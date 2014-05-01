@@ -1,56 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 07/15] ASoC: UDA1380 needs I2C
-Date: Thu, 1 May 2014 10:59:58 -0700
-Message-ID: <20140501175958.GM3245@sirena.org.uk>
-References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org>
- <1398770316-19715-8-git-send-email-kaixu.xia@linaro.org>
+Subject: Re: [PATCHv2 5/9] ASoC: omap: rx51: omap_mcbsp_st_add_controls: add
+ id parameter
+Date: Thu, 1 May 2014 10:54:50 -0700
+Message-ID: <20140501175450.GF3245@sirena.org.uk>
+References: <1398694047-28596-1-git-send-email-sre@kernel.org>
+ <1398694047-28596-6-git-send-email-sre@kernel.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qwymS7QpGZeA8tRa"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="3y/CVJp2vtgPOhvS"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1398770316-19715-8-git-send-email-kaixu.xia@linaro.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Xia Kaixu <kaixu.xia@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linaro-kernel@lists.linaro.org, arnd@arndb.de, Liam Girdwood <lgirdwood@gmail.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+In-Reply-To: <1398694047-28596-6-git-send-email-sre@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sebastian Reichel <sre@kernel.org>
+Cc: Sebastian Reichel <sre@ring0.de>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Tony Lindgren <tony@atomide.com>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---qwymS7QpGZeA8tRa
+--3y/CVJp2vtgPOhvS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 29, 2014 at 07:18:28PM +0800, Xia Kaixu wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> The UDA1380 driver needs I2C to be enabled, so=20
-> SND_SOC_SAMSUNG_H1940_UDA1380 and=20
-> SND_SOC_SAMSUNG_RX1950_UDA1380 also=20
-> require this.
+On Mon, Apr 28, 2014 at 04:07:23PM +0200, Sebastian Reichel wrote:
+> This is a preparation for DT based booting where the McBSP id
+> is set to -1 for all McBSP instances.
 
 Applied, thanks.
 
---qwymS7QpGZeA8tRa
+--3y/CVJp2vtgPOhvS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTYoubAAoJELSic+t+oim9SKkP/i/mW3krmQuLRPbiLtWFQv7/
-S7fHSiJuHsocoXF0JGHYqb6lSdbPKMKOu2VqNWpRzDmMNIhGG+fg/rTif55SKqBU
-SjMkSwMo+y+1tpvVz3iFMYmeRBIns1TjUhp5NnkvvzZI5ZFnl9UxKDa4B7wAg1Uk
-kbkQEyGrSwHQ+ShJFYjhbsFks4zLCgerKZeeaocpsd2LueODQktXp3b70uK1q48h
-oVzRdwzuZ4vxkSwZ0z3CP9lrXI85RLlMBtUCgo+fqUiBNKGJ4fjJGKIoYX9gs1xM
-PTKDcccvTVupZhxELksc3VJus5kxh2sF/4UGoF5wuRh/Hco5DgDoAr3MpkcLLpKd
-Mz8Typog3lClUrHtc2baxYmT5SAbjvExb+Ayf8Bz/SL0fuqYtH9C9TDptu+qPyVY
-en3dFu8ojbtiMZDp1INUhCjFGov+DIlAAyZG4XBUws8hawGq9rmv0ycfzwbmur3I
-tqlI8HoZI5E1GvJOaTL5y47QO/TUWxHzEJTQv5rN9dD6+rTaW5Dy3KzD6zd2xbzN
-c5egL/dgRl0q0F/hhRqR9jlTF6yEjFnKJlSSJwkdRcEyZHLRiPB+OQczlaXI75L2
-E0XuaVLJcy/SUYZQpwkRbVSX3N4KWyk8asxA8HXTmDVm1fTNj3LhfDj3mmcunbpg
-aEZChTMJ9OKWIuaWC673
-=OOS1
+iQIcBAEBAgAGBQJTYopnAAoJELSic+t+oim9Pp8P/0W4IGyCpGGVPDGgzt9/ELiJ
+EY7qhIAnH9boqlLe/k0Js23zNILPFlLf5P+lB5LOd9dRzWjudtRTvsVF4dM+DVBW
+SDkXkhMD2dhwGklx0BTVhBGS6vkWdyDdwJP6Cdg6+yyzF+sTjB74e9SMH7YVZwiY
+QcRLEttQRHGJlrzjj+K0ig2YqUhg04X27lKFcZF9Kw/FZUzWnxjzvL3EsXPLmwTz
+CdZ3zm2oq8ooXrxUG4JGsMsfNZETehZOmKz2lvSrZchAsk/CUORkkFTB9Ll/XC21
+hVtGbFTOXWKEPJDUEkLpVluOF86WYfKiShlR92gp3q8uQU8WmT/9E1HFFpVjJDrn
+36ICE8UoXHjOLUZtxbcgaCaSSwRX/f3hh/EHiWiwKTWyBGvmmOrQLxS38WgYnoZI
+Lhz2l9icLXrzKLKoQ6PV25pMcNZZdr2VqfZIuCQmbZ0pn6Oi8CLDwEjXRJ0bg8zB
+cZSIiaraLuR1d8WHLlXGZovzVG/I5VMKZj1rsfAitLz1xodxJpGbLN85tyQ28aBv
+sWNIWmx5UbNZzVGMqoo+d06io7srXlzIlhiNMzRCxXMKjjjzCnaQyAgIN89Z9b75
+ALw/H5Debc+raHQeBZzulXqR5AymeiCT4ckvBYn0qhR8EAb1OoHWRVMTX3Rg8NsH
+UHyuvm43/7Iu9k6RtQGR
+=w12b
 -----END PGP SIGNATURE-----
 
---qwymS7QpGZeA8tRa--
+--3y/CVJp2vtgPOhvS--
