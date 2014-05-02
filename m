@@ -1,69 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
-Date: Fri, 2 May 2014 09:56:43 -0700
-Message-ID: <20140502165643.GQ3245@sirena.org.uk>
-References: <20140424133920.GA12304@sirena.org.uk>
- <5359E18B.60600@linaro.org>
- <20140429222915.GU15125@sirena.org.uk>
- <5360E5E7.8090807@linaro.org>
- <20140430180314.GA3245@sirena.org.uk>
- <53623004.5010805@linaro.org>
- <20140501141510.GW3245@sirena.org.uk>
- <CAD=FV=Wa4CovkxBng0SkUUAryiFqa=m63tro1Yv1jRgp4e95aw@mail.gmail.com>
- <20140501164003.GC3245@sirena.org.uk>
- <53632568.5020200@linaro.org>
+Subject: Re: [PATCH] ASoC: Intel: Fix stream position pointer.
+Date: Fri, 2 May 2014 09:54:19 -0700
+Message-ID: <20140502165419.GO3245@sirena.org.uk>
+References: <1399046194-5544-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <1399046194-5544-7-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="huW973Vpf/9rkSey"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <53632568.5020200@linaro.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: Doug Anderson <dianders@chromium.org>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, sbkim73@samsung.com, Randy Dunlap <rdunlap@infradead.org>, Mike Turquette <mturquette@linaro.org>
+Content-Type: multipart/mixed; boundary="===============6929496350498277575=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27B7E265510
+ for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 18:54:34 +0200 (CEST)
+In-Reply-To: <1399046194-5544-7-git-send-email-liam.r.girdwood@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---huW973Vpf/9rkSey
+--===============6929496350498277575==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tfkPjF9dLnbqPmYW"
+Content-Disposition: inline
+
+
+--tfkPjF9dLnbqPmYW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 02, 2014 at 10:26:08AM +0530, Tushar Behera wrote:
-> On 05/01/2014 10:10 PM, Mark Brown wrote:
+On Fri, May 02, 2014 at 04:56:33PM +0100, Liam Girdwood wrote:
+> Read the stream offset and presentation position from DSP memory rather
+> than using the old estimated position. This fixes timing issues with
+> pulseaudio.
 
-> > There's patches been posted by (IIRC) Sylvester Nawrocki for this which
-> > I think Mike was basically happy with - I don't immediately see them in
-> > -next though, but I may be looking in the wrong place.
+Applied, thanks.
 
-> Right, there are some patches from Sylwester regarding this. I dont'
-> think the patches are accepted yet as Rob has some reservations against
-> the clock parents.
-
-> https://lkml.org/lkml/2014/4/9/173
-
-Well, OK - that's the bit to fix.  Speaking to Mike the other day he
-said there was also another competing implementation of this.
-
---huW973Vpf/9rkSey
+--tfkPjF9dLnbqPmYW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTY85IAAoJELSic+t+oim9P54P/Rbsqm/AfMtIN4H7pGvOO8hx
-AMthNugbHtxV2QHrdGWE0dPuigHhKv1M1oyFuBQbn/hQNJmdYCKA4iYM07pCNctT
-pBksXo0UwA66SghLZiH4XF4XN278Xonj9zvjnza2+v0l5tGESORbUNWgr54Bkg7a
-UBx3wh/bB9t2ZCfYvmx74yWW3JMQoqNdMrdASJ9uJW1/Xdb1p82R1WVtHmy2iFmJ
-25udDZRMMqHX1RqkpGvuZX2uVAyYkZ4igROJAJMeyrg78xqjt4nwQoa/6JdaGPlZ
-4tlVSt06h2ohCFAX+A35lLRfJ4JXQKPK+dGGmJOCvs3N/6gin7Jn277G72/UBBVx
-h1Xqt+LkCTHDyhAdDYS+BVWLcU5cp8LodL4qV1iJ8Y6Em2zudaqtqN+MI1kWtqxh
-dgpNMOlvBs8rTTBgvDLrEaiDtiXg/xylRSv933QsANmaw7zKzegYHwMMp5vTftMh
-dHSaMxuF7zvACzxswjKJ6oNZd8u+NORknXQVskC+GCV47JKfz6MYmQfr5ezuJ3XJ
-nATMWehVsDMQ7eRBoSY9G1v1AbNKeKSOhMa1Xct+nqEWn+bB2hLZC4PrDGvF+ttg
-22dTqGJMIp1UmgzoOdV1Nv1zy7UPosXxEdN3oT3g30Z788+hn0zExePnYqgaHJRd
-VxNCb9ErXfA15dlp7i/w
-=HMhI
+iQIcBAEBAgAGBQJTY824AAoJELSic+t+oim9hIsP/RsQDXBYoIDYbYdNhODPkI8H
+L6Ls+Tg3CX6B5GmSzgIeWU/ZB+v8IKAscogxMkkG9YJffbkXDMajUuVqmn3IgzET
+M5z4OY6QIuWbtH7EMjVPX5lJq5eCKUIspYX7bVfXXwCAg/9ZYrGJZQoU1OIZOYSn
+Y9h4hyRCTjmZ24/51QU+PPHwbfnr/r2+moEUwFK5ARxCTR7rYAhz9B+Dchj1Aeat
+LPGDV5+q2Y5AkjVOLsciaNVWj5XToElXZnOy6vvsOKR8HKLi0K774kNkhfvwjho+
+qA0K3/utfDtTOT9kICQJDzYiKPc2yOea5FLzAGx9+sdgi39yOoYYp8RyJ+jh0Qob
+b0ixKXtma2z25ZU8LgsSeWDabSsM3wie40R9EWupF/fT54BEuMmsiCRSinAwnnzx
+H0Xd/87vAPfwF6nLInkO+Ld0BUJAr8TolqP2kc8wlptMFr2SMlBu+8Ja3Iittb9+
+6Ip4XPBAqy3P21ihgwxkOx0pgBp2JcsZGfPq7Z+o4ZlDD35OLSfhWlC6r9mY82K/
+eRcL7YmTgcnUVNhkcszaPfkTLp/DB9ssqAK0Qk+4oJa6AZqziUdKpTUzQqJIWI7J
+PGG2VkzztX4kMgOJjKWUyLd8tbojhJ2CiH5LY1h66yJDrOvI9gkG7WvDR5zBYPQg
+gbdJ3vI5K8EpLiI1S3kv
+=WaLN
 -----END PGP SIGNATURE-----
 
---huW973Vpf/9rkSey--
+--tfkPjF9dLnbqPmYW--
+
+--===============6929496350498277575==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6929496350498277575==--
