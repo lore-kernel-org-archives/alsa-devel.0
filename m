@@ -1,262 +1,302 @@
-From: Joschi Brauchle <joschi.brauchle@tum.de>
-Subject: Re: No sound on Thinkpad T440s in Docking Station
-Date: Fri, 02 May 2014 11:27:06 +0200
-Message-ID: <536364EA.5030203@tum.de>
-References: <5360BAD0.3060808@tum.de>	<s5h61lqix9b.wl%tiwai@suse.de>	<53612D54.10302@tum.de>	<s5h7g64skkx.wl%tiwai@suse.de>	<5363544A.8040508@tum.de>
- <s5hzjj0r3ob.wl%tiwai@suse.de> <53635F17.4050202@tum.de>
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+Subject: Re: [PATCH 13/15] ASoC: SND_S3C_DMA_LEGACY needs S3C24XX_DMA
+Date: Fri, 02 May 2014 12:25:58 +0200
+Message-ID: <11471248.qyIXLf6t3H@diego>
+References: <1398770316-19715-1-git-send-email-kaixu.xia@linaro.org> <20140501191125.GB3245@sirena.org.uk> <7071653.m3UbztQEJc@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8076638169607190392=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from postout1.mail.lrz.de (postout1.mail.lrz.de [129.187.255.137])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B918260309
- for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 11:27:07 +0200 (CEST)
-Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
- by postout1.mail.lrz.de (Postfix) with ESMTP id 3gKp572cNhzySG
- for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 11:27:07 +0200 (CEST)
-Received: from postout1.mail.lrz.de ([127.0.0.1])
- by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new,
- port 20024)
- with LMTP id 19CJcQ4URX8p for <alsa-devel@alsa-project.org>;
- Fri,  2 May 2014 11:27:06 +0200 (CEST)
-Received: from [IPv6:2001:4ca0:0:f222:5e51:4fff:fee7:40aa] (unknown
- [IPv6:2001:4ca0:0:f222:5e51:4fff:fee7:40aa])
- (using TLSv1 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by postout1.mail.lrz.de (Postfix) with ESMTPSA id 3gKp565GxszyRm
- for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 11:27:06 +0200 (CEST)
-In-Reply-To: <53635F17.4050202@tum.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <7071653.m3UbztQEJc@wuerfel>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>, Xia Kaixu <kaixu.xia@linaro.org>, linux-kernel@vger.kernel.org, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a cryptographically signed message in MIME format.
+Hi Arnd,
 
---===============8076638169607190392==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms010509090108050001070206"
+Am Freitag, 2. Mai 2014, 00:35:21 schrieb Arnd Bergmann:
+> On Thursday 01 May 2014 12:11:25 Mark Brown wrote:
+> > On Tue, Apr 29, 2014 at 07:18:34PM +0800, Xia Kaixu wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > > 
+> > > SND_S3C_DMA_LEGACY can only be set on S3C24xx, which does not
+> > > (yet) support the dmaengine framework, so samsung_dma_get_ops()
+> > 
+> > > fails to link if S3C24XX_DMA is disabled:
+> > Why is the fix for this not to ensure that s3c24xx always enables the
+> > DMA controller - how likely is it that it would be sane to build a
+> > kernel without DMA after all?
+> 
+> S3C24XX_DMA is only needed for ASoC and for s3cmci. The latter
+> uses 'depends on S3C24XX_DMA'. arch/arm/configs/tct_hammer_defconfig
+> is an example of a configuration that does not include DMA because
+> it uses neither of the two drivers.
+> 
+> On a related topic, I looked at the overall DMA situation for
+> plat-samsung again now, and it looks much nicer now than it used to,
+> with mach-s3c64xx fully migrated to dmaengine, so there might be an
+> even better way to deal with this.
+> 
+> From all I can tell, sound/soc/samsung is the only remaining user
+> of the plat/dma.h interfaces, and there is only one other  driver
+> using the s3c24xx_dma interface directly, drivers/mmc/host/s3cmci.c.
+> 
+> How about the patch below?
+> 8<-------
+> ASoC: s3c24xx: use legacy DMA interface directly
+> 
+> The samsung platform code has a wrapper around the legacy s3c24xx
+> DMA API as an alternative to the dmaengine API. This is only used
+> by the legacy s3c24xx sound support, which is never used in combination
+> with the dmaengine API.
 
-This is a cryptographically signed message in MIME format.
+Just to mention, we have a dmaengine driver for s3c24xx :-) . Correct 
+platform-data is present for all s3c24xx socs (in mach-s3c24xx/common.c) .
 
---------------ms010509090108050001070206
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Mark already removed support for the legacy API from the s3c64xx spi driver 
+(used by s3c2416 and s3c2443), so I guess to way forward would be to "simply" 
+convert asoc and s3cmci to dmaengine and get rid of it altogether.
 
-On 05/02/2014 11:02 AM, Joschi Brauchle wrote:
->
->
-> On 05/02/2014 10:21 AM, Takashi Iwai wrote:
->> At Fri, 02 May 2014 10:16:10 +0200,
->> Joschi Brauchle wrote:
->>>
->>> On 05/02/2014 09:31 AM, Takashi Iwai wrote:
->>>> At Wed, 30 Apr 2014 19:05:24 +0200,
->>>> Joschi Brauchle wrote:
->>>>>
->>>>>
->>>>>
->>>>> On 04/30/2014 06:43 PM, Takashi Iwai wrote:
->>>>>> At Wed, 30 Apr 2014 10:56:48 +0200,
->>>>>> Joschi Brauchle wrote:
->>>>>>>
->>>>>>> Dear all,
->>>>>>>
->>>>>>> using openSUSE 13.1 on an Thinkpad T440s, I am not getting sound
->>>>>>> once
->>>>>>> the laptop is docked to its docking station.
->>>>>>>
->>>>>>> I suspect an additional SND_PCI_QUIRK is needed for this model.
->>>>>>> "pactl list" returns
->>>>>>> ----------------
->>>>>>> alsa.mixer_name =3D "Realtek ALC292"
->>>>>>> alsa.components =3D "HDA:10ec0292,17aa220c,00100001"
->>>>>>> ----------------
->>>>>>> for the analog audio output sink in docked state.
->>>>>>>
->>>>>>> Hence I assume a new line *similar* to this
->>>>>>> ----------------
->>>>>>> SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad T440s",
->>>>>>> ALC269_FIXUP_LENOVO_DOCK),
->>>>>>> ----------------
->>>>>>> is needed?
->>>>>>> What about the ALC292 instead of 269 Realtek chip...?
->>>>>>
->>>>>> It's a compatible chip, so the codec name doesn't matter.
->>>>>> You can try it with model=3Dlenovo-dock option with the recent ker=
-nels.
->>>>>> For Haswell, it's safer to pass twice
->>>>>> (model=3Dlenovo-dock,lenovo-dock).
->>>>>>
->>>>>> Let us know if this works for you.
->>>>>>
->>>>>>
->>>>>> Takashi
->>>>>>
->>>>>     Hi Takashi,
->>>>>
->>>>> so i have:
->>>>> ------------------ /etc/modprobe.d/50-sound.conf ------------------=
--
->>>>>
->>>>> options snd-hda-intel model=3Dlenovo-dock,lenovo-dock
->>>>> options snd slots=3Dsnd-hda-intel,snd-hda-intel
->>>>> # 3hqH.vsazS+ZIdb9:Intel Corporation
->>>>> alias snd-card-0 snd-hda-intel
->>>>> # u1Nb.8dI5aUgInHB:Intel Corporation
->>>>> alias snd-card-1 snd-hda-intel
->>>>> ------------------
->>>>> and rebooted, but still get no sound from the headphone jack on the=
-
->>>>> dock, although the built-in speakers immediately mute when plugging=
- in
->>>>> headphones.
->>>>
->>>> Give alsa-info.sh output with that state for further checking.
->>>>
->>>>
->>>> Takashi
->>>>
->>>
->>> Please find alsa-info attached while docking and with
->>> "model=3Dlenovo-dock,lenovo-dock" option.
->>
->> Did you take alsa-info.sh output while you're plugging to the dock
->> headphone jack?  With the setup, it's NID 0x1b, and "Dock Headphone
->> Jack" control should be "true" when properly detected.
->>
->> Maybe you'd be better to figure out which dock pin corresponds to
->> which at first.  hda-jack-retask should be your help.
->>
->>
->> Takashi
->>
-> Hi,
->
-> yes, alsa-info.sh was created while the laptop was docked and headphone=
-s
-> plugged in at the docking station headphone jack.
->
-> I installed hda-jack-retask and played with it a little bit, but I'm
-> rather lost...
->
-> What exactly whould I try to do with it?
->
-> Thanks, Joschi
->
-
-So if I override pin 0x16 with anything (i.e. type headphones) I do get=20
-sound from the speakers connected to the docking station headphone jack!
-
-Joschi
+I just never had hardware using the old mci driver or with any previously 
+working sound and didn't trust my experience to be enough to be able to do 
+such a conversion "on the fly" like you below in the opposite direction ;-)
 
 
---------------ms010509090108050001070206
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Heiko
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIO6jCC
-BHQwggNcoAMCAQICCQCJkBEVWD6HmzANBgkqhkiG9w0BAQsFADBxMQswCQYDVQQGEwJERTEc
-MBoGA1UEChMTRGV1dHNjaGUgVGVsZWtvbSBBRzEfMB0GA1UECxMWVC1UZWxlU2VjIFRydXN0
-IENlbnRlcjEjMCEGA1UEAxMaRGV1dHNjaGUgVGVsZWtvbSBSb290IENBIDIwHhcNMTQwMjEx
-MTMxMTQ1WhcNMTkwNzA5MjM1OTAwWjBaMQswCQYDVQQGEwJERTETMBEGA1UEChMKREZOLVZl
-cmVpbjEQMA4GA1UECxMHREZOLVBLSTEkMCIGA1UEAxMbREZOLVZlcmVpbiBQQ0EgR2xvYmFs
-IC0gRzAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6ZvDZ4X5Da71jVTDllA1
-PWLpbkztlNcAW5UidNQg6zSP1uzAMQQLmYHiphTSUqAoI4SLdIkEXlvg4njBeMsWyyg1OXst
-kEXQ7aAAeny/Sg4bAMOG6VwrMRF7DPOCJEOMHDiLamgAmu7cT3ir0sYTm3at7t4m6O8Br3QP
-wQmi9mvOvdPNFDBP9eXjpMhim4IaAycwDQJlYE3t0QkjKpY1WCfTdsZxtpAdxO3/NYZ9bzOz
-2w/FEcKKg6GUXUFr2NIQ9Uz9ylGs2b3vkoO72uuLFlZWQ8/h1RM9ph8nMM1JVNvJEzSacXXF
-bOqnC5j5IZ0nrz6jOTlIaoytyZn7wxLyvQIDAQABo4IBJDCCASAwDgYDVR0PAQH/BAQDAgEG
-MB0GA1UdDgQWBBRJt8bP6D0ff+pEexMp9/EKcD7eZDAfBgNVHSMEGDAWgBQxw3kbuvVT1xfg
-iXotF2wKsyudMzASBgNVHRMBAf8ECDAGAQH/AgECMD8GA1UdHwQ4MDYwNKAyoDCGLmh0dHA6
-Ly9vY3NwMDMzNi50ZWxlc2VjLmRlL3JsL0RUX1JPT1RfQ0FfMi5jcmwweQYIKwYBBQUHAQEE
-bTBrMCwGCCsGAQUFBzABhiBodHRwOi8vb2NzcDAzMzYudGVsZXNlYy5kZS9vY3NwcjA7Bggr
-BgEFBQcwAoYvaHR0cDovL29jc3AwMzM2LnRlbGVzZWMuZGUvY3J0L0RUX1JPT1RfQ0FfMi5j
-ZXIwDQYJKoZIhvcNAQELBQADggEBACwvqeBeQy8FcNxRlXVdgI47DMFjWFSBMIOcXalRh8m2
-1w8runhIJGBCzPGi4jPhMh4ym1ETlXnGtazQJO0YFLwvKuovq7ITrEkdXgALBBhqmmXU6Ec1
-vK7t33S22PGAUGWgxtojm41TR8psu0DJlV1OYHor5LtmQFWvtjPB6iMhbvxUnd0zQm5Ma9Xk
-w/LqBrdaMmoyRXS2tW/+6v8cY6q7iNH4WK8gfo+///b3OHeLGrZQP609R3lGw1e0F2KHvZ6j
-NiUHaCSqIvL2rynsN6UUma66AWCGdS1hFbp4loe1ks/hUJGeWToV7J5axob8KD5mutTZNa+t
-PEkihYfub48wggTMMIIDtKADAgECAgQJ8QpjMA0GCSqGSIb3DQEBBQUAMFoxCzAJBgNVBAYT
-AkRFMRMwEQYDVQQKEwpERk4tVmVyZWluMRAwDgYDVQQLEwdERk4tUEtJMSQwIgYDVQQDExtE
-Rk4tVmVyZWluIFBDQSBHbG9iYWwgLSBHMDEwHhcNMDcwMjEzMTAwMzAxWhcNMTkwMjEyMDAw
-MDAwWjBgMQswCQYDVQQGEwJERTEpMCcGA1UEChMgVGVjaG5pc2NoZSBVbml2ZXJzaXRhZXQg
-TXVlbmNoZW4xJjAkBgNVBAMTHVplcnRpZml6aWVydW5nc3N0ZWxsZSBkZXIgVFVNMIIBIjAN
-BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqO/o09gEXMn5kQtzol8T/lqBr/srstYxUEdm
-+iF0lkZ3fWk31AR/NB6mHSSKqybVfmQeto+1Nz2MwfxIsBIEjjkmmk1JJhF/DqPpGMoDs9RK
-1F9XR2rlwE8GXkWnEBjbeUDMzNj7oRASrf+FLwhrfMblDmxomxz70HZKjz6C9pXBmGtaF7s2
-HK9WpgyIGlMT19tWJqHdSvlV0OlwZuxv8GpEPFGs4KNB01DpMJAd8hQQNNAxb9zOPXBuAvGu
-nywHleXAw9ftzYOj7IHJZtyuSK10YR5qBxaoLWBzykP9/w8kihV5bhzLrQ+MdEh9gLQ0FW+D
-0/S+K7AUTJYzXtusjwIDAQABo4IBkjCCAY4wDwYDVR0TAQH/BAUwAwEB/zALBgNVHQ8EBAMC
-AQYwHQYDVR0OBBYEFJ2fI/AZG37HI10nKsylNjqmaeWJMB8GA1UdIwQYMBaAFEm3xs/oPR9/
-6kR7Eyn38QpwPt5kMIGIBgNVHR8EgYAwfjA9oDugOYY3aHR0cDovL2NkcDEucGNhLmRmbi5k
-ZS9nbG9iYWwtcm9vdC1jYS9wdWIvY3JsL2NhY3JsLmNybDA9oDugOYY3aHR0cDovL2NkcDIu
-cGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1jYS9wdWIvY3JsL2NhY3JsLmNybDCBogYIKwYBBQUH
-AQEEgZUwgZIwRwYIKwYBBQUHMAKGO2h0dHA6Ly9jZHAxLnBjYS5kZm4uZGUvZ2xvYmFsLXJv
-b3QtY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0MEcGCCsGAQUFBzAChjtodHRwOi8vY2RwMi5w
-Y2EuZGZuLmRlL2dsb2JhbC1yb290LWNhL3B1Yi9jYWNlcnQvY2FjZXJ0LmNydDANBgkqhkiG
-9w0BAQUFAAOCAQEAg2g22cMLJTBw8Nzrx7+7k7999yz6vjHg55HEq1hd3d1ELK4KjEkCGF6l
-KTahBzz1CFYU44HF5PsqiygKyf6G0u2CdkuPhH/I1fwx6bNg/XvQ5n+bhf2+ZGG3L6CH3SQJ
-JmVpCBP0x9X7uDULpCB6VQNXw3rw13g+XUgwFaQCRlktxP38eCiXn0UaEUMXW4XHtK769gGU
-7eD60ecjXxckEM6zZpsdFcjk+Zhy+0aKuxUx9ZyzSihk6idjDmm9Yj43x1q30M0i+BF2gKFM
-4p289RGO2RjeQmS90B88qx/9kKPceF0SfRvpVlCoOPtUlEK8U4vS2pJzbBSsctHD/0y7aDCC
-BZ4wggSGoAMCAQICBxZx6199LPQwDQYJKoZIhvcNAQEFBQAwYDELMAkGA1UEBhMCREUxKTAn
-BgNVBAoTIFRlY2huaXNjaGUgVW5pdmVyc2l0YWV0IE11ZW5jaGVuMSYwJAYDVQQDEx1aZXJ0
-aWZpemllcnVuZ3NzdGVsbGUgZGVyIFRVTTAeFw0xMzEwMDcwODE2MTZaFw0xNjEwMDYwODE2
-MTZaMIHdMQswCQYDVQQGEwJERTEPMA0GA1UECBMGQmF5ZXJuMREwDwYDVQQHEwhNdWVuY2hl
-bjEpMCcGA1UEChMgVGVjaG5pc2NoZSBVbml2ZXJzaXRhZXQgTXVlbmNoZW4xPjA8BgNVBAsT
-NUZha3VsdGFldCBmdWVyIEVsZWt0cm90ZWNobmlrIHVuZCBJbmZvcm1hdGlvbnN0ZWNobmlr
-MRgwFgYDVQQDEw9Kb3NjaGkgQnJhdWNobGUxJTAjBgkqhkiG9w0BCQEWFmpvc2NoaS5icmF1
-Y2hsZUB0dW0uZGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDDUTo3kvRFgmnS
-RPxNZFPS0YKGEpDFHj90LrvM49ZdL95ZRW3yM7TDf1gmj+YGLecbIDvHBKB4ug4M6Sijndp9
-TFFEWps+JKpKkezQjRx4/HNhXL7dlwyDsn1FixkRJjU+tAwWa+FMlLHMDA3rBohHKOhVmhNU
-Hj9QL9CFoVuXhZlwjIio4urTCVGys8m5cmI1bwhGxjrHF/m4/jDYWiP3A+qgXiyxJpIdDM9W
-HY9oGhbmIKYdNX+I9oP2aMIYxItsKUgXtVgswEwJKZ8aCi7RSUotDbi3Bv3jGRtrRAqjxrUY
-xTTQejAwQFveljx7iyMczSEZXM8d+Mp/tnafvvi/AgMBAAGjggHdMIIB2TAvBgNVHSAEKDAm
-MBEGDysGAQQBga0hgiwBAQQDADARBg8rBgEEAYGtIYIsAgEEAwAwCQYDVR0TBAIwADALBgNV
-HQ8EBAMCBeAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBRIPYxb
-H3otuuvtVp6HesCmsA/g6zAfBgNVHSMEGDAWgBSdnyPwGRt+xyNdJyrMpTY6pmnliTAhBgNV
-HREEGjAYgRZqb3NjaGkuYnJhdWNobGVAdHVtLmRlMHcGA1UdHwRwMG4wNaAzoDGGL2h0dHA6
-Ly9jZHAxLnBjYS5kZm4uZGUvdHVtLWNhL3B1Yi9jcmwvY2FjcmwuY3JsMDWgM6Axhi9odHRw
-Oi8vY2RwMi5wY2EuZGZuLmRlL3R1bS1jYS9wdWIvY3JsL2NhY3JsLmNybDCBkgYIKwYBBQUH
-AQEEgYUwgYIwPwYIKwYBBQUHMAKGM2h0dHA6Ly9jZHAxLnBjYS5kZm4uZGUvdHVtLWNhL3B1
-Yi9jYWNlcnQvY2FjZXJ0LmNydDA/BggrBgEFBQcwAoYzaHR0cDovL2NkcDIucGNhLmRmbi5k
-ZS90dW0tY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQAr3wnm
-z7doaFaoQ+5TDFubiPEyYsb5/oNs/mz/YCMe9aQZbBKBP27nTdQSOos/ui2CvQAVhYCt9/BN
-a/aLo+t6HU5+EMeSbTnUus60WP7+UGM34LC4WiMbbXcEoM6ejf1wBGshtIOoF0uljXUMmft6
-MRyEyPvE2qO3lNswfjSRQPoCkKEy4l2KWTi0Qj9+WQpvHgSjxto/E+K9ePIRciA05JKxkuMQ
-b6s7RHmaSjrY6yEJL57T31ntotyMsTmnGuVnr7xeV/SFMnkEuFMckIJ/ltqd8Oskr4xDNoxw
-S18rmMoWGrEkrqBGiaqW7szchvUClDe7tZZnWi6D3MsTRnNwMYIDWzCCA1cCAQEwazBgMQsw
-CQYDVQQGEwJERTEpMCcGA1UEChMgVGVjaG5pc2NoZSBVbml2ZXJzaXRhZXQgTXVlbmNoZW4x
-JjAkBgNVBAMTHVplcnRpZml6aWVydW5nc3N0ZWxsZSBkZXIgVFVNAgcWcetffSz0MAkGBSsO
-AwIaBQCgggHFMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE0
-MDUwMjA5MjcwNlowIwYJKoZIhvcNAQkEMRYEFB099OW0xdcjeYW/1iGfuhIuR8x9MGwGCSqG
-SIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggq
-hkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwegYJ
-KwYBBAGCNxAEMW0wazBgMQswCQYDVQQGEwJERTEpMCcGA1UEChMgVGVjaG5pc2NoZSBVbml2
-ZXJzaXRhZXQgTXVlbmNoZW4xJjAkBgNVBAMTHVplcnRpZml6aWVydW5nc3N0ZWxsZSBkZXIg
-VFVNAgcWcetffSz0MHwGCyqGSIb3DQEJEAILMW2gazBgMQswCQYDVQQGEwJERTEpMCcGA1UE
-ChMgVGVjaG5pc2NoZSBVbml2ZXJzaXRhZXQgTXVlbmNoZW4xJjAkBgNVBAMTHVplcnRpZml6
-aWVydW5nc3N0ZWxsZSBkZXIgVFVNAgcWcetffSz0MA0GCSqGSIb3DQEBAQUABIIBAFIPuUp2
-exVu1kiL6oS5BMnUaEbXn9m0Icl63cVl9mgL+9S87IyUsy/ADCTEZa5ajC0lBkNDzWRK7ewg
-+yvJ3Jq0FQx8dsUwCNWIaZEx0ADnHOk4e/BJvuJIu/e04hT1pcfKD5Md0xfumiH5R05GVsxQ
-y9aVL0alRHAhNdysPQFZPzsutaYnCPmRFsSJ0F5YJ4jjTFpCaieX54Zl5OJQ/iGoq4t8uk0X
-vnnBVFxFtVikAKldO4p2jaxwtD8TNa0+fSQaKvFsd3zGYE85icNo3o7naWW4uF2t1OynAwFo
-nnjrlsMstv7CuG46Zz+HWU2Pnu77wOnsF+PoGvFGmi+ml3AAAAAAAAA=
---------------ms010509090108050001070206--
-
---===============8076638169607190392==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8076638169607190392==--
+> 
+> We can simplify the ASoC code significantly, and thereby completely
+> obsoleting arch/arm/plat-samsung/dma-ops.c,
+> arch/arm/plat-samsung/s3c-dma-ops.c and
+> arch/arm/plat-samsung/include/plat/dma-ops.h.
+> 
+> This patch achieves this by open-coding the implementation of this
+> wrapper, which ends up saving us more code than we have to add.
+> s3c24xx does not support cyclic DMA, so anything referring to that
+> gets deleted in the process.
+> 
+> The plat-samsung dma wrapper code is now dead code and can be removed
+> subsequently.
+> 
+> Signed-off--by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> 
+>  sound/soc/samsung/ac97.c | 10 ++----
+>  sound/soc/samsung/dma.c  | 79
+> +++++++++++++++--------------------------------- sound/soc/samsung/dma.h  |
+>  2 --
+>  3 files changed, 27 insertions(+), 64 deletions(-)
+> 
+> diff --git a/sound/soc/samsung/ac97.c b/sound/soc/samsung/ac97.c
+> index 76b072b..28fe097 100644
+> --- a/sound/soc/samsung/ac97.c
+> +++ b/sound/soc/samsung/ac97.c
+> @@ -253,10 +253,7 @@ static int s3c_ac97_trigger(struct snd_pcm_substream
+> *substream, int cmd,
+> 
+>  	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
+> 
+> -	if (!dma_data->ops)
+> -		dma_data->ops = samsung_dma_get_ops();
+> -
+> -	dma_data->ops->started(dma_data->channel);
+> +	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
+> 
+>  	return 0;
+>  }
+> @@ -287,10 +284,7 @@ static int s3c_ac97_mic_trigger(struct
+> snd_pcm_substream *substream,
+> 
+>  	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
+> 
+> -	if (!dma_data->ops)
+> -		dma_data->ops = samsung_dma_get_ops();
+> -
+> -	dma_data->ops->started(dma_data->channel);
+> +	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
+> 
+>  	return 0;
+>  }
+> diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
+> index dc09b71..3c6e2f2 100644
+> --- a/sound/soc/samsung/dma.c
+> +++ b/sound/soc/samsung/dma.c
+> @@ -54,8 +54,6 @@ struct runtime_data {
+>  	struct s3c_dma_params *params;
+>  };
+> 
+> -static void audio_buffdone(void *data);
+> -
+>  /* dma_enqueue
+>   *
+>   * place a dma buffer onto the queue for the dma system
+> @@ -66,7 +64,6 @@ static void dma_enqueue(struct snd_pcm_substream
+> *substream) struct runtime_data *prtd = substream->runtime->private_data;
+>  	dma_addr_t pos = prtd->dma_pos;
+>  	unsigned int limit;
+> -	struct samsung_dma_prep dma_info;
+> 
+>  	pr_debug("Entered %s\n", __func__);
+> 
+> @@ -75,33 +72,11 @@ static void dma_enqueue(struct snd_pcm_substream
+> *substream) pr_debug("%s: loaded %d, limit %d\n",
+>  				__func__, prtd->dma_loaded, limit);
+> 
+> -	dma_info.cap = (samsung_dma_has_circular() ? DMA_CYCLIC : DMA_SLAVE);
+> -	dma_info.direction =
+> -		(substream->stream == SNDRV_PCM_STREAM_PLAYBACK
+> -		? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM);
+> -	dma_info.fp = audio_buffdone;
+> -	dma_info.fp_param = substream;
+> -	dma_info.period = prtd->dma_period;
+> -	dma_info.len = prtd->dma_period*limit;
+> -
+> -	if (dma_info.cap == DMA_CYCLIC) {
+> -		dma_info.buf = pos;
+> -		prtd->params->ops->prepare(prtd->params->ch, &dma_info);
+> -		prtd->dma_loaded += limit;
+> -		return;
+> -	}
+> -
+>  	while (prtd->dma_loaded < limit) {
+>  		pr_debug("dma_loaded: %d\n", prtd->dma_loaded);
+> 
+> -		if ((pos + dma_info.period) > prtd->dma_end) {
+> -			dma_info.period  = prtd->dma_end - pos;
+> -			pr_debug("%s: corrected dma len %ld\n",
+> -					__func__, dma_info.period);
+> -		}
+> -
+> -		dma_info.buf = pos;
+> -		prtd->params->ops->prepare(prtd->params->ch, &dma_info);
+> +		s3c2410_dma_enqueue(prtd->params->channel, substream, pos,
+> +				    prtd->dma_period * limit);
+> 
+>  		prtd->dma_loaded++;
+>  		pos += prtd->dma_period;
+> @@ -112,7 +87,8 @@ static void dma_enqueue(struct snd_pcm_substream
+> *substream) prtd->dma_pos = pos;
+>  }
+> 
+> -static void audio_buffdone(void *data)
+> +static void audio_buffdone(struct s3c2410_dma_chan *channel, void *data,
+> +		       int size, enum s3c2410_dma_buffresult res)
+>  {
+>  	struct snd_pcm_substream *substream = data;
+>  	struct runtime_data *prtd = substream->runtime->private_data;
+> @@ -128,10 +104,8 @@ static void audio_buffdone(void *data)
+>  			snd_pcm_period_elapsed(substream);
+> 
+>  		spin_lock(&prtd->lock);
+> -		if (!samsung_dma_has_circular()) {
+> -			prtd->dma_loaded--;
+> -			dma_enqueue(substream);
+> -		}
+> +		prtd->dma_loaded--;
+> +		dma_enqueue(substream);
+>  		spin_unlock(&prtd->lock);
+>  	}
+>  }
+> @@ -145,8 +119,7 @@ static int dma_hw_params(struct snd_pcm_substream
+> *substream, unsigned long totbytes = params_buffer_bytes(params);
+>  	struct s3c_dma_params *dma =
+>  		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+> -	struct samsung_dma_req req;
+> -	struct samsung_dma_config config;
+> +	enum dma_transfer_direction direction;
+> 
+>  	pr_debug("Entered %s\n", __func__);
+> 
+> @@ -164,24 +137,22 @@ static int dma_hw_params(struct snd_pcm_substream
+> *substream, pr_debug("params %p, client %p, channel %d\n", prtd->params,
+>  			prtd->params->client, prtd->params->channel);
+> 
+> -		prtd->params->ops = samsung_dma_get_ops();
+> -
+> -		req.cap = (samsung_dma_has_circular() ?
+> -			DMA_CYCLIC : DMA_SLAVE);
+> -		req.client = prtd->params->client;
+> -		config.direction =
+> -			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK
+> +		direction = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK
+>  			? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM);
+> -		config.width = prtd->params->dma_size;
+> -		config.fifo = prtd->params->dma_addr;
+> -		prtd->params->ch = prtd->params->ops->request(
+> -				prtd->params->channel, &req, rtd->cpu_dai->dev,
+> -				prtd->params->ch_name);
+> -		if (!prtd->params->ch) {
+> +
+> +		if (s3c2410_dma_request(prtd->params->channel,
+> +					(void*)prtd->params->client, NULL) < 0) {
+>  			pr_err("Failed to allocate DMA channel\n");
+> +			s3c2410_dma_free(prtd->params->channel,
+> +					 (void*)prtd->params->client);
+>  			return -ENXIO;
+>  		}
+> -		prtd->params->ops->config(prtd->params->ch, &config);
+> +		s3c2410_dma_devconfig(prtd->params->channel, direction,
+> +				      prtd->params->dma_addr);
+> +		s3c2410_dma_config(prtd->params->channel,
+> +				   prtd->params->dma_size);
+> +		s3c2410_dma_set_buffdone_fn(prtd->params->channel,
+> +					    audio_buffdone);
+>  	}
+> 
+>  	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+> @@ -208,9 +179,9 @@ static int dma_hw_free(struct snd_pcm_substream
+> *substream) snd_pcm_set_runtime_buffer(substream, NULL);
+> 
+>  	if (prtd->params) {
+> -		prtd->params->ops->flush(prtd->params->ch);
+> -		prtd->params->ops->release(prtd->params->ch,
+> -					prtd->params->client);
+> +		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_FLUSH);
+> +		s3c2410_dma_free(prtd->params->channel,
+> +				 (void*)prtd->params->client);
+>  		prtd->params = NULL;
+>  	}
+> 
+> @@ -230,7 +201,7 @@ static int dma_prepare(struct snd_pcm_substream
+> *substream) return 0;
+> 
+>  	/* flush the DMA channel */
+> -	prtd->params->ops->flush(prtd->params->ch);
+> +	s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_FLUSH);
+> 
+>  	prtd->dma_loaded = 0;
+>  	prtd->dma_pos = prtd->dma_start;
+> @@ -253,12 +224,12 @@ static int dma_trigger(struct snd_pcm_substream
+> *substream, int cmd) switch (cmd) {
+>  	case SNDRV_PCM_TRIGGER_START:
+>  		prtd->state |= ST_RUNNING;
+> -		prtd->params->ops->trigger(prtd->params->ch);
+> +		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_START);
+>  		break;
+> 
+>  	case SNDRV_PCM_TRIGGER_STOP:
+>  		prtd->state &= ~ST_RUNNING;
+> -		prtd->params->ops->stop(prtd->params->ch);
+> +		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_STOP);
+>  		break;
+> 
+>  	default:
+> diff --git a/sound/soc/samsung/dma.h b/sound/soc/samsung/dma.h
+> index ad7c0f0..c52fa86 100644
+> --- a/sound/soc/samsung/dma.h
+> +++ b/sound/soc/samsung/dma.h
+> @@ -23,8 +23,6 @@ struct s3c_dma_params {
+>  	int channel;				/* Channel ID */
+>  	dma_addr_t dma_addr;
+>  	int dma_size;			/* Size of the DMA transfer */
+> -	unsigned ch;
+> -	struct samsung_dma_ops *ops;
+>  	char *ch_name;
+>  	struct snd_dmaengine_dai_dma_data dma_data;
+>  };
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-samsung-soc"
+> in the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
