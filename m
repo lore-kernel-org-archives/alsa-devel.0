@@ -1,16 +1,30 @@
 From: Joschi Brauchle <joschi.brauchle@tum.de>
 Subject: Re: No sound on Thinkpad T440s in Docking Station
-Date: Fri, 02 May 2014 11:02:15 +0200
-Message-ID: <53635F17.4050202@tum.de>
+Date: Fri, 02 May 2014 11:27:06 +0200
+Message-ID: <536364EA.5030203@tum.de>
 References: <5360BAD0.3060808@tum.de>	<s5h61lqix9b.wl%tiwai@suse.de>	<53612D54.10302@tum.de>	<s5h7g64skkx.wl%tiwai@suse.de>	<5363544A.8040508@tum.de>
- <s5hzjj0r3ob.wl%tiwai@suse.de>
+ <s5hzjj0r3ob.wl%tiwai@suse.de> <53635F17.4050202@tum.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6587058259267247507=="
+Content-Type: multipart/mixed; boundary="===============8076638169607190392=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from postout2.mail.lrz.de (postout2.mail.lrz.de [129.187.255.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C743260309
- for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 11:02:42 +0200 (CEST)
-In-Reply-To: <s5hzjj0r3ob.wl%tiwai@suse.de>
+Received: from postout1.mail.lrz.de (postout1.mail.lrz.de [129.187.255.137])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B918260309
+ for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 11:27:07 +0200 (CEST)
+Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
+ by postout1.mail.lrz.de (Postfix) with ESMTP id 3gKp572cNhzySG
+ for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 11:27:07 +0200 (CEST)
+Received: from postout1.mail.lrz.de ([127.0.0.1])
+ by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new,
+ port 20024)
+ with LMTP id 19CJcQ4URX8p for <alsa-devel@alsa-project.org>;
+ Fri,  2 May 2014 11:27:06 +0200 (CEST)
+Received: from [IPv6:2001:4ca0:0:f222:5e51:4fff:fee7:40aa] (unknown
+ [IPv6:2001:4ca0:0:f222:5e51:4fff:fee7:40aa])
+ (using TLSv1 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by postout1.mail.lrz.de (Postfix) with ESMTPSA id 3gKp565GxszyRm
+ for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 11:27:06 +0200 (CEST)
+In-Reply-To: <53635F17.4050202@tum.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,122 +34,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a cryptographically signed message in MIME format.
 
---===============6587058259267247507==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms030608070100070006040107"
+--===============8076638169607190392==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms010509090108050001070206"
 
 This is a cryptographically signed message in MIME format.
 
---------------ms030608070100070006040107
+--------------ms010509090108050001070206
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
+On 05/02/2014 11:02 AM, Joschi Brauchle wrote:
+>
+>
+> On 05/02/2014 10:21 AM, Takashi Iwai wrote:
+>> At Fri, 02 May 2014 10:16:10 +0200,
+>> Joschi Brauchle wrote:
+>>>
+>>> On 05/02/2014 09:31 AM, Takashi Iwai wrote:
+>>>> At Wed, 30 Apr 2014 19:05:24 +0200,
+>>>> Joschi Brauchle wrote:
+>>>>>
+>>>>>
+>>>>>
+>>>>> On 04/30/2014 06:43 PM, Takashi Iwai wrote:
+>>>>>> At Wed, 30 Apr 2014 10:56:48 +0200,
+>>>>>> Joschi Brauchle wrote:
+>>>>>>>
+>>>>>>> Dear all,
+>>>>>>>
+>>>>>>> using openSUSE 13.1 on an Thinkpad T440s, I am not getting sound
+>>>>>>> once
+>>>>>>> the laptop is docked to its docking station.
+>>>>>>>
+>>>>>>> I suspect an additional SND_PCI_QUIRK is needed for this model.
+>>>>>>> "pactl list" returns
+>>>>>>> ----------------
+>>>>>>> alsa.mixer_name =3D "Realtek ALC292"
+>>>>>>> alsa.components =3D "HDA:10ec0292,17aa220c,00100001"
+>>>>>>> ----------------
+>>>>>>> for the analog audio output sink in docked state.
+>>>>>>>
+>>>>>>> Hence I assume a new line *similar* to this
+>>>>>>> ----------------
+>>>>>>> SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad T440s",
+>>>>>>> ALC269_FIXUP_LENOVO_DOCK),
+>>>>>>> ----------------
+>>>>>>> is needed?
+>>>>>>> What about the ALC292 instead of 269 Realtek chip...?
+>>>>>>
+>>>>>> It's a compatible chip, so the codec name doesn't matter.
+>>>>>> You can try it with model=3Dlenovo-dock option with the recent ker=
+nels.
+>>>>>> For Haswell, it's safer to pass twice
+>>>>>> (model=3Dlenovo-dock,lenovo-dock).
+>>>>>>
+>>>>>> Let us know if this works for you.
+>>>>>>
+>>>>>>
+>>>>>> Takashi
+>>>>>>
+>>>>>     Hi Takashi,
+>>>>>
+>>>>> so i have:
+>>>>> ------------------ /etc/modprobe.d/50-sound.conf ------------------=
+-
+>>>>>
+>>>>> options snd-hda-intel model=3Dlenovo-dock,lenovo-dock
+>>>>> options snd slots=3Dsnd-hda-intel,snd-hda-intel
+>>>>> # 3hqH.vsazS+ZIdb9:Intel Corporation
+>>>>> alias snd-card-0 snd-hda-intel
+>>>>> # u1Nb.8dI5aUgInHB:Intel Corporation
+>>>>> alias snd-card-1 snd-hda-intel
+>>>>> ------------------
+>>>>> and rebooted, but still get no sound from the headphone jack on the=
 
-
-On 05/02/2014 10:21 AM, Takashi Iwai wrote:
-> At Fri, 02 May 2014 10:16:10 +0200,
-> Joschi Brauchle wrote:
+>>>>> dock, although the built-in speakers immediately mute when plugging=
+ in
+>>>>> headphones.
+>>>>
+>>>> Give alsa-info.sh output with that state for further checking.
+>>>>
+>>>>
+>>>> Takashi
+>>>>
+>>>
+>>> Please find alsa-info attached while docking and with
+>>> "model=3Dlenovo-dock,lenovo-dock" option.
 >>
->> On 05/02/2014 09:31 AM, Takashi Iwai wrote:
->>> At Wed, 30 Apr 2014 19:05:24 +0200,
->>> Joschi Brauchle wrote:
->>>>
->>>>
->>>>
->>>> On 04/30/2014 06:43 PM, Takashi Iwai wrote:
->>>>> At Wed, 30 Apr 2014 10:56:48 +0200,
->>>>> Joschi Brauchle wrote:
->>>>>>
->>>>>> Dear all,
->>>>>>
->>>>>> using openSUSE 13.1 on an Thinkpad T440s, I am not getting sound o=
-nce
->>>>>> the laptop is docked to its docking station.
->>>>>>
->>>>>> I suspect an additional SND_PCI_QUIRK is needed for this model.
->>>>>> "pactl list" returns
->>>>>> ----------------
->>>>>> alsa.mixer_name =3D "Realtek ALC292"
->>>>>> alsa.components =3D "HDA:10ec0292,17aa220c,00100001"
->>>>>> ----------------
->>>>>> for the analog audio output sink in docked state.
->>>>>>
->>>>>> Hence I assume a new line *similar* to this
->>>>>> ----------------
->>>>>> SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad T440s", ALC269_FIXUP_LENOV=
-O_DOCK),
->>>>>> ----------------
->>>>>> is needed?
->>>>>> What about the ALC292 instead of 269 Realtek chip...?
->>>>>
->>>>> It's a compatible chip, so the codec name doesn't matter.
->>>>> You can try it with model=3Dlenovo-dock option with the recent kern=
-els.
->>>>> For Haswell, it's safer to pass twice
->>>>> (model=3Dlenovo-dock,lenovo-dock).
->>>>>
->>>>> Let us know if this works for you.
->>>>>
->>>>>
->>>>> Takashi
->>>>>
->>>>     Hi Takashi,
->>>>
->>>> so i have:
->>>> ------------------ /etc/modprobe.d/50-sound.conf -------------------=
-
->>>>
->>>> options snd-hda-intel model=3Dlenovo-dock,lenovo-dock
->>>> options snd slots=3Dsnd-hda-intel,snd-hda-intel
->>>> # 3hqH.vsazS+ZIdb9:Intel Corporation
->>>> alias snd-card-0 snd-hda-intel
->>>> # u1Nb.8dI5aUgInHB:Intel Corporation
->>>> alias snd-card-1 snd-hda-intel
->>>> ------------------
->>>> and rebooted, but still get no sound from the headphone jack on the
->>>> dock, although the built-in speakers immediately mute when plugging =
-in
->>>> headphones.
->>>
->>> Give alsa-info.sh output with that state for further checking.
->>>
->>>
->>> Takashi
->>>
+>> Did you take alsa-info.sh output while you're plugging to the dock
+>> headphone jack?  With the setup, it's NID 0x1b, and "Dock Headphone
+>> Jack" control should be "true" when properly detected.
 >>
->> Please find alsa-info attached while docking and with
->> "model=3Dlenovo-dock,lenovo-dock" option.
+>> Maybe you'd be better to figure out which dock pin corresponds to
+>> which at first.  hda-jack-retask should be your help.
+>>
+>>
+>> Takashi
+>>
+> Hi,
 >
-> Did you take alsa-info.sh output while you're plugging to the dock
-> headphone jack?  With the setup, it's NID 0x1b, and "Dock Headphone
-> Jack" control should be "true" when properly detected.
+> yes, alsa-info.sh was created while the laptop was docked and headphone=
+s
+> plugged in at the docking station headphone jack.
 >
-> Maybe you'd be better to figure out which dock pin corresponds to
-> which at first.  hda-jack-retask should be your help.
+> I installed hda-jack-retask and played with it a little bit, but I'm
+> rather lost...
 >
+> What exactly whould I try to do with it?
 >
-> Takashi
+> Thanks, Joschi
 >
-Hi,
 
-yes, alsa-info.sh was created while the laptop was docked and headphones =
+So if I override pin 0x16 with anything (i.e. type headphones) I do get=20
+sound from the speakers connected to the docking station headphone jack!
 
-plugged in at the docking station headphone jack.
-
-I installed hda-jack-retask and played with it a little bit, but I'm=20
-rather lost...
-
-What exactly whould I try to do with it?
-
-Thanks, Joschi
+Joschi
 
 
---------------ms030608070100070006040107
+--------------ms010509090108050001070206
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -216,26 +237,26 @@ S18rmMoWGrEkrqBGiaqW7szchvUClDe7tZZnWi6D3MsTRnNwMYIDWzCCA1cCAQEwazBgMQsw
 CQYDVQQGEwJERTEpMCcGA1UEChMgVGVjaG5pc2NoZSBVbml2ZXJzaXRhZXQgTXVlbmNoZW4x
 JjAkBgNVBAMTHVplcnRpZml6aWVydW5nc3N0ZWxsZSBkZXIgVFVNAgcWcetffSz0MAkGBSsO
 AwIaBQCgggHFMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE0
-MDUwMjA5MDIxNVowIwYJKoZIhvcNAQkEMRYEFEZhYb3aMW30aN6icrXFNESMj5NQMGwGCSqG
+MDUwMjA5MjcwNlowIwYJKoZIhvcNAQkEMRYEFB099OW0xdcjeYW/1iGfuhIuR8x9MGwGCSqG
 SIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggq
 hkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwegYJ
 KwYBBAGCNxAEMW0wazBgMQswCQYDVQQGEwJERTEpMCcGA1UEChMgVGVjaG5pc2NoZSBVbml2
 ZXJzaXRhZXQgTXVlbmNoZW4xJjAkBgNVBAMTHVplcnRpZml6aWVydW5nc3N0ZWxsZSBkZXIg
 VFVNAgcWcetffSz0MHwGCyqGSIb3DQEJEAILMW2gazBgMQswCQYDVQQGEwJERTEpMCcGA1UE
 ChMgVGVjaG5pc2NoZSBVbml2ZXJzaXRhZXQgTXVlbmNoZW4xJjAkBgNVBAMTHVplcnRpZml6
-aWVydW5nc3N0ZWxsZSBkZXIgVFVNAgcWcetffSz0MA0GCSqGSIb3DQEBAQUABIIBADI5rXrb
-7qwCg3p0LoM1R+2iyzjgTfo/mkxLXxKx1RodsLzPUeeVvDJ/wXuKT3LZHdm3alJm2jJ+n/9e
-rSoDslokva3DF0Krb+fiv2F1erp4hDQy7KALiDKzy2D+RtoexaIXzvE6sd0R4p0ylwQu8kxM
-55byihapP9OFSCYyw+wj5KzHWzcvzi/5KkPOmEOBjxRdPSfT1sEGJ5pnaKkr0m8En6ULONYb
-TsChCKpU2eEvnsrDAfAAhaKnyhhS7thUDCYeqR+HaTSej5q94286xFNXUU2HqEKGd39Yrr3F
-98pTuamBoYrUTJAoHSBX7q17oqCS84fHcucIM272qQeM61EAAAAAAAA=
---------------ms030608070100070006040107--
+aWVydW5nc3N0ZWxsZSBkZXIgVFVNAgcWcetffSz0MA0GCSqGSIb3DQEBAQUABIIBAFIPuUp2
+exVu1kiL6oS5BMnUaEbXn9m0Icl63cVl9mgL+9S87IyUsy/ADCTEZa5ajC0lBkNDzWRK7ewg
++yvJ3Jq0FQx8dsUwCNWIaZEx0ADnHOk4e/BJvuJIu/e04hT1pcfKD5Md0xfumiH5R05GVsxQ
+y9aVL0alRHAhNdysPQFZPzsutaYnCPmRFsSJ0F5YJ4jjTFpCaieX54Zl5OJQ/iGoq4t8uk0X
+vnnBVFxFtVikAKldO4p2jaxwtD8TNa0+fSQaKvFsd3zGYE85icNo3o7naWW4uF2t1OynAwFo
+nnjrlsMstv7CuG46Zz+HWU2Pnu77wOnsF+PoGvFGmi+ml3AAAAAAAAA=
+--------------ms010509090108050001070206--
 
---===============6587058259267247507==
+--===============8076638169607190392==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6587058259267247507==--
+--===============8076638169607190392==--
