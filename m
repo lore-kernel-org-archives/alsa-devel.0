@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix allocated block list
- usage when adding blocks.
-Date: Fri, 2 May 2014 09:53:15 -0700
-Message-ID: <20140502165315.GK3245@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: Intel: Fix Haswell/Broadwell DSP
+ page table creation.
+Date: Fri, 2 May 2014 09:53:25 -0700
+Message-ID: <20140502165325.GL3245@sirena.org.uk>
 References: <1399046194-5544-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1399046194-5544-3-git-send-email-liam.r.girdwood@linux.intel.com>
+ <1399046194-5544-4-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2894570195194261040=="
+Content-Type: multipart/mixed; boundary="===============8584838330739319330=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E43F9265279
- for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 18:53:28 +0200 (CEST)
-In-Reply-To: <1399046194-5544-3-git-send-email-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A519261AC1
+ for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 18:53:31 +0200 (CEST)
+In-Reply-To: <1399046194-5544-4-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +27,52 @@ Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2894570195194261040==
+--===============8584838330739319330==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WnHDDQh5pHvbcbhl"
+	protocol="application/pgp-signature"; boundary="+HM+R7/Jd0Fa6H3F"
 Content-Disposition: inline
 
 
---WnHDDQh5pHvbcbhl
+--+HM+R7/Jd0Fa6H3F
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 02, 2014 at 04:56:29PM +0100, Liam Girdwood wrote:
-> Make sure we add the allocated blocks to the modules list of blocks.
+On Fri, May 02, 2014 at 04:56:30PM +0100, Liam Girdwood wrote:
+> Fix page table creation on Haswell and Broadwell to remove unsafe
+> virt_to_phys mappings and use more portable SG buffer. Use audio buffer
+> APIs to allocate DMA buffers.
 
 Applied, thanks.
 
---WnHDDQh5pHvbcbhl
+--+HM+R7/Jd0Fa6H3F
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTY814AAoJELSic+t+oim98NMP/39fE+jV2E/lDQbSZ1AwwMIA
-1RdXQAgDe8zmcwt+7pacURqDlqlE1WQsDF6G6Gq4XW2VVEFWL8yoCsRYYhmkduj7
-eHaE85Wg0J/fX6LiSskI1gizvm2DQ2i5/rI10PUTSXeeLM8sjgURUxbvfs/Ymll6
-sk8co4h+1ezztFXzrcqKS2hpcQc5qjXuxzKSWGlzqejjFdoln522QM1qqEovxmwZ
-TCcC/YSOvY/FNN2mOUrBJEEMYhdoMnwX2CWs6ZPN+zBnqRA5tDfJgvP6KmPejQ3c
-EQpuiLk+J8obVydnzcysGrYEpx+ocHXTYaX7ikRvJr3lP2eLCQRPfDBD31qRgeQc
-02TCwNUr6eELE6bJa/dKLBmWC+ILFq6LRjDaf6ulHRkZ2peEyWPyUxQpk5pqbVUE
-lojkcm9N9OwftH6jiSonlBD5Qd26BXh76CehkU0WfZKEIp5dpFbtX2Wz+jRf2idZ
-MrGIM5rxfmdUE36uI9yD/ueOH/WlD25Y/DFQI8vXyWyp/oh0LibTZ8ibNhXAkSeo
-eGrmnneMhJJ+E1U7/N6YtnN0pWQRzXglpDGLv3D2lAeZe5MNVOh/DhB84iTTb0eg
-+HRQcYlZq0yj3MsuT7+PbxxNfZlJsfgarC9bqjb33uivlatTYb1Tsfh5bW6fiBsB
-DiO4omDvdVIj1e+/xNJt
-=TQyz
+iQIcBAEBAgAGBQJTY82CAAoJELSic+t+oim9VJwP/3xll5dTbLeaMKd12XuEowIx
+IlsHel7+L0TyRwMTYlsJCALlLcyZU/JIsxn2Rg0N33AAT6AIeGl//wmczijtYfxD
+QYC0+zCjW/yflUOyYOYiCsxQ4hO0gMJB1WDxe3jb/RjzE7HtFQ10w7uAwILWql6v
+X3CAcPxr4GiUyXI8OuwLecczauB5p11synWlL8YZp4EpoVRqJL5l+LrnnCUNrXbx
+sQ7TBQ66vhOMNrNIkPEaIthNOS8nw8C0jGy7pNUBnBgaiPgnseKaRwqnR9XlbwzN
+qeOF032jb82NSWfylwsBDyPDkrFX9pUs7Hdp4UiA58fGs3Z2fLUcj+i0lm2GsH5c
+GvXVbZ/ufUJaltB0hEWO4G09qKk3TfMtwI1AoOKZ5Zbc3jKgFCa5bvyB7mA9ECdd
+zTbzsGKFKiLQVzHkkbTdUYTG2F+Y4Bpdb4nCrDIl0qFbQJsF4B+rmRoEgDHJZg7/
+9h/gnstIcRXIWoFNgmoJvV9GN8Ij7ltAJpeDhL6i6u7MC91YswqpwI9NvfHV781Q
+cGo4ldApavHVICOrYMGmxzxfuAveiIrG77htuC7EzstFBPQQE2zEprOtjz0WeAFZ
+HJCGt1sL4PAzKKYaPfWnyRVcr0Mnzm46SYz5b/ODkPs9F3afqeTz2FZuRObkS/Wt
+wN21YqofY8BcKQFkADNX
+=hn7s
 -----END PGP SIGNATURE-----
 
---WnHDDQh5pHvbcbhl--
+--+HM+R7/Jd0Fa6H3F--
 
---===============2894570195194261040==
+--===============8584838330739319330==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2894570195194261040==--
+--===============8584838330739319330==--
