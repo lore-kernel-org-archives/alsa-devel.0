@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix block offset calculations.
-Date: Fri, 2 May 2014 09:52:35 -0700
-Message-ID: <20140502165235.GJ3245@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: Intel: Fix allocated block list
+ usage when adding blocks.
+Date: Fri, 2 May 2014 09:53:15 -0700
+Message-ID: <20140502165315.GK3245@sirena.org.uk>
 References: <1399046194-5544-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1399046194-5544-2-git-send-email-liam.r.girdwood@linux.intel.com>
+ <1399046194-5544-3-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8392316874203375000=="
+Content-Type: multipart/mixed; boundary="===============2894570195194261040=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF7E8265232
- for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 18:52:49 +0200 (CEST)
-In-Reply-To: <1399046194-5544-2-git-send-email-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E43F9265279
+ for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 18:53:28 +0200 (CEST)
+In-Reply-To: <1399046194-5544-3-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +27,50 @@ Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8392316874203375000==
+--===============2894570195194261040==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="c4jr9uOfj6q35Id2"
+	protocol="application/pgp-signature"; boundary="WnHDDQh5pHvbcbhl"
 Content-Disposition: inline
 
 
---c4jr9uOfj6q35Id2
+--WnHDDQh5pHvbcbhl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 02, 2014 at 04:56:28PM +0100, Liam Girdwood wrote:
-> Block offset calculations are done in the contiguous allocator so
-> are not required here.
+On Fri, May 02, 2014 at 04:56:29PM +0100, Liam Girdwood wrote:
+> Make sure we add the allocated blocks to the modules list of blocks.
 
 Applied, thanks.
 
---c4jr9uOfj6q35Id2
+--WnHDDQh5pHvbcbhl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTY81QAAoJELSic+t+oim9uAMP/iry5FAh7ks8S238XXgm/Zny
-C0FBUXKXjmJY7qTDbkrMRYqJYYQeSsw52oNgzUdjhuNRf9eMBUJP7CU2LZkIncqJ
-sSDiDg6hUkt3CW3C4iADgqhCvO7pWSlY9dZu1tl2dAOnWeUm78BWHBxqv8r0XuvY
-OcwHD1u45Qiti6Uqg0QFugttlnMihROVdnrcbtY5hzeyP36LQXKu3+ZnSQkHyN7C
-xbYOqRzJ3j05cKS4MuuOrQO/x0qrJT++wl89dhqWWjY6KAxlEdG9DPusTAbWIlRg
-YEQKH7Z/DIzHVCL+siQXaH880GII7+D7cjepZfQ0qTv8RWeKOJ0hjRddtIfAXYSE
-3oOx8Tm51AfVCkJ8RxSumR8RzNL22+6dpSRgFom0AqXO5k0USBIWkwvSo+kdgP1P
-jEEDf0kqI1OAecbCw3LQzQKhouxZLMaeb715jHRRgWLkJ2uzyT37UFND+8n5mcbx
-Dyj+rp63W5HKxeG9lksdMSa3LCS4UktS1Ar1FvwnSUT6eeyaAzfAldFYzcUwPI28
-Ih4D1AldaOA/z4Pkic1vQbYHyqRrW9hSrbA99P9+QnTnQotKRtlnpQUXumXmH8t/
-c3K/TBsebQ+J/+hfRz6VYrrNv4hsFeK0f8ghLXbbGz2LADabzkZ4LG//taZmRj93
-CHmuJUQ4FDX7mshDfn/A
-=1KCm
+iQIcBAEBAgAGBQJTY814AAoJELSic+t+oim98NMP/39fE+jV2E/lDQbSZ1AwwMIA
+1RdXQAgDe8zmcwt+7pacURqDlqlE1WQsDF6G6Gq4XW2VVEFWL8yoCsRYYhmkduj7
+eHaE85Wg0J/fX6LiSskI1gizvm2DQ2i5/rI10PUTSXeeLM8sjgURUxbvfs/Ymll6
+sk8co4h+1ezztFXzrcqKS2hpcQc5qjXuxzKSWGlzqejjFdoln522QM1qqEovxmwZ
+TCcC/YSOvY/FNN2mOUrBJEEMYhdoMnwX2CWs6ZPN+zBnqRA5tDfJgvP6KmPejQ3c
+EQpuiLk+J8obVydnzcysGrYEpx+ocHXTYaX7ikRvJr3lP2eLCQRPfDBD31qRgeQc
+02TCwNUr6eELE6bJa/dKLBmWC+ILFq6LRjDaf6ulHRkZ2peEyWPyUxQpk5pqbVUE
+lojkcm9N9OwftH6jiSonlBD5Qd26BXh76CehkU0WfZKEIp5dpFbtX2Wz+jRf2idZ
+MrGIM5rxfmdUE36uI9yD/ueOH/WlD25Y/DFQI8vXyWyp/oh0LibTZ8ibNhXAkSeo
+eGrmnneMhJJ+E1U7/N6YtnN0pWQRzXglpDGLv3D2lAeZe5MNVOh/DhB84iTTb0eg
++HRQcYlZq0yj3MsuT7+PbxxNfZlJsfgarC9bqjb33uivlatTYb1Tsfh5bW6fiBsB
+DiO4omDvdVIj1e+/xNJt
+=TQyz
 -----END PGP SIGNATURE-----
 
---c4jr9uOfj6q35Id2--
+--WnHDDQh5pHvbcbhl--
 
---===============8392316874203375000==
+--===============2894570195194261040==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8392316874203375000==--
+--===============2894570195194261040==--
