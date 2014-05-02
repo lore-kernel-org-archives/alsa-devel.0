@@ -1,16 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Fix allow hw_params to be called
-	more than once.
-Date: Fri,  2 May 2014 16:56:32 +0100
-Message-ID: <1399046194-5544-6-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Fix Audio DSP usage when IOMMU is
+	enabled.
+Date: Fri,  2 May 2014 16:56:31 +0100
+Message-ID: <1399046194-5544-5-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1399046194-5544-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A7AAE261740
- for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 17:56:57 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B0A96261AE7
+ for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 17:56:55 +0200 (CEST)
 In-Reply-To: <1399046194-5544-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,81 +25,148 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hw_params() can be called multiple times. Make sure we release the DSP
-stream that was allocated on previous hw_params() calls before allocating
-a new DSP stream.
+The Intel IOMMU requires that the ACPI device is used to allocate all
+DMA memory buffers. This means we need to pass the DMA device pointer into child
+component devices that allocate DMA memory.
+
+We also only set the DMA mask for the ACPI device now instead of for each
+component device.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-haswell-pcm.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ sound/soc/intel/sst-acpi.c        |  1 +
+ sound/soc/intel/sst-dsp-priv.h    |  1 +
+ sound/soc/intel/sst-dsp.c         |  1 +
+ sound/soc/intel/sst-dsp.h         |  1 +
+ sound/soc/intel/sst-firmware.c    | 10 ++--------
+ sound/soc/intel/sst-haswell-dsp.c |  4 ++--
+ sound/soc/intel/sst-haswell-pcm.c |  9 ++++-----
+ 7 files changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index ba585a7..50fea07 100644
---- a/sound/soc/intel/sst-haswell-pcm.c
-+++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -99,6 +99,7 @@ struct hsw_pcm_data {
- 	struct snd_compr_stream *cstream;
- 	unsigned int wpos;
- 	struct mutex mutex;
-+	bool allocated;
- };
+diff --git a/sound/soc/intel/sst-acpi.c b/sound/soc/intel/sst-acpi.c
+index 5d06eec..18aee77 100644
+--- a/sound/soc/intel/sst-acpi.c
++++ b/sound/soc/intel/sst-acpi.c
+@@ -138,6 +138,7 @@ static int sst_acpi_probe(struct platform_device *pdev)
  
- /* private data for the driver */
-@@ -113,6 +114,8 @@ struct hsw_priv_data {
- 	struct hsw_pcm_data pcm[HSW_PCM_COUNT];
- };
+ 	sst_pdata = &sst_acpi->sst_pdata;
+ 	sst_pdata->id = desc->sst_id;
++	sst_pdata->dma_dev = dev;
+ 	sst_acpi->desc = desc;
+ 	sst_acpi->mach = mach;
  
-+static u32 hsw_notify_pointer(struct sst_hsw_stream *stream, void *data);
-+
- static inline u32 hsw_mixer_to_ipc(unsigned int value)
- {
- 	if (value >= ARRAY_SIZE(volume_map))
-@@ -322,6 +325,29 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
- 	u8 channels;
- 	int ret;
+diff --git a/sound/soc/intel/sst-dsp-priv.h b/sound/soc/intel/sst-dsp-priv.h
+index 30ca14a..4012134 100644
+--- a/sound/soc/intel/sst-dsp-priv.h
++++ b/sound/soc/intel/sst-dsp-priv.h
+@@ -228,6 +228,7 @@ struct sst_dsp {
+ 	spinlock_t spinlock;	/* IPC locking */
+ 	struct mutex mutex;	/* DSP FW lock */
+ 	struct device *dev;
++	struct device *dma_dev;
+ 	void *thread_context;
+ 	int irq;
+ 	u32 id;
+diff --git a/sound/soc/intel/sst-dsp.c b/sound/soc/intel/sst-dsp.c
+index 0c129fd..0b715b2 100644
+--- a/sound/soc/intel/sst-dsp.c
++++ b/sound/soc/intel/sst-dsp.c
+@@ -337,6 +337,7 @@ struct sst_dsp *sst_dsp_new(struct device *dev,
+ 	spin_lock_init(&sst->spinlock);
+ 	mutex_init(&sst->mutex);
+ 	sst->dev = dev;
++	sst->dma_dev = pdata->dma_dev;
+ 	sst->thread_context = sst_dev->thread_context;
+ 	sst->sst_dev = sst_dev;
+ 	sst->id = pdata->id;
+diff --git a/sound/soc/intel/sst-dsp.h b/sound/soc/intel/sst-dsp.h
+index 74052b5..e44423b 100644
+--- a/sound/soc/intel/sst-dsp.h
++++ b/sound/soc/intel/sst-dsp.h
+@@ -169,6 +169,7 @@ struct sst_pdata {
+ 	u32 dma_base;
+ 	u32 dma_size;
+ 	int dma_engine;
++	struct device *dma_dev;
  
-+	/* check if we are being called a subsequent time */
-+	if (pcm_data->allocated) {
-+		ret = sst_hsw_stream_reset(hsw, pcm_data->stream);
-+		if (ret < 0)
-+			dev_dbg(rtd->dev, "error: reset stream failed %d\n",
-+				ret);
-+
-+		ret = sst_hsw_stream_free(hsw, pcm_data->stream);
-+		if (ret < 0) {
-+			dev_dbg(rtd->dev, "error: free stream failed %d\n",
-+				ret);
-+			return ret;
-+		}
-+		pcm_data->allocated = false;
-+
-+		pcm_data->stream = sst_hsw_stream_new(hsw, rtd->cpu_dai->id,
-+			hsw_notify_pointer, pcm_data);
-+		if (pcm_data->stream == NULL) {
-+			dev_err(rtd->dev, "error: failed to create stream\n");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	/* stream direction */
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		path_id = SST_HSW_STREAM_PATH_SSP0_OUT;
-@@ -475,6 +501,7 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
- 		dev_err(rtd->dev, "error: failed to commit stream %d\n", ret);
+ 	/* DSP */
+ 	u32 id;
+diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
+index 4d50d2f..928f228 100644
+--- a/sound/soc/intel/sst-firmware.c
++++ b/sound/soc/intel/sst-firmware.c
+@@ -57,14 +57,8 @@ struct sst_fw *sst_fw_new(struct sst_dsp *dsp,
+ 	sst_fw->private = private;
+ 	sst_fw->size = fw->size;
+ 
+-	err = dma_coerce_mask_and_coherent(dsp->dev, DMA_BIT_MASK(32));
+-	if (err < 0) {
+-		kfree(sst_fw);
+-		return NULL;
+-	}
+-
+ 	/* allocate DMA buffer to store FW data */
+-	sst_fw->dma_buf = dma_alloc_coherent(dsp->dev, sst_fw->size,
++	sst_fw->dma_buf = dma_alloc_coherent(dsp->dma_dev, sst_fw->size,
+ 				&sst_fw->dmable_fw_paddr, GFP_DMA | GFP_KERNEL);
+ 	if (!sst_fw->dma_buf) {
+ 		dev_err(dsp->dev, "error: DMA alloc failed\n");
+@@ -106,7 +100,7 @@ void sst_fw_free(struct sst_fw *sst_fw)
+ 	list_del(&sst_fw->list);
+ 	mutex_unlock(&dsp->mutex);
+ 
+-	dma_free_coherent(dsp->dev, sst_fw->size, sst_fw->dma_buf,
++	dma_free_coherent(dsp->dma_dev, sst_fw->size, sst_fw->dma_buf,
+ 			sst_fw->dmable_fw_paddr);
+ 	kfree(sst_fw);
+ }
+diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
+index f5ebf36..535f517 100644
+--- a/sound/soc/intel/sst-haswell-dsp.c
++++ b/sound/soc/intel/sst-haswell-dsp.c
+@@ -433,7 +433,7 @@ static int hsw_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+ 	int ret = -ENODEV, i, j, region_count;
+ 	u32 offset, size;
+ 
+-	dev = sst->dev;
++	dev = sst->dma_dev;
+ 
+ 	switch (sst->id) {
+ 	case SST_DEV_ID_LYNX_POINT:
+@@ -466,7 +466,7 @@ static int hsw_init(struct sst_dsp *sst, struct sst_pdata *pdata)
  		return ret;
  	}
-+	pcm_data->allocated = true;
  
- 	ret = sst_hsw_stream_pause(hsw, pcm_data->stream, 1);
- 	if (ret < 0)
-@@ -607,6 +634,7 @@ static int hsw_pcm_close(struct snd_pcm_substream *substream)
- 		dev_dbg(rtd->dev, "error: free stream failed %d\n", ret);
- 		goto out;
- 	}
-+	pcm_data->allocated = 0;
- 	pcm_data->stream = NULL;
+-	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(32));
++	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(31));
+ 	if (ret)
+ 		return ret;
  
- out:
+diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
+index dc53f50..ba585a7 100644
+--- a/sound/soc/intel/sst-haswell-pcm.c
++++ b/sound/soc/intel/sst-haswell-pcm.c
+@@ -633,17 +633,16 @@ static void hsw_pcm_free(struct snd_pcm *pcm)
+ static int hsw_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_pcm *pcm = rtd->pcm;
++	struct snd_soc_platform *platform = rtd->platform;
++	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
++	struct device *dev = pdata->dma_dev;
+ 	int ret = 0;
+ 
+-	ret = dma_coerce_mask_and_coherent(rtd->card->dev, DMA_BIT_MASK(32));
+-	if (ret)
+-		return ret;
+-
+ 	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
+ 			pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+ 		ret = snd_pcm_lib_preallocate_pages_for_all(pcm,
+ 			SNDRV_DMA_TYPE_DEV_SG,
+-			rtd->card->dev,
++			dev,
+ 			hsw_pcm_hardware.buffer_bytes_max,
+ 			hsw_pcm_hardware.buffer_bytes_max);
+ 		if (ret) {
 -- 
 1.9.1
