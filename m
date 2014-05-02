@@ -1,78 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix allow hw_params to be
- called more than once.
-Date: Fri, 2 May 2014 09:53:48 -0700
-Message-ID: <20140502165348.GN3245@sirena.org.uk>
-References: <1399046194-5544-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <1399046194-5544-6-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
+Date: Fri, 2 May 2014 09:56:43 -0700
+Message-ID: <20140502165643.GQ3245@sirena.org.uk>
+References: <20140424133920.GA12304@sirena.org.uk>
+ <5359E18B.60600@linaro.org>
+ <20140429222915.GU15125@sirena.org.uk>
+ <5360E5E7.8090807@linaro.org>
+ <20140430180314.GA3245@sirena.org.uk>
+ <53623004.5010805@linaro.org>
+ <20140501141510.GW3245@sirena.org.uk>
+ <CAD=FV=Wa4CovkxBng0SkUUAryiFqa=m63tro1Yv1jRgp4e95aw@mail.gmail.com>
+ <20140501164003.GC3245@sirena.org.uk>
+ <53632568.5020200@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3706936916494649052=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C05442654D9
- for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 18:53:57 +0200 (CEST)
-In-Reply-To: <1399046194-5544-6-git-send-email-liam.r.girdwood@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="huW973Vpf/9rkSey"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <53632568.5020200@linaro.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: Doug Anderson <dianders@chromium.org>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, sbkim73@samsung.com, Randy Dunlap <rdunlap@infradead.org>, Mike Turquette <mturquette@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3706936916494649052==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TP/bj4LqHgxpFBA9"
-Content-Disposition: inline
-
-
---TP/bj4LqHgxpFBA9
+--huW973Vpf/9rkSey
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, May 02, 2014 at 04:56:32PM +0100, Liam Girdwood wrote:
-> hw_params() can be called multiple times. Make sure we release the DSP
-> stream that was allocated on previous hw_params() calls before allocating
-> a new DSP stream.
+On Fri, May 02, 2014 at 10:26:08AM +0530, Tushar Behera wrote:
+> On 05/01/2014 10:10 PM, Mark Brown wrote:
 
-Applied, thanks.
+> > There's patches been posted by (IIRC) Sylvester Nawrocki for this which
+> > I think Mike was basically happy with - I don't immediately see them in
+> > -next though, but I may be looking in the wrong place.
 
---TP/bj4LqHgxpFBA9
+> Right, there are some patches from Sylwester regarding this. I dont'
+> think the patches are accepted yet as Rob has some reservations against
+> the clock parents.
+
+> https://lkml.org/lkml/2014/4/9/173
+
+Well, OK - that's the bit to fix.  Speaking to Mike the other day he
+said there was also another competing implementation of this.
+
+--huW973Vpf/9rkSey
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTY82ZAAoJELSic+t+oim9O/YP/24TmKrusy2qFcCk22tUPYA/
-b0Cy/bycS/7a74pmdM5pb3Q1kQjha2aK5cnmpO99/Ar9wWhnZNiuo2fAjFxWwYxn
-qqo05DtaK7iUHKmXbHXcxvP1cR8VAEaWXYoXk3S6NJQE3td+evePGL2+CeiOpadl
-y2Dhci8JidHZkI6i9iTDQyVjf9fpH3AQQwdwlOG2xeDiJLt95twVwCj5n9NPuBeJ
-ufz1FfHBjKLf9mihihmHuf658VTrTd3yT12poHpeClfTUlSzWQEQj/NWoWwpf70c
-DYT9M6vpRY22QwcyPMhDTpTj1oePcwDeqHyp4Npj7hkOGf62Rz4p93q6Oa5j15OG
-Ils+i5naMn7Y2cxOZzpRGaHmu6VTQoOonsNjH5qBRooZdY1RSPDFimyZhC6e+9y9
-pGrE0Pql5OWYuKZ42qRdgH+xOeT+i04BgWer2T3Sj6UjKI5qNiW71mQGzsKODhTe
-pG/rVYyix9f1RXK7Mmz9kFkIZ9zgMPlkzAnQJRb2cUUQ4naZSs2bEc7dsXAXGMIR
-yMhXd7uLH+g86FuLRRG9JJiyIZ+aXKqG4xMRI80SxYbARF/BIXD6fuJE4RB/tXsN
-bycRQNWwUh5OL4uyH9/mYq7vqKpI7gDdDs/nJh3+XOPiBKJeII9iORlGIytWsow2
-kZmAMmCTxpm8Mskrqz/Y
-=ThXn
+iQIcBAEBAgAGBQJTY85IAAoJELSic+t+oim9P54P/Rbsqm/AfMtIN4H7pGvOO8hx
+AMthNugbHtxV2QHrdGWE0dPuigHhKv1M1oyFuBQbn/hQNJmdYCKA4iYM07pCNctT
+pBksXo0UwA66SghLZiH4XF4XN278Xonj9zvjnza2+v0l5tGESORbUNWgr54Bkg7a
+UBx3wh/bB9t2ZCfYvmx74yWW3JMQoqNdMrdASJ9uJW1/Xdb1p82R1WVtHmy2iFmJ
+25udDZRMMqHX1RqkpGvuZX2uVAyYkZ4igROJAJMeyrg78xqjt4nwQoa/6JdaGPlZ
+4tlVSt06h2ohCFAX+A35lLRfJ4JXQKPK+dGGmJOCvs3N/6gin7Jn277G72/UBBVx
+h1Xqt+LkCTHDyhAdDYS+BVWLcU5cp8LodL4qV1iJ8Y6Em2zudaqtqN+MI1kWtqxh
+dgpNMOlvBs8rTTBgvDLrEaiDtiXg/xylRSv933QsANmaw7zKzegYHwMMp5vTftMh
+dHSaMxuF7zvACzxswjKJ6oNZd8u+NORknXQVskC+GCV47JKfz6MYmQfr5ezuJ3XJ
+nATMWehVsDMQ7eRBoSY9G1v1AbNKeKSOhMa1Xct+nqEWn+bB2hLZC4PrDGvF+ttg
+22dTqGJMIp1UmgzoOdV1Nv1zy7UPosXxEdN3oT3g30Z788+hn0zExePnYqgaHJRd
+VxNCb9ErXfA15dlp7i/w
+=HMhI
 -----END PGP SIGNATURE-----
 
---TP/bj4LqHgxpFBA9--
-
---===============3706936916494649052==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3706936916494649052==--
+--huW973Vpf/9rkSey--
