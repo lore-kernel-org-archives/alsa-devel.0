@@ -1,18 +1,16 @@
-From: Delcypher <delcypher@gmail.com>
-Subject: Regression Intel Corporation Haswell-ULT HD Audio
-	Controller
-Date: Sat, 3 May 2014 12:57:55 +0100
-Message-ID: <CANNJ_zh6HXT-pdkOV9XpDor3J1aFVbi3zbHLyDnpgisu7DdMdA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: rt5645: Add codec driver
+Date: Sat, 3 May 2014 10:42:37 -0700
+Message-ID: <20140503174237.GF22111@sirena.org.uk>
+References: <1398686350-29771-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5365130617110551127=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f180.google.com (mail-vc0-f180.google.com
- [209.85.220.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B5332608ED
- for <alsa-devel@alsa-project.org>; Sat,  3 May 2014 13:57:56 +0200 (CEST)
-Received: by mail-vc0-f180.google.com with SMTP id hq16so6401388vcb.25
- for <alsa-devel@alsa-project.org>; Sat, 03 May 2014 04:57:55 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3581261675
+ for <alsa-devel@alsa-project.org>; Sat,  3 May 2014 19:42:50 +0200 (CEST)
+In-Reply-To: <1398686350-29771-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +20,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I was told to report my bug here because the ALSA bug tracker is no
-longer active.
+--===============5365130617110551127==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="f61P+fpdnY2FZS1u"
+Content-Disposition: inline
 
-I'm having an issue with " Intel Corporation Haswell-ULT HD Audio
-Controller" card which is inside the Dell XPS13 9333 developer edition
-[1].
 
-I've tried two different distributions
+--f61P+fpdnY2FZS1u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-* Arch Linux (kernel 3.14)
-Output of alsa-utlils-alsa-info.sh [2]
+On Mon, Apr 28, 2014 at 07:59:10PM +0800, Oder Chiou wrote:
+> This patch adds the Realtek ALC5645 codec driver. It is the base
+> version that because the jack detect function is not implemented to
+> it, the headphone and AMIC1 are not workable. We will fill up the
+> further functions later.
 
-* Ubuntu 14.04 LTS (kernel 3.13)
-Output of alsa-utlils-alsa-info.sh [3]
+Applied, thanks.  Like I previously said it really does look like there
+is a lot of opportunity to share code here with the other similar
+drivers, please look into doing something like the arizona drivers.
+Also...
 
-The card behaves correctly under Ubuntu but under Arch Linux I've
-observed the following issues.
+> +	/* I2S2 function select */
+> +	SOC_SINGLE("I2S2 Func Switch", RT5645_GPIO_CTRL1, RT5645_I2S2_SEL_SFT,
+> +		1, 1),
 
-- The microphone does not work correctly. In alsamixer I select
-"Internal Mic" as my capture device but when I do
+What functions is this switching?
 
-$ arecord -d 5 test.wav
-$ aplay test.wav
+> +	/* TDM */
+> +	SOC_ENUM("TDM Adc Slot0 1 Data", rt5645_tdm_adc_slot0_1_enum),
+> +	SOC_ENUM("TDM Adc Slot2 3 Data", rt5645_tdm_adc_slot2_3_enum),
+> +	SOC_ENUM("TDM Adc Slot4 5 Data", rt5645_tdm_adc_slot4_5_enum),
+> +	SOC_ENUM("TDM Adc Slot6 7 Data", rt5645_tdm_adc_slot6_7_enum),
+> +	SOC_ENUM("TDM IF1 ADC DATA Sel", rt5645_tdm_adc_sel_enum),
+> +	SOC_SINGLE("TDM IF1_DAC1_L Sel", RT5645_TDM_CTRL_3, 12, 7, 0),
+> +	SOC_SINGLE("TDM IF1_DAC1_R Sel", RT5645_TDM_CTRL_3, 8, 7, 0),
+> +	SOC_SINGLE("TDM IF1_DAC2_L Sel", RT5645_TDM_CTRL_3, 4, 7, 0),
+> +	SOC_SINGLE("TDM IF1_DAC2_R Sel", RT5645_TDM_CTRL_3, 0, 7, 0),
 
-test.wav contains silence.
+These look like they should be part of DAPM, they're about routing data
+as far as I can tell.
 
-I've also tried enabling/disabling "CAPTURE" on the Capture channel at
-the same time - I don't really understand why this channel is here
-(seems a little bizarre) but enabling/disabling "CAPTURE" on this
-channel doesn't seem to make any difference anyway. Under Ubuntu the
-"arecord... aplay" command works correctly.
+--f61P+fpdnY2FZS1u
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-- There probably isn't a way to reproduce this but when I first
-installed Arch Linux the sound card was put in a state where the
-headphone jack would not work at all. Sound would continue playing out
-of the speakers when the headphone jack was inserted and no sound
-would come out of the headphones. I did notice that if the headphone
-jack was only partially inserted I would get some sound sent to one of
-the headphones.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-My intuition is that the card is probably being incorrectly
-initialised because if you take a look at the output of
-alsa-utils-alsa-info.sh and diff them. Two very big differences I
-noticed were that
+iQIcBAEBAgAGBQJTZSqJAAoJELSic+t+oim9fnwP/2FGl+CU4Ft/93WCYkwVm85e
+3PoD2TzofC32vDUMmwVVixxN0f44kRE8URl1Ukl31k8O3Q3aLOvlsJ8MxyLoM1VO
+jU6cPL2B+dNzGap/BiLcqFxBuHP/G2Je85TymvVFg9VbF2sxy1AS0deZk5Bue500
+RTIwLFOko7sHgVsX6D/dT7Xy5pFicCQi3sfWI3U5FVHApYSfN1TikyEA79lJj7Tq
+NYbGwlWWbzILVlr2wRejXfm+zRde+zqwJg0AF9QVPr4ix4ws84tQOXmjg5orXIGa
+T1HcZTC4aFtX+XT+Jdy/PQyeP4aOhcUrUchO1xcc2u9s7vhJaUsciRhKW2b9Xxhy
+JDx4FtVBvkCrKcayjeCOqSKcDAsjdTisb3tWG7DVoc19FjJfLMFLso9B/bbSBBDm
+OU06ChEdyL0fE79X86cOcm46uHFVGxHAQujs1I2zS7rRp3EAhzWqulIa5f6nAIeF
+NAFBSaQ1ZE+AgOYf73ey3X/tsfyT0oLGwRlhuD67q4ZVxfzlL7gYS9IuzgxzKf5h
+vkGudvRDnTSb91TqYEIEoHwfs6nxxkBLURxSCiZuH59hbcqMLTZpby/CKxvbo9HB
+zotqVHVakC9sOI05nuSo/cL2bHSJa/bazXMhtmsuPdyQAlQZORmePflNVGvfLDN+
+cND1nQgUDZfcOfNCQtPZ
+=uu6U
+-----END PGP SIGNATURE-----
 
-- The card name (from lscpi) is "Intel Corporation Haswell-ULT HD
-Audio Controller" under Ubuntu but under Arch Linux it is "Intel
-Corporation Device 0a0c"
-- The card codec is "Realtek ALC668" under Ubuntu but is "Realtek
-ALC3661" under Arch Linux.
+--f61P+fpdnY2FZS1u--
 
-One interesting I did notice is that under Arch Linux it is possible
-to use the microphone from the Audacity program by selecting "HDA
-Intel PCH: ALC3661Analog (hw0:0) Internal mic:0" as the input (this is
-not the default). Unfortunately I know of no way to make other
-applications use this.
+--===============5365130617110551127==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Any thoughts on how to fix this?
 
-[1] http://www.dell.com/uk/business/p/xps-13-linux/pd
-[2] https://gist.github.com/delcypher/11367224
-[3] https://gist.github.com/delcypher/11367302
-
-Thanks,
-Dan.
+--===============5365130617110551127==--
