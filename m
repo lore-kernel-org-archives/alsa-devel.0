@@ -1,24 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: mc13783: Add devicetree support
-Date: Fri, 2 May 2014 18:49:34 -0700
-Message-ID: <20140503014934.GB22111@sirena.org.uk>
-References: <1398495423-2223-1-git-send-email-shc_work@mail.ru>
- <20140429222522.GS15125@sirena.org.uk>
- <20140430140849.GR29462@lee--X1>
- <1398867073.695596467@f224.i.mail.ru>
- <20140430141708.GS29462@lee--X1>
- <20140430180653.GB3245@sirena.org.uk>
- <20140501074253.GA32761@lee--X1>
- <20140501150653.GZ3245@sirena.org.uk>
- <20140502080944.GA5206@lee--X1>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: On non-rewindability of resamplers
+Date: Sat, 03 May 2014 13:09:01 +0200
+Message-ID: <5364CE4D.7040506@gmail.com>
+References: <5356A9B6.9060405@gmail.com>	<5358FCF0.2040701@ladisch.de>	<53597BA2.8080201@gmail.com>	<5359FE72.8050605@canonical.com>	<535A6C96.7040109@gmail.com>	<CAN8ccibLsqb6oxai=+XOAhZ1dPwZmVVD2r3teDsz2a2_CthoOA@mail.gmail.com>	<535B83E4.5050303@gmail.com>	<CAN8ccibXtR=jc3NJjFMn88stytAhSxjNqbD5QsREDppbKDNg9Q@mail.gmail.com>	<535E908C.4030509@gmail.com>	<CAN8ccib7E7SQFo=Ro5Hksaj74Nn9NtHA1VSQpKX3ARHQDE_QHQ@mail.gmail.com>	<535FDEA8.7010206@gmail.com>
+ <CAN8cciYoR25LDZnr6R9Bn_ek4rX1q8XoRPT+H4Mpp3ecZJF85w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6278849073951485969=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 98453260799
- for <alsa-devel@alsa-project.org>; Sat,  3 May 2014 03:49:58 +0200 (CEST)
-In-Reply-To: <20140502080944.GA5206@lee--X1>
+Received: from mail-ee0-f52.google.com (mail-ee0-f52.google.com [74.125.83.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB7CF2608ED
+ for <alsa-devel@alsa-project.org>; Sat,  3 May 2014 13:08:54 +0200 (CEST)
+Received: by mail-ee0-f52.google.com with SMTP id e53so3826476eek.39
+ for <alsa-devel@alsa-project.org>; Sat, 03 May 2014 04:08:54 -0700 (PDT)
+In-Reply-To: <CAN8cciYoR25LDZnr6R9Bn_ek4rX1q8XoRPT+H4Mpp3ecZJF85w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,71 +23,188 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Alexander Shiyan <shc_work@mail.ru>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+02.05.2014 07:39, Raymond Yau wrote:
+>  >>  >
+>  >>  >
+>  >>  > On most sound cards, PulseAudio uses timer-based scheduling and thus
+>  >> is not subject to any period-size limitations. As far as I can see,
+>  >> snd_ymfpci does not include SNDRV_PCM_INFO_BATCH, and thus will be used
+>  >> in this mode.
+>
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/073816.html
+>
+> Do you mean sound card which cannot provide sample
+> granularity need to use that flag or you want the driver to provide this
+> granularity to application ?
 
---===============6278849073951485969==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="V0207lvV8h4k8FAm"
-Content-Disposition: inline
+I acknowledge that there was some confusion regarding the precise 
+meaning of the flag (especially given three possible situations - 
+accurate to just one period, accurate to better than one period but 
+worse than one sample, accurate to one sample), and I am not the 
+authority here.
 
+My own opinion so far is that, if the card cannot provide 
+sample-accurate position reports at arbitrary moments in time, then the 
+SNDRV_PCM_INFO_BATCH flag needs to be set. Of course, the driver should 
+not attempt to provide sample-accurate information if such information 
+does not exist in the first place.
 
---V0207lvV8h4k8FAm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, May 02, 2014 at 09:09:44AM +0100, Lee Jones wrote:
-> On Thu, 01 May 2014, Mark Brown wrote:
-
-> > Sure, but I didn't see an urgent need for that immediately so I just
-> > went ahead - the ack usually means that it's OK to apply.
-
-> Hmm... I'm inclined to disagree.  The Ack is a marker that I'm okay
-> with the changes, but the note after makes it pretty clear that the
-> preference would be for the patch to be handled via an IB.
-
-Right, and it's sitting on a separate branch which is (as we've seen)
-very easy to add a tag to if it turns out to be needed.  This is what
-all the small topic branches are there for, it makes it really easy to
-cross merge, and obviously applying the patch on a branch is always
-going to be the first step in creating an immutable branch.  It
-certainly doesn't seem worth getting worried about.
-
-Really, if you're not happy for something to be applied you probably
-don't want to be acking it or you at least want to be really explicit
-about things.
-
---V0207lvV8h4k8FAm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTZEslAAoJELSic+t+oim9qNgP/1eYWmEaAgSa5iAWAye0EJvN
-MX2wFTUf4ciqdDWP1dbYArGqYChHIo3mFj/Oz7JLK9nspsC7x6orxgPIyzy4tU7g
-zhqMgcri/dzpTBfV0DPV7T7dRAZD0DuXsTP0oggqYRoqep+IKKG2PjZMBz5+d0ry
-m2AR2ZIQsR/AO6ZmYkKVra47dPBpxkH4XJgoQqurbQLzbx34J9Fh0sFJP7rCd1xJ
-PlOVGHXODtnTiUSlnqY+A+JR8+PyZ5mgcF6GZrG4O3HKowTYFYwwsly1c9XdSJtw
-OR8vZ6ykoKlNi1BmgvY+UOqZsV6dC9dpS+EksL5o7JcgCSssfNw+33UYULztdHK7
-OufBs3AfLXbcpbesrzQJDT4vLDPjp0YgQ8VWCz84jS4ys0Flc8px8v5ut2RzvHsU
-4o6ZkbSO/LeIbvku1H97XKMKEiLCrpqgdEbnCQm0jGzSctSYVNk7eksPpRow8ol6
-zjYtNZVAM6IK8vxtni7IEz8PnkUHoLpe77eXZzOQQnrhGBspJwphBEpqpMTIsUDQ
-suCCAUI9UutPehBFE+VLKQkXXI2NhIGi2RoFcYBOPux3q0bhCdHlioP8mjWTeDJ6
-bxIJlT+nQmMNYiPIL7p7/n1G3cG1aU4pwecE0rIY+IT5fGVjrE5vget82X3HP6OV
-EkV2ALXlZnv4v63VrmZM
-=jjkq
------END PGP SIGNATURE-----
-
---V0207lvV8h4k8FAm--
-
---===============6278849073951485969==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+In addition, there seems to be some confusion here between the hardware 
+periods (which are always 256 samples) and the period size in hw params. 
+If I understand the other emails correctly, regardless of what the user 
+set in hw_params, the reported position on ymfpci will be accurate to 
+within 256 samples.
 
 
---===============6278849073951485969==--
+PulseAudio has the following consideration here: if the card cannot 
+report the position accurately, we need to disable the timestamp-based 
+scheduling, as this breaks module-combine-sink (or any successor of it), 
+because it relies on very accurate estimations of the actual sample rate 
+ratio between two non-identical cards.
+
+>  >In addition, it has an implementation of
+>  >> snd_ymfpci_playback_pointer that seems to look at the hardware, which is
+>  >> good. So effective period times less than 5 ms should work on this card.
+>
+>  >>
+>
+>  >
+>  > Yes (if "cannot disable period wakeups" is the only bad thing about
+> the card, which the further text in your e-mail contradicts to). Key
+> words: dynamic latency.
+>  >
+>  > As you surely know, running with low latency has a high chance of
+> underruns due to CPU spikes, so this should be avoided if reasonable.
+> However, some applications (e.g. VoIP) require low latency. By ignoring
+> period wakeups and relying on time-based scheduling, one can effectively
+> change the period size on the fly, obtaining low latency only when it is
+> needed.
+>  >
+>
+> Are there any different reqiurment bewteen VOIP and other application in
+> addition to low latency ?
+>
+> Voip does not really need stereo . The web cam Mic usually capture at
+> 16000Hz mono while pulseaudio use same default  rate for playback and
+> capture
+
+In practice, only the latency matters here, as PulseAudio will open the 
+device at 48 kHz stereo anyway.
+
+
+>  >
+>  >
+>  > However, I don't see any code that backs up your claim. Is that fake
+> pointer increased in hardware (as opposed to in the kernel) with such
+> bad granularity?
+>  >
+>  > See snd_ymfpci_memalloc(): both chip->voices[voice].bank and
+> chip->bank_playback[voice][bank] are assigned a pointer that is based on
+> chip->work_ptr.area, which is itself obtained through
+> snd_dma_alloc_pages. So all bank pointers definitely point into the
+> DMA-able area.
+>  >
+>  > Also, snd_ymfpci_playback_pointer is based on
+> voice->bank[chip->active_bank].start only, and the same construction is
+> used in the interrupt handler to obtain the current playback position.
+> So it is definitely based on what the hardware wrote into the DMA-able
+> area, and that's why I thought that the .pointer function is good. Does
+> it write there only just before the interrupt, or every 256 samples
+> independently on the period size, or on some other condition?
+>
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2011-September/043715.html
+>
+> The author of the driver told me that
+>
+> The period interrupts are not accurate at all.  The ymfpci hardware
+> internally uses fixed periods of 256 frames at 48 kHz. the driver
+> reports a period interrupt when the next hardware interrupt at or after
+> a period boundary occurs.  The current position reported by the hardware
+> is the position at the time of the last hardware interrupt
+
+IMHO, this fits the purpose of the BATCH flag, but is precisely the 
+middle case (possibly more accurate than one period, but definitely less 
+accurate than one sample) which was disputed at 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/073816.html 
+.
+
+>  >
+>  > OK, but I don't see why it is relevant. Surely we can set up as many
+> periods as we want, if all we are going to do with period interrupts is
+> to ignore them in userspace.
+>  >
+
+To avoid further misunderstandings: I was speaking above about possible 
+changes, not about the current behaviour. The answers below are for the 
+current situation, which may be suboptimal.
+
+> Do you mean pulseaudio will use more periods instead of periods_min for
+> those sound cards which cannot disable period wake-up ?
+
+For cards that are not batch, it will attempt to set both the period 
+size and the buffer size to something large (tsched_size, the default is 
+2s) and let the driver adjust that to something more sensible for the 
+card. I think that in practice this means periods_min, although it is 
+never mentioned explicitly in PulseAudio source.
+
+For batch cards, the desired period (or, in PA speak, "fragment") time 
+and the number of periods come from the config, of course subject to 
+adjustments made by the ALSA library to fit the hardware requirements. 
+The defaults are:
+
+; default-fragments = 4
+; default-fragment-size-msec = 25
+
+
+> Do  dynamic latency mean pulseaudio use 1ms and double the times  until
+> the sound card ?
+
+If you are talking about the wakeup latency, the mechanism is indeed as 
+you described (start with something small, increase if xruns or 
+near-xruns appear, decrease if all runs well for some time), but the 1ms 
+number is wrong. See the defines at the top of 
+src/modules/alsa/alsa-sink.c for exact numbers.
+
+> It may also be obtained by double the number of periods and restrict
+> hwbuf_unused in multiple of samples in a period instead of any arbituary
+> number of sample ?
+
+I don't understand here.
+
+>
+>  >
+>  > It is a bad idea to rewind into the uncertain area that we don't know
+> whether it is already playing or not. If we have 6 periods 5 ms each,
+> and always keep 5 of them full by promptly reacting to the interrupt
+> notifications, then surely we can rewind one of them without much risk.
+> But indeed, a full rewind is impossible for a fake hw_ptr with such bad
+> granularity.
+>  >
+>
+> /* FIXME? True value is 256/48 = 5.33333 ms */
+> err = snd_pcm_hw_constraint_minmax(runtime,
+>     SNDRV_PCM_HW_PARAM_PERIOD_TIME,
+>     5334, UINT_MAX);
+> if (err < 0)
+> return err;
+> err = snd_pcm_hw_rule_noresample(runtime, 48000);
+>
+> Do you mean when noresample is used, the period byte constraint should
+> be used instead of period time to avoid rounding error ?
+
+Yes. And maybe even constrain the period size to be a multiple of 256 
+samples in this case.
+
+> To obtain dynamic latency, you can just keep half of them  or at least
+> two periods full at any time
+
+Yes if we talk about hardware periods (which are always 256 samples) and 
+not about the period size which is settable through calling 
+snd_pcm_hw_params_set_period_size_near() or something similar.
+
+-- 
+Alexander E. Patrakov
