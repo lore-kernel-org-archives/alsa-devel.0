@@ -1,19 +1,24 @@
-From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
-Subject: =?utf-8?q?=5BPATCH=5D_alsa-plugins=3A_fix_polling_an?=
- =?utf-8?q?d_recovering_in_alsa-jack_plugin?=
-Date: Fri, 02 May 2014 22:46:33 +0400
-Message-ID: <1399056393.47049129@f181.i.mail.ru>
-Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: mc13783: Add devicetree support
+Date: Fri, 2 May 2014 18:49:34 -0700
+Message-ID: <20140503014934.GB22111@sirena.org.uk>
+References: <1398495423-2223-1-git-send-email-shc_work@mail.ru>
+ <20140429222522.GS15125@sirena.org.uk>
+ <20140430140849.GR29462@lee--X1>
+ <1398867073.695596467@f224.i.mail.ru>
+ <20140430141708.GS29462@lee--X1>
+ <20140430180653.GB3245@sirena.org.uk>
+ <20140501074253.GA32761@lee--X1>
+ <20140501150653.GZ3245@sirena.org.uk>
+ <20140502080944.GA5206@lee--X1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6278849073951485969=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from f181.i.mail.ru (f181.i.mail.ru [94.100.185.149])
- by alsa0.perex.cz (Postfix) with ESMTP id 67687265279
- for <alsa-devel@alsa-project.org>; Fri,  2 May 2014 20:46:36 +0200 (CEST)
-Received: from mail by f181.i.mail.ru with local (envelope-from
- <sergemp@mail.ru>) id 1WgITh-0003GH-KN
- for alsa-devel@alsa-project.org; Fri, 02 May 2014 22:46:34 +0400
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98453260799
+ for <alsa-devel@alsa-project.org>; Sat,  3 May 2014 03:49:58 +0200 (CEST)
+In-Reply-To: <20140502080944.GA5206@lee--X1>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,133 +28,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Alexander Shiyan <shc_work@mail.ru>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
 
-This patch fixes polling in alsa-to-jack plugin.
-It makes poll()+_poll_revents() return correct values
-whenever there's something to read/write.
+--===============6278849073951485969==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="V0207lvV8h4k8FAm"
+Content-Disposition: inline
 
-Additionally jack_deactivate() code makes it survive snd_pcm_recover().
 
-It works for the code example I posted before, aplay, arecord, mozilla, etc.
+--V0207lvV8h4k8FAm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Comments and suggestions are welcome.
+On Fri, May 02, 2014 at 09:09:44AM +0100, Lee Jones wrote:
+> On Thu, 01 May 2014, Mark Brown wrote:
 
----
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index 7a8b24d..a39fea5 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -42,6 +42,7 @@ typedef struct {
- 	unsigned int num_ports;
- 	unsigned int hw_ptr;
- 	unsigned int sample_bits;
-+	snd_pcm_uframes_t min_avail;
- 
- 	unsigned int channels;
- 	snd_pcm_channel_area_t *areas;
-@@ -50,6 +51,41 @@ typedef struct {
- 	jack_client_t *client;
- } snd_pcm_jack_t;
- 
-+static inline int poll_blocked(snd_pcm_ioplug_t *io)
-+{
-+	static char buf[65536];
-+	snd_pcm_sframes_t avail;
-+	snd_pcm_jack_t *jack = io->private_data;
-+
-+	if (io->state == SND_PCM_STATE_RUNNING)
-+	{
-+		avail = snd_pcm_avail_update(io->pcm);
-+		if (avail >= 0 && avail < jack->min_avail)
-+		{
-+			read(io->poll_fd, &buf, sizeof buf);
-+			return 1;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static inline int poll_unblocked(snd_pcm_ioplug_t *io)
-+{
-+	static char buf[1];
-+	snd_pcm_sframes_t avail;
-+	snd_pcm_jack_t *jack = io->private_data;
-+
-+	avail = snd_pcm_avail_update(io->pcm);
-+	if (avail < 0 || avail >= jack->min_avail)
-+	{
-+		write(jack->fd, &buf, 1);
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
- static void snd_pcm_jack_free(snd_pcm_jack_t *jack)
- {
- 	if (jack) {
-@@ -81,14 +117,10 @@ static int snd_pcm_jack_poll_revents(snd_pcm_ioplug_t *io,
- 				     struct pollfd *pfds, unsigned int nfds,
- 				     unsigned short *revents)
- {
--	static char buf[1];
--	
- 	assert(pfds && nfds == 1 && revents);
- 
--	read(pfds[0].fd, buf, 1);
--
- 	*revents = pfds[0].revents & ~(POLLIN | POLLOUT);
--	if (pfds[0].revents & POLLIN)
-+	if (pfds[0].revents & POLLIN && !poll_blocked(io))
- 		*revents |= (io->stream == SND_PCM_STREAM_PLAYBACK) ? POLLOUT : POLLIN;
- 	return 0;
- }
-@@ -105,7 +137,6 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- 	snd_pcm_jack_t *jack = io->private_data;
- 	const snd_pcm_channel_area_t *areas;
- 	snd_pcm_uframes_t xfer = 0;
--	static char buf[1];
- 	unsigned int channel;
- 	
- 	for (channel = 0; channel < io->channels; channel++) {
-@@ -145,7 +176,7 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- 		xfer += frames;
- 	}
- 
--	write(jack->fd, buf, 1); /* for polling */
-+	poll_unblocked(io); /* unblock socket for polling if needed */
- 
- 	return 0;
- }
-@@ -154,9 +185,25 @@ static int snd_pcm_jack_prepare(snd_pcm_ioplug_t *io)
- {
- 	snd_pcm_jack_t *jack = io->private_data;
- 	unsigned int i;
-+	snd_pcm_sw_params_t *swparams;
-+	int err;
- 
- 	jack->hw_ptr = 0;
- 
-+	jack->min_avail = io->period_size;
-+	snd_pcm_sw_params_alloca(&swparams);
-+	err = snd_pcm_sw_params_current(io->pcm, swparams);
-+	if (err == 0) {
-+		snd_pcm_sw_params_get_avail_min(swparams, &jack->min_avail);
-+	}
-+
-+	poll_unblocked(io); /* unblock socket for initial polling if needed */
-+
-+	if (jack->activated) {
-+		jack_deactivate(jack->client);
-+		jack->activated = 0;
-+	}
-+
- 	if (jack->ports)
- 		return 0;
- 
--- 
+> > Sure, but I didn't see an urgent need for that immediately so I just
+> > went ahead - the ack usually means that it's OK to apply.
+
+> Hmm... I'm inclined to disagree.  The Ack is a marker that I'm okay
+> with the changes, but the note after makes it pretty clear that the
+> preference would be for the patch to be handled via an IB.
+
+Right, and it's sitting on a separate branch which is (as we've seen)
+very easy to add a tag to if it turns out to be needed.  This is what
+all the small topic branches are there for, it makes it really easy to
+cross merge, and obviously applying the patch on a branch is always
+going to be the first step in creating an immutable branch.  It
+certainly doesn't seem worth getting worried about.
+
+Really, if you're not happy for something to be applied you probably
+don't want to be acking it or you at least want to be really explicit
+about things.
+
+--V0207lvV8h4k8FAm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTZEslAAoJELSic+t+oim9qNgP/1eYWmEaAgSa5iAWAye0EJvN
+MX2wFTUf4ciqdDWP1dbYArGqYChHIo3mFj/Oz7JLK9nspsC7x6orxgPIyzy4tU7g
+zhqMgcri/dzpTBfV0DPV7T7dRAZD0DuXsTP0oggqYRoqep+IKKG2PjZMBz5+d0ry
+m2AR2ZIQsR/AO6ZmYkKVra47dPBpxkH4XJgoQqurbQLzbx34J9Fh0sFJP7rCd1xJ
+PlOVGHXODtnTiUSlnqY+A+JR8+PyZ5mgcF6GZrG4O3HKowTYFYwwsly1c9XdSJtw
+OR8vZ6ykoKlNi1BmgvY+UOqZsV6dC9dpS+EksL5o7JcgCSssfNw+33UYULztdHK7
+OufBs3AfLXbcpbesrzQJDT4vLDPjp0YgQ8VWCz84jS4ys0Flc8px8v5ut2RzvHsU
+4o6ZkbSO/LeIbvku1H97XKMKEiLCrpqgdEbnCQm0jGzSctSYVNk7eksPpRow8ol6
+zjYtNZVAM6IK8vxtni7IEz8PnkUHoLpe77eXZzOQQnrhGBspJwphBEpqpMTIsUDQ
+suCCAUI9UutPehBFE+VLKQkXXI2NhIGi2RoFcYBOPux3q0bhCdHlioP8mjWTeDJ6
+bxIJlT+nQmMNYiPIL7p7/n1G3cG1aU4pwecE0rIY+IT5fGVjrE5vget82X3HP6OV
+EkV2ALXlZnv4v63VrmZM
+=jjkq
+-----END PGP SIGNATURE-----
+
+--V0207lvV8h4k8FAm--
+
+--===============6278849073951485969==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6278849073951485969==--
