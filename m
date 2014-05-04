@@ -1,18 +1,18 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH RESEND 1/4] ASoC: fsl_esai: Fix incorrect
-	condition within ratio range check for FP
-Date: Tue, 6 May 2014 16:55:59 +0800
-Message-ID: <c037ec5758485a4081c40277adb5cebb8ab229bc.1399366227.git.Guangyu.Chen@freescale.com>
-References: <cover.1399366227.git.Guangyu.Chen@freescale.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH 2/2] ALSA: hda - hdmi: Set infoframe and
+	channel mapping even without sink
+Date: Mon,  5 May 2014 02:38:44 +0300
+Message-ID: <1399246724-16611-2-git-send-email-anssi.hannula@iki.fi>
+References: <1399246724-16611-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0239.outbound.protection.outlook.com [207.46.163.239])
- by alsa0.perex.cz (Postfix) with ESMTP id 22F5C2608D4
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 10:54:39 +0200 (CEST)
-In-Reply-To: <cover.1399366227.git.Guangyu.Chen@freescale.com>
+Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
+ [83.102.40.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 293112608CF
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 01:38:52 +0200 (CEST)
+In-Reply-To: <1399246724-16611-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: tiwai@suse.de
+Cc: Stephan Raue <stephan@openelec.tv>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The range here from 1 to 16 is confined to FP divider only while the
-sck_div indicates if the calculation contains PSR and PM dividers. So
-for the case using PSR and PM since the sck_div is true, the range of
-ratio would simply become bigger than 16.
+Currently infoframe contents and channel mapping are only set when a
+sink (monitor) is present.
 
-So this patch fixes the condition here and adds one line comments to
-make the purpose here clear.
+However, this does not make much sense, since
+1) We can make a very reasonable guess on CA after 18e391862c ("ALSA:
+   hda - hdmi: Fallback to ALSA allocation when selecting CA") or by
+   relying on a previously valid ELD (or we may be using a
+   user-specified channel map).
+2) Not setting infoframe contents and channel count simply means they
+   are left at a possibly incorrect state - playback is still allowed
+   to proceed (with missing or wrongly mapped channels).
 
-Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+Reasons for monitor_present being 0 include disconnected cable, video
+driver issues, or codec not being spec-compliant. Note that in
+actual disconnected-cable case it should not matter if these settings
+are wrong as they will be re-set after jack detection, though.
+
+Change the behavior to allow the infoframe contents and the channel
+mapping to be set even without a sink/monitor, either based on the
+previous valid ELD contents, if any, or based on sensible defaults
+(standard channel layouts or provided custom map, sink type HDMI).
+
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Tested-by: Stephan Raue <stephan@openelec.tv>
 ---
- sound/soc/fsl/fsl_esai.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index b49b78d..d098a48 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -308,7 +308,8 @@ static int fsl_esai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
- 		return -EINVAL;
- 	}
+This simply removes the monitor_present check, which is probably more
+trouble than it is worth, as it may trip obscure setups even though we
+can tolerate !monitor_present and !eld in 99%+ of all cases by using
+defaults, nowadays post-18e391862c anyway.
+Downside is that missing monitor_present may not be noticed by the user
+as ~everything continues to work.
+
+
+ sound/pci/hda/patch_hdmi.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 1edbb9c47c2d..016f785cdf45 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1127,10 +1127,6 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
+ 					    AMP_OUT_UNMUTE);
  
--	if (esai_priv->sck_div[tx] && (ratio > 16 || ratio == 0)) {
-+	/* The ratio should be contented by FP alone if bypassing PM and PSR */
-+	if (!esai_priv->sck_div[tx] && (ratio > 16 || ratio == 0)) {
- 		dev_err(dai->dev, "the ratio is out of range (1 ~ 16)\n");
- 		return -EINVAL;
- 	}
+ 	eld = &per_pin->sink_eld;
+-	if (!eld->monitor_present) {
+-		hdmi_set_channel_count(codec, per_pin->cvt_nid, channels);
+-		return;
+-	}
+ 
+ 	if (!non_pcm && per_pin->chmap_set)
+ 		ca = hdmi_manual_channel_allocation(channels, per_pin->chmap);
 -- 
-1.8.4
+1.8.4.5
