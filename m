@@ -1,17 +1,16 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [PATCH v2 0/8] ASoC: Intel: rework the mfld
- platform driver
-Date: Tue, 06 May 2014 15:40:02 +0100
-Message-ID: <1399387202.2814.24.camel@loki>
-References: <1399308565-14620-1-git-send-email-vinod.koul@intel.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [RFC PATCH] ALSA: hda - hdmi: Disallow 3/4/5-channel
+	playback to Statement D2
+Date: Mon,  5 May 2014 02:56:06 +0300
+Message-ID: <1399247766-23697-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 16C462619E6
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 16:40:13 +0200 (CEST)
-In-Reply-To: <1399308565-14620-1-git-send-email-vinod.koul@intel.com>
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+ [83.102.40.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1903B2608CF
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 01:56:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +20,185 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: jeeja.kp@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2014-05-05 at 22:19 +0530, Vinod Koul wrote:
-> This patch series reworks and reformats the existing platform driver we use.
-> This is stepping support for seconds series of patches which will support
-> Merrifield platform with DPCM based implementation
-> 
-> Not much logical changes in code except adding drain support for compressed
-> audio. Most is mere modularization of the existing code
-> 
-> Fixes in v2:
-> - add two more patches
-> - fix makefile addition is 4th patch
-> - dropped name change in platform ops patch
-> 
+Anthem Statement D2 receiver plays only front channels when a
+3/4/5-channel HDMI CA is selected. Only 2 and 6 channel maps work
+properly.
 
-All
+Disallow 3/4/5-channel maps based on sink name, allowing userspace to
+retry with a 6-channel mode with additional silent channels.
 
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Reported-by: Grant Warecki <gjwaudio1@hotmail.com>
+Tested-by: Grant Warecki <gjwaudio1@hotmail.com>
+---
 
----------------------------------------------------------------------
-Intel Corporation (UK) Limited
-Registered No. 1134945 (England)
-Registered Office: Pipers Way, Swindon SN3 1RJ
-VAT No: 860 2173 47
+Hi Takashi,
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+I got a report about an issue concerning a fairly obscure high-end
+Anthem Statement D2 sink, and wrote this patch for it. However, I'm now
+having second thoughts about whether the kernel is the correct place for
+this, since
+(a) this is the only case I've encountered so far (and is obscure), and
+(b) these kind of issues might get fixed with fw upgrades, and
+(c) cross-platform media players will have to handle (possibly with
+    manual configuration, though) these cases anyway on non-Linux...
+
+WDYT?
+
+ sound/pci/hda/patch_hdmi.c | 74 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 72 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 0cb5b89cd0c8..0a9c19cdb511 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -64,6 +64,9 @@ struct hdmi_spec_per_cvt {
+ /* max. connections to a widget */
+ #define HDA_MAX_CONNECTIONS	32
+ 
++/* sink supports only CAs with 2/6 channels */
++#define SINK_QUIRK_2_6_CHANNELS	0x0001
++
+ struct hdmi_spec_per_pin {
+ 	hda_nid_t pin_nid;
+ 	int num_mux_nids;
+@@ -83,6 +86,8 @@ struct hdmi_spec_per_pin {
+ 	bool chmap_set;		/* channel-map override by ALSA API? */
+ 	unsigned char chmap[8]; /* ALSA API channel-map */
+ 	char pcm_name[8];	/* filled in build_pcm callbacks */
++	int sink_quirks;	/* sink-specific quirks */
++
+ #ifdef CONFIG_PROC_FS
+ 	struct snd_info_entry *proc_entry;
+ #endif
+@@ -342,6 +347,13 @@ static struct cea_channel_speaker_allocation channel_allocations[] = {
+ { .ca_index = 0x31,  .speakers = { FRW,  FLW,  RR,  RL,  FC,  LFE,  FR,  FL } },
+ };
+ 
++static struct hdmi_sink_quirks {
++	int mfg_id;
++	char name[ELD_MAX_MNL + 1];
++	int quirks;
++} sink_quirks[] = {
++	{ .mfg_id = 0xed40, .name = "Statement D2", .quirks = SINK_QUIRK_2_6_CHANNELS },
++};
+ 
+ /*
+  * HDMI routines
+@@ -640,6 +652,39 @@ static int get_channel_allocation_order(int ca)
+ 	return i;
+ }
+ 
++static unsigned int channels_2_6[] = {
++        2, 6
++};
++
++static struct snd_pcm_hw_constraint_list hw_constraints_2_6_channels = {
++        .count = ARRAY_SIZE(channels_2_6),
++        .list = channels_2_6,
++        .mask = 0,
++};
++
++static void set_constraints_from_sink_quirks(struct snd_pcm_runtime *runtime,
++					     int sink_quirks)
++{
++	if (sink_quirks & SINK_QUIRK_2_6_CHANNELS) {
++		snd_pcm_hw_constraint_list(runtime, 0,
++					   SNDRV_PCM_HW_PARAM_CHANNELS,
++					   &hw_constraints_2_6_channels);
++	}
++}
++
++static bool ca_allowed_by_sink_quirks(int ca, int sink_quirks)
++{
++	if (sink_quirks & SINK_QUIRK_2_6_CHANNELS) {
++		int ordered_ca = get_channel_allocation_order(ca);
++		if (channel_allocations[ordered_ca].channels != 2 &&
++		    channel_allocations[ordered_ca].channels != 6)
++			return false;
++	}
++
++	return true;
++}
++
++
+ /*
+  * The transformation takes two steps:
+  *
+@@ -1482,6 +1527,8 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 			snd_hda_spdif_ctls_unassign(codec, pin_idx);
+ 			return -ENODEV;
+ 		}
++
++		set_constraints_from_sink_quirks(substream->runtime, per_pin->sink_quirks);
+ 	}
+ 
+ 	/* Store the updated parameters */
+@@ -1518,6 +1565,24 @@ static int hdmi_read_pin_conn(struct hda_codec *codec, int pin_idx)
+ 	return 0;
+ }
+ 
++static void hdmi_set_sink_quirks(struct hdmi_spec_per_pin *per_pin)
++{
++	int i;
++
++	per_pin->sink_quirks = 0;
++
++	if (!per_pin->sink_eld.eld_valid)
++		return;
++
++	for (i = 0; i < ARRAY_SIZE(sink_quirks); i++) {
++		if (per_pin->sink_eld.info.manufacture_id == sink_quirks[i].mfg_id &&
++		    !strcmp(per_pin->sink_eld.info.monitor_name, sink_quirks[i].name)) {
++			per_pin->sink_quirks = sink_quirks[i].quirks;
++			break;
++		}
++	}
++}
++
+ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ {
+ 	struct hda_jack_tbl *jack;
+@@ -1592,6 +1657,8 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 		pin_eld->eld_size = eld->eld_size;
+ 		pin_eld->info = eld->info;
+ 
++		hdmi_set_sink_quirks(per_pin);
++
+ 		/*
+ 		 * Re-setup pin and infoframe. This is needed e.g. when
+ 		 * - sink is first plugged-in (infoframe is not set up if !monitor_present)
+@@ -1916,6 +1983,8 @@ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+ 	struct hda_codec *codec = info->private_data;
+ 	struct hdmi_spec *spec = codec->spec;
++	int pin_idx = kcontrol->private_value;
++	struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
+ 	unsigned int __user *dst;
+ 	int chs, count = 0;
+ 
+@@ -1934,7 +2003,8 @@ static int hdmi_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 			int type = spec->ops.chmap_cea_alloc_validate_get_type(cap, chs);
+ 			unsigned int tlv_chmap[8];
+ 
+-			if (type < 0)
++			if (type < 0 ||
++			    !ca_allowed_by_sink_quirks(cap->ca_index, per_pin->sink_quirks))
+ 				continue;
+ 			if (size < 8)
+ 				return -ENOMEM;
+@@ -2007,7 +2077,7 @@ static int hdmi_chmap_ctl_put(struct snd_kcontrol *kcontrol,
+ 	if (!memcmp(chmap, per_pin->chmap, sizeof(chmap)))
+ 		return 0;
+ 	ca = hdmi_manual_channel_allocation(ARRAY_SIZE(chmap), chmap);
+-	if (ca < 0)
++	if (ca < 0 || !ca_allowed_by_sink_quirks(ca, per_pin->sink_quirks))
+ 		return -EINVAL;
+ 	if (spec->ops.chmap_validate) {
+ 		err = spec->ops.chmap_validate(ca, ARRAY_SIZE(chmap), chmap);
+-- 
+1.8.4.5
