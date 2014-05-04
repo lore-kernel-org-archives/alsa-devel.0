@@ -1,52 +1,53 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: Make soc_find_matching_codec() static
-Date: Sun,  4 May 2014 19:18:30 +0200
-Message-ID: <1399223910-28710-1-git-send-email-lars@metafoo.de>
+From: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>
+Subject: Re: [PATCH v2 1/9] ASoC: alc5623: Add device tree binding
+Date: Sun, 4 May 2014 13:49:23 -0400
+Message-ID: <20140504174923.GW28159@titan.lakedaemon.net>
+References: <1399141819-23924-1-git-send-email-andrew@lunn.ch>
+ <1399141819-23924-2-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-167.synserver.de (smtp-out-180.synserver.de
- [212.40.185.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 02F6B261A66
- for <alsa-devel@alsa-project.org>; Sun,  4 May 2014 19:18:31 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Sebastian Reichel <sre@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1399141819-23924-2-git-send-email-andrew-g2DYL2Zd6BY@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The function is only used locally, make it static.
+On Sat, May 03, 2014 at 08:30:11PM +0200, Andrew Lunn wrote:
+> Let the ALC5623 codec be instantiated from DT. Add a simple binding
+> for the additional control register and the jack detect register.
+> 
+> Also, add a prompt to the Kconfig entry for this CODEC, so that it can
+> be selected. Since kirkwood-t5325.c will no longer be used, we need to
+> be able to enable the CODEC in the mvebu_v5_defconfig etc.
+> 
+> Signed-off-by: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
+> ---
+> I followed the example of the WM8903 binding which allows register
+> values to be placed into DT.
+> 
+> v1->v2:
+> 
+> Add redundant OF ID table.
+> Fix binding documentation.
+> Fix check of return code from of_property_read_u32().
+> Add Kconfig prompt
+> ---
+>  .../devicetree/bindings/sound/alc5623.txt          | 25 ++++++++++++++++++++++
+>  sound/soc/codecs/Kconfig                           |  2 +-
+>  sound/soc/codecs/alc5623.c                         | 20 +++++++++++++++++
+>  3 files changed, 46 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/alc5623.txt
 
-Fixes the following warning from sparse:
-	sound/soc/soc-core.c:1644:22: warning: symbol 'soc_find_matching_codec' was not declared. Should it be static?
+I assume Mark is going to take this through his tree.
 
-Fixes: 3ca041ed ("ASoC: dt: Allow Aux Codecs to be specified using DT")
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Acked-by: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index ff2b32f..e14bc6c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1641,7 +1641,8 @@ static void soc_unregister_ac97_dai_link(struct snd_soc_pcm_runtime *rtd)
- }
- #endif
- 
--struct snd_soc_codec *soc_find_matching_codec(struct snd_soc_card *card, int num)
-+static struct snd_soc_codec *soc_find_matching_codec(struct snd_soc_card *card,
-+	int num)
- {
- 	struct snd_soc_aux_dev *aux_dev = &card->aux_dev[num];
- 	struct snd_soc_codec *codec;
--- 
-1.8.0
+thx,
+
+Jason.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
