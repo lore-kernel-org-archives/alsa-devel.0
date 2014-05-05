@@ -1,79 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix check for pdata usage
- before dereference.
-Date: Mon, 5 May 2014 12:42:09 -0700
-Message-ID: <20140505194209.GU22111@sirena.org.uk>
-References: <1399292423-4675-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH 2/2] Documentation: dt: bindings: sound: Add bindings
+ for CS42L56 CODEC
+Date: Mon, 5 May 2014 16:56:12 -0500
+Message-ID: <alpine.DEB.2.02.1405051654060.25909@heelrod>
+References: <1399320549-16645-1-git-send-email-brian.austin@cirrus.com>
+ <1399320549-16645-2-git-send-email-brian.austin@cirrus.com>
+ <47E0FD7A-D2C0-425E-A7FB-917B65D74B2D@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3204894240199859661=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 52153261AA1
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 02:58:41 +0200 (CEST)
-In-Reply-To: <1399292423-4675-1-git-send-email-liam.r.girdwood@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <47E0FD7A-D2C0-425E-A7FB-917B65D74B2D-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Cc: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, paul.handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+>
+> Add a include/dt-bindings for all the various enums
+>
+Can I add that as a seperate patch with the update for the dt-bindings? Or 
+do I need to resend the whole patch series?
 
---===============3204894240199859661==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5M2fOMh7RWu7idz2"
-Content-Disposition: inline
-
-
---5M2fOMh7RWu7idz2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, May 05, 2014 at 01:20:23PM +0100, Liam Girdwood wrote:
-> This patch fixes the following dereference check ordering.
->=20
->  sound/soc/intel/sst-haswell-pcm.c:749 hsw_pcm_probe() warn: variable der=
-eferenced before check 'pdata' (see line 746)
-
-Applied, thanks.
-
---5M2fOMh7RWu7idz2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTZ+mOAAoJELSic+t+oim9YL0P/1Ina4yzn0mx8SxMgOSBLu2l
-Egh3FYn4gPMvAr4KQKurevZ2g7NgxWsDUpXCv+lhNtAhiqe5i9NQg1FYKUozbsjA
-j86SUg1Hr1J7TVo1X8Lp78Yt682PMwnkSQyyBNyeCbl267NM4R2iXoDn7jhJa+4H
-wIU/KtFq+Cj4jfEeuSQmArLpyYlwbgxpHhmaFstAsx8CJl7IWFakBgejaiClPAw5
-ixivuCuwCXRp+WtA3DgUArjHaagxmtL9rLfCga/4gTX2mQWLVWGr++wNlTWNwZhX
-+w/m2/KkS+2wYlcnSANzFUTx5Ya/k9RGhno57MhAqRaRJ0m2mNbwIjNd3uZ1SbJs
-phnbLDlcZRg32kiAWyA0FGn9JUINCPtkQTLYqvLiFg480hj6bdTFHN5n4pP1SLuU
-KhI9AUZXGlnbfnYu/KKhrWMi4q6d5KzGM0+BIlODeaizGlIfHz5dQPWLAeJGRrS6
-2gSnFTarZr0BHr2vStw9CLS24VRLJb9CSveg8aB09YpQFDah49vTEwx8K6DGCwi+
-yu77il8b8CgZiFV3UIc+xAI7RTGBD5mvfjbaTZngHlZt7LqEp6ff20Ng4GqAhMA+
-CU5GKSqheDuUFPWg9+lrs3jUHx9/SiVVQxuR6N+KLB5tCqC15XRyBoVjCXkZpubF
-tLXIEWfz2Bdzb0Bm1tLs
-=78K1
------END PGP SIGNATURE-----
-
---5M2fOMh7RWu7idz2--
-
---===============3204894240199859661==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3204894240199859661==--
+Thanks,
+Brian
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
