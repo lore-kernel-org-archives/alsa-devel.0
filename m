@@ -1,18 +1,21 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [RFC 2/4] ASoC: Intel: Add merrifield machine
- driver
-Date: Tue, 06 May 2014 16:17:19 +0100
-Message-ID: <1399389439.2814.30.camel@loki>
-References: <1399312908-20744-1-git-send-email-vinod.koul@intel.com>
- <1399312908-20744-3-git-send-email-vinod.koul@intel.com>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH 2/2] Documentation: dt: bindings: sound:
+ Add bindings for CS42L56 CODEC
+Date: Mon, 5 May 2014 21:33:57 +0000
+Message-ID: <C793051E-4B3F-4BB9-AA70-AE3522F07002@cirrus.com>
+References: <1399320549-16645-1-git-send-email-brian.austin@cirrus.com>
+ <1399320549-16645-2-git-send-email-brian.austin@cirrus.com>
+ <47E0FD7A-D2C0-425E-A7FB-917B65D74B2D@codeaurora.org>
+ <F1AEB906-8BB1-4699-909A-DF29343F2B6F@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0327908640754036618=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F8AA261A3A
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 17:17:54 +0200 (CEST)
-In-Reply-To: <1399312908-20744-3-git-send-email-vinod.koul@intel.com>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1bon0063.outbound.protection.outlook.com [157.56.111.63])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86BC62610C1
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 23:34:51 +0200 (CEST)
+In-Reply-To: <F1AEB906-8BB1-4699-909A-DF29343F2B6F@cirrus.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,269 +25,155 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: jeeja.kp@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Kumar Gala <galak@codeaurora.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Handrigan,
+ Paul" <Paul.Handrigan@cirrus.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2014-05-05 at 23:31 +0530, Vinod Koul wrote:
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> ---
->  sound/soc/intel/Kconfig                  |   17 +
->  sound/soc/intel/board/Makefile           |    4 +
->  sound/soc/intel/board/merr_dpcm_wm8958.c |  619 ++++++++++++++++++++++++++++++
->  3 files changed, 640 insertions(+), 0 deletions(-)
->  create mode 100644 sound/soc/intel/board/Makefile
->  create mode 100644 sound/soc/intel/board/merr_dpcm_wm8958.c
-> 
-> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index 3c81b38..422c32d 100644
-> --- a/sound/soc/intel/Kconfig
-> +++ b/sound/soc/intel/Kconfig
-> @@ -49,3 +49,20 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
->  	help
->  	  This adds audio driver for Intel Baytrail platform based boards
->  	  with the RT5640 audio codec.
-> +
-> +config SND_SOC_INTEL_MRFLD_WM8958_MACH
-> +	tristate "SOC Machine Audio driver for Intel Merrifield MID platform"
-> +	depends on X86
-> +	select SND_SOC_WM8994
-> +	select MFD_CORE
-> +	select MFD_WM8994
-> +	select REGULATOR_WM8994
-> +	select SND_SST_MFLD_PLATFORM
-> +	select SND_SST_MACHINE
-> +	select SND_INTEL_SST
-> +	default n
-> +	help
-> +	  This adds support for ASoC machine driver for Intel(R) MID Merrifield platform
-> +          used as alsa device in audio substem in Intel(R) MID devices
-> +          Say Y if you have such a device
-> +          If unsure select "N".
-> diff --git a/sound/soc/intel/board/Makefile b/sound/soc/intel/board/Makefile
-> new file mode 100644
-> index 0000000..fdfbecf
-> --- /dev/null
-> +++ b/sound/soc/intel/board/Makefile
-> @@ -0,0 +1,4 @@
-> +# Merrifield board
-> +snd-merr-dpcm-wm8958-objs := merr_dpcm_wm8958.o
-> +
-> +obj-$(CONFIG_SND_SOC_INTEL_MRFLD_WM8958_MACH) += snd-merr-dpcm-wm8958.o
-> diff --git a/sound/soc/intel/board/merr_dpcm_wm8958.c b/sound/soc/intel/board/merr_dpcm_wm8958.c
-> new file mode 100644
-> index 0000000..4c17746
-> --- /dev/null
-> +++ b/sound/soc/intel/board/merr_dpcm_wm8958.c
-> @@ -0,0 +1,619 @@
-> +/*
-> + *  merr_dpcm_wm8958.c - ASoc DPCM Machine driver for Intel Merrfield MID platform
-> + *
-> + *  Copyright (C) 2013-14 Intel Corp
-> + *  Author: Vinod Koul <vinod.koul@intel.com>
-> + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> + *
-> + *  This program is free software; you can redistribute it and/or modify
-> + *  it under the terms of the GNU General Public License as published by
-> + *  the Free Software Foundation; version 2 of the License.
-> + *
-> + *  This program is distributed in the hope that it will be useful, but
-> + *  WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> + *  General Public License for more details.
-> + *
-> + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> + */
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
-> +#include <linux/module.h>
-> +#include <linux/init.h>
-> +#include <linux/device.h>
-> +#include <linux/slab.h>
-> +#include <linux/io.h>
-> +#include <linux/async.h>
-> +#include <linux/delay.h>
-> +#include <linux/gpio.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +#include <sound/jack.h>
-> +#include <linux/input.h>
-> +
-> +#include <linux/mfd/wm8994/core.h>
-> +#include <linux/mfd/wm8994/registers.h>
-> +#include <linux/mfd/wm8994/pdata.h>
-> +#include "../../codecs/wm8994.h"
-> +#include "../platform-libs/controls_v2.h"
-> +
-> +/* Codec PLL output clk rate */
-> +#define CODEC_SYSCLK_RATE			24576000
-> +/* Input clock to codec at MCLK1 PIN */
-> +#define CODEC_IN_MCLK1_RATE			19200000
-> +/* Input clock to codec at MCLK2 PIN */
-> +#define CODEC_IN_MCLK2_RATE			32768
-> +/*  define to select between MCLK1 and MCLK2 input to codec as its clock */
-> +#define CODEC_IN_MCLK1				1
-> +#define CODEC_IN_MCLK2				2
-> +
-> +struct mrfld_8958_mc_private {
-> +	struct snd_soc_jack jack;
-> +	int jack_retry;
-> +};
-> +
-> +
-> +static inline struct snd_soc_codec *mrfld_8958_get_codec(struct snd_soc_card *card)
-> +{
-> +	bool found = false;
-> +	struct snd_soc_codec *codec;
-> +
-> +	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
-> +		if (!strstr(codec->name, "wm8994-codec")) {
-> +			pr_debug("codec was %s", codec->name);
-> +			continue;
-> +		} else {
-> +			found = true;
-> +			break;
-> +		}
-> +	}
-> +	if (found == false) {
-> +		pr_warn("%s: cant find codec", __func__);
-> +		return NULL;
-> +	}
-> +	return codec;
-> +}
-> +
-> +/* TODO: find better way of doing this */
-> +static struct snd_soc_dai *find_codec_dai(struct snd_soc_card *card, const char *dai_name)
-> +{
-> +	int i;
-> +	for (i = 0; i < card->num_rtd; i++) {
-> +		if (!strcmp(card->rtd[i].codec_dai->name, dai_name))
-> +			return card->rtd[i].codec_dai;
-> +	}
-> +	pr_err("%s: unable to find codec dai\n", __func__);
-> +	/* this should never occur */
-> +	WARN_ON(1);
-> +	return NULL;
-> +}
-> +
+--===============0327908640754036618==
+Content-Language: en-US
+Content-Type: multipart/signed;
+	boundary="Apple-Mail=_9F56AAE2-5AE8-44E5-A454-0B4379102C24";
+	protocol="application/pgp-signature"; micalg=pgp-sha512
 
-It would be good if we could eventually make the above 2 calls generic
-in core. Seem to be quite useful functions.
-
-> +/* Function to switch the input clock for codec,  When audio is in
-> + * progress input clock to codec will be through MCLK1 which is 19.2MHz
-> + * while in off state input clock to codec will be through 32KHz through
-> + * MCLK2
-> + * card	: Sound card structure
-> + * src	: Input clock source to codec
-> + */
-> +static int mrfld_8958_set_codec_clk(struct snd_soc_card *card, int src)
-> +{
-> +	struct snd_soc_dai *aif1_dai = find_codec_dai(card, "wm8994-aif1");
-> +	int ret;
-> +
-> +	if (!aif1_dai)
-> +		return -ENODEV;
-> +
-> +	switch (src) {
-> +	case CODEC_IN_MCLK1:
-> +		/* Turn ON the PLL to generate required sysclk rate
-> +		 * from MCLK1 */
-> +		ret = snd_soc_dai_set_pll(aif1_dai,
-> +			WM8994_FLL1, WM8994_FLL_SRC_MCLK1,
-> +			CODEC_IN_MCLK1_RATE, CODEC_SYSCLK_RATE);
-> +		if (ret < 0) {
-> +			pr_err("Failed to start FLL: %d\n", ret);
-> +			return ret;
-> +		}
-> +		/* Switch to MCLK1 input */
-> +		ret = snd_soc_dai_set_sysclk(aif1_dai, WM8994_SYSCLK_FLL1,
-> +				CODEC_SYSCLK_RATE, SND_SOC_CLOCK_IN);
-> +		if (ret < 0) {
-> +			pr_err("Failed to set codec sysclk configuration %d\n",
-> +				 ret);
-> +			return ret;
-> +		}
-> +		break;
-> +	case CODEC_IN_MCLK2:
-> +		/* Switch to MCLK2 */
-> +		ret = snd_soc_dai_set_sysclk(aif1_dai, WM8994_SYSCLK_MCLK2,
-> +				32768, SND_SOC_CLOCK_IN);
-> +		if (ret < 0) {
-> +			pr_err("Failed to switch to MCLK2: %d", ret);
-> +			return ret;
-> +		}
-> +		/* Turn off PLL for MCLK1 */
-> +		ret = snd_soc_dai_set_pll(aif1_dai, WM8994_FLL1, 0, 0, 0);
-> +		if (ret < 0) {
-> +			pr_err("Failed to stop the FLL: %d", ret);
-> +			return ret;
-> +		}
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int mrfld_wm8958_set_clk_fmt(struct snd_soc_dai *codec_dai)
-> +{
-> +	unsigned int fmt;
-> +	int ret = 0;
-> +	struct snd_soc_card *card = codec_dai->card;
-> +
-> +	pr_err("setting snd_soc_dai_set_tdm_slot\n");
-> +	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0, 0, 4, SNDRV_PCM_FORMAT_S24_LE);
-> +	if (ret < 0) {
-> +		pr_err("can't set codec pcm format %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* WM8958 slave Mode */
-> +	fmt =   SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
-> +		| SND_SOC_DAIFMT_CBS_CFS;
-> +	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
-> +	if (ret < 0) {
-> +		pr_err("can't set codec DAI configuration %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* FIXME: move this to SYS_CLOCK event handler when codec driver
-> +	 * dependency is clean.
-> +	 */
-> +	/* Switch to 19.2MHz MCLK1 input clock for codec */
-> +	ret = mrfld_8958_set_codec_clk(card, CODEC_IN_MCLK1);
-> +
-> +	return ret;
-> +}
-> +
-> +static int mrfld_8958_hw_params(struct snd_pcm_substream *substream,
-> +			   struct snd_pcm_hw_params *params)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> +
-> +	if (!strcmp(codec_dai->name, "wm8994-aif1"))
-> +		return mrfld_wm8958_set_clk_fmt(codec_dai);
-> +	return 0;
-> +}
-> +
-> +static int mrfld_wm8958_compr_set_params(struct snd_compr_stream *cstream)
-> +{
-> +	return 0;
-> +}
-
-Do we need to implement this if it's not used ?
+--Apple-Mail=_9F56AAE2-5AE8-44E5-A454-0B4379102C24
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
 
----------------------------------------------------------------------
-Intel Corporation (UK) Limited
-Registered No. 1134945 (England)
-Registered Office: Pipers Way, Swindon SN3 1RJ
-VAT No: 860 2173 47
+On May 5, 2014, at 4:32 PM, Austin, Brian <brian.austin@cirrus.com> =
+wrote:
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+>=20
+> On May 5, 2014, at 4:18 PM, Kumar Gala <galak@codeaurora.org> wrote:
+>=20
+>>=20
+>> On May 5, 2014, at 3:09 PM, Brian Austin <brian.austin@cirrus.com> =
+wrote:
+>>=20
+>>> This patch adds binding documentation for the Cirrus Logic CS42L56 =
+Low Power Stereo I2C CODEC
+>>>=20
+>>> Signed-off-by: Brian Austin <brian.austin@cirrus.com>
+>>> ---
+>>> .../devicetree/bindings/sound/cs42l56.txt          |   63 =
+++++++++++++++++++++
+>>> 1 file changed, 63 insertions(+)
+>>> create mode 100644 =
+Documentation/devicetree/bindings/sound/cs42l56.txt
+>>>=20
+>>> diff --git a/Documentation/devicetree/bindings/sound/cs42l56.txt =
+b/Documentation/devicetree/bindings/sound/cs42l56.txt
+>>> new file mode 100644
+>>> index 0000000..9ae074f
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/sound/cs42l56.txt
+>>> @@ -0,0 +1,63 @@
+>>> +CS42L52 audio CODEC
+>>> +
+>>> +Required properties:
+>>> +
+>>> +  - compatible : "cirrus,cs42l56"
+>>> +
+>>> +  - reg : the I2C address of the device for I2C
+>>> +
+>>> +  - VA-supply, VCP-supply, VLDO-supply : power supplies for the =
+device,
+>>> +  as covered in =
+Documentation/devicetree/bindings/regulator/regulator.txt.
+>>> +
+>>> +Optional properties:
+>>> +
+>>> +  - cirrus,gpio-nreset : GPIO controller's phandle and the number
+>>> +  of the GPIO used to reset the codec.
+>>> +
+>>> +  - cirrus,chgfreq-divisor : Values used to set the Charge Pump =
+Frequency.
+>>> +  Allowable values of 0x00 through 0x0F. These are raw values =
+written to the
+>>> +  register, not the actual frequency. The frequency is determined =
+by the following.
+>>> +  Frequency =3D MCLK / 4 * (N+2)
+>>> +  N =3D chgfreq_val
+>>> +  MCLK =3D Where MCLK is the frequency of the mclk signal after the =
+MCLKDIV2 circuit.
+>>> +
+>>> +  - cirrus,ain1a-ref-cfg, ain1b-ref-cfg : boolean, If present, =
+AIN1A or AIN1B are configured
+>>> +  as a pseudo-differential input referenced to AIN1REF/AIN3A.
+>>=20
+>> What happens if a DT had both bools?
+> That would not cause any issues, but you can only tie the ref to one =
+of the inputs
+>=20
+>>=20
+>>> +
+>>> +  - cirrus,ain2a-ref-cfg, ain2b-ref-cfg : boolean, If present, =
+AIN2A or AIN2B are configured
+>>> +  as a pseudo-differential input referenced to AIN2REF/AIN3B.
+>>> +
+>>> +  - cirrus,micbias-lvl: Set the output voltage level on the MICBIAS =
+Pin.
+>>> +  0 =3D 0.5 x VA
+>>> +  1 =3D 0.6 x VA
+>>> +  2 =3D 0.7 x VA
+>>> +  3 =3D 0.8 x VA
+>>> +  4 =3D 0.83 x VA
+>>> +  5 =3D 0.91 x VA
+>>> +
+>>> +  - cirrus,adaptive-pwr-cfg : Configures how the power to the =
+Headphone and Lineout
+>>> +  Amplifiers adapt to the output signal levels.
+>>> +  0 =3D Adapt to Volume Mode. Voltage level determined by the sum =
+of the relevant volume settings.
+>>> +  1 =3D Fixed - Headphone and Line Amp supply =3D + or - VCP/2.
+>>> +  2 =3D Fixed - Headphone and Line Amp supply =3D + or - VCP.
+>>> +  3 =3D Adapted to Signal; Voltage level is dynamically determined =
+by the output signal.
+>>> +
+>>> +  - cirrus,hpf-left-freq, hpf-right-freq : Sets the corner =
+frequency (-3dB point) for the internal High-Pass
+>>> +  Filter.
+>>> +  0 =3D 1.8Hz
+>>> +  1 =3D 119Hz
+>>> +  2 =3D 236Hz
+>>> +  3 =3D 464Hz
+>>> +
+>>=20
+>> Add a include/dt-bindings for all the various enums
+> Could you explain more please?
+>=20
+> Thanks
+
+I understand now thanks
+
+
+--Apple-Mail=_9F56AAE2-5AE8-44E5-A454-0B4379102C24
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Message signed with OpenPGP using GPGMail
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - https://gpgtools.org
+
+iQEcBAEBCgAGBQJTaAPEAAoJEHdXZdGWfiO7Su4H/2kQRBgn8R+CiWIoo5il1N+n
+gSEt5905IC9ymA1r4rvrGR+eEKgJOQSLhByctE2o+wRmb3ZJYtaBn1S6LIoeT2SC
+FSpodisC60M71ZgfELahicfdtftE96JlL5hCuLclyhKg5f+utwIik+0vuQY29/Ui
+8dRUN+5NKockJj+xRslS59XdY7GMvYCkVWhd7F5ndc+V9PNy92/mL9g1j+zQxYSe
+bhcG7UzD8dKt1UWRiDtgUnx7HvkbVTrc/McgjHN+QqWr0RkiLpp1yi2n7TpaesHU
+HQ8L9W/6TOW6iehdYj71E25229o2x6Uy73totTLstC/B4tt8/pmKTK4e2jKWL7k=
+=KHr1
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_9F56AAE2-5AE8-44E5-A454-0B4379102C24--
+
+--===============0327908640754036618==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0327908640754036618==--
