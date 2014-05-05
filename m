@@ -1,16 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/6] ASoc: Intel: rename sst-mfld-platform.c
-Date: Mon,  5 May 2014 14:27:48 +0530
-Message-ID: <1399280272-26644-3-git-send-email-vinod.koul@intel.com>
-References: <1399280272-26644-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/5] ASoC: fsl_spdif: Use clk_set_rate()
+ for spdif root clock only
+Date: Mon, 5 May 2014 12:26:37 -0700
+Message-ID: <20140505192637.GM22111@sirena.org.uk>
+References: <cover.1398853588.git.Guangyu.Chen@freescale.com>
+ <05eb492d162ee6173f813dbc6cfda6551de70108.1398853588.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4372289257241811378=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 1ED48261B1A
- for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 11:11:17 +0200 (CEST)
-In-Reply-To: <1399280272-26644-1-git-send-email-vinod.koul@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFC0E265071
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 02:57:52 +0200 (CEST)
+In-Reply-To: <05eb492d162ee6173f813dbc6cfda6551de70108.1398853588.git.Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,36 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, jeeja.kp@intel.com, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-to sst-mfld-platform-pcm.c so that we can split pcm and compress to different
-files for upcoming changes to support more platforms
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/Makefile                           |    2 +-
- ...sst-mfld-platform.c => sst-mfld-platform-pcm.c} |    0
- 2 files changed, 1 insertions(+), 1 deletions(-)
- rename sound/soc/intel/{sst-mfld-platform.c => sst-mfld-platform-pcm.c} (100%)
+--===============4372289257241811378==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RXc6EO4W1yUvSQ0X"
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index edeb79a..5d3fb6f 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -2,7 +2,7 @@
- snd-soc-sst-dsp-objs := sst-dsp.o sst-firmware.o
- snd-soc-sst-acpi-objs := sst-acpi.o
- 
--snd-soc-sst-mfld-platform-objs := sst-mfld-platform.o
-+snd-soc-sst-mfld-platform-objs := sst-mfld-platform-pcm.o
- snd-soc-mfld-machine-objs := mfld_machine.o
- 
- obj-$(CONFIG_SND_SST_MFLD_PLATFORM) += snd-soc-sst-mfld-platform.o
-diff --git a/sound/soc/intel/sst-mfld-platform.c b/sound/soc/intel/sst-mfld-platform-pcm.c
-similarity index 100%
-rename from sound/soc/intel/sst-mfld-platform.c
-rename to sound/soc/intel/sst-mfld-platform-pcm.c
--- 
-1.7.0.4
+
+--RXc6EO4W1yUvSQ0X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Apr 30, 2014 at 06:54:05PM +0800, Nicolin Chen wrote:
+> The clock mux for the Freescale S/PDIF controller has eight clock sources
+> while most of them are from other moudles and even system clocks that do
+> not allow a rate-changing operation.
+
+Applied, thanks.
+
+--RXc6EO4W1yUvSQ0X
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTZ+XqAAoJELSic+t+oim9SyEP/irBxfFCAYoJPMRGswElajD3
+dEPxqQ1XyKgBWiwoN7+p9xQGN5AVFfcjh7XE7UkUzdD0fbSxm4kGjVccx5KpxaqC
+qtgPC3JCCs3yGZj2xOafeAUc5Lpq3kDG6/+TmQsuixvU0zLImyxTaPIyVrvsBSNQ
+Q9PYjbC3e78hPrGvKULUsr1azxrW7M1OJuAeDofvVRrNx+kCjW1prIEjVbRx/lOY
+MqAV0WO5i5cPNetYcxQYZADQ8lh0E3bNnQ9rfQX6Zbvx0KG/mSYPWW/b64wpjFnG
+yp/t6mIY5boYHwnEURfM9SDzgjVn6CzITTIJIogWM5aqRYazt58HSFjmtq4gdPyq
+q6MrqfzKU2R0EXSr5L/w8wi8mThEec8sZhIX6+8sKSlznMDKbnbv1cKfVBaXlddq
+yzPeqzUhDLu/zFlc8p1Qa2zFzlxSuTq3pFWxfQzIkaVETLGp1iz0WSKjslq4OLkf
+581ySYjtifdyJu1Umv66fngm+dpJYPW/PZ8sPKjbZCcUoVPM5r7WtYuIAcRfeCvE
+FNED+TFDdzMb4+bXPt/m5f51xDu5b32kOk3+mJR9+nSjf41940xvKp/e8Jg+9nvT
+UWzWkEnWQe2mSrSvanikLdWWkRzPgwaQL0jipW30YTZHnPD4NQwqsgBzu5KeYBPH
+tOYPx/FuipCmajPseJ5Q
+=zExO
+-----END PGP SIGNATURE-----
+
+--RXc6EO4W1yUvSQ0X--
+
+--===============4372289257241811378==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4372289257241811378==--
