@@ -1,47 +1,34 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: arecord - bug with big file?
-Date: Mon, 05 May 2014 01:04:45 +0200
-Message-ID: <5366C78D.5040507@zonque.org>
-References: <5366A35F.4040308@gmail.com>
+From: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>
+Subject: Re: [PATCH v2 2/9] ARM: Kirkwood: Remove platform driver for codec
+Date: Sun, 4 May 2014 21:12:25 -0400
+Message-ID: <20140505011225.GF28159@titan.lakedaemon.net>
+References: <1399141819-23924-1-git-send-email-andrew@lunn.ch>
+ <1399141819-23924-3-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 675AB2608CF
- for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 01:04:47 +0200 (CEST)
-In-Reply-To: <5366A35F.4040308@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: korgman <korgie@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1399141819-23924-3-git-send-email-andrew-g2DYL2Zd6BY@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/04/2014 10:30 PM, korgman wrote:
-> Bugtracker is down ->
-> https://bugtrack.alsa-project.org/alsa-bug
-> from main page ->
-> http://alsa-project.org
+On Sat, May 03, 2014 at 08:30:12PM +0200, Andrew Lunn wrote:
+> Remove the platform driver and platform data for the audio codec.
+> A DT node will replace it.
 > 
-> So, excuse my reporting here.
-> 
-> I can't record with arecord for long periods.
-> 
-> time arecord -f dat -D hw:0,0 | aplay
-> Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-> Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-> 
-> real	186m25.375s
+> Signed-off-by: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
+> ---
+>  arch/arm/mach-mvebu/board-t5325.c | 15 ---------------
+>  1 file changed, 15 deletions(-)
 
-What architecture (uname -a) and distribution is this? Was your libc and
-alsa-lib compiled with LARGEFILE support?
+Patches 2 and 6 applied to mvebu/soc.
 
+thx,
 
-Daniel
+Jason.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
