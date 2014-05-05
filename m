@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [RFC 4/4] ASoC: Intel: add support for mrfld DPCM
-	platform
-Date: Mon,  5 May 2014 23:31:48 +0530
-Message-ID: <1399312908-20744-5-git-send-email-vinod.koul@intel.com>
+Subject: [RFC 3/4] ASoC: Intel: add the low level dsp driver
+	for mrfld
+Date: Mon,  5 May 2014 23:31:47 +0530
+Message-ID: <1399312908-20744-4-git-send-email-vinod.koul@intel.com>
 References: <1399312908-20744-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EE68261A60
- for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 20:19:27 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C9F32625D7
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 20:19:24 +0200 (CEST)
 In-Reply-To: <1399312908-20744-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,807 +25,54 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, jeeja.kp@intel.com, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds DPCM based supprt for managing mrfld platform
+This driver provides low level functions like sending and receiving IPCs, managing
+power for DSP etc
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/Kconfig                          |    3 +
- sound/soc/intel/platform-libs/controls_v2.h      |  754 +++++++++++++
- sound/soc/intel/platform-libs/controls_v2_dpcm.c | 1315 ++++++++++++++++++++++
- sound/soc/intel/platform-libs/sst_widgets.h      |  378 +++++++
- sound/soc/intel/platform_ipc_v2.h                |  694 ++++++++++++
- sound/soc/intel/sst-mfld-platform-compress.c     |    8 +-
- sound/soc/intel/sst-mfld-platform-pcm.c          |  384 ++++++-
- sound/soc/intel/sst-mfld-platform.h              |    2 +
- 8 files changed, 3480 insertions(+), 58 deletions(-)
- create mode 100644 sound/soc/intel/platform-libs/controls_v2.h
- create mode 100644 sound/soc/intel/platform-libs/controls_v2_dpcm.c
- create mode 100644 sound/soc/intel/platform-libs/sst_widgets.h
- create mode 100644 sound/soc/intel/platform_ipc_v2.h
+ sound/soc/intel/sst/Makefile            |    5 +
+ sound/soc/intel/sst/sst.c               |  631 ++++++++++++++++++++
+ sound/soc/intel/sst/sst.h               |  686 ++++++++++++++++++++++
+ sound/soc/intel/sst/sst_drv_interface.c |  812 ++++++++++++++++++++++++++
+ sound/soc/intel/sst/sst_ipc.c           |  388 +++++++++++++
+ sound/soc/intel/sst/sst_loader.c        |  947 +++++++++++++++++++++++++++++++
+ sound/soc/intel/sst/sst_pvt.c           |  203 +++++++
+ sound/soc/intel/sst/sst_stream.c        |  529 +++++++++++++++++
+ 8 files changed, 4201 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/intel/sst/Makefile
+ create mode 100644 sound/soc/intel/sst/sst.c
+ create mode 100644 sound/soc/intel/sst/sst.h
+ create mode 100644 sound/soc/intel/sst/sst_drv_interface.c
+ create mode 100644 sound/soc/intel/sst/sst_ipc.c
+ create mode 100644 sound/soc/intel/sst/sst_loader.c
+ create mode 100644 sound/soc/intel/sst/sst_pvt.c
+ create mode 100644 sound/soc/intel/sst/sst_stream.c
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 422c32d..1254eb8 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -66,3 +66,6 @@ config SND_SOC_INTEL_MRFLD_WM8958_MACH
-           used as alsa device in audio substem in Intel(R) MID devices
-           Say Y if you have such a device
-           If unsure select "N".
-+
-+config SND_INTEL_SST
-+       tristate
-diff --git a/sound/soc/intel/platform-libs/controls_v2.h b/sound/soc/intel/platform-libs/controls_v2.h
+diff --git a/sound/soc/intel/sst/Makefile b/sound/soc/intel/sst/Makefile
 new file mode 100644
-index 0000000..7988d81
+index 0000000..d5bf4e8
 --- /dev/null
-+++ b/sound/soc/intel/platform-libs/controls_v2.h
-@@ -0,0 +1,754 @@
-+/*
-+ *  controls_v2.h - Intel MID Platform driver header file
-+ *
-+ *  Copyright (C) 2013-14 Intel Corp
-+ *  Author: Ramesh Babu <ramesh.babu.koul@intel.com>
-+ *  	Omair M Abdullah <omair.m.abdullah@intel.com>
-+ *  	Samreen Nilofer <samreen.nilofer@intel.com>
-+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ */
++++ b/sound/soc/intel/sst/Makefile
+@@ -0,0 +1,5 @@
++snd-intel-sst-objs := sst.o sst_ipc.o sst_stream.o sst_drv_interface.o sst_loader.o sst_pvt.o
 +
-+#ifndef __SST_CONTROLS_V2_H__
-+#define __SST_CONTROLS_V2_H__
++obj-$(CONFIG_SND_INTEL_SST) += snd-intel-sst.o
 +
-+enum {
-+	MERR_DPCM_AUDIO = 0,
-+	MERR_DPCM_COMPR,
-+};
-+/*
-+ * This section defines the map for the mixer widgets.
-+ *
-+ * Each mixer will be represented by single value and that value will have each
-+ * bit corresponding to one input
-+ *
-+ * Each out_id will correspond to one mixer and one path. Each input will be
-+ * represented by single bit in the register.
-+ */
-+
-+/* mixer register ids here */
-+#define SST_MIX(x)		(x)
-+
-+#define SST_MIX_MODEM		SST_MIX(0)
-+#define SST_MIX_BT		SST_MIX(1)
-+#define SST_MIX_CODEC0		SST_MIX(2)
-+#define SST_MIX_CODEC1		SST_MIX(3)
-+#define SST_MIX_LOOP0		SST_MIX(4)
-+#define SST_MIX_LOOP1		SST_MIX(5)
-+#define SST_MIX_LOOP2		SST_MIX(6)
-+#define SST_MIX_PROBE		SST_MIX(7)
-+#define SST_MIX_HF_SNS		SST_MIX(8)
-+#define SST_MIX_HF		SST_MIX(9)
-+#define SST_MIX_SPEECH		SST_MIX(10)
-+#define SST_MIX_RXSPEECH	SST_MIX(11)
-+#define SST_MIX_VOIP		SST_MIX(12)
-+#define SST_MIX_PCM0		SST_MIX(13)
-+#define SST_MIX_PCM1		SST_MIX(14)
-+#define SST_MIX_PCM2		SST_MIX(15)
-+#define SST_MIX_AWARE		SST_MIX(16)
-+#define SST_MIX_VAD		SST_MIX(17)
-+#define SST_MIX_FM		SST_MIX(18)
-+
-+#define SST_MIX_MEDIA0		SST_MIX(19)
-+#define SST_MIX_MEDIA1		SST_MIX(20)
-+
-+#define SST_NUM_MIX		(SST_MIX_MEDIA1 + 1)
-+
-+#define SST_MIX_SWITCH		(SST_NUM_MIX + 1)
-+#define SST_OUT_SWITCH		(SST_NUM_MIX + 2)
-+#define SST_IN_SWITCH		(SST_NUM_MIX + 3)
-+#define SST_MUX_REG		(SST_NUM_MIX + 4)
-+#define SST_REG_LAST		(SST_MUX_REG)
-+
-+/* last entry defines array size */
-+#define SST_NUM_WIDGETS		(SST_REG_LAST + 1)
-+
-+#define SST_BT_FM_MUX_SHIFT	0
-+#define SST_VOICE_MODE_SHIFT	1
-+#define SST_BT_MODE_SHIFT	2
-+
-+/* in each mixer register we will define one bit for each input */
-+#define SST_MIX_IP(x)		(x)
-+
-+#define SST_IP_MODEM		SST_MIX_IP(0)
-+#define SST_IP_BT		SST_MIX_IP(1)
-+#define SST_IP_CODEC0		SST_MIX_IP(2)
-+#define SST_IP_CODEC1		SST_MIX_IP(3)
-+#define SST_IP_LOOP0		SST_MIX_IP(4)
-+#define SST_IP_LOOP1		SST_MIX_IP(5)
-+#define SST_IP_LOOP2		SST_MIX_IP(6)
-+#define SST_IP_PROBE		SST_MIX_IP(7)
-+#define SST_IP_SIDETONE		SST_MIX_IP(8)
-+#define SST_IP_TXSPEECH		SST_MIX_IP(9)
-+#define SST_IP_SPEECH		SST_MIX_IP(10)
-+#define SST_IP_TONE		SST_MIX_IP(11)
-+#define SST_IP_VOIP		SST_MIX_IP(12)
-+#define SST_IP_PCM0		SST_MIX_IP(13)
-+#define SST_IP_PCM1		SST_MIX_IP(14)
-+#define SST_IP_LOW_PCM0		SST_MIX_IP(15)
-+#define SST_IP_FM		SST_MIX_IP(16)
-+#define SST_IP_MEDIA0		SST_MIX_IP(17)
-+#define SST_IP_MEDIA1		SST_MIX_IP(18)
-+#define SST_IP_MEDIA2		SST_MIX_IP(19)
-+#define SST_IP_MEDIA3		SST_MIX_IP(20)
-+
-+#define SST_IP_LAST		SST_IP_MEDIA3
-+
-+#define SST_SWM_INPUT_COUNT	(SST_IP_LAST + 1)
-+#define SST_CMD_SWM_MAX_INPUTS	6
-+
-+#define SST_PATH_ID_SHIFT	8
-+#define SST_DEFAULT_LOCATION_ID	0xFFFF
-+#define SST_DEFAULT_CELL_NBR	0xFF
-+#define SST_DEFAULT_MODULE_ID	0xFFFF
-+
-+/*
-+ * Audio DSP Path Ids. Specified by the audio DSP FW
-+ */
-+enum sst_path_index {
-+	SST_PATH_INDEX_MODEM_OUT                = (0x00 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_BT_OUT                   = (0x01 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_CODEC_OUT0               = (0x02 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_CODEC_OUT1               = (0x03 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_SPROT_LOOP_OUT           = (0x04 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_MEDIA_LOOP1_OUT          = (0x05 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_MEDIA_LOOP2_OUT          = (0x06 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE_OUT                = (0x07 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_HF_SNS_OUT               = (0x08 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_VOICE_UPLINK_REF2	= (0x08 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_HF_OUT                   = (0x09 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_VOICE_UPLINK_REF1	= (0x09 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_SPEECH_OUT               = (0x0A << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_VOICE_UPLINK		= (0x0A << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_RX_SPEECH_OUT            = (0x0B << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_VOICE_DOWNLINK		= (0x0B << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_VOIP_OUT                 = (0x0C << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PCM0_OUT                 = (0x0D << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PCM1_OUT                 = (0x0E << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PCM2_OUT                 = (0x0F << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_AWARE_OUT                = (0x10 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_VAD_OUT                  = (0x11 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_MEDIA0_OUT               = (0x12 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_MEDIA1_OUT               = (0x13 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_FM_OUT                   = (0x14 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_PROBE1_PIPE_OUT		= (0x15 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE2_PIPE_OUT		= (0x16 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE3_PIPE_OUT		= (0x17 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE4_PIPE_OUT		= (0x18 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE5_PIPE_OUT		= (0x19 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE6_PIPE_OUT		= (0x1A << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE7_PIPE_OUT		= (0x1B << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE8_PIPE_OUT		= (0x1C << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_SIDETONE_OUT		= (0x1D << SST_PATH_ID_SHIFT),
-+
-+	/* Start of input paths */
-+	SST_PATH_INDEX_MODEM_IN                 = (0x80 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_BT_IN                    = (0x81 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_CODEC_IN0                = (0x82 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_CODEC_IN1                = (0x83 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_SPROT_LOOP_IN            = (0x84 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_MEDIA_LOOP1_IN           = (0x85 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_MEDIA_LOOP2_IN           = (0x86 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_PROBE_IN                 = (0x87 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_SIDETONE_IN              = (0x88 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_TX_SPEECH_IN             = (0x89 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_SPEECH_IN                = (0x8A << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_TONE_IN                  = (0x8B << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_VOIP_IN                  = (0x8C << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_PCM0_IN                  = (0x8D << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PCM1_IN                  = (0x8E << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_MEDIA0_IN                = (0x8F << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_MEDIA1_IN                = (0x90 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_MEDIA2_IN                = (0x91 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_FM_IN                    = (0x92 << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_PROBE1_PIPE_IN           = (0x93 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE2_PIPE_IN           = (0x94 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE3_PIPE_IN           = (0x95 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE4_PIPE_IN           = (0x96 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE5_PIPE_IN           = (0x97 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE6_PIPE_IN           = (0x98 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE7_PIPE_IN           = (0x99 << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_PROBE8_PIPE_IN           = (0x9A << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_MEDIA3_IN		= (0x9C << SST_PATH_ID_SHIFT),
-+	SST_PATH_INDEX_LOW_PCM0_IN		= (0x9D << SST_PATH_ID_SHIFT),
-+
-+	SST_PATH_INDEX_RESERVED                 = (0xFF << SST_PATH_ID_SHIFT),
-+};
-+
-+/*
-+ * switch matrix input path IDs
-+ */
-+enum sst_swm_inputs {
-+	SST_SWM_IN_MODEM	= (SST_PATH_INDEX_MODEM_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_BT		= (SST_PATH_INDEX_BT_IN		  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_CODEC0	= (SST_PATH_INDEX_CODEC_IN0	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_CODEC1	= (SST_PATH_INDEX_CODEC_IN1	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_SPROT_LOOP	= (SST_PATH_INDEX_SPROT_LOOP_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_MEDIA_LOOP1	= (SST_PATH_INDEX_MEDIA_LOOP1_IN  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_MEDIA_LOOP2	= (SST_PATH_INDEX_MEDIA_LOOP2_IN  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_PROBE	= (SST_PATH_INDEX_PROBE_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_SIDETONE	= (SST_PATH_INDEX_SIDETONE_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_TXSPEECH	= (SST_PATH_INDEX_TX_SPEECH_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_SPEECH	= (SST_PATH_INDEX_SPEECH_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_TONE		= (SST_PATH_INDEX_TONE_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_VOIP		= (SST_PATH_INDEX_VOIP_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_PCM0		= (SST_PATH_INDEX_PCM0_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_PCM1		= (SST_PATH_INDEX_PCM1_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_MEDIA0	= (SST_PATH_INDEX_MEDIA0_IN	  | SST_DEFAULT_CELL_NBR), /* Part of Media Mixer */
-+	SST_SWM_IN_MEDIA1	= (SST_PATH_INDEX_MEDIA1_IN	  | SST_DEFAULT_CELL_NBR), /* Part of Media Mixer */
-+	SST_SWM_IN_MEDIA2	= (SST_PATH_INDEX_MEDIA2_IN	  | SST_DEFAULT_CELL_NBR), /* Part of Media Mixer */
-+	SST_SWM_IN_FM		= (SST_PATH_INDEX_FM_IN		  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_MEDIA3	= (SST_PATH_INDEX_MEDIA3_IN	  | SST_DEFAULT_CELL_NBR), /* Part of Media Mixer */
-+	SST_SWM_IN_LOW_PCM0	= (SST_PATH_INDEX_LOW_PCM0_IN	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_IN_END		= (SST_PATH_INDEX_RESERVED	  | SST_DEFAULT_CELL_NBR)
-+};
-+
-+/*
-+ * switch matrix output path IDs
-+ */
-+enum sst_swm_outputs {
-+	SST_SWM_OUT_MODEM	= (SST_PATH_INDEX_MODEM_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_BT		= (SST_PATH_INDEX_BT_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_CODEC0	= (SST_PATH_INDEX_CODEC_OUT0	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_CODEC1	= (SST_PATH_INDEX_CODEC_OUT1	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_SPROT_LOOP	= (SST_PATH_INDEX_SPROT_LOOP_OUT  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_MEDIA_LOOP1	= (SST_PATH_INDEX_MEDIA_LOOP1_OUT | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_MEDIA_LOOP2	= (SST_PATH_INDEX_MEDIA_LOOP2_OUT | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_PROBE	= (SST_PATH_INDEX_PROBE_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_HF_SNS	= (SST_PATH_INDEX_HF_SNS_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_HF		= (SST_PATH_INDEX_HF_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_SPEECH	= (SST_PATH_INDEX_SPEECH_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_RXSPEECH	= (SST_PATH_INDEX_RX_SPEECH_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_VOIP	= (SST_PATH_INDEX_VOIP_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_PCM0	= (SST_PATH_INDEX_PCM0_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_PCM1	= (SST_PATH_INDEX_PCM1_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_PCM2	= (SST_PATH_INDEX_PCM2_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_AWARE	= (SST_PATH_INDEX_AWARE_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_VAD		= (SST_PATH_INDEX_VAD_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_MEDIA0	= (SST_PATH_INDEX_MEDIA0_OUT	  | SST_DEFAULT_CELL_NBR), /* Part of Media Mixer */
-+	SST_SWM_OUT_MEDIA1	= (SST_PATH_INDEX_MEDIA1_OUT	  | SST_DEFAULT_CELL_NBR), /* Part of Media Mixer */
-+	SST_SWM_OUT_FM		= (SST_PATH_INDEX_FM_OUT	  | SST_DEFAULT_CELL_NBR),
-+	SST_SWM_OUT_END		= (SST_PATH_INDEX_RESERVED	  | SST_DEFAULT_CELL_NBR),
-+};
-+
-+enum sst_ipc_msg {
-+	SST_IPC_IA_CMD = 1,
-+	SST_IPC_IA_SET_PARAMS,
-+	SST_IPC_IA_GET_PARAMS,
-+};
-+
-+enum sst_cmd_type {
-+	SST_CMD_BYTES_SET = 1,
-+	SST_CMD_BYTES_GET = 2,
-+};
-+
-+enum sst_task {
-+	SST_TASK_SBA = 1,
-+	SST_TASK_FBA_UL,
-+	SST_TASK_MMX,
-+	SST_TASK_AWARE,
-+	SST_TASK_FBA_DL,
-+};
-+
-+enum sst_type {
-+	SST_TYPE_CMD = 1,
-+	SST_TYPE_PARAMS,
-+};
-+
-+enum sst_flag {
-+	SST_FLAG_BLOCKED = 1,
-+	SST_FLAG_NONBLOCK,
-+};
-+
-+/*
-+ * Enumeration for indexing the gain cells in VB_SET_GAIN DSP command
-+ */
-+enum sst_gain_index {
-+	/* GAIN IDs for SB task start here */
-+	SST_GAIN_INDEX_MODEM_OUT,
-+	SST_GAIN_INDEX_MODEM_IN,
-+	SST_GAIN_INDEX_BT_OUT,
-+	SST_GAIN_INDEX_BT_IN,
-+	SST_GAIN_INDEX_FM_OUT,
-+
-+	SST_GAIN_INDEX_FM_IN,
-+	SST_GAIN_INDEX_CODEC_OUT0,
-+	SST_GAIN_INDEX_CODEC_OUT1,
-+	SST_GAIN_INDEX_CODEC_IN0,
-+	SST_GAIN_INDEX_CODEC_IN1,
-+
-+	SST_GAIN_INDEX_SPROT_LOOP_OUT,
-+	SST_GAIN_INDEX_MEDIA_LOOP1_OUT,
-+	SST_GAIN_INDEX_MEDIA_LOOP2_OUT,
-+	SST_GAIN_INDEX_RX_SPEECH_OUT,
-+	SST_GAIN_INDEX_TX_SPEECH_IN,
-+
-+	SST_GAIN_INDEX_SPEECH_OUT,
-+	SST_GAIN_INDEX_SPEECH_IN,
-+	SST_GAIN_INDEX_HF_OUT,
-+	SST_GAIN_INDEX_HF_SNS_OUT,
-+	SST_GAIN_INDEX_TONE_IN,
-+
-+	SST_GAIN_INDEX_SIDETONE_IN,
-+	SST_GAIN_INDEX_PROBE_OUT,
-+	SST_GAIN_INDEX_PROBE_IN,
-+	SST_GAIN_INDEX_PCM0_IN_LEFT,
-+	SST_GAIN_INDEX_PCM0_IN_RIGHT,
-+
-+	SST_GAIN_INDEX_PCM1_OUT_LEFT,
-+	SST_GAIN_INDEX_PCM1_OUT_RIGHT,
-+	SST_GAIN_INDEX_PCM1_IN_LEFT,
-+	SST_GAIN_INDEX_PCM1_IN_RIGHT,
-+	SST_GAIN_INDEX_PCM2_OUT_LEFT,
-+
-+	SST_GAIN_INDEX_PCM2_OUT_RIGHT,
-+	SST_GAIN_INDEX_VOIP_OUT,
-+	SST_GAIN_INDEX_VOIP_IN,
-+	SST_GAIN_INDEX_AWARE_OUT,
-+	SST_GAIN_INDEX_VAD_OUT,
-+
-+	/* Gain IDs for FBA task start here */
-+	SST_GAIN_INDEX_VOICE_UL,
-+
-+	/* Gain IDs for MMX task start here */
-+	SST_GAIN_INDEX_MEDIA0_IN_LEFT,
-+	SST_GAIN_INDEX_MEDIA0_IN_RIGHT,
-+	SST_GAIN_INDEX_MEDIA1_IN_LEFT,
-+	SST_GAIN_INDEX_MEDIA1_IN_RIGHT,
-+
-+	SST_GAIN_INDEX_MEDIA2_IN_LEFT,
-+	SST_GAIN_INDEX_MEDIA2_IN_RIGHT,
-+
-+	SST_GAIN_INDEX_GAIN_END
-+};
-+
-+/*
-+ * Audio DSP module IDs specified by FW spec
-+ * TODO: Update with all modules
-+ */
-+enum sst_module_id {
-+	SST_MODULE_ID_PCM		  = 0x0001,
-+	SST_MODULE_ID_MP3		  = 0x0002,
-+	SST_MODULE_ID_MP24		  = 0x0003,
-+	SST_MODULE_ID_AAC		  = 0x0004,
-+	SST_MODULE_ID_AACP		  = 0x0005,
-+	SST_MODULE_ID_EAACP		  = 0x0006,
-+	SST_MODULE_ID_WMA9		  = 0x0007,
-+	SST_MODULE_ID_WMA10		  = 0x0008,
-+	SST_MODULE_ID_WMA10P		  = 0x0009,
-+	SST_MODULE_ID_RA		  = 0x000A,
-+	SST_MODULE_ID_DDAC3		  = 0x000B,
-+	SST_MODULE_ID_TRUE_HD		  = 0x000C,
-+	SST_MODULE_ID_HD_PLUS		  = 0x000D,
-+
-+	SST_MODULE_ID_SRC		  = 0x0064,
-+	SST_MODULE_ID_DOWNMIX		  = 0x0066,
-+	SST_MODULE_ID_GAIN_CELL		  = 0x0067,
-+	SST_MODULE_ID_SPROT		  = 0x006D,
-+	SST_MODULE_ID_BASS_BOOST	  = 0x006E,
-+	SST_MODULE_ID_STEREO_WDNG	  = 0x006F,
-+	SST_MODULE_ID_AV_REMOVAL	  = 0x0070,
-+	SST_MODULE_ID_MIC_EQ		  = 0x0071,
-+	SST_MODULE_ID_SPL		  = 0x0072,
-+	SST_MODULE_ID_ALGO_VTSV           = 0x0073,
-+	SST_MODULE_ID_NR		  = 0x0076,
-+	SST_MODULE_ID_BWX		  = 0x0077,
-+	SST_MODULE_ID_DRP		  = 0x0078,
-+	SST_MODULE_ID_MDRP		  = 0x0079,
-+
-+	SST_MODULE_ID_ANA		  = 0x007A,
-+	SST_MODULE_ID_AEC		  = 0x007B,
-+	SST_MODULE_ID_NR_SNS		  = 0x007C,
-+	SST_MODULE_ID_SER		  = 0x007D,
-+	SST_MODULE_ID_AGC		  = 0x007E,
-+
-+	SST_MODULE_ID_CNI		  = 0x007F,
-+	SST_MODULE_ID_CONTEXT_ALGO_AWARE  = 0x0080,
-+	SST_MODULE_ID_FIR_24		  = 0x0081,
-+	SST_MODULE_ID_IIR_24		  = 0x0082,
-+
-+	SST_MODULE_ID_ASRC		  = 0x0083,
-+	SST_MODULE_ID_TONE_GEN		  = 0x0084,
-+	SST_MODULE_ID_BMF		  = 0x0086,
-+	SST_MODULE_ID_EDL		  = 0x0087,
-+	SST_MODULE_ID_GLC		  = 0x0088,
-+
-+	SST_MODULE_ID_FIR_16		  = 0x0089,
-+	SST_MODULE_ID_IIR_16		  = 0x008A,
-+	SST_MODULE_ID_DNR		  = 0x008B,
-+
-+	SST_MODULE_ID_VIRTUALIZER	  = 0x008C,
-+	SST_MODULE_ID_VISUALIZATION	  = 0x008D,
-+	SST_MODULE_ID_LOUDNESS_OPTIMIZER  = 0x008E,
-+	SST_MODULE_ID_REVERBERATION	  = 0x008F,
-+
-+	SST_MODULE_ID_CNI_TX		  = 0x0090,
-+	SST_MODULE_ID_REF_LINE		  = 0x0091,
-+	SST_MODULE_ID_VOLUME		  = 0x0092,
-+	SST_MODULE_ID_FILT_DCR		  = 0x0094,
-+	SST_MODULE_ID_SLV		  = 0x009A,
-+	SST_MODULE_ID_NLF		  = 0x009B,
-+	SST_MODULE_ID_TNR		  = 0x009C,
-+	SST_MODULE_ID_WNR		  = 0x009D,
-+
-+	SST_MODULE_ID_LOG		  = 0xFF00,
-+
-+	SST_MODULE_ID_TASK		  = 0xFFFF,
-+};
-+
-+enum sst_cmd {
-+	SBA_IDLE		= 14,
-+	SBA_VB_SET_SPEECH_PATH	= 26,
-+	MMX_SET_GAIN		= 33,
-+	SBA_VB_SET_GAIN		= 33,
-+	FBA_VB_RX_CNI		= 35,
-+	MMX_SET_GAIN_TIMECONST	= 36,
-+	SBA_VB_SET_TIMECONST	= 36,
-+	FBA_VB_ANA		= 37,
-+	FBA_VB_SET_FIR		= 38,
-+	FBA_VB_SET_IIR		= 39,
-+	SBA_VB_START_TONE	= 41,
-+	SBA_VB_STOP_TONE	= 42,
-+	FBA_VB_AEC		= 47,
-+	FBA_VB_NR_UL		= 48,
-+	FBA_VB_AGC		= 49,
-+	FBA_VB_WNR		= 52,
-+	FBA_VB_SLV		= 53,
-+	FBA_VB_NR_DL		= 55,
-+	SBA_PROBE		= 66,
-+	MMX_PROBE		= 66,
-+	FBA_VB_SET_BIQUAD_D_C	= 69,
-+	FBA_VB_DUAL_BAND_COMP	= 70,
-+	FBA_VB_SNS		= 72,
-+	FBA_VB_SER		= 78,
-+	FBA_VB_TX_CNI		= 80,
-+	SBA_VB_START		= 85,
-+	FBA_VB_SET_REF_LINE	= 94,
-+	FBA_VB_SET_DELAY_LINE	= 95,
-+	FBA_VB_BWX		= 104,
-+	FBA_VB_GMM		= 105,
-+	FBA_VB_GLC		= 107,
-+	FBA_VB_BMF		= 111,
-+	FBA_VB_DNR		= 113,
-+	MMX_SET_SWM		= 114,
-+	SBA_SET_SWM		= 114,
-+	SBA_SET_MDRP            = 116,
-+	SBA_HW_SET_SSP		= 117,
-+	SBA_SET_MEDIA_LOOP_MAP	= 118,
-+	SBA_SET_MEDIA_PATH	= 119,
-+	MMX_SET_MEDIA_PATH	= 119,
-+	FBA_VB_TNR_UL		= 119,
-+	FBA_VB_TNR_DL		= 121,
-+	FBA_VB_NLF		= 125,
-+	SBA_VB_LPRO		= 126,
-+	FBA_VB_MDRP		= 127,
-+	SBA_VB_SET_FIR          = 128,
-+	SBA_VB_SET_IIR          = 129,
-+	SBA_SET_SSP_SLOT_MAP	= 130,
-+	AWARE_ENV_CLASS_PARAMS	= 130,
-+	VAD_ENV_CLASS_PARAMS	= 2049,
-+};
-+
-+enum sst_dsp_switch {
-+	SST_SWITCH_OFF = 0,
-+	SST_SWITCH_ON = 3,
-+};
-+
-+enum sst_path_switch {
-+	SST_PATH_OFF = 0,
-+	SST_PATH_ON = 1,
-+};
-+
-+enum sst_swm_state {
-+	SST_SWM_OFF = 0,
-+	SST_SWM_ON = 3,
-+};
-+
-+#define SST_FILL_LOCATION_IDS(dst, cell_idx, pipe_id)		do {	\
-+		dst.location_id.p.cell_nbr_idx = (cell_idx);		\
-+		dst.location_id.p.path_id = (pipe_id);			\
-+	} while (0)
-+#define SST_FILL_LOCATION_ID(dst, loc_id)				(\
-+	dst.location_id.f = (loc_id))
-+#define SST_FILL_MODULE_ID(dst, mod_id)					(\
-+	dst.module_id = (mod_id))
-+
-+#define SST_FILL_DESTINATION1(dst, id)				do {	\
-+		SST_FILL_LOCATION_ID(dst, (id) & 0xFFFF);		\
-+		SST_FILL_MODULE_ID(dst, ((id) & 0xFFFF0000) >> 16);	\
-+	} while (0)
-+#define SST_FILL_DESTINATION2(dst, loc_id, mod_id)		do {	\
-+		SST_FILL_LOCATION_ID(dst, loc_id);			\
-+		SST_FILL_MODULE_ID(dst, mod_id);			\
-+	} while (0)
-+#define SST_FILL_DESTINATION3(dst, cell_idx, path_id, mod_id)	do {	\
-+		SST_FILL_LOCATION_IDS(dst, cell_idx, path_id);		\
-+		SST_FILL_MODULE_ID(dst, mod_id);			\
-+	} while (0)
-+
-+#define SST_FILL_DESTINATION(level, dst, ...)				\
-+	SST_FILL_DESTINATION##level(dst, __VA_ARGS__)
-+#define SST_FILL_DEFAULT_DESTINATION(dst)				\
-+	SST_FILL_DESTINATION(2, dst, SST_DEFAULT_LOCATION_ID, SST_DEFAULT_MODULE_ID)
-+
-+struct sst_destination_id {
-+	union sst_location_id {
-+		struct {
-+			u8 cell_nbr_idx;	/* module index */
-+			u8 path_id;		/* pipe_id */
-+		} __packed	p;		/* part */
-+		u16		f;		/* full */
-+	} __packed location_id;
-+	u16	   module_id;
-+} __packed;
-+
-+struct sst_dsp_header {
-+	struct sst_destination_id dst;
-+	u16 command_id;
-+	u16 length;
-+} __packed;
-+
-+/*
-+ *
-+ * Common Commands
-+ *
-+ */
-+struct sst_cmd_generic {
-+	struct sst_dsp_header header;
-+} __packed;
-+
-+struct swm_input_ids {
-+	struct sst_destination_id input_id;
-+} __packed;
-+
-+struct sst_cmd_set_swm {
-+	struct sst_dsp_header header;
-+	struct sst_destination_id output_id;
-+	u16    switch_state;
-+	u16    nb_inputs;
-+	struct swm_input_ids input[SST_CMD_SWM_MAX_INPUTS];
-+} __packed;
-+
-+struct sst_cmd_set_media_path {
-+	struct sst_dsp_header header;
-+	u16    switch_state;
-+} __packed;
-+
-+struct pcm_cfg {
-+		u8 s_length:2;
-+		u8 rate:3;
-+		u8 format:3;
-+} __packed;
-+
-+struct sst_cmd_set_speech_path {
-+	struct sst_dsp_header header;
-+	u16    switch_state;
-+	struct {
-+		u16 rsvd:8;
-+		struct pcm_cfg cfg;
-+	} config;
-+} __packed;
-+
-+struct gain_cell {
-+	struct sst_destination_id dest;
-+	s16 cell_gain_left;
-+	s16 cell_gain_right;
-+	u16 gain_time_constant;
-+} __packed;
-+
-+#define NUM_GAIN_CELLS 1
-+struct sst_cmd_set_gain_dual {
-+	struct sst_dsp_header header;
-+	u16    gain_cell_num;
-+	struct gain_cell cell_gains[NUM_GAIN_CELLS];
-+} __packed;
-+
-+struct sst_cmd_set_params {
-+	struct sst_destination_id dst;
-+	u16 command_id;
-+	char params[0];
-+} __packed;
-+
-+/*
-+ *
-+ * Media (MMX) commands
-+ *
-+ */
-+
-+/*
-+ *
-+ * SBA commands
-+ *
-+ */
-+struct sst_cmd_sba_vb_start {
-+	struct sst_dsp_header header;
-+} __packed;
-+
-+union sba_media_loop_params {
-+	struct {
-+		u16 rsvd:8;
-+		struct pcm_cfg cfg;
-+	} part;
-+	u16 full;
-+} __packed;
-+
-+struct sst_cmd_sba_set_media_loop_map {
-+	struct	sst_dsp_header header;
-+	u16	switch_state;
-+	union	sba_media_loop_params param;
-+	u16	map;
-+} __packed;
-+
-+struct sst_cmd_tone_stop {
-+	struct	sst_dsp_header header;
-+	u16	switch_state;
-+} __packed;
-+
-+enum sst_ssp_mode {
-+	SSP_MODE_MASTER = 0,
-+	SSP_MODE_SLAVE = 1,
-+};
-+
-+enum sst_ssp_pcm_mode {
-+	SSP_PCM_MODE_NORMAL = 0,
-+	SSP_PCM_MODE_NETWORK = 1,
-+};
-+
-+enum sst_ssp_duplex {
-+	SSP_DUPLEX = 0,
-+	SSP_RX = 1,
-+	SSP_TX = 2,
-+};
-+
-+enum sst_ssp_fs_frequency {
-+	SSP_FS_8_KHZ = 0,
-+	SSP_FS_16_KHZ = 1,
-+	SSP_FS_44_1_KHZ = 2,
-+	SSP_FS_48_KHZ = 3,
-+};
-+
-+enum sst_ssp_fs_polarity {
-+	SSP_FS_ACTIVE_LOW = 0,
-+	SSP_FS_ACTIVE_HIGH = 1,
-+};
-+
-+enum sst_ssp_protocol {
-+	SSP_MODE_PCM = 0,
-+	SSP_MODE_I2S = 1,
-+};
-+
-+enum sst_ssp_port_id {
-+	SSP_MODEM = 0,
-+	SSP_BT = 1,
-+	SSP_FM = 2,
-+	SSP_CODEC = 3,
-+};
-+
-+struct sst_cmd_sba_hw_set_ssp {
-+	struct sst_dsp_header header;
-+	u16 selection;			/* 0:SSP0(def), 1:SSP1, 2:SSP2 */
-+
-+	u16 switch_state;
-+
-+	u16 nb_bits_per_slots:6;        /* 0-32 bits, 24 (def) */
-+	u16 nb_slots:4;			/* 0-8: slots per frame  */
-+	u16 mode:3;			/* 0:Master, 1: Slave  */
-+	u16 duplex:3;
-+
-+	u16 active_tx_slot_map:8;       /* Bit map, 0:off, 1:on */
-+	u16 reserved1:8;
-+
-+	u16 active_rx_slot_map:8;       /* Bit map 0: Off, 1:On */
-+	u16 reserved2:8;
-+
-+	u16 frame_sync_frequency;
-+
-+	u16 frame_sync_polarity:8;
-+	u16 data_polarity:8;
-+
-+	u16 frame_sync_width;           /* 1 to N clocks */
-+	u16 ssp_protocol:8;
-+	u16 start_delay:8;		/* Start delay in terms of clock ticks */
-+} __packed;
-+
-+#define SST_MAX_TDM_SLOTS 8
-+
-+struct sst_param_sba_ssp_slot_map {
-+	struct sst_dsp_header header;
-+
-+	u16 param_id;
-+	u16 param_len;
-+	u16 ssp_index;
-+
-+	u8 rx_slot_map[SST_MAX_TDM_SLOTS];
-+	u8 tx_slot_map[SST_MAX_TDM_SLOTS];
-+} __packed;
-+
-+enum {
-+	SST_PROBE_EXTRACTOR = 0,
-+	SST_PROBE_INJECTOR = 1,
-+};
-+
-+struct sst_cmd_probe {
-+	struct sst_dsp_header header;
-+
-+	u16 switch_state;
-+	struct sst_destination_id probe_dst;
-+
-+	u16 shared_mem:1;
-+	u16 probe_in:1;
-+	u16 probe_out:1;
-+	u16 rsvd_1:13;
-+
-+	u16 rsvd_2:5;
-+	u16 probe_mode:2;
-+	u16 rsvd_3:1;
-+	struct pcm_cfg cfg;
-+
-+	u16 sm_buf_id;
-+
-+	u16 gain[6];
-+	u16 rsvd_4[9];
-+} __packed;
-+
-+struct sst_probe_config {
-+	const char *name;
-+	u16 loc_id;
-+	u16 mod_id;
-+	u8 task_id;
-+	struct pcm_cfg cfg;
-+};
-+
-+int sst_mix_put(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol);
-+int sst_mix_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol);
-+int sst_vtsv_enroll_set(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol);
-+int sst_vtsv_enroll_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol);
-+#endif
-diff --git a/sound/soc/intel/platform-libs/controls_v2_dpcm.c b/sound/soc/intel/platform-libs/controls_v2_dpcm.c
++CFLAGS_snd-intel-sst.o = -I$(src)
+diff --git a/sound/soc/intel/sst/sst.c b/sound/soc/intel/sst/sst.c
 new file mode 100644
-index 0000000..12facc3
+index 0000000..116522b
 --- /dev/null
-+++ b/sound/soc/intel/platform-libs/controls_v2_dpcm.c
-@@ -0,0 +1,1315 @@
++++ b/sound/soc/intel/sst/sst.c
+@@ -0,0 +1,631 @@
 +/*
-+ *  controls_v2_dpcm.c - Intel MID Platform driver DPCM ALSA controls for Mrfld
++ *  sst.c - Intel SST Driver for audio engine
 + *
-+ *  Copyright (C) 2013-14 Intel Corp
-+ *  Author: Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
-+ *  	Vinod Koul <vinod.koul@intel.com>
++ *  Copyright (C) 2008-14	Intel Corp
++ *  Authors:	Vinod Koul <vinod.koul@intel.com>
++ *		Harsha Priya <priya.harsha@intel.com>
++ *		Dharageswari R <dharageswari.r@intel.com>
++ *		KP Jeeja <jeeja.kp@intel.com>
 + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
 + *  This program is free software; you can redistribute it and/or modify
@@ -839,1313 +86,2140 @@ index 0000000..12facc3
 + *
 + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + */
++
 +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 +
-+#include <linux/slab.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+#include "../platform_ipc_v2.h"
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/fs.h>
++#include <linux/interrupt.h>
++#include <linux/firmware.h>
++#include <linux/miscdevice.h>
++#include <linux/pm_runtime.h>
++#include <linux/pm_qos.h>
++#include <linux/async.h>
++#include <linux/delay.h>
++#include <linux/acpi.h>
++#include <asm/intel-mid.h>
++#include <asm/platform_sst_audio.h>
++#include <asm/platform_sst.h>
 +#include "../sst_platform.h"
-+#include "../sst_platform_pvt.h"
-+#include "controls_v2.h"
-+#include "sst_widgets.h"
++#include "../platform_ipc_v2.h"
++#include "sst.h"
 +
-+static inline void sst_fill_byte_control(char *param,
-+					 u8 ipc_msg, u8 block,
-+					 u8 task_id, u8 pipe_id,
-+					 u16 len, void *cmd_data)
++MODULE_AUTHOR("Vinod Koul <vinod.koul@intel.com>");
++MODULE_AUTHOR("Harsha Priya <priya.harsha@intel.com>");
++MODULE_DESCRIPTION("Intel (R) SST(R) Audio Engine Driver");
++MODULE_LICENSE("GPL v2");
++MODULE_VERSION(SST_DRIVER_VERSION);
++
++struct intel_sst_drv *sst_drv_ctx;
++static struct mutex drv_ctx_lock;
++
++#define SST_IS_PROCESS_REPLY(header) ((header & PROCESS_MSG) ? true : false)
++#define SST_VALIDATE_MAILBOX_SIZE(size) ((size <= SST_MAILBOX_SIZE) ? true : false)
++
++static irqreturn_t intel_sst_interrupt_mrfld(int irq, void *context)
 +{
++	union interrupt_reg_mrfld isr;
++	union ipc_header_mrfld header;
++	union sst_imr_reg_mrfld imr;
++	struct ipc_post *msg = NULL;
++	unsigned int size = 0;
++	struct intel_sst_drv *drv = (struct intel_sst_drv *) context;
++	irqreturn_t retval = IRQ_HANDLED;
 +
-+	struct snd_sst_bytes_v2 *byte_data = (struct snd_sst_bytes_v2 *)param;
-+	byte_data->type = SST_CMD_BYTES_SET;
-+	byte_data->ipc_msg = ipc_msg;
-+	byte_data->block = block;
-+	byte_data->task_id = task_id;
-+	byte_data->pipe_id = pipe_id;
-+
-+	if (len > SST_MAX_BIN_BYTES - sizeof(*byte_data)) {
-+		pr_err("%s: command length too big (%u)", __func__, len);
-+		len = SST_MAX_BIN_BYTES - sizeof(*byte_data);
-+		WARN_ON(1); /* this happens only if code is wrong */
++	/* Interrupt arrived, check src */
++	isr.full = sst_shim_read64(drv->shim, SST_ISRX);
++	if (isr.part.done_interrupt) {
++		/* Clear done bit */
++		spin_lock(&drv->ipc_spin_lock);
++		header.full = sst_shim_read64(drv->shim,
++					drv->ipc_reg.ipcx);
++		header.p.header_high.part.done = 0;
++		sst_shim_write64(drv->shim, drv->ipc_reg.ipcx, header.full);
++		/* write 1 to clear status register */;
++		isr.part.done_interrupt = 1;
++		sst_shim_write64(drv->shim, SST_ISRX, isr.full);
++		spin_unlock(&drv->ipc_spin_lock);
++		queue_work(drv->post_msg_wq, &drv->ipc_post_msg.wq);
++		retval = IRQ_HANDLED;
 +	}
-+	byte_data->len = len;
-+	memcpy(byte_data->bytes, cmd_data, len);
-+	print_hex_dump_bytes("writing to lpe: ", DUMP_PREFIX_OFFSET,
-+			     byte_data, len + sizeof(*byte_data));
++	if (isr.part.busy_interrupt) {
++		spin_lock(&drv->ipc_spin_lock);
++		imr.full = sst_shim_read64(drv->shim, SST_IMRX);
++		imr.part.busy_interrupt = 1;
++		sst_shim_write64(drv->shim, SST_IMRX, imr.full);
++		spin_unlock(&drv->ipc_spin_lock);
++		header.full =  sst_shim_read64(drv->shim, drv->ipc_reg.ipcd);
++		if (sst_create_ipc_msg(&msg, header.p.header_high.part.large)) {
++			pr_err("No memory available\n");
++			drv->ops->clear_interrupt();
++			return IRQ_HANDLED;
++		}
++		if (header.p.header_high.part.large) {
++			size = header.p.header_low_payload;
++			if (SST_VALIDATE_MAILBOX_SIZE(size)) {
++				memcpy_fromio(msg->mailbox_data,
++					drv->mailbox + drv->mailbox_recv_offset, size);
++			} else {
++				pr_err("Mailbox not copied, payload siz is: %u\n", size);
++				header.p.header_low_payload = 0;
++			}
++		}
++		msg->mrfld_header = header;
++		msg->is_process_reply =
++			SST_IS_PROCESS_REPLY(header.p.header_high.part.msg_id);
++		spin_lock(&drv->rx_msg_lock);
++		list_add_tail(&msg->node, &drv->rx_list);
++		spin_unlock(&drv->rx_msg_lock);
++		drv->ops->clear_interrupt();
++		retval = IRQ_WAKE_THREAD;
++	}
++	return retval;
 +}
 +
-+static int sst_fill_and_send_cmd_unlocked(struct sst_data *sst,
-+				 u8 ipc_msg, u8 block, u8 task_id, u8 pipe_id,
-+				 void *cmd_data, u16 len)
++static irqreturn_t intel_sst_irq_thread_mrfld(int irq, void *context)
 +{
-+	sst_fill_byte_control(sst->byte_stream, ipc_msg, block, task_id, pipe_id,
-+			      len, cmd_data);
-+	return sst_dsp->ops->set_generic_params(SST_SET_BYTE_STREAM,
-+						sst->byte_stream);
++	struct intel_sst_drv *drv = (struct intel_sst_drv *) context;
++	struct ipc_post *__msg, *msg = NULL;
++	unsigned long irq_flags;
++
++	if (list_empty(&drv->rx_list))
++		return IRQ_HANDLED;
++
++	spin_lock_irqsave(&drv->rx_msg_lock, irq_flags);
++	list_for_each_entry_safe(msg, __msg, &drv->rx_list, node) {
++
++		list_del(&msg->node);
++		spin_unlock_irqrestore(&drv->rx_msg_lock, irq_flags);
++		if (msg->is_process_reply)
++			drv->ops->process_message(msg);
++		else
++			drv->ops->process_reply(msg);
++
++		if (msg->is_large)
++			kfree(msg->mailbox_data);
++		kfree(msg);
++		spin_lock_irqsave(&drv->rx_msg_lock, irq_flags);
++	}
++	spin_unlock_irqrestore(&drv->rx_msg_lock, irq_flags);
++	return IRQ_HANDLED;
++}
++
++static int sst_save_dsp_context_v2(struct intel_sst_drv *sst)
++{
++	unsigned int pvt_id;
++	struct ipc_post *msg = NULL;
++	struct ipc_dsp_hdr dsp_hdr;
++	struct sst_block *block;
++
++	/*send msg to fw*/
++	pvt_id = sst_assign_pvt_id(sst);
++	if (sst_create_block_and_ipc_msg(&msg, true, sst, &block,
++				IPC_CMD, pvt_id)) {
++		pr_err("msg/block alloc failed. Not proceeding with context save\n");
++		return 0;
++	}
++
++	sst_fill_header_mrfld(&msg->mrfld_header, IPC_CMD,
++			      SST_TASK_ID_MEDIA, 1, pvt_id);
++	msg->mrfld_header.p.header_low_payload = sizeof(dsp_hdr);
++	msg->mrfld_header.p.header_high.part.res_rqd = 1;
++	sst_fill_header_dsp(&dsp_hdr, IPC_PREP_D3, PIPE_RSVD, pvt_id);
++	memcpy(msg->mailbox_data, &dsp_hdr, sizeof(dsp_hdr));
++
++	sst_add_to_dispatch_list_and_post(sst, msg);
++	/*wait for reply*/
++	if (sst_wait_timeout(sst, block)) {
++		pr_err("sst: err fw context save timeout  ...\n");
++		pr_err("not suspending FW!!!");
++		sst_free_block(sst, block);
++		return -EIO;
++	}
++	if (block->ret_code) {
++		pr_err("fw responded w/ error %d", block->ret_code);
++		sst_free_block(sst, block);
++		return -EIO;
++	}
++
++	sst_free_block(sst, block);
++	return 0;
++}
++
++static struct intel_sst_ops mrfld_ops = {
++	.interrupt = intel_sst_interrupt_mrfld,
++	.irq_thread = intel_sst_irq_thread_mrfld,
++	.clear_interrupt = intel_sst_clear_intr_mrfld,
++	.start = sst_start_mrfld,
++	.reset = intel_sst_reset_dsp_mrfld,
++	.post_message = sst_post_message_mrfld,
++	.sync_post_message = sst_sync_post_message_mrfld,
++	.process_message = sst_process_message_mrfld,
++	.process_reply = sst_process_reply_mrfld,
++	.save_dsp_context =  sst_save_dsp_context_v2,
++	.alloc_stream = sst_alloc_stream_mrfld,
++	.post_download = sst_post_download_mrfld,
++};
++
++int sst_driver_ops(struct intel_sst_drv *sst)
++{
++
++	switch (sst->pci_id) {
++	case SST_MRFLD_PCI_ID:
++		sst->tstamp = SST_TIME_STAMP_MRFLD;
++		sst->ops = &mrfld_ops;
++		return 0;
++
++	default:
++		pr_err("SST Driver capablities missing for pci_id: %x", sst->pci_id);
++		return -EINVAL;
++	};
++}
++
++int sst_alloc_drv_context(struct device *dev)
++{
++	struct intel_sst_drv *ctx;
++	mutex_lock(&drv_ctx_lock);
++	if (sst_drv_ctx) {
++		pr_err("Only one sst handle is supported\n");
++		mutex_unlock(&drv_ctx_lock);
++		return -EBUSY;
++	}
++	pr_debug("%s: %d", __func__, __LINE__);
++	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
++	if (!ctx) {
++		pr_err("malloc fail\n");
++		mutex_unlock(&drv_ctx_lock);
++		return -ENOMEM;
++	}
++	sst_drv_ctx = ctx;
++	mutex_unlock(&drv_ctx_lock);
++	return 0;
++}
++
++int sst_request_firmware_async(struct intel_sst_drv *ctx)
++{
++	int ret = 0;
++
++	snprintf(ctx->firmware_name, sizeof(ctx->firmware_name),
++			"%s%04x%s", "fw_sst_",
++			ctx->pci_id, ".bin");
++	pr_debug("Requesting FW %s now...\n", ctx->firmware_name);
++
++	ret = request_firmware_nowait(THIS_MODULE, 1, ctx->firmware_name,
++			ctx->dev, GFP_KERNEL, ctx, sst_firmware_load_cb);
++	if (ret)
++		pr_err("could not load firmware %s error %d\n", ctx->firmware_name, ret);
++
++	return ret;
++}
++/*
++* intel_sst_probe - PCI probe function
++*
++* @pci:	PCI device structure
++* @pci_id: PCI device ID structure
++*
++* This function is called by OS when a device is found
++* This enables the device, interrupt etc
++*/
++static int intel_sst_probe(struct pci_dev *pci,
++			const struct pci_device_id *pci_id)
++{
++	int i, ret = 0;
++	struct intel_sst_ops *ops;
++	struct sst_platform_info *sst_pdata = pci->dev.platform_data;
++	int ddr_base;
++
++	pr_debug("Probe for DID %x\n", pci->device);
++	ret = sst_alloc_drv_context(&pci->dev);
++	if (ret)
++		return ret;
++
++	sst_drv_ctx->dev = &pci->dev;
++	sst_drv_ctx->pci_id = pci->device;
++	if (!sst_pdata)
++		return -EINVAL;
++	sst_drv_ctx->pdata = sst_pdata;
++
++	if (0 != sst_driver_ops(sst_drv_ctx))
++		return -EINVAL;
++	ops = sst_drv_ctx->ops;
++	mutex_init(&sst_drv_ctx->sst_lock);
++
++	sst_drv_ctx->stream_cnt = 0;
++	sst_drv_ctx->fw_in_mem = NULL;
++
++	/* we use dma, so set to 1*/
++	sst_drv_ctx->use_dma = 1;
++	sst_drv_ctx->use_lli = 1;
++
++	INIT_LIST_HEAD(&sst_drv_ctx->memcpy_list);
++	INIT_LIST_HEAD(&sst_drv_ctx->libmemcpy_list);
++
++	INIT_LIST_HEAD(&sst_drv_ctx->ipc_dispatch_list);
++	INIT_LIST_HEAD(&sst_drv_ctx->block_list);
++	INIT_LIST_HEAD(&sst_drv_ctx->rx_list);
++	INIT_WORK(&sst_drv_ctx->ipc_post_msg.wq, ops->post_message);
++	init_waitqueue_head(&sst_drv_ctx->wait_queue);
++
++	sst_drv_ctx->post_msg_wq =
++		create_singlethread_workqueue("sst_post_msg_wq");
++	if (!sst_drv_ctx->post_msg_wq) {
++		ret = -EINVAL;
++		goto do_free_drv_ctx;
++	}
++
++	spin_lock_init(&sst_drv_ctx->ipc_spin_lock);
++	spin_lock_init(&sst_drv_ctx->block_lock);
++	spin_lock_init(&sst_drv_ctx->rx_msg_lock);
++
++	pr_info("Got drv data max stream %d\n",
++				sst_drv_ctx->info.max_streams);
++	for (i = 1; i <= sst_drv_ctx->info.max_streams; i++) {
++		struct stream_info *stream = &sst_drv_ctx->streams[i];
++		memset(stream, 0, sizeof(*stream));
++		stream->pipe_id = PIPE_RSVD;
++		mutex_init(&stream->lock);
++	}
++
++	ret = sst_request_firmware_async(sst_drv_ctx);
++	if (ret) {
++		pr_err("Firmware download failed:%d\n", ret);
++		goto do_free_mem;
++	}
++	/* Init the device */
++	ret = pci_enable_device(pci);
++	if (ret) {
++		pr_err("device can't be enabled\n");
++		goto do_free_mem;
++	}
++	sst_drv_ctx->pci = pci_dev_get(pci);
++	ret = pci_request_regions(pci, SST_DRV_NAME);
++	if (ret)
++		goto do_disable_device;
++
++	/* map registers */
++	/* SST Shim */
++	if (sst_drv_ctx->pci_id == SST_MRFLD_PCI_ID) {
++		sst_drv_ctx->ddr_base = pci_resource_start(pci, 0);
++		/*
++		* check that the relocated IMR base matches with FW Binary
++		* put temporary check till better soln is available for FW
++		*/
++		ddr_base = relocate_imr_addr_mrfld(sst_drv_ctx->ddr_base);
++		if (!sst_drv_ctx->pdata->lib_info) {
++			pr_err("%s:lib_info pointer NULL\n", __func__);
++			ret = -EINVAL;
++			goto do_release_regions;
++		}
++		if (ddr_base != sst_drv_ctx->pdata->lib_info->mod_base) {
++			pr_err("FW LSP DDR BASE does not match with IFWI\n");
++			ret = -EINVAL;
++			goto do_release_regions;
++		}
++		sst_drv_ctx->ddr_end = pci_resource_end(pci, 0);
++
++		sst_drv_ctx->ddr = pci_ioremap_bar(pci, 0);
++		if (!sst_drv_ctx->ddr) {
++			ret = -EINVAL;
++			goto do_unmap_ddr;
++		}
++		pr_debug("sst: DDR Ptr %p\n", sst_drv_ctx->ddr);
++	} else {
++		sst_drv_ctx->ddr = NULL;
++	}
++
++	/* SHIM */
++	sst_drv_ctx->shim_phy_add = pci_resource_start(pci, 1);
++	sst_drv_ctx->shim = pci_ioremap_bar(pci, 1);
++	if (!sst_drv_ctx->shim) {
++		ret = -EINVAL;
++		goto do_release_regions;
++	}
++	pr_debug("SST Shim Ptr %p\n", sst_drv_ctx->shim);
++
++	/* Shared SRAM */
++	sst_drv_ctx->mailbox_add = pci_resource_start(pci, 2);
++	sst_drv_ctx->mailbox = pci_ioremap_bar(pci, 2);
++	if (!sst_drv_ctx->mailbox) {
++		ret = -EINVAL;
++		goto do_unmap_shim;
++	}
++	pr_debug("SRAM Ptr %p\n", sst_drv_ctx->mailbox);
++
++	/* IRAM */
++	sst_drv_ctx->iram_end = pci_resource_end(pci, 3);
++	sst_drv_ctx->iram_base = pci_resource_start(pci, 3);
++	sst_drv_ctx->iram = pci_ioremap_bar(pci, 3);
++	if (!sst_drv_ctx->iram) {
++		ret = -EINVAL;
++		goto do_unmap_sram;
++	}
++	pr_debug("IRAM Ptr %p\n", sst_drv_ctx->iram);
++
++	/* DRAM */
++	sst_drv_ctx->dram_end = pci_resource_end(pci, 4);
++	sst_drv_ctx->dram_base = pci_resource_start(pci, 4);
++	sst_drv_ctx->dram = pci_ioremap_bar(pci, 4);
++	if (!sst_drv_ctx->dram) {
++		ret = -EINVAL;
++		goto do_unmap_iram;
++	}
++	pr_debug("DRAM Ptr %p\n", sst_drv_ctx->dram);
++
++
++	sst_set_fw_state_locked(sst_drv_ctx, SST_RESET);
++	sst_drv_ctx->irq_num = pci->irq;
++	/* Register the ISR */
++	ret = request_threaded_irq(pci->irq, sst_drv_ctx->ops->interrupt,
++		sst_drv_ctx->ops->irq_thread, 0, SST_DRV_NAME,
++		sst_drv_ctx);
++	if (ret)
++		goto do_unmap_dram;
++	pr_debug("Registered IRQ 0x%x\n", pci->irq);
++
++	/* default intr are unmasked so set this as masked */
++	if (sst_drv_ctx->pci_id == SST_MRFLD_PCI_ID)
++		sst_shim_write64(sst_drv_ctx->shim, SST_IMRX, 0xFFFF0038);
++
++	pci_set_drvdata(pci, sst_drv_ctx);
++	pm_runtime_allow(sst_drv_ctx->dev);
++	pm_runtime_put_noidle(sst_drv_ctx->dev);
++	register_sst(sst_drv_ctx->dev);
++	sst_drv_ctx->qos = kzalloc(sizeof(struct pm_qos_request),
++				GFP_KERNEL);
++	if (!sst_drv_ctx->qos) {
++		ret = -EINVAL;
++		goto do_free_irq;
++	}
++	pm_qos_add_request(sst_drv_ctx->qos, PM_QOS_CPU_DMA_LATENCY,
++				PM_QOS_DEFAULT_VALUE);
++
++	pr_info("%s successfully done!\n", __func__);
++	return ret;
++
++do_free_irq:
++	free_irq(pci->irq, sst_drv_ctx);
++do_unmap_dram:
++	iounmap(sst_drv_ctx->dram);
++do_unmap_iram:
++	iounmap(sst_drv_ctx->iram);
++do_unmap_sram:
++	iounmap(sst_drv_ctx->mailbox);
++do_unmap_shim:
++	iounmap(sst_drv_ctx->shim);
++
++do_unmap_ddr:
++	if (sst_drv_ctx->ddr)
++		iounmap(sst_drv_ctx->ddr);
++
++do_release_regions:
++	pci_release_regions(pci);
++do_disable_device:
++	pci_disable_device(pci);
++do_free_mem:
++	destroy_workqueue(sst_drv_ctx->post_msg_wq);
++do_free_drv_ctx:
++	sst_drv_ctx = NULL;
++	pr_err("Probe failed with %d\n", ret);
++	return ret;
 +}
 +
 +/**
-+ * sst_fill_and_send_cmd - generate the IPC message and send it to the FW
-+ * @ipc_msg:	type of IPC (CMD, SET_PARAMS, GET_PARAMS)
-+ * @cmd_data:	the IPC payload
++* intel_sst_remove - PCI remove function
++*
++* @pci:	PCI device structure
++*
++* This function is called by OS when a device is unloaded
++* This frees the interrupt etc
++*/
++static void intel_sst_remove(struct pci_dev *pci)
++{
++	struct intel_sst_drv *sst_drv_ctx = pci_get_drvdata(pci);
++	pm_runtime_get_noresume(sst_drv_ctx->dev);
++	pm_runtime_forbid(sst_drv_ctx->dev);
++	unregister_sst(sst_drv_ctx->dev);
++	pci_dev_put(sst_drv_ctx->pci);
++	sst_set_fw_state_locked(sst_drv_ctx, SST_SHUTDOWN);
++	free_irq(pci->irq, sst_drv_ctx);
++
++	iounmap(sst_drv_ctx->dram);
++	iounmap(sst_drv_ctx->iram);
++	iounmap(sst_drv_ctx->mailbox);
++	iounmap(sst_drv_ctx->shim);
++	flush_scheduled_work();
++	destroy_workqueue(sst_drv_ctx->post_msg_wq);
++	pm_qos_remove_request(sst_drv_ctx->qos);
++	kfree(sst_drv_ctx->qos);
++	kfree(sst_drv_ctx->fw_sg_list.src);
++	kfree(sst_drv_ctx->fw_sg_list.dst);
++	sst_drv_ctx->fw_sg_list.list_len = 0;
++	kfree(sst_drv_ctx->fw_in_mem);
++	sst_drv_ctx->fw_in_mem = NULL;
++	sst_memcpy_free_resources();
++	sst_drv_ctx = NULL;
++	pci_release_regions(pci);
++	pci_disable_device(pci);
++	pci_set_drvdata(pci, NULL);
++}
++
++/*
++ * The runtime_suspend/resume is pretty much similar to the legacy
++ * suspend/resume with the noted exception below: The PCI core takes care of
++ * taking the system through D3hot and restoring it back to D0 and so there is
++ * no need to duplicate that here.
 + */
-+static int sst_fill_and_send_cmd(struct sst_data *sst,
-+				 u8 ipc_msg, u8 block, u8 task_id, u8 pipe_id,
-+				 void *cmd_data, u16 len)
++static int intel_sst_runtime_suspend(struct device *dev)
++{
++	int ret = 0;
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	pr_info("runtime_suspend called\n");
++	if (ctx->sst_state == SST_RESET) {
++		pr_debug("LPE is already in RESET state, No action");
++		return 0;
++	}
++	/*save fw context*/
++	if (ctx->ops->save_dsp_context(ctx))
++		return -EBUSY;
++
++	/* Move the SST state to Reset */
++	sst_set_fw_state_locked(ctx, SST_RESET);
++
++	flush_workqueue(ctx->post_msg_wq);
++	synchronize_irq(ctx->irq_num);
++
++	return ret;
++}
++
++static int intel_sst_runtime_resume(struct device *dev)
++{
++	int ret = 0;
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	pr_info("runtime_resume called\n");
++
++	/* When fw_clear_cache is set, clear the cached firmware copy */
++	/* fw_clear_cache is set through debugfs support */
++	if (atomic_read(&ctx->fw_clear_cache) && ctx->fw_in_mem) {
++		pr_debug("Clearing the cached firmware\n");
++		kfree(ctx->fw_in_mem);
++		ctx->fw_in_mem = NULL;
++		atomic_set(&ctx->fw_clear_cache, 0);
++	}
++
++	sst_set_fw_state_locked(ctx, SST_RESET);
++
++	return ret;
++}
++
++static int intel_sst_suspend(struct device *dev)
++{
++
++	return intel_sst_runtime_suspend(dev);
++}
++
++static int intel_sst_runtime_idle(struct device *dev)
++{
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	pr_info("runtime_idle called\n");
++	if (ctx->sst_state != SST_RESET) {
++		pm_schedule_suspend(dev, SST_SUSPEND_DELAY);
++		return -EBUSY;
++	} else {
++		return 0;
++	}
++	return -EBUSY;
++
++}
++
++static const struct dev_pm_ops intel_sst_pm = {
++	.suspend = intel_sst_suspend,
++	.resume = intel_sst_runtime_resume,
++	.runtime_suspend = intel_sst_runtime_suspend,
++	.runtime_resume = intel_sst_runtime_resume,
++	.runtime_idle = intel_sst_runtime_idle,
++};
++
++/* PCI Routines */
++static DEFINE_PCI_DEVICE_TABLE(intel_sst_ids) = {
++	{ PCI_VDEVICE(INTEL, SST_MRFLD_PCI_ID), 0},
++	{ 0, }
++};
++MODULE_DEVICE_TABLE(pci, intel_sst_ids);
++
++static struct pci_driver driver = {
++	.name = SST_DRV_NAME,
++	.id_table = intel_sst_ids,
++	.probe = intel_sst_probe,
++	.remove = intel_sst_remove,
++#ifdef CONFIG_PM
++	.driver = {
++		.pm = &intel_sst_pm,
++	},
++#endif
++};
++
++/**
++* intel_sst_init - Module init function
++*
++* Registers with PCI
++* Registers with /dev
++* Init all data strutures
++*/
++static int __init intel_sst_init(void)
++{
++
++	mutex_init(&drv_ctx_lock);
++	/* Register with PCI */
++	return pci_register_driver(&driver);
++
++}
++
++/**
++* intel_sst_exit - Module exit function
++*
++* Unregisters with PCI
++* Unregisters with /dev
++* Frees all data strutures
++*/
++static void __exit intel_sst_exit(void)
++{
++	pci_unregister_driver(&driver);
++
++	pr_debug("driver unloaded\n");
++	sst_drv_ctx = NULL;
++	return;
++}
++
++module_init(intel_sst_init);
++module_exit(intel_sst_exit);
+diff --git a/sound/soc/intel/sst/sst.h b/sound/soc/intel/sst/sst.h
+new file mode 100644
+index 0000000..fc4b548
+--- /dev/null
++++ b/sound/soc/intel/sst/sst.h
+@@ -0,0 +1,686 @@
++/*
++ *  sst.h - Intel SST Driver for audio engine
++ *
++ *  Copyright (C) 2008-14 Intel Corporation
++ *  Authors:	Vinod Koul <vinod.koul@intel.com>
++ *		Harsha Priya <priya.harsha@intel.com>
++ *		Dharageswari R <dharageswari.r@intel.com>
++ *		KP Jeeja <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  Common private declarations for SST
++ */
++#ifndef __SST_H__
++#define __SST_H__
++
++#include <linux/pm_runtime.h>
++#include <linux/firmware.h>
++#include <asm/platform_sst.h>
++
++#define SST_DRIVER_VERSION "5.0.0"
++
++/* driver names */
++#define SST_DRV_NAME "intel_sst_driver"
++#define SST_MRFLD_PCI_ID 0x119A
++
++#define SST_SUSPEND_DELAY 2000
++#define FW_CONTEXT_MEM (64*1024)
++#define SST_ICCM_BOUNDARY 4
++#define SST_CONFIG_SSP_SIGN 0x7ffe8001
++
++/* FIXME: All this info should come from platform data
++ * move this when the base framework is ready to pass
++ * platform data to SST driver
++ */
++#define MRFLD_FW_VIRTUAL_BASE 0xC0000000
++#define MRFLD_FW_DDR_BASE_OFFSET 0x0
++#define MRFLD_FW_FEATURE_BASE_OFFSET 0x4
++#define MRFLD_FW_BSS_RESET_BIT 0
++extern struct intel_sst_drv *sst_drv_ctx;
++enum sst_states {
++	SST_FW_LOADING = 1,
++	SST_FW_RUNNING,
++	SST_RESET,
++	SST_SHUTDOWN,
++};
++
++enum sst_algo_ops {
++	SST_SET_ALGO = 0,
++	SST_GET_ALGO = 1,
++};
++
++#define SST_BLOCK_TIMEOUT	1000
++
++/* SST register map */
++#define SST_CSR			0x00
++#define SST_PISR		0x08
++#define SST_PIMR		0x10
++#define SST_ISRX		0x18
++#define SST_ISRD		0x20
++#define SST_IMRX		0x28
++#define SST_IMRD		0x30
++#define SST_IPCX		0x38 /* IPC IA-SST */
++#define SST_IPCD		0x40 /* IPC SST-IA */
++#define SST_ISRSC		0x48
++#define SST_ISRLPESC		0x50
++#define SST_IMRSC		0x58
++#define SST_IMRLPESC		0x60
++#define SST_IPCSC		0x68
++#define SST_IPCLPESC		0x70
++#define SST_CLKCTL		0x78
++#define SST_CSR2		0x80
++
++#define SST_SHIM_BEGIN		SST_CSR
++#define SST_SHIM_END		SST_CSR2
++#define SST_SHIM_SIZE		0x88
++
++#define FW_SIGNATURE_SIZE	4
++
++/* stream states */
++enum sst_stream_states {
++	STREAM_UN_INIT	= 0,	/* Freed/Not used stream */
++	STREAM_RUNNING	= 1,	/* Running */
++	STREAM_PAUSED	= 2,	/* Paused stream */
++	STREAM_DECODE	= 3,	/* stream is in decoding only state */
++	STREAM_INIT	= 4,	/* stream init, waiting for data */
++	STREAM_RESET	= 5,	/* force reset on recovery */
++};
++
++enum sst_ram_type {
++	SST_IRAM	= 1,
++	SST_DRAM	= 2,
++	SST_DDR	= 5,
++	SST_CUSTOM_INFO	= 7,	/* consists of FW binary information */
++};
++
++/* SST shim registers to structure mapping  */
++union interrupt_reg {
++	struct {
++		u64 done_interrupt:1;
++		u64 busy_interrupt:1;
++		u64 rsvd:62;
++	} part;
++	u64 full;
++};
++
++union sst_pisr_reg {
++	struct {
++		u32 pssp0:1;
++		u32 pssp1:1;
++		u32 rsvd0:3;
++		u32 dmac:1;
++		u32 rsvd1:26;
++	} part;
++	u32 full;
++};
++
++union sst_pimr_reg {
++	struct {
++		u32 ssp0:1;
++		u32 ssp1:1;
++		u32 rsvd0:3;
++		u32 dmac:1;
++		u32 rsvd1:10;
++		u32 ssp0_sc:1;
++		u32 ssp1_sc:1;
++		u32 rsvd2:3;
++		u32 dmac_sc:1;
++		u32 rsvd3:10;
++	} part;
++	u32 full;
++};
++
++union config_status_reg_mrfld {
++	struct {
++		u64 lpe_reset:1;
++		u64 lpe_reset_vector:1;
++		u64 runstall:1;
++		u64 pwaitmode:1;
++		u64 clk_sel:3;
++		u64 rsvd2:1;
++		u64 sst_clk:3;
++		u64 xt_snoop:1;
++		u64 rsvd3:4;
++		u64 clk_sel1:6;
++		u64 clk_enable:3;
++		u64 rsvd4:6;
++		u64 slim0baseclk:1;
++		u64 rsvd:32;
++	} part;
++	u64 full;
++};
++
++union interrupt_reg_mrfld {
++	struct {
++		u64 done_interrupt:1;
++		u64 busy_interrupt:1;
++		u64 rsvd:62;
++	} part;
++	u64 full;
++};
++
++union sst_imr_reg_mrfld {
++	struct {
++		u64 done_interrupt:1;
++		u64 busy_interrupt:1;
++		u64 rsvd:62;
++	} part;
++	u64 full;
++};
++
++/*This structure is used to block a user/fw data call to another
++fw/user call
++*/
++struct sst_block {
++	bool	condition; /* condition for blocking check */
++	int	ret_code; /* ret code when block is released */
++	void	*data; /* data to be appsed for block if any */
++	u32     size;
++	bool	on;
++	u32     msg_id;  /*msg_id = msgid in mfld/ctp, mrfld = 0 */
++	u32     drv_id; /* = str_id in mfld/ctp, = drv_id in mrfld*/
++	struct list_head node;
++};
++
++/**
++ * struct stream_info - structure that holds the stream information
++ *
++ * @status : stream current state
++ * @prev : stream prev state
++ * @ops : stream operation pb/cp/drm...
++ * @bufs: stream buffer list
++ * @lock : stream mutex for protecting state
++ * @pcm_substream : PCM substream
++ * @period_elapsed : PCM period elapsed callback
++ * @sfreq : stream sampling freq
++ * @str_type : stream type
++ * @cumm_bytes : cummulative bytes decoded
++ * @str_type : stream type
++ * @src : stream source
++ */
++struct stream_info {
++	unsigned int		status;
++	unsigned int		prev;
++	unsigned int		ops;
++	struct mutex		lock; /* mutex */
++	void			*pcm_substream;
++	void (*period_elapsed)	(void *pcm_substream);
++	unsigned int		sfreq;
++	u32			cumm_bytes;
++	void			*compr_cb_param;
++	void (*compr_cb)	(void *compr_cb_param);
++	void			*drain_cb_param;
++	void (*drain_notify)	(void *drain_cb_param);
++
++	unsigned int		num_ch;
++	unsigned int		pipe_id;
++	unsigned int		str_id;
++	unsigned int		task_id;
++};
++
++#define SST_FW_SIGN "$SST"
++#define SST_FW_LIB_SIGN "$LIB"
++
++/*
++ * struct fw_header - FW file headers
++ *
++ * @signature : FW signature
++ * @modules : # of modules
++ * @file_format : version of header format
++ * @reserved : reserved fields
++ */
++struct fw_header {
++	unsigned char signature[FW_SIGNATURE_SIZE]; /* FW signature */
++	u32 file_size; /* size of fw minus this header */
++	u32 modules; /*  # of modules */
++	u32 file_format; /* version of header format */
++	u32 reserved[4];
++};
++
++struct fw_module_header {
++	unsigned char signature[FW_SIGNATURE_SIZE]; /* module signature */
++	u32 mod_size; /* size of module */
++	u32 blocks; /* # of blocks */
++	u32 type; /* codec type, pp lib */
++	u32 entry_point;
++};
++
++struct fw_block_info {
++	enum sst_ram_type	type;	/* IRAM/DRAM */
++	u32			size;	/* Bytes */
++	u32			ram_offset; /* Offset in I/DRAM */
++	u32			rsvd;	/* Reserved field */
++};
++
++struct sst_ipc_msg_wq {
++	union ipc_header_mrfld mrfld_header;
++	struct ipc_dsp_hdr dsp_hdr;
++	char mailbox[SST_MAILBOX_SIZE];
++	struct work_struct	wq;
++	union ipc_header header;
++};
++
++struct sst_runtime_param {
++	struct snd_sst_runtime_params param;
++};
++
++struct sst_sg_list {
++	struct scatterlist *src;
++	struct scatterlist *dst;
++	int list_len;
++	unsigned int sg_idx;
++};
++
++struct sst_memcpy_list {
++	struct list_head memcpylist;
++	void *dstn;
++	const void *src;
++	u32 size;
++	bool is_io;
++};
++
++/* Firmware Module Information*/
++enum sst_lib_dwnld_status {
++	SST_LIB_NOT_FOUND = 0,
++	SST_LIB_FOUND,
++	SST_LIB_DOWNLOADED,
++};
++
++struct sst_module_info {
++	const char *name; /* Library name */
++	u32	id; /* Module ID */
++	u32	entry_pt; /* Module entry point */
++	u8	status; /* module status*/
++	u8	rsvd1;
++	u16	rsvd2;
++};
++
++/* Structure for managing the Library Region(1.5MB)
++ * in DDR in Merrifield
++ */
++struct sst_mem_mgr {
++	phys_addr_t current_base;
++	int avail;
++	unsigned int count;
++};
++
++struct sst_ipc_reg {
++	int ipcx;
++	int ipcd;
++};
++
++struct sst_shim_regs64 {
++	u64 csr;
++	u64 pisr;
++	u64 pimr;
++	u64 isrx;
++	u64 isrd;
++	u64 imrx;
++	u64 imrd;
++	u64 ipcx;
++	u64 ipcd;
++	u64 isrsc;
++	u64 isrlpesc;
++	u64 imrsc;
++	u64 imrlpesc;
++	u64 ipcsc;
++	u64 ipclpesc;
++	u64 clkctl;
++	u64 csr2;
++};
++
++/***
++ *
++ * struct intel_sst_drv - driver ops
++ *
++ * @sst_state : current sst device state
++ * @pci_id : PCI device id loaded
++ * @shim : SST shim pointer
++ * @mailbox : SST mailbox pointer
++ * @iram : SST IRAM pointer
++ * @dram : SST DRAM pointer
++ * @pdata : SST info passed as a part of pci platform data
++ * @shim_phy_add : SST shim phy addr
++ * @shim_regs64: Struct to save shim registers
++ * @ipc_dispatch_list : ipc messages dispatched
++ * @rx_list : to copy the process_reply/process_msg from DSP
++ * @ipc_post_msg_wq : wq to post IPC messages context
++ * @ipc_post_msg : wq to post reply from FW context
++ * @mad_ops : MAD driver operations registered
++ * @mad_wq : MAD driver wq
++ * @post_msg_wq : wq to post IPC messages
++ * @streams : sst stream contexts
++ * @list_lock : sst driver list lock (deprecated)
++ * @ipc_spin_lock : spin lock to handle audio shim access and ipc queue
++ * @block_lock : spin lock to add block to block_list and assign pvt_id
++ * @rx_msg_lock : spin lock to handle the rx messages from the DSP
++ * @scard_ops : sst card ops
++ * @pci : sst pci device struture
++ * @dev : pointer to current device struct
++ * @sst_lock : sst device lock
++ * @pvt_id : sst private id
++ * @stream_cnt : total sst active stream count
++ * @pb_streams : total active pb streams
++ * @cp_streams : total active cp streams
++ * @audio_start : audio status
++ * @qos		: PM Qos struct
++ * firmware_name : Firmware / Library name
++ */
++struct intel_sst_drv {
++	int			sst_state;
++	int			irq_num;
++	unsigned int		pci_id;
++	void __iomem		*ddr;
++	void __iomem		*shim;
++	void __iomem		*mailbox;
++	void __iomem		*iram;
++	void __iomem		*dram;
++	unsigned int		mailbox_add;
++	unsigned int		iram_base;
++	unsigned int		dram_base;
++	unsigned int		shim_phy_add;
++	unsigned int		iram_end;
++	unsigned int		dram_end;
++	unsigned int		ddr_end;
++	unsigned int		ddr_base;
++	unsigned int		mailbox_recv_offset;
++	atomic_t		pm_usage_count;
++	struct sst_shim_regs64	*shim_regs64;
++	struct list_head        block_list;
++	struct list_head	ipc_dispatch_list;
++	struct sst_platform_info *pdata;
++	struct sst_ipc_msg_wq   ipc_post_msg;
++	struct list_head	rx_list;
++	struct work_struct      ipc_post_msg_wq;
++	wait_queue_head_t	wait_queue;
++	struct workqueue_struct *post_msg_wq;
++	unsigned int		tstamp;
++	struct stream_info	streams[MAX_NUM_STREAMS+1]; /*str_id 0 is not used*/
++	spinlock_t		ipc_spin_lock; /* lock for Shim reg access and ipc queue */
++	/* lock for adding block to block_list and assigning pvt_id */
++	spinlock_t              block_lock;
++	spinlock_t		rx_msg_lock;
++	struct pci_dev		*pci;
++	struct device		*dev;
++	unsigned int		pvt_id;
++	struct mutex            sst_lock;
++	unsigned int		stream_cnt;
++	unsigned int		csr_value;
++	void			*fw_in_mem;
++	struct sst_sg_list	fw_sg_list, library_list;
++	struct intel_sst_ops	*ops;
++	struct pm_qos_request	*qos;
++	struct sst_info		info;
++	unsigned int		use_dma;
++	unsigned int		use_lli;
++	atomic_t		fw_clear_context;
++	atomic_t		fw_clear_cache;
++	bool			lib_dwnld_reqd;
++	struct list_head	memcpy_list;
++	struct list_head	libmemcpy_list;
++	struct sst_ipc_reg	ipc_reg;
++	struct sst_mem_mgr      lib_mem_mgr;
++	/* Holder for firmware name. Due to async call it needs to be
++	 * persistent till worker thread gets called
++	 */
++	char firmware_name[20];
++};
++
++extern struct intel_sst_drv *sst_drv_ctx;
++
++/* misc definitions */
++#define FW_DWNL_ID 0xFF
++
++struct intel_sst_ops {
++	irqreturn_t (*interrupt) (int, void *);
++	irqreturn_t (*irq_thread) (int, void *);
++	void (*clear_interrupt) (void);
++	int (*start) (void);
++	int (*reset) (void);
++	void (*process_reply) (struct ipc_post *msg);
++	void (*post_message) (struct work_struct *work);
++	int (*sync_post_message) (struct ipc_post *msg);
++	void (*process_message) (struct ipc_post *msg);
++	void (*set_bypass)(bool set);
++	int (*save_dsp_context) (struct intel_sst_drv *sst);
++	void (*restore_dsp_context) (void);
++	int (*alloc_stream) (char *params, struct sst_block *block);
++	void (*post_download)(struct intel_sst_drv *sst);
++};
++
++int sst_alloc_stream(char *params, struct sst_block *block);
++int sst_pause_stream(int id);
++int sst_resume_stream(int id);
++int sst_drop_stream(int id);
++int sst_next_track(void);
++int sst_free_stream(int id);
++int sst_start_stream(int str_id);
++int sst_send_byte_stream_mrfld(void *sbytes);
++int sst_set_stream_param(int str_id, struct snd_sst_params *str_param);
++int sst_set_metadata(int str_id, char *params);
++int sst_get_stream(struct snd_sst_params *str_param);
++int sst_get_stream_allocated(struct snd_sst_params *str_param,
++				struct snd_sst_lib_download **lib_dnld);
++int sst_drain_stream(int str_id, bool partial_drain);
++
++
++int sst_sync_post_message_mrfld(struct ipc_post *msg);
++void sst_post_message_mrfld(struct work_struct *work);
++void sst_process_message_mrfld(struct ipc_post *msg);
++void sst_process_reply_mrfld(struct ipc_post *msg);
++int sst_start_mrfld(void);
++int intel_sst_reset_dsp_mrfld(void);
++void intel_sst_clear_intr_mrfld(void);
++
++int sst_load_fw(void);
++int sst_load_library(struct snd_sst_lib_download *lib, u8 ops);
++int sst_load_all_modules_elf(struct intel_sst_drv *ctx,
++		struct sst_module_info *mod_table, int mod_table_size);
++int sst_get_next_lib_mem(struct sst_mem_mgr *mgr, int size,
++			unsigned long *lib_base);
++void sst_post_download_mrfld(struct intel_sst_drv *ctx);
++int sst_get_block_stream(struct intel_sst_drv *sst_drv_ctx);
++void sst_memcpy_free_resources(void);
++
++int sst_wait_interruptible(struct intel_sst_drv *sst_drv_ctx,
++				struct sst_block *block);
++int sst_wait_timeout(struct intel_sst_drv *sst_drv_ctx,
++			struct sst_block *block);
++int sst_create_ipc_msg(struct ipc_post **arg, bool large);
++int sst_download_fw(void);
++int free_stream_context(unsigned int str_id);
++void sst_clean_stream(struct stream_info *stream);
++int intel_sst_register_compress(struct intel_sst_drv *sst);
++int intel_sst_remove_compress(struct intel_sst_drv *sst);
++void sst_cdev_fragment_elapsed(int str_id);
++int sst_send_sync_msg(int ipc, int str_id);
++int sst_get_num_channel(struct snd_sst_params *str_param);
++int sst_get_sfreq(struct snd_sst_params *str_param);
++int intel_sst_check_device(void);
++int sst_alloc_stream_ctp(char *params, struct sst_block *block);
++int sst_alloc_stream_mrfld(char *params, struct sst_block *block);
++void sst_restore_fw_context(void);
++struct sst_block *sst_create_block(struct intel_sst_drv *ctx,
++				u32 msg_id, u32 drv_id);
++int sst_create_block_and_ipc_msg(struct ipc_post **arg, bool large,
++		struct intel_sst_drv *sst_drv_ctx, struct sst_block **block,
++		u32 msg_id, u32 drv_id);
++int sst_free_block(struct intel_sst_drv *ctx, struct sst_block *freed);
++int sst_wake_up_block(struct intel_sst_drv *ctx, int result,
++		u32 drv_id, u32 ipc, void *data, u32 size);
++int sst_alloc_drv_context(struct device *dev);
++int sst_request_firmware_async(struct intel_sst_drv *ctx);
++int sst_driver_ops(struct intel_sst_drv *sst);
++struct sst_platform_info *sst_get_acpi_driver_data(const char *hid);
++void sst_firmware_load_cb(const struct firmware *fw, void *context);
++static inline int sst_pm_runtime_put(struct intel_sst_drv *sst_drv)
 +{
 +	int ret;
 +
-+	mutex_lock(&sst->lock);
-+	ret = sst_fill_and_send_cmd_unlocked(sst, ipc_msg, block, task_id, pipe_id,
-+					     cmd_data, len);
-+	mutex_unlock(&sst->lock);
++	ret = pm_runtime_put_sync(sst_drv->dev);
++	if (ret < 0)
++		return ret;
++	atomic_dec(&sst_drv->pm_usage_count);
 +
-+	return ret;
-+}
-+
-+/*
-+ * slot map value is a bitfield where each bit represents a FW channel
-+ *
-+ *			3 2 1 0		# 0 = codec0, 1 = codec1
-+ *			RLRLRLRL	# 3, 4 = reserved
-+ *
-+ * e.g. slot 0 rx map =	00001100b -> data from slot 0 goes into codec_in1 L,R
-+ */
-+static u8 sst_ssp_slot_map[SST_MAX_TDM_SLOTS] = {
-+	0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80, /* default rx map */
-+};
-+
-+/*
-+ * channel map value is a bitfield where each bit represents a slot
-+ *
-+ *			  76543210	# 0 = slot 0, 1 = slot 1
-+ *
-+ * e.g. codec1_0 tx map = 00000101b -> data from codec_out1_0 goes into slot 0, 2
-+ */
-+static u8 sst_ssp_channel_map[SST_MAX_TDM_SLOTS] = {
-+	0x1, 0x2, 0x4, 0x8, 0x10, 0x20, 0x40, 0x80, /* default tx map */
-+};
-+
-+static void sst_send_slot_map(struct sst_data *sst)
-+{
-+	struct sst_param_sba_ssp_slot_map cmd;
-+
-+	pr_debug("Enter: %s\n", __func__);
-+
-+	SST_FILL_DEFAULT_DESTINATION(cmd.header.dst);
-+	cmd.header.command_id = SBA_SET_SSP_SLOT_MAP;
-+	cmd.header.length = sizeof(struct sst_param_sba_ssp_slot_map)
-+				- sizeof(struct sst_dsp_header);
-+
-+	cmd.param_id = SBA_SET_SSP_SLOT_MAP;
-+	cmd.param_len = sizeof(cmd.rx_slot_map) + sizeof(cmd.tx_slot_map) + sizeof(cmd.ssp_index);
-+	cmd.ssp_index = SSP_CODEC;
-+
-+	memcpy(cmd.rx_slot_map, &sst_ssp_slot_map[0], sizeof(cmd.rx_slot_map));
-+	memcpy(cmd.tx_slot_map, &sst_ssp_channel_map[0], sizeof(cmd.tx_slot_map));
-+
-+	sst_fill_and_send_cmd(sst, SST_IPC_IA_SET_PARAMS, SST_FLAG_BLOCKED,
-+			      SST_TASK_SBA, 0, &cmd,
-+			      sizeof(cmd.header) + cmd.header.length);
-+}
-+
-+int sst_slot_enum_info(struct snd_kcontrol *kcontrol,
-+		       struct snd_ctl_elem_info *uinfo)
-+{
-+	struct sst_enum *e = (struct sst_enum *)kcontrol->private_value;
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = 1;
-+	uinfo->value.enumerated.items = e->max;
-+
-+	if (uinfo->value.enumerated.item > e->max- 1)
-+		uinfo->value.enumerated.item = e->max- 1;
-+	strcpy(uinfo->value.enumerated.name,
-+		e->texts[uinfo->value.enumerated.item]);
++	pr_debug("%s: count is %d now..\n", __func__,
++			atomic_read(&sst_drv->pm_usage_count));
 +	return 0;
 +}
 +
-+/**
-+ * sst_slot_get - get the status of the interleaver/deinterleaver control
-+ *
-+ * Searches the map where the control status is stored, and gets the
-+ * channel/slot which is currently set for this enumerated control. Since it is
-+ * an enumerated control, there is only one possible value.
-+ */
-+static int sst_slot_get(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
++static inline void sst_fill_header_mrfld(union ipc_header_mrfld *header,
++				int msg, int task_id, int large, int drv_id)
 +{
-+	struct sst_enum *e = (void *)kcontrol->private_value;
-+	unsigned int ctl_no = e->reg;
-+	unsigned int is_tx = e->tx;
-+	unsigned int val, mux;
-+	u8 *map = is_tx ? sst_ssp_channel_map : sst_ssp_slot_map;
++	header->full = 0;
++	header->p.header_high.part.msg_id = msg;
++	header->p.header_high.part.task_id = task_id;
++	header->p.header_high.part.large = large;
++	header->p.header_high.part.drv_id = drv_id;
++	header->p.header_high.part.done = 0;
++	header->p.header_high.part.busy = 1;
++	header->p.header_high.part.res_rqd = 1;
++}
 +
-+	val = 1 << ctl_no;
-+	/* search which slot/channel has this bit set - there should be only one */
-+	for (mux = e->max; mux > 0;  mux--)
-+		if (map[mux - 1] & val)
-+			break;
++static inline void sst_fill_header_dsp(struct ipc_dsp_hdr *dsp, int msg,
++					int pipe_id, int len)
++{
++	dsp->cmd_id = msg;
++	dsp->mod_index_id = 0xff;
++	dsp->pipe_id = pipe_id;
++	dsp->length = len;
++	dsp->mod_id = 0;
++}
 +
-+	ucontrol->value.enumerated.item[0] = mux;
-+	pr_debug("%s: %s - %s map = %#x\n", __func__, is_tx ? "tx channel" : "rx slot",
-+		 e->texts[mux], mux ? map[mux - 1] : -1);
++#define MAX_BLOCKS 15
++/* sst_assign_pvt_id - assign a pvt id for stream
++ *
++ * @sst_drv_ctx : driver context
++ *
++ * this inline function assigns a private id for calls that dont have stream
++ * context yet, should be called with lock held
++ */
++static inline unsigned int sst_assign_pvt_id(struct intel_sst_drv *sst_drv_ctx)
++{
++	unsigned int local;
++
++	spin_lock(&sst_drv_ctx->block_lock);
++	sst_drv_ctx->pvt_id++;
++	if (sst_drv_ctx->pvt_id > MAX_BLOCKS)
++		sst_drv_ctx->pvt_id = 1;
++	local = sst_drv_ctx->pvt_id;
++	spin_unlock(&sst_drv_ctx->block_lock);
++	return local;
++}
++
++
++static inline void sst_init_stream(struct stream_info *stream,
++		int codec, int sst_id, int ops, u8 slot)
++{
++	stream->status = STREAM_INIT;
++	stream->prev = STREAM_UN_INIT;
++	stream->ops = ops;
++}
++
++static inline int sst_validate_strid(int str_id)
++{
++	if (str_id <= 0 || str_id > sst_drv_ctx->info.max_streams) {
++		pr_err("SST ERR: invalid stream id : %d, max %d\n",
++					str_id, sst_drv_ctx->info.max_streams);
++		return -EINVAL;
++	} else
++		return 0;
++}
++
++static inline int sst_shim_write(void __iomem *addr, int offset, int value)
++{
++	writel(value, addr + offset);
 +	return 0;
 +}
 +
-+/**
-+ * sst_slot_put - set the status of interleaver/deinterleaver control
-+ *
-+ * (de)interleaver controls are defined in opposite sense to be user-friendly
-+ *
-+ * Instead of the enum value being the value written to the register, it is the
-+ * register address; and the kcontrol number (register num) is the value written
-+ * to the register. This is so that there can be only one value for each
-+ * slot/channel since there is only one control for each slot/channel.
-+ *
-+ * This means that whenever an enum is set, we need to clear the bit
-+ * for that kcontrol_no for all the interleaver OR deinterleaver registers
-+ */
-+static int sst_slot_put(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
++static inline u32 sst_shim_read(void __iomem *addr, int offset)
 +{
-+	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(platform);
-+	struct sst_enum *e = (void *)kcontrol->private_value;
++
++	return readl(addr + offset);
++}
++
++static inline u64 sst_reg_read64(void __iomem *addr, int offset)
++{
++	u64 val = 0;
++
++	memcpy_fromio(&val, addr + offset, sizeof(val));
++
++	return val;
++}
++
++static inline int sst_shim_write64(void __iomem *addr, int offset, u64 value)
++{
++	memcpy_toio(addr + offset, &value, sizeof(value));
++	return 0;
++}
++
++static inline u64 sst_shim_read64(void __iomem *addr, int offset)
++{
++	u64 val = 0;
++
++	memcpy_fromio(&val, addr + offset, sizeof(val));
++	return val;
++}
++
++static inline void
++sst_set_fw_state_locked(struct intel_sst_drv *sst_drv_ctx, int sst_state)
++{
++	mutex_lock(&sst_drv_ctx->sst_lock);
++	sst_drv_ctx->sst_state = sst_state;
++	mutex_unlock(&sst_drv_ctx->sst_lock);
++}
++
++static inline struct stream_info *get_stream_info(int str_id)
++{
++	if (sst_validate_strid(str_id))
++		return NULL;
++	return &sst_drv_ctx->streams[str_id];
++}
++
++static inline int get_stream_id_mrfld(u32 pipe_id)
++{
 +	int i;
-+	unsigned int ctl_no = e->reg;
-+	unsigned int is_tx = e->tx;
-+	unsigned int slot_channel_no;
-+	unsigned int val, mux;
 +
-+	u8 *map = is_tx ? sst_ssp_channel_map : sst_ssp_slot_map;
++	for (i = 1; i <= sst_drv_ctx->info.max_streams; i++)
++		if (pipe_id == sst_drv_ctx->streams[i].pipe_id)
++			return i;
 +
-+	val = 1 << ctl_no;
-+	mux = ucontrol->value.enumerated.item[0];
-+	if (mux > e->max- 1)
-+		return -EINVAL;
-+
-+	/* first clear all registers of this bit */
-+	for (i = 0; i < e->max; i++)
-+		map[i] &= ~val;
-+
-+	if (mux == 0) /* kctl set to 'none' */
-+		return 0;
-+
-+	/* offset by one to take "None" into account */
-+	slot_channel_no = mux - 1;
-+	map[slot_channel_no] |= val;
-+
-+	pr_debug("%s: %s %s map = %#x\n", __func__, is_tx ? "tx channel" : "rx slot",
-+		 e->texts[mux], map[slot_channel_no]);
-+
-+	if (e->w && e->w->power)
-+		sst_send_slot_map(sst);
-+	return 0;
++	pr_debug("%s: no such pipe_id(%u)", __func__, pipe_id);
++	return -1;
 +}
 +
-+/* assumes a boolean mux */
-+static inline bool get_mux_state(struct sst_data *sst, unsigned int reg, unsigned int shift)
++int register_sst(struct device *);
++int unregister_sst(struct device *);
++
++static inline u32 relocate_imr_addr_mrfld(u32 base_addr)
 +{
-+	return (sst_reg_read(sst, reg, shift, 1) == 1);
++	/* Get the difference from 512MB aligned base addr */
++	/* relocate the base */
++	base_addr = MRFLD_FW_VIRTUAL_BASE + (base_addr % (512 * 1024 * 1024));
++	return base_addr;
 +}
 +
-+static void sst_send_algo_cmd(struct sst_data *sst,
-+			      struct sst_algo_control *bc)
++static inline void sst_add_to_dispatch_list_and_post(struct intel_sst_drv *sst,
++						struct ipc_post *msg)
 +{
-+	int len;
-+	struct sst_cmd_set_params *cmd;
-+
-+	/* bc->max includes sizeof algos + length field */
-+	len = sizeof(cmd->dst) + sizeof(cmd->command_id) + bc->max;
-+
-+	cmd = kzalloc(len, GFP_KERNEL);
-+	if (cmd == NULL) {
-+		pr_err("Failed to send cmd, kzalloc failed\n");
-+		return;
-+	}
-+
-+	SST_FILL_DESTINATION(2, cmd->dst, bc->pipe_id, bc->module_id);
-+	cmd->command_id = bc->cmd_id;
-+	memcpy(cmd->params, bc->params, bc->max);
-+
-+	sst_fill_and_send_cmd(sst, SST_IPC_IA_SET_PARAMS, SST_FLAG_BLOCKED,
-+			      bc->task_id, 0, cmd, len);
-+	kfree(cmd);
++	unsigned long irq_flags;
++	spin_lock_irqsave(&sst->ipc_spin_lock, irq_flags);
++	list_add_tail(&msg->node, &sst->ipc_dispatch_list);
++	spin_unlock_irqrestore(&sst->ipc_spin_lock, irq_flags);
++	sst->ops->post_message(&sst->ipc_post_msg_wq);
 +}
-+
-+/**
-+ * sst_find_and_send_pipe_algo - send all the algo parameters for a pipe
++#endif
+diff --git a/sound/soc/intel/sst/sst_drv_interface.c b/sound/soc/intel/sst/sst_drv_interface.c
+new file mode 100644
+index 0000000..6e378a1
+--- /dev/null
++++ b/sound/soc/intel/sst/sst_drv_interface.c
+@@ -0,0 +1,812 @@
++/*
++ *  sst_drv_interface.c - Intel SST Driver for audio engine
 + *
-+ * The algos which are in each pipeline are sent to the firmware one by one
++ *  Copyright (C) 2008-10 Intel Corp
++ *  Authors:	Vinod Koul <vinod.koul@intel.com>
++ *		Harsha Priya <priya.harsha@intel.com>
++ *		Dharageswari R <dharageswari.r@intel.com)
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + */
-+static void sst_find_and_send_pipe_algo(struct sst_data *sst,
-+					const char *pipe, struct sst_ids *ids)
-+{
-+	struct sst_algo_control *bc;
-+	struct module *algo = NULL;
 +
-+	pr_debug("Enter: %s, widget=%s\n", __func__, pipe);
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 +
-+	list_for_each_entry(algo, &ids->algo_list, node) {
-+		bc = (void *)algo->kctl->private_value;
++#include <linux/delay.h>
++#include <linux/pci.h>
++#include <linux/fs.h>
++#include <linux/firmware.h>
++#include <linux/pm_runtime.h>
++#include <linux/pm_qos.h>
++#include <linux/math64.h>
++#include <sound/compress_offload.h>
++#include <sound/pcm.h>
++#include "../sst_platform.h"
++#include "../platform_ipc_v2.h"
++#include "sst.h"
 +
-+		pr_debug("Found algo control name=%s pipe=%s\n", algo->kctl->id.name, pipe);
-+		sst_send_algo_cmd(sst, bc);
-+	}
-+}
++#define NUM_CODEC 2
++#define MIN_FRAGMENT 2
++#define MAX_FRAGMENT 4
++#define MIN_FRAGMENT_SIZE (50 * 1024)
++#define MAX_FRAGMENT_SIZE (1024 * 1024)
++#define SST_GET_BYTES_PER_SAMPLE(pcm_wd_sz)  (((pcm_wd_sz + 15) >> 4) << 1)
 +
-+int sst_algo_bytes_ctl_info(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_info *uinfo)
-+{
-+	struct sst_algo_control *bc = (void *)kcontrol->private_value;
-+	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+	uinfo->count = bc->max;
-+
-+	/* allocate space to cache the algo parameters in the driver */
-+	if (bc->params == NULL) {
-+		bc->params = devm_kzalloc(platform->dev, bc->max, GFP_KERNEL);
-+		if (bc->params == NULL) {
-+			pr_err("kzalloc failed\n");
-+			return -ENOMEM;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int sst_algo_control_get(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct sst_algo_control *bc = (void *)kcontrol->private_value;
-+
-+	switch (bc->type) {
-+	case SST_ALGO_PARAMS:
-+		if (bc->params)
-+			memcpy(ucontrol->value.bytes.data, bc->params, bc->max);
-+		break;
-+	case SST_ALGO_BYPASS:
-+		ucontrol->value.integer.value[0] = bc->bypass ? 1 : 0;
-+		pr_debug("%s: bypass  %d\n", __func__, bc->bypass);
-+		break;
-+	default:
-+		pr_err("Invalid Input- algo type:%d\n", bc->type);
-+		return -EINVAL;
-+
-+	}
-+	return 0;
-+}
-+
-+static int sst_algo_control_set(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(platform);
-+	struct sst_algo_control *bc = (void *)kcontrol->private_value;
-+
-+	pr_debug("in %s control_name=%s\n", __func__, kcontrol->id.name);
-+	switch (bc->type) {
-+	case SST_ALGO_PARAMS:
-+		if (bc->params)
-+			memcpy(bc->params, ucontrol->value.bytes.data, bc->max);
-+		break;
-+	case SST_ALGO_BYPASS:
-+		bc->bypass = !!ucontrol->value.integer.value[0];
-+		break;
-+	default:
-+		pr_err("Invalid Input- algo type:%ld\n", ucontrol->value.integer.value[0]);
-+		return -EINVAL;
-+	}
-+	/*if pipe is enabled, need to send the algo params from here */
-+	if (bc->w && bc->w->power)
-+		sst_send_algo_cmd(sst, bc);
-+
-+	return 0;
-+}
-+
-+static int sst_gain_ctl_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	struct sst_gain_mixer_control *mc = (void *)kcontrol->private_value;
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = mc->stereo ? 2 : 1;
-+	uinfo->value.integer.min = mc->min;
-+	uinfo->value.integer.max = mc->max;
-+	return 0;
-+}
-+
-+/**
-+ * sst_send_gain_cmd - send the gain algorithm IPC to the FW
-+ * @gv:		the stored value of gain (also contains rampduration)
-+ * @mute:	flag that indicates whether this was called from the
-+ *		digital_mute callback or directly. If called from the
-+ *		digital_mute callback, module will be muted/unmuted based on this
-+ *		flag. The flag is always 0 if called directly.
++/*
++ * sst_download_fw - download the audio firmware to DSP
 + *
-+ * The user-set gain value is sent only if the user-controllable 'mute' control
-+ * is OFF (indicated by gv->mute). Otherwise, the mute value (MIN value) is
-+ * sent.
++ * This function is called when the FW needs to be downloaded to SST DSP engine
 + */
-+static void sst_send_gain_cmd(struct sst_data *sst, struct sst_gain_value *gv,
-+			      u16 task_id, u16 loc_id, u16 module_id, int mute)
++int sst_download_fw(void)
 +{
-+	struct sst_cmd_set_gain_dual cmd;
-+	pr_debug("%s\n", __func__);
++	int retval = 0;
 +
-+	cmd.header.command_id = MMX_SET_GAIN;
-+	SST_FILL_DEFAULT_DESTINATION(cmd.header.dst);
-+	cmd.gain_cell_num = 1;
++	retval = sst_load_fw();
++	if (retval)
++		return retval;
++	pr_debug("fw loaded successful!!!\n");
 +
-+	if (mute || gv->mute) {
-+		cmd.cell_gains[0].cell_gain_left = SST_GAIN_MIN_VALUE;
-+		cmd.cell_gains[0].cell_gain_right = SST_GAIN_MIN_VALUE;
-+	} else {
-+		cmd.cell_gains[0].cell_gain_left = gv->l_gain;
-+		cmd.cell_gains[0].cell_gain_right = gv->r_gain;
-+	}
-+	SST_FILL_DESTINATION(2, cmd.cell_gains[0].dest,
-+			     loc_id, module_id);
-+	cmd.cell_gains[0].gain_time_constant = gv->ramp_duration;
-+
-+	cmd.header.length = sizeof(struct sst_cmd_set_gain_dual)
-+				- sizeof(struct sst_dsp_header);
-+
-+	sst_fill_and_send_cmd(sst, SST_IPC_IA_SET_PARAMS, SST_FLAG_BLOCKED,
-+			      task_id, 0, &cmd,
-+			      sizeof(cmd.header) + cmd.header.length);
++	if (sst_drv_ctx->ops->restore_dsp_context)
++		sst_drv_ctx->ops->restore_dsp_context();
++	sst_drv_ctx->sst_state = SST_FW_RUNNING;
++	return retval;
 +}
 +
-+static int sst_gain_get(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
++int free_stream_context(unsigned int str_id)
 +{
-+	struct sst_gain_mixer_control *mc = (void *)kcontrol->private_value;
-+	struct sst_gain_value *gv = mc->gain_val;
-+
-+	switch (mc->type) {
-+	case SST_GAIN_TLV:
-+		ucontrol->value.integer.value[0] = gv->l_gain;
-+		ucontrol->value.integer.value[1] = gv->r_gain;
-+		break;
-+	case SST_GAIN_MUTE:
-+		ucontrol->value.integer.value[0] = gv->mute ? 1 : 0;
-+		break;
-+	case SST_GAIN_RAMP_DURATION:
-+		ucontrol->value.integer.value[0] = gv->ramp_duration;
-+		break;
-+	default:
-+		pr_err("Invalid Input- gain type:%d\n", mc->type);
-+		return -EINVAL;
-+	};
-+	return 0;
-+}
-+
-+static int sst_gain_put(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(platform);
-+	struct sst_gain_mixer_control *mc = (void *)kcontrol->private_value;
-+	struct sst_gain_value *gv = mc->gain_val;
-+
-+	switch (mc->type) {
-+	case SST_GAIN_TLV:
-+		gv->l_gain = ucontrol->value.integer.value[0];
-+		gv->r_gain = ucontrol->value.integer.value[1];
-+		pr_debug("%s: %s: Volume %d, %d\n", __func__, mc->pname, gv->l_gain, gv->r_gain);
-+		break;
-+	case SST_GAIN_MUTE:
-+		gv->mute = !!ucontrol->value.integer.value[0];
-+		pr_debug("%s: %s: Mute %d\n", __func__, mc->pname, gv->mute);
-+		break;
-+	case SST_GAIN_RAMP_DURATION:
-+		gv->ramp_duration = ucontrol->value.integer.value[0];
-+		pr_debug("%s: %s: RampDuration %d\n", __func__, mc->pname, gv->ramp_duration);
-+		break;
-+	default:
-+		pr_err("Invalid Input- gain type:%d\n", mc->type);
-+		return -EINVAL;
-+	};
-+
-+	if (mc->w && mc->w->power)
-+		sst_send_gain_cmd(sst, gv, mc->task_id,
-+				mc->pipe_id | mc->instance_id, mc->module_id, 0);
-+	return 0;
-+}
-+
-+static void sst_set_pipe_gain(struct sst_ids *ids, struct sst_data *sst, int mute);
-+
-+static void sst_send_pipe_module_params(struct snd_soc_dapm_widget *w)
-+{
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(w->platform);
-+	struct sst_ids *ids = w->priv;
-+
-+	sst_find_and_send_pipe_algo(sst, w->name, ids);
-+	sst_set_pipe_gain(ids, sst, 0);
-+}
-+
-+static int sst_generic_modules_event(struct snd_soc_dapm_widget *w,
-+				     struct snd_kcontrol *k, int event)
-+{
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		sst_send_pipe_module_params(w);
-+	return 0;
-+}
-+
-+static const DECLARE_TLV_DB_SCALE(sst_gain_tlv_common, SST_GAIN_MIN_VALUE * 10, 10, 0);
-+
-+/* Look up table to convert MIXER SW bit regs to SWM inputs */
-+static const uint swm_mixer_input_ids[SST_SWM_INPUT_COUNT] = {
-+	[SST_IP_CODEC0]		= SST_SWM_IN_CODEC0,
-+	[SST_IP_CODEC1]		= SST_SWM_IN_CODEC1,
-+	[SST_IP_LOOP0]		= SST_SWM_IN_SPROT_LOOP,
-+	[SST_IP_LOOP1]		= SST_SWM_IN_MEDIA_LOOP1,
-+	[SST_IP_LOOP2]		= SST_SWM_IN_MEDIA_LOOP2,
-+	[SST_IP_PCM0]		= SST_SWM_IN_PCM0,
-+	[SST_IP_PCM1]		= SST_SWM_IN_PCM1,
-+	[SST_IP_MEDIA0]		= SST_SWM_IN_MEDIA0,
-+	[SST_IP_MEDIA1]		= SST_SWM_IN_MEDIA1,
-+	[SST_IP_MEDIA2]		= SST_SWM_IN_MEDIA2,
-+	[SST_IP_MEDIA3]		= SST_SWM_IN_MEDIA3,
-+};
-+
-+/**
-+ * fill_swm_input - fill in the SWM input ids given the register
-+ *
-+ * The register value is a bit-field inicated which mixer inputs are ON. Use the
-+ * lookup table to get the input-id and fill it in the structure.
-+ */
-+static int fill_swm_input(struct swm_input_ids *swm_input, unsigned int reg)
-+{
-+	uint i, is_set, nb_inputs = 0;
-+	u16 input_loc_id;
-+
-+	pr_debug("%s: reg: %#x\n", __func__, reg);
-+	for (i = 0; i < SST_SWM_INPUT_COUNT; i++) {
-+		is_set = reg & BIT(i);
-+		if (!is_set)
-+			continue;
-+
-+		input_loc_id = swm_mixer_input_ids[i];
-+		SST_FILL_DESTINATION(2, swm_input->input_id,
-+				     input_loc_id, SST_DEFAULT_MODULE_ID);
-+		nb_inputs++;
-+		swm_input++;
-+		pr_debug("input id: %#x, nb_inputs: %d\n", input_loc_id, nb_inputs);
-+
-+		if (nb_inputs == SST_CMD_SWM_MAX_INPUTS) {
-+			pr_warn("%s: SET_SWM cmd max inputs reached", __func__);
-+			break;
-+		}
-+	}
-+	return nb_inputs;
-+}
-+
-+static void sst_set_pipe_gain(struct sst_ids *ids, struct sst_data *sst, int mute)
-+{
-+	struct sst_gain_mixer_control *mc;
-+	struct sst_gain_value *gv;
-+	struct module *gain = NULL;
-+
-+	list_for_each_entry(gain, &ids->gain_list, node) {
-+		struct snd_kcontrol *kctl = gain->kctl;
-+
-+		pr_debug("control name=%s\n", kctl->id.name);
-+		mc = (void *)kctl->private_value;
-+		gv = mc->gain_val;
-+
-+		sst_send_gain_cmd(sst, gv, mc->task_id,
-+				mc->pipe_id | mc->instance_id, mc->module_id, mute);
-+	}
-+}
-+
-+static int sst_swm_mixer_event(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k, int event)
-+{
-+	struct sst_cmd_set_swm cmd;
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(w->platform);
-+	struct sst_ids *ids = w->priv;
-+	bool set_mixer = false;
-+	int val = sst->widget[ids->reg];
-+
-+	pr_debug("%s: widget = %s\n", __func__, w->name);
-+	pr_debug("%s: reg[%d] = %#x\n", __func__, ids->reg, val);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+	case SND_SOC_DAPM_POST_PMD:
-+		set_mixer = true;
-+		break;
-+	case SND_SOC_DAPM_POST_REG:
-+		if (w->power)
-+			set_mixer = true;
-+		break;
-+	default:
-+		set_mixer = false;
-+	}
-+
-+	if (set_mixer == false)
-+		return 0;
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event) ||
-+	    event == SND_SOC_DAPM_POST_REG)
-+		cmd.switch_state = SST_SWM_ON;
-+	else
-+		cmd.switch_state = SST_SWM_OFF;
-+
-+	SST_FILL_DEFAULT_DESTINATION(cmd.header.dst);
-+	/* MMX_SET_SWM == SBA_SET_SWM */
-+	cmd.header.command_id = SBA_SET_SWM;
-+
-+	SST_FILL_DESTINATION(2, cmd.output_id,
-+			     ids->location_id, SST_DEFAULT_MODULE_ID);
-+	cmd.nb_inputs =	fill_swm_input(&cmd.input[0], val);
-+	cmd.header.length = offsetof(struct sst_cmd_set_swm, input) - sizeof(struct sst_dsp_header)
-+				+ (cmd.nb_inputs * sizeof(cmd.input[0]));
-+
-+	sst_fill_and_send_cmd(sst, SST_IPC_IA_CMD, SST_FLAG_BLOCKED,
-+			      ids->task_id, 0, &cmd,
-+			      sizeof(cmd.header) + cmd.header.length);
-+	return 0;
-+}
-+
-+/* SBA mixers - 16 inputs */
-+#define SST_SBA_DECLARE_MIX_CONTROLS(kctl_name, mixer_reg)			\
-+	static const struct snd_kcontrol_new kctl_name[] = {			\
-+		SOC_SINGLE_EXT("codec_in0", mixer_reg, SST_IP_CODEC0, 1, 0,	\
-+				sst_mix_get, sst_mix_put),			\
-+		SOC_SINGLE_EXT("codec_in1", mixer_reg, SST_IP_CODEC1, 1, 0,	\
-+				sst_mix_get, sst_mix_put),			\
-+		SOC_SINGLE_EXT("sprot_loop_in", mixer_reg, SST_IP_LOOP0, 1, 0,	\
-+				sst_mix_get, sst_mix_put),			\
-+		SOC_SINGLE_EXT("media_loop1_in", mixer_reg, SST_IP_LOOP1, 1, 0,	\
-+				sst_mix_get, sst_mix_put),			\
-+		SOC_SINGLE_EXT("media_loop2_in", mixer_reg, SST_IP_LOOP2, 1, 0,	\
-+				sst_mix_get, sst_mix_put),			\
-+		SOC_SINGLE_EXT("pcm0_in", mixer_reg, SST_IP_PCM0, 1, 0,		\
-+				sst_mix_get, sst_mix_put),			\
-+		SOC_SINGLE_EXT("pcm1_in", mixer_reg, SST_IP_PCM1, 1, 0,		\
-+				sst_mix_get, sst_mix_put),			\
-+	}
-+
-+#define SST_SBA_MIXER_GRAPH_MAP(mix_name)			\
-+	{ mix_name, "codec_in0",	"codec_in0" },		\
-+	{ mix_name, "codec_in1",	"codec_in1" },		\
-+	{ mix_name, "sprot_loop_in",	"sprot_loop_in" },	\
-+	{ mix_name, "media_loop1_in",	"media_loop1_in" },	\
-+	{ mix_name, "media_loop2_in",	"media_loop2_in" },	\
-+	{ mix_name, "pcm0_in",		"pcm0_in" },		\
-+	{ mix_name, "pcm1_in",		"pcm1_in" }
-+
-+#define SST_MMX_DECLARE_MIX_CONTROLS(kctl_name, mixer_reg)			\
-+	static const struct snd_kcontrol_new kctl_name[] = {			\
-+		SOC_SINGLE_EXT("media0_in", mixer_reg, SST_IP_MEDIA0, 1, 0,	\
-+				sst_mix_get, sst_mix_put),			\
-+		SOC_SINGLE_EXT("media1_in", mixer_reg, SST_IP_MEDIA1, 1, 0,	\
-+				sst_mix_get, sst_mix_put),			\
-+		SOC_SINGLE_EXT("media2_in", mixer_reg, SST_IP_MEDIA2, 1, 0,	\
-+				sst_mix_get, sst_mix_put),			\
-+		SOC_SINGLE_EXT("media3_in", mixer_reg, SST_IP_MEDIA3, 1, 0,	\
-+				sst_mix_get, sst_mix_put),			\
-+	}
-+
-+SST_MMX_DECLARE_MIX_CONTROLS(sst_mix_media0_controls, SST_MIX_MEDIA0);
-+SST_MMX_DECLARE_MIX_CONTROLS(sst_mix_media1_controls, SST_MIX_MEDIA1);
-+
-+/* 18 SBA mixers */
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_pcm0_controls, SST_MIX_PCM0);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_pcm1_controls, SST_MIX_PCM1);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_pcm2_controls, SST_MIX_PCM2);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_sprot_l0_controls, SST_MIX_LOOP0);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l1_controls, SST_MIX_LOOP1);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l2_controls, SST_MIX_LOOP2);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_voip_controls, SST_MIX_VOIP);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_aware_controls, SST_MIX_AWARE);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_vad_controls, SST_MIX_VAD);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_hf_sns_controls, SST_MIX_HF_SNS);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_hf_controls, SST_MIX_HF);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_speech_controls, SST_MIX_SPEECH);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_rxspeech_controls, SST_MIX_RXSPEECH);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec0_controls, SST_MIX_CODEC0);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec1_controls, SST_MIX_CODEC1);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_bt_controls, SST_MIX_BT);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_fm_controls, SST_MIX_FM);
-+SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_modem_controls, SST_MIX_MODEM);
-+
-+void sst_handle_vb_timer(struct snd_soc_platform *p, bool enable)
-+{
-+	struct sst_cmd_generic cmd;
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(p);
-+	static int timer_usage;
-+
-+	if (enable)
-+		cmd.header.command_id = SBA_VB_START;
-+	else
-+		cmd.header.command_id = SBA_IDLE;
-+	pr_debug("%s: enable=%u, usage=%d\n", __func__, enable, timer_usage);
-+
-+	SST_FILL_DEFAULT_DESTINATION(cmd.header.dst);
-+	cmd.header.length = 0;
-+
-+	if (enable)
-+		sst_dsp->ops->power(true);
-+
-+	mutex_lock(&sst->lock);
-+	if (enable)
-+		timer_usage++;
-+	else
-+		timer_usage--;
-+
-+	/* Send the command only if this call is the first enable or last
-+	 * disable
-+	 */
-+	if ((enable && (timer_usage == 1)) ||
-+	    (!enable && (timer_usage == 0)))
-+		sst_fill_and_send_cmd_unlocked(sst, SST_IPC_IA_CMD, SST_FLAG_BLOCKED,
-+				      SST_TASK_SBA, 0, &cmd,
-+				      sizeof(cmd.header) + cmd.header.length);
-+	mutex_unlock(&sst->lock);
-+
-+	if (!enable)
-+		sst_dsp->ops->power(false);
-+}
-+
-+#define SST_SSP_CODEC_MUX		0
-+#define SST_SSP_CODEC_DOMAIN		0
-+
-+static const int sst_ssp_mux_shift[SST_NUM_SSPS] = {
-+	[SST_SSP2] = -1,
-+};
-+
-+static const int sst_ssp_domain_shift[SST_NUM_SSPS][SST_MAX_SSP_MUX] = {
-+	[SST_SSP2][0] = -1,
-+};
-+
-+/**
-+ * sst_ssp_config - contains SSP configuration for different UCs
-+ *
-+ * The 3-D array contains SSP configuration for different SSPs for different
-+ * domains (e.g. NB, WB), as well as muxed SSPs.
-+ *
-+ * The first dimension has SSP number
-+ * The second dimension has SSP Muxing (e.g. BT/FM muxed on same SSP)
-+ * The third dimension has SSP domains (e.g. NB/WB for BT)
-+ */
-+static const struct sst_ssp_config
-+sst_ssp_configs[SST_NUM_SSPS][SST_MAX_SSP_MUX][SST_MAX_SSP_DOMAINS] = {
-+	[SST_SSP2] = {
-+		[SST_SSP_CODEC_MUX] = {
-+			[SST_SSP_CODEC_DOMAIN] = {
-+				.ssp_id = SSP_CODEC,
-+				.bits_per_slot = 24,
-+				.slots = 4,
-+				.ssp_mode = SSP_MODE_MASTER,
-+				.pcm_mode = SSP_PCM_MODE_NETWORK,
-+				.duplex = SSP_DUPLEX,
-+				.ssp_protocol = SSP_MODE_PCM,
-+				.fs_width = 1,
-+				.fs_frequency = SSP_FS_48_KHZ,
-+				.active_slot_map = 0xF,
-+				.start_delay = 0,
-+			},
-+		},
-+	},
-+};
-+
-+#define SST_SSP_CFG(wssp_no)                                                            \
-+	(const struct sst_ssp_cfg){ .ssp_config = &sst_ssp_configs[wssp_no],            \
-+				.ssp_number = wssp_no,                              \
-+				.mux_shift = &sst_ssp_mux_shift[wssp_no],           \
-+				.domain_shift = &sst_ssp_domain_shift[wssp_no], }
-+
-+void send_ssp_cmd(struct snd_soc_platform *platform, const char *id, bool enable)
-+{
-+	struct sst_cmd_sba_hw_set_ssp cmd;
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(platform);
-+	unsigned int domain, mux;
-+	int domain_shift, mux_shift, ssp_no;
-+	const struct sst_ssp_config *config;
-+	const struct sst_ssp_cfg *ssp;
-+
-+
-+	pr_err("Enter:%s, enable=%d port_name=%s\n", __func__, enable, id);
-+
-+	if (strcmp(id, "ssp2-port") == 0)
-+		ssp_no = SST_SSP2;
-+	else
-+		return;
-+
-+	ssp = &SST_SSP_CFG(ssp_no);
-+
-+	SST_FILL_DEFAULT_DESTINATION(cmd.header.dst);
-+	cmd.header.command_id = SBA_HW_SET_SSP;
-+	cmd.header.length = sizeof(struct sst_cmd_sba_hw_set_ssp)
-+				- sizeof(struct sst_dsp_header);
-+	mux_shift = *ssp->mux_shift;
-+	mux = (mux_shift == -1) ? 0 : get_mux_state(sst, SST_MUX_REG, mux_shift);
-+	domain_shift = (*ssp->domain_shift)[mux];
-+	domain = (domain_shift == -1) ? 0 : get_mux_state(sst, SST_MUX_REG, domain_shift);
-+
-+	config = &(*ssp->ssp_config)[mux][domain];
-+	pr_debug("%s: ssp_id: %u, mux: %d, domain: %d\n", __func__,
-+		 config->ssp_id, mux, domain);
-+
-+	if (enable)
-+		cmd.switch_state = SST_SWITCH_ON;
-+	else
-+		cmd.switch_state = SST_SWITCH_OFF;
-+
-+	cmd.selection = config->ssp_id;
-+	cmd.nb_bits_per_slots = config->bits_per_slot;
-+	cmd.nb_slots = config->slots;
-+	cmd.mode = config->ssp_mode | (config->pcm_mode << 1);
-+	cmd.duplex = config->duplex;
-+	cmd.active_tx_slot_map = config->active_slot_map;
-+	cmd.active_rx_slot_map = config->active_slot_map;
-+	cmd.frame_sync_frequency = config->fs_frequency;
-+	cmd.frame_sync_polarity = SSP_FS_ACTIVE_HIGH;
-+	cmd.data_polarity = 1;
-+	cmd.frame_sync_width = config->fs_width;
-+	cmd.ssp_protocol = config->ssp_protocol;
-+	cmd.start_delay = config->start_delay;
-+	cmd.reserved1 = cmd.reserved2 = 0xFF;
-+
-+	sst_fill_and_send_cmd(sst, SST_IPC_IA_CMD, SST_FLAG_BLOCKED,
-+				SST_TASK_SBA, 0, &cmd,
-+				sizeof(cmd.header) + cmd.header.length);
-+}
-+
-+static int sst_set_be_modules(struct snd_soc_dapm_widget *w,
-+			 struct snd_kcontrol *k, int event)
-+{
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(w->platform);
-+
-+	pr_debug("Enter: %s, widget=%s\n", __func__, w->name);
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		sst_send_slot_map(sst);
-+		sst_send_pipe_module_params(w);
-+	}
-+	return 0;
-+}
-+
-+static int sst_set_media_path(struct snd_soc_dapm_widget *w,
-+			      struct snd_kcontrol *k, int event)
-+{
-+	struct sst_cmd_set_media_path cmd;
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(w->platform);
-+	struct sst_ids *ids = w->priv;
-+
-+	pr_debug("%s: widget=%s\n", __func__, w->name);
-+	pr_debug("%s: task=%u, location=%#x\n", __func__,
-+				ids->task_id, ids->location_id);
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		cmd.switch_state = SST_PATH_ON;
-+	else
-+		cmd.switch_state = SST_PATH_OFF;
-+
-+	SST_FILL_DESTINATION(2, cmd.header.dst,
-+			     ids->location_id, SST_DEFAULT_MODULE_ID);
-+
-+	/* MMX_SET_MEDIA_PATH == SBA_SET_MEDIA_PATH */
-+	cmd.header.command_id = MMX_SET_MEDIA_PATH;
-+	cmd.header.length = sizeof(struct sst_cmd_set_media_path)
-+				- sizeof(struct sst_dsp_header);
-+
-+	sst_fill_and_send_cmd(sst, SST_IPC_IA_CMD, SST_FLAG_BLOCKED,
-+			      ids->task_id, 0, &cmd,
-+			      sizeof(cmd.header) + cmd.header.length);
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		sst_send_pipe_module_params(w);
-+	return 0;
-+}
-+
-+static int sst_set_media_loop(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k, int event)
-+{
-+	struct sst_cmd_sba_set_media_loop_map cmd;
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(w->platform);
-+	struct sst_ids *ids = w->priv;
-+
-+	pr_debug("Enter:%s, widget=%s\n", __func__, w->name);
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		cmd.switch_state = SST_SWITCH_ON;
-+	else
-+		cmd.switch_state = SST_SWITCH_OFF;
-+
-+	SST_FILL_DESTINATION(2, cmd.header.dst,
-+			     ids->location_id, SST_DEFAULT_MODULE_ID);
-+
-+	cmd.header.command_id = SBA_SET_MEDIA_LOOP_MAP;
-+	cmd.header.length = sizeof(struct sst_cmd_sba_set_media_loop_map)
-+				 - sizeof(struct sst_dsp_header);
-+	cmd.param.part.cfg.rate = 2; /* 48khz */
-+
-+	cmd.param.part.cfg.format = ids->format; /* stereo/Mono */
-+	cmd.param.part.cfg.s_length = 1; /* 24bit left justified*/
-+	cmd.map = 0; /* Algo sequence: Gain - DRP - FIR - IIR  */
-+
-+	sst_fill_and_send_cmd(sst, SST_IPC_IA_CMD, SST_FLAG_BLOCKED,
-+			      SST_TASK_SBA, 0, &cmd,
-+			      sizeof(cmd.header) + cmd.header.length);
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		sst_send_pipe_module_params(w);
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget sst_dapm_widgets[] = {
-+	SST_AIF_IN("codec_in0", sst_set_be_modules),
-+	SST_AIF_IN("codec_in1", sst_set_be_modules),
-+	SST_AIF_OUT("codec_out0", sst_set_be_modules),
-+	SST_AIF_OUT("codec_out1", sst_set_be_modules),
-+
-+	/* Media Paths */
-+	/* MediaX IN paths are set via ALLOC, so no SET_MEDIA_PATH command */
-+	SST_PATH_INPUT("media0_in", SST_TASK_MMX, SST_SWM_IN_MEDIA0, sst_generic_modules_event),
-+	SST_PATH_INPUT("media1_in", SST_TASK_MMX, SST_SWM_IN_MEDIA1, NULL),
-+	SST_PATH_INPUT("media2_in", SST_TASK_MMX, SST_SWM_IN_MEDIA2, sst_set_media_path),
-+	SST_PATH_INPUT("media3_in", SST_TASK_MMX, SST_SWM_IN_MEDIA3, NULL),
-+	SST_PATH_OUTPUT("media0_out", SST_TASK_MMX, SST_SWM_OUT_MEDIA0, sst_set_media_path),
-+	SST_PATH_OUTPUT("media1_out", SST_TASK_MMX, SST_SWM_OUT_MEDIA1, sst_set_media_path),
-+
-+	/* SBA PCM Paths */
-+	SST_PATH_INPUT("pcm0_in", SST_TASK_SBA, SST_SWM_IN_PCM0, sst_set_media_path),
-+	SST_PATH_INPUT("pcm1_in", SST_TASK_SBA, SST_SWM_IN_PCM1, sst_set_media_path),
-+	SST_PATH_OUTPUT("pcm0_out", SST_TASK_SBA, SST_SWM_OUT_PCM0, sst_set_media_path),
-+	SST_PATH_OUTPUT("pcm1_out", SST_TASK_SBA, SST_SWM_OUT_PCM1, sst_set_media_path),
-+	SST_PATH_OUTPUT("pcm2_out", SST_TASK_SBA, SST_SWM_OUT_PCM2, sst_set_media_path),
-+
-+	/* SBA Loops */
-+	SST_PATH_INPUT("sprot_loop_in", SST_TASK_SBA, SST_SWM_IN_SPROT_LOOP, NULL),
-+	SST_PATH_INPUT("media_loop1_in", SST_TASK_SBA, SST_SWM_IN_MEDIA_LOOP1, NULL),
-+	SST_PATH_INPUT("media_loop2_in", SST_TASK_SBA, SST_SWM_IN_MEDIA_LOOP2, NULL),
-+	SST_PATH_MEDIA_LOOP_OUTPUT("sprot_loop_out", SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP, SST_FMT_MONO, sst_set_media_loop),
-+	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop1_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1, SST_FMT_MONO, sst_set_media_loop),
-+	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop2_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2, SST_FMT_STEREO, sst_set_media_loop),
-+
-+	/* Media Mixers */
-+	SST_SWM_MIXER("media0_out mix 0", SST_MIX_MEDIA0, SST_TASK_MMX, SST_SWM_OUT_MEDIA0,
-+		      sst_mix_media0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media1_out mix 0", SST_MIX_MEDIA1, SST_TASK_MMX, SST_SWM_OUT_MEDIA1,
-+		      sst_mix_media1_controls, sst_swm_mixer_event),
-+
-+	/* SBA PCM mixers */
-+	SST_SWM_MIXER("pcm0_out mix 0", SST_MIX_PCM0, SST_TASK_SBA, SST_SWM_OUT_PCM0,
-+		      sst_mix_pcm0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("pcm1_out mix 0", SST_MIX_PCM1, SST_TASK_SBA, SST_SWM_OUT_PCM1,
-+		      sst_mix_pcm1_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("pcm2_out mix 0", SST_MIX_PCM2, SST_TASK_SBA, SST_SWM_OUT_PCM2,
-+		      sst_mix_pcm2_controls, sst_swm_mixer_event),
-+
-+	/* SBA Loop mixers */
-+	SST_SWM_MIXER("sprot_loop_out mix 0", SST_MIX_LOOP0, SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP,
-+		      sst_mix_sprot_l0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media_loop1_out mix 0", SST_MIX_LOOP1, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1,
-+		      sst_mix_media_l1_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media_loop2_out mix 0", SST_MIX_LOOP2, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2,
-+		      sst_mix_media_l2_controls, sst_swm_mixer_event),
-+
-+	/* SBA Backend mixers */
-+	SST_SWM_MIXER("codec_out0 mix 0", SST_MIX_CODEC0, SST_TASK_SBA, SST_SWM_OUT_CODEC0,
-+		      sst_mix_codec0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("codec_out1 mix 0", SST_MIX_CODEC1, SST_TASK_SBA, SST_SWM_OUT_CODEC1,
-+		      sst_mix_codec1_controls, sst_swm_mixer_event),
-+};
-+
-+static const struct snd_soc_dapm_route intercon[] = {
-+	{"media0_in", NULL, "Compress Playback"},
-+	{"media1_in", NULL, "Headset Playback"},
-+	{"media2_in", NULL, "pcm0_out"},
-+
-+	{"media0_out mix 0", "media0_in", "media0_in"},
-+	{"media0_out mix 0", "media1_in", "media1_in"},
-+	{"media0_out mix 0", "media2_in", "media2_in"},
-+	{"media0_out mix 0", "media3_in", "media3_in"},
-+	{"media1_out mix 0", "media0_in", "media0_in"},
-+	{"media1_out mix 0", "media1_in", "media1_in"},
-+	{"media1_out mix 0", "media2_in", "media2_in"},
-+	{"media1_out mix 0", "media3_in", "media3_in"},
-+
-+	{"media0_out", NULL, "media0_out mix 0"},
-+	{"media1_out", NULL, "media1_out mix 0"},
-+	{"pcm0_in", NULL, "media0_out"},
-+	{"pcm1_in", NULL, "media1_out"},
-+
-+	{"Headset Capture", NULL, "pcm1_out"},
-+	{"Headset Capture", NULL, "pcm2_out"},
-+	{"pcm0_out", NULL, "pcm0_out mix 0"},
-+	SST_SBA_MIXER_GRAPH_MAP("pcm0_out mix 0"),
-+	{"pcm1_out", NULL, "pcm1_out mix 0"},
-+	SST_SBA_MIXER_GRAPH_MAP("pcm1_out mix 0"),
-+	{"pcm2_out", NULL, "pcm2_out mix 0"},
-+	SST_SBA_MIXER_GRAPH_MAP("pcm2_out mix 0"),
-+
-+	{"media_loop1_in", NULL, "media_loop1_out"},
-+	{"media_loop1_out", NULL, "media_loop1_out mix 0"},
-+	SST_SBA_MIXER_GRAPH_MAP("media_loop1_out mix 0"),
-+	{"media_loop2_in", NULL, "media_loop2_out"},
-+	{"media_loop2_out", NULL, "media_loop2_out mix 0"},
-+	SST_SBA_MIXER_GRAPH_MAP("media_loop2_out mix 0"),
-+	{"sprot_loop_in", NULL, "sprot_loop_out"},
-+	{"sprot_loop_out", NULL, "sprot_loop_out mix 0"},
-+	SST_SBA_MIXER_GRAPH_MAP("sprot_loop_out mix 0"),
-+
-+	{"codec_out0", NULL, "codec_out0 mix 0"},
-+	SST_SBA_MIXER_GRAPH_MAP("codec_out0 mix 0"),
-+	{"codec_out1", NULL, "codec_out1 mix 0"},
-+	SST_SBA_MIXER_GRAPH_MAP("codec_out1 mix 0"),
-+
-+};
-+
-+static const char * const slot_names[] = {
-+	"none",
-+	"slot 0", "slot 1", "slot 2", "slot 3",
-+	"slot 4", "slot 5", "slot 6", "slot 7", /* not supported by FW */
-+};
-+
-+static const char * const channel_names[] = {
-+	"none",
-+	"codec_out0_0", "codec_out0_1", "codec_out1_0", "codec_out1_1",
-+	"codec_out2_0", "codec_out2_1", "codec_out3_0", "codec_out3_1", /* not supported by FW */
-+};
-+
-+#define SST_INTERLEAVER(xpname, slot_name, slotno) \
-+	SST_SSP_SLOT_CTL(xpname, "interleaver", slot_name, slotno, true, \
-+			 channel_names, sst_slot_get, sst_slot_put)
-+
-+#define SST_DEINTERLEAVER(xpname, channel_name, channel_no) \
-+	SST_SSP_SLOT_CTL(xpname, "deinterleaver", channel_name, channel_no, false, \
-+			 slot_names, sst_slot_get, sst_slot_put)
-+
-+static const struct snd_kcontrol_new sst_slot_controls[] = {
-+	SST_INTERLEAVER("codec_out", "slot 0", 0),
-+	SST_INTERLEAVER("codec_out", "slot 1", 1),
-+	SST_INTERLEAVER("codec_out", "slot 2", 2),
-+	SST_INTERLEAVER("codec_out", "slot 3", 3),
-+	SST_DEINTERLEAVER("codec_in", "codec_in0_0", 0),
-+	SST_DEINTERLEAVER("codec_in", "codec_in0_1", 1),
-+	SST_DEINTERLEAVER("codec_in", "codec_in1_0", 2),
-+	SST_DEINTERLEAVER("codec_in", "codec_in1_1", 3),
-+};
-+
-+/* Gain helper with min/max set */
-+#define SST_GAIN(name, path_id, task_id, instance, gain_var)				\
-+	SST_GAIN_KCONTROLS(name, "gain", SST_GAIN_MIN_VALUE, SST_GAIN_MAX_VALUE,	\
-+		SST_GAIN_TC_MIN, SST_GAIN_TC_MAX,					\
-+		sst_gain_get, sst_gain_put,						\
-+		SST_MODULE_ID_GAIN_CELL, path_id, instance, task_id,			\
-+		sst_gain_tlv_common, gain_var)
-+
-+#define SST_VOLUME(name, path_id, task_id, instance, gain_var)				\
-+	SST_GAIN_KCONTROLS(name, "volume", SST_GAIN_MIN_VALUE, SST_GAIN_MAX_VALUE,	\
-+		SST_GAIN_TC_MIN, SST_GAIN_TC_MAX,					\
-+		sst_gain_get, sst_gain_put,						\
-+		SST_MODULE_ID_VOLUME, path_id, instance, task_id,			\
-+		sst_gain_tlv_common, gain_var)
-+
-+#define SST_NUM_GAINS 36
-+static struct sst_gain_value sst_gains[SST_NUM_GAINS];
-+
-+static const struct snd_kcontrol_new sst_gain_controls[] = {
-+	SST_GAIN("media0_in", SST_PATH_INDEX_MEDIA0_IN, SST_TASK_MMX, 0, &sst_gains[0]),
-+	SST_GAIN("media1_in", SST_PATH_INDEX_MEDIA1_IN, SST_TASK_MMX, 0, &sst_gains[1]),
-+	SST_GAIN("media2_in", SST_PATH_INDEX_MEDIA2_IN, SST_TASK_MMX, 0, &sst_gains[2]),
-+	SST_GAIN("media3_in", SST_PATH_INDEX_MEDIA3_IN, SST_TASK_MMX, 0, &sst_gains[3]),
-+
-+	SST_GAIN("pcm0_in", SST_PATH_INDEX_PCM0_IN, SST_TASK_SBA, 0, &sst_gains[4]),
-+	SST_GAIN("pcm1_in", SST_PATH_INDEX_PCM1_IN, SST_TASK_SBA, 0, &sst_gains[5]),
-+	SST_GAIN("pcm1_out", SST_PATH_INDEX_PCM1_OUT, SST_TASK_SBA, 0, &sst_gains[7]),
-+	SST_GAIN("pcm2_out", SST_PATH_INDEX_PCM2_OUT, SST_TASK_SBA, 0, &sst_gains[8]),
-+
-+	SST_GAIN("codec_in0", SST_PATH_INDEX_CODEC_IN0, SST_TASK_SBA, 0, &sst_gains[20]),
-+	SST_GAIN("codec_in1", SST_PATH_INDEX_CODEC_IN1, SST_TASK_SBA, 0, &sst_gains[21]),
-+	SST_GAIN("codec_out0", SST_PATH_INDEX_CODEC_OUT0, SST_TASK_SBA, 0, &sst_gains[22]),
-+	SST_GAIN("codec_out1", SST_PATH_INDEX_CODEC_OUT1, SST_TASK_SBA, 0, &sst_gains[23]),
-+	SST_GAIN("media_loop1_out", SST_PATH_INDEX_MEDIA_LOOP1_OUT, SST_TASK_SBA, 0, &sst_gains[30]),
-+	SST_GAIN("media_loop2_out", SST_PATH_INDEX_MEDIA_LOOP2_OUT, SST_TASK_SBA, 0, &sst_gains[31]),
-+	SST_GAIN("sprot_loop_out", SST_PATH_INDEX_SPROT_LOOP_OUT, SST_TASK_SBA, 0, &sst_gains[32]),
-+	SST_VOLUME("media0_in", SST_PATH_INDEX_MEDIA0_IN, SST_TASK_MMX, 0, &sst_gains[33]),
-+};
-+
-+static const struct snd_kcontrol_new sst_algo_controls[] = {
-+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
-+		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "iir", 300, SST_MODULE_ID_IIR_24,
-+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "fir", 272, SST_MODULE_ID_FIR_24,
-+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "iir", 300, SST_MODULE_ID_IIR_24,
-+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-+	SST_ALGO_KCONTROL_BYTES("sprot_loop_out", "lpro", 192, SST_MODULE_ID_SPROT,
-+		SST_PATH_INDEX_SPROT_LOOP_OUT, 0, SST_TASK_SBA, SBA_VB_LPRO),
-+	SST_ALGO_KCONTROL_BYTES("codec_in0", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-+		SST_PATH_INDEX_CODEC_IN0, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+	SST_ALGO_KCONTROL_BYTES("codec_in1", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-+		SST_PATH_INDEX_CODEC_IN1, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+
-+};
-+
-+static inline bool is_sst_dapm_widget(struct snd_soc_dapm_widget *w)
-+{
-+	if ((w->id == snd_soc_dapm_pga) ||
-+	    (w->id == snd_soc_dapm_aif_in) ||
-+	    (w->id == snd_soc_dapm_aif_out) ||
-+	    (w->id == snd_soc_dapm_input) ||
-+	    (w->id == snd_soc_dapm_output) ||
-+	    (w->id == snd_soc_dapm_mixer))
-+		return true;
-+	else
-+		return false;
-+}
-+
-+/**
-+ * sst_send_pipe_gains - send gains for the front-end DAIs
-+ *
-+ * The gains in the pipes connected to the front-ends are muted/unmuted
-+ * automatically via the digital_mute() DAPM callback. This function sends the
-+ * gains for the front-end pipes.
-+ */
-+int sst_send_pipe_gains(struct snd_soc_dai *dai, int stream, int mute)
-+{
-+	struct snd_soc_platform *platform = dai->platform;
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(platform);
-+	struct snd_soc_dapm_widget *w;
-+	struct snd_soc_dapm_path *p = NULL;
-+
-+	pr_debug("%s: enter, dai-name=%s dir=%d\n", __func__, dai->name, stream);
-+
-+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		pr_debug("Stream name=%s\n", dai->playback_widget->name);
-+		w = dai->playback_widget;
-+		list_for_each_entry(p, &w->sinks, list_source) {
-+			if (p->connected && !p->connected(w, p->sink))
-+				continue;
-+
-+			if (p->connect && p->sink->power && is_sst_dapm_widget(p->sink)) {
-+				struct sst_ids *ids = p->sink->priv;
-+
-+				pr_debug("send gains for widget=%s\n", p->sink->name);
-+				sst_set_pipe_gain(ids, sst, mute);
-+			}
-+		}
-+	} else {
-+		pr_debug("Stream name=%s\n", dai->capture_widget->name);
-+		w = dai->capture_widget;
-+		list_for_each_entry(p, &w->sources, list_sink) {
-+			if (p->connected && !p->connected(w, p->sink))
-+				continue;
-+
-+			if (p->connect &&  p->source->power && is_sst_dapm_widget(p->source)) {
-+				struct sst_ids *ids = p->source->priv;
-+
-+				pr_debug("send gain for widget=%s\n", p->source->name);
-+				sst_set_pipe_gain(ids, sst, mute);
-+			}
-+		}
-+	}
-+	return 0;
-+}
-+
-+/**
-+ * sst_fill_module_list - populate the list of modules/gains for a pipe
-+ *
-+ *
-+ * Fills the widget pointer in the kcontrol private data, and also fills the
-+ * kcontrol pointer in the widget private data.
-+ *
-+ * Widget pointer is used to send the algo/gain in the .put() handler if the
-+ * widget is powerd on.
-+ *
-+ * Kcontrol pointer is used to send the algo/gain in the widget power ON/OFF
-+ * event handler. Each widget (pipe) has multiple algos stored in the algo_list.
-+ */
-+static int sst_fill_module_list(struct snd_kcontrol *kctl,
-+	 struct snd_soc_dapm_widget *w, int type)
-+{
-+	struct module *module = NULL;
-+	struct sst_ids *ids = w->priv;
-+
-+	module = devm_kzalloc(w->platform->dev, sizeof(*module), GFP_KERNEL);
-+	if (!module) {
-+		pr_err("kzalloc block failed\n");
-+		return -ENOMEM;
-+	}
-+
-+	if (type == SST_MODULE_GAIN) {
-+		struct sst_gain_mixer_control *mc = (void *)kctl->private_value;
-+
-+		mc->w = w;
-+		module->kctl = kctl;
-+		list_add_tail(&module->node, &ids->gain_list);
-+	} else if (type == SST_MODULE_ALGO) {
-+		struct sst_algo_control *bc = (void *)kctl->private_value;
-+
-+		bc->w = w;
-+		module->kctl = kctl;
-+		list_add_tail(&module->node, &ids->algo_list);
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * sst_fill_widget_module_info - fill list of gains/algos for the pipe
-+ * @widget:	pipe modelled as a DAPM widget
-+ *
-+ * Fill the list of gains/algos for the widget by looking at all the card
-+ * controls and comparing the name of the widget with the first part of control
-+ * name. First part of control name contains the pipe name (widget name).
-+ */
-+static int sst_fill_widget_module_info(struct snd_soc_dapm_widget *w,
-+	struct snd_soc_platform *platform)
-+{
-+	struct snd_kcontrol *kctl;
-+	int index, ret = 0;
-+	struct snd_card *card = platform->card->snd_card;
-+	char *idx;
-+
-+	down_read(&card->controls_rwsem);
-+
-+	list_for_each_entry(kctl, &card->controls, list) {
-+		idx = strstr(kctl->id.name, " ");
-+		if (idx == NULL)
-+			continue;
-+		index  = strlen(kctl->id.name) - strlen(idx);
-+		if (strstr(kctl->id.name, "volume") &&
-+		    !strncmp(kctl->id.name, w->name, index))
-+			ret = sst_fill_module_list(kctl, w, SST_MODULE_GAIN);
-+		else if (strstr(kctl->id.name, "params") &&
-+			 !strncmp(kctl->id.name, w->name, index))
-+			ret = sst_fill_module_list(kctl, w, SST_MODULE_ALGO);
-+		else if (strstr(kctl->id.name, "mute") &&
-+			 !strncmp(kctl->id.name, w->name, index)) {
-+			struct sst_gain_mixer_control *mc = (void *)kctl->private_value;
-+			mc->w = w;
-+		} else if (strstr(kctl->id.name, "interleaver") &&
-+			 !strncmp(kctl->id.name, w->name, index)) {
-+			struct sst_enum *e = (void *)kctl->private_value;
-+			e->w = w;
-+		} else if (strstr(kctl->id.name, "deinterleaver") &&
-+			 !strncmp(kctl->id.name, w->name, index)) {
-+			struct sst_enum *e = (void *)kctl->private_value;
-+			e->w = w;
-+		}
-+		if (ret < 0) {
-+			up_read(&card->controls_rwsem);
-+			return ret;
-+		}
-+	}
-+	up_read(&card->controls_rwsem);
-+	return 0;
-+}
-+
-+/**
-+ * sst_fill_linked_widgets - fill the parent pointer for the linked widget
-+ */
-+static void sst_fill_linked_widgets(struct snd_soc_platform *platform,
-+						struct sst_ids *ids)
-+{
-+	struct snd_soc_dapm_widget *w;
-+	struct snd_soc_dapm_context *dapm = &platform->dapm;
-+
-+	unsigned int len = strlen(ids->parent_wname);
-+	list_for_each_entry(w, &dapm->card->widgets, list) {
-+		if (!strncmp(ids->parent_wname, w->name, len)) {
-+			ids->parent_w = w;
-+			break;
-+		}
-+	}
-+}
-+
-+/**
-+ * sst_map_modules_to_pipe - fill algo/gains list for all pipes
-+ */
-+static int sst_map_modules_to_pipe(struct snd_soc_platform *platform)
-+{
-+	struct snd_soc_dapm_widget *w;
-+	struct snd_soc_dapm_context *dapm = &platform->dapm;
++	struct stream_info *stream;
 +	int ret = 0;
 +
-+	list_for_each_entry(w, &dapm->card->widgets, list) {
-+		if (w->platform && is_sst_dapm_widget(w) && (w->priv)) {
-+			struct sst_ids *ids = w->priv;
++	stream = get_stream_info(str_id);
++	if (stream) {
++		/* str_id is valid, so stream is alloacted */
++		ret = sst_free_stream(str_id);
++		if (ret)
++			sst_clean_stream(&sst_drv_ctx->streams[str_id]);
++		return ret;
++	}
++	return ret;
++}
 +
-+			pr_debug("widget type=%d name=%s\n", w->id, w->name);
-+			INIT_LIST_HEAD(&ids->algo_list);
-+			INIT_LIST_HEAD(&ids->gain_list);
-+			ret = sst_fill_widget_module_info(w, platform);
-+			if (ret < 0)
-+				return ret;
-+			/* fill linked widgets */
-+			if (ids->parent_wname !=  NULL)
-+				sst_fill_linked_widgets(platform, ids);
++/*
++ * sst_get_stream_allocated - this function gets a stream allocated with
++ * the given params
++ *
++ * @str_param : stream params
++ * @lib_dnld : pointer to pointer of lib downlaod struct
++ *
++ * This creates new stream id for a stream, in case lib is to be downloaded to
++ * DSP, it downloads that
++ */
++int sst_get_stream_allocated(struct snd_sst_params *str_param,
++		struct snd_sst_lib_download **lib_dnld)
++{
++	int retval, str_id;
++	struct sst_block *block;
++	struct snd_sst_alloc_response *response;
++	struct stream_info *str_info;
++
++	pr_debug("In %s\n", __func__);
++	block = sst_create_block(sst_drv_ctx, 0, 0);
++	if (block == NULL)
++		return -ENOMEM;
++
++	retval = sst_drv_ctx->ops->alloc_stream((char *) str_param, block);
++	str_id = retval;
++	if (retval < 0) {
++		pr_err("sst_alloc_stream failed %d\n", retval);
++		goto free_block;
++	}
++	pr_debug("Stream allocated %d\n", retval);
++	str_info = get_stream_info(str_id);
++	if (str_info == NULL) {
++		pr_err("get stream info returned null\n");
++		str_id = -EINVAL;
++		goto free_block;
++	}
++
++	/* Block the call for reply */
++	retval = sst_wait_timeout(sst_drv_ctx, block);
++	if (block->data) {
++		response = (struct snd_sst_alloc_response *)block->data;
++		retval = response->str_type.result;
++		if (!retval)
++			goto free_block;
++
++		pr_err("sst: FW alloc failed retval %d\n", retval);
++		if (retval == SST_ERR_STREAM_IN_USE) {
++			pr_err("sst:FW not in clean state, send free for:%d\n",
++					str_id);
++			sst_free_stream(str_id);
++			*lib_dnld = NULL;
++		}
++		else {
++			*lib_dnld = NULL;
++		}
++		str_id = -retval;
++	} else if (retval != 0) {
++		pr_err("sst: FW alloc failed retval %d\n", retval);
++		/* alloc failed, so reset the state to uninit */
++		str_info->status = STREAM_UN_INIT;
++		str_id = retval;
++	}
++free_block:
++	sst_free_block(sst_drv_ctx, block);
++	return str_id; /*will ret either error (in above if) or correct str id*/
++}
++
++/*
++ * sst_get_sfreq - this function returns the frequency of the stream
++ *
++ * @str_param : stream params
++ */
++int sst_get_sfreq(struct snd_sst_params *str_param)
++{
++	switch (str_param->codec) {
++	case SST_CODEC_TYPE_PCM:
++		return str_param->sparams.uc.pcm_params.sfreq;
++	case SST_CODEC_TYPE_AAC:
++		return str_param->sparams.uc.aac_params.externalsr;
++	case SST_CODEC_TYPE_MP3:
++		return 0;
++	default:
++		return -EINVAL;
++	}
++}
++
++/*
++ * sst_get_sfreq - this function returns the frequency of the stream
++ *
++ * @str_param : stream params
++ */
++int sst_get_num_channel(struct snd_sst_params *str_param)
++{
++	switch (str_param->codec) {
++	case SST_CODEC_TYPE_PCM:
++		return str_param->sparams.uc.pcm_params.num_chan;
++	case SST_CODEC_TYPE_MP3:
++		return str_param->sparams.uc.mp3_params.num_chan;
++	case SST_CODEC_TYPE_AAC:
++		return str_param->sparams.uc.aac_params.num_chan;
++	default:
++		return -EINVAL;
++	}
++}
++
++/*
++ * sst_get_stream - this function prepares for stream allocation
++ *
++ * @str_param : stream param
++ */
++int sst_get_stream(struct snd_sst_params *str_param)
++{
++	int retval;
++	struct stream_info *str_info;
++	struct snd_sst_lib_download *lib_dnld;
++
++	pr_debug("In %s\n", __func__);
++	/* stream is not allocated, we are allocating */
++	retval = sst_get_stream_allocated(str_param, &lib_dnld);
++
++	if  (retval <= 0) {
++		retval = -EIO;
++		goto err;
++	}
++	/* store sampling freq */
++	str_info = &sst_drv_ctx->streams[retval];
++	str_info->sfreq = sst_get_sfreq(str_param);
++
++err:
++	return retval;
++}
++
++/**
++* intel_sst_check_device - checks SST device
++*
++* This utility function checks the state of SST device and downlaods FW if
++* not done, or resumes the device if suspended
++*/
++int intel_sst_check_device(void)
++{
++	int retval = 0;
++
++	pr_debug("In %s\n", __func__);
++
++	pm_runtime_get_sync(sst_drv_ctx->dev);
++	atomic_inc(&sst_drv_ctx->pm_usage_count);
++
++	pr_debug("%s: count is %d now\n", __func__,
++				atomic_read(&sst_drv_ctx->pm_usage_count));
++
++	mutex_lock(&sst_drv_ctx->sst_lock);
++
++	if (sst_drv_ctx->sst_state == SST_RESET) {
++
++		/* FW is not downloaded */
++		pr_debug("DSP Downloading FW now...\n");
++		retval = sst_download_fw();
++		if (retval) {
++			pr_err("FW download fail %x\n", retval);
++			sst_drv_ctx->sst_state = SST_RESET;
++			mutex_unlock(&sst_drv_ctx->sst_lock);
++			sst_pm_runtime_put(sst_drv_ctx);
++			return retval;
 +		}
 +	}
++	mutex_unlock(&sst_drv_ctx->sst_lock);
++	return retval;
++}
++
++/*
++ * sst_open_pcm_stream - Open PCM interface
++ *
++ * @str_param: parameters of pcm stream
++ *
++ * This function is called by MID sound card driver to open
++ * a new pcm interface
++ */
++static int sst_open_pcm_stream(struct snd_sst_params *str_param)
++{
++	int retval;
++
++	if (!str_param)
++		return -EINVAL;
++
++	pr_debug("%s: doing rtpm_get\n", __func__);
++
++	retval = intel_sst_check_device();
++
++	if (retval)
++		return retval;
++	retval = sst_get_stream(str_param);
++	if (retval > 0) {
++		sst_drv_ctx->stream_cnt++;
++	} else {
++		pr_err("sst_get_stream returned err %d\n", retval);
++		sst_pm_runtime_put(sst_drv_ctx);
++	}
++
++	return retval;
++}
++
++static int sst_cdev_open(struct snd_sst_params *str_params,
++		struct sst_compress_cb *cb)
++{
++	int str_id, retval;
++	struct stream_info *stream;
++
++	pr_debug("%s: doing rtpm_get\n", __func__);
++
++	retval = intel_sst_check_device();
++	if (retval)
++		return retval;
++
++	str_id = sst_get_stream(str_params);
++	if (str_id > 0) {
++		pr_debug("stream allocated in sst_cdev_open %d\n", str_id);
++		stream = &sst_drv_ctx->streams[str_id];
++		stream->compr_cb = cb->compr_cb;
++		stream->compr_cb_param = cb->param;
++		stream->drain_notify = cb->drain_notify;
++		stream->drain_cb_param = cb->drain_cb_param;
++	} else {
++		pr_err("stream encountered error during alloc %d\n", str_id);
++		str_id = -EINVAL;
++		sst_pm_runtime_put(sst_drv_ctx);
++	}
++	return str_id;
++}
++
++static int sst_cdev_close(unsigned int str_id)
++{
++	int retval;
++	struct stream_info *stream;
++
++	pr_debug("%s: Entry\n", __func__);
++	stream = get_stream_info(str_id);
++	if (!stream) {
++		pr_err("stream info is NULL for str %d!!!\n", str_id);
++		return -EINVAL;
++	}
++
++	if (stream->status == STREAM_RESET) {
++		/* silently fail here as we have cleaned the stream */
++		pr_debug("stream in reset state...\n");
++		stream->status = STREAM_UN_INIT;
++
++		retval = 0;
++		goto put;
++	}
++
++	retval = sst_free_stream(str_id);
++put:
++	stream->compr_cb_param = NULL;
++	stream->compr_cb = NULL;
++
++	/* The free_stream will return a error if there is no stream to free,
++	(i.e. the alloc failure case). And in this case the open does a put in
++	the error scenario, so skip in this case.
++		In the close we need to handle put in the success scenario and
++	the timeout error(EBUSY) scenario. */
++	if (!retval || (retval == -EBUSY))
++		sst_pm_runtime_put(sst_drv_ctx);
++	else
++		pr_err("%s: free stream returned err %d\n", __func__, retval);
++
++	pr_debug("%s: End\n", __func__);
++	return retval;
++
++}
++
++static int sst_cdev_ack(unsigned int str_id, unsigned long bytes)
++{
++	struct stream_info *stream;
++	struct snd_sst_tstamp fw_tstamp = {0,};
++	int offset;
++	void __iomem *addr;
++
++	pr_debug("sst:  ackfor %d\n", str_id);
++	stream = get_stream_info(str_id);
++	if (!stream)
++		return -EINVAL;
++
++	/* update bytes sent */
++	stream->cumm_bytes += bytes;
++	pr_debug("bytes copied %d inc by %ld\n", stream->cumm_bytes, bytes);
++
++	memcpy_fromio(&fw_tstamp,
++		((void *)(sst_drv_ctx->mailbox + sst_drv_ctx->tstamp)
++		+(str_id * sizeof(fw_tstamp))),
++		sizeof(fw_tstamp));
++
++	fw_tstamp.bytes_copied = stream->cumm_bytes;
++	pr_debug("bytes sent to fw %llu inc by %ld\n", fw_tstamp.bytes_copied,
++							 bytes);
++
++	addr =  ((void *)(sst_drv_ctx->mailbox + sst_drv_ctx->tstamp)) +
++			(str_id * sizeof(fw_tstamp));
++	offset =  offsetof(struct snd_sst_tstamp, bytes_copied);
++	sst_shim_write(addr, offset, fw_tstamp.bytes_copied);
++	return 0;
++
++}
++
++static int sst_cdev_set_metadata(unsigned int str_id,
++				struct snd_compr_metadata *metadata)
++{
++	int retval = 0, pvt_id, len;
++	struct ipc_post *msg = NULL;
++	struct stream_info *str_info;
++	struct ipc_dsp_hdr dsp_hdr;
++
++	pr_debug("set metadata for stream %d\n", str_id);
++
++	str_info = get_stream_info(str_id);
++	if (!str_info)
++		return -EINVAL;
++
++	if (sst_create_ipc_msg(&msg, 1))
++		return -ENOMEM;
++
++	pvt_id = sst_assign_pvt_id(sst_drv_ctx);
++	pr_debug("pvt id = %d\n", pvt_id);
++	pr_debug("pipe id = %d\n", str_info->pipe_id);
++	sst_fill_header_mrfld(&msg->mrfld_header,
++		IPC_CMD, str_info->task_id, 1, pvt_id);
++
++	len = sizeof(*metadata) + sizeof(dsp_hdr);
++	msg->mrfld_header.p.header_low_payload = len;
++	sst_fill_header_dsp(&dsp_hdr, IPC_IA_SET_STREAM_PARAMS_MRFLD,
++			str_info->pipe_id, sizeof(*metadata));
++	memcpy(msg->mailbox_data, &dsp_hdr, sizeof(dsp_hdr));
++	memcpy(msg->mailbox_data + sizeof(dsp_hdr),
++			metadata, sizeof(*metadata));
++
++	sst_drv_ctx->ops->sync_post_message(msg);
++	return retval;
++}
++
++static int sst_cdev_control(unsigned int cmd, unsigned int str_id)
++{
++	pr_debug("recieved cmd %d on stream %d\n", cmd, str_id);
++
++	if (sst_drv_ctx->sst_state != SST_FW_RUNNING)
++		return 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		return sst_pause_stream(str_id);
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		return sst_resume_stream(str_id);
++	case SNDRV_PCM_TRIGGER_START: {
++		struct stream_info *str_info;
++		str_info = get_stream_info(str_id);
++		if (!str_info)
++			return -EINVAL;
++		str_info->prev = str_info->status;
++		str_info->status = STREAM_RUNNING;
++		return sst_start_stream(str_id);
++	}
++	case SNDRV_PCM_TRIGGER_STOP:
++		return sst_drop_stream(str_id);
++	case SND_COMPR_TRIGGER_DRAIN:
++		return sst_drain_stream(str_id, false);
++	case SND_COMPR_TRIGGER_NEXT_TRACK:
++		return sst_next_track();
++	case SND_COMPR_TRIGGER_PARTIAL_DRAIN:
++		return sst_drain_stream(str_id, true);
++	default:
++		return -EINVAL;
++	}
++}
++
++static int sst_cdev_tstamp(unsigned int str_id, struct snd_compr_tstamp *tstamp)
++{
++	struct snd_sst_tstamp fw_tstamp = {0,};
++	struct stream_info *stream;
++
++	memcpy_fromio(&fw_tstamp,
++		((void *)(sst_drv_ctx->mailbox + sst_drv_ctx->tstamp)
++		+(str_id * sizeof(fw_tstamp))),
++		sizeof(fw_tstamp));
++
++	stream = get_stream_info(str_id);
++	if (!stream)
++		return -EINVAL;
++	pr_debug("rb_counter %llu in bytes\n", fw_tstamp.ring_buffer_counter);
++
++	tstamp->copied_total = fw_tstamp.ring_buffer_counter;
++	tstamp->pcm_frames = fw_tstamp.frames_decoded;
++	tstamp->pcm_io_frames = div_u64(fw_tstamp.hardware_counter,
++			(u64)((stream->num_ch) * SST_GET_BYTES_PER_SAMPLE(24)));
++	tstamp->sampling_rate = fw_tstamp.sampling_frequency;
++	pr_debug("PCM  = %u\n", tstamp->pcm_io_frames);
++	pr_debug("Pointer Query on strid = %d  copied_total %d, decodec %d\n",
++		str_id, tstamp->copied_total, tstamp->pcm_frames);
++	pr_debug("rendered %d\n", tstamp->pcm_io_frames);
 +	return 0;
 +}
 +
-+int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform)
++static int sst_cdev_caps(struct snd_compr_caps *caps)
 +{
-+	int i, ret = 0;
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(platform);
-+
-+	sst->byte_stream = devm_kzalloc(platform->dev,
-+					SST_MAX_BIN_BYTES, GFP_KERNEL);
-+	if (!sst->byte_stream) {
-+		pr_err("%s: kzalloc failed\n", __func__);
-+		return -ENOMEM;
-+	}
-+	sst->widget = devm_kzalloc(platform->dev,
-+				   SST_NUM_WIDGETS * sizeof(*sst->widget),
-+				   GFP_KERNEL);
-+	if (!sst->widget) {
-+		pr_err("%s: kzalloc failed\n", __func__);
-+		return -ENOMEM;
-+	}
-+
-+	snd_soc_dapm_new_controls(&platform->dapm, sst_dapm_widgets,
-+			ARRAY_SIZE(sst_dapm_widgets));
-+	snd_soc_dapm_add_routes(&platform->dapm, intercon,
-+			ARRAY_SIZE(intercon));
-+	snd_soc_dapm_new_widgets(platform->dapm.card);
-+
-+	for (i = 0; i < SST_NUM_GAINS; i++) {
-+		sst_gains[i].mute = SST_GAIN_MUTE_DEFAULT;
-+		sst_gains[i].l_gain = SST_GAIN_VOLUME_DEFAULT;
-+		sst_gains[i].r_gain = SST_GAIN_VOLUME_DEFAULT;
-+		sst_gains[i].ramp_duration = SST_GAIN_RAMP_DURATION_DEFAULT;
-+	}
-+
-+	snd_soc_add_platform_controls(platform, sst_gain_controls,
-+			ARRAY_SIZE(sst_gain_controls));
-+
-+	snd_soc_add_platform_controls(platform, sst_algo_controls,
-+			ARRAY_SIZE(sst_algo_controls));
-+	snd_soc_add_platform_controls(platform, sst_slot_controls,
-+			ARRAY_SIZE(sst_slot_controls));
-+
-+	ret = sst_map_modules_to_pipe(platform);
-+
-+	return ret;
++	caps->num_codecs = NUM_CODEC;
++	caps->min_fragment_size = MIN_FRAGMENT_SIZE;  /* 50KB */
++	caps->max_fragment_size = MAX_FRAGMENT_SIZE;  /* 1024KB */
++	caps->min_fragments = MIN_FRAGMENT;
++	caps->max_fragments = MAX_FRAGMENT;
++	caps->codecs[0] = SND_AUDIOCODEC_MP3;
++	caps->codecs[1] = SND_AUDIOCODEC_AAC;
++	return 0;
 +}
-diff --git a/sound/soc/intel/platform-libs/sst_widgets.h b/sound/soc/intel/platform-libs/sst_widgets.h
-new file mode 100644
-index 0000000..25deae6
---- /dev/null
-+++ b/sound/soc/intel/platform-libs/sst_widgets.h
-@@ -0,0 +1,378 @@
++
++static int sst_cdev_codec_caps(struct snd_compr_codec_caps *codec)
++{
++
++	if (codec->codec == SND_AUDIOCODEC_MP3) {
++		codec->num_descriptors = 2;
++		codec->descriptor[0].max_ch = 2;
++		codec->descriptor[0].sample_rates[0] = 48000;
++		codec->descriptor[0].sample_rates[1] = 44100;
++		codec->descriptor[0].sample_rates[2] = 32000;
++		codec->descriptor[0].sample_rates[3] = 16000;
++		codec->descriptor[0].sample_rates[4] = 8000;
++		codec->descriptor[0].num_sample_rates = 5;
++		codec->descriptor[0].bit_rate[0] = 320; /* 320kbps */
++		codec->descriptor[0].bit_rate[1] = 192;
++		codec->descriptor[0].num_bitrates = 2;
++		codec->descriptor[0].profiles = 0;
++		codec->descriptor[0].modes = SND_AUDIOCHANMODE_MP3_STEREO;
++		codec->descriptor[0].formats = 0;
++	} else if (codec->codec == SND_AUDIOCODEC_AAC) {
++		codec->num_descriptors = 2;
++		codec->descriptor[1].max_ch = 2;
++		codec->descriptor[0].sample_rates[0] = 48000;
++		codec->descriptor[0].sample_rates[1] = 44100;
++		codec->descriptor[0].sample_rates[2] = 32000;
++		codec->descriptor[0].sample_rates[3] = 16000;
++		codec->descriptor[0].sample_rates[4] = 8000;
++		codec->descriptor[0].num_sample_rates = 5;
++		codec->descriptor[1].bit_rate[0] = 320; /* 320kbps */
++		codec->descriptor[1].bit_rate[1] = 192;
++		codec->descriptor[1].num_bitrates = 2;
++		codec->descriptor[1].profiles = 0;
++		codec->descriptor[1].modes = 0;
++		codec->descriptor[1].formats =
++			(SND_AUDIOSTREAMFORMAT_MP4ADTS |
++				SND_AUDIOSTREAMFORMAT_RAW);
++	} else {
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++void sst_cdev_fragment_elapsed(int str_id)
++{
++	struct stream_info *stream;
++
++	pr_debug("fragment elapsed from firmware for str_id %d\n", str_id);
++	stream = &sst_drv_ctx->streams[str_id];
++	if (stream->compr_cb)
++		stream->compr_cb(stream->compr_cb_param);
++}
++
 +/*
-+ *  sst_widgets.h - Intel helpers to generate FW widgets
++ * sst_close_pcm_stream - Close PCM interface
 + *
-+ *  Copyright (C) 2013-14 Intel Corp
-+ *  Author: Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
++ * @str_id: stream id to be closed
++ *
++ * This function is called by MID sound card driver to close
++ * an existing pcm interface
++ */
++static int sst_close_pcm_stream(unsigned int str_id)
++{
++	struct stream_info *stream;
++	int retval = 0;
++
++	pr_debug("%s: Entry\n", __func__);
++	stream = get_stream_info(str_id);
++	if (!stream) {
++		pr_err("stream info is NULL for str %d!!!\n", str_id);
++		return -EINVAL;
++	}
++
++	if (stream->status == STREAM_RESET) {
++		/* silently fail here as we have cleaned the stream */
++		pr_debug("stream in reset state...\n");
++
++		retval = 0;
++		goto put;
++	}
++
++	retval = free_stream_context(str_id);
++put:
++	stream->pcm_substream = NULL;
++	stream->status = STREAM_UN_INIT;
++	stream->period_elapsed = NULL;
++	sst_drv_ctx->stream_cnt--;
++
++	/* The free_stream will return a error if there is no stream to free,
++	(i.e. the alloc failure case). And in this case the open does a put in
++	the error scenario, so skip in this case.
++		In the close we need to handle put in the success scenario and
++	the timeout error(EBUSY) scenario. */
++	if (!retval || (retval == -EBUSY))
++		sst_pm_runtime_put(sst_drv_ctx);
++	else
++		pr_err("%s: free stream returned err %d\n", __func__, retval);
++
++	pr_debug("%s: Exit\n", __func__);
++	return 0;
++}
++
++static inline int sst_calc_tstamp(struct pcm_stream_info *info,
++		struct snd_pcm_substream *substream,
++		struct snd_sst_tstamp *fw_tstamp)
++{
++	size_t delay_bytes, delay_frames;
++	size_t buffer_sz;
++	u32 pointer_bytes, pointer_samples;
++
++	pr_debug("mrfld ring_buffer_counter %llu in bytes\n",
++			fw_tstamp->ring_buffer_counter);
++	pr_debug("mrfld hardware_counter %llu in bytes\n",
++			 fw_tstamp->hardware_counter);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		delay_bytes = (size_t) (fw_tstamp->ring_buffer_counter -
++					fw_tstamp->hardware_counter);
++	else
++		delay_bytes = (size_t) (fw_tstamp->hardware_counter -
++					fw_tstamp->ring_buffer_counter);
++	delay_frames = bytes_to_frames(substream->runtime, delay_bytes);
++	buffer_sz = snd_pcm_lib_buffer_bytes(substream);
++	div_u64_rem(fw_tstamp->ring_buffer_counter, buffer_sz, &pointer_bytes);
++	pointer_samples = bytes_to_samples(substream->runtime, pointer_bytes);
++
++	pr_debug("pcm delay %zu in bytes\n", delay_bytes);
++
++	info->buffer_ptr = pointer_samples / substream->runtime->channels;
++
++	info->pcm_delay = delay_frames / substream->runtime->channels;
++	pr_debug("buffer ptr %llu pcm_delay rep: %llu\n",
++			info->buffer_ptr, info->pcm_delay);
++	return 0;
++}
++
++static int sst_read_timestamp(struct pcm_stream_info *info)
++{
++	struct stream_info *stream;
++	struct snd_pcm_substream *substream;
++	struct snd_sst_tstamp fw_tstamp;
++	unsigned int str_id;
++
++	str_id = info->str_id;
++	stream = get_stream_info(str_id);
++	if (!stream)
++		return -EINVAL;
++
++	if (!stream->pcm_substream)
++		return -EINVAL;
++	substream = stream->pcm_substream;
++
++	memcpy_fromio(&fw_tstamp,
++		((void *)(sst_drv_ctx->mailbox + sst_drv_ctx->tstamp)
++			+ (str_id * sizeof(fw_tstamp))),
++		sizeof(fw_tstamp));
++	return sst_calc_tstamp(info, substream, &fw_tstamp);
++}
++
++/*
++ * sst_device_control - Set Control params
++ *
++ * @cmd: control cmd to be set
++ * @arg: command argument
++ *
++ * This function is called by MID sound card driver to set
++ * SST/Sound card controls for an opened stream.
++ * This is registered with MID driver
++ */
++static int sst_device_control(int cmd, void *arg)
++{
++	int retval = 0, str_id = 0;
++
++	if (sst_drv_ctx->sst_state != SST_FW_RUNNING)
++		return 0;
++
++	switch (cmd) {
++	case SST_SND_START: {
++		struct stream_info *str_info;
++		int ipc;
++		str_id = *(int *)arg;
++		str_info = get_stream_info(str_id);
++		if (!str_info)
++			return -EINVAL;
++		ipc = IPC_IA_START_STREAM;
++		str_info->prev = str_info->status;
++		str_info->status = STREAM_RUNNING;
++		sst_start_stream(str_id);
++		break;
++	}
++	case SST_SND_DROP: {
++		struct stream_info *str_info;
++		int ipc;
++		str_id = *(int *)arg;
++		str_info = get_stream_info(str_id);
++		if (!str_info)
++			return -EINVAL;
++		ipc = IPC_IA_DROP_STREAM;
++		str_info->prev = STREAM_UN_INIT;
++		str_info->status = STREAM_INIT;
++		retval = sst_drop_stream(str_id);
++		break;
++	}
++	case SST_SND_STREAM_INIT: {
++		struct pcm_stream_info *str_info;
++		struct stream_info *stream;
++
++		pr_debug("stream init called\n");
++		str_info = (struct pcm_stream_info *)arg;
++		str_id = str_info->str_id;
++		stream = get_stream_info(str_id);
++		if (!stream) {
++			retval = -EINVAL;
++			break;
++		}
++		pr_debug("setting the period ptrs\n");
++		stream->pcm_substream = str_info->mad_substream;
++		stream->period_elapsed = str_info->period_elapsed;
++		stream->sfreq = str_info->sfreq;
++		stream->prev = stream->status;
++		stream->status = STREAM_INIT;
++		pr_debug("pcm_substream %p, period_elapsed %p, sfreq %d, status %d\n",
++				stream->pcm_substream, stream->period_elapsed, stream->sfreq, stream->status);
++		break;
++	}
++
++	case SST_SND_BUFFER_POINTER: {
++		struct pcm_stream_info *stream_info;
++
++		stream_info = (struct pcm_stream_info *)arg;
++		retval = sst_read_timestamp(stream_info);
++		pr_debug("pointer %llu, delay %llu\n",
++			stream_info->buffer_ptr, stream_info->pcm_delay);
++		break;
++	}
++	default:
++		/* Illegal case */
++		pr_warn("illegal req\n");
++		return -EINVAL;
++	}
++
++	return retval;
++}
++
++/*
++ * sst_set_generic_params - Set generic params
++ *
++ * @cmd: control cmd to be set
++ * @arg: command argument
++ *
++ * This function is called by MID sound card driver to configure
++ * SST runtime params.
++ */
++static int sst_set_generic_params(enum sst_controls cmd, void *arg)
++{
++	int ret_val = 0;
++	pr_debug("Enter:%s, cmd:%d\n", __func__, cmd);
++
++	if (NULL == arg)
++		return -EINVAL;
++
++	switch (cmd) {
++	case SST_SET_BYTE_STREAM: {
++		ret_val = intel_sst_check_device();
++		if (ret_val)
++			return ret_val;
++
++		ret_val = sst_send_byte_stream_mrfld(arg);
++		sst_pm_runtime_put(sst_drv_ctx);
++		break;
++	}
++	default:
++		pr_err("Invalid cmd request:%d\n", cmd);
++		ret_val = -EINVAL;
++	}
++	return ret_val;
++}
++
++static struct sst_ops pcm_ops = {
++	.open = sst_open_pcm_stream,
++	.device_control = sst_device_control,
++	.set_generic_params = sst_set_generic_params,
++	.close = sst_close_pcm_stream,
++};
++
++static struct compress_sst_ops compr_ops = {
++	.open = sst_cdev_open,
++	.close = sst_cdev_close,
++	.control = sst_cdev_control,
++	.tstamp = sst_cdev_tstamp,
++	.ack = sst_cdev_ack,
++	.get_caps = sst_cdev_caps,
++	.get_codec_caps = sst_cdev_codec_caps,
++	.set_metadata = sst_cdev_set_metadata,
++};
++
++
++static struct sst_device sst_dsp_device = {
++	.name = "Intel(R) SST LPE",
++	.dev = NULL,
++	.ops = &pcm_ops,
++	.compr_ops = &compr_ops,
++};
++
++/*
++ * register_sst - function to register DSP
++ *
++ * This functions registers DSP with the platform driver
++ */
++int register_sst(struct device *dev)
++{
++	int ret_val;
++	sst_dsp_device.dev = dev;
++	ret_val = sst_register_dsp(&sst_dsp_device);
++	if (ret_val)
++		pr_err("Unable to register DSP with platform driver\n");
++
++	return ret_val;
++}
++
++int unregister_sst(struct device *dev)
++{
++	return sst_unregister_dsp(&sst_dsp_device);
++}
+diff --git a/sound/soc/intel/sst/sst_ipc.c b/sound/soc/intel/sst/sst_ipc.c
+new file mode 100644
+index 0000000..64dd3df
+--- /dev/null
++++ b/sound/soc/intel/sst/sst_ipc.c
+@@ -0,0 +1,388 @@
++/*
++ *  sst_ipc.c - Intel SST Driver for audio engine
++ *
++ *  Copyright (C) 2008-14 Intel Corporation
++ *  Authors:	Vinod Koul <vinod.koul@intel.com>
++ *		Harsha Priya <priya.harsha@intel.com>
++ *		Dharageswari R <dharageswari.r@intel.com>
++ *		KP Jeeja <jeeja.kp@intel.com>
 + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
 + *  This program is free software; you can redistribute it and/or modify
@@ -2160,1627 +2234,2068 @@ index 0000000..25deae6
 + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + */
 +
-+#ifndef __SST_WIDGETS_H__
-+#define __SST_WIDGETS_H__
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 +
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
++#include <linux/pci.h>
++#include <linux/firmware.h>
++#include <linux/sched.h>
++#include <linux/delay.h>
++#include "../sst_platform.h"
++#include "../platform_ipc_v2.h"
++#include "sst.h"
 +
-+#define SST_MODULE_GAIN 1
-+#define SST_MODULE_ALGO 2
++struct sst_block *sst_create_block(struct intel_sst_drv *ctx,
++					u32 msg_id, u32 drv_id)
++{
++	struct sst_block *msg = NULL;
 +
-+#define SST_FMT_MONO 0
-+#define SST_FMT_STEREO 3
-+
-+/* physical SSP numbers */
-+enum {
-+	SST_SSP0 = 0,
-+	SST_SSP1,
-+	SST_SSP2,
-+	SST_SSP_LAST = SST_SSP2,
-+};
-+
-+#define SST_NUM_SSPS		(SST_SSP_LAST + 1)	/* physical SSPs */
-+#define SST_MAX_SSP_MUX		2			/* single SSP muxed between pipes */
-+#define SST_MAX_SSP_DOMAINS	2			/* domains present in each pipe */
-+
-+struct module {
-+	struct snd_kcontrol *kctl;
-+	struct list_head node;
-+};
-+
-+struct sst_ssp_config {
-+	u8 ssp_id;
-+	u8 bits_per_slot;
-+	u8 slots;
-+	u8 ssp_mode;
-+	u8 pcm_mode;
-+	u8 duplex;
-+	u8 ssp_protocol;
-+	u8 fs_frequency;
-+	u8 active_slot_map;
-+	u8 start_delay;
-+	u16 fs_width;
-+};
-+
-+struct sst_ssp_cfg {
-+	const u8 ssp_number;
-+	const int *mux_shift;
-+	const int (*domain_shift)[SST_MAX_SSP_MUX];
-+	const struct sst_ssp_config (*ssp_config)[SST_MAX_SSP_MUX][SST_MAX_SSP_DOMAINS];
-+};
-+
-+struct sst_ids {
-+	u16 location_id;
-+	u16 module_id;
-+	u8  task_id;
-+	u8  format;
-+	u8  reg;
-+	const char *parent_wname;
-+	struct snd_soc_dapm_widget *parent_w;
-+	struct list_head algo_list;
-+	struct list_head gain_list;
-+	const struct sst_pcm_format *pcm_fmt;
-+};
-+
-+
-+#define SST_AIF_IN(wname, wevent)							\
-+{	.id = snd_soc_dapm_aif_in, .name = wname, .sname = NULL,			\
-+	.reg = SND_SOC_NOPM, .shift = 0,					\
-+	.event = wevent, .event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD,	\
-+	.priv = (void *)&(struct sst_ids) { .task_id = 0, .location_id = 0 }		\
-+}
-+
-+#define SST_AIF_OUT(wname, wevent)							\
-+{	.id = snd_soc_dapm_aif_out, .name = wname, .sname = NULL,			\
-+	.reg = SND_SOC_NOPM, .shift = 0,						\
-+	.event = wevent, .event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD,	\
-+	.priv = (void *)&(struct sst_ids) { .task_id = 0, .location_id = 0 }		\
-+}
-+
-+#define SST_INPUT(wname, wevent)							\
-+{	.id = snd_soc_dapm_input, .name = wname, .sname = NULL,				\
-+	.reg = SND_SOC_NOPM, .shift = 0,						\
-+	.event = wevent, .event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD,	\
-+	.priv = (void *)&(struct sst_ids) { .task_id = 0, .location_id = 0 }		\
-+}
-+
-+#define SST_OUTPUT(wname, wevent)							\
-+{	.id = snd_soc_dapm_output, .name = wname, .sname = NULL,			\
-+	.reg = SND_SOC_NOPM, .shift = 0,						\
-+	.event = wevent, .event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD,	\
-+	.priv = (void *)&(struct sst_ids) { .task_id = 0, .location_id = 0 }		\
-+}
-+
-+#define SST_DAPM_OUTPUT(wname, wloc_id, wtask_id, wformat, wevent)                      \
-+{	.id = snd_soc_dapm_output, .name = wname, .sname = NULL,                        \
-+	.reg = SND_SOC_NOPM, .shift = 0,						\
-+	.event = wevent, .event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD,   \
-+	.priv = (void *)&(struct sst_ids) { .location_id = wloc_id, .task_id = wtask_id,\
-+						.pcm_fmt = wformat, }			\
-+}
-+
-+#define SST_PATH(wname, wtask, wloc_id, wevent, wflags)					\
-+{	.id = snd_soc_dapm_pga, .name = wname, .reg = SND_SOC_NOPM, .shift = 0,		\
-+	.kcontrol_news = NULL, .num_kcontrols = 0,				\
-+	.event = wevent, .event_flags = wflags,						\
-+	.priv = (void *)&(struct sst_ids) { .task_id = wtask, .location_id = wloc_id, }	\
-+}
-+
-+#define SST_LINKED_PATH(wname, wtask, wloc_id, linked_wname, wevent, wflags)		\
-+{	.id = snd_soc_dapm_pga, .name = wname, .reg = SND_SOC_NOPM, .shift = 0,		\
-+	.kcontrol_news = NULL, .num_kcontrols = 0,				\
-+	.event = wevent, .event_flags = wflags,						\
-+	.priv = (void *)&(struct sst_ids) { .task_id = wtask, .location_id = wloc_id,	\
-+					.parent_wname = linked_wname}			\
-+}
-+
-+#define SST_PATH_MEDIA_LOOP(wname, wtask, wloc_id, wformat, wevent, wflags)             \
-+{	.id = snd_soc_dapm_pga, .name = wname, .reg = SND_SOC_NOPM, .shift = 0,         \
-+	.kcontrol_news = NULL, .num_kcontrols = 0,                         \
-+	.event = wevent, .event_flags = wflags,                                         \
-+	.priv = (void *)&(struct sst_ids) { .task_id = wtask, .location_id = wloc_id,	\
-+					    .format = wformat,}				\
-+}
-+
-+/* output is triggered before input */
-+#define SST_PATH_INPUT(name, task_id, loc_id, event)					\
-+	SST_PATH(name, task_id, loc_id, event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
-+
-+#define SST_PATH_LINKED_INPUT(name, task_id, loc_id, linked_wname, event)		\
-+	SST_LINKED_PATH(name, task_id, loc_id, linked_wname, event,			\
-+					SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
-+
-+#define SST_PATH_OUTPUT(name, task_id, loc_id, event)					\
-+	SST_PATH(name, task_id, loc_id, event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD)
-+
-+#define SST_PATH_LINKED_OUTPUT(name, task_id, loc_id, linked_wname, event)		\
-+	SST_LINKED_PATH(name, task_id, loc_id, linked_wname, event,			\
-+					SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD)
-+
-+#define SST_PATH_MEDIA_LOOP_OUTPUT(name, task_id, loc_id, format, event)		\
-+	SST_PATH_MEDIA_LOOP(name, task_id, loc_id, format, event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD)
-+
-+
-+#define SST_SWM_MIXER(wname, wreg, wtask, wloc_id, wcontrols, wevent)			\
-+{	.id = snd_soc_dapm_mixer, .name = wname, .reg = SND_SOC_NOPM, .shift = 0,	\
-+	.kcontrol_news = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols),\
-+	.event = wevent, .event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD |	\
-+					SND_SOC_DAPM_POST_REG,				\
-+	.priv = (void *)&(struct sst_ids) { .task_id = wtask, .location_id = wloc_id,	\
-+					    .reg = wreg }				\
-+}
-+
-+enum sst_gain_kcontrol_type {
-+	SST_GAIN_TLV,
-+	SST_GAIN_MUTE,
-+	SST_GAIN_RAMP_DURATION,
-+};
-+
-+struct sst_gain_mixer_control {
-+	bool stereo;
-+	enum sst_gain_kcontrol_type type;
-+	struct sst_gain_value *gain_val;
-+	int max;
-+	int min;
-+	u16 instance_id;
-+	u16 module_id;
-+	u16 pipe_id;
-+	u16 task_id;
-+	char pname[44];
-+	struct snd_soc_dapm_widget *w;
-+};
-+
-+struct sst_gain_value {
-+	u16 ramp_duration;
-+	s16 l_gain;
-+	s16 r_gain;
-+	bool mute;
-+};
-+
-+#define SST_GAIN_VOLUME_DEFAULT		(-1440)
-+#define SST_GAIN_RAMP_DURATION_DEFAULT	5 /* timeconstant */
-+#define SST_GAIN_MUTE_DEFAULT		true
-+
-+#define SST_GAIN_KCONTROL_TLV(xname, xhandler_get, xhandler_put, \
-+			      xmod, xpipe, xinstance, xtask, tlv_array, xgain_val, \
-+			      xmin, xmax, xpname) \
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
-+		  SNDRV_CTL_ELEM_ACCESS_READWRITE, \
-+	.tlv.p = (tlv_array), \
-+	.info = sst_gain_ctl_info,\
-+	.get = xhandler_get, .put = xhandler_put, \
-+	.private_value = (unsigned long)&(struct sst_gain_mixer_control) \
-+	{ .stereo = true, .max = xmax, .min = xmin, .type = SST_GAIN_TLV, \
-+	  .module_id = xmod, .pipe_id = xpipe, .task_id = xtask,\
-+	  .instance_id = xinstance, .gain_val = xgain_val, .pname = xpname}
-+
-+#define SST_GAIN_KCONTROL_INT(xname, xhandler_get, xhandler_put, \
-+			      xmod, xpipe, xinstance, xtask, xtype, xgain_val, \
-+			      xmin, xmax, xpname) \
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = sst_gain_ctl_info, \
-+	.get = xhandler_get, .put = xhandler_put, \
-+	.private_value = (unsigned long)&(struct sst_gain_mixer_control) \
-+	{ .stereo = false, .max = xmax, .min = xmin, .type = xtype, \
-+	  .module_id = xmod, .pipe_id = xpipe, .task_id = xtask,\
-+	  .instance_id = xinstance, .gain_val = xgain_val, .pname =  xpname}
-+
-+#define SST_GAIN_KCONTROL_BOOL(xname, xhandler_get, xhandler_put,\
-+			       xmod, xpipe, xinstance, xtask, xgain_val, xpname) \
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = snd_soc_info_bool_ext, \
-+	.get = xhandler_get, .put = xhandler_put, \
-+	.private_value = (unsigned long)&(struct sst_gain_mixer_control) \
-+	{ .stereo = false, .type = SST_GAIN_MUTE, \
-+	  .module_id = xmod, .pipe_id = xpipe, .task_id = xtask,\
-+	  .instance_id = xinstance, .gain_val = xgain_val, .pname = xpname}
-+
-+#define SST_CONTROL_NAME(xpname, xmname, xinstance, xtype) \
-+	xpname " " xmname " " #xinstance " " xtype
-+
-+#define SST_COMBO_CONTROL_NAME(xpname, xmname, xinstance, xtype, xsubmodule) \
-+	xpname " " xmname " " #xinstance " " xtype " " xsubmodule
-+
-+/*
-+ * 3 Controls for each Gain module
-+ * e.g.	- pcm0_in gain 0 volume
-+ *	- pcm0_in gain 0 rampduration
-+ *	- pcm0_in gain 0 mute
-+ */
-+#define SST_GAIN_KCONTROLS(xpname, xmname, xmin_gain, xmax_gain, xmin_tc, xmax_tc, \
-+			   xhandler_get, xhandler_put, \
-+			   xmod, xpipe, xinstance, xtask, tlv_array, xgain_val) \
-+	{ SST_GAIN_KCONTROL_INT(SST_CONTROL_NAME(xpname, xmname, xinstance, "rampduration"), \
-+		xhandler_get, xhandler_put, xmod, xpipe, xinstance, xtask, SST_GAIN_RAMP_DURATION, \
-+		xgain_val, xmin_tc, xmax_tc, xpname) }, \
-+	{ SST_GAIN_KCONTROL_BOOL(SST_CONTROL_NAME(xpname, xmname, xinstance, "mute"), \
-+		xhandler_get, xhandler_put, xmod, xpipe, xinstance, xtask, \
-+		xgain_val, xpname) } ,\
-+	{ SST_GAIN_KCONTROL_TLV(SST_CONTROL_NAME(xpname, xmname, xinstance, "volume"), \
-+		xhandler_get, xhandler_put, xmod, xpipe, xinstance, xtask, tlv_array, \
-+		xgain_val, xmin_gain, xmax_gain, xpname) }
-+
-+#define SST_GAIN_TC_MIN		5
-+#define SST_GAIN_TC_MAX		5000
-+#define SST_GAIN_MIN_VALUE	-1440 /* in 0.1 DB units */
-+#define SST_GAIN_MAX_VALUE	360
-+
-+enum sst_algo_kcontrol_type {
-+	SST_ALGO_PARAMS,
-+	SST_ALGO_BYPASS,
-+};
-+
-+struct sst_algo_control {
-+	enum sst_algo_kcontrol_type type;
-+	int max;
-+	u16 module_id;
-+	u16 pipe_id;
-+	u16 task_id;
-+	u16 cmd_id;
-+	bool bypass;
-+	unsigned char *params;
-+	struct snd_soc_dapm_widget *w;
-+};
-+
-+/* size of the control = size of params + size of length field */
-+#define SST_ALGO_CTL_VALUE(xcount, xtype, xpipe, xmod, xtask, xcmd)			\
-+	(struct sst_algo_control){							\
-+		.max = xcount + sizeof(u16), .type = xtype, .module_id = xmod,			\
-+		.pipe_id = xpipe, .task_id = xtask, .cmd_id = xcmd,			\
++	pr_debug("in %s\n", __func__);
++	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
++	if (!msg) {
++		pr_err("kzalloc block failed\n");
++		return NULL;
 +	}
++	msg->condition = false;
++	msg->on = true;
++	msg->msg_id = msg_id;
++	msg->drv_id = drv_id;
++	spin_lock_bh(&ctx->block_lock);
++	list_add_tail(&msg->node, &ctx->block_list);
++	spin_unlock_bh(&ctx->block_lock);
 +
-+#define SST_ALGO_KCONTROL(xname, xcount, xmod, xpipe,					\
-+			  xtask, xcmd, xtype, xinfo, xget, xput)			\
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,						\
-+	.name =  xname,									\
-+	.info = xinfo, .get = xget, .put = xput,					\
-+	.private_value = (unsigned long)&						\
-+			SST_ALGO_CTL_VALUE(xcount, xtype, xpipe,			\
-+					   xmod, xtask, xcmd),				\
++	return msg;
 +}
 +
-+#define SST_ALGO_KCONTROL_BYTES(xpname, xmname, xcount, xmod,				\
-+				xpipe, xinstance, xtask, xcmd)				\
-+	SST_ALGO_KCONTROL(SST_CONTROL_NAME(xpname, xmname, xinstance, "params"),	\
-+			  xcount, xmod, xpipe, xtask, xcmd, SST_ALGO_PARAMS,		\
-+			  sst_algo_bytes_ctl_info,					\
-+			  sst_algo_control_get, sst_algo_control_set)
-+
-+#define SST_ALGO_KCONTROL_BOOL(xpname, xmname, xmod, xpipe, xinstance, xtask)		\
-+	SST_ALGO_KCONTROL(SST_CONTROL_NAME(xpname, xmname, xinstance, "bypass"),	\
-+			  0, xmod, xpipe, xtask, 0, SST_ALGO_BYPASS,			\
-+			  snd_soc_info_bool_ext,					\
-+			  sst_algo_control_get, sst_algo_control_set)
-+
-+#define SST_ALGO_BYPASS_PARAMS(xpname, xmname, xcount, xmod, xpipe,			\
-+				xinstance, xtask, xcmd)					\
-+	SST_ALGO_KCONTROL_BOOL(xpname, xmname, xmod, xpipe, xinstance, xtask),		\
-+	SST_ALGO_KCONTROL_BYTES(xpname, xmname, xcount, xmod, xpipe, xinstance, xtask, xcmd)
-+
-+#define SST_COMBO_ALGO_KCONTROL_BYTES(xpname, xmname, xsubmod, xcount, xmod,		\
-+				      xpipe, xinstance, xtask, xcmd)			\
-+	SST_ALGO_KCONTROL(SST_COMBO_CONTROL_NAME(xpname, xmname, xinstance, "params",	\
-+						 xsubmod),				\
-+			  xcount, xmod, xpipe, xtask, xcmd, SST_ALGO_PARAMS,		\
-+			  sst_algo_bytes_ctl_info,					\
-+			  sst_algo_control_get, sst_algo_control_set)
-+
-+
-+struct sst_enum {
-+	bool tx;
-+	unsigned short reg;
-+	unsigned int max;
-+	const char * const *texts;
-+	struct snd_soc_dapm_widget *w;
-+};
-+
-+/* only 4 slots/channels supported atm */
-+#define SST_SSP_SLOT_ENUM(s_ch_no, is_tx, xtexts) \
-+	(struct sst_enum){ .reg = s_ch_no, .tx = is_tx, .max = 4+1, .texts = xtexts, }
-+
-+#define SST_SLOT_CTL_NAME(xpname, xmname, s_ch_name) \
-+	xpname " " xmname " " s_ch_name
-+
-+#define SST_SSP_SLOT_CTL(xpname, xmname, s_ch_name, s_ch_no, is_tx, xtexts, xget, xput) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
-+	.name = SST_SLOT_CTL_NAME(xpname, xmname, s_ch_name), \
-+	.info = sst_slot_enum_info, \
-+	.get = xget, .put = xput, \
-+	.private_value = (unsigned long)&SST_SSP_SLOT_ENUM(s_ch_no, is_tx, xtexts), \
-+}
-+
-+#define SST_MUX_CTL_NAME(xpname, xinstance) \
-+	xpname " " #xinstance
-+
-+#define SST_SSP_MUX_ENUM(xreg, xshift, xtexts) \
-+	(struct soc_enum){ .reg = xreg, .texts = xtexts, .shift_l = xshift, \
-+			   .shift_r = xshift, .items = ARRAY_SIZE(xtexts), }
-+
-+#define SST_SSP_MUX_CTL(xpname, xinstance, xreg, xshift, xtexts, xget, xput) \
-+	SOC_DAPM_ENUM_EXT(SST_MUX_CTL_NAME(xpname, xinstance), \
-+			  SST_SSP_MUX_ENUM(xreg, xshift, xtexts), \
-+			  xget, xput)
-+
-+struct sst_probe_value {
-+	unsigned int val;
-+	const struct soc_enum *p_enum;
-+};
-+
-+#define SST_PROBE_CTL_NAME(dir, num, type) \
-+	dir #num " " type
-+
-+#define SST_PROBE_ENUM(xname, xenum, xhandler_get, xhandler_put) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = sst_probe_enum_info, \
-+	.get = xhandler_get, .put = xhandler_put, \
-+	.private_value = (unsigned long)&(struct sst_probe_value) \
-+	{ .val = 0, .p_enum = &xenum } }
-+
-+#endif
-diff --git a/sound/soc/intel/platform_ipc_v2.h b/sound/soc/intel/platform_ipc_v2.h
-new file mode 100644
-index 0000000..a718f9c
---- /dev/null
-+++ b/sound/soc/intel/platform_ipc_v2.h
-@@ -0,0 +1,694 @@
-+/*
-+*  platform_ipc_v2.h - Intel MID Platform driver FW IPC definitions
-+*
-+*  Copyright (C) 2008-10 Intel Corporation
-+*  Author:	Vinod Koul <vinod.koul@intel.com>
-+*		Harsha Priya <priya.harsha@intel.com>
-+*		Dharageswari R <dharageswari.r@intel.com>
-+*		KP Jeeja <jeeja.kp@intel.com>
-+*  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+*
-+*  This program is free software; you can redistribute it and/or modify
-+*  it under the terms of the GNU General Public License as published by
-+*  the Free Software Foundation; version 2 of the License.
-+*
-+*  This program is distributed in the hope that it will be useful, but
-+*  WITHOUT ANY WARRANTY; without even the implied warranty of
-+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+*  General Public License for more details.
-+*
-+*  You should have received a copy of the GNU General Public License along
-+*  with this program; if not, write to the Free Software Foundation, Inc.,
-+*  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
-+*
-+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+*
-+*  This driver exposes the audio engine functionalities to the ALSA
-+*	and middleware.
-+*  This file has definitions shared between the firmware and driver
-+*/
-+#ifndef __PLATFORM_IPC_V2_H__
-+#define __PLATFORM_IPC_V2_H__
-+
-+#define MAX_DBG_RW_BYTES 80
-+#define MAX_NUM_SCATTER_BUFFERS 8
-+#define MAX_LOOP_BACK_DWORDS 8
-+/* IPC base address and mailbox, timestamp offsets */
-+#define SST_MAILBOX_SIZE 0x0400
-+#define SST_MAILBOX_SEND 0x0000
-+#define SST_TIME_STAMP 0x1800
-+#define SST_TIME_STAMP_MRFLD 0x680
-+#define SST_TIME_STAMP_BYT 0x800
-+#define SST_RESERVED_OFFSET 0x1A00
-+#define SST_SCU_LPE_MAILBOX 0x1000
-+#define SST_LPE_SCU_MAILBOX 0x1400
-+#define SST_SCU_LPE_LOG_BUF (SST_SCU_LPE_MAILBOX+16)
-+#define PROCESS_MSG 0x80
-+
-+/* Message ID's for IPC messages */
-+/* Bits B7: SST or IA/SC ; B6-B4: Msg Category; B3-B0: Msg Type */
-+
-+/* I2L Firmware/Codec Download msgs */
-+#define IPC_IA_PREP_LIB_DNLD 0x01
-+#define IPC_IA_LIB_DNLD_CMPLT 0x02
-+#define IPC_IA_GET_FW_VERSION 0x04
-+#define IPC_IA_GET_FW_BUILD_INF 0x05
-+#define IPC_IA_GET_FW_INFO 0x06
-+#define IPC_IA_GET_FW_CTXT 0x07
-+#define IPC_IA_SET_FW_CTXT 0x08
-+#define IPC_IA_PREPARE_SHUTDOWN 0x31
-+/* I2L Codec Config/control msgs */
-+#define IPC_PREP_D3 0x10
-+#define IPC_IA_SET_CODEC_PARAMS 0x10
-+#define IPC_IA_GET_CODEC_PARAMS 0x11
-+#define IPC_IA_SET_PPP_PARAMS 0x12
-+#define IPC_IA_GET_PPP_PARAMS 0x13
-+#define IPC_SST_PERIOD_ELAPSED_MRFLD 0xA
-+#define IPC_SST_VB_RESET 0x28
-+#define IPC_IA_ALG_PARAMS 0x1A
-+#define IPC_IA_TUNING_PARAMS 0x1B
-+#define IPC_IA_SET_RUNTIME_PARAMS 0x1C
-+#define IPC_IA_SET_PARAMS 0x1
-+#define IPC_IA_GET_PARAMS 0x2
-+
-+#define IPC_EFFECTS_CREATE 0xE
-+#define IPC_EFFECTS_DESTROY 0xF
-+
-+/* I2L Stream config/control msgs */
-+#define IPC_IA_ALLOC_STREAM_MRFLD 0x2
-+#define IPC_IA_ALLOC_STREAM 0x20 /* Allocate a stream ID */
-+#define IPC_IA_FREE_STREAM_MRFLD 0x03
-+#define IPC_IA_FREE_STREAM 0x21 /* Free the stream ID */
-+#define IPC_IA_SET_STREAM_PARAMS 0x22
-+#define IPC_IA_SET_STREAM_PARAMS_MRFLD 0x12
-+#define IPC_IA_GET_STREAM_PARAMS 0x23
-+#define IPC_IA_PAUSE_STREAM 0x24
-+#define IPC_IA_PAUSE_STREAM_MRFLD 0x4
-+#define IPC_IA_RESUME_STREAM 0x25
-+#define IPC_IA_RESUME_STREAM_MRFLD 0x5
-+#define IPC_IA_DROP_STREAM 0x26
-+#define IPC_IA_DROP_STREAM_MRFLD 0x07
-+#define IPC_IA_DRAIN_STREAM 0x27 /* Short msg with str_id */
-+#define IPC_IA_DRAIN_STREAM_MRFLD 0x8
-+#define IPC_IA_CONTROL_ROUTING 0x29
-+#define IPC_IA_VTSV_UPDATE_MODULES 0x20
-+#define IPC_IA_VTSV_DETECTED 0x21
-+
-+#define IPC_IA_START_STREAM_MRFLD 0X06
-+#define IPC_IA_START_STREAM 0x30 /* Short msg with str_id */
-+
-+#define IPC_IA_SET_GAIN_MRFLD 0x21
-+/* Debug msgs */
-+#define IPC_IA_DBG_MEM_READ 0x40
-+#define IPC_IA_DBG_MEM_WRITE 0x41
-+#define IPC_IA_DBG_LOOP_BACK 0x42
-+#define IPC_IA_DBG_LOG_ENABLE 0x45
-+#define IPC_IA_DBG_SET_PROBE_PARAMS 0x47
-+
-+/* L2I Firmware/Codec Download msgs */
-+#define IPC_IA_FW_INIT_CMPLT 0x81
-+#define IPC_IA_FW_INIT_CMPLT_MRFLD 0x01
-+#define IPC_IA_FW_ASYNC_ERR_MRFLD 0x11
-+
-+/* L2I Codec Config/control msgs */
-+#define IPC_SST_FRAGMENT_ELPASED 0x90 /* Request IA more data */
-+
-+#define IPC_SST_BUF_UNDER_RUN 0x92 /* PB Under run and stopped */
-+#define IPC_SST_BUF_OVER_RUN 0x93 /* CAP Under run and stopped */
-+#define IPC_SST_DRAIN_END 0x94 /* PB Drain complete and stopped */
-+#define IPC_SST_CHNGE_SSP_PARAMS 0x95 /* PB SSP parameters changed */
-+#define IPC_SST_STREAM_PROCESS_FATAL_ERR 0x96/* error in processing a stream */
-+#define IPC_SST_PERIOD_ELAPSED 0x97 /* period elapsed */
-+
-+#define IPC_SST_ERROR_EVENT 0x99 /* Buffer over run occurred */
-+/* L2S messages */
-+#define IPC_SC_DDR_LINK_UP 0xC0
-+#define IPC_SC_DDR_LINK_DOWN 0xC1
-+#define IPC_SC_SET_LPECLK_REQ 0xC2
-+#define IPC_SC_SSP_BIT_BANG 0xC3
-+
-+/* L2I Error reporting msgs */
-+#define IPC_IA_MEM_ALLOC_FAIL 0xE0
-+#define IPC_IA_PROC_ERR 0xE1 /* error in processing a
-+					stream can be used by playback and
-+					capture modules */
-+
-+/* L2I Debug msgs */
-+#define IPC_IA_PRINT_STRING 0xF0
-+
-+/* Buffer under-run */
-+#define IPC_IA_BUF_UNDER_RUN_MRFLD 0x0B
-+
-+/* Mrfld specific defines:
-+ * For asynchronous messages(INIT_CMPLT, PERIOD_ELAPSED, ASYNC_ERROR)
-+ * received from FW, the format is:
-+ *  - IPC High: pvt_id is set to zero. Always short message.
-+ *  - msg_id is in lower 16-bits of IPC low payload.
-+ *  - pipe_id is in higher 16-bits of IPC low payload for period_elapsed.
-+ *  - error id is in higher 16-bits of IPC low payload for async errors.
-+ */
-+#define SST_ASYNC_DRV_ID 0
-+
-+/* Command Response or Acknowledge message to any IPC message will have
-+ * same message ID and stream ID information which is sent.
-+ * There is no specific Ack message ID. The data field is used as response
-+ * meaning.
-+ */
-+
-+/* SCU IPC for resetting & power gating the LPE through SCU */
-+#define IPC_SCU_LPE_RESET 0xA3
-+
-+enum ackData {
-+	IPC_ACK_SUCCESS = 0,
-+	IPC_ACK_FAILURE,
-+};
-+
-+enum ipc_ia_msg_id {
-+	IPC_CMD = 1,		/*!< Task Control message ID */
-+	IPC_SET_PARAMS = 2,/*!< Task Set param message ID */
-+	IPC_GET_PARAMS = 3,	/*!< Task Get param message ID */
-+	IPC_INVALID = 0xFF,	/*!<Task Get param message ID */
-+};
-+
-+enum sst_codec_types {
-+	/*  AUDIO/MUSIC	CODEC Type Definitions */
-+	SST_CODEC_TYPE_UNKNOWN = 0,
-+	SST_CODEC_TYPE_PCM,	/* Pass through Audio codec */
-+	SST_CODEC_TYPE_MP3,
-+	SST_CODEC_TYPE_MP24,
-+	SST_CODEC_TYPE_AAC,
-+	SST_CODEC_TYPE_AACP,
-+	SST_CODEC_TYPE_eAACP,
-+	SST_CODEC_TYPE_WMA9,
-+	SST_CODEC_TYPE_WMA10,
-+	SST_CODEC_TYPE_WMA10P,
-+	SST_CODEC_TYPE_RA,
-+	SST_CODEC_TYPE_DDAC3,
-+	SST_CODEC_TYPE_STEREO_TRUE_HD,
-+	SST_CODEC_TYPE_STEREO_HD_PLUS,
-+
-+	/*  VOICE CODEC Type Definitions */
-+	SST_CODEC_TYPE_VOICE_PCM = 0x21, /* Pass through voice codec */
-+};
-+
-+enum sst_algo_types {
-+	SST_ALGO_SRC = 0x64,
-+	SST_ALGO_MIXER = 0x65,
-+	SST_ALGO_DOWN_MIXER = 0x66,
-+	SST_ALGO_VTSV = 0x73,
-+	SST_ALGO_AUDCLASSIFIER = 0x80,
-+	SST_ALGO_VOLUME_CONTROL = 0x92,
-+	SST_ALGO_GEQ = 0x99,
-+};
-+
-+enum stream_type {
-+	SST_STREAM_TYPE_NONE = 0,
-+	SST_STREAM_TYPE_MUSIC = 1,
-+	SST_STREAM_TYPE_NORMAL = 2,
-+	SST_STREAM_TYPE_PROBE = 3,
-+	SST_STREAM_TYPE_LONG_PB = 4,
-+	SST_STREAM_TYPE_LOW_LATENCY = 5,
-+};
-+
-+enum sst_error_codes {
-+	/* Error code,response to msgId: Description */
-+	/* Common error codes */
-+	SST_SUCCESS = 0,	/* Success */
-+	SST_ERR_INVALID_STREAM_ID = 1,
-+	SST_ERR_INVALID_MSG_ID = 2,
-+	SST_ERR_INVALID_STREAM_OP = 3,
-+	SST_ERR_INVALID_PARAMS = 4,
-+	SST_ERR_INVALID_CODEC = 5,
-+	SST_ERR_INVALID_MEDIA_TYPE = 6,
-+	SST_ERR_STREAM_ERR = 7,
-+
-+	/* IPC specific error codes */
-+	SST_IPC_ERR_CALL_BACK_NOT_REGD = 8,
-+	SST_IPC_ERR_STREAM_NOT_ALLOCATED = 9,
-+	SST_IPC_ERR_STREAM_ALLOC_FAILED = 10,
-+	SST_IPC_ERR_GET_STREAM_FAILED = 11,
-+	SST_ERR_MOD_NOT_AVAIL = 12,
-+	SST_ERR_MOD_DNLD_RQD = 13,
-+	SST_ERR_STREAM_STOPPED = 14,
-+	SST_ERR_STREAM_IN_USE = 15,
-+
-+	/* Capture specific error codes */
-+	SST_CAP_ERR_INCMPLTE_CAPTURE_MSG = 16,
-+	SST_CAP_ERR_CAPTURE_FAIL = 17,
-+	SST_CAP_ERR_GET_DDR_NEW_SGLIST = 18,
-+	SST_CAP_ERR_UNDER_RUN = 19,
-+	SST_CAP_ERR_OVERFLOW = 20,
-+
-+	/* Playback specific error codes*/
-+	SST_PB_ERR_INCMPLTE_PLAY_MSG = 21,
-+	SST_PB_ERR_PLAY_FAIL = 22,
-+	SST_PB_ERR_GET_DDR_NEW_SGLIST = 23,
-+
-+	/* Codec manager specific error codes */
-+	SST_LIB_ERR_LIB_DNLD_REQUIRED = 24,
-+	SST_LIB_ERR_LIB_NOT_SUPPORTED = 25,
-+
-+	/* Library manager specific error codes */
-+	SST_SCC_ERR_PREP_DNLD_FAILED = 26,
-+	SST_SCC_ERR_LIB_DNLD_RES_FAILED = 27,
-+	/* Scheduler specific error codes */
-+	SST_SCH_ERR_FAIL = 28,
-+
-+	/* DMA specific error codes */
-+	SST_DMA_ERR_NO_CHNL_AVAILABLE = 29,
-+	SST_DMA_ERR_INVALID_INPUT_PARAMS = 30,
-+	SST_DMA_ERR_CHNL_ALREADY_SUSPENDED = 31,
-+	SST_DMA_ERR_CHNL_ALREADY_STARTED = 32,
-+	SST_DMA_ERR_CHNL_NOT_ENABLED = 33,
-+	SST_DMA_ERR_TRANSFER_FAILED = 34,
-+
-+	SST_SSP_ERR_ALREADY_ENABLED = 35,
-+	SST_SSP_ERR_ALREADY_DISABLED = 36,
-+	SST_SSP_ERR_NOT_INITIALIZED = 37,
-+	SST_SSP_ERR_SRAM_NO_DMA_DATA = 38,
-+
-+	/* Other error codes */
-+	SST_ERR_MOD_INIT_FAIL = 39,
-+
-+	/* FW init error codes */
-+	SST_RDR_ERR_IO_DEV_SEL_NOT_ALLOWED = 40,
-+	SST_RDR_ERR_ROUTE_ALREADY_STARTED = 41,
-+	SST_RDR_ERR_IO_DEV_SEL_FAILED = 42,
-+	SST_RDR_PREP_CODEC_DNLD_FAILED = 43,
-+
-+	/* Memory debug error codes */
-+	SST_ERR_DBG_MEM_READ_FAIL = 44,
-+	SST_ERR_DBG_MEM_WRITE_FAIL = 45,
-+	SST_ERR_INSUFFICIENT_INPUT_SG_LIST = 46,
-+	SST_ERR_INSUFFICIENT_OUTPUT_SG_LIST = 47,
-+
-+	SST_ERR_BUFFER_NOT_AVAILABLE = 48,
-+	SST_ERR_BUFFER_NOT_ALLOCATED = 49,
-+	SST_ERR_INVALID_REGION_TYPE = 50,
-+	SST_ERR_NULL_PTR = 51,
-+	SST_ERR_INVALID_BUFFER_SIZE = 52,
-+	SST_ERR_INVALID_BUFFER_INDEX = 53,
-+
-+	/*IIPC specific error codes */
-+	SST_IIPC_QUEUE_FULL = 54,
-+	SST_IIPC_ERR_MSG_SND_FAILED = 55,
-+	SST_PB_ERR_UNDERRUN_OCCURED = 56,
-+	SST_RDR_INSUFFICIENT_MIXER_BUFFER = 57,
-+	SST_INVALID_TIME_SLOTS = 58,
-+};
-+
-+enum dbg_mem_data_type {
-+	/* Data type of debug read/write */
-+	DATA_TYPE_U32,
-+	DATA_TYPE_U16,
-+	DATA_TYPE_U8,
-+};
-+
-+enum dbg_type {
-+	NO_DEBUG = 0,
-+	SRAM_DEBUG,
-+	PTI_DEBUG,
-+};
-+
-+struct ipc_dsp_hdr {
-+	u16 mod_index_id:8;		/*!< DSP Command ID specific to tasks */
-+	u16 pipe_id:8;	/*!< instance of the module in the pipeline */
-+	u16 mod_id;		/*!< Pipe_id */
-+	u16 cmd_id;		/*!< Module ID = lpe_algo_types_t */
-+	u16 length;		/*!< Length of the payload only */
-+} __packed;
-+
-+struct ipc_dsp_effects_info {
-+	u16	cmd_id;
-+	u16	length;
-+	u16	sel_pos;
-+	u16	sel_algo_id;
-+	u16	cpu_load;       /* CPU load indication */
-+	u16	memory_usage;   /* Data Memory usage */
-+	u32	flags;         /* effect engine caps/requirements flags */
-+} __packed;
-+
-+struct ipc_effect_dsp_hdr {
-+	u16 mod_index_id:8;             /*!< DSP Command ID specific to tasks */
-+	u16 pipe_id:8;  /*!< instance of the module in the pipeline */
-+	u16 mod_id;             /*!< Pipe_id */
-+} __packed;
-+
-+struct ipc_effect_payload {
-+	struct ipc_effect_dsp_hdr dsp_hdr;
-+	char *data;
-+};
-+
-+union ipc_header_high {
-+	struct {
-+		u32  msg_id:8;	    /* Message ID - Max 256 Message Types */
-+		u32  task_id:4;	    /* Task ID associated with this comand */
-+		u32  drv_id:4;    /* Identifier for the driver to track*/
-+		u32  rsvd1:8;	    /* Reserved */
-+		u32  result:4;	    /* Reserved */
-+		u32  res_rqd:1;	    /* Response rqd */
-+		u32  large:1;	    /* Large Message if large = 1 */
-+		u32  done:1;	    /* bit 30 - Done bit */
-+		u32  busy:1;	    /* bit 31 - busy bit*/
-+	} part;
-+	u32 full;
-+} __packed;
-+
-+/* IPC header */
-+union ipc_header_mrfld {
-+	struct {
-+		u32 header_low_payload;
-+		union ipc_header_high header_high;
-+	} p;
-+	u64 full;
-+} __packed;
-+
-+/* CAUTION NOTE: All IPC message body must be multiple of 32 bits.*/
-+
-+/* IPC Header */
-+union ipc_header {
-+	struct {
-+		u32  msg_id:8; /* Message ID - Max 256 Message Types */
-+		u32  str_id:5;
-+		u32  large:1;	/* Large Message if large = 1 */
-+		u32  reserved:2;	/* Reserved for future use */
-+		u32  data:14;	/* Ack/Info for msg, size of msg in Mailbox */
-+		u32  done:1; /* bit 30 */
-+		u32  busy:1; /* bit 31 */
-+	} part;
-+	u32 full;
-+} __packed;
-+
-+/* Firmware build info */
-+struct sst_fw_build_info {
-+	unsigned char  date[16]; /* Firmware build date */
-+	unsigned char  time[16]; /* Firmware build time */
-+} __packed;
-+
-+/* Firmware Version info */
-+struct snd_sst_fw_version {
-+	u8 build;	/* build number*/
-+	u8 minor;	/* minor number*/
-+	u8 major;	/* major number*/
-+	u8 type;	/* build type */
-+};
-+
-+struct ipc_header_fw_init {
-+	struct snd_sst_fw_version fw_version;/* Firmware version details */
-+	struct sst_fw_build_info build_info;
-+	u16 result;	/* Fw init result */
-+	u8 module_id; /* Module ID in case of error */
-+	u8 debug_info; /* Debug info from Module ID in case of fail */
-+} __packed;
-+
-+struct snd_sst_tstamp {
-+	u64 ring_buffer_counter;	/* PB/CP: Bytes copied from/to DDR. */
-+	u64 hardware_counter;	    /* PB/CP: Bytes DMAed to/from SSP. */
-+	u64 frames_decoded;
-+	u64 bytes_decoded;
-+	u64 bytes_copied;
-+	u32 sampling_frequency;
-+	u32 channel_peak[8];
-+} __packed;
-+
-+/* SST to IA memory read debug message  */
-+struct ipc_sst_ia_dbg_mem_rw  {
-+	u16  num_bytes;/* Maximum of MAX_DBG_RW_BYTES */
-+	u16  data_type;/* enum: dbg_mem_data_type */
-+	u32  address;	/* Memory address of data memory of data_type */
-+	u8	rw_bytes[MAX_DBG_RW_BYTES];/* Maximum of 64 bytes can be RW */
-+} __packed;
-+
-+struct ipc_sst_ia_dbg_loop_back {
-+	u16 num_dwords; /* Maximum of MAX_DBG_RW_BYTES */
-+	u16 increment_val;/* Increments dwords by this value, 0- no increment */
-+	u32 lpbk_dwords[MAX_LOOP_BACK_DWORDS];/* Maximum of 8 dwords loopback */
-+} __packed;
-+
-+/* Stream type params struture for Alloc stream */
-+struct snd_sst_str_type {
-+	u8 codec_type;		/* Codec type */
-+	u8 str_type;		/* 1 = voice 2 = music */
-+	u8 operation;		/* Playback or Capture */
-+	u8 protected_str;	/* 0=Non DRM, 1=DRM */
-+	u8 time_slots;
-+	u8 reserved;		/* Reserved */
-+	u16 result;		/* Result used for acknowledgment */
-+} __packed;
-+
-+/* Library info structure */
-+struct module_info {
-+	u32 lib_version;
-+	u32 lib_type;/*TBD- KLOCKWORK u8 lib_type;*/
-+	u32 media_type;
-+	u8  lib_name[12];
-+	u32 lib_caps;
-+	unsigned char  b_date[16]; /* Lib build date */
-+	unsigned char  b_time[16]; /* Lib build time */
-+} __packed;
-+
-+/* Library slot info */
-+struct lib_slot_info {
-+	u8  slot_num; /* 1 or 2 */
-+	u8  reserved1;
-+	u16 reserved2;
-+	u32 iram_size; /* slot size in IRAM */
-+	u32 dram_size; /* slot size in DRAM */
-+	u32 iram_offset; /* starting offset of slot in IRAM */
-+	u32 dram_offset; /* starting offset of slot in DRAM */
-+} __packed;
-+
-+struct snd_ppp_mixer_params {
-+	__u32			type; /*Type of the parameter */
-+	__u32			size;
-+	__u32			input_stream_bitmap; /*Input stream Bit Map*/
-+} __packed;
-+
-+struct snd_sst_lib_download {
-+	struct module_info lib_info; /* library info type, capabilities etc */
-+	struct lib_slot_info slot_info; /* slot info to be downloaded */
-+	u32 mod_entry_pt;
-+};
-+
-+struct snd_sst_lib_download_info {
-+	struct snd_sst_lib_download dload_lib;
-+	u16 result;	/* Result used for acknowledgment */
-+	u8 pvt_id; /* Private ID */
-+	u8 reserved;  /* for alignment */
-+};
-+
-+struct snd_pcm_params {
-+	u8 num_chan;	/* 1=Mono, 2=Stereo */
-+	u8 pcm_wd_sz;	/* 16/24 - bit*/
-+	u8 use_offload_path;	/* 0-PCM using period elpased & ALSA interfaces
-+				   1-PCM stream via compressed interface  */
-+	u8 reserved2;
-+	u32 sfreq;    /* Sampling rate in Hz */
-+	u8 channel_map[8];
-+} __packed;
-+
-+/* MP3 Music Parameters Message */
-+struct snd_mp3_params {
-+	u8  num_chan;	/* 1=Mono, 2=Stereo	*/
-+	u8  pcm_wd_sz; /* 16/24 - bit*/
-+	u8  crc_check; /* crc_check - disable (0) or enable (1) */
-+	u8  reserved1; /* unused*/
-+};
-+
-+#define AAC_BIT_STREAM_ADTS		0
-+#define AAC_BIT_STREAM_ADIF		1
-+#define AAC_BIT_STREAM_RAW		2
-+
-+/* AAC Music Parameters Message */
-+struct snd_aac_params {
-+	u8 num_chan; /* 1=Mono, 2=Stereo*/
-+	u8 pcm_wd_sz; /* 16/24 - bit*/
-+	u8 bdownsample; /*SBR downsampling 0 - disable 1 -enabled AAC+ only */
-+	u8 bs_format; /* input bit stream format adts=0, adif=1, raw=2 */
-+	u32 externalsr; /*sampling rate of basic AAC raw bit stream*/
-+	u8 sbr_signalling;/*disable/enable/set automode the SBR tool.AAC+*/
-+	u8 reser1;
-+	u16  reser2;
-+};
-+
-+/* WMA Music Parameters Message */
-+struct snd_wma_params {
-+	u8  num_chan;	/* 1=Mono, 2=Stereo */
-+	u8  pcm_wd_sz;	/* 16/24 - bit*/
-+	u16 reserved1;
-+	u32 brate;	/* Use the hard coded value. */
-+	u32 sfreq;	/* Sampling freq eg. 8000, 441000, 48000 */
-+	u32 channel_mask;  /* Channel Mask */
-+	u16 format_tag;	/* Format Tag */
-+	u16 block_align;	/* packet size */
-+	u16 wma_encode_opt;/* Encoder option */
-+	u8 op_align;	/* op align 0- 16 bit, 1- MSB, 2 LSB */
-+	u8 reserved;	/* reserved */
-+};
-+
-+/* Codec params struture */
-+union  snd_sst_codec_params {
-+	struct snd_pcm_params pcm_params;
-+	struct snd_mp3_params mp3_params;
-+	struct snd_aac_params aac_params;
-+	struct snd_wma_params wma_params;
-+};
-+
-+/* Address and size info of a frame buffer in DDR */
-+struct sst_address_info {
-+	__u32 addr; /* Address at IA */
-+	__u32 size; /* Size of the buffer */
-+} __packed;
-+
-+/* Additional params for Alloc struct*/
-+struct snd_sst_alloc_params_ext {
-+	__u16 sg_count;
-+	__u16 reserved;
-+	__u32 frag_size;	/*Number of samples after which period elapsed
-+				  message is sent valid only if path  = 0*/
-+	struct sst_address_info  ring_buf_info[8];
-+};
-+
-+struct snd_sst_stream_params {
-+	union snd_sst_codec_params uc;
-+} __packed;
-+
-+struct snd_sst_params {
-+	u32 result;
-+	u32 stream_id;
-+	u8 codec;
-+	u8 ops;
-+	u8 stream_type;
-+	u8 device_type;
-+	u8 task;
-+	struct snd_sst_stream_params sparams;
-+	struct snd_sst_alloc_params_ext aparams;
-+};
-+
-+struct snd_sst_alloc_mrfld {
-+	u16 codec_type;
-+	u8 operation;
-+	u8 sg_count;
-+	struct sst_address_info ring_buf_info[8];
-+	u32 frag_size;
-+	u32 ts;
-+	struct snd_sst_stream_params codec_params;
-+} __packed;
-+
-+/* Alloc stream params structure */
-+struct snd_sst_alloc_params {
-+	struct snd_sst_str_type str_type;
-+	struct snd_sst_stream_params stream_params;
-+	struct snd_sst_alloc_params_ext alloc_params;
-+} __packed;
-+
-+/* Alloc stream response message */
-+struct snd_sst_alloc_response {
-+	struct snd_sst_str_type str_type; /* Stream type for allocation */
-+	struct snd_sst_lib_download lib_dnld; /* Valid only for codec dnld */
-+};
-+
-+/* Drop response */
-+struct snd_sst_drop_response {
-+	u32 result;
-+	u32 bytes;
-+};
-+
-+struct snd_sst_async_msg {
-+	u32 msg_id; /* Async msg id */
-+	u32 payload[0];
-+};
-+
-+struct snd_sst_async_err_msg {
-+	u32 fw_resp; /* Firmware Result */
-+	u32 lib_resp; /*Library result */
-+} __packed;
-+
-+struct snd_sst_vol {
-+	u32	stream_id;
-+	s32	volume;
-+	u32	ramp_duration;
-+	u32	ramp_type;		/* Ramp type, default=0 */
-+};
-+
-+/* Gain library parameters for mrfld
-+ * based on DSP command spec v0.82
-+ */
-+struct snd_sst_gain_v2 {
-+	u16 gain_cell_num;  /* num of gain cells to modify*/
-+	u8 cell_nbr_idx; /* instance index*/
-+	u8 cell_path_idx; /* pipe-id */
-+	u16 module_id; /*module id */
-+	u16 left_cell_gain; /* left gain value in dB*/
-+	u16 right_cell_gain; /* right gain value in dB*/
-+	u16 gain_time_const; /* gain time constant*/
-+} __packed;
-+
-+struct snd_sst_mute {
-+	u32	stream_id;
-+	u32	mute;
-+};
-+
-+struct snd_sst_runtime_params {
-+	u8 type;
-+	u8 str_id;
-+	u8 size;
-+	u8 rsvd;
-+	void *addr;
-+} __packed;
-+
-+enum stream_param_type {
-+	SST_SET_TIME_SLOT = 0,
-+	SST_SET_CHANNEL_INFO = 1,
-+	OTHERS = 2, /*reserved for future params*/
-+};
-+
-+/* CSV Voice call routing structure */
-+struct snd_sst_control_routing {
-+	u8 control; /* 0=start, 1=Stop */
-+	u8 reserved[3];	/* Reserved- for 32 bit alignment */
-+};
-+
-+struct ipc_post {
-+	struct list_head node;
-+	union ipc_header header; /* driver specific */
-+	bool is_large;
-+	bool is_process_reply;
-+	union ipc_header_mrfld mrfld_header;
-+	char *mailbox_data;
-+};
-+
-+struct snd_sst_ctxt_params {
-+	u32 address; /* Physical Address in DDR where the context is stored */
-+	u32 size; /* size of the context */
-+};
-+
-+struct snd_sst_lpe_log_params {
-+	u8 dbg_type;
-+	u8 module_id;
-+	u8 log_level;
-+	u8 reserved;
-+} __packed;
-+
-+enum snd_sst_bytes_type {
-+	SND_SST_BYTES_SET = 0x1,
-+	SND_SST_BYTES_GET = 0x2,
-+};
-+
-+struct snd_sst_bytes_v2 {
-+	u8 type;
-+	u8 ipc_msg;
-+	u8 block;
-+	u8 task_id;
-+	u8 pipe_id;
-+	u8 rsvd;
-+	u16 len;
-+	char bytes[0];
-+};
-+
-+#define MAX_VTSV_FILES 2
-+struct snd_sst_vtsv_info {
-+	struct sst_address_info vfiles[MAX_VTSV_FILES];
-+} __packed;
-+
-+#endif /* __PLATFORMDRV_IPC_V2_H__ */
-diff --git a/sound/soc/intel/sst-mfld-platform-compress.c b/sound/soc/intel/sst-mfld-platform-compress.c
-index 02abd19..ca58f4c 100644
---- a/sound/soc/intel/sst-mfld-platform-compress.c
-+++ b/sound/soc/intel/sst-mfld-platform-compress.c
-@@ -105,9 +105,11 @@ static int sst_platform_compr_set_params(struct snd_compr_stream *cstream,
- 	/* construct fw structure for this*/
- 	memset(&str_params, 0, sizeof(str_params));
- 
--	str_params.ops = STREAM_OPS_PLAYBACK;
--	str_params.stream_type = SST_STREAM_TYPE_MUSIC;
--	str_params.device_type = SND_SST_DEVICE_COMPRESS;
-+	/* fill the device type and stream id to pass to SST driver */
-+	retval = sst_fill_stream_params(cstream, ctx, &str_params, true);
-+	pr_debug("compr_set_params: fill stream params ret_val = 0x%x\n", retval);
-+	if (retval < 0)
-+		return retval;
- 
- 	switch (params->codec.id) {
- 	case SND_AUDIOCODEC_MP3: {
-diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
-index f4b85e5..836d9a6 100644
---- a/sound/soc/intel/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/sst-mfld-platform-pcm.c
-@@ -28,6 +28,7 @@
- #include <sound/soc.h>
- #include <sound/compress_driver.h>
- #include "sst-mfld-platform.h"
-+#include "platform-libs/controls_v2.h"
- 
- struct sst_device *sst;
- static DEFINE_MUTEX(sst_lock);
-@@ -92,6 +93,39 @@ static struct snd_pcm_hardware sst_platform_pcm_hw = {
- 	.fifo_size = SST_FIFO_SIZE,
- };
- 
-+static struct sst_dev_stream_map dpcm_strm_map[] = {
-+	{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, /* Reserved, not in use */
-+	{MERR_DPCM_AUDIO, 0, SNDRV_PCM_STREAM_PLAYBACK, PIPE_MEDIA1_IN, SST_TASK_ID_MEDIA, SST_DEV_MAP_IN_USE},
-+	{MERR_DPCM_COMPR, 0, SNDRV_PCM_STREAM_PLAYBACK, PIPE_MEDIA0_IN, SST_TASK_ID_MEDIA, SST_DEV_MAP_IN_USE},
-+	{MERR_DPCM_AUDIO, 0, SNDRV_PCM_STREAM_CAPTURE, PIPE_PCM1_OUT, SST_TASK_ID_MEDIA, SST_DEV_MAP_IN_USE},
-+};
-+
-+static int sst_platform_media_set_tdm_slot(struct snd_soc_dai *dai,
-+			unsigned int tx_mask, unsigned int rx_mask,
-+			int slots, int slot_width) {
-+	struct snd_sst_runtime_params params_data;
-+	int channels = slots;
-+
-+	/* registering with SST driver to get access to SST APIs to use */
-+	if (!sst_dsp) {
-+		pr_err("sst: DSP not registered\n");
-+		return -EIO;
-+	}
-+	params_data.type = SST_SET_CHANNEL_INFO;
-+	params_data.str_id = SND_SST_DEVICE_IHF;
-+	params_data.size = sizeof(channels);
-+	params_data.addr = &channels;
-+	return sst_dsp->ops->set_generic_params(SST_SET_RUNTIME_PARAMS,
-+							(void *)&params_data);
-+}
-+
-+static int sst_media_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
++int sst_wake_up_block(struct intel_sst_drv *ctx, int result,
++		u32 drv_id, u32 ipc, void *data, u32 size)
 +{
++	struct sst_block *block = NULL;
 +
-+	pr_debug("%s: enter, mute=%d dai-name=%s dir=%d\n", __func__, mute, dai->name, stream);
-+
-+	return sst_send_pipe_gains(dai, stream, mute);
-+}
- 
- /* helper functions */
- void sst_set_stream_status(struct sst_runtime_stream *stream,
-@@ -114,45 +148,163 @@ static inline int sst_get_stream_status(struct sst_runtime_stream *stream)
- 	return state;
- }
- 
-+static void sst_fill_alloc_params(struct snd_pcm_substream *substream,
-+				struct snd_sst_alloc_params_ext *alloc_param)
-+{
-+	unsigned int channels;
-+	snd_pcm_uframes_t period_size;
-+	ssize_t periodbytes;
-+	ssize_t buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
-+	u32 buffer_addr = virt_to_phys(substream->dma_buffer.area);
-+
-+	channels = substream->runtime->channels;
-+	period_size = substream->runtime->period_size;
-+	periodbytes = samples_to_bytes(substream->runtime, period_size);
-+	alloc_param->ring_buf_info[0].addr = buffer_addr;
-+	alloc_param->ring_buf_info[0].size = buffer_bytes;
-+	alloc_param->sg_count = 1;
-+	alloc_param->reserved = 0;
-+	alloc_param->frag_size = periodbytes * channels;
-+
-+	pr_debug("period_size = %d\n", alloc_param->frag_size);
-+	pr_debug("ring_buf_addr = 0x%x\n", alloc_param->ring_buf_info[0].addr);
-+}
- static void sst_fill_pcm_params(struct snd_pcm_substream *substream,
--				struct sst_pcm_params *param)
--{
--
--	param->num_chan = (u8) substream->runtime->channels;
--	param->pcm_wd_sz = substream->runtime->sample_bits;
--	param->reserved = 0;
--	param->sfreq = substream->runtime->rate;
--	param->ring_buffer_size = snd_pcm_lib_buffer_bytes(substream);
--	param->period_count = substream->runtime->period_size;
--	param->ring_buffer_addr = virt_to_phys(substream->dma_buffer.area);
--	pr_debug("period_cnt = %d\n", param->period_count);
--	pr_debug("sfreq= %d, wd_sz = %d\n", param->sfreq, param->pcm_wd_sz);
-+				struct snd_sst_stream_params *param)
-+{
-+	param->uc.pcm_params.num_chan = (u8) substream->runtime->channels;
-+	param->uc.pcm_params.pcm_wd_sz = substream->runtime->sample_bits;
-+	param->uc.pcm_params.sfreq = substream->runtime->rate;
-+
-+	/* PCM stream via ALSA interface */
-+	param->uc.pcm_params.use_offload_path = 0;
-+	param->uc.pcm_params.reserved2 = 0;
-+	memset(param->uc.pcm_params.channel_map, 0, sizeof(u8));
-+	pr_debug("sfreq= %d, wd_sz = %d\n",
-+	param->uc.pcm_params.sfreq, param->uc.pcm_params.pcm_wd_sz);
-+
-+}
-+
-+static int sst_get_stream_mapping(int dev, int sdev, int dir,
-+	struct sst_dev_stream_map *map, int size, u8 pipe_id,
-+	const struct sst_lowlatency_deepbuff *ll_db)
-+{
-+	int index;
-+
-+	if (map == NULL)
-+		return -EINVAL;
-+
-+	pr_debug("dev %d sdev %d dir %d\n", dev, sdev, dir);
-+
-+	/* index 0 is not used in stream map */
-+	for (index = 1; index < size; index++) {
-+		if ((map[index].dev_num == dev) &&
-+		    (map[index].subdev_num == sdev) &&
-+		    (map[index].direction == dir)) {
-+			if (map[index].status == SST_DEV_MAP_IN_USE) {
-+				return index;
-+			} else if (map[index].status == SST_DEV_MAP_FREE) {
-+				map[index].status = SST_DEV_MAP_IN_USE;
-+
-+				pr_debug("%s: pipe_id 0%x index %d", __func__,
-+						map[index].device_id, index);
-+
-+				return index;
-+			}
++	pr_debug("in %s\n", __func__);
++	spin_lock_bh(&ctx->block_lock);
++	list_for_each_entry(block, &ctx->block_list, node) {
++		pr_debug("Block ipc %d, drv_id %d\n", block->msg_id,
++							block->drv_id);
++		if (block->msg_id == ipc && block->drv_id == drv_id) {
++			pr_debug("free up the block\n");
++			block->ret_code = result;
++			block->data = data;
++			block->size = size;
++			block->condition = true;
++			spin_unlock_bh(&ctx->block_lock);
++			wake_up(&ctx->wait_queue);
++			return 0;
 +		}
 +	}
-+	return 0;
- }
- 
--static int sst_platform_alloc_stream(struct snd_pcm_substream *substream)
-+int sst_fill_stream_params(void *substream,
-+	const struct sst_data *ctx, struct snd_sst_params *str_params, bool is_compress)
-+{
-+	int map_size;
-+	int index;
-+	struct sst_dev_stream_map *map;
-+	struct snd_pcm_substream *pstream = NULL;
-+	struct snd_compr_stream *cstream = NULL;
-+
-+	map = ctx->pdata->pdev_strm_map;
-+	map_size = ctx->pdata->strm_map_size;
-+
-+	if (is_compress == true)
-+		cstream = (struct snd_compr_stream *)substream;
-+	else
-+		pstream = (struct snd_pcm_substream *)substream;
-+
-+	str_params->stream_type = SST_STREAM_TYPE_MUSIC;
-+
-+	/* For pcm streams */
-+	if (pstream) {
-+		index = sst_get_stream_mapping(pstream->pcm->device,
-+					  pstream->number, pstream->stream,
-+					  map, map_size, ctx->pipe_id, &ctx->ll_db);
-+		if (index <= 0)
-+			return -EINVAL;
-+
-+		str_params->stream_id = index;
-+		str_params->device_type = map[index].device_id;
-+		str_params->task = map[index].task_id;
-+
-+		pr_debug("str_id = %d, device_type = 0x%x, task = %d",
-+			 str_params->stream_id, str_params->device_type,
-+			 str_params->task);
-+
-+		str_params->ops = (u8)pstream->stream;
-+	}
-+
-+	if (cstream) {
-+		/* FIXME: Add support for subdevice number in
-+		 * snd_compr_stream */
-+		index = sst_get_stream_mapping(cstream->device->device,
-+					       0, cstream->direction,
-+					       map, map_size, ctx->pipe_id, &ctx->ll_db);
-+		if (index <= 0)
-+			return -EINVAL;
-+		str_params->stream_id = index;
-+		str_params->device_type = map[index].device_id;
-+		str_params->task = map[index].task_id;
-+		pr_debug("compress str_id = %d, device_type = 0x%x, task = %d",
-+			 str_params->stream_id, str_params->device_type,
-+			 str_params->task);
-+
-+		str_params->ops = (u8)cstream->direction;
-+	}
-+	return 0;
++	spin_unlock_bh(&ctx->block_lock);
++	pr_debug("Block not found or a response is received for a short message for ipc %d, drv_id %d\n",
++			ipc, drv_id);
++	return -EINVAL;
 +}
 +
-+#define CALC_PERIODTIME(period_size, rate) (((period_size) * 1000) / (rate))
-+
-+static int sst_platform_alloc_stream(struct snd_pcm_substream *substream,
-+		struct snd_soc_platform *platform)
- {
- 	struct sst_runtime_stream *stream =
- 			substream->runtime->private_data;
--	struct sst_pcm_params param = {0};
--	struct sst_stream_params str_params = {0};
--	int ret_val;
-+	struct snd_sst_stream_params param = {{{0,},},};
-+	struct snd_sst_params str_params = {0};
-+	struct snd_sst_alloc_params_ext alloc_params = {0};
-+	int ret_val = 0;
-+	struct sst_data *ctx = snd_soc_platform_get_drvdata(platform);
- 
- 	/* set codec params and inform SST driver the same */
- 	sst_fill_pcm_params(substream, &param);
- 	substream->runtime->dma_area = substream->dma_buffer.area;
- 	str_params.sparams = param;
--	str_params.codec =  param.codec;
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		str_params.ops = STREAM_OPS_PLAYBACK;
--		str_params.device_type = substream->pcm->device + 1;
--		pr_debug("Playbck stream,Device %d\n",
--					substream->pcm->device);
--	} else {
--		str_params.ops = STREAM_OPS_CAPTURE;
--		str_params.device_type = SND_SST_DEVICE_CAPTURE;
--		pr_debug("Capture stream,Device %d\n",
--					substream->pcm->device);
--	}
-+	str_params.aparams = alloc_params;
-+	str_params.codec = SST_CODEC_TYPE_PCM;
-+
-+	ctx->ll_db.period_time = CALC_PERIODTIME(substream->runtime->period_size,
-+					substream->runtime->rate);
-+
-+	/* fill the device type and stream id to pass to SST driver */
-+	ret_val = sst_fill_stream_params(substream, ctx, &str_params, false);
-+	pr_debug("platform prepare: fill stream params ret_val = 0x%x\n", ret_val);
-+	if (ret_val < 0)
-+		return ret_val;
-+
-+	stream->stream_info.str_id = str_params.stream_id;
-+
- 	ret_val = stream->ops->open(&str_params);
- 	pr_debug("SST_SND_PLAY/CAPTURE ret_val = %x\n", ret_val);
- 	if (ret_val < 0)
-@@ -242,25 +394,55 @@ static int sst_platform_open(struct snd_pcm_substream *substream)
- 	/* allocate memory for SST API set */
- 	runtime->private_data = stream;
- 
--	return 0;
-+static void sst_free_stream_in_use(struct sst_dev_stream_map *map, int str_id)
++int sst_free_block(struct intel_sst_drv *ctx, struct sst_block *freed)
 +{
-+	if (map[str_id].dev_num == MERR_DPCM_AUDIO) {
-+		/* Do nothing in capture for audio device */
-+		if ((map[str_id].dev_num == MERR_DPCM_AUDIO) &&
-+				(map[str_id].direction == SNDRV_PCM_STREAM_CAPTURE))
-+			return;
-+		if ((map[str_id].task_id == SST_TASK_ID_MEDIA) &&
-+				(map[str_id].status == SST_DEV_MAP_IN_USE)) {
-+			pr_debug("str_id %d device_id 0x%x\n", str_id, map[str_id].device_id);
-+			map[str_id].status = SST_DEV_MAP_FREE;
-+			map[str_id].device_id = PIPE_RSVD;
++	struct sst_block *block = NULL, *__block;
++
++	pr_debug("in %s\n", __func__);
++	spin_lock_bh(&ctx->block_lock);
++	list_for_each_entry_safe(block, __block, &ctx->block_list, node) {
++		if (block == freed) {
++			list_del(&freed->node);
++			kfree(freed->data);
++			freed->data = NULL;
++			kfree(freed);
++			spin_unlock_bh(&ctx->block_lock);
++			return 0;
 +		}
 +	}
++	spin_unlock_bh(&ctx->block_lock);
++	return -EINVAL;
++}
++
++void sst_post_message_mrfld(struct work_struct *work)
++{
++	struct ipc_post *msg;
++	union ipc_header_mrfld header;
++	unsigned long irq_flags;
++
++	pr_debug("Enter:%s\n", __func__);
++	spin_lock_irqsave(&sst_drv_ctx->ipc_spin_lock, irq_flags);
++	/* check list */
++	if (list_empty(&sst_drv_ctx->ipc_dispatch_list)) {
++		/* queue is empty, nothing to send */
++		spin_unlock_irqrestore(&sst_drv_ctx->ipc_spin_lock, irq_flags);
++		pr_debug("Empty msg queue... NO Action\n");
++		return;
++	}
++
++	/* check busy bit */
++	header.full = sst_shim_read64(sst_drv_ctx->shim, SST_IPCX);
++	if (header.p.header_high.part.busy) {
++		spin_unlock_irqrestore(&sst_drv_ctx->ipc_spin_lock, irq_flags);
++		pr_debug("Busy not free... post later\n");
++		return;
++	}
++	/* copy msg from list */
++	msg = list_entry(sst_drv_ctx->ipc_dispatch_list.next,
++			struct ipc_post, node);
++	list_del(&msg->node);
++	pr_debug("sst: size: = %x\n", msg->mrfld_header.p.header_low_payload);
++	if (msg->mrfld_header.p.header_high.part.large)
++		memcpy_toio(sst_drv_ctx->mailbox + SST_MAILBOX_SEND,
++			    msg->mailbox_data, msg->mrfld_header.p.header_low_payload);
++
++	sst_shim_write64(sst_drv_ctx->shim, SST_IPCX, msg->mrfld_header.full);
++	spin_unlock_irqrestore(&sst_drv_ctx->ipc_spin_lock, irq_flags);
++	pr_debug("sst: Post message: header = %x\n",
++					msg->mrfld_header.p.header_high.full);
++	kfree(msg->mailbox_data);
++	kfree(msg);
 +	return;
- }
- 
- static int sst_platform_close(struct snd_pcm_substream *substream)
- {
- 	struct sst_runtime_stream *stream;
- 	int ret_val = 0, str_id;
-+	struct sst_data *ctx = snd_soc_platform_get_drvdata(dai->platform);
- 
- 	pr_debug("sst_platform_close called\n");
- 	stream = substream->runtime->private_data;
- 	str_id = stream->stream_info.str_id;
- 	if (str_id)
- 		ret_val = stream->ops->close(str_id);
-+	sst_free_stream_in_use(ctx->pdata->pdev_strm_map, str_id);
- 	module_put(sst->dev->driver->owner);
- 	kfree(stream);
--	return ret_val;
-+static inline unsigned int get_current_pipe_id(struct snd_soc_platform *platform,
-+					       struct snd_pcm_substream *substream)
-+{
-+	struct sst_data *sst = snd_soc_platform_get_drvdata(platform);
-+	struct sst_dev_stream_map *map = sst->pdata->pdev_strm_map;
-+	struct sst_runtime_stream *stream =
-+			substream->runtime->private_data;
-+	u32 str_id = stream->stream_info.str_id;
-+	unsigned int pipe_id;
-+	pipe_id = map[str_id].device_id;
++}
 +
-+	pr_debug("%s: got pipe_id = %#x for str_id = %d\n",
-+		 __func__, pipe_id, str_id);
-+	return pipe_id;
- }
- 
--static int sst_platform_pcm_prepare(struct snd_pcm_substream *substream)
-+static int sst_media_prepare(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
- {
- 	struct sst_runtime_stream *stream;
- 	int ret_val = 0, str_id;
-@@ -274,8 +456,8 @@ static int sst_platform_pcm_prepare(struct snd_pcm_substream *substream)
- 		return ret_val;
- 	}
- 
--	ret_val = sst_platform_alloc_stream(substream);
--	if (ret_val < 0)
-+	ret_val = sst_platform_alloc_stream(substream, dai->platform);
-+	if (ret_val <= 0)
- 		return ret_val;
- 	snprintf(substream->pcm->id, sizeof(substream->pcm->id),
- 			"%d", stream->stream_info.str_id);
-@@ -287,18 +469,78 @@ static int sst_platform_pcm_prepare(struct snd_pcm_substream *substream)
- 	return ret_val;
- }
- 
-+static int sst_media_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params,
-+				struct snd_soc_dai *dai)
++int sst_sync_post_message_mrfld(struct ipc_post *msg)
 +{
++	union ipc_header_mrfld header;
++	unsigned int loop_count = 0;
++	int retval = 0;
++	unsigned long irq_flags;
++
++	pr_debug("Enter:%s\n", __func__);
++	spin_lock_irqsave(&sst_drv_ctx->ipc_spin_lock, irq_flags);
++
++	/* check busy bit */
++	header.full = sst_shim_read64(sst_drv_ctx->shim, SST_IPCX);
++	while (header.p.header_high.part.busy) {
++		if (loop_count > 10) {
++			pr_err("sst: Busy wait failed, cant send this msg\n");
++			retval = -EBUSY;
++			goto out;
++		}
++		udelay(500);
++		loop_count++;
++		header.full = sst_shim_read64(sst_drv_ctx->shim, SST_IPCX);
++	}
++	pr_debug("sst: Post message: header = %x\n",
++					msg->mrfld_header.p.header_high.full);
++	pr_debug("sst: size = 0x%x\n", msg->mrfld_header.p.header_low_payload);
++	if (msg->mrfld_header.p.header_high.part.large)
++		memcpy_toio(sst_drv_ctx->mailbox + SST_MAILBOX_SEND,
++			msg->mailbox_data, msg->mrfld_header.p.header_low_payload);
++
++	sst_shim_write64(sst_drv_ctx->shim, SST_IPCX, msg->mrfld_header.full);
++
++out:
++	spin_unlock_irqrestore(&sst_drv_ctx->ipc_spin_lock, irq_flags);
++	kfree(msg->mailbox_data);
++	kfree(msg);
++	return retval;
++}
++
++void intel_sst_clear_intr_mrfld(void)
++{
++	union interrupt_reg_mrfld isr;
++	union interrupt_reg_mrfld imr;
++	union ipc_header_mrfld clear_ipc;
++	unsigned long irq_flags;
++
++	spin_lock_irqsave(&sst_drv_ctx->ipc_spin_lock, irq_flags);
++	imr.full = sst_shim_read64(sst_drv_ctx->shim, SST_IMRX);
++	isr.full = sst_shim_read64(sst_drv_ctx->shim, SST_ISRX);
++
++	/*  write 1 to clear  */
++	isr.part.busy_interrupt = 1;
++	sst_shim_write64(sst_drv_ctx->shim, SST_ISRX, isr.full);
++
++	/* Set IA done bit */
++	clear_ipc.full = sst_shim_read64(sst_drv_ctx->shim, SST_IPCD);
++
++	clear_ipc.p.header_high.part.busy = 0;
++	clear_ipc.p.header_high.part.done = 1;
++	clear_ipc.p.header_low_payload = IPC_ACK_SUCCESS;
++	sst_shim_write64(sst_drv_ctx->shim, SST_IPCD, clear_ipc.full);
++	/* un mask busy interrupt */
++	imr.part.busy_interrupt = 0;
++	sst_shim_write64(sst_drv_ctx->shim, SST_IMRX, imr.full);
++	spin_unlock_irqrestore(&sst_drv_ctx->ipc_spin_lock, irq_flags);
++}
++
++
++/*
++ * process_fw_init - process the FW init msg
++ *
++ * @msg: IPC message mailbox data from FW
++ *
++ * This function processes the FW init msg from FW
++ * marks FW state and prints debug info of loaded FW
++ */
++static void process_fw_init(void *msg)
++{
++	struct ipc_header_fw_init *init =
++		(struct ipc_header_fw_init *)msg;
++	int retval = 0;
++
++	pr_debug("*** FW Init msg came***\n");
++	if (init->result) {
++		sst_drv_ctx->sst_state =  SST_RESET;
++		pr_debug("FW Init failed, Error %x\n", init->result);
++		pr_err("FW Init failed, Error %x\n", init->result);
++		retval = init->result;
++		goto ret;
++	}
++	pr_info("FW Version %02x.%02x.%02x.%02x\n",
++		init->fw_version.type, init->fw_version.major,
++		init->fw_version.minor, init->fw_version.build);
++	pr_info("Build date %s Time %s\n",
++			init->build_info.date, init->build_info.time);
++
++ret:
++	sst_wake_up_block(sst_drv_ctx, retval, FW_DWNL_ID, 0 , NULL, 0);
++}
++
++/**
++* sst_process_message - Processes message from SST
++*
++* @work:	Pointer to work structure
++*
++* This function is scheduled by ISR
++* It take a msg from process_queue and does action based on msg
++*/
++
++void sst_process_message_mrfld(struct ipc_post *msg)
++{
++	int str_id;
++
++	str_id = msg->mrfld_header.p.header_high.part.drv_id;
++
++	pr_debug("IPC process message header %x payload %x\n",
++			msg->mrfld_header.p.header_high.full,
++			msg->mrfld_header.p.header_low_payload);
++
++	return;
++}
++
++static void process_fw_async_msg(struct ipc_post *msg)
++{
++	u32 msg_id;
++	int str_id;
++	u32 data_size, i;
++	void *data_offset;
++	struct stream_info *stream;
++	union ipc_header_high msg_high;
++	u32 msg_low, pipe_id;
++
++	msg_high = msg->mrfld_header.p.header_high;
++	msg_low = msg->mrfld_header.p.header_low_payload;
++	msg_id = ((struct ipc_dsp_hdr *)msg->mailbox_data)->cmd_id;
++	data_offset = (msg->mailbox_data + sizeof(struct ipc_dsp_hdr));
++	data_size =  msg_low - (sizeof(struct ipc_dsp_hdr));
++
++	switch (msg_id) {
++	case IPC_SST_PERIOD_ELAPSED_MRFLD:
++		pipe_id = ((struct ipc_dsp_hdr *)msg->mailbox_data)->pipe_id;
++		str_id = get_stream_id_mrfld(pipe_id);
++		if (str_id > 0) {
++			pr_debug("Period elapsed rcvd for pipe id 0x%x\n", pipe_id);
++			stream = &sst_drv_ctx->streams[str_id];
++			if (stream->period_elapsed)
++				stream->period_elapsed(stream->pcm_substream);
++			if (stream->compr_cb)
++				stream->compr_cb(stream->compr_cb_param);
++		}
++		break;
++
++	case IPC_IA_DRAIN_STREAM_MRFLD:
++		pipe_id = ((struct ipc_dsp_hdr *)msg->mailbox_data)->pipe_id;
++		str_id = get_stream_id_mrfld(pipe_id);
++		if (str_id > 0) {
++			stream = &sst_drv_ctx->streams[str_id];
++			if (stream->drain_notify)
++				stream->drain_notify(stream->drain_cb_param);
++		}
++		break;
++
++	case IPC_IA_FW_ASYNC_ERR_MRFLD:
++		pr_err("FW sent async error msg:\n");
++		for (i = 0; i < (data_size/4); i++)
++			pr_err("0x%x\n", (*((unsigned int *)data_offset + i)));
++		break;
++
++	case IPC_IA_FW_INIT_CMPLT_MRFLD:
++		process_fw_init(data_offset);
++		break;
++
++	case IPC_IA_BUF_UNDER_RUN_MRFLD:
++		pipe_id = ((struct ipc_dsp_hdr *)msg->mailbox_data)->pipe_id;
++		str_id = get_stream_id_mrfld(pipe_id);
++		if (str_id > 0)
++			pr_err("Buffer under-run for pipe:%#x str_id:%d\n",
++					pipe_id, str_id);
++		break;
++
++	default:
++		pr_err("Unrecognized async msg from FW msg_id %#x\n", msg_id);
++	}
++}
++
++void sst_process_reply_mrfld(struct ipc_post *msg)
++{
++	unsigned int drv_id;
++	void *data;
++	union ipc_header_high msg_high;
++	u32 msg_low;
++	struct ipc_dsp_hdr *dsp_hdr;
++	unsigned int cmd_id;
++
++	msg_high = msg->mrfld_header.p.header_high;
++	msg_low = msg->mrfld_header.p.header_low_payload;
++
++	pr_debug("IPC process message header %x payload %x\n",
++			msg->mrfld_header.p.header_high.full,
++			msg->mrfld_header.p.header_low_payload);
++
++	drv_id = msg_high.part.drv_id;
++
++	/* Check for async messages */
++	if (drv_id == SST_ASYNC_DRV_ID) {
++		/* FW sent async large message */
++		process_fw_async_msg(msg);
++		goto end;
++	}
++
++	/* FW sent short error response for an IPC */
++	if (msg_high.part.result && drv_id && !msg_high.part.large) {
++		/* 32-bit FW error code in msg_low */
++		pr_err("FW sent error response 0x%x", msg_low);
++		sst_wake_up_block(sst_drv_ctx, msg_high.part.result,
++			msg_high.part.drv_id,
++			msg_high.part.msg_id, NULL, 0);
++		goto end;
++	}
++
++	/* Process all valid responses */
++	/* if it is a large message, the payload contains the size to
++	 * copy from mailbox */
++	if (msg_high.part.large) {
++		data = kzalloc(msg_low, GFP_KERNEL);
++		if (!data)
++			goto end;
++		memcpy(data, (void *) msg->mailbox_data, msg_low);
++		/* Copy command id so that we can use to put sst to reset */
++		dsp_hdr = (struct ipc_dsp_hdr *)data;
++		cmd_id = dsp_hdr->cmd_id;
++		pr_debug("cmd_id %d\n", dsp_hdr->cmd_id);
++		if (sst_wake_up_block(sst_drv_ctx, msg_high.part.result,
++				msg_high.part.drv_id,
++				msg_high.part.msg_id, data, msg_low))
++			kfree(data);
++		if (cmd_id == IPC_SST_VB_RESET)
++			sst_set_fw_state_locked(sst_drv_ctx, SST_RESET);
++	} else {
++		sst_wake_up_block(sst_drv_ctx, msg_high.part.result,
++				msg_high.part.drv_id,
++				msg_high.part.msg_id, NULL, 0);
++	}
++
++end:
++	return;
++}
+diff --git a/sound/soc/intel/sst/sst_loader.c b/sound/soc/intel/sst/sst_loader.c
+new file mode 100644
+index 0000000..6adfa75
+--- /dev/null
++++ b/sound/soc/intel/sst/sst_loader.c
+@@ -0,0 +1,947 @@
++/*
++ *  sst_dsp.c - Intel SST Driver for audio engine
++ *
++ *  Copyright (C) 2008-14	Intel Corp
++ *  Authors:	Vinod Koul <vinod.koul@intel.com>
++ *		Harsha Priya <priya.harsha@intel.com>
++ *		Dharageswari R <dharageswari.r@intel.com>
++ *		KP Jeeja <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This file contains all dsp controlling functions like firmware download,
++ * setting/resetting dsp cores, etc
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/pci.h>
++#include <linux/delay.h>
++#include <linux/fs.h>
++#include <linux/sched.h>
++#include <linux/firmware.h>
++#include <linux/dmaengine.h>
++#include <linux/pm_qos.h>
++#include <linux/elf.h>
++#include "../sst_platform.h"
++#include "../platform_ipc_v2.h"
++#include "sst.h"
++
++static struct sst_module_info sst_modules_mrfld[] = {
++	{"mp3_dec", SST_CODEC_TYPE_MP3, 0, SST_LIB_NOT_FOUND},
++	{"aac_dec", SST_CODEC_TYPE_AAC, 0, SST_LIB_NOT_FOUND},
++};
++
++/**
++ * intel_sst_reset_dsp_mrfld - Resetting SST DSP
++ *
++ * This resets DSP in case of MRFLD platfroms
++ */
++int intel_sst_reset_dsp_mrfld(void)
++{
++	union config_status_reg_mrfld csr;
++
++	pr_debug("sst: Resetting the DSP in mrfld\n");
++	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
++
++	pr_debug("value:0x%llx\n", csr.full);
++
++	csr.full |= 0x7;
++	sst_shim_write64(sst_drv_ctx->shim, SST_CSR, csr.full);
++	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
++
++	pr_debug("value:0x%llx\n", csr.full);
++
++	csr.full &= ~(0x1);
++	sst_shim_write64(sst_drv_ctx->shim, SST_CSR, csr.full);
++
++	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
++	pr_debug("value:0x%llx\n", csr.full);
++	return 0;
++}
++
++/**
++ * sst_start_merrifield - Start the SST DSP processor
++ *
++ * This starts the DSP in MERRIFIELD platfroms
++ */
++int sst_start_mrfld(void)
++{
++	union config_status_reg_mrfld csr;
++
++	pr_debug("sst: Starting the DSP in mrfld LALALALA\n");
++	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
++	pr_debug("value:0x%llx\n", csr.full);
++
++	csr.full |= 0x7;
++	sst_shim_write64(sst_drv_ctx->shim, SST_CSR, csr.full);
++
++	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
++	pr_debug("value:0x%llx\n", csr.full);
++
++	csr.part.xt_snoop = 1;
++	csr.full &= ~(0x5);
++	sst_shim_write64(sst_drv_ctx->shim, SST_CSR, csr.full);
++
++	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
++	pr_debug("sst: Starting the DSP_merrifield:%llx\n", csr.full);
++	return 0;
++}
++
++#define SST_CALC_DMA_DSTN(lpe_viewpt_rqd, ia_viewpt_addr, elf_paddr, \
++			lpe_viewpt_addr) ((lpe_viewpt_rqd) ? \
++		elf_paddr : (ia_viewpt_addr + elf_paddr - lpe_viewpt_addr))
++
++static int sst_fill_dstn(struct intel_sst_drv *sst, struct sst_info info,
++			Elf32_Phdr *pr, void **dstn, unsigned int *dstn_phys, int *mem_type)
++{
++	/* work arnd-since only 4 byte align copying is only allowed for ICCM */
++	if ((pr->p_paddr >= info.iram_start) && (pr->p_paddr < info.iram_end)) {
++		size_t data_size = pr->p_filesz % SST_ICCM_BOUNDARY;
++
++		if (data_size)
++			pr->p_filesz += 4 - data_size;
++		*dstn = sst->iram + (pr->p_paddr - info.iram_start);
++		*dstn_phys = SST_CALC_DMA_DSTN(info.lpe_viewpt_rqd,
++				sst->iram_base, pr->p_paddr, info.iram_start);
++		*mem_type = 1;
++	} else if ((pr->p_paddr >= info.dram_start) &&
++		 (pr->p_paddr < info.dram_end)) {
++
++		*dstn = sst->dram + (pr->p_paddr - info.dram_start);
++		*dstn_phys = SST_CALC_DMA_DSTN(info.lpe_viewpt_rqd,
++				sst->dram_base, pr->p_paddr, info.dram_start);
++		*mem_type = 1;
++	} else if ((pr->p_paddr >= info.imr_start) &&
++		   (pr->p_paddr < info.imr_end)) {
++
++		*dstn = sst->ddr + (pr->p_paddr - info.imr_start);
++		*dstn_phys =  sst->ddr_base + pr->p_paddr - info.imr_start;
++		*mem_type = 0;
++	} else {
++	       return -EINVAL;
++	}
++	return 0;
++}
++
++static void sst_fill_info(struct intel_sst_drv *sst,
++			struct sst_info *info)
++{
++	/* first we setup addresses to be used for elf sections */
++	if (sst->info.iram_use) {
++		info->iram_start = sst->info.iram_start;
++		info->iram_end = sst->info.iram_end;
++	} else {
++		info->iram_start = sst->iram_base;
++		info->iram_end = sst->iram_end;
++	}
++	if (sst->info.dram_use) {
++		info->dram_start = sst->info.dram_start;
++		info->dram_end = sst->info.dram_end;
++	} else {
++		info->dram_start = sst->dram_base;
++		info->dram_end = sst->dram_end;
++	}
++	if (sst->info.imr_use) {
++		info->imr_start = sst->info.imr_start;
++		info->imr_end = sst->info.imr_end;
++	} else {
++		info->imr_start = relocate_imr_addr_mrfld(sst->ddr_base);
++		info->imr_end = relocate_imr_addr_mrfld(sst->ddr_end);
++	}
++
++	info->lpe_viewpt_rqd = sst->info.lpe_viewpt_rqd;
++	info->dma_max_len = sst->info.dma_max_len;
++	pr_debug("%s: dma_max_len 0x%x", __func__, info->dma_max_len);
++}
++
++static inline int sst_validate_elf(const struct firmware *sst_bin, bool dynamic)
++{
++	Elf32_Ehdr *elf;
++
++	BUG_ON(!sst_bin);
++
++	pr_debug("IN %s\n", __func__);
++
++	elf = (Elf32_Ehdr *)sst_bin->data;
++
++	if ((elf->e_ident[0] != 0x7F) || (elf->e_ident[1] != 'E') ||
++	    (elf->e_ident[2] != 'L') || (elf->e_ident[3] != 'F')) {
++		pr_debug("ELF Header Not found!%zu\n", sst_bin->size);
++		return -EINVAL;
++	}
++
++	if (dynamic == true) {
++		if (elf->e_type != ET_DYN) {
++			pr_err("Not a dynamic loadable library\n");
++			return -EINVAL;
++		}
++	}
++	pr_debug("Valid ELF Header...%zu\n", sst_bin->size);
++	return 0;
++}
++
++static int sst_validate_fw_image(const void *sst_fw_in_mem, unsigned long size,
++		struct fw_module_header **module, u32 *num_modules)
++{
++	struct fw_header *header;
++
 +	pr_debug("%s\n", __func__);
 +
-+	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
-+	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
++	/* Read the header information from the data pointer */
++	header = (struct fw_header *)sst_fw_in_mem;
++	pr_debug("header sign=%s size=%x modules=%x fmt=%x size=%zx\n",
++			header->signature, header->file_size, header->modules,
++			header->file_format, sizeof(*header));
++
++	/* verify FW */
++	if ((strncmp(header->signature, SST_FW_SIGN, 4) != 0) ||
++		(size != header->file_size + sizeof(*header))) {
++		/* Invalid FW signature */
++		pr_err("InvalidFW sign/filesize mismatch\n");
++		return -EINVAL;
++	}
++	*num_modules = header->modules;
++	*module = (void *)sst_fw_in_mem + sizeof(*header);
++
 +	return 0;
 +}
 +
-+static int sst_media_hw_free(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
++/*
++ * sst_fill_memcpy_list - Fill the memcpy list
++ *
++ * @memcpy_list: List to be filled
++ * @destn: Destination addr to be filled in the list
++ * @src: Source addr to be filled in the list
++ * @size: Size to be filled in the list
++ *
++ * Adds the node to the list after required fields
++ * are populated in the node
++ */
++
++static int sst_fill_memcpy_list(struct list_head *memcpy_list,
++			void *destn, const void *src, u32 size, bool is_io)
 +{
-+	return snd_pcm_lib_free_pages(substream);
++	struct sst_memcpy_list *listnode;
++
++	listnode = kzalloc(sizeof(*listnode), GFP_KERNEL);
++	if (listnode == NULL)
++		return -ENOMEM;
++	listnode->dstn = destn;
++	listnode->src = src;
++	listnode->size = size;
++	listnode->is_io = is_io;
++	list_add_tail(&listnode->memcpylist, memcpy_list);
++
++	return 0;
 +}
 +
-+static int sst_enable_ssp(struct snd_pcm_substream *substream,
-+			struct snd_soc_dai *dai)
++static int sst_parse_elf_module_memcpy(struct intel_sst_drv *sst,
++		const void *fw, struct sst_info info, Elf32_Phdr *pr,
++		struct list_head *memcpy_list)
 +{
-+	pr_debug("In %s :dai=%s pb=%d cp= %d dai_active=%d id=%d\n", __func__,
-+		dai->name, dai->playback_active, dai->capture_active, dai->active,  dai->id);
-+	if (!dai->active) {
-+		sst_handle_vb_timer(dai->platform, true);
-+		send_ssp_cmd(dai->platform, dai->name, 1);
++	void *dstn;
++	unsigned int dstn_phys;
++	int ret_val = 0;
++	int mem_type;
++
++	ret_val = sst_fill_dstn(sst, info, pr, &dstn, &dstn_phys, &mem_type);
++	if (ret_val)
++		return ret_val;
++
++	ret_val = sst_fill_memcpy_list(memcpy_list, dstn,
++			(void *)fw + pr->p_offset, pr->p_filesz, mem_type);
++	if (ret_val)
++		return ret_val;
++
++	return 0;
++}
++
++static int
++sst_parse_elf_fw_memcpy(struct intel_sst_drv *sst, const void *fw_in_mem,
++			struct list_head *memcpy_list)
++{
++	int i = 0;
++
++	Elf32_Ehdr *elf;
++	Elf32_Phdr *pr;
++	struct sst_info info;
++
++	BUG_ON(!fw_in_mem);
++
++	elf = (Elf32_Ehdr *)fw_in_mem;
++	pr = (Elf32_Phdr *) (fw_in_mem + elf->e_phoff);
++	pr_debug("%s entry\n", __func__);
++
++	sst_fill_info(sst, &info);
++
++	while (i < elf->e_phnum) {
++		if (pr[i].p_type == PT_LOAD)
++			sst_parse_elf_module_memcpy(sst, fw_in_mem, info,
++					&pr[i], memcpy_list);
++		i++;
 +	}
 +	return 0;
 +}
 +
-+static void sst_disable_ssp(struct snd_pcm_substream *substream,
-+			struct snd_soc_dai *dai)
++/**
++ * sst_parse_module_memcpy - Parse audio FW modules and populate the memcpy list
++ *
++ * @module		: FW module header
++ * @memcpy_list	: Pointer to the list to be populated
++ * Create the memcpy list as the number of block to be copied
++ * returns error or 0 if module sizes are proper
++ */
++static int sst_parse_module_memcpy(struct fw_module_header *module,
++				struct list_head *memcpy_list)
 +{
-+	pr_debug("In %s :dai=%s pb=%d cp= %d dai_active=%d id=%d\n", __func__,
-+		dai->name, dai->playback_active, dai->capture_active, dai->active, dai->id);
-+	if (!dai->active) {
-+		send_ssp_cmd(dai->platform, dai->name, 0);
-+		sst_handle_vb_timer(dai->platform, false);
++	struct fw_block_info *block;
++	u32 count;
++	int ret_val = 0;
++	void __iomem *ram_iomem;
++
++	pr_debug("module sign %s size %x blocks %x type %x\n",
++			module->signature, module->mod_size,
++			module->blocks, module->type);
++	pr_debug("module entrypoint 0x%x\n", module->entry_point);
++
++	block = (void *)module + sizeof(*module);
++
++	for (count = 0; count < module->blocks; count++) {
++		if (block->size <= 0) {
++			pr_err("block size invalid\n");
++			return -EINVAL;
++		}
++		switch (block->type) {
++		case SST_IRAM:
++			ram_iomem = sst_drv_ctx->iram;
++			break;
++		case SST_DRAM:
++			ram_iomem = sst_drv_ctx->dram;
++			break;
++		case SST_DDR:
++			ram_iomem = sst_drv_ctx->ddr;
++			break;
++		case SST_CUSTOM_INFO:
++			block = (void *)block + sizeof(*block) + block->size;
++			continue;
++		default:
++			pr_err("wrong ram type0x%x in block0x%x\n",
++					block->type, count);
++			return -EINVAL;
++		}
++
++		ret_val = sst_fill_memcpy_list(memcpy_list,
++				ram_iomem + block->ram_offset,
++				(void *)block + sizeof(*block), block->size, 1);
++		if (ret_val)
++			return ret_val;
++
++		block = (void *)block + sizeof(*block) + block->size;
++	}
++	return 0;
++}
++
++/**
++ * sst_parse_fw_memcpy - parse the firmware image & populate the list for memcpy
++ *
++ * @sst_fw_in_mem	: pointer to audio fw
++ * @size		: size of the firmware
++ * @fw_list		: pointer to list_head to be populated
++ * This function parses the FW image and saves the parsed image in the list
++ * for memcpy
++ */
++static int sst_parse_fw_memcpy(const void *sst_fw_in_mem, unsigned long size,
++				struct list_head *fw_list)
++{
++	struct fw_module_header *module;
++	u32 count, num_modules;
++	int ret_val;
++
++	ret_val = sst_validate_fw_image(sst_fw_in_mem, size,
++				&module, &num_modules);
++	if (ret_val)
++		return ret_val;
++
++	for (count = 0; count < num_modules; count++) {
++		/* module */
++		ret_val = sst_parse_module_memcpy(module, fw_list);
++		if (ret_val)
++			return ret_val;
++		module = (void *)module + sizeof(*module) + module->mod_size ;
++	}
++
++	return 0;
++}
++
++/**
++ * sst_do_memcpy - function initiates the memcpy
++ *
++ * @memcpy_list: Pter to memcpy list on which the memcpy needs to be initiated
++ *
++ * Triggers the memcpy
++ */
++static void sst_do_memcpy(struct list_head *memcpy_list)
++{
++	struct sst_memcpy_list *listnode;
++
++	list_for_each_entry(listnode, memcpy_list, memcpylist) {
++		if (listnode->is_io == true)
++			memcpy_toio((void __iomem *)listnode->dstn, listnode->src,
++							listnode->size);
++		else
++			memcpy(listnode->dstn, listnode->src, listnode->size);
 +	}
 +}
 +
-+static struct snd_soc_dai_ops sst_media_dai_ops = {
-+	.startup = sst_media_open,
-+	.shutdown = sst_media_close,
-+	.prepare = sst_media_prepare,
-+	.hw_params = sst_media_hw_params,
-+	.hw_free = sst_media_hw_free,
-+	.set_tdm_slot = sst_platform_media_set_tdm_slot,
-+	.mute_stream = sst_media_digital_mute,
-+};
-+
-+static struct snd_soc_dai_ops sst_compr_dai_ops = {
-+	.mute_stream = sst_media_digital_mute,
-+};
-+
-+static struct snd_soc_dai_ops sst_be_dai_ops = {
-+	.startup = sst_enable_ssp,
-+	.shutdown = sst_disable_ssp,
-+};
-+
- static struct snd_soc_dai_driver sst_platform_dai[] = {
- {
- 	.name = "media-cpu-dai",
-+	.ops = &sst_media_dai_ops,
- 	.playback = {
--		.stream_name = "Media Playback",
-+		.stream_name = "Headset Playback",
- 		.channels_min = SST_STEREO,
- 		.channels_max = SST_STEREO,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.capture = {
--		.stream_name = "Media Capture",
-+		.stream_name = "Headset Capture",
- 		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-@@ -308,6 +550,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- {
- 	.name = "compress-cpu-dai",
- 	.compress_dai = 1,
-+	.ops = &sst_compr_dai_ops,
- 	.playback = {
- 		.stream_name = "Compress Playback",
- 		.channels_min = SST_STEREO,
-@@ -370,6 +613,27 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- },
- };
- 
-+static int sst_platform_open(struct snd_pcm_substream *substream)
++static void sst_memcpy_free_lib_resources(void)
 +{
-+	struct snd_pcm_runtime *runtime;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai_link *dai_link = rtd->dai_link;
++	struct sst_memcpy_list *listnode, *tmplistnode;
 +
-+	pr_debug("sst_platform_open called:%s\n", dai_link->cpu_dai_name);
-+	if (substream->pcm->internal)
-+		return 0;
-+	runtime = substream->runtime;
-+	runtime->hw = sst_platform_pcm_hw;
++	pr_debug("entry:%s\n", __func__);
++
++	/*Free the list*/
++	if (!list_empty(&sst_drv_ctx->libmemcpy_list)) {
++		list_for_each_entry_safe(listnode, tmplistnode,
++				&sst_drv_ctx->libmemcpy_list, memcpylist) {
++			list_del(&listnode->memcpylist);
++			kfree(listnode);
++		}
++	}
++}
++
++void sst_memcpy_free_resources(void)
++{
++	struct sst_memcpy_list *listnode, *tmplistnode;
++
++	pr_debug("entry:%s\n", __func__);
++
++	/*Free the list*/
++	if (!list_empty(&sst_drv_ctx->memcpy_list)) {
++		list_for_each_entry_safe(listnode, tmplistnode,
++				&sst_drv_ctx->memcpy_list, memcpylist) {
++			list_del(&listnode->memcpylist);
++			kfree(listnode);
++		}
++	}
++	sst_memcpy_free_lib_resources();
++}
++
++void sst_firmware_load_cb(const struct firmware *fw, void *context)
++{
++	struct intel_sst_drv *ctx = context;
++	int ret = 0;
++
++	pr_debug("In %s\n", __func__);
++
++	if (fw == NULL) {
++		pr_err("request fw failed\n");
++		return;
++	}
++
++	mutex_lock(&sst_drv_ctx->sst_lock);
++
++	if (sst_drv_ctx->sst_state != SST_RESET ||
++			ctx->fw_in_mem != NULL)
++		goto out;
++
++	pr_debug("Request Fw completed\n");
++
++	if (ctx->info.use_elf == true)
++		ret = sst_validate_elf(fw, false);
++
++	if (ret != 0) {
++		pr_err("FW image invalid...\n");
++		goto out;
++	}
++
++	ctx->fw_in_mem = kzalloc(fw->size, GFP_KERNEL);
++	if (!ctx->fw_in_mem) {
++		pr_err("%s unable to allocate memory\n", __func__);
++		goto out;
++	}
++
++	pr_debug("copied fw to %p", ctx->fw_in_mem);
++	pr_debug("phys: %lx", (unsigned long)virt_to_phys(ctx->fw_in_mem));
++	memcpy(ctx->fw_in_mem, fw->data, fw->size);
++
++	if (ctx->info.use_elf == true)
++		ret = sst_parse_elf_fw_memcpy(ctx, ctx->fw_in_mem,
++						&ctx->memcpy_list);
++	else
++		ret = sst_parse_fw_memcpy(ctx->fw_in_mem, fw->size,
++						&ctx->memcpy_list);
++	if (ret) {
++		kfree(ctx->fw_in_mem);
++		ctx->fw_in_mem = NULL;
++		goto out;
++	}
++	/* If static module download(download at boot time) is supported,
++	 * set the flag to indicate lib download is to be done
++	 */
++	if (ctx->pdata->lib_info)
++		if (ctx->pdata->lib_info->mod_ddr_dnld)
++			ctx->lib_dwnld_reqd = true;
++
++out:
++	mutex_unlock(&sst_drv_ctx->sst_lock);
++	if (fw != NULL)
++		release_firmware(fw);
++}
++
++/*
++ * sst_request_fw - requests audio fw from kernel and saves a copy
++ *
++ * This function requests the SST FW from the kernel, parses it and
++ * saves a copy in the driver context
++ */
++static int sst_request_fw(struct intel_sst_drv *sst)
++{
++	int retval = 0;
++	char name[20];
++	const struct firmware *fw;
++
++	snprintf(name, sizeof(name), "%s%04x%s", "fw_sst_",
++				sst->pci_id, ".bin");
++	pr_debug("Requesting FW %s now...\n", name);
++
++	retval = request_firmware(&fw, name, sst->dev);
++	if (fw == NULL) {
++		pr_err("fw is returning as null\n");
++		return -EINVAL;
++	}
++	if (retval) {
++		pr_err("request fw failed %d\n", retval);
++		return retval;
++	}
++	if (sst->info.use_elf == true)
++		retval = sst_validate_elf(fw, false);
++	if (retval != 0) {
++		pr_err("FW image invalid...\n");
++		goto end_release;
++	}
++	sst->fw_in_mem = kzalloc(fw->size, GFP_KERNEL);
++	if (!sst->fw_in_mem) {
++		pr_err("%s unable to allocate memory\n", __func__);
++		retval = -ENOMEM;
++		goto end_release;
++	}
++	pr_debug("copied fw to %p", sst->fw_in_mem);
++	pr_debug("phys: %lx", (unsigned long)virt_to_phys(sst->fw_in_mem));
++	memcpy(sst->fw_in_mem, fw->data, fw->size);
++	if (sst->info.use_elf == true)
++		retval = sst_parse_elf_fw_memcpy(sst, sst->fw_in_mem,
++						&sst->memcpy_list);
++	else
++		retval = sst_parse_fw_memcpy(sst->fw_in_mem, fw->size,
++							&sst->memcpy_list);
++	if (retval) {
++		kfree(sst->fw_in_mem);
++		sst->fw_in_mem = NULL;
++	}
++
++	/* If static module download(download at boot time) is supported,
++	 * set the flag to indicate lib download is to be done
++	 */
++	if (sst->pdata->lib_info)
++		if (sst->pdata->lib_info->mod_ddr_dnld)
++			sst->lib_dwnld_reqd = true;
++end_release:
++	release_firmware(fw);
++	return retval;
++}
++
++static inline void print_lib_info(struct snd_sst_lib_download_info *resp)
++{
++	pr_debug("codec Type %d Ver %d Built %s: %s\n",
++		resp->dload_lib.lib_info.lib_type,
++		resp->dload_lib.lib_info.lib_version,
++		resp->dload_lib.lib_info.b_date,
++		resp->dload_lib.lib_info.b_time);
++}
++
++/*
++ * Writing the DDR physical base to DCCM offset
++ * so that FW can use it to setup TLB
++ */
++static void sst_dccm_config_write(void __iomem *dram_base, unsigned int ddr_base)
++{
++	void __iomem *addr;
++	u32 bss_reset = 0;
++
++	addr = (void __iomem *)(dram_base + MRFLD_FW_DDR_BASE_OFFSET);
++	memcpy_toio(addr, (void *)&ddr_base, sizeof(u32));
++	bss_reset |= (1 << MRFLD_FW_BSS_RESET_BIT);
++	addr = (void __iomem *)(dram_base + MRFLD_FW_FEATURE_BASE_OFFSET);
++	memcpy_toio(addr, &bss_reset, sizeof(u32));
++	pr_debug("%s: config written to DCCM\n", __func__);
++}
++
++void sst_post_download_mrfld(struct intel_sst_drv *ctx)
++{
++	sst_dccm_config_write(ctx->dram, ctx->ddr_base);
++	/* For mrfld, download all libraries the first time fw is
++	 * downloaded */
++	pr_debug("%s: lib_dwnld = %u\n", __func__, ctx->lib_dwnld_reqd);
++	if (ctx->lib_dwnld_reqd) {
++		sst_load_all_modules_elf(ctx, sst_modules_mrfld, ARRAY_SIZE(sst_modules_mrfld));
++		ctx->lib_dwnld_reqd = false;
++	}
++}
++
++static void sst_init_lib_mem_mgr(struct intel_sst_drv *ctx)
++{
++	struct sst_mem_mgr *mgr = &ctx->lib_mem_mgr;
++	const struct sst_lib_dnld_info *lib_info = ctx->pdata->lib_info;
++
++	memset(mgr, 0, sizeof(*mgr));
++	mgr->current_base = lib_info->mod_base + lib_info->mod_table_offset
++						+ lib_info->mod_table_size;
++	mgr->avail = lib_info->mod_end - mgr->current_base + 1;
++
++	pr_debug("current base = 0x%lx , avail = 0x%x\n",
++		(unsigned long)mgr->current_base, mgr->avail);
++}
++
++/**
++ * sst_load_fw - function to load FW into DSP
++ *
++ *
++ * Transfers the FW to DSP using dma/memcpy
++ */
++int sst_load_fw(void)
++{
++	int ret_val = 0;
++	struct sst_block *block;
++
++	pr_debug("sst_load_fw\n");
++
++	if (sst_drv_ctx->sst_state !=  SST_RESET ||
++			sst_drv_ctx->sst_state == SST_SHUTDOWN)
++		return -EAGAIN;
++
++	if (!sst_drv_ctx->fw_in_mem) {
++		pr_debug("sst: FW not in memory retry to download\n");
++		ret_val = sst_request_fw(sst_drv_ctx);
++		if (ret_val)
++			return ret_val;
++	}
++
++	BUG_ON(!sst_drv_ctx->fw_in_mem);
++	block = sst_create_block(sst_drv_ctx, 0, FW_DWNL_ID);
++	if (block == NULL)
++		return -ENOMEM;
++
++	/* Prevent C-states beyond C6 */
++	pm_qos_update_request(sst_drv_ctx->qos, 0);
++
++	sst_drv_ctx->sst_state = SST_FW_LOADING;
++
++	ret_val = sst_drv_ctx->ops->reset();
++	if (ret_val)
++		goto restore;
++
++	sst_do_memcpy(&sst_drv_ctx->memcpy_list);
++
++	/* Write the DRAM/DCCM config before enabling FW */
++	if (sst_drv_ctx->ops->post_download)
++		sst_drv_ctx->ops->post_download(sst_drv_ctx);
++
++	/* bring sst out of reset */
++	ret_val = sst_drv_ctx->ops->start();
++	if (ret_val)
++		goto restore;
++
++	ret_val = sst_wait_timeout(sst_drv_ctx, block);
++	if (ret_val) {
++		pr_err("fw download failed %d\n" , ret_val);
++		/* assume FW d/l failed due to timeout*/
++		ret_val = -EBUSY;
++
++	}
++
++restore:
++	/* Re-enable Deeper C-states beyond C6 */
++	pm_qos_update_request(sst_drv_ctx->qos, PM_QOS_DEFAULT_VALUE);
++	sst_free_block(sst_drv_ctx, block);
++
++	return ret_val;
++}
++
++/* In relocatable elf file, there can be  relocatable variables and functions.
++ * Variables are kept in Global Address Offset Table (GOT) and functions in
++ * Procedural Linkage Table (PLT). In current codec binaries only relocatable
++ * variables are seen. So we use the GOT table.
++ */
++static int sst_find_got_table(Elf32_Shdr *shdr, int nsec, char *in_elf,
++		Elf32_Rela **got, unsigned int *cnt)
++{
++	int i = 0;
++	while (i < nsec) {
++		if (shdr[i].sh_type == SHT_RELA) {
++			*got = (Elf32_Rela *)(in_elf + shdr[i].sh_offset);
++			*cnt = shdr[i].sh_size / sizeof(Elf32_Rela);
++			break;
++		}
++		i++;
++	}
++	if (i == nsec)
++		return -EINVAL;
++
 +	return 0;
 +}
 +
-+static int sst_platform_close(struct snd_pcm_substream *substream)
++/* For each entry in the GOT table, find the unrelocated offset. Then
++ * add the relocation base to the offset and write back the new address to the
++ * original variable location.
++ */
++static int sst_relocate_got_entries(Elf32_Rela *table, unsigned int size,
++	char *in_elf, int elf_size, u32 rel_base)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai_link *dai_link = rtd->dai_link;
-+	pr_debug("sst_platform_close called:%s\n", dai_link->cpu_dai_name);
++	int i;
++	Elf32_Rela *entry;
++	Elf32_Addr *target_addr, unreloc_addr;
++
++	for (i = 0; i < size; i++) {
++		entry = &table[i];
++		if (ELF32_R_SYM(entry->r_info) != 0) {
++			return -EINVAL;
++		} else {
++			if (entry->r_offset > elf_size) {
++				pr_err("GOT table target addr out of range\n");
++				return -EINVAL;
++			}
++			target_addr = (Elf32_Addr *)(in_elf + entry->r_offset);
++			unreloc_addr = *target_addr + entry->r_addend;
++			if (unreloc_addr > elf_size) {
++				pr_err("GOT table entry invalid\n");
++				continue;
++			}
++			*target_addr = unreloc_addr + rel_base;
++		}
++	}
 +	return 0;
 +}
- static int sst_platform_pcm_trigger(struct snd_pcm_substream *substream,
- 					int cmd)
- {
-@@ -377,6 +641,8 @@ static int sst_platform_pcm_trigger(struct snd_pcm_substream *substream,
- 	struct sst_runtime_stream *stream;
- 	int str_cmd, status;
- 
-+	if (substream->pcm->internal)
-+		return 0;
- 	pr_debug("sst_platform_pcm_trigger called\n");
- 	stream = substream->runtime->private_data;
- 	str_id = stream->stream_info.str_id;
-@@ -431,32 +697,16 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
- 		pr_err("sst: error code = %d\n", ret_val);
- 		return ret_val;
- 	}
--	return stream->stream_info.buffer_ptr;
--}
--
--static int sst_platform_pcm_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
--{
--	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
--	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
--
--	return 0;
--}
--
--static int sst_platform_pcm_hw_free(struct snd_pcm_substream *substream)
--{
--	return snd_pcm_lib_free_pages(substream);
-+	substream->runtime->delay = str_info->pcm_delay;
-+	return str_info->buffer_ptr;
- }
- 
- static struct snd_pcm_ops sst_platform_ops = {
- 	.open = sst_platform_open,
- 	.close = sst_platform_close,
- 	.ioctl = snd_pcm_lib_ioctl,
--	.prepare = sst_platform_pcm_prepare,
- 	.trigger = sst_platform_pcm_trigger,
- 	.pointer = sst_platform_pcm_pointer,
--	.hw_params = sst_platform_pcm_hw_params,
--	.hw_free = sst_platform_pcm_hw_free,
- };
- 
- static void sst_pcm_free(struct snd_pcm *pcm)
-@@ -485,11 +735,21 @@ static int sst_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return retval;
- }
- 
--static struct snd_soc_platform_driver sst_soc_platform_drv = {
-+static int sst_soc_probe(struct snd_soc_platform *platform)
++
++static int sst_relocate_elf(char *in_elf, int elf_size, phys_addr_t rel_base,
++		Elf32_Addr *entry_pt)
 +{
-+	pr_debug("Enter:%s\n", __func__);
-+	return sst_dsp_init_v2_dpcm(platform);
++	int retval = 0;
++	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)in_elf;
++	Elf32_Shdr *shdr = (Elf32_Shdr *) (in_elf + ehdr->e_shoff);
++	Elf32_Phdr *phdr = (Elf32_Phdr *) (in_elf + ehdr->e_phoff);
++	int i, num_sec;
++	Elf32_Rela *rel_table = NULL;
++	unsigned int rela_cnt = 0;
++	u32 rbase;
++
++	BUG_ON(rel_base > (u32)(-1));
++	rbase = (u32) (rel_base & (u32)(~0));
++
++	/* relocate the entry_pt */
++	*entry_pt = (Elf32_Addr)(ehdr->e_entry + rbase);
++	num_sec = ehdr->e_shnum;
++
++	/* Find the relocation(GOT) table through the section header */
++	retval = sst_find_got_table(shdr, num_sec, in_elf,
++					&rel_table, &rela_cnt);
++	if (retval < 0)
++		return retval;
++
++	/* Relocate all the entries in the GOT */
++	retval = sst_relocate_got_entries(rel_table, rela_cnt, in_elf,
++						elf_size, rbase);
++	if (retval < 0)
++		return retval;
++
++	pr_debug("GOT entries relocated\n");
++
++	/* Update the program headers in the ELF */
++	for (i = 0; i < ehdr->e_phnum; i++) {
++		if (phdr[i].p_type == PT_LOAD) {
++			phdr[i].p_vaddr += rbase;
++			phdr[i].p_paddr += rbase;
++		}
++	}
++	pr_debug("program header entries updated\n");
++
++	return retval;
 +}
 +
++#define ALIGN_256 0x100
 +
-+static struct snd_soc_platform_driver sst_soc_platform_drv  = {
-+	.probe		= sst_soc_probe,
- 	.ops		= &sst_platform_ops,
- 	.compr_ops	= &sst_platform_compr_ops,
- 	.pcm_new	= sst_pcm_new,
- 	.pcm_free	= sst_pcm_free,
-+	.read		= sst_soc_read,
-+	.write		= sst_soc_write,
- };
- 
- static const struct snd_soc_component_driver sst_component = {
-@@ -499,10 +759,24 @@ static const struct snd_soc_component_driver sst_component = {
- 
- static int sst_platform_probe(struct platform_device *pdev)
- {
-+	struct sst_data *sst;
- 	int ret;
-+	struct sst_platform_data *pdata = pdev->dev.platform_data;
- 
- 	pr_debug("sst_platform_probe called\n");
--	sst = NULL;
-+	sst = devm_kzalloc(&pdev->dev, sizeof(*sst), GFP_KERNEL);
-+	if (sst == NULL) {
-+		pr_err("kzalloc failed\n");
++int sst_get_next_lib_mem(struct sst_mem_mgr *mgr, int size,
++			unsigned long *lib_base)
++{
++	int retval = 0;
++
++	pr_debug("library orig size = 0x%x", size);
++	if (size % ALIGN_256)
++		size += (ALIGN_256 - (size % ALIGN_256));
++	if (size > mgr->avail)
++		return -ENOMEM;
++
++	*lib_base = mgr->current_base;
++	mgr->current_base += size;
++	mgr->avail -= size;
++	mgr->count++;
++	pr_debug("library base = 0x%lx", *lib_base);
++	pr_debug("library aligned size = 0x%x", size);
++	pr_debug("lib count = %d\n", mgr->count);
++	return retval;
++
++}
++
++static int sst_download_lib_elf(struct intel_sst_drv *sst, const void *lib,
++		int size)
++{
++	int retval = 0;
++
++	pr_debug("In %s\n", __func__);
++
++	retval = sst_parse_elf_fw_memcpy(sst, lib,
++			 &sst->libmemcpy_list);
++	if (retval)
++		return retval;
++	sst_do_memcpy(&sst->libmemcpy_list);
++	sst_memcpy_free_lib_resources();
++	pr_debug("download lib complete");
++	return retval;
++}
++
++static void sst_fill_fw_module_table(struct sst_module_info *mod_list,
++		int list_size, unsigned long ddr_base)
++{
++	int i;
++	u32 *write_ptr = (u32 *)ddr_base;
++
++	pr_debug("In %s\n", __func__);
++
++	for (i = 0; i < list_size; i++) {
++		if (mod_list[i].status == SST_LIB_DOWNLOADED) {
++			pr_debug("status dnwld for %d\n", i);
++			pr_debug("module id %d\n", mod_list[i].id);
++			pr_debug("entry pt 0x%x\n", mod_list[i].entry_pt);
++
++			*write_ptr++ = mod_list[i].id;
++			*write_ptr++ = mod_list[i].entry_pt;
++		}
++	}
++}
++
++static int sst_request_lib_elf(struct sst_module_info *mod_entry,
++	const struct firmware **fw_lib, int pci_id, struct device *dev)
++{
++	char name[25];
++	int retval = 0;
++
++	snprintf(name, sizeof(name), "%s%s%04x%s", mod_entry->name,
++			"_", pci_id, ".bin");
++	pr_debug("Requesting %s\n", name);
++
++	retval = request_firmware(fw_lib, name, dev);
++	if (retval) {
++		pr_err("%s library load failed %d\n", name, retval);
++		return retval;
++	}
++	pr_debug("got lib\n");
++	mod_entry->status = SST_LIB_FOUND;
++	return 0;
++}
++
++static int sst_allocate_lib_mem(const struct firmware *lib, int size,
++	struct sst_mem_mgr *mem_mgr, char **out_elf, unsigned long *lib_start)
++{
++	int retval = 0;
++
++	*out_elf = kzalloc(size, GFP_KERNEL);
++	if (!*out_elf) {
++		pr_err("cannot alloc mem for elf copy %d\n", retval);
++		goto mem_error;
++	}
++
++	memcpy(*out_elf, lib->data, size);
++	retval = sst_get_next_lib_mem(mem_mgr, size, lib_start);
++	if (retval < 0) {
++		pr_err("cannot alloc ddr mem for lib: %d\n", retval);
++		kfree(*out_elf);
++		goto mem_error;
++	}
++	return 0;
++
++mem_error:
++	release_firmware(lib);
++	return -ENOMEM;
++}
++
++int sst_load_all_modules_elf(struct intel_sst_drv *ctx, struct sst_module_info *mod_table,
++								int num_modules)
++{
++	int retval = 0;
++	int i;
++	const struct firmware *fw_lib;
++	struct sst_module_info *mod = NULL;
++	char *out_elf;
++	unsigned int lib_size = 0;
++	unsigned int mod_table_offset = ctx->pdata->lib_info->mod_table_offset;
++	unsigned long lib_base;
++
++	pr_debug("In %s", __func__);
++
++	sst_init_lib_mem_mgr(ctx);
++
++	for (i = 0; i < num_modules; i++) {
++		mod = &mod_table[i];
++		retval = sst_request_lib_elf(mod, &fw_lib,
++						ctx->pci_id, ctx->dev);
++		if (retval < 0)
++			continue;
++		lib_size = fw_lib->size;
++
++		retval = sst_validate_elf(fw_lib, true);
++		if (retval < 0) {
++			pr_err("library is not valid elf %d\n", retval);
++			release_firmware(fw_lib);
++			continue;
++		}
++		pr_debug("elf validated\n");
++		retval = sst_allocate_lib_mem(fw_lib, lib_size,
++				&ctx->lib_mem_mgr, &out_elf, &lib_base);
++		if (retval < 0) {
++			pr_err("lib mem allocation failed: %d\n", retval);
++			continue;
++		}
++		pr_debug("lib space allocated\n");
++
++		/* relocate in place */
++		retval = sst_relocate_elf(out_elf, lib_size,
++						lib_base, &mod->entry_pt);
++		if (retval < 0) {
++			pr_err("lib elf relocation failed: %d\n", retval);
++			release_firmware(fw_lib);
++			kfree(out_elf);
++			continue;
++		}
++		pr_debug("relocation done\n");
++		release_firmware(fw_lib);
++		/* write to ddr imr region,use memcpy method */
++		retval = sst_download_lib_elf(ctx, out_elf, lib_size);
++		mod->status = SST_LIB_DOWNLOADED;
++		kfree(out_elf);
++	}
++
++	/* write module table to DDR */
++	sst_fill_fw_module_table(mod_table, num_modules,
++			(unsigned long)(ctx->ddr + mod_table_offset));
++	return retval;
++}
+diff --git a/sound/soc/intel/sst/sst_pvt.c b/sound/soc/intel/sst/sst_pvt.c
+new file mode 100644
+index 0000000..0cb94af
+--- /dev/null
++++ b/sound/soc/intel/sst/sst_pvt.c
+@@ -0,0 +1,203 @@
++/*
++ *  sst_pvt.c - Intel SST Driver for audio engine
++ *
++ *  Copyright (C) 2008-14	Intel Corp
++ *  Authors:	Vinod Koul <vinod.koul@intel.com>
++ *		Harsha Priya <priya.harsha@intel.com>
++ *		Dharageswari R <dharageswari.r@intel.com>
++ *		KP Jeeja <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This file contains all private functions
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/kobject.h>
++#include <linux/pci.h>
++#include <linux/fs.h>
++#include <linux/firmware.h>
++#include <linux/sched.h>
++#include <linux/delay.h>
++#include <sound/asound.h>
++#include <sound/pcm.h>
++#include <sound/compress_offload.h>
++#include "../sst_platform.h"
++#include "../platform_ipc_v2.h"
++#include "sst.h"
++
++/*
++ * sst_wait_interruptible - wait on event
++ *
++ * @sst_drv_ctx: Driver context
++ * @block: Driver block to wait on
++ *
++ * This function waits without a timeout (and is interruptable) for a
++ * given block event
++ */
++int sst_wait_interruptible(struct intel_sst_drv *sst_drv_ctx,
++				struct sst_block *block)
++{
++	int retval = 0;
++
++	if (!wait_event_interruptible(sst_drv_ctx->wait_queue,
++				block->condition)) {
++		/* event wake */
++		if (block->ret_code < 0) {
++			pr_err("stream failed %d\n", block->ret_code);
++			retval = -EBUSY;
++		} else {
++			pr_debug("event up\n");
++			retval = 0;
++		}
++	} else {
++		pr_err("signal interrupted\n");
++		retval = -EINTR;
++	}
++	return retval;
++
++}
++
++unsigned long long read_shim_data(struct intel_sst_drv *sst, int addr)
++{
++	unsigned long long val = 0;
++
++	switch (sst->pci_id) {
++	case SST_MRFLD_PCI_ID:
++		val = sst_shim_read64(sst->shim, addr);
++		break;
++	}
++	return val;
++}
++
++void write_shim_data(struct intel_sst_drv *sst, int addr,
++				unsigned long long data)
++{
++	switch (sst->pci_id) {
++	case SST_MRFLD_PCI_ID:
++		sst_shim_write64(sst->shim, addr, (u64) data);
++		break;
++	}
++}
++
++/*
++ * sst_wait_timeout - wait on event for timeout
++ *
++ * @sst_drv_ctx: Driver context
++ * @block: Driver block to wait on
++ *
++ * This function waits with a timeout value (and is not interruptible) on a
++ * given block event
++ */
++int sst_wait_timeout(struct intel_sst_drv *sst_drv_ctx, struct sst_block *block)
++{
++	int retval = 0;
++
++	/* NOTE:
++	Observed that FW processes the alloc msg and replies even
++	before the alloc thread has finished execution */
++	pr_debug("sst: waiting for condition %x ipc %d drv_id %d\n",
++		       block->condition, block->msg_id, block->drv_id);
++	if (wait_event_timeout(sst_drv_ctx->wait_queue,
++				block->condition,
++				msecs_to_jiffies(SST_BLOCK_TIMEOUT))) {
++		/* event wake */
++		pr_debug("sst: Event wake %x\n", block->condition);
++		pr_debug("sst: message ret: %d\n", block->ret_code);
++		retval = -block->ret_code;
++	} else {
++		block->on = false;
++		pr_err("sst: Wait timed-out condition:%#x, msg_id:%#x fw_state %#x\n",
++				block->condition, block->msg_id, sst_drv_ctx->sst_state);
++
++		retval = -EBUSY;
++	}
++	return retval;
++}
++
++/*
++ * sst_create_ipc_msg - create a IPC message
++ *
++ * @arg: ipc message
++ * @large: large or short message
++ *
++ * this function allocates structures to send a large or short
++ * message to the firmware
++ */
++int sst_create_ipc_msg(struct ipc_post **arg, bool large)
++{
++	struct ipc_post *msg;
++
++	msg = kzalloc(sizeof(struct ipc_post), GFP_ATOMIC);
++	if (!msg) {
++		pr_err("kzalloc ipc msg failed\n");
 +		return -ENOMEM;
 +	}
++	if (large) {
++		msg->mailbox_data = kzalloc(SST_MAILBOX_SIZE, GFP_ATOMIC);
++		if (!msg->mailbox_data) {
++			kfree(msg);
++			pr_err("kzalloc mailbox_data failed");
++			return -ENOMEM;
++		}
++	} else {
++		msg->mailbox_data = NULL;
++	}
++	msg->is_large = large;
++	*arg = msg;
++	return 0;
++}
 +
-+	pdata->pdev_strm_map = dpcm_strm_map;
-+	pdata->strm_map_size = ARRAY_SIZE(dpcm_strm_map);
-+	sst_pdev = &pdev->dev;
-+	sst->pdata = pdata;
-+	mutex_init(&sst->lock);
-+	dev_set_drvdata(&pdev->dev, sst);
++/*
++ * sst_create_block_and_ipc_msg - Creates IPC message and sst block
++ * @arg: passed to sst_create_ipc_message API
++ * @large: large or short message
++ * @sst_drv_ctx: sst driver context
++ * @block: return block allocated
++ * @msg_id: IPC
++ * @drv_id: stream id or private id
++ */
++int sst_create_block_and_ipc_msg(struct ipc_post **arg, bool large,
++		struct intel_sst_drv *sst_drv_ctx, struct sst_block **block,
++		u32 msg_id, u32 drv_id)
++{
++	int retval = 0;
++	retval = sst_create_ipc_msg(arg, large);
++	if (retval)
++		return retval;
++	*block = sst_create_block(sst_drv_ctx, msg_id, drv_id);
++	if (*block == NULL) {
++		kfree(*arg);
++		return -ENOMEM;
++	}
++	return retval;
++}
 +
- 	ret = snd_soc_register_platform(&pdev->dev, &sst_soc_platform_drv);
- 	if (ret) {
- 		pr_err("registering soc platform failed\n");
-diff --git a/sound/soc/intel/sst-mfld-platform.h b/sound/soc/intel/sst-mfld-platform.h
-index 6c5e7dc..67b375b 100644
---- a/sound/soc/intel/sst-mfld-platform.h
-+++ b/sound/soc/intel/sst-mfld-platform.h
-@@ -126,6 +126,7 @@ struct compress_sst_ops {
- struct sst_ops {
- 	int (*open) (struct sst_stream_params *str_param);
- 	int (*device_control) (int cmd, void *arg);
-+	int (*set_generic_params) (enum sst_controls cmd, void *arg);
- 	int (*close) (unsigned int str_id);
- };
- 
-@@ -143,6 +144,7 @@ struct sst_device {
- 	char *name;
- 	struct device *dev;
- 	struct sst_ops *ops;
-+	struct platform_device *pdev;
- 	struct compress_sst_ops *compr_ops;
- };
- 
++/*
++ * sst_clean_stream - clean the stream context
++ *
++ * @stream: stream structure
++ *
++ * this function resets the stream contexts
++ * should be called in free
++ */
++void sst_clean_stream(struct stream_info *stream)
++{
++	stream->status = STREAM_UN_INIT;
++	stream->prev = STREAM_UN_INIT;
++	mutex_lock(&stream->lock);
++	stream->cumm_bytes = 0;
++	mutex_unlock(&stream->lock);
++}
++
+diff --git a/sound/soc/intel/sst/sst_stream.c b/sound/soc/intel/sst/sst_stream.c
+new file mode 100644
+index 0000000..7dc609c
+--- /dev/null
++++ b/sound/soc/intel/sst/sst_stream.c
+@@ -0,0 +1,529 @@
++/*
++ *  sst_stream.c - Intel SST Driver for audio engine
++ *
++ *  Copyright (C) 2008-14 Intel Corp
++ *  Authors:	Vinod Koul <vinod.koul@intel.com>
++ *		Harsha Priya <priya.harsha@intel.com>
++ *		Dharageswari R <dharageswari.r@intel.com>
++ *		KP Jeeja <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This file contains the stream operations of SST driver
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/pci.h>
++#include <linux/firmware.h>
++#include <linux/sched.h>
++#include <linux/delay.h>
++#include <linux/pm_runtime.h>
++#include <asm/platform_sst_audio.h>
++#include "../sst_platform.h"
++#include "../platform_ipc_v2.h"
++#include "sst.h"
++
++int sst_alloc_stream_mrfld(char *params, struct sst_block *block)
++{
++	struct ipc_post *msg = NULL;
++	struct snd_sst_alloc_mrfld alloc_param;
++	struct ipc_dsp_hdr dsp_hdr;
++	struct snd_sst_params *str_params;
++	struct snd_sst_tstamp fw_tstamp;
++	unsigned int str_id, pipe_id, pvt_id, task_id;
++	u32 len = 0;
++	struct stream_info *str_info;
++	int i, num_ch;
++
++	pr_debug("In %s\n", __func__);
++	BUG_ON(!params);
++
++	str_params = (struct snd_sst_params *)params;
++	memset(&alloc_param, 0, sizeof(alloc_param));
++	alloc_param.operation = str_params->ops;
++	alloc_param.codec_type = str_params->codec;
++	alloc_param.sg_count = str_params->aparams.sg_count;
++	alloc_param.ring_buf_info[0].addr = str_params->aparams.ring_buf_info[0].addr;
++	alloc_param.ring_buf_info[0].size = str_params->aparams.ring_buf_info[0].size;
++	alloc_param.frag_size = str_params->aparams.frag_size;
++
++	memcpy(&alloc_param.codec_params, &str_params->sparams,
++			sizeof(struct snd_sst_stream_params));
++
++	/* fill channel map params for multichannel support.
++	 * Ideally channel map should be received from upper layers
++	 * for multichannel support.
++	 * Currently hardcoding as per FW reqm.
++	 */
++	num_ch = sst_get_num_channel(str_params);
++	for (i = 0; i < 8; i++) {
++		if (i < num_ch)
++			alloc_param.codec_params.uc.pcm_params.channel_map[i] = i;
++		else
++			alloc_param.codec_params.uc.pcm_params.channel_map[i] = 0xFF;
++	}
++
++	str_id = str_params->stream_id;
++	pipe_id = str_params->device_type;
++	task_id = str_params->task;
++	sst_drv_ctx->streams[str_id].pipe_id = pipe_id;
++	sst_drv_ctx->streams[str_id].task_id = task_id;
++	sst_drv_ctx->streams[str_id].num_ch = num_ch;
++
++	pvt_id = sst_assign_pvt_id(sst_drv_ctx);
++	if (sst_drv_ctx->info.lpe_viewpt_rqd)
++		alloc_param.ts = sst_drv_ctx->info.mailbox_start +
++			sst_drv_ctx->tstamp + (str_id * sizeof(fw_tstamp));
++	else
++		alloc_param.ts = sst_drv_ctx->mailbox_add +
++			sst_drv_ctx->tstamp + (str_id * sizeof(fw_tstamp));
++
++	pr_debug("alloc tstamp location = 0x%x\n", alloc_param.ts);
++	pr_debug("assigned pipe id 0x%x to task %d\n", pipe_id, task_id);
++
++	/*allocate device type context*/
++	sst_init_stream(&sst_drv_ctx->streams[str_id], alloc_param.codec_type,
++			str_id, alloc_param.operation, 0);
++	/* send msg to FW to allocate a stream */
++	if (sst_create_ipc_msg(&msg, true))
++		return -ENOMEM;
++
++	block->drv_id = pvt_id;
++	block->msg_id = IPC_CMD;
++
++	sst_fill_header_mrfld(&msg->mrfld_header, IPC_CMD,
++			      task_id, 1, pvt_id);
++	pr_debug("header:%x\n", msg->mrfld_header.p.header_high.full);
++	msg->mrfld_header.p.header_high.part.res_rqd = 1;
++
++	len = msg->mrfld_header.p.header_low_payload = sizeof(alloc_param) + sizeof(dsp_hdr);
++	sst_fill_header_dsp(&dsp_hdr, IPC_IA_ALLOC_STREAM_MRFLD, pipe_id, sizeof(alloc_param));
++	memcpy(msg->mailbox_data, &dsp_hdr, sizeof(dsp_hdr));
++	memcpy(msg->mailbox_data + sizeof(dsp_hdr), &alloc_param,
++			sizeof(alloc_param));
++	str_info = &sst_drv_ctx->streams[str_id];
++	pr_debug("header:%x\n", msg->mrfld_header.p.header_high.full);
++	pr_debug("response rqd: %x", msg->mrfld_header.p.header_high.part.res_rqd);
++	pr_debug("calling post_message\n");
++	pr_info("Alloc for str %d pipe %#x\n", str_id, pipe_id);
++
++	sst_add_to_dispatch_list_and_post(sst_drv_ctx, msg);
++	return str_id;
++}
++
++/**
++* sst_stream_stream - Send msg for a pausing stream
++* @str_id:	 stream ID
++*
++* This function is called by any function which wants to start
++* a stream.
++*/
++int sst_start_stream(int str_id)
++{
++	int retval = 0, pvt_id;
++	u32 len = 0;
++	struct ipc_post *msg = NULL;
++	struct ipc_dsp_hdr dsp_hdr;
++	struct stream_info *str_info;
++
++	pr_debug("sst_start_stream for %d\n", str_id);
++	str_info = get_stream_info(str_id);
++	if (!str_info)
++		return -EINVAL;
++	if (str_info->status != STREAM_RUNNING)
++		return -EBADRQC;
++
++	if (sst_create_ipc_msg(&msg, true))
++		return -ENOMEM;
++
++	pvt_id = sst_assign_pvt_id(sst_drv_ctx);
++	pr_debug("pvt_id = %d, pipe id = %d, task = %d\n",
++		 pvt_id, str_info->pipe_id, str_info->task_id);
++	sst_fill_header_mrfld(&msg->mrfld_header, IPC_CMD,
++			      str_info->task_id, 1, pvt_id);
++
++	len = sizeof(u16) + sizeof(dsp_hdr);
++	msg->mrfld_header.p.header_low_payload = len;
++	sst_fill_header_dsp(&dsp_hdr, IPC_IA_START_STREAM_MRFLD,
++			str_info->pipe_id, sizeof(u16));
++	memcpy(msg->mailbox_data, &dsp_hdr, sizeof(dsp_hdr));
++	memset(msg->mailbox_data + sizeof(dsp_hdr), 0, sizeof(u16));
++
++	sst_drv_ctx->ops->sync_post_message(msg);
++	return retval;
++}
++
++int sst_send_byte_stream_mrfld(void *sbytes)
++{
++	struct ipc_post *msg = NULL;
++	struct snd_sst_bytes_v2 *bytes = (struct snd_sst_bytes_v2 *) sbytes;
++	u32 length;
++	int pvt_id, ret = 0;
++	struct sst_block *block = NULL;
++
++	pr_debug("%s: type:%u ipc_msg:%u block:%u task_id:%u pipe: %#x length:%#x\n",
++		__func__, bytes->type, bytes->ipc_msg,
++		bytes->block, bytes->task_id,
++		bytes->pipe_id, bytes->len);
++
++	/* need some err check as this is user data, perhpas move this to the
++	 * platform driver and pass the struct
++	 */
++	if (sst_create_ipc_msg(&msg, true))
++		return -ENOMEM;
++
++	pvt_id = sst_assign_pvt_id(sst_drv_ctx);
++	sst_fill_header_mrfld(&msg->mrfld_header, bytes->ipc_msg, bytes->task_id,
++			      1, pvt_id);
++	msg->mrfld_header.p.header_high.part.res_rqd = bytes->block;
++	length = bytes->len;
++	msg->mrfld_header.p.header_low_payload = length;
++	pr_debug("length is %d\n", length);
++	memcpy(msg->mailbox_data, &bytes->bytes, bytes->len);
++	if (bytes->block) {
++		block = sst_create_block(sst_drv_ctx, bytes->ipc_msg, pvt_id);
++		if (block == NULL) {
++			kfree(msg);
++			return -ENOMEM;
++		}
++	}
++	sst_add_to_dispatch_list_and_post(sst_drv_ctx, msg);
++	pr_debug("msg->mrfld_header.p.header_low_payload:%d", msg->mrfld_header.p.header_low_payload);
++	if (bytes->block) {
++		ret = sst_wait_timeout(sst_drv_ctx, block);
++		if (ret) {
++			pr_err("%s: fw returned err %d\n", __func__, ret);
++			sst_free_block(sst_drv_ctx, block);
++			return ret;
++		}
++	}
++	if (bytes->type == SND_SST_BYTES_GET) {
++		/* copy the reply and send back
++		 * we need to update only sz and payload
++		 */
++		if (bytes->block) {
++			unsigned char *r = block->data;
++			pr_debug("read back %d bytes", bytes->len);
++			memcpy(bytes->bytes, r, bytes->len);
++		}
++	}
++	if (bytes->block)
++		sst_free_block(sst_drv_ctx, block);
++	return 0;
++}
++
++/*
++ * sst_pause_stream - Send msg for a pausing stream
++ * @str_id:	 stream ID
++ *
++ * This function is called by any function which wants to pause
++ * an already running stream.
++ */
++int sst_pause_stream(int str_id)
++{
++	int retval = 0, pvt_id, len;
++	struct ipc_post *msg = NULL;
++	struct stream_info *str_info;
++	struct intel_sst_ops *ops;
++	struct sst_block *block;
++	struct ipc_dsp_hdr dsp_hdr;
++
++	pr_debug("SST DBG:sst_pause_stream for %d\n", str_id);
++	str_info = get_stream_info(str_id);
++	if (!str_info)
++		return -EINVAL;
++	ops = sst_drv_ctx->ops;
++	if (str_info->status == STREAM_PAUSED)
++		return 0;
++	if (str_info->status == STREAM_RUNNING ||
++		str_info->status == STREAM_INIT) {
++		if (str_info->prev == STREAM_UN_INIT)
++			return -EBADRQC;
++		pvt_id = sst_assign_pvt_id(sst_drv_ctx);
++		retval = sst_create_block_and_ipc_msg(&msg, true,
++				sst_drv_ctx, &block, IPC_CMD, pvt_id);
++		if (retval)
++			return retval;
++		sst_fill_header_mrfld(&msg->mrfld_header, IPC_CMD,
++				str_info->task_id, 1, pvt_id);
++		msg->mrfld_header.p.header_high.part.res_rqd = 1;
++		len = sizeof(dsp_hdr);
++		msg->mrfld_header.p.header_low_payload = len;
++		sst_fill_header_dsp(&dsp_hdr, IPC_IA_PAUSE_STREAM_MRFLD,
++					str_info->pipe_id, 0);
++		memcpy(msg->mailbox_data, &dsp_hdr, sizeof(dsp_hdr));
++		sst_add_to_dispatch_list_and_post(sst_drv_ctx, msg);
++		retval = sst_wait_timeout(sst_drv_ctx, block);
++		sst_free_block(sst_drv_ctx, block);
++		if (retval == 0) {
++			str_info->prev = str_info->status;
++			str_info->status = STREAM_PAUSED;
++		} else if (retval == SST_ERR_INVALID_STREAM_ID) {
++			retval = -EINVAL;
++			mutex_lock(&sst_drv_ctx->sst_lock);
++			sst_clean_stream(str_info);
++			mutex_unlock(&sst_drv_ctx->sst_lock);
++		}
++	} else {
++		retval = -EBADRQC;
++		pr_debug("SST DBG:BADRQC for stream\n ");
++	}
++
++	return retval;
++}
++
++/**
++ * sst_resume_stream - Send msg for resuming stream
++ * @str_id:		stream ID
++ *
++ * This function is called by any function which wants to resume
++ * an already paused stream.
++ */
++int sst_resume_stream(int str_id)
++{
++	int retval = 0;
++	struct ipc_post *msg = NULL;
++	struct stream_info *str_info;
++	struct intel_sst_ops *ops;
++	struct sst_block *block = NULL;
++	int pvt_id, len;
++	struct ipc_dsp_hdr dsp_hdr;
++
++	pr_debug("SST DBG:sst_resume_stream for %d\n", str_id);
++	str_info = get_stream_info(str_id);
++	if (!str_info)
++		return -EINVAL;
++	ops = sst_drv_ctx->ops;
++	if (str_info->status == STREAM_RUNNING)
++			return 0;
++	if (str_info->status == STREAM_PAUSED) {
++		pvt_id = sst_assign_pvt_id(sst_drv_ctx);
++		retval = sst_create_block_and_ipc_msg(&msg, true,
++				sst_drv_ctx, &block, IPC_CMD, pvt_id);
++		if (retval)
++			return retval;
++		sst_fill_header_mrfld(&msg->mrfld_header, IPC_CMD,
++				str_info->task_id, 1, pvt_id);
++		msg->mrfld_header.p.header_high.part.res_rqd = 1;
++		len = sizeof(dsp_hdr);
++		msg->mrfld_header.p.header_low_payload = len;
++		sst_fill_header_dsp(&dsp_hdr,
++					IPC_IA_RESUME_STREAM_MRFLD,
++					str_info->pipe_id, 0);
++		memcpy(msg->mailbox_data, &dsp_hdr, sizeof(dsp_hdr));
++		sst_add_to_dispatch_list_and_post(sst_drv_ctx, msg);
++		retval = sst_wait_timeout(sst_drv_ctx, block);
++		sst_free_block(sst_drv_ctx, block);
++		if (!retval) {
++			if (str_info->prev == STREAM_RUNNING)
++				str_info->status = STREAM_RUNNING;
++			else
++				str_info->status = STREAM_INIT;
++			str_info->prev = STREAM_PAUSED;
++		} else if (retval == -SST_ERR_INVALID_STREAM_ID) {
++			retval = -EINVAL;
++			mutex_lock(&sst_drv_ctx->sst_lock);
++			sst_clean_stream(str_info);
++			mutex_unlock(&sst_drv_ctx->sst_lock);
++		}
++	} else {
++		retval = -EBADRQC;
++		pr_err("SST ERR: BADQRC for stream\n");
++	}
++
++	return retval;
++}
++
++
++/**
++ * sst_drop_stream - Send msg for stopping stream
++ * @str_id:		stream ID
++ *
++ * This function is called by any function which wants to stop
++ * a stream.
++ */
++int sst_drop_stream(int str_id)
++{
++	int retval = 0, pvt_id;
++	struct stream_info *str_info;
++	struct ipc_post *msg = NULL;
++	struct ipc_dsp_hdr dsp_hdr;
++
++	pr_debug("SST DBG:sst_drop_stream for %d\n", str_id);
++	str_info = get_stream_info(str_id);
++	if (!str_info)
++		return -EINVAL;
++
++	if (str_info->status != STREAM_UN_INIT) {
++
++		if (sst_create_ipc_msg(&msg, true))
++			return -ENOMEM;
++		str_info->prev = STREAM_UN_INIT;
++		str_info->status = STREAM_INIT;
++		str_info->cumm_bytes = 0;
++		pvt_id = sst_assign_pvt_id(sst_drv_ctx);
++		sst_fill_header_mrfld(&msg->mrfld_header, IPC_CMD,
++				      str_info->task_id, 1, pvt_id);
++		msg->mrfld_header.p.header_low_payload = sizeof(dsp_hdr);
++		sst_fill_header_dsp(&dsp_hdr, IPC_IA_DROP_STREAM_MRFLD,
++				str_info->pipe_id, 0);
++		memcpy(msg->mailbox_data, &dsp_hdr, sizeof(dsp_hdr));
++
++		sst_drv_ctx->ops->sync_post_message(msg);
++	} else {
++		retval = -EBADRQC;
++		pr_debug("BADQRC for stream, state %x\n", str_info->status);
++	}
++	return retval;
++}
++
++/**
++ * sst_next_track: notify next track
++ * @str_id:		stream ID
++ *
++ * This function is called by any function which wants to
++ * set next track. Current this is NOP as FW doest care
++ */
++int sst_next_track(void)
++{
++	pr_debug("SST DBG: next_track");
++	return 0;
++}
++
++/**
++* sst_drain_stream - Send msg for draining stream
++* @str_id:		stream ID
++*
++* This function is called by any function which wants to drain
++* a stream.
++*/
++int sst_drain_stream(int str_id, bool partial_drain)
++{
++	int retval = 0, pvt_id, len;
++	struct ipc_post *msg = NULL;
++	struct stream_info *str_info;
++	struct intel_sst_ops *ops;
++	struct sst_block *block = NULL;
++	struct ipc_dsp_hdr dsp_hdr;
++
++	pr_debug("SST DBG:sst_drain_stream for %d\n", str_id);
++	str_info = get_stream_info(str_id);
++	if (!str_info)
++		return -EINVAL;
++	ops = sst_drv_ctx->ops;
++	if (str_info->status != STREAM_RUNNING &&
++		str_info->status != STREAM_INIT &&
++		str_info->status != STREAM_PAUSED) {
++			pr_err("SST ERR: BADQRC for stream = %d\n",
++				       str_info->status);
++			return -EBADRQC;
++	}
++
++	pvt_id = sst_assign_pvt_id(sst_drv_ctx);
++	retval = sst_create_block_and_ipc_msg(&msg, true,
++			sst_drv_ctx, &block, IPC_CMD, pvt_id);
++	if (retval)
++		return retval;
++	sst_fill_header_mrfld(&msg->mrfld_header, IPC_CMD,
++			str_info->task_id, 1, pvt_id);
++	pr_debug("header:%x\n",
++		(unsigned int)msg->mrfld_header.p.header_high.full);
++	msg->mrfld_header.p.header_high.part.res_rqd = 1;
++	len = sizeof(u8) + sizeof(dsp_hdr);
++	msg->mrfld_header.p.header_low_payload = len;
++	sst_fill_header_dsp(&dsp_hdr, IPC_IA_DRAIN_STREAM_MRFLD,
++				str_info->pipe_id, sizeof(u8));
++	memcpy(msg->mailbox_data, &dsp_hdr, sizeof(dsp_hdr));
++	memcpy(msg->mailbox_data + sizeof(dsp_hdr),
++			&partial_drain, sizeof(u8));
++	sst_add_to_dispatch_list_and_post(sst_drv_ctx, msg);
++	/* with new non blocked drain implementation in core we dont need to
++	 * wait for respsonse, and need to only invoke callback for drain
++	 * complete
++	 */
++
++	sst_free_block(sst_drv_ctx, block);
++	return retval;
++}
++
++/**
++ * sst_free_stream - Frees a stream
++ * @str_id:		stream ID
++ *
++ * This function is called by any function which wants to free
++ * a stream.
++ */
++int sst_free_stream(int str_id)
++{
++	int retval = 0;
++	unsigned int pvt_id;
++	struct ipc_post *msg = NULL;
++	struct stream_info *str_info;
++	struct intel_sst_ops *ops;
++	unsigned long irq_flags;
++	struct ipc_dsp_hdr dsp_hdr;
++	struct sst_block *block;
++
++	pr_debug("SST DBG:sst_free_stream for %d\n", str_id);
++
++	mutex_lock(&sst_drv_ctx->sst_lock);
++	if (sst_drv_ctx->sst_state == SST_RESET) {
++		mutex_unlock(&sst_drv_ctx->sst_lock);
++		return -ENODEV;
++	}
++	mutex_unlock(&sst_drv_ctx->sst_lock);
++	str_info = get_stream_info(str_id);
++	if (!str_info)
++		return -EINVAL;
++	ops = sst_drv_ctx->ops;
++
++	mutex_lock(&str_info->lock);
++	if (str_info->status != STREAM_UN_INIT) {
++		str_info->prev =  str_info->status;
++		str_info->status = STREAM_UN_INIT;
++		mutex_unlock(&str_info->lock);
++
++		pvt_id = sst_assign_pvt_id(sst_drv_ctx);
++		retval = sst_create_block_and_ipc_msg(&msg, true,
++				sst_drv_ctx, &block, IPC_CMD, pvt_id);
++		if (retval)
++			return retval;
++		sst_fill_header_mrfld(&msg->mrfld_header, IPC_CMD,
++				      str_info->task_id, 1, pvt_id);
++		msg->mrfld_header.p.header_low_payload =
++						sizeof(dsp_hdr);
++		sst_fill_header_dsp(&dsp_hdr, IPC_IA_FREE_STREAM_MRFLD,
++					str_info->pipe_id,  0);
++		memcpy(msg->mailbox_data, &dsp_hdr, sizeof(dsp_hdr));
++		pr_info("Free for str %d pipe %#x\n", str_id, str_info->pipe_id);
++
++		spin_lock_irqsave(&sst_drv_ctx->ipc_spin_lock, irq_flags);
++		list_add_tail(&msg->node, &sst_drv_ctx->ipc_dispatch_list);
++		spin_unlock_irqrestore(&sst_drv_ctx->ipc_spin_lock, irq_flags);
++		ops->post_message(&sst_drv_ctx->ipc_post_msg_wq);
++		retval = sst_wait_timeout(sst_drv_ctx, block);
++		pr_debug("sst: wait for free returned %d\n", retval);
++		mutex_lock(&sst_drv_ctx->sst_lock);
++		sst_clean_stream(str_info);
++		mutex_unlock(&sst_drv_ctx->sst_lock);
++		pr_debug("SST DBG:Stream freed\n");
++		sst_free_block(sst_drv_ctx, block);
++	} else {
++		mutex_unlock(&str_info->lock);
++		retval = -EBADRQC;
++		pr_debug("SST DBG:BADQRC for stream\n");
++	}
++
++	return retval;
++}
 -- 
 1.7.0.4
