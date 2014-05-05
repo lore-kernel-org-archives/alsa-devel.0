@@ -1,15 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 0/8] ASoC: Intel: rework the mfld platform
-	driver
-Date: Mon,  5 May 2014 22:19:17 +0530
-Message-ID: <1399308565-14620-1-git-send-email-vinod.koul@intel.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: [PATCH 2/2] ALSA: hda - hdmi: Set infoframe and
+	channel mapping even without sink
+Date: Mon, 05 May 2014 17:48:04 +0300
+Message-ID: <00e2b3727b902f17c3c849012d58e1f5@mail.onse.fi>
+References: <1399246724-16611-1-git-send-email-anssi.hannula@iki.fi>
+ <1399246724-16611-2-git-send-email-anssi.hannula@iki.fi>
+ <s5hha54fg52.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 49EB72610D4
- for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 19:02:50 +0200 (CEST)
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+ [83.102.40.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D60B2608ED
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 16:48:08 +0200 (CEST)
+In-Reply-To: <s5hha54fg52.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,37 +24,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, jeeja.kp@intel.com, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Stephan Raue <stephan@openelec.tv>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch series reworks and reformats the existing platform driver we use.
-This is stepping support for seconds series of patches which will support
-Merrifield platform with DPCM based implementation
+Takashi Iwai kirjoitti 2014-05-05 17:34:
+> At Mon,  5 May 2014 02:38:44 +0300,
+> Anssi Hannula wrote:
+>> 
+>> Currently infoframe contents and channel mapping are only set when a
+>> sink (monitor) is present.
+>> 
+>> However, this does not make much sense, since
+>> 1) We can make a very reasonable guess on CA after 18e391862c ("ALSA:
+>>    hda - hdmi: Fallback to ALSA allocation when selecting CA") or by
+>>    relying on a previously valid ELD (or we may be using a
+>>    user-specified channel map).
+>> 2) Not setting infoframe contents and channel count simply means they
+>>    are left at a possibly incorrect state - playback is still allowed
+>>    to proceed (with missing or wrongly mapped channels).
+>> 
+>> Reasons for monitor_present being 0 include disconnected cable, video
+>> driver issues, or codec not being spec-compliant. Note that in
+>> actual disconnected-cable case it should not matter if these settings
+>> are wrong as they will be re-set after jack detection, though.
+>> 
+>> Change the behavior to allow the infoframe contents and the channel
+>> mapping to be set even without a sink/monitor, either based on the
+>> previous valid ELD contents, if any, or based on sensible defaults
+>> (standard channel layouts or provided custom map, sink type HDMI).
+>> 
+>> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+>> Tested-by: Stephan Raue <stephan@openelec.tv>
+>> ---
+>> 
+>> This simply removes the monitor_present check, which is probably more
+>> trouble than it is worth, as it may trip obscure setups even though we
+>> can tolerate !monitor_present and !eld in 99%+ of all cases by using
+>> defaults, nowadays post-18e391862c anyway.
+>> Downside is that missing monitor_present may not be noticed by the 
+>> user
+>> as ~everything continues to work.
+> 
+> Is this considered as a "fix" for 3.15 kernel?  If so, I find it a bit
+> distracting to queue the previous patch for stable while we're
+> removing the whole things here later.
+> 
+> If this is intended for testing for 3.16 kernel, I'm fine to take as
+> is.
 
-Not much logical changes in code except adding drain support for compressed
-audio. Most is mere modularization of the existing code
+Well, I intended it for 3.16, since I don't have anything concrete that 
+it
+would fix that the previous AFAICS safer patch did not (for now, at 
+least...).
 
-Fixes in v2:
-- add two more patches
-- fix makefile addition is 4th patch
-- dropped name change in platform ops patch
+Sorry for not making it explicit.
 
-Vinod Koul (8):
-  ASoC: Intel: remove FSF snail mail address
-  ASoc: Intel: rename sst-mfld-platform.c
-  ASoC: Intel: mark sst_set_stream_status as non static
-  ASoC: Intel: split the pcm and compress to different files
-  ASoC: Intel: remove unused sst-mfld platform dais
-  ASoC: Intel: add drain_notify support
-  ASoC: Intel: remove codec memeber from codec structs
-  ASoC: Intel: move component registration blob
-
- sound/soc/intel/Makefile                           |   14 +-
- sound/soc/intel/sst-mfld-dsp.h                     |    8 -
- sound/soc/intel/sst-mfld-platform-compress.c       |  237 +++++++++++++++++++
- ...sst-mfld-platform.c => sst-mfld-platform-pcm.c} |  250 +-------------------
- sound/soc/intel/sst-mfld-platform.h                |   11 +-
- 5 files changed, 263 insertions(+), 257 deletions(-)
- create mode 100644 sound/soc/intel/sst-mfld-platform-compress.c
- rename sound/soc/intel/{sst-mfld-platform.c => sst-mfld-platform-pcm.c} (67%)
+> thanks,
+> 
+> Takashi
+> 
+>> 
+>> 
+>>  sound/pci/hda/patch_hdmi.c | 4 ----
+>>  1 file changed, 4 deletions(-)
+>> 
+>> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+>> index 1edbb9c47c2d..016f785cdf45 100644
+>> --- a/sound/pci/hda/patch_hdmi.c
+>> +++ b/sound/pci/hda/patch_hdmi.c
+>> @@ -1127,10 +1127,6 @@ static void hdmi_setup_audio_infoframe(struct 
+>> hda_codec *codec,
+>>  					    AMP_OUT_UNMUTE);
+>> 
+>>  	eld = &per_pin->sink_eld;
+>> -	if (!eld->monitor_present) {
+>> -		hdmi_set_channel_count(codec, per_pin->cvt_nid, channels);
+>> -		return;
+>> -	}
+>> 
+>>  	if (!non_pcm && per_pin->chmap_set)
+>>  		ca = hdmi_manual_channel_allocation(channels, per_pin->chmap);
+>> --
+>> 1.8.4.5
+>> 
