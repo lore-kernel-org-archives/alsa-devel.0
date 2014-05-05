@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/5] ASoc: fsl_spdif: Add descriptions for
-	fsl_spdif_priv
-Date: Mon, 5 May 2014 12:28:38 -0700
-Message-ID: <20140505192838.GQ22111@sirena.org.uk>
-References: <cover.1398853588.git.Guangyu.Chen@freescale.com>
- <c17222d56dca6ff1bd32bf70dfa7715e82975f84.1398853588.git.Guangyu.Chen@freescale.com>
+From: Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH] ASoC: Make soc_find_matching_codec() static
+Date: Mon, 5 May 2014 02:31:45 +0200
+Message-ID: <20140505003145.GA18069@earth.universe>
+References: <1399223910-28710-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1883249226539376893=="
+Content-Type: multipart/mixed; boundary="===============1660685092248007809=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF97F265074
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 02:58:08 +0200 (CEST)
-In-Reply-To: <c17222d56dca6ff1bd32bf70dfa7715e82975f84.1398853588.git.Guangyu.Chen@freescale.com>
+Received: from mail.kernel.org (mail.kernel.org [198.145.19.201])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B6BB261A88
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 02:31:52 +0200 (CEST)
+In-Reply-To: <1399223910-28710-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1883249226539376893==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="K9fy5ol1Oes4Q/ix"
+--===============1660685092248007809==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
 Content-Disposition: inline
 
 
---K9fy5ol1Oes4Q/ix
+--wac7ysb48OaltWcw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 30, 2014 at 06:54:09PM +0800, Nicolin Chen wrote:
-> Other people would clearly understand each member and improve if they want.
+Hi,
 
-Applied, thanks.
+On Sun, May 04, 2014 at 07:18:30PM +0200, Lars-Peter Clausen wrote:
+> The function is only used locally, make it static.
+>=20
+> Fixes the following warning from sparse:
+> 	sound/soc/soc-core.c:1644:22: warning: symbol 'soc_find_matching_codec' =
+was not declared. Should it be static?
+>=20
+> Fixes: 3ca041ed ("ASoC: dt: Allow Aux Codecs to be specified using DT")
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
---K9fy5ol1Oes4Q/ix
+Acked-By: Sebastian Reichel <sre@kernel.org>
+
+-- Sebastian
+
+--wac7ysb48OaltWcw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Version: GnuPG v1
 
-iQIcBAEBAgAGBQJTZ+ZjAAoJELSic+t+oim9ey8P/2ygD/RG51Oa2Nc2ytLTgcx2
-qFY0aS8s+Rme6Vzm6oO84NjQBnt9AYpV7+pVIazEUVamrjLYI6XvNy2j1BtQ7TGX
-ck37lp7BcAdh1H7ehJWnCBspSo9H2oZGNW9vi9v6Bht44gnTAvRjaRpVPvI1JMTb
-CLN1l5ZuJvf770jKlx2U3ci8btjjNR4UiBuV3TQy+9PvegsVF+Gl30AKysiv59Hd
-c0X0EVm90rr94nWuj2wX1ENv9/5hh708NE4GMo8k0qjAOujTFShI3nskfQsXK+oA
-M3bmDeLMkblQzJsZyulQdfR8Ds4aBMyiGTs7iYTLNjOvZaKmE+Ou14+TioW1jOP0
-x09XLa4Vt8VDF7rb8aFs7XU4s92POqAY9jBVLd9f3gkEuu6nHAm5tOLouYnV50Dk
-/o2wPG2XifEzAHkLlNRnOl3wcM+Ob3bqxzbWKrJL4yef+imGLY+rVpiJbxKvEbgC
-g3InXhtAo7iuY92IfD4GSRgWVWl8FgPWQNV32REb50VOn3zXaR6+SPQEb8Efq3vR
-BbBBOeJ+aS3CtnFwy5SMh8PTK7WiQWNf3CR7eDHItR6G4VaiwX66Wx+2OMhXb4I7
-JvBUSgsSejh7/BmN8rzWmniA1/73T5tEeJ42cZ+46duSYiOCIC/ElJabp+HDwoCD
-dNJY8Gz07tJAwVatG4+I
-=U7hc
+iQIcBAEBCgAGBQJTZtvwAAoJENju1/PIO/qam6EP/jhf+ELJ3hy0LZGZET1JB4Ay
+PTi5lo8BdCdfQzmfO4Bq715Ww1LsnK3/naQFAEK7APZ1bu2CTS1UHbZc2ACmh8jQ
+Qr7PhejQzf4QeNvvUgMJg6hW6YvlxccmA2xvuRhDZLeBDR/R1qj1xZ7nSKLbWScw
+i+FDO/GBTx4Vb6Q2hQund52OOOdstujbvGDgE8Urf/MKTPrn8RyRlnIUdtXggwJT
+wTo7mrYMMptKgpodpB1alI9MYZR/yvi2CEVTogMpnF/EyuH3ebhhR3nFBjJ35Kbm
+MoUSgtcMZ2GGFnUvy8Z7Wg8H9Sr/gDjsCt3ylrjpyn8Ukze5kLiCbTb6MyMK09Mo
+r0u7tTILcRG4Pz9P7sRR7sAPJ/MCRW6YfsXCjBXnCA2iX6V8EyypYWTogI1929no
+VNN6WtBmjbMDCZOEVTfnY30kt0e0/wsVFiA27zMRg6kGTKp25ksFteTlnHT+eMzs
+/lk1uBzgEntLig612HtqfR/LSkGpTb96bFwDnDh75iIq+gQw2H8BWMdb3YR7SgvR
+/cF4UR6xTzJt4ioyLAWU7/D4JNycHjg5+knZgAHXSx0/F7MyFnX9X77yfmdEmr+X
+Zp/a8qpgo8lQhiHlit2JxcUwfGMJzedea61BS3hmNplkORK9b097i2JMS3GmwIFx
+wC9CAk+W57M3wFH5ir2/
+=VfI5
 -----END PGP SIGNATURE-----
 
---K9fy5ol1Oes4Q/ix--
+--wac7ysb48OaltWcw--
 
---===============1883249226539376893==
+--===============1660685092248007809==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1883249226539376893==--
+--===============1660685092248007809==--
