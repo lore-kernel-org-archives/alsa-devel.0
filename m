@@ -1,16 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: arecord - bug with big file?
-Date: Mon, 05 May 2014 11:46:54 +0200
-Message-ID: <53675E0E.2060303@ladisch.de>
-References: <5366A35F.4040308@gmail.com>
+From: Prabhakar Lad <prabhakar.csengg@gmail.com>
+Subject: [Query] Play two audios simultaneously on two channels
+Date: Mon, 5 May 2014 18:43:19 +0530
+Message-ID: <CA+V-a8uhuJ9CBnrDabtEjPReM-K2Ndh8FZinCkNTWXFEXZLyjQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B9F80261B14
- for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 11:46:55 +0200 (CEST)
-In-Reply-To: <5366A35F.4040308@gmail.com>
+Received: from mail-vc0-f175.google.com (mail-vc0-f175.google.com
+ [209.85.220.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C0CD26087D
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 15:13:50 +0200 (CEST)
+Received: by mail-vc0-f175.google.com with SMTP id lh4so8496030vcb.34
+ for <alsa-devel@alsa-project.org>; Mon, 05 May 2014 06:13:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,26 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: korgman <korgie@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-korgman wrote:
-> I can't record with arecord for long periods.
->
-> time arecord -f dat -D hw:0,0 | aplay
-> Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-> Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
->
-> real    186m25.375s
+Hi folks,
 
-This is the time needed for 2^31 bytes.  Stopping recording after that
-is a feature because .wav files (as supported by arecord) have a 2 GB
-limit.  When recording to a file, it would be possible to create
-multiple files, but this is not possible with stdout.
+Is it possible to play two different audio on two separate channels ?
 
-Use "-t raw" to avoid the .wav restrictions.  (This requires you to
-tell aplay about the format.)
+For example a.wav on left channel and b.wav on the right channel.
 
+Any inputs on this would be helpful.
 
-Regards,
-Clemens
+Thanks,
+--Prabhakar
