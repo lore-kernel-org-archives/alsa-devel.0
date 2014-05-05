@@ -1,20 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC 4/4] ASoC: Intel: add support for mrfld DPCM
- platform
-Date: Tue, 6 May 2014 22:16:06 +0530
-Message-ID: <20140506164606.GC28638@intel.com>
-References: <1399312908-20744-1-git-send-email-vinod.koul@intel.com>
- <1399312908-20744-5-git-send-email-vinod.koul@intel.com>
- <1399391598.2814.46.camel@loki>
+Subject: [PATCH v2 7/8] ASoC: Intel: remove codec memeber from
+	codec structs
+Date: Mon,  5 May 2014 22:19:24 +0530
+Message-ID: <1399308565-14620-8-git-send-email-vinod.koul@intel.com>
+References: <1399308565-14620-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 881672616F3
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 18:59:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1399391598.2814.46.camel@loki>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFC152610D4
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 19:03:00 +0200 (CEST)
+In-Reply-To: <1399308565-14620-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,160 +21,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@intel.com>
-Cc: jeeja.kp@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, jeeja.kp@intel.com, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 06, 2014 at 04:53:18PM +0100, Liam Girdwood wrote:
-> On Mon, 2014-05-05 at 23:31 +0530, Vinod Koul wrote:
-> > This patch adds DPCM based supprt for managing mrfld platform
-> > 
-> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > ---
-> >  sound/soc/intel/Kconfig                          |    3 +
-> >  sound/soc/intel/platform-libs/controls_v2.h      |  754 +++++++++++++
-> >  sound/soc/intel/platform-libs/controls_v2_dpcm.c | 1315 ++++++++++++++++++++++
-> >  sound/soc/intel/platform-libs/sst_widgets.h      |  378 +++++++
-> >  sound/soc/intel/platform_ipc_v2.h                |  694 ++++++++++++
-> >  sound/soc/intel/sst-mfld-platform-compress.c     |    8 +-
-> >  sound/soc/intel/sst-mfld-platform-pcm.c          |  384 ++++++-
-> >  sound/soc/intel/sst-mfld-platform.h              |    2 +
-> >  8 files changed, 3480 insertions(+), 58 deletions(-)
-> >  create mode 100644 sound/soc/intel/platform-libs/controls_v2.h
-> >  create mode 100644 sound/soc/intel/platform-libs/controls_v2_dpcm.c
-> >  create mode 100644 sound/soc/intel/platform-libs/sst_widgets.h
-> >  create mode 100644 sound/soc/intel/platform_ipc_v2.h
-> > 
-> > diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> > index 422c32d..1254eb8 100644
-> > --- a/sound/soc/intel/Kconfig
-> > +++ b/sound/soc/intel/Kconfig
-> > @@ -66,3 +66,6 @@ config SND_SOC_INTEL_MRFLD_WM8958_MACH
-> >            used as alsa device in audio substem in Intel(R) MID devices
-> >            Say Y if you have such a device
-> >            If unsure select "N".
-> > +
-> > +config SND_INTEL_SST
-> > +       tristate
-> > diff --git a/sound/soc/intel/platform-libs/controls_v2.h b/sound/soc/intel/platform-libs/controls_v2.h
-> > new file mode 100644
-> > index 0000000..7988d81
-> > --- /dev/null
-> > +++ b/sound/soc/intel/platform-libs/controls_v2.h
-> > @@ -0,0 +1,754 @@
-> > +/*
-> > + *  controls_v2.h - Intel MID Platform driver header file
-> > + *
-> > + *  Copyright (C) 2013-14 Intel Corp
-> > + *  Author: Ramesh Babu <ramesh.babu.koul@intel.com>
-> > + *  	Omair M Abdullah <omair.m.abdullah@intel.com>
-> > + *  	Samreen Nilofer <samreen.nilofer@intel.com>
-> > + *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > + *
-> > + *  This program is free software; you can redistribute it and/or modify
-> > + *  it under the terms of the GNU General Public License as published by
-> > + *  the Free Software Foundation; version 2 of the License.
-> > + *
-> > + *  This program is distributed in the hope that it will be useful, but
-> > + *  WITHOUT ANY WARRANTY; without even the implied warranty of
-> > + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> > + *  General Public License for more details.
-> > + *
-> > + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > + *
-> > + */
-> > +
-> > +#ifndef __SST_CONTROLS_V2_H__
-> > +#define __SST_CONTROLS_V2_H__
-> > +
-> > +enum {
-> > +	MERR_DPCM_AUDIO = 0,
-> > +	MERR_DPCM_COMPR,
-> 
-> SST_ prefix
-yes definately thats required...
+as we already have a memeber struct snd_sst_params.codec to fill this.
+so removing duplicate instance
 
-> 
-> 
-> > +enum sst_cmd {
-> > +	SBA_IDLE		= 14,
-> > +	SBA_VB_SET_SPEECH_PATH	= 26,
-> > +	MMX_SET_GAIN		= 33,
-> > +	SBA_VB_SET_GAIN		= 33,
-> > +	FBA_VB_RX_CNI		= 35,
-> > +	MMX_SET_GAIN_TIMECONST	= 36,
-> > +	SBA_VB_SET_TIMECONST	= 36,
-> > +	FBA_VB_ANA		= 37,
-> > +	FBA_VB_SET_FIR		= 38,
-> > +	FBA_VB_SET_IIR		= 39,
-> > +	SBA_VB_START_TONE	= 41,
-> > +	SBA_VB_STOP_TONE	= 42,
-> > +	FBA_VB_AEC		= 47,
-> > +	FBA_VB_NR_UL		= 48,
-> > +	FBA_VB_AGC		= 49,
-> > +	FBA_VB_WNR		= 52,
-> > +	FBA_VB_SLV		= 53,
-> > +	FBA_VB_NR_DL		= 55,
-> > +	SBA_PROBE		= 66,
-> > +	MMX_PROBE		= 66,
-> > +	FBA_VB_SET_BIQUAD_D_C	= 69,
-> > +	FBA_VB_DUAL_BAND_COMP	= 70,
-> > +	FBA_VB_SNS		= 72,
-> > +	FBA_VB_SER		= 78,
-> > +	FBA_VB_TX_CNI		= 80,
-> > +	SBA_VB_START		= 85,
-> > +	FBA_VB_SET_REF_LINE	= 94,
-> > +	FBA_VB_SET_DELAY_LINE	= 95,
-> > +	FBA_VB_BWX		= 104,
-> > +	FBA_VB_GMM		= 105,
-> > +	FBA_VB_GLC		= 107,
-> > +	FBA_VB_BMF		= 111,
-> > +	FBA_VB_DNR		= 113,
-> > +	MMX_SET_SWM		= 114,
-> > +	SBA_SET_SWM		= 114,
-> > +	SBA_SET_MDRP            = 116,
-> > +	SBA_HW_SET_SSP		= 117,
-> > +	SBA_SET_MEDIA_LOOP_MAP	= 118,
-> > +	SBA_SET_MEDIA_PATH	= 119,
-> > +	MMX_SET_MEDIA_PATH	= 119,
-> > +	FBA_VB_TNR_UL		= 119,
-> > +	FBA_VB_TNR_DL		= 121,
-> > +	FBA_VB_NLF		= 125,
-> > +	SBA_VB_LPRO		= 126,
-> > +	FBA_VB_MDRP		= 127,
-> > +	SBA_VB_SET_FIR          = 128,
-> > +	SBA_VB_SET_IIR          = 129,
-> > +	SBA_SET_SSP_SLOT_MAP	= 130,
-> > +	AWARE_ENV_CLASS_PARAMS	= 130,
-> > +	VAD_ENV_CLASS_PARAMS	= 2049,
-> > +};
-> 
-> ditto
-yes will fix namespace everwhere else too...
-> 
-> 
-> > +
-> > +#define MAX_DBG_RW_BYTES 80
-> > +#define MAX_NUM_SCATTER_BUFFERS 8
-> > +#define MAX_LOOP_BACK_DWORDS 8
-> > +/* IPC base address and mailbox, timestamp offsets */
-> > +#define SST_MAILBOX_SIZE 0x0400
-> > +#define SST_MAILBOX_SEND 0x0000
-> > +#define SST_TIME_STAMP 0x1800
-> > +#define SST_TIME_STAMP_MRFLD 0x680
-> > +#define SST_TIME_STAMP_BYT 0x800
-> > +#define SST_RESERVED_OFFSET 0x1A00
-> > +#define SST_SCU_LPE_MAILBOX 0x1000
-> > +#define SST_LPE_SCU_MAILBOX 0x1400
-> > +#define SST_SCU_LPE_LOG_BUF (SST_SCU_LPE_MAILBOX+16)
-> > +#define PROCESS_MSG 0x80
-> > +
-> 
-> ditto (for some of the above)
-> 
-> This could probably benefit from being split into smaller patches too.
-Yes will try to split to more logical bits. Already did with one patch series
-which Mark applied. It would help review and getting applied quicker too
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/sst-mfld-dsp.h               |    4 ----
+ sound/soc/intel/sst-mfld-platform-compress.c |    2 --
+ sound/soc/intel/sst-mfld-platform-pcm.c      |    1 -
+ 3 files changed, 0 insertions(+), 7 deletions(-)
 
+diff --git a/sound/soc/intel/sst-mfld-dsp.h b/sound/soc/intel/sst-mfld-dsp.h
+index a74477a..8d482d7 100644
+--- a/sound/soc/intel/sst-mfld-dsp.h
++++ b/sound/soc/intel/sst-mfld-dsp.h
+@@ -36,7 +36,6 @@ enum stream_type {
+ };
+ 
+ struct snd_pcm_params {
+-	u16 codec;	/* codec type */
+ 	u8 num_chan;	/* 1=Mono, 2=Stereo */
+ 	u8 pcm_wd_sz;	/* 16/24 - bit*/
+ 	u32 reserved;	/* Bitrate in bits per second */
+@@ -49,7 +48,6 @@ struct snd_pcm_params {
+ 
+ /* MP3 Music Parameters Message */
+ struct snd_mp3_params {
+-	u16 codec;
+ 	u8  num_chan;	/* 1=Mono, 2=Stereo	*/
+ 	u8  pcm_wd_sz; /* 16/24 - bit*/
+ 	u8  crc_check; /* crc_check - disable (0) or enable (1) */
+@@ -63,7 +61,6 @@ struct snd_mp3_params {
+ 
+ /* AAC Music Parameters Message */
+ struct snd_aac_params {
+-	u16 codec;
+ 	u8 num_chan; /* 1=Mono, 2=Stereo*/
+ 	u8 pcm_wd_sz; /* 16/24 - bit*/
+ 	u8 bdownsample; /*SBR downsampling 0 - disable 1 -enabled AAC+ only */
+@@ -77,7 +74,6 @@ struct snd_aac_params {
+ 
+ /* WMA Music Parameters Message */
+ struct snd_wma_params {
+-	u16 codec;
+ 	u8  num_chan;	/* 1=Mono, 2=Stereo */
+ 	u8  pcm_wd_sz;	/* 16/24 - bit*/
+ 	u32 brate;	/* Use the hard coded value. */
+diff --git a/sound/soc/intel/sst-mfld-platform-compress.c b/sound/soc/intel/sst-mfld-platform-compress.c
+index 5c3e234..02abd19 100644
+--- a/sound/soc/intel/sst-mfld-platform-compress.c
++++ b/sound/soc/intel/sst-mfld-platform-compress.c
+@@ -112,7 +112,6 @@ static int sst_platform_compr_set_params(struct snd_compr_stream *cstream,
+ 	switch (params->codec.id) {
+ 	case SND_AUDIOCODEC_MP3: {
+ 		str_params.codec = SST_CODEC_TYPE_MP3;
+-		str_params.sparams.uc.mp3_params.codec = SST_CODEC_TYPE_MP3;
+ 		str_params.sparams.uc.mp3_params.num_chan = params->codec.ch_in;
+ 		str_params.sparams.uc.mp3_params.pcm_wd_sz = 16;
+ 		break;
+@@ -120,7 +119,6 @@ static int sst_platform_compr_set_params(struct snd_compr_stream *cstream,
+ 
+ 	case SND_AUDIOCODEC_AAC: {
+ 		str_params.codec = SST_CODEC_TYPE_AAC;
+-		str_params.sparams.uc.aac_params.codec = SST_CODEC_TYPE_AAC;
+ 		str_params.sparams.uc.aac_params.num_chan = params->codec.ch_in;
+ 		str_params.sparams.uc.aac_params.pcm_wd_sz = 16;
+ 		if (params->codec.format == SND_AUDIOSTREAMFORMAT_MP4ADTS)
+diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
+index 3f9cd77..380802a 100644
+--- a/sound/soc/intel/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/sst-mfld-platform-pcm.c
+@@ -151,7 +151,6 @@ static void sst_fill_pcm_params(struct snd_pcm_substream *substream,
+ 				struct sst_pcm_params *param)
+ {
+ 
+-	param->codec = SST_CODEC_TYPE_PCM;
+ 	param->num_chan = (u8) substream->runtime->channels;
+ 	param->pcm_wd_sz = substream->runtime->sample_bits;
+ 	param->reserved = 0;
 -- 
-~Vinod
+1.7.0.4
