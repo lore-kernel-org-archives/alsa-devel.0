@@ -1,16 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] alsactl: Store lockfile in /tmp
-Date: Tue, 06 May 2014 16:53:00 +0200
-Message-ID: <5368F74C.1020907@perex.cz>
-References: <1399377427-23907-1-git-send-email-julian@jusst.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 2/6] ASoc: Intel: rename sst-mfld-platform.c
+Date: Mon,  5 May 2014 14:27:48 +0530
+Message-ID: <1399280272-26644-3-git-send-email-vinod.koul@intel.com>
+References: <1399280272-26644-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id E241B261A22
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 16:53:00 +0200 (CEST)
-In-Reply-To: <1399377427-23907-1-git-send-email-julian@jusst.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1ED48261B1A
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 11:11:17 +0200 (CEST)
+In-Reply-To: <1399280272-26644-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,67 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julian Scheel <julian@jusst.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, jeeja.kp@intel.com, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Date 6.5.2014 13:57, Julian Scheel wrote:
-> It can not be generally assumed that the directories in which asound.state
-> resides are writable. Instead using /tmp as location for lock files seems more
-> reliable.
+to sst-mfld-platform-pcm.c so that we can split pcm and compress to different
+files for upcoming changes to support more platforms
 
-Apart the missing free for the mallocated string and ommiting the TMPDIR
-environment variable, I think that the right directory for global locks
-is /var/lock . The default asound.state directory is now /var/lib/alsa -
-I don't see the benefit.
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/Makefile                           |    2 +-
+ ...sst-mfld-platform.c => sst-mfld-platform-pcm.c} |    0
+ 2 files changed, 1 insertions(+), 1 deletions(-)
+ rename sound/soc/intel/{sst-mfld-platform.c => sst-mfld-platform-pcm.c} (100%)
 
-What's the reason for this change? Perhaps using an environmental
-variable to override the lock path may be more appropriate for a custom
-directory structure.
-
-                                   Jaroslav
-
-> 
-> Signed-off-by: Julian Scheel <julian@jusst.de>
-> ---
->  alsactl/lock.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/alsactl/lock.c b/alsactl/lock.c
-> index 587a109..7ca3a09 100644
-> --- a/alsactl/lock.c
-> +++ b/alsactl/lock.c
-> @@ -36,17 +36,24 @@ static int state_lock_(const char *file, int lock, int timeout)
->  	struct flock lck;
->  	struct stat st;
->  	char lcktxt[12];
-> +	char *filename;
->  	char *nfile;
->  
->  	if (!do_lock)
->  		return 0;
-> -	nfile = malloc(strlen(file) + 6);
-> +
-> +	/* only use the actual filename, not the path */
-> +	filename = strrchr(file, '/');
-> +	if (!filename)
-> +		filename = file;
-> +
-> +	nfile = malloc(strlen(filename) + 10);
->  	if (nfile == NULL) {
->  		error("No enough memory...");
->  		return -ENOMEM;
->  	}
-> -	strcpy(nfile, file);
-> -	strcat(nfile, ".lock");
-> +
-> +	sprintf(nfile, "/tmp/%s.lock", filename);
->  	lck.l_type = lock ? F_WRLCK : F_UNLCK;
->  	lck.l_whence = SEEK_SET;
->  	lck.l_start = 0;
-> 
-
-
+diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
+index edeb79a..5d3fb6f 100644
+--- a/sound/soc/intel/Makefile
++++ b/sound/soc/intel/Makefile
+@@ -2,7 +2,7 @@
+ snd-soc-sst-dsp-objs := sst-dsp.o sst-firmware.o
+ snd-soc-sst-acpi-objs := sst-acpi.o
+ 
+-snd-soc-sst-mfld-platform-objs := sst-mfld-platform.o
++snd-soc-sst-mfld-platform-objs := sst-mfld-platform-pcm.o
+ snd-soc-mfld-machine-objs := mfld_machine.o
+ 
+ obj-$(CONFIG_SND_SST_MFLD_PLATFORM) += snd-soc-sst-mfld-platform.o
+diff --git a/sound/soc/intel/sst-mfld-platform.c b/sound/soc/intel/sst-mfld-platform-pcm.c
+similarity index 100%
+rename from sound/soc/intel/sst-mfld-platform.c
+rename to sound/soc/intel/sst-mfld-platform-pcm.c
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+1.7.0.4
