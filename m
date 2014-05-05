@@ -1,14 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [RFC 0/4] Add support for merrfield audio
-Date: Mon,  5 May 2014 23:31:44 +0530
-Message-ID: <1399312908-20744-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: sta350: add support for bits in
+ miscellaneous registers
+Date: Mon, 5 May 2014 12:55:29 -0700
+Message-ID: <20140505195529.GZ22111@sirena.org.uk>
+References: <1399283363-16441-1-git-send-email-zonque@gmail.com>
+ <1399283363-16441-2-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0247798308841951082=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 522B3260890
- for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 20:18:34 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59C83261B11
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 02:56:16 +0200 (CEST)
+In-Reply-To: <1399283363-16441-2-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,55 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, jeeja.kp@intel.com, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This RFC patch series is dependent upon the "ASoC: Intel: rework the mfld
-platform driver" series
 
-This add support for Merrfield machine based on WM8958 codec and Intels
-Merrfield SoC. The SoC implementation is based on DPCM.
+--===============0247798308841951082==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eGwLO2yoW8Ya4hN1"
+Content-Disposition: inline
 
-At last the SST DSP driver has been added which provides the low level IPC
-functionality and power management.
 
-Vinod Koul (4):
-  ASoC: Intel: add SSP BE DAIs
-  ASoC: Intel: Add merrifield machine driver
-  ASoC: Intel: add the low level dsp driver for mrfld
-  ASoC: Intel: add support for mrfld DPCM platform
+--eGwLO2yoW8Ya4hN1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- sound/soc/intel/Kconfig                          |   20 +
- sound/soc/intel/board/Makefile                   |    4 +
- sound/soc/intel/board/merr_dpcm_wm8958.c         |  619 ++++++++++
- sound/soc/intel/platform-libs/controls_v2.h      |  754 +++++++++++++
- sound/soc/intel/platform-libs/controls_v2_dpcm.c | 1315 ++++++++++++++++++++++
- sound/soc/intel/platform-libs/sst_widgets.h      |  378 +++++++
- sound/soc/intel/platform_ipc_v2.h                |  694 ++++++++++++
- sound/soc/intel/sst-mfld-platform-compress.c     |    8 +-
- sound/soc/intel/sst-mfld-platform-pcm.c          |  490 +++++++--
- sound/soc/intel/sst-mfld-platform.h              |    2 +
- sound/soc/intel/sst/Makefile                     |    5 +
- sound/soc/intel/sst/sst.c                        |  631 +++++++++++
- sound/soc/intel/sst/sst.h                        |  686 +++++++++++
- sound/soc/intel/sst/sst_drv_interface.c          |  812 +++++++++++++
- sound/soc/intel/sst/sst_ipc.c                    |  388 +++++++
- sound/soc/intel/sst/sst_loader.c                 |  947 ++++++++++++++++
- sound/soc/intel/sst/sst_pvt.c                    |  203 ++++
- sound/soc/intel/sst/sst_stream.c                 |  529 +++++++++
- 18 files changed, 8401 insertions(+), 84 deletions(-)
- create mode 100644 sound/soc/intel/board/Makefile
- create mode 100644 sound/soc/intel/board/merr_dpcm_wm8958.c
- create mode 100644 sound/soc/intel/platform-libs/controls_v2.h
- create mode 100644 sound/soc/intel/platform-libs/controls_v2_dpcm.c
- create mode 100644 sound/soc/intel/platform-libs/sst_widgets.h
- create mode 100644 sound/soc/intel/platform_ipc_v2.h
- create mode 100644 sound/soc/intel/sst/Makefile
- create mode 100644 sound/soc/intel/sst/sst.c
- create mode 100644 sound/soc/intel/sst/sst.h
- create mode 100644 sound/soc/intel/sst/sst_drv_interface.c
- create mode 100644 sound/soc/intel/sst/sst_ipc.c
- create mode 100644 sound/soc/intel/sst/sst_loader.c
- create mode 100644 sound/soc/intel/sst/sst_pvt.c
- create mode 100644 sound/soc/intel/sst/sst_stream.c
+On Mon, May 05, 2014 at 11:49:23AM +0200, Daniel Mack wrote:
+> Add support for RPDNEN, NSHHPEN, BRIDGOFF, CPWMEN and PNDLSL, and add DT
+> bindings to access them.
+
+Applied, thanks.  However...
+
+> +  -  st,powerdown-delay-divider:
+> +	If present, the bridge power-down time will be divided by the provided
+> +	value. If not specified, a divider of 1 will be used. Allowed values
+> +	are 1, 2, 4, 8, 16, 32, 64 and 128.
+> +	This property has to be specified as '/bits/ 8' value.
+
+There doesn't seem to be a pressing need for this to be specified as
+/bits/ 8?  It makes the parsing marginally easier but doesn't seem
+entirely helpful for users.
+
+--eGwLO2yoW8Ya4hN1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTZ+yuAAoJELSic+t+oim9GRIP/2gOtdXdA1hVP9UaXLI8OVPI
+uyjE7wR39LYqFNtNxhVWE7o+Qfht0CrYXGPmIzQivSwfSX5NCC/ovXnf03Vb25vk
+mgsTwQc5Q1Pknb7KByMLeB16mjezj8JP2Mh5EgYNVlwv/CQTwOxuhzyQ8cscpfmc
+NDcNuVnGXnjbHyuwQ1jVQL+JeOjLu7oEuUyVmLlla3xT5yfUfyIUQie8FleeXnxG
+TbZqNdhbDa+vz7x33tQ3RoMKOJ3PMP+OX13ULK5H1qSSZvdmHLFvgh7Rp/PGXvHe
+siKvM1sMlyg/NYU3uHMGRXAjye5VZx4QuV2qwjOD8/iqkigcMYCMA/CEr6FkutQ3
+1wNNF2gTUQyYufGWpKnsobtQMonbx1EKkDiMvON5OFNpljGfIj0x8+E1HHjZcvuA
+/qjsxQa1HNm8Be0+UPBbTA4I35seyaww7xPfS+U0SvJY3dDmx75Kbml0grJlPz2N
+U/iuFo8BJjMhICXEEmDOnxy3HBw0mhE0W5ysyDPA0wQdpcZoXJmlkRxbywVIXBUT
+d+hnDLdrr6j4JqMxLzENBlprnca08vCV0gV8QtzWKNTZlQz077M466qAk9ID+hAV
+M+aDp2DB+XgOOZYw2rGM2i6euhZT5NB7P14gD/ZqCendRj3GtyHjhqqz0oAl++0q
+gZQPsdqdqAC4CaRtFTvp
+=dAne
+-----END PGP SIGNATURE-----
+
+--eGwLO2yoW8Ya4hN1--
+
+--===============0247798308841951082==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0247798308841951082==--
