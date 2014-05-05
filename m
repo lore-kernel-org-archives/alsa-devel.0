@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: sta350: add support for bits in
- miscellaneous registers
-Date: Mon, 5 May 2014 12:55:29 -0700
-Message-ID: <20140505195529.GZ22111@sirena.org.uk>
-References: <1399283363-16441-1-git-send-email-zonque@gmail.com>
- <1399283363-16441-2-git-send-email-zonque@gmail.com>
+Subject: Re: [PATCH] ASoC: Intel: Add support to unload/reload
+ firmware modules.
+Date: Mon, 5 May 2014 12:44:11 -0700
+Message-ID: <20140505194411.GV22111@sirena.org.uk>
+References: <1399307497-6238-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0247798308841951082=="
+Content-Type: multipart/mixed; boundary="===============9124920390720010990=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 59C83261B11
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 02:56:16 +0200 (CEST)
-In-Reply-To: <1399283363-16441-2-git-send-email-zonque@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AF49264EE5
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 02:58:25 +0200 (CEST)
+In-Reply-To: <1399307497-6238-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0247798308841951082==
+--===============9124920390720010990==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eGwLO2yoW8Ya4hN1"
+	protocol="application/pgp-signature"; boundary="lwdfKABU4AhUWl+O"
 Content-Disposition: inline
 
 
---eGwLO2yoW8Ya4hN1
+--lwdfKABU4AhUWl+O
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 05, 2014 at 11:49:23AM +0200, Daniel Mack wrote:
-> Add support for RPDNEN, NSHHPEN, BRIDGOFF, CPWMEN and PNDLSL, and add DT
-> bindings to access them.
+On Mon, May 05, 2014 at 05:31:37PM +0100, Liam Girdwood wrote:
+> Add some SST API calls to unload and reload firmware modules. This can be=
+ used
+> by PM code to restore state and also allow modular FW to unload and relea=
+se
+> memory blocks.=20
 
-Applied, thanks.  However...
+Applied, thanks.
 
-> +  -  st,powerdown-delay-divider:
-> +	If present, the bridge power-down time will be divided by the provided
-> +	value. If not specified, a divider of 1 will be used. Allowed values
-> +	are 1, 2, 4, 8, 16, 32, 64 and 128.
-> +	This property has to be specified as '/bits/ 8' value.
-
-There doesn't seem to be a pressing need for this to be specified as
-/bits/ 8?  It makes the parsing marginally easier but doesn't seem
-entirely helpful for users.
-
---eGwLO2yoW8Ya4hN1
+--lwdfKABU4AhUWl+O
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTZ+yuAAoJELSic+t+oim9GRIP/2gOtdXdA1hVP9UaXLI8OVPI
-uyjE7wR39LYqFNtNxhVWE7o+Qfht0CrYXGPmIzQivSwfSX5NCC/ovXnf03Vb25vk
-mgsTwQc5Q1Pknb7KByMLeB16mjezj8JP2Mh5EgYNVlwv/CQTwOxuhzyQ8cscpfmc
-NDcNuVnGXnjbHyuwQ1jVQL+JeOjLu7oEuUyVmLlla3xT5yfUfyIUQie8FleeXnxG
-TbZqNdhbDa+vz7x33tQ3RoMKOJ3PMP+OX13ULK5H1qSSZvdmHLFvgh7Rp/PGXvHe
-siKvM1sMlyg/NYU3uHMGRXAjye5VZx4QuV2qwjOD8/iqkigcMYCMA/CEr6FkutQ3
-1wNNF2gTUQyYufGWpKnsobtQMonbx1EKkDiMvON5OFNpljGfIj0x8+E1HHjZcvuA
-/qjsxQa1HNm8Be0+UPBbTA4I35seyaww7xPfS+U0SvJY3dDmx75Kbml0grJlPz2N
-U/iuFo8BJjMhICXEEmDOnxy3HBw0mhE0W5ysyDPA0wQdpcZoXJmlkRxbywVIXBUT
-d+hnDLdrr6j4JqMxLzENBlprnca08vCV0gV8QtzWKNTZlQz077M466qAk9ID+hAV
-M+aDp2DB+XgOOZYw2rGM2i6euhZT5NB7P14gD/ZqCendRj3GtyHjhqqz0oAl++0q
-gZQPsdqdqAC4CaRtFTvp
-=dAne
+iQIcBAEBAgAGBQJTZ+oIAAoJELSic+t+oim9gI0P/2UhNkiQ7BKvCcVpTtSSvtfL
+EM4JtdaAH5rZORBy/vbavT650JK51i8RIDu0Bs+wsgUojfI43zj1w6COvECHh6Im
+sf8RM7mBpd9rThHSrFGWXg0EHJVmONoFvl1AdFJHZm2HqNBmM9pnet7ey48WIKsr
++J/A09/c4B2ch2+0XGvE6kffoaoh3AKiaKUa50SeYC2gmE6bASU2ihXemZm3xssX
+Qa4K67B8iS7SXsoVU/PUCvsLeFeJtf0YAguTq3/ofTA2TVtSfq/NWwEZl/71ZVpN
+AGrUIfxeJkcOsMsBtngU7EX1g0nONHL6cYzfkWVpX9cxYGT9SfhOYffeXXI/CJgx
+vkPXMN5tihU/s2TXIAS32Lf2cNp215bzCIBlTA/vXunwXTwMIvTh7hX0x/R4FUGt
+/3y0wmEDcGtyxw94VjUtveJv3UGZAf5LTlW+iaYWX0Ump7ha2uJFcaccNFGO7o2+
+p8mmJNUtofj1+VrXkWEzYDRwSfTGFdU6V6Vt3r6Eyd4LQii7CMrpjiLrOIi+1gPR
+2sUisICvUFz2zXDvFB7i+FdkNIY6GMLMTr9miNRNdT0TY4ZHJqZgGQH8vQEEy1fz
+BZSL/PETz89EU61WRrSGx6c14c64me3ZQ6jWXdyAufZMf0CHV0lm0VwjaaWekvUL
+RFoFcOVLJvasyyXlZlbR
+=pzYe
 -----END PGP SIGNATURE-----
 
---eGwLO2yoW8Ya4hN1--
+--lwdfKABU4AhUWl+O--
 
---===============0247798308841951082==
+--===============9124920390720010990==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0247798308841951082==--
+--===============9124920390720010990==--
