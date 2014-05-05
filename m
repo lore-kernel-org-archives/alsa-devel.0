@@ -1,14 +1,18 @@
-From: Fidel Leon <fidelleon@mykolab.com>
-Subject: No sound for a rather old laptop (ALC260).
-Date: Mon, 05 May 2014 16:34:38 +0200
-Message-ID: <4533148.LqRjaVltA6@lillinux.fidelleon.homelinux.net>
-Mime-Version: 1.0
+From: Kumar Gala <galak@codeaurora.org>
+Subject: Re: [PATCH 2/2] Documentation: dt: bindings: sound:
+	Add bindings for CS42L56 CODEC
+Date: Mon, 5 May 2014 16:18:05 -0500
+Message-ID: <47E0FD7A-D2C0-425E-A7FB-917B65D74B2D@codeaurora.org>
+References: <1399320549-16645-1-git-send-email-brian.austin@cirrus.com>
+ <1399320549-16645-2-git-send-email-brian.austin@cirrus.com>
+Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx03.mykolab.com (mx01.mykolab.com [95.128.36.1])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B49A2608E8
- for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 16:34:45 +0200 (CEST)
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.11.231])
+ by alsa0.perex.cz (Postfix) with ESMTP id C752E2608B7
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 23:26:33 +0200 (CEST)
+In-Reply-To: <1399320549-16645-2-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,33 +22,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, broonie@kernel.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello, list.
 
-I own a rather old laptop which features a snd_hda_intel soundcard, with a 
-ALC260 chipset.
+On May 5, 2014, at 3:09 PM, Brian Austin <brian.austin@cirrus.com> wrote:
 
-I know it works when using rather old kernels (Debian 7, for example), and 
-when I was using Ubuntu 12.04 I could even download the "driver" from Realtek 
-and compile from sources. However, after updating to newer releases (kernels 
-3.9 and beyond), I lost the ability to compile the module by hand (VERSION.H 
-missing).
+> This patch adds binding documentation for the Cirrus Logic CS42L56 Low Power Stereo I2C CODEC
+> 
+> Signed-off-by: Brian Austin <brian.austin@cirrus.com>
+> ---
+> .../devicetree/bindings/sound/cs42l56.txt          |   63 ++++++++++++++++++++
+> 1 file changed, 63 insertions(+)
+> create mode 100644 Documentation/devicetree/bindings/sound/cs42l56.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/cs42l56.txt b/Documentation/devicetree/bindings/sound/cs42l56.txt
+> new file mode 100644
+> index 0000000..9ae074f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/cs42l56.txt
+> @@ -0,0 +1,63 @@
+> +CS42L52 audio CODEC
+> +
+> +Required properties:
+> +
+> +  - compatible : "cirrus,cs42l56"
+> +
+> +  - reg : the I2C address of the device for I2C
+> +
+> +  - VA-supply, VCP-supply, VLDO-supply : power supplies for the device,
+> +  as covered in Documentation/devicetree/bindings/regulator/regulator.txt.
+> +
+> +Optional properties:
+> +
+> +  - cirrus,gpio-nreset : GPIO controller's phandle and the number
+> +  of the GPIO used to reset the codec.
+> +
+> +  - cirrus,chgfreq-divisor : Values used to set the Charge Pump Frequency.
+> +  Allowable values of 0x00 through 0x0F. These are raw values written to the
+> +  register, not the actual frequency. The frequency is determined by the following.
+> +  Frequency = MCLK / 4 * (N+2)
+> +  N = chgfreq_val
+> +  MCLK = Where MCLK is the frequency of the mclk signal after the MCLKDIV2 circuit.
+> +
+> +  - cirrus,ain1a-ref-cfg, ain1b-ref-cfg : boolean, If present, AIN1A or AIN1B are configured
+> +  as a pseudo-differential input referenced to AIN1REF/AIN3A.
 
-For older kernels I could try some "model=xxx" combinations but as far as I 
-see from hda_codec.c, ALC260 doesn't feature such parameter anymore (N/A).
+What happens if a DT had both bools?
 
-When my laptop starts up it make a few clicks and cracks (just when my Fedora 
-initializes the module) but no sound afterwards. I have cranked every 
-alsamixer slider to maximum but the most I get is a "very far far away sound, 
-with a lot of skews and clicks).
+> +
+> +  - cirrus,ain2a-ref-cfg, ain2b-ref-cfg : boolean, If present, AIN2A or AIN2B are configured
+> +  as a pseudo-differential input referenced to AIN2REF/AIN3B.
+> +
+> +  - cirrus,micbias-lvl: Set the output voltage level on the MICBIAS Pin.
+> +  0 = 0.5 x VA
+> +  1 = 0.6 x VA
+> +  2 = 0.7 x VA
+> +  3 = 0.8 x VA
+> +  4 = 0.83 x VA
+> +  5 = 0.91 x VA
+> +
+> +  - cirrus,adaptive-pwr-cfg : Configures how the power to the Headphone and Lineout
+> +  Amplifiers adapt to the output signal levels.
+> +  0 = Adapt to Volume Mode. Voltage level determined by the sum of the relevant volume settings.
+> +  1 = Fixed - Headphone and Line Amp supply = + or - VCP/2.
+> +  2 = Fixed - Headphone and Line Amp supply = + or - VCP.
+> +  3 = Adapted to Signal; Voltage level is dynamically determined by the output signal.
+> +
+> +  - cirrus,hpf-left-freq, hpf-right-freq : Sets the corner frequency (-3dB point) for the internal High-Pass
+> +  Filter.
+> +  0 = 1.8Hz
+> +  1 = 119Hz
+> +  2 = 236Hz
+> +  3 = 464Hz
+> +
 
-I already have an alsa-info.txt file to debug, may I post it here?
+Add a include/dt-bindings for all the various enums
 
-Thanks,
+> +
+> +Example:
+> +
+> +codec: codec@4b {
+> +	compatible = "cirrus,cs42l56";
+> +	reg = <0x4b>;
+> +	gpio-reset = <&gpio 10 0>;
+> +	cirrus,chgfreq-divisor = <0x05>;
+> +	cirrus.ain1_ref_cfg;
+> +	cirrus,micbias-lvl = <5>;
+> +	VA-supply = <&reg_audio>;
+> +};
+> -- 
+> 1.7.9.5
+> 
+
 -- 
-Fidel Leon
-fidelleon@mykolab.com
-GPG: AD74FB97
-"Developers have the attention spans of slightly moronic woodland creatures."
+Employee of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
