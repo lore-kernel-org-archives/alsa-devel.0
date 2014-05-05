@@ -1,16 +1,22 @@
-From: Stefan Roese <sr@denx.de>
-Subject: [PATCH 1/2 v2] ASoC: Add HA (HEAD acoustics) DSP codec
-	driver template
-Date: Tue,  6 May 2014 12:36:35 +0200
-Message-ID: <1399372596-10744-1-git-send-email-sr@denx.de>
+From: Delcypher <delcypher@gmail.com>
+Subject: Fwd: Regression Intel Corporation Haswell-ULT HD Audio
+	Controller
+Date: Mon, 5 May 2014 09:56:28 +0100
+Message-ID: <CANNJ_zh7EO8XgZmEivTBVeWQZpckh_aiokhO7Wy=D-mFTY21fw@mail.gmail.com>
+References: <CANNJ_zh6HXT-pdkOV9XpDor3J1aFVbi3zbHLyDnpgisu7DdMdA@mail.gmail.com>
+ <s5h1tw8irg9.wl%tiwai@suse.de>
+ <CANNJ_zj_aTm5qKG-5U4SgwL-vKeJS5c5YYEPsKGiq_UFW8dgZA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo4-p05-ob.smtp.rzone.de (mo4-p05-ob.smtp.rzone.de
- [81.169.146.182])
- by alsa0.perex.cz (Postfix) with ESMTP id CCE982607B6
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 12:36:28 +0200 (CEST)
+Received: from mail-ve0-f171.google.com (mail-ve0-f171.google.com
+ [209.85.128.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id A01B9261B1A
+ for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 10:56:29 +0200 (CEST)
+Received: by mail-ve0-f171.google.com with SMTP id oz11so690199veb.30
+ for <alsa-devel@alsa-project.org>; Mon, 05 May 2014 01:56:28 -0700 (PDT)
+In-Reply-To: <CANNJ_zj_aTm5qKG-5U4SgwL-vKeJS5c5YYEPsKGiq_UFW8dgZA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,481 +26,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Thorsten Eisbein <thorsten.eisbein@head-acoustics.de>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This codec driver template represents an I2C controlled multichannel audio
-codec that has many typical ASoC codec driver features like volume controls,
-mixer stages, mux selection, output power control, in-codec audio routings,
-codec bias management and DAI link configuration.
+Apologies. The alsa-devel mailing list just rejected my last e-mail
+due to the large attachments. Here is the same e-mail again without
+attachments and links to the relevant files instead. Sorry for the
+noise.
 
-This driver is based on an early version provided by Jarkko Nikula.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Signed-off-by: Stefan Roese <sr@denx.de>
-Cc: Thorsten Eisbein <thorsten.eisbein@head-acoustics.de>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@kernel.org>
----
-v2:
-- Added/changed copyright line
-- Changed authorship (as suggested by Jarkko the original author)
-- Added Thorsten as maintainer
-- Remove ha_dsp_hw_params() and ha_dsp_set_dai_fmt() as its not used
-  (only needed for CODEC as clock master which is currently not suported).
-- Removed some unneeded include files
-- "const char *const foo" used instead of "const char *foo"
-- SOC_MIXER_ARRAY() helper macro used
-- Removed ha_dsp_set_bias_level() and use default implementation
-- Use codec->dev instead of codec->dev->parent in dev_get_regmap()
-- Added CODEC reset to probe
-- Remove "ret" in ha_dsp_i2c_probe()
+---------- Forwarded message ----------
+From: Delcypher <delcypher@gmail.com>
+Date: 5 May 2014 09:46
+Subject: Re: [alsa-devel] Regression Intel Corporation Haswell-ULT HD
+Audio Controller
+To: Takashi Iwai <tiwai@suse.de>
+Cc: David Henningsson <david.henningsson@canonical.com>, Po-Hsu Lin
+<po-hsu.lin@canonical.com>, ALSA Development Mailing List
+<alsa-devel@alsa-project.org>
 
- sound/soc/codecs/Kconfig  |   4 +
- sound/soc/codecs/Makefile |   2 +
- sound/soc/codecs/ha-dsp.c | 333 ++++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/ha-dsp.h |  50 +++++++
- 4 files changed, 389 insertions(+)
- create mode 100644 sound/soc/codecs/ha-dsp.c
- create mode 100644 sound/soc/codecs/ha-dsp.h
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f0e8401..f357988 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -51,6 +51,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_DA732X if I2C
- 	select SND_SOC_DA9055 if I2C
- 	select SND_SOC_BT_SCO
-+	select SND_SOC_HA_DSP if I2C
- 	select SND_SOC_ISABELLE if I2C
- 	select SND_SOC_JZ4740_CODEC
- 	select SND_SOC_LM4857 if I2C
-@@ -343,6 +344,9 @@ config SND_SOC_BT_SCO
- config SND_SOC_DMIC
- 	tristate
- 
-+config SND_SOC_HA_DSP
-+	tristate
-+
- config SND_SOC_HDMI_CODEC
-        tristate "HDMI stub CODEC"
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 3c4d275..f296bec 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -39,6 +39,7 @@ snd-soc-da732x-objs := da732x.o
- snd-soc-da9055-objs := da9055.o
- snd-soc-bt-sco-objs := bt-sco.o
- snd-soc-dmic-objs := dmic.o
-+snd-soc-ha-dsp-objs := ha-dsp.o
- snd-soc-isabelle-objs := isabelle.o
- snd-soc-jz4740-codec-objs := jz4740.o
- snd-soc-l3-objs := l3.o
-@@ -190,6 +191,7 @@ obj-$(CONFIG_SND_SOC_DA732X)	+= snd-soc-da732x.o
- obj-$(CONFIG_SND_SOC_DA9055)	+= snd-soc-da9055.o
- obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
- obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
-+obj-$(CONFIG_SND_SOC_HA_DSP)	+= snd-soc-ha-dsp.o
- obj-$(CONFIG_SND_SOC_ISABELLE)	+= snd-soc-isabelle.o
- obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
- obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
-diff --git a/sound/soc/codecs/ha-dsp.c b/sound/soc/codecs/ha-dsp.c
-new file mode 100644
-index 0000000..5a3c7ef
---- /dev/null
-+++ b/sound/soc/codecs/ha-dsp.c
-@@ -0,0 +1,333 @@
-+/*
-+ * ha-dsp.c  --  HA DSP ALSA SoC Audio driver
-+ *
-+ * Copyright 2011-2014 HEAD acoustics GmbH
-+ *
-+ * Authors:
-+ *   Jarkko Nikula <jarkko.nikula@bitmer.com>
-+ *   Stefan Roese <sr@denx.de>
-+ *   Thorsten Eisbein <thorsten.eisbein@head-acoustics.de>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * Maintainer: Thorsten Eisbein <thorsten.eisbein@head-acoustics.de>
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/i2c.h>
-+#include <linux/regmap.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+#include "ha-dsp.h"
-+
-+/* Reset default register values for soc-cache */
-+static const struct reg_default ha_dsp_reg_defaults[] = {
-+	{ 0x00, 0x00 },
-+	{ 0x01, 0x55 },
-+	{ 0x02, 0x55 },
-+	{ 0x03, 0x00 },
-+	{ 0x04, 0x00 },
-+	{ 0x05, 0x00 },
-+	{ 0x06, 0x00 },
-+	{ 0x07, 0x00 },
-+	{ 0x08, 0x02 },
-+	{ 0x09, 0x02 },
-+	{ 0x0a, 0x02 },
-+	{ 0x0b, 0x02 },
-+	{ 0x0c, 0x02 },
-+	{ 0x0d, 0x02 },
-+	{ 0x0e, 0x02 },
-+	{ 0x0f, 0x02 },
-+};
-+
-+/* DSP mode selection */
-+static const char *const ha_dsp_mode_texts[] = {"Mode 1", "Mode 2"};
-+static SOC_ENUM_SINGLE_DECL(ha_dsp_mode_enum, HA_DSP_CTRL, 0,
-+			    ha_dsp_mode_texts);
-+
-+/* Monitor output mux selection */
-+static const char *const ha_dsp_monitor_texts[] = {"Off", "ADC", "DAC"};
-+static SOC_ENUM_SINGLE_DECL(ha_dsp_monitor_enum, HA_DSP_CTRL, 1,
-+			    ha_dsp_monitor_texts);
-+
-+static const struct snd_kcontrol_new ha_dsp_monitor_control =
-+	SOC_DAPM_ENUM("Route", ha_dsp_monitor_enum);
-+
-+/* Output mixers */
-+static const struct snd_kcontrol_new ha_dsp_out1_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", HA_DSP_OUT1_CTRL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("IN Bypass Switch", HA_DSP_OUT1_CTRL, 2, 1, 0),
-+};
-+static const struct snd_kcontrol_new ha_dsp_out2_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", HA_DSP_OUT2_CTRL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("IN Bypass Switch", HA_DSP_OUT2_CTRL, 2, 1, 0),
-+};
-+static const struct snd_kcontrol_new ha_dsp_out3_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", HA_DSP_OUT3_CTRL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("IN Bypass Switch", HA_DSP_OUT3_CTRL, 2, 1, 0),
-+};
-+static const struct snd_kcontrol_new ha_dsp_out4_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", HA_DSP_OUT4_CTRL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("IN Bypass Switch", HA_DSP_OUT4_CTRL, 2, 1, 0),
-+};
-+static const struct snd_kcontrol_new ha_dsp_out5_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", HA_DSP_OUT5_CTRL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("IN Bypass Switch", HA_DSP_OUT5_CTRL, 2, 1, 0),
-+};
-+static const struct snd_kcontrol_new ha_dsp_out6_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", HA_DSP_OUT6_CTRL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("IN Bypass Switch", HA_DSP_OUT6_CTRL, 2, 1, 0),
-+};
-+static const struct snd_kcontrol_new ha_dsp_out7_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", HA_DSP_OUT7_CTRL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("IN Bypass Switch", HA_DSP_OUT1_CTRL, 2, 1, 0),
-+};
-+static const struct snd_kcontrol_new ha_dsp_out8_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("DAC Switch", HA_DSP_OUT8_CTRL, 1, 1, 0),
-+	SOC_DAPM_SINGLE("IN Bypass Switch", HA_DSP_OUT8_CTRL, 2, 1, 0),
-+};
-+
-+static const struct snd_kcontrol_new ha_dsp_snd_controls[] = {
-+	SOC_SINGLE("ADC Capture Volume",
-+		   HA_DSP_ADC_VOL, 0, 0x7f, 0),
-+	SOC_SINGLE("ADC Capture Switch",
-+		   HA_DSP_ADC_VOL, 7, 0x01, 1),
-+
-+	SOC_SINGLE("PCM Playback Volume",
-+		   HA_DSP_DAC_VOL, 0, 0x7f, 0),
-+	SOC_SINGLE("PCM Playback Switch",
-+		   HA_DSP_DAC_VOL, 7, 0x01, 1),
-+
-+	SOC_ENUM("DSP Mode", ha_dsp_mode_enum),
-+};
-+
-+static const struct snd_soc_dapm_widget ha_dsp_widgets[] = {
-+	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC", "Playback", SND_SOC_NOPM, 0, 0),
-+
-+	SOC_MIXER_ARRAY("OUT1 Mixer", SND_SOC_NOPM, 0, 0,
-+			ha_dsp_out1_mixer_controls),
-+	SOC_MIXER_ARRAY("OUT2 Mixer", SND_SOC_NOPM, 0, 0,
-+			ha_dsp_out2_mixer_controls),
-+	SOC_MIXER_ARRAY("OUT3 Mixer", SND_SOC_NOPM, 0, 0,
-+			ha_dsp_out3_mixer_controls),
-+	SOC_MIXER_ARRAY("OUT4 Mixer", SND_SOC_NOPM, 0, 0,
-+			ha_dsp_out4_mixer_controls),
-+	SOC_MIXER_ARRAY("OUT5 Mixer", SND_SOC_NOPM, 0, 0,
-+			ha_dsp_out5_mixer_controls),
-+	SOC_MIXER_ARRAY("OUT6 Mixer", SND_SOC_NOPM, 0, 0,
-+			ha_dsp_out6_mixer_controls),
-+	SOC_MIXER_ARRAY("OUT7 Mixer", SND_SOC_NOPM, 0, 0,
-+			ha_dsp_out7_mixer_controls),
-+	SOC_MIXER_ARRAY("OUT8 Mixer", SND_SOC_NOPM, 0, 0,
-+			ha_dsp_out8_mixer_controls),
-+
-+	SND_SOC_DAPM_PGA("OUT1 PGA", HA_DSP_OUT1_CTRL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("OUT2 PGA", HA_DSP_OUT2_CTRL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("OUT3 PGA", HA_DSP_OUT3_CTRL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("OUT4 PGA", HA_DSP_OUT4_CTRL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("OUT5 PGA", HA_DSP_OUT5_CTRL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("OUT6 PGA", HA_DSP_OUT6_CTRL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("OUT7 PGA", HA_DSP_OUT7_CTRL, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("OUT8 PGA", HA_DSP_OUT8_CTRL, 0, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_MUX("Monitor Out Mux", SND_SOC_NOPM, 0, 0,
-+			 &ha_dsp_monitor_control),
-+
-+	/* Input pins */
-+	SND_SOC_DAPM_INPUT("IN1"),
-+	SND_SOC_DAPM_INPUT("IN2"),
-+	SND_SOC_DAPM_INPUT("IN3"),
-+	SND_SOC_DAPM_INPUT("IN4"),
-+	SND_SOC_DAPM_INPUT("IN5"),
-+	SND_SOC_DAPM_INPUT("IN6"),
-+	SND_SOC_DAPM_INPUT("IN7"),
-+	SND_SOC_DAPM_INPUT("IN8"),
-+
-+	/* Output pins */
-+	SND_SOC_DAPM_OUTPUT("OUT1"),
-+	SND_SOC_DAPM_OUTPUT("OUT2"),
-+	SND_SOC_DAPM_OUTPUT("OUT3"),
-+	SND_SOC_DAPM_OUTPUT("OUT4"),
-+	SND_SOC_DAPM_OUTPUT("OUT5"),
-+	SND_SOC_DAPM_OUTPUT("OUT6"),
-+	SND_SOC_DAPM_OUTPUT("OUT7"),
-+	SND_SOC_DAPM_OUTPUT("OUT8"),
-+	SND_SOC_DAPM_OUTPUT("MONITOR"),
-+};
-+
-+static const struct snd_soc_dapm_route ha_dsp_routes[] = {
-+	/* Inputs to ADC */
-+	{"ADC", NULL, "IN1"},
-+	{"ADC", NULL, "IN2"},
-+	{"ADC", NULL, "IN3"},
-+	{"ADC", NULL, "IN4"},
-+	{"ADC", NULL, "IN5"},
-+	{"ADC", NULL, "IN6"},
-+	{"ADC", NULL, "IN7"},
-+	{"ADC", NULL, "IN8"},
-+
-+	/* DAC and input bypass paths to outputs */
-+	{"OUT1 Mixer", "DAC Switch", "DAC"},
-+	{"OUT1 Mixer", "IN Bypass Switch", "IN1"},
-+	{"OUT1 PGA", NULL, "OUT1 Mixer"},
-+	{"OUT1", NULL, "OUT1 PGA"},
-+
-+	{"OUT2 Mixer", "DAC Switch", "DAC"},
-+	{"OUT2 Mixer", "IN Bypass Switch", "IN2"},
-+	{"OUT2 PGA", NULL, "OUT2 Mixer"},
-+	{"OUT2", NULL, "OUT2 PGA"},
-+
-+	{"OUT3 Mixer", "DAC Switch", "DAC"},
-+	{"OUT3 Mixer", "IN Bypass Switch", "IN3"},
-+	{"OUT3 PGA", NULL, "OUT3 Mixer"},
-+	{"OUT3", NULL, "OUT3 PGA"},
-+
-+	{"OUT4 Mixer", "DAC Switch", "DAC"},
-+	{"OUT4 Mixer", "IN Bypass Switch", "IN4"},
-+	{"OUT4 PGA", NULL, "OUT4 Mixer"},
-+	{"OUT4", NULL, "OUT4 PGA"},
-+
-+	{"OUT5 Mixer", "DAC Switch", "DAC"},
-+	{"OUT5 Mixer", "IN Bypass Switch", "IN5"},
-+	{"OUT5 PGA", NULL, "OUT5 Mixer"},
-+	{"OUT5", NULL, "OUT5 PGA"},
-+
-+	{"OUT6 Mixer", "DAC Switch", "DAC"},
-+	{"OUT6 Mixer", "IN Bypass Switch", "IN6"},
-+	{"OUT6 PGA", NULL, "OUT6 Mixer"},
-+	{"OUT6", NULL, "OUT6 PGA"},
-+
-+	{"OUT7 Mixer", "DAC Switch", "DAC"},
-+	{"OUT7 Mixer", "IN Bypass Switch", "IN7"},
-+	{"OUT7 PGA", NULL, "OUT7 Mixer"},
-+	{"OUT7", NULL, "OUT7 PGA"},
-+
-+	{"OUT8 Mixer", "DAC Switch", "DAC"},
-+	{"OUT8 Mixer", "IN Bypass Switch", "IN8"},
-+	{"OUT8 PGA", NULL, "OUT8 Mixer"},
-+	{"OUT8", NULL, "OUT8 PGA"},
-+
-+	/* Monitor output */
-+	{"Monitor Out Mux", "ADC", "ADC"},
-+	{"Monitor Out Mux", "DAC", "DAC"},
-+	{"MONITOR", NULL, "Monitor Out Mux"},
-+};
-+
-+static struct snd_soc_dai_driver ha_dsp_dai = {
-+	.name = "ha-dsp-hifi",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 16,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		/* We use only 32 Bits for Audio */
-+		.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 16,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		/* We use only 32 Bits for Audio */
-+		.formats = SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+};
-+
-+static int ha_dsp_probe(struct snd_soc_codec *codec)
-+{
-+	int ret;
-+
-+	codec->control_data = dev_get_regmap(codec->dev, NULL);
-+	ret = snd_soc_codec_set_cache_io(codec, codec->control_data);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-+		return ret;
-+	}
-+
-+	snd_soc_write(codec, HA_DSP_CTRL, HA_DSP_SW_RESET);
-+
-+	return 0;
-+}
-+
-+static int ha_dsp_remove(struct snd_soc_codec *codec)
-+{
-+	snd_soc_write(codec, HA_DSP_CTRL, HA_DSP_SW_RESET);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_codec_driver soc_codec_dev_ha_dsp = {
-+	.probe = ha_dsp_probe,
-+	.remove = ha_dsp_remove,
-+
-+	.controls = ha_dsp_snd_controls,
-+	.num_controls = ARRAY_SIZE(ha_dsp_snd_controls),
-+	.dapm_widgets = ha_dsp_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(ha_dsp_widgets),
-+	.dapm_routes = ha_dsp_routes,
-+	.num_dapm_routes = ARRAY_SIZE(ha_dsp_routes),
-+};
-+
-+static const struct regmap_config ha_dsp_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+
-+	.max_register = 0x0f,
-+	.reg_defaults = ha_dsp_reg_defaults,
-+	.num_reg_defaults = ARRAY_SIZE(ha_dsp_reg_defaults),
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+static int ha_dsp_i2c_probe(struct i2c_client *client,
-+			    const struct i2c_device_id *id)
-+{
-+	struct regmap *regmap;
-+
-+	regmap = devm_regmap_init_i2c(client, &ha_dsp_regmap);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&client->dev, "Failed to create regmap: %ld\n",
-+			PTR_ERR(regmap));
-+		return PTR_ERR(regmap);
-+	}
-+
-+	return snd_soc_register_codec(&client->dev, &soc_codec_dev_ha_dsp,
-+				      &ha_dsp_dai, 1);
-+}
-+
-+static int ha_dsp_i2c_remove(struct i2c_client *client)
-+{
-+	snd_soc_unregister_codec(&client->dev);
-+
-+	return 0;
-+}
-+
-+/*
-+ * This name/ID is neded to match the DT node for the codec
-+ */
-+static const struct i2c_device_id ha_dsp_i2c_id[] = {
-+	{ "ha-dsp-audio", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, ha_dsp_i2c_id);
-+
-+static struct i2c_driver ha_dsp_i2c_driver = {
-+	.driver = {
-+		.name = "ha-dsp-codec",
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = ha_dsp_i2c_probe,
-+	.remove = ha_dsp_i2c_remove,
-+	.id_table = ha_dsp_i2c_id,
-+};
-+
-+module_i2c_driver(ha_dsp_i2c_driver);
-+
-+MODULE_DESCRIPTION("ASoC HA DSP driver");
-+MODULE_AUTHOR("Jarkko Nikula <jarkko.nikula@bitmer.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/ha-dsp.h b/sound/soc/codecs/ha-dsp.h
-new file mode 100644
-index 0000000..6622f8a
---- /dev/null
-+++ b/sound/soc/codecs/ha-dsp.h
-@@ -0,0 +1,50 @@
-+/*
-+ * ha-dsp.h  --  HA DSP ALSA SoC Audio driver
-+ *
-+ * Copyright 2011-2014 HEAD acoustics GmbH
-+ *
-+ * Author: Jarkko Nikula <jhnikula@gmail.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ */
-+
-+#ifndef __HA_DSP_H__
-+#define __HA_DSP_H__
-+
-+/* Registers */
-+
-+/*
-+ * Bit 2-1: Monitor output selection: Off, ADC, DAC
-+ * Bit 0: DSP Mode
-+ */
-+#define HA_DSP_CTRL		0x00
-+
-+/*
-+ * Bit 7: Mute
-+ * Bit 6-0: Volume
-+ */
-+#define HA_DSP_DAC_VOL		0x01
-+#define HA_DSP_ADC_VOL		0x02
-+
-+/*
-+ * Bit 2: INx Bypass to OUTx Switch
-+ * Bit 1: DAC to OUTx switch
-+ * Bit 0: Output power
-+ */
-+#define HA_DSP_OUT1_CTRL	0x08
-+#define HA_DSP_OUT2_CTRL	0x09
-+#define HA_DSP_OUT3_CTRL	0x0a
-+#define HA_DSP_OUT4_CTRL	0x0b
-+#define HA_DSP_OUT5_CTRL	0x0c
-+#define HA_DSP_OUT6_CTRL	0x0d
-+#define HA_DSP_OUT7_CTRL	0x0e
-+#define HA_DSP_OUT8_CTRL	0x0f
-+
-+/* Register bits and values */
-+
-+/* HA_DSP_CTRL */
-+#define HA_DSP_SW_RESET		0xff
-+
-+#endif
--- 
-1.9.2
+Thank you for your suggestions:
+
+If I run
+
+$ amixer -c0 get Capture
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 63
+  Front Left: Capture 63 [100%] [30.00dB] [on]
+  Front Right: Capture 63 [100%] [30.00dB] [on]
+
+So I think it's currently already on (I think I may of switched it on
+after running the script, but it didn't make any difference). I ran ``
+amixer -c0 set Capture cap`` and it didn't fix my microphone issue.
+
+I also tried using model=nofixup and that didn't fix the microphone
+issue either :(
+
+I just tried doing something different and to my surprise it fixed my
+microphone issue, i.e. after doing this the following commands
+
+$ arecord -d 5 test.wav
+$ aplay test.wav
+
+work (test.wav isn't complete silence).
+
+There was one mixer control in alsamixer that I hadn't touched with
+the name "Digital". I had not played with it before because I presumed
+it shouldn't have anything to do with the internal microphone. I
+changed it from 0 to some non zero value and to my surprise my
+internal microphone now works.
+
+So is this a bug or an intended feature? I've attached the output of
+alsa-utlils-alsa-info.sh before and after the mixer adjustment in the
+hope that it will help.
+
+**EDIT**: Links to output.
+Before: https://gist.github.com/delcypher/d9a05a393c7a36d44dad
+After: https://gist.github.com/delcypher/f75c3f8c543866f6a2e0
+
+
+
+On 5 May 2014 09:02, Takashi Iwai <tiwai@suse.de> wrote:
+> At Sat, 3 May 2014 12:57:55 +0100,
+> Delcypher wrote:
+>>
+>> Hi,
+>>
+>> I was told to report my bug here because the ALSA bug tracker is no
+>> longer active.
+>>
+>> I'm having an issue with " Intel Corporation Haswell-ULT HD Audio
+>> Controller" card which is inside the Dell XPS13 9333 developer edition
+>> [1].
+>>
+>> I've tried two different distributions
+>>
+>> * Arch Linux (kernel 3.14)
+>> Output of alsa-utlils-alsa-info.sh [2]
+>>
+>> * Ubuntu 14.04 LTS (kernel 3.13)
+>> Output of alsa-utlils-alsa-info.sh [3]
+>>
+>> The card behaves correctly under Ubuntu but under Arch Linux I've
+>> observed the following issues.
+>>
+>> - The microphone does not work correctly. In alsamixer I select
+>> "Internal Mic" as my capture device but when I do
+>>
+>> $ arecord -d 5 test.wav
+>> $ aplay test.wav
+>>
+>> test.wav contains silence.
+>>
+>> I've also tried enabling/disabling "CAPTURE" on the Capture channel at
+>> the same time - I don't really understand why this channel is here
+>> (seems a little bizarre) but enabling/disabling "CAPTURE" on this
+>> channel doesn't seem to make any difference anyway. Under Ubuntu the
+>> "arecord... aplay" command works correctly.
+>>
+>> - There probably isn't a way to reproduce this but when I first
+>> installed Arch Linux the sound card was put in a state where the
+>> headphone jack would not work at all. Sound would continue playing out
+>> of the speakers when the headphone jack was inserted and no sound
+>> would come out of the headphones. I did notice that if the headphone
+>> jack was only partially inserted I would get some sound sent to one of
+>> the headphones.
+>>
+>> My intuition is that the card is probably being incorrectly
+>> initialised because if you take a look at the output of
+>> alsa-utils-alsa-info.sh and diff them. Two very big differences I
+>> noticed were that
+>>
+>> - The card name (from lscpi) is "Intel Corporation Haswell-ULT HD
+>> Audio Controller" under Ubuntu but under Arch Linux it is "Intel
+>> Corporation Device 0a0c"
+>> - The card codec is "Realtek ALC668" under Ubuntu but is "Realtek
+>> ALC3661" under Arch Linux.
+>>
+>> One interesting I did notice is that under Arch Linux it is possible
+>> to use the microphone from the Audacity program by selecting "HDA
+>> Intel PCH: ALC3661Analog (hw0:0) Internal mic:0" as the input (this is
+>> not the default). Unfortunately I know of no way to make other
+>> applications use this.
+>>
+>> Any thoughts on how to fix this?
+>>
+>> [1] http://www.dell.com/uk/business/p/xps-13-linux/pd
+>> [2] https://gist.github.com/delcypher/11367224
+>> [3] https://gist.github.com/delcypher/11367302
+>
+> The "Capture Switch" is off, according to alsa-info.sh output.
+> Try to turn it on.
+>    % amixer -c0 set Capture cap
+>
+> If this doesn't help, it must be a quirk added in 3.14 kernel:
+>   commit f47e5dc464251f661da9495fcbf003a0d22c1360
+>   ALSA: hda - Add a headset quirk for Dell XPS 13
+>
+> I added relevant people in Cc.
+>
+> Meanwhile, you can try to pass model=nofixup to snd-hda-intel module
+> for avoiding the added fixup above.
+>
+>
+> thanks,
+>
+> Takashi
