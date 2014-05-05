@@ -1,62 +1,33 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: [PATCH RESEND 2/4] ASoC: fsl_esai: Only bypass sck_div
-	for EXTAL source
-Date: Tue, 6 May 2014 16:56:00 +0800
-Message-ID: <6c6ffc8939e15e4942f8b45a8a779d6cc16b72d4.1399366227.git.Guangyu.Chen@freescale.com>
-References: <cover.1399366227.git.Guangyu.Chen@freescale.com>
+From: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>
+Subject: Re: [PATCH v2 3/9] ARM: Kirkwood: Add node for audio codec
+Date: Sun, 4 May 2014 21:21:18 -0400
+Message-ID: <20140505012118.GG28159@titan.lakedaemon.net>
+References: <1399141819-23924-1-git-send-email-andrew@lunn.ch>
+ <1399141819-23924-4-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0211.outbound.protection.outlook.com [207.46.163.211])
- by alsa0.perex.cz (Postfix) with ESMTP id B77A9261A88
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 10:54:41 +0200 (CEST)
-In-Reply-To: <cover.1399366227.git.Guangyu.Chen@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1399141819-23924-4-git-send-email-andrew-g2DYL2Zd6BY@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-ESAI can only output EXTAL clock source directly. But for FSYS clock source,
-ESAI can not output it without getting through PSR PM dividers.
+On Sat, May 03, 2014 at 08:30:13PM +0200, Andrew Lunn wrote:
+> Instantiate the audio codec via a DT node.
+> 
+> Signed-off-by: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
+> ---
+>  arch/arm/boot/dts/kirkwood-t5325.dts | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 
-So this patch adds an extra check in the code.
+Patches 3, 4, and 7 applied to mvebu/dt
 
-Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
----
- sound/soc/fsl/fsl_esai.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+thx,
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index d098a48..7e1916e 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -259,10 +259,16 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
- 		return -EINVAL;
- 	}
- 
--	if (ratio == 1) {
-+	/* Only EXTAL source can be output directly without using PSR and PM */
-+	if (ratio == 1 && clksrc == esai_priv->extalclk) {
- 		/* Bypass all the dividers if not being needed */
- 		ecr |= tx ? ESAI_ECR_ETO : ESAI_ECR_ERO;
- 		goto out;
-+	} else if (ratio < 2) {
-+		/* The ratio should be no less than 2 if using other sources */
-+		dev_err(dai->dev, "failed to derive required HCK%c rate\n",
-+				tx ? 'T' : 'R');
-+		return -EINVAL;
- 	}
- 
- 	ret = fsl_esai_divisor_cal(dai, tx, ratio, false, 0);
--- 
-1.8.4
+Jason.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
