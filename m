@@ -1,17 +1,20 @@
-From: Julian Scheel <julian@jusst.de>
-Subject: Re: [PATCH] alsactl: Store lockfile in /tmp
-Date: Tue, 06 May 2014 20:55:40 +0200
-Message-ID: <5369302C.4040502@jusst.de>
-References: <1399377427-23907-1-git-send-email-julian@jusst.de>
- <5368F74C.1020907@perex.cz> <s5h61ljuevj.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC 2/4] ASoC: Intel: Add merrifield machine
+	driver
+Date: Tue, 06 May 2014 20:17:18 +0200
+Message-ID: <5369272E.5010803@metafoo.de>
+References: <1399312908-20744-1-git-send-email-vinod.koul@intel.com>
+ <1399312908-20744-3-git-send-email-vinod.koul@intel.com>
+ <536905CD.4030007@metafoo.de> <20140506165820.GE28638@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.work.de (smtp1.work.de [212.12.40.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E5212651DC
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 20:55:42 +0200 (CEST)
-In-Reply-To: <s5h61ljuevj.wl%tiwai@suse.de>
+Received: from smtp-out-016.synserver.de (smtp-out-029.synserver.de
+ [212.40.185.29])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3531C2651AF
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 20:17:23 +0200 (CEST)
+In-Reply-To: <20140506165820.GE28638@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,99 +24,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: jeeja.kp@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Am 06/05/14 17:05, schrieb Takashi Iwai:
-> At Tue, 06 May 2014 16:53:00 +0200,
-> Jaroslav Kysela wrote:
->>
->> Date 6.5.2014 13:57, Julian Scheel wrote:
->>> It can not be generally assumed that the directories in which asound.state
->>> resides are writable. Instead using /tmp as location for lock files seems more
->>> reliable.
->>
->> Apart the missing free for the mallocated string and ommiting the TMPDIR
->> environment variable, I think that the right directory for global locks
->> is /var/lock . The default asound.state directory is now /var/lib/alsa -
->> I don't see the benefit.
->
-> Agreed.  Above all, using a fixed path with /tmp is really fragile,
-> easily leading to a security risk for a service that is run by root
-> like this.
-
-I agree that /tmp is not the best choice. It was just what came to my 
-mind first when thinking of a place where r/w access shall be possible 
-in any system.
-
->> What's the reason for this change? Perhaps using an environmental
->> variable to override the lock path may be more appropriate for a custom
->> directory structure.
->
-> ... or give an option?
-
-What about using /var/lock as default, allowing to explicitly override 
-with an option?
-I think this would be more correct than the current approach.
-
--Julian
-
->>
->>                                     Jaroslav
->>
->>>
->>> Signed-off-by: Julian Scheel <julian@jusst.de>
->>> ---
->>>   alsactl/lock.c | 13 ++++++++++---
->>>   1 file changed, 10 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/alsactl/lock.c b/alsactl/lock.c
->>> index 587a109..7ca3a09 100644
->>> --- a/alsactl/lock.c
->>> +++ b/alsactl/lock.c
->>> @@ -36,17 +36,24 @@ static int state_lock_(const char *file, int lock, int timeout)
->>>   	struct flock lck;
->>>   	struct stat st;
->>>   	char lcktxt[12];
->>> +	char *filename;
->>>   	char *nfile;
->>>
->>>   	if (!do_lock)
->>>   		return 0;
->>> -	nfile = malloc(strlen(file) + 6);
+On 05/06/2014 06:58 PM, Vinod Koul wrote:
+> On Tue, May 06, 2014 at 05:54:53PM +0200, Lars-Peter Clausen wrote:
+>> On 05/05/2014 08:01 PM, Vinod Koul wrote:
+>> [...]
+>>> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 >>> +
->>> +	/* only use the actual filename, not the path */
->>> +	filename = strrchr(file, '/');
->>> +	if (!filename)
->>> +		filename = file;
+>>> +#include <linux/module.h>
+>>> +#include <linux/init.h>
+>>> +#include <linux/device.h>
+>>> +#include <linux/slab.h>
+>>> +#include <linux/io.h>
+>>> +#include <linux/async.h>
+>>> +#include <linux/delay.h>
+>>> +#include <linux/gpio.h>
+>>> +#include <sound/pcm.h>
+>>> +#include <sound/pcm_params.h>
+>>> +#include <sound/soc.h>
+>>> +#include <sound/jack.h>
+>>> +#include <linux/input.h>
 >>> +
->>> +	nfile = malloc(strlen(filename) + 10);
->>>   	if (nfile == NULL) {
->>>   		error("No enough memory...");
->>>   		return -ENOMEM;
->>>   	}
->>> -	strcpy(nfile, file);
->>> -	strcat(nfile, ".lock");
->>> +
->>> +	sprintf(nfile, "/tmp/%s.lock", filename);
->>>   	lck.l_type = lock ? F_WRLCK : F_UNLCK;
->>>   	lck.l_whence = SEEK_SET;
->>>   	lck.l_start = 0;
->>>
+>>> +#include <linux/mfd/wm8994/core.h>
+>>> +#include <linux/mfd/wm8994/registers.h>
+>>> +#include <linux/mfd/wm8994/pdata.h>
+>>> +#include "../../codecs/wm8994.h"
+>>> +#include "../platform-libs/controls_v2.h"
 >>
+>> I don't think that include exists in upstream.
+> which one ../platform-libs/controls_v2.h is part of this patch.
+
+I just saw it's part of patch 4 of this series. But still, it should added 
+before the user is added.
+
+[..]
 >>
->> --
->> Jaroslav Kysela <perex@perex.cz>
->> Linux Kernel Sound Maintainer
->> ALSA Project; Red Hat, Inc.
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>> +static struct snd_soc_dai *find_codec_dai(struct snd_soc_card *card, const char *dai_name)
+>>> +{
+>>> +	int i;
+>>> +	for (i = 0; i < card->num_rtd; i++) {
+>>> +		if (!strcmp(card->rtd[i].codec_dai->name, dai_name))
+>>> +			return card->rtd[i].codec_dai;
+>>> +	}
+>>> +	pr_err("%s: unable to find codec dai\n", __func__);
+>>> +	/* this should never occur */
+>>> +	WARN_ON(1);
+>>> +	return NULL;
+>>> +}
 >>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+>> The proper way to do this is to implement the init callback for the
+>> dai link. There you get a pointer to the codec and the dai and
+>> everything else. If you need one for later store them in the private
+>> struct of the card driver.
+> again the driver would need to store the pointers to cards (we multi codec
+> systems) and multi dais. Somehow I dont feel this might be worth thr trouble.
+> Earlier we always had card->codec pointing to _one_ codec but with multi-codec
+> systems that is not the case, so we need ot lookup, but yes am not sure if above
+> is best way or something else..
+
+Another thing you could do is just use card->rtd[X].codec_dai. The rtds are 
+in the same order as the DAI links so you know which rtd is for which DAI.
+
+[...]
+>>> +	snd_soc_dapm_nc_pin(&card->dapm, "DMIC2DAT");
+>>> +	snd_soc_dapm_nc_pin(&card->dapm, "LINEOUT1P");
+>>> +	snd_soc_dapm_nc_pin(&card->dapm, "LINEOUT1N");
+>>> +	snd_soc_dapm_nc_pin(&card->dapm, "LINEOUT2P");
+>>> +	snd_soc_dapm_nc_pin(&card->dapm, "LINEOUT2N");
+>>> +	snd_soc_dapm_nc_pin(&card->dapm, "IN1RN");
+>>> +	snd_soc_dapm_nc_pin(&card->dapm, "IN1RP");
+>>
+>> Set the fully_routed flag on the card and this will happen automatically.
+> I havent looked thos changes up, will this mark as nc asll the unrouted pins?
+
+It will mark any input, output and micbias pin that has no external 
+connection as not connected. Which is typically what you want.
+
+- Lars
