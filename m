@@ -1,21 +1,18 @@
-From: korgman <korgie@gmail.com>
-Subject: arecord - bug with big file?
-Date: Sun, 04 May 2014 23:30:23 +0300
-Message-ID: <5366A35F.4040308@gmail.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH RESEND 1/4] ASoC: fsl_esai: Fix incorrect
+	condition within ratio range check for FP
+Date: Tue, 6 May 2014 16:55:59 +0800
+Message-ID: <c037ec5758485a4081c40277adb5cebb8ab229bc.1399366227.git.Guangyu.Chen@freescale.com>
+References: <cover.1399366227.git.Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ee0-f41.google.com (mail-ee0-f41.google.com [74.125.83.41])
- by alsa0.perex.cz (Postfix) with ESMTP id B1CEB261A66
- for <alsa-devel@alsa-project.org>; Sun,  4 May 2014 22:30:09 +0200 (CEST)
-Received: by mail-ee0-f41.google.com with SMTP id t10so1117667eei.14
- for <alsa-devel@alsa-project.org>; Sun, 04 May 2014 13:30:09 -0700 (PDT)
-Received: from [192.168.10.40] ([176.92.197.24])
- by mx.google.com with ESMTPSA id cb5sm23591511eeb.18.2014.05.04.13.30.07
- for <alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Sun, 04 May 2014 13:30:08 -0700 (PDT)
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0239.outbound.protection.outlook.com [207.46.163.239])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22F5C2608D4
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 10:54:39 +0200 (CEST)
+In-Reply-To: <cover.1399366227.git.Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,35 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Bugtracker is down ->
-https://bugtrack.alsa-project.org/alsa-bug
-from main page ->
-http://alsa-project.org
+The range here from 1 to 16 is confined to FP divider only while the
+sck_div indicates if the calculation contains PSR and PM dividers. So
+for the case using PSR and PM since the sck_div is true, the range of
+ratio would simply become bigger than 16.
 
-So, excuse my reporting here.
+So this patch fixes the condition here and adds one line comments to
+make the purpose here clear.
 
-I can't record with arecord for long periods.
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+---
+ sound/soc/fsl/fsl_esai.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-time arecord -f dat -D hw:0,0 | aplay
-Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-
-real	186m25.375s
-user	1m26.204s
-sys	0m20.772s
-
-It seems that this bug was also reported there.
-https://bugzilla.redhat.com/show_bug.cgi?id=213783
-
-cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version k3.12.9x40-122l. (custom kernel)
-
-arecord --version
-arecord: version 1.0.27.1 by Jaroslav Kysela <perex@perex.cz>
-
-I now trying with sox (rec test.wav) to check if sox is ok.
-
-Thank you for reading this!
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index b49b78d..d098a48 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -308,7 +308,8 @@ static int fsl_esai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (esai_priv->sck_div[tx] && (ratio > 16 || ratio == 0)) {
++	/* The ratio should be contented by FP alone if bypassing PM and PSR */
++	if (!esai_priv->sck_div[tx] && (ratio > 16 || ratio == 0)) {
+ 		dev_err(dai->dev, "the ratio is out of range (1 ~ 16)\n");
+ 		return -EINVAL;
+ 	}
+-- 
+1.8.4
