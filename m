@@ -1,17 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/5] ASoC: Remove unused 'list' field form card
-Date: Tue,  6 May 2014 09:39:38 +0200
-Message-ID: <1399361981-18518-3-git-send-email-lars@metafoo.de>
-References: <1399361981-18518-1-git-send-email-lars@metafoo.de>
+From: Liam Girdwood <liam.r.girdwood@intel.com>
+Subject: Re: [PATCH v2 0/8] ASoC: Intel: rework the mfld
+ platform driver
+Date: Tue, 06 May 2014 15:40:02 +0100
+Message-ID: <1399387202.2814.24.camel@loki>
+References: <1399308565-14620-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-167.synserver.de (smtp-out-016.synserver.de
- [212.40.185.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 7AC8B26072A
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 09:39:50 +0200 (CEST)
-In-Reply-To: <1399361981-18518-1-git-send-email-lars@metafoo.de>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 16C462619E6
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 16:40:13 +0200 (CEST)
+In-Reply-To: <1399308565-14620-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,43 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Bo Shen <voice.shen@atmel.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: jeeja.kp@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The global card list was removed in commit b19e6e7b7 ("ASoC: core: Use driver
-core probe deferral"). The 'list' field of the snd_soc_card struct has been
-unused since then. This patch removes the field.
+On Mon, 2014-05-05 at 22:19 +0530, Vinod Koul wrote:
+> This patch series reworks and reformats the existing platform driver we use.
+> This is stepping support for seconds series of patches which will support
+> Merrifield platform with DPCM based implementation
+> 
+> Not much logical changes in code except adding drain support for compressed
+> audio. Most is mere modularization of the existing code
+> 
+> Fixes in v2:
+> - add two more patches
+> - fix makefile addition is 4th patch
+> - dropped name change in platform ops patch
+> 
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- include/sound/soc.h  | 1 -
- sound/soc/soc-core.c | 1 -
- 2 files changed, 2 deletions(-)
+All
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 30c068f..5603020 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -949,7 +949,6 @@ struct snd_soc_card {
- 	struct snd_card *snd_card;
- 	struct module *owner;
- 
--	struct list_head list;
- 	struct mutex mutex;
- 	struct mutex dapm_mutex;
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 24c1fc2..cc62526 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3733,7 +3733,6 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 	for (i = 0; i < card->num_links; i++)
- 		card->rtd[i].dai_link = &card->dai_link[i];
- 
--	INIT_LIST_HEAD(&card->list);
- 	INIT_LIST_HEAD(&card->dapm_dirty);
- 	card->instantiated = 0;
- 	mutex_init(&card->mutex);
--- 
-1.8.0
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+
+---------------------------------------------------------------------
+Intel Corporation (UK) Limited
+Registered No. 1134945 (England)
+Registered Office: Pipers Way, Swindon SN3 1RJ
+VAT No: 860 2173 47
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
