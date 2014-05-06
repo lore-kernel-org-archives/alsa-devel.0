@@ -1,20 +1,14 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [RFC 2/4] ASoC: Intel: Add merrifield machine
-	driver
-Date: Tue, 06 May 2014 20:17:18 +0200
-Message-ID: <5369272E.5010803@metafoo.de>
-References: <1399312908-20744-1-git-send-email-vinod.koul@intel.com>
- <1399312908-20744-3-git-send-email-vinod.koul@intel.com>
- <536905CD.4030007@metafoo.de> <20140506165820.GE28638@intel.com>
+From: Julian Scheel <julian@jusst.de>
+Subject: [PATCH v2] alsactl: Store lockfile in /tmp
+Date: Tue,  6 May 2014 21:32:19 +0200
+Message-ID: <1399404739-1007-1-git-send-email-julian@jusst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-016.synserver.de (smtp-out-029.synserver.de
- [212.40.185.29])
- by alsa0.perex.cz (Postfix) with ESMTP id 3531C2651AF
- for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 20:17:23 +0200 (CEST)
-In-Reply-To: <20140506165820.GE28638@intel.com>
+Received: from smtp1.work.de (smtp1.work.de [212.12.40.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D2B92651ED
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 21:32:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,83 +18,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: jeeja.kp@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Julian Scheel <julian@jusst.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/06/2014 06:58 PM, Vinod Koul wrote:
-> On Tue, May 06, 2014 at 05:54:53PM +0200, Lars-Peter Clausen wrote:
->> On 05/05/2014 08:01 PM, Vinod Koul wrote:
->> [...]
->>> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->>> +
->>> +#include <linux/module.h>
->>> +#include <linux/init.h>
->>> +#include <linux/device.h>
->>> +#include <linux/slab.h>
->>> +#include <linux/io.h>
->>> +#include <linux/async.h>
->>> +#include <linux/delay.h>
->>> +#include <linux/gpio.h>
->>> +#include <sound/pcm.h>
->>> +#include <sound/pcm_params.h>
->>> +#include <sound/soc.h>
->>> +#include <sound/jack.h>
->>> +#include <linux/input.h>
->>> +
->>> +#include <linux/mfd/wm8994/core.h>
->>> +#include <linux/mfd/wm8994/registers.h>
->>> +#include <linux/mfd/wm8994/pdata.h>
->>> +#include "../../codecs/wm8994.h"
->>> +#include "../platform-libs/controls_v2.h"
->>
->> I don't think that include exists in upstream.
-> which one ../platform-libs/controls_v2.h is part of this patch.
+It can not be generally assumed that the directories in which asound.state
+resides are writable. Instead using /tmp as location for lock files seems more
+reliable.
 
-I just saw it's part of patch 4 of this series. But still, it should added 
-before the user is added.
+Signed-off-by: Julian Scheel <julian@jusst.de>
+---
+ alsactl/alsactl.c |  7 +++++++
+ alsactl/alsactl.h |  1 +
+ alsactl/lock.c    | 13 ++++++++++---
+ 3 files changed, 18 insertions(+), 3 deletions(-)
 
-[..]
->>
->>> +static struct snd_soc_dai *find_codec_dai(struct snd_soc_card *card, const char *dai_name)
->>> +{
->>> +	int i;
->>> +	for (i = 0; i < card->num_rtd; i++) {
->>> +		if (!strcmp(card->rtd[i].codec_dai->name, dai_name))
->>> +			return card->rtd[i].codec_dai;
->>> +	}
->>> +	pr_err("%s: unable to find codec dai\n", __func__);
->>> +	/* this should never occur */
->>> +	WARN_ON(1);
->>> +	return NULL;
->>> +}
->>
->> The proper way to do this is to implement the init callback for the
->> dai link. There you get a pointer to the codec and the dai and
->> everything else. If you need one for later store them in the private
->> struct of the card driver.
-> again the driver would need to store the pointers to cards (we multi codec
-> systems) and multi dais. Somehow I dont feel this might be worth thr trouble.
-> Earlier we always had card->codec pointing to _one_ codec but with multi-codec
-> systems that is not the case, so we need ot lookup, but yes am not sure if above
-> is best way or something else..
-
-Another thing you could do is just use card->rtd[X].codec_dai. The rtds are 
-in the same order as the DAI links so you know which rtd is for which DAI.
-
-[...]
->>> +	snd_soc_dapm_nc_pin(&card->dapm, "DMIC2DAT");
->>> +	snd_soc_dapm_nc_pin(&card->dapm, "LINEOUT1P");
->>> +	snd_soc_dapm_nc_pin(&card->dapm, "LINEOUT1N");
->>> +	snd_soc_dapm_nc_pin(&card->dapm, "LINEOUT2P");
->>> +	snd_soc_dapm_nc_pin(&card->dapm, "LINEOUT2N");
->>> +	snd_soc_dapm_nc_pin(&card->dapm, "IN1RN");
->>> +	snd_soc_dapm_nc_pin(&card->dapm, "IN1RP");
->>
->> Set the fully_routed flag on the card and this will happen automatically.
-> I havent looked thos changes up, will this mark as nc asll the unrouted pins?
-
-It will mark any input, output and micbias pin that has no external 
-connection as not connected. Which is typically what you want.
-
-- Lars
+diff --git a/alsactl/alsactl.c b/alsactl/alsactl.c
+index 6bc013f..415dfb8 100644
+--- a/alsactl/alsactl.c
++++ b/alsactl/alsactl.c
+@@ -38,6 +38,9 @@
+ #ifndef SYS_PIDFILE
+ #define SYS_PIDFILE "/var/run/alsactl.pid"
+ #endif
++#ifndef SYS_LOCKPATH
++#define SYS_LOCKPATH "/var/lock"
++#endif
+ 
+ int debugflag = 0;
+ int force_restore = 1;
+@@ -46,6 +49,7 @@ int do_lock = 0;
+ int use_syslog = 0;
+ char *command;
+ char *statefile = NULL;
++char *lockpath = SYS_LOCKPATH;
+ 
+ #define TITLE	0x0100
+ #define HEADER	0x0200
+@@ -71,6 +75,7 @@ static struct arg args[] = {
+ { HEADER, NULL, "Available state options:" },
+ { FILEARG | 'f', "file", "configuration file (default " SYS_ASOUNDRC ")" },
+ { 'l', "lock", "use file locking to serialize concurrent access" },
++{ FILEARG | 'D', "lock-dir", "directory to use for lock files (default " SYS_LOCKPATH ")" },
+ { 'F', "force", "try to restore the matching controls as much as possible" },
+ { 0, NULL, "  (default mode)" },
+ { 'g', "ignore", "ignore 'No soundcards found' error" },
+@@ -232,6 +237,8 @@ int main(int argc, char *argv[])
+ 		case 'l':
+ 			do_lock = 1;
+ 			break;
++		case 'D':
++			lockpath = optarg;
+ 		case 'F':
+ 			force_restore = 1;
+ 			break;
+diff --git a/alsactl/alsactl.h b/alsactl/alsactl.h
+index 9109a70..6c6bee5 100644
+--- a/alsactl/alsactl.h
++++ b/alsactl/alsactl.h
+@@ -5,6 +5,7 @@ extern int do_lock;
+ extern int use_syslog;
+ extern char *command;
+ extern char *statefile;
++extern char *lockpath;
+ 
+ void info_(const char *fcn, long line, const char *fmt, ...);
+ void error_(const char *fcn, long line, const char *fmt, ...);
+diff --git a/alsactl/lock.c b/alsactl/lock.c
+index 587a109..c69e285 100644
+--- a/alsactl/lock.c
++++ b/alsactl/lock.c
+@@ -36,17 +36,24 @@ static int state_lock_(const char *file, int lock, int timeout)
+ 	struct flock lck;
+ 	struct stat st;
+ 	char lcktxt[12];
++	char *filename;
+ 	char *nfile;
+ 
+ 	if (!do_lock)
+ 		return 0;
+-	nfile = malloc(strlen(file) + 6);
++
++	/* only use the actual filename, not the path */
++	filename = strrchr(file, '/');
++	if (!filename)
++		filename = file;
++
++	nfile = malloc(strlen(lockpath) + strlen(filename) + 7);
+ 	if (nfile == NULL) {
+ 		error("No enough memory...");
+ 		return -ENOMEM;
+ 	}
+-	strcpy(nfile, file);
+-	strcat(nfile, ".lock");
++
++	sprintf(nfile, "%s/%s.lock", lockpath, filename);
+ 	lck.l_type = lock ? F_WRLCK : F_UNLCK;
+ 	lck.l_whence = SEEK_SET;
+ 	lck.l_start = 0;
+-- 
+1.9.2
