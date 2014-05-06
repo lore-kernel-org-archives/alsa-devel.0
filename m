@@ -1,15 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Fix check for pdata usage before
-	dereference.
-Date: Mon,  5 May 2014 13:20:23 +0100
-Message-ID: <1399292423-4675-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] alsactl: Store lockfile in /tmp
+Date: Tue, 06 May 2014 16:55:43 +0200
+Message-ID: <5368F7EF.1020300@perex.cz>
+References: <1399377427-23907-1-git-send-email-julian@jusst.de>
+ <5368F74C.1020907@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CBDC260799
- for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 14:20:52 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1A2A261A22
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 16:55:43 +0200 (CEST)
+In-Reply-To: <5368F74C.1020907@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,58 +21,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: Julian Scheel <julian@jusst.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes the following dereference check ordering.
+Date 6.5.2014 16:53, Jaroslav Kysela wrote:
+> Date 6.5.2014 13:57, Julian Scheel wrote:
+>> It can not be generally assumed that the directories in which asound.state
+>> resides are writable. Instead using /tmp as location for lock files seems more
+>> reliable.
+> 
+> Apart the missing free for the mallocated string and ommiting the TMPDIR
 
- sound/soc/intel/sst-haswell-pcm.c:749 hsw_pcm_probe() warn: variable dereferenced before check 'pdata' (see line 746)
+I'm sorry, the filename variable is not mallocated, forget this part,
+please.
 
- git remote add asoc git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
- git remote update asoc
- git checkout 0b708c87f66a15190fb43661c2320fd48c4dc6c8
- vim +/pdata +749 sound/soc/intel/sst-haswell-pcm.c
+> environment variable, I think that the right directory for global locks
+> is /var/lock . The default asound.state directory is now /var/lib/alsa -
+> I don't see the benefit.
+> 
+> What's the reason for this change? Perhaps using an environmental
+> variable to override the lock path may be more appropriate for a custom
+> directory structure.
+> 
+>                                    Jaroslav
+> 
+>>
+>> Signed-off-by: Julian Scheel <julian@jusst.de>
+>> ---
+>>  alsactl/lock.c | 13 ++++++++++---
+>>  1 file changed, 10 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/alsactl/lock.c b/alsactl/lock.c
+>> index 587a109..7ca3a09 100644
+>> --- a/alsactl/lock.c
+>> +++ b/alsactl/lock.c
+>> @@ -36,17 +36,24 @@ static int state_lock_(const char *file, int lock, int timeout)
+>>  	struct flock lck;
+>>  	struct stat st;
+>>  	char lcktxt[12];
+>> +	char *filename;
+>>  	char *nfile;
+>>  
+>>  	if (!do_lock)
+>>  		return 0;
+>> -	nfile = malloc(strlen(file) + 6);
+>> +
+>> +	/* only use the actual filename, not the path */
+>> +	filename = strrchr(file, '/');
+>> +	if (!filename)
+>> +		filename = file;
+>> +
+>> +	nfile = malloc(strlen(filename) + 10);
+>>  	if (nfile == NULL) {
+>>  		error("No enough memory...");
+>>  		return -ENOMEM;
+>>  	}
+>> -	strcpy(nfile, file);
+>> -	strcat(nfile, ".lock");
+>> +
+>> +	sprintf(nfile, "/tmp/%s.lock", filename);
+>>  	lck.l_type = lock ? F_WRLCK : F_UNLCK;
+>>  	lck.l_whence = SEEK_SET;
+>>  	lck.l_start = 0;
+>>
+> 
+> 
 
- a4b12990 Mark Brown    2014-03-12  740  };
- a4b12990 Mark Brown    2014-03-12  741
- a4b12990 Mark Brown    2014-03-12  742  static int hsw_pcm_probe(struct snd_soc_platform *platform)
- a4b12990 Mark Brown    2014-03-12  743  {
- a4b12990 Mark Brown    2014-03-12  744  	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
- a4b12990 Mark Brown    2014-03-12  745  	struct hsw_priv_data *priv_data;
- 0b708c87 Liam Girdwood 2014-05-02 @746  	struct device *dma_dev = pdata->dma_dev;
- 0b708c87 Liam Girdwood 2014-05-02  747  	int i, ret = 0;
- a4b12990 Mark Brown    2014-03-12  748
- a4b12990 Mark Brown    2014-03-12 @749  	if (!pdata)
- a4b12990 Mark Brown    2014-03-12  750  		return -ENODEV;
- a4b12990 Mark Brown    2014-03-12  751
- a4b12990 Mark Brown    2014-03-12  752  	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data), GFP_KERNEL);
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- sound/soc/intel/sst-haswell-pcm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index 8c6bd33..9d5f64a 100644
---- a/sound/soc/intel/sst-haswell-pcm.c
-+++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -772,12 +772,14 @@ static int hsw_pcm_probe(struct snd_soc_platform *platform)
- {
- 	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
- 	struct hsw_priv_data *priv_data;
--	struct device *dma_dev = pdata->dma_dev;
-+	struct device *dma_dev;
- 	int i, ret = 0;
- 
- 	if (!pdata)
- 		return -ENODEV;
- 
-+	dma_dev = pdata->dma_dev;
-+
- 	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data), GFP_KERNEL);
- 	priv_data->hsw = pdata->dsp;
- 	snd_soc_platform_set_drvdata(platform, priv_data);
 -- 
-1.9.1
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
