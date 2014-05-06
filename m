@@ -1,20 +1,17 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH 2/2] ALSA: hda - hdmi: Set infoframe and
-	channel mapping even without sink
-Date: Mon, 05 May 2014 17:48:04 +0300
-Message-ID: <00e2b3727b902f17c3c849012d58e1f5@mail.onse.fi>
-References: <1399246724-16611-1-git-send-email-anssi.hannula@iki.fi>
- <1399246724-16611-2-git-send-email-anssi.hannula@iki.fi>
- <s5hha54fg52.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 5/5] ASoC: Remove runtime field from DAI
+Date: Tue,  6 May 2014 09:39:41 +0200
+Message-ID: <1399361981-18518-6-git-send-email-lars@metafoo.de>
+References: <1399361981-18518-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D60B2608ED
- for <alsa-devel@alsa-project.org>; Mon,  5 May 2014 16:48:08 +0200 (CEST)
-In-Reply-To: <s5hha54fg52.wl%tiwai@suse.de>
+Received: from smtp-out-167.synserver.de (smtp-out-016.synserver.de
+ [212.40.185.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC792261A18
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 09:39:54 +0200 (CEST)
+In-Reply-To: <1399361981-18518-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,87 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Stephan Raue <stephan@openelec.tv>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai kirjoitti 2014-05-05 17:34:
-> At Mon,  5 May 2014 02:38:44 +0300,
-> Anssi Hannula wrote:
->> 
->> Currently infoframe contents and channel mapping are only set when a
->> sink (monitor) is present.
->> 
->> However, this does not make much sense, since
->> 1) We can make a very reasonable guess on CA after 18e391862c ("ALSA:
->>    hda - hdmi: Fallback to ALSA allocation when selecting CA") or by
->>    relying on a previously valid ELD (or we may be using a
->>    user-specified channel map).
->> 2) Not setting infoframe contents and channel count simply means they
->>    are left at a possibly incorrect state - playback is still allowed
->>    to proceed (with missing or wrongly mapped channels).
->> 
->> Reasons for monitor_present being 0 include disconnected cable, video
->> driver issues, or codec not being spec-compliant. Note that in
->> actual disconnected-cable case it should not matter if these settings
->> are wrong as they will be re-set after jack detection, though.
->> 
->> Change the behavior to allow the infoframe contents and the channel
->> mapping to be set even without a sink/monitor, either based on the
->> previous valid ELD contents, if any, or based on sensible defaults
->> (standard channel layouts or provided custom map, sink type HDMI).
->> 
->> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
->> Tested-by: Stephan Raue <stephan@openelec.tv>
->> ---
->> 
->> This simply removes the monitor_present check, which is probably more
->> trouble than it is worth, as it may trip obscure setups even though we
->> can tolerate !monitor_present and !eld in 99%+ of all cases by using
->> defaults, nowadays post-18e391862c anyway.
->> Downside is that missing monitor_present may not be noticed by the 
->> user
->> as ~everything continues to work.
-> 
-> Is this considered as a "fix" for 3.15 kernel?  If so, I find it a bit
-> distracting to queue the previous patch for stable while we're
-> removing the whole things here later.
-> 
-> If this is intended for testing for 3.16 kernel, I'm fine to take as
-> is.
+This was initially removed in commit 6423c1875 ("ASoC: Remove runtime field from
+DAI"), but was, presumably by accident, brought back in commit f0fba2ad1 ("ASoC:
+multi-component - ASoC Multi-Component Support"). But has never been
+initialized to anything but NULL ever since. This commit removes it again.
 
-Well, I intended it for 3.16, since I don't have anything concrete that 
-it
-would fix that the previous AFAICS safer patch did not (for now, at 
-least...).
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/soc-dai.h  | 1 -
+ sound/soc/soc-compress.c | 1 -
+ sound/soc/soc-pcm.c      | 1 -
+ 3 files changed, 3 deletions(-)
 
-Sorry for not making it explicit.
-
-> thanks,
-> 
-> Takashi
-> 
->> 
->> 
->>  sound/pci/hda/patch_hdmi.c | 4 ----
->>  1 file changed, 4 deletions(-)
->> 
->> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
->> index 1edbb9c47c2d..016f785cdf45 100644
->> --- a/sound/pci/hda/patch_hdmi.c
->> +++ b/sound/pci/hda/patch_hdmi.c
->> @@ -1127,10 +1127,6 @@ static void hdmi_setup_audio_infoframe(struct 
->> hda_codec *codec,
->>  					    AMP_OUT_UNMUTE);
->> 
->>  	eld = &per_pin->sink_eld;
->> -	if (!eld->monitor_present) {
->> -		hdmi_set_channel_count(codec, per_pin->cvt_nid, channels);
->> -		return;
->> -	}
->> 
->>  	if (!non_pcm && per_pin->chmap_set)
->>  		ca = hdmi_manual_channel_allocation(channels, per_pin->chmap);
->> --
->> 1.8.4.5
->> 
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index e2c3e45..688f2ba 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -252,7 +252,6 @@ struct snd_soc_dai {
+ 	unsigned int symmetric_rates:1;
+ 	unsigned int symmetric_channels:1;
+ 	unsigned int symmetric_samplebits:1;
+-	struct snd_pcm_runtime *runtime;
+ 	unsigned int active;
+ 	unsigned char probed:1;
+ 
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 91083e6..5320e86 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -203,7 +203,6 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+ 
+ 	if (platform->driver->compr_ops && platform->driver->compr_ops->free)
+ 		platform->driver->compr_ops->free(cstream);
+-	cpu_dai->runtime = NULL;
+ 
+ 	if (cstream->direction == SND_COMPRESS_PLAYBACK) {
+ 		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 2cedf09..cc00252 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -555,7 +555,6 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 
+ 	if (platform->driver->ops && platform->driver->ops->close)
+ 		platform->driver->ops->close(substream);
+-	cpu_dai->runtime = NULL;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
+-- 
+1.8.0
