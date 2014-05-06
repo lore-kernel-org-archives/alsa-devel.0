@@ -1,73 +1,86 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: Add support for CS42L56 CODEC
-Date: Mon, 5 May 2014 18:24:22 -0700
-Message-ID: <20140506012422.GB22111@sirena.org.uk>
-References: <1399320549-16645-1-git-send-email-brian.austin@cirrus.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] alsactl: Store lockfile in /tmp
+Date: Tue, 06 May 2014 16:53:00 +0200
+Message-ID: <5368F74C.1020907@perex.cz>
+References: <1399377427-23907-1-git-send-email-julian@jusst.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kxn/JluRpPoM1h3S"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1399320549-16645-1-git-send-email-brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, paul.handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id E241B261A22
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 16:53:00 +0200 (CEST)
+In-Reply-To: <1399377427-23907-1-git-send-email-julian@jusst.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Julian Scheel <julian@jusst.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Date 6.5.2014 13:57, Julian Scheel wrote:
+> It can not be generally assumed that the directories in which asound.state
+> resides are writable. Instead using /tmp as location for lock files seems more
+> reliable.
 
---kxn/JluRpPoM1h3S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Apart the missing free for the mallocated string and ommiting the TMPDIR
+environment variable, I think that the right directory for global locks
+is /var/lock . The default asound.state directory is now /var/lib/alsa -
+I don't see the benefit.
 
-On Mon, May 05, 2014 at 03:09:08PM -0500, Brian Austin wrote:
-> This patch adds support for the Cirrus Logic Low Power Stereo I2C CODEC
+What's the reason for this change? Perhaps using an environmental
+variable to override the lock path may be more appropriate for a custom
+directory structure.
 
-Applied, thanks.  A couple of minor issues it'd be good to look at
-incrementally.
+                                   Jaroslav
 
-> +	SOC_ENUM("PCMA Swap", pcma_swap_enum),
-> +	SOC_ENUM("PCMB Swap", pcmb_swap_enum),
-> +	SOC_ENUM("ADCA Swap", adca_swap_enum),
-> +	SOC_ENUM("ADCB Swap", adcb_swap_enum),
+> 
+> Signed-off-by: Julian Scheel <julian@jusst.de>
+> ---
+>  alsactl/lock.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/alsactl/lock.c b/alsactl/lock.c
+> index 587a109..7ca3a09 100644
+> --- a/alsactl/lock.c
+> +++ b/alsactl/lock.c
+> @@ -36,17 +36,24 @@ static int state_lock_(const char *file, int lock, int timeout)
+>  	struct flock lck;
+>  	struct stat st;
+>  	char lcktxt[12];
+> +	char *filename;
+>  	char *nfile;
+>  
+>  	if (!do_lock)
+>  		return 0;
+> -	nfile = malloc(strlen(file) + 6);
+> +
+> +	/* only use the actual filename, not the path */
+> +	filename = strrchr(file, '/');
+> +	if (!filename)
+> +		filename = file;
+> +
+> +	nfile = malloc(strlen(filename) + 10);
+>  	if (nfile == NULL) {
+>  		error("No enough memory...");
+>  		return -ENOMEM;
+>  	}
+> -	strcpy(nfile, file);
+> -	strcat(nfile, ".lock");
+> +
+> +	sprintf(nfile, "/tmp/%s.lock", filename);
+>  	lck.l_type = lock ? F_WRLCK : F_UNLCK;
+>  	lck.l_whence = SEEK_SET;
+>  	lck.l_start = 0;
+> 
 
-Can these be moved to DAPM?
 
-> +	regcache_cache_bypass(cs42l56->regmap, true);
-
-You shouldn't need to do this, if no default is provided regmap should
-just go to hardware.
-
-> +	dev_info(&i2c_client->dev, "Cirrus Logic CS42L56 ");
-> +	dev_info(&i2c_client->dev, "Alpha Rev %X Metal Rev %X\n",
-> +		 alpha_rev, metal_rev);
-
-It's better to just put things on one line and ignore the line length
-warnings from checkpatch - this makes the code more grepable.
-
---kxn/JluRpPoM1h3S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTaDnDAAoJELSic+t+oim9XMMP/0WIYpeXtjZ9A7oJOz7QiqOL
-nXYMh5G1a5MfuWpVK+7ykCxtZW/L9RDUVef9Ii3PnPGriz6y/PMtiCZqV6uF51gH
-sM/6GJ136tb+ANpaaJaMBS/r/FSEEWOgA/GhVWvabM2gssLfnBpuLiRzCspTxFrS
-pYgK8021vSiSvJL6mCSqT8qwXqbr9KUSzm44baYyF3PlAmk8d3VQm1ruuoe13LpT
-LE9HKTBLswIIgPKlN+MF8T9XMKbcArCahVzGkP469CHyP2cxjH5Y7WzAmQPfvLfa
-z25N0NDzhpRQQ3KGua+pHuj21JfTx74Afj8qFBu0b1QthVI4gmhtZuuHVBkErRLN
-q1O5OBADQDvXdLTJIb5w6zitUinIq+5YQyom81Pb5WahCRkTgNUoTDPv8BAkhvld
-M9ZIfiZX2MPEXaIQT6JPGI8PcMtJh47V7saks+MjtS6GxW49al5GW/UFzp4GG4K0
-fOxBgNyzjcHGZGJKsnnuGOYo72EAatuiM1WlRntnDxC7ReqqM4gYPz/x0uV03oys
-lIk4kQg+iL/MWghDGJCLl2xeApId9Gs9H+zpVYLgtBuG0vMfoS5bpfb6hdveBpcW
-mEoGSY8r9HQIrJDQSi2SqfmoycHzerWEh6fJEWx7MBDZpWV+rssgDTXRAmDNwpLD
-MzY4LbRM8HHCtVPrWLDo
-=GFHa
------END PGP SIGNATURE-----
-
---kxn/JluRpPoM1h3S--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
