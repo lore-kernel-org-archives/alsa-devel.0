@@ -1,58 +1,62 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH 1/2] ALSA: hda - hdmi: Set converter channel count even without sink
-Date: Mon,  5 May 2014 02:38:43 +0300
-Message-ID: <1399246724-16611-1-git-send-email-anssi.hannula@iki.fi>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, Stephan Raue <stephan@openelec.tv>, stable@vger.kernel.org
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: [PATCH RESEND 2/4] ASoC: fsl_esai: Only bypass sck_div
+	for EXTAL source
+Date: Tue, 6 May 2014 16:56:00 +0800
+Message-ID: <6c6ffc8939e15e4942f8b45a8a779d6cc16b72d4.1399366227.git.Guangyu.Chen@freescale.com>
+References: <cover.1399366227.git.Guangyu.Chen@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0211.outbound.protection.outlook.com [207.46.163.211])
+ by alsa0.perex.cz (Postfix) with ESMTP id B77A9261A88
+ for <alsa-devel@alsa-project.org>; Tue,  6 May 2014 10:54:41 +0200 (CEST)
+In-Reply-To: <cover.1399366227.git.Guangyu.Chen@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Since commit 1df5a06a ("ALSA: hda - hdmi: Fix programmed active channel
-count") channel count is no longer being set if monitor_present is 0.
-This is because setting the count was moved after the CA value is
-determined, which is only after the monitor_present check in
-hdmi_setup_audio_infoframe().
+ESAI can only output EXTAL clock source directly. But for FSYS clock source,
+ESAI can not output it without getting through PSR PM dividers.
 
-Unfortunately, in some cases, such as with a non-spec-compliant codec or
-with a problematic video driver, monitor_present is always 0. As a
-specific example, this seems to happen with gen1 ATV (SiI1390 codec),
-causing left-channel-only stereo playback (multi-channel playback has
-apparently never worked with this codec despite it reporting 8 channels,
-reason unknown).
+So this patch adds an extra check in the code.
 
-Simply setting converter channel count without setting the pin infoframe
-and channel mapping as well does not theoretically make much sense as
-this will just mean they are out-of-sync and multichannel playback will
-have a wrong channel mapping.
-
-However, adding back just setting the converter channel count even in
-no-monitor case is the safest change which at least fixes the stereo
-playback regression on SiI1390 codec. Do that.
-
-Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-Reported-by: Stephan Raue <stephan@openelec.tv>
-Tested-by: Stephan Raue <stephan@openelec.tv>
-Cc: <stable@vger.kernel.org> # 3.12+
+Signed-off-by: Nicolin Chen <Guangyu.Chen@freescale.com>
 ---
- sound/pci/hda/patch_hdmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl_esai.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 0cb5b89cd0c8..1edbb9c47c2d 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1127,8 +1127,10 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
- 					    AMP_OUT_UNMUTE);
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index d098a48..7e1916e 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -259,10 +259,16 @@ static int fsl_esai_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 		return -EINVAL;
+ 	}
  
- 	eld = &per_pin->sink_eld;
--	if (!eld->monitor_present)
-+	if (!eld->monitor_present) {
-+		hdmi_set_channel_count(codec, per_pin->cvt_nid, channels);
- 		return;
-+	}
+-	if (ratio == 1) {
++	/* Only EXTAL source can be output directly without using PSR and PM */
++	if (ratio == 1 && clksrc == esai_priv->extalclk) {
+ 		/* Bypass all the dividers if not being needed */
+ 		ecr |= tx ? ESAI_ECR_ETO : ESAI_ECR_ERO;
+ 		goto out;
++	} else if (ratio < 2) {
++		/* The ratio should be no less than 2 if using other sources */
++		dev_err(dai->dev, "failed to derive required HCK%c rate\n",
++				tx ? 'T' : 'R');
++		return -EINVAL;
+ 	}
  
- 	if (!non_pcm && per_pin->chmap_set)
- 		ca = hdmi_manual_channel_allocation(channels, per_pin->chmap);
+ 	ret = fsl_esai_divisor_cal(dai, tx, ratio, false, 0);
 -- 
-1.8.4.5
+1.8.4
