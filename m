@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 4/5] ASoC: dapm: Use snd_soc_dapm_add_path() in
-	snd_soc_dapm_new_pcm()
-Date: Wed,  7 May 2014 15:05:47 +0200
-Message-ID: <1399467948-8770-4-git-send-email-lars@metafoo.de>
+Subject: [PATCH 5/5] ASoC: dapm: Simplify
+	snd_soc_dapm_link_dai_widgets()
+Date: Wed,  7 May 2014 15:05:48 +0200
+Message-ID: <1399467948-8770-5-git-send-email-lars@metafoo.de>
 References: <1399467948-8770-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-016.synserver.de (smtp-out-029.synserver.de
  [212.40.185.29])
- by alsa0.perex.cz (Postfix) with ESMTP id B58BF26531F
- for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 15:05:59 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 694CB261B01
+ for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 15:06:03 +0200 (CEST)
 In-Reply-To: <1399467948-8770-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,43 +26,61 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-We already know the widgets we want to connect, so use snd_soc_dapm_add_path()
-instead of snd_soc_dapm_add_route() in snd_soc_dapm_new_pcm().
+If we find a widget who's stream name matches the name of a DAI widget then
+that's the the widget it should be connected to. Based on the widget id we can
+say in which direction the path should be. No need to go back to the DAI and
+check the stream names.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/soc-dapm.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ sound/soc/soc-dapm.c | 27 +++++++++------------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index e28ce91..de48cab 100644
+index de48cab..79b3985 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3247,6 +3247,7 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 	struct snd_soc_dapm_widget *w;
- 	size_t len;
- 	char *link_name;
-+	int ret;
+@@ -3337,6 +3337,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_dapm_widget *dai_w, *w;
++	struct snd_soc_dapm_widget *src, *sink;
+ 	struct snd_soc_dai *dai;
  
- 	len = strlen(source->name) + strlen(sink->name) + 2;
- 	link_name = devm_kzalloc(card->dev, len, GFP_KERNEL);
-@@ -3275,13 +3276,10 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	/* For each DAI widget... */
+@@ -3367,25 +3368,15 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
+ 			if (!w->sname || !strstr(w->sname, dai_w->name))
+ 				continue;
  
- 	memset(&routes, 0, sizeof(routes));
- 
--	routes[0].source = source->name;
--	routes[0].sink = link_name;
--	routes[1].source = link_name;
--	routes[1].sink = sink->name;
+-			if (dai->driver->playback.stream_name &&
+-			    strstr(w->sname,
+-				   dai->driver->playback.stream_name)) {
+-				dev_dbg(dai->dev, "%s -> %s\n",
+-					 dai->playback_widget->name, w->name);
 -
--	return snd_soc_dapm_add_routes(&card->dapm, routes,
--				       ARRAY_SIZE(routes));
-+	ret = snd_soc_dapm_add_path(&card->dapm, source, w, NULL, NULL);
-+	if (ret)
-+		return ret;
-+	return snd_soc_dapm_add_path(&card->dapm, w, sink, NULL, NULL);
- }
+-				snd_soc_dapm_add_path(w->dapm,
+-					dai->playback_widget, w, NULL, NULL);
+-			}
+-
+-			if (dai->driver->capture.stream_name &&
+-			    strstr(w->sname,
+-				   dai->driver->capture.stream_name)) {
+-				dev_dbg(dai->dev, "%s -> %s\n",
+-					w->name, dai->capture_widget->name);
+-
+-				snd_soc_dapm_add_path(w->dapm, w,
+-					dai->capture_widget, NULL, NULL);
++			if (dai_w->id == snd_soc_dapm_dai_in) {
++				src = dai_w;
++				sink = w;
++			} else {
++				src = w;
++				sink = dai_w;
+ 			}
++			dev_dbg(dai->dev, "%s -> %s\n", src->name, sink->name);
++			snd_soc_dapm_add_path(w->dapm, src, sink, NULL, NULL);
+ 		}
+ 	}
  
- int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
 -- 
 1.8.0
