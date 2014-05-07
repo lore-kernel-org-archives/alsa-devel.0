@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 2/5] ASoC: Revert "ASoC: dapm: Fix double
-	prefix addition"
-Date: Wed,  7 May 2014 16:20:25 +0200
-Message-ID: <1399472428-11034-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH v2 5/5] ASoC: dapm: Simplify
+	snd_soc_dapm_link_dai_widgets()
+Date: Wed,  7 May 2014 16:20:28 +0200
+Message-ID: <1399472428-11034-5-git-send-email-lars@metafoo.de>
 References: <1399472428-11034-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-016.synserver.de (smtp-out-029.synserver.de
  [212.40.185.29])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A9A9261AF0
- for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 16:20:35 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E15226533B
+ for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 16:20:43 +0200 (CEST)
 In-Reply-To: <1399472428-11034-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,71 +26,61 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit bd23c5b661858446267f4d6b2fb4edd8eb710dda.
-
-The patch claims that the patch is necessary to avoid double prefix addition
-when calling snd_soc_dapm_add_route() from snd_soc_dapm_connect_dai_link_widgets().
-But snd_soc_dapm_add_route() is called with the card's DAPM context, which does
-not have a prefix, which means there is no prefix that could be added a second
-time.
+If we find a widget who's stream name matches the name of a DAI widget then
+thats the one it should be connected to. Based on the widget id we can say in
+which direction the path should be. No need to go back to the DAI and check the
+stream names.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
-I might be missing something. My best guess is that this was needed in some
-vendor tree, but not in upstream.
----
- sound/soc/soc-dapm.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/soc-dapm.c | 27 +++++++++------------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 142a738..08d869c 100644
+index d7958f4..bed17a3 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -2381,8 +2381,7 @@ err:
- }
- 
- static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
--				  const struct snd_soc_dapm_route *route,
--				  unsigned int is_prefixed)
-+				  const struct snd_soc_dapm_route *route)
+@@ -3334,6 +3334,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
  {
- 	struct snd_soc_dapm_widget *wsource = NULL, *wsink = NULL, *w;
- 	struct snd_soc_dapm_widget *wtsource = NULL, *wtsink = NULL;
-@@ -2392,7 +2391,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 	char prefixed_source[80];
- 	int ret;
+ 	struct snd_soc_dapm_widget *dai_w, *w;
++	struct snd_soc_dapm_widget *src, *sink;
+ 	struct snd_soc_dai *dai;
  
--	if (dapm->codec && dapm->codec->name_prefix && !is_prefixed) {
-+	if (dapm->codec && dapm->codec->name_prefix) {
- 		snprintf(prefixed_sink, sizeof(prefixed_sink), "%s %s",
- 			 dapm->codec->name_prefix, route->sink);
- 		sink = prefixed_sink;
-@@ -2520,7 +2519,7 @@ int snd_soc_dapm_add_routes(struct snd_soc_dapm_context *dapm,
+ 	/* For each DAI widget... */
+@@ -3364,25 +3365,15 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
+ 			if (!w->sname || !strstr(w->sname, dai_w->name))
+ 				continue;
  
- 	mutex_lock_nested(&dapm->card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
- 	for (i = 0; i < num; i++) {
--		r = snd_soc_dapm_add_route(dapm, route, false);
-+		r = snd_soc_dapm_add_route(dapm, route);
- 		if (r < 0) {
- 			dev_err(dapm->dev, "ASoC: Failed to add route %s -> %s -> %s\n",
- 				route->source,
-@@ -3430,7 +3429,7 @@ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
- 				cpu_dai->codec->name, r.source,
- 				codec_dai->platform->name, r.sink);
- 
--			snd_soc_dapm_add_route(&card->dapm, &r, true);
-+			snd_soc_dapm_add_route(&card->dapm, &r);
+-			if (dai->driver->playback.stream_name &&
+-			    strstr(w->sname,
+-				   dai->driver->playback.stream_name)) {
+-				dev_dbg(dai->dev, "%s -> %s\n",
+-					 dai->playback_widget->name, w->name);
+-
+-				snd_soc_dapm_add_path(w->dapm,
+-					dai->playback_widget, w, NULL, NULL);
+-			}
+-
+-			if (dai->driver->capture.stream_name &&
+-			    strstr(w->sname,
+-				   dai->driver->capture.stream_name)) {
+-				dev_dbg(dai->dev, "%s -> %s\n",
+-					w->name, dai->capture_widget->name);
+-
+-				snd_soc_dapm_add_path(w->dapm, w,
+-					dai->capture_widget, NULL, NULL);
++			if (dai_w->id == snd_soc_dapm_dai_in) {
++				src = dai_w;
++				sink = w;
++			} else {
++				src = w;
++				sink = dai_w;
+ 			}
++			dev_dbg(dai->dev, "%s -> %s\n", src->name, sink->name);
++			snd_soc_dapm_add_path(w->dapm, src, sink, NULL, NULL);
  		}
- 
- 		/* connect BE DAI capture if widgets are valid */
-@@ -3441,7 +3440,7 @@ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
- 				codec_dai->codec->name, r.source,
- 				cpu_dai->platform->name, r.sink);
- 
--			snd_soc_dapm_add_route(&card->dapm, &r, true);
-+			snd_soc_dapm_add_route(&card->dapm, &r);
- 		}
- 
  	}
+ 
 -- 
 1.8.0
