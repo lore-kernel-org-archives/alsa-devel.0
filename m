@@ -1,18 +1,16 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [RFC 3/4] ASoC: Intel: add the low level dsp
- driver for mrfld
-Date: Wed, 07 May 2014 09:09:44 +0300
-Message-ID: <5369CE28.5010904@linux.intel.com>
-References: <1399312908-20744-1-git-send-email-vinod.koul@intel.com>
- <1399312908-20744-4-git-send-email-vinod.koul@intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH - aconnect 1/1] fix aconnect -l option
+Date: Wed, 07 May 2014 08:51:33 +0200
+Message-ID: <5369D7F5.8060001@perex.cz>
+References: <1399435607-9730-1-git-send-email-karlbongers@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 69EA52652B7
- for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 08:10:05 +0200 (CEST)
-In-Reply-To: <1399312908-20744-4-git-send-email-vinod.koul@intel.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 809472652B7
+ for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 08:51:35 +0200 (CEST)
+In-Reply-To: <1399435607-9730-1-git-send-email-karlbongers@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
-Cc: jeeja.kp@intel.com, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Karl Bongers <karlbongers@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/05/2014 09:01 PM, Vinod Koul wrote:
-> +++ b/sound/soc/intel/sst/sst.h
-...
-> +
-> +/* SST register map */
-> +#define SST_CSR			0x00
-> +#define SST_PISR		0x08
-> +#define SST_PIMR		0x10
-> +#define SST_ISRX		0x18
-> +#define SST_ISRD		0x20
-> +#define SST_IMRX		0x28
-> +#define SST_IMRD		0x30
-> +#define SST_IPCX		0x38 /* IPC IA-SST */
-> +#define SST_IPCD		0x40 /* IPC SST-IA */
-> +#define SST_ISRSC		0x48
-> +#define SST_ISRLPESC		0x50
-> +#define SST_IMRSC		0x58
-> +#define SST_IMRLPESC		0x60
-> +#define SST_IPCSC		0x68
-> +#define SST_IPCLPESC		0x70
-> +#define SST_CLKCTL		0x78
-> +#define SST_CSR2		0x80
-Please re-use register definitions in sound/soc/intel/sst-dsp.h since 
-they are the same.
+Date 7.5.2014 06:06, Karl Bongers wrote:
+> aconnect -l would just print usage.
+> This fix makes it do what usage says it should do.
+> 
+> Signed-off-by: Karl Bongers <karlbongers@gmail.com>
+
+Thanks. Applied.
+
+> 
+> diff --git a/seq/aconnect/aconnect.c b/seq/aconnect/aconnect.c
+> index 8c66cfd..8d6cebb 100644
+> --- a/seq/aconnect/aconnect.c
+> +++ b/seq/aconnect/aconnect.c
+> @@ -292,6 +292,7 @@ int main(int argc, char **argv)
+>  			convert_real = 0;
+>  			break;
+>  		case 'l':
+> +			command = LIST;
+>  			list_subs = 1;
+>  			break;
+>  		case 'x':
+> 
+
 
 -- 
-Jarkko
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
