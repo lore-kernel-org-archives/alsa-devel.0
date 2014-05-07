@@ -1,18 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 5/5] ASoC: dapm: Simplify
-	snd_soc_dapm_link_dai_widgets()
-Date: Wed,  7 May 2014 15:05:48 +0200
-Message-ID: <1399467948-8770-5-git-send-email-lars@metafoo.de>
-References: <1399467948-8770-1-git-send-email-lars@metafoo.de>
+From: Julian Scheel <julian@jusst.de>
+Subject: Re: [PATCH v2] alsactl: Store lockfile in /tmp
+Date: Wed, 07 May 2014 15:17:15 +0200
+Message-ID: <536A325B.2060705@jusst.de>
+References: <1399404739-1007-1-git-send-email-julian@jusst.de>
+ <s5h4n12qcnc.wl%tiwai@suse.de> <5369F3B7.60105@jusst.de>
+ <5369FB9C.2010602@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-016.synserver.de (smtp-out-029.synserver.de
- [212.40.185.29])
- by alsa0.perex.cz (Postfix) with ESMTP id 694CB261B01
- for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 15:06:03 +0200 (CEST)
-In-Reply-To: <1399467948-8770-1-git-send-email-lars@metafoo.de>
+Received: from smtp1.work.de (smtp1.work.de [212.12.40.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id C578E261B01
+ for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 15:17:17 +0200 (CEST)
+In-Reply-To: <5369FB9C.2010602@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If we find a widget who's stream name matches the name of a DAI widget then
-that's the the widget it should be connected to. Based on the widget id we can
-say in which direction the path should be. No need to go back to the DAI and
-check the stream names.
+Am 07.05.2014 11:23, schrieb Jaroslav Kysela:
+> Date 7.5.2014 10:49, Julian Scheel wrote:
+>> Am 07.05.2014 09:19, schrieb Takashi Iwai:
+>>> At Tue,  6 May 2014 21:32:19 +0200,
+>>> Julian Scheel wrote:
+>>>>
+>>>> It can not be generally assumed that the directories in which asound.state
+>>>> resides are writable. Instead using /tmp as location for lock files seems more
+>>>> reliable.
+>>>
+>>> The subject and changelog don't match with the actual change.
+>>> Now it's /var/log instead of /tmp, right?
+>>
+>> Sorry for that. Must have been too late.
+>
+> I also didn't note that. I applied your v2 patch to the git repo - I
+> forced update now.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-dapm.c | 27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
+Thank you and sorry again :)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index de48cab..79b3985 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3337,6 +3337,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- {
- 	struct snd_soc_dapm_widget *dai_w, *w;
-+	struct snd_soc_dapm_widget *src, *sink;
- 	struct snd_soc_dai *dai;
- 
- 	/* For each DAI widget... */
-@@ -3367,25 +3368,15 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 			if (!w->sname || !strstr(w->sname, dai_w->name))
- 				continue;
- 
--			if (dai->driver->playback.stream_name &&
--			    strstr(w->sname,
--				   dai->driver->playback.stream_name)) {
--				dev_dbg(dai->dev, "%s -> %s\n",
--					 dai->playback_widget->name, w->name);
--
--				snd_soc_dapm_add_path(w->dapm,
--					dai->playback_widget, w, NULL, NULL);
--			}
--
--			if (dai->driver->capture.stream_name &&
--			    strstr(w->sname,
--				   dai->driver->capture.stream_name)) {
--				dev_dbg(dai->dev, "%s -> %s\n",
--					w->name, dai->capture_widget->name);
--
--				snd_soc_dapm_add_path(w->dapm, w,
--					dai->capture_widget, NULL, NULL);
-+			if (dai_w->id == snd_soc_dapm_dai_in) {
-+				src = dai_w;
-+				sink = w;
-+			} else {
-+				src = w;
-+				sink = dai_w;
- 			}
-+			dev_dbg(dai->dev, "%s -> %s\n", src->name, sink->name);
-+			snd_soc_dapm_add_path(w->dapm, src, sink, NULL, NULL);
- 		}
- 	}
- 
--- 
-1.8.0
+>>> Besides that, it'd be better to allow a full path name for a lock file
+>>> instead of a directory name.  If you give a different file name via -f
+>>> option, you have a high chance to conflict with the existing file in
+>>> /var/lock.
+>>
+>> So, you'd prefer a --lock-file/-L option which can be used to set an
+>> explicit lock file?
+>
+> I changed '-D' to '-O' option (file) and used '-L' option to select the
+> "no-lock" behaviour for the global configuration file. Note that the
+> locking is default only for the global file, other files are not lock
+> protected.
+
+Alright, that looks good.
+
+-Julian
+
+> http://git.alsa-project.org/?p=alsa-utils.git;a=commitdiff;h=158a67f6f5058bec0ac27086a1c6206bfd2ff414
+>
+>>> Furthermore, for solving *your* problem (restoring from read-only
+>>> rootfs), an easier option would be allowing to restore the system
+>>> default without locking.
+>>
+>> While this is true I think making the locking mechanism more robust is a
+>> good thing anyway.
+>
+> Yup.
+>
+> 					Jaroslav
+>
