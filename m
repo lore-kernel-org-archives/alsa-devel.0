@@ -1,22 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6] ASoC: add RT286 CODEC driver
-Date: Wed, 7 May 2014 18:21:13 +0100
-Message-ID: <20140507172113.GI22111@sirena.org.uk>
-References: <1397455170-2701-1-git-send-email-bardliao@realtek.com>
- <20140415120428.GU12304@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D73AC302@RTITMBSV03.realtek.com.tw>
- <20140416211145.GC12304@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D73AC511@RTITMBSV03.realtek.com.tw>
- <20140418103715.GJ12304@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D73D68A0@RTITMBSV03.realtek.com.tw>
+From: Ralf Beck <musical_snake@gmx.de>
+Subject: [PATCH] rawmidi.c Set a name for a newly allocated
+	rawmidi substream
+Date: Wed, 07 May 2014 19:24:13 +0200
+Message-ID: <536A6C3D.6080906@gmx.de>
+Reply-To: ralfbeck1@gmx.de
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3542372015094908977=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 73282261AE7
- for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 19:22:09 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D73D68A0@RTITMBSV03.realtek.com.tw>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27479261AE7
+ for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 19:24:15 +0200 (CEST)
+Received: from [192.168.2.173] ([178.13.30.16]) by mail.gmx.com (mrgmx002)
+ with ESMTPSA (Nemesis) id 0LngNT-1XKSOH2wiV-00htZV for
+ <alsa-devel@alsa-project.org>; Wed, 07 May 2014 19:24:14 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,73 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Rationale: Bitwig Studio (and possibly other rawmidi clients) enumerate 
+the Midi I/Os by
+substream names. With the current rawmidi implementation, the name is an 
+empty string
+and only the USB mididriver changes it to a meaningful value after 
+allocation.
 
---===============3542372015094908977==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/KyuVX2Jeo6C4NIo"
-Content-Disposition: inline
+This patch sets a default substream name of the form "somename x-y-z"
 
+--- linux-source-3.13.0/sound/core/rawmidi.c.orig    2014-05-06 
+20:25:33.683081389 +0200
++++ linux-source-3.13.0/sound/core/rawmidi.c    2014-05-06 
+17:42:35.058097185 +0200
+@@ -34,6 +34,7 @@
+  #include <sound/control.h>
+  #include <sound/minors.h>
+  #include <sound/initval.h>
++#include <linux/string.h>
 
---/KyuVX2Jeo6C4NIo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 06, 2014 at 12:04:27PM +0000, Bard Liao wrote:
-> > -----Original Message-----
-> > From: Mark Brown [mailto:broonie@kernel.org]
-
-As I'm fairly sure has been requested before please fix your mailer to
-word wrap within paragraphs, it is very hard to read your mails since
-the lines are longer than 80 columns.
-
-> Virtual controls assume there is no related register related to the controls, so codec
-> doesn't need to set anything when the control's value is changed in general cases.
-> But rt286 need to do something when the control's value is changed especially mux
-> settings.
-
-...
-
-> Do you have any suggestion for setting corresponding registers of a
-> virtual control?
-
-Please extend the APIs for virtual controls if you find they are missing
-things you need, they've not been widely used in this sort of context -
-I think this is the first substantial device anyone has tried to merge
-without a register map so it's likely there are gaps.
-
---/KyuVX2Jeo6C4NIo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTamuBAAoJELSic+t+oim9SSUQAIRIcTSQguB8DEypFmVPxBtc
-tca0DqTX/UyP96i+NpZ5+ki/HMVJuwedo7ZC8H1FEFZ+obPMQhZALkA+8rfmZ/hc
-JNrEWMvD0b+HCu6n73AsE4XFKykdRldyWfdHUW1kWvSbgplwD/vNlr9/OFDsAGpz
-qkiQS+Tw3xTVG6Oz8CPVn/rLMjFD9+5zNtY3YhpxBuaENIuYuYbIk+a0jZOSuHTX
-7QR8N0L2yZg/VlL1A0bjDKxtqpa1Hob+i6cjrdvQV63L9LxJm+h54WFLMWzDG6bk
-eOIfEHyNcvXlYd/F/X58DlcIHg5kBvo2fh/mW6cEWoqaSFdZyXChTr9cuXWhE5xL
-veRzrZY+MZuCzp2m7n1b8rv8RWkfGpHdl6pN9HgO7cS7LIFYxt1Mn20HVGl0v3us
-47QxRDQJ1dClMS+E5hQHJea+SIp26vmt/QCZxjMQhH4mStoypsu+Dk5tCT491s6S
-Jk0GPcck5WUx74onkblKS9c17quHsJ97WzmsV2s+2uXTKJ/Sw8YDVja5rNh9R7xC
-NxqzTR5r/EAKr+xEF44+67et2DrTktGxi4ZzmmTe+lbfAvGRCY9WhtqCRDjmKV5L
-lHxdgGgjPZBZGU2Rk3p2eBFcF2EcAgsSLfnVb0BBAM1qN4WUI6II4wVviy46IbV8
-esx597PGSbibCHp0x0yt
-=QWv9
------END PGP SIGNATURE-----
-
---/KyuVX2Jeo6C4NIo--
-
---===============3542372015094908977==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3542372015094908977==--
+  MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
+  MODULE_DESCRIPTION("Midlevel RawMidi code for ALSA.");
+@@ -1420,6 +1421,8 @@ static int snd_rawmidi_alloc_substreams(
+          substream->number = idx;
+          substream->rmidi = rmidi;
+          substream->pstr = stream;
++            snprintf(substream->name, sizeof(substream->name),
++                 "%s %d-%d-%d", rmidi->id, rmidi->card->number, 
+rmidi->device, idx);
+          list_add_tail(&substream->list, &stream->substreams);
+          stream->substream_count++;
+      }
