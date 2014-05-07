@@ -1,17 +1,16 @@
-From: Julian Scheel <julian@jusst.de>
-Subject: Re: [PATCH v2] alsactl: Store lockfile in /tmp
-Date: Wed, 07 May 2014 10:49:59 +0200
-Message-ID: <5369F3B7.60105@jusst.de>
-References: <1399404739-1007-1-git-send-email-julian@jusst.de>
- <s5h4n12qcnc.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Too many snd_pcm_mmap_readi calls
+Date: Wed, 07 May 2014 11:01:56 +0200
+Message-ID: <5369F684.7060502@ladisch.de>
+References: <5369DE58.30208@janhomann.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.work.de (smtp1.work.de [212.12.40.178])
- by alsa0.perex.cz (Postfix) with ESMTP id E34922610B0
- for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 10:50:00 +0200 (CEST)
-In-Reply-To: <s5h4n12qcnc.wl%tiwai@suse.de>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 874D92610B0
+ for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 11:01:58 +0200 (CEST)
+In-Reply-To: <5369DE58.30208@janhomann.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,139 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Jan Homann <jh@janhomann.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 07.05.2014 09:19, schrieb Takashi Iwai:
-> At Tue,  6 May 2014 21:32:19 +0200,
-> Julian Scheel wrote:
->>
->> It can not be generally assumed that the directories in which asound.state
->> resides are writable. Instead using /tmp as location for lock files seems more
->> reliable.
->
-> The subject and changelog don't match with the actual change.
-> Now it's /var/log instead of /tmp, right?
+Jan Homann wrote:
+> while(1) {
+>     sleep(1);
+>     snd_pcm_wait( pcm_handle, REC_BUFFER_ELEMENT_SIZE_MS + 10);
+>     snd_pcm_mmap_begin(pcm_handle, &my_areas, &offset, &frames);
+>     snd_pcm_avail_update ( pcm_handle );
+>     snd_pcm_mmap_readi( pcm_handle, network_data.data_UC, ALSA_READ_FRAMES);
+>     snd_pcm_mmap_commit(pcm_handle, offset, frames);
+> }
 
-Sorry for that. Must have been too late.
+The sleep will result in an overrun, which will throw off the timing
+of all following calls.
 
-> Besides that, it'd be better to allow a full path name for a lock file
-> instead of a directory name.  If you give a different file name via -f
-> option, you have a high chance to conflict with the existing file in
-> /var/lock.
+You are not checking the return value of any of these functions.
 
-So, you'd prefer a --lock-file/-L option which can be used to set an 
-explicit lock file?
+Why are you calling snd_pcm_avail_update?  And why are you doing this
+_after_ calling mmap_begin?
 
-> Furthermore, for solving *your* problem (restoring from read-only
-> rootfs), an easier option would be allowing to restore the system
-> default without locking.
+You are ignoring the number of frames returned by mmap_begin.  This
+value could be smaller or larger than ALSA_READ_FRAMES.
 
-While this is true I think making the locking mechanism more robust is a 
-good thing anyway.
+Why are you using mmap in the first place, when you don't even try to
+access the buffer directly?
 
-Julian
 
->
-> Takashi
->
->>
->> Signed-off-by: Julian Scheel <julian@jusst.de>
->> ---
->>   alsactl/alsactl.c |  7 +++++++
->>   alsactl/alsactl.h |  1 +
->>   alsactl/lock.c    | 13 ++++++++++---
->>   3 files changed, 18 insertions(+), 3 deletions(-)
->>
->> diff --git a/alsactl/alsactl.c b/alsactl/alsactl.c
->> index 6bc013f..415dfb8 100644
->> --- a/alsactl/alsactl.c
->> +++ b/alsactl/alsactl.c
->> @@ -38,6 +38,9 @@
->>   #ifndef SYS_PIDFILE
->>   #define SYS_PIDFILE "/var/run/alsactl.pid"
->>   #endif
->> +#ifndef SYS_LOCKPATH
->> +#define SYS_LOCKPATH "/var/lock"
->> +#endif
->>
->>   int debugflag = 0;
->>   int force_restore = 1;
->> @@ -46,6 +49,7 @@ int do_lock = 0;
->>   int use_syslog = 0;
->>   char *command;
->>   char *statefile = NULL;
->> +char *lockpath = SYS_LOCKPATH;
->>
->>   #define TITLE	0x0100
->>   #define HEADER	0x0200
->> @@ -71,6 +75,7 @@ static struct arg args[] = {
->>   { HEADER, NULL, "Available state options:" },
->>   { FILEARG | 'f', "file", "configuration file (default " SYS_ASOUNDRC ")" },
->>   { 'l', "lock", "use file locking to serialize concurrent access" },
->> +{ FILEARG | 'D', "lock-dir", "directory to use for lock files (default " SYS_LOCKPATH ")" },
->>   { 'F', "force", "try to restore the matching controls as much as possible" },
->>   { 0, NULL, "  (default mode)" },
->>   { 'g', "ignore", "ignore 'No soundcards found' error" },
->> @@ -232,6 +237,8 @@ int main(int argc, char *argv[])
->>   		case 'l':
->>   			do_lock = 1;
->>   			break;
->> +		case 'D':
->> +			lockpath = optarg;
->>   		case 'F':
->>   			force_restore = 1;
->>   			break;
->> diff --git a/alsactl/alsactl.h b/alsactl/alsactl.h
->> index 9109a70..6c6bee5 100644
->> --- a/alsactl/alsactl.h
->> +++ b/alsactl/alsactl.h
->> @@ -5,6 +5,7 @@ extern int do_lock;
->>   extern int use_syslog;
->>   extern char *command;
->>   extern char *statefile;
->> +extern char *lockpath;
->>
->>   void info_(const char *fcn, long line, const char *fmt, ...);
->>   void error_(const char *fcn, long line, const char *fmt, ...);
->> diff --git a/alsactl/lock.c b/alsactl/lock.c
->> index 587a109..c69e285 100644
->> --- a/alsactl/lock.c
->> +++ b/alsactl/lock.c
->> @@ -36,17 +36,24 @@ static int state_lock_(const char *file, int lock, int timeout)
->>   	struct flock lck;
->>   	struct stat st;
->>   	char lcktxt[12];
->> +	char *filename;
->>   	char *nfile;
->>
->>   	if (!do_lock)
->>   		return 0;
->> -	nfile = malloc(strlen(file) + 6);
->> +
->> +	/* only use the actual filename, not the path */
->> +	filename = strrchr(file, '/');
->> +	if (!filename)
->> +		filename = file;
->> +
->> +	nfile = malloc(strlen(lockpath) + strlen(filename) + 7);
->>   	if (nfile == NULL) {
->>   		error("No enough memory...");
->>   		return -ENOMEM;
->>   	}
->> -	strcpy(nfile, file);
->> -	strcat(nfile, ".lock");
->> +
->> +	sprintf(nfile, "%s/%s.lock", lockpath, filename);
->>   	lck.l_type = lock ? F_WRLCK : F_UNLCK;
->>   	lck.l_whence = SEEK_SET;
->>   	lck.l_start = 0;
->> --
->> 1.9.2
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
+Regards,
+Clemens
