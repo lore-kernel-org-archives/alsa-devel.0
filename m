@@ -1,17 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Too many snd_pcm_mmap_readi calls
-Date: Wed, 07 May 2014 14:58:59 +0200
-Message-ID: <536A2E13.9070900@ladisch.de>
-References: <5369DE58.30208@janhomann.de> <5369F684.7060502@ladisch.de>
- <536A026D.1070104@janhomann.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/5] ASoC: dapm: Skip CODEC<->CODEC links in
+	connect_dai_link_widgets()
+Date: Wed,  7 May 2014 15:05:44 +0200
+Message-ID: <1399467948-8770-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 68164261B01
- for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 14:59:01 +0200 (CEST)
-In-Reply-To: <536A026D.1070104@janhomann.de>
+Received: from smtp-out-016.synserver.de (smtp-out-029.synserver.de
+ [212.40.185.29])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05CF62652CD
+ for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 15:05:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jan Homann <jh@janhomann.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Jan Homann wrote:
-> In my opinion mmap_begin just tells the alsa-lib that someone is about
-> to access the buffer.
+For CODEC to CODEC DAI links the paths are already created in
+snd_soc_dapm_new_pcm(). Make sure to not create additional connections in
+snd_soc_dapm_connect_dai_link_widgets() for CODEC to CODEC links.
 
-With mmap_begin, you ask the device how many frames are available in the
-buffer (and get a pointer to them).  With mmap_commit, you tell the
-device how many frames you actually read.
+Fixes: b893ea5 ("ASoC: sapm: Automatically connect DAI link widgets in DAPM graph.")
+Cc: stable@vger.kernel.org (for 3.14+)
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+The series applies on topic/dapm
+---
+ sound/soc/soc-dapm.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-> I am using mmap because of its good performance.
-
-Using mmap makes sense only when you are accessing the samples in the
-buffer directly.  If you just copy the frames into your own buffer,
-there is *no* difference whatsoever to snd_pcm_readi.
-
-> Under normal condition with snd_pcm_mmap_readi my program uses about
-> 1% of cpu-time where snd_pcm_readi uses about 75%.
-
-It's likely that you do not correctly wait for frames being available
-in your real program.
-
-> Do you know a good tutorial about using mmap_readi?
-
-This: use snd_pcm_readi instead.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index fb6c7b7..142a738 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3410,8 +3410,11 @@ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
+ 		cpu_dai = rtd->cpu_dai;
+ 		codec_dai = rtd->codec_dai;
+ 
+-		/* dynamic FE links have no fixed DAI mapping */
+-		if (rtd->dai_link->dynamic)
++		/*
++		 * dynamic FE links have no fixed DAI mapping.
++		 * CODEC<->CODEC links have no direct connection.
++		 */
++		if (rtd->dai_link->dynamic || rtd->dai_link->params)
+ 			continue;
+ 
+ 		/* there is no point in connecting BE DAI links with dummies */
+-- 
+1.8.0
