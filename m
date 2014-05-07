@@ -1,17 +1,25 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Update Cirrus Logic CODEC
-	maintainers.
-Date: Wed, 7 May 2014 19:08:24 +0100
-Message-ID: <20140507180824.GK22111@sirena.org.uk>
-References: <1399474176-3383-1-git-send-email-Paul.Handrigan@cirrus.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v6] ASoC: add RT286 CODEC driver
+Date: Wed, 07 May 2014 20:21:02 +0200
+Message-ID: <536A798E.6010408@metafoo.de>
+References: <1397455170-2701-1-git-send-email-bardliao@realtek.com>
+ <20140415120428.GU12304@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D73AC302@RTITMBSV03.realtek.com.tw>
+ <20140416211145.GC12304@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D73AC511@RTITMBSV03.realtek.com.tw>
+ <20140418103715.GJ12304@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D73D68A0@RTITMBSV03.realtek.com.tw>
+ <20140507172113.GI22111@sirena.org.uk> <536A7161.7090100@metafoo.de>
+ <20140507180705.GJ22111@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3243340008057776609=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E0CF265347
- for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 20:08:44 +0200 (CEST)
-In-Reply-To: <1399474176-3383-1-git-send-email-Paul.Handrigan@cirrus.com>
+Received: from smtp-out-016.synserver.de (smtp-out-029.synserver.de
+ [212.40.185.29])
+ by alsa0.perex.cz (Postfix) with ESMTP id 174DC261AE7
+ for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 20:21:04 +0200 (CEST)
+In-Reply-To: <20140507180705.GJ22111@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +29,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Handrigan <Paul.Handrigan@cirrus.com>
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, timur@tabi.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 05/07/2014 08:07 PM, Mark Brown wrote:
+> On Wed, May 07, 2014 at 07:46:09PM +0200, Lars-Peter Clausen wrote:
+>
+>> I don't think virtual controls are the right approach here. Virtual controls
+>> are for controls where the state is completely in software, but here the
+>> state is still in hardware. It's just that there is no uniform hardware map.
+>> But there is still some structure. So you'd have controls with custom put
+>> and get handlers and for DAPM widgets use the event handler.
+>
+> What you just described is what I'd consider a virtual control - I don't
+> consider the fact that the put callbacks end up writing to the hardware
+> particularly substantial, as far as the framework is concerned some
+> driver specific thing goes off and does something but it could be
+> setting a variable just as well as writing to hardware.
 
---===============3243340008057776609==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AZuoSAvZwvV/ife4"
-Content-Disposition: inline
+Ok, but we have controls that have virtual in their name, so I think it 
+should be made clear that you are not talking about those.
 
+>
+>> But I still think that the best and easiest solution is to have custom
+>> regmap read/write function that do the translation of logical registers to
+>> physical read/write operations.
+>
+> That's the first time this idea has been mentioned that I recall.  I
+> have to say I'm really not keen on pushing non-physical registers
+> through regmap, all the drivers that have done that previously have
+> ended up causing problems though if the registers were *all* fake then
+> there would be less issue (most of the issues have been due to having
+> extra registers that don't really exist).  It does still feel like it's
+> a layering problem though.
 
---AZuoSAvZwvV/ife4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think the drivers you are thinking of are those which had physical 
+register which were backed by hardware and virtual register which were 
+backed by software. For the later we introduced the virtual controls, so 
+that such hacks are no longer necessary in driver. But in the case of the 
+RT286 all the register all still backed by hardware except that the way they 
+are accessed is not very uniform (different types of registers use a 
+different message format, there is a asymmetry between reading and writing 
+the same data). In a sense this is similar to devices which have registers 
+with different sizes, we also support these with custom regmap callbacks.
 
-On Wed, May 07, 2014 at 09:49:36AM -0500, Paul Handrigan wrote:
-> Remove Timur Tabi as maintainer for CS4270 codec. I would like to thank Timur
-> for his work on maintaining this driver.
-
-Applied, thanks.
-
---AZuoSAvZwvV/ife4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTanaVAAoJELSic+t+oim9snkP/R3sfTJoJIUwu/6JY8ztuvnO
-gYpsj2hmyJatF+C0ff9NO5Jih71n8d4XRANEyMGps7VS0Xw6ZZQffL2D03c0jm1A
-6NJeEy6WupBpr4RIVKkHiNGgYTTaVVO9isWkzSxhrRgQa5cNdgUYJK4sqHZ134qY
-8Whq8fvK3uhyFKeaqYVHNuLjCEzxIUNs6sE34+4x+goTEU0Vre9ULHv3VCN2nZrS
-svz003LVVWpifa+WWM4kNcKaTfe7v+yHVkwljm6SURAecvNZ0usMwCSDMq0+8WDv
-Qk9O5SqhZTNFxLvrsfJIwX2HqKV2Fqwf41KSqGTVf4oDDi4gYvV9St2UThTvNgTD
-bkDPZrua8UsVM6FcV7TxFf1vKcSStaUrecybNf57l7Xh4KJJLq9tGPAUgtmjpViT
-NtTeHZqpt2ZFSaHaS9onssaofOGlQTYQB4CbjILdapGHpNFIIB+MyvOzotMUmRRC
-FnsPat485UZ6xSV8GvvwSCyVbsumjIvpPzMPqwvIAs/LMdC0PXmgtsYccz2XhxqG
-KLU2MZ9kZ7qVWD+ygRrvODU8TB24dUt33nGWCS+sJQ9QAlsJJHOMBkbiYGKEazgG
-N7NgrnPHfir+kgPeJSheJRj5MBMjbkEt5fZHxWEHC88KGbZLvCM4WzIo957wSYKP
-YKjbBr6JX2wYvCsGhv69
-=UUqZ
------END PGP SIGNATURE-----
-
---AZuoSAvZwvV/ife4--
-
---===============3243340008057776609==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3243340008057776609==--
+- Lars
