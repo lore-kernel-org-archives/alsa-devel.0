@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/5] ASoC: Remove unused num_dai field from
-	CODEC
-Date: Wed, 7 May 2014 10:22:02 +0100
-Message-ID: <20140507092202.GG22111@sirena.org.uk>
-References: <1399361981-18518-1-git-send-email-lars@metafoo.de>
- <1399361981-18518-4-git-send-email-lars@metafoo.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH v2] alsactl: Store lockfile in /tmp
+Date: Wed, 07 May 2014 11:23:40 +0200
+Message-ID: <5369FB9C.2010602@perex.cz>
+References: <1399404739-1007-1-git-send-email-julian@jusst.de>
+ <s5h4n12qcnc.wl%tiwai@suse.de> <5369F3B7.60105@jusst.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5968423072967948999=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0483E26109C
- for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 11:22:20 +0200 (CEST)
-In-Reply-To: <1399361981-18518-4-git-send-email-lars@metafoo.de>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AAC12652CC
+ for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 11:23:40 +0200 (CEST)
+In-Reply-To: <5369F3B7.60105@jusst.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>
+To: Julian Scheel <julian@jusst.de>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Date 7.5.2014 10:49, Julian Scheel wrote:
+> Am 07.05.2014 09:19, schrieb Takashi Iwai:
+>> At Tue,  6 May 2014 21:32:19 +0200,
+>> Julian Scheel wrote:
+>>>
+>>> It can not be generally assumed that the directories in which asound.state
+>>> resides are writable. Instead using /tmp as location for lock files seems more
+>>> reliable.
+>>
+>> The subject and changelog don't match with the actual change.
+>> Now it's /var/log instead of /tmp, right?
+> 
+> Sorry for that. Must have been too late.
 
---===============5968423072967948999==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ApAmD002LHtYGJ+H"
-Content-Disposition: inline
+I also didn't note that. I applied your v2 patch to the git repo - I
+forced update now.
 
+>> Besides that, it'd be better to allow a full path name for a lock file
+>> instead of a directory name.  If you give a different file name via -f
+>> option, you have a high chance to conflict with the existing file in
+>> /var/lock.
+> 
+> So, you'd prefer a --lock-file/-L option which can be used to set an 
+> explicit lock file?
 
---ApAmD002LHtYGJ+H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I changed '-D' to '-O' option (file) and used '-L' option to select the
+"no-lock" behaviour for the global configuration file. Note that the
+locking is default only for the global file, other files are not lock
+protected.
 
-On Tue, May 06, 2014 at 09:39:39AM +0200, Lars-Peter Clausen wrote:
-> Commit d191bd8de8 ("ASoC: snd_soc_codec includes snd_soc_component") removed the
-> last user of the num_dai field. Also remove the field itself.
+http://git.alsa-project.org/?p=alsa-utils.git;a=commitdiff;h=158a67f6f5058bec0ac27086a1c6206bfd2ff414
 
-Applied, thanks.
+>> Furthermore, for solving *your* problem (restoring from read-only
+>> rootfs), an easier option would be allowing to restore the system
+>> default without locking.
+> 
+> While this is true I think making the locking mechanism more robust is a 
+> good thing anyway.
 
---ApAmD002LHtYGJ+H
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Yup.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+					Jaroslav
 
-iQIcBAEBAgAGBQJTafs3AAoJELSic+t+oim9HYcP/1W5xoMFt3MUQImFKQtMcFar
-4yJ3t1Kf1Z+riukcD2eh+wgI3YNlqHLGzQg4wowILKEWLD/DoK6oWINeGWOkUCMu
-70Rg8kqzcsQ3wLwM8vVOEWYA79WhWRQIr+/2FjbxLQRKT56YDoVzXX63rVq58Xas
-w2ybBa/52awidMKJW2mPd6kU/ug0AKQyKb2uDzIeoFZ2thZTcOelR8dKxokWLpVJ
-XSN+A2RuB1Iir5Il2wSkOErpvgB33eYox4i/DjmPKCMZUOER8ajUlXICLLiaFEA/
-f4jElfZi1nW9kU89jjcDyG/G6PgxKlADZs2bPxCgepDB+ff7H/vfmou+5luXc8Ct
-ZRFkMM3KuDP2+rdFY8VZY5teAEzTo7dc5yth9AStTVzG7e50v7yJ+oHlpe/vtW3p
-/2KvbvG+EwXz/x1cBjb1sq1IbI+n4xaS8573HkczdtWBr7TECRnYM4+YPiyPUR3U
-bwLiCvdryrkh5gbA8hECAfR4lY5VEiq6t6U7I4mYF4nQ7UNE83CSRnS4Rh8MsSwt
-jgQEEqkUfEK+km5T5kVkdHiULUPeV0tGjuyhEaDtvDW39QHYacP9Uoit7I7inpUn
-CeCr+pwC2hLA2cXKRW5pzRml8oQTjq9FIJc14EnPQ0OEv7bV3OK12iTBS1WmlHmE
-S2lUc8pRqXt6K5Ew53YA
-=Stab
------END PGP SIGNATURE-----
-
---ApAmD002LHtYGJ+H--
-
---===============5968423072967948999==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5968423072967948999==--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
