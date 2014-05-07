@@ -1,16 +1,16 @@
-From: "Sathish Kumar Balasubramaniam -ERS, HCL Tech" <b-sathishkumar@hcl.com>
-Subject: Re: Opening (even read-only) of /dev/snd/pcmC0D0p says
- Operation not permitted
-Date: Wed, 7 May 2014 14:08:27 +0000
-Message-ID: <5D833673AB94D9489A7F7F73E9E611C814AD4801@chn-hclt-mbs08.HCLT.CORP.HCL.IN>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH v2 1/5] ASoC: dapm: Skip CODEC<->CODEC links in
+	connect_dai_link_widgets()
+Date: Wed,  7 May 2014 16:20:24 +0200
+Message-ID: <1399472428-11034-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from GWS07.hcl.com (gws07.hcl.com [192.8.186.130])
- by alsa0.perex.cz (Postfix) with ESMTP id A20D82652CD
- for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 16:08:43 +0200 (CEST)
-Content-Language: en-US
+Received: from smtp-out-016.synserver.de (smtp-out-029.synserver.de
+ [212.40.185.29])
+ by alsa0.perex.cz (Postfix) with ESMTP id 829562616C9
+ for <alsa-devel@alsa-project.org>; Wed,  7 May 2014 16:20:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,93 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Ok. I found the issue.
+For CODEC to CODEC DAI links the paths are created in snd_soc_dapm_new_pcm().
+Also for CODEC to CODEC links the widgets are connected cross-over via a DAI
+link widget, meaning that the capture widget of one CODEC will be connected to
+the playback widget of the other and vice versa. Whereas
+snd_soc_dapm_connect_dai_link_widgets() directly connects the playback widget of
+the CPU DAI to the playback widget of the CODEC DAI and the capture widget of
+the CPU DAI to the capture widget of the CODEC DAI. So not skipping
+CODEC<->CODEC links in snd_soc_dapm_connect_dai_link_widgets() will create
+incorrect connections between the two CODECs which will cause DAPM to detect
+active paths where there are none and unnecessarily power up widgets.
 
-Since the playback routing configuration is not set, it failed.
-Once I set the playback routing configuration using amixer commands, aplay worked.
+Fixes: b893ea5 ("ASoC: sapm: Automatically connect DAI link widgets in DAPM graph.")
+Cc: <stable@vger.kernel.org> (for 3.14+)
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-dapm.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-
-Regards,
-B.Sathish Kumar
-
-From: Sathish Kumar Balasubramaniam -ERS, HCL Tech
-Sent: Tuesday, May 06, 2014 10:11 PM
-To: 'alsa-devel@alsa-project.org'
-Subject: Opening (even read-only) of /dev/snd/pcmC0D0p says Operation not permitted
-
-Hi,
-
-Please can anyone let me know how to debug more or fix the following issue
-
-I tried to play a wav file using aplay. Its giving the following error
-
-root@host# strace aplay a2002011001-e02.wav
-execve("/usr/bin/aplay", ["aplay", "a2002011001-e02.wav"], [/* 15 vars */]) = 0
-...
-...
-open("/dev/snd/pcmC0D0p", O_RDWR|O_NONBLOCK|O_CLOEXEC) = -1 EPERM (Operation not permitted)
-close(3)                                = 0
-write(2, "aplay: main:722: ", 17aplay: main:722: )       = 17
-write(2, "audio open error: Operation not "..., 41audio open error: Operation not permitted) = 41
-write(2, "\n", 1
-)                       = 1
-
-
-I tried to write a small program like the following
-
-err = open("/dev/snd/pcmC0D0p", O_RDONLY);                              (I tried O_RDWR|O_NONBLOCK|O_CLOEXEC also)
-printf("err = %d, errno = %s.\n", err, strerror(errno));
-
-Even the above failed saying "err = -1, errno = Operation not permitted."
-
-I am running these as user "root".
-
-The following are my snd devices
-
-root@host:~# ls -l /dev/snd/
-total 0
-drwxr-xr-x 2 root root       60 Jan  1  1970 by-path
-crw-rw---- 1 root audio 116,  0 Jan  1  1970 controlC0
-crw-rw---- 1 root audio 116, 24 Jan  1  1970 pcmC0D0c
-crw-rw---- 1 root audio 116, 16 Jan  1  1970 pcmC0D0p
-crw-rw---- 1 root audio 116, 33 Jan  1  1970 timer
-root@host:~#
-
-There is nothing present in my /etc/asound.conf
-The following are few parameters in /usr/share/alsa/alsa.conf
-
-defaults.ctl.card 0
-defaults.pcm.card 0
-defaults.pcm.device 0
-defaults.pcm.subdevice -1
-defaults.pcm.nonblock 1
-defaults.pcm.compat 0
-defaults.pcm.minperiodtime 5000         # in us
-defaults.pcm.ipc_key 5678293
-defaults.pcm.ipc_gid audio
-defaults.pcm.ipc_perm 0660
-...
-...
-
-
-Regards,
-B.Sathish Kumar
-
-
-::DISCLAIMER::
-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-The contents of this e-mail and any attachment(s) are confidential and intended for the named recipient(s) only.
-E-mail transmission is not guaranteed to be secure or error-free as information could be intercepted, corrupted,
-lost, destroyed, arrive late or incomplete, or may contain viruses in transmission. The e mail and its contents
-(with or without referred errors) shall therefore not attach any liability on the originator or HCL or its affiliates.
-Views or opinions, if any, presented in this email are solely those of the author and may not necessarily reflect the
-views or opinions of HCL or its affiliates. Any form of reproduction, dissemination, copying, disclosure, modification,
-distribution and / or publication of this message without the prior written consent of authorized representative of
-HCL is strictly prohibited. If you have received this email in error please delete it and notify the sender immediately.
-Before opening any email and/or attachments, please check them for viruses and other defects.
-
-----------------------------------------------------------------------------------------------------------------------------------------------------
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index fb6c7b7..142a738 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3410,8 +3410,11 @@ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
+ 		cpu_dai = rtd->cpu_dai;
+ 		codec_dai = rtd->codec_dai;
+ 
+-		/* dynamic FE links have no fixed DAI mapping */
+-		if (rtd->dai_link->dynamic)
++		/*
++		 * dynamic FE links have no fixed DAI mapping.
++		 * CODEC<->CODEC links have no direct connection.
++		 */
++		if (rtd->dai_link->dynamic || rtd->dai_link->params)
+ 			continue;
+ 
+ 		/* there is no point in connecting BE DAI links with dummies */
+-- 
+1.8.0
