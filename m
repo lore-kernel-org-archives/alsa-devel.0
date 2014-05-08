@@ -1,18 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] rawmidi.c Set a name for a newly allocated
- rawmidi substream
-Date: Thu, 08 May 2014 22:08:27 +0200
-Message-ID: <536BE43B.90603@ladisch.de>
-References: <536A6C3D.6080906@gmx.de> <536A6FE2.20109@ladisch.de>
- <536B1F1B.5070205@gmx.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: Intel: Build Medfield compressed ops
+Date: Thu,  8 May 2014 23:30:37 +0100
+Message-ID: <1399588237-21024-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 2C7A726170F
- for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 22:08:51 +0200 (CEST)
-In-Reply-To: <536B1F1B.5070205@gmx.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C164E261A1D
+ for <alsa-devel@alsa-project.org>; Fri,  9 May 2014 00:30:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ralfbeck1@gmx.de
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Ralf Beck wrote:
-> Am 07.05.2014 19:39, schrieb Clemens Ladisch:
->> Ralf Beck wrote:
->>> Rationale: Bitwig Studio (and possibly other rawmidi clients) enumerate the Midi I/Os by substream names. With the current rawmidi implementation, the name is an empty string and only the USB mididriver changes it to a meaningful value after allocation.
->>
->> Many RawMIDI devices have only one substream, or multiple substreams that are merged into one port. For these, separate substream names do not make sense.
->
-> Any having no substream name at all makes more sense?
+From: Mark Brown <broonie@linaro.org>
 
-The device itself already has a name.
+Since commit 4b68b4e1c564 (ASoC: Intel: split the pcm and compress to
+different files) the compressed ops haven't been built causing link
+failures on allyesconfig and making the driver unbuildable.  Add the
+object to the Makefile to fix that.
 
-Apparently, Bitwig has not been tested with any driver except snd-usb-audio.
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/intel/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->>> This patch sets a default substream name of the form "somename x-y-z"
->>
->> The ID string is not meant to be a name.
->
-> Would it be acceptable, if i remove the ID string and only return x-y-z ?
-
-No; you should use the device name or something like that.
-
-But the substream name buffer is rather short; a better idea would be to
-fix all rawmidi drivers to set the substream name(s) to the appropriate
-value.
-
-> Other than the alsa developers i would call creating rawmidi substreams, but not
-> assigning a name to them a bug.
-
-For most drivers, substreams do not have a logical identity separate
-from the device.
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
+index 5d3fb6f35a19..0db4e2f336dc 100644
+--- a/sound/soc/intel/Makefile
++++ b/sound/soc/intel/Makefile
+@@ -2,7 +2,7 @@
+ snd-soc-sst-dsp-objs := sst-dsp.o sst-firmware.o
+ snd-soc-sst-acpi-objs := sst-acpi.o
+ 
+-snd-soc-sst-mfld-platform-objs := sst-mfld-platform-pcm.o
++snd-soc-sst-mfld-platform-objs := sst-mfld-platform-pcm.o sst-mfld-platform-compress.o
+ snd-soc-mfld-machine-objs := mfld_machine.o
+ 
+ obj-$(CONFIG_SND_SST_MFLD_PLATFORM) += snd-soc-sst-mfld-platform.o
+-- 
+2.0.0.rc2
