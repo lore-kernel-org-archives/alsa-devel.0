@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: rt5645: Remove the unused
-	variable
-Date: Thu, 8 May 2014 08:05:39 +0100
-Message-ID: <20140508070539.GZ12304@sirena.org.uk>
-References: <1399531657-31793-1-git-send-email-oder_chiou@realtek.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH 3/4 v3] ASoC: rt5645: Move settings from
+	probe() to reg_default struct
+Date: Thu, 8 May 2014 15:09:51 +0800
+Message-ID: <1399532991-26635-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0492089965816364350=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 71D332654EF
- for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 09:05:52 +0200 (CEST)
-In-Reply-To: <1399531657-31793-1-git-send-email-oder_chiou@realtek.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF45B2654AE
+ for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 09:10:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch moves the private register settings from probe() to reg_default
+struct.
 
---===============0492089965816364350==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="45wrZtN+lozMdFkw"
-Content-Disposition: inline
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-
---45wrZtN+lozMdFkw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, May 08, 2014 at 02:47:34PM +0800, Oder Chiou wrote:
-> The patch is for removing the unused variable.
-
-Applied all, thanks.
-
---45wrZtN+lozMdFkw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTayzAAAoJELSic+t+oim9qYoQAJE2qx08e/jHjRWZ+jIXH+8Y
-sB82vRnkL0bn9YxoRO0cK6IFAgRl7VKd2wG0boluq9QNXuo9qVw4zQz9l65c7lB0
-ubJcLHyzhmx1Mk2JKRsJ/46N8Jx5PLgAt92A6d+N2uBuH+9Fw64oYQu/UxMFbLMZ
-oAiYVmStB3fx+2LV6dsSxOMjRUzPTFxKYh23O+/d+GeAMxYeAUgyhvHIKmxeDLzv
-oPLQu9lzDOYEX9yFRCSaJYRWMqWAPE15OstefYxk2rnGVB4rvnOB52OyOncYhUdR
-Rry1uqNjOCTp84kWWG8WBB/nWTh/WNIwLjwwLpcfYLGFcZVUNitL5jAnokRGpviG
-l6XFwgzL7w20fHZMzjU1OwP7LLCgAvJGxSWX9rZ0HFrpXDYt6Re5Se59kZyNLZZt
-mSmOUgp1qrXZQczzsZp2pAF7Y6eNUE/Qfaca8ewbhmbqWV5AcCzSYwJYjRwUZf9X
-5NwBxcmd31RxCMy9owOTOMwfSUzZrrwX4Tab50PdrLEmMuKX5y/oyB5qiMZHyRUl
-teYKGbyvNPPlDWcdx8XUozhehzfYBnD+AzfDDwUmK5YxVMLkBqNQbfZO9Zas+oTL
-GqG/B+bd7npqTmA/iKwnoKOxblBUdXzhTd6pXmwAOfmohNsxCgUkma0xELY/w0SC
-Gi2GI/Uu1Pa1KR7BFWHT
-=QnOV
------END PGP SIGNATURE-----
-
---45wrZtN+lozMdFkw--
-
---===============0492089965816364350==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0492089965816364350==--
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 9d8c7c8..4be9000 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -50,6 +50,10 @@ static const struct regmap_range_cfg rt5645_ranges[] = {
+ 
+ static const struct reg_default init_list[] = {
+ 	{RT5645_PR_BASE + 0x3d,	0x3600},
++	{RT5645_PR_BASE + 0x1c,	0xfd20},
++	{RT5645_PR_BASE + 0x20,	0x611f},
++	{RT5645_PR_BASE + 0x21,	0x4040},
++	{RT5645_PR_BASE + 0x23,	0x0004},
+ };
+ #define RT5645_INIT_REG_LEN ARRAY_SIZE(init_list)
+ 
+@@ -2205,10 +2209,6 @@ static int rt5645_probe(struct snd_soc_codec *codec)
+ 	rt5645_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 
+ 	snd_soc_update_bits(codec, RT5645_CHARGE_PUMP, 0x0300, 0x0200);
+-	snd_soc_write(codec, RT5645_PR_BASE + 0x1c, 0xfd20);
+-	snd_soc_write(codec, RT5645_PR_BASE + 0x20, 0x611f);
+-	snd_soc_write(codec, RT5645_PR_BASE + 0x21, 0x4040);
+-	snd_soc_write(codec, RT5645_PR_BASE + 0x23, 0x0004);
+ 
+ 	return 0;
+ }
+-- 
+1.8.1.1.439.g50a6b54
