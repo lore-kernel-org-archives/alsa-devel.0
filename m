@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5645: Fix a serious typo
-Date: Thu, 8 May 2014 09:01:53 +0100
-Message-ID: <20140508080153.GB12304@sirena.org.uk>
-References: <1399534957-23937-1-git-send-email-oder_chiou@realtek.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: sirf-audio-codec: Simplify the new
+ bitmask value in regmap_update_bits
+Date: Thu, 08 May 2014 16:29:49 +0800
+Message-ID: <1399537789.21710.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2362380954051647744=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 43A102654CF
- for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 10:02:04 +0200 (CEST)
-In-Reply-To: <1399534957-23937-1-git-send-email-oder_chiou@realtek.com>
+Received: from mail-vc0-f171.google.com (mail-vc0-f171.google.com
+ [209.85.220.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB8032654E0
+ for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 10:29:56 +0200 (CEST)
+Received: by mail-vc0-f171.google.com with SMTP id lc6so2831285vcb.16
+ for <alsa-devel@alsa-project.org>; Thu, 08 May 2014 01:29:55 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Rongjun Ying <rongjun.ying@csr.com>, Barry Song <baohua@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Having the binary ones complement operator in the new bitmak value makes the
+code hard to read.
 
---===============2362380954051647744==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ATpFShygqtMf38vw"
-Content-Disposition: inline
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+I think the binary ones complement operator in such use case is error prone:
+For example:
+To set BIT(1) and clear both BIT(2) and BIT(3):
+The following code has wrong result:
+regmap_update_bits(regmap, the_register, BIT(1), BIT(2), BIT(3),
+                   BIT(1) | ~BIT(2) | ~BIT(3));
 
+Axel
+ sound/soc/codecs/sirf-audio-codec.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
---ATpFShygqtMf38vw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, May 08, 2014 at 03:42:36PM +0800, Oder Chiou wrote:
-> The patch corrects a serious typo in struct reg_default.
-
-Applied both, thanks.
-
---ATpFShygqtMf38vw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTaznuAAoJELSic+t+oim9WuIP/3WVahZpZcMJMcO16x5Sz4qy
-kGpMWrmoYuwblbg6VNfvC/Y3WQz0KtvFtYFLGgb4JeOMX9MDrt3R9O1vn4nSzxK+
-LmKXRkcekv1RfRGHk2nX8LNk59EACgUztKXHIifQAdM1BjAjMkNVXqtY6RKTfElp
-E7W3eL6KlQXKYNeP10hR1TrwICCrz7EXvc5KqILyg0SSp+6GU8gWlnBjbPgYaW+9
-albL0J8F5CcFhrtixOxh/1aEiFFnr1S4OzWwThsb5YNI3cJPRW0OlPj+epu4f99F
-fYheGsMN+a+tINFO3TycLqram+sM8nPux69hb5STRrWnEpr0QoZffcbcqx9Y1KpH
-1mNoQSAcluXQFVNbbfizdhfAyL3atMsY4fMYhE5UQEI20GL/jOn8lC5a7iBWKLPn
-vVJCa4z5QbJL5TOBU/bJosCoFlaG9xVFH5GPh1GI6fkA6EAXKrn/MpollP1BjoUz
-iN6ZzHASMOnUkxguaZ7TdoVNMfkVCE44T44D4CNayNIFB+CYpQx1+bxwV937nnmi
-+d4ZXMl0YvkzvfPgI2LANodyqpNN2htenRjvftOv1i31Ma/f5n5KMw2QO9Lx3L07
-w9Djsb7k0IBJSbWK0GWIQ+mVeb0vca4KyPzXRMTzvF6ri8HuJQLd7xh5dA7dW9JD
-cX55ylkdRS05SXiBezpm
-=4yFn
------END PGP SIGNATURE-----
-
---ATpFShygqtMf38vw--
-
---===============2362380954051647744==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2362380954051647744==--
+diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
+index c5177bc..d90cb0f 100644
+--- a/sound/soc/codecs/sirf-audio-codec.c
++++ b/sound/soc/codecs/sirf-audio-codec.c
+@@ -109,7 +109,7 @@ static void enable_and_reset_codec(struct regmap *regmap,
+ {
+ 	regmap_update_bits(regmap, AUDIO_IC_CODEC_CTRL1,
+ 			codec_enable_bits | codec_reset_bits,
+-			codec_enable_bits | ~codec_reset_bits);
++			codec_enable_bits);
+ 	msleep(20);
+ 	regmap_update_bits(regmap, AUDIO_IC_CODEC_CTRL1,
+ 			codec_reset_bits, codec_reset_bits);
+@@ -128,8 +128,7 @@ static int atlas6_codec_enable_and_reset_event(struct snd_soc_dapm_widget *w,
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+ 		regmap_update_bits(sirf_audio_codec->regmap,
+-			AUDIO_IC_CODEC_CTRL1, ATLAS6_CODEC_ENABLE_BITS,
+-			~ATLAS6_CODEC_ENABLE_BITS);
++			AUDIO_IC_CODEC_CTRL1, ATLAS6_CODEC_ENABLE_BITS, 0);
+ 		break;
+ 	default:
+ 		break;
+@@ -151,8 +150,7 @@ static int prima2_codec_enable_and_reset_event(struct snd_soc_dapm_widget *w,
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+ 		regmap_update_bits(sirf_audio_codec->regmap,
+-			AUDIO_IC_CODEC_CTRL1, PRIMA2_CODEC_ENABLE_BITS,
+-			~PRIMA2_CODEC_ENABLE_BITS);
++			AUDIO_IC_CODEC_CTRL1, PRIMA2_CODEC_ENABLE_BITS, 0);
+ 		break;
+ 	default:
+ 		break;
+-- 
+1.8.3.2
