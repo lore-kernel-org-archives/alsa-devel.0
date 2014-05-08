@@ -1,20 +1,22 @@
 From: "Yang, Libin" <libin.yang@intel.com>
 Subject: Re: [PATCH] ALSA: hda - using POS_FIX_LPIB on
 	Broadwell HDMI Audio
-Date: Thu, 8 May 2014 06:13:31 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19523313@SHSMSX103.ccr.corp.intel.com>
+Date: Thu, 8 May 2014 06:28:17 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1952333A@SHSMSX103.ccr.corp.intel.com>
 References: <1399485804-75028-1-git-send-email-libin.yang@intel.com>
  <s5hzjisq2kj.wl%tiwai@suse.de>
  <96A12704CE18D347B625EE2D4A099D195232A6@SHSMSX103.ccr.corp.intel.com>
  <s5htx90q0mi.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19523313@SHSMSX103.ccr.corp.intel.com>
+ <s5hr444pzap.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id A99BC265469
- for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 08:14:07 +0200 (CEST)
-In-Reply-To: <s5htx90q0mi.wl%tiwai@suse.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79CB026547F
+ for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 08:28:24 +0200 (CEST)
+In-Reply-To: <s5hr444pzap.wl%tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,96 +35,133 @@ Hi Takashi,
 
 > -----Original Message-----
 > From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Thursday, May 8, 2014 1:51 PM
+> Sent: Thursday, May 8, 2014 2:20 PM
 > To: Yang, Libin
 > Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Pierre-Louis Bossart
 > Subject: Re: [PATCH] ALSA: hda - using POS_FIX_LPIB on Broadwell HDMI
 > Audio
 > 
-> At Thu, 8 May 2014 05:48:04 +0000,
+> At Thu, 8 May 2014 06:13:31 +0000,
 > Yang, Libin wrote:
 > >
 > > Hi Takashi,
 > >
-> > I checked the wallclock counter. The counter is OK. But it failed to correct
-> the position.
-> 
-> So, how wrong the position buffer is?  Is the problem intermittent?
-> Please elaborate more.
-
-The issue is the position is almost always inaccurate. You will hear there is intermittent noise in the sound. And the sound is played faster than it should be.
-
-The following message is what I got from dmesg:
-
-[ 73.278117] snd_hda_intel 0000:00:03.0: IRQ timing workaround is activated for card #0. Suggest a bigger bdl_pos_adj.
-[ 73.528575] snd_hda_intel 0000:00:03.0: Unstable LPIB (26240 >= 24064); disabling LPIB delay counting
-
-Do you think the print of wallclk and position information in the function azx_position_ok() is useful to you? If yes, I will add debug code to print the info.
-
-> 
-> 
-> Takashi
-> 
-> > This issue happens when we play sound on HDMI audio. We have tried
-> with aplay and paplay.
-> >
-> > I have tried the buffer size of 16384, 8192 and 4096 and with the sample
-> rate of 48KHz and 44.1KHz.
-> >
-> > Regards,
-> > Libin
-> >
 > > > -----Original Message-----
 > > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Thursday, May 8, 2014 1:09 PM
+> > > Sent: Thursday, May 8, 2014 1:51 PM
 > > > To: Yang, Libin
 > > > Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Pierre-Louis Bossart
 > > > Subject: Re: [PATCH] ALSA: hda - using POS_FIX_LPIB on Broadwell
 > > > HDMI Audio
 > > >
-> > > At Thu,  8 May 2014 02:03:24 +0800,
-> > > libin.yang@intel.com wrote:
+> > > At Thu, 8 May 2014 05:48:04 +0000,
+> > > Yang, Libin wrote:
 > > > >
-> > > > From: Libin Yang <libin.yang@intel.com>
+> > > > Hi Takashi,
 > > > >
-> > > > Audio stream is not continuous if using position buffer on
-> > > > Broadwell HDMI audio. Sound is clipped.
-> > > > Fix this issue by using POS_FIX_LPIB.
+> > > > I checked the wallclock counter. The counter is OK. But it failed
+> > > > to correct
+> > > the position.
 > > >
-> > > That's odd.  The recent Intel hardware has a wallclock support, so
-> > > the position should be corrected by that.
-> > >
-> > > In which situation did the problem happen?  Did it happen with every
-> > > application and any period/buffer setup?
+> > > So, how wrong the position buffer is?  Is the problem intermittent?
+> > > Please elaborate more.
+> >
+> > The issue is the position is almost always inaccurate. You will hear there is
+> intermittent noise in the sound. And the sound is played faster than it should
+> be.
+> >
+> > The following message is what I got from dmesg:
+> >
+> > [ 73.278117] snd_hda_intel 0000:00:03.0: IRQ timing workaround is
+> activated for card #0. Suggest a bigger bdl_pos_adj.
+> > [ 73.528575] snd_hda_intel 0000:00:03.0: Unstable LPIB (26240 >=
+> > 24064); disabling LPIB delay counting
+> >
+> > Do you think the print of wallclk and position information in the function
+> azx_position_ok() is useful to you? If yes, I will add debug code to print the
+> info.
+> 
+> It'd better to have the raw values of posbuf, lpib and wallclock for further
+> analysis, yes.
+> 
+> BTW, did you try non-snoop mode via snoop=0 option?
+
+I haven't tried non-snoop. Do I use `modprobe snd-hda-intel snoop=0` to use non-snoop mode?
+> 
+> 
+> Takashi
+> 
+> 
+> >
 > > >
 > > >
 > > > Takashi
 > > >
+> > > > This issue happens when we play sound on HDMI audio. We have tried
+> > > with aplay and paplay.
 > > > >
-> > > > Signed-off-by: Libin Yang <libin.yang@intel.com>
-> > > > ---
-> > > >  sound/pci/hda/hda_intel.c | 1 +
-> > > >  1 file changed, 1 insertion(+)
+> > > > I have tried the buffer size of 16384, 8192 and 4096 and with the
+> > > > sample
+> > > rate of 48KHz and 44.1KHz.
 > > > >
-> > > > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> > > > index b540ad7..9cd40c6 100644
-> > > > --- a/sound/pci/hda/hda_intel.c
-> > > > +++ b/sound/pci/hda/hda_intel.c
-> > > > @@ -993,6 +993,7 @@ static struct snd_pci_quirk position_fix_list[] = {
-> > > >  	SND_PCI_QUIRK(0x1565, 0x8218, "Biostar Microtech", POS_FIX_LPIB),
-> > > >  	SND_PCI_QUIRK(0x1849, 0x0888, "775Dual-VSTA", POS_FIX_LPIB),
-> > > >  	SND_PCI_QUIRK(0x8086, 0x2503, "DG965OT AAD63733-203",
-> > > POS_FIX_LPIB),
-> > > > +	SND_PCI_QUIRK(0x8086, 0x2010, "Broadwell HDMI audio",
-> > > POS_FIX_LPIB),
-> > > >  	{}
-> > > >  };
+> > > > Regards,
+> > > > Libin
 > > > >
-> > > > --
-> > > > 1.8.3.2
+> > > > > -----Original Message-----
+> > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > > Sent: Thursday, May 8, 2014 1:09 PM
+> > > > > To: Yang, Libin
+> > > > > Cc: alsa-devel@alsa-project.org; Lin, Mengdong; Pierre-Louis
+> > > > > Bossart
+> > > > > Subject: Re: [PATCH] ALSA: hda - using POS_FIX_LPIB on Broadwell
+> > > > > HDMI Audio
+> > > > >
+> > > > > At Thu,  8 May 2014 02:03:24 +0800, libin.yang@intel.com wrote:
+> > > > > >
+> > > > > > From: Libin Yang <libin.yang@intel.com>
+> > > > > >
+> > > > > > Audio stream is not continuous if using position buffer on
+> > > > > > Broadwell HDMI audio. Sound is clipped.
+> > > > > > Fix this issue by using POS_FIX_LPIB.
+> > > > >
+> > > > > That's odd.  The recent Intel hardware has a wallclock support,
+> > > > > so the position should be corrected by that.
+> > > > >
+> > > > > In which situation did the problem happen?  Did it happen with
+> > > > > every application and any period/buffer setup?
+> > > > >
+> > > > >
+> > > > > Takashi
+> > > > >
+> > > > > >
+> > > > > > Signed-off-by: Libin Yang <libin.yang@intel.com>
+> > > > > > ---
+> > > > > >  sound/pci/hda/hda_intel.c | 1 +
+> > > > > >  1 file changed, 1 insertion(+)
+> > > > > >
+> > > > > > diff --git a/sound/pci/hda/hda_intel.c
+> > > > > > b/sound/pci/hda/hda_intel.c index b540ad7..9cd40c6 100644
+> > > > > > --- a/sound/pci/hda/hda_intel.c
+> > > > > > +++ b/sound/pci/hda/hda_intel.c
+> > > > > > @@ -993,6 +993,7 @@ static struct snd_pci_quirk position_fix_list[]
+> = {
+> > > > > >  	SND_PCI_QUIRK(0x1565, 0x8218, "Biostar Microtech",
+> POS_FIX_LPIB),
+> > > > > >  	SND_PCI_QUIRK(0x1849, 0x0888, "775Dual-VSTA",
+> POS_FIX_LPIB),
+> > > > > >  	SND_PCI_QUIRK(0x8086, 0x2503, "DG965OT AAD63733-203",
+> > > > > POS_FIX_LPIB),
+> > > > > > +	SND_PCI_QUIRK(0x8086, 0x2010, "Broadwell HDMI audio",
+> > > > > POS_FIX_LPIB),
+> > > > > >  	{}
+> > > > > >  };
+> > > > > >
+> > > > > > --
+> > > > > > 1.8.3.2
+> > > > > >
 > > > >
 > >
-
-
-Regards,
-Libin
+> >
+> > Regards,
+> > Libin
+> >
