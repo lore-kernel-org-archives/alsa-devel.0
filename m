@@ -1,17 +1,26 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 7/7] ASoC: Intel: Allow byt-5640 machine driver
-	and SST core go to suspend
-Date: Thu,  8 May 2014 16:07:27 +0300
-Message-ID: <1399554447-16297-8-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1399554447-16297-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: hda - using POS_FIX_LPIB on
+ Broadwell HDMI Audio
+Date: Thu, 08 May 2014 18:06:08 +0200
+Message-ID: <536BAB70.3010905@canonical.com>
+References: <1399485804-75028-1-git-send-email-libin.yang@intel.com>
+ <s5hzjisq2kj.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D195232A6@SHSMSX103.ccr.corp.intel.com>
+ <s5htx90q0mi.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19523313@SHSMSX103.ccr.corp.intel.com>
+ <s5hr444pzap.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D1952333A@SHSMSX103.ccr.corp.intel.com>
+ <s5hoaz8pydg.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D195233B1@SHSMSX103.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D2222654F6
- for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 15:08:34 +0200 (CEST)
-In-Reply-To: <1399554447-16297-1-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EF5526549A
+ for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 18:06:13 +0200 (CEST)
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D195233B1@SHSMSX103.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,71 +30,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: "Yang, Libin" <libin.yang@intel.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since there is no support for compressed audio in Baytrail ADSP firmware
-there is no need to leave it on during suspend since ALSA PCM buffers are
-too small for leaving ADSP on for playing or recording.
 
-Implement PM callbacks to Baytrail byt-rt5640.c machine driver that call
-snd_soc_suspend and snd_soc_resume functions and unset the ignore_suspend
-fields in DAI links.
 
-This makes soc-core and ALSA core gracefully suspend and resume active
-stream and call sst_byt_pcm_trigger() during suspend-resume cycle.
+On 2014-05-08 09:58, Yang, Libin wrote:
+> Hi Takashi,
+>
+> I tested the non-snoop mode. It's worse than snoop mode. Only noise can be heard if using non-snoop mode.
+>
+> I add the print in the function azx_position_ok(). The below is the dmesg:
+> [  119.509631] <0>posbuf: 26368, lpib: 16320, wallclk: 2330325
+> [  119.509674] snd_hda_intel 0000:00:03.0: IRQ timing workaround is activated for card #0. Suggest a bigger bdl_pos_adj.
+> [  119.509683] <0>posbuf: 26368, lpib: 16332, wallclk: 2331659
+> [  119.515467] <0>posbuf: 28224, lpib: 17444, wallclk: 2470504
+> [  119.523460] <0>posbuf: 30592, lpib: 18976, wallclk: 2662403
+> [  119.531431] <0>posbuf: 32128, lpib: 20508, wallclk: 2853751
+> [  119.594932] snd_hda_intel 0000:00:03.0: Unstable LPIB (20416 >= 16384); disabling LPIB delay counting
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
- sound/soc/intel/byt-rt5640.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+This looks quite bad - is it not a hardware bug if LPIB > CBL (CBL 
+should be 16384 in this case)?
 
-diff --git a/sound/soc/intel/byt-rt5640.c b/sound/soc/intel/byt-rt5640.c
-index eff97c8e5218..9061616f0f45 100644
---- a/sound/soc/intel/byt-rt5640.c
-+++ b/sound/soc/intel/byt-rt5640.c
-@@ -124,7 +124,6 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBS_CFS,
- 		.init = byt_rt5640_init,
--		.ignore_suspend = 1,
- 		.ops = &byt_rt5640_ops,
- 	},
- 	{
-@@ -137,7 +136,6 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			   SND_SOC_DAIFMT_CBS_CFS,
- 		.init = NULL,
--		.ignore_suspend = 1,
- 		.ops = &byt_rt5640_ops,
- 	},
- };
-@@ -152,6 +150,17 @@ static struct snd_soc_card byt_rt5640_card = {
- 	.num_dapm_routes = ARRAY_SIZE(byt_rt5640_audio_map),
- };
- 
-+#ifdef CONFIG_PM_SLEEP
-+static const struct dev_pm_ops byt_rt5640_pm_ops = {
-+	.suspend = snd_soc_suspend,
-+	.resume = snd_soc_resume,
-+};
-+
-+#define BYT_RT5640_PM_OPS	(&byt_rt5640_pm_ops)
-+#else
-+#define BYT_RT5640_PM_OPS	NULL
-+#endif
-+
- static int byt_rt5640_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = &byt_rt5640_card;
-@@ -177,6 +186,7 @@ static struct platform_driver byt_rt5640_audio = {
- 	.driver = {
- 		.name = "byt-rt5640",
- 		.owner = THIS_MODULE,
-+		.pm = BYT_RT5640_PM_OPS,
- 	},
- };
- module_platform_driver(byt_rt5640_audio)
+
 -- 
-2.0.0.rc0
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
