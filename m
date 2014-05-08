@@ -1,21 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 7/7] ASoC: rsnd: remove compatibility code
-Date: Thu, 8 May 2014 12:18:33 +0100
-Message-ID: <20140508111833.GD12304@sirena.org.uk>
-References: <87sipg20h1.wl%kuninori.morimoto.gx@gmail.com>
- <87ioqc20ei.wl%kuninori.morimoto.gx@gmail.com>
- <20140414190327.GE25182@sirena.org.uk>
- <87bnv9nn19.wl%kuninori.morimoto.gx@renesas.com>
- <20140508052821.GY12304@sirena.org.uk>
- <8761lgodfc.wl%kuninori.morimoto.gx@renesas.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH 0/7] ASoC: Intel: Baytrail SST suspend/resume
+	support
+Date: Thu,  8 May 2014 16:07:20 +0300
+Message-ID: <1399554447-16297-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4742611805812165152=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 56AB72652AC
- for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 13:18:51 +0200 (CEST)
-In-Reply-To: <8761lgodfc.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33D9226166B
+ for <alsa-devel@alsa-project.org>; Thu,  8 May 2014 15:08:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+This set adds suspend/resume support to Baytrail SST. This is
+implemented by putting the DSP into reset and by releasing driver
+resources before suspend. In resume path the DSP is rebooted in normal
+boot state. Active streams are restored by restarting them from last
+known buffer position before suspend.
 
---===============4742611805812165152==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QphOdKld0oqDwxc9"
-Content-Disposition: inline
+Patches 1-5 are preparing for the suspend/resume and patch 6 implements
+the core logic that takes care of stopping the DSP before suspend and
+restarting it again after resume. Patch 7 removes ignore_suspend flag
+from byt-rt5640 machine driver since it doesn't have use at the moment
+and adds suspend/resume callbacks that are hooked to ASoC core. This
+takes care that active stream will be paused and resumed over
+suspend/resume cycle on byt-rt5640 machine.
 
+Jarkko Nikula (5):
+  ASoC: Intel: Sample Baytrail DSP DMA pointer only after each period
+  ASoC: Intel: Simplify Baytrail stream control IPC construction
+  ASoC: Intel: Pass stream start position to sst_byt_stream_start()
+  ASoC: Intel: Move Baytrail extended fw address saving to
+    sst_byt_boot()
+  ASoC: Intel: Allow byt-5640 machine driver and SST core go to suspend
 
---QphOdKld0oqDwxc9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Liam Girdwood (2):
+  ASoC: Intel: Allow Rx/Tx message list can be cleared prior to suspend
+  ASoC: Intel: Add Baytrail suspend/resume support
 
-On Thu, May 08, 2014 at 01:57:50AM -0700, Kuninori Morimoto wrote:
+ sound/soc/intel/byt-rt5640.c       |  14 +++-
+ sound/soc/intel/sst-baytrail-dsp.c |  14 ++--
+ sound/soc/intel/sst-baytrail-ipc.c | 124 ++++++++++++++++++++++++++++------
+ sound/soc/intel/sst-baytrail-ipc.h |   7 +-
+ sound/soc/intel/sst-baytrail-pcm.c | 135 ++++++++++++++++++++++++++++++++-----
+ 5 files changed, 249 insertions(+), 45 deletions(-)
 
-> > Please resend any patches you want me to look at along with a pull
-> > request for their dependencies.
-
-> These patches removes old style clock / compatibility code from driver.
-> These are based on platform side cleanup patches
-> which are already accepted by maintainer.
-
-Pulled and applied, thanks.
-
---QphOdKld0oqDwxc9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTa2gGAAoJELSic+t+oim9WI8P/j9OBupSJQfnrbRanFXaUr0y
-j5KQJolJmW/Htj89UpLF9IYjPoEJH6014OM019pTnmpbam53oudmnTvPpMiWKVaM
-1Yqrl9mslT5Kg63RPRJuCu6WryMtJzOwQrrEGBGDqlN7/6TdGNjHG0i/fIn0lT9l
-MmFO//8xF1rQFmZozFxbGWWQrv5Hua5vMsYCPLUlmMQ9TGe9dg/drVtWKBoCX87g
-9CltnhCqMCwWtY76eC6OOB9V66uSS1ROkFW+xpyX6SxCptt9VHGiis2yKxypMwIP
-8yFVCA+dhEZh7cVrdY6CC7gdtfUCymW2Lo2+2Ez1P7RicfdEkX1pDzTpEuyRtPjw
-1aTslQkn380MAhY0Pq9EwGKwZ7awIjnqP1keVjAFdyZsS/q+9FbkfJ3lyKpwoL+c
-feacZxAQcAAR5VxZeZSmuLDeqgShTSjCymqm4urK+2RDIhwxnJVzmPRZEV2Fa1gI
-lSsp4Zt5WZdhKFsXzoiLovrVsjgRQS9XTf06wyyJlgC3BPhF53CBQPpB5WJfXoKz
-XoVHM7kuOVkHhjwbTogPcQ7iKj4WLMkCKwamnnPGhZw3DNLpGnGlXxNlGFkAB7HG
-ruvPwpNgggRsoUWpHOqRi5zGazWu5kq4pukgZhRHqO8+Jcnud3c6UFI2n6UsSZpQ
-ReNC/lfxxEvNNJvFGZXx
-=XOgT
------END PGP SIGNATURE-----
-
---QphOdKld0oqDwxc9--
-
---===============4742611805812165152==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4742611805812165152==--
+-- 
+2.0.0.rc0
