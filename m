@@ -1,42 +1,55 @@
-From: Lad Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH] sound: soc: intel: remove unneeded dependency from Makefile
-Date: Thu,  8 May 2014 10:56:11 +0530
-Message-ID: <1399526771-28422-1-git-send-email-prabhakar.csengg@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 7/7] ASoC: rsnd: remove compatibility code
+Date: Thu, 8 May 2014 06:28:21 +0100
+Message-ID: <20140508052821.GY12304@sirena.org.uk>
+References: <87sipg20h1.wl%kuninori.morimoto.gx@gmail.com>
+ <87ioqc20ei.wl%kuninori.morimoto.gx@gmail.com>
+ <20140414190327.GE25182@sirena.org.uk>
+ <87bnv9nn19.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="y8F/z0+7AaC3SFq4"
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87bnv9nn19.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, linux-sh@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
 
-this patch removes drops the entries form Makefile, fixing
-following issues when make clean was run,
+--y8F/z0+7AaC3SFq4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-scripts/Makefile.clean:17: sound/soc/intel/board/Makefile: No such file or directory
-scripts/Makefile.clean:17: sound/soc/intel/sst/Makefile: No such file or directory
+On Wed, May 07, 2014 at 05:15:33PM -0700, Kuninori Morimoto wrote:
 
-Signed-off-by: Lad, Prabhakar <prabhakar.csengg@gmail.com>
----
- Found this issue on linux-next not sure if this is fixed in
- sound subsystem tree.
- 
- sound/soc/intel/Makefile |    6 ------
- 1 file changed, 6 deletions(-)
+> Now, 1) - 5) are accepted by ARM maintainer.
+> Can you please re-check 6) - 7) ?
 
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index 57242c4..26544c5 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -32,9 +32,3 @@ PLATFORM_LIBS = platform-libs/controls_v2_dpcm.o
- 
- snd-soc-sst-platform-objs := pcm.o compress.o $(PLATFORM_LIBS)
- obj-$(CONFIG_SND_SST_PLATFORM) += snd-soc-sst-platform.o
--
--# Relevant Machine driver
--obj-$(CONFIG_SND_SST_MACHINE) += board/
--
--# IPC driver
--obj-$(CONFIG_SND_INTEL_SST) += sst/
--- 
-1.7.9.5
+Please resend any patches you want me to look at along with a pull
+request for their dependencies.
+
+--y8F/z0+7AaC3SFq4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTaxXyAAoJELSic+t+oim9uw0P/A5qpE6pKd7jIESXTYVijpdt
+xlIbHXx/VecP4IMowc+QceVY+MjsLSNtdCr1bbSKjYvVqmLBzGLtGW27GtmFYRGc
+/GCy1XZ3RcZlSAkEVMe5KvZiqx5zr6brQLF68BQSg23nmC9iwR5EjfOkvB9OBuNJ
+X8QFw90Y8Z1uXQ+U/hEQoGtvUtSkmX67fCdDWFP2Doc5f+OedASGjwUP9chilVbk
+lI5xzHk709nsrT4mjIzKoj/FhN8o8isjqpr+pPrkOHOflWkL5E5TBQAZw5+SN5TA
+dTa2oAI0MwCPuPtasV7V/nruwC5xFRazoyh5141xCqa0FdcDc68g8N0tl2HabOGF
+1bwnI6w7j8x/VRI3T+PIKk7ilttbmxiOd0uAYKw+0JAyIqjpJKmEEaWFSv2vpSCS
+2nWEg5LkcHMxRJmI1Owa6XWIpdPKM8Cq1mQ5RZfqpVrTRwvoz1EnH/hB1VBZM67y
+1bSW24EjNCKaqoScv+YNnQbJ/kDPuoEUNMNGIysKqhRed6A0KtHhfKsoeYkFRN+D
+W4tc0kvuP/tr2hVph/idyrEuiyS3eHnDUhF0EbDqzI/8Ru2sMmORgeuxoLmF9shD
+FW4z4o7WJhjqIyRTuLhdbs9cj820k/JpWYxr2N5DA0VZSAUVLPR0ZXstPSD4Y1+K
+su9ryqzFMQOXuDxhEsVv
+=oC1T
+-----END PGP SIGNATURE-----
+
+--y8F/z0+7AaC3SFq4--
