@@ -1,15 +1,17 @@
 From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 1/2] ASoC: Intel: Fix Baytrail SST DSP firmware
-	loading
-Date: Fri,  9 May 2014 16:47:43 +0300
-Message-ID: <1399643264-7669-1-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: Intel: Use ACPI device for Baytrail
+	PCM buffer allocation
+Date: Fri,  9 May 2014 16:47:44 +0300
+Message-ID: <1399643264-7669-2-git-send-email-jarkko.nikula@linux.intel.com>
+References: <1399643264-7669-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id CDDF5261A40
- for <alsa-devel@alsa-project.org>; Fri,  9 May 2014 15:48:11 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05344261A5A
+ for <alsa-devel@alsa-project.org>; Fri,  9 May 2014 15:48:21 +0200 (CEST)
+In-Reply-To: <1399643264-7669-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +25,41 @@ To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 10df350977b1 ("ASoC: Intel: Fix Audio DSP usage when IOMMU is
-enabled.") caused following regression in Baytrail SST:
-
-baytrail-pcm-audio baytrail-pcm-audio: error: DMA alloc failed
-baytrail-pcm-audio baytrail-pcm-audio: error: failed to load firmware
-
-Fix this by calling dma_coerce_mask_and_coherent() in sst_byt_init() with
-the same dma_dev device what is now used in sst_fw_new() when allocating the
-DMA buffer.
+This follows the same idea than commit 10df350977b1
+("ASoC: Intel: Fix Audio DSP usage when IOMMU is enabled.") by using only
+ACPI device for all DMA allocations. Since DMA masking is already done in
+firmware loading it can be removed from here.
 
 Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 ---
- sound/soc/intel/sst-baytrail-dsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/sst-baytrail-pcm.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/sst-baytrail-dsp.c b/sound/soc/intel/sst-baytrail-dsp.c
-index 4a5d489e520b..fc588764ffa3 100644
---- a/sound/soc/intel/sst-baytrail-dsp.c
-+++ b/sound/soc/intel/sst-baytrail-dsp.c
-@@ -324,7 +324,7 @@ static int sst_byt_init(struct sst_dsp *sst, struct sst_pdata *pdata)
- 		return ret;
- 	}
+diff --git a/sound/soc/intel/sst-baytrail-pcm.c b/sound/soc/intel/sst-baytrail-pcm.c
+index 00a2118d20f5..0afb3491f5f0 100644
+--- a/sound/soc/intel/sst-baytrail-pcm.c
++++ b/sound/soc/intel/sst-baytrail-pcm.c
+@@ -319,18 +319,16 @@ static int sst_byt_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 	size_t size;
++	struct snd_soc_platform *platform = rtd->platform;
++	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
+ 	int ret = 0;
  
--	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(32));
-+	ret = dma_coerce_mask_and_coherent(sst->dma_dev, DMA_BIT_MASK(32));
- 	if (ret)
- 		return ret;
- 
+-	ret = dma_coerce_mask_and_coherent(rtd->card->dev, DMA_BIT_MASK(32));
+-	if (ret)
+-		return ret;
+-
+ 	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
+ 	    pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+ 		size = sst_byt_pcm_hardware.buffer_bytes_max;
+ 		ret = snd_pcm_lib_preallocate_pages_for_all(pcm,
+ 							    SNDRV_DMA_TYPE_DEV,
+-							    rtd->card->dev,
++							    pdata->dma_dev,
+ 							    size, size);
+ 		if (ret) {
+ 			dev_err(rtd->dev, "dma buffer allocation failed %d\n",
 -- 
 2.0.0.rc0
