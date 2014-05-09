@@ -1,65 +1,32 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: Use ACPI device for Baytrail
-	PCM buffer allocation
-Date: Fri,  9 May 2014 16:47:44 +0300
-Message-ID: <1399643264-7669-2-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1399643264-7669-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCAxLzJdIG1mZDogbWMxM3h4eDogRG8gbm90IHVzZSBwbGF0?=
+ =?UTF-8?B?Zm9ybSBkYXRhIHdpdGggZGV2aWNldHJlZQ==?=
+Date: Fri, 09 May 2014 17:56:09 +0400
+Message-ID: <1399643769.716496780@f345.i.mail.ru>
+References: <1398926883-21778-1-git-send-email-shc_work@mail.ru>
+ <20140509113030.GV5767@lee--X1>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 05344261A5A
- for <alsa-devel@alsa-project.org>; Fri,  9 May 2014 15:48:21 +0200 (CEST)
-In-Reply-To: <1399643264-7669-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140509113030.GV5767@lee--X1>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?B?TGVlIEpvbmVz?= <lee.jones@linaro.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?B?U2FtdWVsIE9ydGl6?= <sameo@linux.intel.com>, =?UTF-8?B?TGlhbSBHaXJkd29vZA==?= <lgirdwood@gmail.com>, =?UTF-8?B?TWFyayBCcm93bg==?= <broonie@kernel.org>, =?UTF-8?B?SmFyb3NsYXYgS3lzZWxh?= <perex@perex.cz>, =?UTF-8?B?VGFrYXNoaSBJd2Fp?= <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-This follows the same idea than commit 10df350977b1
-("ASoC: Intel: Fix Audio DSP usage when IOMMU is enabled.") by using only
-ACPI device for all DMA allocations. Since DMA masking is already done in
-firmware loading it can be removed from here.
-
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
- sound/soc/intel/sst-baytrail-pcm.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/intel/sst-baytrail-pcm.c b/sound/soc/intel/sst-baytrail-pcm.c
-index 00a2118d20f5..0afb3491f5f0 100644
---- a/sound/soc/intel/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/sst-baytrail-pcm.c
-@@ -319,18 +319,16 @@ static int sst_byt_pcm_new(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_pcm *pcm = rtd->pcm;
- 	size_t size;
-+	struct snd_soc_platform *platform = rtd->platform;
-+	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
- 	int ret = 0;
- 
--	ret = dma_coerce_mask_and_coherent(rtd->card->dev, DMA_BIT_MASK(32));
--	if (ret)
--		return ret;
--
- 	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
- 	    pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
- 		size = sst_byt_pcm_hardware.buffer_bytes_max;
- 		ret = snd_pcm_lib_preallocate_pages_for_all(pcm,
- 							    SNDRV_DMA_TYPE_DEV,
--							    rtd->card->dev,
-+							    pdata->dma_dev,
- 							    size, size);
- 		if (ret) {
- 			dev_err(rtd->dev, "dma buffer allocation failed %d\n",
--- 
-2.0.0.rc0
+RnJpLCA5IE1heSAyMDE0IDEyOjMwOjMwICswMTAwINC+0YIgTGVlIEpvbmVzIDxsZWUuam9uZXNA
+bGluYXJvLm9yZz46Cj4gPiBUaGlzIHBhdGNoIHJlbW92ZXMgcGxhdGZvcm0gZGF0YSB1c2FnZSBm
+b3IgY29kZWMgYW5kIHRvdWNoc2NyZWVuCj4gPiB3aGVuIGRyaXZlciBpcyB1c2VkIHdpdGggZGV2
+aWNldHJlZS4KPiA+IFRoaXMgZml4ZXMgcG9zc2libGUgIm51bGwgcG9pbnRlciBkZXJlZmVyZW5j
+ZSIgZXJyb3IgaWYgRFRTIHVzZXMKPiA+ICJmc2wsbWMxM3h4eC11c2VzLWNvZGVjIiBvciAiZnNs
+LG1jMTN4eHgtdXNlcy10b3VjaCIgb3B0aW9ucy4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogQWxl
+eGFuZGVyIFNoaXlhbiA8c2hjX3dvcmtAbWFpbC5ydT4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvbWZk
+L21jMTN4eHgtY29yZS5jIHwgMTggKysrKysrKysrKy0tLS0tLS0tCj4gPiAgMSBmaWxlIGNoYW5n
+ZWQsIDEwIGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCj4gCj4gQXBwbGllZCwgdGhhbmtz
+LgoKVGhpcyBwYXRjaCBoYXMgYmVlbiB3cml0dGVuIGFzIGEgd2F5IHRvIHNlcGFyYXRlIE1GRCBh
+bmQgQVNvQyBjaGFuZ2VzIG9mCnRoZSBwYXRjaDogKEFTb0M6IG1jMTM3ODM6IEFkZCBkZXZpY2V0
+cmVlIHN1cHBvcnQpCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0
+L25leHQvbGludXgtbmV4dC5naXQvY29tbWl0Lz9pZD03ODBhYWVmZjk2ODE5Y2E1OGUwY2FkODMw
+YmZiZTZlZWU5YWVmODJjCgpTbywgaXQgc2hvdWxkIHByb2R1Y2UgY29uZmxpY3QuCgotLS0KCg==
