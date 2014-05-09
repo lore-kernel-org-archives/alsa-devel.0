@@ -1,34 +1,30 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/2] mfd: mc13xxx: Do not use platform data with
- devicetree
-Date: Fri, 9 May 2014 12:30:30 +0100
-Message-ID: <20140509113030.GV5767@lee--X1>
-References: <1398926883-21778-1-git-send-email-shc_work@mail.ru>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: wm0010: set error code on allocation failure
+Date: Fri, 9 May 2014 14:55:38 +0300
+Message-ID: <20140509115538.GB32027@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1398926883-21778-1-git-send-email-shc_work@mail.ru>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> This patch removes platform data usage for codec and touchscreen
-> when driver is used with devicetree.
-> This fixes possible "null pointer dereference" error if DTS uses
-> "fsl,mc13xxx-uses-codec" or "fsl,mc13xxx-uses-touch" options.
->=20
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> ---
->  drivers/mfd/mc13xxx-core.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
+We should return -ENOMEM if the kzalloc() fails instead of returning
+-ENOMEM.
 
-Applied, thanks.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
+index 71ce315..8dac6c5 100644
+--- a/sound/soc/codecs/wm0010.c
++++ b/sound/soc/codecs/wm0010.c
+@@ -682,6 +682,7 @@ static int wm0010_boot(struct snd_soc_codec *codec)
+ 		if (!img_swap) {
+ 			dev_err(codec->dev,
+ 				"Failed to allocate image buffer\n");
++			ret = -ENOMEM;
+ 			goto abort;
+ 		}
+ 
