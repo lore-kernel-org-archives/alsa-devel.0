@@ -1,15 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: Intel: Build Medfield compressed ops
-Date: Thu,  8 May 2014 23:30:37 +0100
-Message-ID: <1399588237-21024-1-git-send-email-broonie@kernel.org>
+From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+Subject: Re:
+ =?utf-8?q?=5BPATCH=5D_alsa-plugins=3A_fix_polling_an?=
+ =?utf-8?q?d_recovering_in_alsa-jack_plugin?=
+Date: Fri, 09 May 2014 04:00:50 +0400
+Message-ID: <1399593650.837833135@f94.i.mail.ru>
+References: <1399056393.47049129@f181.i.mail.ru> <s5hzjiwdxsk.wl%tiwai@suse.de>
+Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C164E261A1D
- for <alsa-devel@alsa-project.org>; Fri,  9 May 2014 00:30:51 +0200 (CEST)
+Received: from f94.i.mail.ru (f94.i.mail.ru [94.100.185.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id CDBBF261A81
+ for <alsa-devel@alsa-project.org>; Fri,  9 May 2014 02:00:51 +0200 (CEST)
+Received: from mail by f94.i.mail.ru with local (envelope-from
+ <sergemp@mail.ru>) id 1WiYF8-0000pV-Sr
+ for alsa-devel@alsa-project.org; Fri, 09 May 2014 04:00:51 +0400
+In-Reply-To: <s5hzjiwdxsk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,34 +26,250 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@linaro.org>
+To: =?UTF-8?B?YWxzYS1kZXZlbA==?= <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+At Mon 05 May 2014 Takashi Iwai wrote:
 
-Since commit 4b68b4e1c564 (ASoC: Intel: split the pcm and compress to
-different files) the compressed ops haven't been built causing link
-failures on allyesconfig and making the driver unbuildable.  Add the
-object to the Makefile to fix that.
+>> This patch fixes polling in alsa-to-jack plugin.
+>> It makes poll()+_poll_revents() return correct values
+>> whenever there's something to read/write.
+>>
+>> Additionally jack_deactivate() code makes it survive snd_pcm_recover().
+>>
+>> It works for the code example I posted before, aplay, arecord, mozilla, etc.
+>>
+>> Comments and suggestions are welcome.
+>
+> Thanks for the patch.  The basic idea looks good, but some suggestions
+> below.
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
+Thank you for your response and comments.
+
+> You don't need inline in general.  Compilers should be smart enough
+> nowadays.
+
+Uninlined.
+
+> Please follow the coding style in that file.  The brace is placed in
+> the same line as if ().
+
+Missed that, sorry. Fixed.
+
+> So, it's intended to clear all pending writes, right?
+> If so, do reads in loop.  Then you don't have to use such a big
+> buffer.  The size of 32 or such should be enough.
+
+Done.
+
+> The function names are a bit too ambiguous and hard to understand what
+> they are really doing only from the names.
+
+How about pcm_poll_block() and pcm_poll_unblock()?
+
+>> +    poll_unblocked(io); /* unblock socket for initial polling if needed */
+>
+> Is this really needed?
+
+Playback pcm accepts writes since _prepare(), so poll() is unblocked there.
+Without it playback pcm gets poll() blocked by default and a code like:
+  _open();
+  _set_params();
+  while (still_playing) {
+    if (poll() > 0 && _revents() == 0 && revents&POLLOUT)
+      _write();
+  }
+never starts writing.
+
+>> +
+>> +    if (jack->activated) {
+>> +            jack_deactivate(jack->client);
+>> +            jack->activated = 0;
+>> +    }
+>
+> This is same as just calling snd_pcm_jack_stop().
+
+Right. To put snd_pcm_jack_stop() call in snd_pcm_jack_prepare()
+I have to move snd_pcm_jack_prepare() below snd_pcm_jack_stop(),
+that makes patch larger.
+
+Patch updated and ready for more comments.
+
 ---
- sound/soc/intel/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index 5d3fb6f35a19..0db4e2f336dc 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -2,7 +2,7 @@
- snd-soc-sst-dsp-objs := sst-dsp.o sst-firmware.o
- snd-soc-sst-acpi-objs := sst-acpi.o
+diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
+index 7a8b24d..837e15c 100644
+--- a/jack/pcm_jack.c
++++ b/jack/pcm_jack.c
+@@ -42,6 +42,7 @@ typedef struct {
+ 	unsigned int num_ports;
+ 	unsigned int hw_ptr;
+ 	unsigned int sample_bits;
++	snd_pcm_uframes_t min_avail;
  
--snd-soc-sst-mfld-platform-objs := sst-mfld-platform-pcm.o
-+snd-soc-sst-mfld-platform-objs := sst-mfld-platform-pcm.o sst-mfld-platform-compress.o
- snd-soc-mfld-machine-objs := mfld_machine.o
+ 	unsigned int channels;
+ 	snd_pcm_channel_area_t *areas;
+@@ -50,6 +51,38 @@ typedef struct {
+ 	jack_client_t *client;
+ } snd_pcm_jack_t;
  
- obj-$(CONFIG_SND_SST_MFLD_PLATFORM) += snd-soc-sst-mfld-platform.o
++static int pcm_poll_block(snd_pcm_ioplug_t *io)
++{
++	static char buf[32];
++	snd_pcm_sframes_t avail;
++	snd_pcm_jack_t *jack = io->private_data;
++
++	if (io->state == SND_PCM_STATE_RUNNING) {
++		avail = snd_pcm_avail_update(io->pcm);
++		if (avail >= 0 && avail < jack->min_avail) {
++			while (read(io->poll_fd, &buf, sizeof(buf)) == sizeof(buf));
++			return 1;
++		}
++	}
++
++	return 0;
++}
++
++static int pcm_poll_unblock(snd_pcm_ioplug_t *io)
++{
++	static char buf[1];
++	snd_pcm_sframes_t avail;
++	snd_pcm_jack_t *jack = io->private_data;
++
++	avail = snd_pcm_avail_update(io->pcm);
++	if (avail < 0 || avail >= jack->min_avail) {
++		write(jack->fd, &buf, 1);
++		return 1;
++	}
++
++	return 0;
++}
++
+ static void snd_pcm_jack_free(snd_pcm_jack_t *jack)
+ {
+ 	if (jack) {
+@@ -81,14 +114,10 @@ static int snd_pcm_jack_poll_revents(snd_pcm_ioplug_t *io,
+ 				     struct pollfd *pfds, unsigned int nfds,
+ 				     unsigned short *revents)
+ {
+-	static char buf[1];
+-	
+ 	assert(pfds && nfds == 1 && revents);
+ 
+-	read(pfds[0].fd, buf, 1);
+-
+ 	*revents = pfds[0].revents & ~(POLLIN | POLLOUT);
+-	if (pfds[0].revents & POLLIN)
++	if (pfds[0].revents & POLLIN && !pcm_poll_block(io))
+ 		*revents |= (io->stream == SND_PCM_STREAM_PLAYBACK) ? POLLOUT : POLLIN;
+ 	return 0;
+ }
+@@ -105,7 +134,6 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
+ 	snd_pcm_jack_t *jack = io->private_data;
+ 	const snd_pcm_channel_area_t *areas;
+ 	snd_pcm_uframes_t xfer = 0;
+-	static char buf[1];
+ 	unsigned int channel;
+ 	
+ 	for (channel = 0; channel < io->channels; channel++) {
+@@ -145,44 +173,11 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
+ 		xfer += frames;
+ 	}
+ 
+-	write(jack->fd, buf, 1); /* for polling */
++	pcm_poll_unblock(io); /* unblock socket for polling if needed */
+ 
+ 	return 0;
+ }
+ 
+-static int snd_pcm_jack_prepare(snd_pcm_ioplug_t *io)
+-{
+-	snd_pcm_jack_t *jack = io->private_data;
+-	unsigned int i;
+-
+-	jack->hw_ptr = 0;
+-
+-	if (jack->ports)
+-		return 0;
+-
+-	jack->ports = calloc(io->channels, sizeof(jack_port_t*));
+-
+-	for (i = 0; i < io->channels; i++) {
+-		char port_name[32];
+-		if (io->stream == SND_PCM_STREAM_PLAYBACK) {
+-
+-			sprintf(port_name, "out_%03d", i);
+-			jack->ports[i] = jack_port_register(jack->client, port_name,
+-							    JACK_DEFAULT_AUDIO_TYPE,
+-							    JackPortIsOutput, 0);
+-		} else {
+-			sprintf(port_name, "in_%03d", i);
+-			jack->ports[i] = jack_port_register(jack->client, port_name,
+-							    JACK_DEFAULT_AUDIO_TYPE,
+-							    JackPortIsInput, 0);
+-		}
+-	}
+-
+-	jack_set_process_callback(jack->client,
+-				  (JackProcessCallback)snd_pcm_jack_process_cb, io);
+-	return 0;
+-}
+-
+ static int snd_pcm_jack_start(snd_pcm_ioplug_t *io)
+ {
+ 	snd_pcm_jack_t *jack = io->private_data;
+@@ -233,6 +228,54 @@ static int snd_pcm_jack_stop(snd_pcm_ioplug_t *io)
+ 	return 0;
+ }
+ 
++static int snd_pcm_jack_prepare(snd_pcm_ioplug_t *io)
++{
++	snd_pcm_jack_t *jack = io->private_data;
++	unsigned int i;
++	snd_pcm_sw_params_t *swparams;
++	int err;
++
++	jack->hw_ptr = 0;
++
++	jack->min_avail = io->period_size;
++	snd_pcm_sw_params_alloca(&swparams);
++	err = snd_pcm_sw_params_current(io->pcm, swparams);
++	if (err == 0) {
++		snd_pcm_sw_params_get_avail_min(swparams, &jack->min_avail);
++	}
++
++	/* deactivate jack connections if this is XRUN recovery */
++	snd_pcm_jack_stop(io);
++
++	/* playback pcm initially accepts writes, poll must be unblocked */
++	pcm_poll_unblock(io);
++
++	if (jack->ports)
++		return 0;
++
++	jack->ports = calloc(io->channels, sizeof(jack_port_t*));
++
++	for (i = 0; i < io->channels; i++) {
++		char port_name[32];
++		if (io->stream == SND_PCM_STREAM_PLAYBACK) {
++
++			sprintf(port_name, "out_%03d", i);
++			jack->ports[i] = jack_port_register(jack->client, port_name,
++							    JACK_DEFAULT_AUDIO_TYPE,
++							    JackPortIsOutput, 0);
++		} else {
++			sprintf(port_name, "in_%03d", i);
++			jack->ports[i] = jack_port_register(jack->client, port_name,
++							    JACK_DEFAULT_AUDIO_TYPE,
++							    JackPortIsInput, 0);
++		}
++	}
++
++	jack_set_process_callback(jack->client,
++				  (JackProcessCallback)snd_pcm_jack_process_cb, io);
++	return 0;
++}
++
+ static snd_pcm_ioplug_callback_t jack_pcm_callback = {
+ 	.close = snd_pcm_jack_close,
+ 	.start = snd_pcm_jack_start,
 -- 
-2.0.0.rc2
