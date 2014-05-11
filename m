@@ -1,17 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Support for getting "manufacturer" from
- snd_seq_client_info and/or snd_ctl_card_info
-Date: Sun, 11 May 2014 09:50:16 +0200
-Message-ID: <536F2BB8.8060002@ladisch.de>
-References: <CAOf41NnbBTYrfN10GUcxzdHmKZJj0YT=DC3ntfjuhpb=fa+o=A@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: dapm: Handle SND_SOC_DAPM_REG()
+	generically
+Date: Sun, 11 May 2014 19:27:47 +0200
+Message-ID: <1399829267-18755-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id CC0CC261A2C
- for <alsa-devel@alsa-project.org>; Sun, 11 May 2014 09:50:37 +0200 (CEST)
-In-Reply-To: <CAOf41NnbBTYrfN10GUcxzdHmKZJj0YT=DC3ntfjuhpb=fa+o=A@mail.gmail.com>
+Received: from smtp-out-016.synserver.de (smtp-out-079.synserver.de
+ [212.40.185.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 705A8261ABF
+ for <alsa-devel@alsa-project.org>; Sun, 11 May 2014 19:28:02 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +20,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Goode <agoode@chromium.org>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Adam Goode wrote:
-> I am doing a bit of work on the Alsa Web MIDI implementation in Chrome:
-> https://code.google.com/p/chromium/issues/detail?id=344410
->
-> Web MIDI likes to know the "manufacturer" field as part of its API:
-> http://webaudio.github.io/web-midi-api/#attributes-3
->
-> The current implementation in Chrome uses rawmidi, and then tries to parse
-> out the manufacturer from the longname of the card. This works reasonably
-> well, but is brittle and results in a lot of code.
->
-> I am working on a seq implementation for Chrome, to replace the rawmidi
-> implementation. I can retain the manufacturer extraction hack on the card,
-> but seq requires yet another hack to guess the card for a particular seq
-> client.
+Commit commit de9ba98b6d ("ASoC: dapm: Make widget power register settings more
+flexible") added generic support for on_val/off_val in the DAPM core. With this
+in place there is no need anymore for having a special event callback for
+SND_SOC_DAPM_REG() widgets.
 
-Did you test this with anything besides USB devices?
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ include/sound/soc-dapm.h |  7 ++-----
+ sound/soc/soc-dapm.c     | 20 --------------------
+ 2 files changed, 2 insertions(+), 25 deletions(-)
 
-And software clients do not have a card.
-
-> Any suggestions on how to extract the manufacturer more easily? The best
-> solution would be to add a manufacturer (or vendor) field to the
-> snd_seq_client_info ioctl struct.
-
-Old clients would not know to set this field.
-
-The Core MIDI documentation says:
-| kMIDIPropertyManufacturer
-|   Drivers *should* set this property on their devices.
-|   Creators of virtual endpoints *may* set this property on their endpoints.
-
-So what happens on OS X if this is not set?
-
-> A completely different solution would be to add all this info to sysfs
-
-USB devices already have this information in sysfs.
-
-
-How about an easy solution: just use "Linux".
-(IIRC this is what Microsoft's MME/WDM bridge driver does.)
-
-
-Regards,
-Clemens
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 75020f5..5932d66 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -256,9 +256,8 @@ struct device;
+ /* generic widgets */
+ #define SND_SOC_DAPM_REG(wid, wname, wreg, wshift, wmask, won_val, woff_val) \
+ {	.id = wid, .name = wname, .kcontrol_news = NULL, .num_kcontrols = 0, \
+-	.reg = -((wreg) + 1), .shift = wshift, .mask = wmask, \
+-	.on_val = won_val, .off_val = woff_val, .event = dapm_reg_event, \
+-	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD}
++	.reg = wreg, .shift = wshift, .mask = wmask, \
++	.on_val = won_val, .off_val = woff_val, }
+ #define SND_SOC_DAPM_SUPPLY(wname, wreg, wshift, winvert, wevent, wflags) \
+ {	.id = snd_soc_dapm_supply, .name = wname, \
+ 	SND_SOC_DAPM_INIT_REG_VAL(wreg, wshift, winvert), \
+@@ -362,8 +361,6 @@ struct regulator;
+ struct snd_soc_dapm_widget_list;
+ struct snd_soc_dapm_update;
+ 
+-int dapm_reg_event(struct snd_soc_dapm_widget *w,
+-		   struct snd_kcontrol *kcontrol, int event);
+ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event);
+ int dapm_clock_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index fb6c7b7..56fcd6f 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1059,26 +1059,6 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
+ }
+ 
+ /*
+- * Handler for generic register modifier widget.
+- */
+-int dapm_reg_event(struct snd_soc_dapm_widget *w,
+-		   struct snd_kcontrol *kcontrol, int event)
+-{
+-	unsigned int val;
+-
+-	if (SND_SOC_DAPM_EVENT_ON(event))
+-		val = w->on_val;
+-	else
+-		val = w->off_val;
+-
+-	soc_widget_update_bits(w, -(w->reg + 1),
+-			    w->mask << w->shift, val << w->shift);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(dapm_reg_event);
+-
+-/*
+  * Handler for regulator supply widget.
+  */
+ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
+-- 
+1.8.0
