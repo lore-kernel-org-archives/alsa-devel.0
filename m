@@ -1,82 +1,75 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5640: add default case for
-	unexpected ID
-Date: Mon, 12 May 2014 22:09:41 +0100
-Message-ID: <20140512210941.GX12304@sirena.org.uk>
-References: <1399362966-19908-1-git-send-email-bardliao@realtek.com>
+From: Joachim Eastwood <manabian@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 00/19] Rework OMAP4+ HDMI audio support
+Date: Mon, 12 May 2014 23:13:14 +0200
+Message-ID: <CAGhQ9VzjndCBp+ZHS3XPPvS4ors6u9BfHf4NY_HNYN5ynyQOYQ@mail.gmail.com>
+References: <cover.1399884780.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0502507553063613490=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DB09265171
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 23:09:51 +0200 (CEST)
-In-Reply-To: <1399362966-19908-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, swarren@wwwdotorg.org, lgirdwood@gmail.com, flove@realtek.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <cover.1399884780.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, broonie@kernel.org, peter.ujfalusi@ti.com, Tomi Valkeinen <tomi.valkeinen@ti.com>, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 12 May 2014 11:12, Jyri Sarha <jsarha@ti.com> wrote:
+> Since RFC version of the patch set:
+> - Split callbacks removal patch away from "Integrated ASoC DAI
+>   component driver implementation" patches for easier reading
+>
+> This set of patches fixes OMAP4+ HDMI audio. The structure of the
+> implementatin looks a bit different than before. Instead of creating a
+> driver specific API for a separate ASoC component driver to connect
+> to, this implementation integrates an the component driver into the
+> HDMI driver.
+>
+> The idea is to use an existing ASoC component driver API instead of
+> creating a new custom API for each HDMI IP and to avoid splitting the
+> driver to half for separate video and audio parts connected with the
+> API.
+>
+> The new implementation also uses simple-audio-card for a machine
+> driver instead of having its own HW specific machine driver.
+>
+> The patches are based on 3.15-rc2 merged with
+> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> and
+> git://git.kernel.org/pub/scm/linux/kernel/git/tomba/linux.git work/dss-dt-omap5
+>
+> Everything is pushed here here:
+> git://git.ti.com/~jyrisarha/ti-linux-kernel/jyrisarhas-audio-video-linux-feature-tree.git omap-hdmi-audio
 
---===============0502507553063613490==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gmHUB1IiSbxoxvGT"
-Content-Disposition: inline
+hey, this worked straight away :)
 
+But there seems to be something wrong with the channel mapping.
 
---gmHUB1IiSbxoxvGT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For stereo (speaker-test -c 2) the mapping is correct.
 
-On Tue, May 06, 2014 at 03:56:06PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
->=20
-> We may read an unexpected value when detemining which codec is attached.
-> In that case, either a unsupported codec is attached or something wrong=
-=20
-> with I2C. The driver will not work properly on both cases. So we return
-> an error for that.
+But for -c 4 and -c 8 it gets weird:
+speaker-test -c 4 -s X # where X is 1-4
+1: Front Left is Rear Left
+2: Front Right is Rear Right
+3: Rear Right is Front Right
+4: Rear Left is Front Left
 
-Applied, thanks.
+speaker-test -c 8 -s X # where X is 1-8
+1: Front Left is Rear Left
+2: Center is Rear Left
+3: Front Right is Rear Right
+4: Side Right is Front Right
+5: Rear Right is silent
+6: Rear Left is Center
+7: Side Left is Front Left
+8: LFE - Rear Right
 
---gmHUB1IiSbxoxvGT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I think you need to check what channel order ALSA expects. I believe
+speaker-test does the right thing on my HTPC normally connected to my
+receiver.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Note: I am not 100% sure about the -c 8 results. I might have to do
+the test again.
 
-iQIcBAEBAgAGBQJTcTiSAAoJELSic+t+oim9bd0P/A3cAgLYQIEbFD75QhghZKNT
-qGwOXVLO2qChpe0zXV2+Nc9aB0RpnfmroeIZRAh7OtjmWaPDg9oG2w6ESp1gavQR
-dSygTbTlf5hKeKSUuWPp2D8+xE6s/26TJ3anQ6RZqHPYP+9B36yePPA9g+56cdig
-NiS4m/op6j0tOeOmsIgKV8j3XsKtXUUNIrqSrPY6rlVxk4Cs++7ZgMF3DYcetVei
-of2znKh1g5fvyvk+661Q4mghQkqjdWKMrF7c4Rv+WwJpp3wbv2FpQA8X6VdH9KuK
-WWfuqG1WK1xR0BYjvx+nUDH9c4Hj0Sv9pUh26aQrbnWgkfbSkkMfjRByxsB/UnXg
-b3HLxRP0tlkh+B4FbPYR1bQ7CP0MPo4/vmLbpSR1jhxCPQ4QlB5ovoKXGyxAPdoX
-JE7OefGM+ilfCxRElCSAGv1BOe1xROUC2FKPD+1TXDpqPII0R2TrX6GjhdfLMUdi
-jdM0MmX6n9zPdUfo7pG10NKEpZwwancdJGcYkjOf22LdZbyFPcW06VJEmXQIVpgD
-PKXmrXf4GpXfuL02q/j2svm9PcCMESNItB9ALp+h2ALFFOFpQJgCUl4d2O+k9thS
-dgax0lrKmj3ag4VTJFTY7zfJKuhZlN5gEbvEUKcWh6kTJ3sIAY4Bpp6MeItL2vQS
-xOuoqLeOmqVvE3qiU7XG
-=CNWm
------END PGP SIGNATURE-----
+Tested on VAR-DVK-OM44 (OMAP4460) with Yamaha RX-A1030 Surround receiver.
 
---gmHUB1IiSbxoxvGT--
-
---===============0502507553063613490==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0502507553063613490==--
+regards
+Joachim Eastwood
