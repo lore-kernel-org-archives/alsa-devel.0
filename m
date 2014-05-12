@@ -1,31 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
 Subject: Re: On non-rewindability of resamplers
-Date: Mon, 12 May 2014 11:11:46 +0800
-Message-ID: <CAN8ccibugnc_8FEf_184PTWGBHdt4Wa0Af=A8AwT1_uFSJZX_g@mail.gmail.com>
-References: <5356A9B6.9060405@gmail.com> <5358FCF0.2040701@ladisch.de>
- <53597BA2.8080201@gmail.com> <5359FE72.8050605@canonical.com>
- <535A6C96.7040109@gmail.com>
- <CAN8ccibLsqb6oxai=+XOAhZ1dPwZmVVD2r3teDsz2a2_CthoOA@mail.gmail.com>
- <535B83E4.5050303@gmail.com>
- <CAN8ccibXtR=jc3NJjFMn88stytAhSxjNqbD5QsREDppbKDNg9Q@mail.gmail.com>
- <535E908C.4030509@gmail.com>
- <CAN8ccib7E7SQFo=Ro5Hksaj74Nn9NtHA1VSQpKX3ARHQDE_QHQ@mail.gmail.com>
- <535FDEA8.7010206@gmail.com>
- <CAN8cciYoR25LDZnr6R9Bn_ek4rX1q8XoRPT+H4Mpp3ecZJF85w@mail.gmail.com>
- <5364CE4D.7040506@gmail.com>
- <CAN8cciYB-vD0Oeigv=rGt1XDSZvqGm_KpyV_HwARCg8LLFEQjg@mail.gmail.com>
- <536E26A4.1060002@gmail.com>
+Date: Mon, 12 May 2014 10:52:38 +0600
+Message-ID: <53705396.3070406@gmail.com>
+References: <5356A9B6.9060405@gmail.com>	<5358FCF0.2040701@ladisch.de>	<53597BA2.8080201@gmail.com>	<5359FE72.8050605@canonical.com>	<535A6C96.7040109@gmail.com>	<CAN8ccibLsqb6oxai=+XOAhZ1dPwZmVVD2r3teDsz2a2_CthoOA@mail.gmail.com>	<535B83E4.5050303@gmail.com>	<CAN8ccibXtR=jc3NJjFMn88stytAhSxjNqbD5QsREDppbKDNg9Q@mail.gmail.com>	<535E908C.4030509@gmail.com>	<CAN8ccib7E7SQFo=Ro5Hksaj74Nn9NtHA1VSQpKX3ARHQDE_QHQ@mail.gmail.com>	<535FDEA8.7010206@gmail.com>	<CAN8cciYoR25LDZnr6R9Bn_ek4rX1q8XoRPT+H4Mpp3ecZJF85w@mail.gmail.com>	<5364CE4D.7040506@gmail.com>	<CAN8cciYB-vD0Oeigv=rGt1XDSZvqGm_KpyV_HwARCg8LLFEQjg@mail.gmail.com>	<536E26A4.1060002@gmail.com>
+ <CAN8ccibugnc_8FEf_184PTWGBHdt4Wa0Af=A8AwT1_uFSJZX_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="------------040708020706040109000407"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f54.google.com (mail-qa0-f54.google.com
- [209.85.216.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 25145262634
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 05:11:48 +0200 (CEST)
-Received: by mail-qa0-f54.google.com with SMTP id j15so6371780qaq.41
- for <alsa-devel@alsa-project.org>; Sun, 11 May 2014 20:11:47 -0700 (PDT)
-In-Reply-To: <536E26A4.1060002@gmail.com>
+Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
+ [209.85.215.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id C9313264EAA
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 06:56:08 +0200 (CEST)
+Received: by mail-la0-f41.google.com with SMTP id e16so1550883lan.0
+ for <alsa-devel@alsa-project.org>; Sun, 11 May 2014 21:56:08 -0700 (PDT)
+In-Reply-To: <CAN8ccibugnc_8FEf_184PTWGBHdt4Wa0Af=A8AwT1_uFSJZX_g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,215 +23,691 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
 Cc: sergemp@mail.ru, artur.stat@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pj4gID4KPj4gID4gSSBhY2tub3dsZWRnZSB0aGF0IHRoZXJlIHdhcyBzb21lIGNvbmZ1c2lvbiBy
-ZWdhcmRpbmcgdGhlIHByZWNpc2UKPj4gbWVhbmluZyBvZiB0aGUgZmxhZyAoZXNwZWNpYWxseSBn
-aXZlbiB0aHJlZSBwb3NzaWJsZSBzaXR1YXRpb25zIC0KPj4gYWNjdXJhdGUgdG8ganVzdCBvbmUg
-cGVyaW9kLCBhY2N1cmF0ZSB0byBiZXR0ZXIgdGhhbiBvbmUgcGVyaW9kIGJ1dAo+PiB3b3JzZSB0
-aGFuIG9uZSBzYW1wbGUsIGFjY3VyYXRlIHRvIG9uZSBzYW1wbGUpLCBhbmQgSSBhbSBub3QgdGhl
-Cj4+IGF1dGhvcml0eSBoZXJlLgoKaHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQvdWJ1bnR1Lytz
-b3VyY2UvcHVsc2VhdWRpby8rYnVnLzExODg0MjUKCkk6IFtwdWxzZWF1ZGlvXSBhbHNhLXNpbmsu
-YzogU3VjY2Vzc2Z1bGx5IG9wZW5lZCBkZXZpY2UgYTUyOjAuCkk6IFtwdWxzZWF1ZGlvXSBhbHNh
-LXNpbmsuYzogU2VsZWN0ZWQgbWFwcGluZyAnRGlnaXRhbCBTdXJyb3VuZCA1LjEKKElFQzk1OC9B
-QzMpJyAoaWVjOTU4LWFjMy1zdXJyb3VuZC01MSkuCkk6IFtwdWxzZWF1ZGlvXSBhbHNhLXNpbmsu
-YzogQ2Fubm90IGVuYWJsZSB0aW1lci1iYXNlZCBzY2hlZHVsaW5nLCBmYWxsaW5nCmJhY2sgdG8g
-c291bmQgSVJRIHNjaGVkdWxpbmcuCkk6IFtwdWxzZWF1ZGlvXSBhbHNhLXNpbmsuYzogU3VjY2Vz
-c2Z1bGx5IGVuYWJsZWQgbW1hcCgpIG1vZGUuCgpTZWVtIG9ubHkgaHcgZGV2aWNlIHJlcG9ydCB3
-aGV0aGVyIGl0IHN1cHBvcnQgZGlzYWJsZSBwZXJpb2Qgd2FrZS11cAoKaW9wbHVnIGRpZCBub3Qg
-c3VwcG9ydCBkaXNhYmxlIHBlcmlvZCB3YWtlLXVwIGFuZCB5b3UgbmVlZCBBNTIgcGx1Z2luIHRv
-CnByb3ZpZGUgYSBwYXJhbWV0ZXIgdG8gZGlzYWJsZSB0aGUgcGVyaW9kIHdha2V1cCBvZiB0aGUg
-c2xhdmUKCmRvIHlvdSBtZWFuIHB1bHNlYXVkaW8gY2FuIGRpc2FibGUgcGVyaW9kIHdha2V1cCBv
-ZiB0aGUgaGRhLWludGVsIHRocm91Z2gKZXh0cGx1ZyA/CgpEOiBbYWxzYS1zaW5rXSBhbHNhLXV0
-aWwuYzogUENNIHN0YXRlIGlzIFJVTk5JTkcKSTogW2Fsc2Etc2lua10gYWxzYS1zaW5rLmM6IFN0
-YXJ0aW5nIHBsYXliYWNrLgpJOiBbYWxzYS1zaW5rXSAoYWxzYS1saWIpcGNtX2h3LmM6IFNORFJW
-X1BDTV9JT0NUTF9TVEFSVCBmYWlsZWQgKC03NykKCmRvZXMgU05EUlZfUENNX0lPQ1RMX1NUQVJU
-IGZhaWwgbWVhbiBwY20gc3RhdGUgaXMgbm8gbG9uZ2VyIHJ1bm5pbmcgPwoKPgo+IEluc3RlYWQg
-b2Ygd2hhdCB5b3UgYXJlIHByb3Bvc2luZyBhYm92ZSwgSSB3cm90ZSBhIGxvb3AgdGhhdCByZXBl
-YXRlZGx5CmNhbGxzIHNuZF9wY21fcmV3aW5kYWJsZSgpIDcwMDAwMDAgdGltZXMgYW5kIHByaW50
-cyB0aGUgcmVzdWx0IGlmIGl0CmRpZmZlcnMgZnJvbSB0aGUgcHJldmlvdXMgb25lLiBXaXRoIHNu
-ZC1oZGEtaW50ZWwgKFBDSCksIGh3IHBsdWdpbiwgc3RlcmVvLApTMTZfTEUsIDQ4IGtIeiwgNiBw
-ZXJpb2RzLCBhbmQgYSBwZXJpb2Qgc2l6ZSBvZiAxMDI0LCBJIGdldCB0aGlzOgo+Cj4gUmV3aW5k
-YWJsZTogNjExOSwgbG9vcCBpdGVyYXRpb246IDAKPiBSZXdpbmRhYmxlOiA1MTE5LCBsb29wIGl0
-ZXJhdGlvbjogNTM4OTQzNAoKdGhlIG1ldGhvZCBjYW4gYmUgaW1wcm92ZWQKCmluc3RlYWQgb2Yg
-d2FrZSB1cCBpbiBoYWxmIHBlcmlvZCB0aW1lIHRvIGNoZWNrIHRoZSB2YWx1ZSBvZgpzbmRfcGNt
-X3Jld2luZGFibGUoKQoKMSkgc2V0IHRoZSB0aW1lciB0byB3YWtldXAgYXQgMS8xNiBwZXJpb2Qg
-dGltZSBpbnRlcnZhbHMsICBpZiB0aGUgdmFsdWVzCmRvZXMgbm90IGNoYW5nZSAsIHRoaXMgbWVh
-biB0aGF0IGl0IGRvZXMgbm90IHByb3ZpZGUgYWNjdXJhY3kgb2YgMS8xNiBvZgpwZXJpb2QgdGlt
-ZSBhbmQgeW91IGNhbiBrbm93IHdoZXRoZXIgaXQgc3VwcG9ydCAxLzggd2hlbiB0aGUgbmV4dCB3
-YWtldXAKb2NjdXIgYXQgMS84IHBlcmlvZCB0aW1lLCAuLi51bnRpbCB5b3UgZ2V0IDE2IHZhbHVl
-cyBmb3IgdGhlIGZpcnN0IHBlcmlvZAoKMikgaWYgdGhlIHZhbHVlIG9mIHNuZF9wY21fcmV3aW5k
-YWJsZSBjaGFuZ2UgYXQgZXZlcnkgMS8xNiBwZXJpb2QgdGltZQppbnRlcnZhbHMgLCBzZXQgdGhl
-IHRpbWVyIHRvIHdha2V1cCBhdCAxLzI1NiBwZXJpb2QgdGltZSBhdCB0aGUgc2Vjb25kCnBlcmlv
-ZAoKPgo+IFNvIHNuZF9wY21fcmV3aW5kYWJsZSgpIGNhbiByZXR1cm4gd2VpcmQgdmFsdWVzIHRo
-YXQgYXJlIHVwZGF0ZWQgZXZlcnkKcGVyaW9kIHNpemUgb3Igc28uIEFzIHN1Y2gsIEkgd291bGRu
-J3QgYmVsaWV2ZSBpdHMgcmV0dXJuIHZhbHVlIG91dCBvZiB0aGUKYm94IGV2ZW4gZm9yIGh3IGRl
-dmljZXMuIEF0IGxvb3AgaXRlcmF0aW9uIDUzODk0MzMsIHRoZSBDUFUgY2hld2VkIGVub3VnaAp0
-aW1lIGZvciBhbG1vc3Qgb25lIHBlcmlvZCwgYnV0IHNuZF9wY21fcmV3aW5kYWJsZSgpIHNhaWQg
-dGhhdCBhbG1vc3QgNgpwZXJpb2RzIGFyZSByZXdpbmRhYmxlLiBQcm9iYWJseSBhIG1pc3Npbmcg
-c3luY19wdHIoKSBzb21ld2hlcmUsIG9yIGEKZG9jdW1lbnRhdGlvbiBidWcuCj4KPiBXaXRoIHNu
-ZF9wY21fYXZhaWwoKSBpbnNlcnRlZCAod2hpY2ggZG9lcyBzeW5jaHJvbml6ZSB0aGUgcG9zaXRp
-b24pCmJlZm9yZSBlYWNoIGNhbGwgdG8gc25kX3BjbV9yZXdpbmRhYmxlKCksIEkgZ2V0Ogo+Cj4g
-UmV3aW5kYWJsZTogNjExOSwgbG9vcCBpdGVyYXRpb246IDAKPiBSZXdpbmRhYmxlOiA2MTEyLCBs
-b29wIGl0ZXJhdGlvbjogMgo+IFJld2luZGFibGU6IDYxMDQsIGxvb3AgaXRlcmF0aW9uOiA0Mgo+
-IFJld2luZGFibGU6IDYwOTYsIGxvb3AgaXRlcmF0aW9uOiA3Ngo+IFJld2luZGFibGU6IDYwODgs
-IGxvb3AgaXRlcmF0aW9uOiAxMjUKPiBSZXdpbmRhYmxlOiA2MDgwLCBsb29wIGl0ZXJhdGlvbjog
-MTczCj4gUmV3aW5kYWJsZTogNjA3MiwgbG9vcCBpdGVyYXRpb246IDIyMgo+IFJld2luZGFibGU6
-IDYwNjQsIGxvb3AgaXRlcmF0aW9uOiAyNzAKPgo+IChhbmQgYW4gdW5kZXJydW4gaW4gdGhlIGVu
-ZCkuCj4KPiBXaXRoIDQgY2hhbm5lbHM6Cj4KPiBSZXdpbmRhYmxlOiA2MTEyLCBsb29wIGl0ZXJh
-dGlvbjogMAo+IFJld2luZGFibGU6IDYxMDgsIGxvb3AgaXRlcmF0aW9uOiAyCj4gUmV3aW5kYWJs
-ZTogNjEwNCwgbG9vcCBpdGVyYXRpb246IDE0Cj4gUmV3aW5kYWJsZTogNjEwMCwgbG9vcCBpdGVy
-YXRpb246IDM2Cj4gUmV3aW5kYWJsZTogNjA5NiwgbG9vcCBpdGVyYXRpb246IDU4Cj4gUmV3aW5k
-YWJsZTogNjA5MiwgbG9vcCBpdGVyYXRpb246IDYzCj4KPiBXaXRoIDggY2hhbm5lbHM6Cj4KPiBS
-ZXdpbmRhYmxlOiA2MTA0LCBsb29wIGl0ZXJhdGlvbjogMAo+IFJld2luZGFibGU6IDYwOTgsIGxv
-b3AgaXRlcmF0aW9uOiAxCj4gUmV3aW5kYWJsZTogNjA5NiwgbG9vcCBpdGVyYXRpb246IDIKPiBS
-ZXdpbmRhYmxlOiA2MDk0LCBsb29wIGl0ZXJhdGlvbjogOQo+IFJld2luZGFibGU6IDYwOTIsIGxv
-b3AgaXRlcmF0aW9uOiAyNAo+IFJld2luZGFibGU6IDYwOTAsIGxvb3AgaXRlcmF0aW9uOiAzMgo+
-IFJld2luZGFibGU6IDYwODgsIGxvb3AgaXRlcmF0aW9uOiA0MQo+Cj4gU28gb24gbXkgc25kLWhk
-YS1pbnRlbCwgdGhlIGdyYW51bGFyaXR5IG9mIHRoZSBwb2ludGVyIGlzIDMyIGJ5dGVzLgo+Cj4g
-Rm9yIEhhc3dlbGwgSERNSSAob24gYW5vdGhlciBzbmQtaGRhLWludGVsKSwgc3RlcmVvLCBTMTZf
-TEU6Cj4KPiBSZXdpbmRhYmxlOiA2MTI4LCBsb29wIGl0ZXJhdGlvbjogMAo+IFJld2luZGFibGU6
-IDYxMTIsIGxvb3AgaXRlcmF0aW9uOiAxMjkKPiBSZXdpbmRhYmxlOiA2MDk2LCBsb29wIGl0ZXJh
-dGlvbjogMzM5Cj4gUmV3aW5kYWJsZTogNjA4MCwgbG9vcCBpdGVyYXRpb246IDU1MQo+IFJld2lu
-ZGFibGU6IDYwNjQsIGxvb3AgaXRlcmF0aW9uOiA3NTMKPiBSZXdpbmRhYmxlOiA2MDQ4LCBsb29w
-IGl0ZXJhdGlvbjogOTY2Cj4gUmV3aW5kYWJsZTogNjAzMiwgbG9vcCBpdGVyYXRpb246IDExODAK
-Pgo+IHNvIHRoZSByZXN1bHRpbmcgZ3JhbnVsYXJpdHkgaXMgNjQgYnl0ZXMuCj4KPiBBbiB1bmZv
-cnR1bmF0ZSBvYnNlcnZhdGlvbiBpcyB0aGF0LCB3aXRob3V0IHNuZF9wY21fYXZhaWwoKSwgZXZl
-biBvbiBodwpqdXN0IGFmdGVyIGFuIHVuZGVycnVuIHNuZF9wY21fcmV3aW5kYWJsZSgpIGNhbiBy
-ZXR1cm4gbmVnYXRpdmUgbnVtYmVycwpzdWNoIGFzIC0xNiBvciAtMjUgdGhhdCBsZWFkIHRvIG5v
-bnNlbnNlIGVycm9yIGNvZGVzIChFQlVTWSBvciBFTk9UVFkpLgo+CgpwY21fcmV3aW5kMi5jIHVz
-ZSBwZXJpb2Qgc2l6ZSBpbnN0ZWFkIG9mIGJ1ZmZlciBzaXplIGFzIHN0YXJ0X3RocmVzaG9sZCAs
-CnBjbSBpcyBhbHJlYWR5IHN0YXJ0ZWQgYmVmb3JlIHlvdSBmaWxsIHRoZSBidWZmZXIgZnVsbCBh
-bmQgcGNtIGNhbiBiZQpzdG9wcGVkIGF0IHVuZGVycnVuIGlmIHlvdXIgcHJvZ3JhbSBkb2VzIG5v
-dCB1c2UgYm91bmRhcnkgYXMgc3RvcF90aHJlc2hvbGQKCnRoaXMgYWZmZWN0IHlvdXIgdGltaW5n
-IGlmIHlvdXIgdGVzdCBwcm9ncmFtIGJlaGF2ZSBsaWtlIHBjbV9yZXdpbmQyLmMKc3RhdGljIHNu
-ZF9wY21fc2ZyYW1lc190IHNuZF9wY21faHdfcmV3aW5kYWJsZShzbmRfcGNtX3QgKnBjbSkKCnsK
-ICAgICAgICByZXR1cm4gc25kX3BjbV9tbWFwX2h3X2F2YWlsKHBjbSk7CiAgfQoKaWYgdGhpcyBm
-dW5jdGlvbiByZXR1cm4gdGhlIHNhZmUgdmFsdWUsIERvIHlvdSBtZWFuIGl0IG11c3QgaHdfc3lu
-YyB0aGUKcG9pbnRlciBhbmQgIHNob3VsZCByZXR1cm4gemVybyBpZiBzbmRfcGNtX21tYXBfaHdf
-YXZhaWwgaXMgbmVnYXRpdmUgYW5kCmNoZWNrIHRoZSBwY20gc3RhdGUgIHRvIHJldHVybiBuZWdh
-dGl2ZSBlcnJvciBjb2RlID8KCj4KPj4KPj4KaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL350
-aXdhaS93cml0aW5nLWFuLWFsc2EtZHJpdmVyL2NoMDVzMDcuaHRtbCNwY20taW50ZXJmYWNlLWlu
-dGVycnVwdC1oYW5kbGVyLWJvdW5kYXJ5Cj4+Cj4+IEhpZ2ggZnJlcXVlbmN5IHRpbWVyIGludGVy
-cnVwdHMKPj4KPj4gVGhpcyBoYXBwZW5zIHdoZW4gdGhlIGhhcmR3YXJlIGRvZXNuJ3QgZ2VuZXJh
-dGUgaW50ZXJydXB0cyBhdCB0aGUgcGVyaW9kCmJvdW5kYXJ5IGJ1dCBpc3N1ZXMgdGltZXIgaW50
-ZXJydXB0cyBhdCBhIGZpeGVkIHRpbWVyIHJhdGUgKGUuZy4gZXMxOTY4IG9yCnltZnBjaSBkcml2
-ZXJzKS4KCmJvdGggZXMxOTY4IGFuZCB5bWZwY2kgdXNlIGFjOTcgY29kZWMsIHRoZXJlIGlzIGFu
-IGV4dGVybmFsIGNsb2NrIHNvdXJjZQoob3NjaWxsYXRvcikgdG8gcHJvdmlkZSB0aGUgdGltaW5n
-IHRvIGJvdGggc291bmQgY2hpcHMoYWM5NyBjb250cm9sbGVyKSBhbmQKYWM5NyBjb2RlYyB0byBz
-eW5jIHRoZSB0cmFuc2ZlciBvZiBhdWRpbyB0aHJvdWdoIGFjOTcgbGluayBhdCA0ODAwMEh6Cgpp
-dCBkZXBlbmRzIG9uIHdoZXRoZXIgdGhlIGNoaXAgY2FuIGNvdW50IHRoZSBjbG9jayB0aWNrcyB0
-byBwcm92aWRlIGEgdGltZXIKaW50ZXJydXB0Cgo+Pgo+PiBJIGFtIGFsc28gY29uZnVzZSBhYm91
-dCB5bWZwY2kgcmVhbGx5IHVzZSB0aW1lciBpbnRlcnJ1cHRzLgo+Cj4KPiBXZWxsLCB0aGF0J3Mg
-ZWFzeS4gQWNjb3JkaW5nIHRvIHlvdXIgb3duIHdvcmRzLCB0aGUgY2FyZCBzZW5kcyBhbgppbnRl
-cnJ1cHQgZXZlcnkgMjU2IHNhbXBsZXMgYW5kIGhhcyBubyByZWFsIG5vdGlvbiBvZiB0aGUgdXNl
-ci1kZWZpbmVkCnBlcmlvZCBzaXplLiBGcm9tIEFMU0Egdmlld3BvaW50LCB0aGlzIDI1Ni1zYW1w
-bGUgaW50ZXJydXB0IGlzIGp1c3QgYSB0aW1lcgooYnV0IG5vdCBhIHRpbWVyIHRoYXQgaXMgbWFu
-YWdlZCB0aHJvdWdoIGZ1bmN0aW9ucyB0aGF0IGhhdmUgInRpbWVyIiBpbiB0aGUKbmFtZSkuCgpV
-bmxpa2Ugb3RoZXIgaGFyZHdhcmUtbWl4aW5nIHNvdW5kIGNhcmRzIGRlc2dpbmVkIGZvciBwbGF5
-aW5nIGdhbWUgLCAgdGhlCm11bHRpIHZvaWNlcyBvZiB5bWZwY2kgaXMgZGVzaWduZWQgZm9yIHBs
-YXlpbmcgTUlESSB3aGljaCBNSURJIG5vdGVzIG9mIGEKc291bmQgYXJlIHVzdWFsbHkgc3RhcnQg
-YXQgc2FtZSB0ZW1wbwoKc29tZSBzdWJkZXZpY2VzIGNhbiBoYXZlIHVucHJlZGljdGFibGUgZGVs
-YXkgaWYgaXMgaXQgbm90IHRoZSBzdWJkZXZpY2UKd2hpY2ggc3RhcnQgdGhlIGhhcmR3YXJlCgpp
-dCBkZXBlbmRzIG9uIHdoZXRoZXIgdGhlIGhhcmR3YXJlIGNhbiBwcm92aWRlIHJlZ2lzdGVycyBm
-b3IgdGhlIGRyaXZlciB0bwpzdGFydCBlYWNoIHN1YmRldmljZSBpbmRlcGVuZGVudGx5IHdoZW4g
-cmVjZWl2aW5nIFNORFJWX1BDTV9UUklHR0VSX1NUQVJUCmluIHBjbV90cmlnZ2VyIGNhbGxiYWNr
-CgoKPgo+PiAgPiBod19wdHIgZ3JhbnVsYXJpdHkgaXMgZGVmaW5lZCBvbmx5IGJ5IHBlcmlvZF9i
-eXRlc19taW4gKGFuZAo+PiBhZGRpdGlvbmFsIGNvbnN0cmFpbnRzIGlmIGFueSkuCj4KPgo+IFdl
-bGwsIHRoaXMgZGlzYWdyZWVzIHdpdGggbXkgZXhwZXJpbWVudHMuIEZvciBTMTZfTEUgc3RlcmVv
-LApzbmRfcGNtX2h3X3BhcmFtc19nZXRfcGVyaW9kX3NpemVfbWluKCkgc2F5cyAzMiBzYW1wbGVz
-IGZvciBib3RoIFBDSCBhbmQKSERNSSwgd2hpbGUgdGhlIG1lYXN1cmVkIGdyYW51bGFyaXR5IGlz
-IGRpZmZlcmVudCAoOCBhbmQgMTYgc2FtcGxlcykuCgpzaG91bGQgeW91IHVzZSBwZXJpb2RfYnl0
-ZXNfbWluIGluc3RlYWQgb2YgcGVyaW9kX3NpemVfbWluID8KCjEyOCBieXRlcyAvICg4IHggMikg
-ID0gOCBzYW1wbGVzIGZvciA4IGNoYW5uZWxzCgpmb3IgNiBjaGFubmVscyBwbGF5YmFjayAsIHRo
-ZSBwZXJpb2QgZG9lcyBub3QgZml0IGV4YWN0bHkgdGhlIHBjaWUgcGxheWxvYWQKc2l6ZSAxMjgg
-Ynl0ZXMKCgo+Cj4+ICA+Cj4+ICA+IFB1bHNlQXVkaW8gaGFzIHRoZSBmb2xsb3dpbmcgY29uc2lk
-ZXJhdGlvbiBoZXJlOiBpZiB0aGUgY2FyZCBjYW5ub3QKPj4gcmVwb3J0IHRoZSBwb3NpdGlvbiBh
-Y2N1cmF0ZWx5LCB3ZSBuZWVkIHRvIGRpc2FibGUgdGhlIHRpbWVzdGFtcC1iYXNlZAo+PiBzY2hl
-ZHVsaW5nLCBhcyB0aGlzIGJyZWFrcyBtb2R1bGUtY29tYmluZS1zaW5rIChvciBhbnkgc3VjY2Vz
-c29yIG9mIGl0KSwKPj4gYmVjYXVzZSBpdCByZWxpZXMgb24gdmVyeSBhY2N1cmF0ZSBlc3RpbWF0
-aW9ucyBvZiB0aGUgYWN0dWFsIHNhbXBsZSByYXRlCj4+IHJhdGlvIGJldHdlZW4gdHdvIG5vbi1p
-ZGVudGljYWwgY2FyZHMuCj4+ICA+Cj4+Cj4+IGh0dHBzOi8vYnVncy5mcmVlZGVza3RvcC5vcmcv
-c2hvd19idWcuY2dpP2lkPTQ3ODk5Cj4KPgo+IFRoaXMgaXMgc29tZXRoaW5nIHRvIGludmVzdGln
-YXRlLCBJIGFtIG5vdCByZWFkeSB0byBwcm92aWRlIGFueSB1c2VmdWwKY29tbWVudC4gQWx0aG91
-Z2ggaW4gY29tbWVudCAjMiBibHVldG9vdGggaXMgbWVudGlvbmVkLCBhbmQgdGhpcyBpcyBpbmRl
-ZWQKYW4gZXhhbXBsZSB3aGVyZSBldmVuIHNvbWV3aGF0IGFjY3VyYXRlIHRpbWluZyBpbmZvcm1h
-dGlvbiBpcyBub3QgYXZhaWxhYmxlLgo+PgoKPj4gaWYgeW91IHdhbnQgdG8gaGVhciBzb3VuZCBm
-cm9tIHR3byBzbmQtaGRhLWludGVsIGF0IHRoZSBzYW1lIHRpbWUgdXNpbmcKPj4gY29tYmluZWQg
-c2luaywgeW91IG1heSBuZWVkIGRyaXZlciBwcm92aWRlIHRoZSBvdXRwdXQgZGVsYXkgaW4gaGRh
-IGNvZGVjCj4+Cj4+IDcuMy40LjUgQXVkaW8gRnVuY3Rpb24gR3JvdXAgQ2FwYWJpbGl0aWVzCj4+
-Cj4+IE91dHB1dCBEZWxheSBpcyBhIGZvdXIgYml0IHZhbHVlIHJlcHJlc2VudGluZyB0aGUgbnVt
-YmVyIG9mIHNhbXBsZXMKPj4gYmV0d2VlbiB3aGVuIHRoZSBzYW1wbGUgaXMgcmVjZWl2ZWQgZnJv
-bSB0aGUgTGluayBhbmQgd2hlbiBpdCBhcHBlYXJzIGFzCj4+IGFuIGFuYWxvZyBzaWduYWwgYXQg
-dGhlIHBpbi4gVGhpcyBtYXkgYmUgYSDigJx0eXBpY2Fs4oCdIHZhbHVlLiBJZiB0aGlzIGlzCj4+
-IDAsIHRoZSB3aWRnZXRzIGFsb25nIHRoZSBjcml0aWNhbCBwYXRoIHNob3VsZCBiZSBxdWVyaWVk
-LCBhbmQgZWFjaAo+PiBpbmRpdmlkdWFsIHdpZGdldCBtdXN0IHJlcG9ydCBpdHMgaW5kaXZpZHVh
-bCBkZWxheS4KPj4KPj4gRmlndXJlIDg1LiBBdWRpbyBGdW5jdGlvbiBHcm91cCBDYXBhYmlsaXRp
-ZXMgUmVzcG9uc2UgRm9ybWF0Cj4+Cj4+IDcuMy40LjYgQXVkaW8gV2lkZ2V0IENhcGFiaWxpdGll
-cwo+Pgo+PiBEZWxheSBpbmRpY2F0ZXMgdGhlIG51bWJlciBvZiBzYW1wbGUgZGVsYXlzIHRocm91
-Z2ggdGhlIHdpZGdldC4gVGhpcyBtYXkKPj4gYmUgMCBpZiB0aGUgZGVsYXkgdmFsdWUgaW4gdGhl
-IEF1ZGlvIEZ1bmN0aW9uIFBhcmFtZXRlcnMgaXMgc3VwcGxpZWQgdG8KPj4gcmVwcmVzZW50IHRo
-ZSBlbnRpcmUgcGF0aC4KPj4KPj4gaHR0cDovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2Vy
-bmVsL2dpdC90aXdhaS9oZGEtZW11LmdpdC90cmVlL2NvZGVjcwo+Pgo+PiBzb21lIGhkYSBjb2Rl
-Y3MgcmVwb3J0IGRlbGF5IGluIGF1ZGlvIG91dHB1dC9pbnB1dCB3aWRnZXRzIGFuZCB0aGUKPj4g
-cmFuZ2VzIG9mIGRlbGF5IHZhcnkgZnJvbSAzIHRvIDEzIHNhbXBsZXMsIGhkYV9wcm9jLmMgZGlk
-IG5vdCBzaG93Cj4+IG91dHB1dC9pbnB1dCBkZWxheSBpbiB0aGUgYXVkaW8gZnVuY3Rpb24gZ3Jv
-dXAKPgoKRGlkIHNuZF9oZGFfcGFyYW1fcmVhZChjb2RlYywgY29kZWMtPmFmZywgIEFDX1BBUl9B
-VURJT19GR19DQVApIHJldHVybiBhbnkKdmFsdWVzIGZvciB5b3VyIGhkYSBjb2RlY3MgPwoKd2hh
-dCBpcyBjcml0aWNhbCBwYXRoID8KCnNpbmNlIHNvbWUgZHJpdmVyIGNhbiBlbmFibGUvZGlzYWJs
-ZSBsb29wYmFjayBtaXhpbmcgd2hpY2ggdGhlIGF1ZGlvIHBhc3MKdGhyb3VnaCBsZXNzIHdpZGdl
-dHMgd2hlbiBsb29wYmFjayBtaXhpbmcgaXMgZGlzYWJsZWQKCnNvbWUgaWR0IGNvZGVjcyBoYXZl
-IGEgNSBiYW5kcyBlcXVhbGl6ZXIgaW4gdGhlIHBhdGggb2YgUG9ydCBEKG5vdCBpbiB0aGUKcGlu
-IGNvbXBsZXggd2lkZ2V0IG9yIG1peGVyIHdpZGdldCBidXQgc2V0dXAgdXNpbmcgdmVuZG9yIHNw
-ZWNpZmljIHZlcmIgdG8KYXVkaW8gZnVuY3Rpb24gZ3JvdXAgb3IgdmVuZG9yIHNwZWNpZmljIHdp
-ZGdldCkgYnV0IG5vdCBpbiB0aGUgcGF0aCBvZiBQb3J0CkEgKGhlYWRwaG9uZSkKCgo+Cj4gSW50
-ZXJlc3RpbmcsIGltcGxlbWVudGFibGUgZm9yIHNvbWVvbmUgd2l0aCB0aGUgc2tpbGxzIGluIHRo
-aXMgYXJlYSwgYnV0CnByb2JhYmx5IG5vdCByZWxldmFudCBmb3IgdGhlIGFib3ZlIGZyZWVkZXNr
-dG9wIGJ1Zy4gV2hhdCB5b3UgYXJlIHRhbGtpbmcKYWJvdXQgaXMganVzdCBhIGNvbnN0YW50IG9m
-ZnNldCBpbiB0aGUgc25kX3BjbV9kZWxheSgpIHJldHVybiB2YWx1ZXMuClRoYXQncyBiYWQsIGJ1
-dCBJIGd1ZXNzIG5vdCBiYWQgZW5vdWdoIGZvciBQdWxzZUF1ZGlvIHRvIHN0dXR0ZXIuIFdoYXQK
-UHVsc2VBdWRpbyBkb2Vzbid0IHRvbGVyYXRlIGlzIGppdHRlci4KClRoZSB0d28gaGRhIGNvbnRy
-b2xsZXJzIG9mIHRoZSByZXBvcnRlciBkb2VzIG5vdCB1c2Ugc2FtZSBidWZmZXIgc2l6ZQooYnVm
-ZmVyIHRpbWUpCgpEbyB0aGUgdGltZXIgYmFzZWQgc2NoZWR1bGluZyAgd2FrZXVwIDIwbXMgYmVm
-b3JlIHRoZSB0aGUgYnVmZmVyIGlzIGVtcHR5ID8KdGhlIHRpbWVyIGV2ZW50dWFsbHkgd2FrZXVw
-IGF0IGRpZmZlcmVudCB0aW1lIGlmIGJ1ZmZlciB0aW1lIG9mIHR3bwpoZGEtY29udHJvbGxlcnMg
-YXJlIG5vdCB0aGUgc2FtZQoKZG9lcyB0aGlzIG1lYW4gdGhlIHB1bHNlYXVkaW8gc3RpbGwga2Vl
-cCB0aGUgYXVkaW8gZGF0YSB1bnRpbCB0aGUKcHVsc2VhdWRpbyBjbGllbnQgY2xvc2UgdGhlIHN0
-cmVhbSA/Cgo+Cj4+IE90aGVyIHB1bHNlYXVkaW8gbW9kdWxlcyBzZWVuIGRvZXMgbm90IHN1cHBv
-cnQgcmV3aW5kIChlLmcuIGphY2ssCj4+IHR1bm5lbCwgQmx1ZXRvb3RoLC4uLgo+Pgo+PiBodHRw
-Oi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvP3A9YWxzYS1wbHVnaW5zLmdpdDthPXRyZWUKPj4KPj4g
-T3RoZXIgYWxzYSBwbHVnaW5zIChlLmcuIEphY2ssIG9zcywuLi4pIHNlZW0gbm90IHN1cHBvcnQg
-cmV3aW5kCj4KPgo+IEphY2sgaXMgaW50ZXJlc3RpbmcgaGVyZTogaXQgaXMgdGhlIG9ubHkgaW9w
-bHVnLWJhc2VkIHBsdWdpbiB3aGljaCBzZXRzCm1tYXBfcncgPSAxLiBBcyBzdWNoLCBBTFNBIHRy
-ZWF0cyBpdCBhcyBzb21ldGhpbmcgdGhhdCBoYXMgbW1hcHBlZCBidWZmZXIKd2l0aCB0aGUgc2Ft
-ZSBzZW1hbnRpY3MgYXMgYW4gb3JkaW5hcnkgaGFyZHdhcmUgc291bmQgY2FyZCwgYW5kIHBlcmZv
-cm1zCnJld2luZHMgdXNpbmcgdGhpcyBidWZmZXIuIFRoZXJlIGlzIGFsc28gYSAiaGFyZHdhcmUi
-IHBvc2l0aW9uIGNhbGxiYWNrLgpUaGUgYWN0dWFsIHRyYW5zZmVyIG9mIHNhbXBsZXMgZnJvbSB0
-aGF0IGJ1ZmZlciB0byBKQUNLIGlzIHBlcmZvcm1lZCBpbiBhCnNlcGFyYXRlIHJlYWx0aW1lIHRo
-cmVhZCB3aGljaCBpcyBpbXBsaWNpdGx5IGNyZWF0ZWQgaW4gamFja19hY3RpdmF0ZSgpLgpUaGUg
-cG9yaXRpb24gaXMgdXBkYXRlZCBldmVyeSBKQUNLIHBlcmlvZC4KPgo+IFRoZSB3aG9sZSBjb25z
-dHJ1Y3Rpb24gc2hvdWxkIHN1cHBvcnQgcmV3aW5kcywgd2l0aCB0aGUgbm9uLXJld2luZGFibGUK
-cmVtYWluZGVyIGJlaW5nIG9uZSBKQUNLIHBlcmlvZCAod2hpY2ggbWF5IGJlIGRpZmZlcmVudCBm
-cm9tIG9uZSBBTFNBCnBlcmlvZCkuIElmIHRoZSBKQUNLIHBlcmlvZCBpcyAyNTYgc2FtcGxlcywg
-dGhpcyBwbHVnaW4gc2hvdWxkIGJlaGF2ZSB2ZXJ5Cm11Y2ggbGlrZSBvbmUgdm9pY2Ugb2YgeW1m
-cGNpLgoKaHR0cHM6Ly9naXRodWIuY29tL2phY2thdWRpby9qYWNrMi9ibG9iL21hc3Rlci9saW51
-eC9hbHNhL2Fsc2FfZHJpdmVyLmMKCmphY2tkIHNlcnZlciBkb2VzIG5vdCB1c2Ugc25kX3BjbV9y
-ZXdpbmQsIHN1cHBvcnQgbm9uLWludGVybGVhdmVkIG1vZGUKc291bmQgY2FyZHMgYW5kIHNvdW5k
-IGNhcmRzIHdpdGggMTAgb3IgbW9yZSBjaGFubmVscyAoZS5nIGllYzE3MTIsIGhkc3AgYW5kCmhh
-bW1lcmZhbGwsIC4uLikgbW9yZSB0aGFuIHR3byBwbGF5YmFjayBwb3J0cwoKdGhlIGphY2sgY2xp
-ZW50IGhhcyBubyBpbmZvIGFib3V0IGhvdyBtYW55IHBlcmlvZHMgb3IgY2hhbm5lbHMgdXNlZCBi
-eQpqYWNrZCBzZXJ2ZXIKCmh0dHA6Ly9qYWNrYXVkaW8ub3JnL3JvdXRpbmdfYWxzYQoKamFjayBj
-bGllbnQgb25seSBzcGVjaWZ5IGhvdyBtYW55IGNoYW5uZWxzIGFuZCB3aGljaCBwbGF5YmFjayBw
-b3J0cwoKeW91IGNhbiBzcGVjaWZ5IHRoZSBzdGVyZW8gb3V0cHV0IHRvIHRoZSBncmV5IGphY2sg
-aWYgdGhlIGphY2tkIHNlcnZlciB1c2UKOCBjaGFubmVscyBwbGF5YmFjayBvciBtaXggdGhlIHN0
-ZXJlbyBvdXRwdXQgIHRvIHRoZSByaWdodCBjaGFubmVsCgpodHRwOi8vY2dpdC5mcmVlZGVza3Rv
-cC5vcmcvcHVsc2VhdWRpby9wdWxzZWF1ZGlvL3RyZWUvc3JjL21vZHVsZXMvamFjay9tb2R1bGUt
-amFjay1zaW5rLmMKCnNlZW0gbW9kdWxlLWphY2stc2luay5jIHVzZSBmaXhlZCBsYXRlbmN5Cgpk
-b2VzIGl0IG1lYW4gdGhhdCBwdWxzZWF1ZGlvIG9ubHkgcmV3aW5kIHRob3NlIHNpbmsgd2hpY2gg
-c3VwcG9ydCBkeW5hbWljCmxhdGVuY3kgPyBpLmUuIGl0IHdvbid0IHJld2luZCB0aGUgc2luayBp
-ZiB0aGUgc2luayB1c2VkIGZpeGVkIGxhdGVuY3kKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+This is a multi-part message in MIME format.
+--------------040708020706040109000407
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+12.05.2014 09:11, Raymond Yau wrote:
+> https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1188425
+>
+> I: [pulseaudio] alsa-sink.c: Successfully opened device a52:0.
+> I: [pulseaudio] alsa-sink.c: Selected mapping 'Digital Surround 5.1
+> (IEC958/AC3)' (iec958-ac3-surround-51).
+> I: [pulseaudio] alsa-sink.c: Cannot enable timer-based scheduling,
+> falling back to sound IRQ scheduling.
+> I: [pulseaudio] alsa-sink.c: Successfully enabled mmap() mode.
+>
+> Seem only hw device report whether it support disable period wake-up
+>
+> ioplug did not support disable period wake-up and you need A52 plugin t=
+o
+> provide a parameter to disable the period wakeup of the slave
+
+No, or maybe "not yet". PulseAudio will not try to enable timer-based=20
+scheduling on a52 anyway, because of the following source lines.
+
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/a=
+lsa-util.c#n245
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/alsa/a=
+lsa-util.c#n1393
+
+> do you mean pulseaudio can disable period wakeup of the hda-intel
+> through extplug ?
+
+Yes. That's a difference between ioplug and extplug. But I don't really=20
+care about disabling period interrupts.
+
+>
+> D: [alsa-sink] alsa-util.c: PCM state is RUNNING
+> I: [alsa-sink] alsa-sink.c: Starting playback.
+> I: [alsa-sink] (alsa-lib)pcm_hw.c: SNDRV_PCM_IOCTL_START failed (-77)
+>
+> does SNDRV_PCM_IOCTL_START fail mean pcm state is no longer running ?
+
+Note that this comes from pcm_hw.c. As PulseAudio does not use the hw:=20
+device in this particular use case, I have to conclude that it comes=20
+through the a52 or ioplug code. I am not really familiar with this code.
+
+>
+>  >
+>  > Instead of what you are proposing above, I wrote a loop that
+> repeatedly calls snd_pcm_rewindable() 7000000 times and prints the
+> result if it differs from the previous one. With snd-hda-intel (PCH), h=
+w
+> plugin, stereo, S16_LE, 48 kHz, 6 periods, and a period size of 1024, I
+> get this:
+>  >
+>  > Rewindable: 6119, loop iteration: 0
+>  > Rewindable: 5119, loop iteration: 5389434
+>
+> the method can be improved
+>
+> instead of wake up in half period time to check the value of
+> snd_pcm_rewindable()
+>
+> 1) set the timer to wakeup at 1/16 period time intervals,  if the value=
+s
+> does not change , this mean that it does not provide accuracy of 1/16 o=
+f
+> period time and you can know whether it support 1/8 when the next wakeu=
+p
+> occur at 1/8 period time, ...until you get 16 values for the first peri=
+od
+>
+> 2) if the value of snd_pcm_rewindable change at every 1/16 period time
+> intervals , set the timer to wakeup at 1/256 period time at the second
+> period
+
+No need to do this. I have already made enough conclusions.=20
+Unfortunately, I forgot to attach the new test program (intentionally=20
+modified to produce an underrun), doing it now.
+
+The output here is:
+
+$ ./a.out
+Hardware PCM card 2 'HDA Intel PCH' device 0 subdevice 0
+Its setup is:
+   stream       : PLAYBACK
+   access       : RW_INTERLEAVED
+   format       : S16_LE
+   subformat    : STD
+   channels     : 4
+   rate         : 48000
+   exact rate   : 48000 (48000/1)
+   msbits       : 16
+   buffer_size  : 4096
+   period_size  : 1024
+   period_time  : 21333
+   tstamp_mode  : NONE
+   period_step  : 1
+   avail_min    : 1024
+   period_event : 0
+   start_threshold  : 1024
+   stop_threshold   : 4096
+   silence_threshold: 0
+   silence_size : 0
+   boundary     : 4611686018427387904
+   appl_ptr     : 0
+   hw_ptr       : 0
+Playing silence
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Hardware PCM card 2 'HDA Intel PCH' device 0 subdevice 0
+Its setup is:
+   stream       : PLAYBACK
+   access       : RW_INTERLEAVED
+   format       : S16_LE
+   subformat    : STD
+   channels     : 4
+   rate         : 48000
+   exact rate   : 48000 (48000/1)
+   msbits       : 16
+   buffer_size  : 4096
+   period_size  : 1024
+   period_time  : 21333
+   tstamp_mode  : NONE
+   period_step  : 1
+   avail_min    : 1024
+   period_event : 0
+   start_threshold  : 1024
+   stop_threshold   : 4096
+   silence_threshold: 0
+   silence_size : 0
+   boundary     : 4611686018427387904
+   appl_ptr     : 4096
+   hw_ptr       : 0
+Rewindable: 4096, loop iteration: 0
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Hardware PCM card 2 'HDA Intel PCH' device 0 subdevice 0
+Its setup is:
+   stream       : PLAYBACK
+   access       : RW_INTERLEAVED
+   format       : S16_LE
+   subformat    : STD
+   channels     : 4
+   rate         : 48000
+   exact rate   : 48000 (48000/1)
+   msbits       : 16
+   buffer_size  : 4096
+   period_size  : 1024
+   period_time  : 21333
+   tstamp_mode  : NONE
+   period_step  : 1
+   avail_min    : 1024
+   period_event : 0
+   start_threshold  : 1024
+   stop_threshold   : 4096
+   silence_threshold: 0
+   silence_size : 0
+   boundary     : 4611686018427387904
+   appl_ptr     : 4096
+   hw_ptr       : 1048
+Rewindable: 3048, loop iteration: 1288389
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Hardware PCM card 2 'HDA Intel PCH' device 0 subdevice 0
+Its setup is:
+   stream       : PLAYBACK
+   access       : RW_INTERLEAVED
+   format       : S16_LE
+   subformat    : STD
+   channels     : 4
+   rate         : 48000
+   exact rate   : 48000 (48000/1)
+   msbits       : 16
+   buffer_size  : 4096
+   period_size  : 1024
+   period_time  : 21333
+   tstamp_mode  : NONE
+   period_step  : 1
+   avail_min    : 1024
+   period_event : 0
+   start_threshold  : 1024
+   stop_threshold   : 4096
+   silence_threshold: 0
+   silence_size : 0
+   boundary     : 4611686018427387904
+   appl_ptr     : 4096
+   hw_ptr       : 2049
+Rewindable: 2047, loop iteration: 3010739
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Hardware PCM card 2 'HDA Intel PCH' device 0 subdevice 0
+Its setup is:
+   stream       : PLAYBACK
+   access       : RW_INTERLEAVED
+   format       : S16_LE
+   subformat    : STD
+   channels     : 4
+   rate         : 48000
+   exact rate   : 48000 (48000/1)
+   msbits       : 16
+   buffer_size  : 4096
+   period_size  : 1024
+   period_time  : 21333
+   tstamp_mode  : NONE
+   period_step  : 1
+   avail_min    : 1024
+   period_event : 0
+   start_threshold  : 1024
+   stop_threshold   : 4096
+   silence_threshold: 0
+   silence_size : 0
+   boundary     : 4611686018427387904
+   appl_ptr     : 4096
+   hw_ptr       : 3092
+Rewindable: 1004, loop iteration: 5251015
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Hardware PCM card 2 'HDA Intel PCH' device 0 subdevice 0
+Its setup is:
+   stream       : PLAYBACK
+   access       : RW_INTERLEAVED
+   format       : S16_LE
+   subformat    : STD
+   channels     : 4
+   rate         : 48000
+   exact rate   : 48000 (48000/1)
+   msbits       : 16
+   buffer_size  : 4096
+   period_size  : 1024
+   period_time  : 21333
+   tstamp_mode  : NONE
+   period_step  : 1
+   avail_min    : 1024
+   period_event : 0
+   start_threshold  : 1024
+   stop_threshold   : 4096
+   silence_threshold: 0
+   silence_size : 0
+   boundary     : 4611686018427387904
+   appl_ptr     : 4096
+   hw_ptr       : 4136
+Rewindable: -40, loop iteration: 7807909
+This means Too many levels of symbolic links
+
+
+>
+>  >
+>  > So snd_pcm_rewindable() can return weird values that are updated
+> every period size or so. As such, I wouldn't believe its return value
+> out of the box even for hw devices. At loop iteration 5389433, the CPU
+> chewed enough time for almost one period, but snd_pcm_rewindable() said
+> that almost 6 periods are rewindable. Probably a missing sync_ptr()
+> somewhere, or a documentation bug.
+>  >
+>  > With snd_pcm_avail() inserted (which does synchronize the position)
+> before each call to snd_pcm_rewindable(), I get:
+>  >
+>  > Rewindable: 6119, loop iteration: 0
+>  > Rewindable: 6112, loop iteration: 2
+>  > Rewindable: 6104, loop iteration: 42
+>  > Rewindable: 6096, loop iteration: 76
+>  > Rewindable: 6088, loop iteration: 125
+>  > Rewindable: 6080, loop iteration: 173
+>  > Rewindable: 6072, loop iteration: 222
+>  > Rewindable: 6064, loop iteration: 270
+>  >
+>  > (and an underrun in the end).
+>  >
+>  > With 4 channels:
+>  >
+>  > Rewindable: 6112, loop iteration: 0
+>  > Rewindable: 6108, loop iteration: 2
+>  > Rewindable: 6104, loop iteration: 14
+>  > Rewindable: 6100, loop iteration: 36
+>  > Rewindable: 6096, loop iteration: 58
+>  > Rewindable: 6092, loop iteration: 63
+>  >
+>  > With 8 channels:
+>  >
+>  > Rewindable: 6104, loop iteration: 0
+>  > Rewindable: 6098, loop iteration: 1
+>  > Rewindable: 6096, loop iteration: 2
+>  > Rewindable: 6094, loop iteration: 9
+>  > Rewindable: 6092, loop iteration: 24
+>  > Rewindable: 6090, loop iteration: 32
+>  > Rewindable: 6088, loop iteration: 41
+>  >
+>  > So on my snd-hda-intel, the granularity of the pointer is 32 bytes.
+>  >
+>  > For Haswell HDMI (on another snd-hda-intel), stereo, S16_LE:
+>  >
+>  > Rewindable: 6128, loop iteration: 0
+>  > Rewindable: 6112, loop iteration: 129
+>  > Rewindable: 6096, loop iteration: 339
+>  > Rewindable: 6080, loop iteration: 551
+>  > Rewindable: 6064, loop iteration: 753
+>  > Rewindable: 6048, loop iteration: 966
+>  > Rewindable: 6032, loop iteration: 1180
+>  >
+>  > so the resulting granularity is 64 bytes.
+>  >
+>  > An unfortunate observation is that, without snd_pcm_avail(), even on
+> hw just after an underrun snd_pcm_rewindable() can return negative
+> numbers such as -16 or -25 that lead to nonsense error codes (EBUSY or
+> ENOTTY).
+>  >
+>
+> pcm_rewind2.c use period size instead of buffer size as start_threshold
+> , pcm is already started before you fill the buffer full and pcm can be
+> stopped at underrun if your program does not use boundary as stop_thres=
+hold
+>
+> this affect your timing if your test program behave like pcm_rewind2.c
+
+I agree with the above. As long as it serves as a testcase for a bug, it=20
+is good.
+
+>
+> static snd_pcm_sframes_t snd_pcm_hw_rewindable(snd_pcm_t *pcm)
+>
+> {
+>          return snd_pcm_mmap_hw_avail(pcm);
+>    }
+>
+> if this function return the safe value, Do you mean it must hw_sync the
+> pointer and  should return zero if snd_pcm_mmap_hw_avail is negative an=
+d
+> check the pcm state  to return negative error code ?
+
+Answering by parts.
+
+Must hw_sync the pointer - yes.
+
+Should return zero if snd_pcm_mmap_hw_avail is negative - not sure, for=20
+two reasons. First, I am not sure if snd_pcm_mmap_hw_avail is indeed=20
+allowed to return negative values due to yet-undetected xruns. Second,=20
+negative snd_pcm_mmap_hw_avail means an xrun, so I am not sure whether 0=20
+is a valid return code here.
+
+Should check the pcm state to return negative error code - yes at least=20
+for non-xrun states such as SND_PCM_STATE_SUSPENDED or=20
+SND_PCM_STATE_DISCONNECTED, and I am not sure whether to return 0 or=20
+-EPIPE on a known xrun.
+
+Also I am not sure about interaction with a very large stop_threshold=20
+(i.e. settings that ignore underruns), and the above (except hw_sync) is=20
+for playback only. We need a separate discussion about capture, but I am=20
+not yet ready to start it.
+
+>
+>  >
+>  >>
+>  >>
+> http://www.alsa-project.org/~tiwai/writing-an-alsa-driver/ch05s07.html#=
+pcm-interface-interrupt-handler-boundary
+>  >>
+>  >> High frequency timer interrupts
+>  >>
+>  >> This happens when the hardware doesn't generate interrupts at the
+> period boundary but issues timer interrupts at a fixed timer rate (e.g.
+> es1968 or ymfpci drivers).
+>
+> both es1968 and ymfpci use ac97 codec, there is an external clock sourc=
+e
+> (oscillator) to provide the timing to both sound chips(ac97 controller)
+> and ac97 codec to sync the transfer of audio through ac97 link at 48000=
+Hz
+>
+> it depends on whether the chip can count the clock ticks to provide a
+> timer interrupt
+>
+>  >>
+>  >> I am also confuse about ymfpci really use timer interrupts.
+>  >
+>  >
+>  > Well, that's easy. According to your own words, the card sends an
+> interrupt every 256 samples and has no real notion of the user-defined
+> period size. From ALSA viewpoint, this 256-sample interrupt is just a
+> timer (but not a timer that is managed through functions that have
+> "timer" in the name).
+>
+> Unlike other hardware-mixing sound cards desgined for playing game ,
+> the multi voices of ymfpci is designed for playing MIDI which MIDI note=
+s
+> of a sound are usually start at same tempo
+>
+> some subdevices can have unpredictable delay if is it not the subdevice
+> which start the hardware
+>
+> it depends on whether the hardware can provide registers for the driver
+> to start each subdevice independently when receiving
+> SNDRV_PCM_TRIGGER_START in pcm_trigger callback
+
+OK
+
+>  >
+>  >>  > hw_ptr granularity is defined only by period_bytes_min (and
+>  >> additional constraints if any).
+>  >
+>  >
+>  > Well, this disagrees with my experiments. For S16_LE stereo,
+> snd_pcm_hw_params_get_period_size_min() says 32 samples for both PCH an=
+d
+> HDMI, while the measured granularity is different (8 and 16 samples).
+>
+> should you use period_bytes_min instead of period_size_min ?
+>
+> 128 bytes / (8 x 2)  =3D 8 samples for 8 channels
+>
+> for 6 channels playback , the period does not fit exactly the pcie
+> playload size 128 bytes
+
+Will retest later today.
+
+>
+>
+>  >
+>  >>  >
+>  >>  > PulseAudio has the following consideration here: if the card can=
+not
+>  >> report the position accurately, we need to disable the timestamp-ba=
+sed
+>  >> scheduling, as this breaks module-combine-sink (or any successor of=
+ it),
+>  >> because it relies on very accurate estimations of the actual sample=
+ rate
+>  >> ratio between two non-identical cards.
+>  >>  >
+>  >>
+>  >> https://bugs.freedesktop.org/show_bug.cgi?id=3D47899
+>  >
+>  >
+>  > This is something to investigate, I am not ready to provide any
+> useful comment. Although in comment #2 bluetooth is mentioned, and this
+> is indeed an example where even somewhat accurate timing information is
+> not available.
+>
+>  >>
+>
+>  >> if you want to hear sound from two snd-hda-intel at the same time u=
+sing
+>  >> combined sink, you may need driver provide the output delay in hda =
+codec
+>  >>
+>  >> 7.3.4.5 Audio Function Group Capabilities
+>  >>
+>  >> Output Delay is a four bit value representing the number of samples
+>  >> between when the sample is received from the Link and when it appea=
+rs as
+>  >> an analog signal at the pin. This may be a =E2=80=9Ctypical=E2=80=9D=
+ value. If this is
+>  >> 0, the widgets along the critical path should be queried, and each
+>  >> individual widget must report its individual delay.
+>  >>
+>  >> Figure 85. Audio Function Group Capabilities Response Format
+>  >>
+>  >> 7.3.4.6 Audio Widget Capabilities
+>  >>
+>  >> Delay indicates the number of sample delays through the widget. Thi=
+s may
+>  >> be 0 if the delay value in the Audio Function Parameters is supplie=
+d to
+>  >> represent the entire path.
+>  >>
+>  >>
+> http://git.kernel.org/cgit/linux/kernel/git/tiwai/hda-emu.git/tree/code=
+cs
+>  >>
+>  >> some hda codecs report delay in audio output/input widgets and the
+>  >> ranges of delay vary from 3 to 13 samples, hda_proc.c did not show
+>  >> output/input delay in the audio function group
+>  >
+>
+> Did snd_hda_param_read(codec, codec->afg,  AC_PAR_AUDIO_FG_CAP) return
+> any values for your hda codecs ?
+>
+> what is critical path ?
+
+How do I test this? Could you please post some userspace test code or a=20
+kernel patch, together with the instructions?
+
+> since some driver can enable/disable loopback mixing which the audio
+> pass through less widgets when loopback mixing is disabled
+>
+> some idt codecs have a 5 bands equalizer in the path of Port D(not in
+> the pin complex widget or mixer widget but setup using vendor specific
+> verb to audio function group or vendor specific widget) but not in the
+> path of Port A (headphone)
+>
+>
+>  >
+>  > Interesting, implementable for someone with the skills in this area,
+> but probably not relevant for the above freedesktop bug. What you are
+> talking about is just a constant offset in the snd_pcm_delay() return
+> values. That's bad, but I guess not bad enough for PulseAudio to
+> stutter. What PulseAudio doesn't tolerate is jitter.
+>
+> The two hda controllers of the reporter does not use same buffer size
+> (buffer time)
+>
+> Do the timer based scheduling  wakeup 20ms before the the buffer is
+> empty ? the timer eventually wakeup at different time if buffer time of
+> two hda-controllers are not the same
+>
+> does this mean the pulseaudio still keep the audio data until the
+> pulseaudio client close the stream ?
+
+Not ready to answer this yet.
+
+>
+>  >
+>  >> Other pulseaudio modules seen does not support rewind (e.g. jack,
+>  >> tunnel, Bluetooth,...
+>  >>
+>  >> http://git.alsa-project.org/?p=3Dalsa-plugins.git;a=3Dtree
+>  >>
+>  >> Other alsa plugins (e.g. Jack, oss,...) seem not support rewind
+>  >
+>  >
+>  > Jack is interesting here: it is the only ioplug-based plugin which
+> sets mmap_rw =3D 1. As such, ALSA treats it as something that has mmapp=
+ed
+> buffer with the same semantics as an ordinary hardware sound card, and
+> performs rewinds using this buffer. There is also a "hardware" position
+> callback. The actual transfer of samples from that buffer to JACK is
+> performed in a separate realtime thread which is implicitly created in
+> jack_activate(). The porition is updated every JACK period.
+>  >
+>  > The whole construction should support rewinds, with the
+> non-rewindable remainder being one JACK period (which may be different
+> from one ALSA period). If the JACK period is 256 samples, this plugin
+> should behave very much like one voice of ymfpci.
+>
+> https://github.com/jackaudio/jack2/blob/master/linux/alsa/alsa_driver.c
+>
+> jackd server does not use snd_pcm_rewind, support non-interleaved mode
+> sound cards and sound cards with 10 or more channels (e.g iec1712, hdsp
+> and hammerfall, ...) more than two playback ports
+>
+> the jack client has no info about how many periods or channels used by
+> jackd server
+>
+> http://jackaudio.org/routing_alsa
+>
+> jack client only specify how many channels and which playback ports
+>
+> you can specify the stereo output to the grey jack if the jackd server
+> use 8 channels playback or mix the stereo output  to the right channel
+>
+> http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/modules/jack=
+/module-jack-sink.c
+>
+> seem module-jack-sink.c use fixed latency
+>
+> does it mean that pulseaudio only rewind those sink which support
+> dynamic latency ? i.e. it won't rewind the sink if the sink used fixed
+> latency
+
+No. PulseAudio can, in theory, rewind fixed-latency sinks, but it will=20
+never usefully rewind this one (i.e. will truncate all rewind requests=20
+to 0), because it never sets max_rewind, and thus max_rewind gets=20
+defaulted to 0:
+
+http://cgit.freedesktop.org/pulseaudio/pulseaudio/tree/src/pulsecore/sink=
+.c#n337
+
+PulseAudio here uses a different rendering strategy from the ALSA sink.=20
+For the ALSA sink, PulseAudio renders aggressively as much as possible=20
+and then rewinds if necessary. For the JACK sink, PulseAudio renders=20
+only the minimum required portion of data and only when strictly=20
+necessary (when JACK has asked for it).
+
+Note that, in PulseAudio, sink inputs also have buffers (in the form of=20
+memblockq, that's where pa_sink_render reads from), and client rewinds=20
+can be done using these buffers even if the sink itself is not rewindable=
+.
+
+--=20
+Alexander E. Patrakov
+
+--------------040708020706040109000407
+Content-Type: text/x-csrc;
+ name="pcm_rewindable.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="pcm_rewindable.c"
+
+/*
+ *  This extra small demo sends silence to your speakers if all your ALSA plugins support rewinds properly.
+ */
+
+#include <asoundlib.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+
+const char* device = "hw:2";
+const int channels = 4;
+const snd_pcm_sframes_t period_size = 1024;
+const int periods = 4;
+const int rate = 48000;
+
+
+int main(int argc, char* argv[])
+{
+        int err;
+        unsigned int j;
+	short *silence;
+	snd_pcm_sframes_t rewindable = 1;
+
+        snd_pcm_t *handle;
+	snd_output_t *out = NULL;
+
+	snd_pcm_hw_params_t *params;
+	snd_pcm_sw_params_t *swparams;
+
+	snd_pcm_hw_params_alloca(&params);
+	snd_pcm_sw_params_alloca(&swparams);
+
+	snd_output_stdio_attach(&out, stderr, 0);
+	silence = calloc(period_size * periods, sizeof(short) * channels);
+
+	if ((err = snd_pcm_open(&handle, device, SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
+		fprintf(stderr, "Playback open error: %s\n", snd_strerror(err));
+		exit(EXIT_FAILURE);
+	}
+
+	err =   snd_pcm_hw_params_any(handle, params) < 0 ||
+		snd_pcm_hw_params_set_rate_resample(handle, params, 1) < 0 ||
+		snd_pcm_hw_params_set_access(handle, params, SND_PCM_ACCESS_RW_INTERLEAVED) < 0 ||
+		snd_pcm_hw_params_set_format(handle, params, SND_PCM_FORMAT_S16) < 0 ||
+		snd_pcm_hw_params_set_channels(handle, params, channels) < 0 ||
+		snd_pcm_hw_params_set_rate(handle, params, rate, 0) < 0 ||
+		snd_pcm_hw_params_set_period_size(handle, params, period_size, 0) < 0 ||
+		snd_pcm_hw_params_set_periods(handle, params, periods, 0) < 0 ||
+		snd_pcm_hw_params(handle, params) < 0;
+	if (err) {
+		fprintf(stderr, "Playback hwparams error: %s\n", snd_strerror(err));
+		exit(EXIT_FAILURE);
+	}
+
+	err =   snd_pcm_sw_params_current(handle, swparams) < 0 ||
+		snd_pcm_sw_params_set_start_threshold(handle, swparams, period_size) < 0 ||
+		snd_pcm_sw_params_set_avail_min(handle, swparams, period_size) < 0 ||
+		snd_pcm_sw_params(handle, swparams) < 0;
+	if (err) {
+		fprintf(stderr, "Playback swparams error: %s\n", snd_strerror(err));
+		exit(EXIT_FAILURE);
+	}
+
+	snd_pcm_dump(handle, out);
+	fprintf(stderr, "Playing silence\n");
+	fflush(stderr);
+	memset(silence, 0, period_size * periods * sizeof(short) * channels);
+	err = snd_pcm_writei(handle, silence, period_size * periods);
+	if (err < 0) {
+		fprintf(stderr, "Playback error: %s\n", snd_strerror(err));
+		exit(EXIT_FAILURE);
+	}
+
+	j = 0;
+	while (rewindable > 0) {
+		snd_pcm_sframes_t rewindable1 = snd_pcm_rewindable(handle);
+		if (rewindable != rewindable1) {
+			fprintf(stderr, "===================\n");
+			snd_pcm_dump(handle, out);
+			fprintf(stderr, "Rewindable: %d, loop iteration: %d\n", (int)rewindable1, j);
+			if (rewindable1 < 0)
+				fprintf(stderr, "This means %s\n", snd_strerror(rewindable1));
+		}
+		rewindable = rewindable1;
+		j++;
+	}
+	snd_pcm_drop(handle);
+	snd_pcm_close(handle);
+
+	free(silence);
+	return 0;
+}
+
+--------------040708020706040109000407
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------040708020706040109000407--
