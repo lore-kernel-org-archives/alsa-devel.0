@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: dapm: Fix SUSPEND -> OFF bias
-	sequence
-Date: Mon, 12 May 2014 22:06:52 +0100
-Message-ID: <20140512210651.GU12304@sirena.org.uk>
-References: <1399365135-26877-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 4/5] ASoC: atmel-pcm-pdc: Remove broken
+ suspend/resume code
+Date: Mon, 12 May 2014 22:08:50 +0100
+Message-ID: <20140512210850.GV12304@sirena.org.uk>
+References: <1399361981-18518-1-git-send-email-lars@metafoo.de>
+ <1399361981-18518-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4543139010931428351=="
+Content-Type: multipart/mixed; boundary="===============4433237917417958644=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B0DD52650FA
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 23:07:07 +0200 (CEST)
-In-Reply-To: <1399365135-26877-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 04EBE2650FA
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 23:09:05 +0200 (CEST)
+In-Reply-To: <1399361981-18518-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4543139010931428351==
+--===============4433237917417958644==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KsVkpN3j6bpLJgwB"
+	protocol="application/pgp-signature"; boundary="MMMKu5Vi3KxtaswF"
 Content-Disposition: inline
 
 
---KsVkpN3j6bpLJgwB
+--MMMKu5Vi3KxtaswF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 06, 2014 at 10:32:15AM +0200, Lars-Peter Clausen wrote:
-> Currently when the DAPM context bias level is SUSPEND and the target bias level
-> is OFF dapm_pre_sequence_async() will first transition to PREPARE and
-> dapm_post_sequence_async() will then transition back from PREPARE to STANDBY and
-> then to OFF.
+On Tue, May 06, 2014 at 09:39:40AM +0200, Lars-Peter Clausen wrote:
+> Suspend/resume support for the atmel-pcm-pdc driver was broken in commit
+> f0fba2ad1 ("ASoC: multi-component - ASoC Multi-Component Support"). It
+> essentially reverted the modifications done in commit 10cab262 ("ASoC: Change
 
 Applied, thanks.
 
---KsVkpN3j6bpLJgwB
+--MMMKu5Vi3KxtaswF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTcTfoAAoJELSic+t+oim9pJQP/3SeZfIrK+2sDumsZwZcsEbn
-q/JId3XH8axOfVTMWvQvuTiig6kbmG9pYlJw/4Pu18mmeWnjRSJusZZlD8ofKAXO
-g8t55fCk37EL8jHiTsPJtRuLJXeG901cFJqWcANCxUKRIcTczYm9aVOqXfBNrIt0
-qflSuVTNVnJh4xguznocBnT/W3vhqvdHMb8i7C6MDKydGOpxjSNlxHlCuOarp+V6
-ikzGdkVnaMPOx/CprspnzTm5M15zQtW9szNcwaOyoRpjojC7llrkB2V5sel79VZ6
-lwQfQB8SZ8UgqcnOoC8JqQ7gDGmNwiJNpA6V1SETbpFbGSe63VXYmxhpcl5Xq3yE
-n/AbMFYrNPk3coVZCpMPtxwXaRtYXhjkZe+4k2O76Ngdu60lpZdOSlL1KSrmTpgu
-niMEANKqqycjkcbLwvZ33rDrLBi+Zmuy85L/LKfbkxqze/wM+c9BxXdeET6EmfCz
-Mi6586n2EvsE30HMS+mKGeNiVf1IDapmGXX3xqySiqpKApqoihWE/w1v9hN881aQ
-OVsgy00IXqA/hblZJ0tXCnj/8cyu2EGYyeaFRnUJYR4nmaH9jdguuPDnUJVGXrrl
-ypfxvgZooG4ild7E9N1p9W533lZ4OC+p5/Pk2LhJjEJ1MbQvQZrwurcV2oazxDAs
-KyZzpnhTdBNL9KmWPPKO
-=7Ula
+iQIcBAEBAgAGBQJTcThfAAoJELSic+t+oim9cHAP/15aQ6XIPJ2De7euOX389VVu
+oq7uzbjmTj1mVXTMZcgca/FpoE2QURW2fIsXYrlf8WiGd9Jm/d2ce1khh3XfJFHS
+IRilIY40GLSFxW3K1DeKVId/Fgcp7bd90+DpY4yNO74DnyX6Pi+0t4D/RBJWUInW
+ww6BaLxycfXRuCj139W/SdHbk0IyCIRoIxLFM3VsL/mdi7CxZfYYagqJyMs9hNHV
+XZa62ACmBlYffRLcaGIZZt+HlQdiGrwM4lowMVTyOB/LdfDZJ+1BaS+u7Am5hGGg
+cMJzENnWg3gPaUs5aUZo2at42eKTrIzO7waWUMRbY7MNqnoho0US2XxFHQHBbqqq
+YiYbCk0vlYL9rti/wKtmE0QnLfHaasw3Vlr5HbIkzW7X3yWmghd+k9gkPWRO2HrZ
+l2nDgwXOOgRIKCs+aDwx9hTk7hv/map1/Rod31a586mpbxr2DBPvR1yoI8lrnduj
+FcCSfpmqg37py5aC3jGmRkcJ1S9tXoZVO6mKlKHAa3BVUcea8rl7n7GM6H5oX265
+ROQ3Ib/gCnoRSI2HOpBMAtZ+rZqOBC/PAI1vwkOtBcvLRIBp/ZqxuamacpCVBn3j
+BQYHo7uP7AmJu9/Ov24sRwcCOPqmKA3OvL4iiz2dpqzSXBUISGrwcZf++sQL5oRz
+oVFRgitCrovDPq1ZQ1L5
+=GnOQ
 -----END PGP SIGNATURE-----
 
---KsVkpN3j6bpLJgwB--
+--MMMKu5Vi3KxtaswF--
 
---===============4543139010931428351==
+--===============4433237917417958644==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4543139010931428351==--
+--===============4433237917417958644==--
