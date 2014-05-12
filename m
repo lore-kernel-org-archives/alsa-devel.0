@@ -1,51 +1,89 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Fix incorrect condition check for case
- SNDRV_PCM_TRIGGER_SUSPEND
-Date: Mon, 12 May 2014 21:16:31 +0100
-Message-ID: <20140512201631.GF12304@sirena.org.uk>
-References: <1399896725-28083-1-git-send-email-Guangyu.Chen@freescale.com>
+From: Arun Shamanna Lakshmi <aruns@nvidia.com>
+Subject: Re: [PATCH v2 2/5] ASoC: Revert "ASoC: dapm: Fix
+ double prefix addition"
+Date: Mon, 12 May 2014 13:22:14 -0700
+Message-ID: <781A12BB53C15A4BB37291FDE08C03F3A05ED3890B@HQMAIL02.nvidia.com>
+References: <1399472428-11034-1-git-send-email-lars@metafoo.de>
+ <1399472428-11034-2-git-send-email-lars@metafoo.de>
+ <5370E207.4010605@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kFa0FWpjwNIzuSe5"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1399896725-28083-1-git-send-email-Guangyu.Chen@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, perex@perex.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate14.nvidia.com (hqemgate14.nvidia.com [216.228.121.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F61E2650C0
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 22:22:18 +0200 (CEST)
+In-Reply-To: <5370E207.4010605@metafoo.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Songhee Baek <sbaek@nvidia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---kFa0FWpjwNIzuSe5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> -----Original Message-----
+> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
+> Sent: Monday, May 12, 2014 8:00 AM
+> To: Lars-Peter Clausen
+> Cc: Mark Brown; Liam Girdwood; Songhee Baek; Arun Shamanna Lakshmi;
+> alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] [PATCH v2 2/5] ASoC: Revert "ASoC: dapm: Fix
+> double prefix addition"
+> 
+> On 05/07/2014 04:20 PM, Lars-Peter Clausen wrote:
+> > This reverts commit bd23c5b661858446267f4d6b2fb4edd8eb710dda.
+> >
+> > The patch claims that the patch is necessary to avoid double prefix
+> > addition when calling snd_soc_dapm_add_route() from
+> snd_soc_dapm_connect_dai_link_widgets().
+> > But snd_soc_dapm_add_route() is called with the card's DAPM context,
+> > which does not have a prefix, which means there is no prefix that
+> > could be added a second time.
+> >
+> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> > ---
+> > I might be missing something. My best guess is that this was needed in
+> > some vendor tree, but not in upstream.
+> 
+> Hi Songhee, Arun,
+> 
+> Can you take a look at this? I think the reason why you had this patch is
+> because this was needed to prevent double prefix addition in
+> snd_soc_dapm_link_dai_widgets(). All other places where
+> dapm_add_route() is/was used do not suffer the problem of double prefix
+> addition. But
+> snd_soc_dapm_link_dai_widgets() was changed in commit commit
+> 2553628e
+> ("ASoC: dapm: Add snd_soc_dapm_add_path() helper function") to use
+> dapm_add_path which does not have the problem since it doesn't try to
+> add a prefix. v3.12 was the first kernel that had this commit and I think
+> that you forward ported this change from a vendor tree that was based
+> on an earlier version. So in summery I think the issue that you tried to fix
+> this patch was already fixed by the time you submitted the patch.
+> 
+> Thanks,
+> - Lars
 
-On Mon, May 12, 2014 at 08:12:05PM +0800, Nicolin Chen wrote:
-> The regular state before we execute SNDRV_PCM_TRIGGER_SUSPEND should be
-> SNDRV_PCM_TRIGGER_START, not SNDRV_PCM_TRIGGER_STOP. Thus fix it.
+We tested the latest upstream kernel and it works without our patch. So, it's
+okay to revert this and sorry to push this patch in the first place.
 
-Applied, thanks.
+> 
+> > ---
+> >   sound/soc/soc-dapm.c | 11 +++++------
+> >   1 file changed, 5 insertions(+), 6 deletions(-)
+> >
 
---kFa0FWpjwNIzuSe5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTcSwcAAoJELSic+t+oim9QJIP/RN8flUV4fX6+gmhkaAbQFFs
-1xl58MKx6qpOyVOER/sTkmWV/OsI2+JN4fIcw9H4cFT9hJsTLWcsgY4vU7r9Nl9M
-nyfIgZ5jYJTh5wLFh7sRo4qxJai9H1Z11ODIrddHE1odCkrLCEnmJ0tu4rOLHH/p
-z4yblfwZU5xhDNlZCMwOD9e1BjB+XNCCR+7MwOwb9skaeBanGeUUx91I2lN5nqRu
-Q3EAOkzh7FbEmXDbhgBy7RifLl0s494vOKLZhvrolmYT49vB5WkRVC0h+GnHQLRD
-J35ZRoBLNMZ2V9h1z/k+YDDxOH6vd6RLPuseJ+Bo2wKxJ68G1/P0m02savwkIC/o
-cqexGC/aguue5hHr6Ojq8H8zwwpj/Q5U4Z+Z89+r2VwQXcOCIZ+GSzVrP+QuFI2j
-WQoG72J8a/IWQS1JS0KmsaBH4tQnVWVZdyeZx+MzkycMVlXxBUDz2AOCtBzQSv1P
-CI5GoEWlP43JymwjH/lwazHhgmQ8SPYf5YNo8my3im0Vk0PddcBxQxKTA94pbK1M
-w/o5VPLCD6CtQCHccaT9eXypuF+KFXyZW4DlfNjKRuqpGzrUyiFyCqsP0U/hWTVV
-Ws5K23LXevbaODdxqvzJY/cSgrNwe+ERpfIs9mwxJ3dcwXZ/DMr1aUAq9/Kkw2zD
-1roQdr6oQxHfMFOdHaKM
-=klqC
------END PGP SIGNATURE-----
-
---kFa0FWpjwNIzuSe5--
+-----------------------------------------------------------------------------------
+This email message is for the sole use of the intended recipient(s) and may contain
+confidential information.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  If you are not the intended recipient, please contact the sender by
+reply email and destroy all copies of the original message.
+-----------------------------------------------------------------------------------
