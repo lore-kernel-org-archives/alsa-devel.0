@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/5] ASoC: Revert "ASoC: dapm: Fix
- double prefix addition"
-Date: Mon, 12 May 2014 21:35:35 +0100
-Message-ID: <20140512203535.GJ12304@sirena.org.uk>
+Subject: Re: [PATCH v2 3/5] ASoC: dapm: Use
+ snd_soc_dapm_add_path() in connect_dai_link_widgets()
+Date: Mon, 12 May 2014 21:35:45 +0100
+Message-ID: <20140512203545.GK12304@sirena.org.uk>
 References: <1399472428-11034-1-git-send-email-lars@metafoo.de>
- <1399472428-11034-2-git-send-email-lars@metafoo.de>
+ <1399472428-11034-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9080641883784460332=="
+Content-Type: multipart/mixed; boundary="===============7796428327031494136=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D977A2650FE
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 22:35:50 +0200 (CEST)
-In-Reply-To: <1399472428-11034-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8612626510A
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 22:35:52 +0200 (CEST)
+In-Reply-To: <1399472428-11034-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,57 +27,52 @@ Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, a
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9080641883784460332==
+--===============7796428327031494136==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HjuipH1ANCbUVM1T"
+	protocol="application/pgp-signature"; boundary="YrX/q501D8XiO19W"
 Content-Disposition: inline
 
 
---HjuipH1ANCbUVM1T
+--YrX/q501D8XiO19W
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 07, 2014 at 04:20:25PM +0200, Lars-Peter Clausen wrote:
-> This reverts commit bd23c5b661858446267f4d6b2fb4edd8eb710dda.
->=20
-> The patch claims that the patch is necessary to avoid double prefix addit=
-ion
-> when calling snd_soc_dapm_add_route() from snd_soc_dapm_connect_dai_link_=
-widgets().
+On Wed, May 07, 2014 at 04:20:26PM +0200, Lars-Peter Clausen wrote:
+> We already know which two widgets should be connected, so use
+> snd_soc_dapm_add_path() instead of snd_soc_dapm_add_route() in
+> snd_soc_dapm_connect_dai_link_widgets().
 
-Applied, thanks.  Please take care over the word wrapping in your commit
-logs - they're bumping right at the 80 column limit usually.
+Applied, thanks.
 
---HjuipH1ANCbUVM1T
+--YrX/q501D8XiO19W
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTcTCUAAoJELSic+t+oim9SO4P/3Kbp0r9rmVZLAiszZ3oIJge
-xacmEcLZaBTJS9OzEcI5snMtVzQ7CHHhDtZlMwaeNObx5CCEhwuDH0uVNe7YnCod
-qRdeSyPhX6MliTgXn4UJzk05gRNGu7oRRcfWg57WD95mpxwcx6H7z4xN5YCuTiYy
-mt1KQmDhlkBq6x3lhILDx4BcE9NtEmbEWKiyWf0qRlT+aelbgph5XVOr/jFP2+Nk
-pQkERCF8HqBjNaadXJiYYsoaCJ1O5jOBq3f346TTBRnWWkRDrYzd5R9hFUo3YsW7
-avE5zlezeljaCe+t/KZAGMoWvwywZ5LUW/nVlNFqx5bFYvpz+j4zXRVfEMhE3Ewy
-3tUyjmTRC4Lur+VNGF++O3Ay4HOSkPV49fo2yrfKb6JzPxFerau7yQ59tB3tu4wi
-bgNCVJpB9fB4KRR3AutGcDGhvsaJeE0W6O/TVDrJ6wTNKmpkgKR4y5HtKgji6BGZ
-ZP6emH+GE/LdR7RPozVjveEd7Ce6KiLRuUTUuLI8StmZMTv//5PWe880Q9C7IEcI
-XvMK2FG/ylLfblZRau7RwHQ3lha2Q7oRdw+2o0PsHkFB7u21+quu0DET8V+Nf1ie
-F2gAgt9hrDoOazYSF8BHtME/EFA4KkvB8c4gk4DCIPSAJInMlYsuN9q9uoNdfxqf
-raPOw5SUDkZqEtNFl2d4
-=2KKl
+iQIcBAEBAgAGBQJTcTCeAAoJELSic+t+oim9hqsQAJRUCgrkY+c8lYXudPyysARR
+bZjf71CWTwhNYpUplj06RjSIqMcZSK+G2WQDfUL3FRj0P/PZ/1NRcAl061nwf/tT
+bUtj1BUI5LuC2heis53U5ifOEvdLfLgmYZiHxneMJWhCZY9MPmQ/kzVgAvjhrRnj
+l8wnZu3xg35joG2rbpGP5fJ5qpEjruCu9kAOq2laEJb+t86sFEw9XhDHgFCLxkWl
+5Gm6FCVUpGq6LKeNA104nnm6WTGJJMh+uunTZQ0sDfqT0XWiHNjr/GUCqmlnAWVs
+/jE9n+jhT02bTeRNb9y9CbpNyRwrKfbHyi0li8hS0aVz8T20LXkOLj40Yi2kqAKa
+5lGRZT7ilXP+WaEwwqEIgVD1IAQ/Z3UHmJ+exPNVRSNeNT83b53lpwVpNEky9010
+ExC8WKORgMVyqxhGEYUwlwKoWLHFiDlgHxSE14Kl11eUe9D3PK34bZm1S0VGWsof
+C4AYZaBv7N2f2ZIdJ00uSMKkqOSAJEXf7N3vDSNv/5dJAc+/sjYt0387KBdBBUHl
+LfYNZ2/luzLhJqiRKRa/gP3ZrOUpjpD9kOEBT5Ckw9MKdLHh4fjUFH4RhK2W7bIL
+S1ud8Ud4BcP8oJyXtXheFjaCYYLTr6UPgIwNT6mBRsxfJHcGI1gIp762Ugf6WHgc
+HtWe1RPngGBMwlK/KpuT
+=NSlD
 -----END PGP SIGNATURE-----
 
---HjuipH1ANCbUVM1T--
+--YrX/q501D8XiO19W--
 
---===============9080641883784460332==
+--===============7796428327031494136==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9080641883784460332==--
+--===============7796428327031494136==--
