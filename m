@@ -1,125 +1,51 @@
-From: Adam Goode <agoode@chromium.org>
-Subject: Re: Support for getting "manufacturer" from
- snd_seq_client_info and/or snd_ctl_card_info
-Date: Mon, 12 May 2014 12:29:17 -0700
-Message-ID: <CAOf41Nka_a8Y08MwERBKrZdKCUFo5-NhxR0ULHtUye4aUaOKXg@mail.gmail.com>
-References: <CAOf41NnbBTYrfN10GUcxzdHmKZJj0YT=DC3ntfjuhpb=fa+o=A@mail.gmail.com>
- <536F2BB8.8060002@ladisch.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Fix incorrect condition check for case
+ SNDRV_PCM_TRIGGER_SUSPEND
+Date: Mon, 12 May 2014 21:16:31 +0100
+Message-ID: <20140512201631.GF12304@sirena.org.uk>
+References: <1399896725-28083-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f177.google.com (mail-ig0-f177.google.com
- [209.85.213.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 90F872650CE
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 21:29:19 +0200 (CEST)
-Received: by mail-ig0-f177.google.com with SMTP id l13so4293590iga.16
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 12:29:18 -0700 (PDT)
-In-Reply-To: <536F2BB8.8060002@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, Adam Goode <agoode@chromium.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kFa0FWpjwNIzuSe5"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1399896725-28083-1-git-send-email-Guangyu.Chen@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-tl;dr Is anyone against me exposing all the stuff currently in /proc/asound
-via sysfs files? And then can I add more stuff?
 
+--kFa0FWpjwNIzuSe5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sun, May 11, 2014 at 12:50 AM, Clemens Ladisch <clemens@ladisch.de>wrote:
+On Mon, May 12, 2014 at 08:12:05PM +0800, Nicolin Chen wrote:
+> The regular state before we execute SNDRV_PCM_TRIGGER_SUSPEND should be
+> SNDRV_PCM_TRIGGER_START, not SNDRV_PCM_TRIGGER_STOP. Thus fix it.
 
-> Adam Goode wrote:
-> > I am working on a seq implementation for Chrome, to replace the rawmidi
-> > implementation. I can retain the manufacturer extraction hack on the
-> card,
-> > but seq requires yet another hack to guess the card for a particular seq
-> > client.
->
-> Did you test this with anything besides USB devices?
->
->
-No, this heuristic only works for USB devices.
+Applied, thanks.
 
+--kFa0FWpjwNIzuSe5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> And software clients do not have a card.
->
->
-That's fine. The manufacturer field is optional when exposed to Web MIDI
-clients. But it would be great if we could expose the information when it
-is already present in the kernel.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
+iQIcBAEBAgAGBQJTcSwcAAoJELSic+t+oim9QJIP/RN8flUV4fX6+gmhkaAbQFFs
+1xl58MKx6qpOyVOER/sTkmWV/OsI2+JN4fIcw9H4cFT9hJsTLWcsgY4vU7r9Nl9M
+nyfIgZ5jYJTh5wLFh7sRo4qxJai9H1Z11ODIrddHE1odCkrLCEnmJ0tu4rOLHH/p
+z4yblfwZU5xhDNlZCMwOD9e1BjB+XNCCR+7MwOwb9skaeBanGeUUx91I2lN5nqRu
+Q3EAOkzh7FbEmXDbhgBy7RifLl0s494vOKLZhvrolmYT49vB5WkRVC0h+GnHQLRD
+J35ZRoBLNMZ2V9h1z/k+YDDxOH6vd6RLPuseJ+Bo2wKxJ68G1/P0m02savwkIC/o
+cqexGC/aguue5hHr6Ojq8H8zwwpj/Q5U4Z+Z89+r2VwQXcOCIZ+GSzVrP+QuFI2j
+WQoG72J8a/IWQS1JS0KmsaBH4tQnVWVZdyeZx+MzkycMVlXxBUDz2AOCtBzQSv1P
+CI5GoEWlP43JymwjH/lwazHhgmQ8SPYf5YNo8my3im0Vk0PddcBxQxKTA94pbK1M
+w/o5VPLCD6CtQCHccaT9eXypuF+KFXyZW4DlfNjKRuqpGzrUyiFyCqsP0U/hWTVV
+Ws5K23LXevbaODdxqvzJY/cSgrNwe+ERpfIs9mwxJ3dcwXZ/DMr1aUAq9/Kkw2zD
+1roQdr6oQxHfMFOdHaKM
+=klqC
+-----END PGP SIGNATURE-----
 
-
-> > Any suggestions on how to extract the manufacturer more easily? The best
-> > solution would be to add a manufacturer (or vendor) field to the
-> > snd_seq_client_info ioctl struct.
->
-> Old clients would not know to set this field.
->
->
-That's fine, I am not worried about type=user clients. In most cases there
-isn't really a useful manufacturer there.
-
-
-
-> The Core MIDI documentation says:
-> | kMIDIPropertyManufacturer
-> |   Drivers *should* set this property on their devices.
-> |   Creators of virtual endpoints *may* set this property on their
-> endpoints.
->
-> So what happens on OS X if this is not set?
->
->
-In this case, we don't expose the manufacturer via Web MIDI.
-
-
-
-> > A completely different solution would be to add all this info to sysfs
->
-> USB devices already have this information in sysfs.
->
->
-This is true. Unfortunately, here are the current steps to get this
-information:
-1. Given a seq client, attempt to guess the card by making assumptions
-about client->card numbering.
-2. From the card, attempt to guess the manufacturer by making assumptions
-about how longname is constructed. Or, attempt to extract the usb
-information from the card info struct and then try to get the info from
-/sys (but this gives us only the manufacturer string from usb, not the
-quirk vendor name that the usb midi driver knows about).
-
-What I would like to do is make these mappings explicit. Because Alsa is
-very ioctl driven, I was thinking the way to do this is through the
-existing ioctl API. But since I really just want to expose a lot more
-read-only info about the system, perhaps files in /sys would be an
-acceptable way to expose this information. At least, I would like to take
-the rather detailed information stored in /prod/asound and expose this in a
-more sysfs way via /sys, then add more fields and info. Does this sound
-reasonable?
-
-
-
->
-> How about an easy solution: just use "Linux".
-> (IIRC this is what Microsoft's MME/WDM bridge driver does.)
->
->
-Yes, that is a solution. :) But I think we can do better here.
-
-
->
-> Regards,
-> Clemens
->
-
-Thanks,
-Adam
+--kFa0FWpjwNIzuSe5--
