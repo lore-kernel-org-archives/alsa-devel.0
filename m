@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH v4 2/5] ASoC: Move standard
 	kcontrol	helpers to the component level
-Date: Mon, 12 May 2014 11:42:04 +0100
-Message-ID: <20140512104204.GF25203@opensource.wolfsonmicro.com>
+Date: Mon, 12 May 2014 11:52:57 +0100
+Message-ID: <20140512105257.GG25203@opensource.wolfsonmicro.com>
 References: <20140509150034.GH2870@dragon> <536CF16F.8010807@metafoo.de>
  <CAOMZO5Cb4Q80ux1R9EOcsaCPFsmxz3K5Obt02or=s0RitmPMKw@mail.gmail.com>
  <536CFBE7.3070805@metafoo.de> <20140510050747.GI2870@dragon>
@@ -14,8 +14,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EFCC3261680
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 12:42:04 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EA40E264F3D
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 12:52:57 +0200 (CEST)
 Content-Disposition: inline
 In-Reply-To: <20140510091209.GM2870@dragon>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -65,10 +65,9 @@ On Sat, May 10, 2014 at 05:12:11PM +0800, Shawn Guo wrote:
 > returns -EBUSY for reg WM8962_CLASS_D_CONTROL_1.  But how do I find out
 > why the reg is not in the cache?
 
->From what I can see it doesn't look like this register should be
-volatile. I am checking with the hardware guys here, incase I am
-missing something, but otherwise I will wing out a patch to make
-it non-volatile.
+Looking at this a bit more can you let me know when it is
+failing, I assume it is in relation to setting the "Speaker
+Switch" control?
 
 Thanks,
 Charles
