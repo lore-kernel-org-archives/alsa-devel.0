@@ -1,23 +1,23 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4 2/5] ASoC: Move standard
-	kcontrol	helpers to the component level
-Date: Mon, 12 May 2014 11:52:57 +0100
-Message-ID: <20140512105257.GG25203@opensource.wolfsonmicro.com>
-References: <20140509150034.GH2870@dragon> <536CF16F.8010807@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 2/5] ASoC: Move standard kcontrol
+ helpers to the component level
+Date: Mon, 12 May 2014 12:03:04 +0100
+Message-ID: <20140512110304.GB12304@sirena.org.uk>
+References: <536CF16F.8010807@metafoo.de>
  <CAOMZO5Cb4Q80ux1R9EOcsaCPFsmxz3K5Obt02or=s0RitmPMKw@mail.gmail.com>
  <536CFBE7.3070805@metafoo.de> <20140510050747.GI2870@dragon>
  <536DCF6F.9020507@metafoo.de> <536DD108.2090607@metafoo.de>
  <20140510083131.GL2870@dragon> <536DE548.9050008@metafoo.de>
  <20140510091209.GM2870@dragon>
+ <20140512104204.GF25203@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8585614724363341155=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EA40E264F3D
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 12:52:57 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140510091209.GM2870@dragon>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C3CF2616F6
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 13:03:24 +0200 (CEST)
+In-Reply-To: <20140512104204.GF25203@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,47 +27,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Fabio Estevam <festevam@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Fabio Estevam <festevam@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 10, 2014 at 05:12:11PM +0800, Shawn Guo wrote:
-> On Sat, May 10, 2014 at 10:37:28AM +0200, Lars-Peter Clausen wrote:
-> > On 05/10/2014 10:31 AM, Shawn Guo wrote:
-> > >On Sat, May 10, 2014 at 09:11:04AM +0200, Lars-Peter Clausen wrote:
-> > >>On 05/10/2014 09:04 AM, Lars-Peter Clausen wrote:
-> > >>[..]
-> > >>>>The error message only shows up with Debian wheezy and does not with
-> > >>>>yocto rootfs.  And even when the error message shows, the audio still
-> > >>>>functions well on Debian wheezy.  So it's just a noisy error message
-> > >>>>for me which is only seen after your kernel patch.
-> > >>>
-> > >>>The keyword here is "seen". The error quite likely predated the commit, but
-> > >>>it was silently discarded.
-> > >>>
-> > >>>regmap_read() returns -EBUSY when there is no cached register value and
-> > >>>cache_only is set to true. But I'm not sure why that would happen, try to
-> > >>>add some printks to _regmap_read() to see if this is the source and if it is
-> > >>>why it is.
-> > >>
-> > >>Both SGTL5000_CHIP_ANA_ADC_CTRL and SGTL5000_CHIP_MIC_CTRL don't
-> > >>have an entry in sgtl5000_reg_defaults. So if cache_only is true,
-> > >>controls which use these registers will return -EBUSY when you try
-> > >>to read or write them.
-> > >
-> > >Hmm, it's a wm8962 than sgtl5000 on board imx6q-sabresd.
-> > 
-> > Ok, misread the boardname. But the issue will be the same.
-> > cache_only = true and trying to read/update a register that is not
-> > in the cache.
-> 
-> Yea, you're right.  When the error message shows up, _regmap_read()
-> returns -EBUSY for reg WM8962_CLASS_D_CONTROL_1.  But how do I find out
-> why the reg is not in the cache?
 
-Looking at this a bit more can you let me know when it is
-failing, I assume it is in relation to setting the "Speaker
-Switch" control?
+--===============8585614724363341155==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="m/MsweddsUN8J3b6"
+Content-Disposition: inline
 
-Thanks,
-Charles
+
+--m/MsweddsUN8J3b6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, May 12, 2014 at 11:42:04AM +0100, Charles Keepax wrote:
+
+> > Yea, you're right.  When the error message shows up, _regmap_read()
+> > returns -EBUSY for reg WM8962_CLASS_D_CONTROL_1.  But how do I find out
+> > why the reg is not in the cache?
+
+> From what I can see it doesn't look like this register should be
+> volatile. I am checking with the hardware guys here, incase I am
+> missing something, but otherwise I will wing out a patch to make
+> it non-volatile.
+
+IIRC at least one of the bits in the register also appears in another
+register.  They aren't volatile but the cache could get confused unless
+something is open coded to keep the two cached registers in sync.
+
+--m/MsweddsUN8J3b6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTcKplAAoJELSic+t+oim9EhwQAIofzlqz/jsdhAW6K0H3cKuk
+4KVyVJjMCzLm1R2Iagp7vbyG7gedTRv4WDZNdfpWTas5gfP4HgobsOKYXH7iYrUu
+uHVnGEudu90lBolLEvQG/nEvHiS9AdOzStWzXZJePCimG2xD6SDGAT/yG6dV4Y8F
+4KnXo2zojtP8UcOCFOK0Rtk57HeOEfKtvIsT+WKEzcvcDlscwrw8HwiF3NxUv4Hs
+MRZ1RAHwX65Bn8V6fnjAYTkkmkUzR9UKxhR2AXMQvJuqoM+rfoEtdU//P0g3OZG7
+nzvCeUkRqxSqE5wyYfdI7s/cRsteoF0x4mysPRUJTbbp0EzY5b8ZE1fBF7wQOxE2
+T9laHcxLD2HK3bTKYT9PxmXes09Cw6sKKtlTURe5wCvrsC5YgVcxxEs+zcTPBhjx
+oz3EQes8HU/NhoiYR+UGgi8yzgpifT9+oZxA0D29GSm0voWZq8lpYnMiyO5/G3oP
+AThZieJ9BMF17r7osFIWqokcn5rbYrosLtGJ+PcJ9T8tetubQ+NCslhDAq01sEOI
+YSCf3JlepI3fXMdL6VbVTnAOCIQiKmDJqSVbpac15wrO2NESS6n4JaGmDhkNNNX/
+Efk+ovmyIXhephigsd4YL+k8fn1zt3JDhtXtPDNreRpJPtTXv+912J04EWUIpF96
+NFxQ1JELUwSebuzz9mD2
+=Jx95
+-----END PGP SIGNATURE-----
+
+--m/MsweddsUN8J3b6--
+
+--===============8585614724363341155==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8585614724363341155==--
