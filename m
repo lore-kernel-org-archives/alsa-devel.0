@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/7] ASoC: Intel: Baytrail SST
-	suspend/resume support
-Date: Mon, 12 May 2014 22:02:33 +0100
-Message-ID: <20140512210233.GR12304@sirena.org.uk>
-References: <1399554447-16297-1-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: dapm: Fix SUSPEND -> OFF bias
+	sequence
+Date: Mon, 12 May 2014 22:06:52 +0100
+Message-ID: <20140512210651.GU12304@sirena.org.uk>
+References: <1399365135-26877-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6174703965947672859=="
+Content-Type: multipart/mixed; boundary="===============4543139010931428351=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 461E52650FA
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 23:02:44 +0200 (CEST)
-In-Reply-To: <1399554447-16297-1-git-send-email-jarkko.nikula@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B0DD52650FA
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 23:07:07 +0200 (CEST)
+In-Reply-To: <1399365135-26877-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6174703965947672859==
+--===============4543139010931428351==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7mnteZLARgQRrZeZ"
+	protocol="application/pgp-signature"; boundary="KsVkpN3j6bpLJgwB"
 Content-Disposition: inline
 
 
---7mnteZLARgQRrZeZ
+--KsVkpN3j6bpLJgwB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 08, 2014 at 04:07:20PM +0300, Jarkko Nikula wrote:
-> This set adds suspend/resume support to Baytrail SST. This is
-> implemented by putting the DSP into reset and by releasing driver
-> resources before suspend. In resume path the DSP is rebooted in normal
-> boot state. Active streams are restored by restarting them from last
-> known buffer position before suspend.
+On Tue, May 06, 2014 at 10:32:15AM +0200, Lars-Peter Clausen wrote:
+> Currently when the DAPM context bias level is SUSPEND and the target bias level
+> is OFF dapm_pre_sequence_async() will first transition to PREPARE and
+> dapm_post_sequence_async() will then transition back from PREPARE to STANDBY and
+> then to OFF.
 
-Applied all, thanks.
+Applied, thanks.
 
---7mnteZLARgQRrZeZ
+--KsVkpN3j6bpLJgwB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTcTblAAoJELSic+t+oim9H7AP/j8RdsQjWoAq2VTNIQoUvRVp
-qpcQ2kzBhng7SCtGpKDtDtj7iNhQNz+HcLK3IiUJs65QDgmCgYpWOgIgycP7yj2a
-WzELLqfY+il8LcjLF9S85YNcIvor5W0FTKUcSwQXDWRLm9QGGJQBZrrzf2H3jGgZ
-jGqF39UP0rj7Q3mHUuTv2fbxXHOCWjFUqoEtp/TDSKdS0d928rFi+NhX2VhYGrnf
-Z7ER+6OLjfJJdF7VVOo1ChRscnBCwo5qlAX499FQLIywZkuqRm33Xqosk+UmM/v1
-hnhXnOl+sOWqREe+SYZTyz0Bc5xvQ24KU2x3FhzY34X2D6N701+ip1CjhiA7oyLc
-ds8LwF7WsV+RYsTfDoofv8QS1AM0oclUlxDM4X0yH+Ue+zqfzDRMdFowkM/uYLMD
-tNMYj/cEktpTihwvoBnLQsIG5sALM40v0rd/54TLcTn0LhPesfFT9oV/4HTIQD9B
-mrjZWVQ0Sm8pjBCJ8eOy00Y+UBi19OgzxCl0RpjMU3YWGqX0Id9m8RqfByjHKcGf
-jzcU/jrxzMoKB7PJAssQrm0abAVMO2v6S5TABtlGtKq6xhlJL/W/PsMlOLOLCKGb
-/e7exw63YiPQlclU2ptv6O4RVh7SL8ag7/RCzKLJtCUTeIld/DOaal5qVsCG3+bQ
-Pg2tMGSPyEVbWk4dCI/X
-=cp4j
+iQIcBAEBAgAGBQJTcTfoAAoJELSic+t+oim9pJQP/3SeZfIrK+2sDumsZwZcsEbn
+q/JId3XH8axOfVTMWvQvuTiig6kbmG9pYlJw/4Pu18mmeWnjRSJusZZlD8ofKAXO
+g8t55fCk37EL8jHiTsPJtRuLJXeG901cFJqWcANCxUKRIcTczYm9aVOqXfBNrIt0
+qflSuVTNVnJh4xguznocBnT/W3vhqvdHMb8i7C6MDKydGOpxjSNlxHlCuOarp+V6
+ikzGdkVnaMPOx/CprspnzTm5M15zQtW9szNcwaOyoRpjojC7llrkB2V5sel79VZ6
+lwQfQB8SZ8UgqcnOoC8JqQ7gDGmNwiJNpA6V1SETbpFbGSe63VXYmxhpcl5Xq3yE
+n/AbMFYrNPk3coVZCpMPtxwXaRtYXhjkZe+4k2O76Ngdu60lpZdOSlL1KSrmTpgu
+niMEANKqqycjkcbLwvZ33rDrLBi+Zmuy85L/LKfbkxqze/wM+c9BxXdeET6EmfCz
+Mi6586n2EvsE30HMS+mKGeNiVf1IDapmGXX3xqySiqpKApqoihWE/w1v9hN881aQ
+OVsgy00IXqA/hblZJ0tXCnj/8cyu2EGYyeaFRnUJYR4nmaH9jdguuPDnUJVGXrrl
+ypfxvgZooG4ild7E9N1p9W533lZ4OC+p5/Pk2LhJjEJ1MbQvQZrwurcV2oazxDAs
+KyZzpnhTdBNL9KmWPPKO
+=7Ula
 -----END PGP SIGNATURE-----
 
---7mnteZLARgQRrZeZ--
+--KsVkpN3j6bpLJgwB--
 
---===============6174703965947672859==
+--===============4543139010931428351==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6174703965947672859==--
+--===============4543139010931428351==--
