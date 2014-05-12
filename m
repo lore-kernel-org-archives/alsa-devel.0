@@ -1,20 +1,16 @@
-From: Arun Shamanna Lakshmi <aruns@nvidia.com>
-Subject: Re: [PATCH v2 2/5] ASoC: Revert "ASoC: dapm: Fix
- double prefix addition"
-Date: Mon, 12 May 2014 13:22:14 -0700
-Message-ID: <781A12BB53C15A4BB37291FDE08C03F3A05ED3890B@HQMAIL02.nvidia.com>
-References: <1399472428-11034-1-git-send-email-lars@metafoo.de>
- <1399472428-11034-2-git-send-email-lars@metafoo.de>
- <5370E207.4010605@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6] ASoC: add RT286 CODEC driver
+Date: Mon, 12 May 2014 21:29:18 +0100
+Message-ID: <20140512202918.GG12304@sirena.org.uk>
+References: <536B4708.8080203@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1673060179781340696=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate14.nvidia.com (hqemgate14.nvidia.com [216.228.121.143])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F61E2650C0
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 22:22:18 +0200 (CEST)
-In-Reply-To: <5370E207.4010605@metafoo.de>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 416BC2650D4
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 22:29:34 +0200 (CEST)
+In-Reply-To: <536B4708.8080203@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,65 +21,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Songhee Baek <sbaek@nvidia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-> -----Original Message-----
-> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
-> Sent: Monday, May 12, 2014 8:00 AM
-> To: Lars-Peter Clausen
-> Cc: Mark Brown; Liam Girdwood; Songhee Baek; Arun Shamanna Lakshmi;
-> alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] [PATCH v2 2/5] ASoC: Revert "ASoC: dapm: Fix
-> double prefix addition"
-> 
-> On 05/07/2014 04:20 PM, Lars-Peter Clausen wrote:
-> > This reverts commit bd23c5b661858446267f4d6b2fb4edd8eb710dda.
-> >
-> > The patch claims that the patch is necessary to avoid double prefix
-> > addition when calling snd_soc_dapm_add_route() from
-> snd_soc_dapm_connect_dai_link_widgets().
-> > But snd_soc_dapm_add_route() is called with the card's DAPM context,
-> > which does not have a prefix, which means there is no prefix that
-> > could be added a second time.
-> >
-> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> > ---
-> > I might be missing something. My best guess is that this was needed in
-> > some vendor tree, but not in upstream.
-> 
-> Hi Songhee, Arun,
-> 
-> Can you take a look at this? I think the reason why you had this patch is
-> because this was needed to prevent double prefix addition in
-> snd_soc_dapm_link_dai_widgets(). All other places where
-> dapm_add_route() is/was used do not suffer the problem of double prefix
-> addition. But
-> snd_soc_dapm_link_dai_widgets() was changed in commit commit
-> 2553628e
-> ("ASoC: dapm: Add snd_soc_dapm_add_path() helper function") to use
-> dapm_add_path which does not have the problem since it doesn't try to
-> add a prefix. v3.12 was the first kernel that had this commit and I think
-> that you forward ported this change from a vendor tree that was based
-> on an earlier version. So in summery I think the issue that you tried to fix
-> this patch was already fixed by the time you submitted the patch.
-> 
-> Thanks,
-> - Lars
+--===============1673060179781340696==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="b75zxLgdvbUilXow"
+Content-Disposition: inline
 
-We tested the latest upstream kernel and it works without our patch. So, it's
-okay to revert this and sorry to push this patch in the first place.
 
-> 
-> > ---
-> >   sound/soc/soc-dapm.c | 11 +++++------
-> >   1 file changed, 5 insertions(+), 6 deletions(-)
-> >
+--b75zxLgdvbUilXow
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
------------------------------------------------------------------------------------
-This email message is for the sole use of the intended recipient(s) and may contain
-confidential information.  Any unauthorized review, use, disclosure or distribution
-is prohibited.  If you are not the intended recipient, please contact the sender by
-reply email and destroy all copies of the original message.
------------------------------------------------------------------------------------
+On Thu, May 08, 2014 at 10:57:44AM +0200, Lars-Peter Clausen wrote:
+
+> There is still structure, the mapping function does not have to understand
+> each register it only has to understand each verb and the driver uses may=
+be
+> 6-7 different verbs, so it is not that bad. The code would basically look
+> like this:
+
+> write_reg(addr, val)
+> {
+> 	verb =3D EXTRACT_VERB(addr);
+> 	nid =3D EXTRACT_NID(addr);
+> 	pid =3D EXTRACT_PID(addr);
+>=20
+> 	switch (verb) {
+> 	case VERB1:
+> 		return write_verb1(nid, pid, val):
+> 	case VERB2:
+> 		return write_verb2(nid, pid, val):
+> 	....
+> 	}
+> }
+
+> Where pid is verb specific additional addressing information that is used=
+ in
+> the verbs payload.
+
+Yeah, it's not exactly a model of niceness though.  It's looking an
+awful lot like we didn't manage to abstract things properly and setting
+off alarm bells as a result.
+
+> >So how does HDA handle this?  We can obviously keep recording settings
+> >in the same way as we do for virtual enums, writing them out shouldn't
+> >be so hard.   The cache code isn't going to buy us much if we have to
+> >write things out control by control anyway, it essentially just boils
+> >down to a fancy list walk.
+
+> It's not just the DAPM stuff, but also the normal controls, for which we =
+do
+> not have per control caching.
+
+That seems like a simple matter of programming to resolve.
+
+> >If you really want to reuse regmap having a write only regmap internal
+> >to the driver (not presented to ASoC) which just remembers the last
+> >value written to every NID/VID combination might work and at least
+> >avoids the ugly bits with trying to convince ASoC there are registers
+> >since you don't need to worry about reading the data back and can just
+> >pretend that read values match written values since we never look at
+> >them except to write them back out.
+
+> Yes kind of.
+
+Kind of?  It solves the cache sync case and if it's write only then we
+won't need to go to the register map for reads anyway (outside of
+interrupt handling and so on).
+
+--b75zxLgdvbUilXow
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTcS8bAAoJELSic+t+oim9PQ0P/jZT00JBcat4ozK4EAbl2fu8
+KlLJ5D9XGCrba7GqoX0ShL0PjHLTYBWOq51U0lL8MUmliVZG83HX/c74o+MdiEAH
+GIVMt4zbOUyJHpSm9gyUUASl4xemCBW7zcmMAjyVmfknFiCnB3BeySKGkuPry9HV
+CpcFmwl9F57qjlLQe7a7bgihVxTH4Ze4hTQYjgQBF865BTZoNRsbPo6LpWpL1n6b
+zIco9Xj8CYYfRAY0kku+qNVPAnm9dShfqH+lL1Cted+qhiEyBMlGIjwYKYsZy64C
+M38u/WZGqVi1Risd3V+a2Xg7nsHxFofmay5yN/oSL3aUbdA4vPRGLMaxYmGuIjNu
+p2x4TGAAq1xpn5DLAkbmyfZaanJpgTik4nXCmN7SIQnaHUWbHmLlkC5K6hMnB4in
+aio99oRATgrpdnxhC9PPxu5YnYkJr1F9vNcShIdvltk3NiCCuyaWrHv/TC5dPfYJ
+niI8i9wxQh5VfuPIn0AxKyyY1Hq7tNGS8DMZqV8ZCc38x4GKkn85xWonsVgwboT9
+SfxbxmWQHwYMWw390GXuNRWVypIF52dpvF8DRiwSOzHSH3tqZ3GoZFUOoQ5WjyG3
+dtjvRxcq0vtOfB0dTh+zZ8Q7HddxSn+cLfcnTq9HS9BvD5NVSwWf/0/oYs7EVmZk
+gvn0O1j0ltZbUFifiRP8
+=9dB4
+-----END PGP SIGNATURE-----
+
+--b75zxLgdvbUilXow--
+
+--===============1673060179781340696==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1673060179781340696==--
