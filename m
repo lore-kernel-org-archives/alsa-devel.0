@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: fsl_spdif: Fix incorrect usage
-	of regmap_read()
-Date: Mon, 12 May 2014 23:11:29 +0100
-Message-ID: <20140512221129.GC12304@sirena.org.uk>
-References: <1399365699-21084-1-git-send-email-Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH 2/2] ASoC: fsl_spdif: Improve coding style
+Date: Mon, 12 May 2014 23:12:10 +0100
+Message-ID: <20140512221210.GD12304@sirena.org.uk>
+References: <1399365745-21116-1-git-send-email-Guangyu.Chen@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7852933168540130601=="
+Content-Type: multipart/mixed; boundary="===============8631289926468844407=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A47A026524C
- for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 00:11:44 +0200 (CEST)
-In-Reply-To: <1399365699-21084-1-git-send-email-Guangyu.Chen@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EE882651C9
+ for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 00:12:24 +0200 (CEST)
+In-Reply-To: <1399365745-21116-1-git-send-email-Guangyu.Chen@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +25,52 @@ Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7852933168540130601==
+--===============8631289926468844407==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="SWnt3BFTPGlcXUeu"
+	protocol="application/pgp-signature"; boundary="8BHTaIJNvxgAhOuN"
 Content-Disposition: inline
 
 
---SWnt3BFTPGlcXUeu
+--8BHTaIJNvxgAhOuN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 06, 2014 at 04:41:39PM +0800, Nicolin Chen wrote:
-> We should not copy the return value into this val since it's supposed to
-> get the value of the register not the success result of regmap_read().
-> Thus fix it.
+On Tue, May 06, 2014 at 04:42:25PM +0800, Nicolin Chen wrote:
+> 1) Apply better indentations
+> 2) Drop braces for single statement.
+> 3) Use simpler ternary to reduce code.
 
-Applied, thanks.
+Applied, thanks.  It's better to do one change per commit.
 
---SWnt3BFTPGlcXUeu
+--8BHTaIJNvxgAhOuN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTcUcOAAoJELSic+t+oim97cYQAI27iVJPR1eC03sVfsH+0Uav
-kjM3OTagy4g7kOkZ5fABMzTJhuKFWknw8Isj5KOFNpPN55IBgs9XAhmMps3XRFIn
-5DFemGmED61mPo+MuJe4gn6zQVRUhbtZWUb4T0lhdxDw/PCTtUvEPoFaRO2XzoJo
-e9q5JccjvTIpUhxcMHJ38QBJO5+oow9KE766r0uhqowhfOxg+KaURbL4Mifp4nmF
-PbCfnoIla5oLGtJ6WjTojBxRwJ3jNbTxXTV1b/opl0j2FGwR6Z//RX+O1G67j3jP
-yZU4/Lh2Eo111HL2mpDcmq4FCJkSlaJzOnBVHLZ4eZZSs7EtDaQzk6xYg81A1wi/
-P2wv0dUvyJ1v6PYopRfY9ZaF2mEjluQvH+zV9+0BsHZPEofdEYc55rubqrHCwYdI
-sQfsTq2e4KoAn6xAuESyiial9mT4o263DaZOcfVywTkRsUNnA54eBAFbNhs3Olzb
-SaRJlk2yHf4khY3nq5E4K5e0IFd4/fsb3k1aCAXceaGG4vaa6DbA5Z7J6Tw3m6Kq
-EFNGOdUWGwQRkj7PMd+XsvgrYEH6/WUM/WejF8RNAuXX1HO3iqQP/6RY5AioAbev
-11Y5ddsoUK87EEFjo5cRBBzNrort0mPap7n3p6Km7+7D9oVGjmoWUlzMc9hCVku9
-BwKQecXadjfvBEa29+Mn
-=3uOZ
+iQIcBAEBAgAGBQJTcUc3AAoJELSic+t+oim9q5EQAJaxl1X19/tewnqm+YtkoZzS
+OIETvTwbfE70HQO6Rx5jxgw8nCOAR4F1+xgRmSSgM3DgwtqqCbsrTetSLrbT2S6p
+u9gaQ0TodtSQikCQO+YieqInTyZ/srRCGwQ3CHbyPZl0VZalIPTCtiKiGXA78OpA
+gWQlE9EBHUxeOt3tCOreEERkC5H8bxjqbflA4+Al/2B9O0AXe95FrRXWMnOHpU/o
+jHjHM2Ot/R03LChcmiFUPzGAiuKKLlK+GomNXUTpFv9RCbTAETVdBJFmrGjo7frB
+VfD3kbw84/Ht4US1/S4K6KCMyHoaOa0ULzD1bMzOHjmJHwOeNrKhvnsOuosV4CAg
+dgj8W2hinHas5JNfFYTmdezrAqlhq+rQT/owWpt/ArC+/pjeSMI8iNMbOjocTS+B
+LKDEce5VlOzeJGKeNpKMZyKmcrpr9YY8F0maKitlCHbM9AV/dgu1hdhc7InNIBO2
+/uHHXRbJNegLvOikBvNCqP3OgIV5wCsGJ47E3nW46Ko1F+8Sc9yDxfVnYcoCWQ+9
+VNlcj6ywyhFOd+UdW+I/Af1xMIQMVdyExWzHjNn7XOgNIrlo4GjmJrm8ZLR85w3F
+2uWIqFiMNK2aDN7g5buESDCHncG7dqHt9NGBb3t0eO9c6feg+YEnOh8IXrvNERyB
+GFqRaXS+YIml7w2yzaET
+=Vd2L
 -----END PGP SIGNATURE-----
 
---SWnt3BFTPGlcXUeu--
+--8BHTaIJNvxgAhOuN--
 
---===============7852933168540130601==
+--===============8631289926468844407==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7852933168540130601==--
+--===============8631289926468844407==--
