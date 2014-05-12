@@ -1,54 +1,125 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 11/19] ASoC: omap: Remove obsolete HDMI audio code and
- Kconfig options
-Date: Mon, 12 May 2014 18:22:43 +0100
-Message-ID: <20140512172243.GD12304@sirena.org.uk>
-References: <cover.1399884780.git.jsarha@ti.com>
- <df664d05d8208f5789623604a4e0f5342bc6e405.1399884780.git.jsarha@ti.com>
+From: Adam Goode <agoode@chromium.org>
+Subject: Re: Support for getting "manufacturer" from
+ snd_seq_client_info and/or snd_ctl_card_info
+Date: Mon, 12 May 2014 12:29:17 -0700
+Message-ID: <CAOf41Nka_a8Y08MwERBKrZdKCUFo5-NhxR0ULHtUye4aUaOKXg@mail.gmail.com>
+References: <CAOf41NnbBTYrfN10GUcxzdHmKZJj0YT=DC3ntfjuhpb=fa+o=A@mail.gmail.com>
+ <536F2BB8.8060002@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ix8ND813NDRFdDE4"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <df664d05d8208f5789623604a4e0f5342bc6e405.1399884780.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, tomi.valkeinen@ti.com, detheridge@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f177.google.com (mail-ig0-f177.google.com
+ [209.85.213.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90F872650CE
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 21:29:19 +0200 (CEST)
+Received: by mail-ig0-f177.google.com with SMTP id l13so4293590iga.16
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 12:29:18 -0700 (PDT)
+In-Reply-To: <536F2BB8.8060002@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Adam Goode <agoode@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
+tl;dr Is anyone against me exposing all the stuff currently in /proc/asound
+via sysfs files? And then can I add more stuff?
 
---ix8ND813NDRFdDE4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Mon, May 12, 2014 at 12:12:22PM +0300, Jyri Sarha wrote:
-> Removes omap-hdmi DAI driver, omap-hdmi-card driver, the related
-> Kconfig options, and Makefile entries. The HDMI DAI drivers has been
-> integrated directly to OMAP4+ HDMI drivers and simple-card driver is
-> used instead of omap-hdmi-card driver.
+On Sun, May 11, 2014 at 12:50 AM, Clemens Ladisch <clemens@ladisch.de>wrote:
 
-Acked-by: Mark Brown <broonie@linaro.org>
+> Adam Goode wrote:
+> > I am working on a seq implementation for Chrome, to replace the rawmidi
+> > implementation. I can retain the manufacturer extraction hack on the
+> card,
+> > but seq requires yet another hack to guess the card for a particular seq
+> > client.
+>
+> Did you test this with anything besides USB devices?
+>
+>
+No, this heuristic only works for USB devices.
 
---ix8ND813NDRFdDE4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+> And software clients do not have a card.
+>
+>
+That's fine. The manufacturer field is optional when exposed to Web MIDI
+clients. But it would be great if we could expose the information when it
+is already present in the kernel.
 
-iQIcBAEBAgAGBQJTcQNgAAoJELSic+t+oim9VcEP+wQ9RRAyPFn6WlQjf1TuL7qR
-SGEl0Vvf76ngM7Bau/He6sXS6SJNANoZXrHUwLbpH3TLl+wj/MkKYz734rXzXb2A
-+d9BBqU8YnJAOx4dMVMFZ9mtLvtrBlv9IaIc0q6tSQotplCXVBUgUsRyC0cVGZ7/
-FbriH1X+3vp5t+WonazQQUbrzNAvRBfSoGnGvkhN50tybjOai66WQ3Q8Mrb7a7VO
-k/h9vX1R4E/6bafyXRQWM84jRzu3oBFkx/vBfril8FVMjciixWJroGkogT43gdwC
-oWGOp2oKHL/E7O8XHjURReQQKEJL4OGLJwM/1q+veu91b9Ffp+xHsj0ufxQoYXsF
-DNNEIa8JDjvJG6ooYOLczRsBAshAKFTOJn0TZg4VqfFJmoBkUsqTe2b82byYClrB
-zxG3tN7f1/eN9tyvq331MOm6c/Eh6OdGFX2BYK2XOsSNf5EaITKZwmCsxaAxpIvH
-LfIJSe9SvVyequOcUZYo31mWBNOyt6AWxwJ72HYexVNf30+xYIao9o0pwGdR/EIZ
-hzI3Avhnpi1psc7QpKJny3QhfhQmeExrsXBsAGBySWNHQ5AGVIaLNKOS4IiCeVpM
-o142T9VYI2dCmLiPpsFAykMFfmCxV/5ZjjRTvYH9wS6FlLHLzq0UzIff2oWqokjG
-v1pLQ7yJdGA46BzjE4Pg
-=apVs
------END PGP SIGNATURE-----
 
---ix8ND813NDRFdDE4--
+
+> > Any suggestions on how to extract the manufacturer more easily? The best
+> > solution would be to add a manufacturer (or vendor) field to the
+> > snd_seq_client_info ioctl struct.
+>
+> Old clients would not know to set this field.
+>
+>
+That's fine, I am not worried about type=user clients. In most cases there
+isn't really a useful manufacturer there.
+
+
+
+> The Core MIDI documentation says:
+> | kMIDIPropertyManufacturer
+> |   Drivers *should* set this property on their devices.
+> |   Creators of virtual endpoints *may* set this property on their
+> endpoints.
+>
+> So what happens on OS X if this is not set?
+>
+>
+In this case, we don't expose the manufacturer via Web MIDI.
+
+
+
+> > A completely different solution would be to add all this info to sysfs
+>
+> USB devices already have this information in sysfs.
+>
+>
+This is true. Unfortunately, here are the current steps to get this
+information:
+1. Given a seq client, attempt to guess the card by making assumptions
+about client->card numbering.
+2. From the card, attempt to guess the manufacturer by making assumptions
+about how longname is constructed. Or, attempt to extract the usb
+information from the card info struct and then try to get the info from
+/sys (but this gives us only the manufacturer string from usb, not the
+quirk vendor name that the usb midi driver knows about).
+
+What I would like to do is make these mappings explicit. Because Alsa is
+very ioctl driven, I was thinking the way to do this is through the
+existing ioctl API. But since I really just want to expose a lot more
+read-only info about the system, perhaps files in /sys would be an
+acceptable way to expose this information. At least, I would like to take
+the rather detailed information stored in /prod/asound and expose this in a
+more sysfs way via /sys, then add more fields and info. Does this sound
+reasonable?
+
+
+
+>
+> How about an easy solution: just use "Linux".
+> (IIRC this is what Microsoft's MME/WDM bridge driver does.)
+>
+>
+Yes, that is a solution. :) But I think we can do better here.
+
+
+>
+> Regards,
+> Clemens
+>
+
+Thanks,
+Adam
