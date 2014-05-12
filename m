@@ -1,75 +1,63 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND 0/4] ASoC: fsl_esai: Fix some issues
-Date: Mon, 12 May 2014 23:15:43 +0100
-Message-ID: <20140512221543.GE12304@sirena.org.uk>
-References: <cover.1399366227.git.Guangyu.Chen@freescale.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7855752371317723770=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 76168265114
- for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 00:15:57 +0200 (CEST)
-In-Reply-To: <cover.1399366227.git.Guangyu.Chen@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Subject: [PATCH] ASoC: rsnd: Fix warnings due to improper printk formats
+Date: Tue, 13 May 2014 01:10:20 +0200
+Message-ID: <1399936220-17123-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+Return-path: <linux-sh-owner@vger.kernel.org>
+Sender: linux-sh-owner@vger.kernel.org
+To: linux-sh@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
+Use the %pap printk specifier to print resource_size_t variables. This
+fixes warnings on platforms where resource_size_t has a different size
+than int.
 
---===============7855752371317723770==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oh8AZbNfQ/hj6lDD"
-Content-Disposition: inline
+Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+---
+ sound/soc/sh/rcar/gen.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
+Would it be possible to get this patch in v3.16 ?
 
---oh8AZbNfQ/hj6lDD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index 50a1ef3..1d5c025 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -252,13 +252,13 @@ static int rsnd_gen2_probe(struct platform_device *pdev,
+ 		return ret;
+ 
+ 	dev_dbg(dev, "Gen2 device probed\n");
+-	dev_dbg(dev, "SCU  : %08x => %p\n", scu_res->start,
++	dev_dbg(dev, "SCU  : %pap => %p\n", &scu_res->start,
+ 		gen->base[RSND_GEN2_SCU]);
+-	dev_dbg(dev, "ADG  : %08x => %p\n", adg_res->start,
++	dev_dbg(dev, "ADG  : %pap => %p\n", &adg_res->start,
+ 		gen->base[RSND_GEN2_ADG]);
+-	dev_dbg(dev, "SSIU : %08x => %p\n", ssiu_res->start,
++	dev_dbg(dev, "SSIU : %pap => %p\n", &ssiu_res->start,
+ 		gen->base[RSND_GEN2_SSIU]);
+-	dev_dbg(dev, "SSI  : %08x => %p\n", ssi_res->start,
++	dev_dbg(dev, "SSI  : %pap => %p\n", &ssi_res->start,
+ 		gen->base[RSND_GEN2_SSI]);
+ 
+ 	return 0;
+@@ -345,11 +345,11 @@ static int rsnd_gen1_probe(struct platform_device *pdev,
+ 		return ret;
+ 
+ 	dev_dbg(dev, "Gen1 device probed\n");
+-	dev_dbg(dev, "SRU : %08x => %p\n",	sru_res->start,
++	dev_dbg(dev, "SRU : %pap => %p\n",	&sru_res->start,
+ 						gen->base[RSND_GEN1_SRU]);
+-	dev_dbg(dev, "ADG : %08x => %p\n",	adg_res->start,
++	dev_dbg(dev, "ADG : %pap => %p\n",	&adg_res->start,
+ 						gen->base[RSND_GEN1_ADG]);
+-	dev_dbg(dev, "SSI : %08x => %p\n",	ssi_res->start,
++	dev_dbg(dev, "SSI : %pap => %p\n",	&ssi_res->start,
+ 						gen->base[RSND_GEN1_SSI]);
+ 
+ 	return 0;
+-- 
+Regards,
 
-On Tue, May 06, 2014 at 04:55:58PM +0800, Nicolin Chen wrote:
-> Sorry for this resend. I just found my previous patches have
-> not been delivered successfully to the alsa maillist.
+Laurent Pinchart
 
-Applied all, thanks.
-
---oh8AZbNfQ/hj6lDD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTcUgMAAoJELSic+t+oim9amkQAIg/MFpTUuAMoOXLY8cBKjuO
-y6GCCWJ/Z3F1EtZj/rwGmkBDmFF74HYmRz7bLTn6NdMsgiJ+CPl+QSaX8C0GdZ6U
-JZossWHkfRsb1GPIQADKBhIxpn3W3jYzCobRxHAVIvKdKkNi3eNxdm+KDOQ0BMLC
-pEj7tlmjWIf+fk1W1DqN4OotDMhoP+ZP7LNwMNGbRBLG6SRbI5WPekEHs8usZBRq
-SKXBw56C9IJ/14Pk6TrBLprrwryQTzDC9TGdR9dQg4qAVPvb7ME4Yxoh7ARtXvK1
-++trRYkWjpeoOkBwQc05zyzTnLmmj7mlyWVvJhCLTJJm/ufXjQymw7dEJILMnnXE
-aLwUs99mV+wAIAa3+FjerLEIRJVszrkyjTHTK3qO4ChUD8zot53JqI5jnvWGs7b6
-uZF+frREUkDJHnn/9meXMTpLHAHdothufGbK3FZzfcvxI3VdIsyMKkFkBv7kmdqK
-OOx19KcZOaNmJgGtjy7NXJuxpf60gPIIJJNXQCpzChKIrA45G/u4wDwGEFhLJ7df
-ClVH80Q9a7ofxiRmjtzQaqvWsaGNyKErx8vy/K9hp5XB8AwzvT6cH4Q23mV6R+bb
-A+OCGl2/Ol65lYQh6ev8dD0qo9uVR2QU6Td+scWp2QyPGiwbHL01o62RWF5oKrE7
-WaS8vjsAvTBcsRsnqZNC
-=bCCB
------END PGP SIGNATURE-----
-
---oh8AZbNfQ/hj6lDD--
-
---===============7855752371317723770==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7855752371317723770==--
