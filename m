@@ -1,20 +1,19 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 5/5] ASoC: dapm: Simplify
-	snd_soc_dapm_link_dai_widgets()
-Date: Mon, 12 May 2014 16:38:46 +0200
-Message-ID: <5370DCF6.3090004@metafoo.de>
-References: <1399472428-11034-1-git-send-email-lars@metafoo.de>
- <1399472428-11034-5-git-send-email-lars@metafoo.de>
- <20140512143743.GI25203@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v6] ASoC: add RT286 CODEC driver
+Date: Mon, 12 May 2014 16:51:53 +0200
+Message-ID: <5370E009.5070503@metafoo.de>
+References: <536B2C9D.9040807@metafoo.de>
+ <20140508080025.GA12304@sirena.org.uk> <536B4708.8080203@metafoo.de>
+ <CAFOFQBaoYpXCfroxfZX+7yf-ua71dav5kfUytyJLzUs_FCMg8g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-016.synserver.de (smtp-out-079.synserver.de
  [212.40.185.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B80A265050
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 16:38:47 +0200 (CEST)
-In-Reply-To: <20140512143743.GI25203@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 87613265050
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 16:51:55 +0200 (CEST)
+In-Reply-To: <CAFOFQBaoYpXCfroxfZX+7yf-ua71dav5kfUytyJLzUs_FCMg8g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Bard Liao <bardliao.rtk@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/12/2014 04:37 PM, Charles Keepax wrote:
-> On Wed, May 07, 2014 at 04:20:28PM +0200, Lars-Peter Clausen wrote:
->> If we find a widget who's stream name matches the name of a DAI widget then
->> thats the one it should be connected to. Based on the widget id we can say in
->> which direction the path should be. No need to go back to the DAI and check the
->> stream names.
->>
->> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->> ---
->>   sound/soc/soc-dapm.c | 27 +++++++++------------------
->>   1 file changed, 9 insertions(+), 18 deletions(-)
->>
->> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
->> index d7958f4..bed17a3 100644
->> --- a/sound/soc/soc-dapm.c
->> +++ b/sound/soc/soc-dapm.c
->> @@ -3334,6 +3334,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
->>   int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
->>   {
->>   	struct snd_soc_dapm_widget *dai_w, *w;
->> +	struct snd_soc_dapm_widget *src, *sink;
->>   	struct snd_soc_dai *dai;
+On 05/12/2014 01:08 PM, Bard Liao wrote:
+> 2014-05-08 16:57 GMT+08:00 Lars-Peter Clausen <lars@metafoo.de>:
+>> On 05/08/2014 10:00 AM, Mark Brown wrote:
 >
-> I think you have removed all the uses of this variable (dai) so you can
-> remove this as well.
+> [...]
+>
+> Just for confirm.
+>  From the mail thread, what I need to to are:
+> 1. Don't present register map to alsa, use virtrul controls instead.
+>     I may need to extend the APIs to accomplish the goal.
 
-It is still used in the dev_dbg() call.
+To avoid confusion we should not call them virtual controls, but controls 
+with custom put/get handlers.
+
+> 2. I can (or should?) use regmap internal to codec driver to set the
+> codec physically.
+> Did I miss anything?
+
+There are essentially two options.
+
+a) Have custom put/get handlers for different types of verbs. This means 
+you'll re-implement things like caching.
+
+b) Have a mapping that maps the hierarchical HDA register addressing 
+structure onto a linear address map and use regmap.
+
+- Lars
