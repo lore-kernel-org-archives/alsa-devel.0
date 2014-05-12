@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/5] ASoC: Remove runtime field from DAI
-Date: Mon, 12 May 2014 22:08:58 +0100
-Message-ID: <20140512210858.GW12304@sirena.org.uk>
-References: <1399361981-18518-1-git-send-email-lars@metafoo.de>
- <1399361981-18518-6-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: rt5640: add default case for
+	unexpected ID
+Date: Mon, 12 May 2014 22:09:41 +0100
+Message-ID: <20140512210941.GX12304@sirena.org.uk>
+References: <1399362966-19908-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5092261169143467986=="
+Content-Type: multipart/mixed; boundary="===============0502507553063613490=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 50498265114
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 23:09:05 +0200 (CEST)
-In-Reply-To: <1399361981-18518-6-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DB09265171
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 23:09:51 +0200 (CEST)
+In-Reply-To: <1399362966-19908-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Bo Shen <voice.shen@atmel.com>
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, swarren@wwwdotorg.org, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5092261169143467986==
+--===============0502507553063613490==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="c+EycNg3D4rJIzhb"
+	protocol="application/pgp-signature"; boundary="gmHUB1IiSbxoxvGT"
 Content-Disposition: inline
 
 
---c+EycNg3D4rJIzhb
+--gmHUB1IiSbxoxvGT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 06, 2014 at 09:39:41AM +0200, Lars-Peter Clausen wrote:
-> This was initially removed in commit 6423c1875 ("ASoC: Remove runtime field from
-> DAI"), but was, presumably by accident, brought back in commit f0fba2ad1 ("ASoC:
-> multi-component - ASoC Multi-Component Support"). But has never been
-> initialized to anything but NULL ever since. This commit removes it again.
+On Tue, May 06, 2014 at 03:56:06PM +0800, bardliao@realtek.com wrote:
+> From: Bard Liao <bardliao@realtek.com>
+>=20
+> We may read an unexpected value when detemining which codec is attached.
+> In that case, either a unsupported codec is attached or something wrong=
+=20
+> with I2C. The driver will not work properly on both cases. So we return
+> an error for that.
 
 Applied, thanks.
 
---c+EycNg3D4rJIzhb
+--gmHUB1IiSbxoxvGT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTcThnAAoJELSic+t+oim9DWgP/2QMyzLcsCXbo4TP1hBUT+fl
-4FDA7M5hCqUDbG/GANmdMG9+Pc4M6/ueNG66lxkoFLvUVf4KdUstCFJ797MQuCuq
-mXhl9h9Pr5VJlPMlF8PKhgS3hK3BJE8yMKu1Vsgkxn7QY18Go8j2WB6VRiIAgk4G
-6MTHFjrIReBNP1Ob7006KhhXwy/tj7ltvwVa9nUmqwdQv4XpUTtM9QqnpGk4U0tK
-omVp+opp1bihIAjL9914MpkgqIscqU8oI2II6mTA6JShitnMXzt1f37qZTB9c9te
-Re/GN5sfsuKBti2Exg1fMThHlkzbbTZ3IFkK1T0Ogyx4iZYIMKPIJgXQ3UPsOPRy
-kM5YuLW64PHXNth9xaMgu0KG2dgPNO0TT6pW3sp8ZMG6qC/ovwLX9rJLNND6tdAQ
-lRko9txvsnvdDqnfq3+DxBwQdaUDZ6bH8qqgQEVkfsh5AsprZHPilGECV3btaS+P
-SnLvWQtQSMNxyDporebw/zMA+Ot+q9EIGh9gORHe12mqEp/QePG6/P1QFtjTIi6R
-rSoV0LtNep7DOlk5j/3Z5jx60KHtQncpOXfo+wC3JgOGTT02eEXUAF2f5Qzo7MHj
-FBMvSdxZD0MQ0662dULSmJukuF/Cx3854q7UHOcccuC4k3YBgvvYJtuMoG/hQ8Up
-a24QEhDKpE5FhcmZs3GF
-=orrq
+iQIcBAEBAgAGBQJTcTiSAAoJELSic+t+oim9bd0P/A3cAgLYQIEbFD75QhghZKNT
+qGwOXVLO2qChpe0zXV2+Nc9aB0RpnfmroeIZRAh7OtjmWaPDg9oG2w6ESp1gavQR
+dSygTbTlf5hKeKSUuWPp2D8+xE6s/26TJ3anQ6RZqHPYP+9B36yePPA9g+56cdig
+NiS4m/op6j0tOeOmsIgKV8j3XsKtXUUNIrqSrPY6rlVxk4Cs++7ZgMF3DYcetVei
+of2znKh1g5fvyvk+661Q4mghQkqjdWKMrF7c4Rv+WwJpp3wbv2FpQA8X6VdH9KuK
+WWfuqG1WK1xR0BYjvx+nUDH9c4Hj0Sv9pUh26aQrbnWgkfbSkkMfjRByxsB/UnXg
+b3HLxRP0tlkh+B4FbPYR1bQ7CP0MPo4/vmLbpSR1jhxCPQ4QlB5ovoKXGyxAPdoX
+JE7OefGM+ilfCxRElCSAGv1BOe1xROUC2FKPD+1TXDpqPII0R2TrX6GjhdfLMUdi
+jdM0MmX6n9zPdUfo7pG10NKEpZwwancdJGcYkjOf22LdZbyFPcW06VJEmXQIVpgD
+PKXmrXf4GpXfuL02q/j2svm9PcCMESNItB9ALp+h2ALFFOFpQJgCUl4d2O+k9thS
+dgax0lrKmj3ag4VTJFTY7zfJKuhZlN5gEbvEUKcWh6kTJ3sIAY4Bpp6MeItL2vQS
+xOuoqLeOmqVvE3qiU7XG
+=CNWm
 -----END PGP SIGNATURE-----
 
---c+EycNg3D4rJIzhb--
+--gmHUB1IiSbxoxvGT--
 
---===============5092261169143467986==
+--===============0502507553063613490==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5092261169143467986==--
+--===============0502507553063613490==--
