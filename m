@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 5/5] ASoC: dapm: Simplify
- snd_soc_dapm_link_dai_widgets()
-Date: Mon, 12 May 2014 21:37:09 +0100
-Message-ID: <20140512203709.GM12304@sirena.org.uk>
-References: <1399472428-11034-1-git-send-email-lars@metafoo.de>
- <1399472428-11034-5-git-send-email-lars@metafoo.de>
+Subject: Re: Broken outmixer_event function in
+	wm8400/wm8990/wm8991
+Date: Mon, 12 May 2014 21:47:34 +0100
+Message-ID: <20140512204734.GO12304@sirena.org.uk>
+References: <5370840E.10009@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6423342210445014917=="
+Content-Type: multipart/mixed; boundary="===============2975346488130669878=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8BCAE265134
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 22:37:23 +0200 (CEST)
-In-Reply-To: <1399472428-11034-5-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 30C832650FE
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 22:47:53 +0200 (CEST)
+In-Reply-To: <5370840E.10009@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,57 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6423342210445014917==
+--===============2975346488130669878==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2C5Q0iHunA0/kEvg"
+	protocol="application/pgp-signature"; boundary="CcDY5IQM3C8zBYt/"
 Content-Disposition: inline
 
 
---2C5Q0iHunA0/kEvg
+--CcDY5IQM3C8zBYt/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 07, 2014 at 04:20:28PM +0200, Lars-Peter Clausen wrote:
-> If we find a widget who's stream name matches the name of a DAI widget then
-> thats the one it should be connected to. Based on the widget id we can say in
-> which direction the path should be. No need to go back to the DAI and check the
-> stream names.
+On Mon, May 12, 2014 at 10:19:26AM +0200, Lars-Peter Clausen wrote:
 
-Applied, thanks.
+> I was looking at the drivers that were using the SND_SOC_DAPM_PRE_REG event
+> and I noticed that the outmixer_event function for the wm8400, wm8990 and
+> wm8991 is broken. They do a switch statement to determine which kcontrol
+> cause the event in the form of 'switch(kcontrol->private_value) { case (REG
+> | (SHIFT << 8)): ...'. Long long time ago we used to store the register and
+> the shift in the same integer which was stored in private_value. But this
+> was changed in commit 4eaa9819 ("ALSA: ASoC: Convert bitfields in ASoC into
+> full int width"). This was long before the wm8400 and wm8991 drivers were
+> merged and just a month after the wm8990 driver was merged. So these
+> functions have been dead code pretty much for as long as they existed. Do
+> you want to fix this up? If not I'm going to send a patch that removes the
+> functions. If you want to fix this up, this should be re-implemented as a
+> custom put handler for the kcontrols rather than a event callback, which
+> checks whether the change is valid before doing any DAPM changes. The event
+> callback runs in the middle of the DAPM sequence, so half of the changes
+> will already have been applied before the check is made whether the change
+> should be done or not.
 
---2C5Q0iHunA0/kEvg
+Paragraphs are good for legibility...  it would be better to fix this up
+since it's a useful example for people to have, I have seen this sort of
+"A but not B" thing in other devices.  Looking briefly at the WM8400
+datasheet custom put controls would be better though looking at the code
+I'm not sure that the intention with the original code (which predates
+me) wasn't to enforce a limitation based on the outputs being enabled.
+
+--CcDY5IQM3C8zBYt/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTcTDyAAoJELSic+t+oim9fCkQAJAr2Wcxi+Jp4jvuJKLzBM0z
-klfLcc7HU3saXqd6z68sS7pyPc15c7IgNEg+JDILsjodPTyB6gVhuZ216ENZSSqn
-EF+YWQ8wiqnYikZm5sDIzm48rjf0jiQfUsnjBmghzpbi/CVG3PXnQsPoTIUTpm7T
-q0405vF4OT4xqymuernpVlz7D+/1QoxR40SH6demJrhonrOJ4QLGEGle1ZO/WYl2
-rH4Vp8iQsheSGpt7ueVfLrB3H4tq251YE5x3GNDbeyBT8Ga9pbM7VBxZp2/WI98I
-uRTl8UZhls5cWe1Fy6oRgjZSatlfLnWoI9lD2LSCxsKypRJC2RclTPaFx+ia7QC6
-lCjHfZScMuaU9Z37oecQJwuWWlS/K/po8qodHV8PIHyY5GjePEH1i9QXZ1y6/gxR
-b4e214zlXHGjRcELSh/qWh6Eufwai+XY1x/Df88sVGczVE+52x6ICQwPj+7K4G1W
-Jj79xOqIqTg6wt/gwwulxGLa4CSStP27UBxsKEO448JvNYtPT/D6dGxg+ZWK6/CE
-2f4fM5hBcy7gtbF2/lbrlpoBpi47dk0PUs4jmR8LBC92LPNCoefEdtf52RqwnFIu
-LTUHmuCbdO6q+GLdbSXrihY8E4sd1H0xsMXucL6yVdyPmG7j2O0F/kcgzHW5sUfC
-EJ0hlLpdfI55Qmx/LLnv
-=Crex
+iQIcBAEBAgAGBQJTcTNjAAoJELSic+t+oim9tK8QAIapOUXNfqVravPT6Z0zSxm9
+sS0K7wlJcM/lxxjBR/CDgYX9ANMiVhwwVgsOUkLf7LUwiFKT0E7Fpz+q4BIjYM3A
+tPjSBD/sEqtiGug55WIfAhS8btqZEZeakFWclEmk/6+iOuD1yR70nGjTufwgGz8r
+ueC4UcMVe1Yx98+j3FeE0D8zS1mDKiBQS5phrf5hl5cMLE0QX4eSo7PsE5c8RaVF
+m2qkaZYPWPbCZn152upFpgMG6htkCs9hogDzfZ/HzrMvBegI08RSaD2jM/5QvVwY
+Q4RUJ/v2EazCiWhKjThG+n0/oXTWx2Wg5gzNqw+k6C67zuSKqOGsjj+UfOPsErcS
+xrTRayWdFNdtftc1/ptv1lxdEtOjx6QYEShgwmCvf5mglGu3uRy9vvEotrd1+YDY
+D6+5Y6auUSDk0cOHbgoCi7xyHfImVUXKngWX3vxSv6i9Lwg7EZnHtf6pc0CGBNZ4
+a/yb1UF5IwcQceKsmGosUxMR1ah3zKnP0p6q+Q1wMtkRuh8gilE+Q27ml7WjE/0q
+jHPsSccUhJ4jza80B16/Z9oOHrSrFWYHbCk4FR8TbsGrR9kiKdDoh9AvLK7WTs8B
+bG6L2a2BpwHpCBYy6DQCJdXjAXW6zaM4g6AV6a7Abau2TZyyYwyYa9CL+00XRywX
+/J2mSt1F3X6bz3culj9y
+=UXeY
 -----END PGP SIGNATURE-----
 
---2C5Q0iHunA0/kEvg--
+--CcDY5IQM3C8zBYt/--
 
---===============6423342210445014917==
+--===============2975346488130669878==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6423342210445014917==--
+--===============2975346488130669878==--
