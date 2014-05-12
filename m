@@ -1,77 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 4/5] ASoC: dapm: Use
- snd_soc_dapm_add_path() in snd_soc_dapm_new_pcm()
-Date: Mon, 12 May 2014 21:35:54 +0100
-Message-ID: <20140512203554.GL12304@sirena.org.uk>
-References: <1399472428-11034-1-git-send-email-lars@metafoo.de>
- <1399472428-11034-4-git-send-email-lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH] sound: soc: intel: remove unneeded
+ dependency from Makefile
+Date: Mon, 12 May 2014 21:38:18 +0100
+Message-ID: <20140512203818.GN12304@sirena.org.uk>
+References: <1399526771-28422-1-git-send-email-prabhakar.csengg@gmail.com>
+ <20140509074942.GA19551@mylly>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7360511746229693903=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B29A2650FE
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 22:36:09 +0200 (CEST)
-In-Reply-To: <1399472428-11034-4-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Songhee Baek <sbaek@nvidia.com>, Arun Shamanna Lakshmi <aruns@nvidia.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="v4oV8TgUiTp+fDAp"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140509074942.GA19551@mylly>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Lad Prabhakar <prabhakar.csengg@gmail.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7360511746229693903==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Q0Mxzo05v1hOU+a1"
-Content-Disposition: inline
-
-
---Q0Mxzo05v1hOU+a1
+--v4oV8TgUiTp+fDAp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 07, 2014 at 04:20:27PM +0200, Lars-Peter Clausen wrote:
-> We already know the widgets we want to connect, so use snd_soc_dapm_add_path()
-> instead of snd_soc_dapm_add_route() in snd_soc_dapm_new_pcm().
+On Fri, May 09, 2014 at 10:49:42AM +0300, Jarkko Nikula wrote:
 
-Applied, thanks.
+> This hit me too and was introduced in 1eee978f4258
+> ("ASoC: Intel: split the pcm and compress to different files").
 
---Q0Mxzo05v1hOU+a1
+> Vinod, do you have something coming soon to these Makefiles or would it be
+> better take this now?
+
+I separately discarded those commits since there seemed to be this and
+other issues there so the patch no longer applies.
+
+--v4oV8TgUiTp+fDAp
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTcTCnAAoJELSic+t+oim9Yd0P/3b5VQZTL8XDvHjgA2N91ECM
-1/SIvMH0SGGj9D4uSb9U1S7j6OQLkG+CBhnlNY5/JH15xUGMqxhhqQiTM4xtsB3k
-DGJo4ltVfK5AnLAjgdWmCIqQmqnt9gylONYn1vbxdZGnkTfJoLaQ9wYViJqnPh5G
-4yWXwSgFi5vQj1eMDKP8Wu80aR4nFd/EHB2eGQdtzwVQQH3UwJGiehHqy3j5LOJX
-ABBQuJTHA9G/t8X64VFZnvw147QLzvzLR5r3lNzS+x1V9R8YATq9yK5RairJra5u
-IfWlG36mlJv88E3J/zvVQcJhK+7wZdeSGO2CGPlpmIIngAmMIHObsUk3325nmICh
-nQmTDxpngD7MXrg354CQ8nXuz8XDRdYmh6QT9ZVqMhGa65AcjjwlEE46nHvK/VHs
-RoYyy6R3w5mWak5Wglg/9qjHp5TO9pxpYjmp72e+zA2biB/cE8yZLVpTRqovFDqh
-iMF8AsYwLuZV9uJU7TSDAyMGQyDoZ8v7jQCpYpbIVaTDJHC/3hHg0wKx6YZvnmzE
-BAfqyiLhfh87e0nR3k5pYlL1ZXWIYv44oQUi8fYl6OCpYjIkZPtftl/Aw/qRTlNB
-Eh1pqwrSKcbMvSQsuVW0GOc0IbFOWy6u/5fnUBMvww7NWg+XMccVsOQa8rC91CVq
-kvJGxpM7BH+/L7OXilxF
-=O1pw
+iQIcBAEBAgAGBQJTcTE3AAoJELSic+t+oim9cpQP/3NCbmflmhIY341f4/NE1GaH
+22Dy8eIQLiz4LS0N/915XXgasiSpWDJpUfAz/NrUosD8eJdDW0A6vBQCpjfHAD+K
+xmP09skJh6DHuCIadovifzMXyQZkb/wuZp6DtnCpsawp8JshdVT07Ou82LofNxbT
+mwLrfRpNcQptl4gW+JS3MUocwr0OZQWDLTI501jGNMioJ/XsCpM0YMPAi5aATLf2
+2G036U7mv4SQqSdYQltzNnX7/APL4+yNZ21Jcb+pSgxlxIOCm925vu5HZqgTXylE
+MSB9hCMNKYhTRA20tpaEKIcqYRgG2rSERbx+1JbsgnI6SIJ6crr/oa3MYJrWbPCX
+RghyXg+EmiJSICjpXarZAwEamz0WCl/DRsfw8O1xc5UpOXItBG3SjjQyg828JEQD
+hKrb5ffe4wq4kmHSNXkxa+8sCenxgfT5cIWYtGAfWeGbnfCI0yZUol64d1PYlapY
+kZupzbDAQGtnJpDuFWKyzeLxDbrVjVVBuzjD1+0eaNRgNuzIM2fX6w6RERW351av
+QSJdeWUUxNJ2uWrFWu5YyYBW/gOQqA9YnZC0zfRdN+yTbPlhGE5aAEvDQyGhzLfl
+73QZRDR4fxjfQp2ic8i2QDwZMPMMgnnguhn1DbsDLXcgFemMUkuI4j//kqHk44yr
+YTpBRNzz50rgZlY+4rpK
+=5UeW
 -----END PGP SIGNATURE-----
 
---Q0Mxzo05v1hOU+a1--
-
---===============7360511746229693903==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7360511746229693903==--
+--v4oV8TgUiTp+fDAp--
