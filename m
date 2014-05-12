@@ -1,71 +1,118 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH 14/19] ARM: omap4-panda-common.dtsi: Add HDMI audio nodes
-Date: Mon, 12 May 2014 12:12:25 +0300
-Message-ID: <fdeddff24bc38efb7a155b2569a5f2056278cb9d.1399884780.git.jsarha@ti.com>
-References: <cover.1399884780.git.jsarha@ti.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - using POS_FIX_LPIB on
+ Broadwell HDMI Audio
+Date: Mon, 12 May 2014 09:46:07 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B41454C@SHSMSX101.ccr.corp.intel.com>
+References: <1399485804-75028-1-git-send-email-libin.yang@intel.com>
+ <s5hzjisq2kj.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D195232A6@SHSMSX103.ccr.corp.intel.com>
+ <s5htx90q0mi.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19523313@SHSMSX103.ccr.corp.intel.com>
+ <s5hr444pzap.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D1952333A@SHSMSX103.ccr.corp.intel.com>
+ <s5hoaz8pydg.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D195233B1@SHSMSX103.ccr.corp.intel.com>
+ <536BAB70.3010905@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B40F3CB@SHSMSX101.ccr.corp.intel.com>
+ <s5h1tw3qmmt.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B4142B7@SHSMSX101.ccr.corp.intel.com>
+ <s5htx8vo0tf.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <cover.1399884780.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, tomi.valkeinen@ti.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8FCE26162E
+ for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 11:46:52 +0200 (CEST)
+In-Reply-To: <s5htx8vo0tf.wl%tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "anssi.hannula@iki.fi" <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adds a simple-card sound node for HDMI audio, the associated
-hdmi-codec node, and sound-dai-cells propeties to the DAI nodes.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, May 12, 2014 4:31 PM
+> To: Lin, Mengdong
+> Cc: David Henningsson; Yang, Libin; anssi.hannula@iki.fi;
+> alsa-devel@alsa-project.org; Pierre-Louis Bossart
+> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - using POS_FIX_LPIB on Broadwell
+> HDMI Audio
+> 
+> At Mon, 12 May 2014 08:22:13 +0000,
+> Lin, Mengdong wrote:
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Friday, May 09, 2014 6:20 PM
+> > > To: Lin, Mengdong
+> > > Cc: David Henningsson; Yang, Libin; anssi.hannula@iki.fi;
+> > > alsa-devel@alsa-project.org; Pierre-Louis Bossart
+> > > Subject: Re: [alsa-devel] [PATCH] ALSA: hda - using POS_FIX_LPIB on
+> > > Broadwell HDMI Audio
+> > >
+> > > At Fri, 9 May 2014 10:08:19 +0000,
+> > > Lin, Mengdong wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > We found the Broadwell HDMI audio regression is introduced by this
+> patch:
+> > > >
+> > > > commit dcb32ecd9a533f47ab652c5c5680bc50a7a822cd
+> > > > Author: Anssi Hannula <anssi.hannula@iki.fi>
+> > > > Date: Tue Apr 8 12:36:42 2014 +0300
+> > > > ALSA: hda - Do not assign streams in reverse order
+> > > >
+> > > > We'll further check the root cause.
+> > > > Since this patch seems only affect the stream ID. Actually Intel
+> > > > GPU tool only
+> > > find the stream ID is changed by this patch.
+> > > >
+> > > > In addition, Haswell HDMI audio is not affected and works well. It
+> > > > seems
+> > > there is HW behavior difference between HSW and BDW.
+> > >
+> > > Thanks for spotting out!
+> > >
+> > > This sounds like a weird hardware bug of BDW.  If any, we'd need to
+> > > introduce a flag indicating flipping this  lookup behavior depending on the
+> chip.
+> >
+> > In the display HD-A controller of HSW/BDW, there are 3 sets of stream
+> descriptors registers which controls the DMA engines to transfer audio data
+> over HD-A link:
+> > set #0: 0x80 ~ 0x9c SD0CTL ~ SD0BDPU
+> > set #1: 0xa0 ~ 0xbc SD1CTL ~ SD1BDPU
+> > set #2: 0xc0 ~ 0xdc SD2CTL ~ SD2BDPU
+> >
+> > Test shows that
+> > On HSW, DMA update on all 3 sets of registers are okay.
+> > On BDW, DMA update on set #1 and #2 are okay, but is buggy on set #0.
+> Since the three sets of registers have the same definition according to spec and
+> driver behavior is also same, it seems to be a HW issue.
+> >
+> > Maybe we'll have to use the original reverse lookup order for BDW HDMI/DP
+> audio.
+> 
+> I wonder what if you run three streams.  Is the set#0 always broken, or broken
+> only when used alone?  In the former case, the fix would to mask the first slot.
+> In the latter case, back to reverse assignment would work around it.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- arch/arm/boot/dts/omap4-panda-common.dtsi |   21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+The set#0 is always broken, when I run single or two streams at the same time. 
+And when running two streams, there is no difference if the audio driver choose set#0 or #1 at first.
 
-diff --git a/arch/arm/boot/dts/omap4-panda-common.dtsi b/arch/arm/boot/dts/omap4-panda-common.dtsi
-index d2c45bf..c04f453 100644
---- a/arch/arm/boot/dts/omap4-panda-common.dtsi
-+++ b/arch/arm/boot/dts/omap4-panda-common.dtsi
-@@ -41,7 +41,7 @@
- 		};
- 	};
- 
--	sound: sound {
-+	sound: sound@0 {
- 		compatible = "ti,abe-twl6040";
- 		ti,model = "PandaBoard";
- 
-@@ -65,6 +65,24 @@
- 			"AFMR", "Line In";
- 	};
- 
-+	sound@1 {
-+		compatible = "simple-audio-card";
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&hdmi>;
-+		};
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&hdmi_audio>;
-+		};
-+	};
-+
-+	hdmi_audio: hdmi_audio@0 {
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,hdmi-audio";
-+		status = "okay";
-+	};
-+
- 	/* HS USB Port 1 Power */
- 	hsusb1_power: hsusb1_power_reg {
- 		compatible = "regulator-fixed";
-@@ -512,6 +530,7 @@
- };
- 
- &hdmi {
-+	#sound-dai-cells = <0>;
- 	status = "ok";
- 	vdda-supply = <&vdac>;
- 
--- 
-1.7.9.5
+Is it okay to introduce a flag "disabled" to struct azx_dev? 
+If this flag is set, the azx_dev slot is masked.
 
+Thanks
+Mengdong
