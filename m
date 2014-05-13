@@ -1,26 +1,17 @@
-From: James Le Cuirot <chewi@aura-online.co.uk>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Tue, 13 May 2014 13:01:26 +0100
-Message-ID: <20140513130126.1755fa16@red.yakaraplc.local>
-References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
- <loom.20131122T215246-90@post.gmane.org> <529004F8.7070801@iki.fi>
- <20131123154009.6c8c6e97@symphony.aura-online.co.uk>
- <5290CD7C.7020907@iki.fi>
- <20131124145737.22056256@symphony.aura-online.co.uk>
- <52934E97.9060701@iki.fi> <20131125143228.55c94550@red>
- <52936537.8020506@iki.fi>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCHv2] ASoC: Intel: Fix Baytrail SST DSP firmware
+	loading
+Date: Tue, 13 May 2014 15:46:06 +0300
+Message-ID: <1399985166-29055-1-git-send-email-jarkko.nikula@linux.intel.com>
+References: <20140513105352.GG12304@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 181DC2654CD
- for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 14:01:38 +0200 (CEST)
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
- by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 64AF82192A
- for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 08:01:29 -0400 (EDT)
-In-Reply-To: <52936537.8020506@iki.fi>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DE992654BC
+ for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 14:46:30 +0200 (CEST)
+In-Reply-To: <20140513105352.GG12304@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,130 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 25 Nov 2013 16:56:55 +0200
-Anssi Hannula <anssi.hannula@iki.fi> wrote:
+Commit 10df350977b1 ("ASoC: Intel: Fix Audio DSP usage when IOMMU is
+enabled.") caused following regression in Baytrail SST:
 
-> 25.11.2013 16:32, James Le Cuirot kirjoitti:
-> > On Mon, 25 Nov 2013 15:20:23 +0200
-> > Anssi Hannula <anssi.hannula@iki.fi> wrote:
-> > 
-> >> 24.11.2013 16:57, James Le Cuirot kirjoitti:
-> >>> On Sat, 23 Nov 2013 17:45:00 +0200
-> >>> Anssi Hannula <anssi.hannula@iki.fi> wrote:
-> >>>
-> >>>> 23.11.2013 17:40, James Le Cuirot kirjoitti:
-> >>>>> On Sat, 23 Nov 2013 03:29:28 +0200
-> >>>>> Anssi Hannula <anssi.hannula@iki.fi> wrote:
-> >>>>>
-> >>>>>> 23.11.2013 03:05, James Le Cuirot kirjoitti:
-> >>>>>>> Anssi Hannula <anssi.hannula <at> iki.fi> writes:
-> >>>>>>>
-> >>>>>>>> Here's another revision of the ATI/AMD multichannel+HBR
-> >>>>>>>> patchset.
-> >>>>>>>
-> >>>>>>> Hi Anssi. Many thanks for your work on this. I am very keen to
-> >>>>>>> test this new code but have so far been unsuccessful. I have a
-> >>>>>>> Radeon 4670 (Sapphire branded) connected to a Yamaha RX-V773.
-> >>>>>>> I am running the sound/for-next kernel (82755ab) with your
-> >>>>>>> "missing PCM SAD" patch applied.
-> >>>>>>>
-> >>>>>>> The new kernel has allowed ALSA to recognise the card as
-> >>>>>>> multichannel and I can issue the following speaker-test
-> >>>>>>> command but I still only hear "Front Left" and "Front Right"
-> >>>>>>> and the Yahama seems to report the signal as stereo.
-> >>>>>>>
-> >>>>>>> # speaker-test -Dhdmi:CARD=HDMI,DEV=0 -c6 -t wav
-> >>>>>
-> >>>>>
-> >>>>>> ELD stuff is not necessary for playback, it is mostly for
-> >>>>>> information (and providing the necessary info for ELD is
-> >>>>>> disabled on radeon DRI drivers on some kernels on some GPUs
-> >>>>>> ATM due to some issues).
-> >>>>>>
-> >>>>>> Is there anything interesting in "dmesg"?
-> >>>>>
-> >>>>> I have attached my dmesg. I enabled ALSA debug and verbose
-> >>>>> printk but disabled the on-board HDA audio in the BIOS to make
-> >>>>> it less confusing, and also to see if it made any difference,
-> >>>>> which it didn't. The only entry I find noteworthy is about the
-> >>>>> ELD but you say this isn't required.
-> >>>
-> >>> https://gist.github.com/chewi/7628058
-> >>
-> >> Unfortunately everything looks OK.
-> > 
-> > I had a horrible feeling you'd say that.
-> > 
-> >> Do you have any custom configuration in /etc/asound.conf or
-> >> ~/.asoundrc?
-> > 
-> > Just the usual PulseAudio overrides. I don't like PA starting
-> > automatically so I have that disabled and run speaker-test without
-> > it. I think the -D option bypasses it anyway. I have also run
-> > speaker-test through PA just to see and get the same result.
-> 
-> OK.
-> 
-> >> To narrow it down a bit, are you able to test any of the following:
-> >> - same card on Windows,
-> >> - same card on fglrx,
-> >> - same receiver with a different AMD card,
-> >> - same receiver with an Intel/NVIDIA card?
-> > 
-> > I banished real Windows installs from my main desktop after a nasty
-> > incident some years ago. ;) I might be able to dedicate the card to
-> > a QEMU instance but I've never tried that before.
-> > 
-> > I could easily try fglrx but I thought it didn't support
-> > multichannel? Or this new ALSA code fixes that too?
-> 
-> Yes, it was only the ALSA code that was missing for multichannel, it
-> works with fglrx as well. With fglrx you should also see the ELD info
-> as it is not disabled there.
-> 
-> > Unfortunately I don't have any other AMD cards handy. I could try my
-> > wife's Ivy Bridge based laptop though.
-> > 
-> > I'll report back soon.
+baytrail-pcm-audio baytrail-pcm-audio: error: DMA alloc failed
+baytrail-pcm-audio baytrail-pcm-audio: error: failed to load firmware
 
-Hi Anssi,
+Fix this by calling dma_coerce_mask_and_coherent() in sst_byt_init() with
+the same dma_dev device what is now used in sst_fw_new() when allocating the
+DMA buffer.
 
-Guess it wasn't so "soon" after all. This dropped down my priority
-list and then my receiver blew up. I ended up getting the newer
-equivalent model, the RX-V775. Despite that, the problem persists,
-even on a current sound "master" kernel.
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+---
+For fix/intel branch.
+---
+ sound/soc/intel/sst-baytrail-dsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-There has been a little change though. I now get an ELD. This shows
-what I would expect based on my receiver.
-
-https://gist.github.com/chewi/7628058
-
-I note that speaker-test doesn't allow me to specify -c6 anymore, only
--c8. Maybe that's because of the ELD. I do have a kernel log but not to
-hand right now. It only seems to show what appears to be normal output
-anyway.
-
-I was keen to try fglrx but realised I can't because this card is only
-supported by the legacy driver and that only works with kernels up to
-around 3.7.
-
-I did try my wife's Ivy Bridge laptop and that worked straight away
-with no difficulties using the same HDMI cable so it seems that the
-receiver isn't to blame.
-
-I wanted to rule my Gentoo system out so I booted with Ubuntu 14.04 on
-a USB stick and got exactly the same results.
-
-I've tried everything else I can think of like not having my stereo
-monitor connected at the same time. I would dig in to the code but as
-you have previously commented, everything *looks* fine, so I don't know
-where to begin. I may just have to get a newer card but that wasn't an
-investment I was planning to make just yet. :( Any further suggestions
-are appreciated.
-
-Regards,
-James
+diff --git a/sound/soc/intel/sst-baytrail-dsp.c b/sound/soc/intel/sst-baytrail-dsp.c
+index a50bf7fc0e3a..adf0aca5aca6 100644
+--- a/sound/soc/intel/sst-baytrail-dsp.c
++++ b/sound/soc/intel/sst-baytrail-dsp.c
+@@ -324,7 +324,7 @@ static int sst_byt_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+ 	memcpy_toio(sst->addr.lpe + SST_BYT_MAILBOX_OFFSET,
+ 	       &pdata->fw_base, sizeof(u32));
+ 
+-	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(32));
++	ret = dma_coerce_mask_and_coherent(sst->dma_dev, DMA_BIT_MASK(32));
+ 	if (ret)
+ 		return ret;
+ 
+-- 
+2.0.0.rc0
