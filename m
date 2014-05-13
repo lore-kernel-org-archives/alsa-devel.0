@@ -1,7 +1,7 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 15/15] oxfw: Add hwdep interface
-Date: Tue, 13 May 2014 23:27:52 +0900
-Message-ID: <1399991272-5807-16-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 13/15] oxfw: Add support AMDTP in-stream and PCM capture
+Date: Tue, 13 May 2014 23:27:50 +0900
+Message-ID: <1399991272-5807-14-git-send-email-o-takashi@sakamocchi.jp>
 References: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -20,495 +20,837 @@ To: clemens@ladisch.de
 Cc: alsa-devel@alsa-project.org, fenlason@redhat.com, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This interface is designed for mixer/control application. By using this
-interface, an application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+Previous commit adds support for some devices which can capture PCM samples.
+These devices transmit AMDTP stream in non-blocking mode. This commit adds
+functionality to handle AMDTP incoming stream and to capture PCM samples.
+
+OXFW seems to have two quirks:
+ - Transmits packets with non-zero dbc in its beginning
+ - Transmits packets with wrong values in syt field
+
+For the first quirk, this commit adds CIP_SKIP_INIT_DBC_CHECK flag for
+incoming stream to skip first check of dbc.
+
+For the second quirk, this commit doesn't add duplex stream which
+Fireworks/BeBoB drivers use. So OXFW driver generates syt value for outgoing
+stream.
+
+Here are examples of a sequence of packets transmitted by Behringer F-Control
+Audio 202. There are differences between sequences of syt value when OXFW
+driver transfers outgoing stream or not.
+
+When driver gives no outgoing stream:
+Index	Payload	CIP_Header_0	CIP_Header_1
+38	14	00020092	900103D1
+39	12	00020098	900102FF
+40	12	0002009D	9001027F
+41	14	000200A2	90010396
+42	14	000200A8	900102E8
+43	12	000200AE	90010219
+44	14	000200B3	90010331
+45	12	000200B9	9001025F
+46	14	000200BE	90010376
+47	12	000200C4	900102A1
+00	12	000200C9	9001023E
+01	14	000200CE	90010358
+02	12	000200D4	90010289
+03	16	000200D9	900103A3
+04	12	000200E0	900102DD
+05	14	000200E5	900103F1
+06	12	000200EB	90010335
+07	12	000200F0	90010263
+08	14	000200F5	9001037C
+09	12	000200FB	900102AE
+
+When driver gives outgoing stream:
+Index	Payload	CIP_Header_0	CIP_Header_1
+38	12	000200BD	900104A8
+39	14	000200C2	900104A8
+40	12	000200C8	900104AC
+41	14	000200CD	900104A9
+42	12	000200D3	900104B1
+43	14	000200D8	900104A8
+44	12	000200DE	900104AA
+45	14	000200E3	900104A9
+46	14	000200E9	900104AE
+47	12	000200EF	900104A8
+00	14	000200F4	900104AD
+01	12	000200FA	900104A7
+02	14	000200FF	900104A9
+03	12	00020005	900104A9
+04	14	0002000A	900104B1
+05	12	00020010	900104AA
+06	14	00020015	900104AD
+07	12	0002001B	900104A7
+08	14	00020020	900104AC
+09	12	00020026	900104A7
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h       |   3 +-
- include/uapi/sound/firewire.h     |   3 +-
- sound/firewire/Kconfig            |   1 +
- sound/firewire/oxfw/Makefile      |   2 +-
- sound/firewire/oxfw/oxfw.c        |   5 +
- sound/firewire/oxfw/oxfw.h        |  13 +++
- sound/firewire/oxfw/oxfw_hwdep.c  | 190 ++++++++++++++++++++++++++++++++++++++
- sound/firewire/oxfw/oxfw_midi.c   |  24 ++++-
- sound/firewire/oxfw/oxfw_pcm.c    |  13 ++-
- sound/firewire/oxfw/oxfw_stream.c |  39 ++++++++
- 10 files changed, 286 insertions(+), 7 deletions(-)
- create mode 100644 sound/firewire/oxfw/oxfw_hwdep.c
+ sound/firewire/oxfw/oxfw.c        |  19 ++-
+ sound/firewire/oxfw/oxfw.h        |  28 ++++-
+ sound/firewire/oxfw/oxfw_pcm.c    | 164 +++++++++++++++++++++-----
+ sound/firewire/oxfw/oxfw_proc.c   |  14 ++-
+ sound/firewire/oxfw/oxfw_stream.c | 236 ++++++++++++++++++++++++++++++--------
+ 5 files changed, 370 insertions(+), 91 deletions(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 2249483..0c1872a 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -96,9 +96,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
- 	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
- 	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
-+	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_BEBOB
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_OXFW
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index af4bd13..49122df 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -55,7 +55,8 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_TYPE_DICE	1
- #define SNDRV_FIREWIRE_TYPE_FIREWORKS	2
- #define SNDRV_FIREWIRE_TYPE_BEBOB	3
--/* AV/C, RME, MOTU, ... */
-+#define SNDRV_FIREWIRE_TYPE_OXFW	4
-+/* RME, MOTU, ... */
- 
- struct snd_firewire_get_info {
- 	unsigned int type; /* SNDRV_FIREWIRE_TYPE_xxx */
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index b5035b0..92c92c6 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -31,6 +31,7 @@ config SND_OXFW
- 	select SND_PCM
- 	select SND_FIREWIRE_LIB
- 	select SND_RAWMIDI
-+	select SND_HWDEP
- 	help
- 	  Say Y here to include support for Firewire devices based on
- 	  Oxford Semiconductor OXFW970/971 chipset.
-diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
-index 5f65270..310b62d 100644
---- a/sound/firewire/oxfw/Makefile
-+++ b/sound/firewire/oxfw/Makefile
-@@ -1,3 +1,3 @@
- snd-oxfw-objs := oxfw_command.o oxfw_stream.o oxfw_control.o oxfw_proc.o \
--		 oxfw_midi.o oxfw_pcm.o oxfw.o
-+		 oxfw_midi.o oxfw_pcm.o oxfw_hwdep.o oxfw.o
- obj-m += snd-oxfw.o
 diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 5640547..d830d0b 100644
+index 0c9b8e2..a9e21c0 100644
 --- a/sound/firewire/oxfw/oxfw.c
 +++ b/sound/firewire/oxfw/oxfw.c
-@@ -120,6 +120,7 @@ static int oxfw_probe(struct fw_unit *unit,
- 	oxfw->unit = unit;
- 	oxfw->device_info = (const struct device_info *)id->driver_data;
- 	spin_lock_init(&oxfw->lock);
-+	init_waitqueue_head(&oxfw->hwdep_wait);
+@@ -140,13 +140,20 @@ static int oxfw_probe(struct fw_unit *unit,
  
- 	err = snd_oxfw_stream_discover(oxfw);
- 	if (err < 0)
-@@ -147,6 +148,10 @@ static int oxfw_probe(struct fw_unit *unit,
- 			goto error;
- 	}
+ 	snd_oxfw_proc_init(oxfw);
  
-+	err = snd_oxfw_create_hwdep(oxfw);
-+	if (err < 0)
-+		goto error;
-+
- 	err = snd_oxfw_stream_init_simplex(oxfw, &oxfw->rx_stream);
+-	err = snd_oxfw_stream_init_simplex(oxfw);
++	err = snd_oxfw_stream_init_simplex(oxfw, &oxfw->rx_stream);
  	if (err < 0)
  		goto error;
++	if (oxfw->has_output) {
++		err = snd_oxfw_stream_init_simplex(oxfw, &oxfw->tx_stream);
++		if (err < 0)
++			goto error;
++	}
+ 
+ 	err = snd_card_register(card);
+ 	if (err < 0) {
+-		snd_oxfw_stream_destroy_simplex(oxfw);
++		snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->rx_stream);
++		if (oxfw->has_output)
++			snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->tx_stream);
+ 		goto error;
+ 	}
+ 	dev_set_drvdata(&unit->device, oxfw);
+@@ -162,14 +169,18 @@ static void oxfw_bus_reset(struct fw_unit *unit)
+ 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
+ 
+ 	fcp_bus_reset(oxfw->unit);
+-	snd_oxfw_stream_update_simplex(oxfw);
++	snd_oxfw_stream_update_simplex(oxfw, &oxfw->rx_stream);
++	if (oxfw->has_output)
++		snd_oxfw_stream_update_simplex(oxfw, &oxfw->tx_stream);
+ }
+ 
+ static void oxfw_remove(struct fw_unit *unit)
+ {
+ 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
+ 
+-	snd_oxfw_stream_destroy_simplex(oxfw);
++	snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->rx_stream);
++	if (oxfw->has_output)
++		snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->tx_stream);
+ 
+ 	snd_card_disconnect(oxfw->card);
+ 	snd_card_free_when_closed(oxfw->card);
 diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index bcaab01..8f274b4 100644
+index b21dfce..81b6627 100644
 --- a/sound/firewire/oxfw/oxfw.h
 +++ b/sound/firewire/oxfw/oxfw.h
-@@ -12,6 +12,7 @@
- #include <linux/mod_devicetable.h>
- #include <linux/mutex.h>
- #include <linux/slab.h>
-+#include <linux/compat.h>
+@@ -48,10 +48,17 @@ struct snd_oxfw {
+ 	const struct device_info *device_info;
+ 	struct mutex mutex;
  
- #include <sound/control.h>
- #include <sound/core.h>
-@@ -20,6 +21,8 @@
- #include <sound/pcm_params.h>
- #include <sound/info.h>
- #include <sound/rawmidi.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
++	bool has_output;
++	struct snd_oxfw_stream_formation
++		tx_stream_formations[SND_OXFW_STREAM_FORMAT_ENTRIES];
+ 	struct snd_oxfw_stream_formation
+ 		rx_stream_formations[SND_OXFW_STREAM_FORMAT_ENTRIES];
++	struct cmp_connection out_conn;
+ 	struct cmp_connection in_conn;
++	struct amdtp_stream tx_stream;
+ 	struct amdtp_stream rx_stream;
++	atomic_t capture_substreams;
++	atomic_t playback_substreams;
  
- #include "../lib.h"
- #include "../fcp.h"
-@@ -69,6 +72,10 @@ struct snd_oxfw {
+ 	bool mute;
  	s16 volume[6];
- 	s16 volume_min;
- 	s16 volume_max;
+@@ -90,12 +97,21 @@ int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
+ 				enum avc_general_plug_dir dir,
+ 				unsigned short pid);
+ 
+-int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw);
+-int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw, unsigned int rate,
+-				  unsigned int pcm_channels);
+-void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
+-void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw);
+-void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw);
++int snd_oxfw_stream_get_rate(struct snd_oxfw *oxfw, unsigned int *rate);
++int snd_oxfw_stream_set_rate(struct snd_oxfw *oxfw, unsigned int rate);
 +
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
- };
- 
- /*
-@@ -119,6 +126,10 @@ void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw,
- 
++int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw,
++				 struct amdtp_stream *stream);
++int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw,
++				  struct amdtp_stream *stream,
++				  unsigned int rate, unsigned int pcm_channels);
++void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw,
++				  struct amdtp_stream *stream);
++void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw,
++				     struct amdtp_stream *stream);
++void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw,
++				    struct amdtp_stream *stream);
++
  int snd_oxfw_stream_discover(struct snd_oxfw *oxfw);
  
-+void snd_oxfw_stream_lock_changed(struct snd_oxfw *oxfw);
-+int snd_oxfw_stream_lock_try(struct snd_oxfw *oxfw);
-+void snd_oxfw_stream_lock_release(struct snd_oxfw *oxfw);
-+
  int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
- 
- int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
-@@ -126,3 +137,5 @@ int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
- void snd_oxfw_proc_init(struct snd_oxfw *oxfw);
- 
- int snd_oxfw_create_midi(struct snd_oxfw *oxfw);
-+
-+int snd_oxfw_create_hwdep(struct snd_oxfw *oxfw);
-diff --git a/sound/firewire/oxfw/oxfw_hwdep.c b/sound/firewire/oxfw/oxfw_hwdep.c
-new file mode 100644
-index 0000000..bf79118
---- /dev/null
-+++ b/sound/firewire/oxfw/oxfw_hwdep.c
-@@ -0,0 +1,190 @@
-+/*
-+ * oxfw_hwdep.c - a part of driver for OXFW970/971 based devices
-+ *
-+ * Copyright (c) 2014 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+/*
-+ * This codes give three functionality.
-+ *
-+ * 1.get firewire node infomation
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock stream
-+ */
-+
-+#include "oxfw.h"
-+
-+static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf,  long count,
-+		       loff_t *offset)
-+{
-+	struct snd_oxfw *oxfw = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
-+
-+	spin_lock_irq(&oxfw->lock);
-+
-+	while (!oxfw->dev_lock_changed) {
-+		prepare_to_wait(&oxfw->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&oxfw->lock);
-+		schedule();
-+		finish_wait(&oxfw->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&oxfw->lock);
-+	}
-+
-+	memset(&event, 0, sizeof(event));
-+	if (oxfw->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (oxfw->dev_lock_count > 0);
-+		oxfw->dev_lock_changed = false;
-+
-+		count = min_t(long, count, sizeof(event.lock_status));
-+	}
-+
-+	spin_unlock_irq(&oxfw->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
-+			       poll_table *wait)
-+{
-+	struct snd_oxfw *oxfw = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &oxfw->hwdep_wait, wait);
-+
-+	spin_lock_irq(&oxfw->lock);
-+	if (oxfw->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&oxfw->lock);
-+
-+	return events;
-+}
-+
-+static int hwdep_get_info(struct snd_oxfw *oxfw, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(oxfw->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_OXFW;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int hwdep_lock(struct snd_oxfw *oxfw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&oxfw->lock);
-+
-+	if (oxfw->dev_lock_count == 0) {
-+		oxfw->dev_lock_count = -1;
-+		err = 0;
-+	} else {
-+		err = -EBUSY;
-+	}
-+
-+	spin_unlock_irq(&oxfw->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_unlock(struct snd_oxfw *oxfw)
-+{
-+	int err;
-+
-+	spin_lock_irq(&oxfw->lock);
-+
-+	if (oxfw->dev_lock_count == -1) {
-+		oxfw->dev_lock_count = 0;
-+		err = 0;
-+	} else {
-+		err = -EBADFD;
-+	}
-+
-+	spin_unlock_irq(&oxfw->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_oxfw *oxfw = hwdep->private_data;
-+
-+	spin_lock_irq(&oxfw->lock);
-+	if (oxfw->dev_lock_count == -1)
-+		oxfw->dev_lock_count = 0;
-+	spin_unlock_irq(&oxfw->lock);
-+
-+	return 0;
-+}
-+
-+static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+		       unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_oxfw *oxfw = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(oxfw, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(oxfw);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(oxfw);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+			      unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
-+
-+int snd_oxfw_create_hwdep(struct snd_oxfw *oxfw)
-+{
-+	static const struct snd_hwdep_ops hwdep_ops = {
-+		.read		= hwdep_read,
-+		.release	= hwdep_release,
-+		.poll		= hwdep_poll,
-+		.ioctl		= hwdep_ioctl,
-+		.ioctl_compat	= hwdep_compat_ioctl,
-+	};
-+	struct snd_hwdep *hwdep;
-+	int err;
-+
-+	err = snd_hwdep_new(oxfw->card, oxfw->card->driver, 0, &hwdep);
-+	if (err < 0)
-+		goto end;
-+	strcpy(hwdep->name, oxfw->card->driver);
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_OXFW;
-+	hwdep->ops = hwdep_ops;
-+	hwdep->private_data = oxfw;
-+	hwdep->exclusive = true;
-+end:
-+	return err;
-+}
-diff --git a/sound/firewire/oxfw/oxfw_midi.c b/sound/firewire/oxfw/oxfw_midi.c
-index 04be550..f0f045d 100644
---- a/sound/firewire/oxfw/oxfw_midi.c
-+++ b/sound/firewire/oxfw/oxfw_midi.c
-@@ -11,17 +11,35 @@
- static int midi_capture_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_oxfw *oxfw = substream->rmidi->private_data;
-+	int err;
-+
-+	err = snd_oxfw_stream_lock_try(oxfw);
-+	if (err < 0)
-+		goto end;
- 
- 	atomic_inc(&oxfw->capture_substreams);
--	return snd_oxfw_stream_start_simplex(oxfw, &oxfw->tx_stream, 0, 0);
-+	err = snd_oxfw_stream_start_simplex(oxfw, &oxfw->tx_stream, 0, 0);
-+	if (err < 0)
-+		snd_oxfw_stream_lock_release(oxfw);
-+end:
-+	return err;
- }
- 
- static int midi_playback_open(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_oxfw *oxfw = substream->rmidi->private_data;
-+	int err;
-+
-+	err = snd_oxfw_stream_lock_try(oxfw);
-+	if (err < 0)
-+		goto end;
- 
- 	atomic_inc(&oxfw->playback_substreams);
--	return snd_oxfw_stream_start_simplex(oxfw, &oxfw->rx_stream, 0, 0);
-+	err = snd_oxfw_stream_start_simplex(oxfw, &oxfw->rx_stream, 0, 0);
-+	if (err < 0)
-+		snd_oxfw_stream_lock_release(oxfw);
-+end:
-+	return err;
- }
- 
- static int midi_capture_close(struct snd_rawmidi_substream *substream)
-@@ -31,6 +49,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
- 	atomic_dec(&oxfw->capture_substreams);
- 	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->tx_stream);
- 
-+	snd_oxfw_stream_lock_release(oxfw);
- 	return 0;
- }
- 
-@@ -41,6 +60,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
- 	atomic_dec(&oxfw->playback_substreams);
- 	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->rx_stream);
- 
-+	snd_oxfw_stream_lock_release(oxfw);
- 	return 0;
- }
- 
 diff --git a/sound/firewire/oxfw/oxfw_pcm.c b/sound/firewire/oxfw/oxfw_pcm.c
-index e763eef..7fee841 100644
+index 8f65e10..e763eef 100644
 --- a/sound/firewire/oxfw/oxfw_pcm.c
 +++ b/sound/firewire/oxfw/oxfw_pcm.c
-@@ -156,10 +156,14 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	unsigned int rate;
+@@ -105,22 +105,31 @@ static void limit_period_and_buffer(struct snd_pcm_hardware *hw)
+ 	hw->buffer_bytes_max = hw->period_bytes_max * hw->periods_min;
+ }
+ 
+-static int pcm_open(struct snd_pcm_substream *substream)
++static int init_hw_params(struct snd_oxfw *oxfw,
++			  struct snd_pcm_substream *substream)
+ {
+-	struct snd_oxfw *oxfw = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_oxfw_stream_formation *formations;
+-	unsigned int rate;
++	struct amdtp_stream *stream;
  	int err;
  
--	err = init_hw_params(oxfw, substream);
-+	err = snd_oxfw_stream_lock_try(oxfw);
+-	formations = oxfw->rx_stream_formations;
+-
+ 	runtime->hw.info = SNDRV_PCM_INFO_BATCH |
+ 			   SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 			   SNDRV_PCM_INFO_INTERLEAVED |
++			   SNDRV_PCM_INFO_JOINT_DUPLEX |
+ 			   SNDRV_PCM_INFO_MMAP |
+ 			   SNDRV_PCM_INFO_MMAP_VALID;
+ 
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		runtime->hw.formats = AMDTP_IN_PCM_FORMAT_BITS;
++		stream = &oxfw->tx_stream;
++		formations = oxfw->tx_stream_formations;
++	} else {
++		runtime->hw.formats = AMDTP_OUT_PCM_FORMAT_BITS;
++		stream = &oxfw->rx_stream;
++		formations = oxfw->rx_stream_formations;
++	}
++
+ 	limit_channels_and_rates(&runtime->hw, formations);
+ 	limit_period_and_buffer(&runtime->hw);
+ 
+@@ -136,7 +145,18 @@ static int pcm_open(struct snd_pcm_substream *substream)
  	if (err < 0)
  		goto end;
  
-+	err = init_hw_params(oxfw, substream);
-+	if (err < 0)
-+		goto err_locked;
+-	err = amdtp_stream_add_pcm_hw_constraints(&oxfw->rx_stream, runtime);
++	err = amdtp_stream_add_pcm_hw_constraints(stream, runtime);
++end:
++	return err;
++}
 +
- 	/*
++static int pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	unsigned int rate;
++	int err;
++
++	err = init_hw_params(oxfw, substream);
+ 	if (err < 0)
+ 		goto end;
+ 
+@@ -144,16 +164,16 @@ static int pcm_open(struct snd_pcm_substream *substream)
  	 * When any PCM streams are already running, the available sampling
  	 * rate is limited at current value.
-@@ -170,7 +174,7 @@ static int pcm_open(struct snd_pcm_substream *substream)
+ 	 */
+-	if (amdtp_stream_pcm_running(&oxfw->rx_stream)) {
+-		err = avc_general_get_sig_fmt(oxfw->unit, &rate,
+-					      AVC_GENERAL_PLUG_DIR_IN, 0);
++	if (amdtp_stream_pcm_running(&oxfw->tx_stream) ||
++	    amdtp_stream_pcm_running(&oxfw->rx_stream)) {
++		err = snd_oxfw_stream_get_rate(oxfw, &rate);
  		if (err < 0) {
  			dev_err(&oxfw->unit->device,
  				"fail to get sampling rate: %d\n", err);
--			goto end;
-+			goto err_locked;
+ 			goto end;
  		}
- 		substream->runtime->hw.rate_min = rate;
- 		substream->runtime->hw.rate_max = rate;
-@@ -179,10 +183,15 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	snd_pcm_set_sync(substream);
- end:
- 	return err;
-+err_locked:
-+	snd_oxfw_stream_lock_release(oxfw);
-+	return err;
- }
+-		runtime->hw.rate_min = rate;
+-		runtime->hw.rate_max = rate;
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
+ 	}
  
- static int pcm_close(struct snd_pcm_substream *substream)
- {
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	snd_oxfw_stream_lock_release(oxfw);
+ 	snd_pcm_set_sync(substream);
+@@ -166,33 +186,77 @@ static int pcm_close(struct snd_pcm_substream *substream)
  	return 0;
  }
  
+-static int pcm_hw_params(struct snd_pcm_substream *substream,
+-			 struct snd_pcm_hw_params *hw_params)
++static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
++		atomic_inc(&oxfw->capture_substreams);
++	amdtp_stream_set_pcm_format(&oxfw->tx_stream, params_format(hw_params));
++
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
++}
++static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN)
++		atomic_inc(&oxfw->playback_substreams);
+ 	amdtp_stream_set_pcm_format(&oxfw->rx_stream, params_format(hw_params));
++
+ 	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
+ 						params_buffer_bytes(hw_params));
+ }
+ 
+-static int pcm_hw_free(struct snd_pcm_substream *substream)
++static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 
+-	snd_oxfw_stream_stop_simplex(oxfw);
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		atomic_dec(&oxfw->capture_substreams);
++
++	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->tx_stream);
+ 
+ 	return snd_pcm_lib_free_vmalloc_buffer(substream);
+ }
++static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
+ 
+-static int pcm_prepare(struct snd_pcm_substream *substream)
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		atomic_dec(&oxfw->playback_substreams);
++
++	snd_oxfw_stream_stop_simplex(oxfw, &oxfw->rx_stream);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_capture_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int err;
+ 
+-	err = snd_oxfw_stream_start_simplex(oxfw, runtime->rate,
+-					    runtime->channels);
++	err = snd_oxfw_stream_start_simplex(oxfw, &oxfw->tx_stream,
++					    runtime->rate, runtime->channels);
++	if (err < 0)
++		goto end;
++
++	amdtp_stream_pcm_prepare(&oxfw->tx_stream);
++end:
++	return err;
++}
++static int pcm_playback_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	err = snd_oxfw_stream_start_simplex(oxfw, &oxfw->rx_stream,
++					    runtime->rate, runtime->channels);
+ 	if (err < 0)
+ 		goto end;
+ 
+@@ -201,7 +265,23 @@ end:
+ 	return err;
+ }
+ 
+-static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_oxfw *oxfw = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&oxfw->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&oxfw->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 
+@@ -218,35 +298,61 @@ static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return 0;
+ }
+ 
+-static snd_pcm_uframes_t pcm_pointer(struct snd_pcm_substream *substream)
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstm)
+ {
+-	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_oxfw *oxfw = sbstm->private_data;
++
++	return amdtp_stream_pcm_pointer(&oxfw->tx_stream);
++}
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstm)
++{
++	struct snd_oxfw *oxfw = sbstm->private_data;
+ 
+ 	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
+ }
+ 
+ int snd_oxfw_create_pcm(struct snd_oxfw *oxfw)
+ {
+-	static struct snd_pcm_ops ops = {
++	static struct snd_pcm_ops capture_ops = {
+ 		.open      = pcm_open,
+ 		.close     = pcm_close,
+ 		.ioctl     = snd_pcm_lib_ioctl,
+-		.hw_params = pcm_hw_params,
+-		.hw_free   = pcm_hw_free,
+-		.prepare   = pcm_prepare,
+-		.trigger   = pcm_trigger,
+-		.pointer   = pcm_pointer,
++		.hw_params = pcm_capture_hw_params,
++		.hw_free   = pcm_capture_hw_free,
++		.prepare   = pcm_capture_prepare,
++		.trigger   = pcm_capture_trigger,
++		.pointer   = pcm_capture_pointer,
++		.page      = snd_pcm_lib_get_vmalloc_page,
++		.mmap      = snd_pcm_lib_mmap_vmalloc,
++	};
++	static struct snd_pcm_ops playback_ops = {
++		.open      = pcm_open,
++		.close     = pcm_close,
++		.ioctl     = snd_pcm_lib_ioctl,
++		.hw_params = pcm_playback_hw_params,
++		.hw_free   = pcm_playback_hw_free,
++		.prepare   = pcm_playback_prepare,
++		.trigger   = pcm_playback_trigger,
++		.pointer   = pcm_playback_pointer,
+ 		.page      = snd_pcm_lib_get_vmalloc_page,
+ 		.mmap      = snd_pcm_lib_mmap_vmalloc,
+ 	};
+ 	struct snd_pcm *pcm;
++	unsigned int cap = 0;
+ 	int err;
+ 
+-	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, 0, &pcm);
++	if (oxfw->has_output)
++		cap = 1;
++
++	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, cap, &pcm);
+ 	if (err < 0)
+ 		return err;
++
+ 	pcm->private_data = oxfw;
+ 	strcpy(pcm->name, oxfw->card->shortname);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
++	if (cap > 0)
++		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &capture_ops);
++
+ 	return 0;
+ }
+diff --git a/sound/firewire/oxfw/oxfw_proc.c b/sound/firewire/oxfw/oxfw_proc.c
+index dd287dc..7a69aac 100644
+--- a/sound/firewire/oxfw/oxfw_proc.c
++++ b/sound/firewire/oxfw/oxfw_proc.c
+@@ -15,6 +15,15 @@ static void proc_read_formation(struct snd_info_entry *entry,
+ 	struct snd_oxfw_stream_formation *formation;
+ 	unsigned int i;
+ 
++	snd_iprintf(buffer, "Output Stream from device:\n");
++	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
++	formation = oxfw->tx_stream_formations;
++	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
++		snd_iprintf(buffer,
++			"\t%d\t%d\t%d\n", formation[i].rate,
++			formation[i].pcm, formation[i].midi);
++	}
++
+ 	snd_iprintf(buffer, "Input Stream to device:\n");
+ 	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
+ 	formation = oxfw->rx_stream_formations;
+@@ -30,11 +39,8 @@ static void proc_read_clock(struct snd_info_entry *entry,
+ {
+ 	struct snd_oxfw *oxfw = entry->private_data;
+ 	unsigned int rate;
+-	int err;
+ 
+-	err = avc_general_get_sig_fmt(oxfw->unit, &rate,
+-				      AVC_GENERAL_PLUG_DIR_IN, 0);
+-	if (err >= 0)
++	if (snd_oxfw_stream_get_rate(oxfw, &rate) >= 0)
+ 		snd_iprintf(buffer, "Sampling rate: %d\n", rate);
+ }
+ 
 diff --git a/sound/firewire/oxfw/oxfw_stream.c b/sound/firewire/oxfw/oxfw_stream.c
-index 858e1e6..c9aab3f 100644
+index 4d66648..6521899 100644
 --- a/sound/firewire/oxfw/oxfw_stream.c
 +++ b/sound/firewire/oxfw/oxfw_stream.c
-@@ -617,3 +617,42 @@ int snd_oxfw_stream_discover(struct snd_oxfw *oxfw)
+@@ -38,44 +38,73 @@ static const unsigned int avc_stream_rate_table[] = {
+ 	[5] = 0x07,
+ };
+ 
+-int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw)
++int snd_oxfw_stream_get_rate(struct snd_oxfw *oxfw, unsigned int *rate)
+ {
++	unsigned int tx_rate, rx_rate;
+ 	int err;
+ 
+-	err = cmp_connection_init(&oxfw->in_conn, oxfw->unit,
+-				  CMP_INPUT, 0);
++	err = avc_general_get_sig_fmt(oxfw->unit, &rx_rate,
++				      AVC_GENERAL_PLUG_DIR_IN, 0);
+ 	if (err < 0)
+ 		goto end;
++	*rate = rx_rate;
+ 
+-	err = amdtp_stream_init(&oxfw->rx_stream, oxfw->unit,
+-				AMDTP_OUT_STREAM, CIP_NONBLOCKING);
+-	if (err < 0) {
+-		amdtp_stream_destroy(&oxfw->rx_stream);
+-		cmp_connection_destroy(&oxfw->in_conn);
++	if (oxfw->has_output) {
++		err = avc_general_get_sig_fmt(oxfw->unit, &tx_rate,
++						AVC_GENERAL_PLUG_DIR_OUT, 0);
++		if ((err < 0) || (rx_rate == tx_rate))
++			goto end;
++
++		/* synchronize transmit stream rate to receive stream rate */
++		err = avc_general_set_sig_fmt(oxfw->unit, rx_rate,
++					AVC_GENERAL_PLUG_DIR_OUT, 0);
+ 	}
  end:
  	return err;
  }
-+
-+void snd_oxfw_stream_lock_changed(struct snd_oxfw *oxfw)
-+{
-+	oxfw->dev_lock_changed = true;
-+	wake_up(&oxfw->hwdep_wait);
-+}
-+
-+int snd_oxfw_stream_lock_try(struct snd_oxfw *oxfw)
-+{
+ 
+-static int stop_stream(struct snd_oxfw *oxfw)
++int snd_oxfw_stream_set_rate(struct snd_oxfw *oxfw, unsigned int rate)
+ {
+-	amdtp_stream_pcm_abort(&oxfw->rx_stream);
+-	amdtp_stream_stop(&oxfw->rx_stream);
+-	cmp_connection_break(&oxfw->in_conn);
 +	int err;
 +
-+	spin_lock_irq(&oxfw->lock);
++	err = avc_general_set_sig_fmt(oxfw->unit, rate,
++				      AVC_GENERAL_PLUG_DIR_IN, 0);
++	if (err < 0)
++		goto end;
 +
-+	/* user land lock this */
-+	if (oxfw->dev_lock_count < 0) {
-+		err = -EBUSY;
++	if (oxfw->has_output)
++		err = avc_general_set_sig_fmt(oxfw->unit, rate,
++					      AVC_GENERAL_PLUG_DIR_OUT, 0);
++end:
++	return err;
+ }
+ 
+-static int start_stream(struct snd_oxfw *oxfw, unsigned int rate,
+-			unsigned int pcm_channels)
++static void stop_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream)
++{
++	amdtp_stream_pcm_abort(stream);
++	amdtp_stream_stop(stream);
++
++	if (stream == &oxfw->tx_stream)
++		cmp_connection_break(&oxfw->out_conn);
++	else
++		cmp_connection_break(&oxfw->in_conn);
++}
++
++static int start_stream(struct snd_oxfw *oxfw, struct amdtp_stream *stream,
++			unsigned int rate, unsigned int pcm_channels)
+ {
+ 	struct snd_oxfw_stream_formation *formations;
+ 	unsigned int i, midi_ports;
+-	struct amdtp_stream *stream;
+ 	struct cmp_connection *conn;
+ 	int err;
+ 
+-	stream = &oxfw->rx_stream;
+-	formations = oxfw->rx_stream_formations;
+-	conn = &oxfw->in_conn;
++	if (stream == &oxfw->rx_stream) {
++		formations = oxfw->rx_stream_formations;
++		conn = &oxfw->in_conn;
++	} else {
++		formations = oxfw->tx_stream_formations;
++		conn = &oxfw->out_conn;
++	}
+ 
+ 	/* Get stream formation */
+ 	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
+@@ -118,20 +147,22 @@ static int start_stream(struct snd_oxfw *oxfw, unsigned int rate,
+ 	/* Wait first callback */
+ 	err = amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT);
+ 	if (err < 0)
+-		stop_stream(oxfw);
++		stop_stream(oxfw, stream);
+ end:
+ 	return err;
+ }
+ 
+-static int check_connection_used_by_others(struct snd_oxfw *oxfw)
++static int check_connection_used_by_others(struct snd_oxfw *oxfw,
++					   struct amdtp_stream *stream)
+ {
+ 	struct cmp_connection *conn;
+-	struct amdtp_stream *stream;
+ 	bool used;
+ 	int err;
+ 
+-	stream = &oxfw->rx_stream;
+-	conn = &oxfw->in_conn;
++	if (stream == &oxfw->tx_stream)
++		conn = &oxfw->out_conn;
++	else
++		conn = &oxfw->in_conn;
+ 
+ 	err = cmp_connection_check_used(conn, &used);
+ 	if ((err >= 0) && used && !amdtp_stream_running(stream)) {
+@@ -145,48 +176,123 @@ static int check_connection_used_by_others(struct snd_oxfw *oxfw)
+ 	return err;
+ }
+ 
+-int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw, unsigned int rate,
+-				  unsigned int pcm_channels)
++int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw,
++				 struct amdtp_stream *stream)
++{
++	struct cmp_connection *conn;
++	enum cmp_direction c_dir;
++	enum amdtp_stream_direction s_dir;
++	int err;
++
++	if (stream == &oxfw->tx_stream) {
++		conn = &oxfw->out_conn;
++		c_dir = CMP_OUTPUT;
++		s_dir = AMDTP_IN_STREAM;
++	} else {
++		conn = &oxfw->in_conn;
++		c_dir = CMP_INPUT;
++		s_dir = AMDTP_OUT_STREAM;
++	}
++
++	mutex_lock(&oxfw->mutex);
++
++	err = cmp_connection_init(conn, oxfw->unit, c_dir, 0);
++	if (err < 0)
++		goto end;
++
++	err = amdtp_stream_init(stream, oxfw->unit, s_dir, CIP_NONBLOCKING);
++	if (err < 0) {
++		amdtp_stream_destroy(stream);
++		cmp_connection_destroy(conn);
 +		goto end;
 +	}
 +
-+	/* this is the first time */
-+	if (oxfw->dev_lock_count++ == 0)
-+		snd_oxfw_stream_lock_changed(oxfw);
-+	err = 0;
++	/* OXFW starts to transmit packets with non-zero dbc. */
++	if (stream == &oxfw->tx_stream)
++		oxfw->tx_stream.flags |= CIP_SKIP_INIT_DBC_CHECK;
 +end:
-+	spin_unlock_irq(&oxfw->lock);
++	mutex_unlock(&oxfw->mutex);
 +	return err;
 +}
 +
-+void snd_oxfw_stream_lock_release(struct snd_oxfw *oxfw)
-+{
-+	spin_lock_irq(&oxfw->lock);
++int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw,
++				  struct amdtp_stream *stream,
++				  unsigned int rate, unsigned int pcm_channels)
+ {
++	struct amdtp_stream *opposite;
+ 	unsigned int curr_rate;
++	atomic_t *substreams, *opposite_substreams;
+ 	int err = 0;
+ 
++	if (stream == &oxfw->tx_stream) {
++		substreams = &oxfw->capture_substreams;
++		opposite = &oxfw->rx_stream;
++		opposite_substreams = &oxfw->playback_substreams;
++	} else {
++		substreams = &oxfw->playback_substreams;
++		opposite_substreams = &oxfw->capture_substreams;
 +
-+	if (WARN_ON(oxfw->dev_lock_count <= 0))
++		if (oxfw->has_output)
++			opposite = &oxfw->rx_stream;
++		else
++			opposite = NULL;
++	}
++
++	if (atomic_read(substreams) == 0)
 +		goto end;
-+	if (--oxfw->dev_lock_count == 0)
-+		snd_oxfw_stream_lock_changed(oxfw);
-+end:
-+	spin_unlock_irq(&oxfw->lock);
-+}
++
+ 	mutex_lock(&oxfw->mutex);
+ 
+ 	/*
+ 	 * Considering JACK/FFADO streaming:
+ 	 * TODO: This can be removed hwdep functionality becomes popular.
+ 	 */
+-	err = check_connection_used_by_others(oxfw);
++	err = check_connection_used_by_others(oxfw, stream);
+ 	if (err < 0)
+ 		goto end;
+ 
+ 	/* packet queueing error */
+-	if (amdtp_streaming_error(&oxfw->rx_stream))
+-		stop_stream(oxfw);
++	if (amdtp_streaming_error(stream))
++		stop_stream(oxfw, stream);
+ 
+-	/* arrange sampling rate */
+-	err = avc_general_get_sig_fmt(oxfw->unit, &curr_rate,
+-				      AVC_GENERAL_PLUG_DIR_IN, 0);
++	/* stop streams if rate is different */
++	err = snd_oxfw_stream_get_rate(oxfw, &curr_rate);
+ 	if (err < 0) {
+ 		dev_err(&oxfw->unit->device,
+ 			"fail to get sampling rate: %d\n", err);
+ 		goto end;
+ 	}
+ 	if (curr_rate != rate) {
+-		stop_stream(oxfw);
++		/* Stop streams safely. */
++		if (opposite != NULL) {
++			err = check_connection_used_by_others(oxfw, opposite);
++			if (err < 0)
++				goto end;
++			stop_stream(oxfw, opposite);
++		}
++		stop_stream(oxfw, stream);
+ 
+-		err = avc_general_set_sig_fmt(oxfw->unit, rate,
+-					      AVC_GENERAL_PLUG_DIR_IN, 0);
++		err = snd_oxfw_stream_set_rate(oxfw, rate);
+ 		if (err < 0) {
+ 			dev_err(&oxfw->unit->device,
+ 				"fail to set sampling rate: %d\n", err);
+ 			goto end;
+ 		}
++
++		/* Start opposite stream if needed. */
++		if (opposite && !amdtp_stream_running(opposite) &&
++		    (atomic_read(opposite_substreams) > 0)) {
++			err = start_stream(oxfw, opposite, rate, 0);
++			if (err < 0) {
++				dev_err(&oxfw->unit->device,
++					"fail to restart stream: %d\n", err);
++				goto end;
++			}
++		}
+ 	}
+ 
+-	if (!amdtp_stream_running(&oxfw->rx_stream)) {
+-		err = start_stream(oxfw, rate, pcm_channels);
++	if ((atomic_read(substreams) > 0) && !amdtp_stream_running(stream)) {
++		err = start_stream(oxfw, stream, rate, pcm_channels);
+ 		if (err < 0)
+ 			dev_err(&oxfw->unit->device,
+ 				"fail to start stream: %d\n", err);
+@@ -196,33 +302,56 @@ end:
+ 	return err;
+ }
+ 
+-void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw)
++void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw,
++				  struct amdtp_stream *stream)
+ {
++	if (((stream == &oxfw->tx_stream) &&
++	     (atomic_read(&oxfw->capture_substreams) > 0)) ||
++	    ((stream == &oxfw->rx_stream) &&
++	     (atomic_read(&oxfw->playback_substreams) > 0)))
++		return;
++
+ 	mutex_lock(&oxfw->mutex);
+-	stop_stream(oxfw);
++	stop_stream(oxfw, stream);
+ 	mutex_unlock(&oxfw->mutex);
+ }
+ 
+-void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw)
++void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw,
++				     struct amdtp_stream *stream)
+ {
++	struct cmp_connection *conn;
++
++	if (stream == &oxfw->tx_stream)
++		conn = &oxfw->out_conn;
++	else
++		conn = &oxfw->in_conn;
++
+ 	mutex_lock(&oxfw->mutex);
+ 
+-	stop_stream(oxfw);
++	stop_stream(oxfw, stream);
+ 
+-	amdtp_stream_destroy(&oxfw->rx_stream);
+-	cmp_connection_destroy(&oxfw->in_conn);
++	amdtp_stream_destroy(stream);
++	cmp_connection_destroy(conn);
+ 
+ 	mutex_unlock(&oxfw->mutex);
+ }
+ 
+-void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw)
++void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw,
++				    struct amdtp_stream *stream)
+ {
+-	if (cmp_connection_update(&oxfw->in_conn) < 0) {
++	struct cmp_connection *conn;
++
++	if (stream == &oxfw->tx_stream)
++		conn = &oxfw->out_conn;
++	else
++		conn = &oxfw->in_conn;
++
++	if (cmp_connection_update(conn) < 0) {
+ 		mutex_lock(&oxfw->mutex);
+-		stop_stream(oxfw);
++		stop_stream(oxfw, stream);
+ 		mutex_unlock(&oxfw->mutex);
+ 	} else {
+-		amdtp_stream_update(&oxfw->rx_stream);
++		amdtp_stream_update(stream);
+ 	}
+ }
+ 
+@@ -373,7 +502,10 @@ static int fill_stream_formations(struct snd_oxfw *oxfw,
+ 	if (buf == NULL)
+ 		return -ENOMEM;
+ 
+-	formations = oxfw->rx_stream_formations;
++	if (dir == AVC_GENERAL_PLUG_DIR_OUT)
++		formations = oxfw->tx_stream_formations;
++	else
++		formations = oxfw->rx_stream_formations;
+ 
+ 	/* get first entry */
+ 	len = AVC_GENERIC_FRAME_MAXIMUM_BYTES;
+@@ -452,11 +584,19 @@ int snd_oxfw_stream_discover(struct snd_oxfw *oxfw)
+ 		"fail to get info for isoc/external in/out plugs: %d\n",
+ 			err);
+ 		goto end;
+-	} else if (plugs[0] == 0) {
++	} else if ((plugs[0] == 0) && (plugs[1] == 0)) {
+ 		err = -ENOSYS;
+ 		goto end;
+ 	}
+ 
++	/* use oPCR[0] if exists */
++	if (plugs[1] > 0) {
++		err = fill_stream_formations(oxfw, AVC_GENERAL_PLUG_DIR_OUT, 0);
++		if (err < 0)
++			goto end;
++		oxfw->has_output = true;
++	}
++
+ 	/* use iPCR[0] if exists */
+ 	if (plugs[0] > 0)
+ 		err = fill_stream_formations(oxfw, AVC_GENERAL_PLUG_DIR_IN, 0);
 -- 
 1.8.3.2
 
