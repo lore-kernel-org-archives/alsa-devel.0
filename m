@@ -1,198 +1,446 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 00/15 v4] OXFW driver,
-	a succesor to firewire-speakers
-Date: Tue, 13 May 2014 23:27:37 +0900
-Message-ID: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 03/15] oxfw: Split stream functionality to a new file and add
+	a header file
+Date: Tue, 13 May 2014 23:27:40 +0900
+Message-ID: <1399991272-5807-4-git-send-email-o-takashi@sakamocchi.jp>
+References: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BF1426550E
- for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 16:28:03 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
 To: clemens@ladisch.de
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, fenlason@redhat.com, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org, fenlason@redhat.com, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This patchset updates a part of my previous series:
+This is a help for works in followed patches.
 
-[alsa-devel] [RFC v3] [PATCH 00/52] Enhancement for support of firewire devices
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-January/071820.html
+And this commit remove 'fw_unit_get()/fw_unit_put()' because these
+are called by helper functions in 'snd-firewire-lib'.
 
-This patchset is based on this series. (This series is under reviewing.)
-[alsa-devel] [PATCH 00/49 v4] Enhancement for support of Firewire devices
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-April/075841.html
-
-If you try this patchset, please apply the series in advance and apply this patchset.
-
-Or just use backport codes in my github repository:
-https://github.com/takaswie/snd-firewire-improve
-
-Or if you use Ubuntu 14.04, DKMS package is available from David's PPA.
-(Special thanks to David Henningsson.)
-https://launchpad.net/~diwic/+archive/snd-firewire-improve
-
-If you have Griffin FireWave, I would strongly request to test. Please see 'An issue for FireWave' in this message.
-
-== Background
-Currently, in ALSA, 'firewire-speakers' driver supports OXFW970/971 chipset which Oxford Semiconductor produced. But this driver has some restrictions:
- - Don't support MIDI substreams
- - Don't support substreams for PCM/MIDI capturing
-There are several devices which are based on OXFW970/971. Especially, devices which Behringer and Mackie produced support playback/capture PCM samples/MIDI messages. So firewire-speakers needs re-work to support these devices.
-
-This patchset renames 'firewire-speakers' to 'oxfw'. Maintainers already agreed to rename firewire-speakers to suitable name, in my first RFC in Jan 2014.
-
-
-== Supported devices
-Currently these devices are supported:
- * Griffin Firewave
- * LaCie Firewire Speakers
- * Behringer F-Control Audio 202
- * Mackie(Loud) Onyx-i series (former models)
- * Mackie(Loud) Onyx Satellite
- * Mackie(Loud) Tapco Link.Firewire
-
-These devices can be supported but its IDs are unknown:
- * Mackie(Loud), d.2 pro
- * Mackie(Loud), d.4 pro 
- * Mackie(Loud), U.420 
- * Mackie(Loud), U.420d 
-
-When you have unknown devices, please inform me output of this command:
-$ hexdump -C /sys/bus/firewire/devices/fwX/config_rom
-(X is node id for your device. Tipically '1'.)
-
-I tested this driver with Behringer F-Control Audio 202.
-
-
-== Features
- - Capturing/Playbacking PCM samples/MIDI messages at supported sampling rates via ALSA PCM/MIDI interfaces
- - Retrieving firewire node information via ALSA hwdep interface
- - Locking/Unlocking kernel streaming via ALSA hwdep interface
- - Receiving notification at starting/stopping kernel streaming via ALSA hwdep interface
-
-
-== Solutions for reported regressions
-Two regressions were reported for my previous series:
-1.Some names in card structure is trimmed.
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/073128.html
-2.The number of PCM channels are not detected correctly.
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/073145.html
-
-The cause of issue 1 is that the device has too long names in its config rom. To solve this issue, for the driver, this patchset uses the same way which firewire-speakers uses, propper alias in device-specific structure.
-
-The cause of issue 2 is that the device has several format entries for the same sampling rate:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/073561.html
-To solve this issue, this patchset includes improved mechanism to detect stream formation.
-
-Additionally, this patchset adds new device entry for Mackie(Loud) Tapco Link.Firewire, refering to FFADO bug ticket 236:
-http://subversion.ffado.org/ticket/236
-
-
-== An issue for FireWave
-
-I have an issue for Griffin Firewave.
-
-This device can handle AV/C Stream Format Information command and driver can get to know stream formations via the command. With Stefan's help, responses from FireWave against this command are clear.
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/073561.html
-
-According to these responses, supported formations are:
-Input Stream to device:
-	Rate	PCM	MIDI
-	32000	6	0
-	44100	6	0
-	48000	6	0
-	96000	6	0
-	32000	2	0
-	44100	2	0
-	48000	2	0
-	0	0	0
-	0	0	0
-	0	0	0
-(I also expect to get this output from /proc/asound/FireWave/firewire/formation. I note it's order is not important.)
-
-But current 'firewire-speakers' has PCM constraints below:
- - 6ch at 32/44.1/48/96 kHz
- - 2ch at 48/96 kHz
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/073562.html
-
-So this OXFW driver may lost a support for 2ch/96.0kHz for FireWave and gain 2ch/32.0kHz and 2ch/44.1kHz.
-
-I don't know exactly the reason of these gaps. So I strongly hope testers to check these two items:
- - FireWave really can handle 2ch/96kHz with firewire-speakers driver.
- - FireWave really can handle 2ch/32.0kHz and 2ch/44.1kHz with oxfw driver.
-
-I think a test with aplay is easy to execute:
-$ aplay -D hw:FireWave -f S32_LE -c 2 -r 96000 /dev/urandom
-$ aplay -D hw:FireWave -f S32_LE -c 2 -r 48000 /dev/urandom
-$ aplay -D hw:FireWave -f S32_LE -c 2 -r 44100 /dev/urandom
-$ aplay -D hw:FireWave -f S32_LE -c 2 -r 32000 /dev/urandom
-
-If 2ch/96kHz is apparently available, I'll change codes as a quirk.
-
-FYI, when I tested unavailable number of PCM channels with a hack, FCA202 playback PCM substreams but becomes freezed after stopping streaming.
-$ cat /var/log/syslog
-...
-kernel: [10098.670390] snd_oxfw fw1.0: transaction failed: timeout
-...
-
-I believe the other OXFW970/971 based devices have a similar behaviour.
-
-================
-Takashi Sakamoto (15):
-  speakers: Rename to oxfw and rename some members
-  oxfw: Move to its own directory
-  oxfw: Split stream functionality to a new file and add a header file
-  oxfw: Split PCM functionality to a new file
-  oxfw: Split control functionality to a new file
-  oxfw: Change the way to name card
-  oxfw: Change the way to make PCM rules/constraints
-  oxfw: Add proc interface for debugging purpose
-  oxfw: Change the way to start stream
-  oxfw: Add support for AV/C stream format command to get supported
-    stream formation
-  oxfw: Add a quirk for Griffin FireWave
-  oxfw: Add support for Behringer/Mackie devices
-  oxfw: Add support AMDTP in-stream and PCM capture
-  oxfw: Add support for capture/playback MIDI messages
-  oxfw: Add hwdep interface
-
- include/uapi/sound/asound.h        |   3 +-
- include/uapi/sound/firewire.h      |   3 +-
- sound/firewire/Kconfig             |  18 +-
- sound/firewire/Makefile            |   3 +-
- sound/firewire/oxfw/Makefile       |   3 +
- sound/firewire/oxfw/oxfw.c         | 284 +++++++++++++
- sound/firewire/oxfw/oxfw.h         | 141 +++++++
- sound/firewire/oxfw/oxfw_command.c | 113 ++++++
- sound/firewire/oxfw/oxfw_control.c | 283 +++++++++++++
- sound/firewire/oxfw/oxfw_hwdep.c   | 190 +++++++++
- sound/firewire/oxfw/oxfw_midi.c    | 168 ++++++++
- sound/firewire/oxfw/oxfw_pcm.c     | 367 +++++++++++++++++
- sound/firewire/oxfw/oxfw_proc.c    |  83 ++++
- sound/firewire/oxfw/oxfw_stream.c  | 658 ++++++++++++++++++++++++++++++
- sound/firewire/speakers.c          | 792 -------------------------------------
- 15 files changed, 2308 insertions(+), 801 deletions(-)
- create mode 100644 sound/firewire/oxfw/Makefile
- create mode 100644 sound/firewire/oxfw/oxfw.c
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/oxfw/Makefile      |   2 +-
+ sound/firewire/oxfw/oxfw.c        | 136 ++++++--------------------------------
+ sound/firewire/oxfw/oxfw.h        |  56 ++++++++++++++++
+ sound/firewire/oxfw/oxfw_stream.c |  92 ++++++++++++++++++++++++++
+ 4 files changed, 168 insertions(+), 118 deletions(-)
  create mode 100644 sound/firewire/oxfw/oxfw.h
- create mode 100644 sound/firewire/oxfw/oxfw_command.c
- create mode 100644 sound/firewire/oxfw/oxfw_control.c
- create mode 100644 sound/firewire/oxfw/oxfw_hwdep.c
- create mode 100644 sound/firewire/oxfw/oxfw_midi.c
- create mode 100644 sound/firewire/oxfw/oxfw_pcm.c
- create mode 100644 sound/firewire/oxfw/oxfw_proc.c
  create mode 100644 sound/firewire/oxfw/oxfw_stream.c
- delete mode 100644 sound/firewire/speakers.c
 
+diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
+index 9ca49c0..510c1cb 100644
+--- a/sound/firewire/oxfw/Makefile
++++ b/sound/firewire/oxfw/Makefile
+@@ -1,2 +1,2 @@
+-snd-oxfw-objs := oxfw.o
++snd-oxfw-objs := oxfw_stream.o oxfw.o
+ obj-m += snd-oxfw.o
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index e194f54..f393f34 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -5,22 +5,7 @@
+  * Licensed under the terms of the GNU General Public License, version 2.
+  */
+ 
+-#include <linux/device.h>
+-#include <linux/firewire.h>
+-#include <linux/firewire-constants.h>
+-#include <linux/module.h>
+-#include <linux/mod_devicetable.h>
+-#include <linux/mutex.h>
+-#include <linux/slab.h>
+-#include <sound/control.h>
+-#include <sound/core.h>
+-#include <sound/initval.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include "../cmp.h"
+-#include "../fcp.h"
+-#include "../amdtp.h"
+-#include "../lib.h"
++#include "oxfw.h"
+ 
+ #define OXFORD_FIRMWARE_ID_ADDRESS	(CSR_REGISTER_BASE + 0x50000)
+ /* 0x970?vvvv or 0x971?vvvv, where vvvv = firmware version */
+@@ -35,29 +20,6 @@
+ #define SPECIFIER_1394TA	0x00a02d
+ #define VERSION_AVC		0x010001
+ 
+-struct device_info {
+-	const char *driver_name;
+-	const char *short_name;
+-	const char *long_name;
+-	int (*pcm_constraints)(struct snd_pcm_runtime *runtime);
+-	unsigned int mixer_channels;
+-	u8 mute_fb_id;
+-	u8 volume_fb_id;
+-};
+-
+-struct snd_oxfw {
+-	struct snd_card *card;
+-	struct fw_unit *unit;
+-	const struct device_info *device_info;
+-	struct mutex mutex;
+-	struct cmp_connection in_conn;
+-	struct amdtp_stream rx_stream;
+-	bool mute;
+-	s16 volume[6];
+-	s16 volume_min;
+-	s16 volume_max;
+-};
+-
+ MODULE_DESCRIPTION("Oxford OXFW970/971 driver");
+ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_LICENSE("GPL v2");
+@@ -180,23 +142,13 @@ static int oxfw_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static void oxfw_stop_stream(struct snd_oxfw *oxfw)
+-{
+-	if (amdtp_stream_running(&oxfw->rx_stream)) {
+-		amdtp_stream_stop(&oxfw->rx_stream);
+-		cmp_connection_break(&oxfw->in_conn);
+-	}
+-}
+-
+ static int oxfw_hw_params(struct snd_pcm_substream *substream,
+ 			   struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 	int err;
+ 
+-	mutex_lock(&oxfw->mutex);
+-	oxfw_stop_stream(oxfw);
+-	mutex_unlock(&oxfw->mutex);
++	snd_oxfw_stream_stop_simplex(oxfw);
+ 
+ 	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+ 					       params_buffer_bytes(hw_params));
+@@ -230,9 +182,7 @@ static int oxfw_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 
+-	mutex_lock(&oxfw->mutex);
+-	oxfw_stop_stream(oxfw);
+-	mutex_unlock(&oxfw->mutex);
++	snd_oxfw_stream_stop_simplex(oxfw);
+ 
+ 	return snd_pcm_lib_free_vmalloc_buffer(substream);
+ }
+@@ -242,35 +192,14 @@ static int oxfw_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_oxfw *oxfw = substream->private_data;
+ 	int err;
+ 
+-	mutex_lock(&oxfw->mutex);
+-
+-	if (amdtp_streaming_error(&oxfw->rx_stream))
+-		oxfw_stop_stream(oxfw);
++	snd_oxfw_stream_stop_simplex(oxfw);
+ 
+-	if (!amdtp_stream_running(&oxfw->rx_stream)) {
+-		err = cmp_connection_establish(&oxfw->in_conn,
+-			amdtp_stream_get_max_payload(&oxfw->rx_stream));
+-		if (err < 0)
+-			goto err_mutex;
+-
+-		err = amdtp_stream_start(&oxfw->rx_stream,
+-					 oxfw->in_conn.resources.channel,
+-					 oxfw->in_conn.speed);
+-		if (err < 0)
+-			goto err_connection;
+-	}
+-
+-	mutex_unlock(&oxfw->mutex);
++	err = snd_oxfw_stream_start_simplex(oxfw);
++	if (err < 0)
++		goto end;
+ 
+ 	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
+-
+-	return 0;
+-
+-err_connection:
+-	cmp_connection_break(&oxfw->in_conn);
+-err_mutex:
+-	mutex_unlock(&oxfw->mutex);
+-
++end:
+ 	return err;
+ }
+ 
+@@ -615,9 +544,6 @@ static void oxfw_card_free(struct snd_card *card)
+ {
+ 	struct snd_oxfw *oxfw = card->private_data;
+ 
+-	amdtp_stream_destroy(&oxfw->rx_stream);
+-	cmp_connection_destroy(&oxfw->in_conn);
+-	fw_unit_put(oxfw->unit);
+ 	mutex_destroy(&oxfw->mutex);
+ }
+ 
+@@ -635,23 +561,13 @@ static int oxfw_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		return err;
+ 
++	card->private_free = oxfw_card_free;
+ 	oxfw = card->private_data;
+ 	oxfw->card = card;
+ 	mutex_init(&oxfw->mutex);
+-	oxfw->unit = fw_unit_get(unit);
++	oxfw->unit = unit;
+ 	oxfw->device_info = (const struct device_info *)id->driver_data;
+ 
+-	err = cmp_connection_init(&oxfw->in_conn, unit, CMP_INPUT, 0);
+-	if (err < 0)
+-		goto err_unit;
+-
+-	err = amdtp_stream_init(&oxfw->rx_stream, unit, AMDTP_OUT_STREAM,
+-				CIP_NONBLOCKING);
+-	if (err < 0)
+-		goto err_connection;
+-
+-	card->private_free = oxfw_card_free;
+-
+ 	strcpy(card->driver, oxfw->device_info->driver_name);
+ 	strcpy(card->shortname, oxfw->device_info->short_name);
+ 	firmware = oxfw_read_firmware_version(unit);
+@@ -671,19 +587,18 @@ static int oxfw_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
+ 
+-	err = snd_card_register(card);
++	err = snd_oxfw_stream_init_simplex(oxfw);
+ 	if (err < 0)
+ 		goto error;
+ 
++	err = snd_card_register(card);
++	if (err < 0) {
++		snd_oxfw_stream_destroy_simplex(oxfw);
++		goto error;
++	}
+ 	dev_set_drvdata(&unit->device, oxfw);
+ 
+ 	return 0;
+-
+-err_connection:
+-	cmp_connection_destroy(&oxfw->in_conn);
+-err_unit:
+-	fw_unit_put(oxfw->unit);
+-	mutex_destroy(&oxfw->mutex);
+ error:
+ 	snd_card_free(card);
+ 	return err;
+@@ -694,29 +609,16 @@ static void oxfw_bus_reset(struct fw_unit *unit)
+ 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
+ 
+ 	fcp_bus_reset(oxfw->unit);
+-
+-	if (cmp_connection_update(&oxfw->in_conn) < 0) {
+-		amdtp_stream_pcm_abort(&oxfw->rx_stream);
+-		mutex_lock(&oxfw->mutex);
+-		oxfw_stop_stream(oxfw);
+-		mutex_unlock(&oxfw->mutex);
+-		return;
+-	}
+-
+-	amdtp_stream_update(&oxfw->rx_stream);
++	snd_oxfw_stream_update_simplex(oxfw);
+ }
+ 
+ static void oxfw_remove(struct fw_unit *unit)
+ {
+ 	struct snd_oxfw *oxfw = dev_get_drvdata(&unit->device);
+ 
+-	amdtp_stream_pcm_abort(&oxfw->rx_stream);
+-	snd_card_disconnect(oxfw->card);
+-
+-	mutex_lock(&oxfw->mutex);
+-	oxfw_stop_stream(oxfw);
+-	mutex_unlock(&oxfw->mutex);
++	snd_oxfw_stream_destroy_simplex(oxfw);
+ 
++	snd_card_disconnect(oxfw->card);
+ 	snd_card_free_when_closed(oxfw->card);
+ }
+ 
+diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
+new file mode 100644
+index 0000000..e5836e0
+--- /dev/null
++++ b/sound/firewire/oxfw/oxfw.h
+@@ -0,0 +1,56 @@
++/*
++ * oxfw.h - a part of driver for OXFW970/971 based devices
++ *
++ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include <linux/device.h>
++#include <linux/firewire.h>
++#include <linux/firewire-constants.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/mutex.h>
++#include <linux/slab.h>
++
++#include <sound/control.h>
++#include <sound/core.h>
++#include <sound/initval.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++
++#include "../lib.h"
++#include "../fcp.h"
++#include "../packets-buffer.h"
++#include "../iso-resources.h"
++#include "../amdtp.h"
++#include "../cmp.h"
++
++struct device_info {
++	const char *driver_name;
++	const char *short_name;
++	const char *long_name;
++	int (*pcm_constraints)(struct snd_pcm_runtime *runtime);
++	unsigned int mixer_channels;
++	u8 mute_fb_id;
++	u8 volume_fb_id;
++};
++
++struct snd_oxfw {
++	struct snd_card *card;
++	struct fw_unit *unit;
++	const struct device_info *device_info;
++	struct mutex mutex;
++	struct cmp_connection in_conn;
++	struct amdtp_stream rx_stream;
++	bool mute;
++	s16 volume[6];
++	s16 volume_min;
++	s16 volume_max;
++};
++
++int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw);
++int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw);
++void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
++void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw);
++void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw);
+diff --git a/sound/firewire/oxfw/oxfw_stream.c b/sound/firewire/oxfw/oxfw_stream.c
+new file mode 100644
+index 0000000..59861b2
+--- /dev/null
++++ b/sound/firewire/oxfw/oxfw_stream.c
+@@ -0,0 +1,92 @@
++/*
++ * oxfw_stream.c - a part of driver for OXFW970/971 based devices
++ *
++ * Copyright (c) 2014 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "oxfw.h"
++
++int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw)
++{
++	int err;
++
++	err = cmp_connection_init(&oxfw->in_conn, oxfw->unit,
++				  CMP_INPUT, 0);
++	if (err < 0)
++		goto end;
++
++	err = amdtp_stream_init(&oxfw->rx_stream, oxfw->unit,
++				AMDTP_OUT_STREAM, CIP_NONBLOCKING);
++	if (err < 0) {
++		amdtp_stream_destroy(&oxfw->rx_stream);
++		cmp_connection_destroy(&oxfw->in_conn);
++	}
++end:
++	return err;
++}
++
++static int stop_stream(struct snd_oxfw *oxfw)
++{
++	amdtp_stream_pcm_abort(&oxfw->rx_stream);
++	amdtp_stream_stop(&oxfw->rx_stream);
++	cmp_connection_break(&oxfw->in_conn);
++}
++
++int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw)
++{
++	int err = 0;
++
++	mutex_lock(&oxfw->mutex);
++
++	if (amdtp_streaming_error(&oxfw->rx_stream))
++		stop_stream(oxfw);
++
++	if (amdtp_stream_running(&oxfw->rx_stream))
++		goto end;
++
++	err = cmp_connection_establish(&oxfw->in_conn,
++			amdtp_stream_get_max_payload(&oxfw->rx_stream));
++	if (err < 0)
++		goto end;
++
++	err = amdtp_stream_start(&oxfw->rx_stream,
++				 oxfw->in_conn.resources.channel,
++				 oxfw->in_conn.speed);
++	if (err < 0)
++		stop_stream(oxfw);
++end:
++	mutex_unlock(&oxfw->mutex);
++	return err;
++}
++
++void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw)
++{
++	mutex_lock(&oxfw->mutex);
++	stop_stream(oxfw);
++	mutex_unlock(&oxfw->mutex);
++}
++
++void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw)
++{
++	mutex_lock(&oxfw->mutex);
++
++	stop_stream(oxfw);
++
++	amdtp_stream_destroy(&oxfw->rx_stream);
++	cmp_connection_destroy(&oxfw->in_conn);
++
++	mutex_unlock(&oxfw->mutex);
++}
++
++void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw)
++{
++	if (cmp_connection_update(&oxfw->in_conn) < 0) {
++		mutex_lock(&oxfw->mutex);
++		stop_stream(oxfw);
++		mutex_unlock(&oxfw->mutex);
++	} else {
++		amdtp_stream_update(&oxfw->rx_stream);
++	}
++}
 -- 
 1.8.3.2
+
+
+------------------------------------------------------------------------------
+"Accelerate Dev Cycles with Automated Cross-Browser Testing - For FREE
+Instantly run your Selenium tests across 300+ browser/OS combos.
+Get unparalleled scalability from the best Selenium testing platform available
+Simple to use. Nothing to install. Get started now for free."
+http://p.sf.net/sfu/SauceLabs
