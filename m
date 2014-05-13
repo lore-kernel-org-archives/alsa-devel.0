@@ -1,46 +1,43 @@
-From: Aaron Plattner <aplattner@nvidia.com>
-Subject: [PATCH] ALSA: hda - Add new GPU codec ID to snd-hda
-Date: Mon, 12 May 2014 20:05:02 -0700
-Message-ID: <1399950302-29012-1-git-send-email-aplattner@nvidia.com>
+From: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v4 2/5] ASoC: Move standard kcontrol
+ helpers to the component level
+Date: Tue, 13 May 2014 11:19:36 +0800
+Message-ID: <20140513031934.GA8609@dragon>
+References: <536CF16F.8010807@metafoo.de>
+ <CAOMZO5Cb4Q80ux1R9EOcsaCPFsmxz3K5Obt02or=s0RitmPMKw@mail.gmail.com>
+ <536CFBE7.3070805@metafoo.de> <20140510050747.GI2870@dragon>
+ <536DCF6F.9020507@metafoo.de> <536DD108.2090607@metafoo.de>
+ <20140510083131.GL2870@dragon> <536DE548.9050008@metafoo.de>
+ <20140510091209.GM2870@dragon>
+ <20140512105257.GG25203@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Stephen Warren <swarren@nvidia.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Aaron Plattner <aplattner@nvidia.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0140.outbound.protection.outlook.com [207.46.163.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id B44DD2652CE
+ for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 05:19:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20140512105257.GG25203@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Fabio Estevam <festevam@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Vendor ID 0x10de0071 is used by a yet-to-be-named GPU chip.
+On Mon, May 12, 2014 at 11:52:57AM +0100, Charles Keepax wrote:
+> Looking at this a bit more can you let me know when it is
+> failing, I assume it is in relation to setting the "Speaker
+> Switch" control?
 
-Signed-off-by: Aaron Plattner <aplattner@nvidia.com>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Stephen Warren <swarren@nvidia.com>
----
-I verified that the patch_nvhdmi code is still needed for this chip.
+Yes, it is.
 
- sound/pci/hda/patch_hdmi.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 0cb5b89cd0c8..347a84b58c39 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -3330,6 +3330,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
- { .id = 0x10de0051, .name = "GPU 51 HDMI/DP",	.patch = patch_nvhdmi },
- { .id = 0x10de0060, .name = "GPU 60 HDMI/DP",	.patch = patch_nvhdmi },
- { .id = 0x10de0067, .name = "MCP67 HDMI",	.patch = patch_nvhdmi_2ch },
-+{ .id = 0x10de0071, .name = "GPU 71 HDMI/DP",	.patch = patch_nvhdmi },
- { .id = 0x10de8001, .name = "MCP73 HDMI",	.patch = patch_nvhdmi_2ch },
- { .id = 0x11069f80, .name = "VX900 HDMI/DP",	.patch = patch_via_hdmi },
- { .id = 0x11069f81, .name = "VX900 HDMI/DP",	.patch = patch_via_hdmi },
-@@ -3385,6 +3386,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0044");
- MODULE_ALIAS("snd-hda-codec-id:10de0051");
- MODULE_ALIAS("snd-hda-codec-id:10de0060");
- MODULE_ALIAS("snd-hda-codec-id:10de0067");
-+MODULE_ALIAS("snd-hda-codec-id:10de0071");
- MODULE_ALIAS("snd-hda-codec-id:10de8001");
- MODULE_ALIAS("snd-hda-codec-id:11069f80");
- MODULE_ALIAS("snd-hda-codec-id:11069f81");
--- 
-1.9.2
+Shawn
