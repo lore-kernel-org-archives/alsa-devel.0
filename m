@@ -1,15 +1,33 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH 2/2] ALSA: hda - mask buggy stream DMA0 for
-	Broadwell display controller
-Date: Tue, 13 May 2014 12:36:13 +0800
-Message-ID: <1399955773-3213-1-git-send-email-mengdong.lin@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - using POS_FIX_LPIB on
+ Broadwell HDMI Audio
+Date: Tue, 13 May 2014 04:37:18 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B41573D@SHSMSX101.ccr.corp.intel.com>
+References: <1399485804-75028-1-git-send-email-libin.yang@intel.com>
+ <s5hzjisq2kj.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D195232A6@SHSMSX103.ccr.corp.intel.com>
+ <s5htx90q0mi.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19523313@SHSMSX103.ccr.corp.intel.com>
+ <s5hr444pzap.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D1952333A@SHSMSX103.ccr.corp.intel.com>
+ <s5hoaz8pydg.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D195233B1@SHSMSX103.ccr.corp.intel.com>
+ <536BAB70.3010905@canonical.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B40F3CB@SHSMSX101.ccr.corp.intel.com>
+ <s5h1tw3qmmt.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B4142B7@SHSMSX101.ccr.corp.intel.com>
+ <s5htx8vo0tf.wl%tiwai@suse.de>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B41454C@SHSMSX101.ccr.corp.intel.com>
+ <s5hd2fjnx3v.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 8279E2652F1
- for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 06:34:36 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6E892652F1
+ for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 06:37:38 +0200 (CEST)
+In-Reply-To: <s5hd2fjnx3v.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,51 +37,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "anssi.hannula@iki.fi" <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+Hi Takashi,
 
-Broadwell display controller has 3 stream DMA engines. DMA0 cannot update DMA
-postion buffer properly while DMA1 and DMA2 can work well. So this patch masks
-the buggy DMA0.
+I submitted two patches to mask the buggy DMA0 of Broadwell display controller. Please review.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+[PATCH 1/2] ALSA: hda - allow to mask a buggy stream DMA by setting it as opened
+[PATCH 2/2] ALSA: hda - mask buggy stream DMA0 for Broadwell display controller
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 377c3a5..13b13a3 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -281,6 +281,9 @@ static char *driver_short_names[] = {
- 	[AZX_DRIVER_GENERIC] = "HD-Audio Generic",
- };
- 
-+#define is_broadwell_controller(pci) \
-+	((pci)->vendor == 0x8086 && (pci)->device == 0x160c)
-+
- #ifdef CONFIG_X86
- static void __mark_pages_wc(struct azx *chip, struct snd_dma_buffer *dmab, bool on)
- {
-@@ -1249,6 +1252,7 @@ static int azx_first_init(struct azx *chip)
- 	struct snd_card *card = chip->card;
- 	int err;
- 	unsigned short gcap;
-+	unsigned int stream_mask = 0;
- 
- #if BITS_PER_LONG != 64
- 	/* Fix up base address on ULI M5461 */
-@@ -1364,7 +1368,10 @@ static int azx_first_init(struct azx *chip)
- 		return err;
- 
- 	/* initialize streams */
--	azx_init_stream(chip, 0);
-+	if (is_broadwell_controller(pci))
-+		stream_mask = 0x1; /* mask buggy stream DMA0 */
-+
-+	azx_init_stream(chip, stream_mask);
- 
- 	/* initialize chip */
- 	azx_init_pci(chip);
--- 
-1.8.1.2
+Thanks again
+Mengdong
+
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, May 12, 2014 5:52 PM
+> To: Lin, Mengdong
+> Cc: David Henningsson; Yang, Libin; anssi.hannula@iki.fi;
+> alsa-devel@alsa-project.org; Pierre-Louis Bossart
+> Subject: Re: [alsa-devel] [PATCH] ALSA: hda - using POS_FIX_LPIB on Broadwell
+> HDMI Audio
+> 
+> At Mon, 12 May 2014 09:46:07 +0000,
+> Lin, Mengdong wrote:
+> >
+> > > -----Original Message-----
+> > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > Sent: Monday, May 12, 2014 4:31 PM
+> > > To: Lin, Mengdong
+> > > Cc: David Henningsson; Yang, Libin; anssi.hannula@iki.fi;
+> > > alsa-devel@alsa-project.org; Pierre-Louis Bossart
+> > > Subject: Re: [alsa-devel] [PATCH] ALSA: hda - using POS_FIX_LPIB on
+> > > Broadwell HDMI Audio
+> > >
+> > > At Mon, 12 May 2014 08:22:13 +0000,
+> > > Lin, Mengdong wrote:
+> > > >
+> > > > > -----Original Message-----
+> > > > > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > > > > Sent: Friday, May 09, 2014 6:20 PM
+> > > > > To: Lin, Mengdong
+> > > > > Cc: David Henningsson; Yang, Libin; anssi.hannula@iki.fi;
+> > > > > alsa-devel@alsa-project.org; Pierre-Louis Bossart
+> > > > > Subject: Re: [alsa-devel] [PATCH] ALSA: hda - using POS_FIX_LPIB
+> > > > > on Broadwell HDMI Audio
+> > > > >
+> > > > > At Fri, 9 May 2014 10:08:19 +0000, Lin, Mengdong wrote:
+> > > > > >
+> > > > > > Hi,
+> > > > > >
+> > > > > > We found the Broadwell HDMI audio regression is introduced by
+> > > > > > this
+> > > patch:
+> > > > > >
+> > > > > > commit dcb32ecd9a533f47ab652c5c5680bc50a7a822cd
+> > > > > > Author: Anssi Hannula <anssi.hannula@iki.fi>
+> > > > > > Date: Tue Apr 8 12:36:42 2014 +0300
+> > > > > > ALSA: hda - Do not assign streams in reverse order
+> > > > > >
+> > > > > > We'll further check the root cause.
+> > > > > > Since this patch seems only affect the stream ID. Actually
+> > > > > > Intel GPU tool only
+> > > > > find the stream ID is changed by this patch.
+> > > > > >
+> > > > > > In addition, Haswell HDMI audio is not affected and works
+> > > > > > well. It seems
+> > > > > there is HW behavior difference between HSW and BDW.
+> > > > >
+> > > > > Thanks for spotting out!
+> > > > >
+> > > > > This sounds like a weird hardware bug of BDW.  If any, we'd need
+> > > > > to introduce a flag indicating flipping this  lookup behavior
+> > > > > depending on the
+> > > chip.
+> > > >
+> > > > In the display HD-A controller of HSW/BDW, there are 3 sets of
+> > > > stream
+> > > descriptors registers which controls the DMA engines to transfer
+> > > audio data over HD-A link:
+> > > > set #0: 0x80 ~ 0x9c SD0CTL ~ SD0BDPU set #1: 0xa0 ~ 0xbc SD1CTL ~
+> > > > SD1BDPU set #2: 0xc0 ~ 0xdc SD2CTL ~ SD2BDPU
+> > > >
+> > > > Test shows that
+> > > > On HSW, DMA update on all 3 sets of registers are okay.
+> > > > On BDW, DMA update on set #1 and #2 are okay, but is buggy on set #0.
+> > > Since the three sets of registers have the same definition according
+> > > to spec and driver behavior is also same, it seems to be a HW issue.
+> > > >
+> > > > Maybe we'll have to use the original reverse lookup order for BDW
+> > > > HDMI/DP
+> > > audio.
+> > >
+> > > I wonder what if you run three streams.  Is the set#0 always broken,
+> > > or broken only when used alone?  In the former case, the fix would to
+> mask the first slot.
+> > > In the latter case, back to reverse assignment would work around it.
+> >
+> > The set#0 is always broken, when I run single or two streams at the same
+> time.
+> > And when running two streams, there is no difference if the audio driver
+> choose set#0 or #1 at first.
+> >
+> > Is it okay to introduce a flag "disabled" to struct azx_dev?
+> > If this flag is set, the azx_dev slot is masked.
+> 
+> You can just keep azx_dev->opened flag set at initialization time.
+> 
+> 
+> Takashi
