@@ -1,18 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Broken outmixer_event function in
-	wm8400/wm8990/wm8991
-Date: Tue, 13 May 2014 17:09:24 +0100
-Message-ID: <20140513160924.GJ12304@sirena.org.uk>
-References: <5370840E.10009@metafoo.de> <20140512204734.GO12304@sirena.org.uk>
- <20140513135305.GL25203@opensource.wolfsonmicro.com>
+From: James Le Cuirot <chewi@aura-online.co.uk>
+Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
+ multi-channel and HBR support
+Date: Tue, 13 May 2014 17:16:17 +0100
+Message-ID: <20140513171617.4d303844@red.yakaraplc.local>
+References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>
+ <loom.20131122T215246-90@post.gmane.org> <529004F8.7070801@iki.fi>
+ <20131123154009.6c8c6e97@symphony.aura-online.co.uk>
+ <5290CD7C.7020907@iki.fi>
+ <20131124145737.22056256@symphony.aura-online.co.uk>
+ <52934E97.9060701@iki.fi> <20131125143228.55c94550@red>
+ <52936537.8020506@iki.fi>
+ <20140513130126.1755fa16@red.yakaraplc.local>
+ <53720FC3.7000608@iki.fi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3719476778226508548=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DDF626522D
- for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 18:09:41 +0200 (CEST)
-In-Reply-To: <20140513135305.GL25203@opensource.wolfsonmicro.com>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id DAC7E26547F
+ for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 18:16:21 +0200 (CEST)
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+ by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id 36C3F209C3
+ for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 12:16:20 -0400 (EDT)
+In-Reply-To: <53720FC3.7000608@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +32,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 13 May 2014 15:27:47 +0300
+Anssi Hannula <anssi.hannula@iki.fi> wrote:
 
---===============3719476778226508548==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KCEWjeprju4E2Ay1"
-Content-Disposition: inline
+> Unfortunately I've been told that HD 4xxx cards and older do not
+> support multichannel playback, which I didn't know at the time (and I
+> had forgotten your case, hence I didn't get back to you - sorry about
+> that).
 
+Thank you for the quick reply. I'm not sure whether that's strictly
+true. Wikipedia (though not always correct, I grant you) states that:
 
---KCEWjeprju4E2Ay1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+"The RV770 series GPU also supports xvYCC color space output and 7.1
+surround sound output (LPCM, AC3, DTS) over HDMI."
 
-On Tue, May 13, 2014 at 02:53:05PM +0100, Charles Keepax wrote:
+http://en.wikipedia.org/wiki/Radeon_HD_4000_Series#Multimedia_features
 
-> Yeah I think the intention was to avoid imposing limitations on
-> the order you set the controls, as the error checking is only
-> done when the power sequence runs so you can move through an
-> invalid state as long as when things power up they are valid.
+The HD 4670 has the RV730XT chip. It isn't clear in the above statement
+whether it is referring to the higher models in the range or the range
+as a whole, given that the RV770 is the foundation chip. Based on my
+experiences and what you have heard, it's probably the former. This
+news piece at AnandTech also seems to back it up.
 
-Practically speaking we already have ordering restrictions - in general
-you need to do a teardown followed by a setup otherwise there's a good
-chance of causing audible noise from the switching during the setup.
-Like Lars says we do run the event immediately anyway since the register
-update is buried in DAPM processing for exactly this reason, we're
-trying to avoid introducing a sudden DC offset by switching to/from an
-active output so we see if we can power things down before we touch
-anything.
+"All of AMD's Radeon HD graphics cards have shipped with their own
+audio codec, but the Radeon HD 4800 series of cards finally adds
+support for 8-channel LPCM output over HDMI."
 
---KCEWjeprju4E2Ay1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+http://www.anandtech.com/show/2556
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Looks like a new card for me then. Thanks for your help.
 
-iQIcBAEBAgAGBQJTckOxAAoJELSic+t+oim9+R4P/0jttlxzOW03CdozY8YmBC1w
-/hVG5zksrNed0Ar998aQnSfUKMzQrLk8pkmFGICOIX/muqzqxHjp/o4QGDchE2v/
-2270eh6TNk6vAFks0XrRtJ9C2Gfu6yTAUUfMSv8THaqKypxRoH9S8ALPo/r875Ji
-hbS7CNgrlfAq/kyO+iD114QoESBZEDdTaZscB9w8GigzLT0OK+r+QXUdqCltPVkd
-+lczQbBI1KPFomQALeFXD5n7cOeTfIK1GbpXsKlBzzHMvdFadbZKxdrA8ov62vlV
-UV2G5Nq77xcNJDT2SY3lp2ZNN8RCb29iIsIZfGRika9BcS++BZpB5m4MnE92e1pa
-eIjAWGy07O4fHKUHd3SmIUzZtoIVlEeFHBMNl+12e8IxlTnyPDWhsSNcR55eEqyO
-htMhnuUdXx6qtb4AQoZzQiu5UWlQVhlNREoW9WbgsNx/BPHw/kVSO5ugJg1O0tXD
-9NlGX9RjhuvNNMW0h55skaIsZ6c0ugwUJvvlgaZDZh2z3XbZzJY05Ezv6qhpBMaZ
-FWLlejqSa4+Qs+3XZ9+xU/EUxrKaAvNyVuE1Ks5RlsqBIxvp6nFpN/tDFJC0U21W
-QzxE0tGCJ3Av2heV9lPlxb0gEJJX/95GledgkzJespLXqs+NxQCIlF4txUwfcAgc
-U81kaiYrkxJjlyTAR/GF
-=PTnU
------END PGP SIGNATURE-----
-
---KCEWjeprju4E2Ay1--
-
---===============3719476778226508548==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3719476778226508548==--
+Regards,
+James
