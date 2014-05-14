@@ -1,137 +1,67 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 3/6] ASoC: ak4642: Add driver data and driver
-	private struct
-Date: Wed, 14 May 2014 09:37:35 +0200
-Message-ID: <1400053058-1115-4-git-send-email-s.hauer@pengutronix.de>
-References: <1400053058-1115-1-git-send-email-s.hauer@pengutronix.de>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [alsa-devel] [PATCH 00/19] Rework OMAP4+ HDMI audio support
+Date: Wed, 14 May 2014 13:02:22 +0300
+Message-ID: <53733F2E.4030803@ti.com>
+References: <cover.1399884780.git.jsarha@ti.com> <CAGhQ9VzjndCBp+ZHS3XPPvS4ors6u9BfHf4NY_HNYN5ynyQOYQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 65D382652C6
- for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 09:38:14 +0200 (CEST)
-In-Reply-To: <1400053058-1115-1-git-send-email-s.hauer@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@kernel.org>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <CAGhQ9VzjndCBp+ZHS3XPPvS4ors6u9BfHf4NY_HNYN5ynyQOYQ@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Joachim Eastwood <manabian@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, broonie@kernel.org, peter.ujfalusi@ti.com, Tomi Valkeinen <tomi.valkeinen@ti.com>, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently unused, this is done to let the driver distinguish between
-the different supported codec types in later patches.
+On 05/13/2014 12:13 AM, Joachim Eastwood wrote:
+> On 12 May 2014 11:12, Jyri Sarha <jsarha@ti.com> wrote:
+...
+>
+> hey, this worked straight away :)
+>
+> But there seems to be something wrong with the channel mapping.
+>
+> For stereo (speaker-test -c 2) the mapping is correct.
+>
+> But for -c 4 and -c 8 it gets weird:
+> speaker-test -c 4 -s X # where X is 1-4
+> 1: Front Left is Rear Left
+> 2: Front Right is Rear Right
+> 3: Rear Right is Front Right
+> 4: Rear Left is Front Left
+>
+> speaker-test -c 8 -s X # where X is 1-8
+> 1: Front Left is Rear Left
+> 2: Center is Rear Left
+> 3: Front Right is Rear Right
+> 4: Side Right is Front Right
+> 5: Rear Right is silent
+> 6: Rear Left is Center
+> 7: Side Left is Front Left
+> 8: LFE - Rear Right
+>
+> I think you need to check what channel order ALSA expects. I believe
+> speaker-test does the right thing on my HTPC normally connected to my
+> receiver.
+>
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- sound/soc/codecs/ak4642.c | 51 +++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 40 insertions(+), 11 deletions(-)
+I checked the implementation and there was indeed something weird there, 
+but the implementation can not explain the FL and FR channels jumping 
+around. FL and FL should always be the first two channels in all 
+configurations and the implementation does not touch them.
 
-diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index 90d2d93..b568692 100644
---- a/sound/soc/codecs/ak4642.c
-+++ b/sound/soc/codecs/ak4642.c
-@@ -134,6 +134,14 @@
- /* MD_CTL4 */
- #define DACH		(1 << 0)
- 
-+struct ak4642_drvdata {
-+	const struct regmap_config *regmap_config;
-+};
-+
-+struct ak4642_priv {
-+	const struct ak4642_drvdata *drvdata;
-+};
-+
- /*
-  * Playback Volume (table 39)
-  *
-@@ -507,30 +515,51 @@ static const struct regmap_config ak4648_regmap = {
- 	.num_reg_defaults	= ARRAY_SIZE(ak4648_reg),
- };
- 
-+static const struct ak4642_drvdata ak4642_drvdata = {
-+	.regmap_config = &ak4642_regmap,
-+};
-+
-+static const struct ak4642_drvdata ak4643_drvdata = {
-+	.regmap_config = &ak4642_regmap,
-+};
-+
-+static const struct ak4642_drvdata ak4648_drvdata = {
-+	.regmap_config = &ak4648_regmap,
-+};
-+
- static struct of_device_id ak4642_of_match[];
- static int ak4642_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
- {
- 	struct device_node *np = i2c->dev.of_node;
--	const struct regmap_config *regmap_config = NULL;
-+	const struct ak4642_drvdata *drvdata = NULL;
- 	struct regmap *regmap;
-+	struct ak4642_priv *priv;
- 
- 	if (np) {
- 		const struct of_device_id *of_id;
- 
- 		of_id = of_match_device(ak4642_of_match, &i2c->dev);
- 		if (of_id)
--			regmap_config = of_id->data;
-+			drvdata = of_id->data;
- 	} else {
--		regmap_config = (const struct regmap_config *)id->driver_data;
-+		drvdata = (const struct ak4642_drvdata *)id->driver_data;
- 	}
- 
--	if (!regmap_config) {
-+	if (!drvdata) {
- 		dev_err(&i2c->dev, "Unknown device type\n");
- 		return -EINVAL;
- 	}
- 
--	regmap = devm_regmap_init_i2c(i2c, regmap_config);
-+	priv = devm_kzalloc(&i2c->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->drvdata = drvdata;
-+
-+	i2c_set_clientdata(i2c, priv);
-+
-+	regmap = devm_regmap_init_i2c(i2c, drvdata->regmap_config);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
- 
-@@ -545,17 +574,17 @@ static int ak4642_i2c_remove(struct i2c_client *client)
- }
- 
- static struct of_device_id ak4642_of_match[] = {
--	{ .compatible = "asahi-kasei,ak4642",	.data = &ak4642_regmap},
--	{ .compatible = "asahi-kasei,ak4643",	.data = &ak4642_regmap},
--	{ .compatible = "asahi-kasei,ak4648",	.data = &ak4648_regmap},
-+	{ .compatible = "asahi-kasei,ak4642",	.data = &ak4642_drvdata},
-+	{ .compatible = "asahi-kasei,ak4643",	.data = &ak4643_drvdata},
-+	{ .compatible = "asahi-kasei,ak4648",	.data = &ak4648_drvdata},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, ak4642_of_match);
- 
- static const struct i2c_device_id ak4642_i2c_id[] = {
--	{ "ak4642", (kernel_ulong_t)&ak4642_regmap },
--	{ "ak4643", (kernel_ulong_t)&ak4642_regmap },
--	{ "ak4648", (kernel_ulong_t)&ak4648_regmap },
-+	{ "ak4642", (kernel_ulong_t)&ak4642_drvdata },
-+	{ "ak4643", (kernel_ulong_t)&ak4643_drvdata },
-+	{ "ak4648", (kernel_ulong_t)&ak4648_drvdata },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, ak4642_i2c_id);
--- 
-2.0.0.rc0
+The implementation uses 8ch HDMI setup for anything above 2ch with 
+"Audio InfoFrame Data Byte 4" set to 0x13. According to CEA-861 specs 
+this means following channel order: FL, FR, LFE, FC, RL, RR, RLC, RRC
+
+This is a closest match to ALSA 8ch mapping (according to 
+sound/core/pcm_lib.c) which is: FL, FR, FC, LFE, RL, RR, SL, SR
+
+Current implementation has FLE and FC channels correctly swapped, but it 
+shifts them to last two channels and RL, RR, SL, SR are shifted down to 
+fill the place. This is all wrong and I'll try to come up with a fix for 
+that. Unfortunately I can not test anything beyond 2 ch myself so I 
+would need someone to volunteer to test my patch.
+
+Best regards,
+Jyri
