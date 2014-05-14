@@ -1,15 +1,16 @@
 From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 6/6] ASoC: ak4642: Add enable gpio support
-Date: Wed, 14 May 2014 09:37:38 +0200
-Message-ID: <1400053058-1115-7-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 5/6] ASoC: ak4642: Implement Microphone in
+	pathes
+Date: Wed, 14 May 2014 09:37:37 +0200
+Message-ID: <1400053058-1115-6-git-send-email-s.hauer@pengutronix.de>
 References: <1400053058-1115-1-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 64871261A2F
- for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 09:37:50 +0200 (CEST)
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4C3552619E5
+ for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 09:37:58 +0200 (CEST)
 In-Reply-To: <1400053058-1115-1-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,127 +27,154 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- Documentation/devicetree/bindings/sound/ak4642.txt |  3 ++
- sound/soc/codecs/ak4642.c                          | 41 ++++++++++++++++++++++
- 2 files changed, 44 insertions(+)
+ sound/soc/codecs/ak4642.c | 114 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 114 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/ak4642.txt b/Documentation/devicetree/bindings/sound/ak4642.txt
-index 623d4e7..21bc8ef 100644
---- a/Documentation/devicetree/bindings/sound/ak4642.txt
-+++ b/Documentation/devicetree/bindings/sound/ak4642.txt
-@@ -7,6 +7,9 @@ Required properties:
-   - compatible : "asahi-kasei,ak4642" or "asahi-kasei,ak4643" or "asahi-kasei,ak4648"
-   - reg : The chip select number on the I2C bus
- 
-+Optional properties:
-+  - enable-gpios : contains a GPIO used to enable the codec
-+
- Example:
- 
- &i2c {
 diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index 6292a6a..67b8c25 100644
+index 3ba4c0f..6292a6a 100644
 --- a/sound/soc/codecs/ak4642.c
 +++ b/sound/soc/codecs/ak4642.c
-@@ -29,6 +29,7 @@
- #include <linux/of_device.h>
- #include <linux/module.h>
- #include <linux/regmap.h>
-+#include <linux/gpio/consumer.h>
- #include <sound/soc.h>
- #include <sound/initval.h>
- #include <sound/tlv.h>
-@@ -141,6 +142,7 @@ struct ak4642_drvdata {
+@@ -153,6 +153,81 @@ struct ak4642_priv {
+  */
+ static const DECLARE_TLV_DB_SCALE(out_tlv, -11550, 50, 1);
  
- struct ak4642_priv {
- 	const struct ak4642_drvdata *drvdata;
-+	struct gpio_desc *pdn_gpio;
- };
- 
- /*
-@@ -596,9 +598,23 @@ static struct snd_soc_dai_driver ak4642_dai = {
- 	.symmetric_rates = 1,
- };
- 
-+static int ak4642_suspend(struct snd_soc_codec *codec)
-+{
-+	struct ak4642_priv *priv = snd_soc_codec_get_drvdata(codec);
++static const char * const ak4642_micl_strings[] = { "LIN1", "LIN2", "LIN3", "LIN4" };
++static const char * const ak4642_micr_strings[] = { "RIN1", "RIN2", "RIN3", "RIN4" };
 +
-+	if (priv->pdn_gpio)
-+		gpiod_set_value(priv->pdn_gpio, 0);
++static const struct soc_enum ak4642_micl_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(ak4642_micl_strings),
++			    ak4642_micl_strings);
++
++static const struct soc_enum ak4642_micr_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(ak4642_micr_strings),
++			    ak4642_micr_strings);
++
++static int ak4642_micl_enum_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
++	u32 val, inl;
++
++	val = snd_soc_read(codec, PW_MGMT3);
++
++	inl = (val >> 1) & 0x1;
++	inl |= (val >> 5) & 0x2;
++
++	ucontrol->value.integer.value[0] = inl;
 +
 +	return 0;
 +}
 +
- static int ak4642_resume(struct snd_soc_codec *codec)
- {
- 	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
-+	struct ak4642_priv *priv = snd_soc_codec_get_drvdata(codec);
++static int ak4642_micl_enum_put(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
++	int val, inl;
 +
-+	if (priv->pdn_gpio)
-+		gpiod_set_value(priv->pdn_gpio, 1);
- 
- 	regcache_mark_dirty(regmap);
- 	regcache_sync(regmap);
-@@ -608,6 +624,15 @@ static int ak4642_resume(struct snd_soc_codec *codec)
- 
- static int ak4642_probe(struct snd_soc_codec *codec)
- {
-+	struct ak4642_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	int ret;
++	val = ucontrol->value.integer.value[0];
 +
-+	if (priv->pdn_gpio) {
-+		ret = gpiod_direction_output(priv->pdn_gpio, 1);
-+		if (ret)
-+			return ret;
-+	}
++	inl = (val & 0x1) << 1;
++	inl |= (val & 0x2) << 5;
 +
- 	ak4642_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	return 0;
-@@ -615,13 +640,20 @@ static int ak4642_probe(struct snd_soc_codec *codec)
- 
- static int ak4642_remove(struct snd_soc_codec *codec)
- {
-+	struct ak4642_priv *priv = snd_soc_codec_get_drvdata(codec);
++	snd_soc_update_bits(codec, PW_MGMT3, (1 << 1) | (1 << 6), inl);
 +
- 	ak4642_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	return 1;
++}
 +
-+	if (priv->pdn_gpio)
-+		gpiod_set_value(priv->pdn_gpio, 0);
++static int ak4642_micr_enum_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
++	u32 val, inr;
 +
- 	return 0;
- }
- 
- static struct snd_soc_codec_driver soc_codec_dev_ak4642 = {
- 	.probe			= ak4642_probe,
- 	.remove			= ak4642_remove,
-+	.suspend		= ak4642_suspend,
- 	.resume			= ak4642_resume,
- 	.set_bias_level		= ak4642_set_bias_level,
- 	.controls		= ak4642_snd_controls,
-@@ -669,6 +701,7 @@ static int ak4642_i2c_probe(struct i2c_client *i2c,
- 	const struct ak4642_drvdata *drvdata = NULL;
- 	struct regmap *regmap;
- 	struct ak4642_priv *priv;
-+	struct gpio_desc *gpio;
- 
- 	if (np) {
- 		const struct of_device_id *of_id;
-@@ -691,6 +724,14 @@ static int ak4642_i2c_probe(struct i2c_client *i2c,
- 
- 	priv->drvdata = drvdata;
- 
-+	gpio = devm_gpiod_get(&i2c->dev, "enable");
-+	if (IS_ERR(gpio)) {
-+		if (PTR_ERR(gpio) != -ENOENT)
-+			return PTR_ERR(gpio);
-+	} else {
-+		priv->pdn_gpio = gpio;
-+	}
++	val = snd_soc_read(codec, PW_MGMT3);
 +
- 	i2c_set_clientdata(i2c, priv);
++	inr = (val >> 2) & 0x1;
++	inr |= (val >> 6) & 0x2;
++
++	ucontrol->value.integer.value[0] = inr;
++
++	return 0;
++}
++
++static int ak4642_micr_enum_put(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
++	int val, inr;
++
++	val = ucontrol->value.integer.value[0];
++
++	inr = (val & 0x1) << 2;
++	inr |= (val & 0x2) << 6;
++
++	snd_soc_update_bits(codec, PW_MGMT3, (1 << 2) | (1 << 7), inr);
++
++	return 1;
++}
++
+ static const struct snd_kcontrol_new ak4642_snd_controls[] = {
  
- 	regmap = devm_regmap_init_i2c(i2c, drvdata->regmap_config);
+ 	SOC_DOUBLE_R_TLV("Digital Playback Volume", L_DVC, R_DVC,
+@@ -168,6 +243,16 @@ static const struct snd_kcontrol_new ak4642_lout_mixer_controls[] = {
+ 	SOC_DAPM_SINGLE("DACL", SG_SL1, 4, 1, 0),
+ };
+ 
++static const struct snd_kcontrol_new ak4642_micl_controls[] = {
++	SOC_ENUM_EXT("Mic Left Capture Route", ak4642_micl_enum,
++		     ak4642_micl_enum_get,  ak4642_micl_enum_put),
++};
++
++static const struct snd_kcontrol_new ak4642_micr_controls[] = {
++	SOC_ENUM_EXT("Mic Right Capture Route", ak4642_micr_enum,
++		     ak4642_micr_enum_get,  ak4642_micr_enum_put),
++};
++
+ static const struct snd_soc_dapm_widget ak4642_dapm_widgets[] = {
+ 
+ 	/* Outputs */
+@@ -188,6 +273,22 @@ static const struct snd_soc_dapm_widget ak4642_dapm_widgets[] = {
+ 
+ 	/* DAC */
+ 	SND_SOC_DAPM_DAC("DAC", "HiFi Playback", PW_MGMT1, 2, 0),
++
++	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
++
++	SND_SOC_DAPM_MUX("Mic Left Capture Route",
++			SND_SOC_NOPM, 0, 0, ak4642_micl_controls),
++	SND_SOC_DAPM_MUX("Mic Right Capture Route",
++			SND_SOC_NOPM, 0, 0, ak4642_micr_controls),
++
++	SND_SOC_DAPM_INPUT("LIN1"),
++	SND_SOC_DAPM_INPUT("LIN2"),
++	SND_SOC_DAPM_INPUT("LIN3"),
++	SND_SOC_DAPM_INPUT("LIN4"),
++	SND_SOC_DAPM_INPUT("RIN1"),
++	SND_SOC_DAPM_INPUT("RIN2"),
++	SND_SOC_DAPM_INPUT("RIN3"),
++	SND_SOC_DAPM_INPUT("RIN4"),
+ };
+ 
+ static const struct snd_soc_dapm_route ak4642_intercon[] = {
+@@ -205,6 +306,19 @@ static const struct snd_soc_dapm_route ak4642_intercon[] = {
+ 	{"DACH", NULL, "DAC"},
+ 
+ 	{"LINEOUT Mixer", "DACL", "DAC"},
++
++	{"Mic Left Capture Route", "LIN1", "LIN1"},
++	{"Mic Left Capture Route", NULL, "LIN2"},
++	{"Mic Left Capture Route", NULL, "LIN3"},
++	{"Mic Left Capture Route", NULL, "LIN4"},
++
++	{"Mic Right Capture Route", "RIN1", "RIN1"},
++	{"Mic Right Capture Route", NULL, "RIN2"},
++	{"Mic Right Capture Route", NULL, "RIN3"},
++	{"Mic Right Capture Route", NULL, "RIN4"},
++
++	{"ADC", NULL, "Mic Right Capture Route"},
++	{"ADC", NULL, "Mic Left Capture Route"},
+ };
+ 
+ /*
 -- 
 2.0.0.rc0
