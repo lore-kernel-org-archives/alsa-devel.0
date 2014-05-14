@@ -1,77 +1,80 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: Intel: Export Baytrail PCM
- streams under one DAI
-Date: Wed, 14 May 2014 16:57:43 +0100
-Message-ID: <20140514155743.GI12304@sirena.org.uk>
-References: <1400077254-31465-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Joachim Eastwood <manabian@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 00/19] Rework OMAP4+ HDMI audio support
+Date: Wed, 14 May 2014 18:25:47 +0200
+Message-ID: <CAGhQ9VzkGDPiQF7TiqiMgZY_oc9dyrW66yGsZR6ei2ejX-EXcw@mail.gmail.com>
+References: <cover.1399884780.git.jsarha@ti.com>
+	<CAGhQ9VzjndCBp+ZHS3XPPvS4ors6u9BfHf4NY_HNYN5ynyQOYQ@mail.gmail.com>
+	<53733F2E.4030803@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0505831149831722770=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A422726089A
- for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 17:57:59 +0200 (CEST)
-In-Reply-To: <1400077254-31465-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <53733F2E.4030803@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, broonie@kernel.org, peter.ujfalusi@ti.com, Tomi Valkeinen <tomi.valkeinen@ti.com>, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 14 May 2014 12:02, Jyri Sarha <jsarha@ti.com> wrote:
+> On 05/13/2014 12:13 AM, Joachim Eastwood wrote:
+>>
+>> On 12 May 2014 11:12, Jyri Sarha <jsarha@ti.com> wrote:
+>
+> ...
+>
+>>
+>> hey, this worked straight away :)
+>>
+>> But there seems to be something wrong with the channel mapping.
+>>
+>> For stereo (speaker-test -c 2) the mapping is correct.
+>>
+>> But for -c 4 and -c 8 it gets weird:
+>> speaker-test -c 4 -s X # where X is 1-4
+>> 1: Front Left is Rear Left
+>> 2: Front Right is Rear Right
+>> 3: Rear Right is Front Right
+>> 4: Rear Left is Front Left
+>>
+>> speaker-test -c 8 -s X # where X is 1-8
+>> 1: Front Left is Rear Left
+>> 2: Center is Rear Left
+>> 3: Front Right is Rear Right
+>> 4: Side Right is Front Right
+>> 5: Rear Right is silent
+>> 6: Rear Left is Center
+>> 7: Side Left is Front Left
+>> 8: LFE - Rear Right
+>>
+>> I think you need to check what channel order ALSA expects. I believe
+>> speaker-test does the right thing on my HTPC normally connected to my
+>> receiver.
+>>
+>
+> I checked the implementation and there was indeed something weird there, but
+> the implementation can not explain the FL and FR channels jumping around. FL
+> and FL should always be the first two channels in all configurations and the
+> implementation does not touch them.
+>
+> The implementation uses 8ch HDMI setup for anything above 2ch with "Audio
+> InfoFrame Data Byte 4" set to 0x13. According to CEA-861 specs this means
+> following channel order: FL, FR, LFE, FC, RL, RR, RLC, RRC
+>
+> This is a closest match to ALSA 8ch mapping (according to
+> sound/core/pcm_lib.c) which is: FL, FR, FC, LFE, RL, RR, SL, SR
 
---===============0505831149831722770==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oFPe7kv08XVM7cpf"
-Content-Disposition: inline
+hm, okey. I haven't look at the code but it do seem strange. But with
+speaker-test -c 4 the front and back are surely swapped here.
 
+I'll do some more testing and also check with my HTPC. btw, I only
+have a 5.1 setup over here so I can't test all the discrete channels.
 
---oFPe7kv08XVM7cpf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Current implementation has FLE and FC channels correctly swapped, but it
+> shifts them to last two channels and RL, RR, SL, SR are shifted down to fill
+> the place. This is all wrong and I'll try to come up with a fix for that.
+> Unfortunately I can not test anything beyond 2 ch myself so I would need
+> someone to volunteer to test my patch.
 
-On Wed, May 14, 2014 at 05:20:52PM +0300, Jarkko Nikula wrote:
-> It wasn't necessary to export Baytrail SST PCM streams under separate
-> DAI links and complicated needlessly basic ALSA command usage (for
-> instance arecord).
+I have the dev kit setup up over here so I can test your patches.
 
-Applied both, thanks.
-
---oFPe7kv08XVM7cpf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTc5JzAAoJELSic+t+oim9yToP/2BjTmQkaFHLdflogDi1d37+
-V8NgWCKNf8UaRv/M+JpHqQDw0PZojZygwuvPqIIqhhjSC+Sc/KJ3JygmzurKo40j
-luqsZ3qFnKj0sbvZufZXf6FXXg32o+CARPq/xORH614VErO4veNIsXICqWc4DaP6
-cix/E6uXKIsLIsoizUOzcdL5ry19/WpBHe4Rs0gqqmbuonwnW3vbpIP4z3O3rJro
-jBZ34LGTygUn225PdACWIt+RuOnxtZcp86YR8xf0AGxIyVw0v0Laha7hDqXc/toQ
-j17POo7dEVtR0N2ljzXMcFQ1jhLaQcpzO31nK4kZhTfrxDdI7vqx+qyHUAFjDlHy
-GVXUtRKjmnMWkkeIz8E1GAKx7Fg0zXE9kcZi/Lmqi5QxPoezoENhd9nBclgHz+jQ
-Qt9j6a/a32LjLtNQApAO4ms7JY8H2AkdKLDCy6Bk2qciJBESFRalj+gq2cK9BVeQ
-liUeVcb+XGycYe+DCMcusf6oz+VvVai4P96WduE8R6VNJPU/mS0enFTD/oZKuw+9
-uSm9X+sNaOZy/GUaDCMFnhL3Pfo/P8oeBoVnYNb6/0Ts1mI8sTFXuJ8awovOpmuX
-We/Edp1NBuPk9NFHctQKphzYy5hYzHqMe+vZCOHeRwFhRNxy1aFHl/Telvbd2Oe9
-C3GFEBcX8PXkAOWiuf/+
-=IwKZ
------END PGP SIGNATURE-----
-
---oFPe7kv08XVM7cpf--
-
---===============0505831149831722770==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0505831149831722770==--
+regards
+Joachim Eastwood
