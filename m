@@ -1,67 +1,75 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [alsa-devel] [PATCH 00/19] Rework OMAP4+ HDMI audio support
-Date: Wed, 14 May 2014 13:02:22 +0300
-Message-ID: <53733F2E.4030803@ti.com>
-References: <cover.1399884780.git.jsarha@ti.com> <CAGhQ9VzjndCBp+ZHS3XPPvS4ors6u9BfHf4NY_HNYN5ynyQOYQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/6] ASoC: ak4642: Fix typo zoro -> zero
+Date: Wed, 14 May 2014 12:32:20 +0100
+Message-ID: <20140514113220.GS12304@sirena.org.uk>
+References: <1400053058-1115-1-git-send-email-s.hauer@pengutronix.de>
+ <1400053058-1115-2-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <CAGhQ9VzjndCBp+ZHS3XPPvS4ors6u9BfHf4NY_HNYN5ynyQOYQ@mail.gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Joachim Eastwood <manabian@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, broonie@kernel.org, peter.ujfalusi@ti.com, Tomi Valkeinen <tomi.valkeinen@ti.com>, Benoit Cousson <bcousson@baylibre.com>
+Content-Type: multipart/mixed; boundary="===============6368589433055575905=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 409BF261692
+ for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 13:32:36 +0200 (CEST)
+In-Reply-To: <1400053058-1115-2-git-send-email-s.hauer@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/13/2014 12:13 AM, Joachim Eastwood wrote:
-> On 12 May 2014 11:12, Jyri Sarha <jsarha@ti.com> wrote:
-...
->
-> hey, this worked straight away :)
->
-> But there seems to be something wrong with the channel mapping.
->
-> For stereo (speaker-test -c 2) the mapping is correct.
->
-> But for -c 4 and -c 8 it gets weird:
-> speaker-test -c 4 -s X # where X is 1-4
-> 1: Front Left is Rear Left
-> 2: Front Right is Rear Right
-> 3: Rear Right is Front Right
-> 4: Rear Left is Front Left
->
-> speaker-test -c 8 -s X # where X is 1-8
-> 1: Front Left is Rear Left
-> 2: Center is Rear Left
-> 3: Front Right is Rear Right
-> 4: Side Right is Front Right
-> 5: Rear Right is silent
-> 6: Rear Left is Center
-> 7: Side Left is Front Left
-> 8: LFE - Rear Right
->
-> I think you need to check what channel order ALSA expects. I believe
-> speaker-test does the right thing on my HTPC normally connected to my
-> receiver.
->
 
-I checked the implementation and there was indeed something weird there, 
-but the implementation can not explain the FL and FR channels jumping 
-around. FL and FL should always be the first two channels in all 
-configurations and the implementation does not touch them.
+--===============6368589433055575905==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4tudkB9qANwL0HHt"
+Content-Disposition: inline
 
-The implementation uses 8ch HDMI setup for anything above 2ch with 
-"Audio InfoFrame Data Byte 4" set to 0x13. According to CEA-861 specs 
-this means following channel order: FL, FR, LFE, FC, RL, RR, RLC, RRC
 
-This is a closest match to ALSA 8ch mapping (according to 
-sound/core/pcm_lib.c) which is: FL, FR, FC, LFE, RL, RR, SL, SR
+--4tudkB9qANwL0HHt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Current implementation has FLE and FC channels correctly swapped, but it 
-shifts them to last two channels and RL, RR, SL, SR are shifted down to 
-fill the place. This is all wrong and I'll try to come up with a fix for 
-that. Unfortunately I can not test anything beyond 2 ch myself so I 
-would need someone to volunteer to test my patch.
+On Wed, May 14, 2014 at 09:37:33AM +0200, Sascha Hauer wrote:
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-Best regards,
-Jyri
+Applied, thanks.
+
+--4tudkB9qANwL0HHt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTc1RBAAoJELSic+t+oim9ocsP/08HoLSU1vvfThQ7b4glK3Rx
+gOJlawM2g5fwr8+s3quex58QBNK2fTX45d43er6kLg2IiwjIPRV17F3bEtrH7oxK
+QaPtrGflt6NsfzVg9vwFrxo+Fgano+HX9hFzVAE6JfXx2q3/djQxdD19r+HJOPHx
++NaZu/tw5wcbu7XRI1gDcj5j2CDP0PaT3rGs4bByYc7eVcEocg5XJX6rf5p4a+HO
+GAek5IDf0bfsZ9DhQzk6BntD4mfvqVikW0kq/vNI9Zc7dlo/rIuDxl2nfaMX0rKb
+BrrcWd9EZ9eayFFxZtjnTOBIuUImJFHQ29uQrLpHHdjVnr6dsDOD4vkaU5L8xy7v
+0dWllrvA3Kj6ozScRwOeaqUEB4KT0G+On7ag/i9lekAhxTcZAP4eTnIL84PzmMIQ
+Dar3ZTzlEl7U2u8u4pS5ppGCqBV7YWrhTNdQO0rrtaZHwbI+MWXiPxSIy9d1Mayg
+L1NzhsIuLhWApwsPsP/BLmwkIQPZPSeIDNWWR/5qOQgFUvHOcePS3qhWx0vU5GGj
+xNwXndaydc6olHyywPFmXXDzJM28XC7nmFJnB48WQ/1Iw0pLVIVYz2SRYMu+m1v0
+1+fMxAttKa4SZ7AIrLJM22/Wxop6u/5/+NFHdnwRb1eDk2o0EMOutbVd7IsfNwQS
+i3D6YiJSphCCD51zgXQK
+=xxTM
+-----END PGP SIGNATURE-----
+
+--4tudkB9qANwL0HHt--
+
+--===============6368589433055575905==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6368589433055575905==--
