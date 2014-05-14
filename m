@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/6] ASoC: ak4642: Add ALC controls
-Date: Wed, 14 May 2014 12:32:29 +0100
-Message-ID: <20140514113229.GT12304@sirena.org.uk>
+Subject: Re: [PATCH 3/6] ASoC: ak4642: Add driver data and
+ driver private struct
+Date: Wed, 14 May 2014 12:33:11 +0100
+Message-ID: <20140514113311.GU12304@sirena.org.uk>
 References: <1400053058-1115-1-git-send-email-s.hauer@pengutronix.de>
- <1400053058-1115-3-git-send-email-s.hauer@pengutronix.de>
+ <1400053058-1115-4-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0043491504631497844=="
+Content-Type: multipart/mixed; boundary="===============0034097498060307154=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F0A0526517F
- for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 13:32:39 +0200 (CEST)
-In-Reply-To: <1400053058-1115-3-git-send-email-s.hauer@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id CBDEE265457
+ for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 13:33:22 +0200 (CEST)
+In-Reply-To: <1400053058-1115-4-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +27,51 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0043491504631497844==
+--===============0034097498060307154==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TLAkhft3FQwUM7Wk"
+	protocol="application/pgp-signature"; boundary="XoO5jQFkz/fkcUT5"
 Content-Disposition: inline
 
 
---TLAkhft3FQwUM7Wk
+--XoO5jQFkz/fkcUT5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 14, 2014 at 09:37:34AM +0200, Sascha Hauer wrote:
-> ALC and ALC Zero crossing detection has been enabled unconditionally.
-> Add controls for this.
+On Wed, May 14, 2014 at 09:37:35AM +0200, Sascha Hauer wrote:
+> Currently unused, this is done to let the driver distinguish between
+> the different supported codec types in later patches.
 
 Applied, thanks.
 
---TLAkhft3FQwUM7Wk
+--XoO5jQFkz/fkcUT5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTc1RJAAoJELSic+t+oim9sOYP/1amiecfi+5GMOtk75pt+OFU
-ERiCpZj9qEBHQV333yQ9JSEHvx8XVOjPkZsIPLpJVMaJqz3XRiVt6eGZai7ahFcd
-xjP1cybCPGVXIDE+8slnIRUmro0BAZc+HDSa0XmPCVcTRz+X4w6AxgxRRhqdKgXa
-t8N0LJKv3VFGurDfvKLiMOunND3z3Cum9LSkjTjBtufeNRKW2U+PXv5Py4y8Y9Vo
-UfyelO3kfUJfDzGSar7rypLe3DyLcWqggNnz83BdmvVkf9zDSxMC+H2d0bJEq61q
-wjVAmbxAZnA+eMDpOZCR25kupgiWlMp/bTrtcez9YB6B6Qv4O63a0qx/EByo6gmX
-mcUpkQGjqJUsroRRa2UVQlIaNYj9poVBCtHcjw4mFpwMicQ3zDHf+hF/f3TFbjqX
-koYdhBW3OSqwgCOA+f5pJ4D1JxFFNqyW4HyIikVpiSqZGGQLsrgjPOE+glIGm79p
-cpWbSpuKksXjCoW47wQ1aC4pa27eUHRBE7v7idCfno/wxCc2h8sLLdCtwmV0kCHz
-AKhPRjpSxODB98uxc2ClmRz+8oaRiGRQjh+rrE9YgH/FWtc5lnuHNS1bSM822trk
-liffM18Wamd6ySRtNpW9Jan1ezih7f5m0fRhzPOuh1c2rLTHZUyVxwNxLi96EEEp
-MFBWcGEa+BoRFnuRyX/z
-=vSh9
+iQIcBAEBAgAGBQJTc1R0AAoJELSic+t+oim9Jv8P/1c8aCwlos46n3E/S4AZVPVT
+alHLmtorW7f+Fks/0jTqMmfl80W17kWRbvFifYaJn49mvDTUoOtQnGmi244FOHSN
+ixnXpmjXf74SVHTFHNILWWhqUIC+v6uLs3mvFY/Nm2qqpuC1R9PiehAkAkXTcosE
+KpO/ekT56am+JBShaaxSRlC7MELEjamWaNkxaheS+CITPFdqlpEb0lyM2OAgAmsP
+8o+NbzJ0L7rxux1wK+aRyq9OKFvkuqQdeb65P6MxI7Yr/Uy1BtwiUsSuCnve3Swp
+hhcNcMAALxSCa3bihkQsjBwF9ulHqI0uUW8j4G0VzxoICGYXcmDq/+R10twkbd/3
+X20FfytPG+IEjwnH5kEVwwuXxjtHrdNj+xNCSCHKABMX+LNwMZKNQ5fdSCdni79C
+gfHcB+XpRHka0j+nGrNf6NxA+PkQAeoQGWHn0DR2O1Ffrja2m+urXwG+CREZq7iO
+AvEZzKi9ELn2lMQgejGVZGHRFMN7KJKg6hpJ0gITXU0HPWixen4AopjyqDuDeJSK
+INhCyGn2Bo2/SafAudIdSdTeGhTrYEtqwDpzxUdmqtaoUkX7OYUt+tST0R2We05T
+WCYYIdp9P/CcnC3gz6+EzCF3zmQOPla2ziO+Ss3qnwwUmoPM3IZg67cQZJgeCms3
+98MOb+zJPepiN8CjQFgx
+=Yn3e
 -----END PGP SIGNATURE-----
 
---TLAkhft3FQwUM7Wk--
+--XoO5jQFkz/fkcUT5--
 
---===============0043491504631497844==
+--===============0034097498060307154==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0043491504631497844==--
+--===============0034097498060307154==--
