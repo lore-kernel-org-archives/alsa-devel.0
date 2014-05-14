@@ -1,80 +1,229 @@
-From: Joachim Eastwood <manabian@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 00/19] Rework OMAP4+ HDMI audio support
-Date: Wed, 14 May 2014 18:25:47 +0200
-Message-ID: <CAGhQ9VzkGDPiQF7TiqiMgZY_oc9dyrW66yGsZR6ei2ejX-EXcw@mail.gmail.com>
-References: <cover.1399884780.git.jsarha@ti.com>
-	<CAGhQ9VzjndCBp+ZHS3XPPvS4ors6u9BfHf4NY_HNYN5ynyQOYQ@mail.gmail.com>
-	<53733F2E.4030803@ti.com>
+From: JongHo Kim <furmuwon@gmail.com>
+Subject: [Resend] Add the stream report feature. Could you
+	review my idea?
+Date: Thu, 15 May 2014 01:59:48 +0900
+Message-ID: <CANXQt8a_T2ZZ_G6k15ajBpJvcmbQq1=JPn4L8mP3OUT=NZGeew@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <53733F2E.4030803@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, broonie@kernel.org, peter.ujfalusi@ti.com, Tomi Valkeinen <tomi.valkeinen@ti.com>, Benoit Cousson <bcousson@baylibre.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Abramo Bagnara <abramo@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 14 May 2014 12:02, Jyri Sarha <jsarha@ti.com> wrote:
-> On 05/13/2014 12:13 AM, Joachim Eastwood wrote:
->>
->> On 12 May 2014 11:12, Jyri Sarha <jsarha@ti.com> wrote:
->
-> ...
->
->>
->> hey, this worked straight away :)
->>
->> But there seems to be something wrong with the channel mapping.
->>
->> For stereo (speaker-test -c 2) the mapping is correct.
->>
->> But for -c 4 and -c 8 it gets weird:
->> speaker-test -c 4 -s X # where X is 1-4
->> 1: Front Left is Rear Left
->> 2: Front Right is Rear Right
->> 3: Rear Right is Front Right
->> 4: Rear Left is Front Left
->>
->> speaker-test -c 8 -s X # where X is 1-8
->> 1: Front Left is Rear Left
->> 2: Center is Rear Left
->> 3: Front Right is Rear Right
->> 4: Side Right is Front Right
->> 5: Rear Right is silent
->> 6: Rear Left is Center
->> 7: Side Left is Front Left
->> 8: LFE - Rear Right
->>
->> I think you need to check what channel order ALSA expects. I believe
->> speaker-test does the right thing on my HTPC normally connected to my
->> receiver.
->>
->
-> I checked the implementation and there was indeed something weird there, but
-> the implementation can not explain the FL and FR channels jumping around. FL
-> and FL should always be the first two channels in all configurations and the
-> implementation does not touch them.
->
-> The implementation uses 8ch HDMI setup for anything above 2ch with "Audio
-> InfoFrame Data Byte 4" set to 0x13. According to CEA-861 specs this means
-> following channel order: FL, FR, LFE, FC, RL, RR, RLC, RRC
->
-> This is a closest match to ALSA 8ch mapping (according to
-> sound/core/pcm_lib.c) which is: FL, FR, FC, LFE, RL, RR, SL, SR
+(Add the alsa-devel@alsa-project.org)
 
-hm, okey. I haven't look at the code but it do seem strange. But with
-speaker-test -c 4 the front and back are surely swapped here.
+Hi
 
-I'll do some more testing and also check with my HTPC. btw, I only
-have a 5.1 setup over here so I can't test all the discrete channels.
+I am work on ASoC part and developing the smartphone(Android).
+we have been doing the stress and long runtime test.
+audio output is no problem but I sometimes face
+the "playback write error(DMA or IRQ trouble?)" error message.
+I know the meaning of the message and I can solve the error.
+the problem may be caused by AP(clk) or I2S or DMA or Codec.
 
-> Current implementation has FLE and FC channels correctly swapped, but it
-> shifts them to last two channels and RL, RR, SL, SR are shifted down to fill
-> the place. This is all wrong and I'll try to come up with a fix for that.
-> Unfortunately I can not test anything beyond 2 ch myself so I would need
-> someone to volunteer to test my patch.
+I would like to trace the hardware error at the printed message.
 
-I have the dev kit setup up over here so I can test your patches.
+Could you review my idea?
 
-regards
-Joachim Eastwood
+Thanks
+---
+ include/sound/pcm.h     |  2 ++
+ include/sound/soc-dai.h |  2 ++
+ include/sound/soc.h     |  1 +
+ sound/core/pcm_lib.c    |  3 +++
+ sound/core/pcm_native.c | 51
++++++++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/soc-pcm.c     | 26 +++++++++++++++++++++++++
+ 6 files changed, 85 insertions(+)
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index b4d6697..cd3093a 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -82,6 +82,7 @@ struct snd_pcm_ops {
+      unsigned long offset);
+  int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct
+*vma);
+  int (*ack)(struct snd_pcm_substream *substream);
++ void (*report)(struct snd_pcm_substream *substream);
+ };
+
+ /*
+@@ -502,6 +503,7 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
+ int snd_pcm_start(struct snd_pcm_substream *substream);
+ int snd_pcm_stop(struct snd_pcm_substream *substream, snd_pcm_state_t
+status);
+ int snd_pcm_drain_done(struct snd_pcm_substream *substream);
++void snd_pcm_report(struct snd_pcm_substream *substream);
+ #ifdef CONFIG_PM
+ int snd_pcm_suspend(struct snd_pcm_substream *substream);
+ int snd_pcm_suspend_all(struct snd_pcm *pcm);
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index fad7676..c032393 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -184,6 +184,8 @@ struct snd_soc_dai_ops {
+  struct snd_soc_dai *);
+  int (*bespoke_trigger)(struct snd_pcm_substream *, int,
+  struct snd_soc_dai *);
++ void (*report)(struct snd_pcm_substream *,
++ struct snd_soc_dai *);
+  /*
+  * For hardware based FIFO caused delay reporting.
+  * Optional.
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 0b83168..7685839 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -641,6 +641,7 @@ struct snd_soc_ops {
+  int (*hw_free)(struct snd_pcm_substream *);
+  int (*prepare)(struct snd_pcm_substream *);
+  int (*trigger)(struct snd_pcm_substream *, int);
++ void (*report)(struct snd_pcm_substream *);
+ };
+
+ struct snd_soc_compr_ops {
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index ce83def..0d6c9a3 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1944,6 +1944,9 @@ static int wait_for_avail(struct snd_pcm_substream
+*substream,
+  "%s write error (DMA or IRQ trouble?)\n",
+  is_playback ? "playback" : "capture");
+  err = -EIO;
++ snd_pcm_stream_unlock_irq(substream);
++ snd_pcm_report(substream);
++ snd_pcm_stream_lock_irq(substream);
+  break;
+  }
+  }
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index b653ab0..0ccdc10 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -978,6 +978,57 @@ int snd_pcm_drain_done(struct snd_pcm_substream
+*substream)
+      SNDRV_PCM_STATE_SETUP);
+ }
+
++void snd_pcm_report(struct snd_pcm_substream *substream)
++{
++ struct snd_pcm_runtime *runtime = substream->runtime;
++
++ if (!runtime) {
++ snd_printd("runtime disappear\n");
++ return;
++ }
++
++ mutex_lock(&substream->pcm->open_mutex);
++ snd_printd("access: %i\n", runtime->access);
++ snd_printd("format: %i\n", runtime->format);
++ snd_printd("subformat: %d\n", runtime->subformat);
++ snd_printd("channels: %u\n", runtime->channels);
++ snd_printd("rate: %u (%u/%u)\n", runtime->rate, runtime->rate_num,
++   runtime->rate_den);
++ snd_printd("period_size: %lu\n", runtime->period_size);
++ snd_printd("buffer_size: %lu\n", runtime->buffer_size);
++ snd_printd("tstamp_mode: %i\n", runtime->tstamp_mode);
++ snd_printd("period_step: %u\n", runtime->period_step);
++ snd_printd("avail_min: %lu\n", runtime->control->avail_min);
++ snd_printd("start_threshold: %lu\n", runtime->start_threshold);
++ snd_printd("stop_threshold: %lu\n", runtime->stop_threshold);
++ snd_printd("silence_threshold: %lu\n", runtime->silence_threshold);
++ snd_printd("silence_size: %lu\n", runtime->silence_size);
++ snd_printd("boundary: %lu\n", runtime->boundary);
++ snd_printd("state: %i\n", runtime->status->state);
++ snd_printd("owner_pid: %d\n", pid_vnr(substream->pid));
++ snd_printd("trigger_time: %ld.%09ld\n",
++   runtime->trigger_tstamp.tv_sec,
++   runtime->trigger_tstamp.tv_nsec);
++ snd_printd("tstamp: %ld.%09ld\n",
++   runtime->status->tstamp.tv_sec,
++   runtime->status->tstamp.tv_nsec);
++ snd_printd("delay: %ld\n", runtime->delay);
++ if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++ snd_printd("avail: %ld\n", snd_pcm_playback_avail(runtime));
++ else
++ snd_printd("avail: %ld\n", snd_pcm_capture_avail(runtime));
++ snd_printd("avail_max: %ld\n", runtime->avail_max);
++ snd_printd("hw_ptr: %ld\n", runtime->status->hw_ptr);
++ snd_printd("appl_ptr: %ld\n", runtime->control->appl_ptr);
++
++ mutex_unlock(&substream->pcm->open_mutex);
++
++ if (substream->ops->report)
++ substream->ops->report(substream);
++
++ return;
++}
++
+ /*
+  * pause callbacks
+  */
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 2cedf09..98a47b3 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -883,6 +883,30 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct
+snd_pcm_substream *substream)
+  return offset;
+ }
+
++static void soc_pcm_report(struct snd_pcm_substream *substream)
++{
++ struct snd_soc_pcm_runtime *rtd = substream->private_data;
++ struct snd_soc_platform *platform = rtd->platform;
++ struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++ struct snd_soc_dai *codec_dai = rtd->codec_dai;
++
++ mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
++ /* report the audio subsystem */
++ if (rtd->dai_link->ops && rtd->dai_link->ops->report)
++ rtd->dai_link->ops->report(substream);
++
++ if (cpu_dai->driver->ops->report)
++ cpu_dai->driver->ops->report(substream, cpu_dai);
++
++ if (platform->driver->ops && platform->driver->ops->report)
++ platform->driver->ops->report(substream);
++
++ if (codec_dai->driver->ops->report)
++ codec_dai->driver->ops->report(substream, codec_dai);
++
++ mutex_unlock(&rtd->pcm_mutex);
++}
++
+ /* connect a FE and BE */
+ static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+  struct snd_soc_pcm_runtime *be, int stream)
+@@ -2267,6 +2291,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int
+num)
+  rtd->ops.close = dpcm_fe_dai_close;
+  rtd->ops.pointer = soc_pcm_pointer;
+  rtd->ops.ioctl = soc_pcm_ioctl;
++ rtd->ops.report = soc_pcm_report;
+  } else {
+  rtd->ops.open = soc_pcm_open;
+  rtd->ops.hw_params = soc_pcm_hw_params;
+@@ -2276,6 +2301,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int
+num)
+  rtd->ops.close = soc_pcm_close;
+  rtd->ops.pointer = soc_pcm_pointer;
+  rtd->ops.ioctl = soc_pcm_ioctl;
++ rtd->ops.report = soc_pcm_report;
+  }
+
+  if (platform->driver->ops) {
+-- 
+1.8.1.2
