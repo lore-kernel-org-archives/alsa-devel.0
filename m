@@ -1,19 +1,18 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH v3 0/5] ALSA: hda - hdmi: ATI/AMD
- multi-channel and HBR support
-Date: Wed, 14 May 2014 00:50:55 +0300
-Message-ID: <537293BF.20900@iki.fi>
-References: <1382638238-25055-1-git-send-email-anssi.hannula@iki.fi>	<loom.20131122T215246-90@post.gmane.org>	<529004F8.7070801@iki.fi>	<20131123154009.6c8c6e97@symphony.aura-online.co.uk>	<5290CD7C.7020907@iki.fi>	<20131124145737.22056256@symphony.aura-online.co.uk>	<52934E97.9060701@iki.fi>	<20131125143228.55c94550@red>	<52936537.8020506@iki.fi>	<20140513130126.1755fa16@red.yakaraplc.local>	<53720FC3.7000608@iki.fi>	<20140513171617.4d303844@red.yakaraplc.local>
- <20140513221056.0637c51d@symphony.aura-online.co.uk>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] ASoC: cs42l56: Fix new value argument in
+ snd_soc_update_bits calls
+Date: Wed, 14 May 2014 10:13:36 +0800
+Message-ID: <1400033616.10054.2.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
- [83.102.40.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F3E0261A0A
- for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 23:51:00 +0200 (CEST)
-In-Reply-To: <20140513221056.0637c51d@symphony.aura-online.co.uk>
+Received: from mail-ve0-f182.google.com (mail-ve0-f182.google.com
+ [209.85.128.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9F87264F74
+ for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 04:13:42 +0200 (CEST)
+Received: by mail-ve0-f182.google.com with SMTP id sa20so1566626veb.13
+ for <alsa-devel@alsa-project.org>; Tue, 13 May 2014 19:13:41 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,70 +22,174 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alex Deucher <alexander.deucher@amd.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, James Le Cuirot <chewi@aura-online.co.uk>
+To: Mark Brown <broonie@kernel.org>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Alex,
 
-14.05.2014 00:10, James Le Cuirot kirjoitti:
-> On Tue, 13 May 2014 17:16:17 +0100
-> James Le Cuirot <chewi@aura-online.co.uk> wrote:
-> 
->> On Tue, 13 May 2014 15:27:47 +0300
->> Anssi Hannula <anssi.hannula@iki.fi> wrote:
->>
->>> Unfortunately I've been told that HD 4xxx cards and older do not
->>> support multichannel playback, which I didn't know at the time (and
->>> I had forgotten your case, hence I didn't get back to you - sorry
->>> about that).
->>
->> Thank you for the quick reply. I'm not sure whether that's strictly
->> true. Wikipedia (though not always correct, I grant you) states that:
->>
->> "The RV770 series GPU also supports xvYCC color space output and 7.1
->> surround sound output (LPCM, AC3, DTS) over HDMI."
->>
->> http://en.wikipedia.org/wiki/Radeon_HD_4000_Series#Multimedia_features
->>
->> The HD 4670 has the RV730XT chip. It isn't clear in the above
->> statement whether it is referring to the higher models in the range
->> or the range as a whole, given that the RV770 is the foundation chip.
->> Based on my experiences and what you have heard, it's probably the
->> former. This news piece at AnandTech also seems to back it up.
->>
->> "All of AMD's Radeon HD graphics cards have shipped with their own
->> audio codec, but the Radeon HD 4800 series of cards finally adds
->> support for 8-channel LPCM output over HDMI."
->>
->> http://www.anandtech.com/show/2556
->>
->> Looks like a new card for me then. Thanks for your help.
-> 
-> Aaaand after all that, I dig out the box for the old card to get ready
-> to sell it and what do I see printed on the front? 7.1 Channel Sound!
-> The box looks almost identical to this one:
-> 
-> http://www.overclockers.ua/video/ati-radeon-hd4670-ddr4/01-ati-radeon-hd4670-sapphire.jpg
-> 
-> This is very confusing. Any thoughts?
+The new value argument needs proper shift to match the mask bit fields.
 
-Alex, you told me in IRC some time ago that pre-DCE4 cards do no support
-multi-channel PCM. Do you know what is going on above?
-AFAIU James has HD 4670, which is RV730 and therefore has DCE3.2 only,
-but seems like it should still have multi-channel support.
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+Hi Brian,
+This patch replaces
+[PATCH RFT] ASoC: cs42l56: Fix update mute register bits in cs42l56_digital_mute.
+I just found more places of snd_soc_update_bits calls needs fix.
+Regards,
+Axel
+ sound/soc/codecs/cs42l56.c | 71 ++++++++++++++++++----------------------------
+ sound/soc/codecs/cs42l56.h | 14 ++++-----
+ 2 files changed, 35 insertions(+), 50 deletions(-)
 
-Multichannel LPCM support seems to be corroborated by various other
-sources as well, e.g.
-http://www.avsforum.com/t/1029603/ati-radeon-hd-4600-4800-series-support-7-1-channel-hdmi-audio#user_ATIHDMIDriver
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index 5bb134b..c0be526 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -763,14 +763,14 @@ static int cs42l56_set_sysclk(struct snd_soc_dai *codec_dai,
+ 	case CS42L56_MCLK_11P2896MHZ:
+ 	case CS42L56_MCLK_12MHZ:
+ 	case CS42L56_MCLK_12P288MHZ:
+-		cs42l56->mclk_div2 = 1;
++		cs42l56->mclk_div2 = CS42L56_MCLK_DIV2;
+ 		cs42l56->mclk_prediv = 0;
+ 		break;
+ 	case CS42L56_MCLK_22P5792MHZ:
+ 	case CS42L56_MCLK_24MHZ:
+ 	case CS42L56_MCLK_24P576MHZ:
+-		cs42l56->mclk_div2 = 1;
+-		cs42l56->mclk_prediv = 1;
++		cs42l56->mclk_div2 = CS42L56_MCLK_DIV2;
++		cs42l56->mclk_prediv = CS42L56_MCLK_PREDIV;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -839,62 +839,47 @@ static int cs42l56_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ static int cs42l56_digital_mute(struct snd_soc_dai *dai, int mute)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
++	unsigned int mask;
+ 
+ 	if (mute) {
+ 		/* Hit the DSP Mixer first */
+-		snd_soc_update_bits(codec, CS42L56_DSP_MUTE_CTL,
+-				    CS42L56_ADCAMIX_MUTE_MASK |
+-				CS42L56_ADCBMIX_MUTE_MASK |
+-				CS42L56_PCMAMIX_MUTE_MASK |
+-				CS42L56_PCMBMIX_MUTE_MASK |
+-				CS42L56_MSTB_MUTE_MASK |
+-				CS42L56_MSTA_MUTE_MASK,
+-				CS42L56_MUTE);
++		mask = CS42L56_ADCAMIX_MUTE_MASK | CS42L56_ADCBMIX_MUTE_MASK |
++		       CS42L56_PCMAMIX_MUTE_MASK | CS42L56_PCMBMIX_MUTE_MASK |
++		       CS42L56_MSTB_MUTE_MASK | CS42L56_MSTA_MUTE_MASK;
++		snd_soc_update_bits(codec, CS42L56_DSP_MUTE_CTL, mask, mask);
++
+ 		/* Mute ADC's */
+-		snd_soc_update_bits(codec, CS42L56_MISC_ADC_CTL,
+-				CS42L56_ADCA_MUTE_MASK |
+-				CS42L56_ADCB_MUTE_MASK,
+-				CS42L56_MUTE);
++		mask = CS42L56_ADCA_MUTE_MASK | CS42L56_ADCB_MUTE_MASK;
++		snd_soc_update_bits(codec, CS42L56_MISC_ADC_CTL, mask, mask);
++
+ 		/* HP And LO */
+ 		snd_soc_update_bits(codec, CS42L56_HPA_VOLUME,
+-				CS42L56_HP_MUTE_MASK,
+-				CS42L56_MUTE);
++				    CS42L56_HP_MUTE_MASK, CS42L56_HP_MUTE_MASK);
+ 		snd_soc_update_bits(codec, CS42L56_HPB_VOLUME,
+-				CS42L56_HP_MUTE_MASK,
+-				CS42L56_MUTE);
++				    CS42L56_HP_MUTE_MASK, CS42L56_HP_MUTE_MASK);
+ 		snd_soc_update_bits(codec, CS42L56_LOA_VOLUME,
+-				CS42L56_LO_MUTE_MASK,
+-				CS42L56_MUTE);
++				    CS42L56_LO_MUTE_MASK, CS42L56_LO_MUTE_MASK);
+ 		snd_soc_update_bits(codec, CS42L56_LOB_VOLUME,
+-				CS42L56_LO_MUTE_MASK,
+-				CS42L56_MUTE);
++				    CS42L56_LO_MUTE_MASK, CS42L56_LO_MUTE_MASK);
+ 
 
-It doesn't appear to work, though. Is it possible some of those early
-cards had some other way of getting multichannel LPCM?
-Looks like the above forum post directs people to use a "ATI HDMI Audio
-Device" driver from Realtek for Vista/7...
-(
-http://www.realtek.com.tw/downloads/downloadsView.aspx?Langid=1&PNid=24&PFid=24&Level=4&Conn=3&DownTypeID=3&GetDown=false
-)
-
+ 	} else {
+-		snd_soc_update_bits(codec, CS42L56_DSP_MUTE_CTL,
+-				    CS42L56_ADCAMIX_MUTE_MASK |
+-				CS42L56_ADCBMIX_MUTE_MASK |
+-				CS42L56_PCMAMIX_MUTE_MASK |
+-				CS42L56_PCMBMIX_MUTE_MASK |
+-				CS42L56_MSTB_MUTE_MASK |
+-				CS42L56_MSTA_MUTE_MASK,
+-				CS42L56_UNMUTE);
+-		snd_soc_update_bits(codec, CS42L56_MISC_ADC_CTL,
+-				CS42L56_ADCA_MUTE_MASK |
+-				CS42L56_ADCB_MUTE_MASK,
+-				CS42L56_UNMUTE);
++		mask = CS42L56_ADCAMIX_MUTE_MASK | CS42L56_ADCBMIX_MUTE_MASK |
++		       CS42L56_PCMAMIX_MUTE_MASK | CS42L56_PCMBMIX_MUTE_MASK |
++		       CS42L56_MSTB_MUTE_MASK | CS42L56_MSTA_MUTE_MASK;
++		snd_soc_update_bits(codec, CS42L56_DSP_MUTE_CTL, mask , 0);
++
++		mask = CS42L56_ADCA_MUTE_MASK | CS42L56_ADCB_MUTE_MASK;
++		snd_soc_update_bits(codec, CS42L56_MISC_ADC_CTL, mask, 0);
++
+ 		snd_soc_update_bits(codec, CS42L56_HPA_VOLUME,
+-				CS42L56_HP_MUTE_MASK,
+-				CS42L56_UNMUTE);
++				    CS42L56_HP_MUTE_MASK, 0);
+ 		snd_soc_update_bits(codec, CS42L56_HPB_VOLUME,
+-				CS42L56_HP_MUTE_MASK,
+-				CS42L56_UNMUTE);
++				    CS42L56_HP_MUTE_MASK, 0);
+ 		snd_soc_update_bits(codec, CS42L56_LOA_VOLUME,
+-				CS42L56_LO_MUTE_MASK,
+-				CS42L56_UNMUTE);
++				    CS42L56_LO_MUTE_MASK, 0);
+ 		snd_soc_update_bits(codec, CS42L56_LOB_VOLUME,
+-				CS42L56_LO_MUTE_MASK,
+-				CS42L56_UNMUTE);
++				    CS42L56_LO_MUTE_MASK, 0);
+ 	}
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/cs42l56.h b/sound/soc/codecs/cs42l56.h
+index ad2b50a..d2f68c6 100644
+--- a/sound/soc/codecs/cs42l56.h
++++ b/sound/soc/codecs/cs42l56.h
+@@ -80,19 +80,21 @@
+ #define CS42L56_PDN_HPB_MASK		0xc0
+ 
+ /* serial port and clk masks */
+-#define CS42L56_MASTER_MODE		1
+-#define CS42L56_SLAVE_MODE		0
++#define CS42L56_MASTER_MODE		(1 << 6)
++#define CS42L56_SLAVE_MODE		(0 << 6)
+ #define CS42L56_MS_MODE_MASK		0x40
+-#define CS42L56_SCLK_INV		1
++#define CS42L56_SCLK_INV		(1 << 5)
+ #define CS42L56_SCLK_INV_MASK		0x20
+ #define CS42L56_SCLK_MCLK_MASK		0x18
++#define CS42L56_MCLK_PREDIV		(1 << 6)
+ #define CS42L56_MCLK_PREDIV_MASK	0x04
++#define CS42L56_MCLK_DIV2		(1 << 1)
+ #define CS42L56_MCLK_DIV2_MASK		0x02
+ #define CS42L56_MCLK_DIS_MASK		0x01
+ #define CS42L56_CLK_AUTO_MASK		0x20
+ #define CS42L56_CLK_RATIO_MASK		0x1f
+-#define CS42L56_DIG_FMT_I2S		0
+-#define CS42L56_DIG_FMT_LEFT_J		1
++#define CS42L56_DIG_FMT_I2S		(0 << 3)
++#define CS42L56_DIG_FMT_LEFT_J		(1 << 3)
+ #define CS42L56_DIG_FMT_MASK		0x08
+ 
+ /* Class H and misc ctl masks */
+@@ -116,8 +118,6 @@
+ #define CS42L56_DEEMPH_MASK		0x40
+ #define CS42L56_PLYBCK_GANG_MASK	0x10
+ #define CS42L56_PCM_INV_MASK		0x0c
+-#define CS42L56_MUTE			1
+-#define CS42L56_UNMUTE			0
+ #define CS42L56_ADCAMIX_MUTE_MASK	0x40
+ #define CS42L56_ADCBMIX_MUTE_MASK	0x80
+ #define CS42L56_PCMAMIX_MUTE_MASK	0x10
 -- 
-Anssi Hannula
+1.8.3.2
