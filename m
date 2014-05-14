@@ -1,21 +1,14 @@
-From: Bard Liao <bardliao.rtk@gmail.com>
-Subject: Re: [PATCH v6] ASoC: add RT286 CODEC driver
-Date: Mon, 12 May 2014 19:08:40 +0800
-Message-ID: <CAFOFQBaoYpXCfroxfZX+7yf-ua71dav5kfUytyJLzUs_FCMg8g@mail.gmail.com>
-References: <536B2C9D.9040807@metafoo.de>
- <20140508080025.GA12304@sirena.org.uk>
- <536B4708.8080203@metafoo.de>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] ak4642 codec updates
+Date: Wed, 14 May 2014 09:37:32 +0200
+Message-ID: <1400053058-1115-1-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f178.google.com (mail-wi0-f178.google.com
- [209.85.212.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 91881264F45
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 13:08:40 +0200 (CEST)
-Received: by mail-wi0-f178.google.com with SMTP id hm4so4250760wib.5
- for <alsa-devel@alsa-project.org>; Mon, 12 May 2014 04:08:40 -0700 (PDT)
-In-Reply-To: <536B4708.8080203@metafoo.de>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 491C32619E5
+ for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 09:37:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,24 +18,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, Flove <flove@realtek.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-2014-05-08 16:57 GMT+08:00 Lars-Peter Clausen <lars@metafoo.de>:
-> On 05/08/2014 10:00 AM, Mark Brown wrote:
+This series has some updates to the ak4642 codec driver like ALC controls,
+improved sysclk support for the ak4648.
 
-[...]
+Sascha
 
-Just for confirm.
->From the mail thread, what I need to to are:
-1. Don't present register map to alsa, use virtrul controls instead.
-   I may need to extend the APIs to accomplish the goal.
-2. I can (or should?) use regmap internal to codec driver to set the
-codec physically.
-Did I miss anything?
+----------------------------------------------------------------
+Sascha Hauer (6):
+      ASoC: ak4642: Fix typo zoro -> zero
+      ASoC: ak4642: Add ALC controls
+      ASoC: ak4642: Add driver data and driver private struct
+      ASoC: ak4642: Add support for extended sysclk frequencies of the ak4648
+      ASoC: ak4642: Implement Microphone in pathes
+      ASoC: ak4642: Add enable gpio support
 
-Thanks.
-
->
-> ------Please consider the environment before printing this e-mail.
+ Documentation/devicetree/bindings/sound/ak4642.txt |   3 +
+ sound/soc/codecs/ak4642.c                          | 230 +++++++++++++++++++--
+ 2 files changed, 221 insertions(+), 12 deletions(-)
