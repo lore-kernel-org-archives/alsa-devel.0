@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: ak4642: Add driver data and
- driver private struct
-Date: Wed, 14 May 2014 12:33:11 +0100
-Message-ID: <20140514113311.GU12304@sirena.org.uk>
+Subject: Re: [PATCH 4/6] ASoC: ak4642: Add support for extended
+ sysclk frequencies of the ak4648
+Date: Wed, 14 May 2014 12:34:14 +0100
+Message-ID: <20140514113414.GV12304@sirena.org.uk>
 References: <1400053058-1115-1-git-send-email-s.hauer@pengutronix.de>
- <1400053058-1115-4-git-send-email-s.hauer@pengutronix.de>
+ <1400053058-1115-5-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0034097498060307154=="
+Content-Type: multipart/mixed; boundary="===============5338561053574911317=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CBDEE265457
- for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 13:33:22 +0200 (CEST)
-In-Reply-To: <1400053058-1115-4-git-send-email-s.hauer@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 300C62652C6
+ for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 13:34:25 +0200 (CEST)
+In-Reply-To: <1400053058-1115-5-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,51 +27,63 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0034097498060307154==
+--===============5338561053574911317==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XoO5jQFkz/fkcUT5"
+	protocol="application/pgp-signature"; boundary="tmjW4B30BOVDDQ/7"
 Content-Disposition: inline
 
 
---XoO5jQFkz/fkcUT5
+--tmjW4B30BOVDDQ/7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, May 14, 2014 at 09:37:35AM +0200, Sascha Hauer wrote:
-> Currently unused, this is done to let the driver distinguish between
-> the different supported codec types in later patches.
+On Wed, May 14, 2014 at 09:37:36AM +0200, Sascha Hauer wrote:
+> Additionally to the ak4642 pll frequencies the ak4648 also supports 13MHz,
+> 19.2MHz and 26MHz. This adds support for these frequencies.
 
-Applied, thanks.
+Applied, thanks.  However...
 
---XoO5jQFkz/fkcUT5
+> +	case 19200000:
+> +		pll = PLL3;
+> +		extended_freq = 1;
+> +		break;
+> +	case 13000000:
+> +		pll = PLL3 | PLL2 | PLL1;
+> +		extended_freq = 1;
+> +		break;
+> +	case 26000000:
+
+...the sorting here is a bit odd - we do 19.2MHz then 13MHz then 26MHz.
+
+--tmjW4B30BOVDDQ/7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTc1R0AAoJELSic+t+oim9Jv8P/1c8aCwlos46n3E/S4AZVPVT
-alHLmtorW7f+Fks/0jTqMmfl80W17kWRbvFifYaJn49mvDTUoOtQnGmi244FOHSN
-ixnXpmjXf74SVHTFHNILWWhqUIC+v6uLs3mvFY/Nm2qqpuC1R9PiehAkAkXTcosE
-KpO/ekT56am+JBShaaxSRlC7MELEjamWaNkxaheS+CITPFdqlpEb0lyM2OAgAmsP
-8o+NbzJ0L7rxux1wK+aRyq9OKFvkuqQdeb65P6MxI7Yr/Uy1BtwiUsSuCnve3Swp
-hhcNcMAALxSCa3bihkQsjBwF9ulHqI0uUW8j4G0VzxoICGYXcmDq/+R10twkbd/3
-X20FfytPG+IEjwnH5kEVwwuXxjtHrdNj+xNCSCHKABMX+LNwMZKNQ5fdSCdni79C
-gfHcB+XpRHka0j+nGrNf6NxA+PkQAeoQGWHn0DR2O1Ffrja2m+urXwG+CREZq7iO
-AvEZzKi9ELn2lMQgejGVZGHRFMN7KJKg6hpJ0gITXU0HPWixen4AopjyqDuDeJSK
-INhCyGn2Bo2/SafAudIdSdTeGhTrYEtqwDpzxUdmqtaoUkX7OYUt+tST0R2We05T
-WCYYIdp9P/CcnC3gz6+EzCF3zmQOPla2ziO+Ss3qnwwUmoPM3IZg67cQZJgeCms3
-98MOb+zJPepiN8CjQFgx
-=Yn3e
+iQIcBAEBAgAGBQJTc1SzAAoJELSic+t+oim9Ty8P/2eOm2liRGclKVaJ58k8ih3a
+RkIXsk2ivLWdj8gTeeWwqJdNjmVFgXMCNdh32rhwlFVy0yeQ7f7B/GxiotOdrjeQ
+SKomVO8HpGS4mWRtz4URaZyLwYlSRIMUKGxwi2nLqsFMltNp2/FaO3E1SLDBEiZb
+0LoatD+ShfeiGfncDCs/V4pZlYHDJBF37hOQ5l68VLjIe4c92Bxc53vpssKMqNxi
+81kKhOsc0zYU82PMIhOMfI7Ff7ok5trehmOenO+BBHWZ0bJ/Q2coR8+Apo8VAX3H
+sccY5DAoeKe/NeHtT99/K9bbBWxefh47q8qAeFGssdu8EEwL68xXywG8ecu054WG
+opRY/EfZTzko47mj7qH/32fJwfR73f/Ae3+BzAl1/L5+gOmp2TjV7h0mof37X+50
+r2mgn0VYlHmbMqv6oHy/wrxbO7vBZP80azMEPoM4dl2LIdKyF1xv/h+NEzCBbQoC
+l4+zu6DlI/8h8dI+U69GIgARNxLKArFO3X0GPXMjc1ye1I/DLzhvhGPCq1wJ4qgG
+hgEosDU3UCE+cxjkdcSVqZiY8ENhvy0V0FMXJhjybkweEj3D7rOFaHz4KbafD//4
+BZ8HYP6KmmfxXY8pt4vRVeF+UIoh7yAG1sI4opgJ8mnl/ZjPnVz/D6fNhEa/itWp
+v2Cr7Pufjo4d82rQRqr8
+=+0ZA
 -----END PGP SIGNATURE-----
 
---XoO5jQFkz/fkcUT5--
+--tmjW4B30BOVDDQ/7--
 
---===============0034097498060307154==
+--===============5338561053574911317==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0034097498060307154==--
+--===============5338561053574911317==--
