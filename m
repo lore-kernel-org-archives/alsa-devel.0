@@ -1,12 +1,17 @@
-From: JongHo Kim <furmuwon@gmail.com>
-Subject: [Resend] Add the stream report feature. Could you
-	review my idea?
-Date: Thu, 15 May 2014 01:59:48 +0900
-Message-ID: <CANXQt8a_T2ZZ_G6k15ajBpJvcmbQq1=JPn4L8mP3OUT=NZGeew@mail.gmail.com>
+From: Dan MacDonald <allcoms@gmail.com>
+Subject: poor i4600 HDMI output under 1.0.27.2
+Date: Wed, 14 May 2014 23:20:06 +0100
+Message-ID: <CANOoOjuQAttdCW7ozns8kX=+YZdnscf43DzfvDV5jTDrOqRkzA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
+ [209.85.214.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22B06261600
+ for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 00:20:08 +0200 (CEST)
+Received: by mail-ob0-f171.google.com with SMTP id wn1so255920obc.2
+ for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 15:20:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,214 +21,157 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Abramo Bagnara <abramo@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-(Add the alsa-devel@alsa-project.org)
+Hi list
 
-Hi
+I have got HDMI audio out to kinda work but the sound quality is awful and
+not really listenable. Its very choppy and is slightly more high-pitched
+than it should be. This is when using hdmi:CARD=HDMI,DEV=1 @48khz
+outputting via ALSA 1.0.27.2 / jackd 0.124.2 under Deb Jessie amd64 with
+kernel 3.13.10-1. Its a System76 Gazelle Pro laptop FWIW.
 
-I am work on ASoC part and developing the smartphone(Android).
-we have been doing the stress and long runtime test.
-audio output is no problem but I sometimes face
-the "playback write error(DMA or IRQ trouble?)" error message.
-I know the meaning of the message and I can solve the error.
-the problem may be caused by AP(clk) or I2S or DMA or Codec.
+$ lspci -v:
 
-I would like to trace the hardware error at the printed message.
+00:03.0 Audio device: Intel Corporation Xeon E3-1200 v3/4th Gen Core
+Processor HD Audio Controller (rev 06)
+        Subsystem: CLEVO/KAPOK Computer Device 0655
+        Flags: bus master, fast devsel, latency 0, IRQ 49
+        Memory at f7e14000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: <access denied>
+        Kernel driver in use: snd_hda_intel
 
-Could you review my idea?
+00:1b.0 Audio device: Intel Corporation 8 Series/C220 Series Chipset High
+Definition Audio Controller (rev
+05)
 
-Thanks
----
- include/sound/pcm.h     |  2 ++
- include/sound/soc-dai.h |  2 ++
- include/sound/soc.h     |  1 +
- sound/core/pcm_lib.c    |  3 +++
- sound/core/pcm_native.c | 51
-+++++++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-pcm.c     | 26 +++++++++++++++++++++++++
- 6 files changed, 85 insertions(+)
+        Subsystem: CLEVO/KAPOK Computer Device
+0655
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index b4d6697..cd3093a 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -82,6 +82,7 @@ struct snd_pcm_ops {
-      unsigned long offset);
-  int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct
-*vma);
-  int (*ack)(struct snd_pcm_substream *substream);
-+ void (*report)(struct snd_pcm_substream *substream);
- };
+        Flags: bus master, fast devsel, latency 0, IRQ
+48
 
- /*
-@@ -502,6 +503,7 @@ int snd_pcm_status(struct snd_pcm_substream *substream,
- int snd_pcm_start(struct snd_pcm_substream *substream);
- int snd_pcm_stop(struct snd_pcm_substream *substream, snd_pcm_state_t
-status);
- int snd_pcm_drain_done(struct snd_pcm_substream *substream);
-+void snd_pcm_report(struct snd_pcm_substream *substream);
- #ifdef CONFIG_PM
- int snd_pcm_suspend(struct snd_pcm_substream *substream);
- int snd_pcm_suspend_all(struct snd_pcm *pcm);
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index fad7676..c032393 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -184,6 +184,8 @@ struct snd_soc_dai_ops {
-  struct snd_soc_dai *);
-  int (*bespoke_trigger)(struct snd_pcm_substream *, int,
-  struct snd_soc_dai *);
-+ void (*report)(struct snd_pcm_substream *,
-+ struct snd_soc_dai *);
-  /*
-  * For hardware based FIFO caused delay reporting.
-  * Optional.
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 0b83168..7685839 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -641,6 +641,7 @@ struct snd_soc_ops {
-  int (*hw_free)(struct snd_pcm_substream *);
-  int (*prepare)(struct snd_pcm_substream *);
-  int (*trigger)(struct snd_pcm_substream *, int);
-+ void (*report)(struct snd_pcm_substream *);
- };
+        Memory at f7e10000 (64-bit, non-prefetchable)
+[size=16K]
 
- struct snd_soc_compr_ops {
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index ce83def..0d6c9a3 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1944,6 +1944,9 @@ static int wait_for_avail(struct snd_pcm_substream
-*substream,
-  "%s write error (DMA or IRQ trouble?)\n",
-  is_playback ? "playback" : "capture");
-  err = -EIO;
-+ snd_pcm_stream_unlock_irq(substream);
-+ snd_pcm_report(substream);
-+ snd_pcm_stream_lock_irq(substream);
-  break;
-  }
-  }
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index b653ab0..0ccdc10 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -978,6 +978,57 @@ int snd_pcm_drain_done(struct snd_pcm_substream
-*substream)
-      SNDRV_PCM_STATE_SETUP);
- }
+        Capabilities: <access
+denied>
 
-+void snd_pcm_report(struct snd_pcm_substream *substream)
-+{
-+ struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+ if (!runtime) {
-+ snd_printd("runtime disappear\n");
-+ return;
-+ }
-+
-+ mutex_lock(&substream->pcm->open_mutex);
-+ snd_printd("access: %i\n", runtime->access);
-+ snd_printd("format: %i\n", runtime->format);
-+ snd_printd("subformat: %d\n", runtime->subformat);
-+ snd_printd("channels: %u\n", runtime->channels);
-+ snd_printd("rate: %u (%u/%u)\n", runtime->rate, runtime->rate_num,
-+   runtime->rate_den);
-+ snd_printd("period_size: %lu\n", runtime->period_size);
-+ snd_printd("buffer_size: %lu\n", runtime->buffer_size);
-+ snd_printd("tstamp_mode: %i\n", runtime->tstamp_mode);
-+ snd_printd("period_step: %u\n", runtime->period_step);
-+ snd_printd("avail_min: %lu\n", runtime->control->avail_min);
-+ snd_printd("start_threshold: %lu\n", runtime->start_threshold);
-+ snd_printd("stop_threshold: %lu\n", runtime->stop_threshold);
-+ snd_printd("silence_threshold: %lu\n", runtime->silence_threshold);
-+ snd_printd("silence_size: %lu\n", runtime->silence_size);
-+ snd_printd("boundary: %lu\n", runtime->boundary);
-+ snd_printd("state: %i\n", runtime->status->state);
-+ snd_printd("owner_pid: %d\n", pid_vnr(substream->pid));
-+ snd_printd("trigger_time: %ld.%09ld\n",
-+   runtime->trigger_tstamp.tv_sec,
-+   runtime->trigger_tstamp.tv_nsec);
-+ snd_printd("tstamp: %ld.%09ld\n",
-+   runtime->status->tstamp.tv_sec,
-+   runtime->status->tstamp.tv_nsec);
-+ snd_printd("delay: %ld\n", runtime->delay);
-+ if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+ snd_printd("avail: %ld\n", snd_pcm_playback_avail(runtime));
-+ else
-+ snd_printd("avail: %ld\n", snd_pcm_capture_avail(runtime));
-+ snd_printd("avail_max: %ld\n", runtime->avail_max);
-+ snd_printd("hw_ptr: %ld\n", runtime->status->hw_ptr);
-+ snd_printd("appl_ptr: %ld\n", runtime->control->appl_ptr);
-+
-+ mutex_unlock(&substream->pcm->open_mutex);
-+
-+ if (substream->ops->report)
-+ substream->ops->report(substream);
-+
-+ return;
-+}
-+
- /*
-  * pause callbacks
-  */
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 2cedf09..98a47b3 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -883,6 +883,30 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct
-snd_pcm_substream *substream)
-  return offset;
- }
+        Kernel driver in use: snd_hda_intel
 
-+static void soc_pcm_report(struct snd_pcm_substream *substream)
-+{
-+ struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+ struct snd_soc_platform *platform = rtd->platform;
-+ struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+ struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+ mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-+ /* report the audio subsystem */
-+ if (rtd->dai_link->ops && rtd->dai_link->ops->report)
-+ rtd->dai_link->ops->report(substream);
-+
-+ if (cpu_dai->driver->ops->report)
-+ cpu_dai->driver->ops->report(substream, cpu_dai);
-+
-+ if (platform->driver->ops && platform->driver->ops->report)
-+ platform->driver->ops->report(substream);
-+
-+ if (codec_dai->driver->ops->report)
-+ codec_dai->driver->ops->report(substream, codec_dai);
-+
-+ mutex_unlock(&rtd->pcm_mutex);
-+}
-+
- /* connect a FE and BE */
- static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
-  struct snd_soc_pcm_runtime *be, int stream)
-@@ -2267,6 +2291,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int
-num)
-  rtd->ops.close = dpcm_fe_dai_close;
-  rtd->ops.pointer = soc_pcm_pointer;
-  rtd->ops.ioctl = soc_pcm_ioctl;
-+ rtd->ops.report = soc_pcm_report;
-  } else {
-  rtd->ops.open = soc_pcm_open;
-  rtd->ops.hw_params = soc_pcm_hw_params;
-@@ -2276,6 +2301,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int
-num)
-  rtd->ops.close = soc_pcm_close;
-  rtd->ops.pointer = soc_pcm_pointer;
-  rtd->ops.ioctl = soc_pcm_ioctl;
-+ rtd->ops.report = soc_pcm_report;
-  }
-
-  if (platform->driver->ops) {
--- 
-1.8.1.2
+$ cat /proc/asound/card0/codec#0
+Codec: Intel Haswell HDMI
+Address: 0
+AFG Function Id: 0x1 (unsol 0)
+Vendor Id: 0x80862807
+Subsystem Id: 0x80860101
+Revision Id: 0x100000
+No Modem Function Group found
+Default PCM:
+    rates [0x0]:
+    bits [0x0]:
+    formats [0x0]:
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+State of AFG node 0x01:
+  Power states:  D0 D3 CLKSTOP EPSS
+  Power: setting=D0, actual=D0, Clock-stop-OK
+GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+Node 0x02 [Audio Output] wcaps 0x6611: 8-Channels Digital
+  Converter: stream=0, channel=0
+  Digital: Enabled KAE
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x5]: PCM AC3
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x03 [Audio Output] wcaps 0x6611: 8-Channels Digital
+  Converter: stream=0, channel=0
+  Digital: Enabled KAE
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x5]: PCM AC3
+  Power states:  D0 D3 EPSS
+  Power: setting=D3, actual=D3
+Node 0x04 [Audio Output] wcaps 0x6611: 8-Channels Digital
+  Converter: stream=0, channel=0
+  Digital: Enabled KAE
+  Digital category: 0x0
+  IEC Coding Type: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x5]: PCM AC3
+  Power states:  D0 D3 EPSS
+  Power: setting=D3, actual=D3
+Node 0x05 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+  Control: name="HDMI/DP,pcm=3 Jack", index=0, device=0
+  Control: name="IEC958 Playback Con Mask", index=0, device=0
+  Control: name="IEC958 Playback Pro Mask", index=0, device=0
+  Control: name="IEC958 Playback Default", index=0, device=0
+  Control: name="IEC958 Playback Switch", index=0, device=0
+  Control: name="ELD", index=0, device=3
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0b000094: OUT Detect HBR HDMI DP
+  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Unsolicited: tag=01, enabled=1
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+  Devices: 0
+  Connection: 0
+  In-driver Connection: 3
+     0x02 0x03 0x04
+Node 0x06 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+  Control: name="HDMI/DP,pcm=7 Jack", index=0, device=0
+  Control: name="IEC958 Playback Con Mask", index=1, device=0
+  Control: name="IEC958 Playback Pro Mask", index=1, device=0
+  Control: name="IEC958 Playback Default", index=1, device=0
+  Control: name="IEC958 Playback Switch", index=1, device=0
+  Control: name="ELD", index=0, device=7
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0b000094: OUT Detect HBR HDMI DP
+  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Unsolicited: tag=02, enabled=1
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+  Devices: 0
+  Connection: 0
+  In-driver Connection: 3
+     0x02 0x03 0x04
+Node 0x07 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+  Control: name="HDMI/DP,pcm=8 Jack", index=0, device=0
+  Control: name="IEC958 Playback Con Mask", index=2, device=0
+  Control: name="IEC958 Playback Pro Mask", index=2, device=0
+  Control: name="IEC958 Playback Default", index=2, device=0
+  Control: name="IEC958 Playback Switch", index=2, device=0
+  Control: name="ELD", index=0, device=8
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0b000094: OUT Detect HBR HDMI DP
+  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+  Pin-ctls: 0x00:
+  Unsolicited: tag=03, enabled=1
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+  Devices: 0
+  Connection: 0
+  In-driver Connection: 3
+     0x02 0x03 0x04
+Node 0x08 [Vendor Defined Widget] wcaps 0xf00000: Mono
