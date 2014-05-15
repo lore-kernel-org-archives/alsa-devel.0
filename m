@@ -1,52 +1,39 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Fix simultaneous Baytrail SST
-	capture and playback
-Date: Thu, 15 May 2014 14:41:48 +0300
-Message-ID: <1400154108-14698-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rsnd: Fix warnings due to improper printk formats
+Date: Thu, 15 May 2014 14:10:11 +0200
+Message-ID: <37843959.gzda0hXopa@avalon>
+References: <1399936220-17123-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com> <5372D5E4.9060300@renesas.com> <20140515101450.GN12304@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AB9926171D
- for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 13:41:59 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20140515101450.GN12304@sirena.org.uk>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Simon Horman <horms@verge.net.au>, alsa-devel@alsa-project.org, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I managed to drop a change to stream ID setting from commit 49fee1781634
-("ASoC: Intel: Only export one Baytrail DAI") leading to non-working
-simultaneous capture-playback since after one DAI conversion
-rtd->cpu_dai->id + 1 will be the same for both playback and capture.
+Hi Mark,
 
-Use substream->stream + 1 like it was in original Liam's patch.
+On Thursday 15 May 2014 11:14:50 Mark Brown wrote:
+> On Wed, May 14, 2014 at 11:33:08AM +0900, Kuninori Morimoto wrote:
+> > >Morimoto-san, should Mark Brown need to be CCed on a re-post
+> > >in order for him to see this?
+> > 
+> > Ahh, I didn't notice that Mark wasn't CCed.
+> > He never (?) accepts patch which doesn't have "To" him.
+> 
+> Well, sometimes I do but it's much less likely I'll even see an e-mail
+> that only went to the lists than if it goes to my inbox and since CCing
+> the maintainer is one of the things SubmittingPatches tells you to do
+> people really ought to know better.  Anyway, I saw this one and applied
+> it.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
- sound/soc/intel/sst-baytrail-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+My bad, sorry. I suppose I'm too used to maintainers who prefer not to be 
+CC'ed :-/
 
-diff --git a/sound/soc/intel/sst-baytrail-pcm.c b/sound/soc/intel/sst-baytrail-pcm.c
-index 23a25c0627bd..6242ccce2bb7 100644
---- a/sound/soc/intel/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/sst-baytrail-pcm.c
-@@ -254,7 +254,7 @@ static int sst_byt_pcm_open(struct snd_pcm_substream *substream)
- 
- 	snd_soc_set_runtime_hwparams(substream, &sst_byt_pcm_hardware);
- 
--	pcm_data->stream = sst_byt_stream_new(byt, rtd->cpu_dai->id + 1,
-+	pcm_data->stream = sst_byt_stream_new(byt, substream->stream + 1,
- 					      byt_notify_pointer, pcm_data);
- 	if (pcm_data->stream == NULL) {
- 		dev_err(rtd->dev, "failed to create stream\n");
 -- 
-2.0.0.rc0
+Regards,
+
+Laurent Pinchart
+
