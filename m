@@ -1,17 +1,14 @@
-From: Dan MacDonald <allcoms@gmail.com>
-Subject: poor i4600 HDMI output under 1.0.27.2
-Date: Wed, 14 May 2014 23:20:06 +0100
-Message-ID: <CANOoOjuQAttdCW7ozns8kX=+YZdnscf43DzfvDV5jTDrOqRkzA@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [Resend] Add the stream report feature. Could you
+	review my idea?
+Date: Thu, 15 May 2014 12:37:21 +0900
+Message-ID: <53743671.1030606@sakamocchi.jp>
+References: <CANXQt8a_T2ZZ_G6k15ajBpJvcmbQq1=JPn4L8mP3OUT=NZGeew@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
- [209.85.214.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 22B06261600
- for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 00:20:08 +0200 (CEST)
-Received: by mail-ob0-f171.google.com with SMTP id wn1so255920obc.2
- for <alsa-devel@alsa-project.org>; Wed, 14 May 2014 15:20:07 -0700 (PDT)
+In-Reply-To: <CANXQt8a_T2ZZ_G6k15ajBpJvcmbQq1=JPn4L8mP3OUT=NZGeew@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,157 +18,162 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: JongHo Kim <furmuwon@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Abramo Bagnara <abramo@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi list
-
-I have got HDMI audio out to kinda work but the sound quality is awful and
-not really listenable. Its very choppy and is slightly more high-pitched
-than it should be. This is when using hdmi:CARD=HDMI,DEV=1 @48khz
-outputting via ALSA 1.0.27.2 / jackd 0.124.2 under Deb Jessie amd64 with
-kernel 3.13.10-1. Its a System76 Gazelle Pro laptop FWIW.
-
-$ lspci -v:
-
-00:03.0 Audio device: Intel Corporation Xeon E3-1200 v3/4th Gen Core
-Processor HD Audio Controller (rev 06)
-        Subsystem: CLEVO/KAPOK Computer Device 0655
-        Flags: bus master, fast devsel, latency 0, IRQ 49
-        Memory at f7e14000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: <access denied>
-        Kernel driver in use: snd_hda_intel
-
-00:1b.0 Audio device: Intel Corporation 8 Series/C220 Series Chipset High
-Definition Audio Controller (rev
-05)
-
-        Subsystem: CLEVO/KAPOK Computer Device
-0655
-
-        Flags: bus master, fast devsel, latency 0, IRQ
-48
-
-        Memory at f7e10000 (64-bit, non-prefetchable)
-[size=16K]
-
-        Capabilities: <access
-denied>
-
-        Kernel driver in use: snd_hda_intel
-
-$ cat /proc/asound/card0/codec#0
-Codec: Intel Haswell HDMI
-Address: 0
-AFG Function Id: 0x1 (unsol 0)
-Vendor Id: 0x80862807
-Subsystem Id: 0x80860101
-Revision Id: 0x100000
-No Modem Function Group found
-Default PCM:
-    rates [0x0]:
-    bits [0x0]:
-    formats [0x0]:
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-  Power states:  D0 D3 CLKSTOP EPSS
-  Power: setting=D0, actual=D0, Clock-stop-OK
-GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
-Node 0x02 [Audio Output] wcaps 0x6611: 8-Channels Digital
-  Converter: stream=0, channel=0
-  Digital: Enabled KAE
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x5]: PCM AC3
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-Node 0x03 [Audio Output] wcaps 0x6611: 8-Channels Digital
-  Converter: stream=0, channel=0
-  Digital: Enabled KAE
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x5]: PCM AC3
-  Power states:  D0 D3 EPSS
-  Power: setting=D3, actual=D3
-Node 0x04 [Audio Output] wcaps 0x6611: 8-Channels Digital
-  Converter: stream=0, channel=0
-  Digital: Enabled KAE
-  Digital category: 0x0
-  IEC Coding Type: 0x0
-  PCM:
-    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x5]: PCM AC3
-  Power states:  D0 D3 EPSS
-  Power: setting=D3, actual=D3
-Node 0x05 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
-  Control: name="HDMI/DP,pcm=3 Jack", index=0, device=0
-  Control: name="IEC958 Playback Con Mask", index=0, device=0
-  Control: name="IEC958 Playback Pro Mask", index=0, device=0
-  Control: name="IEC958 Playback Default", index=0, device=0
-  Control: name="IEC958 Playback Switch", index=0, device=0
-  Control: name="ELD", index=0, device=3
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0b000094: OUT Detect HBR HDMI DP
-  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Unsolicited: tag=01, enabled=1
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-  Devices: 0
-  Connection: 0
-  In-driver Connection: 3
-     0x02 0x03 0x04
-Node 0x06 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
-  Control: name="HDMI/DP,pcm=7 Jack", index=0, device=0
-  Control: name="IEC958 Playback Con Mask", index=1, device=0
-  Control: name="IEC958 Playback Pro Mask", index=1, device=0
-  Control: name="IEC958 Playback Default", index=1, device=0
-  Control: name="IEC958 Playback Switch", index=1, device=0
-  Control: name="ELD", index=0, device=7
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0b000094: OUT Detect HBR HDMI DP
-  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Unsolicited: tag=02, enabled=1
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-  Devices: 0
-  Connection: 0
-  In-driver Connection: 3
-     0x02 0x03 0x04
-Node 0x07 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
-  Control: name="HDMI/DP,pcm=8 Jack", index=0, device=0
-  Control: name="IEC958 Playback Con Mask", index=2, device=0
-  Control: name="IEC958 Playback Pro Mask", index=2, device=0
-  Control: name="IEC958 Playback Default", index=2, device=0
-  Control: name="IEC958 Playback Switch", index=2, device=0
-  Control: name="ELD", index=0, device=8
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0b000094: OUT Detect HBR HDMI DP
-  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Unsolicited: tag=03, enabled=1
-  Power states:  D0 D3 EPSS
-  Power: setting=D0, actual=D0
-  Devices: 0
-  Connection: 0
-  In-driver Connection: 3
-     0x02 0x03 0x04
-Node 0x08 [Vendor Defined Widget] wcaps 0xf00000: Mono
+SGkgSm9uZ0hvLAoKSSBjYW4gdW5kZXJzdGFuZCB5b3VyIG5lZWRzIGJ1dCBJIGhhdmUgYSBxdWVz
+dGlvbiBmb3IgeW91ciBpZGVhLgoKTW9zdCBvZiBzbmRfcHJpbnRkKCkgb3V0cHV0IGluIHlvdXIg
+cGF0Y2ggYXJlIGZpeGVkIHZhbHVlIGluIGVhY2ggCnN1YnN0cmVhbSBhbmQgaXQncyByZXRyaWV2
+ZWQgZnJvbSB1c2VyLWxhbmQgdmlhIG5vZGVzIGluIHByb2NmcyBvciB2aWEgCmxpYnJhcnkgQVBJ
+cy4gSSB0aGluayBpdCBPSyB0byByZXRyaWV2ZSB0aGVtIGltbWVkaWF0ZWx5IHdoZW4gdGhlIGVy
+cm9yIAptZXNzYWdlIGlzIGdlbmVyYXRlZC4KClNvIEkgdGhpbmsgaXQgZW5vdWdoIHRvIHJldHJp
+ZXZlIHRoZXNlIGl0ZW1zIGZvciBldmVyeSB0aW1lOgorIHNuZF9wcmludGQoImF2YWlsOiAlbGRc
+biIsIHNuZF9wY21fcGxheWJhY2tfYXZhaWwocnVudGltZSkpOworIGVsc2UKKyBzbmRfcHJpbnRk
+KCJhdmFpbDogJWxkXG4iLCBzbmRfcGNtX2NhcHR1cmVfYXZhaWwocnVudGltZSkpOworIHNuZF9w
+cmludGQoImF2YWlsX21heDogJWxkXG4iLCBydW50aW1lLT5hdmFpbF9tYXgpOworIHNuZF9wcmlu
+dGQoImh3X3B0cjogJWxkXG4iLCBydW50aW1lLT5zdGF0dXMtPmh3X3B0cik7Cisgc25kX3ByaW50
+ZCgiYXBwbF9wdHI6ICVsZFxuIiwgcnVudGltZS0+Y29udHJvbC0+YXBwbF9wdHIpOwoKVGhlIHNp
+bWlsYXIgaW5mb3JtYXRpb24gY2FuIGJlIGdvdCB2aWEgaHdfcHRyX2Vycm9yKCkgaW4gCnNvdW5k
+L2NvcmUvcGNtX2xpYi5jLiBZb3UgY2FuIGVuYWJsZSB0aGUgb3V0cHV0IHdoZW4gZW5hYmxpbmcg
+CkNPTkZJR19TTkRfUENNX1hSVU5fREVCVUcgYW5kIHdyaXRpbmcgYXBwcm9wcmlhdGUgdmFsdWUg
+dG8gCi9wcm9jL2Fzb3VuZC9jYXJkJWQvcGNtJWR7YyxwfS94cnVuX2RlYnVnLiBTZWU6Cmh0dHA6
+Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQuZ2l0L3Ry
+ZWUvc291bmQvY29yZS9wY21fbGliLmMjbjE0NQoKSSB0aGluayB0aGVyZSBpcyBhbHJlYWR5IGFu
+IGFsdGVybmF0aXZlIHNvIEkgZGlzYWdyZWUgd2l0aCB5b3VyIGlkZWEuCgoKUmVnYXJkcwoKVGFr
+YXNoaSAobm90IGEgbWFpbnRhaW5lcikgU2FrYW1vdG8Kby10YWthc2hpQHNha2Ftb2NjaGkuanAK
+CigyMDE05bm0MDXmnIgxNeaXpSAwMTo1OSksIEpvbmdIbyBLaW0gd3JvdGU6Cj4gKEFkZCB0aGUg
+YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnKQo+Cj4gSGkKPgo+IEkgYW0gd29yayBvbiBBU29D
+IHBhcnQgYW5kIGRldmVsb3BpbmcgdGhlIHNtYXJ0cGhvbmUoQW5kcm9pZCkuCj4gd2UgaGF2ZSBi
+ZWVuIGRvaW5nIHRoZSBzdHJlc3MgYW5kIGxvbmcgcnVudGltZSB0ZXN0Lgo+IGF1ZGlvIG91dHB1
+dCBpcyBubyBwcm9ibGVtIGJ1dCBJIHNvbWV0aW1lcyBmYWNlCj4gdGhlICJwbGF5YmFjayB3cml0
+ZSBlcnJvcihETUEgb3IgSVJRIHRyb3VibGU/KSIgZXJyb3IgbWVzc2FnZS4KPiBJIGtub3cgdGhl
+IG1lYW5pbmcgb2YgdGhlIG1lc3NhZ2UgYW5kIEkgY2FuIHNvbHZlIHRoZSBlcnJvci4KPiB0aGUg
+cHJvYmxlbSBtYXkgYmUgY2F1c2VkIGJ5IEFQKGNsaykgb3IgSTJTIG9yIERNQSBvciBDb2RlYy4K
+Pgo+IEkgd291bGQgbGlrZSB0byB0cmFjZSB0aGUgaGFyZHdhcmUgZXJyb3IgYXQgdGhlIHByaW50
+ZWQgbWVzc2FnZS4KPgo+IENvdWxkIHlvdSByZXZpZXcgbXkgaWRlYT8KPgo+IFRoYW5rcwo+IC0t
+LQo+ICAgaW5jbHVkZS9zb3VuZC9wY20uaCAgICAgfCAgMiArKwo+ICAgaW5jbHVkZS9zb3VuZC9z
+b2MtZGFpLmggfCAgMiArKwo+ICAgaW5jbHVkZS9zb3VuZC9zb2MuaCAgICAgfCAgMSArCj4gICBz
+b3VuZC9jb3JlL3BjbV9saWIuYyAgICB8ICAzICsrKwo+ICAgc291bmQvY29yZS9wY21fbmF0aXZl
+LmMgfCA1MQo+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysKPiAgIHNvdW5kL3NvYy9zb2MtcGNtLmMgICAgIHwgMjYgKysrKysrKysrKysrKysrKysrKysr
+KysrKwo+ICAgNiBmaWxlcyBjaGFuZ2VkLCA4NSBpbnNlcnRpb25zKCspCj4KPiBkaWZmIC0tZ2l0
+IGEvaW5jbHVkZS9zb3VuZC9wY20uaCBiL2luY2x1ZGUvc291bmQvcGNtLmgKPiBpbmRleCBiNGQ2
+Njk3Li5jZDMwOTNhIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvc291bmQvcGNtLmgKPiArKysgYi9p
+bmNsdWRlL3NvdW5kL3BjbS5oCj4gQEAgLTgyLDYgKzgyLDcgQEAgc3RydWN0IHNuZF9wY21fb3Bz
+IHsKPiAgICAgICAgdW5zaWduZWQgbG9uZyBvZmZzZXQpOwo+ICAgIGludCAoKm1tYXApKHN0cnVj
+dCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLCBzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QKPiAq
+dm1hKTsKPiAgICBpbnQgKCphY2spKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFt
+KTsKPiArIHZvaWQgKCpyZXBvcnQpKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFt
+KTsKPiAgIH07Cj4KPiAgIC8qCj4gQEAgLTUwMiw2ICs1MDMsNyBAQCBpbnQgc25kX3BjbV9zdGF0
+dXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCj4gICBpbnQgc25kX3BjbV9z
+dGFydChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSk7Cj4gICBpbnQgc25kX3Bj
+bV9zdG9wKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLCBzbmRfcGNtX3N0YXRl
+X3QKPiBzdGF0dXMpOwo+ICAgaW50IHNuZF9wY21fZHJhaW5fZG9uZShzdHJ1Y3Qgc25kX3BjbV9z
+dWJzdHJlYW0gKnN1YnN0cmVhbSk7Cj4gK3ZvaWQgc25kX3BjbV9yZXBvcnQoc3RydWN0IHNuZF9w
+Y21fc3Vic3RyZWFtICpzdWJzdHJlYW0pOwo+ICAgI2lmZGVmIENPTkZJR19QTQo+ICAgaW50IHNu
+ZF9wY21fc3VzcGVuZChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSk7Cj4gICBp
+bnQgc25kX3BjbV9zdXNwZW5kX2FsbChzdHJ1Y3Qgc25kX3BjbSAqcGNtKTsKPiBkaWZmIC0tZ2l0
+IGEvaW5jbHVkZS9zb3VuZC9zb2MtZGFpLmggYi9pbmNsdWRlL3NvdW5kL3NvYy1kYWkuaAo+IGlu
+ZGV4IGZhZDc2NzYuLmMwMzIzOTMgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9zb3VuZC9zb2MtZGFp
+LmgKPiArKysgYi9pbmNsdWRlL3NvdW5kL3NvYy1kYWkuaAo+IEBAIC0xODQsNiArMTg0LDggQEAg
+c3RydWN0IHNuZF9zb2NfZGFpX29wcyB7Cj4gICAgc3RydWN0IHNuZF9zb2NfZGFpICopOwo+ICAg
+IGludCAoKmJlc3Bva2VfdHJpZ2dlcikoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICosIGludCwK
+PiAgICBzdHJ1Y3Qgc25kX3NvY19kYWkgKik7Cj4gKyB2b2lkICgqcmVwb3J0KShzdHJ1Y3Qgc25k
+X3BjbV9zdWJzdHJlYW0gKiwKPiArIHN0cnVjdCBzbmRfc29jX2RhaSAqKTsKPiAgICAvKgo+ICAg
+ICogRm9yIGhhcmR3YXJlIGJhc2VkIEZJRk8gY2F1c2VkIGRlbGF5IHJlcG9ydGluZy4KPiAgICAq
+IE9wdGlvbmFsLgo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL3NvYy5oIGIvaW5jbHVkZS9z
+b3VuZC9zb2MuaAo+IGluZGV4IDBiODMxNjguLjc2ODU4MzkgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVk
+ZS9zb3VuZC9zb2MuaAo+ICsrKyBiL2luY2x1ZGUvc291bmQvc29jLmgKPiBAQCAtNjQxLDYgKzY0
+MSw3IEBAIHN0cnVjdCBzbmRfc29jX29wcyB7Cj4gICAgaW50ICgqaHdfZnJlZSkoc3RydWN0IHNu
+ZF9wY21fc3Vic3RyZWFtICopOwo+ICAgIGludCAoKnByZXBhcmUpKHN0cnVjdCBzbmRfcGNtX3N1
+YnN0cmVhbSAqKTsKPiAgICBpbnQgKCp0cmlnZ2VyKShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0g
+KiwgaW50KTsKPiArIHZvaWQgKCpyZXBvcnQpKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqKTsK
+PiAgIH07Cj4KPiAgIHN0cnVjdCBzbmRfc29jX2NvbXByX29wcyB7Cj4gZGlmZiAtLWdpdCBhL3Nv
+dW5kL2NvcmUvcGNtX2xpYi5jIGIvc291bmQvY29yZS9wY21fbGliLmMKPiBpbmRleCBjZTgzZGVm
+Li4wZDZjOWEzIDEwMDY0NAo+IC0tLSBhL3NvdW5kL2NvcmUvcGNtX2xpYi5jCj4gKysrIGIvc291
+bmQvY29yZS9wY21fbGliLmMKPiBAQCAtMTk0NCw2ICsxOTQ0LDkgQEAgc3RhdGljIGludCB3YWl0
+X2Zvcl9hdmFpbChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0KPiAqc3Vic3RyZWFtLAo+ICAgICIl
+cyB3cml0ZSBlcnJvciAoRE1BIG9yIElSUSB0cm91YmxlPylcbiIsCj4gICAgaXNfcGxheWJhY2sg
+PyAicGxheWJhY2siIDogImNhcHR1cmUiKTsKPiAgICBlcnIgPSAtRUlPOwo+ICsgc25kX3BjbV9z
+dHJlYW1fdW5sb2NrX2lycShzdWJzdHJlYW0pOwo+ICsgc25kX3BjbV9yZXBvcnQoc3Vic3RyZWFt
+KTsKPiArIHNuZF9wY21fc3RyZWFtX2xvY2tfaXJxKHN1YnN0cmVhbSk7Cj4gICAgYnJlYWs7Cj4g
+ICAgfQo+ICAgIH0KPiBkaWZmIC0tZ2l0IGEvc291bmQvY29yZS9wY21fbmF0aXZlLmMgYi9zb3Vu
+ZC9jb3JlL3BjbV9uYXRpdmUuYwo+IGluZGV4IGI2NTNhYjAuLjBjY2RjMTAgMTAwNjQ0Cj4gLS0t
+IGEvc291bmQvY29yZS9wY21fbmF0aXZlLmMKPiArKysgYi9zb3VuZC9jb3JlL3BjbV9uYXRpdmUu
+Ywo+IEBAIC05NzgsNiArOTc4LDU3IEBAIGludCBzbmRfcGNtX2RyYWluX2RvbmUoc3RydWN0IHNu
+ZF9wY21fc3Vic3RyZWFtCj4gKnN1YnN0cmVhbSkKPiAgICAgICAgU05EUlZfUENNX1NUQVRFX1NF
+VFVQKTsKPiAgIH0KPgo+ICt2b2lkIHNuZF9wY21fcmVwb3J0KHN0cnVjdCBzbmRfcGNtX3N1YnN0
+cmVhbSAqc3Vic3RyZWFtKQo+ICt7Cj4gKyBzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1l
+ID0gc3Vic3RyZWFtLT5ydW50aW1lOwo+ICsKPiArIGlmICghcnVudGltZSkgewo+ICsgc25kX3By
+aW50ZCgicnVudGltZSBkaXNhcHBlYXJcbiIpOwo+ICsgcmV0dXJuOwo+ICsgfQo+ICsKPiArIG11
+dGV4X2xvY2soJnN1YnN0cmVhbS0+cGNtLT5vcGVuX211dGV4KTsKPiArIHNuZF9wcmludGQoImFj
+Y2VzczogJWlcbiIsIHJ1bnRpbWUtPmFjY2Vzcyk7Cj4gKyBzbmRfcHJpbnRkKCJmb3JtYXQ6ICVp
+XG4iLCBydW50aW1lLT5mb3JtYXQpOwo+ICsgc25kX3ByaW50ZCgic3ViZm9ybWF0OiAlZFxuIiwg
+cnVudGltZS0+c3ViZm9ybWF0KTsKPiArIHNuZF9wcmludGQoImNoYW5uZWxzOiAldVxuIiwgcnVu
+dGltZS0+Y2hhbm5lbHMpOwo+ICsgc25kX3ByaW50ZCgicmF0ZTogJXUgKCV1LyV1KVxuIiwgcnVu
+dGltZS0+cmF0ZSwgcnVudGltZS0+cmF0ZV9udW0sCj4gKyAgIHJ1bnRpbWUtPnJhdGVfZGVuKTsK
+PiArIHNuZF9wcmludGQoInBlcmlvZF9zaXplOiAlbHVcbiIsIHJ1bnRpbWUtPnBlcmlvZF9zaXpl
+KTsKPiArIHNuZF9wcmludGQoImJ1ZmZlcl9zaXplOiAlbHVcbiIsIHJ1bnRpbWUtPmJ1ZmZlcl9z
+aXplKTsKPiArIHNuZF9wcmludGQoInRzdGFtcF9tb2RlOiAlaVxuIiwgcnVudGltZS0+dHN0YW1w
+X21vZGUpOwo+ICsgc25kX3ByaW50ZCgicGVyaW9kX3N0ZXA6ICV1XG4iLCBydW50aW1lLT5wZXJp
+b2Rfc3RlcCk7Cj4gKyBzbmRfcHJpbnRkKCJhdmFpbF9taW46ICVsdVxuIiwgcnVudGltZS0+Y29u
+dHJvbC0+YXZhaWxfbWluKTsKPiArIHNuZF9wcmludGQoInN0YXJ0X3RocmVzaG9sZDogJWx1XG4i
+LCBydW50aW1lLT5zdGFydF90aHJlc2hvbGQpOwo+ICsgc25kX3ByaW50ZCgic3RvcF90aHJlc2hv
+bGQ6ICVsdVxuIiwgcnVudGltZS0+c3RvcF90aHJlc2hvbGQpOwo+ICsgc25kX3ByaW50ZCgic2ls
+ZW5jZV90aHJlc2hvbGQ6ICVsdVxuIiwgcnVudGltZS0+c2lsZW5jZV90aHJlc2hvbGQpOwo+ICsg
+c25kX3ByaW50ZCgic2lsZW5jZV9zaXplOiAlbHVcbiIsIHJ1bnRpbWUtPnNpbGVuY2Vfc2l6ZSk7
+Cj4gKyBzbmRfcHJpbnRkKCJib3VuZGFyeTogJWx1XG4iLCBydW50aW1lLT5ib3VuZGFyeSk7Cj4g
+KyBzbmRfcHJpbnRkKCJzdGF0ZTogJWlcbiIsIHJ1bnRpbWUtPnN0YXR1cy0+c3RhdGUpOwo+ICsg
+c25kX3ByaW50ZCgib3duZXJfcGlkOiAlZFxuIiwgcGlkX3ZucihzdWJzdHJlYW0tPnBpZCkpOwo+
+ICsgc25kX3ByaW50ZCgidHJpZ2dlcl90aW1lOiAlbGQuJTA5bGRcbiIsCj4gKyAgIHJ1bnRpbWUt
+PnRyaWdnZXJfdHN0YW1wLnR2X3NlYywKPiArICAgcnVudGltZS0+dHJpZ2dlcl90c3RhbXAudHZf
+bnNlYyk7Cj4gKyBzbmRfcHJpbnRkKCJ0c3RhbXA6ICVsZC4lMDlsZFxuIiwKPiArICAgcnVudGlt
+ZS0+c3RhdHVzLT50c3RhbXAudHZfc2VjLAo+ICsgICBydW50aW1lLT5zdGF0dXMtPnRzdGFtcC50
+dl9uc2VjKTsKPiArIHNuZF9wcmludGQoImRlbGF5OiAlbGRcbiIsIHJ1bnRpbWUtPmRlbGF5KTsK
+PiArIGlmIChzdWJzdHJlYW0tPnN0cmVhbSA9PSBTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKQo+
+ICsgc25kX3ByaW50ZCgiYXZhaWw6ICVsZFxuIiwgc25kX3BjbV9wbGF5YmFja19hdmFpbChydW50
+aW1lKSk7Cj4gKyBlbHNlCj4gKyBzbmRfcHJpbnRkKCJhdmFpbDogJWxkXG4iLCBzbmRfcGNtX2Nh
+cHR1cmVfYXZhaWwocnVudGltZSkpOwo+ICsgc25kX3ByaW50ZCgiYXZhaWxfbWF4OiAlbGRcbiIs
+IHJ1bnRpbWUtPmF2YWlsX21heCk7Cj4gKyBzbmRfcHJpbnRkKCJod19wdHI6ICVsZFxuIiwgcnVu
+dGltZS0+c3RhdHVzLT5od19wdHIpOwo+ICsgc25kX3ByaW50ZCgiYXBwbF9wdHI6ICVsZFxuIiwg
+cnVudGltZS0+Y29udHJvbC0+YXBwbF9wdHIpOwo+ICsKPiArIG11dGV4X3VubG9jaygmc3Vic3Ry
+ZWFtLT5wY20tPm9wZW5fbXV0ZXgpOwo+ICsKPiArIGlmIChzdWJzdHJlYW0tPm9wcy0+cmVwb3J0
+KQo+ICsgc3Vic3RyZWFtLT5vcHMtPnJlcG9ydChzdWJzdHJlYW0pOwo+ICsKPiArIHJldHVybjsK
+PiArfQo+ICsKPiAgIC8qCj4gICAgKiBwYXVzZSBjYWxsYmFja3MKPiAgICAqLwo+IGRpZmYgLS1n
+aXQgYS9zb3VuZC9zb2Mvc29jLXBjbS5jIGIvc291bmQvc29jL3NvYy1wY20uYwo+IGluZGV4IDJj
+ZWRmMDkuLjk4YTQ3YjMgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL3NvYy1wY20uYwo+ICsrKyBi
+L3NvdW5kL3NvYy9zb2MtcGNtLmMKPiBAQCAtODgzLDYgKzg4MywzMCBAQCBzdGF0aWMgc25kX3Bj
+bV91ZnJhbWVzX3Qgc29jX3BjbV9wb2ludGVyKHN0cnVjdAo+IHNuZF9wY21fc3Vic3RyZWFtICpz
+dWJzdHJlYW0pCj4gICAgcmV0dXJuIG9mZnNldDsKPiAgIH0KPgo+ICtzdGF0aWMgdm9pZCBzb2Nf
+cGNtX3JlcG9ydChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKPiArewo+ICsg
+c3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCA9IHN1YnN0cmVhbS0+cHJpdmF0ZV9kYXRh
+Owo+ICsgc3RydWN0IHNuZF9zb2NfcGxhdGZvcm0gKnBsYXRmb3JtID0gcnRkLT5wbGF0Zm9ybTsK
+PiArIHN0cnVjdCBzbmRfc29jX2RhaSAqY3B1X2RhaSA9IHJ0ZC0+Y3B1X2RhaTsKPiArIHN0cnVj
+dCBzbmRfc29jX2RhaSAqY29kZWNfZGFpID0gcnRkLT5jb2RlY19kYWk7Cj4gKwo+ICsgbXV0ZXhf
+bG9ja19uZXN0ZWQoJnJ0ZC0+cGNtX211dGV4LCBydGQtPnBjbV9zdWJjbGFzcyk7Cj4gKyAvKiBy
+ZXBvcnQgdGhlIGF1ZGlvIHN1YnN5c3RlbSAqLwo+ICsgaWYgKHJ0ZC0+ZGFpX2xpbmstPm9wcyAm
+JiBydGQtPmRhaV9saW5rLT5vcHMtPnJlcG9ydCkKPiArIHJ0ZC0+ZGFpX2xpbmstPm9wcy0+cmVw
+b3J0KHN1YnN0cmVhbSk7Cj4gKwo+ICsgaWYgKGNwdV9kYWktPmRyaXZlci0+b3BzLT5yZXBvcnQp
+Cj4gKyBjcHVfZGFpLT5kcml2ZXItPm9wcy0+cmVwb3J0KHN1YnN0cmVhbSwgY3B1X2RhaSk7Cj4g
+Kwo+ICsgaWYgKHBsYXRmb3JtLT5kcml2ZXItPm9wcyAmJiBwbGF0Zm9ybS0+ZHJpdmVyLT5vcHMt
+PnJlcG9ydCkKPiArIHBsYXRmb3JtLT5kcml2ZXItPm9wcy0+cmVwb3J0KHN1YnN0cmVhbSk7Cj4g
+Kwo+ICsgaWYgKGNvZGVjX2RhaS0+ZHJpdmVyLT5vcHMtPnJlcG9ydCkKPiArIGNvZGVjX2RhaS0+
+ZHJpdmVyLT5vcHMtPnJlcG9ydChzdWJzdHJlYW0sIGNvZGVjX2RhaSk7Cj4gKwo+ICsgbXV0ZXhf
+dW5sb2NrKCZydGQtPnBjbV9tdXRleCk7Cj4gK30KPiArCj4gICAvKiBjb25uZWN0IGEgRkUgYW5k
+IEJFICovCj4gICBzdGF0aWMgaW50IGRwY21fYmVfY29ubmVjdChzdHJ1Y3Qgc25kX3NvY19wY21f
+cnVudGltZSAqZmUsCj4gICAgc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKmJlLCBpbnQgc3Ry
+ZWFtKQo+IEBAIC0yMjY3LDYgKzIyOTEsNyBAQCBpbnQgc29jX25ld19wY20oc3RydWN0IHNuZF9z
+b2NfcGNtX3J1bnRpbWUgKnJ0ZCwgaW50Cj4gbnVtKQo+ICAgIHJ0ZC0+b3BzLmNsb3NlID0gZHBj
+bV9mZV9kYWlfY2xvc2U7Cj4gICAgcnRkLT5vcHMucG9pbnRlciA9IHNvY19wY21fcG9pbnRlcjsK
+PiAgICBydGQtPm9wcy5pb2N0bCA9IHNvY19wY21faW9jdGw7Cj4gKyBydGQtPm9wcy5yZXBvcnQg
+PSBzb2NfcGNtX3JlcG9ydDsKPiAgICB9IGVsc2Ugewo+ICAgIHJ0ZC0+b3BzLm9wZW4gPSBzb2Nf
+cGNtX29wZW47Cj4gICAgcnRkLT5vcHMuaHdfcGFyYW1zID0gc29jX3BjbV9od19wYXJhbXM7Cj4g
+QEAgLTIyNzYsNiArMjMwMSw3IEBAIGludCBzb2NfbmV3X3BjbShzdHJ1Y3Qgc25kX3NvY19wY21f
+cnVudGltZSAqcnRkLCBpbnQKPiBudW0pCj4gICAgcnRkLT5vcHMuY2xvc2UgPSBzb2NfcGNtX2Ns
+b3NlOwo+ICAgIHJ0ZC0+b3BzLnBvaW50ZXIgPSBzb2NfcGNtX3BvaW50ZXI7Cj4gICAgcnRkLT5v
+cHMuaW9jdGwgPSBzb2NfcGNtX2lvY3RsOwo+ICsgcnRkLT5vcHMucmVwb3J0ID0gc29jX3BjbV9y
+ZXBvcnQ7Cj4gICAgfQo+Cj4gICAgaWYgKHBsYXRmb3JtLT5kcml2ZXItPm9wcykgewoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
