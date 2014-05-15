@@ -1,20 +1,22 @@
-From: Dan MacDonald <allcoms@gmail.com>
-Subject: Re: poor i4600 HDMI output under 1.0.27.2
-Date: Thu, 15 May 2014 19:39:03 +0100
-Message-ID: <CANOoOjsei=6bV9YLM23UxgmLoQ4fpeOV6Bx+=oOSkQrzuPj5kQ@mail.gmail.com>
-References: <CANOoOjuQAttdCW7ozns8kX=+YZdnscf43DzfvDV5jTDrOqRkzA@mail.gmail.com>
- <53747B6A.20407@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] dma: pl330: Add support for DMA_PAUSE
+	command
+Date: Thu, 15 May 2014 21:21:12 +0200
+Message-ID: <537513A8.701@metafoo.de>
+References: <1400037830-21211-1-git-send-email-tushar.behera@linaro.org>
+ <CABb+yY3YocX=8Dv7DysM4tcx=NTCCGGipz_gpMfpKDnAw7R8iw@mail.gmail.com>
+ <CAHbNUh0fVND_oGLXWzsyKzbmJc_=FqhZTAnVHE4GGZ5aaJQbEg@mail.gmail.com>
+ <5373607D.2000200@metafoo.de>
+ <CAHbNUh1bmBniGVtvK4PpmpaKOnwG=MgtupkTEnjD6SS3r_-yjw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f42.google.com (mail-oa0-f42.google.com
- [209.85.219.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 0865C261A40
- for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 20:45:04 +0200 (CEST)
-Received: by mail-oa0-f42.google.com with SMTP id j17so1777138oag.1
- for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 11:45:03 -0700 (PDT)
-In-Reply-To: <53747B6A.20407@gmail.com>
+Received: from smtp-out-123.synserver.de (smtp-out-167.synserver.de
+ [212.40.185.167])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34F812625D7
+ for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 21:21:16 +0200 (CEST)
+In-Reply-To: <CAHbNUh1bmBniGVtvK4PpmpaKOnwG=MgtupkTEnjD6SS3r_-yjw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,89 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc: alsa-devel@alsa-project.org, David Woodhouse <dwmw2@infradead.org>
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Jassi Brar <jassisinghbrar@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Alexander
-
-I have tried booting with just
-
-intel_iommu=on,igfx_off
-
-and also with
-
-snd_hda_intel.align_buffer_size=1
-
-but neither combination did anything to fix the garbled HDMI sound
-under both 3.13.10 (Deb Jessie) and 3.11.0 (Ubuntu 12.04.4). The
-analogue audio works fine.
-
-
-
-On Thu, May 15, 2014 at 9:31 AM, Alexander E. Patrakov
-<patrakov@gmail.com>wrote:
-
-> 15.05.2014 04:20, Dan MacDonald wrote:
+On 05/15/2014 02:01 PM, Tushar Behera wrote:
+> On 14 May 2014 17:54, Lars-Peter Clausen <lars@metafoo.de> wrote:
+>> On 05/14/2014 02:07 PM, Tushar Behera wrote:
+>>>
+>>> On 14 May 2014 17:29, Jassi Brar <jassisinghbrar@gmail.com> wrote:
+>>>>
+>>>> On Wed, May 14, 2014 at 8:53 AM, Tushar Behera <tushar.behera@linaro.org>
+>>>> wrote:
+>>>>>
+>>>>> While playing back audio, pmc_dmaengine requests the DMA channel to
+>>>>> stop DMA transmission through DMA_PAUSE command.
+>>>>>
+>>>>> Currently PL330 driver doesn't support DMA pause command, leaving
+>>>>> the DMA state inconsistent when the system resumes. Instead, it would
+>>>>> be better to terminate the DMA transfer during suspend and restart
+>>>>> again during resume.
+>>>>>
+>>>>> Tested with audio playback across a suspend-resume cycle.
+>>>>>
+>>>> What is pmc_dmaengine? How does DMA_PAUSE help, when there is no
+>>>> DMA_RESUME?
+>>>>
+>>>
+>>> Sorry, it is a typo.
+>>>
+>>> sound/core/pcm_dmaengine.c:snd_dmaengine_pcm_trigger() -->
+>>> dmaengine_pause() is called during system suspend.
+>>
+>>
+>> It is only called if the DMA driver has support for pausing and resuming DMA
+>> transfers. Or at least that is the intention.
+>>
+>> - Lars
 >
->> Hi list
->>
->> I have got HDMI audio out to kinda work but the sound quality is awful and
->> not really listenable. Its very choppy and is slightly more high-pitched
->> than it should be. This is when using hdmi:CARD=HDMI,DEV=1 @48khz
->> outputting via ALSA 1.0.27.2 / jackd 0.124.2 under Deb Jessie amd64 with
->> kernel 3.13.10-1. Its a System76 Gazelle Pro laptop FWIW.
->>
->
-> This may be another manifestation of https://bugzilla.kernel.org/
-> show_bug.cgi?id=60769 which is still not completely fixed but has a
-> workaround.
->
-> For me, it leads to silence, for others, it leads to underruns and
-> screeching sounds. Please test whether appending this kernel command line
-> option helps:
->
-> intel_iommu=on,igfx_off
->
->
->
->> $ lspci -v:
->>
->> 00:03.0 Audio device: Intel Corporation Xeon E3-1200 v3/4th Gen Core
->> Processor HD Audio Controller (rev 06)
->>          Subsystem: CLEVO/KAPOK Computer Device 0655
->>          Flags: bus master, fast devsel, latency 0, IRQ 49
->>          Memory at f7e14000 (64-bit, non-prefetchable) [size=16K]
->>          Capabilities: <access denied>
->>          Kernel driver in use: snd_hda_intel
->>
->> 00:1b.0 Audio device: Intel Corporation 8 Series/C220 Series Chipset High
->> Definition Audio Controller (rev
->> 05)
->>
->>          Subsystem: CLEVO/KAPOK Computer Device
->> 0655
->>
->>          Flags: bus master, fast devsel, latency 0, IRQ
->> 48
->>
->>          Memory at f7e10000 (64-bit, non-prefetchable)
->> [size=16K]
->>
->>          Capabilities: <access
->> denied>
->>
->>          Kernel driver in use: snd_hda_intel
->>
->> $ cat /proc/asound/card0/codec#0
->> Codec: Intel Haswell HDMI
->> Address: 0
->> AFG Function Id: 0x1 (unsol 0)
->> Vendor Id: 0x80862807
->> Subsystem Id: 0x80860101
->> Revision Id: 0x100000
->>
->
-> --
-> Alexander E. Patrakov
->
+> During suspend, snd_dmaengine_pcm_trigger():SNDRV_PCM_TRIGGER_SUSPEND
+> is called which unconditionally calls dmaengine_pause(). Should we
+> update snd_dmaengine_pcm_trigger() to check for DMA pause/resume
+> support and call dmaengine_pause() or dmaengine_terminate_all()
+> accordingly?
+
+As far as I understand it we do not have to do anything for TRIGGER_SUSPEND 
+if we do not set the SNDRV_PCM_INFO_RESUME flag. It looks like 
+TRIGGER_SUSPEND is called unconditionally during suspend. But since the 
+error code is ignored it should be fine if we just call dmaengine_pause() 
+and that return -ENOSYS or similar.
+
+Are you seeing an actual issue that you are trying to fix with your patch?
+
+- Lars
