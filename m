@@ -1,55 +1,58 @@
-From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: =?UTF-8?q?=5BPATCH=5D=20Fix=20for=20possible=20null=20pointer=20dereference=20in=20dma=2Ec?=
-Date: Thu, 15 May 2014 23:57:56 +0200
-Message-ID: <1400191076-28279-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+From: Adam Baker <linux@baker-net.org.uk>
+Subject: Re: [PATCH RFC 03/11] sound: ASoC: kirkwood: Remove ARCH_KIRKWOOD
+ dependency
+Date: Thu, 15 May 2014 23:01:14 +0100
+Message-ID: <5375392A.60905@baker-net.org.uk>
+References: <1400163836-9831-1-git-send-email-andrew@lunn.ch>
+ <1400163836-9831-7-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>
-Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1400163836-9831-7-git-send-email-andrew@lunn.ch>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Andrew Lunn <andrew@lunn.ch>, linux ARM <linux-arm-kernel@lists.infradead.org>, Jason Cooper <jason@lakedaemon.net>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-There is otherwise a risk of a possible null pointer dereference.
+On 15/05/14 15:23, Andrew Lunn wrote:
+> mach-kirkwood has been removed, now that kirkwood lives in mach-mvebu.
 
-Was largely found by using a static code analysis program called cppche=
-ck.
+Most of the descriptions in the series say remove mach-kirkwood and most 
+of the actual patches remove ARCH_KIRKWOOD and leave MACH_KIRKWOOD 
+untouched. Patch 01/11 hasn't turned up here so I'm not certain which 
+you meant but consistency would be good.
 
-Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital=
-=2Ese>
----
- sound/soc/samsung/dma.c |   10 ++++++----
- 1 fil =C3=A4ndrad, 6 till=C3=A4gg(+), 4 borttagningar(-)
+>
+> Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: alsa-devel@alsa-project.org
+> ---
+>   sound/soc/kirkwood/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
+> index 1f7c7ee3527a..6a0f79d2bb33 100644
+> --- a/sound/soc/kirkwood/Kconfig
+> +++ b/sound/soc/kirkwood/Kconfig
+> @@ -1,6 +1,6 @@
+>   config SND_KIRKWOOD_SOC
+>   	tristate "SoC Audio for the Marvell Kirkwood and Dove chips"
+> -	depends on ARCH_KIRKWOOD || ARCH_DOVE || ARCH_MVEBU || MACH_KIRKWOOD || COMPILE_TEST
+> +	depends on ARCH_DOVE || ARCH_MVEBU || MACH_KIRKWOOD || COMPILE_TEST
+>   	help
+>   	  Say Y or M if you want to add support for codecs attached to
+>   	  the Kirkwood I2S interface. You will also need to select the
+>
 
-diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
-index dc09b71..b1f6757 100644
---- a/sound/soc/samsung/dma.c
-+++ b/sound/soc/samsung/dma.c
-@@ -115,17 +115,19 @@ static void dma_enqueue(struct snd_pcm_substream =
-*substream)
- static void audio_buffdone(void *data)
- {
- 	struct snd_pcm_substream *substream =3D data;
--	struct runtime_data *prtd =3D substream->runtime->private_data;
-+	struct runtime_data *prtd =3D NULL;
-=20
- 	pr_debug("Entered %s\n", __func__);
-=20
--	if (prtd->state & ST_RUNNING) {
-+	if(substream)
-+		prtd =3D substream->runtime->private_data;
-+
-+	if (prtd && prtd->state & ST_RUNNING) {
- 		prtd->dma_pos +=3D prtd->dma_period;
- 		if (prtd->dma_pos >=3D prtd->dma_end)
- 			prtd->dma_pos =3D prtd->dma_start;
-=20
--		if (substream)
--			snd_pcm_period_elapsed(substream);
-+		snd_pcm_period_elapsed(substream);
-=20
- 		spin_lock(&prtd->lock);
- 		if (!samsung_dma_has_circular()) {
---=20
-1.7.10.4
+Regards
+
+Adam Baker
