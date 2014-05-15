@@ -1,19 +1,16 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: poor i4600 HDMI output under 1.0.27.2
-Date: Thu, 15 May 2014 14:31:38 +0600
-Message-ID: <53747B6A.20407@gmail.com>
-References: <CANOoOjuQAttdCW7ozns8kX=+YZdnscf43DzfvDV5jTDrOqRkzA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Audio mini conference 2014?
+Date: Thu, 15 May 2014 11:12:02 +0100
+Message-ID: <20140515101202.GM12304@sirena.org.uk>
+References: <s5hoaz1iy8e.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4105833036757072809=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f172.google.com (mail-lb0-f172.google.com
- [209.85.217.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 83DF4261A3B
- for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 10:27:11 +0200 (CEST)
-Received: by mail-lb0-f172.google.com with SMTP id l4so527899lbv.17
- for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 01:27:11 -0700 (PDT)
-In-Reply-To: <CANOoOjuQAttdCW7ozns8kX=+YZdnscf43DzfvDV5jTDrOqRkzA@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64034261A80
+ for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 12:12:18 +0200 (CEST)
+In-Reply-To: <s5hoaz1iy8e.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,64 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan MacDonald <allcoms@gmail.com>, alsa-devel@alsa-project.org, David Woodhouse <dwmw2@infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-15.05.2014 04:20, Dan MacDonald wrote:
-> Hi list
->
-> I have got HDMI audio out to kinda work but the sound quality is awful and
-> not really listenable. Its very choppy and is slightly more high-pitched
-> than it should be. This is when using hdmi:CARD=HDMI,DEV=1 @48khz
-> outputting via ALSA 1.0.27.2 / jackd 0.124.2 under Deb Jessie amd64 with
-> kernel 3.13.10-1. Its a System76 Gazelle Pro laptop FWIW.
 
-This may be another manifestation of 
-https://bugzilla.kernel.org/show_bug.cgi?id=60769 which is still not 
-completely fixed but has a workaround.
+--===============4105833036757072809==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="8kBHBqmMEs6fw5Pb"
+Content-Disposition: inline
 
-For me, it leads to silence, for others, it leads to underruns and 
-screeching sounds. Please test whether appending this kernel command 
-line option helps:
 
-intel_iommu=on,igfx_off
+--8kBHBqmMEs6fw5Pb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> $ lspci -v:
->
-> 00:03.0 Audio device: Intel Corporation Xeon E3-1200 v3/4th Gen Core
-> Processor HD Audio Controller (rev 06)
->          Subsystem: CLEVO/KAPOK Computer Device 0655
->          Flags: bus master, fast devsel, latency 0, IRQ 49
->          Memory at f7e14000 (64-bit, non-prefetchable) [size=16K]
->          Capabilities: <access denied>
->          Kernel driver in use: snd_hda_intel
->
-> 00:1b.0 Audio device: Intel Corporation 8 Series/C220 Series Chipset High
-> Definition Audio Controller (rev
-> 05)
->
->          Subsystem: CLEVO/KAPOK Computer Device
-> 0655
->
->          Flags: bus master, fast devsel, latency 0, IRQ
-> 48
->
->          Memory at f7e10000 (64-bit, non-prefetchable)
-> [size=16K]
->
->          Capabilities: <access
-> denied>
->
->          Kernel driver in use: snd_hda_intel
->
-> $ cat /proc/asound/card0/codec#0
-> Codec: Intel Haswell HDMI
-> Address: 0
-> AFG Function Id: 0x1 (unsol 0)
-> Vendor Id: 0x80862807
-> Subsystem Id: 0x80860101
-> Revision Id: 0x100000
+On Tue, May 13, 2014 at 03:50:41PM +0200, Takashi Iwai wrote:
 
--- 
-Alexander E. Patrakov
+> did anyone think of a meeting in this year?  AFAIK, a couple of good
+> candidates to tie with are:
+
+> - LinuxCon + KS will be at Chicago, USA (in August 18-22)
+> - Plumbers will be at Duesseldorf, Germany (in October 15-17)
+
+> Any other opportunities?  I'm not sure whether I'll be in the former
+> (due to private reason), but very likely I'll attend the latter.
+
+I don't have specific plans for anything, though I guess it's likely I
+might be at KS.  If not Plumbers is going to be easiest.
+
+> And, if we hold a meeting, in which format?  I find the previous
+> year's meeting was nice; i.e. a kind of mini-summit that doesn't
+> conflict with other meetings is my preference.  But I'm open for other
+> options.
+
+Me too.
+
+--8kBHBqmMEs6fw5Pb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTdJLvAAoJELSic+t+oim9lVMP/inSHP64FMfdwqY7TZvm8Wz/
+jJfmb+DUC1JExWBVaC79W9aO3Efc+Ckks6l19+KkpM+Jl1ykRy0rt9rPzDNPzXqB
+TWJT3wV4gOUfiIZTfnrd0HxOIRRX2DKneBmRVUhsfBnYJIr03cQ7o3cR0vsjXKA7
+5qioZAbtba/jis9d1OpofB25bSzvpkUzm7Fp3E9P1V45I5E7modSzd9DiLrEtETt
+kVbKbWIp9cPuBKNKzDBLEHrd/TI1TZdEApUIBDjJkj1v+wrVn6fPuGDMynxq4JIw
+is5c2eaMlWXF/FM7RL0vPsvDWVte6VVhj254nQTXQss3V99bf3cKsI9cfSuCGhKz
+G2gvp0L9T9KTHL/7Tj0yAujK9FL1RF5CTGKCS9FBM9tG0APpglEdnOzkyPS8ngC7
+aRJRpoewzhzcdQDVX6/GBjFkyoosCIBd9A6pI1OwjcnKCzBpBP54rxnngzN2tq/E
+swc7GHHG0/EBI77p49DX3YGbNhl9tZTIdCmar6SnA4rIQStb8rHBJdtwBbcmVcsL
+GmVYny2HAb0b6HPjqYZi6Fpati1e7Vf6ie+2mf1RNShgbFYEq5CXagGqHsnkqwb+
+4xxntQJ+Ib5NXjw7k2rT605RPBZvPbSXu0pXbLom4aVqq3+PZFQhWU8YQ1lU4hkX
+WuuAVr/XMudrHvTfYC/M
+=7DP/
+-----END PGP SIGNATURE-----
+
+--8kBHBqmMEs6fw5Pb--
+
+--===============4105833036757072809==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4105833036757072809==--
