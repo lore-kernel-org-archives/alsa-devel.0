@@ -1,330 +1,116 @@
-From: Andrew Lunn <andrew@lunn.ch>
-Subject: [PATCH RFC 02/11] sound: ASoC: kirkwood: Remove unused drivers
-Date: Thu, 15 May 2014 16:23:45 +0200
-Message-ID: <1400163836-9831-5-git-send-email-andrew@lunn.ch>
-References: <1400163836-9831-1-git-send-email-andrew@lunn.ch>
+From: Benoit Cousson <bcousson@baylibre.com>
+Subject: Re: [RFT v3 3/3] ASoC: core: Add support for DAI
+	multicodec
+Date: Thu, 15 May 2014 17:01:19 +0200
+Message-ID: <5374D6BF.4060500@baylibre.com>
+References: <1398340906-5017-1-git-send-email-bcousson@baylibre.com>
+ <1398340906-5017-4-git-send-email-bcousson@baylibre.com>
+ <535BABCF.6080001@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1400163836-9831-1-git-send-email-andrew@lunn.ch>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux ARM <linux-arm-kernel@lists.infradead.org>, Jason Cooper <jason@lakedaemon.net>
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f176.google.com (mail-ig0-f176.google.com
+ [209.85.213.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CA86261ACD
+ for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 17:01:25 +0200 (CEST)
+Received: by mail-ig0-f176.google.com with SMTP id hl10so8011129igb.15
+ for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 08:01:22 -0700 (PDT)
+In-Reply-To: <535BABCF.6080001@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Fabien Parent <fparent@baylibre.com>, misael.lopez@ti.com, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Both kirkwood-openrd and kirkwood-t5325 drivers have been replaced
-with DT based simple-card equivelents.
+Hi Lars,
 
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
----
- sound/soc/kirkwood/Kconfig           |  17 -----
- sound/soc/kirkwood/Makefile          |   4 --
- sound/soc/kirkwood/kirkwood-openrd.c | 109 -----------------------------
- sound/soc/kirkwood/kirkwood-t5325.c  | 129 -----------------------------------
- 4 files changed, 259 deletions(-)
- delete mode 100644 sound/soc/kirkwood/kirkwood-openrd.c
- delete mode 100644 sound/soc/kirkwood/kirkwood-t5325.c
+I'm struggling a little bit to understand one of your comment :-)
 
-diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
-index 06f4e8aa93ae..1f7c7ee3527a 100644
---- a/sound/soc/kirkwood/Kconfig
-+++ b/sound/soc/kirkwood/Kconfig
-@@ -15,20 +15,3 @@ config SND_KIRKWOOD_SOC_ARMADA370_DB
- 	  Say Y if you want to add support for SoC audio on
- 	  the Armada 370 Development Board.
- 
--config SND_KIRKWOOD_SOC_OPENRD
--	tristate "SoC Audio support for Kirkwood Openrd Client"
--	depends on SND_KIRKWOOD_SOC && (MACH_OPENRD_CLIENT || MACH_OPENRD_ULTIMATE || COMPILE_TEST)
--	depends on I2C
--	select SND_SOC_CS42L51
--	help
--	  Say Y if you want to add support for SoC audio on
--	  Openrd Client.
--
--config SND_KIRKWOOD_SOC_T5325
--	tristate "SoC Audio support for HP t5325"
--	depends on SND_KIRKWOOD_SOC && (MACH_T5325 || COMPILE_TEST) && I2C
--	select SND_SOC_ALC5623
--	help
--	  Say Y if you want to add support for SoC audio on
--	  the HP t5325 thin client.
--
-diff --git a/sound/soc/kirkwood/Makefile b/sound/soc/kirkwood/Makefile
-index 7c1d8fe09e6b..c36b03d8006c 100644
---- a/sound/soc/kirkwood/Makefile
-+++ b/sound/soc/kirkwood/Makefile
-@@ -2,10 +2,6 @@ snd-soc-kirkwood-objs := kirkwood-dma.o kirkwood-i2s.o
- 
- obj-$(CONFIG_SND_KIRKWOOD_SOC) += snd-soc-kirkwood.o
- 
--snd-soc-openrd-objs := kirkwood-openrd.o
--snd-soc-t5325-objs := kirkwood-t5325.o
- snd-soc-armada-370-db-objs := armada-370-db.o
- 
- obj-$(CONFIG_SND_KIRKWOOD_SOC_ARMADA370_DB) += snd-soc-armada-370-db.o
--obj-$(CONFIG_SND_KIRKWOOD_SOC_OPENRD) += snd-soc-openrd.o
--obj-$(CONFIG_SND_KIRKWOOD_SOC_T5325) += snd-soc-t5325.o
-diff --git a/sound/soc/kirkwood/kirkwood-openrd.c b/sound/soc/kirkwood/kirkwood-openrd.c
-deleted file mode 100644
-index 65f2a5b9ec3b..000000000000
---- a/sound/soc/kirkwood/kirkwood-openrd.c
-+++ /dev/null
-@@ -1,109 +0,0 @@
--/*
-- * kirkwood-openrd.c
-- *
-- * (c) 2010 Arnaud Patard <apatard@mandriva.com>
-- * (c) 2010 Arnaud Patard <arnaud.patard@rtp-net.org>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/interrupt.h>
--#include <linux/platform_device.h>
--#include <linux/slab.h>
--#include <sound/soc.h>
--#include <linux/platform_data/asoc-kirkwood.h>
--#include "../codecs/cs42l51.h"
--
--static int openrd_client_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	unsigned int freq;
--
--	switch (params_rate(params)) {
--	default:
--	case 44100:
--		freq = 11289600;
--		break;
--	case 48000:
--		freq = 12288000;
--		break;
--	case 96000:
--		freq = 24576000;
--		break;
--	}
--
--	return snd_soc_dai_set_sysclk(codec_dai, 0, freq, SND_SOC_CLOCK_IN);
--
--}
--
--static struct snd_soc_ops openrd_client_ops = {
--	.hw_params = openrd_client_hw_params,
--};
--
--
--static struct snd_soc_dai_link openrd_client_dai[] = {
--{
--	.name = "CS42L51",
--	.stream_name = "CS42L51 HiFi",
--	.cpu_dai_name = "i2s",
--	.platform_name = "mvebu-audio",
--	.codec_dai_name = "cs42l51-hifi",
--	.codec_name = "cs42l51-codec.0-004a",
--	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
--	.ops = &openrd_client_ops,
--},
--};
--
--
--static struct snd_soc_card openrd_client = {
--	.name = "OpenRD Client",
--	.owner = THIS_MODULE,
--	.dai_link = openrd_client_dai,
--	.num_links = ARRAY_SIZE(openrd_client_dai),
--};
--
--static int openrd_probe(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = &openrd_client;
--	int ret;
--
--	card->dev = &pdev->dev;
--
--	ret = snd_soc_register_card(card);
--	if (ret)
--		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
--			ret);
--	return ret;
--}
--
--static int openrd_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	snd_soc_unregister_card(card);
--	return 0;
--}
--
--static struct platform_driver openrd_driver = {
--	.driver		= {
--		.name	= "openrd-client-audio",
--		.owner	= THIS_MODULE,
--	},
--	.probe		= openrd_probe,
--	.remove		= openrd_remove,
--};
--
--module_platform_driver(openrd_driver);
--
--/* Module information */
--MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
--MODULE_DESCRIPTION("ALSA SoC OpenRD Client");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:openrd-client-audio");
-diff --git a/sound/soc/kirkwood/kirkwood-t5325.c b/sound/soc/kirkwood/kirkwood-t5325.c
-deleted file mode 100644
-index d213832b0c72..000000000000
---- a/sound/soc/kirkwood/kirkwood-t5325.c
-+++ /dev/null
-@@ -1,129 +0,0 @@
--/*
-- * kirkwood-t5325.c
-- *
-- * (c) 2010 Arnaud Patard <arnaud.patard@rtp-net.org>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/interrupt.h>
--#include <linux/platform_device.h>
--#include <linux/slab.h>
--#include <sound/soc.h>
--#include <linux/platform_data/asoc-kirkwood.h>
--#include "../codecs/alc5623.h"
--
--static int t5325_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	unsigned int freq;
--
--	freq = params_rate(params) * 256;
--
--	return snd_soc_dai_set_sysclk(codec_dai, 0, freq, SND_SOC_CLOCK_IN);
--
--}
--
--static struct snd_soc_ops t5325_ops = {
--	.hw_params = t5325_hw_params,
--};
--
--static const struct snd_soc_dapm_widget t5325_dapm_widgets[] = {
--	SND_SOC_DAPM_HP("Headphone Jack", NULL),
--	SND_SOC_DAPM_SPK("Speaker", NULL),
--	SND_SOC_DAPM_MIC("Mic Jack", NULL),
--};
--
--static const struct snd_soc_dapm_route t5325_route[] = {
--	{ "Headphone Jack",	NULL,	"HPL" },
--	{ "Headphone Jack",	NULL,	"HPR" },
--
--	{"Speaker",		NULL,	"SPKOUT"},
--	{"Speaker",		NULL,	"SPKOUTN"},
--
--	{ "MIC1",		NULL,	"Mic Jack" },
--	{ "MIC2",		NULL,	"Mic Jack" },
--};
--
--static int t5325_dai_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
--
--	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
--	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
--	snd_soc_dapm_enable_pin(dapm, "Speaker");
--
--	return 0;
--}
--
--static struct snd_soc_dai_link t5325_dai[] = {
--{
--	.name = "ALC5621",
--	.stream_name = "ALC5621 HiFi",
--	.cpu_dai_name = "i2s",
--	.platform_name = "mvebu-audio",
--	.codec_dai_name = "alc5621-hifi",
--	.codec_name = "alc562x-codec.0-001a",
--	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
--	.ops = &t5325_ops,
--	.init = t5325_dai_init,
--},
--};
--
--static struct snd_soc_card t5325 = {
--	.name = "t5325",
--	.owner = THIS_MODULE,
--	.dai_link = t5325_dai,
--	.num_links = ARRAY_SIZE(t5325_dai),
--
--	.dapm_widgets = t5325_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(t5325_dapm_widgets),
--	.dapm_routes = t5325_route,
--	.num_dapm_routes = ARRAY_SIZE(t5325_route),
--};
--
--static int t5325_probe(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = &t5325;
--	int ret;
--
--	card->dev = &pdev->dev;
--
--	ret = snd_soc_register_card(card);
--	if (ret)
--		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
--			ret);
--	return ret;
--}
--
--static int t5325_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	snd_soc_unregister_card(card);
--	return 0;
--}
--
--static struct platform_driver t5325_driver = {
--	.driver		= {
--		.name	= "t5325-audio",
--		.owner	= THIS_MODULE,
--	},
--	.probe		= t5325_probe,
--	.remove		= t5325_remove,
--};
--
--module_platform_driver(t5325_driver);
--
--MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
--MODULE_DESCRIPTION("ALSA SoC t5325 audio client");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:t5325-audio");
--- 
-2.0.0.rc2
+On 26/04/2014 14:51, Lars-Peter Clausen wrote:
+> On 04/24/2014 02:01 PM, Benoit Cousson wrote:
+>> @@ -870,6 +876,10 @@ struct snd_soc_dai_link {
+>>       const struct device_node *codec_of_node;
+>>       /* You MUST specify the DAI name within the codec */
+>>       const char *codec_dai_name;
+>> +
+>> +    struct snd_soc_dai_link_component *codecs;
+> =
+
+> Should probably be const
+
+In fact, I don't think this is not possible, since this struct will be init=
+ialized at runtime in the legacy case when the regular codec struct is the =
+one used by the driver.
+
+[...]
+
+>> @@ -1586,16 +1626,21 @@ static int soc_probe_link_dais(struct =
+
+>> snd_soc_card *card, int num, int order)
+>>                           codec2codec_close_delayed_work);
+>>
+>>               /* link the DAI widgets */
+>> -            ret =3D soc_link_dai_widgets(card, dai_link,
+>> -                    cpu_dai, codec_dai);
+>> -            if (ret)
+>> -                return ret;
+>> +            for (i =3D 0; i < rtd->num_codecs; i++) {
+>> +                ret =3D soc_link_dai_widgets(card, dai_link,
+>> +                        cpu_dai, rtd->codec_dais[i]);
+> =
+
+> This will create a DAI link widget for each CODEC DAI. The DAI link =
+
+> widget will configure the CPU and the CODEC DAI that are connected to =
+
+> it. If there is one DAI link widget per CODEC DAI this means that the =
+
+> CPU DAI will be connected to multiple DAI link widgets, which means it =
+
+> will be configured once for each CODEC DAI (with possible conflicting =
+
+> configurations).
+
+I've got that point, but now I'm wondering what struct should be per codec_=
+dai. Should we consider one source and several sinks to represent the multi=
+ple codecs?
+
+> So there should only be one DAI link widget per DAI link, with the CPU =
+
+> DAI on one side and the CODEC DAIs on the other side. Note that you'll =
+
+> also need to re-work snd_soc_dai_link_event() to handle multiple =
+
+> inputs/outputs. I'd factor that part out into a separate patch.
+
+Here, I'm lost :-)
+
+What struct should be made multiple in that case?
+
+Should we consider that the following list can handle multiple sink/source?
+
+	/* We only support a single source and sink, pick the first */
+	source_p =3D list_first_entry(&w->sources, struct snd_soc_dapm_path,
+				    list_sink);
+	sink_p =3D list_first_entry(&w->sinks, struct snd_soc_dapm_path,
+				  list_source);
+
+[...]
+
+Thanks,
+Benoit
+
+-- =
+
+Beno=EEt Cousson
+BayLibre
+Embedded Linux Technology Lab
+www.baylibre.com
