@@ -1,14 +1,23 @@
-From: Stefano Statuti <stefano.statuti@hotmail.it>
-Subject: [BUG]ABit aa8xe sound card not selected
-Date: Thu, 15 May 2014 09:38:57 +0200
-Message-ID: <DUB127-W341DC0DDBAE2B6BECE8FCE83360@phx.gbl>
+From: Gabriele Mazzotta <gabriele.mzt@gmail.com>
+Subject: Re: [PATCH] ALSA: hda - Disable AA-loopback on ALC668
+Date: Thu, 15 May 2014 21:56:23 +0200
+Message-ID: <5132959.uTC67tbQhF@xps13>
+References: <1784940.JdFq8Pv96a@xps13>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dub0-omc3-s35.dub0.hotmail.com (dub0-omc3-s35.dub0.hotmail.com
- [157.55.2.44]) by alsa0.perex.cz (Postfix) with ESMTP id 5BFAC261A7F
- for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 09:38:58 +0200 (CEST)
+Received: from mail-ee0-f66.google.com (mail-ee0-f66.google.com [74.125.83.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47FDE2625D7
+ for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 21:56:26 +0200 (CEST)
+Received: by mail-ee0-f66.google.com with SMTP id e53so734199eek.1
+ for <alsa-devel@alsa-project.org>; Thu, 15 May 2014 12:56:26 -0700 (PDT)
+Received: from xps13.localnet ([193.190.253.149])
+ by mx.google.com with ESMTPSA id x45sm14830773eeu.23.2014.05.15.12.56.24
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 15 May 2014 12:56:25 -0700 (PDT)
+In-Reply-To: <1784940.JdFq8Pv96a@xps13>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,73 +27,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "alsa-announce@lists.sourceforge.net" <alsa-announce@lists.sourceforge.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hello,
+On Wednesday 14 May 2014 16:31:13, Gabriele Mazzotta <gabriele.mzt@gmail.com> wrote:
+> Disable the AA-loopback path to get rid of the constant white noise
+> that can be heard when headphones are used.
+> 
+> This patch was tested only on a Dell XPS13 9333.
+> 
+> Fix based on d2e92709e88d ("ALSA: hda - Disable AA-loopback on ALC283
+> Chromebook").
+> 
+> Signed-off-by: Gabriele Mazzotta <gabriele.mzt@gmail.com>
+> ---
+>  sound/pci/hda/patch_realtek.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 5f7c765..21c94e4 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -5690,6 +5690,13 @@ static int patch_alc662(struct hda_codec *codec)
+>  	if (has_cdefine_beep(codec))
+>  		spec->gen.beep_nid = 0x01;
+>  
+> +	switch (codec->vendor_id) {
+> +	case 0x10ec0668:
+> +		/* Disable AA-loopback as it causes white noise */
+> +		spec->gen.mixer_nid = 0;
+> +		break;
+> +	}
+> +
+>  	if ((alc_get_coef0(codec) & (1 << 14)) &&
+>  	    codec->bus->pci && codec->bus->pci->subsystem_vendor == 0x1025 &&
+>  	    spec->cdefine.platform_type == 1) {
+> 
+I'm sorry, I was wrong. This patch does not help. I'm still trying to
+understand what temporarily fixed the problem, I was quite sure this patch did
+it, but all of the sudden the noise came back. I'm still trying to find the
+real cause, but I doubt I'll succeed.
 
-
-
-I have opened this ticket on ubuntu-alsa launchpad  _https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1319291
-
-Raymond (superquad-vortrex2) ask me to contact you.
-----quote
-
-    
-
-    
-
-    
-
-  
-  Try specify model=6stack-dig
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/Documentation/sound/alsa/HD-Audio-Models.txt
-00:1b.0 0403: 8086:2668 (rev 04)
-
- Subsystem: 147b:1045
-
-send email to alsa-devel mailing list to add pci quirk since Bios does not setup pin default
- Default 0x00000000: [Jack] Line Out at Ext N/A
-
-Sysfs Files
-
-!!-----------
-
-/sys/class/sound/hwC0D0/init_pin_configs:
-
-0x14 0x00000000
-
-0x15 0x00000000
-
-0x16 0x00000000
-
-0x17 0x00000000
-
-0x18 0x00000000
-
-0x19 0x00000000
-
-0x1a 0x00000000
-
-0x1b 0x00000000
-
-0x1c 0x00000000
-
-0x1d 0x00000000
-
-0x1e 0x00000000
-
-0x1f 0x00000000
------
-
-  
-  
-  
-
-
-  
-whit Ubuntu 12.04 I don't have this problem
-
-bye
-  		 	   		  
+Regards,
+Gabriele
