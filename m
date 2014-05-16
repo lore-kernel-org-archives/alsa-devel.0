@@ -1,102 +1,80 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] dma: pl330: Add support for DMA_PAUSE
-	command
-Date: Fri, 16 May 2014 12:51:51 +0200
-Message-ID: <5375EDC7.5070105@metafoo.de>
-References: <1400037830-21211-1-git-send-email-tushar.behera@linaro.org>
- <CABb+yY3YocX=8Dv7DysM4tcx=NTCCGGipz_gpMfpKDnAw7R8iw@mail.gmail.com>
- <CAHbNUh0fVND_oGLXWzsyKzbmJc_=FqhZTAnVHE4GGZ5aaJQbEg@mail.gmail.com>
- <5373607D.2000200@metafoo.de>
- <CAHbNUh1bmBniGVtvK4PpmpaKOnwG=MgtupkTEnjD6SS3r_-yjw@mail.gmail.com>
- <537513A8.701@metafoo.de> <s5hha4qp92i.wl%tiwai@suse.de>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH 05/19] OMAPDSS: Kconfig: Add depencies and help section
+ to OMAP4_DSS_HDMI_AUDIO
+Date: Fri, 16 May 2014 13:52:55 +0300
+Message-ID: <5375EE07.4090802@ti.com>
+References: <cover.1399884780.git.jsarha@ti.com> <198496d6220a13b0e8910361d969b8f978ee1398.1399884780.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-123.synserver.de (smtp-out-194.synserver.de
- [212.40.185.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A028261718
- for <alsa-devel@alsa-project.org>; Fri, 16 May 2014 12:51:53 +0200 (CEST)
-In-Reply-To: <s5hha4qp92i.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Jassi Brar <jassisinghbrar@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, Tushar Behera <tushar.behera@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="v37FiRuuIllofris9W3FC9QsoifXNHGRA"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <198496d6220a13b0e8910361d969b8f978ee1398.1399884780.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On 05/16/2014 07:49 AM, Takashi Iwai wrote:
-> At Thu, 15 May 2014 21:21:12 +0200,
-> Lars-Peter Clausen wrote:
->>
->> On 05/15/2014 02:01 PM, Tushar Behera wrote:
->>> On 14 May 2014 17:54, Lars-Peter Clausen <lars@metafoo.de> wrote:
->>>> On 05/14/2014 02:07 PM, Tushar Behera wrote:
->>>>>
->>>>> On 14 May 2014 17:29, Jassi Brar <jassisinghbrar@gmail.com> wrote:
->>>>>>
->>>>>> On Wed, May 14, 2014 at 8:53 AM, Tushar Behera <tushar.behera@linaro.org>
->>>>>> wrote:
->>>>>>>
->>>>>>> While playing back audio, pmc_dmaengine requests the DMA channel to
->>>>>>> stop DMA transmission through DMA_PAUSE command.
->>>>>>>
->>>>>>> Currently PL330 driver doesn't support DMA pause command, leaving
->>>>>>> the DMA state inconsistent when the system resumes. Instead, it would
->>>>>>> be better to terminate the DMA transfer during suspend and restart
->>>>>>> again during resume.
->>>>>>>
->>>>>>> Tested with audio playback across a suspend-resume cycle.
->>>>>>>
->>>>>> What is pmc_dmaengine? How does DMA_PAUSE help, when there is no
->>>>>> DMA_RESUME?
->>>>>>
->>>>>
->>>>> Sorry, it is a typo.
->>>>>
->>>>> sound/core/pcm_dmaengine.c:snd_dmaengine_pcm_trigger() -->
->>>>> dmaengine_pause() is called during system suspend.
->>>>
->>>>
->>>> It is only called if the DMA driver has support for pausing and resuming DMA
->>>> transfers. Or at least that is the intention.
->>>>
->>>> - Lars
->>>
->>> During suspend, snd_dmaengine_pcm_trigger():SNDRV_PCM_TRIGGER_SUSPEND
->>> is called which unconditionally calls dmaengine_pause(). Should we
->>> update snd_dmaengine_pcm_trigger() to check for DMA pause/resume
->>> support and call dmaengine_pause() or dmaengine_terminate_all()
->>> accordingly?
->>
->> As far as I understand it we do not have to do anything for TRIGGER_SUSPEND
->> if we do not set the SNDRV_PCM_INFO_RESUME flag. It looks like
->> TRIGGER_SUSPEND is called unconditionally during suspend. But since the
->> error code is ignored it should be fine if we just call dmaengine_pause()
->> and that return -ENOSYS or similar.
->
-> Well, TRIGGER_SUSPEND is issued by PCM core no matter whether
-> SNDRV_PCM_INFO_RESUME flag is set or not.  The resume behavior depends
-> on the flag (SNDRV_PCM_TRIGGER_RESUME is issued if the flag is set,
-> otherwise the normal setup is done by alsa-lib at resume), but the
-> suspend is always triggered in the same way.
->
-> So, PCM core assumes that the driver stops the stream somehow by
-> SNDRV_PCM_TRIGGER_SUSPEND.
+--v37FiRuuIllofris9W3FC9QsoifXNHGRA
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Ok, so we should call terminate_all() when we get a 
-SNDRV_PCM_TRIGGER_SUSPEND if the dmaengine driver does not support pauseing 
-the transfer. Thanks for the clarification.
+Hi,
 
-On a related note it seems like it is still possible to get 
-PAUSE_PUSH/PAUSE_RELEASE events even if SNDRV_PCM_INFO_PAUSE is not set. Do 
-you have an idea what should be the right thing to do in such a case? Return 
--ENOSYS?
+On 12/05/14 12:12, Jyri Sarha wrote:
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+>  drivers/video/fbdev/omap2/dss/Kconfig |   10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/video/fbdev/omap2/dss/Kconfig b/drivers/video/fbde=
+v/omap2/dss/Kconfig
+> index 8921a7a..ecc2f50 100644
+> --- a/drivers/video/fbdev/omap2/dss/Kconfig
+> +++ b/drivers/video/fbdev/omap2/dss/Kconfig
+> @@ -70,7 +70,15 @@ config OMAP4_DSS_HDMI
+>  	  HDMI support for OMAP4 based SoCs.
+> =20
+>  config OMAP4_DSS_HDMI_AUDIO
+> -	bool
+> +	bool "HDMI audio support for OMAP4"
+> +	depends on OMAP4_DSS_HDMI
+> +	depends on SND_OMAP_SOC=3Dy || OMAP2_DSS =3D SND_OMAP_SOC
+> +	default y
+> +	help
+> +	  HDMI audio support for OMAP4 based SoCs. Adds integrated
+> +	  ASoC Digital Audio Interface component driver into OMAPDSS
+> +	  module. Select SND_SOC_HDMI_CODEC and SND_SIMPLE_CARD with
+> +	  devicetree description for full HDMI audio support.
 
-- Lars
+What does "for full HDMI audio support" mean? What's the partial support?=
+ =3D)
+
+ Tomi
+
+
+
+--v37FiRuuIllofris9W3FC9QsoifXNHGRA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJTde4HAAoJEPo9qoy8lh71M3kP/3RwAPy6cradgWXXBhgSdDmD
+a6t6dDuqPp0ANfQuZkdbP/j1/k0B2g3wfCdepkQkYoU6lOre8bD1uABLrHn9LM8E
+N0S981tIGFssuuJaAUnivWvcvpfqGuAOB6+enUT2xDHVNqyrn1M64WjQXHZPczgG
+8Qj2arEAcIruLjI7AYkAMrJjG+tEmfvVtO2sB9fS4AFMu1ba4XAXr3+Bo5/SvVMj
+4wWo6DI3DVjLQwBozPxEXi8+bi7L2xScHIPBX4byT/6pjWvowUOlEzdMLpAdAD4D
+v+oZwpoPHbHJ2Fo+HLtQIu72shGphn/CMKxxv0q7W1+zNHSgK8zxAaLTAg6gcr3M
+vmT4dntQhNlrYfu/wOAfHW7OsAvBSyFAJ6OywgwXO2kb7bRpffIr4yPNvSrA7nHW
+BxTR3i35iokfZmbpH5qh3nZ5Q0Mgy4fUVH4nDmGbmvV7Bpx1mTpjM1f7i8YwOD28
+W8Gnq9wHivx8F74HSlLbH4bUhDlWn8Hvt5f9HarnO7HGVwCJNoUSDSAcMAaBno8p
+K5sM6IDLqcgRvcFrFAAI4ppL3/XNYD2BQd5h6IkghDuyfLw8retYym0/bTmXdHI5
+24S7CRkpSAPhMdS5mO3iAno7/raw2UQGoO9u+BSSmGmPBFadyGKdlJzaE7BEeYH/
+2iwEMn4VgOqZIKZt6C4f
+=q7Qx
+-----END PGP SIGNATURE-----
+
+--v37FiRuuIllofris9W3FC9QsoifXNHGRA--
