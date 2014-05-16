@@ -1,60 +1,95 @@
 From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH 05/19] OMAPDSS: Kconfig: Add depencies and help section
- to OMAP4_DSS_HDMI_AUDIO
-Date: Fri, 16 May 2014 13:52:55 +0300
-Message-ID: <5375EE07.4090802@ti.com>
-References: <cover.1399884780.git.jsarha@ti.com> <198496d6220a13b0e8910361d969b8f978ee1398.1399884780.git.jsarha@ti.com>
+Subject: Re: [PATCH 14/19] ARM: omap4-panda-common.dtsi: Add HDMI audio nodes
+Date: Fri, 16 May 2014 14:04:44 +0300
+Message-ID: <5375F0CC.8090507@ti.com>
+References: <cover.1399884780.git.jsarha@ti.com> <fdeddff24bc38efb7a155b2569a5f2056278cb9d.1399884780.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
 	protocol="application/pgp-signature";
-	boundary="v37FiRuuIllofris9W3FC9QsoifXNHGRA"
+	boundary="vH7OmrmH9sb6mSlninSFhRFnhvxxcqleP"
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <198496d6220a13b0e8910361d969b8f978ee1398.1399884780.git.jsarha@ti.com>
+In-Reply-To: <fdeddff24bc38efb7a155b2569a5f2056278cb9d.1399884780.git.jsarha@ti.com>
 Sender: linux-omap-owner@vger.kernel.org
 To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
 Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
---v37FiRuuIllofris9W3FC9QsoifXNHGRA
+--vH7OmrmH9sb6mSlninSFhRFnhvxxcqleP
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
 On 12/05/14 12:12, Jyri Sarha wrote:
+> Adds a simple-card sound node for HDMI audio, the associated
+> hdmi-codec node, and sound-dai-cells propeties to the DAI nodes.
+>=20
 > Signed-off-by: Jyri Sarha <jsarha@ti.com>
 > ---
->  drivers/video/fbdev/omap2/dss/Kconfig |   10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/video/fbdev/omap2/dss/Kconfig b/drivers/video/fbde=
-v/omap2/dss/Kconfig
-> index 8921a7a..ecc2f50 100644
-> --- a/drivers/video/fbdev/omap2/dss/Kconfig
-> +++ b/drivers/video/fbdev/omap2/dss/Kconfig
-> @@ -70,7 +70,15 @@ config OMAP4_DSS_HDMI
->  	  HDMI support for OMAP4 based SoCs.
-> =20
->  config OMAP4_DSS_HDMI_AUDIO
-> -	bool
-> +	bool "HDMI audio support for OMAP4"
-> +	depends on OMAP4_DSS_HDMI
-> +	depends on SND_OMAP_SOC=3Dy || OMAP2_DSS =3D SND_OMAP_SOC
-> +	default y
-> +	help
-> +	  HDMI audio support for OMAP4 based SoCs. Adds integrated
-> +	  ASoC Digital Audio Interface component driver into OMAPDSS
-> +	  module. Select SND_SOC_HDMI_CODEC and SND_SIMPLE_CARD with
-> +	  devicetree description for full HDMI audio support.
+>  arch/arm/boot/dts/omap4-panda-common.dtsi |   21 ++++++++++++++++++++-=
 
-What does "for full HDMI audio support" mean? What's the partial support?=
- =3D)
+>  1 file changed, 20 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/arm/boot/dts/omap4-panda-common.dtsi b/arch/arm/boot/=
+dts/omap4-panda-common.dtsi
+> index d2c45bf..c04f453 100644
+> --- a/arch/arm/boot/dts/omap4-panda-common.dtsi
+> +++ b/arch/arm/boot/dts/omap4-panda-common.dtsi
+> @@ -41,7 +41,7 @@
+>  		};
+>  	};
+> =20
+> -	sound: sound {
+> +	sound: sound@0 {
+>  		compatible =3D "ti,abe-twl6040";
+>  		ti,model =3D "PandaBoard";
+> =20
+> @@ -65,6 +65,24 @@
+>  			"AFMR", "Line In";
+>  	};
+> =20
+> +	sound@1 {
+> +		compatible =3D "simple-audio-card";
+> +
+> +		simple-audio-card,cpu {
+> +			sound-dai =3D <&hdmi>;
+> +		};
+> +
+> +		simple-audio-card,codec {
+> +			sound-dai =3D <&hdmi_audio>;
+> +		};
+> +	};
+> +
+> +	hdmi_audio: hdmi_audio@0 {
+> +		#sound-dai-cells =3D <0>;
+> +		compatible =3D "linux,hdmi-audio";
+> +		status =3D "okay";
+> +	};
+> +
+>  	/* HS USB Port 1 Power */
+>  	hsusb1_power: hsusb1_power_reg {
+>  		compatible =3D "regulator-fixed";
+> @@ -512,6 +530,7 @@
+>  };
+> =20
+>  &hdmi {
+> +	#sound-dai-cells =3D <0>;
+>  	status =3D "ok";
+>  	vdda-supply =3D <&vdac>;
+
+Maybe this is how this has to be done, but I'll still ask:
+
+Considering that the HDMI audio is basically inseparable part of the
+OMAP HDMI video, and if a board has HDMI video connector connected to
+the SoC's HDMI, then it has HDMI audio.
+
+So all of the above .dts changes are already implied when we have HDMI
+video on the board. Is there no way to prevent every board needing to
+add those exact same nodes to get HDMI audio?
 
  Tomi
 
 
 
---v37FiRuuIllofris9W3FC9QsoifXNHGRA
+--vH7OmrmH9sb6mSlninSFhRFnhvxxcqleP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -62,19 +97,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIcBAEBAgAGBQJTde4HAAoJEPo9qoy8lh71M3kP/3RwAPy6cradgWXXBhgSdDmD
-a6t6dDuqPp0ANfQuZkdbP/j1/k0B2g3wfCdepkQkYoU6lOre8bD1uABLrHn9LM8E
-N0S981tIGFssuuJaAUnivWvcvpfqGuAOB6+enUT2xDHVNqyrn1M64WjQXHZPczgG
-8Qj2arEAcIruLjI7AYkAMrJjG+tEmfvVtO2sB9fS4AFMu1ba4XAXr3+Bo5/SvVMj
-4wWo6DI3DVjLQwBozPxEXi8+bi7L2xScHIPBX4byT/6pjWvowUOlEzdMLpAdAD4D
-v+oZwpoPHbHJ2Fo+HLtQIu72shGphn/CMKxxv0q7W1+zNHSgK8zxAaLTAg6gcr3M
-vmT4dntQhNlrYfu/wOAfHW7OsAvBSyFAJ6OywgwXO2kb7bRpffIr4yPNvSrA7nHW
-BxTR3i35iokfZmbpH5qh3nZ5Q0Mgy4fUVH4nDmGbmvV7Bpx1mTpjM1f7i8YwOD28
-W8Gnq9wHivx8F74HSlLbH4bUhDlWn8Hvt5f9HarnO7HGVwCJNoUSDSAcMAaBno8p
-K5sM6IDLqcgRvcFrFAAI4ppL3/XNYD2BQd5h6IkghDuyfLw8retYym0/bTmXdHI5
-24S7CRkpSAPhMdS5mO3iAno7/raw2UQGoO9u+BSSmGmPBFadyGKdlJzaE7BEeYH/
-2iwEMn4VgOqZIKZt6C4f
-=q7Qx
+iQIcBAEBAgAGBQJTdfDMAAoJEPo9qoy8lh71OaEQAJNPn7bip3/xcJ22p5KeRPFp
+dbvGg5IUkHxMqTSVxushi7A+J64aL3U5xp63GPZdgrJEGi4KWLHotFyL6r+KhAMi
+y7yH+iQrdNIyfRXVAt7UCiZN+F0th5t8tekBcdG3D0S7y4qihUWbfVe9aIfKqAG4
+sEeV3fOHRaQkvKbIdRhruEGzYvlGRRGkwbWp0JE+CSVl706jxuawZ/iUutQbU99z
+BPIZTcA0QREvw+GCsnwQ1q11CpUBsw9HGFVjDSmErcmbyYjn3WPI1p4lldmWkXVB
+yyQ9XAU55XEJIHJ/UfhKkc2SuG6u6IUU1lcJyO4BUd3DwrraHXtxu/z2hdHSRFeV
+F4yVCKhTcLtmJ1WFupHxfR3qHQDp/f2KFXuEmtZ4h5AEMAIx2nCJPf9y/HJUFeBm
+XU+UpOpXeTOgzh9SV+Li0HVBG03htAhMLy+EiIvDkyF5Gu1lZ4tZQeK3WBSimoCq
+1kVuhFI6cJW9kXb43vBXo/hz2w9DUYGhHklL7MGyIHNF7OMzQZQ2o6MiHdHB0yaP
+TZYYGliCAn6zqJVTGTorJpRbTo0o5f4YJA0BrTXxabhQ4DnzZG0l5hPwtcCQv7I+
+YJQvM58RAE2/xzI5yD6AYb9fFalrF+qTCDBTImhJHoH4UAT98ivI1OU8cZcd7GZW
+x81GhrDPHjJs2lGvRLi8
+=TaTc
 -----END PGP SIGNATURE-----
 
---v37FiRuuIllofris9W3FC9QsoifXNHGRA--
+--vH7OmrmH9sb6mSlninSFhRFnhvxxcqleP--
