@@ -1,81 +1,102 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/7] ASoC: max98090: Couple improvements
- and ACPI probing support
-Date: Fri, 16 May 2014 20:01:49 +0100
-Message-ID: <20140516190149.GS22111@sirena.org.uk>
-References: <1400248525-21900-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Joachim Eastwood <manabian@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 00/19] Rework OMAP4+ HDMI audio support
+Date: Sat, 17 May 2014 10:51:53 +0200
+Message-ID: <CAGhQ9VwY_qeOLsa_oAUuL3XT2tmn-mLg0WBtOdL8JL6u+0PQcw@mail.gmail.com>
+References: <cover.1399884780.git.jsarha@ti.com>
+	<CAGhQ9VzjndCBp+ZHS3XPPvS4ors6u9BfHf4NY_HNYN5ynyQOYQ@mail.gmail.com>
+	<53733F2E.4030803@ti.com>
+	<CAGhQ9VzkGDPiQF7TiqiMgZY_oc9dyrW66yGsZR6ei2ejX-EXcw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6962598074446717176=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF0CC2615B6
- for <alsa-devel@alsa-project.org>; Fri, 16 May 2014 21:02:04 +0200 (CEST)
-In-Reply-To: <1400248525-21900-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <CAGhQ9VzkGDPiQF7TiqiMgZY_oc9dyrW66yGsZR6ei2ejX-EXcw@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, broonie@kernel.org, peter.ujfalusi@ti.com, Tomi Valkeinen <tomi.valkeinen@ti.com>, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 14 May 2014 18:25, Joachim  Eastwood <manabian@gmail.com> wrote:
+> On 14 May 2014 12:02, Jyri Sarha <jsarha@ti.com> wrote:
+>> On 05/13/2014 12:13 AM, Joachim Eastwood wrote:
+>>>
+>>> On 12 May 2014 11:12, Jyri Sarha <jsarha@ti.com> wrote:
+>>
+>> ...
+>>
+>>>
+>>> hey, this worked straight away :)
+>>>
+>>> But there seems to be something wrong with the channel mapping.
+>>>
+>>> For stereo (speaker-test -c 2) the mapping is correct.
+>>>
+>>> But for -c 4 and -c 8 it gets weird:
+>>> speaker-test -c 4 -s X # where X is 1-4
+>>> 1: Front Left is Rear Left
+>>> 2: Front Right is Rear Right
+>>> 3: Rear Right is Front Right
+>>> 4: Rear Left is Front Left
+>>>
+>>> speaker-test -c 8 -s X # where X is 1-8
+>>> 1: Front Left is Rear Left
+>>> 2: Center is Rear Left
+>>> 3: Front Right is Rear Right
+>>> 4: Side Right is Front Right
+>>> 5: Rear Right is silent
+>>> 6: Rear Left is Center
+>>> 7: Side Left is Front Left
+>>> 8: LFE - Rear Right
+>>>
+>>> I think you need to check what channel order ALSA expects. I believe
+>>> speaker-test does the right thing on my HTPC normally connected to my
+>>> receiver.
+>>>
+>>
+>> I checked the implementation and there was indeed something weird there, but
+>> the implementation can not explain the FL and FR channels jumping around. FL
+>> and FL should always be the first two channels in all configurations and the
+>> implementation does not touch them.
+>>
+>> The implementation uses 8ch HDMI setup for anything above 2ch with "Audio
+>> InfoFrame Data Byte 4" set to 0x13. According to CEA-861 specs this means
+>> following channel order: FL, FR, LFE, FC, RL, RR, RLC, RRC
+>>
+>> This is a closest match to ALSA 8ch mapping (according to
+>> sound/core/pcm_lib.c) which is: FL, FR, FC, LFE, RL, RR, SL, SR
+>
+> hm, okey. I haven't look at the code but it do seem strange. But with
+> speaker-test -c 4 the front and back are surely swapped here.
+>
+> I'll do some more testing and also check with my HTPC. btw, I only
+> have a 5.1 setup over here so I can't test all the discrete channels.
+>
+>> Current implementation has FLE and FC channels correctly swapped, but it
+>> shifts them to last two channels and RL, RR, SL, SR are shifted down to fill
+>> the place. This is all wrong and I'll try to come up with a fix for that.
+>> Unfortunately I can not test anything beyond 2 ch myself so I would need
+>> someone to volunteer to test my patch.
+>
+> I have the dev kit setup up over here so I can test your patches.
 
---===============6962598074446717176==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gvMLM4USzlj3SVKc"
-Content-Disposition: inline
+I did some more testing over here.
 
+My HTPC (nVidia ION2 based) works good with speaker-test and all
+channels are where they are suppose to be.
 
---gvMLM4USzlj3SVKc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On the OMAP4 board I tried doing: "while true; do speaker-test -c 4 -s
+1; done" and this had an interesting effect.
+Most of the time FL (Front Left) is swapped with BL (Back Left) but
+about every 10th time the sound comes out in the FL speaker... So
+there something weird going on here. Same story for the right channel.
 
-On Fri, May 16, 2014 at 04:55:18PM +0300, Jarkko Nikula wrote:
-> Here are couple improvements to MAX98090 codec driver. I think only 1/7
-> is a real fix and rest 2-7/7 are regular updates that make codec resume
-> working and add ACPI probing support on Intel Baytrail platform.
+I also noticed that HDMI doesn't always work on boot up, it sometimes fail with:
+[ 193.985565] omapdss_hdmi 58006000.encoder: audio not supported
+[ 193.985565] omapdss_hdmi 58006000.encoder: ASoC: can't open
+interface 58006000.encoder: -19
 
-Applied all, thanks.  All the patches up to 4 look like good fixes,
-being out of spec on reset is a definite fix which I've maked to stable
-and making sure that the cache is synced correctly is going to be
-required if power was lost.  The initialisation on resume might not be
-100% required but definitely seems safer too.
+But after replugging the HDMI connector a couple of times it starts to work.
 
---gvMLM4USzlj3SVKc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I'll see if I can try with an old TI OMAP4 kernel (3.4) and see how that works.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTdmCZAAoJELSic+t+oim9jGcP/2kAjpD1DZ0evR8WnDlIzgsa
-/ls7RpYMfyv4ZBZ8uwwHBsrnv4L4+zug/3cOrmenGvR90Bz4s9b/6u2+6s1Bs+JT
-uxuhU0Phn80OrQsdmI8XmL1yBdXhoPP77O41JL1HCV+NWpUAA3ZLPDgA9LP6U/2w
-JAH9Cv/k9VqtpnGo2TQyKEO4YbojTmvq+mT3x86nnPTZEx8sNDLKnHRbW+2yzBXE
-GFGMMGy/Zl8CL+LM025GQPpx+lljEaOu8KUAvjfn9r/fodKYuSrczbsY6j3icmfC
-apRuExr71TW+YggkP2x3NDM6gRINgQvBA89OvIWiAjiCtGyvMW5ftb+ZCA1fyc4c
-aO9jWBy5BD6tkjXbUNn0jtL5jddpDJ/f/SOKJKmtzLpWXzw/Ffza+sbF7lCTV5ij
-OYWWvS8cbOkeopbMyIaqbBlmtmvIsaUlcn+h84qRI1l0G+m+MGMbnDCKqnl4IBFT
-yUmw7FRvCBOi6OCfnSSOnk+BE9mZoequr4gFGjOEhPx/6qSQWD9mlGXKVxBDJWj/
-4JMzT31fpKSHrwt7x60368gjzUEYSEc/BlL1iRfyKaWldUK9ic4HhfC1KC80HxMh
-nsTe8jOjGS3sRQTmTzEhKxBGwoAU/c+5c9Emi3eZleu1/GgUVhiZ83nL3xP6lpxT
-afUOuVSTg7LEu6CUqXYX
-=kL57
------END PGP SIGNATURE-----
-
---gvMLM4USzlj3SVKc--
-
---===============6962598074446717176==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6962598074446717176==--
+regards
+Joachim Eastwood
