@@ -1,27 +1,17 @@
-From: Weedy <weedy2887@gmail.com>
-Subject: Re:
-	=?utf-8?q?Segfaults_in_snd=5Fpcm=5Farea=5Fsilence=28?=
-	=?utf-8?q?=29_when_using_softvol?=
-Date: Sun, 18 May 2014 15:02:17 +0000 (UTC)
-Message-ID: <loom.20140518T165909-667@post.gmane.org>
-References: <1350474892.6596.24.camel@x230>
+From: asd <asd@marian1000.go.ro>
+Subject: This patch is for hearing sound separate on channels
+Date: Sun, 18 May 2014 19:59:44 +0300
+Message-ID: <1645296.iOC1z10K5Z@marian1000.go.ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7599966270745004541=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D07E264FEB
- for <alsa-devel@alsa-project.org>; Sun, 18 May 2014 18:05:06 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Wm3aC-0005BM-Ur
- for alsa-devel@alsa-project.org; Sun, 18 May 2014 18:05:05 +0200
-Received: from 76-10-148-61.dsl.teksavvy.com ([76.10.148.61])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sun, 18 May 2014 18:05:04 +0200
-Received: from weedy2887 by 76-10-148-61.dsl.teksavvy.com with local (Gmexim
- 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Sun, 18 May 2014 18:05:04 +0200
+Received: from marian1000.go.ro (5-14-228-197.residential.rdsnet.ro
+ [5.14.228.197]) by alsa0.perex.cz (Postfix) with ESMTP id 29A89265004
+ for <alsa-devel@alsa-project.org>; Sun, 18 May 2014 18:59:47 +0200 (CEST)
+Received: from localhost ([127.0.0.1] helo=marian1000.go.ro)
+ by marian1000.go.ro with esmtp (Exim 4.82)
+ (envelope-from <asd@marian1000.go.ro>) id 1Wm4R6-0000vw-Gt
+ for alsa-devel@alsa-project.org; Sun, 18 May 2014 19:59:44 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,20 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Tanu Kaskinen <tanuk <at> iki.fi> writes:
-> https://bugs.freedesktop.org/show_bug.cgi?id=51060
-> > I've had this problem too and the problem only occurs with
-> > -ftree-vectorize.
-> > 
-> > It looks to me as if this is a gcc bug, as it produces a "movdqa" or
-> > "vmovdqa" instruction which is used with an unaligned pointer.
+This is a multi-part message in MIME format.
+
+--===============7599966270745004541==
+Content-Type: text/x-patch; charset="UTF-8"; name="test.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Disposition: attachment; filename="test.patch"
+
+--- a/hda_codec.c
++++ b/hda_codec.c
+@@ -5375,6 +5375,7 @@
+ 	int chs = substream->runtime->channels;
+ 	struct hda_spdif_out *spdif;
+ 	int i;
++	//mout->no_share_stream = 1;
+ 	mout->no_share_stream = 1;
+ 
+ 	mutex_lock(&codec->spdif_mutex);
+
+--===============7599966270745004541==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-I want to point out this is still broken.
-alsa-lib 1.0.27.2
-gcc 4.8.2
-
-(holy crap gmane, how much more do I have to prune. Just let me post)
+--===============7599966270745004541==--
