@@ -1,8 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/11] ASoC: Add component level
-	set_bias_level() support
-Date: Sun, 18 May 2014 14:24:17 +0200
-Message-ID: <1400415858-11025-11-git-send-email-lars@metafoo.de>
+Subject: [PATCH 11/11] ASoC: dapm: Remove DAI DAPM context
+Date: Sun, 18 May 2014 14:24:18 +0200
+Message-ID: <1400415858-11025-12-git-send-email-lars@metafoo.de>
 References: <1400415858-11025-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-145.synserver.de (smtp-out-151.synserver.de
  [212.40.185.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FE08264F26
- for <alsa-devel@alsa-project.org>; Sun, 18 May 2014 14:24:35 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id CA9D4264EE5
+ for <alsa-devel@alsa-project.org>; Sun, 18 May 2014 14:24:36 +0200 (CEST)
 In-Reply-To: <1400415858-11025-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,80 +25,71 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a set_bias_level() callback to the snd_soc_component_driver
-struct similar to that found in the snd_soc_codec_driver struct. This will allow
-any component type and not just CODECs to implement such a callback.
-
-The semantics of the component driver and CODEC driver set_bias_level()
-callbacks slightly differ. While the CODEC driver callback only takes the target
-bias level, the component driver callback takes both the current and the target
-bias level. Also for the component driver callback the current bias level will
-be automatically updated to the target bias level if the callback does not
-return an error, whereas with the CODEC bias level callback this has to be done
-in every callback by hand. The change in semantics was implement because the new
-semantics more closly match what drivers need. Most drivers are interested in
-both the current and the target bias level and all drivers update the current to
-the target bias level in case there is no error.
+The DAI DAPM context was added in commit be09ad90 ("ASoC: core: Add platform DAI
+widget mapping") and the only user was removed again in commit ae10e7e8f ("ASoC:
+core: Only add platform DAI widgets once."). Now that we have a per component
+DAPM context it is unlikely that we'll need the DAI DAPM context again.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc.h  |  4 ++++
- sound/soc/soc-core.c | 17 +++++++++++++++++
- 2 files changed, 21 insertions(+)
+ include/sound/soc-dai.h |  1 -
+ sound/soc/soc-core.c    | 12 +-----------
+ 2 files changed, 1 insertion(+), 12 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index fc08d7e..59bc39c 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -662,6 +662,10 @@ struct snd_soc_component_driver {
- 	void (*seq_notifier)(struct snd_soc_component *, enum snd_soc_dapm_type,
- 		int subseq);
- 	int (*stream_event)(struct snd_soc_component *, int event);
-+	int (*set_bias_level)(struct snd_soc_component *component,
-+		enum snd_soc_bias_level current_level,
-+		enum snd_soc_bias_level target_level);
-+	bool idle_bias_off;
- };
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 688f2ba..031be2a 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -257,7 +257,6 @@ struct snd_soc_dai {
  
- struct snd_soc_component {
+ 	struct snd_soc_dapm_widget *playback_widget;
+ 	struct snd_soc_dapm_widget *capture_widget;
+-	struct snd_soc_dapm_context dapm;
+ 
+ 	/* DAI DMA data */
+ 	void *playback_dma_data;
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 1ce443b..668ffd3 100644
+index 668ffd3..05b8ca1 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -4009,6 +4009,20 @@ static int snd_soc_component_stream_event(struct snd_soc_dapm_context *dapm,
- 	return component->driver->stream_event(component, event);
+@@ -1048,11 +1048,8 @@ static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
+ 					cpu_dai->name, err);
+ 		}
+ 		cpu_dai->probed = 0;
+-
+-		if (!cpu_dai->codec) {
+-			snd_soc_dapm_free(&cpu_dai->dapm);
++		if (!cpu_dai->codec)
+ 			module_put(cpu_dai->dev->driver->owner);
+-		}
+ 	}
  }
  
-+static int snd_soc_component_set_bias_level(struct snd_soc_dapm_context *dapm,
-+	enum snd_soc_bias_level target_level)
-+{
-+	struct snd_soc_component *component = dapm->component;
-+	int ret;
-+
-+	ret = component->driver->set_bias_level(component, dapm->bias_level,
-+		target_level);
-+	if (ret == 0)
-+		dapm->bias_level = target_level;
-+
-+	return ret;
-+}
-+
- static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	const struct snd_soc_component_driver *driver, struct device *dev)
- {
-@@ -4030,10 +4044,13 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	dapm->dev = dev;
- 	dapm->component = component;
- 	dapm->bias_level = SND_SOC_BIAS_OFF;
-+	dapm->idle_bias_off = driver->idle_bias_off;
- 	if (driver->seq_notifier)
- 		dapm->seq_notifier = snd_soc_component_seq_notifier;
- 	if (driver->stream_event)
- 		dapm->stream_event = snd_soc_component_stream_event;
-+	if (driver->set_bias_level)
-+		dapm->set_bias_level = snd_soc_component_set_bias_level;
+@@ -1510,11 +1507,8 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
+ 	if (!cpu_dai->probed &&
+ 			cpu_dai->driver->probe_order == order) {
+ 		if (!cpu_dai->codec) {
+-			cpu_dai->dapm.card = card;
+ 			if (!try_module_get(cpu_dai->dev->driver->owner))
+ 				return -ENODEV;
+-
+-			list_add(&cpu_dai->dapm.list, &card->dapm_list);
+ 		}
  
- 	INIT_LIST_HEAD(&component->dai_list);
- 	mutex_init(&component->io_mutex);
+ 		if (cpu_dai->driver->probe) {
+@@ -3975,13 +3969,9 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
+ 		dai->component = component;
+ 		dai->dev = dev;
+ 		dai->driver = &dai_drv[i];
+-		dai->dapm.dev = dev;
+ 		if (!dai->driver->ops)
+ 			dai->driver->ops = &null_dai_ops;
+ 
+-		if (!dai->codec)
+-			dai->dapm.idle_bias_off = 1;
+-
+ 		list_add(&dai->list, &component->dai_list);
+ 
+ 		dev_dbg(dev, "ASoC: Registered DAI '%s'\n", dai->name);
 -- 
 1.8.0
