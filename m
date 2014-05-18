@@ -1,14 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [RFC][PATCH 00/13 v1] Enhancement for Dice driver
-Date: Sun, 18 May 2014 22:36:25 +0900
-Message-ID: <1400420198-24312-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/13] dice: Rename structure and its members
+Date: Sun, 18 May 2014 22:36:26 +0900
+Message-ID: <1400420198-24312-2-git-send-email-o-takashi@sakamocchi.jp>
+References: <1400420198-24312-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 53D60264F19
+ by alsa0.perex.cz (Postfix) with ESMTP id 5682A264F1E
  for <alsa-devel@alsa-project.org>; Sun, 18 May 2014 15:36:49 +0200 (CEST)
+In-Reply-To: <1400420198-24312-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,119 +24,589 @@ To: clemens@ladisch.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This patchset is for enhancement of Dice driver.
+Currently, dice driver supports AMDTP out-stream. In followed commits, AMDTP
+in-stream will be supported but current name of members in dice structure
+are not propper. This commit renames these members to proper name.
 
-This patchset is based on this series. (This series is under reviewing.)
-[alsa-devel] [PATCH 00/49 v4] Enhancement for support of Firewire devices
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-April/075841.html
+Additionally, for easily distinguishing local symbols from structure tag,
+rename dice tag into snd_dice.
 
-If you try this patchset, please apply the series in advance then apply this patchset.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice.c | 154 +++++++++++++++++++++++++-------------------------
+ 1 file changed, 77 insertions(+), 77 deletions(-)
 
-Or just use backport codes in my github repository:
-https://github.com/takaswie/snd-firewire-improve
-
-Or if you use Ubuntu 14.04, DKMS package is available from David's PPA.
-(Special thanks to David Henningsson.)
-https://launchpad.net/~diwic/+archive/snd-firewire-improve
-
-If you have any Dice based devices, please test this patchset because I can't test this driver with actual devices.
-
-
-== Background
-
-Dice is 'Digital Interface Communications Engine', produced by TC Applied Technologies.
-Several vendors produced devices with Dice chipsets.
-
-Currently, ALSA driver for Dice chipset has some restrictions:
- - Support playback of PCM samples only
- - Support SYT-Match mode for sampling clock source only
-
-This patchset adds more functionality into the driver:
- - Support both of capture/playback
- - Support both of PCM/MIDI
- - Support both of SYT-Match or non SYT-Match mode
-
-
-== Call for testing
-I don't have any Dice based devices.
-
-So I work for this patchset with my experiences for the other drivers and some stub codes. So it may not work fine, perhaps. If you have some Dice based devices, I hope you to test these patches and report the result. If it works badly, please get transaction logs and send it to me.
-
-The way to get transaction logs is:
-1. Set debug parameter of 'firewire-ohci' driver. With root privillege:
- $ echo 1 > /sys/module/firewire_ohci/parameters/debug
-2. Then transaction logs are output to /var/log/syslog
- $ tail -n 10 /var/log/syslog
-  kernel: [ 2376.107790] snd_dice fw1.0: transaction failed: address error
-  kernel: [ 2376.108015] firewire_core 0000:02:00.0: created device fw1: GUID 00a0de000002e247, S400
-  kernel: [ 2382.044469] firewire_ohci 0000:02:00.0: AR evt_bus_reset, generation 25
-  kernel: [ 2384.095868] snd_dice fw1.0: transaction failed: bus reset
-  kernel: [ 2384.143898] snd_dice fw1.0: transaction failed: bus reset
-  kernel: [ 2389.517686] firewire_ohci 0000:02:00.0: AR evt_bus_reset, generation 26
-  kernel: [ 2390.015821] firewire_ohci 0000:02:00.0: AT spd 0 tl 1f, ffc0 -> ffc1, evt_missing_ack, QR req, fffff0000400
-  kernel: [ 2392.885455] firewire_ohci 0000:02:00.0: AR evt_bus_reset, generation 27
-  kernel: [ 2392.885504] firewire_core 0000:02:00.0: phy config: new root=ffc1, gap_count=5
-  kernel: [ 2392.885534] firewire_ohci 0000:02:00.0: AT ack_complete, PHY 01c50000 fe3affff
-  kernel: [ 2392.885556] firewire_ohci 0000:02:00.0: AR evt_bus_reset, generation 28
-  kernel: [ 2393.025757] firewire_ohci 0000:02:00.0: AT spd 0 tl 2a, ffc1 -> ffc0, ack_pending , QR req, fffff0000400
-  kernel: [ 2393.026007] firewire_ohci 0000:02:00.0: AR spd 2 tl 2a, ffc0 -> ffc1, ack_complete, QR resp = 041fa8cb
-  kernel: [ 2393.026076] firewire_ohci 0000:02:00.0: AT spd 0 tl 2b, ffc1 -> ffc0, ack_pending , QR req, fffff0000404
-  kernel: [ 2393.026172] firewire_ohci 0000:02:00.0: AR spd 2 tl 2b, ffc0 -> ffc1, ack_complete, QR resp = 31333934
-  kernel: [ 2393.026251] firewire_ohci 0000:02:00.0: AT spd 0 tl 2c, ffc1 -> ffc0, ack_pending , QR req, fffff0000408
-  kernel: [ 2393.030558] firewire_ohci 0000:02:00.0: AR spd 2 tl 2c, ffc0 -> ffc1, ack_complete, QR resp = f0646122
-3. Please send me the output since you plug-in your device (not whole)
-4. And please tell me how you test, which devices you test with and what result you got
-
-
-== All patches
-
-My work for ALSA firewire drivers are available in my remote repository:
-https://github.com/takaswie/sound
-
-It includes 77 patches. I'm always welcome to receive some comments about them.
-
-Takashi Sakamoto (13):
-  dice: Rename structure and its members
-  dice: Move file to its own directory
-  dice: Split transaction functionality into a file
-  dice: Split stream functionality into a file
-  dice: Split PCM functionality into a file
-  dice: Split hwdep functionality into a file
-  dice: Split proc functionality into a file
-  dice: Add new functions for limitation of PCM parameters
-  dice: Change the way to start stream
-  dice: Add support for duplex streams with synchronization
-  dice: Support for non SYT-Match sampling clock source mode
-  dice: Add support for PCM capture
-  dice: Add support for MIDI capture/playback
-
- sound/firewire/Kconfig                 |    4 +-
- sound/firewire/Makefile                |    3 +-
- sound/firewire/dice-interface.h        |  371 --------
- sound/firewire/dice.c                  | 1500 --------------------------------
- sound/firewire/dice/Makefile           |    3 +
- sound/firewire/dice/dice-interface.h   |  371 ++++++++
- sound/firewire/dice/dice.c             |  374 ++++++++
- sound/firewire/dice/dice.h             |  189 ++++
- sound/firewire/dice/dice_hwdep.c       |  190 ++++
- sound/firewire/dice/dice_midi.c        |  173 ++++
- sound/firewire/dice/dice_pcm.c         |  389 +++++++++
- sound/firewire/dice/dice_proc.c        |  252 ++++++
- sound/firewire/dice/dice_stream.c      |  410 +++++++++
- sound/firewire/dice/dice_transaction.c |  359 ++++++++
- 14 files changed, 2712 insertions(+), 1876 deletions(-)
- delete mode 100644 sound/firewire/dice-interface.h
- delete mode 100644 sound/firewire/dice.c
- create mode 100644 sound/firewire/dice/Makefile
- create mode 100644 sound/firewire/dice/dice-interface.h
- create mode 100644 sound/firewire/dice/dice.c
- create mode 100644 sound/firewire/dice/dice.h
- create mode 100644 sound/firewire/dice/dice_hwdep.c
- create mode 100644 sound/firewire/dice/dice_midi.c
- create mode 100644 sound/firewire/dice/dice_pcm.c
- create mode 100644 sound/firewire/dice/dice_proc.c
- create mode 100644 sound/firewire/dice/dice_stream.c
- create mode 100644 sound/firewire/dice/dice_transaction.c
-
+diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
+index a9a30c0..d18e7a6 100644
+--- a/sound/firewire/dice.c
++++ b/sound/firewire/dice.c
+@@ -32,7 +32,7 @@
+ #include "dice-interface.h"
+ 
+ 
+-struct dice {
++struct snd_dice {
+ 	struct snd_card *card;
+ 	struct fw_unit *unit;
+ 	spinlock_t lock;
+@@ -50,8 +50,8 @@ struct dice {
+ 	struct completion clock_accepted;
+ 	wait_queue_head_t hwdep_wait;
+ 	u32 notification_bits;
+-	struct fw_iso_resources resources;
+-	struct amdtp_stream stream;
++	struct fw_iso_resources rx_resources;
++	struct amdtp_stream rx_stream;
+ };
+ 
+ MODULE_DESCRIPTION("DICE driver");
+@@ -87,13 +87,13 @@ static unsigned int rate_index_to_mode(unsigned int rate_index)
+ 	return ((int)rate_index - 1) / 2;
+ }
+ 
+-static void dice_lock_changed(struct dice *dice)
++static void dice_lock_changed(struct snd_dice *dice)
+ {
+ 	dice->dev_lock_changed = true;
+ 	wake_up(&dice->hwdep_wait);
+ }
+ 
+-static int dice_try_lock(struct dice *dice)
++static int dice_try_lock(struct snd_dice *dice)
+ {
+ 	int err;
+ 
+@@ -114,7 +114,7 @@ out:
+ 	return err;
+ }
+ 
+-static void dice_unlock(struct dice *dice)
++static void dice_unlock(struct snd_dice *dice)
+ {
+ 	spin_lock_irq(&dice->lock);
+ 
+@@ -128,18 +128,18 @@ out:
+ 	spin_unlock_irq(&dice->lock);
+ }
+ 
+-static inline u64 global_address(struct dice *dice, unsigned int offset)
++static inline u64 global_address(struct snd_dice *dice, unsigned int offset)
+ {
+ 	return DICE_PRIVATE_SPACE + dice->global_offset + offset;
+ }
+ 
+ // TODO: rx index
+-static inline u64 rx_address(struct dice *dice, unsigned int offset)
++static inline u64 rx_address(struct snd_dice *dice, unsigned int offset)
+ {
+ 	return DICE_PRIVATE_SPACE + dice->rx_offset + offset;
+ }
+ 
+-static int dice_owner_set(struct dice *dice)
++static int dice_owner_set(struct snd_dice *dice)
+ {
+ 	struct fw_device *device = fw_parent_device(dice->unit);
+ 	__be64 *buffer;
+@@ -183,7 +183,7 @@ static int dice_owner_set(struct dice *dice)
+ 	return err;
+ }
+ 
+-static int dice_owner_update(struct dice *dice)
++static int dice_owner_update(struct snd_dice *dice)
+ {
+ 	struct fw_device *device = fw_parent_device(dice->unit);
+ 	__be64 *buffer;
+@@ -226,7 +226,7 @@ static int dice_owner_update(struct dice *dice)
+ 	return err;
+ }
+ 
+-static void dice_owner_clear(struct dice *dice)
++static void dice_owner_clear(struct snd_dice *dice)
+ {
+ 	struct fw_device *device = fw_parent_device(dice->unit);
+ 	__be64 *buffer;
+@@ -249,7 +249,7 @@ static void dice_owner_clear(struct dice *dice)
+ 	dice->owner_generation = -1;
+ }
+ 
+-static int dice_enable_set(struct dice *dice)
++static int dice_enable_set(struct snd_dice *dice)
+ {
+ 	__be32 value;
+ 	int err;
+@@ -267,7 +267,7 @@ static int dice_enable_set(struct dice *dice)
+ 	return 0;
+ }
+ 
+-static void dice_enable_clear(struct dice *dice)
++static void dice_enable_clear(struct snd_dice *dice)
+ {
+ 	__be32 value;
+ 
+@@ -288,7 +288,7 @@ static void dice_notification(struct fw_card *card, struct fw_request *request,
+ 			      int generation, unsigned long long offset,
+ 			      void *data, size_t length, void *callback_data)
+ {
+-	struct dice *dice = callback_data;
++	struct snd_dice *dice = callback_data;
+ 	u32 bits;
+ 	unsigned long flags;
+ 
+@@ -317,7 +317,7 @@ static void dice_notification(struct fw_card *card, struct fw_request *request,
+ static int dice_rate_constraint(struct snd_pcm_hw_params *params,
+ 				struct snd_pcm_hw_rule *rule)
+ {
+-	struct dice *dice = rule->private;
++	struct snd_dice *dice = rule->private;
+ 	const struct snd_interval *channels =
+ 		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_interval *rate =
+@@ -344,7 +344,7 @@ static int dice_rate_constraint(struct snd_pcm_hw_params *params,
+ static int dice_channels_constraint(struct snd_pcm_hw_params *params,
+ 				    struct snd_pcm_hw_rule *rule)
+ {
+-	struct dice *dice = rule->private;
++	struct snd_dice *dice = rule->private;
+ 	const struct snd_interval *rate =
+ 		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
+ 	struct snd_interval *channels =
+@@ -384,7 +384,7 @@ static int dice_open(struct snd_pcm_substream *substream)
+ 		.periods_min = 1,
+ 		.periods_max = UINT_MAX,
+ 	};
+-	struct dice *dice = substream->private_data;
++	struct snd_dice *dice = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	unsigned int i;
+ 	int err;
+@@ -420,7 +420,7 @@ static int dice_open(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		goto err_lock;
+ 
+-	err = amdtp_stream_add_pcm_hw_constraints(&dice->stream, runtime);
++	err = amdtp_stream_add_pcm_hw_constraints(&dice->rx_stream, runtime);
+ 	if (err < 0)
+ 		goto err_lock;
+ 
+@@ -434,47 +434,47 @@ error:
+ 
+ static int dice_close(struct snd_pcm_substream *substream)
+ {
+-	struct dice *dice = substream->private_data;
++	struct snd_dice *dice = substream->private_data;
+ 
+ 	dice_unlock(dice);
+ 
+ 	return 0;
+ }
+ 
+-static int dice_stream_start_packets(struct dice *dice)
++static int dice_stream_start_packets(struct snd_dice *dice)
+ {
+ 	int err;
+ 
+-	if (amdtp_stream_running(&dice->stream))
++	if (amdtp_stream_running(&dice->rx_stream))
+ 		return 0;
+ 
+-	err = amdtp_stream_start(&dice->stream, dice->resources.channel,
++	err = amdtp_stream_start(&dice->rx_stream, dice->rx_resources.channel,
+ 				 fw_parent_device(dice->unit)->max_speed);
+ 	if (err < 0)
+ 		return err;
+ 
+ 	err = dice_enable_set(dice);
+ 	if (err < 0) {
+-		amdtp_stream_stop(&dice->stream);
++		amdtp_stream_stop(&dice->rx_stream);
+ 		return err;
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int dice_stream_start(struct dice *dice)
++static int dice_stream_start(struct snd_dice *dice)
+ {
+ 	__be32 channel;
+ 	int err;
+ 
+-	if (!dice->resources.allocated) {
+-		err = fw_iso_resources_allocate(&dice->resources,
+-				amdtp_stream_get_max_payload(&dice->stream),
++	if (!dice->rx_resources.allocated) {
++		err = fw_iso_resources_allocate(&dice->rx_resources,
++				amdtp_stream_get_max_payload(&dice->rx_stream),
+ 				fw_parent_device(dice->unit)->max_speed);
+ 		if (err < 0)
+ 			goto error;
+ 
+-		channel = cpu_to_be32(dice->resources.channel);
++		channel = cpu_to_be32(dice->rx_resources.channel);
+ 		err = snd_fw_transaction(dice->unit,
+ 					 TCODE_WRITE_QUADLET_REQUEST,
+ 					 rx_address(dice, RX_ISOCHRONOUS),
+@@ -494,36 +494,36 @@ err_rx_channel:
+ 	snd_fw_transaction(dice->unit, TCODE_WRITE_QUADLET_REQUEST,
+ 			   rx_address(dice, RX_ISOCHRONOUS), &channel, 4, 0);
+ err_resources:
+-	fw_iso_resources_free(&dice->resources);
++	fw_iso_resources_free(&dice->rx_resources);
+ error:
+ 	return err;
+ }
+ 
+-static void dice_stream_stop_packets(struct dice *dice)
++static void dice_stream_stop_packets(struct snd_dice *dice)
+ {
+-	if (amdtp_stream_running(&dice->stream)) {
++	if (amdtp_stream_running(&dice->rx_stream)) {
+ 		dice_enable_clear(dice);
+-		amdtp_stream_stop(&dice->stream);
++		amdtp_stream_stop(&dice->rx_stream);
+ 	}
+ }
+ 
+-static void dice_stream_stop(struct dice *dice)
++static void dice_stream_stop(struct snd_dice *dice)
+ {
+ 	__be32 channel;
+ 
+ 	dice_stream_stop_packets(dice);
+ 
+-	if (!dice->resources.allocated)
++	if (!dice->rx_resources.allocated)
+ 		return;
+ 
+ 	channel = cpu_to_be32((u32)-1);
+ 	snd_fw_transaction(dice->unit, TCODE_WRITE_QUADLET_REQUEST,
+ 			   rx_address(dice, RX_ISOCHRONOUS), &channel, 4, 0);
+ 
+-	fw_iso_resources_free(&dice->resources);
++	fw_iso_resources_free(&dice->rx_resources);
+ }
+ 
+-static int dice_change_rate(struct dice *dice, unsigned int clock_rate)
++static int dice_change_rate(struct snd_dice *dice, unsigned int clock_rate)
+ {
+ 	__be32 value;
+ 	int err;
+@@ -547,7 +547,7 @@ static int dice_change_rate(struct dice *dice, unsigned int clock_rate)
+ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 			  struct snd_pcm_hw_params *hw_params)
+ {
+-	struct dice *dice = substream->private_data;
++	struct snd_dice *dice = substream->private_data;
+ 	unsigned int rate_index, mode, rate, channels, i;
+ 	int err;
+ 
+@@ -580,8 +580,8 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 
+ 		for (i = 0; i < channels; i++) {
+-			dice->stream.pcm_positions[i * 2] = i;
+-			dice->stream.pcm_positions[i * 2 + 1] = i + channels;
++			dice->rx_stream.pcm_positions[i * 2] = i;
++			dice->rx_stream.pcm_positions[i * 2 + 1] = i + channels;
+ 		}
+ 
+ 		rate /= 2;
+@@ -589,9 +589,9 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	mode = rate_index_to_mode(rate_index);
+-	amdtp_stream_set_parameters(&dice->stream, rate, channels,
++	amdtp_stream_set_parameters(&dice->rx_stream, rate, channels,
+ 				    dice->rx_midi_ports[mode]);
+-	amdtp_stream_set_pcm_format(&dice->stream,
++	amdtp_stream_set_pcm_format(&dice->rx_stream,
+ 				    params_format(hw_params));
+ 
+ 	return 0;
+@@ -599,7 +599,7 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 
+ static int dice_hw_free(struct snd_pcm_substream *substream)
+ {
+-	struct dice *dice = substream->private_data;
++	struct snd_dice *dice = substream->private_data;
+ 
+ 	mutex_lock(&dice->mutex);
+ 	dice_stream_stop(dice);
+@@ -610,12 +610,12 @@ static int dice_hw_free(struct snd_pcm_substream *substream)
+ 
+ static int dice_prepare(struct snd_pcm_substream *substream)
+ {
+-	struct dice *dice = substream->private_data;
++	struct snd_dice *dice = substream->private_data;
+ 	int err;
+ 
+ 	mutex_lock(&dice->mutex);
+ 
+-	if (amdtp_streaming_error(&dice->stream))
++	if (amdtp_streaming_error(&dice->rx_stream))
+ 		dice_stream_stop_packets(dice);
+ 
+ 	err = dice_stream_start(dice);
+@@ -626,14 +626,14 @@ static int dice_prepare(struct snd_pcm_substream *substream)
+ 
+ 	mutex_unlock(&dice->mutex);
+ 
+-	amdtp_stream_pcm_prepare(&dice->stream);
++	amdtp_stream_pcm_prepare(&dice->rx_stream);
+ 
+ 	return 0;
+ }
+ 
+ static int dice_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+-	struct dice *dice = substream->private_data;
++	struct snd_dice *dice = substream->private_data;
+ 	struct snd_pcm_substream *pcm;
+ 
+ 	switch (cmd) {
+@@ -646,19 +646,19 @@ static int dice_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	amdtp_stream_pcm_trigger(&dice->stream, pcm);
++	amdtp_stream_pcm_trigger(&dice->rx_stream, pcm);
+ 
+ 	return 0;
+ }
+ 
+ static snd_pcm_uframes_t dice_pointer(struct snd_pcm_substream *substream)
+ {
+-	struct dice *dice = substream->private_data;
++	struct snd_dice *dice = substream->private_data;
+ 
+-	return amdtp_stream_pcm_pointer(&dice->stream);
++	return amdtp_stream_pcm_pointer(&dice->rx_stream);
+ }
+ 
+-static int dice_create_pcm(struct dice *dice)
++static int dice_create_pcm(struct snd_dice *dice)
+ {
+ 	static struct snd_pcm_ops ops = {
+ 		.open      = dice_open,
+@@ -688,7 +688,7 @@ static int dice_create_pcm(struct dice *dice)
+ static long dice_hwdep_read(struct snd_hwdep *hwdep, char __user *buf,
+ 			    long count, loff_t *offset)
+ {
+-	struct dice *dice = hwdep->private_data;
++	struct snd_dice *dice = hwdep->private_data;
+ 	DEFINE_WAIT(wait);
+ 	union snd_firewire_event event;
+ 
+@@ -730,7 +730,7 @@ static long dice_hwdep_read(struct snd_hwdep *hwdep, char __user *buf,
+ static unsigned int dice_hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
+ 				    poll_table *wait)
+ {
+-	struct dice *dice = hwdep->private_data;
++	struct snd_dice *dice = hwdep->private_data;
+ 	unsigned int events;
+ 
+ 	poll_wait(file, &dice->hwdep_wait, wait);
+@@ -745,7 +745,7 @@ static unsigned int dice_hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
+ 	return events;
+ }
+ 
+-static int dice_hwdep_get_info(struct dice *dice, void __user *arg)
++static int dice_hwdep_get_info(struct snd_dice *dice, void __user *arg)
+ {
+ 	struct fw_device *dev = fw_parent_device(dice->unit);
+ 	struct snd_firewire_get_info info;
+@@ -764,7 +764,7 @@ static int dice_hwdep_get_info(struct dice *dice, void __user *arg)
+ 	return 0;
+ }
+ 
+-static int dice_hwdep_lock(struct dice *dice)
++static int dice_hwdep_lock(struct snd_dice *dice)
+ {
+ 	int err;
+ 
+@@ -782,7 +782,7 @@ static int dice_hwdep_lock(struct dice *dice)
+ 	return err;
+ }
+ 
+-static int dice_hwdep_unlock(struct dice *dice)
++static int dice_hwdep_unlock(struct snd_dice *dice)
+ {
+ 	int err;
+ 
+@@ -802,7 +802,7 @@ static int dice_hwdep_unlock(struct dice *dice)
+ 
+ static int dice_hwdep_release(struct snd_hwdep *hwdep, struct file *file)
+ {
+-	struct dice *dice = hwdep->private_data;
++	struct snd_dice *dice = hwdep->private_data;
+ 
+ 	spin_lock_irq(&dice->lock);
+ 	if (dice->dev_lock_count == -1)
+@@ -815,7 +815,7 @@ static int dice_hwdep_release(struct snd_hwdep *hwdep, struct file *file)
+ static int dice_hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
+ 			    unsigned int cmd, unsigned long arg)
+ {
+-	struct dice *dice = hwdep->private_data;
++	struct snd_dice *dice = hwdep->private_data;
+ 
+ 	switch (cmd) {
+ 	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
+@@ -840,7 +840,7 @@ static int dice_hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
+ #define dice_hwdep_compat_ioctl NULL
+ #endif
+ 
+-static int dice_create_hwdep(struct dice *dice)
++static int dice_create_hwdep(struct snd_dice *dice)
+ {
+ 	static const struct snd_hwdep_ops ops = {
+ 		.read         = dice_hwdep_read,
+@@ -864,7 +864,7 @@ static int dice_create_hwdep(struct dice *dice)
+ 	return 0;
+ }
+ 
+-static int dice_proc_read_mem(struct dice *dice, void *buffer,
++static int dice_proc_read_mem(struct snd_dice *dice, void *buffer,
+ 			      unsigned int offset_q, unsigned int quadlets)
+ {
+ 	unsigned int i;
+@@ -923,7 +923,7 @@ static void dice_proc_read(struct snd_info_entry *entry,
+ 		"32000", "44100", "48000", "88200", "96000", "176400", "192000",
+ 		"any low", "any mid", "any high", "none"
+ 	};
+-	struct dice *dice = entry->private_data;
++	struct snd_dice *dice = entry->private_data;
+ 	u32 sections[ARRAY_SIZE(section_names) * 2];
+ 	struct {
+ 		u32 number;
+@@ -1098,7 +1098,7 @@ static void dice_proc_read(struct snd_info_entry *entry,
+ 	}
+ }
+ 
+-static void dice_create_proc(struct dice *dice)
++static void dice_create_proc(struct snd_dice *dice)
+ {
+ 	struct snd_info_entry *entry;
+ 
+@@ -1108,9 +1108,9 @@ static void dice_create_proc(struct dice *dice)
+ 
+ static void dice_card_free(struct snd_card *card)
+ {
+-	struct dice *dice = card->private_data;
++	struct snd_dice *dice = card->private_data;
+ 
+-	amdtp_stream_destroy(&dice->stream);
++	amdtp_stream_destroy(&dice->rx_stream);
+ 	fw_core_remove_address_handler(&dice->notification_handler);
+ 	mutex_destroy(&dice->mutex);
+ }
+@@ -1205,7 +1205,7 @@ static int dice_interface_check(struct fw_unit *unit)
+ 	return 0;
+ }
+ 
+-static int highest_supported_mode_rate(struct dice *dice, unsigned int mode)
++static int highest_supported_mode_rate(struct snd_dice *dice, unsigned int mode)
+ {
+ 	int i;
+ 
+@@ -1217,7 +1217,7 @@ static int highest_supported_mode_rate(struct dice *dice, unsigned int mode)
+ 	return -1;
+ }
+ 
+-static int dice_read_mode_params(struct dice *dice, unsigned int mode)
++static int dice_read_mode_params(struct snd_dice *dice, unsigned int mode)
+ {
+ 	__be32 values[2];
+ 	int rate_index, err;
+@@ -1245,7 +1245,7 @@ static int dice_read_mode_params(struct dice *dice, unsigned int mode)
+ 	return 0;
+ }
+ 
+-static int dice_read_params(struct dice *dice)
++static int dice_read_params(struct snd_dice *dice)
+ {
+ 	__be32 pointers[6];
+ 	__be32 value;
+@@ -1286,7 +1286,7 @@ static int dice_read_params(struct dice *dice)
+ 	return 0;
+ }
+ 
+-static void dice_card_strings(struct dice *dice)
++static void dice_card_strings(struct snd_dice *dice)
+ {
+ 	struct snd_card *card = dice->card;
+ 	struct fw_device *dev = fw_parent_device(dice->unit);
+@@ -1324,7 +1324,7 @@ static void dice_card_strings(struct dice *dice)
+ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ {
+ 	struct snd_card *card;
+-	struct dice *dice;
++	struct snd_dice *dice;
+ 	__be32 clock_sel;
+ 	int err;
+ 
+@@ -1361,12 +1361,12 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ 	if (err < 0)
+ 		goto err_owner;
+ 
+-	err = fw_iso_resources_init(&dice->resources, unit);
++	err = fw_iso_resources_init(&dice->rx_resources, unit);
+ 	if (err < 0)
+ 		goto err_owner;
+-	dice->resources.channels_mask = 0x00000000ffffffffuLL;
++	dice->rx_resources.channels_mask = 0x00000000ffffffffuLL;
+ 
+-	err = amdtp_stream_init(&dice->stream, unit, AMDTP_OUT_STREAM,
++	err = amdtp_stream_init(&dice->rx_stream, unit, AMDTP_OUT_STREAM,
+ 				CIP_BLOCKING);
+ 	if (err < 0)
+ 		goto err_resources;
+@@ -1407,7 +1407,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ 	return 0;
+ 
+ err_resources:
+-	fw_iso_resources_destroy(&dice->resources);
++	fw_iso_resources_destroy(&dice->rx_resources);
+ err_owner:
+ 	dice_owner_clear(dice);
+ err_notification_handler:
+@@ -1421,9 +1421,9 @@ error:
+ 
+ static void dice_remove(struct fw_unit *unit)
+ {
+-	struct dice *dice = dev_get_drvdata(&unit->device);
++	struct snd_dice *dice = dev_get_drvdata(&unit->device);
+ 
+-	amdtp_stream_pcm_abort(&dice->stream);
++	amdtp_stream_pcm_abort(&dice->rx_stream);
+ 
+ 	snd_card_disconnect(dice->card);
+ 
+@@ -1439,7 +1439,7 @@ static void dice_remove(struct fw_unit *unit)
+ 
+ static void dice_bus_reset(struct fw_unit *unit)
+ {
+-	struct dice *dice = dev_get_drvdata(&unit->device);
++	struct snd_dice *dice = dev_get_drvdata(&unit->device);
+ 
+ 	/*
+ 	 * On a bus reset, the DICE firmware disables streaming and then goes
+@@ -1449,7 +1449,7 @@ static void dice_bus_reset(struct fw_unit *unit)
+ 	 * to stop so that the application can restart them in an orderly
+ 	 * manner.
+ 	 */
+-	amdtp_stream_pcm_abort(&dice->stream);
++	amdtp_stream_pcm_abort(&dice->rx_stream);
+ 
+ 	mutex_lock(&dice->mutex);
+ 
+@@ -1458,7 +1458,7 @@ static void dice_bus_reset(struct fw_unit *unit)
+ 
+ 	dice_owner_update(dice);
+ 
+-	fw_iso_resources_update(&dice->resources);
++	fw_iso_resources_update(&dice->rx_resources);
+ 
+ 	mutex_unlock(&dice->mutex);
+ }
 -- 
 1.8.3.2
