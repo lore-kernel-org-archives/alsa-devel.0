@@ -1,85 +1,60 @@
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 8/13] sound: mpu401.c: make return of 0 explicit
-Date: Mon, 19 May 2014 06:31:10 +0200
-Message-ID: <1400473875-22228-9-git-send-email-Julia.Lawall@lip6.fr>
-References: <1400473875-22228-1-git-send-email-Julia.Lawall@lip6.fr>
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH] Fix for possible null pointer dereference in dma.c
+Date: Mon, 19 May 2014 07:39:47 +0200
+Message-ID: <20140519073947.66bb2c46@ipc1.ka-ro>
+References: <1400191076-28279-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2-relais-roc.national.inria.fr
- (mail2-relais-roc.national.inria.fr [192.134.164.83])
- by alsa0.perex.cz (Postfix) with ESMTP id AA7DB2650CE
- for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 06:32:47 +0200 (CEST)
-In-Reply-To: <1400473875-22228-1-git-send-email-Julia.Lawall@lip6.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1400191076-28279-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
+Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+Hi,
 
-Delete unnecessary local variable whose value is always 0 and that hides
-the fact that the result is always 0.
+Rickard Strandqvist wrote:
+> There is otherwise a risk of a possible null pointer dereference.
+>=20
+> Was largely found by using a static code analysis program called cppc=
+heck.
+>=20
+> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigit=
+al.se>
+> ---
+>  sound/soc/samsung/dma.c |   10 ++++++----
+>  1 fil =C3=A4ndrad, 6 till=C3=A4gg(+), 4 borttagningar(-)
+>=20
+> diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
+> index dc09b71..b1f6757 100644
+> --- a/sound/soc/samsung/dma.c
+> +++ b/sound/soc/samsung/dma.c
+> @@ -115,17 +115,19 @@ static void dma_enqueue(struct snd_pcm_substrea=
+m *substream)
+>  static void audio_buffdone(void *data)
+>  {
+>  	struct snd_pcm_substream *substream =3D data;
+> -	struct runtime_data *prtd =3D substream->runtime->private_data;
+> +	struct runtime_data *prtd =3D NULL;
+> =20
+>  	pr_debug("Entered %s\n", __func__);
+> =20
+> -	if (prtd->state & ST_RUNNING) {
+> +	if(substream)
+>
+Missing space.
 
-A simplified version of the semantic patch that fixes this problem is as
-follows: (http://coccinelle.lip6.fr/)
 
-// <smpl>
-@r exists@
-local idexpression ret;
-expression e;
-position p;
-@@
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
 
--ret = 0;
-... when != ret = e
-return 
-- ret
-+ 0
-  ;
-// </smpl>
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
----
- sound/oss/mpu401.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/sound/oss/mpu401.c b/sound/oss/mpu401.c
-index 25e4609..3bbc3ec 100644
---- a/sound/oss/mpu401.c
-+++ b/sound/oss/mpu401.c
-@@ -567,7 +567,6 @@ static int mpu401_out(int dev, unsigned char midi_byte)
- static int mpu401_command(int dev, mpu_command_rec * cmd)
- {
- 	int i, timeout, ok;
--	int ret = 0;
- 	unsigned long   flags;
- 	struct mpu_config *devc;
- 
-@@ -644,7 +643,6 @@ retry:
- 			}
- 		}
- 	}
--	ret = 0;
- 	cmd->data[0] = 0;
- 
- 	if (cmd->nr_returns)
-@@ -666,7 +664,7 @@ retry:
- 		}
- 	}
- 	spin_unlock_irqrestore(&devc->lock,flags);
--	return ret;
-+	return 0;
- }
- 
- static int mpu_cmd(int dev, int cmd, int data)
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
