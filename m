@@ -1,18 +1,16 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Add Baytrail byt-max98090
-	machine driver
-Date: Mon, 19 May 2014 10:56:11 +0300
-Message-ID: <5379B91B.5010306@linux.intel.com>
-References: <1400248684-21960-1-git-send-email-jarkko.nikula@linux.intel.com>
- <20140516185429.GR22111@sirena.org.uk>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: [RFC][PATCH 00/13 v1] Enhancement for Dice driver
+Date: Mon, 19 May 2014 09:58:16 +0200
+Message-ID: <20140519095816.21acbc71@kant>
+References: <1400420198-24312-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E270261AB6
- for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 09:56:45 +0200 (CEST)
-In-Reply-To: <20140516185429.GR22111@sirena.org.uk>
+Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46FCC261ABF
+ for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 09:58:18 +0200 (CEST)
+In-Reply-To: <1400420198-24312-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +20,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On May 18 Takashi Sakamoto wrote:
+> Takashi Sakamoto (13):
+>   dice: Rename structure and its members
+>   dice: Move file to its own directory
+>   dice: Split transaction functionality into a file
+>   dice: Split stream functionality into a file
+>   dice: Split PCM functionality into a file
+>   dice: Split hwdep functionality into a file
+>   dice: Split proc functionality into a file
+>   dice: Add new functions for limitation of PCM parameters
+>   dice: Change the way to start stream
+>   dice: Add support for duplex streams with synchronization
+>   dice: Support for non SYT-Match sampling clock source mode
+>   dice: Add support for PCM capture
+>   dice: Add support for MIDI capture/playback
 
-On 05/16/2014 09:54 PM, Mark Brown wrote:
->> +
->> +	/*
->> +	 * ASoC still uses legacy GPIOs so we look both GPIOs using
->> +	 * descriptors here, convert them to numbers and release the
->> +	 * acquired descriptors. Once ASoC switches over to GPIO descriptor
->> +	 * APIs we can pass them directly.
->> +	 */
-> You could just add the required support to the framework...  it seems
-> quicker and simpler.
+Patch 02/12 apparently didn't get through to the mailinglist.  It is this one,
+https://github.com/takaswie/sound/commit/ad9a912161a3b6d2e48d19e185b50d4619ea5a53
+right?
 
-Looks like Mika was already proposing it :-)
->> +	hp_desc = gpiod_get_index(card->dev->parent, NULL, 0);
->> +	if (IS_ERR(hp_desc))
->> +		return 0;
-> This just eats errors, it's broken for deferred probe.
+>From ad9a912161a3b6d2e48d19e185b50d4619ea5a53 Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Date: Fri, 16 May 2014 22:11:47 +0900
+Subject: [PATCH] dice: Move file to its own directory
 
-Indeed yes.
->> +	snd_soc_jack_report(jack, SND_JACK_LINEOUT | SND_JACK_LINEIN,
->> +			    SND_JACK_HEADSET | SND_JACK_LINEOUT |
->> +			    SND_JACK_LINEIN);
-> Why is this here?
+In followed commits, dice driver is split into several files. For easily
+managing these files, this commit adds subdirectory and move file into
+the directory.
 
-Hmm.. I'd guess either a left over from a test code or attempt to send a 
-wrong initial jack state. I'll check.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/Makefile                    |  3 +--
+ sound/firewire/dice/Makefile               |  2 ++
+ sound/firewire/{ => dice}/dice-interface.h |  0
+ sound/firewire/{ => dice}/dice.c           | 15 ++++++++-------
+ 4 files changed, 11 insertions(+), 9 deletions(-)
+ create mode 100644 sound/firewire/dice/Makefile
+ rename sound/firewire/{ => dice}/dice-interface.h (100%)
+ rename sound/firewire/{ => dice}/dice.c (99%)
 
->> +static int byt_max98090_remove(struct platform_device *pdev)
->> +{
->> +	struct snd_soc_card *soc_card = platform_get_drvdata(pdev);
->> +	struct byt_max98090_private *drv = snd_soc_card_get_drvdata(soc_card);
->> +
->> +	snd_soc_jack_free_gpios(&drv->jack, ARRAY_SIZE(hs_jack_gpios),
->> +				hs_jack_gpios);
->> +	snd_soc_card_set_drvdata(soc_card, NULL);
->> +	snd_soc_unregister_card(soc_card);
->> +	platform_set_drvdata(pdev, NULL);
-> Setting the data to NULL on removal is just a waste of time and is done
-> by the core anyway.
->
-> You're freeing these in the device level remove path but allocating them
-> in the ASoC level probe path.  They should be managed consistently.
-
-Right, thanks for pointing, I was blind to see this.
-
-Your other comments are valid to byt-rt5640 too. I'll update it also 
-accordingly.
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index e297995cf7f7..edbe61d9ad1b 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -1,11 +1,10 @@
+ snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
+ 			 fcp.o cmp.o amdtp.o
+-snd-dice-objs := dice.o
+ snd-isight-objs := isight.o
+ snd-scs1x-objs := scs1x.o
+ 
+ obj-$(CONFIG_SND_FIREWIRE_LIB) += snd-firewire-lib.o
+-obj-$(CONFIG_SND_DICE) += snd-dice.o
++obj-$(CONFIG_SND_DICE) += dice/
+ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
+ obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
+ obj-$(CONFIG_SND_FIREWORKS) += fireworks/
+diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
+new file mode 100644
+index 000000000000..af05d7e9119a
+--- /dev/null
++++ b/sound/firewire/dice/Makefile
+@@ -0,0 +1,2 @@
++snd-dice-objs := dice.o
++obj-m += snd-dice.o
+diff --git a/sound/firewire/dice-interface.h b/sound/firewire/dice/dice-interface.h
+similarity index 100%
+rename from sound/firewire/dice-interface.h
+rename to sound/firewire/dice/dice-interface.h
+diff --git a/sound/firewire/dice.c b/sound/firewire/dice/dice.c
+similarity index 99%
+rename from sound/firewire/dice.c
+rename to sound/firewire/dice/dice.c
+index d18e7a68155d..cf8dc05c1596 100644
+--- a/sound/firewire/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -26,9 +26,9 @@
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+-#include "amdtp.h"
+-#include "iso-resources.h"
+-#include "lib.h"
++#include "../amdtp.h"
++#include "../iso-resources.h"
++#include "../lib.h"
+ #include "dice-interface.h"
+ 
+ 
+@@ -133,7 +133,7 @@ static inline u64 global_address(struct snd_dice *dice, unsigned int offset)
+ 	return DICE_PRIVATE_SPACE + dice->global_offset + offset;
+ }
+ 
+-// TODO: rx index
++/* TODO: rx index */
+ static inline u64 rx_address(struct snd_dice *dice, unsigned int offset)
+ {
+ 	return DICE_PRIVATE_SPACE + dice->rx_offset + offset;
+@@ -710,13 +710,14 @@ static long dice_hwdep_read(struct snd_hwdep *hwdep, char __user *buf,
+ 		event.lock_status.status = dice->dev_lock_count > 0;
+ 		dice->dev_lock_changed = false;
+ 
+-		count = min(count, (long)sizeof(event.lock_status));
++		count = min_t(long, count, sizeof(event.lock_status));
+ 	} else {
+-		event.dice_notification.type = SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION;
++		event.dice_notification.type =
++					SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION;
+ 		event.dice_notification.notification = dice->notification_bits;
+ 		dice->notification_bits = 0;
+ 
+-		count = min(count, (long)sizeof(event.dice_notification));
++		count = min_t(long, count, sizeof(event.dice_notification));
+ 	}
+ 
+ 	spin_unlock_irq(&dice->lock);
+-- 
+1.8.5.5
 
 -- 
-Jarkko
+Stefan Richter
+-=====-====- -=-= =--==
+http://arcgraph.de/sr/
