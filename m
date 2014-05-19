@@ -1,82 +1,70 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: cs42xx8: Do not use rtd->codec
-Date: Mon, 19 May 2014 13:58:28 +0000
-Message-ID: <7ED526F4-A4F6-4FEB-92B0-F13189AD41AC@cirrus.com>
-References: <1400479384-19108-1-git-send-email-lars@metafoo.de>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [alsa-devel] [PATCH 00/19] Rework OMAP4+ HDMI audio support
+Date: Mon, 19 May 2014 17:44:09 +0300
+Message-ID: <537A18B9.3040504@ti.com>
+References: <cover.1399884780.git.jsarha@ti.com>	<CAGhQ9VzjndCBp+ZHS3XPPvS4ors6u9BfHf4NY_HNYN5ynyQOYQ@mail.gmail.com>	<53733F2E.4030803@ti.com>	<CAGhQ9VzkGDPiQF7TiqiMgZY_oc9dyrW66yGsZR6ei2ejX-EXcw@mail.gmail.com>	<CAGhQ9VwY_qeOLsa_oAUuL3XT2tmn-mLg0WBtOdL8JL6u+0PQcw@mail.gmail.com> <CAGhQ9VyxKWZ9KSWoYkhf8KeUJnMKJO=b0kG=upC7uojNLHVObw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2039790019940015245=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0235.outbound.protection.outlook.com [207.46.163.235])
- by alsa0.perex.cz (Postfix) with ESMTP id 346AB2617AD
- for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 15:58:41 +0200 (CEST)
-In-Reply-To: <1400479384-19108-1-git-send-email-lars@metafoo.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, "Handrigan,
- Paul" <Paul.Handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>, Nicolin Chen <Guangyu.Chen@freescale.com>, Bard Liao <bardliao@realtek.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <CAGhQ9VyxKWZ9KSWoYkhf8KeUJnMKJO=b0kG=upC7uojNLHVObw@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Joachim Eastwood <manabian@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, broonie@kernel.org, peter.ujfalusi@ti.com, Tomi Valkeinen <tomi.valkeinen@ti.com>, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============2039790019940015245==
-Content-Language: en-US
-Content-Type: multipart/signed;
-	boundary="Apple-Mail=_88DACD12-BA8E-43B8-870A-06701390EC49";
-	protocol="application/pgp-signature"; micalg=pgp-sha512
+On 05/17/2014 12:16 PM, Joachim Eastwood wrote:
+> On 17 May 2014 10:51, Joachim  Eastwood <manabian@gmail.com> wrote:
+>> On 14 May 2014 18:25, Joachim  Eastwood <manabian@gmail.com> wrote:
+...
+>>
+>> I did some more testing over here.
+>>
+>> My HTPC (nVidia ION2 based) works good with speaker-test and all
+>> channels are where they are suppose to be.
+>>
+>> On the OMAP4 board I tried doing: "while true; do speaker-test -c 4 -s
+>> 1; done" and this had an interesting effect.
+>> Most of the time FL (Front Left) is swapped with BL (Back Left) but
+>> about every 10th time the sound comes out in the FL speaker... So
+>> there something weird going on here. Same story for the right channel.
+>>
+>> I also noticed that HDMI doesn't always work on boot up, it sometimes fail with:
+>> [ 193.985565] omapdss_hdmi 58006000.encoder: audio not supported
+>> [ 193.985565] omapdss_hdmi 58006000.encoder: ASoC: can't open
+>> interface 58006000.encoder: -19
+>>
+>> But after replugging the HDMI connector a couple of times it starts to work.
+>>
 
---Apple-Mail=_88DACD12-BA8E-43B8-870A-06701390EC49
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=windows-1252
+That is weird I can not reproduce this problem. I rebooted my panda 
+several times and the audio device was always there. Could it be that 
+the connector is in DVI mode or something?
 
+>> I'll see if I can try with an old TI OMAP4 kernel (3.4) and see how that works.
+>
+> On the 3.4 Variscite kernel:
+> Linux version 3.4.0-1489-omap4 (uri@pluto) (gcc version 4.6.3
+> (Ubuntu/Linaro 4.6.3-1ubuntu5) ) #27 SMP PREEMPT Sun Apr 7 13:27:10
+> IDT 2013
+> git://dev.omapzoom.org/pub/scm/integration/kernel-ubuntu.git +
+> Variscite vendor patches
+>
+> Both speaker-test -c 4 and -c 8 works. All channels are where they are
+> suppose to be.
+>
+> Hot plugging is broken, though. So the HDMI must be connected on boot,
+> but that might be the Variscite board setup.
+>
 
-On May 19, 2014, at 1:03 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+I checked the ubuntu branch implementation and found that it is quite 
+different in many places, but the one place that affects the i2s channel 
+mapping to HDMI looks exactly the same. So there must be a bug some 
+where else and there is no point trying to fix it by changing the 
+mapping (it would be impossible anyway). I'll compare the 
+implementations further when I have time.
 
-> rtd->codec does not necessarily point to the CODEC instance for which =
-the
-> callback was called (e.g. for CODEC<->CODEC or multi-CODEC links). Use
-> dai->codec instead.
->=20
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> =97
-Thanks
+Thanks for your testing. Now I at least now where the bug is not.
 
-Acked-by: Brian Austin <brian.austin@cirrus.com>
-
-
---Apple-Mail=_88DACD12-BA8E-43B8-870A-06701390EC49
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Message signed with OpenPGP using GPGMail
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - https://gpgtools.org
-
-iQEcBAEBCgAGBQJTeg4LAAoJEHdXZdGWfiO7lx0IAIZoprfV8gBxv6DqwH92IsU+
-SgKWhIgHRohT8K4P7Otgsxmg5bmroWej0cB1KNt7ZD49K2kvbQGuFiU9jhCgRpt6
-PyZyBUwahPCjSSiu6ge9NO9p9FkD61UPXQQeOTSNN4gRbg2YO/llZqowgW8q6lO2
-Kf/Kywo6yrXF1jPuu8sJABE/NKHp8KRb6wS+/PRG+/bGAf45Hog5OiDl41EO9riC
-ZgtRlAsgYQbjDE/wXeyUdNk88omBkjDFBTtW3wRqL+8wyCucIeABe2U369MAH7Je
-5WRP0SfJyn0aIvfKPHTiNva0MoUWE1r6QiS8PA+q+kMONKeK7CQYQs1w17jF+HM=
-=5HrR
------END PGP SIGNATURE-----
-
---Apple-Mail=_88DACD12-BA8E-43B8-870A-06701390EC49--
-
---===============2039790019940015245==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2039790019940015245==--
+Best regards,
+Jyri
