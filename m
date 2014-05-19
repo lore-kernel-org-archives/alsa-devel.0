@@ -1,76 +1,57 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH] fm801: convert struct description to kernel-doc
-Date: Mon, 19 May 2014 14:07:28 +0300
-Message-ID: <1400497648-32005-1-git-send-email-andriy.shevchenko@linux.intel.com>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH V2] ASoC: SAMSUNG: Add sound card driver for Snow board
+Date: Mon, 19 May 2014 17:36:38 +0530
+Message-ID: <5379F3CE.8030404@linaro.org>
+References: <20140424133920.GA12304@sirena.org.uk> <5359E18B.60600@linaro.org> <20140429222915.GU15125@sirena.org.uk> <5360E5E7.8090807@linaro.org> <20140430180314.GA3245@sirena.org.uk> <53623004.5010805@linaro.org> <20140501141510.GW3245@sirena.org.uk> <CAD=FV=Wa4CovkxBng0SkUUAryiFqa=m63tro1Yv1jRgp4e95aw@mail.gmail.com> <20140501164003.GC3245@sirena.org.uk> <53632568.5020200@linaro.org> <20140502165643.GQ3245@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DD9626520A
- for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 13:07:51 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <20140502165643.GQ3245@sirena.org.uk>
+Sender: linux-doc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Doug Anderson <dianders@chromium.org>, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, sbkim73@samsung.com, Randy Dunlap <rdunlap@infradead.org>, Mike Turquette <mturquette@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Just move field descriptions to the struct description in the kernel-doc
-format. There is no functional change.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- sound/pci/fm801.c | 26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+On 05/02/2014 10:26 PM, Mark Brown wrote:
+> On Fri, May 02, 2014 at 10:26:08AM +0530, Tushar Behera wrote:
+>> On 05/01/2014 10:10 PM, Mark Brown wrote:
+> 
+>>> There's patches been posted by (IIRC) Sylvester Nawrocki for
+>>> this which I think Mike was basically happy with - I don't
+>>> immediately see them in -next though, but I may be looking in
+>>> the wrong place.
+> 
+>> Right, there are some patches from Sylwester regarding this. I
+>> dont' think the patches are accepted yet as Rob has some
+>> reservations against the clock parents.
+> 
+>> https://lkml.org/lkml/2014/4/9/173
+> 
+> Well, OK - that's the bit to fix.  Speaking to Mike the other day
+> he said there was also another competing implementation of this.
+> 
 
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index e8910d0..529f5f4 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -158,21 +158,27 @@ MODULE_PARM_DESC(radio_nr, "Radio device numbers");
- #define FM801_GPIO_GS3		(1<<15)
- #define FM801_GPIO_GS(x)	(1<<(12+(x)))
- 	
--/*
--
-+/**
-+ * struct fm801 - describes FM801 chip
-+ * @port:		I/O port number
-+ * @multichannel:	multichannel support
-+ * @secondary:		secondary codec
-+ * @secondary_addr:	address of the secondary codec
-+ * @tea575x_tuner:	tuner access method & flags
-+ * @ply_ctrl:		playback control
-+ * @cap_ctrl:		capture control
-  */
--
- struct fm801 {
- 	int irq;
- 
--	unsigned long port;	/* I/O port number */
--	unsigned int multichannel: 1,	/* multichannel support */
--		     secondary: 1;	/* secondary codec */
--	unsigned char secondary_addr;	/* address of the secondary codec */
--	unsigned int tea575x_tuner;	/* tuner access method & flags */
-+	unsigned long port;
-+	unsigned int multichannel: 1,
-+		     secondary: 1;
-+	unsigned char secondary_addr;
-+	unsigned int tea575x_tuner;
- 
--	unsigned short ply_ctrl; /* playback control */
--	unsigned short cap_ctrl; /* capture control */
-+	unsigned short ply_ctrl;
-+	unsigned short cap_ctrl;
- 
- 	unsigned long ply_buffer;
- 	unsigned int ply_buf;
--- 
-2.0.0.rc2
+Instead of setting the parent clock, setting the desired rate on
+XCLKOUT works for audio playback.
+
+Will it be okay to do a 'clk_set_rate(mclk, 24000000)' in sound card
+driver or should we wait for Sylwester's patch to get merged?
+
+- -- 
+Tushar Behera
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iQEcBAEBAgAGBQJTefPOAAoJELqclMPPkq4N6UIH/i5W7KYjyKTQtX+AGdUmJwIx
+3TTwyWVz5YQ6gFpLHwwy5AwIkj4mygox2e7l0qWU6yOXCMceaXrvzxOK+B/LRXlp
++s8xjd+C+Idxhs0T6V4GkJRA9jtari3gcIGfz4tFtWY5O0l0eNTUduILhAvmE/Sw
+c4m8aOwK33P0kvkTIp/ShSujYa8v82XosMRuf4P0iEz9I3qw3syJkWWvqNZFrnPs
+B7i+9ZiZkyttsUVBOAWMBfOdLP5sMtxKDdk1GTkN1plxAE8lKdNVATR5htQL4bxo
+ZFcWJxE14pWQ770gEJVXkDT9o8dhmVNrDVp4eGe3m+43gN+Bssh+9kgdxb3vmIY=
+=gXaJ
+-----END PGP SIGNATURE-----
