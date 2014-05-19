@@ -1,89 +1,52 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] dma: pl330: Add support for DMA_PAUSE command
-Date: Mon, 19 May 2014 07:57:47 +0200
-Message-ID: <53799D5B.2060001@metafoo.de>
-References: <1400037830-21211-1-git-send-email-tushar.behera@linaro.org> <CABb+yY3YocX=8Dv7DysM4tcx=NTCCGGipz_gpMfpKDnAw7R8iw@mail.gmail.com> <CAHbNUh0fVND_oGLXWzsyKzbmJc_=FqhZTAnVHE4GGZ5aaJQbEg@mail.gmail.com> <5373607D.2000200@metafoo.de> <CAHbNUh1bmBniGVtvK4PpmpaKOnwG=MgtupkTEnjD6SS3r_-yjw@mail.gmail.com> <537513A8.701@metafoo.de> <CAHbNUh03oOHtLVzw7LiZ8SSR77D7ttLV9XDWS0px-8GTjSpJ4A@mail.gmail.com>
+Subject: [PATCH 2/2] ASoC: rt5651: Do not use rtd->codec
+Date: Mon, 19 May 2014 08:03:04 +0200
+Message-ID: <1400479384-19108-2-git-send-email-lars@metafoo.de>
+References: <1400479384-19108-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAHbNUh03oOHtLVzw7LiZ8SSR77D7ttLV9XDWS0px-8GTjSpJ4A@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: Jassi Brar <jassisinghbrar@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, dmaengine@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-145.synserver.de (smtp-out-039.synserver.de
+ [212.40.185.39])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DC4026510F
+ for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 08:04:31 +0200 (CEST)
+In-Reply-To: <1400479384-19108-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Nicolin Chen <Guangyu.Chen@freescale.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/19/2014 05:10 AM, Tushar Behera wrote:
-> On 16 May 2014 00:51, Lars-Peter Clausen <lars@metafoo.de> wrote:
->> On 05/15/2014 02:01 PM, Tushar Behera wrote:
->>>
->>> On 14 May 2014 17:54, Lars-Peter Clausen <lars@metafoo.de> wrote:
->>>>
->>>> On 05/14/2014 02:07 PM, Tushar Behera wrote:
->>>>>
->>>>>
->>>>> On 14 May 2014 17:29, Jassi Brar <jassisinghbrar@gmail.com> wrote:
->>>>>>
->>>>>>
->>>>>> On Wed, May 14, 2014 at 8:53 AM, Tushar Behera
->>>>>> <tushar.behera@linaro.org>
->>>>>> wrote:
->>>>>>>
->>>>>>>
->>>>>>> While playing back audio, pmc_dmaengine requests the DMA channel to
->>>>>>> stop DMA transmission through DMA_PAUSE command.
->>>>>>>
->>>>>>> Currently PL330 driver doesn't support DMA pause command, leaving
->>>>>>> the DMA state inconsistent when the system resumes. Instead, it would
->>>>>>> be better to terminate the DMA transfer during suspend and restart
->>>>>>> again during resume.
->>>>>>>
->>>>>>> Tested with audio playback across a suspend-resume cycle.
->>>>>>>
->>>>>> What is pmc_dmaengine? How does DMA_PAUSE help, when there is no
->>>>>> DMA_RESUME?
->>>>>>
->>>>>
->>>>> Sorry, it is a typo.
->>>>>
->>>>> sound/core/pcm_dmaengine.c:snd_dmaengine_pcm_trigger() -->
->>>>> dmaengine_pause() is called during system suspend.
->>>>
->>>>
->>>>
->>>> It is only called if the DMA driver has support for pausing and resuming
->>>> DMA
->>>> transfers. Or at least that is the intention.
->>>>
->>>> - Lars
->>>
->>>
->>> During suspend, snd_dmaengine_pcm_trigger():SNDRV_PCM_TRIGGER_SUSPEND
->>> is called which unconditionally calls dmaengine_pause(). Should we
->>> update snd_dmaengine_pcm_trigger() to check for DMA pause/resume
->>> support and call dmaengine_pause() or dmaengine_terminate_all()
->>> accordingly?
->>
->>
->> As far as I understand it we do not have to do anything for TRIGGER_SUSPEND
->> if we do not set the SNDRV_PCM_INFO_RESUME flag. It looks like
->> TRIGGER_SUSPEND is called unconditionally during suspend. But since the
->> error code is ignored it should be fine if we just call dmaengine_pause()
->> and that return -ENOSYS or similar.
->>
->> Are you seeing an actual issue that you are trying to fix with your patch?
->>
->> - Lars
->>
->
-> Without this patch applied, if audio is playing back while suspend is
-> triggered, it doesn't playback after resume. Stopping the stream and
-> replaying works.
->
+rtd->codec does not necessarily point to the CODEC instance for which the
+callback was called (e.g. for CODEC<->CODEC or multi-CODEC links). Use
+dai->codec instead.
 
-Ok, I think your second suggestion was correct. Call 
-dmaengine_terminate_all() instead of damengine_pause() in 
-snd_dmaengine_pcm_trigger() if the dmaengine driver does not support pausing 
-the transfer.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/rt5651.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-- Lars
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index f785b81..9c88d89 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -1368,8 +1368,7 @@ static int get_clk_info(int sclk, int rate)
+ static int rt5651_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec *codec = rtd->codec;
++	struct snd_soc_codec *codec = dai->codec;
+ 	struct rt5651_priv *rt5651 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int val_len = 0, val_clk, mask_clk;
+ 	int pre_div, bclk_ms, frame_size;
+-- 
+1.8.0
