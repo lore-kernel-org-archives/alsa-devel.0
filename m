@@ -1,60 +1,89 @@
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH] Fix for possible null pointer dereference in dma.c
-Date: Mon, 19 May 2014 07:39:47 +0200
-Message-ID: <20140519073947.66bb2c46@ipc1.ka-ro>
-References: <1400191076-28279-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] dma: pl330: Add support for DMA_PAUSE command
+Date: Mon, 19 May 2014 07:57:47 +0200
+Message-ID: <53799D5B.2060001@metafoo.de>
+References: <1400037830-21211-1-git-send-email-tushar.behera@linaro.org> <CABb+yY3YocX=8Dv7DysM4tcx=NTCCGGipz_gpMfpKDnAw7R8iw@mail.gmail.com> <CAHbNUh0fVND_oGLXWzsyKzbmJc_=FqhZTAnVHE4GGZ5aaJQbEg@mail.gmail.com> <5373607D.2000200@metafoo.de> <CAHbNUh1bmBniGVtvK4PpmpaKOnwG=MgtupkTEnjD6SS3r_-yjw@mail.gmail.com> <537513A8.701@metafoo.de> <CAHbNUh03oOHtLVzw7LiZ8SSR77D7ttLV9XDWS0px-8GTjSpJ4A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1400191076-28279-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAHbNUh03oOHtLVzw7LiZ8SSR77D7ttLV9XDWS0px-8GTjSpJ4A@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: Jassi Brar <jassisinghbrar@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, dmaengine@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-Rickard Strandqvist wrote:
-> There is otherwise a risk of a possible null pointer dereference.
->=20
-> Was largely found by using a static code analysis program called cppc=
-heck.
->=20
-> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigit=
-al.se>
-> ---
->  sound/soc/samsung/dma.c |   10 ++++++----
->  1 fil =C3=A4ndrad, 6 till=C3=A4gg(+), 4 borttagningar(-)
->=20
-> diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
-> index dc09b71..b1f6757 100644
-> --- a/sound/soc/samsung/dma.c
-> +++ b/sound/soc/samsung/dma.c
-> @@ -115,17 +115,19 @@ static void dma_enqueue(struct snd_pcm_substrea=
-m *substream)
->  static void audio_buffdone(void *data)
->  {
->  	struct snd_pcm_substream *substream =3D data;
-> -	struct runtime_data *prtd =3D substream->runtime->private_data;
-> +	struct runtime_data *prtd =3D NULL;
-> =20
->  	pr_debug("Entered %s\n", __func__);
-> =20
-> -	if (prtd->state & ST_RUNNING) {
-> +	if(substream)
+On 05/19/2014 05:10 AM, Tushar Behera wrote:
+> On 16 May 2014 00:51, Lars-Peter Clausen <lars@metafoo.de> wrote:
+>> On 05/15/2014 02:01 PM, Tushar Behera wrote:
+>>>
+>>> On 14 May 2014 17:54, Lars-Peter Clausen <lars@metafoo.de> wrote:
+>>>>
+>>>> On 05/14/2014 02:07 PM, Tushar Behera wrote:
+>>>>>
+>>>>>
+>>>>> On 14 May 2014 17:29, Jassi Brar <jassisinghbrar@gmail.com> wrote:
+>>>>>>
+>>>>>>
+>>>>>> On Wed, May 14, 2014 at 8:53 AM, Tushar Behera
+>>>>>> <tushar.behera@linaro.org>
+>>>>>> wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> While playing back audio, pmc_dmaengine requests the DMA channel to
+>>>>>>> stop DMA transmission through DMA_PAUSE command.
+>>>>>>>
+>>>>>>> Currently PL330 driver doesn't support DMA pause command, leaving
+>>>>>>> the DMA state inconsistent when the system resumes. Instead, it would
+>>>>>>> be better to terminate the DMA transfer during suspend and restart
+>>>>>>> again during resume.
+>>>>>>>
+>>>>>>> Tested with audio playback across a suspend-resume cycle.
+>>>>>>>
+>>>>>> What is pmc_dmaengine? How does DMA_PAUSE help, when there is no
+>>>>>> DMA_RESUME?
+>>>>>>
+>>>>>
+>>>>> Sorry, it is a typo.
+>>>>>
+>>>>> sound/core/pcm_dmaengine.c:snd_dmaengine_pcm_trigger() -->
+>>>>> dmaengine_pause() is called during system suspend.
+>>>>
+>>>>
+>>>>
+>>>> It is only called if the DMA driver has support for pausing and resuming
+>>>> DMA
+>>>> transfers. Or at least that is the intention.
+>>>>
+>>>> - Lars
+>>>
+>>>
+>>> During suspend, snd_dmaengine_pcm_trigger():SNDRV_PCM_TRIGGER_SUSPEND
+>>> is called which unconditionally calls dmaengine_pause(). Should we
+>>> update snd_dmaengine_pcm_trigger() to check for DMA pause/resume
+>>> support and call dmaengine_pause() or dmaengine_terminate_all()
+>>> accordingly?
+>>
+>>
+>> As far as I understand it we do not have to do anything for TRIGGER_SUSPEND
+>> if we do not set the SNDRV_PCM_INFO_RESUME flag. It looks like
+>> TRIGGER_SUSPEND is called unconditionally during suspend. But since the
+>> error code is ignored it should be fine if we just call dmaengine_pause()
+>> and that return -ENOSYS or similar.
+>>
+>> Are you seeing an actual issue that you are trying to fix with your patch?
+>>
+>> - Lars
+>>
 >
-Missing space.
+> Without this patch applied, if audio is playing back while suspend is
+> triggered, it doesn't playback after resume. Stopping the stream and
+> replaying works.
+>
 
+Ok, I think your second suggestion was correct. Call 
+dmaengine_terminate_all() instead of damengine_pause() in 
+snd_dmaengine_pcm_trigger() if the dmaengine driver does not support pausing 
+the transfer.
 
-Lothar Wa=C3=9Fmann
---=20
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+- Lars
