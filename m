@@ -1,54 +1,53 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH] ASoC: cache: Fix possible ZERO_SIZE_PTR
-	pointer dereferencing error.
-Date: Mon, 19 May 2014 16:32:09 +0800
-Message-ID: <1400488329-31702-1-git-send-email-Li.Xiubo@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1blp0189.outbound.protection.outlook.com [207.46.163.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D5D8260864
- for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 11:19:34 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: [PATCH] ALSA: pcm_dmaengine: Add check during device suspend
+Date: Mon, 19 May 2014 14:53:53 +0530
+Message-ID: <1400491433-16860-1-git-send-email-tushar.behera@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, perex@perex.cz, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
-Since we cannot make sure the 'reg_size' will always be none zero here,
-and then if 'reg_size' equals to zero, the kzalloc() will return ZERO_SIZE_PTR,
-which equals to ((void *)16).
+Currently snd_dmaengine_pcm_trigger() calls dmaengine_pause()
+unconditinally during device suspend. In case where DMA controller
+doesn't support PAUSE/RESUME functionality, this call is not able
+to stop the DMA controller. In this scenario, audio playback doesn't
+resume after device resume.
 
-So this patch fix this with just doing the 'reg_size' zero check before calling
-kzalloc().
+Calling dmaengine_pause/dmaengine_terminate_all conditionally fixes
+the issue.
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+It has been tested with audio playback on Samsung platform having
+PL330 DMA controller which doesn't support PAUSE/RESUME.
+
+Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
 ---
- sound/soc/soc-cache.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/core/pcm_dmaengine.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 3fa77d5..8fff5b6 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -72,6 +72,9 @@ int snd_soc_cache_init(struct snd_soc_codec *codec)
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index 94d0873..76cbb9e 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -182,6 +182,7 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
+ int snd_dmaengine_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int ret;
  
- 	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
- 
-+	if (!reg_size)
-+		return -EINVAL;
-+
- 	mutex_init(&codec->cache_rw_mutex);
- 
- 	dev_dbg(codec->dev, "ASoC: Initializing cache for %s codec\n",
+ 	switch (cmd) {
+@@ -196,6 +197,11 @@ int snd_dmaengine_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		dmaengine_resume(prtd->dma_chan);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
++		if (runtime->info & SNDRV_PCM_INFO_PAUSE)
++			dmaengine_pause(prtd->dma_chan);
++		else
++			dmaengine_terminate_all(prtd->dma_chan);
++		break;
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		dmaengine_pause(prtd->dma_chan);
+ 		break;
 -- 
-1.8.4
+1.7.9.5
