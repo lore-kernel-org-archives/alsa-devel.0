@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: cs42xx8: Do not use rtd->codec
-Date: Mon, 19 May 2014 17:14:14 +0100
-Message-ID: <20140519161414.GY12304@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: rt5651: Do not use rtd->codec
+Date: Mon, 19 May 2014 17:16:19 +0100
+Message-ID: <20140519161619.GA12304@sirena.org.uk>
 References: <1400479384-19108-1-git-send-email-lars@metafoo.de>
+ <1400479384-19108-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4488444885283989466=="
+Content-Type: multipart/mixed; boundary="===============7333966432457450019=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 010082607C8
- for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 18:14:42 +0200 (CEST)
-In-Reply-To: <1400479384-19108-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 21B542610A8
+ for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 18:16:42 +0200 (CEST)
+In-Reply-To: <1400479384-19108-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +26,52 @@ Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Paul Ha
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4488444885283989466==
+--===============7333966432457450019==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jgKy7pbvBiUftTGC"
+	protocol="application/pgp-signature"; boundary="U7Bj1ghFXEpdfZh6"
 Content-Disposition: inline
 
 
---jgKy7pbvBiUftTGC
+--U7Bj1ghFXEpdfZh6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, May 19, 2014 at 08:03:03AM +0200, Lars-Peter Clausen wrote:
+On Mon, May 19, 2014 at 08:03:04AM +0200, Lars-Peter Clausen wrote:
 > rtd->codec does not necessarily point to the CODEC instance for which the
 > callback was called (e.g. for CODEC<->CODEC or multi-CODEC links). Use
 > dai->codec instead.
 
 Applied, thanks.
 
---jgKy7pbvBiUftTGC
+--U7Bj1ghFXEpdfZh6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTei3TAAoJELSic+t+oim9My4P/2D84AgGGraD/R0NpVosQEN2
-DUB9dxe5ADTmCPHW5oKfzhAXx7mZhAaPI92igPOsv7qM4utLghVyY9i0D4J7gxsz
-JjjjONwP95rnMIArXPVkYcFGZgMgfZ/d7iVVDIHbBvvrOquAed7OB6WuLj9qwZCv
-17sB9Hwq8r1c0Jos7R+JEssLdRobcLP2fPgqOrgf6VqOumKN4kmrv7k1MYcXUKu4
-P0reWZQF/qtNeQTaV4tAYdXG3FhZKefBMjO53xG9nyQcC1oGgWqCNzbeLyt3M5tf
-XRDwEUy+NvYqEdMxdm5M2ejR+q5FEuCvaIHFZ0CzalgkSWUdPlfjPk1U6V5Q4RsV
-vCJZA76Lbsk4s5fQ46oIwTNg0YCWxKVR/hA/fTNqRRgVsc3W4k+HqY2oJJDNKFKs
-VYeVro0DfEZc1LFTsBemuFoQW2IB9U/viaLCKRB2QdKWFxOi6/Kiz+c5M41RV1L6
-zThBsUazysBRgSNzFrRkXwEhE7jgxz+U3UkLe0CnwnIATSwefPLKt8WQhVT/mXV3
-wEHGWZ34caPICxLpbOlIHXGpHnyf9+4HpHp00JavorrF90LT7QtatqNX/Z8PEwrK
-W2sKoq+Rro5N3+LfZC9WrbCW2QDs3M94BKuk/b0WxF0KFYKH04iZo82nYK9pqsBG
-Y9Ki40y2KXdyiiG1gH2P
-=/NaZ
+iQIcBAEBAgAGBQJTei5QAAoJELSic+t+oim9Rm0P/AwqTbS3zhsUJbynnVyUIp+3
+69YpUJTXC5rdw/u+a5BzavIfO1Y5nYO2ZF+lYpItmWOgw9hlTmp5T61z/IN+UYOB
+B3ZUXB/4zzesigbTZQUXIe53uRqNNRMgjMailx0JdeJtIpC80NlIzGoKj0dNo2Le
+zNlUwmXbEQKR21pm2/deKIXcTc4gD6iYrFTq6Mo8we+m9tuDU61btyJKMBOl3Beu
+0TuWZd/pe2XnyCzjXTdowzGF+1oMnq1Em0fWFR6SN6R6lG0Tot2s+jyStB4IbI7s
+GCqFpWyEdNaWYY6tFDws+aFNSKfePp/2W5mi1dHVKScJqVF3KHL+hFlSkpVwRywz
+Tq4KBRTXY/QzT3dFMVu1SXyp1tulXlmQ4hcSrhyr9bZOMguSexR4bt0l3wKFaDcL
+1KctB5ptDYpw0x9N/tbBxz7IQULWVL6omEcaWVeuOJgQS5BKPuUcGo2QUqokY11Q
+chtT0Bq+HZGOiHj6IOU7DVF1HvnUAfLq0dRQAEtjswiCKvy7no+Jhz8bCkkAPZ+I
+nhg/XGQdwgRMf+mBM4r7VwR+K0kIyYDWWKvFhliSfCasNf1+GAJr3SlRC8eoKMHS
+68HAMcq5gWJ4XRtbKiIHBD0ol3Cx8Oo15At4m5/wU11RlN6pINdeRaqXvQ6Dyu1a
+c83DhFBOVDSf0UxlF1R7
+=n3Nw
 -----END PGP SIGNATURE-----
 
---jgKy7pbvBiUftTGC--
+--U7Bj1ghFXEpdfZh6--
 
---===============4488444885283989466==
+--===============7333966432457450019==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4488444885283989466==--
+--===============7333966432457450019==--
