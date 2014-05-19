@@ -1,65 +1,76 @@
-From: Tomasz Figa <tomasz.figa@gmail.com>
-Subject: Re: [PATCH] Fix for possible null pointer dereference in dma.c
-Date: Mon, 19 May 2014 12:52:52 +0200
-Message-ID: <5379E284.7030700@gmail.com>
-References: <1400191076-28279-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH] fm801: convert struct description to kernel-doc
+Date: Mon, 19 May 2014 14:07:28 +0300
+Message-ID: <1400497648-32005-1-git-send-email-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1400191076-28279-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>
-Cc: Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DD9626520A
+ for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 13:07:51 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rickard,
+Just move field descriptions to the struct description in the kernel-doc
+format. There is no functional change.
 
-On 15.05.2014 23:57, Rickard Strandqvist wrote:
-> There is otherwise a risk of a possible null pointer dereference.
->=20
-> Was largely found by using a static code analysis program called cppc=
-heck.
->=20
-> Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigit=
-al.se>
-> ---
->  sound/soc/samsung/dma.c |   10 ++++++----
->  1 fil =C3=A4ndrad, 6 till=C3=A4gg(+), 4 borttagningar(-)
->=20
-> diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
-> index dc09b71..b1f6757 100644
-> --- a/sound/soc/samsung/dma.c
-> +++ b/sound/soc/samsung/dma.c
-> @@ -115,17 +115,19 @@ static void dma_enqueue(struct snd_pcm_substrea=
-m *substream)
->  static void audio_buffdone(void *data)
->  {
->  	struct snd_pcm_substream *substream =3D data;
-> -	struct runtime_data *prtd =3D substream->runtime->private_data;
-> +	struct runtime_data *prtd =3D NULL;
-> =20
->  	pr_debug("Entered %s\n", __func__);
-> =20
-> -	if (prtd->state & ST_RUNNING) {
-> +	if(substream)
-> +		prtd =3D substream->runtime->private_data;
-> +
-> +	if (prtd && prtd->state & ST_RUNNING) {
->  		prtd->dma_pos +=3D prtd->dma_period;
->  		if (prtd->dma_pos >=3D prtd->dma_end)
->  			prtd->dma_pos =3D prtd->dma_start;
-> =20
-> -		if (substream)
-> -			snd_pcm_period_elapsed(substream);
-> +		snd_pcm_period_elapsed(substream);
-> =20
->  		spin_lock(&prtd->lock);
->  		if (!samsung_dma_has_circular()) {
->=20
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/pci/fm801.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
-Can you find a path (or use case, if possible) on which any of affected
-pointers will be NULL?
-
-Best regards,
-Tomasz
+diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
+index e8910d0..529f5f4 100644
+--- a/sound/pci/fm801.c
++++ b/sound/pci/fm801.c
+@@ -158,21 +158,27 @@ MODULE_PARM_DESC(radio_nr, "Radio device numbers");
+ #define FM801_GPIO_GS3		(1<<15)
+ #define FM801_GPIO_GS(x)	(1<<(12+(x)))
+ 	
+-/*
+-
++/**
++ * struct fm801 - describes FM801 chip
++ * @port:		I/O port number
++ * @multichannel:	multichannel support
++ * @secondary:		secondary codec
++ * @secondary_addr:	address of the secondary codec
++ * @tea575x_tuner:	tuner access method & flags
++ * @ply_ctrl:		playback control
++ * @cap_ctrl:		capture control
+  */
+-
+ struct fm801 {
+ 	int irq;
+ 
+-	unsigned long port;	/* I/O port number */
+-	unsigned int multichannel: 1,	/* multichannel support */
+-		     secondary: 1;	/* secondary codec */
+-	unsigned char secondary_addr;	/* address of the secondary codec */
+-	unsigned int tea575x_tuner;	/* tuner access method & flags */
++	unsigned long port;
++	unsigned int multichannel: 1,
++		     secondary: 1;
++	unsigned char secondary_addr;
++	unsigned int tea575x_tuner;
+ 
+-	unsigned short ply_ctrl; /* playback control */
+-	unsigned short cap_ctrl; /* capture control */
++	unsigned short ply_ctrl;
++	unsigned short cap_ctrl;
+ 
+ 	unsigned long ply_buffer;
+ 	unsigned int ply_buf;
+-- 
+2.0.0.rc2
