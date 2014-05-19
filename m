@@ -1,18 +1,16 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 00/13 v1] Enhancement for Dice driver
-Date: Mon, 19 May 2014 18:11:27 +0900
-Message-ID: <5379CABF.6050909@sakamocchi.jp>
-References: <1400420198-24312-1-git-send-email-o-takashi@sakamocchi.jp>
- <20140519095816.21acbc71@kant> <5379C277.9090804@sakamocchi.jp>
- <s5h38g6duqp.wl%tiwai@suse.de>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH] ASoC: cache: Fix possible ZERO_SIZE_PTR
+	pointer dereferencing error.
+Date: Mon, 19 May 2014 16:32:09 +0800
+Message-ID: <1400488329-31702-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 23955260864
- for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 11:11:35 +0200 (CEST)
-In-Reply-To: <s5h38g6duqp.wl%tiwai@suse.de>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1blp0189.outbound.protection.outlook.com [207.46.163.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D5D8260864
+ for <alsa-devel@alsa-project.org>; Mon, 19 May 2014 11:19:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,19 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jonathan Woithe <jwoithe@just42.net>, lars@metafoo.de, clemens@ladisch.de, Stefan Richter <stefanr@s5r6.in-berlin.de>, ffado-devel@lists.sf.net
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Iwai-san and Lars,
+Since we cannot make sure the 'reg_size' will always be none zero here,
+and then if 'reg_size' equals to zero, the kzalloc() will return ZERO_SIZE_PTR,
+which equals to ((void *)16).
 
-(May 19 2014 17:43), Takashi Iwai wrote:
-> Done.  You could have used -M option for git-format-patch & co, BTW.
+So this patch fix this with just doing the 'reg_size' zero check before calling
+kzalloc().
 
-Thanks. This option is nice to me for OXFW and Dice drivers.
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+---
+ sound/soc/soc-cache.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index 3fa77d5..8fff5b6 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -72,6 +72,9 @@ int snd_soc_cache_init(struct snd_soc_codec *codec)
+ 
+ 	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
+ 
++	if (!reg_size)
++		return -EINVAL;
++
+ 	mutex_init(&codec->cache_rw_mutex);
+ 
+ 	dev_dbg(codec->dev, "ASoC: Initializing cache for %s codec\n",
+-- 
+1.8.4
