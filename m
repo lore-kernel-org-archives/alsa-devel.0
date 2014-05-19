@@ -1,87 +1,134 @@
-From: Tushar Behera <tushar.behera@linaro.org>
-Subject: Re: [PATCH] dma: pl330: Add support for DMA_PAUSE command
-Date: Mon, 19 May 2014 08:40:23 +0530
-Message-ID: <CAHbNUh03oOHtLVzw7LiZ8SSR77D7ttLV9XDWS0px-8GTjSpJ4A@mail.gmail.com>
-References: <1400037830-21211-1-git-send-email-tushar.behera@linaro.org>
-	<CABb+yY3YocX=8Dv7DysM4tcx=NTCCGGipz_gpMfpKDnAw7R8iw@mail.gmail.com>
-	<CAHbNUh0fVND_oGLXWzsyKzbmJc_=FqhZTAnVHE4GGZ5aaJQbEg@mail.gmail.com>
-	<5373607D.2000200@metafoo.de>
-	<CAHbNUh1bmBniGVtvK4PpmpaKOnwG=MgtupkTEnjD6SS3r_-yjw@mail.gmail.com>
-	<537513A8.701@metafoo.de>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 0/13] make return of 0 explicit
+Date: Mon, 19 May 2014 06:31:02 +0200
+Message-ID: <1400473875-22228-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <537513A8.701@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Jassi Brar <jassisinghbrar@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, dmaengine@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Dan Williams <dan.j.williams@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: driverdev-devel-bounces@linuxdriverproject.org
+To: brcm80211-dev-list@broadcom.com
+Cc: devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, alsa-devel@alsa-project.org, linux-scsi@vger.kernel.org, libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netdev@vger.kernel.org, oprofile-list@lists.sf.net, netfilter@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 16 May 2014 00:51, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> On 05/15/2014 02:01 PM, Tushar Behera wrote:
->>
->> On 14 May 2014 17:54, Lars-Peter Clausen <lars@metafoo.de> wrote:
->>>
->>> On 05/14/2014 02:07 PM, Tushar Behera wrote:
->>>>
->>>>
->>>> On 14 May 2014 17:29, Jassi Brar <jassisinghbrar@gmail.com> wrote:
->>>>>
->>>>>
->>>>> On Wed, May 14, 2014 at 8:53 AM, Tushar Behera
->>>>> <tushar.behera@linaro.org>
->>>>> wrote:
->>>>>>
->>>>>>
->>>>>> While playing back audio, pmc_dmaengine requests the DMA channel to
->>>>>> stop DMA transmission through DMA_PAUSE command.
->>>>>>
->>>>>> Currently PL330 driver doesn't support DMA pause command, leaving
->>>>>> the DMA state inconsistent when the system resumes. Instead, it would
->>>>>> be better to terminate the DMA transfer during suspend and restart
->>>>>> again during resume.
->>>>>>
->>>>>> Tested with audio playback across a suspend-resume cycle.
->>>>>>
->>>>> What is pmc_dmaengine? How does DMA_PAUSE help, when there is no
->>>>> DMA_RESUME?
->>>>>
->>>>
->>>> Sorry, it is a typo.
->>>>
->>>> sound/core/pcm_dmaengine.c:snd_dmaengine_pcm_trigger() -->
->>>> dmaengine_pause() is called during system suspend.
->>>
->>>
->>>
->>> It is only called if the DMA driver has support for pausing and resuming
->>> DMA
->>> transfers. Or at least that is the intention.
->>>
->>> - Lars
->>
->>
->> During suspend, snd_dmaengine_pcm_trigger():SNDRV_PCM_TRIGGER_SUSPEND
->> is called which unconditionally calls dmaengine_pause(). Should we
->> update snd_dmaengine_pcm_trigger() to check for DMA pause/resume
->> support and call dmaengine_pause() or dmaengine_terminate_all()
->> accordingly?
->
->
-> As far as I understand it we do not have to do anything for TRIGGER_SUSPEND
-> if we do not set the SNDRV_PCM_INFO_RESUME flag. It looks like
-> TRIGGER_SUSPEND is called unconditionally during suspend. But since the
-> error code is ignored it should be fine if we just call dmaengine_pause()
-> and that return -ENOSYS or similar.
->
-> Are you seeing an actual issue that you are trying to fix with your patch?
->
-> - Lars
->
+Sometimes a local variable is used as a return value in a case where the
+return value is always 0.  The result is more apparent if this variable is
+just replaced by 0.  This is done by the following semantic patch, although
+some cleanups may be needed. (http://coccinelle.lip6.fr/)
 
-Without this patch applied, if audio is playing back while suspend is
-triggered, it doesn't playback after resume. Stopping the stream and
-replaying works.
+// <smpl>
+@r exists@
+local idexpression ret;
+identifier reti;
+expression e;
+position p;
+@@
 
--- 
-Tushar Behera
+ret@reti = 0;
+... when != \(ret = e\|ret &= e\|ret |= e\|ret += e\|ret -= e\|ret *= e\|ret ^= e\)
+    when != \(++ret\|--ret\|ret++\|ret--\)
+    when != &ret
+return ret;@p
+
+@bad1 exists@
+expression e != 0;
+local idexpression r.ret;
+position r.p;
+@@
+
+ \(ret = e\|ret &= e\|ret |= e\|ret += e\|ret -= e\|ret *= e\|ret ^= e\|++ret\|--ret\|ret++\|ret--\|&ret\)
+ ...
+ return ret;@p
+
+@bad2 exists@
+identifier r.reti;
+position r.p;
+identifier f;
+type T;
+@@
+
+f(...,T reti,...) {
+ ...
+ return reti;@p
+}
+
+@change depends on !bad1 && !bad2@
+position r.p;
+local idexpression r.ret;
+identifier f;
+@@
+
+f(...) { <+...
+return 
+-ret
++0
+;@p
+...+> }
+
+@rewrite@
+local idexpression r.ret;
+expression e;
+position p;
+identifier change.f;
+@@
+
+f(...) { <+...
+ \(ret@p = e\|&ret@p\)
+...+> }
+
+@depends on change@
+local idexpression r.ret;
+position p != rewrite.p;
+identifier change.f;
+@@
+
+f(...) { <+...
+(
+break;
+|
+ret = 0;
+... when exists
+ret@p
+... when any
+|
+- ret = 0;
+)
+...+> }
+
+@depends on change@
+identifier r.reti;
+type T;
+constant C;
+identifier change.f;
+@@
+
+f(...) { ... when any
+-T reti = C;
+ ... when != reti
+     when strict
+ }
+
+@depends on change@
+identifier r.reti;
+type T;
+identifier change.f;
+@@
+
+f(...) { ... when any
+-T reti;
+ ... when != reti
+     when strict
+ }
+// </smpl>
+
+The first four rules detect cases where only 0 reaches a return.  The
+remaining rules clean up any variable initializations or declarations that
+are made unnecessary by this change.
