@@ -1,16 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: neo1973_wm8753: Automatically
-	disconnected non-connected pins
-Date: Tue, 20 May 2014 11:13:28 +0200
-Message-ID: <1400577208-1473-1-git-send-email-lars@metafoo.de>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Set eapd to follow stream on or off
+Date: Tue, 20 May 2014 17:20:44 +0800
+Message-ID: <66A4EBB5FA74484E9FB040780F3C8965@realtek.com.tw>
+References: <3143A3763CC94AB9AAD48E43EA2B4DFC@realtek.com.tw><s5h8upw6gf6.wl%tiwai@suse.de><72897913D05F4C12BCED9FF890C77D61@realtek.com.tw>
+ <s5hha4kbz4q.wl%tiwai@suse.de>
+Reply-To: Kailang <kailang@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-145.synserver.de (smtp-out-128.synserver.de
- [212.40.185.128])
- by alsa0.perex.cz (Postfix) with ESMTP id 06BF8264EAA
- for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 11:13:40 +0200 (CEST)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDA49264ED5
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 11:20:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,45 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The DAPM routes for this board are complete, hence we can let the core take care
-of disconnecting non-connected pins rather than doing it manually.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/samsung/neo1973_wm8753.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+> At Tue, 20 May 2014 16:52:43 +0800,
+> Kailang wrote:
+>>
+>>
+>> > At Tue, 20 May 2014 15:15:49 +0800,
+>> > Kailang wrote:
+>> >>
+>> >> Hi Takashi,
+>> >>
+>> >> HP machine had pop noise via speaker.
+>> >> If EAPD on or off, speaker will have pop noise.
+>> >> So, they want to set eapd to follow with stream on or off.
+>> >
+>> > I can apply this as is, but still I wonder whether this results in
+>> > other problems.  Doing EAPD on/off there means that it happens far
+>> > more often.  For example, what happens if you do like below?
+>> >
+>> >     while true; do
+>> >       echo -n > /dev/snd/pcmC0D0p
+>> >     done
+>> >
+>> > And, what if the device is resumed from power-saving by an audio
+>> > playback?  Immediately after the power up, it'll start the streaming,
+>> > so it'll turn on EAPD.
+>> >
+>> > That said, isn't it just a need for some delay before EAPD on/off?
+>>
+>> No, eapd on or off will cause pop noise.
+>
+> Does it do always?
+No, pop noise just one pop sound. It can not remove by software.
+But this machine need to do this always.
 
-diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
-index b080033..9b4a09f 100644
---- a/sound/soc/samsung/neo1973_wm8753.c
-+++ b/sound/soc/samsung/neo1973_wm8753.c
-@@ -271,15 +271,8 @@ static const struct snd_kcontrol_new neo1973_wm8753_controls[] = {
- 
- static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_card *card = rtd->card;
- 
--	/* set up NC codec pins */
--	snd_soc_dapm_nc_pin(&codec->dapm, "OUT3");
--	snd_soc_dapm_nc_pin(&codec->dapm, "OUT4");
--	snd_soc_dapm_nc_pin(&codec->dapm, "LINE1");
--	snd_soc_dapm_nc_pin(&codec->dapm, "LINE2");
--
- 	/* set endpoints to default off mode */
- 	snd_soc_dapm_disable_pin(&card->dapm, "GSM Line Out");
- 	snd_soc_dapm_disable_pin(&card->dapm, "GSM Line In");
-@@ -355,6 +348,7 @@ static struct snd_soc_card neo1973 = {
- 	.num_dapm_widgets = ARRAY_SIZE(neo1973_wm8753_dapm_widgets),
- 	.dapm_routes = neo1973_wm8753_routes,
- 	.num_dapm_routes = ARRAY_SIZE(neo1973_wm8753_routes),
-+	.fully_routed = true,
- };
- 
- static struct platform_device *neo1973_snd_device;
--- 
-1.8.0
+>
+>> Our customer just want to do eapd on when stream is open.
+>> The pop noise will not clear. Because music gain was biger than pop 
+>> noise.
+>
+> Opening a stream doesn't mean that it follows the loud sound
+> immediately.  The script above wouldn't produce any sound but just
+> does open/close the stream.  Did you try that?
+>
+>
+> Takashi
+>
+> ------Please consider the environment before printing this e-mail. 
