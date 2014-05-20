@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] A question regarding open ioctl for user
- space in ASoC driver.
-Date: Tue, 20 May 2014 01:18:34 +0100
-Message-ID: <20140520001834.GJ12304@sirena.org.uk>
-References: <20140516105939.GA2544@MrMyself>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH 3/3] ASoC: rt5640: Add the function
+	"get_clk_info" to RL6231 shared support
+Date: Tue, 20 May 2014 15:01:55 +0800
+Message-ID: <1400569315-12221-3-git-send-email-oder_chiou@realtek.com>
+References: <1400569315-12221-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1571254350533433116=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DEC712615B6
- for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 02:18:51 +0200 (CEST)
-In-Reply-To: <20140516105939.GA2544@MrMyself>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FDC42619F5
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 09:02:21 +0200 (CEST)
+In-Reply-To: <1400569315-12221-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,93 +21,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch adds the function "get_clk_info" to RL6231 shared support.
 
---===============1571254350533433116==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ja/I8q7MYCpKdcsP"
-Content-Disposition: inline
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rl6231.c | 16 ++++++++++++++++
+ sound/soc/codecs/rl6231.h |  1 +
+ sound/soc/codecs/rt5640.c | 17 +----------------
+ sound/soc/codecs/rt5645.c | 17 +----------------
+ sound/soc/codecs/rt5651.c | 17 +----------------
+ 5 files changed, 20 insertions(+), 48 deletions(-)
 
-
---Ja/I8q7MYCpKdcsP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, May 16, 2014 at 06:59:41PM +0800, Nicolin Chen wrote:
-
-> I have an ASoC driver in my own branch and I'm going to get it upstream
-> in the months ahead. The driver is designed for Freescale ASRC module,
-> Asynchronous Sample Rate Converter. It has the capability to convert audio
-> data without involving software conversion like SRC function in ALSA-lib.
-> But before I try to revise and send the driver, I've a few questions here.
-
-So, clearly custom ioctl() calls are not a good idea.
-
-> 1) P2P, peripheral to peripheral, regards ASRC as a FE (front end link)
->    corresponding to a BE (back end link like ESAI<->CS42888). The P2P
->    function resolves a problem of unsupported sample rates for BE that
->    we can convert the unsupported audio format to a supported one before
->    we send the data into BE. It also has better quality and less CPU
->    loading comparing to ALSA-lib's SRC function.
-
->    * For this function, I don't see any critical problem here. But...
-
-This is moderately common in mainline already.  You shouldn't need to
-have any custom code - we should just be able to figure out that the SRC
-is needed (and a quick glance at your out of tree code shows now ioctl()
-so that's fine as you say).
-
-> 2) M2M, memory to memory, can simply make ASRC as a sample rate converter
->    without playback via any BE sound card, just like using any software
->    to convert a WAV file in one sample rate to another WAV in a required
->    sample rate. The driver has its self-designed application to compelte
->    this function by sending the audio data from a wave file into a misc
->    device via non-generic ioctl:
-
-I would expect this to be handled by just routing the audio between the
-two front ends using DAPM/DPCM rather than by having a new kernel API.
-DPCM is mostly Liam's area so I'll defer to him on exactly how DPCM
-would figure that out - even with pure DAPM it's something we should do
-better with than we do.  I don't know if there are examples in the Intel
-code people could refer to?
-
-If nothing else representing the ASRC block as a CODEC would do the
-trick though that doesn't entirely play well with DPCM, it is kind of
-doing the right thing though in that the ASRC block terminates two
-digital paths.  I'm not loving the elegence there though.
-
---Ja/I8q7MYCpKdcsP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTep9XAAoJELSic+t+oim9Jg8P/R0DmaeryjShDrWG/eM4yvGm
-H7ZGhCTrjwz9KQMmOlA/YGWpqDwsmRvt+7zxhINiFnRoiGbn58NjNZPdRgsHK8JC
-SBtx8VU1ksHVY6PyeDIKRNyQY4DMCIB4S0ZAGEgeDiytVBsHxiFAXTtRLMZ3Epuj
-suckniSq55KeifhiDyf9ns+sRTocawFmF5BM9Bt6Updfo6B3JAXPey2IRXZPJGMA
-+lonyjaGIdGdUHH57iH3w3C7uhs3l2Sp4Xycrr/wWNYq7F0BRnW/40VhJc1Zommn
-riZTpFQacYl6eeSu3SMA3Li84/d4nf8yBtx0bQO2U0FuHmSGm1Y6gBNTlPY1kWoG
-qsnP4Y8yyMpsX8CdgBDfzUvRnG5xFwDfDBJc/shvRVqB9UGR72gEX0HMTPeif7c0
-K+kAlKu28wPhlHDLn4qBny0sC0sdnDfxw3ymEHasK7szyVvfuoF9O5fFOPit+XMP
-8+K+8MQ4WWav4DLFKICZlcmi+B6wgqavOcOjMVKEdpJFcHNkhl2uxxvuqxnTMtLD
-01GhZbYSQe1NGG+gtGbDkniBsq7wfpcWTgKmE+kGLo1aJnuxUeLK9YH+5s8UVdPp
-m9XeGH0qLPtFHhgxiHr+0ZjFpDmlQEu54qTntQIS91hQv/N5dPuTL6hKzHJCViMC
-/4l629i+G2wrGvPT4Hg5
-=igmE
------END PGP SIGNATURE-----
-
---Ja/I8q7MYCpKdcsP--
-
---===============1571254350533433116==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1571254350533433116==--
+diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
+index 289024b..7b82fbe 100644
+--- a/sound/soc/codecs/rl6231.c
++++ b/sound/soc/codecs/rl6231.c
+@@ -131,6 +131,22 @@ code_find:
+ }
+ EXPORT_SYMBOL_GPL(rl6231_pll_calc);
+ 
++int rl6231_get_clk_info(int sclk, int rate)
++{
++	int i, pd[] = {1, 2, 3, 4, 6, 8, 12, 16};
++
++	if (sclk <= 0 || rate <= 0)
++		return -EINVAL;
++
++	rate = rate << 8;
++	for (i = 0; i < ARRAY_SIZE(pd); i++)
++		if (sclk == rate * pd[i])
++			return i;
++
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(rl6231_get_clk_info);
++
+ MODULE_DESCRIPTION("RL6231 class device shared support");
+ MODULE_AUTHOR("Oder Chiou <oder_chiou@realtek.com>");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/rl6231.h b/sound/soc/codecs/rl6231.h
+index efdfc86..0f7b057 100644
+--- a/sound/soc/codecs/rl6231.h
++++ b/sound/soc/codecs/rl6231.h
+@@ -29,5 +29,6 @@ struct rl6231_pll_code {
+ int rl6231_calc_dmic_clk(int rate);
+ int rl6231_pll_calc(const unsigned int freq_in,
+ 	const unsigned int freq_out, struct rl6231_pll_code *pll_code);
++int rl6231_get_clk_info(int sclk, int rate);
+ 
+ #endif /* __RL6231_H__ */
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index bdc1a94..de80e89 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1626,21 +1626,6 @@ static int get_sdp_info(struct snd_soc_codec *codec, int dai_id)
+ 	return ret;
+ }
+ 
+-static int get_clk_info(int sclk, int rate)
+-{
+-	int i, pd[] = {1, 2, 3, 4, 6, 8, 12, 16};
+-
+-	if (sclk <= 0 || rate <= 0)
+-		return -EINVAL;
+-
+-	rate = rate << 8;
+-	for (i = 0; i < ARRAY_SIZE(pd); i++)
+-		if (sclk == rate * pd[i])
+-			return i;
+-
+-	return -EINVAL;
+-}
+-
+ static int rt5640_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+@@ -1650,7 +1635,7 @@ static int rt5640_hw_params(struct snd_pcm_substream *substream,
+ 	int dai_sel, pre_div, bclk_ms, frame_size;
+ 
+ 	rt5640->lrck[dai->id] = params_rate(params);
+-	pre_div = get_clk_info(rt5640->sysclk, rt5640->lrck[dai->id]);
++	pre_div = rl6231_get_clk_info(rt5640->sysclk, rt5640->lrck[dai->id]);
+ 	if (pre_div < 0) {
+ 		dev_err(codec->dev, "Unsupported clock setting %d for DAI %d\n",
+ 			rt5640->lrck[dai->id], dai->id);
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index ee6db7c..02147be 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -1786,21 +1786,6 @@ static const struct snd_soc_dapm_route rt5645_dapm_routes[] = {
+ 	{ "SPOR", NULL, "SPK amp" },
+ };
+ 
+-static int get_clk_info(int sclk, int rate)
+-{
+-	int i, pd[] = {1, 2, 3, 4, 6, 8, 12, 16};
+-
+-	if (sclk <= 0 || rate <= 0)
+-		return -EINVAL;
+-
+-	rate = rate << 8;
+-	for (i = 0; i < ARRAY_SIZE(pd); i++)
+-		if (sclk == rate * pd[i])
+-			return i;
+-
+-	return -EINVAL;
+-}
+-
+ static int rt5645_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+@@ -1810,7 +1795,7 @@ static int rt5645_hw_params(struct snd_pcm_substream *substream,
+ 	int pre_div, bclk_ms, frame_size;
+ 
+ 	rt5645->lrck[dai->id] = params_rate(params);
+-	pre_div = get_clk_info(rt5645->sysclk, rt5645->lrck[dai->id]);
++	pre_div = rl6231_get_clk_info(rt5645->sysclk, rt5645->lrck[dai->id]);
+ 	if (pre_div < 0) {
+ 		dev_err(codec->dev, "Unsupported clock setting\n");
+ 		return -EINVAL;
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index a627a1f..ea4b1c6 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -1338,21 +1338,6 @@ static const struct snd_soc_dapm_route rt5651_dapm_routes[] = {
+ 	{"PDMR", NULL, "PDM R Mux"},
+ };
+ 
+-static int get_clk_info(int sclk, int rate)
+-{
+-	int i, pd[] = {1, 2, 3, 4, 6, 8, 12, 16};
+-
+-	if (sclk <= 0 || rate <= 0)
+-		return -EINVAL;
+-
+-	rate = rate << 8;
+-	for (i = 0; i < ARRAY_SIZE(pd); i++)
+-		if (sclk == rate * pd[i])
+-			return i;
+-
+-	return -EINVAL;
+-}
+-
+ static int rt5651_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+@@ -1362,7 +1347,7 @@ static int rt5651_hw_params(struct snd_pcm_substream *substream,
+ 	int pre_div, bclk_ms, frame_size;
+ 
+ 	rt5651->lrck[dai->id] = params_rate(params);
+-	pre_div = get_clk_info(rt5651->sysclk, rt5651->lrck[dai->id]);
++	pre_div = rl6231_get_clk_info(rt5651->sysclk, rt5651->lrck[dai->id]);
+ 
+ 	if (pre_div < 0) {
+ 		dev_err(codec->dev, "Unsupported clock setting\n");
+-- 
+1.8.1.1.439.g50a6b54
