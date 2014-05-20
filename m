@@ -1,15 +1,17 @@
-From: =?UTF-8?q?Toralf=20F=C3=B6rster?= <toralf.foerster@gmx.de>
-Subject: [PATCH] fix format type mismatch in
-	sound/pci/lola/lola_proc.c
-Date: Tue, 20 May 2014 19:22:17 +0200
-Message-ID: <1400606537-22073-1-git-send-email-toralf.foerster@gmx.de>
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH] ALSA: hda/tegra - Fix MODULE_DEVICE_TABLE typo.
+Date: Tue, 20 May 2014 11:26:12 -0700
+Message-ID: <1400610372-12591-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D26A264EF3
- for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 19:22:19 +0200 (CEST)
+Received: from mail-oa0-f74.google.com (mail-oa0-f74.google.com
+ [209.85.219.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48347261B31
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 20:26:16 +0200 (CEST)
+Received: by mail-oa0-f74.google.com with SMTP id m1so168744oag.5
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 11:26:14 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,23 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: =?UTF-8?q?Toralf=20F=C3=B6rster?= <toralf.foerster@gmx.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYuZm9lcnN0ZXJAZ214LmRlPgot
-LS0KIHNvdW5kL3BjaS9sb2xhL2xvbGFfcHJvYy5jIHwgMiArLQogMSBmaWxlIGNoYW5nZWQsIDEg
-aW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2xvbGEv
-bG9sYV9wcm9jLmMgYi9zb3VuZC9wY2kvbG9sYS9sb2xhX3Byb2MuYwppbmRleCAwNGRmODNkLi5j
-MjQxZGMwIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvbG9sYS9sb2xhX3Byb2MuYworKysgYi9zb3Vu
-ZC9wY2kvbG9sYS9sb2xhX3Byb2MuYwpAQCAtMTUxLDcgKzE1MSw3IEBAIHN0YXRpYyB2b2lkIGxv
-bGFfcHJvY19jb2RlY19yd193cml0ZShzdHJ1Y3Qgc25kX2luZm9fZW50cnkgKmVudHJ5LAogCWNo
-YXIgbGluZVs2NF07CiAJdW5zaWduZWQgaW50IGlkLCB2ZXJiLCBkYXRhLCBleHRkYXRhOwogCXdo
-aWxlICghc25kX2luZm9fZ2V0X2xpbmUoYnVmZmVyLCBsaW5lLCBzaXplb2YobGluZSkpKSB7Ci0J
-CWlmIChzc2NhbmYobGluZSwgIiVpICVpICVpICVpIiwgJmlkLCAmdmVyYiwgJmRhdGEsICZleHRk
-YXRhKSAhPSA0KQorCQlpZiAoc3NjYW5mKGxpbmUsICIldSAldSAldSAldSIsICZpZCwgJnZlcmIs
-ICZkYXRhLCAmZXh0ZGF0YSkgIT0gNCkKIAkJCWNvbnRpbnVlOwogCQlsb2xhX2NvZGVjX3JlYWQo
-Y2hpcCwgaWQsIHZlcmIsIGRhdGEsIGV4dGRhdGEsCiAJCQkJJmNoaXAtPmRlYnVnX3JlcywKLS0g
-CjEuOS4zCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+I missed a rename during the review process.  Fix the
+MODULE_DEVICE_TABLE to match the structure.
+
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ sound/pci/hda/hda_tegra.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index e472bc8..086fd06 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -496,7 +496,7 @@ static const struct of_device_id hda_tegra_match[] = {
+ 	{ .compatible = "nvidia,tegra30-hda" },
+ 	{},
+ };
+-MODULE_DEVICE_TABLE(of, tegra_platform_hda_match);
++MODULE_DEVICE_TABLE(of, hda_tegra_match);
+ 
+ static int hda_tegra_probe(struct platform_device *pdev)
+ {
+-- 
+1.8.1.3.605.g02339dd
