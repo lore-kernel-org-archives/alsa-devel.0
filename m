@@ -1,81 +1,46 @@
-From: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Subject: Re: [PATCHv5 2/2] ALSA: hda - Add driver for Tegra SoC HDA
-Date: Tue, 20 May 2014 09:49:01 -0700
-Message-ID: <CAEUnVG6ztyOR9DO0_wP=dbGwL4JRdLtu-rk8Nfjkws0Hg3pQTA@mail.gmail.com>
-References: <1400552307-20192-1-git-send-email-dgreid@chromium.org> <20140520085925.GA10210@ulmo>
+From: =?UTF-8?q?Toralf=20F=C3=B6rster?= <toralf.foerster@gmx.de>
+Subject: [PATCH] fix format type mismatch in
+	sound/pci/hda/patch_sigmatel.c
+Date: Tue, 20 May 2014 19:19:24 +0200
+Message-ID: <1400606364-21649-1-git-send-email-toralf.foerster@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140520085925.GA10210@ulmo>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Peter De Schrijver <pdeschrijver-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1969261B09
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 19:19:29 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: =?UTF-8?q?Toralf=20F=C3=B6rster?= <toralf.foerster@gmx.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 20, 2014 at 1:59 AM, Thierry Reding
-<thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
-> On Mon, May 19, 2014 at 07:18:27PM -0700, Dylan Reid wrote:
->> This adds a driver for the HDA block in Tegra SoCs.  The HDA bus is
->> used to communicate with the HDMI codec on Tegra124.
->>
->> Most of the code is re-used from the Intel/PCI HDA driver.  It brings
->> over only two of the module params, power_save and probe_mask.
->>
->> Signed-off-by: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
->> Reviewed-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->
-> When I run this on Jetson TK1 I get the following:
-
-I haven't tried on a Jetson TK1 yet, but we should have one by EOD.
-All my testing has been on Venice2.
-
->
->         [    1.571912] tegra-hda 70030000.hda: CORB reset timeout#1, CORBRP = 0
->
-> Is that expected?
-
-No, but now that you mention it I see it too.  I'll take a look.
-
->
-> The device seems to register properly:
->
->         $ aplay -l
->         **** List of PLAYBACK Hardware Devices ****
->         card 0: tegrahda [tegra-hda], device 3: HDMI 0 [HDMI 0]
->           Subdevices: 1/1
->           Subdevice #0: subdevice #0
->         card 1: TK1 [NVIDIA Tegra Jetson TK1], device 0: RT5640 PCM rt5640-aif1-0 []
->           Subdevices: 1/1
->           Subdevice #0: subdevice #0
->
-> Would you mind sharing the procedure how you test this? I tried various
-> incantations of this sort:
->
->         $ aplay -D hw:0,3 /usr/share/sounds/alsa/Noise.wav
->
-> or
->
->         $ aplay -D plughw:0,3 /usr/share/sounds/alsa/Noise.wav
->
-> to no avail.
-
-Those sounds are mono so hw:0,3 wouldn't work, but plughw works for me.
-
-Are you getting an error message or is it playing silence?  Never
-hurts to double check that the output didn't end up in DVI mode, and
-that the Playback switch is unmuted in amixer.
-
-I used:
-
-speaker-test -Dhw:0,3 -c 2
-
-or
-
-aplay -Dhw:0,3 stereo_file.wav
-
-Thanks,
-
-Dylan
-
->
-> Thierry
+U2lnbmVkLW9mZi1ieTogVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYuZm9lcnN0ZXJAZ214LmRlPgot
+LS0KIHNvdW5kL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYyB8IDQgKystLQogMSBmaWxlIGNoYW5n
+ZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9w
+Y2kvaGRhL3BhdGNoX3NpZ21hdGVsLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3NpZ21hdGVsLmMK
+aW5kZXggNzU1MTViNC4uN2Y0MGExNSAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9z
+aWdtYXRlbC5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYwpAQCAtNzk1LDcg
+Kzc5NSw3IEBAIHN0YXRpYyBpbnQgZmluZF9tdXRlX2xlZF9jZmcoc3RydWN0IGhkYV9jb2RlYyAq
+Y29kZWMsIGludCBkZWZhdWx0X3BvbGFyaXR5KQogCX0KIAogCXdoaWxlICgoZGV2ID0gZG1pX2Zp
+bmRfZGV2aWNlKERNSV9ERVZfVFlQRV9PRU1fU1RSSU5HLCBOVUxMLCBkZXYpKSkgewotCQlpZiAo
+c3NjYW5mKGRldi0+bmFtZSwgIkhQX011dGVfTEVEXyVkXyV4IiwKKwkJaWYgKHNzY2FuZihkZXYt
+Pm5hbWUsICJIUF9NdXRlX0xFRF8ldV8leCIsCiAJCQkgICAmc3BlYy0+Z3Bpb19sZWRfcG9sYXJp
+dHksCiAJCQkgICAmc3BlYy0+Z3Bpb19sZWQpID09IDIpIHsKIAkJCXVuc2lnbmVkIGludCBtYXhf
+Z3BpbzsKQEAgLTgwOCw3ICs4MDgsNyBAQCBzdGF0aWMgaW50IGZpbmRfbXV0ZV9sZWRfY2ZnKHN0
+cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBpbnQgZGVmYXVsdF9wb2xhcml0eSkKIAkJCQlzcGVjLT52
+cmVmX211dGVfbGVkX25pZCA9IHNwZWMtPmdwaW9fbGVkOwogCQkJcmV0dXJuIDE7CiAJCX0KLQkJ
+aWYgKHNzY2FuZihkZXYtPm5hbWUsICJIUF9NdXRlX0xFRF8lZCIsCisJCWlmIChzc2NhbmYoZGV2
+LT5uYW1lLCAiSFBfTXV0ZV9MRURfJXUiLAogCQkJICAgJnNwZWMtPmdwaW9fbGVkX3BvbGFyaXR5
+KSA9PSAxKSB7CiAJCQlzZXRfaHBfbGVkX2dwaW8oY29kZWMpOwogCQkJcmV0dXJuIDE7Ci0tIAox
+LjkuMwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
