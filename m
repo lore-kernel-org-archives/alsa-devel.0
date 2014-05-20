@@ -1,101 +1,59 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: Set eapd to follow stream on or off
-Date: Tue, 20 May 2014 18:05:42 +0800
-Message-ID: <AC509D0AEA71499FB3503597855A4B0A@realtek.com.tw>
-References: <3143A3763CC94AB9AAD48E43EA2B4DFC@realtek.com.tw><s5h8upw6gf6.wl%tiwai@suse.de><72897913D05F4C12BCED9FF890C77D61@realtek.com.tw><s5hha4kbz4q.wl%tiwai@suse.de><66A4EBB5FA74484E9FB040780F3C8965@realtek.com.tw>
- <s5hd2f8bxns.wl%tiwai@suse.de>
-Reply-To: Kailang <kailang@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: samsung: Allow setting OP_CLK of the IIS Multi
+ Audio Interface
+Date: Tue, 20 May 2014 11:10:42 +0100
+Message-ID: <20140520101042.GK12304@sirena.org.uk>
+References: <1400520638-6907-1-git-send-email-s.nawrocki@samsung.com>
+ <537AE4C1.7050703@linaro.org>
+ <537B1BF0.8060302@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 2ABAF265131
- for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 12:05:45 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rteiRrka0usJZ0GW"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <537B1BF0.8060302@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Tushar Behera <tushar.behera@linaro.org>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-> At Tue, 20 May 2014 17:20:44 +0800,
-> Kailang wrote:
->>
->>
->> > At Tue, 20 May 2014 16:52:43 +0800,
->> > Kailang wrote:
->> >>
->> >>
->> >> > At Tue, 20 May 2014 15:15:49 +0800,
->> >> > Kailang wrote:
->> >> >>
->> >> >> Hi Takashi,
->> >> >>
->> >> >> HP machine had pop noise via speaker.
->> >> >> If EAPD on or off, speaker will have pop noise.
->> >> >> So, they want to set eapd to follow with stream on or off.
->> >> >
->> >> > I can apply this as is, but still I wonder whether this results in
->> >> > other problems.  Doing EAPD on/off there means that it happens far
->> >> > more often.  For example, what happens if you do like below?
->> >> >
->> >> >     while true; do
->> >> >       echo -n > /dev/snd/pcmC0D0p
->> >> >     done
->> >> >
->> >> > And, what if the device is resumed from power-saving by an audio
->> >> > playback?  Immediately after the power up, it'll start the 
->> >> > streaming,
->> >> > so it'll turn on EAPD.
->> >> >
->> >> > That said, isn't it just a need for some delay before EAPD on/off?
->> >>
->> >> No, eapd on or off will cause pop noise.
->> >
->> > Does it do always?
->> No, pop noise just one pop sound. It can not remove by software.
->> But this machine need to do this always.
->
-> So, doing EAPD on/off often is rather worse.  It's what your patch
-> does.
->
-> Once again: did you try the script above?  If the pop noise always
 
-I had try it on my develop machine. I have no HP issue machine on my site.
+--rteiRrka0usJZ0GW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> happens, the operation like above is the worst scenario.
->
-> Then, let's think again how to *reduce* it.  We need one EAPD on at
-> least after each power up.  But it's needed only when you actually
-> plays a stream.  That is, we need only enable EAPD at playback stream
-> open, but leave EAPD as is at close.
->
+On Tue, May 20, 2014 at 11:10:08AM +0200, Sylwester Nawrocki wrote:
 
-[we need only enable EAPD at playback stream open, but leave EAPD as is at 
-close.]
-Yes.
-So, I need to create eapd low in alc269_shutup. Right?
+> So how do you think this should be addressed ? Isn't it better to give
+> options to the machine drivers to alter these clock settings, rather than
+> hard coding it in the I2S driver ? Let's not forget it covers multiple=20
+> Samsung SoC series.
 
->
-> Takashi
->
->> >> Our customer just want to do eapd on when stream is open.
->> >> The pop noise will not clear. Because music gain was biger than pop
->> >> noise.
->> >
->> > Opening a stream doesn't mean that it follows the loud sound
->> > immediately.  The script above wouldn't produce any sound but just
->> > does open/close the stream.  Did you try that?
->> >
->> >
->> > Takashi
->> >
->> > ------Please consider the environment before printing this e-mail.
->> 
+Yes, it's better to make it controllable - ideally this could be moved
+into the clock API but for ASoC level stuff set_sysclk() with a sensible
+default is how it's supposed to be done.
+
+--rteiRrka0usJZ0GW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTeyofAAoJELSic+t+oim9Y1sQAIPtTQ2xFjBWjPUyGwfZeBzk
+lPHBq+UFajwqvjXWlY1WxyBVOkY8upMnsYzA+ELBvmDK30cj/VV0HplQl1q1zMxT
+lO+IsBfLaoHuPsWC7Yd9yCJqShKGXQtOzQ5oc7E1bNbs4RoOoWaK3DNPESExNsSE
+FGz6Fr21QFTBnaQFr2rlWXcPqRq3YH7g71Vi9i03MQX+SKEHVLvDB+8SEjUlWL//
+ABIZlbrIhK0Sqfn3Qv5zVXXN0j5zAv/Lvh20HlRNq6STyRnsrdRN2LbWCWyOvkUL
+hOlV/Ouyoo9xEGeqXXOaDU5BT0RlTShkXFF7Se57oyLnnuzFCxVdLdL1wacLR4EV
+/3yWUu0KHlcQRhDEgCvSBQcPZlvQYoR32t4+9v8T9xubvFy7WdEALaeVW5Buzpvk
+a+6W+NRuwgnkT5Z+MDGO3frvlpLXzdi2pWtHLcC1y3G5XLNiYf637jf8EcQzWRsF
+ThhQ+WoQYVqBjEZ9E6xtUkewdfm6C4HWd1bS4Cm/d7U1BwUDG7ke5yERTeBMbtFL
+qVc18UbQwPWwkChDTYC0hiyL5pqAksvwAfXbYUKGiF+gD/cucyQLcevj3X1gF3ls
+bkfN5JIOQshlgL338/W6tB0RkoeLtCqm2+MIi8U396fdHSZ9hn56gWg8fEVVq1GU
+lXFesr930l/lWl3RmGa8
+=/psr
+-----END PGP SIGNATURE-----
+
+--rteiRrka0usJZ0GW--
