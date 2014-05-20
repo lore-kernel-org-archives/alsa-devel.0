@@ -1,292 +1,84 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC] set up an sync channel between audio and
- display driver (i.e. ALSA and DRM)
-Date: Tue, 20 May 2014 16:07:44 +0530
-Message-ID: <20140520103744.GB21128@intel.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F82B447059@SHSMSX101.ccr.corp.intel.com>
- <s5h7g5g6fc7.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: samsung: Add 'mclk' handling for
+ Snow sound-card driver
+Date: Tue, 20 May 2014 12:16:00 +0100
+Message-ID: <20140520111600.GL12304@sirena.org.uk>
+References: <1400559942-5666-1-git-send-email-tushar.behera@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5h7g5g6fc7.wl%tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikkanen,
- Kimmo" <kimmo.nikkanen@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Babu,
- Ramesh" <ramesh.babu@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Vetter,
- Daniel" <daniel.vetter@intel.com>
+Content-Type: multipart/mixed; boundary="===============1722724084882285034=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DC4C261A81
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 13:16:18 +0200 (CEST)
+In-Reply-To: <1400559942-5666-1-git-send-email-tushar.behera@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: dianders@chromium.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-doc@vger.kernel.org, sbkim73@samsung.com, t.figa@samsung.com, rdunlap@infradead.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 20, 2014 at 10:10:00AM +0200, Takashi Iwai wrote:
-> > struct avsink_client {
-> >          const char *name;  /* client name */
-> >          int type; /* client type*/
-> >          void *context;
-> >          struct module *module;  /* top-level module for locking */
-> > 
-> >          struct avsink_client *peer;      /* peer client */
-> > 
-> >          /* shared power wells */
-> >          struct avsink_power_well *power_well;
-> >          int num_power_wells;
-> 
-> The "power well" is Intel-specific things.  Better to use a more
-> generic term.  (And, I'm always confused what "power well disable"
-> means :)
-Given that runtime pm is a prevalent usage, wouldn't it make sense
-to say that I am HDMI client so keep the resources on? This can be easily
-managed if we are able to create the audio device as child of display
-controller. That would be implementation agnostic and controller can do whatever
-(power well or not) to keep it on/off
 
-> 
-> > 
-> >          /* endpoints, display outputs or audio inputs */
-> >          struct avsink_endpoint * endpoint;
-> >          int num_endpints;
-> > 
-> >          struct avsink_registers_ops *reg_ops; /* ops to access registers of a client */
-> 
-> Use const for ops pointers in general (also other cases below).
-> 
-> 
-> >          void *private_data;
-> >          ...
-> > };
-> > 
-> > On system boots, the avsink module is loaded before the display and audio driver module. And the display and audio
-> > driver may be loaded on parallel.
-> 
-> For HD-audio HDMI, both controller and codec drivers would need the
-> avsink access.  So, both drivers will register the own client?
-that sound logical here..
+--===============1722724084882285034==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="P/co8ZP+C4wcN8Yg"
+Content-Disposition: inline
 
-> 
-> 
-> > * If a specific display driver (eg. i915) supports avsink, it can create a display client, add power wells and display
-> >   outputs to the client, and then register the display client to the avsink core. Then it may look up if there is any
-> >   audio client registered, by name or type, and may find an audio client registered by some audio driver.
-> > 
-> > * If an audio driver supports avsink, it usually should look up a registered display client by name or type at first,
-> >   because it may need the shared power well in GPU and check the display outputs' name to bind the audio inputs. If
-> >   the display client is not registered yet, the audio driver can choose to wait (maybe in a work queue) or return
-> >   -EAGAIN for a deferred probe. After the display client is found, the audio driver can register an audio client with
-> >   the display client's name as the peer name, the avsink core will bind the display and audio clients to each other.
-> 
-> There is already "component" framework, BTW.  Can we integrate it into
-> avsink instead?
-> 
-> 
-> > Open question:
-> > If the display or audio driver is disabled by the black list, shall we introduce a time out to avoid waiting for the
-> > other client registered endlessly?
-> 
-> Yes, timeout sounds like a sensible option.
-> 
-> 
-> > 2. Shared power wells (optional)
-> > 
-> > The audio and display devices, maybe only part of them, may share a common power well (e.g. for Intel Haswell and
-> > Broadwell). If so, the driver that controls the power well should define a power well object, implement the get/put ops,
-> > and add it to its avsink client before registering the client to avsink core. Then the peer client can look up this
-> > power well by its name, and get/put this power well as a user.
-> > 
-> > A client can have multiple power well objects.
-> > 
-> > struct avsink_power_well {
-> >          const char *name; /* name of the power well */
-> >          void *context;   /* parameter of get/put ops, maybe device pointer for this power well */
-> >          struct avsink_power_well_ops *ops
-> > };
-> > 
-> > struct avsink_power_well_ops {
-> >          int (*get)(void *context);
-> >          int (*put)(void *context);
-> > };
-> > 
-> > API:
-> > int avsink_new_power(struct avsink_client *client,
-> >                    const char *power_name,
-> >                    void * power_context,
-> >                    struct avsink_power_well_ops *ops,
-> >                    struct avsink_power_well **power_ret);
-> > 
-> > struct avsink_power_well *avisnk_lookup_power(const char *name);
-> > 
-> > int avsink_get_power(struct avsink_power_well *power);  /* Reqesut the power */
-> > int avsink_put_power(struct avsink_power_well *power);    /* Release the power */
-> > 
-> > For example, the i915 display driver can create a device for the shared power well in Haswell GPU, implement its PM
-> > functions, and use the device pointer as the context when creating the power well object, like below
-> > 
-> > struct avsink_power_well_ops i915_power_well_ops = {
-> >          .get = pm_runtime_get_sync;
-> >          .put = pm_runtime_put_sync;
-> > };
-> 
-> This needs function pointer cast, and it's not portable although it'd
-> work practically.
-> 
-> 
-> > ...
-> > avsink_new_power ( display_client,
-> >                    "i915_display_power_well",
-> >                    pdev,  /* pointer of the power well device */
-> >                    &i915_power_well_ops,
-> >                    ...)
-> > 
-> > Power domain is not used here since a single device seems enough to represent a power well.
-> > 
-> > 3. Display output and audio input endpoints
-> > 
-> > A display client should register the display output endpoints and its audio peer client should register the audio input
-> > endpoints. A client can have multiple endpoints. The avsink core will bind an audio input and a display output as peer
-> > to each other. This is to allow the audio and display driver to synchronize with each other for each display pipeline.
-> > 
-> > All endpoints should be added to a client before the client is registered to avsink core. Dynamic endpoints are not
-> > supported now.
-> > 
-> > A display out here represents a physical HDMI/DP output port. And as long as it's usable in the system (i.e. physically
-> > connected to the HDMP/DP port on the machine board), the display output should be registered not matter the port is
-> > connected to an external display device or not. And if HW and display driver can support DP1.2 daisy chain (multiple DP
-> > display devices can be connected to a single port), multiple static displays outputs should be defined for the DP port
-> > according to the HW capability. The port & display device number can be indicated by the name (e.g. "i915_DDI_B",
-> > "i915_DDI_B_DEV0", "i915_DDI_B_DEV1", or "i915_DDI_B_DEV2"), defined by the display driver.
-> > 
-> > The audio driver can check the endpoints of its peer display client and use an display endpoint's name, or a presumed
-> > display endpoint name, as peer name when registering an audio endpoint, thus the avsink core will bind the two display
-> > and audio endpoints as peers.
-> > 
-> > struct avsink_endpoint {
-> >          const char *name;  /*name of the endpoint */
-> >          int type;            /* DISPLAY_OUTPUT or AUDIO_INPUT */
-> >          void *context;           /* private data, used as parameter of the ops */
-> >          struct avsink_endpoint_ops *ops;
-> > 
-> >          struct avsink_endpoint *peer; /* peer endpoint */
-> > };
-> > 
-> > struct avsink_endpoint_ops {
-> >          int (*get_caps) (enum had_caps_list query_element,
-> >                             void *capabilities,
-> >                             void *context);
-> >          int (*set_caps) (enum had_caps_list set_element,
-> >                             void *capabilities,
-> >                             void *context);
-> >          int (*event_handler) (enum avsink_event_type event_type, void *context);
-> > };
-> > 
-> > API:
-> > int avsink_new_endpoint (struct avsink_client *client,
-> >                             const char *name,
-> >                             int type, /* DISPLAY_OUTPUT or AUDIO_INPUT*/
-> >                             void *context,
-> >                             const char *peer_name, /* can be NULL if no clue */
-> >                             avsink_endpoint_ops *ops,
-> >                             struct avsink_endpoint **endpoint_ret);
-> > 
-> > int avsink_endpoint_get_caps(struct avsink_endpoint *endpoint,
-> >                             enum avsink_caps_list t get_element,
-> >                             void *capabilities);
-> > int avsink_endpoint_set_caps(struct avsink_endpoint *endpoint,
-> >                             enum had_caps_list set_element,
-> >                             void *capabilities);
-> > 
-> > int avsink_endpoint_post_event(struct avsink_endpoint *endpoint,
-> >                             enum avsink_event_type event_type);
-> > 
-> > 4. Get/Set caps on an endpoint
-> > 
-> > The display or audio driver can get or set capabilities on an endpoint. Depending on the capability ID, the avsink core
-> > will call get_caps/set_caps ops of this endpoint, or call get_caps/set_caps ops of its peer endpoint and return the
-> > result to the caller.
-> > 
-> > enum avsink_caps_list {
-> >          /* capabilities for display output endpoints */
-> >          AVSINK_GET_DISPLAY_ELD = 1,
-> >          AVSINK_GET_DISPLAY_TYPE, /* HDMI or DisplayPort */
-> >          AVSINK_GET_DISPLAY_NAME, /* Hope to use display device name under /sys/class/drm, like "card0-DP-1", for user
-> >                                      * space to figure out which HDMI/DP output on the drm side corresponds to which audio
-> >                                        * stream device on the alsa side */
-> >          AVSINK_GET_DISPLAY_SAMPLING_FREQ,      /* HDMI TMDS clock or DP link symbol clock, for audio driver to
-> >                                                          * program N value
-> >                                                         */
-> >          AVSINK_GET_DISPLAY_HDCP_STATUS,
-> >          AVSINK_GET_DISPLAY_AUDIO_STATUS, /* Whether audio is enabled */
-> >          AVSINK_SET_DISPLAY_ENABLE_AUDIO, /* Enable audio */
-> >          AVSINK_SET_DISPLAY_DISABLE_AUDIO,         /* Disable audio */
-> >          AVSINK_SET_DISPLAY_ENABLE_AUDIO_INT, /* Enable audio interrupt */
-> >          AVSINK_SET_DISPLAY_DISABLE_AUDIO_INT,         /* Disable audio interrupt */
-> > 
-> >          /* capabilities for audio input endpoints */
-> >          AVSINK_GET_AUDIO_IS_BUSY,  /* Whether there is an active audio streaming */
-> >          OTHERS_TBD,
-> > };
-> > 
-> > For example, the audio driver can query ELD info on an audio input endpoint by using caps AVSINK_GET_DISPLAY_ELD, and
-> > avsink core will call get_caps() on the peer display output endpoint and return the ELD info to the audio driver.
-> > 
-> > Some audio driver may only use part of these caps. E.g. HD-Audio driver can use bus commands instead of the ops to
-> > control the audio on gfx side, so it doesn't use caps like ENABLE/DISABLE_AUDIO or ENABLE/DISABLE_AUDIO.
-> > 
-> > When the display driver want to disable a display pipeline for hot-plug, mode change or power saving, it can use caps
-> > AVSINK_GET_AUDIO_IS_BUSY to check if the audio input is busy (active streaming) on this display pipeline. And if audio
-> > is busy, the display driver can choose to wait or go ahead to disable display pipeline anyway. For the latter case, the
-> > audio input endpoint will be notified by an event and should abort audio streaming.
-> >
-> > 5. Event handling of endpoints
-> > 
-> > A driver can post events on an endpoint. Depending on the event type, the avsink core will call the endpoint's event
-> > handler or pass the event to its peer endpoint and trigger the peer's event handler function if defined.
-> > 
-> > int avsink_endpoint_post_event(struct avsink_endpoint *endpoint,
-> >                                      enum avsink_event_type event_type);
-what would be the context of callback. Anything less that atomic would tend to
-cause timing issues...
 
-> > 
-> > Now we only defined event types which should be handled by the audio input endpoints. The event types can be extended
-> > in the future.
-> > 
-> > enum avsink_event_type {
-> >         AVSINK_EVENT_DISPLAY_DISABLE = 1,  /* The display pipeline is disabled for hot-plug, mode change or
-> >                                                          * suspend. Audio driver should stop any active streaming.
-> >                                                         */
-> >         AVSINK_EVENT_DISPLAY_ENABLE,                   /* The display pipeline is enabled after hot-plug, mode change or
-> >                                                          * resume. Audio driver can restore previously interrupted streaming
-> >                                                          */
-> >         AVSINK_EVENT_DISPLAY_MODE_CHANGE,   /* Display mode change event. At this time, the new display mode is
-> >                                                          * configured but the display pipeline is not enabled yet. Audio driver
-> >                                                         * can do some configurations such as programing N value */
-> >         AVSINK_EVENT_DISPLAY_AUDIO_BUFFER_DONE,         /* Audio Buffer done interrupts. Only for audio drivers if DMA and
-> >                                                          * interrupt are handled by GPU
-> >                                                         */
-> >         AVSINK_EVENT_DISPLAY_AUDIO_BUFFER_UNDERRUN,       /* Audio Buffer under run interrupts. Only for audio drivers if
-> >                                                                   * DMA and interrupt are handled by GPU
-> >                                                                  */
-> > };
-> > 
-> > So for a display driver, it can post an event on a display output endpoint and get processed by the peer audio input
-> > endpoint. Or it can also directly post an event on a peer audio input endpoint, by using the 'peer' pointer on a
-> > display output endpoint.
-> 
-> Hm, one unclear thing to me is who handles this event by how.
-> Suppose you issue GET_ELD on an audio endpoint.  Then what would
-> avsink does against the display client exactly?
-I think above 4 examples are for async events reported by controller to clients.
-For example buffer done, or hot plug which needs to be notified. Something like
-GET_ELD doesn't need notification but should be a sync read.
+--P/co8ZP+C4wcN8Yg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-~Vinod
+On Tue, May 20, 2014 at 09:55:42AM +0530, Tushar Behera wrote:
+> For audio to work on Snow board, we need the codec master clock 'mclk'
+> to be properly configured.
+>=20
+> Currently XCLKOUT is configured as 'mclk' for codec chip and it is
+> required to be clocked at 24MHz for the codec to work properly.
+>=20
+> Add appropriate clock handling within Snow sound-card driver to set
+> 'mclk' to operate at 24MHz.
+
+The clock here is connected to the CODEC on the board so it should be
+connected to the CODEC in the device tree too.
+
+--P/co8ZP+C4wcN8Yg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTezltAAoJELSic+t+oim9pTsP/j2J/0qbHTLC/QBWUCY5IppL
+9OWrNQUz4XE3lAUVM0yRuVTt90+EdgM21A1qTq2ojz/MZXdST6udFkRBw6YRJKNL
+xG0antQhhd1ez05mg78bkK2qzGb/oCGUQgJfPQoFhTlb471GnnfmR3K5TR98I08D
+1IyA3SLq6JcRA0bBIWED1cGRw0T639QV3RGuTEbHUQ6ZDG5Nl8CwI8RdgPWxzkn2
+xcTaMQa0cMDozcxz38cuqIWnO+jwv30fPPxn7CnzF+HE/qzKMj8PAdlc2WUQqNks
+6YCbkM4N8EbodVQ5CUJ0/EmuZTA9lHazKsUF01eVFayM/QYcdZXoN7+Pqo/B+KSX
+GMsYggkduK3A/vj5YbdtjDBGI+Hbt0wEQmuyPE3SCCbUKdrmGlvUNthlwmdMLpYP
+QmKczhQuIJZSYy7QOf+jTi3v62CzqURBXr/p6qiNXwrVT7lGUdlUHug5i2igaCkO
+VE3wQx5y5oIStUqOzdzi5Gr2PU6Vs7x4l/hMP0STRVlismD4AxSdDbXO8edF8BJ8
+4Lr80mOIc7A5YSngWEbyyEydIcoRSKEmERmNF4R4/QW1Ja0emwgiHpLKRBQkrPE9
+Vbq9mFUfJojXKFU2ZBb8rYKXznl737Nmm9XFsg2OcodtxShGo0TkSAi2jp9/97vF
+fc9nkwdtSiXdRsD/cmOi
+=z2EL
+-----END PGP SIGNATURE-----
+
+--P/co8ZP+C4wcN8Yg--
+
+--===============1722724084882285034==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1722724084882285034==--
