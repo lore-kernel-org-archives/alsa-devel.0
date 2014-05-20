@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC] A question regarding open ioctl for user
- space in ASoC driver.
-Date: Tue, 20 May 2014 12:30:22 +0100
-Message-ID: <20140520113022.GM12304@sirena.org.uk>
-References: <20140516105939.GA2544@MrMyself>
- <20140520001834.GJ12304@sirena.org.uk>
- <20140520044323.GA10471@MrMyself>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: ad1980: Replace goto loop with do-while
+	loop
+Date: Tue, 20 May 2014 14:23:10 +0200
+Message-ID: <1400588590-26820-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2351068181331193611=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 77BD1261A99
- for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 13:30:39 +0200 (CEST)
-In-Reply-To: <20140520044323.GA10471@MrMyself>
+Received: from smtp-out-145.synserver.de (smtp-out-133.synserver.de
+ [212.40.185.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECC8E261AE4
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 14:23:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,102 +20,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+Using a proper do-while loop here instead of a open-coded goto loop is both
+cleaner and shorter.
 
---===============2351068181331193611==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8UlzpBRbXzws3PGf"
-Content-Disposition: inline
+Also fixes the following warnings from smatch:
+	sound/soc/codecs/ad1980.c:213 ad1980_reset() info: loop could be replaced with if statement.
+	sound/soc/codecs/ad1980.c:212 ad1980_reset() info: ignoring unreachable code.
+	sound/soc/codecs/ad1980.c:215 ad1980_reset() info: ignoring unreachable code.
 
+While we are at it also change retry_cnt to unsigned int, using u16 for a
+on-stack loop counter doesn't make that much sense.
 
---8UlzpBRbXzws3PGf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/ad1980.c | 39 +++++++++++++++++++--------------------
+ 1 file changed, 19 insertions(+), 20 deletions(-)
 
-On Tue, May 20, 2014 at 12:43:24PM +0800, Nicolin Chen wrote:
-> On Tue, May 20, 2014 at 01:18:34AM +0100, Mark Brown wrote:
-> > On Fri, May 16, 2014 at 06:59:41PM +0800, Nicolin Chen wrote:
-
-> > This is moderately common in mainline already.  You shouldn't need to
-> > have any custom code - we should just be able to figure out that the SRC
-> > is needed (and a quick glance at your out of tree code shows now ioctl()
-> > so that's fine as you say).
-
-> I was thinking about just leaving P2P as an initial version and reserving
-> some essential interfaces for M2M function so that I can add it up later
-> in our internal branch or we can figure out a better approach in community
-> style. And now, it looks like a good idea for me to try this way so as to
-> move on quickly.
-
-Yes, that's going to make progress faster and it's probably going to be
-the most commonly used bit anyway.
-
-> > > 2) M2M, memory to memory, can simply make ASRC as a sample rate converter
-> > >    without playback via any BE sound card, just like using any software
-> > >    to convert a WAV file in one sample rate to another WAV in a required
-> > >    sample rate. The driver has its self-designed application to compelte
-> > >    this function by sending the audio data from a wave file into a misc
-> > >    device via non-generic ioctl:
-
-> > I would expect this to be handled by just routing the audio between the
-> > two front ends using DAPM/DPCM rather than by having a new kernel API.a
-
-> Two front ends: one for ASRC and the other is...? And how does it transfer
-> audio data with user space?
-
-The front ends are the PCMs userspace actually sees and not usually tied
-to anything except by routing constraints in the firmware/hardware - I'd
-expect to see one available for each side of the ASRC, I guess at least
-one of these is just a normal audio streaming FE used to route to the
-back ends.
-
-> > If nothing else representing the ASRC block as a CODEC would do the
-> > trick though that doesn't entirely play well with DPCM, it is kind of
-> > doing the right thing though in that the ASRC block terminates two
-> > digital paths.  I'm not loving the elegence there though.
-
-> Sorry I can't understand this CODEC approach either...
-
-> Yes, ASRC has two digital ends but each of them is just a FIFO register
-> , input FIFO and output FIFO, waiting for DMA to handle the Tx/Rx job,
-> not like a normal CODEC that has DAI outwards.
-
-Right, the DAIs in this case are just connected back to back inside the
-device like if you looped line input and line output together in a
-normal CODEC but without the DAC and ADC.
-
---8UlzpBRbXzws3PGf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTezzLAAoJELSic+t+oim9ke8P/j+PAryTSMZTnLDcjOQcS8st
-MPl+xKvhWzCvQQbmLlFcef7KodHRS2ofPX+pwoUhOJnJfL0nesoJ/P8wu8+2aBeu
-y+4Ww+X+EjAHFPbgzxuBWmSh6xjcP35RBsY1+jmR5TulwszwXJ+IJtQ+NQnpkzJo
-E41uLDJ6AmLdwitD/KUBx73XkYjaaMt4qMhn82vVvQoHQNbiaRgiEG3SlmpzjRm8
-A4cUie+E9nrCBL2LGbubamhVaW4SZCaGrcCo7MH47KmWKzQPn9onAsjzqedOMOaM
-ug7Tnn6avbJimt+0+NEkml4YTWI23AVOCYPvA0TvGoVbzwHhgdBN6UVq2MrmZEoi
-fJ3a6veuSbOggho0YZKi45nKDDzlkrdxDRRNHq2QMoKr380bnejyyaF9F0J+2IO5
-zNC3og7O3dnTdtH6vSylkwkkSp78UnUVpqAbBia27I/0d4YSC6mQDlJ7PmhP14lC
-EVVZaMO9bjUA5IKknat9dCmRbpkiymC8hhmcGnxP8/Haa5eSBGPTdAvRwHbDC8tp
-k1RElIcUS4FyPNF9Y+4DOaMvSH3/21a5wnjv3ddX9K7XqTgKX/vcUUCeWlvi/9KA
-Rhyan86j0Tz0bEWwzHwbEv2JpWAN94XgQ8LG5FpTamh1sYT65pnvsXhWLjK7prt+
-T8kUVLN5CnfCibaQV68z
-=UZRP
------END PGP SIGNATURE-----
-
---8UlzpBRbXzws3PGf--
-
---===============2351068181331193611==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2351068181331193611==--
+diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
+index 34d965a..304d300 100644
+--- a/sound/soc/codecs/ad1980.c
++++ b/sound/soc/codecs/ad1980.c
+@@ -189,28 +189,27 @@ static struct snd_soc_dai_driver ad1980_dai = {
+ 
+ static int ad1980_reset(struct snd_soc_codec *codec, int try_warm)
+ {
+-	u16 retry_cnt = 0;
++	unsigned int retry_cnt = 0;
+ 
+-retry:
+-	if (try_warm && soc_ac97_ops->warm_reset) {
+-		soc_ac97_ops->warm_reset(codec->ac97);
+-		if (ac97_read(codec, AC97_RESET) == 0x0090)
+-			return 1;
+-	}
+-
+-	soc_ac97_ops->reset(codec->ac97);
+-	/* Set bit 16slot in register 74h, then every slot will has only 16
+-	 * bits. This command is sent out in 20bit mode, in which case the
+-	 * first nibble of data is eaten by the addr. (Tag is always 16 bit)*/
+-	ac97_write(codec, AC97_AD_SERIAL_CFG, 0x9900);
+-
+-	if (ac97_read(codec, AC97_RESET)  != 0x0090)
+-		goto err;
+-	return 0;
++	do {
++		if (try_warm && soc_ac97_ops->warm_reset) {
++			soc_ac97_ops->warm_reset(codec->ac97);
++			if (ac97_read(codec, AC97_RESET) == 0x0090)
++				return 1;
++		}
+ 
+-err:
+-	while (retry_cnt++ < 10)
+-		goto retry;
++		soc_ac97_ops->reset(codec->ac97);
++		/*
++		 * Set bit 16slot in register 74h, then every slot will has only
++		 * 16 bits. This command is sent out in 20bit mode, in which
++		 * case the first nibble of data is eaten by the addr. (Tag is
++		 * always 16 bit)
++		 */
++		ac97_write(codec, AC97_AD_SERIAL_CFG, 0x9900);
++
++		if (ac97_read(codec, AC97_RESET)  == 0x0090)
++			return 0;
++	} while (retry_cnt++ < 10);
+ 
+ 	printk(KERN_ERR "AD1980 AC97 reset failed\n");
+ 	return -EIO;
+-- 
+1.8.0
