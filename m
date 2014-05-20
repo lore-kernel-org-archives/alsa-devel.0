@@ -1,35 +1,77 @@
-From: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
-Subject: Re: [PATCH v2 0/9] DT instantiation of sound on T5325
-Date: Tue, 20 May 2014 23:53:08 +0200
-Message-ID: <20140520215308.GD11248@lunn.ch>
-References: <1399141819-23924-1-git-send-email-andrew@lunn.ch>
- <20140508173748.GK27377@lunn.ch>
- <20140520214718.GT12304@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/4] ASoC: mop500_ab8500: Replace instances
+ of rtd->codec->card with rtd->card
+Date: Tue, 20 May 2014 22:55:53 +0100
+Message-ID: <20140520215553.GX12304@sirena.org.uk>
+References: <1400492508-2732-1-git-send-email-lars@metafoo.de>
+ <1400492508-2732-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140520214718.GT12304-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============7457692528430303270=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E5232654B7
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 23:56:12 +0200 (CEST)
+In-Reply-To: <1400492508-2732-4-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Fabio Baltieri <fabio.baltieri@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 20, 2014 at 10:47:18PM +0100, Mark Brown wrote:
-> On Thu, May 08, 2014 at 07:37:48PM +0200, Andrew Lunn wrote:
-> 
-> > The ARM mvebu maintainer is happy with these patches. Does anybody
-> > have any comments on the sound/soc parts? Mark, will you take the
-> > alc5623 and simple-card patches?
-> 
-> Are there dependencies here?  If not then yes.
 
-Hi Mark
+--===============7457692528430303270==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qQLEtraMxXHZwsst"
+Content-Disposition: inline
 
-No compile time dependencies.
 
-   Andrew
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--qQLEtraMxXHZwsst
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, May 19, 2014 at 11:41:48AM +0200, Lars-Peter Clausen wrote:
+> No need to go via the CODEC to get a pointer to the card. This will help to
+> eventually remove the card field from the snd_soc_codec struct.
+
+Applied, thanks.
+
+--qQLEtraMxXHZwsst
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTe89mAAoJELSic+t+oim9r/AP/iY5N+k3tw0KFeI7pv3xB71R
+yfN0IjPrG2czCNSWwojSK3RfZdSwtWSFi8z/gJXgPRag7jYxGVRKYuZDUEOFMTp7
+yJC/amffftxSwN11LGxoFFzf66npZYwljBocqKWNOim5OtHsfmvN+LzYq6Ps/rJq
+4HGHqpTUp4M0+WYIP32F/ILA2x33jQhbwf6Q18xLUF/YENG/qAnKVO2+5ehGCMLL
+mwWlvyXAQQYoKeIpBLFJKcRNrds4Llb8Ut/aJX6FUMPe3K/6Z13MiMGael6uD8W9
+nL3t2ngtwAeJ9nf7wPnZ8azWI8TB46WT0M8PUQCwwtktfgdOe9DPCR2E7IHHThN6
+3mddM9UDD8HJdnk0ZsIcpWpVs6eSQx8SFeUSUXVtyP4ee2ZRfA1uI4uNoEvv5OGb
+eMBvQK5mp7GxZR/+OZ+1zJ1jBTnERE01ZN3JrtogAOkyLUp8mL9wAKEcuD1/Ctfn
+M9rZlrY2xhjIos8sGXITLrXJg3IYdwNf5aJNE513O87lOWsrqJgaTN59nduiU9nb
+aSXuhCwtDf//fzQ8KX+l3h+Ugh70t+iv3a2/H90gltdE6HpRJWdutqmwY8f9zvnX
++XRuPjI1HCRkajqRk32XAn5dheQG5HHt8v0CksULRg8d3C08cDCf0CxHSGNHj+v7
+YAY+x0LCv0xY3leR/3Ay
+=4+MQ
+-----END PGP SIGNATURE-----
+
+--qQLEtraMxXHZwsst--
+
+--===============7457692528430303270==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7457692528430303270==--
