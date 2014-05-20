@@ -1,41 +1,45 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH 2/4] ASoC: omap: Replace instances of
- rtd->codec->card with rtd->card
-Date: Tue, 20 May 2014 07:40:39 +0300
-Message-ID: <20140520044039.GA28674@bitmer.com>
-References: <1400492508-2732-1-git-send-email-lars@metafoo.de>
- <1400492508-2732-2-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (bitmer.com [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CDC3261684
- for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 06:40:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1400492508-2732-2-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Fabio Baltieri <fabio.baltieri@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>
+From: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Subject: [PATCHv5 1/2] ALSA: hda/hdmi - Add Nvidia Tegra124 HDMI support
+Date: Mon, 19 May 2014 19:17:39 -0700
+Message-ID: <1400552259-20052-1-git-send-email-dgreid@chromium.org>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, pdeschrijver-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, Sumit Bhattacharya <sumitb-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 19, 2014 at 11:41:46AM +0200, Lars-Peter Clausen wrote:
-> No need to go via the CODEC to get a pointer to the card. This will help to
-> eventually remove the card field from the snd_soc_codec struct.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
->  sound/soc/omap/omap-abe-twl6040.c | 5 ++---
->  sound/soc/omap/omap-twl4030.c     | 5 ++---
->  sound/soc/omap/rx51.c             | 2 +-
->  3 files changed, 5 insertions(+), 7 deletions(-)
-> 
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+From: Sumit Bhattacharya <sumitb-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+
+Add the Tegra12x HDA codec id to patch_hdmi.
+
+Signed-off-by: Sumit Bhattacharya <sumitb-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Signed-off-by: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Acked-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+---
+Changes since v4: Commit message only.
+---
+ sound/pci/hda/patch_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 2a3050d..be0a9ee 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -3320,6 +3320,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
+ { .id = 0x10de001a, .name = "GPU 1a HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de001b, .name = "GPU 1b HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de001c, .name = "GPU 1c HDMI/DP",	.patch = patch_nvhdmi },
++{ .id = 0x10de0028, .name = "Tegra12x HDMI",	.patch = patch_nvhdmi },
+ { .id = 0x10de0040, .name = "GPU 40 HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de0041, .name = "GPU 41 HDMI/DP",	.patch = patch_nvhdmi },
+ { .id = 0x10de0042, .name = "GPU 42 HDMI/DP",	.patch = patch_nvhdmi },
+@@ -3376,6 +3377,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0019");
+ MODULE_ALIAS("snd-hda-codec-id:10de001a");
+ MODULE_ALIAS("snd-hda-codec-id:10de001b");
+ MODULE_ALIAS("snd-hda-codec-id:10de001c");
++MODULE_ALIAS("snd-hda-codec-id:10de0028");
+ MODULE_ALIAS("snd-hda-codec-id:10de0040");
+ MODULE_ALIAS("snd-hda-codec-id:10de0041");
+ MODULE_ALIAS("snd-hda-codec-id:10de0042");
+-- 
+1.8.1.3.605.g02339dd
