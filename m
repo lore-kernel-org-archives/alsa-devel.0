@@ -1,17 +1,22 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: Set eapd to follow stream on or off
-Date: Tue, 20 May 2014 17:20:44 +0800
-Message-ID: <66A4EBB5FA74484E9FB040780F3C8965@realtek.com.tw>
-References: <3143A3763CC94AB9AAD48E43EA2B4DFC@realtek.com.tw><s5h8upw6gf6.wl%tiwai@suse.de><72897913D05F4C12BCED9FF890C77D61@realtek.com.tw>
- <s5hha4kbz4q.wl%tiwai@suse.de>
-Reply-To: Kailang <kailang@realtek.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: samsung: s3c24{xx,
+ 12}-i2s: port to use generic dmaengine API
+Date: Tue, 20 May 2014 12:25:53 +0300
+Message-ID: <CA+E=qVddxDAZ6Fkx5aBy1AL7xbpe64Yet4utTqfsSScQUxpXLA@mail.gmail.com>
+References: <1400519509-5940-1-git-send-email-anarsoul@gmail.com>
+ <CA+E=qVdvrp4m2Z8NcSL2p8GKubGEsVLs2baHr24rp-sQmRohUQ@mail.gmail.com>
+ <537A6ABE.7030304@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id BDA49264ED5
- for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 11:20:49 +0200 (CEST)
+Received: from mail-ob0-f181.google.com (mail-ob0-f181.google.com
+ [209.85.214.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BB6326501D
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 11:26:14 +0200 (CEST)
+Received: by mail-ob0-f181.google.com with SMTP id wm4so185757obc.26
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 02:26:13 -0700 (PDT)
+In-Reply-To: <537A6ABE.7030304@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Arnd Bergmann <arnd@arndb.de>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, May 19, 2014 at 11:34 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+> On 05/19/2014 10:18 PM, Vasily Khoruzhick wrote:
+>>
+>> On Mon, May 19, 2014 at 8:11 PM, Vasily Khoruzhick <anarsoul@gmail.com>
+>> wrote:
+>>>
+>>> Use dmaengine instead of legacy s3c24xx DMA API for s3c24xx and s3c2412
+>>
+>>
+>> Please discard this series, I'd like to use
+>> dma_request_slave_channel_compat() to request a dma channel here,
+>> to simpify migration to DT later.
+>
+>
+> When you use the generic DMAengine PCM driver, migration to DT essentially
+> comes for free, you don't need to do anything special other than not
+> specifying the NO_DT flag.
+>
+> - Lars
 
-> At Tue, 20 May 2014 16:52:43 +0800,
-> Kailang wrote:
->>
->>
->> > At Tue, 20 May 2014 15:15:49 +0800,
->> > Kailang wrote:
->> >>
->> >> Hi Takashi,
->> >>
->> >> HP machine had pop noise via speaker.
->> >> If EAPD on or off, speaker will have pop noise.
->> >> So, they want to set eapd to follow with stream on or off.
->> >
->> > I can apply this as is, but still I wonder whether this results in
->> > other problems.  Doing EAPD on/off there means that it happens far
->> > more often.  For example, what happens if you do like below?
->> >
->> >     while true; do
->> >       echo -n > /dev/snd/pcmC0D0p
->> >     done
->> >
->> > And, what if the device is resumed from power-saving by an audio
->> > playback?  Immediately after the power up, it'll start the streaming,
->> > so it'll turn on EAPD.
->> >
->> > That said, isn't it just a need for some delay before EAPD on/off?
->>
->> No, eapd on or off will cause pop noise.
->
-> Does it do always?
-No, pop noise just one pop sound. It can not remove by software.
-But this machine need to do this always.
+Hi Lars, all,
 
->
->> Our customer just want to do eapd on when stream is open.
->> The pop noise will not clear. Because music gain was biger than pop 
->> noise.
->
-> Opening a stream doesn't mean that it follows the loud sound
-> immediately.  The script above wouldn't produce any sound but just
-> does open/close the stream.  Did you try that?
->
->
-> Takashi
->
-> ------Please consider the environment before printing this e-mail. 
+But how do I have to pass DMA channel number for non-DT boot? I've
+seen that s3c64xx uses DMA resources at least for I2S and SPI,
+but Arnd suggested to use platform data. What's preffered way?
+
+Regards
+Vasily
