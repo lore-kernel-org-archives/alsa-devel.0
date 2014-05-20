@@ -1,86 +1,64 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH] ASoC: samsung: Allow setting OP_CLK of the IIS Multi Audio
- Interface
-Date: Tue, 20 May 2014 11:10:08 +0200
-Message-ID: <537B1BF0.8060302@samsung.com>
-References: <1400520638-6907-1-git-send-email-s.nawrocki@samsung.com>
- <537AE4C1.7050703@linaro.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: neo1973_wm8753: Automatically
+	disconnected non-connected pins
+Date: Tue, 20 May 2014 11:13:28 +0200
+Message-ID: <1400577208-1473-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <537AE4C1.7050703@linaro.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tushar Behera <tushar.behera@linaro.org>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-145.synserver.de (smtp-out-128.synserver.de
+ [212.40.185.128])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06BF8264EAA
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 11:13:40 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 20/05/14 07:14, Tushar Behera wrote:
-> On 05/19/2014 11:00 PM, Sylwester Nawrocki wrote:
->> This patch adds support for setting source clock of the "Core CLK"
->> of the IIS Multi Audio Interface.
->>
->> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
->> ---
->>  sound/soc/samsung/i2s.c |    4 ++++
->>  sound/soc/samsung/i2s.h |    1 +
->>  2 files changed, 5 insertions(+)
->>
->> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
->> index 048ead9..ae02811 100644
->> --- a/sound/soc/samsung/i2s.c
->> +++ b/sound/soc/samsung/i2s.c
->> @@ -451,6 +451,10 @@ static int i2s_set_sysclk(struct snd_soc_dai *dai,
->>  	u32 mod = readl(i2s->addr + I2SMOD);
->>  
->>  	switch (clk_id) {
->> +	case SAMSUNG_I2S_OPCLK:
->> +		mod &= ~MOD_OPCLK_MASK;
->> +		mod |= dir;
-> 
-> I am assuming here that dir is one of SND_SOC_CLOCK_IN or
-> SND_SOC_CLOCK_OUT. In that case, you need to take care of offset (30).
+The DAPM routes for this board are complete, hence we can let the core take care
+of disconnecting non-connected pins rather than doing it manually.
 
-And that's not a correct assumption. I also got similarly confused when 
-first seeing this in our downstream kernels. 'dir' is supposed to be one 
-of the MOD_OPCLK_* constants, as defined in sound/soc/samsung/i2s-regs.h.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/samsung/neo1973_wm8753.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-#define MOD_OPCLK_CDCLK_OUT	(0 << 30)
-#define MOD_OPCLK_CDCLK_IN	(1 << 30)
-#define MOD_OPCLK_BCLK_OUT	(2 << 30)
-#define MOD_OPCLK_PCLK		(3 << 30)
-#define MOD_OPCLK_MASK		(3 << 30)
-
-So the clock is reconfigured with calls like:
-snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_OPCLK, 0, MOD_OPCLK_PCLK);
-
-> Also the value of this bit-field doesn't match with SND_SOC_CLOCK_XXX
-> macros.
-> 
-> Bit-field (2'b):
-> 00	Codec Clock out
-> 01	Codec Clock in
-> 10	Bit clock out
-> 11	Audio bus clock
-> 
-> Value of macros:
-> SND_SOC_CLOCK_IN	0
-> SND_SOC_CLOCK_OUT	1
-
-> In the manual, this field is suggested to be Audio bus clock always. Is
-> there an use-case where we might need to update this?
-
-I've checked couple boards and AFAICS we're always setting MOD_OPCLK_PCLK,
-however it's still different from the default value after reset - 
-MOD_OPCLK_CDCLK_OUT. 
-So how do you think this should be addressed ? Isn't it better to give
-options to the machine drivers to alter these clock settings, rather than
-hard coding it in the I2S driver ? Let's not forget it covers multiple 
-Samsung SoC series.
-
-> The default value for audio playback right now is 00 (2'b), which needs
-> to be fixed anyways.
-
---
-Regards,
-Sylwester
+diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
+index b080033..9b4a09f 100644
+--- a/sound/soc/samsung/neo1973_wm8753.c
++++ b/sound/soc/samsung/neo1973_wm8753.c
+@@ -271,15 +271,8 @@ static const struct snd_kcontrol_new neo1973_wm8753_controls[] = {
+ 
+ static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_card *card = rtd->card;
+ 
+-	/* set up NC codec pins */
+-	snd_soc_dapm_nc_pin(&codec->dapm, "OUT3");
+-	snd_soc_dapm_nc_pin(&codec->dapm, "OUT4");
+-	snd_soc_dapm_nc_pin(&codec->dapm, "LINE1");
+-	snd_soc_dapm_nc_pin(&codec->dapm, "LINE2");
+-
+ 	/* set endpoints to default off mode */
+ 	snd_soc_dapm_disable_pin(&card->dapm, "GSM Line Out");
+ 	snd_soc_dapm_disable_pin(&card->dapm, "GSM Line In");
+@@ -355,6 +348,7 @@ static struct snd_soc_card neo1973 = {
+ 	.num_dapm_widgets = ARRAY_SIZE(neo1973_wm8753_dapm_widgets),
+ 	.dapm_routes = neo1973_wm8753_routes,
+ 	.num_dapm_routes = ARRAY_SIZE(neo1973_wm8753_routes),
++	.fully_routed = true,
+ };
+ 
+ static struct platform_device *neo1973_snd_device;
+-- 
+1.8.0
