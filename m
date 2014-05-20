@@ -1,57 +1,76 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 0/9] DT instantiation of sound on T5325
-Date: Tue, 20 May 2014 22:47:18 +0100
-Message-ID: <20140520214718.GT12304@sirena.org.uk>
-References: <1399141819-23924-1-git-send-email-andrew@lunn.ch>
- <20140508173748.GK27377@lunn.ch>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ad1980: Replace goto loop with
+	do-while loop
+Date: Tue, 20 May 2014 22:53:50 +0100
+Message-ID: <20140520215350.GV12304@sirena.org.uk>
+References: <1400588590-26820-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8I2A5AXbe7mGM+Sj"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140508173748.GK27377-g2DYL2Zd6BY@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
-Cc: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============2512436542948857722=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 220752650AE
+ for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 23:54:05 +0200 (CEST)
+In-Reply-To: <1400588590-26820-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---8I2A5AXbe7mGM+Sj
+--===============2512436542948857722==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Q7K/b4KrHb9cgTGH"
+Content-Disposition: inline
+
+
+--Q7K/b4KrHb9cgTGH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 08, 2014 at 07:37:48PM +0200, Andrew Lunn wrote:
+On Tue, May 20, 2014 at 02:23:10PM +0200, Lars-Peter Clausen wrote:
+> Using a proper do-while loop here instead of a open-coded goto loop is both
+> cleaner and shorter.
 
-> The ARM mvebu maintainer is happy with these patches. Does anybody
-> have any comments on the sound/soc parts? Mark, will you take the
-> alc5623 and simple-card patches?
+Applied, thanks.
 
-Are there dependencies here?  If not then yes.
-
---8I2A5AXbe7mGM+Sj
+--Q7K/b4KrHb9cgTGH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTe81jAAoJELSic+t+oim9V18P/10eCOMP8Q5DCQXwTiHZFe4I
-eYGY48+8VEwZDYcLG9vOa660jh26aN6c75aqZmuqFi81Qv02+Uc01+SCTsgZapjZ
-Qno5bE2fkej6i4tqQeLTYwzEVvmsf7hm9xqOZ1XptuE8FLG3J0qiRcHXZsvVI8pn
-TM/+JIYZWjycikmmA/A7vfjjMrj64Vix79DmKvCBZ5x4MWXe/h/1M1BfsEUG6KU7
-WayPe+7H29mdeptc6I1Cq9xoyHc1e5VcDOzQrHfmlm02iTEM0fIxgRy2Qezx3E88
-c2HLfiTsUW3eP+s/Y+AEfS4EFFGmZPicOvzE6INZUmZtTnfReNZrKUQJ7ogFK+hS
-UzebgL1IUq/jRMWgzvrgQGKgvN9HzIt2MCGWa+JsbnSu3WIHrKQ01ZHfaDSDa6Tl
-fN47/7YRjzQ/N/TtlYf1bFEB/3qE7eEdcbD5qfH6C37wLf0Euh9A4mxde9jbDwWQ
-b1g2NQoAj+xBxVz5TaEA61BHIL2zSz//sS5drI5krULRned1eBY5z54ouasPVw2u
-m8Vf/gOw2dNVg4nKEbGkIXmok/Woh5VGY/zQjOdYb3ODXLzGihZClnZNdtAMqYiq
-wdtliEf5BdJn2dq3kjd+ByTJARnegMMnkX3eXo+nGhLDILVx86h5Vjfj6xBSjbCo
-hQDiY5Y4RE5P2Ef1KWld
-=yXg8
+iQIcBAEBAgAGBQJTe87rAAoJELSic+t+oim9y/AP/38bpXEP6WpPAZMQMNUe6K+7
+TqXdQnYyo3b73uWfmJS/AHttlnuQfKGlQsrAJHQLUWo/t0xL+e6yW9bVKFls9asR
+4k1vBTPJzkUME3dWuRLSUL2jr5x3QafHWEUPaVDJlmas6VXcbTTSFoN4+WmDQFFp
+7Xu5oooxCJz9NvhV5ukcXEcAVwb8YutHa60B/lW1UUdyjSh50O2no+xbB3shdBzq
+s3RrVtvJqlupJu6CRRFucybKWghkuWpdjwdAEEdXkoGC/+RqmhOWE6bysN0A2RxS
+svSUfap930jfm3ld2mNKWecI1uf7ZF9oDWYEI1iyhVxu+F1GcyPfQO3EIrF4nj8x
+pqx8XTloIlm670c7LGHAAJF4/Ak5chUr6Lg7GAJsGRQcFayFWVrMEWm8wblZitqH
+HW4GfVBmrCR+z7zqgvsYp3ZrkNmCFHOlYBnCkvj78O8x59FmrATigZW1f8Ry2Buv
+8G4hgkSpsd5mBqFpN3raTRjarJYRkSGbevnRl9s7/mAyH4icLRIVB6itw3o5Xl9u
+5JuuJ5jsmsfJmzzlothnAaV+99mVAyHrYj3HQ5wGVH1KIjS/ACi3qBo4/5y/9fvn
+5yBa/53MFLhJmVJ9KR6gLQzxSvqOY+mGTUOsiGbe9tJk0l9GOzJCblBI5lC29Zpf
+ELu84UJYulfWLITzWHvt
+=OOTt
 -----END PGP SIGNATURE-----
 
---8I2A5AXbe7mGM+Sj--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--Q7K/b4KrHb9cgTGH--
+
+--===============2512436542948857722==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2512436542948857722==--
