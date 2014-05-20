@@ -1,54 +1,58 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 1/9] ASoC: alc5623: Add device tree binding
-Date: Tue, 20 May 2014 23:12:47 +0100
-Message-ID: <20140520221247.GE12304@sirena.org.uk>
+Subject: Re: [PATCH v2 5/9] ASoC: simple-card: Support setting mclk via a
+ fixed factor
+Date: Tue, 20 May 2014 23:13:59 +0100
+Message-ID: <20140520221359.GF12304@sirena.org.uk>
 References: <1399141819-23924-1-git-send-email-andrew@lunn.ch>
- <1399141819-23924-2-git-send-email-andrew@lunn.ch>
+ <1399141819-23924-6-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1aPP7Yg7r/g7Nmtg"
+	protocol="application/pgp-signature"; boundary="SKnaiO/TCj3ZfC7z"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1399141819-23924-2-git-send-email-andrew-g2DYL2Zd6BY@public.gmane.org>
+In-Reply-To: <1399141819-23924-6-git-send-email-andrew-g2DYL2Zd6BY@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
 Cc: Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, linux ARM <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---1aPP7Yg7r/g7Nmtg
+--SKnaiO/TCj3ZfC7z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, May 03, 2014 at 08:30:11PM +0200, Andrew Lunn wrote:
-> Let the ALC5623 codec be instantiated from DT. Add a simple binding
-> for the additional control register and the jack detect register.
+On Sat, May 03, 2014 at 08:30:15PM +0200, Andrew Lunn wrote:
+> Some platforms require that the codecs mclk is a fixed multiplication
+> factor of the audio stream rate. Add a optional property to the
+> binding to hold this factor and implement a hw_params() function to
+> make use of it.
 
-Applied, thanks.
+This doesn't apply against current code, can you please check and
+resend?
 
---1aPP7Yg7r/g7Nmtg
+--SKnaiO/TCj3ZfC7z
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTe9NcAAoJELSic+t+oim9/iYP/3RCmgpx700gG8+6hegUmt2G
-9tO1PZnPrVPV/jXISRWmGY5rCto3b0oz1Zm2efJeWEmnBjaK/bVSYnsAemTJvlrS
-0mnEbcwZFLFlhcPqoH9w5O3hitjtgDXVlR4RqeBXMvPw4Y6wpV7kSwo0DXGsPG4u
-jY7zY2TgSv00WydL5vuUluRXkyvxCD222OM6GocNB3yUJO/TWcg9lsfph+xwgm5o
-MCrUQOFaiBxtDdRrVkPfF4urBmT3zFOhYmQTBV6FpOtgQJ2TYC9UPUDJeJHLgXGz
-BiEh7nLWQjA0mToP7Tc73bAF0WDZ+x/2ak0axs+6riXiTRDTgW4x8TX9I+/Yt+sU
-5cnWepzNWioWE0NadnA25mQ5ntGoGG+6/0fCv81ptlY8wQHxZKa/1o9XIAILyHsR
-nBc6gyN4vZu86fQKKsBBts6IQ1eHBs3xprbQgFI+Efps1fKO3pY7SpBhFWlgpcUi
-oxni9v7PF9gKf6Rs3AEiPaOn1YP5Kiaz70HEYmS4Df/HzrokEXxZj8Yq+Hwl0BIs
-XL0DdDana0u/Ku4rxDaYAzNwoG2oOl+hcqeuPqAnwf91MtBeXOUyAZ39n5lgbmYC
-ONGGprS4JopPJ5D6dmwDrygDaKl3RfUxXW21KEsIY7fZE40IUr33auaIQXfftMXN
-9VfpxCn2mHs4UqiIb00h
-=lxhQ
+iQIcBAEBAgAGBQJTe9OjAAoJELSic+t+oim90zwP/3cNFdU4GRF0FcSPQqNM6Uqc
+QHEFCYczoyAj9lVpGEFZ8wEej/lE3Zlu333bSpi8BWf77xQi1vWldycjrdfRegqJ
+Q2f/+r1QgCED/OkUgXG+vyTsuZ3jvbr49eTQIKF9+Uzw1XcT/3j/kJtGh9PbCTFq
+jGsc7TvJ6dLwpL+PJyKAhmI4ZHPU+45sgXTKA4xf1ian9igBcD8pwOMK7DPRlF0x
+olNJnPKz6wyByfgT3Ay4BbtC2rh+Hm+/+prgvjO/4A833PiEmCXPXXDJQ06P9D+u
+weN0qsV/AV/QAqCJjhDX9sQb6k3NSNAirxR3EIG5RDiGX8bv0ZeU183AHgLjS9AJ
+dHGA/tUb4qgS2dtlc/2Ol9GmRY8yEUysY4SlujPGnX30QuvcHVj14unbGWNgKfLQ
+3zwLrWwU0aQBKijCV9iZgAmj4mDGSwJSQ9ui5LLdcL0pVEtsdEX7yh49lT/ZtU23
+KRDIbtIeVUf9udUaAqTAWZDX1hHPVx/Ph29gRW0qPIaRGjh9PNrlKTnSFBRJ5jMX
+xE2bnN3G/+Mhnl3Nb6wi0txMSBIFYPdt2wDykU6eK97oFTwKkihPNhO5JzzTbm7L
+VVyT4LWc3t2nIaHQkX2GWuheux10qd2AGMTBsKMrJ0yDim4UtC/m4WYnSTU9Bxcg
+HBEYw+aiXyQ4oa4Smo3i
+=rumL
 -----END PGP SIGNATURE-----
 
---1aPP7Yg7r/g7Nmtg--
+--SKnaiO/TCj3ZfC7z--
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
