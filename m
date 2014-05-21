@@ -1,72 +1,79 @@
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-Subject: Re: [alsa-devel] [PATCH v2 1/2] ASoC: samsung: s3c24{xx, 12}-i2s: port to use generic dmaengine API
-Date: Wed, 21 May 2014 17:56:41 +0200
-Message-ID: <27469899.QpTIQjlnqG@phil>
-References: <1400617569-7187-1-git-send-email-anarsoul@gmail.com> <45188858.i0tHnasRTk@phil> <CA+E=qVfXb2BeEsPcwnvKSiYRtP=HL6J_OLv+yrpg16kg74zJzQ@mail.gmail.com>
+From: "Babu, Ramesh" <ramesh.babu@intel.com>
+Subject: Re: [RFC] set up an sync channel between audio and
+ display driver (i.e. ALSA and DRM)
+Date: Wed, 21 May 2014 15:56:34 +0000
+Message-ID: <32F4D3A311A1404B92CF923AFF38C3C522292976@BGSMSX104.gar.corp.intel.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F82B447059@SHSMSX101.ccr.corp.intel.com>
+ <1400596147.32158.36.camel@intelbox> <20140520143555.GD21128@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <CA+E=qVfXb2BeEsPcwnvKSiYRtP=HL6J_OLv+yrpg16kg74zJzQ@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: Tomasz Figa <t.figa@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20140520143555.GD21128@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Koul, Vinod" <vinod.koul@intel.com>, "Deak, Imre" <imre.deak@intel.com>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikkanen,
+ Kimmo" <kimmo.nikkanen@intel.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Vetter,
+ Daniel" <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Am Mittwoch, 21. Mai 2014, 18:39:26 schrieb Vasily Khoruzhick:
-> On Wed, May 21, 2014 at 6:29 PM, Heiko St=FCbner <heiko@sntech.de> wr=
-ote:
-> > Am Mittwoch, 21. Mai 2014, 17:07:47 schrieb Tomasz Figa:
-> >> On 21.05.2014 16:53, Vasily Khoruzhick wrote:
-> >> > On Wed, May 21, 2014 at 4:28 PM, Tomasz Figa <t.figa@samsung.com=
-> wrote:
-> >> >> Please remember to keep linux-samsung-soc ML on Cc when sending
-> >> >> patches
-> >> >> related to Samsung platforms. It is essential to let Samsung pe=
-ople
-> >> >> review them.
-> >> >=20
-> >> > Ok, I'll keep it in mind. I've just checked and get_maintainer.p=
-l
-> >> > outputs linux-samsung-soc ML for these
-> >> > patches. I've omitted it occasionally, because it wasn't necessa=
-ry to
-> >> > keep it in CC back in 2011
-> >> > (year of my last sound-related patch for s3c24xx).
-> >> >=20
-> >> >> Please resend the series with this in mind.
-> >> >=20
-> >> > Is it really necessary? This patch is supposed to go through ASo=
-C
-> >> > tree, not through Samsung's.
-> >> > And I really doubt that Samsung guys test kernel for s3c24xx boa=
-rds
-> >> > nowadays.
-> >>=20
-> >> Maybe not test, but at least review the code. Also there might be =
-other
-> >> people following that list that might be interested in looking at =
-this
-> >> series, while not subscribed to alsa-devel - I can name at least H=
-eiko
-> >> St=FCbner, who should be able to test it on further s3c24xx-based =
-boards.
-> >=20
-> > Sadly, I don't have a working sound setup on my 2 s3c boards.
->=20
-> What are they btw? Is it too time-consuming to make sound working on =
-them?
-> It would be nice if anyone except me could test these patches.
-
-Openmoko Freerunner (S3C2440) where there may be sound reachable somewa=
-y and a=20
-"Oyo" ebook-reader (S3C2416) whose i2s is I think compatible with the s=
-3c64xx=20
-instead of the s3c24xx ones and with a completely unsupported codec.
-
-But in general I'm fairly confident that if you hear sounds on your dev=
-ice your=20
-conversion would be fine test-wise :-)
-
-
-Heiko
+> On Tue, May 20, 2014 at 05:29:07PM +0300, Imre Deak wrote:
+> > On Tue, 2014-05-20 at 05:52 +0300, Lin, Mengdong wrote:
+> > > This RFC is based on previous discussion to set up a generic
+> > > communication channel between display and audio driver and an
+> > > internal design of Intel MCG/VPG HDMI audio driver. It's still an
+> > > initial draft and your advice would be appreciated to improve the
+> > > design.
+> > >
+> > > The basic idea is to create a new avsink module and let both drm and
+> > > alsa depend on it.
+> > > This new module provides a framework and APIs for synchronization
+> > > between the display and audio driver.
+> > >
+> > > 1. Display/Audio Client
+> > >
+> > > The avsink core provides APIs to create, register and lookup a
+> > > display/audio client.
+> > > A specific display driver (eg. i915) or audio driver (eg. HD-Audio
+> > > driver) can create a client, add some resources objects (shared
+> > > power wells, display outputs, and audio inputs, register ops) to the
+> > > client, and then register this client to avisink core. The peer
+> > > driver can look up a registered client by a name or type, or both.
+> > > If a client gives a valid peer client name on registration, avsink
+> > > core will bind the two clients as peer for each other. And we expect
+> > > a display client and an audio client to be peers for each other in a
+> > > system.
+> >
+> > One problem we have at the moment is the order of calling the system
+> > suspend/resume handlers of the display driver wrt. that of the audio
+> > driver. Since the power well control is part of the display HW block,
+> > we need to run the display driver's resume handler first, initialize
+> > the HW, and only then let the audio driver's resume handler run. For
+> > similar reasons we have to call the audio suspend handler first and
+> > only then the display driver resume handler. Currently we solve this
+> > using the display driver's late/early suspend/resume hooks, but we'd
+> > need a more robust solution.
+> >
+> > This seems to be a similar issue to the load time ordering problem
+> > that you describe later. Having a real device for avsync that would be
+> > a child of the display device would solve the ordering issue in both
+> > cases. I admit I haven't looked into it if this is feasible, but I
+> > would like to see some solution to this as part of the plan.
+> 
+> If we are able create and mandate that HDMI display controller is parent and
+> audio is child device, then this wouldn't be an issue and PM frameowrk will
+> ensure parent is suspended last.
+> 
+If there is a scenario where HDMI audio has to active but display has to go to low power, then
+parent-child device is not optimal.  There needs to be a mechanism to turn on/off individual hw blocks within
+the controller.
