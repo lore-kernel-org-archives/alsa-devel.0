@@ -1,99 +1,292 @@
-From: Adam Goode <agoode@chromium.org>
-Subject: Re: Support for getting "manufacturer" from
- snd_seq_client_info and/or snd_ctl_card_info
-Date: Tue, 20 May 2014 23:23:58 -0400
-Message-ID: <CAOf41NkVoCiUruSZyAPYB4PzEjPLRtU2g2byhn6F_OJ7LgCVrw@mail.gmail.com>
-References: <CAOf41NnbBTYrfN10GUcxzdHmKZJj0YT=DC3ntfjuhpb=fa+o=A@mail.gmail.com>
- <536F2BB8.8060002@ladisch.de>
- <CAOf41Nka_a8Y08MwERBKrZdKCUFo5-NhxR0ULHtUye4aUaOKXg@mail.gmail.com>
- <5371E4D8.3030406@ladisch.de> <s5hegzxiv0t.wl%tiwai@suse.de>
- <CAOf41N=cvQZv8ZaTKL6fhj98gywws0x+78CAYKuQJTh+YFBJ1w@mail.gmail.com>
- <5375BD8A.2040201@ladisch.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
- [209.85.223.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 5967726552A
- for <alsa-devel@alsa-project.org>; Wed, 21 May 2014 05:24:00 +0200 (CEST)
-Received: by mail-ie0-f169.google.com with SMTP id at1so1456548iec.28
- for <alsa-devel@alsa-project.org>; Tue, 20 May 2014 20:23:59 -0700 (PDT)
-In-Reply-To: <5375BD8A.2040201@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Adam Goode <agoode@chromium.org>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: [PATCH 1/4] ASoC: samsung: Use devm_snd_soc_register_card
+Date: Wed, 21 May 2014 08:52:17 +0530
+Message-ID: <1400642540-24375-2-git-send-email-tushar.behera@linaro.org>
+References: <1400642540-24375-1-git-send-email-tushar.behera@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1400642540-24375-1-git-send-email-tushar.behera@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Cc: tiwai@suse.de, perex@perex.cz, broonie@kernel.org, lgirdwood@gmail.com, sbkim73@samsung.com, kgene.kim@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 16, 2014 at 3:26 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+Replace snd_soc_register_card with devm_snd_soc_register_card.
+With this change, we can delete the empty remove functions.
 
-> Adam Goode wrote:
-> >> Clemens Ladisch wrote:
-> >>> 2. Add the manufacturer name to snd_ctl_card_info.  For USB devices,
-> >>>    this is almost always known, but most other drivers do not know the
-> >>>    name of the card manufacturer (as opposed to the chip manufacturer).
-> >>>    In those cases, the most informative name that a driver could
-> provide
-> >>>    would be based on a registered ID like "USB:0x1234", "PCI:0x5678",
-> or
-> >>>    "IEEE:0x9abcde".
-> >
-> > One question I have for step 2 above: snd_ctl_card_info is full. I
-> > don't see a way of adding to it without introducing a new ioctl
-> > (SNDRV_CTL_IOCTL_CARD_INFO2 + struct snd_ctl_card_info2?)
->
-> If you really want to avoid adding a new ioctl:  The numerical IDs are
-> just numbers, for which there is enough space in snd_ctl_card_info.  For
-> USB devices, the manufacturer name is part of the longname, so you'd
-> just need offset/length values.
->
-> And I'm not sure if it would be a good idea to expose the manufacturer
-> ID as a string.  Is that value supposed to be shown to the user, or just
-> some unique ID?
->
->
-For Web MIDI, we don't actually need the USB ids, but it is good to have
-these available. snd_ctl_card_info already has these encoded via the
-components field:
+Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
+---
+ sound/soc/samsung/bells.c          |   16 +++-------------
+ sound/soc/samsung/littlemill.c     |   18 +++---------------
+ sound/soc/samsung/lowland.c        |   18 +++---------------
+ sound/soc/samsung/smdk_wm8580pcm.c |   15 +++------------
+ sound/soc/samsung/smdk_wm8994pcm.c |   15 +++------------
+ sound/soc/samsung/speyside.c       |   18 +++---------------
+ sound/soc/samsung/tobermory.c      |   18 +++---------------
+ 7 files changed, 21 insertions(+), 97 deletions(-)
 
-$ ./alsa-lib/test/control
-
-Soundcard #1:
-  card - 0
-  id - 'UX16'
-  driver - 'USB-Audio'
-  name - 'UX16'
-  longname - 'Yamaha UX16 at usb-0000:00:14.0-10, full speed'
-  mixername - ''
-  components - 'USB0499:1009'
-RAWMIDI info, device #0:
-  device - 0
-  subdevice - 0
-  stream - 0
-  card - 0
-  flags - 0x7
-  id - 'USB MIDI'
-  name - 'UX16'
-  subname - 'UX16 MIDI 1'
-  subdevices count - 1
-  subdevices avail - 0
- ...
-
-For getting manufacturer, it is an interesting idea to encode the offset
-and length for extraction from longname. I have no problem with creating a
-new ioctl though, which seems cleaner, if that is acceptable.
-
-The manufacturer string is just a string, to be presented to the user. It
-is not a unique/opaque id.
-
-
-
-Adam
+diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
+index 84f5d8b..5b21207 100644
+--- a/sound/soc/samsung/bells.c
++++ b/sound/soc/samsung/bells.c
+@@ -433,22 +433,13 @@ static int bells_probe(struct platform_device *pdev)
+ 
+ 	bells_cards[pdev->id].dev = &pdev->dev;
+ 
+-	ret = snd_soc_register_card(&bells_cards[pdev->id]);
+-	if (ret) {
++	ret = devm_snd_soc_register_card(&pdev->dev, &bells_cards[pdev->id]);
++	if (ret)
+ 		dev_err(&pdev->dev,
+ 			"snd_soc_register_card(%s) failed: %d\n",
+ 			bells_cards[pdev->id].name, ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static int bells_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_card(&bells_cards[pdev->id]);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static struct platform_driver bells_driver = {
+@@ -458,7 +449,6 @@ static struct platform_driver bells_driver = {
+ 		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = bells_probe,
+-	.remove = bells_remove,
+ };
+ 
+ module_platform_driver(bells_driver);
+diff --git a/sound/soc/samsung/littlemill.c b/sound/soc/samsung/littlemill.c
+index bfb91f3..840787e 100644
+--- a/sound/soc/samsung/littlemill.c
++++ b/sound/soc/samsung/littlemill.c
+@@ -304,23 +304,12 @@ static int littlemill_probe(struct platform_device *pdev)
+ 
+ 	card->dev = &pdev->dev;
+ 
+-	ret = snd_soc_register_card(card);
+-	if (ret) {
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+ 			ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static int littlemill_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 
+-	snd_soc_unregister_card(card);
+-
+-	return 0;
++	return ret;
+ }
+ 
+ static struct platform_driver littlemill_driver = {
+@@ -330,7 +319,6 @@ static struct platform_driver littlemill_driver = {
+ 		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = littlemill_probe,
+-	.remove = littlemill_remove,
+ };
+ 
+ module_platform_driver(littlemill_driver);
+diff --git a/sound/soc/samsung/lowland.c b/sound/soc/samsung/lowland.c
+index 570cf52..bd5f0d6 100644
+--- a/sound/soc/samsung/lowland.c
++++ b/sound/soc/samsung/lowland.c
+@@ -187,23 +187,12 @@ static int lowland_probe(struct platform_device *pdev)
+ 
+ 	card->dev = &pdev->dev;
+ 
+-	ret = snd_soc_register_card(card);
+-	if (ret) {
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+ 			ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static int lowland_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 
+-	snd_soc_unregister_card(card);
+-
+-	return 0;
++	return ret;
+ }
+ 
+ static struct platform_driver lowland_driver = {
+@@ -213,7 +202,6 @@ static struct platform_driver lowland_driver = {
+ 		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = lowland_probe,
+-	.remove = lowland_remove,
+ };
+ 
+ module_platform_driver(lowland_driver);
+diff --git a/sound/soc/samsung/smdk_wm8580pcm.c b/sound/soc/samsung/smdk_wm8580pcm.c
+index 23a9204..e119aaa 100644
+--- a/sound/soc/samsung/smdk_wm8580pcm.c
++++ b/sound/soc/samsung/smdk_wm8580pcm.c
+@@ -164,19 +164,11 @@ static int snd_smdk_probe(struct platform_device *pdev)
+ 		xtal_freq = mclk_freq = SMDK_WM8580_EXT_VOICE;
+ 
+ 	smdk_pcm.dev = &pdev->dev;
+-	ret = snd_soc_register_card(&smdk_pcm);
+-	if (ret) {
++	ret = devm_snd_soc_register_card(&pdev->dev, &smdk_pcm);
++	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed %d\n", ret);
+-		return ret;
+-	}
+ 
+-	return 0;
+-}
+-
+-static int snd_smdk_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_card(&smdk_pcm);
+-	return 0;
++	return ret;
+ }
+ 
+ static struct platform_driver snd_smdk_driver = {
+@@ -185,7 +177,6 @@ static struct platform_driver snd_smdk_driver = {
+ 		.name = "samsung-smdk-pcm",
+ 	},
+ 	.probe = snd_smdk_probe,
+-	.remove = snd_smdk_remove,
+ };
+ 
+ module_platform_driver(snd_smdk_driver);
+diff --git a/sound/soc/samsung/smdk_wm8994pcm.c b/sound/soc/samsung/smdk_wm8994pcm.c
+index 0c84ca0..b6c0997 100644
+--- a/sound/soc/samsung/smdk_wm8994pcm.c
++++ b/sound/soc/samsung/smdk_wm8994pcm.c
+@@ -134,19 +134,11 @@ static int snd_smdk_probe(struct platform_device *pdev)
+ 	int ret = 0;
+ 
+ 	smdk_pcm.dev = &pdev->dev;
+-	ret = snd_soc_register_card(&smdk_pcm);
+-	if (ret) {
++	ret = devm_snd_soc_register_card(&pdev->dev, &smdk_pcm);
++	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed %d\n", ret);
+-		return ret;
+-	}
+ 
+-	return 0;
+-}
+-
+-static int snd_smdk_remove(struct platform_device *pdev)
+-{
+-	snd_soc_unregister_card(&smdk_pcm);
+-	return 0;
++	return ret;
+ }
+ 
+ static struct platform_driver snd_smdk_driver = {
+@@ -155,7 +147,6 @@ static struct platform_driver snd_smdk_driver = {
+ 		.name = "samsung-smdk-pcm",
+ 	},
+ 	.probe = snd_smdk_probe,
+-	.remove = snd_smdk_remove,
+ };
+ 
+ module_platform_driver(snd_smdk_driver);
+diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
+index 57df90d..9902efc 100644
+--- a/sound/soc/samsung/speyside.c
++++ b/sound/soc/samsung/speyside.c
+@@ -327,23 +327,12 @@ static int speyside_probe(struct platform_device *pdev)
+ 
+ 	card->dev = &pdev->dev;
+ 
+-	ret = snd_soc_register_card(card);
+-	if (ret) {
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+ 			ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static int speyside_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 
+-	snd_soc_unregister_card(card);
+-
+-	return 0;
++	return ret;
+ }
+ 
+ static struct platform_driver speyside_driver = {
+@@ -353,7 +342,6 @@ static struct platform_driver speyside_driver = {
+ 		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = speyside_probe,
+-	.remove = speyside_remove,
+ };
+ 
+ module_platform_driver(speyside_driver);
+diff --git a/sound/soc/samsung/tobermory.c b/sound/soc/samsung/tobermory.c
+index 1807b75..6a2b9f1 100644
+--- a/sound/soc/samsung/tobermory.c
++++ b/sound/soc/samsung/tobermory.c
+@@ -223,23 +223,12 @@ static int tobermory_probe(struct platform_device *pdev)
+ 
+ 	card->dev = &pdev->dev;
+ 
+-	ret = snd_soc_register_card(card);
+-	if (ret) {
++	ret = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
+ 			ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static int tobermory_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 
+-	snd_soc_unregister_card(card);
+-
+-	return 0;
++	return ret;
+ }
+ 
+ static struct platform_driver tobermory_driver = {
+@@ -249,7 +238,6 @@ static struct platform_driver tobermory_driver = {
+ 		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = tobermory_probe,
+-	.remove = tobermory_remove,
+ };
+ 
+ module_platform_driver(tobermory_driver);
+-- 
+1.7.9.5
