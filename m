@@ -1,122 +1,240 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [alsa-devel] [RFC] set up an sync channel between
- audio and display driver (i.e. ALSA and DRM)
-Date: Thu, 22 May 2014 10:46:44 +0800
-Message-ID: <CAN8cciYSs2Cq08qTx0r3mhqTVhOvy_TYqz+qnu1HD4wYZzECPg@mail.gmail.com>
-References: <F46914AEC2663F4A9BB62374E5EEF8F82B447059@SHSMSX101.ccr.corp.intel.com>
- <s5h7g5g6fc7.wl%tiwai@suse.de>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Set eapd to follow stream on or off
+Date: Thu, 22 May 2014 14:26:04 +0800
+Message-ID: <FFF2001631DC472CAB958914E07B553E@realtek.com.tw>
+References: <3143A3763CC94AB9AAD48E43EA2B4DFC@realtek.com.tw><s5h8upw6gf6.wl%tiwai@suse.de><72897913D05F4C12BCED9FF890C77D61@realtek.com.tw><s5hha4kbz4q.wl%tiwai@suse.de><66A4EBB5FA74484E9FB040780F3C8965@realtek.com.tw><s5hd2f8bxns.wl%tiwai@suse.de><AC509D0AEA71499FB3503597855A4B0A@realtek.com.tw><s5h4n0kbw0e.wl%tiwai@suse.de><DA522F18DEB345498651505F8E1E9873@realtek.com.tw><s5hwqdf4qd5.wl%tiwai@suse.de><2BA29E879D5348299D5D82B47C851285@realtek.com.tw><s5htx8j8pkt.wl%tiwai@suse.de><3CFE5334A02242699453C353916E8AA8@realtek.com.tw>
+ <s5hiooz8npl.wl%tiwai@suse.de>
+Reply-To: Kailang <kailang@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0090921655=="
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5h7g5g6fc7.wl%tiwai@suse.de>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F9EF26546B
+ for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 08:26:09 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikkanen,
- Kimmo" <kimmo.nikkanen@intel.com>, "Babu, Ramesh" <ramesh.babu@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Vetter,
- Daniel" <daniel.vetter@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0090921655==
-Content-Type: multipart/alternative; boundary=047d7bdc82c298678c04f9f41f69
 
---047d7bdc82c298678c04f9f41f69
-Content-Type: text/plain; charset=UTF-8
 
-> >
-> > This RFC is based on previous discussion to set up a generic
-communication channel between display and audio driver and
-> > an internal design of Intel MCG/VPG HDMI audio driver. It's still an
-initial draft and your advice would be appreciated
-> > to improve the design.
-> >
-> > The basic idea is to create a new avsink module and let both drm and
-alsa depend on it.
+> At Wed, 21 May 2014 17:24:16 +0800,
+> Kailang wrote:
+>>
+>> > At Wed, 21 May 2014 14:28:12 +0800,
+>> > Kailang wrote:
+>> >>
+>> >> Hi Takashi,
+>> >>
+>> >> Attach is the update patch.
+>> >
+>> > Keep the function in lower letters.
+>> >
+>> > Also, update the patch description as well (and better to put more
+>> > words).
+>>
+>> Update as attach.
+>> Thanks.
+>
+> Well, do you really want to turn off EAPD at closing the stream?
+
+Yes.
+
+> As I repeatedly explained, this results in more frequent EAPD on/off,
+> i.e. more pop noises.
+>
+
+I have sent the patch for HP.
+I will wait for feedback from customer.
+If it is solve the issue, I will advise you.
+
+Our AE says, windows use this method. HP is agree this usage.
 
 >
-> > 1. Display/Audio Client
-> >
-> > The avsink core provides APIs to create, register and lookup a
-display/audio client.
-
+> Takashi
 >
-> For HD-audio HDMI, both controller and codec drivers would need the
-> avsink access.  So, both drivers will register the own client?
-
-http://nvidia.custhelp.com/app/answers/detail/a_id/2544/~/my-nvidia-graphics-card-came-with-an-internal-spdif-pass-through-audio-cable-to
-
-http://www.intel.com/support/motherboards/desktop/sb/CS-032871.htm
-
-Does it mean that those grpahic card HDMI which use motherboard internal
-spdif connector will not be supported any more when  graphic card have no
-way to communicate with audio driver ?
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/hda_auto_parser.c?id=3f25dcf691ebf45924a34b9aaedec78e5a255798
-
-Should alsa regard these kind of digital device as HDMI or SPDIF ?
-
---047d7bdc82c298678c04f9f41f69
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<p><br>
-&gt; &gt;<br>
-&gt; &gt; This RFC is based on previous discussion to set up a generic comm=
-unication channel between display and audio driver and<br>
-&gt; &gt; an internal design of Intel MCG/VPG HDMI audio driver. It&#39;s s=
-till an initial draft and your advice would be appreciated<br>
-&gt; &gt; to improve the design.<br>
-&gt; &gt;<br>
-&gt; &gt; The basic idea is to create a new avsink module and let both drm =
-and alsa depend on it.</p>
-<p>&gt;<br>
-&gt; &gt; 1. Display/Audio Client<br>
-&gt; &gt;<br>
-&gt; &gt; The avsink core provides APIs to create, register and lookup a di=
-splay/audio client.</p>
-<p>&gt;<br>
-&gt; For HD-audio HDMI, both controller and codec drivers would need the<br=
->
-&gt; avsink access. =C2=A0So, both drivers will register the own client?</p=
->
-<p><a href=3D"http://nvidia.custhelp.com/app/answers/detail/a_id/2544/~/my-=
-nvidia-graphics-card-came-with-an-internal-spdif-pass-through-audio-cable-t=
-o">http://nvidia.custhelp.com/app/answers/detail/a_id/2544/~/my-nvidia-grap=
-hics-card-came-with-an-internal-spdif-pass-through-audio-cable-to</a></p>
-
-<p><a href=3D"http://www.intel.com/support/motherboards/desktop/sb/CS-03287=
-1.htm">http://www.intel.com/support/motherboards/desktop/sb/CS-032871.htm</=
-a></p>
-<p>Does it mean that those grpahic card HDMI which use motherboard internal=
- spdif connector will not be supported any more when=C2=A0 graphic card hav=
-e no way to communicate with audio driver ?<br></p>
-<p><a href=3D"https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/=
-commit/sound/pci/hda/hda_auto_parser.c?id=3D3f25dcf691ebf45924a34b9aaedec78=
-e5a255798">https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/com=
-mit/sound/pci/hda/hda_auto_parser.c?id=3D3f25dcf691ebf45924a34b9aaedec78e5a=
-255798</a></p>
-
-<p>Should alsa regard these kind of digital device as HDMI or SPDIF ?</p>
-
---047d7bdc82c298678c04f9f41f69--
-
---===============0090921655==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Intel-gfx mailing list
-Intel-gfx@lists.freedesktop.org
-http://lists.freedesktop.org/mailman/listinfo/intel-gfx
-
---===============0090921655==--
+>>
+>> >
+>> >
+>> > thanks,
+>> >
+>> > Takashi
+>> >
+>> >> Many thanks.
+>> >>
+>> >> BR,
+>> >> Kailang
+>> >>
+>> >>
+>> >> > At Wed, 21 May 2014 13:58:14 +0800,
+>> >> > Kailang wrote:
+>> >> >>
+>> >> >>
+>> >> >> > At Tue, 20 May 2014 18:05:42 +0800,
+>> >> >> > Kailang wrote:
+>> >> >> >>
+>> >> >> >> > At Tue, 20 May 2014 17:20:44 +0800,
+>> >> >> >> > Kailang wrote:
+>> >> >> >> >>
+>> >> >> >> >>
+>> >> >> >> >> > At Tue, 20 May 2014 16:52:43 +0800,
+>> >> >> >> >> > Kailang wrote:
+>> >> >> >> >> >>
+>> >> >> >> >> >>
+>> >> >> >> >> >> > At Tue, 20 May 2014 15:15:49 +0800,
+>> >> >> >> >> >> > Kailang wrote:
+>> >> >> >> >> >> >>
+>> >> >> >> >> >> >> Hi Takashi,
+>> >> >> >> >> >> >>
+>> >> >> >> >> >> >> HP machine had pop noise via speaker.
+>> >> >> >> >> >> >> If EAPD on or off, speaker will have pop noise.
+>> >> >> >> >> >> >> So, they want to set eapd to follow with stream on or 
+>> >> >> >> >> >> >> off.
+>> >> >> >> >> >> >
+>> >> >> >> >> >> > I can apply this as is, but still I wonder whether this
+>> >> >> >> >> >> > results
+>> >> >> >> >> >> > in
+>> >> >> >> >> >> > other problems.  Doing EAPD on/off there means that it
+>> >> >> >> >> >> > happens
+>> >> >> >> >> >> > far
+>> >> >> >> >> >> > more often.  For example, what happens if you do like
+>> >> >> >> >> >> > below?
+>> >> >> >> >> >> >
+>> >> >> >> >> >> >     while true; do
+>> >> >> >> >> >> >       echo -n > /dev/snd/pcmC0D0p
+>> >> >> >> >> >> >     done
+>> >> >> >> >> >> >
+>> >> >> >> >> >> > And, what if the device is resumed from power-saving by 
+>> >> >> >> >> >> > an
+>> >> >> >> >> >> > audio
+>> >> >> >> >> >> > playback?  Immediately after the power up, it'll start 
+>> >> >> >> >> >> > the
+>> >> >> >> >> >> > streaming,
+>> >> >> >> >> >> > so it'll turn on EAPD.
+>> >> >> >> >> >> >
+>> >> >> >> >> >> > That said, isn't it just a need for some delay before 
+>> >> >> >> >> >> > EAPD
+>> >> >> >> >> >> > on/off?
+>> >> >> >> >> >>
+>> >> >> >> >> >> No, eapd on or off will cause pop noise.
+>> >> >> >> >> >
+>> >> >> >> >> > Does it do always?
+>> >> >> >> >> No, pop noise just one pop sound. It can not remove by 
+>> >> >> >> >> software.
+>> >> >> >> >> But this machine need to do this always.
+>> >> >> >> >
+>> >> >> >> > So, doing EAPD on/off often is rather worse.  It's what your
+>> >> >> >> > patch
+>> >> >> >> > does.
+>> >> >> >> >
+>> >> >> >> > Once again: did you try the script above?  If the pop noise
+>> >> >> >> > always
+>> >> >> >>
+>> >> >> >> I had try it on my develop machine. I have no HP issue machine 
+>> >> >> >> on
+>> >> >> >> my
+>> >> >> >> site.
+>> >> >> >>
+>> >> >> >> > happens, the operation like above is the worst scenario.
+>> >> >> >> >
+>> >> >> >> > Then, let's think again how to *reduce* it.  We need one EAPD 
+>> >> >> >> > on
+>> >> >> >> > at
+>> >> >> >> > least after each power up.  But it's needed only when you
+>> >> >> >> > actually
+>> >> >> >> > plays a stream.  That is, we need only enable EAPD at playback
+>> >> >> >> > stream
+>> >> >> >> > open, but leave EAPD as is at close.
+>> >> >> >> >
+>> >> >> >>
+>> >> >> >> [we need only enable EAPD at playback stream open, but leave 
+>> >> >> >> EAPD
+>> >> >> >> as
+>> >> >> >> is
+>> >> >> >> at
+>> >> >> >> close.]
+>> >> >> >> Yes.
+>> >> >> >> So, I need to create eapd low in alc269_shutup. Right?
+>> >> >> >
+>> >> >> > Better to create own shutup callback (you can call 
+>> >> >> > alc269_shutup()
+>> >> >> > from there, too) and set it to spec->shutup in the fixup.  The
+>> >> >> > pincfg
+>> >> >> > cleanup isn't often needed or may have bad effect.  You should 
+>> >> >> > test
+>> >> >> > with real machines what are needed and what are not.
+>> >> >>
+>> >> >> static void alc290_fixup_pop_noise(struct hda_codec *codec,
+>> >> >>            const struct hda_fixup *fix, int action)
+>> >> >> {
+>> >> >>  struct alc_spec *spec = codec->spec;
+>> >> >>
+>> >> >>  if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+>> >> >>   spec->gen.pcm_playback_hook = ALC290_playback_pcm_hook;
+>> >> >>  }
+>> >> >> if (action ==   HDA_FIXUP_ACT_INIT) {
+>> >> >>   set_eapd(codec, 0x14, false);
+>> >> >>  }
+>> >> >> }
+>> >> >>
+>> >> >> Could I modify as upper code?
+>> >> >> To set eapd low in HDA_FIXUP_ACT_INIT state.
+>> >> >> If system resume, it will initial eapd to low.
+>> >> >> To write eapd to same value, it will have no pop noise.
+>> >> >> It will keep always low for eapd, only stream open and close have
+>> >> >> change
+>> >> >> state for eapd.
+>> >> >
+>> >> > Yes, it looks OK.
+>> >> >
+>> >> >
+>> >> > Takashi
+>> >> >
+>> >> >
+>> >> >>
+>> >> >> >
+>> >> >> >
+>> >> >> > Takashi
+>> >> >> >
+>> >> >> >>
+>> >> >> >> >
+>> >> >> >> > Takashi
+>> >> >> >> >
+>> >> >> >> >> >> Our customer just want to do eapd on when stream is open.
+>> >> >> >> >> >> The pop noise will not clear. Because music gain was biger
+>> >> >> >> >> >> than
+>> >> >> >> >> >> pop
+>> >> >> >> >> >> noise.
+>> >> >> >> >> >
+>> >> >> >> >> > Opening a stream doesn't mean that it follows the loud 
+>> >> >> >> >> > sound
+>> >> >> >> >> > immediately.  The script above wouldn't produce any sound 
+>> >> >> >> >> > but
+>> >> >> >> >> > just
+>> >> >> >> >> > does open/close the stream.  Did you try that?
+>> >> >> >> >> >
+>> >> >> >> >> >
+>> >> >> >> >> > Takashi
+>> >> >> >> >> >
+>> >> >> >> >> > ------Please consider the environment before printing this
+>> >> >> >> >> > e-mail.
+>> >> >> >> >>
+>> >> >> >>
+>> >> >>
+>> >> [2 0001-set-eapd-follow-stream-on-off.patch <application/octet-stream
+>> >> (quoted-printable)>]
+>> >>
+>> >
+>> > ------Please consider the environment before printing this e-mail.
+>> [2 0002-set-eapd-follow-stream-on-off.patch <application/octet-stream 
+>> (quoted-printable)>]
+>> 
