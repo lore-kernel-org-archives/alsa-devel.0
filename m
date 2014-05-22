@@ -1,140 +1,122 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [BUG]ABit aa8xe sound card not selected
-Date: Thu, 22 May 2014 10:30:31 +0800
-Message-ID: <CAN8cciYkdkrSpCmo8D+eTfwhX36hYfA9XLOuGD3rxU9FHvyjXg@mail.gmail.com>
-References: <DUB127-W341DC0DDBAE2B6BECE8FCE83360@phx.gbl>
- <CAN8cciY6O3tzsVMmyQF1Xq-8MRUK-XtUa0JjtjdVn7vjETxgZQ@mail.gmail.com>
- <BLU436-SMTP25820E06E9F4D27CD71A5AA833C0@phx.gbl>
+Subject: Re: [alsa-devel] [RFC] set up an sync channel between
+ audio and display driver (i.e. ALSA and DRM)
+Date: Thu, 22 May 2014 10:46:44 +0800
+Message-ID: <CAN8cciYSs2Cq08qTx0r3mhqTVhOvy_TYqz+qnu1HD4wYZzECPg@mail.gmail.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F82B447059@SHSMSX101.ccr.corp.intel.com>
+ <s5h7g5g6fc7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f180.google.com (mail-qc0-f180.google.com
- [209.85.216.180])
- by alsa0.perex.cz (Postfix) with ESMTP id AF40E26546B
- for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 04:30:32 +0200 (CEST)
-Received: by mail-qc0-f180.google.com with SMTP id i17so4749796qcy.11
- for <alsa-devel@alsa-project.org>; Wed, 21 May 2014 19:30:31 -0700 (PDT)
-In-Reply-To: <BLU436-SMTP25820E06E9F4D27CD71A5AA833C0@phx.gbl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stefano Statuti <stefano.statuti@hotmail.it>, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============0090921655=="
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5h7g5g6fc7.wl%tiwai@suse.de>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikkanen,
+ Kimmo" <kimmo.nikkanen@intel.com>, "Babu, Ramesh" <ramesh.babu@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Vetter,
+ Daniel" <daniel.vetter@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
+--===============0090921655==
+Content-Type: multipart/alternative; boundary=047d7bdc82c298678c04f9f41f69
+
+--047d7bdc82c298678c04f9f41f69
+Content-Type: text/plain; charset=UTF-8
+
+> >
+> > This RFC is based on previous discussion to set up a generic
+communication channel between display and audio driver and
+> > an internal design of Intel MCG/VPG HDMI audio driver. It's still an
+initial draft and your advice would be appreciated
+> > to improve the design.
+> >
+> > The basic idea is to create a new avsink module and let both drm and
+alsa depend on it.
+
 >
-> i tried to force the install one of olds kernel like 3.12 but ubuntu
-crash on start. removed the 3.12 i reinstall the 3.13 same identical
-problem (no audio).
-> tried to install the lastest development kernel but not solve my problem.
+> > 1. Display/Audio Client
+> >
+> > The avsink core provides APIs to create, register and lookup a
+display/audio client.
+
 >
-> For the detailed ALC880 config pins , I reveived this by Raimond on
-ubuntu-launchpad (
-https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/1319291 ) but I
-dont know how to apply the fix that you have sayd me, sorry. Can you send
-me a link for a guide that could help me?
+> For HD-audio HDMI, both controller and codec drivers would need the
+> avsink access.  So, both drivers will register the own client?
+
+http://nvidia.custhelp.com/app/answers/detail/a_id/2544/~/my-nvidia-graphics-card-came-with-an-internal-spdif-pass-through-audio-cable-to
+
+http://www.intel.com/support/motherboards/desktop/sb/CS-032871.htm
+
+Does it mean that those grpahic card HDMI which use motherboard internal
+spdif connector will not be supported any more when  graphic card have no
+way to communicate with audio driver ?
+
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/hda_auto_parser.c?id=3f25dcf691ebf45924a34b9aaedec78e5a255798
+
+Should alsa regard these kind of digital device as HDMI or SPDIF ?
+
+--047d7bdc82c298678c04f9f41f69
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<p><br>
+&gt; &gt;<br>
+&gt; &gt; This RFC is based on previous discussion to set up a generic comm=
+unication channel between display and audio driver and<br>
+&gt; &gt; an internal design of Intel MCG/VPG HDMI audio driver. It&#39;s s=
+till an initial draft and your advice would be appreciated<br>
+&gt; &gt; to improve the design.<br>
+&gt; &gt;<br>
+&gt; &gt; The basic idea is to create a new avsink module and let both drm =
+and alsa depend on it.</p>
+<p>&gt;<br>
+&gt; &gt; 1. Display/Audio Client<br>
+&gt; &gt;<br>
+&gt; &gt; The avsink core provides APIs to create, register and lookup a di=
+splay/audio client.</p>
+<p>&gt;<br>
+&gt; For HD-audio HDMI, both controller and codec drivers would need the<br=
 >
-> Maybe I have to modify the config file into
-/sys/class/sound/hwC0D0/init_pin_configs folder ? tried with root but is
-impossible to save.
-
-http://voices.canonical.com/david.henningsson/2012/07/13/top-five-wrong-ways-to-fix-your-audio/
-
-When your BIOS does not setup pin default for all pin comples
-
-The only way you get your alc880 work is to edit
-/etc/modprobe.d/alsa-base.conf and add the following line if your
-motherboard have six audio jacks and digital out at rear panel
-
-options snd-hda-intel model=6stack-digout
-
-or
-
-options snd-hda-intel model=6stack-automute
-
-If your computer chassis have a hda front audio panel which support jack
-detection
-
->> >
->> >
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/Documentation/sound/alsa/HD-Audio-Models.txt
->>
->> have you try the model=6stack-digout or 6stack-automute ?
->>
->>
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_realtek.c?id=67b6ec3196da235317ff1b9474f17379b78f3294
->>
->> ALC880_FIXUP_6ST_BASE] = {
->> + .type = ALC_FIXUP_PINS,
->> + .v.pins = (const struct alc_pincfg[]) {
->> + { 0x14, 0x01014010 }, /* front */
->> + { 0x15, 0x01016412 }, /* surr */
->> + { 0x16, 0x01011411 }, /* CLFE */
->> + { 0x17, 0x01012414 }, /* side */
->> + { 0x18, 0x01a19c30 }, /* mic-in */
->> + { 0x19, 0x02a19c40 }, /* front-mic */
->> + { 0x1a, 0x01813031 }, /* line-in */
->> + { 0x1b, 0x0121411f }, /* HP */
->>
->> HP in ALC880_FIXUP_6ST_BASE explicitly disable jack detection ,
->>
->> Do you need a new model which support headphone automute speaker with
-digital output since 6stack-automute does not have digital ouput ?
->>
->>
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_realtek.c?id=5397145f4faeabbb7937ac784f734b06b20ed921
->>
->> >
->> > 00:1b.0 0403: 8086:2668 (rev 04)
->> >
->> >  Subsystem: 147b:1045
->> >
->> > send email to alsa-devel mailing list to add pci quirk since Bios does
-not setup pin default
->> >  Default 0x00000000: [Jack] Line Out at Ext N/A
->> >
->> > Sysfs Files
->> >
->> > !!-----------
->> >
->> > /sys/class/sound/hwC0D0/init_pin_configs:
->> >
->> > 0x14 0x00000000
->> >
->> > 0x15 0x00000000
->> >
->> > 0x16 0x00000000
->> >
->> > 0x17 0x00000000
->> >
->> > 0x18 0x00000000
->> >
->> > 0x19 0x00000000
->> >
->> > 0x1a 0x00000000
->> >
->> > 0x1b 0x00000000
->> >
->> > 0x1c 0x00000000
->> >
->> > 0x1d 0x00000000
->> >
->> > 0x1e 0x00000000
->> >
->> > 0x1f 0x00000000
->> > -----
->> >
->>
->>
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/hda_auto_parser.c?id=9b7564a64999597844513604df4a206fa4da3b69
->>
->> Do you mean the driver still does not provide any warning message when
-all your pins are ignored by the driver ?
->>
+&gt; avsink access. =C2=A0So, both drivers will register the own client?</p=
 >
+<p><a href=3D"http://nvidia.custhelp.com/app/answers/detail/a_id/2544/~/my-=
+nvidia-graphics-card-came-with-an-internal-spdif-pass-through-audio-cable-t=
+o">http://nvidia.custhelp.com/app/answers/detail/a_id/2544/~/my-nvidia-grap=
+hics-card-came-with-an-internal-spdif-pass-through-audio-cable-to</a></p>
+
+<p><a href=3D"http://www.intel.com/support/motherboards/desktop/sb/CS-03287=
+1.htm">http://www.intel.com/support/motherboards/desktop/sb/CS-032871.htm</=
+a></p>
+<p>Does it mean that those grpahic card HDMI which use motherboard internal=
+ spdif connector will not be supported any more when=C2=A0 graphic card hav=
+e no way to communicate with audio driver ?<br></p>
+<p><a href=3D"https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/=
+commit/sound/pci/hda/hda_auto_parser.c?id=3D3f25dcf691ebf45924a34b9aaedec78=
+e5a255798">https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/com=
+mit/sound/pci/hda/hda_auto_parser.c?id=3D3f25dcf691ebf45924a34b9aaedec78e5a=
+255798</a></p>
+
+<p>Should alsa regard these kind of digital device as HDMI or SPDIF ?</p>
+
+--047d7bdc82c298678c04f9f41f69--
+
+--===============0090921655==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Intel-gfx mailing list
+Intel-gfx@lists.freedesktop.org
+http://lists.freedesktop.org/mailman/listinfo/intel-gfx
+
+--===============0090921655==--
