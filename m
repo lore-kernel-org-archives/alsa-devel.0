@@ -1,287 +1,33 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: Set eapd to follow stream on or off
-Date: Thu, 22 May 2014 15:26:53 +0800
-Message-ID: <8AA83F462951441BA223CD0269836486@realtek.com.tw>
-References: <3143A3763CC94AB9AAD48E43EA2B4DFC@realtek.com.tw><s5h8upw6gf6.wl%tiwai@suse.de><72897913D05F4C12BCED9FF890C77D61@realtek.com.tw><s5hha4kbz4q.wl%tiwai@suse.de><66A4EBB5FA74484E9FB040780F3C8965@realtek.com.tw><s5hd2f8bxns.wl%tiwai@suse.de><AC509D0AEA71499FB3503597855A4B0A@realtek.com.tw><s5h4n0kbw0e.wl%tiwai@suse.de><DA522F18DEB345498651505F8E1E9873@realtek.com.tw><s5hwqdf4qd5.wl%tiwai@suse.de><2BA29E879D5348299D5D82B47C851285@realtek.com.tw><s5htx8j8pkt.wl%tiwai@suse.de><3CFE5334A02242699453C353916E8AA8@realtek.com.tw><s5hiooz8npl.wl%tiwai@suse.de><FFF2001631DC472CAB958914E07B553E@realtek.com.tw>
- <s5h1tvmguyw.wl%tiwai@suse.de>
-Reply-To: Kailang <kailang@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 4212A2602F3
- for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 09:26:57 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: [PATCH 0/2] ASoC: max98090/max98095: Add master clock handing
+Date: Thu, 22 May 2014 14:47:06 +0530
+Message-ID: <1400750228-13750-1-git-send-email-tushar.behera@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc: tiwai@suse.de, perex@perex.cz, broonie@kernel.org, dianders@chromium.org, jerry.wong@maximintegrated.com
 List-Id: alsa-devel@alsa-project.org
 
+These CODECs are used on Snow/Peach-pit boards and the master clock
+needs to be set at 24MHz.
 
+Adding support in respective codec drivers so that we can update the
+master clock frequency from sound card driver through set_sysclk.
 
-> At Thu, 22 May 2014 14:26:04 +0800,
-> Kailang wrote:
->>
->>
->>
->> > At Wed, 21 May 2014 17:24:16 +0800,
->> > Kailang wrote:
->> >>
->> >> > At Wed, 21 May 2014 14:28:12 +0800,
->> >> > Kailang wrote:
->> >> >>
->> >> >> Hi Takashi,
->> >> >>
->> >> >> Attach is the update patch.
->> >> >
->> >> > Keep the function in lower letters.
->> >> >
->> >> > Also, update the patch description as well (and better to put more
->> >> > words).
->> >>
->> >> Update as attach.
->> >> Thanks.
->> >
->> > Well, do you really want to turn off EAPD at closing the stream?
->>
->> Yes.
->>
->> > As I repeatedly explained, this results in more frequent EAPD on/off,
->> > i.e. more pop noises.
->> >
->>
->> I have sent the patch for HP.
->> I will wait for feedback from customer.
->
-> Did you send the test script, too?
-No.
+These patches are prepared as per review comments on following patch.
+[PATCH] ASoC: samsung: Add 'mclk' handling for Snow sound-card driver
+https://lkml.org/lkml/2014/5/20/4
 
->
->> If it is solve the issue, I will advise you.
->>
->> Our AE says, windows use this method. HP is agree this usage.
->
-> Windows does this likely because of possible power saving, not because
-> of pop noises.
->
-> I'm fine to take the patch, but only when I'm convinced why it really
-> fixes the pop noise problem in the scenario below:
-> - playing a silent stream
-> - frequent open / close a stream
->
+Tushar Behera (2):
+  ASoC: max98090: Add master clock handling
+  ASoC: max98095: Add master clock handling
 
-You are right. It is the key points. But I think first stream will show pop 
-noise. It was hard to remove.
-Keep EAPD to high after first stream start maybe a good idea.
-Thanks.
-I think to request the machine is better.
-I will let our AE to request the machine.
+ .../devicetree/bindings/sound/max98090.txt         |    6 ++++++
+ .../devicetree/bindings/sound/max98095.txt         |    6 ++++++
+ sound/soc/codecs/max98090.c                        |   13 +++++++++++++
+ sound/soc/codecs/max98090.h                        |    1 +
+ sound/soc/codecs/max98095.c                        |   14 ++++++++++++++
+ 5 files changed, 40 insertions(+)
 
->
-> Takashi
->
->
->>
->> >
->> > Takashi
->> >
->> >>
->> >> >
->> >> >
->> >> > thanks,
->> >> >
->> >> > Takashi
->> >> >
->> >> >> Many thanks.
->> >> >>
->> >> >> BR,
->> >> >> Kailang
->> >> >>
->> >> >>
->> >> >> > At Wed, 21 May 2014 13:58:14 +0800,
->> >> >> > Kailang wrote:
->> >> >> >>
->> >> >> >>
->> >> >> >> > At Tue, 20 May 2014 18:05:42 +0800,
->> >> >> >> > Kailang wrote:
->> >> >> >> >>
->> >> >> >> >> > At Tue, 20 May 2014 17:20:44 +0800,
->> >> >> >> >> > Kailang wrote:
->> >> >> >> >> >>
->> >> >> >> >> >>
->> >> >> >> >> >> > At Tue, 20 May 2014 16:52:43 +0800,
->> >> >> >> >> >> > Kailang wrote:
->> >> >> >> >> >> >>
->> >> >> >> >> >> >>
->> >> >> >> >> >> >> > At Tue, 20 May 2014 15:15:49 +0800,
->> >> >> >> >> >> >> > Kailang wrote:
->> >> >> >> >> >> >> >>
->> >> >> >> >> >> >> >> Hi Takashi,
->> >> >> >> >> >> >> >>
->> >> >> >> >> >> >> >> HP machine had pop noise via speaker.
->> >> >> >> >> >> >> >> If EAPD on or off, speaker will have pop noise.
->> >> >> >> >> >> >> >> So, they want to set eapd to follow with stream on 
->> >> >> >> >> >> >> >> or
->> >> >> >> >> >> >> >> off.
->> >> >> >> >> >> >> >
->> >> >> >> >> >> >> > I can apply this as is, but still I wonder whether 
->> >> >> >> >> >> >> > this
->> >> >> >> >> >> >> > results
->> >> >> >> >> >> >> > in
->> >> >> >> >> >> >> > other problems.  Doing EAPD on/off there means that 
->> >> >> >> >> >> >> > it
->> >> >> >> >> >> >> > happens
->> >> >> >> >> >> >> > far
->> >> >> >> >> >> >> > more often.  For example, what happens if you do like
->> >> >> >> >> >> >> > below?
->> >> >> >> >> >> >> >
->> >> >> >> >> >> >> >     while true; do
->> >> >> >> >> >> >> >       echo -n > /dev/snd/pcmC0D0p
->> >> >> >> >> >> >> >     done
->> >> >> >> >> >> >> >
->> >> >> >> >> >> >> > And, what if the device is resumed from power-saving 
->> >> >> >> >> >> >> > by
->> >> >> >> >> >> >> > an
->> >> >> >> >> >> >> > audio
->> >> >> >> >> >> >> > playback?  Immediately after the power up, it'll 
->> >> >> >> >> >> >> > start
->> >> >> >> >> >> >> > the
->> >> >> >> >> >> >> > streaming,
->> >> >> >> >> >> >> > so it'll turn on EAPD.
->> >> >> >> >> >> >> >
->> >> >> >> >> >> >> > That said, isn't it just a need for some delay before
->> >> >> >> >> >> >> > EAPD
->> >> >> >> >> >> >> > on/off?
->> >> >> >> >> >> >>
->> >> >> >> >> >> >> No, eapd on or off will cause pop noise.
->> >> >> >> >> >> >
->> >> >> >> >> >> > Does it do always?
->> >> >> >> >> >> No, pop noise just one pop sound. It can not remove by
->> >> >> >> >> >> software.
->> >> >> >> >> >> But this machine need to do this always.
->> >> >> >> >> >
->> >> >> >> >> > So, doing EAPD on/off often is rather worse.  It's what 
->> >> >> >> >> > your
->> >> >> >> >> > patch
->> >> >> >> >> > does.
->> >> >> >> >> >
->> >> >> >> >> > Once again: did you try the script above?  If the pop noise
->> >> >> >> >> > always
->> >> >> >> >>
->> >> >> >> >> I had try it on my develop machine. I have no HP issue 
->> >> >> >> >> machine
->> >> >> >> >> on
->> >> >> >> >> my
->> >> >> >> >> site.
->> >> >> >> >>
->> >> >> >> >> > happens, the operation like above is the worst scenario.
->> >> >> >> >> >
->> >> >> >> >> > Then, let's think again how to *reduce* it.  We need one 
->> >> >> >> >> > EAPD
->> >> >> >> >> > on
->> >> >> >> >> > at
->> >> >> >> >> > least after each power up.  But it's needed only when you
->> >> >> >> >> > actually
->> >> >> >> >> > plays a stream.  That is, we need only enable EAPD at 
->> >> >> >> >> > playback
->> >> >> >> >> > stream
->> >> >> >> >> > open, but leave EAPD as is at close.
->> >> >> >> >> >
->> >> >> >> >>
->> >> >> >> >> [we need only enable EAPD at playback stream open, but leave
->> >> >> >> >> EAPD
->> >> >> >> >> as
->> >> >> >> >> is
->> >> >> >> >> at
->> >> >> >> >> close.]
->> >> >> >> >> Yes.
->> >> >> >> >> So, I need to create eapd low in alc269_shutup. Right?
->> >> >> >> >
->> >> >> >> > Better to create own shutup callback (you can call
->> >> >> >> > alc269_shutup()
->> >> >> >> > from there, too) and set it to spec->shutup in the fixup.  The
->> >> >> >> > pincfg
->> >> >> >> > cleanup isn't often needed or may have bad effect.  You should
->> >> >> >> > test
->> >> >> >> > with real machines what are needed and what are not.
->> >> >> >>
->> >> >> >> static void alc290_fixup_pop_noise(struct hda_codec *codec,
->> >> >> >>            const struct hda_fixup *fix, int action)
->> >> >> >> {
->> >> >> >>  struct alc_spec *spec = codec->spec;
->> >> >> >>
->> >> >> >>  if (action == HDA_FIXUP_ACT_PRE_PROBE) {
->> >> >> >>   spec->gen.pcm_playback_hook = ALC290_playback_pcm_hook;
->> >> >> >>  }
->> >> >> >> if (action ==   HDA_FIXUP_ACT_INIT) {
->> >> >> >>   set_eapd(codec, 0x14, false);
->> >> >> >>  }
->> >> >> >> }
->> >> >> >>
->> >> >> >> Could I modify as upper code?
->> >> >> >> To set eapd low in HDA_FIXUP_ACT_INIT state.
->> >> >> >> If system resume, it will initial eapd to low.
->> >> >> >> To write eapd to same value, it will have no pop noise.
->> >> >> >> It will keep always low for eapd, only stream open and close 
->> >> >> >> have
->> >> >> >> change
->> >> >> >> state for eapd.
->> >> >> >
->> >> >> > Yes, it looks OK.
->> >> >> >
->> >> >> >
->> >> >> > Takashi
->> >> >> >
->> >> >> >
->> >> >> >>
->> >> >> >> >
->> >> >> >> >
->> >> >> >> > Takashi
->> >> >> >> >
->> >> >> >> >>
->> >> >> >> >> >
->> >> >> >> >> > Takashi
->> >> >> >> >> >
->> >> >> >> >> >> >> Our customer just want to do eapd on when stream is 
->> >> >> >> >> >> >> open.
->> >> >> >> >> >> >> The pop noise will not clear. Because music gain was 
->> >> >> >> >> >> >> biger
->> >> >> >> >> >> >> than
->> >> >> >> >> >> >> pop
->> >> >> >> >> >> >> noise.
->> >> >> >> >> >> >
->> >> >> >> >> >> > Opening a stream doesn't mean that it follows the loud
->> >> >> >> >> >> > sound
->> >> >> >> >> >> > immediately.  The script above wouldn't produce any 
->> >> >> >> >> >> > sound
->> >> >> >> >> >> > but
->> >> >> >> >> >> > just
->> >> >> >> >> >> > does open/close the stream.  Did you try that?
->> >> >> >> >> >> >
->> >> >> >> >> >> >
->> >> >> >> >> >> > Takashi
->> >> >> >> >> >> >
->> >> >> >> >> >> > ------Please consider the environment before printing 
->> >> >> >> >> >> > this
->> >> >> >> >> >> > e-mail.
->> >> >> >> >> >>
->> >> >> >> >>
->> >> >> >>
->> >> >> [2 0001-set-eapd-follow-stream-on-off.patch 
->> >> >> <application/octet-stream
->> >> >> (quoted-printable)>]
->> >> >>
->> >> >
->> >> > ------Please consider the environment before printing this e-mail.
->> >> [2 0002-set-eapd-follow-stream-on-off.patch <application/octet-stream
->> >> (quoted-printable)>]
->> >>
->> 
+-- 
+1.7.9.5
