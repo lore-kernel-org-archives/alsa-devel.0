@@ -1,47 +1,52 @@
-From: Andrew Lunn <andrew@lunn.ch>
-Subject: [PATCH] ASoC: alc5623: Depend on I2C.
-Date: Thu, 22 May 2014 17:54:59 +0200
-Message-ID: <1400774099-24708-1-git-send-email-andrew@lunn.ch>
-References: <537c16a2.M0hsJdtS6xDtvRgJ%fengguang.wu@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: samsung: Handle errors when getting the op_clk
+ clock
+Date: Thu, 22 May 2014 17:57:44 +0100
+Message-ID: <20140522165744.GK12304@sirena.org.uk>
+References: <1400753452-6943-1-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps0.lunn.ch (vps0.lunn.ch [178.209.37.122])
- by alsa0.perex.cz (Postfix) with ESMTP id EBD6D265630
- for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 18:18:00 +0200 (CEST)
-In-Reply-To: <537c16a2.M0hsJdtS6xDtvRgJ%fengguang.wu@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@linaro.org
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, kbuild-all@01.org, jim.epost@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="u13C/yEOc42HESKG"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1400753452-6943-1-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an i2c driver, so make the Kconfig entry depend on I2C.
 
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
----
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+--u13C/yEOc42HESKG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index c59943a19f94..397b66c2b999 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -274,6 +274,7 @@ config SND_SOC_AK5386
- 
- config SND_SOC_ALC5623
-        tristate "Realtek ALC5623 CODEC"
-+       depends on I2C
- 
- config SND_SOC_ALC5632
- 	tristate
--- 
-2.0.0.rc2
+On Thu, May 22, 2014 at 12:10:52PM +0200, Sylwester Nawrocki wrote:
+> Ensure i2s->op_clk is not used when clk_get() for this clock fails.
+> This prevents working with an incorrectly configured clock in some
+> conditions.
+
+Applied, thanks.
+
+--u13C/yEOc42HESKG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTfiyFAAoJELSic+t+oim97nEQAJbA+nP1eer0RBqNFmmwBl2n
+PIdLJy2rwvCvzyfjukgqFuzWarEIjdzjUosHFmDOBFochjkW9+C0Zz3DREXzKc62
+J+l+85KOCkp4bfu1LoIOJjFL7Wl2I1SBrj39DFbj4uH4bPmB2NXCnyxVZTzIl/+f
+D1OYubU/hpPfckwbCwcnYaxvSkOzLu3U2Oo4lpmRjlykrDvzVIv5IuTaQ+oeaugF
+paI1wE0VhFAlb0ufHcn+HUwHFAu3Rl5MUrE0/8ebLoOpZSJ7IY4cKfQJD55EgyVI
+DDt0r7n6B2VWmx5R8/IhtCKZC7cwHnkmhUm6zHiSng9qq7Mw2sAKpVmhIMX0Z0qK
+YBX1Hm1VY2tSilnkvcbZjCRSkrZXq4HiTMLdQyAnc7puYZB4nIcmFhjrLAPT3rCC
+jbdFGA/LtEfTS+4zIRIRIEqo4GsN9JyMMbwWpDbzBytyzlS948HAFEbKgfQ4nnmo
+hMLA98QWc0OgLUqfF3FDPf5Gexp6ZP43Jq1CH1bq9hwn68fDt5gwCkqqci3B8RLc
+kczhzfPMxro2uIQbRHCVhHbLn2fFuNOZuDS+tEUQHo2qBnj984uDGRKivCzvX9/Q
+p6E8eXlD7TzeiFO8NJX/+Ow5+o+zcpaye3s4j5S0w096fpyXucZI1k48OH/hpBEB
+xZiQd13VXJsYOV2z5SWw
+=YNfL
+-----END PGP SIGNATURE-----
+
+--u13C/yEOc42HESKG--
