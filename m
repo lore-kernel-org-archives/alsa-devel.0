@@ -1,102 +1,131 @@
-From: Petr Kulhavy <petr@barix.com>
-Subject: Re: ASoC: Two codecs on a single CPU DAI
-Date: Thu, 22 May 2014 15:49:41 +0200
-Message-ID: <537E0075.50500@barix.com>
-References: <537B53C9.6000900@barix.com> <537B5CA4.8010607@metafoo.de>
- <537C8E21.8040400@baylibre.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [RFC] set up an sync channel between audio and
+ display driver (i.e. ALSA and DRM)
+Date: Thu, 22 May 2014 14:29:49 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B44C1B8@SHSMSX101.ccr.corp.intel.com>
+References: <F46914AEC2663F4A9BB62374E5EEF8F82B447059@SHSMSX101.ccr.corp.intel.com>
+ <1400596147.32158.36.camel@intelbox> <20140520143555.GD21128@intel.com>
+ <32F4D3A311A1404B92CF923AFF38C3C522292976@BGSMSX104.gar.corp.intel.com>
+ <CAKMK7uFd8eLO2JnF-duOD3TDNUAjayr70N+A3vJ=T9_cHVSgkg@mail.gmail.com>
+ <1400692055.26136.69.camel@intelbox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f175.google.com (mail-wi0-f175.google.com
- [209.85.212.175])
- by alsa0.perex.cz (Postfix) with ESMTP id CCC0B265589
- for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 15:49:45 +0200 (CEST)
-Received: by mail-wi0-f175.google.com with SMTP id f8so9286791wiw.2
- for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 06:49:45 -0700 (PDT)
-In-Reply-To: <537C8E21.8040400@baylibre.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Benoit Cousson <bcousson@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <1400692055.26136.69.camel@intelbox>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Deak, Imre" <imre.deak@intel.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikkanen,
+ Kimmo" <kimmo.nikkanen@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "Babu,
+ Ramesh" <ramesh.babu@intel.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Vetter,
+ Daniel" <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Benoit,
+> -----Original Message-----
+> From: Intel-gfx [mailto:intel-gfx-bounces@lists.freedesktop.org] On Behalf Of
+> Imre Deak
+> Sent: Thursday, May 22, 2014 1:08 AM
+> 
+> On Wed, 2014-05-21 at 18:05 +0200, Daniel Vetter wrote:
+> > On Wed, May 21, 2014 at 5:56 PM, Babu, Ramesh <ramesh.babu@intel.com>
+> wrote:
+> > >> On Tue, May 20, 2014 at 05:29:07PM +0300, Imre Deak wrote:
+> > >> > On Tue, 2014-05-20 at 05:52 +0300, Lin, Mengdong wrote:
+> > >> > > This RFC is based on previous discussion to set up a generic
+> > >> > > communication channel between display and audio driver and an
+> > >> > > internal design of Intel MCG/VPG HDMI audio driver. It's still
+> > >> > > an initial draft and your advice would be appreciated to
+> > >> > > improve the design.
+> > >> > >
+> > >> > > The basic idea is to create a new avsink module and let both
+> > >> > > drm and alsa depend on it.
+> > >> > > This new module provides a framework and APIs for
+> > >> > > synchronization between the display and audio driver.
+> > >> > >
+> > >> > > 1. Display/Audio Client
+> > >> > >
+> > >> > > The avsink core provides APIs to create, register and lookup a
+> > >> > > display/audio client.
+> > >> > > A specific display driver (eg. i915) or audio driver (eg.
+> > >> > > HD-Audio
+> > >> > > driver) can create a client, add some resources objects (shared
+> > >> > > power wells, display outputs, and audio inputs, register ops)
+> > >> > > to the client, and then register this client to avisink core.
+> > >> > > The peer driver can look up a registered client by a name or type, or
+> both.
+> > >> > > If a client gives a valid peer client name on registration,
+> > >> > > avsink core will bind the two clients as peer for each other.
+> > >> > > And we expect a display client and an audio client to be peers
+> > >> > > for each other in a system.
+> > >> >
+> > >> > One problem we have at the moment is the order of calling the
+> > >> > system suspend/resume handlers of the display driver wrt. that of
+> > >> > the audio driver. Since the power well control is part of the
+> > >> > display HW block, we need to run the display driver's resume
+> > >> > handler first, initialize the HW, and only then let the audio
+> > >> > driver's resume handler run. For similar reasons we have to call
+> > >> > the audio suspend handler first and only then the display driver
+> > >> > resume handler. Currently we solve this using the display
+> > >> > driver's late/early suspend/resume hooks, but we'd need a more robust
+> solution.
+> > >> >
+> > >> > This seems to be a similar issue to the load time ordering
+> > >> > problem that you describe later. Having a real device for avsync
+> > >> > that would be a child of the display device would solve the
+> > >> > ordering issue in both cases. I admit I haven't looked into it if
+> > >> > this is feasible, but I would like to see some solution to this as part of the
+> plan.
+> > >>
+> > >> If we are able create and mandate that HDMI display controller is
+> > >> parent and audio is child device, then this wouldn't be an issue
+> > >> and PM frameowrk will ensure parent is suspended last.
+> > >>
+> > > If there is a scenario where HDMI audio has to active but display
+> > > has to go to low power, then > parent-child device is not optimal.
+> > > There needs to be a mechanism to turn on/off individual hw blocks
+> > > within the controller.
+> >
+> > Our gfx runtime pm code is a _lot_ better than that. We track each
+> > power domain individually and enable/disable them only when need.
+> > armsoc drivers could do the same or make sure that the avsink device
+> > is a child of the right block. Of course if your driver only has
+> > binary runtime pm and fires up everything then we have a problem. But
+> > imo that's a problem with that driver, not with making avsink real
+> > devices as children of something.
+> 
+> I would also add that at least in case of Haswell, there is really a hard
+> dependency between the display device and the HDMI audio
+> functionality: The power well required by HDMI is controlled via the
+> PWR_WELL_CTL2 register which is in turn part of the display power domain.
+> This domain is turned off when the display device is in D3 state, so to turn on
+> audio we really have to first put the display device into D0 state. Since the PM
+> framework doesn't provide any way to reorder the initialization of devices, we
+> can only depend on the device parent -> child relationship to achieve the
+> above correct init order.
+> 
+> --Imre
 
-thank you, I will try them out. At the moment I need to focus on other 
-projects, but in a few weeks I should be able to get back to the drivers.
+So for Haswell, how about create a device for the 'power well' and make this power
+device be a child of the display device?
 
-Regards
-Petr
+And by any means (e.g. further extract the device as a power object and expose to audio driver), 
+the audio driver can finally trigger pm_runtime_get/put_sync() on this power device to solve the
+power dependency on audio side, and the parent->child relationship will assure the order on drm side.
+I feel it's a natural way for HD-Audio driver, which already binds to the HD-A controller.
 
-On 21.05.2014 13:29, Benoit Cousson wrote:
-> Hi Petr,
->
-> I'm about to release a v4, but you can used the previous version that 
-> was working fine for my setup.
->
-> I'm glad to have more users for the series, because my setup is so 
-> simple that I cannot validate all the code I'm about to change :-(
->
-> Bottom line; The more, the merrier.
->
-> Regards,
-> Benoit
->
->
-> On 20/05/2014 15:46, Lars-Peter Clausen wrote:
->> On 05/20/2014 03:08 PM, Petr Kulhavy wrote:
->>> Hi,
->>>
->>> I'm writing a driver for a custom DaVinci board, which has two codecs
->>> (Wolfson and STA323 amplifier) connected to the same CPU DAI. The
->>> intention
->>> is that both codecs always play the same audio, only the volume/mixer
->>> settings are controlled separately. In addition to that the design is
->>> atypical by the fact, that the Wolfson is the clock master. So in
->>> order to
->>> play audio on the amplifier the Wolfson must be initialized as well.
->>>
->>> My question is: how to reflect this architecture in a SOC platform
->>> driver?
->>>
->>> As the first approach I tried to create two DAI links, one for each
->>> codec.
->>> That worked if audio was first played on the Wolfson link (clock
->>> master was
->>> initialized) and then on the second link, using the same sampling rate.
->>>
->>> But in fact I would need only one DAI link to both. So then I tried to
->>> make
->>> just one link to Wolfson and put the amplifier as an "aux_dev". However
->>> there I need to set hw_params and format for the amplifier codec DAI 
->>> and
->>> those functions were not called. In fact there was no codec DAI
->>> created for
->>> the amplifier. I've also seen that one can define rtd_aux runtimes,
->>> but have
->>> nowhere found how to use it.
->>>
->>> Could someone please help me?
->>
->> Hi,
->>
->> Benoit is currently working on adding support for this to the ASoC
->> framework, see this patch series:
->> http://comments.gmane.org/gmane.linux.alsa.devel/122160
->>
->> - Lars
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
+And for MCG HDMI audio driver which directly feeds data from system memory to the display device,
+I think it can either use pm_runtime_get/put_sync() on this power device (seems no necessary),
+or just make the audio device as child of the display device.
+
+Thanks
+Mengdong
