@@ -1,83 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: The resume of sgtl5000 causes kernel Oops
-Date: Thu, 22 May 2014 18:48:18 +0100
-Message-ID: <20140522174818.GN12304@sirena.org.uk>
-References: <20140522145650.GD32184@dragon>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: max98090: Add master clock handling
+Date: Thu, 22 May 2014 11:50:55 -0600
+Message-ID: <537E38FF.9000407@wwwdotorg.org>
+References: <1400750228-13750-1-git-send-email-tushar.behera@linaro.org> <1400750228-13750-2-git-send-email-tushar.behera@linaro.org> <537E1D0A.6020303@wwwdotorg.org> <20140522173403.GL12304@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5204135127745734508=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 86A69261A01
- for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 19:48:33 +0200 (CEST)
-In-Reply-To: <20140522145650.GD32184@dragon>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@freescale.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20140522173403.GL12304-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Tushar Behera <tushar.behera-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, jerry.wong-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On 05/22/2014 11:34 AM, Mark Brown wrote:
+> On Thu, May 22, 2014 at 09:51:38AM -0600, Stephen Warren wrote:
+>> On 05/22/2014 03:17 AM, Tushar Behera wrote:
+> 
+>>> +	if (!IS_ERR(max98090->mclk)) {
+>>> +		freq = clk_round_rate(max98090->mclk, freq);
+>>> +		clk_set_rate(max98090->mclk, freq);
+>>> +	}
+> 
+>> What are the intended semantics of set_sysclk()?
+>> sound/soc/tegra/tegra_wm98090.c assumes that set_sysclk() is a
+>> notification to the CODEC driver to tell it what rate the MCLK input is
+>> set to (the rate is set before calling set_sysclk), whereas the code
+>> above assumes that this function is to tell the CODEC to somehow
+>> configure its input clock to be a particular rate. I have a feeling the
+>> code above might fail on Tegra.
+>
+> It's a bit of both.  Since we've never had a generic clock API (and
+> still don't really due to everything being a shambles) it's generally
+> just a notification to the CODEC that it's at the specified rate,
+> however if the CODEC knows about its dependencies it seems sensible for
+> it to tell the clock API about what was asked.  Ideally we want to
+> remove all the ASoC specific clock control and use the clock API.
 
---===============5204135127745734508==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="A++jtAeVRMZJdZL/"
-Content-Disposition: inline
+I think we should nail down exactly what set_sysclk() means. Since it
+takes an explicit MCLK clock rate (rather than e.g. sample rate) right
+now, surely it's a notification of what the clock /is/, not a request
+for the CODEC to set up its input clock. If we expect the CODEC to go to
+the clock driver and request an MCLK for itself (e.g. based on sample
+rate), surely that should happen from some function besides
+set_sysclk(), with different semantics e.g. hw_params().
 
+I'm not convinced that the CODEC can trigger its input clock changes in
+general. In Tegra, there needs to be centralized clock management, e.g.
+to prevent one audio stream using a 44.1KHz-based rate and another using
+a 48KHz-based rate. That's because the main audio PLL can't generate
+both sets of frequencies at once. This can't be done in individual CODEC
+drivers, since they shouldn't know about the Tegra restrictions. Doing
+it in the clock driver in response to the CODEC's request for a specific
+input clock, might work, but then the CODEC would have to call into the
+clk driver from e.g. hw_params() rather than set_sysclk(). If that's how
+it's supposed to work, then this patch is adding code in the wrong
+place. If set_sysclk() doesn't get removed from the CODEC API, then
+doing all this clock setup logic in the machine driver, as the
+tegra_wm89090.c machine driver does, seems to make the most sense for now.
 
---A++jtAeVRMZJdZL/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> The Tegra driver will presumably succeed unless someone does the
+> appropriate clock hookup in DT, at which point clk_set_rate() for the
+> rate the clock is already at really ought to succeed so things should
+> continue to work.
 
-On Thu, May 22, 2014 at 10:56:51PM +0800, Shawn Guo wrote:
-> The suspend/resume test on imx51-babbage board discovers a kernel Oops
-> caused by sgtl5000_resume().  I believe it happens due to commit
-> e5d80e82e32e (ASoC: sgtl5000: Convert to use regmap directly).  After
-> the commit, it seems that the codec->reg_cache in function
-> sgtl5000_restore_regs() becomes invalid.  It looks that the register
-> restoring in the function requires some strict sequence, I'm not sure
-> what the correct fix is.
-
-Yes, reg_cache isn't there if we're not using ASoC level caching.  The
-fix should just be to replace the direct cache references with
-snd_soc_read()s which will end up in a cache lookup if the register is
-cached.
-
---A++jtAeVRMZJdZL/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTfjhfAAoJELSic+t+oim9i20P/3dhFEBHdLEsZiKo7K8MmmsJ
-v55WyV0v396yE/6/HbSJVM6SI0X9XUCqhQgeN8gwg3CPeq4VWo0K7WvWaXVLHtUx
-v0yyj3ZM36oshLt4J7gBsaWNsdiTabKQdPh/AwqUqW36cwJ7hx+OuVCTkn/iK1WI
-VXZkB81Tcg+EeBwL0fDEAngK5rN9+ZL8qaZTLJTcCx+faIsDUYy09EeyKkyqNwYY
-KX8xJ4q8ONUl9goyDcvzV7dPQS63hyZJoCe65l5uyev0RpzoEX1yOJduLzVqf5Mx
-5/HYkIj5tFVfJVaLrp91it5WWPdlBsj06Jc24vOhcUThQf147WH++xKPLKcjChrn
-vObbdm6dHr9fGiTrFgZr6eO7x2iMxkOiFULgWeTOyiMl8pls6l4FJH1+1agj0Fl1
-A0NWHv+ycW62srcQFRdo80qWAiL2QljHYahEzjpC6EwP6fiwvzbYZke+Ynb23k/C
-syRC0IC1PjvN+H/pTE3qBpl8H8MNRJbxQORoAmZ+zAw2a9pugXMVPIxhgO4YFhLJ
-C5vb4diYPW8qIuzQ09PkaU6rXRpBQEHSYGPQ8XZG792codDVsHTphZHbgHB1U/B2
-2hTMPWhQPVy5WfNhATcVi9GkL0k7T0nFT8XTv+IsURYY1nytUL3NB+e2heId4o5+
-LDbIAyAuc8FOw7ytQ1XY
-=/QRe
------END PGP SIGNATURE-----
-
---A++jtAeVRMZJdZL/--
-
---===============5204135127745734508==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5204135127745734508==--
+Ah yes, if we don't add the clock to DT, this code won't do anything, so
+nothing will break.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
