@@ -1,19 +1,20 @@
-From: Ricardo Crudo <ricardo.crudo@gmail.com>
-Subject: Fwd: enabling a20 allwinner audio codec to 24bit
-Date: Thu, 22 May 2014 18:30:35 -0300
-Message-ID: <CAPjqk-+5Y84oWjdzPw6DBm4Dzzh1GhJC49_WKnRKcW+yzgCYDg@mail.gmail.com>
-References: <CAPjqk-JXPen2TF7f4Sb9S0T7VNq++-0Gpb3rGCkWk1yUoECdaQ@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: The resume of sgtl5000 causes kernel Oops
+Date: Thu, 22 May 2014 18:33:05 -0300
+Message-ID: <CAOMZO5CCFnZSz_jaipe4Fz0sTxXOajp7QRPiaM5f5wg_Di0ftA@mail.gmail.com>
+References: <20140522145650.GD32184@dragon>
+ <20140522174818.GN12304@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f44.google.com (mail-la0-f44.google.com
- [209.85.215.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D476261A3D
- for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 23:30:56 +0200 (CEST)
-Received: by mail-la0-f44.google.com with SMTP id hr17so3243562lab.17
- for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 14:30:56 -0700 (PDT)
-In-Reply-To: <CAPjqk-JXPen2TF7f4Sb9S0T7VNq++-0Gpb3rGCkWk1yUoECdaQ@mail.gmail.com>
+Received: from mail-ve0-f181.google.com (mail-ve0-f181.google.com
+ [209.85.128.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id A116C261A3D
+ for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 23:33:06 +0200 (CEST)
+Received: by mail-ve0-f181.google.com with SMTP id pa12so5156998veb.40
+ for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 14:33:05 -0700 (PDT)
+In-Reply-To: <20140522174818.GN12304@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,56 +24,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Shawn Guo <shawn.guo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi Mark,
 
-I'm working with sunxi-codec of allwinner A20 device. Currently the
-codec driver works only for 16bit mode, the source code can be found
-here: https://github.com/linux-sunxi/linux-sunxi/tree/sunxi-3.4/sound/soc/sunxi,
- and the A20 datasheet here:
-https://github.com/OLIMEX/OLINUXINO/blob/master/HARDWARE/A20-PDFs/A20%20User%20Manual%202013-03-22.pdf.
+On Thu, May 22, 2014 at 2:48 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, May 22, 2014 at 10:56:51PM +0800, Shawn Guo wrote:
+>> The suspend/resume test on imx51-babbage board discovers a kernel Oops
+>> caused by sgtl5000_resume().  I believe it happens due to commit
+>> e5d80e82e32e (ASoC: sgtl5000: Convert to use regmap directly).  After
+>> the commit, it seems that the codec->reg_cache in function
+>> sgtl5000_restore_regs() becomes invalid.  It looks that the register
+>> restoring in the function requires some strict sequence, I'm not sure
+>> what the correct fix is.
+>
+> Yes, reg_cache isn't there if we're not using ASoC level caching.  The
+> fix should just be to replace the direct cache references with
+> snd_soc_read()s which will end up in a cache lookup if the register is
+> cached.
 
-Reading the allwinner A20 datasheet and doing some modifications on
-sunxi code I managed the codec to work in 24bit mode. However, it
-isn't working properly. When I play a stereo wav file using the aplay
-command the audio data of both channels are played mixed in only one
-channel and the another channel didn't plays any sound.
+Do you mean like this?
 
-For example, picture a wav stereo file with this samples:
-left  right
-0.5  -0.5
-0.4  -0.4
-0.3  -0.3
-0.2  -0.2
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 9626ee0..437751a 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1075,7 +1075,6 @@ static int sgtl5000_suspend(struct snd_soc_codec *codec)
+  */
+ static int sgtl5000_restore_regs(struct snd_soc_codec *codec)
+ {
+-    u16 *cache = codec->reg_cache;
+     u16 reg;
 
-The played sound is:
-left   right
- 0.5  0.0
--0.5  0.0
- 0.4  0.0
--0.4  0.0
- 0.3  0.0
--0.3  0.0
- 0.2  0.0
--0.2  0.0
+     /* restore regular registers */
+@@ -1089,12 +1088,12 @@ static int sgtl5000_restore_regs(struct
+snd_soc_codec *codec)
+             reg == SGTL5000_CHIP_REF_CTRL)
+             continue;
 
-The A20 datasheet says:
-"DAC TX DATA REGISTER (TXDATA): Transmitting left, right channel
-sample data should be written this register one by one. The left
-channel sample data is first and then the right channel sample."
+-        snd_soc_write(codec, reg, cache[reg]);
++        snd_soc_write(codec, reg, snd_soc_read(codec, reg));
+     }
 
-I guess that this is related with the problem, despite the datasheet
-didn't notify, I think that in 16bit mode the TXDATA transmits both
-channels data together as the register is 32bit.
+     /* restore dap registers */
+     for (reg = SGTL5000_DAP_REG_OFFSET; reg <
+SGTL5000_MAX_REG_OFFSET; reg += 2)
+-        snd_soc_write(codec, reg, cache[reg]);
++        snd_soc_write(codec, reg, snd_soc_read(codec, reg));
 
-I'm not familiar writing alsa driver and other alsa working concepts.
-I hope someone can help me with this.
+     /*
+      * restore these regs according to the power setting sequence in
+@@ -1110,19 +1109,19 @@ static int sgtl5000_restore_regs(struct
+snd_soc_codec *codec)
+      *    prefer to resotre it after SGTL5000_CHIP_ANA_POWER restored
+      */
+     snd_soc_write(codec, SGTL5000_CHIP_LINREG_CTRL,
+-            cache[SGTL5000_CHIP_LINREG_CTRL]);
++            snd_soc_read(codec, SGTL5000_CHIP_LINREG_CTRL));
 
-The diff file of sunxi-codec.c is here: http://pastebin.com/raw.php?i=SvypkVU6
+     snd_soc_write(codec, SGTL5000_CHIP_ANA_POWER,
+-            cache[SGTL5000_CHIP_ANA_POWER]);
++            snd_soc_read(codec, SGTL5000_CHIP_ANA_POWER));
 
-I appreciate any help.
+     snd_soc_write(codec, SGTL5000_CHIP_CLK_CTRL,
+-            cache[SGTL5000_CHIP_CLK_CTRL]);
++            snd_soc_read(codec, SGTL5000_CHIP_CLK_CTRL));
 
-Regards,
-Ricardo
+     snd_soc_write(codec, SGTL5000_CHIP_REF_CTRL,
+-            cache[SGTL5000_CHIP_REF_CTRL]);
++            snd_soc_read(codec, SGTL5000_CHIP_REF_CTRL));
+
+     snd_soc_write(codec, SGTL5000_CHIP_LINE_OUT_CTRL,
+-            cache[SGTL5000_CHIP_LINE_OUT_CTRL]);
++            snd_soc_read(codec, SGTL5000_CHIP_LINE_OUT_CTRL));
+     return 0;
+ }
+
+This avoids the crash in suspend, but I get different errors now:
+
+root@freescale /$ echo mem > /sys/power/state
+PM: Syncing filesystems ... done.
+Freezing user space processes ... (elapsed 0.001 seconds) done.
+Freezing remaining freezable tasks ... (elapsed 0.002 seconds) done.
+Suspending console(s) (use no_console_suspend to debug)
+random: nonblocking pool is initialized
+PM: suspend of devices complete after 15.210 msecs
+PM: suspend devices took 0.010 seconds
+PM: late suspend of devices complete after 4.435 msecs
+PM: noirq suspend of devices complete after 4.691 msecs
+Disabling non-boot CPUs ...
+PM: noirq resume of devices complete after 3.931 msecs
+PM: early resume of devices complete after 5.724 msecs
+sgtl5000 1-000a: Failed to restore cache: -5
+sgtl5000 1-000a: Failed to restore cache: -5
+sgtl5000 1-000a: ASoC: Failed to turn on bias: -5
+sgtl5000 1-000a: Failed to restore cache: -5
+sgtl5000 1-000a: ASoC: Failed to turn on bias: -5
+sgtl5000 1-000a: Failed to restore cache: -5
+sgtl5000 1-000a: ASoC: Failed to turn on bias: -5
+PM: resume of devices complete after 62.349 msecs
+PM: resume devices took 0.060 seconds
+Restarting tasks ... done.
