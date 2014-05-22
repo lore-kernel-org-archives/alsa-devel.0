@@ -1,60 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: max98090: Add master clock handling
-Date: Thu, 22 May 2014 11:30:39 +0100
-Message-ID: <20140522103039.GD12304@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: max98095: Add master clock handling
+Date: Thu, 22 May 2014 11:31:37 +0100
+Message-ID: <20140522103137.GE12304@sirena.org.uk>
 References: <1400750228-13750-1-git-send-email-tushar.behera@linaro.org>
- <1400750228-13750-2-git-send-email-tushar.behera@linaro.org>
+ <1400750228-13750-3-git-send-email-tushar.behera@linaro.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3QshgT4nm5mNXvH/"
+	protocol="application/pgp-signature"; boundary="AV6bwGDIl1DgWyaJ"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1400750228-13750-2-git-send-email-tushar.behera@linaro.org>
+In-Reply-To: <1400750228-13750-3-git-send-email-tushar.behera@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Tushar Behera <tushar.behera@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, tiwai@suse.de, perex@perex.cz, dianders@chromium.org, jerry.wong@maximintegrated.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, tiwai@suse.de, perex@perex.cz, dianders@chromium.org, jerry.wong@maximintegrated.com, Jarkko Nikula <jarkko.nikula@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---3QshgT4nm5mNXvH/
+--AV6bwGDIl1DgWyaJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 22, 2014 at 02:47:07PM +0530, Tushar Behera wrote:
+On Thu, May 22, 2014 at 02:47:08PM +0530, Tushar Behera wrote:
+> If master clock is provided through device tree, then update
+> the master clock frequency during set_sysclk.
 
-> +	max98090->mclk =3D devm_clk_get(codec->dev, "mclk");
-> +	if (!IS_ERR(max98090->mclk))
-> +		clk_prepare_enable(max98090->mclk);
-> +
+Same issues here.
 
-Ths doesn't handle deferred probe, we need to at least return an error
-if we get -EPROBE_DEFER. =20
-
-It'd also be better to move the enabling to set_bias_level() if possible
-(I don't know if the clock is needed for register access) though less
-essential.
-
---3QshgT4nm5mNXvH/
+--AV6bwGDIl1DgWyaJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTfdHMAAoJELSic+t+oim9gUIQAJNKPSihIGnAwBUsNQLw2+42
-yqhHnH53X0OeeR6/CPA0OyDkqmQXEL0p5z2z8nURIzmqH4dxh/gRv6nJJQU398s2
-Sb26E3dSSuzXRd6KVf+BXiWn65LSbnM61ZbucDvkYGRPo8PlpD7DYqThwTP8jlV/
-hgc7c6WbQiQ7gwU6FrCAF/P4AECPKav57uYQage7aL8OEjXAocRiOrmw0rgKnHby
-e9GqvgIvUdTMszXPGsCkb/22+/VwC2YPk0uvoIfYn0L5tFxnBiGLLVZABD4J6F/d
-98TgkxpQ87HqCZdYFdzxOfgqmH0u1Nwh/N0WyeQa2iWPnDsjjwAu96JDVmw0Gw2I
-Ndk3zeCaI8RFp90lCNqACSmpAcCbvja5taZWs5hojnycj7QHmm2sPvdTAQhnz9nA
-PQyYtU/fyxT4Zm2fQGSU2HTnE3yH3KfhqiqBb5bBh8eX+WQQG8+BJNphd/8Ne8sV
-nc9cgR285sbfXOqPCUqWhqVhIfBIRN5wbc8Kh7/6+O188nhFeh/4pYWWx+buUfVk
-1fv//JFHnbKpj9BWZL+AladMgZlX/Yx/N1uF5Imap/W3WdqO6XZbuIChfHraeMCK
-wK+RRiBxCrDn8+Om6HwUxC+uY1cOJ/Du5Um8qYZSC+cs9gLS99KrXAELK6zP+QH5
-fxXwLHx+oDtaK+NeC0hn
-=+iuv
+iQIcBAEBAgAGBQJTfdIGAAoJELSic+t+oim9O6wP/1P9klcj7qRF6QcyX1jclMzz
+JRFmSf+Z9v9WuqNiD3TKJUMUjIVvy6YgY5xq8o4NX3IKYABNtoxgek/9pKxCQeWy
+jheEjbCn3moVIpioYXLeK704xeUqLuKSnrvG12Qa2xwwZZQjqfBYKNJkEsmuJZp5
+BMtfTogBVuNOYz6gSPVv7Rb3d23Zmckd2Otb7mKbv9N3THX/aRCJgQLJjpKQn5+4
+JYj6s/nmrgEzCCQ4R77YE4kDinaY2a6nF54RsmMyw9WXcGOVpz5CHpv3WDMtg474
+1H1n5HsCeFoNWV70xSvlXPhWql99If8ka5xI3Uhj2thCENn4Id3HiM+mkYaFP0f/
+6GtyjD10mLARSmAbImjLfn/BQ7qJzZQZbMVEp+Tz3xYwhbc/wAdjRImkwdcRTnrv
+LkDt/IQ1HUz3kciEhy8jVhBCfwvRIdurGeNmkN5hBkF5oSrsvJyBhm4PZ67yy3nZ
+YcSb7VWIV+ltR7KtvLrr9cXs3nDfTMob92ETM09pBjqXn4/vIOVZiWtUed7it1zv
+Abak2Brxy5f+df4dqqnHMHaUzIXwBCpvjpKTURFudyD36Mc4EfJy2cE2lTLo1qSk
+FIUPXDH7OtXkpKTF8FhAisdpayumKn1rTDWxoyWHzE98XJEDo3uFN9jo8zOCyCN2
+2m1C5+AeOmvKcuPEplBQ
+=YGih
 -----END PGP SIGNATURE-----
 
---3QshgT4nm5mNXvH/--
+--AV6bwGDIl1DgWyaJ--
