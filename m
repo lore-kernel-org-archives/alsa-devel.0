@@ -1,20 +1,21 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v2] ASoC: sgtl5000: Fix the cache handling
-Date: Fri, 23 May 2014 09:39:41 -0300
-Message-ID: <CAOMZO5AG==Evkn6Sdgmp-7LhigXWK2=d=eoFCUPVn7hCYyBnLg@mail.gmail.com>
-References: <1400821880-20939-1-git-send-email-festevam@gmail.com>
- <537F0884.3050605@metafoo.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFT v3 3/3] ASoC: core: Add support for DAI
+	multicodec
+Date: Fri, 23 May 2014 14:42:26 +0200
+Message-ID: <537F4232.4090801@metafoo.de>
+References: <1398340906-5017-1-git-send-email-bcousson@baylibre.com>
+ <1398340906-5017-4-git-send-email-bcousson@baylibre.com>
+ <535BABCF.6080001@metafoo.de> <5374D6BF.4060500@baylibre.com>
+ <5375EC1C.9020909@metafoo.de> <537DA0C6.7080502@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f174.google.com (mail-vc0-f174.google.com
- [209.85.220.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 00BE2264FE3
- for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 14:39:42 +0200 (CEST)
-Received: by mail-vc0-f174.google.com with SMTP id hq11so401326vcb.33
- for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 05:39:41 -0700 (PDT)
-In-Reply-To: <537F0884.3050605@metafoo.de>
+Received: from smtp-out-176.synserver.de (smtp-out-181.synserver.de
+ [212.40.185.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89F73264FE3
+ for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 14:42:31 +0200 (CEST)
+In-Reply-To: <537DA0C6.7080502@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,85 +25,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Shawn Guo <shawn.guo@freescale.com>
+To: Benoit Cousson <bcousson@baylibre.com>
+Cc: Fabien Parent <fparent@baylibre.com>, misael.lopez@ti.com, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars-Peter,
-
-On Fri, May 23, 2014 at 5:36 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+On 05/22/2014 09:01 AM, Benoit Cousson wrote:
+> Hi Lars,
+>
+> On 16/05/2014 12:44, Lars-Peter Clausen wrote:
+>> On 05/15/2014 05:01 PM, Benoit Cousson wrote:
+>
 > [...]
 >
->> @@ -1075,7 +1079,6 @@ static int sgtl5000_suspend(struct snd_soc_codec
->> *codec)
->>    */
->>   static int sgtl5000_restore_regs(struct snd_soc_codec *codec)
->>   {
->> -       u16 *cache = codec->reg_cache;
->>         u16 reg;
+>>>>> @@ -1586,16 +1626,21 @@ static int soc_probe_link_dais(struct
+>>>>> snd_soc_card *card, int num, int order)
+>>>>>                             codec2codec_close_delayed_work);
+>>>>>
+>>>>>                 /* link the DAI widgets */
+>>>>> -            ret = soc_link_dai_widgets(card, dai_link,
+>>>>> -                    cpu_dai, codec_dai);
+>>>>> -            if (ret)
+>>>>> -                return ret;
+>>>>> +            for (i = 0; i < rtd->num_codecs; i++) {
+>>>>> +                ret = soc_link_dai_widgets(card, dai_link,
+>>>>> +                        cpu_dai, rtd->codec_dais[i]);
+>>>>
+>>>> This will create a DAI link widget for each CODEC DAI. The DAI link
+>>>> widget will configure the CPU and the CODEC DAI that are connected to
+>>>> it. If there is one DAI link widget per CODEC DAI this means that the
+>>>> CPU DAI will be connected to multiple DAI link widgets, which means it
+>>>> will be configured once for each CODEC DAI (with possible conflicting
+>>>> configurations).
+>>>
+>>> I've got that point, but now I'm wondering what struct should be per
+>>> codec_dai. Should we consider one source and several sinks to
+>>> represent the multiple codecs?
 >>
->>         /* restore regular registers */
->> @@ -1089,12 +1092,12 @@ static int sgtl5000_restore_regs(struct
->> snd_soc_codec *codec)
->>                         reg == SGTL5000_CHIP_REF_CTRL)
->>                         continue;
->>
->> -               snd_soc_write(codec, reg, cache[reg]);
->> +               snd_soc_write(codec, reg, snd_soc_read(codec, reg));
->>         }
->>
->>         /* restore dap registers */
->>         for (reg = SGTL5000_DAP_REG_OFFSET; reg < SGTL5000_MAX_REG_OFFSET;
->> reg += 2)
->> -               snd_soc_write(codec, reg, cache[reg]);
->> +               snd_soc_write(codec, reg, snd_soc_read(codec, reg));
->>
->>         /*
->>          * restore these regs according to the power setting sequence in
->> @@ -1110,29 +1113,32 @@ static int sgtl5000_restore_regs(struct
->> snd_soc_codec *codec)
->>          *    prefer to resotre it after SGTL5000_CHIP_ANA_POWER restored
->>          */
->>         snd_soc_write(codec, SGTL5000_CHIP_LINREG_CTRL,
->> -                       cache[SGTL5000_CHIP_LINREG_CTRL]);
->> +                       snd_soc_read(codec, SGTL5000_CHIP_LINREG_CTRL));
->>
->>         snd_soc_write(codec, SGTL5000_CHIP_ANA_POWER,
->> -                       cache[SGTL5000_CHIP_ANA_POWER]);
->> +                       snd_soc_read(codec, SGTL5000_CHIP_ANA_POWER));
->>
->>         snd_soc_write(codec, SGTL5000_CHIP_CLK_CTRL,
->> -                       cache[SGTL5000_CHIP_CLK_CTRL]);
->> +                       snd_soc_read(codec, SGTL5000_CHIP_CLK_CTRL));
->>
->>         snd_soc_write(codec, SGTL5000_CHIP_REF_CTRL,
->> -                       cache[SGTL5000_CHIP_REF_CTRL]);
->> +                       snd_soc_read(codec, SGTL5000_CHIP_REF_CTRL));
->>
->>         snd_soc_write(codec, SGTL5000_CHIP_LINE_OUT_CTRL,
->> -                       cache[SGTL5000_CHIP_LINE_OUT_CTRL]);
->> +                       snd_soc_read(codec, SGTL5000_CHIP_LINE_OUT_CTRL));
->>         return 0;
->>   }
->>
->>   static int sgtl5000_resume(struct snd_soc_codec *codec)
->>   {
->> +       struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
->>         /* Bring the codec back up to standby to enable regulators */
->>         sgtl5000_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
->>
->>         /* Restore registers by cached in memory */
->>         sgtl5000_restore_regs(codec);
->> +
->> +       regcache_cache_only(sgtl5000->regmap, false);
+>> The soc_link_dai_widgets function should take the rtd as a parameter
+>> instead of the CODEC and CPU DAIs. Same goes for snd_soc_dapm_new_pcm()
+>> then you create one dai_link widget per stream (i.e. one for capture of
+>> there is capture support, one for playback if there is playback
+>> support). And then create the paths between the dai_link widgets and the
+>> DAI widgets accordingly.
 >
+> I'm still not 100% sure how it should work so here is a tentative patch to try to handle that part. Please note that in my setup none of that code is ever called :-( I'm not sure why!
 >
-> That doesn't make too much sense, if regmap is in cache only mode
-> snd_soc_read() will read from the cache and snd_soc_write() will write to
-> the cache and nothing else happens. So you read from the cache only to write
-> the same value back.
+> Please ignore the extra DEBUG code I added and there is probably some way to factorize some code, but I'd like to be sure that this is the proper way to handle the routes in the multicodec case before re-sending that series.
 
-I would appreciate some guidance here as I am not very familiar with
-the caching details.
+If we do not want to support CODEC<-->CODEC links with multiple CODECs you 
+do not have to care about this for now. But I think the code looks good. The 
+result should look something like this:
 
-What would be the recommended approach in this case?
+                     +----------+
+                     | Playback | --> [ CODEC 1 DAI ]
+         [ CPU ] --> | DAI LINK | --> [ CODEC 2 DAI ]
+                     |          | --> [ CODEC 3 DAI ]
+                     +----------+
+
+                     +----------+
+[ CODEC 1 DAI ]-- > | Capture  |
+[ CODEC 2 DAI ] --> | DAI LINK | --> [ CPU DAI ]
+[ CODEC 3 DAI ] --> |          |
+                     +----------+
+
+Also note that the code in upstream is now using snd_soc_dapm_add_path() 
+rather than snd_soc_dapm_add_route()
+
+- Lars
