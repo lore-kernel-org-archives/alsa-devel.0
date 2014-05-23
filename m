@@ -1,52 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Re: [PATCH 2/2] ASoC: samsung: Add machine driver for odroidx2
-Date: Fri, 23 May 2014 12:11:31 +0100
-Message-ID: <20140523111131.GZ12304@sirena.org.uk>
-References: <0E.BA.03708.FFFAE735@epcpsbgx1.samsung.com>
+From: Alexander Shiyan <shc_work@mail.ru>
+Subject: [PATCH] ASoC: fsl: Remove dependencies of boards for
+	SND_SOC_EUKREA_TLV320
+Date: Fri, 23 May 2014 15:11:01 +0400
+Message-ID: <1400843461-24991-1-git-send-email-shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pn1gsForad4VrZRv"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <0E.BA.03708.FFFAE735@epcpsbgx1.samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Zhen Chen <zhen1.chen@samsung.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp26.mail.ru (smtp26.mail.ru [94.100.181.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2268261ACD
+ for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 13:11:13 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: alsa-devel@alsa-project.org
 
+Eukrea-i.MX51 board was converted to use DT, ie we no longer have a
+MACH_EUKREA_MBIMXSD51_BASEBOARD symbol.
+Transformation of other boards planned for the near future, so this
+patch removes all these dependencies and restricts build of this
+driver to ARCH_MXC.
 
---pn1gsForad4VrZRv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ sound/soc/fsl/Kconfig | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-On Fri, May 23, 2014 at 02:18:39AM +0000, Zhen Chen wrote:
-> <HTML xmlns:o = "urn:schemas-microsoft-com:office:office"><HEAD><TITLE>Samsung Enterprise Portal mySingle</TITLE>
-> <META content=IE=5 http-equiv=X-UA-Compatible>
-> <META content="text/html; charset=windows-1252" http-equiv=Content-Type>
-
-Please fix your mail configuration to send in plain text, I can't read
-this - it's not even got a multipart/alternative plain text bit.
-
---pn1gsForad4VrZRv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTfyzfAAoJELSic+t+oim9uc4QAIWdqojsllf+5mEqUGQEvLlv
-5UoJWJcTvhR2XJmpbp1ZiBKwBS4jDNwalT5AJCH0GzEEWgsYepRqtP5dfRodhWzR
-LEk1qEkgLHLyt3Ipb46xWcDIPqJFXX9zYPejTbAUHOh2Xo5XVCM8GhjguPpu6GvG
-ROJmtLf36tH+OtPdbCB9Px7fCscgxm7Tnz5A94DbtjO84jNU9IFGmMwY3tuMcqZy
-oH58TJCygw+0Lb8IoQG0i5VgDkt5dCuGnSyPGkUbtqb8V1YhdzO1jLLCvTSD9GRN
-20kYFmFbXptldTqR8AmjXX645Bx9XPep0pLkJPoR0ezFiEipEHrUvXWd+x062s/C
-TY7dqh6fC/IX9AfMNt6nR7Q74Kl6wM9ChtC6VgnI0TfSc85q8OEmxSL+YBoBHxts
-Rxx1lO7Iq6LIFKa8Udg63YoeMiMPjerT0lpjYsajT1iAtWn/m4fYJsdl8gxofD77
-y41zT3zRZB3bPcNoVvaVcJhiUQrdQ5HeLfOIs5V8MQlnjlrXIaY+d1tZPxKuDZye
-XnCxEMOm3SRPFfzoUU/RThDAfv0N5ppjzXEypI+E0TO1Rn+8+TGmbFnv/5/1HbEw
-5+vZlJ+KgkzcXCXi/cX4hf116ZrXQzO8O1rcRIc5QlTMN2M/PgDvL3/GTC4GuOX9
-kh4S5/49A/wq413JovLZ
-=TUNm
------END PGP SIGNATURE-----
-
---pn1gsForad4VrZRv--
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index d262ec0..2989319 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -207,12 +207,7 @@ config SND_SOC_PHYCORE_AC97
+ 
+ config SND_SOC_EUKREA_TLV320
+ 	tristate "Eukrea TLV320"
+-	depends on MACH_EUKREA_MBIMX27_BASEBOARD \
+-		|| MACH_EUKREA_MBIMXSD25_BASEBOARD \
+-		|| MACH_EUKREA_MBIMXSD35_BASEBOARD \
+-		|| MACH_EUKREA_MBIMXSD51_BASEBOARD \
+-		|| (OF && ARM)
+-	depends on I2C
++	depends on ARCH_MXC && I2C
+ 	select SND_SOC_TLV320AIC23_I2C
+ 	select SND_SOC_IMX_AUDMUX
+ 	select SND_SOC_IMX_SSI
+-- 
+1.8.3.2
