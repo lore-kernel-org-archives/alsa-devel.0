@@ -1,18 +1,17 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH v3] ASoC: cs42l56: Fix new value argument in
- snd_soc_update_bits calls
-Date: Fri, 23 May 2014 13:05:31 +0800
-Message-ID: <1400821531.915.1.camel@phoenix>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v2] ASoC: sgtl5000: Fix the cache handling
+Date: Fri, 23 May 2014 02:11:20 -0300
+Message-ID: <1400821880-20939-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f180.google.com (mail-vc0-f180.google.com
- [209.85.220.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 5427C26563E
- for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 07:05:38 +0200 (CEST)
-Received: by mail-vc0-f180.google.com with SMTP id hy4so5506971vcb.25
- for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 22:05:37 -0700 (PDT)
+Received: from mail-qg0-f54.google.com (mail-qg0-f54.google.com
+ [209.85.192.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F575265634
+ for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 07:11:30 +0200 (CEST)
+Received: by mail-qg0-f54.google.com with SMTP id q108so7273920qgd.27
+ for <alsa-devel@alsa-project.org>; Thu, 22 May 2014 22:11:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,165 +21,173 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-The new value argument needs proper shift to match the mask bit fields.
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Since commit e5d80e82e32e (ASoC: sgtl5000: Convert to use regmap directly) a 
+kernel oops is observed after a suspend/resume sequence.
+
+According to Mark Brown:
+
+"Yes, reg_cache isn't there if we're not using ASoC level caching.  The
+fix should just be to replace the direct cache references with
+snd_soc_read()s which will end up in a cache lookup if the register is
+cached."
+
+Do as suggested and also complete the cache array with the missing registers
+so that sgtl5000_restore_regs() can properly cache the all the registers it 
+needs.
+
+Reported-by: Shawn Guo <shawn.guo@freescale.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
-v3: Define CS42L56_MUTE_ALL as 0xff, so all the mask bits will be set.
-v2: Address Brian's comment in v1.
- sound/soc/codecs/cs42l56.c | 70 ++++++++++++++++++++--------------------------
- sound/soc/codecs/cs42l56.h | 10 ++++---
- 2 files changed, 37 insertions(+), 43 deletions(-)
+Changes since v1:
+- Also fix sgtl5000_set_bias_level so that suspend/resume/play sequence does
+not fail after several interactions
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index 5bb134b..fdc4bd2 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -763,14 +763,14 @@ static int cs42l56_set_sysclk(struct snd_soc_dai *codec_dai,
- 	case CS42L56_MCLK_11P2896MHZ:
- 	case CS42L56_MCLK_12MHZ:
- 	case CS42L56_MCLK_12P288MHZ:
--		cs42l56->mclk_div2 = 1;
-+		cs42l56->mclk_div2 = CS42L56_MCLK_DIV2;
- 		cs42l56->mclk_prediv = 0;
- 		break;
- 	case CS42L56_MCLK_22P5792MHZ:
- 	case CS42L56_MCLK_24MHZ:
- 	case CS42L56_MCLK_24P576MHZ:
--		cs42l56->mclk_div2 = 1;
--		cs42l56->mclk_prediv = 1;
-+		cs42l56->mclk_div2 = CS42L56_MCLK_DIV2;
-+		cs42l56->mclk_prediv = CS42L56_MCLK_PREDIV;
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -844,57 +844,49 @@ static int cs42l56_digital_mute(struct snd_soc_dai *dai, int mute)
- 		/* Hit the DSP Mixer first */
- 		snd_soc_update_bits(codec, CS42L56_DSP_MUTE_CTL,
- 				    CS42L56_ADCAMIX_MUTE_MASK |
--				CS42L56_ADCBMIX_MUTE_MASK |
--				CS42L56_PCMAMIX_MUTE_MASK |
--				CS42L56_PCMBMIX_MUTE_MASK |
--				CS42L56_MSTB_MUTE_MASK |
--				CS42L56_MSTA_MUTE_MASK,
--				CS42L56_MUTE);
-+				    CS42L56_ADCBMIX_MUTE_MASK |
-+				    CS42L56_PCMAMIX_MUTE_MASK |
-+				    CS42L56_PCMBMIX_MUTE_MASK |
-+				    CS42L56_MSTB_MUTE_MASK |
-+				    CS42L56_MSTA_MUTE_MASK,
-+				    CS42L56_MUTE_ALL);
- 		/* Mute ADC's */
- 		snd_soc_update_bits(codec, CS42L56_MISC_ADC_CTL,
--				CS42L56_ADCA_MUTE_MASK |
--				CS42L56_ADCB_MUTE_MASK,
--				CS42L56_MUTE);
-+				    CS42L56_ADCA_MUTE_MASK |
-+				    CS42L56_ADCB_MUTE_MASK,
-+				    CS42L56_MUTE_ALL);
- 		/* HP And LO */
- 		snd_soc_update_bits(codec, CS42L56_HPA_VOLUME,
--				CS42L56_HP_MUTE_MASK,
--				CS42L56_MUTE);
-+				    CS42L56_HP_MUTE_MASK, CS42L56_MUTE_ALL);
- 		snd_soc_update_bits(codec, CS42L56_HPB_VOLUME,
--				CS42L56_HP_MUTE_MASK,
--				CS42L56_MUTE);
-+				    CS42L56_HP_MUTE_MASK, CS42L56_MUTE_ALL);
- 		snd_soc_update_bits(codec, CS42L56_LOA_VOLUME,
--				CS42L56_LO_MUTE_MASK,
--				CS42L56_MUTE);
-+				    CS42L56_LO_MUTE_MASK, CS42L56_MUTE_ALL);
- 		snd_soc_update_bits(codec, CS42L56_LOB_VOLUME,
--				CS42L56_LO_MUTE_MASK,
--				CS42L56_MUTE);
+ sound/soc/codecs/sgtl5000.c | 50 +++++++++++++++++++++++++--------------------
+ 1 file changed, 28 insertions(+), 22 deletions(-)
+
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 9626ee0..53511c6 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -36,18 +36,32 @@
+ 
+ /* default value of sgtl5000 registers */
+ static const struct reg_default sgtl5000_reg_defaults[] = {
++	{ SGTL5000_CHIP_DIG_POWER,		0x0000 },
+ 	{ SGTL5000_CHIP_CLK_CTRL,		0x0008 },
+ 	{ SGTL5000_CHIP_I2S_CTRL,		0x0010 },
+ 	{ SGTL5000_CHIP_SSS_CTRL,		0x0010 },
++	{ SGTL5000_CHIP_ADCDAC_CTRL,		0x020c },
+ 	{ SGTL5000_CHIP_DAC_VOL,		0x3c3c },
+ 	{ SGTL5000_CHIP_PAD_STRENGTH,		0x015f },
++	{ SGTL5000_CHIP_ANA_ADC_CTRL,		0x0000 },
+ 	{ SGTL5000_CHIP_ANA_HP_CTRL,		0x1818 },
+ 	{ SGTL5000_CHIP_ANA_CTRL,		0x0111 },
++	{ SGTL5000_CHIP_LINREG_CTRL,		0x0000 },
++	{ SGTL5000_CHIP_REF_CTRL,		0x0000 },
++	{ SGTL5000_CHIP_MIC_CTRL,		0x0000 },
++	{ SGTL5000_CHIP_LINE_OUT_CTRL,		0x0000 },
+ 	{ SGTL5000_CHIP_LINE_OUT_VOL,		0x0404 },
+ 	{ SGTL5000_CHIP_ANA_POWER,		0x7060 },
+ 	{ SGTL5000_CHIP_PLL_CTRL,		0x5000 },
++	{ SGTL5000_CHIP_CLK_TOP_CTRL,		0x0000 },
++	{ SGTL5000_CHIP_ANA_STATUS,		0x0000 },
++	{ SGTL5000_CHIP_SHORT_CTRL,		0x0000 },
++	{ SGTL5000_CHIP_ANA_TEST2,		0x0000 },
++	{ SGTL5000_DAP_CTRL,			0x0000 },
++	{ SGTL5000_DAP_PEQ,			0x0000 },
+ 	{ SGTL5000_DAP_BASS_ENHANCE,		0x0040 },
+ 	{ SGTL5000_DAP_BASS_ENHANCE_CTRL,	0x051f },
++	{ SGTL5000_DAP_AUDIO_EQ,		0x0000 },
+ 	{ SGTL5000_DAP_SURROUND,		0x0040 },
+ 	{ SGTL5000_DAP_EQ_BASS_BAND0,		0x002f },
+ 	{ SGTL5000_DAP_EQ_BASS_BAND1,		0x002f },
+@@ -55,6 +69,7 @@ static const struct reg_default sgtl5000_reg_defaults[] = {
+ 	{ SGTL5000_DAP_EQ_BASS_BAND3,		0x002f },
+ 	{ SGTL5000_DAP_EQ_BASS_BAND4,		0x002f },
+ 	{ SGTL5000_DAP_MAIN_CHAN,		0x8000 },
++	{ SGTL5000_DAP_MIX_CHAN,		0x0000 },
+ 	{ SGTL5000_DAP_AVC_CTRL,		0x0510 },
+ 	{ SGTL5000_DAP_AVC_THRESHOLD,		0x1473 },
+ 	{ SGTL5000_DAP_AVC_ATTACK,		0x0028 },
+@@ -924,20 +939,6 @@ static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
+ 			if (ret)
+ 				return ret;
+ 			udelay(10);
 -
+-			regcache_cache_only(sgtl5000->regmap, false);
 -
-+				    CS42L56_LO_MUTE_MASK, CS42L56_MUTE_ALL);
- 	} else {
- 		snd_soc_update_bits(codec, CS42L56_DSP_MUTE_CTL,
- 				    CS42L56_ADCAMIX_MUTE_MASK |
--				CS42L56_ADCBMIX_MUTE_MASK |
--				CS42L56_PCMAMIX_MUTE_MASK |
--				CS42L56_PCMBMIX_MUTE_MASK |
--				CS42L56_MSTB_MUTE_MASK |
--				CS42L56_MSTA_MUTE_MASK,
--				CS42L56_UNMUTE);
-+				    CS42L56_ADCBMIX_MUTE_MASK |
-+				    CS42L56_PCMAMIX_MUTE_MASK |
-+				    CS42L56_PCMBMIX_MUTE_MASK |
-+				    CS42L56_MSTB_MUTE_MASK |
-+				    CS42L56_MSTA_MUTE_MASK,
-+				    CS42L56_UNMUTE);
+-			ret = regcache_sync(sgtl5000->regmap);
+-			if (ret != 0) {
+-				dev_err(codec->dev,
+-					"Failed to restore cache: %d\n", ret);
+-
+-				regcache_cache_only(sgtl5000->regmap, true);
+-				regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
+-						       sgtl5000->supplies);
+-
+-				return ret;
+-			}
+ 		}
+ 
+ 		break;
+@@ -1063,7 +1064,10 @@ static bool sgtl5000_readable(struct device *dev, unsigned int reg)
+ #ifdef CONFIG_SUSPEND
+ static int sgtl5000_suspend(struct snd_soc_codec *codec)
+ {
++	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
 +
- 		snd_soc_update_bits(codec, CS42L56_MISC_ADC_CTL,
--				CS42L56_ADCA_MUTE_MASK |
--				CS42L56_ADCB_MUTE_MASK,
--				CS42L56_UNMUTE);
-+				    CS42L56_ADCA_MUTE_MASK |
-+				    CS42L56_ADCB_MUTE_MASK,
-+				    CS42L56_UNMUTE);
-+
- 		snd_soc_update_bits(codec, CS42L56_HPA_VOLUME,
--				CS42L56_HP_MUTE_MASK,
--				CS42L56_UNMUTE);
-+				    CS42L56_HP_MUTE_MASK, CS42L56_UNMUTE);
- 		snd_soc_update_bits(codec, CS42L56_HPB_VOLUME,
--				CS42L56_HP_MUTE_MASK,
--				CS42L56_UNMUTE);
-+				    CS42L56_HP_MUTE_MASK, CS42L56_UNMUTE);
- 		snd_soc_update_bits(codec, CS42L56_LOA_VOLUME,
--				CS42L56_LO_MUTE_MASK,
--				CS42L56_UNMUTE);
-+				    CS42L56_LO_MUTE_MASK, CS42L56_UNMUTE);
- 		snd_soc_update_bits(codec, CS42L56_LOB_VOLUME,
--				CS42L56_LO_MUTE_MASK,
--				CS42L56_UNMUTE);
-+				    CS42L56_LO_MUTE_MASK, CS42L56_UNMUTE);
- 	}
+ 	sgtl5000_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	regcache_cache_only(sgtl5000->regmap, true);
+ 
  	return 0;
  }
-diff --git a/sound/soc/codecs/cs42l56.h b/sound/soc/codecs/cs42l56.h
-index ad2b50a..5025ec9 100644
---- a/sound/soc/codecs/cs42l56.h
-+++ b/sound/soc/codecs/cs42l56.h
-@@ -80,19 +80,21 @@
- #define CS42L56_PDN_HPB_MASK		0xc0
+@@ -1075,7 +1079,6 @@ static int sgtl5000_suspend(struct snd_soc_codec *codec)
+  */
+ static int sgtl5000_restore_regs(struct snd_soc_codec *codec)
+ {
+-	u16 *cache = codec->reg_cache;
+ 	u16 reg;
  
- /* serial port and clk masks */
--#define CS42L56_MASTER_MODE		1
-+#define CS42L56_MASTER_MODE		0x40
- #define CS42L56_SLAVE_MODE		0
- #define CS42L56_MS_MODE_MASK		0x40
--#define CS42L56_SCLK_INV		1
-+#define CS42L56_SCLK_INV		0x20
- #define CS42L56_SCLK_INV_MASK		0x20
- #define CS42L56_SCLK_MCLK_MASK		0x18
-+#define CS42L56_MCLK_PREDIV		0x04
- #define CS42L56_MCLK_PREDIV_MASK	0x04
-+#define CS42L56_MCLK_DIV2		0x02
- #define CS42L56_MCLK_DIV2_MASK		0x02
- #define CS42L56_MCLK_DIS_MASK		0x01
- #define CS42L56_CLK_AUTO_MASK		0x20
- #define CS42L56_CLK_RATIO_MASK		0x1f
- #define CS42L56_DIG_FMT_I2S		0
--#define CS42L56_DIG_FMT_LEFT_J		1
-+#define CS42L56_DIG_FMT_LEFT_J		0x08
- #define CS42L56_DIG_FMT_MASK		0x08
+ 	/* restore regular registers */
+@@ -1089,12 +1092,12 @@ static int sgtl5000_restore_regs(struct snd_soc_codec *codec)
+ 			reg == SGTL5000_CHIP_REF_CTRL)
+ 			continue;
  
- /* Class H and misc ctl masks */
-@@ -116,7 +118,7 @@
- #define CS42L56_DEEMPH_MASK		0x40
- #define CS42L56_PLYBCK_GANG_MASK	0x10
- #define CS42L56_PCM_INV_MASK		0x0c
--#define CS42L56_MUTE			1
-+#define CS42L56_MUTE_ALL		0xff
- #define CS42L56_UNMUTE			0
- #define CS42L56_ADCAMIX_MUTE_MASK	0x40
- #define CS42L56_ADCBMIX_MUTE_MASK	0x80
+-		snd_soc_write(codec, reg, cache[reg]);
++		snd_soc_write(codec, reg, snd_soc_read(codec, reg));
+ 	}
+ 
+ 	/* restore dap registers */
+ 	for (reg = SGTL5000_DAP_REG_OFFSET; reg < SGTL5000_MAX_REG_OFFSET; reg += 2)
+-		snd_soc_write(codec, reg, cache[reg]);
++		snd_soc_write(codec, reg, snd_soc_read(codec, reg));
+ 
+ 	/*
+ 	 * restore these regs according to the power setting sequence in
+@@ -1110,29 +1113,32 @@ static int sgtl5000_restore_regs(struct snd_soc_codec *codec)
+ 	 *    prefer to resotre it after SGTL5000_CHIP_ANA_POWER restored
+ 	 */
+ 	snd_soc_write(codec, SGTL5000_CHIP_LINREG_CTRL,
+-			cache[SGTL5000_CHIP_LINREG_CTRL]);
++			snd_soc_read(codec, SGTL5000_CHIP_LINREG_CTRL));
+ 
+ 	snd_soc_write(codec, SGTL5000_CHIP_ANA_POWER,
+-			cache[SGTL5000_CHIP_ANA_POWER]);
++			snd_soc_read(codec, SGTL5000_CHIP_ANA_POWER));
+ 
+ 	snd_soc_write(codec, SGTL5000_CHIP_CLK_CTRL,
+-			cache[SGTL5000_CHIP_CLK_CTRL]);
++			snd_soc_read(codec, SGTL5000_CHIP_CLK_CTRL));
+ 
+ 	snd_soc_write(codec, SGTL5000_CHIP_REF_CTRL,
+-			cache[SGTL5000_CHIP_REF_CTRL]);
++			snd_soc_read(codec, SGTL5000_CHIP_REF_CTRL));
+ 
+ 	snd_soc_write(codec, SGTL5000_CHIP_LINE_OUT_CTRL,
+-			cache[SGTL5000_CHIP_LINE_OUT_CTRL]);
++			snd_soc_read(codec, SGTL5000_CHIP_LINE_OUT_CTRL));
+ 	return 0;
+ }
+ 
+ static int sgtl5000_resume(struct snd_soc_codec *codec)
+ {
++	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
+ 	/* Bring the codec back up to standby to enable regulators */
+ 	sgtl5000_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+ 	/* Restore registers by cached in memory */
+ 	sgtl5000_restore_regs(codec);
++
++	regcache_cache_only(sgtl5000->regmap, false);
+ 	return 0;
+ }
+ #else
 -- 
 1.8.3.2
