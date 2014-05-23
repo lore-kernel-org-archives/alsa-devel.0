@@ -1,58 +1,84 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 1/2] doc: dt bindings: Document Odroid X2/U3 audio
- subsystem bindings
-Date: Fri, 23 May 2014 11:54:31 +0200
-Message-ID: <537F1AD7.1070808@samsung.com>
-References: <1400759708-25831-1-git-send-email-s.nawrocki@samsung.com>
- <20140522184656.GS12304@sirena.org.uk>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: MiniDSP USBStreamer / UAC2 / Alsamixer bogus
+Date: Fri, 23 May 2014 12:10:15 +0200
+Message-ID: <537F1E87.2010707@zonque.org>
+References: <trinity-69d5b18f-8b7a-4d6a-97e4-025a61f952fe-1400780207708@3capp-gmx-bs24>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20140522184656.GS12304@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id B099B261ACB
+ for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 12:10:17 +0200 (CEST)
+In-Reply-To: <trinity-69d5b18f-8b7a-4d6a-97e4-025a61f952fe-1400780207708@3capp-gmx-bs24>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jan Baumgart <raga.raga@gmx.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 22/05/14 20:46, Mark Brown wrote:
-> On Thu, May 22, 2014 at 01:55:07PM +0200, Sylwester Nawrocki wrote:
+Hi Jan,
+
+On 05/22/2014 07:36 PM, Jan Baumgart wrote:
+>    Today I received a MiniDSP USBStreamer Box.
+>    (http://www.minidsp.com/products/usb-audio-interface/usbstreamer-box)
+>    It's an USB to ADAT optical interface and claims to be UAC2 compliant.
+>    It's based on a XMOS L2 core.
 > 
->> +	sound {
->> +		compatible = "samsung,odroidx2-audio";
->> +		samsung,i2s-controller = <&i2s0>;
->> +		samsung,audio-codec = <&max98090>;
->> +	};
+>    Audio worked out of the box!
+>    8-Channels In & Out :)
+
+Nice!
+
+>    But the alsamixer controls seem to be bogus.
+>    Here's a screenshot of qasmixer:
+>    icem.folkwang-uni.de/~jb/geheim/usbstreamer_qasmixer.png
 > 
-> Can this not use simple-card?
+>    All controls are named "USBStreamer Clock Selector"...
 
-I dug into that and it seems it almost could, but there is one
-thing I'm not sure how to cover with the simple-card DT bindings
-and the related driver.
+That's strange indeed.
 
-There are these two calls:
+>    The first control always snaps back to zero.
 
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_OPCLK,
-+					0, MOD_OPCLK_PCLK);
+This is likely a separate problem.
+
+>    The following 8 Multi-Controls don't have any effect.
+>    Only the last two Input/Ouput Master controls work as expected.
+
+Could you read through Documentation/usb/usbmon.txt and follow the
+instructions there? Then capture the packets that are transmitted when
+you try to set the ALSA controls with amixer. I'd like to know whether
+the right units are addressed at all. Make sure to denote in the trace
+which amixer control you set, and which traffic resulted from that.
+
+Also, a snapping back control means that the driver got an interrupt
+from the device. The corresponding packet should also be visible in the
+dump.
+
+>    On OS X 10.8.5 without installing any driver I see 8 Input/Output
+>    Volume Sliders + Master Sliders and a working Clock Selector.
+
+Ok, so that means it's definitely a bug on our side.
+
+>    I'm running debian testing with a 3.13-1-amd64 stock kernel.
+
+You can already build a kernel from today's sound master git, as this is
+the base for new patches:
+
+  https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/
+
+>    Any ideas? I've attached lsusb and amixer infos below...
+
+Excellent - thanks a bunch for such detailed information!
+
+I'll hope to find some time soon to comprehend what's going on.
 
 
-+	/* Set the cpu DAI configuration in order to use CDCLK */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
-+					0, SND_SOC_CLOCK_OUT);
-
-This changes clocks routing so that the CPU DAI in slave mode generates
-master clock for the codec, on the SoC's CDCLK pin. Then this is
-a reference clock for the codec's PLL, which is a source of the I2S
-interface clocks.
-
-It's done this way to avoid changing at runtime frequency of the EPLL
-clock, which may be parent of other clocks than the sound subsystem,
-e.g. MMC.
-
-simple-card just calls set_sysclk once for the CPU DAI and CODEC with
-the second and last argument set to 0.
-I'll try and see again if there is some way to use simple-card.
-
--- 
 Thanks,
-Sylwester
+Daniel
