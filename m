@@ -1,60 +1,62 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH 07/13] ASoC: omap-hdmi-card: Add platform data stuct for omap-hdmi-card driver
-Date: Fri, 23 May 2014 22:07:56 +0300
-Message-ID: <49e1e8f9d6841b63f6ba096743f48c94842fe956.1400871999.git.jsarha@ti.com>
-References: <cover.1400871999.git.jsarha@ti.com>
+From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH 1/2] ASoC: cs4265: bindings: sound: Add bindings for CS4265 CODEC
+Date: Fri, 23 May 2014 14:16:53 -0500
+Message-ID: <1400872614-21666-1-git-send-email-Paul.Handrigan@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <cover.1400871999.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, tomi.valkeinen@ti.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Paul Handrigan <paul.handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The names of the needed ASoC component drivers need to be passed to
-the omap-hdmi-card driver for it to find them.
+This patch adds binding documentation for the Cirrus Logic CS4265 CODEC.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
+Signed-off-by: Paul Handrigan <paul.handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 ---
- include/sound/omap-hdmi-card-pdata.h |   28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
- create mode 100644 include/sound/omap-hdmi-card-pdata.h
+ Documentation/devicetree/bindings/sound/cs4265.txt | 29 ++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs4265.txt
 
-diff --git a/include/sound/omap-hdmi-card-pdata.h b/include/sound/omap-hdmi-card-pdata.h
+diff --git a/Documentation/devicetree/bindings/sound/cs4265.txt b/Documentation/devicetree/bindings/sound/cs4265.txt
 new file mode 100644
-index 0000000..f70495b
+index 0000000..03d0dde
 --- /dev/null
-+++ b/include/sound/omap-hdmi-card-pdata.h
-@@ -0,0 +1,28 @@
-+/*
-+ * omap-hdmi-card-pdata.h
-+ *
-+ * Platform data for OMAP ALSA SoC card driver for HDMI audio on OMAP4+
-+ * processors.
-+ * Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/
-+ * Authors: Jyri Sarha <jsarha@ti.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ */
++++ b/Documentation/devicetree/bindings/sound/cs4265.txt
+@@ -0,0 +1,29 @@
++CS4265 audio CODEC
 +
-+#ifndef __OMAP_HDMI_CARD_PDATA_H__
-+#define __OMAP_HDMI_CARD_PDATA_H__
++This device supports I2C only.
 +
-+struct asoc_omap_hdmi_card_pdata {
-+	const char *cpudai_name;
-+	const char *codec_name;
++Required properties:
++
++  - compatible : "cirrus,cs4265"
++
++  - reg : the I2C address of the device for I2C. The I2C address depends on
++          the state of the AD0 pin.  If AD0 is high, the i2c address is 0x4f.
++          If it is low, the i2c address is 0x4e.
++
++Optional properties:
++
++  - reset-gpio : a GPIO spec for the reset pin. If specified, it will be
++		 deasserted before communication to the codec starts.
++
++Examples:
++
++codec_ad0_high: cs4265@4f { /* AD0 Pin is high */
++	compatible = "cirrus,cs4265";
++	reg = <0x4f>;
 +};
 +
-+#endif
++
++codec_ad0_low: cs4265@4e { /* AD0 Pin is low */
++	compatible = "cirrus,cs4265";
++	reg = <0x4e>;
++};
 -- 
-1.7.9.5
+1.9.1
 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
