@@ -1,21 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [RFT v3 3/3] ASoC: core: Add support for DAI
-	multicodec
-Date: Fri, 23 May 2014 14:42:26 +0200
-Message-ID: <537F4232.4090801@metafoo.de>
-References: <1398340906-5017-1-git-send-email-bcousson@baylibre.com>
- <1398340906-5017-4-git-send-email-bcousson@baylibre.com>
- <535BABCF.6080001@metafoo.de> <5374D6BF.4060500@baylibre.com>
- <5375EC1C.9020909@metafoo.de> <537DA0C6.7080502@baylibre.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] hda-emu: Add new HDMI commands
+Date: Fri, 23 May 2014 15:58:24 +0200
+Message-ID: <1400853504-17405-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-176.synserver.de (smtp-out-181.synserver.de
- [212.40.185.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 89F73264FE3
- for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 14:42:31 +0200 (CEST)
-In-Reply-To: <537DA0C6.7080502@baylibre.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD046264F28
+ for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 15:58:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,70 +19,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Benoit Cousson <bcousson@baylibre.com>
-Cc: Fabien Parent <fparent@baylibre.com>, misael.lopez@ti.com, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/22/2014 09:01 AM, Benoit Cousson wrote:
-> Hi Lars,
->
-> On 16/05/2014 12:44, Lars-Peter Clausen wrote:
->> On 05/15/2014 05:01 PM, Benoit Cousson wrote:
->
-> [...]
->
->>>>> @@ -1586,16 +1626,21 @@ static int soc_probe_link_dais(struct
->>>>> snd_soc_card *card, int num, int order)
->>>>>                             codec2codec_close_delayed_work);
->>>>>
->>>>>                 /* link the DAI widgets */
->>>>> -            ret = soc_link_dai_widgets(card, dai_link,
->>>>> -                    cpu_dai, codec_dai);
->>>>> -            if (ret)
->>>>> -                return ret;
->>>>> +            for (i = 0; i < rtd->num_codecs; i++) {
->>>>> +                ret = soc_link_dai_widgets(card, dai_link,
->>>>> +                        cpu_dai, rtd->codec_dais[i]);
->>>>
->>>> This will create a DAI link widget for each CODEC DAI. The DAI link
->>>> widget will configure the CPU and the CODEC DAI that are connected to
->>>> it. If there is one DAI link widget per CODEC DAI this means that the
->>>> CPU DAI will be connected to multiple DAI link widgets, which means it
->>>> will be configured once for each CODEC DAI (with possible conflicting
->>>> configurations).
->>>
->>> I've got that point, but now I'm wondering what struct should be per
->>> codec_dai. Should we consider one source and several sinks to
->>> represent the multiple codecs?
->>
->> The soc_link_dai_widgets function should take the rtd as a parameter
->> instead of the CODEC and CPU DAIs. Same goes for snd_soc_dapm_new_pcm()
->> then you create one dai_link widget per stream (i.e. one for capture of
->> there is capture support, one for playback if there is playback
->> support). And then create the paths between the dai_link widgets and the
->> DAI widgets accordingly.
->
-> I'm still not 100% sure how it should work so here is a tentative patch to try to handle that part. Please note that in my setup none of that code is ever called :-( I'm not sure why!
->
-> Please ignore the extra DEBUG code I added and there is probably some way to factorize some code, but I'd like to be sure that this is the proper way to handle the routes in the multicodec case before re-sending that series.
+Some new HDMI commands were added recently to the HDA driver.
+This patch makes hda-emu support these new commands (or at least,
+not output errors).
 
-If we do not want to support CODEC<-->CODEC links with multiple CODECs you 
-do not have to care about this for now. But I think the code looks good. The 
-result should look something like this:
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ hda-int.c           | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ include/hda-types.h |  2 ++
+ 2 files changed, 55 insertions(+)
 
-                     +----------+
-                     | Playback | --> [ CODEC 1 DAI ]
-         [ CPU ] --> | DAI LINK | --> [ CODEC 2 DAI ]
-                     |          | --> [ CODEC 3 DAI ]
-                     +----------+
-
-                     +----------+
-[ CODEC 1 DAI ]-- > | Capture  |
-[ CODEC 2 DAI ] --> | DAI LINK | --> [ CPU DAI ]
-[ CODEC 3 DAI ] --> |          |
-                     +----------+
-
-Also note that the code in upstream is now using snd_soc_dapm_add_path() 
-rather than snd_soc_dapm_add_route()
-
-- Lars
+diff --git a/hda-int.c b/hda-int.c
+index ef90fe8..6dd862d 100644
+--- a/hda-int.c
++++ b/hda-int.c
+@@ -823,6 +823,52 @@ static int get_cvt_channel_count(struct xhda_codec *codec,
+ 	return node->cvt_channel_count;
+ }
+ 
++static int get_asp_channel_slot(struct xhda_codec *codec,
++				struct xhda_node *node, unsigned int cmd)
++{
++	return (node->asp_channel_slot[cmd & 0xf] << 4) + (cmd & 0xf);
++}
++
++static int set_asp_channel_slot(struct xhda_codec *codec,
++				struct xhda_node *node, unsigned int cmd)
++{
++	node->asp_channel_slot[cmd & 0xf] = (cmd & 0xf0) >> 4;
++	return 0;
++}
++
++static int set_dip_index(struct xhda_codec *codec,
++			 struct xhda_node *node, unsigned int cmd)
++{
++	return 0; /* FIXME */
++}
++
++static int set_dip_data(struct xhda_codec *codec,
++			struct xhda_node *node, unsigned int cmd)
++{
++	return 0; /* FIXME */
++}
++
++static int get_dip_size(struct xhda_codec *codec,
++			struct xhda_node *node, unsigned int cmd)
++{
++	if (cmd & 0x8)
++		return 128; /* ELD buffer size */
++	return 32; /* DIP buffer size */
++}
++
++static int set_dip_xmitctrl(struct xhda_codec *codec,
++			    struct xhda_node *node, unsigned int cmd)
++{
++	node->dip_xmitctrl = cmd & 0xc0;
++	return 0;
++}
++
++static int get_dip_xmitctrl(struct xhda_codec *codec,
++			    struct xhda_node *node, unsigned int cmd)
++{
++	return node->dip_xmitctrl;
++}
++
+ 
+ /*
+  * parameters
+@@ -1063,6 +1109,10 @@ static struct xhda_verb_table verb_tbl[] = {
+ 	{ 0x71e, set_config_def_2, "set_config_def_2" },
+ 	{ 0x71f, set_config_def_3, "set_config_def_3" },
+ 	{ 0x72d, set_cvt_channel_count, "set_cvt_channel_count" },
++	{ 0x730, set_dip_index, "set_dip_index" },
++	{ 0x731, set_dip_data, "set_dip_data" },
++	{ 0x732, set_dip_xmitctrl, "set_dip_xmitctrl" },
++	{ 0x734, set_asp_channel_slot, "set_asp_channel_slot" },
+ 	{ 0x7ff, set_codec_reset, "set_codec_reset" },
+ 	{ 0xf00, get_parameters, "get_parameters" },
+ 	{ 0xf01, get_connect_sel, "get_connect_sel" },
+@@ -1087,6 +1137,9 @@ static struct xhda_verb_table verb_tbl[] = {
+ 	{ 0xf1c, get_config_default, "get_config_default" },
+ 	{ 0xf20, get_ssid, "get_ssid" },
+ 	{ 0xf2d, get_cvt_channel_count, "get_cvt_channel_count" },
++	{ 0xf2e, get_dip_size, "get_dip_size" },
++	{ 0xf32, get_dip_xmitctrl, "get_dip_xmitctrl" },
++	{ 0xf34, get_asp_channel_slot, "get_asp_channel_slot" },
+ 	{}
+ };
+ 
+diff --git a/include/hda-types.h b/include/hda-types.h
+index fe6b31f..46bfc67 100644
+--- a/include/hda-types.h
++++ b/include/hda-types.h
+@@ -58,6 +58,8 @@ struct xhda_node {
+ 	unsigned char gpio_wake, gpio_unsol, gpio_sticky;
+ 	unsigned int coef_idx;
+ 	unsigned char cvt_channel_count;
++	unsigned char asp_channel_slot[16];
++	unsigned char dip_xmitctrl;
+ 	struct xhda_coef_table *coef_tbl;
+ 	struct xhda_node *next;
+ };
+-- 
+1.9.1
