@@ -1,85 +1,77 @@
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH 00/19] Rework OMAP4+ HDMI audio support
-Date: Fri, 23 May 2014 14:02:37 +0300
-Message-ID: <537F2ACD.6030603@ti.com>
-References: <cover.1399884780.git.jsarha@ti.com> <20140512150616.GF31772@atomide.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: samsung: Add machine driver for odroidx2
+Date: Fri, 23 May 2014 12:05:44 +0100
+Message-ID: <20140523110544.GY12304@sirena.org.uk>
+References: <1400759708-25831-1-git-send-email-s.nawrocki@samsung.com>
+ <1400759708-25831-2-git-send-email-s.nawrocki@samsung.com>
+ <20140522185334.GT12304@sirena.org.uk>
+ <537F0A88.8000904@samsung.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="oiPfMWKmiB6kXRrMgOXOCOqKeJjHKB8cb"
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20140512150616.GF31772@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>, Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com
+	protocol="application/pgp-signature"; boundary="MZRUDfwK0cLsyVHQ"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <537F0A88.8000904@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Chen Zhen <zhen1.chen@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
---oiPfMWKmiB6kXRrMgOXOCOqKeJjHKB8cb
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
 
-On 12/05/14 18:06, Tony Lindgren wrote:
-> * Jyri Sarha <jsarha@ti.com> [140512 02:13]:
->> Since RFC version of the patch set:=20
->> - Split callbacks removal patch away from "Integrated ASoC DAI
->>   component driver implementation" patches for easier reading
->>
->> This set of patches fixes OMAP4+ HDMI audio. The structure of the
->> implementatin looks a bit different than before. Instead of creating a=
+--MZRUDfwK0cLsyVHQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> driver specific API for a separate ASoC component driver to connect
->> to, this implementation integrates an the component driver into the
->> HDMI driver.
->>
->> The idea is to use an existing ASoC component driver API instead of
->> creating a new custom API for each HDMI IP and to avoid splitting the
->> driver to half for separate video and audio parts connected with the
->> API.
->>
->> The new implementation also uses simple-audio-card for a machine
->> driver instead of having its own HW specific machine driver.
->=20
-> Can you guys please post this split into the following separate
-> parts for the maintainers to merge:
->=20
-> - ASoC changes
-> - DSS changes
-> - DTS changes
->=20
-> And once those are all in, please post the defconfig changes.
+On Fri, May 23, 2014 at 10:44:56AM +0200, Sylwester Nawrocki wrote:
+> On 22/05/14 20:53, Mark Brown wrote:
 
-Tony, this series will get delayed until 3.17, but I'd like to merge the
-HDMI DMA channel changes to omap4/omap5.dtsi already to 3.16. They are
-patches 13 and 15.
+> As for the DT binding documentation patch, I thought we're supposed to keep
+> documentation in separate patches, so processes of separating it from the
+> kernel is easier ?
 
-Those are very trivial, but I'd rather have acks from you for all the
-=2Edts changes I'll be sending.
+I'm not sure what the current theory is - they should definitely be
+separate if they're part of a multi-patch series but for a single patch
+I don't remember what the current taste is.  If you're sending to the
+same recipients anyway splitting isn't going to accomplish much, the
+idea was to only send the DT binding to the DT maintainers and list and
+not the code.
 
- Tomi
+> >> +	ret = snd_soc_dai_set_sysclk(codec_dai, 3, MAX98090_MCLK_FREQ,
+> >> +				     SND_SOC_CLOCK_IN);
+> >> +	if (ret < 0) {
+> >> +		dev_err(codec_dai->dev,
+> >> +			"Unable to switch to FLL1: %d\n", ret);
+> >> +		return ret;
+> >> +	}
 
+> > So's this - also what is 3?  Set it on init.
 
+> OK, will move it. I'm not sure why 3, it seems to be ignored by the codec
+> anyway. Chen, can you confirm the second argument is actually a don't care
+> value ?
 
---oiPfMWKmiB6kXRrMgOXOCOqKeJjHKB8cb
+If it's don't care supply 0 instead.
+
+--MZRUDfwK0cLsyVHQ
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTfyrTAAoJEPo9qoy8lh71ROgP/iOog0kAlegSyAHuak6SOcYl
-N7ZXQMzlnU6Yc1GjDyOJmIdSx3fYXtWdolYQTGR4QRN9hXm4xBiQIGTL+LIBAngD
-YgPhwQQzJCTdsweoyMH5RRPHV6rAJ4uwDA/8PEnjbilctM/tLt+QGQhXucWepd1+
-jbA1+2IeduTmoqaAKkXWNJrkduVJGSw7+KTEao/fT342NI/UHmVu7dT/YMz6FyVn
-iwA+PMbKAnNnZddLAC6H8QWMr3oY5rDQFu6tT3/AeVCT2J0nGZWwy+6bXhbRCCJI
-59am90u+hAaqmdTXRkLKrceZO15pE8Iaf6EvfNyITM0e2+t9oGUnWpyMO0pLF9pZ
-u9I7VmTvsSH3alMwH1yORj+mU4VmEtRpwbHkN3WRI11XJzZz1UovEN0lnogC7opD
-KXiLYWbx344ILxJhxSItBUujX7FzEiTTyrSWUh30vjVgw9I+6TDsb2JckR8Xzz4B
-48hJFC1AdNNV+ktYe4fAe1RbGASzitOFf3o8xiVE8TajpeVWV9rpwWOyi65bLo9s
-ysshfrAModJSHdevgZ9K9AL0LMkG1cbHxQlucDAStL5G0Cv4hhdYrFkTRP3z5d2h
-UEwy+MqRZSv75yDnDaNXlUoY1+r0/h8+Snbv9al1W8oTsY0TSxsBEOwkTAxgofy3
-zvZxejbOW+8/8peLICSh
-=Md8W
+iQIcBAEBAgAGBQJTfyuEAAoJELSic+t+oim955YP/0q2lXOX0mplig4lK/bLQD55
+YThdFpX2rEAEI0ZhU+YcfydG2K3Um3tHpoMm9PV9yTBFPjzlVK7Ja1FosyDba5kc
+JhCdG0ckeUvxaj5IZ7Pa9KkxqfW0CIZZ09yk5NqbOnj9C6+vqXKZYCkvL6BavZ3h
+3Voa4TUQY1WLf1Zlx1C+FiMia6aHWfQVmh3tidKkJ/WdwEeHfNJl/Jnl4EDrNJ5I
+KBVXtS4yff+9LZP1qaLtkLkzSVmQrtPGFj6LBrywH67L8rNkdqbN1ZtbeRGU4cx8
+gX+RcdkljWjfP/BUsM6+UlsJ+3Xw4RKK6Qyi8Qy9f//VAPowRRbz7f+9HRao6uHz
+F27YEcqwXTvA1DXJdeX4Uf+c3DUxhJkyQxB6wFgV4fTHfpLNhCLULLeSl/De67Ie
+AZE7lOhGBsa77+T6Ew9M/ZXT9YuK1dIYQhg1YxPn2ZgmLLJi64wTrQaY9GguIxCF
+zO5zR8eh2dxi2GIRyErAR4VP6MT3iVz6qauTYOwEBkQbe7lB09+P9XxP+GXjH1Gh
+xTP5q9SZ7KGpoGJR8NKQwNeWAR6WWFcnLJBpxVuTj4J0tB7G0crBs3P9ZRCXupFs
+F8/D8TAAVFPe/18c2+Q/pgEMXogAnqxZZ5lfvqHyIxwOir1NgB4rRCv+bSxWKBEA
+bejqPtatfOqu5udrR5oQ
+=HKeh
 -----END PGP SIGNATURE-----
 
---oiPfMWKmiB6kXRrMgOXOCOqKeJjHKB8cb--
+--MZRUDfwK0cLsyVHQ--
