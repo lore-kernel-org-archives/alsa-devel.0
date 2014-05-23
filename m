@@ -1,84 +1,85 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: MiniDSP USBStreamer / UAC2 / Alsamixer bogus
-Date: Fri, 23 May 2014 12:10:15 +0200
-Message-ID: <537F1E87.2010707@zonque.org>
-References: <trinity-69d5b18f-8b7a-4d6a-97e4-025a61f952fe-1400780207708@3capp-gmx-bs24>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH 00/19] Rework OMAP4+ HDMI audio support
+Date: Fri, 23 May 2014 14:02:37 +0300
+Message-ID: <537F2ACD.6030603@ti.com>
+References: <cover.1399884780.git.jsarha@ti.com> <20140512150616.GF31772@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id B099B261ACB
- for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 12:10:17 +0200 (CEST)
-In-Reply-To: <trinity-69d5b18f-8b7a-4d6a-97e4-025a61f952fe-1400780207708@3capp-gmx-bs24>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jan Baumgart <raga.raga@gmx.de>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="oiPfMWKmiB6kXRrMgOXOCOqKeJjHKB8cb"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20140512150616.GF31772@atomide.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>, Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, bcousson@baylibre.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jan,
+--oiPfMWKmiB6kXRrMgOXOCOqKeJjHKB8cb
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-On 05/22/2014 07:36 PM, Jan Baumgart wrote:
->    Today I received a MiniDSP USBStreamer Box.
->    (http://www.minidsp.com/products/usb-audio-interface/usbstreamer-box)
->    It's an USB to ADAT optical interface and claims to be UAC2 compliant.
->    It's based on a XMOS L2 core.
-> 
->    Audio worked out of the box!
->    8-Channels In & Out :)
+On 12/05/14 18:06, Tony Lindgren wrote:
+> * Jyri Sarha <jsarha@ti.com> [140512 02:13]:
+>> Since RFC version of the patch set:=20
+>> - Split callbacks removal patch away from "Integrated ASoC DAI
+>>   component driver implementation" patches for easier reading
+>>
+>> This set of patches fixes OMAP4+ HDMI audio. The structure of the
+>> implementatin looks a bit different than before. Instead of creating a=
 
-Nice!
+>> driver specific API for a separate ASoC component driver to connect
+>> to, this implementation integrates an the component driver into the
+>> HDMI driver.
+>>
+>> The idea is to use an existing ASoC component driver API instead of
+>> creating a new custom API for each HDMI IP and to avoid splitting the
+>> driver to half for separate video and audio parts connected with the
+>> API.
+>>
+>> The new implementation also uses simple-audio-card for a machine
+>> driver instead of having its own HW specific machine driver.
+>=20
+> Can you guys please post this split into the following separate
+> parts for the maintainers to merge:
+>=20
+> - ASoC changes
+> - DSS changes
+> - DTS changes
+>=20
+> And once those are all in, please post the defconfig changes.
 
->    But the alsamixer controls seem to be bogus.
->    Here's a screenshot of qasmixer:
->    icem.folkwang-uni.de/~jb/geheim/usbstreamer_qasmixer.png
-> 
->    All controls are named "USBStreamer Clock Selector"...
+Tony, this series will get delayed until 3.17, but I'd like to merge the
+HDMI DMA channel changes to omap4/omap5.dtsi already to 3.16. They are
+patches 13 and 15.
 
-That's strange indeed.
+Those are very trivial, but I'd rather have acks from you for all the
+=2Edts changes I'll be sending.
 
->    The first control always snaps back to zero.
-
-This is likely a separate problem.
-
->    The following 8 Multi-Controls don't have any effect.
->    Only the last two Input/Ouput Master controls work as expected.
-
-Could you read through Documentation/usb/usbmon.txt and follow the
-instructions there? Then capture the packets that are transmitted when
-you try to set the ALSA controls with amixer. I'd like to know whether
-the right units are addressed at all. Make sure to denote in the trace
-which amixer control you set, and which traffic resulted from that.
-
-Also, a snapping back control means that the driver got an interrupt
-from the device. The corresponding packet should also be visible in the
-dump.
-
->    On OS X 10.8.5 without installing any driver I see 8 Input/Output
->    Volume Sliders + Master Sliders and a working Clock Selector.
-
-Ok, so that means it's definitely a bug on our side.
-
->    I'm running debian testing with a 3.13-1-amd64 stock kernel.
-
-You can already build a kernel from today's sound master git, as this is
-the base for new patches:
-
-  https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/
-
->    Any ideas? I've attached lsusb and amixer infos below...
-
-Excellent - thanks a bunch for such detailed information!
-
-I'll hope to find some time soon to comprehend what's going on.
+ Tomi
 
 
-Thanks,
-Daniel
+
+--oiPfMWKmiB6kXRrMgOXOCOqKeJjHKB8cb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJTfyrTAAoJEPo9qoy8lh71ROgP/iOog0kAlegSyAHuak6SOcYl
+N7ZXQMzlnU6Yc1GjDyOJmIdSx3fYXtWdolYQTGR4QRN9hXm4xBiQIGTL+LIBAngD
+YgPhwQQzJCTdsweoyMH5RRPHV6rAJ4uwDA/8PEnjbilctM/tLt+QGQhXucWepd1+
+jbA1+2IeduTmoqaAKkXWNJrkduVJGSw7+KTEao/fT342NI/UHmVu7dT/YMz6FyVn
+iwA+PMbKAnNnZddLAC6H8QWMr3oY5rDQFu6tT3/AeVCT2J0nGZWwy+6bXhbRCCJI
+59am90u+hAaqmdTXRkLKrceZO15pE8Iaf6EvfNyITM0e2+t9oGUnWpyMO0pLF9pZ
+u9I7VmTvsSH3alMwH1yORj+mU4VmEtRpwbHkN3WRI11XJzZz1UovEN0lnogC7opD
+KXiLYWbx344ILxJhxSItBUujX7FzEiTTyrSWUh30vjVgw9I+6TDsb2JckR8Xzz4B
+48hJFC1AdNNV+ktYe4fAe1RbGASzitOFf3o8xiVE8TajpeVWV9rpwWOyi65bLo9s
+ysshfrAModJSHdevgZ9K9AL0LMkG1cbHxQlucDAStL5G0Cv4hhdYrFkTRP3z5d2h
+UEwy+MqRZSv75yDnDaNXlUoY1+r0/h8+Snbv9al1W8oTsY0TSxsBEOwkTAxgofy3
+zvZxejbOW+8/8peLICSh
+=Md8W
+-----END PGP SIGNATURE-----
+
+--oiPfMWKmiB6kXRrMgOXOCOqKeJjHKB8cb--
