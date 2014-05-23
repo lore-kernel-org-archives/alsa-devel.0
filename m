@@ -1,78 +1,68 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: Re: [PATCH 2/2] ASoC: samsung: Add machine driver for odroidx2
-Date: Fri, 23 May 2014 10:44:56 +0200
-Message-ID: <537F0A88.8000904@samsung.com>
-References: <1400759708-25831-1-git-send-email-s.nawrocki@samsung.com>
- <1400759708-25831-2-git-send-email-s.nawrocki@samsung.com>
- <20140522185334.GT12304@sirena.org.uk>
+From: Shawn Guo <shawn.guo@freescale.com>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Add suspend/resume support
+Date: Fri, 23 May 2014 17:18:21 +0800
+Message-ID: <20140523091820.GB2650@dragon>
+References: <1400823536-31708-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <20140522185334.GT12304@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Chen Zhen <zhen1.chen@samsung.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0210.outbound.protection.outlook.com [207.46.163.210])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0096F261ACD
+ for <alsa-devel@alsa-project.org>; Fri, 23 May 2014 11:18:36 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1400823536-31708-1-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-On 22/05/14 20:53, Mark Brown wrote:
-> On Thu, May 22, 2014 at 01:55:08PM +0200, Sylwester Nawrocki wrote:
->> From: Chen Zhen <zhen1.chen@samsung.com>
->>
->> This machine driver primary defines the audio path, the supported
->> data formats and sample frequency.
+On Fri, May 23, 2014 at 02:38:56AM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
 > 
-> I guess it can't yet, it would have been good to explain that in the
-> changelog for the bindings (and include the binding in this patch...).
-
-Thanks for the review, I'm still rather inexperienced in the ASoC stuff,
-I've obviously overlooked there is actually no routing handling. I'd rather
-add those bits.
-As for the DT binding documentation patch, I thought we're supposed to keep
-documentation in separate patches, so processes of separating it from the
-kernel is easier ?
-
->> +	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
->> +					| SND_SOC_DAIFMT_NB_NF
->> +					| SND_SOC_DAIFMT_CBM_CFM);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
->> +					| SND_SOC_DAIFMT_NB_NF
->> +					| SND_SOC_DAIFMT_CBM_CFM);
->> +	if (ret < 0)
->> +		return ret;
+> Doing a suspend/resume sequence while playing an audio track in the backgroung
+> causes broken audio right after resume:
 > 
-> These are constant, set these in the dai_link.
+> root@freescale /$ aplay clarinet.wav &
 > 
->> +
->> +	ret = snd_soc_dai_set_sysclk(codec_dai, 3, MAX98090_MCLK_FREQ,
->> +				     SND_SOC_CLOCK_IN);
->> +	if (ret < 0) {
->> +		dev_err(codec_dai->dev,
->> +			"Unable to switch to FLL1: %d\n", ret);
->> +		return ret;
->> +	}
+> root@freescale /home$ Playing WAVE 'clarinet.wav' : Signed 16 bit Little Endian,
+>  Rate 44100 Hz, Mono
 > 
-> So's this - also what is 3?  Set it on init.
-
-OK, will move it. I'm not sure why 3, it seems to be ignored by the codec
-anyway. Chen, can you confirm the second argument is actually a don't care
-value ?
-
->> +	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_OPCLK,
->> +					0, MOD_OPCLK_PCLK);
+> root@freescale /home$ echo mem > /sys/power/state 
+> PM: Syncing filesystems ... done.
+> Freezing user space processes ... (elapsed 0.002 seconds) done.
+> Freezing remaining freezable tasks ... (elapsed 0.002 seconds) done.
+> Suspending console(s) (use no_console_suspend to debug)
+> PM: suspend of devices complete after 37.082 msecs
+> PM: suspend devices took 0.040 seconds
+> PM: late suspend of devices complete after 4.234 msecs
+> PM: noirq suspend of devices complete after 4.618 msecs
+> Disabling non-boot CPUs ...
+> PM: noirq resume of devices complete after 4.013 msecs
+> PM: early resume of devices complete after 4.000 msecs
+> PM: resume of devices complete after 68.907 msecs
+> PM: resume devices took 0.070 seconds
+> Restarting tasks ... Suspended. Trying resume. Failed. Restarting stream. Done.
+> Suspended. Trying resume. Failed. Restarting stream. Done.
+> Suspended. Trying resume. Failed. Restarting stream. Done.
+> Suspended. Trying resume. Failed. Restarting stream. Done.
+> Suspended. Trying resume. Failed. Restarting stream. Done.
+> Suspended. Trying resume. Failed. Restarting stream. Done.
+> Suspended. Trying resume. Failed. Restarting stream. Done.
+> ....
 > 
-> Similarly for the rest of the function.
+> Add SNDRV_PCM_TRIGGER_RESUME/SUSPEND cases so that we can gracefully handle
+> system suspend/resume.
 > 
->> +	return snd_soc_register_card(card);
-> 
-> devm_snd_soc_register_card().
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-Thanks for the suggestions, I'll amend that.
-
-
---
-Regards,
-Sylwester
+Acked-by: Shawn Guo <shawn.guo@freescale.com>
