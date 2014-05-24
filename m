@@ -1,20 +1,19 @@
 From: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 1/2] ALSA: snd-usb: mixer: coding style
-	fixups
-Date: Sat, 24 May 2014 10:49:35 +0200
-Message-ID: <53805D1F.3070107@gmail.com>
-References: <1400864762-19458-1-git-send-email-zonque@gmail.com>
- <s5h8uprftp3.wl%tiwai@suse.de>
+Subject: [PATCH v2 2/2] ALSA: snd-usb: mixer: remove error
+	messages on failed kmalloc()
+Date: Sat, 24 May 2014 10:58:17 +0200
+Message-ID: <1400921897-3782-2-git-send-email-zonque@gmail.com>
+References: <1400921897-3782-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f41.google.com (mail-wg0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 67E6626516B
- for <alsa-devel@alsa-project.org>; Sat, 24 May 2014 10:49:37 +0200 (CEST)
-Received: by mail-wg0-f41.google.com with SMTP id z12so5674327wgg.0
- for <alsa-devel@alsa-project.org>; Sat, 24 May 2014 01:49:36 -0700 (PDT)
-In-Reply-To: <s5h8uprftp3.wl%tiwai@suse.de>
+Received: from mail-wg0-f46.google.com (mail-wg0-f46.google.com [74.125.82.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 962D02625D4
+ for <alsa-devel@alsa-project.org>; Sat, 24 May 2014 10:58:25 +0200 (CEST)
+Received: by mail-wg0-f46.google.com with SMTP id n12so5811611wgh.5
+ for <alsa-devel@alsa-project.org>; Sat, 24 May 2014 01:58:25 -0700 (PDT)
+In-Reply-To: <1400921897-3782-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,22 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/24/2014 10:48 AM, Takashi Iwai wrote:
-> At Fri, 23 May 2014 19:06:01 +0200,
-> Daniel Mack wrote:
->>
->> Shorten some over-long lines, multi-line comments, spurious whitespaces,
->> curly brakets etc.  No functional change.
->>
->> Signed-off-by: Daniel Mack <zonque@gmail.com>
-> 
-> This didn't apply cleanly.  Which tree/branch is it based on?
+If kmalloc() fails, warnings will be loud enough. We can safely just
+return -ENOMEM in such cases.
 
-Oh, sorry. I'll check and resend.
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/usb/mixer.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
-
-Daniel
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 9765e1c..0b728d8 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1229,10 +1229,8 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 		return;
+ 
+ 	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
+-	if (!cval) {
+-		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
++	if (!cval)
+ 		return;
+-	}
+ 	cval->mixer = state->mixer;
+ 	cval->id = unitid;
+ 	cval->control = control;
+@@ -1815,10 +1813,8 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 		if (check_ignored_ctl(map))
+ 			continue;
+ 		cval = kzalloc(sizeof(*cval), GFP_KERNEL);
+-		if (!cval) {
+-			usb_audio_err(state->chip, "cannot malloc kcontrol\n");
++		if (!cval)
+ 			return -ENOMEM;
+-		}
+ 		cval->mixer = state->mixer;
+ 		cval->id = unitid;
+ 		cval->control = valinfo->control;
+@@ -1849,7 +1845,6 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 
+ 		kctl = snd_ctl_new1(&mixer_procunit_ctl, cval);
+ 		if (!kctl) {
+-			usb_audio_err(state->chip, "cannot malloc kcontrol\n");
+ 			kfree(cval);
+ 			return -ENOMEM;
+ 		}
+@@ -2028,10 +2023,8 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 		return 0;
+ 
+ 	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
+-	if (!cval) {
+-		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
++	if (!cval)
+ 		return -ENOMEM;
+-	}
+ 	cval->mixer = state->mixer;
+ 	cval->id = unitid;
+ 	cval->val_type = USB_MIXER_U8;
+@@ -2048,7 +2041,6 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 
+ 	namelist = kmalloc(sizeof(char *) * desc->bNrInPins, GFP_KERNEL);
+ 	if (!namelist) {
+-		usb_audio_err(state->chip, "cannot malloc\n");
+ 		kfree(cval);
+ 		return -ENOMEM;
+ 	}
+@@ -2058,7 +2050,6 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 		len = 0;
+ 		namelist[i] = kmalloc(MAX_ITEM_NAME_LEN, GFP_KERNEL);
+ 		if (!namelist[i]) {
+-			usb_audio_err(state->chip, "cannot malloc\n");
+ 			while (i--)
+ 				kfree(namelist[i]);
+ 			kfree(namelist);
+-- 
+1.9.0
