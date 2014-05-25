@@ -1,17 +1,25 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v4] ASoC: sgtl5000: Fix the cache handling
-Date: Mon, 26 May 2014 09:26:33 +0200
-Message-ID: <5382ECA9.1090808@metafoo.de>
-References: <1400958960-18775-1-git-send-email-festevam@gmail.com>
+From: "Justin Piszcz" <jpiszcz@lucidpixels.com>
+Subject: Bug report: [alsa-sink-USB Audio] alsa-sink.c: Most
+	likely this is a bug in the ALSA driver '(null)'. Please
+	report this issue to the ALSA
+Date: Sun, 25 May 2014 08:53:15 -0400
+Message-ID: <001401cf7818$4be327c0$e3a97740$@lucidpixels.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-112.synserver.de (smtp-out-227.synserver.de
- [212.40.185.227])
- by alsa0.perex.cz (Postfix) with ESMTP id C6AED264F1E
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 09:26:37 +0200 (CEST)
-In-Reply-To: <1400958960-18775-1-git-send-email-festevam@gmail.com>
+Received: from mail-qc0-f175.google.com (mail-qc0-f175.google.com
+ [209.85.216.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBBDD2619F3
+ for <alsa-devel@alsa-project.org>; Sun, 25 May 2014 14:53:20 +0200 (CEST)
+Received: by mail-qc0-f175.google.com with SMTP id w7so10799286qcr.34
+ for <alsa-devel@alsa-project.org>; Sun, 25 May 2014 05:53:17 -0700 (PDT)
+Received: from warpc (lucidpixels.com. [72.73.18.11])
+ by mx.google.com with ESMTPSA id j5sm14895179qai.34.2014.05.25.05.53.15
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Sun, 25 May 2014 05:53:16 -0700 (PDT)
+Content-Language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,47 +29,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, broonie@kernel.org, shawn.guo@freescale.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 05/24/2014 09:16 PM, Fabio Estevam wrote:
-[...]
->   /*
-> + * restore all sgtl5000 registers,
-> + * since a big hole between dap and regular registers,
-> + * we will restore them respectively.
-> + */
-> +static int sgtl5000_restore_regs(struct snd_soc_codec *codec)
-> +{
-> +	u16 reg;
-> +	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
-> +
-> +	/* restore regular registers */
-> +	for (reg = 0; reg <= SGTL5000_CHIP_SHORT_CTRL; reg += 2) {
-> +
-> +		/* These regs should restore in particular order */
-> +		if (reg == SGTL5000_CHIP_ANA_POWER ||
-> +			reg == SGTL5000_CHIP_CLK_CTRL ||
-> +			reg == SGTL5000_CHIP_LINREG_CTRL ||
-> +			reg == SGTL5000_CHIP_LINE_OUT_CTRL ||
-> +			reg == SGTL5000_CHIP_REF_CTRL)
-> +			continue;
-> +
-> +		regmap_update_bits(sgtl5000->regmap, reg, reg, 0);
+Hi,
 
-This makes even less sense than before. The third parameter of 
-regmap_update_bits() is the mask for the update operation and the last 
-parameter is the value. regmap_update_bits() basically does this reg = (reg 
-& ~mask) | value;
+ 
 
-I think the issue with this chip is that it wants a special sequence in 
-which the registers are written when syncing the cache to the hardware. The 
-first thing to check is probably if that is actually necessary. If not just 
-drop the whole restore_regs thing. If it is necessary its probably worth 
-investigating whether it makes sense to support custom sync sequences in 
-regmap. We already have regcache_sync_region() so maybe add a 
-regcache_sync_regions() which takes a array of struct regmap_range. And 
-syncs the registers in the order of the ranges.
+Bug report:
 
-- Lars
+ 
+
+==> /var/log/user.log <==
+
+May 25 06:38:06 atom pulseaudio[6754]: [alsa-sink-USB Audio] alsa-sink.c:
+ALSA woke us up to write new data to the device, but there was actually
+nothing to write!
+
+May 25 06:38:06 atom pulseaudio[6754]: [alsa-sink-USB Audio] alsa-sink.c:
+Most likely this is a bug in the ALSA driver '(null)'. Please report this
+issue to the ALSA developers.
+
+May 25 06:38:06 atom pulseaudio[6754]: [alsa-sink-USB Audio] alsa-sink.c: We
+were woken up with POLLOUT set -- however a subsequent snd_pcm_avail()
+returned 0 or another value < min_avail.
+
+ 
+
+$ uname -a
+
+Linux atom 3.14.0 #2 SMP Wed Apr 2 06:30:21 EDT 2014 x86_64 GNU/Linux
+
+ 
+
+$ lsusb
+
+Bus 002 Device 004: ID 0764:0501 Cyber Power System, Inc. CP1500 AVR UPS
+
+Bus 002 Device 008: ID 0baf:0303 U.S. Robotics 
+
+Bus 002 Device 007: ID 067b:2303 Prolific Technology, Inc. PL2303 Serial
+Port
+
+Bus 002 Device 010: ID 0461:4d15 Primax Electronics, Ltd Dell Optical Mouse
+
+Bus 002 Device 009: ID 413c:2002 Dell Computer Corp. SK-8125 Keyboard
+
+Bus 002 Device 006: ID 413c:1002 Dell Computer Corp. Keyboard Hub
+
+Bus 002 Device 005: ID 0d8c:0008 C-Media Electronics, Inc. 
+
+Bus 002 Device 003: ID 2001:f103 D-Link Corp. DUB-H7 7-port USB 2.0 hub
+
+Bus 002 Device 002: ID 8087:0024 Intel Corp. Integrated Rate Matching Hub
+
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+
+Bus 001 Device 003: ID 0557:2221 ATEN International Co., Ltd Winbond Hermon
+
+Bus 001 Device 002: ID 8087:0024 Intel Corp. Integrated Rate Matching Hub
+
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+
+ 
+
+Justin.
