@@ -1,19 +1,15 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 5/5] ALSA: hda - add an instance to use
-	snd_hda_pick_pin_fixup
-Date: Mon, 26 May 2014 12:14:20 +0200
-Message-ID: <538313FC.7070100@canonical.com>
-References: <1401092564-14293-1-git-send-email-hui.wang@canonical.com>
- <1401092564-14293-5-git-send-email-hui.wang@canonical.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: jack: Basic GPIO descriptor
+	conversion
+Date: Mon, 26 May 2014 14:34:36 +0300
+Message-ID: <1401104077-25366-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 47E08264FFB
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 12:14:19 +0200 (CEST)
-In-Reply-To: <1401092564-14293-5-git-send-email-hui.wang@canonical.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 963AF2650F2
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 13:35:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,98 +19,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <hui.wang@canonical.com>, tiwai@suse.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+This patch does basic GPIO descriptor conversion to soc-jack. Even the GPIOs
+are still passed and requested using legacy GPIO numbers the driver
+internals are converted to use GPIO descriptor API.
 
+Motivation for this is to prepare soc-jack so that it will allow registering
+jack GPIO pins using both GPIO descriptors and legacy GPIO numbers.
 
-On 2014-05-26 10:22, Hui Wang wrote:
-> Just two members in the alc269_pin_fixup_tbl[] can cover more than
-> 10 Dell laptop models.
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+---
+ include/sound/soc.h  |  1 +
+ sound/soc/soc-jack.c | 19 +++++++++++--------
+ 2 files changed, 12 insertions(+), 8 deletions(-)
 
-Shouldn't then 10 lines be removed from alc269_fixup_tbl? Right now only 
-two lines are removed.
-
->
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
-> ---
->   sound/pci/hda/patch_realtek.c | 47 +++++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 45 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index c0b16de..992949c 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -4725,8 +4725,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->   	SND_PCI_QUIRK(0x1028, 0x061f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
->   	SND_PCI_QUIRK(0x1028, 0x0629, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
->   	SND_PCI_QUIRK(0x1028, 0x062c, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-> -	SND_PCI_QUIRK(0x1028, 0x062e, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-> -	SND_PCI_QUIRK(0x1028, 0x0632, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
->   	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS_HSJACK),
->   	SND_PCI_QUIRK(0x1028, 0x063e, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
->   	SND_PCI_QUIRK(0x1028, 0x063f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
-> @@ -4924,6 +4922,50 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
->   	{}
->   };
->
-> +static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
-> +	{
-> +		.codec = 0x10ec0293,
-> +		.subvendor = 0x1028,
-> +#ifdef CONFIG_SND_DEBUG_VERBOSE
-> +		.name = "Dell",
-> +#endif
-> +		.pins = (const struct hda_pintbl[]) {
-> +			{0x12, 0x40000000},
-> +			{0x13, 0x90a60140},
-> +			{0x14, 0x90170110},
-> +			{0x15, 0x0221401f},
-> +			{0x16, 0x21014020},
-> +			{0x18, 0x411111f0},
-> +			{0x19, 0x21a19030},
-> +			{0x1a, 0x411111f0},
-> +			{0x1b, 0x411111f0},
-> +			{0x1d, 0x40700001},
-> +			{0x1e, 0x411111f0},
-> +		},
-> +		.value = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
-> +	},
-> +	{
-> +		.codec = 0x10ec0255,
-> +		.subvendor = 0x1028,
-> +#ifdef CONFIG_SND_DEBUG_VERBOSE
-> +		.name = "Dell",
-> +#endif
-> +		.pins = (const struct hda_pintbl[]) {
-> +			{0x12, 0x90a60140},
-> +			{0x14, 0x90170110},
-> +			{0x17, 0x40000000},
-> +			{0x18, 0x411111f0},
-> +			{0x19, 0x411111f0},
-> +			{0x1a, 0x411111f0},
-> +			{0x1b, 0x411111f0},
-> +			{0x1d, 0x40700001},
-> +			{0x1e, 0x411111f0},
-> +			{0x21, 0x02211020},
-> +		},
-> +		.value = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-> +	},
-> +	{}
-> +};
->
->   static void alc269_fill_coef(struct hda_codec *codec)
->   {
-> @@ -4985,6 +5027,7 @@ static int patch_alc269(struct hda_codec *codec)
->
->   	snd_hda_pick_fixup(codec, alc269_fixup_models,
->   		       alc269_fixup_tbl, alc269_fixups);
-> +	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups);
->   	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
->
->   	alc_auto_parse_customize_define(codec);
->
-
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index dcdcc95efd1d..e9ec645911d9 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -607,6 +607,7 @@ struct snd_soc_jack_gpio {
+ 
+ 	struct snd_soc_jack *jack;
+ 	struct delayed_work work;
++	struct gpio_desc *desc;
+ 
+ 	void *data;
+ 	int (*jack_status_check)(void *data);
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index b903f822d1b2..7203842fea66 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -14,6 +14,7 @@
+ #include <sound/jack.h>
+ #include <sound/soc.h>
+ #include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/interrupt.h>
+ #include <linux/workqueue.h>
+ #include <linux/delay.h>
+@@ -240,7 +241,7 @@ static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
+ 	int enable;
+ 	int report;
+ 
+-	enable = gpio_get_value_cansleep(gpio->gpio);
++	enable = gpiod_get_value_cansleep(gpio->desc);
+ 	if (gpio->invert)
+ 		enable = !enable;
+ 
+@@ -314,14 +315,16 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 		if (ret)
+ 			goto undo;
+ 
+-		ret = gpio_direction_input(gpios[i].gpio);
++		gpios[i].desc = gpio_to_desc(gpios[i].gpio);
++
++		ret = gpiod_direction_input(gpios[i].desc);
+ 		if (ret)
+ 			goto err;
+ 
+ 		INIT_DELAYED_WORK(&gpios[i].work, gpio_work);
+ 		gpios[i].jack = jack;
+ 
+-		ret = request_any_context_irq(gpio_to_irq(gpios[i].gpio),
++		ret = request_any_context_irq(gpiod_to_irq(gpios[i].desc),
+ 					      gpio_handler,
+ 					      IRQF_TRIGGER_RISING |
+ 					      IRQF_TRIGGER_FALLING,
+@@ -331,7 +334,7 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 			goto err;
+ 
+ 		if (gpios[i].wake) {
+-			ret = irq_set_irq_wake(gpio_to_irq(gpios[i].gpio), 1);
++			ret = irq_set_irq_wake(gpiod_to_irq(gpios[i].desc), 1);
+ 			if (ret != 0)
+ 				dev_err(jack->codec->dev, "ASoC: "
+ 				  "Failed to mark GPIO %d as wake source: %d\n",
+@@ -339,7 +342,7 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 		}
+ 
+ 		/* Expose GPIO value over sysfs for diagnostic purposes */
+-		gpio_export(gpios[i].gpio, false);
++		gpiod_export(gpios[i].desc, false);
+ 
+ 		/* Update initial jack status */
+ 		schedule_delayed_work(&gpios[i].work,
+@@ -372,10 +375,10 @@ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
+ 	int i;
+ 
+ 	for (i = 0; i < count; i++) {
+-		gpio_unexport(gpios[i].gpio);
+-		free_irq(gpio_to_irq(gpios[i].gpio), &gpios[i]);
++		gpiod_unexport(gpios[i].desc);
++		free_irq(gpiod_to_irq(gpios[i].desc), &gpios[i]);
+ 		cancel_delayed_work_sync(&gpios[i].work);
+-		gpio_free(gpios[i].gpio);
++		gpiod_put(gpios[i].desc);
+ 		gpios[i].jack = NULL;
+ 	}
+ }
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+2.0.0.rc2
