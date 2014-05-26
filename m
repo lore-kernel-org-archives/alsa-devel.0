@@ -1,21 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 2/2] ASoC: dapm: Add a helper to get the
  platform for DAPM kcontrol
-Date: Mon, 26 May 2014 20:07:45 +0200
-Message-ID: <538382F1.8080506@metafoo.de>
+Date: Mon, 26 May 2014 19:54:59 +0100
+Message-ID: <20140526185459.GL12304@sirena.org.uk>
 References: <1401106136-3745-1-git-send-email-vinod.koul@intel.com>
  <1401106136-3745-2-git-send-email-vinod.koul@intel.com>
  <5383419F.9040105@metafoo.de> <20140526162345.GG21128@intel.com>
  <5383714C.6020809@metafoo.de> <20140526164759.GH21128@intel.com>
+ <538382F1.8080506@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2994535893956574498=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-006.synserver.de (smtp-out-024.synserver.de
- [212.40.185.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5620B261AD0
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 20:22:22 +0200 (CEST)
-In-Reply-To: <20140526164759.GH21128@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E8C526545F
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 20:55:17 +0200 (CEST)
+In-Reply-To: <538382F1.8080506@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,76 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Kp Jeeja <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, Kp Jeeja <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 05/26/2014 06:47 PM, Vinod Koul wrote:
-> On Mon, May 26, 2014 at 06:52:28PM +0200, Lars-Peter Clausen wrote:
->> On 05/26/2014 06:23 PM, Vinod Koul wrote:
->>> On Mon, May 26, 2014 at 03:29:03PM +0200, Lars-Peter Clausen wrote:
->>>> On 05/26/2014 02:08 PM, Vinod Koul wrote:
->>>> [...]
->>>>> + * snd_soc_dapm_kcontrol_platform() - Returns the platform associated to a kcontrol
->>>>> + * @kcontrol: The kcontrol
->>>>> + */
->>>>> +struct snd_soc_platform *snd_soc_dapm_kcontrol_platform(
->>>>> +		struct snd_kcontrol *kcontrol)
->>>>> +{
->>>>> +	return dapm_kcontrol_get_wlist(kcontrol)->widgets[0]->platform;
->>>>> +}
->>>>> +EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_platform);
->>>>
->>>> This conflicts with the series that moves DAPM support to the
->>>> component level [1].
->>>
->>> Thanks for the pointer, has this series been merged?
->>> Dont see it in topic/core in Mark's tree.
->>
->> It hasn't been merged yet.
-> Okay, what is the state of the series? Would it merged soonish?
 
-Maybe, depends on how well the review goes. But it doesn't really matter which 
-patch is merged first, we just need to be aware that the other one needs to be 
-reworked and rebased on top of it.
+--===============2994535893956574498==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aW9lYAu6M9O6B01x"
+Content-Disposition: inline
 
-> If this is approach going to be taken then we need to plan for intercepting this
->
->>>
->>> I will take a look but fwiw this statement is not entirely true in the cover
->>> letter of patch:
->>>
->>> "This will allow any component to have DAPM widgets and routes, which was
->>> previously only possible for CODECs, and will allow any component to have DAPM
->>> widgets with controls (i.e. Mixers and MUXs), which was previously only possible
->>> for CODECs"
->>>
->>> I am already running a system which models platform and has Mixers,
->>> Muxes and works fine (tested on 3.10 and 3.14).
->>
->> It works if you use custom controls. But it does not work with the
->> standard SOC_DAPM_* controls.
-> Not sure as we are using SOC_DAPM but yes with *_E versions and our own get/put
-> handlers with additional dapm event handlers.
-> I have also tested with a version which used non _E versions and only dapm event
-> handlers. So not sure where you found it difficult. I was able to model a fiarly
-> complex DSP and able to do both playback as well as loopback tests.
->
-> We haven't wrriten our own SOC_DAPM_* controls yet.
 
-The standard DAPM get/put handlers will crash if you use them with a platform.
+--aW9lYAu6M9O6B01x
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
->>> Few bits of code is in RFC I sent earlier and will post these in detail over
->>> next few weeks
->>
->> Do you think it is necessary that these two patches get merged
->> before you send the other patches? It would be good to see things in
->> context. That will make it easier to properly review patch 1 of this
->> series.
-> Actually yes, as our mixer/mux get and put handlers would need to find the
-> platform pointer as well as set and get the values.
->
+On Mon, May 26, 2014 at 08:07:45PM +0200, Lars-Peter Clausen wrote:
+> On 05/26/2014 06:47 PM, Vinod Koul wrote:
 
-Yes, but can these two patches be sent in the same series as the first user? 
-That makes review easier.
+> >>It hasn't been merged yet.
+> >Okay, what is the state of the series? Would it merged soonish?
+
+> Maybe, depends on how well the review goes. But it doesn't really matter
+> which patch is merged first, we just need to be aware that the other one
+> needs to be reworked and rebased on top of it.
+
+Probably not until after the merge window now; that should open next
+week and it's a bit invasive to be doing right now.
+
+--aW9lYAu6M9O6B01x
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTg44AAAoJELSic+t+oim9qu8P/01+swL/aiBhkmLvpDKgtdad
+h9O5Hq9DA3gjtmUbC2s0tvCv7scdm+F1ydWZCE1mpTF7d5h4FmPdc43C6kzV/anh
+Ot8qQSocCd5hypudYDkrViqgSJaBxGwBhn9+QgjtS2s39RfXyz/Nw4KLr/rBBri4
+hcxhUjtfaJlk8cbuuvL8zJwDnNh7gM2CnQhi+5W7rQO6N88ZtCPcEjCPfVLKOLHh
+6OzWF/kboCopCGc63mvLSuQOZ8WyySg6qpXEGLGNiGYp1W8hpHbgcMmlDIHTre++
+o1R9VRjGMfFjWN7ygOCS+Eh0qHrNV02+kGjNMnChAcZnvOfSaFjDJL0YodG2RD47
++qf61Mts8vOUBhzDXC8P7g4Rd8AeMmWyeOiB5jET64GCPGYGd6Q/AuabTjytpDQ8
+UmJn2kyFsm/dixnJNmAHnozF1/Inf+SFxMzf1ZzPwhevAzDYvrQiq4l8VRJlwuyV
+6wkkw//aOJfhkPXnUQFBPPCpbVsO3Y4l92RA+JwYe5xAaKoYXsJrfmzWEeyuhe6A
+UGJMFyx+VZg54q6eUziObLaVfolGX3Lk3C62vjGi6iY3DZKZ/wDibE6rd6CTOXoN
+XpsYuAm2UcR2c5eYQulun+bk4vk0m4GkpwbIwRn6siwAnex2aIepKMpm1G97QD/X
+4N6mocKny9I710Ezf7r/
+=mgPU
+-----END PGP SIGNATURE-----
+
+--aW9lYAu6M9O6B01x--
+
+--===============2994535893956574498==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2994535893956574498==--
