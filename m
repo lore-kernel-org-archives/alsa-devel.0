@@ -1,34 +1,105 @@
 From: Tushar Behera <tushar.behera@linaro.org>
-Subject: [PATCH V2 0/2] ASoC: max98090/max98095: Add master clock handing
-Date: Mon, 26 May 2014 13:58:20 +0530
-Message-ID: <1401092902-20525-1-git-send-email-tushar.behera@linaro.org>
+Subject: [PATCH 2/2] ASoC: max98095: Add master clock handling
+Date: Mon, 26 May 2014 13:58:22 +0530
+Message-ID: <1401092902-20525-3-git-send-email-tushar.behera@linaro.org>
+References: <1401092902-20525-1-git-send-email-tushar.behera@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1401092902-20525-1-git-send-email-tushar.behera@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 Cc: tiwai@suse.de, perex@perex.cz, broonie@kernel.org, dianders@chromium.org, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
-These CODECs are used on Snow/Peach-pit boards and the master clock
-needs to be set at 24MHz.
+If master clock is provided through device tree, then update
+the master clock frequency during set_sysclk.
 
-Adding support in respective codec drivers so that we can update the
-master clock frequency from sound card driver through set_sysclk.
+Documentation has been updated to reflect the change.
 
-Changes for V2:
-1. Added PROBE_DEFER if clock driver has not yet been probed
-2. Moved clk_prepare_enable from .probe to .set_bias_level
-3. Moved clk_disable_unprepare from .remove to .set_bias_level
-
-Tushar Behera (2):
-  ASoC: max98090: Add master clock handling
-  ASoC: max98095: Add master clock handling
-
- .../devicetree/bindings/sound/max98090.txt         |    6 +++++
+Signed-off-by: Tushar Behera <tushar.behera@linaro.org>
+---
  .../devicetree/bindings/sound/max98095.txt         |    6 +++++
- sound/soc/codecs/max98090.c                        |   23 +++++++++++++++++++
- sound/soc/codecs/max98090.h                        |    1 +
  sound/soc/codecs/max98095.c                        |   24 ++++++++++++++++++++
- 5 files changed, 60 insertions(+)
+ 2 files changed, 30 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/sound/max98095.txt b/Documentation/devicetree/bindings/sound/max98095.txt
+index bacbeaa..318a4c8 100644
+--- a/Documentation/devicetree/bindings/sound/max98095.txt
++++ b/Documentation/devicetree/bindings/sound/max98095.txt
+@@ -8,6 +8,12 @@ Required properties:
+ 
+ - reg : The I2C address of the device.
+ 
++Optional properties:
++
++- clocks: The phandle of the master clock to the CODEC
++
++- clock-names: Should be "mclk"
++
+ Example:
+ 
+ max98095: codec@11 {
+diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
+index d6c1e4c..89ec004 100644
+--- a/sound/soc/codecs/max98095.c
++++ b/sound/soc/codecs/max98095.c
+@@ -15,6 +15,7 @@
+ #include <linux/delay.h>
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
++#include <linux/clk.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -42,6 +43,7 @@ struct max98095_priv {
+ 	struct regmap *regmap;
+ 	enum max98095_type devtype;
+ 	struct max98095_pdata *pdata;
++	struct clk *mclk;
+ 	unsigned int sysclk;
+ 	struct max98095_cdata dai[3];
+ 	const char **eq_texts;
+@@ -1395,6 +1397,11 @@ static int max98095_dai_set_sysclk(struct snd_soc_dai *dai,
+ 	if (freq == max98095->sysclk)
+ 		return 0;
+ 
++	if (!IS_ERR(max98095->mclk)) {
++		freq = clk_round_rate(max98095->mclk, freq);
++		clk_set_rate(max98095->mclk, freq);
++	}
++
+ 	/* Setup clocks for slave mode, and using the PLL
+ 	 * PSCLK = 0x01 (when master clk is 10MHz to 20MHz)
+ 	 *         0x02 (when master clk is 20MHz to 40MHz)..
+@@ -1634,6 +1641,19 @@ static int max98095_set_bias_level(struct snd_soc_codec *codec,
+ 		break;
+ 
+ 	case SND_SOC_BIAS_PREPARE:
++		/*
++		 * SND_SOC_BIAS_PREPARE is called while preparing for a
++		 * transition to ON or away from ON. If current bias_level
++		 * is SND_SOC_BIAS_ON, then it is preparing for a transition
++		 * away from ON. Disable the clock in that case, otherwise
++		 * enable it.
++		 */
++		if (!IS_ERR(max98095->mclk)) {
++			if (codec->dapm.bias_level == SND_SOC_BIAS_ON)
++				clk_disable_unprepare(max98095->mclk);
++			else
++				clk_prepare_enable(max98095->mclk);
++		}
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+@@ -2238,6 +2258,10 @@ static int max98095_probe(struct snd_soc_codec *codec)
+ 	struct i2c_client *client;
+ 	int ret = 0;
+ 
++	max98095->mclk = devm_clk_get(codec->dev, "mclk");
++	if (PTR_ERR(max98095->mclk) == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
++
+ 	/* reset the codec, the DSP core, and disable all interrupts */
+ 	max98095_reset(codec);
+ 
 -- 
 1.7.9.5
