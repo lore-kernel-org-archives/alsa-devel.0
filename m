@@ -1,14 +1,18 @@
-From: Josef Ahmad <josef.ahmad@linux.intel.com>
-Subject: Recovering from DAI xrun condition
-Date: Mon, 26 May 2014 13:44:09 +0100 (IST)
-Message-ID: <Pine.LNX.4.61.1405261327160.64705@irsectmgbld0301.ir.intel.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH 2/2] ASoC: dapm: Add a helper to get the
+ platform for DAPM kcontrol
+Date: Mon, 26 May 2014 15:44:22 +0300
+Message-ID: <53833726.9050007@linux.intel.com>
+References: <1401106136-3745-1-git-send-email-vinod.koul@intel.com>
+ <1401106136-3745-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C9D2B2650F7
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 14:44:11 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2724A2650F7
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 14:44:34 +0200 (CEST)
+In-Reply-To: <1401106136-3745-2-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,24 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
+Cc: Kp Jeeja <jeeja.kp@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 05/26/2014 03:08 PM, Vinod Koul wrote:
+> From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+>
+> commit eee5d7f9 introduced helper for getting codec for DAPM kcontrol, for DSPs
+> we need similar stuff for platforms as well
+>
+Please refer not only the commit id but also commit title ("ASoC: dapm: 
+Add a helper to get the CODEC for DAPM kcontrol").
 
-I see the ALSA framework is capable of detecting and recovering from ring 
-buffer xrun conditions.  What I'm not sure about is whether it is possible 
-to recover from a DAI xrun error as well.
+Makes commit log more clear and helps cases where original commit is 
+backported to older tree.
 
-Let's take the example of an I2S interface operating in tx mode.  If the
-tx fifo overruns, one or more words will be discarded by the interface.
-If an odd number of words gets discarded, this may result in the left and 
-right word being swapped.  This is actually a quite common weakness in I2S 
-controllers.
-
-Is there a mechanism to notify the ALSA subsystem that a DAI xrun 
-condition has occurred?
-
-Regards
-
-Josef
+-- 
+Jarkko
