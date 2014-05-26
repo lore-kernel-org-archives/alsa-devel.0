@@ -1,55 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: max98090: Add NI/MI values for user pclk 19.2 MHz
-Date: Mon, 26 May 2014 14:29:11 +0100
-Message-ID: <20140526132911.GX22111@sirena.org.uk>
-References: <1400757703-24431-1-git-send-email-s.nawrocki@samsung.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/2] ASoC: dapm: Add a helper to get the
+ platform for DAPM kcontrol
+Date: Mon, 26 May 2014 15:29:03 +0200
+Message-ID: <5383419F.9040105@metafoo.de>
+References: <1401106136-3745-1-git-send-email-vinod.koul@intel.com>
+ <1401106136-3745-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="my+VSKri2szq3kvl"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1400757703-24431-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Chen Zhen <zhen1.chen@samsung.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-006.synserver.de (smtp-out-006.synserver.de
+ [212.40.185.6]) by alsa0.perex.cz (Postfix) with ESMTP id 9E9CC265284
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 15:29:02 +0200 (CEST)
+In-Reply-To: <1401106136-3745-2-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Kp Jeeja <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On 05/26/2014 02:08 PM, Vinod Koul wrote:
+[...]
+> + * snd_soc_dapm_kcontrol_platform() - Returns the platform associated to a kcontrol
+> + * @kcontrol: The kcontrol
+> + */
+> +struct snd_soc_platform *snd_soc_dapm_kcontrol_platform(
+> +		struct snd_kcontrol *kcontrol)
+> +{
+> +	return dapm_kcontrol_get_wlist(kcontrol)->widgets[0]->platform;
+> +}
+> +EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_platform);
 
---my+VSKri2szq3kvl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This conflicts with the series that moves DAPM support to the component 
+level [1].
 
-On Thu, May 22, 2014 at 01:21:43PM +0200, Sylwester Nawrocki wrote:
-> From: Chen Zhen <zhen1.chen@samsung.com>
->=20
-> This patch adds the clock divisor and multiplier NI, MI values for audio
-> sampling frequencies 44100 and 48000 Hz and PCLK 19.2 MHz. This is useful
-> for the Odroid X2/U2 boards when the codec works in master mode and its
-> MCLK clock is fed from the I2S CDCLK output.
+- Lars
 
-Applied, thanks.
-
---my+VSKri2szq3kvl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTg0GkAAoJELSic+t+oim9dssQAIQwnbmWdsTJcUAHJQpEObPI
-65PsiKH1TUgAh1DcltFcgnWIiL0GItPFm5gquEbLJpRW9JUSMfFv3xUKft9MocVf
-z/ghahnNwZrT9FYVkilxzzfBkrJqdQF0y+LKIbgwqoM1gwl3XUr7olDs4Fds1FYm
-dDJaz//YVJYQcyNP640PHEMClwNE3sClmWHJvnnfoVTllZEhSKVBN6YlZc3UwTqi
-GVt5UibOMlpjNOs14reNLbdphRAgSXAawWrEoHjUTIYNkflQ0hypKrfftwyXN8Hn
-o2hkQ2VQoQBJR2xaGU3wokLSltxLJOnJqYtE5g0ffbd6xV0wuqiLStZmMzMSIXiN
-FqJOKnG+bVE+CcgAFVFpqQA0dzf/XGtfLIUJpzu29V/necKSiEZFjw6D7B3VWF0k
-2VmwM02BscaX3Tq11EEllhLd7I5CzAbU/NxG3ZjDs9cw6lerA/P2d0kKet33iNw+
-0A93viQLDTiOuapAU8knB4ZYyCfGrQt98NteVCSHgPJoYoy/AfekNrC6X5mpvmWW
-ZIq+Yv3Z5LDptn0oysVVnAQAaIjApe6lWC1bjTq48vl5WfgxTptG71fRmqkMhd/P
-jtmP1KzgFLMYYj/KKt+6yCA7uKrJHJA9B5IVXqqLi8CdDjnAmUwTyPLghLYEePUv
-rxxFNci5LMdhvk+fsGq7
-=c48G
------END PGP SIGNATURE-----
-
---my+VSKri2szq3kvl--
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2014-May/076718.html
