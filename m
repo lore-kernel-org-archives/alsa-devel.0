@@ -1,17 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 2/2] ASoC: dapm: Add a helper to get the
-	platform for DAPM kcontrol
-Date: Mon, 26 May 2014 17:38:56 +0530
-Message-ID: <1401106136-3745-2-git-send-email-vinod.koul@intel.com>
-References: <1401106136-3745-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 1/2] ASoC: add api for dapm kcontrol
+	configiuration
+Date: Mon, 26 May 2014 17:38:55 +0530
+Message-ID: <1401106136-3745-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E26F2650F2
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 14:25:29 +0200 (CEST)
-In-Reply-To: <1401106136-3745-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EFE382650E4
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 14:25:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +25,62 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 
-commit eee5d7f9 introduced helper for getting codec for DAPM kcontrol, for DSPs
-we need similar stuff for platforms as well
+For DSPs we need to set and get the value for snd_kcontrol. This is currently
+done by dapm_kcontrol_set/get_value, so create a wrapper
+snd_soc_dapm_kcontrol_get/set_value APIs to let drivers use this
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/soc-dapm.h |    2 ++
- sound/soc/soc-dapm.c     |   11 +++++++++++
- 2 files changed, 13 insertions(+), 0 deletions(-)
+ include/sound/soc-dapm.h |    4 ++++
+ sound/soc/soc-dapm.c     |   13 +++++++++++++
+ 2 files changed, 17 insertions(+), 0 deletions(-)
 
 diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 9e826e9..9f47dee 100644
+index 75020f5..9e826e9 100644
 --- a/include/sound/soc-dapm.h
 +++ b/include/sound/soc-dapm.h
-@@ -460,6 +460,8 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
- 	struct snd_soc_dapm_widget_list **list);
+@@ -368,6 +368,10 @@ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event);
+ int dapm_clock_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event);
++bool snd_soc_dapm_kcontrol_set_value(
++		const struct snd_kcontrol *kcontrol, unsigned int value);
++unsigned int snd_soc_dapm_kcontrol_get_value(
++		const struct snd_kcontrol *kcontrol);
  
- struct snd_soc_codec *snd_soc_dapm_kcontrol_codec(struct snd_kcontrol *kcontrol);
-+struct snd_soc_platform *snd_soc_dapm_kcontrol_platform(
-+		struct snd_kcontrol *kcontrol);
- 
- /* dapm widget types */
- enum snd_soc_dapm_type {
+ /* dapm controls */
+ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b7dfa1a..f37ca16 100644
+index 98c1dc6..b7dfa1a 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -373,6 +373,17 @@ struct snd_soc_codec *snd_soc_dapm_kcontrol_codec(struct snd_kcontrol *kcontrol)
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_codec);
+@@ -333,6 +333,12 @@ static unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol)
  
-+/**
-+ * snd_soc_dapm_kcontrol_platform() - Returns the platform associated to a kcontrol
-+ * @kcontrol: The kcontrol
-+ */
-+struct snd_soc_platform *snd_soc_dapm_kcontrol_platform(
-+		struct snd_kcontrol *kcontrol)
+ 	return data->value;
+ }
++unsigned int snd_soc_dapm_kcontrol_get_value(
++	const struct snd_kcontrol *kcontrol)
 +{
-+	return dapm_kcontrol_get_wlist(kcontrol)->widgets[0]->platform;
++	dapm_kcontrol_get_value(kcontrol);
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_platform);
++EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_get_value);
+ 
+ static bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
+ 	unsigned int value)
+@@ -350,6 +356,13 @@ static bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
+ 	return true;
+ }
+ 
++bool snd_soc_dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
++	unsigned int value)
++{
++	return dapm_kcontrol_set_value(kcontrol, value);
++}
++EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_set_value);
 +
- static void dapm_reset(struct snd_soc_card *card)
- {
- 	struct snd_soc_dapm_widget *w;
+ /**
+  * snd_soc_dapm_kcontrol_codec() - Returns the codec associated to a kcontrol
+  * @kcontrol: The kcontrol
 -- 
 1.7.0.4
