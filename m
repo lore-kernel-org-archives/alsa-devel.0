@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Add suspend/resume support
-Date: Mon, 26 May 2014 14:24:47 +0100
-Message-ID: <20140526132447.GW22111@sirena.org.uk>
-References: <1400823536-31708-1-git-send-email-festevam@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: add api for dapm kcontrol
+	configiuration
+Date: Mon, 26 May 2014 15:26:39 +0200
+Message-ID: <5383410F.9020404@metafoo.de>
+References: <1401106136-3745-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4018543314505632271=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E461B265158
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 15:25:13 +0200 (CEST)
-In-Reply-To: <1400823536-31708-1-git-send-email-festevam@gmail.com>
+Received: from smtp-out-006.synserver.de (smtp-out-006.synserver.de
+ [212.40.185.6]) by alsa0.perex.cz (Postfix) with ESMTP id D3AF026518B
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 15:26:40 +0200 (CEST)
+In-Reply-To: <1401106136-3745-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org, shawn.guo@freescale.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Kp Jeeja <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On 05/26/2014 02:08 PM, Vinod Koul wrote:
+> From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+>
+> For DSPs we need to set and get the value for snd_kcontrol. This is currently
+> done by dapm_kcontrol_set/get_value, so create a wrapper
+> snd_soc_dapm_kcontrol_get/set_value APIs to let drivers use this
 
---===============4018543314505632271==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="XhDIt1ZqED2V8RHq"
-Content-Disposition: inline
+Can you go a bit more into detail how you intend to use this?
 
+> [...]
+> +unsigned int snd_soc_dapm_kcontrol_get_value(
+> +	const struct snd_kcontrol *kcontrol)
+> +{
+> +	dapm_kcontrol_get_value(kcontrol);
 
---XhDIt1ZqED2V8RHq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The compiler should have complained about this.
 
-On Fri, May 23, 2014 at 02:38:56AM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> Doing a suspend/resume sequence while playing an audio track in the backg=
-roung
-> causes broken audio right after resume:
+> +}
+> +EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_get_value);
 
-Applied, thanks.
-
---XhDIt1ZqED2V8RHq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTg0CSAAoJELSic+t+oim9LnIP/jKf2myalDiOFrynvKhgQ9wm
-/PRj6ftMxpBo6vImL3k7jKCtUE9mAYdzR47+nmtsxMzhbKZYFEs+hIAyt/DD0WxI
-EI7IZHqQfmepYJuut67y6YVKdg/ZNNjqVyD0574Ieu9JRTHplqZU7Bwr793i6rDB
-xD03et1AsnPpCqKJvewypcOyIMcnIKB18lmqQyc2Sq3m5MFx5d5BoMFa6eOrYapZ
-I2bSFGT3DQWRkH0B339pw7JGdf0+YxXJ+FRJa04x9dqN+d1Sxg+kWJo0CaAGUr/f
-TTWZWPmE1+8KTATfkONPzlE+VszFP+MpLXujrNHBYvOPvUC2uKLFiItSU/EhYTZ9
-fWBnxa3lxGUzLdv/gOGCDDY31e8PrnH35qAnz3VwEy5xEMUfnugGWsJjPyQ4FdrJ
-rgDjh09OwbbmmcMvH5LN8O6VEtjHf4iem3s7OIUj+0pApVqc5A4eaoQIH4deTliP
-uceAPgFG/gypzDR5IhcP0V7YAEtNkiyVLpuUrUbvDjwtkdov3VXPRIDOE2BWn6ku
-9eZ+rV11hQ5lIAINlHAXApsa9BMfyF/sA753DKceZ0Pf6r2szk2J6koGgXbXoRFE
-PKoIq4lGH+rG18685WzwrE0I2hfGCIhpUijeFwJm8jxOPdJbAiSRgWvk2bXOLn/R
-xIKkucloMtyQGigvnPaB
-=1yCu
------END PGP SIGNATURE-----
-
---XhDIt1ZqED2V8RHq--
-
---===============4018543314505632271==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4018543314505632271==--
+I'm also not sure how much sense it makes to have a single line wrapper 
+function for exporting things? Why not just rename the original function and 
+then export it?
