@@ -1,55 +1,165 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tegra: free jack GPIOs before the sound card is
- freed
-Date: Mon, 26 May 2014 14:32:47 +0100
-Message-ID: <20140526133247.GB22111@sirena.org.uk>
-References: <1400796893-29540-1-git-send-email-swarren@wwwdotorg.org>
+From: Fabio Estevam <fabio.estevam@freescale.com>
+Subject: [PATCH v5] ASoC: sgtl5000: Fix the cache handling
+Date: Mon, 26 May 2014 10:34:20 -0300
+Message-ID: <1401111260-23320-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="d+OnLgn+wkzLMn3r"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1400796893-29540-1-git-send-email-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0204.outbound.protection.outlook.com [207.46.163.204])
+ by alsa0.perex.cz (Postfix) with ESMTP id 741B32651EB
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 15:34:36 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, shawn.guo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
+Since commit e5d80e82e32e (ASoC: sgtl5000: Convert to use regmap directly) a 
+kernel oops is observed after a suspend/resume sequence.
 
---d+OnLgn+wkzLMn3r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The kernel oops happens inside sgtl5000_restore_regs() as codec->reg_cache is no
+longer a valid pointer.
 
-On Thu, May 22, 2014 at 04:14:53PM -0600, Stephen Warren wrote:
-> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
->=20
-> snd_soc_jack_add_gpios() schedules a work queue item to poll the GPIO to
-> generate an initial jack status report. If sound card initialization
-> fails, that work item needs to be cancelled, so it doesn't run after the
+Add the remaining register entries into sgtl5000_reg_defaults[] and remove
+sgtl5000_restore_regs() completely, which allows suspend/resume to work fine and
+make the code simpler.
 
-Applied, thanks.
+Tested on a im53-qsb board.
 
---d+OnLgn+wkzLMn3r
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Reported-by: Shawn Guo <shawn.guo@freescale.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+Changes since v4:
+- Remove sgtl5000_restore_regs() as suggested by Lars-Peter
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+ sound/soc/codecs/sgtl5000.c | 75 +++++++++------------------------------------
+ 1 file changed, 15 insertions(+), 60 deletions(-)
 
-iQIcBAEBAgAGBQJTg0J8AAoJELSic+t+oim9CVkQAJahzO8TY/XX4YFoeiqXRoDo
-gfH+OYIRxvtnURw4U+Ohh+78lDOyxW+hIdbpiXxKdgUnIcynZvED8nbT2/fS+C6Y
-8g71DQMQAKNwFsE6qNqoOz9dy//H6R4rjEOn0nUsVObRyzmwrJfKU0CEX76+6oT4
-oPB1s0MofRJCTgUFj7ds+7Ep7MMs7Q5oMk2ktvLSyOhF++K7A1W6EE9VmAoWyHbp
-CoBk0f4eNkAKNX77y2Zs6v7ZnYlst+Jg0GlcNL4G1Cdqa8no+AIffuT+tsOy9uoS
-uIOHUNFSBahQ1AJIPGwSNrJKgbJCs6ODwCLI8OAXnS6kVvQUK1JIborOR1XQk7e6
-Lt15ytJCcYR+qhnRB6NTtMsUA0xmUbOa9XaGqfOf+tVdJPqNz3nUZg8D8JMm8T0G
-31cqrf0vx6ghHQdcsG3HWKDQpnVNmepdT8+hg8M4hFyzvHHwyQE0j6Fr3TL+PK1i
-s5SxC6lrTnM5DT1JUUr4yQV4UVKWU3Y6wuU2Jex4hrkZDZAUbwEmJH3mdNwd96jp
-16Ml4Bb5Wwokwah2D2CT0YvTrXaGj94PaSJSY6d4DiQA+Q48N3SmP+8klzocknnA
-1zIz7XfE30p3Yw/kiOm1J6hr1OE/bOqiIP2y3GBg3DnbsNot+QO3WXbemsR08LhS
-YwTVI5XPH4BxVQThbCTY
-=OUzp
------END PGP SIGNATURE-----
-
---d+OnLgn+wkzLMn3r--
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 9626ee0..3d39f0b 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -36,18 +36,32 @@
+ 
+ /* default value of sgtl5000 registers */
+ static const struct reg_default sgtl5000_reg_defaults[] = {
++	{ SGTL5000_CHIP_DIG_POWER,		0x0000 },
+ 	{ SGTL5000_CHIP_CLK_CTRL,		0x0008 },
+ 	{ SGTL5000_CHIP_I2S_CTRL,		0x0010 },
+ 	{ SGTL5000_CHIP_SSS_CTRL,		0x0010 },
++	{ SGTL5000_CHIP_ADCDAC_CTRL,		0x020c },
+ 	{ SGTL5000_CHIP_DAC_VOL,		0x3c3c },
+ 	{ SGTL5000_CHIP_PAD_STRENGTH,		0x015f },
++	{ SGTL5000_CHIP_ANA_ADC_CTRL,		0x0000 },
+ 	{ SGTL5000_CHIP_ANA_HP_CTRL,		0x1818 },
+ 	{ SGTL5000_CHIP_ANA_CTRL,		0x0111 },
++	{ SGTL5000_CHIP_LINREG_CTRL,		0x0000 },
++	{ SGTL5000_CHIP_REF_CTRL,		0x0000 },
++	{ SGTL5000_CHIP_MIC_CTRL,		0x0000 },
++	{ SGTL5000_CHIP_LINE_OUT_CTRL,		0x0000 },
+ 	{ SGTL5000_CHIP_LINE_OUT_VOL,		0x0404 },
+ 	{ SGTL5000_CHIP_ANA_POWER,		0x7060 },
+ 	{ SGTL5000_CHIP_PLL_CTRL,		0x5000 },
++	{ SGTL5000_CHIP_CLK_TOP_CTRL,		0x0000 },
++	{ SGTL5000_CHIP_ANA_STATUS,		0x0000 },
++	{ SGTL5000_CHIP_SHORT_CTRL,		0x0000 },
++	{ SGTL5000_CHIP_ANA_TEST2,		0x0000 },
++	{ SGTL5000_DAP_CTRL,			0x0000 },
++	{ SGTL5000_DAP_PEQ,			0x0000 },
+ 	{ SGTL5000_DAP_BASS_ENHANCE,		0x0040 },
+ 	{ SGTL5000_DAP_BASS_ENHANCE_CTRL,	0x051f },
++	{ SGTL5000_DAP_AUDIO_EQ,		0x0000 },
+ 	{ SGTL5000_DAP_SURROUND,		0x0040 },
+ 	{ SGTL5000_DAP_EQ_BASS_BAND0,		0x002f },
+ 	{ SGTL5000_DAP_EQ_BASS_BAND1,		0x002f },
+@@ -55,6 +69,7 @@ static const struct reg_default sgtl5000_reg_defaults[] = {
+ 	{ SGTL5000_DAP_EQ_BASS_BAND3,		0x002f },
+ 	{ SGTL5000_DAP_EQ_BASS_BAND4,		0x002f },
+ 	{ SGTL5000_DAP_MAIN_CHAN,		0x8000 },
++	{ SGTL5000_DAP_MIX_CHAN,		0x0000 },
+ 	{ SGTL5000_DAP_AVC_CTRL,		0x0510 },
+ 	{ SGTL5000_DAP_AVC_THRESHOLD,		0x1473 },
+ 	{ SGTL5000_DAP_AVC_ATTACK,		0x0028 },
+@@ -1068,71 +1083,11 @@ static int sgtl5000_suspend(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-/*
+- * restore all sgtl5000 registers,
+- * since a big hole between dap and regular registers,
+- * we will restore them respectively.
+- */
+-static int sgtl5000_restore_regs(struct snd_soc_codec *codec)
+-{
+-	u16 *cache = codec->reg_cache;
+-	u16 reg;
+-
+-	/* restore regular registers */
+-	for (reg = 0; reg <= SGTL5000_CHIP_SHORT_CTRL; reg += 2) {
+-
+-		/* These regs should restore in particular order */
+-		if (reg == SGTL5000_CHIP_ANA_POWER ||
+-			reg == SGTL5000_CHIP_CLK_CTRL ||
+-			reg == SGTL5000_CHIP_LINREG_CTRL ||
+-			reg == SGTL5000_CHIP_LINE_OUT_CTRL ||
+-			reg == SGTL5000_CHIP_REF_CTRL)
+-			continue;
+-
+-		snd_soc_write(codec, reg, cache[reg]);
+-	}
+-
+-	/* restore dap registers */
+-	for (reg = SGTL5000_DAP_REG_OFFSET; reg < SGTL5000_MAX_REG_OFFSET; reg += 2)
+-		snd_soc_write(codec, reg, cache[reg]);
+-
+-	/*
+-	 * restore these regs according to the power setting sequence in
+-	 * sgtl5000_set_power_regs() and clock setting sequence in
+-	 * sgtl5000_set_clock().
+-	 *
+-	 * The order of restore is:
+-	 * 1. SGTL5000_CHIP_CLK_CTRL MCLK_FREQ bits (1:0) should be restore after
+-	 *    SGTL5000_CHIP_ANA_POWER PLL bits set
+-	 * 2. SGTL5000_CHIP_LINREG_CTRL should be set before
+-	 *    SGTL5000_CHIP_ANA_POWER LINREG_D restored
+-	 * 3. SGTL5000_CHIP_REF_CTRL controls Analog Ground Voltage,
+-	 *    prefer to resotre it after SGTL5000_CHIP_ANA_POWER restored
+-	 */
+-	snd_soc_write(codec, SGTL5000_CHIP_LINREG_CTRL,
+-			cache[SGTL5000_CHIP_LINREG_CTRL]);
+-
+-	snd_soc_write(codec, SGTL5000_CHIP_ANA_POWER,
+-			cache[SGTL5000_CHIP_ANA_POWER]);
+-
+-	snd_soc_write(codec, SGTL5000_CHIP_CLK_CTRL,
+-			cache[SGTL5000_CHIP_CLK_CTRL]);
+-
+-	snd_soc_write(codec, SGTL5000_CHIP_REF_CTRL,
+-			cache[SGTL5000_CHIP_REF_CTRL]);
+-
+-	snd_soc_write(codec, SGTL5000_CHIP_LINE_OUT_CTRL,
+-			cache[SGTL5000_CHIP_LINE_OUT_CTRL]);
+-	return 0;
+-}
+-
+ static int sgtl5000_resume(struct snd_soc_codec *codec)
+ {
+ 	/* Bring the codec back up to standby to enable regulators */
+ 	sgtl5000_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+-	/* Restore registers by cached in memory */
+-	sgtl5000_restore_regs(codec);
+ 	return 0;
+ }
+ #else
+-- 
+1.8.3.2
