@@ -1,65 +1,51 @@
-From: Fidel Leon Martin <fidelleon@mykolab.com>
-Subject: Re: Fwd: Re: No sound for a rather old laptop (ALC260).
-Date: Mon, 26 May 2014 18:00:09 +0200
-Message-ID: <6521264.xMD4ONptL0@lillinux>
-References: <1490682.oNo167L24G@lillinux> <2860698.yPnmLZqY7f@lillinux>
- <s5hfvjwk0w4.wl%tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: samsung: Use params_width()
+Date: Mon, 26 May 2014 17:04:40 +0100
+Message-ID: <20140526160440.GJ22111@sirena.org.uk>
+References: <1400846739-32427-1-git-send-email-tushar.behera@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx03.mykolab.com (mx01.mykolab.com [95.128.36.1])
- by alsa0.perex.cz (Postfix) with ESMTP id C800D265375
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 18:00:20 +0200 (CEST)
-In-Reply-To: <s5hfvjwk0w4.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yYtrNYCJ4sZown6G"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1400846739-32427-1-git-send-email-tushar.behera@linaro.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, tiwai@suse.de, perex@perex.cz, lgirdwood@gmail.com, sbkim73@samsung.com, kgene.kim@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 26 May 2014 17:36:27 Takashi Iwai wrote:
-> > > > > Fidel Leon wrote:
-> > > > > > I own a rather old laptop which features a snd_hda_intel
-> > > > > > soundcard,
-> > > > > > with a
-> > > > > > ALC260 chipset.
-> > > > 
-> > > > Attached are alsa-infos from kernel 2.6 (which works) and 3.14 (Fedora
-> > > > 20,
-> > > > which doesnt work).
-> > > 
-> > > Looking at the alsa-info.sh output on 3.14, the node 0x0f has a
-> > > strange control value 0x80.  This should be usually 0xc0, and testing
-> > > with the emulator, it give this value at all.
-> > > 
-> > > What if you give model=nofixup option to snd-hda-intel module?
-> > 
-> > /etc/modprobe.d/alc260.conf:
-> > options snd-hda-intel model=nofixup
-> > 
-> > Rebooted but seems to make little difference. Cranked every slider from
-> > Alsamixer an pavucontrol to maximum. No output from speakers and a very
-> > low
-> > volume output in the S/PDIF output.
-> > 
-> > And now, to increase my dumb reputation, I'm not running 3.14 kernel
-> > (neither Fedora) anymore - I'm using Lubuntu 14.04 - so I'm attaching
-> > alsa-info.sh log for new setup.
-> 
-> You're testing the speaker output, right?  What about the headphone
-> output?
 
-It doesn't work either, not even a whisper. Already checked volume levels from 
-alsamixer and pavucontrol, they are at maximum.
+--yYtrNYCJ4sZown6G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Fidel Leon - fidelleon@mykolab.com
-GPG: AD74FB97
+On Fri, May 23, 2014 at 05:35:39PM +0530, Tushar Behera wrote:
+> commit 8c5178fca4ce ("ALSA: Add params_width() helpers") introduces
+> a helper to get the sample width. Updating Samsung related sound
+> drivers to use this helper.
+
+Applied, thanks.
+
+--yYtrNYCJ4sZown6G
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTg2YVAAoJELSic+t+oim9ZdAP/32osrxT61699mdfyzQNHesF
+ME8yujSL5/E6AMZ/dvIOscp4Y6u+1Yeju9XS0l+SrQqaY7a9eJMmX7gzInQC4z2M
+SdrByuhzpezU9tcVBhkmpe7PVUtZ7srcx3qUMZqxoxQTHPuEnoCQTdQp5tjBW594
+g7OvUc2C8HfAJMmpJuVZRDu2fQf7giPxgF6z9WihJC1u+bRvjmkszLnOxNi9nC1a
+ArNA+uTe4GewNliqqygvrJFVJwQuXez0i3Df2kXOcYQ+rSOX/S7gr2z0RvxRQGl0
+hV6YSqjhammCWI9cRFgNQX9jKArcAa+La6NTastSJzVfq+5SlJSNohyRYGyqD9Aj
+yNmEjrhLWITtVnTekuwuz4g5IMaeVLzNuVDNbRCoQ/jIDMMgOk1i4Xdt3jf8Nsg+
+HPeiUit+Mg9NVw42ghumrNOtNp9sakO4g2QOuL2JwOFst2WLO7Yw6LRnZXgdaPqJ
+Q2FU9nfqw3UgohiOJl4AJyM3G8N4T3ncGCtfywdYL3E+1xJegRSAB1RHUcx4YuQK
+CPuLsPbBoF5w6xke7epj9n8s8v6xJZZhu3z+IKzZi2Vp7QtrVYvW6DtSE2mfc/yb
+64Lb1ymtg/A74LKn4vFtxAwpFtFWjetgESp4ZI+HZnDtKKHQhS6njnac+qz0ix2B
+RYZMudFQVmtk4TBa6dWN
+=/PBU
+-----END PGP SIGNATURE-----
+
+--yYtrNYCJ4sZown6G--
