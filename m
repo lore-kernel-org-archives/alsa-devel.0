@@ -1,53 +1,44 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2] ALSA: hda: fix tegra build
-Date: Mon, 26 May 2014 21:15:20 +0200
-Message-ID: <4369871.VRtaiA22pI@wuerfel>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 05/11] ASoC: Add helper functions to cast
+ from DAPM context to CODEC/platform
+Date: Mon, 26 May 2014 21:36:54 +0200
+Message-ID: <538397D6.4080105@metafoo.de>
+References: <1400415858-11025-1-git-send-email-lars@metafoo.de>
+ <1400415858-11025-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Stephen Warren <swarren@nvidia.com>, Dylan Reid <dgreid@chromium.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-017.synserver.de (smtp-out-043.synserver.de
+ [212.40.185.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC6A026545F
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 21:38:41 +0200 (CEST)
+In-Reply-To: <1400415858-11025-6-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-When CONFIG_PM is disabled, the CONFIG_SND_HDA_POWER_SAVE_DEFAULT symbol
-does not get defined, which causes a build error for the hda-tegra driver:
+On 05/18/2014 02:24 PM, Lars-Peter Clausen wrote:
+> This is useful if we have a pointer to a DAPM context and know that it is a
+> CODEC or platform DAPM context and want to get a pointer to the CODEC or
+> platform.
+>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
 
-hda/hda_tegra.c:80:25: error: 'CONFIG_SND_HDA_POWER_SAVE_DEFAULT' undeclared here (not in a function)
- static int power_save = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
-                         ^
-/git/arm-soc/sound/pci/hda/hda_tegra.c:235:13: warning: 'hda_tegra_disable_clocks' defined but not used [-Wunused-function]
- static void hda_tegra_disable_clocks(struct hda_tegra *data)
-             ^
+It would be nice if this one could make it into 3.16. It doesn't depend on any 
+of the patches earlier in this series and I think it is pretty trivial. Having 
+it in 3.16 makes it possible to use it after the merge window in some driver 
+cleanup patches without having to do cross topic branch merges.
 
-This works around the problem by not referencing that macro
-when CONFIG_PM is disabled. Instead, we assume that it's disabled
-unconditionally and cannot be enabled at runtime.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Dylan Reid <dgreid@chromium.org>
-Cc: Stephen Warren <swarren@nvidia.com>
-Cc: Takashi Iwai <tiwai@suse.de>
----
-Same patch, but this time with correct Signed-off-by line.
-
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index 086fd06..a366ba9 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -77,10 +77,14 @@ struct hda_tegra {
- 	void __iomem *regs;
- };
- 
-+#ifdef CONFIG_PM
- static int power_save = CONFIG_SND_HDA_POWER_SAVE_DEFAULT;
- module_param(power_save, bint, 0644);
- MODULE_PARM_DESC(power_save,
- 		 "Automatic power-saving timeout (in seconds, 0 = disable).");
-+#else
-+static int power_save = 0;
-+#endif
- 
- /*
-  * DMA page allocation ops.
+Thanks,
+- Lars
