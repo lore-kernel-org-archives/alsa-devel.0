@@ -1,15 +1,17 @@
 From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 1/2] ASoC: jack: Basic GPIO descriptor
-	conversion
-Date: Mon, 26 May 2014 14:34:36 +0300
-Message-ID: <1401104077-25366-1-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: jack: Add support for GPIO
+	descriptor defined jack pins
+Date: Mon, 26 May 2014 14:34:37 +0300
+Message-ID: <1401104077-25366-2-git-send-email-jarkko.nikula@linux.intel.com>
+References: <1401104077-25366-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 963AF2650F2
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 13:35:20 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A70072650F7
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 13:35:22 +0200 (CEST)
+In-Reply-To: <1401104077-25366-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,102 +25,175 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch does basic GPIO descriptor conversion to soc-jack. Even the GPIOs
-are still passed and requested using legacy GPIO numbers the driver
-internals are converted to use GPIO descriptor API.
+Allow jack GPIO pins be defined also using GPIO descriptor-based interface
+in addition to legacy GPIO numbers. This is done by adding two new fields to
+struct snd_soc_jack_gpio: idx and gpiod_dev.
 
-Motivation for this is to prepare soc-jack so that it will allow registering
-jack GPIO pins using both GPIO descriptors and legacy GPIO numbers.
+Legacy GPIO numbers are used only when GPIO consumer device gpiod_dev is
+NULL and otherwise idx is the descriptor index within the GPIO consumer
+device.
+
+New function snd_soc_jack_add_gpiods() is added for typical cases where all
+GPIO descriptor jack pins belong to same GPIO consumer device. For other
+cases the caller must set the gpiod_dev in struct snd_soc_jack_gpio before
+calling snd_soc_jack_add_gpios().
 
 Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 ---
- include/sound/soc.h  |  1 +
- sound/soc/soc-jack.c | 19 +++++++++++--------
- 2 files changed, 12 insertions(+), 8 deletions(-)
+ include/sound/soc.h  | 16 +++++++++++-
+ sound/soc/soc-jack.c | 73 ++++++++++++++++++++++++++++++++++++++++------------
+ 2 files changed, 72 insertions(+), 17 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index dcdcc95efd1d..e9ec645911d9 100644
+index e9ec645911d9..98dca42487bc 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -607,6 +607,7 @@ struct snd_soc_jack_gpio {
+@@ -452,6 +452,9 @@ int snd_soc_jack_get_type(struct snd_soc_jack *jack, int micbias_voltage);
+ #ifdef CONFIG_GPIOLIB
+ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 			struct snd_soc_jack_gpio *gpios);
++int snd_soc_jack_add_gpiods(struct device *gpiod_dev,
++			    struct snd_soc_jack *jack,
++			    int count, struct snd_soc_jack_gpio *gpios);
+ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
+ 			struct snd_soc_jack_gpio *gpios);
+ #else
+@@ -461,6 +464,13 @@ static inline int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 	return 0;
+ }
  
- 	struct snd_soc_jack *jack;
- 	struct delayed_work work;
-+	struct gpio_desc *desc;
- 
- 	void *data;
- 	int (*jack_status_check)(void *data);
++int snd_soc_jack_add_gpiods(struct device *gpiod_dev,
++			    struct snd_soc_jack *jack,
++			    int count, struct snd_soc_jack_gpio *gpios)
++{
++	return 0;
++}
++
+ static inline void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
+ 					   struct snd_soc_jack_gpio *gpios)
+ {
+@@ -587,7 +597,9 @@ struct snd_soc_jack_zone {
+ /**
+  * struct snd_soc_jack_gpio - Describes a gpio pin for jack detection
+  *
+- * @gpio:         gpio number
++ * @gpio:         legacy gpio number
++ * @idx:          gpio descriptor index within the GPIO consumer device
++ * @gpiod_dev     GPIO consumer device
+  * @name:         gpio name
+  * @report:       value to report when jack detected
+  * @invert:       report presence in low state
+@@ -599,6 +611,8 @@ struct snd_soc_jack_zone {
+  */
+ struct snd_soc_jack_gpio {
+ 	unsigned int gpio;
++	unsigned int idx;
++	struct device *gpiod_dev;
+ 	const char *name;
+ 	int report;
+ 	int invert;
 diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index b903f822d1b2..7203842fea66 100644
+index 7203842fea66..d0d98810af91 100644
 --- a/sound/soc/soc-jack.c
 +++ b/sound/soc/soc-jack.c
-@@ -14,6 +14,7 @@
- #include <sound/jack.h>
- #include <sound/soc.h>
- #include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/interrupt.h>
- #include <linux/workqueue.h>
- #include <linux/delay.h>
-@@ -240,7 +241,7 @@ static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
- 	int enable;
- 	int report;
+@@ -298,24 +298,41 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 	int i, ret;
  
--	enable = gpio_get_value_cansleep(gpio->gpio);
-+	enable = gpiod_get_value_cansleep(gpio->desc);
- 	if (gpio->invert)
- 		enable = !enable;
- 
-@@ -314,14 +315,16 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
- 		if (ret)
+ 	for (i = 0; i < count; i++) {
+-		if (!gpio_is_valid(gpios[i].gpio)) {
+-			dev_err(jack->codec->dev, "ASoC: Invalid gpio %d\n",
+-				gpios[i].gpio);
+-			ret = -EINVAL;
+-			goto undo;
+-		}
+ 		if (!gpios[i].name) {
+-			dev_err(jack->codec->dev, "ASoC: No name for gpio %d\n",
+-				gpios[i].gpio);
++			dev_err(jack->codec->dev,
++				"ASoC: No name for gpio at index %d\n", i);
+ 			ret = -EINVAL;
  			goto undo;
+ 		}
  
--		ret = gpio_direction_input(gpios[i].gpio);
-+		gpios[i].desc = gpio_to_desc(gpios[i].gpio);
+-		ret = gpio_request(gpios[i].gpio, gpios[i].name);
+-		if (ret)
+-			goto undo;
+-
+-		gpios[i].desc = gpio_to_desc(gpios[i].gpio);
++		if (gpios[i].gpiod_dev) {
++			/* GPIO descriptor */
++			gpios[i].desc = gpiod_get_index(gpios[i].gpiod_dev,
++							gpios[i].name,
++							gpios[i].idx);
++			if (IS_ERR(gpios[i].desc)) {
++				ret = PTR_ERR(gpios[i].desc);
++				dev_err(gpios[i].gpiod_dev,
++					"ASoC: Cannot get gpio at index %d: %d",
++					i, ret);
++				goto undo;
++			}
++		} else {
++			/* legacy GPIO number */
++			if (!gpio_is_valid(gpios[i].gpio)) {
++				dev_err(jack->codec->dev,
++					"ASoC: Invalid gpio %d\n",
++					gpios[i].gpio);
++				ret = -EINVAL;
++				goto undo;
++			}
 +
-+		ret = gpiod_direction_input(gpios[i].desc);
++			ret = gpio_request(gpios[i].gpio, gpios[i].name);
++			if (ret)
++				goto undo;
++
++			gpios[i].desc = gpio_to_desc(gpios[i].gpio);
++		}
+ 
+ 		ret = gpiod_direction_input(gpios[i].desc);
  		if (ret)
- 			goto err;
- 
- 		INIT_DELAYED_WORK(&gpios[i].work, gpio_work);
- 		gpios[i].jack = jack;
- 
--		ret = request_any_context_irq(gpio_to_irq(gpios[i].gpio),
-+		ret = request_any_context_irq(gpiod_to_irq(gpios[i].desc),
- 					      gpio_handler,
- 					      IRQF_TRIGGER_RISING |
- 					      IRQF_TRIGGER_FALLING,
-@@ -331,7 +334,7 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
- 			goto err;
- 
+@@ -336,9 +353,9 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
  		if (gpios[i].wake) {
--			ret = irq_set_irq_wake(gpio_to_irq(gpios[i].gpio), 1);
-+			ret = irq_set_irq_wake(gpiod_to_irq(gpios[i].desc), 1);
+ 			ret = irq_set_irq_wake(gpiod_to_irq(gpios[i].desc), 1);
  			if (ret != 0)
- 				dev_err(jack->codec->dev, "ASoC: "
- 				  "Failed to mark GPIO %d as wake source: %d\n",
-@@ -339,7 +342,7 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+-				dev_err(jack->codec->dev, "ASoC: "
+-				  "Failed to mark GPIO %d as wake source: %d\n",
+-					gpios[i].gpio, ret);
++				dev_err(jack->codec->dev,
++					"ASoC: Failed to mark GPIO at index %d as wake source: %d\n",
++					i, ret);
  		}
  
  		/* Expose GPIO value over sysfs for diagnostic purposes */
--		gpio_export(gpios[i].gpio, false);
-+		gpiod_export(gpios[i].desc, false);
+@@ -361,6 +378,30 @@ undo:
+ EXPORT_SYMBOL_GPL(snd_soc_jack_add_gpios);
  
- 		/* Update initial jack status */
- 		schedule_delayed_work(&gpios[i].work,
-@@ -372,10 +375,10 @@ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
- 	int i;
- 
- 	for (i = 0; i < count; i++) {
--		gpio_unexport(gpios[i].gpio);
--		free_irq(gpio_to_irq(gpios[i].gpio), &gpios[i]);
-+		gpiod_unexport(gpios[i].desc);
-+		free_irq(gpiod_to_irq(gpios[i].desc), &gpios[i]);
- 		cancel_delayed_work_sync(&gpios[i].work);
--		gpio_free(gpios[i].gpio);
-+		gpiod_put(gpios[i].desc);
- 		gpios[i].jack = NULL;
- 	}
- }
+ /**
++ * snd_soc_jack_add_gpiods - Associate GPIO descriptor pins with an ASoC jack
++ *
++ * @gpiod_dev: GPIO consumer device
++ * @jack:      ASoC jack
++ * @count:     number of pins
++ * @gpios:     array of gpio pins
++ *
++ * This function will request gpio, set data direction and request irq
++ * for each gpio in the array.
++ */
++int snd_soc_jack_add_gpiods(struct device *gpiod_dev,
++			    struct snd_soc_jack *jack,
++			    int count, struct snd_soc_jack_gpio *gpios)
++{
++	int i;
++
++	for (i = 0; i < count; i++)
++		gpios[i].gpiod_dev = gpiod_dev;
++
++	return snd_soc_jack_add_gpios(jack, count, gpios);
++}
++EXPORT_SYMBOL_GPL(snd_soc_jack_add_gpiods);
++
++/**
+  * snd_soc_jack_free_gpios - Release GPIO pins' resources of an ASoC jack
+  *
+  * @jack:  ASoC jack
 -- 
 2.0.0.rc2
