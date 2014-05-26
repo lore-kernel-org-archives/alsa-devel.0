@@ -1,20 +1,16 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 2/2] ASoC: dapm: Add a helper to get the
- platform for DAPM kcontrol
-Date: Mon, 26 May 2014 18:21:46 +0530
-Message-ID: <20140526125146.GE21128@intel.com>
-References: <1401106136-3745-1-git-send-email-vinod.koul@intel.com>
- <1401106136-3745-2-git-send-email-vinod.koul@intel.com>
- <53833726.9050007@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Add suspend/resume support
+Date: Mon, 26 May 2014 14:24:47 +0100
+Message-ID: <20140526132447.GW22111@sirena.org.uk>
+References: <1400823536-31708-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4018543314505632271=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A516265158
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 15:08:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <53833726.9050007@linux.intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E461B265158
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 15:25:13 +0200 (CEST)
+In-Reply-To: <1400823536-31708-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.jf.intel.com>
-Cc: Kp Jeeja <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, timur@tabi.org, shawn.guo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 26, 2014 at 03:44:22PM +0300, Jarkko Nikula wrote:
-> On 05/26/2014 03:08 PM, Vinod Koul wrote:
-> >From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> >
-> >commit eee5d7f9 introduced helper for getting codec for DAPM kcontrol, for DSPs
-> >we need similar stuff for platforms as well
-> >
-> Please refer not only the commit id but also commit title ("ASoC:
-> dapm: Add a helper to get the CODEC for DAPM kcontrol").
-> 
-> Makes commit log more clear and helps cases where original commit is
-> backported to older tree.
-ah yes, my bad :(
 
-Mark, do you want a patch or can edit the commit with title "ASoC: dapm: Add a
-helper to get the CODEC for DAPM kcontrol" before applying, if no further
-comments
+--===============4018543314505632271==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XhDIt1ZqED2V8RHq"
+Content-Disposition: inline
 
--- 
-~Vinod
+
+--XhDIt1ZqED2V8RHq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, May 23, 2014 at 02:38:56AM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>=20
+> Doing a suspend/resume sequence while playing an audio track in the backg=
+roung
+> causes broken audio right after resume:
+
+Applied, thanks.
+
+--XhDIt1ZqED2V8RHq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTg0CSAAoJELSic+t+oim9LnIP/jKf2myalDiOFrynvKhgQ9wm
+/PRj6ftMxpBo6vImL3k7jKCtUE9mAYdzR47+nmtsxMzhbKZYFEs+hIAyt/DD0WxI
+EI7IZHqQfmepYJuut67y6YVKdg/ZNNjqVyD0574Ieu9JRTHplqZU7Bwr793i6rDB
+xD03et1AsnPpCqKJvewypcOyIMcnIKB18lmqQyc2Sq3m5MFx5d5BoMFa6eOrYapZ
+I2bSFGT3DQWRkH0B339pw7JGdf0+YxXJ+FRJa04x9dqN+d1Sxg+kWJo0CaAGUr/f
+TTWZWPmE1+8KTATfkONPzlE+VszFP+MpLXujrNHBYvOPvUC2uKLFiItSU/EhYTZ9
+fWBnxa3lxGUzLdv/gOGCDDY31e8PrnH35qAnz3VwEy5xEMUfnugGWsJjPyQ4FdrJ
+rgDjh09OwbbmmcMvH5LN8O6VEtjHf4iem3s7OIUj+0pApVqc5A4eaoQIH4deTliP
+uceAPgFG/gypzDR5IhcP0V7YAEtNkiyVLpuUrUbvDjwtkdov3VXPRIDOE2BWn6ku
+9eZ+rV11hQ5lIAINlHAXApsa9BMfyF/sA753DKceZ0Pf6r2szk2J6koGgXbXoRFE
+PKoIq4lGH+rG18685WzwrE0I2hfGCIhpUijeFwJm8jxOPdJbAiSRgWvk2bXOLn/R
+xIKkucloMtyQGigvnPaB
+=1yCu
+-----END PGP SIGNATURE-----
+
+--XhDIt1ZqED2V8RHq--
+
+--===============4018543314505632271==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4018543314505632271==--
