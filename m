@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: alc5623: Fix Kconfig dependency
-Date: Mon, 26 May 2014 16:11:17 +0100
-Message-ID: <20140526151117.GR22111@sirena.org.uk>
-References: <1401113317-32101-1-git-send-email-tiwai@suse.de>
+From: Gabriele Mazzotta <gabriele.mzt@gmail.com>
+Subject: [PATCH] ALSA: hda - Pop noises fix for XPS13 9333
+Date: Mon, 26 May 2014 17:11:46 +0200
+Message-ID: <2583453.CzVdMf61zs@xps13>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7764781597323671235=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DEB5265056
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 17:11:41 +0200 (CEST)
-In-Reply-To: <1401113317-32101-1-git-send-email-tiwai@suse.de>
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
+ [209.85.212.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E73A265056
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 17:11:50 +0200 (CEST)
+Received: by mail-wi0-f173.google.com with SMTP id bs8so151630wib.6
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 08:11:50 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,55 +21,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
+When headphones are plugged in, force AFG and node 0x02
+("Headphone Playback Volume") to D0 to avoid pop noises.
 
---===============7764781597323671235==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6uWySOjkgtH+Mvsi"
-Content-Disposition: inline
+Signed-off-by: Gabriele Mazzotta <gabriele.mzt@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
 
-
---6uWySOjkgtH+Mvsi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 26, 2014 at 04:08:37PM +0200, Takashi Iwai wrote:
-> Add "depends on I2C" to shut up the build errors from randconfig.
-
-Applied, thanks.
-
---6uWySOjkgtH+Mvsi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTg1mRAAoJELSic+t+oim9o8QP/Rboopncuo7lW7p5tYlnXut7
-MtmCcpPb647lKmI9NAZW25yhcj6qo848Ya0lIRKpb3VOLtksWEc4bIrmZJm+6re2
-vbEOH22xNqf/oqkq6xUuShQmc72TDfT7uA6z1CpeppKGxZB6lU7jrjOSfZiLEJ5w
-k2pdt5tEzQF9/gR/ELEvyat050W6HYTwQlPBjERdOqQ6Blfg9n13hbP0YYRITEwd
-WjoXxFK6DZcwJfp6WQV5GNKgdLxK/keAdOeEK6OIGPbaDC3b0aQSp3zidSDG6X+x
-NX8vIs5bFtatpu4ug0l9lGTlmPsXOp6QN9QbQnkGxuGBrdPWiZM5+bbeeF8ZqtYT
-hMl/1y8m41ZAEwUVT91BSOtXWO637IK96EpK7fjP4QYjbP3/Pbojpc9ZpNjIVEp/
-yD9wcHrkMJVmBFp1mNjlUmPzIU5aa8Ydy1y8cwafpba5u7kMapPhRHMOZ89m29Tc
-dnk8C61XAVRDikJ7+ivjvDNycYOXO6MxA08r8EpjjL/aq5rV4b8bLfhU7Gbsr10U
-jF8/NmqLsCl0DEDPEyOmzwGutPylHNJwCOV6eSjUAC9DsXlkN4fOsDNHygTWfKee
-qepGKk95O8I/LMxDtaZana/1pSO5ZfOWc4lsTAqX/Ua/1l4zMKZwFA0s2N4iKzgP
-KZhgIeYRcG/rpKIwhfyQ
-=Ry2Y
------END PGP SIGNATURE-----
-
---6uWySOjkgtH+Mvsi--
-
---===============7764781597323671235==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7764781597323671235==--
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ce28dc4..b7a435c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3726,6 +3726,29 @@ static void alc_fixup_disable_aamix(struct hda_codec *codec,
+ 	}
+ }
+ 
++static unsigned int alc_power_filter_xps13(struct hda_codec *codec,
++				hda_nid_t nid,
++				unsigned int power_state)
++{
++	struct alc_spec *spec = codec->spec;
++
++	/* Avoid pop noises when headphones are plugged in */
++	if (spec->gen.hp_jack_present)
++		if (nid == codec->afg || nid == 0x02)
++			return AC_PWRST_D0;
++	return power_state;
++}
++
++static void alc_fixup_dell_xps13(struct hda_codec *codec,
++				const struct hda_fixup *fix, int action)
++{
++	if (action == HDA_FIXUP_ACT_PROBE) {
++		struct alc_spec *spec = codec->spec;
++		spec->shutup = alc_no_shutup;
++		codec->power_filter = alc_power_filter_xps13;
++	}
++}
++
+ static void alc_fixup_headset_mode_alc668(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+@@ -5068,6 +5091,7 @@ enum {
+ 	ALC662_FIXUP_BASS_1A_CHMAP,
+ 	ALC668_FIXUP_AUTO_MUTE,
+ 	ALC668_FIXUP_DELL_DISABLE_AAMIX,
++	ALC668_FIXUP_DELL_XPS13,
+ };
+ 
+ static const struct hda_fixup alc662_fixups[] = {
+@@ -5228,6 +5252,12 @@ static const struct hda_fixup alc662_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_inv_dmic_0x12,
+ 	},
++	[ALC668_FIXUP_DELL_XPS13] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_dell_xps13,
++		.chained = true,
++		.chain_id = ALC668_FIXUP_DELL_DISABLE_AAMIX
++	},
+ 	[ALC668_FIXUP_DELL_DISABLE_AAMIX] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_disable_aamix,
+@@ -5285,7 +5315,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
+ 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x1028, 0x060a, "Dell XPS 13", ALC668_FIXUP_DELL_DISABLE_AAMIX),
++	SND_PCI_QUIRK(0x1028, 0x060a, "Dell XPS 13", ALC668_FIXUP_DELL_XPS13),
+ 	SND_PCI_QUIRK(0x1028, 0x0623, "Dell", ALC668_FIXUP_AUTO_MUTE),
+ 	SND_PCI_QUIRK(0x1028, 0x0624, "Dell", ALC668_FIXUP_AUTO_MUTE),
+ 	SND_PCI_QUIRK(0x1028, 0x0625, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+-- 
+2.0.0.rc4
