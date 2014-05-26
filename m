@@ -1,101 +1,51 @@
-From: Gabriele Mazzotta <gabriele.mzt@gmail.com>
-Subject: [PATCH] ALSA: hda - Pop noises fix for XPS13 9333
-Date: Mon, 26 May 2014 17:11:46 +0200
-Message-ID: <2583453.CzVdMf61zs@xps13>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V2 1/2] ASoC: max98090: Add master clock handling
+Date: Mon, 26 May 2014 16:18:38 +0100
+Message-ID: <20140526151838.GS22111@sirena.org.uk>
+References: <1401092902-20525-1-git-send-email-tushar.behera@linaro.org>
+ <1401092902-20525-2-git-send-email-tushar.behera@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
- [209.85.212.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E73A265056
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 17:11:50 +0200 (CEST)
-Received: by mail-wi0-f173.google.com with SMTP id bs8so151630wib.6
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 08:11:50 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4sIpN43wh+0KCG0T"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1401092902-20525-2-git-send-email-tushar.behera@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tushar Behera <tushar.behera@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, tiwai@suse.de, perex@perex.cz, dianders@chromium.org, swarren@wwwdotorg.org
 List-Id: alsa-devel@alsa-project.org
 
-When headphones are plugged in, force AFG and node 0x02
-("Headphone Playback Volume") to D0 to avoid pop noises.
 
-Signed-off-by: Gabriele Mazzotta <gabriele.mzt@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+--4sIpN43wh+0KCG0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index ce28dc4..b7a435c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3726,6 +3726,29 @@ static void alc_fixup_disable_aamix(struct hda_codec *codec,
- 	}
- }
- 
-+static unsigned int alc_power_filter_xps13(struct hda_codec *codec,
-+				hda_nid_t nid,
-+				unsigned int power_state)
-+{
-+	struct alc_spec *spec = codec->spec;
-+
-+	/* Avoid pop noises when headphones are plugged in */
-+	if (spec->gen.hp_jack_present)
-+		if (nid == codec->afg || nid == 0x02)
-+			return AC_PWRST_D0;
-+	return power_state;
-+}
-+
-+static void alc_fixup_dell_xps13(struct hda_codec *codec,
-+				const struct hda_fixup *fix, int action)
-+{
-+	if (action == HDA_FIXUP_ACT_PROBE) {
-+		struct alc_spec *spec = codec->spec;
-+		spec->shutup = alc_no_shutup;
-+		codec->power_filter = alc_power_filter_xps13;
-+	}
-+}
-+
- static void alc_fixup_headset_mode_alc668(struct hda_codec *codec,
- 				const struct hda_fixup *fix, int action)
- {
-@@ -5068,6 +5091,7 @@ enum {
- 	ALC662_FIXUP_BASS_1A_CHMAP,
- 	ALC668_FIXUP_AUTO_MUTE,
- 	ALC668_FIXUP_DELL_DISABLE_AAMIX,
-+	ALC668_FIXUP_DELL_XPS13,
- };
- 
- static const struct hda_fixup alc662_fixups[] = {
-@@ -5228,6 +5252,12 @@ static const struct hda_fixup alc662_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_inv_dmic_0x12,
- 	},
-+	[ALC668_FIXUP_DELL_XPS13] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_dell_xps13,
-+		.chained = true,
-+		.chain_id = ALC668_FIXUP_DELL_DISABLE_AAMIX
-+	},
- 	[ALC668_FIXUP_DELL_DISABLE_AAMIX] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_disable_aamix,
-@@ -5285,7 +5315,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
- 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
--	SND_PCI_QUIRK(0x1028, 0x060a, "Dell XPS 13", ALC668_FIXUP_DELL_DISABLE_AAMIX),
-+	SND_PCI_QUIRK(0x1028, 0x060a, "Dell XPS 13", ALC668_FIXUP_DELL_XPS13),
- 	SND_PCI_QUIRK(0x1028, 0x0623, "Dell", ALC668_FIXUP_AUTO_MUTE),
- 	SND_PCI_QUIRK(0x1028, 0x0624, "Dell", ALC668_FIXUP_AUTO_MUTE),
- 	SND_PCI_QUIRK(0x1028, 0x0625, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
--- 
-2.0.0.rc4
+On Mon, May 26, 2014 at 01:58:21PM +0530, Tushar Behera wrote:
+> If master clock is provided through device tree, then update
+> the master clock frequency during set_sysclk.
+
+Applied, thanks.
+
+--4sIpN43wh+0KCG0T
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTg1tKAAoJELSic+t+oim9eZ4P/iWyMAAkIymViwiAu1gI3VIn
+OOYL3fmHoeuC0M3ELMtsMFWz/olftH5hkSrCmFWBu3AAzdeR3/F/cJ0oiYQYZ019
+iYlp5Ml6nV+to0zF1hILF5BNa1uYH5dhprZ7zsQmgVjZJDzX2+9unJAZasJtY9Dj
+XWLLu3CYH/b3jB9292euSSRjIY8HKPAQ2ikOkAn7I2ezWit0T4NYF5PPjXvTpY41
+ngDJ7FmiujwlfXyIpjByJ4Qu/XPcnVaMNdaAWk7YDf+D8/9evt7Fe2Ki9Q68cg7v
+rykHVnw42TbZzIxDDO32IQn1hT3BkP+aE3T0/VWygK8h67tLV7suaRgM8iiyLoRm
+UoVooaDZvOUc71fztYlcrazbAM+x+rnoqWl/cuyq2uWTVZ8fMtEjFMKwr7ufCLHU
+lVbjADn68tydwS9baw8LW5eL3v6pUngFyRSRAVdILzDDvsHSo8wqnFI4hvJCEOX3
+pX62w3eFk/JJqH7OG0HQxvF551qKDAq+Vmt42tQo+x0vRFXyV/EZHFiR77H/aw89
+/pDa7PvRwk8p5X8FPVMlb+S1ZcLGfRs+EaiZbpeP4msEO6rjuQB85qtS+FUpe/x5
+nSHzzsoC2QO6+gsX6XhKDRWo4W85PUt5OsBkSE3IuSuNSNYftx8FdkLFP6nP7KRL
+ceAAuWjEAdLOW74DiXsr
+=WSA0
+-----END PGP SIGNATURE-----
+
+--4sIpN43wh+0KCG0T--
