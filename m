@@ -1,17 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: aplay: main:722: audio open error: No such file or
- directory
-Date: Mon, 26 May 2014 10:30:33 +0200
-Message-ID: <5382FBA9.4000402@ladisch.de>
-References: <20140525091124.01578e75@kruskal.home.chead.ca>
+Subject: Re: [PATCH 00/49 v4] Enhancement for support of
+ Firewire devices
+Date: Mon, 26 May 2014 10:41:31 +0200
+Message-ID: <5382FE3B.2010507@ladisch.de>
+References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
+ <538185B4.6010909@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 6945526087B
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 10:30:34 +0200 (CEST)
-In-Reply-To: <20140525091124.01578e75@kruskal.home.chead.ca>
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 818D826087B
+ for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 10:41:31 +0200 (CEST)
+In-Reply-To: <538185B4.6010909@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christopher Head <alsa@chead.ca>, alsa-devel@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Christopher Head wrote:
-> asound # cat cards
->  0 [MID            ]: HDA-Intel - HDA Intel MID
->                       HDA Intel MID at 0xf4900000 irq 53
->  1 [NVidia         ]: HDA-Intel - HDA NVidia
->                       HDA NVidia at 0xf3080000 irq 17
->
-> I can't play audio on non-default devices.
->
-> Running aplay with -D hdmi does not work, failing with this message:
-> aplay: main:722: audio open error: No such file or directory
+Takashi Sakamoto wrote:
+> Any reactions for this patchset?
 
-The default card has no "hdmi" device.
+Sorry, I haven't been able to find time, and probably' won't until
+next week.
 
-Try -D hdmi:CARD=NVidia (or better plug:hdmi:CARD=NVidia to get
-automatic sample format conversions).
+In any case, I think all patches deserve testing in the -next tree.
 
 
 Regards,
