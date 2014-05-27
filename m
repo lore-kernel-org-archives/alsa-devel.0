@@ -1,19 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 00/49 v4] Enhancement for support of
-	Firewire devices
-Date: Tue, 27 May 2014 13:13:25 +0900
-Message-ID: <538410E5.8080909@sakamocchi.jp>
-References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
- <538185B4.6010909@sakamocchi.jp> <5382FE3B.2010507@ladisch.de>
- <s5hy4xoly1f.wl%tiwai@suse.de> <s5h8upolnof.wl%tiwai@suse.de>
- <5383C41D.4020103@sakamocchi.jp>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH 4/5] ALSA: hda - drop def association and
+ sequence from pinconf comparing
+Date: Tue, 27 May 2014 06:41:09 +0200
+Message-ID: <53841765.4000404@canonical.com>
+References: <1401092564-14293-1-git-send-email-hui.wang@canonical.com>	<1401092564-14293-4-git-send-email-hui.wang@canonical.com>	<5383136A.3040006@canonical.com>
+ <CAJ=jqub_w_9vppPdO0dnz0nYztsGr3yn5DM4eHu-PWmhQnv1SA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000204000903090102070106"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id C978D2654B2
- for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 06:13:37 +0200 (CEST)
-In-Reply-To: <5383C41D.4020103@sakamocchi.jp>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6498E2654C6
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 06:41:09 +0200 (CEST)
+In-Reply-To: <CAJ=jqub_w_9vppPdO0dnz0nYztsGr3yn5DM4eHu-PWmhQnv1SA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,849 +23,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, ffado-devel@lists.sf.net
+To: Alex Hung <alex.hung@canonical.com>
+Cc: Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000204000903090102070106
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Iwai-san,
-
-Attached files are fixups for each patches. I think it better to renew
-patches because there're somewhat much lines to be modified.
 
 
-Regards
+On 2014-05-27 04:25, Alex Hung wrote:
+> Hi David,
+>
+> BIOS today implements verbtable which is provided by codec vendor
+> based on hardware design, and it is indeed not uncommon that the
+> verbtable includes used pin only and leaves unused pins untouched.
 
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+Sure, but those unused pins would then have the same default value that 
+the codec initializes it with.
 
-(May 27 2014 07:45), Takashi Sakamoto wrote:
-> Iwai-san,
-> 
-> (May 26 2014 21:38), Takashi Iwai wrote:
->> Meanwhile I applied the patches to topic/firewire branch and put to my
->> build test bot.  I'll merge the branch to for-next tomorrow if no one
->> gives objections.
-> 
-> Thanks for your applying this patchset to topic/firewire branch. I
-> receive some sparse messages from kbuild test backend. There're several
-> codes which should be fixed, mainly for type conflict.
-> 
-> I want you to apply revised patchset. I've already done most of this
-> work for revised patchset.
-> 
-> Should I post them as new patchset? Or post new patches to previous
-> patchset?
-> 
-> 
-> Thanks
-> 
-> Takashi Sakamoto
-> o-takashi@sakamocchi.jp
+Also, it wouldn't be uncommon for BIOS (or codec vendors) to use the 
+same verbtable for several machines if they share the same audio hardware.
 
+But none of this explains why anyone would just change def association 
+and sequence value between machines? It makes no sense.
 
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0012-fixup-for-PATCH-11-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0012-fixup-for-PATCH-11-49.patch"
+>
+> On Mon, May 26, 2014 at 6:11 PM, David Henningsson
+> <david.henningsson@canonical.com> wrote:
+>> (Add Alex Hung to CC)
+>>
+>> On 2014-05-26 10:22, Hui Wang wrote:
+>>>
+>>> A lot a machine have the same codec, but they have different default
+>>> pinconf setting just because the def association and sequence is
+>>> different, as a result they can't share a hda_pintbl[], to overcome
+>>> it, we don't compare def association and sequence in the pinconf
+>>> matching.
+>>
+>>
+>> Uhm, really? Alex, does this seem reasonable from a BIOS perspective, i e,
+>> that BIOS people normally would set def association and sequence different
+>> while leaving everything else unchanged?
+>>
+>>>
+>>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>>> ---
+>>>    sound/pci/hda/hda_auto_parser.c | 3 ++-
+>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/sound/pci/hda/hda_auto_parser.c
+>>> b/sound/pci/hda/hda_auto_parser.c
+>>> index b684c6e..3cf9137 100644
+>>> --- a/sound/pci/hda/hda_auto_parser.c
+>>> +++ b/sound/pci/hda/hda_auto_parser.c
+>>> @@ -844,7 +844,8 @@ static bool pin_config_match(struct hda_codec *codec,
+>>>    {
+>>>          for (; pins->nid; pins++) {
+>>>                  u32 def_conf = snd_hda_codec_get_pincfg(codec, pins->nid);
+>>> -               if (pins->val != def_conf)
+>>> +               u32 mask = 0xffffff00;
+>>> +               if ((pins->val & mask) != (def_conf & mask))
+>>>                          return false;
+>>>          }
+>>>          return true;
+>>>
+>>
+>> --
+>> David Henningsson, Canonical Ltd.
+>> https://launchpad.net/~diwic
+>
+>
+>
 
->From 7bfccd9826cf2a84f39a0b22fe3930fbe4bc702d Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 02:47:19 +0900
-Subject: fixup for [PATCH 11/49]
-
-A wrong type of variable is given as function argument.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/speakers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/firewire/speakers.c b/sound/firewire/speakers.c
-index 3427527..58e7ab0 100644
---- a/sound/firewire/speakers.c
-+++ b/sound/firewire/speakers.c
-@@ -167,7 +167,7 @@ static int fwspk_open(struct snd_pcm_substream *substream)
- 	if (err < 0)
- 		return err;
- 
--	err = amdtp_stream_add_pcm_hw_constraints(fwspk->stream, runtime);
-+	err = amdtp_stream_add_pcm_hw_constraints(&fwspk->stream, runtime);
- 	if (err < 0)
- 		return err;
- 
 -- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0018-fixup-for-PATCH-16-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0018-fixup-for-PATCH-16-49.patch"
-
->From 9d6136c7974b2bdb4530008808ab3fcf00fe74b4 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 11:57:38 +0900
-Subject: fixup for [PATCH 16/49]
-
-A variable is assigned to a different type of variable.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/cmp.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/sound/firewire/cmp.c b/sound/firewire/cmp.c
-index d31a403..32c0209 100644
---- a/sound/firewire/cmp.c
-+++ b/sound/firewire/cmp.c
-@@ -163,8 +163,13 @@ int cmp_connection_check_used(struct cmp_connection *c, bool *used)
- 	err = snd_fw_transaction(
- 			c->resources.unit, TCODE_READ_QUADLET_REQUEST,
- 			pcr_address(c), &pcr, 4, 0);
--	if (err >= 0)
--		*used = (pcr & cpu_to_be32(PCR_BCAST_CONN | PCR_P2P_CONN_MASK));
-+	if (err >= 0) {
-+		if ((pcr & cpu_to_be32(PCR_BCAST_CONN | PCR_P2P_CONN_MASK)) > 0)
-+			*used = true;
-+		else
-+			*used = false;
-+	}
-+
- 	return err;
- }
- EXPORT_SYMBOL(cmp_connection_check_used);
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0021-fixup-for-PATCH-18-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0021-fixup-for-PATCH-18-49.patch"
-
->From 19ae60f0f4e9cbf1e18b4bb43134e68d6e22f1d4 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 01:44:01 +0900
-Subject: fixup for [PATCH 18/49]
-
-Apply the same prototype in header and fix limitation of loop counter.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/firewire/amdtp.c b/sound/firewire/amdtp.c
-index 5b88461..21cc2a4 100644
---- a/sound/firewire/amdtp.c
-+++ b/sound/firewire/amdtp.c
-@@ -105,7 +105,7 @@ const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT] = {
- };
- EXPORT_SYMBOL(amdtp_syt_intervals);
- 
--const unsigned int amdtp_rate_table[] = {
-+const unsigned int amdtp_rate_table[CIP_SFC_COUNT] = {
- 	[CIP_SFC_32000]  =  32000,
- 	[CIP_SFC_44100]  =  44100,
- 	[CIP_SFC_48000]  =  48000,
-@@ -196,7 +196,7 @@ void amdtp_stream_set_parameters(struct amdtp_stream *s,
- 	    WARN_ON(midi_channels > AMDTP_MAX_CHANNELS_FOR_MIDI))
- 		return;
- 
--	for (sfc = 0; sfc < sizeof(amdtp_rate_table); ++sfc)
-+	for (sfc = 0; sfc < ARRAY_SIZE(amdtp_rate_table); ++sfc)
- 		if (amdtp_rate_table[sfc] == rate)
- 			goto sfc_found;
- 	WARN_ON(1);
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0024-fixup-for-PATCH-20-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0024-fixup-for-PATCH-20-49.patch"
-
->From 3adc93a785e8b30f310c2710284f664891e67d5b Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 01:49:47 +0900
-Subject: fixup for [PATCH 20/49]
-
-Fix different prototype than function and wrong narrowing conversion.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/fireworks/fireworks.h             | 3 ++-
- sound/firewire/fireworks/fireworks_transaction.c | 4 ++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index e999802..051cf04 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -145,7 +145,8 @@ enum snd_efw_transport_mode {
- };
- int snd_efw_command_set_resp_addr(struct snd_efw *efw,
- 				  u16 addr_high, u32 addr_low);
--int snd_efw_command_set_tx_mode(struct snd_efw *efw, unsigned int mode);
-+int snd_efw_command_set_tx_mode(struct snd_efw *efw,
-+				enum snd_efw_transport_mode mode);
- int snd_efw_command_get_hwinfo(struct snd_efw *efw,
- 			       struct snd_efw_hwinfo *hwinfo);
- int snd_efw_command_get_phys_meters(struct snd_efw *efw,
-diff --git a/sound/firewire/fireworks/fireworks_transaction.c b/sound/firewire/fireworks/fireworks_transaction.c
-index aac91d8..13f99b7 100644
---- a/sound/firewire/fireworks/fireworks_transaction.c
-+++ b/sound/firewire/fireworks/fireworks_transaction.c
-@@ -31,8 +31,8 @@
-  */
- #include "./fireworks.h"
- 
--#define MEMORY_SPACE_EFW_COMMAND	0xecc000000000
--#define MEMORY_SPACE_EFW_RESPONSE	0xecc080000000
-+#define MEMORY_SPACE_EFW_COMMAND	0xecc000000000LL
-+#define MEMORY_SPACE_EFW_RESPONSE	0xecc080000000LL
- 
- #define ERROR_RETRIES 3
- #define ERROR_DELAY_MS 5
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0026-fixup-for-PATCH-21-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0026-fixup-for-PATCH-21-49.patch"
-
->From 934d7ca623f242301de03990b7394a6d59e707c5 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 01:47:22 +0900
-Subject: fixup for [PATCH 21/49]
-
-Fix wrong type of variable. The type of struct snd_pcm_runtime.rate is
-'unsigned int'.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/fireworks/fireworks.h        | 2 +-
- sound/firewire/fireworks/fireworks_stream.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/firewire/fireworks/fireworks.h b/sound/firewire/fireworks/fireworks.h
-index 7ebfb78..7fd79d6 100644
---- a/sound/firewire/fireworks/fireworks.h
-+++ b/sound/firewire/fireworks/fireworks.h
-@@ -179,7 +179,7 @@ int snd_efw_command_get_sampling_rate(struct snd_efw *efw, unsigned int *rate);
- int snd_efw_command_set_sampling_rate(struct snd_efw *efw, unsigned int rate);
- 
- int snd_efw_stream_init_duplex(struct snd_efw *efw);
--int snd_efw_stream_start_duplex(struct snd_efw *efw, int sampling_rate);
-+int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate);
- void snd_efw_stream_stop_duplex(struct snd_efw *efw);
- void snd_efw_stream_update_duplex(struct snd_efw *efw);
- void snd_efw_stream_destroy_duplex(struct snd_efw *efw);
-diff --git a/sound/firewire/fireworks/fireworks_stream.c b/sound/firewire/fireworks/fireworks_stream.c
-index ec62aa6..915c60e 100644
---- a/sound/firewire/fireworks/fireworks_stream.c
-+++ b/sound/firewire/fireworks/fireworks_stream.c
-@@ -211,7 +211,7 @@ end:
- 	return err;
- }
- 
--int snd_efw_stream_start_duplex(struct snd_efw *efw, int rate)
-+int snd_efw_stream_start_duplex(struct snd_efw *efw, unsigned int rate)
- {
- 	struct amdtp_stream *master, *slave;
- 	atomic_t *slave_substreams;
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0034-fixup-for-PATCH-28-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0034-fixup-for-PATCH-28-49.patch"
-
->From d6241ae2269f11196581baa1f8ae2473b1667b94 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 02:10:41 +0900
-Subject: fixup for [PATCH 28/49]
-
-Improve indentation.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/fireworks/fireworks_midi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-index cbf34e9..1727de8 100644
---- a/sound/firewire/fireworks/fireworks_midi.c
-+++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -122,7 +122,7 @@ int snd_efw_create_midi_devices(struct snd_efw *efw)
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
- 
- 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
--					&midi_capture_ops);
-+				    &midi_capture_ops);
- 
- 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
- 
-@@ -133,7 +133,7 @@ int snd_efw_create_midi_devices(struct snd_efw *efw)
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
- 
- 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
--					&midi_playback_ops);
-+				    &midi_playback_ops);
- 
- 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
- 
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0037-fixup-for-PATCH-30-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0037-fixup-for-PATCH-30-49.patch"
-
->From 561308d267184f80dc47a9ede9699c426b3bd6ca Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 01:50:48 +0900
-Subject: fixup for [PATCH 30/49]
-
-Fix wrong type of variable for function argument.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/fireworks/fireworks_pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
-index 15ec4e0..8cc5c8b7 100644
---- a/sound/firewire/fireworks/fireworks_pcm.c
-+++ b/sound/firewire/fireworks/fireworks_pcm.c
-@@ -195,8 +195,8 @@ end:
- static int pcm_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_efw *efw = substream->private_data;
--	int sampling_rate;
--	unsigned int clock_source;
-+	unsigned int sampling_rate;
-+	enum snd_efw_clock_source clock_source;
- 	int err;
- 
- 	err = pcm_init_hw_params(efw, substream);
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0040-fixup-for-PATCH-32-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0040-fixup-for-PATCH-32-49.patch"
-
->From 1a1e970e3bd18ebc69b109f315c001b4bf14d3e5 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 11:29:03 +0900
-Subject: fixup for [PATCH 32/49]
-
-Fix a wrong variable to PTR_ERR().
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/fireworks/fireworks_hwdep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
-index 6b50a67..4f8216f 100644
---- a/sound/firewire/fireworks/fireworks_hwdep.c
-+++ b/sound/firewire/fireworks/fireworks_hwdep.c
-@@ -135,7 +135,7 @@ hwdep_write(struct snd_hwdep *hwdep, const char __user *data, long count,
- 
- 	buf = memdup_user(data, count);
- 	if (IS_ERR(buf))
--		return PTR_ERR(data);
-+		return PTR_ERR(buf);
- 
- 	/* check seqnum is not for kernel-land */
- 	seqnum = be32_to_cpu(((struct snd_efw_transaction *)buf)->seqnum);
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0042-fixup-for-PATCH-33-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0042-fixup-for-PATCH-33-49.patch"
-
->From f59ab9520cb99e442f749b1c95e4482311886c02 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 02:14:01 +0900
-Subject: fixup for [PATCH 33/49]
-
-Use different names for global and local symbols, remove meaningless function
-and prevent from narrowing conversion.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob.c | 7 +++----
- sound/firewire/bebob/bebob.h | 4 ++--
- 2 files changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index b5644ab..3666b73 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -59,7 +59,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
- 	struct fw_device *fw_dev = fw_parent_device(bebob->unit);
- 	char vendor[24] = {0};
- 	char model[32] = {0};
--	u32 id;
-+	u32 hw_id;
- 	u32 data[2] = {0};
- 	u32 revision;
- 	int err;
-@@ -78,7 +78,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
- 
- 	/* get hardware id */
- 	err = snd_bebob_read_quad(bebob->unit, INFO_OFFSET_HW_MODEL_ID,
--				  &id);
-+				  &hw_id);
- 	if (err < 0)
- 		goto end;
- 
-@@ -99,7 +99,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
- 	strcpy(bebob->card->mixername, model);
- 	snprintf(bebob->card->longname, sizeof(bebob->card->longname),
- 		 "%s %s (id:%d, rev:%d), GUID %08x%08x at %s, S%d",
--		 vendor, model, id, revision,
-+		 vendor, model, hw_id, revision,
- 		 data[0], data[1], dev_name(&bebob->unit->device),
- 		 100 << fw_dev->max_speed);
- end:
-@@ -285,7 +285,6 @@ static void __exit
- snd_bebob_exit(void)
- {
- 	driver_unregister(&bebob_driver.driver);
--	mutex_destroy(&devices_mutex);
- }
- 
- module_init(snd_bebob_init);
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 862f756..9575f03 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -25,8 +25,8 @@
- #include "../fcp.h"
- 
- /* basic register addresses on DM1000/DM1100/DM1500 */
--#define BEBOB_ADDR_REG_INFO	0xffffc8020000
--#define BEBOB_ADDR_REG_REQ	0xffffc8021000
-+#define BEBOB_ADDR_REG_INFO	0xffffc8020000LL
-+#define BEBOB_ADDR_REG_REQ	0xffffc8021000LL
- 
- struct snd_bebob {
- 	struct snd_card *card;
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0044-fixup-for-PATCH-34-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0044-fixup-for-PATCH-34-49.patch"
-
->From bf230c5036c9c1b4cf137a0a8b549e043a5e9e69 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 01:53:19 +0900
-Subject: fixup for [PATCH 34/49]
-
-Fix wrong type of variable. The type of struct snd_pcm_runtime.rate is
-'unsigned int'. And fix wrong type of variable for function argument,
-improve comments for stream format.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob.h        | 2 +-
- sound/firewire/bebob/bebob_stream.c | 7 ++++---
- 2 files changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/sound/firewire/bebob/bebob.h b/sound/firewire/bebob/bebob.h
-index 6686871..89d66e5 100644
---- a/sound/firewire/bebob/bebob.h
-+++ b/sound/firewire/bebob/bebob.h
-@@ -162,7 +162,7 @@ int snd_bebob_stream_discover(struct snd_bebob *bebob);
- int snd_bebob_stream_map(struct snd_bebob *bebob,
- 			 struct amdtp_stream *stream);
- int snd_bebob_stream_init_duplex(struct snd_bebob *bebob);
--int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, int rate);
-+int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate);
- void snd_bebob_stream_stop_duplex(struct snd_bebob *bebob);
- void snd_bebob_stream_update_duplex(struct snd_bebob *bebob);
- void snd_bebob_stream_destroy_duplex(struct snd_bebob *bebob);
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index c868c17..6a2a66d 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -427,7 +427,7 @@ end:
- 	return err;
- }
- 
--int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, int rate)
-+int snd_bebob_stream_start_duplex(struct snd_bebob *bebob, unsigned int rate)
- {
- 	struct amdtp_stream *master, *slave;
- 	atomic_t *slave_substreams;
-@@ -655,7 +655,7 @@ parse_stream_formation(u8 *buf, unsigned int len,
- 		format = buf[6 + e * 2];
- 
- 		switch (format) {
--		/* IEC 60958-3, currently handle as MBLA */
-+		/* IEC 60958 Conformant, currently handled as MBLA */
- 		case 0x00:
- 		/* Multi bit linear audio */
- 		case 0x06:	/* Raw */
-@@ -747,7 +747,8 @@ static int
- seek_msu_sync_input_plug(struct snd_bebob *bebob)
- {
- 	u8 plugs[AVC_PLUG_INFO_BUF_BYTES], addr[AVC_BRIDGECO_ADDR_BYTES];
--	unsigned int i, type;
-+	unsigned int i;
-+	enum avc_bridgeco_plug_type type;
- 	int err;
- 
- 	/* Get the number of Music Sub Unit for both direction. */
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0048-fixup-for-PATCH-37-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0048-fixup-for-PATCH-37-49.patch"
-
->From bf973b05f35cf038adf79778da2fba7271e41ccb Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 02:14:46 +0900
-Subject: fixup for [PATCH 37/49]
-
-Improve indentaion.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob_midi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
-index 120a61b9..03a996df 100644
---- a/sound/firewire/bebob/bebob_midi.c
-+++ b/sound/firewire/bebob/bebob_midi.c
-@@ -123,7 +123,7 @@ int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
- 
- 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
--					&midi_capture_ops);
-+				    &midi_capture_ops);
- 
- 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
- 
-@@ -134,7 +134,7 @@ int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
- 
- 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
--					&midi_playback_ops);
-+				    &midi_playback_ops);
- 
- 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
- 
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0052-fixup-for-PATCH-40-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0052-fixup-for-PATCH-40-49.patch"
-
->From ddc64059ed3a3b7ef24158031890d1f6849c1aee Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 02:07:06 +0900
-Subject: fixup for [PATCH 40/49]
-
-Add static specifier to file local variable.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 5e17d09..9ed96c4 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -224,7 +224,7 @@ static void bebob_remove(struct fw_unit *unit)
- 	snd_card_free_when_closed(bebob->card);
- }
- 
--struct snd_bebob_rate_spec normal_rate_spec = {
-+static struct snd_bebob_rate_spec normal_rate_spec = {
- 	.get	= &snd_bebob_stream_get_rate,
- 	.set	= &snd_bebob_stream_set_rate
- };
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0054-fixup-for-PATCH-41-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0054-fixup-for-PATCH-41-49.patch"
-
->From 64ee38712a8ec557c6c0dbad63677d9cf5c6f6b2 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 01:54:32 +0900
-Subject: fixup for [PATCH 41/49]
-
-Add static specifier to file local variable.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob_terratec.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
-index 2a89c1c..eef8ea7 100644
---- a/sound/firewire/bebob/bebob_terratec.c
-+++ b/sound/firewire/bebob/bebob_terratec.c
-@@ -38,13 +38,13 @@ phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
- 	return avc_audio_get_selector(bebob->unit, 0, 4, id);
- }
- 
--struct snd_bebob_rate_spec phase_series_rate_spec = {
-+static struct snd_bebob_rate_spec phase_series_rate_spec = {
- 	.get	= &snd_bebob_stream_get_rate,
- 	.set	= &snd_bebob_stream_set_rate,
- };
- 
- /* PHASE 88 Rack FW */
--struct snd_bebob_clock_spec phase88_rack_clk = {
-+static struct snd_bebob_clock_spec phase88_rack_clk = {
- 	.num	= ARRAY_SIZE(phase88_rack_clk_src_labels),
- 	.labels	= phase88_rack_clk_src_labels,
- 	.get	= &phase88_rack_clk_src_get,
-@@ -56,7 +56,7 @@ struct snd_bebob_spec phase88_rack_spec = {
- };
- 
- /* 'PHASE 24 FW' and 'PHASE X24 FW' */
--struct snd_bebob_clock_spec phase24_series_clk = {
-+static struct snd_bebob_clock_spec phase24_series_clk = {
- 	.num	= ARRAY_SIZE(phase24_series_clk_src_labels),
- 	.labels	= phase24_series_clk_src_labels,
- 	.get	= &phase24_series_clk_src_get,
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0057-fixup-for-PATCH-43-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0057-fixup-for-PATCH-43-49.patch"
-
->From 5ddaa135241e358f9d3c6b01f3478cdd36cfdcde Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 01:55:51 +0900
-Subject: fixup for [PATCH 43/49]
-
-Add static specifier to file local variable, and prevent from narrowing conversion.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob_focusrite.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/sound/firewire/bebob/bebob_focusrite.c b/sound/firewire/bebob/bebob_focusrite.c
-index cd29dbc..474d0c9 100644
---- a/sound/firewire/bebob/bebob_focusrite.c
-+++ b/sound/firewire/bebob/bebob_focusrite.c
-@@ -14,15 +14,15 @@
- #define DIG_OUT	"Digital Out"
- #define STM_IN	"Stream In"
- 
--#define SAFFIRE_ADDRESS_BASE			0x000100000000
-+#define SAFFIRE_ADDRESS_BASE			0x000100000000LL
- 
--#define SAFFIRE_OFFSET_CLOCK_SOURCE		0x0000000000f8
--#define SAFFIREPRO_OFFSET_CLOCK_SOURCE		0x000000000174
-+#define SAFFIRE_OFFSET_CLOCK_SOURCE		0x00f8
-+#define SAFFIREPRO_OFFSET_CLOCK_SOURCE		0x0174
- 
- /* whether sync to external device or not */
--#define SAFFIRE_OFFSET_CLOCK_SYNC_EXT		0x00000000013c
--#define SAFFIRE_LE_OFFSET_CLOCK_SYNC_EXT	0x000000000432
--#define SAFFIREPRO_OFFSET_CLOCK_SYNC_EXT	0x000000000164
-+#define SAFFIRE_OFFSET_CLOCK_SYNC_EXT		0x013c
-+#define SAFFIRE_LE_OFFSET_CLOCK_SYNC_EXT	0x0432
-+#define SAFFIREPRO_OFFSET_CLOCK_SYNC_EXT	0x0164
- 
- #define SAFFIRE_CLOCK_SOURCE_INTERNAL		0
- #define SAFFIRE_CLOCK_SOURCE_SPDIF		1
-@@ -35,10 +35,10 @@
- #define SAFFIREPRO_CLOCK_SOURCE_WORDCLOCK	5
- 
- /* S/PDIF, ADAT1, ADAT2 is enabled or not. three quadlets */
--#define SAFFIREPRO_ENABLE_DIG_IFACES		0x0000000001a4
-+#define SAFFIREPRO_ENABLE_DIG_IFACES		0x01a4
- 
- /* saffirepro has its own parameter for sampling frequency */
--#define SAFFIREPRO_RATE_NOREBOOT		0x0000000001cc
-+#define SAFFIREPRO_RATE_NOREBOOT		0x01cc
- /* index is the value for this register */
- static const unsigned int rates[] = {
- 	[0] = 0,
-@@ -51,8 +51,8 @@ static const unsigned int rates[] = {
- };
- 
- /* saffire(no label)/saffire LE has metering */
--#define SAFFIRE_OFFSET_METER			0x000000000100
--#define SAFFIRE_LE_OFFSET_METER			0x000000000168
-+#define SAFFIRE_OFFSET_METER			0x0100
-+#define SAFFIRE_LE_OFFSET_METER			0x0168
- 
- static inline int
- saffire_read_block(struct snd_bebob *bebob, u64 offset,
-@@ -256,7 +256,7 @@ static struct snd_bebob_clock_spec saffire_both_clk_spec = {
- 	.get	= &saffire_both_clk_src_get,
- };
- /* Saffire LE */
--struct snd_bebob_meter_spec saffire_le_meter_spec = {
-+static struct snd_bebob_meter_spec saffire_le_meter_spec = {
- 	.num	= ARRAY_SIZE(saffire_le_meter_labels),
- 	.labels	= saffire_le_meter_labels,
- 	.get	= &saffire_meter_get,
-@@ -267,7 +267,7 @@ struct snd_bebob_spec saffire_le_spec = {
- 	.meter	= &saffire_le_meter_spec
- };
- /* Saffire */
--struct snd_bebob_meter_spec saffire_meter_spec = {
-+static struct snd_bebob_meter_spec saffire_meter_spec = {
- 	.num	= ARRAY_SIZE(saffire_meter_labels),
- 	.labels	= saffire_meter_labels,
- 	.get	= &saffire_meter_get,
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0059-fixup-for-PATCH-44-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0059-fixup-for-PATCH-44-49.patch"
-
->From 0a076eeea485b381a0eeb2448a6ad874bb2b5c73 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 11:26:28 +0900
-Subject: fixup for [PATCH 44/49]
-
-Prevent from narrowing conversion.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob_maudio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-index dededb3..1cc0271 100644
---- a/sound/firewire/bebob/bebob_maudio.c
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -24,7 +24,7 @@
-  * mixer.
-  */
- 
--#define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000
-+#define MAUDIO_SPECIFIC_ADDRESS	0xffc700000000LL
- 
- #define METER_OFFSET		0x00600000
- 
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/x-diff;
- name="0064-fixup-for-PATCH-48-49.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0064-fixup-for-PATCH-48-49.patch"
-
->From b12634cce5b43885a40cd5fdde4975e6824bf274 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 27 May 2014 11:27:44 +0900
-Subject: fixup for [PATCH 48/49]
-
-Prevent from narrowing conversion.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob_maudio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-index cf3abb9..4c61709 100644
---- a/sound/firewire/bebob/bebob_maudio.c
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -111,7 +111,7 @@ int snd_bebob_maudio_load_firmware(struct fw_unit *unit)
- 	 * firmware version 5058 or later has date later than "20070401", but
- 	 * 'date' is not null-terminated.
- 	 */
--	if (date < 0x3230303730343031) {
-+	if (date < 0x3230303730343031LL) {
- 		dev_err(&unit->device,
- 			"Use firmware version 5058 or later\n");
- 		err = -ENOSYS;
--- 
-1.8.3.2
-
-
---------------000204000903090102070106
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---------------000204000903090102070106--
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
