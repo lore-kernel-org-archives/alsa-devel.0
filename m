@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm_adsp: Use adsp_err/warn instead
-	of dev_err/warn
-Date: Tue, 27 May 2014 16:08:57 +0100
-Message-ID: <20140527150857.GW12304@sirena.org.uk>
-References: <1401192523-5750-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 03/12] fireworks: Fix wrong value as argument
+	for PTR_ERR()
+Date: Wed, 28 May 2014 00:14:38 +0900
+Message-ID: <1401203687-4189-4-git-send-email-o-takashi@sakamocchi.jp>
+References: <1401203687-4189-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1868855126206011633=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 78D9E265804
- for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 17:09:13 +0200 (CEST)
-In-Reply-To: <1401192523-5750-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 332FB265865
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 17:15:14 +0200 (CEST)
+In-Reply-To: <1401203687-4189-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: clemens@ladisch.de, dan.carpenter@oracle.com, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+The return value of memdup_user() should be passed to return correct error.
 
---===============1868855126206011633==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KPrYzGMfVRt/FH5S"
-Content-Disposition: inline
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/fireworks/fireworks_hwdep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
---KPrYzGMfVRt/FH5S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 27, 2014 at 01:08:43PM +0100, Charles Keepax wrote:
-> We have defines for adsp messages best to consistently use them.
-
-Applied, thanks.
-
---KPrYzGMfVRt/FH5S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJThKqGAAoJELSic+t+oim9ncsP/RBpciac2503JoYog2LANdbk
-HowqG+lTk4Py1y38ywmC4VlW+cHpBwyQY3R4YsKtt7KpetZXbieP9L0V0nW2KT01
-+oUUnosw/QEpr0xjy6WO6+Z9L0kTFQKte35XsnxQ2npHOOc+5Xl3q+SCSGqOixoT
-chHWQgWN+G+UhXs2QWAzV8VNfBSCV0cQiSw0RJpVADcNi2+yfk8NmgeP9jdpYHPM
-6HDgyR5EiglLW+jFjJoMyco//HjAPljSAVpD07hYtKtL+gTvyxC7iR19SpSHhg8H
-jH/vHigRI9+95DM3TOrnc1+zfAOAbxJDjCHo442lcWu1l5OWiNoExc3BUZy7005Z
-wHczymBLWwXMt4KIwc/04Z1p4mJjKIrOjsStmZiV5fQswFay71deEuuU1+2NplDu
-/Xge3p6LkwL+6hKhX4v43zvYnn0tnql1RCfLDnhJjWuGUapjBySqCVfPFvbQEnbR
-pJ+gY0CDmy8HCe20nLeAoKixvZJOKchqb3Eq39ehhbAskqD8Sqfhur/8gc+PmpLE
-ShgU/0TXbybc/P1Hn9gGx6+sFg1nVtq0npajWcSjbjcKuF9qkRAkC5WU2hbLClet
-+5/MSm6uhYWfhC+jvuwByoRs0IvkVYmgyZcFLeRyad4/8fJ6StG6Wn6T9AZZhTtb
-qXmId3uAP+9J36C2hHmf
-=u9kP
------END PGP SIGNATURE-----
-
---KPrYzGMfVRt/FH5S--
-
---===============1868855126206011633==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1868855126206011633==--
+diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
+index 6b50a67..4f8216f 100644
+--- a/sound/firewire/fireworks/fireworks_hwdep.c
++++ b/sound/firewire/fireworks/fireworks_hwdep.c
+@@ -135,7 +135,7 @@ hwdep_write(struct snd_hwdep *hwdep, const char __user *data, long count,
+ 
+ 	buf = memdup_user(data, count);
+ 	if (IS_ERR(buf))
+-		return PTR_ERR(data);
++		return PTR_ERR(buf);
+ 
+ 	/* check seqnum is not for kernel-land */
+ 	seqnum = be32_to_cpu(((struct snd_efw_transaction *)buf)->seqnum);
+-- 
+1.8.3.2
