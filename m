@@ -1,22 +1,17 @@
-From: Alex Hung <alex.hung@canonical.com>
-Subject: Re: [PATCH 4/5] ALSA: hda - drop def association and
- sequence from pinconf comparing
-Date: Tue, 27 May 2014 10:25:34 +0800
-Message-ID: <CAJ=jqub_w_9vppPdO0dnz0nYztsGr3yn5DM4eHu-PWmhQnv1SA@mail.gmail.com>
-References: <1401092564-14293-1-git-send-email-hui.wang@canonical.com>
- <1401092564-14293-4-git-send-email-hui.wang@canonical.com>
- <5383136A.3040006@canonical.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 03/13] dice: Split transaction
+	functionality into a file
+Date: Tue, 27 May 2014 12:42:10 +0900
+Message-ID: <53840992.9000704@sakamocchi.jp>
+References: <1400420198-24312-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1400420198-24312-4-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------040504000706010002050408"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f175.google.com (mail-qc0-f175.google.com
- [209.85.216.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F0E3265192
- for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 04:25:35 +0200 (CEST)
-Received: by mail-qc0-f175.google.com with SMTP id w7so13034738qcr.20
- for <alsa-devel@alsa-project.org>; Mon, 26 May 2014 19:25:34 -0700 (PDT)
-In-Reply-To: <5383136A.3040006@canonical.com>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75A252654B9
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 05:42:16 +0200 (CEST)
+In-Reply-To: <1400420198-24312-4-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,62 +21,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi David,
+This is a multi-part message in MIME format.
+--------------040504000706010002050408
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-BIOS today implements verbtable which is provided by codec vendor
-based on hardware design, and it is indeed not uncommon that the
-verbtable includes used pin only and leaves unused pins untouched.
-
-On Mon, May 26, 2014 at 6:11 PM, David Henningsson
-<david.henningsson@canonical.com> wrote:
-> (Add Alex Hung to CC)
->
-> On 2014-05-26 10:22, Hui Wang wrote:
->>
->> A lot a machine have the same codec, but they have different default
->> pinconf setting just because the def association and sequence is
->> different, as a result they can't share a hda_pintbl[], to overcome
->> it, we don't compare def association and sequence in the pinconf
->> matching.
->
->
-> Uhm, really? Alex, does this seem reasonable from a BIOS perspective, i e,
-> that BIOS people normally would set def association and sequence different
-> while leaving everything else unchanged?
->
->>
->> Signed-off-by: Hui Wang <hui.wang@canonical.com>
->> ---
->>   sound/pci/hda/hda_auto_parser.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/pci/hda/hda_auto_parser.c
->> b/sound/pci/hda/hda_auto_parser.c
->> index b684c6e..3cf9137 100644
->> --- a/sound/pci/hda/hda_auto_parser.c
->> +++ b/sound/pci/hda/hda_auto_parser.c
->> @@ -844,7 +844,8 @@ static bool pin_config_match(struct hda_codec *codec,
->>   {
->>         for (; pins->nid; pins++) {
->>                 u32 def_conf = snd_hda_codec_get_pincfg(codec, pins->nid);
->> -               if (pins->val != def_conf)
->> +               u32 mask = 0xffffff00;
->> +               if ((pins->val & mask) != (def_conf & mask))
->>                         return false;
->>         }
->>         return true;
->>
->
-> --
-> David Henningsson, Canonical Ltd.
-> https://launchpad.net/~diwic
+This patch includes two bugs. Please apply attached fixup.
 
 
+Regards
 
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
+
+
+--------------040504000706010002050408
+Content-Type: text/x-diff;
+ name="0084-fixup-for-PATCH-03-13.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0084-fixup-for-PATCH-03-13.patch"
+
+>From 59777bb80164e54611a933ed090d67772e5b458b Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Date: Tue, 27 May 2014 02:27:04 +0900
+Subject: fixup for [PATCH 03/13]
+
+fix wrong type of variable for function argument, and prevent from narrowing
+conversion.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice.c             | 8 ++++----
+ sound/firewire/dice/dice_transaction.c | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index f410030..a0172a7 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -865,7 +865,7 @@ static int dice_interface_check(struct fw_unit *unit)
+ 	};
+ 	struct fw_device *device = fw_parent_device(unit);
+ 	struct fw_csr_iterator it;
+-	int key, vendor = -1, model = -1, err;
++	int key, val, vendor = -1, model = -1, err;
+ 	unsigned int category, i;
+ 	__be32 *pointers, value;
+ 	__be32 tx_data[4];
+@@ -882,13 +882,13 @@ static int dice_interface_check(struct fw_unit *unit)
+ 	 * ID, and a 22-bit serial number.
+ 	 */
+ 	fw_csr_iterator_init(&it, unit->directory);
+-	while (fw_csr_iterator_next(&it, &key, &value)) {
++	while (fw_csr_iterator_next(&it, &key, &val)) {
+ 		switch (key) {
+ 		case CSR_SPECIFIER_ID:
+-			vendor = value;
++			vendor = val;
+ 			break;
+ 		case CSR_MODEL:
+-			model = value;
++			model = val;
+ 			break;
+ 		}
+ 	}
+diff --git a/sound/firewire/dice/dice_transaction.c b/sound/firewire/dice/dice_transaction.c
+index 90773b8..1ac249a 100644
+--- a/sound/firewire/dice/dice_transaction.c
++++ b/sound/firewire/dice/dice_transaction.c
+@@ -12,7 +12,7 @@
+ #define NOTIFICATION_TIMEOUT_MS	100
+ 
+ static u64 get_subaddr(struct snd_dice *dice, enum snd_dice_addr_type type,
+-		       unsigned int offset)
++		       u64 offset)
+ {
+ 	switch (type) {
+ 	case SND_DICE_ADDR_TYPE_TX:
 -- 
-Cheers,
-Alex Hung
+1.8.3.2
+
+
+--------------040504000706010002050408
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------040504000706010002050408--
