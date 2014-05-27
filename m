@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: jack: Clarify GPIO descriptor lookup
- in struct snd_soc_jack_gpio doc
-Date: Tue, 27 May 2014 12:03:57 +0100
-Message-ID: <20140527110357.GN12304@sirena.org.uk>
-References: <1401188058-18129-1-git-send-email-jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH] ASoC: jack: Fix multiple definition of
+ `snd_soc_jack_add_gpiods'
+Date: Tue, 27 May 2014 12:05:42 +0100
+Message-ID: <20140527110542.GP12304@sirena.org.uk>
+References: <1401176397-17591-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3916859005590288778=="
+Content-Type: multipart/mixed; boundary="===============6756939617472103598=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ED59226559B
- for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 13:04:08 +0200 (CEST)
-In-Reply-To: <1401188058-18129-1-git-send-email-jarkko.nikula@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0451C261691
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 13:05:53 +0200 (CEST)
+In-Reply-To: <1401176397-17591-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, kbuild test robot <fengguang.wu@intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3916859005590288778==
+--===============6756939617472103598==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Zv8pCbYjkbT4685J"
+	protocol="application/pgp-signature"; boundary="ToPhyPkr1RwLFl0y"
 Content-Disposition: inline
 
 
---Zv8pCbYjkbT4685J
+--ToPhyPkr1RwLFl0y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 27, 2014 at 01:54:18PM +0300, Jarkko Nikula wrote:
-> Clarify struct snd_soc_jack_gpio documentation for the idx and name fields.
-> Because name is passed as connection ID to gpiod_get_index() when using GPIO
-> descriptor defined jack pins it is not only used as a label in debugfs but
-> also as function name lookup in systems that support functions names for
-> GPIOs.
+On Tue, May 27, 2014 at 10:39:57AM +0300, Jarkko Nikula wrote:
+> Commit f025d3b9c64e ("ASoC: jack: Add support for GPIO descriptor defined
+> jack pins") caused build error when CONFIG_GPIOLIB is not set:
 
 Applied, thanks.
 
---Zv8pCbYjkbT4685J
+--ToPhyPkr1RwLFl0y
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJThHEaAAoJELSic+t+oim9oP8P/jYjJylcvP5/okMnIjEldCmp
-C39cixtm+uGm8HuwqS2cbkxSjD5SkNSabDJTWIXDR4VUFlYkgWkSV8oGW4Y7tqFc
-O+7Up1jUOPq33fzXgMSfyKSHznX4lCOPGMF1J9IQ+9uVTP3VvB9cCtWB79BXTQdk
-WTx9AdBrGXWgW16GKmMIeYSfow1DKpsXjHgfgsTFp+4dzbcHR0BK/ZHWRrWOi+rf
-Q7/t8ijHsrIy1y6nBgvCU284cY0F1JYlYtPM9F8JR6hGCUWmi0vxOewgw2OF8/2p
-x2ijW/YFf54N9EytMghHlGakbEQOsGeaJlvaLJ9c2NIWerPEovH6YhYZAFAByX8W
-LTFIpYOv+cKAR9scv/FZPTQFTHCLlQ0h+Djltv0qXj95pzseylAqDBKEVlMvFXvn
-h7nNwn2pn33tc1uXubbLZqa48nXIaYFsmF1Zk21mfgI+6B7b8nab2dBIbEJihKXE
-gbIm+bbTJPZWR6fjn3aS9gqz+kKxICbc07ITdoKPk600l9UJEpytbMzPpEq6zAOY
-ySy/g3ScN9R0V9KKDJxe3ecPy8IunHOOCQ33HDj//8iX2G5/5lbu2h6mT+uLf4qf
-tn7w3CpVw1U4GP5zc/y3+Z6ErYHcYb2auCAyfEFsYojgecxJ0fZhkfhQCnypHp3l
-xj7iiddzNMCOiFJFF41L
-=oBt9
+iQIcBAEBAgAGBQJThHGDAAoJELSic+t+oim9NuAP+waIO7nS6jGWnrB5PKLclRIJ
+BgAxelAtvqV+2SIJvV+CA62pjIy2L54jMZsABdf8xC434UQP4xzM59Hq4jc12JJe
+wuAgVSclD4kwNxWBtPlmCNwrow6NdSWvRAU71DS8yXfvQlOzgN+KYUaQyXNYOzhS
+gFRL0OEK12xyawI4awlzHdqPp0HMybte5HG4rU4JDJp2ZTDg93KutnzGjIkuEnaP
+syeTaP8GmsWCVcorjiHM+4BYA/NYPH3OLgiP1C+qj7bOSVtvj2hAPC24+wNcRhGU
+0ksOxK3aLeYzIktjHZjdyzkSKYdpKf4NgLlhvrnR4TjHjYUTBcFbYWQG1VkHsJLX
+JuQXAz2AbPrUewy3g1jHXpnkxffXOt05y4iol+nNubvkD08LWqmrzPH550rhCMfv
+5PMu/EjCc2inN+OcNrOEWGOvSxKYwqeQdq3A4/2yS4LZLW92+umfiw5ypcNx2RNU
+o6qDickgnI/4PLmxpR3V5DXMdb6xZ7GPdQVqhrd+bSJ9o+cbZtF16V1EhyBWWKva
+NhXGrAwof1DLJNPgW1o8Uq9aDHK8lMewypIMli+iExkrnulev1j44IgUmqu4KTH1
+xx8LXpn77twvv30grJdxSu2T6QQ/vom2uiLJTnG8gYRulfd3jIZLyufV8natfwwj
+BWaekWHskrwVrEbm+QHO
+=kbAq
 -----END PGP SIGNATURE-----
 
---Zv8pCbYjkbT4685J--
+--ToPhyPkr1RwLFl0y--
 
---===============3916859005590288778==
+--===============6756939617472103598==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3916859005590288778==--
+--===============6756939617472103598==--
