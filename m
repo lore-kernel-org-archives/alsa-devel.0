@@ -1,18 +1,15 @@
-From: Shawn Guo <shawn.guo@freescale.com>
-Subject: Re: [PATCH v5] ASoC: sgtl5000: Fix the cache handling
-Date: Tue, 27 May 2014 15:34:58 +0800
-Message-ID: <20140527073452.GA8860@dragon>
-References: <1401111260-23320-1-git-send-email-fabio.estevam@freescale.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH] ASoC: jack: Fix multiple definition of
+	`snd_soc_jack_add_gpiods'
+Date: Tue, 27 May 2014 10:39:57 +0300
+Message-ID: <1401176397-17591-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1blp0190.outbound.protection.outlook.com [207.46.163.190])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DA4B26553F
- for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 09:35:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1401111260-23320-1-git-send-email-fabio.estevam@freescale.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18A35265553
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 09:40:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,24 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lars@metafoo.de
+To: alsa-devel@alsa-project.org
+Cc: kbuild test robot <fengguang.wu@intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 26, 2014 at 10:34:20AM -0300, Fabio Estevam wrote:
-> Since commit e5d80e82e32e (ASoC: sgtl5000: Convert to use regmap directly) a 
-> kernel oops is observed after a suspend/resume sequence.
-> 
-> The kernel oops happens inside sgtl5000_restore_regs() as codec->reg_cache is no
-> longer a valid pointer.
-> 
-> Add the remaining register entries into sgtl5000_reg_defaults[] and remove
-> sgtl5000_restore_regs() completely, which allows suspend/resume to work fine and
-> make the code simpler.
-> 
-> Tested on a im53-qsb board.
-> 
-> Reported-by: Shawn Guo <shawn.guo@freescale.com>
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Commit f025d3b9c64e ("ASoC: jack: Add support for GPIO descriptor defined
+jack pins") caused build error when CONFIG_GPIOLIB is not set:
 
-Tested-by: Shawn Guo <shawn.guo@freescale.com>
+sound/include/sound/soc.h:470: multiple definition of `snd_soc_jack_add_gpiods'
+sound/soc/soc-core.o:sound/include/sound/soc.h:470: first defined here
+make[2]: *** [sound/soc/snd-soc-core.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [sound/soc] Error 2
+make: *** [sound] Error 2
+
+Fix this by marking snd_soc_jack_add_gpiods() as static inline in soc.h.
+
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+---
+ include/sound/soc.h | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 98dca42487bc..15ee2f71b92e 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -464,9 +464,10 @@ static inline int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 	return 0;
+ }
+ 
+-int snd_soc_jack_add_gpiods(struct device *gpiod_dev,
+-			    struct snd_soc_jack *jack,
+-			    int count, struct snd_soc_jack_gpio *gpios)
++static inline int snd_soc_jack_add_gpiods(struct device *gpiod_dev,
++					  struct snd_soc_jack *jack,
++					  int count,
++					  struct snd_soc_jack_gpio *gpios)
+ {
+ 	return 0;
+ }
+-- 
+2.0.0.rc2
