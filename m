@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: jack: Fix multiple definition of
- `snd_soc_jack_add_gpiods'
-Date: Tue, 27 May 2014 12:05:42 +0100
-Message-ID: <20140527110542.GP12304@sirena.org.uk>
-References: <1401176397-17591-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/2] ASoC: tlv320aic3x: Fix Left/Rigth PGA
+ mixer widgets/kcontrols
+Date: Tue, 27 May 2014 13:18:33 +0200
+Message-ID: <53847489.2010801@metafoo.de>
+References: <1401187986-11059-1-git-send-email-peter.ujfalusi@ti.com>
+ <1401187986-11059-3-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6756939617472103598=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0451C261691
- for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 13:05:53 +0200 (CEST)
-In-Reply-To: <1401176397-17591-1-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from smtp-out-017.synserver.de (smtp-out-071.synserver.de
+ [212.40.185.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id 127D82655AD
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 13:18:31 +0200 (CEST)
+In-Reply-To: <1401187986-11059-3-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, kbuild test robot <fengguang.wu@intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 05/27/2014 12:53 PM, Peter Ujfalusi wrote:
+> Commit "cf7c1de20c576 ASoC: dapm: Move 'value' field from widget to
+> control" changed the way how the 'value' has been stored for a widget.
+> Since the driver is not updated following the mentioned commit it is mostly
+> broken when we try to change mixers for Left/Right PGA since the value is
+> not going to be updated correctly.
 
---===============6756939617472103598==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ToPhyPkr1RwLFl0y"
-Content-Disposition: inline
+I don't think the mentioned commit is the cause. The driver didn't set 
+widget->value either, so there is no change in behavior here. The commit 
+only changed where the value is stored not how it is handled.
 
+This driver uses a custom put handler and the generic get handler. 
+dapm_kcontrol_get_value() is used in the generic get handler, but only if 
+reg equal to SND_SOC_NOPM. Which is not the case for this driver. And that's 
+the only place where the value stored for the kcontrol is used. I don't see 
+how calling dapm_kcontrol_set_value() or not calling 
+dapm_kcontrol_set_value() changes anything.
 
---ToPhyPkr1RwLFl0y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I might be missing something, but I think the issue is somewhere else.
 
-On Tue, May 27, 2014 at 10:39:57AM +0300, Jarkko Nikula wrote:
-> Commit f025d3b9c64e ("ASoC: jack: Add support for GPIO descriptor defined
-> jack pins") caused build error when CONFIG_GPIOLIB is not set:
-
-Applied, thanks.
-
---ToPhyPkr1RwLFl0y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJThHGDAAoJELSic+t+oim9NuAP+waIO7nS6jGWnrB5PKLclRIJ
-BgAxelAtvqV+2SIJvV+CA62pjIy2L54jMZsABdf8xC434UQP4xzM59Hq4jc12JJe
-wuAgVSclD4kwNxWBtPlmCNwrow6NdSWvRAU71DS8yXfvQlOzgN+KYUaQyXNYOzhS
-gFRL0OEK12xyawI4awlzHdqPp0HMybte5HG4rU4JDJp2ZTDg93KutnzGjIkuEnaP
-syeTaP8GmsWCVcorjiHM+4BYA/NYPH3OLgiP1C+qj7bOSVtvj2hAPC24+wNcRhGU
-0ksOxK3aLeYzIktjHZjdyzkSKYdpKf4NgLlhvrnR4TjHjYUTBcFbYWQG1VkHsJLX
-JuQXAz2AbPrUewy3g1jHXpnkxffXOt05y4iol+nNubvkD08LWqmrzPH550rhCMfv
-5PMu/EjCc2inN+OcNrOEWGOvSxKYwqeQdq3A4/2yS4LZLW92+umfiw5ypcNx2RNU
-o6qDickgnI/4PLmxpR3V5DXMdb6xZ7GPdQVqhrd+bSJ9o+cbZtF16V1EhyBWWKva
-NhXGrAwof1DLJNPgW1o8Uq9aDHK8lMewypIMli+iExkrnulev1j44IgUmqu4KTH1
-xx8LXpn77twvv30grJdxSu2T6QQ/vom2uiLJTnG8gYRulfd3jIZLyufV8natfwwj
-BWaekWHskrwVrEbm+QHO
-=kbAq
------END PGP SIGNATURE-----
-
---ToPhyPkr1RwLFl0y--
-
---===============6756939617472103598==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6756939617472103598==--
+- Lars
