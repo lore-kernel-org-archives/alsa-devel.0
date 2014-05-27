@@ -1,131 +1,87 @@
-From: "Handrigan, Paul" <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Subject: RE: [alsa-devel] [PATCH 2/2] ASoC: Add support for CS4265 CODEC
-Date: Tue, 27 May 2014 17:09:19 +0000
-Message-ID: <0CBF9AAF3CF9714282149D6CA9B22CF30B47F0AA@ex2.ad.cirrus.com>
-References: <1400872614-21666-1-git-send-email-Paul.Handrigan@cirrus.com>
- <1400872614-21666-2-git-send-email-Paul.Handrigan@cirrus.com>,<5380C57A.9050603@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RFC 02/11] sound: ASoC: kirkwood: Remove
+	unused drivers
+Date: Tue, 27 May 2014 19:00:47 +0100
+Message-ID: <20140527180047.GA12304@sirena.org.uk>
+References: <1400163836-9831-1-git-send-email-andrew@lunn.ch>
+ <1400163836-9831-5-git-send-email-andrew@lunn.ch>
+ <20140526155901.GF22111@sirena.org.uk>
+ <20140527164530.GJ26379@lunn.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <5380C57A.9050603-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "Austin, Brian" <Brian.Austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org" <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============0987101046231394957=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30C33261B1E
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 20:01:02 +0200 (CEST)
+In-Reply-To: <20140527164530.GJ26379@lunn.ch>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, linux ARM <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-________________________________________
-From: Lars-Peter Clausen [lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org]
-Sent: Saturday, May 24, 2014 11:14 AM
-To: Handrigan, Paul
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org; devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; mark.rutland-5wv7dgnIgG8@public.gmane.org; Austin, Brian; pawel.moll-5wv7dgnIgG8@public.gmane.org; ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org; lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org; robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org; broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org; galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
-Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: Add support for CS4265 CODEC
+--===============0987101046231394957==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SifRfUUGN6IYK7RE"
+Content-Disposition: inline
 
-On 05/23/2014 09:16 PM, Paul Handrigan wrote:
-[...]
 
-A couple of trivial bits:
+--SifRfUUGN6IYK7RE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> @@ -300,6 +301,10 @@ config SND_SOC_CS42L73
->       tristate "Cirrus Logic CS42L73 CODEC"
->       depends on I2C
->
-> +config SND_SOC_CS4265
-> +     tristate "Cirrus Logic CS4265 CODEC"
-> +     depends on I2C
+On Tue, May 27, 2014 at 06:45:30PM +0200, Andrew Lunn wrote:
 
-select REGMAP_I2C
+> This is an RFC patch, as it says in the Subject line, and the cover
+> note. It is not intended to be applied yet. Please unapply it, and the
+> other one in the series you have applied.
 
-> +
->   # Cirrus Logic CS4270 Codec
->   config SND_SOC_CS4270
->       tristate "Cirrus Logic CS4270 CODEC"
-> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-> index 1ccdaf0..b3c6b5f 100644
-[...]
-> diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-> new file mode 100644
-> index 0000000..f7a6be9
-> --- /dev/null
-> +++ b/sound/soc/codecs/cs4265.c
-> @@ -0,0 +1,716 @@
-[...]
-> +struct cs4265_private {
-> +     struct cs4265_platform_data pdata;
-> +     struct regmap *regmap;
-> +     struct snd_soc_codec *codec;
-> +     struct device *dev;
+Eh?  I thought the discussion was that everything was OK and we were
+going to go ahead with this approach.  Or to put it another way what's
+wrong with this and what's expected to change?  The only issue you
+identified in the cover letter was me applying some patches I'd already
+applied (BTW, please always include plain text descriptions of external
+things you're referring to in mails - this applies to links as much as
+it does to commit IDs).
 
-Both the codec and the dev field don't seem to be used.
+--SifRfUUGN6IYK7RE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> +     u8 format;
-> +     u32 sysclk;
-> +};
-> +
-[...]
-> +
-> +static const struct soc_enum digital_input_mux_enum =
-> +     SOC_ENUM_SINGLE(CS4265_SIG_SEL, 7,
-> +                     ARRAY_SIZE(digital_input_mux_text),
-> +                     digital_input_mux_text);
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-SOC_ENUM_SINGLE_DECL(), same for the other enums below.
+iQIcBAEBAgAGBQJThNLMAAoJELSic+t+oim9ytkP/0RExlE/5PPDAgGLdTcDo9Hr
+lL9+VDTFlvlUfQvJj0CVKndzKw9g1NgAaC8MStgfeg9VIb1OF7HePG5ZeIOSQTLG
+dGtcKfBDrubh3kVI9pqd/lkpLyVtVIT3Obs2nUlJYRu64/fdfnNZMkOxtWDH6U2b
+eoBRAe0/XoonDBjH4ItJ5vPk14lvBd1fEsmAVBR4Ati7aXXW7YmKp2oeqKr5rmJf
+isbY8mJwts5End772kqMjuWgCVdvajgfUfa1VlHxft3g4B0qzG1c8cM4XHcjVypo
+YpywwaN2AUYk0dnO/sNVJTY/uJMDNwQV+EkHxAQFM8cIAO9zLdLjNldRlKWdTNGo
+eaJZxIC+FxK6TMDUOiM3RlbNLQuHZQipxts+KCOJ/1O1vyvnJylYHqr2P81WEkeT
+d0rUDE7SFnK/gjM6cY03njS2nzB+go9gsWa9z9Gh0gvcseFnQ4Nh2aowLE5GBfEc
+D/DHlCA00LZL4rzhLaiQfvEILQNSGlZ3hiW4q/OzTdbPHDVT+p78jb4UY2ljvb+W
+5oy/HFJPVHXhCmpX/Hhv4q3qNIUCsLdheajwFnhCESIUPV489LOIgqMeU6ubsu2I
+vOZZJ8zGe+2pWDbyAU8xejt0m4iQXPaxJI4xvpC1kIEDHVmjk/blqtCZ4ylxuQgC
+K8NutUJ7megptPONToVm
+=Imaq
+-----END PGP SIGNATURE-----
 
-> +
-[...]
-> +static struct snd_soc_dai_ops cs4265_ops = {
+--SifRfUUGN6IYK7RE--
 
-const
+--===============0987101046231394957==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> +     .hw_params      = cs4265_pcm_hw_params,
-> +     .digital_mute   = cs4265_digital_mute,
-> +     .set_fmt        = cs4265_set_fmt,
-> +     .set_sysclk     = cs4265_set_sysclk,
-> +};
-[...]
-> +static struct snd_soc_codec_driver soc_codec_dev_cs4265 = {
 
-const
-
-The soc_codec_dev_foobar naming scheme used in some older driver comes from
-a time where there were no CODEC drivers. A better naming scheme for new
-driver is foobar_codec_driver.
-
-> +     .probe = cs4265_probe,
-> +     .remove = cs4265_remove,
-> +     .set_bias_level = cs4265_set_bias_level,
-> +
-> +     .dapm_widgets = cs4265_dapm_widgets,
-> +     .num_dapm_widgets = ARRAY_SIZE(cs4265_dapm_widgets),
-> +     .dapm_routes = cs4265_audio_map,
-> +     .num_dapm_routes = ARRAY_SIZE(cs4265_audio_map),
-> +
-> +     .controls = cs4265_snd_controls,
-> +     .num_controls = ARRAY_SIZE(cs4265_snd_controls),
-> +};
-> +
-> +static struct regmap_config cs4265_regmap = {
-
-const
-
-> +     .reg_bits = 8,
-> +     .val_bits = 8,
-> +
-> +     .max_register = CS4265_MAX_REGISTER,
-> +     .reg_defaults = cs4265_reg_defaults,
-> +     .num_reg_defaults = ARRAY_SIZE(cs4265_reg_defaults),
-> +     .readable_reg = cs4265_readable_register,
-> +     .volatile_reg = cs4265_volatile_register,
-> +     .cache_type = REGCACHE_RBTREE,
-> +};
-> +
-[...]
-
-Thanks!  I will make these changes as well.
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--===============0987101046231394957==--
