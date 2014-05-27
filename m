@@ -1,17 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/2] ASoC: tlv320aic3x: Fix Left/Rigth PGA
-	mixer widgets/kcontrols
-Date: Tue, 27 May 2014 13:53:06 +0300
-Message-ID: <1401187986-11059-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1401187986-11059-1-git-send-email-peter.ujfalusi@ti.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH] ASoC: jack: Clarify GPIO descriptor lookup in
+	struct snd_soc_jack_gpio doc
+Date: Tue, 27 May 2014 13:54:18 +0300
+Message-ID: <1401188058-18129-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 789CF261AD8
- for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 12:53:16 +0200 (CEST)
-In-Reply-To: <1401187986-11059-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BE74265786
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 12:54:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +19,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit "cf7c1de20c576 ASoC: dapm: Move 'value' field from widget to
-control" changed the way how the 'value' has been stored for a widget.
-Since the driver is not updated following the mentioned commit it is mostly
-broken when we try to change mixers for Left/Right PGA since the value is
-not going to be updated correctly.
-This can be seen when trying to switch of one of the routes for the first
-time (the second try will succeed):
-amixer sset 'Left PGA Mixer Line1L' off
-amixer: Invalid command!
+Clarify struct snd_soc_jack_gpio documentation for the idx and name fields.
+Because name is passed as connection ID to gpiod_get_index() when using GPIO
+descriptor defined jack pins it is not only used as a label in debugfs but
+also as function name lookup in systems that support functions names for
+GPIOs.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Clarify also idx since the index is within the function of the GPIO consumer
+device and not within the device itself only.
+
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 ---
- sound/soc/codecs/tlv320aic3x.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ include/sound/soc.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index d7349bc89ad3..167c95bdf289 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -156,21 +156,21 @@ static int snd_soc_dapm_put_volsw_aic3x(struct snd_kcontrol *kcontrol,
- 	int connect, change;
- 
- 	val = (ucontrol->value.integer.value[0] & mask);
-+	connect = !!val;
-+
-+	if (invert)
-+		val = max - val;
-+
-+	change = dapm_kcontrol_set_value(kcontrol, val);
- 
- 	mask = 0xf;
- 	if (val)
- 		val = mask;
- 
--	connect = !!val;
--
--	if (invert)
--		val = mask - val;
--
- 	mask <<= shift;
- 	val <<= shift;
- 
--	change = snd_soc_test_bits(codec, val, mask, reg);
--	if (change) {
-+	if (change && snd_soc_test_bits(codec, val, mask, reg)) {
- 		update.kcontrol = kcontrol;
- 		update.reg = reg;
- 		update.mask = mask;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 15ee2f71b92e..72e056529745 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -599,9 +599,11 @@ struct snd_soc_jack_zone {
+  * struct snd_soc_jack_gpio - Describes a gpio pin for jack detection
+  *
+  * @gpio:         legacy gpio number
+- * @idx:          gpio descriptor index within the GPIO consumer device
++ * @idx:          gpio descriptor index within the function of the GPIO
++ *                consumer device
+  * @gpiod_dev     GPIO consumer device
+- * @name:         gpio name
++ * @name:         gpio name. Also as connection ID for the GPIO consumer
++ *                device function name lookup
+  * @report:       value to report when jack detected
+  * @invert:       report presence in low state
+  * @debouce_time: debouce time in ms
 -- 
-1.9.3
+2.0.0.rc2
