@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 09/12] bebob: Use different names for
-	identifiers in the same file
-Date: Wed, 28 May 2014 00:14:44 +0900
-Message-ID: <1401203687-4189-10-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/12] bebob: Add static specifier to
+	identifier with file scope
+Date: Wed, 28 May 2014 00:14:45 +0900
+Message-ID: <1401203687-4189-11-git-send-email-o-takashi@sakamocchi.jp>
 References: <1401203687-4189-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id D6FE726584A
- for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 17:15:16 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 367C526586D
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 17:15:18 +0200 (CEST)
 In-Reply-To: <1401203687-4189-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,43 +25,80 @@ To: clemens@ladisch.de, dan.carpenter@oracle.com, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-To suppress 'sparse' warning.
+Some variables were declared without static even if they're not referred
+to from external files. This commit make them local symbols for better
+information-hiding by file unit.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/firewire/bebob/bebob.c           | 2 +-
+ sound/firewire/bebob/bebob_focusrite.c | 4 ++--
+ sound/firewire/bebob/bebob_terratec.c  | 6 +++---
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 31b96b7..b5e8f99 100644
+index b5e8f99..0e9d625 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -69,7 +69,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
- 	struct fw_device *fw_dev = fw_parent_device(bebob->unit);
- 	char vendor[24] = {0};
- 	char model[32] = {0};
--	u32 id;
-+	u32 hw_id;
- 	u32 data[2] = {0};
- 	u32 revision;
- 	int err;
-@@ -88,7 +88,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+@@ -313,7 +313,7 @@ static void bebob_remove(struct fw_unit *unit)
+ 	snd_card_free_when_closed(bebob->card);
+ }
  
- 	/* get hardware id */
- 	err = snd_bebob_read_quad(bebob->unit, INFO_OFFSET_HW_MODEL_ID,
--				  &id);
-+				  &hw_id);
- 	if (err < 0)
- 		goto end;
+-struct snd_bebob_rate_spec normal_rate_spec = {
++static struct snd_bebob_rate_spec normal_rate_spec = {
+ 	.get	= &snd_bebob_stream_get_rate,
+ 	.set	= &snd_bebob_stream_set_rate
+ };
+diff --git a/sound/firewire/bebob/bebob_focusrite.c b/sound/firewire/bebob/bebob_focusrite.c
+index e71066d..45a0eed 100644
+--- a/sound/firewire/bebob/bebob_focusrite.c
++++ b/sound/firewire/bebob/bebob_focusrite.c
+@@ -256,7 +256,7 @@ static struct snd_bebob_clock_spec saffire_both_clk_spec = {
+ 	.get	= &saffire_both_clk_src_get,
+ };
+ /* Saffire LE */
+-struct snd_bebob_meter_spec saffire_le_meter_spec = {
++static struct snd_bebob_meter_spec saffire_le_meter_spec = {
+ 	.num	= ARRAY_SIZE(saffire_le_meter_labels),
+ 	.labels	= saffire_le_meter_labels,
+ 	.get	= &saffire_meter_get,
+@@ -267,7 +267,7 @@ struct snd_bebob_spec saffire_le_spec = {
+ 	.meter	= &saffire_le_meter_spec
+ };
+ /* Saffire */
+-struct snd_bebob_meter_spec saffire_meter_spec = {
++static struct snd_bebob_meter_spec saffire_meter_spec = {
+ 	.num	= ARRAY_SIZE(saffire_meter_labels),
+ 	.labels	= saffire_meter_labels,
+ 	.get	= &saffire_meter_get,
+diff --git a/sound/firewire/bebob/bebob_terratec.c b/sound/firewire/bebob/bebob_terratec.c
+index 2a89c1c..eef8ea7 100644
+--- a/sound/firewire/bebob/bebob_terratec.c
++++ b/sound/firewire/bebob/bebob_terratec.c
+@@ -38,13 +38,13 @@ phase24_series_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
+ 	return avc_audio_get_selector(bebob->unit, 0, 4, id);
+ }
  
-@@ -109,7 +109,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
- 	strcpy(bebob->card->mixername, model);
- 	snprintf(bebob->card->longname, sizeof(bebob->card->longname),
- 		 "%s %s (id:%d, rev:%d), GUID %08x%08x at %s, S%d",
--		 vendor, model, id, revision,
-+		 vendor, model, hw_id, revision,
- 		 data[0], data[1], dev_name(&bebob->unit->device),
- 		 100 << fw_dev->max_speed);
- end:
+-struct snd_bebob_rate_spec phase_series_rate_spec = {
++static struct snd_bebob_rate_spec phase_series_rate_spec = {
+ 	.get	= &snd_bebob_stream_get_rate,
+ 	.set	= &snd_bebob_stream_set_rate,
+ };
+ 
+ /* PHASE 88 Rack FW */
+-struct snd_bebob_clock_spec phase88_rack_clk = {
++static struct snd_bebob_clock_spec phase88_rack_clk = {
+ 	.num	= ARRAY_SIZE(phase88_rack_clk_src_labels),
+ 	.labels	= phase88_rack_clk_src_labels,
+ 	.get	= &phase88_rack_clk_src_get,
+@@ -56,7 +56,7 @@ struct snd_bebob_spec phase88_rack_spec = {
+ };
+ 
+ /* 'PHASE 24 FW' and 'PHASE X24 FW' */
+-struct snd_bebob_clock_spec phase24_series_clk = {
++static struct snd_bebob_clock_spec phase24_series_clk = {
+ 	.num	= ARRAY_SIZE(phase24_series_clk_src_labels),
+ 	.labels	= phase24_series_clk_src_labels,
+ 	.get	= &phase24_series_clk_src_get,
 -- 
 1.8.3.2
