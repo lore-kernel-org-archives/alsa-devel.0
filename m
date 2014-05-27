@@ -1,16 +1,14 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] pcm: route: Correctly close slave pcm when no
-	matching chmap is found
-Date: Tue, 27 May 2014 09:51:21 +0200
-Message-ID: <1401177081-22204-1-git-send-email-david.henningsson@canonical.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: [PATCH v5 0/8] ASoC: fsl-ssi: Driver cleanup
+Date: Tue, 27 May 2014 10:24:17 +0200
+Message-ID: <1401179065-31195-1-git-send-email-mpa@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id B7BA1265556
- for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 09:51:23 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id CEB0C265521
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 10:24:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,34 +18,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: superquad.vortex2@gmail.com, David Henningsson <david.henningsson@canonical.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes a bug where the slave pcm was not correctly closed
-on some error conditions, such as not finding a matching chmap.
+Hi,
 
-Reported-by: Raymond Yau <superquad.vortex2@gmail.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- src/pcm/pcm_route.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+These are the remaining patches of this fsl-ssi cleanup series.
 
-diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
-index 49567ea..751e36f 100644
---- a/src/pcm/pcm_route.c
-+++ b/src/pcm/pcm_route.c
-@@ -1429,8 +1429,10 @@ int _snd_pcm_route_open(snd_pcm_t **pcmp, const char *name,
- 	if (tt_chmap) {
- 		err = find_matching_chmap(spcm, tt_chmap, &chmap, &schannels);
- 		free(tt_chmap);
--		if (err < 0)
-+		if (err < 0) {
-+			snd_pcm_close(spcm);
- 			return err;
-+		}
- 	}
- 
- 	err = _snd_pcm_route_determine_ttable(tt, &csize, &ssize, chmap);
+v5 adds the possibility to set the bitclock frequency using .set_dai_sysclk as
+suggested. If it is not explicitly set, the bitclock is calculated using the
+hw_params. I also added the missing signed-off-by tags to the patches.
+
+Best Regards,
+
+Markus
+
+
+Markus Pargmann (4):
+  ASoC: fsl-ssi: make fsl,mode property optional
+  ASoC: fsl-ssi: Fix baudclock handling
+  ASoC: fsl-ssi: reorder and document fsl_ssi_private
+  ASoC: fsl-ssi: Use regmap
+
+Sascha Hauer (4):
+  ASoC: fsl-ssi: introduce SoC specific data
+  ASoC: fsl-ssi: set bitclock in master mode from hw_params
+  ASoC: fsl-ssi: remove unnecessary spinlock
+  ASoC: fsl-ssi: Set framerate divider correctly for i2s master mode
+
+ sound/soc/fsl/Kconfig   |   1 +
+ sound/soc/fsl/fsl_ssi.c | 574 ++++++++++++++++++++++++++++--------------------
+ sound/soc/fsl/fsl_ssi.h |  50 ++---
+ 3 files changed, 360 insertions(+), 265 deletions(-)
+
 -- 
-1.9.1
+2.0.0.rc2
