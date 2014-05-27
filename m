@@ -1,47 +1,39 @@
-From: Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH RFC 02/11] sound: ASoC: kirkwood: Remove unused drivers
-Date: Tue, 27 May 2014 18:45:30 +0200
-Message-ID: <20140527164530.GJ26379@lunn.ch>
-References: <1400163836-9831-1-git-send-email-andrew@lunn.ch>
- <1400163836-9831-5-git-send-email-andrew@lunn.ch>
- <20140526155901.GF22111@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC] AVB - network-based soundcards in ALSA
+Date: Tue, 27 May 2014 11:55:26 -0500
+Message-ID: <5384C37E.8060404@linux.intel.com>
+References: <20140526130352.GA17414@austad.us> <s5ha9a3uw44.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20140526155901.GF22111@sirena.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, linux ARM <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 538F42608D3
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 18:59:17 +0200 (CEST)
+In-Reply-To: <s5ha9a3uw44.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Henrik Austad <henrik@austad.us>
+Cc: hansverk@cisco.com, alsa-devel@alsa-project.org, haustad@cisco.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 26, 2014 at 04:59:01PM +0100, Mark Brown wrote:
-> On Thu, May 15, 2014 at 04:23:45PM +0200, Andrew Lunn wrote:
-> > Both kirkwood-openrd and kirkwood-t5325 drivers have been replaced
-> > with DT based simple-card equivelents.
-> 
-> Applied, thanks.
 
-Hi Mark
+> This reminds me of the talk Pierre gave in LPC at San Diego a couple
+> of years ago.  Although his topic was more about the audio time
+> accounting, the framework mentioned at that time would fit with this
+> scenario?
 
-This is an RFC patch, as it says in the Subject line, and the cover
-note. It is not intended to be applied yet. Please unapply it, and the
-other one in the series you have applied.
-
-> Please do try to use subject lines matching the style for the
-> subsystem.
-
-O.K, i will fix this when i send the real, not RFC, to be applied,
-patches.
-
-Thanks
-	Andrew
+Yes it is related but the overall architecture on a first pass of 
+reading seems different: the ideas we presented were more along the 
+lines of letting every subsystem provide an accurate accounting of time 
+and have some userspace parts see and compensate the difference between 
+system, network, audio, video, clocks.
+very interesting topic and RFC, thanks for posting this.
+-Pierre
