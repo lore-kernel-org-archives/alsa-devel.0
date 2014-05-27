@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 08/12] fireworks/bebob: Improve indentation
-Date: Wed, 28 May 2014 00:14:43 +0900
-Message-ID: <1401203687-4189-9-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/12] bebob: Use different names for
+	identifiers in the same file
+Date: Wed, 28 May 2014 00:14:44 +0900
+Message-ID: <1401203687-4189-10-git-send-email-o-takashi@sakamocchi.jp>
 References: <1401203687-4189-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 4493026586C
+ by alsa0.perex.cz (Postfix) with ESMTP id D6FE726584A
  for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 17:15:16 +0200 (CEST)
 In-Reply-To: <1401203687-4189-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,57 +25,43 @@ To: clemens@ladisch.de, dan.carpenter@oracle.com, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-According to coding rule.
+To suppress 'sparse' warning.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob_midi.c         | 4 ++--
- sound/firewire/fireworks/fireworks_midi.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/firewire/bebob/bebob.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
-index c04cea2..63343d5 100644
---- a/sound/firewire/bebob/bebob_midi.c
-+++ b/sound/firewire/bebob/bebob_midi.c
-@@ -143,7 +143,7 @@ int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 31b96b7..b5e8f99 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -69,7 +69,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+ 	struct fw_device *fw_dev = fw_parent_device(bebob->unit);
+ 	char vendor[24] = {0};
+ 	char model[32] = {0};
+-	u32 id;
++	u32 hw_id;
+ 	u32 data[2] = {0};
+ 	u32 revision;
+ 	int err;
+@@ -88,7 +88,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
  
- 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
--					&midi_capture_ops);
-+				    &midi_capture_ops);
+ 	/* get hardware id */
+ 	err = snd_bebob_read_quad(bebob->unit, INFO_OFFSET_HW_MODEL_ID,
+-				  &id);
++				  &hw_id);
+ 	if (err < 0)
+ 		goto end;
  
- 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
- 
-@@ -154,7 +154,7 @@ int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
- 
- 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
--					&midi_playback_ops);
-+				    &midi_playback_ops);
- 
- 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
- 
-diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-index 4a600d2..cf9c652 100644
---- a/sound/firewire/fireworks/fireworks_midi.c
-+++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -143,7 +143,7 @@ int snd_efw_create_midi_devices(struct snd_efw *efw)
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
- 
- 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
--					&midi_capture_ops);
-+				    &midi_capture_ops);
- 
- 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
- 
-@@ -154,7 +154,7 @@ int snd_efw_create_midi_devices(struct snd_efw *efw)
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
- 
- 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
--					&midi_playback_ops);
-+				    &midi_playback_ops);
- 
- 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
- 
+@@ -109,7 +109,7 @@ name_device(struct snd_bebob *bebob, unsigned int vendor_id)
+ 	strcpy(bebob->card->mixername, model);
+ 	snprintf(bebob->card->longname, sizeof(bebob->card->longname),
+ 		 "%s %s (id:%d, rev:%d), GUID %08x%08x at %s, S%d",
+-		 vendor, model, id, revision,
++		 vendor, model, hw_id, revision,
+ 		 data[0], data[1], dev_name(&bebob->unit->device),
+ 		 100 << fw_dev->max_speed);
+ end:
 -- 
 1.8.3.2
