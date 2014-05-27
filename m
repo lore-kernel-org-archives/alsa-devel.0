@@ -1,18 +1,20 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH v4 08/17] ASoC: fsl-ssi: introduce SoC
-	specific data
-Date: Tue, 27 May 2014 08:21:24 +0200
-Message-ID: <20140527062124.GB20989@pengutronix.de>
-References: <1398682498-24357-1-git-send-email-mpa@pengutronix.de>
- <1398682498-24357-9-git-send-email-mpa@pengutronix.de>
- <20140520220213.GZ12304@sirena.org.uk>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH 4/5] ALSA: hda - drop def association and
+ sequence from pinconf comparing
+Date: Tue, 27 May 2014 14:40:41 +0800
+Message-ID: <53843369.6000401@canonical.com>
+References: <1401092564-14293-1-git-send-email-hui.wang@canonical.com>	<1401092564-14293-4-git-send-email-hui.wang@canonical.com>	<5383136A.3040006@canonical.com>
+ <CAJ=jqub_w_9vppPdO0dnz0nYztsGr3yn5DM4eHu-PWmhQnv1SA@mail.gmail.com>
+ <53841765.4000404@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5397585988436325469=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 549462654C8
- for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 08:21:48 +0200 (CEST)
-In-Reply-To: <20140520220213.GZ12304@sirena.org.uk>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 955BF2654C8
+ for <alsa-devel@alsa-project.org>; Tue, 27 May 2014 08:40:48 +0200 (CEST)
+In-Reply-To: <53841765.4000404@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,84 +24,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Alexander Shiyan <shc_work@mail.ru>, Sascha Hauer <s.hauer@pengutronix.de>, Timur Tabi <timur@tabi.org>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, kernel@pengutronix.de, Nicolin Chen <Guangyu.Chen@freescale.com>, linux-arm-kernel@lists.infradead.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Alex Hung <alex.hung@canonical.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 05/27/2014 12:41 PM, David Henningsson wrote:
+>
+>
+> On 2014-05-27 04:25, Alex Hung wrote:
+>> Hi David,
+>>
+>> BIOS today implements verbtable which is provided by codec vendor
+>> based on hardware design, and it is indeed not uncommon that the
+>> verbtable includes used pin only and leaves unused pins untouched.
+>
+> Sure, but those unused pins would then have the same default value 
+> that the codec initializes it with.
+>
+> Also, it wouldn't be uncommon for BIOS (or codec vendors) to use the 
+> same verbtable for several machines if they share the same audio 
+> hardware.
+>
+> But none of this explains why anyone would just change def association 
+> and sequence value between machines? It makes no sense.
 
---===============5397585988436325469==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Bn2rw/3z4jIqBvZU"
-Content-Disposition: inline
+So far, I met one example for this case:
 
+the Dell laptops with the same 0x10ec0255 codec,
 
---Bn2rw/3z4jIqBvZU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On some machines:
+pin 0x12, 0x90a60170
+pin 0x14, 0x90170120
+pin 0x21, 0x02211030
 
-Hi,
-
-On Tue, May 20, 2014 at 11:02:13PM +0100, Mark Brown wrote:
-> On Mon, Apr 28, 2014 at 12:54:49PM +0200, Markus Pargmann wrote:
-> > From: Sascha Hauer <s.hauer@pengutronix.de>
-> >=20
-> > Introduce a SoC data struct which contains the differences between
-> > the different SoCs this driver supports. This makes it easy to support
-> > more differences without having to introduce a new switch/case each
-> > time.
-> >=20
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
->=20
-> Applied everything before this patch, thanks.  I've not applied this one
-> since you didn't sign it off - please make sure when forwarding patches
-> for other people that you add your signoff at the bottom, this is needed
-> for legal reasons (see SubmittingPatches).
-
-Ok, thanks, I will resubmit the remaining patches.
-
-Best Regards,
-
-Markus
+On another machine:
+pin 0x12, 0x90a60140
+pin 0x14, 0x90170110
+pin 0x21, 0x02211020
 
 
-
---=20
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---Bn2rw/3z4jIqBvZU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJThC7kAAoJEEpcgKtcEGQQ+MYP+QGVHSudxlZR/3EUYfRtiltv
-KdDICUkwhRAEiGZOvHeQWQz4SU/n1axgw2Fjzv25EEM9c/cmxNDSA1JEIZV1gwE/
-dwayxMT24zT9e4O3OoOGvszIb98bzbZRmwR346SDiXt7fWq5MMEekHnsvz1/VXir
-YARJiWDm8K2T92fzDwRVwg/jiaMJBmgMsELqePZKoDuAr9X4MQmCsDCSPjloFUtk
-PBfSDY8DKK+zbT+rC9bALe50p8gRqf9Ej4a9e+0ON7yoFDmoq6a5LG56M9kiI1/F
-/5OvU1Y5C4dhX/lGYGX6MPqF0VKU8pqTLPumW94fSvOeufoSDnjvDE+dSSB2XcXx
-UfpvebfEQ83ZO2fuSrlr7GIxBJqvLnhmQxHEK647sSyQsy/m4DLDKZoKe842t2Zt
-hosYqdwFOtwP/k1TEpXz2ochss2q6Dhb6lZrNF0j8/xVHKqSSY9+XUwhOO0oQyPe
-mNIvGoUC4FptS2AWmZZmxh+8QZ149BjCjBXEoNYTZGoGccrLQsMMVx2qQ0v9kfzg
-G4jS9x5P5de679p/O+UEtcrhw2RT+wzahnw1Wz9sK4E3GSWUeU5vOoShC+oGhoG1
-yyMIRTplyPu/4v+cJQQNO09qbPmc/rQAxs/vzRvNZTy0oTssjg3P8EJnz4SpqDXf
-4sdKNWwcWZVRMEhJJPa9
-=EyXE
------END PGP SIGNATURE-----
-
---Bn2rw/3z4jIqBvZU--
-
---===============5397585988436325469==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The def config of the rest pins are same.
 
 
---===============5397585988436325469==--
+Regards,
+Hui.
+>
+>>
+>> On Mon, May 26, 2014 at 6:11 PM, David Henningsson
+>> <david.henningsson@canonical.com> wrote:
+>>> (Add Alex Hung to CC)
+>>>
+>>> On 2014-05-26 10:22, Hui Wang wrote:
+>>>>
+>>>> A lot a machine have the same codec, but they have different default
+>>>> pinconf setting just because the def association and sequence is
+>>>> different, as a result they can't share a hda_pintbl[], to overcome
+>>>> it, we don't compare def association and sequence in the pinconf
+>>>> matching.
+>>>
+>>>
+>>> Uhm, really? Alex, does this seem reasonable from a BIOS 
+>>> perspective, i e,
+>>> that BIOS people normally would set def association and sequence 
+>>> different
+>>> while leaving everything else unchanged?
+>>>
+>>>>
+>>>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>>>> ---
+>>>>    sound/pci/hda/hda_auto_parser.c | 3 ++-
+>>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/sound/pci/hda/hda_auto_parser.c
+>>>> b/sound/pci/hda/hda_auto_parser.c
+>>>> index b684c6e..3cf9137 100644
+>>>> --- a/sound/pci/hda/hda_auto_parser.c
+>>>> +++ b/sound/pci/hda/hda_auto_parser.c
+>>>> @@ -844,7 +844,8 @@ static bool pin_config_match(struct hda_codec 
+>>>> *codec,
+>>>>    {
+>>>>          for (; pins->nid; pins++) {
+>>>>                  u32 def_conf = snd_hda_codec_get_pincfg(codec, 
+>>>> pins->nid);
+>>>> -               if (pins->val != def_conf)
+>>>> +               u32 mask = 0xffffff00;
+>>>> +               if ((pins->val & mask) != (def_conf & mask))
+>>>>                          return false;
+>>>>          }
+>>>>          return true;
+>>>>
+>>>
+>>> -- 
+>>> David Henningsson, Canonical Ltd.
+>>> https://launchpad.net/~diwic
+>>
+>>
+>>
+>
