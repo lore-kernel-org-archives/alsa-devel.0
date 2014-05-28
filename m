@@ -1,24 +1,19 @@
-From: Jason Cooper <jason@lakedaemon.net>
-Subject: Re: [PATCH RFC 02/11] sound: ASoC: kirkwood: Remove
-	unused drivers
-Date: Tue, 27 May 2014 19:46:38 -0400
-Message-ID: <20140527234638.GV8664@titan.lakedaemon.net>
-References: <1400163836-9831-1-git-send-email-andrew@lunn.ch>
- <1400163836-9831-5-git-send-email-andrew@lunn.ch>
- <20140526155901.GF22111@sirena.org.uk>
- <20140527164530.GJ26379@lunn.ch>
- <20140527180047.GA12304@sirena.org.uk>
- <20140527181818.GK26379@lunn.ch>
- <20140527195212.GE12304@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 0/2] ASoC: tlv320aic3x: Fix
+ snd_soc_dapm_put_volsw_aic3x callback
+Date: Wed, 28 May 2014 09:27:03 +0200
+Message-ID: <53858FC7.5020407@metafoo.de>
+References: <1401187986-11059-1-git-send-email-peter.ujfalusi@ti.com>
+ <20140527110259.GM12304@sirena.org.uk> <53848D66.1050204@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-01-ewr.mailhop.org (mho-03-ewr.mailhop.org [204.13.248.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 344482655A7
- for <alsa-devel@alsa-project.org>; Wed, 28 May 2014 01:46:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140527195212.GE12304@sirena.org.uk>
+Received: from smtp-out-170.synserver.de (smtp-out-170.synserver.de
+ [212.40.185.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id E79B2265629
+ for <alsa-devel@alsa-project.org>; Wed, 28 May 2014 09:27:03 +0200 (CEST)
+In-Reply-To: <53848D66.1050204@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,39 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, linux ARM <linux-arm-kernel@lists.infradead.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 27, 2014 at 08:52:12PM +0100, Mark Brown wrote:
-> On Tue, May 27, 2014 at 08:18:18PM +0200, Andrew Lunn wrote:
-> > On Tue, May 27, 2014 at 07:00:47PM +0100, Mark Brown wrote:
-> > > On Tue, May 27, 2014 at 06:45:30PM +0200, Andrew Lunn wrote:
-> 
-> > > > This is an RFC patch, as it says in the Subject line, and the cover
-> > > > note. It is not intended to be applied yet. Please unapply it, and the
-> > > > other one in the series you have applied.
-> 
-> > > Eh?  I thought the discussion was that everything was OK and we were
-> > > going to go ahead with this approach.  Or to put it another way what's
-> > > wrong with this and what's expected to change?
-> 
-> > What is wrong is that the merge path for the first patch, which
-> > removes the boards making use of these drivers, has already closed for
-> > patches.  So we now have boards left in the tree with broken audio. We
-> > can leave it that way, because these boards are actually in the tree
-> > twice. One using DT, which will work as things are now, and old style
-> > board file boards which are broken.
-> 
-> OK, so another part of this is that you didn't send the first patch to
-> me so I didn't realise that the boards were still there.  TBH I'd have
-> expected that removal to just be going in independently of cleaning up
-> the drivers.
-> 
-> Anyway, I dropped the patches.
+On 05/27/2014 03:04 PM, Peter Ujfalusi wrote:
+> Mark,
+>
+> On 05/27/2014 02:02 PM, Mark Brown wrote:
+>> On Tue, May 27, 2014 at 01:53:04PM +0300, Peter Ujfalusi wrote:
+>>> Hi,
+>>>
+>>> Commit "cf7c1de20c576 ASoC: dapm: Move 'value' field from widget to
+>>> control" changed the way how the 'value' has been stored for a widget.
+>>> This resulted issues with codec drivers needing and using custom dapm put
+>>> callbacks to handle the hw underneath, like the tlv320aic3x driver.
+>>> Since the driver is not updated following the mentioned commit it is mostly
+>>> broken when we try to change Left/Righ PGA mixers:
+>>
+>> Applied both, thanks.
+>
+> After discussing this with Lars over the IRC, would it be possible to drop
+> these patches? I'll come back with another set to fix this issue tomorrow.
 
-Thanks Mark, sorry for the confusion.
 
-thx,
+After giving some more though to the discussion from yesterday I think it is 
+best to just find out why snd_soc_test_bits() returns -EINVAL and fix that 
+and leave the rest as it is for now. Moving dapm_kcontrol_set_value() around 
+is a bit more complicated than I thought.
 
-Jason.
+- Lars
