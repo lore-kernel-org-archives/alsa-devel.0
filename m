@@ -1,17 +1,21 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCHv2 3/4] ASoC: Intel: Use
-	devm_snd_soc_register_card
-Date: Wed, 28 May 2014 12:35:39 +0300
-Message-ID: <1401269739-1373-1-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1401112593-2852-3-git-send-email-jarkko.nikula@linux.intel.com>
+From: Henrik Austad <henrik@austad.us>
+Subject: Re: [RFC] AVB - network-based soundcards in ALSA
+Date: Wed, 28 May 2014 11:32:35 +0200
+Message-ID: <20140528093235.GB26498@austad.us>
+References: <20140526130352.GA17414@austad.us> <538369F6.4040306@gmail.com>
+ <20140527090216.GB20915@austad.us> <5384977C.5070009@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B9552654EB
- for <alsa-devel@alsa-project.org>; Wed, 28 May 2014 11:35:53 +0200 (CEST)
-In-Reply-To: <1401112593-2852-3-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from mail-la0-f42.google.com (mail-la0-f42.google.com
+ [209.85.215.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2B122655A1
+ for <alsa-devel@alsa-project.org>; Wed, 28 May 2014 11:37:03 +0200 (CEST)
+Received: by mail-la0-f42.google.com with SMTP id el20so7257458lab.15
+ for <alsa-devel@alsa-project.org>; Wed, 28 May 2014 02:37:03 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <5384977C.5070009@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +25,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, hansverk@cisco.com, alsa-devel@alsa-project.org, "Alexander E. Patrakov" <patrakov@gmail.com>, haustad@cisco.com
 List-Id: alsa-devel@alsa-project.org
 
-Simplify byt-rt5640.c and haswell.c machine drivers by using
-devm_snd_soc_register_card(). Remove also needless dev_set_drvdata()
-from byt_rt5640_probe() since snd_soc_register_card() does it too.
+On Tue, May 27, 2014 at 03:47:40PM +0200, Clemens Ladisch wrote:
+> Henrik Austad wrote:
+> > [...]
+> > As to moving samples from the buffer onto the network, one approach would
+> > be to wrap a set of samples and place it into a ready frame with headers
+> > and bits set and leave it in a buffer for the network layer to pick up.
+> >
+> > The exact method here is not clear to me yet, I need to experiment, and
+> > probably send something off to the networking guys. But before I do that,
+> > I'd like to have a reasonable sane idea of how ALSA should handle this.
+> 
+> ALSA expects that the sound card hardware fetches samples whenever it
+> needs them.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
-v2: Fix s/devm_snd_soc_unregister_card/devm_snd_soc_register_card/ typo in
-title and commit log
----
- sound/soc/intel/byt-rt5640.c | 14 +-------------
- sound/soc/intel/haswell.c    |  9 +--------
- 2 files changed, 2 insertions(+), 21 deletions(-)
+Right, that's what I thought. Is it correct to assume that _all_
+soundcards do this? I.e. no polled memory ops here, only DMA?
 
-diff --git a/sound/soc/intel/byt-rt5640.c b/sound/soc/intel/byt-rt5640.c
-index 5535c3fb7922..7c97e1909462 100644
---- a/sound/soc/intel/byt-rt5640.c
-+++ b/sound/soc/intel/byt-rt5640.c
-@@ -146,25 +146,13 @@ static const struct dev_pm_ops byt_rt5640_pm_ops = {
- static int byt_rt5640_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = &byt_rt5640_card;
--	struct device *dev = &pdev->dev;
- 
- 	card->dev = &pdev->dev;
--	dev_set_drvdata(dev, card);
--	return snd_soc_register_card(card);
--}
--
--static int byt_rt5640_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	snd_soc_unregister_card(card);
--
--	return 0;
-+	return devm_snd_soc_register_card(&pdev->dev, card);
- }
- 
- static struct platform_driver byt_rt5640_audio = {
- 	.probe = byt_rt5640_probe,
--	.remove = byt_rt5640_remove,
- 	.driver = {
- 		.name = "byt-rt5640",
- 		.owner = THIS_MODULE,
-diff --git a/sound/soc/intel/haswell.c b/sound/soc/intel/haswell.c
-index 94c2c33ffe49..3981982674ac 100644
---- a/sound/soc/intel/haswell.c
-+++ b/sound/soc/intel/haswell.c
-@@ -202,18 +202,11 @@ static int haswell_audio_probe(struct platform_device *pdev)
- {
- 	haswell_rt5640.dev = &pdev->dev;
- 
--	return snd_soc_register_card(&haswell_rt5640);
--}
--
--static int haswell_audio_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_card(&haswell_rt5640);
--	return 0;
-+	return devm_snd_soc_register_card(&pdev->dev, &haswell_rt5640);
- }
- 
- static struct platform_driver haswell_audio = {
- 	.probe = haswell_audio_probe,
--	.remove = haswell_audio_remove,
- 	.driver = {
- 		.name = "haswell-audio",
- 		.owner = THIS_MODULE,
+> For USB and FireWire, there is a short queue of packets; the driver
+> appends new packets whenever a bunch of older packets has been completed
+> (as reported by an interrupt).
+
+Yes, that is what I thought was happening. I was then hoping to do
+something similar with AVB, just with the networking part instead. So
+the net subsystem would act as a hardware device to ALSA and provide a
+wakeup to the snd_media_driver once it is done.
+
+On a regular PCI soundcard, I had the impression that it would also
+fetch the samples whenever it needed them (you only mention USB and
+Firewire). Is this correct, or is PCI a whole different ballpark?
+
+> (This queue is separate from the ALSA ring buffer, which is then never
+> accessed directly by hardware.)
+
+Ah, so userspace places samples in a buffer via alsalib, and
+snd_<whatever> then moves the samples from that buffer into another
+buffer which the hardware can access directly?
+
+> > The process of evening out the rate of samples is what traffic shaping and
+> > stream reservation will help you do (or enforce, ymmv), to some extent at
+> > least. The credit based shaper algorithm is designed to force bursty
+> > traffic into a steady stream.
+>
+> In the case of USB and FireWire, the hardware already knows to send
+> isochronous packets at a rate of 8 kHz.
+
+Yes, that is true.
+
+> A 'normal' NIC wouldn't be able to do this.  Are there NICs that have
+> a separate queue for isochronous packets?  Or how else can this be
+> handled?
+
+As I said in another email, I've only found i210 with support for AVB at
+the moment (sorry for the rather intense Intel plugfest this turned
+into).
+
+>From the datasheet [1]:
+"""
+The I210 implements 4 receive queues and 4 transmit queues, where up to
+two queues are dedicated for stream reservation or priority, and up to
+three queues for strict priority. In Qav mode, the MAC flow control is
+disabled. Note that Qav mode is supported only in 100 Mb/s and 1000
+Mb/s. Furthermore, Qav is supported only in full-duplex mode with no
+option for Jumbo packets transmission.
+"""
+
+It goes on further down (In sec 7.2.7.5 if you're interested) to say:
+"""
+A queue is eligible for arbitrations only if it has descriptors pointing
+to at least a single packet in host memory. For SR queues with the time
+based element enabled a queue is only eligible for arbitration if the
+fetch time of the up coming packet has been reached.
+"""
+
+So, for this, I interpret it as saying that if you create a set of
+frames ready for transmission and assign them to a queue with a reserved
+stream and prioritized queue, the NIC itself will take care of fetching
+data.
+
+If this is a correct interpretation, I don't know, but I think it is a
+fair assessment that you can get support from HW to do this. It also
+means that avb_media_driver needs to have some awareness over actual
+network hardware. This could get somewhat messy.
+
+1) http://www.intel.com/content/dam/www/public/us/en/documents/datasheets/i210-ethernet-controller-datasheet.pdf
 -- 
-2.0.0.rc2
+Henrik Austad
