@@ -1,16 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 2/2] ASoC: dapm: Add a helper to get the
-	platform for DAPM kcontrol
-Date: Thu, 29 May 2014 15:33:37 +0530
-Message-ID: <1401357817-17942-2-git-send-email-vinod.koul@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 1/2] ASoC: export
+ dapm_kcontrol_set/get_value functions
+Date: Thu, 29 May 2014 12:55:07 +0200
+Message-ID: <5387120B.6090100@metafoo.de>
 References: <1401357817-17942-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id AB5DD261687
- for <alsa-devel@alsa-project.org>; Thu, 29 May 2014 12:20:29 +0200 (CEST)
+Received: from smtp-out-248.synserver.de (smtp-out-252.synserver.de
+ [212.40.185.252])
+ by alsa0.perex.cz (Postfix) with ESMTP id 321BA2610A5
+ for <alsa-devel@alsa-project.org>; Thu, 29 May 2014 12:55:11 +0200 (CEST)
 In-Reply-To: <1401357817-17942-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,57 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, Kp Jeeja <jeeja.kp@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Kp Jeeja <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+On 05/29/2014 12:03 PM, Vinod Koul wrote:
+> The DSPs like Intel ones use the DPCM to represent the DSP toplogy. So when DAPM
+> triggers the widget, the DSP needs to know the kcontrol values and pass on to DSP
+> firmware, so export these for driver use
+>
 
-commit eee5d7f9 - "ASoC: dapm: Add a helper to get the CODEC for DAPM kcontrol"
-introduced helper for getting codec for DAPM kcontrol. For DSPs we need similar
-method to get the platform pointer while handling the widgets.
+As I said I feel a bit uneasy about exporting these and I'd rather much 
+prefer to see this patch in context (i.e. in the same series as its user).
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- include/sound/soc-dapm.h |    2 ++
- sound/soc/soc-dapm.c     |   11 +++++++++++
- 2 files changed, 13 insertions(+), 0 deletions(-)
-
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index abda467..247cd5e 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -459,6 +459,8 @@ int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
- 	struct snd_soc_dapm_widget_list **list);
- 
- struct snd_soc_codec *snd_soc_dapm_kcontrol_codec(struct snd_kcontrol *kcontrol);
-+struct snd_soc_platform *snd_soc_dapm_kcontrol_platform(
-+		struct snd_kcontrol *kcontrol);
- 
- /* dapm widget types */
- enum snd_soc_dapm_type {
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index d831e73..8a4a733 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -362,6 +362,17 @@ struct snd_soc_codec *snd_soc_dapm_kcontrol_codec(struct snd_kcontrol *kcontrol)
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_codec);
- 
-+/**
-+ * snd_soc_dapm_kcontrol_platform() - Returns the platform associated to a kcontrol
-+ * @kcontrol: The kcontrol
-+ */
-+struct snd_soc_platform *snd_soc_dapm_kcontrol_platform(
-+		struct snd_kcontrol *kcontrol)
-+{
-+	return dapm_kcontrol_get_wlist(kcontrol)->widgets[0]->platform;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_kcontrol_platform);
-+
- static void dapm_reset(struct snd_soc_card *card)
- {
- 	struct snd_soc_dapm_widget *w;
--- 
-1.7.0.4
+- Lars
