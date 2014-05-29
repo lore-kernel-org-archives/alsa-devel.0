@@ -1,20 +1,15 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 3/3] ALSA: hda - move some alc662 family
-	machines to hda_pin_quirk table
-Date: Thu, 29 May 2014 15:59:19 +0800
-Message-ID: <1401350359-5045-3-git-send-email-hui.wang@canonical.com>
-References: <1401350359-5045-1-git-send-email-hui.wang@canonical.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 1/2] ASoC: export dapm_kcontrol_set/get_value
+	functions
+Date: Thu, 29 May 2014 15:32:46 +0530
+Message-ID: <1401357767-17907-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f53.google.com (mail-pb0-f53.google.com
- [209.85.160.53])
- by alsa0.perex.cz (Postfix) with ESMTP id C1FC6260786
- for <alsa-devel@alsa-project.org>; Thu, 29 May 2014 09:59:36 +0200 (CEST)
-Received: by mail-pb0-f53.google.com with SMTP id md12so12592635pbc.40
- for <alsa-devel@alsa-project.org>; Thu, 29 May 2014 00:59:35 -0700 (PDT)
-In-Reply-To: <1401350359-5045-1-git-send-email-hui.wang@canonical.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6C14260851
+ for <alsa-devel@alsa-project.org>; Thu, 29 May 2014 12:19:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,113 +19,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: hui.wang@canonical.com, david.henningsson@canonical.com
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, Kp Jeeja <jeeja.kp@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 72 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 68 insertions(+), 4 deletions(-)
+The DSPs like Intel ones use the DPCM to represent the DSP toplogy. So when DAPM
+triggers the widget, the DSP needs to know the kcontrol values and pass on to DSP
+firmware, so export these for driver use
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d82884b..a00cd69 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5894,12 +5894,8 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x060a, "Dell XPS 13", ALC668_FIXUP_DELL_XPS13),
--	SND_PCI_QUIRK(0x1028, 0x0623, "Dell", ALC668_FIXUP_AUTO_MUTE),
--	SND_PCI_QUIRK(0x1028, 0x0624, "Dell", ALC668_FIXUP_AUTO_MUTE),
- 	SND_PCI_QUIRK(0x1028, 0x0625, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0626, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
--	SND_PCI_QUIRK(0x1028, 0x0628, "Dell", ALC668_FIXUP_AUTO_MUTE),
--	SND_PCI_QUIRK(0x1028, 0x064e, "Dell", ALC668_FIXUP_AUTO_MUTE),
- 	SND_PCI_QUIRK(0x1028, 0x0696, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0698, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1632, "HP RP5800", ALC662_FIXUP_HP_RP5800),
-@@ -5991,6 +5987,73 @@ static const struct hda_model_fixup alc662_fixup_models[] = {
- 	{}
- };
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/soc-dapm.h |    3 +++
+ sound/soc/soc-dapm.c     |    6 ++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 75020f5..abda467 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -368,6 +368,9 @@ int dapm_regulator_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event);
+ int dapm_clock_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event);
++bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
++			unsigned int value);
++unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol);
  
-+static const struct snd_hda_pin_quirk alc662_pin_fixup_tbl[] = {
-+	{
-+		.codec = 0x10ec0668,
-+		.subvendor = 0x1028,
-+#ifdef CONFIG_SND_DEBUG_VERBOSE
-+		.name = "Dell",
-+#endif
-+		.pins = (const struct hda_pintbl[]) {
-+			{0x12, 0x99a30130},
-+			{0x14, 0x90170110},
-+			{0x15, 0x0321101f},
-+			{0x16, 0x03011020},
-+			{0x18, 0x40000008},
-+			{0x19, 0x411111f0},
-+			{0x1a, 0x411111f0},
-+			{0x1b, 0x411111f0},
-+			{0x1d, 0x41000001},
-+			{0x1e, 0x411111f0},
-+			{0x1f, 0x411111f0},
-+		},
-+		.value = ALC668_FIXUP_AUTO_MUTE,
-+	},
-+	{
-+		.codec = 0x10ec0668,
-+		.subvendor = 0x1028,
-+#ifdef CONFIG_SND_DEBUG_VERBOSE
-+		.name = "Dell",
-+#endif
-+		.pins = (const struct hda_pintbl[]) {
-+			{0x12, 0x99a30150},
-+			{0x14, 0x90170110},
-+			{0x15, 0x0321101f},
-+			{0x16, 0x03011020},
-+			{0x18, 0x40000008},
-+			{0x19, 0x411111f0},
-+			{0x1a, 0x411111f0},
-+			{0x1b, 0x411111f0},
-+			{0x1d, 0x41000001},
-+			{0x1e, 0x411111f0},
-+			{0x1f, 0x411111f0},
-+		},
-+		.value = ALC668_FIXUP_AUTO_MUTE,
-+	},
-+	{
-+		.codec = 0x10ec0668,
-+		.subvendor = 0x1028,
-+#ifdef CONFIG_SND_DEBUG_VERBOSE
-+		.name = "Dell",
-+#endif
-+		.pins = (const struct hda_pintbl[]) {
-+			{0x12, 0x411111f0},
-+			{0x14, 0x90170110},
-+			{0x15, 0x0321101f},
-+			{0x16, 0x03011020},
-+			{0x18, 0x40000008},
-+			{0x19, 0x411111f0},
-+			{0x1a, 0x411111f0},
-+			{0x1b, 0x411111f0},
-+			{0x1d, 0x41000001},
-+			{0x1e, 0x411111f0},
-+			{0x1f, 0x411111f0},
-+		},
-+		.value = ALC668_FIXUP_AUTO_MUTE,
-+	},
-+	{}
-+};
-+
- static void alc662_fill_coef(struct hda_codec *codec)
+ /* dapm controls */
+ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 98c1dc6..d831e73 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -327,14 +327,15 @@ static struct list_head *dapm_kcontrol_get_path_list(
+ 	list_for_each_entry(path, dapm_kcontrol_get_path_list(kcontrol), \
+ 		list_kcontrol)
+ 
+-static unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol)
++unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol)
  {
- 	int val, coef;
-@@ -6040,6 +6103,7 @@ static int patch_alc662(struct hda_codec *codec)
+ 	struct dapm_kcontrol_data *data = snd_kcontrol_chip(kcontrol);
  
- 	snd_hda_pick_fixup(codec, alc662_fixup_models,
- 		       alc662_fixup_tbl, alc662_fixups);
-+	snd_hda_pick_pin_fixup(codec, alc662_pin_fixup_tbl, alc662_fixups);
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+ 	return data->value;
+ }
++EXPORT_SYMBOL_GPL(dapm_kcontrol_get_value);
  
- 	alc_auto_parse_customize_define(codec);
+-static bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
++bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
+ 	unsigned int value)
+ {
+ 	struct dapm_kcontrol_data *data = snd_kcontrol_chip(kcontrol);
+@@ -349,6 +350,7 @@ static bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
+ 
+ 	return true;
+ }
++EXPORT_SYMBOL_GPL(dapm_kcontrol_set_value);
+ 
+ /**
+  * snd_soc_dapm_kcontrol_codec() - Returns the codec associated to a kcontrol
 -- 
-1.8.1.2
+1.7.0.4
