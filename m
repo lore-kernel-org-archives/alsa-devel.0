@@ -1,15 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 1/2] ASoC: export dapm_kcontrol_set/get_value
-	functions
-Date: Thu, 29 May 2014 15:32:46 +0530
-Message-ID: <1401357767-17907-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 1/2] ASoC: export
+	dapm_kcontrol_set/get_value functions
+Date: Thu, 29 May 2014 15:33:36 +0530
+Message-ID: <1401357817-17942-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B6C14260851
- for <alsa-devel@alsa-project.org>; Thu, 29 May 2014 12:19:42 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 123FB261631
+ for <alsa-devel@alsa-project.org>; Thu, 29 May 2014 12:20:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
