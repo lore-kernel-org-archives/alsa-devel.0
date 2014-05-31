@@ -1,91 +1,36 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH 49/49] firewire/bebob: Add a workaround for M-Audio
-	special Firewire series
-Date: Fri, 30 May 2014 22:22:59 +0200
-Message-ID: <20140530222259.78f93253@kant>
-References: <1398433530-13136-1-git-send-email-o-takashi@sakamocchi.jp>
-	<1398433530-13136-50-git-send-email-o-takashi@sakamocchi.jp>
-	<s5hegzbkzej.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hegzbkzej.wl%tiwai@suse.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, perex@perex.cz, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
+From: Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH] ALSA: Docs: Fix typo in tegra_hda doc.
+Date: Fri, 30 May 2014 19:15:47 -0700
+Message-ID: <1401502547-8436-1-git-send-email-dgreid@chromium.org>
+Return-path: <linux-doc-owner@vger.kernel.org>
+Sender: linux-doc-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, swarren@wwwdotorg.org, linux-doc@vger.kernel.org, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On May 30 Takashi Iwai wrote:
-> At Fri, 25 Apr 2014 22:45:30 +0900,
-> Takashi Sakamoto wrote:
-> > 
-> > In post commit, a quirk of this firmware about transactions is reported.
-> > This commit apply a workaround for this quirk.
-> > 
-> > They often fail transactions due to gap_count mismatch. This state is changed
-> > by generating bus reset.
-> > 
-> > The fw_schedule_bus_reset() is an exported symbol in firewire-core. But there
-> > are no header for public. This commit moves its prototype from
-> > drivers/firewire/core.h to include/linux/firewire.h.
-> > 
-> > This mismatch still affects bus management before generating this bus reset.
-> > It still takes a time to call driver's probe() because transactions are still
-> > often failed.
-> > 
-> > Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> 
-> Hrm, I should have taken a deeper review.  This change was slipped to
-> my tree without Stefan's ack.
-> Stefan, is it OK to keep this change as is?
+The correct name of the third clock is hda2codec_2x.
 
-Yes, the implementation of this patch and its routing through the ALSA
-tree is OK with me.  I should have sent
-Acked-by: Stefan Richter <stefanr@s5r6.in-berlin.de>
-right away when this revision of the patch series showed up on the list.
-(I think I only sent an informal agreement a time ago for an earlier
-revision.)
+Signed-off-by: Dylan Reid <dgreid@chromium.org>
+---
+ Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Longer term we should look into improving this workaround to address
-  1. the above mentioned transaction failures which happen before the bebob
-     driver's .probe is called (which are merely transient recoverable
-     failures, apparently),
-  2. the theoretical possibility of the very same problem occurring with
-     other IEEE 1394 devices.
-If we indeed come up with such a more general solution, its implementation
-will of course move out of the bebob driver into firewire-core.  But this
-is really longer term since we need to be careful with that, and I might
-want to recreate an environment which reproduces the issue before I
-attempt such generalization or before I take a respective patch from
-somebody else. --- So in short, let's proceed with this patch through ALSA
-git.
-
-> thanks,
-> 
-> Takashi
-> 
-> > ---
-> >  drivers/firewire/core.h      |  1 -
-> >  include/linux/firewire.h     |  3 +++
-> >  sound/firewire/bebob/bebob.c | 32 ++++++++++++++++++++++++++++----
-> >  sound/firewire/bebob/bebob.h |  1 +
-> >  4 files changed, 32 insertions(+), 5 deletions(-)
-[...]
-
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.txt
+index c26f8ca..b4730c2 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.txt
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.txt
+@@ -20,9 +20,9 @@ hda@0,70030000 {
+ 	clocks = <&tegra_car TEGRA124_CLK_HDA>,
+ 		 <&tegra_car TEGRA124_CLK_HDA2HDMI>,
+ 		 <&tegra_car TEGRA124_CLK_HDA2CODEC_2X>;
+-	clock-names = "hda", "hda2hdmi", "hdacodec_2x";
++	clock-names = "hda", "hda2hdmi", "hda2codec_2x";
+ 	resets = <&tegra_car 125>, /* hda */
+ 		 <&tegra_car 128>; /* hda2hdmi */
+ 		 <&tegra_car 111>, /* hda2codec_2x */
+-	reset-names = "hda", "hda2hdmi", "hdacodec_2x";
++	reset-names = "hda", "hda2hdmi", "hda2codec_2x";
+ };
 -- 
-Stefan Richter
--=====-====- -=-= ====-
-http://arcgraph.de/sr/
+1.8.1.3.605.g02339dd
 
-------------------------------------------------------------------------------
-Time is money. Stop wasting it! Get your web API in 5 minutes.
-www.restlet.com/download
-http://p.sf.net/sfu/restlet
