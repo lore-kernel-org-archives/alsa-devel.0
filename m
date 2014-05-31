@@ -1,68 +1,119 @@
-From: asd <asd@marian1000.go.ro>
-Subject: Realtek Alc 883 not have eapd
-Date: Sat, 31 May 2014 23:58:03 +0300
-Message-ID: <1619929.VNVWo8L5J4@marian1000.go.ro>
+From: "Handrigan, Paul" <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH 2/2] ASoC: Add support for CS4265 CODEC
+Date: Sat, 31 May 2014 22:08:24 +0000
+Message-ID: <0FB99937-124F-489E-B4A5-15BA0E91CA1B@cirrus.com>
+References: <1400872614-21666-1-git-send-email-Paul.Handrigan@cirrus.com>
+ <1400872614-21666-2-git-send-email-Paul.Handrigan@cirrus.com>,<20140523203945.GN22111@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="nextPart4510010.3ZOYrlORXn"
-Content-Transfer-Encoding: 7Bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from marian1000.go.ro (5-14-230-222.residential.rdsnet.ro
- [5.14.230.222]) by alsa0.perex.cz (Postfix) with ESMTP id 9780126513B
- for <Alsa-devel@alsa-project.org>; Sat, 31 May 2014 22:58:04 +0200 (CEST)
-Received: from localhost ([127.0.0.1] helo=marian1000.go.ro)
- by marian1000.go.ro with esmtp (Exim 4.82)
- (envelope-from <asd@marian1000.go.ro>) id 1WqqLr-0000tt-K7
- for Alsa-devel@alsa-project.org; Sat, 31 May 2014 23:58:03 +0300
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20140523203945.GN22111-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "Austin, Brian" <Brian.Austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org" <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
---nextPart4510010.3ZOYrlORXn
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-Below is patch wich disable eapd.
---nextPart4510010.3ZOYrlORXn
-Content-Disposition: attachment; filename="patch_realtek_eapd.patch"
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/x-patch; charset="UTF-8"; name="patch_realtek_eapd.patch"
-
-Index: hda/patch_realtek.c
-===================================================================
---- hda.orig/patch_realtek.c	2014-05-13 14:33:14.000000000 +0300
-+++ hda/patch_realtek.c	2014-05-31 23:09:08.668996601 +0300
-@@ -293,8 +293,14 @@
- static void alc_auto_init_amp(struct hda_codec *codec, int type)
- {
- 	unsigned int tmp;
-+	
-+	if (codec->vendor_id == 0x10ec0883) {
- 
--	alc_auto_setup_eapd(codec, true);
-+		alc_auto_setup_eapd(codec, false);
-+	} else {
-+		alc_auto_setup_eapd(codec, true);
-+		}
-+			
- 	switch (type) {
- 	case ALC_INIT_GPIO1:
- 		snd_hda_sequence_write(codec, alc_gpio1_init_verbs);
-
---nextPart4510010.3ZOYrlORXn
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 
---nextPart4510010.3ZOYrlORXn--
+> On May 23, 2014, at 3:40 PM, "Mark Brown" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> 
+>> On Fri, May 23, 2014 at 02:16:54PM -0500, Paul Handrigan wrote:
+>> This patch adds support for the Cirrus Logic Stereo I2C CODEC
+> 
+> This all looks pretty clean and nice, I have got a few comments below
+> but they're all pretty small things.
+> 
+>> +    SOC_SINGLE("De-emp 44.1kHz", CS4265_DAC_CTL, 1,
+>> +                1, 0),
+>> +    SOC_SINGLE("DAC INV", CS4265_DAC_CTL2, 5,
+>> +                1, 0),
+>> +    SOC_SINGLE("DAC Zero Cross", CS4265_DAC_CTL2, 6,
+>> +                1, 0),
+>> +    SOC_SINGLE("DAC Soft Ramp", CS4265_DAC_CTL2, 7,
+>> +                1, 0),
+> 
+> All boolean controls should have Switch at the end of the name.
+> 
+>> +    SOC_SINGLE("ADC HPF Disable", CS4265_ADC_CTL, 1,
+>> +                1, 0),
+> 
+> Invert this one and call it ADC HPF Switch (similarly for other disable
+> controls).
+> 
+>> +
+>> +    for (i = 0; i < ARRAY_SIZE(clk_map_table); i++) {
+>> +        if (clk_map_table[i].rate == rate &&
+>> +            clk_map_table[i].mclk == mclk)
+>> +            return i;
+> 
+> Indent the second line of the if condition with the (.
+> 
+>> +static int cs4265_set_sysclk(struct snd_soc_dai *codec_dai, int clk_id,
+>> +            unsigned int freq, int dir)
+>> +{
+>> +    struct snd_soc_codec *codec = codec_dai->codec;
+>> +    struct cs4265_private *cs4265 = snd_soc_codec_get_drvdata(codec);
+>> +    int i;
+>> +
+>> +    for (i = 0; i < ARRAY_SIZE(clk_map_table); i++) {
+>> +        if (clk_map_table[i].mclk == freq) {
+> 
+> It's better to check that clk_id is 0 here, just in case you think of
+> another clock to control in future (perhaps with a new device that can
+> share the same driver even if it's not possible for this one).
+> 
+>> +    {
+>> +        .name = "cs4265-spdif",
+>> +        .playback = {
+>> +            .stream_name = "SPDIF Playback",
+>> +            .channels_min = 1,
+>> +            .channels_max = 2,
+>> +            .rates = CS4265_SPDIF_RATES,
+>> +            .formats = CS4265_FORMATS,
+>> +        },
+>> +        .ops = &cs4265_ops,
+>> +    },
+> 
+> You should have separate operations for the DAC and S/PDIF DAIs and only
+> mute the relevant interfaces.  If you can't mute the DAC DAIs
+> independently just don't provide an operation and let the user control
+> it as they like.  This avoids problems if more than one stream is
+> running at once.
+
+I am going to remove the S/PDIF DAI.  Since it is TX only.
+> 
+>> +static int cs4265_probe(struct snd_soc_codec *codec)
+>> +{
+>> +    return 0;
+>> +}
+> 
+> Remove empty operations.
+> 
+>> +    } else {
+>> +        pdata = devm_kzalloc(&i2c_client->dev,
+>> +                     sizeof(struct cs4265_platform_data),
+>> +                GFP_KERNEL);
+>> +        if (!pdata) {
+>> +            dev_err(&i2c_client->dev, "could not allocate pdata\n");
+>> +            return -ENOMEM;
+>> +        }
+>> +        pdata->reset_gpio = of_get_named_gpio(i2c_client->dev.of_node,
+>> +                        "reset-gpio", 0);
+>> +        cs4265->pdata = *pdata;
+>> +    }
+> 
+> Can you convert this to use the new gpiod_ APIs and directly request by
+> name?  There's also the -gpios thing I mentioned for the binding.
+> 
+>> +    ret =  snd_soc_register_codec(&i2c_client->dev,
+>> +            &soc_codec_dev_cs4265, cs4265_dai,
+>> +            ARRAY_SIZE(cs4265_dai));
+>> +    return ret;
+> 
+> devm_
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
