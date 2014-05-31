@@ -1,26 +1,18 @@
-From: Petr Maivald <petr@jezdec.com>
-Subject: Re: no sound with intel audio
-Date: Sat, 31 May 2014 13:47:59 +0200
-Message-ID: <CADKJLGxt+wR=KfOJXjrCgtT7a4mi9YK-246fM+4njQn1e1WW0g@mail.gmail.com>
-References: <CADKJLGxnyK5SkNQRuX1S5BMkM1XA_64TT77iR=dnEy-sw02+wQ@mail.gmail.com>
- <s5hy4xjr7cx.wl%tiwai@suse.de>
- <CADKJLGzYZy+GCmUHkkFU9wB0rPTrHMW01uAdwb6oUjvwvLHtiw@mail.gmail.com>
- <s5htx87r6b4.wl%tiwai@suse.de>
- <CADKJLGxYF9AtBwznmeu=OokvGNU_NyxXjVb2w_PPYo9dJDTXgg@mail.gmail.com>
- <s5hegzbmlvi.wl%tiwai@suse.de>
- <CADKJLGwR+XoPngrqkXqs05JYH090f21LzDV+0dnxUqvJZvpMxA@mail.gmail.com>
- <s5hfvjrkzkg.wl%tiwai@suse.de>
+From: asd <asd@marian1000.go.ro>
+Subject: Realtek Alc 883 not have eapd
+Date: Sat, 31 May 2014 23:58:03 +0300
+Message-ID: <1619929.VNVWo8L5J4@marian1000.go.ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="nextPart4510010.3ZOYrlORXn"
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f180.google.com (mail-lb0-f180.google.com
- [209.85.217.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B25726506E
- for <alsa-devel@alsa-project.org>; Sat, 31 May 2014 13:48:02 +0200 (CEST)
-Received: by mail-lb0-f180.google.com with SMTP id p9so1540015lbv.25
- for <alsa-devel@alsa-project.org>; Sat, 31 May 2014 04:47:59 -0700 (PDT)
-In-Reply-To: <s5hfvjrkzkg.wl%tiwai@suse.de>
+Received: from marian1000.go.ro (5-14-230-222.residential.rdsnet.ro
+ [5.14.230.222]) by alsa0.perex.cz (Postfix) with ESMTP id 9780126513B
+ for <Alsa-devel@alsa-project.org>; Sat, 31 May 2014 22:58:04 +0200 (CEST)
+Received: from localhost ([127.0.0.1] helo=marian1000.go.ro)
+ by marian1000.go.ro with esmtp (Exim 4.82)
+ (envelope-from <asd@marian1000.go.ro>) id 1WqqLr-0000tt-K7
+ for Alsa-devel@alsa-project.org; Sat, 31 May 2014 23:58:03 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,73 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 30, 2014 at 6:21 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Fri, 30 May 2014 18:05:06 +0200,
-> Petr Maivald wrote:
->>
->> > As a primary test, for example, try the following on a terminal:
->> >
->> >   % amixer -c1 set "Auto-Mute Mode" "Enabled"
->> >   % aplay -Dplughw:1 -vv some-your-file.wav
->> >
->> > where some-your-file.wav is any WAV file you'd like to hear.
->> >
->> > If you're using PulseAudio, try like below instead:
->> >
->> >   % pasuspender -- aplay -D plughw:1 -vv some-your-file.wav
->> >
->> > Does it play anything?  Try both the headphone plugged and unplugged.
->>
->> My apologies, I did seriously try to figure out how to figure this out
->> and didn't come across anything that made any sense. So, I thought it
->> was a kernel bug...
->>
->> Your suggestion to try aplay did indeed produce sound. It is the first
->> sound I was able to get out of this configuration ever. I attached the
->> output of alsa-info.sh with aplay playing, and with mplayer playing
->> and not working, and the diff. Thanks for your help, at least now I
->> have some clue about where to look.
->
-> Well, I still don't know what you did try.  This should have been
-> clarified in the first ground.  Are you using PulseAudio?  If so, take
-> a look at the mixer, pavucontrol, etc, and which output is being
-> selected.  On your machine, the first device is HDMI, not the onboard
-> audio.
->
-> If you're using the direct ALSA API without PA, it's likely HDMI being
-> picked up as the primary output.  You can change the device init order
-> via index module option or specify the default card number in
-> ~/.asoundrc or /etc/asound.conf in that case.
+This is a multi-part message in MIME format.
 
-Outstanding! You rock! I had no luck figuring out how to change the
-device init order via index module option, but I googled around and
-found that I can set /etc/asound.conf to
+--nextPart4510010.3ZOYrlORXn
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-pcm.!default {
-    type hw
-    card PCH
-}
+Below is patch wich disable eapd.
+--nextPart4510010.3ZOYrlORXn
+Content-Disposition: attachment; filename="patch_realtek_eapd.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="patch_realtek_eapd.patch"
 
-ctl.!default {
-    type hw
-    card PCH
-}
+Index: hda/patch_realtek.c
+===================================================================
+--- hda.orig/patch_realtek.c	2014-05-13 14:33:14.000000000 +0300
++++ hda/patch_realtek.c	2014-05-31 23:09:08.668996601 +0300
+@@ -293,8 +293,14 @@
+ static void alc_auto_init_amp(struct hda_codec *codec, int type)
+ {
+ 	unsigned int tmp;
++	
++	if (codec->vendor_id == 0x10ec0883) {
+ 
+-	alc_auto_setup_eapd(codec, true);
++		alc_auto_setup_eapd(codec, false);
++	} else {
++		alc_auto_setup_eapd(codec, true);
++		}
++			
+ 	switch (type) {
+ 	case ALC_INIT_GPIO1:
+ 		snd_hda_sequence_write(codec, alc_gpio1_init_verbs);
 
-And, that did the trick! Now I have sound!
+--nextPart4510010.3ZOYrlORXn
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-So, apparently I'm using the direct ALSA API without PA since mixer,
-pavucontrol, and pasuspender is not installed. To go back to your
-question of what I did try, I was running Flash, Gnome Mplayer,
-Audacious, and VLC. I guess I neglected to mention that since the
-sound problem didn't seem related to the media players (they all had
-the same no sound problem).
 
-Sorry about the earlier confusion. I was trying to figure out dozens
-of configuration files without knowing what was relevant or installed,
-etc.
-
-Peter
+--nextPart4510010.3ZOYrlORXn--
