@@ -1,17 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC] [PATCH] firewire-lib: Use IEC 61883-6
- compliant labels for Raw Audio/
-Date: Sat, 31 May 2014 16:51:52 +0900
-Message-ID: <53898A18.4050902@sakamocchi.jp>
-References: <5389818C.7080205@sakamocchi.jp> <5389862F.7060309@ladisch.de>
+From: Justin Piszcz <jpiszcz@lucidpixels.com>
+Subject: Re: Bug report: [alsa-sink-USB Audio] alsa-sink.c:
+ Most likely this is a bug in the ALSA driver '(null)'. Please report this
+ issue to the ALSA
+Date: Sat, 31 May 2014 06:48:56 -0400
+Message-ID: <CAO9zADwzvKuMqNjhb0A5i8cVKg8T2z2Uegk+4dTfuTsFd1VBGw@mail.gmail.com>
+References: <001401cf7818$4be327c0$e3a97740$@lucidpixels.com>
+ <CAN8cciZwbNVu7LO_muaynfbudxTB8qRS0aPyxwnd28yupCxSEA@mail.gmail.com>
+ <001201cf7be2$dfbb1980$9f314c80$@lucidpixels.com>
+ <CAN8cciauEUo4A5z7E-0f7EhehRaTJmNjo7Ok7R1GAGQphehjHQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CD90265050
- for <alsa-devel@alsa-project.org>; Sat, 31 May 2014 09:51:58 +0200 (CEST)
-In-Reply-To: <5389862F.7060309@ladisch.de>
+Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
+ [209.85.212.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2ECD2625E0
+ for <alsa-devel@alsa-project.org>; Sat, 31 May 2014 12:48:56 +0200 (CEST)
+Received: by mail-wi0-f174.google.com with SMTP id r20so2347336wiv.1
+ for <alsa-devel@alsa-project.org>; Sat, 31 May 2014 03:48:56 -0700 (PDT)
+In-Reply-To: <CAN8cciauEUo4A5z7E-0f7EhehRaTJmNjo7Ok7R1GAGQphehjHQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,39 +28,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-(May 31 2014 16:35), Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> I don't touch this label issue with my patchset because there is a bit
->> possibility to cause a regression. But now, I have a confidence that
->> this modification is reasonable. In detail, please see an attached patch.
-> 
->> According to AM824 in IEC 61883-6:2002, 2 bits in LSB of label for Raw Audio
->> data means Valid Length Code (VBL). Ths value is:
->> - b00 for 24 bits sample (label is 0x40)
->> - b01 for 20 bits sample (label is 0x41)
->> - b10 for 16 bits sample (label is 0x42)
->>
->> But current firewire-lib apply 24 bits label for both of 16/24 bits samples.
->>
->> As long as I investigate with BeBoB/Fireworks and OXFW, all of them have a
->> behaviour to ignore this label
-> 
-> Same for DICE.
-
-It's nice information for Dice developers.
-
-> Acked-by: Clemens Ladisch <clemens@ladisch.de>
-
-Thanks.
-
-Iwai-san, could you please apply this patch to for-next?
-
-
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+T24gU2F0LCBNYXkgMzEsIDIwMTQgYXQgMTI6NTggQU0sIFJheW1vbmQgWWF1CjxzdXBlcnF1YWQu
+dm9ydGV4MkBnbWFpbC5jb20+IHdyb3RlOgo+Cj4+Cj4+Cj4+Cj4+IEFzIHJlcXVlc3RlZOKAlAo+
+Pgo+Pgo+Pgo+PiBodHRwOi8vaG9tZS5jb21jYXN0Lm5ldC9+anBpc3pjei8yMDE0MDUzMC9sc3Vz
+Yi12dnZ2LnR4dAo+Pgo+PiBodHRwOi8vaG9tZS5jb21jYXN0Lm5ldC9+anBpc3pjei8yMDE0MDUz
+MC9mdWxsLXB1bHNlLWF1ZGlvLWxvZy50eHQKPgo+Pgo+PiBodHRwOi8vaG9tZS5jb21jYXN0Lm5l
+dC9+anBpc3pjei8yMDE0MDUzMC9hbHNhLWluZm8udHh0Cj4+Cj4KPiBjb250cm9sLjYgewo+IGlm
+YWNlIE1JWEVSCj4gbmFtZSAnU3BlYWtlciBQbGF5YmFjayBWb2x1bWUnCj4gdmFsdWUuMCAxNTEK
+PiB2YWx1ZS4xIDE1MQo+IGNvbW1lbnQgewo+IGFjY2VzcyAncmVhZCB3cml0ZScKPiB0eXBlIElO
+VEVHRVIKPiBjb3VudCAyCj4gcmFuZ2UgJzAgLSAxNTEnCj4gZGJtaW4gLTI4MzcKPiBkYm1heCAt
+Ngo+IGRidmFsdWUuMCAtNgo+IGRidmFsdWUuMSAtNgo+IH0KPiB9Cj4KPiBZb3UgaGF2ZSB0byBz
+cGVjaWZ5IGxvZ19pbmZvPWRlYnVnIGluIGRhZW1vbi5jb25mCj4KPiBDaGVjayB0aGUgcHVsc2Vh
+dWRpbyBkZWJ1ZyBsb2cgd2hldGhlciBwdWxzZWF1ZGlvIGNhbGN1bGF0ZWQgIHNvZnR3YXJlCj4g
+dm9sdW1lIGlzIGFjY3VyYXRlIGVub3VnaCAoVk9MVU1FX0FDQ1VSQUNZPVBBX1ZPTFVNRV9OT1JN
+LzEwMCkgc2luY2UgeW91cgo+IE1heCBkQiAgLTAuMDYgYXJlIHF1aXRlIGNsb3NlIHRvIFBBX1ZP
+TFVNRV9OT1JNCj4KPj4KPj4KPj4gw5ggIHN0ZXAgdG8gcmVwcm9kdWNlIHlvdXIgcHJvYmxlbSB3
+aGVuIHlvdSByZXBvcnQgdGhlIGJ1Zwo+Cj4+Cj4+IEkgb2Z0ZW4gU1NIIHRvIG15IG1hY2hpbmUg
+b3IgdXNlIFggcmVtb3RlbHkgYW5kIG5vdCBsb2NhbGx54oCUIHRoaXMgaXMgdGhlCj4+IGZpcnN0
+IHRpbWUgSSBoYXZlIHNlZW4gdGhpcyBpbiBsb2dzIHRoYXQgSSBjYW4gcmVtZW1iZXIgYW5kIEni
+gJl2ZSBub3QgY2hhbmdlZAo+PiBhbnl0aGluZyBsb2NhbGx5Lgo+Pgo+Cj4+ID4gPT0+IC92YXIv
+bG9nL3VzZXIubG9nIDw9PQo+PiA+Cj4+ID4gTWF5IDI1IDA2OjM4OjA2IGF0b20gcHVsc2VhdWRp
+b1s2NzU0XTogW2Fsc2Etc2luay1VU0IgQXVkaW9dCj4+ID4gYWxzYS1zaW5rLmM6Cj4+ID4gQUxT
+QSB3b2tlIHVzIHVwIHRvIHdyaXRlIG5ldyBkYXRhIHRvIHRoZSBkZXZpY2UsIGJ1dCB0aGVyZSB3
+YXMgYWN0dWFsbHkKPj4gPiBub3RoaW5nIHRvIHdyaXRlIQo+PiA+Cj4+ID4gTWF5IDI1IDA2OjM4
+OjA2IGF0b20gcHVsc2VhdWRpb1s2NzU0XTogW2Fsc2Etc2luay1VU0IgQXVkaW9dCj4+ID4gYWxz
+YS1zaW5rLmM6Cj4+ID4gTW9zdCBsaWtlbHkgdGhpcyBpcyBhIGJ1ZyBpbiB0aGUgQUxTQSBkcml2
+ZXIgJyhudWxsKScuIFBsZWFzZSByZXBvcnQKPj4gPiB0aGlzCj4+ID4gaXNzdWUgdG8gdGhlIEFM
+U0EgZGV2ZWxvcGVycy4KPj4KPj4gTmFtZSBvZiBhbHNhIHNpbmsgc2VlbSBjaGFuZ2VkIGZyb20g
+VVNCLWF1ZGlvIHRvIG51bGwsICBkaWQgeW91IGZpbmQgYW55Cj4+IHVucGx1ZyBldmVudCBpZiBV
+U0IgYXVkaW8gZGV2aWNlIGluIHN5c3RlbSBsb2cKPj4KPj4gQW55IGVycm9yIG1lc3NhZ2UgcmVs
+YXRlZCB0byBVU0IgY29udHJvbGxlcnMgYW5kIHlvdXIgYXVkaW8gY2FyZAo+Pgo+PiA+Cj4+ID4g
+TWF5IDI1IDA2OjM4OjA2IGF0b20gcHVsc2VhdWRpb1s2NzU0XTogW2Fsc2Etc2luay1VU0IgQXVk
+aW9dCj4+ID4gYWxzYS1zaW5rLmM6IFdlCj4+ID4gd2VyZSB3b2tlbiB1cCB3aXRoIFBPTExPVVQg
+c2V0IC0tIGhvd2V2ZXIgYSBzdWJzZXF1ZW50IHNuZF9wY21fYXZhaWwoKQo+PiA+IHJldHVybmVk
+IDAgb3IgYW5vdGhlciB2YWx1ZSA8IG1pbl9hdmFpbC4KPj4gPgo+PiA+Cj4KPiBodHRwOi8vd3d3
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbi9pbmRleC5waHAvWFJVTl9EZWJ1Zwo+Cj4gL3Byb2MvYXNv
+dW5kL2NhcmQjL3BjbTBwL3hydW5fZGVidWcKPgo+IFJlcGxhY2UgJyMnIHdpdGggeW91ciBjYXJk
+IG51bWJlciAodXN1YWxseSAwKS4gVGhpcyBwcm9jIGZpbGUgY2FuIGVuYWJsZQo+IHZhcmlvdXMg
+ZGVidWdnaW5nIHRvb2xzLiBUaGUgQ09ORklHX1NORF9QQ01fWFJVTl9ERUJVRywKPiBDT05GSUdf
+U05EX1ZFUkJPU0VfUFJPQ0ZTLCBDT05GSUdfU05EX0RFQlVHIG9wdGlvbnMgbXVzdCBiZSBlbmFi
+bGVkIGluIHlvdXIKPiBrZXJuZWwgKGlmIHhydW5fZGVidWcgcHJvYyBmaWxlIGlzIHByZXNlbnQg
+LSB0aGlzIGZlYXR1cmUgaXMgZW5hYmxlZCkuCj4KPiAjIEVuYWJsZSBiYXNpYyBkZWJ1Z2dpbmcg
+YW5kIGR1bXAgc3RhY2ssIGNoZWNrIGhhcmR3YXJlIHBvaW50ZXIgb24gdGhlCj4gcGVyaW9kIHVw
+ZGF0ZQo+ICMgVXNlZnVsbCB0byBqdXN0IHNlZSwgaWYgUENNIHN0cmVhbSBpcyBzdG9wcGVkIGZv
+ciBhIHJlYXNvbiAodXN1YWxseSB3cm9uZwo+IGF1ZGlvIHByb2Nlc3MgdGltaW5nIGZyb20gc2No
+ZWR1bGVyKQo+ICMgQW5kIHRvIGNoZWNrIHRoZSB2YWx1ZXMgZnJvbSBkcml2ZXIKPiBlY2hvIDEx
+ID4gL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBwL3hydW5fZGVidWcKClRoYW5rcywgaWYgSSBjYW4g
+cmVwcm9kdWNlIGl0LSBJIHdpbGwgdHJ5IHRoaXMsIHNvIGZhciBJIGhhdmUgbm90IGJlZW4KYWJs
+ZSB0byBnZXQgaXQgdG8gcmVjdXIuCgpSZWdhcmRzLAoKSnVzdGluLgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
