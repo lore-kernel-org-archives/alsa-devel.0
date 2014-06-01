@@ -1,18 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/2] ASoC: dapm: Add a helper to get the
- platform for DAPM kcontrol
-Date: Sun, 1 Jun 2014 20:28:06 +0100
-Message-ID: <20140601192806.GR5099@sirena.org.uk>
-References: <1401357817-17942-1-git-send-email-vinod.koul@intel.com>
- <1401357817-17942-2-git-send-email-vinod.koul@intel.com>
+From: Petr Maivald <petr@jezdec.com>
+Subject: Re: no sound with intel audio
+Date: Sun, 1 Jun 2014 22:37:23 +0200
+Message-ID: <CADKJLGzkyWrQeXM4Kxgh+sySowjL=c0LW8tH9keZNk2_m=gmFg@mail.gmail.com>
+References: <CADKJLGxnyK5SkNQRuX1S5BMkM1XA_64TT77iR=dnEy-sw02+wQ@mail.gmail.com>
+ <s5hy4xjr7cx.wl%tiwai@suse.de>
+ <CADKJLGzYZy+GCmUHkkFU9wB0rPTrHMW01uAdwb6oUjvwvLHtiw@mail.gmail.com>
+ <s5htx87r6b4.wl%tiwai@suse.de>
+ <CADKJLGxYF9AtBwznmeu=OokvGNU_NyxXjVb2w_PPYo9dJDTXgg@mail.gmail.com>
+ <s5hegzbmlvi.wl%tiwai@suse.de>
+ <CADKJLGwR+XoPngrqkXqs05JYH090f21LzDV+0dnxUqvJZvpMxA@mail.gmail.com>
+ <s5hfvjrkzkg.wl%tiwai@suse.de>
+ <CADKJLGxt+wR=KfOJXjrCgtT7a4mi9YK-246fM+4njQn1e1WW0g@mail.gmail.com>
+ <s5hlhthup2l.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2856846695628659729=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B6800265475
- for <alsa-devel@alsa-project.org>; Sun,  1 Jun 2014 21:28:15 +0200 (CEST)
-In-Reply-To: <1401357817-17942-2-git-send-email-vinod.koul@intel.com>
+Received: from mail-lb0-f180.google.com (mail-lb0-f180.google.com
+ [209.85.217.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A9E526548F
+ for <alsa-devel@alsa-project.org>; Sun,  1 Jun 2014 22:37:24 +0200 (CEST)
+Received: by mail-lb0-f180.google.com with SMTP id p9so2089106lbv.11
+ for <alsa-devel@alsa-project.org>; Sun, 01 Jun 2014 13:37:23 -0700 (PDT)
+In-Reply-To: <s5hlhthup2l.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +32,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Kp Jeeja <jeeja.kp@intel.com>, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Jun 1, 2014 at 8:22 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Sat, 31 May 2014 13:47:59 +0200,
+> Petr Maivald wrote:
+>>
+>> On Fri, May 30, 2014 at 6:21 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Fri, 30 May 2014 18:05:06 +0200,
+>> > Petr Maivald wrote:
+>> >>
+>> >> > As a primary test, for example, try the following on a terminal:
+>> >> >
+>> >> >   % amixer -c1 set "Auto-Mute Mode" "Enabled"
+>> >> >   % aplay -Dplughw:1 -vv some-your-file.wav
+>> >> >
+>> >> > where some-your-file.wav is any WAV file you'd like to hear.
+>> >> >
+>> >> > If you're using PulseAudio, try like below instead:
+>> >> >
+>> >> >   % pasuspender -- aplay -D plughw:1 -vv some-your-file.wav
+>> >> >
+>> >> > Does it play anything?  Try both the headphone plugged and unplugged.
+>> >>
+>> >> My apologies, I did seriously try to figure out how to figure this out
+>> >> and didn't come across anything that made any sense. So, I thought it
+>> >> was a kernel bug...
+>> >>
+>> >> Your suggestion to try aplay did indeed produce sound. It is the first
+>> >> sound I was able to get out of this configuration ever. I attached the
+>> >> output of alsa-info.sh with aplay playing, and with mplayer playing
+>> >> and not working, and the diff. Thanks for your help, at least now I
+>> >> have some clue about where to look.
+>> >
+>> > Well, I still don't know what you did try.  This should have been
+>> > clarified in the first ground.  Are you using PulseAudio?  If so, take
+>> > a look at the mixer, pavucontrol, etc, and which output is being
+>> > selected.  On your machine, the first device is HDMI, not the onboard
+>> > audio.
+>> >
+>> > If you're using the direct ALSA API without PA, it's likely HDMI being
+>> > picked up as the primary output.  You can change the device init order
+>> > via index module option or specify the default card number in
+>> > ~/.asoundrc or /etc/asound.conf in that case.
+>>
+>> Outstanding! You rock! I had no luck figuring out how to change the
+>> device init order via index module option, but I googled around and
+>> found that I can set /etc/asound.conf to
+>>
+>> pcm.!default {
+>>     type hw
+>>     card PCH
+>> }
+>>
+>> ctl.!default {
+>>     type hw
+>>     card PCH
+>> }
+>>
+>> And, that did the trick! Now I have sound!
+>
+> It's close to the solution, but the drawback of this setup is that you
+> cannot play multiple streams at the same time.  Instead, you can pass
+> the PCM definition like:
+>
+>   pcm.!default sysdefault:PCM
+>
+> Then dmix and dsnoop will be used for simultaneous accesses.
+> The ctl definition can be what you used.
+>
+> But, as mentioned, another solution is to swap the devices in the
+> driver level.  Instead of the ~/.asoundrc setup, pass index=1,0 option
+> to snd-hda-intel module.  Then the order of PCM and HDMI will be
+> swapped.
+>
+>
+> Takashi
+>
+>> So, apparently I'm using the direct ALSA API without PA since mixer,
+>> pavucontrol, and pasuspender is not installed. To go back to your
+>> question of what I did try, I was running Flash, Gnome Mplayer,
+>> Audacious, and VLC. I guess I neglected to mention that since the
+>> sound problem didn't seem related to the media players (they all had
+>> the same no sound problem).
+>>
+>> Sorry about the earlier confusion. I was trying to figure out dozens
+>> of configuration files without knowing what was relevant or installed,
+>> etc.
+Thanks again, it's a bit tricky for me since I don't know what these things in
+the file do. I realized that PCM should be the card's name (PCH), and I got
+rid of the stuff in the first curly brackets and it worked just as you said.
 
---===============2856846695628659729==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="y08JZfPv7c5uulCx"
-Content-Disposition: inline
-
-
---y08JZfPv7c5uulCx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, May 29, 2014 at 03:33:37PM +0530, Vinod Koul wrote:
-> From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
->=20
-> commit eee5d7f9 - "ASoC: dapm: Add a helper to get the CODEC for DAPM kco=
-ntrol"
-> introduced helper for getting codec for DAPM kcontrol. For DSPs we need s=
-imilar
-> method to get the platform pointer while handling the widgets.
-
-This is fine if we need it but hopefully soon we'll be able to just use
-a component for everything instead of a platform and so it won't be
-needed at all so I'd rather wait until there's a user.
-
---y08JZfPv7c5uulCx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTi37DAAoJELSic+t+oim9odMP/RiZfgKtm2WqGNXdFXXVLq+N
-3rlnmrH9UJK7xrfDytnoJWwyIh8JKisrWYXbyAJi3iN/ztixltI5OugLJlzIZdQZ
-xGiwM3aaANWQOSgLi3iO7+IAuwSHnz8ynHVfYEpnTsjZ5J1wIYCMg/R9+ft5e4/d
-UcdM3ye+Y/TwZ/qlkr9J2VZWoBCV/HVJrcz92swKcFhtekoyqOhJU5w8WxG5v9no
-wmFSaw4/N334SXzV1Pz+HuEmzq1fw1HCKItnmRx7hYu5qJeRM2pA2ohZLmmi4X6h
-cHw7/UkIKbMVNbUuhR9Isc2lyfP53hnAZOELXpznitOyiJ319K7niY7L//KJSDY9
-OrQarcGOxZkLTQPJ5zimSGgni3kzjy2oqDvBUE6j9p+ZU7a7ZF9ayoXv2hTIiV2L
-s/CsRSH7ntv3OajE2R0NPslBIacp2V7dGuXQP0crGsvsGNG2OABlEHGEHV7SLDx5
-KZ9TjFi6v2bD08wQ1TnuU3SjIY9gLNkCAURuxJA0/mmBF/qMTkS2z7LpY/UwAoq/
-lwbnNZa8smoZMrZp4pmTJ2memf9QmfJMXqfcPCFYdFNiBjw96U1nY4zXHf7D8jjv
-NTGDeIfrssQdYwZyf+YOJcR0dfRq7oDFkajpRye9x3512laN+RV6EPZPL4sR3Adx
-IMOBZEpsaW3oaF0pLj2I
-=knuA
------END PGP SIGNATURE-----
-
---y08JZfPv7c5uulCx--
-
---===============2856846695628659729==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2856846695628659729==--
+At this point, after what I've read about it, the format of
+/etc/modprobe.d/alsa-base.conf
+isn't understandable to me. So, I don't think I can handle passing the
+index=1,0 option
+to the snd-hda-intel module. Part of the problem is that both cards
+use snd-hda-intel,
+but the main thing is that I have working sound now, so the current
+solution seems
+good to me.
