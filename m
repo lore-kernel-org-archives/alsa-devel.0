@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aci3x: Fix custom
- snd_soc_dapm_put_volsw_aic3x() function
-Date: Sun, 1 Jun 2014 11:43:23 +0100
-Message-ID: <20140601104323.GW5099@sirena.org.uk>
-References: <1401457661-2994-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: Intel: byt/hsw: Add missing
+ kthread_stop to error/cleanup path
+Date: Sun, 1 Jun 2014 11:45:05 +0100
+Message-ID: <20140601104505.GX5099@sirena.org.uk>
+References: <1401436349-19202-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8402086281259796741=="
+Content-Type: multipart/mixed; boundary="===============4836126197863793911=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B882261A49
- for <alsa-devel@alsa-project.org>; Sun,  1 Jun 2014 12:43:43 +0200 (CEST)
-In-Reply-To: <1401457661-2994-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C21E0261A49
+ for <alsa-devel@alsa-project.org>; Sun,  1 Jun 2014 12:45:15 +0200 (CEST)
+In-Reply-To: <1401436349-19202-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Liam Girdwood <lgirdwood@gmail.com>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Imre Deak <imre.deak@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8402086281259796741==
+--===============4836126197863793911==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4nn+A2p41ba1mxGd"
+	protocol="application/pgp-signature"; boundary="yBbBYFH0ZHvzMoI/"
 Content-Disposition: inline
 
 
---4nn+A2p41ba1mxGd
+--yBbBYFH0ZHvzMoI/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 30, 2014 at 04:47:41PM +0300, Peter Ujfalusi wrote:
-> For some unknown reason the parameters for snd_soc_test_bits() were in wrong
-> order:
+On Fri, May 30, 2014 at 10:52:29AM +0300, Jarkko Nikula wrote:
+> From: Imre Deak <imre.deak@intel.com>
+>=20
+> Baytrail and Haswell SST IPC don't stop the kernel thread in error and
+> cleanup path thus leaving orphan kernel thread behind in such a case.
 
 Applied, thanks.
 
---4nn+A2p41ba1mxGd
+--yBbBYFH0ZHvzMoI/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTiwPIAAoJELSic+t+oim9QXMP/3rwxr1Owq/KITCRNgQJHNNX
-qlGv04Qv+9fYTY/KDAYGfo2eW3W+OEWaRZxxKhOJE3Jbf6P1gdgwQbErKkOU8XM3
-1df+JvQ3L6CAhiWuOscLvfmV7bVivYmdnN3v936L6OAC5/P+1I5wUyrPPgh5vYFd
-SEMSgJvPHojowfSYFcpNlCLm12pk0/s1IH+7M5SPezzqvsuL20gIAPMsr6WDzIHr
-kNBWFqzkBnAvCPue071XgXTWAKjmWYmXIC1nsL/A/juW0bUH5Gity+L0S5dsdBfB
-RJhLcVPXfWQdFqr/iPH/NZbgY/hV4uGx2NW0QSFmhd9IrHTnd1ZzYuj5nW2txAt9
-xqjuwdSR992Lj6PpgwwOCqc7mAQZQOkLGbKQZfY93sYLB+nmPVCAzVZLouLmtC5c
-7CuuwB3nbGPAKCKIQKj15c/sposHmQBMU4iLtXQ4c98OX/bfXbp5eu69KCB2zEWc
-DGYLakWuouWvuu0JRU/9vUe8kaAJwqtnhoMXQUbN+yifJpXZoygEdbj26hJxwQwG
-odGdrAHTFgcTHEb+Lvg3hmguzazHrLxY9lYHeyCKAvNuvHHoFaCWSS1yh5BgjN3X
-+QDJvO+0IlEY7MxoNL5Jz0X92lKaHkLDbBn0ONyJ5aHxHn6UTaGlM8Zx6A8ozpjf
-XN5psSZQIBKrFOoXcIrF
-=rs3L
+iQIcBAEBAgAGBQJTiwQtAAoJELSic+t+oim9vBEQAIhgdokOwQxN2GQbOS2rQWTr
+fk/73w6LKE9N8Cy5wAl2PFGXVnMmw4BzbiPUwv7b0u4Cg6C4xKobnmUzXx9SKy3V
+thijNQVZB5FKWqkSCta+hccIV4ERZS5YBofdkX6EKZFupeCqN1c/fn68cM8/Wmpu
+JGJlRROxfMHVrH38b83cQuKWalD658BaPxwn8JJGHcW1wGnWP9iuOXHzCdxnWktj
+lAsb4kjBy9ixItZN5JLEUEXHr34G+SdCDISBQflhbiC6eNs4DTUWSUM5ScV2iCOZ
+aljKlHvP++tykByVo2kUEWHXqLG+jURPAAEBL8ovxXnl9H2uVCVEN0C9cqR1i/vJ
+sVybEoshBxBiMZ88j8OoBKe8mlQ18G3ydl76aaPCmY7gg1CN/mSgVt5k+v2aqXae
+Xqfz6eMz3OikPyrr6/D+lzfHdDQrs80pmzicqdDBNy8s/PDLfpKpES5Kxcb6lAk5
+qwxMNjNz6K4wcs3aO9onjM2PBhN8OG+I1v+sdBLPCGgAnuedGbm3VVTAz9QTVKQh
+thqDNgklpOtu8eM2UhjiBmz0BvlacsmUi2cCTSAW2shWq7kSooP2J3/1wdqZVigl
+MlvbJ/fQAGIt5schc4lQz+o9L7eOWeyuVWV3GHwMN7s+Y8AgzxZuzynmpixusek0
+URLi2uRzfxCrdu6zd0pO
+=CZyc
 -----END PGP SIGNATURE-----
 
---4nn+A2p41ba1mxGd--
+--yBbBYFH0ZHvzMoI/--
 
---===============8402086281259796741==
+--===============4836126197863793911==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8402086281259796741==--
+--===============4836126197863793911==--
