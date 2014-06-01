@@ -1,523 +1,85 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [RESEND PATCH v2 2/2] ASoC: samsung: drop support for legacy S3C24XX DMA API
-Date: Sun,  1 Jun 2014 20:15:58 +0300
-Message-ID: <1401642958-6236-2-git-send-email-anarsoul@gmail.com>
-References: <1401642958-6236-1-git-send-email-anarsoul@gmail.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1401642958-6236-1-git-send-email-anarsoul@gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, Tomasz Figa <t.figa@samsung.com>, =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 05/11] ASoC: Add helper functions to cast
+ from DAPM context to CODEC/platform
+Date: Sun, 1 Jun 2014 19:18:11 +0100
+Message-ID: <20140601181811.GK5099@sirena.org.uk>
+References: <1400415858-11025-1-git-send-email-lars@metafoo.de>
+ <1400415858-11025-6-git-send-email-lars@metafoo.de>
+ <538397D6.4080105@metafoo.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7639801159260976633=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D021F265474
+ for <alsa-devel@alsa-project.org>; Sun,  1 Jun 2014 20:18:42 +0200 (CEST)
+In-Reply-To: <538397D6.4080105@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
----
-v2: No changes
 
- sound/soc/samsung/Kconfig  |   3 -
- sound/soc/samsung/Makefile |   2 -
- sound/soc/samsung/dma.c    | 460 ---------------------------------------------
- 3 files changed, 465 deletions(-)
- delete mode 100644 sound/soc/samsung/dma.c
+--===============7639801159260976633==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CzAS06hjyJnpEZQC"
+Content-Disposition: inline
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 022c7a4..bf4bb7b 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -13,9 +13,6 @@ config SND_SOC_SAMSUNG
- config SND_S3C_DMA
- 	tristate
- 
--config SND_S3C_DMA_LEGACY
--	tristate
--
- config SND_S3C24XX_I2S
- 	tristate
- 
-diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
-index 86715d8..bc02da0 100644
---- a/sound/soc/samsung/Makefile
-+++ b/sound/soc/samsung/Makefile
-@@ -1,6 +1,5 @@
- # S3c24XX Platform Support
- snd-soc-s3c-dma-objs := dmaengine.o
--snd-soc-s3c-dma-legacy-objs := dma.o
- snd-soc-idma-objs := idma.o
- snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
- snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
-@@ -11,7 +10,6 @@ snd-soc-pcm-objs := pcm.o
- snd-soc-i2s-objs := i2s.o
- 
- obj-$(CONFIG_SND_S3C_DMA) += snd-soc-s3c-dma.o
--obj-$(CONFIG_SND_S3C_DMA_LEGACY) += snd-soc-s3c-dma-legacy.o
- obj-$(CONFIG_SND_S3C24XX_I2S) += snd-soc-s3c24xx-i2s.o
- obj-$(CONFIG_SND_SAMSUNG_AC97) += snd-soc-ac97.o
- obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
-diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
-deleted file mode 100644
-index dc09b71..0000000
---- a/sound/soc/samsung/dma.c
-+++ /dev/null
-@@ -1,460 +0,0 @@
--/*
-- * dma.c  --  ALSA Soc Audio Layer
-- *
-- * (c) 2006 Wolfson Microelectronics PLC.
-- * Graeme Gregory graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-- *
-- * Copyright 2004-2005 Simtec Electronics
-- *	http://armlinux.simtec.co.uk/
-- *	Ben Dooks <ben@simtec.co.uk>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#include <linux/slab.h>
--#include <linux/dma-mapping.h>
--#include <linux/module.h>
--
--#include <sound/soc.h>
--#include <sound/pcm_params.h>
--
--#include <asm/dma.h>
--#include <mach/hardware.h>
--#include <mach/dma.h>
--
--#include "dma.h"
--
--#define ST_RUNNING		(1<<0)
--#define ST_OPENED		(1<<1)
--
--static const struct snd_pcm_hardware dma_hardware = {
--	.info			= SNDRV_PCM_INFO_INTERLEAVED |
--				    SNDRV_PCM_INFO_BLOCK_TRANSFER |
--				    SNDRV_PCM_INFO_MMAP |
--				    SNDRV_PCM_INFO_MMAP_VALID,
--	.buffer_bytes_max	= 128*1024,
--	.period_bytes_min	= PAGE_SIZE,
--	.period_bytes_max	= PAGE_SIZE*2,
--	.periods_min		= 2,
--	.periods_max		= 128,
--	.fifo_size		= 32,
--};
--
--struct runtime_data {
--	spinlock_t lock;
--	int state;
--	unsigned int dma_loaded;
--	unsigned int dma_period;
--	dma_addr_t dma_start;
--	dma_addr_t dma_pos;
--	dma_addr_t dma_end;
--	struct s3c_dma_params *params;
--};
--
--static void audio_buffdone(void *data);
--
--/* dma_enqueue
-- *
-- * place a dma buffer onto the queue for the dma system
-- * to handle.
-- */
--static void dma_enqueue(struct snd_pcm_substream *substream)
--{
--	struct runtime_data *prtd = substream->runtime->private_data;
--	dma_addr_t pos = prtd->dma_pos;
--	unsigned int limit;
--	struct samsung_dma_prep dma_info;
--
--	pr_debug("Entered %s\n", __func__);
--
--	limit = (prtd->dma_end - prtd->dma_start) / prtd->dma_period;
--
--	pr_debug("%s: loaded %d, limit %d\n",
--				__func__, prtd->dma_loaded, limit);
--
--	dma_info.cap = (samsung_dma_has_circular() ? DMA_CYCLIC : DMA_SLAVE);
--	dma_info.direction =
--		(substream->stream == SNDRV_PCM_STREAM_PLAYBACK
--		? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM);
--	dma_info.fp = audio_buffdone;
--	dma_info.fp_param = substream;
--	dma_info.period = prtd->dma_period;
--	dma_info.len = prtd->dma_period*limit;
--
--	if (dma_info.cap == DMA_CYCLIC) {
--		dma_info.buf = pos;
--		prtd->params->ops->prepare(prtd->params->ch, &dma_info);
--		prtd->dma_loaded += limit;
--		return;
--	}
--
--	while (prtd->dma_loaded < limit) {
--		pr_debug("dma_loaded: %d\n", prtd->dma_loaded);
--
--		if ((pos + dma_info.period) > prtd->dma_end) {
--			dma_info.period  = prtd->dma_end - pos;
--			pr_debug("%s: corrected dma len %ld\n",
--					__func__, dma_info.period);
--		}
--
--		dma_info.buf = pos;
--		prtd->params->ops->prepare(prtd->params->ch, &dma_info);
--
--		prtd->dma_loaded++;
--		pos += prtd->dma_period;
--		if (pos >= prtd->dma_end)
--			pos = prtd->dma_start;
--	}
--
--	prtd->dma_pos = pos;
--}
--
--static void audio_buffdone(void *data)
--{
--	struct snd_pcm_substream *substream = data;
--	struct runtime_data *prtd = substream->runtime->private_data;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (prtd->state & ST_RUNNING) {
--		prtd->dma_pos += prtd->dma_period;
--		if (prtd->dma_pos >= prtd->dma_end)
--			prtd->dma_pos = prtd->dma_start;
--
--		if (substream)
--			snd_pcm_period_elapsed(substream);
--
--		spin_lock(&prtd->lock);
--		if (!samsung_dma_has_circular()) {
--			prtd->dma_loaded--;
--			dma_enqueue(substream);
--		}
--		spin_unlock(&prtd->lock);
--	}
--}
--
--static int dma_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct runtime_data *prtd = runtime->private_data;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	unsigned long totbytes = params_buffer_bytes(params);
--	struct s3c_dma_params *dma =
--		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--	struct samsung_dma_req req;
--	struct samsung_dma_config config;
--
--	pr_debug("Entered %s\n", __func__);
--
--	/* return if this is a bufferless transfer e.g.
--	 * codec <--> BT codec or GSM modem -- lg FIXME */
--	if (!dma)
--		return 0;
--
--	/* this may get called several times by oss emulation
--	 * with different params -HW */
--	if (prtd->params == NULL) {
--		/* prepare DMA */
--		prtd->params = dma;
--
--		pr_debug("params %p, client %p, channel %d\n", prtd->params,
--			prtd->params->client, prtd->params->channel);
--
--		prtd->params->ops = samsung_dma_get_ops();
--
--		req.cap = (samsung_dma_has_circular() ?
--			DMA_CYCLIC : DMA_SLAVE);
--		req.client = prtd->params->client;
--		config.direction =
--			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK
--			? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM);
--		config.width = prtd->params->dma_size;
--		config.fifo = prtd->params->dma_addr;
--		prtd->params->ch = prtd->params->ops->request(
--				prtd->params->channel, &req, rtd->cpu_dai->dev,
--				prtd->params->ch_name);
--		if (!prtd->params->ch) {
--			pr_err("Failed to allocate DMA channel\n");
--			return -ENXIO;
--		}
--		prtd->params->ops->config(prtd->params->ch, &config);
--	}
--
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
--
--	runtime->dma_bytes = totbytes;
--
--	spin_lock_irq(&prtd->lock);
--	prtd->dma_loaded = 0;
--	prtd->dma_period = params_period_bytes(params);
--	prtd->dma_start = runtime->dma_addr;
--	prtd->dma_pos = prtd->dma_start;
--	prtd->dma_end = prtd->dma_start + totbytes;
--	spin_unlock_irq(&prtd->lock);
--
--	return 0;
--}
--
--static int dma_hw_free(struct snd_pcm_substream *substream)
--{
--	struct runtime_data *prtd = substream->runtime->private_data;
--
--	pr_debug("Entered %s\n", __func__);
--
--	snd_pcm_set_runtime_buffer(substream, NULL);
--
--	if (prtd->params) {
--		prtd->params->ops->flush(prtd->params->ch);
--		prtd->params->ops->release(prtd->params->ch,
--					prtd->params->client);
--		prtd->params = NULL;
--	}
--
--	return 0;
--}
--
--static int dma_prepare(struct snd_pcm_substream *substream)
--{
--	struct runtime_data *prtd = substream->runtime->private_data;
--	int ret = 0;
--
--	pr_debug("Entered %s\n", __func__);
--
--	/* return if this is a bufferless transfer e.g.
--	 * codec <--> BT codec or GSM modem -- lg FIXME */
--	if (!prtd->params)
--		return 0;
--
--	/* flush the DMA channel */
--	prtd->params->ops->flush(prtd->params->ch);
--
--	prtd->dma_loaded = 0;
--	prtd->dma_pos = prtd->dma_start;
--
--	/* enqueue dma buffers */
--	dma_enqueue(substream);
--
--	return ret;
--}
--
--static int dma_trigger(struct snd_pcm_substream *substream, int cmd)
--{
--	struct runtime_data *prtd = substream->runtime->private_data;
--	int ret = 0;
--
--	pr_debug("Entered %s\n", __func__);
--
--	spin_lock(&prtd->lock);
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--		prtd->state |= ST_RUNNING;
--		prtd->params->ops->trigger(prtd->params->ch);
--		break;
--
--	case SNDRV_PCM_TRIGGER_STOP:
--		prtd->state &= ~ST_RUNNING;
--		prtd->params->ops->stop(prtd->params->ch);
--		break;
--
--	default:
--		ret = -EINVAL;
--		break;
--	}
--
--	spin_unlock(&prtd->lock);
--
--	return ret;
--}
--
--static snd_pcm_uframes_t
--dma_pointer(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct runtime_data *prtd = runtime->private_data;
--	unsigned long res;
--
--	pr_debug("Entered %s\n", __func__);
--
--	res = prtd->dma_pos - prtd->dma_start;
--
--	pr_debug("Pointer offset: %lu\n", res);
--
--	/* we seem to be getting the odd error from the pcm library due
--	 * to out-of-bounds pointers. this is maybe due to the dma engine
--	 * not having loaded the new values for the channel before being
--	 * called... (todo - fix )
--	 */
--
--	if (res >= snd_pcm_lib_buffer_bytes(substream)) {
--		if (res == snd_pcm_lib_buffer_bytes(substream))
--			res = 0;
--	}
--
--	return bytes_to_frames(substream->runtime, res);
--}
--
--static int dma_open(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct runtime_data *prtd;
--
--	pr_debug("Entered %s\n", __func__);
--
--	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
--	snd_soc_set_runtime_hwparams(substream, &dma_hardware);
--
--	prtd = kzalloc(sizeof(struct runtime_data), GFP_KERNEL);
--	if (prtd == NULL)
--		return -ENOMEM;
--
--	spin_lock_init(&prtd->lock);
--
--	runtime->private_data = prtd;
--	return 0;
--}
--
--static int dma_close(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct runtime_data *prtd = runtime->private_data;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (!prtd)
--		pr_debug("dma_close called with prtd == NULL\n");
--
--	kfree(prtd);
--
--	return 0;
--}
--
--static int dma_mmap(struct snd_pcm_substream *substream,
--	struct vm_area_struct *vma)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--
--	pr_debug("Entered %s\n", __func__);
--
--	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
--				     runtime->dma_area,
--				     runtime->dma_addr,
--				     runtime->dma_bytes);
--}
--
--static struct snd_pcm_ops dma_ops = {
--	.open		= dma_open,
--	.close		= dma_close,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= dma_hw_params,
--	.hw_free	= dma_hw_free,
--	.prepare	= dma_prepare,
--	.trigger	= dma_trigger,
--	.pointer	= dma_pointer,
--	.mmap		= dma_mmap,
--};
--
--static int preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
--{
--	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
--	struct snd_dma_buffer *buf = &substream->dma_buffer;
--	size_t size = dma_hardware.buffer_bytes_max;
--
--	pr_debug("Entered %s\n", __func__);
--
--	buf->dev.type = SNDRV_DMA_TYPE_DEV;
--	buf->dev.dev = pcm->card->dev;
--	buf->private_data = NULL;
--	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
--					   &buf->addr, GFP_KERNEL);
--	if (!buf->area)
--		return -ENOMEM;
--	buf->bytes = size;
--	return 0;
--}
--
--static void dma_free_dma_buffers(struct snd_pcm *pcm)
--{
--	struct snd_pcm_substream *substream;
--	struct snd_dma_buffer *buf;
--	int stream;
--
--	pr_debug("Entered %s\n", __func__);
--
--	for (stream = 0; stream < 2; stream++) {
--		substream = pcm->streams[stream].substream;
--		if (!substream)
--			continue;
--
--		buf = &substream->dma_buffer;
--		if (!buf->area)
--			continue;
--
--		dma_free_writecombine(pcm->card->dev, buf->bytes,
--				      buf->area, buf->addr);
--		buf->area = NULL;
--	}
--}
--
--static int dma_new(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_card *card = rtd->card->snd_card;
--	struct snd_pcm *pcm = rtd->pcm;
--	int ret;
--
--	pr_debug("Entered %s\n", __func__);
--
--	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
--	if (ret)
--		return ret;
--
--	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
--		ret = preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_PLAYBACK);
--		if (ret)
--			goto out;
--	}
--
--	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
--		ret = preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_CAPTURE);
--		if (ret)
--			goto out;
--	}
--out:
--	return ret;
--}
--
--static struct snd_soc_platform_driver samsung_asoc_platform = {
--	.ops		= &dma_ops,
--	.pcm_new	= dma_new,
--	.pcm_free	= dma_free_dma_buffers,
--};
--
--void samsung_asoc_init_dma_data(struct snd_soc_dai *dai,
--				struct s3c_dma_params *playback,
--				struct s3c_dma_params *capture)
--{
--	snd_soc_dai_init_dma_data(dai, playback, capture);
--}
--EXPORT_SYMBOL_GPL(samsung_asoc_init_dma_data);
--
--int samsung_asoc_dma_platform_register(struct device *dev)
--{
--	return snd_soc_register_platform(dev, &samsung_asoc_platform);
--}
--EXPORT_SYMBOL_GPL(samsung_asoc_dma_platform_register);
--
--void samsung_asoc_dma_platform_unregister(struct device *dev)
--{
--	snd_soc_unregister_platform(dev);
--}
--EXPORT_SYMBOL_GPL(samsung_asoc_dma_platform_unregister);
--
--MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("Samsung ASoC DMA Driver");
--MODULE_LICENSE("GPL");
--- 
-1.9.3
+
+--CzAS06hjyJnpEZQC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, May 26, 2014 at 09:36:54PM +0200, Lars-Peter Clausen wrote:
+
+> It would be nice if this one could make it into 3.16. It doesn't depend on
+> any of the patches earlier in this series and I think it is pretty trivial.
+> Having it in 3.16 makes it possible to use it after the merge window in some
+> driver cleanup patches without having to do cross topic branch merges.
+
+I've applied it - as a general suggestion if I've said something is
+being punted for a while then replying to the series probably isn't a
+good way to get attention for it, I very nearly just punted on this
+until after the merge window.  Resending individually or pinging me on
+IRC will probably work better.
+
+--CzAS06hjyJnpEZQC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTi25gAAoJELSic+t+oim9CXoP/Rj6nNb2Q45WTWUYkYAbI2VP
+VYiWlVRvfGiGPc86LayZAOSB3mfHeFgCFMmBjn8/TxDcY/q/4b2t9AZ2w+jF9uua
+rVP2iR4smlpZCQ55pcwmJ4qhsofanWa5Uvi8SoGox1mkAuy3bggm2l4dEj0VnRHJ
+PcmWnvEnlxMLGDLNXGNLLcg4fQWC3LrYJPsuC+2GFMrgASy/cMEeSYzoULG1JfRu
+FILmGrVqynNNdvVRfsh+QmKafBFrslFKxjUqIN/G4mjO/+GT6I6sffun94ZXYvmB
+Pmva4BjPNcZRtZe8wE1429PAGBvwLBIsJJNIqub/lGfzh6fE/x4toRh0U7DHGDh+
+xoHHfEZXxKjd90uevo7/t8nO6uP+Fueqg0j5fXbo1E5f33SyI3mwtNm0fl/K7oOz
+ZBBTEAXAZLYSuUpsImbaftyWDhesZ88bbqVh8ZZABtMrX0hYLSKtQGc+4Nb12FZw
+5S/QMtHYowjrMEPKwtmwC/++kkel0W7t73vtiu4ZzSrwfD9P1+x5wZJW32ij0YYP
+w3rkkJMFbl6jRDTfJ1TCh+UaqsfjmOfu7TEU3lLyvFkeoQpl/qPWUtTWLJ90v3+q
+5Meayu37t+lAvU05c9oA6FcFOvPKOEvra8yCyiZlxP0rzm/wI9lZiF+QeqOhcBDC
+huNSfxGpcdAHSXVuqbZW
+=LAGF
+-----END PGP SIGNATURE-----
+
+--CzAS06hjyJnpEZQC--
+
+--===============7639801159260976633==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7639801159260976633==--
