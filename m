@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
+From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: Failed to set cache compression type
-Date: Mon, 2 Jun 2014 15:10:17 +0100
-Message-ID: <20140602141017.GF31751@sirena.org.uk>
+Date: Mon, 2 Jun 2014 11:13:34 -0300
+Message-ID: <CAOMZO5D6WAPdV371v6sVc46TcfUZFNGL2VUzBLNfkLfX83e7zA@mail.gmail.com>
 References: <CAOMZO5Cj=qrrH_nWhCM4-63GPqfgpL1k=Q53z8cDDk3_TpUzBA@mail.gmail.com>
- <538C840A.2000307@linux.intel.com>
+ <538C840A.2000307@linux.intel.com> <538C85C3.5020808@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2830390155173777684=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F4C02654EC
- for <alsa-devel@alsa-project.org>; Mon,  2 Jun 2014 16:10:48 +0200 (CEST)
-In-Reply-To: <538C840A.2000307@linux.intel.com>
+Received: from mail-vc0-f182.google.com (mail-vc0-f182.google.com
+ [209.85.220.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id E94BA2652E7
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jun 2014 16:13:35 +0200 (CEST)
+Received: by mail-vc0-f182.google.com with SMTP id id10so5164705vcb.13
+ for <alsa-devel@alsa-project.org>; Mon, 02 Jun 2014 07:13:35 -0700 (PDT)
+In-Reply-To: <538C85C3.5020808@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Fabio Estevam <festevam@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jun 2, 2014 at 11:10 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
 
---===============2830390155173777684==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="z0eOaCaDLjvTGF2l"
-Content-Disposition: inline
+> I think snd_soc_cache_init() should return 0 rather than -EINVAL if reg_size
+> is 0.
 
+Yes, this fixes the issue:
 
---z0eOaCaDLjvTGF2l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -73,7 +73,7 @@ int snd_soc_cache_init(struct snd_soc_codec *codec)
+        reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
 
-On Mon, Jun 02, 2014 at 05:02:50PM +0300, Jarkko Nikula wrote:
+        if (!reg_size)
+-               return -EINVAL;
++               return 0;
 
-> If I understood commit 657254714ad2 ("ASoC: io: Remove support for ASoC
-> cache in conjunction with regmap") right should we remove remaining
-> soc-cache use? All codec drivers seems to include regmap.h although some of
-> them are still calling soc_cache_sync().
-
-Anything using both regmap and the ASoC cache is definitely broken, yes.
-
---z0eOaCaDLjvTGF2l
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTjIXBAAoJELSic+t+oim9MQQP/A2H5D8f8Bm4batBR0ZD6Pl5
-WTa5qMdYtCawwRKnJOW90tQoOzCzuXHIPYBL6ZI93TW4d4IvNVgVy9EgYf/Tovft
-bQS+6ipRmpWL8TJpgia05apiE47YEsO5TFNdYj7+lpGsBjFoMfF/s1MKvzYyaiqZ
-0aYxH7EvQbT+nj2X4K+IY4Fv74dN6bz72O5VTb1kLLiZInPYSAopXceJUXRQLiOW
-9b3CeRBzkOzqEcXqhoe88Ckp4H2DW9ZRqKUep10ZFNtFaDMcUHGSLz0xOJ7Gx2jT
-msBJjbCm8/V+3hnyABsl3R5LMHvb9luPslnoGls/ApniePwf1Qu18N6yOmVA2le1
-AK42EAUHkAOibaOYo19uF+sf+MQmPZK+Ebbv7ArVkg8/Tx8QI8w3BknGh6TS4cDu
-GrtHNQGqDiZvS2p1tjiAC/SMzUWkbtalb7xlZ/PBog8qxrsPe7rRxPMwxEwNOnME
-Qjrf90GAw5cNQvWTE0wWRCse3IcXsHf/DWMizQlCwC2RsgfxnZVVy5LJIZHAb/Kq
-zkpTidLsL+6qeRiPtE0T84iF6xT5NkpQkGdHJZnyE29bNnSUqsO5twXEPUzznPd7
-G6fU1xKcis8wpy+zOr5L9qVBXWKd2ARTu8nUUNw78G/I9zF5liWQ8JkyB5Daz1kD
-MHXbNdlg207j8+8cVFO3
-=M8Tp
------END PGP SIGNATURE-----
-
---z0eOaCaDLjvTGF2l--
-
---===============2830390155173777684==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2830390155173777684==--
+        mutex_init(&codec->cache_rw_mutex);
