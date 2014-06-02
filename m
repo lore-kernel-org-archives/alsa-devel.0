@@ -1,21 +1,21 @@
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-Subject: Re:
- =?utf-8?q?=5BPATCH=5D_ARM=3A_i=2EMX=3A_Compile_FIQ_c?=
- =?utf-8?q?ode_for_AVIC_=26_TZIC_only?=
-Date: Mon, 02 Jun 2014 13:42:43 +0400
-Message-ID: <1401702163.832576877@f354.i.mail.ru>
-References: <1400604231-2672-1-git-send-email-shc_work@mail.ru>
- <1400604231-2672-2-git-send-email-shc_work@mail.ru>
- <20140602113327.2568c198@ipc1.ka-ro>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+From: Alex Fedora <alexander.fedora@gmail.com>
+Subject: Re: PROBLEM: [Lenovo ThinkPad X61s] Speaker volume
+ mutes itself in random intervals after upgrading from 3.11 to 3.15.
+Date: Mon, 02 Jun 2014 02:49:16 -0700
+Message-ID: <538C489C.1030508@gmail.com>
+References: <538ACE22.9020306@gmail.com>	<s5h8upflouw.wl%tiwai@suse.de>	<538C3BF4.2000706@gmail.com>
+ <s5h1tv7lliv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from f354.i.mail.ru (f354.i.mail.ru [217.69.140.250])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D7C92610AB
- for <alsa-devel@alsa-project.org>; Mon,  2 Jun 2014 11:42:45 +0200 (CEST)
-In-Reply-To: <20140602113327.2568c198@ipc1.ka-ro>
+Received: from mail-pb0-f45.google.com (mail-pb0-f45.google.com
+ [209.85.160.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC4122610AB
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jun 2014 11:49:19 +0200 (CEST)
+Received: by mail-pb0-f45.google.com with SMTP id um1so4042620pbc.4
+ for <alsa-devel@alsa-project.org>; Mon, 02 Jun 2014 02:49:18 -0700 (PDT)
+In-Reply-To: <s5h1tv7lliv.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +25,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, =?UTF-8?B?U2FzY2hhIEhhdWVy?= <kernel@pengutronix.de>, =?UTF-8?B?U2hhd24gR3Vv?= <shawn.guo@freescale.com>, =?UTF-8?B?VGltdXIgVGFiaQ==?= <timur@tabi.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TW9uLCAyIEp1biAyMDE0IDExOjMzOjI3ICswMjAwINC+0YIgTG90aGFyIFdhw59tYW5uIDxMV0BL
-QVJPLWVsZWN0cm9uaWNzLmRlPjoKPiBIaSwKPiAKPiBBbGV4YW5kZXIgU2hpeWFuIHdyb3RlOgo+
-ID4gVGhlcmUgYXJlIG5vIHJlYXNvbiB0byBjb21waWxlIEZJUSBzcGVjaWZpYyBjb2RlIGZvciBH
-SUMgSVJRCj4gPiBjb250cm9sbGVyIChpLk1YNikuIFRoaXMgcGF0Y2ggcmVzdHJpY3QgY29tcGls
-YXRpb24gZm9yIEZJUQo+ID4gc3BlY2lmaWMgY29kZSBmb3IgQVZJQyBhbmQgVFpJQyBvbmx5Lgo+
-ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgU2hpeWFuIDxzaGNfd29ya0BtYWlsLnJ1
-Pgo+ID4gLS0tCj4gPiAgYXJjaC9hcm0vbWFjaC1pbXgvTWFrZWZpbGUgfCA2ICsrKy0tLQo+ID4g
-IDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4gPiAKPiA+
-IGRpZmYgLS1naXQgYS9hcmNoL2FybS9tYWNoLWlteC9NYWtlZmlsZSBiL2FyY2gvYXJtL21hY2gt
-aW14L01ha2VmaWxlCj4gPiBpbmRleCBiYmU5M2JiLi42MjBhNzYwIDEwMDY0NAo+ID4gLS0tIGEv
-YXJjaC9hcm0vbWFjaC1pbXgvTWFrZWZpbGUKPiA+ICsrKyBiL2FyY2gvYXJtL21hY2gtaW14L01h
-a2VmaWxlCj4gPiBAQCAtMSw0ICsxLDQgQEAKPiA+IC1vYmoteSA6PSB0aW1lLm8gY3B1Lm8gc3lz
-dGVtLm8gaXJxLWNvbW1vbi5vCj4gPiArb2JqLXkgOj0gdGltZS5vIGNwdS5vIHN5c3RlbS5vCj4g
-PiAgCj4gPiAgb2JqLSQoQ09ORklHX1NPQ19JTVgxKSArPSBjbGstaW14MS5vIG1tLWlteDEubwo+
-ID4gIG9iai0kKENPTkZJR19TT0NfSU1YMjEpICs9IGNsay1pbXgyMS5vIG1tLWlteDIxLm8KPiA+
-IEBAIC0yMSw4ICsyMSw4IEBAIG9iai0kKENPTkZJR19DT01NT05fQ0xLKSArPSBjbGstcGxsdjEu
-byBjbGstcGxsdjIubyBjbGstcGxsdjMubyBjbGstZ2F0ZTIubyBcCj4gPiAgb2JqLSQoQ09ORklH
-X0lNWF9IQVZFX0lPTVVYX1YxKSArPSBpb211eC12MS5vCj4gPiAgb2JqLSQoQ09ORklHX0FSQ0hf
-TVhDX0lPTVVYX1YzKSArPSBpb211eC12My5vCj4gPiAgCj4gPiAtb2JqLSQoQ09ORklHX01YQ19U
-WklDKSArPSB0emljLm8KPiA+IC1vYmotJChDT05GSUdfTVhDX0FWSUMpICs9IGF2aWMubwo+ID4g
-K29iai0kKENPTkZJR19NWENfVFpJQykgKz0gdHppYy5vIGlycS1jb21tb24ubwo+ID4gK29iai0k
-KENPTkZJR19NWENfQVZJQykgKz0gYXZpYy5vIGlycS1jb21tb24ubwo+ID4gIAo+ID4gIG9iai0k
-KENPTkZJR19NWENfVVNFX0VQSVQpICs9IGVwaXQubwo+ID4gIG9iai0kKENPTkZJR19NWENfREVC
-VUdfQk9BUkQpICs9IDNkc19kZWJ1Z2JvYXJkLm8KPiA+Cj4gVGhpcyBwYXRjaCBpbnRyb2R1Y2Vz
-IGEgYnVpbGQgZXJyb3IgaW4gc291bmQvc29jL2ZzbC9pbXgtcGNtLWZpcS5jOgo+IHNvdW5kL2J1
-aWx0LWluLm86IEluIGZ1bmN0aW9uIGBpbXhfcGNtX2ZpcV9mcmVlJzoKPiBsYXN0LmM6KC50ZXh0
-KzB4MmFjYTgpOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBteGNfc2V0X2lycV9maXEnCj4gc291
-bmQvYnVpbHQtaW4ubzogSW4gZnVuY3Rpb24gYGlteF9wY21fZmlxX2luaXQnOgo+IGxhc3QuYzoo
-LnRleHQrMHgyYjFhNCk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYG14Y19zZXRfaXJxX2ZpcScK
-PiBsYXN0LmM6KC50ZXh0KzB4MmIyMDApOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBteGNfc2V0
-X2lycV9maXEnCj4gbWFrZVsxXTogKioqIFt2bWxpbnV4XSBFcnJvciAxCj4gbWFrZTogKioqIFtz
-dWItbWFrZV0gRXJyb3IgMgo+IAo+IFRoaXMgY291bGQgYmUgZml4ZWQgd2l0aCB0aGUgZm9sbG93
-aW5nIHBhdGNoOgo+IC0tLSBteGMtZmlxLm9yaWcvc291bmQvc29jL2ZzbC9LY29uZmlnICAyMDE0
-LTA2LTAyIDExOjI1OjM4LjMxNTk2MDQ1MSArMDIwMAo+ICsrKyBteGMtZmlxL3NvdW5kL3NvYy9m
-c2wvS2NvbmZpZyAgICAgICAyMDE0LTA2LTAyIDExOjI1OjM4LjQxMTk2MDU5NSArMDIwMAo+IEBA
-IC0xNSw3ICsxNSw3IEBACj4gIGNvbmZpZyBTTkRfU09DX0ZTTF9TU0kKPiAJdHJpc3RhdGUgIlN5
-bmNocm9ub3VzIFNlcmlhbCBJbnRlcmZhY2UgbW9kdWxlIHN1cHBvcnQiCj4gCXNlbGVjdCBTTkRf
-U09DX0lNWF9QQ01fRE1BIGlmIFNORF9JTVhfU09DICE9IG4KPiAtCXNlbGVjdCBTTkRfU09DX0lN
-WF9QQ01fRklRIGlmIFNORF9JTVhfU09DICE9IG4gJiYgQVJDSF9NWEMKPiArCXNlbGVjdCBTTkRf
-U09DX0lNWF9QQ01fRklRIGlmIFNORF9JTVhfU09DICE9IG4gJiYgKE1YQ19BVklDIHx8IE1YQ19U
-WklDKQouLi4KCk5vLiBUaGlzIHdpbGwgYnJlYWsgYnVpbGRpbmcgZnNsLXNzaSBmb3IgUFBDIGFu
-ZCBpLk1YNiwgc28gbGV0J3MganVzdCBkcm9wIG9yaWdpbmFsIHBhdGNoIGZvciBhIHdoaWxlLgoK
-LS0tCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 06/02/2014 02:15 AM, Takashi Iwai wrote:
+> At Mon, 02 Jun 2014 01:55:16 -0700,
+> Alex Fedora wrote:
+>> On 06/02/2014 01:03 AM, Takashi Iwai wrote:
+>>> At Sat, 31 May 2014 23:54:26 -0700,
+>>> Alex Fedora wrote:
+>>>> Hi,
+>>>>
+>>>> Please see problem description below. I've captured alsa info output for
+>>>> the latest kernel. Kernel just before the regression. And info from the
+>>>> kernel with the offending commit. But I had to calculate diff from first
+>>>> one to fit to 100K limit. If you want, I can send all 3 files as an
+>>>> attachments. Also the latest version of the kernel was took from
+>>>> http://kernel.ubuntu.com/~kernel-ppa/mainline/daily/current/linux-image-3.15.0-999-generic_3.15.0-999.201405310205_amd64.deb
+>>>> .
+>>>>
+>>>> Thank you,
+>>>> Alex
+>>>>
+>>>> [1.] One line summary of the problem: [Lenovo ThinkPad X61s] Speaker
+>>>> volume mutes itself in random intervals after upgrade to latest kernel
+>>>> [2.] Full description of the problem/report:
+>>>>
+>>>> Speaker mutes itself in random intervals. Headphones are working fine at
+>>>> that moment. I can see what volume of the Speaker drops to 0% and then
+>>>> back to 100% using alsamixer. It seems like Internal Mic Boost also
+>>>> jumps from 100% to 0% and back. It is regression from
+>>>> 5ccc618fee67f0f0b2122dd4b32a02fd2b6a1569 (ALSA: hda - Remove static
+>>>> quirks for AD1884/1984 & variants). I've tested previous commit
+>>>> aa95d61b43e0fcb0b2ce68e5efa37174fd9e5cd3 (ALSA: hda - Remove static
+>>>> quirks for AD1882) and audio works as expected.
+>>>>
+>>>> New kernel shows two controls "Headphone Playback Volume" and "Speaker
+>>>> Playback Volume". But old one shows single control "PCM Playback
+>>>> Volume". "Speaker Playback Volume" is the one which gets muted randomly.
+>>> Are you using PulseAudio?  If yes, does the problem happen without PA?
+>>> This kind of random mute/unmute tends to be an issue of bogus
+>>> headphone or mic jack detection.
+>>>
+>>>
+>>> Takashi
+>>>
+>> Hi Takashi,
+>>
+>> Yes, I'm using  PulseAudio. I've removed it and issue gone away. It
+>> returned back after reinstalling it. This is still driver bug, right?
+> Yes.  So PA seems confused by some bogus information by the driver.
+>
+> Try to run "alsactl monitor 0", maybe better without PA at first.
+> Do you see occasional events about the jack detection even if you
+> don't plug/unplug?  And, try it also with PA.
+>
+>
+> Takashi
+>
+Yes, I can see a lot of events even if I don't plug/unplug anything. 
+Even more if I'm using PA.
+
+No pulseaudio:
+
+card 0, #22 (0,0,0,Mic Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #22 (0,0,0,Mic Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #22 (0,0,0,Mic Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #22 (0,0,0,Mic Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #22 (0,0,0,Mic Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #22 (0,0,0,Mic Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #22 (0,0,0,Mic Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #22 (0,0,0,Mic Jack,0) VALUE
+card 0, #22 (0,0,0,Mic Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+
+Pulseaudio:
+
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #23 (0,0,0,Headphone Jack,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
+card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
+
+
+Thank you,
+Alex
