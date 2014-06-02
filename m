@@ -1,73 +1,82 @@
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH] ARM: i.MX: Compile FIQ code for AVIC & TZIC only
-Date: Mon, 2 Jun 2014 11:33:27 +0200
-Message-ID: <20140602113327.2568c198@ipc1.ka-ro>
-References: <1400604231-2672-1-git-send-email-shc_work@mail.ru>
- <1400604231-2672-2-git-send-email-shc_work@mail.ru>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: intel: The Baytrail/MAX98090 driver
+ depends on I2C
+Date: Mon, 2 Jun 2014 10:40:20 +0100
+Message-ID: <20140602094020.GU5099@sirena.org.uk>
+References: <1401650018-31023-1-git-send-email-broonie@kernel.org>
+ <65206.10.254.34.105.1401672603.squirrel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1400604231-2672-2-git-send-email-shc_work@mail.ru>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Shawn Guo <shawn.guo@freescale.com>, alsa-devel@alsa-project.org, Sascha Hauer <kernel@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Timur Tabi <timur@tabi.org>
+Content-Type: multipart/mixed; boundary="===============5076509669180983041=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32B6E2651ED
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jun 2014 11:40:35 +0200 (CEST)
+In-Reply-To: <65206.10.254.34.105.1401672603.squirrel@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: kevin.strasser@linux.intel.com
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpBbGV4YW5kZXIgU2hpeWFuIHdyb3RlOgo+IFRoZXJlIGFyZSBubyByZWFzb24gdG8gY29t
-cGlsZSBGSVEgc3BlY2lmaWMgY29kZSBmb3IgR0lDIElSUQo+IGNvbnRyb2xsZXIgKGkuTVg2KS4g
-VGhpcyBwYXRjaCByZXN0cmljdCBjb21waWxhdGlvbiBmb3IgRklRCj4gc3BlY2lmaWMgY29kZSBm
-b3IgQVZJQyBhbmQgVFpJQyBvbmx5Lgo+IAo+IFNpZ25lZC1vZmYtYnk6IEFsZXhhbmRlciBTaGl5
-YW4gPHNoY193b3JrQG1haWwucnU+Cj4gLS0tCj4gIGFyY2gvYXJtL21hY2gtaW14L01ha2VmaWxl
-IHwgNiArKystLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlv
-bnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vbWFjaC1pbXgvTWFrZWZpbGUgYi9hcmNo
-L2FybS9tYWNoLWlteC9NYWtlZmlsZQo+IGluZGV4IGJiZTkzYmIuLjYyMGE3NjAgMTAwNjQ0Cj4g
-LS0tIGEvYXJjaC9hcm0vbWFjaC1pbXgvTWFrZWZpbGUKPiArKysgYi9hcmNoL2FybS9tYWNoLWlt
-eC9NYWtlZmlsZQo+IEBAIC0xLDQgKzEsNCBAQAo+IC1vYmoteSA6PSB0aW1lLm8gY3B1Lm8gc3lz
-dGVtLm8gaXJxLWNvbW1vbi5vCj4gK29iai15IDo9IHRpbWUubyBjcHUubyBzeXN0ZW0ubwo+ICAK
-PiAgb2JqLSQoQ09ORklHX1NPQ19JTVgxKSArPSBjbGstaW14MS5vIG1tLWlteDEubwo+ICBvYmot
-JChDT05GSUdfU09DX0lNWDIxKSArPSBjbGstaW14MjEubyBtbS1pbXgyMS5vCj4gQEAgLTIxLDgg
-KzIxLDggQEAgb2JqLSQoQ09ORklHX0NPTU1PTl9DTEspICs9IGNsay1wbGx2MS5vIGNsay1wbGx2
-Mi5vIGNsay1wbGx2My5vIGNsay1nYXRlMi5vIFwKPiAgb2JqLSQoQ09ORklHX0lNWF9IQVZFX0lP
-TVVYX1YxKSArPSBpb211eC12MS5vCj4gIG9iai0kKENPTkZJR19BUkNIX01YQ19JT01VWF9WMykg
-Kz0gaW9tdXgtdjMubwo+ICAKPiAtb2JqLSQoQ09ORklHX01YQ19UWklDKSArPSB0emljLm8KPiAt
-b2JqLSQoQ09ORklHX01YQ19BVklDKSArPSBhdmljLm8KPiArb2JqLSQoQ09ORklHX01YQ19UWklD
-KSArPSB0emljLm8gaXJxLWNvbW1vbi5vCj4gK29iai0kKENPTkZJR19NWENfQVZJQykgKz0gYXZp
-Yy5vIGlycS1jb21tb24ubwo+ICAKPiAgb2JqLSQoQ09ORklHX01YQ19VU0VfRVBJVCkgKz0gZXBp
-dC5vCj4gIG9iai0kKENPTkZJR19NWENfREVCVUdfQk9BUkQpICs9IDNkc19kZWJ1Z2JvYXJkLm8K
-PgpUaGlzIHBhdGNoIGludHJvZHVjZXMgYSBidWlsZCBlcnJvciBpbiBzb3VuZC9zb2MvZnNsL2lt
-eC1wY20tZmlxLmM6CnNvdW5kL2J1aWx0LWluLm86IEluIGZ1bmN0aW9uIGBpbXhfcGNtX2ZpcV9m
-cmVlJzoKbGFzdC5jOigudGV4dCsweDJhY2E4KTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgbXhj
-X3NldF9pcnFfZmlxJwpzb3VuZC9idWlsdC1pbi5vOiBJbiBmdW5jdGlvbiBgaW14X3BjbV9maXFf
-aW5pdCc6Cmxhc3QuYzooLnRleHQrMHgyYjFhNCk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYG14
-Y19zZXRfaXJxX2ZpcScKbGFzdC5jOigudGV4dCsweDJiMjAwKTogdW5kZWZpbmVkIHJlZmVyZW5j
-ZSB0byBgbXhjX3NldF9pcnFfZmlxJwptYWtlWzFdOiAqKiogW3ZtbGludXhdIEVycm9yIDEKbWFr
-ZTogKioqIFtzdWItbWFrZV0gRXJyb3IgMgoKVGhpcyBjb3VsZCBiZSBmaXhlZCB3aXRoIHRoZSBm
-b2xsb3dpbmcgcGF0Y2g6Ci0tLSBteGMtZmlxLm9yaWcvc291bmQvc29jL2ZzbC9LY29uZmlnICAy
-MDE0LTA2LTAyIDExOjI1OjM4LjMxNTk2MDQ1MSArMDIwMAorKysgbXhjLWZpcS9zb3VuZC9zb2Mv
-ZnNsL0tjb25maWcgICAgICAgMjAxNC0wNi0wMiAxMToyNTozOC40MTE5NjA1OTUgKzAyMDAKQEAg
-LTE1LDcgKzE1LDcgQEAKIGNvbmZpZyBTTkRfU09DX0ZTTF9TU0kKCXRyaXN0YXRlICJTeW5jaHJv
-bm91cyBTZXJpYWwgSW50ZXJmYWNlIG1vZHVsZSBzdXBwb3J0IgoJc2VsZWN0IFNORF9TT0NfSU1Y
-X1BDTV9ETUEgaWYgU05EX0lNWF9TT0MgIT0gbgotCXNlbGVjdCBTTkRfU09DX0lNWF9QQ01fRklR
-IGlmIFNORF9JTVhfU09DICE9IG4gJiYgQVJDSF9NWEMKKwlzZWxlY3QgU05EX1NPQ19JTVhfUENN
-X0ZJUSBpZiBTTkRfSU1YX1NPQyAhPSBuICYmIChNWENfQVZJQyB8fCBNWENfVFpJQykKCWhlbHAK
-CSAgU2F5IFkgaWYgeW91IHdhbnQgdG8gYWRkIFN5bmNocm9ub3VzIFNlcmlhbCBJbnRlcmZhY2Ug
-KFNTSSkKCSAgc3VwcG9ydCBmb3IgdGhlIEZyZWVzY2FsZSBDUFVzLgoKCgpMb3RoYXIgV2HDn21h
-bm4KLS0gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCgpLYS1SbyBlbGVjdHJvbmljcyBHbWJIIHwgUGFzY2Fsc3RyYcOfZSAyMiB8IEQg
-LSA1MjA3NiBBYWNoZW4KUGhvbmU6ICs0OSAyNDA4IDE0MDItMCB8IEZheDogKzQ5IDI0MDggMTQw
-Mi0xMApHZXNjaMOkZnRzZsO8aHJlcjogTWF0dGhpYXMgS2F1c3NlbgpIYW5kZWxzcmVnaXN0ZXJl
-aW50cmFnOiBBbXRzZ2VyaWNodCBBYWNoZW4sIEhSQiA0OTk2Cgp3d3cua2Fyby1lbGVjdHJvbmlj
-cy5kZSB8IGluZm9Aa2Fyby1lbGVjdHJvbmljcy5kZQpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QK
-bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAo=
+
+--===============5076509669180983041==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1a0hRYDdJmE1GM/c"
+Content-Disposition: inline
+
+
+--1a0hRYDdJmE1GM/c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Jun 01, 2014 at 06:30:03PM -0700, kevin.strasser@linux.intel.com wrote:
+
+> >  	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
+> > -	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
+> > +	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS && I2C
+
+> I think the dependency on I2C is specific to the MAX98090 codec.
+> Can we add this to the codec config entry instead?
+
+No, selects ignore dependencies.
+
+--1a0hRYDdJmE1GM/c
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTjEaBAAoJELSic+t+oim902wP/R6mzaKV65nUmLcBAenNU3J7
+Jw+GV8q0ZZrDLEEtd/fkkdXlBZ1wUJQe0pBhp5EkuD5hSCa6H3aWw72q8KVvaOYz
+nucG0WtioM30falTrWlYD6WlY+q6j2lP7O+1dAf4mZgTfDDYUHlU62bf5U9Thhq9
+5zLs3U0cmdV8N6C30NWprLbkU8SrWBwkZLWcNgiZCrAS2Ra90e+DGNogH6YoO5bY
+p5vqD8N77Sth9Vy9Db5ma34A2tHx35BtOOVuf6Jr/32WU1T0e6pwW6/OwCYTwwbV
+uaueVv5z0Z1rjON03vahiWFfNXQDk4mtEocR4LjPIO4qa2WU16XxLCoYSQkhoknf
+KMof9DuV4/51PyCh16AlSMT1knMpA3nBh49elpUNwo0Vm7RfmhK5IemcooV6br1S
+08n34xUJE6qQVv9NiVizDO3TqVvzU6rCdqpVEHvdtghEUq2/vVdgjv1phenxwvrG
+pOGLXgwKLvYUo/0RytZnRqr6cwBtEMeVs1B17EUgVQo3WlLmBLQgpMTkejs+OhY1
+ismJPB7RvPYyHTxksKPOh0jZi06AbqeLxP3TLUyObEAQRNB62rqGbr5vaVJlojzu
+M29bk4nDAK+14TeMnw53Pu654nJpQ+mJTcBPH9c+EHz3OUiBlpowz2XfK8/bsPrh
+VEi+1u02aGZ8pMJoDOCi
+=ZVtT
+-----END PGP SIGNATURE-----
+
+--1a0hRYDdJmE1GM/c--
+
+--===============5076509669180983041==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5076509669180983041==--
