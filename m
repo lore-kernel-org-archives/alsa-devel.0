@@ -1,20 +1,16 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Failed to set cache compression type
-Date: Mon, 2 Jun 2014 11:13:34 -0300
-Message-ID: <CAOMZO5D6WAPdV371v6sVc46TcfUZFNGL2VUzBLNfkLfX83e7zA@mail.gmail.com>
-References: <CAOMZO5Cj=qrrH_nWhCM4-63GPqfgpL1k=Q53z8cDDk3_TpUzBA@mail.gmail.com>
- <538C840A.2000307@linux.intel.com> <538C85C3.5020808@metafoo.de>
+From: Fabio Estevam <fabio.estevam@freescale.com>
+Subject: [PATCH] ASoC: soc-cache: Fix the return value of
+	snd_soc_cache_init when reg_size is 0
+Date: Mon, 2 Jun 2014 11:23:54 -0300
+Message-ID: <1401719034-17204-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f182.google.com (mail-vc0-f182.google.com
- [209.85.220.182])
- by alsa0.perex.cz (Postfix) with ESMTP id E94BA2652E7
- for <alsa-devel@alsa-project.org>; Mon,  2 Jun 2014 16:13:35 +0200 (CEST)
-Received: by mail-vc0-f182.google.com with SMTP id id10so5164705vcb.13
- for <alsa-devel@alsa-project.org>; Mon, 02 Jun 2014 07:13:35 -0700 (PDT)
-In-Reply-To: <538C85C3.5020808@metafoo.de>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0243.outbound.protection.outlook.com [207.46.163.243])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EA062652E7
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jun 2014 16:24:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,24 +20,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Li.Xiubo@freescale.com, jarkko.nikula@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 2, 2014 at 11:10 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+Commit b59dce53ef6 (ASoC: cache: Fix possible ZERO_SIZE_PTR pointer 
+dereferencing error.) caused the following probe error:
 
-> I think snd_soc_cache_init() should return 0 rather than -EINVAL if reg_size
-> is 0.
+wm8962 0-001a: customer id 0 revision D
+wm8962 0-001a: ASoC: Failed to set cache compression type: -22
+imx-wm8962 sound: snd_soc_register_card failed (-22)
+imx-wm8962: probe of sound failed with error -22
 
-Yes, this fixes the issue:
+If reg_size just return success instead.
 
+Suggested-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/soc-cache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index 8fff5b6..00e70b6 100644
 --- a/sound/soc/soc-cache.c
 +++ b/sound/soc/soc-cache.c
 @@ -73,7 +73,7 @@ int snd_soc_cache_init(struct snd_soc_codec *codec)
-        reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
-
-        if (!reg_size)
--               return -EINVAL;
-+               return 0;
-
-        mutex_init(&codec->cache_rw_mutex);
+ 	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
+ 
+ 	if (!reg_size)
+-		return -EINVAL;
++		return 0;
+ 
+ 	mutex_init(&codec->cache_rw_mutex);
+ 
+-- 
+1.8.3.2
