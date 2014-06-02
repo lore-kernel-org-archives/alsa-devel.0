@@ -1,28 +1,17 @@
-From: Petr Maivald <petr@jezdec.com>
-Subject: Re: no sound with intel audio
-Date: Sun, 1 Jun 2014 22:37:23 +0200
-Message-ID: <CADKJLGzkyWrQeXM4Kxgh+sySowjL=c0LW8tH9keZNk2_m=gmFg@mail.gmail.com>
-References: <CADKJLGxnyK5SkNQRuX1S5BMkM1XA_64TT77iR=dnEy-sw02+wQ@mail.gmail.com>
- <s5hy4xjr7cx.wl%tiwai@suse.de>
- <CADKJLGzYZy+GCmUHkkFU9wB0rPTrHMW01uAdwb6oUjvwvLHtiw@mail.gmail.com>
- <s5htx87r6b4.wl%tiwai@suse.de>
- <CADKJLGxYF9AtBwznmeu=OokvGNU_NyxXjVb2w_PPYo9dJDTXgg@mail.gmail.com>
- <s5hegzbmlvi.wl%tiwai@suse.de>
- <CADKJLGwR+XoPngrqkXqs05JYH090f21LzDV+0dnxUqvJZvpMxA@mail.gmail.com>
- <s5hfvjrkzkg.wl%tiwai@suse.de>
- <CADKJLGxt+wR=KfOJXjrCgtT7a4mi9YK-246fM+4njQn1e1WW0g@mail.gmail.com>
- <s5hlhthup2l.wl%tiwai@suse.de>
+From: kevin.strasser@linux.intel.com
+Subject: Re: [PATCH] ASoC: intel: The Baytrail/MAX98090 driver
+ depends on I2C
+Date: Sun, 1 Jun 2014 18:30:03 -0700 (PDT)
+Message-ID: <65206.10.254.34.105.1401672603.squirrel@linux.intel.com>
+References: <1401650018-31023-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f180.google.com (mail-lb0-f180.google.com
- [209.85.217.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A9E526548F
- for <alsa-devel@alsa-project.org>; Sun,  1 Jun 2014 22:37:24 +0200 (CEST)
-Received: by mail-lb0-f180.google.com with SMTP id p9so2089106lbv.11
- for <alsa-devel@alsa-project.org>; Sun, 01 Jun 2014 13:37:23 -0700 (PDT)
-In-Reply-To: <s5hlhthup2l.wl%tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 621B2265205
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jun 2014 03:30:40 +0200 (CEST)
+In-Reply-To: <1401650018-31023-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,105 +21,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jun 1, 2014 at 8:22 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Sat, 31 May 2014 13:47:59 +0200,
-> Petr Maivald wrote:
->>
->> On Fri, May 30, 2014 at 6:21 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > At Fri, 30 May 2014 18:05:06 +0200,
->> > Petr Maivald wrote:
->> >>
->> >> > As a primary test, for example, try the following on a terminal:
->> >> >
->> >> >   % amixer -c1 set "Auto-Mute Mode" "Enabled"
->> >> >   % aplay -Dplughw:1 -vv some-your-file.wav
->> >> >
->> >> > where some-your-file.wav is any WAV file you'd like to hear.
->> >> >
->> >> > If you're using PulseAudio, try like below instead:
->> >> >
->> >> >   % pasuspender -- aplay -D plughw:1 -vv some-your-file.wav
->> >> >
->> >> > Does it play anything?  Try both the headphone plugged and unplugged.
->> >>
->> >> My apologies, I did seriously try to figure out how to figure this out
->> >> and didn't come across anything that made any sense. So, I thought it
->> >> was a kernel bug...
->> >>
->> >> Your suggestion to try aplay did indeed produce sound. It is the first
->> >> sound I was able to get out of this configuration ever. I attached the
->> >> output of alsa-info.sh with aplay playing, and with mplayer playing
->> >> and not working, and the diff. Thanks for your help, at least now I
->> >> have some clue about where to look.
->> >
->> > Well, I still don't know what you did try.  This should have been
->> > clarified in the first ground.  Are you using PulseAudio?  If so, take
->> > a look at the mixer, pavucontrol, etc, and which output is being
->> > selected.  On your machine, the first device is HDMI, not the onboard
->> > audio.
->> >
->> > If you're using the direct ALSA API without PA, it's likely HDMI being
->> > picked up as the primary output.  You can change the device init order
->> > via index module option or specify the default card number in
->> > ~/.asoundrc or /etc/asound.conf in that case.
->>
->> Outstanding! You rock! I had no luck figuring out how to change the
->> device init order via index module option, but I googled around and
->> found that I can set /etc/asound.conf to
->>
->> pcm.!default {
->>     type hw
->>     card PCH
->> }
->>
->> ctl.!default {
->>     type hw
->>     card PCH
->> }
->>
->> And, that did the trick! Now I have sound!
->
-> It's close to the solution, but the drawback of this setup is that you
-> cannot play multiple streams at the same time.  Instead, you can pass
-> the PCM definition like:
->
->   pcm.!default sysdefault:PCM
->
-> Then dmix and dsnoop will be used for simultaneous accesses.
-> The ctl definition can be what you used.
->
-> But, as mentioned, another solution is to swap the devices in the
-> driver level.  Instead of the ~/.asoundrc setup, pass index=1,0 option
-> to snd-hda-intel module.  Then the order of PCM and HDMI will be
-> swapped.
->
->
-> Takashi
->
->> So, apparently I'm using the direct ALSA API without PA since mixer,
->> pavucontrol, and pasuspender is not installed. To go back to your
->> question of what I did try, I was running Flash, Gnome Mplayer,
->> Audacious, and VLC. I guess I neglected to mention that since the
->> sound problem didn't seem related to the media players (they all had
->> the same no sound problem).
->>
->> Sorry about the earlier confusion. I was trying to figure out dozens
->> of configuration files without knowing what was relevant or installed,
->> etc.
-Thanks again, it's a bit tricky for me since I don't know what these things in
-the file do. I realized that PCM should be the card's name (PCH), and I got
-rid of the stuff in the first curly brackets and it worked just as you said.
+Hi Mark,
 
-At this point, after what I've read about it, the format of
-/etc/modprobe.d/alsa-base.conf
-isn't understandable to me. So, I don't think I can handle passing the
-index=1,0 option
-to the snd-hda-intel module. Part of the problem is that both cards
-use snd-hda-intel,
-but the main thing is that I have working sound now, so the current
-solution seems
-good to me.
+> From: Mark Brown <broonie@linaro.org>
+>
+> Signed-off-by: Mark Brown <broonie@linaro.org>
+> ---
+>  sound/soc/intel/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+> index cd3498736e91..c30fedb3e149 100644
+> --- a/sound/soc/intel/Kconfig
+> +++ b/sound/soc/intel/Kconfig
+> @@ -52,7 +52,7 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
+>
+>  config SND_SOC_INTEL_BYT_MAX98090_MACH
+>  	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
+> -	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
+> +	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS && I2C
+
+I think the dependency on I2C is specific to the MAX98090 codec.
+Can we add this to the codec config entry instead?
+
+Thanks,
+Kevin
+
+>  	select SND_SOC_INTEL_BAYTRAIL
+>  	select SND_SOC_MAX98090
+>  	help
+> --
+> 2.0.0.rc4
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
