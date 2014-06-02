@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: intel: The Baytrail/MAX98090 driver
- depends on I2C
-Date: Mon, 2 Jun 2014 10:40:20 +0100
-Message-ID: <20140602094020.GU5099@sirena.org.uk>
-References: <1401650018-31023-1-git-send-email-broonie@kernel.org>
- <65206.10.254.34.105.1401672603.squirrel@linux.intel.com>
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Subject: Re:
+ =?utf-8?q?=5BPATCH=5D_ARM=3A_i=2EMX=3A_Compile_FIQ_c?=
+ =?utf-8?q?ode_for_AVIC_=26_TZIC_only?=
+Date: Mon, 02 Jun 2014 13:42:43 +0400
+Message-ID: <1401702163.832576877@f354.i.mail.ru>
+References: <1400604231-2672-1-git-send-email-shc_work@mail.ru>
+ <1400604231-2672-2-git-send-email-shc_work@mail.ru>
+ <20140602113327.2568c198@ipc1.ka-ro>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5076509669180983041=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 32B6E2651ED
- for <alsa-devel@alsa-project.org>; Mon,  2 Jun 2014 11:40:35 +0200 (CEST)
-In-Reply-To: <65206.10.254.34.105.1401672603.squirrel@linux.intel.com>
+Received: from f354.i.mail.ru (f354.i.mail.ru [217.69.140.250])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D7C92610AB
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jun 2014 11:42:45 +0200 (CEST)
+In-Reply-To: <20140602113327.2568c198@ipc1.ka-ro>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +25,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kevin.strasser@linux.intel.com
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, =?UTF-8?B?U2FzY2hhIEhhdWVy?= <kernel@pengutronix.de>, =?UTF-8?B?U2hhd24gR3Vv?= <shawn.guo@freescale.com>, =?UTF-8?B?VGltdXIgVGFiaQ==?= <timur@tabi.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5076509669180983041==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1a0hRYDdJmE1GM/c"
-Content-Disposition: inline
-
-
---1a0hRYDdJmE1GM/c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sun, Jun 01, 2014 at 06:30:03PM -0700, kevin.strasser@linux.intel.com wrote:
-
-> >  	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
-> > -	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
-> > +	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS && I2C
-
-> I think the dependency on I2C is specific to the MAX98090 codec.
-> Can we add this to the codec config entry instead?
-
-No, selects ignore dependencies.
-
---1a0hRYDdJmE1GM/c
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTjEaBAAoJELSic+t+oim902wP/R6mzaKV65nUmLcBAenNU3J7
-Jw+GV8q0ZZrDLEEtd/fkkdXlBZ1wUJQe0pBhp5EkuD5hSCa6H3aWw72q8KVvaOYz
-nucG0WtioM30falTrWlYD6WlY+q6j2lP7O+1dAf4mZgTfDDYUHlU62bf5U9Thhq9
-5zLs3U0cmdV8N6C30NWprLbkU8SrWBwkZLWcNgiZCrAS2Ra90e+DGNogH6YoO5bY
-p5vqD8N77Sth9Vy9Db5ma34A2tHx35BtOOVuf6Jr/32WU1T0e6pwW6/OwCYTwwbV
-uaueVv5z0Z1rjON03vahiWFfNXQDk4mtEocR4LjPIO4qa2WU16XxLCoYSQkhoknf
-KMof9DuV4/51PyCh16AlSMT1knMpA3nBh49elpUNwo0Vm7RfmhK5IemcooV6br1S
-08n34xUJE6qQVv9NiVizDO3TqVvzU6rCdqpVEHvdtghEUq2/vVdgjv1phenxwvrG
-pOGLXgwKLvYUo/0RytZnRqr6cwBtEMeVs1B17EUgVQo3WlLmBLQgpMTkejs+OhY1
-ismJPB7RvPYyHTxksKPOh0jZi06AbqeLxP3TLUyObEAQRNB62rqGbr5vaVJlojzu
-M29bk4nDAK+14TeMnw53Pu654nJpQ+mJTcBPH9c+EHz3OUiBlpowz2XfK8/bsPrh
-VEi+1u02aGZ8pMJoDOCi
-=ZVtT
------END PGP SIGNATURE-----
-
---1a0hRYDdJmE1GM/c--
-
---===============5076509669180983041==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5076509669180983041==--
+TW9uLCAyIEp1biAyMDE0IDExOjMzOjI3ICswMjAwINC+0YIgTG90aGFyIFdhw59tYW5uIDxMV0BL
+QVJPLWVsZWN0cm9uaWNzLmRlPjoKPiBIaSwKPiAKPiBBbGV4YW5kZXIgU2hpeWFuIHdyb3RlOgo+
+ID4gVGhlcmUgYXJlIG5vIHJlYXNvbiB0byBjb21waWxlIEZJUSBzcGVjaWZpYyBjb2RlIGZvciBH
+SUMgSVJRCj4gPiBjb250cm9sbGVyIChpLk1YNikuIFRoaXMgcGF0Y2ggcmVzdHJpY3QgY29tcGls
+YXRpb24gZm9yIEZJUQo+ID4gc3BlY2lmaWMgY29kZSBmb3IgQVZJQyBhbmQgVFpJQyBvbmx5Lgo+
+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgU2hpeWFuIDxzaGNfd29ya0BtYWlsLnJ1
+Pgo+ID4gLS0tCj4gPiAgYXJjaC9hcm0vbWFjaC1pbXgvTWFrZWZpbGUgfCA2ICsrKy0tLQo+ID4g
+IDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4gPiAKPiA+
+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9tYWNoLWlteC9NYWtlZmlsZSBiL2FyY2gvYXJtL21hY2gt
+aW14L01ha2VmaWxlCj4gPiBpbmRleCBiYmU5M2JiLi42MjBhNzYwIDEwMDY0NAo+ID4gLS0tIGEv
+YXJjaC9hcm0vbWFjaC1pbXgvTWFrZWZpbGUKPiA+ICsrKyBiL2FyY2gvYXJtL21hY2gtaW14L01h
+a2VmaWxlCj4gPiBAQCAtMSw0ICsxLDQgQEAKPiA+IC1vYmoteSA6PSB0aW1lLm8gY3B1Lm8gc3lz
+dGVtLm8gaXJxLWNvbW1vbi5vCj4gPiArb2JqLXkgOj0gdGltZS5vIGNwdS5vIHN5c3RlbS5vCj4g
+PiAgCj4gPiAgb2JqLSQoQ09ORklHX1NPQ19JTVgxKSArPSBjbGstaW14MS5vIG1tLWlteDEubwo+
+ID4gIG9iai0kKENPTkZJR19TT0NfSU1YMjEpICs9IGNsay1pbXgyMS5vIG1tLWlteDIxLm8KPiA+
+IEBAIC0yMSw4ICsyMSw4IEBAIG9iai0kKENPTkZJR19DT01NT05fQ0xLKSArPSBjbGstcGxsdjEu
+byBjbGstcGxsdjIubyBjbGstcGxsdjMubyBjbGstZ2F0ZTIubyBcCj4gPiAgb2JqLSQoQ09ORklH
+X0lNWF9IQVZFX0lPTVVYX1YxKSArPSBpb211eC12MS5vCj4gPiAgb2JqLSQoQ09ORklHX0FSQ0hf
+TVhDX0lPTVVYX1YzKSArPSBpb211eC12My5vCj4gPiAgCj4gPiAtb2JqLSQoQ09ORklHX01YQ19U
+WklDKSArPSB0emljLm8KPiA+IC1vYmotJChDT05GSUdfTVhDX0FWSUMpICs9IGF2aWMubwo+ID4g
+K29iai0kKENPTkZJR19NWENfVFpJQykgKz0gdHppYy5vIGlycS1jb21tb24ubwo+ID4gK29iai0k
+KENPTkZJR19NWENfQVZJQykgKz0gYXZpYy5vIGlycS1jb21tb24ubwo+ID4gIAo+ID4gIG9iai0k
+KENPTkZJR19NWENfVVNFX0VQSVQpICs9IGVwaXQubwo+ID4gIG9iai0kKENPTkZJR19NWENfREVC
+VUdfQk9BUkQpICs9IDNkc19kZWJ1Z2JvYXJkLm8KPiA+Cj4gVGhpcyBwYXRjaCBpbnRyb2R1Y2Vz
+IGEgYnVpbGQgZXJyb3IgaW4gc291bmQvc29jL2ZzbC9pbXgtcGNtLWZpcS5jOgo+IHNvdW5kL2J1
+aWx0LWluLm86IEluIGZ1bmN0aW9uIGBpbXhfcGNtX2ZpcV9mcmVlJzoKPiBsYXN0LmM6KC50ZXh0
+KzB4MmFjYTgpOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBteGNfc2V0X2lycV9maXEnCj4gc291
+bmQvYnVpbHQtaW4ubzogSW4gZnVuY3Rpb24gYGlteF9wY21fZmlxX2luaXQnOgo+IGxhc3QuYzoo
+LnRleHQrMHgyYjFhNCk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYG14Y19zZXRfaXJxX2ZpcScK
+PiBsYXN0LmM6KC50ZXh0KzB4MmIyMDApOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBteGNfc2V0
+X2lycV9maXEnCj4gbWFrZVsxXTogKioqIFt2bWxpbnV4XSBFcnJvciAxCj4gbWFrZTogKioqIFtz
+dWItbWFrZV0gRXJyb3IgMgo+IAo+IFRoaXMgY291bGQgYmUgZml4ZWQgd2l0aCB0aGUgZm9sbG93
+aW5nIHBhdGNoOgo+IC0tLSBteGMtZmlxLm9yaWcvc291bmQvc29jL2ZzbC9LY29uZmlnICAyMDE0
+LTA2LTAyIDExOjI1OjM4LjMxNTk2MDQ1MSArMDIwMAo+ICsrKyBteGMtZmlxL3NvdW5kL3NvYy9m
+c2wvS2NvbmZpZyAgICAgICAyMDE0LTA2LTAyIDExOjI1OjM4LjQxMTk2MDU5NSArMDIwMAo+IEBA
+IC0xNSw3ICsxNSw3IEBACj4gIGNvbmZpZyBTTkRfU09DX0ZTTF9TU0kKPiAJdHJpc3RhdGUgIlN5
+bmNocm9ub3VzIFNlcmlhbCBJbnRlcmZhY2UgbW9kdWxlIHN1cHBvcnQiCj4gCXNlbGVjdCBTTkRf
+U09DX0lNWF9QQ01fRE1BIGlmIFNORF9JTVhfU09DICE9IG4KPiAtCXNlbGVjdCBTTkRfU09DX0lN
+WF9QQ01fRklRIGlmIFNORF9JTVhfU09DICE9IG4gJiYgQVJDSF9NWEMKPiArCXNlbGVjdCBTTkRf
+U09DX0lNWF9QQ01fRklRIGlmIFNORF9JTVhfU09DICE9IG4gJiYgKE1YQ19BVklDIHx8IE1YQ19U
+WklDKQouLi4KCk5vLiBUaGlzIHdpbGwgYnJlYWsgYnVpbGRpbmcgZnNsLXNzaSBmb3IgUFBDIGFu
+ZCBpLk1YNiwgc28gbGV0J3MganVzdCBkcm9wIG9yaWdpbmFsIHBhdGNoIGZvciBhIHdoaWxlLgoK
+LS0tCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
