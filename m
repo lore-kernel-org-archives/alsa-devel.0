@@ -1,18 +1,16 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] ASoC: rl6231: Remove unneeded inclusion of
-	header files
-Date: Tue, 03 Jun 2014 14:56:35 +0800
-Message-ID: <1401778595.19083.1.camel@phoenix>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: ALSA userspace release time?
+Date: Tue, 03 Jun 2014 08:58:41 +0200
+Message-ID: <538D7221.6010802@perex.cz>
+References: <538D6AC8.1010208@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f176.google.com (mail-vc0-f176.google.com
- [209.85.220.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C41C2655C5
- for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 08:56:41 +0200 (CEST)
-Received: by mail-vc0-f176.google.com with SMTP id la4so6222808vcb.7
- for <alsa-devel@alsa-project.org>; Mon, 02 Jun 2014 23:56:40 -0700 (PDT)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 398222655C5
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 08:58:42 +0200 (CEST)
+In-Reply-To: <538D6AC8.1010208@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,44 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: David Henningsson <david.henningsson@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- sound/soc/codecs/rl6231.c | 19 -------------------
- 1 file changed, 19 deletions(-)
+Date 3.6.2014 08:27, David Henningsson wrote:
+> Hi,
+> 
+> It was around a year since we last had a release of ALSA's userspace 
+> component.
+> 
+> Is it perhaps time for 1.0.28, or are we waiting for something that 
+> would be nice to get in first?
+> 
+> We've currently got e g speaker-test improvements/fixes, 2.1 surround 
+> support, "alsactl monitor" command, and random fixes here and there. 
+> Sounds good enough for a release to me.
+> 
 
-diff --git a/sound/soc/codecs/rl6231.c b/sound/soc/codecs/rl6231.c
-index 7b82fbe..56650d6 100644
---- a/sound/soc/codecs/rl6231.c
-+++ b/sound/soc/codecs/rl6231.c
-@@ -11,25 +11,6 @@
-  */
- 
- #include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/init.h>
--#include <linux/delay.h>
--#include <linux/pm.h>
--#include <linux/gpio.h>
--#include <linux/i2c.h>
--#include <linux/regmap.h>
--#include <linux/of.h>
--#include <linux/of_gpio.h>
--#include <linux/platform_device.h>
--#include <linux/spi/spi.h>
--#include <linux/acpi.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--#include <sound/initval.h>
--#include <sound/tlv.h>
- 
- #include "rl6231.h"
- 
+Hi,
+
+  yes, I also think that's time to prepare the 1.0.28 release. I will
+start the work on it.
+
+  If someone has any waiting fix, please, let me know ...
+
+					Jaroslav
+
 -- 
-1.8.3.2
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
