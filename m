@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [GIT PULL] ASoC updates for v3.16
-Date: Tue, 3 Jun 2014 11:29:06 +0100
-Message-ID: <20140603102906.GW31751@sirena.org.uk>
+Date: Tue, 3 Jun 2014 11:50:57 +0100
+Message-ID: <20140603105057.GA31751@sirena.org.uk>
 References: <20140603094645.GR31751@sirena.org.uk>
  <s5hoaya5nbx.wl%tiwai@suse.de> <s5hfvjm5mbb.wl%tiwai@suse.de>
+ <s5ha99u5lc8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0880724248912952113=="
+Content-Type: multipart/mixed; boundary="===============2595893249256899120=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 11790260851
- for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 12:51:15 +0200 (CEST)
-In-Reply-To: <s5hfvjm5mbb.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E2FE62608EA
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 12:51:17 +0200 (CEST)
+In-Reply-To: <s5ha99u5lc8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,68 +27,53 @@ Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdw
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0880724248912952113==
+--===============2595893249256899120==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qndya+I13rh6QJ0p"
+	protocol="application/pgp-signature"; boundary="zOhrINIRDRtNKIHr"
 Content-Disposition: inline
 
 
---qndya+I13rh6QJ0p
+--zOhrINIRDRtNKIHr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jun 03, 2014 at 12:17:44PM +0200, Takashi Iwai wrote:
+On Tue, Jun 03, 2014 at 12:38:47PM +0200, Takashi Iwai wrote:
 
-> Now I get a few build warnings that look really buggy:
+> FWIW, below is a fix patch.  Only compile-tested.
 
-> sound/soc/omap/omap-twl4030.c:274:2: warning: initialization from incompatible p
-> ointer type [enabled by default]
-> sound/soc/omap/omap-twl4030.c:274:2: warning: (near initialization for 'omap_twl
-> 4030_card.remove') [enabled by default]
+Oh, I was just writing that but never mind.
 
-> sound/soc/omap/rx51.c:379:2: warning: initialization from incompatible pointer t
-> ype [enabled by default]
-> sound/soc/omap/rx51.c:379:2: warning: (near initialization for 'rx51_sound_card.remove') [enabled by default]
+Acked-by: Mark Brown <broonie@linaro.org>
 
-> They come from Stephen's patch, commit e1d4d3c8
->     ASoC: free jack GPIOs before the sound card is freed
-
-> The argument for remove callback should be struct snd_soc_card *.
-
-> Mark, aren't any fixes queued in your tree yet?
-
-No, not yet - I didn't have those drivers enabled in my config when I
-tested.
-
---qndya+I13rh6QJ0p
+--zOhrINIRDRtNKIHr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTjaNvAAoJELSic+t+oim9zCwQAJYxkrhSauMGEsqii7WXE4m+
-EuZhb60L5a+8ESjVIB9nPCOl7wTg/SO4CYuDeAJfz+tY+th50GTkGEuH895V257Z
-q+a618WKw/y8p760hBAq4NadqMkMaXKAVwE/kCvai5PE1vMDfApqfJiiYN7Ldulz
-TVTsBaZ9G++YYsKio4rBWYfhiMvGv3jBn2vgTbyKo/Djq3fFmw2iW3c2/KZllxBf
-3z1KfdFuDU9YQPjmF5lUNXH+ebZLoqxynITYa85juzOdn0giB1zYnTzupf0bpoI3
-mqwBpJSB6LlUV/O+K7vGUPSZVdbOM7ds75RdfsVPO3RG+Zqo9iWM2MS1nlEHpvIF
-vb8QQI3T5V26N5YX4BhCtD9Y0q3ecYaWluAUf7z9O4J7TDPDaLEKoKSY9YOq22Jt
-2W7cZMCPJ/EJ7xX4txvXMRzwfJBVA5eq/UjB89SK0VfnBCNvOzPKFxPtjajU1ArJ
-IDu9zLwAvaCCAgi7V1w4BC7UHW5u87NeK/leNdunFmR/QAe3cjn3igY0f3lyk53n
-NCHhRK4hCh5XWtnIqZ577lXbNL3S4lIlXBBz2xvLAwXHUEMeD1Na4wQO6l7Y1525
-/y7RWCoKUhRMWelPWoRx+aBqVHxspa3D0nn+PwClit/FIsy+kM12e5XRWGjAZJdx
-4f0RfQxF9aJk02V5oqF8
-=qLBO
+iQIcBAEBAgAGBQJTjaiOAAoJELSic+t+oim9XvgP/3jMriS9rkV58wOkEma6I+G/
+amKaEhx67gp87SCrZtHVyt2jEOalNdHjx9rc4sbs2FO2QezlgMAF8gjtEGqzhnqo
+AHKz8afa6QE40lEwqaP0k1zryd4BJZgPxUoKSTYevx7wA8G//ZINwQEOs/bp25pk
+IocwnhaLMumoQTjt7eHL6xmb78n5RMrTNk1hxh21qlerceaRmf8mGD4RtqCHZjLV
+mktZf6StCb7yGEMKb29dlWK7Kx/lroEqkh2lHr6DEjA1Aridqm62wdxRy4Rs+HtB
+58LsIJVErMhQFVeDONmIYlAiXuGhrvuevG2uFayd9yV6NY1pT4CGwttnpwNn3Nby
+nkUuO6a0Tc4XiZJDAlknsJyZtzXv7oy0c0QURlcrLdBu8WgRRMYAeBOZXwig7pX8
+vFwEsRBDeXwDzT44qabyO/gMnzsBrfazzIj2NAjZzv+opmnqQskL+2OAxwWesX/d
+4aUZON3UpeXNx3oNklFN3T+h6d7xZNEFZgMDAeXgXFeNc9kCJizHzrNKPAT1Mpxl
+2P5IHdhK8FLVGwaPd1BVSgNworHqJnM+i3eVJqLJmoz2VcsUhEK7Z0/gHXCLQPvh
+dU45E1CKa5lBpWEs9ZK2Cxrp4oB8bMAMWUC9R4tFZzdZCe68EDoXilB3cSVkytfm
+vRsY9J+7s7kBoV6lab0x
+=HHnR
 -----END PGP SIGNATURE-----
 
---qndya+I13rh6QJ0p--
+--zOhrINIRDRtNKIHr--
 
---===============0880724248912952113==
+--===============2595893249256899120==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0880724248912952113==--
+--===============2595893249256899120==--
