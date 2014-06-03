@@ -1,14 +1,14 @@
-From: Violeta Menendez Gonzalez <violeta.menendez@codethink.co.uk>
-Subject: r8a7790 only has audio when clock is forced on
-Date: Tue, 03 Jun 2014 18:23:19 +0100
-Message-ID: <538E0487.1010700@codethink.co.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: pxa: add I2C dependencies as needed
+Date: Tue, 03 Jun 2014 20:38:27 +0200
+Message-ID: <46560700.2S4p0nUZl8@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ducie-dc1.codethink.co.uk (unknown [185.25.241.215])
- by alsa0.perex.cz (Postfix) with ESMTP id A81352617AB
- for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 19:23:41 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5976C26168D
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 20:38:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,64 +18,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-sh@vger.kernel.org
-Cc: linux-kernel@lists.codethink.co.uk, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+We have in the past added 'depends on I2C' for some of the PXA boards
+after hitting randconfig build bugs. I have seens a couple of new
+bugs in this area during the linux-next cycle for 3.16, after it
+became possible to build some more PXA machines with I2C disabled.
 
-We have a problem where audio on r8a7790 is not working due to it not =
+To shut this up for good, this adds the dependency to every board
+that uses I2C as the interface to the codec. I have gone through
+all board files and verified that they all either use AC97 or
+I2C, and this annotates the latter. Some of these already enable
+I2C from mach-pxa/Kconfig, but since that can change it's better
+to be explicit here.
 
-sending interrupts.
+The link error that can result otherwise happens when CONFIG_I2C
+is set to 'm' and the codec driver is built-in as a result of being
+selected by the platform specific glue.
 
-We've verified that the pins and the clocks are working and correctly =
-
-configured. The codec is starting and producing correct bit and word =
-
-clock signals
-
-We've made a hack to force /mstp10_clks /on that makes the audio work. =
-
-Further investigation showed that it's only needed to force SSI(ALL) on, =
-
-but, as far as we know, the manual doesn't say anything about it having =
-
-to be kept on.
-
-We've also debugged this hack and saw that the registers have correct =
-
-values. These are some of the debugging messages we have when the audio =
-
-fails:
-
-
-Playing WAVE '../audio/r.wav' : Signed 16 bit Little Endian, Rate 44100 =
-
-Hz, Stereo
-cpg_mstp_clock_endisable: index 5, enable 1
-cpg_mstp_clock_endisable: index 5, value read from group->smstpcr 0002ffe0
-cpg_mstp_clock_endisable: index 5, value write in group->smstpcr 0002ffc0
-cpg_mstp_clock_endisable: index 15, enable 1
-cpg_mstp_clock_endisable: index 15, value read from group->smstpcr 0002ffc0
-cpg_mstp_clock_endisable: index 15, value written in group->smstpcr 00027fc0
-aplay: pcm_writecpg_mstp_clock_endisable: index 15, enable 0
-cpg_mstp_clock_endisable: index 15, value read from group->smstpcr 00027fc0
-cpg_mstp_clock_endisable: index 15, value write in group->smstpcr 0002ffc0
-:1710: write errcpg_mstp_clock_endisable: index 5, enable 0
-cpg_mstp_clock_endisable: index 5, value read from group->smstpcr 0002ffc0
-cpg_mstp_clock_endisable: index 5, value write in group->smstpcr 0002ffe0
-or: Input/output error
-
-This shows that the SSI (ALL) clock in bit 5 being enabled before the =
-
-SSI0 and that it is also disabled in the reverse sequence as expected.
-
-Not sure what to do next or what the problem could be.
-Any new ideas are welcome,
-
-Thanks!
-
--- =
-
-Violeta Men=E9ndez Gonz=E1lez	http://www.codethink.co.uk/
-Software Engineer		Codethink - Providing Genius
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index dcf0c08..e195b038 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -40,7 +40,7 @@ config SND_MMP_SOC_SSPA
+ 
+ config SND_PXA2XX_SOC_CORGI
+ 	tristate "SoC Audio support for Sharp Zaurus SL-C7x0"
+-	depends on SND_PXA2XX_SOC && PXA_SHARP_C7xx
++	depends on SND_PXA2XX_SOC && PXA_SHARP_C7xx && I2C
+ 	select SND_PXA2XX_SOC_I2S
+ 	select SND_SOC_WM8731
+ 	help
+@@ -49,7 +49,7 @@ config SND_PXA2XX_SOC_CORGI
+ 
+ config SND_PXA2XX_SOC_SPITZ
+ 	tristate "SoC Audio support for Sharp Zaurus SL-Cxx00"
+-	depends on SND_PXA2XX_SOC && PXA_SHARP_Cxx00
++	depends on SND_PXA2XX_SOC && PXA_SHARP_Cxx00 && I2C
+ 	select SND_PXA2XX_SOC_I2S
+ 	select SND_SOC_WM8750
+ 	help
+@@ -58,7 +58,7 @@ config SND_PXA2XX_SOC_SPITZ
+ 
+ config SND_PXA2XX_SOC_Z2
+ 	tristate "SoC Audio support for Zipit Z2"
+-	depends on SND_PXA2XX_SOC && MACH_ZIPIT2
++	depends on SND_PXA2XX_SOC && MACH_ZIPIT2 && I2C
+ 	select SND_PXA2XX_SOC_I2S
+ 	select SND_SOC_WM8750
+ 	help
+@@ -66,7 +66,7 @@ config SND_PXA2XX_SOC_Z2
+ 
+ config SND_PXA2XX_SOC_POODLE
+ 	tristate "SoC Audio support for Poodle"
+-	depends on SND_PXA2XX_SOC && MACH_POODLE
++	depends on SND_PXA2XX_SOC && MACH_POODLE && I2C
+ 	select SND_PXA2XX_SOC_I2S
+ 	select SND_SOC_WM8731
+ 	help
+@@ -181,7 +181,7 @@ config SND_PXA2XX_SOC_HX4700
+ 
+ config SND_PXA2XX_SOC_MAGICIAN
+ 	tristate "SoC Audio support for HTC Magician"
+-	depends on SND_PXA2XX_SOC && MACH_MAGICIAN
++	depends on SND_PXA2XX_SOC && MACH_MAGICIAN && I2C
+ 	select SND_PXA2XX_SOC_I2S
+ 	select SND_PXA_SOC_SSP
+ 	select SND_SOC_UDA1380
