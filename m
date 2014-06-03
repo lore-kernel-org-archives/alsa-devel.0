@@ -1,18 +1,14 @@
-From: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [GIT PULL] ASoC updates for v3.16
-Date: Tue, 03 Jun 2014 10:20:06 -0600
-Message-ID: <538DF5B6.80800@wwwdotorg.org>
-References: <20140603094645.GR31751@sirena.org.uk>
- <s5hoaya5nbx.wl%tiwai@suse.de> <s5hfvjm5mbb.wl%tiwai@suse.de>
- <s5ha99u5lc8.wl%tiwai@suse.de>
+From: Violeta Menendez Gonzalez <violeta.menendez@codethink.co.uk>
+Subject: r8a7790 only has audio when clock is forced on
+Date: Tue, 03 Jun 2014 18:23:19 +0100
+Message-ID: <538E0487.1010700@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 8252526168D
- for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 18:20:14 +0200 (CEST)
-In-Reply-To: <s5ha99u5lc8.wl%tiwai@suse.de>
+Received: from ducie-dc1.codethink.co.uk (unknown [185.25.241.215])
+ by alsa0.perex.cz (Postfix) with ESMTP id A81352617AB
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 19:23:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +18,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: linux-sh@vger.kernel.org
+Cc: linux-kernel@lists.codethink.co.uk, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/03/2014 04:38 AM, Takashi Iwai wrote:
-> At Tue, 03 Jun 2014 12:17:44 +0200 Takashi Iwai wrote:
->> At Tue, 03 Jun 2014 11:55:46 +0200Takashi Iwai wrote:
->>> At Tue, 3 Jun 2014 10:46:45 +0100 Mark Brown wrote:
->>>>
->>>> The following changes since commit cee429e5c53f7ffc1dd500001d9dff567833c23d:
->>>>
->>>>   Merge remote-tracking branches 'asoc/topic/ux500', 'asoc/topic/wm8731', 'asoc/topic/wm8804', 'asoc/topic/wm8955' and 'asoc/topic/wm8985' into asoc-next (2014-05-22 00:24:04 +0100)
->>>>
->>>> are available in the git repository at:
->>>>
->>>>   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git asoc-v3.16-2
->>>>
->>>> for you to fetch changes up to e1d4d3c854f25cff6c6c139588570e124d5e8fa4:
->>>>
->>>>   ASoC: free jack GPIOs before the sound card is freed (2014-06-03 10:41:16 +0100)
->>>>
->>>> ----------------------------------------------------------------
->>>> ASoC: Final updates for v3.16
-...
->> Now I get a few build warnings that look really buggy:
->>
->> sound/soc/omap/omap-twl4030.c:274:2: warning: initialization from incompatible p
->> ointer type [enabled by default]
->> sound/soc/omap/omap-twl4030.c:274:2: warning: (near initialization for 'omap_twl
->> 4030_card.remove') [enabled by default]
-...
-> FWIW, below is a fix patch.  Only compile-tested.
-...
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ASoC: Fix wrong argument for card remove callbacks
-> 
-> The commit [e1d4d3c8: ASoC: free jack GPIOs before the sound card is
-> freed] introduced snd_soc_card remove callbacks to a few drivers, but
-> they are implemented with a wrong argument type.  The callback should
-> receive snd_soc_card pointer instead of snd_soc_pcm_runtime.
-> 
-> Fixes: e1d4d3c854f2 ('ASoC: free jack GPIOs before the sound card is freed')
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Hi all,
 
-Reviewed-by: Stephen Warren <swarren@nvidia.com>
+We have a problem where audio on r8a7790 is not working due to it not =
 
-Sorry about that. I had compiled ams-delta.c and even fixed some issues
-I found because of that, but evidently didn't notice the warnings after
-I changed from a per-dai_link callback to a per-card callback:-/
+sending interrupts.
+
+We've verified that the pins and the clocks are working and correctly =
+
+configured. The codec is starting and producing correct bit and word =
+
+clock signals
+
+We've made a hack to force /mstp10_clks /on that makes the audio work. =
+
+Further investigation showed that it's only needed to force SSI(ALL) on, =
+
+but, as far as we know, the manual doesn't say anything about it having =
+
+to be kept on.
+
+We've also debugged this hack and saw that the registers have correct =
+
+values. These are some of the debugging messages we have when the audio =
+
+fails:
+
+
+Playing WAVE '../audio/r.wav' : Signed 16 bit Little Endian, Rate 44100 =
+
+Hz, Stereo
+cpg_mstp_clock_endisable: index 5, enable 1
+cpg_mstp_clock_endisable: index 5, value read from group->smstpcr 0002ffe0
+cpg_mstp_clock_endisable: index 5, value write in group->smstpcr 0002ffc0
+cpg_mstp_clock_endisable: index 15, enable 1
+cpg_mstp_clock_endisable: index 15, value read from group->smstpcr 0002ffc0
+cpg_mstp_clock_endisable: index 15, value written in group->smstpcr 00027fc0
+aplay: pcm_writecpg_mstp_clock_endisable: index 15, enable 0
+cpg_mstp_clock_endisable: index 15, value read from group->smstpcr 00027fc0
+cpg_mstp_clock_endisable: index 15, value write in group->smstpcr 0002ffc0
+:1710: write errcpg_mstp_clock_endisable: index 5, enable 0
+cpg_mstp_clock_endisable: index 5, value read from group->smstpcr 0002ffc0
+cpg_mstp_clock_endisable: index 5, value write in group->smstpcr 0002ffe0
+or: Input/output error
+
+This shows that the SSI (ALL) clock in bit 5 being enabled before the =
+
+SSI0 and that it is also disabled in the reverse sequence as expected.
+
+Not sure what to do next or what the problem could be.
+Any new ideas are welcome,
+
+Thanks!
+
+-- =
+
+Violeta Men=E9ndez Gonz=E1lez	http://www.codethink.co.uk/
+Software Engineer		Codethink - Providing Genius
