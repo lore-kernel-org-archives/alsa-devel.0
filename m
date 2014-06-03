@@ -1,195 +1,113 @@
-From: Alex Fedora <alexander.fedora@gmail.com>
-Subject: Re: PROBLEM: [Lenovo ThinkPad X61s] Speaker volume
- mutes itself in random intervals after upgrading from 3.11 to 3.15.
-Date: Tue, 03 Jun 2014 00:41:48 -0700
-Message-ID: <538D7C3C.3040301@gmail.com>
-References: <538ACE22.9020306@gmail.com>	<s5h8upflouw.wl%tiwai@suse.de>	<538C3BF4.2000706@gmail.com>	<s5h1tv7lliv.wl%tiwai@suse.de>	<538C489C.1030508@gmail.com>
- <s5hvbsjjz2w.wl%tiwai@suse.de>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [alsa-devel] [RFC] set up an sync channel between
+ audio and display driver (i.e. ALSA and DRM)
+Date: Tue, 3 Jun 2014 09:44:31 +0200
+Message-ID: <20140603074431.GI19050@phenom.ffwll.local>
+References: <F46914AEC2663F4A9BB62374E5EEF8F82B447059@SHSMSX101.ccr.corp.intel.com>
+ <1400596147.32158.36.camel@intelbox>
+ <CAKMK7uFdPiBoTO-oKCF-t3JbHVwB9F_wFTNnUwgH5JL2fpSH7Q@mail.gmail.com>
+ <20140520145729.GB23140@ulmo> <537B6FC7.9030307@intel.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B44C2EA@SHSMSX101.ccr.corp.intel.com>
+ <20140522195807.GA14357@phenom.ffwll.local>
+ <F46914AEC2663F4A9BB62374E5EEF8F82B46503C@shsmsx102.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f50.google.com (mail-pb0-f50.google.com
- [209.85.160.50])
- by alsa0.perex.cz (Postfix) with ESMTP id E5A8B2655C5
- for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 09:41:57 +0200 (CEST)
-Received: by mail-pb0-f50.google.com with SMTP id ma3so5204294pbc.9
- for <alsa-devel@alsa-project.org>; Tue, 03 Jun 2014 00:41:56 -0700 (PDT)
-In-Reply-To: <s5hvbsjjz2w.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F82B46503C@shsmsx102.ccr.corp.intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: "Yang, Libin" <libin.yang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Nikkanen,
+ Kimmo" <kimmo.nikkanen@intel.com>, "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "Babu,
+ Ramesh" <ramesh.babu@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, Thierry Reding <thierry.reding@gmail.com>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>, "Vetter,
+ Daniel" <daniel.vetter@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/02/2014 05:05 AM, Takashi Iwai wrote:
-> At Mon, 02 Jun 2014 02:49:16 -0700,
-> Alex Fedora wrote:
->> On 06/02/2014 02:15 AM, Takashi Iwai wrote:
->>> At Mon, 02 Jun 2014 01:55:16 -0700,
->>> Alex Fedora wrote:
->>>> On 06/02/2014 01:03 AM, Takashi Iwai wrote:
->>>>> At Sat, 31 May 2014 23:54:26 -0700,
->>>>> Alex Fedora wrote:
->>>>>> Hi,
->>>>>>
->>>>>> Please see problem description below. I've captured alsa info output for
->>>>>> the latest kernel. Kernel just before the regression. And info from the
->>>>>> kernel with the offending commit. But I had to calculate diff from first
->>>>>> one to fit to 100K limit. If you want, I can send all 3 files as an
->>>>>> attachments. Also the latest version of the kernel was took from
->>>>>> http://kernel.ubuntu.com/~kernel-ppa/mainline/daily/current/linux-image-3.15.0-999-generic_3.15.0-999.201405310205_amd64.deb
->>>>>> .
->>>>>>
->>>>>> Thank you,
->>>>>> Alex
->>>>>>
->>>>>> [1.] One line summary of the problem: [Lenovo ThinkPad X61s] Speaker
->>>>>> volume mutes itself in random intervals after upgrade to latest kernel
->>>>>> [2.] Full description of the problem/report:
->>>>>>
->>>>>> Speaker mutes itself in random intervals. Headphones are working fine at
->>>>>> that moment. I can see what volume of the Speaker drops to 0% and then
->>>>>> back to 100% using alsamixer. It seems like Internal Mic Boost also
->>>>>> jumps from 100% to 0% and back. It is regression from
->>>>>> 5ccc618fee67f0f0b2122dd4b32a02fd2b6a1569 (ALSA: hda - Remove static
->>>>>> quirks for AD1884/1984 & variants). I've tested previous commit
->>>>>> aa95d61b43e0fcb0b2ce68e5efa37174fd9e5cd3 (ALSA: hda - Remove static
->>>>>> quirks for AD1882) and audio works as expected.
->>>>>>
->>>>>> New kernel shows two controls "Headphone Playback Volume" and "Speaker
->>>>>> Playback Volume". But old one shows single control "PCM Playback
->>>>>> Volume". "Speaker Playback Volume" is the one which gets muted randomly.
->>>>> Are you using PulseAudio?  If yes, does the problem happen without PA?
->>>>> This kind of random mute/unmute tends to be an issue of bogus
->>>>> headphone or mic jack detection.
->>>>>
->>>>>
->>>>> Takashi
->>>>>
->>>> Hi Takashi,
->>>>
->>>> Yes, I'm using  PulseAudio. I've removed it and issue gone away. It
->>>> returned back after reinstalling it. This is still driver bug, right?
->>> Yes.  So PA seems confused by some bogus information by the driver.
->>>
->>> Try to run "alsactl monitor 0", maybe better without PA at first.
->>> Do you see occasional events about the jack detection even if you
->>> don't plug/unplug?  And, try it also with PA.
->>>
->>>
->>> Takashi
->>>
->> Yes, I can see a lot of events even if I don't plug/unplug anything.
->> Even more if I'm using PA.
->>
->> No pulseaudio:
->>
->> card 0, #22 (0,0,0,Mic Jack,0) VALUE
->> card 0, #23 (0,0,0,Headphone Jack,0) VALUE
->> card 0, #23 (0,0,0,Headphone Jack,0) VALUE
-> Thanks.  These are definitely bogus events.  No wonder that PA gets
-> screwed up.
->
-> Could you try the patch below?
->
->
-> Takashi
->
-> ---
-> diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-> index 06275f8807a8..fa626648d746 100644
-> --- a/sound/pci/hda/patch_analog.c
-> +++ b/sound/pci/hda/patch_analog.c
-> @@ -191,7 +191,6 @@ static int ad198x_parse_auto_config(struct hda_codec *codec, bool indep_hp)
->   	int err;
->   
->   	codec->spdif_status_reset = 1;
-> -	codec->no_trigger_sense = 1;
->   	codec->no_sticky_stream = 1;
->   
->   	spec->gen.indep_hp = indep_hp;
-> @@ -377,6 +376,8 @@ static int patch_ad1986a(struct hda_codec *codec)
->   	/* AD1986A has the inverted EAPD implementation */
->   	codec->inv_eapd = 1;
->   
-> +	codec->no_trigger_sense = 1;
-> +
->   	spec->gen.mixer_nid = 0x07;
->   	spec->gen.beep_nid = 0x19;
->   	set_beep_amp(spec, 0x18, 0, HDA_OUTPUT);
-> @@ -500,6 +501,8 @@ static int patch_ad1983(struct hda_codec *codec)
->   		return err;
->   	spec = codec->spec;
->   
-> +	codec->no_trigger_sense = 1;
-> +
->   	spec->gen.mixer_nid = 0x0e;
->   	spec->gen.beep_nid = 0x10;
->   	set_beep_amp(spec, 0x10, 0, HDA_OUTPUT);
-> @@ -588,6 +591,8 @@ static int patch_ad1981(struct hda_codec *codec)
->   		return -ENOMEM;
->   	spec = codec->spec;
->   
-> +	codec->no_trigger_sense = 1;
-> +
->   	spec->gen.mixer_nid = 0x0e;
->   	spec->gen.beep_nid = 0x10;
->   	set_beep_amp(spec, 0x0d, 0, HDA_OUTPUT);
-> @@ -913,6 +918,8 @@ static int patch_ad1988(struct hda_codec *codec)
->   		return err;
->   	spec = codec->spec;
->   
-> +	codec->no_trigger_sense = 1;
-> +
->   	spec->gen.mixer_nid = 0x20;
->   	spec->gen.mixer_merge_nid = 0x21;
->   	spec->gen.beep_nid = 0x10;
-> @@ -1140,6 +1147,8 @@ static int patch_ad1882(struct hda_codec *codec)
->   		return err;
->   	spec = codec->spec;
->   
-> +	codec->no_trigger_sense = 1;
-> +
->   	spec->gen.mixer_nid = 0x20;
->   	spec->gen.mixer_merge_nid = 0x21;
->   	spec->gen.beep_nid = 0x10;
-> .
->
+On Tue, Jun 03, 2014 at 01:42:03AM +0000, Lin, Mengdong wrote:
+> > -----Original Message-----
+> > From: Daniel Vetter [mailto:daniel.vetter@ffwll.ch] 
+> 
+> > > Hi Daniel,
+> > >
+> > > Would you please share more info about your idea?
+> > >
+> > > - What would be an avsink device represent here?
+> > >  E.g. on Intel platforms, will the whole display device have a child
+> > > avsink device or multiple avsink devices for each DDI port?
+> > 
+> > My idea would be to have one for each output pipe (i.e. the link between
+> > audio and gfx), not one per ddi. Gfx driver would then let audio know
+> > when a screen is connected and which one (e.g. exact model serial from
+> > edid).
+> > This is somewhat important for dp mst where there's no longer a fixed
+> > relationship between audio pin and screen
+> 
+> Thanks. But if we use avsink device, I prefer to have an avsink device per DDI or several avsink devices per DDI,
+> It's because
+> 1. Without DP MST, there is a fixed mapping between each audio codec pin and DDI;
+> 2. With DP MST, the above pin: DDI mapping is still valid (at least on Intel platforms),
+>   and there is also a fixed mapping between each device (screen) connected to a pin/DDI.  
+> 3. HD-Audio driver creates a PCM (audio stream) devices for each pin.
+>   Keeping this behavior can make audio driver works on platforms without implementing the sound/gfx sync channel.
+>   And I guess in the future the audio driver will creates more than one PCM devices for a DP MST-capable pin, according how many devices a DDI can support.
+> 
+> 4. Display mode change can change the pipe connected to a DDI even if the monitor stays on the same DDI, 
+>   If we have an avsink device per pipe, the audio driver will have to check another avsink device for this case. It seems not convenient.
 
-I've applied the patch and rebuild the kernel. But it didn't solve the 
-problem. I have applied the patch to kernel 3.13.11.2. Does it matter? 
-Should I try to download latest kernel and try to apply patch to it?
+All this can also be solved by making the connector/avsink/sound pcm known
+to userspace and let userspace figure it out. A few links in sysfs should
+be good enough, plus exposing the full edid on the sound pcm side (so that
+userspace can compare the serial number in the edid).
 
-Here is the output of the monitor with PA enabled:
+> > > - And for the relationship between audio driver and the avsink device,
+> > > which would be the master and which would be the component?
+> > 
+> > 1:1 for avsink:alsa pin (iirc it's called a pin, not sure about the name).
+> > That way the audio driver has a clear point for getting at the eld and
+> > similar information.
+> 
+> Since the audio driver usually already binds to some device (PCI or platform device),
+> I think the audio driver cannot bind to the new avsink devices created by display driver, and we need a new driver to handle these device and communication.
+> 
+> While the display driver creates the new endpoint "avsink" devices, the audio driver can also create the same number of audio endpoint devices.
+> And we could let the audio endpoint device be the master and its peer display endpoint device be the component.
+> Thus the master/component framework can help us to bind/unbind each pair of display/audio endpoint devices.
+> 
+> Is it doable? If okay, I'll modify the RFC and see if there are other gaps.
 
-card 0, #22 (0,0,0,Mic Jack,0) VALUE
-card 0, #23 (0,0,0,Headphone Jack,0) VALUE
-card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
-card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
-card 0, #22 (0,0,0,Mic Jack,0) VALUE
-card 0, #22 (0,0,0,Mic Jack,0) VALUE
-card 0, #22 (0,0,0,Mic Jack,0) VALUE
-card 0, #23 (0,0,0,Headphone Jack,0) VALUE
-card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
-card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
-card 0, #22 (0,0,0,Mic Jack,0) VALUE
-card 0, #23 (0,0,0,Headphone Jack,0) VALUE
-card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
-card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
-card 0, #13 (2,0,0,Capture Volume,0) VALUE
-card 0, #23 (0,0,0,Headphone Jack,0) VALUE
-card 0, #22 (0,0,0,Mic Jack,0) VALUE
-card 0, #4 (2,0,0,Speaker Playback Switch,0) VALUE
-card 0, #3 (2,0,0,Speaker Playback Volume,0) VALUE
-card 0, #13 (2,0,0,Capture Volume,0) VALUE
+Yeah, that should be doable. gfx creates avsink devices, audio binds to
+them using the component framework.
 
-Thank you,
-Alex
+> > > In addition, the component framework does not touch PM now.
+> > > And introducing PM to the component framework seems not easy since
+> > > there can be potential conflict caused by parent-child relationship of
+> > > the involved devices.
+> > 
+> > Yeah, the entire PM situation seems to be a bit bad. It also looks like on
+> > resume/suspend we still have problems, at least on the audio side since
+> > we need to coordinate between 2 completel different underlying devices.
+> > But at least with the parent->child relationship we have a guranatee that
+> > the avsink won't be suspended after the gfx device is already off.
+> > -Daniel
+> 
+> Yes. You're right.
+> And we could find a way to hide the Intel-specific display "power well"
+> from the audio driver by using runtime PM API on these devices.
+
+Yeah, that's one of the goals a I have here.
+
+Cheers, Daneil
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
