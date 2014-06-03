@@ -1,16 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ALSA userspace release time?
-Date: Tue, 03 Jun 2014 08:58:41 +0200
-Message-ID: <538D7221.6010802@perex.cz>
-References: <538D6AC8.1010208@canonical.com>
+From: Shawn Guo <shawn.guo@freescale.com>
+Subject: Re: [PATCH] ARM: i.MX: Compile FIQ code for AVIC &
+	TZIC only
+Date: Tue, 3 Jun 2014 15:37:04 +0800
+Message-ID: <20140603073702.GP8860@dragon>
+References: <1400604231-2672-1-git-send-email-shc_work@mail.ru>
+ <1400604231-2672-2-git-send-email-shc_work@mail.ru>
+ <20140602113327.2568c198@ipc1.ka-ro> <1401702163.832576877@f354.i.mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 398222655C5
- for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 08:58:42 +0200 (CEST)
-In-Reply-To: <538D6AC8.1010208@canonical.com>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0238.outbound.protection.outlook.com [207.46.163.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEFA12655C5
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 09:37:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1401702163.832576877@f354.i.mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,33 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: Alexander Shiyan <shc_work@mail.ru>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, linux-arm-kernel@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>, Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: alsa-devel@alsa-project.org
 
-Date 3.6.2014 08:27, David Henningsson wrote:
-> Hi,
-> 
-> It was around a year since we last had a release of ALSA's userspace 
-> component.
-> 
-> Is it perhaps time for 1.0.28, or are we waiting for something that 
-> would be nice to get in first?
-> 
-> We've currently got e g speaker-test improvements/fixes, 2.1 surround 
-> support, "alsactl monitor" command, and random fixes here and there. 
-> Sounds good enough for a release to me.
-> 
-
-Hi,
-
-  yes, I also think that's time to prepare the 1.0.28 release. I will
-start the work on it.
-
-  If someone has any waiting fix, please, let me know ...
-
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+T24gTW9uLCBKdW4gMDIsIDIwMTQgYXQgMDE6NDI6NDNQTSArMDQwMCwgQWxleGFuZGVyIFNoaXlh
+biB3cm90ZToKPiBNb24sIDIgSnVuIDIwMTQgMTE6MzM6MjcgKzAyMDAg0L7RgiBMb3RoYXIgV2HD
+n21hbm4gPExXQEtBUk8tZWxlY3Ryb25pY3MuZGU+Ogo+ID4gSGksCj4gPiAKPiA+IEFsZXhhbmRl
+ciBTaGl5YW4gd3JvdGU6Cj4gPiA+IFRoZXJlIGFyZSBubyByZWFzb24gdG8gY29tcGlsZSBGSVEg
+c3BlY2lmaWMgY29kZSBmb3IgR0lDIElSUQo+ID4gPiBjb250cm9sbGVyIChpLk1YNikuIFRoaXMg
+cGF0Y2ggcmVzdHJpY3QgY29tcGlsYXRpb24gZm9yIEZJUQo+ID4gPiBzcGVjaWZpYyBjb2RlIGZv
+ciBBVklDIGFuZCBUWklDIG9ubHkuCj4gPiA+IAo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5k
+ZXIgU2hpeWFuIDxzaGNfd29ya0BtYWlsLnJ1Pgo+ID4gPiAtLS0KPiA+ID4gIGFyY2gvYXJtL21h
+Y2gtaW14L01ha2VmaWxlIHwgNiArKystLS0KPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2Vy
+dGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4gPiA+IAo+ID4gPiBkaWZmIC0tZ2l0IGEvYXJjaC9h
+cm0vbWFjaC1pbXgvTWFrZWZpbGUgYi9hcmNoL2FybS9tYWNoLWlteC9NYWtlZmlsZQo+ID4gPiBp
+bmRleCBiYmU5M2JiLi42MjBhNzYwIDEwMDY0NAo+ID4gPiAtLS0gYS9hcmNoL2FybS9tYWNoLWlt
+eC9NYWtlZmlsZQo+ID4gPiArKysgYi9hcmNoL2FybS9tYWNoLWlteC9NYWtlZmlsZQo+ID4gPiBA
+QCAtMSw0ICsxLDQgQEAKPiA+ID4gLW9iai15IDo9IHRpbWUubyBjcHUubyBzeXN0ZW0ubyBpcnEt
+Y29tbW9uLm8KPiA+ID4gK29iai15IDo9IHRpbWUubyBjcHUubyBzeXN0ZW0ubwo+ID4gPiAgCj4g
+PiA+ICBvYmotJChDT05GSUdfU09DX0lNWDEpICs9IGNsay1pbXgxLm8gbW0taW14MS5vCj4gPiA+
+ICBvYmotJChDT05GSUdfU09DX0lNWDIxKSArPSBjbGstaW14MjEubyBtbS1pbXgyMS5vCj4gPiA+
+IEBAIC0yMSw4ICsyMSw4IEBAIG9iai0kKENPTkZJR19DT01NT05fQ0xLKSArPSBjbGstcGxsdjEu
+byBjbGstcGxsdjIubyBjbGstcGxsdjMubyBjbGstZ2F0ZTIubyBcCj4gPiA+ICBvYmotJChDT05G
+SUdfSU1YX0hBVkVfSU9NVVhfVjEpICs9IGlvbXV4LXYxLm8KPiA+ID4gIG9iai0kKENPTkZJR19B
+UkNIX01YQ19JT01VWF9WMykgKz0gaW9tdXgtdjMubwo+ID4gPiAgCj4gPiA+IC1vYmotJChDT05G
+SUdfTVhDX1RaSUMpICs9IHR6aWMubwo+ID4gPiAtb2JqLSQoQ09ORklHX01YQ19BVklDKSArPSBh
+dmljLm8KPiA+ID4gK29iai0kKENPTkZJR19NWENfVFpJQykgKz0gdHppYy5vIGlycS1jb21tb24u
+bwo+ID4gPiArb2JqLSQoQ09ORklHX01YQ19BVklDKSArPSBhdmljLm8gaXJxLWNvbW1vbi5vCj4g
+PiA+ICAKPiA+ID4gIG9iai0kKENPTkZJR19NWENfVVNFX0VQSVQpICs9IGVwaXQubwo+ID4gPiAg
+b2JqLSQoQ09ORklHX01YQ19ERUJVR19CT0FSRCkgKz0gM2RzX2RlYnVnYm9hcmQubwo+ID4gPgo+
+ID4gVGhpcyBwYXRjaCBpbnRyb2R1Y2VzIGEgYnVpbGQgZXJyb3IgaW4gc291bmQvc29jL2ZzbC9p
+bXgtcGNtLWZpcS5jOgo+ID4gc291bmQvYnVpbHQtaW4ubzogSW4gZnVuY3Rpb24gYGlteF9wY21f
+ZmlxX2ZyZWUnOgo+ID4gbGFzdC5jOigudGV4dCsweDJhY2E4KTogdW5kZWZpbmVkIHJlZmVyZW5j
+ZSB0byBgbXhjX3NldF9pcnFfZmlxJwo+ID4gc291bmQvYnVpbHQtaW4ubzogSW4gZnVuY3Rpb24g
+YGlteF9wY21fZmlxX2luaXQnOgo+ID4gbGFzdC5jOigudGV4dCsweDJiMWE0KTogdW5kZWZpbmVk
+IHJlZmVyZW5jZSB0byBgbXhjX3NldF9pcnFfZmlxJwo+ID4gbGFzdC5jOigudGV4dCsweDJiMjAw
+KTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgbXhjX3NldF9pcnFfZmlxJwo+ID4gbWFrZVsxXTog
+KioqIFt2bWxpbnV4XSBFcnJvciAxCj4gPiBtYWtlOiAqKiogW3N1Yi1tYWtlXSBFcnJvciAyCj4g
+PiAKPiA+IFRoaXMgY291bGQgYmUgZml4ZWQgd2l0aCB0aGUgZm9sbG93aW5nIHBhdGNoOgo+ID4g
+LS0tIG14Yy1maXEub3JpZy9zb3VuZC9zb2MvZnNsL0tjb25maWcgIDIwMTQtMDYtMDIgMTE6MjU6
+MzguMzE1OTYwNDUxICswMjAwCj4gPiArKysgbXhjLWZpcS9zb3VuZC9zb2MvZnNsL0tjb25maWcg
+ICAgICAgMjAxNC0wNi0wMiAxMToyNTozOC40MTE5NjA1OTUgKzAyMDAKPiA+IEBAIC0xNSw3ICsx
+NSw3IEBACj4gPiAgY29uZmlnIFNORF9TT0NfRlNMX1NTSQo+ID4gCXRyaXN0YXRlICJTeW5jaHJv
+bm91cyBTZXJpYWwgSW50ZXJmYWNlIG1vZHVsZSBzdXBwb3J0Igo+ID4gCXNlbGVjdCBTTkRfU09D
+X0lNWF9QQ01fRE1BIGlmIFNORF9JTVhfU09DICE9IG4KPiA+IC0Jc2VsZWN0IFNORF9TT0NfSU1Y
+X1BDTV9GSVEgaWYgU05EX0lNWF9TT0MgIT0gbiAmJiBBUkNIX01YQwo+ID4gKwlzZWxlY3QgU05E
+X1NPQ19JTVhfUENNX0ZJUSBpZiBTTkRfSU1YX1NPQyAhPSBuICYmIChNWENfQVZJQyB8fCBNWENf
+VFpJQykKPiAuLi4KPiAKPiBOby4gVGhpcyB3aWxsIGJyZWFrIGJ1aWxkaW5nIGZzbC1zc2kgZm9y
+IFBQQyBhbmQgaS5NWDYsIHNvIGxldCdzIGp1c3QgZHJvcCBvcmlnaW5hbCBwYXRjaCBmb3IgYSB3
+aGlsZS4KCk9rLCBwYXRjaCBkcm9wcGVkIGZvciBub3cuCgpTaGF3bgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
