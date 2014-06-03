@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: arizona: Implement TDM support for
-	Arizona devices
-Date: Tue, 3 Jun 2014 23:06:07 +0100
-Message-ID: <20140603220607.GD2520@sirena.org.uk>
-References: <1401822370-5324-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Adam Goode <agoode@google.com>
+Subject: Re: [PATCH - seq 1/1] ALSA: seq: Continue broadcasting
+ events to ports if one of them fails
+Date: Tue, 3 Jun 2014 18:33:32 -0400
+Message-ID: <CAOf41NnJeMhUOTg+U6FM0UcDLsU2DNJum4=rPCOFuEH4Uc0Y1g@mail.gmail.com>
+References: <1401738082-28488-1-git-send-email-agoode@google.com>
+ <s5hlhtezgze.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8101939355304068214=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9905C261AB6
- for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 00:06:31 +0200 (CEST)
-In-Reply-To: <1401822370-5324-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mail-ig0-f178.google.com (mail-ig0-f178.google.com
+ [209.85.213.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 002E4261AB6
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 00:33:33 +0200 (CEST)
+Received: by mail-ig0-f178.google.com with SMTP id h18so339941igc.5
+ for <alsa-devel@alsa-project.org>; Tue, 03 Jun 2014 15:33:32 -0700 (PDT)
+In-Reply-To: <s5hlhtezgze.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +25,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jun 3, 2014 at 1:42 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
---===============8101939355304068214==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T7mxYSe680VjQnyC"
-Content-Disposition: inline
+> At Mon,  2 Jun 2014 15:41:22 -0400,
+> Adam Goode wrote:
+> >
+> > Sometimes PORT_EXIT messages are lost when a process is exiting.
+> > This happens if you subscribe to the announce port with client A,
+> > then subscribe to the announce port with client B, then kill client A.
+> > Client B will not see the PORT_EXIT message because client A's port is
+> > closing and is earlier in the announce port subscription list. The
+> > for each loop will try to send the announcement to client A and fail,
+> > then will stop trying to broadcast to other ports. Killing B works fine
+> > since the announcement will already have gone to A. The CLIENT_EXIT
+> > message does not get lost.
+> >
+> > How to reproduce problem:
+> >
+> > *** termA
+> > $ aseqdump -p 0:1
+> >   0:1   Port subscribed            0:1 -> 128:0
+> >
+> > *** termB
+> > $ aseqdump -p 0:1
+> >
+> > *** termA
+> >   0:1   Client start               client 129
+> >   0:1   Port start                 129:0
+> >   0:1   Port subscribed            0:1 -> 129:0
+> >
+> > *** termB
+> >   0:1   Port subscribed            0:1 -> 129:0
+> >
+> > *** termA
+> > ^C
+> >
+> > *** termB
+> >   0:1   Client exit                client 128
+> >    <--- expected Port exit as well (before client exit)
+> >
+> > Signed-off-by: Adam Goode <agoode@google.com>
+>
+> Thanks.  The changes look OK to me, though, I'd prefer a variable name
+> "result" instead of "sticky_err".  And you don't have to initialize
+> err any longer there.
+>
+> Meanwhile, it's another question what to be returned from the
+> function.  Such broadcasting case, would it be better to return always
+> num_ev when it's positive, or always report any (non-serious) error?
+>
+>
+Thanks, I will send another patch with "result" instead.
+
+Right now, the function will always report an error if any error occurs. My
+patch should not change this behavior. I believe my patch has the effect
+equivalent to sorting the list such that the failed ports are all at the
+end.
+
+If you would like to change the behavior of the function, that is another
+issue.
 
 
---T7mxYSe680VjQnyC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks,
 
-On Tue, Jun 03, 2014 at 08:06:10PM +0100, Charles Keepax wrote:
-
-> +	if (tdm_width && wl != tdm_width)
-> +		arizona_aif_warn(dai, "Word length not equal to TDM width\n");
-> +
-
-Is it a problem to have say 16 bit words in a 32 bit TDM slot?  One of
-the reasons this stuff sometimes gets used is to help out the other
-connected device if it's having trouble configuring the "natural" clock
-rates.  Ignoring LSBs shouldn't be an issue.
-
---T7mxYSe680VjQnyC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIbBAEBAgAGBQJTjkbLAAoJELSic+t+oim92foP+KsRCHJ8VGcw6yPF4eR9qiEl
-t+f04J/x3JPLvJ8EJD+HJT/fDghW3iEHrvOxTbek6t78f8m7NdNY8zFHxoVrUlPm
-ZfSJLlOhIFMr0/zIR/rZvLf5yHw1Ml72cL2LLDHiq/2p1GpVCdzfmpVookErXGSD
-slyB4WSePj/n1He9nZUt5xONbAG+XOeWfQ6BMgqtnlN4xFUi3Sw+Byw3P7VX9Hpn
-qK1hTV/M2xzZoImeNnFV2t5qMtrDPvii1tx6FDa8mfEyP3zRdQLAupDpiX5C+df/
-NKBD/KDiMbmCDlvqBl4ojbtDhm8BovAImC9TQbJjec2auG+Dc17uH9Pu5lnPcNgD
-xHpXS5WduYGjBvig3wSeEGacThdSjb/eEHPkXGFz9bCterO4xRn6xaLTDJW6Bq1O
-Rmp++T4ZBn3m1mCs4WxHsLvbzxSjOlCq+9xbbj+yHt1p1Fig2k/H1QXwljxhI69Q
-N+BcThvFwnk8KEoq2bMqJ2ehcGD8VYccq3KMM2J/RElo6mOK3g5L0w0/5A07yXJR
-4W2FoprS0CUGURAIbcULAhpCffpASeV+OnDlJhCBHI3nPXOFl5KoTvXfkDybDv+3
-vh4lwQGSeRJlNBDSrs530Ajomx9jkDaoHH5wJgHslZTikBRvz+G9aipZjR5COcPf
-561AVz0yogPQKUP12/E=
-=faFT
------END PGP SIGNATURE-----
-
---T7mxYSe680VjQnyC--
-
---===============8101939355304068214==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8101939355304068214==--
+Adam
