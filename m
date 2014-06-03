@@ -1,23 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: PROBLEM: [Lenovo ThinkPad X61s] Speaker volume
- mutes itself in random intervals after upgrading from 3.11 to 3.15.
-Date: Tue, 3 Jun 2014 19:38:43 +0800
-Message-ID: <CAN8cciaxYYQqKBrACAuWQTq3eTXqS3qT84-3ns7NDW6S0WC8kw@mail.gmail.com>
-References: <538ACE22.9020306@gmail.com> <s5h8upflouw.wl%tiwai@suse.de>
- <538C3BF4.2000706@gmail.com> <s5h1tv7lliv.wl%tiwai@suse.de>
- <538C489C.1030508@gmail.com> <s5hvbsjjz2w.wl%tiwai@suse.de>
- <538D7C3C.3040301@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: fsl: refine DMA/FIQ dependencies
+Date: Tue, 03 Jun 2014 14:11:56 +0200
+Message-ID: <6452477.9e3eS6Cip1@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f44.google.com (mail-qg0-f44.google.com
- [209.85.192.44])
- by alsa0.perex.cz (Postfix) with ESMTP id DD1E32610A3
- for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 13:38:44 +0200 (CEST)
-Received: by mail-qg0-f44.google.com with SMTP id i50so12645554qgf.17
- for <alsa-devel@alsa-project.org>; Tue, 03 Jun 2014 04:38:43 -0700 (PDT)
-In-Reply-To: <538D7C3C.3040301@gmail.com>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81A902610A3
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jun 2014 14:12:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,66 +18,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alex Fedora <alexander.fedora@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
->
->>>>>>> Hi,
->>>>>>>
->>>>>>> Please see problem description below. I've captured alsa info
-output for
->>>>>>> the latest kernel. Kernel just before the regression. And info from
-the
->>>>>>> kernel with the offending commit. But I had to calculate diff from
-first
->>>>>>> one to fit to 100K limit. If you want, I can send all 3 files as an
->>>>>>> attachments. Also the latest version of the kernel was took from
->>>>>>>
-http://kernel.ubuntu.com/~kernel-ppa/mainline/daily/current/linux-image-3.15.0-999-generic_3.15.0-999.201405310205_amd64.deb
->>>>>>> .
->>>>>>>
->>>>>>> Thank you,
->>>>>>> Alex
->>>>>>>
->>>>>>> [1.] One line summary of the problem: [Lenovo ThinkPad X61s] Speaker
->>>>>>> volume mutes itself in random intervals after upgrade to latest
-kernel
->>>>>>> [2.] Full description of the problem/report:
->>>>>>>
->>>>>>> Speaker mutes itself in random intervals. Headphones are working
-fine at
->>>>>>> that moment. I can see what volume of the Speaker drops to 0% and
-then
->>>>>>> back to 100% using alsamixer. It seems like Internal Mic Boost also
->>>>>>> jumps from 100% to 0% and back. It is regression from
->>>>>>> 5ccc618fee67f0f0b2122dd4b32a02fd2b6a1569 (ALSA: hda - Remove static
->>>>>>> quirks for AD1884/1984 & variants). I've tested previous commit
->>>>>>> aa95d61b43e0fcb0b2ce68e5efa37174fd9e5cd3 (ALSA: hda - Remove static
->>>>>>> quirks for AD1882) and audio works as expected.
->>>>>>>
->>>>>>> New kernel shows two controls "Headphone Playback Volume" and
-"Speaker
->>>>>>> Playback Volume". But old one shows single control "PCM Playback
->>>>>>> Volume". "Speaker Playback Volume" is the one which gets muted
-randomly.
->>>>>>
->>>>>> Are you using PulseAudio?  If yes, does the problem happen without
-PA?
->>>>>> This kind of random mute/unmute tends to be an issue of bogus
->>>>>> headphone or mic jack detection.
->>>>>>
+Commit 31ee2bfd724ab ("ASoC: fsl: select SND_SOC_IMX_PCM_DMA
+where needed") started selecting SND_SOC_IMX_PCM_DMA and
+SND_SOC_IMX_PCM_FIQ for two drivers when building for i.MX.
+This has turned out too aggressive, as FIQ is only available
+for i.mx2 through i.mx5, but not i.mx6 or vybrid.
 
-GPIO: io=3, o=0, i=0, unsolicited=1, wake=0
-- IO[0]: enable=0, dir=0, wake=0, sticky=0, data=1, unsol=0
-+ IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-    IO[1]: enable=1, dir=0, wake=0, sticky=0, data=0, unsol=0
-    IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+Further, two more drivers have become user-selectable in the
+meantime, and they both depend on DMA for the imx platform
+as well.
 
-Seem gpio are different
+This changes the selection of FIQ to depend on the TZIC or
+AVIC interrupt controllers that actually export the imx
+specific FIQ interfaces, and adds the missing select statements
+for SAI and ESAI.
 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda/patch_analog.c?id=5ccc618fee67f0f0b2122dd4b32a02fd2b6a1569
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Those  unsolicited event of mic jacks were not enabled
-
-You need to use hda-jack-sense-test
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 3793362..52bbe9f 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -5,6 +5,7 @@ comment "Common SoC Audio options for Freescale CPUs:"
+ config SND_SOC_FSL_SAI
+ 	tristate "Synchronous Audio Interface (SAI) module support"
+ 	select REGMAP_MMIO
++	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+ 	  Say Y if you want to add Synchronous Audio Interface (SAI)
+@@ -15,7 +16,7 @@ config SND_SOC_FSL_SAI
+ config SND_SOC_FSL_SSI
+ 	tristate "Synchronous Serial Interface module support"
+ 	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
+-	select SND_SOC_IMX_PCM_FIQ if SND_IMX_SOC != n && ARCH_MXC
++	select SND_SOC_IMX_PCM_FIQ if SND_IMX_SOC != n && (MXC_TZIC || MXC_AVIC)
+ 	select REGMAP_MMIO
+ 	help
+ 	  Say Y if you want to add Synchronous Serial Interface (SSI)
+@@ -27,7 +28,7 @@ config SND_SOC_FSL_SPDIF
+ 	tristate "Sony/Philips Digital Interface module support"
+ 	select REGMAP_MMIO
+ 	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
+-	select SND_SOC_IMX_PCM_FIQ if SND_IMX_SOC != n && ARCH_MXC
++	select SND_SOC_IMX_PCM_FIQ if SND_IMX_SOC != n && (MXC_TZIC || MXC_AVIC)
+ 	help
+ 	  Say Y if you want to add Sony/Philips Digital Interface (SPDIF)
+ 	  support for the Freescale CPUs.
+@@ -37,6 +38,7 @@ config SND_SOC_FSL_SPDIF
+ config SND_SOC_FSL_ESAI
+ 	tristate "Enhanced Serial Audio Interface (ESAI) module support"
+ 	select REGMAP_MMIO
++	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
+ 	select SND_SOC_FSL_UTILS
+ 	help
+ 	  Say Y if you want to add Enhanced Synchronous Audio Interface
