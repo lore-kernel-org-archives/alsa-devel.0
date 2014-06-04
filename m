@@ -1,19 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 5/6] fireworks: Remove meaningless
-	mutex_unlock()
-Date: Wed, 04 Jun 2014 21:54:15 +0900
-Message-ID: <538F16F7.4080702@sakamocchi.jp>
-References: <1401863137-15103-1-git-send-email-o-takashi@sakamocchi.jp>
- <1401863137-15103-6-git-send-email-o-takashi@sakamocchi.jp>
- <s5h8upc3l0h.wl%tiwai@suse.de>
+From: =?UTF-8?B?RnJhbsOnb2lzIElzYWJlbGxl?= <isabellf@sympatico.ca>
+Subject: Re: Recording support for Roland SD-50 USB Audio device
+Date: Wed, 4 Jun 2014 09:10:40 -0400
+Message-ID: <BLU0-SMTP85440BF63C6B13B2B2E03AAB220@phx.gbl>
+References: <538F0E19.7000708@sympatico.ca>
+ <BLU0-SMTP42B277A2F1597FFF1F391CAB220@phx.gbl> <538F1173.1030603@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id ED2B2262634
- for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 14:54:27 +0200 (CEST)
-In-Reply-To: <s5h8upc3l0h.wl%tiwai@suse.de>
+Received: from BLU004-OMC3S35.hotmail.com (blu004-omc3s35.hotmail.com
+ [65.55.116.110])
+ by alsa0.perex.cz (Postfix) with ESMTP id BABAC262634
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 15:10:44 +0200 (CEST)
+In-Reply-To: <538F1173.1030603@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-(Jun 4 2014 21:41), Takashi Iwai wrote:
-> At Wed,  4 Jun 2014 15:25:36 +0900,
-> Takashi Sakamoto wrote:
->>
->> Currently mutex_unlock() is called in module's cleanup function. But after
->> cleaned up, this mutex is automatically released. So this function call
->> is meaningless.
->>
->> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> 
-> It must be meant as mutex_destroy()?
-> I applied it with the typo fixes.  Thanks.
-
-Exactly. Thanks for your correction.
-
-
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+CkxlIDA0LzA2LzIwMTQgMDg6MzAsIERhbmllbCBNYWNrIGEgw6ljcml0IDoKPiBXaGF0IGV4YWN0
+bHkgaXMgdGhlIHByb2JsZW0gYW5kIGhvdyBkaWQgeW91IHRlc3Q/CgpJIHRyaWVkIHRoZSAiaW5w
+dXQiIHZpZXcgbWVldGVyIGluIHBhdnVjb250cm9sIGZpcnN0LgoKQW5kIHRoaXMgaXMgd2hhdCBJ
+IGdldCB3aGVuIHRyeWluZyB0aGUgcmVjb3JkIGZyb20gdGhlIGNvbW1hbmQgbGluZToKCmlzYWJl
+bGxmQGJyYWhtczp+L2Fsc2EtZHJpdmVyJCBMQ19BTEw9QyAgYXJlY29yZCAtRHBsdWdodzozIGZp
+bGUud2F2CmFyZWNvcmQ6IG1haW46NzIyOiBhdWRpbyBvcGVuIGVycm9yOiBEZXZpY2Ugb3IgcmVz
+b3VyY2UgYnVzeQoKCkkgYWxzbyBjaGVja2VkIHRoZSBhbGFzbWl4ZXIgY2FwdHVyZSBwYXJhbWV0
+ZXJzIGl0IHNheXM6CiAgICBUaGlzIHNvdW5kIGRldmljZSBkb2VzIG5vdCBoYXZlIGFueSBjYXB0
+dXJlIGNvbnRyb2xzLgoKRnJhbsOnb2lzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
