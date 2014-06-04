@@ -1,15 +1,15 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: Set eapd to follow stream on or off
-Date: Wed, 4 Jun 2014 14:14:03 +0800
-Message-ID: <37647B9182104A1192A28B55F28BEC04@realtek.com.tw>
-Reply-To: Kailang <kailang@realtek.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/6] Fix some minor issues for Fireworks/BeBoB
+	drivers
+Date: Wed,  4 Jun 2014 15:25:31 +0900
+Message-ID: <1401863137-15103-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 62A98261629
- for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 08:14:14 +0200 (CEST)
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2470D2625DB
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 08:25:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,283 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>
+To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Remove some unused or meaningless functions and improve some codes and comments.
 
-I abandon this update.
-Playing a slient stream will be had pop noise.
-It is hardware issue. It is not to avoid.
-But it need to read and write our hidden register to control eapd.
-Resume back need to fill eapd to keep low state.
-I think I just send the patch to ubuntu team.
-Thanks.
+Takashi Sakamoto (6):
+  fireworks/bebob: Shorten critical section for stream_stop_duplex()
+  fireworks: Use safer way to arrange ring buffer pointer
+  fireworks: Improve comments about Fireworks transaction
+  fireworks: Remove a constant over width to which it's applied
+  fireworks: Remove meaningless mutex_unlock()
+  bebob: Remove unused function prototype
 
->
->
->> At Thu, 22 May 2014 14:26:04 +0800,
->> Kailang wrote:
->>>
->>>
->>>
->>> > At Wed, 21 May 2014 17:24:16 +0800,
->>> > Kailang wrote:
->>> >>
->>> >> > At Wed, 21 May 2014 14:28:12 +0800,
->>> >> > Kailang wrote:
->>> >> >>
->>> >> >> Hi Takashi,
->>> >> >>
->>> >> >> Attach is the update patch.
->>> >> >
->>> >> > Keep the function in lower letters.
->>> >> >
->>> >> > Also, update the patch description as well (and better to put more
->>> >> > words).
->>> >>
->>> >> Update as attach.
->>> >> Thanks.
->>> >
->>> > Well, do you really want to turn off EAPD at closing the stream?
->>>
->>> Yes.
->>>
->>> > As I repeatedly explained, this results in more frequent EAPD on/off,
->>> > i.e. more pop noises.
->>> >
->>>
->>> I have sent the patch for HP.
->>> I will wait for feedback from customer.
->>
->> Did you send the test script, too?
-> No.
->
->>
->>> If it is solve the issue, I will advise you.
->>>
->>> Our AE says, windows use this method. HP is agree this usage.
->>
->> Windows does this likely because of possible power saving, not because
->> of pop noises.
->>
->> I'm fine to take the patch, but only when I'm convinced why it really
->> fixes the pop noise problem in the scenario below:
->> - playing a silent stream
->> - frequent open / close a stream
->>
->
-> You are right. It is the key points. But I think first stream will show 
-> pop noise. It was hard to remove.
-> Keep EAPD to high after first stream start maybe a good idea.
-> Thanks.
-> I think to request the machine is better.
-> I will let our AE to request the machine.
->
->>
->> Takashi
->>
->>
->>>
->>> >
->>> > Takashi
->>> >
->>> >>
->>> >> >
->>> >> >
->>> >> > thanks,
->>> >> >
->>> >> > Takashi
->>> >> >
->>> >> >> Many thanks.
->>> >> >>
->>> >> >> BR,
->>> >> >> Kailang
->>> >> >>
->>> >> >>
->>> >> >> > At Wed, 21 May 2014 13:58:14 +0800,
->>> >> >> > Kailang wrote:
->>> >> >> >>
->>> >> >> >>
->>> >> >> >> > At Tue, 20 May 2014 18:05:42 +0800,
->>> >> >> >> > Kailang wrote:
->>> >> >> >> >>
->>> >> >> >> >> > At Tue, 20 May 2014 17:20:44 +0800,
->>> >> >> >> >> > Kailang wrote:
->>> >> >> >> >> >>
->>> >> >> >> >> >>
->>> >> >> >> >> >> > At Tue, 20 May 2014 16:52:43 +0800,
->>> >> >> >> >> >> > Kailang wrote:
->>> >> >> >> >> >> >>
->>> >> >> >> >> >> >>
->>> >> >> >> >> >> >> > At Tue, 20 May 2014 15:15:49 +0800,
->>> >> >> >> >> >> >> > Kailang wrote:
->>> >> >> >> >> >> >> >>
->>> >> >> >> >> >> >> >> Hi Takashi,
->>> >> >> >> >> >> >> >>
->>> >> >> >> >> >> >> >> HP machine had pop noise via speaker.
->>> >> >> >> >> >> >> >> If EAPD on or off, speaker will have pop noise.
->>> >> >> >> >> >> >> >> So, they want to set eapd to follow with stream on 
->>> >> >> >> >> >> >> >> or
->>> >> >> >> >> >> >> >> off.
->>> >> >> >> >> >> >> >
->>> >> >> >> >> >> >> > I can apply this as is, but still I wonder whether 
->>> >> >> >> >> >> >> > this
->>> >> >> >> >> >> >> > results
->>> >> >> >> >> >> >> > in
->>> >> >> >> >> >> >> > other problems.  Doing EAPD on/off there means that 
->>> >> >> >> >> >> >> > it
->>> >> >> >> >> >> >> > happens
->>> >> >> >> >> >> >> > far
->>> >> >> >> >> >> >> > more often.  For example, what happens if you do 
->>> >> >> >> >> >> >> > like
->>> >> >> >> >> >> >> > below?
->>> >> >> >> >> >> >> >
->>> >> >> >> >> >> >> >     while true; do
->>> >> >> >> >> >> >> >       echo -n > /dev/snd/pcmC0D0p
->>> >> >> >> >> >> >> >     done
->>> >> >> >> >> >> >> >
->>> >> >> >> >> >> >> > And, what if the device is resumed from power-saving 
->>> >> >> >> >> >> >> > by
->>> >> >> >> >> >> >> > an
->>> >> >> >> >> >> >> > audio
->>> >> >> >> >> >> >> > playback?  Immediately after the power up, it'll 
->>> >> >> >> >> >> >> > start
->>> >> >> >> >> >> >> > the
->>> >> >> >> >> >> >> > streaming,
->>> >> >> >> >> >> >> > so it'll turn on EAPD.
->>> >> >> >> >> >> >> >
->>> >> >> >> >> >> >> > That said, isn't it just a need for some delay 
->>> >> >> >> >> >> >> > before
->>> >> >> >> >> >> >> > EAPD
->>> >> >> >> >> >> >> > on/off?
->>> >> >> >> >> >> >>
->>> >> >> >> >> >> >> No, eapd on or off will cause pop noise.
->>> >> >> >> >> >> >
->>> >> >> >> >> >> > Does it do always?
->>> >> >> >> >> >> No, pop noise just one pop sound. It can not remove by
->>> >> >> >> >> >> software.
->>> >> >> >> >> >> But this machine need to do this always.
->>> >> >> >> >> >
->>> >> >> >> >> > So, doing EAPD on/off often is rather worse.  It's what 
->>> >> >> >> >> > your
->>> >> >> >> >> > patch
->>> >> >> >> >> > does.
->>> >> >> >> >> >
->>> >> >> >> >> > Once again: did you try the script above?  If the pop 
->>> >> >> >> >> > noise
->>> >> >> >> >> > always
->>> >> >> >> >>
->>> >> >> >> >> I had try it on my develop machine. I have no HP issue 
->>> >> >> >> >> machine
->>> >> >> >> >> on
->>> >> >> >> >> my
->>> >> >> >> >> site.
->>> >> >> >> >>
->>> >> >> >> >> > happens, the operation like above is the worst scenario.
->>> >> >> >> >> >
->>> >> >> >> >> > Then, let's think again how to *reduce* it.  We need one 
->>> >> >> >> >> > EAPD
->>> >> >> >> >> > on
->>> >> >> >> >> > at
->>> >> >> >> >> > least after each power up.  But it's needed only when you
->>> >> >> >> >> > actually
->>> >> >> >> >> > plays a stream.  That is, we need only enable EAPD at 
->>> >> >> >> >> > playback
->>> >> >> >> >> > stream
->>> >> >> >> >> > open, but leave EAPD as is at close.
->>> >> >> >> >> >
->>> >> >> >> >>
->>> >> >> >> >> [we need only enable EAPD at playback stream open, but leave
->>> >> >> >> >> EAPD
->>> >> >> >> >> as
->>> >> >> >> >> is
->>> >> >> >> >> at
->>> >> >> >> >> close.]
->>> >> >> >> >> Yes.
->>> >> >> >> >> So, I need to create eapd low in alc269_shutup. Right?
->>> >> >> >> >
->>> >> >> >> > Better to create own shutup callback (you can call
->>> >> >> >> > alc269_shutup()
->>> >> >> >> > from there, too) and set it to spec->shutup in the fixup. 
->>> >> >> >> > The
->>> >> >> >> > pincfg
->>> >> >> >> > cleanup isn't often needed or may have bad effect.  You 
->>> >> >> >> > should
->>> >> >> >> > test
->>> >> >> >> > with real machines what are needed and what are not.
->>> >> >> >>
->>> >> >> >> static void alc290_fixup_pop_noise(struct hda_codec *codec,
->>> >> >> >>            const struct hda_fixup *fix, int action)
->>> >> >> >> {
->>> >> >> >>  struct alc_spec *spec = codec->spec;
->>> >> >> >>
->>> >> >> >>  if (action == HDA_FIXUP_ACT_PRE_PROBE) {
->>> >> >> >>   spec->gen.pcm_playback_hook = ALC290_playback_pcm_hook;
->>> >> >> >>  }
->>> >> >> >> if (action ==   HDA_FIXUP_ACT_INIT) {
->>> >> >> >>   set_eapd(codec, 0x14, false);
->>> >> >> >>  }
->>> >> >> >> }
->>> >> >> >>
->>> >> >> >> Could I modify as upper code?
->>> >> >> >> To set eapd low in HDA_FIXUP_ACT_INIT state.
->>> >> >> >> If system resume, it will initial eapd to low.
->>> >> >> >> To write eapd to same value, it will have no pop noise.
->>> >> >> >> It will keep always low for eapd, only stream open and close 
->>> >> >> >> have
->>> >> >> >> change
->>> >> >> >> state for eapd.
->>> >> >> >
->>> >> >> > Yes, it looks OK.
->>> >> >> >
->>> >> >> >
->>> >> >> > Takashi
->>> >> >> >
->>> >> >> >
->>> >> >> >>
->>> >> >> >> >
->>> >> >> >> >
->>> >> >> >> > Takashi
->>> >> >> >> >
->>> >> >> >> >>
->>> >> >> >> >> >
->>> >> >> >> >> > Takashi
->>> >> >> >> >> >
->>> >> >> >> >> >> >> Our customer just want to do eapd on when stream is 
->>> >> >> >> >> >> >> open.
->>> >> >> >> >> >> >> The pop noise will not clear. Because music gain was 
->>> >> >> >> >> >> >> biger
->>> >> >> >> >> >> >> than
->>> >> >> >> >> >> >> pop
->>> >> >> >> >> >> >> noise.
->>> >> >> >> >> >> >
->>> >> >> >> >> >> > Opening a stream doesn't mean that it follows the loud
->>> >> >> >> >> >> > sound
->>> >> >> >> >> >> > immediately.  The script above wouldn't produce any 
->>> >> >> >> >> >> > sound
->>> >> >> >> >> >> > but
->>> >> >> >> >> >> > just
->>> >> >> >> >> >> > does open/close the stream.  Did you try that?
->>> >> >> >> >> >> >
->>> >> >> >> >> >> >
->>> >> >> >> >> >> > Takashi
->>> >> >> >> >> >> >
->>> >> >> >> >> >> > ------Please consider the environment before printing 
->>> >> >> >> >> >> > this
->>> >> >> >> >> >> > e-mail.
->>> >> >> >> >> >>
->>> >> >> >> >>
->>> >> >> >>
->>> >> >> [2 0001-set-eapd-follow-stream-on-off.patch 
->>> >> >> <application/octet-stream
->>> >> >> (quoted-printable)>]
->>> >> >>
->>> >> >
->>> >> > ------Please consider the environment before printing this e-mail.
->>> >> [2 0002-set-eapd-follow-stream-on-off.patch <application/octet-stream
->>> >> (quoted-printable)>]
->>> >>
->>>
-> 
+ sound/firewire/bebob/bebob.h                     |  2 --
+ sound/firewire/bebob/bebob_stream.c              |  4 ++--
+ sound/firewire/fireworks/fireworks.c             |  1 -
+ sound/firewire/fireworks/fireworks.h             |  1 -
+ sound/firewire/fireworks/fireworks_hwdep.c       |  2 +-
+ sound/firewire/fireworks/fireworks_stream.c      |  4 ++--
+ sound/firewire/fireworks/fireworks_transaction.c | 18 +++++++++---------
+ 7 files changed, 14 insertions(+), 18 deletions(-)
+
+-- 
+1.8.3.2
