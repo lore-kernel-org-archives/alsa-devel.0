@@ -1,51 +1,54 @@
-From: Ben Dooks <ben@trinity.fluff.org>
-Subject: Re: [alsa-devel] r8a7790 only has audio when clock is forced on
-Date: Wed, 4 Jun 2014 10:38:18 +0100
-Message-ID: <20140604093818.GD19809@trinity.fluff.org>
-References: <538E0487.1010700@codethink.co.uk>
- <20140603214226.GA2520@sirena.org.uk>
- <87egz5ldtm.wl%kuninori.morimoto.gx@renesas.com>
- <538EE41D.3000500@codethink.co.uk>
- <CAMuHMdUKL7T0xmwz_Ji+ycLm3=S75V7tJD1wkB_wrud4gzLPBA@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: samsung: Add I2C dependency for snow
+Date: Wed, 04 Jun 2014 11:40:40 +0200
+Message-ID: <7290614.Z7JFMYFomx@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUKL7T0xmwz_Ji+ycLm3=S75V7tJD1wkB_wrud4gzLPBA@mail.gmail.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Violeta Menendez Gonzalez <violeta.menendez@codethink.co.uk>, linux-kernel@lists.codethink.co.uk, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-sh list <linux-sh@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Ben Dooks <ben.dooks@codethink.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA01E261A01
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 11:40:46 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, Tushar Behera <tushar.behera@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 04, 2014 at 11:33:14AM +0200, Geert Uytterhoeven wrote:
-> Hi Violeta,
-> 
-> On Wed, Jun 4, 2014 at 11:17 AM, Violeta Menendez Gonzalez
-> <violeta.menendez@codethink.co.uk> wrote:
-> >> - Which kernel are you using ?
-> >
-> > 3.15-rc1
-> >
-> >> - Does your kernel booted from legacy code (= using board-lager.c)
-> >>    or from DT code (= using board-lager-referenct.c) ?
-> >>
-> > DT code
-> 
-> Does applying commit 3c90c55dcde745bed81f6447f24ba96bda43d984
-> ("drivers: sh: compile drivers/sh/pm_runtime.c if ARCH_SHMOBILE_MULTI")
-> help?
+Both codecs used by snow, max98090 and max98095 require the use
+of I2C, so we can only select this driver if I2C is there, otherwise
+we get a build error like:
 
-We should have that in our tree (other things don't work). As a note,
-we did include a debug output showing the clock driver is writing the
-clock enables for these bits.
+codecs/max98090.c:2494:1: warning: data definition has no type or storage class [enabled by default]
+ module_i2c_driver(max98090_i2c_driver);
+ ^
+codecs/max98095.c:2443:1: warning: data definition has no type or storage class [enabled by default]
+ module_i2c_driver(max98095_i2c_driver);
+ ^
 
-The system is also not showing any signs of external aborts, which is
-indicative of trying to access an IP block when it is not clocked. I
-will sit down and see if we can debug through this once we've had a
-look at DMA.
+This adds one more I2C dependency to the hundreds we already
+have.
 
--- 
-Ben Dooks, ben@fluff.org, http://www.fluff.org/ben/
-
-Large Hadron Colada: A large Pina Colada that makes the universe disappear.
-
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Tushar Behera <tushar.behera@linaro.org>
+---
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index a7cb8f6..cb7be4f 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -232,7 +232,7 @@ config SND_SOC_LITTLEMILL
+ 
+ config SND_SOC_SNOW
+ 	tristate "Audio support for Google Snow boards"
+-	depends on SND_SOC_SAMSUNG
++	depends on SND_SOC_SAMSUNG && I2C
+ 	select SND_SOC_MAX98090
+ 	select SND_SOC_MAX98095
+ 	select SND_SAMSUNG_I2S
