@@ -1,45 +1,104 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: arizona: Implement TDM support for
-	Arizona	devices
-Date: Wed, 4 Jun 2014 09:08:08 +0100
-Message-ID: <20140604080808.GG11951@opensource.wolfsonmicro.com>
-References: <1401822370-5324-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20140603220607.GD2520@sirena.org.uk>
+From: Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: Re: [alsa-devel] r8a7790 only has audio when clock is forced on
+Date: Wed, 04 Jun 2014 10:02:54 +0100
+Message-ID: <538EE0BE.5030304@codethink.co.uk>
+References: <538E0487.1010700@codethink.co.uk>	<20140603214226.GA2520@sirena.org.uk> <87egz5ldtm.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D7EFC261A8C
- for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 10:08:08 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140603220607.GD2520@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <87egz5ldtm.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: Violeta Menendez Gonzalez <violeta.menendez@codethink.co.uk>, linux-kernel@lists.codethink.co.uk, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 03, 2014 at 11:06:07PM +0100, Mark Brown wrote:
-> On Tue, Jun 03, 2014 at 08:06:10PM +0100, Charles Keepax wrote:
+On 04/06/14 01:26, Kuninori Morimoto wrote:
 > 
-> > +	if (tdm_width && wl != tdm_width)
-> > +		arizona_aif_warn(dai, "Word length not equal to TDM width\n");
-> > +
+> Hi Violeta, Mark
 > 
-> Is it a problem to have say 16 bit words in a 32 bit TDM slot?  One of
-> the reasons this stuff sometimes gets used is to help out the other
-> connected device if it's having trouble configuring the "natural" clock
-> rates.  Ignoring LSBs shouldn't be an issue.
+>> Adding Morimoto-san who does most of the work on those drivers upstream
+>> - it's always best to CC relevant maintainers/developers on kernel stuff
+>> as things only on the lists are easily missed.  Not deleting context so
+>> he sees it.
+> 
+> Thank you for adding me.
+> I want to help you
+> 
+>>> We have a problem where audio on r8a7790 is not working due to it not
+>>> sending interrupts.
+> 
+> I need to ask you something
+> 
+> - Are you using lager board ?
+> - Which kernel are you using ?
+> - Does your kernel booted from legacy code (= using board-lager.c)
+>   or from DT code (= using board-lager-referenct.c) ?
+> 
+>> We've made a hack to force /mstp10_clks /on that makes the audio work.
+>> Further investigation showed that it's only needed to force SSI(ALL) on,
+>> but, as far as we know, the manual doesn't say anything about it having to
+>> be kept on.
+> 
+> YES. all SSI port needs SSI(ALL).
+> (Actually, all SRC needs SRC(ALL) too if you use it)
 
-A good point I will respin and take this out.
+The result of our investigation is as follows:
 
-Thanks,
-Charles
+- The clock code correctly enables SSI(ALL) but the audio does not work
+- If we force SSI(ALL) to be on all the time, we have working audio
+
+> Basically, R-Car sound is very complex IP.
+> The interrupt/data register/DMA selection are depends on your "data path"
+> 
+> This driver is producing many steps to use it.
+> 
+> At 1st, you can use "PIO transfer". this is not good performance,
+> but, very easy settings. you can check your basic setting by this.
+> (power/codec/pin/clock...)
+> 
+> The data path is..
+> 
+>           PIO
+>     [MEM] ---> [SSI]
+> 
+> Next step is "using DMA". but, R-Car sound has 2 DMAs (Audio DMAC/Audio DMAC peri peri)
+> And, these DMAC usage is complex too. So, you can use basic DMA transfer as DMA 1st step.
+> The data path is..
+> 
+>        Audio DMAC
+>     [MEM] ---> [SSI]
+> 
+> Next step is more complex. use SRC
+> 
+>                      Audio DMAC
+>         Audio DMAC    peri peri
+>     [MEM] ---> [SRC] --->[SSI]
+> 
+> Final step is using DVC
+> 
+>                             Audio DMAC
+>         Audio DMAC           peri peri
+>     [MEM] ---> [SRC] ---> [DVC] --->[SSI]
+> 
+> 
+> Actually, lagacy boot is supporting above all path.
+> But, DT boot is supporting 1st/2nd step only at this point
+> (On rsnd driver side, DMAEngine DT is not yet supporing)
+> I want to support 3rd/4th step on DT, but I'm busy now...
+> 
+> I pushed my local patches which are based on LTSI v3.4 + our original patches.
+> These are tring to use sound as legacy code (= not DT) for lager/koelsh.
+> Maybe not good fit too you, but can help ?
+> 
+> https://dl.dropboxusercontent.com/u/2774973/lager-koelsh-sound.tar.bz2
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-sh" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+
+
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
