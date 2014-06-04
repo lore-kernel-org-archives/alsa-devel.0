@@ -1,21 +1,19 @@
-From: Jordi Mallach <jordi@debian.org>
-Subject: Re: ALSA userspace release time?
-Date: Wed, 04 Jun 2014 12:44:20 +0200
-Message-ID: <1401878660.2891.4.camel@penyagolosa>
-References: <538D6AC8.1010208@canonical.com> <538D7221.6010802@perex.cz>
- <s5hmwdu5nax.wl%tiwai@suse.de>
+From: Tushar Behera <tushar.behera@linaro.org>
+Subject: Re: [PATCH] ASoC: samsung: Add I2C dependency for snow
+Date: Wed, 4 Jun 2014 16:56:05 +0530
+Message-ID: <CAHbNUh2tKh1zMM7xQ41sWEs6xwd5U5OyzewZQTC9wdPRTZ4nsA@mail.gmail.com>
+References: <7290614.Z7JFMYFomx@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tempesta.oskuro.net (tempesta.oskuro.net [92.243.30.96])
- by alsa0.perex.cz (Postfix) with ESMTP id E0461261B19
- for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 12:44:22 +0200 (CEST)
-Received: from penyagolosa.local (199.Red-79-154-11.dynamicIP.rima-tde.net
- [79.154.11.199])
- by tempesta.oskuro.net (Postfix) with ESMTPSA id 1D75F61CEE
- for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 12:44:01 +0200 (CEST)
-In-Reply-To: <s5hmwdu5nax.wl%tiwai@suse.de>
+Received: from mail-ob0-f172.google.com (mail-ob0-f172.google.com
+ [209.85.214.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3401A261B19
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 13:26:07 +0200 (CEST)
+Received: by mail-ob0-f172.google.com with SMTP id wp18so7516416obc.3
+ for <alsa-devel@alsa-project.org>; Wed, 04 Jun 2014 04:26:06 -0700 (PDT)
+In-Reply-To: <7290614.Z7JFMYFomx@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,31 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-RWwgZHQgMDMgZGUgMDYgZGUgMjAxNCBhIGxlcyAxMTo1NiArMDIwMCwgZW4vbmEgVGFrYXNoaSBJ
-d2FpIHZhCmVzY3JpdXJlOgo+IEF0IFR1ZSwgMDMgSnVuIDIwMTQgMDg6NTg6NDEgKzAyMDAsCj4g
-SmFyb3NsYXYgS3lzZWxhIHdyb3RlOgo+ID4gCj4gPiBEYXRlIDMuNi4yMDE0IDA4OjI3LCBEYXZp
-ZCBIZW5uaW5nc3NvbiB3cm90ZToKPiA+ID4gSGksCj4gPiA+IAo+ID4gPiBJdCB3YXMgYXJvdW5k
-IGEgeWVhciBzaW5jZSB3ZSBsYXN0IGhhZCBhIHJlbGVhc2Ugb2YgQUxTQSdzIHVzZXJzcGFjZSAK
-PiA+ID4gY29tcG9uZW50Lgo+ID4gPiAKPiA+ID4gSXMgaXQgcGVyaGFwcyB0aW1lIGZvciAxLjAu
-MjgsIG9yIGFyZSB3ZSB3YWl0aW5nIGZvciBzb21ldGhpbmcgdGhhdCAKPiA+ID4gd291bGQgYmUg
-bmljZSB0byBnZXQgaW4gZmlyc3Q/Cj4gPiA+IAo+ID4gPiBXZSd2ZSBjdXJyZW50bHkgZ290IGUg
-ZyBzcGVha2VyLXRlc3QgaW1wcm92ZW1lbnRzL2ZpeGVzLCAyLjEgc3Vycm91bmQgCj4gPiA+IHN1
-cHBvcnQsICJhbHNhY3RsIG1vbml0b3IiIGNvbW1hbmQsIGFuZCByYW5kb20gZml4ZXMgaGVyZSBh
-bmQgdGhlcmUuIAo+ID4gPiBTb3VuZHMgZ29vZCBlbm91Z2ggZm9yIGEgcmVsZWFzZSB0byBtZS4K
-PiA+ID4gCj4gPiAKPiA+IEhpLAo+ID4gCj4gPiAgIHllcywgSSBhbHNvIHRoaW5rIHRoYXQncyB0
-aW1lIHRvIHByZXBhcmUgdGhlIDEuMC4yOCByZWxlYXNlLiBJIHdpbGwKPiA+IHN0YXJ0IHRoZSB3
-b3JrIG9uIGl0Lgo+ID4gCj4gPiAgIElmIHNvbWVvbmUgaGFzIGFueSB3YWl0aW5nIGZpeCwgcGxl
-YXNlLCBsZXQgbWUga25vdyAuLi4KPiAKPiBOb3RoaW5nIGZyb20gbXkgc2lkZS4gIExldCdzIGdv
-IGZvcndhcmQhCgpJIGRvIGhhdmUgc29tZSBwYXRjaGVzIHRoYXQgSSBzZW50IGhlcmUgYW5kIHdl
-bnQgdW5ub3RpY2VkLgoKSSdsbCB0cnkgdG8gcGljayB0aGVtIHVwIGFuZCByZXNlbmQsIGJ1dCBz
-ZWUgbXkgcG9zdHMgb24gMjgvMDYvMjAxMyBhbmQKMDQvMDcvMjAxMywgZm9yIGV4YW1wbGUuCgot
-LSAKSm9yZGkgTWFsbGFjaCBQw6lyZXogIC0tICBEZWJpYW4gZGV2ZWxvcGVyICAgICBodHRwOi8v
-d3d3LmRlYmlhbi5vcmcvCmpvcmRpQHNpbmRvbWluaW8ubmV0ICAgICBqb3JkaUBkZWJpYW4ub3Jn
-ICAgICBodHRwOi8vd3d3LnNpbmRvbWluaW8ubmV0LwpHbnVQRyBwdWJsaWMga2V5IGluZm9ybWF0
-aW9uIGF2YWlsYWJsZSBhdCBodHRwOi8vb3NrdXJvLm5ldC8KCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 4 June 2014 15:10, Arnd Bergmann <arnd@arndb.de> wrote:
+> Both codecs used by snow, max98090 and max98095 require the use
+> of I2C, so we can only select this driver if I2C is there, otherwise
+> we get a build error like:
+>
+> codecs/max98090.c:2494:1: warning: data definition has no type or storage class [enabled by default]
+>  module_i2c_driver(max98090_i2c_driver);
+>  ^
+> codecs/max98095.c:2443:1: warning: data definition has no type or storage class [enabled by default]
+>  module_i2c_driver(max98095_i2c_driver);
+>  ^
+>
+> This adds one more I2C dependency to the hundreds we already
+> have.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Cc: Tushar Behera <tushar.behera@linaro.org>
+
+Thanks for the patch. I should have added this dependency while
+introducing this config option.
+
+Acked-by: Tushar Behera <tushar.behera@linaro.org>
+
+> ---
+> diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+> index a7cb8f6..cb7be4f 100644
+> --- a/sound/soc/samsung/Kconfig
+> +++ b/sound/soc/samsung/Kconfig
+> @@ -232,7 +232,7 @@ config SND_SOC_LITTLEMILL
+>
+>  config SND_SOC_SNOW
+>         tristate "Audio support for Google Snow boards"
+> -       depends on SND_SOC_SAMSUNG
+> +       depends on SND_SOC_SAMSUNG && I2C
+>         select SND_SOC_MAX98090
+>         select SND_SOC_MAX98095
+>         select SND_SAMSUNG_I2S
+>
+
+-- 
+Tushar Behera
