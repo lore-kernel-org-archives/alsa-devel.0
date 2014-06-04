@@ -1,16 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: Add I2C dependency for snow
-Date: Wed, 4 Jun 2014 16:45:49 +0100
-Message-ID: <20140604154549.GO2520@sirena.org.uk>
-References: <7290614.Z7JFMYFomx@wuerfel>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Recording support for Roland SD-50 USB Audio device
+Date: Wed, 04 Jun 2014 21:28:05 +0200
+Message-ID: <538F7345.7040008@ladisch.de>
+References: <538F0E19.7000708@sympatico.ca>
+ <BLU0-SMTP42B277A2F1597FFF1F391CAB220@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7544830479534934457=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D2C2F265071
- for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 17:46:09 +0200 (CEST)
-In-Reply-To: <7290614.Z7JFMYFomx@wuerfel>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 25087265163
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jun 2014 21:28:39 +0200 (CEST)
+In-Reply-To: <BLU0-SMTP42B277A2F1597FFF1F391CAB220@phx.gbl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, Tushar Behera <tushar.behera@linaro.org>
+To: =?UTF-8?B?RnJhbsOnb2lzIElzYWJlbGxl?= <isabellf@sympatico.ca>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============7544830479534934457==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3snK74p7ddXn3Qrx"
-Content-Disposition: inline
-
-
---3snK74p7ddXn3Qrx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jun 04, 2014 at 11:40:40AM +0200, Arnd Bergmann wrote:
-> Both codecs used by snow, max98090 and max98095 require the use
-> of I2C, so we can only select this driver if I2C is there, otherwise
-> we get a build error like:
-
-Applied, thanks.
-
---3snK74p7ddXn3Qrx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTjz8qAAoJELSic+t+oim9aWgP/1upHpdrZTKAqNP6HUpnX5uz
-hABJyJEBwd2gz8/Dks4HnL89Z1Ndm58qo/nNnG4Ko6LLwyORC0puskVBe+ZO9DW0
-O4J1FG5WH5N1GW84Vmr+51U8+/Vb1V6rjVT+jdIOJH63qsQw7w6s9517EiW8wEoU
-EBLGGC+FSR1WelYsD2LNCnEIRAaTQwdGJQlp91jelJQam3rHmZTpjDL3gcR+Fsnl
-hPoOzvhSbZOrxF4NfbThv1zmvYZA2sIgXHa5JMIfVW3oZzi//MH7vhnt7FwUKXIs
-yeoNmpEowh3bCPfr6CvcGk4DhxN1YJhVR/Ah5fY5rVLrvUpyvvYoQYRMon9qQW7g
-bExqgm6cI/WahnJ7CQsr/esnj7NnDfD/2lgLBDWLdNuZ9TXvXbCyqoFIUc4xA39E
-xtCxZU+m90zzuGf9miJkrsW3POo7iM7KkmrbmlXGWZ4CvYN9kPGz6hN4qyANfXlg
-x4Lv/RQI1+hQTlacxRkuMvV7VFsA51UJKcoEd7nYZmD79L5sp2Br7FWi8ziFkT5r
-+wH4uyPbox77fLs59E+GPQaw/lDy7VeiwPv1iMx9j7FBOT+izjG1iSGgG4b5R5jt
-auGEc+n+q0G7zoUl95IUvsM0JuKVxxMIX8UzZsYzfU8EYkcxYyEu0p1PY/v7D/Mp
-IQKL7mOtmtqaJSGuLDiM
-=zx18
------END PGP SIGNATURE-----
-
---3snK74p7ddXn3Qrx--
-
---===============7544830479534934457==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7544830479534934457==--
+RnJhbsOnb2lzIElzYWJlbGxlIHdyb3RlOgo+IE15IGFsc2EgY29uZmlndXJhdGlvbiBpcyBhdmFp
+bGFibGUgYXQgdGhlIGZvbGxvd2luZyBhZGRyZXNzOgo+Cj4gaHR0cDovL3d3dy5hbHNhLXByb2pl
+Y3Qub3JnL2RiLz9mPTE5YWVmZmQwZDMwZTk1MmZkZDEyZDU4OTkyOWZiZTJhMGY5OGFkN2YKCk9L
+LCB0aGUga2VybmVsIGlzIG5ldyBlbm91Z2guCgo+IEknbSB1bmFibGUgdG8gcmVjb3JkIHVzaW5n
+IHRoZSBSb2xhbmQgU0QtNTAgb24gTGludXguCgpBbmQgd2hlbiB5b3UncmUgcGxheWluZyBzb21l
+dGhpbmcgYXQgdGhlIHNhbWUgdGltZT8KCj4gVGhlcmUgaXMgc29tZXRoaW5nIG9kZCB3aXRoIHBs
+YXliYWNrIGFzIHdlbGwuIFdpdGggdGhlIHNvdW5kIGNvbnRyb2wKPiBwYW5lbCAoIHVuaXR5LWNv
+bnRyb2wtY2VudGVyICkuIFRoZSB0ZXN0IG91dHB1dCBvbmx5IHdvcmtzIHdoZW4gdGhlCj4gU0Qt
+NTAgaW5wdXQgaXMgc2VsZWN0ZWQgZnJvbSB0aGUgaW5wdXQgdGFiLgoKU28gaXQgd29ya3Mgb25s
+eSBpZiBib3RoIHBsYXliYWNrK2NhcHR1cmUgYXJlIHVzZWQ/Cgo+IFNvLCBJJ20gcHJldHR5IHN1
+cmUgdGhlcmUgaXMgc2ltcGx5IHNvbWUgbWl4IHVwIGluIHRoZSBtaXhlcgo+IGNvbmZpZ3VyYXRp
+b24uLi4KCklmIHNvLCB0aGUgY29uZmlndXJhdGlvbiBjYW5ub3QgYmUgYWNjZXNzZWQgZnJvbSB0
+aGUgY29tcHV0ZXIuCkNoZWNrIHRoZSBkZXZpY2Ugc2V0dGluZ3MuCihEbyB0aGUgY3VycmVudCBz
+ZXR0aW5ncyB3b3JrIHdpdGggV2luZG93cz8pCgoKUmVnYXJkcywKQ2xlbWVucwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
