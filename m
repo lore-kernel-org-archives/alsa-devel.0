@@ -1,58 +1,76 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: MMP audio needs sram support
-Date: Thu, 05 Jun 2014 12:40:04 +0200
-Message-ID: <4367111.vzeoBg4u5h@wuerfel>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: MMP audio needs sram support
+Date: Thu, 5 Jun 2014 12:35:26 +0100
+Message-ID: <20140605113526.GU2520@sirena.org.uk>
+References: <4367111.vzeoBg4u5h@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: broonie@kernel.org
+Content-Type: multipart/mixed; boundary="===============1716150280973364167=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B379B26549C
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2014 13:36:06 +0200 (CEST)
+In-Reply-To: <4367111.vzeoBg4u5h@wuerfel>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
 Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, lgirdwood@gmail.com, Haojian Zhuang <haojian.zhuang@gmail.com>, Qiao Zhou <zhouqiao@marvell.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
->From e7a94bb7fb871c73cc85712d89c1f48d0271c1be Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 5 Jun 2014 12:31:28 +0200
-Subject: [PATCH] ASoC: MMP audio needs sram support
 
-Building the pxa/mmp audio driver without support for the mmp
-sram driver enabled results in this link error:
+--===============1716150280973364167==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/Rh48Y0bnrojh5Wm"
+Content-Disposition: inline
 
-sound/built-in.o: In function `mmp_pcm_free_dma_buffers':
-:(.text+0x3e734): undefined reference to `sram_get_gpool'
-sound/built-in.o: In function `mmp_pcm_new':
-:(.text+0x3e7c0): undefined reference to `sram_get_gpool'
 
-The sram driver is cannot be manually enabled and needs to
-be turned on by selecting MMP_SRAM from each module that
-needs it, which is what this patch does.
+--/Rh48Y0bnrojh5Wm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Ideally, MMP should move over to the generic SRAM support, but
-for the moment, we can avoid the build error.
+On Thu, Jun 05, 2014 at 12:40:04PM +0200, Arnd Bergmann wrote:
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Eric Miao <eric.y.miao@gmail.com>
-Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: Qiao Zhou <zhouqiao@marvell.com>
+> Building the pxa/mmp audio driver without support for the mmp
+> sram driver enabled results in this link error:
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 42b305e..12a6da8 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -11,6 +11,7 @@ config SND_PXA2XX_SOC
- config SND_MMP_SOC
- 	bool "Soc Audio for Marvell MMP chips"
- 	depends on ARCH_MMP
-+	select MMP_SRAM
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	select SND_ARM
- 	help
+applied, thanks.
+
+--/Rh48Y0bnrojh5Wm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTkFX7AAoJELSic+t+oim9ms8QAI6NlhA3aSo/JDHjJVxauVAM
+AI8INH57X/wPNptBQDvoigRcTnleT9b3P164ECQUm9bgB71sbpf0QadGt19FAux5
+gYm8MyBf6QpJH/ZHohNryjwNnx/28dsJE1reC2dIpRx9beFriLapGQNIOo7Srhrp
+qznbtXWcMLI05LCniJsX+W59qeL3LkW0JH5Y/rX3yjLvjJDdM7DU55RhjVc6xWYs
+i2kGIYWH1dVGjg+XsX/da+rQUyXwnEbD5F12wglzwI5NBglJL1X0P/TDjSHAmGNq
+AF0VNrU2ZJHcg0wK70LhjMhuIFFVFW7onFz1oRUo1hBEnOCCgCMx1yxsXDXvcKpB
+/9j7egkM2xGYU8YJ6AIYdxAZpI1Iv2vOd/yo/Aa2iyW8Ti155ZOl8hXgrSb7zz0v
+ahLIUECDFBVjlfGkSVGZnNWNqQyBQB05o7bichU0gVRR7nEel4fz2Jq47MeZ9eHs
+bdY88WPDcI5vSNlU8Hm4jeJlEFp86V8VVy/fQJ72J0zUw9XgBQoVcL63HgmANmAO
+/XOydStHB/xl1c4b1493ejFJftF5l2lsD6KjyE+nzzs4SCCirW01T9+4V+9JBGH2
+9ak4bU5cTF/A12zZRIHILdrqQFKl6Lx/ORRHVFxexpRTV6yH4+R68LaJlDYna/nF
+beTRoUvSUSsGyMBQpwKt
+=nLay
+-----END PGP SIGNATURE-----
+
+--/Rh48Y0bnrojh5Wm--
+
+--===============1716150280973364167==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1716150280973364167==--
