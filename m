@@ -1,66 +1,39 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ASoC: sigmadsp: remove I2C support
-Date: Thu, 05 Jun 2014 17:29:01 +0200
-Message-ID: <6805774.tHfga8A7Qh@wuerfel>
-References: <6181626.txoA4bpImf@wuerfel> <4610731.9TBGyCy3TV@wuerfel>
- <53908B5B.10807@metafoo.de>
+From: =?UTF-8?Q?Fran=C3=A7ois_Isabelle?= <isabellf@sympatico.ca>
+Subject: Re: Recording support for Roland SD-50 USB Audio device
+Date: Thu, 5 Jun 2014 13:03:51 -0400
+Message-ID: <BAY172-DS298345BAEF06B9E17B4DEAB2D0@phx.gbl>
+References: <538F0E19.7000708@sympatico.ca>
+ <BLU0-SMTP42B277A2F1597FFF1F391CAB220@phx.gbl> <538F7345.7040008@ladisch.de>
+ <BLU0-SMTP80B49720644D01F16BA42BAB2D0@phx.gbl> <5390149A.9090107@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <53908B5B.10807@metafoo.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from BAY004-OMC4S25.hotmail.com (bay004-omc4s25.hotmail.com
+ [65.54.190.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id 017D3265671
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2014 19:03:20 +0200 (CEST)
+In-Reply-To: <5390149A.9090107@ladisch.de>
+Content-Language: fr-ca
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: 'Clemens Ladisch' <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 05 June 2014 17:23:07 Lars-Peter Clausen wrote:
-> On 06/05/2014 05:10 PM, Arnd Bergmann wrote:
-> > On Thursday 05 June 2014 16:55:47 Lars-Peter Clausen wrote:
-> >> On 06/05/2014 04:47 PM, Arnd Bergmann wrote:
-> >>> The newly added ADAU1781 codec comes with separate drivers for
-> >>> I2C and SPI modes, which gives us a new variation of the dependency
-> >>> problems: If SPI is enabled and the I2C core is a loadable module,
-> >>> selecting SND_SOC_ADAU1781_SPI as built-in leads to a link error because
-> >>> the common base code from sigmadsp.c now also gets built-in:
-> >>>
-> >>> sound/built-in.o: In function `sigma_action_write_i2c':
-> >>> :(.text+0x5d8d4): undefined reference to `i2c_master_send'
-> >>>
-> >>> Rather than adding yet more complex Kconfig logic, this converts the last
-> >>> user of process_sigma_firmware() to process_sigma_firmware_regmap(),
-> >>> which seems trivial after the driver itself now uses regmap as well.
-> >>> With that done, there is no more linker dependency from
-> >>> SND_SOC_ADAU1781_SPI to i2c_master_send.
-> >>>
-> >>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >>> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> >>
-> >> No this patch won't work. Regmap support for the adau1701 is rather limited
-> >> which is why we need native i2c support in the lib.
-> >
-> > Ah, I see.
-> >
-> >> But yea, I just noticed the same problem an hour ago and was thinking
-> >> hopefully I'll get to fixing this before it shows up in Arnd's randconfig
-> >> builds
-> >
-> > It's actually my second attempt after I finished writing the first patch
-> > for it. Is that better?
-> 
-> That will fix the symptoms of the issue for SND_SOC_ALL_CODECS, but the 
-> problem is still there. I'll send a patch which factors the regmap and I2C 
-> sigmadsp code out into their own modules.
-> 
-
-Ok, that sounds best, thanks!
-
-	Arnd
+PiBUaGlzIGlzIGJlY2F1c2Ugb2Ygc29tZSBlcnJvciBtZXNzYWdlIHRoYXQgd2FzIHJlcGVhdGVk
+IHRvbyBvZnRlbi4KPiBUaGF0IGNvbWVzIGJlZm9yZSB0aGVzZSAiY2FsbGJhY2tzIHN1cHByZXNz
+ZWQiPwo+IApPbmx5IHRoZSBkZXRlY3Rpb24gb2YgdGhlIGRldmljZS4KQnV0IHlvdSAga25vdyB3
+aGF0ID8hIEkgZm91bmQgYXQgdGhhdCB0aGUgZGV2aWNlIG5vIGxvbmdlciByZWNvcmRzIG9uIFdp
+bmRvd3MgZWl0aGVyIGFuZCBJIHRoaW5rIHRoZSBpbnB1dCBtaWdodCBiZSBicm9rZW4gKGJhcmVs
+eSBhdWRpYmxlIHdoaXRlIG5vaXNlIGF0IG1heGltdW0gZ2FpbikgLCBJJ2xsIGhhdmUgaXQgY2hl
+Y2tlZCBieSBhIHRlY2guCgpUaGFuayB5b3UKRnJhbsOnb2lzIAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
