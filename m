@@ -1,59 +1,133 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH 1/2] ALSA: soundcore: coding style fixes
-Date: Thu, 05 Jun 2014 16:14:11 +0200
-Message-ID: <53907B33.1050402@zonque.org>
-References: <1401970346-9043-1-git-send-email-zonque@gmail.com>	<s5hegz31mz0.wl%tiwai@suse.de>	<539077A7.1080007@zonque.org>
- <s5ha99r1m3u.wl%tiwai@suse.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: sigmadsp: remove I2C support
+Date: Thu, 05 Jun 2014 16:47:06 +0200
+Message-ID: <6181626.txoA4bpImf@wuerfel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F68E265626
- for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2014 16:14:13 +0200 (CEST)
-In-Reply-To: <s5ha99r1m3u.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/05/2014 04:12 PM, Takashi Iwai wrote:
-> At Thu, 05 Jun 2014 15:59:03 +0200,
-> Daniel Mack wrote:
->>
->> On 06/05/2014 03:53 PM, Takashi Iwai wrote:
->>> At Thu,  5 Jun 2014 14:12:25 +0200,
->>> Daniel Mack wrote:
->>>>
->>>> sound/sounc_core.c has a larger number of style issues. Fix them to make the
->>>> code more readable. No functional change.
->>>>
->>>> Signed-off-by: Daniel Mack <zonque@gmail.com>
->>>
->>> Thanks for the patches, but are you going to fix anything in these
->>> codes along with them?  Such coding style fixes just stir git history,
->>> which make often annoying for backporting or reviewing.  So, basically
->>> I'd take such cleanup patches only if the real fixes will come
->>> together.
->>
->> Yeah, I know that code is legacy. I was just skimming over the sources
->> to trace a bug report on alsa-user, and stumbled over so many style
->> issues that made reading the code harder than necessary that I couldn't
->> resist fixing them :)
-> 
-> Ah, you're looking at usb disconnection issue?  I just saw the thread
-> now...
+The newly added ADAU1781 codec comes with separate drivers for
+I2C and SPI modes, which gives us a new variation of the dependency
+problems: If SPI is enabled and the I2C core is a loadable module,
+selecting SND_SOC_ADAU1781_SPI as built-in leads to a link error because
+the common base code from sigmadsp.c now also gets built-in:
 
-Jup. I was hoping that I could reproduce it here, but failed. The I had
-a quick look at the code, but I didn't find anything yet ...
+sound/built-in.o: In function `sigma_action_write_i2c':
+:(.text+0x5d8d4): undefined reference to `i2c_master_send'
 
+Rather than adding yet more complex Kconfig logic, this converts the last
+user of process_sigma_firmware() to process_sigma_firmware_regmap(),
+which seems trivial after the driver itself now uses regmap as well.
+With that done, there is no more linker dependency from
+SND_SOC_ADAU1781_SPI to i2c_master_send.
 
-Daniel
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+---
+I hope this is the last ASoC patch I have for the moment, sorry for spamming
+everybody ;-)
+
+ sound/soc/codecs/adau1701.c |  5 +++--
+ sound/soc/codecs/sigmadsp.c | 27 ---------------------------
+ sound/soc/codecs/sigmadsp.h |  3 ---
+ 3 files changed, 3 insertions(+), 32 deletions(-)
+
+diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+index d71c59c..1b5e306 100644
+--- a/sound/soc/codecs/adau1701.c
++++ b/sound/soc/codecs/adau1701.c
+@@ -239,7 +239,6 @@ static int adau1701_reg_read(void *context, unsigned int reg,
+ static int adau1701_reset(struct snd_soc_codec *codec, unsigned int clkdiv)
+ {
+ 	struct adau1701 *adau1701 = snd_soc_codec_get_drvdata(codec);
+-	struct i2c_client *client = to_i2c_client(codec->dev);
+ 	int ret;
+ 
+ 	if (clkdiv != ADAU1707_CLKDIV_UNSET &&
+@@ -282,7 +281,9 @@ static int adau1701_reset(struct snd_soc_codec *codec, unsigned int clkdiv)
+ 	 * know the correct PLL setup
+ 	 */
+ 	if (clkdiv != ADAU1707_CLKDIV_UNSET) {
+-		ret = process_sigma_firmware(client, ADAU1701_FIRMWARE);
++		ret = process_sigma_firmware_regmap(codec->dev,
++						    adau1701->regmap,
++						    ADAU1701_FIRMWARE);
+ 		if (ret) {
+ 			dev_warn(codec->dev, "Failed to load firmware\n");
+ 			return ret;
+diff --git a/sound/soc/codecs/sigmadsp.c b/sound/soc/codecs/sigmadsp.c
+index 4068f24..209f98f 100644
+--- a/sound/soc/codecs/sigmadsp.c
++++ b/sound/soc/codecs/sigmadsp.c
+@@ -10,7 +10,6 @@
+ #include <linux/delay.h>
+ #include <linux/firmware.h>
+ #include <linux/kernel.h>
+-#include <linux/i2c.h>
+ #include <linux/regmap.h>
+ #include <linux/module.h>
+ 
+@@ -198,30 +197,6 @@ static int _process_sigma_firmware(struct device *dev,
+ 	return ret;
+ }
+ 
+-#if IS_ENABLED(CONFIG_I2C)
+-
+-static int sigma_action_write_i2c(void *control_data,
+-	const struct sigma_action *sa, size_t len)
+-{
+-	return i2c_master_send(control_data, (const unsigned char *)&sa->addr,
+-		len);
+-}
+-
+-int process_sigma_firmware(struct i2c_client *client, const char *name)
+-{
+-	struct sigma_firmware ssfw;
+-
+-	ssfw.control_data = client;
+-	ssfw.write = sigma_action_write_i2c;
+-
+-	return _process_sigma_firmware(&client->dev, &ssfw, name);
+-}
+-EXPORT_SYMBOL(process_sigma_firmware);
+-
+-#endif
+-
+-#if IS_ENABLED(CONFIG_REGMAP)
+-
+ static int sigma_action_write_regmap(void *control_data,
+ 	const struct sigma_action *sa, size_t len)
+ {
+@@ -241,6 +216,4 @@ int process_sigma_firmware_regmap(struct device *dev, struct regmap *regmap,
+ }
+ EXPORT_SYMBOL(process_sigma_firmware_regmap);
+ 
+-#endif
+-
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/sigmadsp.h b/sound/soc/codecs/sigmadsp.h
+index e439cbd..38a455b 100644
+--- a/sound/soc/codecs/sigmadsp.h
++++ b/sound/soc/codecs/sigmadsp.h
+@@ -12,9 +12,6 @@
+ #include <linux/device.h>
+ #include <linux/regmap.h>
+ 
+-struct i2c_client;
+-
+-extern int process_sigma_firmware(struct i2c_client *client, const char *name);
+ extern int process_sigma_firmware_regmap(struct device *dev,
+ 		struct regmap *regmap, const char *name);
