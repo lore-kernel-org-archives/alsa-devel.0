@@ -1,17 +1,19 @@
-From: =?UTF-8?B?RnJhbsOnb2lzIElzYWJlbGxl?= <isabellf@sympatico.ca>
-Subject: Re: Recording support for Roland SD-50 USB Audio device
-Date: Wed, 4 Jun 2014 20:15:59 -0400
-Message-ID: <BLU0-SMTP80B49720644D01F16BA42BAB2D0@phx.gbl>
-References: <538F0E19.7000708@sympatico.ca>
- <BLU0-SMTP42B277A2F1597FFF1F391CAB220@phx.gbl> <538F7345.7040008@ladisch.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Rate or plug plugin issue with snd-pcsp
+Date: Thu, 5 Jun 2014 12:53:34 +0800
+Message-ID: <CAN8cciZ0dNvA+SYJ2xTRadC2LdrcuhO7UK8CMCrF+zm+d6q6qw@mail.gmail.com>
+References: <538D7F4B.8090009@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from BLU004-OMC3S10.hotmail.com (blu004-omc3s10.hotmail.com
- [65.55.116.85]) by alsa0.perex.cz (Postfix) with ESMTP id CD76726516E
- for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2014 02:16:06 +0200 (CEST)
-In-Reply-To: <538F7345.7040008@ladisch.de>
+Received: from mail-qg0-f53.google.com (mail-qg0-f53.google.com
+ [209.85.192.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id F092A2651D2
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2014 06:53:35 +0200 (CEST)
+Received: by mail-qg0-f53.google.com with SMTP id f51so750945qge.26
+ for <alsa-devel@alsa-project.org>; Wed, 04 Jun 2014 21:53:35 -0700 (PDT)
+In-Reply-To: <538D7F4B.8090009@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-CkxlIDA0LzA2LzIwMTQgMTU6MjgsIENsZW1lbnMgTGFkaXNjaCBhIMOpY3JpdCA6Cj4gRnJhbsOn
-b2lzIElzYWJlbGxlIHdyb3RlOgo+PiBNeSBhbHNhIGNvbmZpZ3VyYXRpb24gaXMgYXZhaWxhYmxl
-IGF0IHRoZSBmb2xsb3dpbmcgYWRkcmVzczoKPj4KPj4gaHR0cDovL3d3dy5hbHNhLXByb2plY3Qu
-b3JnL2RiLz9mPTE5YWVmZmQwZDMwZTk1MmZkZDEyZDU4OTkyOWZiZTJhMGY5OGFkN2YKPiBPSywg
-dGhlIGtlcm5lbCBpcyBuZXcgZW5vdWdoLgp5ZXMsIEknbSBvbiBVYnVudHUgMTQuMDQKPgo+PiBJ
-J20gdW5hYmxlIHRvIHJlY29yZCB1c2luZyB0aGUgUm9sYW5kIFNELTUwIG9uIExpbnV4Lgo+IEFu
-ZCB3aGVuIHlvdSdyZSBwbGF5aW5nIHNvbWV0aGluZyBhdCB0aGUgc2FtZSB0aW1lPwpJIGRpZG4n
-dCB0cnkgdGhhdCBzbyBJIGp1c3QgZGlkOiBubyBzdWNjZXNzLgoKCkkgbm90aWNlZCBhIGJ1bmNo
-IG9mIHRoZXNlIGluIHRoZSBrZXJuZWwgbG9ncywgd29uZGVyaW5nIGlmIHRoZXkgY291bGQgCmhh
-dmUgYW4gZWZmZWN0IC4uLgoKNzQ1OTMuOTExNzgyXSByZXRpcmVfcGxheWJhY2tfdXJiOiA4Mjcg
-Y2FsbGJhY2tzIHN1cHByZXNzZWQKWzc0NjgyLjc5Nzc5OF0gcmV0aXJlX3BsYXliYWNrX3VyYjog
-ODI3IGNhbGxiYWNrcyBzdXBwcmVzc2VkCls3NDY4Ny44MTI1NjFdIHJldGlyZV9wbGF5YmFja191
-cmI6IDgzMSBjYWxsYmFja3Mgc3VwcHJlc3NlZApbNzQ2OTIuODI3MzM2XSByZXRpcmVfcGxheWJh
-Y2tfdXJiOiA4MzIgY2FsbGJhY2tzIHN1cHByZXNzZWQKWzc0Njk3Ljg0MjEwOF0gcmV0aXJlX3Bs
-YXliYWNrX3VyYjogODMyIGNhbGxiYWNrcyBzdXBwcmVzc2VkCls3NDcwMi44NTY4NzRdIHJldGly
-ZV9wbGF5YmFja191cmI6IDgzMiBjYWxsYmFja3Mgc3VwcHJlc3NlZAoKCj4KPj4gVGhlcmUgaXMg
-c29tZXRoaW5nIG9kZCB3aXRoIHBsYXliYWNrIGFzIHdlbGwuIFdpdGggdGhlIHNvdW5kIGNvbnRy
-b2wKPj4gcGFuZWwgKCB1bml0eS1jb250cm9sLWNlbnRlciApLiBUaGUgdGVzdCBvdXRwdXQgb25s
-eSB3b3JrcyB3aGVuIHRoZQo+PiBTRC01MCBpbnB1dCBpcyBzZWxlY3RlZCBmcm9tIHRoZSBpbnB1
-dCB0YWIuCj4gU28gaXQgd29ya3Mgb25seSBpZiBib3RoIHBsYXliYWNrK2NhcHR1cmUgYXJlIHVz
-ZWQ/ClRoYXQncyBub3Qgd2hhdCBJIG1lYW50LiBJIG1lYW4gdGhhdCB0aGUgIFNELTUwIG91dHB1
-dCB1c2luZyBwdWxzZWF1ZGlvIApvbmx5IHNlZW1zIHRvIHdvcmsgd2hlbiB0aGUgcHVsc2UgYXVk
-aW8gZGVmYXVsdCBpbnB1dCBpcyBzZXQgdG8gdGhlIApTRC01MCBhcyB3ZWxsLgpJIHRoaW5rIEkg
-c2hvdWxkIHByb2JhYmx5IGdldCBwdWxzZWF1ZGlvIG91dCBvZiB0aGUgbWl4IGZvciBub3csIGFu
-ZCAKZm9jdXMgb24gdGhlIGNvcmUgYWxzYSBzdXBwb3J0LgpJcyB0aGlzIFNELTUwIGNhcmQgIGtu
-b3duIHRvIHdvcmsgPwo+Cj4+IFNvLCBJJ20gcHJldHR5IHN1cmUgdGhlcmUgaXMgc2ltcGx5IHNv
-bWUgbWl4IHVwIGluIHRoZSBtaXhlcgo+PiBjb25maWd1cmF0aW9uLi4uCj4gSWYgc28sIHRoZSBj
-b25maWd1cmF0aW9uIGNhbm5vdCBiZSBhY2Nlc3NlZCBmcm9tIHRoZSBjb21wdXRlci4KPiBDaGVj
-ayB0aGUgZGV2aWNlIHNldHRpbmdzLgo+IChEbyB0aGUgY3VycmVudCBzZXR0aW5ncyB3b3JrIHdp
-dGggV2luZG93cz8pClRoZXJlIGlzIHZlcnkgbGl0dGxlIGNvbmZpZ3VyYXRpb24gcGFyYW1ldGVy
-cyBvbiB0aGUgZGV2aWNlIGl0c2VsZiwgCmV4Y2VwdCBpbnB1dCBzZWxlY3Rpb24gZm9yIG1pYy9n
-dWl0YXIgYW5kIHBvd2VyIHNlbGVjdGlvbiBiZXR3ZWVuIGJ1cyAKYW5kIHBvd2VyIGNvcmQuIEl0
-IHdhcyB3b3JraW5nIHdpdGggd2luZG93cyBsYXN0IHRpbWUgSSBjaGVja2VkIGFuZCBJIApkaWRu
-J3QgY2hhbmdlIGl0LgoKUmlnaHQgbm93LCBJJ20gbm90IGdldHRpbmcgYW55IG91dHB1dCB3aGVu
-IHVzaW5nOgogIHBhc3VzcGVuZGVyIC0tICBzcGVha2VyLXRlc3QgLURwbHVnaHc6MwoKQnV0IGlm
-IEkgZGVzZWxlY3QgYW5kIHJlc2VsZWN0IHRoZSBpbnB1dCBkZXZpY2UgaW4gdGhlIGF1ZGlvIGNv
-bnRyb2wgCnBhbmVsIG9yIHNlbGVjdCB0aGUgUy9QRElGIG91cHV0IGluc3RlYWQgKHdoaWNoIHRo
-ZSB1bml0IGRvZXMgbm90IGhhdmUpIAp0aGUgc291bmQgcGFuZWwgYnVpbHQtaW4gc291bmQgY2hl
-Y2sgc3RhcnRzIHdvcmtpbmcgYWdhaW4uLgoKVGhpcyBpcyBhIGJpZyBzbmFmdSBzdGF0ZS4KCkxv
-b2tpbmcgZm9yd2FyZCBmb3Igc29tZSB0cm91Ymxlc2hvb3RpbmcgLi4uClRoYW5rcy4KRnJhbsOn
-b2lzLgoKPgo+Cj4gUmVnYXJkcywKPiBDbGVtZW5zCj4gX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+>
+> While testing application support for weird-rate cards (such as
+snd-pcsp), I found a bug in alsa-lib. Alsa-plugins are installed, so the
+"libspeex (builtin)" rate converter is used. This bug already exists in
+alsa-plugins 1.0.27.2, so not a regression and thus should not block 1.0.28.
+>
+> $ file test.wav
+> test.wav: RIFF (little-endian) data, WAVE audio, Microsoft PCM, 16 bit,
+stereo 32000 Hz
+>
+> $ aplay -vvv -D plughw:pcsp test.wav
+> Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 32000 Hz,
+Stereo
+> aplay: set_params:1297: Unable to install hw params:
+> ACCESS:  RW_INTERLEAVED
+> FORMAT:  S16_LE
+> SUBFORMAT:  STD
+> SAMPLE_BITS: 16
+> FRAME_BITS: 32
+> CHANNELS: 2
+> RATE: NONE
+> PERIOD_TIME: (125006 125007)
+> PERIOD_SIZE: NONE
+> PERIOD_BYTES: (16000 16004)
+> PERIODS: (3 4)
+> BUFFER_TIME: 500000
+> BUFFER_SIZE: 16000
+> BUFFER_BYTES: 64000
+> TICK_TIME: 0
+>
+> The pcsp device supports the sample rate of 37286 Hz.
+
+PERIOD_SIZE: NONE
+
+Seem driver bug which use sndrv_pcm_rate_knot when only support single rate
+and
+
+The constraint refinement  need driver  usIng equal size periods
+
+snd_pcm_hw_constraint_integer(runtime,
+   SNDRV_PCM_HW_PARAM_PERIODS)
