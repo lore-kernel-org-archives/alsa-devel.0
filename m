@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: MMP audio needs sram support
-Date: Thu, 5 Jun 2014 12:35:26 +0100
-Message-ID: <20140605113526.GU2520@sirena.org.uk>
-References: <4367111.vzeoBg4u5h@wuerfel>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH 1/2] ALSA: soundcore: coding style fixes
+Date: Thu,  5 Jun 2014 14:12:25 +0200
+Message-ID: <1401970346-9043-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1716150280973364167=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B379B26549C
- for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2014 13:36:06 +0200 (CEST)
-In-Reply-To: <4367111.vzeoBg4u5h@wuerfel>
+Received: from mail-wg0-f46.google.com (mail-wg0-f46.google.com [74.125.82.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id E584E2650B3
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jun 2014 14:12:33 +0200 (CEST)
+Received: by mail-wg0-f46.google.com with SMTP id b13so778021wgh.29
+ for <alsa-devel@alsa-project.org>; Thu, 05 Jun 2014 05:12:33 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +20,451 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, lgirdwood@gmail.com, Haojian Zhuang <haojian.zhuang@gmail.com>, Qiao Zhou <zhouqiao@marvell.com>, linux-arm-kernel@lists.infradead.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+sound/sounc_core.c has a larger number of style issues. Fix them to make the
+code more readable. No functional change.
 
---===============1716150280973364167==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/Rh48Y0bnrojh5Wm"
-Content-Disposition: inline
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/sound_core.c | 192 ++++++++++++++++++++++++-----------------------------
+ 1 file changed, 85 insertions(+), 107 deletions(-)
 
-
---/Rh48Y0bnrojh5Wm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jun 05, 2014 at 12:40:04PM +0200, Arnd Bergmann wrote:
-
-> Building the pxa/mmp audio driver without support for the mmp
-> sram driver enabled results in this link error:
-
-applied, thanks.
-
---/Rh48Y0bnrojh5Wm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTkFX7AAoJELSic+t+oim9ms8QAI6NlhA3aSo/JDHjJVxauVAM
-AI8INH57X/wPNptBQDvoigRcTnleT9b3P164ECQUm9bgB71sbpf0QadGt19FAux5
-gYm8MyBf6QpJH/ZHohNryjwNnx/28dsJE1reC2dIpRx9beFriLapGQNIOo7Srhrp
-qznbtXWcMLI05LCniJsX+W59qeL3LkW0JH5Y/rX3yjLvjJDdM7DU55RhjVc6xWYs
-i2kGIYWH1dVGjg+XsX/da+rQUyXwnEbD5F12wglzwI5NBglJL1X0P/TDjSHAmGNq
-AF0VNrU2ZJHcg0wK70LhjMhuIFFVFW7onFz1oRUo1hBEnOCCgCMx1yxsXDXvcKpB
-/9j7egkM2xGYU8YJ6AIYdxAZpI1Iv2vOd/yo/Aa2iyW8Ti155ZOl8hXgrSb7zz0v
-ahLIUECDFBVjlfGkSVGZnNWNqQyBQB05o7bichU0gVRR7nEel4fz2Jq47MeZ9eHs
-bdY88WPDcI5vSNlU8Hm4jeJlEFp86V8VVy/fQJ72J0zUw9XgBQoVcL63HgmANmAO
-/XOydStHB/xl1c4b1493ejFJftF5l2lsD6KjyE+nzzs4SCCirW01T9+4V+9JBGH2
-9ak4bU5cTF/A12zZRIHILdrqQFKl6Lx/ORRHVFxexpRTV6yH4+R68LaJlDYna/nF
-beTRoUvSUSsGyMBQpwKt
-=nLay
------END PGP SIGNATURE-----
-
---/Rh48Y0bnrojh5Wm--
-
---===============1716150280973364167==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1716150280973364167==--
+diff --git a/sound/sound_core.c b/sound/sound_core.c
+index 11e953a..bf9e41e 100644
+--- a/sound/sound_core.c
++++ b/sound/sound_core.c
+@@ -68,21 +68,16 @@ module_exit(cleanup_soundcore);
+ #ifdef CONFIG_SOUND_OSS_CORE
+ /*
+  *	OSS sound core handling. Breaks out sound functions to submodules
+- *	
+- *	Author:		Alan Cox <alan@lxorguk.ukuu.org.uk>
+- *
+- *	Fixes:
+  *
++ *	Author:		Alan Cox <alan@lxorguk.ukuu.org.uk>
+  *
+  *	This program is free software; you can redistribute it and/or
+  *	modify it under the terms of the GNU General Public License
+  *	as published by the Free Software Foundation; either version
+  *	2 of the License, or (at your option) any later version.
+  *
+- *                         --------------------
+- * 
+  *	Top level handler for the sound subsystem. Various devices can
+- *	plug into this. The fact they don't all go via OSS doesn't mean 
++ *	plug into this. The fact they don't all go via OSS doesn't mean
+  *	they don't have to implement the OSS API. There is a lot of logic
+  *	to keeping much of the OSS weight out of the code in a compatibility
+  *	module, but it's up to the driver to rember to load it...
+@@ -111,8 +106,7 @@ module_exit(cleanup_soundcore);
+ 
+ #define SOUND_STEP 16
+ 
+-struct sound_unit
+-{
++struct sound_unit {
+ 	int unit_minor;
+ 	const struct file_operations *unit_fops;
+ 	struct sound_unit *next;
+@@ -158,8 +152,7 @@ module_param(preclaim_oss, int, 0444);
+ 
+ static int soundcore_open(struct inode *, struct file *);
+ 
+-static const struct file_operations soundcore_fops =
+-{
++static const struct file_operations soundcore_fops = {
+ 	/* We must have an owner or the module locking fails */
+ 	.owner	= THIS_MODULE,
+ 	.open	= soundcore_open,
+@@ -171,71 +164,66 @@ static const struct file_operations soundcore_fops =
+  *	join into it. Called with the lock asserted
+  */
+ 
+-static int __sound_insert_unit(struct sound_unit * s, struct sound_unit **list, const struct file_operations *fops, int index, int low, int top)
++static int __sound_insert_unit(struct sound_unit *s, struct sound_unit **list,
++			       const struct file_operations *fops,
++			       int index, int low, int top)
+ {
+-	int n=low;
++	int n = low;
+ 
+ 	if (index < 0) {	/* first free */
++		while (*list && (*list)->unit_minor < n)
++			list = &((*list)->next);
+ 
+-		while (*list && (*list)->unit_minor<n)
+-			list=&((*list)->next);
+-
+-		while(n<top)
+-		{
++		while (n < top) {
+ 			/* Found a hole ? */
+-			if(*list==NULL || (*list)->unit_minor>n)
++			if (*list == NULL || (*list)->unit_minor > n)
+ 				break;
+-			list=&((*list)->next);
+-			n+=SOUND_STEP;
++
++			list = &((*list)->next);
++			n += SOUND_STEP;
+ 		}
+ 
+-		if(n>=top)
++		if (n >= top)
+ 			return -ENOENT;
+ 	} else {
+-		n = low+(index*16);
++		n = low + (index * 16);
+ 		while (*list) {
+-			if ((*list)->unit_minor==n)
++			if ((*list)->unit_minor == n)
+ 				return -EBUSY;
+-			if ((*list)->unit_minor>n)
++			if ((*list)->unit_minor > n)
+ 				break;
+-			list=&((*list)->next);
++			list = &((*list)->next);
+ 		}
+-	}	
+-		
+-	/*
+-	 *	Fill it in
+-	 */
+-	 
+-	s->unit_minor=n;
+-	s->unit_fops=fops;
+-	
+-	/*
+-	 *	Link it
+-	 */
+-	 
+-	s->next=*list;
+-	*list=s;
+-	
+-	
++	}
++
++	/* Fill it in */
++	s->unit_minor = n;
++	s->unit_fops = fops;
++
++	/* Link it */
++	s->next = *list;
++	*list = s;
++
+ 	return n;
+ }
+ 
+ /*
+  *	Remove a node from the chain. Called with the lock asserted
+  */
+- 
+-static struct sound_unit *__sound_remove_unit(struct sound_unit **list, int unit)
++static struct sound_unit *__sound_remove_unit(struct sound_unit **list,
++					      int unit)
+ {
+-	while(*list)
+-	{
+-		struct sound_unit *p=*list;
+-		if(p->unit_minor==unit)
+-		{
+-			*list=p->next;
++	while (*list) {
++		struct sound_unit *p = *list;
++
++		if (p->unit_minor == unit) {
++			*list = p->next;
+ 			return p;
+ 		}
+-		list=&(p->next);
++
++		list = &p->next;
+ 	}
++
+ 	printk(KERN_ERR "Sound device %d went missing!\n", unit);
+ 	return NULL;
+ }
+@@ -250,12 +238,15 @@ static DEFINE_SPINLOCK(sound_loader_lock);
+  *	Allocate the controlling structure and add it to the sound driver
+  *	list. Acquires locks as needed
+  */
+-
+-static int sound_insert_unit(struct sound_unit **list, const struct file_operations *fops, int index, int low, int top, const char *name, umode_t mode, struct device *dev)
++static int sound_insert_unit(struct sound_unit **list,
++			     const struct file_operations *fops,
++			     int index, int low, int top, const char *name,
++			     umode_t mode, struct device *dev)
+ {
+-	struct sound_unit *s = kmalloc(sizeof(*s), GFP_KERNEL);
++	struct sound_unit *s;
+ 	int r;
+ 
++	s = kmalloc(sizeof(*s), GFP_KERNEL);
+ 	if (!s)
+ 		return -ENOMEM;
+ 
+@@ -263,7 +254,7 @@ static int sound_insert_unit(struct sound_unit **list, const struct file_operati
+ retry:
+ 	r = __sound_insert_unit(s, list, fops, index, low, top);
+ 	spin_unlock(&sound_loader_lock);
+-	
++
+ 	if (r < 0)
+ 		goto fail;
+ 	else if (r < SOUND_STEP)
+@@ -292,7 +283,8 @@ retry:
+ 	}
+ 
+ 	device_create(sound_class, dev, MKDEV(SOUND_MAJOR, s->unit_minor),
+-		      NULL, "%s", s->name+6);
++		      NULL, "%s", s->name + 6);
++
+ 	return s->unit_minor;
+ 
+ fail:
+@@ -305,7 +297,6 @@ fail:
+  *	completed the removal before their file operations become
+  *	invalid.
+  */
+- 	
+ static void sound_remove_unit(struct sound_unit **list, int unit)
+ {
+ 	struct sound_unit *p;
+@@ -357,7 +348,6 @@ static struct sound_unit *chains[SOUND_STEP];
+  *	Return: The allocated number is returned on success. On failure,
+  *	a negative error code is returned.
+  */
+- 
+ int register_sound_special_device(const struct file_operations *fops, int unit,
+ 				  struct device *dev)
+ {
+@@ -367,69 +357,66 @@ int register_sound_special_device(const struct file_operations *fops, int unit,
+ 	char _name[16];
+ 
+ 	switch (chain) {
+-	    case 0:
++	case 0:
+ 		name = "mixer";
+ 		break;
+-	    case 1:
++	case 1:
+ 		name = "sequencer";
+ 		if (unit >= SOUND_STEP)
+ 			goto __unknown;
+ 		max_unit = unit + 1;
+ 		break;
+-	    case 2:
++	case 2:
+ 		name = "midi";
+ 		break;
+-	    case 3:
++	case 3:
+ 		name = "dsp";
+ 		break;
+-	    case 4:
++	case 4:
+ 		name = "audio";
+ 		break;
+-	    case 5:
++	case 5:
+ 		name = "dspW";
+ 		break;
+-	    case 8:
++	case 8:
+ 		name = "sequencer2";
+ 		if (unit >= SOUND_STEP)
+ 			goto __unknown;
+ 		max_unit = unit + 1;
+ 		break;
+-	    case 9:
++	case 9:
+ 		name = "dmmidi";
+ 		break;
+-	    case 10:
++	case 10:
+ 		name = "dmfm";
+ 		break;
+-	    case 12:
++	case 12:
+ 		name = "adsp";
+ 		break;
+-	    case 13:
++	case 13:
+ 		name = "amidi";
+ 		break;
+-	    case 14:
++	case 14:
+ 		name = "admmidi";
+ 		break;
+-	    default:
+-	    	{
+-		    __unknown:
+-			sprintf(_name, "unknown%d", chain);
+-		    	if (unit >= SOUND_STEP)
+-		    		strcat(_name, "-");
+-		    	name = _name;
+-		}
++	default:
++__unknown:
++		sprintf(_name, "unknown%d", chain);
++		if (unit >= SOUND_STEP)
++			strcat(_name, "-");
++		name = _name;
+ 		break;
+ 	}
++
+ 	return sound_insert_unit(&chains[chain], fops, -1, unit, max_unit,
+ 				 name, S_IRUSR | S_IWUSR, dev);
+ }
+- 
+ EXPORT_SYMBOL(register_sound_special_device);
+ 
+ int register_sound_special(const struct file_operations *fops, int unit)
+ {
+ 	return register_sound_special_device(fops, unit, NULL);
+ }
+-
+ EXPORT_SYMBOL(register_sound_special);
+ 
+ /**
+@@ -443,13 +430,11 @@ EXPORT_SYMBOL(register_sound_special);
+  *	Return: On success, the allocated number is returned. On failure,
+  *	a negative error code is returned.
+  */
+-
+ int register_sound_mixer(const struct file_operations *fops, int dev)
+ {
+ 	return sound_insert_unit(&chains[0], fops, dev, 0, 128,
+ 				 "mixer", S_IRUSR | S_IWUSR, NULL);
+ }
+-
+ EXPORT_SYMBOL(register_sound_mixer);
+ 
+ /**
+@@ -469,14 +454,13 @@ int register_sound_midi(const struct file_operations *fops, int dev)
+ 	return sound_insert_unit(&chains[2], fops, dev, 2, 130,
+ 				 "midi", S_IRUSR | S_IWUSR, NULL);
+ }
+-
+ EXPORT_SYMBOL(register_sound_midi);
+ 
+ /*
+  *	DSP's are registered as a triple. Register only one and cheat
+  *	in open - see below.
+  */
+- 
++
+ /**
+  *	register_sound_dsp - register a DSP device
+  *	@fops: File operations for the driver
+@@ -497,7 +481,6 @@ int register_sound_dsp(const struct file_operations *fops, int dev)
+ 	return sound_insert_unit(&chains[3], fops, dev, 3, 131,
+ 				 "dsp", S_IWUSR | S_IRUSR, NULL);
+ }
+-
+ EXPORT_SYMBOL(register_sound_dsp);
+ 
+ /**
+@@ -514,7 +497,6 @@ void unregister_sound_special(int unit)
+ {
+ 	sound_remove_unit(&chains[unit % SOUND_STEP], unit);
+ }
+- 
+ EXPORT_SYMBOL(unregister_sound_special);
+ 
+ /**
+@@ -529,7 +511,6 @@ void unregister_sound_mixer(int unit)
+ {
+ 	sound_remove_unit(&chains[0], unit);
+ }
+-
+ EXPORT_SYMBOL(unregister_sound_mixer);
+ 
+ /**
+@@ -544,7 +525,6 @@ void unregister_sound_midi(int unit)
+ {
+ 	sound_remove_unit(&chains[2], unit);
+ }
+-
+ EXPORT_SYMBOL(unregister_sound_midi);
+ 
+ /**
+@@ -561,21 +541,19 @@ void unregister_sound_dsp(int unit)
+ {
+ 	sound_remove_unit(&chains[3], unit);
+ }
+-
+-
+ EXPORT_SYMBOL(unregister_sound_dsp);
+ 
+ static struct sound_unit *__look_for_unit(int chain, int unit)
+ {
+ 	struct sound_unit *s;
+-	
+-	s=chains[chain];
+-	while(s && s->unit_minor <= unit)
+-	{
+-		if(s->unit_minor==unit)
++
++	s = chains[chain];
++	while (s && s->unit_minor <= unit) {
++		if (s->unit_minor == unit)
+ 			return s;
+-		s=s->next;
++		s = s->next;
+ 	}
++
+ 	return NULL;
+ }
+ 
+@@ -586,14 +564,13 @@ static int soundcore_open(struct inode *inode, struct file *file)
+ 	struct sound_unit *s;
+ 	const struct file_operations *new_fops = NULL;
+ 
+-	chain=unit&0x0F;
+-	if(chain==4 || chain==5)	/* dsp/audio/dsp16 */
+-	{
+-		unit&=0xF0;
+-		unit|=3;
+-		chain=3;
++	chain = unit & 0x0F;
++	if (chain == 4 || chain == 5) {	/* dsp/audio/dsp16 */
++		unit &= 0xF0;
++		unit |= 3;
++		chain = 3;
+ 	}
+-	
++
+ 	spin_lock(&sound_loader_lock);
+ 	s = __look_for_unit(chain, unit);
+ 	if (s)
+@@ -608,8 +585,8 @@ static int soundcore_open(struct inode *inode, struct file *file)
+ 		 *  ALSA toplevel modules for soundcards, thus we need
+ 		 *  load them at first.	  [Jaroslav Kysela <perex@jcu.cz>]
+ 		 */
+-		request_module("sound-slot-%i", unit>>4);
+-		request_module("sound-service-%i-%i", unit>>4, chain);
++		request_module("sound-slot-%i", unit >> 4);
++		request_module("sound-service-%i-%i", unit >> 4, chain);
+ 
+ 		/*
+ 		 * sound-slot/service-* module aliases are scheduled
+@@ -636,10 +613,11 @@ static int soundcore_open(struct inode *inode, struct file *file)
+ 		replace_fops(file, new_fops);
+ 
+ 		if (file->f_op->open)
+-			err = file->f_op->open(inode,file);
++			err = file->f_op->open(inode, file);
+ 
+ 		return err;
+ 	}
++
+ 	return -ENODEV;
+ }
+ 
+-- 
+1.9.3
