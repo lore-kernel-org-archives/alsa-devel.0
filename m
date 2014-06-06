@@ -1,73 +1,91 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH 1/2] misc: atmel-ssc: support to read ssc version
-Date: Fri, 6 Jun 2014 15:41:34 +0800
-Message-ID: <1402040495-10320-1-git-send-email-voice.shen@atmel.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Show Baytrail SST DSP firmware
+	details during init
+Date: Fri,  6 Jun 2014 11:10:11 +0300
+Message-ID: <1402042211-13842-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-sound-owner@vger.kernel.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Bo Shen <voice.shen@atmel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06A412651E3
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jun 2014 10:10:22 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Read SSC IP version to check whether it supports frame sync
-length extension feature.
+DSP initialization complete message IPC_IA_FW_INIT_CMPLT is a large message
+carrying firmware details in mailbox. Read and show those details during
+init in order to be able to get that information to QA reports.
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 ---
+ sound/soc/intel/sst-baytrail-ipc.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
- drivers/misc/atmel-ssc.c  | 7 +++++++
- include/linux/atmel-ssc.h | 3 +++
- 2 files changed, 10 insertions(+)
-
-diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-index 22de137..9f49bcb 100644
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -136,6 +136,7 @@ static int ssc_probe(struct platform_device *pdev)
- 	struct resource *regs;
- 	struct ssc_device *ssc;
- 	const struct atmel_ssc_platform_data *plat_dat;
-+	u32 version;
+diff --git a/sound/soc/intel/sst-baytrail-ipc.c b/sound/soc/intel/sst-baytrail-ipc.c
+index d207b22ea330..67673a2c0f41 100644
+--- a/sound/soc/intel/sst-baytrail-ipc.c
++++ b/sound/soc/intel/sst-baytrail-ipc.c
+@@ -122,6 +122,26 @@ struct sst_byt_tstamp {
+ 	u32 channel_peak[8];
+ } __packed;
  
- 	ssc = devm_kzalloc(&pdev->dev, sizeof(struct ssc_device), GFP_KERNEL);
- 	if (!ssc) {
-@@ -173,8 +174,14 @@ static int ssc_probe(struct platform_device *pdev)
- 	clk_prepare_enable(ssc->clk);
- 	ssc_writel(ssc->regs, IDR, -1);
- 	ssc_readl(ssc->regs, SR);
-+	version = ssc_readl(ssc->regs, VERSION);
- 	clk_disable_unprepare(ssc->clk);
- 
-+	if (version >= 0x300)
-+		ssc->has_fslen_ext = 1;
-+	else
-+		ssc->has_fslen_ext = 0;
++struct sst_byt_fw_version {
++	u8 build;
++	u8 minor;
++	u8 major;
++	u8 type;
++} __packed;
 +
- 	ssc->irq = platform_get_irq(pdev, 0);
- 	if (!ssc->irq) {
- 		dev_dbg(&pdev->dev, "could not get irq\n");
-diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
-index 571a12e..9ee1b68 100644
---- a/include/linux/atmel-ssc.h
-+++ b/include/linux/atmel-ssc.h
-@@ -19,6 +19,7 @@ struct ssc_device {
- 	int			user;
- 	int			irq;
- 	bool			clk_from_rk_pin;
-+	int			has_fslen_ext;
- };
- 
- struct ssc_device * __must_check ssc_request(unsigned int ssc_num);
-@@ -258,6 +259,8 @@ void ssc_free(struct ssc_device *ssc);
- #define SSC_IMR_TXSYN_SIZE			 1
- #define SSC_IMR_TXSYN_OFFSET			10
- 
-+#define SSC_VERSION			0x000000fc
++struct sst_byt_fw_build_info {
++	u8 date[16];
++	u8 time[16];
++} __packed;
 +
- /* SSC PDC Receive Pointer Register */
- #define SSC_PDC_RPR			0x00000100
++struct sst_byt_fw_init {
++	struct sst_byt_fw_version fw_version;
++	struct sst_byt_fw_build_info build_info;
++	u16 result;
++	u8 module_id;
++	u8 debug_info;
++} __packed;
++
+ /* driver internal IPC message structure */
+ struct ipc_message {
+ 	struct list_head list;
+@@ -868,6 +888,7 @@ int sst_byt_dsp_init(struct device *dev, struct sst_pdata *pdata)
+ {
+ 	struct sst_byt *byt;
+ 	struct sst_fw *byt_sst_fw;
++	struct sst_byt_fw_init init;
+ 	int err;
+ 
+ 	dev_dbg(dev, "initialising Byt DSP IPC\n");
+@@ -929,6 +950,15 @@ int sst_byt_dsp_init(struct device *dev, struct sst_pdata *pdata)
+ 		goto boot_err;
+ 	}
+ 
++	/* show firmware information */
++	sst_dsp_inbox_read(byt->dsp, &init, sizeof(init));
++	dev_info(byt->dev, "FW version: %02x.%02x.%02x.%02x\n",
++		 init.fw_version.major, init.fw_version.minor,
++		 init.fw_version.build, init.fw_version.type);
++	dev_info(byt->dev, "Build type: %x\n", init.fw_version.type);
++	dev_info(byt->dev, "Build date: %s %s\n",
++		 init.build_info.date, init.build_info.time);
++
+ 	pdata->dsp = byt;
+ 	byt->fw = byt_sst_fw;
  
 -- 
-1.8.5.2
-
+2.0.0.rc2
