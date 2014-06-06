@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: sigmadsp: Split regmap and I2C
- support into separate modules
-Date: Fri, 6 Jun 2014 14:10:37 +0100
-Message-ID: <20140606131037.GP2520@sirena.org.uk>
-References: <1402056557-31348-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Intel: Show Baytrail SST DSP
+ firmware details during init
+Date: Fri, 6 Jun 2014 14:13:27 +0100
+Message-ID: <20140606131327.GQ2520@sirena.org.uk>
+References: <1402042211-13842-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2869863605463992525=="
+Content-Type: multipart/mixed; boundary="===============0161281701263821718=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 98867265172
- for <alsa-devel@alsa-project.org>; Fri,  6 Jun 2014 15:11:13 +0200 (CEST)
-In-Reply-To: <1402056557-31348-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id D13FC265172
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jun 2014 15:13:48 +0200 (CEST)
+In-Reply-To: <1402042211-13842-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Arnd Bergmann <arnd@arndb.de>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2869863605463992525==
+--===============0161281701263821718==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IjzautVOrq+IorBk"
+	protocol="application/pgp-signature"; boundary="ZFN9GYGE3tAy85aa"
 Content-Disposition: inline
 
 
---IjzautVOrq+IorBk
+--ZFN9GYGE3tAy85aa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 06, 2014 at 02:09:17PM +0200, Lars-Peter Clausen wrote:
-> When the SigmaDSP module is built-in, but the I2C core is build as a module
-> we'll get a undefined reference:
+On Fri, Jun 06, 2014 at 11:10:11AM +0300, Jarkko Nikula wrote:
+> DSP initialization complete message IPC_IA_FW_INIT_CMPLT is a large message
+> carrying firmware details in mailbox. Read and show those details during
+> init in order to be able to get that information to QA reports.
 
-Applied, thanks.
+Applied, thanks.  Is it worth putting these into sysfs file so we can
+get the data read out with alsa-info.sh?
 
---IjzautVOrq+IorBk
+--ZFN9GYGE3tAy85aa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTkb3JAAoJELSic+t+oim9IUoP/jbBbmz4stFQGfBxkdNoYAra
-wU+pVEgqN17rdVjSNBOHL09RlePu2spRELTRQwdxV3ZjVh3E2LTdaxA97BStGTlO
-tLDfCHlGHLsjQ/QwrYaiYAXBpSHC9UC/L1FC5zXz3a97FoCASVv4P/BSsxX9Bktf
-sc2Wkr/tgg2sG2DdOwCDRzsJDkZYzulunpU0WpjI//SNFzJ7IA3V6MJ9lxHFgE0d
-eR3NzBH85cE5//mDelmNiOnBJ403T1brkTJUI9XfmnwILDlSW48gMGvy2/F7E5Uk
-aiTtbX8g54ugdnQZkmHrCZs50SpcLRIGigchrTHT+cpLnnq9V/oU6mV/Zhk265dI
-l8SBmmwPilApCAIonAE5WhkNwxmyJ2RrtF3TV/ZEZILC2iVJOiN7ZOYO9lb3Rnjs
-uzpffe/rbmWLiy7TXOiVDaMy9aa3XD4r38+quUZThjGbfUoOe3Kf8SoZ5lBTyail
-CHqAG9FGrgNNFkRpSSvYf5GQg0Hje2JxBot/2qCuGTcvhchteHXSIlMzV2TPbRTj
-r1AeQiz7VmlVpMiskBheMAkb5XTtxsBh1hGkWpfCQjMVBuRnDQnreB74Vcg852hX
-moNFzx/WzSjFpdU3JDfAlUDkUlYBInsj4tnkfvk/50juFidbZeVF2fgfthqSJ4E9
-waFVcvLKo179UAK1RuJI
-=Pmz2
+iQIcBAEBAgAGBQJTkb5zAAoJELSic+t+oim92+wP/jhqAbU6LqDvB96wYLsBBkad
+jZ+0a7lEa/e6SUT8bjiBIUhdS6hmcaz9UEL4rx8iFgF4KZB5S82DOQvn1Eyobxnq
+10J7VzZgNYGj45YUdoR8pqbQ+ZpBhgyz69aQyQHMV33+yKsC5CM4eISrS0JEDFFc
+tb2E5VuIWUfe7GUJZEtql30bRB94FTe3IUWxSjPwfZdriRe2/ytOS6U9IgbpxjYX
+yxdcB5HHzVOgUMjfZpgs6hGzXMlZkEpPeMx+sPjcLMu38uskaoNsvWlEfGhkU7kU
+QIdDvM69+SM/UPUFJCrM9XxaLNP5S+FjU8ytPOndI3SDm/+4oTUVvaPV7v3gDlTz
+mLpLOrHG4gOeTN9yKXA9W5WAsvyY8iPWlXnsw42hHEdqtrk//gE2xCnTtagIIFYC
+Yle3+AZ2JIF2xkvBJxTrjelxnd5WhhBxOxHLD5b7BuOxUjLn8I2cD22z81fu136e
+1YEJVMfA9Kgpo4jCFqnXbcMYDHyn88lo/7qfRcUwAGIQHp+OB82SlYEMARPEhmCj
+hGzh0s24FJhsH59TlDBwtf2niwLrVxEPIXSjfCG2ox24E6Kx0SyJuxokC5KSdjIe
+UGQs9NK89YTkKnTBxcRsqXAK4yIlQMk4IxvrPvhOX4yWz12lOR3p9xTpgsY38thc
+I6wxsaEXLHUF82L+Ds0M
+=g6Lu
 -----END PGP SIGNATURE-----
 
---IjzautVOrq+IorBk--
+--ZFN9GYGE3tAy85aa--
 
---===============2869863605463992525==
+--===============0161281701263821718==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2869863605463992525==--
+--===============0161281701263821718==--
