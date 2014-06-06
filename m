@@ -1,14 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: tlv320aic3x: Correct S24_3LE support
-Date: Fri, 6 Jun 2014 16:05:31 +0300
-Message-ID: <1402059931-10731-1-git-send-email-peter.ujfalusi@ti.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] mfd: wm5102: Mark additional registers
+	as volatile
+Date: Fri, 6 Jun 2014 14:07:36 +0100
+Message-ID: <20140606130736.GD19857@opensource.wolfsonmicro.com>
+References: <1402058000-5357-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1402058000-5357-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id D3868265232
- for <alsa-devel@alsa-project.org>; Fri,  6 Jun 2014 15:05:36 +0200 (CEST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F2598265172
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jun 2014 15:07:36 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1402058000-5357-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,31 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Correct the hw_params callback to configure the codec correctly in case of
-S24_3LE format.
-S24_LE is not defined as supported format for the codec.
+On Fri, Jun 06, 2014 at 01:33:19PM +0100, Charles Keepax wrote:
+> @@ -1878,6 +1875,9 @@ static bool wm5102_volatile_register(struct device *dev, unsigned int reg)
+>  	switch (reg) {
+>  	case ARIZONA_SOFTWARE_RESET:
+>  	case ARIZONA_DEVICE_REVISION:
+> +	case ARIZONA_WRITE_SEQUENCER_CTRL_0:
+> +	case ARIZONA_WRITE_SEQUENCER_CTRL_1:
+> +	case ARIZONA_WRITE_SEQUENCER_CTRL_2:
+>  	case ARIZONA_OUTPUT_STATUS_1:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/codecs/tlv320aic3x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Just noticed that we are missing WRITE_SEQUENCER_CTRL_3 here, I
+might hold off with this patch until:
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index e12fafbb1e09..5360772bc1ad 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -879,7 +879,7 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_FORMAT_S20_3LE:
- 		data |= (0x01 << 4);
- 		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
-+	case SNDRV_PCM_FORMAT_S24_3LE:
- 		data |= (0x02 << 4);
- 		break;
- 	case SNDRV_PCM_FORMAT_S32_LE:
--- 
-2.0.0
+mfd: wm5102: Mark register write sequencer control 3 readable
+
+Has made it to a public MFD branch I can rebase onto, then I can
+add that in too.
+
+Thanks,
+Charles
