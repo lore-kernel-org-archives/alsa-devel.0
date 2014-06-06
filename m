@@ -1,56 +1,127 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [alsa-devel] r8a7790 only has audio when clock is forced on
-Date: Fri, 6 Jun 2014 08:42:12 +0200
-Message-ID: <CAMuHMdX-M753qtpTGjf-neaK=6AGYZJVuweUf4jR_z5KCe=8nA@mail.gmail.com>
-References: <538E0487.1010700@codethink.co.uk>
-	<20140603214226.GA2520@sirena.org.uk>
-	<87egz5ldtm.wl%kuninori.morimoto.gx@renesas.com>
-	<538EE0BE.5030304@codethink.co.uk>
-	<87zjhrj3gc.wl%kuninori.morimoto.gx@renesas.com>
-	<539033ED.4010604@codethink.co.uk>
-	<87fvjjitqm.wl%kuninori.morimoto.gx@renesas.com>
-	<53903DCF.1050604@codethink.co.uk>
-	<539048D3.6060306@codethink.co.uk>
-	<87iooebn1d.wl%kuninori.morimoto.gx@renesas.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH 2/2] ASoC: atmel_ssc_dai: enable fslen extension feature
+Date: Fri, 6 Jun 2014 15:41:35 +0800
+Message-ID: <1402040495-10320-2-git-send-email-voice.shen@atmel.com>
+References: <1402040495-10320-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <87iooebn1d.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Violeta Menendez Gonzalez <violeta.menendez@codethink.co.uk>, Ben Dooks <ben.dooks@codethink.co.uk>, linux-kernel@lists.codethink.co.uk, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <1402040495-10320-1-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san,
+When SSC work as master, it will generate the frame sync signal.
+On old SoCs, it only supports frame sync length less or equal to
+16bits, on newer SoCs, it supports frame sync length extension,
+which can support frame size larger than 16 bits.
+So, add this to make it supports playback 24/32 bits audio clips.
 
-On Fri, Jun 6, 2014 at 7:54 AM, Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
->> >>   - SSI(ALL) is called via pm_runtime_xxx() from sound driver
->> >>   - SRC(ALL) is called as parent clock of SRCn clocks
->> >
->> > See, this is why I /hate/ the implicit clock management. This is
->> > another case where we're getting bitten by it.
->
-> I troubled about this ALL bit too,
-> then, it become current style.
->
-> One reason was that
-> this driver is supporting Gen1 sound too.
-> But, this SRC(ALL) didn't exist on Gen1..
+Signed-off-by: Bo Shen <voice.shen@atmel.com>
+---
+ include/linux/atmel-ssc.h       |  4 ++++
+ sound/soc/atmel/atmel_ssc_dai.c | 34 ++++++++++++++++++----------------
+ 2 files changed, 22 insertions(+), 16 deletions(-)
 
-This is not the only module that has a clock in R-Car Gen2, but not in Gen1.
-The same is true for GPIO. There may be others...
+diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
+index 9ee1b68..70c5922 100644
+--- a/include/linux/atmel-ssc.h
++++ b/include/linux/atmel-ssc.h
+@@ -72,6 +72,8 @@ void ssc_free(struct ssc_device *ssc);
+ #define SSC_RFMR_DATNB_OFFSET			 8
+ #define SSC_RFMR_FSEDGE_SIZE			 1
+ #define SSC_RFMR_FSEDGE_OFFSET			24
++#define SSC_RFMR_FSLEN_EXT_SIZE			 4
++#define SSC_RFMR_FSLEN_EXT_OFFSET		28
+ #define SSC_RFMR_FSLEN_SIZE			 4
+ #define SSC_RFMR_FSLEN_OFFSET			16
+ #define SSC_RFMR_FSOS_SIZE			 4
+@@ -110,6 +112,8 @@ void ssc_free(struct ssc_device *ssc);
+ #define SSC_TFMR_FSDEN_OFFSET			23
+ #define SSC_TFMR_FSEDGE_SIZE			 1
+ #define SSC_TFMR_FSEDGE_OFFSET			24
++#define SSC_TFMR_FSLEN_EXT_SIZE			 4
++#define SSC_TFMR_FSLEN_EXT_OFFSET		28
+ #define SSC_TFMR_FSLEN_SIZE			 4
+ #define SSC_TFMR_FSLEN_OFFSET			16
+ #define SSC_TFMR_FSOS_SIZE			 3
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index de433cfd..7d501e4 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -347,6 +347,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	u32 tfmr, rfmr, tcmr, rcmr;
+ 	int start_event;
+ 	int ret;
++	int fslen, fslen_ext;
+ 
+ 	/*
+ 	 * Currently, there is only one set of dma params for
+@@ -388,18 +389,6 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/*
+-	 * The SSC only supports up to 16-bit samples in I2S format, due
+-	 * to the size of the Frame Mode Register FSLEN field.
+-	 */
+-	if ((ssc_p->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_I2S
+-		&& bits > 16) {
+-		printk(KERN_WARNING
+-				"atmel_ssc_dai: sample size %d "
+-				"is too large for I2S\n", bits);
+-		return -EINVAL;
+-	}
+-
+-	/*
+ 	 * Compute SSC register settings.
+ 	 */
+ 	switch (ssc_p->daifmt
+@@ -413,6 +402,17 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 		 * from the MCK divider, and the BCLK signal
+ 		 * is output on the SSC TK line.
+ 		 */
++
++		if (bits > 16 && !ssc->has_fslen_ext) {
++			dev_err(dai->dev,
++				"sample size %d is too large for SSC device\n",
++				bits);
++			return -EINVAL;
++		}
++
++		fslen_ext = (bits - 1) / 16;
++		fslen = (bits - 1) % 16;
++
+ 		rcmr =	  SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
+ 			| SSC_BF(RCMR_STTDLY, START_DELAY)
+ 			| SSC_BF(RCMR_START, SSC_START_FALLING_RF)
+@@ -420,9 +420,10 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
+ 			| SSC_BF(RCMR_CKS, SSC_CKS_DIV);
+ 
+-		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
++		rfmr =    SSC_BF(RFMR_FSLEN_EXT, fslen_ext)
++			| SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
+ 			| SSC_BF(RFMR_FSOS, SSC_FSOS_NEGATIVE)
+-			| SSC_BF(RFMR_FSLEN, (bits - 1))
++			| SSC_BF(RFMR_FSLEN, fslen)
+ 			| SSC_BF(RFMR_DATNB, (channels - 1))
+ 			| SSC_BIT(RFMR_MSBF)
+ 			| SSC_BF(RFMR_LOOP, 0)
+@@ -435,10 +436,11 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
+ 			| SSC_BF(TCMR_CKO, SSC_CKO_CONTINUOUS)
+ 			| SSC_BF(TCMR_CKS, SSC_CKS_DIV);
+ 
+-		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
++		tfmr =    SSC_BF(TFMR_FSLEN_EXT, fslen_ext)
++			| SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
+ 			| SSC_BF(TFMR_FSDEN, 0)
+ 			| SSC_BF(TFMR_FSOS, SSC_FSOS_NEGATIVE)
+-			| SSC_BF(TFMR_FSLEN, (bits - 1))
++			| SSC_BF(TFMR_FSLEN, fslen)
+ 			| SSC_BF(TFMR_DATNB, (channels - 1))
+ 			| SSC_BIT(TFMR_MSBF)
+ 			| SSC_BF(TFMR_DATDEF, 0)
+-- 
+1.8.5.2
 
-When adding a device node to the DTS, always make sure to double check
-if it has a clock, and add it.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
