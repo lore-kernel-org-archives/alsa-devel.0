@@ -1,19 +1,14 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: Add SND_SOC_BYTES_EXT
-	control	type
-Date: Fri, 6 Jun 2014 13:53:01 +0100
-Message-ID: <20140606125301.GC19857@opensource.wolfsonmicro.com>
-References: <1402058000-5357-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <5391B89C.80205@metafoo.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: tlv320aic3x: Correct S24_3LE support
+Date: Fri, 6 Jun 2014 16:05:31 +0300
+Message-ID: <1402059931-10731-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E5574265172
- for <alsa-devel@alsa-project.org>; Fri,  6 Jun 2014 14:53:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <5391B89C.80205@metafoo.de>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id D3868265232
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jun 2014 15:05:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,22 +18,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, patches@opensource.wolfsonmicro.com, broonie@kernel.org, lgirdwood@gmail.org, lee.jones@linaro.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 06, 2014 at 02:48:28PM +0200, Lars-Peter Clausen wrote:
-> On 06/06/2014 02:33 PM, Charles Keepax wrote:
->> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
->
-> Vinod did beat you on this one:
->
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-May/076155.html
->
-> Although that version of the macro looks slightly different.
+Correct the hw_params callback to configure the codec correctly in case of
+S24_3LE format.
+S24_LE is not defined as supported format for the codec.
 
-Ooops.. not sure how I missed that, will rebase my stuff on top
-of that.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/codecs/tlv320aic3x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Charles
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index e12fafbb1e09..5360772bc1ad 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -879,7 +879,7 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_FORMAT_S20_3LE:
+ 		data |= (0x01 << 4);
+ 		break;
+-	case SNDRV_PCM_FORMAT_S24_LE:
++	case SNDRV_PCM_FORMAT_S24_3LE:
+ 		data |= (0x02 << 4);
+ 		break;
+ 	case SNDRV_PCM_FORMAT_S32_LE:
+-- 
+2.0.0
