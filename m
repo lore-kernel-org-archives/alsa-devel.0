@@ -1,54 +1,55 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/5] dt: wm8904: add device tree binding document
-Date: Fri, 6 Jun 2014 10:58:39 +0100
-Message-ID: <20140606095839.GC2520@sirena.org.uk>
+Subject: Re: [PATCH 4/5] ARM: atmel: sama5d3xek: switch sound to CCF
+Date: Fri, 6 Jun 2014 11:00:05 +0100
+Message-ID: <20140606100005.GD2520@sirena.org.uk>
 References: <1401963572-10953-1-git-send-email-voice.shen@atmel.com>
- <1401963572-10953-4-git-send-email-voice.shen@atmel.com>
+ <1401963572-10953-5-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6nSyB+bcl/pT7+kx"
+	protocol="application/pgp-signature"; boundary="bwMunqOr7B7rzQrh"
 Return-path: <linux-sound-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1401963572-10953-4-git-send-email-voice.shen@atmel.com>
+In-Reply-To: <1401963572-10953-5-git-send-email-voice.shen@atmel.com>
 Sender: linux-sound-owner@vger.kernel.org
 To: Bo Shen <voice.shen@atmel.com>
 Cc: nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---6nSyB+bcl/pT7+kx
+--bwMunqOr7B7rzQrh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 05, 2014 at 06:19:30PM +0800, Bo Shen wrote:
+On Thu, Jun 05, 2014 at 06:19:31PM +0800, Bo Shen wrote:
+> As the sama5d3xek board has switch to CCF, so add clock for wm8904
+>=20
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
 
-> +  - reg: the I2C address of the device.
-> +  - clocks and clock-names: reference to
-> +    <Documentation/devicetree/bindings/clock/clock-bindings.txt>
+Reviwed-by: Mark Brown <broonie@linaro.org>
 
-This all looks good except for in the above you should list the name of
-the clock (mclk) - that name is part of the binding.
+The bindings won't change so this is good to go.
 
---6nSyB+bcl/pT7+kx
+--bwMunqOr7B7rzQrh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTkZDMAAoJELSic+t+oim9/0UP/RrCMjaVTOwKgBUAFsZJfc0S
-YPjsSo/vI1vR5fPwCeGbwsZgaaluV14tmfY8BXkwL157fwqPytQVVSt0yW9THctE
-aLoJzG5wYfYs0TPD5rPN9int5Dg/wyJ8oQdBeoOUwa2i6mNpBc/Q56dX2hNWb0cR
-iz6MS1Gw7MhCCGI8f/M2iTHTXnE6G/SFRybYakT4m8xUenDsG3XSKJExwir8TGgH
-7Wt+4wC0dekoOxXEN2Mm7aQFUADzmI0HBWZAzJvhNpR6cYN4vkCnf156L0bSPnYZ
-jLYP9Nsx2hRo74ns6waQc0m4z+VYZPTtMqxZBkLiRY28UsFd4v1idMI4cU7QsD2t
-rZyYG7EK3jcPZBJgfrQ1jJ5AwLCfOk5jZmXAaHl7ddMpL55LowIxQ9QqRphxkyWY
-GmAN6cWUVHKS951E3jWb8PAM/fwOoOuBORhhn2iJ/SAvfkCrPcsESurDWrSTzpRs
-QjU64s48+MhVeIK5WR9/nTbFuWtOz6n6Ihlv2lyOnDVVDKR49jM9fhZ4HKKEArgG
-xU06TSCHAtSGsq5TAfchlfKTE2YkCxo5Xk1dg1iVnR1wVRue2qrmlfmcVP65AMRo
-I/mXJM32wRJlm6bkIUl/23x886PrLXe0SYtPUyGd47xSHgpcPg7DyQTB76Adw5vw
-XbcibAl9SPBvaF4rruRF
-=hzUb
+iQIcBAEBAgAGBQJTkZEiAAoJELSic+t+oim9IYQP/2Jm83Qt1u+CFBfgAXCUjF5P
+ApyAomSA2EIT1TgvygJc13Cvn5oLVIseIcr1vnMhsR/LhmMu1m4ISQ9myG5nwWeh
+hj+c6Vls4mhZnf84rPrBZS4O7eSV/PcIW2DehYCRSTc6hcSPWsUQ+5Ubo6YTfzss
+m3bvLzXCuiPMDY7pCB5S6MBHErqXzRBcg2h4p+/3T3TFiPDLbDKAZIub7MP4/QDB
+eR+1f5jrFNTednFV6PJ4E5uKIQ9ANYHA4bW4Bp7e8qB4FlLWFMy64Bu5b0gLR8M+
+7+1V2YpxK/NE2rjJ9DM7NvaR2eZJNxXG91UoLOWsX1Lq3qpqeUbvcPqhjvFlvWeD
+6rA5C8Ks2HGPH6weMhrmjOD/v9HjD5yhsgf2803TNUP8Um//+NbtSgD6Wkpr4S6K
+2IfoibkDqt+3bAjQw6yS4t2a+DR35FPGuWKG2L3lHF7lz0amCYAuMuXfJYaQ9i+W
+xNr2x3dnmrJFMOjAFwriGxBZ27vOIpNdkoihtQoip0VQAYi/agCzy4Hu0SRVr4Y7
+JLdeqf0Mx+AaqsHYsjTWVRRJkY8m70IbDkC15pt69+xahnHxoqQ6voNbzWgcpTZ0
+STGete6voaKUkMhpG/S4eKWAZklxBQcsBqQf2Exn20kV8ZE1hYIkKM/T/CQ7/fl5
+mloR77jQVCQ+ZeCmfKHH
+=ivZN
 -----END PGP SIGNATURE-----
 
---6nSyB+bcl/pT7+kx--
+--bwMunqOr7B7rzQrh--
