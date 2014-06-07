@@ -1,18 +1,19 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Show Baytrail SST DSP
- firmware details during init
-Date: Fri, 06 Jun 2014 17:28:24 +0300
-Message-ID: <5391D008.4090803@linux.intel.com>
-References: <1402042211-13842-1-git-send-email-jarkko.nikula@linux.intel.com>
- <20140606131327.GQ2520@sirena.org.uk>
+From: asd <asd@marian1000.go.ro>
+Subject: On HD codec valid command working only on hwdep
+	hda-verb and embedded on function snd_hda_multi_out_analog_open
+Date: Sat, 07 Jun 2014 13:10:20 +0300
+Message-ID: <2900340.PkFpOr51gc@marian1000.go.ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="nextPart2548077.fLWg0B4XBu"
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 490FF265284
- for <alsa-devel@alsa-project.org>; Fri,  6 Jun 2014 16:28:28 +0200 (CEST)
-In-Reply-To: <20140606131327.GQ2520@sirena.org.uk>
+Received: from marian1000.go.ro (5-14-228-204.residential.rdsnet.ro
+ [5.14.228.204]) by alsa0.perex.cz (Postfix) with ESMTP id F1E742619FB
+ for <Alsa-devel@alsa-project.org>; Sat,  7 Jun 2014 12:10:21 +0200 (CEST)
+Received: from localhost ([127.0.0.1] helo=marian1000.go.ro)
+ by marian1000.go.ro with esmtp (Exim 4.82)
+ (envelope-from <asd@marian1000.go.ro>) id 1WtDZs-0000ui-SX
+ for Alsa-devel@alsa-project.org; Sat, 07 Jun 2014 13:10:20 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/06/2014 04:13 PM, Mark Brown wrote:
-> On Fri, Jun 06, 2014 at 11:10:11AM +0300, Jarkko Nikula wrote:
->> DSP initialization complete message IPC_IA_FW_INIT_CMPLT is a large message
->> carrying firmware details in mailbox. Read and show those details during
->> init in order to be able to get that information to QA reports.
-> Applied, thanks.  Is it worth putting these into sysfs file so we can
-> get the data read out with alsa-info.sh?
-Not a bad idea. I'm not going to be implementing it instantly but should 
-such a file be one generic node listing all the sound components that 
-use fw and their info or a node with fixed name under each device's 
-directory? Latter one sounds a bit simpler in kernel but I'm thinking 
-which way makes most sense for utilities.
+This is a multi-part message in MIME format.
 
--- 
-Jarkko
+--nextPart2548077.fLWg0B4XBu
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+Hi
+
+On patch_realtek can't run snd_hda_write.Only situations when run 
+snd_hda_write is to run inside off snd_hda_multi_out_analog_open function 
+(suppose to when sream is on codec is weak up and become online.
+--nextPart2548077.fLWg0B4XBu
+Content-Disposition: attachment; filename="set_param.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="set_param.patch"
+
+Index: hda/hda_codec.c
+===================================================================
+--- hda.orig/hda_codec.c	2014-06-07 12:38:24.000000000 +0300
++++ hda/hda_codec.c	2014-06-07 12:51:16.173510291 +0300
+@@ -5420,6 +5420,8 @@
+ 		}
+ 		mutex_unlock(&codec->spdif_mutex);
+ 	}
++	snd_hda_codec_write(codec, 0x14, 0,
++		AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc0);
+ 	return snd_pcm_hw_constraint_step(substream->runtime, 0,
+ 					  SNDRV_PCM_HW_PARAM_CHANNELS, 2);
+ }
+
+--nextPart2548077.fLWg0B4XBu
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--nextPart2548077.fLWg0B4XBu--
