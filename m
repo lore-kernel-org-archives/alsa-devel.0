@@ -1,19 +1,15 @@
-From: asd <asd@marian1000.go.ro>
-Subject: On HD codec valid command working only on hwdep
-	hda-verb and embedded on function snd_hda_multi_out_analog_open
-Date: Sat, 07 Jun 2014 13:10:20 +0300
-Message-ID: <2900340.PkFpOr51gc@marian1000.go.ro>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] pcm: Fix channel map query when there are lots
+	of maps
+Date: Sun,  8 Jun 2014 12:58:56 +0300
+Message-ID: <1402221536-26473-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="nextPart2548077.fLWg0B4XBu"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from marian1000.go.ro (5-14-228-204.residential.rdsnet.ro
- [5.14.228.204]) by alsa0.perex.cz (Postfix) with ESMTP id F1E742619FB
- for <Alsa-devel@alsa-project.org>; Sat,  7 Jun 2014 12:10:21 +0200 (CEST)
-Received: from localhost ([127.0.0.1] helo=marian1000.go.ro)
- by marian1000.go.ro with esmtp (Exim 4.82)
- (envelope-from <asd@marian1000.go.ro>) id 1WtDZs-0000ui-SX
- for Alsa-devel@alsa-project.org; Sat, 07 Jun 2014 13:10:20 +0300
+Received: from mail3.ippnet.fi (mail3.ippnet.fi [62.197.168.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id A85212617B5
+ for <alsa-devel@alsa-project.org>; Sun,  8 Jun 2014 11:59:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,44 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On most HDA Intel HDMI devices, the channel map list is approx. 500 ints
+in size, making the 256-sized buffer used by
+snd_pcm_query_chmaps_from_hw() too small and causing the query to fail
+(NULL result to caller, ENOMEM).
 
---nextPart2548077.fLWg0B4XBu
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Bump the buffer size to 2048 ints.
 
-Hi
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+---
 
-On patch_realtek can't run snd_hda_write.Only situations when run 
-snd_hda_write is to run inside off snd_hda_multi_out_analog_open function 
-(suppose to when sream is on codec is weak up and become online.
---nextPart2548077.fLWg0B4XBu
-Content-Disposition: attachment; filename="set_param.patch"
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/x-patch; charset="UTF-8"; name="set_param.patch"
+Found while writing XBMC support.
 
-Index: hda/hda_codec.c
-===================================================================
---- hda.orig/hda_codec.c	2014-06-07 12:38:24.000000000 +0300
-+++ hda/hda_codec.c	2014-06-07 12:51:16.173510291 +0300
-@@ -5420,6 +5420,8 @@
- 		}
- 		mutex_unlock(&codec->spdif_mutex);
- 	}
-+	snd_hda_codec_write(codec, 0x14, 0,
-+		AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc0);
- 	return snd_pcm_hw_constraint_step(substream->runtime, 0,
- 					  SNDRV_PCM_HW_PARAM_CHANNELS, 2);
- }
+I don't like just bumping the buffer size, so I hope you have some idea
+of a better solution?
+I guess one way would be just to retry with a dynamically allocated
+bigger buffer on ENOMEM, if there is nothing better...
 
---nextPart2548077.fLWg0B4XBu
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+ src/pcm/pcm_hw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
---nextPart2548077.fLWg0B4XBu--
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index 9ff83a9..ed83197 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -1051,7 +1051,7 @@ snd_pcm_query_chmaps_from_hw(int card, int dev, int subdev,
+ {
+ 	snd_ctl_t *ctl;
+ 	snd_ctl_elem_id_t *id;
+-	unsigned int tlv[256], *start;
++	unsigned int tlv[2048], *start;
+ 	snd_pcm_chmap_query_t **map;
+ 	int i, ret, nums;
+ 
+-- 
+1.8.4.5
