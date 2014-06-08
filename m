@@ -1,18 +1,19 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] pcm: Fix channel map query when there are
-	lots of maps
-Date: Sun, 08 Jun 2014 16:53:11 +0300
-Message-ID: <53946AC7.20804@iki.fi>
-References: <1402221536-26473-1-git-send-email-anssi.hannula@iki.fi>
- <s5hzjhnwwea.wl%tiwai@suse.de>
+From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+Subject: =?utf-8?q?=5BBug=3F=5D_alsa-lib=3A_Plug_fails_to_con?=
+ =?utf-8?q?vert_float_mono_to_float_stereo?=
+Date: Sun, 08 Jun 2014 23:02:23 +0400
+Message-ID: <1402254143.119530615@f78.i.mail.ru>
+Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3.ippnet.fi (mail3.ippnet.fi [62.197.168.3])
- by alsa0.perex.cz (Postfix) with ESMTP id CAE99261718
- for <alsa-devel@alsa-project.org>; Sun,  8 Jun 2014 15:53:19 +0200 (CEST)
-In-Reply-To: <s5hzjhnwwea.wl%tiwai@suse.de>
+Received: from f78.i.mail.ru (f78.i.mail.ru [94.100.185.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id CDE1C261A0A
+ for <alsa-devel@alsa-project.org>; Sun,  8 Jun 2014 21:02:24 +0200 (CEST)
+Received: from mail by f78.i.mail.ru with local (envelope-from
+ <sergemp@mail.ru>) id 1WtiMK-0006mg-07
+ for alsa-devel@alsa-project.org; Sun, 08 Jun 2014 23:02:24 +0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: =?UTF-8?B?YWxzYS1kZXZlbA==?= <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-08.06.2014 13:03, Takashi Iwai kirjoitti:
-> At Sun,  8 Jun 2014 12:58:56 +0300,
-> Anssi Hannula wrote:
->>
->> On most HDA Intel HDMI devices, the channel map list is approx. 500 ints
->> in size, making the 256-sized buffer used by
->> snd_pcm_query_chmaps_from_hw() too small and causing the query to fail
->> (NULL result to caller, ENOMEM).
->>
->> Bump the buffer size to 2048 ints.
->>
->> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
->> ---
->>
->> Found while writing XBMC support.
->>
->> I don't like just bumping the buffer size, so I hope you have some idea
->> of a better solution?
->> I guess one way would be just to retry with a dynamically allocated
->> bigger buffer on ENOMEM, if there is nothing better...
-> 
-> For user-space, this stack size doesn't matter too much, I suppose.
-> Unless we'll hit really too big size, I guess we can keep in this
-> way.  So, I applied it as is.
+Plug fails to convert float mono to float stereo,
+which is required when plug is used for float-only slaves
+like "jack" or "ladspa".
 
-OK.
+Steps to reproduce:
+#~/.asoundrc
+pcm.!default {
+  type plug
+  slave.pcm { type null }
+  slave.channels 2
+  slave.format FLOAT_LE
+}
+# aplay -f FLOAT_LE /dev/zero
 
-I'm a bit afraid about HDMI 2.x, though, with its reported 32 channel
-audio support... but I guess we can tackle that when we actually know
-how exactly it works and get driver support.
+A possible workaround is to use two plugs:
+pcm.!default {
+  type plug
+  slave.pcm {
+    type plug
+    slave.pcm { type null }
+    slave.channels 2
+    slave.format FLOAT_LE
+  }
+  slave.format S32_LE
+}
 
+But shouldn't "plug" do that automatically?
 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
->>
->>  src/pcm/pcm_hw.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
->> index 9ff83a9..ed83197 100644
->> --- a/src/pcm/pcm_hw.c
->> +++ b/src/pcm/pcm_hw.c
->> @@ -1051,7 +1051,7 @@ snd_pcm_query_chmaps_from_hw(int card, int dev, int subdev,
->>  {
->>  	snd_ctl_t *ctl;
->>  	snd_ctl_elem_id_t *id;
->> -	unsigned int tlv[256], *start;
->> +	unsigned int tlv[2048], *start;
->>  	snd_pcm_chmap_query_t **map;
->>  	int i, ret, nums;
->>  
->> -- 
->> 1.8.4.5
->>
-
+PS: the workaround makes `aplay -fFLOAT_LE /dev/zero` freeze on Ctrl+C,
+but that's a different alsa 1.0.27 regression that I have not tracked yet.
 
 -- 
-Anssi Hannula
+  Sergey
