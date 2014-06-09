@@ -1,48 +1,65 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/4] regulator: arizona-ldo1: Do not control clocking from
-	regulator
-Date: Mon, 9 Jun 2014 16:04:35 +0100
-Message-ID: <20140609150435.GE5229@opensource.wolfsonmicro.com>
-References: <20140609150013.GA5229@opensource.wolfsonmicro.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] ASoC: fsl_spdif: Fix integer overflow when
+	calculating divisors
+Date: Mon,  9 Jun 2014 19:16:43 +0300
+Message-ID: <1402330603-16547-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140609150013.GA5229@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: sameo@linux.intel.com, lee.jones@linaro.org, ckeepax@opensource.wolfsonmicro.com, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail3.ippnet.fi (mail3.ippnet.fi [62.197.168.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 396702650BE
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 18:16:59 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <Guangyu.Chen@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Using the driver for the internal regulator to also control
-the clock frequency of blocks inside the codec is an
-unexpected side-effect for a regulator, and also means that
-the core clocks won't be changed as expected if an external
-regulator is used to power the codec.
+The calculation code does
+u64 = (u32 - u32) * 100000;
 
-The clocking control is now handled by the core arizona MFD
-driver so can be removed from the LDO1 driver.
+The 64 bits are of no help here as the type is casted only after the
+multiplication, and therefore the result may overflow, possibly causing
+inoptimal or wrong clock setup in an unfortunate case (the maximum
+result value of the first substraction is currently 47999).
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Fix the code to cast before multiplication.
+
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
 ---
- drivers/regulator/arizona-ldo1.c |    5 -----
- 1 files changed, 0 insertions(+), 5 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/regulator/arizona-ldo1.c b/drivers/regulator/arizona-ldo1.c
-index d3787e1..ea4fbce 100644
---- a/drivers/regulator/arizona-ldo1.c
-+++ b/drivers/regulator/arizona-ldo1.c
-@@ -77,11 +77,6 @@ static int arizona_ldo1_hc_set_voltage_sel(struct regulator_dev *rdev,
- 	if (ret != 0)
- 		return ret;
- 
--	ret = regmap_update_bits(regmap, ARIZONA_DYNAMIC_FREQUENCY_SCALING_1,
--				 ARIZONA_SUBSYS_MAX_FREQ, val);
--	if (ret != 0)
--		return ret;
--
- 	if (val)
- 		return 0;
- 
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index b912d45a2a4c..0bd9136279a2 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1076,7 +1076,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ 				goto out;
+ 			} else if (arate / rate[index] == 1) {
+ 				/* A little bigger than expect */
+-				sub = (arate - rate[index]) * 100000;
++				sub = (u64)(arate - rate[index]) * 100000;
+ 				do_div(sub, rate[index]);
+ 				if (sub >= savesub)
+ 					continue;
+@@ -1086,7 +1086,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
+ 				spdif_priv->txrate[index] = arate;
+ 			} else if (rate[index] / arate == 1) {
+ 				/* A little smaller than expect */
+-				sub = (rate[index] - arate) * 100000;
++				sub = (u64)(rate[index] - arate) * 100000;
+ 				do_div(sub, rate[index]);
+ 				if (sub >= savesub)
+ 					continue;
 -- 
-1.7.2.5
+1.8.4.5
