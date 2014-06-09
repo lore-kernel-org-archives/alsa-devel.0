@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: wm5102: Add controls to allow
- shaping of ultrasonic response
-Date: Mon, 9 Jun 2014 21:20:28 +0100
-Message-ID: <20140609202028.GW5099@sirena.org.uk>
-References: <1402060445-5455-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: Correct S24_3LE support
+Date: Mon, 9 Jun 2014 21:24:03 +0100
+Message-ID: <20140609202403.GX5099@sirena.org.uk>
+References: <1402059931-10731-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8712475862673281410=="
+Content-Type: multipart/mixed; boundary="===============3145531271276964652=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BA93926566C
- for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 22:20:50 +0200 (CEST)
-In-Reply-To: <1402060445-5455-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C5922651A2
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 22:24:19 +0200 (CEST)
+In-Reply-To: <1402059931-10731-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.org, sameo@linux.intel.com
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8712475862673281410==
+--===============3145531271276964652==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oMQ/0Eds4GFUZehv"
+	protocol="application/pgp-signature"; boundary="Zq1NejLgb6rxdd6z"
 Content-Disposition: inline
 
 
---oMQ/0Eds4GFUZehv
+--Zq1NejLgb6rxdd6z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 06, 2014 at 02:14:05PM +0100, Charles Keepax wrote:
-> Add controls to allow custom shaping of the ultrasonic response. This
-> custom shaping can be turned on/off at runtime, although, it should be
-> noted that settings will not affect a currently open audio stream,
-> they will be applied when the next audio stream is started.
+On Fri, Jun 06, 2014 at 04:05:31PM +0300, Peter Ujfalusi wrote:
 
-Applied, thanks.
+> Correct the hw_params callback to configure the codec correctly in case of
+> S24_3LE format.
+> S24_LE is not defined as supported format for the codec.
 
---oMQ/0Eds4GFUZehv
+These should both be supported by the time things get down to the wire -
+the memory layout shouldn't matter.  I really need to get round to doing
+the rest of the conversions to use params_width() which should ensure
+this.
+
+--Zq1NejLgb6rxdd6z
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTlhcJAAoJELSic+t+oim98KsP/1H5UYrppKRBx4PnAmkU055e
-a1+pIczBX+4sqNMFY/sK6akrZM+wgL4No6susGmOmCMk/uuqGQ13RZw7/xQB/uXh
-mTPcMF9xAheAwXTcOlD89d2RICG6hm4xb/+xSd2NgrY9b2XGN6VYadlsPjBInaJW
-+44uagLfLXyJdUEvBB3m0tWH6zTQsB6MfxcGPP7UowmVPEz+2W/6/ysfhzcmTfzm
-O7RvZNTDtypn3PMQIMmrgJ/r/uzhgIOH8Gc0Gb0/0Z1ey0i3Fkr5Rt7S+T8iWEGI
-ITzkp131zZaR5oeiC5fB68Fjef1nTeFtK5cT0rBWdloV7bghqO5n4mVKdy4eKDT0
-qgPP18ZHhf2Z2g13yOD+4vJvxslcFqDynzG6WFcxSFAqIvuIawLE1Gz9hgyQ/LXq
-LcnuZKPtarL9fJDN7ywYZjAo/MYAhHwL9JGsxUH+SwmSSe7S8zpxd0W5dkKK8UuG
-Zn9BzQ4FxlQ5k4d17oP1svXtOEhINv8QZBFzTKEUnB55tY0O5ZUG3Us/RSX4/ZyP
-KnP4gAbORh6COvUhcGFVPYpB99cR6qtP/fa3i7tP1XelqSOQIWr7lsKU+wsMWjxR
-88QWgjOQzwUhg5qf669TC9g4kfjhiJIZisUhXaSeC5NJYXqLBKSk/xKKqVeu5m2I
-YKjr5i2bD02+0faMryKt
-=ZUIE
+iQIcBAEBAgAGBQJTlhfgAAoJELSic+t+oim9oKAP/1cf1U9VCTYKKaSrFpQzIEzQ
+ROtw0Ln2kKEVu92qrqcAxLd0lFiYzUUn37urPGf90lypKRxzAdBMGLviwtOi+Ims
+lgDNCTunNBieU2ZJaLffevQ6F2c1k9RKiv1LXFGsLzk+syhitEXipId5M9q9U58u
+M4MNJAwybvLwVNqOKGUxBE0k3RhVfuryKkJ4N8MEzN4uJlUPnQLaJ0OrSRjMDc25
+yhya5Zkc4YUWNMJtbY+vUcKH/DBkT5vT0JxlMxRqQ5Wo/TVMSd0WLx1YqUkof6UP
+R0T80Wbq+F8CP5x7FSdXftU6WILLAW/t/6idWy67H4emLyOAC0yqmpDyr8G2Mk8q
+xDmG9VekGpLlVCOMJDR1Hbe6lSHRd4zbvA+g8rtNDjG8ynLg/ySEh7XSr0bmrAlb
+f1unLhcvfEvJxzRGRWof7iS88yFups8CmsjLuWf/oXKFEHngxzvQ5FRqUYKtFN6Q
+lSdYKq5oqvl0lEQJlxosW/YRPpNNkkmVsHOweGYnRoWa8Q0M/v4AM9R1ar0ufg+7
+hcIjmbOhxzdS3yJoFPbEg0iBU4TBqDDRZ2zIQVMyAVtgQ2eFFwed7y9iehEnGwcH
+MDWfHDu9yVjjgXRvoKCgOfEpqPwrVc1lhPEM+h7P0NXM7++Z3YYvZ7ALWmrpSjDP
+tzK1RfsRN/5xZ9xl8lz7
+=4NV7
 -----END PGP SIGNATURE-----
 
---oMQ/0Eds4GFUZehv--
+--Zq1NejLgb6rxdd6z--
 
---===============8712475862673281410==
+--===============3145531271276964652==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8712475862673281410==--
+--===============3145531271276964652==--
