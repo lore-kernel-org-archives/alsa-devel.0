@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: rt5677: Convert to use
-	rl6231_calc_dmic_clk
-Date: Mon, 9 Jun 2014 21:16:40 +0100
-Message-ID: <20140609201640.GT5099@sirena.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: rt5677: Convert to use
+	rl6231_get_clk_info
+Date: Mon, 9 Jun 2014 21:17:24 +0100
+Message-ID: <20140609201724.GU5099@sirena.org.uk>
 References: <1401764201.15216.0.camel@phoenix>
- <1401764338.15216.3.camel@phoenix>
+ <1401764288.15216.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7445233593752698445=="
+Content-Type: multipart/mixed; boundary="===============7358032916962591560=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2152D265669
- for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 22:16:51 +0200 (CEST)
-In-Reply-To: <1401764338.15216.3.camel@phoenix>
+ by alsa0.perex.cz (Postfix) with ESMTP id 45BEF265739
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 22:17:40 +0200 (CEST)
+In-Reply-To: <1401764288.15216.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +27,54 @@ Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdw
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7445233593752698445==
+--===============7358032916962591560==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qKOY9RTXA4DvnaVz"
+	protocol="application/pgp-signature"; boundary="HR4ti3j4RKbrMpBw"
 Content-Disposition: inline
 
 
---qKOY9RTXA4DvnaVz
+--HR4ti3j4RKbrMpBw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jun 03, 2014 at 10:58:58AM +0800, Axel Lin wrote:
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+On Tue, Jun 03, 2014 at 10:58:08AM +0800, Axel Lin wrote:
 
-Applied, thanks.
+>  #define RT5677_DEVICE_ID 0x6327
+> @@ -2798,21 +2799,6 @@ static const struct snd_soc_dapm_route
+> rt5677_dapm_routes[] = {
 
---qKOY9RTXA4DvnaVz
+Your mailer has corrupted this patch by word wrapping the line above -
+can you please check and resend?
+
+--HR4ti3j4RKbrMpBw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTlhYlAAoJELSic+t+oim9MvQQAIhd8fcXULevn5qS9GX4T76u
-V6JZNdUIvsvbIPoiPkC2aBDT+XH/uCMbxRoTO5OfnobOjozosiv8Pp3PL+Li25cv
-hqpD9MqxJZ41ESmPfAYlBOikN2sCgfghzqEqwI1x2wYnF84nK1FFDK48NKLFbgym
-RThfioIKovk2OJqJ2FrDQhNv83Yo5vA9sjwf6Dz7t3D/iuyJ6jdPJv2OHXNACbtI
-bHqHiWO4+irTFkzpG0kETgR47cR86+H5A8Z0VUo/3EYtkrBMApGLQ+f/AgWVRlFv
-PW6h2g/0p/360oHU4yI3t0MVVGpVGXgE5R8ZP9i6I3KODstKL3gAIRL9kPjXZDk6
-oK2aGWpj+R1pFzIp1CFq0ezI/Kri92/BMBiY+56ipNsKTdem1ZFeYb1iQUy3Y0iP
-LfWIl743XzjPBbL0E99g5lQDCBSPey3bXt1/4WqD2MW7IG0ER4TqsrsrB2T2yi+p
-hAe0s8yAUhew0JZma22vMopQt+SgkeqvQ5M2f/ETxgbYMmKS2LfBbGG7FuuzhGkc
-hzyAMN5Y3xl/z36AcgaA/WsmZZen6B2087R3P3dUaG0cx6NcT06Z5+KHH45YxF0e
-baoUgbNBxI2s1XoAN0UsUOC7yfWQ1G6Bqe2rr1cNqZmgkwSBSWKbt8cm/8NC6vUQ
-Na+F9ISZ5bnWr1ZCVgut
-=DO4N
+iQIcBAEBAgAGBQJTlhZRAAoJELSic+t+oim9IpMQAIglvTHA+8QDA3IyauOKL/4M
+2tslSKuH8RxNEmUMwCkTZt/BVpOKWLNqIWolZ8pp+rf9U/QcuEExGbrKE0Hg3Pb7
+g0Gg/rEjWly2W+UUcqg4eTQ7MxdALzoyt2hpxOmfE8mtqaU7sD/KQ4QPLpBQMYoS
+fkFwXq6KobnpXnkAMJJmcJyeOzK6fTl6FLVHlS65GyfijhdwKBcQsVGUptymfxyF
+DyX9NKkF81rfrBAL5uJUkfeC5qdKUOq45yzuPFSPYBi7bUmtl63r00NhYMscrdLT
+jlWwYy+TbEANvfrCTyMZxlCsBAbw6PQ+wa+y8MHc1PQGgsXLil4QH2t0o9KY2/61
+K/VOl5IBevsKGGAKyKvFNSUKHwCqPjH+aQd2DEH/OgcFklHQW7+X5xCyonsOpyYR
++dfrG0ibsEV3ON8Hediri4Lcqv4GZf4W24qYJMFYwgiAeig3bCUxQRXi+GXsuAtU
+GFOvN2wgSzdOTx/+ptZmJy5i+Yc7H8N6YfTkivMY1t9tPldGquSZkMeJ6lYeGJHJ
+p6jpzucQGbMw9YpB8sFFY6wSkDtAHeHuKBYBlPzi6CIvZE6S3ywzbfw8whjEdxjf
+IT3w1uneak0Gsg4EcHYPXqXMoTogJYhNcqJuiyPTVA9EastEONOUo4ENbYVkRUmT
+ltnH6A82jrKQ6tGI1JFI
+=/Axe
 -----END PGP SIGNATURE-----
 
---qKOY9RTXA4DvnaVz--
+--HR4ti3j4RKbrMpBw--
 
---===============7445233593752698445==
+--===============7358032916962591560==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7445233593752698445==--
+--===============7358032916962591560==--
