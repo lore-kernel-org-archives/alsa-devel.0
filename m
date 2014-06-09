@@ -1,17 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Make sure register value is in
- sync with DAPM kcontrol state
-Date: Mon, 9 Jun 2014 20:57:52 +0100
-Message-ID: <20140609195752.GL5099@sirena.org.uk>
-References: <1402312829-1163-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH] sound: soc: pxa2xx-ac97: prepare and unprepare
+	the clocks
+Date: Mon,  9 Jun 2014 21:59:12 +0200
+Message-ID: <1402343952-1287-1-git-send-email-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7291750314133646138=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DAC082652B0
- for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 21:58:07 +0200 (CEST)
-In-Reply-To: <1402312829-1163-1-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from smtp.smtpout.orange.fr (smtp10.smtpout.orange.fr
+ [80.12.242.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 570452652B0
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 21:59:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +20,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+To: Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
+Add the clock prepare and unprepare call to the driver initialization
+phase. This will remove a warning once the PXA architecture is migrated
+to the clock infrastructure.
 
---===============7291750314133646138==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Khiu2s0Zk5P3S+XT"
-Content-Disposition: inline
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ sound/arm/pxa2xx-ac97-lib.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-
---Khiu2s0Zk5P3S+XT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 09, 2014 at 02:20:29PM +0300, Jarkko Nikula wrote:
-> Commit c9e065c27fe9 ("ASoC: dapm: Make sure to always update the DAPM graph
-> in _put_volsw()") stopped updating register values in those cases where
-> initial after boot state of kcontrol appears to not change but where
-> register value still needs update because it is not in sync with the
-> kcontrol state.
-
-Applied, thanks.  One thing...
-
-> -	int connect, change;
-> +	int connect, change, reg_change = 0;
-
-It's better not to mix initialisations in with other variable
-declarations, it's a bit messy and marginally unclear.
-
---Khiu2s0Zk5P3S+XT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTlhG9AAoJELSic+t+oim9hZUP/0tc/BS0ozbuByR3B/1rQci6
-NKrzvLx2cPKG61OvCoa/4QADGNpkDzWJrtkTODArth3klDG5TPCp/P69CDjglZLp
-VnuexqLjCzmqQ76G9bl+rlVCJwSHQ3J2qfwk9Q6LwD76NlLGwKhl+P0kpTvAanbC
-/+LoyWE/mT2d8rAhRNlh1nFl45upjeqHvE37wPAqQ2rEyIP2ksCfXIUOsEElBzb0
-evp9xhPJYz3KUJ4Ctqsp9OT3yq+ejwdEu6/mVkMh6JwLXlmUR3wLmEp3jhZCybMj
-7xg7E3v4kkeineEHqpX0uq/Eup9jXmbYQO5NwJb64FDGNv3klTaT35gd0fAxhDUB
-Vwy8r0rx2RHHHDDNBSHhN/ae9Z5hbCafE6lSfanvjPT2m9IiYCTCLwxdvsvLt8Fx
-1XWphDXKgIiQc8ShHQU7hO5sXo52H3W55LyCYnnbi64VaJ3wzg1LNifK4d1ZgZRS
-j4rMUdVFbODeh12Z3B6IoyAigDCYcEk83PctVWwIsqN5xqOObZKGrwhUrU1O7BQf
-UPlMxI6Y+ZEIe9OGgpNc/gIyU6BGk6OcyOGbkmgslzQ0cOwCJI//vuhEjTadIdVE
-zsLhmA2RzNcFWtlZcTOYXwEVfIkm1lv8+oImTuQBy+cMBdPUBXyS3gPxYYBmyrbO
-FHes0Puujg07EB7ntRTC
-=OgcW
------END PGP SIGNATURE-----
-
---Khiu2s0Zk5P3S+XT--
-
---===============7291750314133646138==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7291750314133646138==--
+diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+index 66de90e..39c3969 100644
+--- a/sound/arm/pxa2xx-ac97-lib.c
++++ b/sound/arm/pxa2xx-ac97-lib.c
+@@ -152,9 +152,9 @@ static inline void pxa_ac97_cold_pxa27x(void)
+ 	gsr_bits = 0;
+ 
+ 	/* PXA27x Developers Manual section 13.5.2.2.1 */
+-	clk_enable(ac97conf_clk);
++	clk_prepare_enable(ac97conf_clk);
+ 	udelay(5);
+-	clk_disable(ac97conf_clk);
++	clk_disable_unprepare(ac97conf_clk);
+ 	GCR = GCR_COLD_RST | GCR_WARM_RST;
+ }
+ #endif
+@@ -299,14 +299,14 @@ static irqreturn_t pxa2xx_ac97_irq(int irq, void *dev_id)
+ int pxa2xx_ac97_hw_suspend(void)
+ {
+ 	GCR |= GCR_ACLINK_OFF;
+-	clk_disable(ac97_clk);
++	clk_disable_unprepare(ac97_clk);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(pxa2xx_ac97_hw_suspend);
+ 
+ int pxa2xx_ac97_hw_resume(void)
+ {
+-	clk_enable(ac97_clk);
++	clk_prepare_enable(ac97_clk);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(pxa2xx_ac97_hw_resume);
+@@ -368,7 +368,7 @@ int pxa2xx_ac97_hw_probe(struct platform_device *dev)
+ 		goto err_clk;
+ 	}
+ 
+-	ret = clk_enable(ac97_clk);
++	ret = clk_prepare_enable(ac97_clk);
+ 	if (ret)
+ 		goto err_clk2;
+ 
+@@ -403,7 +403,7 @@ void pxa2xx_ac97_hw_remove(struct platform_device *dev)
+ 		clk_put(ac97conf_clk);
+ 		ac97conf_clk = NULL;
+ 	}
+-	clk_disable(ac97_clk);
++	clk_disable_unprepare(ac97_clk);
+ 	clk_put(ac97_clk);
+ 	ac97_clk = NULL;
+ }
+-- 
+2.0.0.rc2
