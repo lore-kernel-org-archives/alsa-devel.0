@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: Correct S24_3LE support
-Date: Mon, 9 Jun 2014 21:24:03 +0100
-Message-ID: <20140609202403.GX5099@sirena.org.uk>
-References: <1402059931-10731-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: sigmadsp: Split regmap and I2C
+ support into separate modules
+Date: Mon, 9 Jun 2014 21:24:44 +0100
+Message-ID: <20140609202444.GY5099@sirena.org.uk>
+References: <1402056557-31348-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3145531271276964652=="
+Content-Type: multipart/mixed; boundary="===============6700432593298692605=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C5922651A2
- for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 22:24:19 +0200 (CEST)
-In-Reply-To: <1402059931-10731-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BA4F126567A
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 22:25:02 +0200 (CEST)
+In-Reply-To: <1402056557-31348-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3145531271276964652==
+--===============6700432593298692605==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Zq1NejLgb6rxdd6z"
+	protocol="application/pgp-signature"; boundary="0Yt18YowHM3Aoknw"
 Content-Disposition: inline
 
 
---Zq1NejLgb6rxdd6z
+--0Yt18YowHM3Aoknw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jun 06, 2014 at 04:05:31PM +0300, Peter Ujfalusi wrote:
+On Fri, Jun 06, 2014 at 02:09:17PM +0200, Lars-Peter Clausen wrote:
+> When the SigmaDSP module is built-in, but the I2C core is build as a module
+> we'll get a undefined reference:
 
-> Correct the hw_params callback to configure the codec correctly in case of
-> S24_3LE format.
-> S24_LE is not defined as supported format for the codec.
+Applied, thanks.
 
-These should both be supported by the time things get down to the wire -
-the memory layout shouldn't matter.  I really need to get round to doing
-the rest of the conversions to use params_width() which should ensure
-this.
-
---Zq1NejLgb6rxdd6z
+--0Yt18YowHM3Aoknw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTlhfgAAoJELSic+t+oim9oKAP/1cf1U9VCTYKKaSrFpQzIEzQ
-ROtw0Ln2kKEVu92qrqcAxLd0lFiYzUUn37urPGf90lypKRxzAdBMGLviwtOi+Ims
-lgDNCTunNBieU2ZJaLffevQ6F2c1k9RKiv1LXFGsLzk+syhitEXipId5M9q9U58u
-M4MNJAwybvLwVNqOKGUxBE0k3RhVfuryKkJ4N8MEzN4uJlUPnQLaJ0OrSRjMDc25
-yhya5Zkc4YUWNMJtbY+vUcKH/DBkT5vT0JxlMxRqQ5Wo/TVMSd0WLx1YqUkof6UP
-R0T80Wbq+F8CP5x7FSdXftU6WILLAW/t/6idWy67H4emLyOAC0yqmpDyr8G2Mk8q
-xDmG9VekGpLlVCOMJDR1Hbe6lSHRd4zbvA+g8rtNDjG8ynLg/ySEh7XSr0bmrAlb
-f1unLhcvfEvJxzRGRWof7iS88yFups8CmsjLuWf/oXKFEHngxzvQ5FRqUYKtFN6Q
-lSdYKq5oqvl0lEQJlxosW/YRPpNNkkmVsHOweGYnRoWa8Q0M/v4AM9R1ar0ufg+7
-hcIjmbOhxzdS3yJoFPbEg0iBU4TBqDDRZ2zIQVMyAVtgQ2eFFwed7y9iehEnGwcH
-MDWfHDu9yVjjgXRvoKCgOfEpqPwrVc1lhPEM+h7P0NXM7++Z3YYvZ7ALWmrpSjDP
-tzK1RfsRN/5xZ9xl8lz7
-=4NV7
+iQIcBAEBAgAGBQJTlhgJAAoJELSic+t+oim9ZwEP/3s2ZzY8K9PQkv4pSguJyZbv
+Tl2iY615N0aPaamC7XAN4kHMuW5zlTcbTXfbDAM+M/QUN3aee8i81xt5jpKNXUWE
+JZyefv5vg8PlmwOj4laK3TrC6WI7sHwDYWhDfKtHvsKqReP+xFSExtHh94gJmIXz
+hsCVot3YjpKZl6B2UbpKegZ/fUOaMGRsvoqvK+W9gjtmJll2i2aZ1fqBUPbZ9Uhh
+QewJJDQ2XJ+G5IoaF0xUP2fej2MYgdc4pNt68lFYimPfg43/ukN/1P45YYqK6wtg
+o+QxSkI5dCGE888Lw7ZlAaKFVKt7a15F2JJ+TiNf5dl0mYzfBE1sM3BwUpnhl7Ih
+2xqdYcW+7COwXyZoYtgRfypaw2vts/ua/nH6hsaST1nx6MYqLkYn1zEI0csZhr4R
+JNvnhHZNfAl+lZC+ejmlxl7WKpdUrLrKPODTRNibljIsSupX4wA7R8GMGhRJfG9j
+pJ8QD1FMlcYg3ky/s3VnOymENPGwJXDQMnQdAduAnqtatWGY7AF8Z+uVg+tKjUti
+GvaSW3hA/i/y5JNoyUM8uW0er93Iqe+JE1v05yRjxt+rzkybcunnYJIgNCJ+4I/M
+M2eJeXV3Y220KhufOkANOVu58+G/4YAl3JKRyBX2LJFjmYUSuBNTuV4NG5CUEtXM
+Xuzh60ew9Vgsw67cEj95
+=6p2b
 -----END PGP SIGNATURE-----
 
---Zq1NejLgb6rxdd6z--
+--0Yt18YowHM3Aoknw--
 
---===============3145531271276964652==
+--===============6700432593298692605==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3145531271276964652==--
+--===============6700432593298692605==--
