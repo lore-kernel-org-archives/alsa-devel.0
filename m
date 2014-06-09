@@ -1,19 +1,18 @@
-From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
-Subject: =?utf-8?q?=5BBug=3F=5D_alsa-lib=3A_Plug_fails_to_con?=
- =?utf-8?q?vert_float_mono_to_float_stereo?=
-Date: Sun, 08 Jun 2014 23:02:23 +0400
-Message-ID: <1402254143.119530615@f78.i.mail.ru>
-Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH 1/3] ASoC: rt5677: Convert to use
+	module_i2c_driver
+Date: Mon, 9 Jun 2014 02:24:19 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D1269437127B@RTITMBSV03.realtek.com.tw>
+References: <1401764201.15216.0.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from f78.i.mail.ru (f78.i.mail.ru [94.100.185.14])
- by alsa0.perex.cz (Postfix) with ESMTP id CDE1C261A0A
- for <alsa-devel@alsa-project.org>; Sun,  8 Jun 2014 21:02:24 +0200 (CEST)
-Received: from mail by f78.i.mail.ru with local (envelope-from
- <sergemp@mail.ru>) id 1WtiMK-0006mg-07
- for alsa-devel@alsa-project.org; Sun, 08 Jun 2014 23:02:24 +0400
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C53F261A38
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 04:24:26 +0200 (CEST)
+In-Reply-To: <1401764201.15216.0.camel@phoenix>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?YWxzYS1kZXZlbA==?= <alsa-devel@alsa-project.org>
+To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Plug fails to convert float mono to float stereo,
-which is required when plug is used for float-only slaves
-like "jack" or "ladspa".
+> -----Original Message-----
+> From: Axel Lin [mailto:axel.lin@ingics.com]
+> Sent: Tuesday, June 03, 2014 10:57 AM
+> To: Mark Brown
+> Cc: Oder Chiou; Liam Girdwood; alsa-devel@alsa-project.org
+> Subject: [PATCH 1/3] ASoC: rt5677: Convert to use module_i2c_driver
+> 
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+>  sound/soc/codecs/rt5677.c | 13 +------------
+>  1 file changed, 1 insertion(+), 12 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c index
+> 833231e..60fff7f 100644
+> --- a/sound/soc/codecs/rt5677.c
+> +++ b/sound/soc/codecs/rt5677.c
+> @@ -3480,18 +3480,7 @@ static struct i2c_driver rt5677_i2c_driver = {
+>  	.remove   = rt5677_i2c_remove,
+>  	.id_table = rt5677_i2c_id,
+>  };
+> -
+> -static int __init rt5677_modinit(void)
+> -{
+> -	return i2c_add_driver(&rt5677_i2c_driver);
+> -}
+> -module_init(rt5677_modinit);
+> -
+> -static void __exit rt5677_modexit(void) -{
+> -	i2c_del_driver(&rt5677_i2c_driver);
+> -}
+> -module_exit(rt5677_modexit);
+> +module_i2c_driver(rt5677_i2c_driver);
+> 
+>  MODULE_DESCRIPTION("ASoC RT5677 driver");  MODULE_AUTHOR("Oder
+> Chiou <oder_chiou@realtek.com>");
+> --
+> 1.8.3.2
+> 
+> 
 
-Steps to reproduce:
-#~/.asoundrc
-pcm.!default {
-  type plug
-  slave.pcm { type null }
-  slave.channels 2
-  slave.format FLOAT_LE
-}
-# aplay -f FLOAT_LE /dev/zero
+Tested-by: Oder Chiou <oder_chiou@realtek.com>
 
-A possible workaround is to use two plugs:
-pcm.!default {
-  type plug
-  slave.pcm {
-    type plug
-    slave.pcm { type null }
-    slave.channels 2
-    slave.format FLOAT_LE
-  }
-  slave.format S32_LE
-}
-
-But shouldn't "plug" do that automatically?
-
-PS: the workaround makes `aplay -fFLOAT_LE /dev/zero` freeze on Ctrl+C,
-but that's a different alsa 1.0.27 regression that I have not tracked yet.
-
--- 
-  Sergey
+Thanks
