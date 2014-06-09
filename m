@@ -1,77 +1,60 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH] ASoC: fsl_spdif: Fix integer overflow when
- calculating divisors
-Date: Tue, 10 Jun 2014 01:26:32 +0800
-Message-ID: <20140609172630.GA7715@MrMyself>
-References: <1402330603-16547-1-git-send-email-anssi.hannula@iki.fi>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/4] regulator: arizona-ldo1: Do not control clocking
+ from regulator
+Date: Mon, 9 Jun 2014 19:43:14 +0100
+Message-ID: <20140609184314.GB5099@sirena.org.uk>
+References: <20140609150013.GA5229@opensource.wolfsonmicro.com>
+ <20140609150435.GE5229@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1blp0189.outbound.protection.outlook.com [207.46.163.189])
- by alsa0.perex.cz (Postfix) with ESMTP id A752426517E
- for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 19:26:48 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="DCmVMJei/gJT7wEg"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1402330603-16547-1-git-send-email-anssi.hannula@iki.fi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+In-Reply-To: <20140609150435.GE5229@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: sameo@linux.intel.com, lee.jones@linaro.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 09, 2014 at 07:16:43PM +0300, Anssi Hannula wrote:
-> The calculation code does
-> u64 = (u32 - u32) * 100000;
-> 
-> The 64 bits are of no help here as the type is casted only after the
-> multiplication, and therefore the result may overflow, possibly causing
-> inoptimal or wrong clock setup in an unfortunate case (the maximum
-> result value of the first substraction is currently 47999).
-> 
-> Fix the code to cast before multiplication.
-> 
-> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-> Cc: Nicolin Chen <Guangyu.Chen@freescale.com>
 
-Acked-by: Nicolin Chen <Guangyu.Chen@freescale.com>
+--DCmVMJei/gJT7wEg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thank you so much :)
-Nicolin
+On Mon, Jun 09, 2014 at 04:04:35PM +0100, Richard Fitzgerald wrote:
+> Using the driver for the internal regulator to also control
+> the clock frequency of blocks inside the codec is an
+> unexpected side-effect for a regulator, and also means that
+> the core clocks won't be changed as expected if an external
+> regulator is used to power the codec.
 
-> ---
->  sound/soc/fsl/fsl_spdif.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-> index b912d45a2a4c..0bd9136279a2 100644
-> --- a/sound/soc/fsl/fsl_spdif.c
-> +++ b/sound/soc/fsl/fsl_spdif.c
-> @@ -1076,7 +1076,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
->  				goto out;
->  			} else if (arate / rate[index] == 1) {
->  				/* A little bigger than expect */
-> -				sub = (arate - rate[index]) * 100000;
-> +				sub = (u64)(arate - rate[index]) * 100000;
->  				do_div(sub, rate[index]);
->  				if (sub >= savesub)
->  					continue;
-> @@ -1086,7 +1086,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
->  				spdif_priv->txrate[index] = arate;
->  			} else if (rate[index] / arate == 1) {
->  				/* A little smaller than expect */
-> -				sub = (rate[index] - arate) * 100000;
-> +				sub = (u64)(rate[index] - arate) * 100000;
->  				do_div(sub, rate[index]);
->  				if (sub >= savesub)
->  					continue;
-> -- 
-> 1.8.4.5
-> 
+IIRC this was deliberately coded in this fashion on advice from the
+hardware engineers - there was more going on with that register than
+there might at first appear and some actual sync with the LDO.  I
+believe there was some different process to follow (possibly just
+setting this mode all the time) when using an external regulator, though
+it's also possible the hardware guys were just unsure at the time.
+
+--DCmVMJei/gJT7wEg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTlgA/AAoJELSic+t+oim959cP/0/3jtI44v32TiiSfbOu1TJj
+Mn3vlQNuNokV+TQt5TP7CtgsMibdtS+VB/wUAVOcDQfROYvczu2c4P2LAaF76UzQ
+CXFMlGEI3rstB8WvkYgv+WNzmxdNU2z3XcgqEI82aW6fbTdqSDSfXeG4nlmQ4LLJ
+V9eTjVqFL2Pvs7MARoc8IiU6eQ6JAo4QE064w7lKwYWc3pCzjg6LrT6Y4DY3ipUV
+kCj66s4a7DNZOixYH1Im7z+UszEgkkEzCJpYCfVI7Ed9Q1/Ac6Bzg34rYF00SUl7
+VrHakhWBQyKxy6XV5b7nzlkSfz9jETeP7W/SB7vCkDizqzVTw0y8n4qHEfFqq53k
+HkcT5anVskZ3ePGYo670rAtHWDm3IPstfLZOAiu/3Dq3VhkPrnV0uPWDniuRRwMt
+8sBP8IzRw8gGfJDySCih+p0rIzogHllfA/oG9Yvcwu8p5R9jffUjEot3pHdMyc/m
+/zRAtvJ0mgWgjRm+7onIVprQaK6EIGZoW1GXVfGPJ9Oid/TOCG7LRzwGmnfUHgbR
+45+aIfNB/xUI1moPuYya8FgltSxw0yWZxcaU68ZyjAbzl5mboLnQbYBkiuWi1KX/
+L4wse07WI39W8EQih7odcYImTuFWBsbFWdyMANP9+8Ix7FNyY5elLQeJlA6ulDNG
+UvBbwqFnBENPnkl7nDFK
+=wJ7n
+-----END PGP SIGNATURE-----
+
+--DCmVMJei/gJT7wEg--
