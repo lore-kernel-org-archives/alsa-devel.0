@@ -1,7 +1,7 @@
 From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH v2 3/5] dt: wm8904: add device tree binding document
-Date: Mon, 9 Jun 2014 11:31:45 +0800
-Message-ID: <1402284707-23354-4-git-send-email-voice.shen@atmel.com>
+Subject: [PATCH v2 4/5] ARM: atmel: sama5d3xek: switch sound to CCF
+Date: Mon, 9 Jun 2014 11:31:46 +0800
+Message-ID: <1402284707-23354-5-git-send-email-voice.shen@atmel.com>
 References: <1402284707-23354-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,54 +12,30 @@ To: Mark Brown <broonie@kernel.org>
 Cc: nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
+As the sama5d3xek board has switch to CCF, so add clock for wm8904
+
 Signed-off-by: Bo Shen <voice.shen@atmel.com>
+Reviwed-by: Mark Brown <broonie@linaro.org>
 ---
 Changes in v2:
-  - List the clock-names, which need by driver.
+  - None
 
- Documentation/devicetree/bindings/sound/wm8904.txt | 33 ++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/wm8904.txt
+ arch/arm/boot/dts/sama5d3xmb.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/wm8904.txt b/Documentation/devicetree/bindings/sound/wm8904.txt
-new file mode 100644
-index 0000000..e99f409
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wm8904.txt
-@@ -0,0 +1,33 @@
-+WM8904 audio CODEC
-+
-+This device supports I2C only.
-+
-+Required properties:
-+  - compatible: "wlf,wm8904"
-+  - reg: the I2C address of the device.
-+  - clock-names: "mclk"
-+  - clocks: reference to
-+    <Documentation/devicetree/bindings/clock/clock-bindings.txt>
-+
-+Pins on the device (for linking into audio routes):
-+
-+  * IN1L
-+  * IN1R
-+  * IN2L
-+  * IN2R
-+  * IN3L
-+  * IN3R
-+  * HPOUTL
-+  * HPOUTR
-+  * LINEOUTL
-+  * LINEOUTR
-+  * MICBIAS
-+
-+Examples:
-+
-+codec: wm8904@1a {
-+	compatible = "wlf,wm8904";
-+	reg = <0x1a>;
-+	clocks = <&pck0>;
-+	clock-names = "mclk";
-+};
+diff --git a/arch/arm/boot/dts/sama5d3xmb.dtsi b/arch/arm/boot/dts/sama5d3xmb.dtsi
+index 306eef0..b8c6f20 100644
+--- a/arch/arm/boot/dts/sama5d3xmb.dtsi
++++ b/arch/arm/boot/dts/sama5d3xmb.dtsi
+@@ -45,6 +45,8 @@
+ 				wm8904: wm8904@1a {
+ 					compatible = "wm8904";
+ 					reg = <0x1a>;
++					clocks = <&pck0>;
++					clock-names = "mclk";
+ 				};
+ 			};
+ 
 -- 
 1.8.5.2
 
