@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: rt5677: Convert to use
-	rl6231_get_clk_info
-Date: Mon, 9 Jun 2014 21:17:24 +0100
-Message-ID: <20140609201724.GU5099@sirena.org.uk>
-References: <1401764201.15216.0.camel@phoenix>
- <1401764288.15216.2.camel@phoenix>
+Subject: Re: [PATCH] ASoC: rl6231: Remove unneeded inclusion of
+	header files
+Date: Mon, 9 Jun 2014 21:18:18 +0100
+Message-ID: <20140609201818.GV5099@sirena.org.uk>
+References: <1401778595.19083.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7358032916962591560=="
+Content-Type: multipart/mixed; boundary="===============7737699804337095782=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 45BEF265739
- for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 22:17:40 +0200 (CEST)
-In-Reply-To: <1401764288.15216.2.camel@phoenix>
+ by alsa0.perex.cz (Postfix) with ESMTP id CBE9A265644
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 22:18:28 +0200 (CEST)
+In-Reply-To: <1401778595.19083.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,54 +26,50 @@ Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdw
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7358032916962591560==
+--===============7737699804337095782==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HR4ti3j4RKbrMpBw"
+	protocol="application/pgp-signature"; boundary="Z7VyPvL0GdI/eL50"
 Content-Disposition: inline
 
 
---HR4ti3j4RKbrMpBw
+--Z7VyPvL0GdI/eL50
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jun 03, 2014 at 10:58:08AM +0800, Axel Lin wrote:
+On Tue, Jun 03, 2014 at 02:56:35PM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
 
->  #define RT5677_DEVICE_ID 0x6327
-> @@ -2798,21 +2799,6 @@ static const struct snd_soc_dapm_route
-> rt5677_dapm_routes[] = {
+Applied, thanks.
 
-Your mailer has corrupted this patch by word wrapping the line above -
-can you please check and resend?
-
---HR4ti3j4RKbrMpBw
+--Z7VyPvL0GdI/eL50
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTlhZRAAoJELSic+t+oim9IpMQAIglvTHA+8QDA3IyauOKL/4M
-2tslSKuH8RxNEmUMwCkTZt/BVpOKWLNqIWolZ8pp+rf9U/QcuEExGbrKE0Hg3Pb7
-g0Gg/rEjWly2W+UUcqg4eTQ7MxdALzoyt2hpxOmfE8mtqaU7sD/KQ4QPLpBQMYoS
-fkFwXq6KobnpXnkAMJJmcJyeOzK6fTl6FLVHlS65GyfijhdwKBcQsVGUptymfxyF
-DyX9NKkF81rfrBAL5uJUkfeC5qdKUOq45yzuPFSPYBi7bUmtl63r00NhYMscrdLT
-jlWwYy+TbEANvfrCTyMZxlCsBAbw6PQ+wa+y8MHc1PQGgsXLil4QH2t0o9KY2/61
-K/VOl5IBevsKGGAKyKvFNSUKHwCqPjH+aQd2DEH/OgcFklHQW7+X5xCyonsOpyYR
-+dfrG0ibsEV3ON8Hediri4Lcqv4GZf4W24qYJMFYwgiAeig3bCUxQRXi+GXsuAtU
-GFOvN2wgSzdOTx/+ptZmJy5i+Yc7H8N6YfTkivMY1t9tPldGquSZkMeJ6lYeGJHJ
-p6jpzucQGbMw9YpB8sFFY6wSkDtAHeHuKBYBlPzi6CIvZE6S3ywzbfw8whjEdxjf
-IT3w1uneak0Gsg4EcHYPXqXMoTogJYhNcqJuiyPTVA9EastEONOUo4ENbYVkRUmT
-ltnH6A82jrKQ6tGI1JFI
-=/Axe
+iQIcBAEBAgAGBQJTlhaGAAoJELSic+t+oim9PJcP/j7/3cqzou1cNCtyPEYHNEVF
+WQsb3XTQKttMt4rfjlS5oBeOCASRkhG/FnT/+PfVshQa0HB/1OwSpVlRmF21ZJbE
+odWV3nHxaNNHbke/Fg3aWRtAqCq2AJe2j4AaIQne5idMIIJJZbuk74vmTajnv6Yc
+fuKGQedopgcFI+7s6+mwv9uL2ApenpgMm3YQBjBjSV4TO1AUzR97WpOoJz+DR4pA
+JLYfAmOmxW3mz+UVaUg8a0B+xLLZnjhyI66EPpu8zLRz3WkJO2/gVNSxR/XofFxP
+DEr7hD2euOS31b9/sF+SyRYc2u9fP0lJJvRHCRuXyJo6dmtUnKQKAjdCGwhDYwgl
+RpJZenD2PFyFX0CgKiOF3YLxKz2k4AUy/nIt22QFUFpKb8ssrKrBHFYP1aSGDXsN
+Yu/3YvLzdbi17/WmhiMWj2ZgPrKPcoyLDbVUMI7eMRzPoNX/YGs1BiTi5sRTIuei
+SaUygLeYxGfPVR2qbgj4mb5klP2KHPyTrucBN34fwklfws0AwtZp+KkR0KA2Z3TU
+QSyGtEn+EJqvo6f9zReTFYQehoioPeoLVZhJ9Lzs6F+utClHzF138fIKz577DgV2
+RHDBJJPZ1XlqbTp5sX7cHEHG9J9XyX8s+xHapsdwvemwE9nqC368kkJfYTNLhbel
+tF7dT6JN/1zHrmopgd4y
+=gXKa
 -----END PGP SIGNATURE-----
 
---HR4ti3j4RKbrMpBw--
+--Z7VyPvL0GdI/eL50--
 
---===============7358032916962591560==
+--===============7737699804337095782==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7358032916962591560==--
+--===============7737699804337095782==--
