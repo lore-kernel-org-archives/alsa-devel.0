@@ -1,41 +1,44 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH v2 5/5] ARM: atmel: at91sam9n12ek: switch sound to CCF
-Date: Mon, 9 Jun 2014 11:31:47 +0800
-Message-ID: <1402284707-23354-6-git-send-email-voice.shen@atmel.com>
-References: <1402284707-23354-1-git-send-email-voice.shen@atmel.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: add RT5677 CODEC driver
+Date: Mon, 9 Jun 2014 05:22:57 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D12694371336@RTITMBSV03.realtek.com.tw>
+References: <1401107553-314-1-git-send-email-oder_chiou@realtek.com>
+ <20140601191913.GP5099@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1402284707-23354-1-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA6452655AB
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 07:23:03 +0200 (CEST)
+In-Reply-To: <20140601191913.GP5099@sirena.org.uk>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, Bo Shen <voice.shen@atmel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-As the at91sam9n12ek has switch to CCF, so add clock for wm8904
+> > +static int rt5677_set_micbias1_event(struct snd_soc_dapm_widget *w,
+> > +	struct snd_kcontrol *kcontrol, int event) {
+> > +	struct snd_soc_codec *codec = w->codec;
+> > +	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
+> > +
+> > +	switch (event) {
+> > +	case SND_SOC_DAPM_POST_PMU:
+> > +		regmap_update_bits(rt5677->regmap, RT5677_PWR_ANLG2,
+> > +			RT5677_PWR_CLK_MB1 | RT5677_PWR_PP_MB1 |
+> > +			RT5677_PWR_CLK_MB, RT5677_PWR_CLK_MB1 |
+> > +			RT5677_PWR_PP_MB1 | RT5677_PWR_CLK_MB);
+> 
+> What does this do - I note we never undo this?
+> 
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
-Reviwed-by: Mark Brown <broonie@linaro.org>
----
-Changes in v2:
-  - None
-
- arch/arm/boot/dts/at91sam9n12ek.dts | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm/boot/dts/at91sam9n12ek.dts b/arch/arm/boot/dts/at91sam9n12ek.dts
-index 64bbe46..8ae771d 100644
---- a/arch/arm/boot/dts/at91sam9n12ek.dts
-+++ b/arch/arm/boot/dts/at91sam9n12ek.dts
-@@ -56,6 +56,8 @@
- 				wm8904: codec@1a {
- 					compatible = "wm8904";
- 					reg = <0x1a>;
-+					clocks = <&pck0>;
-+					clock-names = "mclk";
- 				};
- 
- 				qt1070: keyboard@1b {
--- 
-1.8.5.2
-
+We will add a PMD case for this event, thanks.
