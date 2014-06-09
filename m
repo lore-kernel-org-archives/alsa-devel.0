@@ -1,78 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] sound: soc: pxa2xx-ac97: prepare and
-	unprepare the clocks
-Date: Mon, 9 Jun 2014 21:11:56 +0100
-Message-ID: <20140609201156.GO5099@sirena.org.uk>
-References: <1402343952-1287-1-git-send-email-robert.jarzmik@free.fr>
+Subject: Re: [PATCH v2 2/5] ASoC: wm8904: switch to CCF
+Date: Mon, 9 Jun 2014 21:13:22 +0100
+Message-ID: <20140609201322.GP5099@sirena.org.uk>
+References: <1402284707-23354-1-git-send-email-voice.shen@atmel.com>
+ <1402284707-23354-3-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7580342473000542381=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E590265173
- for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 22:12:17 +0200 (CEST)
-In-Reply-To: <1402343952-1287-1-git-send-email-robert.jarzmik@free.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, Haojian Zhuang <haojian.zhuang@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wR9Y6Ks0OCEmDFVd"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1402284707-23354-3-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: nicolas.ferre@atmel.com, boris.brezillon@free-electrons.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7580342473000542381==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fW6jlebSFjIjuLDN"
-Content-Disposition: inline
-
-
---fW6jlebSFjIjuLDN
+--wR9Y6Ks0OCEmDFVd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 09, 2014 at 09:59:12PM +0200, Robert Jarzmik wrote:
-> Add the clock prepare and unprepare call to the driver initialization
-> phase. This will remove a warning once the PXA architecture is migrated
-> to the clock infrastructure.
+On Mon, Jun 09, 2014 at 11:31:44AM +0800, Bo Shen wrote:
+> Enable WM8904 to support common clock framework.
 
-Applied, please use subject lines matching the usual style for the
-subsystem.
+Applied, thanks.
 
---fW6jlebSFjIjuLDN
+--wR9Y6Ks0OCEmDFVd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTlhUJAAoJELSic+t+oim9q10P/2lsp428Q2bCOU2sKQp/90Jm
-t4INGNJwgq9MzF3Gv6xuGakiK2WQ/X2triVLDW1phBZ6p/7kfKa2nT3HCtKmBktM
-TCT2TdEoX3UzdexDODjT6H5NSxwcrZdkq10t9/xQ1sjYVNOzXVm5DtkOnDPkXyke
-L4AejmJDA/WOgwprctNCGq5M19edkNVo7XxeEfJldhqWImkj+Y7didQeTJ/IN4Cc
-2VY6+NPJtiul1O96/JBOcuaIZ45vYCDpGuoaPVSAxURMiOXIPtYNl73Os66vEpsl
-gaThVxLvXx7fq4ITy//9XOph1dCNBikDYJf+Ad3I5nTS2G0Lh+ym9eJQk9UzVCUe
-+f3+zz+KYLhYcFOGKvA94u5Hz+G7QuYaL9/5q3T1fELoTv5eiSQ0rY+t8+9tZT1h
-2Ie5V6/kHjWZyO6rzk5HOKEJ9JMiSlWYW3L8yH0M/fME2JjTWFM8Ti+U4P8BoyyR
-mAac9XE1PGAIH4zcvKbCw8IpfIMsOs4GhdfbJLaXj1h89h538htbJF5HC9cxVih+
-Yjce6D3tGWHcmK5XX0zOqzzDAiM/W+y5BkllY+u65SWB60+YaOm6ZRpqZ1dtT8vH
-ItMIIgZbTBclXoOC9YxaHA8EYawB0Lt0oRhLovtWa1d1BxJbeltUDzpTv3zNmaag
-3p7/2O2cbsjfkpJTe/eb
-=Geqb
+iQIcBAEBAgAGBQJTlhVfAAoJELSic+t+oim98sEP/iKbrohevFfY2kjiq3SqPp2t
+KUoQBO/bCR1ArPcF8aKx0fbob64mKivpSL372dBDagd7/wV2AROzVFbDTo1X319O
+QE7wOcbU5Hz4Nz/XPQOktYL37r7F8luk9W4vL5CcoGlShqSF/wH7r7f5bvb27MY0
+XRF03ILNY6oRALFbWOzWd6IHHI8Gg0gairWKSs//3Zjf/WfcOKHKe6r9eyjyOe/6
+VLOxNO5J0uWanyixtXQGJE9VZ7gsHMmiqP/bgiAgcVvupPWH1Xd4vzahXaG7O8yD
+bS7hjNziPNebgwXSoE8JAWfOOkpIGG278mNsBflUw3N+tUDuqYU/IUqS2TxfVJZM
+iD5LOV1keinsLyltgLuRD66N2YekF3zL5w9qBcWeW5YvgIonGZHb7ThbAnezNnPJ
+/SAm/nqczrxRbPHc0Qd9fY5D/YfBPFuDBICBfjI+v6sKvkm9q8Fk3iuhqT9EbIGD
+Yf6RRCFgK4NYHl2uNh9OurE3pbeIb3/Fhpe5+04B+3ArXQGaVzAHq23NuZizjj9K
+Zl0SIYFVKX82v85xfDtXSAn6PGGXF7+rxIJlY78eQsPLKJiOc9/25e03j2rdvcCT
+6Tms0gN6fGJT+YTOa+d+nexx1HTD11vxG7z5bxmHELjk4MT/Vvf50BsS7raZ2QZf
+jH04GI5Tlx4yZLn9ox6C
+=q8iP
 -----END PGP SIGNATURE-----
 
---fW6jlebSFjIjuLDN--
-
---===============7580342473000542381==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7580342473000542381==--
+--wR9Y6Ks0OCEmDFVd--
