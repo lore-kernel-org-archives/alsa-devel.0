@@ -1,60 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] regulator: arizona-ldo1: Do not control clocking
- from regulator
-Date: Mon, 9 Jun 2014 19:43:14 +0100
-Message-ID: <20140609184314.GB5099@sirena.org.uk>
-References: <20140609150013.GA5229@opensource.wolfsonmicro.com>
- <20140609150435.GE5229@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Intel: byt-rt5640: Enable headset
+	mic bias voltage
+Date: Mon, 9 Jun 2014 20:48:31 +0100
+Message-ID: <20140609194831.GG5099@sirena.org.uk>
+References: <1402313946-12398-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DCmVMJei/gJT7wEg"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140609150435.GE5229@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: sameo@linux.intel.com, lee.jones@linaro.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============8998458701570836100=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93AEF2652DA
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 21:48:46 +0200 (CEST)
+In-Reply-To: <1402313946-12398-1-git-send-email-jarkko.nikula@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---DCmVMJei/gJT7wEg
+--===============8998458701570836100==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IfZ7xA51UQS4uQU3"
+Content-Disposition: inline
+
+
+--IfZ7xA51UQS4uQU3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 09, 2014 at 04:04:35PM +0100, Richard Fitzgerald wrote:
-> Using the driver for the internal regulator to also control
-> the clock frequency of blocks inside the codec is an
-> unexpected side-effect for a regulator, and also means that
-> the core clocks won't be changed as expected if an external
-> regulator is used to power the codec.
+On Mon, Jun 09, 2014 at 02:39:06PM +0300, Jarkko Nikula wrote:
+> Connect "Headset Mic" to "MICBIAS1" supply widget of RT5640 in order to
+> enable bias voltage for headset microphones.
 
-IIRC this was deliberately coded in this fashion on advice from the
-hardware engineers - there was more going on with that register than
-there might at first appear and some actual sync with the LDO.  I
-believe there was some different process to follow (possibly just
-setting this mode all the time) when using an external regulator, though
-it's also possible the hardware guys were just unsure at the time.
+Applied, thanks.
 
---DCmVMJei/gJT7wEg
+--IfZ7xA51UQS4uQU3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTlgA/AAoJELSic+t+oim959cP/0/3jtI44v32TiiSfbOu1TJj
-Mn3vlQNuNokV+TQt5TP7CtgsMibdtS+VB/wUAVOcDQfROYvczu2c4P2LAaF76UzQ
-CXFMlGEI3rstB8WvkYgv+WNzmxdNU2z3XcgqEI82aW6fbTdqSDSfXeG4nlmQ4LLJ
-V9eTjVqFL2Pvs7MARoc8IiU6eQ6JAo4QE064w7lKwYWc3pCzjg6LrT6Y4DY3ipUV
-kCj66s4a7DNZOixYH1Im7z+UszEgkkEzCJpYCfVI7Ed9Q1/Ac6Bzg34rYF00SUl7
-VrHakhWBQyKxy6XV5b7nzlkSfz9jETeP7W/SB7vCkDizqzVTw0y8n4qHEfFqq53k
-HkcT5anVskZ3ePGYo670rAtHWDm3IPstfLZOAiu/3Dq3VhkPrnV0uPWDniuRRwMt
-8sBP8IzRw8gGfJDySCih+p0rIzogHllfA/oG9Yvcwu8p5R9jffUjEot3pHdMyc/m
-/zRAtvJ0mgWgjRm+7onIVprQaK6EIGZoW1GXVfGPJ9Oid/TOCG7LRzwGmnfUHgbR
-45+aIfNB/xUI1moPuYya8FgltSxw0yWZxcaU68ZyjAbzl5mboLnQbYBkiuWi1KX/
-L4wse07WI39W8EQih7odcYImTuFWBsbFWdyMANP9+8Ix7FNyY5elLQeJlA6ulDNG
-UvBbwqFnBENPnkl7nDFK
-=wJ7n
+iQIcBAEBAgAGBQJTlg+LAAoJELSic+t+oim959AP/06FpHsunJJK+GUN7sP0pJW2
+Jlm53cMBDpWbB4ZyhZy/t+eAbXvzF1C/iaoDWvZ1CXwgJLhzTPjhcxlp61BP95k4
+KTgc+RK2uX5mK8gw+6jO7B4AAh4JjqDP8ETlVQrNt34S+zIUNnWQiYzAGl3len+g
+mH3KEKw+c5gteEx+1656sJYCba8f2KdMrNwPjFowBaDoADv00v7g6zMNSny5UdvK
+wNpxFwnlNYc5fUthEnou78xxbISRJvBF28X/WChCfa8qo4stGFB2YDJzOyYRZgTD
+7ROKCtU/r9fRjrjA/m31RMna+7neaJBpM0WDLxweJLmfsFQafd+1GOEm2EsBHav3
+024tOGIKhhnoGMsPr/4CgEgvDS5l7C/2v6SwoSN4rErjcDOY/Q5cA6YoM8wKTcnv
+jV/uiTevGrsMo9w1zzeuVXEWSo+sUNRRAU9CwNpmTZIzfMUfToTVRZ1AKenykb4s
+veP9YBw5+1LvWO1GavgWm6NevH1HqNx/1q3MKebZ2s6weMdUhPKoeYQyZXFBPinL
+ukxOkJNebSdwl8o/AJXEeFu6IlBm+0OUKeGW+f9YPoijyAE3gzjocm+gnJkbZRoJ
+KqQWW6RE/5F2SXmyyJ2AsQY0FrT804oAgdjWXweT30mlHWRkxjc8Dy58sLhMek+h
+ihXkbpQ9Sb+VVsXC8n+T
+=QRx2
 -----END PGP SIGNATURE-----
 
---DCmVMJei/gJT7wEg--
+--IfZ7xA51UQS4uQU3--
+
+--===============8998458701570836100==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8998458701570836100==--
