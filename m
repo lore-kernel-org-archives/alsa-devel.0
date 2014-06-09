@@ -1,16 +1,17 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH] sound: soc: pxa2xx-ac97: prepare and unprepare
-	the clocks
-Date: Mon,  9 Jun 2014 21:59:12 +0200
-Message-ID: <1402343952-1287-1-git-send-email-robert.jarzmik@free.fr>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_spdif: Fix integer overflow when
+ calculating divisors
+Date: Mon, 9 Jun 2014 21:00:52 +0100
+Message-ID: <20140609200052.GN5099@sirena.org.uk>
+References: <1402330603-16547-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8081799619160444927=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp10.smtpout.orange.fr
- [80.12.242.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 570452652B0
- for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 21:59:16 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E2F6265197
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 22:01:09 +0200 (CEST)
+In-Reply-To: <1402330603-16547-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,69 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: alsa-devel@alsa-project.org, Nicolin Chen <Guangyu.Chen@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add the clock prepare and unprepare call to the driver initialization
-phase. This will remove a warning once the PXA architecture is migrated
-to the clock infrastructure.
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
- sound/arm/pxa2xx-ac97-lib.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+--===============8081799619160444927==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="8CLqiYUo6qiluZPB"
+Content-Disposition: inline
 
-diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
-index 66de90e..39c3969 100644
---- a/sound/arm/pxa2xx-ac97-lib.c
-+++ b/sound/arm/pxa2xx-ac97-lib.c
-@@ -152,9 +152,9 @@ static inline void pxa_ac97_cold_pxa27x(void)
- 	gsr_bits = 0;
- 
- 	/* PXA27x Developers Manual section 13.5.2.2.1 */
--	clk_enable(ac97conf_clk);
-+	clk_prepare_enable(ac97conf_clk);
- 	udelay(5);
--	clk_disable(ac97conf_clk);
-+	clk_disable_unprepare(ac97conf_clk);
- 	GCR = GCR_COLD_RST | GCR_WARM_RST;
- }
- #endif
-@@ -299,14 +299,14 @@ static irqreturn_t pxa2xx_ac97_irq(int irq, void *dev_id)
- int pxa2xx_ac97_hw_suspend(void)
- {
- 	GCR |= GCR_ACLINK_OFF;
--	clk_disable(ac97_clk);
-+	clk_disable_unprepare(ac97_clk);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(pxa2xx_ac97_hw_suspend);
- 
- int pxa2xx_ac97_hw_resume(void)
- {
--	clk_enable(ac97_clk);
-+	clk_prepare_enable(ac97_clk);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(pxa2xx_ac97_hw_resume);
-@@ -368,7 +368,7 @@ int pxa2xx_ac97_hw_probe(struct platform_device *dev)
- 		goto err_clk;
- 	}
- 
--	ret = clk_enable(ac97_clk);
-+	ret = clk_prepare_enable(ac97_clk);
- 	if (ret)
- 		goto err_clk2;
- 
-@@ -403,7 +403,7 @@ void pxa2xx_ac97_hw_remove(struct platform_device *dev)
- 		clk_put(ac97conf_clk);
- 		ac97conf_clk = NULL;
- 	}
--	clk_disable(ac97_clk);
-+	clk_disable_unprepare(ac97_clk);
- 	clk_put(ac97_clk);
- 	ac97_clk = NULL;
- }
--- 
-2.0.0.rc2
+
+--8CLqiYUo6qiluZPB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 09, 2014 at 07:16:43PM +0300, Anssi Hannula wrote:
+> The calculation code does
+> u64 = (u32 - u32) * 100000;
+
+Applied, thanks.
+
+--8CLqiYUo6qiluZPB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTlhJxAAoJELSic+t+oim9exQP/3Ykmz4qcvB3Mjtxe6BmWGko
+h5YKtVR5+GrzkuyB0ryaiugsVHHUuftlOECgYzWKEp/ctp/Cl5mTV3f2SboGOboo
+bufw1GCmTnOe2WdE2gZpbCQ9DNkXkRZzkJBlWy6rVyazI6JwPDKY2RDscWJYB/VX
+cakAUOirxTBVo49Ywmd5oVO4bj7MBvM/qJXPUGUzFOjI/RFsjbqxlENFAoWMoiXH
+JLv/DNAqaqI5eXAyLE0n8esTbbWX8bTMw5OmFIXj+W6MT+DcZ6m8Bhp26889pzOo
+h+ncHrztAN031Qw8srecAXFxVOamZSqNVFP5WlMmxLpiKxQUe/smMTv1+UsrE1tW
+P16J33is8p43OT+0u3HM6MgGKDWmAYlY45ljPlF4zfayy8eyfOtsRiSBCenPBEpl
+Gylvxm37UYLv1sl6vwe5bvWgLueZMYcjncYVGoTD88CYMhab91WCOe1tIrCKPUUt
+2TMtpwK5Y1e0nP8a6afeS3oucHle1Or80R/ca7Zy0ZGxDqsU3+NDPbuzu3ULuBfa
+avNymQgW5R61NxGKDWZv2S2jNJThHdyis4QRy7PH5P4vCRvHp599tweV348Y4dtZ
+XV4vrQSYJz9+TF915sY1T3nJ9lKIqrFGsXcXEeJSRCwABzv1/cx1PnB+rFlwfOQS
+iNFCGV3i1KvQ5jZ/x3Mw
+=3I+2
+-----END PGP SIGNATURE-----
+
+--8CLqiYUo6qiluZPB--
+
+--===============8081799619160444927==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8081799619160444927==--
