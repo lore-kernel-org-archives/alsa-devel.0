@@ -1,16 +1,15 @@
 From: Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH 1/1] SND/PCI/HDA: add __init to
-	snd_hda_add_codec_preset
-Date: Mon,  9 Jun 2014 16:23:32 +0200
-Message-ID: <1402323812-1225-1-git-send-email-fabf@skynet.be>
+Subject: [PATCH 1/1] OSS/DMASOUND: add __init to dmasound_init
+Date: Mon,  9 Jun 2014 16:53:59 +0200
+Message-ID: <1402325639-2376-1-git-send-email-fabf@skynet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailrelay009.isp.belgacom.be (mailrelay009.isp.belgacom.be
- [195.238.6.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C09B264F1A
- for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 16:24:56 +0200 (CEST)
+Received: from mailrelay008.isp.belgacom.be (mailrelay008.isp.belgacom.be
+ [195.238.6.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBFE6264F28
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jun 2014 16:55:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +23,45 @@ To: alsa-devel@alsa-project.org
 Cc: Fabian Frederick <fabf@skynet.be>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-snd_hda_add_codec_preset is only called by __init functions:
+dmasound_init is only called by __init functions:
 
-__init patch_via_init
-__init patch_sigmatel_init
-__init patch_si3054_init
-__init patch_realtek_init
-__init patch_hdmi_init
-__init patch_conexant_init
-__init patch_cmedia_init
-__init patch_cirrus_init
-__init patch_ca0132_init
-__init patch_ca0110_init
-__init patch_analog_init
+__init dmasound_q40_init
+__init amiga_audio_probe
+__init dmasound_atari_init
 
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Fabian Frederick <fabf@skynet.be>
 ---
- sound/pci/hda/hda_codec.c | 2 +-
- sound/pci/hda/hda_codec.h | 2 +-
+ sound/oss/dmasound/dmasound.h      | 2 +-
+ sound/oss/dmasound/dmasound_core.c | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 4c20277..5770c5c 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -77,7 +77,7 @@ static struct hda_vendor_id hda_vendor_ids[] = {
- static DEFINE_MUTEX(preset_mutex);
- static LIST_HEAD(hda_preset_tables);
+diff --git a/sound/oss/dmasound/dmasound.h b/sound/oss/dmasound/dmasound.h
+index 01019f0..a181ed2 100644
+--- a/sound/oss/dmasound/dmasound.h
++++ b/sound/oss/dmasound/dmasound.h
+@@ -86,7 +86,7 @@ static inline int ioctl_return(int __user *addr, int value)
+      *  Initialization
+      */
  
--int snd_hda_add_codec_preset(struct hda_codec_preset_list *preset)
-+int __init snd_hda_add_codec_preset(struct hda_codec_preset_list *preset)
+-extern int dmasound_init(void);
++extern int __init dmasound_init(void);
+ #ifdef MODULE
+ extern void dmasound_deinit(void);
+ #else
+diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
+index f4ee85a..1f0a42c 100644
+--- a/sound/oss/dmasound/dmasound_core.c
++++ b/sound/oss/dmasound/dmasound_core.c
+@@ -1394,7 +1394,7 @@ static int state_init(void)
+      *  This function is called by _one_ chipset-specific driver
+      */
+ 
+-int dmasound_init(void)
++int __init dmasound_init(void)
  {
- 	mutex_lock(&preset_mutex);
- 	list_add_tail(&preset->list, &hda_preset_tables);
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 5825aa1..02a9123 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -182,7 +182,7 @@ struct hda_codec_preset_list {
- };
- 
- /* initial hook */
--int snd_hda_add_codec_preset(struct hda_codec_preset_list *preset);
-+int __init snd_hda_add_codec_preset(struct hda_codec_preset_list *preset);
- int snd_hda_delete_codec_preset(struct hda_codec_preset_list *preset);
- 
- /* ops set by the preset patch */
+ 	int res ;
+ #ifdef MODULE
 -- 
 1.8.4.5
