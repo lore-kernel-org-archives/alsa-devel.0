@@ -1,18 +1,20 @@
 From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 1/3] ASoC: rt5640: Remove unneeded goto in
-	rt5640_i2c_probe
-Date: Tue, 10 Jun 2014 11:35:56 +0800
-Message-ID: <1402371356.16323.1.camel@phoenix>
+Subject: [PATCH 2/3] ASoC: rt5645: Remove unneeded goto in
+	rt5645_i2c_probe
+Date: Tue, 10 Jun 2014 11:36:41 +0800
+Message-ID: <1402371401.16323.2.camel@phoenix>
+References: <1402371356.16323.1.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 8802B2651AD
- for <alsa-devel@alsa-project.org>; Tue, 10 Jun 2014 05:36:02 +0200 (CEST)
-Received: by mail-pa0-f45.google.com with SMTP id hz1so206653pad.18
- for <alsa-devel@alsa-project.org>; Mon, 09 Jun 2014 20:36:00 -0700 (PDT)
+Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
+ [209.85.192.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BDC32656FE
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jun 2014 05:36:47 +0200 (CEST)
+Received: by mail-pd0-f170.google.com with SMTP id g10so5643292pdj.1
+ for <alsa-devel@alsa-project.org>; Mon, 09 Jun 2014 20:36:46 -0700 (PDT)
+In-Reply-To: <1402371356.16323.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,29 +30,29 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- sound/soc/codecs/rt5640.c | 10 ++--------
+ sound/soc/codecs/rt5645.c | 10 ++--------
  1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index de80e89..6bc6efd 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -2215,14 +2215,8 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 02147be..a7762d0 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -2345,14 +2345,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
  
- 	rt5640->hp_mute = 1;
+ 	}
  
--	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5640,
--			rt5640_dai, ARRAY_SIZE(rt5640_dai));
+-	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5645,
+-			rt5645_dai, ARRAY_SIZE(rt5645_dai));
 -	if (ret < 0)
 -		goto err;
 -
 -	return 0;
 -err:
 -	return ret;
-+	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5640,
-+				      rt5640_dai, ARRAY_SIZE(rt5640_dai));
++	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5645,
++				      rt5645_dai, ARRAY_SIZE(rt5645_dai));
  }
  
- static int rt5640_i2c_remove(struct i2c_client *i2c)
+ static int rt5645_i2c_remove(struct i2c_client *i2c)
 -- 
 1.8.3.2
