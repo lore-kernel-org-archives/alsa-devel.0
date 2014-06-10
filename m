@@ -1,19 +1,15 @@
-From: Fabian Frederick <fabf@skynet.be>
-Subject: Re: [PATCH 1/1] SND/PCI/HDA: add __init to
-	snd_hda_add_codec_preset
-Date: Tue, 10 Jun 2014 19:43:59 +0200
-Message-ID: <20140610194359.478dccf4063f96c85fa2408d@skynet.be>
-References: <1402323812-1225-1-git-send-email-fabf@skynet.be>
- <s5hppigx41d.wl%tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm5110: Power both channels for
+	differential mono output
+Date: Tue, 10 Jun 2014 18:41:02 +0100
+Message-ID: <1402422062-7162-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailrelay005.isp.belgacom.be (mailrelay005.isp.belgacom.be
- [195.238.6.171])
- by alsa0.perex.cz (Postfix) with ESMTP id E802D2654C9
- for <alsa-devel@alsa-project.org>; Tue, 10 Jun 2014 19:45:13 +0200 (CEST)
-In-Reply-To: <s5hppigx41d.wl%tiwai@suse.de>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A84A9265527
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jun 2014 19:48:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,79 +19,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Jun 2014 15:55:26 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+On the wm5110 CODEC both the left and right channel must be powered
+when an output is being used as a mono output, although no audio is
+routed to the right output channel. This patch adds additional DAPM
+routes to link the right channel to the left in the case where an output
+is marked as mono. Audio must always be brought in on the left channel
+for mono operation.
 
-> At Mon,  9 Jun 2014 16:23:32 +0200,
-> Fabian Frederick wrote:
-> > 
-> > snd_hda_add_codec_preset is only called by __init functions:
-> > 
-> > __init patch_via_init
-> > __init patch_sigmatel_init
-> > __init patch_si3054_init
-> > __init patch_realtek_init
-> > __init patch_hdmi_init
-> > __init patch_conexant_init
-> > __init patch_cmedia_init
-> > __init patch_cirrus_init
-> > __init patch_ca0132_init
-> > __init patch_ca0110_init
-> > __init patch_analog_init
-> > 
-> > Cc: Jaroslav Kysela <perex@perex.cz>
-> > Cc: Takashi Iwai <tiwai@suse.de>
-> > Signed-off-by: Fabian Frederick <fabf@skynet.be>
-> 
-> No, it's a wrong guess.  Each module may be called at any time, so you
-> can't use __init for helper functions.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.c |   25 +++++++++++++++++++++++++
+ sound/soc/codecs/arizona.h |    1 +
+ sound/soc/codecs/wm5110.c  |    1 +
+ 3 files changed, 27 insertions(+), 0 deletions(-)
 
-Sorry but I don't understand what you mean by "calling at any time".
-AFAIK __init prefix only impacts built-in drivers.
-
-Regards,
-Fabian
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > ---
-> >  sound/pci/hda/hda_codec.c | 2 +-
-> >  sound/pci/hda/hda_codec.h | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> > index 4c20277..5770c5c 100644
-> > --- a/sound/pci/hda/hda_codec.c
-> > +++ b/sound/pci/hda/hda_codec.c
-> > @@ -77,7 +77,7 @@ static struct hda_vendor_id hda_vendor_ids[] = {
-> >  static DEFINE_MUTEX(preset_mutex);
-> >  static LIST_HEAD(hda_preset_tables);
-> >  
-> > -int snd_hda_add_codec_preset(struct hda_codec_preset_list *preset)
-> > +int __init snd_hda_add_codec_preset(struct hda_codec_preset_list *preset)
-> >  {
-> >  	mutex_lock(&preset_mutex);
-> >  	list_add_tail(&preset->list, &hda_preset_tables);
-> > diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-> > index 5825aa1..02a9123 100644
-> > --- a/sound/pci/hda/hda_codec.h
-> > +++ b/sound/pci/hda/hda_codec.h
-> > @@ -182,7 +182,7 @@ struct hda_codec_preset_list {
-> >  };
-> >  
-> >  /* initial hook */
-> > -int snd_hda_add_codec_preset(struct hda_codec_preset_list *preset);
-> > +int __init snd_hda_add_codec_preset(struct hda_codec_preset_list *preset);
-> >  int snd_hda_delete_codec_preset(struct hda_codec_preset_list *preset);
-> >  
-> >  /* ops set by the preset patch */
-> > -- 
-> > 1.8.4.5
-> > 
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index 41b56ee..d441d80 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -243,6 +243,31 @@ int arizona_init_spk(struct snd_soc_codec *codec)
+ }
+ EXPORT_SYMBOL_GPL(arizona_init_spk);
+ 
++static const struct snd_soc_dapm_route arizona_mono_routes[] = {
++	{ "OUT1R", NULL, "OUT1L" },
++	{ "OUT2R", NULL, "OUT2L" },
++	{ "OUT3R", NULL, "OUT3L" },
++	{ "OUT4R", NULL, "OUT4L" },
++	{ "OUT5R", NULL, "OUT5L" },
++	{ "OUT6R", NULL, "OUT6L" },
++};
++
++int arizona_init_mono(struct snd_soc_codec *codec)
++{
++	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
++	struct arizona *arizona = priv->arizona;
++	int i;
++
++	for (i = 0; i < ARIZONA_MAX_OUTPUT; ++i) {
++		if (arizona->pdata.out_mono[i])
++			snd_soc_dapm_add_routes(&codec->dapm,
++						&arizona_mono_routes[i], 1);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(arizona_init_mono);
++
+ int arizona_init_gpio(struct snd_soc_codec *codec)
+ {
+ 	struct arizona_priv *priv = snd_soc_codec_get_drvdata(codec);
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 05ae17f..942cfb1 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -249,6 +249,7 @@ extern int arizona_set_fll(struct arizona_fll *fll, int source,
+ 
+ extern int arizona_init_spk(struct snd_soc_codec *codec);
+ extern int arizona_init_gpio(struct snd_soc_codec *codec);
++extern int arizona_init_mono(struct snd_soc_codec *codec);
+ 
+ extern int arizona_init_dai(struct arizona_priv *priv, int dai);
+ 
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 2e5fcb5..62ef544 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -1596,6 +1596,7 @@ static int wm5110_codec_probe(struct snd_soc_codec *codec)
+ 
+ 	arizona_init_spk(codec);
+ 	arizona_init_gpio(codec);
++	arizona_init_mono(codec);
+ 
+ 	ret = snd_soc_add_codec_controls(codec, wm_adsp2_fw_controls, 8);
+ 	if (ret != 0)
+-- 
+1.7.2.5
