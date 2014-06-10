@@ -1,151 +1,101 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH 2/2] ASoC: atmel_ssc_dai: enable fslen extension feature
-Date: Tue, 10 Jun 2014 18:40:31 +0200
-Message-ID: <539734FF.8070404@atmel.com>
-References: <1402040495-10320-1-git-send-email-voice.shen@atmel.com> <1402040495-10320-2-git-send-email-voice.shen@atmel.com>
+From: Fabian Frederick <fabf@skynet.be>
+Subject: Re: [PATCH 1/1] SND/PCI/HDA: add __init to
+	snd_hda_add_codec_preset
+Date: Tue, 10 Jun 2014 19:43:59 +0200
+Message-ID: <20140610194359.478dccf4063f96c85fa2408d@skynet.be>
+References: <1402323812-1225-1-git-send-email-fabf@skynet.be>
+ <s5hppigx41d.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1402040495-10320-2-git-send-email-voice.shen@atmel.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>, broonie@kernel.org
-Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailrelay005.isp.belgacom.be (mailrelay005.isp.belgacom.be
+ [195.238.6.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id E802D2654C9
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jun 2014 19:45:13 +0200 (CEST)
+In-Reply-To: <s5hppigx41d.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/06/2014 09:41, Bo Shen :
-> When SSC work as master, it will generate the frame sync signal.
-> On old SoCs, it only supports frame sync length less or equal to
-> 16bits, on newer SoCs, it supports frame sync length extension,
-> which can support frame size larger than 16 bits.
-> So, add this to make it supports playback 24/32 bits audio clips.
+On Tue, 10 Jun 2014 15:55:26 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Mon,  9 Jun 2014 16:23:32 +0200,
+> Fabian Frederick wrote:
+> > 
+> > snd_hda_add_codec_preset is only called by __init functions:
+> > 
+> > __init patch_via_init
+> > __init patch_sigmatel_init
+> > __init patch_si3054_init
+> > __init patch_realtek_init
+> > __init patch_hdmi_init
+> > __init patch_conexant_init
+> > __init patch_cmedia_init
+> > __init patch_cirrus_init
+> > __init patch_ca0132_init
+> > __init patch_ca0110_init
+> > __init patch_analog_init
+> > 
+> > Cc: Jaroslav Kysela <perex@perex.cz>
+> > Cc: Takashi Iwai <tiwai@suse.de>
+> > Signed-off-by: Fabian Frederick <fabf@skynet.be>
 > 
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> No, it's a wrong guess.  Each module may be called at any time, so you
+> can't use __init for helper functions.
 
-I am okay with these modifications. I suspect that they can also apply
-to the "compatible string" approach that I advice you to take in
-previous email.
+Sorry but I don't understand what you mean by "calling at any time".
+AFAIK __init prefix only impacts built-in drivers.
 
-
-> ---
->  include/linux/atmel-ssc.h       |  4 ++++
->  sound/soc/atmel/atmel_ssc_dai.c | 34 ++++++++++++++++++----------------
->  2 files changed, 22 insertions(+), 16 deletions(-)
+Regards,
+Fabian
 > 
-> diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
-> index 9ee1b68..70c5922 100644
-> --- a/include/linux/atmel-ssc.h
-> +++ b/include/linux/atmel-ssc.h
-> @@ -72,6 +72,8 @@ void ssc_free(struct ssc_device *ssc);
->  #define SSC_RFMR_DATNB_OFFSET			 8
->  #define SSC_RFMR_FSEDGE_SIZE			 1
->  #define SSC_RFMR_FSEDGE_OFFSET			24
-> +#define SSC_RFMR_FSLEN_EXT_SIZE			 4
-> +#define SSC_RFMR_FSLEN_EXT_OFFSET		28
-
-Can we add a little comment saying that it is only with this "extebsion"
-bits on some products?
-
->  #define SSC_RFMR_FSLEN_SIZE			 4
->  #define SSC_RFMR_FSLEN_OFFSET			16
->  #define SSC_RFMR_FSOS_SIZE			 4
-> @@ -110,6 +112,8 @@ void ssc_free(struct ssc_device *ssc);
->  #define SSC_TFMR_FSDEN_OFFSET			23
->  #define SSC_TFMR_FSEDGE_SIZE			 1
->  #define SSC_TFMR_FSEDGE_OFFSET			24
-> +#define SSC_TFMR_FSLEN_EXT_SIZE			 4
-> +#define SSC_TFMR_FSLEN_EXT_OFFSET		28
-
-Ditto
-
->  #define SSC_TFMR_FSLEN_SIZE			 4
->  #define SSC_TFMR_FSLEN_OFFSET			16
->  #define SSC_TFMR_FSOS_SIZE			 3
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> index de433cfd..7d501e4 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -347,6 +347,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  	u32 tfmr, rfmr, tcmr, rcmr;
->  	int start_event;
->  	int ret;
-> +	int fslen, fslen_ext;
->  
->  	/*
->  	 * Currently, there is only one set of dma params for
-> @@ -388,18 +389,6 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  	}
->  
->  	/*
-> -	 * The SSC only supports up to 16-bit samples in I2S format, due
-> -	 * to the size of the Frame Mode Register FSLEN field.
-> -	 */
-> -	if ((ssc_p->daifmt & SND_SOC_DAIFMT_FORMAT_MASK) == SND_SOC_DAIFMT_I2S
-> -		&& bits > 16) {
-> -		printk(KERN_WARNING
-> -				"atmel_ssc_dai: sample size %d "
-> -				"is too large for I2S\n", bits);
-> -		return -EINVAL;
-> -	}
-> -
-> -	/*
->  	 * Compute SSC register settings.
->  	 */
->  	switch (ssc_p->daifmt
-> @@ -413,6 +402,17 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  		 * from the MCK divider, and the BCLK signal
->  		 * is output on the SSC TK line.
->  		 */
-> +
-> +		if (bits > 16 && !ssc->has_fslen_ext) {
-> +			dev_err(dai->dev,
-> +				"sample size %d is too large for SSC device\n",
-> +				bits);
-> +			return -EINVAL;
-> +		}
-> +
-> +		fslen_ext = (bits - 1) / 16;
-> +		fslen = (bits - 1) % 16;
-> +
->  		rcmr =	  SSC_BF(RCMR_PERIOD, ssc_p->rcmr_period)
->  			| SSC_BF(RCMR_STTDLY, START_DELAY)
->  			| SSC_BF(RCMR_START, SSC_START_FALLING_RF)
-> @@ -420,9 +420,10 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  			| SSC_BF(RCMR_CKO, SSC_CKO_NONE)
->  			| SSC_BF(RCMR_CKS, SSC_CKS_DIV);
->  
-> -		rfmr =	  SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
-> +		rfmr =    SSC_BF(RFMR_FSLEN_EXT, fslen_ext)
-> +			| SSC_BF(RFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
->  			| SSC_BF(RFMR_FSOS, SSC_FSOS_NEGATIVE)
-> -			| SSC_BF(RFMR_FSLEN, (bits - 1))
-> +			| SSC_BF(RFMR_FSLEN, fslen)
->  			| SSC_BF(RFMR_DATNB, (channels - 1))
->  			| SSC_BIT(RFMR_MSBF)
->  			| SSC_BF(RFMR_LOOP, 0)
-> @@ -435,10 +436,11 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->  			| SSC_BF(TCMR_CKO, SSC_CKO_CONTINUOUS)
->  			| SSC_BF(TCMR_CKS, SSC_CKS_DIV);
->  
-> -		tfmr =	  SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
-> +		tfmr =    SSC_BF(TFMR_FSLEN_EXT, fslen_ext)
-> +			| SSC_BF(TFMR_FSEDGE, SSC_FSEDGE_POSITIVE)
->  			| SSC_BF(TFMR_FSDEN, 0)
->  			| SSC_BF(TFMR_FSOS, SSC_FSOS_NEGATIVE)
-> -			| SSC_BF(TFMR_FSLEN, (bits - 1))
-> +			| SSC_BF(TFMR_FSLEN, fslen)
->  			| SSC_BF(TFMR_DATNB, (channels - 1))
->  			| SSC_BIT(TFMR_MSBF)
->  			| SSC_BF(TFMR_DATDEF, 0)
 > 
-
-Otherwise looks okay.
-
-With little comments addressed:
-
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-
-
-Bye,
--- 
-Nicolas Ferre
+> thanks,
+> 
+> Takashi
+> 
+> > ---
+> >  sound/pci/hda/hda_codec.c | 2 +-
+> >  sound/pci/hda/hda_codec.h | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> > index 4c20277..5770c5c 100644
+> > --- a/sound/pci/hda/hda_codec.c
+> > +++ b/sound/pci/hda/hda_codec.c
+> > @@ -77,7 +77,7 @@ static struct hda_vendor_id hda_vendor_ids[] = {
+> >  static DEFINE_MUTEX(preset_mutex);
+> >  static LIST_HEAD(hda_preset_tables);
+> >  
+> > -int snd_hda_add_codec_preset(struct hda_codec_preset_list *preset)
+> > +int __init snd_hda_add_codec_preset(struct hda_codec_preset_list *preset)
+> >  {
+> >  	mutex_lock(&preset_mutex);
+> >  	list_add_tail(&preset->list, &hda_preset_tables);
+> > diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+> > index 5825aa1..02a9123 100644
+> > --- a/sound/pci/hda/hda_codec.h
+> > +++ b/sound/pci/hda/hda_codec.h
+> > @@ -182,7 +182,7 @@ struct hda_codec_preset_list {
+> >  };
+> >  
+> >  /* initial hook */
+> > -int snd_hda_add_codec_preset(struct hda_codec_preset_list *preset);
+> > +int __init snd_hda_add_codec_preset(struct hda_codec_preset_list *preset);
+> >  int snd_hda_delete_codec_preset(struct hda_codec_preset_list *preset);
+> >  
+> >  /* ops set by the preset patch */
+> > -- 
+> > 1.8.4.5
+> > 
