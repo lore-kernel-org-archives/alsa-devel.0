@@ -1,34 +1,90 @@
-From: Tomasz Figa <t.figa@samsung.com>
-Subject: Re: [RESEND PATCH v2 2/2] ASoC: samsung: drop support for legacy
- S3C24XX DMA API
-Date: Tue, 10 Jun 2014 17:26:04 +0200
-Message-ID: <5397238C.10004@samsung.com>
-References: <1401642958-6236-1-git-send-email-anarsoul@gmail.com>
- <1401642958-6236-2-git-send-email-anarsoul@gmail.com>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH 1/2] misc: atmel-ssc: support to read ssc version
+Date: Tue, 10 Jun 2014 18:32:27 +0200
+Message-ID: <5397331B.1040903@atmel.com>
+References: <1402040495-10320-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1401642958-6236-2-git-send-email-anarsoul@gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, =?ISO-8859-1?Q?Heiko_St=FCbner?= <heiko@sntech.de>
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <1402040495-10320-1-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>, broonie@kernel.org
+Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On 01.06.2014 19:15, Vasily Khoruzhick wrote:
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> ---
-> v2: No changes
+On 06/06/2014 09:41, Bo Shen :
+> Read SSC IP version to check whether it supports frame sync
+> length extension feature.
 > 
->  sound/soc/samsung/Kconfig  |   3 -
->  sound/soc/samsung/Makefile |   2 -
->  sound/soc/samsung/dma.c    | 460 ---------------------------------------------
->  3 files changed, 465 deletions(-)
->  delete mode 100644 sound/soc/samsung/dma.c
-> 
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
 
-Reviewed-by: Tomasz Figa <t.figa@samsung.com>
+No. We already have 2 compatible versions for the DT or id table. Simply
+add one.
+Please use this infrastructure to describe such features, I don't want
+to mix the approaches: "compatible string" xor "IP revision".
+
+The DT of the product will then describe on which version of the IP it
+can rely to have this feature.
 
 Best regards,
-Tomasz
+
+> ---
+> 
+>  drivers/misc/atmel-ssc.c  | 7 +++++++
+>  include/linux/atmel-ssc.h | 3 +++
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+> index 22de137..9f49bcb 100644
+> --- a/drivers/misc/atmel-ssc.c
+> +++ b/drivers/misc/atmel-ssc.c
+> @@ -136,6 +136,7 @@ static int ssc_probe(struct platform_device *pdev)
+>  	struct resource *regs;
+>  	struct ssc_device *ssc;
+>  	const struct atmel_ssc_platform_data *plat_dat;
+> +	u32 version;
+>  
+>  	ssc = devm_kzalloc(&pdev->dev, sizeof(struct ssc_device), GFP_KERNEL);
+>  	if (!ssc) {
+> @@ -173,8 +174,14 @@ static int ssc_probe(struct platform_device *pdev)
+>  	clk_prepare_enable(ssc->clk);
+>  	ssc_writel(ssc->regs, IDR, -1);
+>  	ssc_readl(ssc->regs, SR);
+> +	version = ssc_readl(ssc->regs, VERSION);
+>  	clk_disable_unprepare(ssc->clk);
+>  
+> +	if (version >= 0x300)
+> +		ssc->has_fslen_ext = 1;
+> +	else
+> +		ssc->has_fslen_ext = 0;
+> +
+>  	ssc->irq = platform_get_irq(pdev, 0);
+>  	if (!ssc->irq) {
+>  		dev_dbg(&pdev->dev, "could not get irq\n");
+> diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
+> index 571a12e..9ee1b68 100644
+> --- a/include/linux/atmel-ssc.h
+> +++ b/include/linux/atmel-ssc.h
+> @@ -19,6 +19,7 @@ struct ssc_device {
+>  	int			user;
+>  	int			irq;
+>  	bool			clk_from_rk_pin;
+> +	int			has_fslen_ext;
+>  };
+>  
+>  struct ssc_device * __must_check ssc_request(unsigned int ssc_num);
+> @@ -258,6 +259,8 @@ void ssc_free(struct ssc_device *ssc);
+>  #define SSC_IMR_TXSYN_SIZE			 1
+>  #define SSC_IMR_TXSYN_OFFSET			10
+>  
+> +#define SSC_VERSION			0x000000fc
+> +
+>  /* SSC PDC Receive Pointer Register */
+>  #define SSC_PDC_RPR			0x00000100
+>  
+> 
+
+
+-- 
+Nicolas Ferre
