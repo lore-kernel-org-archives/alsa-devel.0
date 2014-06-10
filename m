@@ -1,51 +1,50 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Add quirk for ABit AA8XE
-Date: Tue, 10 Jun 2014 10:52:50 +0200
-Message-ID: <1402390370-8684-1-git-send-email-david.henningsson@canonical.com>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH v2 4/5] ARM: atmel: sama5d3xek: switch sound to CCF
+Date: Tue, 10 Jun 2014 14:27:30 +0200
+Message-ID: <5396F9B2.9010106@atmel.com>
+References: <1402284707-23354-1-git-send-email-voice.shen@atmel.com> <1402284707-23354-5-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 050C32608EA
- for <alsa-devel@alsa-project.org>; Tue, 10 Jun 2014 10:52:51 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1319291@bugs.launchpad.net, David Henningsson <david.henningsson@canonical.com>
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <1402284707-23354-5-git-send-email-voice.shen@atmel.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>, Mark Brown <broonie@kernel.org>
+Cc: boris.brezillon@free-electrons.com, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Bios does not set up the pin config default correctly (everything
-is set to zero). Reporter claims that 6stack-dig and 6stack-automute
-solve the problem.
+On 09/06/2014 05:31, Bo Shen :
+> As the sama5d3xek board has switch to CCF, so add clock for wm8904
+> 
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> Reviwed-by: Mark Brown <broonie@linaro.org>
 
-Alsa-info at http://www.alsa-project.org/db/?f=376c0804cbdde90bcd2cb94799407cb1cacf5d05
-BugLink: https://bugs.launchpad.net/bugs/1319291
-Reported-by: Stefano Statuti <stefano.statuti@hotmail.it>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d77745a..9c095fa 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -1427,6 +1427,7 @@ static const struct snd_pci_quirk alc880_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x10c3, "ASUS W5A", ALC880_FIXUP_ASUS_W5A),
- 	SND_PCI_QUIRK(0x1043, 0x1964, "ASUS Z71V", ALC880_FIXUP_Z71V),
- 	SND_PCI_QUIRK_VENDOR(0x1043, "ASUS", ALC880_FIXUP_GPIO1),
-+	SND_PCI_QUIRK(0x147b, 0x1045, "ABit AA8XE", ALC880_FIXUP_6ST_AUTOMUTE),
- 	SND_PCI_QUIRK(0x1558, 0x5401, "Clevo GPIO2", ALC880_FIXUP_GPIO2),
- 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo", ALC880_FIXUP_EAPD_COEF),
- 	SND_PCI_QUIRK(0x1584, 0x9050, "Uniwill", ALC880_FIXUP_UNIWILL_DIG),
+And taken for next "dt" branch (maybe can go in before). Thanks.
+
+> ---
+> Changes in v2:
+>   - None
+> 
+>  arch/arm/boot/dts/sama5d3xmb.dtsi | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/sama5d3xmb.dtsi b/arch/arm/boot/dts/sama5d3xmb.dtsi
+> index 306eef0..b8c6f20 100644
+> --- a/arch/arm/boot/dts/sama5d3xmb.dtsi
+> +++ b/arch/arm/boot/dts/sama5d3xmb.dtsi
+> @@ -45,6 +45,8 @@
+>  				wm8904: wm8904@1a {
+>  					compatible = "wm8904";
+>  					reg = <0x1a>;
+> +					clocks = <&pck0>;
+> +					clock-names = "mclk";
+>  				};
+>  			};
+>  
+> 
+
+
 -- 
-1.9.1
+Nicolas Ferre
