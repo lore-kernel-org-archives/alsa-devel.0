@@ -1,35 +1,51 @@
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-Subject: Re: [alsa-devel] "ak" vs "asahi-kasei" (was: Re: [PATCH 3/3 v3] ARM:
- shmobile: lager: add sound support on DT)
-Date: Wed, 11 Jun 2014 09:40:06 +0100
-Message-ID: <539815E6.2050304@codethink.co.uk>
-References: <CAMuHMdWTVBjFzA9L9Eqpq_2Xi9_NHkOCLrb_UjK611SBfwnc=Q@mail.gmail.com> <87ioo7c0g5.wl%kuninori.morimoto.gx@renesas.com>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: Re: Audio mini conference 2014?
+Date: Wed, 11 Jun 2014 12:43:19 +0300
+Message-ID: <1402479799.2366.31.camel@tkkaskin-mobl3.ger.corp.intel.com>
+References: <s5hoaz1iy8e.wl%tiwai@suse.de>
+ <20140525132320.GT22111@sirena.org.uk> <53821E56.8020107@canonical.com>
+ <s5hwqd9elq9.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <87ioo7c0g5.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, Simon <horms@verge.net.au>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id CAB40265616
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jun 2014 11:43:46 +0200 (CEST)
+In-Reply-To: <s5hwqd9elq9.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/06/14 09:30, Kuninori Morimoto wrote:
+On Sun, 2014-05-25 at 20:50 +0200, Takashi Iwai wrote:
+> At Sun, 25 May 2014 18:46:14 +0200,
+> David Henningsson wrote:
+> > 
+> > If we want a full day that does not collide with anything else, I guess 
+> > Saturday 18th would be an option. Or Tuesday 14th if most people are 
+> > there for plumbers rather than Linuxcon?
 > 
-> Hi Geert
-> 
->>> grep asahi-kasei sound/soc/codecs/*
->>> sound/soc/codecs/ak4104.c:      { .compatible = "asahi-kasei,ak4104", },
->>> sound/soc/codecs/ak4554.c:      { .compatible = "asahi-kasei,ak4554" },
->>> sound/soc/codecs/ak4642.c:      { .compatible = "asahi-kasei,ak4642",   .data = &ak4642_drvdata},
->>> sound/soc/codecs/ak4642.c:      { .compatible = "asahi-kasei,ak4643",   .data = &ak4643_drvdata},
->>> sound/soc/codecs/ak4642.c:      { .compatible = "asahi-kasei,ak4648",   .data = &ak4648_drvdata},
->>> sound/soc/codecs/ak5386.c:      { .compatible = "asahi-kasei,ak5386", },
->>>
->>> ak4642 driver can't probe by "ak";
+> I guess most of developers will attend LPC primarily.
+> Maybe we should apply to LPC mini conf no matter which date we'll
+> hold, so that we can get a room properly?
 
-Should we add ak, as well?
+Has anything happened on this front?
+
+To me it sounds a bit strange to simultaneously plan to have a whole-day
+event, especially outside the official LPC dates as David suggested, and
+also to try to get an official microconference accepted. They seem
+mutually exclusive plans, unless we want to have two events... But I
+don't really mind - no matter the day or format, I'll most likely be
+there :)
 
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+Tanu
