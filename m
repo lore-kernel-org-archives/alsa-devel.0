@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl: Fix build problem
-Date: Thu, 12 Jun 2014 00:34:53 +0100
-Message-ID: <20140611233453.GP5099@sirena.org.uk>
-References: <1402470832-24889-1-git-send-email-linux@roeck-us.net>
+Subject: Re: [PATCH] ASoC: wm5102: Convert snd_kcontrol_chip to
+ snd_soc_kcontrol_codec
+Date: Thu, 12 Jun 2014 00:35:34 +0100
+Message-ID: <20140611233534.GQ5099@sirena.org.uk>
+References: <1402487458-18957-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0558589101921594675=="
+Content-Type: multipart/mixed; boundary="===============2100470728924237739=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E493926571C
- for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2014 01:35:08 +0200 (CEST)
-In-Reply-To: <1402470832-24889-1-git-send-email-linux@roeck-us.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id A8052265733
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2014 01:35:41 +0200 (CEST)
+In-Reply-To: <1402487458-18957-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@tabi.org>, Markus Pargmann <mpa@pengutronix.de>, linuxppc-dev@lists.ozlabs.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0558589101921594675==
+--===============2100470728924237739==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8Ioc0IVuiHZoupes"
+	protocol="application/pgp-signature"; boundary="6GaTvyp6jYG0kAmd"
 Content-Disposition: inline
 
 
---8Ioc0IVuiHZoupes
+--6GaTvyp6jYG0kAmd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jun 11, 2014 at 12:13:52AM -0700, Guenter Roeck wrote:
-> Commit 432481220 (ASoC: fsl-ssi: Use regmap) removed struct ccsr_ssi.
-> Unfortunately, the structure is still used. This causes
-> mpc85xx_smp_defconfig and mpc85xx_defconfig builds to fail with
+On Wed, Jun 11, 2014 at 12:50:58PM +0100, Charles Keepax wrote:
+> Controls for shaping the ultrasonic frequency response were introduced
+> in this commit:
 
-Applied, thanks,.
+Applied, thanks.
 
---8Ioc0IVuiHZoupes
+--6GaTvyp6jYG0kAmd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTmOeZAAoJELSic+t+oim9vfUP+gL2Kunt8IHQpb2QCqBnQmCi
-c6/4lVq8KM5yBWiAva8iaBvjjKUr1Wt757bDj0NYyJPMt2+mi/3b/Fy0uYZC1Vh7
-Y/m5ZsWk6VDcu0fPLLYpsGvTcnCggLbEt+G5W8LFcv/Qijb26x315FnUkwvRd3B0
-zMU9V/GfWmfmz4h6+YCMnhYE4b+qIHaAKcBW/qPJmlyWvZKhO4i/Hyz+fbUo+7SU
-KiQgts8QUplKmyrHEP9y2pcw+W1swb2wueFDvKSJc+7l+qzgeMjS0yNWemCEybkL
-GAvgFB+1V7x4hf+CziefOCkfeCDSkUpSbizZj/c63yKQBDw4afwTuGdcDh9xeHND
-1YWHhE2MIiZnr55DjwvILhUHKPGJfZZNXWV2W4T+hGCTU+zX2XJ4Lc9PFUjMQkvO
-Z6oa3H7NbKMcg+rCvF7XVhyQv85n7XBofWQIW2wZKGH6M3pn6S3FBW/GWIOM5rMw
-tLA++QsvDYyuk4xMfTAnfUQvj6R00p8RrseDxx1CM55aX62OFLgSvwIESZOqQewe
-/ZW38o59Iacniwb5vzSBkMx7lu/VULZJEt6BllVenDv6leOB18EH+f9lqnVgp70/
-SUQoIo4g7xFyXz0fXDLnss4+K+4eYigwkH4abBRnKIGFwubnjRO3hNAhnOwDlBYW
-j/ln3Yw0z3TNkklTE5s9
-=Ck1x
+iQIcBAEBAgAGBQJTmOfCAAoJELSic+t+oim9SdIP/3fnuvoMGUqBSQUySUmPjIVI
+lUbCGIMiPs+z7hzQtCJtjaCrTp49zcpqQp+cjj2pdNLJS15rInxhGjFZVZbTY9fQ
+lc4bstCWzpKasQh9Ccj8Ydj3jDhxLWD5B+1F/NILKKE56DI3i6aC0zjZzRHSAwzW
+UXs+eGV4rWqW7asnVBgASxO7Fto2+a8JI5uH68DXpp/LIU6aPSMAs3dVb4CS0db2
+BnNtG1r6wLrs0Cl+njtoZPypBTaKiBGgZYeQNgrERbvYFGzM7mN3+yjCgpWU0t5e
+DWEBRBaDVz3GdM6e4qvteYiMYCFGyjemtnIHA5Q1gZRB38xV/+3vtPeP8ySNrE+S
+/MMQRi8gzJT6SU3QIgMhng0jh4J4E1hWCiCQNoWXNDixyddhFs/mk4RofmHHSnTO
+IlNiVb7h640uqqfUpX6q+J8t0xXQQk9Ao6/G0VsiUFQdGZoRKbjwJyq9aB7umE8z
+0Lj77OIZLj4h20WJMt4T/9vj5+rs1uPWkHI5SkJKy6n7rso/X6SjlbZW0LGA9YEN
+yBFgwJl9Nj7DoUyK2pOHuPdAHheuDsrY9wyVezireKv9siozymHxsSWI8hSpo5Vg
+xhgv6YKeeQLkdKYnQM5zNemnGxs+oeGd/LfGpGaOiUH1KreMxY6m3gDm+LyHRLkn
+Ypta+j4eSFAHUpgwDE7g
+=V4A1
 -----END PGP SIGNATURE-----
 
---8Ioc0IVuiHZoupes--
+--6GaTvyp6jYG0kAmd--
 
---===============0558589101921594675==
+--===============2100470728924237739==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0558589101921594675==--
+--===============2100470728924237739==--
