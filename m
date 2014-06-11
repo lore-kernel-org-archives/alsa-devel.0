@@ -1,50 +1,94 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: [PATCH v2 3/4] dts: atmel: at91sam9rl: switch ssc compatible string
-Date: Wed, 11 Jun 2014 18:14:41 +0800
-Message-ID: <1402481682-9811-4-git-send-email-voice.shen@atmel.com>
-References: <1402481682-9811-1-git-send-email-voice.shen@atmel.com>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH v2 1/4] ASoC: atmel-ssc: distinguish whether SSC supports
+ fslen ext
+Date: Wed, 11 Jun 2014 12:25:04 +0200
+Message-ID: <53982E80.5070908@atmel.com>
+References: <1402481682-9811-1-git-send-email-voice.shen@atmel.com> <1402481682-9811-2-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <1402481682-9811-1-git-send-email-voice.shen@atmel.com>
+In-Reply-To: <1402481682-9811-2-git-send-email-voice.shen@atmel.com>
 Sender: linux-sound-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, Bo Shen <voice.shen@atmel.com>
+To: Bo Shen <voice.shen@atmel.com>, broonie@kernel.org
+Cc: linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-As the SSC integrate in at91sam9rl support frame sync length
-extension, so switch compatible string to support this feature.
+On 11/06/2014 12:14, Bo Shen :
+> Add compatible string to distinguish whether SSC supports
+> frame sync length extension.
+> 
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
-Changes in v2:
-  - New
+Ok, I am fine with this one:
 
- arch/arm/boot/dts/at91sam9rl.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-diff --git a/arch/arm/boot/dts/at91sam9rl.dtsi b/arch/arm/boot/dts/at91sam9rl.dtsi
-index 1da1831..fa32de9 100644
---- a/arch/arm/boot/dts/at91sam9rl.dtsi
-+++ b/arch/arm/boot/dts/at91sam9rl.dtsi
-@@ -203,7 +203,7 @@
- 			};
- 
- 			ssc0: ssc@fffc0000 {
--				compatible = "atmel,at91rm9200-ssc";
-+				compatible = "atmel,at91sam9rl-ssc";
- 				reg = <0xfffc0000 0x4000>;
- 				interrupts = <14 IRQ_TYPE_LEVEL_HIGH 5>;
- 				pinctrl-names = "default";
-@@ -212,7 +212,7 @@
- 			};
- 
- 			ssc1: ssc@fffc4000 {
--				compatible = "atmel,at91rm9200-ssc";
-+				compatible = "atmel,at91sam9rl-ssc";
- 				reg = <0xfffc4000 0x4000>;
- 				interrupts = <15 IRQ_TYPE_LEVEL_HIGH 5>;
- 				pinctrl-names = "default";
+> ---
+> Changes in v2:
+>   - Using compatible string to distinguish whether SSC supports
+>     frame sync length extension to replace check IP version.
+> 
+>  drivers/misc/atmel-ssc.c  | 13 +++++++++++++
+>  include/linux/atmel-ssc.h |  1 +
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
+> index 22de137..60843a2 100644
+> --- a/drivers/misc/atmel-ssc.c
+> +++ b/drivers/misc/atmel-ssc.c
+> @@ -83,10 +83,17 @@ EXPORT_SYMBOL(ssc_free);
+>  
+>  static struct atmel_ssc_platform_data at91rm9200_config = {
+>  	.use_dma = 0,
+> +	.has_fslen_ext = 0,
+> +};
+> +
+> +static struct atmel_ssc_platform_data at91sam9rl_config = {
+> +	.use_dma = 0,
+> +	.has_fslen_ext = 1,
+>  };
+>  
+>  static struct atmel_ssc_platform_data at91sam9g45_config = {
+>  	.use_dma = 1,
+> +	.has_fslen_ext = 1,
+>  };
+>  
+>  static const struct platform_device_id atmel_ssc_devtypes[] = {
+> @@ -94,6 +101,9 @@ static const struct platform_device_id atmel_ssc_devtypes[] = {
+>  		.name = "at91rm9200_ssc",
+>  		.driver_data = (unsigned long) &at91rm9200_config,
+>  	}, {
+> +		.name = "at91sam9rl_ssc",
+> +		.driver_data = (unsigned long) &at91sam9rl_config,
+> +	}, {
+>  		.name = "at91sam9g45_ssc",
+>  		.driver_data = (unsigned long) &at91sam9g45_config,
+>  	}, {
+> @@ -107,6 +117,9 @@ static const struct of_device_id atmel_ssc_dt_ids[] = {
+>  		.compatible = "atmel,at91rm9200-ssc",
+>  		.data = &at91rm9200_config,
+>  	}, {
+> +		.compatible = "atmel,at91sam9rl-ssc",
+> +		.data = &at91sam9rl_config,
+> +	}, {
+>  		.compatible = "atmel,at91sam9g45-ssc",
+>  		.data = &at91sam9g45_config,
+>  	}, {
+> diff --git a/include/linux/atmel-ssc.h b/include/linux/atmel-ssc.h
+> index 571a12e..e8dd408 100644
+> --- a/include/linux/atmel-ssc.h
+> +++ b/include/linux/atmel-ssc.h
+> @@ -7,6 +7,7 @@
+>  
+>  struct atmel_ssc_platform_data {
+>  	int			use_dma;
+> +	int			has_fslen_ext;
+>  };
+>  
+>  struct ssc_device {
+> 
+
+
 -- 
-1.8.5.2
-
+Nicolas Ferre
