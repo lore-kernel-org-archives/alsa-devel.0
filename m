@@ -1,63 +1,58 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] ASoC: fsl: Fix build problem
-Date: Wed, 11 Jun 2014 00:13:52 -0700
-Message-ID: <1402470832-24889-1-git-send-email-linux@roeck-us.net>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: "ak" vs "asahi-kasei" (was: Re: [PATCH 3/3 v3] ARM: shmobile: lager:
+ add sound support on DT)
+Date: Wed, 11 Jun 2014 10:12:21 +0200
+Message-ID: <CAMuHMdWTVBjFzA9L9Eqpq_2Xi9_NHkOCLrb_UjK611SBfwnc=Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pb0-f44.google.com (mail-pb0-f44.google.com
- [209.85.160.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 561CC2654A7
- for <alsa-devel@alsa-project.org>; Wed, 11 Jun 2014 09:19:53 +0200 (CEST)
-Received: by mail-pb0-f44.google.com with SMTP id rq2so7164806pbb.3
- for <alsa-devel@alsa-project.org>; Wed, 11 Jun 2014 00:19:51 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linuxppc-dev@lists.ozlabs.org
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Markus Pargmann <mpa@pengutronix.de>, Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sh-owner@vger.kernel.org>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Simon <horms@verge.net.au>, Magnus <magnus.damm@gmail.com>, Linux-sh list <linux-sh@vger.kernel.org>, Ben Dooks <ben.dooks@codethink.co.uk>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 432481220 (ASoC: fsl-ssi: Use regmap) removed struct ccsr_ssi.
-Unfortunately, the structure is still used. This causes
-mpc85xx_smp_defconfig and mpc85xx_defconfig builds to fail with
+Hi Morimoto-san,
 
-sound/soc/fsl/fsl_dma.c:926:50:
-  error: invalid use of undefined type 'struct ccsr_ssi'
-  dma->ssi_stx_phys = res.start + offsetof(struct ccsr_ssi, stx0);
-ound/soc/fsl/fsl_dma.c:927:50:
-  error: invalid use of undefined type 'struct ccsr_ssi'
-  dma->ssi_srx_phys = res.start + offsetof(struct ccsr_ssi, srx0);
+CC devicetree, alsa-devel
 
-Fix by using constants, similar to original commit.
+On Wed, Jun 11, 2014 at 9:40 AM, Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
+>> On Wed, Jun 11, 2014 at 8:54 AM, Kuninori Morimoto
+>> <kuninori.morimoto.gx@renesas.com> wrote:
+>> > +               compatible = "asahi-kasei,ak4643";
+>>
+>> As Sergei already commented,
+>> Documentation/devicetree/bindings/vendor-prefixes.txt
+>> says
+>>
+>>         ak      Asahi Kasei Corp.
+>
+> I know, but,
+>
+> grep asahi-kasei sound/soc/codecs/*
+> sound/soc/codecs/ak4104.c:      { .compatible = "asahi-kasei,ak4104", },
+> sound/soc/codecs/ak4554.c:      { .compatible = "asahi-kasei,ak4554" },
+> sound/soc/codecs/ak4642.c:      { .compatible = "asahi-kasei,ak4642",   .data = &ak4642_drvdata},
+> sound/soc/codecs/ak4642.c:      { .compatible = "asahi-kasei,ak4643",   .data = &ak4643_drvdata},
+> sound/soc/codecs/ak4642.c:      { .compatible = "asahi-kasei,ak4648",   .data = &ak4648_drvdata},
+> sound/soc/codecs/ak5386.c:      { .compatible = "asahi-kasei,ak5386", },
+>
+> ak4642 driver can't probe by "ak";
 
-Cc: Markus Pargmann <mpa@pengutronix.de>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- sound/soc/fsl/fsl_dma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+That's bad. And all but one of these match entries have been added
+_after_ the addition of "ak" to vendor-prefixes.txt...
 
-diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index 6bb0ea5..a609aaf 100644
---- a/sound/soc/fsl/fsl_dma.c
-+++ b/sound/soc/fsl/fsl_dma.c
-@@ -923,8 +923,8 @@ static int fsl_soc_dma_probe(struct platform_device *pdev)
- 	dma->dai.pcm_free = fsl_dma_free_dma_buffers;
- 
- 	/* Store the SSI-specific information that we need */
--	dma->ssi_stx_phys = res.start + offsetof(struct ccsr_ssi, stx0);
--	dma->ssi_srx_phys = res.start + offsetof(struct ccsr_ssi, srx0);
-+	dma->ssi_stx_phys = res.start + CCSR_SSI_STX0;
-+	dma->ssi_srx_phys = res.start + CCSR_SSI_SRX0;
- 
- 	iprop = of_get_property(ssi_np, "fsl,fifo-depth", NULL);
- 	if (iprop)
--- 
-1.9.1
+Outside sound, there's also "asahi-kasei,ak8975" vs. "ak,ak8975".
+
+> My code is based on "code", not "document"
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
