@@ -1,51 +1,39 @@
-From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
-Subject: Re: Audio mini conference 2014?
-Date: Wed, 11 Jun 2014 12:43:19 +0300
-Message-ID: <1402479799.2366.31.camel@tkkaskin-mobl3.ger.corp.intel.com>
-References: <s5hoaz1iy8e.wl%tiwai@suse.de>
- <20140525132320.GT22111@sirena.org.uk> <53821E56.8020107@canonical.com>
- <s5hwqd9elq9.wl%tiwai@suse.de>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: [PATCH v2 0/4] ASoC: atmel_ssc: enable fslen extension feature
+Date: Wed, 11 Jun 2014 18:14:38 +0800
+Message-ID: <1402481682-9811-1-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id CAB40265616
- for <alsa-devel@alsa-project.org>; Wed, 11 Jun 2014 11:43:46 +0200 (CEST)
-In-Reply-To: <s5hwqd9elq9.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain
+Return-path: <linux-sound-owner@vger.kernel.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: nicolas.ferre@atmel.com, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, Bo Shen <voice.shen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2014-05-25 at 20:50 +0200, Takashi Iwai wrote:
-> At Sun, 25 May 2014 18:46:14 +0200,
-> David Henningsson wrote:
-> > 
-> > If we want a full day that does not collide with anything else, I guess 
-> > Saturday 18th would be an option. Or Tuesday 14th if most people are 
-> > there for plumbers rather than Linuxcon?
-> 
-> I guess most of developers will attend LPC primarily.
-> Maybe we should apply to LPC mini conf no matter which date we'll
-> hold, so that we can get a room properly?
+On at91sam9rl, at91sam9g10, at91sam9g20, at91sam9g45 and newer
+SoCs, the SSC peripheral supports frame sync length extension
+feature. When SSC works as master, it can generate frame sync
+lenght larger than 16 bits. After enable this feature, it can
+playback 24/32 bits audio clips.
 
-Has anything happened on this front?
+Changes in v2:
+  - Using compatible string to distinguish whether SSC supports
+    frame sync length extension to replace check IP version.
+  - Add related modification for dts file.
 
-To me it sounds a bit strange to simultaneously plan to have a whole-day
-event, especially outside the official LPC dates as David suggested, and
-also to try to get an official microconference accepted. They seem
-mutually exclusive plans, unless we want to have two events... But I
-don't really mind - no matter the day or format, I'll most likely be
-there :)
+Bo Shen (4):
+  ASoC: atmel-ssc: distinguish whether SSC supports fslen ext
+  ASoC: atmel_ssc_dai: enable fslen extension feature
+  dts: atmel: at91sam9rl: switch ssc compatible string
+  dts: atmel: at91sam9g20: switch ssc compatible string
+
+ arch/arm/boot/dts/at91sam9g20.dtsi |  4 ++++
+ arch/arm/boot/dts/at91sam9rl.dtsi  |  4 ++--
+ drivers/misc/atmel-ssc.c           | 13 +++++++++++++
+ include/linux/atmel-ssc.h          | 13 +++++++++++++
+ sound/soc/atmel/atmel_ssc_dai.c    | 34 ++++++++++++++++++----------------
+ 5 files changed, 50 insertions(+), 18 deletions(-)
 
 -- 
-Tanu
+1.8.5.2
+
