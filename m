@@ -1,98 +1,47 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 1/2] [RFC] ASoC: samsung: move s3c24xx over to dmaengine
-Date: Thu, 12 Jun 2014 15:16:27 +0200
-Message-ID: <5498575.LeGAfDJTRA@wuerfel>
-References: <6123933.aGtaUr149J@wuerfel> <20140605133606.GX2520@sirena.org.uk> <4306380.m7SZhHfhaK@wuerfel>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH] of: Add vendor 2nd prefix for Asahi Kasei Corp
+Date: Thu, 12 Jun 2014 09:33:04 -0600
+Message-ID: <5399C830.8070607@wwwdotorg.org>
+References: <CAMuHMdWTVBjFzA9L9Eqpq_2Xi9_NHkOCLrb_UjK611SBfwnc=Q@mail.gmail.com>	<87ioo7c0g5.wl%kuninori.morimoto.gx@renesas.com>	<539815E6.2050304@codethink.co.uk>	<20140611165410.GK5099@sirena.org.uk>	<CAMuHMdUT0hEBGbN+W-Oz5zJ0N8S2VDMndqtDO=EtWF3jG2MEew@mail.gmail.com>	<20140611170233.GL5099@sirena.org.uk>	<5398A53D.3020706@wwwdotorg.org>	<20140611190444.GN5099@sirena.org.uk>	<5398AB07.4040304@wwwdotorg.org> <87sinbdk44.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <4306380.m7SZhHfhaK@wuerfel>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, Sangbeom Kim <sbkim73@samsung.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, lgirdwood@gmail.com, Russell Linux <linux@arm.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <87sinbdk44.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Linux-sh list <linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Magnus <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>, Ben Dooks <ben.dooks-4yDnlxn2s6sWdaTGBSpHTA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 05 June 2014 16:04:03 Arnd Bergmann wrote:
-> On Thursday 05 June 2014 14:36:06 Mark Brown wrote:
-> > On Thu, Jun 05, 2014 at 03:20:50PM +0200, Arnd Bergmann wrote:
-> > > The s3c24xx sound support keeps giving randconfig build errors, this
-> > > is a new attempt to solve it by moving the driver over to use dmaengine
-> > > exclusively.
-> > 
-> > We already have a patch pending for this, it's just waiting until after
-> > the merge window to avoid bisection breakage since it depends on
-> > dmaengine changes.
+On 06/11/2014 06:53 PM, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 > 
-> Ok, very good.
+> Current vendor-prefixes.txt already has
+> "ak" prefix for Asahi Kasei Corp by
+> ae8c4209af2cec065fef15d200a42a04130799f7
+> (of: Add vendor prefix for Asahi Kasei Corp.)
+> 
+> It went through the appropriate review process,
+> and is already in use.
+> But, almost all Asahi Kasei chip driver is
+> using "asahi-kasei" prefix today.
 
-Actually, I think it would still be good to do something about the
-samsung/ac97.c file, which is the only reason we are keeping the
-SAMSUNG_DMADEV code around that is part of the dependency chain
-Russell posted, and it's definitely broken on anything but s3c24xx.
+I'm fine with this patch, but just wanted to comment on this part of the
+commit description:
 
-If we do something like the patch below, we can just disable
-SAMSUNG_DMADEV already, which simplifies the dependency chains
-a lot. We can then remove that code entirely in 3.17.
+What is in the drivers isn't relevant; that's not what drives the ABI.
+The issue is that some *DTs* use ak and some use asahi-kasei, so both
+those need to be supported.
 
-Note that for !CONFIG_S3C24XX_DMA, the code is currently broken,
-as samsung_dma_get_ops()->started is a NULL pointer for dmadev.
+That said, we should document which one of the two prefixes is
+preferred, and use this for any new AK binding.
 
-	Arnd
+It would also be nice to ensure the preferred prefix is in all drivers'
+of_match_tables, and remove the deprecated prefix from all drivers'
+of_match_tables *except* where there's already a DT file that references
+the deprecated vendor prefix.
 
-diff --git a/sound/soc/samsung/ac97.c b/sound/soc/samsung/ac97.c
-index 68d9303..1db1028 100644
---- a/sound/soc/samsung/ac97.c
-+++ b/sound/soc/samsung/ac97.c
-@@ -225,9 +225,11 @@ static int s3c_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
- 				struct snd_soc_dai *dai)
- {
- 	u32 ac_glbctrl;
-+#ifdef CONFIG_S3C24XX_DMA
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct s3c_dma_params *dma_data =
- 		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+#endif
- 
- 	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-@@ -253,10 +255,9 @@ static int s3c_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
- 
--	if (!dma_data->ops)
--		dma_data->ops = samsung_dma_get_ops();
--
--	dma_data->ops->started(dma_data->channel);
-+#ifdef CONFIG_S3C24XX_DMA
-+	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
-+#endif
- 
- 	return 0;
- }
-@@ -265,9 +266,11 @@ static int s3c_ac97_mic_trigger(struct snd_pcm_substream *substream,
- 				    int cmd, struct snd_soc_dai *dai)
- {
- 	u32 ac_glbctrl;
-+#ifdef CONFIG_S3C24XX_DMA
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct s3c_dma_params *dma_data =
- 		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+#endif
- 
- 	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
- 	ac_glbctrl &= ~S3C_AC97_GLBCTRL_MICINTM_MASK;
-@@ -287,10 +290,9 @@ static int s3c_ac97_mic_trigger(struct snd_pcm_substream *substream,
- 
- 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
- 
--	if (!dma_data->ops)
--		dma_data->ops = samsung_dma_get_ops();
--
--	dma_data->ops->started(dma_data->channel);
-+#ifdef CONFIG_S3C24XX_DMA
-+	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
-+#endif
- 
- 	return 0;
- }
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
