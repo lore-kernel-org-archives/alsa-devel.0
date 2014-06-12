@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm5102: Convert snd_kcontrol_chip to
- snd_soc_kcontrol_codec
-Date: Thu, 12 Jun 2014 00:35:34 +0100
-Message-ID: <20140611233534.GQ5099@sirena.org.uk>
-References: <1402487458-18957-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: Re: [PATCH RESEND] ASoC: rt5677: Convert to use
+	rl6231_get_clk_info
+Date: Thu, 12 Jun 2014 08:26:25 +0800
+Message-ID: <CAFRkauCDgnGt1HpRQQDY59ASF8=oSYX+NdOgGan2iZEiwry6pg@mail.gmail.com>
+References: <1402361856.4636.0.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2100470728924237739=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A8052265733
- for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2014 01:35:41 +0200 (CEST)
-In-Reply-To: <1402487458-18957-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mail-qc0-f170.google.com (mail-qc0-f170.google.com
+ [209.85.216.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id E679D26571C
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2014 02:26:26 +0200 (CEST)
+Received: by mail-qc0-f170.google.com with SMTP id l6so865126qcy.29
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jun 2014 17:26:26 -0700 (PDT)
+In-Reply-To: <1402361856.4636.0.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+2014-06-10 8:57 GMT+08:00 Axel Lin <axel.lin@ingics.com>:
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> Tested-by: Oder Chiou <oder_chiou@realtek.com>
+> ---
+>  sound/soc/codecs/Kconfig  |  2 ++
+>  sound/soc/codecs/rt5677.c | 18 ++----------------
+>  2 files changed, 4 insertions(+), 16 deletions(-)
+>
+> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+> index cbfa1e1..9d88845 100644
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -445,9 +445,11 @@ config SND_SOC_RL6231
+>         default y if SND_SOC_RT5640=y
+>         default y if SND_SOC_RT5645=y
+>         default y if SND_SOC_RT5651=y
+> +       default y if SND_SOC_RT5677=y
+>         default m if SND_SOC_RT5640=m
+>         default m if SND_SOC_RT5645=m
+>         default m if SND_SOC_RT5651=m
+> +       default m if SND_SOC_RT5677=m
 
---===============2100470728924237739==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6GaTvyp6jYG0kAmd"
-Content-Disposition: inline
+Hi Mark,
+This patch ensures SND_SOC_RL6231 will be built.
+This patch is required to fix build error with commit
+"ASoC: rt5677: Convert to use rl6231_calc_dmic_clk".
 
-
---6GaTvyp6jYG0kAmd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jun 11, 2014 at 12:50:58PM +0100, Charles Keepax wrote:
-> Controls for shaping the ultrasonic frequency response were introduced
-> in this commit:
-
-Applied, thanks.
-
---6GaTvyp6jYG0kAmd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTmOfCAAoJELSic+t+oim9SdIP/3fnuvoMGUqBSQUySUmPjIVI
-lUbCGIMiPs+z7hzQtCJtjaCrTp49zcpqQp+cjj2pdNLJS15rInxhGjFZVZbTY9fQ
-lc4bstCWzpKasQh9Ccj8Ydj3jDhxLWD5B+1F/NILKKE56DI3i6aC0zjZzRHSAwzW
-UXs+eGV4rWqW7asnVBgASxO7Fto2+a8JI5uH68DXpp/LIU6aPSMAs3dVb4CS0db2
-BnNtG1r6wLrs0Cl+njtoZPypBTaKiBGgZYeQNgrERbvYFGzM7mN3+yjCgpWU0t5e
-DWEBRBaDVz3GdM6e4qvteYiMYCFGyjemtnIHA5Q1gZRB38xV/+3vtPeP8ySNrE+S
-/MMQRi8gzJT6SU3QIgMhng0jh4J4E1hWCiCQNoWXNDixyddhFs/mk4RofmHHSnTO
-IlNiVb7h640uqqfUpX6q+J8t0xXQQk9Ao6/G0VsiUFQdGZoRKbjwJyq9aB7umE8z
-0Lj77OIZLj4h20WJMt4T/9vj5+rs1uPWkHI5SkJKy6n7rso/X6SjlbZW0LGA9YEN
-yBFgwJl9Nj7DoUyK2pOHuPdAHheuDsrY9wyVezireKv9siozymHxsSWI8hSpo5Vg
-xhgv6YKeeQLkdKYnQM5zNemnGxs+oeGd/LfGpGaOiUH1KreMxY6m3gDm+LyHRLkn
-Ypta+j4eSFAHUpgwDE7g
-=V4A1
------END PGP SIGNATURE-----
-
---6GaTvyp6jYG0kAmd--
-
---===============2100470728924237739==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2100470728924237739==--
+Regards,
+Axel
