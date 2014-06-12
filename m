@@ -1,15 +1,18 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] ALSA: hda - verify pin:converter connection on
-	unsol event for HSW and VLV
-Date: Thu, 12 Jun 2014 14:42:25 +0800
-Message-ID: <1402555345-16481-1-git-send-email-mengdong.lin@intel.com>
+From: Qiao Zhou <zhouqiao@marvell.com>
+Subject: Re: [PATCH] ASoC: pcm: fix dpcm_path_put in dpcm
+	runtime update
+Date: Thu, 12 Jun 2014 14:52:03 +0800
+Message-ID: <53994E13.4020800@marvell.com>
+References: <1401882126-26225-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E866265725
- for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2014 08:40:18 +0200 (CEST)
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
+ [67.231.156.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id C48A5265502
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2014 08:52:10 +0200 (CEST)
+In-Reply-To: <1401882126-26225-1-git-send-email-zhouqiao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,48 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+On 06/04/2014 07:42 PM, Qiao Zhou wrote:
+> we need to release dapm widget list after dpcm_path_get in
+> soc_dpcm_runtime_update. otherwise, there will be potential memory
+> leak. add dpcm_path_put to fix it.
+>
+> Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
+> ---
+>   sound/soc/soc-pcm.c |    1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index a391de0..3bb8b80 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -2072,6 +2072,7 @@ int soc_dpcm_runtime_update(struct snd_soc_card *card)
+>   			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
+>   		}
+>
+> +		dpcm_path_put(&list);
+>   capture:
+>   		/* skip if FE doesn't have capture capability */
+>   		if (!fe->cpu_dai->driver->capture.channels_min)
+>
+Hi Maintainers,
 
-This patch will verify the pin's coverter selection for an active stream
-when an unsol event reports this pin becomes available again after a display
-mode change or hot-plug event.
+Do you have any comments? Thanks.
 
-For Haswell+ and Valleyview: display mode change or hot-plug can change the
-transcoder:port connection and make all the involved audio pins share the 1st
-converter. So the stream using 1st convertor will flow to multiple pins
-but active streams using other converters will fail. This workaround
-is to assure the pin selects the right conveter and an assigned converter is
-not shared by other unused pins.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index be0a9ee..3e4417b 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1594,10 +1594,18 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 		 * Re-setup pin and infoframe. This is needed e.g. when
- 		 * - sink is first plugged-in (infoframe is not set up if !monitor_present)
- 		 * - transcoder can change during stream playback on Haswell
-+		 *   and this can make HW reset converter selection on a pin.
- 		 */
--		if (eld->eld_valid && !old_eld_valid && per_pin->setup)
-+		if (eld->eld_valid && !old_eld_valid && per_pin->setup) {
-+			if (is_haswell_plus(codec) || is_valleyview(codec)) {
-+				intel_verify_pin_cvt_connect(codec, per_pin);
-+				intel_not_share_assigned_cvt(codec, pin_nid,
-+							per_pin->mux_idx);
-+			}
-+
- 			hdmi_setup_audio_infoframe(codec, per_pin,
- 						   per_pin->non_pcm);
-+		}
- 	}
- 
- 	if (eld_changed)
 -- 
-1.8.1.2
+
+Best Regards
+Qiao
