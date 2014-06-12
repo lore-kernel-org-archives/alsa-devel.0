@@ -1,18 +1,18 @@
-From: Qiao Zhou <zhouqiao@marvell.com>
-Subject: Re: [PATCH] ASoC: pcm: fix dpcm_path_put in dpcm
-	runtime update
-Date: Thu, 12 Jun 2014 14:52:03 +0800
-Message-ID: <53994E13.4020800@marvell.com>
-References: <1401882126-26225-1-git-send-email-zhouqiao@marvell.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RESEND] ASoC: rt5677: Convert to use
+	rl6231_get_clk_info
+Date: Thu, 12 Jun 2014 10:49:58 +0100
+Message-ID: <20140612094958.GT5099@sirena.org.uk>
+References: <1402361856.4636.0.camel@phoenix>
+ <CAFRkauCDgnGt1HpRQQDY59ASF8=oSYX+NdOgGan2iZEiwry6pg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2168752816131289079=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
- [67.231.156.173])
- by alsa0.perex.cz (Postfix) with ESMTP id C48A5265502
- for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2014 08:52:10 +0200 (CEST)
-In-Reply-To: <1401882126-26225-1-git-send-email-zhouqiao@marvell.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0CBC265753
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2014 11:50:09 +0200 (CEST)
+In-Reply-To: <CAFRkauCDgnGt1HpRQQDY59ASF8=oSYX+NdOgGan2iZEiwry6pg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/04/2014 07:42 PM, Qiao Zhou wrote:
-> we need to release dapm widget list after dpcm_path_get in
-> soc_dpcm_runtime_update. otherwise, there will be potential memory
-> leak. add dpcm_path_put to fix it.
->
-> Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
-> ---
->   sound/soc/soc-pcm.c |    1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index a391de0..3bb8b80 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -2072,6 +2072,7 @@ int soc_dpcm_runtime_update(struct snd_soc_card *card)
->   			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
->   		}
->
-> +		dpcm_path_put(&list);
->   capture:
->   		/* skip if FE doesn't have capture capability */
->   		if (!fe->cpu_dai->driver->capture.channels_min)
->
-Hi Maintainers,
 
-Do you have any comments? Thanks.
+--===============2168752816131289079==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="z0bQ+oXmfTh/YqQi"
+Content-Disposition: inline
 
--- 
 
-Best Regards
-Qiao
+--z0bQ+oXmfTh/YqQi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jun 12, 2014 at 08:26:25AM +0800, Axel Lin wrote:
+
+> This patch ensures SND_SOC_RL6231 will be built.
+> This patch is required to fix build error with commit
+> "ASoC: rt5677: Convert to use rl6231_calc_dmic_clk".
+
+Sure, but remember that that patch isn't in -next yet since the merge
+window is still open.  I'll get to it at some point before it is.
+
+--z0bQ+oXmfTh/YqQi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTmXfDAAoJELSic+t+oim9Za8P/R5yypDHwFQo39sKNZODV4lo
+ZrKX9JI9WEpRi9FsuRIBwnL4vARpwuYJmkxJvhZsB6tBWg+T1A8KAKS+Utm5NjAw
+FoWrS+p8KQanZZmy5kgOOCniXxzXwmDpjEF8TIt19vbFEQe5xXoB/TwZsQ0o/gya
+W27zNveMKXAATBs2CpfGTcFH9ANgSXI54DQ5aYRlkb/S5O/Nl2OiVQ3NJFQRSKG5
+QTaJMPHsaNIGQbwrQvWI9L5e2bdb5wotqo9CLo77PY6EMs81OqD1J1v9VmhtageR
+isBLvG4PY6rCpFbK5xq9mmPkvHAy2+euFx8pJTnY/hG0FQPxwSU32CYaffipaoO5
+1VavIBc2wJjbmx8mKpBQiZE5nudqmyqEZ6RjhqyyJfendsrVy+biiG9xrMBVhZjb
+FqZV8YB/NphwzYghKBJjSAqezl9U1EtTijQqLPuxo/X9TdKmg/oMJvHfaHGYeq4V
+iTTUVKLGYbvt1BreS9+MbcIMgI0r+tm6CdvmH/36mZgvn6uVp8ed/IneBmcffGQW
+ABt4hfpN42Qe8jVsHdDHoCuuBytUrrd/IrPA0mSQYu3S78G+WyJWpeRLEQ0lxCgc
+b5iABkXBLwDmFwaNVZoM2q8dOuFOaPlA3o4vMCPOtGMSPUPEu9igvHCPHHWQ9xHK
+0of0lRwGb3nq9hVj08eC
+=Hrsd
+-----END PGP SIGNATURE-----
+
+--z0bQ+oXmfTh/YqQi--
+
+--===============2168752816131289079==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2168752816131289079==--
