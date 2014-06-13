@@ -1,16 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 13/19] ASoC: Intel: mrfld: add bytes control
-	for modules
-Date: Fri, 13 Jun 2014 18:04:02 +0530
-Message-ID: <1402662848-24534-14-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 14/19] ASoC: Intel: mrfld: add the gain controls
+Date: Fri, 13 Jun 2014 18:04:03 +0530
+Message-ID: <1402662848-24534-15-git-send-email-vinod.koul@intel.com>
 References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 1691D264EFA
- for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 14:33:12 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DB4E264F09
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 14:33:14 +0200 (CEST)
 In-Reply-To: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,341 +24,342 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add support for various modules like eq etc for mrfld DSP. All these
-moduels will be exposed to usermode as bytes controls.
+The DSP has various gain modules in the path, add these as ALSA gain controls
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/sst-atom-controls.c |  172 +++++++++++++++++++++++++++++++++++
- sound/soc/intel/sst-atom-controls.h |  129 ++++++++++++++++++++++++++
- 2 files changed, 301 insertions(+), 0 deletions(-)
+ sound/soc/intel/sst-atom-controls.c |  164 ++++++++++++++++++++++++++++++++++-
+ sound/soc/intel/sst-atom-controls.h |  119 +++++++++++++++++++++++++
+ 2 files changed, 282 insertions(+), 1 deletions(-)
 
 diff --git a/sound/soc/intel/sst-atom-controls.c b/sound/soc/intel/sst-atom-controls.c
-index f710888..c72d3aa 100644
+index c72d3aa..0d9c72c 100644
 --- a/sound/soc/intel/sst-atom-controls.c
 +++ b/sound/soc/intel/sst-atom-controls.c
-@@ -66,6 +66,176 @@ unsigned int sst_reg_write(struct sst_data *drv, unsigned int reg,
- 	return val;
+@@ -215,6 +215,157 @@ static int sst_algo_control_set(struct snd_kcontrol *kcontrol,
+ 	return 0;
  }
  
-+static inline void sst_fill_byte_control(char *param,
-+					 u8 ipc_msg, u8 block,
-+					 u8 task_id, u8 pipe_id,
-+					 u16 len, void *cmd_data)
++static int sst_gain_ctl_info(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_info *uinfo)
 +{
++	struct sst_gain_mixer_control *mc = (void *)kcontrol->private_value;
 +
-+	struct snd_sst_bytes_v2 *byte_data = (struct snd_sst_bytes_v2 *)param;
-+	byte_data->type = SST_CMD_BYTES_SET;
-+	byte_data->ipc_msg = ipc_msg;
-+	byte_data->block = block;
-+	byte_data->task_id = task_id;
-+	byte_data->pipe_id = pipe_id;
-+
-+	if (len > SST_MAX_BIN_BYTES - sizeof(*byte_data)) {
-+		pr_err("%s: command length too big (%u)", __func__, len);
-+		len = SST_MAX_BIN_BYTES - sizeof(*byte_data);
-+		WARN_ON(1); /* this happens only if code is wrong */
-+	}
-+	byte_data->len = len;
-+	memcpy(byte_data->bytes, cmd_data, len);
-+	print_hex_dump_bytes("writing to lpe: ", DUMP_PREFIX_OFFSET,
-+			     byte_data, len + sizeof(*byte_data));
-+}
-+
-+static int sst_fill_and_send_cmd_unlocked(struct sst_data *drv,
-+				 u8 ipc_msg, u8 block, u8 task_id, u8 pipe_id,
-+				 void *cmd_data, u16 len)
-+{
-+	sst_fill_byte_control(drv->byte_stream, ipc_msg, block, task_id, pipe_id,
-+			      len, cmd_data);
-+	return sst->ops->set_generic_params(SST_SET_BYTE_STREAM,
-+						drv->byte_stream);
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = mc->stereo ? 2 : 1;
++	uinfo->value.integer.min = mc->min;
++	uinfo->value.integer.max = mc->max;
++	return 0;
 +}
 +
 +/**
-+ * sst_fill_and_send_cmd - generate the IPC message and send it to the FW
-+ * @ipc_msg:	type of IPC (CMD, SET_PARAMS, GET_PARAMS)
-+ * @cmd_data:	the IPC payload
++ * sst_send_gain_cmd - send the gain algorithm IPC to the FW
++ * @gv:		the stored value of gain (also contains rampduration)
++ * @mute:	flag that indicates whether this was called from the
++ *		digital_mute callback or directly. If called from the
++ *		digital_mute callback, module will be muted/unmuted based on this
++ *		flag. The flag is always 0 if called directly.
++ *
++ * The user-set gain value is sent only if the user-controllable 'mute' control
++ * is OFF (indicated by gv->mute). Otherwise, the mute value (MIN value) is
++ * sent.
 + */
-+static int sst_fill_and_send_cmd(struct sst_data *drv,
-+				 u8 ipc_msg, u8 block, u8 task_id, u8 pipe_id,
-+				 void *cmd_data, u16 len)
++static void sst_send_gain_cmd(struct sst_data *drv, struct sst_gain_value *gv,
++			      u16 task_id, u16 loc_id, u16 module_id, int mute)
 +{
-+	int ret;
++	struct sst_cmd_set_gain_dual cmd;
++	pr_debug("%s\n", __func__);
 +
-+	mutex_lock(&drv->lock);
-+	ret = sst_fill_and_send_cmd_unlocked(drv, ipc_msg, block, task_id, pipe_id,
-+					     cmd_data, len);
-+	mutex_unlock(&drv->lock);
++	cmd.header.command_id = MMX_SET_GAIN;
++	SST_FILL_DEFAULT_DESTINATION(cmd.header.dst);
++	cmd.gain_cell_num = 1;
 +
-+	return ret;
-+}
-+
-+static void sst_send_algo_cmd(struct sst_data *drv,
-+			      struct sst_algo_control *bc)
-+{
-+	int len;
-+	struct sst_cmd_set_params *cmd;
-+
-+	if (bc->params == NULL)
-+		return;
-+
-+	/* bc->max includes sizeof algos + length field */
-+	len = sizeof(cmd->dst) + sizeof(cmd->command_id) + bc->max;
-+
-+	cmd = kzalloc(len, GFP_KERNEL);
-+	if (cmd == NULL) {
-+		pr_err("Failed to send cmd, kzalloc failed\n");
-+		return;
++	if (mute || gv->mute) {
++		cmd.cell_gains[0].cell_gain_left = SST_GAIN_MIN_VALUE;
++		cmd.cell_gains[0].cell_gain_right = SST_GAIN_MIN_VALUE;
++	} else {
++		cmd.cell_gains[0].cell_gain_left = gv->l_gain;
++		cmd.cell_gains[0].cell_gain_right = gv->r_gain;
 +	}
++	SST_FILL_DESTINATION(2, cmd.cell_gains[0].dest,
++			     loc_id, module_id);
++	cmd.cell_gains[0].gain_time_constant = gv->ramp_duration;
 +
-+	SST_FILL_DESTINATION(2, cmd->dst, bc->pipe_id, bc->module_id);
-+	cmd->command_id = bc->cmd_id;
-+	memcpy(cmd->params, bc->params, bc->max);
++	cmd.header.length = sizeof(struct sst_cmd_set_gain_dual)
++				- sizeof(struct sst_dsp_header);
 +
 +	sst_fill_and_send_cmd(drv, SST_IPC_IA_SET_PARAMS, SST_FLAG_BLOCKED,
-+			      bc->task_id, 0, cmd, len);
-+	kfree(cmd);
++			      task_id, 0, &cmd,
++			      sizeof(cmd.header) + cmd.header.length);
 +}
 +
-+static int sst_algo_bytes_ctl_info(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_info *uinfo)
++static int sst_gain_get(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct sst_algo_control *bc = (void *)kcontrol->private_value;
-+	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
++	struct sst_gain_mixer_control *mc = (void *)kcontrol->private_value;
++	struct sst_gain_value *gv = mc->gain_val;
 +
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+	uinfo->count = bc->max;
-+
-+	/* allocate space to cache the algo parameters in the driver */
-+	if (bc->params == NULL) {
-+		bc->params = devm_kzalloc(platform->dev, bc->max, GFP_KERNEL);
-+		if (bc->params == NULL) {
-+			pr_err("kzalloc failed\n");
-+			return -ENOMEM;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int sst_algo_control_get(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct sst_algo_control *bc = (void *)kcontrol->private_value;
-+
-+	switch (bc->type) {
-+	case SST_ALGO_PARAMS:
-+		if (bc->params)
-+			memcpy(ucontrol->value.bytes.data, bc->params, bc->max);
++	switch (mc->type) {
++	case SST_GAIN_TLV:
++		ucontrol->value.integer.value[0] = gv->l_gain;
++		ucontrol->value.integer.value[1] = gv->r_gain;
 +		break;
-+	case SST_ALGO_BYPASS:
-+		ucontrol->value.integer.value[0] = bc->bypass ? 1 : 0;
-+		pr_debug("%s: bypass  %d\n", __func__, bc->bypass);
++	case SST_GAIN_MUTE:
++		ucontrol->value.integer.value[0] = gv->mute ? 1 : 0;
++		break;
++	case SST_GAIN_RAMP_DURATION:
++		ucontrol->value.integer.value[0] = gv->ramp_duration;
 +		break;
 +	default:
-+		pr_err("Invalid Input- algo type:%d\n", bc->type);
++		pr_err("Invalid Input- gain type:%d\n", mc->type);
 +		return -EINVAL;
-+
-+	}
++	};
 +	return 0;
 +}
 +
-+static int sst_algo_control_set(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
++static int sst_gain_put(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
 +{
 +	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
 +	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
-+	struct sst_algo_control *bc = (void *)kcontrol->private_value;
++	struct sst_gain_mixer_control *mc = (void *)kcontrol->private_value;
++	struct sst_gain_value *gv = mc->gain_val;
 +
-+	pr_debug("in %s control_name=%s\n", __func__, kcontrol->id.name);
-+	switch (bc->type) {
-+	case SST_ALGO_PARAMS:
-+		if (bc->params)
-+			memcpy(bc->params, ucontrol->value.bytes.data, bc->max);
++	switch (mc->type) {
++	case SST_GAIN_TLV:
++		gv->l_gain = ucontrol->value.integer.value[0];
++		gv->r_gain = ucontrol->value.integer.value[1];
++		pr_debug("%s: %s: Volume %d, %d\n", __func__, mc->pname, gv->l_gain, gv->r_gain);
 +		break;
-+	case SST_ALGO_BYPASS:
-+		bc->bypass = !!ucontrol->value.integer.value[0];
++	case SST_GAIN_MUTE:
++		gv->mute = !!ucontrol->value.integer.value[0];
++		pr_debug("%s: %s: Mute %d\n", __func__, mc->pname, gv->mute);
++		break;
++	case SST_GAIN_RAMP_DURATION:
++		gv->ramp_duration = ucontrol->value.integer.value[0];
++		pr_debug("%s: %s: RampDuration %d\n", __func__, mc->pname, gv->ramp_duration);
 +		break;
 +	default:
-+		pr_err("Invalid Input- algo type:%ld\n", ucontrol->value.integer.value[0]);
++		pr_err("Invalid Input- gain type:%d\n", mc->type);
 +		return -EINVAL;
-+	}
-+	/*if pipe is enabled, need to send the algo params from here */
-+	if (bc->w && bc->w->power)
-+		sst_send_algo_cmd(drv, bc);
++	};
 +
++	if (mc->w && mc->w->power)
++		sst_send_gain_cmd(drv, gv, mc->task_id,
++				mc->pipe_id | mc->instance_id, mc->module_id, 0);
 +	return 0;
 +}
 +
-+static const struct snd_kcontrol_new sst_algo_controls[] = {
-+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
-+		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "iir", 300, SST_MODULE_ID_IIR_24,
-+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "fir", 272, SST_MODULE_ID_FIR_24,
-+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "iir", 300, SST_MODULE_ID_IIR_24,
-+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-+	SST_ALGO_KCONTROL_BYTES("sprot_loop_out", "lpro", 192, SST_MODULE_ID_SPROT,
-+		SST_PATH_INDEX_SPROT_LOOP_OUT, 0, SST_TASK_SBA, SBA_VB_LPRO),
-+	SST_ALGO_KCONTROL_BYTES("codec_in0", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-+		SST_PATH_INDEX_CODEC_IN0, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+	SST_ALGO_KCONTROL_BYTES("codec_in1", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-+		SST_PATH_INDEX_CODEC_IN1, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
++static const DECLARE_TLV_DB_SCALE(sst_gain_tlv_common, SST_GAIN_MIN_VALUE * 10, 10, 0);
 +
++/* Gain helper with min/max set */
++#define SST_GAIN(name, path_id, task_id, instance, gain_var)				\
++	SST_GAIN_KCONTROLS(name, "gain", SST_GAIN_MIN_VALUE, SST_GAIN_MAX_VALUE,	\
++		SST_GAIN_TC_MIN, SST_GAIN_TC_MAX,					\
++		sst_gain_get, sst_gain_put,						\
++		SST_MODULE_ID_GAIN_CELL, path_id, instance, task_id,			\
++		sst_gain_tlv_common, gain_var)
++
++#define SST_VOLUME(name, path_id, task_id, instance, gain_var)				\
++	SST_GAIN_KCONTROLS(name, "volume", SST_GAIN_MIN_VALUE, SST_GAIN_MAX_VALUE,	\
++		SST_GAIN_TC_MIN, SST_GAIN_TC_MAX,					\
++		sst_gain_get, sst_gain_put,						\
++		SST_MODULE_ID_VOLUME, path_id, instance, task_id,			\
++		sst_gain_tlv_common, gain_var)
++
++#define SST_NUM_GAINS 36
++static struct sst_gain_value sst_gains[SST_NUM_GAINS];
++
++static const struct snd_kcontrol_new sst_gain_controls[] = {
++	SST_GAIN("media0_in", SST_PATH_INDEX_MEDIA0_IN, SST_TASK_MMX, 0, &sst_gains[0]),
++	SST_GAIN("media1_in", SST_PATH_INDEX_MEDIA1_IN, SST_TASK_MMX, 0, &sst_gains[1]),
++	SST_GAIN("media2_in", SST_PATH_INDEX_MEDIA2_IN, SST_TASK_MMX, 0, &sst_gains[2]),
++	SST_GAIN("media3_in", SST_PATH_INDEX_MEDIA3_IN, SST_TASK_MMX, 0, &sst_gains[3]),
++
++	SST_GAIN("pcm0_in", SST_PATH_INDEX_PCM0_IN, SST_TASK_SBA, 0, &sst_gains[4]),
++	SST_GAIN("pcm1_in", SST_PATH_INDEX_PCM1_IN, SST_TASK_SBA, 0, &sst_gains[5]),
++	SST_GAIN("pcm1_out", SST_PATH_INDEX_PCM1_OUT, SST_TASK_SBA, 0, &sst_gains[7]),
++	SST_GAIN("pcm2_out", SST_PATH_INDEX_PCM2_OUT, SST_TASK_SBA, 0, &sst_gains[8]),
++
++	SST_GAIN("codec_in0", SST_PATH_INDEX_CODEC_IN0, SST_TASK_SBA, 0, &sst_gains[20]),
++	SST_GAIN("codec_in1", SST_PATH_INDEX_CODEC_IN1, SST_TASK_SBA, 0, &sst_gains[21]),
++	SST_GAIN("codec_out0", SST_PATH_INDEX_CODEC_OUT0, SST_TASK_SBA, 0, &sst_gains[22]),
++	SST_GAIN("codec_out1", SST_PATH_INDEX_CODEC_OUT1, SST_TASK_SBA, 0, &sst_gains[23]),
++	SST_GAIN("media_loop1_out", SST_PATH_INDEX_MEDIA_LOOP1_OUT, SST_TASK_SBA, 0, &sst_gains[30]),
++	SST_GAIN("media_loop2_out", SST_PATH_INDEX_MEDIA_LOOP2_OUT, SST_TASK_SBA, 0, &sst_gains[31]),
++	SST_GAIN("sprot_loop_out", SST_PATH_INDEX_SPROT_LOOP_OUT, SST_TASK_SBA, 0, &sst_gains[32]),
++	SST_VOLUME("media0_in", SST_PATH_INDEX_MEDIA0_IN, SST_TASK_MMX, 0, &sst_gains[33]),
 +};
++
+ static const struct snd_kcontrol_new sst_algo_controls[] = {
+ 	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
+ 		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
+@@ -239,7 +390,7 @@ static const struct snd_kcontrol_new sst_algo_controls[] = {
  
  int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform)
  {
-@@ -86,5 +256,7 @@ int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform)
+-	int ret = 0;
++	int i, ret = 0;
+ 	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
+ 
+ 	drv->byte_stream = devm_kzalloc(platform->dev,
+@@ -256,6 +407,17 @@ int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform)
  		return -ENOMEM;
  	}
  
-+	snd_soc_add_platform_controls(platform, sst_algo_controls,
-+			ARRAY_SIZE(sst_algo_controls));
++
++	for (i = 0; i < SST_NUM_GAINS; i++) {
++		sst_gains[i].mute = SST_GAIN_MUTE_DEFAULT;
++		sst_gains[i].l_gain = SST_GAIN_VOLUME_DEFAULT;
++		sst_gains[i].r_gain = SST_GAIN_VOLUME_DEFAULT;
++		sst_gains[i].ramp_duration = SST_GAIN_RAMP_DURATION_DEFAULT;
++	}
++
++	snd_soc_add_platform_controls(platform, sst_gain_controls,
++			ARRAY_SIZE(sst_gain_controls));
++
+ 	snd_soc_add_platform_controls(platform, sst_algo_controls,
+ 			ARRAY_SIZE(sst_algo_controls));
  	return ret;
- }
 diff --git a/sound/soc/intel/sst-atom-controls.h b/sound/soc/intel/sst-atom-controls.h
-index 8c35946..448fdff 100644
+index 448fdff..9f04e43 100644
 --- a/sound/soc/intel/sst-atom-controls.h
 +++ b/sound/soc/intel/sst-atom-controls.h
-@@ -345,4 +345,133 @@ enum sst_swm_state {
- 	SST_SWM_ON = 3,
- };
- 
-+#define SST_FILL_LOCATION_IDS(dst, cell_idx, pipe_id)		do {	\
-+		dst.location_id.p.cell_nbr_idx = (cell_idx);		\
-+		dst.location_id.p.path_id = (pipe_id);			\
-+	} while (0)
-+#define SST_FILL_LOCATION_ID(dst, loc_id)				(\
-+	dst.location_id.f = (loc_id))
-+#define SST_FILL_MODULE_ID(dst, mod_id)					(\
-+	dst.module_id = (mod_id))
+@@ -396,16 +396,135 @@ struct sst_dsp_header {
+ struct sst_cmd_generic {
+ 	struct sst_dsp_header header;
+ } __packed;
 +
-+#define SST_FILL_DESTINATION1(dst, id)				do {	\
-+		SST_FILL_LOCATION_ID(dst, (id) & 0xFFFF);		\
-+		SST_FILL_MODULE_ID(dst, ((id) & 0xFFFF0000) >> 16);	\
-+	} while (0)
-+#define SST_FILL_DESTINATION2(dst, loc_id, mod_id)		do {	\
-+		SST_FILL_LOCATION_ID(dst, loc_id);			\
-+		SST_FILL_MODULE_ID(dst, mod_id);			\
-+	} while (0)
-+#define SST_FILL_DESTINATION3(dst, cell_idx, path_id, mod_id)	do {	\
-+		SST_FILL_LOCATION_IDS(dst, cell_idx, path_id);		\
-+		SST_FILL_MODULE_ID(dst, mod_id);			\
-+	} while (0)
-+
-+#define SST_FILL_DESTINATION(level, dst, ...)				\
-+	SST_FILL_DESTINATION##level(dst, __VA_ARGS__)
-+#define SST_FILL_DEFAULT_DESTINATION(dst)				\
-+	SST_FILL_DESTINATION(2, dst, SST_DEFAULT_LOCATION_ID, SST_DEFAULT_MODULE_ID)
-+
-+struct sst_destination_id {
-+	union sst_location_id {
-+		struct {
-+			u8 cell_nbr_idx;	/* module index */
-+			u8 path_id;		/* pipe_id */
-+		} __packed	p;		/* part */
-+		u16		f;		/* full */
-+	} __packed location_id;
-+	u16	   module_id;
-+} __packed;
-+struct sst_dsp_header {
-+	struct sst_destination_id dst;
-+	u16 command_id;
-+	u16 length;
++struct gain_cell {
++	struct sst_destination_id dest;
++	s16 cell_gain_left;
++	s16 cell_gain_right;
++	u16 gain_time_constant;
 +} __packed;
 +
-+/*
-+ *
-+ * Common Commands
-+ *
-+ */
-+struct sst_cmd_generic {
++#define NUM_GAIN_CELLS 1
++struct sst_cmd_set_gain_dual {
 +	struct sst_dsp_header header;
++	u16    gain_cell_num;
++	struct gain_cell cell_gains[NUM_GAIN_CELLS];
 +} __packed;
-+struct sst_cmd_set_params {
-+	struct sst_destination_id dst;
-+	u16 command_id;
-+	char params[0];
-+} __packed;
-+#define SST_CONTROL_NAME(xpname, xmname, xinstance, xtype) \
-+	xpname " " xmname " " #xinstance " " xtype
+ struct sst_cmd_set_params {
+ 	struct sst_destination_id dst;
+ 	u16 command_id;
+ 	char params[0];
+ } __packed;
++/**** widget defines *****/
 +
-+#define SST_COMBO_CONTROL_NAME(xpname, xmname, xinstance, xtype, xsubmodule) \
-+	xpname " " xmname " " #xinstance " " xtype " " xsubmodule
-+enum sst_algo_kcontrol_type {
-+	SST_ALGO_PARAMS,
-+	SST_ALGO_BYPASS,
++#include <sound/soc.h>
++#include <sound/tlv.h>
++struct sst_ids {
++	u16 location_id;
++	u16 module_id;
++	u8  task_id;
++	u8  format;
++	u8  reg;
++	const char *parent_wname;
++	struct snd_soc_dapm_widget *parent_w;
++	struct list_head algo_list;
++	struct list_head gain_list;
++	const struct sst_pcm_format *pcm_fmt;
++};
++enum sst_gain_kcontrol_type {
++	SST_GAIN_TLV,
++	SST_GAIN_MUTE,
++	SST_GAIN_RAMP_DURATION,
 +};
 +
-+struct sst_algo_control {
-+	enum sst_algo_kcontrol_type type;
++struct sst_gain_mixer_control {
++	bool stereo;
++	enum sst_gain_kcontrol_type type;
++	struct sst_gain_value *gain_val;
 +	int max;
++	int min;
++	u16 instance_id;
 +	u16 module_id;
 +	u16 pipe_id;
 +	u16 task_id;
-+	u16 cmd_id;
-+	bool bypass;
-+	unsigned char *params;
++	char pname[44];
 +	struct snd_soc_dapm_widget *w;
 +};
 +
-+/* size of the control = size of params + size of length field */
-+#define SST_ALGO_CTL_VALUE(xcount, xtype, xpipe, xmod, xtask, xcmd)			\
-+	(struct sst_algo_control){							\
-+		.max = xcount + sizeof(u16), .type = xtype, .module_id = xmod,			\
-+		.pipe_id = xpipe, .task_id = xtask, .cmd_id = xcmd,			\
-+	}
-+
-+#define SST_ALGO_KCONTROL(xname, xcount, xmod, xpipe,					\
-+			  xtask, xcmd, xtype, xinfo, xget, xput)			\
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,						\
-+	.name =  xname,									\
-+	.info = xinfo, .get = xget, .put = xput,					\
-+	.private_value = (unsigned long)&						\
-+			SST_ALGO_CTL_VALUE(xcount, xtype, xpipe,			\
-+					   xmod, xtask, xcmd),				\
-+}
-+
-+#define SST_ALGO_KCONTROL_BYTES(xpname, xmname, xcount, xmod,				\
-+				xpipe, xinstance, xtask, xcmd)				\
-+	SST_ALGO_KCONTROL(SST_CONTROL_NAME(xpname, xmname, xinstance, "params"),	\
-+			  xcount, xmod, xpipe, xtask, xcmd, SST_ALGO_PARAMS,		\
-+			  sst_algo_bytes_ctl_info,					\
-+			  sst_algo_control_get, sst_algo_control_set)
-+
-+#define SST_ALGO_KCONTROL_BOOL(xpname, xmname, xmod, xpipe, xinstance, xtask)		\
-+	SST_ALGO_KCONTROL(SST_CONTROL_NAME(xpname, xmname, xinstance, "bypass"),	\
-+			  0, xmod, xpipe, xtask, 0, SST_ALGO_BYPASS,			\
-+			  snd_soc_info_bool_ext,					\
-+			  sst_algo_control_get, sst_algo_control_set)
-+
-+#define SST_ALGO_BYPASS_PARAMS(xpname, xmname, xcount, xmod, xpipe,			\
-+				xinstance, xtask, xcmd)					\
-+	SST_ALGO_KCONTROL_BOOL(xpname, xmname, xmod, xpipe, xinstance, xtask),		\
-+	SST_ALGO_KCONTROL_BYTES(xpname, xmname, xcount, xmod, xpipe, xinstance, xtask, xcmd)
-+
-+#define SST_COMBO_ALGO_KCONTROL_BYTES(xpname, xmname, xsubmod, xcount, xmod,		\
-+				      xpipe, xinstance, xtask, xcmd)			\
-+	SST_ALGO_KCONTROL(SST_COMBO_CONTROL_NAME(xpname, xmname, xinstance, "params",	\
-+						 xsubmod),				\
-+			  xcount, xmod, xpipe, xtask, xcmd, SST_ALGO_PARAMS,		\
-+			  sst_algo_bytes_ctl_info,					\
-+			  sst_algo_control_get, sst_algo_control_set)
-+
-+
-+struct sst_enum {
-+	bool tx;
-+	unsigned short reg;
-+	unsigned int max;
-+	const char * const *texts;
-+	struct snd_soc_dapm_widget *w;
++struct sst_gain_value {
++	u16 ramp_duration;
++	s16 l_gain;
++	s16 r_gain;
++	bool mute;
 +};
- #endif
++#define SST_GAIN_VOLUME_DEFAULT		(-1440)
++#define SST_GAIN_RAMP_DURATION_DEFAULT	5 /* timeconstant */
++#define SST_GAIN_MUTE_DEFAULT		true
++
++#define SST_GAIN_KCONTROL_TLV(xname, xhandler_get, xhandler_put, \
++			      xmod, xpipe, xinstance, xtask, tlv_array, xgain_val, \
++			      xmin, xmax, xpname) \
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
++		  SNDRV_CTL_ELEM_ACCESS_READWRITE, \
++	.tlv.p = (tlv_array), \
++	.info = sst_gain_ctl_info,\
++	.get = xhandler_get, .put = xhandler_put, \
++	.private_value = (unsigned long)&(struct sst_gain_mixer_control) \
++	{ .stereo = true, .max = xmax, .min = xmin, .type = SST_GAIN_TLV, \
++	  .module_id = xmod, .pipe_id = xpipe, .task_id = xtask,\
++	  .instance_id = xinstance, .gain_val = xgain_val, .pname = xpname}
++
++#define SST_GAIN_KCONTROL_INT(xname, xhandler_get, xhandler_put, \
++			      xmod, xpipe, xinstance, xtask, xtype, xgain_val, \
++			      xmin, xmax, xpname) \
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.info = sst_gain_ctl_info, \
++	.get = xhandler_get, .put = xhandler_put, \
++	.private_value = (unsigned long)&(struct sst_gain_mixer_control) \
++	{ .stereo = false, .max = xmax, .min = xmin, .type = xtype, \
++	  .module_id = xmod, .pipe_id = xpipe, .task_id = xtask,\
++	  .instance_id = xinstance, .gain_val = xgain_val, .pname =  xpname}
++
++#define SST_GAIN_KCONTROL_BOOL(xname, xhandler_get, xhandler_put,\
++			       xmod, xpipe, xinstance, xtask, xgain_val, xpname) \
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.info = snd_soc_info_bool_ext, \
++	.get = xhandler_get, .put = xhandler_put, \
++	.private_value = (unsigned long)&(struct sst_gain_mixer_control) \
++	{ .stereo = false, .type = SST_GAIN_MUTE, \
++	  .module_id = xmod, .pipe_id = xpipe, .task_id = xtask,\
++	  .instance_id = xinstance, .gain_val = xgain_val, .pname = xpname}
+ #define SST_CONTROL_NAME(xpname, xmname, xinstance, xtype) \
+ 	xpname " " xmname " " #xinstance " " xtype
+ 
+ #define SST_COMBO_CONTROL_NAME(xpname, xmname, xinstance, xtype, xsubmodule) \
+ 	xpname " " xmname " " #xinstance " " xtype " " xsubmodule
++
++/*
++ * 3 Controls for each Gain module
++ * e.g.	- pcm0_in gain 0 volume
++ *	- pcm0_in gain 0 rampduration
++ *	- pcm0_in gain 0 mute
++ */
++#define SST_GAIN_KCONTROLS(xpname, xmname, xmin_gain, xmax_gain, xmin_tc, xmax_tc, \
++			   xhandler_get, xhandler_put, \
++			   xmod, xpipe, xinstance, xtask, tlv_array, xgain_val) \
++	{ SST_GAIN_KCONTROL_INT(SST_CONTROL_NAME(xpname, xmname, xinstance, "rampduration"), \
++		xhandler_get, xhandler_put, xmod, xpipe, xinstance, xtask, SST_GAIN_RAMP_DURATION, \
++		xgain_val, xmin_tc, xmax_tc, xpname) }, \
++	{ SST_GAIN_KCONTROL_BOOL(SST_CONTROL_NAME(xpname, xmname, xinstance, "mute"), \
++		xhandler_get, xhandler_put, xmod, xpipe, xinstance, xtask, \
++		xgain_val, xpname) } ,\
++	{ SST_GAIN_KCONTROL_TLV(SST_CONTROL_NAME(xpname, xmname, xinstance, "volume"), \
++		xhandler_get, xhandler_put, xmod, xpipe, xinstance, xtask, tlv_array, \
++		xgain_val, xmin_gain, xmax_gain, xpname) }
++
++#define SST_GAIN_TC_MIN		5
++#define SST_GAIN_TC_MAX		5000
++#define SST_GAIN_MIN_VALUE	-1440 /* in 0.1 DB units */
++#define SST_GAIN_MAX_VALUE	360
++
+ enum sst_algo_kcontrol_type {
+ 	SST_ALGO_PARAMS,
+ 	SST_ALGO_BYPASS,
 -- 
 1.7.0.4
