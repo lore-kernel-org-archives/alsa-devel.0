@@ -1,15 +1,14 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 18/19] ASoC: Intel: mfld-pcm: add the fe & be
-	dai ops
-Date: Fri, 13 Jun 2014 18:04:07 +0530
-Message-ID: <1402662848-24534-19-git-send-email-vinod.koul@intel.com>
+Subject: [RFC 19/19] ASoC: Intel: mrfld: add the DSP mixers
+Date: Fri, 13 Jun 2014 18:04:08 +0530
+Message-ID: <1402662848-24534-20-git-send-email-vinod.koul@intel.com>
 References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 13A5B265010
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06218261A3D
  for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 14:33:31 +0200 (CEST)
 In-Reply-To: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,103 +24,99 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Now that the DSP toplogy is added, add the FE and BE dai ops for controls DSP as
-well mute/unmute of FE thru ASoC
+The is RFC patch for adding the platform mixer controls. This requires the
+dapm_set-get to be exported. Or changes required after component series is
+merged
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/sst-mfld-platform-pcm.c |   38 +++++++++++++++++++++++++++++++
- 1 files changed, 38 insertions(+), 0 deletions(-)
+ sound/soc/intel/sst-atom-controls.c |   67 +++++++++++++++++++++++++++++++++++
+ 1 files changed, 67 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
-index 346f972..007bfcd 100644
---- a/sound/soc/intel/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/sst-mfld-platform-pcm.c
-@@ -101,6 +101,11 @@ static struct sst_dev_stream_map dpcm_strm_map[] = {
- 	{MERR_DPCM_AUDIO, 0, SNDRV_PCM_STREAM_CAPTURE, PIPE_PCM1_OUT, SST_TASK_ID_MEDIA, 0},
- };
- 
-+static int sst_media_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
-+{
-+
-+	return sst_send_pipe_gains(dai, stream, mute);
-+}
- 
- /* helper functions */
- void sst_set_stream_status(struct sst_runtime_stream *stream,
-@@ -421,12 +426,41 @@ static int sst_media_hw_free(struct snd_pcm_substream *substream,
- 	return snd_pcm_lib_free_pages(substream);
+diff --git a/sound/soc/intel/sst-atom-controls.c b/sound/soc/intel/sst-atom-controls.c
+index 2e733f8..81a24eb 100644
+--- a/sound/soc/intel/sst-atom-controls.c
++++ b/sound/soc/intel/sst-atom-controls.c
+@@ -66,6 +66,47 @@ unsigned int sst_reg_write(struct sst_data *drv, unsigned int reg,
+ 	return val;
  }
  
-+static int sst_enable_ssp(struct snd_pcm_substream *substream,
-+			struct snd_soc_dai *dai)
++int sst_mix_put(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
 +{
-+	if (!dai->active) {
-+		sst_handle_vb_timer(dai->platform, true);
-+		send_ssp_cmd(dai->platform, dai->name, 1);
-+	}
++	struct snd_soc_dapm_widget_list *wlist;// = dapm_kcontrol_get_wlist(kcontrol);
++	struct snd_soc_dapm_widget *widget = wlist->widgets[0];
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct sst_data *drv = snd_soc_platform_get_drvdata(widget->platform);
++	unsigned int mask = (1 << fls(mc->max)) - 1;
++	unsigned int val;
++	int connect;
++	struct snd_soc_dapm_update update;
++
++	pr_debug("%s called set %#lx for %s\n", __func__,
++			ucontrol->value.integer.value[0], widget->name);
++	val = sst_reg_write(drv, mc->reg, mc->shift, mc->max, ucontrol->value.integer.value[0]);
++	connect = !!val;
++
++	//dapm_kcontrol_set_value(kcontrol, val);
++	update.kcontrol = kcontrol;
++	update.reg = mc->reg;
++	update.mask = mask;
++	update.val = val;
++
++	snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol, connect, &update);
 +	return 0;
 +}
 +
-+static void sst_disable_ssp(struct snd_pcm_substream *substream,
-+			struct snd_soc_dai *dai)
++int sst_mix_get(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
 +{
-+	if (!dai->active) {
-+		send_ssp_cmd(dai->platform, dai->name, 0);
-+		sst_handle_vb_timer(dai->platform, false);
-+	}
++	struct snd_soc_dapm_widget_list *wlist;// = dapm_kcontrol_get_wlist(kcontrol);
++	struct snd_soc_dapm_widget *w = wlist->widgets[0];
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct sst_data *drv = snd_soc_platform_get_drvdata(w->platform);
++
++	ucontrol->value.integer.value[0] = !!sst_reg_read(drv, mc->reg, mc->shift, mc->max);
++	return 0;
 +}
 +
- static struct snd_soc_dai_ops sst_media_dai_ops = {
- 	.startup = sst_media_open,
- 	.shutdown = sst_media_close,
- 	.prepare = sst_media_prepare,
- 	.hw_params = sst_media_hw_params,
- 	.hw_free = sst_media_hw_free,
-+	.mute_stream = sst_media_digital_mute,
-+};
+ static inline void sst_fill_byte_control(char *param,
+ 					 u8 ipc_msg, u8 block,
+ 					 u8 task_id, u8 pipe_id,
+@@ -937,6 +978,32 @@ static const struct snd_soc_dapm_widget sst_dapm_widgets[] = {
+ 	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop2_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2, SST_FMT_STEREO, sst_set_media_loop),
+ 
+ 	/* Media Mixers */
++	SST_SWM_MIXER("media0_out mix 0", SST_MIX_MEDIA0, SST_TASK_MMX, SST_SWM_OUT_MEDIA0,
++		      sst_mix_media0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("media1_out mix 0", SST_MIX_MEDIA1, SST_TASK_MMX, SST_SWM_OUT_MEDIA1,
++		      sst_mix_media1_controls, sst_swm_mixer_event),
 +
-+static struct snd_soc_dai_ops sst_compr_dai_ops = {
-+	.mute_stream = sst_media_digital_mute,
-+};
++	/* SBA PCM mixers */
++	SST_SWM_MIXER("pcm0_out mix 0", SST_MIX_PCM0, SST_TASK_SBA, SST_SWM_OUT_PCM0,
++		      sst_mix_pcm0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("pcm1_out mix 0", SST_MIX_PCM1, SST_TASK_SBA, SST_SWM_OUT_PCM1,
++		      sst_mix_pcm1_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("pcm2_out mix 0", SST_MIX_PCM2, SST_TASK_SBA, SST_SWM_OUT_PCM2,
++		      sst_mix_pcm2_controls, sst_swm_mixer_event),
 +
-+static struct snd_soc_dai_ops sst_be_dai_ops = {
-+	.startup = sst_enable_ssp,
-+	.shutdown = sst_disable_ssp,
++	/* SBA Loop mixers */
++	SST_SWM_MIXER("sprot_loop_out mix 0", SST_MIX_LOOP0, SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP,
++		      sst_mix_sprot_l0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("media_loop1_out mix 0", SST_MIX_LOOP1, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1,
++		      sst_mix_media_l1_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("media_loop2_out mix 0", SST_MIX_LOOP2, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2,
++		      sst_mix_media_l2_controls, sst_swm_mixer_event),
++
++	/* SBA Backend mixers */
++	SST_SWM_MIXER("codec_out0 mix 0", SST_MIX_CODEC0, SST_TASK_SBA, SST_SWM_OUT_CODEC0,
++		      sst_mix_codec0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("codec_out1 mix 0", SST_MIX_CODEC1, SST_TASK_SBA, SST_SWM_OUT_CODEC1,
++		      sst_mix_codec1_controls, sst_swm_mixer_event),
  };
  
- static struct snd_soc_dai_driver sst_platform_dai[] = {
-@@ -451,6 +485,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- {
- 	.name = "compress-cpu-dai",
- 	.compress_dai = 1,
-+	.ops = &sst_compr_dai_ops,
- 	.playback = {
- 		.stream_name = "Compress Playback",
- 		.channels_min = SST_STEREO,
-@@ -462,6 +497,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- /*BE CPU  Dais */
- {
- 	.name = "ssp0-port",
-+	.ops = &sst_be_dai_ops,
- 	.playback = {
- 		.stream_name = "ssp0 Tx",
- 		.channels_min = SST_STEREO,
-@@ -479,6 +515,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- },
- {
- 	.name = "ssp1-port",
-+	.ops = &sst_be_dai_ops,
- 	.playback = {
- 		.stream_name = "ssp1 Tx",
- 		.channels_min = SST_STEREO,
-@@ -496,6 +533,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- },
- {
- 	.name = "ssp2-port",
-+	.ops = &sst_be_dai_ops,
- 	.playback = {
- 		.stream_name = "ssp2 Tx",
- 		.channels_min = SST_STEREO,
+ static const struct snd_soc_dapm_route intercon[] = {
 -- 
 1.7.0.4
