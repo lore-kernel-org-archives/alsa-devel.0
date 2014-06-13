@@ -1,48 +1,50 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [RFC][PATCH v1] ASoC: fsl_ssi: Add DAI master mode
- support for SSI on i.MX series
-Date: Fri, 13 Jun 2014 11:50:50 +0800
-Message-ID: <20140613035049.GB15609@MrMyself>
-References: <1386845085-21682-1-git-send-email-Guangyu.Chen@freescale.com>
- <CAOZdJXWsxMq19-wNTKv6d45K4d79ASpMbSbofM+DMoTOKW2JJA@mail.gmail.com>
- <20140613032119.GA15609@MrMyself>
- <CAOZdJXUUz2bufcYmt9U-x0bic6XU68VHLOiPPsHoEdSZmnisZw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0240.outbound.protection.outlook.com [207.46.163.240])
- by alsa0.perex.cz (Postfix) with ESMTP id 765B72610A7
- for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 06:07:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAOZdJXUUz2bufcYmt9U-x0bic6XU68VHLOiPPsHoEdSZmnisZw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Liam Girdwood <lgirdwood@gmail.com>
+From: Shahina Shaik <shahina.s@samsung.com>
+Subject: [PATCH 1/2] SOUND: TLV320AIC32x4: Fixed Coding style Issues
+Date: Fri, 13 Jun 2014 11:18:47 +0530
+Message-ID: <1402638528-5787-1-git-send-email-shahina.s@samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, broonie@kernel.org, lgirdwood@gmail.com
+Cc: sharab.shaik@gmail.com, shahina.s@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 12, 2014 at 10:44:48PM -0500, Timur Tabi wrote:
-> On Thu, Jun 12, 2014 at 10:21 PM, Nicolin Chen
-> <Guangyu.Chen@freescale.com> wrote:
-> 
-> > It compiles well with my ARM cross compiler. I guess it might be related
-> > to the compiler's version? But we should fix it anyway. Would you mind if
-> > I submit a patch? Or you do it directly?
-> 
-> I just submitted a patch, but I can't test the code since I don't have
-> any boards that configure the SSI into master mode, so this function
-> is never called.
+From: Shahina Shaik <sharab.shaik@gmail.com>
 
-I just tested it with i.MX platform. It still works.
+Fixed a brace coding style issue in the tlv320aic32x4.c
 
-Thank you,
-Nicolin
+Signed-off-by: Shahina Shaik <sharab.shaik@gmail.com>
+---
+ sound/soc/codecs/tlv320aic32x4.c |    9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 1d9b117..1e50f15 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -626,21 +626,18 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
+ 		snd_soc_write(codec, AIC32X4_MICBIAS, AIC32X4_MICBIAS_LDOIN |
+ 						      AIC32X4_MICBIAS_2075V);
+ 	}
+-	if (aic32x4->power_cfg & AIC32X4_PWR_AVDD_DVDD_WEAK_DISABLE) {
++	if (aic32x4->power_cfg & AIC32X4_PWR_AVDD_DVDD_WEAK_DISABLE)
+ 		snd_soc_write(codec, AIC32X4_PWRCFG, AIC32X4_AVDDWEAKDISABLE);
+-	}
+ 
+ 	tmp_reg = (aic32x4->power_cfg & AIC32X4_PWR_AIC32X4_LDO_ENABLE) ?
+ 			AIC32X4_LDOCTLEN : 0;
+ 	snd_soc_write(codec, AIC32X4_LDOCTL, tmp_reg);
+ 
+ 	tmp_reg = snd_soc_read(codec, AIC32X4_CMMODE);
+-	if (aic32x4->power_cfg & AIC32X4_PWR_CMMODE_LDOIN_RANGE_18_36) {
++	if (aic32x4->power_cfg & AIC32X4_PWR_CMMODE_LDOIN_RANGE_18_36)
+ 		tmp_reg |= AIC32X4_LDOIN_18_36;
+-	}
+-	if (aic32x4->power_cfg & AIC32X4_PWR_CMMODE_HP_LDOIN_POWERED) {
++	if (aic32x4->power_cfg & AIC32X4_PWR_CMMODE_HP_LDOIN_POWERED)
+ 		tmp_reg |= AIC32X4_LDOIN2HP;
+-	}
+ 	snd_soc_write(codec, AIC32X4_CMMODE, tmp_reg);
+ 
+ 	/* Mic PGA routing */
+-- 
+1.7.9.5
