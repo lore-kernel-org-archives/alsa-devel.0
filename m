@@ -1,72 +1,101 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda - Add quirk for external mic on Lifebook U904
-Date: Fri, 13 Jun 2014 11:15:44 +0200
-Message-ID: <1402650944-26327-1-git-send-email-david.henningsson@canonical.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [RFC][PATCH v1] ASoC: fsl_ssi: Add DAI master mode
+ support for SSI on i.MX series
+Date: Fri, 13 Jun 2014 16:56:03 +0800
+Message-ID: <20140613085602.GA16026@MrMyself>
+References: <1386845085-21682-1-git-send-email-Guangyu.Chen@freescale.com>
+ <CAOZdJXWsxMq19-wNTKv6d45K4d79ASpMbSbofM+DMoTOKW2JJA@mail.gmail.com>
+ <s5hioo5gp66.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org, 1328587@bugs.launchpad.net
-Cc: David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0144.outbound.protection.outlook.com [207.46.163.144])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BAE72619D7
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 11:15:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hioo5gp66.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-According to the bug reporter (=D0=94=D0=B0=D0=BD=D0=B8=D0=BB=D0=BE =D0=
-=A8=D0=B5=D0=B3=D0=B0=D0=BD), the external mic
-starts to work and has proper jack detection if only pin 0x19
-is marked properly as an external headset mic.
+On Fri, Jun 13, 2014 at 11:00:01AM +0200, Takashi Iwai wrote:
+> At Thu, 12 Jun 2014 22:24:55 -0500,
+> Timur Tabi wrote:
+> > 
+> > On Thu, Dec 12, 2013 at 4:44 AM, Nicolin Chen
+> > <Guangyu.Chen@freescale.com> wrote:
+> > >
+> > > +static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+> > > +                                 int clk_id, unsigned int freq, int dir)
+> > > +{
+> > > +       struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+> > > +       struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+> > > +       int synchronous = ssi_private->cpu_dai_drv.symmetric_rates, ret;
+> > > +       u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
+> > > +       unsigned long flags, clkrate, baudrate, tmprate;
+> > > +       u64 sub, savesub = 100000;
+> > > +
+> > > +       /* Don't apply it to any non-baudclk circumstance */
+> > > +       if (IS_ERR(ssi_private->baudclk))
+> > > +               return -EINVAL;
+> > > +
+> > > +       /* It should be already enough to divide clock by setting pm alone */
+> > > +       psr = 0;
+> > > +       div2 = 0;
+> > > +
+> > > +       factor = (div2 + 1) * (7 * psr + 1) * 2;
+> > > +
+> > > +       for (i = 0; i < 255; i++) {
+> > > +               /* The bclk rate must be smaller than 1/5 sysclk rate */
+> > > +               if (factor * (i + 1) < 5)
+> > > +                       continue;
+> > > +
+> > > +               tmprate = freq * factor * (i + 2);
+> > > +               clkrate = clk_round_rate(ssi_private->baudclk, tmprate);
+> > > +
+> > > +               do_div(clkrate, factor);
+> > 
+> > This do_div() call causes this warning on PowerPC:
+> > 
+> >   CC      sound/soc/fsl/fsl_ssi.o
+> > sound/soc/fsl/fsl_ssi.c: In function 'fsl_ssi_set_bclk':
+> > sound/soc/fsl/fsl_ssi.c:593:3: warning: comparison of distinct pointer
+> > types lacks a cast
+> > sound/soc/fsl/fsl_ssi.c:593:3: warning: right shift count >= width of type
+> > sound/soc/fsl/fsl_ssi.c:593:3: warning: passing argument 1 of
+> > '__div64_32' from incompatible pointer type
+> > include/asm-generic/div64.h:35:17: note: expected 'uint64_t *' but
+> > argument is of type 'long unsigned int *'
+> > 
+> > The comments in do_div() say that clkrate should be 64-bits.  Changing
+> > clkrate to a u64 does fix this problem, but I'm wondering if anyone
+> > else has seen this.  This code has been around for months.
+> 
+> Using do_div() for unsigned long makes no sense.
+> And, you *must* pass uint64_t there as an argument, since it's no
+> inline function and there is no implicit conversion in the generic
+> code.
+> 
+> In short, use the normal division operator instead:
+> 	clkrate /= factor;
 
-AlsaInfo at https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1=
-328587/+attachment/4128991/+files/AlsaInfo.txt
+Yes. I forgot why I used do_div() for clkrate at the first place
+but it's definitely a mistake here.
 
-Cc: stable@vger.kernel.org
-BugLink: https://bugs.launchpad.net/bugs/1328587
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Sorry,
+Nicolin
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realte=
-k.c
-index 9c095fa..89af62f 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4246,6 +4246,7 @@ enum {
- 	ALC269_FIXUP_HEADSET_MIC,
- 	ALC269_FIXUP_QUANTA_MUTE,
- 	ALC269_FIXUP_LIFEBOOK,
-+	ALC269_FIXUP_LIFEBOOK_EXTMIC,
- 	ALC269_FIXUP_AMIC,
- 	ALC269_FIXUP_DMIC,
- 	ALC269VB_FIXUP_AMIC,
-@@ -4383,6 +4384,13 @@ static const struct hda_fixup alc269_fixups[] =3D=
- {
- 		.chained =3D true,
- 		.chain_id =3D ALC269_FIXUP_QUANTA_MUTE
- 	},
-+	[ALC269_FIXUP_LIFEBOOK_EXTMIC] =3D {
-+		.type =3D HDA_FIXUP_PINS,
-+		.v.pins =3D (const struct hda_pintbl[]) {
-+			{ 0x19, 0x01a1903c }, /* headset mic, with jack detect */
-+			{ }
-+		},
-+	},
- 	[ALC269_FIXUP_AMIC] =3D {
- 		.type =3D HDA_FIXUP_PINS,
- 		.v.pins =3D (const struct hda_pintbl[]) {
-@@ -4844,6 +4852,7 @@ static const struct snd_pci_quirk alc269_fixup_tb=
-l[] =3D {
- 	SND_PCI_QUIRK(0x104d, 0x9099, "Sony VAIO S13", ALC275_FIXUP_SONY_DISA=
-BLE_AAMIX),
- 	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
- 	SND_PCI_QUIRK(0x10cf, 0x1475, "Lifebook", ALC269_FIXUP_LIFEBOOK),
-+	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_=
-EXTMIC),
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_=
-IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x215e, "Thinkpad L512", ALC269_FIXUP_SKU_IGNOR=
-E),
- 	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IG=
-NORE),
---=20
-1.9.1
+> 
+> 
+> Takashi
