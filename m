@@ -1,68 +1,72 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC PATCH] alsactl: Do not run udev rule before
-	datadir is mounted
-Date: Fri, 13 Jun 2014 11:11:28 +0200
-Message-ID: <539AC040.6040308@perex.cz>
-References: <1402647348-25604-1-git-send-email-david.henningsson@canonical.com>
- <539AB5C7.6020501@perex.cz> <539ABEF0.7020508@canonical.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Add quirk for external mic on Lifebook U904
+Date: Fri, 13 Jun 2014 11:15:44 +0200
+Message-ID: <1402650944-26327-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 647862618F2
- for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 11:11:29 +0200 (CEST)
-In-Reply-To: <539ABEF0.7020508@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1289730@bugs.launchpad.net
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org, 1328587@bugs.launchpad.net
+Cc: David Henningsson <david.henningsson@canonical.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 13.6.2014 11:05, David Henningsson wrote:
-> 
-> 
-> On 2014-06-13 10:26, Jaroslav Kysela wrote:
->> Date 13.6.2014 10:15, David Henningsson wrote:
->>> The 90-alsa-restore.rules udev rule is primarily meant to handle hotplugging,
->>> but sometimes it is also run before /usr is mounted,
->>> and alsactl restore depends on /usr/share/alsa being present.
->>>
->>> If /usr/share/alsa is not present, we're so early in the boot
->>> process that alsa-restore.service (or upstart equivalent) will
->>> run later on.
->>>
->>> BugLink: https://bugs.launchpad.net/bugs/1289730
->>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->>> ---
->>>
->>> I'm not really sure of all quirks in the boot process, and I haven't tested the
->>> patch either, hence the RFC above. Do you think it makes sense?
->>
->> Yes, I think that's ok. Takashi?
->>
->>> Should we also add @sbindir@ to the things to test for?
->>
->> It shouldn't harm anything. Could you prepare a new patch?
-> 
-> Sure, please find it attached. I was also considering adding something 
-> under /var as well, but I didn't do that, because I think it will fall 
-> back to an "alsactl init" in that case (right?), so it still makes some 
-> sense to run alsactl without /var.
+According to the bug reporter (=D0=94=D0=B0=D0=BD=D0=B8=D0=BB=D0=BE =D0=
+=A8=D0=B5=D0=B3=D0=B0=D0=BD), the external mic
+starts to work and has proper jack detection if only pin 0x19
+is marked properly as an external headset mic.
 
-Yes, /var contents is not mandatory. Thanks, I applied it to the
-alsa-utils repository.
+AlsaInfo at https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/1=
+328587/+attachment/4128991/+files/AlsaInfo.txt
 
-					Jaroslav
+Cc: stable@vger.kernel.org
+BugLink: https://bugs.launchpad.net/bugs/1328587
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realte=
+k.c
+index 9c095fa..89af62f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4246,6 +4246,7 @@ enum {
+ 	ALC269_FIXUP_HEADSET_MIC,
+ 	ALC269_FIXUP_QUANTA_MUTE,
+ 	ALC269_FIXUP_LIFEBOOK,
++	ALC269_FIXUP_LIFEBOOK_EXTMIC,
+ 	ALC269_FIXUP_AMIC,
+ 	ALC269_FIXUP_DMIC,
+ 	ALC269VB_FIXUP_AMIC,
+@@ -4383,6 +4384,13 @@ static const struct hda_fixup alc269_fixups[] =3D=
+ {
+ 		.chained =3D true,
+ 		.chain_id =3D ALC269_FIXUP_QUANTA_MUTE
+ 	},
++	[ALC269_FIXUP_LIFEBOOK_EXTMIC] =3D {
++		.type =3D HDA_FIXUP_PINS,
++		.v.pins =3D (const struct hda_pintbl[]) {
++			{ 0x19, 0x01a1903c }, /* headset mic, with jack detect */
++			{ }
++		},
++	},
+ 	[ALC269_FIXUP_AMIC] =3D {
+ 		.type =3D HDA_FIXUP_PINS,
+ 		.v.pins =3D (const struct hda_pintbl[]) {
+@@ -4844,6 +4852,7 @@ static const struct snd_pci_quirk alc269_fixup_tb=
+l[] =3D {
+ 	SND_PCI_QUIRK(0x104d, 0x9099, "Sony VAIO S13", ALC275_FIXUP_SONY_DISA=
+BLE_AAMIX),
+ 	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
+ 	SND_PCI_QUIRK(0x10cf, 0x1475, "Lifebook", ALC269_FIXUP_LIFEBOOK),
++	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_=
+EXTMIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_=
+IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x215e, "Thinkpad L512", ALC269_FIXUP_SKU_IGNOR=
+E),
+ 	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IG=
+NORE),
+--=20
+1.9.1
