@@ -1,14 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 00/19]: add mrfld DSP support
-Date: Fri, 13 Jun 2014 18:03:49 +0530
-Message-ID: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 03/19] ASoC: Intel: mfld-pcm rename period
+	callback arg
+Date: Fri, 13 Jun 2014 18:03:52 +0530
+Message-ID: <1402662848-24534-4-git-send-email-vinod.koul@intel.com>
+References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 089AB261629
- for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 14:32:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0129D261737
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 14:32:51 +0200 (CEST)
+In-Reply-To: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,45 +25,72 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Here is the split patch series for adding DSP support for Intel's merrfield
-platform. 
+The argument was called mad_substream which is no longer apt as older driver
+is not used anymore so rename as arg
 
-The last patch si mxer update patch which we have been discussing over the list.
-This is only for discussion and sake of complteness. For that patch we need the
-dapm_kcontrol_get/set series to do merged OR patch to be reworked after
-compenent series
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/sst-mfld-platform-pcm.c |   10 +++++-----
+ sound/soc/intel/sst-mfld-platform.h     |    4 ++--
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-Vinod Koul (19):
-  ASoC: Intel: add COMPILE_TEST to mfld machine
-  ASoC: Intel: mfld_pcm: move stream handling to dai_ops
-  ASoC: Intel: mfld-pcm rename period callback arg
-  ASoc: Intel: mfld-pcm: report pcm delay
-  ASoC: Intel: add the mrfld fw IPC definations
-  ASoC: Intel: mfld-pcm: modularize stream allocation code
-  ASoC: Intel: add mrfld pipelines
-  ASoC: Intel: use common stream allocation method for compressed stream
-  ASoC: Intel: mfld-pcm: add FE and BE ops
-  ASoC: Intel: add mrfld DSP registers
-  ASoC: intel: mfld-pcm: don't call trigger ops to DSP for internal streams
-  ASoC: Intel: add generic parameter set interface
-  ASoC: Intel: mrfld: add bytes control for modules
-  ASoC: Intel: mrfld: add the gain controls
-  ASoC: Intel: mfld-pcm: add control for powering up/down dsp
-  ASoC: Intel: mrfld: add DSP core controls
-  ASoC: Intel; mrfld: add the DSP DAPM widgets
-  ASoC: Intel: mfld-pcm: add the fe & be dai ops
-  ASoC: Intel: mrfld: add the DSP mixers
-
- arch/x86/include/asm/platform_sst_audio.h    |   78 ++
- sound/soc/intel/Kconfig                      |    2 +-
- sound/soc/intel/Makefile                     |    3 +-
- sound/soc/intel/sst-atom-controls.c          | 1386 ++++++++++++++++++++++++++
- sound/soc/intel/sst-atom-controls.h          |  906 +++++++++++++++++
- sound/soc/intel/sst-mfld-dsp.h               |  414 ++++++++-
- sound/soc/intel/sst-mfld-platform-compress.c |   11 +-
- sound/soc/intel/sst-mfld-platform-pcm.c      |  492 +++++++---
- sound/soc/intel/sst-mfld-platform.h          |   47 +-
- 9 files changed, 3199 insertions(+), 140 deletions(-)
- create mode 100644 arch/x86/include/asm/platform_sst_audio.h
- create mode 100644 sound/soc/intel/sst-atom-controls.c
- create mode 100644 sound/soc/intel/sst-atom-controls.h
+diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
+index 0d46005..4528946 100644
+--- a/sound/soc/intel/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/sst-mfld-platform-pcm.c
+@@ -192,9 +192,9 @@ static int sst_platform_alloc_stream(struct snd_pcm_substream *substream)
+ 	return ret_val;
+ }
+ 
+-static void sst_period_elapsed(void *mad_substream)
++static void sst_period_elapsed(void *arg)
+ {
+-	struct snd_pcm_substream *substream = mad_substream;
++	struct snd_pcm_substream *substream = arg;
+ 	struct sst_runtime_stream *stream;
+ 	int status;
+ 
+@@ -218,7 +218,7 @@ static int sst_platform_init_stream(struct snd_pcm_substream *substream)
+ 	pr_debug("setting buffer ptr param\n");
+ 	sst_set_stream_status(stream, SST_PLATFORM_INIT);
+ 	stream->stream_info.period_elapsed = sst_period_elapsed;
+-	stream->stream_info.mad_substream = substream;
++	stream->stream_info.arg = substream;
+ 	stream->stream_info.buffer_ptr = 0;
+ 	stream->stream_info.sfreq = substream->runtime->rate;
+ 	ret_val = stream->ops->device_control(
+@@ -255,7 +255,7 @@ static int sst_media_open(struct snd_pcm_substream *substream,
+ 
+ 	stream->stream_info.str_id = 0;
+ 
+-	stream->stream_info.mad_substream = substream;
++	stream->stream_info.arg = substream;
+ 	/* allocate memory for SST API set */
+ 	runtime->private_data = stream;
+ 
+@@ -363,7 +363,7 @@ static int sst_platform_pcm_trigger(struct snd_pcm_substream *substream,
+ 		pr_debug("sst: Trigger Start\n");
+ 		str_cmd = SST_SND_START;
+ 		status = SST_PLATFORM_RUNNING;
+-		stream->stream_info.mad_substream = substream;
++		stream->stream_info.arg = substream;
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		pr_debug("sst: in stop\n");
+diff --git a/sound/soc/intel/sst-mfld-platform.h b/sound/soc/intel/sst-mfld-platform.h
+index 6c5e7dc..6d929c7 100644
+--- a/sound/soc/intel/sst-mfld-platform.h
++++ b/sound/soc/intel/sst-mfld-platform.h
+@@ -39,8 +39,8 @@ extern struct sst_device *sst;
+ 
+ struct pcm_stream_info {
+ 	int str_id;
+-	void *mad_substream;
+-	void (*period_elapsed) (void *mad_substream);
++	void *arg;
++	void (*period_elapsed) (void *arg);
+ 	unsigned long long buffer_ptr;
+ 	int sfreq;
+ };
+-- 
+1.7.0.4
