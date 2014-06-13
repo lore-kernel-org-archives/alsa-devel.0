@@ -1,21 +1,19 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [RFC][PATCH v1] ASoC: fsl_ssi: Add DAI master mode
- support for SSI on i.MX series
-Date: Fri, 13 Jun 2014 16:56:03 +0800
-Message-ID: <20140613085602.GA16026@MrMyself>
-References: <1386845085-21682-1-git-send-email-Guangyu.Chen@freescale.com>
- <CAOZdJXWsxMq19-wNTKv6d45K4d79ASpMbSbofM+DMoTOKW2JJA@mail.gmail.com>
- <s5hioo5gp66.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 2/4] pcm: rate: add rewindable and
+ forwardable callbacks
+Date: Fri, 13 Jun 2014 11:19:49 +0200
+Message-ID: <539AC235.3050400@perex.cz>
+References: <1402569264-2789-1-git-send-email-patrakov@gmail.com>
+ <1402569264-2789-3-git-send-email-patrakov@gmail.com>
+ <539AA4B0.2050005@perex.cz> <539AB9D2.6080504@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1lp0144.outbound.protection.outlook.com [207.46.163.144])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BAE72619D7
- for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 11:15:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hioo5gp66.wl%tiwai@suse.de>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58DFC2619D7
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 11:19:50 +0200 (CEST)
+In-Reply-To: <539AB9D2.6080504@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,77 +23,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 13, 2014 at 11:00:01AM +0200, Takashi Iwai wrote:
-> At Thu, 12 Jun 2014 22:24:55 -0500,
-> Timur Tabi wrote:
-> > 
-> > On Thu, Dec 12, 2013 at 4:44 AM, Nicolin Chen
-> > <Guangyu.Chen@freescale.com> wrote:
-> > >
-> > > +static int fsl_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
-> > > +                                 int clk_id, unsigned int freq, int dir)
-> > > +{
-> > > +       struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
-> > > +       struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
-> > > +       int synchronous = ssi_private->cpu_dai_drv.symmetric_rates, ret;
-> > > +       u32 pm = 999, div2, psr, stccr, mask, afreq, factor, i;
-> > > +       unsigned long flags, clkrate, baudrate, tmprate;
-> > > +       u64 sub, savesub = 100000;
-> > > +
-> > > +       /* Don't apply it to any non-baudclk circumstance */
-> > > +       if (IS_ERR(ssi_private->baudclk))
-> > > +               return -EINVAL;
-> > > +
-> > > +       /* It should be already enough to divide clock by setting pm alone */
-> > > +       psr = 0;
-> > > +       div2 = 0;
-> > > +
-> > > +       factor = (div2 + 1) * (7 * psr + 1) * 2;
-> > > +
-> > > +       for (i = 0; i < 255; i++) {
-> > > +               /* The bclk rate must be smaller than 1/5 sysclk rate */
-> > > +               if (factor * (i + 1) < 5)
-> > > +                       continue;
-> > > +
-> > > +               tmprate = freq * factor * (i + 2);
-> > > +               clkrate = clk_round_rate(ssi_private->baudclk, tmprate);
-> > > +
-> > > +               do_div(clkrate, factor);
-> > 
-> > This do_div() call causes this warning on PowerPC:
-> > 
-> >   CC      sound/soc/fsl/fsl_ssi.o
-> > sound/soc/fsl/fsl_ssi.c: In function 'fsl_ssi_set_bclk':
-> > sound/soc/fsl/fsl_ssi.c:593:3: warning: comparison of distinct pointer
-> > types lacks a cast
-> > sound/soc/fsl/fsl_ssi.c:593:3: warning: right shift count >= width of type
-> > sound/soc/fsl/fsl_ssi.c:593:3: warning: passing argument 1 of
-> > '__div64_32' from incompatible pointer type
-> > include/asm-generic/div64.h:35:17: note: expected 'uint64_t *' but
-> > argument is of type 'long unsigned int *'
-> > 
-> > The comments in do_div() say that clkrate should be 64-bits.  Changing
-> > clkrate to a u64 does fix this problem, but I'm wondering if anyone
-> > else has seen this.  This code has been around for months.
-> 
-> Using do_div() for unsigned long makes no sense.
-> And, you *must* pass uint64_t there as an argument, since it's no
-> inline function and there is no implicit conversion in the generic
-> code.
-> 
-> In short, use the normal division operator instead:
-> 	clkrate /= factor;
-
-Yes. I forgot why I used do_div() for clkrate at the first place
-but it's definitely a mistake here.
-
-Sorry,
-Nicolin
-
-> 
-> 
-> Takashi
+RGF0ZSAxMy42LjIwMTQgMTA6NDQsIEFsZXhhbmRlciBFLiBQYXRyYWtvdiB3cm90ZToKPiAxMy4w
+Ni4yMDE0IDEzOjEzLCBKYXJvc2xhdiBLeXNlbGEg0L/QuNGI0LXRgjoKPj4gRGF0ZSAxMi42LjIw
+MTQgMTI6MzQsIEFsZXhhbmRlciBFLiBQYXRyYWtvdiB3cm90ZToKPj4+IFRoaXMgY29tbWl0IGRv
+ZXMgbm90IGZpeCBub25zZW5zZSB2YWx1ZXMgcmV0dXJuZWQgYnkgdGhlIHJld2luZCBhbmQKPj4+
+IGZvcndhcmQgY2FsbGJhY2tzLiBFLmcuLCB3aXRoIHBlcmlvZF9zaXplID0gMTAyNCBhbmQgYnVm
+ZmVyX3NpemUgPSA0MDk2LAo+Pj4gYW4gYXR0ZW1wdCB0byByZXdpbmQgMTAyNCBzYW1wbGVzIGZy
+b20gdGhlIG5lYXJseS1mdWxsIGJ1ZmZlciByZXR1cm5zCj4+PiA0MDkwLgo+Pj4KPj4+IER1ZSB0
+byB0aGVzZSBub25zZW5zZSB2YWx1ZXMsIHRoZSBjdXJyZW50IHJhdGUgcGx1Z2luIHNob3VsZCBi
+ZSB0cmVhdGVkCj4+PiBhcyBub24tcmV3aW5kYWJsZS4gVGhhdCdzIHdoeSB0aGUgbmV3IGNhbGxi
+YWNrcyByZXR1cm4gMC4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgRS4gUGF0cmFr
+b3YgPHBhdHJha292QGdtYWlsLmNvbT4KPj4gSSBkb24ndCBhZ3JlZS4gVGhlIHNuZF9wY21fcmF0
+ZV9tb3ZlX2FwcGxwdHIoKSBzaG91bGQgYmUgZml4ZWQgaW5zdGVhZAo+PiB0aGlzIGJsb2NraW5n
+IGF0dGVtcHQuIERvIHlvdSBoYXZlIGFueSBzaW1wbGUgdXNlIGNhc2U/Cj4gCj4gSSBkb24ndCB1
+bmRlcnN0YW5kIHdoYXQgeW91IG1lYW4gYnkgYSAic2ltcGxlIHVzZSBjYXNlIi4KCkkgbWVhbnQg
+YSB0ZXN0IGNhc2UgKGEgc2ltcGxlIHRlc3QgcHJvZ3JhbSkuCgo+IEFuZCBhbnl3YXksIGR1ZSB0
+byByZWFzb25zIGV4cHJlc3NlZCBpbiAKPiBodHRwOi8vcGVybWFsaW5rLmdtYW5lLm9yZy9nbWFu
+ZS5saW51eC5hbHNhLmRldmVsLzEyMjE3OSAsIEkgaW5zaXN0IHRoYXQgCj4gMCBpcyB0aGUgb25s
+eSBjb3JyZWN0IHJldHVybiB2YWx1ZSBldmVuIGlmIHNvbWVvbmUgZml4ZXMgCj4gc25kX3BjbV9y
+YXRlX21vdmVfYXBwbHB0cigpLCB3aGljaCBpcyBub3QgdHJpdmlhbC4gQWxzbywgMCBpcyBub3Qg
+YSAKPiByZWdyZXNzaW9uIC0gaXQgd2FzICJjcmFzaCIgcHJldmlvdXNseSwgYW5kIEkgaGF2ZSBu
+b3QgY2hhbmdlZCB0aGUgCj4gY3VycmVudGx5LWJyb2tlbiBzbmRfcGNtX3JhdGVfbW92ZV9hcHBs
+cHRyIGxvZ2ljIChqdXN0IGZvciB0aGUgCj4gaW1wb3NzaWJsZSBjYXNlIGlmIHNvbWVvbmUgZG9l
+cyByZWx5IG9uIGl0KS4KPiAKPiBUaGUgZnVsbCBmaXgsIGFmdGVyIHdoaWNoIEkgZG8gYWdyZWUg
+dG8gY2hhbmdlIDAgdG8gc29tZXRoaW5nIGVsc2UsIAo+IHdvdWxkIGludm9sdmU6Cj4gCj4gMS4g
+V3JpdGluZyBhIHJld2luZGFibGUgcmVzYW1wbGVyIGxpYnJhcnksIG9yIGEgcmVzYW1wbGVyIGxp
+YnJhcnkgdGhhdCAKPiBvZmZlcnMgYSBwdWJsaWMgQVBJIHRvIHNhdmUgaXRzIHN0YXRlLgo+IDIu
+IERyb3BwaW5nIGFsbCBvdGhlciByZXNhbXBsZXIgaW1wbGVtZW50YXRpb25zLgo+IDMuIEV4dGVu
+ZGluZyB0aGUgc25kX3BjbV9yYXRlX29wc190IHN0cnVjdHVyZSBpbiBvcmRlciB0byBmb3J3YXJk
+IGVpdGhlciAKPiByZXdpbmRzIG9yIHNhdmUtcmVxdWVzdHMgdG8gdGhlIHJlc2FtcGxlci4KPiA0
+LiBVc2luZyB0aGVzZSBuZXcgY2FsbGJhY2tzLgo+IAo+IFRoaXMgdHJhbnNsYXRlcyB0byBzZXZl
+cmFsIG1vbnRocywgb3IgbWF5YmUgYSB5ZWFyIG9mIHdvcmsgYXQgdGhlIAo+IGN1cnJlbnQgcmF0
+ZS4gSXQgaGFzIHRvIGJlIGRvbmUsIGFuZCBJIGRvIHBsYW4gdG8gZG8gdGhpcy4gQnV0IGl0IHNo
+b3VsZCAKPiBub3QgYmxvY2sgdGhlIGNyYXNoLWZpeDogYSBzdWJvcHRpbWFsIGJ1dCB2YWxpZCBy
+ZXR1cm4gdmFsdWUgb2YgCj4gc25kX3BjbV9yZXdpbmRhYmxlKCkgaXMgYmV0dGVyIHRoYW4gYSBj
+cmFzaCBpbnNpZGUgdGhpcyBmdW5jdGlvbi4KCkkgc2VlLCBJIGFncmVlIHRoYXQgdGhlIGN1cnJl
+bnQgY29kZSBpcy93YXMgdHJpY2t5IGFuZCBwcm9iYWJseSBicm9rZW4KYXMgeW91IG5vdGVkLgoK
+QnV0IGFsb25nIHdpdGggeW91ciBwYXRjaCwgdGhlIGNvZGUgaW4gcmV3aW5kL2ZvcndhcmQgY2Fs
+bGJhY2tzIHNob3VsZApiZSBhbHNvIHJlbW92ZWQuIEkgcHV0IHlvdXJzIGFuZCB0aGlzIHBhdGNo
+IHRvIHRoZSBhbHNhLWxpYiByZXBvc2l0b3J5OgoKaHR0cDovL2dpdC5hbHNhLXByb2plY3Qub3Jn
+Lz9wPWFsc2EtbGliLmdpdDthPWNvbW1pdDtoPTUyNTZlMTUwZWIzNGNmNTk5ZTc5ODM5ZmVhZmY3
+Mzk4ZWQ2N2E0OTkKCgkJCQlUaGFua3MsCgkJCQkJSmFyb3NsYXYKCi0tIApKYXJvc2xhdiBLeXNl
+bGEgPHBlcmV4QHBlcmV4LmN6PgpMaW51eCBLZXJuZWwgU291bmQgTWFpbnRhaW5lcgpBTFNBIFBy
+b2plY3Q7IFJlZCBIYXQsIEluYy4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
