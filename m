@@ -1,60 +1,38 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ALSA 1.0.28 release - request for testing
-Date: Fri, 13 Jun 2014 19:19:30 +0200
-Message-ID: <539B32A2.9080407@perex.cz>
-References: <1402647348-25604-1-git-send-email-david.henningsson@canonical.com>	<539AB5C7.6020501@perex.cz>	<539ABEF0.7020508@canonical.com>
- <s5hfvj9go7w.wl%tiwai@suse.de> <539AC54C.60504@canonical.com>
- <539ACD9A.5040209@perex.cz> <539ADA29.50508@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 867FF261A88
- for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 19:19:30 +0200 (CEST)
-In-Reply-To: <539ADA29.50508@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, jordi@debian.org
+From: Christian Engelmayer <cengelma@gmx.at>
+Subject: [PATCH] ASoC: wm8985: Remove unused pointer in wm8985_remove()
+Date: Fri, 13 Jun 2014 19:19:28 +0200
+Message-ID: <1402679968-5925-1-git-send-email-cengelma@gmx.at>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Fabio Estevam <fabio.estevam@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Xiubo Li <Li.Xiubo@freescale.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Christian Engelmayer <cengelma@gmx.at>
 List-Id: alsa-devel@alsa-project.org
 
-Date 13.6.2014 13:02, David Henningsson wrote:
-> While testing alsa-lib I found that the attached patch - which comes 
-> from Debian - probably should be applied upstream as well.
+Commit a0b148b4 (ASoC: wm8985: Use devm_regulator_bulk_get()) removed the last
+user of pointer wm8985 to struct wm8985_priv. Thus remove it. Detected by
+Coverity CID 1222150.
 
-Thanks. Applied.
+Signed-off-by: Christian Engelmayer <cengelma@gmx.at>
+---
+Compile tested. Applies against branch for-next in tree
+git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+---
+ sound/soc/codecs/wm8985.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-                   Jaroslav
-
-> 
-> On 2014-06-13 12:08, Jaroslav Kysela wrote:
->> Hello all,
->>
->>    ALSA 1.0.28 packages are available for testing at
->>
->> ftp://ftp.alsa-project.org/pub/testing/
->>
->>    Please, report any issues. I expect to announce the release on Monday.
->>
->> 					Jaroslav
->>
->> -----
->> Jaroslav Kysela <perex@perex.cz>
->> Linux Kernel Sound Maintainer
->> ALSA Project; Red Hat, Inc.
->>
-> 
-
-
+diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
+index 0f5780c..cbbdfbb 100644
+--- a/sound/soc/codecs/wm8985.c
++++ b/sound/soc/codecs/wm8985.c
+@@ -980,9 +980,6 @@ static int wm8985_resume(struct snd_soc_codec *codec)
+ 
+ static int wm8985_remove(struct snd_soc_codec *codec)
+ {
+-	struct wm8985_priv *wm8985;
+-
+-	wm8985 = snd_soc_codec_get_drvdata(codec);
+ 	wm8985_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	return 0;
+ }
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+1.9.1
