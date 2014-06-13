@@ -1,18 +1,19 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - fix a fixup value for codec alc293
-	in the pin_quirk table
-Date: Fri, 13 Jun 2014 09:23:10 +0800
-Message-ID: <1402622590-28675-1-git-send-email-hui.wang@canonical.com>
+From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+Subject: =?utf-8?q?=5BPATCH=5D_aplay=3A_Fix_VU-meter_stdout/s?=
+ =?utf-8?q?tderr_mess?=
+Date: Fri, 13 Jun 2014 05:28:49 +0400
+Message-ID: <1402622929.875823920@f438.i.mail.ru>
+Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B898260845
- for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 03:25:39 +0200 (CEST)
-Received: by mail-pa0-f48.google.com with SMTP id et14so259535pad.21
- for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2014 18:25:38 -0700 (PDT)
+Received: from f438.i.mail.ru (f438.i.mail.ru [185.5.136.109])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E880260824
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 03:28:51 +0200 (CEST)
+Received: from mail by f438.i.mail.ru with local (envelope-from
+ <sergemp@mail.ru>) id 1WvGIT-0004UE-RQ
+ for alsa-devel@alsa-project.org; Fri, 13 Jun 2014 05:28:50 +0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,33 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: hui.wang@canonical.com, david.henningsson@canonical.com
+To: =?UTF-8?B?YWxzYS1kZXZlbA==?= <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The fixup value for codec alc293 was set to
-ALC269_FIXUP_DELL1_MIC_NO_PRESENCE by a mistake, if we don't fix it,
-the Dock mic will be overwriten by the headset mic, this will make
-the Dock mic can't work.
-
-Cc: David Henningsson <david.henningsson@canonical.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Commit 6bbeb78d forgot to change some of VU-meter output to stderr.
+This patch makes the output of `aplay -vvv` consistent again.
 ---
- sound/pci/hda/patch_realtek.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ aplay/aplay.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 9c095fa..06d6063 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5159,7 +5159,7 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 			{0x1d, 0x40700001},
- 			{0x1e, 0x411111f0},
- 		},
--		.value = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		.value = ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	},
- 	{}
- };
+diff --git a/aplay/aplay.c b/aplay/aplay.c
+index 33a8ed5..77e40a3 100644
+--- a/aplay/aplay.c
++++ b/aplay/aplay.c
+@@ -1774,12 +1774,12 @@ static void compute_max_peak(u_char *data, size_t count)
+ 		fflush(stderr);
+ 	}
+ 	else if(verbose==3) {
+-		printf(_("Max peak (%li samples): 0x%08x "), (long)ocount, max_peak[0]);
++		fprintf(stderr, _("Max peak (%li samples): 0x%08x "), (long)ocount, max_peak[0]);
+ 		for (val = 0; val < 20; val++)
+ 			if (val <= perc[0] / 5)
+-				putchar('#');
++				putc('#', stderr);
+ 			else
+-				putchar(' ');
++				putc(' ', stderr);
+ 		fprintf(stderr, " %i%%\n", perc[0]);
+ 		fflush(stderr);
+ 	}
 -- 
-1.8.1.2
+1.7.10.4
