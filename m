@@ -1,38 +1,66 @@
-From: Christian Engelmayer <cengelma@gmx.at>
-Subject: [PATCH] ASoC: wm8985: Remove unused pointer in wm8985_remove()
-Date: Fri, 13 Jun 2014 19:19:28 +0200
-Message-ID: <1402679968-5925-1-git-send-email-cengelma@gmx.at>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Fabio Estevam <fabio.estevam@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Xiubo Li <Li.Xiubo@freescale.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Christian Engelmayer <cengelma@gmx.at>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [RFC][PATCH 0/2] Fix aplay and alsa-lib
+ write_areas() freezing with 100% cpu usage on stuck slave pcm
+Date: Fri, 13 Jun 2014 19:20:03 +0200
+Message-ID: <539B32C3.2040901@perex.cz>
+References: <1402642371.496174944@f39.i.mail.ru> <539ABED4.9000105@perex.cz>
+ <1402661625.359891425@f87.i.mail.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89BF7261ADB
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 19:20:03 +0200 (CEST)
+In-Reply-To: <1402661625.359891425@f87.i.mail.ru>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sergey <sergemp@mail.ru>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit a0b148b4 (ASoC: wm8985: Use devm_regulator_bulk_get()) removed the last
-user of pointer wm8985 to struct wm8985_priv. Thus remove it. Detected by
-Coverity CID 1222150.
+Date 13.6.2014 14:13, Sergey wrote:
+> Fri, 13 Jun 2014 Jaroslav Kysela wrote:
+> 
+>>> First patch fixes snd_pcm_write_areas() stuck in a loop because of transfer
+>>> func() always returning 0. That caused application calling it to freeze.
+>>> In the example above it have frozen aplay. If it was called by firefox,
+>>> it would freeze firefox.
+>>>
+>>> Is it a good way to fix it? Should snd_pcm_read_areas() be fixed like that too?
+>>
+>> Nope: The whole culprit was in the null plugin - the stream was not
+>> started, thus new samples were not delivered.
+>>
+>> I tried to fix this in:
+>>
+>> http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=9c3086fb749cd5545be3f15cdde1592390006258
+>>
+>>> Second patch fixes aplay itself, not returning from pcm_write() after SIGINT.
+>>
+>> Thanks, looks good, but I added the in_aborting check to other
+>> functions, too:
+>>
+>> http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=c06dbf077459923066c96556678835cd1f55123a
+> 
+> It works great. Thank you!
+> 
+> PS: What do you think about that small aplay patch?:
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-June/077665.html
+> aplay -vvv output looks weird without it.
 
-Signed-off-by: Christian Engelmayer <cengelma@gmx.at>
----
-Compile tested. Applies against branch for-next in tree
-git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
----
- sound/soc/codecs/wm8985.c | 3 ---
- 1 file changed, 3 deletions(-)
+Thanks. Applied now.
 
-diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
-index 0f5780c..cbbdfbb 100644
---- a/sound/soc/codecs/wm8985.c
-+++ b/sound/soc/codecs/wm8985.c
-@@ -980,9 +980,6 @@ static int wm8985_resume(struct snd_soc_codec *codec)
- 
- static int wm8985_remove(struct snd_soc_codec *codec)
- {
--	struct wm8985_priv *wm8985;
--
--	wm8985 = snd_soc_codec_get_drvdata(codec);
- 	wm8985_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	return 0;
- }
+				Jaroslav
+
+
 -- 
-1.9.1
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
