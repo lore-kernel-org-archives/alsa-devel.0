@@ -1,15 +1,18 @@
-From: Kailang <kailang@realtek.com>
-Subject: Enable more HP machine to enable mute led
-Date: Fri, 13 Jun 2014 17:27:31 +0800
-Message-ID: <AD477C06ADA84EB4A008D8EF0A900D8F@realtek.com.tw>
-Reply-To: Kailang <kailang@realtek.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC PATCH] alsactl: Do not run udev rule before
+	datadir is mounted
+Date: Fri, 13 Jun 2014 11:33:00 +0200
+Message-ID: <539AC54C.60504@canonical.com>
+References: <1402647348-25604-1-git-send-email-david.henningsson@canonical.com>	<539AB5C7.6020501@perex.cz>	<539ABEF0.7020508@canonical.com>
+ <s5hfvj9go7w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_NextPart_000_002E_01CF872C.C1B15990"
+Content-Type: multipart/mixed; boundary="------------060700020709040408080500"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C8902618F2
- for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 11:27:18 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B0DB2619D7
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 11:32:59 +0200 (CEST)
+In-Reply-To: <s5hfvj9go7w.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,91 +22,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: 1289730@bugs.launchpad.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_NextPart_000_002E_01CF872C.C1B15990
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
+This is a multi-part message in MIME format.
+--------------060700020709040408080500
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
- Hi Takashi,
- 
-Add more HP machine to support mute led functions.
- 
- Thanks.
- 
- BR,
-Kailang
-------=_NextPart_000_002E_01CF872C.C1B15990
-Content-Type: application/octet-stream;
-	name="0000-add-mute-led-for-hp.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment; filename="0000-add-mute-led-for-hp.patch"
 
->From f06f78fc2fd45c004ab512b77b4e1945bb52ffda Mon Sep 17 00:00:00 2001=0A=
-From: Kailang Yang <kailang@realtek.com>=0A=
-Date: Fri, 13 Jun 2014 17:16:31 +0800=0A=
-Subject: [PATCH] ALSA: hda/realtek - Add more entry for enable HP mute =
-led=0A=
-=0A=
-More HP machine need mute led support.=0A=
-=0A=
-Signed-off-by: Kailang Yang <kailang@realtek.com>=0A=
-=0A=
-diff --git a/sound/pci/hda/patch_realtek.c =
-b/sound/pci/hda/patch_realtek.c=0A=
-index 9c095fa..874647c 100644=0A=
---- a/sound/pci/hda/patch_realtek.c=0A=
-+++ b/sound/pci/hda/patch_realtek.c=0A=
-@@ -4774,14 +4774,24 @@ static const struct snd_pci_quirk =
-alc269_fixup_tbl[] =3D {=0A=
- 	SND_PCI_QUIRK(0x103c, 0x1983, "HP Pavilion", =
-ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x218b, "HP", =
-ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED),=0A=
- 	/* ALC282 */=0A=
-+	SND_PCI_QUIRK(0x103c, 0x220d, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x220e, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x220f, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2210, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2211, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2212, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2213, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2214, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2266, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2267, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2268, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2269, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x226a, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x226b, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x226c, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x226d, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x226e, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x226f, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x227a, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x227b, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x229e, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-@@ -4821,6 +4831,10 @@ static const struct snd_pci_quirk =
-alc269_fixup_tbl[] =3D {=0A=
- 	SND_PCI_QUIRK(0x103c, 0x22c8, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x22c3, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x22c4, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2334, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2335, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2336, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2337, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),=0A=
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),=0A=
- 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", =
-ALC269_FIXUP_LIMIT_INT_MIC_BOOST),=0A=
 
-------=_NextPart_000_002E_01CF872C.C1B15990
+On 2014-06-13 11:20, Takashi Iwai wrote:
+
+>> +++ b/alsactl/90-alsa-restore.rules.in
+>> @@ -1,4 +1,4 @@
+>> -ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", KERNELS!="card*", GOTO="alsa_restore_go"
+>> +ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", KERNELS!="card*", TEST=="@sbindir@", TEST=="@datadir@", GOTO="alsa_restore_go"
+>>   GOTO="alsa_restore_end"
+>
+> IMO, it's better to use @mydatadir@ instead of @datadir@ here and...
+
+Oops, sorry about that. Thanks for the review!
+
+Attaching a fixup patch.
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
+
+--------------060700020709040408080500
+Content-Type: text/x-patch;
+ name="0001-alsactl-Fixup-test-for-mydatadir-sbindir.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-alsactl-Fixup-test-for-mydatadir-sbindir.patch"
+
+>From 7402d0421df6782dd7af9a30f3bc1223057cd9f3 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Fri, 13 Jun 2014 11:31:44 +0200
+Subject: [PATCH] alsactl: Fixup test for mydatadir/sbindir
+
+Use the "mydatadir" name consistently.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ alsactl/90-alsa-restore.rules.in | 2 +-
+ alsactl/Makefile.am              | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/alsactl/90-alsa-restore.rules.in b/alsactl/90-alsa-restore.rules.in
+index 80fc043..c0c1b23 100644
+--- a/alsactl/90-alsa-restore.rules.in
++++ b/alsactl/90-alsa-restore.rules.in
+@@ -1,4 +1,4 @@
+-ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", KERNELS!="card*", TEST=="@sbindir@", TEST=="@datadir@", GOTO="alsa_restore_go"
++ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", KERNELS!="card*", TEST=="@sbindir@", TEST=="@mydatadir@", GOTO="alsa_restore_go"
+ GOTO="alsa_restore_end"
+ 
+ LABEL="alsa_restore_go"
+diff --git a/alsactl/Makefile.am b/alsactl/Makefile.am
+index afbedb3..47f06e9 100644
+--- a/alsactl/Makefile.am
++++ b/alsactl/Makefile.am
+@@ -44,7 +44,7 @@ endif
+ 
+ edit = \
+ 	$(SED) -r -e 's,@sbindir\@,$(sbindir),g' \
+-		  -e 's,@datadir\@,$(mydatadir),g' \
++		  -e 's,@mydatadir\@,$(mydatadir),g' \
+ 		  -e 's,@daemonswitch\@,$(ALSACTL_DAEMONSWITCH),g' \
+ 							< $< > $@ || rm $@
+ 
+-- 
+1.9.1
+
+
+--------------060700020709040408080500
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
-------=_NextPart_000_002E_01CF872C.C1B15990--
+--------------060700020709040408080500--
