@@ -1,17 +1,22 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC PATCH] alsactl: Do not run udev rule before
-	datadir is mounted
-Date: Fri, 13 Jun 2014 10:26:47 +0200
-Message-ID: <539AB5C7.6020501@perex.cz>
-References: <1402647348-25604-1-git-send-email-david.henningsson@canonical.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: [PATCH 2/4] pcm: rate: add rewindable and
+ forwardable callbacks
+Date: Fri, 13 Jun 2014 14:44:02 +0600
+Message-ID: <539AB9D2.6080504@gmail.com>
+References: <1402569264-2789-1-git-send-email-patrakov@gmail.com>
+ <1402569264-2789-3-git-send-email-patrakov@gmail.com>
+ <539AA4B0.2050005@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id EBDAF261718
- for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 10:26:47 +0200 (CEST)
-In-Reply-To: <1402647348-25604-1-git-send-email-david.henningsson@canonical.com>
+Received: from mail-lb0-f170.google.com (mail-lb0-f170.google.com
+ [209.85.217.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57297261740
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 10:44:04 +0200 (CEST)
+Received: by mail-lb0-f170.google.com with SMTP id 10so248018lbg.1
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 01:44:03 -0700 (PDT)
+In-Reply-To: <539AA4B0.2050005@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,75 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: 1289730@bugs.launchpad.net
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Date 13.6.2014 10:15, David Henningsson wrote:
-> The 90-alsa-restore.rules udev rule is primarily meant to handle hotplugging,
-> but sometimes it is also run before /usr is mounted,
-> and alsactl restore depends on /usr/share/alsa being present.
-> 
-> If /usr/share/alsa is not present, we're so early in the boot
-> process that alsa-restore.service (or upstart equivalent) will
-> run later on.
-> 
-> BugLink: https://bugs.launchpad.net/bugs/1289730
-> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
-> ---
-> 
-> I'm not really sure of all quirks in the boot process, and I haven't tested the
-> patch either, hence the RFC above. Do you think it makes sense?
-
-Yes, I think that's ok. Takashi?
-
-> Should we also add @sbindir@ to the things to test for?
-
-It shouldn't harm anything. Could you prepare a new patch?
-
->  alsactl/90-alsa-restore.rules.in | 2 +-
->  alsactl/Makefile.am              | 1 +
->  configure.ac                     | 1 +
->  3 files changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/alsactl/90-alsa-restore.rules.in b/alsactl/90-alsa-restore.rules.in
-> index c68119d..c83c6b5 100644
-> --- a/alsactl/90-alsa-restore.rules.in
-> +++ b/alsactl/90-alsa-restore.rules.in
-> @@ -1,4 +1,4 @@
-> -ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", KERNELS!="card*", GOTO="alsa_restore_go"
-> +ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", KERNELS!="card*", TEST=="@datadir@", GOTO="alsa_restore_go"
->  GOTO="alsa_restore_end"
->  
->  LABEL="alsa_restore_go"
-> diff --git a/alsactl/Makefile.am b/alsactl/Makefile.am
-> index b862412..afbedb3 100644
-> --- a/alsactl/Makefile.am
-> +++ b/alsactl/Makefile.am
-> @@ -44,6 +44,7 @@ endif
->  
->  edit = \
->  	$(SED) -r -e 's,@sbindir\@,$(sbindir),g' \
-> +		  -e 's,@datadir\@,$(mydatadir),g' \
->  		  -e 's,@daemonswitch\@,$(ALSACTL_DAEMONSWITCH),g' \
->  							< $< > $@ || rm $@
->  
-> diff --git a/configure.ac b/configure.ac
-> index 7e6894a..a4d2db3 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -292,6 +292,7 @@ AC_DEFINE_UNQUOTED(SOUNDSDIR, "$soundsdir", [directory containing sample data])
->  
->  mydatadir="$dir/alsa"
->  AC_DEFINE_UNQUOTED(DATADIR, "$mydatadir", [directory containing alsa configuration])
-> +AC_SUBST(mydatadir)
->  
->  AC_ARG_WITH(testsound,
->    AS_HELP_STRING([--with-testsound=file], [give the path of test sound file for alsaconf]),
-> 
-
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+MTMuMDYuMjAxNCAxMzoxMywgSmFyb3NsYXYgS3lzZWxhINC/0LjRiNC10YI6Cj4gRGF0ZSAxMi42
+LjIwMTQgMTI6MzQsIEFsZXhhbmRlciBFLiBQYXRyYWtvdiB3cm90ZToKPj4gVGhpcyBjb21taXQg
+ZG9lcyBub3QgZml4IG5vbnNlbnNlIHZhbHVlcyByZXR1cm5lZCBieSB0aGUgcmV3aW5kIGFuZAo+
+PiBmb3J3YXJkIGNhbGxiYWNrcy4gRS5nLiwgd2l0aCBwZXJpb2Rfc2l6ZSA9IDEwMjQgYW5kIGJ1
+ZmZlcl9zaXplID0gNDA5NiwKPj4gYW4gYXR0ZW1wdCB0byByZXdpbmQgMTAyNCBzYW1wbGVzIGZy
+b20gdGhlIG5lYXJseS1mdWxsIGJ1ZmZlciByZXR1cm5zCj4+IDQwOTAuCj4+Cj4+IER1ZSB0byB0
+aGVzZSBub25zZW5zZSB2YWx1ZXMsIHRoZSBjdXJyZW50IHJhdGUgcGx1Z2luIHNob3VsZCBiZSB0
+cmVhdGVkCj4+IGFzIG5vbi1yZXdpbmRhYmxlLiBUaGF0J3Mgd2h5IHRoZSBuZXcgY2FsbGJhY2tz
+IHJldHVybiAwLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgRS4gUGF0cmFrb3YgPHBh
+dHJha292QGdtYWlsLmNvbT4KPiBJIGRvbid0IGFncmVlLiBUaGUgc25kX3BjbV9yYXRlX21vdmVf
+YXBwbHB0cigpIHNob3VsZCBiZSBmaXhlZCBpbnN0ZWFkCj4gdGhpcyBibG9ja2luZyBhdHRlbXB0
+LiBEbyB5b3UgaGF2ZSBhbnkgc2ltcGxlIHVzZSBjYXNlPwoKSSBkb24ndCB1bmRlcnN0YW5kIHdo
+YXQgeW91IG1lYW4gYnkgYSAic2ltcGxlIHVzZSBjYXNlIi4KCkFuZCBhbnl3YXksIGR1ZSB0byBy
+ZWFzb25zIGV4cHJlc3NlZCBpbiAKaHR0cDovL3Blcm1hbGluay5nbWFuZS5vcmcvZ21hbmUubGlu
+dXguYWxzYS5kZXZlbC8xMjIxNzkgLCBJIGluc2lzdCB0aGF0IAowIGlzIHRoZSBvbmx5IGNvcnJl
+Y3QgcmV0dXJuIHZhbHVlIGV2ZW4gaWYgc29tZW9uZSBmaXhlcyAKc25kX3BjbV9yYXRlX21vdmVf
+YXBwbHB0cigpLCB3aGljaCBpcyBub3QgdHJpdmlhbC4gQWxzbywgMCBpcyBub3QgYSAKcmVncmVz
+c2lvbiAtIGl0IHdhcyAiY3Jhc2giIHByZXZpb3VzbHksIGFuZCBJIGhhdmUgbm90IGNoYW5nZWQg
+dGhlIApjdXJyZW50bHktYnJva2VuIHNuZF9wY21fcmF0ZV9tb3ZlX2FwcGxwdHIgbG9naWMgKGp1
+c3QgZm9yIHRoZSAKaW1wb3NzaWJsZSBjYXNlIGlmIHNvbWVvbmUgZG9lcyByZWx5IG9uIGl0KS4K
+ClRoZSBmdWxsIGZpeCwgYWZ0ZXIgd2hpY2ggSSBkbyBhZ3JlZSB0byBjaGFuZ2UgMCB0byBzb21l
+dGhpbmcgZWxzZSwgCndvdWxkIGludm9sdmU6CgoxLiBXcml0aW5nIGEgcmV3aW5kYWJsZSByZXNh
+bXBsZXIgbGlicmFyeSwgb3IgYSByZXNhbXBsZXIgbGlicmFyeSB0aGF0IApvZmZlcnMgYSBwdWJs
+aWMgQVBJIHRvIHNhdmUgaXRzIHN0YXRlLgoyLiBEcm9wcGluZyBhbGwgb3RoZXIgcmVzYW1wbGVy
+IGltcGxlbWVudGF0aW9ucy4KMy4gRXh0ZW5kaW5nIHRoZSBzbmRfcGNtX3JhdGVfb3BzX3Qgc3Ry
+dWN0dXJlIGluIG9yZGVyIHRvIGZvcndhcmQgZWl0aGVyIApyZXdpbmRzIG9yIHNhdmUtcmVxdWVz
+dHMgdG8gdGhlIHJlc2FtcGxlci4KNC4gVXNpbmcgdGhlc2UgbmV3IGNhbGxiYWNrcy4KClRoaXMg
+dHJhbnNsYXRlcyB0byBzZXZlcmFsIG1vbnRocywgb3IgbWF5YmUgYSB5ZWFyIG9mIHdvcmsgYXQg
+dGhlIApjdXJyZW50IHJhdGUuIEl0IGhhcyB0byBiZSBkb25lLCBhbmQgSSBkbyBwbGFuIHRvIGRv
+IHRoaXMuIEJ1dCBpdCBzaG91bGQgCm5vdCBibG9jayB0aGUgY3Jhc2gtZml4OiBhIHN1Ym9wdGlt
+YWwgYnV0IHZhbGlkIHJldHVybiB2YWx1ZSBvZiAKc25kX3BjbV9yZXdpbmRhYmxlKCkgaXMgYmV0
+dGVyIHRoYW4gYSBjcmFzaCBpbnNpZGUgdGhpcyBmdW5jdGlvbi4KCi0tIApBbGV4YW5kZXIgRS4g
+UGF0cmFrb3YKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
