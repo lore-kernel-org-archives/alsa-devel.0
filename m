@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 05/19] ASoC: Intel: add the mrfld fw IPC
-	definations
-Date: Fri, 13 Jun 2014 18:03:54 +0530
-Message-ID: <1402662848-24534-6-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 02/19] ASoC: Intel: mfld_pcm: move stream
+	handling to dai_ops
+Date: Fri, 13 Jun 2014 18:03:51 +0530
+Message-ID: <1402662848-24534-3-git-send-email-vinod.koul@intel.com>
 References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id F218F2619EC
- for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 14:32:54 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F2D362616F3
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 14:32:51 +0200 (CEST)
 In-Reply-To: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,484 +25,206 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-This will be used to update current driver as well as in support for the mrfld
-patches
+This helps us to handle pcm and compress ops seperately and per dai
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/sst-mfld-dsp.h |  414 ++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 403 insertions(+), 11 deletions(-)
+ sound/soc/intel/sst-mfld-platform-pcm.c |  112 +++++++++++++++++-------------
+ 1 files changed, 63 insertions(+), 49 deletions(-)
 
-diff --git a/sound/soc/intel/sst-mfld-dsp.h b/sound/soc/intel/sst-mfld-dsp.h
-index 8d482d7..2c88785 100644
---- a/sound/soc/intel/sst-mfld-dsp.h
-+++ b/sound/soc/intel/sst-mfld-dsp.h
-@@ -3,7 +3,7 @@
- /*
-  *  sst_mfld_dsp.h - Intel SST Driver for audio engine
-  *
-- *  Copyright (C) 2008-12 Intel Corporation
-+ *  Copyright (C) 2008-14 Intel Corporation
-  *  Authors:	Vinod Koul <vinod.koul@linux.intel.com>
-  *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  *
-@@ -19,6 +19,142 @@
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  */
+diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
+index 7c790f5..0d46005 100644
+--- a/sound/soc/intel/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/sst-mfld-platform-pcm.c
+@@ -230,19 +230,12 @@ static int sst_platform_init_stream(struct snd_pcm_substream *substream)
+ }
+ /* end -- helper functions */
  
-+#define SST_MAX_BIN_BYTES 1024
+-static int sst_platform_open(struct snd_pcm_substream *substream)
++static int sst_media_open(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
+ {
++	int ret_val = 0;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct sst_runtime_stream *stream;
+-	int ret_val;
+-
+-	pr_debug("sst_platform_open called\n");
+-
+-	snd_soc_set_runtime_hwparams(substream, &sst_platform_pcm_hw);
+-	ret_val = snd_pcm_hw_constraint_integer(runtime,
+-						SNDRV_PCM_HW_PARAM_PERIODS);
+-	if (ret_val < 0)
+-		return ret_val;
+ 
+ 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+ 	if (!stream)
+@@ -251,50 +244,54 @@ static int sst_platform_open(struct snd_pcm_substream *substream)
+ 
+ 	/* get the sst ops */
+ 	mutex_lock(&sst_lock);
+-	if (!sst) {
++	if (!sst ||
++	    !try_module_get(sst->dev->driver->owner)) {
+ 		pr_err("no device available to run\n");
+-		mutex_unlock(&sst_lock);
+-		kfree(stream);
+-		return -ENODEV;
+-	}
+-	if (!try_module_get(sst->dev->driver->owner)) {
+-		mutex_unlock(&sst_lock);
+-		kfree(stream);
+-		return -ENODEV;
++		ret_val = -ENODEV;
++		goto out_ops;
+ 	}
+ 	stream->ops = sst->ops;
+ 	mutex_unlock(&sst_lock);
+ 
+ 	stream->stream_info.str_id = 0;
+-	sst_set_stream_status(stream, SST_PLATFORM_INIT);
 +
-+#define MAX_DBG_RW_BYTES 80
-+#define MAX_NUM_SCATTER_BUFFERS 8
-+#define MAX_LOOP_BACK_DWORDS 8
-+/* IPC base address and mailbox, timestamp offsets */
-+#define SST_MAILBOX_SIZE 0x0400
-+#define SST_MAILBOX_SEND 0x0000
-+#define SST_TIME_STAMP 0x1800
-+#define SST_TIME_STAMP_MRFLD 0x800
-+#define SST_RESERVED_OFFSET 0x1A00
-+#define SST_SCU_LPE_MAILBOX 0x1000
-+#define SST_LPE_SCU_MAILBOX 0x1400
-+#define SST_SCU_LPE_LOG_BUF (SST_SCU_LPE_MAILBOX+16)
-+#define PROCESS_MSG 0x80
+ 	stream->stream_info.mad_substream = substream;
+ 	/* allocate memory for SST API set */
+ 	runtime->private_data = stream;
+ 
+-	return 0;
++	/* Make sure, that the period size is always even */
++	snd_pcm_hw_constraint_step(substream->runtime, 0,
++			   SNDRV_PCM_HW_PARAM_PERIODS, 2);
 +
-+/* Message ID's for IPC messages */
-+/* Bits B7: SST or IA/SC ; B6-B4: Msg Category; B3-B0: Msg Type */
++	return snd_pcm_hw_constraint_integer(runtime,
++			 SNDRV_PCM_HW_PARAM_PERIODS);
++out_ops:
++	kfree(stream);
++	mutex_unlock(&sst_lock);
++	return ret_val;
+ }
+ 
+-static int sst_platform_close(struct snd_pcm_substream *substream)
++static void sst_media_close(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
+ {
+ 	struct sst_runtime_stream *stream;
+ 	int ret_val = 0, str_id;
+ 
+-	pr_debug("sst_platform_close called\n");
+ 	stream = substream->runtime->private_data;
+ 	str_id = stream->stream_info.str_id;
+ 	if (str_id)
+ 		ret_val = stream->ops->close(str_id);
+ 	module_put(sst->dev->driver->owner);
+ 	kfree(stream);
+-	return ret_val;
++	return;
+ }
+ 
+-static int sst_platform_pcm_prepare(struct snd_pcm_substream *substream)
++static int sst_media_prepare(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
+ {
+ 	struct sst_runtime_stream *stream;
+ 	int ret_val = 0, str_id;
+ 
+-	pr_debug("sst_platform_pcm_prepare called\n");
+ 	stream = substream->runtime->private_data;
+ 	str_id = stream->stream_info.str_id;
+ 	if (stream->stream_info.str_id) {
+@@ -316,6 +313,41 @@ static int sst_platform_pcm_prepare(struct snd_pcm_substream *substream)
+ 	return ret_val;
+ }
+ 
++static int sst_media_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
++{
++	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
++	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
++	return 0;
++}
 +
-+/* I2L Firmware/Codec Download msgs */
-+#define IPC_IA_PREP_LIB_DNLD 0x01
-+#define IPC_IA_LIB_DNLD_CMPLT 0x02
-+#define IPC_IA_GET_FW_VERSION 0x04
-+#define IPC_IA_GET_FW_BUILD_INF 0x05
-+#define IPC_IA_GET_FW_INFO 0x06
-+#define IPC_IA_GET_FW_CTXT 0x07
-+#define IPC_IA_SET_FW_CTXT 0x08
-+#define IPC_IA_PREPARE_SHUTDOWN 0x31
-+/* I2L Codec Config/control msgs */
-+#define IPC_PREP_D3 0x10
-+#define IPC_IA_SET_CODEC_PARAMS 0x10
-+#define IPC_IA_GET_CODEC_PARAMS 0x11
-+#define IPC_IA_SET_PPP_PARAMS 0x12
-+#define IPC_IA_GET_PPP_PARAMS 0x13
-+#define IPC_SST_PERIOD_ELAPSED_MRFLD 0xA
-+#define IPC_IA_ALG_PARAMS 0x1A
-+#define IPC_IA_TUNING_PARAMS 0x1B
-+#define IPC_IA_SET_RUNTIME_PARAMS 0x1C
-+#define IPC_IA_SET_PARAMS 0x1
-+#define IPC_IA_GET_PARAMS 0x2
++static int sst_media_hw_free(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	return snd_pcm_lib_free_pages(substream);
++}
 +
-+#define IPC_EFFECTS_CREATE 0xE
-+#define IPC_EFFECTS_DESTROY 0xF
-+
-+/* I2L Stream config/control msgs */
-+#define IPC_IA_ALLOC_STREAM_MRFLD 0x2
-+#define IPC_IA_ALLOC_STREAM 0x20 /* Allocate a stream ID */
-+#define IPC_IA_FREE_STREAM_MRFLD 0x03
-+#define IPC_IA_FREE_STREAM 0x21 /* Free the stream ID */
-+#define IPC_IA_SET_STREAM_PARAMS 0x22
-+#define IPC_IA_SET_STREAM_PARAMS_MRFLD 0x12
-+#define IPC_IA_GET_STREAM_PARAMS 0x23
-+#define IPC_IA_PAUSE_STREAM 0x24
-+#define IPC_IA_PAUSE_STREAM_MRFLD 0x4
-+#define IPC_IA_RESUME_STREAM 0x25
-+#define IPC_IA_RESUME_STREAM_MRFLD 0x5
-+#define IPC_IA_DROP_STREAM 0x26
-+#define IPC_IA_DROP_STREAM_MRFLD 0x07
-+#define IPC_IA_DRAIN_STREAM 0x27 /* Short msg with str_id */
-+#define IPC_IA_DRAIN_STREAM_MRFLD 0x8
-+#define IPC_IA_CONTROL_ROUTING 0x29
-+#define IPC_IA_VTSV_UPDATE_MODULES 0x20
-+#define IPC_IA_VTSV_DETECTED 0x21
-+
-+#define IPC_IA_START_STREAM_MRFLD 0X06
-+#define IPC_IA_START_STREAM 0x30 /* Short msg with str_id */
-+
-+#define IPC_IA_SET_GAIN_MRFLD 0x21
-+/* Debug msgs */
-+#define IPC_IA_DBG_MEM_READ 0x40
-+#define IPC_IA_DBG_MEM_WRITE 0x41
-+#define IPC_IA_DBG_LOOP_BACK 0x42
-+#define IPC_IA_DBG_LOG_ENABLE 0x45
-+#define IPC_IA_DBG_SET_PROBE_PARAMS 0x47
-+
-+/* L2I Firmware/Codec Download msgs */
-+#define IPC_IA_FW_INIT_CMPLT 0x81
-+#define IPC_IA_FW_INIT_CMPLT_MRFLD 0x01
-+#define IPC_IA_FW_ASYNC_ERR_MRFLD 0x11
-+
-+/* L2I Codec Config/control msgs */
-+#define IPC_SST_FRAGMENT_ELPASED 0x90 /* Request IA more data */
-+
-+#define IPC_SST_BUF_UNDER_RUN 0x92 /* PB Under run and stopped */
-+#define IPC_SST_BUF_OVER_RUN 0x93 /* CAP Under run and stopped */
-+#define IPC_SST_DRAIN_END 0x94 /* PB Drain complete and stopped */
-+#define IPC_SST_CHNGE_SSP_PARAMS 0x95 /* PB SSP parameters changed */
-+#define IPC_SST_STREAM_PROCESS_FATAL_ERR 0x96/* error in processing a stream */
-+#define IPC_SST_PERIOD_ELAPSED 0x97 /* period elapsed */
-+
-+#define IPC_SST_ERROR_EVENT 0x99 /* Buffer over run occurred */
-+/* L2S messages */
-+#define IPC_SC_DDR_LINK_UP 0xC0
-+#define IPC_SC_DDR_LINK_DOWN 0xC1
-+#define IPC_SC_SET_LPECLK_REQ 0xC2
-+#define IPC_SC_SSP_BIT_BANG 0xC3
-+
-+/* L2I Error reporting msgs */
-+#define IPC_IA_MEM_ALLOC_FAIL 0xE0
-+#define IPC_IA_PROC_ERR 0xE1 /* error in processing a
-+					stream can be used by playback and
-+					capture modules */
-+
-+/* L2I Debug msgs */
-+#define IPC_IA_PRINT_STRING 0xF0
-+
-+/* Buffer under-run */
-+#define IPC_IA_BUF_UNDER_RUN_MRFLD 0x0B
-+
-+/* Mrfld specific defines:
-+ * For asynchronous messages(INIT_CMPLT, PERIOD_ELAPSED, ASYNC_ERROR)
-+ * received from FW, the format is:
-+ *  - IPC High: pvt_id is set to zero. Always short message.
-+ *  - msg_id is in lower 16-bits of IPC low payload.
-+ *  - pipe_id is in higher 16-bits of IPC low payload for period_elapsed.
-+ *  - error id is in higher 16-bits of IPC low payload for async errors.
-+ */
-+#define SST_ASYNC_DRV_ID 0
-+
-+/* Command Response or Acknowledge message to any IPC message will have
-+ * same message ID and stream ID information which is sent.
-+ * There is no specific Ack message ID. The data field is used as response
-+ * meaning.
-+ */
-+enum ackData {
-+	IPC_ACK_SUCCESS = 0,
-+	IPC_ACK_FAILURE,
++static struct snd_soc_dai_ops sst_media_dai_ops = {
++	.startup = sst_media_open,
++	.shutdown = sst_media_close,
++	.prepare = sst_media_prepare,
++	.hw_params = sst_media_hw_params,
++	.hw_free = sst_media_hw_free,
 +};
 +
-+enum ipc_ia_msg_id {
-+	IPC_CMD = 1,		/*!< Task Control message ID */
-+	IPC_SET_PARAMS = 2,/*!< Task Set param message ID */
-+	IPC_GET_PARAMS = 3,	/*!< Task Get param message ID */
-+	IPC_INVALID = 0xFF,	/*!<Task Get param message ID */
-+};
++static int sst_platform_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime;
 +
- enum sst_codec_types {
- 	/*  AUDIO/MUSIC	CODEC Type Definitions */
- 	SST_CODEC_TYPE_UNKNOWN = 0,
-@@ -35,14 +171,142 @@ enum stream_type {
- 	SST_STREAM_TYPE_MUSIC = 1,
++	if (substream->pcm->internal)
++		return 0;
++
++	runtime = substream->runtime;
++	runtime->hw = sst_platform_pcm_hw;
++	return 0;
++}
++
+ static int sst_platform_pcm_trigger(struct snd_pcm_substream *substream,
+ 					int cmd)
+ {
+@@ -377,32 +409,14 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
+ 		pr_err("sst: error code = %d\n", ret_val);
+ 		return ret_val;
+ 	}
+-	return stream->stream_info.buffer_ptr;
+-}
+-
+-static int sst_platform_pcm_hw_params(struct snd_pcm_substream *substream,
+-		struct snd_pcm_hw_params *params)
+-{
+-	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+-	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
+-
+-	return 0;
+-}
+-
+-static int sst_platform_pcm_hw_free(struct snd_pcm_substream *substream)
+-{
+-	return snd_pcm_lib_free_pages(substream);
++	return str_info->buffer_ptr;
+ }
+ 
+ static struct snd_pcm_ops sst_platform_ops = {
+ 	.open = sst_platform_open,
+-	.close = sst_platform_close,
+ 	.ioctl = snd_pcm_lib_ioctl,
+-	.prepare = sst_platform_pcm_prepare,
+ 	.trigger = sst_platform_pcm_trigger,
+ 	.pointer = sst_platform_pcm_pointer,
+-	.hw_params = sst_platform_pcm_hw_params,
+-	.hw_free = sst_platform_pcm_hw_free,
  };
  
-+struct ipc_dsp_hdr {
-+	u16 mod_index_id:8;		/*!< DSP Command ID specific to tasks */
-+	u16 pipe_id:8;	/*!< instance of the module in the pipeline */
-+	u16 mod_id;		/*!< Pipe_id */
-+	u16 cmd_id;		/*!< Module ID = lpe_algo_types_t */
-+	u16 length;		/*!< Length of the payload only */
-+} __packed;
-+
-+union ipc_header_high {
-+	struct {
-+		u32  msg_id:8;	    /* Message ID - Max 256 Message Types */
-+		u32  task_id:4;	    /* Task ID associated with this comand */
-+		u32  drv_id:4;    /* Identifier for the driver to track*/
-+		u32  rsvd1:8;	    /* Reserved */
-+		u32  result:4;	    /* Reserved */
-+		u32  res_rqd:1;	    /* Response rqd */
-+		u32  large:1;	    /* Large Message if large = 1 */
-+		u32  done:1;	    /* bit 30 - Done bit */
-+		u32  busy:1;	    /* bit 31 - busy bit*/
-+	} part;
-+	u32 full;
-+} __packed;
-+/* IPC header */
-+union ipc_header_mrfld {
-+	struct {
-+		u32 header_low_payload;
-+		union ipc_header_high header_high;
-+	} p;
-+	u64 full;
-+} __packed;
-+/* CAUTION NOTE: All IPC message body must be multiple of 32 bits.*/
-+
-+/* IPC Header */
-+union ipc_header {
-+	struct {
-+		u32  msg_id:8; /* Message ID - Max 256 Message Types */
-+		u32  str_id:5;
-+		u32  large:1;	/* Large Message if large = 1 */
-+		u32  reserved:2;	/* Reserved for future use */
-+		u32  data:14;	/* Ack/Info for msg, size of msg in Mailbox */
-+		u32  done:1; /* bit 30 */
-+		u32  busy:1; /* bit 31 */
-+	} part;
-+	u32 full;
-+} __packed;
-+
-+/* Firmware build info */
-+struct sst_fw_build_info {
-+	unsigned char  date[16]; /* Firmware build date */
-+	unsigned char  time[16]; /* Firmware build time */
-+} __packed;
-+
-+/* Firmware Version info */
-+struct snd_sst_fw_version {
-+	u8 build;	/* build number*/
-+	u8 minor;	/* minor number*/
-+	u8 major;	/* major number*/
-+	u8 type;	/* build type */
-+};
-+
-+struct ipc_header_fw_init {
-+	struct snd_sst_fw_version fw_version;/* Firmware version details */
-+	struct sst_fw_build_info build_info;
-+	u16 result;	/* Fw init result */
-+	u8 module_id; /* Module ID in case of error */
-+	u8 debug_info; /* Debug info from Module ID in case of fail */
-+} __packed;
-+
-+struct snd_sst_tstamp {
-+	u64 ring_buffer_counter;	/* PB/CP: Bytes copied from/to DDR. */
-+	u64 hardware_counter;	    /* PB/CP: Bytes DMAed to/from SSP. */
-+	u64 frames_decoded;
-+	u64 bytes_decoded;
-+	u64 bytes_copied;
-+	u32 sampling_frequency;
-+	u32 channel_peak[8];
-+} __packed;
-+
-+/* Stream type params struture for Alloc stream */
-+struct snd_sst_str_type {
-+	u8 codec_type;		/* Codec type */
-+	u8 str_type;		/* 1 = voice 2 = music */
-+	u8 operation;		/* Playback or Capture */
-+	u8 protected_str;	/* 0=Non DRM, 1=DRM */
-+	u8 time_slots;
-+	u8 reserved;		/* Reserved */
-+	u16 result;		/* Result used for acknowledgment */
-+} __packed;
-+
-+/* Library info structure */
-+struct module_info {
-+	u32 lib_version;
-+	u32 lib_type;/*TBD- KLOCKWORK u8 lib_type;*/
-+	u32 media_type;
-+	u8  lib_name[12];
-+	u32 lib_caps;
-+	unsigned char  b_date[16]; /* Lib build date */
-+	unsigned char  b_time[16]; /* Lib build time */
-+} __packed;
-+
-+/* Library slot info */
-+struct lib_slot_info {
-+	u8  slot_num; /* 1 or 2 */
-+	u8  reserved1;
-+	u16 reserved2;
-+	u32 iram_size; /* slot size in IRAM */
-+	u32 dram_size; /* slot size in DRAM */
-+	u32 iram_offset; /* starting offset of slot in IRAM */
-+	u32 dram_offset; /* starting offset of slot in DRAM */
-+} __packed;
-+
-+struct snd_ppp_mixer_params {
-+	__u32			type; /*Type of the parameter */
-+	__u32			size;
-+	__u32			input_stream_bitmap; /*Input stream Bit Map*/
-+} __packed;
-+
-+struct snd_sst_lib_download {
-+	struct module_info lib_info; /* library info type, capabilities etc */
-+	struct lib_slot_info slot_info; /* slot info to be downloaded */
-+	u32 mod_entry_pt;
-+};
-+
-+struct snd_sst_lib_download_info {
-+	struct snd_sst_lib_download dload_lib;
-+	u16 result;	/* Result used for acknowledgment */
-+	u8 pvt_id; /* Private ID */
-+	u8 reserved;  /* for alignment */
-+};
- struct snd_pcm_params {
- 	u8 num_chan;	/* 1=Mono, 2=Stereo */
- 	u8 pcm_wd_sz;	/* 16/24 - bit*/
--	u32 reserved;	/* Bitrate in bits per second */
--	u32 sfreq;	/* Sampling rate in Hz */
--	u8 use_offload_path;
-+	u8 use_offload_path;	/* 0-PCM using period elpased & ALSA interfaces
-+				   1-PCM stream via compressed interface  */
- 	u8 reserved2;
--	u16 reserved3;
-+	u32 sfreq;    /* Sampling rate in Hz */
- 	u8 channel_map[8];
- } __packed;
+ static void sst_pcm_free(struct snd_pcm *pcm)
+@@ -413,15 +427,15 @@ static void sst_pcm_free(struct snd_pcm *pcm)
  
-@@ -76,6 +340,7 @@ struct snd_aac_params {
- struct snd_wma_params {
- 	u8  num_chan;	/* 1=Mono, 2=Stereo */
- 	u8  pcm_wd_sz;	/* 16/24 - bit*/
-+	u16 reserved1;
- 	u32 brate;	/* Use the hard coded value. */
- 	u32 sfreq;	/* Sampling freq eg. 8000, 441000, 48000 */
- 	u32 channel_mask;  /* Channel Mask */
-@@ -101,26 +366,153 @@ struct sst_address_info {
- };
+ static int sst_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_dai *dai = rtd->cpu_dai;
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 	int retval = 0;
  
- struct snd_sst_alloc_params_ext {
--	struct sst_address_info  ring_buf_info[8];
--	u8 sg_count;
--	u8 reserved;
--	u16 reserved2;
--	u32 frag_size;	/*Number of samples after which period elapsed
-+	__u16 sg_count;
-+	__u16 reserved;
-+	__u32 frag_size;	/*Number of samples after which period elapsed
- 				  message is sent valid only if path  = 0*/
--} __packed;
-+	struct sst_address_info  ring_buf_info[8];
-+};
- 
- struct snd_sst_stream_params {
- 	union snd_sst_codec_params uc;
- } __packed;
- 
- struct snd_sst_params {
-+	u32 result;
- 	u32 stream_id;
- 	u8 codec;
- 	u8 ops;
- 	u8 stream_type;
- 	u8 device_type;
-+	u8 task;
- 	struct snd_sst_stream_params sparams;
- 	struct snd_sst_alloc_params_ext aparams;
- };
- 
-+struct snd_sst_alloc_mrfld {
-+	u16 codec_type;
-+	u8 operation;
-+	u8 sg_count;
-+	struct sst_address_info ring_buf_info[8];
-+	u32 frag_size;
-+	u32 ts;
-+	struct snd_sst_stream_params codec_params;
-+} __packed;
-+
-+/* Alloc stream params structure */
-+struct snd_sst_alloc_params {
-+	struct snd_sst_str_type str_type;
-+	struct snd_sst_stream_params stream_params;
-+	struct snd_sst_alloc_params_ext alloc_params;
-+} __packed;
-+
-+/* Alloc stream response message */
-+struct snd_sst_alloc_response {
-+	struct snd_sst_str_type str_type; /* Stream type for allocation */
-+	struct snd_sst_lib_download lib_dnld; /* Valid only for codec dnld */
-+};
-+
-+/* Drop response */
-+struct snd_sst_drop_response {
-+	u32 result;
-+	u32 bytes;
-+};
-+
-+struct snd_sst_async_msg {
-+	u32 msg_id; /* Async msg id */
-+	u32 payload[0];
-+};
-+
-+struct snd_sst_async_err_msg {
-+	u32 fw_resp; /* Firmware Result */
-+	u32 lib_resp; /*Library result */
-+} __packed;
-+
-+struct snd_sst_vol {
-+	u32	stream_id;
-+	s32	volume;
-+	u32	ramp_duration;
-+	u32	ramp_type;		/* Ramp type, default=0 */
-+};
-+
-+/* Gain library parameters for mrfld
-+ * based on DSP command spec v0.82
-+ */
-+struct snd_sst_gain_v2 {
-+	u16 gain_cell_num;  /* num of gain cells to modify*/
-+	u8 cell_nbr_idx; /* instance index*/
-+	u8 cell_path_idx; /* pipe-id */
-+	u16 module_id; /*module id */
-+	u16 left_cell_gain; /* left gain value in dB*/
-+	u16 right_cell_gain; /* right gain value in dB*/
-+	u16 gain_time_const; /* gain time constant*/
-+} __packed;
-+
-+struct snd_sst_mute {
-+	u32	stream_id;
-+	u32	mute;
-+};
-+
-+struct snd_sst_runtime_params {
-+	u8 type;
-+	u8 str_id;
-+	u8 size;
-+	u8 rsvd;
-+	void *addr;
-+} __packed;
-+
-+enum stream_param_type {
-+	SST_SET_TIME_SLOT = 0,
-+	SST_SET_CHANNEL_INFO = 1,
-+	OTHERS = 2, /*reserved for future params*/
-+};
-+
-+/* CSV Voice call routing structure */
-+struct snd_sst_control_routing {
-+	u8 control; /* 0=start, 1=Stop */
-+	u8 reserved[3];	/* Reserved- for 32 bit alignment */
-+};
-+
-+struct ipc_post {
-+	struct list_head node;
-+	union ipc_header header; /* driver specific */
-+	bool is_large;
-+	bool is_process_reply;
-+	union ipc_header_mrfld mrfld_header;
-+	char *mailbox_data;
-+};
-+
-+struct snd_sst_ctxt_params {
-+	u32 address; /* Physical Address in DDR where the context is stored */
-+	u32 size; /* size of the context */
-+};
-+
-+struct snd_sst_lpe_log_params {
-+	u8 dbg_type;
-+	u8 module_id;
-+	u8 log_level;
-+	u8 reserved;
-+} __packed;
-+
-+enum snd_sst_bytes_type {
-+	SND_SST_BYTES_SET = 0x1,
-+	SND_SST_BYTES_GET = 0x2,
-+};
-+
-+struct snd_sst_bytes_v2 {
-+	u8 type;
-+	u8 ipc_msg;
-+	u8 block;
-+	u8 task_id;
-+	u8 pipe_id;
-+	u8 rsvd;
-+	u16 len;
-+	char bytes[0];
-+};
-+
-+#define MAX_VTSV_FILES 2
-+struct snd_sst_vtsv_info {
-+	struct sst_address_info vfiles[MAX_VTSV_FILES];
-+} __packed;
-+
- #endif /* __SST_MFLD_DSP_H__ */
+-	pr_debug("sst_pcm_new called\n");
+-	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
+-			pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
++	if (dai->driver->playback.channels_min ||
++			dai->driver->capture.channels_min) {
+ 		retval =  snd_pcm_lib_preallocate_pages_for_all(pcm,
+ 			SNDRV_DMA_TYPE_CONTINUOUS,
+-			snd_dma_continuous_data(GFP_KERNEL),
++			snd_dma_continuous_data(GFP_DMA),
+ 			SST_MIN_BUFFER, SST_MAX_BUFFER);
+ 		if (retval) {
+ 			pr_err("dma buffer allocationf fail\n");
 -- 
 1.7.0.4
