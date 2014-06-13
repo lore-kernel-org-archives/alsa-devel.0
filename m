@@ -1,49 +1,40 @@
 From: Shahina Shaik <shahina.s@samsung.com>
-Subject: [PATCH 2/2] SOUND: TLV320AIC32x4: Fixed Coding Style Issues
-Date: Fri, 13 Jun 2014 11:18:48 +0530
-Message-ID: <1402638528-5787-2-git-send-email-shahina.s@samsung.com>
-References: <1402638528-5787-1-git-send-email-shahina.s@samsung.com>
+Subject: [PATCH 4/4] Sound: tlv320aic31xx: Fixed Coding Style Issues
+Date: Fri, 13 Jun 2014 11:56:54 +0530
+Message-ID: <1402640814-7037-1-git-send-email-shahina.s@samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <1402638528-5787-1-git-send-email-shahina.s@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, broonie@kernel.org, lgirdwood@gmail.com
-Cc: sharab.shaik@gmail.com, shahina.s@gmail.com
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Shahina Shaik <sharab.shaik@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Shahina Shaik <sharab.shaik@gmail.com>
 
-Fixed Coding style issues of lines over 80 characters.
-
+Fixed coding style issues of "Missing Blank line after declaration"
 Signed-off-by: Shahina Shaik <sharab.shaik@gmail.com>
 ---
- sound/soc/codecs/tlv320aic32x4.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 1e50f15..89e41d2 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -642,13 +642,17 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
- 
- 	/* Mic PGA routing */
- 	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K)
--		snd_soc_write(codec, AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_IN2R_10K);
-+		snd_soc_write(codec, AIC32X4_LMICPGANIN,
-+				AIC32X4_LMICPGANIN_IN2R_10K);
- 	else
--		snd_soc_write(codec, AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_CM1L_10K);
-+		snd_soc_write(codec, AIC32X4_LMICPGANIN,
-+				AIC32X4_LMICPGANIN_CM1L_10K);
- 	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K)
--		snd_soc_write(codec, AIC32X4_RMICPGANIN, AIC32X4_RMICPGANIN_IN1L_10K);
-+		snd_soc_write(codec, AIC32X4_RMICPGANIN,
-+				AIC32X4_RMICPGANIN_IN1L_10K);
- 	else
--		snd_soc_write(codec, AIC32X4_RMICPGANIN, AIC32X4_RMICPGANIN_CM1R_10K);
-+		snd_soc_write(codec, AIC32X4_RMICPGANIN,
-+				AIC32X4_RMICPGANIN_CM1R_10K);
- 
- 	aic32x4_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 2341910..a9c4a8b 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -329,6 +329,7 @@ static int aic31xx_wait_bits(struct aic31xx_priv *aic31xx, unsigned int reg,
+ 	unsigned int bits;
+ 	int counter = count;
+ 	int ret = regmap_read(aic31xx->regmap, reg, &bits);
++
+ 	while ((bits & mask) != wbits && counter && !ret) {
+ 		usleep_range(sleep, sleep * 2);
+ 		ret = regmap_read(aic31xx->regmap, reg, &bits);
+@@ -435,6 +436,7 @@ static int mic_bias_event(struct snd_soc_dapm_widget *w,
+ {
+ 	struct snd_soc_codec *codec = w->codec;
+ 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
++
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		/* change mic bias voltage to user defined */
 -- 
 1.7.9.5
