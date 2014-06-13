@@ -1,49 +1,54 @@
-From: Himangi Saraogi <himangi774@gmail.com>
-Subject: [PATCH] ALSA: au1x00: Use resource_size
-Date: Fri, 13 Jun 2014 03:32:07 +0530
-Message-ID: <20140612220206.GA10257@himangi-Dell>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - fix a fixup value for codec alc293
+	in the pin_quirk table
+Date: Fri, 13 Jun 2014 09:23:10 +0800
+Message-ID: <1402622590-28675-1-git-send-email-hui.wang@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: julia.lawall@lip6.fr
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
+ [209.85.220.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B898260845
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 03:25:39 +0200 (CEST)
+Received: by mail-pa0-f48.google.com with SMTP id et14so259535pad.21
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jun 2014 18:25:38 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: hui.wang@canonical.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Use the function resource_size, which reduces the chance of introducing
-off-by-one errors in calculating the resource size.
+The fixup value for codec alc293 was set to
+ALC269_FIXUP_DELL1_MIC_NO_PRESENCE by a mistake, if we don't fix it,
+the Dock mic will be overwriten by the headset mic, this will make
+the Dock mic can't work.
 
-The semantic patch that makes this change is as follows:
-
-// <smpl>
-@@
-struct resource *res;
-@@
-
-- (res->end - res->start) + 1
-+ resource_size(res)
-// </smpl>
-
-Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
-Acked-by: Julia Lawall <julia.lawall@lip6.fr>
+Cc: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
-Not compile tested.
- sound/mips/au1x00.c | 2 +-
+ sound/pci/hda/patch_realtek.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
-index d10ef76..86583c7 100644
---- a/sound/mips/au1x00.c
-+++ b/sound/mips/au1x00.c
-@@ -649,7 +649,7 @@ static int au1000_ac97_probe(struct platform_device *pdev)
- 
- 	err = -EBUSY;
- 	au1000->ac97_res_port = request_mem_region(r->start,
--					r->end - r->start + 1, pdev->name);
-+					resource_size(r), pdev->name);
- 	if (!au1000->ac97_res_port) {
- 		snd_printk(KERN_ERR "ALSA AC97: can't grab AC97 port\n");
- 		goto out;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 9c095fa..06d6063 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5159,7 +5159,7 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 			{0x1d, 0x40700001},
+ 			{0x1e, 0x411111f0},
+ 		},
+-		.value = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
++		.value = ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	},
+ 	{}
+ };
 -- 
-1.9.1
+1.8.1.2
