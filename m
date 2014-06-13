@@ -1,40 +1,61 @@
-From: Shahina Shaik <shahina.s@samsung.com>
-Subject: [PATCH 4/4] Sound: tlv320aic31xx: Fixed Coding Style Issues
-Date: Fri, 13 Jun 2014 11:56:54 +0530
-Message-ID: <1402640814-7037-1-git-send-email-shahina.s@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Shahina Shaik <sharab.shaik@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: ALSA userspace release time?
+Date: Fri, 13 Jun 2014 08:30:04 +0200
+Message-ID: <539A9A6C.6050108@canonical.com>
+References: <538D6AC8.1010208@canonical.com> <538D7221.6010802@perex.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D9C626167D
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jun 2014 08:30:04 +0200 (CEST)
+In-Reply-To: <538D7221.6010802@perex.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Shahina Shaik <sharab.shaik@gmail.com>
 
-Fixed coding style issues of "Missing Blank line after declaration"
-Signed-off-by: Shahina Shaik <sharab.shaik@gmail.com>
----
- sound/soc/codecs/tlv320aic31xx.c |    2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 2341910..a9c4a8b 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -329,6 +329,7 @@ static int aic31xx_wait_bits(struct aic31xx_priv *aic31xx, unsigned int reg,
- 	unsigned int bits;
- 	int counter = count;
- 	int ret = regmap_read(aic31xx->regmap, reg, &bits);
-+
- 	while ((bits & mask) != wbits && counter && !ret) {
- 		usleep_range(sleep, sleep * 2);
- 		ret = regmap_read(aic31xx->regmap, reg, &bits);
-@@ -435,6 +436,7 @@ static int mic_bias_event(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_codec *codec = w->codec;
- 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
-+
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 		/* change mic bias voltage to user defined */
+On 2014-06-03 08:58, Jaroslav Kysela wrote:
+> Date 3.6.2014 08:27, David Henningsson wrote:
+>> Hi,
+>>
+>> It was around a year since we last had a release of ALSA's userspace
+>> component.
+>>
+>> Is it perhaps time for 1.0.28, or are we waiting for something that
+>> would be nice to get in first?
+>>
+>> We've currently got e g speaker-test improvements/fixes, 2.1 surround
+>> support, "alsactl monitor" command, and random fixes here and there.
+>> Sounds good enough for a release to me.
+>>
+>
+> Hi,
+>
+>    yes, I also think that's time to prepare the 1.0.28 release. I will
+> start the work on it.
+
+Thanks! Any progress?
+
+>    If someone has any waiting fix, please, let me know ...
+
+Alexander posted a few small fixes yesterday [1], which probably make 
+sense to include after a quick review by yourself or Takashi.
+
 -- 
-1.7.9.5
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
+
+[1] 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-June/077652.html
