@@ -1,121 +1,63 @@
-From: Mauro Carvalho Chehab <m.chehab@samsung.com>
-Subject: Re: [alsa-devel] [PATCH 1/3] sound: Add a quirk to enforce period_bytes
-Date: Mon, 16 Jun 2014 11:21:10 -0300
-Message-ID: <20140616112110.3f509262.m.chehab@samsung.com>
-References: <1402762571-6316-1-git-send-email-m.chehab@samsung.com>
- <1402762571-6316-2-git-send-email-m.chehab@samsung.com>
- <539E9F25.7030504@ladisch.de>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH/RFC] ASoC: Drop const from struct
+ snd_soc_dai_link *of_node members
+Date: Mon, 16 Jun 2014 16:33:46 +0200
+Message-ID: <1402929226-5547-1-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-media-owner@vger.kernel.org>
-In-reply-to: <539E9F25.7030504@ladisch.de>
-Sender: linux-media-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7919F265455
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2014 16:35:26 +0200 (CEST)
+Received: from epcpsbgm2.samsung.com (epcpsbgm2 [203.254.230.27])
+ by mailout2.samsung.com
+ (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
+ 17 2011)) with ESMTP id <0N790093IN5MKCC0@mailout2.samsung.com> for
+ alsa-devel@alsa-project.org; Mon, 16 Jun 2014 23:34:34 +0900 (KST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Mon, 16 Jun 2014 09:39:17 +0200
-Clemens Ladisch <clemens@ladisch.de> escreveu:
-
-> (CC stable dropped; this is not how to submit stable patches.)
->=20
-> Mauro Carvalho Chehab wrote:
-> > The Auvitek 0828 chip, used on HVR950Q actually need two
-> > quirks and not just one.
-> >
-> > The first one, already implemented, enforces that it won't have
-> > channel swaps at the transfers.
-> >
-> > However, for TV applications, like xawtv and tvtime, another quirk
-> > is needed, in order to enforce that, at least 2 URB transfer
-> > intervals will be needed to fill a buffer.
->=20
-> > +			period =3D 2 * MAX_URBS * fp->maxpacksize;
-> > +			min_period =3D period * 90 / 100;
-> > +			max_period =3D period * 110 / 100;
->=20
-> I don't quite understand what you mean with "URB transfer interval".
->=20
-> All USB audio devices transfer packets in intervals between 125 =C2=B5=
-s and
-> 1000 =C2=B5s.
-
-In this case, it uses a 1000 =C2=B5s, as defined at the USB descriptor =
-for the
-au0828 devices (bInterval).
-
-=46YI, those TV devices are too limited, in terms of audio: they only p=
-rovide:
-	- 48 kHz rate;
-	- 16 bits/sample;
-	- 2 channels;
-	- maxumum URB size: 256 bytes.
-
-Its internal firmware is also too buggy. We needed to add several
-workarounds at both analog and digital stream support for some
-conditions that caused the chip to stop producing URBs, or made it
-to cause ESHUTDOWN errors while streaming.
-
-> MAX_URBS is a somewhat random value that is not directly derived from
-> either a hardware or software constraint.
-
-Yes, I noticed that.
-
-> Are you trying to enforce two packets per URB?
-
-No, I'm trying to enforce that it won't complain about underruns,
-while keeping the latency constrained.
-
-This is the same kind of fix we needed to do with em28xx-audio.c some
-time ago.
-
-In this case, I'm enforcing that the URB callback will receive 3072
-samples, and that the PCM timer won't be triggered too early, e. g.
-it will wait for the needed time for the URB callback to be called
-twice.
-
-> Why are you setting both a minimum and a maximum?
-
-When I wrote em28xx patches, I did several tests with different max
-latency constraints. On some cases, when it selected an odd number of
-periods, we would still have some troubles. So, it sounds safer to
-keep the same type of logic here.
-
-Anyway, just setting the minimum is enough for xawtv/tvtime to work
-with the default -alsa-latency parameter.
-
-> Isn't this affected by the constraints of the playback device?
-
-Hard to tell without having a test hardware with different constraints.
-All playback hardware I currently have supports 48 kHz rate, and suppor=
-ts
-a period size in the range of this=20
-The application takes those constraints into account
->=20
-> > Without it, buffer underruns happen when trying to syncronize the
-> > audio input from au0828 and the audio playback at the default audio
-> > output device.
->=20
-> This looks like a workaround for a userspace bug that would affect al=
-l
-> USB audio devices.  What period/buffer sizes are xawtv/tvtime trying =
-to
-> use?
-
-Both xawtv and tvtime use the same code for audio:
-	http://git.linuxtv.org/cgit.cgi/xawtv3.git/tree/common/alsa_stream.c
-
-There's an algorithm there that gets the period size form both the
-capture and the playback cards, trying to find a minimum period that
-would work properly for both.
-
-It tries to enforce a choice where the max latency would be constrained=
-=2E
-The max latency is 30ms, by default, but the user can change it via
--alsa-latency parameter.
-
-
-
-Regards,
-Mauro
+RHJvcHBpbmcgdGhlIGNvbnN0IHF1YWxpZmllcnMgcHJldmVudHMgInBhc3NpbmcgYXJndW1lbnQg
+MSBvZiDigJhvZl9ub2RlX3B1dOKAmQpkaXNjYXJkcyDigJhjb25zdOKAmSBxdWFsaWZpZXIgZnJv
+bSBwb2ludGVyIHRhcmdldCB0eXBlIiB0eXBlIHdhcm5pbmdzIHdoZW4KY29tcGlsaW5nIHRoZSBj
+b2RlIGRyb3BwaW5nIHJlZmVyZW5jZSB0byBjcHVfb2Zfbm9kZSwgY29kZWNfb2Zfbm9kZSBvcgpw
+bGF0Zm9ybV9vZl9ub2RlIHdpdGggd2l0aCBhbiBvZl9ub2RlX3B1dCgpIGZ1bmN0aW9uIGNhbGwu
+CgpUaGlzIGxldHMgdXMgdG8gYXZvaWQgY2FzdGluZyB0byBzdHJ1Y3QgZGV2aWNlX25vZGUgKiBv
+ciBjYWNoaW5nIHZhcmlhYmxlcwppbnRlcm5hbGx5IGluIGRyaXZlcnMganVzdCB0byBiZSBhYmxl
+IHRvIHByb3Blcmx5IGRyb3AgYSByZWZlcmVuY2UgdG8gdGhlCk9GIG5vZGUgb24gY2xlYW4gdXAg
+cGF0aHMuCgpTaWduZWQtb2ZmLWJ5OiBTeWx3ZXN0ZXIgTmF3cm9ja2kgPHMubmF3cm9ja2lAc2Ft
+c3VuZy5jb20+Ci0tLQogaW5jbHVkZS9zb3VuZC9zb2MuaCB8ICAgIDYgKysrLS0tCiAxIGZpbGUg
+Y2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2lu
+Y2x1ZGUvc291bmQvc29jLmggYi9pbmNsdWRlL3NvdW5kL3NvYy5oCmluZGV4IGVkOWUyZDcuLmE4
+ZDRiNzkgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvc291bmQvc29jLmgKKysrIGIvaW5jbHVkZS9zb3Vu
+ZC9zb2MuaApAQCAtODgxLDcgKzg4MSw3IEBAIHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIHsKIAkg
+KiBvbmx5IGZvciBjb2RlYyB0byBjb2RlYyBsaW5rcywgb3Igc3lzdGVtcyB1c2luZyBkZXZpY2Ug
+dHJlZS4KIAkgKi8KIAljb25zdCBjaGFyICpjcHVfbmFtZTsKLQljb25zdCBzdHJ1Y3QgZGV2aWNl
+X25vZGUgKmNwdV9vZl9ub2RlOworCXN0cnVjdCBkZXZpY2Vfbm9kZSAqY3B1X29mX25vZGU7CiAJ
+LyoKIAkgKiBZb3UgTUFZIHNwZWNpZnkgdGhlIERBSSBuYW1lIG9mIHRoZSBDUFUgREFJLiBJZiB0
+aGlzIGluZm9ybWF0aW9uIGlzCiAJICogb21pdHRlZCwgdGhlIENQVS1zaWRlIERBSSBpcyBtYXRj
+aGVkIHVzaW5nIC5jcHVfbmFtZS8uY3B1X29mX25vZGUKQEAgLTg5Myw3ICs4OTMsNyBAQCBzdHJ1
+Y3Qgc25kX3NvY19kYWlfbGluayB7CiAJICogRFQvT0Ygbm9kZSwgYnV0IG5vdCBib3RoLgogCSAq
+LwogCWNvbnN0IGNoYXIgKmNvZGVjX25hbWU7Ci0JY29uc3Qgc3RydWN0IGRldmljZV9ub2RlICpj
+b2RlY19vZl9ub2RlOworCXN0cnVjdCBkZXZpY2Vfbm9kZSAqY29kZWNfb2Zfbm9kZTsKIAkvKiBZ
+b3UgTVVTVCBzcGVjaWZ5IHRoZSBEQUkgbmFtZSB3aXRoaW4gdGhlIGNvZGVjICovCiAJY29uc3Qg
+Y2hhciAqY29kZWNfZGFpX25hbWU7CiAJLyoKQEAgLTkwMiw3ICs5MDIsNyBAQCBzdHJ1Y3Qgc25k
+X3NvY19kYWlfbGluayB7CiAJICogZG8gbm90IG5lZWQgYSBwbGF0Zm9ybS4KIAkgKi8KIAljb25z
+dCBjaGFyICpwbGF0Zm9ybV9uYW1lOwotCWNvbnN0IHN0cnVjdCBkZXZpY2Vfbm9kZSAqcGxhdGZv
+cm1fb2Zfbm9kZTsKKwlzdHJ1Y3QgZGV2aWNlX25vZGUgKnBsYXRmb3JtX29mX25vZGU7CiAJaW50
+IGJlX2lkOwkvKiBvcHRpb25hbCBJRCBmb3IgbWFjaGluZSBkcml2ZXIgQkUgaWRlbnRpZmljYXRp
+b24gKi8KCiAJY29uc3Qgc3RydWN0IHNuZF9zb2NfcGNtX3N0cmVhbSAqcGFyYW1zOwotLQoxLjcu
+OS41CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
