@@ -1,65 +1,100 @@
-From: Mark Brown <broonie@kernel.org>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 1/4] mfd: arizona: Export function to control subsystem
- DVFS
-Date: Mon, 16 Jun 2014 17:48:58 +0100
-Message-ID: <20140616164858.GI5099@sirena.org.uk>
-References: <20140609150013.GA5229@opensource.wolfsonmicro.com>
- <20140609150226.GB5229@opensource.wolfsonmicro.com>
- <20140616164242.GB14323@lee--X1>
+	DVFS
+Date: Mon, 16 Jun 2014 18:06:54 +0100
+Message-ID: <20140616170654.GB26741@opensource.wolfsonmicro.com>
+References: <20140609150013.GA5229@opensource.wolfsonmicro.com> <20140609150226.GB5229@opensource.wolfsonmicro.com> <20140616164242.GB14323@lee--X1>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="A+YNfBJfL1GjoVjN"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
 In-Reply-To: <20140616164242.GB14323@lee--X1>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Lee Jones <lee.jones@linaro.org>
-Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, sameo@linux.intel.com, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, sameo@linux.intel.com, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
-
-
---A+YNfBJfL1GjoVjN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
 On Mon, Jun 16, 2014 at 05:42:42PM +0100, Lee Jones wrote:
 > On Mon, 09 Jun 2014, Richard Fitzgerald wrote:
+> 
+> > Moving this control from being a side-effect of the LDO1
+> > regulator driver to a specific exported function.
+> > 
+> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> > ---
+> >  drivers/mfd/arizona-core.c       |   84 ++++++++++++++++++++++++++++++++++++++
+> >  include/linux/mfd/arizona/core.h |   12 +++++
+> >  2 files changed, 96 insertions(+), 0 deletions(-)
+> > 
+> > diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+> > index 58e1fe5..a1b4fe6 100644
+> > --- a/drivers/mfd/arizona-core.c
+> > +++ b/drivers/mfd/arizona-core.c
+> > @@ -94,6 +94,89 @@ int arizona_clk32k_disable(struct arizona *arizona)
+> >  }
+> >  EXPORT_SYMBOL_GPL(arizona_clk32k_disable);
+> >  
+> > +int arizona_dvfs_up(struct arizona *arizona, unsigned int mask)
+> > +{
+> > +	unsigned int new_flags;
+> > +	int ret = 0;
+> > +
+> > +	mutex_lock(&arizona->subsys_max_lock);
+> > +
+> > +	new_flags = arizona->subsys_max_rq | mask;
+> 
+> This doesn't look like a mask to me.  It looks like you're setting
+> flags rather than masking out bits?
 
+Richard is on holiday so I will fill in for him. Yeah these are
+flags I think mask is just a poorly chosen variable name.
+
+> 
 > > +	if (arizona->subsys_max_rq != new_flags) {
-
+> > +		switch (arizona->type) {
+> > +		case WM5102:
+> > +		case WM8997:
+> > +			ret = regulator_set_voltage(arizona->dcvdd,
+> > +						    1800000, 1800000);
+> > +			if (ret != 0) {
+> > +				dev_err(arizona->dev,
+> > +					"Failed to raise dcvdd (%u)\n", ret);
+> > +				goto err;
+> > +			}
+> > +
+> > +			ret = regmap_update_bits(arizona->regmap,
+> > +					ARIZONA_DYNAMIC_FREQUENCY_SCALING_1,
+> > +					ARIZONA_SUBSYS_MAX_FREQ, 1);
+> > +			if (ret != 0) {
+> > +				dev_err(arizona->dev,
+> > +					"Failed to enable subsys max (%u)\n",
+> > +					ret);
+> > +				regulator_set_voltage(arizona->dcvdd,
+> > +						      1200000, 1800000);
+> > +				goto err;
+> > +			}
+> > +			break;
+> > +
+> > +		default:
+> > +			break;
+> > +		}
+> 
 > I don't really get this.  What's the point in passing the mask
 > parameter - I don't see it being used for anything in this routine? No
 > matter what is passed in you always just turn on the same regulator.
-
+> 
 > What am I missing?
 
-AFAICT it's a bunch of different independently selectable requests for
-the voltage to ramped with any one of them causing it to happen.
+As Mark said each bit represents something that can require the
+higher clock rate. Any of the causes being active requires the
+higher clock rate.
 
-I did wonder why this wasn't just done by refcounting, that's the more
-normal pattern in the kernel, though I guess it's possible some of them
-need different ramps on different devices.
+> 
+> > +	arizona->subsys_max_rq = new_flags;
+> 
+> This tabbing is incorrect.
 
---A+YNfBJfL1GjoVjN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Will get fixed with the other comments.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTnx/3AAoJELSic+t+oim91vgP/3xqnq3yz4symAO68ZBTjY+E
-wbzAmXGb8GU9Zjkcl/4A1j7OCvdc5d+ZSKBQkVbG4VuB/umDyt73H7nw/VNfiI8d
-mlSb3Ewh9+BIL9gedk5RNV/JHZvgcqmzmKASQWoC32p8h4wS9emhov2OQOy70Ysc
-BvD4lm8vjD4sBwDZKhTCMrWnO2kj6JVtH2BPiwnKwW635d/SH98nfi2/+hPorC2n
-FYXeleMNlT3kiLuqe2VBQmSx99aSQoqVj8TuzBD18kTgQUc58o8O3JE3ixOmafyh
-BVCDtb0ZXJvhE1gyJCNAEaDPgRGhP0jTdl/S48mtEBsaHj7ZaoCYYio8292lX/6F
-CRArhYuF7VK1JuYDQMJqRqwvPHRGqxVlntPxekR6S+EdyI5BPoO7ehx+O3pq+1Tv
-z33TdzfzSlaRR17l7NdFQj2jLx+ljGvRnlDcNzi2mqxJe+Z1X0d9OQw5ajh8jF3K
-veMrBuq/5bJ6mBSjQ2aFiYCEkI6n0dC/RhW+p/kHt7o5/RZIKGSPDHHDeEuJsuHM
-i9XFVmt58ky0ZE1EFgR4olx87sEAmvFOrgwMWbReSZcHBTwC4IaRuyHbrmopGyOt
-3laIB6rzQi7YOlp51WbLPyUIFK45zPF84GgUVkeB8C+k1m2izg6goq6NuFQr3t3n
-n4Tn3f65/YpV2eGAmgF9
-=nMGS
------END PGP SIGNATURE-----
-
---A+YNfBJfL1GjoVjN--
+Thanks,
+Charles
