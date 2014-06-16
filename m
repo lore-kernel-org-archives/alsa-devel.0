@@ -1,76 +1,66 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND] ASoC: rt5677: Convert to use
-	rl6231_get_clk_info
-Date: Mon, 16 Jun 2014 15:58:51 +0100
-Message-ID: <20140616145851.GH5099@sirena.org.uk>
-References: <1402361856.4636.0.camel@phoenix>
+From: Mauro Carvalho Chehab <m.chehab@samsung.com>
+Subject: Re: [alsa-devel] [PATCH 1/3] sound: Add a quirk to enforce period_bytes
+Date: Mon, 16 Jun 2014 12:05:44 -0300
+Message-ID: <20140616120544.10ef75f4.m.chehab@samsung.com>
+References: <1402762571-6316-1-git-send-email-m.chehab@samsung.com>
+ <1402762571-6316-2-git-send-email-m.chehab@samsung.com>
+ <539E9F25.7030504@ladisch.de>
+ <CAGoCfiw3du9rXFvDfsUYLu4Ru6mbdWa+LtAyYupXosM0n-71NA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8075364899681689066=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A8122265461
- for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2014 16:59:02 +0200 (CEST)
-In-Reply-To: <1402361856.4636.0.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-reply-to: <CAGoCfiw3du9rXFvDfsUYLu4Ru6mbdWa+LtAyYupXosM0n-71NA@mail.gmail.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Devin Heitmueller <dheitmueller@kernellabs.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+Em Mon, 16 Jun 2014 09:22:08 -0400
+Devin Heitmueller <dheitmueller@kernellabs.com> escreveu:
 
---===============8075364899681689066==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0y/VvS0T6GrSShsQ"
-Content-Disposition: inline
+> > This looks like a workaround for a userspace bug that would affect all
+> > USB audio devices.  What period/buffer sizes are xawtv/tvtime trying to
+> > use?
+> 
+> I have similar concerns, although I don't know what the right solution
+> is.  For example, the last time Mauro tweaked the latency in tvtime,
+> it broke support for all cx231xx devices (note that tvtime and xawtv
+> share essentially the same ALSA code):
+> 
+> http://git.linuxtv.org/cgit.cgi/tvtime.git/commit/?id=3d58ba563bfcc350c180b59a94cec746ccad6ebe
+> 
+> It seems like there is definitely something wrong with the
+> latency/period selection in both applications, but we need some
+> insight from people who are better familiar with the ALSA subsystem
+> for advice on the "right" way to do low latency audio capture (i.e.
+> properly negotiating minimal latency in a way that works with all
+> devices).
 
+Well, I suspect that the issue is at Kernel level.
 
---0y/VvS0T6GrSShsQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Let's see the au0828 case:
+	48 kHz, 2 bytes/sample, 2 channels, 256 maxpacksize, 1 ms URB
+interval (bInterval = 1).
 
-On Tue, Jun 10, 2014 at 08:57:36AM +0800, Axel Lin wrote:
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> Tested-by: Oder Chiou <oder_chiou@realtek.com>
+In this case, there is 192 bytes per 1ms period.	
 
-Applied, thanks.
+Let's assume that the period was set to 3456, with corresponds to
+a latency of 18 ms.
 
---0y/VvS0T6GrSShsQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+In this case, as NUM_URBS = 12, it means that the transfer buffer
+will be set to its maximum value of 3072 bytes per URB pack (12 * 256),
+and the URB transfer_callback will be called on every 16 ms.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+So, what happens is:
 
-iQIcBAEBAgAGBQJTnwYoAAoJELSic+t+oim923AP/3u05cAmviRLpNjIHcPbTIRi
-lkOy+qbVfOAHIShGtaUAHNzk3AIHOPZmX3evV5qE/LedcmUtz20TBlA8yMssWrUo
-HCCUE5OXtENXshD6Zk8OtiK2Aikn0NbS7KY83+PXsua5VGqZVmh7dKNyBDQztE/B
-a7F8YJBcwBVLUTLs0Xp6wpetJzqx+CmYzx4djW/xDPwVsfbG5y5VPT5Vtm18EINW
-8VxdmxuIAT3E4JREbeJvZypdCMA3h4iMOMezK0Y9KNs8BhbC/1J4Z476WQa96otb
-YRcqdbMKr7tPXh70MPvJ69zSkuKpGnNX50m2ReAXD6Gco/vpoGTRAqfc8n0GQSVn
-pmkGbkBsruo+hM4uZbqhiVr2HVBga4wDpJ+Du3XB6mmhqcn1js72zRXMWxNIJr2H
-vQOJ5iU0j+FxO/pc/Hn+QQ78sw+RYDvn+WvJ10EWEfsrl0FMkSxidZTClH4caec2
-k72uoSaAUV04zw5ooDzDlUQ2mlW3VpXtZU+yRwUID6Ef/5LGIazEeRnX1hELSdLV
-NSZy6DQWu0mfXniqox0cLYcn93hhN+44eVXUfZAuKFQW+QW46sYF9M242rGlhyr/
-t07J2t/Bp6IcaHMFrAJF0VzyZ0HTOMR8AvaWqtBpL1hoF3kj2CFyTHGOmO6f1c3t
-376XQkjdGQKUgXPIkh4J
-=h1bD
------END PGP SIGNATURE-----
+	- after 16 ms, the first 3072 bytes arrive. The next
+	  packet will take another 16ms to arrive;
+	- after 2 ms, underrun, as the period_size was not
+	  filled yet.
 
---0y/VvS0T6GrSShsQ--
+The thing is that any latency that between 16 ms and 32 ms
+are invalid, as the URB settings won't support it.
 
---===============8075364899681689066==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8075364899681689066==--
+Regards,
+Mauro
