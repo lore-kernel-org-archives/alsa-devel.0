@@ -1,55 +1,121 @@
-From: Devin Heitmueller <dheitmueller@kernellabs.com>
-Subject: Re: [PATCH 1/3] sound: Add a quirk to enforce
-	period_bytes
-Date: Mon, 16 Jun 2014 09:22:08 -0400
-Message-ID: <CAGoCfiw3du9rXFvDfsUYLu4Ru6mbdWa+LtAyYupXosM0n-71NA@mail.gmail.com>
+From: Mauro Carvalho Chehab <m.chehab@samsung.com>
+Subject: Re: [alsa-devel] [PATCH 1/3] sound: Add a quirk to enforce period_bytes
+Date: Mon, 16 Jun 2014 11:21:10 -0300
+Message-ID: <20140616112110.3f509262.m.chehab@samsung.com>
 References: <1402762571-6316-1-git-send-email-m.chehab@samsung.com>
  <1402762571-6316-2-git-send-email-m.chehab@samsung.com>
  <539E9F25.7030504@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f178.google.com (mail-qc0-f178.google.com
- [209.85.216.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D3DD2652E1
- for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2014 15:22:09 +0200 (CEST)
-Received: by mail-qc0-f178.google.com with SMTP id c9so7632937qcz.37
- for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2014 06:22:08 -0700 (PDT)
-In-Reply-To: <539E9F25.7030504@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-media-owner@vger.kernel.org>
+In-reply-to: <539E9F25.7030504@ladisch.de>
+Sender: linux-media-owner@vger.kernel.org
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Mauro Carvalho Chehab <m.chehab@samsung.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-> This looks like a workaround for a userspace bug that would affect all
-> USB audio devices.  What period/buffer sizes are xawtv/tvtime trying to
+Em Mon, 16 Jun 2014 09:39:17 +0200
+Clemens Ladisch <clemens@ladisch.de> escreveu:
+
+> (CC stable dropped; this is not how to submit stable patches.)
+>=20
+> Mauro Carvalho Chehab wrote:
+> > The Auvitek 0828 chip, used on HVR950Q actually need two
+> > quirks and not just one.
+> >
+> > The first one, already implemented, enforces that it won't have
+> > channel swaps at the transfers.
+> >
+> > However, for TV applications, like xawtv and tvtime, another quirk
+> > is needed, in order to enforce that, at least 2 URB transfer
+> > intervals will be needed to fill a buffer.
+>=20
+> > +			period =3D 2 * MAX_URBS * fp->maxpacksize;
+> > +			min_period =3D period * 90 / 100;
+> > +			max_period =3D period * 110 / 100;
+>=20
+> I don't quite understand what you mean with "URB transfer interval".
+>=20
+> All USB audio devices transfer packets in intervals between 125 =C2=B5=
+s and
+> 1000 =C2=B5s.
+
+In this case, it uses a 1000 =C2=B5s, as defined at the USB descriptor =
+for the
+au0828 devices (bInterval).
+
+=46YI, those TV devices are too limited, in terms of audio: they only p=
+rovide:
+	- 48 kHz rate;
+	- 16 bits/sample;
+	- 2 channels;
+	- maxumum URB size: 256 bytes.
+
+Its internal firmware is also too buggy. We needed to add several
+workarounds at both analog and digital stream support for some
+conditions that caused the chip to stop producing URBs, or made it
+to cause ESHUTDOWN errors while streaming.
+
+> MAX_URBS is a somewhat random value that is not directly derived from
+> either a hardware or software constraint.
+
+Yes, I noticed that.
+
+> Are you trying to enforce two packets per URB?
+
+No, I'm trying to enforce that it won't complain about underruns,
+while keeping the latency constrained.
+
+This is the same kind of fix we needed to do with em28xx-audio.c some
+time ago.
+
+In this case, I'm enforcing that the URB callback will receive 3072
+samples, and that the PCM timer won't be triggered too early, e. g.
+it will wait for the needed time for the URB callback to be called
+twice.
+
+> Why are you setting both a minimum and a maximum?
+
+When I wrote em28xx patches, I did several tests with different max
+latency constraints. On some cases, when it selected an odd number of
+periods, we would still have some troubles. So, it sounds safer to
+keep the same type of logic here.
+
+Anyway, just setting the minimum is enough for xawtv/tvtime to work
+with the default -alsa-latency parameter.
+
+> Isn't this affected by the constraints of the playback device?
+
+Hard to tell without having a test hardware with different constraints.
+All playback hardware I currently have supports 48 kHz rate, and suppor=
+ts
+a period size in the range of this=20
+The application takes those constraints into account
+>=20
+> > Without it, buffer underruns happen when trying to syncronize the
+> > audio input from au0828 and the audio playback at the default audio
+> > output device.
+>=20
+> This looks like a workaround for a userspace bug that would affect al=
+l
+> USB audio devices.  What period/buffer sizes are xawtv/tvtime trying =
+to
 > use?
 
-I have similar concerns, although I don't know what the right solution
-is.  For example, the last time Mauro tweaked the latency in tvtime,
-it broke support for all cx231xx devices (note that tvtime and xawtv
-share essentially the same ALSA code):
+Both xawtv and tvtime use the same code for audio:
+	http://git.linuxtv.org/cgit.cgi/xawtv3.git/tree/common/alsa_stream.c
 
-http://git.linuxtv.org/cgit.cgi/tvtime.git/commit/?id=3d58ba563bfcc350c180b59a94cec746ccad6ebe
+There's an algorithm there that gets the period size form both the
+capture and the playback cards, trying to find a minimum period that
+would work properly for both.
 
-It seems like there is definitely something wrong with the
-latency/period selection in both applications, but we need some
-insight from people who are better familiar with the ALSA subsystem
-for advice on the "right" way to do low latency audio capture (i.e.
-properly negotiating minimal latency in a way that works with all
-devices).
+It tries to enforce a choice where the max latency would be constrained=
+=2E
+The max latency is 30ms, by default, but the user can change it via
+-alsa-latency parameter.
 
-Devin
 
--- 
-Devin J. Heitmueller - Kernel Labs
-http://www.kernellabs.com
+
+Regards,
+Mauro
