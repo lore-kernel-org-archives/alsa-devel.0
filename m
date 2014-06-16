@@ -1,7 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 10/11] ASoC: dapm: Remove DAI DAPM context
-Date: Mon, 16 Jun 2014 18:13:10 +0200
-Message-ID: <1402935191-18398-11-git-send-email-lars@metafoo.de>
+Subject: [PATCH v2 11/11] ASoC: dapm: Remove platform field
+	from widget and dapm context struct
+Date: Mon, 16 Jun 2014 18:13:11 +0200
+Message-ID: <1402935191-18398-12-git-send-email-lars@metafoo.de>
 References: <1402935191-18398-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-035.synserver.de (smtp-out-035.synserver.de
  [212.40.185.35])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AE5426549F
- for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2014 18:13:29 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D344C265455
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2014 18:13:30 +0200 (CEST)
 In-Reply-To: <1402935191-18398-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,71 +26,61 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The DAI DAPM context was added in commit be09ad90 ("ASoC: core: Add platform DAI
-widget mapping") and the only user was removed again in commit ae10e7e8f ("ASoC:
-core: Only add platform DAI widgets once."). Now that we have a per component
-DAPM context it is unlikely that we'll need the DAI DAPM context again.
+The platform field in the snd_soc_dapm_widget and snd_soc_dapm_context structs
+is now unused can be removed. New code that wants to get the platform for a
+widget or dapm context should use snd_soc_dapm_to_platform(w->dapm) or
+snd_soc_dapm_to_platform(dapm).
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc-dai.h |  1 -
- sound/soc/soc-core.c    | 12 +-----------
- 2 files changed, 1 insertion(+), 12 deletions(-)
+ include/sound/soc-dapm.h | 2 --
+ sound/soc/soc-core.c     | 1 -
+ sound/soc/soc-dapm.c     | 1 -
+ 3 files changed, 4 deletions(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 688f2ba..031be2a 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -257,7 +257,6 @@ struct snd_soc_dai {
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index e292683..aac04ff 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -526,7 +526,6 @@ struct snd_soc_dapm_widget {
+ 	const char *name;		/* widget name */
+ 	const char *sname;	/* stream name */
+ 	struct snd_soc_codec *codec;
+-	struct snd_soc_platform *platform;
+ 	struct list_head list;
+ 	struct snd_soc_dapm_context *dapm;
  
- 	struct snd_soc_dapm_widget *playback_widget;
- 	struct snd_soc_dapm_widget *capture_widget;
--	struct snd_soc_dapm_context dapm;
+@@ -595,7 +594,6 @@ struct snd_soc_dapm_context {
+ 	struct device *dev; /* from parent - for debug */
+ 	struct snd_soc_component *component; /* parent component */
+ 	struct snd_soc_codec *codec; /* parent codec */
+-	struct snd_soc_platform *platform; /* parent platform */
+ 	struct snd_soc_card *card; /* parent card */
  
- 	/* DAI DMA data */
- 	void *playback_dma_data;
+ 	/* used during DAPM updates */
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a414689..19dfa80 100644
+index 19dfa80..7ad4838 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1048,11 +1048,8 @@ static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
- 					cpu_dai->name, err);
- 		}
- 		cpu_dai->probed = 0;
--
--		if (!cpu_dai->codec) {
--			snd_soc_dapm_free(&cpu_dai->dapm);
-+		if (!cpu_dai->codec)
- 			module_put(cpu_dai->dev->driver->owner);
--		}
- 	}
- }
+@@ -4176,7 +4176,6 @@ int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
  
-@@ -1510,11 +1507,8 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
- 	if (!cpu_dai->probed &&
- 			cpu_dai->driver->probe_order == order) {
- 		if (!cpu_dai->codec) {
--			cpu_dai->dapm.card = card;
- 			if (!try_module_get(cpu_dai->dev->driver->owner))
- 				return -ENODEV;
--
--			list_add(&cpu_dai->dapm.list, &card->dapm_list);
- 		}
+ 	platform->dev = dev;
+ 	platform->driver = platform_drv;
+-	platform->component.dapm.platform = platform;
+ 	if (platform_drv->write)
+ 		platform->component.write = snd_soc_platform_drv_write;
+ 	if (platform_drv->read)
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 4702b92..4bf08cf 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3097,7 +3097,6 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
  
- 		if (cpu_dai->driver->probe) {
-@@ -3975,13 +3969,9 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
- 		dai->component = component;
- 		dai->dev = dev;
- 		dai->driver = &dai_drv[i];
--		dai->dapm.dev = dev;
- 		if (!dai->driver->ops)
- 			dai->driver->ops = &null_dai_ops;
- 
--		if (!dai->codec)
--			dai->dapm.idle_bias_off = 1;
--
- 		list_add(&dai->list, &component->dai_list);
- 
- 		dev_dbg(dev, "ASoC: Registered DAI '%s'\n", dai->name);
+ 	w->dapm = dapm;
+ 	w->codec = dapm->codec;
+-	w->platform = dapm->platform;
+ 	INIT_LIST_HEAD(&w->sources);
+ 	INIT_LIST_HEAD(&w->sinks);
+ 	INIT_LIST_HEAD(&w->list);
 -- 
 1.8.0
