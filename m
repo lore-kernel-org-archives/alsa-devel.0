@@ -1,180 +1,65 @@
-From: Lee Jones <lee.jones@linaro.org>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 1/4] mfd: arizona: Export function to control subsystem
  DVFS
-Date: Mon, 16 Jun 2014 17:42:42 +0100
-Message-ID: <20140616164242.GB14323@lee--X1>
+Date: Mon, 16 Jun 2014 17:48:58 +0100
+Message-ID: <20140616164858.GI5099@sirena.org.uk>
 References: <20140609150013.GA5229@opensource.wolfsonmicro.com>
  <20140609150226.GB5229@opensource.wolfsonmicro.com>
+ <20140616164242.GB14323@lee--X1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="A+YNfBJfL1GjoVjN"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140609150226.GB5229@opensource.wolfsonmicro.com>
+In-Reply-To: <20140616164242.GB14323@lee--X1>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: sameo@linux.intel.com, ckeepax@opensource.wolfsonmicro.com, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, sameo@linux.intel.com, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 09 Jun 2014, Richard Fitzgerald wrote:
 
-> Moving this control from being a side-effect of the LDO1
-> regulator driver to a specific exported function.
->=20
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> ---
->  drivers/mfd/arizona-core.c       |   84 ++++++++++++++++++++++++++++=
-++++++++++
->  include/linux/mfd/arizona/core.h |   12 +++++
->  2 files changed, 96 insertions(+), 0 deletions(-)
->=20
-> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-> index 58e1fe5..a1b4fe6 100644
-> --- a/drivers/mfd/arizona-core.c
-> +++ b/drivers/mfd/arizona-core.c
-> @@ -94,6 +94,89 @@ int arizona_clk32k_disable(struct arizona *arizona=
-)
->  }
->  EXPORT_SYMBOL_GPL(arizona_clk32k_disable);
-> =20
-> +int arizona_dvfs_up(struct arizona *arizona, unsigned int mask)
-> +{
-> +	unsigned int new_flags;
-> +	int ret =3D 0;
-> +
-> +	mutex_lock(&arizona->subsys_max_lock);
-> +
-> +	new_flags =3D arizona->subsys_max_rq | mask;
+--A+YNfBJfL1GjoVjN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This doesn't look like a mask to me.  It looks like you're setting
-flags rather than masking out bits?
+On Mon, Jun 16, 2014 at 05:42:42PM +0100, Lee Jones wrote:
+> On Mon, 09 Jun 2014, Richard Fitzgerald wrote:
 
-> +	if (arizona->subsys_max_rq !=3D new_flags) {
-> +		switch (arizona->type) {
-> +		case WM5102:
-> +		case WM8997:
-> +			ret =3D regulator_set_voltage(arizona->dcvdd,
-> +						    1800000, 1800000);
-> +			if (ret !=3D 0) {
-> +				dev_err(arizona->dev,
-> +					"Failed to raise dcvdd (%u)\n", ret);
-> +				goto err;
-> +			}
-> +
-> +			ret =3D regmap_update_bits(arizona->regmap,
-> +					ARIZONA_DYNAMIC_FREQUENCY_SCALING_1,
-> +					ARIZONA_SUBSYS_MAX_FREQ, 1);
-> +			if (ret !=3D 0) {
-> +				dev_err(arizona->dev,
-> +					"Failed to enable subsys max (%u)\n",
-> +					ret);
-> +				regulator_set_voltage(arizona->dcvdd,
-> +						      1200000, 1800000);
-> +				goto err;
-> +			}
-> +			break;
-> +
-> +		default:
-> +			break;
-> +		}
+> > +	if (arizona->subsys_max_rq != new_flags) {
 
-I don't really get this.  What's the point in passing the mask
-parameter - I don't see it being used for anything in this routine? No
-matter what is passed in you always just turn on the same regulator.
+> I don't really get this.  What's the point in passing the mask
+> parameter - I don't see it being used for anything in this routine? No
+> matter what is passed in you always just turn on the same regulator.
 
-What am I missing?
+> What am I missing?
 
-> +	arizona->subsys_max_rq =3D new_flags;
+AFAICT it's a bunch of different independently selectable requests for
+the voltage to ramped with any one of them causing it to happen.
 
-This tabbing is incorrect.
-> +	}
-> +err:
-> +	mutex_unlock(&arizona->subsys_max_lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(arizona_dvfs_up);
-> +
-> +int arizona_dvfs_down(struct arizona *arizona, unsigned int mask)
-> +{
-> +	int ret =3D 0;
-> +
-> +	mutex_lock(&arizona->subsys_max_lock);
-> +
-> +	arizona->subsys_max_rq &=3D ~mask;
-> +
-> +	if (arizona->subsys_max_rq =3D=3D 0) {
-> +		switch (arizona->type) {
-> +		case WM5102:
-> +		case WM8997:
-> +			ret =3D regmap_update_bits(arizona->regmap,
-> +					ARIZONA_DYNAMIC_FREQUENCY_SCALING_1,
-> +					ARIZONA_SUBSYS_MAX_FREQ, 0);
-> +			if (ret !=3D 0)
-> +				dev_err(arizona->dev,
-> +					"Failed to disable subsys max (%u)\n",
-> +					ret);
-> +
-> +			ret =3D regulator_set_voltage(arizona->dcvdd,
-> +						    1200000, 1800000);
-> +			if (ret !=3D 0)
-> +				dev_err(arizona->dev,
-> +					"Failed to lower dcvdd (%u)\n", ret);
-> +			break;
-> +
-> +		default:
-> +			break;
-> +		}
-> +	}
-> +
-> +	mutex_unlock(&arizona->subsys_max_lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(arizona_dvfs_down);
-> +
->  static irqreturn_t arizona_clkgen_err(int irq, void *data)
->  {
->  	struct arizona *arizona =3D data;
-> @@ -645,6 +728,7 @@ int arizona_dev_init(struct arizona *arizona)
-> =20
->  	dev_set_drvdata(arizona->dev, arizona);
->  	mutex_init(&arizona->clk_lock);
-> +	mutex_init(&arizona->subsys_max_lock);
-> =20
->  	if (dev_get_platdata(arizona->dev))
->  		memcpy(&arizona->pdata, dev_get_platdata(arizona->dev),
-> diff --git a/include/linux/mfd/arizona/core.h b/include/linux/mfd/ari=
-zona/core.h
-> index 76564af..b4b8a7e 100644
-> --- a/include/linux/mfd/arizona/core.h
-> +++ b/include/linux/mfd/arizona/core.h
-> @@ -132,11 +132,23 @@ struct arizona {
->  	struct mutex clk_lock;
->  	int clk32k_ref;
-> =20
-> +	struct mutex subsys_max_lock;
-> +	unsigned int subsys_max_rq;
-> +
->  	struct snd_soc_dapm_context *dapm;
->  };
-> =20
-> +#define ARIZONA_DVFS_SR1_RQ          0x00000001
-> +#define ARIZONA_DVFS_SR2_RQ          0x00000002
-> +#define ARIZONA_DVFS_SR3_RQ          0x00000004
-> +#define ARIZONA_DVFS_ASR1_RQ         0x00000010
-> +#define ARIZONA_DVFS_ASR2_RQ         0x00000020
-> +#define ARIZONA_DVFS_ADSP1_RQ        0x00010000
-> +
->  int arizona_clk32k_enable(struct arizona *arizona);
->  int arizona_clk32k_disable(struct arizona *arizona);
-> +int arizona_dvfs_up(struct arizona *arizona, unsigned int mask);
-> +int arizona_dvfs_down(struct arizona *arizona, unsigned int mask);
-> =20
->  int arizona_request_irq(struct arizona *arizona, int irq, char *name=
-,
->  			irq_handler_t handler, void *data);
+I did wonder why this wasn't just done by refcounting, that's the more
+normal pattern in the kernel, though I guess it's possible some of them
+need different ramps on different devices.
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+--A+YNfBJfL1GjoVjN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTnx/3AAoJELSic+t+oim91vgP/3xqnq3yz4symAO68ZBTjY+E
+wbzAmXGb8GU9Zjkcl/4A1j7OCvdc5d+ZSKBQkVbG4VuB/umDyt73H7nw/VNfiI8d
+mlSb3Ewh9+BIL9gedk5RNV/JHZvgcqmzmKASQWoC32p8h4wS9emhov2OQOy70Ysc
+BvD4lm8vjD4sBwDZKhTCMrWnO2kj6JVtH2BPiwnKwW635d/SH98nfi2/+hPorC2n
+FYXeleMNlT3kiLuqe2VBQmSx99aSQoqVj8TuzBD18kTgQUc58o8O3JE3ixOmafyh
+BVCDtb0ZXJvhE1gyJCNAEaDPgRGhP0jTdl/S48mtEBsaHj7ZaoCYYio8292lX/6F
+CRArhYuF7VK1JuYDQMJqRqwvPHRGqxVlntPxekR6S+EdyI5BPoO7ehx+O3pq+1Tv
+z33TdzfzSlaRR17l7NdFQj2jLx+ljGvRnlDcNzi2mqxJe+Z1X0d9OQw5ajh8jF3K
+veMrBuq/5bJ6mBSjQ2aFiYCEkI6n0dC/RhW+p/kHt7o5/RZIKGSPDHHDeEuJsuHM
+i9XFVmt58ky0ZE1EFgR4olx87sEAmvFOrgwMWbReSZcHBTwC4IaRuyHbrmopGyOt
+3laIB6rzQi7YOlp51WbLPyUIFK45zPF84GgUVkeB8C+k1m2izg6goq6NuFQr3t3n
+n4Tn3f65/YpV2eGAmgF9
+=nMGS
+-----END PGP SIGNATURE-----
+
+--A+YNfBJfL1GjoVjN--
