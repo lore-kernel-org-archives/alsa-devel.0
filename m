@@ -1,66 +1,133 @@
-From: Mauro Carvalho Chehab <m.chehab@samsung.com>
-Subject: Re: [alsa-devel] [PATCH 1/3] sound: Add a quirk to enforce period_bytes
-Date: Mon, 16 Jun 2014 12:05:44 -0300
-Message-ID: <20140616120544.10ef75f4.m.chehab@samsung.com>
-References: <1402762571-6316-1-git-send-email-m.chehab@samsung.com>
- <1402762571-6316-2-git-send-email-m.chehab@samsung.com>
- <539E9F25.7030504@ladisch.de>
- <CAGoCfiw3du9rXFvDfsUYLu4Ru6mbdWa+LtAyYupXosM0n-71NA@mail.gmail.com>
+From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+Subject: =?utf-8?q?alsa-lib=3A_pcm=5Fplug=3A_fix_float_conver?=
+ =?utf-8?q?sion_for_user_specified_ttable?=
+Date: Mon, 16 Jun 2014 19:52:51 +0400
+Message-ID: <1402933971.835286264@f359.i.mail.ru>
+Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-reply-to: <CAGoCfiw3du9rXFvDfsUYLu4Ru6mbdWa+LtAyYupXosM0n-71NA@mail.gmail.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Devin Heitmueller <dheitmueller@kernellabs.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from f359.i.mail.ru (f359.i.mail.ru [217.69.141.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9135265466
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jun 2014 17:52:52 +0200 (CEST)
+Received: from mail by f359.i.mail.ru with local (envelope-from
+ <sergemp@mail.ru>) id 1WwZDH-0003PX-TK
+ for alsa-devel@alsa-project.org; Mon, 16 Jun 2014 19:52:52 +0400
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?YWxzYS1kZXZlbA==?= <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Em Mon, 16 Jun 2014 09:22:08 -0400
-Devin Heitmueller <dheitmueller@kernellabs.com> escreveu:
+Move custom ttable with equal channels case from a separate ttable_last
+exception into a common plugins insertion loop.
+Fixes plug with ttable for float pcms (jack, ladspa).
+Example: aplay -fFLOAT_LE /dev/zero
+pcm.!default {
+    type plug
+    slave.pcm { type null }
+    ttable.0.0 1
+}
+---
+ src/pcm/pcm_plug.c |   36 +++++++++++-------------------------
+ 1 file changed, 11 insertions(+), 25 deletions(-)
 
-> > This looks like a workaround for a userspace bug that would affect all
-> > USB audio devices.  What period/buffer sizes are xawtv/tvtime trying to
-> > use?
-> 
-> I have similar concerns, although I don't know what the right solution
-> is.  For example, the last time Mauro tweaked the latency in tvtime,
-> it broke support for all cx231xx devices (note that tvtime and xawtv
-> share essentially the same ALSA code):
-> 
-> http://git.linuxtv.org/cgit.cgi/tvtime.git/commit/?id=3d58ba563bfcc350c180b59a94cec746ccad6ebe
-> 
-> It seems like there is definitely something wrong with the
-> latency/period selection in both applications, but we need some
-> insight from people who are better familiar with the ALSA subsystem
-> for advice on the "right" way to do low latency audio capture (i.e.
-> properly negotiating minimal latency in a way that works with all
-> devices).
-
-Well, I suspect that the issue is at Kernel level.
-
-Let's see the au0828 case:
-	48 kHz, 2 bytes/sample, 2 channels, 256 maxpacksize, 1 ms URB
-interval (bInterval = 1).
-
-In this case, there is 192 bytes per 1ms period.	
-
-Let's assume that the period was set to 3456, with corresponds to
-a latency of 18 ms.
-
-In this case, as NUM_URBS = 12, it means that the transfer buffer
-will be set to its maximum value of 3072 bytes per URB pack (12 * 256),
-and the URB transfer_callback will be called on every 16 ms.
-
-So, what happens is:
-
-	- after 16 ms, the first 3072 bytes arrive. The next
-	  packet will take another 16ms to arrive;
-	- after 2 ms, underrun, as the period_size was not
-	  filled yet.
-
-The thing is that any latency that between 16 ms and 32 ms
-are invalid, as the URB settings won't support it.
-
-Regards,
-Mauro
+diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
+index ede9c15..6d0454f 100644
+--- a/src/pcm/pcm_plug.c
++++ b/src/pcm/pcm_plug.c
+@@ -53,7 +53,7 @@ typedef struct {
+ 	const snd_config_t *rate_converter;
+ 	enum snd_pcm_plug_route_policy route_policy;
+ 	snd_pcm_route_ttable_entry_t *ttable;
+-	int ttable_ok, ttable_last;
++	int ttable_ok;
+ 	unsigned int tt_ssize, tt_cused, tt_sused;
+ } snd_pcm_plug_t;
+ 
+@@ -380,7 +380,7 @@ static int snd_pcm_plug_change_channels(snd_pcm_t *pcm, snd_pcm_t **new, snd_pcm
+ 	snd_pcm_route_ttable_entry_t *ttable;
+ 	int err;
+ 	if (clt->channels == slv->channels &&
+-	    (!plug->ttable || !plug->ttable_last))
++	    (!plug->ttable || plug->ttable_ok))
+ 		return 0;
+ 	if (clt->rate != slv->rate &&
+ 	    clt->channels > slv->channels)
+@@ -485,13 +485,15 @@ static int snd_pcm_plug_change_format(snd_pcm_t *pcm, snd_pcm_t **new, snd_pcm_p
+ 	/* No conversion is needed */
+ 	if (clt->format == slv->format &&
+ 	    clt->rate == slv->rate &&
+-	    clt->channels == slv->channels)
++	    clt->channels == slv->channels &&
++	    (!plug->ttable || plug->ttable_ok))
+ 		return 0;
+ 
+ 	if (snd_pcm_format_linear(slv->format)) {
+ 		/* Conversion is done in another plugin */
+ 		if (clt->rate != slv->rate ||
+-		    clt->channels != slv->channels)
++		    clt->channels != slv->channels ||
++		    (plug->ttable && !plug->ttable_ok))
+ 			return 0;
+ 		cfmt = clt->format;
+ 		switch (clt->format) {
+@@ -525,7 +527,8 @@ static int snd_pcm_plug_change_format(snd_pcm_t *pcm, snd_pcm_t **new, snd_pcm_p
+ 		if (snd_pcm_format_linear(clt->format)) {
+ 			cfmt = clt->format;
+ 			f = snd_pcm_lfloat_open;
+-		} else if (clt->rate != slv->rate || clt->channels != slv->channels) {
++		} else if (clt->rate != slv->rate || clt->channels != slv->channels ||
++		           (plug->ttable && !plug->ttable_ok)) {
+ 			cfmt = SND_PCM_FORMAT_S16;
+ 			f = snd_pcm_lfloat_open;
+ 		} else
+@@ -641,11 +644,12 @@ static int snd_pcm_plug_insert_plugins(snd_pcm_t *pcm,
+ 	};
+ 	snd_pcm_plug_params_t p = *slave;
+ 	unsigned int k = 0;
+-	plug->ttable_ok = plug->ttable_last = 0;
++	plug->ttable_ok = 0;
+ 	while (client->format != p.format ||
+ 	       client->channels != p.channels ||
+ 	       client->rate != p.rate ||
+-	       client->access != p.access) {
++	       client->access != p.access ||
++	       (plug->ttable && !plug->ttable_ok)) {
+ 		snd_pcm_t *new;
+ 		int err;
+ 		if (k >= sizeof(funcs)/sizeof(*funcs))
+@@ -660,24 +664,6 @@ static int snd_pcm_plug_insert_plugins(snd_pcm_t *pcm,
+ 		}
+ 		k++;
+ 	}
+-#ifdef BUILD_PCM_PLUGIN_ROUTE
+-	/* it's exception, user specified ttable, but no reduction/expand */
+-	if (plug->ttable && !plug->ttable_ok) {
+-		snd_pcm_t *new;
+-		int err;
+-		plug->ttable_last = 1;
+-		err = snd_pcm_plug_change_channels(pcm, &new, client, &p);
+-		if (err < 0) {
+-			snd_pcm_plug_clear(pcm);
+-			return err;
+-		}
+-		assert(err);
+-		assert(plug->ttable_ok);
+-		plug->gen.slave = new;
+-		pcm->fast_ops = new->fast_ops;
+-		pcm->fast_op_arg = new->fast_op_arg;
+-	}
+-#endif
+ 	return 0;
+ }
+ 
+-- 
+1.7.10.4
