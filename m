@@ -1,16 +1,18 @@
-From: Sean Cross <xobs@kosagi.com>
-Subject: [PATCH v2 3/3] ASoC: fsl: add imx-es8328 machine driver
-Date: Tue, 17 Jun 2014 13:16:29 +0800
-Message-ID: <1402982189-28598-4-git-send-email-xobs@kosagi.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 2/3] ASoC: add es8328 codec driver
+Date: Tue, 17 Jun 2014 08:24:44 +0200
+Message-ID: <539FDF2C.10606@metafoo.de>
 References: <1402982189-28598-1-git-send-email-xobs@kosagi.com>
+ <1402982189-28598-3-git-send-email-xobs@kosagi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.g1.pair.com (mail1.g1.pair.com [66.39.3.162])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B2FE265519
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 07:16:53 +0200 (CEST)
-In-Reply-To: <1402982189-28598-1-git-send-email-xobs@kosagi.com>
+Received: from smtp-out-086.synserver.de (smtp-out-088.synserver.de
+ [212.40.185.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90898265530
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 08:24:54 +0200 (CEST)
+In-Reply-To: <1402982189-28598-3-git-send-email-xobs@kosagi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,499 +22,229 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Nicolin Chen <Guangyu.Chen@freescale.com>, Fabio Estevam <fabio.estevam@freescale.com>
-Cc: Sean Cross <xobs@kosagi.com>
+To: Sean Cross <xobs@kosagi.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Nicolin Chen <Guangyu.Chen@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-This adds an initial machine driver for the ES8328 audio codec.  The
-driver supports headphones, an audio regulator for both the codec itself
-and a speaker amp, and supports reparenting and adjusting clocks to supply
-the audio codec with the unusual frequency it requires.
+On 06/17/2014 07:16 AM, Sean Cross wrote:
 
-Signed-off-by: Sean Cross <xobs@kosagi.com>
----
- .../devicetree/bindings/sound/imx-audio-es8328.txt |  60 ++++
- sound/soc/fsl/Kconfig                              |  13 +
- sound/soc/fsl/Makefile                             |   2 +
- sound/soc/fsl/imx-es8328.c                         | 359 +++++++++++++++++++++
- 4 files changed, 434 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
- create mode 100644 sound/soc/fsl/imx-es8328.c
+A couple of small bits inline.
 
-diff --git a/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt b/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
-new file mode 100644
-index 0000000..bd614a6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
-@@ -0,0 +1,60 @@
-+Freescale i.MX audio complex with ES8328 codec
-+
-+Required properties:
-+- compatible : "fsl,imx-audio-es8328"
-+- model : The user-visible name of this sound complex
-+- clocks : A list of clocks required to run the codec at 22.5792 MHz
-+- ssi-controller : The phandle of the i.MX SSI controller
-+- jack-gpio : Optional GPIO for headphone jack
-+- codec-supply : Power regulator for audio codec chip
-+- audio-amp-supply : Power regulator for speaker amps
-+- audio-codec : The phandle of the ES8328 audio codec
-+- audio-routing : A list of the connections between audio components.
-+  Each entry is a pair of strings, the first being the connection's sink,
-+  the second being the connection's source. Valid names could be power
-+  supplies, ES8328 pins, and the jacks on the board:
-+
-+  Power supplies:
-+   * audio-amp
-+   * codec
-+
-+  ES8328 pins:
-+   * LOUT1
-+   * LOUT2
-+   * ROUT1
-+   * ROUT2
-+
-+  Board connectors:
-+   * Headphone
-+   * Speaker
-+
-+- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX)
-+- mux-ext-port : The external port of the i.MX audio muxer
-+
-+Note: The AUDMUX port numbering should start at 1, which is consistent with
-+hardware manual.
-+
-+Example:
-+
-+sound {
-+	compatible = "fsl,imx-audio-es8328";
-+	model = "imx-audio-es8328";
-+	clocks = <&clks 169>, <&clks 57>, <&clks 173>,
-+		 <&clks 203>, <&clks 201>;
-+	clock-names = "cko1", "cko1_sel", "pll4_audio",
-+		      "pll4_post_div", "cko_sel";
-+	ssi-controller = <&ssi1>;
-+	audio-codec = <&codec>;
-+	jack-gpio = <&gpio5 15 0>;
-+	codec-supply = <&reg_audio_codec>;
-+	audio-amp-supply = <&reg_audio_amp>;
-+	audio-routing =
-+		"Speaker", "LOUT2",
-+		"Speaker", "ROUT2",
-+		"Speaker", "audio-amp",
-+		"Headphone", "ROUT1",
-+		"Headphone", "LOUT1";
-+	mux-int-port = <1>;
-+	mux-ext-port = <3>;
-+};
-+
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 3793362..5f1e43f 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -229,6 +229,19 @@ config SND_SOC_IMX_WM8962
- 	  Say Y if you want to add support for SoC audio on an i.MX board with
- 	  a wm8962 codec.
- 
-+config SND_SOC_IMX_ES8328
-+	tristate "SoC Audio support for i.MX boards with the ES8328 codec"
-+	depends on OF && (I2C || SPI)
-+	select SND_SOC_ES8328
-+	select SND_SOC_IMX_PCM_DMA
-+	select SND_SOC_IMX_AUDMUX
-+	select SND_SOC_FSL_SSI
-+	select SND_SOC_FSL_UTILS
-+	select SND_SOC_IMX_PCM_FIQ
-+	help
-+	  Say Y if you want to add support for the ES8328 audio codec connected
-+	  via SSI/I2S over either SPI or I2C.
-+
- config SND_SOC_IMX_SGTL5000
- 	tristate "SoC Audio support for i.MX boards with sgtl5000"
- 	depends on OF && I2C
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index db254e3..e561766 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -48,6 +48,7 @@ snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
- snd-soc-phycore-ac97-objs := phycore-ac97.o
- snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
- snd-soc-wm1133-ev1-objs := wm1133-ev1.o
-+snd-soc-imx-es8328-objs := imx-es8328.o
- snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
- snd-soc-imx-wm8962-objs := imx-wm8962.o
- snd-soc-imx-spdif-objs := imx-spdif.o
-@@ -57,6 +58,7 @@ obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
- obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
- obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
- obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
-+obj-$(CONFIG_SND_SOC_IMX_ES8328) += snd-soc-imx-es8328.o
- obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
- obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
- obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
-diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
-new file mode 100644
-index 0000000..5345955
---- /dev/null
-+++ b/sound/soc/fsl/imx-es8328.c
-@@ -0,0 +1,359 @@
-+/*
-+ * Copyright 2012 Freescale Semiconductor, Inc.
-+ * Copyright 2012 Linaro Ltd.
-+ *
-+ * The code contained herein is licensed under the GNU General Public
-+ * License. You may obtain a copy of the GNU General Public License
-+ * Version 2 or later at the following locations:
-+ *
-+ * http://www.opensource.org/licenses/gpl-license.html
-+ * http://www.gnu.org/copyleft/gpl.html
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/i2c.h>
-+#include <linux/clk.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/clk-provider.h>
-+#include <sound/soc.h>
-+#include <sound/jack.h>
-+
-+#include "imx-audmux.h"
-+
-+#define DAI_NAME_SIZE	32
-+#define IMX6Q_SYSCLK 0x00
-+
-+struct imx_es8328_data {
-+	struct device *dev;
-+	struct snd_soc_dai_link dai;
-+	struct snd_soc_card card;
-+	struct regulator *codec_regulator;
-+	char codec_dai_name[DAI_NAME_SIZE];
-+	char platform_name[DAI_NAME_SIZE];
-+	struct clk *codec_clk;
-+	struct clk *codec_clk_src;
-+	struct clk *codec_clk_sel;
-+	struct clk *codec_clk_post_div;
-+	struct clk *system_cko;
-+	unsigned int clk_freq_src;
-+	unsigned int clk_frequency;
-+	int power_gpio;
-+	int jack_gpio;
-+};
-+
-+static struct snd_soc_jack_gpio headset_jack_gpios[] = {
-+	{
-+		.gpio = -1,
-+		.name = "headset-gpio",
-+		.report = SND_JACK_HEADSET,
-+		.invert = 0,
-+		.debounce_time = 200,
-+	},
-+};
-+
-+static struct snd_soc_jack headset_jack;
-+
-+static int imx_es8328_dai_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct imx_es8328_data *data = container_of(rtd->card,
-+					struct imx_es8328_data, card);
-+	struct device *dev = rtd->card->dev;
-+	int ret;
-+
-+	ret = snd_soc_dai_set_sysclk(rtd->codec_dai, IMX6Q_SYSCLK,
-+				     data->clk_frequency, SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		dev_err(dev, "could not set codec driver clock params to %d\n",
-+			data->clk_frequency);
-+		return ret;
-+	}
-+
-+	/* Headphone jack detection */
-+	if (gpio_is_valid(data->jack_gpio)) {
-+		ret = snd_soc_jack_new(rtd->codec, "Headphone",
-+				       SND_JACK_HEADPHONE | SND_JACK_BTN_0,
-+				       &headset_jack);
-+		if (ret)
-+			return ret;
-+
-+		headset_jack_gpios[0].gpio = data->jack_gpio;
-+		ret = snd_soc_jack_add_gpios(&headset_jack,
-+					     ARRAY_SIZE(headset_jack_gpios),
-+					     headset_jack_gpios);
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct snd_soc_dapm_widget imx_es8328_dapm_widgets[] = {
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_SPK("Speaker", NULL),
-+	SND_SOC_DAPM_REGULATOR_SUPPLY("audio-amp", 1, 0),
-+};
-+
-+static int imx_set_frequency(struct imx_es8328_data *data, int freq)
-+{
-+	int ret;
-+
-+	ret = clk_set_parent(data->system_cko, data->codec_clk);
-+	if (ret) {
-+		dev_err(data->dev, "unable to set clk output");
-+		return ret;
-+	}
-+
-+	ret = clk_set_parent(data->codec_clk_sel, data->codec_clk_post_div);
-+	if (ret) {
-+		dev_err(data->dev, "unable to set clk parent");
-+		return ret;
-+	}
-+
-+	data->clk_freq_src = clk_round_rate(data->codec_clk_src, freq * 32);
-+	data->clk_frequency = clk_round_rate(data->codec_clk, freq);
-+	dev_dbg(data->dev, "clock source frequency: %d\n", data->clk_freq_src);
-+	dev_dbg(data->dev, "clock frequency: %d\n", data->clk_frequency);
-+
-+	ret = clk_set_rate(data->codec_clk_src, data->clk_freq_src);
-+	if (ret) {
-+		dev_err(data->dev, "unable to set source clock rate\n");
-+		return ret;
-+	}
-+
-+	ret = clk_set_rate(data->codec_clk, data->clk_frequency);
-+	if (ret) {
-+		dev_err(data->dev, "unable to set codec clock rate\n");
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(data->codec_clk);
-+	if (ret) {
-+		dev_err(data->dev, "unable to prepare codec clk\n");
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(data->codec_clk_src);
-+	if (ret) {
-+		dev_err(data->dev, "unable to prepare codec clk source\n");
-+		return ret;
-+	}
-+	return ret;
-+}
-+
-+static int imx_es8328_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *ssi_np, *codec_np;
-+	struct platform_device *ssi_pdev;
-+	struct imx_es8328_data *data;
-+	int int_port, ext_port;
-+	int ret;
-+	struct device *dev = &pdev->dev;
-+
-+	ret = of_property_read_u32(np, "mux-int-port", &int_port);
-+	if (ret) {
-+		dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
-+		return ret;
-+	}
-+	ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
-+	if (ret) {
-+		dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
-+		return ret;
-+	}
-+
-+	/*
-+	 * The port numbering in the hardware manual starts at 1, while
-+	 * the audmux API expects it starts at 0.
-+	 */
-+	int_port--;
-+	ext_port--;
-+	ret = imx_audmux_v2_configure_port(int_port,
-+			IMX_AUDMUX_V2_PTCR_SYN |
-+			IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
-+			IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
-+			IMX_AUDMUX_V2_PTCR_TFSDIR |
-+			IMX_AUDMUX_V2_PTCR_TCLKDIR,
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
-+	if (ret) {
-+		dev_err(&pdev->dev, "audmux internal port setup failed\n");
-+		return ret;
-+	}
-+	ret = imx_audmux_v2_configure_port(ext_port,
-+			IMX_AUDMUX_V2_PTCR_SYN,
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
-+	if (ret) {
-+		dev_err(&pdev->dev, "audmux external port setup failed\n");
-+		return ret;
-+	}
-+
-+	ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
-+	codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
-+	if (!ssi_np || !codec_np) {
-+		dev_err(&pdev->dev, "phandle missing or invalid\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	ssi_pdev = of_find_device_by_node(ssi_np);
-+	if (!ssi_pdev) {
-+		dev_err(&pdev->dev, "failed to find SSI platform device\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	data->dev = dev;
-+
-+	data->jack_gpio = of_get_named_gpio(pdev->dev.of_node,
-+				"jack-gpio", 0);
-+
-+	data->power_gpio = of_get_named_gpio(pdev->dev.of_node,
-+				"power-gpio", 0);
-+	if (gpio_is_valid(data->power_gpio))
-+		devm_gpio_request_one(&pdev->dev, data->power_gpio,
-+				    GPIOF_OUT_INIT_HIGH,
-+				    "audio codec power switch");
-+
-+	/* Setup clocks */
-+	data->codec_clk = devm_clk_get(dev, "cko1");
-+	if (IS_ERR(data->codec_clk)) {
-+		dev_err(dev,
-+			"codec clock missing or invalid\n");
-+		goto fail;
-+	}
-+
-+	data->codec_clk_sel = devm_clk_get(dev, "cko1_sel");
-+	if (IS_ERR(data->codec_clk_sel)) {
-+		dev_err(dev,
-+			"codec clock select missing or invalid\n");
-+		goto fail;
-+	}
-+
-+	data->codec_clk_src = devm_clk_get(dev, "pll4_audio");
-+	if (IS_ERR(data->codec_clk_src)) {
-+		dev_err(dev,
-+			"codec clock source missing or invalid\n");
-+		goto fail;
-+	}
-+
-+	data->codec_clk_post_div = devm_clk_get(dev, "pll4_post_div");
-+	if (IS_ERR(data->codec_clk_post_div)) {
-+		dev_err(dev,
-+			"codec clock post-div missing or invalid\n");
-+		goto fail;
-+	}
-+
-+	data->system_cko = devm_clk_get(dev, "cko_sel");
-+	if (IS_ERR(data->system_cko)) {
-+		dev_err(dev,
-+			"system clock missing or invalid\n");
-+		goto fail;
-+	}
-+
-+	ret = imx_set_frequency(data, 22579200);
-+	if (ret)
-+		goto fail;
-+
-+	data->codec_regulator = devm_regulator_get(dev, "codec");
-+	if (IS_ERR(data->codec_regulator)) {
-+		dev_err(dev, "No codec regulator\n");
-+		data->codec_regulator = NULL;
-+	} else {
-+		ret = regulator_enable(data->codec_regulator);
-+		if (ret)
-+			dev_err(dev,
-+				"Unable to enable codec regulator: %d\n", ret);
-+	}
-+
-+	data->dai.name = "hifi";
-+	data->dai.stream_name = "hifi";
-+	data->dai.codec_dai_name = "es8328-hifi-analog";
-+	data->dai.codec_of_node = codec_np;
-+	data->dai.cpu_of_node = ssi_np;
-+	data->dai.platform_of_node = ssi_np;
-+	data->dai.init = &imx_es8328_dai_init;
-+	data->dai.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			    SND_SOC_DAIFMT_CBM_CFM;
-+
-+	data->card.dev = &pdev->dev;
-+	data->card.dapm_widgets = imx_es8328_dapm_widgets;
-+	data->card.num_dapm_widgets = ARRAY_SIZE(imx_es8328_dapm_widgets);
-+	ret = snd_soc_of_parse_card_name(&data->card, "model");
-+	if (ret)
-+		goto fail;
-+	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
-+	if (ret)
-+		goto fail;
-+	data->card.num_links = 1;
-+	data->card.owner = THIS_MODULE;
-+	data->card.dai_link = &data->dai;
-+
-+	ret = snd_soc_register_card(&data->card);
-+	if (ret)
-+		goto fail;
-+
-+	platform_set_drvdata(pdev, data);
-+fail:
-+	if (ssi_np)
-+		of_node_put(ssi_np);
-+	if (codec_np)
-+		of_node_put(codec_np);
-+
-+	return ret;
-+}
-+
-+static int imx_es8328_remove(struct platform_device *pdev)
-+{
-+	struct imx_es8328_data *data = platform_get_drvdata(pdev);
-+
-+	snd_soc_jack_free_gpios(&headset_jack, ARRAY_SIZE(headset_jack_gpios),
-+				headset_jack_gpios);
-+	if (data->codec_regulator) {
-+		int ret;
-+
-+		ret = regulator_disable(data->codec_regulator);
-+		if (ret)
-+			dev_err(&pdev->dev,
-+				"Unable to disable codec regulator: %d\n", ret);
-+	}
-+
-+	if (data->codec_clk)
-+		clk_disable_unprepare(data->codec_clk);
-+
-+	if (data->codec_clk_src)
-+		clk_disable_unprepare(data->codec_clk_src);
-+
-+	snd_soc_unregister_card(&data->card);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id imx_es8328_dt_ids[] = {
-+	{ .compatible = "fsl,imx-audio-es8328", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, imx_es8328_dt_ids);
-+
-+static struct platform_driver imx_es8328_driver = {
-+	.driver = {
-+		.name = "imx-es8328",
-+		.owner = THIS_MODULE,
-+		.of_match_table = imx_es8328_dt_ids,
-+	},
-+	.probe = imx_es8328_probe,
-+	.remove = imx_es8328_remove,
-+};
-+module_platform_driver(imx_es8328_driver);
-+
-+MODULE_AUTHOR("Sean Cross <xobs@kosagi.com>");
-+MODULE_DESCRIPTION("Kosagi i.MX6 ES8328 ASoC machine driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:imx-audio-es8328");
--- 
-2.0.0
+[...]
+> --- /dev/null
+> +++ b/sound/soc/codecs/es8328.c
+> @@ -0,0 +1,711 @@
+[...]
+> +#include <linux/platform_device.h>
+
+You don't use platform devices in here
+
+[...]
+> +uint8_t sample_ratios[] = {
+
+static const, also a prefix like es8328_ wont hurt
+
+> +	[ES8328_RATE_8019]  = 0x9,
+> +	[ES8328_RATE_11025] = 0x7,
+> +	[ES8328_RATE_22050] = 0x4,
+> +	[ES8328_RATE_44100] = 0x2,
+> +};
+> +
+> +#define ES8328_RATES (SNDRV_PCM_RATE_44100 | \
+> +		SNDRV_PCM_RATE_22050 | \
+> +		SNDRV_PCM_RATE_11025)
+> +#define ES8328_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
+> +
+> +/* codec private data */
+> +struct es8328_priv {
+> +	struct regmap *regmap;
+> +	int sysclk;
+> +};
+> +
+> +/*
+> + * ES8328 Controls
+> + */
+> +
+> +static const char * const deemph_txt[] = {"None", "32Khz", "44.1Khz", "48Khz"};
+> +static SOC_ENUM_SINGLE_DECL(deemph,
+> +			    ES8328_DACCONTROL6, 6, deemph_txt);
+
+deemph should just be a single boolean switch (On or Off) and automatically 
+select the correct setting based on the configured sample rate.
+
+[...]
+> +static const char * const es8328_line_texts[] = {
+> +	"Line 1", "Line 2", "PGA", "Differential"};
+> +
+> +static const unsigned int es8328_line_values[] = {
+> +	0, 1, 2, 3};
+
+You don't need to use a value enum for this.
+
+[...]
+> +static const char * const es8328_pga_sel[] = {
+> +	"Line 1", "Line 2", "Line 3", "Differential"};
+> +static const unsigned int es8328_pga_val[] = { 0, 1, 2, 3 };
+
+same here
+
+[...]
+> +static int es8328_hw_params(struct snd_pcm_substream *substream,
+> +	struct snd_pcm_hw_params *params,
+> +	struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		u8 dac = snd_soc_read(codec, ES8328_DACCONTROL2);
+> +
+> +		dac &= ~ES8328_DACCONTROL2_RATEMASK;
+> +
+> +		switch (params_rate(params)) {
+> +		case 8000:
+> +			dac |= sample_ratios[ES8328_RATE_8019];
+> +			break;
+> +		case 11025:
+> +			dac |= sample_ratios[ES8328_RATE_11025];
+> +			break;
+> +		case 22050:
+> +			dac |= sample_ratios[ES8328_RATE_22050];
+> +			break;
+> +		case 44100:
+> +			dac |= sample_ratios[ES8328_RATE_44100];
+> +			break;
+> +		default:
+> +			dev_err(codec->dev, "%s: unknown rate %d\n",
+> +				 __func__, params_rate(params));
+> +			return -EINVAL;
+> +		}
+> +		snd_soc_write(codec, ES8328_DACCONTROL2, dac);
+> +	}
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+> +		u8 adc = snd_soc_read(codec, ES8328_ADCCONTROL5);
+> +
+> +		adc &= ~ES8328_ADCCONTROL5_RATEMASK;
+> +
+> +		switch (params_rate(params)) {
+> +		case 8000:
+> +			adc |= sample_ratios[ES8328_RATE_8019];
+> +			break;
+> +		case 11025:
+> +			adc |= sample_ratios[ES8328_RATE_11025];
+> +			break;
+> +		case 22050:
+> +			adc |= sample_ratios[ES8328_RATE_22050];
+> +			break;
+> +		case 44100:
+> +			adc |= sample_ratios[ES8328_RATE_44100];
+> +			break;
+> +		default:
+> +			dev_err(codec->dev, "%s: unknown rate %d\n",
+> +				 __func__, params_rate(params));
+> +			return -EINVAL;
+> +		}
+> +		snd_soc_write(codec, ES8328_ADCCONTROL5, adc);
+> +	}
+
+The capture and the playback case look pretty much the same. This could 
+probably be handled without duplicating the code. Also use 
+snd_soc_update_bits() for updating the register.
+
+> +
+> +	return 0;
+> +}
+[...][
+> +static int es8328_probe(struct snd_soc_codec *codec)
+> +{
+> +	/* power on device */
+> +	return es8328_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+> +}
+
+You don't need this one, the core will automatically bring the dapm context 
+to idle bias after the device has been probed.
+
+> +
+> +static int es8328_remove(struct snd_soc_codec *codec)
+> +{
+> +	return 0;
+> +}
+
+No, need to have empty callbacks, just leave .remove of the codec driver 
+struct NULL.
+
+> +
+> +static struct snd_soc_codec_driver soc_codec_dev_es8328 = {
+
+const
+
+the soc_codec_dev_foobar naming pattern comes from a time when this actually 
+used to be a device rather than a driver. Something like es8328_codec_driver 
+is a more appropriate name these days.
+
+> +	.probe =		es8328_probe,
+> +	.remove =		es8328_remove,
+> +	.suspend =		es8328_suspend,
+> +	.resume =		es8328_resume,
+> +	.set_bias_level =	es8328_set_bias_level,
+> +	.controls =		es8328_snd_controls,
+> +	.num_controls =		ARRAY_SIZE(es8328_snd_controls),
+> +	.dapm_widgets =		es8328_dapm_widgets,
+> +	.num_dapm_widgets =	ARRAY_SIZE(es8328_dapm_widgets),
+> +	.dapm_routes =		es8328_dapm_routes,
+> +	.num_dapm_routes =	ARRAY_SIZE(es8328_dapm_routes),
+> +};
+[...]
+> +#if defined(CONFIG_SPI_MASTER)
+
+For CODECs with more than one bus interface we started splitting the bus 
+interface support code into separate modules (e.g. one module for the core 
+logic of the driver, one module for I2C and one module for SPI). This was 
+done to avoid issue when one bus is built-in and the the other is built as a 
+module. New drivers should follow this scheme. E.g. see 
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/sound/soc/codecs/?id=6c3d713e6d32706999689e379a9098afb4cd8a2c
+
+> +static int es8328_spi_probe(struct spi_device *spi)
+> +{
+> +	struct es8328_priv *es8328;
+> +	int ret;
+> +
+> +	es8328 = devm_kzalloc(&spi->dev, sizeof(struct es8328_priv),
+
+sizeof(*es8328) is the preferred style
+
+> +			      GFP_KERNEL);
+> +	if (es8328 == NULL)
+> +		return -ENOMEM;
+> +
+> +	es8328->regmap = devm_regmap_init_spi(spi, &es8328_regmap);
+> +	if (IS_ERR(es8328->regmap))
+> +		return PTR_ERR(es8328->regmap);
+> +
+> +	spi_set_drvdata(spi, es8328);
+> +
+> +	ret = snd_soc_register_codec(&spi->dev,
+> +			&soc_codec_dev_es8328, &es8328_dai, 1);
+> +	if (ret < 0)
+> +		dev_err(&spi->dev, "unable to register codec: %d\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static int es8328_spi_remove(struct spi_device *spi)
+> +{
+> +	snd_soc_unregister_codec(&spi->dev);
+> +
+> +	return 0;
+[...]
+> +static const struct i2c_device_id es8328_i2c_id[] = {
+> +	{ "es8328", 0x11 },
+
+The second field is the drvdata, this is not the I2C address of the device. 
+If you don't use drvdata just leave it 0.
+
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, es8328_i2c_id);
+> +
+[...]
