@@ -1,141 +1,66 @@
-From: Rahul Panwar <panwar.rahul@gmail.com>
-Subject: TLV320AIC32x4 driver configuration for playing wav
-	file using aplay
-Date: Tue, 17 Jun 2014 20:30:35 +0530
-Message-ID: <CAPQ+6UnfRaVa1o8NALhmMLg-Rr16fRXUP0BX69HiF3Re52rq8w@mail.gmail.com>
+From: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v3 1/2] ASoC: add es8328 codec driver
+Date: Tue, 17 Jun 2014 17:00:13 +0100
+Message-ID: <20140617160013.GD8930@leverpostej>
+References: <1402997571-1255-1-git-send-email-xobs@kosagi.com>
+ <1402997571-1255-2-git-send-email-xobs@kosagi.com>
+ <20140617104639.GD26741@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001a11c2dbceedc40e04fc09671a
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f68.google.com (mail-oa0-f68.google.com
- [209.85.219.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 93D5C2655FB
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 17:00:38 +0200 (CEST)
-Received: by mail-oa0-f68.google.com with SMTP id j17so2420836oag.3
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 08:00:35 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20140617104639.GD26741-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>, "lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org" <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, "grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org" <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org" <bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
---001a11c2dbceedc40e04fc09671a
-Content-Type: text/plain; charset=UTF-8
+On Tue, Jun 17, 2014 at 11:46:39AM +0100, Charles Keepax wrote:
+> On Tue, Jun 17, 2014 at 05:32:50PM +0800, Sean Cross wrote:
+> > Add a codec driver for the Everest ES8328.  It supports two separate audio
+> > outputs and two separate audio inputs.
+> > 
+> > Signed-off-by: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+> > ---
+> >  Documentation/devicetree/bindings/sound/es8328.txt |  18 +
+> >  sound/soc/codecs/Kconfig                           |  13 +
+> >  sound/soc/codecs/Makefile                          |   6 +
+> >  sound/soc/codecs/es8328-i2c.c                      |  55 ++
+> >  sound/soc/codecs/es8328-spi.c                      |  44 ++
+> >  sound/soc/codecs/es8328.c                          | 625 +++++++++++++++++++++
+> >  sound/soc/codecs/es8328.h                          | 313 +++++++++++
+> >  7 files changed, 1074 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
+> >  create mode 100644 sound/soc/codecs/es8328-i2c.c
+> >  create mode 100644 sound/soc/codecs/es8328-spi.c
+> >  create mode 100644 sound/soc/codecs/es8328.c
+> >  create mode 100644 sound/soc/codecs/es8328.h
+> > 
+> > diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
+> > new file mode 100644
+> > index 0000000..488bc32
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/es8328.txt
+> > @@ -0,0 +1,18 @@
+> > +Everest ES8328 audio CODEC
+> > +
+> > +This device supports both I2C and SPI (configured with pin strapping
+> > +on the board).
+> > +
+> > +Required properties:
+> > +
+> > +  - compatible : "es8328"
+> 
+> I suspect the vendor prefix will be mandatory.
 
-Hi,
+Yes.
 
-We integrated TLV320AIC32x4  codec to OMAP-L138 Soc board. We are using
-Linux kernel 3.3.0 with driver of TLV320AIC32x4. Driver is successfully
-detecting.
+There doesn't seem to be a prefix for Everest in vendor-prefixes.txt,
+Sean could you please add one as part of this series?
 
-But we are not able to play a wav file using aplay. When we are trying to
-play any WAV file using aplay, it is not enabling the DAC and file failed
-to play.
-
-When we try to debug that using debugfs, it look like, it is only setting
-"LOR" ==> "LOR Powe" ==> "LOR Output Mixer".
-But after that there is no further Input / path / output configuration
-found. As per the driver it should enable the "Right DAC" via "R_DAC
-Switch".
-When it will enable "Right DAC", DAC will be enabled and it may start
-playing WAV file after that.
-
-We are not able the get the cause, what we are doing wrong. What should we
-need to do to enable DAC.
-
-I am attaching the debugfs log for TLV320AIC32x4 dapm, it may be helpful to
-understand the cause, which we are unable to get.
-
--- 
-Thanks and Regards,
-Rahul Panwar
-www.linuxexplore.com
-
---001a11c2dbceedc40e04fc09671a
-Content-Type: text/plain; charset=US-ASCII; name="dapmlog.txt"
-Content-Disposition: attachment; filename="dapmlog.txt"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hwjc43ql0
-
-PT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vSGVhZHBob25l
-IEphY2sgPD09CkhlYWRwaG9uZSBKYWNrOiBPZmYgIGluIDAgb3V0IDEKIGluICAic3RhdGljIiAi
-SFBSIgogaW4gICJzdGF0aWMiICJIUEwiCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWlj
-MzJ4NC41LTAwMTgvZGFwbS9MaW5lIE91dCA8PT0KTGluZSBPdXQ6IE9mZiAgaW4gMCBvdXQgMQog
-aW4gICJzdGF0aWMiICJMT1IiCiBpbiAgInN0YXRpYyIgIkxPTCIKCj09PiAvc3lzL2tlcm5lbC9k
-ZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL0xpbmUgSW4gPD09CkxpbmUgSW46IE9mZiAg
-aW4gMSBvdXQgMAogb3V0ICJzdGF0aWMiICJJTjFfUiIKIG91dCAic3RhdGljIiAiSU4xX0wiCgo9
-PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAwMTgvZGFwbS9PbmJvYXJkIE1p
-YyA8PT0KT25ib2FyZCBNaWM6IE9mZiAgaW4gMSBvdXQgMAogb3V0ICJzdGF0aWMiICJJTjNfUiIK
-IG91dCAic3RhdGljIiAiSU4zX0wiCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4
-NC41LTAwMTgvZGFwbS9MZWZ0IERBQyA8PT0KTGVmdCBEQUM6IE9mZiAgaW4gMCBvdXQgMCAtIFI2
-MygweDNmKSBiaXQgNwogc3RyZWFtIExlZnQgUGxheWJhY2sgaW5hY3RpdmUKCj09PiAvc3lzL2tl
-cm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL0hQTCBPdXRwdXQgTWl4ZXIgPD09
-CkhQTCBPdXRwdXQgTWl4ZXI6IE9mZiAgaW4gMCBvdXQgMQogb3V0ICJzdGF0aWMiICJIUEwgUG93
-ZXIiCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAwMTgvZGFwbS9IUEwg
-UG93ZXIgPD09CkhQTCBQb3dlcjogT2ZmICBpbiAwIG91dCAxIC0gUjEzNygweDg5KSBiaXQgNQog
-aW4gICJzdGF0aWMiICJIUEwgT3V0cHV0IE1peGVyIgogb3V0ICJzdGF0aWMiICJIUEwiCgo9PT4g
-L3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAwMTgvZGFwbS9MT0wgT3V0cHV0IE1p
-eGVyIDw9PQpMT0wgT3V0cHV0IE1peGVyOiBPZmYgIGluIDAgb3V0IDEKIG91dCAic3RhdGljIiAi
-TE9MIFBvd2VyIgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2Rh
-cG0vTE9MIFBvd2VyIDw9PQpMT0wgUG93ZXI6IE9mZiAgaW4gMCBvdXQgMSAtIFIxMzcoMHg4OSkg
-Yml0IDMKIGluICAic3RhdGljIiAiTE9MIE91dHB1dCBNaXhlciIKIG91dCAic3RhdGljIiAiTE9M
-IgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vUmlnaHQg
-REFDIDw9PQpSaWdodCBEQUM6IE9mZiAgaW4gMCBvdXQgMCAtIFI2MygweDNmKSBiaXQgNgogc3Ry
-ZWFtIFJpZ2h0IFBsYXliYWNrIGluYWN0aXZlCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIw
-YWljMzJ4NC41LTAwMTgvZGFwbS9IUFIgT3V0cHV0IE1peGVyIDw9PQpIUFIgT3V0cHV0IE1peGVy
-OiBPZmYgIGluIDAgb3V0IDEKIG91dCAic3RhdGljIiAiSFBSIFBvd2VyIgoKPT0+IC9zeXMva2Vy
-bmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vSFBSIFBvd2VyIDw9PQpIUFIgUG93
-ZXI6IE9mZiAgaW4gMCBvdXQgMSAtIFIxMzcoMHg4OSkgYml0IDQKIGluICAic3RhdGljIiAiSFBS
-IE91dHB1dCBNaXhlciIKIG91dCAic3RhdGljIiAiSFBSIgoKPT0+IC9zeXMva2VybmVsL2RlYnVn
-L3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vTE9SIE91dHB1dCBNaXhlciA8PT0KTE9SIE91dHB1
-dCBNaXhlcjogT2ZmICBpbiAwIG91dCAxCiBvdXQgInN0YXRpYyIgIkxPUiBQb3dlciIKCj09PiAv
-c3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL0xPUiBQb3dlciA8PT0K
-TE9SIFBvd2VyOiBPZmYgIGluIDAgb3V0IDEgLSBSMTM3KDB4ODkpIGJpdCAyCiBpbiAgInN0YXRp
-YyIgIkxPUiBPdXRwdXQgTWl4ZXIiCiBvdXQgInN0YXRpYyIgIkxPUiIKCj09PiAvc3lzL2tlcm5l
-bC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL0xlZnQgSW5wdXQgTWl4ZXIgPD09Ckxl
-ZnQgSW5wdXQgTWl4ZXI6IE9mZiAgaW4gMCBvdXQgMAogb3V0ICJzdGF0aWMiICJMZWZ0IEFEQyIK
-Cj09PiAvc3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL1JpZ2h0IElu
-cHV0IE1peGVyIDw9PQpSaWdodCBJbnB1dCBNaXhlcjogT2ZmICBpbiAwIG91dCAwCiBvdXQgInN0
-YXRpYyIgIlJpZ2h0IEFEQyIKCj09PiAvc3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUt
-MDAxOC9kYXBtL0xlZnQgQURDIDw9PQpMZWZ0IEFEQzogT2ZmICBpbiAwIG91dCAwIC0gUjgxKDB4
-NTEpIGJpdCA3CiBzdHJlYW0gTGVmdCBDYXB0dXJlIGluYWN0aXZlCiBpbiAgInN0YXRpYyIgIkxl
-ZnQgSW5wdXQgTWl4ZXIiCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAw
-MTgvZGFwbS9SaWdodCBBREMgPD09ClJpZ2h0IEFEQzogT2ZmICBpbiAwIG91dCAwIC0gUjgxKDB4
-NTEpIGJpdCA2CiBzdHJlYW0gUmlnaHQgQ2FwdHVyZSBpbmFjdGl2ZQogaW4gICJzdGF0aWMiICJS
-aWdodCBJbnB1dCBNaXhlciIKCj09PiAvc3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUt
-MDAxOC9kYXBtL01pYyBCaWFzIDw9PQpNaWMgQmlhczogT2ZmICBpbiAwIG91dCAwIC0gUjE3OSgw
-eGIzKSBiaXQgNgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2Rh
-cG0vSFBMIDw9PQpIUEw6IE9mZiAgaW4gMCBvdXQgMQogaW4gICJzdGF0aWMiICJIUEwgUG93ZXIi
-CiBvdXQgInN0YXRpYyIgIkhlYWRwaG9uZSBKYWNrIgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3Rs
-djMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vSFBSIDw9PQpIUFI6IE9mZiAgaW4gMCBvdXQgMQogaW4g
-ICJzdGF0aWMiICJIUFIgUG93ZXIiCiBvdXQgInN0YXRpYyIgIkhlYWRwaG9uZSBKYWNrIgoKPT0+
-IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vTE9MIDw9PQpMT0w6
-IE9mZiAgaW4gMCBvdXQgMQogaW4gICJzdGF0aWMiICJMT0wgUG93ZXIiCiBvdXQgInN0YXRpYyIg
-IkxpbmUgT3V0IgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2Rh
-cG0vTE9SIDw9PQpMT1I6IE9mZiAgaW4gMCBvdXQgMQogaW4gICJzdGF0aWMiICJMT1IgUG93ZXIi
-CiBvdXQgInN0YXRpYyIgIkxpbmUgT3V0IgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFp
-YzMyeDQuNS0wMDE4L2RhcG0vSU4xX0wgPD09CklOMV9MOiBPZmYgIGluIDEgb3V0IDAKIGluICAi
-c3RhdGljIiAiTGluZSBJbiIKCj09PiAvc3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUt
-MDAxOC9kYXBtL0lOMV9SIDw9PQpJTjFfUjogT2ZmICBpbiAxIG91dCAwCiBpbiAgInN0YXRpYyIg
-IkxpbmUgSW4iCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAwMTgvZGFw
-bS9JTjJfTCA8PT0KSU4yX0w6IE9mZiAgaW4gMSBvdXQgMAoKPT0+IC9zeXMva2VybmVsL2RlYnVn
-L3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vSU4yX1IgPD09CklOMl9SOiBPZmYgIGluIDEgb3V0
-IDAKCj09PiAvc3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL0lOM19M
-IDw9PQpJTjNfTDogT2ZmICBpbiAxIG91dCAwCiBpbiAgInN0YXRpYyIgIk9uYm9hcmQgTWljIgoK
-PT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vSU4zX1IgPD09
-CklOM19SOiBPZmYgIGluIDEgb3V0IDAKIGluICAic3RhdGljIiAiT25ib2FyZCBNaWMiCgo9PT4g
-L3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAwMTgvZGFwbS9iaWFzX2xldmVsIDw9
-PQpTdGFuZGJ5Cgo=
---001a11c2dbceedc40e04fc09671a
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---001a11c2dbceedc40e04fc09671a--
+Cheers,
+Mark.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
