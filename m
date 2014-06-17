@@ -1,18 +1,22 @@
-From: "Brandon Yates" <Brandon.Yates@adaptivedigital.com>
-Subject: Re: Plug In Creation - aplay can't find existing .so
-Date: Tue, 17 Jun 2014 15:15:30 -0400
-Message-ID: <B02206F4ACA2904A8270028316B8DAFF01149ECF@mercury.corp.adaptivedigital.com>
-References: <B02206F4ACA2904A8270028316B8DAFF01149EA3@mercury.corp.adaptivedigital.com>
- <s5hr42tf0c3.wl%tiwai@suse.de>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 3/3] ASoC: wm5102: Add controls to allow
+ shaping of ultrasonic response
+Date: Tue, 17 Jun 2014 20:22:44 +0100
+Message-ID: <20140617192244.GT29841@lee--X1>
+References: <1402058000-5357-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1402058000-5357-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta12.messagelabs.com (mail1.bemta12.messagelabs.com
- [216.82.251.1]) by alsa0.perex.cz (Postfix) with ESMTP id 0150F265607
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 21:15:32 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <s5hr42tf0c3.wl%tiwai@suse.de>
+Received: from mail-ie0-f174.google.com (mail-ie0-f174.google.com
+ [209.85.223.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41D30265607
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 21:22:52 +0200 (CEST)
+Received: by mail-ie0-f174.google.com with SMTP id lx4so6800386iec.33
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 12:22:51 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1402058000-5357-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,86 +26,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.org, sameo@linux.intel.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Actually on close inspection it looks like open is succeeding. Not sure
-what's going on here. Here's more of the strace:
-
-
-open("/usr/lib/i386-linux-gnu/alsa-lib/libasound_module_pcm_adt_dsp.so",
-O_RDONLY|O_CLOEXEC) = 3
-read(3,
-"\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\20\7\0\0004\0\0\0"...,
-512) = 512
-fstat64(3, {st_mode=S_IFREG|0644, st_size=7655, ...}) = 0
-mmap2(NULL, 8464, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0)
-= 0x166000
-mmap2(0x167000, 8192, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0x167000
-close(3)                                = 0
-munmap(0x166000, 8464)                  = 0
-write(2, "ALSA lib dlmisc.c:254:(snd1_dlob"..., 45ALSA lib
-dlmisc.c:254:(snd1_dlobj_cache_get) ) = 45
-write(2, "Cannot open shared library /usr/"..., 91Cannot open shared
-library
-/usr/lib/i386-linux-gnu/alsa-lib/libasound_module_pcm_adt_dsp.so) = 91
-
-
-Any insight?
-
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Friday, June 13, 2014 8:42 AM
-To: Brandon Yates
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] Plug In Creation - aplay can't find existing
-.so
-
-At Tue, 10 Jun 2014 13:55:39 -0400,
-Brandon Yates wrote:
-> 
-> Hello,
-> 
-> I am working on a new pcm plugin. At this point it is basically just a
-
-> Hello World plugin, to make sure I have the tools working and 
-> understand the workflow.  I created a simple file which is just
-basically:
-> 
-> #include <alsa/asoundlib.h>
-> #include <alsa/pcm_external.h>
-> SND_PCM_PLUGIN_DEFINE_FUNC(my_mod)
-> {	
->    printf("hello world\n");
->    return 0;
-> }
-> SND_PCM_PLUGIN_SYMBOL(my_mod);
-> 
-> 
-> I compiled this as a shared lib named
-'libasound_module_pcm_my_mod.so'
-> and copied it to '/usr/lib/i386-linux-gnu/alsa-lib/'
-> 
-> I edited my ~/.asoundrc to create a new device that uses this plugin.
-> Then I try to use it with `aplay --device=my_mod_test out.pcm`
-> 
-> I get the error message
-> 
-> ALSA lib dlmisc.c:254:(snd1_dlobj_cache_get) Cannot open shared 
-> library 
-> /usr/lib/i386-linux-gnu/alsa-lib/libasound_module_pcm_my_mod.so
-> aplay: main:682: audio open error: No such device or address
-> 
-> 
-> But this file actually does exist, I just copied it there.
-> 
-> 
-> Any idea why this happens?
-
-Try strace to see what happens.  If it fails in dlopen(), it's likely
-because your shared object is invalid.
-
-
-Takashi
+T24gRnJpLCAwNiBKdW4gMjAxNCwgQ2hhcmxlcyBLZWVwYXggd3JvdGU6Cgo+IEFkZCBjb250cm9s
+cyB0byBhbGxvdyBjdXN0b20gc2hhcGluZyBvZiB0aGUgdWx0cmFzb25pYyByZXNwb25zZS4gVGhp
+cwo+IGN1c3RvbSBzaGFwaW5nIGNhbiBiZSB0dXJuZWQgb24vb2ZmIGF0IHJ1bnRpbWUsIGFsdGhv
+dWdoLCBpdCBzaG91bGQgYmUKPiBub3RlZCB0aGF0IHNldHRpbmdzIHdpbGwgbm90IGFmZmVjdCBh
+IGN1cnJlbnRseSBvcGVuIGF1ZGlvIHN0cmVhbSwKPiB0aGV5IHdpbGwgYmUgYXBwbGllZCB3aGVu
+IHRoZSBuZXh0IGF1ZGlvIHN0cmVhbSBpcyBzdGFydGVkLgo+IAo+IFNpZ25lZC1vZmYtYnk6IENo
+YXJsZXMgS2VlcGF4IDxja2VlcGF4QG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KPiAtLS0K
+PiAgaW5jbHVkZS9saW51eC9tZmQvYXJpem9uYS9jb3JlLmggfCAgICAzICsrCgpGb3IgdGhlIE1G
+RCBjaGFuZ2VzOgogIEFja2VkLWJ5OiBMZWUgSm9uZXMgPGxlZS5qb25lc0BsaW5hcm8ub3JnPgoK
+PiAgc291bmQvc29jL2NvZGVjcy9hcml6b25hLmMgICAgICAgfCAgIDM0ICsrKysrKysrKysrKysr
+KysrKysrKwo+ICBzb3VuZC9zb2MvY29kZWNzL3dtNTEwMi5jICAgICAgICB8ICAgNjIgKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPiAgMyBmaWxlcyBjaGFuZ2VkLCA5OSBp
+bnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xp
+bnV4L21mZC9hcml6b25hL2NvcmUuaCBiL2luY2x1ZGUvbGludXgvbWZkL2FyaXpvbmEvY29yZS5o
+Cj4gaW5kZXggMTE3ODNiNS4uNTU5MjY1MSAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xpbnV4L21m
+ZC9hcml6b25hL2NvcmUuaAo+ICsrKyBiL2luY2x1ZGUvbGludXgvbWZkL2FyaXpvbmEvY29yZS5o
+Cj4gQEAgLTExMyw2ICsxMTMsOSBAQCBzdHJ1Y3QgYXJpem9uYSB7Cj4gIAo+ICAJaW50IHRkbV93
+aWR0aFtBUklaT05BX01BWF9BSUZdOwo+ICAJaW50IHRkbV9zbG90c1tBUklaT05BX01BWF9BSUZd
+Owo+ICsKPiArCXVpbnQxNl90IGRhY19jb21wX2NvZWZmOwo+ICsJdWludDhfdCBkYWNfY29tcF9l
+bmFibGVkOwo+ICB9Owo+ICAKPiAgaW50IGFyaXpvbmFfY2xrMzJrX2VuYWJsZShzdHJ1Y3QgYXJp
+em9uYSAqYXJpem9uYSk7Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvYXJpem9uYS5j
+IGIvc291bmQvc29jL2NvZGVjcy9hcml6b25hLmMKPiBpbmRleCBlNzdmNjFjLi40MWI1NmVlIDEw
+MDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvYXJpem9uYS5jCj4gKysrIGIvc291bmQvc29j
+L2NvZGVjcy9hcml6b25hLmMKPiBAQCAtMTEyNyw2ICsxMTI3LDMxIEBAIHN0YXRpYyBpbnQgYXJp
+em9uYV9zdGFydHVwKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAo+ICAJCQkJ
+CSAgY29uc3RyYWludCk7Cj4gIH0KPiAgCj4gK3N0YXRpYyB2b2lkIGFyaXpvbmFfd201MTAyX3Nl
+dF9kYWNfY29tcChzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsCj4gKwkJCQkJdW5zaWduZWQg
+aW50IHJhdGUpCj4gK3sKPiArCXN0cnVjdCBhcml6b25hX3ByaXYgKnByaXYgPSBzbmRfc29jX2Nv
+ZGVjX2dldF9kcnZkYXRhKGNvZGVjKTsKPiArCXN0cnVjdCBhcml6b25hICphcml6b25hID0gcHJp
+di0+YXJpem9uYTsKPiArCXN0cnVjdCByZWdfZGVmYXVsdCBkYWNfY29tcFtdID0gewo+ICsJCXsg
+MHg4MCwgMHgzIH0sCj4gKwkJeyBBUklaT05BX0RBQ19DT01QXzEsIDAgfSwKPiArCQl7IEFSSVpP
+TkFfREFDX0NPTVBfMiwgMCB9LAo+ICsJCXsgMHg4MCwgMHgwIH0sCj4gKwl9Owo+ICsKPiArCW11
+dGV4X2xvY2soJmNvZGVjLT5tdXRleCk7Cj4gKwo+ICsJZGFjX2NvbXBbMV0uZGVmID0gYXJpem9u
+YS0+ZGFjX2NvbXBfY29lZmY7Cj4gKwlpZiAocmF0ZSA+PSAxNzY0MDApCj4gKwkJZGFjX2NvbXBb
+Ml0uZGVmID0gYXJpem9uYS0+ZGFjX2NvbXBfZW5hYmxlZDsKPiArCj4gKwltdXRleF91bmxvY2so
+JmNvZGVjLT5tdXRleCk7Cj4gKwo+ICsJcmVnbWFwX211bHRpX3JlZ193cml0ZShhcml6b25hLT5y
+ZWdtYXAsCj4gKwkJCSAgICAgICBkYWNfY29tcCwKPiArCQkJICAgICAgIEFSUkFZX1NJWkUoZGFj
+X2NvbXApKTsKPiArfQo+ICsKPiAgc3RhdGljIGludCBhcml6b25hX2h3X3BhcmFtc19yYXRlKHN0
+cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAo+ICAJCQkJICBzdHJ1Y3Qgc25kX3Bj
+bV9od19wYXJhbXMgKnBhcmFtcywKPiAgCQkJCSAgc3RydWN0IHNuZF9zb2NfZGFpICpkYWkpCj4g
+QEAgLTExNTMsNiArMTE3OCwxNSBAQCBzdGF0aWMgaW50IGFyaXpvbmFfaHdfcGFyYW1zX3JhdGUo
+c3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCj4gIAo+ICAJc3dpdGNoIChkYWlf
+cHJpdi0+Y2xrKSB7Cj4gIAljYXNlIEFSSVpPTkFfQ0xLX1NZU0NMSzoKPiArCQlzd2l0Y2ggKHBy
+aXYtPmFyaXpvbmEtPnR5cGUpIHsKPiArCQljYXNlIFdNNTEwMjoKPiArCQkJYXJpem9uYV93bTUx
+MDJfc2V0X2RhY19jb21wKGNvZGVjLAo+ICsJCQkJCQkgICAgcGFyYW1zX3JhdGUocGFyYW1zKSk7
+Cj4gKwkJCWJyZWFrOwo+ICsJCWRlZmF1bHQ6Cj4gKwkJCWJyZWFrOwo+ICsJCX0KPiArCj4gIAkJ
+c25kX3NvY191cGRhdGVfYml0cyhjb2RlYywgQVJJWk9OQV9TQU1QTEVfUkFURV8xLAo+ICAJCQkJ
+ICAgIEFSSVpPTkFfU0FNUExFX1JBVEVfMV9NQVNLLCBzcl92YWwpOwo+ICAJCWlmIChiYXNlKQo+
+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3dtNTEwMi5jIGIvc291bmQvc29jL2NvZGVj
+cy93bTUxMDIuYwo+IGluZGV4IDI4OWI2NGQuLmE0MGVhNGQgMTAwNjQ0Cj4gLS0tIGEvc291bmQv
+c29jL2NvZGVjcy93bTUxMDIuYwo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvd201MTAyLmMKPiBA
+QCAtNjEyLDYgKzYxMiw2MiBAQCBzdGF0aWMgaW50IHdtNTEwMl9zeXNjbGtfZXYoc3RydWN0IHNu
+ZF9zb2NfZGFwbV93aWRnZXQgKncsCj4gIAlyZXR1cm4gMDsKPiAgfQo+ICAKPiArc3RhdGljIGlu
+dCB3bTUxMDJfb3V0X2NvbXBfY29lZmZfZ2V0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9s
+LAo+ICsJCQkJICAgICBzdHJ1Y3Qgc25kX2N0bF9lbGVtX3ZhbHVlICp1Y29udHJvbCkKPiArewo+
+ICsJc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjID0gc25kX2tjb250cm9sX2NoaXAoa2NvbnRy
+b2wpOwo+ICsJc3RydWN0IGFyaXpvbmEgKmFyaXpvbmEgPSBkZXZfZ2V0X2RydmRhdGEoY29kZWMt
+PmRldi0+cGFyZW50KTsKPiArCXVpbnQxNl90IGRhdGE7Cj4gKwo+ICsJbXV0ZXhfbG9jaygmY29k
+ZWMtPm11dGV4KTsKPiArCWRhdGEgPSBjcHVfdG9fYmUxNihhcml6b25hLT5kYWNfY29tcF9jb2Vm
+Zik7Cj4gKwltZW1jcHkodWNvbnRyb2wtPnZhbHVlLmJ5dGVzLmRhdGEsICZkYXRhLCBzaXplb2Yo
+ZGF0YSkpOwo+ICsJbXV0ZXhfdW5sb2NrKCZjb2RlYy0+bXV0ZXgpOwo+ICsKPiArCXJldHVybiAw
+Owo+ICt9Cj4gKwo+ICtzdGF0aWMgaW50IHdtNTEwMl9vdXRfY29tcF9jb2VmZl9wdXQoc3RydWN0
+IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCj4gKwkJCQkgICAgIHN0cnVjdCBzbmRfY3RsX2VsZW1f
+dmFsdWUgKnVjb250cm9sKQo+ICt7Cj4gKwlzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBz
+bmRfa2NvbnRyb2xfY2hpcChrY29udHJvbCk7Cj4gKwlzdHJ1Y3QgYXJpem9uYSAqYXJpem9uYSA9
+IGRldl9nZXRfZHJ2ZGF0YShjb2RlYy0+ZGV2LT5wYXJlbnQpOwo+ICsKPiArCW11dGV4X2xvY2so
+JmNvZGVjLT5tdXRleCk7Cj4gKwltZW1jcHkoJmFyaXpvbmEtPmRhY19jb21wX2NvZWZmLCB1Y29u
+dHJvbC0+dmFsdWUuYnl0ZXMuZGF0YSwKPiArCSAgICAgICBzaXplb2YoYXJpem9uYS0+ZGFjX2Nv
+bXBfY29lZmYpKTsKPiArCWFyaXpvbmEtPmRhY19jb21wX2NvZWZmID0gYmUxNl90b19jcHUoYXJp
+em9uYS0+ZGFjX2NvbXBfY29lZmYpOwo+ICsJbXV0ZXhfdW5sb2NrKCZjb2RlYy0+bXV0ZXgpOwo+
+ICsKPiArCXJldHVybiAwOwo+ICt9Cj4gKwo+ICtzdGF0aWMgaW50IHdtNTEwMl9vdXRfY29tcF9z
+d2l0Y2hfZ2V0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAo+ICsJCQkJICAgICAgc3Ry
+dWN0IHNuZF9jdGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wpCj4gK3sKPiArCXN0cnVjdCBzbmRfc29j
+X2NvZGVjICpjb2RlYyA9IHNuZF9rY29udHJvbF9jaGlwKGtjb250cm9sKTsKPiArCXN0cnVjdCBh
+cml6b25hICphcml6b25hID0gZGV2X2dldF9kcnZkYXRhKGNvZGVjLT5kZXYtPnBhcmVudCk7Cj4g
+Kwo+ICsJbXV0ZXhfbG9jaygmY29kZWMtPm11dGV4KTsKPiArCXVjb250cm9sLT52YWx1ZS5pbnRl
+Z2VyLnZhbHVlWzBdID0gYXJpem9uYS0+ZGFjX2NvbXBfZW5hYmxlZDsKPiArCW11dGV4X3VubG9j
+aygmY29kZWMtPm11dGV4KTsKPiArCj4gKwlyZXR1cm4gMDsKPiArfQo+ICsKPiArc3RhdGljIGlu
+dCB3bTUxMDJfb3V0X2NvbXBfc3dpdGNoX3B1dChzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJv
+bCwKPiArCQkJCSAgICAgIHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnVjb250cm9sKQo+ICt7
+Cj4gKwlzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBzbmRfa2NvbnRyb2xfY2hpcChrY29u
+dHJvbCk7Cj4gKwlzdHJ1Y3QgYXJpem9uYSAqYXJpem9uYSA9IGRldl9nZXRfZHJ2ZGF0YShjb2Rl
+Yy0+ZGV2LT5wYXJlbnQpOwo+ICsKPiArCW11dGV4X2xvY2soJmNvZGVjLT5tdXRleCk7Cj4gKwlh
+cml6b25hLT5kYWNfY29tcF9lbmFibGVkID0gdWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFsdWVb
+MF07Cj4gKwltdXRleF91bmxvY2soJmNvZGVjLT5tdXRleCk7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4g
+K30KPiArCj4gIHN0YXRpYyBjb25zdCBjaGFyICp3bTUxMDJfb3NyX3RleHRbXSA9IHsKPiAgCSJM
+b3cgcG93ZXIiLCAiTm9ybWFsIiwgIkhpZ2ggcGVyZm9ybWFuY2UiLAo+ICB9Owo+IEBAIC04NDMs
+NiArODk5LDEyIEBAIFNPQ19TSU5HTEVfVExWKCJOb2lzZSBHYXRlIFRocmVzaG9sZCBWb2x1bWUi
+LCBBUklaT05BX05PSVNFX0dBVEVfQ09OVFJPTCwKPiAgCSAgICAgICBBUklaT05BX05HQVRFX1RI
+Ul9TSElGVCwgNywgMSwgbmdfdGx2KSwKPiAgU09DX0VOVU0oIk5vaXNlIEdhdGUgSG9sZCIsIGFy
+aXpvbmFfbmdfaG9sZCksCj4gIAo+ICtTTkRfU09DX0JZVEVTX0VYVCgiT3V0cHV0IENvbXBlbnNh
+dGlvbiBDb2VmZmljaWVudCIsIDAsIDEsCj4gKwkJICB3bTUxMDJfb3V0X2NvbXBfY29lZmZfZ2V0
+LCB3bTUxMDJfb3V0X2NvbXBfY29lZmZfcHV0KSwKPiArCj4gK1NPQ19TSU5HTEVfRVhUKCJPdXRw
+dXQgQ29tcGVuc2F0aW9uIFN3aXRjaCIsIDAsIDAsIDEsIDAsCj4gKwkgICAgICAgd201MTAyX291
+dF9jb21wX3N3aXRjaF9nZXQsIHdtNTEwMl9vdXRfY29tcF9zd2l0Y2hfcHV0KSwKPiArCj4gIFdN
+NTEwMl9OR19TUkMoIkhQT1VUMUwiLCBBUklaT05BX05PSVNFX0dBVEVfU0VMRUNUXzFMKSwKPiAg
+V001MTAyX05HX1NSQygiSFBPVVQxUiIsIEFSSVpPTkFfTk9JU0VfR0FURV9TRUxFQ1RfMVIpLAo+
+ICBXTTUxMDJfTkdfU1JDKCJIUE9VVDJMIiwgQVJJWk9OQV9OT0lTRV9HQVRFX1NFTEVDVF8yTCks
+CgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVE1pY3JvZWxlY3Ryb25pY3MgTGFuZGluZyBUZWFtIExl
+YWQKTGluYXJvLm9yZyDilIIgT3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxv
+dyBMaW5hcm86IEZhY2Vib29rIHwgVHdpdHRlciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
