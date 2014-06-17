@@ -1,248 +1,67 @@
-From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v3 1/2] ASoC: add es8328 codec driver
-Date: Tue, 17 Jun 2014 19:36:36 +0800
-Message-ID: <53A02844.9050701@kosagi.com>
-References: <1402997571-1255-1-git-send-email-xobs@kosagi.com> <1402997571-1255-2-git-send-email-xobs@kosagi.com> <20140617104639.GD26741@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Trying to enable digital audio output - Intel HDA
+	- AD1983
+Date: Tue, 17 Jun 2014 19:39:31 +0800
+Message-ID: <CAN8ccibK5C4Ns1=pFjspqncJGCs9Xq8gt4r3Wy=3E88w7jenmw@mail.gmail.com>
+References: <CAK_KU4a90_WVjFhbHXfOKN4gZqLyugSER+XPSnYpkdAviA6EhQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140617104639.GD26741-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f176.google.com (mail-qc0-f176.google.com
+ [209.85.216.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id D216526557B
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 13:39:32 +0200 (CEST)
+Received: by mail-qc0-f176.google.com with SMTP id w7so8505667qcr.21
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 04:39:32 -0700 (PDT)
+In-Reply-To: <CAK_KU4a90_WVjFhbHXfOKN4gZqLyugSER+XPSnYpkdAviA6EhQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Scott D'Vileskis <sdvileskis@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/17/14 18:46, Charles Keepax wrote:
-> On Tue, Jun 17, 2014 at 05:32:50PM +0800, Sean Cross wrote:
->> Add a codec driver for the Everest ES8328.  It supports two separate audio
->> outputs and two separate audio inputs.
->>
->> Signed-off-by: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
->> ---
->>  Documentation/devicetree/bindings/sound/es8328.txt |  18 +
->>  sound/soc/codecs/Kconfig                           |  13 +
->>  sound/soc/codecs/Makefile                          |   6 +
->>  sound/soc/codecs/es8328-i2c.c                      |  55 ++
->>  sound/soc/codecs/es8328-spi.c                      |  44 ++
->>  sound/soc/codecs/es8328.c                          | 625 +++++++++++++++++++++
->>  sound/soc/codecs/es8328.h                          | 313 +++++++++++
->>  7 files changed, 1074 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
->>  create mode 100644 sound/soc/codecs/es8328-i2c.c
->>  create mode 100644 sound/soc/codecs/es8328-spi.c
->>  create mode 100644 sound/soc/codecs/es8328.c
->>  create mode 100644 sound/soc/codecs/es8328.h
->>
->> diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
->> new file mode 100644
->> index 0000000..488bc32
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/es8328.txt
->> @@ -0,0 +1,18 @@
->> +Everest ES8328 audio CODEC
->> +
->> +This device supports both I2C and SPI (configured with pin strapping
->> +on the board).
->> +
->> +Required properties:
->> +
->> +  - compatible : "es8328"
-> I suspect the vendor prefix will be mandatory.
+> I have a Lenovo M55 SFF desktop I use for a media center computer
+> (XBMCbuntu). It has the AD1983 chip on it. From the factory, it had 2
+> ports in the back (mic + speaker) , and 2 ports in the front (mic +
+> speaker). It also has an on-board speaker.
 >
->> +
->> +  - reg : the I2C address of the device for I2C, the chip select
->> +          number for SPI.
->> +
->> +Example:
->> +
->> +codec: es8328@11 {
->> +	compatible = "es8328";
->> +	reg = <0x11>;
->> +};
->> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
->> index cbfa1e1..6a509e3 100644
->> --- a/sound/soc/codecs/Kconfig
->> +++ b/sound/soc/codecs/Kconfig
->> @@ -56,6 +56,8 @@ config SND_SOC_ALL_CODECS
->>  	select SND_SOC_DA732X if I2C
->>  	select SND_SOC_DA9055 if I2C
->>  	select SND_SOC_BT_SCO
->> +	select SND_SOC_ES8328_SPI if SPI_MASTER
->> +	select SND_SOC_ES8328_I2C if I2C
->>  	select SND_SOC_ISABELLE if I2C
->>  	select SND_SOC_JZ4740_CODEC
->>  	select SND_SOC_LM4857 if I2C
->> @@ -396,6 +398,17 @@ config SND_SOC_DMIC
->>  config SND_SOC_HDMI_CODEC
->>         tristate "HDMI stub CODEC"
->>  
->> +config SND_SOC_ES8328
->> +	tristate "Everest Semi ES8328 CODEC"
->> +
->> +config SND_SOC_ES8328_I2C
->> +	tristate
->> +	select SND_SOC_ES8328
->> +
->> +config SND_SOC_ES8328_SPI
->> +	tristate
->> +	select SND_SOC_ES8328
->> +
->>  config SND_SOC_ISABELLE
->>          tristate
->>  
->> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
->> index be3377b..66e7859 100644
->> --- a/sound/soc/codecs/Makefile
->> +++ b/sound/soc/codecs/Makefile
->> @@ -48,6 +48,9 @@ snd-soc-da732x-objs := da732x.o
->>  snd-soc-da9055-objs := da9055.o
->>  snd-soc-bt-sco-objs := bt-sco.o
->>  snd-soc-dmic-objs := dmic.o
->> +snd-soc-es8328-objs := es8328.o
->> +snd-soc-es8328-i2c-objs := es8328-i2c.o
->> +snd-soc-es8328-spi-objs := es8328-spi.o
->>  snd-soc-isabelle-objs := isabelle.o
->>  snd-soc-jz4740-codec-objs := jz4740.o
->>  snd-soc-l3-objs := l3.o
->> @@ -213,6 +216,9 @@ obj-$(CONFIG_SND_SOC_DA732X)	+= snd-soc-da732x.o
->>  obj-$(CONFIG_SND_SOC_DA9055)	+= snd-soc-da9055.o
->>  obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
->>  obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
->> +obj-$(CONFIG_SND_SOC_ES8328)	+= snd-soc-es8328.o
->> +obj-$(CONFIG_SND_SOC_ES8328_I2C)+= snd-soc-es8328-i2c.o
->> +obj-$(CONFIG_SND_SOC_ES8328_SPI)+= snd-soc-es8328-spi.o
->>  obj-$(CONFIG_SND_SOC_ISABELLE)	+= snd-soc-isabelle.o
->>  obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
->>  obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
->> diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
->> new file mode 100644
->> index 0000000..0bb02d3
->> --- /dev/null
->> +++ b/sound/soc/codecs/es8328-i2c.c
->> @@ -0,0 +1,55 @@
->> +/*
->> + * es8328-i2c.c  --  ES8328 ALSA SoC I2C Audio driver
->> + *
->> + * Copyright 2014 Sutajio Ko-Usagi PTE LTD
->> + *
->> + * Author: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
->> + *
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License version 2 as
->> + * published by the Free Software Foundation.
->> + */
->> +
->> +#include <linux/module.h>
->> +#include <linux/i2c.h>
->> +#include <linux/regmap.h>
->> +
->> +#include <sound/soc.h>
->> +
->> +#include "es8328.h"
->> +
->> +static const struct i2c_device_id es8328_id[] = {
->> +	{ "es8328", 0 },
->> +	{ }
->> +};
->> +MODULE_DEVICE_TABLE(i2c, es8328_id);
->> +
->> +static int es8328_i2c_probe(struct i2c_client *i2c,
->> +			    const struct i2c_device_id *id)
->> +{
->> +	struct regmap_config config;
->> +
->> +	config = es8328_regmap_config;
->> +	return es8328_probe(&i2c->dev, devm_regmap_init_i2c(i2c, &config));
->> +}
->> +
->> +static int es8328_i2c_remove(struct i2c_client *i2c)
->> +{
->> +	snd_soc_unregister_codec(&i2c->dev);
->> +	return 0;
->> +}
->> +
->> +static struct i2c_driver es8328_i2c_driver = {
->> +	.driver = {
->> +		.name = "es8328",
->> +	},
->> +	.probe    = es8328_i2c_probe,
->> +	.remove   = es8328_i2c_remove,
->> +	.id_table = es8328_id,
->> +};
->> +
->> +module_i2c_driver(es8328_i2c_driver);
->> +
->> +MODULE_DESCRIPTION("ASoC ES8328 audio CODEC I2C driver");
->> +MODULE_AUTHOR("Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>");
->> +MODULE_LICENSE("GPL");
->> diff --git a/sound/soc/codecs/es8328-spi.c b/sound/soc/codecs/es8328-spi.c
->> new file mode 100644
->> index 0000000..28433e7
->> --- /dev/null
->> +++ b/sound/soc/codecs/es8328-spi.c
->> @@ -0,0 +1,44 @@
->> +/*
->> + * es8328.c  --  ES8328 ALSA SoC SPI Audio driver
->> + *
->> + * Copyright 2014 Sutajio Ko-Usagi PTE LTD
->> + *
->> + * Author: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
->> + *
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License version 2 as
->> + * published by the Free Software Foundation.
->> + */
->> +
->> +#include <linux/module.h>
->> +#include <linux/regmap.h>
->> +#include <linux/spi/spi.h>
->> +#include <sound/soc.h>
->> +#include "es8328.h"
->> +
->> +static int es8328_spi_probe(struct spi_device *spi)
->> +{
->> +	struct regmap_config config;
->> +
->> +	config = es8328_regmap_config;
->> +	return es8328_probe(&spi->dev, devm_regmap_init_spi(spi, &config));
->> +}
->> +
->> +static int es8328_spi_remove(struct spi_device *spi)
->> +{
->> +	snd_soc_unregister_codec(&spi->dev);
->> +	return 0;
->> +}
->> +
->> +static struct spi_driver es8328_spi_driver = {
->> +	.driver = {
->> +		.name	= "es8328",
->> +	},
->> +	.probe	= es8328_spi_probe,
->> +	.remove	= es8328_spi_remove,
->> +};
-> Your of_match_table seems to have gone missing since the last
-> version I suspect that is why you had trouble with the vendor
-> prefix. Ditto for the I2C as well.
-I was basing the driver off the 6c3d713e6d32706999689e379a9098afb4cd8a2c
-commit mentioned in the previous comment.  In that commit, there is an
-id_table in ad193x-i2c.c.  ad193x.c doesn't have an of_match_table,
-which makes sense because I'm trying to load the I2C device.
+> It never shipped with a SPDIF output, but I soldered a wire to the
+> AD1983 and installed an RCA jack on the back of the case. Earlier
+> versions of XBMC shipped with a different version of alsa, and I was
+> able to use this custom SPDIF output without issue for the last year
+> or two, but the current version only enables the 'proper'
+> inputs/outputs
+>
+> I have tried editing the module options and specifying several
+> different models, but the documentation doesn't list any 'model'
+> options for the AD1983.
+>
+> I suspect I need to overwrite the pin configs.
+> cat init_pin_configs:
+> 0x05 0x01014010
+> 0x06 0x0221401f
+> 0x07 0x991301f0
+> 0x08 0x02a19020
+> 0x09 0x0181302e
+> 0x0a 0x414511f0
 
-I see now that of_match_table is distinct from the id_table.  I assumed
-the I2C bus would walk the i2c_driver's id_table and load it that way.
+Node 0x0a [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x414511f0: [N/A] SPDIF Out at Ext Rear
+    Conn = Optical, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x02
 
-How should this work, then?  Should I specify the same "everest,es8328"
-compatible array to both the I2C and the SPI driver, and let the
-different buses sort it out?  Or should I rename one to, say,
-"everest,es8328-i2c" and the other to "everest,es8328-spi"?
-
-Also, for my own curiosity, what is the difference between the I2C
-id_table and the generic driver of_match_table?
-
-
-Sean
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Use hda-jack-retask or early patching to change pin default of node 0x0a
+from [N/A] to [JACK]
