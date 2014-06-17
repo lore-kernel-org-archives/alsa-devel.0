@@ -1,44 +1,62 @@
-From: Sean Cross <xobs@kosagi.com>
-Subject: Re: [PATCH v2 3/3] ASoC: fsl: add imx-es8328 machine
-	driver
-Date: Tue, 17 Jun 2014 15:12:14 +0800
-Message-ID: <539FEA4E.503@kosagi.com>
-References: <1402982189-28598-1-git-send-email-xobs@kosagi.com>
- <1402982189-28598-4-git-send-email-xobs@kosagi.com>
- <539FDF92.8070401@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.g1.pair.com (mail1.g1.pair.com [66.39.3.162])
- by alsa0.perex.cz (Postfix) with ESMTP id 6341E2654EC
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 09:12:43 +0200 (CEST)
-In-Reply-To: <539FDF92.8070401@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Nicolin Chen <Guangyu.Chen@freescale.com>
+From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v3 0/3] Add ES8328 audio codec
+Date: Tue, 17 Jun 2014 17:32:49 +0800
+Message-ID: <1402997571-1255-1-git-send-email-xobs@kosagi.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/17/14 14:26, Lars-Peter Clausen wrote:
-> On 06/17/2014 07:16 AM, Sean Cross wrote:
-> [...]
->> +- codec-supply : Power regulator for audio codec chip
->
-> If this is the supply for the CODEC it should be part of the CODEC's
-> bindings and probably be handled by the CODEC driver.
->
->
-On this board, it's simply a GPIO on this board that enables or disables
-power to the chip.  Since it's external to the codec, it seemed more
-appropriate to put it in the machine driver file.
+This patchset adds support for the Everest Semi ES8328 audio codec.  It also
+adds support for using the es8328 on IMX boards.
 
+We write a machine driver rather than using simple-card because the machine
+driver needs to support regulators for the codec itself and speaker amps,
+have headphone support, and must supply an unusual frequency to the codec chip.
 
-Sean
+Changes since v2:
+    - Change deemph to a bool, and update based on sample rate
+    - Replace value enums with regular enums
+    - Break SPI and I2C drivers into their own modules
+    - Rename everest,es8328 to es8328 as the module wasn't getting detected.
+      Because of this, the patch to vendor-prefixes.txt has been dropped.
+
+Changes since v1:
+    - Rename HP/Speaker to OUT1/OUT2
+    - Use DAPM widgets for startup/shutdown
+    - Add regulator support to machine driver
+
+*** BLURB HERE ***
+
+Sean Cross (2):
+  ASoC: add es8328 codec driver
+  ASoC: fsl: add imx-es8328 machine driver
+
+ Documentation/devicetree/bindings/sound/es8328.txt |  18 +
+ .../devicetree/bindings/sound/imx-audio-es8328.txt |  60 ++
+ sound/soc/codecs/Kconfig                           |  13 +
+ sound/soc/codecs/Makefile                          |   6 +
+ sound/soc/codecs/es8328-i2c.c                      |  55 ++
+ sound/soc/codecs/es8328-spi.c                      |  44 ++
+ sound/soc/codecs/es8328.c                          | 625 +++++++++++++++++++++
+ sound/soc/codecs/es8328.h                          | 313 +++++++++++
+ sound/soc/fsl/Kconfig                              |  14 +
+ sound/soc/fsl/Makefile                             |   2 +
+ sound/soc/fsl/imx-es8328.c                         | 359 ++++++++++++
+ 11 files changed, 1509 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
+ create mode 100644 sound/soc/codecs/es8328-i2c.c
+ create mode 100644 sound/soc/codecs/es8328-spi.c
+ create mode 100644 sound/soc/codecs/es8328.c
+ create mode 100644 sound/soc/codecs/es8328.h
+ create mode 100644 sound/soc/fsl/imx-es8328.c
+
+-- 
+2.0.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
