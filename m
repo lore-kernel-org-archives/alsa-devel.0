@@ -1,14 +1,17 @@
 From: Sean Cross <xobs@kosagi.com>
-Subject: [PATCH v2 0/3] Add ES8328 audio codec
-Date: Tue, 17 Jun 2014 13:16:26 +0800
-Message-ID: <1402982189-28598-1-git-send-email-xobs@kosagi.com>
+Subject: [PATCH v2 1/3] devicetree: bindings: Add Everest
+	Semicodunctor
+Date: Tue, 17 Jun 2014 13:16:27 +0800
+Message-ID: <1402982189-28598-2-git-send-email-xobs@kosagi.com>
+References: <1402982189-28598-1-git-send-email-xobs@kosagi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.g1.pair.com (mail1.g1.pair.com [66.39.3.162])
- by alsa0.perex.cz (Postfix) with ESMTP id 372D8265518
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 07:16:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 759C3265519
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 07:16:46 +0200 (CEST)
+In-Reply-To: <1402982189-28598-1-git-send-email-xobs@kosagi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,40 +25,20 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarosl
 Cc: Sean Cross <xobs@kosagi.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patchset adds support for the Everest Semi ES8328 audio codec.  It also
-adds support for using the es8328 on IMX boards.
-
-We write a machine driver rather than using simple-card because the machine
-driver needs to support regulators for the codec itself and speaker amps,
-have headphone support, and must supply an unusual frequency to the codec chip.
-
-Changes since v1:
-
-    - Rename HP/Speaker to OUT1/OUT2
-    - Use DAPM widgets for startup/shutdown
-    - Add regulator support to machine driver
-
-Sean Cross (3):
-  devicetree: bindings: Add Everest Semicodunctor
-  ASoC: add es8328 codec driver
-  ASoC: fsl: add imx-es8328 machine driver
-
- Documentation/devicetree/bindings/sound/es8328.txt |  18 +
- .../devicetree/bindings/sound/imx-audio-es8328.txt |  60 ++
- .../devicetree/bindings/vendor-prefixes.txt        |   1 +
- sound/soc/codecs/Kconfig                           |   5 +
- sound/soc/codecs/Makefile                          |   2 +
- sound/soc/codecs/es8328.c                          | 711 +++++++++++++++++++++
- sound/soc/codecs/es8328.h                          | 305 +++++++++
- sound/soc/fsl/Kconfig                              |  13 +
- sound/soc/fsl/Makefile                             |   2 +
- sound/soc/fsl/imx-es8328.c                         | 359 +++++++++++
- 10 files changed, 1476 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
- create mode 100644 sound/soc/codecs/es8328.c
- create mode 100644 sound/soc/codecs/es8328.h
- create mode 100644 sound/soc/fsl/imx-es8328.c
-
--- 
-2.0.0
+RXZlcmVzdCBTZW1pY29uZHVjdG9yIG1ha2VzIGF1ZGlvIGNvZGVjcy4KClNpZ25lZC1vZmYtYnk6
+IFNlYW4gQ3Jvc3MgPHhvYnNAa29zYWdpLmNvbT4KLS0tCiBEb2N1bWVudGF0aW9uL2RldmljZXRy
+ZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnR4dCB8IDEgKwogMSBmaWxlIGNoYW5nZWQsIDEg
+aW5zZXJ0aW9uKCspCgpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL3ZlbmRvci1wcmVmaXhlcy50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3MvdmVuZG9yLXByZWZpeGVzLnR4dAppbmRleCA0ZDdmMzc1Li4yZDg4YzEwIDEwMDY0NAotLS0g
+YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnR4dAor
+KysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnR4
+dApAQCAtNDYsNiArNDYsNyBAQCBlcGZsCUVjb2xlIFBvbHl0ZWNobmlxdWUgRsOpZMOpcmFsZSBk
+ZSBMYXVzYW5uZQogZXBzb24JU2Vpa28gRXBzb24gQ29ycC4KIGVzdAlFU1RlZW0gV2lyZWxlc3Mg
+TW9kZW1zCiBldWtyZWEgIEV1a3LDqWEgRWxlY3Ryb21hdGlxdWUKK2V2ZXJlc3QJRXZlcmVzdCBT
+ZW1pY29uZHVjdG9yIENvLiBMdGQuCiBleGNpdG8JRXhjaXRvCiBmc2wJRnJlZXNjYWxlIFNlbWlj
+b25kdWN0b3IKIEdFRmFudWMJR0UgRmFudWMgSW50ZWxsaWdlbnQgUGxhdGZvcm1zIEVtYmVkZGVk
+IFN5c3RlbXMsIEluYy4KLS0gCjIuMC4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
