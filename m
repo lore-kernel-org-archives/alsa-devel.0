@@ -1,235 +1,131 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v3 1/2] ASoC: add es8328 codec driver
-Date: Tue, 17 Jun 2014 11:46:39 +0100
-Message-ID: <20140617104639.GD26741@opensource.wolfsonmicro.com>
-References: <1402997571-1255-1-git-send-email-xobs@kosagi.com> <1402997571-1255-2-git-send-email-xobs@kosagi.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: ASoC updates for v3.16
+Date: Tue, 17 Jun 2014 12:07:25 +0100
+Message-ID: <20140617110725.GM5099@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1402997571-1255-2-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Cc: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============3406473643556327253=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0DB926557B
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 13:07:42 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 17, 2014 at 05:32:50PM +0800, Sean Cross wrote:
-> Add a codec driver for the Everest ES8328.  It supports two separate audio
-> outputs and two separate audio inputs.
-> 
-> Signed-off-by: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/sound/es8328.txt |  18 +
->  sound/soc/codecs/Kconfig                           |  13 +
->  sound/soc/codecs/Makefile                          |   6 +
->  sound/soc/codecs/es8328-i2c.c                      |  55 ++
->  sound/soc/codecs/es8328-spi.c                      |  44 ++
->  sound/soc/codecs/es8328.c                          | 625 +++++++++++++++++++++
->  sound/soc/codecs/es8328.h                          | 313 +++++++++++
->  7 files changed, 1074 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
->  create mode 100644 sound/soc/codecs/es8328-i2c.c
->  create mode 100644 sound/soc/codecs/es8328-spi.c
->  create mode 100644 sound/soc/codecs/es8328.c
->  create mode 100644 sound/soc/codecs/es8328.h
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
-> new file mode 100644
-> index 0000000..488bc32
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/es8328.txt
-> @@ -0,0 +1,18 @@
-> +Everest ES8328 audio CODEC
-> +
-> +This device supports both I2C and SPI (configured with pin strapping
-> +on the board).
-> +
-> +Required properties:
-> +
-> +  - compatible : "es8328"
 
-I suspect the vendor prefix will be mandatory.
+--===============3406473643556327253==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TQdceJAPMCgoeI5/"
+Content-Disposition: inline
 
-> +
-> +  - reg : the I2C address of the device for I2C, the chip select
-> +          number for SPI.
-> +
-> +Example:
-> +
-> +codec: es8328@11 {
-> +	compatible = "es8328";
-> +	reg = <0x11>;
-> +};
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index cbfa1e1..6a509e3 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -56,6 +56,8 @@ config SND_SOC_ALL_CODECS
->  	select SND_SOC_DA732X if I2C
->  	select SND_SOC_DA9055 if I2C
->  	select SND_SOC_BT_SCO
-> +	select SND_SOC_ES8328_SPI if SPI_MASTER
-> +	select SND_SOC_ES8328_I2C if I2C
->  	select SND_SOC_ISABELLE if I2C
->  	select SND_SOC_JZ4740_CODEC
->  	select SND_SOC_LM4857 if I2C
-> @@ -396,6 +398,17 @@ config SND_SOC_DMIC
->  config SND_SOC_HDMI_CODEC
->         tristate "HDMI stub CODEC"
->  
-> +config SND_SOC_ES8328
-> +	tristate "Everest Semi ES8328 CODEC"
-> +
-> +config SND_SOC_ES8328_I2C
-> +	tristate
-> +	select SND_SOC_ES8328
-> +
-> +config SND_SOC_ES8328_SPI
-> +	tristate
-> +	select SND_SOC_ES8328
-> +
->  config SND_SOC_ISABELLE
->          tristate
->  
-> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-> index be3377b..66e7859 100644
-> --- a/sound/soc/codecs/Makefile
-> +++ b/sound/soc/codecs/Makefile
-> @@ -48,6 +48,9 @@ snd-soc-da732x-objs := da732x.o
->  snd-soc-da9055-objs := da9055.o
->  snd-soc-bt-sco-objs := bt-sco.o
->  snd-soc-dmic-objs := dmic.o
-> +snd-soc-es8328-objs := es8328.o
-> +snd-soc-es8328-i2c-objs := es8328-i2c.o
-> +snd-soc-es8328-spi-objs := es8328-spi.o
->  snd-soc-isabelle-objs := isabelle.o
->  snd-soc-jz4740-codec-objs := jz4740.o
->  snd-soc-l3-objs := l3.o
-> @@ -213,6 +216,9 @@ obj-$(CONFIG_SND_SOC_DA732X)	+= snd-soc-da732x.o
->  obj-$(CONFIG_SND_SOC_DA9055)	+= snd-soc-da9055.o
->  obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
->  obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
-> +obj-$(CONFIG_SND_SOC_ES8328)	+= snd-soc-es8328.o
-> +obj-$(CONFIG_SND_SOC_ES8328_I2C)+= snd-soc-es8328-i2c.o
-> +obj-$(CONFIG_SND_SOC_ES8328_SPI)+= snd-soc-es8328-spi.o
->  obj-$(CONFIG_SND_SOC_ISABELLE)	+= snd-soc-isabelle.o
->  obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
->  obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
-> diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
-> new file mode 100644
-> index 0000000..0bb02d3
-> --- /dev/null
-> +++ b/sound/soc/codecs/es8328-i2c.c
-> @@ -0,0 +1,55 @@
-> +/*
-> + * es8328-i2c.c  --  ES8328 ALSA SoC I2C Audio driver
-> + *
-> + * Copyright 2014 Sutajio Ko-Usagi PTE LTD
-> + *
-> + * Author: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/i2c.h>
-> +#include <linux/regmap.h>
-> +
-> +#include <sound/soc.h>
-> +
-> +#include "es8328.h"
-> +
-> +static const struct i2c_device_id es8328_id[] = {
-> +	{ "es8328", 0 },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, es8328_id);
-> +
-> +static int es8328_i2c_probe(struct i2c_client *i2c,
-> +			    const struct i2c_device_id *id)
-> +{
-> +	struct regmap_config config;
-> +
-> +	config = es8328_regmap_config;
-> +	return es8328_probe(&i2c->dev, devm_regmap_init_i2c(i2c, &config));
-> +}
-> +
-> +static int es8328_i2c_remove(struct i2c_client *i2c)
-> +{
-> +	snd_soc_unregister_codec(&i2c->dev);
-> +	return 0;
-> +}
-> +
-> +static struct i2c_driver es8328_i2c_driver = {
-> +	.driver = {
-> +		.name = "es8328",
-> +	},
-> +	.probe    = es8328_i2c_probe,
-> +	.remove   = es8328_i2c_remove,
-> +	.id_table = es8328_id,
-> +};
-> +
-> +module_i2c_driver(es8328_i2c_driver);
-> +
-> +MODULE_DESCRIPTION("ASoC ES8328 audio CODEC I2C driver");
-> +MODULE_AUTHOR("Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>");
-> +MODULE_LICENSE("GPL");
-> diff --git a/sound/soc/codecs/es8328-spi.c b/sound/soc/codecs/es8328-spi.c
-> new file mode 100644
-> index 0000000..28433e7
-> --- /dev/null
-> +++ b/sound/soc/codecs/es8328-spi.c
-> @@ -0,0 +1,44 @@
-> +/*
-> + * es8328.c  --  ES8328 ALSA SoC SPI Audio driver
-> + *
-> + * Copyright 2014 Sutajio Ko-Usagi PTE LTD
-> + *
-> + * Author: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/regmap.h>
-> +#include <linux/spi/spi.h>
-> +#include <sound/soc.h>
-> +#include "es8328.h"
-> +
-> +static int es8328_spi_probe(struct spi_device *spi)
-> +{
-> +	struct regmap_config config;
-> +
-> +	config = es8328_regmap_config;
-> +	return es8328_probe(&spi->dev, devm_regmap_init_spi(spi, &config));
-> +}
-> +
-> +static int es8328_spi_remove(struct spi_device *spi)
-> +{
-> +	snd_soc_unregister_codec(&spi->dev);
-> +	return 0;
-> +}
-> +
-> +static struct spi_driver es8328_spi_driver = {
-> +	.driver = {
-> +		.name	= "es8328",
-> +	},
-> +	.probe	= es8328_spi_probe,
-> +	.remove	= es8328_spi_remove,
-> +};
 
-Your of_match_table seems to have gone missing since the last
-version I suspect that is why you had trouble with the vendor
-prefix. Ditto for the I2C as well.
+--TQdceJAPMCgoeI5/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Charles
+The following changes since commit 7171511eaec5bf23fb06078f59784a3a0626b38f:
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+  Linux 3.16-rc1 (2014-06-15 17:45:28 -1000)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.16-rc1
+
+for you to fetch changes up to 28e48f0e262fd94a613613d06ac5eaf6745b18a8:
+
+  Merge remote-tracking branches 'asoc/fix/fsl-dma', 'asoc/fix/fsl-spdif', 'asoc/fix/pxa', 'asoc/fix/rcar' and 'asoc/fix/sigmadsp' into asoc-linus (2014-06-16 16:05:16 +0100)
+
+----------------------------------------------------------------
+
+ASoC: Fixes for v3.16
+
+Quite a few build coverage fixes in here among the usual small driver
+fixes includling the sigmadsp change from Lars - moving the driver to
+separate modules per bus (which is basically just code motion) avoids
+issues with some combinations of buses being enabled.
+
+----------------------------------------------------------------
+
+Anssi Hannula (1):
+      ASoC: fsl_spdif: Fix integer overflow when calculating divisors
+
+Arnd Bergmann (2):
+      ASoC: pxa: add I2C dependencies as needed
+      ASoC: MMP audio needs sram support
+
+Guenter Roeck (1):
+      ASoC: fsl: Fix build problem
+
+Jarkko Nikula (1):
+      ASoC: dapm: Make sure register value is in sync with DAPM kcontrol state
+
+Kuninori Morimoto (1):
+      ASoC: rsnd: fixup index of src/dst mod when capture
+
+Lars-Peter Clausen (1):
+      ASoC: sigmadsp: Split regmap and I2C support into separate modules
+
+Mark Brown (2):
+      Merge remote-tracking branch 'asoc/fix/core' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/fsl-dma', 'asoc/fix/fsl-spdif', 'asoc/fix/pxa', 'asoc/fix/rcar' and 'asoc/fix/sigmadsp' into asoc-linus
+
+Nicolin Chen (1):
+      ASoC: fsl_spdif: Fix incorrect usage of regmap_read()
+
+ sound/soc/codecs/Kconfig           | 12 +++++--
+ sound/soc/codecs/Makefile          |  4 +++
+ sound/soc/codecs/sigmadsp-i2c.c    | 35 ++++++++++++++++++++
+ sound/soc/codecs/sigmadsp-regmap.c | 36 +++++++++++++++++++++
+ sound/soc/codecs/sigmadsp.c        | 65 ++------------------------------------
+ sound/soc/codecs/sigmadsp.h        | 20 ++++++++++++
+ sound/soc/fsl/fsl_dma.c            |  4 +--
+ sound/soc/fsl/fsl_spdif.c          |  6 ++--
+ sound/soc/pxa/Kconfig              | 11 ++++---
+ sound/soc/sh/rcar/core.c           |  2 +-
+ sound/soc/soc-dapm.c               | 29 +++++++++--------
+ 11 files changed, 135 insertions(+), 89 deletions(-)
+ create mode 100644 sound/soc/codecs/sigmadsp-i2c.c
+ create mode 100644 sound/soc/codecs/sigmadsp-regmap.c
+
+--TQdceJAPMCgoeI5/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJToCFpAAoJELSic+t+oim9s8wQAIrCZOoYF+NCxLEFZkzpvTA+
+R/duuB8bR7cWjXXCuqm2bEAVmZpQF0c9oIKREr4b1O4N0XDaFay9V5/VrrTUT6mF
+X6moJaCCYkDPhUcXP0I1zwmZSLMbQGFjQvhEOcB8j1k9jtIyAT1wlTbgq4V0kr+i
+eE7naxkMioed5nH3LLk+4VtXiA1td6HFAx7Vq/BzKNHiImQPS+WEFC3lUnlbBfx9
+dtSHb/RWf13klc+fhSjAl8B3E/H/EGGRNny4rgm+fgAX4NcpyiePgxf/oCAd2SvE
+ncvL3v3O8Bq5ohW5QcdyIS8doqkEKs3OC8O2m6RxFggt7o8CYnpZrqsX105NrZjv
+I6/ayd/ItoH2i0iBXRlbOtprlwzRdAmUUTbjQwFPwZJQvtyxipbL2TY0SUhbxKT+
+NVgPGT2MSHN65ED1NsAT32nE91xNo+nwGXCY9El1HMit/UipOlkwKVHJCcnlPtyn
+KvlfvzfmtEufJGPxoLWT/gGXeEEPIGR9a+hm69m/eIEh2VH1HAfhjI5dZytdkN/P
+0boX6MNwC7yEAOVVSVO8bmL66uPM9viBx/MtVpqmHB+un6aVuQXtX1k0vto+J+HZ
+pYBihiG6la8h2OMvq3uCS4ehDIQU6hmCAXWfpm0d2bB9zc/4dARZ0sLgwnwyNqK9
+ulCxiFIr3NU3SB223n4w
+=a5yf
+-----END PGP SIGNATURE-----
+
+--TQdceJAPMCgoeI5/--
+
+--===============3406473643556327253==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3406473643556327253==--
