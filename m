@@ -1,17 +1,17 @@
-From: Manish Badarkhe <badarkhe.manish@gmail.com>
-Subject: Sound issue in IMx6
-Date: Tue, 17 Jun 2014 15:55:28 +0530
-Message-ID: <CAKDJKT545O8jOWCOk-U=+OK5aQVft4rJ-0YH8bgujmdMcC782A@mail.gmail.com>
+From: Rahul Panwar <panwar.rahul@gmail.com>
+Subject: TLV320AIC32x4 driver configuration for playing wav
+	file using aplay
+Date: Tue, 17 Jun 2014 20:30:35 +0530
+Message-ID: <CAPQ+6UnfRaVa1o8NALhmMLg-Rr16fRXUP0BX69HiF3Re52rq8w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=001a11c2dbceedc40e04fc09671a
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
- [209.85.192.170])
- by alsa0.perex.cz (Postfix) with ESMTP id 02C7E265530
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 12:25:32 +0200 (CEST)
-Received: by mail-pd0-f170.google.com with SMTP id z10so4005584pdj.1
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 03:25:29 -0700 (PDT)
+Received: from mail-oa0-f68.google.com (mail-oa0-f68.google.com
+ [209.85.219.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93D5C2655FB
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 17:00:38 +0200 (CEST)
+Received: by mail-oa0-f68.google.com with SMTP id j17so2420836oag.3
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 08:00:35 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +24,118 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+--001a11c2dbceedc40e04fc09671a
+Content-Type: text/plain; charset=UTF-8
 
-In our android project, We are using IMx6 chip which is having SSI module
-to send data to codec.
+Hi,
 
-We are facing issues with PCM data which is getting passed to codec
-getting changed sometimes (even though android is filling up same data).
+We integrated TLV320AIC32x4  codec to OMAP-L138 Soc board. We are using
+Linux kernel 3.3.0 with driver of TLV320AIC32x4. Driver is successfully
+detecting.
 
-Our use case is as follows:
+But we are not able to play a wav file using aplay. When we are trying to
+play any WAV file using aplay, it is not enabling the DAC and file failed
+to play.
 
-Press key on keypad (PCM open  function gets called) and after 3secs
-of inactivity PCM close function get called.
-After doing this above activity,quite number of times we have seen
-sometimes sound gets changed abruptly.
+When we try to debug that using debugfs, it look like, it is only setting
+"LOR" ==> "LOR Powe" ==> "LOR Output Mixer".
+But after that there is no further Input / path / output configuration
+found. As per the driver it should enable the "Right DAC" via "R_DAC
+Switch".
+When it will enable "Right DAC", DAC will be enabled and it may start
+playing WAV file after that.
 
-I have seen your commit in mainline which is fix to almost similar
-behavior as I explained above in usecase.
-Commit: ASoC: fsl: imx-ssi: omit ssi counter to avoid harm in
-unbalanced situation
-But still after applying above change issue gets seen sometimes.
+We are not able the get the cause, what we are doing wrong. What should we
+need to do to enable DAC.
 
-After this I put some delay in "imx_ssi_trigger" function as below:
-@@ -360,9 +360,9 @@ static int imx_ssi_trigger(struct
-snd_pcm_substream *substream, int cmd,
-                        scr |= SSI_SCR_RE;
-                sier |= sier_bits;
+I am attaching the debugfs log for TLV320AIC32x4 dapm, it may be helpful to
+understand the cause, which we are unable to get.
 
--               if (++ssi->enabled == 1)
--                       scr |= SSI_SCR_SSIEN;
--
-+               scr |= SSI_SCR_SSIEN;
-+               mdelay(1);
-                break;
+-- 
+Thanks and Regards,
+Rahul Panwar
+www.linuxexplore.com
 
-        case SNDRV_PCM_TRIGGER_STOP:
-@@ -374,9 +374,10 @@ static int imx_ssi_trigger(struct
-snd_pcm_substream *substream, int cmd,
-                        scr &= ~SSI_SCR_RE;
-                sier &= ~sier_bits;
+--001a11c2dbceedc40e04fc09671a
+Content-Type: text/plain; charset=US-ASCII; name="dapmlog.txt"
+Content-Disposition: attachment; filename="dapmlog.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hwjc43ql0
 
--               if (--ssi->enabled == 0)
-+               if (!(scr & (SSI_SCR_TE | SSI_SCR_RE)))
-                        scr &= ~SSI_SCR_SSIEN;
--
-+                       mdelay(1);
-                break;
+PT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vSGVhZHBob25l
+IEphY2sgPD09CkhlYWRwaG9uZSBKYWNrOiBPZmYgIGluIDAgb3V0IDEKIGluICAic3RhdGljIiAi
+SFBSIgogaW4gICJzdGF0aWMiICJIUEwiCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWlj
+MzJ4NC41LTAwMTgvZGFwbS9MaW5lIE91dCA8PT0KTGluZSBPdXQ6IE9mZiAgaW4gMCBvdXQgMQog
+aW4gICJzdGF0aWMiICJMT1IiCiBpbiAgInN0YXRpYyIgIkxPTCIKCj09PiAvc3lzL2tlcm5lbC9k
+ZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL0xpbmUgSW4gPD09CkxpbmUgSW46IE9mZiAg
+aW4gMSBvdXQgMAogb3V0ICJzdGF0aWMiICJJTjFfUiIKIG91dCAic3RhdGljIiAiSU4xX0wiCgo9
+PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAwMTgvZGFwbS9PbmJvYXJkIE1p
+YyA8PT0KT25ib2FyZCBNaWM6IE9mZiAgaW4gMSBvdXQgMAogb3V0ICJzdGF0aWMiICJJTjNfUiIK
+IG91dCAic3RhdGljIiAiSU4zX0wiCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4
+NC41LTAwMTgvZGFwbS9MZWZ0IERBQyA8PT0KTGVmdCBEQUM6IE9mZiAgaW4gMCBvdXQgMCAtIFI2
+MygweDNmKSBiaXQgNwogc3RyZWFtIExlZnQgUGxheWJhY2sgaW5hY3RpdmUKCj09PiAvc3lzL2tl
+cm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL0hQTCBPdXRwdXQgTWl4ZXIgPD09
+CkhQTCBPdXRwdXQgTWl4ZXI6IE9mZiAgaW4gMCBvdXQgMQogb3V0ICJzdGF0aWMiICJIUEwgUG93
+ZXIiCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAwMTgvZGFwbS9IUEwg
+UG93ZXIgPD09CkhQTCBQb3dlcjogT2ZmICBpbiAwIG91dCAxIC0gUjEzNygweDg5KSBiaXQgNQog
+aW4gICJzdGF0aWMiICJIUEwgT3V0cHV0IE1peGVyIgogb3V0ICJzdGF0aWMiICJIUEwiCgo9PT4g
+L3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAwMTgvZGFwbS9MT0wgT3V0cHV0IE1p
+eGVyIDw9PQpMT0wgT3V0cHV0IE1peGVyOiBPZmYgIGluIDAgb3V0IDEKIG91dCAic3RhdGljIiAi
+TE9MIFBvd2VyIgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2Rh
+cG0vTE9MIFBvd2VyIDw9PQpMT0wgUG93ZXI6IE9mZiAgaW4gMCBvdXQgMSAtIFIxMzcoMHg4OSkg
+Yml0IDMKIGluICAic3RhdGljIiAiTE9MIE91dHB1dCBNaXhlciIKIG91dCAic3RhdGljIiAiTE9M
+IgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vUmlnaHQg
+REFDIDw9PQpSaWdodCBEQUM6IE9mZiAgaW4gMCBvdXQgMCAtIFI2MygweDNmKSBiaXQgNgogc3Ry
+ZWFtIFJpZ2h0IFBsYXliYWNrIGluYWN0aXZlCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIw
+YWljMzJ4NC41LTAwMTgvZGFwbS9IUFIgT3V0cHV0IE1peGVyIDw9PQpIUFIgT3V0cHV0IE1peGVy
+OiBPZmYgIGluIDAgb3V0IDEKIG91dCAic3RhdGljIiAiSFBSIFBvd2VyIgoKPT0+IC9zeXMva2Vy
+bmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vSFBSIFBvd2VyIDw9PQpIUFIgUG93
+ZXI6IE9mZiAgaW4gMCBvdXQgMSAtIFIxMzcoMHg4OSkgYml0IDQKIGluICAic3RhdGljIiAiSFBS
+IE91dHB1dCBNaXhlciIKIG91dCAic3RhdGljIiAiSFBSIgoKPT0+IC9zeXMva2VybmVsL2RlYnVn
+L3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vTE9SIE91dHB1dCBNaXhlciA8PT0KTE9SIE91dHB1
+dCBNaXhlcjogT2ZmICBpbiAwIG91dCAxCiBvdXQgInN0YXRpYyIgIkxPUiBQb3dlciIKCj09PiAv
+c3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL0xPUiBQb3dlciA8PT0K
+TE9SIFBvd2VyOiBPZmYgIGluIDAgb3V0IDEgLSBSMTM3KDB4ODkpIGJpdCAyCiBpbiAgInN0YXRp
+YyIgIkxPUiBPdXRwdXQgTWl4ZXIiCiBvdXQgInN0YXRpYyIgIkxPUiIKCj09PiAvc3lzL2tlcm5l
+bC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL0xlZnQgSW5wdXQgTWl4ZXIgPD09Ckxl
+ZnQgSW5wdXQgTWl4ZXI6IE9mZiAgaW4gMCBvdXQgMAogb3V0ICJzdGF0aWMiICJMZWZ0IEFEQyIK
+Cj09PiAvc3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL1JpZ2h0IElu
+cHV0IE1peGVyIDw9PQpSaWdodCBJbnB1dCBNaXhlcjogT2ZmICBpbiAwIG91dCAwCiBvdXQgInN0
+YXRpYyIgIlJpZ2h0IEFEQyIKCj09PiAvc3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUt
+MDAxOC9kYXBtL0xlZnQgQURDIDw9PQpMZWZ0IEFEQzogT2ZmICBpbiAwIG91dCAwIC0gUjgxKDB4
+NTEpIGJpdCA3CiBzdHJlYW0gTGVmdCBDYXB0dXJlIGluYWN0aXZlCiBpbiAgInN0YXRpYyIgIkxl
+ZnQgSW5wdXQgTWl4ZXIiCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAw
+MTgvZGFwbS9SaWdodCBBREMgPD09ClJpZ2h0IEFEQzogT2ZmICBpbiAwIG91dCAwIC0gUjgxKDB4
+NTEpIGJpdCA2CiBzdHJlYW0gUmlnaHQgQ2FwdHVyZSBpbmFjdGl2ZQogaW4gICJzdGF0aWMiICJS
+aWdodCBJbnB1dCBNaXhlciIKCj09PiAvc3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUt
+MDAxOC9kYXBtL01pYyBCaWFzIDw9PQpNaWMgQmlhczogT2ZmICBpbiAwIG91dCAwIC0gUjE3OSgw
+eGIzKSBiaXQgNgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2Rh
+cG0vSFBMIDw9PQpIUEw6IE9mZiAgaW4gMCBvdXQgMQogaW4gICJzdGF0aWMiICJIUEwgUG93ZXIi
+CiBvdXQgInN0YXRpYyIgIkhlYWRwaG9uZSBKYWNrIgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3Rs
+djMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vSFBSIDw9PQpIUFI6IE9mZiAgaW4gMCBvdXQgMQogaW4g
+ICJzdGF0aWMiICJIUFIgUG93ZXIiCiBvdXQgInN0YXRpYyIgIkhlYWRwaG9uZSBKYWNrIgoKPT0+
+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vTE9MIDw9PQpMT0w6
+IE9mZiAgaW4gMCBvdXQgMQogaW4gICJzdGF0aWMiICJMT0wgUG93ZXIiCiBvdXQgInN0YXRpYyIg
+IkxpbmUgT3V0IgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2Rh
+cG0vTE9SIDw9PQpMT1I6IE9mZiAgaW4gMCBvdXQgMQogaW4gICJzdGF0aWMiICJMT1IgUG93ZXIi
+CiBvdXQgInN0YXRpYyIgIkxpbmUgT3V0IgoKPT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFp
+YzMyeDQuNS0wMDE4L2RhcG0vSU4xX0wgPD09CklOMV9MOiBPZmYgIGluIDEgb3V0IDAKIGluICAi
+c3RhdGljIiAiTGluZSBJbiIKCj09PiAvc3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUt
+MDAxOC9kYXBtL0lOMV9SIDw9PQpJTjFfUjogT2ZmICBpbiAxIG91dCAwCiBpbiAgInN0YXRpYyIg
+IkxpbmUgSW4iCgo9PT4gL3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAwMTgvZGFw
+bS9JTjJfTCA8PT0KSU4yX0w6IE9mZiAgaW4gMSBvdXQgMAoKPT0+IC9zeXMva2VybmVsL2RlYnVn
+L3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vSU4yX1IgPD09CklOMl9SOiBPZmYgIGluIDEgb3V0
+IDAKCj09PiAvc3lzL2tlcm5lbC9kZWJ1Zy90bHYzMjBhaWMzMng0LjUtMDAxOC9kYXBtL0lOM19M
+IDw9PQpJTjNfTDogT2ZmICBpbiAxIG91dCAwCiBpbiAgInN0YXRpYyIgIk9uYm9hcmQgTWljIgoK
+PT0+IC9zeXMva2VybmVsL2RlYnVnL3RsdjMyMGFpYzMyeDQuNS0wMDE4L2RhcG0vSU4zX1IgPD09
+CklOM19SOiBPZmYgIGluIDEgb3V0IDAKIGluICAic3RhdGljIiAiT25ib2FyZCBNaWMiCgo9PT4g
+L3N5cy9rZXJuZWwvZGVidWcvdGx2MzIwYWljMzJ4NC41LTAwMTgvZGFwbS9iaWFzX2xldmVsIDw9
+PQpTdGFuZGJ5Cgo=
+--001a11c2dbceedc40e04fc09671a
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-and with this change I never seen issue. But looking like delay to put
-is just a workaround. Even in datasheet it is not mentioned
-to put any delay after SSI enabled/disabled. Please let me know if
-anybody have any proper solution/hints for this issue.
-Also, let me know if any more information requires.
 
-We are using 3.0.35 kernel.
-
-Regards
-Manish Badarkhe
+--001a11c2dbceedc40e04fc09671a--
