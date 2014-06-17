@@ -1,84 +1,79 @@
-From: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Subject: Re: [PATCH v3 2/2] ASoC: fsl: add imx-es8328 machine driver
-Date: Tue, 17 Jun 2014 17:07:00 +0100
-Message-ID: <20140617160700.GE8930@leverpostej>
-References: <1402997571-1255-1-git-send-email-xobs@kosagi.com>
- <1402997571-1255-3-git-send-email-xobs@kosagi.com>
+From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+Subject: Re:
+ =?utf-8?q?alsa-lib=3A_pcm=5Fplug=3A_fix_float_conver?=
+ =?utf-8?q?sion_for_user_specified_ttable?=
+Date: Tue, 17 Jun 2014 20:19:43 +0400
+Message-ID: <1403021983.990267259@f229.i.mail.ru>
+References: <1402933971.835286264@f359.i.mail.ru>
+ <CAN8cciZvcjLTyOFSB-=Ret7FrG7ASGbkJSNo0xRVOZF7+et4sg@mail.gmail.com>
+Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1402997571-1255-3-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Cc: "lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org" <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, "grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org" <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org" <bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from f229.i.mail.ru (f229.i.mail.ru [217.69.138.229])
+ by alsa0.perex.cz (Postfix) with ESMTP id 845B6265489
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 18:19:44 +0200 (CEST)
+In-Reply-To: <CAN8cciZvcjLTyOFSB-=Ret7FrG7ASGbkJSNo0xRVOZF7+et4sg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?YWxzYS1kZXZlbA==?= <alsa-devel@alsa-project.org>
+Cc: =?UTF-8?B?UmF5bW9uZCBZYXU=?= <superquad.vortex2@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 17, 2014 at 10:32:51AM +0100, Sean Cross wrote:
-> This adds an initial machine driver for the ES8328 audio codec.  The
-> driver supports headphones, an audio regulator for both the codec itself
-> and a speaker amp, and supports reparenting and adjusting clocks to supply
-> the audio codec with the unusual frequency it requires.
+June 17 2014 Raymond Yau wrote:
+
+>> Move custom ttable with equal channels case from a separate ttable_last
+>> exception into a common plugins insertion loop.
+>> Fixes plug with ttable for float pcms (jack, ladspa).
+>> Example: aplay -fFLOAT_LE /dev/zero
+>> pcm.!default {
+>>     type plug
+>>     slave.pcm { type null }
+>>     ttable.0.0 1
+>> }
 > 
-> Signed-off-by: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/imx-audio-es8328.txt |  60 ++++
->  sound/soc/fsl/Kconfig                              |  14 +
->  sound/soc/fsl/Makefile                             |   2 +
->  sound/soc/fsl/imx-es8328.c                         | 359 +++++++++++++++++++++
->  4 files changed, 435 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
->  create mode 100644 sound/soc/fsl/imx-es8328.c
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt b/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
-> new file mode 100644
-> index 0000000..bd614a6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
-> @@ -0,0 +1,60 @@
-> +Freescale i.MX audio complex with ES8328 codec
-> +
-> +Required properties:
-> +- compatible : "fsl,imx-audio-es8328"
-> +- model : The user-visible name of this sound complex
-> +- clocks : A list of clocks required to run the codec at 22.5792 MHz
+> Any reason to use type null in your test case since type null seem can
+> support all format ?
 
-The driver seems to acquire these by name.
+It was the shortest test to reproduce the bug.
 
-Please document the names you expect.
+A more restricted config:
+# aplay -fFLOAT_LE /dev/zero
+pcm.!default {
+    type plug
+    slave.pcm { type null }
+    slave.format FLOAT_LE
+    ttable.0.0 1
+}
+But that test was enough to reproduce "Assertion failed" bug too.
 
-[...]
+Actually I've hit this bug with a complex ladspa upmixing code:
+pcm.upmix {
+    type plug
+    slave.pcm {
+        type ladspa
+        slave.pcm {
+            type plug
+            slave.pcm "..."
+            ttable { ... }
+        }
+        plugins [ ... ]
+    }
+    ttable { ... }
+}
+similar to this:
+  http://forums.gentoo.org/viewtopic-p-4528619.html#4528619
 
-> +static int imx_es8328_probe(struct platform_device *pdev)
-> +{
-> +       struct device_node *np = pdev->dev.of_node;
-> +       struct device_node *ssi_np, *codec_np;
-> +       struct platform_device *ssi_pdev;
-> +       struct imx_es8328_data *data;
-> +       int int_port, ext_port;
-> +       int ret;
-> +       struct device *dev = &pdev->dev;
-> +
-> +       ret = of_property_read_u32(np, "mux-int-port", &int_port);
+This bug crashed the application for me (it generates SIGABRT)
+so I thought that it should be fixed.
 
-I see int_port is defined as an int; please make it a u32 to match the
-prototype of of_property_read_u32.
-
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
-> +               return ret;
-> +       }
-> +       ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
-> +               return ret;
-> +       }
-
-As with int_port, please define ext_port as a u32.
-
-Cheers,
-Mark.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+  Sergey
