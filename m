@@ -1,20 +1,18 @@
-From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
-Subject: Re:
- =?utf-8?q?alsa-lib=3A_pcm=5Fplug=3A_fix_float_conver?=
- =?utf-8?q?sion_for_user_specified_ttable?=
-Date: Tue, 17 Jun 2014 20:19:43 +0400
-Message-ID: <1403021983.990267259@f229.i.mail.ru>
-References: <1402933971.835286264@f359.i.mail.ru>
- <CAN8cciZvcjLTyOFSB-=Ret7FrG7ASGbkJSNo0xRVOZF7+et4sg@mail.gmail.com>
-Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+From: "Brandon Yates" <Brandon.Yates@adaptivedigital.com>
+Subject: Re: Plug In Creation - aplay can't find existing .so
+Date: Tue, 17 Jun 2014 15:15:30 -0400
+Message-ID: <B02206F4ACA2904A8270028316B8DAFF01149ECF@mercury.corp.adaptivedigital.com>
+References: <B02206F4ACA2904A8270028316B8DAFF01149EA3@mercury.corp.adaptivedigital.com>
+ <s5hr42tf0c3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from f229.i.mail.ru (f229.i.mail.ru [217.69.138.229])
- by alsa0.perex.cz (Postfix) with ESMTP id 845B6265489
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 18:19:44 +0200 (CEST)
-In-Reply-To: <CAN8cciZvcjLTyOFSB-=Ret7FrG7ASGbkJSNo0xRVOZF7+et4sg@mail.gmail.com>
+Received: from mail1.bemta12.messagelabs.com (mail1.bemta12.messagelabs.com
+ [216.82.251.1]) by alsa0.perex.cz (Postfix) with ESMTP id 0150F265607
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 21:15:32 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <s5hr42tf0c3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,56 +22,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?YWxzYS1kZXZlbA==?= <alsa-devel@alsa-project.org>
-Cc: =?UTF-8?B?UmF5bW9uZCBZYXU=?= <superquad.vortex2@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-June 17 2014 Raymond Yau wrote:
+Actually on close inspection it looks like open is succeeding. Not sure
+what's going on here. Here's more of the strace:
 
->> Move custom ttable with equal channels case from a separate ttable_last
->> exception into a common plugins insertion loop.
->> Fixes plug with ttable for float pcms (jack, ladspa).
->> Example: aplay -fFLOAT_LE /dev/zero
->> pcm.!default {
->>     type plug
->>     slave.pcm { type null }
->>     ttable.0.0 1
->> }
+
+open("/usr/lib/i386-linux-gnu/alsa-lib/libasound_module_pcm_adt_dsp.so",
+O_RDONLY|O_CLOEXEC) = 3
+read(3,
+"\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\20\7\0\0004\0\0\0"...,
+512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=7655, ...}) = 0
+mmap2(NULL, 8464, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0)
+= 0x166000
+mmap2(0x167000, 8192, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0) = 0x167000
+close(3)                                = 0
+munmap(0x166000, 8464)                  = 0
+write(2, "ALSA lib dlmisc.c:254:(snd1_dlob"..., 45ALSA lib
+dlmisc.c:254:(snd1_dlobj_cache_get) ) = 45
+write(2, "Cannot open shared library /usr/"..., 91Cannot open shared
+library
+/usr/lib/i386-linux-gnu/alsa-lib/libasound_module_pcm_adt_dsp.so) = 91
+
+
+Any insight?
+
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Friday, June 13, 2014 8:42 AM
+To: Brandon Yates
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Plug In Creation - aplay can't find existing
+.so
+
+At Tue, 10 Jun 2014 13:55:39 -0400,
+Brandon Yates wrote:
 > 
-> Any reason to use type null in your test case since type null seem can
-> support all format ?
+> Hello,
+> 
+> I am working on a new pcm plugin. At this point it is basically just a
 
-It was the shortest test to reproduce the bug.
+> Hello World plugin, to make sure I have the tools working and 
+> understand the workflow.  I created a simple file which is just
+basically:
+> 
+> #include <alsa/asoundlib.h>
+> #include <alsa/pcm_external.h>
+> SND_PCM_PLUGIN_DEFINE_FUNC(my_mod)
+> {	
+>    printf("hello world\n");
+>    return 0;
+> }
+> SND_PCM_PLUGIN_SYMBOL(my_mod);
+> 
+> 
+> I compiled this as a shared lib named
+'libasound_module_pcm_my_mod.so'
+> and copied it to '/usr/lib/i386-linux-gnu/alsa-lib/'
+> 
+> I edited my ~/.asoundrc to create a new device that uses this plugin.
+> Then I try to use it with `aplay --device=my_mod_test out.pcm`
+> 
+> I get the error message
+> 
+> ALSA lib dlmisc.c:254:(snd1_dlobj_cache_get) Cannot open shared 
+> library 
+> /usr/lib/i386-linux-gnu/alsa-lib/libasound_module_pcm_my_mod.so
+> aplay: main:682: audio open error: No such device or address
+> 
+> 
+> But this file actually does exist, I just copied it there.
+> 
+> 
+> Any idea why this happens?
 
-A more restricted config:
-# aplay -fFLOAT_LE /dev/zero
-pcm.!default {
-    type plug
-    slave.pcm { type null }
-    slave.format FLOAT_LE
-    ttable.0.0 1
-}
-But that test was enough to reproduce "Assertion failed" bug too.
+Try strace to see what happens.  If it fails in dlopen(), it's likely
+because your shared object is invalid.
 
-Actually I've hit this bug with a complex ladspa upmixing code:
-pcm.upmix {
-    type plug
-    slave.pcm {
-        type ladspa
-        slave.pcm {
-            type plug
-            slave.pcm "..."
-            ttable { ... }
-        }
-        plugins [ ... ]
-    }
-    ttable { ... }
-}
-similar to this:
-  http://forums.gentoo.org/viewtopic-p-4528619.html#4528619
 
-This bug crashed the application for me (it generates SIGABRT)
-so I thought that it should be fixed.
-
--- 
-  Sergey
+Takashi
