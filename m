@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: MMP audio needs sram support
-Date: Tue, 17 Jun 2014 15:31:12 +0100
-Message-ID: <20140617143112.GQ5099@sirena.org.uk>
-References: <4367111.vzeoBg4u5h@wuerfel>
+Subject: Re: [PATCH 1/2] ASoC: spdif_transmitter: Allow 192kHz
+	sample rate
+Date: Tue, 17 Jun 2014 15:35:53 +0100
+Message-ID: <20140617143553.GR5099@sirena.org.uk>
+References: <1402876602-2942-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8311851810962764489=="
+Content-Type: multipart/mixed; boundary="===============7389341236486315986=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E1CA22654A7
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 16:31:30 +0200 (CEST)
-In-Reply-To: <4367111.vzeoBg4u5h@wuerfel>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2049C2654A7
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 16:36:14 +0200 (CEST)
+In-Reply-To: <1402876602-2942-1-git-send-email-anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,63 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, lgirdwood@gmail.com, Haojian Zhuang <haojian.zhuang@gmail.com>, Qiao Zhou <zhouqiao@marvell.com>, linux-arm-kernel@lists.infradead.org
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8311851810962764489==
+--===============7389341236486315986==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L6pQrL3WnLTXWajL"
+	protocol="application/pgp-signature"; boundary="EgR43ajAe15TVSiE"
 Content-Disposition: inline
 
 
---L6pQrL3WnLTXWajL
+--EgR43ajAe15TVSiE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 05, 2014 at 12:40:04PM +0200, Arnd Bergmann wrote:
-> From e7a94bb7fb871c73cc85712d89c1f48d0271c1be Mon Sep 17 00:00:00 2001
-> From: Arnd Bergmann <arnd@arndb.de>
-> Date: Thu, 5 Jun 2014 12:31:28 +0200
-> Subject: [PATCH] ASoC: MMP audio needs sram support
->=20
-> Building the pxa/mmp audio driver without support for the mmp
-> sram driver enabled results in this link error:
+On Mon, Jun 16, 2014 at 02:56:41AM +0300, Anssi Hannula wrote:
+> Transmitters and receivers may support a 192kHz sample rate.
 
-One other thing here: please send patches in the format in
-SubmittingPatches so that the tools can apply them cleanly.
+Applied, thanks.
 
---L6pQrL3WnLTXWajL
+--EgR43ajAe15TVSiE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJToFEtAAoJELSic+t+oim9Zh8P/2NXkpyGhNRWJKDG8VrJNkpw
-5WjTMa1jWgk5hYssZEuQmU7ndk1tMx7G+CbDeM89Q/qNjYzz4Ypg/qn0DJULxHeF
-w2QqymG8g5EodoxDbLQDIIeXq3G7Ayom09Dw9LGAKx83aWwe4YPU84pA6bqrbSNH
-f1KAzzD7mQxpNoDTl7W2/bzJKd/4vhZ1HkKgz04dCPFkkFsWxjnV3ifJAXq7Al0a
-vzsVIErXaKZ5cmzSG76Crc8cKkgnH+ay6lzEUMSAkxI7gRlKlQjE2q3G6sAZ5/6a
-Dy46iGf0K7aXUCzdQHaMVTiQP6lXVcDWap9lVwPF7JAIR0SPxgi/XIG7c38NzQJY
-a3tq0/6/+ZUQplrMFRqMQtb4/fsvguVbEHrgD9hNtLhECZskpqe7Qj1QBFB1TKq3
-NRF9drZI5Mjos8QgxBZbG39yAUSePlsgnv8Hqf6fyNQ0D4Bu4MsqYJxkl3RMySZ8
-oaTBTnqsjZt+HErr0fEyIpNs2ghT97HEV74aM3jLNM6+zdMidsc/8r1nPdX3YEVF
-x6pBxBzWevZE8Gbp56BQT/vtEpllwGIiFk+z3MiPYYrTGE/pj9eDVVJP5Jcplmgr
-jO7REANET9AGAu11Kq++iNk5TFt8WgcfJd/+9yo6qGLIWSzj5qVbGeEase8K0ZLv
-t0zVTD0TMHz23f3otsna
-=fHCG
+iQIcBAEBAgAGBQJToFJGAAoJELSic+t+oim9vagQAIF7wxrzQNNwbnz1SsybomNl
+Z/SQQN8zZcaaWtKkkLJ8RZI3O8a164Pd1dcBPkH+Hz/hIuKj3VTkzAHGQdd1WcB9
+z3Tt5AFtHV2tvsYv/dg89O0T95/wB4Hh0YU2WTQ9nWILueykjOHezTmlazB1DKU6
+jM/pGfi/34GGhh0s7jhfm6WuKo8f8IXivkGDoM6LCPWV8Xq8mjfwfuUtobL1awJa
+9Mh0yLsvubUX7ss/sRCF1NluEP1FGOOoNIyvRI0nntntgb3O4UEn2lOyqeFLCyda
+Q587CaYZPHLQQrBrTGUhllZSDBbcZx3R3q0hCV2yYTDEt3VyPLHmCEDoqfoWdih/
+Ezkh38UYm5dxJ1iTBN2kfETQ24UR6j/JoyR91hMW5FgireHDpj/MLik/0tiKuk10
+atgPgLyuFZrWXq1uGVT+f9PtzVhPoRK5haeHTuZdWoKlQSCm7Nl7NV2MN9LLh7qt
+S/avm37t4KtqlQWFMlQIb0nO1aKKF3MrqBtgXVSYXDA9h0hhzSIwApGM4qUtlnbo
+ULTTejR/bVxPtJWOLaPtpsejYrp4BvvnhGSEINo35ATpXcKY46xiJ8CuIy0wQIqp
+rshkxHTlNGbz3z1w9QDGotMM0e+7CUjON4ox0Ufbg4rMXV/MLHNbrzBfR/Qkc33P
+qhjwy/zPJZZZ//u6Mu1U
+=Xbnt
 -----END PGP SIGNATURE-----
 
---L6pQrL3WnLTXWajL--
+--EgR43ajAe15TVSiE--
 
---===============8311851810962764489==
+--===============7389341236486315986==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8311851810962764489==--
+--===============7389341236486315986==--
