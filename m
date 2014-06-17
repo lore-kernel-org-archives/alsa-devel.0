@@ -1,76 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: fsl_spdif: Add support for
- output sample rates 96kHz and 192kHz
-Date: Tue, 17 Jun 2014 15:37:05 +0100
-Message-ID: <20140617143704.GS5099@sirena.org.uk>
-References: <1402876602-2942-1-git-send-email-anssi.hannula@iki.fi>
- <1402876602-2942-2-git-send-email-anssi.hannula@iki.fi>
+Subject: Re: [PATCH] ASoC: wm8985: Remove unused pointer in wm8985_remove()
+Date: Tue, 17 Jun 2014 15:40:47 +0100
+Message-ID: <20140617144047.GT5099@sirena.org.uk>
+References: <1402679968-5925-1-git-send-email-cengelma@gmx.at>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2726633838811578447=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 467302655EA
- for <alsa-devel@alsa-project.org>; Tue, 17 Jun 2014 16:37:22 +0200 (CEST)
-In-Reply-To: <1402876602-2942-2-git-send-email-anssi.hannula@iki.fi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: alsa-devel@alsa-project.org, Nicolin Chen <Guangyu.Chen@freescale.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Mcvs3sMuhDlWUu+I"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1402679968-5925-1-git-send-email-cengelma@gmx.at>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Christian Engelmayer <cengelma@gmx.at>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Fabio Estevam <fabio.estevam@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Xiubo Li <Li.Xiubo@freescale.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2726633838811578447==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Xqa6BLk9/BAwVQKe"
-Content-Disposition: inline
-
-
---Xqa6BLk9/BAwVQKe
+--Mcvs3sMuhDlWUu+I
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 16, 2014 at 02:56:42AM +0300, Anssi Hannula wrote:
-> Add support for the output sample rates 96kHz and 192kHz.
+On Fri, Jun 13, 2014 at 07:19:28PM +0200, Christian Engelmayer wrote:
+> Commit a0b148b4 (ASoC: wm8985: Use devm_regulator_bulk_get()) removed the last
+> user of pointer wm8985 to struct wm8985_priv. Thus remove it. Detected by
+> Coverity CID 1222150.
 
 Applied, thanks.
 
---Xqa6BLk9/BAwVQKe
+--Mcvs3sMuhDlWUu+I
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJToFKNAAoJELSic+t+oim9nxgP/Ru8Zw62SKA3Dru2n5v0pMxn
-BbSLCTkQaGdc1T86G46e73vi1iFlOSL0aUtCQdsCnl8a4gOm/itCd416YaDKR8EC
-lxAV+Xhxxab5LisUtfP3lVyrGOiJBAdYj63zRoENmL2z6FwewL0zONa/2p+EJYOn
-ct+gvAzt5lCX4dWRGoDSWwMdNRmcx5kcvSfy7kJxYdPjHJg0dsA3lfyY1DTvYed/
-2T2oWPVIIhIaWaE07u0DLTrFrDzglkY3y2fq+B/NafOF/n5C3FizqqbRlZuA2k5h
-s6EsBV0trM2XmsF71nTqxcOsp2MIra0wuMs6hRb2p74lEtXs6Jw1vovqsygvRAy5
-XL6cmayLllBBA3LULxxnxeElHyZMKRKdIkrO5i5UJ4dfWK1+2mLu0+C+2yHBR7HW
-RwhTpD7Sd1xHwHJPeZ9xrrK4271t048bsOQHgddNqIAXjE4wdRFGKjhXNJfSJ/lV
-lWb6NRJJUhJz6NpW+3zvWNa3Ke0SZRv3kSdtw8OmzvV3DVbj+6rlR0T2bZfBR6jv
-glVjwrenENBmo8nAOpkva8g4RwEM775qmJ9xONvOT72Rm242Jk53+slJ+vLxB94W
-wSCRYGzZXlghfGv4PlcmxeXpsphb3TNbGNm0ZQT3kkPfY19JZkKoKBz+5RWYCScR
-cvOpkTd6V+zPho3b3uAi
-=RiD3
+iQIcBAEBAgAGBQJToFNsAAoJELSic+t+oim9spoP/3IrTBbUxknKlWLP2x5kxTr9
+fnfqHBIM5zr0NHiXCPYAJPO6D1p2eMRTjNoinkimMNn73Yp/EKVX7zNWLrVbZba6
+koEnty9O/4t1BkW6ILLLmeN8Lj5Xk7UJXoNJbda9jna+dl8pqKVIasE2PVY9OOx1
+bxAkmCUuGD197wJ9+MdSm/xgHffZ4WkfFRcA93ZddomCu83C6BAEC2Hcs3/dCdnD
+7emFpPHMeKzn+hu7pMjp1HCvLUmH48EdPpGMJ8/slZ6Z9gBy4Sig/Ebi1d4IuZu9
+jAJ8XPMJtfiD85w4gIUFGmuy2K1e80eHfMJmejGQ2jHzSIYN3y5PWFXjs1/zsW1S
+jChs/tYelSsVN9Fu2S+YXRLgpT7crsMR940Z9jQshmjEySmxIB1/raxsBW21uGYj
+yJUf6HRQ2UinxtqI15eAJj7CT852MmzXjBvo+lUIcgrR4X8b+YyaaS8Iy67VPKkb
+G5E9B0+HLbN/IvIT2sExrHDmAsPEvBK/b7AbCLkr6zhwuNCmm1VcjQTc26el58ZF
+bqEg8HTsArbGD3bzT0D1cXAvtOS1S67gioEuckJWHnlLkVPUbY/dW8G5Pn+YeTyi
+6VtqzUXcrtGO489ttWXcMAMAU6sJie1UZMHphAE8sfydX9OOktLQlCQ4yHpf3D3X
+8HnWADE5kWV5VOdB9mhq
+=gN7M
 -----END PGP SIGNATURE-----
 
---Xqa6BLk9/BAwVQKe--
-
---===============2726633838811578447==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2726633838811578447==--
+--Mcvs3sMuhDlWUu+I--
