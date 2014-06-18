@@ -1,17 +1,17 @@
 From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH 1/2] ASoC: ak5386: Add regulators to
- documentation and fix sparse warning
-Date: Wed, 18 Jun 2014 17:12:49 +0200
-Message-ID: <53A1AC71.7070403@zonque.org>
-References: <1396029905-6807-1-git-send-email-zonque@gmail.com>
- <20140329101708.GH21628@sirena.org.uk>
+Subject: Re: [PATCH v3] ASoC: davinci-mcasp: set up channel
+ status bits for S/PDIF mode
+Date: Wed, 18 Jun 2014 17:14:50 +0200
+Message-ID: <53A1ACEA.8000004@zonque.org>
+References: <1395916060-16234-1-git-send-email-zonque@gmail.com>
+ <20140327131823.GM30768@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1332999579291191729=="
+Content-Type: multipart/mixed; boundary="===============2618812076225114692=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 494CF2610C1
- for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 17:12:52 +0200 (CEST)
-In-Reply-To: <20140329101708.GH21628@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 41EDC26109F
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 17:14:52 +0200 (CEST)
+In-Reply-To: <20140327131823.GM30768@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,42 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============1332999579291191729==
+--===============2618812076225114692==
 Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="IF6RlF1po3a6ELaf2BQ7VmR1gXOOqgxNT"
+ boundary="EaeURLn4v5vGJlaXWTsphmRL6WKnxCbug"
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IF6RlF1po3a6ELaf2BQ7VmR1gXOOqgxNT
+--EaeURLn4v5vGJlaXWTsphmRL6WKnxCbug
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 03/29/2014 11:17 AM, Mark Brown wrote:
-> On Fri, Mar 28, 2014 at 07:05:04PM +0100, Daniel Mack wrote:
->> Document the newly added regulators to the DT binding document.
->>
->> Also, "static const char const *x" is not identical to "static const
->> char * const x", which sparse now complains about. Fix it.
+On 03/27/2014 02:18 PM, Mark Brown wrote:
+> On Thu, Mar 27, 2014 at 11:27:40AM +0100, Daniel Mack wrote:
+>> In DIT (S/PDIF) mode, program the transmitted user bits to reflect the=
+
+>> configured sample rate, along with some other details.
 >=20
-> Applied, though this should really have been two patches as there's no
-> overlap.
+> Applied, thanks.
 >=20
 
-Hmm, for some reason, this patch didn't make it to mainline yet. Same
-for another one that patches the same file which I sent the same day.
-Want me to resend?
+Strange - this one's also missing in mainline? No big deal, I can resend
+if you want me to. I just want to understand what happened :)
 
 
 Thanks,
 Daniel
 
 
-
---IF6RlF1po3a6ELaf2BQ7VmR1gXOOqgxNT
+--EaeURLn4v5vGJlaXWTsphmRL6WKnxCbug
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -66,28 +62,28 @@ Content-Disposition: attachment; filename="signature.asc"
 Version: GnuPG v1
 Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-iQIcBAEBAgAGBQJToaxxAAoJELphMRr8Y1QkKHIQAK+S+6GlBwneuBLA+u6+m5g0
-KJRnF9TOfdEYARW0I9Os/oiOO5bK2z7W7+026xQ4H5hTncFAyaBZrao3+6ld/3MX
-Vg1ARr/T3TVawaHEWUguYRdy2Rm3c8WH9Vjg9q34qkxGBgA0t4uXvMinz3PEs8Bc
-Y1RtBkAqAcDmjHAv6/CFIdTR75M+GsOyKiSwuADxE0WHbL/5R+Lb00JzPc9AY1rV
-S+OOmuxNdS7dT41q/BrBAWQ1eQLEja7el+rZhShc7kjOu+hmqNQ/mni/L2ZOE0n1
-6Z96LITcEpIz2I0mweOku0CYqBFxJld38cfr3Q4w+JDcnzKJTJTaS3igKRv7ewLC
-HDiFYppPISy09J61RaRSeReZIFAY2vksjupyz2qM67GjVUdgt1t499leWi5hisK5
-4y3r/Wvyw3B0k7wrNyk04VAGG1+xmQ+WNA99zG2lH8V4RQoC4rAOZo10C6wcJcZh
-gjJXMdGqd7GhqCk417TLlSIzALkVWQ4dkcZEYX1hKMXDA0aotzxulFeo6xnIp0/2
-2FpjYt1JTzhHjjTz51VeRgzgVaJUyGhTax3KhNP/lpe2DdwsPbuph7vZYhbXl64X
-ONzSPz6sAdCEnTYI+dFKL8NVOixF85dg0B9AXhjpDEBMZH3sZSsq3x7iiA5YqvKN
-X1X8ybaY7mSbUP/NXPfm
-=cwCR
+iQIcBAEBAgAGBQJToazqAAoJELphMRr8Y1QkjvYQAKHr/ZK8z5A9tc36USI2ZjuL
+sHg6vfmh6FOP5OHYj0SJ63oKazLG+lbZGk/BpXRd8IXas75SnO/g1LVkprhyisBP
+PNjeD1UAvKyEKE/Smgz2J7yiiJC90dlyhuF/PVq9s6XZ0WORJ60wHIt23ARAHIea
+jTwT9yk5GaGCqkzoJfIzVKPxfUYNy1gMGkVxza51ZBCIeZjrd3twAR1uygLsOEey
+xBsqgamiJ3MrkC2c7PRqCzeISInO6C/AOtCDXUipLka86lmjE5y6ih4/qdtYqGMR
+S4omjl739AWiBDsJZnqBMiSLKYY2HIvev7E0RowA1cg18cM0EA6Tctmlu0hp1pzi
+xTv7psyL9wjaULwWeUT+hcTxPxBRHpGkixFo9t5XgVveNUUdbPDDTW0xsPh3jufH
+1YtPv2kzTws9ZJK3ueVfm3MemyvqQZn4silL3rS0cwIPdejnF38VE9sPOpXA7+BV
+Z9SnRVlSZWBF4tjGyJKeeEGmj0fB9cCYzCNy2a05/MB2XOt7oQiRu+/gZoxJUIVK
+GqAOl9VlmN5UgCne67+assBm+AuU9Q2GXPDXKAVCsc/zBidGb/PLEAA7lrql7iRK
+cvXmPR4pulrAMsDvcMlpjfK1wOpNspfZgT+MMFuXhV2K2AIue/p36IjlXVTlmWeQ
+JwczQmuXDdfXQ1BN+tZj
+=Sxia
 -----END PGP SIGNATURE-----
 
---IF6RlF1po3a6ELaf2BQ7VmR1gXOOqgxNT--
+--EaeURLn4v5vGJlaXWTsphmRL6WKnxCbug--
 
---===============1332999579291191729==
+--===============2618812076225114692==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1332999579291191729==--
+--===============2618812076225114692==--
