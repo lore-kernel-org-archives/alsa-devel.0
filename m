@@ -1,9 +1,9 @@
 From: Joseph Salisbury <joseph.salisbury@canonical.com>
 Subject: [v3.13.y][SRU][PATCH 0/1] ALSA: usb-audio: Prevent printk ratelimiting from spamming kernel log while DEBUG not defined
 Date: Wed, 18 Jun 2014 13:14:05 -0400
-Message-ID: <cover.1400085278.git.joseph.salisbury__30926.6961332925$1403111666$gmane$org@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
+Message-ID: <cover.1400085278.git.joseph.salisbury__15745.0094040998$1403111684$gmane$org@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: kamal.mostafa@canonical.com
 Cc: perex@perex.cz, tiwai@suse.de, eldad@fogrefinery.com, clemens@ladisch.de, tim.gardner@canonical.com, stern@rowland.harvard.edu, linux@eikelenboom.it, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
