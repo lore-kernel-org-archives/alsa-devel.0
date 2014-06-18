@@ -1,85 +1,89 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [RFC PATCH] ASoC: tas2552: Support TI TAS2552 Amplifier
-Date: Wed, 18 Jun 2014 14:05:23 -0500
-Message-ID: <53A1E2F3.8070205@ti.com>
-References: <1403113547-15120-1-git-send-email-dmurphy@ti.com> <20140618184440.GK5099@sirena.org.uk>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [PATCH v11 2/8] ASoC: core: Generic ac97 link reset functions
+Date: Wed, 18 Jun 2014 23:19:33 +0200
+Message-ID: <20140618211933.GD32450@pengutronix.de>
+References: <1376924761-4054-1-git-send-email-mpa@pengutronix.de>
+ <1376924761-4054-3-git-send-email-mpa@pengutronix.de>
+ <20140618184234.GA27312@sfrouter>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <20140618184440.GK5099@sirena.org.uk>
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pZs/OQEoSSbxGlYw"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20140618184234.GA27312@sfrouter>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "S. Fricke" <silvio.fricke-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Grant Likely <grant.likely-s3s/WqlpOiPyB63q8FvJNQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark
-Thanks for the comments
 
-On 06/18/2014 01:44 PM, Mark Brown wrote:
-> On Wed, Jun 18, 2014 at 12:45:46PM -0500, Dan Murphy wrote:
->
->> +static int tas2552_i2c_read(struct tas2552_data *tas_data, int reg)
->> +{
->> +	int val;
->> +
->> +	if (WARN_ON(!tas_data->tas2552_client))
->> +		return -EINVAL;
->> +
->> +	/* If powered off, return the cached value */
->> +	mutex_lock(&tas_data->mutex);
->> +	if (tas_data->power_state) {
->> +		val = i2c_smbus_read_byte_data(tas_data->tas2552_client, reg);
-> Don't open code your I/O, use regmap like any other CODEC driver.  This
-> will remove a very large proportion of the code in the driver which
-> replicates features of the regmap framework.
+--pZs/OQEoSSbxGlYw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-My initial implementation was with regmap but it gave me heart ache.
-Which could have been wonky HW.
+Hi Silvio,
 
-I will attempt regmap again and see if it was just a HW issue.
+On Wed, Jun 18, 2014 at 08:42:34PM +0200, S. Fricke wrote:
+>=20
+> Hi Markus,
+>=20
+> I'm fighting with your ac97 pinctrl configuration per dts.=20
+>=20
+> > [...]
+> > +ssi {
+> > +	...
+> > +
+> > +	pinctrl-names =3D "default", "ac97-running", "ac97-reset", "ac97-warm=
+-reset";
+> > +	pinctrl-0 =3D <&ac97link_running>;
+> > +	pinctrl-1 =3D <&ac97link_running>;
+> > +	pinctrl-2 =3D <&ac97link_reset>;
+> > +	pinctrl-3 =3D <&ac97link_warm_reset>;
+> > +	ac97-gpios =3D <&gpio3 20 0 &gpio3 22 0 &gpio3 28 0>;
+>=20
+> I see here the gpios for sync, sdata and reset. On my board I have two sd=
+ata
+> lines (sdata-in and sdata-out) which line should I specify here for this =
+setting?
 
->
->> +static int tas2552_startup(struct snd_pcm_substream *substream,
->> +			   struct snd_soc_dai *dai)
->> +{
->> +	struct snd_soc_codec *codec = dai->codec;
->> +	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
->> +
->> +	tas2552_sw_shutdown(tas2552, 1);
->> +	tas2552_power(tas2552, 1);
->> +	/* Turn on Class D amplifier */
->> +	tas2552_i2c_write(tas2552, TAS2552_CFG_2, 0x80);
->> +	tas2552_sw_shutdown(tas2552, 0);
-> I'd expect this to be done using DAPM.
+Try to use sdata-out. This is the only data output line. sdata-in is the
+input to the SoC so we don't have to use this for an AC97 reset.
 
-Will take a look at it for V2.
+Regards,
 
->
->> +static const struct regmap_config tas2552_regmap_config = {
->> +	.reg_bits = 8,
->> +	.val_bits = 8,
->> +
->> +	.max_register = TAS2552_MAX_REG,
->> +	.reg_defaults = NULL,
->> +	.num_reg_defaults = 0,
-> No need to set things to zero or NULL in static variables, that's the
-> default.
+Markus
 
-This was an artifact from my regmap implementation.  This will be
-populated when I re-implement the regmap code.
+--=20
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
->> +	dev = &client->dev;
->> +	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
->> +	if (data == NULL) {
->> +		dev_err(dev, "Can not allocate memory\n");
-> No need to print an error, OOM messages are already quite noisy.
+--pZs/OQEoSSbxGlYw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Will remove.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Dan
+iQIcBAEBAgAGBQJTogJlAAoJEEpcgKtcEGQQ5X4P/jqJ87EWIJxGcJQzUq1zUe0Q
+NN+4nttrjLst+QfkBGVxEvGBIcJKhNxuSzs19koB9iA9irzcZQpC1iHTXLGOikxx
+z3rYmkbBn2WwHnNypt8nHzr4pVikv8n6C+q9y2cXIr1Z4yBmanQ/0+FPe0onc7Mc
+ECNmQAogMcbtkPEhFFLOYAwtFbA0haqjcOYbC8J8uFLCTvagcMPO/VZ2sMcERc4B
+VZtCDivDEqhTphq8hsFJEw40OG9trwYriNTAkIl6EVdrkyZ2DCeDmhlEQ5vnxU5u
+axUWbe5qUWn1XTmEIjRP0GSkbPXJJI3MHTQ+6WbrPkObv6IZWe1KuDnbIQjuMCj1
+BNm7Zs0iAmYji+kL6dkvbkgtuH2eC1yL3hxsCj70AZF45zPuRy7qGS8gRFaFEyPt
+E3Jd+k6y8DNUhf0ivfp3vY7eibnMUReziPN2rVh5DFrpAlObZPN+CKdNLfmItEc+
+y4K88y9T/LTfjvEkPvqlfmUILnpeR2PsAuXsSKjJlQLgKKVvPD00QmE8U132jjir
+L+z3U8pzm/OxnzHpT7RiZIrYBJ7hfcWExgPIw62sN10g7I8+oi8CDFX3UfllVtSU
+z1N2u2Iaxl+UgylSkdMKuZEI8IMswpArzE8vmthIkvnfm73tThEbMJEXoIJY6a8l
+i8dSkVo6cbS6vMaSEghA
+=+4wK
+-----END PGP SIGNATURE-----
 
--- 
-------------------
-Dan Murphy
-
+--pZs/OQEoSSbxGlYw--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
