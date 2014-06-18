@@ -1,74 +1,63 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH V2 2/2] doc: dt bindings: Document Odroid X2/U3
- audio subsystem bindings
-Date: Wed, 18 Jun 2014 18:22:31 +0200
-Message-ID: <1403108551-25058-3-git-send-email-s.nawrocki__14900.339584756$1403108724$gmane$org@samsung.com>
-References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-reply-to: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: mark.rutland@arm.com, linux-samsung-soc@vger.kernel.org, pawel.moll@arm.com, zhen1.chen@samsung.com, kyungmin.park@samsung.com, Sylwester Nawrocki <s.nawrocki@samsung.com>, galak@codeaurora.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
+From: Joseph Salisbury <joseph.salisbury@canonical.com>
+Subject: [Trusty][SRU][PATCH 1/1] ALSA: usb-audio: Prevent printk ratelimiting from spamming kernel log while DEBUG not defined
+Date: Wed, 18 Jun 2014 13:14:06 -0400
+Message-ID: <e9b02dbdd0f27bfe9c324a7b05538bdc171d9b8a.1400085278.git.joseph.salisbury__4842.24502365596$1403111665$gmane$org@canonical.com>
+References: <cover.1400085278.git.joseph.salisbury@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <cover.1400085278.git.joseph.salisbury@canonical.com>
+In-Reply-To: <cover.1400085278.git.joseph.salisbury@canonical.com>
+References: <cover.1400085278.git.joseph.salisbury@canonical.com>
+Sender: stable-owner@vger.kernel.org
+To: kamal.mostafa@canonical.com
+Cc: perex@perex.cz, tiwai@suse.de, eldad@fogrefinery.com, clemens@ladisch.de, tim.gardner@canonical.com, stern@rowland.harvard.edu, linux@eikelenboom.it, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Sander Eikelenboom <linux@eikelenboom.it>
+
+BugLink: http://bugs.launchpad.net/bugs/1319457
+
+This (widely used) construction:
+
+if(printk_ratelimit())
+	dev_dbg()
+
+Causes the ratelimiting to spam the kernel log with the "callbacks suppressed"
+message below, even while the dev_dbg it is supposed to rate limit wouldn't
+print anything because DEBUG is not defined for this device.
+
+[  533.803964] retire_playback_urb: 852 callbacks suppressed
+[  538.807930] retire_playback_urb: 852 callbacks suppressed
+[  543.811897] retire_playback_urb: 852 callbacks suppressed
+[  548.815745] retire_playback_urb: 852 callbacks suppressed
+[  553.819826] retire_playback_urb: 852 callbacks suppressed
+
+So use dev_dbg_ratelimited() instead of this construction.
+
+Signed-off-by: Sander Eikelenboom <linux@eikelenboom.it>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+(backported from commit b7a7723513dc89f83d6df13206df55d4dc26e825)
+Signed-off-by: Joseph Salisbury <joseph.salisbury@canonical.com>
+
 ---
- .../bindings/sound/samsung,odroidx2-max98090.txt   |   35 ++++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/samsung,odroidx2-max98090.txt
+ sound/usb/pcm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/samsung,odroidx2-max98090.txt b/Documentation/devicetree/bindings/sound/samsung,odroidx2-max98090.txt
-new file mode 100644
-index 0000000..9148f72
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/samsung,odroidx2-max98090.txt
-@@ -0,0 +1,35 @@
-+Samsung Exynos Odroid X2/U3 audio complex with MAX98090 codec
-+
-+Required properties:
-+ - compatible : "samsung,odroidx2-audio" - for Odroid X2 board,
-+		"samsung,odroidu3-audio" - for Odroid U3 board
-+ - samsung,model : the user-visible name of this sound complex
-+ - samsung,i2s-controller : the phandle of the I2S controller
-+ - samsung,audio-codec : the phandle of the MAX98090 audio codec
-+ - samsung,audio-routing : a list of the connections between audio
-+   components;  each entry is a pair of strings, the first being the
-+   connection's sink, the second being the connection's source;
-+   valid names for sources and sinks are the MAX98090's pins (as
-+   documented in its binding), and the jacks on the board
-+   For Odroid X2:
-+     * Headphone Jack
-+     * Mic Jack
-+     * DMIC
-+
-+   For Odroid U3:
-+     * Headphone Jack
-+     * Speakers
-+
-+Example:
-+
-+sound {
-+	compatible = "samsung,odroidu3-audio";
-+	samsung,i2s-controller = <&i2s0>;
-+	samsung,audio-codec = <&max98090>;
-+	samsung,model = "Odroid-X2";
-+	samsung,audio-routing =
-+		"Headphone Jack", "HPL",
-+		"Headphone Jack", "HPR",
-+		"IN1", "Mic Jack",
-+		"Mic Jack", "MICBIAS";
-+};
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 7bfa7a1..ede4b92 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1487,9 +1487,9 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
+ 	 * The error should be lower than 2ms since the estimate relies
+ 	 * on two reads of a counter updated every ms.
+ 	 */
+-	if (printk_ratelimit() &&
+-	    abs(est_delay - subs->last_delay) * 1000 > runtime->rate * 2)
+-		snd_printk(KERN_DEBUG "delay: estimated %d, actual %d\n",
++	if (abs(est_delay - subs->last_delay) * 1000 > runtime->rate * 2)
++		dev_dbg_ratelimited(&subs->dev->dev,
++			"delay: estimated %d, actual %d\n",
+ 			est_delay, subs->last_delay);
+ 
+ 	if (!subs->running) {
 -- 
-1.7.9.5
-
+1.9.1
