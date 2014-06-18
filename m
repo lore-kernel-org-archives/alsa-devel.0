@@ -1,248 +1,127 @@
-From: Kailang <kailang@realtek.com>
-Subject: Enable HP machine to enable capture mute led and
-	output mute led
-Date: Wed, 18 Jun 2014 17:13:57 +0800
-Message-ID: <561C9577BEE34837ADA1F3C2AD57F508@realtek.com.tw>
-Reply-To: Kailang <kailang@realtek.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v4 2/3] ASoC: add es8328 codec driver
+Date: Wed, 18 Jun 2014 10:45:05 +0100
+Message-ID: <20140618094505.GD5099@sirena.org.uk>
+References: <1403063242-20840-1-git-send-email-xobs@kosagi.com>
+ <1403063242-20840-3-git-send-email-xobs@kosagi.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_NextPart_000_016F_01CF8B18.B0A1E670"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id A65192615B9
- for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 11:14:03 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3IUuVPBxFdaU0JwQ"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1403063242-20840-3-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Cc: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_NextPart_000_016F_01CF8B18.B0A1E670
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=response
-Content-Transfer-Encoding: 7bit
 
-Hi Takashi,
-
-Attach was HP mute led support patch.
-It use Line1 vref and Mic1 vref to control mute led for ALC282.
-Line1 vref to control output mute led.
-Mic1 vref to control input mute led.
-
-It use GPIO3 and Mic1 vref to control mute led for ALC280.
-GPIO3 to control output mute led.
-Mic1 vref to control input mute led.
-
-For the DMI string for output mute led application.
-I already request from HP to support it in next release.
-
-HP_Mute_LED_0_A  => use Mic1 vref to control mute led.
-Is the string right?
-I have tested upper string for Mic1 mute led.
-
-BR,
-Kailang
-
-------=_NextPart_000_016F_01CF8B18.B0A1E670
-Content-Type: application/octet-stream; name="0000-new-hp-mute-led.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment; filename="0000-new-hp-mute-led.patch"
-
->From 4e33ef24a17106ec44eeecb22459cf2296d6d603 Mon Sep 17 00:00:00 2001=0A=
-From: Kailang Yang <kailang@realtek.com>=0A=
-Date: Wed, 18 Jun 2014 16:54:01 +0800=0A=
-Subject: [PATCH] ALSA: hda/realtek - Support HP mute led for output and =
-input=0A=
-=0A=
-HP mute led support output mute led and input mute led.=0A=
-=0A=
-Signed-off-by: Kailang Yang <kailang@realtek.com>=0A=
-=0A=
-diff --git a/sound/pci/hda/patch_realtek.c =
-b/sound/pci/hda/patch_realtek.c=0A=
-index af76995..4852120 100644=0A=
---- a/sound/pci/hda/patch_realtek.c=0A=
-+++ b/sound/pci/hda/patch_realtek.c=0A=
-@@ -101,6 +101,7 @@ struct alc_spec {=0A=
- 	/* mute LED for HP laptops, see alc269_fixup_mic_mute_hook() */=0A=
- 	int mute_led_polarity;=0A=
- 	hda_nid_t mute_led_nid;=0A=
-+	hda_nid_t cap_mute_led_nid;=0A=
- =0A=
- 	unsigned int gpio_led; /* used for alc269_fixup_hp_gpio_led() */=0A=
- =0A=
-@@ -3520,6 +3521,67 @@ static void alc269_fixup_hp_gpio_led(struct =
-hda_codec *codec,=0A=
- 	}=0A=
- }=0A=
- =0A=
-+/* turn on/off mic-mute LED per capture hook */=0A=
-+static void alc269_fixup_hp_cap_mic_mute_hook(struct hda_codec *codec,=0A=
-+					       struct snd_kcontrol *kcontrol,=0A=
-+					       struct snd_ctl_elem_value *ucontrol)=0A=
-+{=0A=
-+	struct alc_spec *spec =3D codec->spec;=0A=
-+	unsigned int pinval, enable, disable;=0A=
-+=0A=
-+	pinval =3D snd_hda_codec_get_pin_target(codec, spec->mute_led_nid);=0A=
-+	pinval &=3D ~AC_PINCTL_VREFEN;=0A=
-+	enable  =3D pinval | AC_PINCTL_VREF_80;=0A=
-+	disable =3D pinval | AC_PINCTL_VREF_HIZ;=0A=
-+=0A=
-+	if (!ucontrol)=0A=
-+		return;=0A=
-+=0A=
-+	if (ucontrol->value.integer.value[0] ||=0A=
-+	    ucontrol->value.integer.value[1])=0A=
-+		pinval =3D disable;=0A=
-+	else=0A=
-+		pinval =3D enable;=0A=
-+=0A=
-+	if (spec->cap_mute_led_nid)=0A=
-+		snd_hda_set_pin_ctl_cache(codec, spec->cap_mute_led_nid, pinval);=0A=
-+}=0A=
-+=0A=
-+static void alc269_fixup_hp_gpio_mic1_led(struct hda_codec *codec,=0A=
-+				const struct hda_fixup *fix, int action)=0A=
-+{=0A=
-+	struct alc_spec *spec =3D codec->spec;=0A=
-+	static const struct hda_verb gpio_init[] =3D {=0A=
-+		{ 0x01, AC_VERB_SET_GPIO_MASK, 0x08 },=0A=
-+		{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x08 },=0A=
-+		{}=0A=
-+	};=0A=
-+=0A=
-+	if (action =3D=3D HDA_FIXUP_ACT_PRE_PROBE) {=0A=
-+		spec->gen.vmaster_mute.hook =3D alc269_fixup_hp_gpio_mute_hook;=0A=
-+		spec->gen.cap_sync_hook =3D alc269_fixup_hp_cap_mic_mute_hook;=0A=
-+		spec->gpio_led =3D 0;=0A=
-+		spec->cap_mute_led_nid =3D 0x18;=0A=
-+		snd_hda_add_verbs(codec, gpio_init);=0A=
-+	}=0A=
-+}=0A=
-+=0A=
-+static void alc269_fixup_hp_line1_mic1_led(struct hda_codec *codec,=0A=
-+				const struct hda_fixup *fix, int action)=0A=
-+{=0A=
-+	struct alc_spec *spec =3D codec->spec;=0A=
-+=0A=
-+	if (action =3D=3D HDA_FIXUP_ACT_PRE_PROBE) {=0A=
-+		spec->gen.vmaster_mute.hook =3D alc269_fixup_mic_mute_hook;=0A=
-+		spec->gen.cap_sync_hook =3D alc269_fixup_hp_cap_mic_mute_hook;=0A=
-+		spec->mute_led_polarity =3D 0;=0A=
-+		spec->mute_led_nid =3D 0x1a;=0A=
-+		spec->cap_mute_led_nid =3D 0x18;=0A=
-+		spec->gen.vmaster_mute_enum =3D 1;=0A=
-+		codec->power_filter =3D led_power_filter;=0A=
-+	}=0A=
-+}=0A=
-+=0A=
- static void alc_headset_mode_unplugged(struct hda_codec *codec)=0A=
- {=0A=
- 	int val;=0A=
-@@ -4255,6 +4317,8 @@ enum {=0A=
- 	ALC269_FIXUP_HP_MUTE_LED_MIC1,=0A=
- 	ALC269_FIXUP_HP_MUTE_LED_MIC2,=0A=
- 	ALC269_FIXUP_HP_GPIO_LED,=0A=
-+	ALC269_FIXUP_HP_GPIO_MIC1_LED,=0A=
-+	ALC269_FIXUP_HP_LINE1_MIC1_LED,=0A=
- 	ALC269_FIXUP_INV_DMIC,=0A=
- 	ALC269_FIXUP_LENOVO_DOCK,=0A=
- 	ALC269_FIXUP_NO_SHUTUP,=0A=
-@@ -4447,6 +4511,14 @@ static const struct hda_fixup alc269_fixups[] =3D =
-{=0A=
- 		.type =3D HDA_FIXUP_FUNC,=0A=
- 		.v.func =3D alc269_fixup_hp_gpio_led,=0A=
- 	},=0A=
-+	[ALC269_FIXUP_HP_GPIO_MIC1_LED] =3D {=0A=
-+		.type =3D HDA_FIXUP_FUNC,=0A=
-+		.v.func =3D alc269_fixup_hp_gpio_mic1_led,=0A=
-+	},=0A=
-+	[ALC269_FIXUP_HP_LINE1_MIC1_LED] =3D {=0A=
-+		.type =3D HDA_FIXUP_FUNC,=0A=
-+		.v.func =3D alc269_fixup_hp_line1_mic1_led,=0A=
-+	},=0A=
- 	[ALC269_FIXUP_INV_DMIC] =3D {=0A=
- 		.type =3D HDA_FIXUP_FUNC,=0A=
- 		.v.func =3D alc_fixup_inv_dmic_0x12,=0A=
-@@ -4790,6 +4862,20 @@ static const struct snd_pci_quirk =
-alc269_fixup_tbl[] =3D {=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2212, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2213, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2214, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2234, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2235, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2236, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2237, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2238, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2239, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2246, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2247, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2248, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2249, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x224a, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x224b, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x224c, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x224d, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2266, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2267, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2268, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-@@ -4814,13 +4900,41 @@ static const struct snd_pci_quirk =
-alc269_fixup_tbl[] =3D {=0A=
- 	SND_PCI_QUIRK(0x103c, 0x22ce, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x22cf, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x22d0, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x22da, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x22db, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x22dc, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x22fb, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x8004, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
- 	/* ALC290 */=0A=
-+	SND_PCI_QUIRK(0x103c, 0x221b, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2220, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2221, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2222, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2223, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2224, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2225, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2246, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2247, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2248, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2249, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2253, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2254, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2255, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2256, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2257, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2258, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2259, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x225a, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2260, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2261, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2262, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2263, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2264, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x2265, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2272, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2273, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2277, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
-+	SND_PCI_QUIRK(0x103c, 0x2278, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x227d, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x227e, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
- 	SND_PCI_QUIRK(0x103c, 0x227f, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),=0A=
-
-------=_NextPart_000_016F_01CF8B18.B0A1E670
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+--3IUuVPBxFdaU0JwQ
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
+On Wed, Jun 18, 2014 at 11:47:20AM +0800, Sean Cross wrote:
 
-------=_NextPart_000_016F_01CF8B18.B0A1E670--
+> +Required properties:
+> +
+> +  - compatible : "es8328"
+
+This needs the prefix, as does the example.
+
+> +static int es8328_i2c_probe(struct i2c_client *i2c,
+> +			    const struct i2c_device_id *id)
+> +{
+> +	struct regmap_config config;
+> +
+> +	config = es8328_regmap_config;
+> +	return es8328_probe(&i2c->dev, devm_regmap_init_i2c(i2c, &config));
+> +}
+
+config appears to serve no purpose here.
+
+> +/* Run the codec at 22.5792 MHz to support these rates */
+> +enum es8328_rate {
+> +	ES8328_RATE_8019,
+> +	ES8328_RATE_11025,
+> +	ES8328_RATE_22050,
+> +	ES8328_RATE_44100,
+> +};
+
+The driver should be enforcing constraints based on the clock it's got
+then.  Not everything does though so it's a bit optional.
+
+> +static int es8328_put_deemph(struct snd_kcontrol *kcontrol,
+> +			     struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+> +	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
+> +	int deemph = ucontrol->value.enumerated.item[0];
+> +
+> +	if (deemph > 1)
+> +		return -EINVAL;
+> +
+> +	es8328->deemph = deemph;
+> +
+> +	return es8328_set_deemph(codec);
+> +}
+
+This will unconditionally store the new deemphasis setting even if we
+failed to set it.  That should never happen but still...
+
+> +	SOC_DOUBLE_TLV("Mic PGA Gain", ES8328_ADCCONTROL1, 4, 0, 8, 0, mic_tlv),
+
+Mic PGA Volume.
+
+> +	SND_SOC_DAPM_MICBIAS("Mic Bias", ES8328_ADCPOWER,
+> +			ES8328_ADCPOWER_MIC_BIAS_OFF, 1),
+
+Represent this as a suply, MICBIAS widgets are legacy.
+
+> +	case SND_SOC_BIAS_PREPARE:
+> +		/* VREF, VMID=2x50k, digital enabled */
+> +		snd_soc_write(codec, ES8328_CHIPPOWER, pwr_reg);
+> +		snd_soc_write(codec, ES8328_CONTROL1,
+> +				cc1_reg |
+> +				ES8328_CONTROL1_VMIDSEL_50k |
+> +				ES8328_CONTROL1_ENREF);
+
+snd_soc_update_bits().
+
+> +const struct regmap_config es8328_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.max_register = ES8328_REG_MAX,
+> +	.cache_type = REGCACHE_NONE,
+> +};
+> +EXPORT_SYMBOL_GPL(es8328_regmap_config);
+
+No need to specify no cache, it's the default - though a cache is
+better, it's faster and allows for suspend/resume.
+
+--3IUuVPBxFdaU0JwQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJToV+eAAoJELSic+t+oim9DkgP/juZs/PCVZL39ecU5kQtafwW
+lamYA72xdWX0TOQ/gHDpc80H4U9lK0ObpHwhbBK3cNIoZuBluGdIiZaB0E6qxUOQ
+VpD9v0C9eZYVTKSQ1RIO3cylrx4O/nAaWcUd1fHnGygZBBvNOJmt4pzLaTTlL72s
+acs5UYL9PpQG9vyr6hkLaoFSWFvgxbWHYwMvf501LJpSMMLtE712xx4cZgH2q6Do
+oYEz7aT96Yr7AGdxCNnH8Yx5ho10iKVHEjQKHNzm4d9aJP/gTNB163sPeZ64zz9d
+M6y6F25nUHtNyhGBtDn4zvi2u2j3tU+dklC693ug+5ZjHbSrmZ/PEIGr8O4sGPJv
+05D/xtJWKVxQA31Swlq+rNhiY1/wFgBcFgyYFeGucZBJ/1NEpd/5QJi1RzQsEiYx
+pMqDsVvrb7/zJtPQrKiHRvoZlC9m1bUWi+LM+OkW4hx+nnH2un8mlCzqKuvte1kx
+zue8tTtw6V5O9nmjucjxvvUAhxqVAtryvBugCMJcddNLiKlt71oW7fMVsk9xuLK2
+hGINFCNqSJXzzDRMj0ogbB77DfHYrEZaPbQMHAiFQ+8di51jE8QB2UZJPpul1owR
+7v9GMgZP3hS1scfG7hntyzpoUrVurimnlPtvhF8l1xzvqZaEfK/0kSpiwSsB3Gkk
+CMcFeeC65JOnQ+iZSq/H
+=v9HQ
+-----END PGP SIGNATURE-----
+
+--3IUuVPBxFdaU0JwQ--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
