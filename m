@@ -1,18 +1,20 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] *** ASoC: core: refine of node id parse of
- cpu/codec dai ***
-Date: Wed, 18 Jun 2014 14:13:39 +0200
-Message-ID: <53A18273.7090203@metafoo.de>
-References: <1403089319-2555-1-git-send-email-zhouqiao@marvell.com>
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH 09/12] ASoC: rsnd: enable SRC setting via DT
+Date: Wed, 18 Jun 2014 18:20:18 +0400
+Message-ID: <53A1A022.1020801@cogentembedded.com>
+References: <87d2e6zjhf.wl%kuninori.morimoto.gx@gmail.com>
+ <87zjhay4s6.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-215.synserver.de (smtp-out-215.synserver.de
- [212.40.185.215])
- by alsa0.perex.cz (Postfix) with ESMTP id 2009E261A74
- for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 14:13:47 +0200 (CEST)
-In-Reply-To: <1403089319-2555-1-git-send-email-zhouqiao@marvell.com>
+Received: from mail-la0-f42.google.com (mail-la0-f42.google.com
+ [209.85.215.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74AD7261A1D
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 16:20:13 +0200 (CEST)
+Received: by mail-la0-f42.google.com with SMTP id pn19so582444lab.29
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 07:20:13 -0700 (PDT)
+In-Reply-To: <87zjhay4s6.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,33 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qiao Zhou <zhouqiao@marvell.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, zhangfei.gao@gmail.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
+Cc: linux-sh@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/18/2014 01:01 PM, Qiao Zhou wrote:
-> Hi Mark, Liam
->
-> This patch is to add another check besides cpu_dai/codec_dai name during
-> dai_link bind. currently if the cpu_dai/codec_dai name match corresponding
-> dai_link cpu/codec name, then a match is found. in this patch, it also checks
-> whether cpu/codec dai id match dailink cpu_dai_id/codec_dai_id. Still check
-> name first.
-> 1. if it doesn't match, it will keep checking whether cpu_id/codec_id match
-> corresponding dai_link cpu_dai_id/codec_dai_id. if the ids are equal, then
-> a match is found.
-> 2. if it does match, then a match is already found. no need to further check.
->
+Hello.
+
+On 06/18/2014 12:56 PM, Kuninori Morimoto wrote:
+
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+> some special board wants to exchange sampling rate by using SRC.
+> This patch enables its settings.
+
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
 [...]
-> Could you help share your opinions? Thanks in advance.
 
-Hi,
+> diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+> index 4d39505..93a5e58 100644
+> --- a/sound/soc/sh/rcar/src.c
+> +++ b/sound/soc/sh/rcar/src.c
+[...]
+> @@ -640,6 +640,16 @@ static void rsnd_of_parse_src(struct platform_device *pdev,
+>   	info->src_info		= src_info;
+>   	info->src_info_nr	= nr;
+>
+> +	i = 0;
+> +	for_each_child_of_node(src_node, np) {
+> +		src_info = info->src_info + i;
+> +
+> +		of_property_read_u32(src_node, "convert-rate",
 
-There is already snd_soc_of_get_dai_name() which will translate a phandle + 
-specifier to a DAI name. By default it will use the DAI id for the 
-specifier. Alternatively the driver can implement a of_xlate_dai_name 
-callback that does the translation from specifier to name. The advantage of 
-this approach is that the board driver does not need to know about the 
-specific format of the DAI specifier.
+    Are you sure it's 'src_node' here, not 'np'?
 
-- Lars
+> +				     &src_info->convert_rate);
+> +
+> +		i++;
+> +	}
+> +
+
+WBR, Sergei
