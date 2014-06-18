@@ -1,81 +1,55 @@
-From: Simon Horman <simon@horms.net>
-Subject: Re: [PATCH] ASoC: rsnd: fixup rsnd_gen_dma_addr() for
-	Gen1
-Date: Wed, 18 Jun 2014 14:36:01 +0900
-Message-ID: <20140618053558.GA15909@verge.net.au>
-References: <20140617121349.GA20165@verge.net.au>
- <87k38fyp3a.wl%kuninori.morimoto.gx@renesas.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] [PATCH 1/3] sound: Add a quirk to enforce period_bytes
+Date: Wed, 18 Jun 2014 10:20:59 +0200
+Message-ID: <53A14BEB.1060403@ladisch.de>
+References: <1402762571-6316-1-git-send-email-m.chehab@samsung.com> <1402762571-6316-2-git-send-email-m.chehab@samsung.com> <539E9F25.7030504@ladisch.de> <CAGoCfiw3du9rXFvDfsUYLu4Ru6mbdWa+LtAyYupXosM0n-71NA@mail.gmail.com> <20140616120544.10ef75f4.m.chehab@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from kirsty.vergenet.net (kirsty.vergenet.net [202.4.237.240])
- by alsa0.perex.cz (Postfix) with ESMTP id AE77C2608ED
- for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 07:36:07 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <87k38fyp3a.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20140616120544.10ef75f4.m.chehab@samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <m.chehab@samsung.com>, Devin Heitmueller <dheitmueller@kernellabs.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@infradead.org>, Linux Media Mailing List <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKdW4gMTcsIDIwMTQgYXQgMDY6Mzg6MDFQTSAtMDcwMCwgS3VuaW5vcmkgTW9yaW1v
-dG8gd3JvdGU6Cj4gRnJvbTogS3VuaW5vcmkgTW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4
-QHJlbmVzYXMuY29tPgo+IAo+IGFkMzJkMGM3YjBlOTkzNDMzZGYxNTJhZTc0NzY1MjY0N2ViNjVh
-MjcKPiAoQVNvQzogcnNuZDogYWRkIHJzbmRfZ2VuX2RtYV9hZGRyKCkgZm9yIERNQUMgYWRkcikK
-PiBhZGRlZCByc25kX2dlbl9kbWFfYWRkcigpIHRvIGNhbGN1bGF0ZSBETUEgYWRkciwKPiBidXQs
-IGl0IGlzIG5lY2Vzc2FyeSBvbmx5IGZvciBHZW4yLgo+IFRoaXMgcGF0Y2ggaWdub3JlcyBHZW4x
-IGNhc2UuCj4gS2VybmVsIHdpbGwgYmUgcGFuaWMgd2l0aG91dCB0aGlzIHBhdGNoLgo+IFNwZWNp
-YWwgdGhhbmtzIHRvIFNpbW9uCj4gCj4gUmVwb3J0ZWQtYnk6IFNpbW9uIEhvcm1hbiA8aG9ybXNA
-dmVyZ2UubmV0LmF1Pgo+IFNpZ25lZC1vZmYtYnk6IEt1bmlub3JpIE1vcmltb3RvIDxrdW5pbm9y
-aS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4KCkhpIE1vcmltb3RvLXNhbiwKCnRoYW5rcyBmb3Ig
-dGhlIHF1aWNrIGZpeC4KSSBoYXZlIHZlcmlmaWVkIHRoYXQgdGhlIGJvY2t3IGJvYXJkIG5vIGxv
-bmdlciBwYW5pY3MuCgpUZXN0ZWQtYnk6IFNpbW9uIEhvcm1hbiA8aG9ybXMrcmVuZXNhc0B2ZXJn
-ZS5uZXQuYXU+Cgo+IC0tLQo+ICBzb3VuZC9zb2Mvc2gvcmNhci9nZW4uYyB8ICAgMzMgKysrKysr
-KysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAyMSBpbnNlcnRp
-b25zKCspLCAxMiBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3NoL3Jj
-YXIvZ2VuLmMgYi9zb3VuZC9zb2Mvc2gvcmNhci9nZW4uYwo+IGluZGV4IDFkZDJiN2QuLjAyODBh
-MTEgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL3NoL3JjYXIvZ2VuLmMKPiArKysgYi9zb3VuZC9z
-b2Mvc2gvcmNhci9nZW4uYwo+IEBAIC0xODQsNyArMTg0LDcgQEAgc3RhdGljIGludCByc25kX2dl
-bl9yZWdtYXBfaW5pdChzdHJ1Y3QgcnNuZF9wcml2ICpwcml2LAo+ICAjZGVmaW5lIFJETUFfQ01E
-X09fTihhZGRyLCBpKQkoYWRkciAjI19yZWcgLSAweDAwNGY4MDAwICsgKDB4NDAwICogaSkpCj4g
-ICNkZWZpbmUgUkRNQV9DTURfT19QKGFkZHIsIGkpCShhZGRyICMjX3JlZyAtIDB4MDAxZjgwMDAg
-KyAoMHg0MDAgKiBpKSkKPiAgCj4gLXZvaWQgcnNuZF9nZW5fZG1hX2FkZHIoc3RydWN0IHJzbmRf
-cHJpdiAqcHJpdiwKPiArc3RhdGljIHZvaWQgcnNuZF9nZW4yX2RtYV9hZGRyKHN0cnVjdCByc25k
-X3ByaXYgKnByaXYsCj4gIAkJICAgICAgIHN0cnVjdCByc25kX2RtYSAqZG1hLAo+ICAJCSAgICAg
-ICBzdHJ1Y3QgZG1hX3NsYXZlX2NvbmZpZyAqY2ZnLAo+ICAJCSAgICAgICBpbnQgaXNfcGxheSwg
-aW50IHNsYXZlX2lkKQo+IEBAIC0yMjYsMTcgKzIyNiw2IEBAIHZvaWQgcnNuZF9nZW5fZG1hX2Fk
-ZHIoc3RydWN0IHJzbmRfcHJpdiAqcHJpdiwKPiAgCQl9Cj4gIAl9Owo+ICAKPiAtCWNmZy0+c2xh
-dmVfaWQJPSBzbGF2ZV9pZDsKPiAtCWNmZy0+c3JjX2FkZHIJPSAwOwo+IC0JY2ZnLT5kc3RfYWRk
-cgk9IDA7Cj4gLQljZmctPmRpcmVjdGlvbgk9IGlzX3BsYXkgPyBETUFfTUVNX1RPX0RFViA6IERN
-QV9ERVZfVE9fTUVNOwo+IC0KPiAtCS8qCj4gLQkgKiBnZW4xIHVzZXMgZGVmYXVsdCBETUEgYWRk
-cgo+IC0JICovCj4gLQlpZiAocnNuZF9pc19nZW4xKHByaXYpKQo+IC0JCXJldHVybjsKPiAtCj4g
-IAkvKiBpdCBzaG91bGRuJ3QgaGFwcGVuICovCj4gIAlpZiAodXNlX2R2YyAmICF1c2Vfc3JjKSB7
-Cj4gIAkJZGV2X2VycihkZXYsICJEVkMgaXMgc2VsZWN0ZWQgd2l0aG91dCBTUkNcbiIpOwo+IEBA
-IC0yNTAsNiArMjM5LDI2IEBAIHZvaWQgcnNuZF9nZW5fZG1hX2FkZHIoc3RydWN0IHJzbmRfcHJp
-diAqcHJpdiwKPiAgCQlpZCwgY2ZnLT5zcmNfYWRkciwgY2ZnLT5kc3RfYWRkcik7Cj4gIH0KPiAg
-Cj4gK3ZvaWQgcnNuZF9nZW5fZG1hX2FkZHIoc3RydWN0IHJzbmRfcHJpdiAqcHJpdiwKPiArCQkg
-ICAgICAgc3RydWN0IHJzbmRfZG1hICpkbWEsCj4gKwkJICAgICAgIHN0cnVjdCBkbWFfc2xhdmVf
-Y29uZmlnICpjZmcsCj4gKwkJICAgICAgIGludCBpc19wbGF5LCBpbnQgc2xhdmVfaWQpCj4gK3sK
-PiArCWNmZy0+c2xhdmVfaWQgICA9IHNsYXZlX2lkOwo+ICsJY2ZnLT5zcmNfYWRkciAgID0gMDsK
-PiArCWNmZy0+ZHN0X2FkZHIgICA9IDA7Cj4gKwljZmctPmRpcmVjdGlvbiAgPSBpc19wbGF5ID8g
-RE1BX01FTV9UT19ERVYgOiBETUFfREVWX1RPX01FTTsKPiArCj4gKwkvKgo+ICsJICogZ2VuMSB1
-c2VzIGRlZmF1bHQgRE1BIGFkZHIKPiArCSAqLwo+ICsJaWYgKHJzbmRfaXNfZ2VuMShwcml2KSkK
-PiArCQlyZXR1cm47Cj4gKwo+ICsJcnNuZF9nZW4yX2RtYV9hZGRyKHByaXYsIGRtYSwgY2ZnLCBp
-c19wbGF5LCBzbGF2ZV9pZCk7Cj4gK30KPiArCj4gKwo+ICAvKgo+ICAgKgkJR2VuMgo+ICAgKi8K
-PiAtLSAKPiAxLjcuOS41Cj4gCgotLSAKU2ltb24gSG9ybWFuL+ODm+ODvOODnuODsyDjgrXjgqTj
-g6Ljg7MgICAgICAgIHNpbW9uQGhvcm1zLm5ldApIb3JtcyBTb2x1dGlvbnMg5qCq5byP5Lya56S+
-ICAgICAgICAgICAgICAgIHd3dy5ob3Jtcy5uZXQK44CSNjUxLTAwODQg5YW15bqr55yM56We5oi4
-5biC5Lit5aSu5Yy656Ov6L666YCaNC0xLTggSVRD44OT44OrOTAx5Y+3ClRlbDogMDMgNjM2NSA1
-OTc3ICAgICAgICAgICAgICAgICAgIEZheDogMDMgNjY3MyA0MjY4ClNreXBlOiBob3JtczcKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Mauro Carvalho Chehab wrote:
+> Let's see the au0828 case:
+> 	48 kHz, 2 bytes/sample, 2 channels, 256 maxpacksize, 1 ms URB
+> interval (bInterval = 1).
+>
+> In this case, there is 192 bytes per 1ms period.
+
+The device's clock and the bus clock are not synchronized, so there will
+be _approximately_ 192 bytes per USB frame.
+
+> Let's assume that the period was set to 3456, with corresponds to
+> a latency of 18 ms.
+>
+> In this case, as NUM_URBS = 12,
+
+There is no symbol named NUM_URBS.
+
+> it means that the transfer buffer will be set to its maximum value of
+> 3072 bytes per URB pack (12 * 256)
+
+The number of URBs is not the same as the number of packets per URB.
+
+> and the URB transfer_callback will be called on every 16 ms.
+
+It will be called once per millisecond.
+
+> So, what
+
+... definitely not ...
+
+> happens is:
+>
+> 	- after 16 ms, the first 3072 bytes arrive. The next
+> 	  packet will take another 16ms to arrive;
+> 	- after 2 ms, underrun, as the period_size was not
+> 	  filled yet.
+
+
+Regards,
+Clemens
