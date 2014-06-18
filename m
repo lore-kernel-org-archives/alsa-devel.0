@@ -1,20 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: hda - Kill the rest of snd_print*()
-	usages
-Date: Wed, 18 Jun 2014 16:35:32 +0200
-Message-ID: <1403102132-1708-2-git-send-email-tiwai@suse.de>
-References: <1403102132-1708-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: hda - Remove the obsoleted static
+	quirk codes from patch_cmedia.c
+Date: Wed, 18 Jun 2014 16:38:08 +0200
+Message-ID: <1403102288-1803-2-git-send-email-tiwai@suse.de>
+References: <1403102288-1803-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F526261A1D
- for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 16:35:33 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B5BABAD18
- for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 14:35:32 +0000 (UTC)
-In-Reply-To: <1403102132-1708-1-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7180E261AA5
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 16:38:08 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 39E5AAD44
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 14:38:08 +0000 (UTC)
+In-Reply-To: <1403102288-1803-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,246 +27,670 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Pass the codec object so that we can replace all the rest of
-snd_print*() usages with the proper device-specific print helpers.
+The static quirk code has been disabled for a while and it seems
+working fine, so it's time to actually get rid of it.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c      | 35 +++++++++++++++++++++--------------
- sound/pci/hda/hda_codec.h      |  3 ++-
- sound/pci/hda/hda_controller.c |  3 ++-
- sound/pci/hda/hda_generic.c    |  2 +-
- sound/pci/hda/hda_local.h      |  3 ++-
- sound/pci/hda/patch_ca0132.c   |  6 +++---
- sound/pci/hda/patch_sigmatel.c |  2 +-
- 7 files changed, 32 insertions(+), 22 deletions(-)
+ sound/pci/hda/patch_cmedia.c | 624 +------------------------------------------
+ 1 file changed, 9 insertions(+), 615 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 4c20277a6835..d91cb7f5961a 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2727,7 +2727,7 @@ int snd_hda_codec_reset(struct hda_codec *codec)
- 	return 0;
- }
+diff --git a/sound/pci/hda/patch_cmedia.c b/sound/pci/hda/patch_cmedia.c
+index 061ea5965dd5..ed3d133ffbb6 100644
+--- a/sound/pci/hda/patch_cmedia.c
++++ b/sound/pci/hda/patch_cmedia.c
+@@ -31,550 +31,11 @@
+ #include "hda_jack.h"
+ #include "hda_generic.h"
  
--typedef int (*map_slave_func_t)(void *, struct snd_kcontrol *);
-+typedef int (*map_slave_func_t)(struct hda_codec *, void *, struct snd_kcontrol *);
- 
- /* apply the function to all matching slave ctls in the mixer list */
- static int map_slaves(struct hda_codec *codec, const char * const *slaves,
-@@ -2751,7 +2751,7 @@ static int map_slaves(struct hda_codec *codec, const char * const *slaves,
- 				name = tmpname;
- 			}
- 			if (!strcmp(sctl->id.name, name)) {
--				err = func(data, sctl);
-+				err = func(codec, data, sctl);
- 				if (err)
- 					return err;
- 				break;
-@@ -2761,13 +2761,15 @@ static int map_slaves(struct hda_codec *codec, const char * const *slaves,
- 	return 0;
- }
- 
--static int check_slave_present(void *data, struct snd_kcontrol *sctl)
-+static int check_slave_present(struct hda_codec *codec,
-+			       void *data, struct snd_kcontrol *sctl)
- {
- 	return 1;
- }
- 
- /* guess the value corresponding to 0dB */
--static int get_kctl_0dB_offset(struct snd_kcontrol *kctl, int *step_to_check)
-+static int get_kctl_0dB_offset(struct hda_codec *codec,
-+			       struct snd_kcontrol *kctl, int *step_to_check)
- {
- 	int _tlv[4];
- 	const int *tlv = NULL;
-@@ -2788,7 +2790,7 @@ static int get_kctl_0dB_offset(struct snd_kcontrol *kctl, int *step_to_check)
- 		if (!step)
- 			return -1;
- 		if (*step_to_check && *step_to_check != step) {
--			snd_printk(KERN_ERR "hda_codec: Mismatching dB step for vmaster slave (%d!=%d)\n",
-+			codec_err(codec, "Mismatching dB step for vmaster slave (%d!=%d)\n",
- -				   *step_to_check, step);
- 			return -1;
- 		}
-@@ -2813,16 +2815,18 @@ static int put_kctl_with_value(struct snd_kcontrol *kctl, int val)
- }
- 
- /* initialize the slave volume with 0dB */
--static int init_slave_0dB(void *data, struct snd_kcontrol *slave)
-+static int init_slave_0dB(struct hda_codec *codec,
-+			  void *data, struct snd_kcontrol *slave)
- {
--	int offset = get_kctl_0dB_offset(slave, data);
-+	int offset = get_kctl_0dB_offset(codec, slave, data);
- 	if (offset > 0)
- 		put_kctl_with_value(slave, offset);
- 	return 0;
- }
- 
- /* unmute the slave */
--static int init_slave_unmute(void *data, struct snd_kcontrol *slave)
-+static int init_slave_unmute(struct hda_codec *codec,
-+			     void *data, struct snd_kcontrol *slave)
- {
- 	return put_kctl_with_value(slave, 1);
- }
-@@ -4280,6 +4284,7 @@ static struct hda_rate_tbl rate_bits[] = {
- 
- /**
-  * snd_hda_calc_stream_format - calculate format bitset
-+ * @codec: HD-audio codec
-  * @rate: the sample rate
-  * @channels: the number of channels
-  * @format: the PCM format (SNDRV_PCM_FORMAT_XXX)
-@@ -4289,7 +4294,8 @@ static struct hda_rate_tbl rate_bits[] = {
-  *
-  * Return zero if invalid.
-  */
--unsigned int snd_hda_calc_stream_format(unsigned int rate,
-+unsigned int snd_hda_calc_stream_format(struct hda_codec *codec,
-+					unsigned int rate,
- 					unsigned int channels,
- 					unsigned int format,
- 					unsigned int maxbps,
-@@ -4304,12 +4310,12 @@ unsigned int snd_hda_calc_stream_format(unsigned int rate,
- 			break;
- 		}
- 	if (!rate_bits[i].hz) {
--		snd_printdd("invalid rate %d\n", rate);
-+		codec_dbg(codec, "invalid rate %d\n", rate);
- 		return 0;
- 	}
- 
- 	if (channels == 0 || channels > 8) {
--		snd_printdd("invalid channels %d\n", channels);
-+		codec_dbg(codec, "invalid channels %d\n", channels);
- 		return 0;
- 	}
- 	val |= channels - 1;
-@@ -4332,7 +4338,7 @@ unsigned int snd_hda_calc_stream_format(unsigned int rate,
- 			val |= AC_FMT_BITS_20;
- 		break;
- 	default:
--		snd_printdd("invalid format width %d\n",
-+		codec_dbg(codec, "invalid format width %d\n",
- 			  snd_pcm_format_width(format));
- 		return 0;
- 	}
-@@ -5670,12 +5676,13 @@ EXPORT_SYMBOL_GPL(_snd_hda_set_pin_ctl);
-  * suffix is appended to the label.  This label index number is stored
-  * to type_idx when non-NULL pointer is given.
-  */
--int snd_hda_add_imux_item(struct hda_input_mux *imux, const char *label,
-+int snd_hda_add_imux_item(struct hda_codec *codec,
-+			  struct hda_input_mux *imux, const char *label,
- 			  int index, int *type_idx)
- {
- 	int i, label_idx = 0;
- 	if (imux->num_items >= HDA_MAX_NUM_INPUTS) {
--		snd_printd(KERN_ERR "hda_codec: Too many imux items!\n");
-+		codec_err(codec, "hda_codec: Too many imux items!\n");
- 		return -EINVAL;
- 	}
- 	for (i = 0; i < imux->num_items; i++) {
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index a4233136cb93..bbc5a1392c75 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -537,7 +537,8 @@ void __snd_hda_codec_cleanup_stream(struct hda_codec *codec, hda_nid_t nid,
- 				    int do_now);
- #define snd_hda_codec_cleanup_stream(codec, nid) \
- 	__snd_hda_codec_cleanup_stream(codec, nid, 0)
--unsigned int snd_hda_calc_stream_format(unsigned int rate,
-+unsigned int snd_hda_calc_stream_format(struct hda_codec *codec,
-+					unsigned int rate,
- 					unsigned int channels,
- 					unsigned int format,
- 					unsigned int maxbps,
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 480bbddbd801..875e0ebf56eb 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -481,7 +481,8 @@ static int azx_pcm_prepare(struct snd_pcm_substream *substream)
- 	}
- 
- 	azx_stream_reset(chip, azx_dev);
--	format_val = snd_hda_calc_stream_format(runtime->rate,
-+	format_val = snd_hda_calc_stream_format(apcm->codec,
-+						runtime->rate,
- 						runtime->channels,
- 						runtime->format,
- 						hinfo->maxbps,
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 16133881e967..26c3c7868033 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -3054,7 +3054,7 @@ static int parse_capture_source(struct hda_codec *codec, hda_nid_t pin,
- 			if (spec->hp_mic_pin == pin)
- 				spec->hp_mic_mux_idx = imux->num_items;
- 			spec->imux_pins[imux->num_items] = pin;
--			snd_hda_add_imux_item(imux, label, cfg_idx, NULL);
-+			snd_hda_add_imux_item(codec, imux, label, cfg_idx, NULL);
- 			imux_added = true;
- 			if (spec->dyn_adc_switch)
- 				spec->dyn_adc_idx[imux_idx] = c;
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index 7820fd2d9ba8..8e11b58bc9fb 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -268,7 +268,8 @@ int snd_hda_input_mux_put(struct hda_codec *codec,
- 			  const struct hda_input_mux *imux,
- 			  struct snd_ctl_elem_value *ucontrol, hda_nid_t nid,
- 			  unsigned int *cur_val);
--int snd_hda_add_imux_item(struct hda_input_mux *imux, const char *label,
-+int snd_hda_add_imux_item(struct hda_codec *codec,
-+			  struct hda_input_mux *imux, const char *label,
- 			  int index, int *type_index_ret);
- 
- /*
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 092f2bd030bd..4f3aba78f720 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -2046,14 +2046,14 @@ enum dma_state {
- 	DMA_STATE_RUN   = 1
+-#undef ENABLE_CMI_STATIC_QUIRKS
+-
+-#ifdef ENABLE_CMI_STATIC_QUIRKS
+-#define NUM_PINS	11
+-
+-
+-/* board config type */
+-enum {
+-	CMI_MINIMAL,	/* back 3-jack */
+-	CMI_MIN_FP,	/* back 3-jack + front-panel 2-jack */
+-	CMI_FULL,	/* back 6-jack + front-panel 2-jack */
+-	CMI_FULL_DIG,	/* back 6-jack + front-panel 2-jack + digital I/O */
+-	CMI_ALLOUT,	/* back 5-jack + front-panel 2-jack + digital out */
+-	CMI_AUTO,	/* let driver guess it */
+-	CMI_MODELS
+-};
+-#endif /* ENABLE_CMI_STATIC_QUIRKS */
+-
+ struct cmi_spec {
+ 	struct hda_gen_spec gen;
+-
+-#ifdef ENABLE_CMI_STATIC_QUIRKS
+-	/* below are only for static models */
+-
+-	int board_config;
+-	unsigned int no_line_in: 1;	/* no line-in (5-jack) */
+-	unsigned int front_panel: 1;	/* has front-panel 2-jack */
+-
+-	/* playback */
+-	struct hda_multi_out multiout;
+-	hda_nid_t dac_nids[AUTO_CFG_MAX_OUTS];	/* NID for each DAC */
+-	int num_dacs;
+-
+-	/* capture */
+-	const hda_nid_t *adc_nids;
+-	hda_nid_t dig_in_nid;
+-
+-	/* capture source */
+-	const struct hda_input_mux *input_mux;
+-	unsigned int cur_mux[2];
+-
+-	/* channel mode */
+-	int num_channel_modes;
+-	const struct hda_channel_mode *channel_modes;
+-
+-	struct hda_pcm pcm_rec[2];	/* PCM information */
+-
+-	/* pin default configuration */
+-	hda_nid_t pin_nid[NUM_PINS];
+-	unsigned int def_conf[NUM_PINS];
+-	unsigned int pin_def_confs;
+-
+-	/* multichannel pins */
+-	struct hda_verb multi_init[9];	/* 2 verbs for each pin + terminator */
+-#endif /* ENABLE_CMI_STATIC_QUIRKS */
+-};
+-
+-#ifdef ENABLE_CMI_STATIC_QUIRKS
+-/*
+- * input MUX
+- */
+-static int cmi_mux_enum_info(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
+-{
+-	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+-	struct cmi_spec *spec = codec->spec;
+-	return snd_hda_input_mux_info(spec->input_mux, uinfo);
+-}
+-
+-static int cmi_mux_enum_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+-	struct cmi_spec *spec = codec->spec;
+-	unsigned int adc_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
+-
+-	ucontrol->value.enumerated.item[0] = spec->cur_mux[adc_idx];
+-	return 0;
+-}
+-
+-static int cmi_mux_enum_put(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+-	struct cmi_spec *spec = codec->spec;
+-	unsigned int adc_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
+-
+-	return snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
+-				     spec->adc_nids[adc_idx], &spec->cur_mux[adc_idx]);
+-}
+-
+-/*
+- * shared line-in, mic for surrounds
+- */
+-
+-/* 3-stack / 2 channel */
+-static const struct hda_verb cmi9880_ch2_init[] = {
+-	/* set line-in PIN for input */
+-	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
+-	/* set mic PIN for input, also enable vref */
+-	{ 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80 },
+-	/* route front PCM (DAC1) to HP */
+-	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x00 },
+-	{}
+-};
+-
+-/* 3-stack / 6 channel */
+-static const struct hda_verb cmi9880_ch6_init[] = {
+-	/* set line-in PIN for output */
+-	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
+-	/* set mic PIN for output */
+-	{ 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
+-	/* route front PCM (DAC1) to HP */
+-	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x00 },
+-	{}
+-};
+-
+-/* 3-stack+front / 8 channel */
+-static const struct hda_verb cmi9880_ch8_init[] = {
+-	/* set line-in PIN for output */
+-	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
+-	/* set mic PIN for output */
+-	{ 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
+-	/* route rear-surround PCM (DAC4) to HP */
+-	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x03 },
+-	{}
+-};
+-
+-static const struct hda_channel_mode cmi9880_channel_modes[3] = {
+-	{ 2, cmi9880_ch2_init },
+-	{ 6, cmi9880_ch6_init },
+-	{ 8, cmi9880_ch8_init },
+-};
+-
+-static int cmi_ch_mode_info(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
+-{
+-	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+-	struct cmi_spec *spec = codec->spec;
+-	return snd_hda_ch_mode_info(codec, uinfo, spec->channel_modes,
+-				    spec->num_channel_modes);
+-}
+-
+-static int cmi_ch_mode_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+-	struct cmi_spec *spec = codec->spec;
+-	return snd_hda_ch_mode_get(codec, ucontrol, spec->channel_modes,
+-				   spec->num_channel_modes, spec->multiout.max_channels);
+-}
+-
+-static int cmi_ch_mode_put(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+-	struct cmi_spec *spec = codec->spec;
+-	return snd_hda_ch_mode_put(codec, ucontrol, spec->channel_modes,
+-				   spec->num_channel_modes, &spec->multiout.max_channels);
+-}
+-
+-/*
+- */
+-static const struct snd_kcontrol_new cmi9880_basic_mixer[] = {
+-	/* CMI9880 has no playback volumes! */
+-	HDA_CODEC_MUTE("PCM Playback Switch", 0x03, 0x0, HDA_OUTPUT), /* front */
+-	HDA_CODEC_MUTE("Surround Playback Switch", 0x04, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_MUTE_MONO("Center Playback Switch", 0x05, 1, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_MUTE_MONO("LFE Playback Switch", 0x05, 2, 0x0, HDA_OUTPUT),
+-	HDA_CODEC_MUTE("Side Playback Switch", 0x06, 0x0, HDA_OUTPUT),
+-	{
+-		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-		/* The multiple "Capture Source" controls confuse alsamixer
+-		 * So call somewhat different..
+-		 */
+-		/* .name = "Capture Source", */
+-		.name = "Input Source",
+-		.count = 2,
+-		.info = cmi_mux_enum_info,
+-		.get = cmi_mux_enum_get,
+-		.put = cmi_mux_enum_put,
+-	},
+-	HDA_CODEC_VOLUME("Capture Volume", 0x08, 0, HDA_INPUT),
+-	HDA_CODEC_VOLUME_IDX("Capture Volume", 1, 0x09, 0, HDA_INPUT),
+-	HDA_CODEC_MUTE("Capture Switch", 0x08, 0, HDA_INPUT),
+-	HDA_CODEC_MUTE_IDX("Capture Switch", 1, 0x09, 0, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Beep Playback Volume", 0x23, 0, HDA_OUTPUT),
+-	HDA_CODEC_MUTE("Beep Playback Switch", 0x23, 0, HDA_OUTPUT),
+-	{ } /* end */
  };
  
--static int dma_convert_to_hda_format(
-+static int dma_convert_to_hda_format(struct hda_codec *codec,
- 		unsigned int sample_rate,
- 		unsigned short channels,
- 		unsigned short *hda_format)
+ /*
+- * shared I/O pins
+- */
+-static const struct snd_kcontrol_new cmi9880_ch_mode_mixer[] = {
+-	{
+-		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-		.name = "Channel Mode",
+-		.info = cmi_ch_mode_info,
+-		.get = cmi_ch_mode_get,
+-		.put = cmi_ch_mode_put,
+-	},
+-	{ } /* end */
+-};
+-
+-/* AUD-in selections:
+- * 0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
+- */
+-static const struct hda_input_mux cmi9880_basic_mux = {
+-	.num_items = 4,
+-	.items = {
+-		{ "Front Mic", 0x5 },
+-		{ "Rear Mic", 0x2 },
+-		{ "Line", 0x1 },
+-		{ "CD", 0x7 },
+-	}
+-};
+-
+-static const struct hda_input_mux cmi9880_no_line_mux = {
+-	.num_items = 3,
+-	.items = {
+-		{ "Front Mic", 0x5 },
+-		{ "Rear Mic", 0x2 },
+-		{ "CD", 0x7 },
+-	}
+-};
+-
+-/* front, rear, clfe, rear_surr */
+-static const hda_nid_t cmi9880_dac_nids[4] = {
+-	0x03, 0x04, 0x05, 0x06
+-};
+-/* ADC0, ADC1 */
+-static const hda_nid_t cmi9880_adc_nids[2] = {
+-	0x08, 0x09
+-};
+-
+-#define CMI_DIG_OUT_NID	0x07
+-#define CMI_DIG_IN_NID	0x0a
+-
+-/*
+- */
+-static const struct hda_verb cmi9880_basic_init[] = {
+-	/* port-D for line out (rear panel) */
+-	{ 0x0b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	/* port-E for HP out (front panel) */
+-	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	/* route front PCM to HP */
+-	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x00 },
+-	/* port-A for surround (rear panel) */
+-	{ 0x0e, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	/* port-G for CLFE (rear panel) */
+-	{ 0x1f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	{ 0x1f, AC_VERB_SET_CONNECT_SEL, 0x02 },
+-	/* port-H for side (rear panel) */
+-	{ 0x20, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	{ 0x20, AC_VERB_SET_CONNECT_SEL, 0x01 },
+-	/* port-C for line-in (rear panel) */
+-	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
+-	/* port-B for mic-in (rear panel) with vref */
+-	{ 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80 },
+-	/* port-F for mic-in (front panel) with vref */
+-	{ 0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80 },
+-	/* CD-in */
+-	{ 0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
+-	/* route front mic to ADC1/2 */
+-	{ 0x08, AC_VERB_SET_CONNECT_SEL, 0x05 },
+-	{ 0x09, AC_VERB_SET_CONNECT_SEL, 0x05 },
+-	{} /* terminator */
+-};
+-
+-static const struct hda_verb cmi9880_allout_init[] = {
+-	/* port-D for line out (rear panel) */
+-	{ 0x0b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	/* port-E for HP out (front panel) */
+-	{ 0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	/* route front PCM to HP */
+-	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x00 },
+-	/* port-A for side (rear panel) */
+-	{ 0x0e, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	/* port-G for CLFE (rear panel) */
+-	{ 0x1f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	{ 0x1f, AC_VERB_SET_CONNECT_SEL, 0x02 },
+-	/* port-H for side (rear panel) */
+-	{ 0x20, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	{ 0x20, AC_VERB_SET_CONNECT_SEL, 0x01 },
+-	/* port-C for surround (rear panel) */
+-	{ 0x0c, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP },
+-	/* port-B for mic-in (rear panel) with vref */
+-	{ 0x0d, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80 },
+-	/* port-F for mic-in (front panel) with vref */
+-	{ 0x10, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80 },
+-	/* CD-in */
+-	{ 0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN },
+-	/* route front mic to ADC1/2 */
+-	{ 0x08, AC_VERB_SET_CONNECT_SEL, 0x05 },
+-	{ 0x09, AC_VERB_SET_CONNECT_SEL, 0x05 },
+-	{} /* terminator */
+-};
+-
+-/*
+- */
+-static int cmi9880_build_controls(struct hda_codec *codec)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-	struct snd_kcontrol *kctl;
+-	int i, err;
+-
+-	err = snd_hda_add_new_ctls(codec, cmi9880_basic_mixer);
+-	if (err < 0)
+-		return err;
+-	if (spec->channel_modes) {
+-		err = snd_hda_add_new_ctls(codec, cmi9880_ch_mode_mixer);
+-		if (err < 0)
+-			return err;
+-	}
+-	if (spec->multiout.dig_out_nid) {
+-		err = snd_hda_create_spdif_out_ctls(codec,
+-						    spec->multiout.dig_out_nid,
+-						    spec->multiout.dig_out_nid);
+-		if (err < 0)
+-			return err;
+-		err = snd_hda_create_spdif_share_sw(codec,
+-						    &spec->multiout);
+-		if (err < 0)
+-			return err;
+-		spec->multiout.share_spdif = 1;
+-	}
+-	if (spec->dig_in_nid) {
+-		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in_nid);
+-		if (err < 0)
+-			return err;
+-	}
+-
+-	/* assign Capture Source enums to NID */
+-	kctl = snd_hda_find_mixer_ctl(codec, "Capture Source");
+-	for (i = 0; kctl && i < kctl->count; i++) {
+-		err = snd_hda_add_nid(codec, kctl, i, spec->adc_nids[i]);
+-		if (err < 0)
+-			return err;
+-	}
+-	return 0;
+-}
+-
+-static int cmi9880_init(struct hda_codec *codec)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-	if (spec->board_config == CMI_ALLOUT)
+-		snd_hda_sequence_write(codec, cmi9880_allout_init);
+-	else
+-		snd_hda_sequence_write(codec, cmi9880_basic_init);
+-	if (spec->board_config == CMI_AUTO)
+-		snd_hda_sequence_write(codec, spec->multi_init);
+-	return 0;
+-}
+-
+-/*
+- * Analog playback callbacks
+- */
+-static int cmi9880_playback_pcm_open(struct hda_pcm_stream *hinfo,
+-				     struct hda_codec *codec,
+-				     struct snd_pcm_substream *substream)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-	return snd_hda_multi_out_analog_open(codec, &spec->multiout, substream,
+-					     hinfo);
+-}
+-
+-static int cmi9880_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+-					struct hda_codec *codec,
+-					unsigned int stream_tag,
+-					unsigned int format,
+-					struct snd_pcm_substream *substream)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-	return snd_hda_multi_out_analog_prepare(codec, &spec->multiout, stream_tag,
+-						format, substream);
+-}
+-
+-static int cmi9880_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
+-				       struct hda_codec *codec,
+-				       struct snd_pcm_substream *substream)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-	return snd_hda_multi_out_analog_cleanup(codec, &spec->multiout);
+-}
+-
+-/*
+- * Digital out
+- */
+-static int cmi9880_dig_playback_pcm_open(struct hda_pcm_stream *hinfo,
+-					 struct hda_codec *codec,
+-					 struct snd_pcm_substream *substream)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-	return snd_hda_multi_out_dig_open(codec, &spec->multiout);
+-}
+-
+-static int cmi9880_dig_playback_pcm_close(struct hda_pcm_stream *hinfo,
+-					  struct hda_codec *codec,
+-					  struct snd_pcm_substream *substream)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-	return snd_hda_multi_out_dig_close(codec, &spec->multiout);
+-}
+-
+-static int cmi9880_dig_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+-					    struct hda_codec *codec,
+-					    unsigned int stream_tag,
+-					    unsigned int format,
+-					    struct snd_pcm_substream *substream)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-	return snd_hda_multi_out_dig_prepare(codec, &spec->multiout, stream_tag,
+-					     format, substream);
+-}
+-
+-/*
+- * Analog capture
+- */
+-static int cmi9880_capture_pcm_prepare(struct hda_pcm_stream *hinfo,
+-				      struct hda_codec *codec,
+-				      unsigned int stream_tag,
+-				      unsigned int format,
+-				      struct snd_pcm_substream *substream)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-
+-	snd_hda_codec_setup_stream(codec, spec->adc_nids[substream->number],
+-				   stream_tag, 0, format);
+-	return 0;
+-}
+-
+-static int cmi9880_capture_pcm_cleanup(struct hda_pcm_stream *hinfo,
+-				      struct hda_codec *codec,
+-				      struct snd_pcm_substream *substream)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-
+-	snd_hda_codec_cleanup_stream(codec, spec->adc_nids[substream->number]);
+-	return 0;
+-}
+-
+-
+-/*
+- */
+-static const struct hda_pcm_stream cmi9880_pcm_analog_playback = {
+-	.substreams = 1,
+-	.channels_min = 2,
+-	.channels_max = 8,
+-	.nid = 0x03, /* NID to query formats and rates */
+-	.ops = {
+-		.open = cmi9880_playback_pcm_open,
+-		.prepare = cmi9880_playback_pcm_prepare,
+-		.cleanup = cmi9880_playback_pcm_cleanup
+-	},
+-};
+-
+-static const struct hda_pcm_stream cmi9880_pcm_analog_capture = {
+-	.substreams = 2,
+-	.channels_min = 2,
+-	.channels_max = 2,
+-	.nid = 0x08, /* NID to query formats and rates */
+-	.ops = {
+-		.prepare = cmi9880_capture_pcm_prepare,
+-		.cleanup = cmi9880_capture_pcm_cleanup
+-	},
+-};
+-
+-static const struct hda_pcm_stream cmi9880_pcm_digital_playback = {
+-	.substreams = 1,
+-	.channels_min = 2,
+-	.channels_max = 2,
+-	/* NID is set in cmi9880_build_pcms */
+-	.ops = {
+-		.open = cmi9880_dig_playback_pcm_open,
+-		.close = cmi9880_dig_playback_pcm_close,
+-		.prepare = cmi9880_dig_playback_pcm_prepare
+-	},
+-};
+-
+-static const struct hda_pcm_stream cmi9880_pcm_digital_capture = {
+-	.substreams = 1,
+-	.channels_min = 2,
+-	.channels_max = 2,
+-	/* NID is set in cmi9880_build_pcms */
+-};
+-
+-static int cmi9880_build_pcms(struct hda_codec *codec)
+-{
+-	struct cmi_spec *spec = codec->spec;
+-	struct hda_pcm *info = spec->pcm_rec;
+-
+-	codec->num_pcms = 1;
+-	codec->pcm_info = info;
+-
+-	info->name = "CMI9880";
+-	info->stream[SNDRV_PCM_STREAM_PLAYBACK] = cmi9880_pcm_analog_playback;
+-	info->stream[SNDRV_PCM_STREAM_CAPTURE] = cmi9880_pcm_analog_capture;
+-
+-	if (spec->multiout.dig_out_nid || spec->dig_in_nid) {
+-		codec->num_pcms++;
+-		info++;
+-		info->name = "CMI9880 Digital";
+-		info->pcm_type = HDA_PCM_TYPE_SPDIF;
+-		if (spec->multiout.dig_out_nid) {
+-			info->stream[SNDRV_PCM_STREAM_PLAYBACK] = cmi9880_pcm_digital_playback;
+-			info->stream[SNDRV_PCM_STREAM_PLAYBACK].nid = spec->multiout.dig_out_nid;
+-		}
+-		if (spec->dig_in_nid) {
+-			info->stream[SNDRV_PCM_STREAM_CAPTURE] = cmi9880_pcm_digital_capture;
+-			info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->dig_in_nid;
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-static void cmi9880_free(struct hda_codec *codec)
+-{
+-	kfree(codec->spec);
+-}
+-
+-/*
+- */
+-
+-static const char * const cmi9880_models[CMI_MODELS] = {
+-	[CMI_MINIMAL]	= "minimal",
+-	[CMI_MIN_FP]	= "min_fp",
+-	[CMI_FULL]	= "full",
+-	[CMI_FULL_DIG]	= "full_dig",
+-	[CMI_ALLOUT]	= "allout",
+-	[CMI_AUTO]	= "auto",
+-};
+-
+-static const struct snd_pci_quirk cmi9880_cfg_tbl[] = {
+-	SND_PCI_QUIRK(0x1043, 0x813d, "ASUS P5AD2", CMI_FULL_DIG),
+-	SND_PCI_QUIRK(0x1854, 0x002b, "LG LS75", CMI_MINIMAL),
+-	SND_PCI_QUIRK(0x1854, 0x0032, "LG", CMI_FULL_DIG),
+-	{} /* terminator */
+-};
+-
+-static const struct hda_codec_ops cmi9880_patch_ops = {
+-	.build_controls = cmi9880_build_controls,
+-	.build_pcms = cmi9880_build_pcms,
+-	.init = cmi9880_init,
+-	.free = cmi9880_free,
+-};
+-#endif /* ENABLE_CMI_STATIC_QUIRKS */
+-
+-/*
+  * stuff for auto-parser
+  */
+ static const struct hda_codec_ops cmi_auto_patch_ops = {
+@@ -585,12 +46,18 @@ static const struct hda_codec_ops cmi_auto_patch_ops = {
+ 	.unsol_event = snd_hda_jack_unsol_event,
+ };
+ 
+-static int cmi_parse_auto_config(struct hda_codec *codec)
++static int patch_cmi9880(struct hda_codec *codec)
  {
- 	unsigned int format_val;
+-	struct cmi_spec *spec = codec->spec;
+-	struct auto_pin_cfg *cfg = &spec->gen.autocfg;
++	struct cmi_spec *spec;
++	struct auto_pin_cfg *cfg;
+ 	int err;
  
--	format_val = snd_hda_calc_stream_format(
-+	format_val = snd_hda_calc_stream_format(codec,
- 				sample_rate,
- 				channels,
- 				SNDRV_PCM_FORMAT_S32_LE,
-@@ -2452,7 +2452,7 @@ static int dspxfr_image(struct hda_codec *codec,
- 	}
++	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
++	if (spec == NULL)
++		return -ENOMEM;
++
++	codec->spec = spec;
++	cfg = &spec->gen.autocfg;
+ 	snd_hda_gen_spec_init(&spec->gen);
  
- 	dma_engine->codec = codec;
--	dma_convert_to_hda_format(sample_rate, channels, &hda_format);
-+	dma_convert_to_hda_format(codec, sample_rate, channels, &hda_format);
- 	dma_engine->m_converter_format = hda_format;
- 	dma_engine->buf_size = (ovly ? DSP_DMA_WRITE_BUFLEN_OVLY :
- 			DSP_DMA_WRITE_BUFLEN_INIT) * 2;
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 75515b494034..a9c815e86a6a 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -1011,7 +1011,7 @@ static int stac_create_spdif_mux_ctls(struct hda_codec *codec)
- 	for (i = 0; i < num_cons; i++) {
- 		if (snd_BUG_ON(!labels[i]))
- 			return -EINVAL;
--		snd_hda_add_imux_item(&spec->spdif_mux, labels[i], i, NULL);
-+		snd_hda_add_imux_item(codec, &spec->spdif_mux, labels[i], i, NULL);
- 	}
+ 	err = snd_hda_parse_pin_defcfg(codec, cfg, NULL, 0);
+@@ -608,79 +75,6 @@ static int cmi_parse_auto_config(struct hda_codec *codec)
+ 	return err;
+ }
  
- 	kctl = snd_hda_gen_add_kctl(&spec->gen, NULL, &stac_smux_mixer);
+-
+-static int patch_cmi9880(struct hda_codec *codec)
+-{
+-	struct cmi_spec *spec;
+-
+-	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
+-	if (spec == NULL)
+-		return -ENOMEM;
+-
+-	codec->spec = spec;
+-#ifdef ENABLE_CMI_STATIC_QUIRKS
+-	spec->board_config = snd_hda_check_board_config(codec, CMI_MODELS,
+-							cmi9880_models,
+-							cmi9880_cfg_tbl);
+-	if (spec->board_config < 0) {
+-		codec_dbg(codec, "%s: BIOS auto-probing.\n",
+-			    codec->chip_name);
+-		spec->board_config = CMI_AUTO; /* try everything */
+-	}
+-
+-	if (spec->board_config == CMI_AUTO)
+-		return cmi_parse_auto_config(codec);
+-
+-	/* copy default DAC NIDs */
+-	memcpy(spec->dac_nids, cmi9880_dac_nids, sizeof(spec->dac_nids));
+-	spec->num_dacs = 4;
+-
+-	switch (spec->board_config) {
+-	case CMI_MINIMAL:
+-	case CMI_MIN_FP:
+-		spec->channel_modes = cmi9880_channel_modes;
+-		if (spec->board_config == CMI_MINIMAL)
+-			spec->num_channel_modes = 2;
+-		else {
+-			spec->front_panel = 1;
+-			spec->num_channel_modes = 3;
+-		}
+-		spec->multiout.max_channels = cmi9880_channel_modes[0].channels;
+-		spec->input_mux = &cmi9880_basic_mux;
+-		break;
+-	case CMI_FULL:
+-	case CMI_FULL_DIG:
+-		spec->front_panel = 1;
+-		spec->multiout.max_channels = 8;
+-		spec->input_mux = &cmi9880_basic_mux;
+-		if (spec->board_config == CMI_FULL_DIG) {
+-			spec->multiout.dig_out_nid = CMI_DIG_OUT_NID;
+-			spec->dig_in_nid = CMI_DIG_IN_NID;
+-		}
+-		break;
+-	case CMI_ALLOUT:
+-	default:
+-		spec->front_panel = 1;
+-		spec->multiout.max_channels = 8;
+-		spec->no_line_in = 1;
+-		spec->input_mux = &cmi9880_no_line_mux;
+-		spec->multiout.dig_out_nid = CMI_DIG_OUT_NID;
+-		break;
+-	}
+-
+-	spec->multiout.num_dacs = spec->num_dacs;
+-	spec->multiout.dac_nids = spec->dac_nids;
+-
+-	spec->adc_nids = cmi9880_adc_nids;
+-
+-	codec->patch_ops = cmi9880_patch_ops;
+-
+-	return 0;
+-#else
+-	return cmi_parse_auto_config(codec);
+-#endif
+-}
+-
+ /*
+  * patch entries
+  */
 -- 
 1.9.3
