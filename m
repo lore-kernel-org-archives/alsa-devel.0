@@ -1,18 +1,16 @@
 From: Qiao Zhou <zhouqiao@marvell.com>
-Subject: [PATCH] ASoC: core: refine of node id parse of
-	cpu/codec dai
-Date: Wed, 18 Jun 2014 19:01:59 +0800
-Message-ID: <1403089319-2555-2-git-send-email-zhouqiao@marvell.com>
-References: <1403089319-2555-1-git-send-email-zhouqiao@marvell.com>
+Subject: [PATCH] *** ASoC: core: refine of node id parse of
+	cpu/codec dai ***
+Date: Wed, 18 Jun 2014 19:01:58 +0800
+Message-ID: <1403089319-2555-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
- [67.231.148.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 065D0261735
- for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 13:02:06 +0200 (CEST)
-In-Reply-To: <1403089319-2555-1-git-send-email-zhouqiao@marvell.com>
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
+ [67.231.156.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 583562617A6
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 13:02:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,100 +24,77 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarosl
 Cc: Qiao Zhou <zhouqiao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-refine cpu_dai/codec_dai of_node checking by checking either name
-or dai_id matches.
+Hi Mark, Liam
 
-Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
----
+This patch is to add another check besides cpu_dai/codec_dai name during
+dai_link bind. currently if the cpu_dai/codec_dai name match corresponding
+dai_link cpu/codec name, then a match is found. in this patch, it also checks
+whether cpu/codec dai id match dailink cpu_dai_id/codec_dai_id. Still check
+name first.
+1. if it doesn't match, it will keep checking whether cpu_id/codec_id match
+corresponding dai_link cpu_dai_id/codec_dai_id. if the ids are equal, then
+a match is found.
+2. if it does match, then a match is already found. no need to further check.
+
+By this way, it's convenient to maintain dai_link in DT files, and machine
+driver can parse related node point to get dai id info. Then there is no need
+to parse cpu_dai/codec_dai name for each dai. Like below:
+
+In DT files:
+sound {
+	compatible = "sound card name xx";
+	dai_link_1:dai_link_1 {
+		compatible = "xx-dailink-1";
+		cpu-dai = <&cpu-dai-node CPU_DAI_ID_1>;
+		codec-dai = <&codec-dai-node CODEC_DAI_ID_1>;
+		......
+	}
+
+	dai_link_2:dai_link_2 {
+		compatible = "xx-dailink-2";
+		cpu-dai = <&cpu-dai-node CPU_DAI_ID_2>;
+		codec-dai = <&codec-dai-node CODEC_DAI_ID_2>;
+		......
+	}
+	......
+}
+
+In machine driver:
+static xx_sound_card_probe(struct platform_device *pdev)
+{
+	struct device_node *np = pdev->dev.of_node;
+
+	i = 0;
+	for_each_child_of_node(np, dailink_np) {
+		of_parse_phandle_with_args(dailink_np, "cpu-dai", "#dailink-cells", 0,
+&out_args);
+		dailink[i].cpu_of_node = out_args.np;
+		dailink[i].cpu_dai_id = out_args.args[0];
+		dailink[i].platform_of_node = out_args.np;
+
+		of_parse_phandle_with_args(dailink_np, "codec-dai", "#dailink-cells", 0,
+&out_args);
+		dailink[i].codec_of_node = out_args.np;
+		dailink[i].codec_dai_id = out_args.args[0];
+		......
+		i++
+	}
+	......
+	ret = snd_soc_register_card(card);
+	......
+}
+
+If some drivers don't have DT support, then we have no choice but to add correct
+cpu/codec(dai) name in DT and parse name info in machine driver.
+
+Could you help share your opinions? Thanks in advance.
+
+Qiao Zhou (1):
+  ASoC: core: refine of node id parse of cpu/codec dai
+
  include/sound/soc.h  |    2 ++
  sound/soc/soc-core.c |   32 +++++++++++++++++++++++---------
  2 files changed, 25 insertions(+), 9 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index ed9e2d7..782f7a0 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -888,12 +888,14 @@ struct snd_soc_dai_link {
- 	 * only, which only works well when that device exposes a single DAI.
- 	 */
- 	const char *cpu_dai_name;
-+	unsigned int cpu_dai_id;
- 	/*
- 	 * You MUST specify the link's codec, either by device name, or by
- 	 * DT/OF node, but not both.
- 	 */
- 	const char *codec_name;
- 	const struct device_node *codec_of_node;
-+	unsigned int codec_dai_id;
- 	/* You MUST specify the DAI name within the codec */
- 	const char *codec_dai_name;
- 	/*
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b87d7d8..777237d 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -868,14 +868,16 @@ static struct snd_soc_codec *soc_find_codec(const struct device_node *codec_of_n
- }
- 
- static struct snd_soc_dai *soc_find_codec_dai(struct snd_soc_codec *codec,
--					      const char *codec_dai_name)
-+					      struct snd_soc_dai_link *dai_link)
- {
- 	struct snd_soc_dai *codec_dai;
- 
- 	list_for_each_entry(codec_dai, &codec->component.dai_list, list) {
--		if (!strcmp(codec_dai->name, codec_dai_name)) {
-+		if (dai_link->codec_dai_name
-+		    && !strcmp(codec_dai->name, dai_link->codec_dai_name))
-+			return codec_dai;
-+		else if (codec_dai->id == dai_link->codec_dai_id)
- 			return codec_dai;
--		}
- 	}
- 
- 	return NULL;
-@@ -904,6 +906,9 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- 			if (dai_link->cpu_dai_name &&
- 				strcmp(cpu_dai->name, dai_link->cpu_dai_name))
- 				continue;
-+			if (!dai_link->cpu_dai_name &&
-+				cpu_dai->id != dai_link->cpu_dai_id)
-+				continue;
- 
- 			rtd->cpu_dai = cpu_dai;
- 		}
-@@ -919,17 +924,26 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
- 	rtd->codec = soc_find_codec(dai_link->codec_of_node,
- 				    dai_link->codec_name);
- 	if (!rtd->codec) {
--		dev_err(card->dev, "ASoC: CODEC %s not registered\n",
--			dai_link->codec_name);
-+		if (dai_link->codec_name)
-+			dev_err(card->dev, "ASoC: CODEC %s not registered\n",
-+				dai_link->codec_name);
-+		else if (dai_link->codec_of_node)
-+			dev_err(card->dev, "ASoC: CODEC %s not registered\n",
-+				dai_link->codec_of_node->name);
- 		return -EPROBE_DEFER;
- 	}
- 
- 	/* Find CODEC DAI from registered list */
--	rtd->codec_dai = soc_find_codec_dai(rtd->codec,
--					    dai_link->codec_dai_name);
-+	rtd->codec_dai = soc_find_codec_dai(rtd->codec, dai_link);
- 	if (!rtd->codec_dai) {
--		dev_err(card->dev, "ASoC: CODEC DAI %s not registered\n",
--			dai_link->codec_dai_name);
-+		if (dai_link->codec_dai_name)
-+			dev_err(card->dev,
-+				"ASoC: CODEC DAI %s not registered\n",
-+				dai_link->codec_dai_name);
-+		else
-+			dev_err(card->dev,
-+				"ASoC: CODEC DAI %d not registered\n",
-+				dai_link->codec_dai_id);
- 		return -EPROBE_DEFER;
- 	}
- 
 -- 
 1.7.9.5
