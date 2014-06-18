@@ -1,67 +1,57 @@
 From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH 09/12] ASoC: rsnd: enable SRC setting via DT
-Date: Wed, 18 Jun 2014 18:20:18 +0400
-Message-ID: <53A1A022.1020801@cogentembedded.com>
-References: <87d2e6zjhf.wl%kuninori.morimoto.gx@gmail.com>
- <87zjhay4s6.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 11/12] ASoC: rsnd: DMA start address is properly used
+ for each DMAC
+Date: Wed, 18 Jun 2014 18:22:29 +0400
+Message-ID: <53A1A0A5.2040000@cogentembedded.com>
+References: <87d2e6zjhf.wl%kuninori.morimoto.gx@gmail.com> <87wqcey4rl.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f42.google.com (mail-la0-f42.google.com
- [209.85.215.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 74AD7261A1D
- for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 16:20:13 +0200 (CEST)
-Received: by mail-la0-f42.google.com with SMTP id pn19so582444lab.29
- for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2014 07:20:13 -0700 (PDT)
-In-Reply-To: <87zjhay4s6.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <87wqcey4rl.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: linux-sh@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
-
-On 06/18/2014 12:56 PM, Kuninori Morimoto wrote:
+On 06/18/2014 12:57 PM, Kuninori Morimoto wrote:
 
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-> some special board wants to exchange sampling rate by using SRC.
-> This patch enables its settings.
+> R-Car sound uses Audio DMAC and Audio DMAC peri peri.
+> Audio DMAC peri peri transfers data inside circuit.
+
+> DMA transfer needs source / destination address,
+> and destination address can be set via dmaengine_slave_config().
+> The source address can be set when starting DMAEngine.
+> Because Audio DMAC peri peri always ignores its value,
+> current driver always used same source address for
+> Audio DMAC / Audio DMAC peri peri
+> (Audio DMAC peri peri source / destination address
+> is always fixed value)
+> But, This is not good match for DT booting.
+> This patch properly uses DMA start address
+> for Audio DMAC / Audio DMAC peri peri.
 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>   sound/soc/sh/rcar/core.c |    2 ++
+>   sound/soc/sh/rcar/rsnd.h |    1 +
+>   2 files changed, 3 insertions(+)
 
-[...]
-
-> diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-> index 4d39505..93a5e58 100644
-> --- a/sound/soc/sh/rcar/src.c
-> +++ b/sound/soc/sh/rcar/src.c
-[...]
-> @@ -640,6 +640,16 @@ static void rsnd_of_parse_src(struct platform_device *pdev,
->   	info->src_info		= src_info;
->   	info->src_info_nr	= nr;
+> diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+> index 36895eb..6fb89fc 100644
+> --- a/sound/soc/sh/rcar/core.c
+> +++ b/sound/soc/sh/rcar/core.c
+> @@ -200,6 +200,7 @@ void rsnd_dma_start(struct rsnd_dma *dma)
+>   	struct dma_async_tx_descriptor *desc;
 >
-> +	i = 0;
-> +	for_each_child_of_node(src_node, np) {
-> +		src_info = info->src_info + i;
-> +
-> +		of_property_read_u32(src_node, "convert-rate",
+>   	desc = dmaengine_prep_dma_cyclic(dma->chan,
+> +					 (dma->addr) ? dma->addr :
 
-    Are you sure it's 'src_node' here, not 'np'?
+    () not needed at all.
 
-> +				     &src_info->convert_rate);
-> +
-> +		i++;
-> +	}
-> +
+[...]
 
 WBR, Sergei
+
