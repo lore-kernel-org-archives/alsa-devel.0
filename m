@@ -1,7 +1,7 @@
 From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH v4 3/3] ASoC: fsl: add imx-es8328 machine driver
-Date: Wed, 18 Jun 2014 11:47:21 +0800
-Message-ID: <1403063242-20840-4-git-send-email-xobs@kosagi.com>
+Subject: [PATCH v4 2/3] ASoC: add es8328 codec driver
+Date: Wed, 18 Jun 2014 11:47:20 +0800
+Message-ID: <1403063242-20840-3-git-send-email-xobs@kosagi.com>
 References: <1403063242-20840-1-git-send-email-xobs@kosagi.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <1403063242-20840-1-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
@@ -10,505 +10,1179 @@ To: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, mark.rutland-5wv7dgnIgG8@publi
 Cc: bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This adds an initial machine driver for the ES8328 audio codec.  The
-driver supports headphones, an audio regulator for both the codec itself
-and a speaker amp, and supports reparenting and adjusting clocks to supply
-the audio codec with the unusual frequency it requires.
+Add a codec driver for the Everest ES8328.  It supports two separate audio
+outputs and two separate audio inputs.
 
 Signed-off-by: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
 ---
- .../devicetree/bindings/sound/imx-audio-es8328.txt |  68 ++++
- sound/soc/fsl/Kconfig                              |  14 +
- sound/soc/fsl/Makefile                             |   2 +
- sound/soc/fsl/imx-es8328.c                         | 359 +++++++++++++++++++++
- 4 files changed, 443 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
- create mode 100644 sound/soc/fsl/imx-es8328.c
+ Documentation/devicetree/bindings/sound/es8328.txt |  18 +
+ sound/soc/codecs/Kconfig                           |  13 +
+ sound/soc/codecs/Makefile                          |   6 +
+ sound/soc/codecs/es8328-i2c.c                      |  62 ++
+ sound/soc/codecs/es8328-spi.c                      |  51 ++
+ sound/soc/codecs/es8328.c                          | 625 +++++++++++++++++++++
+ sound/soc/codecs/es8328.h                          | 313 +++++++++++
+ 7 files changed, 1088 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
+ create mode 100644 sound/soc/codecs/es8328-i2c.c
+ create mode 100644 sound/soc/codecs/es8328-spi.c
+ create mode 100644 sound/soc/codecs/es8328.c
+ create mode 100644 sound/soc/codecs/es8328.h
 
-diff --git a/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt b/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
+diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
 new file mode 100644
-index 0000000..9498e42
+index 0000000..488bc32
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
-@@ -0,0 +1,68 @@
-+Freescale i.MX audio complex with ES8328 codec
++++ b/Documentation/devicetree/bindings/sound/es8328.txt
+@@ -0,0 +1,18 @@
++Everest ES8328 audio CODEC
++
++This device supports both I2C and SPI (configured with pin strapping
++on the board).
 +
 +Required properties:
-+- compatible : "fsl,imx-audio-es8328"
-+- model : The user-visible name of this sound complex
-+- clocks : A list of clocks required to run the codec at 22.5792 MHz:
-+- clock-names : Descriptive names of the various clocks:
 +
-+    clk_sel : Main audio PLL source selector
-+    clk_src : Main audio PLL
-+    clk_post_div : Clock source, after a 1-32 divider
-+    clk : The final clock stage before reaching output
-+    output_clk : The resulting output clock frequency
++  - compatible : "es8328"
 +
-+- ssi-controller : The phandle of the i.MX SSI controller
-+- jack-gpio : Optional GPIO for headphone jack
-+- codec-supply : Power regulator for audio codec chip
-+- audio-amp-supply : Power regulator for speaker amps
-+- audio-codec : The phandle of the ES8328 audio codec
-+- audio-routing : A list of the connections between audio components.
-+  Each entry is a pair of strings, the first being the connection's sink,
-+  the second being the connection's source. Valid names could be power
-+  supplies, ES8328 pins, and the jacks on the board:
-+
-+  Power supplies:
-+   * audio-amp
-+   * codec
-+
-+  ES8328 pins:
-+   * LOUT1
-+   * LOUT2
-+   * ROUT1
-+   * ROUT2
-+
-+  Board connectors:
-+   * Headphone
-+   * Speaker
-+
-+- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX)
-+- mux-ext-port : The external port of the i.MX audio muxer
-+
-+Note: The AUDMUX port numbering should start at 1, which is consistent with
-+hardware manual.
++  - reg : the I2C address of the device for I2C, the chip select
++          number for SPI.
 +
 +Example:
 +
-+sound {
-+	compatible = "fsl,imx-audio-es8328";
-+	model = "imx-audio-es8328";
-+	clocks = <&clks 169>, <&clks 57>, <&clks 173>,
-+		 <&clks 203>, <&clks 201>;
-+	clock-names = "cko1", "cko1_sel", "pll4_audio",
-+		      "pll4_post_div", "cko_sel";
-+	ssi-controller = <&ssi1>;
-+	audio-codec = <&codec>;
-+	jack-gpio = <&gpio5 15 0>;
-+	codec-supply = <&reg_audio_codec>;
-+	audio-amp-supply = <&reg_audio_amp>;
-+	audio-routing =
-+		"Speaker", "LOUT2",
-+		"Speaker", "ROUT2",
-+		"Speaker", "audio-amp",
-+		"Headphone", "ROUT1",
-+		"Headphone", "LOUT1";
-+	mux-int-port = <1>;
-+	mux-ext-port = <3>;
++codec: es8328@11 {
++	compatible = "es8328";
++	reg = <0x11>;
 +};
-+
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 3793362..c0ace69 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -229,6 +229,20 @@ config SND_SOC_IMX_WM8962
- 	  Say Y if you want to add support for SoC audio on an i.MX board with
- 	  a wm8962 codec.
- 
-+config SND_SOC_IMX_ES8328
-+	tristate "SoC Audio support for i.MX boards with the ES8328 codec"
-+	depends on OF && (I2C || SPI)
-+	select SND_SOC_ES8328_I2C if I2C
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cbfa1e1..6a509e3 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -56,6 +56,8 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_DA732X if I2C
+ 	select SND_SOC_DA9055 if I2C
+ 	select SND_SOC_BT_SCO
 +	select SND_SOC_ES8328_SPI if SPI_MASTER
-+	select SND_SOC_IMX_PCM_DMA
-+	select SND_SOC_IMX_AUDMUX
-+	select SND_SOC_FSL_SSI
-+	select SND_SOC_FSL_UTILS
-+	select SND_SOC_IMX_PCM_FIQ
-+	help
-+	  Say Y if you want to add support for the ES8328 audio codec connected
-+	  via SSI/I2S over either SPI or I2C.
++	select SND_SOC_ES8328_I2C if I2C
+ 	select SND_SOC_ISABELLE if I2C
+ 	select SND_SOC_JZ4740_CODEC
+ 	select SND_SOC_LM4857 if I2C
+@@ -396,6 +398,17 @@ config SND_SOC_DMIC
+ config SND_SOC_HDMI_CODEC
+        tristate "HDMI stub CODEC"
+ 
++config SND_SOC_ES8328
++	tristate "Everest Semi ES8328 CODEC"
 +
- config SND_SOC_IMX_SGTL5000
- 	tristate "SoC Audio support for i.MX boards with sgtl5000"
- 	depends on OF && I2C
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index db254e3..e561766 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -48,6 +48,7 @@ snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
- snd-soc-phycore-ac97-objs := phycore-ac97.o
- snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
- snd-soc-wm1133-ev1-objs := wm1133-ev1.o
-+snd-soc-imx-es8328-objs := imx-es8328.o
- snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
- snd-soc-imx-wm8962-objs := imx-wm8962.o
- snd-soc-imx-spdif-objs := imx-spdif.o
-@@ -57,6 +58,7 @@ obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
- obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
- obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
- obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
-+obj-$(CONFIG_SND_SOC_IMX_ES8328) += snd-soc-imx-es8328.o
- obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
- obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
- obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
-diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
++config SND_SOC_ES8328_I2C
++	tristate
++	select SND_SOC_ES8328
++
++config SND_SOC_ES8328_SPI
++	tristate
++	select SND_SOC_ES8328
++
+ config SND_SOC_ISABELLE
+         tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index be3377b..66e7859 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -48,6 +48,9 @@ snd-soc-da732x-objs := da732x.o
+ snd-soc-da9055-objs := da9055.o
+ snd-soc-bt-sco-objs := bt-sco.o
+ snd-soc-dmic-objs := dmic.o
++snd-soc-es8328-objs := es8328.o
++snd-soc-es8328-i2c-objs := es8328-i2c.o
++snd-soc-es8328-spi-objs := es8328-spi.o
+ snd-soc-isabelle-objs := isabelle.o
+ snd-soc-jz4740-codec-objs := jz4740.o
+ snd-soc-l3-objs := l3.o
+@@ -213,6 +216,9 @@ obj-$(CONFIG_SND_SOC_DA732X)	+= snd-soc-da732x.o
+ obj-$(CONFIG_SND_SOC_DA9055)	+= snd-soc-da9055.o
+ obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
+ obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
++obj-$(CONFIG_SND_SOC_ES8328)	+= snd-soc-es8328.o
++obj-$(CONFIG_SND_SOC_ES8328_I2C)+= snd-soc-es8328-i2c.o
++obj-$(CONFIG_SND_SOC_ES8328_SPI)+= snd-soc-es8328-spi.o
+ obj-$(CONFIG_SND_SOC_ISABELLE)	+= snd-soc-isabelle.o
+ obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
+ obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
+diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
 new file mode 100644
-index 0000000..ccfdc5d
+index 0000000..16f670f
 --- /dev/null
-+++ b/sound/soc/fsl/imx-es8328.c
-@@ -0,0 +1,359 @@
++++ b/sound/soc/codecs/es8328-i2c.c
+@@ -0,0 +1,62 @@
 +/*
-+ * Copyright 2012 Freescale Semiconductor, Inc.
-+ * Copyright 2012 Linaro Ltd.
++ * es8328-i2c.c  --  ES8328 ALSA SoC I2C Audio driver
 + *
-+ * The code contained herein is licensed under the GNU General Public
-+ * License. You may obtain a copy of the GNU General Public License
-+ * Version 2 or later at the following locations:
++ * Copyright 2014 Sutajio Ko-Usagi PTE LTD
 + *
-+ * http://www.opensource.org/licenses/gpl-license.html
-+ * http://www.gnu.org/copyleft/gpl.html
++ * Author: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
 +
 +#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
 +#include <linux/i2c.h>
-+#include <linux/clk.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/clk-provider.h>
++#include <linux/regmap.h>
++
 +#include <sound/soc.h>
-+#include <sound/jack.h>
 +
-+#include "imx-audmux.h"
++#include "es8328.h"
 +
-+#define DAI_NAME_SIZE	32
-+#define IMX6Q_SYSCLK 0x00
-+
-+struct imx_es8328_data {
-+	struct device *dev;
-+	struct snd_soc_dai_link dai;
-+	struct snd_soc_card card;
-+	struct regulator *codec_regulator;
-+	char codec_dai_name[DAI_NAME_SIZE];
-+	char platform_name[DAI_NAME_SIZE];
-+	struct clk *codec_clk;
-+	struct clk *codec_clk_src;
-+	struct clk *codec_clk_sel;
-+	struct clk *codec_clk_post_div;
-+	struct clk *output_clk;
-+	unsigned int clk_freq_src;
-+	unsigned int clk_frequency;
-+	int power_gpio;
-+	int jack_gpio;
++static const struct i2c_device_id es8328_id[] = {
++	{ "everest,es8328", 0 },
++	{ }
 +};
++MODULE_DEVICE_TABLE(i2c, es8328_id);
 +
-+static struct snd_soc_jack_gpio headset_jack_gpios[] = {
-+	{
-+		.gpio = -1,
-+		.name = "headset-gpio",
-+		.report = SND_JACK_HEADSET,
-+		.invert = 0,
-+		.debounce_time = 200,
++static const struct of_device_id es8328_of_match[] = {
++	{ .compatible = "everest,es8328", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, es8328_of_match);
++
++static int es8328_i2c_probe(struct i2c_client *i2c,
++			    const struct i2c_device_id *id)
++{
++	struct regmap_config config;
++
++	config = es8328_regmap_config;
++	return es8328_probe(&i2c->dev, devm_regmap_init_i2c(i2c, &config));
++}
++
++static int es8328_i2c_remove(struct i2c_client *i2c)
++{
++	snd_soc_unregister_codec(&i2c->dev);
++	return 0;
++}
++
++static struct i2c_driver es8328_i2c_driver = {
++	.driver = {
++		.name		= "es8328",
++		.of_match_table = es8328_of_match,
 +	},
++	.probe    = es8328_i2c_probe,
++	.remove   = es8328_i2c_remove,
++	.id_table = es8328_id,
 +};
 +
-+static struct snd_soc_jack headset_jack;
++module_i2c_driver(es8328_i2c_driver);
 +
-+static int imx_es8328_dai_init(struct snd_soc_pcm_runtime *rtd)
++MODULE_DESCRIPTION("ASoC ES8328 audio CODEC I2C driver");
++MODULE_AUTHOR("Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/es8328-spi.c b/sound/soc/codecs/es8328-spi.c
+new file mode 100644
+index 0000000..b31efa4
+--- /dev/null
++++ b/sound/soc/codecs/es8328-spi.c
+@@ -0,0 +1,51 @@
++/*
++ * es8328.c  --  ES8328 ALSA SoC SPI Audio driver
++ *
++ * Copyright 2014 Sutajio Ko-Usagi PTE LTD
++ *
++ * Author: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/spi/spi.h>
++#include <sound/soc.h>
++#include "es8328.h"
++
++static const struct of_device_id es8328_of_match[] = {
++	{ .compatible = "everest,es8328", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, es8328_of_match);
++
++static int es8328_spi_probe(struct spi_device *spi)
 +{
-+	struct imx_es8328_data *data = container_of(rtd->card,
-+					struct imx_es8328_data, card);
-+	struct device *dev = rtd->card->dev;
-+	int ret;
++	struct regmap_config config;
 +
-+	ret = snd_soc_dai_set_sysclk(rtd->codec_dai, IMX6Q_SYSCLK,
-+				     data->clk_frequency, SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		dev_err(dev, "could not set codec driver clock params to %d\n",
-+			data->clk_frequency);
-+		return ret;
-+	}
-+
-+	/* Headphone jack detection */
-+	if (gpio_is_valid(data->jack_gpio)) {
-+		ret = snd_soc_jack_new(rtd->codec, "Headphone",
-+				       SND_JACK_HEADPHONE | SND_JACK_BTN_0,
-+				       &headset_jack);
-+		if (ret)
-+			return ret;
-+
-+		headset_jack_gpios[0].gpio = data->jack_gpio;
-+		ret = snd_soc_jack_add_gpios(&headset_jack,
-+					     ARRAY_SIZE(headset_jack_gpios),
-+					     headset_jack_gpios);
-+	}
-+
-+	return ret;
++	config = es8328_regmap_config;
++	return es8328_probe(&spi->dev, devm_regmap_init_spi(spi, &config));
 +}
 +
-+static const struct snd_soc_dapm_widget imx_es8328_dapm_widgets[] = {
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_SPK("Speaker", NULL),
-+	SND_SOC_DAPM_REGULATOR_SUPPLY("audio-amp", 1, 0),
++static int es8328_spi_remove(struct spi_device *spi)
++{
++	snd_soc_unregister_codec(&spi->dev);
++	return 0;
++}
++
++static struct spi_driver es8328_spi_driver = {
++	.driver = {
++		.name		= "es8328",
++		.of_match_table	= es8328_of_match,
++	},
++	.probe	= es8328_spi_probe,
++	.remove	= es8328_spi_remove,
 +};
 +
-+static int imx_set_frequency(struct imx_es8328_data *data, int freq)
++module_spi_driver(es8328_spi_driver);
++MODULE_DESCRIPTION("ASoC ES8328 audio CODEC SPI driver");
++MODULE_AUTHOR("Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+new file mode 100644
+index 0000000..4cadb4f
+--- /dev/null
++++ b/sound/soc/codecs/es8328.c
+@@ -0,0 +1,625 @@
++/*
++ * es8328.c  --  ES8328 ALSA SoC Audio driver
++ *
++ * Copyright 2014 Sutajio Ko-Usagi PTE LTD
++ *
++ * Author: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/delay.h>
++#include <linux/pm.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include <linux/of_device.h>
++#include <linux/regulator/consumer.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/initval.h>
++#include <sound/tlv.h>
++#include "es8328.h"
++
++/* Run the codec at 22.5792 MHz to support these rates */
++enum es8328_rate {
++	ES8328_RATE_8019,
++	ES8328_RATE_11025,
++	ES8328_RATE_22050,
++	ES8328_RATE_44100,
++};
++
++uint8_t es8328_sample_ratios[] = {
++	[ES8328_RATE_8019]  = 0x9,
++	[ES8328_RATE_11025] = 0x7,
++	[ES8328_RATE_22050] = 0x4,
++	[ES8328_RATE_44100] = 0x2,
++};
++
++#define ES8328_RATES (SNDRV_PCM_RATE_44100 | \
++		SNDRV_PCM_RATE_22050 | \
++		SNDRV_PCM_RATE_11025)
++#define ES8328_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
++
++/* codec private data */
++struct es8328_priv {
++	struct regmap *regmap;
++	int sysclk;
++	int playback_fs;
++	bool deemph;
++};
++
++/*
++ * ES8328 Controls
++ */
++
++static const char * const adcpol_txt[] = {"Normal", "L Invert", "R Invert",
++					  "L + R Invert"};
++static SOC_ENUM_SINGLE_DECL(adcpol,
++			    ES8328_ADCCONTROL6, 6, adcpol_txt);
++
++static const DECLARE_TLV_DB_SCALE(play_tlv, -3000, 100, 0);
++static const DECLARE_TLV_DB_SCALE(dac_adc_tlv, -9600, 50, 0);
++static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 300, 0);
++static const DECLARE_TLV_DB_SCALE(bypass_tlv, -1500, 300, 0);
++static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 300, 0);
++
++static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
++
++static int es8328_set_deemph(struct snd_soc_codec *codec)
 +{
-+	int ret;
-+
-+	ret = clk_set_parent(data->output_clk, data->codec_clk);
-+	if (ret) {
-+		dev_err(data->dev, "unable to set clk output");
-+		return ret;
-+	}
-+
-+	ret = clk_set_parent(data->codec_clk_sel, data->codec_clk_post_div);
-+	if (ret) {
-+		dev_err(data->dev, "unable to set clk parent");
-+		return ret;
-+	}
-+
-+	data->clk_freq_src = clk_round_rate(data->codec_clk_src, freq * 32);
-+	data->clk_frequency = clk_round_rate(data->codec_clk, freq);
-+	dev_dbg(data->dev, "clock source frequency: %d\n", data->clk_freq_src);
-+	dev_dbg(data->dev, "clock frequency: %d\n", data->clk_frequency);
-+
-+	ret = clk_set_rate(data->codec_clk_src, data->clk_freq_src);
-+	if (ret) {
-+		dev_err(data->dev, "unable to set source clock rate\n");
-+		return ret;
-+	}
-+
-+	ret = clk_set_rate(data->codec_clk, data->clk_frequency);
-+	if (ret) {
-+		dev_err(data->dev, "unable to set codec clock rate\n");
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(data->codec_clk);
-+	if (ret) {
-+		dev_err(data->dev, "unable to prepare codec clk\n");
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(data->codec_clk_src);
-+	if (ret) {
-+		dev_err(data->dev, "unable to prepare codec clk source\n");
-+		return ret;
-+	}
-+	return ret;
-+}
-+
-+static int imx_es8328_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *ssi_np, *codec_np;
-+	struct platform_device *ssi_pdev;
-+	struct imx_es8328_data *data;
-+	int int_port, ext_port;
-+	int ret;
-+	struct device *dev = &pdev->dev;
-+
-+	ret = of_property_read_u32(np, "mux-int-port", &int_port);
-+	if (ret) {
-+		dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
-+		return ret;
-+	}
-+	ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
-+	if (ret) {
-+		dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
-+		return ret;
-+	}
++	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++	int val, i, best;
 +
 +	/*
-+	 * The port numbering in the hardware manual starts at 1, while
-+	 * the audmux API expects it starts at 0.
++	 * If we're using deemphasis select the nearest available sample
++	 * rate.
 +	 */
-+	int_port--;
-+	ext_port--;
-+	ret = imx_audmux_v2_configure_port(int_port,
-+			IMX_AUDMUX_V2_PTCR_SYN |
-+			IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
-+			IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
-+			IMX_AUDMUX_V2_PTCR_TFSDIR |
-+			IMX_AUDMUX_V2_PTCR_TCLKDIR,
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
-+	if (ret) {
-+		dev_err(&pdev->dev, "audmux internal port setup failed\n");
-+		return ret;
-+	}
-+	ret = imx_audmux_v2_configure_port(ext_port,
-+			IMX_AUDMUX_V2_PTCR_SYN,
-+			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
-+	if (ret) {
-+		dev_err(&pdev->dev, "audmux external port setup failed\n");
-+		return ret;
-+	}
++	if (es8328->deemph) {
++		best = 1;
++		for (i = 2; i < ARRAY_SIZE(deemph_settings); i++) {
++			if (abs(deemph_settings[i] - es8328->playback_fs) <
++			    abs(deemph_settings[best] - es8328->playback_fs))
++				best = i;
++		}
 +
-+	ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
-+	codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
-+	if (!ssi_np || !codec_np) {
-+		dev_err(&pdev->dev, "phandle missing or invalid\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	ssi_pdev = of_find_device_by_node(ssi_np);
-+	if (!ssi_pdev) {
-+		dev_err(&pdev->dev, "failed to find SSI platform device\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
-+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	data->dev = dev;
-+
-+	data->jack_gpio = of_get_named_gpio(pdev->dev.of_node,
-+				"jack-gpio", 0);
-+
-+	data->power_gpio = of_get_named_gpio(pdev->dev.of_node,
-+				"power-gpio", 0);
-+	if (gpio_is_valid(data->power_gpio))
-+		devm_gpio_request_one(&pdev->dev, data->power_gpio,
-+				    GPIOF_OUT_INIT_HIGH,
-+				    "audio codec power switch");
-+
-+	/* Setup clocks */
-+	data->codec_clk = devm_clk_get(dev, "clk");
-+	if (IS_ERR(data->codec_clk)) {
-+		dev_err(dev,
-+			"codec clock missing or invalid\n");
-+		goto fail;
-+	}
-+
-+	data->codec_clk_sel = devm_clk_get(dev, "clk_sel");
-+	if (IS_ERR(data->codec_clk_sel)) {
-+		dev_err(dev,
-+			"codec clock select missing or invalid\n");
-+		goto fail;
-+	}
-+
-+	data->codec_clk_src = devm_clk_get(dev, "clk_src");
-+	if (IS_ERR(data->codec_clk_src)) {
-+		dev_err(dev,
-+			"codec clock source missing or invalid\n");
-+		goto fail;
-+	}
-+
-+	data->codec_clk_post_div = devm_clk_get(dev, "clk_post_div");
-+	if (IS_ERR(data->codec_clk_post_div)) {
-+		dev_err(dev,
-+			"codec clock post-div missing or invalid\n");
-+		goto fail;
-+	}
-+
-+	data->output_clk = devm_clk_get(dev, "output_clk");
-+	if (IS_ERR(data->output_clk)) {
-+		dev_err(dev,
-+			"system clock missing or invalid\n");
-+		goto fail;
-+	}
-+
-+	ret = imx_set_frequency(data, 22579200);
-+	if (ret)
-+		goto fail;
-+
-+	data->codec_regulator = devm_regulator_get(dev, "codec");
-+	if (IS_ERR(data->codec_regulator)) {
-+		dev_err(dev, "No codec regulator\n");
-+		data->codec_regulator = NULL;
++		val = best << 1;
 +	} else {
-+		ret = regulator_enable(data->codec_regulator);
-+		if (ret)
-+			dev_err(dev,
-+				"Unable to enable codec regulator: %d\n", ret);
++		val = 0;
 +	}
 +
-+	data->dai.name = "hifi";
-+	data->dai.stream_name = "hifi";
-+	data->dai.codec_dai_name = "es8328-hifi-analog";
-+	data->dai.codec_of_node = codec_np;
-+	data->dai.cpu_of_node = ssi_np;
-+	data->dai.platform_of_node = ssi_np;
-+	data->dai.init = &imx_es8328_dai_init;
-+	data->dai.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+			    SND_SOC_DAIFMT_CBM_CFM;
++	dev_dbg(codec->dev, "Set deemphasis %d\n", val);
 +
-+	data->card.dev = &pdev->dev;
-+	data->card.dapm_widgets = imx_es8328_dapm_widgets;
-+	data->card.num_dapm_widgets = ARRAY_SIZE(imx_es8328_dapm_widgets);
-+	ret = snd_soc_of_parse_card_name(&data->card, "model");
-+	if (ret)
-+		goto fail;
-+	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
-+	if (ret)
-+		goto fail;
-+	data->card.num_links = 1;
-+	data->card.owner = THIS_MODULE;
-+	data->card.dai_link = &data->dai;
-+
-+	ret = snd_soc_register_card(&data->card);
-+	if (ret)
-+		goto fail;
-+
-+	platform_set_drvdata(pdev, data);
-+fail:
-+	if (ssi_np)
-+		of_node_put(ssi_np);
-+	if (codec_np)
-+		of_node_put(codec_np);
-+
-+	return ret;
++	return snd_soc_update_bits(codec, ES8328_DACCONTROL6, 0x6, val);
 +}
 +
-+static int imx_es8328_remove(struct platform_device *pdev)
++static int es8328_get_deemph(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_value *ucontrol)
 +{
-+	struct imx_es8328_data *data = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
 +
-+	snd_soc_jack_free_gpios(&headset_jack, ARRAY_SIZE(headset_jack_gpios),
-+				headset_jack_gpios);
-+	if (data->codec_regulator) {
-+		int ret;
++	ucontrol->value.enumerated.item[0] = es8328->deemph;
++	return 0;
++}
 +
-+		ret = regulator_disable(data->codec_regulator);
-+		if (ret)
-+			dev_err(&pdev->dev,
-+				"Unable to disable codec regulator: %d\n", ret);
++static int es8328_put_deemph(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++	int deemph = ucontrol->value.enumerated.item[0];
++
++	if (deemph > 1)
++		return -EINVAL;
++
++	es8328->deemph = deemph;
++
++	return es8328_set_deemph(codec);
++}
++
++
++
++static const struct snd_kcontrol_new es8328_snd_controls[] = {
++	SOC_DOUBLE_R_TLV("Capture Digital Volume",
++		ES8328_ADCCONTROL8, ES8328_ADCCONTROL9,
++		 0, 0xc0, 0, dac_adc_tlv),
++	SOC_SINGLE("Capture ZC Switch", ES8328_ADCCONTROL7, 6, 1, 0),
++
++	SOC_SINGLE_BOOL_EXT("DAC Deemphasis Switch", 0,
++		    es8328_get_deemph, es8328_put_deemph),
++
++	SOC_ENUM("Capture Polarity", adcpol),
++
++	SOC_SINGLE_TLV("Left Mixer Left Bypass Volume",
++			ES8328_DACCONTROL17, 3, 7, 1, bypass_tlv),
++	SOC_SINGLE_TLV("Left Mixer Right Bypass Volume",
++			ES8328_DACCONTROL19, 3, 7, 1, bypass_tlv),
++	SOC_SINGLE_TLV("Right Mixer Left Bypass Volume",
++			ES8328_DACCONTROL18, 3, 7, 1, bypass_tlv),
++	SOC_SINGLE_TLV("Right Mixer Right Bypass Volume",
++			ES8328_DACCONTROL20, 3, 7, 1, bypass_tlv),
++
++	SOC_DOUBLE_R_TLV("PCM Volume",
++			ES8328_LDACVOL, ES8328_RDACVOL,
++			0, ES8328_DACVOL_MAX, 1, dac_adc_tlv),
++
++	SOC_DOUBLE_R_TLV("Output 1 Playback Volume",
++			ES8328_LOUT1VOL, ES8328_ROUT1VOL,
++			0, ES8328_OUT1VOL_MAX, 0, play_tlv),
++
++	SOC_DOUBLE_R_TLV("Output 2 Playback Volume",
++			ES8328_LOUT2VOL, ES8328_ROUT2VOL,
++			0, ES8328_OUT2VOL_MAX, 0, play_tlv),
++
++	SOC_DOUBLE_TLV("Mic PGA Gain", ES8328_ADCCONTROL1, 4, 0, 8, 0, mic_tlv),
++};
++
++/*
++ * DAPM Controls
++ */
++
++static const char * const es8328_line_texts[] = {
++	"Line 1", "Line 2", "PGA", "Differential"};
++
++static const struct soc_enum es8328_lline_enum =
++	SOC_ENUM_SINGLE(ES8328_DACCONTROL16, 3,
++			      ARRAY_SIZE(es8328_line_texts),
++			      es8328_line_texts);
++static const struct snd_kcontrol_new es8328_left_line_controls =
++	SOC_DAPM_ENUM("Route", es8328_lline_enum);
++
++static const struct soc_enum es8328_rline_enum =
++	SOC_ENUM_SINGLE(ES8328_DACCONTROL16, 0,
++			      ARRAY_SIZE(es8328_line_texts),
++			      es8328_line_texts);
++static const struct snd_kcontrol_new es8328_right_line_controls =
++	SOC_DAPM_ENUM("Route", es8328_lline_enum);
++
++/* Left Mixer */
++static const struct snd_kcontrol_new es8328_left_mixer_controls[] = {
++	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL17, 8, 1, 0),
++	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL17, 7, 1, 0),
++	SOC_DAPM_SINGLE("Right Playback Switch", ES8328_DACCONTROL18, 8, 1, 0),
++	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL18, 7, 1, 0),
++};
++
++/* Right Mixer */
++static const struct snd_kcontrol_new es8328_right_mixer_controls[] = {
++	SOC_DAPM_SINGLE("Left Playback Switch", ES8328_DACCONTROL19, 8, 1, 0),
++	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL19, 7, 1, 0),
++	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL20, 8, 1, 0),
++	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL20, 7, 1, 0),
++};
++
++static const char * const es8328_pga_sel[] = {
++	"Line 1", "Line 2", "Line 3", "Differential"};
++
++/* Left PGA Mux */
++static const struct soc_enum es8328_lpga_enum =
++	SOC_ENUM_SINGLE(ES8328_ADCCONTROL2, 6,
++			      ARRAY_SIZE(es8328_pga_sel),
++			      es8328_pga_sel);
++static const struct snd_kcontrol_new es8328_left_pga_controls =
++	SOC_DAPM_ENUM("Route", es8328_lpga_enum);
++
++/* Right PGA Mux */
++static const struct soc_enum es8328_rpga_enum =
++	SOC_ENUM_SINGLE(ES8328_ADCCONTROL2, 4,
++			      ARRAY_SIZE(es8328_pga_sel),
++			      es8328_pga_sel);
++static const struct snd_kcontrol_new es8328_right_pga_controls =
++	SOC_DAPM_ENUM("Route", es8328_rpga_enum);
++
++/* Differential Mux */
++static const char * const es8328_diff_sel[] = {"Line 1", "Line 2"};
++static SOC_ENUM_SINGLE_DECL(diffmux,
++			    ES8328_ADCCONTROL3, 7, es8328_diff_sel);
++static const struct snd_kcontrol_new es8328_diffmux_controls =
++	SOC_DAPM_ENUM("Route", diffmux);
++
++/* Mono ADC Mux */
++static const char * const es8328_mono_mux[] = {"Stereo", "Mono (Left)",
++	"Mono (Right)", "Digital Mono"};
++static SOC_ENUM_SINGLE_DECL(monomux,
++			    ES8328_ADCCONTROL3, 3, es8328_mono_mux);
++static const struct snd_kcontrol_new es8328_monomux_controls =
++	SOC_DAPM_ENUM("Route", monomux);
++
++static const struct snd_soc_dapm_widget es8328_dapm_widgets[] = {
++	SND_SOC_DAPM_MUX("Differential Mux", SND_SOC_NOPM, 0, 0,
++		&es8328_diffmux_controls),
++	SND_SOC_DAPM_MUX("Left ADC Mux", SND_SOC_NOPM, 0, 0,
++		&es8328_monomux_controls),
++	SND_SOC_DAPM_MUX("Right ADC Mux", SND_SOC_NOPM, 0, 0,
++		&es8328_monomux_controls),
++
++	SND_SOC_DAPM_MUX("Left PGA Mux", ES8328_ADCPOWER,
++			ES8328_ADCPOWER_AINL_OFF, 1,
++			&es8328_left_pga_controls),
++	SND_SOC_DAPM_MUX("Right PGA Mux", ES8328_ADCPOWER,
++			ES8328_ADCPOWER_AINR_OFF, 1,
++			&es8328_right_pga_controls),
++
++	SND_SOC_DAPM_MUX("Left Line Mux", SND_SOC_NOPM, 0, 0,
++		&es8328_left_line_controls),
++	SND_SOC_DAPM_MUX("Right Line Mux", SND_SOC_NOPM, 0, 0,
++		&es8328_right_line_controls),
++
++	SND_SOC_DAPM_ADC("Right ADC", "Right Capture", ES8328_ADCPOWER,
++			ES8328_ADCPOWER_ADCR_OFF, 1),
++	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", ES8328_ADCPOWER,
++			ES8328_ADCPOWER_ADCL_OFF, 1),
++
++	SND_SOC_DAPM_MICBIAS("Mic Bias", ES8328_ADCPOWER,
++			ES8328_ADCPOWER_MIC_BIAS_OFF, 1),
++	SND_SOC_DAPM_SUPPLY("Mic Bias Gen", ES8328_ADCPOWER,
++			ES8328_ADCPOWER_ADC_BIAS_GEN_OFF, 1, NULL, 0),
++
++	SND_SOC_DAPM_DAC("Right DAC", "Right Playback", ES8328_DACPOWER,
++			ES8328_DACPOWER_RDAC_OFF, 1),
++	SND_SOC_DAPM_DAC("Left DAC", "Left Playback", ES8328_DACPOWER,
++			ES8328_DACPOWER_LDAC_OFF, 1),
++
++	SND_SOC_DAPM_MIXER("Left Mixer", SND_SOC_NOPM, 0, 0,
++		&es8328_left_mixer_controls[0],
++		ARRAY_SIZE(es8328_left_mixer_controls)),
++	SND_SOC_DAPM_MIXER("Right Mixer", SND_SOC_NOPM, 0, 0,
++		&es8328_right_mixer_controls[0],
++		ARRAY_SIZE(es8328_right_mixer_controls)),
++
++	SND_SOC_DAPM_PGA("Right Out 2", ES8328_DACPOWER,
++			ES8328_DACPOWER_ROUT2_ON, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Left Out 2", ES8328_DACPOWER,
++			ES8328_DACPOWER_LOUT2_ON, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Right Out 1", ES8328_DACPOWER,
++			ES8328_DACPOWER_ROUT1_ON, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Left Out 1", ES8328_DACPOWER,
++			ES8328_DACPOWER_LOUT1_ON, 0, NULL, 0),
++
++	SND_SOC_DAPM_OUTPUT("LOUT1"),
++	SND_SOC_DAPM_OUTPUT("ROUT1"),
++	SND_SOC_DAPM_OUTPUT("LOUT2"),
++	SND_SOC_DAPM_OUTPUT("ROUT2"),
++	SND_SOC_DAPM_OUTPUT("VREF"),
++
++	SND_SOC_DAPM_INPUT("LINPUT1"),
++	SND_SOC_DAPM_INPUT("LINPUT2"),
++	SND_SOC_DAPM_INPUT("RINPUT1"),
++	SND_SOC_DAPM_INPUT("RINPUT2"),
++};
++
++static const struct snd_soc_dapm_route es8328_dapm_routes[] = {
++
++	{ "Left Line Mux", "Line 1", "LINPUT1" },
++	{ "Left Line Mux", "Line 2", "LINPUT2" },
++	{ "Left Line Mux", "PGA", "Left PGA Mux" },
++	{ "Left Line Mux", "Differential", "Differential Mux" },
++
++	{ "Right Line Mux", "Line 1", "RINPUT1" },
++	{ "Right Line Mux", "Line 2", "RINPUT2" },
++	{ "Right Line Mux", "PGA", "Right PGA Mux" },
++	{ "Right Line Mux", "Differential", "Differential Mux" },
++
++	{ "Left PGA Mux", "Line 1", "LINPUT1" },
++	{ "Left PGA Mux", "Line 2", "LINPUT2" },
++	{ "Left PGA Mux", "Differential", "Differential Mux" },
++
++	{ "Right PGA Mux", "Line 1", "RINPUT1" },
++	{ "Right PGA Mux", "Line 2", "RINPUT2" },
++	{ "Right PGA Mux", "Differential", "Differential Mux" },
++
++	{ "Differential Mux", "Line 1", "LINPUT1" },
++	{ "Differential Mux", "Line 1", "RINPUT1" },
++	{ "Differential Mux", "Line 2", "LINPUT2" },
++	{ "Differential Mux", "Line 2", "RINPUT2" },
++
++	{ "Left ADC Mux", "Stereo", "Left PGA Mux" },
++	{ "Left ADC Mux", "Mono (Left)", "Left PGA Mux" },
++	{ "Left ADC Mux", "Digital Mono", "Left PGA Mux" },
++
++	{ "Right ADC Mux", "Stereo", "Right PGA Mux" },
++	{ "Right ADC Mux", "Mono (Right)", "Right PGA Mux" },
++	{ "Right ADC Mux", "Digital Mono", "Right PGA Mux" },
++
++	{ "Left ADC", NULL, "Left ADC Mux" },
++	{ "Right ADC", NULL, "Right ADC Mux" },
++
++	{ "Left Line Mux", "Line 1", "LINPUT1" },
++	{ "Left Line Mux", "Line 2", "LINPUT2" },
++	{ "Left Line Mux", "PGA", "Left PGA Mux" },
++	{ "Left Line Mux", "Differential", "Differential Mux" },
++
++	{ "Right Line Mux", "Line 1", "RINPUT1" },
++	{ "Right Line Mux", "Line 2", "RINPUT2" },
++	{ "Right Line Mux", "PGA", "Right PGA Mux" },
++	{ "Right Line Mux", "Differential", "Differential Mux" },
++
++	{ "Left Out 1", NULL, "Left DAC" },
++	{ "Right Out 1", NULL, "Right DAC" },
++	{ "Left Out 2", NULL, "Left DAC" },
++	{ "Right Out 2", NULL, "Right DAC" },
++
++	{ "Left Mixer", "Playback Switch", "Left DAC" },
++	{ "Left Mixer", "Left Bypass Switch", "Left Line Mux" },
++	{ "Left Mixer", "Right Playback Switch", "Right DAC" },
++	{ "Left Mixer", "Right Bypass Switch", "Right Line Mux" },
++
++	{ "Right Mixer", "Left Playback Switch", "Left DAC" },
++	{ "Right Mixer", "Left Bypass Switch", "Left Line Mux" },
++	{ "Right Mixer", "Playback Switch", "Right DAC" },
++	{ "Right Mixer", "Right Bypass Switch", "Right Line Mux" },
++
++	{ "Left Out 1", NULL, "Left Mixer" },
++	{ "LOUT1", NULL, "Left Out 1" },
++	{ "Right Out 1", NULL, "Right Mixer" },
++	{ "ROUT1", NULL, "Right Out 1" },
++
++	{ "Left Out 2", NULL, "Left Mixer" },
++	{ "LOUT2", NULL, "Left Out 2" },
++	{ "Right Out 2", NULL, "Right Mixer" },
++	{ "ROUT2", NULL, "Right Out 2" },
++};
++
++static int es8328_mute(struct snd_soc_dai *dai, int mute)
++{
++	return snd_soc_update_bits(dai->codec, ES8328_DACCONTROL3,
++			ES8328_DACCONTROL3_DACMUTE,
++			mute ? ES8328_DACCONTROL3_DACMUTE : 0);
++}
++
++static int es8328_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params,
++	struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++	int reg;
++	u8 val;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		reg = ES8328_DACCONTROL2;
++
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		reg = ES8328_ADCCONTROL5;
++	else
++		return -EINVAL;
++
++	switch (params_rate(params)) {
++	case 8000:
++		val = es8328_sample_ratios[ES8328_RATE_8019];
++		break;
++	case 11025:
++		val = es8328_sample_ratios[ES8328_RATE_11025];
++		break;
++	case 22050:
++		val = es8328_sample_ratios[ES8328_RATE_22050];
++		break;
++	case 44100:
++		val = es8328_sample_ratios[ES8328_RATE_44100];
++		break;
++	default:
++		dev_err(codec->dev, "%s: unknown rate %d\n",
++			 __func__, params_rate(params));
++		return -EINVAL;
 +	}
 +
-+	if (data->codec_clk)
-+		clk_disable_unprepare(data->codec_clk);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		es8328->playback_fs = params_rate(params);
++		es8328_set_deemph(codec);
++	}
 +
-+	if (data->codec_clk_src)
-+		clk_disable_unprepare(data->codec_clk_src);
++	return snd_soc_update_bits(codec, reg, ES8328_RATEMASK, val);
++}
 +
-+	snd_soc_unregister_card(&data->card);
++static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
++		unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	u8 mode = ES8328_DACCONTROL1_DACWL_16;
++
++	/* set master/slave audio interface */
++	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBM_CFM)
++		return -EINVAL;
++
++	/* interface format */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		mode |= ES8328_DACCONTROL1_DACFORMAT_I2S;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		mode |= ES8328_DACCONTROL1_DACFORMAT_RJUST;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		mode |= ES8328_DACCONTROL1_DACFORMAT_LJUST;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* clock inversion */
++	if ((fmt & SND_SOC_DAIFMT_INV_MASK) != SND_SOC_DAIFMT_NB_NF)
++		return -EINVAL;
++
++	snd_soc_write(codec, ES8328_DACCONTROL1, mode);
++	snd_soc_write(codec, ES8328_ADCCONTROL4, mode);
++
++	/* Master serial port mode */
++	snd_soc_write(codec, ES8328_MASTERMODE,
++			ES8328_MASTERMODE_MCLKDIV2 |
++			ES8328_MASTERMODE_MSC);
++	return 0;
++}
++
++static int es8328_set_dai_sysclk(struct snd_soc_dai *codec_dai,
++				 int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++
++	switch (clk_id) {
++	case 0:
++		es8328->sysclk = freq;
++		break;
++	default:
++		return -EINVAL;
++	}
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id imx_es8328_dt_ids[] = {
-+	{ .compatible = "fsl,imx-audio-es8328", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, imx_es8328_dt_ids);
++static int es8328_set_bias_level(struct snd_soc_codec *codec,
++				 enum snd_soc_bias_level level)
++{
++	u8 cc1_reg = snd_soc_read(codec, ES8328_CONTROL1) & ~0x07;
++	u8 pwr_reg = 0;
 +
-+static struct platform_driver imx_es8328_driver = {
-+	.driver = {
-+		.name = "imx-es8328",
-+		.owner = THIS_MODULE,
-+		.of_match_table = imx_es8328_dt_ids,
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++		break;
++
++	case SND_SOC_BIAS_PREPARE:
++		/* VREF, VMID=2x50k, digital enabled */
++		snd_soc_write(codec, ES8328_CHIPPOWER, pwr_reg);
++		snd_soc_write(codec, ES8328_CONTROL1,
++				cc1_reg |
++				ES8328_CONTROL1_VMIDSEL_50k |
++				ES8328_CONTROL1_ENREF);
++		break;
++
++	case SND_SOC_BIAS_STANDBY:
++		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++			snd_soc_write(codec, ES8328_CONTROL1,
++					cc1_reg |
++					ES8328_CONTROL1_VMIDSEL_5k |
++					ES8328_CONTROL1_ENREF);
++
++			/* Charge caps */
++			msleep(100);
++		}
++
++		snd_soc_write(codec, ES8328_CONTROL2,
++				ES8328_CONTROL2_OVERCURRENT_ON |
++				ES8328_CONTROL2_THERMAL_SHUTDOWN_ON);
++
++		/* VREF, VMID=2*500k, digital stopped */
++		snd_soc_write(codec, ES8328_CONTROL1,
++				cc1_reg |
++				ES8328_CONTROL1_VMIDSEL_500k |
++				ES8328_CONTROL1_ENREF);
++		snd_soc_write(codec, ES8328_CHIPPOWER,
++				pwr_reg |
++				ES8328_CHIPPOWER_DACDIG_OFF |
++				ES8328_CHIPPOWER_ADCDIG_OFF |
++				ES8328_CHIPPOWER_ADCVREF_OFF |
++				ES8328_CHIPPOWER_DACVREF_OFF);
++		break;
++
++	case SND_SOC_BIAS_OFF:
++		snd_soc_write(codec, ES8328_CONTROL1, cc1_reg);
++		snd_soc_write(codec, ES8328_CHIPPOWER,
++				ES8328_CHIPPOWER_ADCDIG_OFF |
++				ES8328_CHIPPOWER_DACDIG_OFF |
++				ES8328_CHIPPOWER_ADCSTM_RESET |
++				ES8328_CHIPPOWER_DACSTM_RESET |
++				ES8328_CHIPPOWER_ADCPLL_OFF |
++				ES8328_CHIPPOWER_DACPLL_OFF |
++				ES8328_CHIPPOWER_ADCVREF_OFF |
++				ES8328_CHIPPOWER_DACVREF_OFF);
++		break;
++	}
++	codec->dapm.bias_level = level;
++	return 0;
++}
++
++static const struct snd_soc_dai_ops es8328_dai_ops = {
++	.hw_params	= es8328_hw_params,
++	.digital_mute	= es8328_mute,
++	.set_fmt	= es8328_set_dai_fmt,
++	.set_sysclk	= es8328_set_dai_sysclk,
++};
++
++static struct snd_soc_dai_driver es8328_dai = {
++	.name = "es8328-hifi-analog",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = ES8328_RATES,
++		.formats = ES8328_FORMATS,
 +	},
-+	.probe = imx_es8328_probe,
-+	.remove = imx_es8328_remove,
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = ES8328_RATES,
++		.formats = ES8328_FORMATS,
++	},
++	.ops = &es8328_dai_ops,
 +};
-+module_platform_driver(imx_es8328_driver);
 +
++static int es8328_suspend(struct snd_soc_codec *codec)
++{
++	es8328_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	return 0;
++}
++
++static int es8328_resume(struct snd_soc_codec *codec)
++{
++	es8328_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	return 0;
++}
++
++static int es8328_codec_probe(struct snd_soc_codec *codec)
++{
++	return 0;
++}
++
++const struct regmap_config es8328_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.max_register = ES8328_REG_MAX,
++	.cache_type = REGCACHE_NONE,
++};
++EXPORT_SYMBOL_GPL(es8328_regmap_config);
++
++static struct snd_soc_codec_driver es8328_codec_driver = {
++	.probe =		es8328_codec_probe,
++	.suspend =		es8328_suspend,
++	.resume =		es8328_resume,
++	.set_bias_level =	es8328_set_bias_level,
++	.controls =		es8328_snd_controls,
++	.num_controls =		ARRAY_SIZE(es8328_snd_controls),
++	.dapm_widgets =		es8328_dapm_widgets,
++	.num_dapm_widgets =	ARRAY_SIZE(es8328_dapm_widgets),
++	.dapm_routes =		es8328_dapm_routes,
++	.num_dapm_routes =	ARRAY_SIZE(es8328_dapm_routes),
++};
++
++int es8328_probe(struct device *dev, struct regmap *regmap)
++{
++	struct es8328_priv *es8328;
++
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
++
++	es8328 = devm_kzalloc(dev, sizeof(*es8328), GFP_KERNEL);
++	if (es8328 == NULL)
++		return -ENOMEM;
++
++	es8328->regmap = regmap;
++
++	dev_set_drvdata(dev, es8328);
++
++	return snd_soc_register_codec(dev,
++			&es8328_codec_driver, &es8328_dai, 1);
++}
++EXPORT_SYMBOL_GPL(es8328_probe);
++
++MODULE_DESCRIPTION("ASoC ES8328 driver");
 +MODULE_AUTHOR("Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>");
-+MODULE_DESCRIPTION("Kosagi i.MX6 ES8328 ASoC machine driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:imx-audio-es8328");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/es8328.h b/sound/soc/codecs/es8328.h
+new file mode 100644
+index 0000000..f944912
+--- /dev/null
++++ b/sound/soc/codecs/es8328.h
+@@ -0,0 +1,313 @@
++/*
++ * es8328.h  --  ES8328 ALSA SoC Audio driver
++ */
++
++#ifndef _ES8328_H
++#define _ES8328_H
++
++#include <linux/regmap.h>
++
++struct device;
++
++extern const struct regmap_config es8328_regmap_config;
++int es8328_probe(struct device *dev, struct regmap *regmap);
++
++#define ES8328_DACLVOL 46
++#define ES8328_DACRVOL 47
++#define ES8328_DACCTL 28
++#define ES8328_RATEMASK (0x1f << 0)
++
++#define ES8328_CONTROL1		0x00
++#define ES8328_CONTROL1_VMIDSEL_OFF (0 << 0)
++#define ES8328_CONTROL1_VMIDSEL_50k (1 << 0)
++#define ES8328_CONTROL1_VMIDSEL_500k (2 << 0)
++#define ES8328_CONTROL1_VMIDSEL_5k (3 << 0)
++#define ES8328_CONTROL1_ENREF (1 << 2)
++#define ES8328_CONTROL1_SEQEN (1 << 3)
++#define ES8328_CONTROL1_SAMEFS (1 << 4)
++#define ES8328_CONTROL1_DACMCLK_ADC (0 << 5)
++#define ES8328_CONTROL1_DACMCLK_DAC (1 << 5)
++#define ES8328_CONTROL1_LRCM (1 << 6)
++#define ES8328_CONTROL1_SCP_RESET (1 << 7)
++
++#define ES8328_CONTROL2		0x01
++#define ES8328_CONTROL2_VREF_BUF_OFF (1 << 0)
++#define ES8328_CONTROL2_VREF_LOWPOWER (1 << 1)
++#define ES8328_CONTROL2_IBIASGEN_OFF (1 << 2)
++#define ES8328_CONTROL2_ANALOG_OFF (1 << 3)
++#define ES8328_CONTROL2_VREF_BUF_LOWPOWER (1 << 4)
++#define ES8328_CONTROL2_VCM_MOD_LOWPOWER (1 << 5)
++#define ES8328_CONTROL2_OVERCURRENT_ON (1 << 6)
++#define ES8328_CONTROL2_THERMAL_SHUTDOWN_ON (1 << 7)
++
++#define ES8328_CHIPPOWER	0x02
++#define ES8328_CHIPPOWER_DACVREF_OFF (1 << 0)
++#define ES8328_CHIPPOWER_ADCVREF_OFF (1 << 1)
++#define ES8328_CHIPPOWER_DACPLL_OFF (1 << 2)
++#define ES8328_CHIPPOWER_ADCPLL_OFF (1 << 3)
++#define ES8328_CHIPPOWER_DACSTM_RESET (1 << 4)
++#define ES8328_CHIPPOWER_ADCSTM_RESET (1 << 5)
++#define ES8328_CHIPPOWER_DACDIG_OFF (1 << 6)
++#define ES8328_CHIPPOWER_ADCDIG_OFF (1 << 7)
++
++#define ES8328_ADCPOWER		0x03
++#define ES8328_ADCPOWER_INT1_LOWPOWER 0
++#define ES8328_ADCPOWER_FLASH_ADC_LOWPOWER 1
++#define ES8328_ADCPOWER_ADC_BIAS_GEN_OFF 2
++#define ES8328_ADCPOWER_MIC_BIAS_OFF 3
++#define ES8328_ADCPOWER_ADCR_OFF 4
++#define ES8328_ADCPOWER_ADCL_OFF 5
++#define ES8328_ADCPOWER_AINR_OFF 6
++#define ES8328_ADCPOWER_AINL_OFF 7
++
++#define ES8328_DACPOWER		0x04
++#define ES8328_DACPOWER_OUT3_ON 0
++#define ES8328_DACPOWER_MONO_ON 1
++#define ES8328_DACPOWER_ROUT2_ON 2
++#define ES8328_DACPOWER_LOUT2_ON 3
++#define ES8328_DACPOWER_ROUT1_ON 4
++#define ES8328_DACPOWER_LOUT1_ON 5
++#define ES8328_DACPOWER_RDAC_OFF 6
++#define ES8328_DACPOWER_LDAC_OFF 7
++
++#define ES8328_CHIPLOPOW1	0x05
++#define ES8328_CHIPLOPOW2	0x06
++#define ES8328_ANAVOLMANAG	0x07
++
++#define ES8328_MASTERMODE	0x08
++#define ES8328_MASTERMODE_BCLKDIV (0 << 0)
++#define ES8328_MASTERMODE_BCLK_INV (1 << 5)
++#define ES8328_MASTERMODE_MCLKDIV2 (1 << 6)
++#define ES8328_MASTERMODE_MSC (1 << 7)
++
++#define ES8328_ADCCONTROL1	0x09
++#define ES8328_ADCCONTROL2	0x0a
++#define ES8328_ADCCONTROL3	0x0b
++#define ES8328_ADCCONTROL4	0x0c
++#define ES8328_ADCCONTROL5	0x0d
++#define ES8328_ADCCONTROL5_RATEMASK (0x1f << 0)
++
++#define ES8328_ADCCONTROL6	0x0e
++
++#define ES8328_ADCCONTROL7	0x0f
++#define ES8328_ADCCONTROL7_ADC_MUTE (1 << 2)
++#define ES8328_ADCCONTROL7_ADC_LER (1 << 3)
++#define ES8328_ADCCONTROL7_ADC_ZERO_CROSS (1 << 4)
++#define ES8328_ADCCONTROL7_ADC_SOFT_RAMP (1 << 5)
++#define ES8328_ADCCONTROL7_ADC_RAMP_RATE_4 (0 << 6)
++#define ES8328_ADCCONTROL7_ADC_RAMP_RATE_8 (1 << 6)
++#define ES8328_ADCCONTROL7_ADC_RAMP_RATE_16 (2 << 6)
++#define ES8328_ADCCONTROL7_ADC_RAMP_RATE_32 (3 << 6)
++
++#define ES8328_ADCCONTROL8	0x10
++#define ES8328_ADCCONTROL9	0x11
++#define ES8328_ADCCONTROL10	0x12
++#define ES8328_ADCCONTROL11	0x13
++#define ES8328_ADCCONTROL12	0x14
++#define ES8328_ADCCONTROL13	0x15
++#define ES8328_ADCCONTROL14	0x16
++
++#define ES8328_DACCONTROL1	0x17
++#define ES8328_DACCONTROL1_DACFORMAT_I2S (0 << 1)
++#define ES8328_DACCONTROL1_DACFORMAT_LJUST (1 << 1)
++#define ES8328_DACCONTROL1_DACFORMAT_RJUST (2 << 1)
++#define ES8328_DACCONTROL1_DACFORMAT_PCM (3 << 1)
++#define ES8328_DACCONTROL1_DACWL_24 (0 << 3)
++#define ES8328_DACCONTROL1_DACWL_20 (1 << 3)
++#define ES8328_DACCONTROL1_DACWL_18 (2 << 3)
++#define ES8328_DACCONTROL1_DACWL_16 (3 << 3)
++#define ES8328_DACCONTROL1_DACWL_32 (4 << 3)
++#define ES8328_DACCONTROL1_DACLRP_I2S_POL_NORMAL (0 << 6)
++#define ES8328_DACCONTROL1_DACLRP_I2S_POL_INV (1 << 6)
++#define ES8328_DACCONTROL1_DACLRP_PCM_MSB_CLK2 (0 << 6)
++#define ES8328_DACCONTROL1_DACLRP_PCM_MSB_CLK1 (1 << 6)
++#define ES8328_DACCONTROL1_LRSWAP (1 << 7)
++
++#define ES8328_DACCONTROL2	0x18
++#define ES8328_DACCONTROL2_RATEMASK (0x1f << 0)
++#define ES8328_DACCONTROL2_DOUBLESPEED (1 << 5)
++
++#define ES8328_DACCONTROL3	0x19
++#define ES8328_DACCONTROL3_AUTOMUTE (1 << 2)
++#define ES8328_DACCONTROL3_DACMUTE (1 << 2)
++#define ES8328_DACCONTROL3_LEFTGAINVOL (1 << 3)
++#define ES8328_DACCONTROL3_DACZEROCROSS (1 << 4)
++#define ES8328_DACCONTROL3_DACSOFTRAMP (1 << 5)
++#define ES8328_DACCONTROL3_DACRAMPRATE (3 << 6)
++
++#define ES8328_LDACVOL 0x1a
++#define ES8328_LDACVOL_MASK (0 << 0)
++#define ES8328_LDACVOL_MAX (0xc0)
++
++#define ES8328_RDACVOL 0x1b
++#define ES8328_RDACVOL_MASK (0 << 0)
++#define ES8328_RDACVOL_MAX (0xc0)
++
++#define ES8328_DACVOL_MAX (0xc0)
++
++#define ES8328_DACCONTROL4	0x1a
++#define ES8328_DACCONTROL5	0x1b
++
++#define ES8328_DACCONTROL6	0x1c
++#define ES8328_DACCONTROL6_CLICKFREE (1 << 3)
++#define ES8328_DACCONTROL6_DAC_INVR (1 << 4)
++#define ES8328_DACCONTROL6_DAC_INVL (1 << 5)
++#define ES8328_DACCONTROL6_DEEMPH_OFF (0 << 6)
++#define ES8328_DACCONTROL6_DEEMPH_32k (1 << 6)
++#define ES8328_DACCONTROL6_DEEMPH_44_1k (2 << 6)
++#define ES8328_DACCONTROL6_DEEMPH_48k (3 << 6)
++
++#define ES8328_DACCONTROL7	0x1d
++#define ES8328_DACCONTROL7_VPP_SCALE_3p5	(0 << 0)
++#define ES8328_DACCONTROL7_VPP_SCALE_4p0	(1 << 0)
++#define ES8328_DACCONTROL7_VPP_SCALE_3p0	(2 << 0)
++#define ES8328_DACCONTROL7_VPP_SCALE_2p5	(3 << 0)
++#define ES8328_DACCONTROL7_SHELVING_STRENGTH (1 << 2) /* In eights */
++#define ES8328_DACCONTROL7_MONO		(1 << 5)
++#define ES8328_DACCONTROL7_ZEROR	(1 << 6)
++#define ES8328_DACCONTROL7_ZEROL	(1 << 7)
++
++/* Shelving filter */
++#define ES8328_DACCONTROL8	0x1e
++#define ES8328_DACCONTROL9	0x1f
++#define ES8328_DACCONTROL10	0x20
++#define ES8328_DACCONTROL11	0x21
++#define ES8328_DACCONTROL12	0x22
++#define ES8328_DACCONTROL13	0x23
++#define ES8328_DACCONTROL14	0x24
++#define ES8328_DACCONTROL15	0x25
++
++#define ES8328_DACCONTROL16	0x26
++#define ES8328_DACCONTROL16_RMIXSEL_RIN1 (0 << 0)
++#define ES8328_DACCONTROL16_RMIXSEL_RIN2 (1 << 0)
++#define ES8328_DACCONTROL16_RMIXSEL_RIN3 (2 << 0)
++#define ES8328_DACCONTROL16_RMIXSEL_RADC (3 << 0)
++#define ES8328_DACCONTROL16_LMIXSEL_LIN1 (0 << 3)
++#define ES8328_DACCONTROL16_LMIXSEL_LIN2 (1 << 3)
++#define ES8328_DACCONTROL16_LMIXSEL_LIN3 (2 << 3)
++#define ES8328_DACCONTROL16_LMIXSEL_LADC (3 << 3)
++
++#define ES8328_DACCONTROL17	0x27
++#define ES8328_DACCONTROL17_LI2LOVOL (7 << 3)
++#define ES8328_DACCONTROL17_LI2LO (1 << 6)
++#define ES8328_DACCONTROL17_LD2LO (1 << 7)
++
++#define ES8328_DACCONTROL18	0x28
++#define ES8328_DACCONTROL18_RI2LOVOL (7 << 3)
++#define ES8328_DACCONTROL18_RI2LO (1 << 6)
++#define ES8328_DACCONTROL18_RD2LO (1 << 7)
++
++#define ES8328_DACCONTROL19	0x29
++#define ES8328_DACCONTROL19_LI2ROVOL (7 << 3)
++#define ES8328_DACCONTROL19_LI2RO (1 << 6)
++#define ES8328_DACCONTROL19_LD2RO (1 << 7)
++
++#define ES8328_DACCONTROL20	0x2a
++#define ES8328_DACCONTROL20_RI2ROVOL (7 << 3)
++#define ES8328_DACCONTROL20_RI2RO (1 << 6)
++#define ES8328_DACCONTROL20_RD2RO (1 << 7)
++
++#define ES8328_DACCONTROL21	0x2b
++#define ES8328_DACCONTROL21_LI2MOVOL (7 << 3)
++#define ES8328_DACCONTROL21_LI2MO (1 << 6)
++#define ES8328_DACCONTROL21_LD2MO (1 << 7)
++
++#define ES8328_DACCONTROL22	0x2c
++#define ES8328_DACCONTROL22_RI2MOVOL (7 << 3)
++#define ES8328_DACCONTROL22_RI2MO (1 << 6)
++#define ES8328_DACCONTROL22_RD2MO (1 << 7)
++
++#define ES8328_DACCONTROL23	0x2d
++#define ES8328_DACCONTROL23_MOUTINV		(1 << 1)
++#define ES8328_DACCONTROL23_HPSWPOL		(1 << 2)
++#define ES8328_DACCONTROL23_HPSWEN		(1 << 3)
++#define ES8328_DACCONTROL23_VROI_1p5k		(0 << 4)
++#define ES8328_DACCONTROL23_VROI_40k		(1 << 4)
++#define ES8328_DACCONTROL23_OUT3_VREF		(0 << 5)
++#define ES8328_DACCONTROL23_OUT3_ROUT1		(1 << 5)
++#define ES8328_DACCONTROL23_OUT3_MONOOUT	(2 << 5)
++#define ES8328_DACCONTROL23_OUT3_RIGHT_MIXER	(3 << 5)
++#define ES8328_DACCONTROL23_ROUT2INV		(1 << 7)
++
++/* LOUT1 Amplifier */
++#define ES8328_LOUT1VOL 0x2e
++#define ES8328_LOUT1VOL_MASK (0 << 5)
++#define ES8328_LOUT1VOL_MAX (0x24)
++
++/* ROUT1 Amplifier */
++#define ES8328_ROUT1VOL 0x2f
++#define ES8328_ROUT1VOL_MASK (0 << 5)
++#define ES8328_ROUT1VOL_MAX (0x24)
++
++#define ES8328_OUT1VOL_MAX (0x24)
++
++/* LOUT2 Amplifier */
++#define ES8328_LOUT2VOL 0x30
++#define ES8328_LOUT2VOL_MASK (0 << 5)
++#define ES8328_LOUT2VOL_MAX (0x24)
++
++/* ROUT2 Amplifier */
++#define ES8328_ROUT2VOL 0x31
++#define ES8328_ROUT2VOL_MASK (0 << 5)
++#define ES8328_ROUT2VOL_MAX (0x24)
++
++#define ES8328_OUT2VOL_MAX (0x24)
++
++/* Mono Out Amplifier */
++#define ES8328_MONOOUTVOL 0x32
++#define ES8328_MONOOUTVOL_MASK (0 << 5)
++#define ES8328_MONOOUTVOL_MAX (0x24)
++
++#define ES8328_DACCONTROL29	0x33
++#define ES8328_DACCONTROL30	0x34
++
++#define ES8328_SYSCLK		0
++
++#define ES8328_REG_MAX		0x35
++
++#define ES8328_PLL1		0
++#define ES8328_PLL2		1
++
++/* clock inputs */
++#define ES8328_MCLK		0
++#define ES8328_PCMCLK		1
++
++/* clock divider id's */
++#define ES8328_PCMDIV		0
++#define ES8328_BCLKDIV		1
++#define ES8328_VXCLKDIV		2
++
++/* PCM clock dividers */
++#define ES8328_PCM_DIV_1	(0 << 6)
++#define ES8328_PCM_DIV_3	(2 << 6)
++#define ES8328_PCM_DIV_5_5	(3 << 6)
++#define ES8328_PCM_DIV_2	(4 << 6)
++#define ES8328_PCM_DIV_4	(5 << 6)
++#define ES8328_PCM_DIV_6	(6 << 6)
++#define ES8328_PCM_DIV_8	(7 << 6)
++
++/* BCLK clock dividers */
++#define ES8328_BCLK_DIV_1	(0 << 7)
++#define ES8328_BCLK_DIV_2	(1 << 7)
++#define ES8328_BCLK_DIV_4	(2 << 7)
++#define ES8328_BCLK_DIV_8	(3 << 7)
++
++/* VXCLK clock dividers */
++#define ES8328_VXCLK_DIV_1	(0 << 6)
++#define ES8328_VXCLK_DIV_2	(1 << 6)
++#define ES8328_VXCLK_DIV_4	(2 << 6)
++#define ES8328_VXCLK_DIV_8	(3 << 6)
++#define ES8328_VXCLK_DIV_16	(4 << 6)
++
++#define ES8328_DAI_HIFI		0
++#define ES8328_DAI_VOICE	1
++
++#define ES8328_1536FS		1536
++#define ES8328_1024FS		1024
++#define ES8328_768FS		768
++#define ES8328_512FS		512
++#define ES8328_384FS		384
++#define ES8328_256FS		256
++#define ES8328_128FS		128
++
++#endif
 -- 
 2.0.0
 
