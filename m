@@ -1,19 +1,16 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] *** ASoC: core: refine of node id parse of
- cpu/codec dai ***
-Date: Thu, 19 Jun 2014 07:29:41 +0200
-Message-ID: <53A27545.7040304@metafoo.de>
-References: <1403089319-2555-1-git-send-email-zhouqiao@marvell.com>
- <53A18273.7090203@metafoo.de> <53A2389B.3000102@marvell.com>
+Subject: [PATCH] ASoC: wm5100/wm8903/wm8996: Replace open-coded
+	snd_soc_dapm_to_codec()
+Date: Thu, 19 Jun 2014 07:50:01 +0200
+Message-ID: <1403157002-11638-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-072.synserver.de (smtp-out-075.synserver.de
- [212.40.185.75])
- by alsa0.perex.cz (Postfix) with ESMTP id 31FC02651D2
- for <alsa-devel@alsa-project.org>; Thu, 19 Jun 2014 07:29:46 +0200 (CEST)
-In-Reply-To: <53A2389B.3000102@marvell.com>
+Received: from smtp-out-075.synserver.de (smtp-out-079.synserver.de
+ [212.40.185.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52A2D2651CF
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jun 2014 07:50:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qiao Zhou <zhouqiao@marvell.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/19/2014 03:10 AM, Qiao Zhou wrote:
-> On 06/18/2014 08:13 PM, Lars-Peter Clausen wrote:
->> On 06/18/2014 01:01 PM, Qiao Zhou wrote:
->>> Hi Mark, Liam
->>>
->>> This patch is to add another check besides cpu_dai/codec_dai name during
->>> dai_link bind. currently if the cpu_dai/codec_dai name match corresponding
->>> dai_link cpu/codec name, then a match is found. in this patch, it also
->>> checks
->>> whether cpu/codec dai id match dailink cpu_dai_id/codec_dai_id. Still check
->>> name first.
->>> 1. if it doesn't match, it will keep checking whether cpu_id/codec_id match
->>> corresponding dai_link cpu_dai_id/codec_dai_id. if the ids are equal, then
->>> a match is found.
->>> 2. if it does match, then a match is already found. no need to further
->>> check.
->>>
->> [...]
->>> Could you help share your opinions? Thanks in advance.
->>
->> Hi,
->>
->> There is already snd_soc_of_get_dai_name() which will translate a phandle +
->> specifier to a DAI name. By default it will use the DAI id for the
->> specifier. Alternatively the driver can implement a of_xlate_dai_name
->> callback that does the translation from specifier to name. The advantage of
->> this approach is that the board driver does not need to know about the
->> specific format of the DAI specifier.
->>
->> - Lars
->>
-> Hi Lars,
->
-> This API is powerful and meets my requirement. Thanks a lot.
->
-> I still have a small question. why don't we consider to also use DAI id to
-> match DAIs & dai_link? It seems to be a more direct alternative. Please
-> correct/instruct me if anything is wrong.
+We now have a generic helper function to cast from a DAPM context to a CODEC.
+Make use of it in the places which previously open-coded it.
 
-Matching by id would also work, I guess. But it doesn't really matter if 
-name or id is used since both should be unique per CODEC. But what you 
-shouldn't do is manually parse the id from the devicetree property in the 
-machine driver since the specifier layout is CODEC specific and hence has to 
-be parsed by the CODEC.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/wm5100.c | 3 +--
+ sound/soc/codecs/wm8903.c | 3 +--
+ sound/soc/codecs/wm8996.c | 3 +--
+ 3 files changed, 3 insertions(+), 6 deletions(-)
 
-I think ideally the machine driver would pass the devicetree node and the 
-name of the property that specifies the DAI to the core and the core would 
-take care of everything else. As it is right now we first lookup the DAI by 
-the of node and return the name of the DAI, then later on we use that name 
-to lookup the DAI again. The second lookup is kind of superfluous since we 
-already had a pointer to the DAI during the first lookup, so this is 
-something that could be optimized if somebody was interested in optimizing this.
-
-- Lars
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 91a9ea2..7bb0d36 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -735,8 +735,7 @@ WM5100_MIXER_CONTROLS("LHPF4", WM5100_HPLP4MIX_INPUT_1_SOURCE),
+ static void wm5100_seq_notifier(struct snd_soc_dapm_context *dapm,
+ 				enum snd_soc_dapm_type event, int subseq)
+ {
+-	struct snd_soc_codec *codec = container_of(dapm,
+-						   struct snd_soc_codec, dapm);
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
+ 	struct wm5100_priv *wm5100 = snd_soc_codec_get_drvdata(codec);
+ 	u16 val, expect, i;
+ 
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index b84940c..ec3250d 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -281,8 +281,7 @@ static int wm8903_dcs_event(struct snd_soc_dapm_widget *w,
+ static void wm8903_seq_notifier(struct snd_soc_dapm_context *dapm,
+ 				enum snd_soc_dapm_type event, int subseq)
+ {
+-	struct snd_soc_codec *codec = container_of(dapm,
+-						   struct snd_soc_codec, dapm);
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
+ 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
+ 	int dcs_mode = WM8903_DCS_MODE_WRITE_STOP;
+ 	int i, val;
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index 6926633..9304a91 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -690,8 +690,7 @@ static void wait_for_dc_servo(struct snd_soc_codec *codec, u16 mask)
+ static void wm8996_seq_notifier(struct snd_soc_dapm_context *dapm,
+ 				enum snd_soc_dapm_type event, int subseq)
+ {
+-	struct snd_soc_codec *codec = container_of(dapm,
+-						   struct snd_soc_codec, dapm);
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
+ 	struct wm8996_priv *wm8996 = snd_soc_codec_get_drvdata(codec);
+ 	u16 val, mask;
+ 
+-- 
+1.8.0
