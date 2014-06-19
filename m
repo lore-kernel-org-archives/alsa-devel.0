@@ -1,15 +1,15 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] ASoC: max98090: Remove needless defines and
-	line feeds
-Date: Thu, 19 Jun 2014 09:44:26 +0300
-Message-ID: <1403160266-4571-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 0/5] ASoC: Fix trival sparse warnings
+Date: Thu, 19 Jun 2014 09:40:26 +0200
+Message-ID: <1403163631-26215-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id BF4E72651CF
- for <alsa-devel@alsa-project.org>; Thu, 19 Jun 2014 08:44:34 +0200 (CEST)
+Received: from smtp-out-089.synserver.de (smtp-out-092.synserver.de
+ [212.40.185.92])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6803026525F
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jun 2014 09:40:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,95 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
- sound/soc/codecs/max98090.c | 13 -------------
- 1 file changed, 13 deletions(-)
+Hi,
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index d97f1ce7ff7d..6ea0fdd42eb5 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -26,10 +26,6 @@
- #include <sound/max98090.h>
- #include "max98090.h"
- 
--#define DEBUG
--#define EXTMIC_METHOD
--#define EXTMIC_METHOD_TEST
--
- /* Allows for sparsely populated register maps */
- static struct reg_default max98090_reg[] = {
- 	{ 0x00, 0x00 }, /* 00 Software Reset */
-@@ -820,7 +816,6 @@ static int max98090_micinput_event(struct snd_soc_dapm_widget *w,
- 	else
- 		val = (val & M98090_MIC_PA2EN_MASK) >> M98090_MIC_PA2EN_SHIFT;
- 
--
- 	if (val >= 1) {
- 		if (w->reg == M98090_REG_MIC1_INPUT_LEVEL) {
- 			max98090->pa1en = val - 1; /* Update for volatile */
-@@ -1140,7 +1135,6 @@ static const struct snd_kcontrol_new max98090_mixhprsel_mux =
- 	SOC_DAPM_ENUM("MIXHPRSEL Mux", mixhprsel_mux_enum);
- 
- static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
--
- 	SND_SOC_DAPM_INPUT("MIC1"),
- 	SND_SOC_DAPM_INPUT("MIC2"),
- 	SND_SOC_DAPM_INPUT("DMICL"),
-@@ -1304,7 +1298,6 @@ static const struct snd_soc_dapm_widget max98090_dapm_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_widget max98091_dapm_widgets[] = {
--
- 	SND_SOC_DAPM_INPUT("DMIC3"),
- 	SND_SOC_DAPM_INPUT("DMIC4"),
- 
-@@ -1315,7 +1308,6 @@ static const struct snd_soc_dapm_widget max98091_dapm_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_route max98090_dapm_routes[] = {
--
- 	{"MIC1 Input", NULL, "MIC1"},
- 	{"MIC2 Input", NULL, "MIC2"},
- 
-@@ -1493,17 +1485,14 @@ static const struct snd_soc_dapm_route max98090_dapm_routes[] = {
- 	{"SPKR", NULL, "SPK Right Out"},
- 	{"RCVL", NULL, "RCV Left Out"},
- 	{"RCVR", NULL, "RCV Right Out"},
--
- };
- 
- static const struct snd_soc_dapm_route max98091_dapm_routes[] = {
--
- 	/* DMIC inputs */
- 	{"DMIC3", NULL, "DMIC3_ENA"},
- 	{"DMIC4", NULL, "DMIC4_ENA"},
- 	{"DMIC3", NULL, "AHPF"},
- 	{"DMIC4", NULL, "AHPF"},
--
- };
- 
- static int max98090_add_widgets(struct snd_soc_codec *codec)
-@@ -1531,7 +1520,6 @@ static int max98090_add_widgets(struct snd_soc_codec *codec)
- 
- 		snd_soc_dapm_add_routes(dapm, max98091_dapm_routes,
- 			ARRAY_SIZE(max98091_dapm_routes));
--
- 	}
- 
- 	return 0;
-@@ -2221,7 +2209,6 @@ static void max98090_handle_pdata(struct snd_soc_codec *codec)
- 		dev_err(codec->dev, "No platform data\n");
- 		return;
- 	}
--
- }
- 
- static int max98090_probe(struct snd_soc_codec *codec)
+This series fixes a couple of trivial issues that are reported when running
+the sparse codechecker on the ASoC tree.
+
+- Lars
+
+Lars-Peter Clausen (5):
+  ASoC: tlv320aic31xx: Remove duplicate const
+  ASoC: cs42xx8: Make of match table static
+  ASoC: omap-pcm: Include omap-pcm.h
+  ASoC: rcar: Fix dma direction type
+  ASoC: sh/fsi: Make one-bit bitfields unsigned
+
+ sound/soc/codecs/cs42xx8.c       |  2 +-
+ sound/soc/codecs/tlv320aic31xx.c | 21 ++++++++++-----------
+ sound/soc/omap/omap-pcm.c        |  1 +
+ sound/soc/sh/fsi.c               | 12 ++++++------
+ sound/soc/sh/rcar/core.c         |  2 +-
+ sound/soc/sh/rcar/rsnd.h         |  2 +-
+ 6 files changed, 20 insertions(+), 20 deletions(-)
+
 -- 
-2.0.0
+1.8.0
