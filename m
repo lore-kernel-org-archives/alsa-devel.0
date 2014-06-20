@@ -1,73 +1,412 @@
 From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH v5 0/3] Add ES8328 audio codec
-Date: Fri, 20 Jun 2014 14:14:16 +0800
-Message-ID: <1403244859-22236-1-git-send-email-xobs@kosagi.com>
+Subject: [PATCH v5 3/3] ASoC: fsl: add imx-es8328 machine driver
+Date: Fri, 20 Jun 2014 14:14:19 +0800
+Message-ID: <1403244859-22236-4-git-send-email-xobs@kosagi.com>
+References: <1403244859-22236-1-git-send-email-xobs@kosagi.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1403244859-22236-1-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 Cc: bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patchset adds support for the Everest Semi ES8328 audio codec.  It also
-adds support for using the es8328 on IMX boards.
+This adds an initial machine driver for the ES8328 audio codec on Freescale
+boards.  The driver supports headphones and an audio regulator for an onboard
+speaker amp.
 
-We write a machine driver rather than using simple-card because the machine
-driver needs to support regulators for the speaker amps and as well as
-supporting headphone jacks.
-
-This requires support for DT clock reparenting in order to get the codec
-its 22.5792 MHz supply frequency.
-
-Changes since v4:
-    - Simplify clock handling and use assigned-clock-parents
-    - Move the codec regulator from the machine driver to the codec
-    - Specify all four regulators, and require their presence
-    - Fix audio recording, such that it enables the PGA
-
-Changes since v3:
-    - Add OF bindings for everest,es8328
-    - Add back in patch to add everest as a vendor prefix
-    - Give clocks more generic names
-    - Document required clocks in DT bindings document
-
-Changes since v2:
-    - Change deemph to a bool, and update based on sample rate
-    - Replace value enums with regular enums
-    - Break SPI and I2C drivers into their own modules
-    - Rename everest,es8328 to es8328 as the module wasn't getting detected.
-      Because of this, the patch to vendor-prefixes.txt has been dropped.
-
-Changes since v1:
-    - Rename HP/Speaker to OUT1/OUT2
-    - Use DAPM widgets for startup/shutdown
-    - Add regulator support to machine driver
-
-Sean Cross (3):
-  devicetree: bindings: Add Everest Semicodunctor
-  ASoC: add es8328 codec driver
-  ASoC: fsl: add imx-es8328 machine driver
-
- Documentation/devicetree/bindings/sound/es8328.txt |  24 +
- .../devicetree/bindings/sound/imx-audio-es8328.txt |  63 ++
- .../devicetree/bindings/vendor-prefixes.txt        |   1 +
- sound/soc/codecs/Kconfig                           |  13 +
- sound/soc/codecs/Makefile                          |   6 +
- sound/soc/codecs/es8328-i2c.c                      |  60 ++
- sound/soc/codecs/es8328-spi.c                      |  49 ++
- sound/soc/codecs/es8328.c                          | 694 +++++++++++++++++++++
- sound/soc/codecs/es8328.h                          | 313 ++++++++++
- sound/soc/fsl/Kconfig                              |  14 +
+Signed-off-by: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+---
+ .../devicetree/bindings/sound/imx-audio-es8328.txt |  63 +++++
+ sound/soc/fsl/Kconfig                              |  14 ++
  sound/soc/fsl/Makefile                             |   2 +
- sound/soc/fsl/imx-es8328.c                         | 263 ++++++++
- 12 files changed, 1502 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
+ sound/soc/fsl/imx-es8328.c                         | 263 +++++++++++++++++++++
+ 4 files changed, 342 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
- create mode 100644 sound/soc/codecs/es8328-i2c.c
- create mode 100644 sound/soc/codecs/es8328-spi.c
- create mode 100644 sound/soc/codecs/es8328.c
- create mode 100644 sound/soc/codecs/es8328.h
  create mode 100644 sound/soc/fsl/imx-es8328.c
 
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt b/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
+new file mode 100644
+index 0000000..c1127ca
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
+@@ -0,0 +1,63 @@
++Freescale i.MX audio complex with ES8328 codec
++
++Required properties:
++- compatible : "fsl,imx-audio-es8328"
++- model : The user-visible name of this sound complex
++- clocks : A clock that generates a 22.5792 MHz signal
++- ssi-controller : The phandle of the i.MX SSI controller
++- jack-gpio : Optional GPIO for headphone jack
++- audio-amp-supply : Power regulator for speaker amps
++- audio-codec : The phandle of the ES8328 audio codec
++- audio-routing : A list of the connections between audio components.
++  Each entry is a pair of strings, the first being the connection's sink,
++  the second being the connection's source. Valid names could be power
++  supplies, ES8328 pins, and the jacks on the board:
++
++  Power supplies:
++   * audio-amp
++
++  ES8328 pins:
++   * LOUT1
++   * LOUT2
++   * ROUT1
++   * ROUT2
++
++  Board connectors:
++   * Headphone
++   * Speaker
++
++- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX)
++- mux-ext-port : The external port of the i.MX audio muxer
++
++Note: The AUDMUX port numbering should start at 1, which is consistent with
++hardware manual.
++
++Example:
++
++sound {
++	compatible = "fsl,imx-audio-es8328";
++	model = "imx-audio-es8328";
++	clocks = <&clks 169>;
++	assigned-clocks = <&clks 201>, <&clks 57>,
++			  <&clks 173>, <&clks 169>;
++	assigned-clock-parents = <&clks 169>, <&clks 203>,
++				 <&clks 3>, <&clks 100>;
++	assigned-clock-rates = <0>, <0>,
++			       <722534400>, <22579200>;
++	ssi-controller = <&ssi1>;
++	audio-codec = <&codec>;
++	jack-gpio = <&gpio5 15 0>;
++	audio-amp-supply = <&reg_audio_amp>;
++	audio-routing =
++		"Speaker", "LOUT2",
++		"Speaker", "ROUT2",
++		"Speaker", "audio-amp",
++		"Headphone", "ROUT1",
++		"Headphone", "LOUT1",
++		"LINPUT1", "Mic Jack",
++		"RINPUT1", "Mic Jack",
++		"Mic Jack", "Mic Bias";
++	mux-int-port = <1>;
++	mux-ext-port = <3>;
++};
++
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 3793362..c0ace69 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -229,6 +229,20 @@ config SND_SOC_IMX_WM8962
+ 	  Say Y if you want to add support for SoC audio on an i.MX board with
+ 	  a wm8962 codec.
+ 
++config SND_SOC_IMX_ES8328
++	tristate "SoC Audio support for i.MX boards with the ES8328 codec"
++	depends on OF && (I2C || SPI)
++	select SND_SOC_ES8328_I2C if I2C
++	select SND_SOC_ES8328_SPI if SPI_MASTER
++	select SND_SOC_IMX_PCM_DMA
++	select SND_SOC_IMX_AUDMUX
++	select SND_SOC_FSL_SSI
++	select SND_SOC_FSL_UTILS
++	select SND_SOC_IMX_PCM_FIQ
++	help
++	  Say Y if you want to add support for the ES8328 audio codec connected
++	  via SSI/I2S over either SPI or I2C.
++
+ config SND_SOC_IMX_SGTL5000
+ 	tristate "SoC Audio support for i.MX boards with sgtl5000"
+ 	depends on OF && I2C
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index db254e3..e561766 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -48,6 +48,7 @@ snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
+ snd-soc-phycore-ac97-objs := phycore-ac97.o
+ snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
+ snd-soc-wm1133-ev1-objs := wm1133-ev1.o
++snd-soc-imx-es8328-objs := imx-es8328.o
+ snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
+ snd-soc-imx-wm8962-objs := imx-wm8962.o
+ snd-soc-imx-spdif-objs := imx-spdif.o
+@@ -57,6 +58,7 @@ obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
+ obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
+ obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
+ obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
++obj-$(CONFIG_SND_SOC_IMX_ES8328) += snd-soc-imx-es8328.o
+ obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
+ obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
+diff --git a/sound/soc/fsl/imx-es8328.c b/sound/soc/fsl/imx-es8328.c
+new file mode 100644
+index 0000000..15b8d54
+--- /dev/null
++++ b/sound/soc/fsl/imx-es8328.c
+@@ -0,0 +1,263 @@
++/*
++ * Copyright 2012 Freescale Semiconductor, Inc.
++ * Copyright 2012 Linaro Ltd.
++ *
++ * The code contained herein is licensed under the GNU General Public
++ * License. You may obtain a copy of the GNU General Public License
++ * Version 2 or later at the following locations:
++ *
++ * http://www.opensource.org/licenses/gpl-license.html
++ * http://www.gnu.org/copyleft/gpl.html
++ */
++
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/i2c.h>
++#include <linux/clk.h>
++#include <linux/gpio.h>
++#include <linux/of_gpio.h>
++#include <linux/clk-provider.h>
++#include <sound/soc.h>
++#include <sound/jack.h>
++
++#include "imx-audmux.h"
++
++#define DAI_NAME_SIZE	32
++#define IMX6Q_SYSCLK 0x00
++
++struct imx_es8328_data {
++	struct device *dev;
++	struct snd_soc_dai_link dai;
++	struct snd_soc_card card;
++	char codec_dai_name[DAI_NAME_SIZE];
++	char platform_name[DAI_NAME_SIZE];
++	struct clk *codec_clk;
++	unsigned int clk_frequency;
++	int jack_gpio;
++};
++
++static struct snd_soc_jack_gpio headset_jack_gpios[] = {
++	{
++		.gpio = -1,
++		.name = "headset-gpio",
++		.report = SND_JACK_HEADSET,
++		.invert = 0,
++		.debounce_time = 200,
++	},
++};
++
++static struct snd_soc_jack headset_jack;
++
++static int imx_es8328_dai_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct imx_es8328_data *data = container_of(rtd->card,
++					struct imx_es8328_data, card);
++	struct device *dev = rtd->card->dev;
++	int ret;
++
++	ret = snd_soc_dai_set_sysclk(rtd->codec_dai, IMX6Q_SYSCLK,
++				     data->clk_frequency, SND_SOC_CLOCK_IN);
++	if (ret) {
++		dev_err(dev, "could not set codec driver clock params to %d\n",
++			data->clk_frequency);
++		return ret;
++	}
++
++	/* Headphone jack detection */
++	if (gpio_is_valid(data->jack_gpio)) {
++		ret = snd_soc_jack_new(rtd->codec, "Headphone",
++				       SND_JACK_HEADPHONE | SND_JACK_BTN_0,
++				       &headset_jack);
++		if (ret)
++			return ret;
++
++		headset_jack_gpios[0].gpio = data->jack_gpio;
++		ret = snd_soc_jack_add_gpios(&headset_jack,
++					     ARRAY_SIZE(headset_jack_gpios),
++					     headset_jack_gpios);
++	}
++
++	return ret;
++}
++
++static const struct snd_soc_dapm_widget imx_es8328_dapm_widgets[] = {
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_REGULATOR_SUPPLY("audio-amp", 1, 0),
++};
++
++static int imx_set_frequency(struct imx_es8328_data *data, int freq)
++{
++	int ret;
++
++	return ret;
++}
++
++static int imx_es8328_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *ssi_np, *codec_np;
++	struct platform_device *ssi_pdev;
++	struct imx_es8328_data *data;
++	int int_port, ext_port;
++	int ret;
++	struct device *dev = &pdev->dev;
++
++	ret = of_property_read_u32(np, "mux-int-port", &int_port);
++	if (ret) {
++		dev_err(dev, "mux-int-port missing or invalid\n");
++		return ret;
++	}
++	ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
++	if (ret) {
++		dev_err(dev, "mux-ext-port missing or invalid\n");
++		return ret;
++	}
++
++	/*
++	 * The port numbering in the hardware manual starts at 1, while
++	 * the audmux API expects it starts at 0.
++	 */
++	int_port--;
++	ext_port--;
++	ret = imx_audmux_v2_configure_port(int_port,
++			IMX_AUDMUX_V2_PTCR_SYN |
++			IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
++			IMX_AUDMUX_V2_PTCR_TCSEL(ext_port) |
++			IMX_AUDMUX_V2_PTCR_TFSDIR |
++			IMX_AUDMUX_V2_PTCR_TCLKDIR,
++			IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port));
++	if (ret) {
++		dev_err(dev, "audmux internal port setup failed\n");
++		return ret;
++	}
++	ret = imx_audmux_v2_configure_port(ext_port,
++			IMX_AUDMUX_V2_PTCR_SYN,
++			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port));
++	if (ret) {
++		dev_err(dev, "audmux external port setup failed\n");
++		return ret;
++	}
++
++	ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
++	codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
++	if (!ssi_np || !codec_np) {
++		dev_err(dev, "phandle missing or invalid\n");
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	ssi_pdev = of_find_device_by_node(ssi_np);
++	if (!ssi_pdev) {
++		dev_err(dev, "failed to find SSI platform device\n");
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
++	if (!data) {
++		ret = -ENOMEM;
++		goto fail;
++	}
++
++	data->dev = dev;
++
++	data->jack_gpio = of_get_named_gpio(pdev->dev.of_node, "jack-gpio", 0);
++
++	/* Setup clocks */
++	data->codec_clk = devm_clk_get(dev, NULL);
++	if (IS_ERR(data->codec_clk)) {
++		dev_err(dev,
++			"codec clock missing or invalid\n");
++		goto fail;
++	}
++
++	ret = clk_prepare_enable(data->codec_clk);
++	if (ret) {
++		dev_err(data->dev, "unable to prepare codec clk\n");
++		return ret;
++	}
++
++	data->clk_frequency = clk_get_rate(data->codec_clk);
++
++	data->dai.name = "hifi";
++	data->dai.stream_name = "hifi";
++	data->dai.codec_dai_name = "es8328-hifi-analog";
++	data->dai.codec_of_node = codec_np;
++	data->dai.cpu_of_node = ssi_np;
++	data->dai.platform_of_node = ssi_np;
++	data->dai.init = &imx_es8328_dai_init;
++	data->dai.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			    SND_SOC_DAIFMT_CBM_CFM;
++
++	data->card.dev = dev;
++	data->card.dapm_widgets = imx_es8328_dapm_widgets;
++	data->card.num_dapm_widgets = ARRAY_SIZE(imx_es8328_dapm_widgets);
++	ret = snd_soc_of_parse_card_name(&data->card, "model");
++	if (ret) {
++		dev_err(dev, "Unable to parse card name\n");
++		goto fail;
++	}
++	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
++	if (ret) {
++		dev_err(dev, "Unable to parse routing: %d\n", ret);
++		goto fail;
++	}
++	data->card.num_links = 1;
++	data->card.owner = THIS_MODULE;
++	data->card.dai_link = &data->dai;
++
++	ret = snd_soc_register_card(&data->card);
++	if (ret) {
++		dev_err(dev, "Unable to register: %d\n", ret);
++		goto fail;
++	}
++
++	platform_set_drvdata(pdev, data);
++fail:
++	if (ssi_np)
++		of_node_put(ssi_np);
++	if (codec_np)
++		of_node_put(codec_np);
++
++	return ret;
++}
++
++static int imx_es8328_remove(struct platform_device *pdev)
++{
++	struct imx_es8328_data *data = platform_get_drvdata(pdev);
++
++	snd_soc_jack_free_gpios(&headset_jack, ARRAY_SIZE(headset_jack_gpios),
++				headset_jack_gpios);
++
++	if (data->codec_clk)
++		clk_disable_unprepare(data->codec_clk);
++
++	snd_soc_unregister_card(&data->card);
++
++	return 0;
++}
++
++static const struct of_device_id imx_es8328_dt_ids[] = {
++	{ .compatible = "fsl,imx-audio-es8328", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, imx_es8328_dt_ids);
++
++static struct platform_driver imx_es8328_driver = {
++	.driver = {
++		.name = "imx-es8328",
++		.owner = THIS_MODULE,
++		.of_match_table = imx_es8328_dt_ids,
++	},
++	.probe = imx_es8328_probe,
++	.remove = imx_es8328_remove,
++};
++module_platform_driver(imx_es8328_driver);
++
++MODULE_AUTHOR("Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>");
++MODULE_DESCRIPTION("Kosagi i.MX6 ES8328 ASoC machine driver");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:imx-audio-es8328");
 -- 
 2.0.0
 
