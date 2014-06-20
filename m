@@ -1,40 +1,58 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v5 3/3] ASoC: fsl: add imx-es8328 machine
-	driver
-Date: Fri, 20 Jun 2014 11:57:00 +0100
-Message-ID: <20140620105700.GE3412@opensource.wolfsonmicro.com>
-References: <1403244859-22236-1-git-send-email-xobs@kosagi.com> <1403244859-22236-4-git-send-email-xobs@kosagi.com>
+From: Rajeev kumar <rajeev-dlh.kumar@st.com>
+Subject: Re: [PATCH 01/16] ASoC: cs4270: Remove redundant OOM
+ message
+Date: Fri, 20 Jun 2014 16:34:12 +0530
+Message-ID: <53A4152C.2050702@st.com>
+References: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1403244859-22236-4-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Cc: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 1AC1D261ABF
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 13:04:19 +0200 (CEST)
+In-Reply-To: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sachin Kamat <sachin.kamat@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "spk.linux@gmail.com" <spk.linux@gmail.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 20, 2014 at 02:14:19PM +0800, Sean Cross wrote:
-> This adds an initial machine driver for the ES8328 audio codec on Freescale
-> boards.  The driver supports headphones and an audio regulator for an onboard
-> speaker amp.
-> 
-> Signed-off-by: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+On 6/20/2014 3:28 PM, Sachin Kamat wrote:
+> Let memory subsystem handle the error logging.
+>
+> Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
 > ---
-<snip>
-> +static int imx_set_frequency(struct imx_es8328_data *data, int freq)
-> +{
-> +	int ret;
-> +
-> +	return ret;
-> +}
+>   sound/soc/codecs/cs4270.c |    4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+> index 9947a9583679..e6d4ff9fd992 100644
+> --- a/sound/soc/codecs/cs4270.c
+> +++ b/sound/soc/codecs/cs4270.c
+> @@ -664,10 +664,8 @@ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
+>
+>   	cs4270 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs4270_private),
+>   			      GFP_KERNEL);
+> -	if (!cs4270) {
+> -		dev_err(&i2c_client->dev, "could not allocate codec\n");
 
-This function returns an uninitialised variable and is not used
-anywhere, so I assume can be removed.
+You are just removing a information which are required in error condition.
+In my view it should be here..
 
-Thanks,
-Charles
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+~Rajeev
+
+> +	if (!cs4270)
+>   		return -ENOMEM;
+> -	}
+>
+>   	/* get the power supply regulators */
+>   	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
+>
