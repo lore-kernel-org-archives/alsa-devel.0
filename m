@@ -1,19 +1,19 @@
 From: Sachin Kamat <sachin.kamat@samsung.com>
-Subject: [PATCH 14/16] ASoC: wm8994: Remove redundant OOM
+Subject: [PATCH 15/16] ASoC: wm9090: Remove redundant OOM
 	message
-Date: Fri, 20 Jun 2014 15:29:10 +0530
-Message-ID: <1403258352-8210-14-git-send-email-sachin.kamat@samsung.com>
+Date: Fri, 20 Jun 2014 15:29:11 +0530
+Message-ID: <1403258352-8210-15-git-send-email-sachin.kamat@samsung.com>
 References: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f178.google.com (mail-pd0-f178.google.com
- [209.85.192.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 4860C261B2D
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 12:03:07 +0200 (CEST)
-Received: by mail-pd0-f178.google.com with SMTP id r10so2847756pdi.9
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 03:03:06 -0700 (PDT)
+Received: from mail-pb0-f42.google.com (mail-pb0-f42.google.com
+ [209.85.160.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C6662650A9
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 12:03:10 +0200 (CEST)
+Received: by mail-pb0-f42.google.com with SMTP id ma3so2944077pbc.15
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 03:03:09 -0700 (PDT)
 In-Reply-To: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,26 +32,24 @@ Let memory subsystem handle the error logging.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
 ---
- sound/soc/codecs/wm8994.c |    6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ sound/soc/codecs/wm9090.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 9719d3ca8e47..39d8df040116 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -3296,12 +3296,8 @@ static void wm8994_handle_pdata(struct wm8994_priv *wm8994)
- 		/* We need an array of texts for the enum API */
- 		wm8994->drc_texts = devm_kzalloc(wm8994->hubs.codec->dev,
- 			    sizeof(char *) * pdata->num_drc_cfgs, GFP_KERNEL);
--		if (!wm8994->drc_texts) {
--			dev_err(wm8994->hubs.codec->dev,
--				"Failed to allocate %d DRC config texts\n",
--				pdata->num_drc_cfgs);
-+		if (!wm8994->drc_texts)
- 			return;
--		}
+diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
+index 87934171f063..a13f0725611a 100644
+--- a/sound/soc/codecs/wm9090.c
++++ b/sound/soc/codecs/wm9090.c
+@@ -613,10 +613,8 @@ static int wm9090_i2c_probe(struct i2c_client *i2c,
+ 	int ret;
  
- 		for (i = 0; i < pdata->num_drc_cfgs; i++)
- 			wm8994->drc_texts[i] = pdata->drc_cfgs[i].name;
+ 	wm9090 = devm_kzalloc(&i2c->dev, sizeof(*wm9090), GFP_KERNEL);
+-	if (wm9090 == NULL) {
+-		dev_err(&i2c->dev, "Can not allocate memory\n");
++	if (!wm9090)
+ 		return -ENOMEM;
+-	}
+ 
+ 	wm9090->regmap = devm_regmap_init_i2c(i2c, &wm9090_regmap);
+ 	if (IS_ERR(wm9090->regmap)) {
 -- 
 1.7.9.5
