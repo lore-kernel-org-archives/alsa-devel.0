@@ -1,20 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 13/19] ASoC: Intel: mrfld: add bytes
- control for modules
-Date: Fri, 20 Jun 2014 17:00:13 +0530
-Message-ID: <20140620113013.GH22053@intel.com>
+Subject: Re: [PATCH 10/19] ASoC: Intel: add mrfld DSP registers
+Date: Fri, 20 Jun 2014 17:02:19 +0530
+Message-ID: <20140620113219.GI22053@intel.com>
 References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
- <1402662848-24534-14-git-send-email-vinod.koul@intel.com>
- <53A3ECAB.404@metafoo.de>
+ <1402662848-24534-11-git-send-email-vinod.koul@intel.com>
+ <53A3EF46.9000704@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id AF78D261A68
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 13:29:55 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28D6E261B1E
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 13:32:20 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <53A3ECAB.404@metafoo.de>
+In-Reply-To: <53A3EF46.9000704@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,44 +27,51 @@ To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 20, 2014 at 10:11:23AM +0200, Lars-Peter Clausen wrote:
-> On 06/13/2014 02:34 PM, Vinod Koul wrote:
-> >+static int sst_algo_control_set(struct snd_kcontrol *kcontrol,
-> >+				struct snd_ctl_elem_value *ucontrol)
+On Fri, Jun 20, 2014 at 10:22:30AM +0200, Lars-Peter Clausen wrote:
+> On 06/13/2014 02:33 PM, Vinod Koul wrote:
+> >+unsigned int sst_soc_read(struct snd_soc_platform *platform,
+> >+			unsigned int reg)
+> >+{
+> >+	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
+> >+
+> >+	pr_debug("%s: reg[%d] = %#x\n", __func__, reg, drv->widget[reg]);
+> >+	BUG_ON(reg > (SST_NUM_WIDGETS - 1));
+> >+	return drv->widget[reg];
+> >+}
+> >+
+> >+int sst_soc_write(struct snd_soc_platform *platform,
+> >+		  unsigned int reg, unsigned int val)
+> >+{
+> >+	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
+> >+
+> >+	pr_debug("%s: reg[%d] = %#x\n", __func__, reg, val);
+> >+	BUG_ON(reg > (SST_NUM_WIDGETS - 1));
+> >+	drv->widget[reg] = val;
+> >+	return 0;
+> >+}
+> 
+> These seem to be purely virtual registers, what is this about? The
+> DAPM core is able to handle widgets and controls without any
+> register backing just fine. There is no need to emulate virtual
+> registers.
+But we need to store the mixer configuration for sending IPCs to DSP. So virtual
+register file is very much required
+
+> >+
+> >+unsigned int sst_reg_read(struct sst_data *drv, unsigned int reg,
+> >+			  unsigned int shift, unsigned int max)
 > >+{
 > [...]
 > >+}
-> 
-> You probably want some kind of locking around the put and get handlers.
-Is that for prevting get/set races? I though the mixer implemention in
-sound/core would lock against that?
-
 > >+
-> >+static const struct snd_kcontrol_new sst_algo_controls[] = {
-> >+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
-> >+		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-> >+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "iir", 300, SST_MODULE_ID_IIR_24,
-> >+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-> >+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-> >+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-> >+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "fir", 272, SST_MODULE_ID_FIR_24,
-> >+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-> >+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "iir", 300, SST_MODULE_ID_IIR_24,
-> >+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-> >+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-> >+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-> >+	SST_ALGO_KCONTROL_BYTES("sprot_loop_out", "lpro", 192, SST_MODULE_ID_SPROT,
-> >+		SST_PATH_INDEX_SPROT_LOOP_OUT, 0, SST_TASK_SBA, SBA_VB_LPRO),
-> >+	SST_ALGO_KCONTROL_BYTES("codec_in0", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-> >+		SST_PATH_INDEX_CODEC_IN0, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-> >+	SST_ALGO_KCONTROL_BYTES("codec_in1", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-> >+		SST_PATH_INDEX_CODEC_IN1, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+> >+unsigned int sst_reg_write(struct sst_data *drv, unsigned int reg,
+> >+			   unsigned int shift, unsigned int max, unsigned int val)
+> >+{
+> [..]
+> >+}
 > 
-> 
-> You are creating a lot of global non-const variables here that are
-> later modified in the put and get handlers and also elsewhere.
-Sorry which ones above are modfied. Above values are information for headers of
-IPCs which we send to DSPs
+> How are these functions different from snd_soc_platform_{read,update_bits}()?
+Should be possible, I will check!
 
 -- 
 ~Vinod
