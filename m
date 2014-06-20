@@ -1,59 +1,67 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 00/19]: add mrfld DSP support
-Date: Fri, 20 Jun 2014 10:04:51 +0200
-Message-ID: <53A3EB23.4050302@metafoo.de>
-References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-236.synserver.de (smtp-out-238.synserver.de
- [212.40.185.238])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B9CD2610AA
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 10:04:51 +0200 (CEST)
-In-Reply-To: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+From: Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: [PATCH 1/2] ASoC: max98090: Add max98091 compatible string
+Date: Fri, 20 Jun 2014 13:33:15 +0530
+Message-ID: <1403251396-17487-1-git-send-email-tushar.b@samsung.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, kgene.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/13/2014 02:33 PM, Vinod Koul wrote:
-> Here is the split patch series for adding DSP support for Intel's merrfield
-> platform.
->
-> The last patch si mxer update patch which we have been discussing over the list.
-> This is only for discussion and sake of complteness. For that patch we need the
-> dapm_kcontrol_get/set series to do merged OR patch to be reworked after
-> compenent series
+From: Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 
-Hi,
+The MAX98091 CODEC is the same as MAX98090 CODEC, but with an extra
+microphone. Existing driver for MAX98090 CODEC already has support
+for MAX98091 CODEC. Adding proper compatible string so that MAX98091
+CODEC can be specified from device tree.
 
-Some general feedback on this series.
+Signed-off-by: Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Signed-off-by: Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Signed-off-by: Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+---
 
-You are often accessing data structures which are more or less internal to 
-the DAPM core, all without doing any of the necessary locking. Those are in 
-particular the widget and path structures. This access in the driver will 
-make it harder to make modifications to the core as you'd not only 
-understand the core but also the special semantics that this driver puts on 
-those data structures. If you think the core does not provide what you need 
-try to extend the core with helper functions, with well defined semantics, 
-that do what you need.
+Picked from https://chromium-review.googlesource.com/#/c/184091/
 
-Also this series is a bit of a step backwards in terms of 
-compartmentalization as it re-introduces things that we've been trying to 
-get rid of over the last few months:
-  * Don't access widget->platform or dapm->platform, use 
-snd_soc_dapm_to_platform()
-* Don't access dai->platform, use rtd->platform.
-* Use regmap for IO instead of the read/write callbacks in the 
-platform_driver struct.
+ .../devicetree/bindings/sound/max98090.txt         |    2 +-
+ sound/soc/codecs/max98090.c                        |    2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-- Lars
+diff --git a/Documentation/devicetree/bindings/sound/max98090.txt b/Documentation/devicetree/bindings/sound/max98090.txt
+index a5e63fa..c454e67 100644
+--- a/Documentation/devicetree/bindings/sound/max98090.txt
++++ b/Documentation/devicetree/bindings/sound/max98090.txt
+@@ -4,7 +4,7 @@ This device supports I2C only.
+ 
+ Required properties:
+ 
+-- compatible : "maxim,max98090".
++- compatible : "maxim,max98090" or "maxim,max98091".
+ 
+ - reg : The I2C address of the device.
+ 
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index f5fccc7..4f5534d 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2460,12 +2460,14 @@ static const struct dev_pm_ops max98090_pm = {
+ 
+ static const struct i2c_device_id max98090_i2c_id[] = {
+ 	{ "max98090", MAX98090 },
++	{ "max98091", MAX98091 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, max98090_i2c_id);
+ 
+ static const struct of_device_id max98090_of_match[] = {
+ 	{ .compatible = "maxim,max98090", },
++	{ .compatible = "maxim,max98091", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, max98090_of_match);
+-- 
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
