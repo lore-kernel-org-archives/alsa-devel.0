@@ -1,131 +1,141 @@
-From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH v5 2/3] ASoC: add es8328 codec driver
-Date: Fri, 20 Jun 2014 14:14:18 +0800
-Message-ID: <1403244859-22236-3-git-send-email-xobs@kosagi.com>
-References: <1403244859-22236-1-git-send-email-xobs@kosagi.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1403244859-22236-1-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+From: <bardliao@realtek.com>
+Subject: [PATCH v7] ASoC: add RT286 CODEC driver
+Date: Fri, 20 Jun 2014 14:41:13 +0800
+Message-ID: <1403246473-11055-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEB15261735
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 08:41:36 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, Bard Liao <bardliao@realtek.com>, Gustaw Lewandowski <gustaw.lewandowski@intel.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Add a codec driver for the Everest ES8328.  It supports two separate audio
-outputs and two separate audio inputs.
+From: Bard Liao <bardliao@realtek.com>
 
-Signed-off-by: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+This patch adds Realtek ALC286 codec driver.
+
+ALC286 is a dual mode codec, which can run as HD-A or I2S mode.
+It is controlled by HD-A verb commands via I2C protocol.
+The following is the I/O difference between ALC286 and general I2S codecs.
+1. A HD-A verb command contains three parts, NID, VID, and PID.
+   And an I2S command contains only two parts: address and data.
+2. Not only the register address is written, but the read command also
+   includes the entire write command.
+3. rt286 uses different registers for read and write the same bits.
+
+We map verb command to regmap structure. However, we read most registers from
+cache to prevent the asymmetry read/write issue in rt286.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Gustaw Lewandowski <gustaw.lewandowski@intel.com>
 ---
- Documentation/devicetree/bindings/sound/es8328.txt |  24 +
- sound/soc/codecs/Kconfig                           |  13 +
- sound/soc/codecs/Makefile                          |   6 +
- sound/soc/codecs/es8328-i2c.c                      |  60 ++
- sound/soc/codecs/es8328-spi.c                      |  49 ++
- sound/soc/codecs/es8328.c                          | 694 +++++++++++++++++++++
- sound/soc/codecs/es8328.h                          | 313 ++++++++++
- 7 files changed, 1159 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
- create mode 100644 sound/soc/codecs/es8328-i2c.c
- create mode 100644 sound/soc/codecs/es8328-spi.c
- create mode 100644 sound/soc/codecs/es8328.c
- create mode 100644 sound/soc/codecs/es8328.h
+The jack detection function is done by Lewandowski Gustaw.
+So I add Gustaw's Signed-off-by line in this patch
 
-diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
+The difference between this version and previous version is listed below.
+* Use regmap for IO control.
+
+---
+ include/sound/rt286.h     |   19 +
+ sound/soc/codecs/Kconfig  |    4 +
+ sound/soc/codecs/Makefile |    2 +
+ sound/soc/codecs/rt286.c  | 1208 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/rt286.h  |  193 ++++++++
+ 5 files changed, 1426 insertions(+)
+ create mode 100644 include/sound/rt286.h
+ create mode 100644 sound/soc/codecs/rt286.c
+ create mode 100644 sound/soc/codecs/rt286.h
+
+diff --git a/include/sound/rt286.h b/include/sound/rt286.h
 new file mode 100644
-index 0000000..8c3c39d
+index 0000000..eb773d1
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/es8328.txt
-@@ -0,0 +1,24 @@
-+Everest ES8328 audio CODEC
++++ b/include/sound/rt286.h
+@@ -0,0 +1,19 @@
++/*
++ * linux/sound/rt286.h -- Platform data for RT286
++ *
++ * Copyright 2013 Realtek Microelectronics
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
 +
-+This device supports both I2C and SPI (configured with pin strapping
-+on the board).
++#ifndef __LINUX_SND_RT286_H
++#define __LINUX_SND_RT286_H
 +
-+Required properties:
-+
-+  - compatible : "everest,es8328"
-+  - DVDD-supply : Regulator providing digital core supply voltage 1.8 - 3.6V
-+  - AVDD-supply : Regulator providing analog supply voltage 3.3V
-+  - PVDD-supply : Regulator providing digital IO supply voltage 1.8 - 3.6V
-+  - IPVDD-supply : Regulator providing analog output voltage 3.3V
-+  - reg : the I2C address of the device for I2C, the chip select number for SPI
-+
-+Example:
-+
-+codec: es8328@11 {
-+	compatible = "everest,es8328";
-+	DVDD-supply = <&reg_3p3v>;
-+	AVDD-supply = <&reg_3p3v>;
-+	PVDD-supply = <&reg_3p3v>;
-+	HPVDD-supply = <&reg_3p3v>;
-+	reg = <0x11>;
++struct rt286_platform_data {
++	bool cbj_en; /*combo jack enable*/
++	bool gpio2_en; /*GPIO2 enable*/
 +};
++
++#endif
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index cbfa1e1..6a509e3 100644
+index 7541fa7..1c5eee3 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -56,6 +56,8 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_DA732X if I2C
- 	select SND_SOC_DA9055 if I2C
- 	select SND_SOC_BT_SCO
-+	select SND_SOC_ES8328_SPI if SPI_MASTER
-+	select SND_SOC_ES8328_I2C if I2C
- 	select SND_SOC_ISABELLE if I2C
- 	select SND_SOC_JZ4740_CODEC
- 	select SND_SOC_LM4857 if I2C
-@@ -396,6 +398,17 @@ config SND_SOC_DMIC
- config SND_SOC_HDMI_CODEC
-        tristate "HDMI stub CODEC"
+@@ -74,6 +74,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_PCM3008
+ 	select SND_SOC_PCM512x_I2C if I2C
+ 	select SND_SOC_PCM512x_SPI if SPI_MASTER
++	select SND_SOC_RT286 if I2C
+ 	select SND_SOC_RT5631 if I2C
+ 	select SND_SOC_RT5640 if I2C
+ 	select SND_SOC_RT5645 if I2C
+@@ -451,6 +452,9 @@ config SND_SOC_RL6231
+ 	default m if SND_SOC_RT5651=m
+ 	default m if SND_SOC_RT5677=m
  
-+config SND_SOC_ES8328
-+	tristate "Everest Semi ES8328 CODEC"
-+
-+config SND_SOC_ES8328_I2C
++config SND_SOC_RT286
 +	tristate
-+	select SND_SOC_ES8328
 +
-+config SND_SOC_ES8328_SPI
-+	tristate
-+	select SND_SOC_ES8328
-+
- config SND_SOC_ISABELLE
-         tristate
+ config SND_SOC_RT5631
+ 	tristate
  
 diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index be3377b..66e7859 100644
+index 1bd6e1c..3302f95 100644
 --- a/sound/soc/codecs/Makefile
 +++ b/sound/soc/codecs/Makefile
-@@ -48,6 +48,9 @@ snd-soc-da732x-objs := da732x.o
- snd-soc-da9055-objs := da9055.o
- snd-soc-bt-sco-objs := bt-sco.o
- snd-soc-dmic-objs := dmic.o
-+snd-soc-es8328-objs := es8328.o
-+snd-soc-es8328-i2c-objs := es8328-i2c.o
-+snd-soc-es8328-spi-objs := es8328-spi.o
- snd-soc-isabelle-objs := isabelle.o
- snd-soc-jz4740-codec-objs := jz4740.o
- snd-soc-l3-objs := l3.o
-@@ -213,6 +216,9 @@ obj-$(CONFIG_SND_SOC_DA732X)	+= snd-soc-da732x.o
- obj-$(CONFIG_SND_SOC_DA9055)	+= snd-soc-da9055.o
- obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
- obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
-+obj-$(CONFIG_SND_SOC_ES8328)	+= snd-soc-es8328.o
-+obj-$(CONFIG_SND_SOC_ES8328_I2C)+= snd-soc-es8328-i2c.o
-+obj-$(CONFIG_SND_SOC_ES8328_SPI)+= snd-soc-es8328-spi.o
- obj-$(CONFIG_SND_SOC_ISABELLE)	+= snd-soc-isabelle.o
- obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
- obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
-diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
+@@ -68,6 +68,7 @@ snd-soc-pcm512x-objs := pcm512x.o
+ snd-soc-pcm512x-i2c-objs := pcm512x-i2c.o
+ snd-soc-pcm512x-spi-objs := pcm512x-spi.o
+ snd-soc-rl6231-objs := rl6231.o
++snd-soc-rt286-objs := rt286.o
+ snd-soc-rt5631-objs := rt5631.o
+ snd-soc-rt5640-objs := rt5640.o
+ snd-soc-rt5645-objs := rt5645.o
+@@ -235,6 +236,7 @@ obj-$(CONFIG_SND_SOC_PCM512x)	+= snd-soc-pcm512x.o
+ obj-$(CONFIG_SND_SOC_PCM512x_I2C)	+= snd-soc-pcm512x-i2c.o
+ obj-$(CONFIG_SND_SOC_PCM512x_SPI)	+= snd-soc-pcm512x-spi.o
+ obj-$(CONFIG_SND_SOC_RL6231)	+= snd-soc-rl6231.o
++obj-$(CONFIG_SND_SOC_RT286)	+= snd-soc-rt286.o
+ obj-$(CONFIG_SND_SOC_RT5631)	+= snd-soc-rt5631.o
+ obj-$(CONFIG_SND_SOC_RT5640)	+= snd-soc-rt5640.o
+ obj-$(CONFIG_SND_SOC_RT5645)	+= snd-soc-rt5645.o
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
 new file mode 100644
-index 0000000..aae410d
+index 0000000..acfba9c
 --- /dev/null
-+++ b/sound/soc/codecs/es8328-i2c.c
-@@ -0,0 +1,60 @@
++++ b/sound/soc/codecs/rt286.c
+@@ -0,0 +1,1208 @@
 +/*
-+ * es8328-i2c.c  --  ES8328 ALSA SoC I2C Audio driver
++ * rt286.c  --  RT286 ALSA SoC audio codec driver
 + *
-+ * Copyright 2014 Sutajio Ko-Usagi PTE LTD
-+ *
-+ * Author: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
++ * Copyright 2013 Realtek Semiconductor Corp.
++ * Author: Bard Liao <bardliao@realtek.com>
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
@@ -133,1131 +143,1400 @@ index 0000000..aae410d
 + */
 +
 +#include <linux/module.h>
-+#include <linux/i2c.h>
-+#include <linux/regmap.h>
-+
-+#include <sound/soc.h>
-+
-+#include "es8328.h"
-+
-+static const struct i2c_device_id es8328_id[] = {
-+	{ "everest,es8328", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, es8328_id);
-+
-+static const struct of_device_id es8328_of_match[] = {
-+	{ .compatible = "everest,es8328", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, es8328_of_match);
-+
-+static int es8328_i2c_probe(struct i2c_client *i2c,
-+			    const struct i2c_device_id *id)
-+{
-+	return es8328_probe(&i2c->dev,
-+			devm_regmap_init_i2c(i2c, &es8328_regmap_config));
-+}
-+
-+static int es8328_i2c_remove(struct i2c_client *i2c)
-+{
-+	snd_soc_unregister_codec(&i2c->dev);
-+	return 0;
-+}
-+
-+static struct i2c_driver es8328_i2c_driver = {
-+	.driver = {
-+		.name		= "es8328",
-+		.of_match_table = es8328_of_match,
-+	},
-+	.probe    = es8328_i2c_probe,
-+	.remove   = es8328_i2c_remove,
-+	.id_table = es8328_id,
-+};
-+
-+module_i2c_driver(es8328_i2c_driver);
-+
-+MODULE_DESCRIPTION("ASoC ES8328 audio CODEC I2C driver");
-+MODULE_AUTHOR("Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/es8328-spi.c b/sound/soc/codecs/es8328-spi.c
-new file mode 100644
-index 0000000..8fbd935
---- /dev/null
-+++ b/sound/soc/codecs/es8328-spi.c
-@@ -0,0 +1,49 @@
-+/*
-+ * es8328.c  --  ES8328 ALSA SoC SPI Audio driver
-+ *
-+ * Copyright 2014 Sutajio Ko-Usagi PTE LTD
-+ *
-+ * Author: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/spi/spi.h>
-+#include <sound/soc.h>
-+#include "es8328.h"
-+
-+static const struct of_device_id es8328_of_match[] = {
-+	{ .compatible = "everest,es8328", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, es8328_of_match);
-+
-+static int es8328_spi_probe(struct spi_device *spi)
-+{
-+	return es8328_probe(&spi->dev,
-+			devm_regmap_init_spi(spi, &es8328_regmap_config));
-+}
-+
-+static int es8328_spi_remove(struct spi_device *spi)
-+{
-+	snd_soc_unregister_codec(&spi->dev);
-+	return 0;
-+}
-+
-+static struct spi_driver es8328_spi_driver = {
-+	.driver = {
-+		.name		= "es8328",
-+		.of_match_table	= es8328_of_match,
-+	},
-+	.probe	= es8328_spi_probe,
-+	.remove	= es8328_spi_remove,
-+};
-+
-+module_spi_driver(es8328_spi_driver);
-+MODULE_DESCRIPTION("ASoC ES8328 audio CODEC SPI driver");
-+MODULE_AUTHOR("Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-new file mode 100644
-index 0000000..6a5816c
---- /dev/null
-+++ b/sound/soc/codecs/es8328.c
-@@ -0,0 +1,694 @@
-+/*
-+ * es8328.c  --  ES8328 ALSA SoC Audio driver
-+ *
-+ * Copyright 2014 Sutajio Ko-Usagi PTE LTD
-+ *
-+ * Author: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
 +#include <linux/delay.h>
 +#include <linux/pm.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/of_device.h>
-+#include <linux/regulator/consumer.h>
++#include <linux/i2c.h>
++#include <linux/platform_device.h>
++#include <linux/spi/spi.h>
++#include <linux/acpi.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
++#include <sound/soc-dapm.h>
 +#include <sound/initval.h>
 +#include <sound/tlv.h>
-+#include "es8328.h"
++#include <sound/jack.h>
++#include <linux/workqueue.h>
++#include <sound/rt286.h>
++#include <sound/hda_verbs.h>
 +
-+/* Run the codec at 22.5792 MHz to support these rates */
-+enum es8328_rate {
-+	ES8328_RATE_8019,
-+	ES8328_RATE_11025,
-+	ES8328_RATE_22050,
-+	ES8328_RATE_44100,
-+};
++#include "rt286.h"
 +
-+#define ES8328_SYSCLK_FREQ 22579200
++#define RT286_VENDOR_ID 0x10ec0286
 +
-+uint8_t es8328_sample_ratios[] = {
-+	[ES8328_RATE_8019]  = 0x9,
-+	[ES8328_RATE_11025] = 0x7,
-+	[ES8328_RATE_22050] = 0x4,
-+	[ES8328_RATE_44100] = 0x2,
-+};
-+
-+/* regulator supplies for sgtl5000, VDDD is an optional external supply */
-+enum sgtl5000_regulator_supplies {
-+	DVDD,
-+	AVDD,
-+	PVDD,
-+	HPVDD,
-+	ES8328_SUPPLY_NUM
-+};
-+
-+/* vddd is optional supply */
-+static const char * const supply_names[ES8328_SUPPLY_NUM] = {
-+	"DVDD",
-+	"AVDD",
-+	"PVDD",
-+	"HPVDD",
-+};
-+
-+#define ES8328_RATES (SNDRV_PCM_RATE_44100 | \
-+		SNDRV_PCM_RATE_22050 | \
-+		SNDRV_PCM_RATE_11025)
-+#define ES8328_FORMATS (SNDRV_PCM_FMTBIT_S16_LE)
-+
-+struct es8328_priv {
++struct rt286_priv {
 +	struct regmap *regmap;
-+	int sysclk;
-+	int playback_fs;
-+	bool deemph;
-+	struct regulator_bulk_data supplies[ES8328_SUPPLY_NUM];
++	struct snd_soc_codec *codec;
++	struct rt286_platform_data pdata;
++	struct i2c_client *i2c;
++	struct snd_soc_jack *jack;
++	struct delayed_work jack_detect_work;
++	int sys_clk;
++	struct reg_default *index_cache;
 +};
 +
-+/*
-+ * ES8328 Controls
-+ */
++static struct reg_default rt286_index_def[] = {
++	{ 0x01, 0xaaaa },
++	{ 0x02, 0x8aaa },
++	{ 0x03, 0x0002 },
++	{ 0x04, 0xaf01 },
++	{ 0x08, 0x000d },
++	{ 0x09, 0xd810 },
++	{ 0x0a, 0x0060 },
++	{ 0x0b, 0x0000 },
++	{ 0x0f, 0x0000 },
++	{ 0x19, 0x0a17 },
++	{ 0x20, 0x0020 },
++	{ 0x33, 0x0208 },
++	{ 0x49, 0x0004 },
++	{ 0x4f, 0x50e9 },
++	{ 0x50, 0x2c00 },
++	{ 0x63, 0x2902 },
++};
++#define INDEX_CACHE_SIZE ARRAY_SIZE(rt286_index_def)
 +
-+static const char * const adcpol_txt[] = {"Normal", "L Invert", "R Invert",
-+					  "L + R Invert"};
-+static SOC_ENUM_SINGLE_DECL(adcpol,
-+			    ES8328_ADCCONTROL6, 6, adcpol_txt);
++static const struct reg_default rt286_reg[] = {
++	{ 0x00170500, 0x00000400 },
++	{ 0x00220000, 0x00000031 },
++	{ 0x00239000, 0x0000007f },
++	{ 0x0023a000, 0x0000007f },
++	{ 0x00270500, 0x00000400 },
++	{ 0x00370500, 0x00000400 },
++	{ 0x00870500, 0x00000400 },
++	{ 0x00920000, 0x00000031 },
++	{ 0x00935000, 0x000000c3 },
++	{ 0x00936000, 0x000000c3 },
++	{ 0x00970500, 0x00000400 },
++	{ 0x00b37000, 0x00000097 },
++	{ 0x00b37200, 0x00000097 },
++	{ 0x00b37300, 0x00000097 },
++	{ 0x00c37000, 0x00000000 },
++	{ 0x00c37100, 0x00000080 },
++	{ 0x01270500, 0x00000400 },
++	{ 0x01370500, 0x00000400 },
++	{ 0x01371f00, 0x411111f0 },
++	{ 0x01439000, 0x00000080 },
++	{ 0x0143a000, 0x00000080 },
++	{ 0x01470700, 0x00000000 },
++	{ 0x01470500, 0x00000400 },
++	{ 0x01470c00, 0x00000000 },
++	{ 0x01470100, 0x00000000 },
++	{ 0x01837000, 0x00000000 },
++	{ 0x01870500, 0x00000400 },
++	{ 0x02050000, 0x00000000 },
++	{ 0x02139000, 0x00000080 },
++	{ 0x0213a000, 0x00000080 },
++	{ 0x02170100, 0x00000000 },
++	{ 0x02170500, 0x00000400 },
++	{ 0x02170700, 0x00000000 },
++	{ 0x02270100, 0x00000000 },
++	{ 0x02370100, 0x00000000 },
++	{ 0x02040000, 0x00004002 },
++	{ 0x01870700, 0x00000020 },
++	{ 0x00830000, 0x000000c3 },
++	{ 0x00930000, 0x000000c3 },
++	{ 0x01270700, 0x00000000 },
++};
 +
-+static const DECLARE_TLV_DB_SCALE(play_tlv, -3000, 100, 0);
-+static const DECLARE_TLV_DB_SCALE(dac_adc_tlv, -9600, 50, 0);
-+static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 300, 0);
-+static const DECLARE_TLV_DB_SCALE(bypass_tlv, -1500, 300, 0);
-+static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 300, 0);
-+
-+static const int deemph_settings[] = { 0, 32000, 44100, 48000 };
-+
-+static int es8328_set_deemph(struct snd_soc_codec *codec)
++static bool rt286_volatile_register(struct device *dev, unsigned int reg)
 +{
-+	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
-+	int val, i, best;
-+
-+	/*
-+	 * If we're using deemphasis select the nearest available sample
-+	 * rate.
-+	 */
-+	if (es8328->deemph) {
-+		best = 1;
-+		for (i = 2; i < ARRAY_SIZE(deemph_settings); i++) {
-+			if (abs(deemph_settings[i] - es8328->playback_fs) <
-+			    abs(deemph_settings[best] - es8328->playback_fs))
-+				best = i;
-+		}
-+
-+		val = best << 1;
-+	} else {
-+		val = 0;
++	switch (reg) {
++	case 0 ... 0xff:
++	case RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID):
++	case RT286_GET_HP_SENSE:
++	case RT286_GET_MIC1_SENSE:
++	case RT286_PROC_COEF:
++		return true;
++	default:
++		return false;
 +	}
 +
-+	dev_dbg(codec->dev, "Set deemphasis %d\n", val);
 +
-+	return snd_soc_update_bits(codec, ES8328_DACCONTROL6, 0x6, val);
 +}
 +
-+static int es8328_get_deemph(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
++static bool rt286_readable_register(struct device *dev, unsigned int reg)
 +{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
-+
-+	ucontrol->value.enumerated.item[0] = es8328->deemph;
-+	return 0;
++	switch (reg) {
++	case 0 ... 0xff:
++	case RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID):
++	case RT286_GET_HP_SENSE:
++	case RT286_GET_MIC1_SENSE:
++	case RT286_SET_AUDIO_POWER:
++	case RT286_SET_HPO_POWER:
++	case RT286_SET_SPK_POWER:
++	case RT286_SET_DMIC1_POWER:
++	case RT286_SPK_MUX:
++	case RT286_HPO_MUX:
++	case RT286_ADC0_MUX:
++	case RT286_ADC1_MUX:
++	case RT286_SET_MIC1:
++	case RT286_SET_PIN_HPO:
++	case RT286_SET_PIN_SPK:
++	case RT286_SET_PIN_DMIC1:
++	case RT286_SPK_EAPD:
++	case RT286_SET_AMP_GAIN_HPO:
++	case RT286_SET_DMIC2_DEFAULT:
++	case RT286_DACL_GAIN:
++	case RT286_DACR_GAIN:
++	case RT286_ADCL_GAIN:
++	case RT286_ADCR_GAIN:
++	case RT286_MIC_GAIN:
++	case RT286_SPOL_GAIN:
++	case RT286_SPOR_GAIN:
++	case RT286_HPOL_GAIN:
++	case RT286_HPOR_GAIN:
++	case RT286_F_DAC_SWITCH:
++	case RT286_F_RECMIX_SWITCH:
++	case RT286_REC_MIC_SWITCH:
++	case RT286_REC_I2S_SWITCH:
++	case RT286_REC_LINE_SWITCH:
++	case RT286_REC_BEEP_SWITCH:
++	case RT286_DAC_FORMAT:
++	case RT286_ADC_FORMAT:
++	case RT286_COEF_INDEX:
++	case RT286_PROC_COEF:
++	case RT286_SET_AMP_GAIN_ADC_IN1:
++	case RT286_SET_AMP_GAIN_ADC_IN2:
++	case RT286_SET_POWER(RT286_DAC_OUT1):
++	case RT286_SET_POWER(RT286_DAC_OUT2):
++	case RT286_SET_POWER(RT286_ADC_IN1):
++	case RT286_SET_POWER(RT286_ADC_IN2):
++	case RT286_SET_POWER(RT286_DMIC2):
++	case RT286_SET_POWER(RT286_MIC1):
++		return true;
++	default:
++		return false;
++	}
 +}
 +
-+static int es8328_put_deemph(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
++static int rt286_hw_write(void *context, unsigned int reg, unsigned int value)
 +{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
-+	int deemph = ucontrol->value.enumerated.item[0];
-+	int ret;
++	struct i2c_client *client = context;
++	struct rt286_priv *rt286 = i2c_get_clientdata(client);
++	u8 data[4];
++	int ret, i;
 +
-+	if (deemph > 1)
-+		return -EINVAL;
++	/*handle index registers*/
++	if (reg <= 0xff) {
++		rt286_hw_write(client, RT286_COEF_INDEX, reg);
++		reg = RT286_PROC_COEF;
++		for (i = 0; i < INDEX_CACHE_SIZE; i++) {
++			if (reg == rt286->index_cache[i].reg) {
++				rt286->index_cache[i].def = value;
++				break;
++			}
 +
-+	ret = es8328_set_deemph(codec);
++		}
++	}
++
++	data[0] = (reg >> 24) & 0xff;
++	data[1] = (reg >> 16) & 0xff;
++	/*
++	 * 4 bit VID: reg should be 0
++	 * 12 bit VID: value should be 0
++	 * So we use an OR operator to handle it rather than use if condition.
++	 */
++	data[2] = ((reg >> 8) & 0xff) | ((value >> 8) & 0xff);
++	data[3] = value & 0xff;
++
++	ret = i2c_master_send(client, data, 4);
++
++	if (ret == 4)
++		return 0;
++	else
++		pr_err("ret=%d\n", ret);
 +	if (ret < 0)
 +		return ret;
++	else
++		return -EIO;
++}
 +
-+	es8328->deemph = deemph;
++static int rt286_hw_read(void *context, unsigned int reg, unsigned int *value)
++{
++	struct i2c_client *client = context;
++	struct i2c_msg xfer[2];
++	int ret;
++	__be32 be_reg;
++	unsigned int index, vid, buf = 0x0;
++
++	/*handle index registers*/
++	if (reg <= 0xff) {
++		rt286_hw_write(client, RT286_COEF_INDEX, reg);
++		reg = RT286_PROC_COEF;
++	}
++
++	reg = reg | 0x80000;
++	vid = (reg >> 8) & 0xfff;
++
++	if (AC_VERB_GET_AMP_GAIN_MUTE == (vid & 0xf00)) {
++		index = (reg >> 8) & 0xf;
++		reg = (reg & ~0xf0f) | index;
++	}
++	be_reg = cpu_to_be32(reg);
++
++	/* Write register */
++	xfer[0].addr = client->addr;
++	xfer[0].flags = 0;
++	xfer[0].len = 4;
++	xfer[0].buf = (u8 *)&be_reg;
++
++	/* Read data */
++	xfer[1].addr = client->addr;
++	xfer[1].flags = I2C_M_RD;
++	xfer[1].len = 4;
++	xfer[1].buf = (u8 *)&buf;
++
++	ret = i2c_transfer(client->adapter, xfer, 2);
++	if (ret < 0)
++		return ret;
++	else if (ret != 2)
++		return -EIO;
++
++	*value = be32_to_cpu(buf);
 +
 +	return 0;
 +}
 +
-+
-+
-+static const struct snd_kcontrol_new es8328_snd_controls[] = {
-+	SOC_DOUBLE_R_TLV("Capture Digital Volume",
-+		ES8328_ADCCONTROL8, ES8328_ADCCONTROL9,
-+		 0, 0xc0, 1, dac_adc_tlv),
-+	SOC_SINGLE("Capture ZC Switch", ES8328_ADCCONTROL7, 6, 1, 0),
-+
-+	SOC_SINGLE_BOOL_EXT("DAC Deemphasis Switch", 0,
-+		    es8328_get_deemph, es8328_put_deemph),
-+
-+	SOC_ENUM("Capture Polarity", adcpol),
-+
-+	SOC_SINGLE_TLV("Left Mixer Left Bypass Volume",
-+			ES8328_DACCONTROL17, 3, 7, 1, bypass_tlv),
-+	SOC_SINGLE_TLV("Left Mixer Right Bypass Volume",
-+			ES8328_DACCONTROL19, 3, 7, 1, bypass_tlv),
-+	SOC_SINGLE_TLV("Right Mixer Left Bypass Volume",
-+			ES8328_DACCONTROL18, 3, 7, 1, bypass_tlv),
-+	SOC_SINGLE_TLV("Right Mixer Right Bypass Volume",
-+			ES8328_DACCONTROL20, 3, 7, 1, bypass_tlv),
-+
-+	SOC_DOUBLE_R_TLV("PCM Volume",
-+			ES8328_LDACVOL, ES8328_RDACVOL,
-+			0, ES8328_DACVOL_MAX, 1, dac_adc_tlv),
-+
-+	SOC_DOUBLE_R_TLV("Output 1 Playback Volume",
-+			ES8328_LOUT1VOL, ES8328_ROUT1VOL,
-+			0, ES8328_OUT1VOL_MAX, 0, play_tlv),
-+
-+	SOC_DOUBLE_R_TLV("Output 2 Playback Volume",
-+			ES8328_LOUT2VOL, ES8328_ROUT2VOL,
-+			0, ES8328_OUT2VOL_MAX, 0, play_tlv),
-+
-+	SOC_DOUBLE_TLV("Mic PGA Volume", ES8328_ADCCONTROL1,
-+			4, 0, 8, 0, mic_tlv),
-+};
-+
-+/*
-+ * DAPM Controls
-+ */
-+
-+static const char * const es8328_line_texts[] = {
-+	"Line 1", "Line 2", "PGA", "Differential"};
-+
-+static const struct soc_enum es8328_lline_enum =
-+	SOC_ENUM_SINGLE(ES8328_DACCONTROL16, 3,
-+			      ARRAY_SIZE(es8328_line_texts),
-+			      es8328_line_texts);
-+static const struct snd_kcontrol_new es8328_left_line_controls =
-+	SOC_DAPM_ENUM("Route", es8328_lline_enum);
-+
-+static const struct soc_enum es8328_rline_enum =
-+	SOC_ENUM_SINGLE(ES8328_DACCONTROL16, 0,
-+			      ARRAY_SIZE(es8328_line_texts),
-+			      es8328_line_texts);
-+static const struct snd_kcontrol_new es8328_right_line_controls =
-+	SOC_DAPM_ENUM("Route", es8328_lline_enum);
-+
-+/* Left Mixer */
-+static const struct snd_kcontrol_new es8328_left_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL17, 8, 1, 0),
-+	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL17, 7, 1, 0),
-+	SOC_DAPM_SINGLE("Right Playback Switch", ES8328_DACCONTROL18, 8, 1, 0),
-+	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL18, 7, 1, 0),
-+};
-+
-+/* Right Mixer */
-+static const struct snd_kcontrol_new es8328_right_mixer_controls[] = {
-+	SOC_DAPM_SINGLE("Left Playback Switch", ES8328_DACCONTROL19, 8, 1, 0),
-+	SOC_DAPM_SINGLE("Left Bypass Switch", ES8328_DACCONTROL19, 7, 1, 0),
-+	SOC_DAPM_SINGLE("Playback Switch", ES8328_DACCONTROL20, 8, 1, 0),
-+	SOC_DAPM_SINGLE("Right Bypass Switch", ES8328_DACCONTROL20, 7, 1, 0),
-+};
-+
-+static const char * const es8328_pga_sel[] = {
-+	"Line 1", "Line 2", "Line 3", "Differential"};
-+
-+/* Left PGA Mux */
-+static const struct soc_enum es8328_lpga_enum =
-+	SOC_ENUM_SINGLE(ES8328_ADCCONTROL2, 6,
-+			      ARRAY_SIZE(es8328_pga_sel),
-+			      es8328_pga_sel);
-+static const struct snd_kcontrol_new es8328_left_pga_controls =
-+	SOC_DAPM_ENUM("Route", es8328_lpga_enum);
-+
-+/* Right PGA Mux */
-+static const struct soc_enum es8328_rpga_enum =
-+	SOC_ENUM_SINGLE(ES8328_ADCCONTROL2, 4,
-+			      ARRAY_SIZE(es8328_pga_sel),
-+			      es8328_pga_sel);
-+static const struct snd_kcontrol_new es8328_right_pga_controls =
-+	SOC_DAPM_ENUM("Route", es8328_rpga_enum);
-+
-+/* Differential Mux */
-+static const char * const es8328_diff_sel[] = {"Line 1", "Line 2"};
-+static SOC_ENUM_SINGLE_DECL(diffmux,
-+			    ES8328_ADCCONTROL3, 7, es8328_diff_sel);
-+static const struct snd_kcontrol_new es8328_diffmux_controls =
-+	SOC_DAPM_ENUM("Route", diffmux);
-+
-+/* Mono ADC Mux */
-+static const char * const es8328_mono_mux[] = {"Stereo", "Mono (Left)",
-+	"Mono (Right)", "Digital Mono"};
-+static SOC_ENUM_SINGLE_DECL(monomux,
-+			    ES8328_ADCCONTROL3, 3, es8328_mono_mux);
-+static const struct snd_kcontrol_new es8328_monomux_controls =
-+	SOC_DAPM_ENUM("Route", monomux);
-+
-+static const struct snd_soc_dapm_widget es8328_dapm_widgets[] = {
-+	SND_SOC_DAPM_MUX("Differential Mux", SND_SOC_NOPM, 0, 0,
-+		&es8328_diffmux_controls),
-+	SND_SOC_DAPM_MUX("Left ADC Mux", SND_SOC_NOPM, 0, 0,
-+		&es8328_monomux_controls),
-+	SND_SOC_DAPM_MUX("Right ADC Mux", SND_SOC_NOPM, 0, 0,
-+		&es8328_monomux_controls),
-+
-+	SND_SOC_DAPM_MUX("Left PGA Mux", ES8328_ADCPOWER,
-+			ES8328_ADCPOWER_AINL_OFF, 1,
-+			&es8328_left_pga_controls),
-+	SND_SOC_DAPM_MUX("Right PGA Mux", ES8328_ADCPOWER,
-+			ES8328_ADCPOWER_AINR_OFF, 1,
-+			&es8328_right_pga_controls),
-+
-+	SND_SOC_DAPM_MUX("Left Line Mux", SND_SOC_NOPM, 0, 0,
-+		&es8328_left_line_controls),
-+	SND_SOC_DAPM_MUX("Right Line Mux", SND_SOC_NOPM, 0, 0,
-+		&es8328_right_line_controls),
-+
-+	SND_SOC_DAPM_ADC("Right ADC", "Right Capture", ES8328_ADCPOWER,
-+			ES8328_ADCPOWER_ADCR_OFF, 1),
-+	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", ES8328_ADCPOWER,
-+			ES8328_ADCPOWER_ADCL_OFF, 1),
-+
-+	SND_SOC_DAPM_SUPPLY("Mic Bias", ES8328_ADCPOWER,
-+			ES8328_ADCPOWER_MIC_BIAS_OFF, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Mic Bias Gen", ES8328_ADCPOWER,
-+			ES8328_ADCPOWER_ADC_BIAS_GEN_OFF, 1, NULL, 0),
-+
-+	SND_SOC_DAPM_DAC("Right DAC", "Right Playback", ES8328_DACPOWER,
-+			ES8328_DACPOWER_RDAC_OFF, 1),
-+	SND_SOC_DAPM_DAC("Left DAC", "Left Playback", ES8328_DACPOWER,
-+			ES8328_DACPOWER_LDAC_OFF, 1),
-+
-+	SND_SOC_DAPM_MIXER("Left Mixer", SND_SOC_NOPM, 0, 0,
-+		&es8328_left_mixer_controls[0],
-+		ARRAY_SIZE(es8328_left_mixer_controls)),
-+	SND_SOC_DAPM_MIXER("Right Mixer", SND_SOC_NOPM, 0, 0,
-+		&es8328_right_mixer_controls[0],
-+		ARRAY_SIZE(es8328_right_mixer_controls)),
-+
-+	SND_SOC_DAPM_PGA("Right Out 2", ES8328_DACPOWER,
-+			ES8328_DACPOWER_ROUT2_ON, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Left Out 2", ES8328_DACPOWER,
-+			ES8328_DACPOWER_LOUT2_ON, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Right Out 1", ES8328_DACPOWER,
-+			ES8328_DACPOWER_ROUT1_ON, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Left Out 1", ES8328_DACPOWER,
-+			ES8328_DACPOWER_LOUT1_ON, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_OUTPUT("LOUT1"),
-+	SND_SOC_DAPM_OUTPUT("ROUT1"),
-+	SND_SOC_DAPM_OUTPUT("LOUT2"),
-+	SND_SOC_DAPM_OUTPUT("ROUT2"),
-+	SND_SOC_DAPM_OUTPUT("VREF"),
-+
-+	SND_SOC_DAPM_INPUT("LINPUT1"),
-+	SND_SOC_DAPM_INPUT("LINPUT2"),
-+	SND_SOC_DAPM_INPUT("RINPUT1"),
-+	SND_SOC_DAPM_INPUT("RINPUT2"),
-+};
-+
-+static const struct snd_soc_dapm_route es8328_dapm_routes[] = {
-+
-+	{ "Left Line Mux", "Line 1", "LINPUT1" },
-+	{ "Left Line Mux", "Line 2", "LINPUT2" },
-+	{ "Left Line Mux", "PGA", "Left PGA Mux" },
-+	{ "Left Line Mux", "Differential", "Differential Mux" },
-+
-+	{ "Right Line Mux", "Line 1", "RINPUT1" },
-+	{ "Right Line Mux", "Line 2", "RINPUT2" },
-+	{ "Right Line Mux", "PGA", "Right PGA Mux" },
-+	{ "Right Line Mux", "Differential", "Differential Mux" },
-+
-+	{ "Left PGA Mux", "Line 1", "LINPUT1" },
-+	{ "Left PGA Mux", "Line 2", "LINPUT2" },
-+	{ "Left PGA Mux", "Differential", "Differential Mux" },
-+
-+	{ "Right PGA Mux", "Line 1", "RINPUT1" },
-+	{ "Right PGA Mux", "Line 2", "RINPUT2" },
-+	{ "Right PGA Mux", "Differential", "Differential Mux" },
-+
-+	{ "Differential Mux", "Line 1", "LINPUT1" },
-+	{ "Differential Mux", "Line 1", "RINPUT1" },
-+	{ "Differential Mux", "Line 2", "LINPUT2" },
-+	{ "Differential Mux", "Line 2", "RINPUT2" },
-+
-+	{ "Left ADC Mux", "Stereo", "Left PGA Mux" },
-+	{ "Left ADC Mux", "Mono (Left)", "Left PGA Mux" },
-+	{ "Left ADC Mux", "Digital Mono", "Left PGA Mux" },
-+
-+	{ "Right ADC Mux", "Stereo", "Right PGA Mux" },
-+	{ "Right ADC Mux", "Mono (Right)", "Right PGA Mux" },
-+	{ "Right ADC Mux", "Digital Mono", "Right PGA Mux" },
-+
-+	{ "Left ADC", NULL, "Left ADC Mux" },
-+	{ "Right ADC", NULL, "Right ADC Mux" },
-+
-+	{ "Mic Bias", NULL, "Mic Bias Gen" },
-+
-+	{ "Left Line Mux", "Line 1", "LINPUT1" },
-+	{ "Left Line Mux", "Line 2", "LINPUT2" },
-+	{ "Left Line Mux", "PGA", "Left PGA Mux" },
-+	{ "Left Line Mux", "Differential", "Differential Mux" },
-+
-+	{ "Right Line Mux", "Line 1", "RINPUT1" },
-+	{ "Right Line Mux", "Line 2", "RINPUT2" },
-+	{ "Right Line Mux", "PGA", "Right PGA Mux" },
-+	{ "Right Line Mux", "Differential", "Differential Mux" },
-+
-+	{ "Left Out 1", NULL, "Left DAC" },
-+	{ "Right Out 1", NULL, "Right DAC" },
-+	{ "Left Out 2", NULL, "Left DAC" },
-+	{ "Right Out 2", NULL, "Right DAC" },
-+
-+	{ "Left Mixer", "Playback Switch", "Left DAC" },
-+	{ "Left Mixer", "Left Bypass Switch", "Left Line Mux" },
-+	{ "Left Mixer", "Right Playback Switch", "Right DAC" },
-+	{ "Left Mixer", "Right Bypass Switch", "Right Line Mux" },
-+
-+	{ "Right Mixer", "Left Playback Switch", "Left DAC" },
-+	{ "Right Mixer", "Left Bypass Switch", "Left Line Mux" },
-+	{ "Right Mixer", "Playback Switch", "Right DAC" },
-+	{ "Right Mixer", "Right Bypass Switch", "Right Line Mux" },
-+
-+	{ "Left Out 1", NULL, "Left Mixer" },
-+	{ "LOUT1", NULL, "Left Out 1" },
-+	{ "Right Out 1", NULL, "Right Mixer" },
-+	{ "ROUT1", NULL, "Right Out 1" },
-+
-+	{ "Left Out 2", NULL, "Left Mixer" },
-+	{ "LOUT2", NULL, "Left Out 2" },
-+	{ "Right Out 2", NULL, "Right Mixer" },
-+	{ "ROUT2", NULL, "Right Out 2" },
-+};
-+
-+static int es8328_mute(struct snd_soc_dai *dai, int mute)
++static void rt286_index_sync(struct snd_soc_codec *codec)
 +{
-+	return snd_soc_update_bits(dai->codec, ES8328_DACCONTROL3,
-+			ES8328_DACCONTROL3_DACMUTE,
-+			mute ? ES8328_DACCONTROL3_DACMUTE : 0);
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++	int i;
++
++	for (i = 0; i < INDEX_CACHE_SIZE; i++) {
++		snd_soc_write(codec, rt286->index_cache[i].reg,
++				  rt286->index_cache[i].def);
++	}
 +}
 +
-+static int es8328_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params,
-+	struct snd_soc_dai *dai)
++static int rt286_support_power_controls[] = {
++	RT286_DAC_OUT1,
++	RT286_DAC_OUT2,
++	RT286_ADC_IN1,
++	RT286_ADC_IN2,
++	RT286_MIC1,
++	RT286_DMIC1,
++	RT286_DMIC2,
++	RT286_SPK_OUT,
++	RT286_HP_OUT,
++};
++#define RT286_POWER_REG_LEN ARRAY_SIZE(rt286_support_power_controls)
++
++static int rt286_jack_detect(struct snd_soc_codec *codec, bool *hp, bool *mic)
++{
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++	unsigned int val, buf;
++	int i;
++
++	*hp = false;
++	*mic = false;
++
++	if (rt286->pdata.cbj_en) {
++		buf = snd_soc_read(codec, RT286_GET_HP_SENSE);
++		*hp = buf & 0x80000000;
++		if (*hp) {
++			/* power on HV,VERF */
++			snd_soc_update_bits(codec,
++				RT286_POWER_CTRL1, 0x1001, 0x0);
++			/* power LDO1 */
++			snd_soc_update_bits(codec,
++				RT286_POWER_CTRL2, 0x4, 0x4);
++			snd_soc_write(codec, RT286_SET_MIC1, 0x24);
++			val = snd_soc_read(codec, RT286_CBJ_CTRL2);
++
++			msleep(200);
++			i = 40;
++			while (((val & 0x0800) == 0) && (i > 0)) {
++				val =  snd_soc_read(codec,
++					RT286_CBJ_CTRL2);
++				i--;
++				msleep(20);
++			}
++
++			if (0x0400 == (val & 0x0700)) {
++				*mic = false;
++
++				snd_soc_write(codec,
++					RT286_SET_MIC1, 0x20);
++				/* power off HV,VERF */
++				snd_soc_update_bits(codec,
++					RT286_POWER_CTRL1, 0x1001, 0x1001);
++				snd_soc_update_bits(codec,
++					RT286_A_BIAS_CTRL3, 0xc000, 0x0000);
++				snd_soc_update_bits(codec,
++					RT286_CBJ_CTRL1, 0x0030, 0x0000);
++				snd_soc_update_bits(codec,
++					RT286_A_BIAS_CTRL2, 0xc000, 0x0000);
++			} else if ((0x0200 == (val & 0x0700)) ||
++				(0x0100 == (val & 0x0700))) {
++				*mic = true;
++				snd_soc_update_bits(codec,
++					RT286_A_BIAS_CTRL3, 0xc000, 0x8000);
++				snd_soc_update_bits(codec,
++					RT286_CBJ_CTRL1, 0x0030, 0x0020);
++				snd_soc_update_bits(codec,
++					RT286_A_BIAS_CTRL2, 0xc000, 0x8000);
++			} else {
++				*mic = false;
++			}
++
++			snd_soc_update_bits(codec,
++						RT286_MISC_CTRL1,
++						0x0060, 0x0000);
++		} else {
++			snd_soc_update_bits(codec,
++						RT286_MISC_CTRL1,
++						0x0060, 0x0020);
++			snd_soc_update_bits(codec,
++						RT286_A_BIAS_CTRL3,
++						0xc000, 0x8000);
++			snd_soc_update_bits(codec,
++						RT286_CBJ_CTRL1,
++						0x0030, 0x0020);
++			snd_soc_update_bits(codec,
++						RT286_A_BIAS_CTRL2,
++						0xc000, 0x8000);
++
++			*mic = false;
++		}
++	} else {
++		buf = snd_soc_read(codec, RT286_GET_HP_SENSE);
++		*hp = buf & 0x80000000;
++		buf = snd_soc_read(codec, RT286_GET_MIC1_SENSE);
++		*mic = buf & 0x80000000;
++	}
++
++	return 0;
++}
++
++static void rt286_jack_detect_work(struct work_struct *work)
++{
++	struct rt286_priv *rt286 =
++		container_of(work, struct rt286_priv, jack_detect_work.work);
++	int status = 0;
++	bool hp = false;
++	bool mic = false;
++
++	rt286_jack_detect(rt286->codec, &hp, &mic);
++
++	if (hp == true)
++		status |= SND_JACK_HEADPHONE;
++
++	if (mic == true)
++		status |= SND_JACK_MICROPHONE;
++
++	snd_soc_jack_report(rt286->jack, status,
++		SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
++}
++
++int rt286_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
++{
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++
++	rt286->jack = jack;
++
++	/* Send an initial empty report */
++	snd_soc_jack_report(rt286->jack, 0,
++		SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(rt286_mic_detect);
++
++static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -6350, 50, 0);
++static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, 0, 1000, 0);
++
++static const struct snd_kcontrol_new rt286_snd_controls[] = {
++	SOC_DOUBLE_R_TLV("DAC0 Playback Volume", RT286_DACL_GAIN,
++			    RT286_DACR_GAIN, 0, 0x7f, 0, out_vol_tlv),
++	SOC_DOUBLE_R_TLV("ADC0 Capture Volume", RT286_ADCL_GAIN,
++			    RT286_ADCR_GAIN, 0, 0x7f, 0, out_vol_tlv),
++	SOC_SINGLE_TLV("AMIC Volume", RT286_MIC_GAIN,
++			    0, 0x3, 0, mic_vol_tlv),
++	SOC_DOUBLE_R("Speaker Playback Switch", RT286_SPOL_GAIN,
++			    RT286_SPOR_GAIN, RT286_MUTE_SFT, 1, 1),
++};
++
++/* Digital Mixer */
++static const struct snd_kcontrol_new rt286_front_mix[] = {
++	SOC_DAPM_SINGLE("DAC Switch",  RT286_F_DAC_SWITCH,
++			RT286_MUTE_SFT, 1, 1),
++	SOC_DAPM_SINGLE("RECMIX Switch", RT286_F_RECMIX_SWITCH,
++			RT286_MUTE_SFT, 1, 1),
++};
++
++/* Analog Input Mixer */
++static const struct snd_kcontrol_new rt286_rec_mix[] = {
++	SOC_DAPM_SINGLE("Mic1 Switch", RT286_REC_MIC_SWITCH,
++			RT286_MUTE_SFT, 1, 1),
++	SOC_DAPM_SINGLE("I2S Switch", RT286_REC_I2S_SWITCH,
++			RT286_MUTE_SFT, 1, 1),
++	SOC_DAPM_SINGLE("Line1 Switch", RT286_REC_LINE_SWITCH,
++			RT286_MUTE_SFT, 1, 1),
++	SOC_DAPM_SINGLE("Beep Switch", RT286_REC_BEEP_SWITCH,
++			RT286_MUTE_SFT, 1, 1),
++};
++
++static const struct snd_kcontrol_new spo_enable_control =
++	SOC_DAPM_SINGLE("Switch", RT286_SET_PIN_SPK,
++			RT286_SET_PIN_SFT, 1, 0);
++
++static const struct snd_kcontrol_new hpol_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT286_HPOL_GAIN,
++			RT286_MUTE_SFT, 1, 1);
++
++static const struct snd_kcontrol_new hpor_enable_control =
++	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT286_HPOR_GAIN,
++			RT286_MUTE_SFT, 1, 1);
++
++/* ADC0 source */
++static const char * const rt286_adc_src[] = {
++	"Mic", "RECMIX", "Dmic"
++};
++
++static const int rt286_adc_values[] = {
++	0, 4, 5,
++};
++
++static SOC_VALUE_ENUM_SINGLE_DECL(
++	rt286_adc0_enum, RT286_ADC0_MUX, RT286_ADC_SEL_SFT,
++	RT286_ADC_SEL_MASK, rt286_adc_src, rt286_adc_values);
++
++static const struct snd_kcontrol_new rt286_adc0_mux =
++	SOC_DAPM_ENUM("ADC 0 source", rt286_adc0_enum);
++
++static SOC_VALUE_ENUM_SINGLE_DECL(
++	rt286_adc1_enum, RT286_ADC1_MUX, RT286_ADC_SEL_SFT,
++	RT286_ADC_SEL_MASK, rt286_adc_src, rt286_adc_values);
++
++static const struct snd_kcontrol_new rt286_adc1_mux =
++	SOC_DAPM_ENUM("ADC 1 source", rt286_adc1_enum);
++
++static const char * const rt286_dac_src[] = {
++	"Front", "Surround"
++};
++/* HP-OUT source */
++static SOC_ENUM_SINGLE_DECL(rt286_hpo_enum, RT286_HPO_MUX,
++				0, rt286_dac_src);
++
++static const struct snd_kcontrol_new rt286_hpo_mux =
++SOC_DAPM_ENUM("HPO source", rt286_hpo_enum);
++
++/* SPK-OUT source */
++static SOC_ENUM_SINGLE_DECL(rt286_spo_enum, RT286_SPK_MUX,
++				0, rt286_dac_src);
++
++static const struct snd_kcontrol_new rt286_spo_mux =
++SOC_DAPM_ENUM("SPO source", rt286_spo_enum);
++
++static int rt286_spk_event(struct snd_soc_dapm_widget *w,
++			    struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_write(codec,
++			RT286_SPK_EAPD, RT286_SET_EAPD_HIGH);
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		snd_soc_write(codec,
++			RT286_SPK_EAPD, RT286_SET_EAPD_LOW);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int rt286_set_dmic1_event(struct snd_soc_dapm_widget *w,
++				  struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_write(codec, RT286_SET_PIN_DMIC1, 0x20);
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		snd_soc_write(codec, RT286_SET_PIN_DMIC1, 0);
++		break;
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int rt286_adc_event(struct snd_soc_dapm_widget *w,
++			     struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	unsigned int nid;
++
++	nid = (w->reg >> 20) & 0xff;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_update_bits(codec,
++			VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, nid, 0),
++			0x7080, 0x7000);
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		snd_soc_update_bits(codec,
++			VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, nid, 0),
++			0x7080, 0x7080);
++		break;
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget rt286_dapm_widgets[] = {
++	/* Input Lines */
++	SND_SOC_DAPM_INPUT("DMIC1 Pin"),
++	SND_SOC_DAPM_INPUT("DMIC2 Pin"),
++	SND_SOC_DAPM_INPUT("MIC1"),
++	SND_SOC_DAPM_INPUT("LINE1"),
++	SND_SOC_DAPM_INPUT("Beep"),
++
++	/* DMIC */
++	SND_SOC_DAPM_PGA_E("DMIC1", RT286_SET_POWER(RT286_DMIC1), 0, 1,
++		NULL, 0, rt286_set_dmic1_event,
++		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_PGA("DMIC2", RT286_SET_POWER(RT286_DMIC2), 0, 1,
++		NULL, 0),
++	SND_SOC_DAPM_SUPPLY("DMIC Receiver", SND_SOC_NOPM,
++		0, 0, NULL, 0),
++
++	/* REC Mixer */
++	SND_SOC_DAPM_MIXER("RECMIX", SND_SOC_NOPM, 0, 0,
++		rt286_rec_mix, ARRAY_SIZE(rt286_rec_mix)),
++
++	/* ADCs */
++	SND_SOC_DAPM_ADC("ADC 0", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_ADC("ADC 1", NULL, SND_SOC_NOPM, 0, 0),
++
++	/* ADC Mux */
++	SND_SOC_DAPM_MUX_E("ADC 0 Mux", RT286_SET_POWER(RT286_ADC_IN1), 0, 1,
++		&rt286_adc0_mux, rt286_adc_event, SND_SOC_DAPM_PRE_PMD |
++		SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_MUX_E("ADC 1 Mux", RT286_SET_POWER(RT286_ADC_IN2), 0, 1,
++		&rt286_adc1_mux, rt286_adc_event, SND_SOC_DAPM_PRE_PMD |
++		SND_SOC_DAPM_POST_PMU),
++
++	/* Audio Interface */
++	SND_SOC_DAPM_AIF_IN("AIF1RX", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("AIF1TX", "AIF1 Capture", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_IN("AIF2RX", "AIF2 Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("AIF2TX", "AIF2 Capture", 0, SND_SOC_NOPM, 0, 0),
++
++	/* Output Side */
++	/* DACs */
++	SND_SOC_DAPM_DAC("DAC 0", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("DAC 1", NULL, SND_SOC_NOPM, 0, 0),
++
++	/* Output Mux */
++	SND_SOC_DAPM_MUX("SPK Mux", SND_SOC_NOPM, 0, 0, &rt286_spo_mux),
++	SND_SOC_DAPM_MUX("HPO Mux", SND_SOC_NOPM, 0, 0, &rt286_hpo_mux),
++
++	SND_SOC_DAPM_SUPPLY("HP Power", RT286_SET_PIN_HPO,
++		RT286_SET_PIN_SFT, 0, NULL, 0),
++
++	/* Output Mixer */
++	SND_SOC_DAPM_MIXER("Front", RT286_SET_POWER(RT286_DAC_OUT1), 0, 1,
++			rt286_front_mix, ARRAY_SIZE(rt286_front_mix)),
++	SND_SOC_DAPM_PGA("Surround", RT286_SET_POWER(RT286_DAC_OUT2), 0, 1,
++			NULL, 0),
++
++	/* Output Pga */
++	SND_SOC_DAPM_SWITCH_E("SPO", SND_SOC_NOPM, 0, 0,
++		&spo_enable_control, rt286_spk_event,
++		SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_SWITCH("HPO L", SND_SOC_NOPM, 0, 0,
++		&hpol_enable_control),
++	SND_SOC_DAPM_SWITCH("HPO R", SND_SOC_NOPM, 0, 0,
++		&hpor_enable_control),
++
++	/* Output Lines */
++	SND_SOC_DAPM_OUTPUT("SPOL"),
++	SND_SOC_DAPM_OUTPUT("SPOR"),
++	SND_SOC_DAPM_OUTPUT("HPO Pin"),
++	SND_SOC_DAPM_OUTPUT("SPDIF"),
++};
++
++static const struct snd_soc_dapm_route rt286_dapm_routes[] = {
++	{"DMIC1", NULL, "DMIC1 Pin"},
++	{"DMIC2", NULL, "DMIC2 Pin"},
++	{"DMIC1", NULL, "DMIC Receiver"},
++	{"DMIC2", NULL, "DMIC Receiver"},
++
++	{"RECMIX", "Beep Switch", "Beep"},
++	{"RECMIX", "Line1 Switch", "LINE1"},
++	{"RECMIX", "Mic1 Switch", "MIC1"},
++
++	{"ADC 0 Mux", "Dmic", "DMIC1"},
++	{"ADC 0 Mux", "RECMIX", "RECMIX"},
++	{"ADC 0 Mux", "Mic", "MIC1"},
++	{"ADC 1 Mux", "Dmic", "DMIC2"},
++	{"ADC 1 Mux", "RECMIX", "RECMIX"},
++	{"ADC 1 Mux", "Mic", "MIC1"},
++
++	{"ADC 0", NULL, "ADC 0 Mux"},
++	{"ADC 1", NULL, "ADC 1 Mux"},
++
++	{"AIF1TX", NULL, "ADC 0"},
++	{"AIF2TX", NULL, "ADC 1"},
++
++	{"DAC 0", NULL, "AIF1RX"},
++	{"DAC 1", NULL, "AIF2RX"},
++
++	{"Front", "DAC Switch", "DAC 0"},
++	{"Front", "RECMIX Switch", "RECMIX"},
++
++	{"Surround", NULL, "DAC 1"},
++
++	{"SPK Mux", "Front", "Front"},
++	{"SPK Mux", "Surround", "Surround"},
++
++	{"HPO Mux", "Front", "Front"},
++	{"HPO Mux", "Surround", "Surround"},
++
++	{"SPO", "Switch", "SPK Mux"},
++	{"HPO L", "Switch", "HPO Mux"},
++	{"HPO R", "Switch", "HPO Mux"},
++	{"HPO L", NULL, "HP Power"},
++	{"HPO R", NULL, "HP Power"},
++
++	{"SPOL", NULL, "SPO"},
++	{"SPOR", NULL, "SPO"},
++	{"HPO Pin", NULL, "HPO L"},
++	{"HPO Pin", NULL, "HPO R"},
++};
++
++static int rt286_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params,
++			    struct snd_soc_dai *dai)
 +{
 +	struct snd_soc_codec *codec = dai->codec;
-+	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
-+	int reg;
-+	u8 val;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		reg = ES8328_DACCONTROL2;
-+
-+	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		reg = ES8328_ADCCONTROL5;
-+	else
-+		return -EINVAL;
-+
-+	if (es8328->sysclk != ES8328_SYSCLK_FREQ) {
-+		dev_err(codec->dev, "%s: clock is running at %d Hz, not %d Hz\n",
-+			 __func__, es8328->sysclk, ES8328_SYSCLK_FREQ);
-+		return -EINVAL;
-+	}
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++	unsigned int val = 0;
++	int d_len_code;
 +
 +	switch (params_rate(params)) {
-+	case 8000:
-+		val = es8328_sample_ratios[ES8328_RATE_8019];
-+		break;
-+	case 11025:
-+		val = es8328_sample_ratios[ES8328_RATE_11025];
-+		break;
-+	case 22050:
-+		val = es8328_sample_ratios[ES8328_RATE_22050];
-+		break;
++	/* bit 14 0:48K 1:44.1K */
 +	case 44100:
-+		val = es8328_sample_ratios[ES8328_RATE_44100];
++		val |= 0x4000;
++		break;
++	case 48000:
 +		break;
 +	default:
-+		dev_err(codec->dev, "%s: unknown rate %d\n",
-+			 __func__, params_rate(params));
++		dev_err(codec->dev, "Unsupported sample rate %d\n",
++					params_rate(params));
++		return -EINVAL;
++	}
++	switch (rt286->sys_clk) {
++	case 12288000:
++	case 24576000:
++		if (params_rate(params) != 48000) {
++			dev_err(codec->dev, "Sys_clk is not matched (%d %d)\n",
++					params_rate(params), rt286->sys_clk);
++			return -EINVAL;
++		}
++		break;
++	case 11289600:
++	case 22579200:
++		if (params_rate(params) != 44100) {
++			dev_err(codec->dev, "Sys_clk is not matched (%d %d)\n",
++					params_rate(params), rt286->sys_clk);
++			return -EINVAL;
++		}
++		break;
++	}
++
++	if (params_channels(params) <= 16) {
++		/* bit 3:0 Number of Channel */
++		val |= (params_channels(params) - 1);
++	} else {
++		dev_err(codec->dev, "Unsupported channels %d\n",
++					params_channels(params));
 +		return -EINVAL;
 +	}
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		es8328->playback_fs = params_rate(params);
-+		es8328_set_deemph(codec);
++	d_len_code = 0;
++	switch (params_width(params)) {
++	/* bit 6:4 Bits per Sample */
++	case 16:
++		d_len_code = 0;
++		val |= (0x1 << 4);
++		break;
++	case 32:
++		d_len_code = 2;
++		val |= (0x4 << 4);
++		break;
++	case 20:
++		d_len_code = 1;
++		val |= (0x2 << 4);
++		break;
++	case 24:
++		d_len_code = 2;
++		val |= (0x3 << 4);
++		break;
++	case 8:
++		d_len_code = 3;
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
-+	return snd_soc_update_bits(codec, reg, ES8328_RATEMASK, val);
++	snd_soc_update_bits(codec,
++		RT286_I2S_CTRL1, 0x0018, d_len_code << 3);
++	dev_dbg(codec->dev, "format val = 0x%x\n", val);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		snd_soc_update_bits(codec, RT286_DAC_FORMAT, 0x407f, val);
++	else
++		snd_soc_update_bits(codec, RT286_ADC_FORMAT, 0x407f, val);
++
++	return 0;
 +}
 +
-+static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+		unsigned int fmt)
++static int rt286_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 +{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	u8 mode = ES8328_DACCONTROL1_DACWL_16;
++	struct snd_soc_codec *codec = dai->codec;
 +
-+	/* set master/slave audio interface */
-+	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBM_CFM)
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL1, 0x800, 0x800);
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL1, 0x800, 0x0);
++		break;
++	default:
 +		return -EINVAL;
++	}
 +
-+	/* interface format */
 +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
 +	case SND_SOC_DAIFMT_I2S:
-+		mode |= ES8328_DACCONTROL1_DACFORMAT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		mode |= ES8328_DACCONTROL1_DACFORMAT_RJUST;
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL1, 0x300, 0x0);
 +		break;
 +	case SND_SOC_DAIFMT_LEFT_J:
-+		mode |= ES8328_DACCONTROL1_DACFORMAT_LJUST;
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL1, 0x300, 0x1 << 8);
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL1, 0x300, 0x2 << 8);
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL1, 0x300, 0x3 << 8);
 +		break;
 +	default:
 +		return -EINVAL;
 +	}
++	/* bit 15 Stream Type 0:PCM 1:Non-PCM */
++	snd_soc_update_bits(codec, RT286_DAC_FORMAT, 0x8000, 0);
++	snd_soc_update_bits(codec, RT286_ADC_FORMAT, 0x8000, 0);
 +
-+	/* clock inversion */
-+	if ((fmt & SND_SOC_DAIFMT_INV_MASK) != SND_SOC_DAIFMT_NB_NF)
-+		return -EINVAL;
-+
-+	snd_soc_write(codec, ES8328_DACCONTROL1, mode);
-+	snd_soc_write(codec, ES8328_ADCCONTROL4, mode);
-+
-+	/* Master serial port mode */
-+	snd_soc_write(codec, ES8328_MASTERMODE,
-+			ES8328_MASTERMODE_MCLKDIV2 |
-+			ES8328_MASTERMODE_MSC);
 +	return 0;
 +}
 +
-+static int es8328_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-+				 int clk_id, unsigned int freq, int dir)
++static int rt286_set_dai_sysclk(struct snd_soc_dai *dai,
++				int clk_id, unsigned int freq, int dir)
 +{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct es8328_priv *es8328 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_codec *codec = dai->codec;
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
 +
-+	switch (clk_id) {
-+	case 0:
-+		es8328->sysclk = freq;
++	dev_dbg(codec->dev, "%s freq=%d\n", __func__, freq);
++
++	if (RT286_SCLK_S_MCLK == clk_id) {
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL2, 0x0100, 0x0);
++		snd_soc_update_bits(codec,
++			RT286_PLL_CTRL1, 0x20, 0x20);
++	} else {
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL2, 0x0100, 0x0100);
++		snd_soc_update_bits(codec,
++			RT286_PLL_CTRL, 0x4, 0x4);
++		snd_soc_update_bits(codec,
++			RT286_PLL_CTRL1, 0x20, 0x0);
++	}
++
++	switch (freq) {
++	case 19200000:
++		if (RT286_SCLK_S_MCLK == clk_id) {
++			dev_err(codec->dev, "Should not use MCLK\n");
++			return -EINVAL;
++		}
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL2, 0x40, 0x40);
++		break;
++	case 24000000:
++		if (RT286_SCLK_S_MCLK == clk_id) {
++			dev_err(codec->dev, "Should not use MCLK\n");
++			return -EINVAL;
++		}
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL2, 0x40, 0x0);
++		break;
++	case 12288000:
++	case 11289600:
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL2, 0x8, 0x0);
++		snd_soc_update_bits(codec,
++			RT286_CLK_DIV, 0xfc1e, 0x0004);
++		break;
++	case 24576000:
++	case 22579200:
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL2, 0x8, 0x8);
++		snd_soc_update_bits(codec,
++			RT286_CLK_DIV, 0xfc1e, 0x5406);
 +		break;
 +	default:
++		dev_err(codec->dev, "Unsupported system clock\n");
 +		return -EINVAL;
 +	}
++
++	rt286->sys_clk = freq;
 +
 +	return 0;
 +}
 +
-+static int es8328_set_bias_level(struct snd_soc_codec *codec,
++static int rt286_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
++{
++	struct snd_soc_codec *codec = dai->codec;
++
++	dev_dbg(codec->dev, "%s ratio=%d\n", __func__, ratio);
++	if (50 == ratio)
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL1, 0x1000, 0x1000);
++	else
++		snd_soc_update_bits(codec,
++			RT286_I2S_CTRL1, 0x1000, 0x0);
++
++
++	return 0;
++}
++
++static int rt286_set_bias_level(struct snd_soc_codec *codec,
 +				 enum snd_soc_bias_level level)
 +{
-+	u8 cc1_reg = snd_soc_read(codec, ES8328_CONTROL1) & ~0x07;
-+	u8 pwr_reg = 0;
-+
 +	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+		break;
-+
 +	case SND_SOC_BIAS_PREPARE:
-+		/* VREF, VMID=2x50k, digital enabled */
-+		snd_soc_write(codec, ES8328_CHIPPOWER, pwr_reg);
-+		snd_soc_write(codec, ES8328_CONTROL1,
-+				cc1_reg |
-+				ES8328_CONTROL1_VMIDSEL_50k |
-+				ES8328_CONTROL1_ENREF);
++		if (SND_SOC_BIAS_STANDBY == codec->dapm.bias_level)
++			snd_soc_write(codec,
++				RT286_SET_AUDIO_POWER, AC_PWRST_D0);
 +		break;
 +
 +	case SND_SOC_BIAS_STANDBY:
-+		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
-+			snd_soc_write(codec, ES8328_CONTROL1,
-+					cc1_reg |
-+					ES8328_CONTROL1_VMIDSEL_5k |
-+					ES8328_CONTROL1_ENREF);
-+
-+			/* Charge caps */
-+			msleep(100);
-+		}
-+
-+		snd_soc_write(codec, ES8328_CONTROL2,
-+				ES8328_CONTROL2_OVERCURRENT_ON |
-+				ES8328_CONTROL2_THERMAL_SHUTDOWN_ON);
-+
-+		/* VREF, VMID=2*500k, digital stopped */
-+		snd_soc_write(codec, ES8328_CONTROL1,
-+				cc1_reg |
-+				ES8328_CONTROL1_VMIDSEL_500k |
-+				ES8328_CONTROL1_ENREF);
-+		snd_soc_write(codec, ES8328_CHIPPOWER,
-+				pwr_reg |
-+				ES8328_CHIPPOWER_DACDIG_OFF |
-+				ES8328_CHIPPOWER_ADCDIG_OFF |
-+				ES8328_CHIPPOWER_ADCVREF_OFF |
-+				ES8328_CHIPPOWER_DACVREF_OFF);
++		snd_soc_write(codec,
++			RT286_SET_AUDIO_POWER, AC_PWRST_D3);
 +		break;
 +
-+	case SND_SOC_BIAS_OFF:
-+		snd_soc_write(codec, ES8328_CONTROL1, cc1_reg);
-+		snd_soc_write(codec, ES8328_CHIPPOWER,
-+				ES8328_CHIPPOWER_ADCDIG_OFF |
-+				ES8328_CHIPPOWER_DACDIG_OFF |
-+				ES8328_CHIPPOWER_ADCSTM_RESET |
-+				ES8328_CHIPPOWER_DACSTM_RESET |
-+				ES8328_CHIPPOWER_ADCPLL_OFF |
-+				ES8328_CHIPPOWER_DACPLL_OFF |
-+				ES8328_CHIPPOWER_ADCVREF_OFF |
-+				ES8328_CHIPPOWER_DACVREF_OFF);
++	default:
 +		break;
 +	}
 +	codec->dapm.bias_level = level;
++
 +	return 0;
 +}
 +
-+static const struct snd_soc_dai_ops es8328_dai_ops = {
-+	.hw_params	= es8328_hw_params,
-+	.digital_mute	= es8328_mute,
-+	.set_fmt	= es8328_set_dai_fmt,
-+	.set_sysclk	= es8328_set_dai_sysclk,
++static irqreturn_t rt286_irq(int irq, void *data)
++{
++	struct rt286_priv *rt286 = data;
++	bool hp = false;
++	bool mic = false;
++	int status = 0;
++
++	rt286_jack_detect(rt286->codec, &hp, &mic);
++
++	/* Clear IRQ */
++	snd_soc_update_bits(rt286->codec,
++					RT286_IRQ_CTRL, 0x1, 0x1);
++
++	if (hp == true)
++		status |= SND_JACK_HEADPHONE;
++
++	if (mic == true)
++		status |= SND_JACK_MICROPHONE;
++
++	snd_soc_jack_report(rt286->jack, status,
++		SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
++
++	pm_wakeup_event(&rt286->i2c->dev, 300);
++
++	return IRQ_HANDLED;
++}
++
++static int rt286_probe(struct snd_soc_codec *codec)
++{
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++	int i, ret;
++
++	ret = snd_soc_read(codec,
++		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID));
++	if (ret != RT286_VENDOR_ID) {
++		dev_err(codec->dev,
++			"Device with ID register %x is not rt286\n", ret);
++		return -ENODEV;
++	}
++
++	snd_soc_write(codec, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
++
++	for (i = 0; i < RT286_POWER_REG_LEN; i++)
++		snd_soc_write(codec,
++			RT286_SET_POWER(rt286_support_power_controls[i]),
++			AC_PWRST_D1);
++
++	if (!rt286->pdata.cbj_en) {
++		snd_soc_write(codec, RT286_CBJ_CTRL2, 0x0000);
++		snd_soc_write(codec, RT286_MIC1_DET_CTRL, 0x0816);
++		snd_soc_write(codec, RT286_MISC_CTRL1, 0x0000);
++		snd_soc_update_bits(codec,
++					RT286_CBJ_CTRL1, 0xf000, 0xb000);
++	} else {
++		snd_soc_update_bits(codec,
++					RT286_CBJ_CTRL1, 0xf000, 0x5000);
++	}
++
++	mdelay(10);
++
++	if (!rt286->pdata.gpio2_en)
++		snd_soc_write(codec, RT286_SET_DMIC2_DEFAULT, 0x4000);
++	else
++		snd_soc_write(codec, RT286_SET_DMIC2_DEFAULT, 0);
++
++	mdelay(10);
++
++	/*Power down LDO2*/
++	snd_soc_update_bits(codec, RT286_POWER_CTRL2, 0x8, 0x0);
++
++	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
++	rt286->codec = codec;
++
++	rt286->i2c->irq = 0;
++	if (rt286->i2c->irq) {
++		snd_soc_update_bits(codec,
++					RT286_IRQ_CTRL, 0x2, 0x2);
++
++		INIT_DELAYED_WORK(&rt286->jack_detect_work,
++					rt286_jack_detect_work);
++		schedule_delayed_work(&rt286->jack_detect_work,
++					msecs_to_jiffies(1250));
++
++		ret = request_threaded_irq(rt286->i2c->irq, NULL, rt286_irq,
++			IRQF_TRIGGER_HIGH | IRQF_ONESHOT, "rt286", rt286);
++		if (ret != 0) {
++			dev_err(codec->dev,
++				"Failed to reguest IRQ: %d\n", ret);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int rt286_remove(struct snd_soc_codec *codec)
++{
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++
++	cancel_delayed_work_sync(&rt286->jack_detect_work);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int rt286_suspend(struct snd_soc_codec *codec)
++{
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++
++	regcache_cache_only(rt286->regmap, true);
++	regcache_mark_dirty(rt286->regmap);
++
++	return 0;
++}
++
++static int rt286_resume(struct snd_soc_codec *codec)
++{
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++
++	regcache_cache_only(rt286->regmap, false);
++	rt286_index_sync(codec);
++	regcache_sync(rt286->regmap);
++
++	return 0;
++}
++#else
++#define rt286_suspend NULL
++#define rt286_resume NULL
++#endif
++
++#define RT286_STEREO_RATES (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
++#define RT286_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
++
++static const struct snd_soc_dai_ops rt286_aif_dai_ops = {
++	.hw_params = rt286_hw_params,
++	.set_fmt = rt286_set_dai_fmt,
++	.set_sysclk = rt286_set_dai_sysclk,
++	.set_bclk_ratio = rt286_set_bclk_ratio,
 +};
 +
-+static struct snd_soc_dai_driver es8328_dai = {
-+	.name = "es8328-hifi-analog",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = ES8328_RATES,
-+		.formats = ES8328_FORMATS,
++static struct snd_soc_dai_driver rt286_dai[] = {
++	{
++		.name = "rt286-aif1",
++		.id = RT286_AIF1,
++		.playback = {
++			.stream_name = "AIF1 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT286_STEREO_RATES,
++			.formats = RT286_FORMATS,
++		},
++		.capture = {
++			.stream_name = "AIF1 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT286_STEREO_RATES,
++			.formats = RT286_FORMATS,
++		},
++		.ops = &rt286_aif_dai_ops,
++		.symmetric_rates = 1,
 +	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = ES8328_RATES,
-+		.formats = ES8328_FORMATS,
++	{
++		.name = "rt286-aif2",
++		.id = RT286_AIF2,
++		.playback = {
++			.stream_name = "AIF2 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT286_STEREO_RATES,
++			.formats = RT286_FORMATS,
++		},
++		.capture = {
++			.stream_name = "AIF2 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = RT286_STEREO_RATES,
++			.formats = RT286_FORMATS,
++		},
++		.ops = &rt286_aif_dai_ops,
++		.symmetric_rates = 1,
 +	},
-+	.ops = &es8328_dai_ops,
++
 +};
 +
-+static int es8328_suspend(struct snd_soc_codec *codec)
-+{
-+	es8328_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	return 0;
-+}
++static struct snd_soc_codec_driver soc_codec_dev_rt286 = {
++	.probe = rt286_probe,
++	.remove = rt286_remove,
++	.suspend = rt286_suspend,
++	.resume = rt286_resume,
++	.set_bias_level = rt286_set_bias_level,
++	.idle_bias_off = true,
++	.controls = rt286_snd_controls,
++	.num_controls = ARRAY_SIZE(rt286_snd_controls),
++	.dapm_widgets = rt286_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(rt286_dapm_widgets),
++	.dapm_routes = rt286_dapm_routes,
++	.num_dapm_routes = ARRAY_SIZE(rt286_dapm_routes),
++};
 +
-+static int es8328_resume(struct snd_soc_codec *codec)
-+{
-+	es8328_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+	return 0;
-+}
++static const struct regmap_config rt286_regmap = {
++	.reg_bits = 32,
++	.val_bits = 32,
++	.max_register = 0x02370100,
++	.volatile_reg = rt286_volatile_register,
++	.readable_reg = rt286_readable_register,
++	.reg_write = rt286_hw_write,
++	.reg_read = rt286_hw_read,
++	.cache_type = REGCACHE_RBTREE,
++	.reg_defaults = rt286_reg,
++	.num_reg_defaults = ARRAY_SIZE(rt286_reg),
++};
 +
-+static int es8328_codec_probe(struct snd_soc_codec *codec)
++static const struct i2c_device_id rt286_i2c_id[] = {
++	{"rt286", 0},
++	{}
++};
++MODULE_DEVICE_TABLE(i2c, rt286_i2c_id);
++
++static const struct acpi_device_id rt286_acpi_match[] = {
++	{ "INT343A", 0 },
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, rt286_acpi_match);
++
++static int rt286_i2c_probe(struct i2c_client *i2c,
++			   const struct i2c_device_id *id)
 +{
-+	struct es8328_priv *es8328;
++	struct rt286_platform_data *pdata = dev_get_platdata(&i2c->dev);
++	struct rt286_priv *rt286;
 +	int ret;
-+	int i;
 +
-+	es8328 = snd_soc_codec_get_drvdata(codec);
-+
-+	for (i = 0; i < ARRAY_SIZE(es8328->supplies); i++)
-+		es8328->supplies[i].supply = supply_names[i];
-+
-+	ret = devm_regulator_bulk_get(codec->dev, ARRAY_SIZE(es8328->supplies),
-+				es8328->supplies);
-+	if (ret) {
-+		dev_err(codec->dev, "!!! Unable to get regulators\n");
-+		return ret;
-+	}
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(es8328->supplies),
-+					es8328->supplies);
-+	if (ret) {
-+		dev_err(codec->dev, "!!! Unable to enable regulators\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int es8328_remove(struct snd_soc_codec *codec)
-+{
-+	struct es8328_priv *es8328;
-+
-+	es8328 = snd_soc_codec_get_drvdata(codec);
-+
-+	regulator_bulk_disable(ARRAY_SIZE(es8328->supplies),
-+			       es8328->supplies);
-+
-+	return 0;
-+}
-+
-+const struct regmap_config es8328_regmap_config = {
-+	.reg_bits	= 8,
-+	.val_bits	= 8,
-+	.max_register	= ES8328_REG_MAX,
-+	.cache_type	= REGCACHE_RBTREE,
-+};
-+EXPORT_SYMBOL_GPL(es8328_regmap_config);
-+
-+static struct snd_soc_codec_driver es8328_codec_driver = {
-+	.probe		  = es8328_codec_probe,
-+	.suspend	  = es8328_suspend,
-+	.resume		  = es8328_resume,
-+	.remove		  = es8328_remove,
-+	.set_bias_level	  = es8328_set_bias_level,
-+	.controls	  = es8328_snd_controls,
-+	.num_controls	  = ARRAY_SIZE(es8328_snd_controls),
-+	.dapm_widgets	  = es8328_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(es8328_dapm_widgets),
-+	.dapm_routes	  = es8328_dapm_routes,
-+	.num_dapm_routes  = ARRAY_SIZE(es8328_dapm_routes),
-+};
-+
-+int es8328_probe(struct device *dev, struct regmap *regmap)
-+{
-+	struct es8328_priv *es8328;
-+
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	es8328 = devm_kzalloc(dev, sizeof(*es8328), GFP_KERNEL);
-+	if (es8328 == NULL)
++	rt286 = devm_kzalloc(&i2c->dev,	sizeof(*rt286),
++				GFP_KERNEL);
++	if (NULL == rt286)
 +		return -ENOMEM;
 +
-+	es8328->regmap = regmap;
++	rt286->regmap = devm_regmap_init(&i2c->dev, NULL, i2c, &rt286_regmap);
++	if (IS_ERR(rt286->regmap)) {
++		ret = PTR_ERR(rt286->regmap);
++		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
++			ret);
++		return ret;
++	}
 +
-+	dev_set_drvdata(dev, es8328);
++	rt286->index_cache = rt286_index_def;
++	rt286->i2c = i2c;
++	i2c_set_clientdata(i2c, rt286);
 +
-+	return snd_soc_register_codec(dev,
-+			&es8328_codec_driver, &es8328_dai, 1);
++	if (pdata)
++		rt286->pdata = *pdata;
++
++	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt286,
++				     rt286_dai, ARRAY_SIZE(rt286_dai));
++
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(es8328_probe);
 +
-+MODULE_DESCRIPTION("ASoC ES8328 driver");
-+MODULE_AUTHOR("Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>");
++static int rt286_i2c_remove(struct i2c_client *i2c)
++{
++	struct rt286_priv *rt286 = i2c_get_clientdata(i2c);
++
++	if (i2c->irq)
++		free_irq(i2c->irq, rt286);
++	snd_soc_unregister_codec(&i2c->dev);
++
++	return 0;
++}
++
++
++struct i2c_driver rt286_i2c_driver = {
++	.driver = {
++		   .name = "rt286",
++		   .owner = THIS_MODULE,
++		   .acpi_match_table = ACPI_PTR(rt286_acpi_match),
++		   },
++	.probe = rt286_i2c_probe,
++	.remove = rt286_i2c_remove,
++	.id_table = rt286_i2c_id,
++};
++
++module_i2c_driver(rt286_i2c_driver);
++
++MODULE_DESCRIPTION("ASoC RT286 driver");
++MODULE_AUTHOR("Bard Liao <bardliao@realtek.com>");
 +MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/es8328.h b/sound/soc/codecs/es8328.h
+diff --git a/sound/soc/codecs/rt286.h b/sound/soc/codecs/rt286.h
 new file mode 100644
-index 0000000..f944912
+index 0000000..21c570f
 --- /dev/null
-+++ b/sound/soc/codecs/es8328.h
-@@ -0,0 +1,313 @@
++++ b/sound/soc/codecs/rt286.h
+@@ -0,0 +1,193 @@
 +/*
-+ * es8328.h  --  ES8328 ALSA SoC Audio driver
++ * rt286.h  --  RT286 ALSA SoC audio driver
++ *
++ * Copyright 2011 Realtek Microelectronics
++ * Author: Johnny Hsu <johnnyhsu@realtek.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
 +
-+#ifndef _ES8328_H
-+#define _ES8328_H
++#ifndef __RT286_H__
++#define __RT286_H__
 +
-+#include <linux/regmap.h>
++#define VERB_CMD(V, N, D) ((N << 20) | (V << 8) | D)
 +
-+struct device;
++#define RT286_AUDIO_FUNCTION_GROUP			0x01
++#define RT286_DAC_OUT1					0x02
++#define RT286_DAC_OUT2					0x03
++#define RT286_ADC_IN1					0x09
++#define RT286_ADC_IN2					0x08
++#define RT286_MIXER_IN					0x0b
++#define RT286_MIXER_OUT1				0x0c
++#define RT286_MIXER_OUT2				0x0d
++#define RT286_DMIC1					0x12
++#define RT286_DMIC2					0x13
++#define RT286_SPK_OUT					0x14
++#define RT286_MIC1					0x18
++#define RT286_LINE1					0x1a
++#define RT286_BEEP					0x1d
++#define RT286_SPDIF					0x1e
++#define RT286_VENDOR_REGISTERS				0x20
++#define RT286_HP_OUT					0x21
++#define RT286_MIXER_IN1					0x22
++#define RT286_MIXER_IN2					0x23
 +
-+extern const struct regmap_config es8328_regmap_config;
-+int es8328_probe(struct device *dev, struct regmap *regmap);
++#define RT286_SET_PIN_SFT				6
++#define RT286_SET_PIN_ENABLE				0x40
++#define RT286_SET_PIN_DISABLE				0
++#define RT286_SET_EAPD_HIGH				0x2
++#define RT286_SET_EAPD_LOW				0
 +
-+#define ES8328_DACLVOL 46
-+#define ES8328_DACRVOL 47
-+#define ES8328_DACCTL 28
-+#define ES8328_RATEMASK (0x1f << 0)
++#define RT286_MUTE_SFT					7
 +
-+#define ES8328_CONTROL1		0x00
-+#define ES8328_CONTROL1_VMIDSEL_OFF (0 << 0)
-+#define ES8328_CONTROL1_VMIDSEL_50k (1 << 0)
-+#define ES8328_CONTROL1_VMIDSEL_500k (2 << 0)
-+#define ES8328_CONTROL1_VMIDSEL_5k (3 << 0)
-+#define ES8328_CONTROL1_ENREF (1 << 2)
-+#define ES8328_CONTROL1_SEQEN (1 << 3)
-+#define ES8328_CONTROL1_SAMEFS (1 << 4)
-+#define ES8328_CONTROL1_DACMCLK_ADC (0 << 5)
-+#define ES8328_CONTROL1_DACMCLK_DAC (1 << 5)
-+#define ES8328_CONTROL1_LRCM (1 << 6)
-+#define ES8328_CONTROL1_SCP_RESET (1 << 7)
++/* Verb commands */
++#define RT286_GET_PARAM(NID, PARAM) VERB_CMD(AC_VERB_PARAMETERS, NID, PARAM)
++#define RT286_SET_POWER(NID) VERB_CMD(AC_VERB_SET_POWER_STATE, NID, 0)
++#define RT286_SET_AUDIO_POWER RT286_SET_POWER(RT286_AUDIO_FUNCTION_GROUP)
++#define RT286_SET_HPO_POWER RT286_SET_POWER(RT286_HP_OUT)
++#define RT286_SET_SPK_POWER RT286_SET_POWER(RT286_SPK_OUT)
++#define RT286_SET_DMIC1_POWER RT286_SET_POWER(RT286_DMIC1)
++#define RT286_SPK_MUX\
++	VERB_CMD(AC_VERB_SET_CONNECT_SEL, RT286_SPK_OUT, 0)
++#define RT286_HPO_MUX\
++	VERB_CMD(AC_VERB_SET_CONNECT_SEL, RT286_HP_OUT, 0)
++#define RT286_ADC0_MUX\
++	VERB_CMD(AC_VERB_SET_CONNECT_SEL, RT286_MIXER_IN1, 0)
++#define RT286_ADC1_MUX\
++	VERB_CMD(AC_VERB_SET_CONNECT_SEL, RT286_MIXER_IN2, 0)
++#define RT286_SET_MIC1\
++	VERB_CMD(AC_VERB_SET_PIN_WIDGET_CONTROL, RT286_MIC1, 0)
++#define RT286_SET_PIN_HPO\
++	VERB_CMD(AC_VERB_SET_PIN_WIDGET_CONTROL, RT286_HP_OUT, 0)
++#define RT286_SET_PIN_SPK\
++	VERB_CMD(AC_VERB_SET_PIN_WIDGET_CONTROL, RT286_SPK_OUT, 0)
++#define RT286_SET_PIN_DMIC1\
++	VERB_CMD(AC_VERB_SET_PIN_WIDGET_CONTROL, RT286_DMIC1, 0)
++#define RT286_SPK_EAPD\
++	VERB_CMD(AC_VERB_SET_EAPD_BTLENABLE, RT286_SPK_OUT, 0)
++#define RT286_SET_AMP_GAIN_HPO\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_HP_OUT, 0)
++#define RT286_SET_AMP_GAIN_ADC_IN1\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_ADC_IN1, 0)
++#define RT286_SET_AMP_GAIN_ADC_IN2\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_ADC_IN2, 0)
++#define RT286_GET_HP_SENSE\
++	VERB_CMD(AC_VERB_GET_PIN_SENSE, RT286_HP_OUT, 0)
++#define RT286_GET_MIC1_SENSE\
++	VERB_CMD(AC_VERB_GET_PIN_SENSE, RT286_MIC1, 0)
++#define RT286_SET_DMIC2_DEFAULT\
++	VERB_CMD(AC_VERB_SET_CONFIG_DEFAULT_BYTES_3, RT286_DMIC2, 0)
++#define RT286_DACL_GAIN\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_DAC_OUT1, 0xa000)
++#define RT286_DACR_GAIN\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_DAC_OUT1, 0x9000)
++#define RT286_ADCL_GAIN\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_ADC_IN1, 0x6000)
++#define RT286_ADCR_GAIN\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_ADC_IN1, 0x5000)
++#define RT286_MIC_GAIN\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_MIC1, 0x7000)
++#define RT286_SPOL_GAIN\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_SPK_OUT, 0xa000)
++#define RT286_SPOR_GAIN\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_SPK_OUT, 0x9000)
++#define RT286_HPOL_GAIN\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_HP_OUT, 0xa000)
++#define RT286_HPOR_GAIN\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_HP_OUT, 0x9000)
++#define RT286_F_DAC_SWITCH\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_MIXER_OUT1, 0x7000)
++#define RT286_F_RECMIX_SWITCH\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_MIXER_OUT1, 0x7100)
++#define RT286_REC_MIC_SWITCH\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_MIXER_IN, 0x7000)
++#define RT286_REC_I2S_SWITCH\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_MIXER_IN, 0x7100)
++#define RT286_REC_LINE_SWITCH\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_MIXER_IN, 0x7200)
++#define RT286_REC_BEEP_SWITCH\
++	VERB_CMD(AC_VERB_SET_AMP_GAIN_MUTE, RT286_MIXER_IN, 0x7300)
++#define RT286_DAC_FORMAT\
++	VERB_CMD(AC_VERB_SET_STREAM_FORMAT, RT286_DAC_OUT1, 0)
++#define RT286_ADC_FORMAT\
++	VERB_CMD(AC_VERB_SET_STREAM_FORMAT, RT286_ADC_IN1, 0)
++#define RT286_COEF_INDEX\
++	VERB_CMD(AC_VERB_SET_COEF_INDEX, RT286_VENDOR_REGISTERS, 0)
++#define RT286_PROC_COEF\
++	VERB_CMD(AC_VERB_SET_PROC_COEF, RT286_VENDOR_REGISTERS, 0)
 +
-+#define ES8328_CONTROL2		0x01
-+#define ES8328_CONTROL2_VREF_BUF_OFF (1 << 0)
-+#define ES8328_CONTROL2_VREF_LOWPOWER (1 << 1)
-+#define ES8328_CONTROL2_IBIASGEN_OFF (1 << 2)
-+#define ES8328_CONTROL2_ANALOG_OFF (1 << 3)
-+#define ES8328_CONTROL2_VREF_BUF_LOWPOWER (1 << 4)
-+#define ES8328_CONTROL2_VCM_MOD_LOWPOWER (1 << 5)
-+#define ES8328_CONTROL2_OVERCURRENT_ON (1 << 6)
-+#define ES8328_CONTROL2_THERMAL_SHUTDOWN_ON (1 << 7)
++/* Index registers */
++#define RT286_A_BIAS_CTRL1	0x01
++#define RT286_A_BIAS_CTRL2	0x02
++#define RT286_POWER_CTRL1	0x03
++#define RT286_A_BIAS_CTRL3	0x04
++#define RT286_POWER_CTRL2	0x08
++#define RT286_I2S_CTRL1		0x09
++#define RT286_I2S_CTRL2		0x0a
++#define RT286_CLK_DIV		0x0b
++#define RT286_POWER_CTRL3	0x0f
++#define RT286_MIC1_DET_CTRL	0x19
++#define RT286_MISC_CTRL1	0x20
++#define RT286_IRQ_CTRL		0x33
++#define RT286_PLL_CTRL1		0x49
++#define RT286_CBJ_CTRL1		0x4f
++#define RT286_CBJ_CTRL2		0x50
++#define RT286_PLL_CTRL		0x63
 +
-+#define ES8328_CHIPPOWER	0x02
-+#define ES8328_CHIPPOWER_DACVREF_OFF (1 << 0)
-+#define ES8328_CHIPPOWER_ADCVREF_OFF (1 << 1)
-+#define ES8328_CHIPPOWER_DACPLL_OFF (1 << 2)
-+#define ES8328_CHIPPOWER_ADCPLL_OFF (1 << 3)
-+#define ES8328_CHIPPOWER_DACSTM_RESET (1 << 4)
-+#define ES8328_CHIPPOWER_ADCSTM_RESET (1 << 5)
-+#define ES8328_CHIPPOWER_DACDIG_OFF (1 << 6)
-+#define ES8328_CHIPPOWER_ADCDIG_OFF (1 << 7)
++/* SPDIF (0x06) */
++#define RT286_SPDIF_SEL_SFT	0
++#define RT286_SPDIF_SEL_PCM0	0
++#define RT286_SPDIF_SEL_PCM1	1
++#define RT286_SPDIF_SEL_SPOUT	2
++#define RT286_SPDIF_SEL_PP	3
 +
-+#define ES8328_ADCPOWER		0x03
-+#define ES8328_ADCPOWER_INT1_LOWPOWER 0
-+#define ES8328_ADCPOWER_FLASH_ADC_LOWPOWER 1
-+#define ES8328_ADCPOWER_ADC_BIAS_GEN_OFF 2
-+#define ES8328_ADCPOWER_MIC_BIAS_OFF 3
-+#define ES8328_ADCPOWER_ADCR_OFF 4
-+#define ES8328_ADCPOWER_ADCL_OFF 5
-+#define ES8328_ADCPOWER_AINR_OFF 6
-+#define ES8328_ADCPOWER_AINL_OFF 7
++/* RECMIX (0x0b) */
++#define RT286_M_REC_BEEP_SFT	0
++#define RT286_M_REC_LINE1_SFT	1
++#define RT286_M_REC_MIC1_SFT	2
++#define RT286_M_REC_I2S_SFT	3
 +
-+#define ES8328_DACPOWER		0x04
-+#define ES8328_DACPOWER_OUT3_ON 0
-+#define ES8328_DACPOWER_MONO_ON 1
-+#define ES8328_DACPOWER_ROUT2_ON 2
-+#define ES8328_DACPOWER_LOUT2_ON 3
-+#define ES8328_DACPOWER_ROUT1_ON 4
-+#define ES8328_DACPOWER_LOUT1_ON 5
-+#define ES8328_DACPOWER_RDAC_OFF 6
-+#define ES8328_DACPOWER_LDAC_OFF 7
++/* Front (0x0c) */
++#define RT286_M_FRONT_DAC_SFT	0
++#define RT286_M_FRONT_REC_SFT	1
 +
-+#define ES8328_CHIPLOPOW1	0x05
-+#define ES8328_CHIPLOPOW2	0x06
-+#define ES8328_ANAVOLMANAG	0x07
++/* SPK-OUT (0x14) */
++#define RT286_M_SPK_MUX_SFT	14
++#define RT286_SPK_SEL_MASK	0x1
++#define RT286_SPK_SEL_SFT	0
++#define RT286_SPK_SEL_F		0
++#define RT286_SPK_SEL_S		1
 +
-+#define ES8328_MASTERMODE	0x08
-+#define ES8328_MASTERMODE_BCLKDIV (0 << 0)
-+#define ES8328_MASTERMODE_BCLK_INV (1 << 5)
-+#define ES8328_MASTERMODE_MCLKDIV2 (1 << 6)
-+#define ES8328_MASTERMODE_MSC (1 << 7)
++/* HP-OUT (0x21) */
++#define RT286_M_HP_MUX_SFT	14
++#define RT286_HP_SEL_MASK	0x1
++#define RT286_HP_SEL_SFT	0
++#define RT286_HP_SEL_F		0
++#define RT286_HP_SEL_S		1
 +
-+#define ES8328_ADCCONTROL1	0x09
-+#define ES8328_ADCCONTROL2	0x0a
-+#define ES8328_ADCCONTROL3	0x0b
-+#define ES8328_ADCCONTROL4	0x0c
-+#define ES8328_ADCCONTROL5	0x0d
-+#define ES8328_ADCCONTROL5_RATEMASK (0x1f << 0)
++/* ADC (0x22) (0x23) */
++#define RT286_ADC_SEL_MASK	0x7
++#define RT286_ADC_SEL_SFT	0
++#define RT286_ADC_SEL_SURR	0
++#define RT286_ADC_SEL_FRONT	1
++#define RT286_ADC_SEL_DMIC	2
++#define RT286_ADC_SEL_BEEP	4
++#define RT286_ADC_SEL_LINE1	5
++#define RT286_ADC_SEL_I2S	6
++#define RT286_ADC_SEL_MIC1	7
 +
-+#define ES8328_ADCCONTROL6	0x0e
++#define RT286_SCLK_S_MCLK	0
++#define RT286_SCLK_S_PLL	1
 +
-+#define ES8328_ADCCONTROL7	0x0f
-+#define ES8328_ADCCONTROL7_ADC_MUTE (1 << 2)
-+#define ES8328_ADCCONTROL7_ADC_LER (1 << 3)
-+#define ES8328_ADCCONTROL7_ADC_ZERO_CROSS (1 << 4)
-+#define ES8328_ADCCONTROL7_ADC_SOFT_RAMP (1 << 5)
-+#define ES8328_ADCCONTROL7_ADC_RAMP_RATE_4 (0 << 6)
-+#define ES8328_ADCCONTROL7_ADC_RAMP_RATE_8 (1 << 6)
-+#define ES8328_ADCCONTROL7_ADC_RAMP_RATE_16 (2 << 6)
-+#define ES8328_ADCCONTROL7_ADC_RAMP_RATE_32 (3 << 6)
++enum {
++	RT286_AIF1,
++	RT286_AIF2,
++	RT286_AIFS,
++};
 +
-+#define ES8328_ADCCONTROL8	0x10
-+#define ES8328_ADCCONTROL9	0x11
-+#define ES8328_ADCCONTROL10	0x12
-+#define ES8328_ADCCONTROL11	0x13
-+#define ES8328_ADCCONTROL12	0x14
-+#define ES8328_ADCCONTROL13	0x15
-+#define ES8328_ADCCONTROL14	0x16
++int rt286_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack);
 +
-+#define ES8328_DACCONTROL1	0x17
-+#define ES8328_DACCONTROL1_DACFORMAT_I2S (0 << 1)
-+#define ES8328_DACCONTROL1_DACFORMAT_LJUST (1 << 1)
-+#define ES8328_DACCONTROL1_DACFORMAT_RJUST (2 << 1)
-+#define ES8328_DACCONTROL1_DACFORMAT_PCM (3 << 1)
-+#define ES8328_DACCONTROL1_DACWL_24 (0 << 3)
-+#define ES8328_DACCONTROL1_DACWL_20 (1 << 3)
-+#define ES8328_DACCONTROL1_DACWL_18 (2 << 3)
-+#define ES8328_DACCONTROL1_DACWL_16 (3 << 3)
-+#define ES8328_DACCONTROL1_DACWL_32 (4 << 3)
-+#define ES8328_DACCONTROL1_DACLRP_I2S_POL_NORMAL (0 << 6)
-+#define ES8328_DACCONTROL1_DACLRP_I2S_POL_INV (1 << 6)
-+#define ES8328_DACCONTROL1_DACLRP_PCM_MSB_CLK2 (0 << 6)
-+#define ES8328_DACCONTROL1_DACLRP_PCM_MSB_CLK1 (1 << 6)
-+#define ES8328_DACCONTROL1_LRSWAP (1 << 7)
++#endif /* __RT286_H__ */
 +
-+#define ES8328_DACCONTROL2	0x18
-+#define ES8328_DACCONTROL2_RATEMASK (0x1f << 0)
-+#define ES8328_DACCONTROL2_DOUBLESPEED (1 << 5)
-+
-+#define ES8328_DACCONTROL3	0x19
-+#define ES8328_DACCONTROL3_AUTOMUTE (1 << 2)
-+#define ES8328_DACCONTROL3_DACMUTE (1 << 2)
-+#define ES8328_DACCONTROL3_LEFTGAINVOL (1 << 3)
-+#define ES8328_DACCONTROL3_DACZEROCROSS (1 << 4)
-+#define ES8328_DACCONTROL3_DACSOFTRAMP (1 << 5)
-+#define ES8328_DACCONTROL3_DACRAMPRATE (3 << 6)
-+
-+#define ES8328_LDACVOL 0x1a
-+#define ES8328_LDACVOL_MASK (0 << 0)
-+#define ES8328_LDACVOL_MAX (0xc0)
-+
-+#define ES8328_RDACVOL 0x1b
-+#define ES8328_RDACVOL_MASK (0 << 0)
-+#define ES8328_RDACVOL_MAX (0xc0)
-+
-+#define ES8328_DACVOL_MAX (0xc0)
-+
-+#define ES8328_DACCONTROL4	0x1a
-+#define ES8328_DACCONTROL5	0x1b
-+
-+#define ES8328_DACCONTROL6	0x1c
-+#define ES8328_DACCONTROL6_CLICKFREE (1 << 3)
-+#define ES8328_DACCONTROL6_DAC_INVR (1 << 4)
-+#define ES8328_DACCONTROL6_DAC_INVL (1 << 5)
-+#define ES8328_DACCONTROL6_DEEMPH_OFF (0 << 6)
-+#define ES8328_DACCONTROL6_DEEMPH_32k (1 << 6)
-+#define ES8328_DACCONTROL6_DEEMPH_44_1k (2 << 6)
-+#define ES8328_DACCONTROL6_DEEMPH_48k (3 << 6)
-+
-+#define ES8328_DACCONTROL7	0x1d
-+#define ES8328_DACCONTROL7_VPP_SCALE_3p5	(0 << 0)
-+#define ES8328_DACCONTROL7_VPP_SCALE_4p0	(1 << 0)
-+#define ES8328_DACCONTROL7_VPP_SCALE_3p0	(2 << 0)
-+#define ES8328_DACCONTROL7_VPP_SCALE_2p5	(3 << 0)
-+#define ES8328_DACCONTROL7_SHELVING_STRENGTH (1 << 2) /* In eights */
-+#define ES8328_DACCONTROL7_MONO		(1 << 5)
-+#define ES8328_DACCONTROL7_ZEROR	(1 << 6)
-+#define ES8328_DACCONTROL7_ZEROL	(1 << 7)
-+
-+/* Shelving filter */
-+#define ES8328_DACCONTROL8	0x1e
-+#define ES8328_DACCONTROL9	0x1f
-+#define ES8328_DACCONTROL10	0x20
-+#define ES8328_DACCONTROL11	0x21
-+#define ES8328_DACCONTROL12	0x22
-+#define ES8328_DACCONTROL13	0x23
-+#define ES8328_DACCONTROL14	0x24
-+#define ES8328_DACCONTROL15	0x25
-+
-+#define ES8328_DACCONTROL16	0x26
-+#define ES8328_DACCONTROL16_RMIXSEL_RIN1 (0 << 0)
-+#define ES8328_DACCONTROL16_RMIXSEL_RIN2 (1 << 0)
-+#define ES8328_DACCONTROL16_RMIXSEL_RIN3 (2 << 0)
-+#define ES8328_DACCONTROL16_RMIXSEL_RADC (3 << 0)
-+#define ES8328_DACCONTROL16_LMIXSEL_LIN1 (0 << 3)
-+#define ES8328_DACCONTROL16_LMIXSEL_LIN2 (1 << 3)
-+#define ES8328_DACCONTROL16_LMIXSEL_LIN3 (2 << 3)
-+#define ES8328_DACCONTROL16_LMIXSEL_LADC (3 << 3)
-+
-+#define ES8328_DACCONTROL17	0x27
-+#define ES8328_DACCONTROL17_LI2LOVOL (7 << 3)
-+#define ES8328_DACCONTROL17_LI2LO (1 << 6)
-+#define ES8328_DACCONTROL17_LD2LO (1 << 7)
-+
-+#define ES8328_DACCONTROL18	0x28
-+#define ES8328_DACCONTROL18_RI2LOVOL (7 << 3)
-+#define ES8328_DACCONTROL18_RI2LO (1 << 6)
-+#define ES8328_DACCONTROL18_RD2LO (1 << 7)
-+
-+#define ES8328_DACCONTROL19	0x29
-+#define ES8328_DACCONTROL19_LI2ROVOL (7 << 3)
-+#define ES8328_DACCONTROL19_LI2RO (1 << 6)
-+#define ES8328_DACCONTROL19_LD2RO (1 << 7)
-+
-+#define ES8328_DACCONTROL20	0x2a
-+#define ES8328_DACCONTROL20_RI2ROVOL (7 << 3)
-+#define ES8328_DACCONTROL20_RI2RO (1 << 6)
-+#define ES8328_DACCONTROL20_RD2RO (1 << 7)
-+
-+#define ES8328_DACCONTROL21	0x2b
-+#define ES8328_DACCONTROL21_LI2MOVOL (7 << 3)
-+#define ES8328_DACCONTROL21_LI2MO (1 << 6)
-+#define ES8328_DACCONTROL21_LD2MO (1 << 7)
-+
-+#define ES8328_DACCONTROL22	0x2c
-+#define ES8328_DACCONTROL22_RI2MOVOL (7 << 3)
-+#define ES8328_DACCONTROL22_RI2MO (1 << 6)
-+#define ES8328_DACCONTROL22_RD2MO (1 << 7)
-+
-+#define ES8328_DACCONTROL23	0x2d
-+#define ES8328_DACCONTROL23_MOUTINV		(1 << 1)
-+#define ES8328_DACCONTROL23_HPSWPOL		(1 << 2)
-+#define ES8328_DACCONTROL23_HPSWEN		(1 << 3)
-+#define ES8328_DACCONTROL23_VROI_1p5k		(0 << 4)
-+#define ES8328_DACCONTROL23_VROI_40k		(1 << 4)
-+#define ES8328_DACCONTROL23_OUT3_VREF		(0 << 5)
-+#define ES8328_DACCONTROL23_OUT3_ROUT1		(1 << 5)
-+#define ES8328_DACCONTROL23_OUT3_MONOOUT	(2 << 5)
-+#define ES8328_DACCONTROL23_OUT3_RIGHT_MIXER	(3 << 5)
-+#define ES8328_DACCONTROL23_ROUT2INV		(1 << 7)
-+
-+/* LOUT1 Amplifier */
-+#define ES8328_LOUT1VOL 0x2e
-+#define ES8328_LOUT1VOL_MASK (0 << 5)
-+#define ES8328_LOUT1VOL_MAX (0x24)
-+
-+/* ROUT1 Amplifier */
-+#define ES8328_ROUT1VOL 0x2f
-+#define ES8328_ROUT1VOL_MASK (0 << 5)
-+#define ES8328_ROUT1VOL_MAX (0x24)
-+
-+#define ES8328_OUT1VOL_MAX (0x24)
-+
-+/* LOUT2 Amplifier */
-+#define ES8328_LOUT2VOL 0x30
-+#define ES8328_LOUT2VOL_MASK (0 << 5)
-+#define ES8328_LOUT2VOL_MAX (0x24)
-+
-+/* ROUT2 Amplifier */
-+#define ES8328_ROUT2VOL 0x31
-+#define ES8328_ROUT2VOL_MASK (0 << 5)
-+#define ES8328_ROUT2VOL_MAX (0x24)
-+
-+#define ES8328_OUT2VOL_MAX (0x24)
-+
-+/* Mono Out Amplifier */
-+#define ES8328_MONOOUTVOL 0x32
-+#define ES8328_MONOOUTVOL_MASK (0 << 5)
-+#define ES8328_MONOOUTVOL_MAX (0x24)
-+
-+#define ES8328_DACCONTROL29	0x33
-+#define ES8328_DACCONTROL30	0x34
-+
-+#define ES8328_SYSCLK		0
-+
-+#define ES8328_REG_MAX		0x35
-+
-+#define ES8328_PLL1		0
-+#define ES8328_PLL2		1
-+
-+/* clock inputs */
-+#define ES8328_MCLK		0
-+#define ES8328_PCMCLK		1
-+
-+/* clock divider id's */
-+#define ES8328_PCMDIV		0
-+#define ES8328_BCLKDIV		1
-+#define ES8328_VXCLKDIV		2
-+
-+/* PCM clock dividers */
-+#define ES8328_PCM_DIV_1	(0 << 6)
-+#define ES8328_PCM_DIV_3	(2 << 6)
-+#define ES8328_PCM_DIV_5_5	(3 << 6)
-+#define ES8328_PCM_DIV_2	(4 << 6)
-+#define ES8328_PCM_DIV_4	(5 << 6)
-+#define ES8328_PCM_DIV_6	(6 << 6)
-+#define ES8328_PCM_DIV_8	(7 << 6)
-+
-+/* BCLK clock dividers */
-+#define ES8328_BCLK_DIV_1	(0 << 7)
-+#define ES8328_BCLK_DIV_2	(1 << 7)
-+#define ES8328_BCLK_DIV_4	(2 << 7)
-+#define ES8328_BCLK_DIV_8	(3 << 7)
-+
-+/* VXCLK clock dividers */
-+#define ES8328_VXCLK_DIV_1	(0 << 6)
-+#define ES8328_VXCLK_DIV_2	(1 << 6)
-+#define ES8328_VXCLK_DIV_4	(2 << 6)
-+#define ES8328_VXCLK_DIV_8	(3 << 6)
-+#define ES8328_VXCLK_DIV_16	(4 << 6)
-+
-+#define ES8328_DAI_HIFI		0
-+#define ES8328_DAI_VOICE	1
-+
-+#define ES8328_1536FS		1536
-+#define ES8328_1024FS		1024
-+#define ES8328_768FS		768
-+#define ES8328_512FS		512
-+#define ES8328_384FS		384
-+#define ES8328_256FS		256
-+#define ES8328_128FS		128
-+
-+#endif
 -- 
-2.0.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.8.1.1.439.g50a6b54
