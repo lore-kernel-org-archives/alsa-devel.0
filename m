@@ -1,35 +1,68 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs42l56: Fix stereo channel register
- assignment for Headphone and LineOut volume mixers
-Date: Fri, 20 Jun 2014 15:05:15 -0500
-Message-ID: <alpine.DEB.2.02.1406201504560.25941@heelrod>
-References: <1403294402-6686-1-git-send-email-ryan.harvey@cirrus.com>
+From: Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Subject: Re: [PATCH 1/2] ASoC: max98090: Add max98091 compatible string
+Date: Fri, 20 Jun 2014 13:32:26 -0700
+Message-ID: <CAD=FV=XX1XAX-jZTJaQYTHbeXkHu2uX_6==vHYbSnVpjJe6+tQ@mail.gmail.com>
+References: <1403251396-17487-1-git-send-email-tushar.b@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0242.outbound.protection.outlook.com [207.46.163.242])
- by alsa0.perex.cz (Postfix) with ESMTP id D8B4E2610C1
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 22:03:08 +0200 (CEST)
-In-Reply-To: <1403294402-6686-1-git-send-email-ryan.harvey@cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ryan Harvey <ryan.harvey@cirrus.com>
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1403251396-17487-1-git-send-email-tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Cc: linux-samsung-soc <linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Kukjin Kim <kgene.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, tiwai-l3A5Bk7waGM@public.gmane.org, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tushar Behera <trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 20 Jun 2014, Ryan Harvey wrote:
+Tushar,
 
-> Stereo Headphone and LineOut volume mixers are now attached to HPA+HPB, LOA+LOB.
+On Fri, Jun 20, 2014 at 1:03 AM, Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
+> From: Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 >
-> Signed-off-by: Ryan Harvey <ryan.harvey@cirrus.com>
+> The MAX98091 CODEC is the same as MAX98090 CODEC, but with an extra
+> microphone. Existing driver for MAX98090 CODEC already has support
+> for MAX98091 CODEC. Adding proper compatible string so that MAX98091
+> CODEC can be specified from device tree.
+>
+> Signed-off-by: Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+> Signed-off-by: Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+> Signed-off-by: Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 > ---
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+>
+> Picked from https://chromium-review.googlesource.com/#/c/184091/
+>
+>  .../devicetree/bindings/sound/max98090.txt         |    2 +-
+>  sound/soc/codecs/max98090.c                        |    2 ++
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/max98090.txt b/Documentation/devicetree/bindings/sound/max98090.txt
+> index a5e63fa..c454e67 100644
+> --- a/Documentation/devicetree/bindings/sound/max98090.txt
+> +++ b/Documentation/devicetree/bindings/sound/max98090.txt
+> @@ -4,7 +4,7 @@ This device supports I2C only.
+>
+>  Required properties:
+>
+> -- compatible : "maxim,max98090".
+> +- compatible : "maxim,max98090" or "maxim,max98091".
+>
+>  - reg : The I2C address of the device.
+>
+> diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+> index f5fccc7..4f5534d 100644
+> --- a/sound/soc/codecs/max98090.c
+> +++ b/sound/soc/codecs/max98090.c
+> @@ -2460,12 +2460,14 @@ static const struct dev_pm_ops max98090_pm = {
+>
+>  static const struct i2c_device_id max98090_i2c_id[] = {
+>         { "max98090", MAX98090 },
+> +       { "max98091", MAX98091 },
+
+optional: This would allow you to add some extra error checking in
+max98090_probe() to make sure that the device-tree specified device
+matched the device that was detected.  That could be in a future
+patch, though.
+
+Reviewed-by: Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
