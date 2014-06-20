@@ -1,52 +1,96 @@
-From: Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH 2/2] ASoC: samsung: Extend snow driver to support MAX98091
-Date: Fri, 20 Jun 2014 13:33:16 +0530
-Message-ID: <1403251396-17487-2-git-send-email-tushar.b@samsung.com>
-References: <1403251396-17487-1-git-send-email-tushar.b@samsung.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1403251396-17487-1-git-send-email-tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, kgene.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 13/19] ASoC: Intel: mrfld: add bytes
+ control for modules
+Date: Fri, 20 Jun 2014 10:11:23 +0200
+Message-ID: <53A3ECAB.404@metafoo.de>
+References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
+ <1402662848-24534-14-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-236.synserver.de (smtp-out-238.synserver.de
+ [212.40.185.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id D294E2619DB
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 10:11:25 +0200 (CEST)
+In-Reply-To: <1402662848-24534-14-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Peach-pi board has MAX98091 CODEC. Extend snow machine driver to support
-this board.
+On 06/13/2014 02:34 PM, Vinod Koul wrote:
+[...]
+> +
+> +static int sst_algo_bytes_ctl_info(struct snd_kcontrol *kcontrol,
+> +			    struct snd_ctl_elem_info *uinfo)
+> +{
+> +	struct sst_algo_control *bc = (void *)kcontrol->private_value;
+> +	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
 
-Signed-off-by: Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/snow.txt |    1 +
- sound/soc/samsung/snow.c                         |    1 +
- 2 files changed, 2 insertions(+)
+This won't work in asoc/for-next. Use snd_soc_kcontrol_platform(kcontrol).
 
-diff --git a/Documentation/devicetree/bindings/sound/snow.txt b/Documentation/devicetree/bindings/sound/snow.txt
-index 678b191..e0b7a82 100644
---- a/Documentation/devicetree/bindings/sound/snow.txt
-+++ b/Documentation/devicetree/bindings/sound/snow.txt
-@@ -3,6 +3,7 @@ Audio Binding for Snow boards
- Required properties:
- - compatible : Can be one of the following,
- 			"google,snow-audio-max98090" or
-+			"google,snow-audio-max98091" or
- 			"google,snow-audio-max98095"
- - samsung,i2s-controller: The phandle of the Samsung I2S controller
- - samsung,audio-codec: The phandle of the audio codec
-diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
-index 014c177..8bbd348 100644
---- a/sound/soc/samsung/snow.c
-+++ b/sound/soc/samsung/snow.c
-@@ -103,6 +103,7 @@ static int snow_probe(struct platform_device *pdev)
- 
- static const struct of_device_id snow_of_match[] = {
- 	{ .compatible = "google,snow-audio-max98090", },
-+	{ .compatible = "google,snow-audio-max98091", },
- 	{ .compatible = "google,snow-audio-max98095", },
- 	{},
- };
--- 
-1.7.9.5
+> +
+> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
+> +	uinfo->count = bc->max;
+> +
+> +	/* allocate space to cache the algo parameters in the driver */
+> +	if (bc->params == NULL) {
+> +		bc->params = devm_kzalloc(platform->dev, bc->max, GFP_KERNEL);
+> +		if (bc->params == NULL) {
+> +			pr_err("kzalloc failed\n");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int sst_algo_control_get(struct snd_kcontrol *kcontrol,
+> +				struct snd_ctl_elem_value *ucontrol)
+> +{
+[...]
+> +}
+> +
+> +static int sst_algo_control_set(struct snd_kcontrol *kcontrol,
+> +				struct snd_ctl_elem_value *ucontrol)
+> +{
+[...]
+> +}
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+You probably want some kind of locking around the put and get handlers.
+
+> +
+> +static const struct snd_kcontrol_new sst_algo_controls[] = {
+> +	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
+> +		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
+> +	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "iir", 300, SST_MODULE_ID_IIR_24,
+> +		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+> +	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "mdrp", 286, SST_MODULE_ID_MDRP,
+> +		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
+> +	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "fir", 272, SST_MODULE_ID_FIR_24,
+> +		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
+> +	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "iir", 300, SST_MODULE_ID_IIR_24,
+> +		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+> +	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "mdrp", 286, SST_MODULE_ID_MDRP,
+> +		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
+> +	SST_ALGO_KCONTROL_BYTES("sprot_loop_out", "lpro", 192, SST_MODULE_ID_SPROT,
+> +		SST_PATH_INDEX_SPROT_LOOP_OUT, 0, SST_TASK_SBA, SBA_VB_LPRO),
+> +	SST_ALGO_KCONTROL_BYTES("codec_in0", "dcr", 52, SST_MODULE_ID_FILT_DCR,
+> +		SST_PATH_INDEX_CODEC_IN0, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+> +	SST_ALGO_KCONTROL_BYTES("codec_in1", "dcr", 52, SST_MODULE_ID_FILT_DCR,
+> +		SST_PATH_INDEX_CODEC_IN1, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+
+
+You are creating a lot of global non-const variables here that are later 
+modified in the put and get handlers and also elsewhere.
+
+> +
+> +};
