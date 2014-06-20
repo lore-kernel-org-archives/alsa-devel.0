@@ -1,96 +1,77 @@
-From: Qiao Zhou <zhouqiao@marvell.com>
-Subject: Re: [PATCH] *** ASoC: core: refine of node id parse of
- cpu/codec dai ***
-Date: Fri, 20 Jun 2014 10:32:30 +0800
-Message-ID: <53A39D3E.9030101@marvell.com>
-References: <1403089319-2555-1-git-send-email-zhouqiao@marvell.com>
- <53A18273.7090203@metafoo.de> <53A2389B.3000102@marvell.com>
- <53A27545.7040304@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
- [67.231.156.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 631002610D4
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 04:32:33 +0200 (CEST)
-In-Reply-To: <53A27545.7040304@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>
+From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v5 0/3] Add ES8328 audio codec
+Date: Fri, 20 Jun 2014 14:14:16 +0800
+Message-ID: <1403244859-22236-1-git-send-email-xobs@kosagi.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/19/2014 01:29 PM, Lars-Peter Clausen wrote:
-> On 06/19/2014 03:10 AM, Qiao Zhou wrote:
->> On 06/18/2014 08:13 PM, Lars-Peter Clausen wrote:
->>> On 06/18/2014 01:01 PM, Qiao Zhou wrote:
->>>> Hi Mark, Liam
->>>>
->>>> This patch is to add another check besides cpu_dai/codec_dai name during
->>>> dai_link bind. currently if the cpu_dai/codec_dai name match corresponding
->>>> dai_link cpu/codec name, then a match is found. in this patch, it also
->>>> checks
->>>> whether cpu/codec dai id match dailink cpu_dai_id/codec_dai_id. Still check
->>>> name first.
->>>> 1. if it doesn't match, it will keep checking whether cpu_id/codec_id match
->>>> corresponding dai_link cpu_dai_id/codec_dai_id. if the ids are equal, then
->>>> a match is found.
->>>> 2. if it does match, then a match is already found. no need to further
->>>> check.
->>>>
->>> [...]
->>>> Could you help share your opinions? Thanks in advance.
->>>
->>> Hi,
->>>
->>> There is already snd_soc_of_get_dai_name() which will translate a phandle +
->>> specifier to a DAI name. By default it will use the DAI id for the
->>> specifier. Alternatively the driver can implement a of_xlate_dai_name
->>> callback that does the translation from specifier to name. The advantage of
->>> this approach is that the board driver does not need to know about the
->>> specific format of the DAI specifier.
->>>
->>> - Lars
->>>
->> Hi Lars,
->>
->> This API is powerful and meets my requirement. Thanks a lot.
->>
->> I still have a small question. why don't we consider to also use DAI id to
->> match DAIs & dai_link? It seems to be a more direct alternative. Please
->> correct/instruct me if anything is wrong.
->
-> Matching by id would also work, I guess. But it doesn't really matter if
-> name or id is used since both should be unique per CODEC. But what you
-> shouldn't do is manually parse the id from the devicetree property in the
-> machine driver since the specifier layout is CODEC specific and hence has to
-> be parsed by the CODEC.
-For DPCM, CPU dai of BE also needs to handle id matching specifically 
-just as codec dai does. In this case, we need to also consider cpu dai 
-id parsing, right?
->
-> I think ideally the machine driver would pass the devicetree node and the
-> name of the property that specifies the DAI to the core and the core would
-> take care of everything else. As it is right now we first lookup the DAI by
-Totally agree. A device node & a specifier together should be enough.
-> the of node and return the name of the DAI, then later on we use that name
-> to lookup the DAI again. The second lookup is kind of superfluous since we
-> already had a pointer to the DAI during the first lookup, so this is
-> something that could be optimized if somebody was interested in optimizing this.
->
-> - Lars
->
+This patchset adds support for the Everest Semi ES8328 audio codec.  It also
+adds support for using the es8328 on IMX boards.
 
+We write a machine driver rather than using simple-card because the machine
+driver needs to support regulators for the speaker amps and as well as
+supporting headphone jacks.
+
+This requires support for DT clock reparenting in order to get the codec
+its 22.5792 MHz supply frequency.
+
+Changes since v4:
+    - Simplify clock handling and use assigned-clock-parents
+    - Move the codec regulator from the machine driver to the codec
+    - Specify all four regulators, and require their presence
+    - Fix audio recording, such that it enables the PGA
+
+Changes since v3:
+    - Add OF bindings for everest,es8328
+    - Add back in patch to add everest as a vendor prefix
+    - Give clocks more generic names
+    - Document required clocks in DT bindings document
+
+Changes since v2:
+    - Change deemph to a bool, and update based on sample rate
+    - Replace value enums with regular enums
+    - Break SPI and I2C drivers into their own modules
+    - Rename everest,es8328 to es8328 as the module wasn't getting detected.
+      Because of this, the patch to vendor-prefixes.txt has been dropped.
+
+Changes since v1:
+    - Rename HP/Speaker to OUT1/OUT2
+    - Use DAPM widgets for startup/shutdown
+    - Add regulator support to machine driver
+
+Sean Cross (3):
+  devicetree: bindings: Add Everest Semicodunctor
+  ASoC: add es8328 codec driver
+  ASoC: fsl: add imx-es8328 machine driver
+
+ Documentation/devicetree/bindings/sound/es8328.txt |  24 +
+ .../devicetree/bindings/sound/imx-audio-es8328.txt |  63 ++
+ .../devicetree/bindings/vendor-prefixes.txt        |   1 +
+ sound/soc/codecs/Kconfig                           |  13 +
+ sound/soc/codecs/Makefile                          |   6 +
+ sound/soc/codecs/es8328-i2c.c                      |  60 ++
+ sound/soc/codecs/es8328-spi.c                      |  49 ++
+ sound/soc/codecs/es8328.c                          | 694 +++++++++++++++++++++
+ sound/soc/codecs/es8328.h                          | 313 ++++++++++
+ sound/soc/fsl/Kconfig                              |  14 +
+ sound/soc/fsl/Makefile                             |   2 +
+ sound/soc/fsl/imx-es8328.c                         | 263 ++++++++
+ 12 files changed, 1502 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
+ create mode 100644 sound/soc/codecs/es8328-i2c.c
+ create mode 100644 sound/soc/codecs/es8328-spi.c
+ create mode 100644 sound/soc/codecs/es8328.c
+ create mode 100644 sound/soc/codecs/es8328.h
+ create mode 100644 sound/soc/fsl/imx-es8328.c
 
 -- 
+2.0.0
 
-Best Regards
-Qiao
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
