@@ -1,55 +1,40 @@
-From: Sachin Kamat <sachin.kamat@samsung.com>
-Subject: [PATCH 16/16] ASoC: wm_hubs: Remove redundant OOM
-	message
-Date: Fri, 20 Jun 2014 15:29:12 +0530
-Message-ID: <1403258352-8210-16-git-send-email-sachin.kamat@samsung.com>
-References: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v5 3/3] ASoC: fsl: add imx-es8328 machine
+	driver
+Date: Fri, 20 Jun 2014 11:57:00 +0100
+Message-ID: <20140620105700.GE3412@opensource.wolfsonmicro.com>
+References: <1403244859-22236-1-git-send-email-xobs@kosagi.com> <1403244859-22236-4-git-send-email-xobs@kosagi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
- [209.85.192.169])
- by alsa0.perex.cz (Postfix) with ESMTP id C29D52650BD
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 12:03:13 +0200 (CEST)
-Received: by mail-pd0-f169.google.com with SMTP id g10so2830766pdj.28
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 03:03:12 -0700 (PDT)
-In-Reply-To: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, spk.linux@gmail.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1403244859-22236-4-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Cc: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Let memory subsystem handle the error logging.
+On Fri, Jun 20, 2014 at 02:14:19PM +0800, Sean Cross wrote:
+> This adds an initial machine driver for the ES8328 audio codec on Freescale
+> boards.  The driver supports headphones and an audio regulator for an onboard
+> speaker amp.
+> 
+> Signed-off-by: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+> ---
+<snip>
+> +static int imx_set_frequency(struct imx_es8328_data *data, int freq)
+> +{
+> +	int ret;
+> +
+> +	return ret;
+> +}
 
-Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
----
- sound/soc/codecs/wm_hubs.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+This function returns an uninitialised variable and is not used
+anywhere, so I assume can be removed.
 
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index 916817fe6632..374537d5e179 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -183,10 +183,8 @@ static void wm_hubs_dcs_cache_set(struct snd_soc_codec *codec, u16 dcs_cfg)
- 		return;
- 
- 	cache = devm_kzalloc(codec->dev, sizeof(*cache), GFP_KERNEL);
--	if (!cache) {
--		dev_err(codec->dev, "Failed to allocate DCS cache entry\n");
-+	if (!cache)
- 		return;
--	}
- 
- 	cache->left = snd_soc_read(codec, WM8993_LEFT_OUTPUT_VOLUME);
- 	cache->left &= WM8993_HPOUT1L_VOL_MASK;
--- 
-1.7.9.5
+Thanks,
+Charles
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
