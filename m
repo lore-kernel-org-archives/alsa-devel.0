@@ -1,38 +1,39 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 16/16] ASoC: wm_hubs: Remove redundant
-	OOM	message
-Date: Fri, 20 Jun 2014 16:06:59 +0100
-Message-ID: <20140620150659.GO3412@opensource.wolfsonmicro.com>
-References: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
- <1403258352-8210-16-git-send-email-sachin.kamat@samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 55E312650E7
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 17:07:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1403258352-8210-16-git-send-email-sachin.kamat@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, spk.linux@gmail.com, lgirdwood@gmail.com
+From: Vincent Heuken <me@vincentheuken.com>
+Subject: [PATCH] Sound: Core: fixed assignment in if condition style error in hwdep.c
+Date: Fri, 20 Jun 2014 08:50:35 -0700
+Message-ID: <1403279435-31231-1-git-send-email-me@vincentheuken.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Vincent Heuken <me@vincentheuken.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 20, 2014 at 03:29:12PM +0530, Sachin Kamat wrote:
-> Let memory subsystem handle the error logging.
-> 
-> Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
-> ---
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+This is a patch to the hwdep.c file that fixes one instance of
+the following error:
+ERROR: do not use assignment in if condition
 
-Thanks,
-Charles
+It also, incidentally, fixes one instance of the following warning:
+WARNING: line over 80 characters
+
+Signed-off-by: Vincent Heuken <me@vincentheuken.com>
+---
+ sound/core/hwdep.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
+index 69459e5..42d8324 100644
+--- a/sound/core/hwdep.c
++++ b/sound/core/hwdep.c
+@@ -527,7 +527,9 @@ static void __init snd_hwdep_proc_init(void)
+ {
+ 	struct snd_info_entry *entry;
+ 
+-	if ((entry = snd_info_create_module_entry(THIS_MODULE, "hwdep", NULL)) != NULL) {
++	entry = snd_info_create_module_entry(THIS_MODULE, "hwdep", NULL);
++
++	if (entry != NULL) {
+ 		entry->c.text.read = snd_hwdep_proc_read;
+ 		if (snd_info_register(entry) < 0) {
+ 			snd_info_free_entry(entry);
+-- 
+2.0.0
