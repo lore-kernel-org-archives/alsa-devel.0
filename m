@@ -1,19 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 13/19] ASoC: Intel: mrfld: add bytes
- control for modules
-Date: Fri, 20 Jun 2014 10:11:23 +0200
-Message-ID: <53A3ECAB.404@metafoo.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 00/19]: add mrfld DSP support
+Date: Fri, 20 Jun 2014 13:50:41 +0530
+Message-ID: <20140620082041.GG22053@intel.com>
 References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
- <1402662848-24534-14-git-send-email-vinod.koul@intel.com>
+ <53A3EB23.4050302@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-236.synserver.de (smtp-out-238.synserver.de
- [212.40.185.238])
- by alsa0.perex.cz (Postfix) with ESMTP id D294E2619DB
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 10:11:25 +0200 (CEST)
-In-Reply-To: <1402662848-24534-14-git-send-email-vinod.koul@intel.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id D97D72619DB
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 10:20:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <53A3EB23.4050302@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,74 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/13/2014 02:34 PM, Vinod Koul wrote:
-[...]
-> +
-> +static int sst_algo_bytes_ctl_info(struct snd_kcontrol *kcontrol,
-> +			    struct snd_ctl_elem_info *uinfo)
-> +{
-> +	struct sst_algo_control *bc = (void *)kcontrol->private_value;
-> +	struct snd_soc_platform *platform = snd_kcontrol_chip(kcontrol);
+On Fri, Jun 20, 2014 at 10:04:51AM +0200, Lars-Peter Clausen wrote:
+> On 06/13/2014 02:33 PM, Vinod Koul wrote:
+> >Here is the split patch series for adding DSP support for Intel's merrfield
+> >platform.
+> >
+> >The last patch si mxer update patch which we have been discussing over the list.
+> >This is only for discussion and sake of complteness. For that patch we need the
+> >dapm_kcontrol_get/set series to do merged OR patch to be reworked after
+> >compenent series
+> 
+> Hi,
+> 
+> Some general feedback on this series.
+Thanks a bunch for that :)
+> 
+> You are often accessing data structures which are more or less
+> internal to the DAPM core, all without doing any of the necessary
+> locking. Those are in particular the widget and path structures.
+> This access in the driver will make it harder to make modifications
+> to the core as you'd not only understand the core but also the
+> special semantics that this driver puts on those data structures. If
+> you think the core does not provide what you need try to extend the
+> core with helper functions, with well defined semantics, that do
+> what you need.
+> 
+> Also this series is a bit of a step backwards in terms of
+> compartmentalization as it re-introduces things that we've been
+> trying to get rid of over the last few months:
+Well the series was developed on 3.10 and forward ported for upstreaming. So yes
+you can get that feel. I will try to clean these bits up. Where ever missed
+please do point it out.
 
-This won't work in asoc/for-next. Use snd_soc_kcontrol_platform(kcontrol).
+>  * Don't access widget->platform or dapm->platform, use
+> snd_soc_dapm_to_platform()
+> * Don't access dai->platform, use rtd->platform.
+Will update above two
 
-> +
-> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-> +	uinfo->count = bc->max;
-> +
-> +	/* allocate space to cache the algo parameters in the driver */
-> +	if (bc->params == NULL) {
-> +		bc->params = devm_kzalloc(platform->dev, bc->max, GFP_KERNEL);
-> +		if (bc->params == NULL) {
-> +			pr_err("kzalloc failed\n");
-> +			return -ENOMEM;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int sst_algo_control_get(struct snd_kcontrol *kcontrol,
-> +				struct snd_ctl_elem_value *ucontrol)
-> +{
-[...]
-> +}
-> +
-> +static int sst_algo_control_set(struct snd_kcontrol *kcontrol,
-> +				struct snd_ctl_elem_value *ucontrol)
-> +{
-[...]
-> +}
+> * Use regmap for IO instead of the read/write callbacks in the
+> platform_driver struct.
+I dont think we need that for our DSP. The read/write are writing to driver
+memory which is later used to send data to DSP using IPCs. So how will regmap
+help here?
 
-You probably want some kind of locking around the put and get handlers.
-
-> +
-> +static const struct snd_kcontrol_new sst_algo_controls[] = {
-> +	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
-> +		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-> +	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "iir", 300, SST_MODULE_ID_IIR_24,
-> +		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-> +	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-> +		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-> +	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "fir", 272, SST_MODULE_ID_FIR_24,
-> +		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-> +	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "iir", 300, SST_MODULE_ID_IIR_24,
-> +		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-> +	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-> +		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-> +	SST_ALGO_KCONTROL_BYTES("sprot_loop_out", "lpro", 192, SST_MODULE_ID_SPROT,
-> +		SST_PATH_INDEX_SPROT_LOOP_OUT, 0, SST_TASK_SBA, SBA_VB_LPRO),
-> +	SST_ALGO_KCONTROL_BYTES("codec_in0", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-> +		SST_PATH_INDEX_CODEC_IN0, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-> +	SST_ALGO_KCONTROL_BYTES("codec_in1", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-> +		SST_PATH_INDEX_CODEC_IN1, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-
-
-You are creating a lot of global non-const variables here that are later 
-modified in the put and get handlers and also elsewhere.
-
-> +
-> +};
+-- 
+~Vinod
