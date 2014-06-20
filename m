@@ -1,19 +1,19 @@
 From: Sachin Kamat <sachin.kamat@samsung.com>
-Subject: [PATCH 05/16] ASoC: tlv320aic3x: Remove redundant OOM
+Subject: [PATCH 07/16] ASoC: twl4030: Remove redundant OOM
 	message
-Date: Fri, 20 Jun 2014 15:29:01 +0530
-Message-ID: <1403258352-8210-5-git-send-email-sachin.kamat@samsung.com>
+Date: Fri, 20 Jun 2014 15:29:03 +0530
+Message-ID: <1403258352-8210-7-git-send-email-sachin.kamat@samsung.com>
 References: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f50.google.com (mail-pa0-f50.google.com
- [209.85.220.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BD31261ABF
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 12:02:36 +0200 (CEST)
-Received: by mail-pa0-f50.google.com with SMTP id bj1so2975048pad.9
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 03:02:35 -0700 (PDT)
+Received: from mail-pd0-f181.google.com (mail-pd0-f181.google.com
+ [209.85.192.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D2E6261A95
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 12:02:43 +0200 (CEST)
+Received: by mail-pd0-f181.google.com with SMTP id v10so2826211pde.40
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 03:02:42 -0700 (PDT)
 In-Reply-To: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,36 +32,24 @@ Let memory subsystem handle the error logging.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
 ---
- sound/soc/codecs/tlv320aic3x.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ sound/soc/codecs/twl4030.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index e12fafbb1e09..446303198ffd 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1477,10 +1477,8 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
- 	u32 value;
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 69e12a311ba2..955df35c5ab6 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -2162,10 +2162,8 @@ static int twl4030_soc_probe(struct snd_soc_codec *codec)
  
- 	aic3x = devm_kzalloc(&i2c->dev, sizeof(struct aic3x_priv), GFP_KERNEL);
--	if (aic3x == NULL) {
--		dev_err(&i2c->dev, "failed to create private data\n");
-+	if (!aic3x)
+ 	twl4030 = devm_kzalloc(codec->dev, sizeof(struct twl4030_priv),
+ 			       GFP_KERNEL);
+-	if (twl4030 == NULL) {
+-		dev_err(codec->dev, "Can not allocate memory\n");
++	if (!twl4030)
  		return -ENOMEM;
 -	}
- 
- 	aic3x->regmap = devm_regmap_init_i2c(i2c, &aic3x_regmap);
- 	if (IS_ERR(aic3x->regmap)) {
-@@ -1498,10 +1496,8 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
- 	} else if (np) {
- 		ai3x_setup = devm_kzalloc(&i2c->dev, sizeof(*ai3x_setup),
- 								GFP_KERNEL);
--		if (ai3x_setup == NULL) {
--			dev_err(&i2c->dev, "failed to create private data\n");
-+		if (!ai3x_setup)
- 			return -ENOMEM;
--		}
- 
- 		ret = of_get_named_gpio(np, "gpio-reset", 0);
- 		if (ret >= 0)
+ 	snd_soc_codec_set_drvdata(codec, twl4030);
+ 	/* Set the defaults, and power up the codec */
+ 	twl4030->sysclk = twl4030_audio_get_mclk() / 1000;
 -- 
 1.7.9.5
