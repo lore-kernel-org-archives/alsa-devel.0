@@ -1,19 +1,19 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 13/16] ASoC: wm8958: Remove redundant
+Subject: Re: [PATCH 14/16] ASoC: wm8994: Remove redundant
 	OOM	message
-Date: Fri, 20 Jun 2014 16:05:39 +0100
-Message-ID: <20140620150539.GL3412@opensource.wolfsonmicro.com>
+Date: Fri, 20 Jun 2014 16:06:08 +0100
+Message-ID: <20140620150608.GM3412@opensource.wolfsonmicro.com>
 References: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
- <1403258352-8210-13-git-send-email-sachin.kamat@samsung.com>
+ <1403258352-8210-14-git-send-email-sachin.kamat@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CB54A265122
- for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 17:05:39 +0200 (CEST)
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA9602651CB
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jun 2014 17:06:08 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1403258352-8210-13-git-send-email-sachin.kamat@samsung.com>
+In-Reply-To: <1403258352-8210-14-git-send-email-sachin.kamat@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ To: Sachin Kamat <sachin.kamat@samsung.com>
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, spk.linux@gmail.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 20, 2014 at 03:29:09PM +0530, Sachin Kamat wrote:
+On Fri, Jun 20, 2014 at 03:29:10PM +0530, Sachin Kamat wrote:
 > Let memory subsystem handle the error logging.
 > 
 > Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
