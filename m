@@ -1,80 +1,52 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 10/19] ASoC: Intel: add mrfld DSP registers
-Date: Sat, 21 Jun 2014 08:56:42 +0200
-Message-ID: <53A52CAA.2030101@metafoo.de>
-References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
- <1402662848-24534-11-git-send-email-vinod.koul@intel.com>
- <53A3EF46.9000704@metafoo.de> <20140620113219.GI22053@intel.com>
- <53A42A0F.5070806@metafoo.de> <20140621062234.GK22053@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: davinci-mcasp: Add dependecy to
+ SND_DAVINCI_SOC or SND_OMAP_SOC
+Date: Sat, 21 Jun 2014 11:03:25 +0100
+Message-ID: <20140621100325.GZ5099@sirena.org.uk>
+References: <cover.1402652359.git.jsarha@ti.com>
+ <d2504eb8a058681b7ef67f6c41da020c4d1b1bed.1402652359.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-139.synserver.de (smtp-out-141.synserver.de
- [212.40.185.141])
- by alsa0.perex.cz (Postfix) with ESMTP id 33A2E265112
- for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 08:56:45 +0200 (CEST)
-In-Reply-To: <20140621062234.GK22053@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5pdrwNc8kybVvzwn"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <d2504eb8a058681b7ef67f6c41da020c4d1b1bed.1402652359.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/21/2014 08:22 AM, Vinod Koul wrote:
-> On Fri, Jun 20, 2014 at 02:33:19PM +0200, Lars-Peter Clausen wrote:
->> On 06/20/2014 01:32 PM, Vinod Koul wrote:
->>> On Fri, Jun 20, 2014 at 10:22:30AM +0200, Lars-Peter Clausen wrote:
->>>> On 06/13/2014 02:33 PM, Vinod Koul wrote:
->>>>> +unsigned int sst_soc_read(struct snd_soc_platform *platform,
->>>>> +			unsigned int reg)
->>>>> +{
->>>>> +	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
->>>>> +
->>>>> +	pr_debug("%s: reg[%d] = %#x\n", __func__, reg, drv->widget[reg]);
->>>>> +	BUG_ON(reg > (SST_NUM_WIDGETS - 1));
->>>>> +	return drv->widget[reg];
->>>>> +}
->>>>> +
->>>>> +int sst_soc_write(struct snd_soc_platform *platform,
->>>>> +		  unsigned int reg, unsigned int val)
->>>>> +{
->>>>> +	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
->>>>> +
->>>>> +	pr_debug("%s: reg[%d] = %#x\n", __func__, reg, val);
->>>>> +	BUG_ON(reg > (SST_NUM_WIDGETS - 1));
->>>>> +	drv->widget[reg] = val;
->>>>> +	return 0;
->>>>> +}
->>>>
->>>> These seem to be purely virtual registers, what is this about? The
->>>> DAPM core is able to handle widgets and controls without any
->>>> register backing just fine. There is no need to emulate virtual
->>>> registers.
->>> But we need to store the mixer configuration for sending IPCs to DSP. So virtual
->>> register file is very much required
->>
->> Hm, ok. But how does this work, when is the IPC triggered and why
->> can't the IPC be done from within the write function?
-> Write can come at any time, even when DSP is inactive. Also we want to tell DSP
-> about the paths which are active
->
-> So most of IPCs are sent from DAPM widget handlers with exception of controls
-> which are active. For those we send IPC during get/put handlers.
 
-This sounds very similar to the auto-mute controls that are supported by the 
-ASoC core. Auto-mute controls will update the value in the put handler, but 
-only if the widget it is attached to is powered up. If the widget is not 
-powered up the value is stored and will be written once the widget powers 
-up. Try to see if you can adopt the auto-mute controls for your usecase. I 
-think this should allow to remove some of the parts from the driver that 
-peek into core internal data structures.
+--5pdrwNc8kybVvzwn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- Lars
+On Fri, Jun 13, 2014 at 12:49:59PM +0300, Jyri Sarha wrote:
+> Fixes build with SND_DAVINCI_SOC or SND_OMAP_SOC alone and adds build
+> dependecy to SND_DAVINCI_SOC or SND_OMAP_SOC.
+
+Applied, thanks.
+
+--5pdrwNc8kybVvzwn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTpVhqAAoJELSic+t+oim9/Z8P/317MVEA7W8I9C4CYT8nVSv3
+ASYNvwdlOSr2CCCa2p7qRHxJMHOikxMfjH+NmyJK4eSX6l4XxdwUVuOWlw6bXy60
+BRycndc+JExzE8wCqld60ji48knABi9FxU3nR1bMewWAeuQc0D54DbaHZxMuoK6I
+F6Io5szJdvkjNZFh0Myh/eUpuoPFgMNkRTdeE/Cm3x4Fc6sPPZq1DIXRBgmbIgxm
+TLgGI9hLetSjtaL//jamrOBkN9aFN2chbGVY+0AV26qi4LZMQ8qFEVRUJWzwd2sn
+8XS1uOy8p7stXZpKXrs2W8be6wAk8yQYvt4owfX7XdRQ+3R3xmPyQx9fyWbgpPGG
+4BY4wNPV5fd1y7o14qJnvV+niqtcrySeMkW57frL9poRmSZDMIXs5m0J1gDasSCT
+sxGXfK2gRZxmlXBOIwMnVtu7OemHRttJ38PiurliN+ysZkkMyo8PrvcrWyNr9Zxy
+RJz59xjAch99Uh4uhbF7QR+VQ/kuvQ0BVqUERWkqqdOOARlOtTe1aQel1FteKTGJ
+PjHe7mOZnk0nVvXJeAUyie67BdWEO5QMFSgD6Y8e9pozynZnEmDpHGeKAMYV7dtl
+9l6EIBxeKP8RX3ytVBaLmgjV/x/lVJGbpW5Egpwo4scRC0RG/O2HiRjJdhCay/p6
+Bf91Jf3I2OwDCQp2ZkF+
+=Frxw
+-----END PGP SIGNATURE-----
+
+--5pdrwNc8kybVvzwn--
