@@ -1,68 +1,85 @@
-From: Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: max98090: Add max98091 compatible string
-Date: Fri, 20 Jun 2014 13:32:26 -0700
-Message-ID: <CAD=FV=XX1XAX-jZTJaQYTHbeXkHu2uX_6==vHYbSnVpjJe6+tQ@mail.gmail.com>
-References: <1403251396-17487-1-git-send-email-tushar.b@samsung.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 13/19] ASoC: Intel: mrfld: add bytes
+ control for modules
+Date: Sat, 21 Jun 2014 11:46:05 +0530
+Message-ID: <20140621061605.GJ22053@intel.com>
+References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
+ <1402662848-24534-14-git-send-email-vinod.koul@intel.com>
+ <53A3ECAB.404@metafoo.de> <20140620113013.GH22053@intel.com>
+ <53A428C8.9030707@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1403251396-17487-1-git-send-email-tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Cc: linux-samsung-soc <linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Kukjin Kim <kgene.kim-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, tiwai-l3A5Bk7waGM@public.gmane.org, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Tushar Behera <trblinux-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBA8C2650C2
+ for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 08:15:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <53A428C8.9030707@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Tushar,
+On Fri, Jun 20, 2014 at 02:27:52PM +0200, Lars-Peter Clausen wrote:
+> On 06/20/2014 01:30 PM, Vinod Koul wrote:
+> >On Fri, Jun 20, 2014 at 10:11:23AM +0200, Lars-Peter Clausen wrote:
+> >>On 06/13/2014 02:34 PM, Vinod Koul wrote:
+> >>>+static int sst_algo_control_set(struct snd_kcontrol *kcontrol,
+> >>>+				struct snd_ctl_elem_value *ucontrol)
+> >>>+{
+> >>[...]
+> >>>+}
+> >>
+> >>You probably want some kind of locking around the put and get handlers.
+> >Is that for prevting get/set races? I though the mixer implemention in
+> >sound/core would lock against that?
+> 
+> There core doesn't do any locking on the put and get handlers. If
+> you need locking you need to do it by hand.
+> 
+> >
+> >>>+
+> >>>+static const struct snd_kcontrol_new sst_algo_controls[] = {
+> >>>+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
+> >>>+		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
+> >>>+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "iir", 300, SST_MODULE_ID_IIR_24,
+> >>>+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+> >>>+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "mdrp", 286, SST_MODULE_ID_MDRP,
+> >>>+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
+> >>>+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "fir", 272, SST_MODULE_ID_FIR_24,
+> >>>+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
+> >>>+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "iir", 300, SST_MODULE_ID_IIR_24,
+> >>>+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+> >>>+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "mdrp", 286, SST_MODULE_ID_MDRP,
+> >>>+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
+> >>>+	SST_ALGO_KCONTROL_BYTES("sprot_loop_out", "lpro", 192, SST_MODULE_ID_SPROT,
+> >>>+		SST_PATH_INDEX_SPROT_LOOP_OUT, 0, SST_TASK_SBA, SBA_VB_LPRO),
+> >>>+	SST_ALGO_KCONTROL_BYTES("codec_in0", "dcr", 52, SST_MODULE_ID_FILT_DCR,
+> >>>+		SST_PATH_INDEX_CODEC_IN0, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+> >>>+	SST_ALGO_KCONTROL_BYTES("codec_in1", "dcr", 52, SST_MODULE_ID_FILT_DCR,
+> >>>+		SST_PATH_INDEX_CODEC_IN1, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+> >>
+> >>
+> >>You are creating a lot of global non-const variables here that are
+> >>later modified in the put and get handlers and also elsewhere.
+> >Sorry which ones above are modfied. Above values are information for headers of
+> >IPCs which we send to DSPs
+> >
+> 
+> The SST_ALGO_CTL_VALUE() macro uses compound literals to create a
+> global (nameless) struct. A pointer to this struct is assigned to
+> the kcontrols private_value field. This is later read and the struct
+> is modified.
+Yes but not the above values as these as IPC header info which DSP needs.
 
-On Fri, Jun 20, 2014 at 1:03 AM, Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org> wrote:
-> From: Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
->
-> The MAX98091 CODEC is the same as MAX98090 CODEC, but with an extra
-> microphone. Existing driver for MAX98090 CODEC already has support
-> for MAX98091 CODEC. Adding proper compatible string so that MAX98091
-> CODEC can be specified from device tree.
->
-> Signed-off-by: Wonjoon Lee <woojoo.lee-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-> Signed-off-by: Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-> Signed-off-by: Tushar Behera <tushar.b-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-> ---
->
-> Picked from https://chromium-review.googlesource.com/#/c/184091/
->
->  .../devicetree/bindings/sound/max98090.txt         |    2 +-
->  sound/soc/codecs/max98090.c                        |    2 ++
->  2 files changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/sound/max98090.txt b/Documentation/devicetree/bindings/sound/max98090.txt
-> index a5e63fa..c454e67 100644
-> --- a/Documentation/devicetree/bindings/sound/max98090.txt
-> +++ b/Documentation/devicetree/bindings/sound/max98090.txt
-> @@ -4,7 +4,7 @@ This device supports I2C only.
->
->  Required properties:
->
-> -- compatible : "maxim,max98090".
-> +- compatible : "maxim,max98090" or "maxim,max98091".
->
->  - reg : The I2C address of the device.
->
-> diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-> index f5fccc7..4f5534d 100644
-> --- a/sound/soc/codecs/max98090.c
-> +++ b/sound/soc/codecs/max98090.c
-> @@ -2460,12 +2460,14 @@ static const struct dev_pm_ops max98090_pm = {
->
->  static const struct i2c_device_id max98090_i2c_id[] = {
->         { "max98090", MAX98090 },
-> +       { "max98091", MAX98091 },
-
-optional: This would allow you to add some extra error checking in
-max98090_probe() to make sure that the device-tree specified device
-matched the device that was detected.  That could be in a future
-patch, though.
-
-Reviewed-by: Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+~Vinod
