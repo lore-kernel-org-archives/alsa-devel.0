@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: rt5677: Replace the string
- "micbias1" to "MICBIAS1"
-Date: Sat, 21 Jun 2014 11:34:23 +0100
-Message-ID: <20140621103423.GW5099@sirena.org.uk>
-References: <1402382126-704-1-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: wm5110: Power both channels for
+ differential mono output
+Date: Sat, 21 Jun 2014 11:35:30 +0100
+Message-ID: <20140621103530.GX5099@sirena.org.uk>
+References: <1402422062-7162-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1401570825433400268=="
+Content-Type: multipart/mixed; boundary="===============2311985015406953579=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E51826535D
- for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 12:34:37 +0200 (CEST)
-In-Reply-To: <1402382126-704-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D6CCB2652E9
+ for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 12:35:56 +0200 (CEST)
+In-Reply-To: <1402422062-7162-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1401570825433400268==
+--===============2311985015406953579==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="K7GH7OT6LIc2qrGj"
+	protocol="application/pgp-signature"; boundary="MYNCyPYCQT4ygp9S"
 Content-Disposition: inline
 
 
---K7GH7OT6LIc2qrGj
+--MYNCyPYCQT4ygp9S
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jun 10, 2014 at 02:35:23PM +0800, Oder Chiou wrote:
-> The patch replaces the string "micbias1" to "MICBIAS1".
+On Tue, Jun 10, 2014 at 06:41:02PM +0100, Charles Keepax wrote:
+> On the wm5110 CODEC both the left and right channel must be powered
+> when an output is being used as a mono output, although no audio is
+> routed to the right output channel. This patch adds additional DAPM
+> routes to link the right channel to the left in the case where an output
+> is marked as mono. Audio must always be brought in on the left channel
+> for mono operation.
 
-Applied all, thanks.
+Applied, thanks.
 
---K7GH7OT6LIc2qrGj
+--MYNCyPYCQT4ygp9S
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTpV+rAAoJELSic+t+oim9ttIP/129ODCSnRlloyEVvGZsXmYw
-AGm5bWUw/NyRIIwdvBkbIjZ2zE3Kw5mpMQj/+mQ/MPY5rM9113iXtRWCEyA7FEJE
-0S4+4YfeZeIP2Jtr84UZ3SaYnGsndU1hXt2cWgcYjAlNmwfDhSQgogSNzSNdwARx
-R86GbwijZ4uVKkG2gzMvcN+KoOXQdDN4EwgNXULjO0vxJJNNOSlmmBQDk0ZBkllT
-NXeUWdlxJpLA4XbelfPal5MMNbG9oAxe+WHLn+ew9Wr5fjzKuzCddeToLZBSA4aB
-vRR1dBTyx/KYFGEQWOYk2yCth8byTxqii/b4l1S3GOPUoausyimfBA9u5zIHh2FF
-m5THojI/oWX+ckVtKR0m6E8Fkr8SXnun/yfq6+/mU3uaFsRAs6row1gQQVjBO1qw
-LLuFKhDhbI06COUMJaldzI1mUIBeKHk+dLUjc1iErIIhO4/R0g2pWg6IwPelX+DC
-yqy000sv/vfMBQCEV+TURi4FBs2jONxnGfLm96MXWUUxQ7iBSzGqA1l8Nx5+J2jX
-1Q6ANrF2nWtoxbvyWvtvxbKtCQfPseVH4rruIutNkqQ1FgnWM96ZCHLcIkhi2ekI
-bwH48unV7In6xwzmHrI5QqxjS6lSGrUGDsp0OV8sOOHCbsuf37OyhwKOxIfNQFvW
-3NbghIKDDt5bBVy/AkRN
-=pqQN
+iQIcBAEBAgAGBQJTpV/vAAoJELSic+t+oim9GXgQAJQttXGTRKbUGKe/JS5wuj2X
+uj4WWId38CWUHRjciHm3LNm+FZUKIZsQApkos053QBiugWFqOxwyqvX+Pjt3tzoD
+28E8xeJLA6YtJSFSCEqy7P0i1auflKAeE+WHeMGiyJEfb67IsE4452VEzyPdYvio
+lLVA5AWUdKfMSE2E4iShZcB6ao+A9eZPhw7O8bJcAaupWW3JMI4kyG1vgXJtK+be
+whKAVMP9IWcj/ZLycu7PZ3A+CEDiS21NywSn0k7nMCMEWSQQpWFVu27X6cISozi/
+TeB3CeHuO3Vf/jgGw16UNnqYi3AxWh/+2lYQt4QdYcSpJfs3pg7oRfBQnkLozst3
+pa2/G/3de+JSN7HA7SgOZss+TLm9/yAxQ7fUK+KSz5qRn8CRbb2c+fw+kqBb1iyu
+vJZ4lXgNBZDmbZAhE2opEZSK34/FeQBzF8HIGT+Q6eJCalFkNF6o9fg1VV2N1nQo
+ReH32r+6vpZKgbA+8h66J3eZP7CaY2rNQosgtjg8KZgWrSrpIY6f30etpPie5c8A
+Jd7SxMbLkiiOtMOobG33DURO56eaBD5ElgwY7LCeoEzxkW2KU1FZRp2eJqJdl7lV
+v0r9zQI5mNv6z2AhtQV7Y/vtMagfrYu6i7kZNFLO5GISABoC6aqEb4JiSt5HwO8T
+eG6EoPSOkXDrDuZVGpLb
+=CgEu
 -----END PGP SIGNATURE-----
 
---K7GH7OT6LIc2qrGj--
+--MYNCyPYCQT4ygp9S--
 
---===============1401570825433400268==
+--===============2311985015406953579==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1401570825433400268==--
+--===============2311985015406953579==--
