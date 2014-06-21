@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 08/11] ASoC: Add component level
- stream_event() and seq_notifier() support
-Date: Sat, 21 Jun 2014 21:35:04 +0100
-Message-ID: <20140621203504.GD22657@sirena.org.uk>
+Subject: Re: [PATCH v2 11/11] ASoC: dapm: Remove platform field
+ from widget and dapm context struct
+Date: Sat, 21 Jun 2014 21:36:28 +0100
+Message-ID: <20140621203628.GF22657@sirena.org.uk>
 References: <1402935191-18398-1-git-send-email-lars@metafoo.de>
- <1402935191-18398-9-git-send-email-lars@metafoo.de>
+ <1402935191-18398-12-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4669639160626852514=="
+Content-Type: multipart/mixed; boundary="===============5274714120311830799=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ED00D262618
- for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 22:35:29 +0200 (CEST)
-In-Reply-To: <1402935191-18398-9-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 317C6265104
+ for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 22:36:44 +0200 (CEST)
+In-Reply-To: <1402935191-18398-12-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,54 +27,53 @@ Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Liam Girdwoo
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4669639160626852514==
+--===============5274714120311830799==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ieNMXl1Fr3cevapt"
+	protocol="application/pgp-signature"; boundary="UBnjLfzoMQYIXCvq"
 Content-Disposition: inline
 
 
---ieNMXl1Fr3cevapt
+--UBnjLfzoMQYIXCvq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 16, 2014 at 06:13:08PM +0200, Lars-Peter Clausen wrote:
-> This patch adds stream_event() and seq_notifier() callbacks similar to those
-> found in the snd_soc_codec_driver and snd_soc_platform driver struct to the
-> snd_soc_component_driver struct. This is meant to unify the handling of these
-> callbacks across different types of components and will eventually allow their
-> removal from the CODEC and platfrom driver structs.
+On Mon, Jun 16, 2014 at 06:13:11PM +0200, Lars-Peter Clausen wrote:
+> The platform field in the snd_soc_dapm_widget and snd_soc_dapm_context structs
+> is now unused can be removed. New code that wants to get the platform for a
+> widget or dapm context should use snd_soc_dapm_to_platform(w->dapm) or
+> snd_soc_dapm_to_platform(dapm).
 
 Applied, thanks.
 
---ieNMXl1Fr3cevapt
+--UBnjLfzoMQYIXCvq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTpex0AAoJELSic+t+oim9x9wP/0dZ5q39Lzwg/TfbhCjHhKG0
-YudjkUMcgO7heIbaDnpx441v1jfA/9aLtxGv4IngCEmW15MLh360C0HY7/lnHBHe
-jeqEI3IUIfEiVfSgSasuk4Aib/ZJnhDpWrUVivnaCRqZJaAoxqkrscnwXnHAtxPj
-N1yJRM3MIOYKf87jE5DgR6B4Pr9OYnUDN/36migAsVgeBUaCh7oto3b2c+yyIbf7
-V77YSVmFqeK3biOFpVFPGGMnDa0Ny/0ywD+GcGV3dU7+qbB3CAKeVsRT6R/63FE0
-WWOX7pPNYnV+qclvRKnmFnd8L6XpzeFlSYnt+fLhzWNXMD9DvHE2GdCFu94EjghQ
-D7hXlmJQJxaoshypin9DxK8sO/GKORMI2MIFOJNuPTS7sCyJNmQFyUBMCZRxFFHB
-e4JChNEI3l8C782vy2+0pMla4VhxHeNBlZ+oB5lauCB14kH1VP9GQXJfix3sw3tx
-5ljwxsxmGWAVbbVxzPlLZTbvSfwfM1MKfdoBv+j+r+4J3BBRE1wQMeritsLzUCgx
-LPGWJaDIFnZJyrjt3bJ3myz9Oa+gnIYCiIK5iu66oUm1K8xGcUxYut56X7tn05Mf
-4DCfN6KkOmKANGLR4EDYbjC1rEOs43Jl24pjFkGz+e1O9hxN9dyCd+oyHjLz84wF
-+wC3Fw6TW7djcnSGUOGJ
-=RwSb
+iQIcBAEBAgAGBQJTpezJAAoJELSic+t+oim9PQAP/i5UxYghehTCU/ZXwM9fBgGZ
+NfxrCql2WprWST1E6B8ZcIdz4PJYF8PPgWpnnUwrkGfjILHtmfsJZ9FIKH84t4dQ
+BONwo32k8y1GPfQwWqwFjKodHl7qWRz9Sq9jrvmFW2Av1xkhmDvJcICq+oHmdPdN
+JlleLv2xUDv7NBQNoYbfzKuO9TxIglydzOgzxy2eErHJIR/Kz8H5kS4JOUW5ZkOk
+JQfPOFZDvdF3docTI0n/hNNB5RUXPx0m3mZ0bUeazTdZReMgT2TVHHuJcyOjqO27
+/btBeSo72L22de31VsnNtAPpsmQb/rR6PDKhK16pXZC5wUJfzOyY0vfMzMQtXRrt
+wH1dSbupgTknYhk2MP+S+YP5KwTdhBzWfAfqkMpkWHIClqigSp9yl33+So/BgrwM
+u5Lb0MFJyQtPZE7v6NorxQKTC3UPKx44I0fH9pUJrDasvOl1kuqbrStNyrfX5olq
+SMygFji8Tn20wLs7lh0+bXze6krgIuv2FjdsnA/xg30zr9QRUHfrEEnnK58p4Uh8
+gXuP5yZupHxkMRuMSimMM/0QY/dZQ2TS8kWhuESl+6mFefvBqRbLjKjCN70tB4qN
+ne4ZAtaUrN2hbf1jXvA3+ZGt53mgW7F9PPqwEEyKmvi5DH+jL8LdDt1K5eW0Lyg3
+xQlim8J5mzw5oeW7Yi/h
+=kcSf
 -----END PGP SIGNATURE-----
 
---ieNMXl1Fr3cevapt--
+--UBnjLfzoMQYIXCvq--
 
---===============4669639160626852514==
+--===============5274714120311830799==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4669639160626852514==--
+--===============5274714120311830799==--
