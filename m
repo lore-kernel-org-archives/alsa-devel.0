@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 04/19] ASoc: Intel: mfld-pcm: report pcm
-	delay
-Date: Sat, 21 Jun 2014 11:43:32 +0100
-Message-ID: <20140621104332.GE5099@sirena.org.uk>
-References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
- <1402662848-24534-5-git-send-email-vinod.koul@intel.com>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: [PATCH] ASoC: Fix SOC_DOUBLE_R_SX_TLV volume mixer
+	arguments
+Date: Sat, 21 Jun 2014 11:58:17 +0000
+Message-ID: <EFACFFC4-D1CC-4B63-816F-A0C95ED2CA69@cirrus.com>
+References: <1403294418-6743-1-git-send-email-ryan.harvey@cirrus.com>
+ <alpine.DEB.2.02.1406201503070.25941@heelrod>,
+ <20140621102444.GP5099@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1407357135545951575=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C9B726545E
- for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 12:43:47 +0200 (CEST)
-In-Reply-To: <1402662848-24534-5-git-send-email-vinod.koul@intel.com>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0212.outbound.protection.outlook.com [207.46.163.212])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19374265141
+ for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 13:58:34 +0200 (CEST)
+In-Reply-To: <20140621102444.GP5099@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Handrigan,
+ Paul" <Paul.Handrigan@cirrus.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "Harvey, Ryan" <Ryan.Harvey@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1407357135545951575==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2b5bRed07meAXa2o"
-Content-Disposition: inline
 
+> On Jun 21, 2014, at 5:25, "Mark Brown" <broonie@kernel.org> wrote:
+> 
+>> On Fri, Jun 20, 2014 at 03:03:58PM -0500, Brian Austin wrote:
+>>> On Fri, 20 Jun 2014, Ryan Harvey wrote:
+>>> 
+>>> Remove unnecessary bit shifts. Correct min value to match datasheet. #Steps equals number of steps between min and max.
+>>> 
+>>> This patch depends on 8f0367b53d887726b1f4b0b39e0f09b7cca2f79f
+>>> ASoC: cs42l56: Fix stereo channel register assignment for Headphone and
+>>> LineOut volume mixers.
+>>> 
+>>> Signed-off-by: Ryan Harvey <ryan.harvey@cirrus.com>
+>>> ---
+>> Acked-by: Brian Austin <brian.austin@cirrus.com>
+> 
+> I don't seem to have any of these patches from Ryan - don't know what's
+> going on there, the message looks like it should be going to me, but
+> without the patches I can't apply them (and they typos in the list
+> address means I couldn't pick up the list copy).
 
---2b5bRed07meAXa2o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I have an idea what's wrong.. IT
+I'll get him to resend after weekend.
 
-On Fri, Jun 13, 2014 at 06:03:53PM +0530, Vinod Koul wrote:
-> Now the DSP is capable of reporting the delay, report it to upper layers
-
-Applied, thanks.
-
---2b5bRed07meAXa2o
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTpWHRAAoJELSic+t+oim9eVkQAJEO9z75RXpUm5Ogd8GkYj3n
-MZrcxJvZex+fOxTji3AIqNiUhZeIulhlTFdv9BVw+bbs2nPuSxUm1bVHuhltk2AE
-a2iPyAzgXOjjvnLvovhOgg/3VNjaYEd8xVNx/jKTe9/mz9XbxVbtLdiZyRAHjQYk
-gkOzr5I6PsQlN2PjysSP5gB9sF0RoJXi49DgIKl9tvsDIhigCmer7HBPT8EupSz+
-NCnEbQizc0i8MLNxg6PKChfmjfJgn1u5hBsidroYSbdOVVJbbwZyJ0cJ87IE8M7P
-4b18XabgyPJ5zqJuYgD0ciIovmdb7XQyvYOWlpvjB2pc3APkuW8kzWiqOCJGuBKd
-a2BSvdyq74d+pIrDUHSIt6WT+hACxJ7FcfxZnzsJz+xoPJX+v0avFaR7IbzITrP2
-HvGbUsc/kn0rx8GJbi/TBM8WfQgf8QMNSAaisYC9EdaD7cXwyyHK6TaXSzd/Wcu5
-FmeFUx2+8NgsVCSXS+h8jT4imYougP7Mgjw7GA7BSlt1iK5IFgcybu+A0QrsT0o7
-7qh5Oe6yQe6LTu0wuSQWCwmlVgH8WUq/2PgWN7WyoVU2IJu+HrCVgVjsoXQKUwLj
-p36a1SugZZsRiCGPCPQ3dAlKDpdSocIHRUauy+gAs0D3TTcOIDBZAETZExcNoOVi
-F6m4Q7XulsnLitUqG4EP
-=TZOl
------END PGP SIGNATURE-----
-
---2b5bRed07meAXa2o--
-
---===============1407357135545951575==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1407357135545951575==--
+-Brian 
