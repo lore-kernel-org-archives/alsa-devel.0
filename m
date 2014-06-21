@@ -1,87 +1,102 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4 v2] regulator: arizona-ldo1: Do not
- control clocking from regulator
-Date: Sat, 21 Jun 2014 21:53:49 +0100
-Message-ID: <20140621205349.GD24291@sirena.org.uk>
-References: <1403275273-22713-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v5 2/3] ASoC: add es8328 codec driver
+Date: Sat, 21 Jun 2014 22:02:54 +0100
+Message-ID: <20140621210254.GF24291@sirena.org.uk>
+References: <1403244859-22236-1-git-send-email-xobs@kosagi.com>
+ <1403244859-22236-3-git-send-email-xobs@kosagi.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2313735520678446106=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AD85264EF1
- for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 23:10:35 +0200 (CEST)
-In-Reply-To: <1403275273-22713-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="z0eOaCaDLjvTGF2l"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1403244859-22236-3-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Cc: lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2313735520678446106==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BRE3mIcgqKzpedwo"
-Content-Disposition: inline
-
-
---BRE3mIcgqKzpedwo
+--z0eOaCaDLjvTGF2l
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 20, 2014 at 03:41:13PM +0100, Charles Keepax wrote:
-> From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
->=20
-> Using the driver for the internal regulator to also control
-> the clock frequency of blocks inside the codec is an
-> unexpected side-effect for a regulator, and also means that
-> the core clocks won't be changed as expected if an external
-> regulator is used to power the codec.
->=20
-> The clocking control is now handled by the core arizona MFD
-> driver so can be removed from the LDO1 driver.
+On Fri, Jun 20, 2014 at 02:14:18PM +0800, Sean Cross wrote:
 
-I would expect this to be squashed into the first patch since otherwise
-there's a bisection issue with both drivers trying to maintain the same
-thing at the same time.
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		reg = ES8328_DACCONTROL2;
+> +
+> +	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+> +		reg = ES8328_ADCCONTROL5;
+> +	else
+> +		return -EINVAL;
 
---BRE3mIcgqKzpedwo
+Idiomatically this is just a single if/else, if you weren't doing that
+then it ought to be a switch but really there's no need to do something
+non-idiomatic.
+
+> +	/* Master serial port mode */
+> +	snd_soc_write(codec, ES8328_MASTERMODE,
+> +			ES8328_MASTERMODE_MCLKDIV2 |
+> +			ES8328_MASTERMODE_MSC);
+
+It seems a bit unfortunate that set_sysclk() doesn't manage MCLKDIV2 -
+if that isn't badly named the driver could easily support both the
+current fixed SYSCLK rate and twice that.
+
+> +	case SND_SOC_BIAS_PREPARE:
+> +		/* VREF, VMID=2x50k, digital enabled */
+> +		snd_soc_write(codec, ES8328_CHIPPOWER, pwr_reg);
+> +		snd_soc_write(codec, ES8328_CONTROL1,
+> +				cc1_reg |
+> +				ES8328_CONTROL1_VMIDSEL_50k |
+> +				ES8328_CONTROL1_ENREF);
+
+snd_soc_update_bits() as I'm fairly sure I said last time.
+
+> +static int es8328_suspend(struct snd_soc_codec *codec)
+> +{
+> +       es8328_set_bias_level(codec, SND_SOC_BIAS_OFF);
+> +       return 0;
+> +}
+
+Neither this nor set_bias_level() restores the register cache after
+suspend - this will mean suspend and resume is broken in systems where
+power is removed from the device over suspend.
+
+> +	ret = devm_regulator_bulk_get(codec->dev, ARRAY_SIZE(es8328->supplies),
+> +				es8328->supplies);
+> +	if (ret) {
+> +		dev_err(codec->dev, "!!! Unable to get regulators\n");
+> +		return ret;
+> +	}
+
+Print the error code and format the messages normally - none of this
+!!! stuff please.
+
+--z0eOaCaDLjvTGF2l
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTpfDZAAoJELSic+t+oim9wE8P/jCMqhUKCZgVIKN0HW+e1PN3
-d6Oe8bbiCkh8mWX7euay6bsFVqrYduPTzG45My7FaMChFQ0YwYCZ88SfuEszTqAq
-E5bqiZPcntfaNLLaxEKJ7rjrV7gT3GcTRE4KFHelRKZ2/g6xV6uj4lSEy9v8VpIC
-Okazbd0OGAYoaKZK6yy233qdAoExFaXw5G5KqhcoGO/pE2fJLPmGBZKSI4KW2Nwz
-hYpz2zgcV3hqqJt1VIbjNvgAEENknPD0oURTpBFkCh432ffqTJ9HMkcUqB4wXrTq
-JSaKLa+W5uscm4hEVvN9jrec8IUo2KE1Y8gKGHTcdeOpbQMQyry3spAebj/7ZHKz
-iTWZ+vXh4IX34NKp/08CSrJCpaFujOEmx5PhJwbMkfMQuXRWlV2MWZiEoqLU+U2T
-RXtrRgNHVFH1NOzh9Ri+5SRwHuS2ZkswAUCG43R/aDVgjZnmkSR0XQha/wckbGp1
-88wrvoAV48nDRTQg2Voc9yun3RpwNs5JBk2IV9KXuah19LQoyd8sXCzA1VKRZc1m
-gA4FosnRE7V+p9zIQatHI0Diboyq7y5NXmf9uM4lSjPsPtv2BEPc8djlw2z2QKBx
-3nmOw377k4/zxFQj6Lji+6mEIOeFKm66da5wAmJ9nDpRKFVjHegKw6pnfQcTUFsg
-+olJ/0mO/bip70LTbqq/
-=TwON
+iQIcBAEBAgAGBQJTpfL7AAoJELSic+t+oim9EDMP/2KK9j+MzzcByPpJiGbZqT6b
+HOZMw0fpBg6LJ2L0QtLcHnr7Ye9w6rkzlj/6LQJ9oxmQUGcwUwNh0lvOruv1K9Cy
+lC0uos0WsGBpc7y/UrutoChgh/f8ZdUBvgKdWwBDuJXGEkn3L0liI3Snt0DK5Mdr
+cGSIyM8i6fk+HCVEBqSrJ4kf1NF4IlkSbBwnJ6qqHACgitjlWkkeMCo9uyEGs7Et
+kKCjrDW7ke8/zST/T39YGM+gvyyj7py4ozQvX7ZwlK3QYA7NrwxFnFahqd5aApsx
+nHoS2sKOYF+HBKVKTsN1hkB2oYHAQIll7lpe1aBDYHDPQzpn7TQh9n+Yx1uLLufW
+XLNtKOSfBSoyZwyICMU7AEfbUEykmmDnSHCHiCBvS8NTL4r3QskpHNsOIT0YH2hP
+j7E1SGArqLFnQAGGPbmC5OStWiGTMi6PJQp+V4FZeCWe+aNxqwSQnEyiglHFhqQV
+UUlEDoPHxJlQojBXFFjBukOvN948qyuk76RfzX3rtL/+jjMAzsHGytP2NO/tmkTg
+QFm52nzC0zJXqeIBY+E7ofqKG0nkOQnSPseCUD8I0p+92NdYCL4yVkuY35lHQkSd
+4zUSQAMTnuJjFIfOlzMupZ0zF4U2U818/T6AC5eEabiXfY25tkWB44jF5wzf4hm0
+vqLpNE/r1RCoXIDmp6ka
+=cnJf
 -----END PGP SIGNATURE-----
 
---BRE3mIcgqKzpedwo--
-
---===============2313735520678446106==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2313735520678446106==--
+--z0eOaCaDLjvTGF2l--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
