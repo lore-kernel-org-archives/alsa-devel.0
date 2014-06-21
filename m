@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/5] ASoC: rcar: Fix dma direction type
-Date: Sat, 21 Jun 2014 21:00:52 +0100
-Message-ID: <20140621200052.GM5099@sirena.org.uk>
+Subject: Re: [PATCH 5/5] ASoC: sh/fsi: Make one-bit bitfields
+	unsigned
+Date: Sat, 21 Jun 2014 21:02:28 +0100
+Message-ID: <20140621200228.GN5099@sirena.org.uk>
 References: <1403163631-26215-1-git-send-email-lars@metafoo.de>
- <1403163631-26215-5-git-send-email-lars@metafoo.de>
+ <1403163631-26215-6-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7985630051557774528=="
+Content-Type: multipart/mixed; boundary="===============1356932013307580104=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DA1E326262A
- for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 22:01:05 +0200 (CEST)
-In-Reply-To: <1403163631-26215-5-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CBD3264EF1
+ for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 22:02:48 +0200 (CEST)
+In-Reply-To: <1403163631-26215-6-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +27,52 @@ Cc: Brian Austin <brian.austin@cirrus.com>, Kuninori Morimoto <kuninori.morimoto
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7985630051557774528==
+--===============1356932013307580104==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1cCDjWmMO1HuOC1Z"
+	protocol="application/pgp-signature"; boundary="BlSXMmufQQBIrxDX"
 Content-Disposition: inline
 
 
---1cCDjWmMO1HuOC1Z
+--BlSXMmufQQBIrxDX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 19, 2014 at 09:40:30AM +0200, Lars-Peter Clausen wrote:
-> dmaengine_prep_slave_single() expects a enum dma_transfer_direction and not a
-> enum dma_data_direction. Since the integer representations of both DMA_TO_DEVICE
-> and DMA_MEM_TO_DEV aswell as DMA_FROM_DEVICE and DMA_DEV_TO_MEM have the same
-> value the code worked fine even though it was using the wrong type.
+On Thu, Jun 19, 2014 at 09:40:31AM +0200, Lars-Peter Clausen wrote:
+> One-bit signed bitfields have two possible values: 0 and -1. This sometimes
+> leads to unexpected results (e.g. foo.bar = 1; foo.bar == 1 => false) which is
+> why it is recommended to make one-bit bitfields unsigned.
 
 Applied, thanks.
 
---1cCDjWmMO1HuOC1Z
+--BlSXMmufQQBIrxDX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTpeRwAAoJELSic+t+oim9gJEP/RS7Qsyl0zNj5w1hZ5rYLqpZ
-OLtvm36wBzjbl0fI/L22nh0Fkh919MbeBmaK3DyGRy2cze4FtNVLIKJzE8EJb1lS
-d/55TJS68FRIe/ZOsr7O93jMAHUQdAr7Jf9hBooKSUvEMbQZmIyga+H8W2yIkOT0
-LyHX7PGa8nWtrJUzQznyQsPFmO5avTu43O0xjQuWn9jvPZ23xfKVTGZzSefpEfdV
-/PHBl/cYdFN01P/C8nBeoRysPN2zKHU4eFxMhtXhGA8bG9d2h29fq/uBbHi9WVFB
-wSukYYTaV3e1vxG83Qgy/6/EoKQVPTgmNUWn1/R1eGrm2NEY1uplFhJi+nDe8fv8
-xUNfNYFOVH9OTeJAU3ZMfhv5w/RVIh6t1OzpuHxDcTMqP5sO6MPqVBa/INCGFq8M
-4YCIH0BzVy213TGJxdxSuXQAfoDueV0aFOoev701+X54uCbu49uiG6cpPUHeyCe5
-Q32FxO8Qd3QDNAJfxnrpLiQJQJb1Zy4dxJ2Vaka8CJeW3NrMGFcX5wf9/DCj/V6Y
-19oARIX1v+ZwEMO9xjDSkhxLJJ4Ghxpg79WXYzalsz2aLzhZqdMRUeGqUJfcliom
-xvrjbd2+v7oArjyPBBuQfq/RJnyLGupAaaeeo40u116Gh4T1lAMyJmcQH6S0nalh
-GSgmA33F/hLKQnnycDn5
-=lyBG
+iQIcBAEBAgAGBQJTpeTRAAoJELSic+t+oim9CZ4P+gN1S3+VWUeGfIfBRMgX9Q45
+2M345TykU/UzboETlRTGmwORKTUrgZ6pE/norAEjJIMAkna2RpJhSzypLRsgZCas
+WVkiVcEUn6hpAtDdTYIRT7HKcNgeMj5gTB6IhjPdWZwqr+IY6g/rlZg1JTByiYBv
+uVtKhKUmohAlaWyGqFu9iNRPECUm1oe8wFD5pTkkaPgToScModbqlpHYm/JaAq2p
+zxg0LGF6DbEUERprIv5xpUPpbDE4tkYb/H2esBTV86+kkDjtUf5XTE4A36qKEkcL
+aKfrvQjfUOlHItaJj0KGe37vwUkclVJkmeyOfkjoAjzmo0hu/QOOaK4qKYdnbcpY
+4EiHWoy3FUgD92C7LwGlQ/2JAXkgfV3KaRLhE7hbg0zbsXtUDXGYKjUZwRKrUIXj
+utJHtrashliGYdt6mevS+Z53IKAbot7JcfF/dE1U2NLiqh68DTURhSUjENfMM7Qz
++Yj1myoseIMVlUpTAU1fN5jYE/a5JwQQ6NF60+aL2hy6xiUNyxb5EsYKJ9SZFb8g
+XA6Nz3nqdOggU4bVF95bl6zAFwKQPg5qaNFgFCRoZzgJGKG9KdIoRBk7u8i2wjCq
+yizzTWccaeeRNpsyMmIhVCJdYLrBE0hYvqM5fItBSGb2d8wzFSzI+3V39SkZo+Ec
+2SaDwawTq5bEpuubNuJH
+=0jgl
 -----END PGP SIGNATURE-----
 
---1cCDjWmMO1HuOC1Z--
+--BlSXMmufQQBIrxDX--
 
---===============7985630051557774528==
+--===============1356932013307580104==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7985630051557774528==--
+--===============1356932013307580104==--
