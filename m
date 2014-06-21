@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: rt5640: Remove unneeded goto in
- rt5640_i2c_probe
-Date: Sat, 21 Jun 2014 11:31:18 +0100
-Message-ID: <20140621103118.GS5099@sirena.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: rt5645: Remove unneeded goto in
+ rt5645_i2c_probe
+Date: Sat, 21 Jun 2014 11:31:41 +0100
+Message-ID: <20140621103140.GT5099@sirena.org.uk>
 References: <1402371356.16323.1.camel@phoenix>
+ <1402371401.16323.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3408065499117421344=="
+Content-Type: multipart/mixed; boundary="===============6827889240984435050=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3FDA82651FD
- for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 12:31:29 +0200 (CEST)
-In-Reply-To: <1402371356.16323.1.camel@phoenix>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A485265314
+ for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 12:31:51 +0200 (CEST)
+In-Reply-To: <1402371401.16323.2.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,50 +27,50 @@ Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdw
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3408065499117421344==
+--===============6827889240984435050==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="inNNdVmXvrZHvZjh"
+	protocol="application/pgp-signature"; boundary="XN1lL3NhKlxgwOIA"
 Content-Disposition: inline
 
 
---inNNdVmXvrZHvZjh
+--XN1lL3NhKlxgwOIA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jun 10, 2014 at 11:35:56AM +0800, Axel Lin wrote:
+On Tue, Jun 10, 2014 at 11:36:41AM +0800, Axel Lin wrote:
 > Signed-off-by: Axel Lin <axel.lin@ingics.com>
 
 Applied, thanks.
 
---inNNdVmXvrZHvZjh
+--XN1lL3NhKlxgwOIA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTpV7zAAoJELSic+t+oim9AsUQAI2+8iNlh6Jl8Rapc9HLy4nQ
-8sJ2d7Q4ysZcqX1rFAosNKh62ZRMRQ4/MnrLEi3odsa4qy54JjoXOmuiLu4nsCHE
-bhG3oScUGvk3/LEBtJBjglrFsQ9bbYr7KOX7m+p/PBtudxh8BNKWXG+FEUMumKB5
-wdz8XSW9+nEwgeDRGfSkd2tpRd6pN2r4+ljIjqgqbqZQGUE7ySBTHCOhmrVDiAfR
-P02v+hjMyKSF1kKUv+sgU/mroqz3g3CBGVkOmb8OYYNNgVhO+I3I5oHcf2hDTqcp
-SGtiwsRTOpfFclAIWPkYrAk8j9S1M8gT8tNUDvzMV7XZeOoa7u1IP18l1aZl4Cgq
-kpCXMbyF/p4EbjHgC2XbFoOZldDZc5q3ZPHGDorgrcasRzXbFKsLPdSMt/n2a9sO
-LrkLV1hammTKYhrQ1jMKNbvKIINGUFgX+BOBOHU+AUosKwvbVT1xomR9xbGEWu5K
-MSbQ5ObLbAiioHP8cKusVXBfle7Ju/lGjk79dS11/h/O3gsSqgsX9Ar0wjjO/ARk
-+rDUjSHiSvWbANgX/hMqXx/6ZXNBhQdJycWbShSx9Of5Y3nYdMZyVHexbBH+n9ds
-y3EMdzuErwWz0qWz8eU+8S+7qLtekXkbEo5PjsPeRREOuJG6+7l3RU7/jROlZho0
-5J8QsCpzFA9unPZOBgy7
-=FII9
+iQIcBAEBAgAGBQJTpV8JAAoJELSic+t+oim9qsMP/2fDBhKvs6c39NfmNQGet5jT
+Laeq7n4X3se4KnWmLl07p34yW29ml6jVN20EpFoXEdxtmu62Dq2GQWUJZSrK47aU
+bGJ/VlDpAMDbRJTXHKhgISmp/IoOdOEaPKPD9/10j+yRc5Kr9EEApE1BCOLpdzMd
+NaBqmDxHYjBVb8gw7MyRwP1sFxH2E/QRkRuSvJFP0nYOP6Ffk1+gv+aA4Uj4rnAS
+eALDcFdXEvaz5QCX0fmXU0AdJisTofSYl0rZCPkkSh+bqhE4WW0YLxhn99kjyekN
+1yQV2R9eUJzwOdvNDP3N3cVhC0IxKPkkx/yIicZVaC0h+x7rqqSng5EY+ABeYqMk
+e3mO6GNzcpf8KyQUduf/zw+4Y0zHswBIkK82/f5EcPeQ4qVXLSnwY9Wr8pHQvyAT
+vUPZ7LAmawTeTQdz22pZ0piO0RTQvWICn1tYFYaEJRPVSkHwvrfnmlDwTPCArm3x
+6uZ04jlkJn01HCtad6gmaF5CxDe64cbSsOwgzzxbMe5oxRFUFkwwNACeH1zMcNdw
+AHy3U5mUC1zDFpp1VHsyi42mIvD4qRLtfONxsxHPru0vOU3ZeADRsoi8x65Rn2rW
+oxzQJjxSMmoozDUrB8HdeCHNUPMtOJZ1kziQ3KYqcosqH/oPk4rADRQBxohD/j/E
+ilNwY46ukes0TKUSsJlq
+=sG/T
 -----END PGP SIGNATURE-----
 
---inNNdVmXvrZHvZjh--
+--XN1lL3NhKlxgwOIA--
 
---===============3408065499117421344==
+--===============6827889240984435050==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3408065499117421344==--
+--===============6827889240984435050==--
