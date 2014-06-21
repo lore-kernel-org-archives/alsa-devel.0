@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 01/11] ASoC: Move name_prefix from CODEC
-	to component
-Date: Sat, 21 Jun 2014 21:03:34 +0100
-Message-ID: <20140621200334.GO5099@sirena.org.uk>
+Subject: Re: [PATCH v2 02/11] ASoC: Move name and id from
+ CODEC/platform to component
+Date: Sat, 21 Jun 2014 21:04:34 +0100
+Message-ID: <20140621200434.GP5099@sirena.org.uk>
 References: <1402935191-18398-1-git-send-email-lars@metafoo.de>
- <1402935191-18398-2-git-send-email-lars@metafoo.de>
+ <1402935191-18398-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2469082438089762127=="
+Content-Type: multipart/mixed; boundary="===============0500269490902553668=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4614E261A7F
- for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 22:03:44 +0200 (CEST)
-In-Reply-To: <1402935191-18398-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id D765F261B0A
+ for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 22:05:01 +0200 (CEST)
+In-Reply-To: <1402935191-18398-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,54 +27,53 @@ Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Liam Girdwoo
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2469082438089762127==
+--===============0500269490902553668==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="o/s5EVDMealX6CVa"
+	protocol="application/pgp-signature"; boundary="xu6B5v5yNovF5RLT"
 Content-Disposition: inline
 
 
---o/s5EVDMealX6CVa
+--xu6B5v5yNovF5RLT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 16, 2014 at 06:13:01PM +0200, Lars-Peter Clausen wrote:
-> Move the name_prefix from the CODEC struct to the component struct. This will
-> eventually allow to specify prefixes for all types of components. It is also
-> necessary to make the DAPM code component type independent (i.e. a DAPM context
-> does not need to know whether it belongs to a CODEC or a platform or something
-> else).
+On Mon, Jun 16, 2014 at 06:13:02PM +0200, Lars-Peter Clausen wrote:
+> The component struct already has a name and id field which are initialized to
+> the same values as the same fields in the CODEC and platform structs. So remove
+> them from the CODEC and platform structs and used the ones from the component
+> struct instead.
 
 Applied, thanks.
 
---o/s5EVDMealX6CVa
+--xu6B5v5yNovF5RLT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTpeUTAAoJELSic+t+oim94zcP/RaA7u5DnrpPD0v1P8v2fT7v
-UfapyQ7htXoViwpJ2aglMHZas2S+4BgtG4bE7IxR0eYkpKk9ZbptHJFPez2EcHTK
-MvCdyNuHxuQAMLJOFbnCfSJcHaRtdL980hrj2ljfpnBgw8ZZA08Pw/WVU2+YlKZd
-VIaPWLWA3RZ0+HhONP58TIBMkrKgZ5SNzPXdN/5l/8uqUuUjQxA60ZXA4hsw6JLt
-lBkgm0Xnf/lhXkEzGYZr69bGXtXCL2wt+gPlDcl8q+O6zIF+e4zoJsLXsAyJ/IOW
-MIkrjEQC+2y2OvPXmKsix7ioDvX5gr1z53FIRygWqF46Gmr8iSuNLeoF9VbYgEFY
-R/vw74PNty7qY/k5ggwU5DOc6OubtlQZ92pD4eg8JSdzyOk1oHmKNntqO0/VDhIF
-b1OZo/JtFMBb5FCDdbEV/uIbd5ASsz+CIj9T4vES2Hi41On6MPhWCVRkFj1n/enl
-jP5rdNflhBJCRSIGVeXzj3NxQ2SiKinw1qZcxPX/s+i7LD9Ono7lWy8u5qLhrE9u
-Wp9fPN2pwOYr+Msh3Y/UOQotY8i6MdSnO6Ip8BEdjJsrhxdfmJpgnzu5ikDqNMWc
-tfn+jl2dvN0RTABsKhCdf5kRefWdWZ7G5qhvDhAaa6YH0Ax++O21Oz197UOzRAXU
-5ywIvAiwQCg7BmCE83xY
-=2yGb
+iQIcBAEBAgAGBQJTpeVPAAoJELSic+t+oim9fR0P/RQNN8Zk5xzr4PjyqE1Sx/ut
+A/Lw+HBVulMUYzTZp94OtNWxfLeMqlyo0ztrhGq7THfLZ8cicMIc5Y2pxC6AfhdA
+kTw7oQ09un8f15u35JQB6UlAnEjvmZ8yUXXk7ERHCSJPMcpNBUVyrmpS+/w/aliD
+d18TQaD14kZtJYqaqWQnj+hVM/RH+C/OevLpNKeiTialygtKen7NtzWvdr7BzyrU
+MHdUtW+1u3szQ+1sQhURAlsveYWauHh0PDNIJSBXVJerhqfufLTX/u8JxDiiKrK1
+wG/j3WcKxoUlMKbDFs9M6yRHx3Q9AWzl1hxrh/pEq1YWmLa8FcfGIWtP2JEJwuSj
+DwyNHSa+SOD5dHrKn1uu5JrAQj5/QmUBPPv4mPidCgQv5aSnrUoAkn5RFelPIDIc
+npOryM+9NPcSqz6BMs+AmY8lGgq+tM1Diil4ACJQAPUj1EoMscagrOrxbp4FttNr
+rwafU9aVAzqap/ySWvBEhLycdoWMIulTyRxDYbG7A7VVPzEwWk2oHmSY1/YXuP8m
+7lep++DCDpNYXw0xMUGm8AtEUTiurhbZShMysBi3vNOkBSSPlr3i0sbfT35XwGoP
+NgaI5zdA7LzUFdQSYaibG0mcShprMo9AhOsmKWGKO8dSZtJ6rq4a6sxLYiQYoV7m
+ZUCZKnUL9dZyW0MeZ2Kz
+=UUla
 -----END PGP SIGNATURE-----
 
---o/s5EVDMealX6CVa--
+--xu6B5v5yNovF5RLT--
 
---===============2469082438089762127==
+--===============0500269490902553668==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2469082438089762127==--
+--===============0500269490902553668==--
