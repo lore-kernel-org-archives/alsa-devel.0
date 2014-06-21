@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pcm: fix dpcm_path_put in dpcm
-	runtime update
-Date: Sat, 21 Jun 2014 11:30:13 +0100
-Message-ID: <20140621103013.GR5099@sirena.org.uk>
-References: <1401882126-26225-1-git-send-email-zhouqiao@marvell.com>
+Subject: Re: [PATCH 1/3] ASoC: rt5640: Remove unneeded goto in
+ rt5640_i2c_probe
+Date: Sat, 21 Jun 2014 11:31:18 +0100
+Message-ID: <20140621103118.GS5099@sirena.org.uk>
+References: <1402371356.16323.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4914703216602876672=="
+Content-Type: multipart/mixed; boundary="===============3408065499117421344=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B208265141
- for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 12:30:23 +0200 (CEST)
-In-Reply-To: <1401882126-26225-1-git-send-email-zhouqiao@marvell.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FDA82651FD
+ for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 12:31:29 +0200 (CEST)
+In-Reply-To: <1402371356.16323.1.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qiao Zhou <zhouqiao@marvell.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4914703216602876672==
+--===============3408065499117421344==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hUTgNrncnQ/xgPMs"
+	protocol="application/pgp-signature"; boundary="inNNdVmXvrZHvZjh"
 Content-Disposition: inline
 
 
---hUTgNrncnQ/xgPMs
+--inNNdVmXvrZHvZjh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jun 04, 2014 at 07:42:06PM +0800, Qiao Zhou wrote:
-> we need to release dapm widget list after dpcm_path_get in
-> soc_dpcm_runtime_update. otherwise, there will be potential memory
-> leak. add dpcm_path_put to fix it.
+On Tue, Jun 10, 2014 at 11:35:56AM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
 
 Applied, thanks.
 
---hUTgNrncnQ/xgPMs
+--inNNdVmXvrZHvZjh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTpV6yAAoJELSic+t+oim9kwIP/16fst7HAuF85ANLojSFDhou
-fX0e8/Yxr++seNkqRPwcQSZqDOjMEiVrGx+wA3pBjHTHBmv9iXhDo/nPozvuLrgU
-Z3qXEmH4IDiXD8b+lrBG7U+PPiS0A9rA4oZTgVTbZGzVdqFV2xNP0swjbq2lpeIA
-A750lN91BOwWHv5XfKr1u7ckBqE6MWC0BLEvgXO7nls+X3ZT9MK798jnzo6IPdOg
-akcEFsJ6f8LmQ7shxhDkQxPdy/w4sF78/oOr8MMMrrTsKhwFUYh/bYKwtRNkDFXP
-hr6i1evZvwLLXZAL4U6PjMkICbx++/yE0nrSXR0zx8ikuqlmOr1WjVuzlPN10Fzb
-PKta/2HqwyTvC3z47eK0Lt7pwDx0I8H0gGlfBMhHvsqMvfXZ4clr8Tnv7rt8Z6Y+
-ZxwT+dTynjdIvFq5YoN9xrhh9T+z23ZeT7nkHDpvo/59CfK56TUl4wiW3rvmZy//
-ixL1kv4MZQwr+mAI3LJIJWdUR8Xt0YqfVPgHd9f/T8RADyhFr6msXW5AnpZWWjSK
-/xuKeUFNeUA+iWqI+/97KvUs4FZQNAX+rbOfFeJ3Xeh1H79pXxaHEVpXFlHsqYnr
-5LrkUnm4Y4sB7TBsVj8zbLt45MFtYZiz1LbXrSxdjmwYkqyrvsL2FNuOvFoQfEkZ
-gN6Jh5PaKNLt6VNSF2DE
-=KRSm
+iQIcBAEBAgAGBQJTpV7zAAoJELSic+t+oim9AsUQAI2+8iNlh6Jl8Rapc9HLy4nQ
+8sJ2d7Q4ysZcqX1rFAosNKh62ZRMRQ4/MnrLEi3odsa4qy54JjoXOmuiLu4nsCHE
+bhG3oScUGvk3/LEBtJBjglrFsQ9bbYr7KOX7m+p/PBtudxh8BNKWXG+FEUMumKB5
+wdz8XSW9+nEwgeDRGfSkd2tpRd6pN2r4+ljIjqgqbqZQGUE7ySBTHCOhmrVDiAfR
+P02v+hjMyKSF1kKUv+sgU/mroqz3g3CBGVkOmb8OYYNNgVhO+I3I5oHcf2hDTqcp
+SGtiwsRTOpfFclAIWPkYrAk8j9S1M8gT8tNUDvzMV7XZeOoa7u1IP18l1aZl4Cgq
+kpCXMbyF/p4EbjHgC2XbFoOZldDZc5q3ZPHGDorgrcasRzXbFKsLPdSMt/n2a9sO
+LrkLV1hammTKYhrQ1jMKNbvKIINGUFgX+BOBOHU+AUosKwvbVT1xomR9xbGEWu5K
+MSbQ5ObLbAiioHP8cKusVXBfle7Ju/lGjk79dS11/h/O3gsSqgsX9Ar0wjjO/ARk
++rDUjSHiSvWbANgX/hMqXx/6ZXNBhQdJycWbShSx9Of5Y3nYdMZyVHexbBH+n9ds
+y3EMdzuErwWz0qWz8eU+8S+7qLtekXkbEo5PjsPeRREOuJG6+7l3RU7/jROlZho0
+5J8QsCpzFA9unPZOBgy7
+=FII9
 -----END PGP SIGNATURE-----
 
---hUTgNrncnQ/xgPMs--
+--inNNdVmXvrZHvZjh--
 
---===============4914703216602876672==
+--===============3408065499117421344==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4914703216602876672==--
+--===============3408065499117421344==--
