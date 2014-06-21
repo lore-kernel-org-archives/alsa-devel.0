@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 03/11] ASoC: Split component
- registration into two steps
-Date: Sat, 21 Jun 2014 21:05:50 +0100
-Message-ID: <20140621200550.GQ5099@sirena.org.uk>
+Subject: Re: [PATCH v2 04/11] ASoC: Auto disconnect pins from
+ all DAPM contexts
+Date: Sat, 21 Jun 2014 21:07:07 +0100
+Message-ID: <20140621200707.GR5099@sirena.org.uk>
 References: <1402935191-18398-1-git-send-email-lars@metafoo.de>
- <1402935191-18398-4-git-send-email-lars@metafoo.de>
+ <1402935191-18398-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3555127224305607374=="
+Content-Type: multipart/mixed; boundary="===============2986869019447848275=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 317882617A4
- for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 22:06:02 +0200 (CEST)
-In-Reply-To: <1402935191-18398-4-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E8602651CF
+ for <alsa-devel@alsa-project.org>; Sat, 21 Jun 2014 22:07:31 +0200 (CEST)
+In-Reply-To: <1402935191-18398-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,54 +27,54 @@ Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Liam Girdwoo
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3555127224305607374==
+--===============2986869019447848275==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="EYHn5iBSUv6bGbqT"
+	protocol="application/pgp-signature"; boundary="lA9F05uMKC/Ah7SI"
 Content-Disposition: inline
 
 
---EYHn5iBSUv6bGbqT
+--lA9F05uMKC/Ah7SI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 16, 2014 at 06:13:03PM +0200, Lars-Peter Clausen wrote:
-> Split snd_soc_component_register() into snd_soc_component_initialize() and
-> snd_soc_component_add(). Using a 2-stage registration approach has the advantage
-> that it is possible to modify the component after it has been initialized, but
-> before it is made visible to the system. This e.g. allows CODECs or platforms to
-> overwrite some of the default settings made in snd_soc_component_initialize().
+On Mon, Jun 16, 2014 at 06:13:04PM +0200, Lars-Peter Clausen wrote:
+> Currently only pins in CODEC DAPM contexts are automatically marked as
+> non-connected if the card has the fully_routed flag set. This makes sense since
+> widgets which qualify for auto-disconnection are only found in CODEC DAPM
+> contexts. But with componentisation this is going to change, so consider all
+> widgets for auto-disconnection.
 
 Applied, thanks.
 
---EYHn5iBSUv6bGbqT
+--lA9F05uMKC/Ah7SI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTpeWbAAoJELSic+t+oim95H4QAI+hvGwSHcWkSoPNZH6x3Ms4
-u3Er8BW43fENHyNjrsUIi6AQQKkV7gb3AGKeK5v/DeIyLA4u/pwUpnlACp/rcYT8
-Kit8BmH/iEQIBJ/Cu33dhm6TDWBBeX7tcw2NAuVTN7vqE8uB77DW41pts2obGRgs
-0JNPj5nlVqPJa0sO1NjjGnH78dAWH2fq7Nl2ZA/onlcIZP6opfLzECWvkj2bm0X3
-nEbTJB8U/VXD+1PPPBUxm0TTgIK90k92p7SC7x64mdPY2TnTYX/nm/tNATX3qbC/
-1ETWFIbhmt+8sR39UMznV43to6apr+F4wopU0C7PsFLXTbkE+mtfe+WzRPL5FuVA
-J+k2AqzqPO8WzWGqq2t8ej6+FarBLeteeRfrCrZp+1JJFzGuYKNnk5fRBjK+gdPD
-529yV/ZxjzLEckeu14DYVM2pbgItAVxyexnxpCt6KxMzEEPvVsFckVBA8TWAnIYv
-r6AovHhpElPJbnCcfm3ALnVA0T3eib+jrZzfEtaDnvbwnwoPzwKB7s99eopo64QF
-+6IqtKNSeO6htJzLJljRbGmiGs+F7dE17WCGGpbsIGrq0vtTpJ8FfK9ps5tA3DOB
-HckjTk5yn3c69f4iIMWIdC97xv+QlMceaOPuvF6HjN8QqMylrJLcTBEkbCW0neqM
-kGPURll6Xh1PRnKpdLcq
-=BIxy
+iQIcBAEBAgAGBQJTpeXoAAoJELSic+t+oim9o0EP/1hsw3S5GTJ+SzoaRElGgb+o
+jZsTwIbD3bt3QxbmDxkf4X0LUrz686eZzblIW1o4UFzuMJPnqXNhqDoFr9ajyIur
+JaavPl4DV9qfKCpbg5s7wjny51hftySTQFdrdZnfPad8/LGQHrM0+q3bvuX02UvH
+5KwuoOQovpr721jRBbAPGisYsXx4wPtFatECMHjjl2TXXpLmctdLu7ewvWrAVdVJ
+AfPQLCYU6yT59++DareRKCcnscnchz7T94jt08OIm9yXlCeRofS3+MicfhGzPlHR
+SRPbEB5sxx3hBrCtaPeE+pfiBkNZmeSkgXDV5FBV81kaaCHoJ9G0FuRB6RQsQnc/
+tlA28uGZjjq4IGZGxV9W209m4j59YV7rZNsiNEQ9iE9hEDl7tJvTc2DMH1zSORDP
+lbqM8eDD7DrWJ6nU+pD+8sgGDUcHMcv/OLUsdbzxtQHQxu4M5CkFPYpRTZa4o6HF
+i5CfHwh6euUGyqEJkG69QG6V7smFxOy0SAkoYe382mGa0dBqJCtMFyoCrjxqy2o9
+nynWOOytb7wRA/we8aoPkrzM4uFGjJvRAEzkwIYWahb4+KHkDhBt2/JjXyKCHeAb
+l44J15H1gUm5uTmRICzvRfEX7IGyV1DTpNM/x663Z1QRQf9GXVSi/TjJG4gNv7eR
+2dNfdc4bypuicOuZ5j9M
+=dJpD
 -----END PGP SIGNATURE-----
 
---EYHn5iBSUv6bGbqT--
+--lA9F05uMKC/Ah7SI--
 
---===============3555127224305607374==
+--===============2986869019447848275==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3555127224305607374==--
+--===============2986869019447848275==--
