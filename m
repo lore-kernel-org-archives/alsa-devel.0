@@ -1,52 +1,73 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: Re: [PATCH RFC/RFT] ASoC: rt5677: Convert to use
-	rl6231_pll_calc
-Date: Mon, 23 Jun 2014 05:32:29 +0000
-Message-ID: <7EB0DE829A537248AF2ED30C97D1269453316C@RTITMBSV03.realtek.com.tw>
-References: <1402980091.13607.1.camel@phoenix>
+From: Tushar Behera <trblinux@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: max98090: Add max98091 compatible string
+Date: Mon, 23 Jun 2014 11:49:33 +0530
+Message-ID: <53A7C6F5.9070203@gmail.com>
+References: <1403251396-17487-1-git-send-email-tushar.b@samsung.com> <CAD=FV=XX1XAX-jZTJaQYTHbeXkHu2uX_6==vHYbSnVpjJe6+tQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 556B6261609
- for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 07:32:38 +0200 (CEST)
-In-Reply-To: <1402980091.13607.1.camel@phoenix>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <CAD=FV=XX1XAX-jZTJaQYTHbeXkHu2uX_6==vHYbSnVpjJe6+tQ@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Doug Anderson <dianders@chromium.org>, Tushar Behera <tushar.b@samsung.com>
+Cc: linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Kukjin Kim <kgene.kim@samsung.com>, tiwai@suse.de, "broonie@kernel.org" <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>, Rob Herring <robh+dt@kernel.org>, Wonjoon Lee <woojoo.lee@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Axel Lin [mailto:axel.lin@ingics.com]
-> Sent: Tuesday, June 17, 2014 12:42 PM
-> To: Mark Brown
-> Cc: Oder Chiou; Liam Girdwood; alsa-devel@alsa-project.org
-> Subject: [PATCH RFC/RFT] ASoC: rt5677: Convert to use rl6231_pll_calc
+On 06/21/2014 02:02 AM, Doug Anderson wrote:
+> Tushar,
 > 
-> The implementation of rt5677_pll_calc() has the same logic of rl6231_pll_calc().
-> The only difference is the lower boundary checking for freq_in.
+> On Fri, Jun 20, 2014 at 1:03 AM, Tushar Behera <tushar.b@samsung.com> wrote:
+>> From: Wonjoon Lee <woojoo.lee@samsung.com>
+>>
+>> The MAX98091 CODEC is the same as MAX98090 CODEC, but with an extra
+>> microphone. Existing driver for MAX98090 CODEC already has support
+>> for MAX98091 CODEC. Adding proper compatible string so that MAX98091
+>> CODEC can be specified from device tree.
+>>
+>> Signed-off-by: Wonjoon Lee <woojoo.lee@samsung.com>
+>> Signed-off-by: Doug Anderson <dianders@chromium.org>
+>> Signed-off-by: Tushar Behera <tushar.b@samsung.com>
+>> ---
+>>
+>> Picked from https://chromium-review.googlesource.com/#/c/184091/
+>>
+>>  .../devicetree/bindings/sound/max98090.txt         |    2 +-
+>>  sound/soc/codecs/max98090.c                        |    2 ++
+>>  2 files changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/max98090.txt b/Documentation/devicetree/bindings/sound/max98090.txt
+>> index a5e63fa..c454e67 100644
+>> --- a/Documentation/devicetree/bindings/sound/max98090.txt
+>> +++ b/Documentation/devicetree/bindings/sound/max98090.txt
+>> @@ -4,7 +4,7 @@ This device supports I2C only.
+>>
+>>  Required properties:
+>>
+>> -- compatible : "maxim,max98090".
+>> +- compatible : "maxim,max98090" or "maxim,max98091".
+>>
+>>  - reg : The I2C address of the device.
+>>
+>> diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+>> index f5fccc7..4f5534d 100644
+>> --- a/sound/soc/codecs/max98090.c
+>> +++ b/sound/soc/codecs/max98090.c
+>> @@ -2460,12 +2460,14 @@ static const struct dev_pm_ops max98090_pm = {
+>>
+>>  static const struct i2c_device_id max98090_i2c_id[] = {
+>>         { "max98090", MAX98090 },
+>> +       { "max98091", MAX98091 },
 > 
-> This patch calls rl6231_pll_calc() instead of open-coded.
-> The k_bp of struct rt5677_pll_code is always false, thus also remove the
-> code to check pll_code.k_bp.
+> optional: This would allow you to add some extra error checking in
+> max98090_probe() to make sure that the device-tree specified device
+> matched the device that was detected.  That could be in a future
+> patch, though.
 > 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Tested-by: Oder Chiou <oder_chiou@realtek.com>
+> Reviewed-by: Doug Anderson <dianders@chromium.org>
+> 
 
-> ---
-> Hi Oder,
-> This patch removes the usage of k_bp from struct rt5677_pll_code because it is
-> always false. I think if k_bp is necessay in the further development, maybe
-> it's better to add it to rl6231_pll_code. How do you think?
-> 
-It is the better way, thanks.
+Okay. I will add that in a follow-up patch.
+
+Thanks for reviewing.
+-- 
+Tushar Behera
