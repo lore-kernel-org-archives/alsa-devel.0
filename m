@@ -1,19 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4 v2] regulator: arizona-ldo1: Do not
-	control	clocking from regulator
-Date: Mon, 23 Jun 2014 16:53:37 +0100
-Message-ID: <20140623155337.GD23517@opensource.wolfsonmicro.com>
-References: <1403275273-22713-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20140621205349.GD24291@sirena.org.uk>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42l56: Fix stereo channel register
+ assignment for Headphone and LineOut volume mixers
+Date: Mon, 23 Jun 2014 11:25:18 -0500
+Message-ID: <alpine.DEB.2.02.1406231124500.25941@heelrod>
+References: <1403540273-15231-1-git-send-email-ryan.harvey@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2B7752655A6
- for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 17:53:38 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140621205349.GD24291@sirena.org.uk>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1blp0184.outbound.protection.outlook.com [207.46.163.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BE20265864
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 18:22:48 +0200 (CEST)
+In-Reply-To: <1403540273-15231-1-git-send-email-ryan.harvey@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,33 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com
+To: Ryan Harvey <ryan.harvey@cirrus.com>
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, paul.handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 21, 2014 at 09:53:49PM +0100, Mark Brown wrote:
-> On Fri, Jun 20, 2014 at 03:41:13PM +0100, Charles Keepax wrote:
-> > From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> > 
-> > Using the driver for the internal regulator to also control
-> > the clock frequency of blocks inside the codec is an
-> > unexpected side-effect for a regulator, and also means that
-> > the core clocks won't be changed as expected if an external
-> > regulator is used to power the codec.
-> > 
-> > The clocking control is now handled by the core arizona MFD
-> > driver so can be removed from the LDO1 driver.
-> 
-> I would expect this to be squashed into the first patch since otherwise
-> there's a bisection issue with both drivers trying to maintain the same
-> thing at the same time.
+On Mon, 23 Jun 2014, Ryan Harvey wrote:
 
-Whilst there are two things controlling it for a couple of
-patches they both set the same value one after another, so it
-should be safe. If it goes into the first patch nothing is
-controlling the DVFS for a few patches so that actually creates a
-bisection issue. It could be squashed into the second last patch
-but this way feels cleaner?
+> Stereo Headphone and LineOut volume mixers are now attached to HPA+HPB, LOA+LOB.
+>
+> Signed-off-by: Ryan Harvey <ryan.harvey@cirrus.com>
+> ---
+> sound/soc/codecs/cs42l56.c |    4 ++--
+> 1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+> index fdc4bd2..8e68ef5 100644
+> --- a/sound/soc/codecs/cs42l56.c
+> +++ b/sound/soc/codecs/cs42l56.c
+> @@ -445,9 +445,9 @@ static const struct snd_kcontrol_new cs42l56_snd_controls[] = {
+> 	SOC_DOUBLE("ADC Boost Switch", CS42L56_GAIN_BIAS_CTL, 3, 2, 1, 1),
+>
+> 	SOC_DOUBLE_R_SX_TLV("Headphone Volume", CS42L56_HPA_VOLUME,
+> -			      CS42L56_HPA_VOLUME, 0, 0x44, 0x55, hl_tlv),
+> +			      CS42L56_HPB_VOLUME, 0, 0x44, 0x55, hl_tlv),
+> 	SOC_DOUBLE_R_SX_TLV("LineOut Volume", CS42L56_LOA_VOLUME,
+> -			      CS42L56_LOA_VOLUME, 0, 0x44, 0x55, hl_tlv),
+> +			      CS42L56_LOB_VOLUME, 0, 0x44, 0x55, hl_tlv),
+>
+> 	SOC_SINGLE_TLV("Bass Shelving Volume", CS42L56_TONE_CTL,
+> 			0, 0x00, 1, tone_tlv),
+> -- 
+> 1.7.9.5
+>
+>
+Acked-by: Brian Austin <brian.austin@cirrus.com>
 
 Thanks,
-Charles
