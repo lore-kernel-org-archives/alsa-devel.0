@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: cs42l56: Fix stereo channel register
- assignment for Headphone and LineOut volume mixers
-Date: Mon, 23 Jun 2014 17:35:50 +0100
-Message-ID: <20140623163550.GD23300@sirena.org.uk>
-References: <1403540273-15231-1-git-send-email-ryan.harvey@cirrus.com>
- <alpine.DEB.2.02.1406231124500.25941@heelrod>
- <20140623162642.GB23300@sirena.org.uk>
- <alpine.DEB.2.02.1406231136430.25941@heelrod>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/3 v3] ASoC: wm_adsp: Move DVFS control into
+	codec driver
+Date: Mon, 23 Jun 2014 17:28:28 +0100
+Message-ID: <1403540909-22013-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1403540909-22013-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6000669495941057504=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 14D48265654
- for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 18:35:56 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1406231136430.25941@heelrod>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 477032655E5
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 18:38:08 +0200 (CEST)
+In-Reply-To: <1403540909-22013-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,64 +21,281 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org, paul.handrigan@cirrus.com, lgirdwood@gmail.com, Ryan Harvey <ryan.harvey@cirrus.com>
+To: broonie@kernel.org, lee.jones@linaro.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 
---===============6000669495941057504==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gE7i1rD7pdK0Ng3j"
-Content-Disposition: inline
+In theory the ADSP driver should not need to know
+anything about the codec it is part of. But some codecs
+need DVFS control based on ADSP clocking speed. This was
+being handled by bundling part of the knowledge of this
+into the ADSP driver.
 
+This change removes this handling out of the ADSP driver.
+A new macro WM_ADSP2_E() takes a callback function to be
+called by the preloader widget in place of the default
+handler, and this can be used to do codec-specific power
+control.
 
---gE7i1rD7pdK0Ng3j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The WM5102 driver has been updated to implement the DVFS.
 
-On Mon, Jun 23, 2014 at 11:37:06AM -0500, Brian Austin wrote:
-> On Mon, 23 Jun 2014, Mark Brown wrote:
-> >On Mon, Jun 23, 2014 at 11:25:18AM -0500, Brian Austin wrote:
-> >>On Mon, 23 Jun 2014, Ryan Harvey wrote:
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ drivers/regulator/arizona-ldo1.c |    5 ---
+ sound/soc/codecs/wm5102.c        |   47 +++++++++++++++++++++++-
+ sound/soc/codecs/wm5110.c        |    2 +-
+ sound/soc/codecs/wm_adsp.c       |   73 +-------------------------------------
+ sound/soc/codecs/wm_adsp.h       |   13 ++++---
+ 5 files changed, 54 insertions(+), 86 deletions(-)
 
-> >>>Stereo Headphone and LineOut volume mixers are now attached to HPA+HPB, LOA+LOB.
-
-> >I don't seem to have been copied on the original patches here, or
-> >they're snarled up somewhere in transmission anyway.
-
-> You're there. Maybe stuck in Moderator with first post to mailing list?
-
-The list shouldn't affect the direct CC to me though.
-
---gE7i1rD7pdK0Ng3j
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTqFdjAAoJELSic+t+oim9K5IP/0+jO4M78qCrYhqAe+oE2iHP
-yA97uDqmswp5MsJkEz54LRbff/s7Dx8JFAt0CPV+dlGkBfBy+i+9WlnmghU+qanV
-eO954Gmx+IjRFUyD2ArBx5zS0pegx5Mg34Yexf0DdGT+VmroB9kDztVz6RFaThzS
-P466Ml1gEWJbmdGuM0ZqZRXvg4JbCNLjzqh4Rhkifz7g8E2JhvXb2BSY/l4o8Q9c
-8CDtdqdf/QGU7eaWM8MsIXgvORffzf//pbl8Wv1T9Hf/R0/1uY6TNQmCxLuLtXS3
-CQg988esjiQCvoC9OZ+x8TMFUQfp0RNIpTrK1iflUuPXOpskOGUtlcsSNzlyhz4+
-1cKj/8/MRGrE+XdHEsDnRlN/4+iOeSnMzmGmKf9a3mlzu05xUAn2EKD90+pMN7Nt
-EBblzopX+ecstOwk1+cHOWoHzrhGg0ZPZx6xGTAcFHJyO/JW6nCp25RJc9pHzIHa
-y6yoz9s9q5RloZ4/l6miR+AamePW8GIMm0j2O1Zhi0deHZwXWrhxsftOdRlm8QQ+
-udBOm3uZ9HCI45hoLZM3W+wfwFuZlcijwj7S/sqHdSthGBkUg+VjtVQ4wagvNbYS
-Bhy/KAY9oI8xWU7pMyRNwXatpp7It3NLx6wl7WsAxKuY2eezVpuzHZ5Q5LRFNOH8
-iZQwrqTYah/MWg3eedUh
-=nCFj
------END PGP SIGNATURE-----
-
---gE7i1rD7pdK0Ng3j--
-
---===============6000669495941057504==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6000669495941057504==--
+diff --git a/drivers/regulator/arizona-ldo1.c b/drivers/regulator/arizona-ldo1.c
+index 04f262a..47b48c8 100644
+--- a/drivers/regulator/arizona-ldo1.c
++++ b/drivers/regulator/arizona-ldo1.c
+@@ -78,11 +78,6 @@ static int arizona_ldo1_hc_set_voltage_sel(struct regulator_dev *rdev,
+ 	if (ret != 0)
+ 		return ret;
+ 
+-	ret = regmap_update_bits(regmap, ARIZONA_DYNAMIC_FREQUENCY_SCALING_1,
+-				 ARIZONA_SUBSYS_MAX_FREQ, val);
+-	if (ret != 0)
+-		return ret;
+-
+ 	if (val)
+ 		return 0;
+ 
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index fa24d55..0ecc89b 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -612,6 +612,49 @@ static int wm5102_sysclk_ev(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++static int wm5102_adsp_power_ev(struct snd_soc_dapm_widget *w,
++		   struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	struct arizona *arizona = dev_get_drvdata(codec->dev->parent);
++	unsigned int v;
++	int ret;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		ret = regmap_read(arizona->regmap, ARIZONA_SYSTEM_CLOCK_1, &v);
++		if (ret != 0) {
++			dev_err(codec->dev,
++				"Failed to read SYSCLK state: %d\n", ret);
++			return -EIO;
++		}
++
++		v = (v & ARIZONA_SYSCLK_FREQ_MASK) >> ARIZONA_SYSCLK_FREQ_SHIFT;
++
++		if (v >= 3) {
++			ret = arizona_dvfs_up(arizona, ARIZONA_DVFS_ADSP1_RQ);
++			if (ret != 0) {
++				dev_err(codec->dev,
++					"Failed to raise DVFS: %d\n", ret);
++				return ret;
++			}
++		}
++		break;
++
++	case SND_SOC_DAPM_POST_PMD:
++		ret = arizona_dvfs_down(arizona, ARIZONA_DVFS_ADSP1_RQ);
++		if (ret != 0)
++			dev_warn(codec->dev,
++				 "Failed to lower DVFS: %d\n", ret);
++		break;
++
++	default:
++		break;
++	}
++
++	return wm_adsp2_early_event(w, kcontrol, event);
++}
++
+ static int wm5102_out_comp_coeff_get(struct snd_kcontrol *kcontrol,
+ 				     struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -1362,7 +1405,7 @@ ARIZONA_MUX_WIDGETS(ISRC2DEC2, "ISRC2DEC2"),
+ ARIZONA_MUX_WIDGETS(ISRC2INT1, "ISRC2INT1"),
+ ARIZONA_MUX_WIDGETS(ISRC2INT2, "ISRC2INT2"),
+ 
+-WM_ADSP2("DSP1", 0),
++WM_ADSP2_E("DSP1", 0, wm5102_adsp_power_ev),
+ 
+ SND_SOC_DAPM_OUTPUT("HPOUT1L"),
+ SND_SOC_DAPM_OUTPUT("HPOUT1R"),
+@@ -1909,7 +1952,7 @@ static int wm5102_probe(struct platform_device *pdev)
+ 	wm5102->core.adsp[0].mem = wm5102_dsp1_regions;
+ 	wm5102->core.adsp[0].num_mems = ARRAY_SIZE(wm5102_dsp1_regions);
+ 
+-	ret = wm_adsp2_init(&wm5102->core.adsp[0], true);
++	ret = wm_adsp2_init(&wm5102->core.adsp[0]);
+ 	if (ret != 0)
+ 		return ret;
+ 
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 62ef544..a2a3951 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -1688,7 +1688,7 @@ static int wm5110_probe(struct platform_device *pdev)
+ 		wm5110->core.adsp[i].num_mems
+ 			= ARRAY_SIZE(wm5110_dsp1_regions);
+ 
+-		ret = wm_adsp2_init(&wm5110->core.adsp[i], false);
++		ret = wm_adsp2_init(&wm5110->core.adsp[i]);
+ 		if (ret != 0)
+ 			return ret;
+ 	}
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 0600271..cdf98bf 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1539,35 +1539,6 @@ static void wm_adsp2_boot_work(struct work_struct *work)
+ 		return;
+ 	}
+ 
+-	if (dsp->dvfs) {
+-		ret = regmap_read(dsp->regmap,
+-				  dsp->base + ADSP2_CLOCKING, &val);
+-		if (ret != 0) {
+-			adsp_err(dsp, "Failed to read clocking: %d\n", ret);
+-			return;
+-		}
+-
+-		if ((val & ADSP2_CLK_SEL_MASK) >= 3) {
+-			ret = regulator_enable(dsp->dvfs);
+-			if (ret != 0) {
+-				adsp_err(dsp,
+-					 "Failed to enable supply: %d\n",
+-					 ret);
+-				return;
+-			}
+-
+-			ret = regulator_set_voltage(dsp->dvfs,
+-						    1800000,
+-						    1800000);
+-			if (ret != 0) {
+-				adsp_err(dsp,
+-					 "Failed to raise supply: %d\n",
+-					 ret);
+-				return;
+-			}
+-		}
+-	}
+-
+ 	ret = wm_adsp2_ena(dsp);
+ 	if (ret != 0)
+ 		return;
+@@ -1668,21 +1639,6 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		regmap_write(dsp->regmap, dsp->base + ADSP2_WDMA_CONFIG_2, 0);
+ 		regmap_write(dsp->regmap, dsp->base + ADSP2_RDMA_CONFIG_1, 0);
+ 
+-		if (dsp->dvfs) {
+-			ret = regulator_set_voltage(dsp->dvfs, 1200000,
+-						    1800000);
+-			if (ret != 0)
+-				adsp_warn(dsp,
+-					  "Failed to lower supply: %d\n",
+-					  ret);
+-
+-			ret = regulator_disable(dsp->dvfs);
+-			if (ret != 0)
+-				adsp_err(dsp,
+-					 "Failed to enable supply: %d\n",
+-					 ret);
+-		}
+-
+ 		list_for_each_entry(ctl, &dsp->ctl_list, list)
+ 			ctl->enabled = 0;
+ 
+@@ -1709,7 +1665,7 @@ err:
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_event);
+ 
+-int wm_adsp2_init(struct wm_adsp *adsp, bool dvfs)
++int wm_adsp2_init(struct wm_adsp *adsp)
+ {
+ 	int ret;
+ 
+@@ -1728,33 +1684,6 @@ int wm_adsp2_init(struct wm_adsp *adsp, bool dvfs)
+ 	INIT_LIST_HEAD(&adsp->ctl_list);
+ 	INIT_WORK(&adsp->boot_work, wm_adsp2_boot_work);
+ 
+-	if (dvfs) {
+-		adsp->dvfs = devm_regulator_get(adsp->dev, "DCVDD");
+-		if (IS_ERR(adsp->dvfs)) {
+-			ret = PTR_ERR(adsp->dvfs);
+-			adsp_err(adsp, "Failed to get DCVDD: %d\n", ret);
+-			return ret;
+-		}
+-
+-		ret = regulator_enable(adsp->dvfs);
+-		if (ret != 0) {
+-			adsp_err(adsp, "Failed to enable DCVDD: %d\n", ret);
+-			return ret;
+-		}
+-
+-		ret = regulator_set_voltage(adsp->dvfs, 1200000, 1800000);
+-		if (ret != 0) {
+-			adsp_err(adsp, "Failed to initialise DVFS: %d\n", ret);
+-			return ret;
+-		}
+-
+-		ret = regulator_disable(adsp->dvfs);
+-		if (ret != 0) {
+-			adsp_err(adsp, "Failed to disable DCVDD: %d\n", ret);
+-			return ret;
+-		}
+-	}
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_init);
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index a4f6b64..a86e531 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -56,8 +56,6 @@ struct wm_adsp {
+ 	int fw;
+ 	bool running;
+ 
+-	struct regulator *dvfs;
+-
+ 	struct list_head ctl_list;
+ 
+ 	struct work_struct boot_work;
+@@ -67,19 +65,22 @@ struct wm_adsp {
+ 	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
+ 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
+ 
+-#define WM_ADSP2(wname, num) \
++#define WM_ADSP2_E(wname, num, event_fn) \
+ {	.id = snd_soc_dapm_dai_link, .name = wname " Preloader", \
+-	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_early_event, \
+-	.event_flags = SND_SOC_DAPM_PRE_PMU }, \
++	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
++	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD }, \
+ {	.id = snd_soc_dapm_out_drv, .name = wname, \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
+ 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
+ 
++#define WM_ADSP2(wname, num) \
++	WM_ADSP2_E(wname, num, wm_adsp2_early_event)
++
+ extern const struct snd_kcontrol_new wm_adsp1_fw_controls[];
+ extern const struct snd_kcontrol_new wm_adsp2_fw_controls[];
+ 
+ int wm_adsp1_init(struct wm_adsp *adsp);
+-int wm_adsp2_init(struct wm_adsp *adsp, bool dvfs);
++int wm_adsp2_init(struct wm_adsp *adsp);
+ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event);
+ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+-- 
+1.7.2.5
