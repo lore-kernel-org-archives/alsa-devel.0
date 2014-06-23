@@ -1,20 +1,20 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs42l56: Fix stereo channel register
- assignment for Headphone and LineOut volume mixers
-Date: Mon, 23 Jun 2014 11:37:06 -0500
-Message-ID: <alpine.DEB.2.02.1406231136430.25941@heelrod>
-References: <1403540273-15231-1-git-send-email-ryan.harvey@cirrus.com>
- <alpine.DEB.2.02.1406231124500.25941@heelrod>
- <20140623162642.GB23300@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/4 v2] regulator: arizona-ldo1: Do not
+ control clocking from regulator
+Date: Mon, 23 Jun 2014 17:35:10 +0100
+Message-ID: <20140623163510.GC23300@sirena.org.uk>
+References: <1403275273-22713-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <20140621205349.GD24291@sirena.org.uk>
+ <20140623155337.GD23517@opensource.wolfsonmicro.com>
+ <20140623162922.GE23517@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7028013756279742126=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (dns-bn1lp0143.outbound.protection.outlook.com [207.46.163.143])
- by alsa0.perex.cz (Postfix) with ESMTP id E1E3F2655CE
- for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 18:34:36 +0200 (CEST)
-In-Reply-To: <20140623162642.GB23300@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4CEF42655D7
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 18:35:19 +0200 (CEST)
+In-Reply-To: <20140623162922.GE23517@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,18 +24,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, paul.handrigan@cirrus.com, alsa-devel@alsa-project.org, Ryan Harvey <ryan.harvey@cirrus.com>, lgirdwood@gmail.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 23 Jun 2014, Mark Brown wrote:
 
-> On Mon, Jun 23, 2014 at 11:25:18AM -0500, Brian Austin wrote:
->> On Mon, 23 Jun 2014, Ryan Harvey wrote:
->>
->>> Stereo Headphone and LineOut volume mixers are now attached to HPA+HPB, LOA+LOB.
->
-> I don't seem to have been copied on the original patches here, or
-> they're snarled up somewhere in transmission anyway.
->
-You're there. Maybe stuck in Moderator with first post to mailing list?
+--===============7028013756279742126==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ABTtc+pdwF7KHXCz"
+Content-Disposition: inline
+
+
+--ABTtc+pdwF7KHXCz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 23, 2014 at 05:29:22PM +0100, Charles Keepax wrote:
+> On Mon, Jun 23, 2014 at 04:53:37PM +0100, Charles Keepax wrote:
+
+> > Whilst there are two things controlling it for a couple of
+> > patches they both set the same value one after another, so it
+> > should be safe. If it goes into the first patch nothing is
+> > controlling the DVFS for a few patches so that actually creates a
+> > bisection issue. It could be squashed into the second last patch
+> > but this way feels cleaner?
+
+> Although looking at that again it can happily merge into the
+> second patch in the series so I will do that.
+
+OK, or if you do want to leave them separate I'd suggest noting why it's
+safe in the commit log.
+
+--ABTtc+pdwF7KHXCz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTqFc6AAoJELSic+t+oim91akQAIgELTJCvucWoYqjhSxBu05q
+CIUkO6oap50tUB/clVUhZWKIigRR7ag05hNiq6ld4D6F44gkbBLWFJSR7FPNX2yZ
+lB1JjCBlNbSDqfvAiT/rKvtYg7ousawBf5ekKK7gZ9hGaP85G6Tq7Vr50NZD07YB
+BPAD9yeODPN3m7xF0WWdM9RjCn9kdgN3CfcgLtnMeNF79Q95/vTO6jXGQkNxdOaM
+MxO2agnJFzrYAMtkK23bvx8WejBLZH+63tZg0jGBOaCgMUELu76yCV1CeT9d0SUx
+91evzuK1U3p2oFDLMCQgWVeutRYbQtlD99d9KVDyf8eF6LXh2AZ9YkW74QImZwAx
+TVUVDgmYLHu5eBjXuIu+CxujxASaqMoNZk/jW/hC6MIpWM5wPOhcaqmCyo6fpEku
+FUAVWT6S46vtR/YSjpSmyBvBcOvoTJTDh7zu9xkaKh4qfsfX1X8UckZEla7je5Cn
+hrsVEjJLfDP3TqSJaEsvFMvHrK3sQk8IOTnVCfjc3vI9zEtsldqH1sBBQNhXjImp
+vhofxbM1C6W2+Gj15Rx+5/bHX16uNaJQ5vntSzVyOLwyDgDWuEY11fz8kE4Cw4At
+9LG8Yuv9sYn0LvTl6FM9UsoMhjHMK09QBSqnOtfZNik+6ExZDANiFLIPACZP4ann
+x92tJAWxIYWZurDEQd1t
+=R7Ky
+-----END PGP SIGNATURE-----
+
+--ABTtc+pdwF7KHXCz--
+
+--===============7028013756279742126==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7028013756279742126==--
