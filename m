@@ -1,22 +1,21 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 13/19] ASoC: Intel: mrfld: add bytes
- control for modules
-Date: Mon, 23 Jun 2014 09:45:00 +0530
-Message-ID: <20140623041500.GN22053@intel.com>
+Subject: Re: [PATCH 10/19] ASoC: Intel: add mrfld DSP registers
+Date: Mon, 23 Jun 2014 09:57:46 +0530
+Message-ID: <20140623042746.GO22053@intel.com>
 References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
- <1402662848-24534-14-git-send-email-vinod.koul@intel.com>
- <53A3ECAB.404@metafoo.de> <20140620113013.GH22053@intel.com>
- <53A428C8.9030707@metafoo.de> <20140621061605.GJ22053@intel.com>
- <53A523E1.1080808@metafoo.de>
+ <1402662848-24534-11-git-send-email-vinod.koul@intel.com>
+ <53A3EF46.9000704@metafoo.de> <20140620113219.GI22053@intel.com>
+ <53A42A0F.5070806@metafoo.de> <20140621062234.GK22053@intel.com>
+ <53A52CAA.2030101@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 87033260864
- for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 06:15:08 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA148260864
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 06:27:52 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <53A523E1.1080808@metafoo.de>
+In-Reply-To: <53A52CAA.2030101@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,59 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
+To: Lars-Peter Clausen <lars@metafoo.de>, "@intel.com"@vkoul-udesk3.iind.intel.com
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jun 21, 2014 at 08:19:13AM +0200, Lars-Peter Clausen wrote:
-> >>>>>+static const struct snd_kcontrol_new sst_algo_controls[] = {
-> >>>>>+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
-> >>>>>+		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-> >>>>>+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "iir", 300, SST_MODULE_ID_IIR_24,
-> >>>>>+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-> >>>>>+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-> >>>>>+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-> >>>>>+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "fir", 272, SST_MODULE_ID_FIR_24,
-> >>>>>+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-> >>>>>+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "iir", 300, SST_MODULE_ID_IIR_24,
-> >>>>>+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-> >>>>>+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-> >>>>>+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-> >>>>>+	SST_ALGO_KCONTROL_BYTES("sprot_loop_out", "lpro", 192, SST_MODULE_ID_SPROT,
-> >>>>>+		SST_PATH_INDEX_SPROT_LOOP_OUT, 0, SST_TASK_SBA, SBA_VB_LPRO),
-> >>>>>+	SST_ALGO_KCONTROL_BYTES("codec_in0", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-> >>>>>+		SST_PATH_INDEX_CODEC_IN0, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-> >>>>>+	SST_ALGO_KCONTROL_BYTES("codec_in1", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-> >>>>>+		SST_PATH_INDEX_CODEC_IN1, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+On Sat, Jun 21, 2014 at 08:56:42AM +0200, Lars-Peter Clausen wrote:
+> On 06/21/2014 08:22 AM, Vinod Koul wrote:
+> >On Fri, Jun 20, 2014 at 02:33:19PM +0200, Lars-Peter Clausen wrote:
+> >>On 06/20/2014 01:32 PM, Vinod Koul wrote:
+> >>>On Fri, Jun 20, 2014 at 10:22:30AM +0200, Lars-Peter Clausen wrote:
+> >>>>On 06/13/2014 02:33 PM, Vinod Koul wrote:
+> >>>>>+unsigned int sst_soc_read(struct snd_soc_platform *platform,
+> >>>>>+			unsigned int reg)
+> >>>>>+{
+> >>>>>+	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
+> >>>>>+
+> >>>>>+	pr_debug("%s: reg[%d] = %#x\n", __func__, reg, drv->widget[reg]);
+> >>>>>+	BUG_ON(reg > (SST_NUM_WIDGETS - 1));
+> >>>>>+	return drv->widget[reg];
+> >>>>>+}
+> >>>>>+
+> >>>>>+int sst_soc_write(struct snd_soc_platform *platform,
+> >>>>>+		  unsigned int reg, unsigned int val)
+> >>>>>+{
+> >>>>>+	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
+> >>>>>+
+> >>>>>+	pr_debug("%s: reg[%d] = %#x\n", __func__, reg, val);
+> >>>>>+	BUG_ON(reg > (SST_NUM_WIDGETS - 1));
+> >>>>>+	drv->widget[reg] = val;
+> >>>>>+	return 0;
+> >>>>>+}
 > >>>>
-> >>>>
-> >>>>You are creating a lot of global non-const variables here that are
-> >>>>later modified in the put and get handlers and also elsewhere.
-> >>>Sorry which ones above are modfied. Above values are information for headers of
-> >>>IPCs which we send to DSPs
-> >>>
+> >>>>These seem to be purely virtual registers, what is this about? The
+> >>>>DAPM core is able to handle widgets and controls without any
+> >>>>register backing just fine. There is no need to emulate virtual
+> >>>>registers.
+> >>>But we need to store the mixer configuration for sending IPCs to DSP. So virtual
+> >>>register file is very much required
 > >>
-> >>The SST_ALGO_CTL_VALUE() macro uses compound literals to create a
-> >>global (nameless) struct. A pointer to this struct is assigned to
-> >>the kcontrols private_value field. This is later read and the struct
-> >>is modified.
-> >Yes but not the above values as these as IPC header info which DSP needs.
+> >>Hm, ok. But how does this work, when is the IPC triggered and why
+> >>can't the IPC be done from within the write function?
+> >Write can come at any time, even when DSP is inactive. Also we want to tell DSP
+> >about the paths which are active
 > >
+> >So most of IPCs are sent from DAPM widget handlers with exception of controls
+> >which are active. For those we send IPC during get/put handlers.
 > 
-> The SST_ALGO_KCONTROL_BYTES() macro calls SST_ALGO_KCONTROL() which
-> in return calls SST_ALGO_CTL_VALUE()
-Yes and 
-#define SST_ALGO_CTL_VALUE(xcount, xtype, xpipe, xmod, xtask, xcmd)	\
-        (struct sst_algo_control){					\
-                .max = xcount + sizeof(u16), .type = xtype, .module_id = xmod,\
-                .pipe_id = xpipe, .task_id = xtask, .cmd_id = xcmd,\
-        }
+> This sounds very similar to the auto-mute controls that are
+> supported by the ASoC core. Auto-mute controls will update the value
+> in the put handler, but only if the widget it is attached to is
+> powered up. If the widget is not powered up the value is stored and
+> will be written once the widget powers up. Try to see if you can
+> adopt the auto-mute controls for your usecase. I think this should
+> allow to remove some of the parts from the driver that peek into
+> core internal data structures.
 
-So these values passed above are filled here and put in private_data as you
-rightly noticed. But later on get/put handlers will not modify these specfic
-value but other private value. Above are used _only_ for IPC headers to DSP so
-we cant afford to modify them. We cna try making these values above as
-consts, static
+Do you mean autodisable bit? Btw this seems to be used only in kcontrol creation
+and not in runtime. Actually I wont find using this feature if we have it :)
 
 -- 
 ~Vinod
