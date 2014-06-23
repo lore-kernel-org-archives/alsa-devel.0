@@ -1,17 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: Correct S24_3LE support
-Date: Mon, 23 Jun 2014 16:01:13 +0300
-Message-ID: <53A82519.6050506@ti.com>
-References: <1402059931-10731-1-git-send-email-peter.ujfalusi@ti.com>
- <20140609202403.GX5099@sirena.org.uk>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH 1/6] ASoC: Intel: byt-max98090: Move MICBIAS
+	widget to supply of Headset Mic
+Date: Mon, 23 Jun 2014 16:29:37 +0300
+Message-ID: <1403530182-5400-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id F3DE82608C7
- for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 15:01:20 +0200 (CEST)
-In-Reply-To: <20140609202403.GX5099@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 115782608C7
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 15:29:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Strasser <kevin.strasser@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/09/2014 11:24 PM, Mark Brown wrote:
-> On Fri, Jun 06, 2014 at 04:05:31PM +0300, Peter Ujfalusi wrote:
-> =
+Move "MICBIAS" as a supply widget to "Headset Mic" instead of keeping it
+between input pin "IN34" and "Headset Mic".
 
->> Correct the hw_params callback to configure the codec correctly in case =
-of
->> S24_3LE format.
->> S24_LE is not defined as supported format for the codec.
-> =
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+---
+ sound/soc/intel/byt-max98090.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> These should both be supported by the time things get down to the wire -
-> the memory layout shouldn't matter.
-
-The codec itself has support for 16, 20, 24 and 32 bits data. The
-AIC3X_FORMATS is correct:
-#define AIC3X_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |=
- \
-			SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
-
-While in hw_params the switch was not handling the S24_3LE but it was defin=
-ed
-as S24_LE. So the code was not correct: It advertised that it supportsd
-S24_3LE and was not handling it, but it was handling S24_LE which would not
-happen with this codec driver since the format is not supported - as it was
-defined by the AIC3X_FORMATS.
-
-This is a fix for the current driver.
-
-> I really need to get round to doing
-> the rest of the conversions to use params_width() which should ensure
-> this.
-
-Not sure how this would work at the end to be honest for all platforms and =
-codecs.
-How should the bitclock need to be configured for S24_3LE, S24_LE and S32_LE
-msbits=3D24? They are at the end have 24bits audio data but in memory they =
-are
-stored in different ways.
-Aic3x for example need to be configured to 24bit mode (24 clocks/channel if=
- it
-is master) so it is going to 'pull' that amount from the CPU side. This can
-not be used with OMAP's sDMA/McBSP but davinci's eDMA/McASP can support it.=
- I
-can even get daVinci to 'extract' the valid 24 bits from the 32bit sample
-coming via eDMA (mask/rotate/reverse operation).
-
-So I still think that this is a bit more complicated than it looks
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/intel/byt-max98090.c b/sound/soc/intel/byt-max98090.c
+index 5fc98c64a3f4..a3c5f02a60fc 100644
+--- a/sound/soc/intel/byt-max98090.c
++++ b/sound/soc/intel/byt-max98090.c
+@@ -39,8 +39,7 @@ static const struct snd_soc_dapm_widget byt_max98090_widgets[] = {
+ 
+ static const struct snd_soc_dapm_route byt_max98090_audio_map[] = {
+ 	{"IN34", NULL, "Headset Mic"},
+-	{"IN34", NULL, "MICBIAS"},
+-	{"MICBIAS", NULL, "Headset Mic"},
++	{"Headset Mic", NULL, "MICBIAS"},
+ 	{"DMICL", NULL, "Int Mic"},
+ 	{"Headphone", NULL, "HPL"},
+ 	{"Headphone", NULL, "HPR"},
+-- 
+2.0.0
