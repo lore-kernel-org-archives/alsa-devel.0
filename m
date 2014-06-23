@@ -1,20 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4 v2] regulator: arizona-ldo1: Do not
-	control	clocking from regulator
-Date: Mon, 23 Jun 2014 17:29:22 +0100
-Message-ID: <20140623162922.GE23517@opensource.wolfsonmicro.com>
-References: <1403275273-22713-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20140621205349.GD24291@sirena.org.uk>
- <20140623155337.GD23517@opensource.wolfsonmicro.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH V2 0/2] Sound support for Exynos4412 Odroid
+	X2, U3 board
+Date: Mon, 23 Jun 2014 18:32:46 +0200
+Message-ID: <53A856AE.1030202__48444.5723974661$1403542839$gmane$org@samsung.com>
+References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
+ <CAD8Lp44h6zc2Rt2MGLjhmNG-YB0kYCWf5G7hX5JmdmBfc1PvKg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 875EC261A01
- for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 18:29:23 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140623155337.GD23517@opensource.wolfsonmicro.com>
+In-reply-to: <CAD8Lp44h6zc2Rt2MGLjhmNG-YB0kYCWf5G7hX5JmdmBfc1PvKg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +19,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com
+To: alsa-devel@alsa-project.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, pawel.moll@arm.com, zhen1.chen@samsung.com, Kyungmin Park <kyungmin.park@samsung.com>, Mark Brown <broonie@kernel.org>, galak@codeaurora.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Marek Szyprowski <m.szyprowski@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 23, 2014 at 04:53:37PM +0100, Charles Keepax wrote:
-> On Sat, Jun 21, 2014 at 09:53:49PM +0100, Mark Brown wrote:
-> > On Fri, Jun 20, 2014 at 03:41:13PM +0100, Charles Keepax wrote:
-> > > From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> > > 
-> > > Using the driver for the internal regulator to also control
-> > > the clock frequency of blocks inside the codec is an
-> > > unexpected side-effect for a regulator, and also means that
-> > > the core clocks won't be changed as expected if an external
-> > > regulator is used to power the codec.
-> > > 
-> > > The clocking control is now handled by the core arizona MFD
-> > > driver so can be removed from the LDO1 driver.
-> > 
-> > I would expect this to be squashed into the first patch since otherwise
-> > there's a bisection issue with both drivers trying to maintain the same
-> > thing at the same time.
+On 23/06/14 11:40, Daniel Drake wrote:
+> I tested ODROID-U2's 3.5mm analog headphone jack output with:
 > 
-> Whilst there are two things controlling it for a couple of
-> patches they both set the same value one after another, so it
-> should be safe. If it goes into the first patch nothing is
-> controlling the DVFS for a few patches so that actually creates a
-> bisection issue. It could be squashed into the second last patch
-> but this way feels cleaner?
+> # speaker-test -c 2 -t wav -l 2
+> 
+> On my x86 laptop this command takes ~6 seconds and produces audible output:
+> "Front left, front right, front left, front right"
+> 
+> When those words are reproduced over the speakers, there is a
+> corresponding message printed to stdout which synchronizes nicely.
+> 
+> On ODROID-U2 the same command doesn't work quite right - execution
+> takes only 3.5 seconds and the audible output is truncated:
+> "Front left, front right, front"
+> and the stdout messages do not really coincide with the audio being
+> reproduced at that time.
+> 
+> No pulseaudio or anything like that.
+> 
+> Can you reproduce this?
 
-Although looking at that again it can happily merge into the
-second patch in the series so I will do that.
+I could reproduce such behaviour on the U3 board, but only with u-boot
+which sets the MPLL clock frequency (fout_mpll) to 880 MHz, rather
+than 800 MHz, which was the case in my original environment.
+All fout_mpll child clocks have then different frequency values
+in both cases.
+It's a bit strange though, because frequencies of all the audio
+subsystem clocks seem to be same anyway:
 
-Thanks,
-Charles
+# cat /sys/kernel/debug/clk/clk_summary
+    ...
+    fout_epll                   0           0            192000000
+       mout_audss               0           0            192000000
+          dout_rp               0           0            19200000
+             dout_aud_bus       0           0            19200000
+          mout_i2s0             0           0            192000000
+             dout_i2s0          0           0            192000000
+       sclk_epll                0           0            192000000
+          audss                 0           0            192000000
+
+So there might be some other difference I'm overlooking.
+Will let you know as soon I find out anything else.
+
+Regards,
+Sylwester
