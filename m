@@ -1,14 +1,17 @@
-From: Daniel Drake <drake@endlessm.com>
-Subject: Re: [PATCH V2 0/2] Sound support for Exynos4412 Odroid
-	X2, U3 board
-Date: Mon, 23 Jun 2014 10:40:39 +0100
-Message-ID: <CAD8Lp44h6zc2Rt2MGLjhmNG-YB0kYCWf5G7hX5JmdmBfc1PvKg__2696.13871719248$1403520782$gmane$org@mail.gmail.com>
-References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 07/19] ASoC: Intel: add mrfld pipelines
+Date: Mon, 23 Jun 2014 12:24:44 +0100
+Message-ID: <20140623112444.GZ24291@sirena.org.uk>
+References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
+ <1402662848-24534-8-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4520632101275019177=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE0432608C7
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 13:24:53 +0200 (CEST)
+In-Reply-To: <1402662848-24534-8-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,40 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, pawel.moll@arm.com, zhen1.chen@samsung.com, Kyungmin Park <kyungmin.park@samsung.com>, Mark Brown <broonie@kernel.org>, galak@codeaurora.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Marek Szyprowski <m.szyprowski@samsung.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 18, 2014 at 5:22 PM, Sylwester Nawrocki
-<s.nawrocki@samsung.com> wrote:
-> This series adds basic sound support for the Odroid X2/U3 boards.
-> It relies on specific Exynos Audio Subsystem clock parent and
-> frequencies being pre-configured.
->
-> My full testing git branch has been pushed to:
-> git://linuxtv.org/snawrocki/samsung.git v3.16-rc1-odroid-sound-clk
 
-Thanks for this! I tested these patches plus the ones in your branch
-to integrate with the ODROID.
-I tested ODROID-U2's 3.5mm analog headphone jack output with:
+--===============4520632101275019177==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zAZKrYjO7GRpkTOs"
+Content-Disposition: inline
 
-# speaker-test -c 2 -t wav -l 2
 
-On my x86 laptop this command takes ~6 seconds and produces audible output:
-"Front left, front right, front left, front right"
+--zAZKrYjO7GRpkTOs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-When those words are reproduced over the speakers, there is a
-corresponding message printed to stdout which synchronizes nicely.
+On Fri, Jun 13, 2014 at 06:03:56PM +0530, Vinod Koul wrote:
+> Merrifield DSP used various pipelines to identify the streams and processing
+> modules. Add these defination in the pcm driver and also add a table for device
+> entries to firmware pipeline id conversion
 
-On ODROID-U2 the same command doesn't work quite right - execution
-takes only 3.5 seconds and the audible output is truncated:
-"Front left, front right, front"
-and the stdout messages do not really coincide with the audio being
-reproduced at that time.
+Applied, thanks.
 
-No pulseaudio or anything like that.
+--zAZKrYjO7GRpkTOs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Can you reproduce this?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Thanks
-Daniel
+iQIcBAEBAgAGBQJTqA55AAoJELSic+t+oim9JhAP/i0+ckSWX74PtzExksOLLp9Y
+2MhRUrbibq+pDbbNFWNqbEnYI+2RI6VO1mlhRIcLsXFnDQdYg+cmtYU1jQzfAj5P
+F+eDTlX3ma4btc0tUwNyfQT92hdfwGzrIlcj5BQqa3Y5dFWmnj3kwdI0JPkzdN3C
+8pwH6K9kfoCzCESQqtlPOBx+C9DPMDaGBVEhiBPSdiGrqfHq20LKfD8jRZYtjirR
+3bAhwpblXiFwofsUKEK8O80qgJCeZWBcPRNtnFdM/xl3gUOa7y5aI2SxMrxGxmMV
++2Gqf3uLdpcYc/Qkt3s51SOgpRxzu1ZtNUEfyVE8GKCBFFHvWbMnPHkbivmr//U9
+TgTFj6F/MUmNIT7A0/EhIexC8cy6jhdseGKOmcsHIA/bs4nrPbo8ZXyuByu7P/gw
+6Wqpos3GbnphxQzc/G4NsvKnx5rcMLvnDrogQ568sSqO4u9tuDZB8p/w8oDVu0Ko
+nOttiphTZbhIxB8MSTic3poF7vEn6QpHdaXTHft4kPwx6Gj0g/cX/H1Thso52WV0
+gMS6INV3J2Df8tYBy+oQKfXtucUHHhEFx1cXtwucFY5vJ2GPAKg0q9OpvijQZhdQ
+WXMvo8SjtL5H6b7SGYonkDaMgGYf2aXJZvDZI0bxxYWid04NNxLLaaDpGaSidcqQ
+EJ32imDO2M1ilPX2VjNC
+=TGPm
+-----END PGP SIGNATURE-----
+
+--zAZKrYjO7GRpkTOs--
+
+--===============4520632101275019177==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4520632101275019177==--
