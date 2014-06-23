@@ -1,35 +1,66 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH v3 0/4] ASoc: samsung: update s3c24xx to dmaengine and common clk framework
-Date: Mon, 23 Jun 2014 23:24:03 +0300
-Message-ID: <1403555047-14783-1-git-send-email-anarsoul@gmail.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, Tomasz Figa <t.figa@samsung.com>, =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+From: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v2 1/2] ASoC: cs4265: bindings: sound: Add binding for CS4265 CODEC.
+Date: Mon, 23 Jun 2014 17:29:52 -0500
+Message-ID: <1403562593-31952-1-git-send-email-Paul.Handrigan@cirrus.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawl.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Paul Handrigan <paul.handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This series updates s3c24{xx,12}-i2s driver to use newer DMA and CLK APIs.
+This patch adds binding documentation for the Cirrus Logic CS4265 I2C CODEC.
 
-v2: use hardcoded dma channel number
-v3: rebase onto v3.16-rc1, add common clk framework-related changes
+Changes for v2:
 
-Vasily Khoruzhick (4):
-  ASoC: samsung: s3c24{xx,12}-i2s: port to use generic dmaengine API
-  ASoC: samsung: drop support for legacy S3C24XX DMA API
-  ASoC: samsung: s3c2412-i2s: Move to
-    clk_prepare_enable/clk_disable_unprepare
-  ASoC: samsung: s3c24xx-i2s: Move to
-    clk_prepare_enable/clk_disable_unprepare
+* Change DT reset pin name to "reset-gpios"
 
- sound/soc/samsung/Kconfig       |  12 +-
- sound/soc/samsung/Makefile      |   2 -
- sound/soc/samsung/dma.c         | 454 ----------------------------------------
- sound/soc/samsung/dmaengine.c   |   3 +
- sound/soc/samsung/s3c-i2s-v2.c  |  17 +-
- sound/soc/samsung/s3c2412-i2s.c |  51 +++--
- sound/soc/samsung/s3c24xx-i2s.c |  62 +++---
- 7 files changed, 61 insertions(+), 540 deletions(-)
- delete mode 100644 sound/soc/samsung/dma.c
+Signed-off-by: Paul Handrigan <paul.handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+---
+ Documentation/devicetree/bindings/sound/cs4265.txt | 29 ++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs4265.txt
 
+diff --git a/Documentation/devicetree/bindings/sound/cs4265.txt b/Documentation/devicetree/bindings/sound/cs4265.txt
+new file mode 100644
+index 0000000..380fff8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs4265.txt
+@@ -0,0 +1,29 @@
++CS4265 audio CODEC
++
++This device supports I2C only.
++
++Required properties:
++
++  - compatible : "cirrus,cs4265"
++
++  - reg : the I2C address of the device for I2C. The I2C address depends on
++          the state of the AD0 pin.  If AD0 is high, the i2c address is 0x4f.
++          If it is low, the i2c address is 0x4e.
++
++Optional properties:
++
++  - reset-gpios : a GPIO spec for the reset pin. If specified, it will be
++		 deasserted before communication to the codec starts.
++
++Examples:
++
++codec_ad0_high: cs4265@4f { /* AD0 Pin is high */
++	compatible = "cirrus,cs4265";
++	reg = <0x4f>;
++};
++
++
++codec_ad0_low: cs4265@4e { /* AD0 Pin is low */
++	compatible = "cirrus,cs4265";
++	reg = <0x4e>;
++};
 -- 
-2.0.0
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
