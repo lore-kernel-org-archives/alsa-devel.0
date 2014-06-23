@@ -1,127 +1,362 @@
-From: Michael Howard <mike@dewberryfields.co.uk>
-Subject: Wandboard Quad - SPDIF issue, no sound
-Date: Mon, 23 Jun 2014 19:07:01 +0100
-Message-ID: <53A86CC5.2060204@dewberryfields.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dewberryfields.co.uk (mail.dewberryfields.co.uk
- [217.41.92.67]) by alsa0.perex.cz (Postfix) with ESMTP id 1BAA4261A32
- for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2014 20:07:02 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: [PATCH v3 1/4] ASoC: samsung: s3c24{xx,12}-i2s: port to use generic dmaengine API
+Date: Mon, 23 Jun 2014 23:24:04 +0300
+Message-ID: <1403555047-14783-2-git-send-email-anarsoul@gmail.com>
+References: <1403555047-14783-1-git-send-email-anarsoul@gmail.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1403555047-14783-1-git-send-email-anarsoul@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, Tomasz Figa <t.figa@samsung.com>, =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello All,
+Use dmaengine instead of legacy s3c24xx DMA API for s3c24xx and s3c2412
 
-I'm resending this email as orignally I wasn't subcribed and I've been 
-told the message hasn't made it through.
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+---
+ sound/soc/samsung/Kconfig       |  9 +++----
+ sound/soc/samsung/dmaengine.c   |  3 +++
+ sound/soc/samsung/s3c-i2s-v2.c  | 17 +------------
+ sound/soc/samsung/s3c2412-i2s.c | 47 +++++++++++++++++-----------------
+ sound/soc/samsung/s3c24xx-i2s.c | 56 +++++++++++++++++++----------------------
+ 5 files changed, 56 insertions(+), 76 deletions(-)
 
-I was pointed here from the Wandboard Google Groups forum. If I'm in the 
-wrong place please accept my appologies.
-
-With known good cabling and receiver I'm not getting sound from the 
-Wandboard Quad's S/PDIF output. I have built various kernels from 
-mainline, the last two sources I tried are 3.15.1 and 3.16-rc2.
-
-With sound built as modules I get nothing on any outputs, errors from 
-dmesg are;
-
-dmesg | grep snd
-5.206990] imx-spdif sound-spdif.13: snd_soc_register_card failed: -517
-[ 5.241976] imx-spdif sound-spdif.13: snd_soc_register_card failed: -517
-[ 5.258174] imx-spdif sound-spdif.13: snd-soc-dummy-dai <-> 
-2004000.spdif mapping ok
-[ 5.281704] imx-sgtl5000 sound.12: snd_soc_register_card failed (-517)
-
-With sound built in I get sound on the 'line out' output and from dmesg;
-
-dmesg | grep snd
-imx-spdif sound-spdif: snd-soc-dummy-dai <-> 2004000.spdif mapping ok
-
-In both cases I get (or similar);
-
-dmesg | grep firm
-imx-sdma 20ec000.sdma: Direct firmware load failed with error -2
-imx-sdma 20ec000.sdma: loaded firmware 1.1
-
-Not sure if the firmware message above is a problem or not.
-
-aplay output;
-
-aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: imx6wandboardsg [imx6-wandboard-sgtl5000], device 0: HiFi 
-sgtl5000-0 []
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 1: imxspdif [imx-spdif], device 0: S/PDIF PCM snd-soc-dummy-dai-0 []
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-
-aplay -L
-null
-     Discard all samples (playback) or generate zero samples (capture)
-pulse
-     PulseAudio Sound Server
-sysdefault:CARD=imx6wandboardsg
-     imx6-wandboard-sgtl5000,
-     Default Audio Device
-sysdefault:CARD=imxspdif
-     imx-spdif,
-     Default Audio Device
-
-aplay -vv ImABeliever.wav
-Playing WAVE 'ImABeliever.wav' : Signed 16 bit Little Endian, Rate 44100 
-Hz, Stereo
-Hardware PCM card 1 'imx-spdif' device 0 subdevice 0
-Its setup is:
-   stream       : PLAYBACK
-   access       : RW_INTERLEAVED
-   format       : S16_LE
-   subformat    : STD
-   channels     : 2
-   rate         : 44100
-   exact rate   : 44100 (44100/1)
-   msbits       : 16
-   buffer_size  : 16384
-   period_size  : 4096
-   period_time  : 92879
-   tstamp_mode  : NONE
-   period_step  : 1
-   avail_min    : 4096
-   period_event : 0
-   start_threshold  : 16384
-   stop_threshold   : 16384
-   silence_threshold: 0
-   silence_size : 0
-   boundary     : 1073741824
-   appl_ptr     : 0
-   hw_ptr       : 0
-#################           +                      | 55%
-
-but no sound form SPDIF.
-
-If this is right place for this and if I can be of any help debuuging or 
-you need more info I'm more than happy to help in any way I can.
-
-Since I sent the original message Ive realised that data is being sent 
-to and received at the SPDIF output of the wandboard quad it can't seem 
-to handle it. If I connect a DAC to the SPDIF output and then connect 
-the DAC to my recievers aux input I hear the sound in all it's glory.
-
-The same receiver and cabling works with a cubietruck and the sunxi kernel.
-
-Cheers,
-Mike
-
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 753b8c9..98767d3 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -1,11 +1,10 @@
+ config SND_SOC_SAMSUNG
+ 	tristate "ASoC support for Samsung"
+ 	depends on PLAT_SAMSUNG
+-	select S3C2410_DMA if ARCH_S3C24XX
++	select S3C24XX_DMAC if ARCH_S3C24XX
+ 	select S3C64XX_PL080 if ARCH_S3C64XX
+-	select SND_S3C_DMA if !ARCH_S3C24XX
+-	select SND_S3C_DMA_LEGACY if ARCH_S3C24XX
+-	select SND_SOC_GENERIC_DMAENGINE_PCM if !ARCH_S3C24XX
++	select SND_S3C_DMA
++	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to
+ 	  the Samsung SoCs' Audio interfaces. You will also need to
+@@ -19,7 +18,6 @@ config SND_S3C_DMA_LEGACY
+ 
+ config SND_S3C24XX_I2S
+ 	tristate
+-	select S3C24XX_DMA
+ 
+ config SND_S3C_I2SV2_SOC
+ 	tristate
+@@ -27,7 +25,6 @@ config SND_S3C_I2SV2_SOC
+ config SND_S3C2412_SOC_I2S
+ 	tristate
+ 	select SND_S3C_I2SV2_SOC
+-	select S3C2410_DMA
+ 
+ config SND_SAMSUNG_PCM
+ 	tristate
+diff --git a/sound/soc/samsung/dmaengine.c b/sound/soc/samsung/dmaengine.c
+index a0e4e79..506f5bf 100644
+--- a/sound/soc/samsung/dmaengine.c
++++ b/sound/soc/samsung/dmaengine.c
+@@ -17,6 +17,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/amba/pl08x.h>
++#include <linux/platform_data/dma-s3c24xx.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -29,6 +30,8 @@
+ 
+ #ifdef CONFIG_ARCH_S3C64XX
+ #define filter_fn pl08x_filter_id
++#elif defined(CONFIG_ARCH_S3C24XX)
++#define filter_fn s3c24xx_dma_filter
+ #else
+ #define filter_fn NULL
+ #endif
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index 0ff4bbe..de6c321 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -392,8 +392,6 @@ static int s3c2412_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	int capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
+ 	unsigned long irqs;
+ 	int ret = 0;
+-	struct s3c_dma_params *dma_data =
+-		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+ 
+ 	pr_debug("Entered %s\n", __func__);
+ 
+@@ -424,13 +422,6 @@ static int s3c2412_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 
+ 		local_irq_restore(irqs);
+ 
+-		/*
+-		 * Load the next buffer to DMA to meet the reqirement
+-		 * of the auto reload mechanism of S3C24XX.
+-		 * This call won't bother S3C64XX.
+-		 */
+-		s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
+-
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_STOP:
+@@ -644,12 +635,6 @@ int s3c_i2sv2_probe(struct snd_soc_dai *dai,
+ 	/* record our i2s structure for later use in the callbacks */
+ 	snd_soc_dai_set_drvdata(dai, i2s);
+ 
+-	i2s->regs = ioremap(base, 0x100);
+-	if (i2s->regs == NULL) {
+-		dev_err(dev, "cannot ioremap registers\n");
+-		return -ENXIO;
+-	}
+-
+ 	i2s->iis_pclk = clk_get(dev, "iis");
+ 	if (IS_ERR(i2s->iis_pclk)) {
+ 		dev_err(dev, "failed to get iis_clock\n");
+@@ -729,7 +714,7 @@ int s3c_i2sv2_register_component(struct device *dev, int id,
+ 			   struct snd_soc_component_driver *cmp_drv,
+ 			   struct snd_soc_dai_driver *dai_drv)
+ {
+-	struct snd_soc_dai_ops *ops = dai_drv->ops;
++	struct snd_soc_dai_ops *ops = (struct snd_soc_dai_ops *)dai_drv->ops;
+ 
+ 	ops->trigger = s3c2412_i2s_trigger;
+ 	if (!ops->hw_params)
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index 08c059b..d9d27cc 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -33,25 +33,19 @@
+ #include "regs-i2s-v2.h"
+ #include "s3c2412-i2s.h"
+ 
+-static struct s3c_dma_client s3c2412_dma_client_out = {
+-	.name		= "I2S PCM Stereo out"
+-};
+-
+-static struct s3c_dma_client s3c2412_dma_client_in = {
+-	.name		= "I2S PCM Stereo in"
+-};
+-
+ static struct s3c_dma_params s3c2412_i2s_pcm_stereo_out = {
+-	.client		= &s3c2412_dma_client_out,
++	.client		=
++		(struct s3c_dma_client *)&s3c2412_i2s_pcm_stereo_out,
+ 	.channel	= DMACH_I2S_OUT,
+-	.dma_addr	= S3C2410_PA_IIS + S3C2412_IISTXD,
++	.ch_name	= "tx",
+ 	.dma_size	= 4,
+ };
+ 
+ static struct s3c_dma_params s3c2412_i2s_pcm_stereo_in = {
+-	.client		= &s3c2412_dma_client_in,
++	.client		=
++		(struct s3c_dma_client *)&s3c2412_i2s_pcm_stereo_in,
+ 	.channel	= DMACH_I2S_IN,
+-	.dma_addr	= S3C2410_PA_IIS + S3C2412_IISRXD,
++	.ch_name	= "rx",
+ 	.dma_size	= 4,
+ };
+ 
+@@ -63,6 +57,9 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+ 
+ 	pr_debug("Entered %s\n", __func__);
+ 
++	samsung_asoc_init_dma_data(dai, &s3c2412_i2s_pcm_stereo_out,
++		&s3c2412_i2s_pcm_stereo_in);
++
+ 	ret = s3c_i2sv2_probe(dai, &s3c2412_i2s, S3C2410_PA_IIS);
+ 	if (ret)
+ 		return ret;
+@@ -70,10 +67,9 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+ 	s3c2412_i2s.dma_capture = &s3c2412_i2s_pcm_stereo_in;
+ 	s3c2412_i2s.dma_playback = &s3c2412_i2s_pcm_stereo_out;
+ 
+-	s3c2412_i2s.iis_cclk = clk_get(dai->dev, "i2sclk");
++	s3c2412_i2s.iis_cclk = devm_clk_get(dai->dev, "i2sclk");
+ 	if (IS_ERR(s3c2412_i2s.iis_cclk)) {
+ 		pr_err("failed to get i2sclk clock\n");
+-		iounmap(s3c2412_i2s.regs);
+ 		return PTR_ERR(s3c2412_i2s.iis_cclk);
+ 	}
+ 
+@@ -94,8 +90,6 @@ static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
+ static int s3c2412_i2s_remove(struct snd_soc_dai *dai)
+ {
+ 	clk_disable(s3c2412_i2s.iis_cclk);
+-	clk_put(s3c2412_i2s.iis_cclk);
+-	iounmap(s3c2412_i2s.regs);
+ 
+ 	return 0;
+ }
+@@ -105,18 +99,10 @@ static int s3c2412_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *cpu_dai)
+ {
+ 	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(cpu_dai);
+-	struct s3c_dma_params *dma_data;
+ 	u32 iismod;
+ 
+ 	pr_debug("Entered %s\n", __func__);
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		dma_data = i2s->dma_playback;
+-	else
+-		dma_data = i2s->dma_capture;
+-
+-	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
+-
+ 	iismod = readl(i2s->regs + S3C2412_IISMOD);
+ 	pr_debug("%s: r: IISMOD: %x\n", __func__, iismod);
+ 
+@@ -169,6 +155,19 @@ static const struct snd_soc_component_driver s3c2412_i2s_component = {
+ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
+ {
+ 	int ret = 0;
++	struct resource *res;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "Can't get IO resource.\n");
++		return -ENOENT;
++	}
++	s3c2412_i2s.regs = devm_ioremap_resource(&pdev->dev, res);
++	if (s3c2412_i2s.regs == NULL)
++		return -ENXIO;
++
++	s3c2412_i2s_pcm_stereo_out.dma_addr = res->start + S3C2412_IISTXD;
++	s3c2412_i2s_pcm_stereo_in.dma_addr = res->start + S3C2412_IISRXD;
+ 
+ 	ret = s3c_i2sv2_register_component(&pdev->dev, -1,
+ 					   &s3c2412_i2s_component,
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index 9aba9fb..6f3ee87 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -31,25 +31,19 @@
+ #include "dma.h"
+ #include "s3c24xx-i2s.h"
+ 
+-static struct s3c_dma_client s3c24xx_dma_client_out = {
+-	.name = "I2S PCM Stereo out"
+-};
+-
+-static struct s3c_dma_client s3c24xx_dma_client_in = {
+-	.name = "I2S PCM Stereo in"
+-};
+-
+ static struct s3c_dma_params s3c24xx_i2s_pcm_stereo_out = {
+-	.client		= &s3c24xx_dma_client_out,
++	.client		=
++		(struct s3c_dma_client *)&s3c24xx_i2s_pcm_stereo_out,
+ 	.channel	= DMACH_I2S_OUT,
+-	.dma_addr	= S3C2410_PA_IIS + S3C2410_IISFIFO,
++	.ch_name	= "tx",
+ 	.dma_size	= 2,
+ };
+ 
+ static struct s3c_dma_params s3c24xx_i2s_pcm_stereo_in = {
+-	.client		= &s3c24xx_dma_client_in,
++	.client		=
++		(struct s3c_dma_client *)&s3c24xx_i2s_pcm_stereo_in,
+ 	.channel	= DMACH_I2S_IN,
+-	.dma_addr	= S3C2410_PA_IIS + S3C2410_IISFIFO,
++	.ch_name	= "rx",
+ 	.dma_size	= 2,
+ };
+ 
+@@ -231,18 +225,12 @@ static int s3c24xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct s3c_dma_params *dma_data;
++	struct snd_dmaengine_dai_dma_data *dma_data;
+ 	u32 iismod;
+ 
+ 	pr_debug("Entered %s\n", __func__);
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		dma_data = &s3c24xx_i2s_pcm_stereo_out;
+-	else
+-		dma_data = &s3c24xx_i2s_pcm_stereo_in;
+-
+-	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
++	dma_data = snd_soc_dai_get_dma_data(dai, substream);
+ 
+ 	/* Working copies of register */
+ 	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+@@ -251,11 +239,11 @@ static int s3c24xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	switch (params_width(params)) {
+ 	case 8:
+ 		iismod &= ~S3C2410_IISMOD_16BIT;
+-		dma_data->dma_size = 1;
++		dma_data->addr_width = 1;
+ 		break;
+ 	case 16:
+ 		iismod |= S3C2410_IISMOD_16BIT;
+-		dma_data->dma_size = 2;
++		dma_data->addr_width = 2;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -270,8 +258,6 @@ static int s3c24xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			       struct snd_soc_dai *dai)
+ {
+ 	int ret = 0;
+-	struct s3c_dma_params *dma_data =
+-		snd_soc_dai_get_dma_data(dai, substream);
+ 
+ 	pr_debug("Entered %s\n", __func__);
+ 
+@@ -290,7 +276,6 @@ static int s3c24xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		else
+ 			s3c24xx_snd_txctrl(1);
+ 
+-		s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+@@ -380,14 +365,12 @@ static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
+ {
+ 	pr_debug("Entered %s\n", __func__);
+ 
+-	s3c24xx_i2s.regs = ioremap(S3C2410_PA_IIS, 0x100);
+-	if (s3c24xx_i2s.regs == NULL)
+-		return -ENXIO;
++	samsung_asoc_init_dma_data(dai, &s3c24xx_i2s_pcm_stereo_out,
++		&s3c24xx_i2s_pcm_stereo_in);
+ 
+-	s3c24xx_i2s.iis_clk = clk_get(dai->dev, "iis");
++	s3c24xx_i2s.iis_clk = devm_clk_get(dai->dev, "iis");
+ 	if (IS_ERR(s3c24xx_i2s.iis_clk)) {
+ 		pr_err("failed to get iis_clock\n");
+-		iounmap(s3c24xx_i2s.regs);
+ 		return PTR_ERR(s3c24xx_i2s.iis_clk);
+ 	}
+ 	clk_enable(s3c24xx_i2s.iis_clk);
+@@ -474,6 +457,19 @@ static const struct snd_soc_component_driver s3c24xx_i2s_component = {
+ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
+ {
+ 	int ret = 0;
++	struct resource *res;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "Can't get IO resource.\n");
++		return -ENOENT;
++	}
++	s3c24xx_i2s.regs = devm_ioremap_resource(&pdev->dev, res);
++	if (s3c24xx_i2s.regs == NULL)
++		return -ENXIO;
++
++	s3c24xx_i2s_pcm_stereo_out.dma_addr = res->start + S3C2410_IISFIFO;
++	s3c24xx_i2s_pcm_stereo_in.dma_addr = res->start + S3C2410_IISFIFO;
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 			&s3c24xx_i2s_component, &s3c24xx_i2s_dai, 1);
 -- 
+2.0.0
