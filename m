@@ -1,65 +1,71 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 1/2] ASoC: cs4265: bindings: sound: Add binding for
- CS4265 CODEC.
-Date: Tue, 24 Jun 2014 16:18:16 +0100
-Message-ID: <20140624151816.GM23300@sirena.org.uk>
-References: <1403562593-31952-1-git-send-email-Paul.Handrigan@cirrus.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Add pin quirk for Dell XPS 15
+Date: Tue, 24 Jun 2014 14:10:47 +0200
+Message-ID: <1403611847-14700-1-git-send-email-david.henningsson__13030.4154278294$1403623842$gmane$org@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kkcDP0v44wDpNmbp"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1403562593-31952-1-git-send-email-Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawl.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 272012652C1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2014 14:10:42 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, 1331915@bugs.launchpad.net, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+Two bug reporters with Dell XPS 15 report that they need to use the
+dell-headset-multi model to get the headset mic working.
 
---kkcDP0v44wDpNmbp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The two bug reporters have different PCI SSID (1028:05fd and 1028:05fe)
+but this pin quirk matches both.
 
-On Mon, Jun 23, 2014 at 05:29:52PM -0500, Paul Handrigan wrote:
-> This patch adds binding documentation for the Cirrus Logic CS4265 I2C COD=
-EC.
+BugLink: https://bugs.launchpad.net/bugs/1331915
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-Applied both, thanks.  I suspect you'll end up needing to split the
-S/PDIF mute operation but it doesn't make such a big difference at the
-framework level.
-
-> Changes for v2:
->=20
-> * Change DT reset pin name to "reset-gpios"
-
-As covered in SubmittingPatches things like this should go after the
----.
-
---kkcDP0v44wDpNmbp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTqZa1AAoJELSic+t+oim9FpUP/3P1KlHjoJ8ozY8Hbf9g/zKo
-a0hCd6yrfXf3t6FYTsQ6eWi0VKa43r8/uy7az+SfDBKnISMhdmMd5Ifi8M/ygGbd
-0nJ3jgMx4qxgKkQEvDh0U2yZ1KtF9Ua2knsJjdKAYA4EoWisHENuC423l5CSdkQH
-kvKyw6NoTV0ryDd6eE/aZgDR6a/jFL7WEiju+cU3Eb5QfLWHf24G8XuD5gZRnoJO
-Ncf/5S3/Z/4f26YhKM6SbSMcYoM+s0CwJWuwWUstOKwTWLPTqNqoEw8B7Y5Qd6kX
-s9ILdwKlbkxemSd+Z7F+Jrs44VEQS1l5plcIsY+w+xOEbsJEIL4y/ZV8AouyNN43
-ws3l6Ox//K1OX3fklsG1SJ1XNLnmtO5kxBjYxEH1k1VLwJy2lGPSbjp6W42xrEGH
-2oaY6w1+kHxcJsjmjozjNe4ATA8Qmwqbi33sPx1+PTsMGMmZ6cAKDcozjmZyX6ZD
-eq9q1Vz0JrOYvnmLadQtZ+uuqIuequvbzXffZoXeil67JoVne9VtWQi2wdz6nguD
-UWYHtHTH+uxXMjzWG8pbfQXkssehoD3QFGc/LN3wtddyYVEU1FXJRxXdNrSRs35P
-K1o6syZkjnHxID50G0Oo8MMmlxXQ+l4/1R9uYYc26WGQ1wtLnGgS2e7e5CBa9Xi2
-cVlBggqXvY9xJyY2nYxE
-=bZjB
------END PGP SIGNATURE-----
-
---kkcDP0v44wDpNmbp--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index f52f096..229a189 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6258,6 +6258,27 @@ static const struct snd_hda_pin_quirk alc662_pin_fixup_tbl[] = {
+ 		},
+ 		.value = ALC668_FIXUP_AUTO_MUTE,
+ 	},
++	{
++		.codec = 0x10ec0668,
++		.subvendor = 0x1028,
++#ifdef CONFIG_SND_DEBUG_VERBOSE
++		.name = "Dell XPS 15",
++#endif
++		.pins = (const struct hda_pintbl[]) {
++			{0x12, 0x90a60130},
++			{0x14, 0x90170110},
++			{0x15, 0x0321101f},
++			{0x16, 0x40000000},
++			{0x18, 0x411111f0},
++			{0x19, 0x411111f0},
++			{0x1a, 0x411111f0},
++			{0x1b, 0x411111f0},
++			{0x1d, 0x40d6832d},
++			{0x1e, 0x411111f0},
++			{0x1f, 0x411111f0},
++		},
++		.value = ALC668_FIXUP_AUTO_MUTE,
++	},
+ 	{}
+ };
+ 
+-- 
+1.9.1
