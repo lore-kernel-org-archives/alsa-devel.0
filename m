@@ -1,18 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/2] ALSA: hda - Make the pin quirk tables use
-	the SND_HDA_PIN_QUIRK macro
-Date: Tue, 24 Jun 2014 14:46:54 +0200
-Message-ID: <1403614014-15417-2-git-send-email-david.henningsson@canonical.com>
-References: <1403614014-15417-1-git-send-email-david.henningsson@canonical.com>
+From: Michael Howard <mike@dewberryfields.co.uk>
+Subject: Re: Wandboard Quad - SPDIF issue, no sound
+Date: Tue, 24 Jun 2014 15:57:56 +0100
+Message-ID: <53A991F4.9070905@dewberryfields.co.uk>
+References: <53A86CC5.2060204@dewberryfields.co.uk>
+ <53A90D98.3050000@writeme.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 77A9C26530A
- for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2014 14:46:50 +0200 (CEST)
-In-Reply-To: <1403614014-15417-1-git-send-email-david.henningsson@canonical.com>
+Received: from mail.dewberryfields.co.uk (mail.dewberryfields.co.uk
+ [217.41.92.67]) by alsa0.perex.cz (Postfix) with ESMTP id 26C812658E6
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2014 16:57:57 +0200 (CEST)
+In-Reply-To: <53A90D98.3050000@writeme.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,544 +21,155 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, hui.wang@canonical.com, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is cosmetical - it makes the pin quirk table look better.
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 510 +++++++++++++++---------------------------
- 1 file changed, 183 insertions(+), 327 deletions(-)
+On 24/06/2014 06:33, Sinan Akman wrote:
+>
+>   Hi Micheal
+>
+> On 06/23/2014 02:07 PM, Michael Howard wrote:
+>> Hello All,
+>>
+>> I'm resending this email as orignally I wasn't subcribed and I've been
+>> told the message hasn't made it through.
+>>
+>> I was pointed here from the Wandboard Google Groups forum. If I'm in the
+>> wrong place please accept my appologies.
+>>
+>> With known good cabling and receiver I'm not getting sound from the
+>> Wandboard Quad's S/PDIF output.
+>
+>   How are you testing your spdif output exactly ?
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c70d43f..60bf5ee 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -5076,228 +5076,129 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- };
- 
- static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
--	{
--		.codec = 0x10ec0255,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60140},
--			{0x14, 0x90170110},
--			{0x17, 0x40000000},
--			{0x18, 0x411111f0},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40700001},
--			{0x1e, 0x411111f0},
--			{0x21, 0x02211020},
--		},
--		.value = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--	},
--	{
--		.codec = 0x10ec0255,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60160},
--			{0x14, 0x90170120},
--			{0x17, 0x40000000},
--			{0x18, 0x411111f0},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40700001},
--			{0x1e, 0x411111f0},
--			{0x21, 0x02211030},
--		},
--		.value = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--	},
--	{
--		.codec = 0x10ec0255,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60160},
--			{0x14, 0x90170120},
--			{0x17, 0x90170140},
--			{0x18, 0x40000000},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x41163b05},
--			{0x1e, 0x411111f0},
--			{0x21, 0x0321102f},
--		},
--		.value = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--	},
--	{
--		.codec = 0x10ec0255,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60160},
--			{0x14, 0x90170130},
--			{0x17, 0x40000000},
--			{0x18, 0x411111f0},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40700001},
--			{0x1e, 0x411111f0},
--			{0x21, 0x02211040},
--		},
--		.value = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--	},
--	{
--		.codec = 0x10ec0255,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60160},
--			{0x14, 0x90170140},
--			{0x17, 0x40000000},
--			{0x18, 0x411111f0},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40700001},
--			{0x1e, 0x411111f0},
--			{0x21, 0x02211050},
--		},
--		.value = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--	},
--	{
--		.codec = 0x10ec0255,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60170},
--			{0x14, 0x90170120},
--			{0x17, 0x40000000},
--			{0x18, 0x411111f0},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40700001},
--			{0x1e, 0x411111f0},
--			{0x21, 0x02211030},
--		},
--		.value = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--	},
--	{
--		.codec = 0x10ec0255,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60170},
--			{0x14, 0x90170130},
--			{0x17, 0x40000000},
--			{0x18, 0x411111f0},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40700001},
--			{0x1e, 0x411111f0},
--			{0x21, 0x02211040},
--		},
--		.value = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
--	},
--	{
--		.codec = 0x10ec0283,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60130},
--			{0x14, 0x90170110},
--			{0x17, 0x40020008},
--			{0x18, 0x411111f0},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40e00001},
--			{0x1e, 0x411111f0},
--			{0x21, 0x0321101f},
--		},
--		.value = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
--	},
--	{
--		.codec = 0x10ec0283,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60160},
--			{0x14, 0x90170120},
--			{0x17, 0x40000000},
--			{0x18, 0x411111f0},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40700001},
--			{0x1e, 0x411111f0},
--			{0x21, 0x02211030},
--		},
--		.value = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
--	},
--	{
--		.codec = 0x10ec0292,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60140},
--			{0x13, 0x411111f0},
--			{0x14, 0x90170110},
--			{0x15, 0x0221401f},
--			{0x16, 0x411111f0},
--			{0x18, 0x411111f0},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40700001},
--			{0x1e, 0x411111f0},
--		},
--		.value = ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
--	},
--	{
--		.codec = 0x10ec0293,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x40000000},
--			{0x13, 0x90a60140},
--			{0x14, 0x90170110},
--			{0x15, 0x0221401f},
--			{0x16, 0x21014020},
--			{0x18, 0x411111f0},
--			{0x19, 0x21a19030},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40700001},
--			{0x1e, 0x411111f0},
--		},
--		.value = ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
--	},
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60140},
-+		{0x14, 0x90170110},
-+		{0x17, 0x40000000},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40700001},
-+		{0x1e, 0x411111f0},
-+		{0x21, 0x02211020}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60160},
-+		{0x14, 0x90170120},
-+		{0x17, 0x40000000},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40700001},
-+		{0x1e, 0x411111f0},
-+		{0x21, 0x02211030}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60160},
-+		{0x14, 0x90170120},
-+		{0x17, 0x90170140},
-+		{0x18, 0x40000000},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x41163b05},
-+		{0x1e, 0x411111f0},
-+		{0x21, 0x0321102f}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60160},
-+		{0x14, 0x90170130},
-+		{0x17, 0x40000000},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40700001},
-+		{0x1e, 0x411111f0},
-+		{0x21, 0x02211040}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60160},
-+		{0x14, 0x90170140},
-+		{0x17, 0x40000000},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40700001},
-+		{0x1e, 0x411111f0},
-+		{0x21, 0x02211050}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60170},
-+		{0x14, 0x90170120},
-+		{0x17, 0x40000000},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40700001},
-+		{0x1e, 0x411111f0},
-+		{0x21, 0x02211030}),
-+	SND_HDA_PIN_QUIRK(0x10ec0255, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60170},
-+		{0x14, 0x90170130},
-+		{0x17, 0x40000000},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40700001},
-+		{0x1e, 0x411111f0},
-+		{0x21, 0x02211040}),
-+	SND_HDA_PIN_QUIRK(0x10ec0283, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60130},
-+		{0x14, 0x90170110},
-+		{0x17, 0x40020008},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40e00001},
-+		{0x1e, 0x411111f0},
-+		{0x21, 0x0321101f}),
-+	SND_HDA_PIN_QUIRK(0x10ec0283, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60160},
-+		{0x14, 0x90170120},
-+		{0x17, 0x40000000},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40700001},
-+		{0x1e, 0x411111f0},
-+		{0x21, 0x02211030}),
-+	SND_HDA_PIN_QUIRK(0x10ec0292, 0x1028, "Dell", ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
-+		{0x12, 0x90a60140},
-+		{0x13, 0x411111f0},
-+		{0x14, 0x90170110},
-+		{0x15, 0x0221401f},
-+		{0x16, 0x411111f0},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40700001},
-+		{0x1e, 0x411111f0}),
-+	SND_HDA_PIN_QUIRK(0x10ec0293, 0x1028, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		{0x12, 0x40000000},
-+		{0x13, 0x90a60140},
-+		{0x14, 0x90170110},
-+		{0x15, 0x0221401f},
-+		{0x16, 0x21014020},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x21a19030},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40700001},
-+		{0x1e, 0x411111f0}),
- 	{}
- };
- 
-@@ -6153,111 +6054,66 @@ static const struct hda_model_fixup alc662_fixup_models[] = {
- };
- 
- static const struct snd_hda_pin_quirk alc662_pin_fixup_tbl[] = {
--	{
--		.codec = 0x10ec0668,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x99a30130},
--			{0x14, 0x90170110},
--			{0x15, 0x0321101f},
--			{0x16, 0x03011020},
--			{0x18, 0x40000008},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x41000001},
--			{0x1e, 0x411111f0},
--			{0x1f, 0x411111f0},
--		},
--		.value = ALC668_FIXUP_AUTO_MUTE,
--	},
--	{
--		.codec = 0x10ec0668,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x99a30140},
--			{0x14, 0x90170110},
--			{0x15, 0x0321101f},
--			{0x16, 0x03011020},
--			{0x18, 0x40000008},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x41000001},
--			{0x1e, 0x411111f0},
--			{0x1f, 0x411111f0},
--		},
--		.value = ALC668_FIXUP_AUTO_MUTE,
--	},
--	{
--		.codec = 0x10ec0668,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x99a30150},
--			{0x14, 0x90170110},
--			{0x15, 0x0321101f},
--			{0x16, 0x03011020},
--			{0x18, 0x40000008},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x41000001},
--			{0x1e, 0x411111f0},
--			{0x1f, 0x411111f0},
--		},
--		.value = ALC668_FIXUP_AUTO_MUTE,
--	},
--	{
--		.codec = 0x10ec0668,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x411111f0},
--			{0x14, 0x90170110},
--			{0x15, 0x0321101f},
--			{0x16, 0x03011020},
--			{0x18, 0x40000008},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x41000001},
--			{0x1e, 0x411111f0},
--			{0x1f, 0x411111f0},
--		},
--		.value = ALC668_FIXUP_AUTO_MUTE,
--	},
--	{
--		.codec = 0x10ec0668,
--		.subvendor = 0x1028,
--#ifdef CONFIG_SND_DEBUG_VERBOSE
--		.name = "Dell XPS 15",
--#endif
--		.pins = (const struct hda_pintbl[]) {
--			{0x12, 0x90a60130},
--			{0x14, 0x90170110},
--			{0x15, 0x0321101f},
--			{0x16, 0x40000000},
--			{0x18, 0x411111f0},
--			{0x19, 0x411111f0},
--			{0x1a, 0x411111f0},
--			{0x1b, 0x411111f0},
--			{0x1d, 0x40d6832d},
--			{0x1e, 0x411111f0},
--			{0x1f, 0x411111f0},
--		},
--		.value = ALC668_FIXUP_AUTO_MUTE,
--	},
-+	SND_HDA_PIN_QUIRK(0x10ec0668, 0x1028, "Dell", ALC668_FIXUP_AUTO_MUTE,
-+		{0x12, 0x99a30130},
-+		{0x14, 0x90170110},
-+		{0x15, 0x0321101f},
-+		{0x16, 0x03011020},
-+		{0x18, 0x40000008},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x41000001},
-+		{0x1e, 0x411111f0},
-+		{0x1f, 0x411111f0}),
-+	SND_HDA_PIN_QUIRK(0x10ec0668, 0x1028, "Dell", ALC668_FIXUP_AUTO_MUTE,
-+		{0x12, 0x99a30140},
-+		{0x14, 0x90170110},
-+		{0x15, 0x0321101f},
-+		{0x16, 0x03011020},
-+		{0x18, 0x40000008},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x41000001},
-+		{0x1e, 0x411111f0},
-+		{0x1f, 0x411111f0}),
-+	SND_HDA_PIN_QUIRK(0x10ec0668, 0x1028, "Dell", ALC668_FIXUP_AUTO_MUTE,
-+		{0x12, 0x99a30150},
-+		{0x14, 0x90170110},
-+		{0x15, 0x0321101f},
-+		{0x16, 0x03011020},
-+		{0x18, 0x40000008},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x41000001},
-+		{0x1e, 0x411111f0},
-+		{0x1f, 0x411111f0}),
-+	SND_HDA_PIN_QUIRK(0x10ec0668, 0x1028, "Dell", ALC668_FIXUP_AUTO_MUTE,
-+		{0x12, 0x411111f0},
-+		{0x14, 0x90170110},
-+		{0x15, 0x0321101f},
-+		{0x16, 0x03011020},
-+		{0x18, 0x40000008},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x41000001},
-+		{0x1e, 0x411111f0},
-+		{0x1f, 0x411111f0}),
-+	SND_HDA_PIN_QUIRK(0x10ec0668, 0x1028, "Dell XPS 15", ALC668_FIXUP_AUTO_MUTE,
-+		{0x12, 0x90a60130},
-+		{0x14, 0x90170110},
-+		{0x15, 0x0321101f},
-+		{0x16, 0x40000000},
-+		{0x18, 0x411111f0},
-+		{0x19, 0x411111f0},
-+		{0x1a, 0x411111f0},
-+		{0x1b, 0x411111f0},
-+		{0x1d, 0x40d6832d},
-+		{0x1e, 0x411111f0},
-+		{0x1f, 0x411111f0}),
- 	{}
- };
- 
+Until now, simply from a usage point of view with alsa. That is to say 
+aplay, the same as with the cubietruck.
+>
+>> I have built various kernels from
+>> mainline, the last two sources I tried are 3.15.1 and 3.16-rc2.
+>>
+>> With sound built as modules I get nothing on any outputs, errors from
+>> dmesg are;
+>>
+>> dmesg | grep snd
+>> 5.206990] imx-spdif sound-spdif.13: snd_soc_register_card failed: -517
+>> [ 5.241976] imx-spdif sound-spdif.13: snd_soc_register_card failed: -517
+>> [ 5.258174] imx-spdif sound-spdif.13: snd-soc-dummy-dai <->
+>> 2004000.spdif mapping ok
+>> [ 5.281704] imx-sgtl5000 sound.12: snd_soc_register_card failed (-517)
+>>
+>> With sound built in I get sound on the 'line out' output and from dmesg;
+>>
+>> dmesg | grep snd
+>> imx-spdif sound-spdif: snd-soc-dummy-dai <-> 2004000.spdif mapping ok
+>>
+>> In both cases I get (or similar);
+>>
+>> dmesg | grep firm
+>> imx-sdma 20ec000.sdma: Direct firmware load failed with error -2
+>> imx-sdma 20ec000.sdma: loaded firmware 1.1
+>>
+>> Not sure if the firmware message above is a problem or not.
+>
+>   No, it should work without loading external firmware to ram.
+>
+I thought so with current mainline.
+>>
+>> aplay output;
+>>
+>> aplay -l
+>> **** List of PLAYBACK Hardware Devices ****
+>> card 0: imx6wandboardsg [imx6-wandboard-sgtl5000], device 0: HiFi
+>> sgtl5000-0 []
+>>    Subdevices: 1/1
+>>    Subdevice #0: subdevice #0
+>> card 1: imxspdif [imx-spdif], device 0: S/PDIF PCM 
+>> snd-soc-dummy-dai-0 []
+>>    Subdevices: 1/1
+>>    Subdevice #0: subdevice #0
+>>
+>> aplay -L
+>> null
+>>      Discard all samples (playback) or generate zero samples (capture)
+>> pulse
+>>      PulseAudio Sound Server
+>> sysdefault:CARD=imx6wandboardsg
+>>      imx6-wandboard-sgtl5000,
+>>      Default Audio Device
+>> sysdefault:CARD=imxspdif
+>>      imx-spdif,
+>>      Default Audio Device
+>>
+>> aplay -vv ImABeliever.wav
+>> Playing WAVE 'ImABeliever.wav' : Signed 16 bit Little Endian, Rate 44100
+>> Hz, Stereo
+>> Hardware PCM card 1 'imx-spdif' device 0 subdevice 0
+>> Its setup is:
+>>    stream       : PLAYBACK
+>>    access       : RW_INTERLEAVED
+>>    format       : S16_LE
+>>    subformat    : STD
+>>    channels     : 2
+>>    rate         : 44100
+>>    exact rate   : 44100 (44100/1)
+>>    msbits       : 16
+>>    buffer_size  : 16384
+>>    period_size  : 4096
+>>    period_time  : 92879
+>>    tstamp_mode  : NONE
+>>    period_step  : 1
+>>    avail_min    : 4096
+>>    period_event : 0
+>>    start_threshold  : 16384
+>>    stop_threshold   : 16384
+>>    silence_threshold: 0
+>>    silence_size : 0
+>>    boundary     : 1073741824
+>>    appl_ptr     : 0
+>>    hw_ptr       : 0
+>> #################           +                      | 55%
+>>
+>> but no sound form SPDIF.
+>>
+>> If this is right place for this and if I can be of any help debuuging or
+>> you need more info I'm more than happy to help in any way I can.
+>>
+>> Since I sent the original message Ive realised that data is being sent
+>> to and received at the SPDIF output of the wandboard quad it can't seem
+>> to handle it.
+>
+>   This is somewhat unclear. If you confirm that the data is being
+> set to spdif port correctly, what do you mean by "it can't seem to
+> handle it" ?
+>
+I probably should have phrased this as 'data arrives at the SPDID output 
+but is not understood at the receiver'? The cubietruck manages this task 
+though with the same data, same commands so the two SPDIF outputs are 
+doing somethin differently? Or am I being to simplistic? :)
+>
+>> If I connect a DAC to the SPDIF output and then connect
+>> the DAC to my recievers aux input I hear the sound in all it's glory.
+>
+>   If you have your spdif output connected to dac and that works fine
+> then I would say your spdif is just fine. There might be something
+> specific with your receiver.
+>
+>>
+>> The same receiver and cabling works with a cubietruck and the sunxi 
+>> kernel.
+>
+>   I would suggest you hook up a scope to your spdif output for both
+> wandboard and cubietruck and compare the signals. Perhaps the voltage
+> levels are too low for your receiver. You might want to try another
+> receiver, but I would check the scope outputs first.
+Ok, I'll 'hook up  a scope' and get back to the list but I am a complete 
+amateur :)
+I have tried a second receiver and the results are the same, as in, the 
+wandboard fails, the cubietruck works. I fear that this a design issue 
+and I'm wasting your time.
+
+Cheers
+Mike.
+
 -- 
-1.9.1
