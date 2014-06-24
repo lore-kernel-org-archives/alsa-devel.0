@@ -1,33 +1,50 @@
-From: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
-Subject: [PATCH] sound: oss: mpu401.c:  Cleaning up missing break in a case
-Date: Tue, 24 Jun 2014 12:49:35 +0200
-Message-ID: <1403606975-12827-1-git-send-email-rickard_strandqvist@spectrumdigital.se>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/4] ASoc: samsung: update s3c24xx to dmaengine and
+ common clk framework
+Date: Tue, 24 Jun 2014 11:57:57 +0100
+Message-ID: <20140624105757.GI23300@sirena.org.uk>
+References: <1403555047-14783-1-git-send-email-anarsoul@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/GPgYEyhnw15BExa"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1403555047-14783-1-git-send-email-anarsoul@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, Tomasz Figa <t.figa@samsung.com>, Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>
 List-Id: alsa-devel@alsa-project.org
 
-Added a missed break in a case statement
 
-This was found using a static code analysis program called cppcheck.
+--/GPgYEyhnw15BExa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Rickard Strandqvist <rickard_strandqvist@spectrumdigital.se>
----
- sound/oss/mpu401.c |    1 +
- 1 file changed, 1 insertion(+)
+On Mon, Jun 23, 2014 at 11:24:03PM +0300, Vasily Khoruzhick wrote:
+> This series updates s3c24{xx,12}-i2s driver to use newer DMA and CLK APIs.
 
-diff --git a/sound/oss/mpu401.c b/sound/oss/mpu401.c
-index 25e4609..400896b 100644
---- a/sound/oss/mpu401.c
-+++ b/sound/oss/mpu401.c
-@@ -316,6 +316,7 @@ static int mpu_input_scanner(struct mpu_config *devc, unsigned char midic)
- 				case 0xf6:
- 					/* printk( "tune_request\n"); */
- 					devc->m_state = ST_INIT;
-+					break;
- 
- 					/*
- 					 *    Real time messages
--- 
-1.7.10.4
+Applied all, thanks.
+
+--/GPgYEyhnw15BExa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTqVmyAAoJELSic+t+oim9jqEP/1QkNuBQaOVFIQcr6gSP02wM
+A46Iszuisi4reetaTbkuANh4knByh+YUI0mWbZfAcpvH7EPXbB6puecyJEiAbqVr
+JFYaNqL/83Cvhf/cnMehIs388f7FP0r3JyzG39wYoJg4JHC6OrIqbGvNUHxGj8Dm
+R5JY/LMjwMMoZ52h2xAsIqUftBF4QO9+51Vhm5XyT0lYWwMeBHBS2152XoN5Bkhh
+HIpJafGw2+42zTz6i0kXARxgY3OE8uO/h12qU1/oG8EkK/UGvztO8qrE3sOj3OgE
+3OFsnBUq2saSdPY43Uz50PAn0jrqYgJZgGyaIhnFe/oExbq7cvb0+bsl7Ud3Il+S
+GOAut1NrtrNf+C5+w68KGu98ETpQjmGhsA9C0q1Efp/3R87Rt5JUrfWCgpLm6PMs
+jkasDYZemawomkyGobD5lZn7fTrweddOhJipEbW9VTNy/uNQJCW5cAk2QybLcLQ9
+3dSxOivJUzo2ti7kLBGSLk+vmQq6t5Hb/HMowA6MsbXSN5Ppc4lyC71jNAGJvgp3
+lXDHP2HuV5z4+nVoVKd/XnulmgcieVWYR5tE/fUU322XVCTtNLdz0hFMDqo1MSwh
+MGX5hZbn7rU1oeX8mdC0vxPcR7KiIjh3UsB8Ef4nIYUvY5nDyuSXBXkd8bBY8uUI
+JYEbSMMQR2tmM2lAfztW
+=L8/w
+-----END PGP SIGNATURE-----
+
+--/GPgYEyhnw15BExa--
