@@ -1,17 +1,18 @@
-From: Michael Howard <mike@dewberryfields.co.uk>
-Subject: Re: Wandboard Quad - SPDIF issue, no sound
-Date: Tue, 24 Jun 2014 15:57:56 +0100
-Message-ID: <53A991F4.9070905@dewberryfields.co.uk>
-References: <53A86CC5.2060204@dewberryfields.co.uk>
- <53A90D98.3050000@writeme.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Adjust speaker HPF and add LED
+	support for HP Spectre 13
+Date: Tue, 24 Jun 2014 17:12:39 +0200
+Message-ID: <1403622759-10170-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.dewberryfields.co.uk (mail.dewberryfields.co.uk
- [217.41.92.67]) by alsa0.perex.cz (Postfix) with ESMTP id 26C812658E6
- for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2014 16:57:57 +0200 (CEST)
-In-Reply-To: <53A90D98.3050000@writeme.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2CEB2656F3
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2014 17:12:39 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 2D042AC69
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2014 15:12:39 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,152 +25,133 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+HP Spectre 13 has the IDT 92HD95 codec, and BIOS seems to set the
+default high-pass filter in some "safer" range, which results in the
+very soft tone from the built-in speakers in contrast to Windows.
+Also, the mute LED control is missing, since 92HD95 codec still has no
+HP-specific fixups for GPIO setups.
 
-On 24/06/2014 06:33, Sinan Akman wrote:
->
->   Hi Micheal
->
-> On 06/23/2014 02:07 PM, Michael Howard wrote:
->> Hello All,
->>
->> I'm resending this email as orignally I wasn't subcribed and I've been
->> told the message hasn't made it through.
->>
->> I was pointed here from the Wandboard Google Groups forum. If I'm in the
->> wrong place please accept my appologies.
->>
->> With known good cabling and receiver I'm not getting sound from the
->> Wandboard Quad's S/PDIF output.
->
->   How are you testing your spdif output exactly ?
+This patch adds these missing features: the HPF is adjusted by the
+vendor-specific verb, and the LED is set up from a DMI string (but
+with the default polarity = 0 assumption due to the incomplete BIOS on
+the given machine).
 
-Until now, simply from a usage point of view with alsa. That is to say 
-aplay, the same as with the cubietruck.
->
->> I have built various kernels from
->> mainline, the last two sources I tried are 3.15.1 and 3.16-rc2.
->>
->> With sound built as modules I get nothing on any outputs, errors from
->> dmesg are;
->>
->> dmesg | grep snd
->> 5.206990] imx-spdif sound-spdif.13: snd_soc_register_card failed: -517
->> [ 5.241976] imx-spdif sound-spdif.13: snd_soc_register_card failed: -517
->> [ 5.258174] imx-spdif sound-spdif.13: snd-soc-dummy-dai <->
->> 2004000.spdif mapping ok
->> [ 5.281704] imx-sgtl5000 sound.12: snd_soc_register_card failed (-517)
->>
->> With sound built in I get sound on the 'line out' output and from dmesg;
->>
->> dmesg | grep snd
->> imx-spdif sound-spdif: snd-soc-dummy-dai <-> 2004000.spdif mapping ok
->>
->> In both cases I get (or similar);
->>
->> dmesg | grep firm
->> imx-sdma 20ec000.sdma: Direct firmware load failed with error -2
->> imx-sdma 20ec000.sdma: loaded firmware 1.1
->>
->> Not sure if the firmware message above is a problem or not.
->
->   No, it should work without loading external firmware to ram.
->
-I thought so with current mainline.
->>
->> aplay output;
->>
->> aplay -l
->> **** List of PLAYBACK Hardware Devices ****
->> card 0: imx6wandboardsg [imx6-wandboard-sgtl5000], device 0: HiFi
->> sgtl5000-0 []
->>    Subdevices: 1/1
->>    Subdevice #0: subdevice #0
->> card 1: imxspdif [imx-spdif], device 0: S/PDIF PCM 
->> snd-soc-dummy-dai-0 []
->>    Subdevices: 1/1
->>    Subdevice #0: subdevice #0
->>
->> aplay -L
->> null
->>      Discard all samples (playback) or generate zero samples (capture)
->> pulse
->>      PulseAudio Sound Server
->> sysdefault:CARD=imx6wandboardsg
->>      imx6-wandboard-sgtl5000,
->>      Default Audio Device
->> sysdefault:CARD=imxspdif
->>      imx-spdif,
->>      Default Audio Device
->>
->> aplay -vv ImABeliever.wav
->> Playing WAVE 'ImABeliever.wav' : Signed 16 bit Little Endian, Rate 44100
->> Hz, Stereo
->> Hardware PCM card 1 'imx-spdif' device 0 subdevice 0
->> Its setup is:
->>    stream       : PLAYBACK
->>    access       : RW_INTERLEAVED
->>    format       : S16_LE
->>    subformat    : STD
->>    channels     : 2
->>    rate         : 44100
->>    exact rate   : 44100 (44100/1)
->>    msbits       : 16
->>    buffer_size  : 16384
->>    period_size  : 4096
->>    period_time  : 92879
->>    tstamp_mode  : NONE
->>    period_step  : 1
->>    avail_min    : 4096
->>    period_event : 0
->>    start_threshold  : 16384
->>    stop_threshold   : 16384
->>    silence_threshold: 0
->>    silence_size : 0
->>    boundary     : 1073741824
->>    appl_ptr     : 0
->>    hw_ptr       : 0
->> #################           +                      | 55%
->>
->> but no sound form SPDIF.
->>
->> If this is right place for this and if I can be of any help debuuging or
->> you need more info I'm more than happy to help in any way I can.
->>
->> Since I sent the original message Ive realised that data is being sent
->> to and received at the SPDIF output of the wandboard quad it can't seem
->> to handle it.
->
->   This is somewhat unclear. If you confirm that the data is being
-> set to spdif port correctly, what do you mean by "it can't seem to
-> handle it" ?
->
-I probably should have phrased this as 'data arrives at the SPDID output 
-but is not understood at the receiver'? The cubietruck manages this task 
-though with the same data, same commands so the two SPDIF outputs are 
-doing somethin differently? Or am I being to simplistic? :)
->
->> If I connect a DAC to the SPDIF output and then connect
->> the DAC to my recievers aux input I hear the sound in all it's glory.
->
->   If you have your spdif output connected to dac and that works fine
-> then I would say your spdif is just fine. There might be something
-> specific with your receiver.
->
->>
->> The same receiver and cabling works with a cubietruck and the sunxi 
->> kernel.
->
->   I would suggest you hook up a scope to your spdif output for both
-> wandboard and cubietruck and compare the signals. Perhaps the voltage
-> levels are too low for your receiver. You might want to try another
-> receiver, but I would check the scope outputs first.
-Ok, I'll 'hook up  a scope' and get back to the list but I am a complete 
-amateur :)
-I have tried a second receiver and the results are the same, as in, the 
-wandboard fails, the cubietruck works. I fear that this a design issue 
-and I'm wasting your time.
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=74841
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ Documentation/sound/alsa/HD-Audio-Models.txt |  5 +++
+ sound/pci/hda/patch_sigmatel.c               | 58 +++++++++++++++++++++++++++-
+ 2 files changed, 62 insertions(+), 1 deletion(-)
 
-Cheers
-Mike.
-
+diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
+index 85c362d8ea34..d1ab5e17eb13 100644
+--- a/Documentation/sound/alsa/HD-Audio-Models.txt
++++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+@@ -286,6 +286,11 @@ STAC92HD83*
+   hp-inv-led	HP with broken BIOS for inverted mute LED
+   auto		BIOS setup (default)
+ 
++STAC92HD95
++==========
++  hp-led	LED support for HP laptops
++  hp-bass	Bass HPF setup for HP Spectre 13
++
+ STAC9872
+ ========
+   vaio		VAIO laptop without SPDIF
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 7f40a150899c..3744ea4e843d 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -122,6 +122,12 @@ enum {
+ };
+ 
+ enum {
++	STAC_92HD95_HP_LED,
++	STAC_92HD95_HP_BASS,
++	STAC_92HD95_MODELS
++};
++
++enum {
+ 	STAC_925x_REF,
+ 	STAC_M1,
+ 	STAC_M1_2,
+@@ -4128,6 +4134,48 @@ static const struct snd_pci_quirk stac9205_fixup_tbl[] = {
+ 	{} /* terminator */
+ };
+ 
++static void stac92hd95_fixup_hp_led(struct hda_codec *codec,
++				    const struct hda_fixup *fix, int action)
++{
++	struct sigmatel_spec *spec = codec->spec;
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++
++	if (find_mute_led_cfg(codec, spec->default_polarity))
++		codec_dbg(codec, "mute LED gpio %d polarity %d\n",
++				spec->gpio_led,
++				spec->gpio_led_polarity);
++}
++
++static const struct hda_fixup stac92hd95_fixups[] = {
++	[STAC_92HD95_HP_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = stac92hd95_fixup_hp_led,
++	},
++	[STAC_92HD95_HP_BASS] = {
++		.type = HDA_FIXUP_VERBS,
++		.v.verbs = (const struct hda_verb[]) {
++			{0x1a, 0x795, 0x00}, /* HPF to 100Hz */
++			{}
++		},
++		.chained = true,
++		.chain_id = STAC_92HD95_HP_LED,
++	},
++};
++
++static const struct snd_pci_quirk stac92hd95_fixup_tbl[] = {
++	SND_PCI_QUIRK(PCI_VENDOR_ID_HP, 0x1911, "HP Spectre 13", STAC_92HD95_HP_BASS),
++	{} /* terminator */
++};
++
++static const struct hda_model_fixup stac92hd95_models[] = {
++	{ .id = STAC_92HD95_HP_LED, .name = "hp-led" },
++	{ .id = STAC_92HD95_HP_BASS, .name = "hp-bass" },
++	{}
++};
++
++
+ static int stac_parse_auto_config(struct hda_codec *codec)
+ {
+ 	struct sigmatel_spec *spec = codec->spec;
+@@ -4580,10 +4628,16 @@ static int patch_stac92hd95(struct hda_codec *codec)
+ 	spec->gen.beep_nid = 0x19; /* digital beep */
+ 	spec->pwr_nids = stac92hd95_pwr_nids;
+ 	spec->num_pwrs = ARRAY_SIZE(stac92hd95_pwr_nids);
+-	spec->default_polarity = -1; /* no default cfg */
++	spec->default_polarity = 0;
+ 
+ 	codec->patch_ops = stac_patch_ops;
+ 
++	snd_hda_pick_fixup(codec, stac92hd95_models, stac92hd95_fixup_tbl,
++			   stac92hd95_fixups);
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
++
++	stac_setup_gpio(codec);
++
+ 	err = stac_parse_auto_config(codec);
+ 	if (err < 0) {
+ 		stac_free(codec);
+@@ -4592,6 +4646,8 @@ static int patch_stac92hd95(struct hda_codec *codec)
+ 
+ 	codec->proc_widget_hook = stac92hd_proc_hook;
+ 
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PROBE);
++
+ 	return 0;
+ }
+ 
 -- 
+2.0.0
