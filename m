@@ -1,82 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aic3x: Correct S24_3LE support
-Date: Tue, 24 Jun 2014 10:18:43 +0100
-Message-ID: <20140624091843.GE23300@sirena.org.uk>
-References: <1402059931-10731-1-git-send-email-peter.ujfalusi@ti.com>
- <20140609202403.GX5099@sirena.org.uk> <53A82519.6050506@ti.com>
- <20140623151822.GA23300@sirena.org.uk> <53A91960.1040108@ti.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 1/2] ASoC: cs4265: bindings: sound: Add binding for
+ CS4265 CODEC.
+Date: Tue, 24 Jun 2014 16:18:16 +0100
+Message-ID: <20140624151816.GM23300@sirena.org.uk>
+References: <1403562593-31952-1-git-send-email-Paul.Handrigan@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2586384885109547646=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 48101265E32
- for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2014 11:19:01 +0200 (CEST)
-In-Reply-To: <53A91960.1040108@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kkcDP0v44wDpNmbp"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1403562593-31952-1-git-send-email-Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Paul Handrigan <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawl.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2586384885109547646==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PPYy/fEw/8QCHSq3"
-Content-Disposition: inline
-
-
---PPYy/fEw/8QCHSq3
+--kkcDP0v44wDpNmbp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 24, 2014 at 09:23:28AM +0300, Peter Ujfalusi wrote:
-> On 06/23/2014 06:18 PM, Mark Brown wrote:
+On Mon, Jun 23, 2014 at 05:29:52PM -0500, Paul Handrigan wrote:
+> This patch adds binding documentation for the Cirrus Logic CS4265 I2C COD=
+EC.
 
-> > The number of bits on the wire should be the number specified in the
-> > format.
+Applied both, thanks.  I suspect you'll end up needing to split the
+S/PDIF mute operation but it doesn't make such a big difference at the
+framework level.
 
-> So you are saying that for S24_3LE, S24_LE and S32_LE (msbits=24) we should
-> have 24 bits on the wire?
+> Changes for v2:
+>=20
+> * Change DT reset pin name to "reset-gpios"
 
-No - when the format is S32_LE then that's 32 bits.
+As covered in SubmittingPatches things like this should go after the
+---.
 
---PPYy/fEw/8QCHSq3
+--kkcDP0v44wDpNmbp
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTqUJvAAoJELSic+t+oim9s68P/1MWM2ceiLXErLRor7qnNC2s
-5Ko99luvr7R1qXKjQkh/zr8W/4YEwesFvZagYOCytVA2rqoP7F1mXiMYsdF8rB2n
-hB/MVzyyVYR0+3eM1TSJa3QaEF6aWS89bYCssG4FB92YCak0J4ySgIHcMKWhUOCM
-jk5U2rZGd67xcWJshxrFtSISzRqRxo2uHdlNAbQ4TPvmoIg+hjA9bkbn1mFanK/v
-SqAqXebXhhpLGOYeDI512D6AeE6//oEH96WrqFBb6GqdQh92lKs3VBX5qFOs2g0n
-ZCrvVPxvKaDr5b/BwWy7E9voi2Omdy0qxfRrQYhkcxy3WvemqvzrKUT+3MyPswR2
-HkswDRyJEMprIUPb5mbaB8Mkf5fV+JgLubifaQRdsN0deikBDOGXP9XP2+tiZQy4
-G3AkkL4TI29mKI1UgQUn3L2ZTdNBPeI8/T3r239R5sl9H6RwbPeXOidJK2vBLlDs
-V3TpNq7fYPXepTm3pWR+oMbi1aYlotRkE+nboaqG62j4PmIxfkefRRenKmYwYC/C
-1Z6zCHQfyvRTqWoHmJOntWWH/Xpj339iOIwmWyBbTl48796sJqPdt3Gv20wDy0HK
-gCZ/qhKt/Gz7Jpsr/N62jjujGEpsxGshz8eznL05NfdrwHIagksaFLoJtFW8YcMH
-uAIwNfBe+zZ2rMc4OJlr
-=UsYQ
+iQIcBAEBAgAGBQJTqZa1AAoJELSic+t+oim9FpUP/3P1KlHjoJ8ozY8Hbf9g/zKo
+a0hCd6yrfXf3t6FYTsQ6eWi0VKa43r8/uy7az+SfDBKnISMhdmMd5Ifi8M/ygGbd
+0nJ3jgMx4qxgKkQEvDh0U2yZ1KtF9Ua2knsJjdKAYA4EoWisHENuC423l5CSdkQH
+kvKyw6NoTV0ryDd6eE/aZgDR6a/jFL7WEiju+cU3Eb5QfLWHf24G8XuD5gZRnoJO
+Ncf/5S3/Z/4f26YhKM6SbSMcYoM+s0CwJWuwWUstOKwTWLPTqNqoEw8B7Y5Qd6kX
+s9ILdwKlbkxemSd+Z7F+Jrs44VEQS1l5plcIsY+w+xOEbsJEIL4y/ZV8AouyNN43
+ws3l6Ox//K1OX3fklsG1SJ1XNLnmtO5kxBjYxEH1k1VLwJy2lGPSbjp6W42xrEGH
+2oaY6w1+kHxcJsjmjozjNe4ATA8Qmwqbi33sPx1+PTsMGMmZ6cAKDcozjmZyX6ZD
+eq9q1Vz0JrOYvnmLadQtZ+uuqIuequvbzXffZoXeil67JoVne9VtWQi2wdz6nguD
+UWYHtHTH+uxXMjzWG8pbfQXkssehoD3QFGc/LN3wtddyYVEU1FXJRxXdNrSRs35P
+K1o6syZkjnHxID50G0Oo8MMmlxXQ+l4/1R9uYYc26WGQ1wtLnGgS2e7e5CBa9Xi2
+cVlBggqXvY9xJyY2nYxE
+=bZjB
 -----END PGP SIGNATURE-----
 
---PPYy/fEw/8QCHSq3--
-
---===============2586384885109547646==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2586384885109547646==--
+--kkcDP0v44wDpNmbp--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
