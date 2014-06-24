@@ -1,12 +1,12 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Message-id: <53A85B6F.9090809@samsung.com>
-Date: Mon, 23 Jun 2014 18:53:03 +0200
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-MIME-version: 1.0
+MIME-Version: 1.0
+In-Reply-To: <53A856AE.1030202@samsung.com>
 References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
  <CAD8Lp44h6zc2Rt2MGLjhmNG-YB0kYCWf5G7hX5JmdmBfc1PvKg@mail.gmail.com>
  <53A856AE.1030202@samsung.com>
-In-reply-to: <53A856AE.1030202@samsung.com>
+Date: Tue, 24 Jun 2014 09:35:51 +0100
+Message-ID: <CAD8Lp46gqbV9gDfrH2hbVnF7s6wK6ASBdsX7vn0L0CFAHXSemg@mail.gmail.com>
+From: Daniel Drake <drake@endlessm.com>
 Subject: Re: [alsa-devel] [PATCH V2 0/2] Sound support for Exynos4412 Odroid
 	X2, U3 board
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -21,36 +21,35 @@ Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, pawel.moll@arm.com, zhen1.chen@samsung.com, Kyungmin Park <kyungmin.park@samsung.com>, Mark Brown <broonie@kernel.org>, galak@codeaurora.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, pawel.moll@arm.com, zhen1.chen@samsung.com, Kyungmin Park <kyungmin.park@samsung.com>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Marek Szyprowski <m.szyprowski@samsung.com>
 List-ID: <alsa-devel@alsa-project.org>
 
-On 23/06/14 18:32, Sylwester Nawrocki wrote:
-> On 23/06/14 11:40, Daniel Drake wrote:
->> > I tested ODROID-U2's 3.5mm analog headphone jack output with:
->> > 
->> > # speaker-test -c 2 -t wav -l 2
->> > 
->> > On my x86 laptop this command takes ~6 seconds and produces audible output:
->> > "Front left, front right, front left, front right"
->> > 
->> > When those words are reproduced over the speakers, there is a
->> > corresponding message printed to stdout which synchronizes nicely.
->> > 
->> > On ODROID-U2 the same command doesn't work quite right - execution
->> > takes only 3.5 seconds and the audible output is truncated:
->> > "Front left, front right, front"
->> > and the stdout messages do not really coincide with the audio being
->> > reproduced at that time.
+On Mon, Jun 23, 2014 at 5:32 PM, Sylwester Nawrocki
+<s.nawrocki@samsung.com> wrote:
+> I could reproduce such behaviour on the U3 board, but only with u-boot
+> which sets the MPLL clock frequency (fout_mpll) to 880 MHz, rather
+> than 800 MHz, which was the case in my original environment.
+> All fout_mpll child clocks have then different frequency values
+> in both cases.
+> It's a bit strange though, because frequencies of all the audio
+> subsystem clocks seem to be same anyway:
 
-Is it still wrong when you set the period manually to 1024, i.e.
+I'm using the standard uboot from hardkernel.
+
+> # cat /sys/kernel/debug/clk/clk_summary
+
+This command makes the kernel totally hang, weird.
 
 # speaker-test -c 2 -t wav -l 2 -p 1024
 
-?
+This plays back fine.
 
---
-Thanks,
-Sylwester
+Could it be a problem with the samsung-i2s driver, not correctly
+flushing at the right times?
+Or do you think the problem is more likely to be clock-related?
+
+Thanks
+Daniel
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
 the body of a message to majordomo@vger.kernel.org
