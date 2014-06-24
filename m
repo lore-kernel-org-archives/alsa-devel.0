@@ -1,22 +1,18 @@
-From: Sinan Akman <sinan@writeme.com>
-Subject: Re: Wandboard Quad - SPDIF issue, no sound
-Date: Tue, 24 Jun 2014 01:33:12 -0400
-Message-ID: <53A90D98.3050000@writeme.com>
-References: <53A86CC5.2060204@dewberryfields.co.uk>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: Correct S24_3LE support
+Date: Tue, 24 Jun 2014 09:23:28 +0300
+Message-ID: <53A91960.1040108@ti.com>
+References: <1402059931-10731-1-git-send-email-peter.ujfalusi@ti.com>
+ <20140609202403.GX5099@sirena.org.uk> <53A82519.6050506@ti.com>
+ <20140623151822.GA23300@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from walmailout03.yourhostingaccount.com
- (walmailout03.yourhostingaccount.com [65.254.253.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 070EA2619FF
- for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2014 07:33:17 +0200 (CEST)
-Received: from mailscan04.yourhostingaccount.com ([10.1.15.4]
- helo=walmailscan04.yourhostingaccount.com)
- by walmailout03.yourhostingaccount.com with esmtp (Exim)
- id 1WzJM5-0007a8-CG
- for alsa-devel@alsa-project.org; Tue, 24 Jun 2014 01:33:17 -0400
-In-Reply-To: <53A86CC5.2060204@dewberryfields.co.uk>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D6DB2652E3
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2014 08:23:33 +0200 (CEST)
+In-Reply-To: <20140623151822.GA23300@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,138 +22,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Howard <mike@dewberryfields.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 06/23/2014 06:18 PM, Mark Brown wrote:
+> On Mon, Jun 23, 2014 at 04:01:13PM +0300, Peter Ujfalusi wrote:
+> =
 
-   Hi Micheal
+>> AIC3X_FORMATS is correct:
+>> #define AIC3X_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3L=
+E | \
+>> 			SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
+> =
 
-On 06/23/2014 02:07 PM, Michael Howard wrote:
-> Hello All,
->
-> I'm resending this email as orignally I wasn't subcribed and I've been
-> told the message hasn't made it through.
->
-> I was pointed here from the Wandboard Google Groups forum. If I'm in the
-> wrong place please accept my appologies.
->
-> With known good cabling and receiver I'm not getting sound from the
-> Wandboard Quad's S/PDIF output.
+>> While in hw_params the switch was not handling the S24_3LE but it was de=
+fined
+>> as S24_LE. So the code was not correct: It advertised that it supportsd
+>> S24_3LE and was not handling it, but it was handling S24_LE which would =
+not
+>> happen with this codec driver since the format is not supported - as it =
+was
+>> defined by the AIC3X_FORMATS.
+> =
 
-   How are you testing your spdif output exactly ?
+>> This is a fix for the current driver.
+> =
 
-> I have built various kernels from
-> mainline, the last two sources I tried are 3.15.1 and 3.16-rc2.
->
-> With sound built as modules I get nothing on any outputs, errors from
-> dmesg are;
->
-> dmesg | grep snd
-> 5.206990] imx-spdif sound-spdif.13: snd_soc_register_card failed: -517
-> [ 5.241976] imx-spdif sound-spdif.13: snd_soc_register_card failed: -517
-> [ 5.258174] imx-spdif sound-spdif.13: snd-soc-dummy-dai <->
-> 2004000.spdif mapping ok
-> [ 5.281704] imx-sgtl5000 sound.12: snd_soc_register_card failed (-517)
->
-> With sound built in I get sound on the 'line out' output and from dmesg;
->
-> dmesg | grep snd
-> imx-spdif sound-spdif: snd-soc-dummy-dai <-> 2004000.spdif mapping ok
->
-> In both cases I get (or similar);
->
-> dmesg | grep firm
-> imx-sdma 20ec000.sdma: Direct firmware load failed with error -2
-> imx-sdma 20ec000.sdma: loaded firmware 1.1
->
-> Not sure if the firmware message above is a problem or not.
+> Yes, but the fix should be to support both.
 
-   No, it should work without loading external firmware to ram.
+I would rather fix the S24_3LE with this patch and add the S24_LE with a
+separate one. But IMHO the S24_LE support is not obvious.
 
->
-> aplay output;
->
-> aplay -l
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: imx6wandboardsg [imx6-wandboard-sgtl5000], device 0: HiFi
-> sgtl5000-0 []
->    Subdevices: 1/1
->    Subdevice #0: subdevice #0
-> card 1: imxspdif [imx-spdif], device 0: S/PDIF PCM snd-soc-dummy-dai-0 []
->    Subdevices: 1/1
->    Subdevice #0: subdevice #0
->
-> aplay -L
-> null
->      Discard all samples (playback) or generate zero samples (capture)
-> pulse
->      PulseAudio Sound Server
-> sysdefault:CARD=imx6wandboardsg
->      imx6-wandboard-sgtl5000,
->      Default Audio Device
-> sysdefault:CARD=imxspdif
->      imx-spdif,
->      Default Audio Device
->
-> aplay -vv ImABeliever.wav
-> Playing WAVE 'ImABeliever.wav' : Signed 16 bit Little Endian, Rate 44100
-> Hz, Stereo
-> Hardware PCM card 1 'imx-spdif' device 0 subdevice 0
-> Its setup is:
->    stream       : PLAYBACK
->    access       : RW_INTERLEAVED
->    format       : S16_LE
->    subformat    : STD
->    channels     : 2
->    rate         : 44100
->    exact rate   : 44100 (44100/1)
->    msbits       : 16
->    buffer_size  : 16384
->    period_size  : 4096
->    period_time  : 92879
->    tstamp_mode  : NONE
->    period_step  : 1
->    avail_min    : 4096
->    period_event : 0
->    start_threshold  : 16384
->    stop_threshold   : 16384
->    silence_threshold: 0
->    silence_size : 0
->    boundary     : 1073741824
->    appl_ptr     : 0
->    hw_ptr       : 0
-> #################           +                      | 55%
->
-> but no sound form SPDIF.
->
-> If this is right place for this and if I can be of any help debuuging or
-> you need more info I'm more than happy to help in any way I can.
->
-> Since I sent the original message Ive realised that data is being sent
-> to and received at the SPDIF output of the wandboard quad it can't seem
-> to handle it.
+>>> I really need to get round to doing
+>>> the rest of the conversions to use params_width() which should ensure
+>>> this.
+> =
 
-   This is somewhat unclear. If you confirm that the data is being
-set to spdif port correctly, what do you mean by "it can't seem to
-handle it" ?
+>> Not sure how this would work at the end to be honest for all platforms a=
+nd codecs.
+>> How should the bitclock need to be configured for S24_3LE, S24_LE and S3=
+2_LE
+>> msbits=3D24? They are at the end have 24bits audio data but in memory th=
+ey are
+>> stored in different ways.
+> =
+
+> The number of bits on the wire should be the number specified in the
+> format.
+
+So you are saying that for S24_3LE, S24_LE and S32_LE (msbits=3D24) we shou=
+ld
+have 24 bits on the wire?
+At least twl4030/5030 expects the 24bit data on the wire with 32 clocks (24
+bits data + 8bits padding).
+OMAP McBSP can only support 24bit audio with S32_LE (msbits=3D24) and it ne=
+eds
+to have 32 clock cycle on the bus to do this due to system constraints.
+
+So if we say that S32_LE (msbits=3D24) should have 24 bits on the wire neit=
+her
+OMAP McBSP nor twl4030/5030 could do that.
+
+Not sure about other SoCs, but I would not be so surprised that they also w=
+ant
+to shift out all the bits they have got form the main memory, ie 24 bits in
+case of S24_3LE, 32bits in case of S24_LE or S32_LE (msbits=3D24).
+
+>> Aic3x for example need to be configured to 24bit mode (24 clocks/channel=
+ if it
+>> is master) so it is going to 'pull' that amount from the CPU side. This =
+can
+>> not be used with OMAP's sDMA/McBSP but davinci's eDMA/McASP can support =
+it. I
+>> can even get daVinci to 'extract' the valid 24 bits from the 32bit sample
+>> coming via eDMA (mask/rotate/reverse operation).
+> =
+
+> Sure, so it only supports exactly 24 bit sample formats in master mode.
+> That's what's expected by default.
+> =
+
+>> So I still think that this is a bit more complicated than it looks
+> =
+
+> I'm not seeing anything particularly hard here.  The main thing is that
+> we ought to do something for dealing with extra BCLKs (eg, a device that
+> can tolerate extra BCLKs can have the other end generating more data
+> quite happily).
+> =
 
 
-> If I connect a DAC to the SPDIF output and then connect
-> the DAC to my recievers aux input I hear the sound in all it's glory.
 
-   If you have your spdif output connected to dac and that works fine
-then I would say your spdif is just fine. There might be something
-specific with your receiver.
+-- =
 
->
-> The same receiver and cabling works with a cubietruck and the sunxi kernel.
-
-   I would suggest you hook up a scope to your spdif output for both
-wandboard and cubietruck and compare the signals. Perhaps the voltage
-levels are too low for your receiver. You might want to try another
-receiver, but I would check the scope outputs first.
-
-   Hope this helps.
-
-   Sinan Akman
+P=E9ter
