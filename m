@@ -1,16 +1,18 @@
-From: Daniel Drake <drake@endlessm.com>
-Subject: Re: [PATCH V2 0/2] Sound support for Exynos4412 Odroid
-	X2, U3 board
-Date: Tue, 24 Jun 2014 09:35:51 +0100
-Message-ID: <CAD8Lp46gqbV9gDfrH2hbVnF7s6wK6ASBdsX7vn0L0CFAHXSemg__21260.0191626281$1403620610$gmane$org@mail.gmail.com>
-References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
- <CAD8Lp44h6zc2Rt2MGLjhmNG-YB0kYCWf5G7hX5JmdmBfc1PvKg@mail.gmail.com>
- <53A856AE.1030202@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: Correct S24_3LE support
+Date: Tue, 24 Jun 2014 10:18:43 +0100
+Message-ID: <20140624091843.GE23300@sirena.org.uk>
+References: <1402059931-10731-1-git-send-email-peter.ujfalusi@ti.com>
+ <20140609202403.GX5099@sirena.org.uk> <53A82519.6050506@ti.com>
+ <20140623151822.GA23300@sirena.org.uk> <53A91960.1040108@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2586384885109547646=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <53A856AE.1030202@samsung.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48101265E32
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2014 11:19:01 +0200 (CEST)
+In-Reply-To: <53A91960.1040108@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,33 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, pawel.moll@arm.com, zhen1.chen@samsung.com, Kyungmin Park <kyungmin.park@samsung.com>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Marek Szyprowski <m.szyprowski@samsung.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 23, 2014 at 5:32 PM, Sylwester Nawrocki
-<s.nawrocki@samsung.com> wrote:
-> I could reproduce such behaviour on the U3 board, but only with u-boot
-> which sets the MPLL clock frequency (fout_mpll) to 880 MHz, rather
-> than 800 MHz, which was the case in my original environment.
-> All fout_mpll child clocks have then different frequency values
-> in both cases.
-> It's a bit strange though, because frequencies of all the audio
-> subsystem clocks seem to be same anyway:
 
-I'm using the standard uboot from hardkernel.
+--===============2586384885109547646==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PPYy/fEw/8QCHSq3"
+Content-Disposition: inline
 
-> # cat /sys/kernel/debug/clk/clk_summary
 
-This command makes the kernel totally hang, weird.
+--PPYy/fEw/8QCHSq3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-# speaker-test -c 2 -t wav -l 2 -p 1024
+On Tue, Jun 24, 2014 at 09:23:28AM +0300, Peter Ujfalusi wrote:
+> On 06/23/2014 06:18 PM, Mark Brown wrote:
 
-This plays back fine.
+> > The number of bits on the wire should be the number specified in the
+> > format.
 
-Could it be a problem with the samsung-i2s driver, not correctly
-flushing at the right times?
-Or do you think the problem is more likely to be clock-related?
+> So you are saying that for S24_3LE, S24_LE and S32_LE (msbits=24) we should
+> have 24 bits on the wire?
 
-Thanks
-Daniel
+No - when the format is S32_LE then that's 32 bits.
+
+--PPYy/fEw/8QCHSq3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTqUJvAAoJELSic+t+oim9s68P/1MWM2ceiLXErLRor7qnNC2s
+5Ko99luvr7R1qXKjQkh/zr8W/4YEwesFvZagYOCytVA2rqoP7F1mXiMYsdF8rB2n
+hB/MVzyyVYR0+3eM1TSJa3QaEF6aWS89bYCssG4FB92YCak0J4ySgIHcMKWhUOCM
+jk5U2rZGd67xcWJshxrFtSISzRqRxo2uHdlNAbQ4TPvmoIg+hjA9bkbn1mFanK/v
+SqAqXebXhhpLGOYeDI512D6AeE6//oEH96WrqFBb6GqdQh92lKs3VBX5qFOs2g0n
+ZCrvVPxvKaDr5b/BwWy7E9voi2Omdy0qxfRrQYhkcxy3WvemqvzrKUT+3MyPswR2
+HkswDRyJEMprIUPb5mbaB8Mkf5fV+JgLubifaQRdsN0deikBDOGXP9XP2+tiZQy4
+G3AkkL4TI29mKI1UgQUn3L2ZTdNBPeI8/T3r239R5sl9H6RwbPeXOidJK2vBLlDs
+V3TpNq7fYPXepTm3pWR+oMbi1aYlotRkE+nboaqG62j4PmIxfkefRRenKmYwYC/C
+1Z6zCHQfyvRTqWoHmJOntWWH/Xpj339iOIwmWyBbTl48796sJqPdt3Gv20wDy0HK
+gCZ/qhKt/Gz7Jpsr/N62jjujGEpsxGshz8eznL05NfdrwHIagksaFLoJtFW8YcMH
+uAIwNfBe+zZ2rMc4OJlr
+=UsYQ
+-----END PGP SIGNATURE-----
+
+--PPYy/fEw/8QCHSq3--
+
+--===============2586384885109547646==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2586384885109547646==--
