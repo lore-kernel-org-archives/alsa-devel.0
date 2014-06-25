@@ -1,21 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 10/19] ASoC: Intel: add mrfld DSP registers
-Date: Wed, 25 Jun 2014 06:31:17 +0200
-Message-ID: <53AA5095.1080206@metafoo.de>
-References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
- <1402662848-24534-11-git-send-email-vinod.koul@intel.com>
- <53A3EF46.9000704@metafoo.de> <20140620113219.GI22053@intel.com>
- <53A42A0F.5070806@metafoo.de> <20140621062234.GK22053@intel.com>
- <53A52CAA.2030101@metafoo.de> <20140623042746.GO22053@intel.com>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: snd_usb_endpoint_free
+Date: Wed, 25 Jun 2014 08:28:43 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1406250824110.2012@localhost6.localdomain6>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-098.synserver.de (smtp-out-098.synserver.de
- [212.40.185.98])
- by alsa0.perex.cz (Postfix) with ESMTP id BD15B2610B7
- for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2014 06:31:24 +0200 (CEST)
-In-Reply-To: <20140623042746.GO22053@intel.com>
+Received: from mail2-relais-roc.national.inria.fr
+ (mail2-relais-roc.national.inria.fr [192.134.164.83])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5565B261691
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2014 08:28:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,67 +19,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/23/2014 06:27 AM, Vinod Koul wrote:
-> On Sat, Jun 21, 2014 at 08:56:42AM +0200, Lars-Peter Clausen wrote:
->> On 06/21/2014 08:22 AM, Vinod Koul wrote:
->>> On Fri, Jun 20, 2014 at 02:33:19PM +0200, Lars-Peter Clausen wrote:
->>>> On 06/20/2014 01:32 PM, Vinod Koul wrote:
->>>>> On Fri, Jun 20, 2014 at 10:22:30AM +0200, Lars-Peter Clausen wrote:
->>>>>> On 06/13/2014 02:33 PM, Vinod Koul wrote:
->>>>>>> +unsigned int sst_soc_read(struct snd_soc_platform *platform,
->>>>>>> +			unsigned int reg)
->>>>>>> +{
->>>>>>> +	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
->>>>>>> +
->>>>>>> +	pr_debug("%s: reg[%d] = %#x\n", __func__, reg, drv->widget[reg]);
->>>>>>> +	BUG_ON(reg > (SST_NUM_WIDGETS - 1));
->>>>>>> +	return drv->widget[reg];
->>>>>>> +}
->>>>>>> +
->>>>>>> +int sst_soc_write(struct snd_soc_platform *platform,
->>>>>>> +		  unsigned int reg, unsigned int val)
->>>>>>> +{
->>>>>>> +	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
->>>>>>> +
->>>>>>> +	pr_debug("%s: reg[%d] = %#x\n", __func__, reg, val);
->>>>>>> +	BUG_ON(reg > (SST_NUM_WIDGETS - 1));
->>>>>>> +	drv->widget[reg] = val;
->>>>>>> +	return 0;
->>>>>>> +}
->>>>>>
->>>>>> These seem to be purely virtual registers, what is this about? The
->>>>>> DAPM core is able to handle widgets and controls without any
->>>>>> register backing just fine. There is no need to emulate virtual
->>>>>> registers.
->>>>> But we need to store the mixer configuration for sending IPCs to DSP. So virtual
->>>>> register file is very much required
->>>>
->>>> Hm, ok. But how does this work, when is the IPC triggered and why
->>>> can't the IPC be done from within the write function?
->>> Write can come at any time, even when DSP is inactive. Also we want to tell DSP
->>> about the paths which are active
->>>
->>> So most of IPCs are sent from DAPM widget handlers with exception of controls
->>> which are active. For those we send IPC during get/put handlers.
->>
->> This sounds very similar to the auto-mute controls that are
->> supported by the ASoC core. Auto-mute controls will update the value
->> in the put handler, but only if the widget it is attached to is
->> powered up. If the widget is not powered up the value is stored and
->> will be written once the widget powers up. Try to see if you can
->> adopt the auto-mute controls for your usecase. I think this should
->> allow to remove some of the parts from the driver that peek into
->> core internal data structures.
->
-> Do you mean autodisable bit? Btw this seems to be used only in kcontrol creation
-> and not in runtime. Actually I wont find using this feature if we have it :)
->
+The function snd_usb_endpoint_free in sound/usb/endpoint.c is defined as 
+follows:
 
-Auto-disable is also used at runtime. If the auto-disable bit in a control 
-is set to 1, the control will have the behavior as described above.
+void snd_usb_endpoint_free(struct list_head *head)
+{
+        struct snd_usb_endpoint *ep;
 
-- Lars
+        ep = list_entry(head, struct snd_usb_endpoint, list);
+        release_urbs(ep, 1);
+        kfree(ep);
+}
+
+I wonder if the final kfree should be list_del?  In practice, this 
+function is only used from snd_usb_audio_disconnect in sound/usb/card.c 
+where the entire list is destroyed, but it seems like quite a generic 
+function that someone may someday want to use for just freeing one entry.
+
+julia
