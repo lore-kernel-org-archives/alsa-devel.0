@@ -1,17 +1,18 @@
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH V2 0/2] Sound support for Exynos4412 Odroid
-	X2, U3 board
-Date: Tue, 24 Jun 2014 11:02:01 +0200
-Message-ID: <53A93E89.2030901__26854.5758714483$1403772684$gmane$org@samsung.com>
-References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
- <CAD8Lp44h6zc2Rt2MGLjhmNG-YB0kYCWf5G7hX5JmdmBfc1PvKg@mail.gmail.com>
- <53A856AE.1030202@samsung.com>
- <CAD8Lp46gqbV9gDfrH2hbVnF7s6wK6ASBdsX7vn0L0CFAHXSemg@mail.gmail.com>
+From: =?UTF-8?Q?Roc_Vall=C3=A8s?= <vallesroc@gmail.com>
+Subject: alsa-tools 1.0.28 regression with sblive/emu10k1:
+ init_live shell script broken.
+Date: Wed, 25 Jun 2014 16:10:05 +0000
+Message-ID: <CAPq5wtYT7ckOSf4wb1w7aUPcSaQW8LY4AzeffL0hMOFJBUq4Fw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-reply-to: <CAD8Lp46gqbV9gDfrH2hbVnF7s6wK6ASBdsX7vn0L0CFAHXSemg@mail.gmail.com>
+Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
+ [209.85.216.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 368002619D8
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2014 18:10:06 +0200 (CEST)
+Received: by mail-qa0-f44.google.com with SMTP id hw13so1724909qab.3
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2014 09:10:05 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,42 +23,127 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, pawel.moll@arm.com, zhen1.chen@samsung.com, Kyungmin Park <kyungmin.park@samsung.com>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+I've recently upgraded to alsa-tools 1.0.28. There's apparently a
+regression: The script that is bundled for sound blaster live (emu10k1
+in my case) soundcard initialization has been broken. Without this,
+the soundcard can only be used at a very basic level (just 2 speakers,
+no equalization or other effects, most inputs unavailable). Reporting
+here as the bugtracker is down.
 
-On 2014-06-24 10:35, Daniel Drake wrote:
-> On Mon, Jun 23, 2014 at 5:32 PM, Sylwester Nawrocki
-> <s.nawrocki@samsung.com> wrote:
->> I could reproduce such behaviour on the U3 board, but only with u-boot
->> which sets the MPLL clock frequency (fout_mpll) to 880 MHz, rather
->> than 800 MHz, which was the case in my original environment.
->> All fout_mpll child clocks have then different frequency values
->> in both cases.
->> It's a bit strange though, because frequencies of all the audio
->> subsystem clocks seem to be same anyway:
-> I'm using the standard uboot from hardkernel.
->
->> # cat /sys/kernel/debug/clk/clk_summary
-> This command makes the kernel totally hang, weird.
 
-This is known issue with clocks vs. ISP power domain. We should really 
-fix this in exynos4 clock driver.
+Correct run (1.0.17):
+# sh /usr/bin/init_live
+No Emux synth hwdep device is found
+Found hardware: "EMU10K1" "SigmaTel STAC9721,23" "AC97a:83847609"
+"0x1102" "0x8040"
+Hardware is initialized using a generic method
 
-> # speaker-test -c 2 -t wav -l 2 -p 1024
->
-> This plays back fine.
->
-> Could it be a problem with the samsung-i2s driver, not correctly
-> flushing at the right times?
-> Or do you think the problem is more likely to be clock-related?
 
-Hard to say right now, but at least we need to test a bit more our 
-solutions with different initial clocks configuration.
+Broken run (1.0.28):
+# /usr/bin/init_live
+/usr/bin/init_live: line 49: log: command not found
+/usr/bin/init_live: line 51: local: can only be used in a function
+/usr/bin/init_live: line 55: [: 0: unary operator expected
+/usr/bin/init_live: line 60: runlo10k1: command not found
+/usr/bin/init_live: line 62: log: command not found
+rename: not enough arguments
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Usage:
+ rename [options] expression replacement file...
 
+Options:
+ -v, --verbose    explain what is being done
+ -s, --symlink    act on symlink target
+
+ -h, --help     display this help and exit
+ -V, --version  output version information and exit
+
+For more details see rename(1).
+/usr/bin/init_live: line 79: log: command not found
+/usr/bin/init_live: line 81: runlo10k1: command not found
+/usr/bin/init_live: line 84: connect: command not found
+/usr/bin/init_live: line 90: log: command not found
+/usr/bin/init_live: line 92: runlo10k1: command not found
+/usr/bin/init_live: line 95: copy: command not found
+/usr/bin/init_live: line 97: local: can only be used in a function
+/usr/bin/init_live: line 98: local: can only be used in a function
+/usr/bin/init_live: line 100: log: command not found
+/usr/bin/init_live: line 103: runlo10k1: command not found
+/usr/bin/init_live: line 105: connect: command not found
+/usr/bin/init_live: line 108: volume: command not found
+/usr/bin/init_live: line 110: local: can only be used in a function
+/usr/bin/init_live: line 111: local: can only be used in a function
+/usr/bin/init_live: line 112: local: can only be used in a function
+/usr/bin/init_live: line 113: local: can only be used in a function
+/usr/bin/init_live: line 115: log: command not found
+/usr/bin/init_live: line 118: runlo10k1: command not found
+/usr/bin/init_live: line 120: connect: command not found
+/usr/bin/init_live: line 123: master_volume: command not found
+/usr/bin/init_live: line 125: local: can only be used in a function
+/usr/bin/init_live: line 126: local: can only be used in a function
+/usr/bin/init_live: line 127: local: can only be used in a function
+/usr/bin/init_live: line 128: local: can only be used in a function
+/usr/bin/init_live: line 130: log: command not found
+/usr/bin/init_live: line 133: runlo10k1: command not found
+/usr/bin/init_live: line 135: connect: command not found
+/usr/bin/init_live: line 138: switch: command not found
+/usr/bin/init_live: line 140: local: can only be used in a function
+/usr/bin/init_live: line 141: local: can only be used in a function
+/usr/bin/init_live: line 142: local: can only be used in a function
+/usr/bin/init_live: line 144: log: command not found
+/usr/bin/init_live: line 148: runlo10k1: command not found
+/usr/bin/init_live: line 150: connect: command not found
+/usr/bin/init_live: line 153: switch_2x2: command not found
+/usr/bin/init_live: line 155: local: can only be used in a function
+/usr/bin/init_live: line 156: local: can only be used in a function
+/usr/bin/init_live: line 157: local: can only be used in a function
+/usr/bin/init_live: line 158: local: can only be used in a function
+/usr/bin/init_live: line 160: log: command not found
+/usr/bin/init_live: line 163: runlo10k1: command not found
+/usr/bin/init_live: line 165: connect: command not found
+/usr/bin/init_live: line 166: connect: command not found
+/usr/bin/init_live: line 169: switch_5x2: command not found
+/usr/bin/init_live: line 171: local: can only be used in a function
+/usr/bin/init_live: line 172: local: can only be used in a function
+/usr/bin/init_live: line 173: local: can only be used in a function
+/usr/bin/init_live: line 174: local: can only be used in a function
+/usr/bin/init_live: line 176: log: command not found
+/usr/bin/init_live: line 179: runlo10k1: command not found
+/usr/bin/init_live: line 181: connect: command not found
+/usr/bin/init_live: line 182: connect: command not found
+/usr/bin/init_live: line 185: master_switch: command not found
+/usr/bin/init_live: line 187: local: can only be used in a function
+/usr/bin/init_live: line 188: local: can only be used in a function
+/usr/bin/init_live: line 189: local: can only be used in a function
+/usr/bin/init_live: line 190: local: can only be used in a function
+/usr/bin/init_live: line 192: log: command not found
+/usr/bin/init_live: line 195: runlo10k1: command not found
+/usr/bin/init_live: line 197: connect: command not found
+/usr/bin/init_live: line 200: playback: command not found
+/usr/bin/init_live: line 205: log: command not found
+/usr/bin/init_live: line 208: switch: command not found
+/usr/bin/init_live: line 209: volume: command not found
+/usr/bin/init_live: line 211: add_output: command not found
+/usr/bin/init_live: line 214: playback_noswitch: command not found
+/usr/bin/init_live: line 219: log: command not found
+/usr/bin/init_live: line 222: volume: command not found
+/usr/bin/init_live: line 224: add_output: command not found
+/usr/bin/init_live: line 227: capture: command not found
+/usr/bin/init_live: line 232: log: command not found
+/usr/bin/init_live: line 235: switch: command not found
+/usr/bin/init_live: line 236: volume: command not found
+/usr/bin/init_live: line 238: connect: command not found
+/usr/bin/init_live: line 241: capture_noswitch: command not found
+/usr/bin/init_live: line 246: log: command not found
+/usr/bin/init_live: line 249: volume: command not found
+/usr/bin/init_live: line 251: connect: command not found
+/usr/bin/init_live: line 254: master: command not found
+/usr/bin/init_live: line 256: local: can only be used in a function
+/usr/bin/init_live: line 257: local: can only be used in a function
+/usr/bin/init_live: line 258: local: can only be used in a function
+/usr/bin/init_live: line 260: log: command not found
+/usr/bin/init_live: line 263: master_volume: command not found
+/usr/bin/init_live: line 264: master_switch: command not found
+/usr/bin/init_live: line 267: dump_patches: command not found
