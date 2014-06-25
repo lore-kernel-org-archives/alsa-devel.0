@@ -1,106 +1,86 @@
-From: Tushar Behera <trblinux@gmail.com>
-Subject: Re: [alsa-devel] [PATCH V2 1/2] ASoC: samsung: Add machine driver
- for Odroid X2/U3
-Date: Wed, 25 Jun 2014 09:01:47 +0530
-Message-ID: <53AA42A3.7030004@gmail.com>
-References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com> <1403108551-25058-2-git-send-email-s.nawrocki@samsung.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 13/19] ASoC: Intel: mrfld: add bytes
+ control for modules
+Date: Wed, 25 Jun 2014 06:23:54 +0200
+Message-ID: <53AA4EDA.20504@metafoo.de>
+References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
+ <1402662848-24534-14-git-send-email-vinod.koul@intel.com>
+ <53A3ECAB.404@metafoo.de> <20140620113013.GH22053@intel.com>
+ <53A428C8.9030707@metafoo.de> <20140621061605.GJ22053@intel.com>
+ <53A523E1.1080808@metafoo.de> <20140623041500.GN22053@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1403108551-25058-2-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>, alsa-devel@alsa-project.org
-Cc: mark.rutland@arm.com, linux-samsung-soc@vger.kernel.org, pawel.moll@arm.com, zhen1.chen@samsung.com, kyungmin.park@samsung.com, galak@codeaurora.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-098.synserver.de (smtp-out-098.synserver.de
+ [212.40.185.98])
+ by alsa0.perex.cz (Postfix) with ESMTP id 054B32610B7
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2014 06:24:19 +0200 (CEST)
+In-Reply-To: <20140623041500.GN22053@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/18/2014 09:52 PM, Sylwester Nawrocki wrote:
-> This patch adds the sound subsystem driver for Odroid-X2 and
-> Odroid-U3 boards. The codec works in I2S master mode; there are
-> 2 separate audio routing paths defined as there are differences
-> in the signal routing between the X2 and U3 boards, i.e. U3 uses
-> single jack for headphones and microphone.
-> 
-> Signed-off-by: Chen Zhen <zhen1.chen@samsung.com>
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
->  sound/soc/samsung/Kconfig             |    8 ++
->  sound/soc/samsung/Makefile            |    2 +
->  sound/soc/samsung/odroidx2_max98090.c |  191 +++++++++++++++++++++++++++++++++
->  3 files changed, 201 insertions(+)
->  create mode 100644 sound/soc/samsung/odroidx2_max98090.c
-> 
+On 06/23/2014 06:15 AM, Vinod Koul wrote:
+> On Sat, Jun 21, 2014 at 08:19:13AM +0200, Lars-Peter Clausen wrote:
+>>>>>>> +static const struct snd_kcontrol_new sst_algo_controls[] = {
+>>>>>>> +	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
+>>>>>>> +		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
+>>>>>>> +	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "iir", 300, SST_MODULE_ID_IIR_24,
+>>>>>>> +		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+>>>>>>> +	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "mdrp", 286, SST_MODULE_ID_MDRP,
+>>>>>>> +		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
+>>>>>>> +	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "fir", 272, SST_MODULE_ID_FIR_24,
+>>>>>>> +		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
+>>>>>>> +	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "iir", 300, SST_MODULE_ID_IIR_24,
+>>>>>>> +		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+>>>>>>> +	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "mdrp", 286, SST_MODULE_ID_MDRP,
+>>>>>>> +		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
+>>>>>>> +	SST_ALGO_KCONTROL_BYTES("sprot_loop_out", "lpro", 192, SST_MODULE_ID_SPROT,
+>>>>>>> +		SST_PATH_INDEX_SPROT_LOOP_OUT, 0, SST_TASK_SBA, SBA_VB_LPRO),
+>>>>>>> +	SST_ALGO_KCONTROL_BYTES("codec_in0", "dcr", 52, SST_MODULE_ID_FILT_DCR,
+>>>>>>> +		SST_PATH_INDEX_CODEC_IN0, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+>>>>>>> +	SST_ALGO_KCONTROL_BYTES("codec_in1", "dcr", 52, SST_MODULE_ID_FILT_DCR,
+>>>>>>> +		SST_PATH_INDEX_CODEC_IN1, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
+>>>>>>
+>>>>>>
+>>>>>> You are creating a lot of global non-const variables here that are
+>>>>>> later modified in the put and get handlers and also elsewhere.
+>>>>> Sorry which ones above are modfied. Above values are information for headers of
+>>>>> IPCs which we send to DSPs
+>>>>>
+>>>>
+>>>> The SST_ALGO_CTL_VALUE() macro uses compound literals to create a
+>>>> global (nameless) struct. A pointer to this struct is assigned to
+>>>> the kcontrols private_value field. This is later read and the struct
+>>>> is modified.
+>>> Yes but not the above values as these as IPC header info which DSP needs.
+>>>
+>>
+>> The SST_ALGO_KCONTROL_BYTES() macro calls SST_ALGO_KCONTROL() which
+>> in return calls SST_ALGO_CTL_VALUE()
+> Yes and
+> #define SST_ALGO_CTL_VALUE(xcount, xtype, xpipe, xmod, xtask, xcmd)	\
+>          (struct sst_algo_control){					\
+>                  .max = xcount + sizeof(u16), .type = xtype, .module_id = xmod,\
+>                  .pipe_id = xpipe, .task_id = xtask, .cmd_id = xcmd,\
+>          }
+>
+> So these values passed above are filled here and put in private_data as you
+> rightly noticed. But later on get/put handlers will not modify these specfic
+> value but other private value. Above are used _only_ for IPC headers to DSP so
+> we cant afford to modify them. We cna try making these values above as
+> consts, static
 
-[ ... ]
+Ok, but how does this work, where does the different private_value come from?
 
-> +static int odroidx2_hw_params(struct snd_pcm_substream *substream,
-> +	struct snd_pcm_hw_params *params)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> +	int ret;
-> +
-> +	ret = snd_soc_dai_set_sysclk(codec_dai, 0, MAX98090_MCLK,
-> +						SND_SOC_CLOCK_IN);
-> +	if (ret < 0) {
-> +		dev_err(codec_dai->dev,
-> +			"Unable to switch to FLL1: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* Set the cpu DAI configuration in order to use CDCLK */
-> +	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
-> +					0, SND_SOC_CLOCK_OUT);
-> +	if (ret < 0)
-> +		return ret;
-> +
-
-While upstreaming sound-card driver for Snow board, I had a comment from
-Mark to move this to probe, if possible. That way, the clock operations
-would be done only once and this function and odroidx2_ops can be
-removed altogether.
-
-> +	dev_dbg(codec_dai->dev, "HiFi DAI %s params: channels: %d, rate: %d\n",
-> +		snd_pcm_stream_str(substream), params_channels(params),
-> +		params_rate(params));
-> +
-> +	return 0;
-> +}
-> +
-> +static struct snd_soc_ops odroidx2_ops = {
-> +	.hw_params	= odroidx2_hw_params,
-> +};
-> +
-
-[ ... ]
-
-> +
-> +	ret = snd_soc_register_card(card);
-
-devm_snd_soc_register_card ?
-
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "snd_soc_register_card failed: %d\n", ret);
-> +		goto err_put_cpu_n;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_put_cpu_n:
-> +	of_node_put(odroidx2_dai[0].cpu_of_node);
-> +err_put_cod_n:
-> +	of_node_put(odroidx2_dai[0].codec_of_node);
-> +	return ret;
-> +}
-> +
-> +static int odroidx2_audio_remove(struct platform_device *pdev)
-> +{
-> +	struct snd_soc_card *card = platform_get_drvdata(pdev);
-> +
-> +	snd_soc_unregister_card(card);
-
-This can be removed when devm_snd_soc_register_card is used.
-
--- 
-Tushar Behera
+- Lars
