@@ -1,25 +1,16 @@
-From: Sinan Akman <sinan@writeme.com>
-Subject: Re: Wandboard Quad - SPDIF issue, no sound
-Date: Thu, 26 Jun 2014 15:07:57 -0400
-Message-ID: <53AC6F8D.6020101@writeme.com>
-References: <53A86CC5.2060204@dewberryfields.co.uk>
- <53A90D98.3050000@writeme.com> <53A991F4.9070905@dewberryfields.co.uk>
- <53AA0E8E.6030508@writeme.com> <53AAD9D3.2000107@dewberryfields.co.uk>
- <53AC2E59.1030601@dewberryfields.co.uk>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH 00/12] Rework OMAP4+ HDMI audio support
+Date: Thu, 26 Jun 2014 22:20:51 +0300
+Message-ID: <cover.1403807781.git.jsarha@ti.com>
+References: <y>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from walmailout07.yourhostingaccount.com
- (mailout07.yourhostingaccount.com [65.254.254.77])
- by alsa0.perex.cz (Postfix) with ESMTP id 96053265122
- for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 21:08:01 +0200 (CEST)
-Received: from mailscan14.yourhostingaccount.com ([10.1.15.14]
- helo=walmailscan14.yourhostingaccount.com)
- by walmailout07.yourhostingaccount.com with esmtp (Exim)
- id 1X0F1c-0001xZ-L4
- for alsa-devel@alsa-project.org; Thu, 26 Jun 2014 15:08:00 -0400
-In-Reply-To: <53AC2E59.1030601@dewberryfields.co.uk>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9009261B1B
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 21:21:14 +0200 (CEST)
+In-Reply-To: <y>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,33 +20,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Howard <mike@dewberryfields.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: liam.r.girdwood@linux.intel.com, detheridge@ti.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com, jyri.sarha@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
+The patches are based on linux 3.16-rc2 and OMAPDSS HDMI infoframe
+patches[1] from Tomi Valkeinen. The base, the patches, and couple of
+additional not-to-be-merged omap2plus_defconfig patches can be found
+here:
 
-   Hi Mike, I just saw this after I sent my other e-mail.
+git://git.ti.com/~jyrisarha/ti-linux-kernel/jyrisarhas-audio-video-linux-feature-tree.git omap-hdmi-audio
 
-> The volatges match the spec sheets, i.e. 5v for the Cubietruck and 3.3v
-> for the Wandboard at VCC whether audio is playing or not.
+The patch set fixes OMAP4+ HDMI audio. The structure of the
+implementation looks a bit different than before. Instead of creating
+a driver specific API for a separate ASoC component driver to connect
+to, this implementation integrates an the ASoC cpu-dai component
+driver into the HDMI driver. Also the other ASoC component drivers
+needed for operational audio are automatically registered by the HDMI
+driver. There is no need to add anything to the device tree as long as
+the nodes needed for HDMI video are there.
 
-   Yes, this might be the issue.
+Big part of the HDMI audio code is still unchanged and there is a need
+for a cleanup there. Also there is still probably something wrong with
+speaker mapping of multi-channel streams. I will get back to cleaning
+up these issues later.
 
-> So unless both my receivers have a problem with only 3.3v I'm at a loss.
-> I can't find anything on the limited specs for the receivers relating to
-> this.
+Best regards,
+Jyri
 
-   I think you can just test your receiver(s) with another 3.3v source
-and if you see the same problem then they probably need 5v levels.
+[1] http://marc.info/?l=linux-fbdev&m=140360425130951&w=2
 
-> I guess I'll just sideline the Wandboards and use proper kit instead.
+Jyri Sarha (12):
+  ARM: OMAP2+: Remove non working OMAP HDMI audio initialization
+  OMAPDSS: hdmi.h: Add HDMI_AUDIO_LAYOUT_6CH enum value
+  OMAPDSS: hdmi_wp: Add function for getting hdmi_wp physical base
+    address
+  OMAPDSS: hdmi_audio: Integrated ASoC DAI component driver
+    implementation
+  OMAPDSS: Kconfig: Select audio dependencies if OMAP4_DSS_HDMI_AUDIO=y
+  OMAPDSS: hdmi4: Register HDMI audio ASoC drivers from HDMI driver
+  OMAPDSS: Kconfig: Select audio dependencies if OMAP5_DSS_HDMI_AUDIO=y
+  OMAPDSS: hdmi5: Register HDMI audio ASoC drivers from HDMI driver
+  ASoC: omap: Remove obsolete HDMI audio code and Kconfig options
+  OMAPDSS: hdmi4: Remove callbacks for an external ASoC DAI driver
+  OMAPDSS: hdmi5: Remove callbacks for an external ASoC DAI driver
+  OMAPDSS: Remove all references to obsolete HDMI audio callbacks
 
-   If it turns out that the voltage level is really the problem and
-you need to use those receivers I guess this would be the case. I
-am not electrical but you might be able to build a small adaptor to
-change the voltage levels on the spdif output. This would be another
-solution.
+ arch/arm/mach-omap2/devices.c                      |   28 --
+ .../fbdev/omap2/displays-new/connector-hdmi.c      |   99 ------
+ .../fbdev/omap2/displays-new/encoder-tpd12s015.c   |   56 ---
+ drivers/video/fbdev/omap2/dss/Kconfig              |   24 +-
+ drivers/video/fbdev/omap2/dss/Makefile             |    2 +
+ drivers/video/fbdev/omap2/dss/hdmi.h               |   43 ++-
+ drivers/video/fbdev/omap2/dss/hdmi4.c              |  158 +++------
+ drivers/video/fbdev/omap2/dss/hdmi5.c              |  170 +++------
+ drivers/video/fbdev/omap2/dss/hdmi_audio.c         |  317 +++++++++++++++++
+ drivers/video/fbdev/omap2/dss/hdmi_wp.c            |    6 +
+ include/video/omapdss.h                            |   31 --
+ sound/soc/omap/Kconfig                             |   13 -
+ sound/soc/omap/Makefile                            |    4 -
+ sound/soc/omap/omap-hdmi-card.c                    |   87 -----
+ sound/soc/omap/omap-hdmi.c                         |  364 --------------------
+ sound/soc/omap/omap-hdmi.h                         |   38 --
+ 16 files changed, 489 insertions(+), 951 deletions(-)
+ create mode 100644 drivers/video/fbdev/omap2/dss/hdmi_audio.c
+ delete mode 100644 sound/soc/omap/omap-hdmi-card.c
+ delete mode 100644 sound/soc/omap/omap-hdmi.c
+ delete mode 100644 sound/soc/omap/omap-hdmi.h
 
-   Regards
-
-   Sinan Akman
+-- 
+1.7.9.5
