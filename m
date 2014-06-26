@@ -1,12 +1,13 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: [PATCH 0/7] Kirkwood ASoC updates
-Date: Thu, 26 Jun 2014 15:22:31 +0100
-Message-ID: <20140626142231.GR32514@n2100.arm.linux.org.uk>
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: [PATCH 1/7] ASoC: fix debugfs directory creation bug
+Date: Thu, 26 Jun 2014 15:22:50 +0100
+Message-ID: <E1X0AZe-0003i7-0z@rmk-PC.arm.linux.org.uk>
+References: <20140626142231.GR32514@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
+In-Reply-To: <20140626142231.GR32514@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -20,39 +21,65 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+Avoid creating duplicate directories by prefixing codecs and platforms
+with their separate identifiers.  This avoids snd-soc-dummy (which can
+appear both as a dummy platform and a dummy codec on the same card)
+from clashing.
 
-Here are a set of patches I've had for a while as part of my DPCM work.
-I think it's worth getting these merged.
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ sound/soc/soc-core.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
 
-The first patch fixes a bug at ASoC level with debugfs handling - it is
-not permitted to create more than one debugfs directory with the same
-name in the same parent directory - and this can happen when the dummy
-platform and codec are used.
-
-The second patch adds a helper definition to handle both I2S and SPDIF
-bits in the RECCTL register in the same way that we already do with the
-PLAYCTL register.
-
-Patch 3 fixes the RECCTL enable masking - we would accumulate enable bits
-but never clear any of them.
-
-Patch 4 makes the driver's handling of the PLAYCTL register slightly more
-conformant to the documentation - which requires that the appropriate mute
-bits are set while the respective output interface is disabled.
-
-Patch 5 updates my previous attempt to properly fix this.  The previous
-attempt did stop things going wrong from the hardware perspective, but
-we are left with the occasional stuck-busy.  Although that was harmless,
-this patch stops this occuring in addition to the previous fix.
-
-Patch 6 lifts some of the driver restrictions on the period size and
-number of periods - there's no reason to restrict these values, so
-let's give userspace more flexibility.
-
-Patch 7 adds NO_PERIOD_WAKEUP support for kirkwood, permitting
-interrupt-less operation.
-
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b87d7d882e6d..91120b8e283e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -270,12 +270,32 @@ static const struct file_operations codec_reg_fops = {
+ 	.llseek = default_llseek,
+ };
+ 
++static struct dentry *soc_debugfs_create_dir(struct dentry *parent,
++	const char *fmt, ...)
++{
++	struct dentry *de;
++	va_list ap;
++	char *s;
++
++	va_start(ap, fmt);
++	s = kvasprintf(GFP_KERNEL, fmt, ap);
++	va_end(ap);
++
++	if (!s)
++		return NULL;
++
++	de = debugfs_create_dir(s, parent);
++	kfree(s);
++
++	return de;
++}
++
+ static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
+ {
+ 	struct dentry *debugfs_card_root = codec->card->debugfs_card_root;
+ 
+-	codec->debugfs_codec_root = debugfs_create_dir(codec->name,
+-						       debugfs_card_root);
++	codec->debugfs_codec_root = soc_debugfs_create_dir(debugfs_card_root,
++						"codec:%s", codec->name);
+ 	if (!codec->debugfs_codec_root) {
+ 		dev_warn(codec->dev,
+ 			"ASoC: Failed to create codec debugfs directory\n");
+@@ -306,8 +326,8 @@ static void soc_init_platform_debugfs(struct snd_soc_platform *platform)
+ {
+ 	struct dentry *debugfs_card_root = platform->card->debugfs_card_root;
+ 
+-	platform->debugfs_platform_root = debugfs_create_dir(platform->name,
+-						       debugfs_card_root);
++	platform->debugfs_platform_root = soc_debugfs_create_dir(debugfs_card_root,
++						"platform:%s", platform->name);
+ 	if (!platform->debugfs_platform_root) {
+ 		dev_warn(platform->dev,
+ 			"ASoC: Failed to create platform debugfs directory\n");
 -- 
-FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
-improving, and getting towards what was expected from it.
+1.8.3.1
