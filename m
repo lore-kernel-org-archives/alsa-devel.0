@@ -1,24 +1,25 @@
 From: Sinan Akman <sinan@writeme.com>
 Subject: Re: Wandboard Quad - SPDIF issue, no sound
-Date: Thu, 26 Jun 2014 14:56:26 -0400
-Message-ID: <53AC6CDA.7090503@writeme.com>
+Date: Thu, 26 Jun 2014 15:07:57 -0400
+Message-ID: <53AC6F8D.6020101@writeme.com>
 References: <53A86CC5.2060204@dewberryfields.co.uk>
  <53A90D98.3050000@writeme.com> <53A991F4.9070905@dewberryfields.co.uk>
  <53AA0E8E.6030508@writeme.com> <53AAD9D3.2000107@dewberryfields.co.uk>
+ <53AC2E59.1030601@dewberryfields.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from walmailout06.yourhostingaccount.com
- (walmailout06.yourhostingaccount.com [65.254.253.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 40AC52650CC
- for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 20:56:32 +0200 (CEST)
-Received: from mailscan07.yourhostingaccount.com ([10.1.15.7]
- helo=walmailscan07.yourhostingaccount.com)
- by walmailout06.yourhostingaccount.com with esmtp (Exim)
- id 1X0EqV-0003J9-8Q
- for alsa-devel@alsa-project.org; Thu, 26 Jun 2014 14:56:31 -0400
-In-Reply-To: <53AAD9D3.2000107@dewberryfields.co.uk>
+Received: from walmailout07.yourhostingaccount.com
+ (mailout07.yourhostingaccount.com [65.254.254.77])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96053265122
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 21:08:01 +0200 (CEST)
+Received: from mailscan14.yourhostingaccount.com ([10.1.15.14]
+ helo=walmailscan14.yourhostingaccount.com)
+ by walmailout07.yourhostingaccount.com with esmtp (Exim)
+ id 1X0F1c-0001xZ-L4
+ for alsa-devel@alsa-project.org; Thu, 26 Jun 2014 15:08:00 -0400
+In-Reply-To: <53AC2E59.1030601@dewberryfields.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,25 +34,28 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-   Hi Mike
+   Hi Mike, I just saw this after I sent my other e-mail.
 
-> One obvious difference is that the Wandboard uses 'snd-soc-dummy-dai'.
+> The volatges match the spec sheets, i.e. 5v for the Cubietruck and 3.3v
+> for the Wandboard at VCC whether audio is playing or not.
 
-   What does the other board show ?
+   Yes, this might be the issue.
 
->
-> I'll get a scope on the job this evening, is there anything inparticular
-> I should be looking for?
+> So unless both my receivers have a problem with only 3.3v I'm at a loss.
+> I can't find anything on the limited specs for the receivers relating to
+> this.
 
-   I am not an expert on spdif electrical levels but at one one point
-I was explained that professional grade cd players might have
-higher signal level (as I was using spdif as input). So perhaps
-you can compare the signal levels of the two different boards and
-see if there is a visible difference there.
+   I think you can just test your receiver(s) with another 3.3v source
+and if you see the same problem then they probably need 5v levels.
 
-   Also, I don't read the mailing list regularly so you might want
-to cc your replies to me if you want me see them sooner.
+> I guess I'll just sideline the Wandboards and use proper kit instead.
 
-   Hope this helps
+   If it turns out that the voltage level is really the problem and
+you need to use those receivers I guess this would be the case. I
+am not electrical but you might be able to build a small adaptor to
+change the voltage levels on the spdif output. This would be another
+solution.
+
+   Regards
 
    Sinan Akman
