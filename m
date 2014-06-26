@@ -1,51 +1,87 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa-tools 1.0.28 regression with sblive/emu10k1:
- init_live shell script broken.
-Date: Wed, 25 Jun 2014 18:57:46 +0200
-Message-ID: <53AAFF8A.5060809@ladisch.de>
-References: <CAPq5wtZVZpYvBJ2TK-oG5kEbfc95bz4_nVKxzcWXwGXWnWHQgw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 0ECE72619F7
- for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2014 18:58:28 +0200 (CEST)
-In-Reply-To: <CAPq5wtZVZpYvBJ2TK-oG5kEbfc95bz4_nVKxzcWXwGXWnWHQgw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?Um9jIFZhbGzDqHM=?= <vallesroc@gmail.com>, Elimar Riesebieter <riesebie@lxtec.de>, Jordi Mallach <jordi@debian.org>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v7 0/3] Add ES8328 audio codec
+Date: Thu, 26 Jun 2014 10:01:52 +0800
+Message-ID: <1403748115-11047-1-git-send-email-xobs@kosagi.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Um9jIFZhbGzDqHMgd3JvdGU6Cj4gSSd2ZSByZWNlbnRseSB1cGdyYWRlZCB0byBhbHNhLXRvb2xz
-IDEuMC4yOC4gVGhlcmUncyBhcHBhcmVudGx5IGEKPiByZWdyZXNzaW9uOiBsaXZlX2luaXQsIHRo
-ZSBzY3JpcHQgdGhhdCBpcyBidW5kbGVkIGZvciBzb3VuZCBibGFzdGVyCj4gbGl2ZSBzb3VuZGNh
-cmQgaW5pdGlhbGl6YXRpb24sIGhhcyBiZWVuIGJyb2tlbi4KPgo+ICMgL3Vzci9iaW4vaW5pdF9s
-aXZlCj4gL3Vzci9iaW4vaW5pdF9saXZlOiBsaW5lIDQ5OiBsb2c6IGNvbW1hbmQgbm90IGZvdW5k
-Cj4gL3Vzci9iaW4vaW5pdF9saXZlOiBsaW5lIDUxOiBsb2NhbDogY2FuIG9ubHkgYmUgdXNlZCBp
-biBhIGZ1bmN0aW9uCj4gLi4uCgpCcm9rZW4gYnkgdGhlIHBhdGNoIGJlbG93LiAgV2hlcmUgYXJl
-IHRoZSBwYXJlbnRoZXNlcz8KCgogICAgY29tbWl0IGExNzI4MjUwM2Y0Y2ViNjJmNjZlYjVhMjg3
-MjZmZDA5NmFmMGE3MGIKICAgIEF1dGhvcjogRWxpbWFyIFJpZXNlYmlldGVyIDxyaWVzZWJpZUBs
-eHRlYy5kZT4KICAgIERhdGU6ICAgV2VkIE1heSAxNSAxOToxOTowNyAyMDEzICswMjAwCgogICAg
-Rml4IGJhc2hpc21zLgoKICAgIFRoZSAiwoDCnGZ1bmN0aW9uIsKAwp0gYnVpbHRpbiBpcyBhIGJh
-c2hpc20gdGhhdCBjYW4gYmUgc2ltcGx5IG9taXR0ZWQgd2l0aAogICAgbm8gYmVoYXZpb3VyIGNo
-YW5nZSwgaWYgcGFyZW50aGVzZXMgYXJlIHN1cHBsaWVkLgoKICAgIFNpZ25lZC1vZmYtYnk6IEpv
-cmRpIE1hbGxhY2ggPGpvcmRpQGRlYmlhbi5vcmc+CiAgICBTaWduZWQtb2ZmLWJ5OiBUYWthc2hp
-IEl3YWkgPHRpd2FpQHN1c2UuZGU+CgogICAgZGlmZiAtLWdpdCBhL2xkMTBrMS9zZXR1cC9pbml0
-X2xpdmUuaW4gYi9sZDEwazEvc2V0dXAvaW5pdF9saXZlLmluCiAgICBpbmRleCA3MGQzMGM4Li41
-ZTY1ODBmIDEwMDY0NAogICAgLS0tIGEvbGQxMGsxL3NldHVwL2luaXRfbGl2ZS5pbgogICAgKysr
-IGIvbGQxMGsxL3NldHVwL2luaXRfbGl2ZS5pbgogICAgQEAgLTQ2LDcgKzQ2LDcgQEAgc3RkX3Bs
-YXliYWNrPXBsYXliYWNrCiAgICAgc3RkX2NhcHR1cmU9Y2FwdHVyZQogICAgICNzdGRfY2FwdHVy
-ZT1jYXB0dXJlX25vc3dpdGNoCgogICAgLWZ1bmN0aW9uIGxvZwogICAgK2xvZwogICAgIHsKICAg
-ICAgICAgbG9jYWwgbGV2ZWw9JDEKICAgIC4uLgoKClJlZ2FyZHMsCkNsZW1lbnMKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This patchset adds support for the Everest Semi ES8328 audio codec.  It also
+adds support for using the es8328 on IMX boards.
+
+We write a machine driver rather than using simple-card because the machine
+driver needs to support regulators for the speaker amps and as well as
+supporting headphone jacks, in addition to the i.MX audmux routing.
+
+Changes since v6:
+    - Minor clarification of AUDMUX in imx-audio-es8328.txt
+    - Use u32 instead of int in imx-es8328.c for int-mux and ext-mux
+    - Bounds checking on mux-int-port and mux-ext-port in imx-es8328.c
+    - Remove NULL checks before calling of_node_put()
+
+Changes since v5:
+    - Removed empty imx_set_frequency function from imx-es8328.c
+    - Move the clock from imx-audio-es8328 to the es8328 codec itself
+    - Add support for 2x (22.5792 MHz) and 1x (11.2896 MHz) source clocks
+    - Restore registers on resume
+    - Document pins for ES8328, including input pins
+
+Changes since v4:
+    - Simplify clock handling and use assigned-clock-parents
+    - Move the codec regulator from the machine driver to the codec
+    - Specify all four regulators, and require their presence
+    - Fix audio recording, such that it enables the PGA
+
+Changes since v3:
+    - Add OF bindings for everest,es8328
+    - Add back in patch to add everest as a vendor prefix
+    - Give clocks more generic names
+    - Document required clocks in DT bindings document
+
+Changes since v2:
+    - Change deemph to a bool, and update based on sample rate
+    - Replace value enums with regular enums
+    - Break SPI and I2C drivers into their own modules
+    - Rename everest,es8328 to es8328 as the module wasn't getting detected.
+      Because of this, the patch to vendor-prefixes.txt has been dropped.
+
+Changes since v1:
+    - Rename HP/Speaker to OUT1/OUT2
+    - Use DAPM widgets for startup/shutdown
+    - Add regulator support to machine driver
+
+Sean Cross (3):
+  devicetree: bindings: Add Everest Semicodunctor
+  ASoC: add es8328 codec driver
+  ASoC: fsl: add imx-es8328 machine driver
+
+ Documentation/devicetree/bindings/sound/es8328.txt |  38 ++
+ .../devicetree/bindings/sound/imx-audio-es8328.txt |  61 ++
+ .../devicetree/bindings/vendor-prefixes.txt        |   1 +
+ sound/soc/codecs/Kconfig                           |  13 +
+ sound/soc/codecs/Makefile                          |   6 +
+ sound/soc/codecs/es8328-i2c.c                      |  60 ++
+ sound/soc/codecs/es8328-spi.c                      |  49 ++
+ sound/soc/codecs/es8328.c                          | 719 +++++++++++++++++++++
+ sound/soc/codecs/es8328.h                          | 314 +++++++++
+ sound/soc/fsl/Kconfig                              |  14 +
+ sound/soc/fsl/Makefile                             |   2 +
+ sound/soc/fsl/imx-es8328.c                         | 233 +++++++
+ 12 files changed, 1510 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
+ create mode 100644 sound/soc/codecs/es8328-i2c.c
+ create mode 100644 sound/soc/codecs/es8328-spi.c
+ create mode 100644 sound/soc/codecs/es8328.c
+ create mode 100644 sound/soc/codecs/es8328.h
+ create mode 100644 sound/soc/fsl/imx-es8328.c
+
+-- 
+2.0.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
