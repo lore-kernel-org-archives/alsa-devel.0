@@ -1,18 +1,19 @@
-From: =?UTF-8?Q?Roc_Vall=C3=A8s?= <vallesroc@gmail.com>
-Subject: alsa-tools 1.0.28 regression with sblive/emu10k1:
- init_live shell script broken.
-Date: Wed, 25 Jun 2014 16:10:05 +0000
-Message-ID: <CAPq5wtYT7ckOSf4wb1w7aUPcSaQW8LY4AzeffL0hMOFJBUq4Fw@mail.gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH] ALSA: hda - restore BCLK M/N values when
+ resuming HSW/BDW display controller
+Date: Thu, 26 Jun 2014 09:49:37 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B580289@SHSMSX101.ccr.corp.intel.com>
+References: <1403768236-3294-1-git-send-email-mengdong.lin@intel.com>
+ <s5hha38vyz5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f44.google.com (mail-qa0-f44.google.com
- [209.85.216.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 368002619D8
- for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2014 18:10:06 +0200 (CEST)
-Received: by mail-qa0-f44.google.com with SMTP id hw13so1724909qab.3
- for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2014 09:10:05 -0700 (PDT)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19E1F2610C1
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 11:49:49 +0200 (CEST)
+In-Reply-To: <s5hha38vyz5.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,128 +23,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I've recently upgraded to alsa-tools 1.0.28. There's apparently a
-regression: The script that is bundled for sound blaster live (emu10k1
-in my case) soundcard initialization has been broken. Without this,
-the soundcard can only be used at a very basic level (just 2 speakers,
-no equalization or other effects, most inputs unavailable). Reporting
-here as the bugtracker is down.
+Hi Takashi,
 
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Thursday, June 26, 2014 4:48 PM
+ >
+> > For Intel Haswell/Broadwell display HD-A controller, the 24MHz HD-A
+> > link BCLK is converted from Core Display Clock (CDCLK): BCLK = CDCLK *
+> > M / N And there are two registers EM4 and EM5 to program M, N value
+> respectively.
+> > The EM4/EM5 values will be lost and when the display power well is
+> disabled.
+> >
+> > BIOS programs CDCLK selected by OEM and EM4/EM5, but BIOS has no
+> idea
+> > about display power well on/off at runtime. So the M/N can be wrong if
+> > non-default CDCLK is used when the audio controller resumes, which
+> > results in an invalid BCLK and abnormal audio playback rate. So this
+> > patch saves and restores valid M/N values on controller
+> suspend/resume.
+> 
+> Can this be the cause of bko#74861?
+>    https://bugzilla.kernel.org/show_bug.cgi?id=74861
+> 
 
-Correct run (1.0.17):
-# sh /usr/bin/init_live
-No Emux synth hwdep device is found
-Found hardware: "EMU10K1" "SigmaTel STAC9721,23" "AC97a:83847609"
-"0x1102" "0x8040"
-Hardware is initialized using a generic method
+I think #74861 is the same problem as what we observe on Broadwell.
 
+This problem is only for Haswell and Broadwell, which has a separate HD-A controller for display audio and convert HD-A link BCLK from display clock.
 
-Broken run (1.0.28):
-# /usr/bin/init_live
-/usr/bin/init_live: line 49: log: command not found
-/usr/bin/init_live: line 51: local: can only be used in a function
-/usr/bin/init_live: line 55: [: 0: unary operator expected
-/usr/bin/init_live: line 60: runlo10k1: command not found
-/usr/bin/init_live: line 62: log: command not found
-rename: not enough arguments
+ 
+> This is HSW/BDW specific, so we should avoid adding new fields in struct
+> azx.  Instead, define struct hda_intel in hda_intel.c,
+> 
+> 	struct hda_intel {
+> 		struct azx chip;
+> 
+> 		/* HSW/BDW display HDA controller to restore BCLK from CDCLK
+> */
+> 		unsigned int bclk_m;
+> 		unsigned int bclk_n;
+> 	};
+> 
+> then change azx_create() to allocate struct hda_intel instead of struct azx.
+> 
+> 	struct hda_intel *hda;
+> 
+> 	hda = kzalloc(sizeof(*hda), GFP_KERNEL);
+> 	if (!hda) {
+> 		...
+> 	}
+> 
+> 	chip = &hda->chip;
+> 	spin_lock_init(&chip->reg_lock);
+> 	mutex_init(&chip->open_mutex);
+> 	chip->card = card;
+> 	...
+> 
+> and access to bclk_m and bclk_n via cast using container_of().
+> 
+> static void haswell_save_bclk(struct azx *chip) {
+> 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+> 	hda->bclk_m = azx_readw(chip, EM4);
+> 	hda->bclk_n = azx_readw(chip, EM5);
+> }
+> 
+> 
+> > +/* Intel HSW/BDW display HD-A controller Extended Mode registers.
+> > + * EM4 (M value) and EM5 (N Value) are used to convert CDClk (Core
+> > +Display
+> > + * Clock) to 24MHz BCLK: BCLK = CDCLK * M / N
+> > + * The values will be lost when the display power well is disabled.
+> > + */
+> > +#define ICH6_REG_EM4			0x100c
+> > +#define ICH6_REG_EM5			0x1010
+> 
+> These are definitely not for ICH6.  Define them rather in hda_intel.c.
+> 
+> I'm going to move more other PCI-controller specific things from
+> hda_priv.h into hda_intel.c, too.
+> 
+> Also, I guess this deserves for Cc to stable, right?
 
-Usage:
- rename [options] expression replacement file...
+Yes, I agree. 
+I'll revise the patch as you suggested. Many thanks for the review!
 
-Options:
- -v, --verbose    explain what is being done
- -s, --symlink    act on symlink target
-
- -h, --help     display this help and exit
- -V, --version  output version information and exit
-
-For more details see rename(1).
-/usr/bin/init_live: line 79: log: command not found
-/usr/bin/init_live: line 81: runlo10k1: command not found
-/usr/bin/init_live: line 84: connect: command not found
-/usr/bin/init_live: line 90: log: command not found
-/usr/bin/init_live: line 92: runlo10k1: command not found
-/usr/bin/init_live: line 95: copy: command not found
-/usr/bin/init_live: line 97: local: can only be used in a function
-/usr/bin/init_live: line 98: local: can only be used in a function
-/usr/bin/init_live: line 100: log: command not found
-/usr/bin/init_live: line 103: runlo10k1: command not found
-/usr/bin/init_live: line 105: connect: command not found
-/usr/bin/init_live: line 108: volume: command not found
-/usr/bin/init_live: line 110: local: can only be used in a function
-/usr/bin/init_live: line 111: local: can only be used in a function
-/usr/bin/init_live: line 112: local: can only be used in a function
-/usr/bin/init_live: line 113: local: can only be used in a function
-/usr/bin/init_live: line 115: log: command not found
-/usr/bin/init_live: line 118: runlo10k1: command not found
-/usr/bin/init_live: line 120: connect: command not found
-/usr/bin/init_live: line 123: master_volume: command not found
-/usr/bin/init_live: line 125: local: can only be used in a function
-/usr/bin/init_live: line 126: local: can only be used in a function
-/usr/bin/init_live: line 127: local: can only be used in a function
-/usr/bin/init_live: line 128: local: can only be used in a function
-/usr/bin/init_live: line 130: log: command not found
-/usr/bin/init_live: line 133: runlo10k1: command not found
-/usr/bin/init_live: line 135: connect: command not found
-/usr/bin/init_live: line 138: switch: command not found
-/usr/bin/init_live: line 140: local: can only be used in a function
-/usr/bin/init_live: line 141: local: can only be used in a function
-/usr/bin/init_live: line 142: local: can only be used in a function
-/usr/bin/init_live: line 144: log: command not found
-/usr/bin/init_live: line 148: runlo10k1: command not found
-/usr/bin/init_live: line 150: connect: command not found
-/usr/bin/init_live: line 153: switch_2x2: command not found
-/usr/bin/init_live: line 155: local: can only be used in a function
-/usr/bin/init_live: line 156: local: can only be used in a function
-/usr/bin/init_live: line 157: local: can only be used in a function
-/usr/bin/init_live: line 158: local: can only be used in a function
-/usr/bin/init_live: line 160: log: command not found
-/usr/bin/init_live: line 163: runlo10k1: command not found
-/usr/bin/init_live: line 165: connect: command not found
-/usr/bin/init_live: line 166: connect: command not found
-/usr/bin/init_live: line 169: switch_5x2: command not found
-/usr/bin/init_live: line 171: local: can only be used in a function
-/usr/bin/init_live: line 172: local: can only be used in a function
-/usr/bin/init_live: line 173: local: can only be used in a function
-/usr/bin/init_live: line 174: local: can only be used in a function
-/usr/bin/init_live: line 176: log: command not found
-/usr/bin/init_live: line 179: runlo10k1: command not found
-/usr/bin/init_live: line 181: connect: command not found
-/usr/bin/init_live: line 182: connect: command not found
-/usr/bin/init_live: line 185: master_switch: command not found
-/usr/bin/init_live: line 187: local: can only be used in a function
-/usr/bin/init_live: line 188: local: can only be used in a function
-/usr/bin/init_live: line 189: local: can only be used in a function
-/usr/bin/init_live: line 190: local: can only be used in a function
-/usr/bin/init_live: line 192: log: command not found
-/usr/bin/init_live: line 195: runlo10k1: command not found
-/usr/bin/init_live: line 197: connect: command not found
-/usr/bin/init_live: line 200: playback: command not found
-/usr/bin/init_live: line 205: log: command not found
-/usr/bin/init_live: line 208: switch: command not found
-/usr/bin/init_live: line 209: volume: command not found
-/usr/bin/init_live: line 211: add_output: command not found
-/usr/bin/init_live: line 214: playback_noswitch: command not found
-/usr/bin/init_live: line 219: log: command not found
-/usr/bin/init_live: line 222: volume: command not found
-/usr/bin/init_live: line 224: add_output: command not found
-/usr/bin/init_live: line 227: capture: command not found
-/usr/bin/init_live: line 232: log: command not found
-/usr/bin/init_live: line 235: switch: command not found
-/usr/bin/init_live: line 236: volume: command not found
-/usr/bin/init_live: line 238: connect: command not found
-/usr/bin/init_live: line 241: capture_noswitch: command not found
-/usr/bin/init_live: line 246: log: command not found
-/usr/bin/init_live: line 249: volume: command not found
-/usr/bin/init_live: line 251: connect: command not found
-/usr/bin/init_live: line 254: master: command not found
-/usr/bin/init_live: line 256: local: can only be used in a function
-/usr/bin/init_live: line 257: local: can only be used in a function
-/usr/bin/init_live: line 258: local: can only be used in a function
-/usr/bin/init_live: line 260: log: command not found
-/usr/bin/init_live: line 263: master_volume: command not found
-/usr/bin/init_live: line 264: master_switch: command not found
-/usr/bin/init_live: line 267: dump_patches: command not found
+Mengdong
