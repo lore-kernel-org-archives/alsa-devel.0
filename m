@@ -1,35 +1,58 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ucm: Document PlaybackPCMIsDummy and
- CapturePCMIsDummy values
-Date: Thu, 26 Jun 2014 13:49:17 +0100
-Message-ID: <1403786957.2667.26.camel@loki>
-References: <1403778625-4608-1-git-send-email-tanu.kaskinen@linux.intel.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: [PATCH 0/7] Kirkwood ASoC updates
+Date: Thu, 26 Jun 2014 15:22:31 +0100
+Message-ID: <20140626142231.GR32514@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 3694F265007
- for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 14:49:44 +0200 (CEST)
-In-Reply-To: <1403778625-4608-1-git-send-email-tanu.kaskinen@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Felipe Tonello <eu@felipetonello.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2014-06-26 at 13:30 +0300, Tanu Kaskinen wrote:
-> At least PulseAudio needs special handling for dummy devices. To allow
-> that to happen automatically, the UCM configuration should contain the
-> information about which PCMs are dummy.
+Mark,
 
-> Signed-off-by: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Here are a set of patches I've had for a while as part of my DPCM work.
+I think it's worth getting these merged.
 
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+The first patch fixes a bug at ASoC level with debugfs handling - it is
+not permitted to create more than one debugfs directory with the same
+name in the same parent directory - and this can happen when the dummy
+platform and codec are used.
+
+The second patch adds a helper definition to handle both I2S and SPDIF
+bits in the RECCTL register in the same way that we already do with the
+PLAYCTL register.
+
+Patch 3 fixes the RECCTL enable masking - we would accumulate enable bits
+but never clear any of them.
+
+Patch 4 makes the driver's handling of the PLAYCTL register slightly more
+conformant to the documentation - which requires that the appropriate mute
+bits are set while the respective output interface is disabled.
+
+Patch 5 updates my previous attempt to properly fix this.  The previous
+attempt did stop things going wrong from the hardware perspective, but
+we are left with the occasional stuck-busy.  Although that was harmless,
+this patch stops this occuring in addition to the previous fix.
+
+Patch 6 lifts some of the driver restrictions on the period size and
+number of periods - there's no reason to restrict these values, so
+let's give userspace more flexibility.
+
+Patch 7 adds NO_PERIOD_WAKEUP support for kirkwood, permitting
+interrupt-less operation.
+
+-- 
+FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
+improving, and getting towards what was expected from it.
