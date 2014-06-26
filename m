@@ -1,20 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 00/19]: add mrfld DSP support
-Date: Thu, 26 Jun 2014 16:01:47 +0530
-Message-ID: <20140626103147.GW22053@intel.com>
-References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
- <53A3EB23.4050302@metafoo.de> <20140620082041.GG22053@intel.com>
- <53A3F775.80303@metafoo.de> <20140623100957.GX24291@sirena.org.uk>
- <53AA4FC0.5010202@metafoo.de>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2] ALSA: hda - restore BCLK M/N values when
+	resuming HSW/BDW display controller
+Date: Thu, 26 Jun 2014 18:45:16 +0800
+Message-ID: <cf161a8248cc08c0a3e1d9a59be572d1941fe2b6.1403779411.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 0649C2610C1
- for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 12:32:25 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <53AA4FC0.5010202@metafoo.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id E921B2610C1
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 12:42:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,39 +19,173 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 25, 2014 at 06:27:44AM +0200, Lars-Peter Clausen wrote:
-> On 06/23/2014 12:09 PM, Mark Brown wrote:
-> >On Fri, Jun 20, 2014 at 10:57:25AM +0200, Lars-Peter Clausen wrote:
-> >
-> >>The idea is to get rid of the IO abstraction layer inside ASoC and only rely
-> >>on regmap for this. This is a process this has been going on ever since the
-> >>regmap framework was added to the kernel and we are almost there now. The
-> >>best is to implement a regmap bus or a bus-less regmap instance that
-> >>implements the IPC for the DSP. If the IPC does not map nicely onto a
-> >>register map, we need to come up with something better. It's basically the
-> >>same problem that that HDA CODEC by RT has.
-No the register file _does_ not map to IPCs, as I have explained previosuly. The
-file is just to store the informationa nd dpam widget handling triggers IPCs.
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-Since we are NOT writing to device, I still dont think regmap will help
+For Intel Haswell/Broadwell display HD-A controller, the 24MHz HD-A link BCLK
+is converted from Core Display Clock (CDCLK): BCLK = CDCLK * M / N
+And there are two registers EM4 and EM5 to program M, N value respectively.
+The EM4/EM5 values will be lost and when the display power well is disabled.
 
-> >Well, it depends.  If the device looks like it has a register map that's
-> >sensible but if it looks nothing like that then we should be
-> >implementing the widgets differently.  It may be that we need to be
-> >constructing and destructing objects on the DSP for example.
-> 
-> What do you mean by 'constructing/destructing on the DSP'?
-I think Mark refers to modules and processing elements on DSP. Since this is DSP
-(firmware) we can tell it to create a link b/w FE and BE, throw in another link
-etc. Unlike codec, everything is driver controlled and instances created and
-destroyed dynamically.
+BIOS programs CDCLK selected by OEM and EM4/EM5, but BIOS has no idea about
+display power well on/off at runtime. So the M/N can be wrong if non-default
+CDCLK is used when the audio controller resumes, which results in an invalid
+BCLK and abnormal audio playback rate. So this patch saves and restores valid
+M/N values on controller suspend/resume.
 
-yes upating this to latest dapm (thanks to Lars for that), will help in moving
-code away from driver
+And 'struct hda_intel' is defined to contain standard HD-A 'struct azx' and
+Intel specific fields, as Takashi suggested.
 
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index bb65a124..ff9cacd 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -288,6 +288,24 @@ static char *driver_short_names[] = {
+ 	[AZX_DRIVER_GENERIC] = "HD-Audio Generic",
+ };
+ 
++
++/* Intel HSW/BDW display HDA controller Extended Mode registers.
++ * EM4 (M value) and EM5 (N Value) are used to convert CDClk (Core Display
++ * Clock) to 24MHz BCLK: BCLK = CDCLK * M / N
++ * The values will be lost when the display power well is disabled.
++ */
++#define ICH6_REG_EM4			0x100c
++#define ICH6_REG_EM5			0x1010
++
++struct hda_intel {
++	struct azx chip;
++
++	/* HSW/BDW display HDA controller to restore BCLK from CDCLK */
++	unsigned int bclk_m;
++	unsigned int bclk_n;
++};
++
++
+ #ifdef CONFIG_X86
+ static void __mark_pages_wc(struct azx *chip, struct snd_dma_buffer *dmab, bool on)
+ {
+@@ -580,6 +598,22 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
+ #define azx_del_card_list(chip) /* NOP */
+ #endif /* CONFIG_PM */
+ 
++static void haswell_save_bclk(struct azx *chip)
++{
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++
++	hda->bclk_m = azx_readw(chip, EM4);
++	hda->bclk_n = azx_readw(chip, EM5);
++}
++
++static void haswell_restore_bclk(struct azx *chip)
++{
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++
++	azx_writew(chip, EM4, hda->bclk_m);
++	azx_writew(chip, EM5, hda->bclk_n);
++}
++
+ #if defined(CONFIG_PM_SLEEP) || defined(SUPPORT_VGA_SWITCHEROO)
+ /*
+  * power management
+@@ -606,6 +640,13 @@ static int azx_suspend(struct device *dev)
+ 		free_irq(chip->irq, chip);
+ 		chip->irq = -1;
+ 	}
++
++	/* Save BCLK M/N values before they become invalid in D3.
++	 * Will test if display power well can be released now.
++	 */
++	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
++		haswell_save_bclk(chip);
++
+ 	if (chip->msi)
+ 		pci_disable_msi(chip->pci);
+ 	pci_disable_device(pci);
+@@ -625,8 +666,10 @@ static int azx_resume(struct device *dev)
+ 	if (chip->disabled)
+ 		return 0;
+ 
+-	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
++	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
+ 		hda_display_power(true);
++		haswell_restore_bclk(chip);
++	}
+ 	pci_set_power_state(pci, PCI_D0);
+ 	pci_restore_state(pci);
+ 	if (pci_enable_device(pci) < 0) {
+@@ -670,8 +713,10 @@ static int azx_runtime_suspend(struct device *dev)
+ 	azx_stop_chip(chip);
+ 	azx_enter_link_reset(chip);
+ 	azx_clear_irq_pending(chip);
+-	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
++	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
++		haswell_save_bclk(chip);
+ 		hda_display_power(false);
++	}
+ 	return 0;
+ }
+ 
+@@ -689,8 +734,10 @@ static int azx_runtime_resume(struct device *dev)
+ 	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
+ 		return 0;
+ 
+-	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
++	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
+ 		hda_display_power(true);
++		haswell_restore_bclk(chip);
++	}
+ 
+ 	/* Read STATESTS before controller reset */
+ 	status = azx_readw(chip, STATESTS);
+@@ -883,6 +930,8 @@ static int register_vga_switcheroo(struct azx *chip)
+ static int azx_free(struct azx *chip)
+ {
+ 	struct pci_dev *pci = chip->pci;
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++
+ 	int i;
+ 
+ 	if ((chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
+@@ -930,7 +979,7 @@ static int azx_free(struct azx *chip)
+ 		hda_display_power(false);
+ 		hda_i915_exit();
+ 	}
+-	kfree(chip);
++	kfree(hda);
+ 
+ 	return 0;
+ }
+@@ -1174,6 +1223,7 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	static struct snd_device_ops ops = {
+ 		.dev_free = azx_dev_free,
+ 	};
++	struct hda_intel *hda;
+ 	struct azx *chip;
+ 	int err;
+ 
+@@ -1183,13 +1233,14 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	if (err < 0)
+ 		return err;
+ 
+-	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+-	if (!chip) {
+-		dev_err(card->dev, "Cannot allocate chip\n");
++	hda = kzalloc(sizeof(*hda), GFP_KERNEL);
++	if (!hda) {
++		dev_err(card->dev, "Cannot allocate hda\n");
+ 		pci_disable_device(pci);
+ 		return -ENOMEM;
+ 	}
+ 
++	chip = &hda->chip;
+ 	spin_lock_init(&chip->reg_lock);
+ 	mutex_init(&chip->open_mutex);
+ 	chip->card = card;
 -- 
-~Vinod
+1.8.1.2
