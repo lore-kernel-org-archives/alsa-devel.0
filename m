@@ -1,7 +1,7 @@
 From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH 02/12] OMAPDSS: hdmi.h: Add HDMI_AUDIO_LAYOUT_6CH enum value
-Date: Thu, 26 Jun 2014 22:20:53 +0300
-Message-ID: <3a1ecb5f60aae6b4af2733402da740d06a42fe6b.1403807781.git.jsarha@ti.com>
+Subject: [PATCH 03/12] OMAPDSS: hdmi_wp: Add function for getting hdmi_wp physical base address
+Date: Thu, 26 Jun 2014 22:20:54 +0300
+Message-ID: <71e703f319eacd5a7196d8b34601b52e32b946d3.1403807781.git.jsarha@ti.com>
 References: <cover.1403807781.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,29 +12,55 @@ To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.ke
 Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, jyri.sarha@iki.fi, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The OMAP5 HDMI audio implementation needs HDMI_AUDIO_LAYOUT_6CH in
-hdmi_core_audio_layout enum. I found the correct value from ti-linux
-3.8 tree.
+The hdmi_wp physical base address is needed for hdmi audio dma.
 
 Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
- drivers/video/fbdev/omap2/dss/hdmi.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/video/fbdev/omap2/dss/hdmi.h    |    2 ++
+ drivers/video/fbdev/omap2/dss/hdmi_wp.c |    6 ++++++
+ 2 files changed, 8 insertions(+)
 
 diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev/omap2/dss/hdmi.h
-index 262771b..1f01068 100644
+index 1f01068..927cb4d 100644
 --- a/drivers/video/fbdev/omap2/dss/hdmi.h
 +++ b/drivers/video/fbdev/omap2/dss/hdmi.h
-@@ -160,7 +160,8 @@ enum hdmi_audio_blk_strt_end_sig {
+@@ -250,6 +250,7 @@ struct hdmi_core_audio_config {
  
- enum hdmi_core_audio_layout {
- 	HDMI_AUDIO_LAYOUT_2CH = 0,
--	HDMI_AUDIO_LAYOUT_8CH = 1
-+	HDMI_AUDIO_LAYOUT_8CH = 1,
-+	HDMI_AUDIO_LAYOUT_6CH = 2
+ struct hdmi_wp_data {
+ 	void __iomem *base;
++	phys_addr_t phys_base;
  };
  
- enum hdmi_core_cts_mode {
+ struct hdmi_pll_data {
+@@ -317,6 +318,7 @@ void hdmi_wp_video_config_timing(struct hdmi_wp_data *wp,
+ void hdmi_wp_init_vid_fmt_timings(struct hdmi_video_format *video_fmt,
+ 		struct omap_video_timings *timings, struct hdmi_config *param);
+ int hdmi_wp_init(struct platform_device *pdev, struct hdmi_wp_data *wp);
++phys_addr_t hdmi_wp_get_phys_addr(struct hdmi_wp_data *wp);
+ 
+ /* HDMI PLL funcs */
+ int hdmi_pll_enable(struct hdmi_pll_data *pll, struct hdmi_wp_data *wp);
+diff --git a/drivers/video/fbdev/omap2/dss/hdmi_wp.c b/drivers/video/fbdev/omap2/dss/hdmi_wp.c
+index 496327e..eadd4ed 100644
+--- a/drivers/video/fbdev/omap2/dss/hdmi_wp.c
++++ b/drivers/video/fbdev/omap2/dss/hdmi_wp.c
+@@ -247,6 +247,7 @@ int hdmi_wp_init(struct platform_device *pdev, struct hdmi_wp_data *wp)
+ 		DSSERR("can't get WP mem resource\n");
+ 		return -EINVAL;
+ 	}
++	wp->phys_base = res->start;
+ 
+ 	wp->base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(wp->base)) {
+@@ -256,3 +257,8 @@ int hdmi_wp_init(struct platform_device *pdev, struct hdmi_wp_data *wp)
+ 
+ 	return 0;
+ }
++
++phys_addr_t hdmi_wp_get_phys_addr(struct hdmi_wp_data *wp)
++{
++	return wp->phys_base;
++}
 -- 
 1.7.9.5
 
