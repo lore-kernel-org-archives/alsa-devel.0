@@ -1,16 +1,18 @@
-From: Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH 1/1] sound/soc/omap/mcbsp.c: remove unnecessary
-	null test before kfree
-Date: Thu, 26 Jun 2014 16:55:29 +0200
-Message-ID: <1403794529-2063-1-git-send-email-fabf@skynet.be>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Remove from list in
+	snd_usb_endpoint_free()
+Date: Thu, 26 Jun 2014 18:14:02 +0200
+Message-ID: <1403799242-20622-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailrelay010.isp.belgacom.be (mailrelay010.isp.belgacom.be
- [195.238.6.177])
- by alsa0.perex.cz (Postfix) with ESMTP id BD66E2658DB
- for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 16:56:48 +0200 (CEST)
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A47212650FF
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 18:14:05 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 87111AC2A
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 16:14:02 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Fabian Frederick <fabf@skynet.be>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix checkpatch warning:
-WARNING: kfree(NULL) is safe this check is probably not required
+snd_usb_endpoint_free() deallocates the object but it doesn't unlink
+from the list.  This is actually no problem in the current usage
+because all elements are freed at once, but it's more consistent to do
+a proper unlinking there.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
+Reported-by: Julia Lawall <julia.lawall@lip6.fr>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/omap/mcbsp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
-index 86c7538..68a1252 100644
---- a/sound/soc/omap/mcbsp.c
-+++ b/sound/soc/omap/mcbsp.c
-@@ -621,8 +621,7 @@ void omap_mcbsp_free(struct omap_mcbsp *mcbsp)
- 	mcbsp->reg_cache = NULL;
- 	spin_unlock(&mcbsp->lock);
+This is a 3.17 material.
+
+ sound/usb/endpoint.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 114e3e7ff511..304f36bf29cb 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -1011,6 +1011,7 @@ void snd_usb_endpoint_free(struct list_head *head)
+ 	struct snd_usb_endpoint *ep;
  
--	if (reg_cache)
--		kfree(reg_cache);
-+	kfree(reg_cache);
+ 	ep = list_entry(head, struct snd_usb_endpoint, list);
++	list_del(head);
+ 	kfree(ep);
  }
  
- /*
 -- 
-1.8.4.5
+2.0.0
