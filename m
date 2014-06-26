@@ -1,54 +1,57 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 0/7] Kirkwood ASoC updates
-Date: Thu, 26 Jun 2014 19:22:57 +0100
-Message-ID: <20140626182257.GZ32514@n2100.arm.linux.org.uk>
-References: <20140626142231.GR32514@n2100.arm.linux.org.uk>
- <20140626181012.GE18520@lunn.ch>
+From: Sinan Akman <sinan@writeme.com>
+Subject: Re: Wandboard Quad - SPDIF issue, no sound
+Date: Thu, 26 Jun 2014 14:56:26 -0400
+Message-ID: <53AC6CDA.7090503@writeme.com>
+References: <53A86CC5.2060204@dewberryfields.co.uk>
+ <53A90D98.3050000@writeme.com> <53A991F4.9070905@dewberryfields.co.uk>
+ <53AA0E8E.6030508@writeme.com> <53AAD9D3.2000107@dewberryfields.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20140626181012.GE18520@lunn.ch>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from walmailout06.yourhostingaccount.com
+ (walmailout06.yourhostingaccount.com [65.254.253.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40AC52650CC
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 20:56:32 +0200 (CEST)
+Received: from mailscan07.yourhostingaccount.com ([10.1.15.7]
+ helo=walmailscan07.yourhostingaccount.com)
+ by walmailout06.yourhostingaccount.com with esmtp (Exim)
+ id 1X0EqV-0003J9-8Q
+ for alsa-devel@alsa-project.org; Thu, 26 Jun 2014 14:56:31 -0400
+In-Reply-To: <53AAD9D3.2000107@dewberryfields.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Michael Howard <mike@dewberryfields.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 26, 2014 at 08:10:12PM +0200, Andrew Lunn wrote:
-> On Thu, Jun 26, 2014 at 03:22:31PM +0100, Russell King - ARM Linux wrote:
-> > Mark,
-> > 
-> > Here are a set of patches I've had for a while as part of my DPCM work.
-> > I think it's worth getting these merged.
-> 
-> Hi Russell, Mark
-> 
-> I tested simple playback of WAV and MP3 files on a Kirkwood based HP
-> T5325 machine. No obvious regressions.
-> 
-> Tested-by: Andrew Lunn <andrew@lunn.ch>
-> 
-> > Patch 7 adds NO_PERIOD_WAKEUP support for kirkwood, permitting
-> > interrupt-less operation.
-> 
-> When using mpg123 to play back mp3 files, i get about 9 interrupts per
-> second for kirkwood-i2s. Does this sound right?
 
-Whether this feature is taken advantage of depends on the application.
-For example, with pulseaudio, I get:
+   Hi Mike
 
- 21:          0  main-interrupt-ctrl  21  kirkwood-i2s
+> One obvious difference is that the Wandboard uses 'snd-soc-dummy-dai'.
 
+   What does the other board show ?
 
--- 
-FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
-improving, and getting towards what was expected from it.
+>
+> I'll get a scope on the job this evening, is there anything inparticular
+> I should be looking for?
+
+   I am not an expert on spdif electrical levels but at one one point
+I was explained that professional grade cd players might have
+higher signal level (as I was using spdif as input). So perhaps
+you can compare the signal levels of the two different boards and
+see if there is a visible difference there.
+
+   Also, I don't read the mailing list regularly so you might want
+to cc your replies to me if you want me see them sooner.
+
+   Hope this helps
+
+   Sinan Akman
