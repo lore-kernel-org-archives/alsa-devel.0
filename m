@@ -1,55 +1,44 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Remove from list in
-	snd_usb_endpoint_free()
-Date: Thu, 26 Jun 2014 18:14:02 +0200
-Message-ID: <1403799242-20622-1-git-send-email-tiwai@suse.de>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH 0/7] Kirkwood ASoC updates
+Date: Thu, 26 Jun 2014 20:10:12 +0200
+Message-ID: <20140626181012.GE18520@lunn.ch>
+References: <20140626142231.GR32514@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A47212650FF
- for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 18:14:05 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 87111AC2A
- for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 16:14:02 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20140626142231.GR32514@n2100.arm.linux.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_usb_endpoint_free() deallocates the object but it doesn't unlink
-from the list.  This is actually no problem in the current usage
-because all elements are freed at once, but it's more consistent to do
-a proper unlinking there.
+On Thu, Jun 26, 2014 at 03:22:31PM +0100, Russell King - ARM Linux wrote:
+> Mark,
+> 
+> Here are a set of patches I've had for a while as part of my DPCM work.
+> I think it's worth getting these merged.
 
-Reported-by: Julia Lawall <julia.lawall@lip6.fr>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
+Hi Russell, Mark
 
-This is a 3.17 material.
+I tested simple playback of WAV and MP3 files on a Kirkwood based HP
+T5325 machine. No obvious regressions.
 
- sound/usb/endpoint.c | 1 +
- 1 file changed, 1 insertion(+)
+Tested-by: Andrew Lunn <andrew@lunn.ch>
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 114e3e7ff511..304f36bf29cb 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1011,6 +1011,7 @@ void snd_usb_endpoint_free(struct list_head *head)
- 	struct snd_usb_endpoint *ep;
- 
- 	ep = list_entry(head, struct snd_usb_endpoint, list);
-+	list_del(head);
- 	kfree(ep);
- }
- 
--- 
-2.0.0
+> Patch 7 adds NO_PERIOD_WAKEUP support for kirkwood, permitting
+> interrupt-less operation.
+
+When using mpg123 to play back mp3 files, i get about 9 interrupts per
+second for kirkwood-i2s. Does this sound right?
+
+       Andrew
