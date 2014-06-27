@@ -1,85 +1,66 @@
-From: JongHo Kim <furmuwon@gmail.com>
-Subject: [PATCH] ALSA: Remove the runtime local variable in
- snd_pcm_period_elapsed
-Date: Sat, 28 Jun 2014 03:13:07 +0900 (KST)
-Message-ID: <alpine.DEB.2.02.1406280257470.6133@homeuser>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v2 03/13] OMAPDSS: hdmi_wp: Add function for getting audio dma address
+Date: Fri, 27 Jun 2014 21:38:45 +0300
+Message-ID: <e90168befc41157a0b06b719b3b62c42ad16c53d.1403894190.git.jsarha@ti.com>
+References: <cover.1403894190.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
- [209.85.220.45])
- by alsa0.perex.cz (Postfix) with ESMTP id E3969265350
- for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2014 20:13:13 +0200 (CEST)
-Received: by mail-pa0-f45.google.com with SMTP id rd3so4873931pab.18
- for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2014 11:13:12 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, Tim Gardner <tim.gardner@canonical.com>, Mark Brown <broonie@linaro.org>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <cover.1403894190.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, jyri.sarha@iki.fi, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
->From a46df32a4fc184364be45ffe8957d5a20818d979 Mon Sep 17 00:00:00 2001
-From: JongHo Kim <furmuwon@gmail.com>
-Date: Sat, 28 Jun 2014 02:49:13 +0900
-Subject: [PATCH] ALSA: Remove the runtime local variable in
-  snd_pcm_period_elapsed
+The audio dma port is found in the hdmi_wp physical address space.
 
-The local runtime variable in snd_pcm_period_elapsed has the value
-of substream->runtime. If the substream->runtime memory was freed,
-The local runtime variable can point the invalid memory.
-If do not fix this, can refer to freed memory.
-This patch remove local runtime variable and check the NULL directly.
-
-Signed-off-by: JongHo Kim <furmuwon@gmail.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
-  sound/core/pcm_lib.c | 14 +++++++-------
-  1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/video/fbdev/omap2/dss/hdmi.h    |    2 ++
+ drivers/video/fbdev/omap2/dss/hdmi_wp.c |    6 ++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 9acc77e..c3de2d3 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1836,15 +1836,13 @@ EXPORT_SYMBOL(snd_pcm_lib_ioctl);
-   */
-  void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
-  {
--	struct snd_pcm_runtime *runtime;
-  	unsigned long flags;
-
-  	if (PCM_RUNTIME_CHECK(substream))
-  		return;
--	runtime = substream->runtime;
-
--	if (runtime->transfer_ack_begin)
--		runtime->transfer_ack_begin(substream);
-+	if (substream->runtime && substream->runtime->transfer_ack_begin)
-+		substream->runtime->transfer_ack_begin(substream);
-
-  	snd_pcm_stream_lock_irqsave(substream, flags);
-  	if (!snd_pcm_running(substream) ||
-@@ -1855,9 +1853,11 @@ void snd_pcm_period_elapsed(struct 
-snd_pcm_substream *substream)
-  		snd_timer_interrupt(substream->timer, 1);
-   _end:
-  	snd_pcm_stream_unlock_irqrestore(substream, flags);
--	if (runtime->transfer_ack_end)
--		runtime->transfer_ack_end(substream);
--	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
-+	if (substream->runtime && substream->runtime->transfer_ack_end)
-+		substream->runtime->transfer_ack_end(substream);
+diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev/omap2/dss/hdmi.h
+index 1f01068..9e85b86 100644
+--- a/drivers/video/fbdev/omap2/dss/hdmi.h
++++ b/drivers/video/fbdev/omap2/dss/hdmi.h
+@@ -250,6 +250,7 @@ struct hdmi_core_audio_config {
+ 
+ struct hdmi_wp_data {
+ 	void __iomem *base;
++	phys_addr_t phys_base;
+ };
+ 
+ struct hdmi_pll_data {
+@@ -317,6 +318,7 @@ void hdmi_wp_video_config_timing(struct hdmi_wp_data *wp,
+ void hdmi_wp_init_vid_fmt_timings(struct hdmi_video_format *video_fmt,
+ 		struct omap_video_timings *timings, struct hdmi_config *param);
+ int hdmi_wp_init(struct platform_device *pdev, struct hdmi_wp_data *wp);
++phys_addr_t hdmi_wp_get_audio_dma_addr(struct hdmi_wp_data *wp);
+ 
+ /* HDMI PLL funcs */
+ int hdmi_pll_enable(struct hdmi_pll_data *pll, struct hdmi_wp_data *wp);
+diff --git a/drivers/video/fbdev/omap2/dss/hdmi_wp.c b/drivers/video/fbdev/omap2/dss/hdmi_wp.c
+index 496327e..43bf93e 100644
+--- a/drivers/video/fbdev/omap2/dss/hdmi_wp.c
++++ b/drivers/video/fbdev/omap2/dss/hdmi_wp.c
+@@ -247,6 +247,7 @@ int hdmi_wp_init(struct platform_device *pdev, struct hdmi_wp_data *wp)
+ 		DSSERR("can't get WP mem resource\n");
+ 		return -EINVAL;
+ 	}
++	wp->phys_base = res->start;
+ 
+ 	wp->base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(wp->base)) {
+@@ -256,3 +257,8 @@ int hdmi_wp_init(struct platform_device *pdev, struct hdmi_wp_data *wp)
+ 
+ 	return 0;
+ }
 +
-+	if (substream->runtime)
-+		kill_fasync(&substream->runtime->fasync, SIGIO, POLL_IN);
-  }
-
-  EXPORT_SYMBOL(snd_pcm_period_elapsed);
++phys_addr_t hdmi_wp_get_audio_dma_addr(struct hdmi_wp_data *wp)
++{
++	return wp->phys_base + HDMI_WP_AUDIO_DATA;
++}
 -- 
-1.8.1.2
+1.7.9.5
+
