@@ -1,268 +1,98 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v2 13/13] OMAPDSS: Remove all references to obsolete HDMI audio callbacks
-Date: Fri, 27 Jun 2014 21:38:55 +0300
-Message-ID: <c62a45f04179a921514c339cb67c4ccd6b9e128a.1403894190.git.jsarha@ti.com>
-References: <cover.1403894190.git.jsarha@ti.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: Remove the runtime local variable in
+	snd_pcm_period_elapsed
+Date: Fri, 27 Jun 2014 21:00:44 +0200
+Message-ID: <53ADBF5C.1030605@perex.cz>
+References: <alpine.DEB.2.02.1406280257470.6133@homeuser>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <cover.1403894190.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, jyri.sarha@iki.fi, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id E79FC265350
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2014 21:00:46 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.02.1406280257470.6133@homeuser>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: JongHo Kim <furmuwon@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Tim Gardner <tim.gardner@canonical.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-In new model these callbacks are obsolete since the ASoC component
-drivers are integrated into the HDMI drivers and no callbacks are
-needed anymore.
+Date 27.6.2014 20:13, JongHo Kim wrote:
+>>From a46df32a4fc184364be45ffe8957d5a20818d979 Mon Sep 17 00:00:00 2001
+> From: JongHo Kim <furmuwon@gmail.com>
+> Date: Sat, 28 Jun 2014 02:49:13 +0900
+> Subject: [PATCH] ALSA: Remove the runtime local variable in
+>   snd_pcm_period_elapsed
+> 
+> The local runtime variable in snd_pcm_period_elapsed has the value
+> of substream->runtime. If the substream->runtime memory was freed,
+> The local runtime variable can point the invalid memory.
+> If do not fix this, can refer to freed memory.
+> This patch remove local runtime variable and check the NULL directly.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- .../fbdev/omap2/displays-new/connector-hdmi.c      |   99 --------------------
- .../fbdev/omap2/displays-new/encoder-tpd12s015.c   |   56 -----------
- include/video/omapdss.h                            |   31 ------
- 3 files changed, 186 deletions(-)
+This patch looks wrong. Besides the wrong fix, the elapsed function MUST
+NOT be called when the stream is inactive (stopped). The PCM core
+functions calls the stop callback for the lowlevel drivers. It appears
+like an issue in the hardware driver.
 
-diff --git a/drivers/video/fbdev/omap2/displays-new/connector-hdmi.c b/drivers/video/fbdev/omap2/displays-new/connector-hdmi.c
-index 131c6e2..dd36d71 100644
---- a/drivers/video/fbdev/omap2/displays-new/connector-hdmi.c
-+++ b/drivers/video/fbdev/omap2/displays-new/connector-hdmi.c
-@@ -170,98 +170,6 @@ static bool hdmic_detect(struct omap_dss_device *dssdev)
- 		return in->ops.hdmi->detect(in);
- }
- 
--static int hdmic_audio_enable(struct omap_dss_device *dssdev)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--	int r;
--
--	/* enable audio only if the display is active */
--	if (!omapdss_device_is_enabled(dssdev))
--		return -EPERM;
--
--	r = in->ops.hdmi->audio_enable(in);
--	if (r)
--		return r;
--
--	dssdev->audio_state = OMAP_DSS_AUDIO_ENABLED;
--
--	return 0;
--}
--
--static void hdmic_audio_disable(struct omap_dss_device *dssdev)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--
--	in->ops.hdmi->audio_disable(in);
--
--	dssdev->audio_state = OMAP_DSS_AUDIO_DISABLED;
--}
--
--static int hdmic_audio_start(struct omap_dss_device *dssdev)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--	int r;
--
--	/*
--	 * No need to check the panel state. It was checked when trasitioning
--	 * to AUDIO_ENABLED.
--	 */
--	if (dssdev->audio_state != OMAP_DSS_AUDIO_ENABLED)
--		return -EPERM;
--
--	r = in->ops.hdmi->audio_start(in);
--	if (r)
--		return r;
--
--	dssdev->audio_state = OMAP_DSS_AUDIO_PLAYING;
--
--	return 0;
--}
--
--static void hdmic_audio_stop(struct omap_dss_device *dssdev)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--
--	in->ops.hdmi->audio_stop(in);
--
--	dssdev->audio_state = OMAP_DSS_AUDIO_ENABLED;
--}
--
--static bool hdmic_audio_supported(struct omap_dss_device *dssdev)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--
--	if (!omapdss_device_is_enabled(dssdev))
--		return false;
--
--	return in->ops.hdmi->audio_supported(in);
--}
--
--static int hdmic_audio_config(struct omap_dss_device *dssdev,
--		struct omap_dss_audio *audio)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--	int r;
--
--	/* config audio only if the display is active */
--	if (!omapdss_device_is_enabled(dssdev))
--		return -EPERM;
--
--	r = in->ops.hdmi->audio_config(in, audio);
--	if (r)
--		return r;
--
--	dssdev->audio_state = OMAP_DSS_AUDIO_CONFIGURED;
--
--	return 0;
--}
--
- static int hdmic_set_hdmi_mode(struct omap_dss_device *dssdev, bool hdmi_mode)
- {
- 	struct panel_drv_data *ddata = to_panel_data(dssdev);
-@@ -296,13 +204,6 @@ static struct omap_dss_driver hdmic_driver = {
- 	.detect			= hdmic_detect,
- 	.set_hdmi_mode		= hdmic_set_hdmi_mode,
- 	.set_hdmi_infoframe	= hdmic_set_infoframe,
--
--	.audio_enable		= hdmic_audio_enable,
--	.audio_disable		= hdmic_audio_disable,
--	.audio_start		= hdmic_audio_start,
--	.audio_stop		= hdmic_audio_stop,
--	.audio_supported	= hdmic_audio_supported,
--	.audio_config		= hdmic_audio_config,
- };
- 
- static int hdmic_probe_pdata(struct platform_device *pdev)
-diff --git a/drivers/video/fbdev/omap2/displays-new/encoder-tpd12s015.c b/drivers/video/fbdev/omap2/displays-new/encoder-tpd12s015.c
-index c891d8f..235e3d5 100644
---- a/drivers/video/fbdev/omap2/displays-new/encoder-tpd12s015.c
-+++ b/drivers/video/fbdev/omap2/displays-new/encoder-tpd12s015.c
-@@ -193,55 +193,6 @@ static bool tpd_detect(struct omap_dss_device *dssdev)
- 	return gpio_get_value_cansleep(ddata->hpd_gpio);
- }
- 
--static int tpd_audio_enable(struct omap_dss_device *dssdev)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--
--	return in->ops.hdmi->audio_enable(in);
--}
--
--static void tpd_audio_disable(struct omap_dss_device *dssdev)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--
--	in->ops.hdmi->audio_disable(in);
--}
--
--static int tpd_audio_start(struct omap_dss_device *dssdev)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--
--	return in->ops.hdmi->audio_start(in);
--}
--
--static void tpd_audio_stop(struct omap_dss_device *dssdev)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--
--	in->ops.hdmi->audio_stop(in);
--}
--
--static bool tpd_audio_supported(struct omap_dss_device *dssdev)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--
--	return in->ops.hdmi->audio_supported(in);
--}
--
--static int tpd_audio_config(struct omap_dss_device *dssdev,
--		struct omap_dss_audio *audio)
--{
--	struct panel_drv_data *ddata = to_panel_data(dssdev);
--	struct omap_dss_device *in = ddata->in;
--
--	return in->ops.hdmi->audio_config(in, audio);
--}
--
- static int tpd_set_infoframe(struct omap_dss_device *dssdev,
- 		const struct hdmi_avi_infoframe *avi)
- {
-@@ -275,13 +226,6 @@ static const struct omapdss_hdmi_ops tpd_hdmi_ops = {
- 	.detect			= tpd_detect,
- 	.set_infoframe		= tpd_set_infoframe,
- 	.set_hdmi_mode		= tpd_set_hdmi_mode,
--
--	.audio_enable		= tpd_audio_enable,
--	.audio_disable		= tpd_audio_disable,
--	.audio_start		= tpd_audio_start,
--	.audio_stop		= tpd_audio_stop,
--	.audio_supported	= tpd_audio_supported,
--	.audio_config		= tpd_audio_config,
- };
- 
- static int tpd_probe_pdata(struct platform_device *pdev)
-diff --git a/include/video/omapdss.h b/include/video/omapdss.h
-index 069dfca..9035325 100644
---- a/include/video/omapdss.h
-+++ b/include/video/omapdss.h
-@@ -635,19 +635,6 @@ struct omapdss_hdmi_ops {
- 	int (*set_hdmi_mode)(struct omap_dss_device *dssdev, bool hdmi_mode);
- 	int (*set_infoframe)(struct omap_dss_device *dssdev,
- 		const struct hdmi_avi_infoframe *avi);
--
--	/*
--	 * Note: These functions might sleep. Do not call while
--	 * holding a spinlock/readlock.
--	 */
--	int (*audio_enable)(struct omap_dss_device *dssdev);
--	void (*audio_disable)(struct omap_dss_device *dssdev);
--	bool (*audio_supported)(struct omap_dss_device *dssdev);
--	int (*audio_config)(struct omap_dss_device *dssdev,
--		struct omap_dss_audio *audio);
--	/* Note: These functions may not sleep */
--	int (*audio_start)(struct omap_dss_device *dssdev);
--	void (*audio_stop)(struct omap_dss_device *dssdev);
- };
- 
- struct omapdss_dsi_ops {
-@@ -858,24 +845,6 @@ struct omap_dss_driver {
- 	int (*set_hdmi_mode)(struct omap_dss_device *dssdev, bool hdmi_mode);
- 	int (*set_hdmi_infoframe)(struct omap_dss_device *dssdev,
- 		const struct hdmi_avi_infoframe *avi);
--
--	/*
--	 * For display drivers that support audio. This encompasses
--	 * HDMI and DisplayPort at the moment.
--	 */
--	/*
--	 * Note: These functions might sleep. Do not call while
--	 * holding a spinlock/readlock.
--	 */
--	int (*audio_enable)(struct omap_dss_device *dssdev);
--	void (*audio_disable)(struct omap_dss_device *dssdev);
--	bool (*audio_supported)(struct omap_dss_device *dssdev);
--	int (*audio_config)(struct omap_dss_device *dssdev,
--		struct omap_dss_audio *audio);
--	/* Note: These functions may not sleep */
--	int (*audio_start)(struct omap_dss_device *dssdev);
--	void (*audio_stop)(struct omap_dss_device *dssdev);
--
- };
- 
- enum omapdss_version omapdss_get_version(void);
+					Jaroslav
+
+> 
+> Signed-off-by: JongHo Kim <furmuwon@gmail.com>
+> ---
+>   sound/core/pcm_lib.c | 14 +++++++-------
+>   1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+> index 9acc77e..c3de2d3 100644
+> --- a/sound/core/pcm_lib.c
+> +++ b/sound/core/pcm_lib.c
+> @@ -1836,15 +1836,13 @@ EXPORT_SYMBOL(snd_pcm_lib_ioctl);
+>    */
+>   void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
+>   {
+> -	struct snd_pcm_runtime *runtime;
+>   	unsigned long flags;
+> 
+>   	if (PCM_RUNTIME_CHECK(substream))
+>   		return;
+> -	runtime = substream->runtime;
+> 
+> -	if (runtime->transfer_ack_begin)
+> -		runtime->transfer_ack_begin(substream);
+> +	if (substream->runtime && substream->runtime->transfer_ack_begin)
+> +		substream->runtime->transfer_ack_begin(substream);
+> 
+>   	snd_pcm_stream_lock_irqsave(substream, flags);
+>   	if (!snd_pcm_running(substream) ||
+> @@ -1855,9 +1853,11 @@ void snd_pcm_period_elapsed(struct 
+> snd_pcm_substream *substream)
+>   		snd_timer_interrupt(substream->timer, 1);
+>    _end:
+>   	snd_pcm_stream_unlock_irqrestore(substream, flags);
+> -	if (runtime->transfer_ack_end)
+> -		runtime->transfer_ack_end(substream);
+> -	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
+> +	if (substream->runtime && substream->runtime->transfer_ack_end)
+> +		substream->runtime->transfer_ack_end(substream);
+> +
+> +	if (substream->runtime)
+> +		kill_fasync(&substream->runtime->fasync, SIGIO, POLL_IN);
+>   }
+> 
+>   EXPORT_SYMBOL(snd_pcm_period_elapsed);
+> 
+
+
 -- 
-1.7.9.5
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
