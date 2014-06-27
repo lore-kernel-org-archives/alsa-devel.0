@@ -1,76 +1,92 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 02/16] ASoC: cs42l73: Remove redundant OOM
-	message
-Date: Fri, 27 Jun 2014 12:48:41 +0100
-Message-ID: <20140627114841.GJ23300@sirena.org.uk>
-References: <1403258352-8210-1-git-send-email-sachin.kamat@samsung.com>
- <1403258352-8210-2-git-send-email-sachin.kamat@samsung.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH 07/12] OMAPDSS: Kconfig: Select audio dependencies if
+ OMAP5_DSS_HDMI_AUDIO=y
+Date: Fri, 27 Jun 2014 14:49:31 +0300
+Message-ID: <53AD5A4B.5050308@ti.com>
+References: <cover.1403807781.git.jsarha@ti.com> <67ea660311de39b8a35e90a9a7d3b345fdaaf895.1403807781.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6612786112825010077=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A583265152
- for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2014 13:49:02 +0200 (CEST)
-In-Reply-To: <1403258352-8210-2-git-send-email-sachin.kamat@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@samsung.com>
-Cc: alsa-devel@alsa-project.org, spk.linux@gmail.com, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="Bt4mDDp36HVECLUwfFVbwns1K6IKXtFeC"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <67ea660311de39b8a35e90a9a7d3b345fdaaf895.1403807781.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, jyri.sarha@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
+--Bt4mDDp36HVECLUwfFVbwns1K6IKXtFeC
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
---===============6612786112825010077==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kTN++mu+z+U/mv0o"
-Content-Disposition: inline
+On 26/06/14 22:20, Jyri Sarha wrote:
+> Adds help section and SND_SOC dependency to OMAP4_DSS_HDMI_AUDIO.
+> Selects SND_OMAP_SOC, SND_SOC_HDMI_CODEC, and SND_SIMPLE_CARD if
+> OMAP4_DSS_HDMI_AUDIO is enabled.
+>=20
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+>  drivers/video/fbdev/omap2/dss/Kconfig |   16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/video/fbdev/omap2/dss/Kconfig b/drivers/video/fbde=
+v/omap2/dss/Kconfig
+> index 871f722..1cce26c 100644
+> --- a/drivers/video/fbdev/omap2/dss/Kconfig
+> +++ b/drivers/video/fbdev/omap2/dss/Kconfig
+> @@ -6,9 +6,9 @@ menuconfig OMAP2_DSS
+>  	select VIDEOMODE_HELPERS
+>  	select OMAP2_DSS_INIT
+>  	select HDMI
+> -	select SND_OMAP_SOC if OMAP4_DSS_HDMI_AUDIO
+> -	select SND_SOC_HDMI_CODEC if OMAP4_DSS_HDMI_AUDIO
+> -	select SND_SIMPLE_CARD if OMAP4_DSS_HDMI_AUDIO
+> +	select SND_OMAP_SOC if OMAP4_DSS_HDMI_AUDIO || OMAP5_DSS_HDMI_AUDIO
+> +	select SND_SOC_HDMI_CODEC if OMAP4_DSS_HDMI_AUDIO || OMAP5_DSS_HDMI_A=
+UDIO
+> +	select SND_SIMPLE_CARD if OMAP4_DSS_HDMI_AUDIO || OMAP5_DSS_HDMI_AUDI=
+O
+>          help
+>  	  OMAP2+ Display Subsystem support.
+> =20
+> @@ -99,8 +99,16 @@ config OMAP5_DSS_HDMI
+>  	  specification.
+> =20
+>  config OMAP5_DSS_HDMI_AUDIO
+> +	bool "HDMI audio support for OMAP5"
+>  	depends on OMAP5_DSS_HDMI
+> -	bool
+> +	depends on SND_SOC=3Dy || OMAP2_DSS =3D SND_SOC
+> +	default y
+
+These selects and depends ons make me feel a bit uneasy, but I don't
+have any idea how to deal with it in a nicer way...
+
+ Tomi
 
 
---kTN++mu+z+U/mv0o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Fri, Jun 20, 2014 at 03:28:58PM +0530, Sachin Kamat wrote:
-> Let memory subsystem handle the error logging.
-
-Applied all, thanks.
-
---kTN++mu+z+U/mv0o
+--Bt4mDDp36HVECLUwfFVbwns1K6IKXtFeC
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Version: GnuPG v1
 
-iQIcBAEBAgAGBQJTrVoWAAoJELSic+t+oim9okQP/idJEvIVWaTYebcN8wn+r1LC
-Olo6OvJ50EjJAIW/1q150RdIlIUSz/BP8tVVi94GCrFogo3J9a6hjrmvIsnKJ+Vd
-ZIR+Si+L4rtE1hlhk+xgFY/3hwAOyRxUDXxAHo1m7nKPHITnZ5rMt19JrzaZMjmr
-NjV9MkPWBWbDClghMZyYVVnl4K4JHFgFQ2k3VWkP4KCBqah2EckA5UtTUbOMisiX
-5jVU70WSk9czNk0Le+J+jY9MO17OpqLmTk3Qv24NeNim+A2582HbnRY1vIeEeIUL
-B0D52ge3k7+YO+l+ee0nc2UeJkoy81CIaJm+U7GSjmvYGFjFOvU6UIEE21WyzSxT
-ZUtMbjXzWdg+FlFHJrZHza/CfYTACS6e5yui4+ay2jx+bvGfFe32KOX0uRSIG1+z
-4yfFk0JaBDqaY0JVjjtpZUHgG1n8qBQHG7Cl2ISOyBhwYJuh2tWSBp2g52uWqSUW
-zKlVdR3wRwyGdjp9oLYQWLj847X0xT/0jiH8QVR7WWBsDCTq0LdfoQ4lL40EX4iG
-JXw4Gdn3ppATDGLn8IpO/ejyoV132jGxtKw34VVa3//qZ1Uyvt8/lF/qJ1Cf1rG7
-tkyGRlRUAIpBOhsmVjHdglVbXgd1avMX3PBXIKO2296IiWozXiKlmLDowDK1sWVR
-RIVEK+fNrYOgSKnBlWvF
-=sT6r
+iQIcBAEBAgAGBQJTrVpMAAoJEPo9qoy8lh71moMP/3R4hZ7iDGprmjxuZDFb5SE4
+tPpPioNOPwbkFuhP65AZ/qdvZWl+fQyL4j5DnVi4bBMRQhwgj0kxZR1enKM1abBC
+JRdgLmwS6FyIpWTjKYIZE50KEgrplUt23lX310Ik41vwprPWlA2WsC1mNjNSEkEQ
+sL2FrRNL93bBkYeY/9B7hSO9ip/1+RgUFuOfeAflVJARAXe34fWU61wW0fgjMmPp
+Y4Kwg5VPN0QcrOsbG/W8ATF4eZk8RB91VjrSaRHknfeKljiH5quUmXxA6zHtuId3
+0A0qsoM9MgGauWw/zIX3FKaPD7waHo8TAcYDF4EzKu8mTbdWPr7t8PDtS3FkgRQc
+B8jtnTf1kEpdtj+jkJ4u0KpV2dIq4lb4/b7PSbHLlcSpxBCiW0euLhcscVT3+yFn
+66mAUKJVBlWDVKvliSiIInkmVHdZ2Wrbq9yraKuSy81Sr8DwzblPjMKV8mMN/Ore
+q1QPZnh5Y7d2SmAmVNPEm2MljTHe4ctbtV/DiBHmUQBnuvkftDuqYogjZY4oIBqe
+r/+yr863bJypcI5qF04mAGH6fB2DeRWpqyJXME1CzAxUhXvUQGyOvPxZIrw27vro
+Y6BCtEzn5B5rdVxbLUZOFwwcNOqp40uMhpRGEVtTg4rqTAcdIgG09CaXvRboMGEk
+OVmwmPrfd6ry+u5dUG92
+=qBZK
 -----END PGP SIGNATURE-----
 
---kTN++mu+z+U/mv0o--
-
---===============6612786112825010077==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6612786112825010077==--
+--Bt4mDDp36HVECLUwfFVbwns1K6IKXtFeC--
