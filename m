@@ -1,17 +1,19 @@
-From: =?UTF-8?B?6rmA7J2A7Z2s?= <exeriment@gmail.com>
-Subject: infinity wait in snd_pcm_wait_nocheck
-Date: Fri, 27 Jun 2014 11:40:42 +0900
-Message-ID: <CAKHxhgoO40+uSt+_xC6bQM0HubeZ_ngOM=7-aBHZiqtdMC=pbw@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/7] ASoC: fix debugfs directory creation
+ bug
+Date: Fri, 27 Jun 2014 04:45:11 +0200
+Message-ID: <53ACDAB7.5080703@metafoo.de>
+References: <20140626142231.GR32514@n2100.arm.linux.org.uk>
+ <E1X0AZe-0003i7-0z@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f195.google.com (mail-ob0-f195.google.com
- [209.85.214.195])
- by alsa0.perex.cz (Postfix) with ESMTP id C6983261ADC
- for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2014 04:40:43 +0200 (CEST)
-Received: by mail-ob0-f195.google.com with SMTP id va2so1288101obc.2
- for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2014 19:40:42 -0700 (PDT)
+Received: from smtp-out-198.synserver.de (smtp-out-200.synserver.de
+ [212.40.185.200])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E240261ADC
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2014 04:45:27 +0200 (CEST)
+In-Reply-To: <E1X0AZe-0003i7-0z@rmk-PC.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +23,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Russell King <rmk+kernel@arm.linux.org.uk>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-My system plays and captures short streams using by dmix device after boot.
-But that system sometimes go infinity wait state when stream plays.
-I use alsa-lib-1.0.24.1. but v1.0.27 and 1.0.28 also occur same err.
-So I have below questions.
-- What event that poll (in snd_pcm_wait_nocheck) wait?
-I know snd_pcm_wait function is for wait PCM ready. But I want to know
-details.
-- How can I avoid that problem?
-I changed timeout(in snd_pcm_wait) from -1 to 100. But system go infinity
-loop.
+On 06/26/2014 04:22 PM, Russell King wrote:
+> Avoid creating duplicate directories by prefixing codecs and platforms
+> with their separate identifiers.  This avoids snd-soc-dummy (which can
+> appear both as a dummy platform and a dummy codec on the same card)
+> from clashing.
 
-And I attach status and params when this problem occurred.
-- status
-state: RUNNING
-owner_pid   : 1213
-trigger_time: 5.285075511
-tstamp      : 5.333190511
-delay       : -832
-avail       : 17216
-avail_max   : 17216
------
-hw_ptr      : 832
-appl_ptr    : 0
-- hw_params
-access: MMAP_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 44100 (44100/1)
-period_size: 1024
-buffer_size: 16384
-- sw_params
-tstamp_mode: ENABLE
-period_step: 1
-avail_min: 1024
-start_threshold: 1
-stop_threshold: 1073741824
-silence_threshold: 0
-silence_size: 1073741824
-boundary: 1073741824
+Do we actually want to create debugfs entries for the snd-soc-dummies? There 
+shouldn't be any meaningful information in there.
 
-Please reply about it.
-Thanks.
+If we want to and if we change the naming scheme of the debugfs entries 
+anyway we should also add the component name to the entry name. This fixes a 
+issue with devices that register multiple components.
 
------
-Eunhee Kim
+The other thing is that we are working on generalizing the ASoC code and 
+getting rid of the distinction between CODECs and platforms. Which means 
+there won't really a way to get the prefix anymore soon.
+
+- Lars
+
+>
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+> ---
+>   sound/soc/soc-core.c | 28 ++++++++++++++++++++++++----
+>   1 file changed, 24 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index b87d7d882e6d..91120b8e283e 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -270,12 +270,32 @@ static const struct file_operations codec_reg_fops = {
+>   	.llseek = default_llseek,
+>   };
+>
+> +static struct dentry *soc_debugfs_create_dir(struct dentry *parent,
+> +	const char *fmt, ...)
+> +{
+> +	struct dentry *de;
+> +	va_list ap;
+> +	char *s;
+> +
+> +	va_start(ap, fmt);
+> +	s = kvasprintf(GFP_KERNEL, fmt, ap);
+> +	va_end(ap);
+> +
+> +	if (!s)
+> +		return NULL;
+> +
+> +	de = debugfs_create_dir(s, parent);
+> +	kfree(s);
+> +
+> +	return de;
+> +}
+> +
+>   static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
+>   {
+>   	struct dentry *debugfs_card_root = codec->card->debugfs_card_root;
+>
+> -	codec->debugfs_codec_root = debugfs_create_dir(codec->name,
+> -						       debugfs_card_root);
+> +	codec->debugfs_codec_root = soc_debugfs_create_dir(debugfs_card_root,
+> +						"codec:%s", codec->name);
+>   	if (!codec->debugfs_codec_root) {
+>   		dev_warn(codec->dev,
+>   			"ASoC: Failed to create codec debugfs directory\n");
+> @@ -306,8 +326,8 @@ static void soc_init_platform_debugfs(struct snd_soc_platform *platform)
+>   {
+>   	struct dentry *debugfs_card_root = platform->card->debugfs_card_root;
+>
+> -	platform->debugfs_platform_root = debugfs_create_dir(platform->name,
+> -						       debugfs_card_root);
+> +	platform->debugfs_platform_root = soc_debugfs_create_dir(debugfs_card_root,
+> +						"platform:%s", platform->name);
+>   	if (!platform->debugfs_platform_root) {
+>   		dev_warn(platform->dev,
+>   			"ASoC: Failed to create platform debugfs directory\n");
+>
