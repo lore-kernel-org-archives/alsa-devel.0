@@ -1,174 +1,144 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [RFC][PATCH 1/2] dma: imx-sdma: Add device to
-	device support
-Date: Fri, 27 Jun 2014 18:58:09 +0800
-Message-ID: <20140627105808.GB2506@MrMyself>
-References: <cover.1402653667.git.nicoleotsuka@gmail.com>
- <42744e778ce8a4b424d5642f86d18ef047bcc7cd.1402653667.git.nicoleotsuka@gmail.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH 04/12] OMAPDSS: hdmi_audio: Integrated ASoC DAI component
+ driver implementation
+Date: Fri, 27 Jun 2014 14:10:29 +0300
+Message-ID: <53AD5125.4040006@ti.com>
+References: <cover.1403807781.git.jsarha@ti.com> <69f5b1481bd8b8a005b5d9142626f3529a0d71c7.1403807781.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0203.outbound.protection.outlook.com [207.46.163.203])
- by alsa0.perex.cz (Postfix) with ESMTP id DEA27265053
- for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2014 13:08:20 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <42744e778ce8a4b424d5642f86d18ef047bcc7cd.1402653667.git.nicoleotsuka@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, vinod.koul@intel.com, s.hauer@pengutronix.de
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, tiwai@suse.de, timur@tabi.org, lgirdwood@gmail.com, b42378@freescale.com, b02247@freescale.com, grant.likely@linaro.org, devicetree@vger.kernel.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, b38343@freescale.com, robh+dt@kernel.org, dan.j.williams@intel.com, rdunlap@infradead.org, linux-kernel@vger.kernel.org, broonie@kernel.org, galak@codeaurora.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="o32J7124B18dJ7EPASTM4qUDo9LDXdTON"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <69f5b1481bd8b8a005b5d9142626f3529a0d71c7.1403807781.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, jyri.sarha@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 13, 2014 at 06:07:04PM +0800, Nicolin Chen wrote:
-> This patch adds DEV_TO_DEV support for i.MX SDMA driver to support data
-> tranfer between two peripheral FIFOs. The per_2_per script requires two
-> peripheral addresses and two DMA requests. So this patch also adds them
-> into private structure.
-> 
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+--o32J7124B18dJ7EPASTM4qUDo9LDXdTON
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Excuse me, the patch has been here for two weeks. Could anyone please
-give a comment or an Ack on it?
-
-Thank you,
-Nicolin
-
+On 26/06/14 22:20, Jyri Sarha wrote:
+> Integrate ASoC DAI component driver in to the OMAP hdmi driver. The
+> patch also updates the relevant entry in ti,omap5-dss DT binding
+> document. The driver registers a dummy hdmi codec driver and a
+> simple-card driver to produce a fully functional ALSA device. The DAI
+> driver is implemented in hdmi_audio.c, but it still needs to be
+> registered from hdmi4.c or hdmi5.c.
+>=20
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
 > ---
->  drivers/dma/imx-sdma.c                | 40 ++++++++++++++++++++++++++++++-----
->  include/linux/platform_data/dma-imx.h |  1 +
->  2 files changed, 36 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-> index 85561dc..5af1a69 100644
-> --- a/drivers/dma/imx-sdma.c
-> +++ b/drivers/dma/imx-sdma.c
-> @@ -258,8 +258,9 @@ struct sdma_channel {
->  	struct sdma_buffer_descriptor	*bd;
->  	dma_addr_t			bd_phys;
->  	unsigned int			pc_from_device, pc_to_device;
-> +	unsigned int			device_to_device;
->  	unsigned long			flags;
-> -	dma_addr_t			per_address;
-> +	dma_addr_t			per_address, per_address2;
->  	unsigned long			event_mask[2];
->  	unsigned long			watermark_level;
->  	u32				shp_addr, per_addr;
-> @@ -696,6 +697,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
->  
->  	sdmac->pc_from_device = 0;
->  	sdmac->pc_to_device = 0;
-> +	sdmac->device_to_device = 0;
->  
->  	switch (peripheral_type) {
->  	case IMX_DMATYPE_MEMORY:
-> @@ -770,6 +772,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
->  
->  	sdmac->pc_from_device = per_2_emi;
->  	sdmac->pc_to_device = emi_2_per;
-> +	sdmac->device_to_device = per_2_per;
->  }
->  
->  static int sdma_load_context(struct sdma_channel *sdmac)
-> @@ -782,11 +785,12 @@ static int sdma_load_context(struct sdma_channel *sdmac)
->  	int ret;
->  	unsigned long flags;
->  
-> -	if (sdmac->direction == DMA_DEV_TO_MEM) {
-> +	if (sdmac->direction == DMA_DEV_TO_MEM)
->  		load_address = sdmac->pc_from_device;
-> -	} else {
-> +	else if (sdmac->direction == DMA_DEV_TO_DEV)
-> +		load_address = sdmac->device_to_device;
-> +	else
->  		load_address = sdmac->pc_to_device;
-> -	}
->  
->  	if (load_address < 0)
->  		return load_address;
-> @@ -850,6 +854,12 @@ static int sdma_config_channel(struct sdma_channel *sdmac)
->  		sdma_event_enable(sdmac, sdmac->event_id0);
->  	}
->  
-> +	if (sdmac->event_id1) {
-> +		if (sdmac->event_id1 >= sdmac->sdma->drvdata->num_events)
-> +			return -EINVAL;
-> +		sdma_event_enable(sdmac, sdmac->event_id1);
-> +	}
+>  drivers/video/fbdev/omap2/dss/Makefile     |    2 +
+>  drivers/video/fbdev/omap2/dss/hdmi.h       |   38 +++-
+>  drivers/video/fbdev/omap2/dss/hdmi_audio.c |  317 ++++++++++++++++++++=
+++++++++
+>  3 files changed, 355 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/video/fbdev/omap2/dss/hdmi_audio.c
+>=20
+> diff --git a/drivers/video/fbdev/omap2/dss/Makefile b/drivers/video/fbd=
+ev/omap2/dss/Makefile
+> index 245f933..8260987 100644
+> --- a/drivers/video/fbdev/omap2/dss/Makefile
+> +++ b/drivers/video/fbdev/omap2/dss/Makefile
+> @@ -14,5 +14,7 @@ omapdss-$(CONFIG_OMAP2_DSS_DSI) +=3D dsi.o
+>  omapdss-$(CONFIG_OMAP2_DSS_HDMI_COMMON) +=3D hdmi_common.o hdmi_wp.o h=
+dmi_pll.o \
+>  	hdmi_phy.o
+>  omapdss-$(CONFIG_OMAP4_DSS_HDMI) +=3D hdmi4.o hdmi4_core.o
+> +omapdss-$(CONFIG_OMAP4_DSS_HDMI_AUDIO) +=3D hdmi_audio.o
+>  omapdss-$(CONFIG_OMAP5_DSS_HDMI) +=3D hdmi5.o hdmi5_core.o
+> +omapdss-$(CONFIG_OMAP5_DSS_HDMI_AUDIO) +=3D hdmi_audio.o
+>  ccflags-$(CONFIG_OMAP2_DSS_DEBUG) +=3D -DDEBUG
+> diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev=
+/omap2/dss/hdmi.h
+> index 927cb4d..cc6ecb5 100644
+> --- a/drivers/video/fbdev/omap2/dss/hdmi.h
+> +++ b/drivers/video/fbdev/omap2/dss/hdmi.h
+> @@ -25,6 +25,11 @@
+>  #include <linux/hdmi.h>
+>  #include <video/omapdss.h>
+> =20
+> +#if defined(CONFIG_OMAP4_DSS_HDMI_AUDIO) || defined(CONFIG_OMAP5_DSS_H=
+DMI_AUDIO)
+
+I think you're a bit overeager with these ifdefs =3D). They make the code=
+
+more difficult to read. The question is, what is their purpose here? I'm
+quite sure those includes below can be included just fine even without
+HDMI support in the driver. So as far as I see, their only purpose would
+be to very minimally speed up the kernel compilation.
+
+> +#include <sound/dmaengine_pcm.h>
+> +#include <uapi/sound/asound.h>
+> +#endif
 > +
->  	switch (sdmac->peripheral_type) {
->  	case IMX_DMATYPE_DSP:
->  		sdma_config_ownership(sdmac, false, true, true);
-> @@ -880,7 +890,12 @@ static int sdma_config_channel(struct sdma_channel *sdmac)
->  		/* Watermark Level */
->  		sdmac->watermark_level |= sdmac->watermark_level;
->  		/* Address */
-> -		sdmac->shp_addr = sdmac->per_address;
-> +		if (sdmac->direction == DMA_DEV_TO_DEV) {
-> +			sdmac->shp_addr = sdmac->per_address2;
-> +			sdmac->per_addr = sdmac->per_address;
-> +		} else {
-> +			sdmac->shp_addr = sdmac->per_address;
-> +		}
->  	} else {
->  		sdmac->watermark_level = 0; /* FIXME: M3_BASE_ADDRESS */
->  	}
-> @@ -974,6 +989,7 @@ static int sdma_alloc_chan_resources(struct dma_chan *chan)
->  
->  	sdmac->peripheral_type = data->peripheral_type;
->  	sdmac->event_id0 = data->dma_request;
-> +	sdmac->event_id1 = data->dma_request2;
->  
->  	clk_enable(sdmac->sdma->clk_ipg);
->  	clk_enable(sdmac->sdma->clk_ahb);
-> @@ -1213,6 +1229,19 @@ static int sdma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
->  			sdmac->watermark_level = dmaengine_cfg->src_maxburst *
->  						dmaengine_cfg->src_addr_width;
->  			sdmac->word_size = dmaengine_cfg->src_addr_width;
-> +		} else if (dmaengine_cfg->direction == DMA_DEV_TO_DEV) {
-> +			sdmac->per_address = dmaengine_cfg->src_addr;
-> +			sdmac->per_address2 = dmaengine_cfg->dst_addr;
-> +			/*
-> +			 * For per_2_per sciprt, register r7 requires two
-> +			 * watermark levels: the lower placed at bits [0-7]
-> +			 * and the higher one placed at bits [16-23].
-> +			 */
-> +			sdmac->watermark_level =
-> +				dmaengine_cfg->src_maxburst & 0xff;
-> +			sdmac->watermark_level |=
-> +				(dmaengine_cfg->dst_maxburst & 0xff) << 16;
-> +			sdmac->word_size = dmaengine_cfg->dst_addr_width;
->  		} else {
->  			sdmac->per_address = dmaengine_cfg->dst_addr;
->  			sdmac->watermark_level = dmaengine_cfg->dst_maxburst *
-> @@ -1433,6 +1462,7 @@ static struct dma_chan *sdma_xlate(struct of_phandle_args *dma_spec,
->  	data.dma_request = dma_spec->args[0];
->  	data.peripheral_type = dma_spec->args[1];
->  	data.priority = dma_spec->args[2];
-> +	data.dma_request2 = 0;
->  
->  	return dma_request_channel(mask, sdma_filter_fn, &data);
->  }
-> diff --git a/include/linux/platform_data/dma-imx.h b/include/linux/platform_data/dma-imx.h
-> index 7aa0e89..6a1357d 100644
-> --- a/include/linux/platform_data/dma-imx.h
-> +++ b/include/linux/platform_data/dma-imx.h
-> @@ -51,6 +51,7 @@ enum imx_dma_prio {
->  
->  struct imx_dma_data {
->  	int dma_request; /* DMA request line */
-> +	int dma_request2; /* secondary DMA request line */
->  	enum sdma_peripheral_type peripheral_type;
->  	int priority;
->  };
-> -- 
-> 1.8.4
-> 
+>  #include "dss.h"
+> =20
+>  /* HDMI Wrapper */
+> @@ -338,6 +343,35 @@ int hdmi_parse_lanes_of(struct platform_device *pd=
+ev, struct device_node *ep,
+>  	struct hdmi_phy_data *phy);
+> =20
+>  #if defined(CONFIG_OMAP4_DSS_HDMI_AUDIO) || defined(CONFIG_OMAP5_DSS_H=
+DMI_AUDIO)
+
+Same here. The struct definition doesn't do any harm, even if the audio
+support is not compiled in.
+
+> +struct hdmi_audio_data {
+> +	/* These should be initialized when hdmi_audio_register() is called *=
+/
+> +	struct mutex *hdmi_lock;
+> +	struct hdmi_wp_data *wp;
+> +	struct hdmi_core_data *core;
+> +	struct hdmi_config *cfg;
+> +	struct snd_soc_dai_driver *hdmi_dai_drv;
+> +
+> +	int (*audio_start)(struct hdmi_core_data *core,
+> +			   struct hdmi_wp_data *wp);
+> +	void (*audio_stop)(struct hdmi_core_data *core,
+> +			   struct hdmi_wp_data *wp);
+> +	int (*audio_config)(struct hdmi_core_data *core,
+> +			    struct hdmi_wp_data *wp,
+> +			    struct omap_dss_audio *audio,
+> +			    u32 pclk);
+> +
+> +	/* These are of audio implementation's private use */
+> +	struct snd_dmaengine_dai_dma_data dma_data;
+> +	struct omap_dss_audio dss_audio;
+> +	struct snd_aes_iec958 iec;
+> +	struct snd_cea_861_aud_if cea;
+> +	struct platform_device *codec_pdev;
+> +	struct platform_device *card_pdev;
+> +};
+
+ Tomi
+
+
+
+
+--o32J7124B18dJ7EPASTM4qUDo9LDXdTON
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJTrVEqAAoJEPo9qoy8lh71/LwP/i8wEqAyCmej15rxHgDwgqyV
+qPJNNqn4n3iRqGf6cyj2oIDh3cjF92rLfUziJ0A4pJVkyh81DioOHDmPHBTO3HG8
+E6dh7s+JFyLfvlShbraOi/aKnFXmjMhAxXA69R5GL010+GUCZiDDwCjz5OL3pyP+
+xJdIzgaucRx7G1TRYSpO+Wlm9LpADQsJMr4e8E5+i4GJIuCWTF+C/3lB8i7Jz2FX
+3i3TddRsJM6IC6I1v/jN9xh47WFYgWKdl8nQe2uZSF1fo77KQvrLjN/27K4HbXhi
+Fzh/we/gnVrd8cGSGJ8iXEO0pRvSe6fEuGjcPg2q9BFG1aJm0e2OL8+gH1sjsA+Y
+KN1CGx14DLfIav014gXOSY0IY9V450j9i16QouVZYx1JOFiND3Ncb2DOR3b1rggo
+m13qH/woq4b6YUzJRmAtET8xxkBLiYtmKg/pNJTiZn5ia3tG6DUXqtdc7d2+jrqm
+YGv3ObEqMft6fg80go1Zf4pMSXRJy6n8P9iFw9W+uy/x6q4+7titC/cRpvOfkndm
+5s9bE60qCJU3CjkD3cx2eCBfMTrmKHCCEHbFfg4BiJ4tUmqnLNYn/fobFJdoTWp0
+y2EMUhD0QCod/TvpIgwQ/1Mwt4pOxU1U0uXNUQ9gxWzDN3wRADf4p5ancYmN3Nst
+yN9/ez5vLAiuhggWsiXZ
+=qz5n
+-----END PGP SIGNATURE-----
+
+--o32J7124B18dJ7EPASTM4qUDo9LDXdTON--
