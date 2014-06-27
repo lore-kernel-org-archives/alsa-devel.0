@@ -1,17 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: Remove the runtime local variable in
-	snd_pcm_period_elapsed
-Date: Fri, 27 Jun 2014 21:00:44 +0200
-Message-ID: <53ADBF5C.1030605@perex.cz>
-References: <alpine.DEB.2.02.1406280257470.6133@homeuser>
+From: "Max Schmidt" <schmidti444@web.de>
+Subject: Constant delay between starting a playback and a
+	capture stream
+Date: Fri, 27 Jun 2014 21:27:23 +0200
+Message-ID: <trinity-f377e59a-71a6-447c-859a-f2188926e1f9-1403897243118@3capp-webde-bs11>
+References: <trinity-76c63013-83c5-446c-a160-bc9ed56a1161-1403540443117@3capp-webde-bs03>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id E79FC265350
- for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2014 21:00:46 +0200 (CEST)
-In-Reply-To: <alpine.DEB.2.02.1406280257470.6133@homeuser>
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B43126535D
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2014 21:27:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +20,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: JongHo Kim <furmuwon@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Tim Gardner <tim.gardner@canonical.com>, Mark Brown <broonie@linaro.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 27.6.2014 20:13, JongHo Kim wrote:
->>From a46df32a4fc184364be45ffe8957d5a20818d979 Mon Sep 17 00:00:00 2001
-> From: JongHo Kim <furmuwon@gmail.com>
-> Date: Sat, 28 Jun 2014 02:49:13 +0900
-> Subject: [PATCH] ALSA: Remove the runtime local variable in
->   snd_pcm_period_elapsed
-> 
-> The local runtime variable in snd_pcm_period_elapsed has the value
-> of substream->runtime. If the substream->runtime memory was freed,
-> The local runtime variable can point the invalid memory.
-> If do not fix this, can refer to freed memory.
-> This patch remove local runtime variable and check the NULL directly.
-
-This patch looks wrong. Besides the wrong fix, the elapsed function MUST
-NOT be called when the stream is inactive (stopped). The PCM core
-functions calls the stop callback for the lowlevel drivers. It appears
-like an issue in the hardware driver.
-
-					Jaroslav
-
-> 
-> Signed-off-by: JongHo Kim <furmuwon@gmail.com>
-> ---
->   sound/core/pcm_lib.c | 14 +++++++-------
->   1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-> index 9acc77e..c3de2d3 100644
-> --- a/sound/core/pcm_lib.c
-> +++ b/sound/core/pcm_lib.c
-> @@ -1836,15 +1836,13 @@ EXPORT_SYMBOL(snd_pcm_lib_ioctl);
->    */
->   void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
->   {
-> -	struct snd_pcm_runtime *runtime;
->   	unsigned long flags;
-> 
->   	if (PCM_RUNTIME_CHECK(substream))
->   		return;
-> -	runtime = substream->runtime;
-> 
-> -	if (runtime->transfer_ack_begin)
-> -		runtime->transfer_ack_begin(substream);
-> +	if (substream->runtime && substream->runtime->transfer_ack_begin)
-> +		substream->runtime->transfer_ack_begin(substream);
-> 
->   	snd_pcm_stream_lock_irqsave(substream, flags);
->   	if (!snd_pcm_running(substream) ||
-> @@ -1855,9 +1853,11 @@ void snd_pcm_period_elapsed(struct 
-> snd_pcm_substream *substream)
->   		snd_timer_interrupt(substream->timer, 1);
->    _end:
->   	snd_pcm_stream_unlock_irqrestore(substream, flags);
-> -	if (runtime->transfer_ack_end)
-> -		runtime->transfer_ack_end(substream);
-> -	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
-> +	if (substream->runtime && substream->runtime->transfer_ack_end)
-> +		substream->runtime->transfer_ack_end(substream);
-> +
-> +	if (substream->runtime)
-> +		kill_fasync(&substream->runtime->fasync, SIGIO, POLL_IN);
->   }
-> 
->   EXPORT_SYMBOL(snd_pcm_period_elapsed);
-> 
-
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+ICAgSGkgYWxsLAoKICAgSSBmaXJzdCB3cm90ZSB0aGlzIGVtYWlsIHRvIHRoZSBBTFNBIHVzZXIg
+bWFpbGluZyBsaXN0IHNpbmNlIEkgZGlkbid0CiAgIGtub3cgaWYgaXQncyBhcHByb3ByaWF0ZSB0
+byB3cml0ZSB0byB0aGUgQUxTQSBkZXYgbGlzdCBhcyBJJ20gbm90CiAgIGRpcmVjdGx5IGludm9s
+dmVkIGluIHRoZSBwcm9qZWN0LiBJIHdhcyBzdWdnZXN0ZWQgdG8gYmV0dGVyIHRyeSBpdAogICBo
+ZXJlLiBTbywgSSdtIHNvcnJ5IGlmIHRoaXMgZW1haWwgaXMgYW4gaW5jb252ZW5pZW5jZS4KCiAg
+IFNlZSBiZWxvdyBteSBvcmlnaW5hbCBwb3N0LgogICBUaGFua3MgYW5kIGdyZWV0aW5ncyEKCiAg
+IEdlc2VuZGV0OiBNb250YWcsIDIzLiBKdW5pIDIwMTQgdW0gMTg6MjAgVWhyCiAgIFZvbjogIk1h
+eCBTY2htaWR0IiA8c2NobWlkdGk0NDRAd2ViLmRlPgogICBBbjogYWxzYS11c2VyQGxpc3RzLnNv
+dXJjZWZvcmdlLm5ldAogICBCZXRyZWZmOiBDb25zdGFudCBkZWxheSBiZXR3ZWVuIHN0YXJ0aW5n
+IGEgcGxheWJhY2sgYW5kIGEgY2FwdHVyZQogICBzdHJlYW0KICAgSGV5IGFsbCwKCiAgIGZpcnN0
+IGEgYmlnIGhlbGxvIHRvIGV2ZXJ5b25lIHNpbmNlIEknbSBuZXcgdG8gdGhpcyBtYWlsaW5nLWxp
+c3QuCiAgIEkndmUgaGFkIGEgbG9vayByZWdhcmRpbmcgdGhpcyBpc3N1ZSBoZXJlIGFuZCBpbiBn
+ZW5lcmVsbCBpbiB0aGUKICAgaW50ZXJuZXQgYnV0IGRpZG4ndCBmaW5kIGFueXRoaW5nIHJlbGF0
+aW5nLiBTbywgc29ycnkgaWYgSSBvdmVybG9va2VkCiAgIHNvbWV0aGluZy4KCiAgIEkndmUgZ290
+IGEgQmVhZ2xlQm9uZSBCbGFjayAoQVJNIENvcnRleCBBIDggwrVQKSB3aXRoIGFuIEF1ZGlvLUNh
+cGUKICAgKHVzaW5nIE1jQXNwIGFuZCBBTFNBLURhdmluY2ktRHJpdmVycykgYW5kIHdyb3RlIGFu
+IG1tYXAgYmFzZWQKICAgcGxheWJhY2stY2FwdHVyZSBhcHBsaWNhdGlvbiAoYm90aCBkZXZpY2Vz
+ICJodzowLDAiKS4gVGhlIGltcG9ydGFudAogICB0aGluZyBpcyB0aGF0IHRoZSBhcHBsaWNhdGlv
+biBuZWVkcyBhIGNvbnN0YW50IGRlbGF5IChub3QgbmVjZXNzYXJpbHkKICAgc21hbGwpIGJldHdl
+ZW4gdGhlIHN0YXJ0IG9mIHRoZSBwbGF5YmFjayBhbmQgdGhlIGNhcHR1cmUgc3RyZWFtLiBTbwog
+ICB3aGVuIGxvb3BpbmcgYmFjayB0aGUgc2lnbmFsIHRvIHRoZSBtaWNyb2ZvbmUgdGhlIGZpcnN0
+IHBsYXllZCBzYW1wbGUKICAgZS5nLiBhbHdheXMgKGV2ZW4gYWZ0ZXIgYSByZXN0YXJ0IG9mIHRo
+ZSBCZWFnbGVCb25lIG9yIHRoZSBhcHApIGhhcyBhCiAgIGRlbGF5IGluIHRoZSBjYXB0dXJlIHN0
+cmVhbSBvZiBleGFjdGx5IDgwIHNhbXBsZXMgKHdoZW4gZS5nLiBwbGF5ZWQKICAgd2l0aCA0OCBr
+SHopLCAgYW5kIG9uY2UgbWVhc3VyZWQgY2FuIGJlIHNlZW4gYXMgY29uc3RhbnQuCiAgIFRvIHJl
+YWxpemUgdGhhdCBJIHVzZSB0aGUgQUxTQSBBUEkgZnVuY3Rpb24gInNuZF9wY21fbGluayhjX2hh
+bmRsZSwKICAgcF9oYW5kbGUpIi4gV2hlbiBzdGFydGluZyB0aGUgcGxheWJhY2sgc3RyZWFtIChh
+bmQgdGhlcmVmb3JlIGxpbmtlZAogICBjYXB0dXJlIHN0cmVhbSBhcyB3ZWxsbCkgbWFudWFsbHkg
+aXRzIGJ1ZmZlciBhbHJlYWR5IGlzIGZpbGxlZC4gVGhlcmUKICAgaXMgbm8gYnVmZmVyIHVuZGVy
+cnVuL292ZXJydW4gcmVjb3ZlcnkuCiAgIEl0IGFscmVhZHkgd29ya3MgcXVpdGUgZmluZSBidXQg
+SSBzdGlsbCBoYXZlIHNvbWUgcXVlc3Rpb25zIGFuZCBpdAogICB3b3VsZCBiZSByZWFsbHkgbmlj
+ZSBpZiBzb21lb25lIGNhbiBoZWxwOgoKICAgMSkgTG9va2luZyBhdCBhIHBsb3Qgb2YgbXVsdGlw
+bGUgbWVhc3VyZW1lbnRzIG9mIGxvb3BlZCBiYWNrIGFuZAogICBjYXB0dXJlZCBzcXVhcmUgd2F2
+ZXMgKG9yIHNpbmVzKSB0aGVyZSBzdGlsbCBpcyBhIGppdHRlciBvZiBhYm91dCB0d28KICAgdG8g
+Zm91ciBzYW1wbGVzIChhdCA0OCBrSHo7IHdoaWNoIGlzIGFib3V0IDQwIHRvIDgwIG1zKSwgbm8g
+bWF0dGVyIGlmIEkKICAgcnVuIGl0IGFzIFJULWFwcCAoZW5lcmd5IHNhdmUgbW9kZXMgZXRjLiBk
+aXNhYmxlZCwganVzdCBpbXBvcnRhbnQKICAgUHJvY2Vzc2VzIGhhdmUgYSBoaWdoZXIgUHJpb3Jp
+dHkgZS5nLiBFRE1BKSBvciBub3JtYWwgYXBwLgogICBQbGVhc2UgY29ycmVjdCBtZSBpZiBJJ20g
+d3JvbmcsIGJ1dCBhcyBmYXIgYXMgSSB1bmRlcnN0YW5kIHdoZW4gdGhlCiAgIHN0cmVhbXMgYXJl
+IGxpbmtlZCwgYXQgc3RhcnQgdGhlIHByb2Nlc3NvciBpcyBnb2luZyB0aHJvdWdoIGEgbGlua2Vk
+CiAgIGxpc3QgdHJpZ2dlcmluZyBhbGwgbGlua2VkIHN0cmVhbXMuIEFuZCB0aGUgdHJpZ2dlciBz
+dGFydCBpcyBhbiBhdG9taWMKICAgcHJvY2VzcyBzbyBzaG91bGRuJ3QgZ2V0IGludGVycnVwdGVk
+LiBTaG91bGRuJ3QgaXQgYWx3YXlzIHRha2UgdGhlIHNhbWUKICAgdGltZSBiZXR3ZWVuIHN0YXJ0
+aW5nIHRoZSBwbGF5YmFjayBhbmQgY2FwdHVyZSBzdHJlYW0gdGhlbj8gQW5kIGlmIHllcywKICAg
+d2hlcmUgY291bGQgdGhlIHZhcmlhYmxlIHN0YXJ0IGRlbGF5IGNvbWUgZnJvbT8KCiAgIDIpIExv
+b2tpbmcgYXQgdGhlIHRpbWUgc3RhbXAgb2YgYm90aCBzdHJlYW1zIGl0IHRlbGxzIHRoYXQgdGhl
+CiAgIGRpZmZlcmVuY2UgYmV0d2VlbiB0aGUgc3RhcnQgdHJpZ2dlciBub3JtYWxseSBpcyBiZXR3
+ZWVuIDIgdG8gNyBtcy4KICAgV2hhdCwgSSB0aGluaywgZG9lcyBub3QgcmVhbGx5IGZpdCB0byB0
+aGUgb2JzZXJ2YXRpb24gd3JpdHRlbiBhYm92ZQogICBzaW5jZSB0aGVuIHRoZXJlIG5vcm1hbGx5
+IHNob3VsZCBiZSBubyBiaWcgc2FtcGxlIGppdHRlciBhdCA0OCBrSHouIEFyZQogICB0aGUgdGlt
+ZSBzdGFtcCB2YWx1ZXMgbm90IHByZWNpc2UgZW5vdWdoIChhY3R1YWxseSBob3cgcHJlY2lzZSBh
+cmUgdGhlCiAgIHRpbWUgc3RhbXBzLCBqdXN0IHRoYXQgdGhleSBjYW4gc2hvdyBtaWNyb3NlY29u
+ZHMgZG9lcyBub3QgaW1wbHkgdGhhdAogICB0aGUgcmVzb2x1dGlvbiByZWFsbHkgaXMgbWljcm9z
+ZWNvbmRzLCBvciBhbSBJIHdyb25nPykgb3IgYXJlIHRoZXkKICAgY29ycmVjdCBhbmQgdGhlIGRp
+ZmZlcmVuY2UgaW4gbGF0ZW5jeSBzZWVuIGluIG1lYXN1cmVkIHBsb3RzIGNvbWVzIGZyb20KICAg
+c29tZXdoZXJlIGVsc2U/IERlbGF5IGR1ZSB0byBIYXJkd2FyZSBzaG91bGQgYmUgY29uc3RhbnQg
+c28gdGhlIGlzc3VlCiAgIG11c3QgaGF2ZSBzb21ldGhpbmcgdG8gZG8gd2l0aCBBTFNBIG9yIExp
+bnV4LgoKCiAgIFdvdWxkIGJlIG5pY2UgaWYgc29tZW9uZSBjYW4gaGVscCBvciBoYXMgYW4gaWRl
+YSEKICAgVGlwcHMgZm9yIGFuIGltcHJvdmVtZW50IGFyZSB3bGVjb21lIGFzIHdlbGwhCiAgIE1h
+bnkgdGhhbmtzIGFuZCBjaGVlcnMhCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
