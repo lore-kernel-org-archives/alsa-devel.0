@@ -1,15 +1,17 @@
-From: Paul Handrigan <Paul.Handrigan@cirrus.com>
-Subject: [PATCH] ASoC: cs4265: Change return values to boolean.
-Date: Sat, 28 Jun 2014 11:34:25 -0500
-Message-ID: <1403973265-19787-1-git-send-email-Paul.Handrigan@cirrus.com>
+From: =?UTF-8?B?Sm/Dq2wgS3LDpGhlbWFubg==?= <weedlight@gmail.com>
+Subject: Why SIGABORT
+Date: Sat, 28 Jun 2014 23:30:16 +0200
+Message-ID: <CANr2zYioMsQAonnTnKFLEPNGacvpQug6bM-PRQvJMWekzZ4ysQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1blp0186.outbound.protection.outlook.com [207.46.163.186])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B4A02619EA
- for <alsa-devel@alsa-project.org>; Sat, 28 Jun 2014 18:39:40 +0200 (CEST)
+Received: from mail-oa0-f46.google.com (mail-oa0-f46.google.com
+ [209.85.219.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EBD9261AC4
+ for <alsa-devel@alsa-project.org>; Sat, 28 Jun 2014 23:30:17 +0200 (CEST)
+Received: by mail-oa0-f46.google.com with SMTP id m1so7206753oag.33
+ for <alsa-devel@alsa-project.org>; Sat, 28 Jun 2014 14:30:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,32 +22,690 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: brian.austin@cirrus.com, broonie@kernel.org, lgirdwood@gmail.com, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-The cs4265_volatile_register reutrns a bool. The function now returns
-true or false vs 1 and 0.
+http://ags.sf.net
 
-Signed-off-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
----
- sound/soc/codecs/cs4265.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-index c9c04d2..4c4bf21 100644
---- a/sound/soc/codecs/cs4265.c
-+++ b/sound/soc/codecs/cs4265.c
-@@ -87,9 +87,9 @@ static bool cs4265_volatile_register(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case CS4265_INT_STATUS:
--		return 1;
-+		return true;
- 	default:
--		return 0;
-+		return false;
- 	}
- }
- 
--- 
-1.9.1
+7ffe9f5d8000-7ffe9fdd8000 rw-p 00000000 00:00 0
+7ffe9fdd8000-7ffe9fdd9000 ---p 00000000 00:00 0
+7ffe9fdd9000-7ffea05d9000 rw-p 00000000 00:00 0
+7ffea05d9000-7ffea05da000 ---p 00000000 00:00 0
+7ffea05da000-7ffea0dda000 rw-p 00000000 00:00 0
+7ffea0dda000-7ffea0ddb000 ---p 00000000 00:00 0
+7ffea0ddb000-7ffea15db000 rw-p 00000000 00:00 0
+7ffea15db000-7ffea15dc000 ---p 00000000 00:00 0
+7ffea15dc000-7ffea1ddc000 rw-p 00000000 00:00 0
+7ffea1ddc000-7ffea1ddd000 ---p 00000000 00:00 0
+7ffea1ddd000-7ffea25dd000 rw-p 00000000 00:00 0
+7ffea25dd000-7ffea25de000 ---p 00000000 00:00 0
+7ffea25de000-7ffea2dde000 rw-p 00000000 00:00 0
+7ffea2dde000-7ffea2ddf000 ---p 00000000 00:00 0
+7ffea2ddf000-7ffea35df000 rw-p 00000000 00:00 0
+7ffea35df000-7ffea35e0000 ---p 00000000 00:00 0
+7ffea35e0000-7ffea3de0000 rw-p 00000000 00:00 0
+7ffea3de0000-7ffea3de1000 ---p 00000000 00:00 0
+7ffea3de1000-7ffea45e1000 rw-p 00000000 00:00 0
+7ffea45e1000-7ffea45e2000 ---p 00000000 00:00 0
+7ffea45e2000-7ffea4de2000 rw-p 00000000 00:00 0
+7ffea4de2000-7ffea4de3000 ---p 00000000 00:00 0
+7ffea4de3000-7ffea55e3000 rw-p 00000000 00:00 0
+7ffea55e3000-7ffea55e4000 ---p 00000000 00:00 0
+7ffea55e4000-7ffea5de4000 rw-p 00000000 00:00 0
+7ffea5de4000-7ffea5de5000 ---p 00000000 00:00 0
+7ffea5de5000-7ffea65e5000 rw-p 00000000 00:00 0
+7ffea65e5000-7ffea65e6000 ---p 00000000 00:00 0
+7ffea65e6000-7ffea6de6000 rw-p 00000000 00:00 0
+7ffea6de6000-7ffea6de7000 ---p 00000000 00:00 0
+7ffea6de7000-7ffea75e7000 rw-p 00000000 00:00 0
+7ffea75e7000-7ffea75e8000 ---p 00000000 00:00 0
+7ffea75e8000-7ffea7de8000 rw-p 00000000 00:00 0
+7ffea7de8000-7ffea7de9000 ---p 00000000 00:00 0
+7ffea7de9000-7ffea85e9000 rw-p 00000000 00:00 0
+7ffea85e9000-7ffea85ea000 ---p 00000000 00:00 0
+7ffea85ea000-7ffea8dea000 rw-p 00000000 00:00 0
+7ffea8dea000-7ffea8deb000 ---p 00000000 00:00 0
+7ffea8deb000-7ffea95eb000 rw-p 00000000 00:00 0
+7ffea95eb000-7ffea95ec000 ---p 00000000 00:00 0
+7ffea95ec000-7ffea9dec000 rw-p 00000000 00:00 0
+7ffea9dec000-7ffea9ded000 ---p 00000000 00:00 0
+7ffea9ded000-7ffeaa5ed000 rw-p 00000000 00:00 0
+7ffeaa5ed000-7ffeaa5ee000 ---p 00000000 00:00 0
+7ffeaa5ee000-7ffeaadee000 rw-p 00000000 00:00 0
+7ffeaadee000-7ffeaadef000 ---p 00000000 00:00 0
+7ffeaadef000-7ffeab5ef000 rw-p 00000000 00:00 0
+  [stack:13073]
+7ffeab5ef000-7ffeab5f0000 ---p 00000000 00:00 0
+7ffeab5f0000-7ffeabdf0000 rw-p 00000000 00:00 0
+7ffeabdf0000-7ffeabdf1000 ---p 00000000 00:00 0
+7ffeabdf1000-7ffeac5f1000 rw-p 00000000 00:00 0
+7ffeac5f1000-7ffeac5f2000 ---p 00000000 00:00 0
+7ffeac5f2000-7ffeacdf2000 rw-p 00000000 00:00 0
+7ffeacdf2000-7ffeacdf3000 ---p 00000000 00:00 0
+7ffeacdf3000-7ffead5f3000 rw-p 00000000 00:00 0
+7ffead5f3000-7ffead5f4000 ---p 00000000 00:00 0
+7ffead5f4000-7ffeaddf4000 rw-p 00000000 00:00 0
+7ffeaddf4000-7ffeaddf5000 ---p 00000000 00:00 0
+7ffeaddf5000-7ffeae5f5000 rw-p 00000000 00:00 0
+7ffeae5f5000-7ffeae5f6000 ---p 00000000 00:00 0
+7ffeae5f6000-7ffeaedf6000 rw-p 00000000 00:00 0
+7ffeaedf6000-7ffeaedf7000 ---p 00000000 00:00 0
+7ffeaedf7000-7ffeaf5f7000 rw-p 00000000 00:00 0
+7ffeaf5f7000-7ffeaf5f8000 ---p 00000000 00:00 0
+7ffeaf5f8000-7ffeafdf8000 rw-p 00000000 00:00 0
+7ffeafdf8000-7ffeafdf9000 ---p 00000000 00:00 0
+7ffeafdf9000-7ffeb05f9000 rw-p 00000000 00:00 0
+7ffeb05f9000-7ffeb05fa000 ---p 00000000 00:00 0
+7ffeb05fa000-7ffeb0dfa000 rw-p 00000000 00:00 0
+7ffeb0dfa000-7ffeb0dfb000 ---p 00000000 00:00 0
+7ffeb0dfb000-7ffeb15fb000 rw-p 00000000 00:00 0
+7ffeb15fb000-7ffeb15fc000 ---p 00000000 00:00 0
+7ffeb15fc000-7ffeb1dfc000 rw-p 00000000 00:00 0
+7ffeb1dfc000-7ffeb1dfd000 ---p 00000000 00:00 0
+7ffeb1dfd000-7ffeb25fd000 rw-p 00000000 00:00 0
+7ffeb25fd000-7ffeb25fe000 ---p 00000000 00:00 0
+7ffeb25fe000-7ffeb2dfe000 rw-p 00000000 00:00 0
+7ffeb2dfe000-7ffeb2dff000 ---p 00000000 00:00 0
+7ffeb2dff000-7ffeb35ff000 rw-p 00000000 00:00 0
+7ffeb35ff000-7ffeb3600000 ---p 00000000 00:00 0
+7ffeb3600000-7ffeb3e00000 rw-p 00000000 00:00 0
+7ffeb3e00000-7ffeb3e01000 ---p 00000000 00:00 0
+7ffeb3e01000-7ffeb4601000 rw-p 00000000 00:00 0
+7ffeb4601000-7ffeb4602000 ---p 00000000 00:00 0
+7ffeb4602000-7ffeb4e02000 rw-p 00000000 00:00 0
+7ffeb4e02000-7ffeb4e03000 ---p 00000000 00:00 0
+7ffeb4e03000-7ffeb5603000 rw-p 00000000 00:00 0
+7ffeb5603000-7ffeb5604000 ---p 00000000 00:00 0
+7ffeb5604000-7ffeb5e04000 rw-p 00000000 00:00 0
+7ffeb5e04000-7ffeb5e05000 ---p 00000000 00:00 0
+7ffeb5e05000-7ffeb6605000 rw-p 00000000 00:00 0
+7ffeb6605000-7ffeb6606000 ---p 00000000 00:00 0
+7ffeb6606000-7ffeb6e06000 rw-p 00000000 00:00 0
+7ffeb6e06000-7ffeb6e07000 ---p 00000000 00:00 0
+7ffeb6e07000-7ffeb7607000 rw-p 00000000 00:00 0
+7ffeb7607000-7ffeb7608000 ---p 00000000 00:00 0
+7ffeb7608000-7ffeb7e08000 rw-p 00000000 00:00 0
+7ffeb7e08000-7ffeb7e09000 ---p 00000000 00:00 0
+7ffeb7e09000-7ffeb8609000 rw-p 00000000 00:00 0
+7ffeb8609000-7ffeb860a000 ---p 00000000 00:00 0
+7ffeb860a000-7ffeb8e0a000 rw-p 00000000 00:00 0
+7ffeb8e0a000-7ffeb8e0b000 ---p 00000000 00:00 0
+7ffeb8e0b000-7ffeb960b000 rw-p 00000000 00:00 0
+7ffeb960b000-7ffeb960c000 ---p 00000000 00:00 0
+7ffeb960c000-7ffeb9e0c000 rw-p 00000000 00:00 0
+7ffeb9e0c000-7ffeb9e0d000 ---p 00000000 00:00 0
+7ffeb9e0d000-7ffeba60d000 rw-p 00000000 00:00 0
+7ffeba60d000-7ffeba60e000 ---p 00000000 00:00 0
+7ffeba60e000-7ffebae0e000 rw-p 00000000 00:00 0
+7ffebae0e000-7ffebae0f000 ---p 00000000 00:00 0
+7ffebae0f000-7ffebb60f000 rw-p 00000000 00:00 0
+7ffebb60f000-7ffebb610000 ---p 00000000 00:00 0
+7ffebb610000-7ffebbe10000 rw-p 00000000 00:00 0
+7ffebbe10000-7ffebbe11000 ---p 00000000 00:00 0
+7ffebbe11000-7ffebc611000 rw-p 00000000 00:00 0
+7ffebc611000-7ffebc612000 ---p 00000000 00:00 0
+7ffebc612000-7ffebce12000 rw-p 00000000 00:00 0
+7ffebce12000-7ffebce13000 ---p 00000000 00:00 0
+7ffebce13000-7ffebd613000 rw-p 00000000 00:00 0
+7ffebd613000-7ffebd614000 ---p 00000000 00:00 0
+7ffebd614000-7ffebde14000 rw-p 00000000 00:00 0
+7ffebde14000-7ffebde15000 ---p 00000000 00:00 0
+7ffebde15000-7ffebe615000 rw-p 00000000 00:00 0
+7ffebe615000-7ffebe616000 ---p 00000000 00:00 0
+7ffebe616000-7ffebee16000 rw-p 00000000 00:00 0
+7ffebee16000-7ffebee17000 ---p 00000000 00:00 0
+7ffebee17000-7ffebf617000 rw-p 00000000 00:00 0
+7ffebf617000-7ffebf618000 ---p 00000000 00:00 0
+7ffebf618000-7ffebfe18000 rw-p 00000000 00:00 0
+7ffebfe18000-7ffebfe19000 ---p 00000000 00:00 0
+7ffebfe19000-7ffec0619000 rw-p 00000000 00:00 0
+7ffec0619000-7ffec061a000 ---p 00000000 00:00 0
+7ffec061a000-7ffec0e1a000 rw-p 00000000 00:00 0
+7ffec0e1a000-7ffec0e1b000 ---p 00000000 00:00 0
+7ffec0e1b000-7ffec161b000 rw-p 00000000 00:00 0
+7ffec161b000-7ffec161c000 ---p 00000000 00:00 0
+7ffec161c000-7ffec1e1c000 rw-p 00000000 00:00 0
+7ffec1e1c000-7ffec1e1d000 ---p 00000000 00:00 0
+7ffec1e1d000-7ffec261d000 rw-p 00000000 00:00 0
+7ffec261d000-7ffec261e000 ---p 00000000 00:00 0
+7ffec261e000-7ffec2e1e000 rw-p 00000000 00:00 0
+7ffec2e1e000-7ffec2e1f000 ---p 00000000 00:00 0
+7ffec2e1f000-7ffec361f000 rw-p 00000000 00:00 0
+7ffec361f000-7ffec3620000 ---p 00000000 00:00 0
+7ffec3620000-7ffec3e20000 rw-p 00000000 00:00 0
+7ffec3e20000-7ffec3e21000 ---p 00000000 00:00 0
+7ffec3e21000-7ffec4621000 rw-p 00000000 00:00 0
+7ffec4621000-7ffec4622000 ---p 00000000 00:00 0
+7ffec4622000-7ffec4e22000 rw-p 00000000 00:00 0
+7ffec4e22000-7ffec4e23000 ---p 00000000 00:00 0
+7ffec4e23000-7ffec5623000 rw-p 00000000 00:00 0
+7ffec5623000-7ffec5624000 ---p 00000000 00:00 0
+7ffec5624000-7ffec5e24000 rw-p 00000000 00:00 0
+7ffec5e24000-7ffec5e25000 ---p 00000000 00:00 0
+7ffec5e25000-7ffec6625000 rw-p 00000000 00:00 0
+7ffec6625000-7ffec6626000 ---p 00000000 00:00 0
+7ffec6626000-7ffec6e26000 rw-p 00000000 00:00 0
+7ffec6e26000-7ffec6e27000 ---p 00000000 00:00 0
+7ffec6e27000-7ffec7627000 rw-p 00000000 00:00 0
+7ffec7627000-7ffec7628000 ---p 00000000 00:00 0
+7ffec7628000-7ffec7e28000 rw-p 00000000 00:00 0
+7ffec7e28000-7ffec7e29000 ---p 00000000 00:00 0
+7ffec7e29000-7ffec8629000 rw-p 00000000 00:00 0
+7ffec8629000-7ffec862a000 ---p 00000000 00:00 0
+7ffec862a000-7ffec8e2a000 rw-p 00000000 00:00 0
+7ffec8e2a000-7ffec8e2b000 ---p 00000000 00:00 0
+7ffec8e2b000-7ffec962b000 rw-p 00000000 00:00 0
+7ffec962b000-7ffec962c000 ---p 00000000 00:00 0
+7ffec962c000-7ffec9e2c000 rw-p 00000000 00:00 0
+7ffec9e2c000-7ffec9e2d000 ---p 00000000 00:00 0
+7ffec9e2d000-7ffeca62d000 rw-p 00000000 00:00 0
+7ffeca62d000-7ffeca62e000 ---p 00000000 00:00 0
+7ffeca62e000-7ffecae2e000 rw-p 00000000 00:00 0
+7ffecae2e000-7ffecae2f000 ---p 00000000 00:00 0
+7ffecae2f000-7ffecb62f000 rw-p 00000000 00:00 0
+7ffecb62f000-7ffecb630000 ---p 00000000 00:00 0
+7ffecb630000-7ffecbe30000 rw-p 00000000 00:00 0
+7ffecbe30000-7ffecbe31000 ---p 00000000 00:00 0
+7ffecbe31000-7ffecc631000 rw-p 00000000 00:00 0
+7ffecc631000-7ffecc632000 ---p 00000000 00:00 0
+7ffecc632000-7ffecce32000 rw-p 00000000 00:00 0
+7ffecce32000-7ffecce33000 ---p 00000000 00:00 0
+7ffecce33000-7ffecd633000 rw-p 00000000 00:00 0
+7ffecd633000-7ffecd634000 ---p 00000000 00:00 0
+7ffecd634000-7ffecde34000 rw-p 00000000 00:00 0
+7ffecde34000-7ffecde35000 ---p 00000000 00:00 0
+7ffecde35000-7ffece635000 rw-p 00000000 00:00 0
+7ffece635000-7ffece636000 ---p 00000000 00:00 0
+7ffece636000-7ffecee36000 rw-p 00000000 00:00 0
+7ffecee36000-7ffecee37000 ---p 00000000 00:00 0
+7ffecee37000-7ffecf637000 rw-p 00000000 00:00 0
+7ffecf637000-7ffecf638000 ---p 00000000 00:00 0
+7ffecf638000-7ffecfe38000 rw-p 00000000 00:00 0
+7ffecfe38000-7ffecfe39000 ---p 00000000 00:00 0
+7ffecfe39000-7ffed0639000 rw-p 00000000 00:00 0
+7ffed0639000-7ffed063a000 ---p 00000000 00:00 0
+7ffed063a000-7ffed0e3a000 rw-p 00000000 00:00 0
+7ffed0e3a000-7ffed0e3b000 ---p 00000000 00:00 0
+7ffed0e3b000-7ffed163b000 rw-p 00000000 00:00 0
+7ffed163b000-7ffed163c000 ---p 00000000 00:00 0
+7ffed163c000-7ffed1e3c000 rw-p 00000000 00:00 0
+7ffed1e3c000-7ffed1e3d000 ---p 00000000 00:00 0
+7ffed1e3d000-7ffed263d000 rw-p 00000000 00:00 0
+  [stack:12994]
+7ffed263d000-7ffed263e000 ---p 00000000 00:00 0
+7ffed263e000-7ffed2e3e000 rw-p 00000000 00:00 0
+7ffed2e3e000-7ffed2e3f000 ---p 00000000 00:00 0
+7ffed2e3f000-7ffed363f000 rw-p 00000000 00:00 0
+7ffed363f000-7ffed3640000 ---p 00000000 00:00 0
+7ffed3640000-7ffed3e40000 rw-p 00000000 00:00 0
+7ffed3e40000-7ffed3e41000 ---p 00000000 00:00 0
+7ffed3e41000-7ffed4641000 rw-p 00000000 00:00 0
+7ffed4641000-7ffed4642000 ---p 00000000 00:00 0
+7ffed4642000-7ffed4e42000 rw-p 00000000 00:00 0
+7ffed4e42000-7ffed4e43000 ---p 00000000 00:00 0
+7ffed4e43000-7ffed5643000 rw-p 00000000 00:00 0
+7ffed5643000-7ffed5644000 ---p 00000000 00:00 0
+7ffed5644000-7ffed5e44000 rw-p 00000000 00:00 0
+  [stack:12987]
+7ffed5e44000-7ffed5e45000 ---p 00000000 00:00 0
+7ffed5e45000-7ffed6645000 rw-p 00000000 00:00 0
+7ffed6645000-7ffed6646000 ---p 00000000 00:00 0
+7ffed6646000-7ffed6e46000 rw-p 00000000 00:00 0
+7ffed6e46000-7ffed6e47000 ---p 00000000 00:00 0
+7ffed6e47000-7ffed7647000 rw-p 00000000 00:00 0
+7ffed7647000-7ffed7648000 ---p 00000000 00:00 0
+7ffed7648000-7ffed7e48000 rw-p 00000000 00:00 0
+7ffed7e48000-7ffed7e49000 ---p 00000000 00:00 0
+7ffed7e49000-7ffed8649000 rw-p 00000000 00:00 0
+7ffed8649000-7ffed864a000 ---p 00000000 00:00 0
+7ffed864a000-7ffed8e4a000 rw-p 00000000 00:00 0
+7ffed8e4a000-7ffed8e4b000 ---p 00000000 00:00 0
+7ffed8e4b000-7ffed964b000 rw-p 00000000 00:00 0
+7ffed964b000-7ffed964c000 ---p 00000000 00:00 0
+7ffed964c000-7ffed9e4c000 rw-p 00000000 00:00 0
+7ffed9e4c000-7ffed9e4d000 ---p 00000000 00:00 0
+7ffed9e4d000-7ffeda64d000 rw-p 00000000 00:00 0
+7ffeda64d000-7ffeda64e000 ---p 00000000 00:00 0
+7ffeda64e000-7ffedae4e000 rw-p 00000000 00:00 0
+7ffedae4e000-7ffedae4f000 ---p 00000000 00:00 0
+7ffedae4f000-7ffedb64f000 rw-p 00000000 00:00 0
+7ffedb64f000-7ffedb650000 ---p 00000000 00:00 0
+7ffedb650000-7ffedbe50000 rw-p 00000000 00:00 0
+7ffedbe50000-7ffedbe51000 ---p 00000000 00:00 0
+7ffedbe51000-7ffedc651000 rw-p 00000000 00:00 0
+7ffedc651000-7ffedc652000 ---p 00000000 00:00 0
+7ffedc652000-7ffedce52000 rw-p 00000000 00:00 0
+7ffedce52000-7ffedce53000 ---p 00000000 00:00 0
+7ffedce53000-7ffedd653000 rw-p 00000000 00:00 0
+7ffedd653000-7ffedd654000 ---p 00000000 00:00 0
+7ffedd654000-7ffedde54000 rw-p 00000000 00:00 0
+7ffedde54000-7ffedde55000 ---p 00000000 00:00 0
+7ffedde55000-7ffede655000 rw-p 00000000 00:00 0
+7ffede655000-7ffede656000 ---p 00000000 00:00 0
+7ffede656000-7ffedee56000 rw-p 00000000 00:00 0
+7ffedee56000-7ffedee57000 ---p 00000000 00:00 0
+7ffedee57000-7ffedf657000 rw-p 00000000 00:00 0
+7ffedf657000-7ffedf658000 ---p 00000000 00:00 0
+7ffedf658000-7ffedfe58000 rw-p 00000000 00:00 0
+7ffedfe58000-7ffedfe59000 ---p 00000000 00:00 0
+7ffedfe59000-7ffee0659000 rw-p 00000000 00:00 0
+7ffee0659000-7ffee065a000 ---p 00000000 00:00 0
+7ffee065a000-7ffee0e5a000 rw-p 00000000 00:00 0
+7ffee0e5a000-7ffee0e5b000 ---p 00000000 00:00 0
+7ffee0e5b000-7ffee165b000 rw-p 00000000 00:00 0
+7ffee165b000-7ffee165c000 ---p 00000000 00:00 0
+7ffee165c000-7ffee1e5c000 rw-p 00000000 00:00 0
+7ffee1e5c000-7ffee1e5d000 ---p 00000000 00:00 0
+7ffee1e5d000-7ffee265d000 rw-p 00000000 00:00 0
+7ffee265d000-7ffee265e000 ---p 00000000 00:00 0
+7ffee265e000-7ffee2e5e000 rw-p 00000000 00:00 0
+7ffee2e5e000-7ffee2e5f000 ---p 00000000 00:00 0
+7ffee2e5f000-7ffee365f000 rw-p 00000000 00:00 0
+7ffee365f000-7ffee3660000 ---p 00000000 00:00 0
+7ffee3660000-7ffee3e60000 rw-p 00000000 00:00 0
+7ffee3e60000-7ffee3e61000 ---p 00000000 00:00 0
+7ffee3e61000-7ffee4661000 rw-p 00000000 00:00 0
+7ffee4661000-7ffee4662000 ---p 00000000 00:00 0
+7ffee4662000-7ffee4e62000 rw-p 00000000 00:00 0
+7ffee4e62000-7ffee4e63000 ---p 00000000 00:00 0
+7ffee4e63000-7ffee5663000 rw-p 00000000 00:00 0
+7ffee5663000-7ffee5664000 ---p 00000000 00:00 0
+7ffee5664000-7ffee5e64000 rw-p 00000000 00:00 0
+7ffee5e64000-7ffee5e65000 ---p 00000000 00:00 0
+7ffee5e65000-7ffee6665000 rw-p 00000000 00:00 0
+7ffee6665000-7ffee6666000 ---p 00000000 00:00 0
+7ffee6666000-7ffee6e66000 rw-p 00000000 00:00 0
+7ffee6e66000-7ffee6e67000 ---p 00000000 00:00 0
+7ffee6e67000-7ffee7667000 rw-p 00000000 00:00 0
+7ffee7667000-7ffee7668000 ---p 00000000 00:00 0
+7ffee7668000-7ffee7e68000 rw-p 00000000 00:00 0
+7ffee7e68000-7ffee7e69000 ---p 00000000 00:00 0
+7ffee7e69000-7ffee8669000 rw-p 00000000 00:00 0
+7ffee8669000-7ffee866a000 ---p 00000000 00:00 0
+7ffee866a000-7ffee8e6a000 rw-p 00000000 00:00 0
+7ffee8e6a000-7ffee8e6b000 ---p 00000000 00:00 0
+7ffee8e6b000-7ffee966b000 rw-p 00000000 00:00 0
+7ffee966b000-7ffee966c000 ---p 00000000 00:00 0
+7ffee966c000-7ffee9e6c000 rw-p 00000000 00:00 0
+7ffee9e6c000-7ffee9e6d000 ---p 00000000 00:00 0
+7ffee9e6d000-7ffeea66d000 rw-p 00000000 00:00 0
+7ffeea66d000-7ffeea66e000 ---p 00000000 00:00 0
+7ffeea66e000-7ffeeae6e000 rw-p 00000000 00:00 0
+7ffeeae6e000-7ffeeae6f000 ---p 00000000 00:00 0
+7ffeeae6f000-7ffeeb66f000 rw-p 00000000 00:00 0
+7ffeeb66f000-7ffeeb670000 ---p 00000000 00:00 0
+7ffeeb670000-7ffeebe70000 rw-p 00000000 00:00 0
+7ffeebe70000-7ffeebe71000 ---p 00000000 00:00 0
+7ffeebe71000-7ffeec671000 rw-p 00000000 00:00 0
+7ffeec671000-7ffeec672000 ---p 00000000 00:00 0
+7ffeec672000-7ffeece72000 rw-p 00000000 00:00 0
+7ffeece72000-7ffeece73000 ---p 00000000 00:00 0
+7ffeece73000-7ffeed673000 rw-p 00000000 00:00 0
+7ffeed673000-7ffeed674000 ---p 00000000 00:00 0
+7ffeed674000-7ffeede74000 rw-p 00000000 00:00 0
+7ffeede74000-7ffeede75000 ---p 00000000 00:00 0
+7ffeede75000-7ffeee675000 rw-p 00000000 00:00 0
+7ffeee675000-7ffeee676000 ---p 00000000 00:00 0
+7ffeee676000-7ffeeee76000 rw-p 00000000 00:00 0
+7ffeeee76000-7ffeeee77000 ---p 00000000 00:00 0
+7ffeeee77000-7ffeef677000 rw-p 00000000 00:00 0
+7ffeef677000-7ffeef678000 ---p 00000000 00:00 0
+7ffeef678000-7ffeefe78000 rw-p 00000000 00:00 0
+7ffeefe78000-7ffeefe79000 ---p 00000000 00:00 0
+7ffeefe79000-7ffef0679000 rw-p 00000000 00:00 0
+7ffef0679000-7ffef067a000 ---p 00000000 00:00 0
+7ffef067a000-7ffef0e7a000 rw-p 00000000 00:00 0
+7ffef0e7a000-7ffef0e7b000 ---p 00000000 00:00 0
+7ffef0e7b000-7ffef167b000 rw-p 00000000 00:00 0
+7ffef167b000-7ffef167c000 ---p 00000000 00:00 0
+7ffef167c000-7ffef1e7c000 rw-p 00000000 00:00 0
+7ffef1e7c000-7ffef1e7d000 ---p 00000000 00:00 0
+7ffef1e7d000-7ffef267d000 rw-p 00000000 00:00 0
+7ffef267d000-7ffef267e000 ---p 00000000 00:00 0
+7ffef267e000-7ffef2e7e000 rw-p 00000000 00:00 0
+7ffef2e7e000-7ffef2e7f000 ---p 00000000 00:00 0
+7ffef2e7f000-7ffef367f000 rw-p 00000000 00:00 0
+7ffef367f000-7ffef3680000 ---p 00000000 00:00 0
+7ffef3680000-7ffef3e80000 rw-p 00000000 00:00 0
+7ffef3e80000-7ffef3e81000 ---p 00000000 00:00 0
+7ffef3e81000-7ffef4681000 rw-p 00000000 00:00 0
+7ffef4681000-7ffef4682000 ---p 00000000 00:00 0
+7ffef4682000-7ffef4e82000 rw-p 00000000 00:00 0
+7ffef4e82000-7ffef4e83000 ---p 00000000 00:00 0
+7ffef4e83000-7ffef5683000 rw-p 00000000 00:00 0
+7ffef5683000-7ffef5684000 ---p 00000000 00:00 0
+7ffef5684000-7ffef5e84000 rw-p 00000000 00:00 0
+7ffef5e84000-7ffef5e85000 ---p 00000000 00:00 0
+7ffef5e85000-7ffef6685000 rw-p 00000000 00:00 0
+7ffef6685000-7ffef6686000 ---p 00000000 00:00 0
+7ffef6686000-7ffef6e86000 rw-p 00000000 00:00 0
+7ffef6e86000-7ffef6e87000 ---p 00000000 00:00 0
+7ffef6e87000-7ffef7687000 rw-p 00000000 00:00 0
+7ffef7687000-7ffef7688000 ---p 00000000 00:00 0
+7ffef7688000-7ffef7e88000 rw-p 00000000 00:00 0
+7ffef7e88000-7ffef7e89000 ---p 00000000 00:00 0
+7ffef7e89000-7ffef8689000 rw-p 00000000 00:00 0
+7ffef8689000-7ffef868a000 ---p 00000000 00:00 0
+7ffef868a000-7ffef8e8a000 rw-p 00000000 00:00 0
+7ffef8e8a000-7ffef8e8b000 ---p 00000000 00:00 0
+7ffef8e8b000-7ffef968b000 rw-p 00000000 00:00 0
+7ffef968b000-7ffef968c000 ---p 00000000 00:00 0
+7ffef968c000-7ffef9e8c000 rw-p 00000000 00:00 0
+7ffef9e8c000-7ffef9e8d000 ---p 00000000 00:00 0
+7ffef9e8d000-7ffefa68d000 rw-p 00000000 00:00 0
+7ffefa68d000-7ffefa68e000 ---p 00000000 00:00 0
+7ffefa68e000-7ffefae8e000 rw-p 00000000 00:00 0
+7ffefae8e000-7ffefae8f000 ---p 00000000 00:00 0
+7ffefae8f000-7ffefb68f000 rw-p 00000000 00:00 0
+7ffefb68f000-7ffefb690000 ---p 00000000 00:00 0
+7ffefb690000-7ffefbe90000 rw-p 00000000 00:00 0
+7ffefbe90000-7ffefbe91000 ---p 00000000 00:00 0
+7ffefbe91000-7ffefc691000 rw-p 00000000 00:00 0
+7ffefc691000-7ffefc692000 ---p 00000000 00:00 0
+7ffefc692000-7ffefce92000 rw-p 00000000 00:00 0
+7ffefce92000-7ffefce93000 ---p 00000000 00:00 0
+7ffefce93000-7ffefd693000 rw-p 00000000 00:00 0
+7ffefd693000-7ffefd694000 ---p 00000000 00:00 0
+7ffefd694000-7ffefde94000 rw-p 00000000 00:00 0
+7ffefde94000-7ffefde95000 ---p 00000000 00:00 0
+7ffefde95000-7ffefe695000 rw-p 00000000 00:00 0
+7ffefe695000-7ffefe696000 ---p 00000000 00:00 0
+7ffefe696000-7ffefee96000 rw-p 00000000 00:00 0
+7ffefee96000-7ffefee97000 ---p 00000000 00:00 0
+7ffefee97000-7ffeff697000 rw-p 00000000 00:00 0
+7ffeff697000-7ffeff698000 ---p 00000000 00:00 0
+7ffeff698000-7ffeffe98000 rw-p 00000000 00:00 0
+7ffeffe98000-7ffeffe99000 ---p 00000000 00:00 0
+7ffeffe99000-7fff00699000 rw-p 00000000 00:00 0
+7fff00699000-7fff0069a000 ---p 00000000 00:00 0
+7fff0069a000-7fff00e9a000 rw-p 00000000 00:00 0
+7fff00e9a000-7fff00e9b000 ---p 00000000 00:00 0
+7fff00e9b000-7fff0169b000 rw-p 00000000 00:00 0
+7fff0169b000-7fff0169c000 ---p 00000000 00:00 0
+7fff0169c000-7fff01e9c000 rw-p 00000000 00:00 0
+7fff01e9c000-7fff01e9d000 ---p 00000000 00:00 0
+7fff01e9d000-7fff0269d000 rw-p 00000000 00:00 0
+7fff0269d000-7fff0269e000 ---p 00000000 00:00 0
+7fff0269e000-7fff02e9e000 rw-p 00000000 00:00 0
+7fff02e9e000-7fff02e9f000 ---p 00000000 00:00 0
+7fff02e9f000-7fff0369f000 rw-p 00000000 00:00 0
+7fff0369f000-7fff036a0000 ---p 00000000 00:00 0
+7fff036a0000-7fff03ea0000 rw-p 00000000 00:00 0
+7fff03ea0000-7fff03ea1000 ---p 00000000 00:00 0
+7fff03ea1000-7fff046a1000 rw-p 00000000 00:00 0
+7fff046a1000-7fff046a2000 ---p 00000000 00:00 0
+7fff046a2000-7fff04ea2000 rw-p 00000000 00:00 0
+7fff04ea2000-7fff04ea3000 ---p 00000000 00:00 0
+7fff04ea3000-7fff056a3000 rw-p 00000000 00:00 0
+7fff056a3000-7fff056a4000 ---p 00000000 00:00 0
+7fff056a4000-7fff05ea4000 rw-p 00000000 00:00 0
+7fff05ea4000-7fff05ea5000 ---p 00000000 00:00 0
+7fff05ea5000-7fff066a5000 rw-p 00000000 00:00 0
+7fff066a5000-7fff066a6000 ---p 00000000 00:00 0
+7fff066a6000-7fff06ea6000 rw-p 00000000 00:00 0
+7fff06ea6000-7fff06ea7000 ---p 00000000 00:00 0
+7fff06ea7000-7fff076a7000 rw-p 00000000 00:00 0
+7fff076a7000-7fff076a8000 ---p 00000000 00:00 0
+7fff076a8000-7fff07ea8000 rw-p 00000000 00:00 0
+7fff07ea8000-7fff07ea9000 ---p 00000000 00:00 0
+7fff07ea9000-7fff086a9000 rw-p 00000000 00:00 0
+7fff086a9000-7fff086aa000 ---p 00000000 00:00 0
+7fff086aa000-7fff08eaa000 rw-p 00000000 00:00 0
+7fff08eaa000-7fff08eab000 ---p 00000000 00:00 0
+7fff08eab000-7fff096ab000 rw-p 00000000 00:00 0
+7fff096ab000-7fff096ac000 ---p 00000000 00:00 0
+7fff096ac000-7fff09eac000 rw-p 00000000 00:00 0
+7fff09eac000-7fff09ead000 ---p 00000000 00:00 0
+7fff09ead000-7fff0a6ad000 rw-p 00000000 00:00 0
+7fff0a6ad000-7fff0a6ae000 ---p 00000000 00:00 0
+7fff0a6ae000-7fff0aeae000 rw-p 00000000 00:00 0
+7fff0aeae000-7fff0aeaf000 ---p 00000000 00:00 0
+7fff0aeaf000-7fff0b6af000 rw-p 00000000 00:00 0
+7fff0b6af000-7fff0b6b0000 ---p 00000000 00:00 0
+7fff0b6b0000-7fff0beb0000 rw-p 00000000 00:00 0
+7fff0beb0000-7fff0beb1000 ---p 00000000 00:00 0
+7fff0beb1000-7fff0c6b1000 rw-p 00000000 00:00 0
+7fff0c6b1000-7fff0c6b2000 ---p 00000000 00:00 0
+7fff0c6b2000-7fff0ceb2000 rw-p 00000000 00:00 0
+7fff0ceb2000-7fff0ceb3000 ---p 00000000 00:00 0
+7fff0ceb3000-7fff0d6b3000 rw-p 00000000 00:00 0
+7fff0d6b3000-7fff0d6b4000 ---p 00000000 00:00 0
+7fff0d6b4000-7fff0deb4000 rw-p 00000000 00:00 0
+7fff0deb4000-7fff0deb5000 ---p 00000000 00:00 0
+7fff0deb5000-7fff0e6b5000 rw-p 00000000 00:00 0
+7fff0e6b5000-7fff0e6b6000 ---p 00000000 00:00 0
+7fff0e6b6000-7fff0eeb6000 rw-p 00000000 00:00 0
+7fff0eeb6000-7fff0eeb7000 ---p 00000000 00:00 0
+7fff0eeb7000-7fff0f6b7000 rw-p 00000000 00:00 0
+7fff0f6b7000-7fff0f6b8000 ---p 00000000 00:00 0
+7fff0f6b8000-7fff0feb8000 rw-p 00000000 00:00 0
+7fff0feb8000-7fff0feb9000 ---p 00000000 00:00 0
+7fff0feb9000-7fff106b9000 rw-p 00000000 00:00 0
+7fff106b9000-7fff106ba000 ---p 00000000 00:00 0
+7fff106ba000-7fff10eba000 rw-p 00000000 00:00 0
+7fff10eba000-7fff10ebb000 ---p 00000000 00:00 0
+7fff10ebb000-7fff116bb000 rw-p 00000000 00:00 0
+7fff116bb000-7fff116bc000 ---p 00000000 00:00 0
+7fff116bc000-7fff11ebc000 rw-p 00000000 00:00 0
+7fff11ebc000-7fff11ebd000 ---p 00000000 00:00 0
+7fff11ebd000-7fff126bd000 rw-p 00000000 00:00 0
+7fff126bd000-7fff126be000 ---p 00000000 00:00 0
+7fff126be000-7fff12ebe000 rw-p 00000000 00:00 0
+7fff12ebe000-7fff12ebf000 ---p 00000000 00:00 0
+7fff12ebf000-7fff136bf000 rw-p 00000000 00:00 0
+7fff136bf000-7fff136c0000 ---p 00000000 00:00 0
+7fff136c0000-7fff13ec0000 rw-p 00000000 00:00 0
+7fff13ec0000-7fff13ec1000 ---p 00000000 00:00 0
+7fff13ec1000-7fff146c1000 rw-p 00000000 00:00 0
+7fff146c1000-7fff146c2000 ---p 00000000 00:00 0
+7fff146c2000-7fff14ec2000 rw-p 00000000 00:00 0
+7fff14ec2000-7fff14ec3000 ---p 00000000 00:00 0
+7fff14ec3000-7fff156c3000 rw-p 00000000 00:00 0
+7fff156c3000-7fff156c4000 ---p 00000000 00:00 0
+7fff156c4000-7fff15ec4000 rw-p 00000000 00:00 0
+7fff15ec4000-7fff15ec5000 ---p 00000000 00:00 0
+7fff15ec5000-7fff166c5000 rw-p 00000000 00:00 0
+7fff166c5000-7fff166c6000 ---p 00000000 00:00 0
+7fff166c6000-7fff16ec6000 rw-p 00000000 00:00 0
+7fff16ec6000-7fff16ec7000 ---p 00000000 00:00 0
+7fff16ec7000-7fff176c7000 rw-p 00000000 00:00 0
+7fff176c7000-7fff176c8000 ---p 00000000 00:00 0
+7fff176c8000-7fff17ec8000 rw-p 00000000 00:00 0
+7fff17ec8000-7fff17ec9000 ---p 00000000 00:00 0
+7fff17ec9000-7fff186c9000 rw-p 00000000 00:00 0
+7fff186c9000-7fff186ca000 ---p 00000000 00:00 0
+7fff186ca000-7fff18eca000 rw-p 00000000 00:00 0
+7fff18eca000-7fff18ecb000 ---p 00000000 00:00 0
+7fff18ecb000-7fff196cb000 rw-p 00000000 00:00 0
+7fff196cb000-7fff196cc000 ---p 00000000 00:00 0
+7fff196cc000-7fff19ecc000 rw-p 00000000 00:00 0
+7fff19ecc000-7fff19ecd000 ---p 00000000 00:00 0
+7fff19ecd000-7fff1a6cd000 rw-p 00000000 00:00 0
+7fff1a6cd000-7fff1a6ce000 ---p 00000000 00:00 0
+7fff1a6ce000-7fff1aece000 rw-p 00000000 00:00 0
+7fff1aece000-7fff1aecf000 ---p 00000000 00:00 0
+7fff1aecf000-7fff1b6cf000 rw-p 00000000 00:00 0
+7fff1b6cf000-7fff1b6d0000 ---p 00000000 00:00 0
+7fff1b6d0000-7fff1bed0000 rw-p 00000000 00:00 0
+7fff1bed0000-7fff1bed1000 ---p 00000000 00:00 0
+7fff1bed1000-7fff1c6d1000 rw-p 00000000 00:00 0
+7fff1c6d1000-7fff1c6d2000 ---p 00000000 00:00 0
+7fff1c6d2000-7fff1ced2000 rw-p 00000000 00:00 0
+7fff1ced2000-7fff1ced3000 ---p 00000000 00:00 0
+7fff1ced3000-7fff1d6d3000 rw-p 00000000 00:00 0
+7fff1d6d3000-7fff1d6d4000 ---p 00000000 00:00 0
+7fff1d6d4000-7fff1ded4000 rw-p 00000000 00:00 0
+7fff1ded4000-7fff1ded5000 ---p 00000000 00:00 0
+7fff1ded5000-7fff1e6d5000 rw-p 00000000 00:00 0
+7fff1e6d5000-7fff1e6d6000 ---p 00000000 00:00 0
+7fff1e6d6000-7fff1eed6000 rw-p 00000000 00:00 0
+7fff1eed6000-7fff1eed7000 ---p 00000000 00:00 0
+7fff1eed7000-7fff1f6d7000 rw-p 00000000 00:00 0
+7fff1f6d7000-7fff1f6d8000 ---p 00000000 00:00 0
+7fff1f6d8000-7fff1fed8000 rw-p 00000000 00:00 0
+7fff1fed8000-7fff1fed9000 ---p 00000000 00:00 0
+7fff1fed9000-7fff206d9000 rw-p 00000000 00:00 0
+7fff206d9000-7fff206da000 ---p 00000000 00:00 0
+7fff206da000-7fff20eda000 rw-p 00000000 00:00 0
+7fff20eda000-7fff20edb000 ---p 00000000 00:00 0
+7fff20edb000-7fff216db000 rw-p 00000000 00:00 0
+7fff216db000-7fff216dc000 ---p 00000000 00:00 0
+7fff216dc000-7fff21edc000 rw-p 00000000 00:00 0
+7fff21edc000-7fff21edd000 ---p 00000000 00:00 0
+7fff21edd000-7fff226dd000 rw-p 00000000 00:00 0
+7fff226dd000-7fff226de000 ---p 00000000 00:00 0
+7fff226de000-7fff22ede000 rw-p 00000000 00:00 0
+7fff22ede000-7fff22edf000 ---p 00000000 00:00 0
+7fff22edf000-7fff236df000 rw-p 00000000 00:00 0
+7fff236df000-7fff236e0000 ---p 00000000 00:00 0
+7fff236e0000-7fff23ee0000 rw-p 00000000 00:00 0
+7fff23ee0000-7fff23ee1000 ---p 00000000 00:00 0
+7fff23ee1000-7fff246e1000 rw-p 00000000 00:00 0
+7fff246e1000-7fff246e2000 ---p 00000000 00:00 0
+7fff246e2000-7fff24ee2000 rw-p 00000000 00:00 0
+7fff24ee2000-7fff24ee3000 ---p 00000000 00:00 0
+7fff24ee3000-7fff256e3000 rw-p 00000000 00:00 0
+7fff256e3000-7fff256e4000 ---p 00000000 00:00 0
+7fff256e4000-7fff25ee4000 rw-p 00000000 00:00 0
+7fff25ee4000-7fff25ee5000 ---p 00000000 00:00 0
+7fff25ee5000-7fff266e5000 rw-p 00000000 00:00 0
+7fff266e5000-7fff266e6000 ---p 00000000 00:00 0
+7fff266e6000-7fff26ee6000 rw-p 00000000 00:00 0
+7fff26ee6000-7fff26ee7000 ---p 00000000 00:00 0
+7fff26ee7000-7fff276e7000 rw-p 00000000 00:00 0
+7fff276e7000-7fff276e8000 ---p 00000000 00:00 0
+7fff276e8000-7fff27ee8000 rw-p 00000000 00:00 0
+7fff27ee8000-7fff27ee9000 ---p 00000000 00:00 0
+7fff27ee9000-7fff286e9000 rw-p 00000000 00:00 0
+7fff286e9000-7fff286ea000 ---p 00000000 00:00 0
+7fff286ea000-7fff28eea000 rw-p 00000000 00:00 0
+Program received signal SIGABRT, Aborted.
+[Switching to Thread 0x7fffeec86700 (LWP 12501)]
+0x00007ffff0303349 in __GI_raise (sig=sig@entry=6) at
+../nptl/sysdeps/unix/sysv/linux/raise.c:56
+56      return INLINE_SYSCALL (tgkill, 3, pid, selftid, sig);
+(gdb) bt
+#0  0x00007ffff0303349 in __GI_raise (sig=sig@entry=6) at
+../nptl/sysdeps/unix/sysv/linux/raise.c:56
+#1  0x00007ffff0304748 in __GI_abort () at abort.c:89
+#2  0x00007ffff03411d4 in __libc_message (do_abort=do_abort@entry=2,
+fmt=fmt@entry=0x7ffff04334b8 "*** Error in `%s': %s: 0x%s ***\n") at
+../sysdeps/posix/libc_fatal.c:175
+#3  0x00007ffff034695e in malloc_printerr (action=3,
+str=0x7ffff042f608 "free(): invalid size", ptr=<optimized out>) at
+malloc.c:4991
+#4  0x00007ffff0347666 in _int_free (av=<optimized out>, p=<optimized
+out>, have_lock=0) at malloc.c:3837
+#5  0x00007ffff290dec8 in g_free () from /usr/lib/../lib64/libglib-2.0.so.0
+#6  0x00000000004bce3f in ags_list_free_and_free_link
+(list=0x7fffb438b000) at ./src/ags/lib/ags_list.c:29
+#7  0x000000000046a6fc in ags_audio_signal_finalize
+(gobject=0x7fffb4006800) at ./src/ags/audio/ags_audio_signal.c:329
+#8  0x00007ffff2df1282 in g_object_unref () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#9  0x000000000046c702 in ags_recall_recycling_set_property
+(gobject=0x7fffd07954f0, prop_id=<optimized out>,
+value=0x7fffeec83d50, param_spec=0x7fffc4002190) at
+./src/ags/audio/ags_recall_recycling.c:367
+#10 0x00007ffff2dec876 in object_set_property () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#11 0x00007ffff2dee774 in g_object_set_valist () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#12 0x00007ffff2deef54 in g_object_set () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#13 0x000000000046c286 in
+ags_recall_recycling_destination_add_audio_signal_callback
+(destination=<optimized out>, audio_signal=0x7fffb4006900,
+recall_recycling=0x7fffd07954f0) at
+./src/ags/audio/ags_recall_recycling.c:728
+#14 0x00007ffff2de986a in g_cclosure_marshal_VOID__OBJECT () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#15 0x00007ffff2de4d5f in g_closure_invoke () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#16 0x00007ffff2e01f24 in signal_emit_unlocked_R () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#17 0x00007ffff2e00f7c in g_signal_emit_valist () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#18 0x00007ffff2e014cf in g_signal_emit () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#19 0x00000000004686cb in ags_recycling_add_audio_signal
+(recycling=0x7fffe00abcf0, audio_signal=0x7fffb4006900) at
+./src/ags/audio/ags_recycling.c:278
+#20 0x00000000004815e0 in ags_loop_channel_run_create_audio_signals
+(loop_channel_run=0x7fffe000aae0) at
+./src/ags/audio/recall/ags_loop_channel_run.c:607
+#21 0x00007ffff2de8607 in g_cclosure_marshal_VOID(unsigned int0_t,
+void) () from /usr/lib/../lib64/libgobject-2.0.so.0
+#22 0x00007ffff2de4ff7 in _g_closure_invoke_va () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#23 0x00007ffff2e002f9 in g_signal_emit_valist () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#24 0x00007ffff2e014cf in g_signal_emit () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#25 0x000000000047d6ea in ags_count_beats_audio_run_sequencer_loop
+(count_beats_audio_run=0x7fffd005ace0, run_order=0) at
+./src/ags/audio/recall/ags_count_beats_audio_run.c:861
+#26 0x000000000047d8eb in
+ags_count_beats_audio_run_sequencer_alloc_output_callback
+(delay_audio_run=<optimized out>, run_order=0, delay=<optimized out>,
+attack=<optimized out>, count_beats_audio_run=0x7fffd005ace0)
+    at ./src/ags/audio/recall/ags_count_beats_audio_run.c:948
+#27 0x00007ffff2de4d5f in g_closure_invoke () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#28 0x00007ffff2e01c62 in signal_emit_unlocked_R () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#29 0x00007ffff2e00f7c in g_signal_emit_valist () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#30 0x00007ffff2e014cf in g_signal_emit () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#31 0x0000000000476ff5 in ags_delay_audio_run_sequencer_alloc_output
+(delay_audio_run=0x7fffd078c010, run_order=0, delay=<optimized out>,
+attack=684) at ./src/ags/audio/recall/ags_delay_audio_run.c:574
+#32 0x000000000047736a in ags_delay_audio_run_run_pre
+(recall=<optimized out>) at
+./src/ags/audio/recall/ags_delay_audio_run.c:420
+#33 0x00007ffff2de8607 in g_cclosure_marshal_VOID(unsigned int0_t,
+void) () from /usr/lib/../lib64/libgobject-2.0.so.0
+#34 0x00007ffff2de5434 in g_type_class_meta_marshalv () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#35 0x00007ffff2de4ff7 in _g_closure_invoke_va () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#36 0x00007ffff2e002f9 in g_signal_emit_valist () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#37 0x00007ffff2e014cf in g_signal_emit () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#38 0x0000000000471ce6 in ags_recall_run_pre (recall=0x7fffd078c010)
+at ./src/ags/audio/ags_recall.c:1239
+#39 0x000000000046fd69 in ags_audio_play
+(audio=audio@entry=0x7fffe00039f0,
+recall_id=recall_id@entry=0x7fffd00ed2c0, stage=0) at
+./src/ags/audio/ags_audio.c:2252
+#40 0x000000000048ca3b in ags_channel_recursive_play_output
+(output=output@entry=0x7fffe00c2470,
+output_recall_id=output_recall_id@entry=0x7fffd00ed2c0) at
+./src/ags/audio/ags_channel.c:2011
+#41 0x000000000048cfee in ags_channel_recursive_play
+(channel=channel@entry=0x7fffe00c2470, recall_id=0x7fffd00ed2c0,
+stage=stage@entry=0) at ./src/ags/audio/ags_channel.c:2088
+#42 0x00000000004c324f in ags_audio_loop_play_audio
+(audio_loop=audio_loop@entry=0x902fd0) at
+./src/ags/thread/ags_audio_loop.c:779
+#43 0x00000000004c3458 in ags_audio_loop_run (thread=<optimized out>)
+at ./src/ags/thread/ags_audio_loop.c:540
+#44 0x00007ffff2de7dd0 in g_cclosure_marshal_VOID__VOIDv () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#45 0x00007ffff2de5434 in g_type_class_meta_marshalv () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#46 0x00007ffff2de4ff7 in _g_closure_invoke_va () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#47 0x00007ffff2e002f9 in g_signal_emit_valist () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#48 0x00007ffff2e014cf in g_signal_emit () from
+/usr/lib/../lib64/libgobject-2.0.so.0
+#49 0x00000000004c16e6 in ags_thread_run (thread=0x902fd0) at
+./src/ags/thread/ags_thread.c:1914
+#50 0x00000000004c19c7 in ags_thread_loop (ptr=<optimized out>) at
+./src/ags/thread/ags_thread.c:1804
+#51 0x00007ffff245f032 in start_thread (arg=0x7fffeec86700) at
+pthread_create.c:309
+#52 0x00007ffff03b3d0d in clone () at
+../sysdeps/unix/sysv/linux/x86_64/clone.S:111
