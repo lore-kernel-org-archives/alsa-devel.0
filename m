@@ -1,57 +1,56 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 07/10 v2] ASoC: rsnd: enable SRC setting via DT
-Date: Sat, 28 Jun 2014 14:40:46 +0100
-Message-ID: <20140628134046.GW2520@sirena.org.uk>
+Subject: Re: [PATCH 06/10 v2] ASoC: rsnd: enable DVC when capture
+Date: Sat, 28 Jun 2014 14:41:36 +0100
+Message-ID: <20140628134136.GX2520@sirena.org.uk>
 References: <87d2e6zjhf.wl%kuninori.morimoto.gx@gmail.com>
  <8761jstphc.wl%kuninori.morimoto.gx@gmail.com>
- <87vbrssar8.wl%kuninori.morimoto.gx@renesas.com>
+ <87wqc8sasb.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FclElvQKoGCylS3A"
+	protocol="application/pgp-signature"; boundary="VBg0eA7b+gOCQW/G"
 Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <87vbrssar8.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87wqc8sasb.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-sh-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---FclElvQKoGCylS3A
+--VBg0eA7b+gOCQW/G
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jun 22, 2014 at 05:57:42PM -0700, Kuninori Morimoto wrote:
+On Sun, Jun 22, 2014 at 05:57:04PM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Current DVC can be enabled only when playback,
+> but, this came from misunderstanding.
+> It is not correct.
 
->  SRC subnode properties:
-> -no properties at this point
-> +- convert-rate			: SRC convert rate if needed
+Applied up to here, thanks.
 
-It's not clear to me why this is something that we'd control in the
-device tree.  Are there some systems which can't support this, if the
-hardware can do it it's hard to see why someone wouldn't want to use it
-(and why it wouldn't be a runtime decision anyway).
-
---FclElvQKoGCylS3A
+--VBg0eA7b+gOCQW/G
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTrsXbAAoJELSic+t+oim9je4P/3xoI/WUlQsITk3mdzSB/OyL
-ezrq1kfEhIyoqozvE7cuZCzItcxnk5paWvQ6DRp2gBwEIGiIhPOona9ktXiehjob
-aFEw8AhASjNeti9TF54tNpc5KyEpXDa7NOH/3wgbWelAFDnjJhZr1WbQkYD5v4VD
-XR13+iGAmHSTZfsyvWnPTtmHu/qtquV4ILe7/PWrvkyFAB2imXZ6BbpdrHToMj/L
-HoQOXvYlG2SDQoRtexeFDB2t2GAS2TlKnkWcyVtm5K6xLBAgmTng4K9EFnZVXLxx
-Q/ix1aHL5DscPBwbAOn5/GDPa9x8+N6y2nLVRoHZEnowDw4d4WKvqC8YXMFZUzea
-yVVtw3WqHwspgZqDq7NjgSZ3YsLnqHwNAVpitGkR0cOYC7apncwqgSAaSJv4c/1r
-GIxE+8X2vQPfvNVjfQErbph7w603Yhej9pDPNfU+VJyouppJkQXye+8m8HS5Uyv6
-sxhuGZYutD8g2Gtk45kdgjBUgWsXNUp/sBw6Z+hTzUglFHK5PJzW4zWh51JHHrE+
-jkZ9C4G+q6vcZOAp62B8kvCG+fOOE6IFX9FdrJP8CooWjb/QxbgnVPIqcShU3YzN
-g/gbTnXOrjVun5zCNpbE9SjPrirjfzBZGU2IICKzr+Ve1wUgdv7+45QnrDWFLE9P
-P00PsauilS6WlBNjsw3F
-=2QJu
+iQIcBAEBAgAGBQJTrsYNAAoJELSic+t+oim9xlIP/j3rtjF/AfgU5d1AJbbxgZ8e
+/+PQ3ZpTiK1nI9/s/lLc17bhhpEX7tq3ReSJWJwFVtwoMAABXxiKO5Z1wkugtkUM
+2wytNgSiBs7gFw5oZkEIY+esfnC/ErcBoHNMOAXowK5umqbrg3qkZ53ahhyG/gJm
+LryCTFSOvoBRlHStbvy1Aq5blguWssM4G7Hn2T9/uqviABUPVajsfVd/AETGV3/M
+HmmYao9YZofhUeTLXiOH7ik/OqM3iUVg7tdtTGzmuJGoG/8fs53CHM5TcE0R2ZcS
+h3vUgXhkej5WK5DhnhR9K6xEDdYdzs8n7ylmZOcTksySMWtmX2qx9jrZ0aIVV/35
+NCdxfGImCql+QG3d1/BMTwkrFLwwuRSyMKBpBikwdNoSY0nd7vR25z2jg7g1wnYB
+ivoPzMPdJ1UnNSSgOX4IghvXKM1f0HG5dGFe2NY+Vn4V3TxBHUmjpy86tWSZOM2a
+T0kM272uNZGx0V/5nCprDiDWswpoZfSSNQzhhFSHw2JOl35Qk4SxyEzKhkkO7/ku
+/WidXg+lCJsJ4HKVulI+4mDT+ZAZWEOe9BMr8Fq06QZHjD5BuMTdsX5caNf3RQC1
+1sHztXxd3FZWE7q9CaMk9Rz2YpLj3trQH//7S6i5htHnunTAKuRG/JORDP0YGWcg
+vZWEVjAi+l3OFyMe9In7
+=q/rY
 -----END PGP SIGNATURE-----
 
---FclElvQKoGCylS3A--
+--VBg0eA7b+gOCQW/G--
