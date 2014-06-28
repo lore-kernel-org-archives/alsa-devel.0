@@ -1,16 +1,19 @@
-From: "Max Schmidt" <schmidti444@web.de>
-Subject: Constant delay between starting a playback and a
-	capture stream
-Date: Fri, 27 Jun 2014 21:27:23 +0200
-Message-ID: <trinity-f377e59a-71a6-447c-859a-f2188926e1f9-1403897243118@3capp-webde-bs11>
-References: <trinity-76c63013-83c5-446c-a160-bc9ed56a1161-1403540443117@3capp-webde-bs03>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/7] ASoC: fix debugfs directory creation
+	bug
+Date: Sat, 28 Jun 2014 13:46:42 +0100
+Message-ID: <20140628124642.GR2520@sirena.org.uk>
+References: <20140626142231.GR32514@n2100.arm.linux.org.uk>
+ <E1X0AZe-0003i7-0z@rmk-PC.arm.linux.org.uk>
+ <53ACDAB7.5080703@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2758822820161653377=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B43126535D
- for <alsa-devel@alsa-project.org>; Fri, 27 Jun 2014 21:27:23 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00E382610B1
+ for <alsa-devel@alsa-project.org>; Sat, 28 Jun 2014 14:47:33 +0200 (CEST)
+In-Reply-To: <53ACDAB7.5080703@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,69 +23,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Russell King <rmk+kernel@arm.linux.org.uk>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-ICAgSGkgYWxsLAoKICAgSSBmaXJzdCB3cm90ZSB0aGlzIGVtYWlsIHRvIHRoZSBBTFNBIHVzZXIg
-bWFpbGluZyBsaXN0IHNpbmNlIEkgZGlkbid0CiAgIGtub3cgaWYgaXQncyBhcHByb3ByaWF0ZSB0
-byB3cml0ZSB0byB0aGUgQUxTQSBkZXYgbGlzdCBhcyBJJ20gbm90CiAgIGRpcmVjdGx5IGludm9s
-dmVkIGluIHRoZSBwcm9qZWN0LiBJIHdhcyBzdWdnZXN0ZWQgdG8gYmV0dGVyIHRyeSBpdAogICBo
-ZXJlLiBTbywgSSdtIHNvcnJ5IGlmIHRoaXMgZW1haWwgaXMgYW4gaW5jb252ZW5pZW5jZS4KCiAg
-IFNlZSBiZWxvdyBteSBvcmlnaW5hbCBwb3N0LgogICBUaGFua3MgYW5kIGdyZWV0aW5ncyEKCiAg
-IEdlc2VuZGV0OiBNb250YWcsIDIzLiBKdW5pIDIwMTQgdW0gMTg6MjAgVWhyCiAgIFZvbjogIk1h
-eCBTY2htaWR0IiA8c2NobWlkdGk0NDRAd2ViLmRlPgogICBBbjogYWxzYS11c2VyQGxpc3RzLnNv
-dXJjZWZvcmdlLm5ldAogICBCZXRyZWZmOiBDb25zdGFudCBkZWxheSBiZXR3ZWVuIHN0YXJ0aW5n
-IGEgcGxheWJhY2sgYW5kIGEgY2FwdHVyZQogICBzdHJlYW0KICAgSGV5IGFsbCwKCiAgIGZpcnN0
-IGEgYmlnIGhlbGxvIHRvIGV2ZXJ5b25lIHNpbmNlIEknbSBuZXcgdG8gdGhpcyBtYWlsaW5nLWxp
-c3QuCiAgIEkndmUgaGFkIGEgbG9vayByZWdhcmRpbmcgdGhpcyBpc3N1ZSBoZXJlIGFuZCBpbiBn
-ZW5lcmVsbCBpbiB0aGUKICAgaW50ZXJuZXQgYnV0IGRpZG4ndCBmaW5kIGFueXRoaW5nIHJlbGF0
-aW5nLiBTbywgc29ycnkgaWYgSSBvdmVybG9va2VkCiAgIHNvbWV0aGluZy4KCiAgIEkndmUgZ290
-IGEgQmVhZ2xlQm9uZSBCbGFjayAoQVJNIENvcnRleCBBIDggwrVQKSB3aXRoIGFuIEF1ZGlvLUNh
-cGUKICAgKHVzaW5nIE1jQXNwIGFuZCBBTFNBLURhdmluY2ktRHJpdmVycykgYW5kIHdyb3RlIGFu
-IG1tYXAgYmFzZWQKICAgcGxheWJhY2stY2FwdHVyZSBhcHBsaWNhdGlvbiAoYm90aCBkZXZpY2Vz
-ICJodzowLDAiKS4gVGhlIGltcG9ydGFudAogICB0aGluZyBpcyB0aGF0IHRoZSBhcHBsaWNhdGlv
-biBuZWVkcyBhIGNvbnN0YW50IGRlbGF5IChub3QgbmVjZXNzYXJpbHkKICAgc21hbGwpIGJldHdl
-ZW4gdGhlIHN0YXJ0IG9mIHRoZSBwbGF5YmFjayBhbmQgdGhlIGNhcHR1cmUgc3RyZWFtLiBTbwog
-ICB3aGVuIGxvb3BpbmcgYmFjayB0aGUgc2lnbmFsIHRvIHRoZSBtaWNyb2ZvbmUgdGhlIGZpcnN0
-IHBsYXllZCBzYW1wbGUKICAgZS5nLiBhbHdheXMgKGV2ZW4gYWZ0ZXIgYSByZXN0YXJ0IG9mIHRo
-ZSBCZWFnbGVCb25lIG9yIHRoZSBhcHApIGhhcyBhCiAgIGRlbGF5IGluIHRoZSBjYXB0dXJlIHN0
-cmVhbSBvZiBleGFjdGx5IDgwIHNhbXBsZXMgKHdoZW4gZS5nLiBwbGF5ZWQKICAgd2l0aCA0OCBr
-SHopLCAgYW5kIG9uY2UgbWVhc3VyZWQgY2FuIGJlIHNlZW4gYXMgY29uc3RhbnQuCiAgIFRvIHJl
-YWxpemUgdGhhdCBJIHVzZSB0aGUgQUxTQSBBUEkgZnVuY3Rpb24gInNuZF9wY21fbGluayhjX2hh
-bmRsZSwKICAgcF9oYW5kbGUpIi4gV2hlbiBzdGFydGluZyB0aGUgcGxheWJhY2sgc3RyZWFtIChh
-bmQgdGhlcmVmb3JlIGxpbmtlZAogICBjYXB0dXJlIHN0cmVhbSBhcyB3ZWxsbCkgbWFudWFsbHkg
-aXRzIGJ1ZmZlciBhbHJlYWR5IGlzIGZpbGxlZC4gVGhlcmUKICAgaXMgbm8gYnVmZmVyIHVuZGVy
-cnVuL292ZXJydW4gcmVjb3ZlcnkuCiAgIEl0IGFscmVhZHkgd29ya3MgcXVpdGUgZmluZSBidXQg
-SSBzdGlsbCBoYXZlIHNvbWUgcXVlc3Rpb25zIGFuZCBpdAogICB3b3VsZCBiZSByZWFsbHkgbmlj
-ZSBpZiBzb21lb25lIGNhbiBoZWxwOgoKICAgMSkgTG9va2luZyBhdCBhIHBsb3Qgb2YgbXVsdGlw
-bGUgbWVhc3VyZW1lbnRzIG9mIGxvb3BlZCBiYWNrIGFuZAogICBjYXB0dXJlZCBzcXVhcmUgd2F2
-ZXMgKG9yIHNpbmVzKSB0aGVyZSBzdGlsbCBpcyBhIGppdHRlciBvZiBhYm91dCB0d28KICAgdG8g
-Zm91ciBzYW1wbGVzIChhdCA0OCBrSHo7IHdoaWNoIGlzIGFib3V0IDQwIHRvIDgwIG1zKSwgbm8g
-bWF0dGVyIGlmIEkKICAgcnVuIGl0IGFzIFJULWFwcCAoZW5lcmd5IHNhdmUgbW9kZXMgZXRjLiBk
-aXNhYmxlZCwganVzdCBpbXBvcnRhbnQKICAgUHJvY2Vzc2VzIGhhdmUgYSBoaWdoZXIgUHJpb3Jp
-dHkgZS5nLiBFRE1BKSBvciBub3JtYWwgYXBwLgogICBQbGVhc2UgY29ycmVjdCBtZSBpZiBJJ20g
-d3JvbmcsIGJ1dCBhcyBmYXIgYXMgSSB1bmRlcnN0YW5kIHdoZW4gdGhlCiAgIHN0cmVhbXMgYXJl
-IGxpbmtlZCwgYXQgc3RhcnQgdGhlIHByb2Nlc3NvciBpcyBnb2luZyB0aHJvdWdoIGEgbGlua2Vk
-CiAgIGxpc3QgdHJpZ2dlcmluZyBhbGwgbGlua2VkIHN0cmVhbXMuIEFuZCB0aGUgdHJpZ2dlciBz
-dGFydCBpcyBhbiBhdG9taWMKICAgcHJvY2VzcyBzbyBzaG91bGRuJ3QgZ2V0IGludGVycnVwdGVk
-LiBTaG91bGRuJ3QgaXQgYWx3YXlzIHRha2UgdGhlIHNhbWUKICAgdGltZSBiZXR3ZWVuIHN0YXJ0
-aW5nIHRoZSBwbGF5YmFjayBhbmQgY2FwdHVyZSBzdHJlYW0gdGhlbj8gQW5kIGlmIHllcywKICAg
-d2hlcmUgY291bGQgdGhlIHZhcmlhYmxlIHN0YXJ0IGRlbGF5IGNvbWUgZnJvbT8KCiAgIDIpIExv
-b2tpbmcgYXQgdGhlIHRpbWUgc3RhbXAgb2YgYm90aCBzdHJlYW1zIGl0IHRlbGxzIHRoYXQgdGhl
-CiAgIGRpZmZlcmVuY2UgYmV0d2VlbiB0aGUgc3RhcnQgdHJpZ2dlciBub3JtYWxseSBpcyBiZXR3
-ZWVuIDIgdG8gNyBtcy4KICAgV2hhdCwgSSB0aGluaywgZG9lcyBub3QgcmVhbGx5IGZpdCB0byB0
-aGUgb2JzZXJ2YXRpb24gd3JpdHRlbiBhYm92ZQogICBzaW5jZSB0aGVuIHRoZXJlIG5vcm1hbGx5
-IHNob3VsZCBiZSBubyBiaWcgc2FtcGxlIGppdHRlciBhdCA0OCBrSHouIEFyZQogICB0aGUgdGlt
-ZSBzdGFtcCB2YWx1ZXMgbm90IHByZWNpc2UgZW5vdWdoIChhY3R1YWxseSBob3cgcHJlY2lzZSBh
-cmUgdGhlCiAgIHRpbWUgc3RhbXBzLCBqdXN0IHRoYXQgdGhleSBjYW4gc2hvdyBtaWNyb3NlY29u
-ZHMgZG9lcyBub3QgaW1wbHkgdGhhdAogICB0aGUgcmVzb2x1dGlvbiByZWFsbHkgaXMgbWljcm9z
-ZWNvbmRzLCBvciBhbSBJIHdyb25nPykgb3IgYXJlIHRoZXkKICAgY29ycmVjdCBhbmQgdGhlIGRp
-ZmZlcmVuY2UgaW4gbGF0ZW5jeSBzZWVuIGluIG1lYXN1cmVkIHBsb3RzIGNvbWVzIGZyb20KICAg
-c29tZXdoZXJlIGVsc2U/IERlbGF5IGR1ZSB0byBIYXJkd2FyZSBzaG91bGQgYmUgY29uc3RhbnQg
-c28gdGhlIGlzc3VlCiAgIG11c3QgaGF2ZSBzb21ldGhpbmcgdG8gZG8gd2l0aCBBTFNBIG9yIExp
-bnV4LgoKCiAgIFdvdWxkIGJlIG5pY2UgaWYgc29tZW9uZSBjYW4gaGVscCBvciBoYXMgYW4gaWRl
-YSEKICAgVGlwcHMgZm9yIGFuIGltcHJvdmVtZW50IGFyZSB3bGVjb21lIGFzIHdlbGwhCiAgIE1h
-bnkgdGhhbmtzIGFuZCBjaGVlcnMhCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+
+--===============2758822820161653377==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="W/1XGRQlv2BMqnS3"
+Content-Disposition: inline
+
+
+--W/1XGRQlv2BMqnS3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jun 27, 2014 at 04:45:11AM +0200, Lars-Peter Clausen wrote:
+> On 06/26/2014 04:22 PM, Russell King wrote:
+> >Avoid creating duplicate directories by prefixing codecs and platforms
+> >with their separate identifiers.  This avoids snd-soc-dummy (which can
+> >appear both as a dummy platform and a dummy codec on the same card)
+> >from clashing.
+
+> Do we actually want to create debugfs entries for the snd-soc-dummies? There
+> shouldn't be any meaningful information in there.
+
+On the one hand they're virtual things that we probably should be hiding
+but then again part of what we're trying to do is stub things out as
+they would be normally so special casing potentically causes problems.
+
+> If we want to and if we change the naming scheme of the debugfs entries
+> anyway we should also add the component name to the entry name. This fixes a
+> issue with devices that register multiple components.
+
+> The other thing is that we are working on generalizing the ASoC code and
+> getting rid of the distinction between CODECs and platforms. Which means
+> there won't really a way to get the prefix anymore soon.
+
+Right, these are both issues.  However I think the patch is OK for now,
+it does avoid an actual problem so I'll apply it for now - we can
+further improve it later.
+
+--W/1XGRQlv2BMqnS3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTrrkpAAoJELSic+t+oim9WLIP/2JCQ0qQoS6nC23431U/Jke4
+JQm5LcDp0nsLF+WAs7CkHOCMs8gKvGgf4RnBAO8/AOkpvb14Sf57bP/1qsyd8Yaz
+8+u4vN4Sr2hEt1BwL6LsziJS1WwjQreGf+aj++g0i0WLQ3vfJf0qLeF/4p2fGjwT
+dndsQ2cdwsEr5AM1qD4OOfXJueF6BMUcXaGdHPOFw+thwVtSNNCIcT8JL4J4roL3
+zq8myB6u3WgvuiUNXnbK57QpkiPfnpizcqjiAPcqWRgJVUIwjTeNLZRnLCVh7e12
+LRoY1JI2aHR5jDwzrvLxeiHeTlzFAcuRrHI/QoHwf7JrZdpV4z9bUzynr1VYHgVI
+QaYRYJGLd5wTrkVyXMTDejsUsF5cCPPgOC187RE1/hrlDOvUWDkPkvZwQu9AvmSh
+U9hTcTSrdshaL6azRrGHLaL5hS6jN7Nultq9IR01TWLKMWbZP8C0Qt1bVCX+c++G
+aF9JLikHwYelTRu7iL5mMVSAbWuD1idXymfF3bz0IU0NPa8Ijz/Uwn99op5FqUQ3
+bzVIAxkaIj2bSEGc6m9VNOCRH7FfEPE3FGfyuaDqDzvcmggpAK1ExWxgPTB9dCNg
+OFQhAFCfdbJqgCW5+x5bqmvrCJNaxatE8w/NUoaaEoFlMteSmxqK9c0j1Ykb826L
+S1m74iC0O3XOuN+gk1vy
+=bxCC
+-----END PGP SIGNATURE-----
+
+--W/1XGRQlv2BMqnS3--
+
+--===============2758822820161653377==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2758822820161653377==--
