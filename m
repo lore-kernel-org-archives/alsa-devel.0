@@ -1,60 +1,180 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Constant delay between starting a playback and a
- capture stream
-Date: Sun, 29 Jun 2014 20:21:02 +0200
-Message-ID: <53B0590E.5010808@ladisch.de>
-References: <trinity-76c63013-83c5-446c-a160-bc9ed56a1161-1403540443117@3capp-webde-bs03>
- <trinity-f377e59a-71a6-447c-859a-f2188926e1f9-1403897243118@3capp-webde-bs11>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id E7ED6264EBF
- for <alsa-devel@alsa-project.org>; Sun, 29 Jun 2014 20:21:47 +0200 (CEST)
-In-Reply-To: <trinity-f377e59a-71a6-447c-859a-f2188926e1f9-1403897243118@3capp-webde-bs11>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Max Schmidt <schmidti444@web.de>, alsa-devel@alsa-project.org
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH 00/13] Remove mach-kirkwood and mach-dove
+Date: Sun, 29 Jun 2014 22:59:47 +0200
+Message-ID: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
+Return-path: <linux-leds-owner@vger.kernel.org>
+Sender: linux-leds-owner@vger.kernel.org
+To: Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>
+Cc: Gregory Clement <gregory.clement@free-electrons.com>, rmk+kernel@arm.linux.org.uk, Andrew Lunn <andrew@lunn.ch>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-TWF4IFNjaG1pZHQgd3JvdGU6Cj4gSSd2ZSBnb3QgYSBCZWFnbGVCb25lIEJsYWNrIChBUk0gQ29y
-dGV4IEEgOCDCtVApIHdpdGggYW4gQXVkaW8tQ2FwZQo+ICh1c2luZyBNY0FzcCBhbmQgQUxTQS1E
-YXZpbmNpLURyaXZlcnMpIGFuZCB3cm90ZSBhbiBtbWFwIGJhc2VkCj4gcGxheWJhY2stY2FwdHVy
-ZSBhcHBsaWNhdGlvbiAoYm90aCBkZXZpY2VzICJodzowLDAiKS4gVGhlIGltcG9ydGFudAo+IHRo
-aW5nIGlzIHRoYXQgdGhlIGFwcGxpY2F0aW9uIG5lZWRzIGEgY29uc3RhbnQgZGVsYXkgKG5vdCBu
-ZWNlc3NhcmlseQo+IHNtYWxsKSBiZXR3ZWVuIHRoZSBzdGFydCBvZiB0aGUgcGxheWJhY2sgYW5k
-IHRoZSBjYXB0dXJlIHN0cmVhbS4KPiBUbyByZWFsaXplIHRoYXQgSSB1c2UgdGhlIEFMU0EgQVBJ
-IGZ1bmN0aW9uICJzbmRfcGNtX2xpbmsoY19oYW5kbGUsCj4gcF9oYW5kbGUpIi4KPgo+IDEpIExv
-b2tpbmcgYXQgYSBwbG90IG9mIG11bHRpcGxlIG1lYXN1cmVtZW50cyBvZiBsb29wZWQgYmFjayBh
-bmQKPiBjYXB0dXJlZCBzcXVhcmUgd2F2ZXMgKG9yIHNpbmVzKSB0aGVyZSBzdGlsbCBpcyBhIGpp
-dHRlciBvZiBhYm91dCB0d28KPiB0byBmb3VyIHNhbXBsZXMgKGF0IDQ4IGtIejsgd2hpY2ggaXMg
-YWJvdXQgNDAgdG8gODAgbXMpLCBubyBtYXR0ZXIgaWYgSQo+IHJ1biBpdCBhcyBSVC1hcHAgKGVu
-ZXJneSBzYXZlIG1vZGVzIGV0Yy4gZGlzYWJsZWQsIGp1c3QgaW1wb3J0YW50Cj4gUHJvY2Vzc2Vz
-IGhhdmUgYSBoaWdoZXIgUHJpb3JpdHkgZS5nLiBFRE1BKSBvciBub3JtYWwgYXBwLgo+IFBsZWFz
-ZSBjb3JyZWN0IG1lIGlmIEknbSB3cm9uZywgYnV0IGFzIGZhciBhcyBJIHVuZGVyc3RhbmQgd2hl
-biB0aGUKPiBzdHJlYW1zIGFyZSBsaW5rZWQsIGF0IHN0YXJ0IHRoZSBwcm9jZXNzb3IgaXMgZ29p
-bmcgdGhyb3VnaCBhIGxpbmtlZAo+IGxpc3QgdHJpZ2dlcmluZyBhbGwgbGlua2VkIHN0cmVhbXMu
-IEFuZCB0aGUgdHJpZ2dlciBzdGFydCBpcyBhbiBhdG9taWMKPiBwcm9jZXNzIHNvIHNob3VsZG4n
-dCBnZXQgaW50ZXJydXB0ZWQuCgpZZXMuCgo+IFNob3VsZG4ndCBpdCBhbHdheXMgdGFrZSB0aGUg
-c2FtZSB0aW1lIGJldHdlZW4gc3RhcnRpbmcgdGhlIHBsYXliYWNrCj4gYW5kIGNhcHR1cmUgc3Ry
-ZWFtIHRoZW4/IEFuZCBpZiB5ZXMsIHdoZXJlIGNvdWxkIHRoZSB2YXJpYWJsZSBzdGFydAo+IGRl
-bGF5IGNvbWUgZnJvbT8KCkhhcmR3YXJlIGFjY2Vzc2VzIGNhbiBiZSBxdWl0ZSBub25kZXRlcm1p
-bmlzdGljLiAgQW5kIGlmIHRoZSBkcml2ZXIgaXMKbm90IHdyaXR0ZW4gcHJvcGVybHksIHRoZSBz
-dGFydCB0cmlnZ2VyIHdpbGwgZG8gYWxsIHRoZSBETUEgc3RyZWFtCmluaXRpYWxpemF0aW9uIHRo
-YXQgc2hvdWxkIGhhdmUgYmVlbiBkb25lIHdoZW4gcHJlcGFyaW5nIHRoZSBkZXZpY2UuCihtY2Fz
-cF9zdGFydF90eCgpIGhhcyBhIGJ1c3kgbG9vcCB3YWl0aW5nIGZvciB0aGUgZGV2aWNlLikKClRo
-ZXJlIGlzIGhhcmR3YXJlIHRoYXQgYWN0dWFsbHkgc3VwcG9ydHMgc3RhcnRpbmcgdHdvIHN0cmVh
-bXMgYXQgZXhhY3RseQp0aGUgc2FtZSB0aW1lIChieSBzZXR0aW5nIHR3byBiaXRzIGluIHRoZSBz
-YW1lIHJlZ2lzdGVyKS4gIE9idmlvdXNseSwKdGhpcyBoYXJkd2FyZSBvciBpdHMgZHJpdmVyIGRv
-ZXNuJ3Qgc3VwcG9ydCB0aGlzLgoKClJlZ2FyZHMsCkNsZW1lbnMKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This patchset removes arch/arm/mach-kirkwood and arch/arm/mach-dove.
+These SoCs are now supported in arch/arm/mach-mvebu using device tree.
+
+Change the dependencies for a number of drivers, either to use
+ARCH_MVEBU where the drivers are generic, or MACH_KIRKWOOD and
+MACH_DOVE where the drivers are specific to a SoC.
+
+
+Andrew Lunn (13):
+  ARM: Kirkwood: Remove mach-kirkwood
+  ARM: Dove: Remove mach-dove
+  sound: ASoC: kirkwood: Remove unused drivers
+  sound: ASoC: kirkwood: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
+  cpuidle: kirkwood: Replace ARCH_KIRKWOOD dependency
+  ata: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
+  thermal: Replace ARCH_KIRKWOOD and ARCH_DOVE dependency
+  leds: Replace ARCH_KIRKWOOD dependency
+  PCI: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
+  phy: Replace ARCH_KIRKWOOD and ARCH_DOVE dependency
+  rtc: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
+  watchdog: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
+  Remove ARCH_DOVE dependency
+
+ arch/arm/Kconfig                                  |  32 -
+ arch/arm/Kconfig.debug                            |  10 +-
+ arch/arm/Makefile                                 |   2 -
+ arch/arm/boot/dts/Makefile                        |   5 +-
+ arch/arm/configs/dove_defconfig                   | 146 -----
+ arch/arm/configs/kirkwood_defconfig               | 181 ------
+ arch/arm/mach-dove/Kconfig                        |  25 -
+ arch/arm/mach-dove/Makefile                       |   5 -
+ arch/arm/mach-dove/Makefile.boot                  |   3 -
+ arch/arm/mach-dove/cm-a510.c                      |  97 ---
+ arch/arm/mach-dove/common.c                       | 411 ------------
+ arch/arm/mach-dove/common.h                       |  49 --
+ arch/arm/mach-dove/dove-db-setup.c                | 103 ---
+ arch/arm/mach-dove/include/mach/bridge-regs.h     |  57 --
+ arch/arm/mach-dove/include/mach/dove.h            | 190 ------
+ arch/arm/mach-dove/include/mach/entry-macro.S     |  33 -
+ arch/arm/mach-dove/include/mach/hardware.h        |  19 -
+ arch/arm/mach-dove/include/mach/irqs.h            |  96 ---
+ arch/arm/mach-dove/include/mach/pm.h              |  72 ---
+ arch/arm/mach-dove/include/mach/uncompress.h      |  36 --
+ arch/arm/mach-dove/irq.c                          | 178 ------
+ arch/arm/mach-dove/mpp.c                          | 162 -----
+ arch/arm/mach-dove/mpp.h                          | 196 ------
+ arch/arm/mach-dove/pcie.c                         | 220 -------
+ arch/arm/mach-kirkwood/Kconfig                    | 111 ----
+ arch/arm/mach-kirkwood/Makefile                   |  14 -
+ arch/arm/mach-kirkwood/Makefile.boot              |   3 -
+ arch/arm/mach-kirkwood/board-dt.c                 | 223 -------
+ arch/arm/mach-kirkwood/common.c                   | 746 ----------------------
+ arch/arm/mach-kirkwood/common.h                   |  74 ---
+ arch/arm/mach-kirkwood/d2net_v2-setup.c           | 231 -------
+ arch/arm/mach-kirkwood/include/mach/bridge-regs.h |  86 ---
+ arch/arm/mach-kirkwood/include/mach/entry-macro.S |  34 -
+ arch/arm/mach-kirkwood/include/mach/hardware.h    |  14 -
+ arch/arm/mach-kirkwood/include/mach/irqs.h        |  65 --
+ arch/arm/mach-kirkwood/include/mach/kirkwood.h    | 142 ----
+ arch/arm/mach-kirkwood/include/mach/uncompress.h  |  46 --
+ arch/arm/mach-kirkwood/irq.c                      |  82 ---
+ arch/arm/mach-kirkwood/lacie_v2-common.c          | 114 ----
+ arch/arm/mach-kirkwood/lacie_v2-common.h          |  16 -
+ arch/arm/mach-kirkwood/mpp.c                      |  43 --
+ arch/arm/mach-kirkwood/mpp.h                      | 348 ----------
+ arch/arm/mach-kirkwood/netxbig_v2-setup.c         | 422 ------------
+ arch/arm/mach-kirkwood/openrd-setup.c             | 255 --------
+ arch/arm/mach-kirkwood/pcie.c                     | 296 ---------
+ arch/arm/mach-kirkwood/pm.c                       |  76 ---
+ arch/arm/mach-kirkwood/pm.h                       |  26 -
+ arch/arm/mach-kirkwood/rd88f6192-nas-setup.c      |  89 ---
+ arch/arm/mach-kirkwood/rd88f6281-setup.c          | 128 ----
+ arch/arm/mach-kirkwood/t5325-setup.c              | 216 -------
+ arch/arm/mach-kirkwood/ts219-setup.c              | 142 ----
+ arch/arm/mach-kirkwood/ts41x-setup.c              | 186 ------
+ arch/arm/mach-kirkwood/tsx1x-common.c             | 113 ----
+ arch/arm/mach-kirkwood/tsx1x-common.h             |   7 -
+ arch/arm/mm/Kconfig                               |   2 +-
+ drivers/ata/Kconfig                               |   4 +-
+ drivers/cpuidle/Kconfig.arm                       |   2 +-
+ drivers/leds/Kconfig                              |   4 +-
+ drivers/mmc/host/Kconfig                          |   2 +-
+ drivers/pci/host/Kconfig                          |   2 +-
+ drivers/phy/Kconfig                               |   2 +-
+ drivers/rtc/Kconfig                               |   2 +-
+ drivers/thermal/Kconfig                           |   4 +-
+ drivers/watchdog/Kconfig                          |   2 +-
+ sound/soc/kirkwood/Kconfig                        |  19 +-
+ sound/soc/kirkwood/Makefile                       |   4 -
+ sound/soc/kirkwood/kirkwood-openrd.c              | 109 ----
+ sound/soc/kirkwood/kirkwood-t5325.c               | 116 ----
+ 68 files changed, 20 insertions(+), 6930 deletions(-)
+ delete mode 100644 arch/arm/configs/dove_defconfig
+ delete mode 100644 arch/arm/configs/kirkwood_defconfig
+ delete mode 100644 arch/arm/mach-dove/Kconfig
+ delete mode 100644 arch/arm/mach-dove/Makefile
+ delete mode 100644 arch/arm/mach-dove/Makefile.boot
+ delete mode 100644 arch/arm/mach-dove/cm-a510.c
+ delete mode 100644 arch/arm/mach-dove/common.c
+ delete mode 100644 arch/arm/mach-dove/common.h
+ delete mode 100644 arch/arm/mach-dove/dove-db-setup.c
+ delete mode 100644 arch/arm/mach-dove/include/mach/bridge-regs.h
+ delete mode 100644 arch/arm/mach-dove/include/mach/dove.h
+ delete mode 100644 arch/arm/mach-dove/include/mach/entry-macro.S
+ delete mode 100644 arch/arm/mach-dove/include/mach/hardware.h
+ delete mode 100644 arch/arm/mach-dove/include/mach/irqs.h
+ delete mode 100644 arch/arm/mach-dove/include/mach/pm.h
+ delete mode 100644 arch/arm/mach-dove/include/mach/uncompress.h
+ delete mode 100644 arch/arm/mach-dove/irq.c
+ delete mode 100644 arch/arm/mach-dove/mpp.c
+ delete mode 100644 arch/arm/mach-dove/mpp.h
+ delete mode 100644 arch/arm/mach-dove/pcie.c
+ delete mode 100644 arch/arm/mach-kirkwood/Kconfig
+ delete mode 100644 arch/arm/mach-kirkwood/Makefile
+ delete mode 100644 arch/arm/mach-kirkwood/Makefile.boot
+ delete mode 100644 arch/arm/mach-kirkwood/board-dt.c
+ delete mode 100644 arch/arm/mach-kirkwood/common.c
+ delete mode 100644 arch/arm/mach-kirkwood/common.h
+ delete mode 100644 arch/arm/mach-kirkwood/d2net_v2-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/bridge-regs.h
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/entry-macro.S
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/hardware.h
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/irqs.h
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/kirkwood.h
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/uncompress.h
+ delete mode 100644 arch/arm/mach-kirkwood/irq.c
+ delete mode 100644 arch/arm/mach-kirkwood/lacie_v2-common.c
+ delete mode 100644 arch/arm/mach-kirkwood/lacie_v2-common.h
+ delete mode 100644 arch/arm/mach-kirkwood/mpp.c
+ delete mode 100644 arch/arm/mach-kirkwood/mpp.h
+ delete mode 100644 arch/arm/mach-kirkwood/netxbig_v2-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/openrd-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/pcie.c
+ delete mode 100644 arch/arm/mach-kirkwood/pm.c
+ delete mode 100644 arch/arm/mach-kirkwood/pm.h
+ delete mode 100644 arch/arm/mach-kirkwood/rd88f6192-nas-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/rd88f6281-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/t5325-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/ts219-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/ts41x-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/tsx1x-common.c
+ delete mode 100644 arch/arm/mach-kirkwood/tsx1x-common.h
+ delete mode 100644 sound/soc/kirkwood/kirkwood-openrd.c
+ delete mode 100644 sound/soc/kirkwood/kirkwood-t5325.c
+
+
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+Cc: linux-pm@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>
+Cc: linux-ide@vger.kernel.org
+Cc: Zhang Rui <rui.zhang@intel.com>
+Cc: linux-pm@vger.kernel.org
+Cc: Bryan Wu <cooloney@gmail.com>
+Cc: Richard Purdie <rpurdie@rpsys.net>
+Cc: linux-leds@vger.kernel.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org
+Cc: Kishon Vijay Abraham I <kishon@ti.com>
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: rtc-linux@googlegroups.com
+Cc: Wim Van Sebroeck <wim@iguana.be>
+Cc: linux-watchdog@vger.kernel.org
+
+-- 
+2.0.0
