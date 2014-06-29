@@ -1,147 +1,60 @@
-From: Jan Kiszka <jan.kiszka@web.de>
-Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs for more Thinkpads
- with Conexant codec
-Date: Sun, 29 Jun 2014 13:33:38 +0200
-Message-ID: <53AFF992.5030403@web.de>
-References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Constant delay between starting a playback and a
+ capture stream
+Date: Sun, 29 Jun 2014 20:21:02 +0200
+Message-ID: <53B0590E.5010808@ladisch.de>
+References: <trinity-76c63013-83c5-446c-a160-bc9ed56a1161-1403540443117@3capp-webde-bs03>
+ <trinity-f377e59a-71a6-447c-859a-f2188926e1f9-1403897243118@3capp-webde-bs11>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="q8vmVHoes7wLPVuAAe5uf02lp4XqxmLIq"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: hui.wang@canonical.com, alex.hung@canonical.com, yk@canonical.com, david.henningsson@canonical.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id E7ED6264EBF
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jun 2014 20:21:47 +0200 (CEST)
+In-Reply-To: <trinity-f377e59a-71a6-447c-859a-f2188926e1f9-1403897243118@3capp-webde-bs11>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Max Schmidt <schmidti444@web.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---q8vmVHoes7wLPVuAAe5uf02lp4XqxmLIq
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-On 2013-11-27 07:47, Hui Wang wrote:
-> Most Thinkpad Edge series laptops use conexant codec, so far although
-> the codecs have different minor Vendor Id and minor Subsystem Id,
-> they all belong to the cxt5066 family, this change can make the
-> mute/mic-mute LEDs support more generic among cxt_5066 family.
->=20
-> This design refers to the similar solution for the realtek codec
-> ALC269 family in the patch_realtek.c.
->=20
-> Cc: Alex Hung <alex.hung@canonical.com>
-> Cc: David Henningsson <david.henningsson@canonical.com>
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
-> ---
->  sound/pci/hda/patch_conexant.c | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
->=20
-> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conex=
-ant.c
-> index c205bb1..1f2717f 100644
-> --- a/sound/pci/hda/patch_conexant.c
-> +++ b/sound/pci/hda/patch_conexant.c
-> @@ -3244,9 +3244,29 @@ enum {
->  #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
-> =20
->  #include <linux/thinkpad_acpi.h>
-> +#include <acpi/acpi.h>
-> =20
->  static int (*led_set_func)(int, bool);
-> =20
-> +static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void *co=
-ntext,
-> +				 void **rv)
-> +{
-> +	bool *found =3D context;
-> +	*found =3D true;
-> +	return AE_OK;
-> +}
-> +
-> +static bool is_thinkpad(struct hda_codec *codec)
-> +{
-> +	bool found =3D false;
-> +	if (codec->subsystem_id >> 16 !=3D 0x17aa)
-> +		return false;
-> +	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, N=
-ULL)) && found)
-> +		return true;
-> +	found =3D false;
-> +	return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb, &found=
-, NULL)) && found;
-> +}
-> +
->  static void update_tpacpi_mute_led(void *private_data, int enabled)
->  {
->  	struct hda_codec *codec =3D private_data;
-> @@ -3279,6 +3299,8 @@ static void cxt_fixup_thinkpad_acpi(struct hda_co=
-dec *codec,
->  	bool removefunc =3D false;
-> =20
->  	if (action =3D=3D HDA_FIXUP_ACT_PROBE) {
-> +		if (!is_thinkpad(codec))
-> +			return;
->  		if (!led_set_func)
->  			led_set_func =3D symbol_request(tpacpi_led_set);
->  		if (!led_set_func) {
-> @@ -3494,6 +3516,7 @@ static const struct snd_pci_quirk cxt5066_fixups[=
-] =3D {
->  	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),=
-
->  	SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310", CXT_FIXUP_STEREO=
-_DMIC),
->  	SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205", CXT_FIXUP_STEREO_DMIC),
-> +	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI),
->  	SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004", CXT_PINCFG_LEMOTE_A1004=
-),
->  	SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205", CXT_PINCFG_LEMOTE_A1205=
-),
->  	{}
->=20
-
-Starting with this patch, my Lenovo Thinkpad X121e netbook (it's without
-any mute LEDs, BTW, there is only a power LED) considers the power
-button as hard reset. I have to exclude my machine from that ACPI fixup
-(this is on top of current Linus master):
-
-diff --git a/sound/pci/hda/thinkpad_helper.c b/sound/pci/hda/thinkpad_hel=
-per.c
-index 6ba0b55..7e1a179 100644
---- a/sound/pci/hda/thinkpad_helper.c
-+++ b/sound/pci/hda/thinkpad_helper.c
-@@ -21,7 +21,8 @@ static acpi_status acpi_check_cb(acpi_handle handle, u3=
-2 lvl, void *context,
- static bool is_thinkpad(struct hda_codec *codec)
- {
- 	bool found =3D false;
--	if (codec->subsystem_id >> 16 !=3D 0x17aa)
-+	if (codec->subsystem_id >> 16 !=3D 0x17aa ||
-+	    codec->subsystem_id =3D=3D 0x17aa21ec)
- 		return false;
- 	if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb, &found, NUL=
-L)) && found)
- 		return true;
-
-
-Is that the way to address it? Then I can send a proper patch. Any hints
-regarding the "why" will be incorporated into its description.
-
-Thanks,
-Jan
-
-
---q8vmVHoes7wLPVuAAe5uf02lp4XqxmLIq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlOv+ZgACgkQitSsb3rl5xR5TwCfQU8n5BYp0T49g6reQKzKORbI
-VrkAoM70vChOimUjK8qpKpx+PLtbeS9b
-=G9pw
------END PGP SIGNATURE-----
-
---q8vmVHoes7wLPVuAAe5uf02lp4XqxmLIq--
+TWF4IFNjaG1pZHQgd3JvdGU6Cj4gSSd2ZSBnb3QgYSBCZWFnbGVCb25lIEJsYWNrIChBUk0gQ29y
+dGV4IEEgOCDCtVApIHdpdGggYW4gQXVkaW8tQ2FwZQo+ICh1c2luZyBNY0FzcCBhbmQgQUxTQS1E
+YXZpbmNpLURyaXZlcnMpIGFuZCB3cm90ZSBhbiBtbWFwIGJhc2VkCj4gcGxheWJhY2stY2FwdHVy
+ZSBhcHBsaWNhdGlvbiAoYm90aCBkZXZpY2VzICJodzowLDAiKS4gVGhlIGltcG9ydGFudAo+IHRo
+aW5nIGlzIHRoYXQgdGhlIGFwcGxpY2F0aW9uIG5lZWRzIGEgY29uc3RhbnQgZGVsYXkgKG5vdCBu
+ZWNlc3NhcmlseQo+IHNtYWxsKSBiZXR3ZWVuIHRoZSBzdGFydCBvZiB0aGUgcGxheWJhY2sgYW5k
+IHRoZSBjYXB0dXJlIHN0cmVhbS4KPiBUbyByZWFsaXplIHRoYXQgSSB1c2UgdGhlIEFMU0EgQVBJ
+IGZ1bmN0aW9uICJzbmRfcGNtX2xpbmsoY19oYW5kbGUsCj4gcF9oYW5kbGUpIi4KPgo+IDEpIExv
+b2tpbmcgYXQgYSBwbG90IG9mIG11bHRpcGxlIG1lYXN1cmVtZW50cyBvZiBsb29wZWQgYmFjayBh
+bmQKPiBjYXB0dXJlZCBzcXVhcmUgd2F2ZXMgKG9yIHNpbmVzKSB0aGVyZSBzdGlsbCBpcyBhIGpp
+dHRlciBvZiBhYm91dCB0d28KPiB0byBmb3VyIHNhbXBsZXMgKGF0IDQ4IGtIejsgd2hpY2ggaXMg
+YWJvdXQgNDAgdG8gODAgbXMpLCBubyBtYXR0ZXIgaWYgSQo+IHJ1biBpdCBhcyBSVC1hcHAgKGVu
+ZXJneSBzYXZlIG1vZGVzIGV0Yy4gZGlzYWJsZWQsIGp1c3QgaW1wb3J0YW50Cj4gUHJvY2Vzc2Vz
+IGhhdmUgYSBoaWdoZXIgUHJpb3JpdHkgZS5nLiBFRE1BKSBvciBub3JtYWwgYXBwLgo+IFBsZWFz
+ZSBjb3JyZWN0IG1lIGlmIEknbSB3cm9uZywgYnV0IGFzIGZhciBhcyBJIHVuZGVyc3RhbmQgd2hl
+biB0aGUKPiBzdHJlYW1zIGFyZSBsaW5rZWQsIGF0IHN0YXJ0IHRoZSBwcm9jZXNzb3IgaXMgZ29p
+bmcgdGhyb3VnaCBhIGxpbmtlZAo+IGxpc3QgdHJpZ2dlcmluZyBhbGwgbGlua2VkIHN0cmVhbXMu
+IEFuZCB0aGUgdHJpZ2dlciBzdGFydCBpcyBhbiBhdG9taWMKPiBwcm9jZXNzIHNvIHNob3VsZG4n
+dCBnZXQgaW50ZXJydXB0ZWQuCgpZZXMuCgo+IFNob3VsZG4ndCBpdCBhbHdheXMgdGFrZSB0aGUg
+c2FtZSB0aW1lIGJldHdlZW4gc3RhcnRpbmcgdGhlIHBsYXliYWNrCj4gYW5kIGNhcHR1cmUgc3Ry
+ZWFtIHRoZW4/IEFuZCBpZiB5ZXMsIHdoZXJlIGNvdWxkIHRoZSB2YXJpYWJsZSBzdGFydAo+IGRl
+bGF5IGNvbWUgZnJvbT8KCkhhcmR3YXJlIGFjY2Vzc2VzIGNhbiBiZSBxdWl0ZSBub25kZXRlcm1p
+bmlzdGljLiAgQW5kIGlmIHRoZSBkcml2ZXIgaXMKbm90IHdyaXR0ZW4gcHJvcGVybHksIHRoZSBz
+dGFydCB0cmlnZ2VyIHdpbGwgZG8gYWxsIHRoZSBETUEgc3RyZWFtCmluaXRpYWxpemF0aW9uIHRo
+YXQgc2hvdWxkIGhhdmUgYmVlbiBkb25lIHdoZW4gcHJlcGFyaW5nIHRoZSBkZXZpY2UuCihtY2Fz
+cF9zdGFydF90eCgpIGhhcyBhIGJ1c3kgbG9vcCB3YWl0aW5nIGZvciB0aGUgZGV2aWNlLikKClRo
+ZXJlIGlzIGhhcmR3YXJlIHRoYXQgYWN0dWFsbHkgc3VwcG9ydHMgc3RhcnRpbmcgdHdvIHN0cmVh
+bXMgYXQgZXhhY3RseQp0aGUgc2FtZSB0aW1lIChieSBzZXR0aW5nIHR3byBiaXRzIGluIHRoZSBz
+YW1lIHJlZ2lzdGVyKS4gIE9idmlvdXNseSwKdGhpcyBoYXJkd2FyZSBvciBpdHMgZHJpdmVyIGRv
+ZXNuJ3Qgc3VwcG9ydCB0aGlzLgoKClJlZ2FyZHMsCkNsZW1lbnMKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
