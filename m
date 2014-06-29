@@ -1,52 +1,43 @@
-From: Andrew Lunn <andrew@lunn.ch>
-Subject: [PATCH 04/13] sound: ASoC: kirkwood: Remove
-	ARCH_KIRKWOOD and ARCH_DOVE dependency
-Date: Sun, 29 Jun 2014 22:59:53 +0200
-Message-ID: <1404075603-31838-7-git-send-email-andrew@lunn.ch>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
+Date: Sun, 29 Jun 2014 22:35:11 +0100
+Message-ID: <20140629213510.GR32514@n2100.arm.linux.org.uk>
 References: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vps0.lunn.ch (vps0.lunn.ch [178.209.37.122])
- by alsa0.perex.cz (Postfix) with ESMTP id ABD322654F2
- for <alsa-devel@alsa-project.org>; Sun, 29 Jun 2014 23:06:13 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-ide-owner@vger.kernel.org>
+Content-Disposition: inline
 In-Reply-To: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>
-Cc: Gregory Clement <gregory.clement@free-electrons.com>, rmk+kernel@arm.linux.org.uk, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Sender: linux-ide-owner@vger.kernel.org
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Gregory Clement <gregory.clement@free-electrons.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Both mach-kirkwood and mach-dove has been removed, now that Kirkwood
-and Dove live in mach-mvebu. Remove these config symbols since
-ARCH_MVEBU is sufficient.
+On Sun, Jun 29, 2014 at 10:59:47PM +0200, Andrew Lunn wrote:
+> This patchset removes arch/arm/mach-kirkwood and arch/arm/mach-dove.
+> These SoCs are now supported in arch/arm/mach-mvebu using device tree.
+> 
+> Change the dependencies for a number of drivers, either to use
+> ARCH_MVEBU where the drivers are generic, or MACH_KIRKWOOD and
+> MACH_DOVE where the drivers are specific to a SoC.
+> 
+> 
+> Andrew Lunn (13):
+>   ARM: Kirkwood: Remove mach-kirkwood
+>   ARM: Dove: Remove mach-dove
 
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
----
- sound/soc/kirkwood/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There is actually a cubox regression which has yet to be tracked down.
+Running with my kernel (which is not-DT based) runs perfectly.  With
+DT, HDMI output can be unstable.
 
-diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
-index 1f7c7ee3527a..952234de0cac 100644
---- a/sound/soc/kirkwood/Kconfig
-+++ b/sound/soc/kirkwood/Kconfig
-@@ -1,6 +1,6 @@
- config SND_KIRKWOOD_SOC
- 	tristate "SoC Audio for the Marvell Kirkwood and Dove chips"
--	depends on ARCH_KIRKWOOD || ARCH_DOVE || ARCH_MVEBU || MACH_KIRKWOOD || COMPILE_TEST
-+	depends on ARCH_MVEBU || COMPILE_TEST
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the Kirkwood I2S interface. You will also need to select the
+One of the problems is that it's /very/ difficult to reproduce, but it
+is reproducable.  I've seen it on two days over many reboots, and I've
+proved it by switching back and forth.  DT sometimes suffers from the
+problem, whereas non-DT /never/ does.
+
+Sebastian is aware of this, and as yet we haven't found a solution,
+nor have we found a way to reliably reproduce it.
+
 -- 
-2.0.0
+FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
+improving, and getting towards what was expected from it.
