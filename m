@@ -1,16 +1,16 @@
 From: Andrew Lunn <andrew@lunn.ch>
-Subject: [PATCH 04/13] ASoC: kirkwood: Remove ARCH_KIRKWOOD and
-	ARCH_DOVE dependency
-Date: Sun, 29 Jun 2014 22:59:52 +0200
-Message-ID: <1404075603-31838-6-git-send-email-andrew@lunn.ch>
+Subject: [PATCH 04/13] sound: ASoC: kirkwood: Remove
+	ARCH_KIRKWOOD and ARCH_DOVE dependency
+Date: Sun, 29 Jun 2014 22:59:53 +0200
+Message-ID: <1404075603-31838-7-git-send-email-andrew@lunn.ch>
 References: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from vps0.lunn.ch (vps0.lunn.ch [178.209.37.122])
- by alsa0.perex.cz (Postfix) with ESMTP id A491D261622
- for <alsa-devel@alsa-project.org>; Sun, 29 Jun 2014 23:06:05 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id ABD322654F2
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jun 2014 23:06:13 +0200 (CEST)
 In-Reply-To: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
