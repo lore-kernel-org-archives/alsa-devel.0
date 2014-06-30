@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/7] ALSA: hda - Move SD nums definitions to
-	hda_intel.c
-Date: Mon, 30 Jun 2014 14:21:00 +0200
-Message-ID: <1404130862-3152-6-git-send-email-tiwai@suse.de>
+Subject: [PATCH 3/7] ALSA: hda - Move more
+	PCI-controller-specific stuff from generic code
+Date: Mon, 30 Jun 2014 14:20:58 +0200
+Message-ID: <1404130862-3152-4-git-send-email-tiwai@suse.de>
 References: <1404130862-3152-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C2E4426559F
+ by alsa0.perex.cz (Postfix) with ESMTP id A6D0A265587
  for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 14:21:05 +0200 (CEST)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 9C53FAD62
+ by mx2.suse.de (Postfix) with ESMTP id 85D3CAD60
  for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 12:21:05 +0000 (UTC)
 In-Reply-To: <1404130862-3152-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,70 +27,417 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The defined numbers of SDs are specific to hda-intel, so move them to
-there.
+Just move struct fields between struct azx and struct hda_intel, and
+move some definitions from hda_priv.h to hda_intel.c.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_intel.c | 17 +++++++++++++++++
- sound/pci/hda/hda_priv.h  | 17 -----------------
- 2 files changed, 17 insertions(+), 17 deletions(-)
+ sound/pci/hda/hda_intel.c | 117 +++++++++++++++++++++++++++++++++-------------
+ sound/pci/hda/hda_priv.h  |  38 ---------------
+ 2 files changed, 85 insertions(+), 70 deletions(-)
 
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 1e971e2f1d50..bbf01fcb6893 100644
+index cb5d807bbd0c..bbb446aef67a 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -94,6 +94,23 @@ enum {
- /* Define VIA HD Audio Device ID*/
- #define VIA_HDAC_DEVICE_ID		0x3288
+@@ -75,6 +75,26 @@ enum {
+ 	POS_FIX_COMBO,
+ };
  
-+/* max number of SDs */
-+/* ICH, ATI and VIA have 4 playback and 4 capture */
-+#define ICH6_NUM_CAPTURE	4
-+#define ICH6_NUM_PLAYBACK	4
++/* Defines for ATI HD Audio support in SB450 south bridge */
++#define ATI_SB450_HDAUDIO_MISC_CNTR2_ADDR   0x42
++#define ATI_SB450_HDAUDIO_ENABLE_SNOOP      0x02
 +
-+/* ULI has 6 playback and 5 capture */
-+#define ULI_NUM_CAPTURE		5
-+#define ULI_NUM_PLAYBACK	6
++/* Defines for Nvidia HDA support */
++#define NVIDIA_HDA_TRANSREG_ADDR      0x4e
++#define NVIDIA_HDA_ENABLE_COHBITS     0x0f
++#define NVIDIA_HDA_ISTRM_COH          0x4d
++#define NVIDIA_HDA_OSTRM_COH          0x4c
++#define NVIDIA_HDA_ENABLE_COHBIT      0x01
 +
-+/* ATI HDMI may have up to 8 playbacks and 0 capture */
-+#define ATIHDMI_NUM_CAPTURE	0
-+#define ATIHDMI_NUM_PLAYBACK	8
++/* Defines for Intel SCH HDA snoop control */
++#define INTEL_SCH_HDA_DEVC      0x78
++#define INTEL_SCH_HDA_DEVC_NOSNOOP       (0x1<<11)
 +
-+/* TERA has 4 playback and 3 capture */
-+#define TERA_NUM_CAPTURE	3
-+#define TERA_NUM_PLAYBACK	4
++/* Define IN stream 0 FIFO size offset in VIA controller */
++#define VIA_IN_STREAM0_FIFO_SIZE_OFFSET	0x90
++/* Define VIA HD Audio Device ID*/
++#define VIA_HDAC_DEVICE_ID		0x3288
 +
  
  static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
  static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
+@@ -312,8 +332,28 @@ struct hda_intel {
+ 	/* HSW/BDW display HDA controller to restore BCLK from CDCLK */
+ 	unsigned int bclk_m;
+ 	unsigned int bclk_n;
+-};
+ 
++	/* for pending irqs */
++	struct work_struct irq_pending_work;
++
++	/* sync probing */
++	struct completion probe_wait;
++	struct work_struct probe_work;
++
++	/* card list (for power_save trigger) */
++	struct list_head list;
++
++	/* extra flags */
++	unsigned int irq_pending_warned:1;
++
++	/* VGA-switcheroo setup */
++	unsigned int use_vga_switcheroo:1;
++	unsigned int vga_switcheroo_registered:1;
++	unsigned int init_failed:1; /* delayed init failed */
++
++	/* secondary power domain for hdmi audio under vga device */
++	struct dev_pm_domain hdmi_pm_domain;
++};
+ 
+ #ifdef CONFIG_X86
+ static void __mark_pages_wc(struct azx *chip, struct snd_dma_buffer *dmab, bool on)
+@@ -480,6 +520,7 @@ static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev);
+ /* called from IRQ */
+ static int azx_position_check(struct azx *chip, struct azx_dev *azx_dev)
+ {
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	int ok;
+ 
+ 	ok = azx_position_ok(chip, azx_dev);
+@@ -489,7 +530,7 @@ static int azx_position_check(struct azx *chip, struct azx_dev *azx_dev)
+ 	} else if (ok == 0 && chip->bus && chip->bus->workq) {
+ 		/* bogus IRQ, process it later */
+ 		azx_dev->irq_pending = 1;
+-		queue_work(chip->bus->workq, &chip->irq_pending_work);
++		queue_work(chip->bus->workq, &hda->irq_pending_work);
+ 	}
+ 	return 0;
+ }
+@@ -550,14 +591,15 @@ static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
+  */
+ static void azx_irq_pending_work(struct work_struct *work)
+ {
+-	struct azx *chip = container_of(work, struct azx, irq_pending_work);
++	struct hda_intel *hda = container_of(work, struct hda_intel, irq_pending_work);
++	struct azx *chip = &hda->chip;
+ 	int i, pending, ok;
+ 
+-	if (!chip->irq_pending_warned) {
++	if (!hda->irq_pending_warned) {
+ 		dev_info(chip->card->dev,
+ 			 "IRQ timing workaround is activated for card #%d. Suggest a bigger bdl_pos_adj.\n",
+ 			 chip->card->number);
+-		chip->irq_pending_warned = 1;
++		hda->irq_pending_warned = 1;
+ 	}
+ 
+ 	for (;;) {
+@@ -677,21 +719,24 @@ static LIST_HEAD(card_list);
+ 
+ static void azx_add_card_list(struct azx *chip)
+ {
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	mutex_lock(&card_list_lock);
+-	list_add(&chip->list, &card_list);
++	list_add(&hda->list, &card_list);
+ 	mutex_unlock(&card_list_lock);
+ }
+ 
+ static void azx_del_card_list(struct azx *chip)
+ {
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	mutex_lock(&card_list_lock);
+-	list_del_init(&chip->list);
++	list_del_init(&hda->list);
+ 	mutex_unlock(&card_list_lock);
+ }
+ 
+ /* trigger power-save check at writing parameter */
+ static int param_set_xint(const char *val, const struct kernel_param *kp)
+ {
++	struct hda_intel *hda;
+ 	struct azx *chip;
+ 	struct hda_codec *c;
+ 	int prev = power_save;
+@@ -701,7 +746,8 @@ static int param_set_xint(const char *val, const struct kernel_param *kp)
+ 		return ret;
+ 
+ 	mutex_lock(&card_list_lock);
+-	list_for_each_entry(chip, &card_list, list) {
++	list_for_each_entry(hda, &card_list, list) {
++		chip = &hda->chip;
+ 		if (!chip->bus || chip->disabled)
+ 			continue;
+ 		list_for_each_entry(c, &chip->bus->codec_list, list)
+@@ -939,10 +985,11 @@ static void azx_vs_set_state(struct pci_dev *pci,
+ {
+ 	struct snd_card *card = pci_get_drvdata(pci);
+ 	struct azx *chip = card->private_data;
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	bool disabled;
+ 
+-	wait_for_completion(&chip->probe_wait);
+-	if (chip->init_failed)
++	wait_for_completion(&hda->probe_wait);
++	if (hda->init_failed)
+ 		return;
+ 
+ 	disabled = (state == VGA_SWITCHEROO_OFF);
+@@ -956,7 +1003,7 @@ static void azx_vs_set_state(struct pci_dev *pci,
+ 				 "Start delayed initialization\n");
+ 			if (azx_probe_continue(chip) < 0) {
+ 				dev_err(chip->card->dev, "initialization error\n");
+-				chip->init_failed = true;
++				hda->init_failed = true;
+ 			}
+ 		}
+ 	} else {
+@@ -986,9 +1033,10 @@ static bool azx_vs_can_switch(struct pci_dev *pci)
+ {
+ 	struct snd_card *card = pci_get_drvdata(pci);
+ 	struct azx *chip = card->private_data;
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 
+-	wait_for_completion(&chip->probe_wait);
+-	if (chip->init_failed)
++	wait_for_completion(&hda->probe_wait);
++	if (hda->init_failed)
+ 		return false;
+ 	if (chip->disabled || !chip->bus)
+ 		return true;
+@@ -1000,11 +1048,12 @@ static bool azx_vs_can_switch(struct pci_dev *pci)
+ 
+ static void init_vga_switcheroo(struct azx *chip)
+ {
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	struct pci_dev *p = get_bound_vga(chip->pci);
+ 	if (p) {
+ 		dev_info(chip->card->dev,
+ 			 "Handle VGA-switcheroo audio client\n");
+-		chip->use_vga_switcheroo = 1;
++		hda->use_vga_switcheroo = 1;
+ 		pci_dev_put(p);
+ 	}
+ }
+@@ -1016,9 +1065,10 @@ static const struct vga_switcheroo_client_ops azx_vs_ops = {
+ 
+ static int register_vga_switcheroo(struct azx *chip)
+ {
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	int err;
+ 
+-	if (!chip->use_vga_switcheroo)
++	if (!hda->use_vga_switcheroo)
+ 		return 0;
+ 	/* FIXME: currently only handling DIS controller
+ 	 * is there any machine with two switchable HDMI audio controllers?
+@@ -1028,11 +1078,11 @@ static int register_vga_switcheroo(struct azx *chip)
+ 						    chip->bus != NULL);
+ 	if (err < 0)
+ 		return err;
+-	chip->vga_switcheroo_registered = 1;
++	hda->vga_switcheroo_registered = 1;
+ 
+ 	/* register as an optimus hdmi audio power domain */
+ 	vga_switcheroo_init_domain_pm_optimus_hdmi_audio(chip->card->dev,
+-							 &chip->hdmi_pm_domain);
++							 &hda->hdmi_pm_domain);
+ 	return 0;
+ }
+ #else
+@@ -1048,7 +1098,6 @@ static int azx_free(struct azx *chip)
+ {
+ 	struct pci_dev *pci = chip->pci;
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+-
+ 	int i;
+ 
+ 	if ((chip->driver_caps & AZX_DCAPS_PM_RUNTIME)
+@@ -1059,13 +1108,13 @@ static int azx_free(struct azx *chip)
+ 
+ 	azx_notifier_unregister(chip);
+ 
+-	chip->init_failed = 1; /* to be sure */
+-	complete_all(&chip->probe_wait);
++	hda->init_failed = 1; /* to be sure */
++	complete_all(&hda->probe_wait);
+ 
+-	if (use_vga_switcheroo(chip)) {
++	if (use_vga_switcheroo(hda)) {
+ 		if (chip->disabled && chip->bus)
+ 			snd_hda_unlock_devices(chip->bus);
+-		if (chip->vga_switcheroo_registered)
++		if (hda->vga_switcheroo_registered)
+ 			vga_switcheroo_unregister_client(chip->pci);
+ 	}
+ 
+@@ -1350,7 +1399,8 @@ static void azx_check_snoop_available(struct azx *chip)
+ 
+ static void azx_probe_work(struct work_struct *work)
+ {
+-	azx_probe_continue(container_of(work, struct azx, probe_work));
++	struct hda_intel *hda = container_of(work, struct hda_intel, probe_work);
++	azx_probe_continue(&hda->chip);
+ }
+ 
+ /*
+@@ -1393,11 +1443,11 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	check_msi(chip);
+ 	chip->dev_index = dev;
+ 	chip->jackpoll_ms = jackpoll_ms;
+-	INIT_WORK(&chip->irq_pending_work, azx_irq_pending_work);
+ 	INIT_LIST_HEAD(&chip->pcm_list);
+-	INIT_LIST_HEAD(&chip->list);
++	INIT_WORK(&hda->irq_pending_work, azx_irq_pending_work);
++	INIT_LIST_HEAD(&hda->list);
+ 	init_vga_switcheroo(chip);
+-	init_completion(&chip->probe_wait);
++	init_completion(&hda->probe_wait);
+ 
+ 	assign_position_fix(chip, check_position_fix(chip, position_fix[dev]));
+ 
+@@ -1428,7 +1478,7 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	}
+ 
+ 	/* continue probing in work context as may trigger request module */
+-	INIT_WORK(&chip->probe_work, azx_probe_work);
++	INIT_WORK(&hda->probe_work, azx_probe_work);
+ 
+ 	*rchip = chip;
+ 
+@@ -1750,6 +1800,7 @@ static int azx_probe(struct pci_dev *pci,
+ {
+ 	static int dev;
+ 	struct snd_card *card;
++	struct hda_intel *hda;
+ 	struct azx *chip;
+ 	bool schedule_probe;
+ 	int err;
+@@ -1773,6 +1824,7 @@ static int azx_probe(struct pci_dev *pci,
+ 	if (err < 0)
+ 		goto out_free;
+ 	card->private_data = chip;
++	hda = container_of(chip, struct hda_intel, chip);
+ 
+ 	pci_set_drvdata(pci, card);
+ 
+@@ -1809,11 +1861,11 @@ static int azx_probe(struct pci_dev *pci,
+ #endif
+ 
+ 	if (schedule_probe)
+-		schedule_work(&chip->probe_work);
++		schedule_work(&hda->probe_work);
+ 
+ 	dev++;
+ 	if (chip->disabled)
+-		complete_all(&chip->probe_wait);
++		complete_all(&hda->probe_wait);
+ 	return 0;
+ 
+ out_free:
+@@ -1829,6 +1881,7 @@ static unsigned int azx_max_codecs[AZX_NUM_DRIVERS] = {
+ 
+ static int azx_probe_continue(struct azx *chip)
+ {
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	struct pci_dev *pci = chip->pci;
+ 	int dev = chip->dev_index;
+ 	int err;
+@@ -1902,13 +1955,13 @@ static int azx_probe_continue(struct azx *chip)
+ 	power_down_all_codecs(chip);
+ 	azx_notifier_register(chip);
+ 	azx_add_card_list(chip);
+-	if ((chip->driver_caps & AZX_DCAPS_PM_RUNTIME) || chip->use_vga_switcheroo)
++	if ((chip->driver_caps & AZX_DCAPS_PM_RUNTIME) || hda->use_vga_switcheroo)
+ 		pm_runtime_put_noidle(&pci->dev);
+ 
+ out_free:
+ 	if (err < 0)
+-		chip->init_failed = 1;
+-	complete_all(&chip->probe_wait);
++		hda->init_failed = 1;
++	complete_all(&hda->probe_wait);
+ 	return err;
+ }
+ 
 diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
-index 30bbbc48d314..0688aaff09f1 100644
+index 43dd8a19cc09..30bbbc48d314 100644
 --- a/sound/pci/hda/hda_priv.h
 +++ b/sound/pci/hda/hda_priv.h
-@@ -103,23 +103,6 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
-  * other constants
-  */
+@@ -188,26 +188,6 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_DCAPS_I915_POWERWELL (1 << 27)	/* HSW i915 powerwell support */
+ #define AZX_DCAPS_CORBRP_SELF_CLEAR (1 << 28)	/* CORBRP clears itself after reset */
  
--/* max number of SDs */
--/* ICH, ATI and VIA have 4 playback and 4 capture */
--#define ICH6_NUM_CAPTURE	4
--#define ICH6_NUM_PLAYBACK	4
+-/* Defines for ATI HD Audio support in SB450 south bridge */
+-#define ATI_SB450_HDAUDIO_MISC_CNTR2_ADDR   0x42
+-#define ATI_SB450_HDAUDIO_ENABLE_SNOOP      0x02
 -
--/* ULI has 6 playback and 5 capture */
--#define ULI_NUM_CAPTURE		5
--#define ULI_NUM_PLAYBACK	6
+-/* Defines for Nvidia HDA support */
+-#define NVIDIA_HDA_TRANSREG_ADDR      0x4e
+-#define NVIDIA_HDA_ENABLE_COHBITS     0x0f
+-#define NVIDIA_HDA_ISTRM_COH          0x4d
+-#define NVIDIA_HDA_OSTRM_COH          0x4c
+-#define NVIDIA_HDA_ENABLE_COHBIT      0x01
 -
--/* ATI HDMI may have up to 8 playbacks and 0 capture */
--#define ATIHDMI_NUM_CAPTURE	0
--#define ATIHDMI_NUM_PLAYBACK	8
+-/* Defines for Intel SCH HDA snoop control */
+-#define INTEL_SCH_HDA_DEVC      0x78
+-#define INTEL_SCH_HDA_DEVC_NOSNOOP       (0x1<<11)
 -
--/* TERA has 4 playback and 3 capture */
--#define TERA_NUM_CAPTURE	3
--#define TERA_NUM_PLAYBACK	4
+-/* Define IN stream 0 FIFO size offset in VIA controller */
+-#define VIA_IN_STREAM0_FIFO_SIZE_OFFSET	0x90
+-/* Define VIA HD Audio Device ID*/
+-#define VIA_HDAC_DEVICE_ID		0x3288
 -
- /* max number of fragments - we may use more if allocating more pages for BDL */
- #define BDL_SIZE		4096
- #define AZX_MAX_BDL_ENTRIES	(BDL_SIZE / 16)
+ /* HD Audio class code */
+ #define PCI_CLASS_MULTIMEDIA_HD_AUDIO	0x0403
+ 
+@@ -345,7 +325,6 @@ struct azx {
+ 	/* locks */
+ 	spinlock_t reg_lock;
+ 	struct mutex open_mutex; /* Prevents concurrent open/close operations */
+-	struct completion probe_wait;
+ 
+ 	/* streams (x num_streams) */
+ 	struct azx_dev *azx_dev;
+@@ -379,38 +358,21 @@ struct azx {
+ 	unsigned int single_cmd:1;
+ 	unsigned int polling_mode:1;
+ 	unsigned int msi:1;
+-	unsigned int irq_pending_warned:1;
+ 	unsigned int probing:1; /* codec probing phase */
+ 	unsigned int snoop:1;
+ 	unsigned int align_buffer_size:1;
+ 	unsigned int region_requested:1;
+-
+-	/* VGA-switcheroo setup */
+-	unsigned int use_vga_switcheroo:1;
+-	unsigned int vga_switcheroo_registered:1;
+-	unsigned int init_failed:1; /* delayed init failed */
+ 	unsigned int disabled:1; /* disabled by VGA-switcher */
+ 
+ 	/* for debugging */
+ 	unsigned int last_cmd[AZX_MAX_CODECS];
+ 
+-	/* for pending irqs */
+-	struct work_struct irq_pending_work;
+-
+-	struct work_struct probe_work;
+-
+ 	/* reboot notifier (for mysterious hangup problem at power-down) */
+ 	struct notifier_block reboot_notifier;
+ 
+-	/* card list (for power_save trigger) */
+-	struct list_head list;
+-
+ #ifdef CONFIG_SND_HDA_DSP_LOADER
+ 	struct azx_dev saved_azx_dev;
+ #endif
+-
+-	/* secondary power domain for hdmi audio under vga device */
+-	struct dev_pm_domain hdmi_pm_domain;
+ };
+ 
+ #ifdef CONFIG_SND_VERBOSE_PRINTK
 -- 
 2.0.0
