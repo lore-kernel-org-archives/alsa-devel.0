@@ -1,111 +1,218 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v2] ASoC: tas2552: Support TI TAS2552 Amplifier
-Date: Mon, 30 Jun 2014 12:27:03 -0500
-Message-ID: <53B19DE7.6080509@ti.com>
-References: <1404148259-17305-1-git-send-email-dmurphy@ti.com> <20140630172115.GE28740@leverpostej>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
+Date: Mon, 30 Jun 2014 19:31:30 +0200
+Message-ID: <53B19EF2.7020801@gmail.com>
+References: <1404075603-31838-1-git-send-email-andrew@lunn.ch> <20140629213510.GR32514@n2100.arm.linux.org.uk> <53B154FE.80804@gmail.com> <20140630124320.GZ32514@n2100.arm.linux.org.uk> <53B164B2.7090902@gmail.com> <20140630142516.GA32514@n2100.arm.linux.org.uk> <53B183D5.8020708@gmail.com> <20140630165615.GE32514@n2100.arm.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140630172115.GE28740@leverpostej>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Return-path: <linux-pci-owner@vger.kernel.org>
+In-Reply-To: <20140630165615.GE32514@n2100.arm.linux.org.uk>
+Sender: linux-pci-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Gregory Clement <gregory.clement@free-electrons.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-
-On 06/30/2014 12:21 PM, Mark Rutland wrote:
-> Hi,
->
-> On Mon, Jun 30, 2014 at 06:10:59PM +0100, Dan Murphy wrote:
->> Support the TI TAS2552 Class D amplifier.
+On 06/30/2014 06:56 PM, Russell King - ARM Linux wrote:
+> On Mon, Jun 30, 2014 at 05:35:49PM +0200, Sebastian Hesselbarth wrote:
+>> On 06/30/2014 04:25 PM, Russell King - ARM Linux wrote:
+>>> Nothing has changed on the PMU patches since I posted them, because
+>>> they're based on 3.15 and there's been no changes there.
 >>
->> The TAS2552 is a high efficiency Class-D audio
->> power amplifier with advanced battery current
->> management and an integrated Class-G boost
->> The device constantly measures the
->> current and voltage across the load and provides a
->> digital stream of this information.
+>> I offered to deal with mainlining them end of April, you never replied.
+>> I know that if you dislike something you answer, but it is hard to tell
+>> if silence means agreement.
 >>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
+>> I am not going to waste any time preparing patches just to get a NAK.
+> 
+> That's because I am quite prepared to work on them _if_ there is a way
+> forward.  You've already said that changing things like hwmon and rtc
+> is a work in progress to convert them to regmap.  That's great, but
+> in order to progress these myself, I need *visibility* of that work,
+> and there is zero visibility of that.
+
+So, we are on the same boat. For the HDMI issue, I also need visibility
+to add any more ideas how to deal with it. Just provide me the binaries,
+I see if I can at least reproduce the issue.
+
+>>> As for the ASoC stuff which you avoided commenting on, let me repeat
+>>> that _that_ stuff is now totally dead and can /never/ be merged into
+>>> mainline without breaking the existing ASoC kirkwood support.  In
+>>> that case, it's not like I wasn't sending the patches out, because
+>>> I had been... so everyone was aware of what was going on there,
+>>> but I guess converting stuff to DT in ways that totally fuck over
+>>> other patches is what now happens in the kernel.
 >>
->> v2 - Address RFC comments- Added regmap, and snd_soc calls
->> removed debug code, address checkpatch errors -https://patchwork.kernel.org/patch/4378281/
+>> If you are talking about "Kirkwood ASoC updates", you got a Tested-by
+>> from Andrew even before I read your patches. And besides, just because
+>> I am interested in Dove does not mean I just swallowed the whole Linux
+>> API knowledge. I simply avoided commenting on it, because there is
+>> /nothing/ I can add to it.
+> 
+> No I am not - and those are the patches which I referred to as having
+> been already taken by Mark into his tree.  The patch I'm referring to
+> which can never be merged now is the one which I replied to Jean
+> Francois just now - and if you read through it, you'll understand
+> why - that's because it /totally/ breaks the simple DT bindings that
+> are now established - independently - for Kirkwood stuff.
+
+And I stopped discussing the pros and cons of the simple DT binding
+as soon as I realized that my comments had no impact on the way it
+will be implemented. I am not responsible for the binding.
+
+>>> What I think you're missing is that for those of us who want to have
+>>> a platform fully supported, the choice has been non-DT until relatively
+>>> recently.  We're now at the point where the DT support on Dove has
+>>> matured to the point where it's relatively easy to end up with a fully
+>>> functional (but not necessarily bug free) setup with DT.  It's at the
+>>> sweet spot where you can switch between DT and non-DT and preserve
+>>> that functionality... but as soon as we get there we want to rip out
+>>> the old stuff.
 >>
->>  .../devicetree/bindings/sound/tas2552.txt          |   22 +
->>  include/sound/tas2552-plat.h                       |   25 ++
->>  sound/soc/codecs/Kconfig                           |    5 +
->>  sound/soc/codecs/Makefile                          |    2 +
->>  sound/soc/codecs/tas2552.c                         |  462 ++++++++++++++++++++
->>  sound/soc/codecs/tas2552.h                         |   75 ++++
->>  6 files changed, 591 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/sound/tas2552.txt
->>  create mode 100644 include/sound/tas2552-plat.h
->>  create mode 100644 sound/soc/codecs/tas2552.c
->>  create mode 100644 sound/soc/codecs/tas2552.h
+>> Oh, ok.. you think it is "me" and "us"? It is you who actually want to
+>> use Dove and me just wanting a DT representation for it?
 >>
->> diff --git a/Documentation/devicetree/bindings/sound/tas2552.txt b/Documentation/devicetree/bindings/sound/tas2552.txt
->> new file mode 100644
->> index 0000000..58e931b
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/tas2552.txt
->> @@ -0,0 +1,22 @@
->> +Texas Instruments - tas2552 Codec module
->> +
->> +The tas2552 serial control bus communicates through I2C protocols
->> +
->> +Required properties:
->> +
->> +- compatible - "string" - One of:
->> +    "ti,tas2552" - TAS2552
-> Drop the "string". The compatible list is a standard property and its
-> type (string list) is well-known.
->
-> You could change "One of:" to "should contain:", which will look less
-> weird with a single entry.
->
->> +- reg - <int> -  I2C slave address
-> Similarly to "string" we can get rid of <int> here. i2c addresses are
-> well-known to be described in a single u32 cell.
->
->> +
->> +Optional properties:
->> +
->> +- power-gpio - gpio pin to enable/disable the device
-> The code below seems to look for "enable-gpio". Searching for
-> "power-gpio" only hits in the line above and the example below. I assume
-> the code is in error?
+>> It is not my fault that your patches are blocked by others. I can offer
+>> help to track down the issue, but I am not going to be your scapegoat.
+> 
+> Right, and removing the non-DT support and screwing people like me
+> who have out of tree patches is good for MVEBU development because...
+> (complete the sentence with a damned good reason.)
 
-No this was PEBKAC I did not update the documentation when I wrote the
-code.
+...ranting at people not jumping into review and testing is.
 
->
->> +
->> +Example:
->> +
->> +tas2552: tas2552@41 {
->> +       compatible = "ti,tas2552";
->> +       reg = <0x41>;
->> +       power-gpio = <&gpio4 2 GPIO_ACTIVE_HIGH>;
->> +};
-> [...]
->
->> +       if (pdata) {
->> +               data->power_gpio = pdata->power_gpio;
->> +       } else if (np) {
->> +               data->power_gpio = of_get_named_gpio(np, "enable-gpio", 0);
-> Usually I see this logic the other way around, looking for DT data first
-> then falling back to platform data if no DT information was present.
->
-> Cheers,
-> Mark.
+>>> What I'm trying to get you to understand is that leaving the old stuff
+>>> behind for a little while longer is beneficial - while those who have
+>>> been running crippled DT based setups for the last year don't care
+>>> about having full support, there are those who do.
+>>
+>> Ok, let's have mach-dove for a little longer, fine with me.
+> 
+> Great, that's all I ask.  I'm trying as fast as I can to push stuff
+> out - I'm not being anywhere close to idle about it - but it takes time
+> to deal with the updates from each merge window and such like, work out
+> what has been accepted, which patches need to be revised, and do all the
+> testing that's necessary before trying to get some more out.  Oh, and
+> port some more of the patches over to be mainline-based.
 
-Thanks for the review.  I will take these changes into v3 after a good code review soak time.
+> I would've preferred to be clear of the ASoC stuff 12 months ago, and
+> we all know why that was a big problem.
 
-Dan
+>> What I really want is to stop that blackmailing with giving up on
+>> sending patches. It will be a huge loss if you do and many have said
+>> that in the past.
+> 
+> It's not blackmail.  It's reality.  If the kernel becomes too much
+> hassle to deal with, then volunteers will walk away from it - that's
+> almost a fact of life.
 
--- 
-------------------
-Dan Murphy
+Right. And since I am one of those volunteers, I can tell you that
+some specific attitude in dealing with people is definitely reducing
+the willingness to stick with it.
+
+I constantly offered to spend my spare time for hunting the issue
+but only received ranting.
+
+> Even with DT support, I'm nowhere near being "DT clean" on the Cubox -
+> I need this as a minimum to do "special" stuff there:
+
+Sure, nobody said that DT is feature complete. But you'd have to do
+the same on mainline non-DT dove as there has never been support for
+the cubox.
+
+If it helps us tracking down the HDMI issue, we can have below setup
+for DT dove and get rid of it incrementally.
+
+I am sure, Andrew can drop removing mach-dove removal from the patches
+and we can continue improving Dove mainline.
+
+Sebastian
+
+> #include <linux/of_platform.h>
+> #include <asm/hardware/cache-tauros2.h>
+> #include "clock.h"
+> 
+> static struct resource armada_drm_resources[] = {
+>         DEFINE_RES_MEM(0, 0),
+> };
+> 
+> static const char *armada_drm_devices[4];
+> 
+> static const struct platform_device_info armada_drm_dev_info __initconst = {
+>         .name = "armada-drm",
+>         .id = -1,
+>         .res = armada_drm_resources,
+>         .num_res = ARRAY_SIZE(armada_drm_resources),
+>         .data = armada_drm_devices,
+>         .size_data = sizeof(armada_drm_devices),
+> };
+> 
+> static struct platform_device cubox_spdif = {
+>         .name   = "kirkwood-spdif-audio",
+>         .id     = 1,
+> };
+> 
+> static const struct platform_device_info cubox_spdif_dit __initconst = {
+>         .name = "spdif-dit",
+>         .id = -1,
+> };
+> 
+> static void __init cubox_reserve(void)
+> {
+>         phys_addr_t phys;
+> 
+>         dove_reserve();
+> 
+>         /* Steal 32MB for the drm framebuffers */
+>         phys = arm_memblock_steal(SZ_32M, SZ_2M);
+>         armada_drm_resources[0].start = phys;
+>         armada_drm_resources[0].end = phys + SZ_32M - 1;
+> }
+> 
+> static void __init cubox_dt_init(void)
+> {
+>         struct device_node *node;
+>         struct platform_device *pdev;
+>         int i;
+> 
+>         pr_info("Dove 88AP510 SoC\n");
+> 
+> #ifdef CONFIG_CACHE_TAUROS2
+>         tauros2_init(0);
+> #endif
+>         dove_init_pmu();
+> 
+>         BUG_ON(mvebu_mbus_dt_init());
+>         of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
+> 
+>         dove_devclks_init();
+>         dove_gpu_init();
+>         dove_bmm_init();
+> 
+>         for (i = 0, node = NULL; (node = of_find_compatible_node(node, NULL, "marvell,dove-lcd")) != NULL; ) {
+>                 if (!of_device_is_available(node))
+>                         continue;
+>                 pdev = of_find_device_by_node(node);
+>                 if (pdev)
+>                         armada_drm_devices[i++] = dev_name(&pdev->dev);
+>         }
+>         armada_drm_devices[i++] = NULL;
+>         platform_device_register_full(&armada_drm_dev_info);
+> 
+>         platform_device_register_full(&cubox_spdif_dit);
+>         platform_device_register(&cubox_spdif);
+> }
+> 
+> static const char * const cubox_dt_compat[] = {
+>         "solidrun,cubox",
+>         NULL
+> };
+> 
+> DT_MACHINE_START(DOVE_DT, "Marvell Dove (Cubox)")
+>         .dt_compat      = cubox_dt_compat,
+>         .reserve        = cubox_reserve,
+>         .map_io         = dove_map_io,
+>         .init_machine   = cubox_dt_init,
+>         .restart        = dove_restart,
+> };
+> 
+> 
