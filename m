@@ -1,18 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/3] ASoC: s6105-ipcam: Automatically
-	disconnect non-connected pins
-Date: Mon, 30 Jun 2014 10:01:39 +0200
-Message-ID: <1404115299-24109-3-git-send-email-lars@metafoo.de>
-References: <1404115299-24109-1-git-send-email-lars@metafoo.de>
+From: Kailang <kailang@realtek.com>
+Subject: ALC286 recording delay
+Date: Mon, 30 Jun 2014 16:25:46 +0800
+Message-ID: <EF9E26FF321C429281C88C574F0373A6@realtek.com.tw>
+Reply-To: Kailang <kailang@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="----=_NextPart_000_014B_01CF947F.F2280460"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-252.synserver.de (smtp-out-252.synserver.de
- [212.40.185.252])
- by alsa0.perex.cz (Postfix) with ESMTP id B5C4126552C
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 10:03:09 +0200 (CEST)
-In-Reply-To: <1404115299-24109-1-git-send-email-lars@metafoo.de>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id E46262617B6
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 10:25:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +19,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, =?UTF-8?q?Daniel=20Gl=C3=B6ckner?= <daniel-gl@gmx.net>
+To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-All CODEC input and output widgets are either in the DAPM routing table or
-manually marked as non-connected. This means the card is fully routed and we can
-let the core take care of disconnecting non-connected pins.
+------=_NextPart_000_014B_01CF947F.F2280460
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/s6000/s6105-ipcam.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+Hi Takashi,
+ 
+It will be recording voice delay for resume back recording for Headset Mic.
+This patch doesn't disable pin for suspend state. The issue was fixed.
+This is follow ALC286 programing guide.
+ 
+Thanks.
+ 
+BR,
+Kailang
+------=_NextPart_000_014B_01CF947F.F2280460
+Content-Type: application/octet-stream;
+	name="0000-alc286-fixed-recording-delay.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="0000-alc286-fixed-recording-delay.patch"
 
-diff --git a/sound/soc/s6000/s6105-ipcam.c b/sound/soc/s6000/s6105-ipcam.c
-index 50875e6..3510c01 100644
---- a/sound/soc/s6000/s6105-ipcam.c
-+++ b/sound/soc/s6000/s6105-ipcam.c
-@@ -133,22 +133,8 @@ static const struct snd_kcontrol_new audio_out_mux = {
- /* Logic for a aic3x as connected on the s6105 ip camera ref design */
- static int s6105_aic3x_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_codec *codec = rtd->codec;
--	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	struct snd_soc_card *card = rtd->card;
- 
--	/* not present */
--	snd_soc_dapm_nc_pin(dapm, "MONO_LOUT");
--	snd_soc_dapm_nc_pin(dapm, "LINE2L");
--	snd_soc_dapm_nc_pin(dapm, "LINE2R");
--
--	/* not connected */
--	snd_soc_dapm_nc_pin(dapm, "MIC3L"); /* LINE2L on this chip */
--	snd_soc_dapm_nc_pin(dapm, "MIC3R"); /* LINE2R on this chip */
--	snd_soc_dapm_nc_pin(dapm, "LLOUT");
--	snd_soc_dapm_nc_pin(dapm, "RLOUT");
--	snd_soc_dapm_nc_pin(dapm, "HPRCOM");
--
- 	/* must correspond to audio_out_mux.private_value initializer */
- 	snd_soc_dapm_disable_pin(&card->dapm, "Audio Out Differential");
- 
-@@ -180,6 +166,7 @@ static struct snd_soc_card snd_soc_card_s6105 = {
- 	.num_dapm_widgets = ARRAY_SIZE(aic3x_dapm_widgets),
- 	.dapm_routes = audio_map,
- 	.num_dapm_routes = ARRAY_SIZE(audio_map),
-+	.fully_routed = true,
- };
- 
- static struct s6000_snd_platform_data s6105_snd_data __initdata = {
--- 
-1.8.0
+>From 5d7ae195257daaffa1497d2c79d06aa01b9754b0 Mon Sep 17 00:00:00 2001=0A=
+From: Kailang Yang <kailang@realtek.com>=0A=
+Date: Mon, 30 Jun 2014 16:10:37 +0800=0A=
+Subject: [PATCH] ALSA: hda/realtek - Fixed ALC286/ALC288 recording delay =
+for=0A=
+ Headset Mic=0A=
+=0A=
+It will be recording voice delay for resume back recording for Headset =
+Mic.=0A=
+This patch doesn't disable pin for suspend state. The issue was fixed.=0A=
+This is follow ALC286 programing guide.=0A=
+=0A=
+Signed-off-by: Kailang Yang <kailang@realtek.com>=0A=
+=0A=
+diff --git a/sound/pci/hda/patch_realtek.c =
+b/sound/pci/hda/patch_realtek.c=0A=
+index 60bf5ee..13cdefb 100644=0A=
+--- a/sound/pci/hda/patch_realtek.c=0A=
++++ b/sound/pci/hda/patch_realtek.c=0A=
+@@ -2782,6 +2782,25 @@ static int alc269_parse_auto_config(struct =
+hda_codec *codec)=0A=
+ 	return alc_parse_auto_config(codec, alc269_ignore, ssids);=0A=
+ }=0A=
+ =0A=
++void alc_snd_hda_shutup_pins(struct hda_codec *codec)=0A=
++{=0A=
++	int i;=0A=
++	int mic_pin =3D find_ext_mic_pin(codec);=0A=
++	/* don't shut up pins when unloading the driver; otherwise it breaks=0A=
++	 * the default pin setup at the next load of the driver=0A=
++	 */=0A=
++	if (codec->bus->shutdown)=0A=
++		return;=0A=
++	for (i =3D 0; i < codec->init_pins.used; i++) {=0A=
++		struct hda_pincfg *pin =3D snd_array_elem(&codec->init_pins, i);=0A=
++		/* use read here for syncing after issuing each verb */=0A=
++		if (pin->nid !=3D mic_pin)=0A=
++			snd_hda_codec_read(codec, pin->nid, 0,=0A=
++					AC_VERB_SET_PIN_WIDGET_CONTROL, 0);=0A=
++	}=0A=
++	codec->pins_shutup =3D 1;=0A=
++}=0A=
++=0A=
+ static void alc269vb_toggle_power_output(struct hda_codec *codec, int =
+power_up)=0A=
+ {=0A=
+ 	int val =3D alc_read_coef_idx(codec, 0x04);=0A=
+@@ -5326,6 +5345,7 @@ static int patch_alc269(struct hda_codec *codec)=0A=
+ 	case 0x10ec0286:=0A=
+ 	case 0x10ec0288:=0A=
+ 		spec->codec_variant =3D ALC269_TYPE_ALC286;=0A=
++		spec->shutup =3D alc_snd_hda_shutup_pins;=0A=
+ 		break;=0A=
+ 	case 0x10ec0255:=0A=
+ 		spec->codec_variant =3D ALC269_TYPE_ALC255;=0A=
+
+------=_NextPart_000_014B_01CF947F.F2280460
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+------=_NextPart_000_014B_01CF947F.F2280460--
