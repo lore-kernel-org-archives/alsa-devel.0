@@ -1,17 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RFC/RFT] ASoC: rt5677: Convert to use
-	rl6231_pll_calc
-Date: Mon, 30 Jun 2014 19:42:59 +0100
-Message-ID: <20140630184259.GD23300@sirena.org.uk>
-References: <1402980091.13607.1.camel@phoenix>
+Subject: Re: [PATCH V2 1/2] ASoC: samsung: Add machine driver
+	for Odroid X2/U3
+Date: Mon, 30 Jun 2014 19:46:58 +0100
+Message-ID: <20140630184658.GE23300__47449.4250411682$1404154076$gmane$org@sirena.org.uk>
+References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
+ <1403108551-25058-2-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7044234405462889587=="
+Content-Type: multipart/mixed; boundary="===============1120637554900130394=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C029265572
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 20:43:16 +0200 (CEST)
-In-Reply-To: <1402980091.13607.1.camel@phoenix>
+In-Reply-To: <1403108551-25058-2-git-send-email-s.nawrocki@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +18,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, pawel.moll@arm.com, zhen1.chen@samsung.com, kyungmin.park@samsung.com, galak@codeaurora.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7044234405462889587==
+--===============1120637554900130394==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="V1U121k6BDnjVM6n"
+	protocol="application/pgp-signature"; boundary="hobqzgJMeQ3bIoso"
 Content-Disposition: inline
 
 
---V1U121k6BDnjVM6n
+--hobqzgJMeQ3bIoso
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 17, 2014 at 12:41:31PM +0800, Axel Lin wrote:
-> The implementation of rt5677_pll_calc() has the same logic of rl6231_pll_=
-calc().
-> The only difference is the lower boundary checking for freq_in.
->=20
-> This patch calls rl6231_pll_calc() instead of open-coded.
-> The k_bp of struct rt5677_pll_code is always false, thus also remove the
-> code to check pll_code.k_bp.
+On Wed, Jun 18, 2014 at 06:22:30PM +0200, Sylwester Nawrocki wrote:
 
-Applied, thanks.
+> +struct odroidx2_drv_data odroidx2_drvdata = {
+> +	.dapm_widgets		= odroidx2_dapm_widgets,
+> +	.num_dapm_widgets	= ARRAY_SIZE(odroidx2_dapm_widgets),
+> +};
+> +
+> +struct odroidx2_drv_data odroidu3_drvdata = {
+> +	.dapm_widgets		= odroidu3_dapm_widgets,
+> +	.num_dapm_widgets	= ARRAY_SIZE(odroidu3_dapm_widgets),
+> +};
 
---V1U121k6BDnjVM6n
+> +	ret = snd_soc_of_parse_audio_routing(card, "samsung,audio-routing");
+> +	if (ret < 0)
+> +		return ret;
+
+Given that the widgets don't have any actions defined and the routing is
+all done by DT it might be easier and more flexible to just define all
+the widgets all the time and let them hang there if they're not in use,
+that way you don't need multiple compatible strings.  If you do that
+you're then very close to being able to use simple-card...
+
+--hobqzgJMeQ3bIoso
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTsa+wAAoJELSic+t+oim9WHoP/1Fu3e053Q3GXeePPqlzxoDP
-zco45VJj32039uN28mzV1Fl58O7jfnYCc32bIanfuYRSMgHOboedEJ0MH6uEDAk0
-cS2p0mdu0o4pm1daQvO0taPVZJgnWzE0oqtWX78tcfzBQIN4qHty73ycV/JGN8Z0
-sH1rYujg0RFZdvabGzA46q3++6gZ3Wr10zmBUW+XQejSayst+0gUJ/DwjS9nc/Vi
-BFse8DFEGr0VRpvUYqytZokPwqYwf5PYVfllcfkmUi+gTetrWFtSlULSCx/xm41n
-ZFskykcsx9ezhIaXsfmLaijH6QlE+IPWAZDyHOcOqQCKNkU1vXnAqjrHSFTMOH6h
-vMZ0z66EKMCduQBhYMRWXa81++tfSbESRNm/HmUDSuE/MkTMhfWA/6fKyKs+wKOx
-XvdfMA6d9c5GjDO95PyDU2GEzgFr5TZAAnt6NzHLFo/iJoc8JK2mRM5wX+8LoLuK
-prffC0mVVu9nw+km2HRcRuayOBE0KB3/fQzGX/MpBCIVJTUbxIwgCgxW1e7sx8L6
-fxmmMmCeoB/Q2qVdapUOsRpFyaxVFddU8HhW/PmS49V0M6Jq13LopnFLXao8Kr9J
-o9H6tfhCU9OKhI5sODVAA5pK0ZLLW5fp1EBDhLDLZAm7nsszZMViCQAn4kDMOvMW
-CZuubM77PY6yS4XUTY7+
-=BLKD
+iQIcBAEBAgAGBQJTsbCeAAoJELSic+t+oim9bYUP/i+ywW+Yl67NWQKW0fQIDKDW
+oZFdfsjqruHE+0N0snlFM731QEZ6J9nxbHm4ltBdTwNWQZJRB+FqLUMO/tLySn3E
+DT23UOCKdDNveJxLBpa8c+xKNI+Er/DyQSp1ncOcCh9Wxzbj+lAo/31whqT5k/Zo
+xbWV6Uq9V/vVM+KU8lRtJKeTXEXWN85hAnOPxlGor4fEOooR7vwwow7+qPouVz3t
+SXPtL+Z1rlWKiV+nfnuDaqfnK8FUn7r+4jPUA1YBbfnyODHmPlxZyyX2hwloz1P9
+gV+Cz3ZPDETeAkibw3kiimL5PTs1Wh6Gh4/U+VIUCN0rP6488fXPsjfBNqIZLaKh
+poDDuR1tW9s+1THPxv59JuV5yJFtpT87gh0a6bWbeTD3eYsdfEJ7UmqxOxEx8o1j
+goLB5e7IP1pu2QdeVmLAWNfR0sGn+NgOfXqslZXgGAk1jmrC4q/uXinNtjdcK41d
+b80Vo93KMout5k3VJHtSRQmInGPhxudkDfe4i3ziEEd9qiTrJsaGv2NGAUWJxJ9I
+1mespzvc7638qYbu+pT7spHkJ87FiWRp+btfE2jCazN/t+qE2X3k2YiVrXmzN621
+C6hD6GcQUIHBFFJ6eXSgPvX2lK1x+aqD9rLodWvWq5n5dZgjpgyz4ZM7pgvlL5h+
+9E6paQ5aEQ5v7vtxXeuo
+=oZyg
 -----END PGP SIGNATURE-----
 
---V1U121k6BDnjVM6n--
+--hobqzgJMeQ3bIoso--
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
---===============7044234405462889587==
+
+--===============1120637554900130394==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7044234405462889587==--
+--===============1120637554900130394==--
