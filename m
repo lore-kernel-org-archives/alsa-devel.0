@@ -1,75 +1,74 @@
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
-Date: Mon, 30 Jun 2014 19:21:45 -0300
-Message-ID: <20140630222145.GA8789@arch.cereza>
-References: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
- <20140629213510.GR32514@n2100.arm.linux.org.uk>
- <53B154FE.80804@gmail.com>
- <20140630124320.GZ32514@n2100.arm.linux.org.uk>
- <53B164B2.7090902@gmail.com>
- <20140630142516.GA32514@n2100.arm.linux.org.uk>
+From: "Max Schmidt" <schmidti444@web.de>
+Subject: Re: Constant delay between starting a playback and a
+ capture stream
+Date: Tue, 1 Jul 2014 01:32:34 +0200
+Message-ID: <trinity-3b7a74c8-62eb-4254-a0b1-a83878d3b84d-1404171154142@3capp-webde-bs21>
+References: <trinity-76c63013-83c5-446c-a160-bc9ed56a1161-1403540443117@3capp-webde-bs03>
+ <trinity-f377e59a-71a6-447c-859a-f2188926e1f9-1403897243118@3capp-webde-bs11>,
+ <53B0590E.5010808@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-pm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140630142516.GA32514@n2100.arm.linux.org.uk>
-Sender: linux-pm-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Gregory Clement <gregory.clement@free-electrons.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5CF24265689
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 03:21:53 +0200 (CEST)
+In-Reply-To: <53B0590E.5010808@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 30 Jun 03:25 PM, Russell King - ARM Linux wrote:
-[..]
->=20
-> Right, so what I have against mainline right now in my tree is:
->=20
-> * two SPI patches, which have been taken by Mark
-> * one long term core ARM patch adding optimised memset/memcpy IO oper=
-ations
-> * the PMU stuff
-> * BMM (already published in git form)
-> * Vmeta (already published in git form)
-> * ASoC cleanup patches, which Mark took last week.
->=20
-> What isn't visible is the stuff which converts Armada DRM to componen=
-t
-> support, along with the TDA998x driver (and it sounds like the TI LCD=
-C
-> people may end up blocking that effort).  This is necessary to conver=
-t
-> it to DT support.  However, this depends on the component helper, and
-> that's where there's a blocking problem.
->=20
-> I sent out a bunch of patches last week, with a request for help from
-> the Exynos people.  So far, that has only attracted one relatively mi=
-nor
-> comment from the iMX people.  I can't move forwards with the Armada
-> DRM until this is sorted.  Neither can I move forward with the TDA998=
-x
-> driver.
->=20
-
-I'm not sure I understand why tilcdc people are an obstacle for the
-component stuff, other than the lack of responsiveness. In any case, if
-you have some tilcdc or tda998x patches and you need help with the main=
-line
-process, feel free to ask.
-
-I've been doing some tilcdc work lately, and I'd be happy to help you w=
-ith
-that.
-
-Do you plan to change the devicetree binding? While the current one wor=
-ks fine,
-it has several deficiencies, and it would be great to sort them out bef=
-ore
-the whole platform becomes obsolete.
-
-Really, if you need help and if you think I can handle it, just drop me=
- a line
-and I'll see what I can do.
---=20
-Ezequiel Garc=EDa, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+ICAgSGkgQ2xlbWVucywKCiAgIHRoYW5rcyBmb3IgeW91ciBoZWxwZnVsbCBhbnN3ZXIhCgogICBS
+ZWdhcmRzLAogICBNYXgKCiAgIEdlc2VuZGV0OiBTb25udGFnLCAyOS4gSnVuaSAyMDE0IHVtIDIw
+OjIxIFVocgogICBWb246ICJDbGVtZW5zIExhZGlzY2giIDxjbGVtZW5zQGxhZGlzY2guZGU+CiAg
+IEFuOiAiTWF4IFNjaG1pZHQiIDxzY2htaWR0aTQ0NEB3ZWIuZGU+LCBhbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKICAgQmV0cmVmZjogUmU6IFthbHNhLWRldmVsXSBDb25zdGFudCBkZWxheSBi
+ZXR3ZWVuIHN0YXJ0aW5nIGEgcGxheWJhY2sKICAgYW5kIGEgY2FwdHVyZSBzdHJlYW0KICAgTWF4
+IFNjaG1pZHQgd3JvdGU6CiAgID4gSSd2ZSBnb3QgYSBCZWFnbGVCb25lIEJsYWNrIChBUk0gQ29y
+dGV4IEEgOCDCtVApIHdpdGggYW4gQXVkaW8tQ2FwZQogICA+ICh1c2luZyBNY0FzcCBhbmQgQUxT
+QS1EYXZpbmNpLURyaXZlcnMpIGFuZCB3cm90ZSBhbiBtbWFwIGJhc2VkCiAgID4gcGxheWJhY2st
+Y2FwdHVyZSBhcHBsaWNhdGlvbiAoYm90aCBkZXZpY2VzICJodzowLDAiKS4gVGhlIGltcG9ydGFu
+dAogICA+IHRoaW5nIGlzIHRoYXQgdGhlIGFwcGxpY2F0aW9uIG5lZWRzIGEgY29uc3RhbnQgZGVs
+YXkgKG5vdCBuZWNlc3NhcmlseQogICA+IHNtYWxsKSBiZXR3ZWVuIHRoZSBzdGFydCBvZiB0aGUg
+cGxheWJhY2sgYW5kIHRoZSBjYXB0dXJlIHN0cmVhbS4KICAgPiBUbyByZWFsaXplIHRoYXQgSSB1
+c2UgdGhlIEFMU0EgQVBJIGZ1bmN0aW9uICJzbmRfcGNtX2xpbmsoY19oYW5kbGUsCiAgID4gcF9o
+YW5kbGUpIi4KICAgPgogICA+IDEpIExvb2tpbmcgYXQgYSBwbG90IG9mIG11bHRpcGxlIG1lYXN1
+cmVtZW50cyBvZiBsb29wZWQgYmFjayBhbmQKICAgPiBjYXB0dXJlZCBzcXVhcmUgd2F2ZXMgKG9y
+IHNpbmVzKSB0aGVyZSBzdGlsbCBpcyBhIGppdHRlciBvZiBhYm91dCB0d28KICAgPiB0byBmb3Vy
+IHNhbXBsZXMgKGF0IDQ4IGtIejsgd2hpY2ggaXMgYWJvdXQgNDAgdG8gODAgbXMpLCBubyBtYXR0
+ZXIgaWYKICAgSQogICA+IHJ1biBpdCBhcyBSVC1hcHAgKGVuZXJneSBzYXZlIG1vZGVzIGV0Yy4g
+ZGlzYWJsZWQsIGp1c3QgaW1wb3J0YW50CiAgID4gUHJvY2Vzc2VzIGhhdmUgYSBoaWdoZXIgUHJp
+b3JpdHkgZS5nLiBFRE1BKSBvciBub3JtYWwgYXBwLgogICA+IFBsZWFzZSBjb3JyZWN0IG1lIGlm
+IEknbSB3cm9uZywgYnV0IGFzIGZhciBhcyBJIHVuZGVyc3RhbmQgd2hlbiB0aGUKICAgPiBzdHJl
+YW1zIGFyZSBsaW5rZWQsIGF0IHN0YXJ0IHRoZSBwcm9jZXNzb3IgaXMgZ29pbmcgdGhyb3VnaCBh
+IGxpbmtlZAogICA+IGxpc3QgdHJpZ2dlcmluZyBhbGwgbGlua2VkIHN0cmVhbXMuIEFuZCB0aGUg
+dHJpZ2dlciBzdGFydCBpcyBhbgogICBhdG9taWMKICAgPiBwcm9jZXNzIHNvIHNob3VsZG4ndCBn
+ZXQgaW50ZXJydXB0ZWQuCiAgIFllcy4KICAgPiBTaG91bGRuJ3QgaXQgYWx3YXlzIHRha2UgdGhl
+IHNhbWUgdGltZSBiZXR3ZWVuIHN0YXJ0aW5nIHRoZSBwbGF5YmFjawogICA+IGFuZCBjYXB0dXJl
+IHN0cmVhbSB0aGVuPyBBbmQgaWYgeWVzLCB3aGVyZSBjb3VsZCB0aGUgdmFyaWFibGUgc3RhcnQK
+ICAgPiBkZWxheSBjb21lIGZyb20/CiAgIEhhcmR3YXJlIGFjY2Vzc2VzIGNhbiBiZSBxdWl0ZSBu
+b25kZXRlcm1pbmlzdGljLiBBbmQgaWYgdGhlIGRyaXZlciBpcwogICBub3Qgd3JpdHRlbiBwcm9w
+ZXJseSwgdGhlIHN0YXJ0IHRyaWdnZXIgd2lsbCBkbyBhbGwgdGhlIERNQSBzdHJlYW0KICAgaW5p
+dGlhbGl6YXRpb24gdGhhdCBzaG91bGQgaGF2ZSBiZWVuIGRvbmUgd2hlbiBwcmVwYXJpbmcgdGhl
+IGRldmljZS4KICAgKG1jYXNwX3N0YXJ0X3R4KCkgaGFzIGEgYnVzeSBsb29wIHdhaXRpbmcgZm9y
+IHRoZSBkZXZpY2UuKQogICBUaGVyZSBpcyBoYXJkd2FyZSB0aGF0IGFjdHVhbGx5IHN1cHBvcnRz
+IHN0YXJ0aW5nIHR3byBzdHJlYW1zIGF0CiAgIGV4YWN0bHkKICAgdGhlIHNhbWUgdGltZSAoYnkg
+c2V0dGluZyB0d28gYml0cyBpbiB0aGUgc2FtZSByZWdpc3RlcikuIE9idmlvdXNseSwKICAgdGhp
+cyBoYXJkd2FyZSBvciBpdHMgZHJpdmVyIGRvZXNuJ3Qgc3VwcG9ydCB0aGlzLgogICBSZWdhcmRz
+LAogICBDbGVtZW5zCiAgIF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCiAgIEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CiAgIEFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwogICBbMV1odHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAoKUmVmZXJlbmNlcwoKICAgMS4gaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
