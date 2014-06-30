@@ -1,8 +1,8 @@
 From: Josh Lehan <alsa@krellan.com>
-Subject: [PATCH - alsa-utils 3/5] Makefile for amidicat,
-	includes manual page
-Date: Mon, 30 Jun 2014 01:55:01 -0700
-Message-ID: <1404118503-22921-4-git-send-email-alsa@krellan.com>
+Subject: [PATCH - alsa-utils 2/5] Add amidicat Makefile to
+	AC_OUTPUT list
+Date: Mon, 30 Jun 2014 01:55:00 -0700
+Message-ID: <1404118503-22921-3-git-send-email-alsa@krellan.com>
 References: <1404118503-22921-1-git-send-email-alsa@krellan.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,16 +24,15 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Josh Lehan <alsa@krellan.com>
 
-diff --git a/amidicat/Makefile.am b/amidicat/Makefile.am
-new file mode 100644
-index 0000000..02a896d
---- /dev/null
-+++ b/amidicat/Makefile.am
-@@ -0,0 +1,5 @@
-+AM_CPPFLAGS  = -I$(top_srcdir)/include
-+EXTRA_DIST   = amidicat.1
-+
-+bin_PROGRAMS = amidicat
-+man_MANS     = amidicat.1
+diff --git a/configure.ac b/configure.ac
+index a4d2db3..3f43ff9 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -360,4 +360,4 @@ AC_OUTPUT(Makefile alsactl/Makefile alsactl/init/Makefile \
+ 	  utils/alsa-utils.spec seq/Makefile seq/aconnect/Makefile \
+ 	  seq/aplaymidi/Makefile seq/aseqdump/Makefile seq/aseqnet/Makefile \
+ 	  speaker-test/Makefile speaker-test/samples/Makefile \
+-	  alsaloop/Makefile)
++	  alsaloop/Makefile amidicat/Makefile)
 -- 
 1.8.3.2
