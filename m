@@ -1,494 +1,61 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 7/7] ALSA: hda - Replace ICH6_ prefix
-Date: Mon, 30 Jun 2014 14:21:02 +0200
-Message-ID: <1404130862-3152-8-git-send-email-tiwai@suse.de>
-References: <1404130862-3152-1-git-send-email-tiwai@suse.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
+Date: Mon, 30 Jun 2014 13:43:20 +0100
+Message-ID: <20140630124320.GZ32514@n2100.arm.linux.org.uk>
+References: <1404075603-31838-1-git-send-email-andrew@lunn.ch> <20140629213510.GR32514@n2100.arm.linux.org.uk> <53B154FE.80804@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E39AD2655B3
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 14:21:05 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id C53A7AD58
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 12:21:05 +0000 (UTC)
-In-Reply-To: <1404130862-3152-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-pm-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <53B154FE.80804@gmail.com>
+Sender: linux-pm-owner@vger.kernel.org
+To: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Gregory Clement <gregory.clement@free-electrons.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-ICH6_ prefix doesn't mean that it's specific to ICH6 chipset but
-rather its generic for all HD-audio (or "Azalia") devices.
-Use AZX_ prefix instead to align with other constants.
+On Mon, Jun 30, 2014 at 02:15:58PM +0200, Sebastian Hesselbarth wrote:
+> Can you give a /rough/ schedule for your plans to sort out your private
+> branches? If we can all investigate the issue with the same code basis,
+> I am sure we can make DT dove behave the same way non-DT dove seems to
+> be.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_controller.c |  47 ++++++-----
- sound/pci/hda/hda_intel.c      |  12 +--
- sound/pci/hda/hda_priv.h       | 172 ++++++++++++++++++++---------------------
- 3 files changed, 115 insertions(+), 116 deletions(-)
+As you will be aware, that is an unreasonable question.  I have no
+idea what so ever how long it will take to sort out my private
+branches, because it doesn't depend all that much on me.
 
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 8d9398a4c7c9..06f39c126ba4 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -155,9 +155,9 @@ static int azx_setup_controller(struct azx *chip, struct azx_dev *azx_dev)
- 	/* enable the position buffer */
- 	if (chip->get_position[0] != azx_get_pos_lpib ||
- 	    chip->get_position[1] != azx_get_pos_lpib) {
--		if (!(azx_readl(chip, DPLBASE) & ICH6_DPLBASE_ENABLE))
-+		if (!(azx_readl(chip, DPLBASE) & AZX_DPLBASE_ENABLE))
- 			azx_writel(chip, DPLBASE,
--				(u32)chip->posbuf.addr | ICH6_DPLBASE_ENABLE);
-+				(u32)chip->posbuf.addr | AZX_DPLBASE_ENABLE);
- 	}
- 
- 	/* set the interrupt enable bits in the descriptor control register */
-@@ -975,10 +975,10 @@ static void azx_init_cmd_io(struct azx *chip)
- 	azx_writew(chip, CORBWP, 0);
- 
- 	/* reset the corb hw read pointer */
--	azx_writew(chip, CORBRP, ICH6_CORBRP_RST);
-+	azx_writew(chip, CORBRP, AZX_CORBRP_RST);
- 	if (!(chip->driver_caps & AZX_DCAPS_CORBRP_SELF_CLEAR)) {
- 		for (timeout = 1000; timeout > 0; timeout--) {
--			if ((azx_readw(chip, CORBRP) & ICH6_CORBRP_RST) == ICH6_CORBRP_RST)
-+			if ((azx_readw(chip, CORBRP) & AZX_CORBRP_RST) == AZX_CORBRP_RST)
- 				break;
- 			udelay(1);
- 		}
-@@ -998,7 +998,7 @@ static void azx_init_cmd_io(struct azx *chip)
- 	}
- 
- 	/* enable corb dma */
--	azx_writeb(chip, CORBCTL, ICH6_CORBCTL_RUN);
-+	azx_writeb(chip, CORBCTL, AZX_CORBCTL_RUN);
- 
- 	/* RIRB set up */
- 	chip->rirb.addr = chip->rb.addr + 2048;
-@@ -1011,14 +1011,14 @@ static void azx_init_cmd_io(struct azx *chip)
- 	/* set the rirb size to 256 entries (ULI requires explicitly) */
- 	azx_writeb(chip, RIRBSIZE, 0x02);
- 	/* reset the rirb hw write pointer */
--	azx_writew(chip, RIRBWP, ICH6_RIRBWP_RST);
-+	azx_writew(chip, RIRBWP, AZX_RIRBWP_RST);
- 	/* set N=1, get RIRB response interrupt for new entry */
- 	if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
- 		azx_writew(chip, RINTCNT, 0xc0);
- 	else
- 		azx_writew(chip, RINTCNT, 1);
- 	/* enable rirb dma and response irq */
--	azx_writeb(chip, RIRBCTL, ICH6_RBCTL_DMA_EN | ICH6_RBCTL_IRQ_EN);
-+	azx_writeb(chip, RIRBCTL, AZX_RBCTL_DMA_EN | AZX_RBCTL_IRQ_EN);
- 	spin_unlock_irq(&chip->reg_lock);
- }
- EXPORT_SYMBOL_GPL(azx_init_cmd_io);
-@@ -1062,7 +1062,7 @@ static int azx_corb_send_cmd(struct hda_bus *bus, u32 val)
- 		return -EIO;
- 	}
- 	wp++;
--	wp %= ICH6_MAX_CORB_ENTRIES;
-+	wp %= AZX_MAX_CORB_ENTRIES;
- 
- 	rp = azx_readw(chip, CORBRP);
- 	if (wp == rp) {
-@@ -1080,7 +1080,7 @@ static int azx_corb_send_cmd(struct hda_bus *bus, u32 val)
- 	return 0;
- }
- 
--#define ICH6_RIRB_EX_UNSOL_EV	(1<<4)
-+#define AZX_RIRB_EX_UNSOL_EV	(1<<4)
- 
- /* retrieve RIRB entry - called from interrupt handler */
- static void azx_update_rirb(struct azx *chip)
-@@ -1101,7 +1101,7 @@ static void azx_update_rirb(struct azx *chip)
- 
- 	while (chip->rirb.rp != wp) {
- 		chip->rirb.rp++;
--		chip->rirb.rp %= ICH6_MAX_RIRB_ENTRIES;
-+		chip->rirb.rp %= AZX_MAX_RIRB_ENTRIES;
- 
- 		rp = chip->rirb.rp << 1; /* an RIRB entry is 8-bytes */
- 		res_ex = le32_to_cpu(chip->rirb.buf[rp + 1]);
-@@ -1112,8 +1112,7 @@ static void azx_update_rirb(struct azx *chip)
- 				res, res_ex,
- 				chip->rirb.rp, wp);
- 			snd_BUG();
--		}
--		else if (res_ex & ICH6_RIRB_EX_UNSOL_EV)
-+		} else if (res_ex & AZX_RIRB_EX_UNSOL_EV)
- 			snd_hda_queue_unsol_event(chip->bus, res, res_ex);
- 		else if (chip->rirb.cmds[addr]) {
- 			chip->rirb.res[addr] = res;
-@@ -1221,7 +1220,7 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
- 	/* release CORB/RIRB */
- 	azx_free_cmd_io(chip);
- 	/* disable unsolicited responses */
--	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~ICH6_GCTL_UNSOL);
-+	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~AZX_GCTL_UNSOL);
- 	return -1;
- }
- 
-@@ -1242,7 +1241,7 @@ static int azx_single_wait_for_response(struct azx *chip, unsigned int addr)
- 
- 	while (timeout--) {
- 		/* check IRV busy bit */
--		if (azx_readw(chip, IRS) & ICH6_IRS_VALID) {
-+		if (azx_readw(chip, IRS) & AZX_IRS_VALID) {
- 			/* reuse rirb.res as the response return value */
- 			chip->rirb.res[addr] = azx_readl(chip, IR);
- 			return 0;
-@@ -1266,13 +1265,13 @@ static int azx_single_send_cmd(struct hda_bus *bus, u32 val)
- 	bus->rirb_error = 0;
- 	while (timeout--) {
- 		/* check ICB busy bit */
--		if (!((azx_readw(chip, IRS) & ICH6_IRS_BUSY))) {
-+		if (!((azx_readw(chip, IRS) & AZX_IRS_BUSY))) {
- 			/* Clear IRV valid bit */
- 			azx_writew(chip, IRS, azx_readw(chip, IRS) |
--				   ICH6_IRS_VALID);
-+				   AZX_IRS_VALID);
- 			azx_writel(chip, IC, val);
- 			azx_writew(chip, IRS, azx_readw(chip, IRS) |
--				   ICH6_IRS_BUSY);
-+				   AZX_IRS_BUSY);
- 			return azx_single_wait_for_response(chip, addr);
- 		}
- 		udelay(1);
-@@ -1501,10 +1500,10 @@ void azx_enter_link_reset(struct azx *chip)
- 	unsigned long timeout;
- 
- 	/* reset controller */
--	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~ICH6_GCTL_RESET);
-+	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~AZX_GCTL_RESET);
- 
- 	timeout = jiffies + msecs_to_jiffies(100);
--	while ((azx_readb(chip, GCTL) & ICH6_GCTL_RESET) &&
-+	while ((azx_readb(chip, GCTL) & AZX_GCTL_RESET) &&
- 			time_before(jiffies, timeout))
- 		usleep_range(500, 1000);
- }
-@@ -1515,7 +1514,7 @@ static void azx_exit_link_reset(struct azx *chip)
- {
- 	unsigned long timeout;
- 
--	azx_writeb(chip, GCTL, azx_readb(chip, GCTL) | ICH6_GCTL_RESET);
-+	azx_writeb(chip, GCTL, azx_readb(chip, GCTL) | AZX_GCTL_RESET);
- 
- 	timeout = jiffies + msecs_to_jiffies(100);
- 	while (!azx_readb(chip, GCTL) &&
-@@ -1556,7 +1555,7 @@ static int azx_reset(struct azx *chip, bool full_reset)
- 	/* Accept unsolicited responses */
- 	if (!chip->single_cmd)
- 		azx_writel(chip, GCTL, azx_readl(chip, GCTL) |
--			   ICH6_GCTL_UNSOL);
-+			   AZX_GCTL_UNSOL);
- 
- 	/* detect codecs */
- 	if (!chip->codec_mask) {
-@@ -1573,7 +1572,7 @@ static void azx_int_enable(struct azx *chip)
- {
- 	/* enable controller CIE and GIE */
- 	azx_writel(chip, INTCTL, azx_readl(chip, INTCTL) |
--		   ICH6_INT_CTRL_EN | ICH6_INT_GLOBAL_EN);
-+		   AZX_INT_CTRL_EN | AZX_INT_GLOBAL_EN);
- }
- 
- /* disable interrupts */
-@@ -1594,7 +1593,7 @@ static void azx_int_disable(struct azx *chip)
- 
- 	/* disable controller CIE and GIE */
- 	azx_writel(chip, INTCTL, azx_readl(chip, INTCTL) &
--		   ~(ICH6_INT_CTRL_EN | ICH6_INT_GLOBAL_EN));
-+		   ~(AZX_INT_CTRL_EN | AZX_INT_GLOBAL_EN));
- }
- 
- /* clear interrupts */
-@@ -1615,7 +1614,7 @@ static void azx_int_clear(struct azx *chip)
- 	azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
- 
- 	/* clear int status */
--	azx_writel(chip, INTSTS, ICH6_INT_CTRL_EN | ICH6_INT_ALL_STREAM);
-+	azx_writel(chip, INTSTS, AZX_INT_CTRL_EN | AZX_INT_ALL_STREAM);
- }
- 
- /*
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index bbf01fcb6893..dc0c8dac1900 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -339,8 +339,8 @@ static char *driver_short_names[] = {
-  * Clock) to 24MHz BCLK: BCLK = CDCLK * M / N
-  * The values will be lost when the display power well is disabled.
-  */
--#define ICH6_REG_EM4			0x100c
--#define ICH6_REG_EM5			0x1010
-+#define AZX_REG_EM4			0x100c
-+#define AZX_REG_EM5			0x1010
- 
- struct hda_intel {
- 	struct azx chip;
-@@ -451,7 +451,7 @@ static void azx_init_pci(struct azx *chip)
- 	 */
- 	if (!(chip->driver_caps & AZX_DCAPS_NO_TCSEL)) {
- 		dev_dbg(chip->card->dev, "Clearing TCSEL\n");
--		update_pci_byte(chip->pci, ICH6_PCIREG_TCSEL, 0x07, 0);
-+		update_pci_byte(chip->pci, AZX_PCIREG_TCSEL, 0x07, 0);
- 	}
- 
- 	/* For ATI SB450/600/700/800/900 and AMD Hudson azalia HD audio,
-@@ -1529,7 +1529,7 @@ static int azx_first_init(struct azx *chip)
- 					 NULL);
- 		if (p_smbus) {
- 			if (p_smbus->revision < 0x30)
--				gcap &= ~ICH6_GCAP_64OK;
-+				gcap &= ~AZX_GCAP_64OK;
- 			pci_dev_put(p_smbus);
- 		}
- 	}
-@@ -1537,7 +1537,7 @@ static int azx_first_init(struct azx *chip)
- 	/* disable 64bit DMA address on some devices */
- 	if (chip->driver_caps & AZX_DCAPS_NO_64BIT) {
- 		dev_dbg(card->dev, "Disabling 64bit DMA\n");
--		gcap &= ~ICH6_GCAP_64OK;
-+		gcap &= ~AZX_GCAP_64OK;
- 	}
- 
- 	/* disable buffer size rounding to 128-byte multiples if supported */
-@@ -1553,7 +1553,7 @@ static int azx_first_init(struct azx *chip)
- 	}
- 
- 	/* allow 64bit DMA address if supported by H/W */
--	if ((gcap & ICH6_GCAP_64OK) && !pci_set_dma_mask(pci, DMA_BIT_MASK(64)))
-+	if ((gcap & AZX_GCAP_64OK) && !pci_set_dma_mask(pci, DMA_BIT_MASK(64)))
- 		pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(64));
- 	else {
- 		pci_set_dma_mask(pci, DMA_BIT_MASK(32));
-diff --git a/sound/pci/hda/hda_priv.h b/sound/pci/hda/hda_priv.h
-index da2d3a41f8f3..33eb5d027d38 100644
---- a/sound/pci/hda/hda_priv.h
-+++ b/sound/pci/hda/hda_priv.h
-@@ -22,82 +22,82 @@
- /*
-  * registers
-  */
--#define ICH6_REG_GCAP			0x00
--#define   ICH6_GCAP_64OK	(1 << 0)   /* 64bit address support */
--#define   ICH6_GCAP_NSDO	(3 << 1)   /* # of serial data out signals */
--#define   ICH6_GCAP_BSS		(31 << 3)  /* # of bidirectional streams */
--#define   ICH6_GCAP_ISS		(15 << 8)  /* # of input streams */
--#define   ICH6_GCAP_OSS		(15 << 12) /* # of output streams */
--#define ICH6_REG_VMIN			0x02
--#define ICH6_REG_VMAJ			0x03
--#define ICH6_REG_OUTPAY			0x04
--#define ICH6_REG_INPAY			0x06
--#define ICH6_REG_GCTL			0x08
--#define   ICH6_GCTL_RESET	(1 << 0)   /* controller reset */
--#define   ICH6_GCTL_FCNTRL	(1 << 1)   /* flush control */
--#define   ICH6_GCTL_UNSOL	(1 << 8)   /* accept unsol. response enable */
--#define ICH6_REG_WAKEEN			0x0c
--#define ICH6_REG_STATESTS		0x0e
--#define ICH6_REG_GSTS			0x10
--#define   ICH6_GSTS_FSTS	(1 << 1)   /* flush status */
--#define ICH6_REG_INTCTL			0x20
--#define ICH6_REG_INTSTS			0x24
--#define ICH6_REG_WALLCLK		0x30	/* 24Mhz source */
--#define ICH6_REG_OLD_SSYNC		0x34	/* SSYNC for old ICH */
--#define ICH6_REG_SSYNC			0x38
--#define ICH6_REG_CORBLBASE		0x40
--#define ICH6_REG_CORBUBASE		0x44
--#define ICH6_REG_CORBWP			0x48
--#define ICH6_REG_CORBRP			0x4a
--#define   ICH6_CORBRP_RST	(1 << 15)  /* read pointer reset */
--#define ICH6_REG_CORBCTL		0x4c
--#define   ICH6_CORBCTL_RUN	(1 << 1)   /* enable DMA */
--#define   ICH6_CORBCTL_CMEIE	(1 << 0)   /* enable memory error irq */
--#define ICH6_REG_CORBSTS		0x4d
--#define   ICH6_CORBSTS_CMEI	(1 << 0)   /* memory error indication */
--#define ICH6_REG_CORBSIZE		0x4e
--
--#define ICH6_REG_RIRBLBASE		0x50
--#define ICH6_REG_RIRBUBASE		0x54
--#define ICH6_REG_RIRBWP			0x58
--#define   ICH6_RIRBWP_RST	(1 << 15)  /* write pointer reset */
--#define ICH6_REG_RINTCNT		0x5a
--#define ICH6_REG_RIRBCTL		0x5c
--#define   ICH6_RBCTL_IRQ_EN	(1 << 0)   /* enable IRQ */
--#define   ICH6_RBCTL_DMA_EN	(1 << 1)   /* enable DMA */
--#define   ICH6_RBCTL_OVERRUN_EN	(1 << 2)   /* enable overrun irq */
--#define ICH6_REG_RIRBSTS		0x5d
--#define   ICH6_RBSTS_IRQ	(1 << 0)   /* response irq */
--#define   ICH6_RBSTS_OVERRUN	(1 << 2)   /* overrun irq */
--#define ICH6_REG_RIRBSIZE		0x5e
--
--#define ICH6_REG_IC			0x60
--#define ICH6_REG_IR			0x64
--#define ICH6_REG_IRS			0x68
--#define   ICH6_IRS_VALID	(1<<1)
--#define   ICH6_IRS_BUSY		(1<<0)
--
--#define ICH6_REG_DPLBASE		0x70
--#define ICH6_REG_DPUBASE		0x74
--#define   ICH6_DPLBASE_ENABLE	0x1	/* Enable position buffer */
-+#define AZX_REG_GCAP			0x00
-+#define   AZX_GCAP_64OK		(1 << 0)   /* 64bit address support */
-+#define   AZX_GCAP_NSDO		(3 << 1)   /* # of serial data out signals */
-+#define   AZX_GCAP_BSS		(31 << 3)  /* # of bidirectional streams */
-+#define   AZX_GCAP_ISS		(15 << 8)  /* # of input streams */
-+#define   AZX_GCAP_OSS		(15 << 12) /* # of output streams */
-+#define AZX_REG_VMIN			0x02
-+#define AZX_REG_VMAJ			0x03
-+#define AZX_REG_OUTPAY			0x04
-+#define AZX_REG_INPAY			0x06
-+#define AZX_REG_GCTL			0x08
-+#define   AZX_GCTL_RESET	(1 << 0)   /* controller reset */
-+#define   AZX_GCTL_FCNTRL	(1 << 1)   /* flush control */
-+#define   AZX_GCTL_UNSOL	(1 << 8)   /* accept unsol. response enable */
-+#define AZX_REG_WAKEEN			0x0c
-+#define AZX_REG_STATESTS		0x0e
-+#define AZX_REG_GSTS			0x10
-+#define   AZX_GSTS_FSTS		(1 << 1)   /* flush status */
-+#define AZX_REG_INTCTL			0x20
-+#define AZX_REG_INTSTS			0x24
-+#define AZX_REG_WALLCLK			0x30	/* 24Mhz source */
-+#define AZX_REG_OLD_SSYNC		0x34	/* SSYNC for old ICH */
-+#define AZX_REG_SSYNC			0x38
-+#define AZX_REG_CORBLBASE		0x40
-+#define AZX_REG_CORBUBASE		0x44
-+#define AZX_REG_CORBWP			0x48
-+#define AZX_REG_CORBRP			0x4a
-+#define   AZX_CORBRP_RST	(1 << 15)  /* read pointer reset */
-+#define AZX_REG_CORBCTL			0x4c
-+#define   AZX_CORBCTL_RUN	(1 << 1)   /* enable DMA */
-+#define   AZX_CORBCTL_CMEIE	(1 << 0)   /* enable memory error irq */
-+#define AZX_REG_CORBSTS			0x4d
-+#define   AZX_CORBSTS_CMEI	(1 << 0)   /* memory error indication */
-+#define AZX_REG_CORBSIZE		0x4e
-+
-+#define AZX_REG_RIRBLBASE		0x50
-+#define AZX_REG_RIRBUBASE		0x54
-+#define AZX_REG_RIRBWP			0x58
-+#define   AZX_RIRBWP_RST	(1 << 15)  /* write pointer reset */
-+#define AZX_REG_RINTCNT			0x5a
-+#define AZX_REG_RIRBCTL			0x5c
-+#define   AZX_RBCTL_IRQ_EN	(1 << 0)   /* enable IRQ */
-+#define   AZX_RBCTL_DMA_EN	(1 << 1)   /* enable DMA */
-+#define   AZX_RBCTL_OVERRUN_EN	(1 << 2)   /* enable overrun irq */
-+#define AZX_REG_RIRBSTS			0x5d
-+#define   AZX_RBSTS_IRQ		(1 << 0)   /* response irq */
-+#define   AZX_RBSTS_OVERRUN	(1 << 2)   /* overrun irq */
-+#define AZX_REG_RIRBSIZE		0x5e
-+
-+#define AZX_REG_IC			0x60
-+#define AZX_REG_IR			0x64
-+#define AZX_REG_IRS			0x68
-+#define   AZX_IRS_VALID		(1<<1)
-+#define   AZX_IRS_BUSY		(1<<0)
-+
-+#define AZX_REG_DPLBASE			0x70
-+#define AZX_REG_DPUBASE			0x74
-+#define   AZX_DPLBASE_ENABLE	0x1	/* Enable position buffer */
- 
- /* SD offset: SDI0=0x80, SDI1=0xa0, ... SDO3=0x160 */
- enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
- 
- /* stream register offsets from stream base */
--#define ICH6_REG_SD_CTL			0x00
--#define ICH6_REG_SD_STS			0x03
--#define ICH6_REG_SD_LPIB		0x04
--#define ICH6_REG_SD_CBL			0x08
--#define ICH6_REG_SD_LVI			0x0c
--#define ICH6_REG_SD_FIFOW		0x0e
--#define ICH6_REG_SD_FIFOSIZE		0x10
--#define ICH6_REG_SD_FORMAT		0x12
--#define ICH6_REG_SD_BDLPL		0x18
--#define ICH6_REG_SD_BDLPU		0x1c
-+#define AZX_REG_SD_CTL			0x00
-+#define AZX_REG_SD_STS			0x03
-+#define AZX_REG_SD_LPIB			0x04
-+#define AZX_REG_SD_CBL			0x08
-+#define AZX_REG_SD_LVI			0x0c
-+#define AZX_REG_SD_FIFOW		0x0e
-+#define AZX_REG_SD_FIFOSIZE		0x10
-+#define AZX_REG_SD_FORMAT		0x12
-+#define AZX_REG_SD_BDLPL		0x18
-+#define AZX_REG_SD_BDLPU		0x1c
- 
- /* PCI space */
--#define ICH6_PCIREG_TCSEL	0x44
-+#define AZX_PCIREG_TCSEL		0x44
- 
- /*
-  * other constants
-@@ -140,13 +140,13 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
- #define SD_STS_FIFO_READY	0x20	/* FIFO ready */
- 
- /* INTCTL and INTSTS */
--#define ICH6_INT_ALL_STREAM	0xff	   /* all stream interrupts */
--#define ICH6_INT_CTRL_EN	0x40000000 /* controller interrupt enable bit */
--#define ICH6_INT_GLOBAL_EN	0x80000000 /* global interrupt enable bit */
-+#define AZX_INT_ALL_STREAM	0xff	   /* all stream interrupts */
-+#define AZX_INT_CTRL_EN	0x40000000 /* controller interrupt enable bit */
-+#define AZX_INT_GLOBAL_EN	0x80000000 /* global interrupt enable bit */
- 
- /* below are so far hardcoded - should read registers in future */
--#define ICH6_MAX_CORB_ENTRIES	256
--#define ICH6_MAX_RIRB_ENTRIES	256
-+#define AZX_MAX_CORB_ENTRIES	256
-+#define AZX_MAX_RIRB_ENTRIES	256
- 
- /* driver quirks (capabilities) */
- /* bits 0-7 are used for indicating driver type */
-@@ -369,29 +369,29 @@ struct azx {
-  */
- 
- #define azx_writel(chip, reg, value) \
--	((chip)->ops->reg_writel(value, (chip)->remap_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_writel(value, (chip)->remap_addr + AZX_REG_##reg))
- #define azx_readl(chip, reg) \
--	((chip)->ops->reg_readl((chip)->remap_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_readl((chip)->remap_addr + AZX_REG_##reg))
- #define azx_writew(chip, reg, value) \
--	((chip)->ops->reg_writew(value, (chip)->remap_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_writew(value, (chip)->remap_addr + AZX_REG_##reg))
- #define azx_readw(chip, reg) \
--	((chip)->ops->reg_readw((chip)->remap_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_readw((chip)->remap_addr + AZX_REG_##reg))
- #define azx_writeb(chip, reg, value) \
--	((chip)->ops->reg_writeb(value, (chip)->remap_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_writeb(value, (chip)->remap_addr + AZX_REG_##reg))
- #define azx_readb(chip, reg) \
--	((chip)->ops->reg_readb((chip)->remap_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_readb((chip)->remap_addr + AZX_REG_##reg))
- 
- #define azx_sd_writel(chip, dev, reg, value) \
--	((chip)->ops->reg_writel(value, (dev)->sd_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_writel(value, (dev)->sd_addr + AZX_REG_##reg))
- #define azx_sd_readl(chip, dev, reg) \
--	((chip)->ops->reg_readl((dev)->sd_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_readl((dev)->sd_addr + AZX_REG_##reg))
- #define azx_sd_writew(chip, dev, reg, value) \
--	((chip)->ops->reg_writew(value, (dev)->sd_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_writew(value, (dev)->sd_addr + AZX_REG_##reg))
- #define azx_sd_readw(chip, dev, reg) \
--	((chip)->ops->reg_readw((dev)->sd_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_readw((dev)->sd_addr + AZX_REG_##reg))
- #define azx_sd_writeb(chip, dev, reg, value) \
--	((chip)->ops->reg_writeb(value, (dev)->sd_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_writeb(value, (dev)->sd_addr + AZX_REG_##reg))
- #define azx_sd_readb(chip, dev, reg) \
--	((chip)->ops->reg_readb((dev)->sd_addr + ICH6_REG_##reg))
-+	((chip)->ops->reg_readb((dev)->sd_addr + AZX_REG_##reg))
- 
- #endif /* __SOUND_HDA_PRIV_H */
+For example, I've had fully working audio on the Cubox for 18+ months,
+but there's a big problem getting it into mainline.  First it was the
+lack of co-operation from the ASoC maintainers.  Then it was the ASoC
+maintainers accepting Jean-Francois patches (which really torpedoed
+my efforts.)  And the final problem which makes it totally impossible
+is that pushing the DPCM stuff will completely break the DT based
+kirkwood ASoC stuff which got pushed in.
+
+I suspect that the PMU work I did has also been torpedoed because of
+no one in the mvebu circles has really thought about how to deal
+properly with the overlapping registers for the PMU, hwmon and RTC.
+
+Right now, I have 250 patches in my Cubox tree against a base of
+3.15 plus the original set of changes.  And no, I'm *not* going
+to be stupid enough to publish the tree because of the non-GPL
+license header(s) on various files in the Vivante code base.
+
+I'm actually on the point of just giving up with mainlike on the Cubox
+because of this kind of crap, and the extreme difficulty to get any
+kind of progress on this stuff - and I'm seeing a growing number of
+patches on the Cubox-i side of things, the mainline churn on mach-dove
+is becoming a /big/ problem.
+
+So... if you want to remove mach-dove, then I'll just add to my
+cubox tree an entire revert of it.  Especially as DT does not work
+properly here and non-DT does.
+
+And I really don't buy your "it's down to the timing" explanation -
+because (a) switching from 720p to 1080p reprograms the clock chain
+right from the Si5351, which is no different to what happens on
+initial bring up, and (b) I've measured the HDMI clock which is
+derived from this chain and it is correct and unmodulated.
+
 -- 
-2.0.0
+FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
+improving, and getting towards what was expected from it.
