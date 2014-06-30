@@ -1,111 +1,57 @@
-From: Kailang <kailang@realtek.com>
-Subject: ALC286 recording delay
-Date: Mon, 30 Jun 2014 16:25:46 +0800
-Message-ID: <EF9E26FF321C429281C88C574F0373A6@realtek.com.tw>
-Reply-To: Kailang <kailang@realtek.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [alsa-devel] [PATCH 00/13] Remove mach-kirkwood and mach-dove
+Date: Mon, 30 Jun 2014 09:49:18 +0100
+Message-ID: <20140630084918.GS32514@n2100.arm.linux.org.uk>
+References: <1404075603-31838-1-git-send-email-andrew@lunn.ch> <20140629213510.GR32514@n2100.arm.linux.org.uk> <20140630091643.2df3b0fb@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_NextPart_000_014B_01CF947F.F2280460"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id E46262617B6
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 10:25:50 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-ide-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140630091643.2df3b0fb@armhf>
+Sender: linux-ide-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Andrew Lunn <andrew@lunn.ch>, linux-ide@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>, alsa-devel@alsa-project.org, Bryan Wu <cooloney@gmail.com>, Jason Cooper <jason@lakedaemon.net>, rtc-linux@googlegroups.com, linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Daniel Lezcano <daniel.lezcano@linaro.org>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Kishon Vijay Abraham I <kishon@ti.com>, Tejun Heo <tj@kernel.org>, Wim Van Sebroeck <wim@iguana.be>, Mark Brown <broonie@kernel.org>, Richard Purdie <rpurdie@rpsys.net>, linux-pci@vger.kernel.org, Gregory Clement <gregory.clement@free-electrons.com>, Zhang Rui <rui.zhang@intel.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-leds@vger.kernel.org, linux-watchdog@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_NextPart_000_014B_01CF947F.F2280460
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
+On Mon, Jun 30, 2014 at 09:16:43AM +0200, Jean-Francois Moine wrote:
+> On Sun, 29 Jun 2014 22:35:11 +0100
+> Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
+> 
+> > There is actually a cubox regression which has yet to be tracked down.
+> > Running with my kernel (which is not-DT based) runs perfectly.  With
+> > DT, HDMI output can be unstable.
+> 
+> Russell,
+> 
+> What is this HDMI problem with DT?
+> 
+> I am running a DT based kernel on my Cubox for more than 1 year and the
+> only problem I have is a random black screen at startup time, and this
+> black screen problem also exists with the old non-DT kernels from
+> SolidRun.
 
-Hi Takashi,
- 
-It will be recording voice delay for resume back recording for Headset Mic.
-This patch doesn't disable pin for suspend state. The issue was fixed.
-This is follow ALC286 programing guide.
- 
-Thanks.
- 
-BR,
-Kailang
-------=_NextPart_000_014B_01CF947F.F2280460
-Content-Type: application/octet-stream;
-	name="0000-alc286-fixed-recording-delay.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="0000-alc286-fixed-recording-delay.patch"
+The problem is that the picture appears for about a second, then goes black
+for maybe a couple of seconds, then reappears for about a second and this
+cycle repeats.  Rebooting into the DT kernel doesn't fix it.  Rebooting
+back into the non-DT kernel does fix it.  Then if you boot back into the DT
+kernel it's back again.  Boot back into the non-DT kernel and it's again
+fixed.
 
->From 5d7ae195257daaffa1497d2c79d06aa01b9754b0 Mon Sep 17 00:00:00 2001=0A=
-From: Kailang Yang <kailang@realtek.com>=0A=
-Date: Mon, 30 Jun 2014 16:10:37 +0800=0A=
-Subject: [PATCH] ALSA: hda/realtek - Fixed ALC286/ALC288 recording delay =
-for=0A=
- Headset Mic=0A=
-=0A=
-It will be recording voice delay for resume back recording for Headset =
-Mic.=0A=
-This patch doesn't disable pin for suspend state. The issue was fixed.=0A=
-This is follow ALC286 programing guide.=0A=
-=0A=
-Signed-off-by: Kailang Yang <kailang@realtek.com>=0A=
-=0A=
-diff --git a/sound/pci/hda/patch_realtek.c =
-b/sound/pci/hda/patch_realtek.c=0A=
-index 60bf5ee..13cdefb 100644=0A=
---- a/sound/pci/hda/patch_realtek.c=0A=
-+++ b/sound/pci/hda/patch_realtek.c=0A=
-@@ -2782,6 +2782,25 @@ static int alc269_parse_auto_config(struct =
-hda_codec *codec)=0A=
- 	return alc_parse_auto_config(codec, alc269_ignore, ssids);=0A=
- }=0A=
- =0A=
-+void alc_snd_hda_shutup_pins(struct hda_codec *codec)=0A=
-+{=0A=
-+	int i;=0A=
-+	int mic_pin =3D find_ext_mic_pin(codec);=0A=
-+	/* don't shut up pins when unloading the driver; otherwise it breaks=0A=
-+	 * the default pin setup at the next load of the driver=0A=
-+	 */=0A=
-+	if (codec->bus->shutdown)=0A=
-+		return;=0A=
-+	for (i =3D 0; i < codec->init_pins.used; i++) {=0A=
-+		struct hda_pincfg *pin =3D snd_array_elem(&codec->init_pins, i);=0A=
-+		/* use read here for syncing after issuing each verb */=0A=
-+		if (pin->nid !=3D mic_pin)=0A=
-+			snd_hda_codec_read(codec, pin->nid, 0,=0A=
-+					AC_VERB_SET_PIN_WIDGET_CONTROL, 0);=0A=
-+	}=0A=
-+	codec->pins_shutup =3D 1;=0A=
-+}=0A=
-+=0A=
- static void alc269vb_toggle_power_output(struct hda_codec *codec, int =
-power_up)=0A=
- {=0A=
- 	int val =3D alc_read_coef_idx(codec, 0x04);=0A=
-@@ -5326,6 +5345,7 @@ static int patch_alc269(struct hda_codec *codec)=0A=
- 	case 0x10ec0286:=0A=
- 	case 0x10ec0288:=0A=
- 		spec->codec_variant =3D ALC269_TYPE_ALC286;=0A=
-+		spec->shutup =3D alc_snd_hda_shutup_pins;=0A=
- 		break;=0A=
- 	case 0x10ec0255:=0A=
- 		spec->codec_variant =3D ALC269_TYPE_ALC255;=0A=
+I have compared register settings for the Si5351, LCD controllers and the
+TDA998x between the non-DT and DT versions, and can find no differences
+there.  Yet, DT kernels are the only kernels which exhibit this behaviour.
+Non-DT kernels (which I've run continuously including many reboots) for
+the last two years have *never* shown this problem.
 
-------=_NextPart_000_014B_01CF947F.F2280460
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I have also verified that the HDMI clock is correct.  The problem occurs
+at both 1080p and 720p resolutions (which are the two that are used during
+boot - I have the kernel using 720p, and Xorg uses 1080p.)
 
+I should also point out that in both cases, it is the _same_ kernel binary
+(3.15) that I'm running - the DT test case just has the DT blob attached
+whereas the non-DT case boots without (and therefore falls back to the
+old platform stuff.)
 
-------=_NextPart_000_014B_01CF947F.F2280460--
+-- 
+FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
+improving, and getting towards what was expected from it.
