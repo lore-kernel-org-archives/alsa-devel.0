@@ -1,34 +1,31 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] [PATCH 00/13] Remove mach-kirkwood and mach-dove
-Date: Mon, 30 Jun 2014 11:00:49 +0100
-Message-ID: <20140630100048.GU32514@n2100.arm.linux.org.uk>
-References: <1404075603-31838-1-git-send-email-andrew@lunn.ch> <20140629213510.GR32514@n2100.arm.linux.org.uk> <20140630091643.2df3b0fb@armhf> <20140630084918.GS32514@n2100.arm.linux.org.uk> <20140630114701.1368d49e@armhf>
+From: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
+Subject: Re: [PATCHv2 5/9] ASoC: omap: rx51: omap_mcbsp_st_add_controls: add
+ id parameter
+Date: Mon, 30 Jun 2014 12:02:28 +0200
+Message-ID: <20140630100228.GB4934@xo-6d-61-c0.localdomain>
+References: <1398694047-28596-1-git-send-email-sre@kernel.org>
+ <1398694047-28596-6-git-send-email-sre@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-ide-owner@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20140630114701.1368d49e@armhf>
-Sender: linux-ide-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Andrew Lunn <andrew@lunn.ch>, linux-ide@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>, alsa-devel@alsa-project.org, Bryan Wu <cooloney@gmail.com>, Jason Cooper <jason@lakedaemon.net>, rtc-linux@googlegroups.com, linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Daniel Lezcano <daniel.lezcano@linaro.org>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Kishon Vijay Abraham I <kishon@ti.com>, Tejun Heo <tj@kernel.org>, Wim Van Sebroeck <wim@iguana.be>, Mark Brown <broonie@kernel.org>, Richard Purdie <rpurdie@rpsys.net>, linux-pci@vger.kernel.org, Gregory Clement <gregory.clement@free-electrons.com>, Zhang Rui <rui.zhang@intel.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-leds@vger.kernel.org, linux-watchdog@vger.kernel.org
+In-Reply-To: <1398694047-28596-6-git-send-email-sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Sebastian Reichel <sre-GFxCN5SEZAc@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Peter Ujfalusi <peter.ujfalusi-l0cyMroinI0@public.gmane.org>, Rob Herring <rob.herring-bsGFqQB8/DxBDgjK7y7TUQ@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jarkko Nikula <jarkko.nikula-FVTvWyuFUl3QT0dZR+AlfA@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 30, 2014 at 11:47:01AM +0200, Jean-Francois Moine wrote:
-> Have you declared the LCD clock in dove.dtsi?
+On Mon 2014-04-28 16:07:23, Sebastian Reichel wrote:
+> This is a preparation for DT based booting where the McBSP id
+> is set to -1 for all McBSP instances.
 > 
->  	lcdclk: fixed-clock {
-> 		compatible = "fixed-clock";
->  		#clock-cells = <0>;
->  		clock-frequency = <400000000>;
->  	};
+> Signed-off-by: Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 
-And what difference would that make - this would not be used.
-
-The clock used for the LCD controller somes from the Si5351.  The internal
-clocks are not used as they are unsuitable for generating the resolutions
-we require.  The other clocks used by the LCD controller (AXI clock and
-PLL clock) are both fundamental clocks in the SoC, neither are 400MHz.
-
+Acked-by: Pavel Machek <pavel-+ZI9xUNit7I@public.gmane.org>
 -- 
-FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
-improving, and getting towards what was expected from it.
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
