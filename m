@@ -1,15 +1,13 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Message-id: <53A93E89.2030901@samsung.com>
-Date: Tue, 24 Jun 2014 11:02:01 +0200
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-MIME-version: 1.0
+Date: Mon, 30 Jun 2014 19:46:58 +0100
+From: Mark Brown <broonie@kernel.org>
+Message-ID: <20140630184658.GE23300@sirena.org.uk>
 References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
- <CAD8Lp44h6zc2Rt2MGLjhmNG-YB0kYCWf5G7hX5JmdmBfc1PvKg@mail.gmail.com>
- <53A856AE.1030202@samsung.com>
- <CAD8Lp46gqbV9gDfrH2hbVnF7s6wK6ASBdsX7vn0L0CFAHXSemg@mail.gmail.com>
-In-reply-to: <CAD8Lp46gqbV9gDfrH2hbVnF7s6wK6ASBdsX7vn0L0CFAHXSemg@mail.gmail.com>
-Subject: Re: [alsa-devel] [PATCH V2 0/2] Sound support for Exynos4412 Odroid
-	X2, U3 board
+ <1403108551-25058-2-git-send-email-s.nawrocki@samsung.com>
+MIME-Version: 1.0
+In-Reply-To: <1403108551-25058-2-git-send-email-s.nawrocki@samsung.com>
+Subject: Re: [alsa-devel] [PATCH V2 1/2] ASoC: samsung: Add machine driver
+	for Odroid X2/U3
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,56 +15,84 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: multipart/mixed; boundary="===============1120637554900130394=="
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, pawel.moll@arm.com, zhen1.chen@samsung.com, Kyungmin Park <kyungmin.park@samsung.com>, Mark Brown <broonie@kernel.org>, Kumar Gala <galak@codeaurora.org>, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, pawel.moll@arm.com, zhen1.chen@samsung.com, kyungmin.park@samsung.com, galak@codeaurora.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
 List-ID: <alsa-devel@alsa-project.org>
 
-Hello,
 
-On 2014-06-24 10:35, Daniel Drake wrote:
-> On Mon, Jun 23, 2014 at 5:32 PM, Sylwester Nawrocki
-> <s.nawrocki@samsung.com> wrote:
->> I could reproduce such behaviour on the U3 board, but only with u-boot
->> which sets the MPLL clock frequency (fout_mpll) to 880 MHz, rather
->> than 800 MHz, which was the case in my original environment.
->> All fout_mpll child clocks have then different frequency values
->> in both cases.
->> It's a bit strange though, because frequencies of all the audio
->> subsystem clocks seem to be same anyway:
-> I'm using the standard uboot from hardkernel.
->
->> # cat /sys/kernel/debug/clk/clk_summary
-> This command makes the kernel totally hang, weird.
+--===============1120637554900130394==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hobqzgJMeQ3bIoso"
+Content-Disposition: inline
 
-This is known issue with clocks vs. ISP power domain. We should really 
-fix this in exynos4 clock driver.
 
-> # speaker-test -c 2 -t wav -l 2 -p 1024
->
-> This plays back fine.
->
-> Could it be a problem with the samsung-i2s driver, not correctly
-> flushing at the right times?
-> Or do you think the problem is more likely to be clock-related?
+--hobqzgJMeQ3bIoso
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hard to say right now, but at least we need to test a bit more our 
-solutions with different initial clocks configuration.
+On Wed, Jun 18, 2014 at 06:22:30PM +0200, Sylwester Nawrocki wrote:
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+> +struct odroidx2_drv_data odroidx2_drvdata = {
+> +	.dapm_widgets		= odroidx2_dapm_widgets,
+> +	.num_dapm_widgets	= ARRAY_SIZE(odroidx2_dapm_widgets),
+> +};
+> +
+> +struct odroidx2_drv_data odroidu3_drvdata = {
+> +	.dapm_widgets		= odroidu3_dapm_widgets,
+> +	.num_dapm_widgets	= ARRAY_SIZE(odroidu3_dapm_widgets),
+> +};
 
+> +	ret = snd_soc_of_parse_audio_routing(card, "samsung,audio-routing");
+> +	if (ret < 0)
+> +		return ret;
+
+Given that the widgets don't have any actions defined and the routing is
+all done by DT it might be easier and more flexible to just define all
+the widgets all the time and let them hang there if they're not in use,
+that way you don't need multiple compatible strings.  If you do that
+you're then very close to being able to use simple-card...
+
+--hobqzgJMeQ3bIoso
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTsbCeAAoJELSic+t+oim9bYUP/i+ywW+Yl67NWQKW0fQIDKDW
+oZFdfsjqruHE+0N0snlFM731QEZ6J9nxbHm4ltBdTwNWQZJRB+FqLUMO/tLySn3E
+DT23UOCKdDNveJxLBpa8c+xKNI+Er/DyQSp1ncOcCh9Wxzbj+lAo/31whqT5k/Zo
+xbWV6Uq9V/vVM+KU8lRtJKeTXEXWN85hAnOPxlGor4fEOooR7vwwow7+qPouVz3t
+SXPtL+Z1rlWKiV+nfnuDaqfnK8FUn7r+4jPUA1YBbfnyODHmPlxZyyX2hwloz1P9
+gV+Cz3ZPDETeAkibw3kiimL5PTs1Wh6Gh4/U+VIUCN0rP6488fXPsjfBNqIZLaKh
+poDDuR1tW9s+1THPxv59JuV5yJFtpT87gh0a6bWbeTD3eYsdfEJ7UmqxOxEx8o1j
+goLB5e7IP1pu2QdeVmLAWNfR0sGn+NgOfXqslZXgGAk1jmrC4q/uXinNtjdcK41d
+b80Vo93KMout5k3VJHtSRQmInGPhxudkDfe4i3ziEEd9qiTrJsaGv2NGAUWJxJ9I
+1mespzvc7638qYbu+pT7spHkJ87FiWRp+btfE2jCazN/t+qE2X3k2YiVrXmzN621
+C6hD6GcQUIHBFFJ6eXSgPvX2lK1x+aqD9rLodWvWq5n5dZgjpgyz4ZM7pgvlL5h+
+9E6paQ5aEQ5v7vtxXeuo
+=oZyg
+-----END PGP SIGNATURE-----
+
+--hobqzgJMeQ3bIoso--
 --
 To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
 the body of a message to majordomo@vger.kernel.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
+
+--===============1120637554900130394==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1120637554900130394==--
