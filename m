@@ -1,78 +1,55 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: [PATCH] ICE1712: add surround71 pcm definition
-Date: Tue,  1 Jul 2014 00:40:48 +0600
-Message-ID: <1404153648-3201-1-git-send-email-patrakov@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: max98090: Add max98091 compatible string
+Date: Mon, 30 Jun 2014 19:51:39 +0100
+Message-ID: <20140630185139.GF23300@sirena.org.uk>
+References: <1403251396-17487-1-git-send-email-tushar.b@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
- [209.85.215.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B59E26558B
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 20:41:18 +0200 (CEST)
-Received: by mail-la0-f51.google.com with SMTP id mc6so5050524lab.24
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 11:41:17 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "Alexander E. Patrakov" <patrakov@gmail.com>, mzagrabe@d.umn.edu
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OM63UbYQsNeyh2dn"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1403251396-17487-1-git-send-email-tushar.b@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tushar Behera <tushar.b@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, dianders@chromium.org, kgene.kim@samsung.com, tiwai@suse.de, lgirdwood@gmail.com, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, trblinux@gmail.com, Wonjoon Lee <woojoo.lee@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-The M-Audio Delta 1010 card has 7.1 analog output, but no ready-made pcm
-definition to use it.
 
-Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
-Reported-and-tested-by: Matt Zagrabelny <mzagrabe@d.umn.edu>
----
- src/conf/cards/ICE1712.conf | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+--OM63UbYQsNeyh2dn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/src/conf/cards/ICE1712.conf b/src/conf/cards/ICE1712.conf
-index 398fa7a..db62684 100644
---- a/src/conf/cards/ICE1712.conf
-+++ b/src/conf/cards/ICE1712.conf
-@@ -78,6 +78,7 @@ ICE1712.pcm.surround40.0 {
- <confdir:pcm/surround41.conf>
- <confdir:pcm/surround50.conf>
- <confdir:pcm/surround51.conf>
-+<confdir:pcm/surround71.conf>
- 
- ICE1712.pcm.surround51.0 {
- 	@args [ CARD ]
-@@ -98,6 +99,27 @@ ICE1712.pcm.surround51.0 {
- 	slave.channels 10
- }
- 
-+ICE1712.pcm.surround71.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type route
-+	ttable.0.0 1
-+	ttable.1.1 1
-+	ttable.2.2 1
-+	ttable.3.3 1
-+	ttable.4.4 1
-+	ttable.5.5 1
-+	ttable.6.6 1
-+	ttable.7.7 1
-+	slave.pcm {
-+		type hw
-+		card $CARD
-+	}
-+	slave.channels 10
-+}
-+
- <confdir:pcm/iec958.conf>
- 
- ICE1712.pcm.iec958.0 {
--- 
-2.0.0
+On Fri, Jun 20, 2014 at 01:33:15PM +0530, Tushar Behera wrote:
+> From: Wonjoon Lee <woojoo.lee@samsung.com>
+>=20
+> The MAX98091 CODEC is the same as MAX98090 CODEC, but with an extra
+> microphone. Existing driver for MAX98090 CODEC already has support
+> for MAX98091 CODEC. Adding proper compatible string so that MAX98091
+> CODEC can be specified from device tree.
+
+Applied, thanks.
+
+--OM63UbYQsNeyh2dn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTsbG4AAoJELSic+t+oim9MmcP/RKT93/dRKmZEoSXaeISq6Up
+n+4O0BDxLY+Awb895ctTuP0Nlq5yAx8GMh27mcTL5skUWRcxbNP8GMbFPUduNoVF
+G1F6rsYPCAgr7EoC1EJfMe0LpXXq+sFfw9Zw4knKReTqBxEwAfhyOqcmOiiLf9hD
+ERsT+0mCoGbuk5Wr8egINRtdpFwkSONCyoINRKirw59W/DzehuUF5YDiaoNdcieF
+3d5kYF96cbyIK+nLFhDMQz7xoXuWkM6cJjCRZXqxqyIhLarN6Jkpv22xGXNgn7mJ
+qA1YXH/tuM8DRb5hyKw9HOXdsaiiDzIBmNxbxjIYNfD8XkKGWrAdFNK+tOmNtB+z
+VhjISgq9Te58LzsoftE7t9mwzNdH+JbP9FWiWBpwAf7aP0q3qtbW97EoADM4dfp0
+aThc1okSM5klz/R/2R0LLuoIW+Ps+AKWAWwTrPTuFBSZGTcnMT/kPWGq7KMFHAyF
+tklNAayw1KfH2fQGRF0ICQKnHvmcaCiHgvQYseapBwPE6jiK6I8ZRcNxZVCVx2+p
+yC1y3pU0mn1EJ0KfdLtSmde9HvJZLv1L13ErKZ4/u+ns3r9ejXGEeSvb4AceYMew
+iPk/lkyLtSdGP/Gn2gq7bcPKqrQNTGduIXYAZonhFTu/UF/zQ7GH8aJs8JB+oKlM
+GwRbDYyp0RGjXiagz/AN
+=Fqkg
+-----END PGP SIGNATURE-----
+
+--OM63UbYQsNeyh2dn--
