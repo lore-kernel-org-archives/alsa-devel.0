@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: add RT5670 CODEC driver
-Date: Mon, 30 Jun 2014 10:56:25 +0100
-Message-ID: <20140630095625.GU23300@sirena.org.uk>
-References: <1402028138-27444-1-git-send-email-bardliao@realtek.com>
- <20140627153143.GP23300@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D75C87D9@RTITMBSV03.realtek.com.tw>
+From: Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: [PATCH] ASoC: sgtl5000: fix devres handling
+Date: Mon, 30 Jun 2014 10:58:18 +0100
+Message-ID: <E1X1YLq-0004E1-MT@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4886018653159560559=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EDCD82608E8
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 11:56:53 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D75C87D9@RTITMBSV03.realtek.com.tw>
+Received: from pandora.arm.linux.org.uk (gw-1.arm.linux.org.uk [78.32.30.217])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22BC72610CE
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 11:58:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +18,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The sgtl5000 uses a two-stage initialisation process.  The first stage
+is when the platform driver is probed, where some resources are found
+and initialised.  The second stage is via the codec driver's probe
+function, where regulators are found and initialised using the managed
+resource support.
 
---===============4886018653159560559==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dzQpwWBOJ0CmsuPs"
-Content-Disposition: inline
+The problem here is that this works fine until the codec driver is
+unbound.  When this occurs, sgtl5000_remove() is called which is a no-op
+as far as the managed resource code is concerned.  The regulators remain
+allocated, and their pointers in sgtl5000_priv remain valid.
 
+If the codec is now re-probed, it will again try and find the regulators,
+which will now be busy.  This will fail.
 
---dzQpwWBOJ0CmsuPs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That's not the only problem - if using the LDO regulator, the regulator
+is unregistered from the regulator core code, but it still has a user.
+When the user is cleaned up (eg, by removing the module) it hits the
+free'd regulator, and this can oops the kernel.
 
-On Mon, Jun 30, 2014 at 05:38:59AM +0000, Bard Liao wrote:
+This bug was originally introduced by 63e54cd9caa3ce ("ASoC: sgtl5000:
+Use devm_regulator_bulk_get()").
 
-> > > +static int check_dac_monor_asrc_source(struct snd_soc_dapm_widget
-> > *source,
-> > > +			 struct snd_soc_dapm_widget *sink) {
-> > > +	struct snd_soc_codec *codec = source->codec;
-> > > +
-> > > +	return is_using_asrc(codec, RT5670_ASRC_2, 4); }
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+You may wish to give some consideration to whether ASoC core code should
+be doing this instead, this is probably a very common source of brokenness
+where two-stage driver initialisation exists.  These kinds of issues are
+why I consider (as a general rule) that two-stage driver initialisation
+is really bad.
 
-> > I have to say I'm not convinced all these wrapper functions are really
-> > adding much - just making is_using_asrc() take a widget and passing the
-> > arguments directly seems as simple.
+ sound/soc/codecs/sgtl5000.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> Do you mean use is_using_asrc() as the checking function for all of those
-> widgets, and use different arguments for different widgets?
-
-Yes, it seems like that's all the functions do which isn't adding much.
-
---dzQpwWBOJ0CmsuPs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTsTRGAAoJELSic+t+oim9p6EP+gKNNFLUA2T+nt/zRw+QHWZ5
-0CGP8sUUkIOIrpBd1chfhEVwNrWJ9e/zA+qTigRXPaVaXvP+Dd92zIrn85wYnWWI
-muQNpvqcYCWD9L+xOg4EMA8qn4pfV5VQAwYpW9XmSbwC3YTDaMEme6q/FvkfIXXq
-lATAtkH+V7aoGbEYTwC4yNwzNKhf6E3OJrsq/RBfvKmjWUd/HGNOnHVKA1FWve0l
-Czrfk24rTLAvCfXrNB44xclfuYgT44zNbhPInUWgj1bRDvPSFd8f/sEQdxFFWK9k
-GPg75Ft14M8uXH7CWhaYODnjXu9HMZNF8Ys1DAIrI72lL8YKToBUPDxwSWRqPRMl
-y6MJUKls9oNIaZtaLix4GO+o/JJibbI6Vln5lD9bczwMEoyscC66E7oTrd6rJcBg
-aCnkQeDiNNvA3l7FDtJsuGWsKb6453t7KLnCLTYA57tb1u7jLVa39DJPbz5GDdhG
-giLj3LafXy9+/JSP+0PHX6AbzT1azWYoghYP/+OpgkmZAjMz3VN4wc5g4po7/yC9
-Orn4CgaO/GSe4BOGWz8pXlOZToBgku+a79gBW45IvmtoAsQwrTvTMtciFbGtWfw3
-pbxOSgNdqRI3IKMTiH7KSBF8khKtruBQU8ybaId5VCy9s14J4EwEMn00ATVYO3UB
-8a8/imwKcHhG968vjvmd
-=Pfav
------END PGP SIGNATURE-----
-
---dzQpwWBOJ0CmsuPs--
-
---===============4886018653159560559==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4886018653159560559==--
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 96ce061c1f10..3bbd89065313 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -1305,6 +1305,9 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
+ 	int ret;
+ 	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
+ 
++	if (!devres_open_group(codec->dev, NULL, GFP_KERNEL))
++		return -ENOMEM;
++
+ 	ret = sgtl5000_enable_regulators(codec);
+ 	if (ret)
+ 		return ret;
+@@ -1362,6 +1365,9 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
+ err:
+ 	regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
+ 						sgtl5000->supplies);
++
++	devres_release_group(codec->dev, NULL);
++
+ 	ldo_regulator_remove(codec);
+ 
+ 	return ret;
+@@ -1375,6 +1381,9 @@ static int sgtl5000_remove(struct snd_soc_codec *codec)
+ 
+ 	regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
+ 						sgtl5000->supplies);
++
++	devres_release_group(codec->dev, NULL);
++
+ 	ldo_regulator_remove(codec);
+ 
+ 	return 0;
+-- 
+1.8.3.1
