@@ -1,57 +1,62 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [alsa-devel] [PATCH 00/13] Remove mach-kirkwood and mach-dove
-Date: Mon, 30 Jun 2014 09:49:18 +0100
-Message-ID: <20140630084918.GS32514@n2100.arm.linux.org.uk>
-References: <1404075603-31838-1-git-send-email-andrew@lunn.ch> <20140629213510.GR32514@n2100.arm.linux.org.uk> <20140630091643.2df3b0fb@armhf>
+From: Josh Lehan <alsa@krellan.com>
+Subject: [PATCH - alsa-utils 0/5] The amidicat program as a
+	patch
+Date: Mon, 30 Jun 2014 01:54:58 -0700
+Message-ID: <1404118503-22921-1-git-send-email-alsa@krellan.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-ide-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140630091643.2df3b0fb@armhf>
-Sender: linux-ide-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Andrew Lunn <andrew@lunn.ch>, linux-ide@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>, alsa-devel@alsa-project.org, Bryan Wu <cooloney@gmail.com>, Jason Cooper <jason@lakedaemon.net>, rtc-linux@googlegroups.com, linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Daniel Lezcano <daniel.lezcano@linaro.org>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Kishon Vijay Abraham I <kishon@ti.com>, Tejun Heo <tj@kernel.org>, Wim Van Sebroeck <wim@iguana.be>, Mark Brown <broonie@kernel.org>, Richard Purdie <rpurdie@rpsys.net>, linux-pci@vger.kernel.org, Gregory Clement <gregory.clement@free-electrons.com>, Zhang Rui <rui.zhang@intel.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-leds@vger.kernel.org, linux-watchdog@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Josh Lehan <alsa@krellan.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 30, 2014 at 09:16:43AM +0200, Jean-Francois Moine wrote:
-> On Sun, 29 Jun 2014 22:35:11 +0100
-> Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
-> 
-> > There is actually a cubox regression which has yet to be tracked down.
-> > Running with my kernel (which is not-DT based) runs perfectly.  With
-> > DT, HDMI output can be unstable.
-> 
-> Russell,
-> 
-> What is this HDMI problem with DT?
-> 
-> I am running a DT based kernel on my Cubox for more than 1 year and the
-> only problem I have is a random black screen at startup time, and this
-> black screen problem also exists with the old non-DT kernels from
-> SolidRun.
+This is my "amidicat" program, which makes it easy and straightforward
+to interact with the ALSA MIDI sequencer from the command line,
+by simply using standard input and output.
 
-The problem is that the picture appears for about a second, then goes black
-for maybe a couple of seconds, then reappears for about a second and this
-cycle repeats.  Rebooting into the DT kernel doesn't fix it.  Rebooting
-back into the non-DT kernel does fix it.  Then if you boot back into the DT
-kernel it's back again.  Boot back into the non-DT kernel and it's again
-fixed.
+It took just over a year, to find the time to work on it again,
+but here it is, formatted as a patch to alsa-utils, as requested.
 
-I have compared register settings for the Si5351, LCD controllers and the
-TDA998x between the non-DT and DT versions, and can find no differences
-there.  Yet, DT kernels are the only kernels which exhibit this behaviour.
-Non-DT kernels (which I've run continuously including many reboots) for
-the last two years have *never* shown this problem.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-May/062353.html
 
-I have also verified that the HDMI clock is correct.  The problem occurs
-at both 1080p and 720p resolutions (which are the two that are used during
-boot - I have the kernel using 720p, and Xorg uses 1080p.)
+It has been cleaned up to match "checkpatch" coding standards,
+and all compiler warnings have been fixed.
 
-I should also point out that in both cases, it is the _same_ kernel binary
-(3.15) that I'm running - the DT test case just has the DT blob attached
-whereas the non-DT case boots without (and therefore falls back to the
-old platform stuff.)
+The documentation has also been cleaned up, in particular, the Perl
+examples have been brought up to date: the raw bytes no longer
+cause errors on Unicode systems.
+
+I respectfully submit this program to alsa-utils,
+and hope that it makes it in there :)
+
+Josh Lehan
+
+Josh Lehan (5):
+  Adding amidicat subdirectory to SUBDIRS
+  Add amidicat Makefile to AC_OUTPUT list
+  Makefile for amidicat, includes manual page
+  Documentation manual page for amidicat
+  The amidicat program itself, better late than never
+
+ Makefile.am          |    2 +-
+ amidicat/Makefile.am |    5 +
+ amidicat/amidicat.1  |  392 ++++++++++++
+ amidicat/amidicat.c  | 1708 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.ac         |    2 +-
+ 5 files changed, 2107 insertions(+), 2 deletions(-)
+ create mode 100644 amidicat/Makefile.am
+ create mode 100644 amidicat/amidicat.1
+ create mode 100644 amidicat/amidicat.c
 
 -- 
-FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
-improving, and getting towards what was expected from it.
+1.8.3.2
