@@ -1,93 +1,34 @@
-From: Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: [PATCH] ASoC: sgtl5000: fix devres handling
-Date: Mon, 30 Jun 2014 10:58:18 +0100
-Message-ID: <E1X1YLq-0004E1-MT@rmk-PC.arm.linux.org.uk>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [alsa-devel] [PATCH 00/13] Remove mach-kirkwood and mach-dove
+Date: Mon, 30 Jun 2014 11:00:49 +0100
+Message-ID: <20140630100048.GU32514@n2100.arm.linux.org.uk>
+References: <1404075603-31838-1-git-send-email-andrew@lunn.ch> <20140629213510.GR32514@n2100.arm.linux.org.uk> <20140630091643.2df3b0fb@armhf> <20140630084918.GS32514@n2100.arm.linux.org.uk> <20140630114701.1368d49e@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.arm.linux.org.uk (gw-1.arm.linux.org.uk [78.32.30.217])
- by alsa0.perex.cz (Postfix) with ESMTP id 22BC72610CE
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 11:58:26 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-ide-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140630114701.1368d49e@armhf>
+Sender: linux-ide-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Andrew Lunn <andrew@lunn.ch>, linux-ide@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>, alsa-devel@alsa-project.org, Bryan Wu <cooloney@gmail.com>, Jason Cooper <jason@lakedaemon.net>, rtc-linux@googlegroups.com, linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Daniel Lezcano <daniel.lezcano@linaro.org>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Kishon Vijay Abraham I <kishon@ti.com>, Tejun Heo <tj@kernel.org>, Wim Van Sebroeck <wim@iguana.be>, Mark Brown <broonie@kernel.org>, Richard Purdie <rpurdie@rpsys.net>, linux-pci@vger.kernel.org, Gregory Clement <gregory.clement@free-electrons.com>, Zhang Rui <rui.zhang@intel.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-leds@vger.kernel.org, linux-watchdog@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The sgtl5000 uses a two-stage initialisation process.  The first stage
-is when the platform driver is probed, where some resources are found
-and initialised.  The second stage is via the codec driver's probe
-function, where regulators are found and initialised using the managed
-resource support.
+On Mon, Jun 30, 2014 at 11:47:01AM +0200, Jean-Francois Moine wrote:
+> Have you declared the LCD clock in dove.dtsi?
+> 
+>  	lcdclk: fixed-clock {
+> 		compatible = "fixed-clock";
+>  		#clock-cells = <0>;
+>  		clock-frequency = <400000000>;
+>  	};
 
-The problem here is that this works fine until the codec driver is
-unbound.  When this occurs, sgtl5000_remove() is called which is a no-op
-as far as the managed resource code is concerned.  The regulators remain
-allocated, and their pointers in sgtl5000_priv remain valid.
+And what difference would that make - this would not be used.
 
-If the codec is now re-probed, it will again try and find the regulators,
-which will now be busy.  This will fail.
+The clock used for the LCD controller somes from the Si5351.  The internal
+clocks are not used as they are unsuitable for generating the resolutions
+we require.  The other clocks used by the LCD controller (AXI clock and
+PLL clock) are both fundamental clocks in the SoC, neither are 400MHz.
 
-That's not the only problem - if using the LDO regulator, the regulator
-is unregistered from the regulator core code, but it still has a user.
-When the user is cleaned up (eg, by removing the module) it hits the
-free'd regulator, and this can oops the kernel.
-
-This bug was originally introduced by 63e54cd9caa3ce ("ASoC: sgtl5000:
-Use devm_regulator_bulk_get()").
-
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
----
-You may wish to give some consideration to whether ASoC core code should
-be doing this instead, this is probably a very common source of brokenness
-where two-stage driver initialisation exists.  These kinds of issues are
-why I consider (as a general rule) that two-stage driver initialisation
-is really bad.
-
- sound/soc/codecs/sgtl5000.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 96ce061c1f10..3bbd89065313 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1305,6 +1305,9 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 	int ret;
- 	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
- 
-+	if (!devres_open_group(codec->dev, NULL, GFP_KERNEL))
-+		return -ENOMEM;
-+
- 	ret = sgtl5000_enable_regulators(codec);
- 	if (ret)
- 		return ret;
-@@ -1362,6 +1365,9 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- err:
- 	regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
- 						sgtl5000->supplies);
-+
-+	devres_release_group(codec->dev, NULL);
-+
- 	ldo_regulator_remove(codec);
- 
- 	return ret;
-@@ -1375,6 +1381,9 @@ static int sgtl5000_remove(struct snd_soc_codec *codec)
- 
- 	regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
- 						sgtl5000->supplies);
-+
-+	devres_release_group(codec->dev, NULL);
-+
- 	ldo_regulator_remove(codec);
- 
- 	return 0;
 -- 
-1.8.3.1
+FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
+improving, and getting towards what was expected from it.
