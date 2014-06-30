@@ -1,45 +1,82 @@
-From: Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
-Date: Mon, 30 Jun 2014 20:16:40 +0200
-Message-ID: <20140630181640.GL18520@lunn.ch>
-References: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
- <20140629213510.GR32514@n2100.arm.linux.org.uk>
- <53B154FE.80804@gmail.com>
- <20140630124320.GZ32514@n2100.arm.linux.org.uk>
- <53B164B2.7090902@gmail.com>
- <20140630142516.GA32514@n2100.arm.linux.org.uk>
- <53B183D5.8020708@gmail.com>
- <20140630165615.GE32514@n2100.arm.linux.org.uk>
- <20140630174351.GI18520@lunn.ch>
- <20140630180853.GF32514@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH RFC/RFT] ASoC: rt5677: Convert to use
+	rl6231_pll_calc
+Date: Mon, 30 Jun 2014 19:42:59 +0100
+Message-ID: <20140630184259.GD23300@sirena.org.uk>
+References: <1402980091.13607.1.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-ide-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140630180853.GF32514@n2100.arm.linux.org.uk>
-Sender: linux-ide-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Gregory Clement <gregory.clement@free-electrons.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============7044234405462889587=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C029265572
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 20:43:16 +0200 (CEST)
+In-Reply-To: <1402980091.13607.1.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> So, what do we do now with support for compressed audio streams via
-> SPDIF on kirkwood hardware?  As far as I can see, it's no longer
-> possible and mainline kernels will never support this.  Please tell
-> me I'm wrong...
 
-Well, it would of been nice if you had made a comment to either v1 or
-v2 of my patchset saying this is going to cause problems for some
-devices.
-
-So i will go look at your patch to add frontend and backend and see
-what it means for the current DT binding. The nice thing about
-kirkwood (and Dove) is, there is no uboot with DT support. Hence
-nobody is flashing there DT blob. They are always using appended DT.
-So i'm not against changing the binding. And it has only been in the
-kernel for one cycle, so i doubt there are too many users at the
-moment.
-
-	Andrew
+--===============7044234405462889587==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="V1U121k6BDnjVM6n"
+Content-Disposition: inline
 
 
+--V1U121k6BDnjVM6n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Jun 17, 2014 at 12:41:31PM +0800, Axel Lin wrote:
+> The implementation of rt5677_pll_calc() has the same logic of rl6231_pll_=
+calc().
+> The only difference is the lower boundary checking for freq_in.
+>=20
+> This patch calls rl6231_pll_calc() instead of open-coded.
+> The k_bp of struct rt5677_pll_code is always false, thus also remove the
+> code to check pll_code.k_bp.
+
+Applied, thanks.
+
+--V1U121k6BDnjVM6n
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTsa+wAAoJELSic+t+oim9WHoP/1Fu3e053Q3GXeePPqlzxoDP
+zco45VJj32039uN28mzV1Fl58O7jfnYCc32bIanfuYRSMgHOboedEJ0MH6uEDAk0
+cS2p0mdu0o4pm1daQvO0taPVZJgnWzE0oqtWX78tcfzBQIN4qHty73ycV/JGN8Z0
+sH1rYujg0RFZdvabGzA46q3++6gZ3Wr10zmBUW+XQejSayst+0gUJ/DwjS9nc/Vi
+BFse8DFEGr0VRpvUYqytZokPwqYwf5PYVfllcfkmUi+gTetrWFtSlULSCx/xm41n
+ZFskykcsx9ezhIaXsfmLaijH6QlE+IPWAZDyHOcOqQCKNkU1vXnAqjrHSFTMOH6h
+vMZ0z66EKMCduQBhYMRWXa81++tfSbESRNm/HmUDSuE/MkTMhfWA/6fKyKs+wKOx
+XvdfMA6d9c5GjDO95PyDU2GEzgFr5TZAAnt6NzHLFo/iJoc8JK2mRM5wX+8LoLuK
+prffC0mVVu9nw+km2HRcRuayOBE0KB3/fQzGX/MpBCIVJTUbxIwgCgxW1e7sx8L6
+fxmmMmCeoB/Q2qVdapUOsRpFyaxVFddU8HhW/PmS49V0M6Jq13LopnFLXao8Kr9J
+o9H6tfhCU9OKhI5sODVAA5pK0ZLLW5fp1EBDhLDLZAm7nsszZMViCQAn4kDMOvMW
+CZuubM77PY6yS4XUTY7+
+=BLKD
+-----END PGP SIGNATURE-----
+
+--V1U121k6BDnjVM6n--
+
+--===============7044234405462889587==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7044234405462889587==--
