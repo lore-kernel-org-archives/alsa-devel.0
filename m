@@ -1,14 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2 1/2] ASoC: samsung: Add machine driver
-	for Odroid X2/U3
-Date: Mon, 30 Jun 2014 19:46:58 +0100
-Message-ID: <20140630184658.GE23300__47449.4250411682$1404154076$gmane$org@sirena.org.uk>
-References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
- <1403108551-25058-2-git-send-email-s.nawrocki@samsung.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: [PATCH] ICE1712: add surround71 pcm definition
+Date: Tue,  1 Jul 2014 00:40:48 +0600
+Message-ID: <1404153648-3201-1-git-send-email-patrakov@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1120637554900130394=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1403108551-25058-2-git-send-email-s.nawrocki@samsung.com>
+Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
+ [209.85.215.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B59E26558B
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 20:41:18 +0200 (CEST)
+Received: by mail-la0-f51.google.com with SMTP id mc6so5050524lab.24
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 11:41:17 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,76 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, pawel.moll@arm.com, zhen1.chen@samsung.com, kyungmin.park@samsung.com, galak@codeaurora.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
+Cc: "Alexander E. Patrakov" <patrakov@gmail.com>, mzagrabe@d.umn.edu
 List-Id: alsa-devel@alsa-project.org
 
+The M-Audio Delta 1010 card has 7.1 analog output, but no ready-made pcm
+definition to use it.
 
---===============1120637554900130394==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hobqzgJMeQ3bIoso"
-Content-Disposition: inline
+Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
+Reported-and-tested-by: Matt Zagrabelny <mzagrabe@d.umn.edu>
+---
+ src/conf/cards/ICE1712.conf | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-
---hobqzgJMeQ3bIoso
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jun 18, 2014 at 06:22:30PM +0200, Sylwester Nawrocki wrote:
-
-> +struct odroidx2_drv_data odroidx2_drvdata = {
-> +	.dapm_widgets		= odroidx2_dapm_widgets,
-> +	.num_dapm_widgets	= ARRAY_SIZE(odroidx2_dapm_widgets),
-> +};
-> +
-> +struct odroidx2_drv_data odroidu3_drvdata = {
-> +	.dapm_widgets		= odroidu3_dapm_widgets,
-> +	.num_dapm_widgets	= ARRAY_SIZE(odroidu3_dapm_widgets),
-> +};
-
-> +	ret = snd_soc_of_parse_audio_routing(card, "samsung,audio-routing");
-> +	if (ret < 0)
-> +		return ret;
-
-Given that the widgets don't have any actions defined and the routing is
-all done by DT it might be easier and more flexible to just define all
-the widgets all the time and let them hang there if they're not in use,
-that way you don't need multiple compatible strings.  If you do that
-you're then very close to being able to use simple-card...
-
---hobqzgJMeQ3bIoso
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTsbCeAAoJELSic+t+oim9bYUP/i+ywW+Yl67NWQKW0fQIDKDW
-oZFdfsjqruHE+0N0snlFM731QEZ6J9nxbHm4ltBdTwNWQZJRB+FqLUMO/tLySn3E
-DT23UOCKdDNveJxLBpa8c+xKNI+Er/DyQSp1ncOcCh9Wxzbj+lAo/31whqT5k/Zo
-xbWV6Uq9V/vVM+KU8lRtJKeTXEXWN85hAnOPxlGor4fEOooR7vwwow7+qPouVz3t
-SXPtL+Z1rlWKiV+nfnuDaqfnK8FUn7r+4jPUA1YBbfnyODHmPlxZyyX2hwloz1P9
-gV+Cz3ZPDETeAkibw3kiimL5PTs1Wh6Gh4/U+VIUCN0rP6488fXPsjfBNqIZLaKh
-poDDuR1tW9s+1THPxv59JuV5yJFtpT87gh0a6bWbeTD3eYsdfEJ7UmqxOxEx8o1j
-goLB5e7IP1pu2QdeVmLAWNfR0sGn+NgOfXqslZXgGAk1jmrC4q/uXinNtjdcK41d
-b80Vo93KMout5k3VJHtSRQmInGPhxudkDfe4i3ziEEd9qiTrJsaGv2NGAUWJxJ9I
-1mespzvc7638qYbu+pT7spHkJ87FiWRp+btfE2jCazN/t+qE2X3k2YiVrXmzN621
-C6hD6GcQUIHBFFJ6eXSgPvX2lK1x+aqD9rLodWvWq5n5dZgjpgyz4ZM7pgvlL5h+
-9E6paQ5aEQ5v7vtxXeuo
-=oZyg
------END PGP SIGNATURE-----
-
---hobqzgJMeQ3bIoso--
---
-To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
---===============1120637554900130394==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1120637554900130394==--
+diff --git a/src/conf/cards/ICE1712.conf b/src/conf/cards/ICE1712.conf
+index 398fa7a..db62684 100644
+--- a/src/conf/cards/ICE1712.conf
++++ b/src/conf/cards/ICE1712.conf
+@@ -78,6 +78,7 @@ ICE1712.pcm.surround40.0 {
+ <confdir:pcm/surround41.conf>
+ <confdir:pcm/surround50.conf>
+ <confdir:pcm/surround51.conf>
++<confdir:pcm/surround71.conf>
+ 
+ ICE1712.pcm.surround51.0 {
+ 	@args [ CARD ]
+@@ -98,6 +99,27 @@ ICE1712.pcm.surround51.0 {
+ 	slave.channels 10
+ }
+ 
++ICE1712.pcm.surround71.0 {
++	@args [ CARD ]
++	@args.CARD {
++		type string
++	}
++	type route
++	ttable.0.0 1
++	ttable.1.1 1
++	ttable.2.2 1
++	ttable.3.3 1
++	ttable.4.4 1
++	ttable.5.5 1
++	ttable.6.6 1
++	ttable.7.7 1
++	slave.pcm {
++		type hw
++		card $CARD
++	}
++	slave.channels 10
++}
++
+ <confdir:pcm/iec958.conf>
+ 
+ ICE1712.pcm.iec958.0 {
+-- 
+2.0.0
