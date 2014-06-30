@@ -1,25 +1,62 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v2 01/13] ARM: OMAP2+: Remove non working OMAP HDMI audio
- initialization
-Date: Mon, 30 Jun 2014 00:24:14 -0700
-Message-ID: <20140630072414.GL28884@atomide.com>
-References: <cover.1403894190.git.jsarha@ti.com>
- <41571cc2e5a93ff95eda9263a4b5808bba7e6e36.1403894190.git.jsarha@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 1/3] ASoC: s6000-i2s: Fix s6000_i2s_remove()
+	return type
+Date: Mon, 30 Jun 2014 10:01:37 +0200
+Message-ID: <1404115299-24109-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <41571cc2e5a93ff95eda9263a4b5808bba7e6e36.1403894190.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, jyri.sarha@iki.fi
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-252.synserver.de (smtp-out-252.synserver.de
+ [212.40.185.252])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8FDC02617B6
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 10:02:32 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, =?UTF-8?q?Daniel=20Gl=C3=B6ckner?= <daniel-gl@gmx.net>
 List-Id: alsa-devel@alsa-project.org
 
-* Jyri Sarha <jsarha@ti.com> [140627 11:41]:
-> This code is not working currently and it can be removed. There is a
-> conflict in sharing resources with the actual HDMI driver and with
-> the ASoC HDMI audio DAI driver.
-> 
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+The platform_driver remove callback return type is int not void.
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+Fixes the following warning:
+	sound/soc/s6000/s6000-i2s.c:604:19: warning: incorrect type in initializer (different base types)
+	sound/soc/s6000/s6000-i2s.c:604:19:    expected int ( *remove )( ... )
+	sound/soc/s6000/s6000-i2s.c:604:19:    got void ( static [toplevel] *<noident>)( ... )
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/s6000/s6000-i2s.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/s6000/s6000-i2s.c b/sound/soc/s6000/s6000-i2s.c
+index 7eba797..1c8d011 100644
+--- a/sound/soc/s6000/s6000-i2s.c
++++ b/sound/soc/s6000/s6000-i2s.c
+@@ -570,7 +570,7 @@ err_release_none:
+ 	return ret;
+ }
+ 
+-static void s6000_i2s_remove(struct platform_device *pdev)
++static int s6000_i2s_remove(struct platform_device *pdev)
+ {
+ 	struct s6000_i2s_dev *dev = dev_get_drvdata(&pdev->dev);
+ 	struct resource *region;
+@@ -597,6 +597,8 @@ static void s6000_i2s_remove(struct platform_device *pdev)
+ 	iounmap(mmio);
+ 	region = platform_get_resource(pdev, IORESOURCE_IO, 0);
+ 	release_mem_region(region->start, resource_size(region));
++
++	return 0;
+ }
+ 
+ static struct platform_driver s6000_i2s_driver = {
+-- 
+1.8.0
