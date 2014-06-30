@@ -1,50 +1,137 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH] ASoC: rt5640: add ASRC support
-Date: Mon, 30 Jun 2014 06:09:53 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D75C87F7@RTITMBSV03.realtek.com.tw>
-References: <1403866691-5031-1-git-send-email-bardliao@realtek.com>
- <53AD7A1A.2090501@metafoo.de>
+From: Jan Kiszka <jan.kiszka@web.de>
+Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs for more Thinkpads
+ with Conexant codec
+Date: Mon, 30 Jun 2014 08:45:31 +0200
+Message-ID: <53B1078B.4090101@web.de>
+References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com> <53AFF992.5030403@web.de> <53B0C596.6090007@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id D270126166B
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 08:10:01 +0200 (CEST)
-In-Reply-To: <53AD7A1A.2090501@metafoo.de>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Flove <flove@realtek.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="ISVDuFUp3haWQlCAhFMVmVXUXJk1du389"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <53B0C596.6090007@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Hui Wang <hui.wang@canonical.com>
+Cc: Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org, alex.hung@canonical.com, yk@canonical.com, david.henningsson@canonical.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Lars-Peter Clausen [mailto:lars@metafoo.de]
-> Sent: Friday, June 27, 2014 10:05 PM
-> To: Bard Liao; broonie@kernel.org; lgirdwood@gmail.com
-> Cc: Oder Chiou; alsa-devel@alsa-project.org; Flove
-> Subject: Re: [alsa-devel] [PATCH] ASoC: rt5640: add ASRC support
-> 
-> 
-> I wonder if that shouldn't be something that is automatically
-> enabled/disabled based on the samplerates involved. Also for
-> enable/disable controls use a switch control rather than a enum.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ISVDuFUp3haWQlCAhFMVmVXUXJk1du389
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-To turn on/off rt5640's ASRC function is not decided by only one
-condition. To make it flexible, I prefer to use a control to enable/
-disable ASRC function.
-Do you mean SOC_SINGLE_EXT? I didn't find a _SWITCH control
-in soc.h
+On 2014-06-30 04:04, Hui Wang wrote:
+> On 06/29/2014 07:33 PM, Jan Kiszka wrote:
+>> On 2013-11-27 07:47, Hui Wang wrote:
+>>> Most Thinkpad Edge series laptops use conexant codec, so far although=
 
-> 
-> - Lars
-> 
-> ------Please consider the environment before printing this e-mail.
+>>> the codecs have different minor Vendor Id and minor Subsystem Id,
+>>> they all belong to the cxt5066 family, this change can make the
+>>> mute/mic-mute LEDs support more generic among cxt_5066 family.
+>>>
+>>> This design refers to the similar solution for the realtek codec
+>>> ALC269 family in the patch_realtek.c.
+>>>
+>>> Cc: Alex Hung <alex.hung@canonical.com>
+>>> Cc: David Henningsson <david.henningsson@canonical.com>
+>>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>>> ---
+>>>   sound/pci/hda/patch_conexant.c | 23 +++++++++++++++++++++++
+>>>   1 file changed, 23 insertions(+)
+>>>
+>>> diff --git a/sound/pci/hda/patch_conexant.c
+>>> b/sound/pci/hda/patch_conexant.c
+>>> index c205bb1..1f2717f 100644
+>>> --- a/sound/pci/hda/patch_conexant.c
+>>> +++ b/sound/pci/hda/patch_conexant.c
+>>> @@ -3244,9 +3244,29 @@ enum {
+>>>   #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+>>>     #include <linux/thinkpad_acpi.h>
+>>> +#include <acpi/acpi.h>
+>>>     static int (*led_set_func)(int, bool);
+>>>   +static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void=
+
+>>> *context,
+>>> +                 void **rv)
+>>> +{
+>>> +    bool *found =3D context;
+>>> +    *found =3D true;
+>>> +    return AE_OK;
+>>> +}
+>>> +
+>>> +static bool is_thinkpad(struct hda_codec *codec)
+>>> +{
+>>> +    bool found =3D false;
+>>> +    if (codec->subsystem_id >> 16 !=3D 0x17aa)
+>>> +        return false;
+>>> +    if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb,
+>>> &found, NULL)) && found)
+>>> +        return true;
+>>> +    found =3D false;
+>>> +    return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb,
+>>> &found, NULL)) && found;
+>>> +}
+>>> +
+>>>   static void update_tpacpi_mute_led(void *private_data, int enabled)=
+
+>>>   {
+>>>       struct hda_codec *codec =3D private_data;
+>>> @@ -3279,6 +3299,8 @@ static void cxt_fixup_thinkpad_acpi(struct
+>>> hda_codec *codec,
+>>>       bool removefunc =3D false;
+>>>         if (action =3D=3D HDA_FIXUP_ACT_PROBE) {
+>>> +        if (!is_thinkpad(codec))
+>>> +            return;
+>>>           if (!led_set_func)
+>>>               led_set_func =3D symbol_request(tpacpi_led_set);
+>>>           if (!led_set_func) {
+>>> @@ -3494,6 +3516,7 @@ static const struct snd_pci_quirk
+>>> cxt5066_fixups[] =3D {
+>>>       SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s",
+>>> CXT_FIXUP_STEREO_DMIC),
+>>>       SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310",
+>>> CXT_FIXUP_STEREO_DMIC),
+>>>       SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205",
+>>> CXT_FIXUP_STEREO_DMIC),
+>>> +    SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI=
+),
+>>>       SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004",
+>>> CXT_PINCFG_LEMOTE_A1004),
+>>>       SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205",
+>>> CXT_PINCFG_LEMOTE_A1205),
+>>>       {}
+>>>
+>> Starting with this patch, my Lenovo Thinkpad X121e netbook (it's witho=
+ut
+>> any mute LEDs, BTW, there is only a power LED) considers the power
+>> button as hard reset. I have to exclude my machine from that ACPI fixu=
+p
+>> (this is on top of current Linus master):
+> It seems more like a firmware issue, in the acpi code, the "SSMS" is fo=
+r
+> mute led, and the "MMTS" is for micmute led, I don't know why your
+> machine can pass "SSMS" or "MMTS" scanning even without mute LEDs.
+>=20
+
+Is there anything I can debug or any information I can collect from my
+box to examine this?
+
+Jan
+
+
+
+--ISVDuFUp3haWQlCAhFMVmVXUXJk1du389
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlOxB4wACgkQitSsb3rl5xSbiQCbBBrrMvBXj4+/q6mtx7Gd/sPK
+yncAn1cRRH51SrdqfqmKcglcRqbUnpS6
+=MabO
+-----END PGP SIGNATURE-----
+
+--ISVDuFUp3haWQlCAhFMVmVXUXJk1du389--
