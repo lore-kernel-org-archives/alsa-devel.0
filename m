@@ -1,67 +1,58 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix invalid function call in
-	snd_hda_add_vmaster()
-Date: Mon, 30 Jun 2014 14:12:22 +0200
-Message-ID: <1404130342-2753-1-git-send-email-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
+Date: Mon, 30 Jun 2014 14:15:58 +0200
+Message-ID: <53B154FE.80804@gmail.com>
+References: <1404075603-31838-1-git-send-email-andrew@lunn.ch> <20140629213510.GR32514@n2100.arm.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EEC026554B
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 14:12:23 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 351CEABEB
- for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 12:12:23 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-leds-owner@vger.kernel.org>
+In-Reply-To: <20140629213510.GR32514@n2100.arm.linux.org.uk>
+Sender: linux-leds-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>, Andrew Lunn <andrew@lunn.ch>
+Cc: Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Gregory Clement <gregory.clement@free-electrons.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The recent commit [6194b99d: ALSA: hda - Kill the rest of snd_print*()
-usages] changed the callback map_slaves(), but one call was forgotten
-to be replaced due to the cast, which leads to kernel Oops due to
-invalid function.  This patch replaces it with a proper function.
+On 06/29/2014 11:35 PM, Russell King - ARM Linux wrote:
+> On Sun, Jun 29, 2014 at 10:59:47PM +0200, Andrew Lunn wrote:
+>> This patchset removes arch/arm/mach-kirkwood and arch/arm/mach-dove.
+>> These SoCs are now supported in arch/arm/mach-mvebu using device tree.
+>>
+>> Change the dependencies for a number of drivers, either to use
+>> ARCH_MVEBU where the drivers are generic, or MACH_KIRKWOOD and
+>> MACH_DOVE where the drivers are specific to a SoC.
+>>
+>>
+>> Andrew Lunn (13):
+>>    ARM: Kirkwood: Remove mach-kirkwood
+>>    ARM: Dove: Remove mach-dove
+>
+> There is actually a cubox regression which has yet to be tracked down.
+> Running with my kernel (which is not-DT based) runs perfectly.  With
+> DT, HDMI output can be unstable.
+>
+> One of the problems is that it's /very/ difficult to reproduce, but it
+> is reproducable.  I've seen it on two days over many reboots, and I've
+> proved it by switching back and forth.  DT sometimes suffers from the
+> problem, whereas non-DT /never/ does.
+>
+> Sebastian is aware of this, and as yet we haven't found a solution,
+> nor have we found a way to reliably reproduce it.
 
-Fixes: 6194b99de9f5 ('ALSA: hda - Kill the rest of snd_print*() usages')
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+I am aware of the issue but have not been able to reproduce it. Also,
+we have no /official/ non-DT CuBox support in mainline Linux at all.
+I understand that removing non-DT mach-dove currently is not your
+most preferred patch but from a mainline POV, mach-dove isn't actively
+used. The three officially supported boards have been converted to DT
+months ago and haven't received any TLC since then, so I doubt they are
+used by anyone.
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index d91cb7f5961a..47a617786fca 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2831,6 +2831,12 @@ static int init_slave_unmute(struct hda_codec *codec,
- 	return put_kctl_with_value(slave, 1);
- }
- 
-+static int add_slave(struct hda_codec *codec,
-+		     void *data, struct snd_kcontrol *slave)
-+{
-+	return snd_ctl_add_slave(data, slave);
-+}
-+
- /**
-  * snd_hda_add_vmaster - create a virtual master control and add slaves
-  * @codec: HD-audio codec
-@@ -2873,8 +2879,7 @@ int __snd_hda_add_vmaster(struct hda_codec *codec, char *name,
- 	if (err < 0)
- 		return err;
- 
--	err = map_slaves(codec, slaves, suffix,
--			 (map_slave_func_t)snd_ctl_add_slave, kctl);
-+	err = map_slaves(codec, slaves, suffix, add_slave, kctl);
- 	if (err < 0)
- 		return err;
- 
--- 
-2.0.0
+My current impression of the issue is that it is more related with
+driver load order/missing delays for clocks/ignoring IP behavior on
+clock rate change or something like it.
+
+Can you give a /rough/ schedule for your plans to sort out your private
+branches? If we can all investigate the issue with the same code basis,
+I am sure we can make DT dove behave the same way non-DT dove seems to
+be.
+
+Sebastian
