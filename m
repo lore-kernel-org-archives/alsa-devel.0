@@ -1,18 +1,18 @@
 From: Sachin Kamat <sachin.kamat@samsung.com>
-Subject: [PATCH 3/5] ALSA: revo: Remove unused variable
-Date: Tue,  1 Jul 2014 17:02:56 +0530
-Message-ID: <1404214378-24669-3-git-send-email-sachin.kamat@samsung.com>
+Subject: [PATCH 5/5] ALSA: mixart: Remove unused variable
+Date: Tue,  1 Jul 2014 17:02:58 +0530
+Message-ID: <1404214378-24669-5-git-send-email-sachin.kamat@samsung.com>
 References: <1404214378-24669-1-git-send-email-sachin.kamat@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
- [209.85.220.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FDEE261B08
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 13:36:36 +0200 (CEST)
-Received: by mail-pa0-f53.google.com with SMTP id ey11so10432956pad.12
- for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 04:36:36 -0700 (PDT)
+Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
+ [209.85.192.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 876D7261A7F
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 13:36:43 +0200 (CEST)
+Received: by mail-pd0-f169.google.com with SMTP id g10so10004152pdj.28
+ for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 04:36:42 -0700 (PDT)
 In-Reply-To: <1404214378-24669-1-git-send-email-sachin.kamat@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,29 +31,27 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
 ---
- sound/pci/ice1712/revo.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/pci/mixart/mixart_core.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/pci/ice1712/revo.c b/sound/pci/ice1712/revo.c
-index 1112ec1953be..0168aaa5f58c 100644
---- a/sound/pci/ice1712/revo.c
-+++ b/sound/pci/ice1712/revo.c
-@@ -481,7 +481,6 @@ static int ap192_ak4114_init(struct snd_ice1712 *ice)
- 	static const unsigned char ak4114_init_txcsb[] = {
- 		0x41, 0x02, 0x2c, 0x00, 0x00
- 	};
--	int err;
+diff --git a/sound/pci/mixart/mixart_core.c b/sound/pci/mixart/mixart_core.c
+index 71f4bdcc4055..84f67450924e 100644
+--- a/sound/pci/mixart/mixart_core.c
++++ b/sound/pci/mixart/mixart_core.c
+@@ -151,13 +151,11 @@ static int send_msg( struct mixart_mgr *mgr,
+ {
+ 	u32 headptr, tailptr;
+ 	u32 msg_frame_address;
+-	int err, i;
++	int i;
  
- 	struct revo51_spec *spec;
- 	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
-@@ -489,7 +488,7 @@ static int ap192_ak4114_init(struct snd_ice1712 *ice)
- 		return -ENOMEM;
- 	ice->spec = spec;
+ 	if (snd_BUG_ON(msg->size % 4))
+ 		return -EINVAL;
  
--	err = snd_ak4114_create(ice->card,
-+	snd_ak4114_create(ice->card,
- 				 ap192_ak4114_read,
- 				 ap192_ak4114_write,
- 				 ak4114_init_vals, ak4114_init_txcsb,
+-	err = 0;
+-
+ 	/* get message frame address */
+ 	tailptr = readl_be(MIXART_MEM(mgr, MSG_INBOUND_FREE_TAIL));
+ 	headptr = readl_be(MIXART_MEM(mgr, MSG_INBOUND_FREE_HEAD));
 -- 
 1.7.9.5
