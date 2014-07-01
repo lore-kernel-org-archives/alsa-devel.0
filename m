@@ -1,74 +1,111 @@
-From: "Max Schmidt" <schmidti444@web.de>
-Subject: Re: Constant delay between starting a playback and a
- capture stream
-Date: Tue, 1 Jul 2014 01:32:34 +0200
-Message-ID: <trinity-3b7a74c8-62eb-4254-a0b1-a83878d3b84d-1404171154142@3capp-webde-bs21>
-References: <trinity-76c63013-83c5-446c-a160-bc9ed56a1161-1403540443117@3capp-webde-bs03>
- <trinity-f377e59a-71a6-447c-859a-f2188926e1f9-1403897243118@3capp-webde-bs11>,
- <53B0590E.5010808@ladisch.de>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs for more Thinkpads
+ with Conexant codec
+Date: Tue, 01 Jul 2014 10:15:59 +0800
+Message-ID: <53B219DF.6090807@canonical.com>
+References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com> <53AFF992.5030403@web.de> <53B0C596.6090007@canonical.com> <53B1078B.4090101@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CF24265689
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 03:21:53 +0200 (CEST)
-In-Reply-To: <53B0590E.5010808@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <53B1078B.4090101@web.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jan Kiszka <jan.kiszka@web.de>
+Cc: Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org, alex.hung@canonical.com, yk@canonical.com, david.henningsson@canonical.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-ICAgSGkgQ2xlbWVucywKCiAgIHRoYW5rcyBmb3IgeW91ciBoZWxwZnVsbCBhbnN3ZXIhCgogICBS
-ZWdhcmRzLAogICBNYXgKCiAgIEdlc2VuZGV0OiBTb25udGFnLCAyOS4gSnVuaSAyMDE0IHVtIDIw
-OjIxIFVocgogICBWb246ICJDbGVtZW5zIExhZGlzY2giIDxjbGVtZW5zQGxhZGlzY2guZGU+CiAg
-IEFuOiAiTWF4IFNjaG1pZHQiIDxzY2htaWR0aTQ0NEB3ZWIuZGU+LCBhbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKICAgQmV0cmVmZjogUmU6IFthbHNhLWRldmVsXSBDb25zdGFudCBkZWxheSBi
-ZXR3ZWVuIHN0YXJ0aW5nIGEgcGxheWJhY2sKICAgYW5kIGEgY2FwdHVyZSBzdHJlYW0KICAgTWF4
-IFNjaG1pZHQgd3JvdGU6CiAgID4gSSd2ZSBnb3QgYSBCZWFnbGVCb25lIEJsYWNrIChBUk0gQ29y
-dGV4IEEgOCDCtVApIHdpdGggYW4gQXVkaW8tQ2FwZQogICA+ICh1c2luZyBNY0FzcCBhbmQgQUxT
-QS1EYXZpbmNpLURyaXZlcnMpIGFuZCB3cm90ZSBhbiBtbWFwIGJhc2VkCiAgID4gcGxheWJhY2st
-Y2FwdHVyZSBhcHBsaWNhdGlvbiAoYm90aCBkZXZpY2VzICJodzowLDAiKS4gVGhlIGltcG9ydGFu
-dAogICA+IHRoaW5nIGlzIHRoYXQgdGhlIGFwcGxpY2F0aW9uIG5lZWRzIGEgY29uc3RhbnQgZGVs
-YXkgKG5vdCBuZWNlc3NhcmlseQogICA+IHNtYWxsKSBiZXR3ZWVuIHRoZSBzdGFydCBvZiB0aGUg
-cGxheWJhY2sgYW5kIHRoZSBjYXB0dXJlIHN0cmVhbS4KICAgPiBUbyByZWFsaXplIHRoYXQgSSB1
-c2UgdGhlIEFMU0EgQVBJIGZ1bmN0aW9uICJzbmRfcGNtX2xpbmsoY19oYW5kbGUsCiAgID4gcF9o
-YW5kbGUpIi4KICAgPgogICA+IDEpIExvb2tpbmcgYXQgYSBwbG90IG9mIG11bHRpcGxlIG1lYXN1
-cmVtZW50cyBvZiBsb29wZWQgYmFjayBhbmQKICAgPiBjYXB0dXJlZCBzcXVhcmUgd2F2ZXMgKG9y
-IHNpbmVzKSB0aGVyZSBzdGlsbCBpcyBhIGppdHRlciBvZiBhYm91dCB0d28KICAgPiB0byBmb3Vy
-IHNhbXBsZXMgKGF0IDQ4IGtIejsgd2hpY2ggaXMgYWJvdXQgNDAgdG8gODAgbXMpLCBubyBtYXR0
-ZXIgaWYKICAgSQogICA+IHJ1biBpdCBhcyBSVC1hcHAgKGVuZXJneSBzYXZlIG1vZGVzIGV0Yy4g
-ZGlzYWJsZWQsIGp1c3QgaW1wb3J0YW50CiAgID4gUHJvY2Vzc2VzIGhhdmUgYSBoaWdoZXIgUHJp
-b3JpdHkgZS5nLiBFRE1BKSBvciBub3JtYWwgYXBwLgogICA+IFBsZWFzZSBjb3JyZWN0IG1lIGlm
-IEknbSB3cm9uZywgYnV0IGFzIGZhciBhcyBJIHVuZGVyc3RhbmQgd2hlbiB0aGUKICAgPiBzdHJl
-YW1zIGFyZSBsaW5rZWQsIGF0IHN0YXJ0IHRoZSBwcm9jZXNzb3IgaXMgZ29pbmcgdGhyb3VnaCBh
-IGxpbmtlZAogICA+IGxpc3QgdHJpZ2dlcmluZyBhbGwgbGlua2VkIHN0cmVhbXMuIEFuZCB0aGUg
-dHJpZ2dlciBzdGFydCBpcyBhbgogICBhdG9taWMKICAgPiBwcm9jZXNzIHNvIHNob3VsZG4ndCBn
-ZXQgaW50ZXJydXB0ZWQuCiAgIFllcy4KICAgPiBTaG91bGRuJ3QgaXQgYWx3YXlzIHRha2UgdGhl
-IHNhbWUgdGltZSBiZXR3ZWVuIHN0YXJ0aW5nIHRoZSBwbGF5YmFjawogICA+IGFuZCBjYXB0dXJl
-IHN0cmVhbSB0aGVuPyBBbmQgaWYgeWVzLCB3aGVyZSBjb3VsZCB0aGUgdmFyaWFibGUgc3RhcnQK
-ICAgPiBkZWxheSBjb21lIGZyb20/CiAgIEhhcmR3YXJlIGFjY2Vzc2VzIGNhbiBiZSBxdWl0ZSBu
-b25kZXRlcm1pbmlzdGljLiBBbmQgaWYgdGhlIGRyaXZlciBpcwogICBub3Qgd3JpdHRlbiBwcm9w
-ZXJseSwgdGhlIHN0YXJ0IHRyaWdnZXIgd2lsbCBkbyBhbGwgdGhlIERNQSBzdHJlYW0KICAgaW5p
-dGlhbGl6YXRpb24gdGhhdCBzaG91bGQgaGF2ZSBiZWVuIGRvbmUgd2hlbiBwcmVwYXJpbmcgdGhl
-IGRldmljZS4KICAgKG1jYXNwX3N0YXJ0X3R4KCkgaGFzIGEgYnVzeSBsb29wIHdhaXRpbmcgZm9y
-IHRoZSBkZXZpY2UuKQogICBUaGVyZSBpcyBoYXJkd2FyZSB0aGF0IGFjdHVhbGx5IHN1cHBvcnRz
-IHN0YXJ0aW5nIHR3byBzdHJlYW1zIGF0CiAgIGV4YWN0bHkKICAgdGhlIHNhbWUgdGltZSAoYnkg
-c2V0dGluZyB0d28gYml0cyBpbiB0aGUgc2FtZSByZWdpc3RlcikuIE9idmlvdXNseSwKICAgdGhp
-cyBoYXJkd2FyZSBvciBpdHMgZHJpdmVyIGRvZXNuJ3Qgc3VwcG9ydCB0aGlzLgogICBSZWdhcmRz
-LAogICBDbGVtZW5zCiAgIF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCiAgIEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CiAgIEFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwogICBbMV1odHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAoKUmVmZXJlbmNlcwoKICAgMS4gaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 06/30/2014 02:45 PM, Jan Kiszka wrote:
+> On 2014-06-30 04:04, Hui Wang wrote:
+>> On 06/29/2014 07:33 PM, Jan Kiszka wrote:
+>>> On 2013-11-27 07:47, Hui Wang wrote:
+>>>> Most Thinkpad Edge series laptops use conexant codec, so far although
+>>>> the codecs have different minor Vendor Id and minor Subsystem Id,
+>>>> they all belong to the cxt5066 family, this change can make the
+>>>> mute/mic-mute LEDs support more generic among cxt_5066 family.
+>>>>
+>>>> This design refers to the similar solution for the realtek codec
+>>>> ALC269 family in the patch_realtek.c.
+>>>>
+>>>> Cc: Alex Hung <alex.hung@canonical.com>
+>>>> Cc: David Henningsson <david.henningsson@canonical.com>
+>>>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>>>> ---
+>>>>    sound/pci/hda/patch_conexant.c | 23 +++++++++++++++++++++++
+>>>>    1 file changed, 23 insertions(+)
+>>>>
+>>>> diff --git a/sound/pci/hda/patch_conexant.c
+>>>> b/sound/pci/hda/patch_conexant.c
+>>>> index c205bb1..1f2717f 100644
+>>>> --- a/sound/pci/hda/patch_conexant.c
+>>>> +++ b/sound/pci/hda/patch_conexant.c
+>>>> @@ -3244,9 +3244,29 @@ enum {
+>>>>    #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+>>>>      #include <linux/thinkpad_acpi.h>
+>>>> +#include <acpi/acpi.h>
+>>>>      static int (*led_set_func)(int, bool);
+>>>>    +static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void
+>>>> *context,
+>>>> +                 void **rv)
+>>>> +{
+>>>> +    bool *found = context;
+>>>> +    *found = true;
+>>>> +    return AE_OK;
+>>>> +}
+>>>> +
+>>>> +static bool is_thinkpad(struct hda_codec *codec)
+>>>> +{
+>>>> +    bool found = false;
+>>>> +    if (codec->subsystem_id >> 16 != 0x17aa)
+>>>> +        return false;
+>>>> +    if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb,
+>>>> &found, NULL)) && found)
+>>>> +        return true;
+>>>> +    found = false;
+>>>> +    return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb,
+>>>> &found, NULL)) && found;
+>>>> +}
+>>>> +
+>>>>    static void update_tpacpi_mute_led(void *private_data, int enabled)
+>>>>    {
+>>>>        struct hda_codec *codec = private_data;
+>>>> @@ -3279,6 +3299,8 @@ static void cxt_fixup_thinkpad_acpi(struct
+>>>> hda_codec *codec,
+>>>>        bool removefunc = false;
+>>>>          if (action == HDA_FIXUP_ACT_PROBE) {
+>>>> +        if (!is_thinkpad(codec))
+>>>> +            return;
+>>>>            if (!led_set_func)
+>>>>                led_set_func = symbol_request(tpacpi_led_set);
+>>>>            if (!led_set_func) {
+>>>> @@ -3494,6 +3516,7 @@ static const struct snd_pci_quirk
+>>>> cxt5066_fixups[] = {
+>>>>        SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s",
+>>>> CXT_FIXUP_STEREO_DMIC),
+>>>>        SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310",
+>>>> CXT_FIXUP_STEREO_DMIC),
+>>>>        SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205",
+>>>> CXT_FIXUP_STEREO_DMIC),
+>>>> +    SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI),
+>>>>        SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004",
+>>>> CXT_PINCFG_LEMOTE_A1004),
+>>>>        SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205",
+>>>> CXT_PINCFG_LEMOTE_A1205),
+>>>>        {}
+>>>>
+>>> Starting with this patch, my Lenovo Thinkpad X121e netbook (it's without
+>>> any mute LEDs, BTW, there is only a power LED) considers the power
+>>> button as hard reset. I have to exclude my machine from that ACPI fixup
+>>> (this is on top of current Linus master):
+>> It seems more like a firmware issue, in the acpi code, the "SSMS" is for
+>> mute led, and the "MMTS" is for micmute led, I don't know why your
+>> machine can pass "SSMS" or "MMTS" scanning even without mute LEDs.
+>>
+> Is there anything I can debug or any information I can collect from my
+> box to examine this?
+What is the linux distribution on your machine? And use showkey to catch 
+the keycode of that button.
+
+>
+> Jan
+>
+>
