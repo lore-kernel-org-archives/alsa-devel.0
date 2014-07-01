@@ -1,22 +1,18 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
-Date: Tue, 1 Jul 2014 17:56:49 +0100
-Message-ID: <20140701165649.GZ32514@n2100.arm.linux.org.uk>
-References: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
- <20140629213510.GR32514@n2100.arm.linux.org.uk> <53B154FE.80804@gmail.com>
- <20140630124320.GZ32514@n2100.arm.linux.org.uk>
- <20140630181347.6a4ad4a8@armhf>
- <20140630162050.GC32514@n2100.arm.linux.org.uk>
- <20140701184413.6d9aa16f@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: add driver for Rockchip RK3xxx
+	I2S controller
+Date: Tue, 1 Jul 2014 18:07:47 +0100
+Message-ID: <20140701170747.GA15028@sirena.org.uk>
+References: <1404203860-30712-1-git-send-email-xjq@rock-chips.com>
+ <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6651556296070768379=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.arm.linux.org.uk (gw-1.arm.linux.org.uk [78.32.30.217])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FF182650EE
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 18:56:58 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140701184413.6d9aa16f@armhf>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF26D2650EE
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 19:08:35 +0200 (CEST)
+In-Reply-To: <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,122 +22,218 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Mark Brown <broonie@kernel.org>, Gregory Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+To: jianqun <xjq@rock-chips.com>
+Cc: huangtao@rock-chips.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, tiwai@suse.de, linux-kernel@vger.kernel.org, zhangqing@rock-chips.com, lgirdwood@gmail.com, kever.yang@rock-chips.com, zyw@rock-chips.com, robh+dt@kernel.org, kfx@rock-chips.com, grant.likely@linaro.org, cf@rock-chips.com, hj@rock-chips.com, yzq@rock-chips.com, zhenfu.fang@rock-chips.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 01, 2014 at 06:44:13PM +0200, Jean-Francois Moine wrote:
-> On Mon, 30 Jun 2014 17:20:51 +0100
-> Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
-> 
-> > Add DPCM support to kirkwood-i2s to support the I2S and SPDIF streams.
-> > This consists of:
-> > - a single front end DAI called "kirkwood-fe" with "dma-tx" and "dma-rx"
-> >   streams.
-> > - one backend DAI called "kirkwood-i2s" for I2S with streams named
-> >   "i2s-tx" and "i2s-rx"
-> > - one backend DAI called "kirkwood-spdif" for SPDIF with a single stream
-> >   named "spdif-tx".
-> 
-> In the Cubox, you may have kirkwood S/PDIF with both HDMI and S/PDIF
-> outputs and this avoids to activate both kirkwood I2S and S/PDIF in
-> most cases.
 
-I run my Cubox with just SPDIF output to both.
+--===============6651556296070768379==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
 
-> > -		.rates = SNDRV_PCM_RATE_CONTINUOUS,
-> > -		.rate_min = 5512,
-> > -		.rate_max = 192000,
-> > -		.formats = KIRKWOOD_I2S_FORMATS,
-> > +		.rates = SNDRV_PCM_RATE_8000_192000 |
-> > +			 SNDRV_PCM_RATE_CONTINUOUS |
-> > +			 SNDRV_PCM_RATE_KNOT,
-> > +		.formats = KIRKWOOD_FE_FORMATS,
-> 
-> This does not work: SNDRV_PCM_RATE_CONTINUOUS asks for rate_min and
-> rate_max. SNDRV_PCM_RATE_KNOT is of no interest here.
 
-Yes, there was a recent discussion about that, but I've yet to update
-this driver for it.
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > diff --git a/sound/soc/kirkwood/kirkwood-openrd.c b/sound/soc/kirkwood/kirkwood-openrd.c
-> > index 65f2a5b9ec3b..78fb05ff44a8 100644
-> > --- a/sound/soc/kirkwood/kirkwood-openrd.c
-> > +++ b/sound/soc/kirkwood/kirkwood-openrd.c
-> > @@ -49,24 +49,34 @@ static struct snd_soc_ops openrd_client_ops = {
-> >  
-> >  
-> >  static struct snd_soc_dai_link openrd_client_dai[] = {
-> > +	KIRKWOOD_FE_DAI_LINK(".0", 1, 1),
-> >  {
-> >  	.name = "CS42L51",
-> >  	.stream_name = "CS42L51 HiFi",
-> > -	.cpu_dai_name = "i2s",
-> > -	.platform_name = "mvebu-audio",
-> > +	.cpu_name = "mvebu-audio.0",
-> > +	.cpu_dai_name = "kirkwood-i2s",
-> > +	.platform_name = "snd-soc-dummy",
-> >  	.codec_dai_name = "cs42l51-hifi",
-> >  	.codec_name = "cs42l51-codec.0-004a",
-> >  	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
-> >  	.ops = &openrd_client_ops,
-> > +	.dpcm_playback = 1,
-> > +	.dpcm_capture = 1,
-> >  },
-> >  };
-> 
-> There is no need to change the openrd and t5325 drivers: they may use
-> the kirkwood DAI's in a non-DPCM way.
+On Tue, Jul 01, 2014 at 04:47:38PM +0800, jianqun wrote:
 
-With a proper DPCM solution, at least one backend must be linked so that
-the CPU side knows which interface(s) are in use.  This solution allows
-both to be used simultaneously, which, if you wish to use I2S on the
-Cubox to drive the TDA998x (against my advice, but I'm not going to
-stop you) and also have the SPDIF output on the side of the device
-working, this is required.
+> --- /dev/null
+> +++ b/sound/soc/rockchip/i2s.h
+> @@ -0,0 +1,222 @@
+> +/*
+> + * i2s.h - ALSA IIS interface for the rockchip SoC
+> + *
+> + * Driver for rockchip iis audio
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#include <linux/version.h>
 
-> > diff --git a/sound/soc/kirkwood/kirkwood-spdif.c b/sound/soc/kirkwood/kirkwood-spdif.c
-> > index 9d49bc53f07d..6098dde85fc9 100644
-> > --- a/sound/soc/kirkwood/kirkwood-spdif.c
-> > +++ b/sound/soc/kirkwood/kirkwood-spdif.c
-> 
-> What is that file?
+You should never need to include this.
 
-This is the file for supporting SPDIF on the Cubox.
+> +	bool i2s_tx_status;
+> +	bool i2s_rx_status;
 
-> Eventually, your code is close to the one I tested end 2013. But, once
-> again, this does not work because DPCM does not handle the format and
-> rate constraints of the backends. This is critical for the device which
-> is connected to HDMI.
+Can we have more meaningful names for these please?
 
-DPCM may have these shortcomings, but this is how Mark Brown was telling
-me he wanted the hardware on Dove supported, and would not accept any
-other solution from me.
+> +static inline void i2s_writel(struct rk_i2s_dev *i2s, u32 value,
+> +			      unsigned int offset)
+> +{
+> +	writel_relaxed(value, i2s->regs + offset);
+> +}
+> +
+> +static inline u32 i2s_readl(struct rk_i2s_dev *i2s, unsigned int offset)
+> +{
+> +	return readl_relaxed(i2s->regs + offset);
+> +}
 
-However, what you say does not hold for all cases - if you use the SPDIF
-output on the side of the Cubox (as I do) you are not limited to the
-constraints of the attached HDMI device - in fact, limiting this case to
-the constraints of the attached HDMI device is wrong.  The only time
-this makes sense is if you only want to use the HDMI device and not the
-optical out on the side.
+Perhaps use regmap?  The main advantage would be the debug
+infrastructure, though you could also use _update_bits() to reduce the
+amount of time spent locked.
 
-With a decoder box connected to the optical output, I can decode a wide
-range of sample rates beyond those which my TV can cope with, and I can
-also directly decode AC-3 and MPEG2 audio streams in hardware - even to
-decoding AC-3 to 5.1 audio without any load on the Dove CPU beyond
-sending the compressed audio stream.
+> +	if (need_delay) {
+> +		while (i2s_readl(i2s, I2S_CLR) && try_cnt) {
+> +			udelay(1);
+> +			try_cnt--;
+> +		}
+> +	}
 
-This is where getting this stuff correct is most important - the TV must
-not see valid audio being sent to it (with SPDIF, compressed audio is
-always sent with the valid bit not set.)  With I2S, the I2S output must
-be muted or disabled - exactly as the Dove manuals clearly state.
+It's not reall a delay but rather a wait for the hardware to be ready I
+guess?  I'd expect to see some kind of message printed if we time out
+without the hardware reporting it's ready - that probably means
+something is going wrong.
 
-Also bear in mind that HDMI is based on SPDIF (it's SPDIF with a few
-bits omitted) and HDMI also supports compressed audio, dependent on the
-attached device's capabilities, and the attached device will decode
-compressed audio when presented correctly - which is only possible via
-a SPDIF connection between the Dove and TDA998x.
+> +	case SND_SOC_DAIFMT_I2S:
+> +		tx_ctl &= ~I2S_TXCR_IBM_MASK;
+> +		tx_ctl |= I2S_TXCR_IBM_NORMAL;
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		goto exit;
+> +	}
+> +
+> +	i2s_writel(i2s, tx_ctl, I2S_TXCR);
 
--- 
-FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
-improving, and getting towards what was expected from it.
+It's not a serious problem but it's more normal to defer the writes to
+the end of the function after all the error checking so that if the
+function fails we don't end up writing out part of the configuration.
+
+> +static int rockchip_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+> +	int clk_id, unsigned int freq, int dir)
+> +{
+> +	struct rk_i2s_dev *i2s = to_info(cpu_dai);
+> +
+> +	clk_set_rate(i2s->clk, freq);
+
+You should check (or just directly return) the error code here.  It'd
+also be good to define and validate a clock number, even if there's only
+one right now, in order to avoid problems later on.
+
+> +static int rockchip_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
+> +	int div_id, int div)
+
+Why are you defining a set_clkdiv() operation?  The code appears to just
+support MCLK and BCLK dividers both of which the driver ought to be able
+to just configure automatically.
+
+> +
+> +static int i2s_runtime_resume(struct device *dev)
+> +{
+> +	struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
+> +
+> +	return clk_prepare_enable(i2s->clk);
+
+Error checking.
+
+> +	/* Try to set the I2S Channel id from dt */
+> +	pdev->id = of_alias_get_id(np, "i2s");
+> +	dev_set_name(&pdev->dev, "%s.%d",
+> +				pdev->dev.driver->name,
+> +				pdev->id);
+
+No, this is seriously broken - a driver should never attempt to change
+its own device name, just use the name that the kernel set.
+
+> +	ret = devm_snd_soc_register_component(&pdev->dev,
+> +				&rockchip_i2s_component,
+> +				&rockchip_i2s_dai[pdev->id], 1);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Could not register DAI\n");
+> +		goto err_clk_disable;
+> +	}
+> +
+> +	pm_runtime_enable(&pdev->dev);
+
+Error checking and I'd expect this to happen before the device is
+registered - remember that the device may be bound into a sound card
+within the component registration so it has to be able to run normally.
+
+> +	snd_soc_unregister_component(&pdev->dev);
+
+Not neeed with devm_snd_soc_register_component().
+
+> +static const struct of_device_id rockchip_i2s_match[] = {
+> +	{
+> +		.compatible = "rockchip,rk3066-i2s"
+> +	},
+> +};
+> +MODULE_DEVICE_TABLE(of, rockchip_i2s_match);
+
+Needs an empty terminating entry and the binding document listed two
+compatible strings.
+
+> @@ -0,0 +1,64 @@
+> +/* sound/soc/rockchip/pcm.c
+> + *
+> + * ALSA SoC Audio Layer - Rockchip I2S Controller driver
+
+Submit this as a separate patch.
+
+> +static const struct snd_pcm_hardware rockchip_pcm_hardware = {
+> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
+> +			SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> +			SNDRV_PCM_INFO_MMAP |
+> +			SNDRV_PCM_INFO_MMAP_VALID |
+> +			SNDRV_PCM_INFO_PAUSE |
+> +			SNDRV_PCM_INFO_RESUME,
+> +	.formats = SNDRV_PCM_FMTBIT_S24_LE |
+> +			SNDRV_PCM_FMTBIT_S20_3LE |
+> +			SNDRV_PCM_FMTBIT_S16_LE,
+> +	.channels_min = 2,
+> +	.channels_max = 8,
+> +	.buffer_bytes_max = 128*1024,
+> +	.period_bytes_min = 64,
+> +	.period_bytes_max = 2048*4,
+> +	.periods_min = 3,
+> +	.periods_max = 128,
+> +	.fifo_size = 16,
+> +};
+
+The framework is supposed to be able to figure this out automatically
+with current kernels - if there's something not working there we should
+at least understand what and ideally fix it.
+
+> +static const struct snd_dmaengine_pcm_config rockchip_dmaengine_pcm_config = {
+> +	.pcm_hardware = &rockchip_pcm_hardware,
+> +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
+> +	.compat_filter_fn = NULL,
+
+No need to set NULL explicitly.
+
+--OXfL5xGRrasGEqWY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTsurfAAoJELSic+t+oim9XuIP/0ljuEl/+FtVQNnIsLLOGpiK
+6ptA/SYDPfwtfKMfxoT7ox9OEwFy1KKY9dn8lfEqzOf4P0jXhd+z6zLm/b6ZvQCY
+t5cHQ3JLJLsS08UwYc4wQD4simzih7QbhrHhyUpDSasQTAQLURTyUb87zo7ci1pV
+5k9MFV7hvIuZirohENJoAAgFs5CZthcjxJsevaF61Ws8+FyifikmvKzN5+ia8/mL
+CIpuxicyO+skz7oKyYKYbLO2DxriIoSXDaJtenJZ15+lXYCObVWdRjtMOg71cgWy
+LH6bdzwNbKR4n72bWW9uEPXDeL1IWKZCJwxwJqMch8wzqpLHCjzHc2w11zIrKHuC
+leZOeoBvKCMo/Oesjx7Jm4fdlBbVFhRz8tAPUhEkyu9my6h8vNCkfoC7USR5beZu
+K0uytTF3CQcKduoO55sYKzKWeqplmPkozf+o+aeF/K+pAg5lXIXt/YW5MXJXne3B
+Xaek2hmPUyVJ01Uqy8tNosTe2FOajLVGOEdf3w6uN4VPfI2713yS3hERmKz26Rw0
+8on89gauKUNPSv5nR0/jJgoVYqwjFrTGRV6ACLHZA73pL82sHuKIApzFFw+U3Z7G
+zi6Dw74hK09gpfHZKmWaRGQmpeQafV0v+s+Jxl4+7zRBoZ3nOBHVaLtxasmDPJ7C
+lJLdF/F4jZa7E27LiTyx
+=FP6f
+-----END PGP SIGNATURE-----
+
+--OXfL5xGRrasGEqWY--
+
+--===============6651556296070768379==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6651556296070768379==--
