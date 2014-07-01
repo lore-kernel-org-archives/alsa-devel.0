@@ -1,148 +1,89 @@
-From: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: add driver for Rockchip RK3xxx
- I2S controller
-Date: Tue, 01 Jul 2014 11:51:37 +0200
-Message-ID: <53B284A9.6050608@metafoo.de>
-References: <1404203860-30712-1-git-send-email-xjq@rock-chips.com> <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [RFC] question regarding codec DAI ops
+Date: Tue, 1 Jul 2014 11:28:44 +0200
+Message-ID: <53B27F4C.9040900@st.com>
+References: <53A44007.1000008@st.com> <20140621102644.GQ5099@sirena.org.uk>
+ <53A7D78B.1050508@st.com> <20140630103127.GX23300@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1404204458-30881-1-git-send-email-xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: jianqun <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: huangtao-TNX95d0MmH7DzftRWevZcw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, yzq-TNX95d0MmH7DzftRWevZcw@public.gmane.org, zhangqing-TNX95d0MmH7DzftRWevZcw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kever.yang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, cf-TNX95d0MmH7DzftRWevZcw@public.gmane.org, kfx-TNX95d0MmH7DzftRWevZcw@public.gmane.org, zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org, hj-TNX95d0MmH7DzftRWevZcw@public.gmane.org, zhenfu.fang-TNX95d0MmH7DzftRWevZcw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id B416226577B
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 11:29:06 +0200 (CEST)
+In-Reply-To: <20140630103127.GX23300@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 07/01/2014 10:47 AM, jianqun wrote:
-[...]
-> new file mode 100644
-> index 0000000..946b60c
-> --- /dev/null
-> +++ b/sound/soc/rockchip/Kconfig
-> @@ -0,0 +1,16 @@
-> +config SND_SOC_ROCKCHIP
-> +	tristate "ASoC support for Rockchip"
-> +	depends on SND_SOC && ARCH_ROCKCHIP
 
-No need for SND_SOC this is implicit for all drivers in sound/soc/. Also 
-allow the driver to be select when COMPILE_TEST is selected.
+On 06/30/2014 12:31 PM, Mark Brown wrote:
+> On Mon, Jun 23, 2014 at 09:30:19AM +0200, Arnaud Pouliquen wrote:
+>> On 06/21/2014 12:26 PM, Mark Brown wrote:
+>>> On Fri, Jun 20, 2014 at 04:07:03PM +0200, Arnaud Pouliquen wrote:
+>>>> I have a platform with several audio IOs (DAC , HDMI...) and I2S In/out
+>>>> connectors.
+>>>> I'm using my codec driver but for this I2S output i used dummy codec driver
+>>>> with the snd-soc-dummy-dai dai.
+>>> Why are you using the dummy driver?  This is intended to stub things out
+>>> in some DPCM situations rather than as something that should be used in
+>>> normal code.
+>> My platform is a base for several projects and customers. In this context
+>> some extra I2S bus are available for extensions.
+>> I have  two use cases to support.
+>> - Possibility to test I2S bus without audio codec associated.
+>> - Support client that does not use ASOC for audio codec ( a.e one manage
+>> HDMI in his display driver...)
+>> To be able to support these use cases i use device tree to construct the
+>> alsa card.  if no asoc codec present, i connect dummy one.
+> No, this is is not at all sensible - don't do that.  Think about it for
+> a minute - if this were something we wanted to do it's going to apply
+> just as much to any other I2S controller so we should be doing it in the
+> core.
+In fact what i really need is a dummy codec driver.
+But, perhaps, may i the only one to see advantages of using a dummy codec.
+if it is the case i will implement a dummy DAI in my codec driver.
+Otherwise tell me if you are interested in a generic dummy codec drivers.
 
-> +	select SND_SOC_GENERIC_DMAENGINE_PCM
-> +	select SND_ROCKCHIP_PCM
-> +	select SND_ROCKCHIP_I2S
-> +	help
-> +	  Say Y or M if you want to add support for codecs attached to
-> +	  the Rockchip SoCs' Audio interfaces. You will also need to
-> +	  select the audio interfaces to support below.
-> +
-[...]
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/device.h>
-> +#include <linux/delay.h>
-> +#include <linux/clk.h>
-> +#include <linux/version.h>
-> +#include <linux/of.h>
-> +#include <linux/of_gpio.h>
-> +#include <linux/clk.h>
-> +#include <linux/io.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-> +#include <linux/io.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/workqueue.h>
-> +#include <asm/dma.h>
-> +#include <sound/core.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/initval.h>
-> +#include <sound/soc.h>
-> +#include <sound/dmaengine_pcm.h>
-
-Are you sure that you need all of these includes?
-
-> +
-[...]
-> +static struct snd_soc_dai_ops rockchip_i2s_dai_ops = {
-const
-> +	.trigger = rockchip_i2s_trigger,
-> +	.hw_params = rockchip_i2s_hw_params,
-> +	.set_fmt = rockchip_i2s_set_fmt,
-> +	.set_clkdiv = rockchip_i2s_set_clkdiv,
-> +	.set_sysclk = rockchip_i2s_set_sysclk,
-> +};
-[...]
-> +static int rockchip_i2s_probe(struct platform_device *pdev)
-> +{
-[...]
-> +	/* Try to set the I2S Channel id from dt */
-> +	pdev->id = of_alias_get_id(np, "i2s");
-> +	dev_set_name(&pdev->dev, "%s.%d",
-> +				pdev->dev.driver->name,
-> +				pdev->id);
-
-A device should not change its id or name.
-
-> +
-> +	i2s->dev = &pdev->dev;
-> +	dev_set_drvdata(&pdev->dev, i2s);
-> +
-> +	ret = devm_snd_soc_register_component(&pdev->dev,
-> +				&rockchip_i2s_component,
-> +				&rockchip_i2s_dai[pdev->id], 1);
-
-If those are two instances of the same I2S core just use one 
-snd_soc_dai_driver struct. There is no need for the driver to know or care 
-about how many instances of the core the system has.
-
-[...]
-> +
-> +static const struct snd_pcm_hardware rockchip_pcm_hardware = {
-> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
-> +			SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> +			SNDRV_PCM_INFO_MMAP |
-> +			SNDRV_PCM_INFO_MMAP_VALID |
-> +			SNDRV_PCM_INFO_PAUSE |
-> +			SNDRV_PCM_INFO_RESUME,
-> +	.formats = SNDRV_PCM_FMTBIT_S24_LE |
-> +			SNDRV_PCM_FMTBIT_S20_3LE |
-> +			SNDRV_PCM_FMTBIT_S16_LE,
-> +	.channels_min = 2,
-> +	.channels_max = 8,
-> +	.buffer_bytes_max = 128*1024,
-> +	.period_bytes_min = 64,
-> +	.period_bytes_max = 2048*4,
-> +	.periods_min = 3,
-> +	.periods_max = 128,
-> +	.fifo_size = 16,
-> +};
-> +
-> +static const struct snd_dmaengine_pcm_config rockchip_dmaengine_pcm_config = {
-> +	.pcm_hardware = &rockchip_pcm_hardware,
-> +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-> +	.compat_filter_fn = NULL,
-> +	.prealloc_buffer_size = PAGE_SIZE * 8,
-> +};
-> +
-> +int rockchip_pcm_platform_register(struct device *dev)
-> +{
-> +	return snd_dmaengine_pcm_register(dev, &rockchip_dmaengine_pcm_config,
-> +			SND_DMAENGINE_PCM_FLAG_COMPAT|
-> +			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
-
-We should try to avoid adding new users of the generic dmaengine pcm driver 
-that manually specify a snd_pcm_hardware struct. We now have the 
-infrastructure to autodiscover the capabilities of the DMA via the dmaengine 
-API.
-
-New drivers really should just do snd_dmaengine_pcm_register(dev, NULL, 0);
-
-- Lars
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>   If the user really wants to look at the signals with a scope they
+> are probably capable of providing a suitable driver for their purposes.
+Unfortunately, my experience tells me otherwise.
+>
+>> If customer want to use another codec they have just  to change device tree.
+>> Here is an example of my device tree declaration.
+>>      sound {
+>>          compatible = "st,snd-soc-sti";
+>>          st,card-name = "audio";
+>>          st,audio-routing =
+>>              /* Analog out route */
+>>              "Analog out","DAC",
+>>              "DAC","dac_p";
+>>
+>>          st,asoc-platform = <&sti_asoc_platform>;
+>>          backend-name  = "HDMI_out", "PCM_out",
+>>                      "Analog_out", "spdif",
+>>                      "HDMI_in", "PCM_in";
+>>          backend-cpu-dai = <&snd_uni_player0 &snd_uni_player1
+>>                      &snd_uni_player2 &snd_uni_player3
+>>                      &snd_uni_reader0 &snd_uni_reader1 >;
+>>          backend-codec = <&sti_sasg_codec 0
+>>                      &sti_sasg_codec &sti_sasg_codec
+>>                      0 0>;
+>>          backend-codec-dai = "sas-dai-hdmi-out", "snd-soc-dummy-dai",
+>>                      "sas-dai-dac", "sas-dai-spdif-out",
+>>                      "snd-soc-dummy-dai","snd-soc-dummy-dai";
+>>      };
+> This looks a lot like you're trying to reinvent simple-card.
+Ok , not see that last versions of simple card manage multi DAI links.
+i will check if compatible with my design to reuse it instead of my 
+machine driver.
+Thanks for the remarks.
