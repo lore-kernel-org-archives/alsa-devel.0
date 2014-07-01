@@ -1,19 +1,19 @@
-From: steve@snewbury.org.uk
-Subject: Re: No speaker output with kernel 3.15 and later
-Date: Tue, 1 Jul 2014 12:11:50 +0000
-Message-ID: <efu8hs.n818kp.1hgeaud-qmf@mail.snewbury.org.uk>
-References: <1404050996.31259.2.camel@snewbury.org.uk>
- <s5hr426sqbq.wl%tiwai@suse.de>	<1404215372.2290.0.camel@snewbury.org.uk>
- <s5h61jh8fau.wl%tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v4 3/8] ASoC: core: Add initial support for
+	DAI multicodec
+Date: Tue, 01 Jul 2014 15:19:33 +0200
+Message-ID: <53B2B565.9080808@metafoo.de>
+References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
+ <1404200881-32253-4-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from know-smtprelay-omc-11.server.virginmedia.net
- (know-smtprelay-omc-11.server.virginmedia.net [80.0.253.75])
- by alsa0.perex.cz (Postfix) with ESMTP id D4436264FDF
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 14:12:30 +0200 (CEST)
-In-Reply-To: <s5h61jh8fau.wl%tiwai@suse.de>
+Received: from smtp-out-145.synserver.de (smtp-out-145.synserver.de
+ [212.40.185.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9109126504F
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 15:19:37 +0200 (CEST)
+In-Reply-To: <1404200881-32253-4-git-send-email-bcousson@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +23,158 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Benoit Cousson <bcousson@baylibre.com>, broonie@kernel.org, lgirdwood@gmail.com
+Cc: Fabien Parent <fparent@baylibre.com>, misael.lopez@ti.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 07/01/2014 09:47 AM, Benoit Cousson wrote:
+> DAI link assumes a one to one mapping between CPU DAI and CODEC. In
+> some cases, the same CPU DAI can be connected to several codecs.
+> This is the case for example, if you connect two mono codecs to the
+> same I2S link in order to have a stereo card.
+> The current ASoC implementation does not allow such setup.
+>
+> Add support for DAI links composed of a single CPU DAI and multiple
+> CODECs. Sound cards have to pass the CODECs array in the corresponding
+> DAI link through a new 'snd_soc_dai_link_component' struct. Each CODEC in
+> this array is described in the same manner single CODEC DAIs are
+> (either DT/OF node or codec_name).
+>
+> Based on an original code done by Misael.
+>
+> Signed-off-by: Benoit Cousson <bcousson@baylibre.com>
+> Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 
+Almost. There are two more serious issues, the rest is trivial.
 
-On Tue Jul 01 2014 12:54:49 GMT+0100 (BST), Takashi Iwai wrote:
-> At Tue, 01 Jul 2014 12:49:32 +0100,
-> Steven Newbury wrote:
-> > 
-> > On Mon, 2014-06-30 at 11:24 +0200, Takashi Iwai wrote:
-> > > At Sun, 29 Jun 2014 15:09:56 +0100,
-> > > Steven Newbury wrote:
-> > > >  I sent 
-> > > > Takashi an email mentioning this regression a month ago, and
-> > > >  it's 
-> > > > taken me this long to send this email... :-$
-> > > >  Since updating to 
-> > > > kernel versions >=3.15 I've had no audio from my
-> > > >  laptop speakers.  
-> > > > Earlier versions worked fine.
-> > > >  It's a CLEVO W270EUQ laptop.  The 
-> > > > output mixer device is showing up,
-> > > >  but no sound comes out at any 
-> > > > volume level.
-> > > >  As requested I've attached compressed alsa-info.sh 
-> > > > output for both the
-> > > >  working and non-working cases.
-> > > >  I'm perfectly 
-> > > > willing to test patches etc.
-> > >  
-> > > Hm, I see no significant difference between 3.14 and 3.15 alsa-info.sh
-> > > outputs, and there's been very little change for VIA codecs between
-> > > these versions.  So, in short, I have no idea what went wrong.
-> > >  
-> > > Could you double-check whether it's really a kernel issue?
-> > > That is, switch between 3.14 and 3.15 and confirm the problem happens
-> > > only with 3.15.  Also, for testing the sound, try like
-> > >  
-> > >         % aplay -Dplughw -vv foo.wav
-> > > 
-> > Checked again.
-> > 
-> > 3.16-rc2: silence
-> > 3.14.3: works fine
-> 
-> Then I'd suggest to bisect between 3.14 and 3.15.
-> 
-Will do.
--- 
-Sent from my Jolla
+> ---
+[...]
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 37a965c..3764150 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -554,7 +554,7 @@ int snd_soc_suspend(struct device *dev)
+>   {
+>   	struct snd_soc_card *card = dev_get_drvdata(dev);
+>   	struct snd_soc_codec *codec;
+> -	int i;
+> +	int i, j;
+>
+>   	/* If the initialization of this soc device failed, there is no codec
+>   	 * associated with it. Just bail out in this case.
+> @@ -574,14 +574,16 @@ int snd_soc_suspend(struct device *dev)
+>
+>   	/* mute any active DACs */
+>   	for (i = 0; i < card->num_rtd; i++) {
+> -		struct snd_soc_dai *dai = card->rtd[i].codec_dai;
+> -		struct snd_soc_dai_driver *drv = dai->driver;
+> +		for (j = 0; j < card->rtd[i].num_codecs; j++) {
+> +			struct snd_soc_dai *dai = card->rtd[i].codec_dais[j];
+> +			struct snd_soc_dai_driver *drv = dai->driver;
+>
+> -		if (card->rtd[i].dai_link->ignore_suspend)
+> -			continue;
+> +			if (card->rtd[i].dai_link->ignore_suspend)
+> +				continue;
+
+This check can actually stay outside the inner loop. We either want to mute 
+all or none.
+
+>
+> -		if (drv->ops->digital_mute && dai->playback_active)
+> -			drv->ops->digital_mute(dai, 1);
+> +			if (drv->ops->digital_mute && dai->playback_active)
+> +				drv->ops->digital_mute(dai, 1);
+> +		}
+>   	}
+>
+>   	/* suspend all pcms */
+[...]
+> @@ -697,7 +703,7 @@ static void soc_resume_deferred(struct work_struct *work)
+>   	struct snd_soc_card *card =
+>   			container_of(work, struct snd_soc_card, deferred_resume_work);
+>   	struct snd_soc_codec *codec;
+> -	int i;
+> +	int i, j;
+>
+>   	/* our power state is still SNDRV_CTL_POWER_D3hot from suspend time,
+>   	 * so userspace apps are blocked from touching us
+> @@ -758,14 +764,17 @@ static void soc_resume_deferred(struct work_struct *work)
+>
+>   	/* unmute any active DACs */
+>   	for (i = 0; i < card->num_rtd; i++) {
+> -		struct snd_soc_dai *dai = card->rtd[i].codec_dai;
+> -		struct snd_soc_dai_driver *drv = dai->driver;
+>
+> -		if (card->rtd[i].dai_link->ignore_suspend)
+> -			continue;
+> +		for (j = 0; j < card->rtd[i].num_codecs; j++) {
+> +			struct snd_soc_dai *dai = card->rtd[i].codec_dais[j];
+> +			struct snd_soc_dai_driver *drv = dai->driver;
+> +
+> +			if (card->rtd[i].dai_link->ignore_suspend)
+> +				continue;
+
+Same as with the mute loop.
+
+>
+> -		if (drv->ops->digital_mute && dai->playback_active)
+> -			drv->ops->digital_mute(dai, 0);
+> +			if (drv->ops->digital_mute && dai->playback_active)
+> +				drv->ops->digital_mute(dai, 0);
+> +		}
+>   	}
+>
+>   	for (i = 0; i < card->num_rtd; i++) {
+[...]			    int num)
+> +static int soc_aux_dev_init(struct snd_soc_card *card, int num)
+>   {
+>   	struct snd_soc_aux_dev *aux_dev = &card->aux_dev[num];
+>   	struct snd_soc_pcm_runtime *rtd = &card->rtd_aux[num];
+> +	struct snd_soc_codec *codec;
+>   	int ret;
+>
+>   	rtd->card = card;
+>
+> +	codec = soc_find_codec(NULL, aux_dev->codec_name);
+
+We actually have support for binding the aux dev by DT node now. But I have 
+a patch in my componentization branch that cleans all this up. Let me send 
+it to you and then you can rebase on-top of that.
+
+> +	if (!codec)
+> +		return -EPROBE_DEFER;
+> +
+>   	/* do machine specific initialization */
+>   	if (aux_dev->init) {
+>   		ret = aux_dev->init(&codec->dapm);
+> @@ -1286,16 +1316,19 @@ static int soc_aux_dev_init(struct snd_soc_card *card,
+>   	return 0;
+>   }
+>
+> -static int soc_dai_link_init(struct snd_soc_card *card,
+> -			     struct snd_soc_codec *codec,
+> -			     int num)
+> +static int soc_dai_link_init(struct snd_soc_card *card, int num)
+>   {
+>   	struct snd_soc_dai_link *dai_link =  &card->dai_link[num];
+>   	struct snd_soc_pcm_runtime *rtd = &card->rtd[num];
+> -	int ret;
+> +	int i, ret;
+>
+>   	rtd->card = card;
+>
+> +	for (i = 0; i < rtd->num_codecs; i++) {
+> +		/* Make sure all DAPM widgets are instantiated */
+> +		snd_soc_dapm_new_widgets(rtd->codec_dais[i]->codec->dapm.card);
+> +	}
+
+This is still a left over from a very early revision of this patch. We 
+removed this in upstream a while ago.
+
+> +
+>   	/* do machine specific initialization */
+>   	if (dai_link->init) {
+>   		ret = dai_link->init(rtd);
+[...]
