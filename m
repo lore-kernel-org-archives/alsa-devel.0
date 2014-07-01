@@ -1,18 +1,18 @@
-From: Jan Kiszka <jan.kiszka@web.de>
-Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs
- for more Thinkpads with Conexant codec
-Date: Tue, 01 Jul 2014 09:38:29 +0200
-Message-ID: <53B26575.1000003@web.de>
-References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>
- <53AFF992.5030403@web.de> <53B0C596.6090007@canonical.com>
- <53B1078B.4090101@web.de> <53B219DF.6090807@canonical.com>
+From: Benoit Cousson <bcousson@baylibre.com>
+Subject: [PATCH v4 0/8] ASoC: core: Add support for DAI
+	multicodec
+Date: Tue,  1 Jul 2014 09:47:53 +0200
+Message-ID: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6032003321775545136=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CE6B264F03
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 09:38:37 +0200 (CEST)
-In-Reply-To: <53B219DF.6090807@canonical.com>
+Received: from mail-wi0-f182.google.com (mail-wi0-f182.google.com
+ [209.85.212.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1637F264F03
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 09:48:22 +0200 (CEST)
+Received: by mail-wi0-f182.google.com with SMTP id bs8so7243279wib.3
+ for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 00:48:21 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,151 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hui Wang <hui.wang@canonical.com>
-Cc: alsa-devel@alsa-project.org, Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alex.hung@canonical.com, yk@canonical.com, david.henningsson@canonical.com
+To: broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de
+Cc: misael.lopez@ti.com, alsa-devel@alsa-project.org, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============6032003321775545136==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="NmVLcdK0vSpIAsKlHTTHOVlfM85fQoi1G"
+Hi Lars, Mark and Liam,
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---NmVLcdK0vSpIAsKlHTTHOVlfM85fQoi1G
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Sorry for the delay. Here is the fourth version of the multicodec series.
 
-On 2014-07-01 04:15, Hui Wang wrote:
-> On 06/30/2014 02:45 PM, Jan Kiszka wrote:
->> On 2014-06-30 04:04, Hui Wang wrote:
->>> On 06/29/2014 07:33 PM, Jan Kiszka wrote:
->>>> On 2013-11-27 07:47, Hui Wang wrote:
->>>>> Most Thinkpad Edge series laptops use conexant codec, so far althou=
-gh
->>>>> the codecs have different minor Vendor Id and minor Subsystem Id,
->>>>> they all belong to the cxt5066 family, this change can make the
->>>>> mute/mic-mute LEDs support more generic among cxt_5066 family.
->>>>>
->>>>> This design refers to the similar solution for the realtek codec
->>>>> ALC269 family in the patch_realtek.c.
->>>>>
->>>>> Cc: Alex Hung <alex.hung@canonical.com>
->>>>> Cc: David Henningsson <david.henningsson@canonical.com>
->>>>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
->>>>> ---
->>>>>    sound/pci/hda/patch_conexant.c | 23 +++++++++++++++++++++++
->>>>>    1 file changed, 23 insertions(+)
->>>>>
->>>>> diff --git a/sound/pci/hda/patch_conexant.c
->>>>> b/sound/pci/hda/patch_conexant.c
->>>>> index c205bb1..1f2717f 100644
->>>>> --- a/sound/pci/hda/patch_conexant.c
->>>>> +++ b/sound/pci/hda/patch_conexant.c
->>>>> @@ -3244,9 +3244,29 @@ enum {
->>>>>    #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
->>>>>      #include <linux/thinkpad_acpi.h>
->>>>> +#include <acpi/acpi.h>
->>>>>      static int (*led_set_func)(int, bool);
->>>>>    +static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, v=
-oid
->>>>> *context,
->>>>> +                 void **rv)
->>>>> +{
->>>>> +    bool *found =3D context;
->>>>> +    *found =3D true;
->>>>> +    return AE_OK;
->>>>> +}
->>>>> +
->>>>> +static bool is_thinkpad(struct hda_codec *codec)
->>>>> +{
->>>>> +    bool found =3D false;
->>>>> +    if (codec->subsystem_id >> 16 !=3D 0x17aa)
->>>>> +        return false;
->>>>> +    if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb,
->>>>> &found, NULL)) && found)
->>>>> +        return true;
->>>>> +    found =3D false;
->>>>> +    return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb,=
+I had to split it in smaller chunks since the previous patch was exceeding the 
+size limit of the ML :-(
 
->>>>> &found, NULL)) && found;
->>>>> +}
->>>>> +
->>>>>    static void update_tpacpi_mute_led(void *private_data, int enabl=
-ed)
->>>>>    {
->>>>>        struct hda_codec *codec =3D private_data;
->>>>> @@ -3279,6 +3299,8 @@ static void cxt_fixup_thinkpad_acpi(struct
->>>>> hda_codec *codec,
->>>>>        bool removefunc =3D false;
->>>>>          if (action =3D=3D HDA_FIXUP_ACT_PROBE) {
->>>>> +        if (!is_thinkpad(codec))
->>>>> +            return;
->>>>>            if (!led_set_func)
->>>>>                led_set_func =3D symbol_request(tpacpi_led_set);
->>>>>            if (!led_set_func) {
->>>>> @@ -3494,6 +3516,7 @@ static const struct snd_pci_quirk
->>>>> cxt5066_fixups[] =3D {
->>>>>        SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s",
->>>>> CXT_FIXUP_STEREO_DMIC),
->>>>>        SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310",
->>>>> CXT_FIXUP_STEREO_DMIC),
->>>>>        SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205",
->>>>> CXT_FIXUP_STEREO_DMIC),
->>>>> +    SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad",
->>>>> CXT_FIXUP_THINKPAD_ACPI),
->>>>>        SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004",
->>>>> CXT_PINCFG_LEMOTE_A1004),
->>>>>        SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205",
->>>>> CXT_PINCFG_LEMOTE_A1205),
->>>>>        {}
->>>>>
->>>> Starting with this patch, my Lenovo Thinkpad X121e netbook (it's
->>>> without
->>>> any mute LEDs, BTW, there is only a power LED) considers the power
->>>> button as hard reset. I have to exclude my machine from that ACPI fi=
-xup
->>>> (this is on top of current Linus master):
->>> It seems more like a firmware issue, in the acpi code, the "SSMS" is =
-for
->>> mute led, and the "MMTS" is for micmute led, I don't know why your
->>> machine can pass "SSMS" or "MMTS" scanning even without mute LEDs.
->>>
->> Is there anything I can debug or any information I can collect from my=
+I think (and hope) I did address all the v3 comments from Lars.
 
->> box to examine this?
-> What is the linux distribution on your machine? And use showkey to catc=
-h
-> the keycode of that button.
+I did not address the codec to codec link in multicodec case as suggested
+by Lars.
 
-I'm running OpenSUSE 13.1. The reported keycode of the power button is 11=
-6.
+There is still an open point about enforcing the number of channels for the
+CPU dai in case the TDM slots are set for the CODEC dais.
+I guess this point could be addressed later.
 
-Jan
+Please note that I have a very simple setup based on BBB to check if the series
+is working, so it will be good to test it on various platforms to ensure
+this is not generating any regression.
+
+The series is based on asoc/for-next (v3.16-rc1).
+
+Test and comments are welcome.
+
+Thanks,
+Benoit
 
 
+v1: http://comments.gmane.org/gmane.linux.alsa.devel/120532
 
---NmVLcdK0vSpIAsKlHTTHOVlfM85fQoi1G
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+v2: http://comments.gmane.org/gmane.linux.alsa.devel/121024
+- Split the first version in several patches.
+- Remove the TDM fixup 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+v3: 
+- Fixed all the places that were not iterating over all the codecs.
+- Change the structure and split it.
 
-iEYEARECAAYFAlOyZXUACgkQitSsb3rl5xQ9zACeIcjAxqON183YtX79atfxGoX1
-eAYAoNnelPb3XGqHDcoUn9Lu15yJwIB9
-=Qb3x
------END PGP SIGNATURE-----
-
---NmVLcdK0vSpIAsKlHTTHOVlfM85fQoi1G--
-
---===============6032003321775545136==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+v4:
+- Improve the TDM management
+- Split the orginal patch in smaller chunks
+- Ignore the CODEC to CODEC link case for the moment
+- Add iteration for multicodecs everywhere
 
 
---===============6032003321775545136==--
+Benoit Cousson (8):
+  ASoC: core: Change soc_link_dai_widgets signature for multiple codecs
+  ASoC: pcm: Refactor soc_pcm_apply_msb for multicodecs
+  ASoC: core: Add initial support for DAI multicodec
+  ASoC: pcm: Add support for DAI multicodec
+  ASoC: dapm: Add support for DAI multicodec
+  ASoC: compress: Add support for DAI multicodec
+  ASoC: pcm: Add soc_dai_hw_params helper
+  ASoC: core: Add a warning for link_dai_widget in the multicodec case
+
+ include/sound/soc-dai.h  |   4 +
+ include/sound/soc.h      |  17 ++
+ sound/soc/soc-compress.c |  94 +++++---
+ sound/soc/soc-core.c     | 348 +++++++++++++++++++----------
+ sound/soc/soc-dapm.c     |  93 ++++----
+ sound/soc/soc-pcm.c      | 563 ++++++++++++++++++++++++++++++++---------------
+ 6 files changed, 751 insertions(+), 368 deletions(-)
+
+-- 
+1.9.1
