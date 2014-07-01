@@ -1,18 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: add Wolfson WM8973 codec driver
-Date: Tue, 1 Jul 2014 12:05:00 +0100
-Message-ID: <20140701110500.GA19534@opensource.wolfsonmicro.com>
-References: <1403852955-18974-1-git-send-email-xavier.hsu@linaro.org>
- <53AD7ABB.7010201@metafoo.de>
+From: Sachin Kamat <sachin.kamat@samsung.com>
+Subject: [PATCH 1/5] ALSA: hda: Remove unused variable
+Date: Tue,  1 Jul 2014 17:02:54 +0530
+Message-ID: <1404214378-24669-1-git-send-email-sachin.kamat@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 511782619D8
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 13:05:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <53AD7ABB.7010201@metafoo.de>
+Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
+ [209.85.192.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAFB6261A7F
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 13:36:30 +0200 (CEST)
+Received: by mail-pd0-f172.google.com with SMTP id w10so9969218pde.17
+ for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 04:36:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,25 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: andy.green@linaro.org, Xavier Hsu <xavier.hsu@linaro.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, patches@linaro.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Thierry Reding <thierry.reding@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>, spk.linux@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 27, 2014 at 04:07:55PM +0200, Lars-Peter Clausen wrote:
-> On 06/27/2014 09:09 AM, Xavier Hsu wrote:
->> This patch adds support for the wm8973 codec, based on the
->> existing wm8971 codec driver.
->>
->
-> Those two look really similar. Do you think they can both be supported by 
-> the same driver, rather than duplicating most of the code?
->
-> - Lars
+'status' is not used in the function. Remove it.
 
-I am not super familiar with these two devices but looking
-through the two datasheets it certainly seems they should be
-supported by the same driver. I would like to see some reason if
-we were to not go down this route.
+Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
+Cc: Stephen Warren <swarren@wwwdotorg.org>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+---
+All patches in this series only compile tested.
+---
+ sound/pci/hda/hda_tegra.c |    4 ----
+ 1 file changed, 4 deletions(-)
 
-Thanks,
-Charles
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index a366ba9293a8..8cd7b06eecef 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -272,13 +272,9 @@ static int hda_tegra_resume(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip = card->private_data;
+ 	struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
+-	int status;
+ 
+ 	hda_tegra_enable_clocks(hda);
+ 
+-	/* Read STATESTS before controller reset */
+-	status = azx_readw(chip, STATESTS);
+-
+ 	hda_tegra_init(hda);
+ 
+ 	azx_init_chip(chip, 1);
+-- 
+1.7.9.5
