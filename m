@@ -1,22 +1,20 @@
-From: jianqun <xjq@rock-chips.com>
+From: jianqun <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 Subject: [PATCH 2/2] ASoC: add driver for Rockchip RK3xxx I2S controller
-Date: Tue,  1 Jul 2014 16:47:38 +0800
-Message-ID: <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
-References: <1404203860-30712-1-git-send-email-xjq@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1404203860-30712-1-git-send-email-xjq@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, robh+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, zhangqing@rock-chips.com, hj@rock-chips.com, kever.yang@rock-chips.com, huangtao@rock-chips.com, zyw@rock-chips.com, yzq@rock-chips.com, zhenfu.fang@rock-chips.com, cf@rock-chips.com, kfx@rock-chips.com, Jianqun Xu <xjq@rock-chips.com>
+Date: Tue,  1 Jul 2014 16:39:32 +0800
+Message-ID: <1404203972-30760-1-git-send-email-xjq@rock-chips.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, zhangqing-TNX95d0MmH7DzftRWevZcw@public.gmane.org, hj-TNX95d0MmH7DzftRWevZcw@public.gmane.org, kever.yang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, huangtao-TNX95d0MmH7DzftRWevZcw@public.gmane.org, zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org, yzq-TNX95d0MmH7DzftRWevZcw@public.gmane.org, zhenfu.fang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, cf-TNX95d0MmH7DzftRWevZcw@public.gmane.org, kfx-TNX95d0MmH7DzftRWevZcw@public.gmane.org, Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jianqun Xu <xjq@rock-chips.com>
+From: Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 
 Add driver for I2S controller in Rockchip RK3xxx SoCs.
 
 This driver patch has been tested on the RK3288 SDK board.
 
-Signed-off-by: Jianqun Xu <xjq@rock-chips.com>
+Signed-off-by: Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 ---
  sound/soc/Kconfig                 |    1 +
  sound/soc/Makefile                |    1 +
@@ -966,7 +964,7 @@ index 0000000..bb52ae3
 +module_platform_driver(rockchip_i2s_driver);
 +
 +MODULE_DESCRIPTION("ROCKCHIP IIS ASoC Interface");
-+MODULE_AUTHOR("jianqun <jay.xu@rock-chips.com>");
++MODULE_AUTHOR("jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>");
 +MODULE_LICENSE("GPL v2");
 diff --git a/sound/soc/rockchip/rockchip_pcm.c b/sound/soc/rockchip/rockchip_pcm.c
 new file mode 100644
@@ -1036,7 +1034,13 @@ index 0000000..454c609
 +EXPORT_SYMBOL_GPL(rockchip_pcm_platform_unregister);
 +
 +MODULE_DESCRIPTION("ROCKCHIP PCM ASoC Interface");
-+MODULE_AUTHOR("jianqun <jay.xu@rock-chips.com>");
++MODULE_AUTHOR("jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>");
 +MODULE_LICENSE("GPL v2");
 -- 
 1.7.9.5
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
