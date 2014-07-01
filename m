@@ -1,20 +1,20 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
-	multicodec
-Date: Tue, 1 Jul 2014 21:55:40 +0530
-Message-ID: <20140701162540.GG2296@intel.com>
-References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
- <1404200881-32253-7-git-send-email-bcousson@baylibre.com>
- <53B2BC7F.2060909@metafoo.de>
+From: Huang Tao <huangtao@rock-chips.com>
+Subject: Re: [PATCH 2/2] ASoC: add driver for Rockchip RK3xxx
+ I2S controller
+Date: Tue, 01 Jul 2014 23:17:35 +0800
+Message-ID: <53B2D10F.2020008@rock-chips.com>
+References: <1404203860-30712-1-git-send-email-xjq@rock-chips.com>
+ <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
+ <53B284A9.6050608@metafoo.de> <53B2CA5E.1060401@rock-chips.com>
+ <53B2CC43.5090309@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 4123126570F
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 18:26:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <53B2BC7F.2060909@metafoo.de>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id D609F2656BB
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 17:17:39 +0200 (CEST)
+In-Reply-To: <53B2CC43.5090309@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, broonie@kernel.org, lgirdwood@gmail.com, Benoit Cousson <bcousson@baylibre.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 01, 2014 at 03:49:51PM +0200, Lars-Peter Clausen wrote:
-> On 07/01/2014 09:47 AM, Benoit Cousson wrote:
-And you should have cced me on this patch
-
-> [...]
-> for (i = 0; i < rtd->num_codecs; i++) {
-> >+		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-> >+		/* check client and interface hw capabilities */
-> >+		snprintf(new_name, sizeof(new_name), "%s %s-%d",
-> >+			 rtd->dai_link->stream_name, codec_dai->name, num);
-> 
-> We may need to rethink how to do the naming for multiple CODEC DAI
-> links here. This implementation will just keep overwriting new_name
-> with each loop iteration and end up using the last one. Vinod may
-> have some insights.
-
-I am intrugued on how we do this for pcms with multi-codec support.
-
-Looking at the patch series I dont think the soc_pcm_new() has been updated
-(please point out if i missed, it is late in night)
-Shouldnt this be updated for pcm too?
-
-I would suggest makes sense is to keep appending the codec name for the
-dai-link. But yes keep a check on the size. Unless we have better ideas.
-
--- 
-~Vinod
+ICAg5LqOIDIwMTTlubQwN+aciDAx5pelIDIyOjU3LCBMYXJzLVBldGVyIENsYXVzZW4g5YaZ6YGT
+OgoKCuS6jiAyMDE05bm0MDfmnIgwMeaXpSAxNzo1MSwgTGFycy1QZXRlciBDbGF1c2VuIOWGmemB
+kzoKCisgICAgICAgLyogVHJ5IHRvIHNldCB0aGUgSTJTIENoYW5uZWwgaWQgZnJvbSBkdCAqLwoK
+KyAgICAgICBwZGV2LT5pZCA9IG9mX2FsaWFzX2dldF9pZChucCwgImkycyIpOworICAgICAgIGRl
+dl9zZXRfbmFtZSgmcGRldi0+ZGV2LCAiJXMuJWQiLAorICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHBkZXYtPmRldi5kcml2ZXItPm5hbWUsCisgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgcGRldi0+aWQpOwoKQSBkZXZpY2Ugc2hvdWxkIG5vdCBjaGFuZ2UgaXRzIGlkIG9yIG5h
+bWUuCgoKQ291bGQgeW91IHRlbGwgbWUgdGhlIHJlYXNvbj8KCgpXaGVuIHJlZ2lzdGVyaW5nIGEg
+ZGV2aWNlIHRoZSBMaW51eCBkZXZpY2UgY29yZSB0aGF0IHRoZSBpZCBhbmQgbmFtZSBhcmUKdW5p
+cXVlLiBJZiB5b3UgY2hhbmdlIHRoZW0gYmVoaW5kIHRoZSBiYWNrIG9mIHRoZSBjb3JlIHRoZXJl
+IGlzIG5vIGd1YXJhbnRlZQp0aGF0IHRoZXkgYXJlIHN0aWxsIHVuaXF1ZSBhbmQgdW5kZWZpbmVk
+IGJlaGF2aW9yIG1pZ2h0IG9jY3VyLiBBbHNvIGNoYW5naW5nCnRoZW0gY2FuIGNhdXNlIGFsbCBr
+aW5kIG9mIG90aGVyIHdlaXJkIGJlaGF2aW9yLCBlLmcuIHRoZSBuYW1lIG5vIGxvbmdlcgptYXRj
+aGVzIHRoZSBuYW1lIG9mIHRoZSBzeXNmcyBmaWxlcywgZXRjLgoKLSBMYXJzCgoKICAgT0suIFRo
+YW5rcyEgV2Ugd2lsbCBmb2xsb3cgdGhpcyBydWxlIG9uIHRoZSBmdXR1cmUgcGF0Y2hlcy4KCiAg
+IEJlc3QgUmVnYXJkcywKCgogICAgSHVhbmcgVGFvCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
