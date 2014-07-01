@@ -1,18 +1,18 @@
 From: Benoit Cousson <bcousson@baylibre.com>
-Subject: [PATCH v4 6/8] ASoC: compress: Add support for DAI
-	multicodec
-Date: Tue,  1 Jul 2014 09:47:59 +0200
-Message-ID: <1404200881-32253-7-git-send-email-bcousson@baylibre.com>
+Subject: [PATCH v4 7/8] ASoC: pcm: Add soc_dai_hw_params helper
+Date: Tue,  1 Jul 2014 09:48:00 +0200
+Message-ID: <1404200881-32253-8-git-send-email-bcousson@baylibre.com>
 References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f43.google.com (mail-wg0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 795ED2656B4
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 09:49:04 +0200 (CEST)
-Received: by mail-wg0-f43.google.com with SMTP id k14so341217wgh.2
- for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 00:49:04 -0700 (PDT)
+Received: from mail-we0-f169.google.com (mail-we0-f169.google.com
+ [74.125.82.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DE562656FD
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 09:49:06 +0200 (CEST)
+Received: by mail-we0-f169.google.com with SMTP id t60so9281117wes.14
+ for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 00:49:05 -0700 (PDT)
 In-Reply-To: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,171 +27,135 @@ To: broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de
 Cc: misael.lopez@ti.com, alsa-devel@alsa-project.org, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add multicodec support in soc-compress.c
+Add a function helper to factorize the hw_params code.
+
+Suggested by Lars-Peter Clausen <lars@metafoo.de>
 
 Signed-off-by: Benoit Cousson <bcousson@baylibre.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>
 ---
- sound/soc/soc-compress.c | 94 ++++++++++++++++++++++++++++++------------------
- 1 file changed, 59 insertions(+), 35 deletions(-)
+ include/sound/soc.h  |  4 ++++
+ sound/soc/soc-dapm.c | 26 ++++++--------------------
+ sound/soc/soc-pcm.c  | 41 ++++++++++++++++++++++-------------------
+ 3 files changed, 32 insertions(+), 39 deletions(-)
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index f96fb96..cd65b12 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -155,14 +155,17 @@ static void close_delayed_work(struct work_struct *work)
- {
- 	struct snd_soc_pcm_runtime *rtd =
- 			container_of(work, struct snd_soc_pcm_runtime, delayed_work.work);
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int i;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index f2142cf..98555f8 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -436,6 +436,10 @@ int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
+ int snd_soc_platform_trigger(struct snd_pcm_substream *substream,
+ 		int cmd, struct snd_soc_platform *platform);
  
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
--	dev_dbg(rtd->dev, "ASoC: pop wq checking: %s status: %s waiting: %s\n",
--		 codec_dai->driver->playback.stream_name,
--		 codec_dai->playback_active ? "active" : "inactive",
--		 rtd->pop_wait ? "yes" : "no");
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-+		dev_dbg(rtd->dev, "ASoC: pop wq checking: %s status: %s waiting: %s\n",
-+			 codec_dai->driver->playback.stream_name,
-+			 codec_dai->playback_active ? "active" : "inactive",
-+			 rtd->pop_wait ? "yes" : "no");
-+	}
- 
- 	/* are we waiting on this codec DAI stream */
- 	if (rtd->pop_wait == 1) {
-@@ -179,8 +182,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int stream;
-+	int stream, i;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
-@@ -191,14 +193,18 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
- 
- 	snd_soc_runtime_deactivate(rtd, stream);
- 
--	snd_soc_dai_digital_mute(codec_dai, 1, cstream->direction);
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
++int soc_dai_hw_params(struct snd_pcm_substream *substream,
++		      struct snd_pcm_hw_params *params,
++		      struct snd_soc_dai *dai);
 +
-+		snd_soc_dai_digital_mute(codec_dai, 1, cstream->direction);
+ /* Jack reporting */
+ int snd_soc_jack_new(struct snd_soc_codec *codec, const char *id, int type,
+ 		     struct snd_soc_jack *jack);
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 5c63c3b..d8a24bb 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3214,27 +3214,13 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		if (source->driver->ops && source->driver->ops->hw_params) {
+-			substream.stream = SNDRV_PCM_STREAM_CAPTURE;
+-			ret = source->driver->ops->hw_params(&substream,
+-							     params, source);
+-			if (ret != 0) {
+-				dev_err(source->dev,
+-					"ASoC: hw_params() failed: %d\n", ret);
+-				goto out;
+-			}
+-		}
++		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
++		if (soc_dai_hw_params(&substream, params, source) < 0)
++			goto out;
+ 
+-		if (sink->driver->ops && sink->driver->ops->hw_params) {
+-			substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
+-			ret = sink->driver->ops->hw_params(&substream, params,
+-							   sink);
+-			if (ret != 0) {
+-				dev_err(sink->dev,
+-					"ASoC: hw_params() failed: %d\n", ret);
+-				goto out;
+-			}
+-		}
++		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
++		if (soc_dai_hw_params(&substream, params, sink) < 0)
++			goto out;
+ 		break;
+ 
+ 	case SND_SOC_DAPM_POST_PMU:
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 981b99c..b48f2a8 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -780,6 +780,24 @@ static void soc_pcm_codec_params_fixup(struct snd_pcm_hw_params *params,
+ 	interval->max = channels;
+ }
+ 
++int soc_dai_hw_params(struct snd_pcm_substream *substream,
++		      struct snd_pcm_hw_params *params,
++		      struct snd_soc_dai *dai)
++{
++	int ret;
 +
-+		if (!codec_dai->active)
-+			codec_dai->rate = 0;
-+	}
- 
- 	if (!cpu_dai->active)
- 		cpu_dai->rate = 0;
- 
--	if (!codec_dai->active)
--		codec_dai->rate = 0;
--
- 
- 	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->shutdown)
- 		rtd->dai_link->compr_ops->shutdown(cstream);
-@@ -283,8 +289,7 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
- 
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_platform *platform = rtd->platform;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int ret = 0;
-+	int i, ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 
-@@ -294,13 +299,19 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
- 			goto out;
- 	}
- 
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--		snd_soc_dai_digital_mute(codec_dai, 0, cstream->direction);
--		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--		snd_soc_dai_digital_mute(codec_dai, 1, cstream->direction);
--		break;
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-+
-+		switch (cmd) {
-+		case SNDRV_PCM_TRIGGER_START:
-+			snd_soc_dai_digital_mute(codec_dai, 0,
-+						 cstream->direction);
-+			break;
-+		case SNDRV_PCM_TRIGGER_STOP:
-+			snd_soc_dai_digital_mute(codec_dai, 1,
-+						 cstream->direction);
-+			break;
-+		}
- 	}
- 
- out:
-@@ -622,23 +633,33 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- {
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_platform *platform = rtd->platform;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_compr *compr;
- 	struct snd_pcm *be_pcm;
- 	char new_name[64];
--	int ret = 0, direction = 0;
--
--	/* check client and interface hw capabilities */
--	snprintf(new_name, sizeof(new_name), "%s %s-%d",
--			rtd->dai_link->stream_name, codec_dai->name, num);
--
--	if (codec_dai->driver->playback.channels_min)
--		direction = SND_COMPRESS_PLAYBACK;
--	else if (codec_dai->driver->capture.channels_min)
--		direction = SND_COMPRESS_CAPTURE;
--	else
--		return -EINVAL;
-+	int i, ret = 0, direction = -1;
-+
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-+		/* check client and interface hw capabilities */
-+		snprintf(new_name, sizeof(new_name), "%s %s-%d",
-+			 rtd->dai_link->stream_name, codec_dai->name, num);
-+
-+		if (direction < 0) {
-+			if (codec_dai->driver->playback.channels_min)
-+				direction = SND_COMPRESS_PLAYBACK;
-+			else if (codec_dai->driver->capture.channels_min)
-+				direction = SND_COMPRESS_CAPTURE;
-+			else
-+				return -EINVAL;
-+		} else {
-+			if ((codec_dai->driver->playback.channels_min &&
-+					direction != SND_COMPRESS_PLAYBACK) ||
-+			    (codec_dai->driver->capture.channels_min &&
-+					direction != SND_COMPRESS_CAPTURE))
-+				return -EINVAL;
++	if (dai->driver->ops && dai->driver->ops->hw_params) {
++		ret = dai->driver->ops->hw_params(substream, params, dai);
++		if (ret < 0) {
++			dev_err(dai->dev, "ASoC: can't set %s hw params: %d\n",
++				dai->name, ret);
++			return ret;
 +		}
 +	}
++
++	return 0;
++}
++
+ /*
+  * Called by ALSA when the hardware params are set by application. This
+  * function can also be called multiple times and can allocate buffers
+@@ -823,17 +841,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 			soc_pcm_codec_params_fixup(&codec_params,
+ 						   codec_dai->rx_mask);
  
- 	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
- 	if (compr == NULL) {
-@@ -692,8 +713,11 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
- 	rtd->compr = compr;
- 	compr->private_data = rtd;
+-		if (codec_dai->driver->ops &&
+-		    codec_dai->driver->ops->hw_params) {
+-			ret = codec_dai->driver->ops->hw_params(substream,
+-						&codec_params, codec_dai);
+-			if (ret < 0) {
+-				dev_err(codec_dai->dev,
+-					"ASoC: can't set %s hw params: %d\n",
+-					codec_dai->name, ret);
+-				goto codec_err;
+-			}
+-		}
++		if (soc_dai_hw_params(substream, &codec_params, codec_dai) < 0)
++			goto codec_err;
  
--	printk(KERN_INFO "compress asoc: %s <-> %s mapping ok\n", codec_dai->name,
--		cpu_dai->name);
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-+		printk(KERN_INFO "compress asoc: %s <-> %s mapping ok\n",
-+		       codec_dai->name, cpu_dai->name);
-+	}
- 	return ret;
+ 		codec_dai->rate = params_rate(&codec_params);
+ 		codec_dai->channels = params_channels(&codec_params);
+@@ -841,14 +850,8 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 						params_format(&codec_params));
+ 	}
  
- compr_err:
+-	if (cpu_dai->driver->ops && cpu_dai->driver->ops->hw_params) {
+-		ret = cpu_dai->driver->ops->hw_params(substream, params, cpu_dai);
+-		if (ret < 0) {
+-			dev_err(cpu_dai->dev, "ASoC: %s hw params failed: %d\n",
+-				cpu_dai->name, ret);
+-			goto interface_err;
+-		}
+-	}
++	if (soc_dai_hw_params(substream, params, cpu_dai) < 0)
++		goto interface_err;
+ 
+ 	if (platform->driver->ops && platform->driver->ops->hw_params) {
+ 		ret = platform->driver->ops->hw_params(substream, params);
 -- 
 1.9.1
