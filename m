@@ -1,20 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
-	multicodec
-Date: Tue, 01 Jul 2014 18:42:12 +0200
-Message-ID: <53B2E4E4.7020006@metafoo.de>
-References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
- <1404200881-32253-7-git-send-email-bcousson@baylibre.com>
- <53B2BC7F.2060909@metafoo.de> <20140701162540.GG2296@intel.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
+Date: Tue, 1 Jul 2014 18:44:13 +0200
+Message-ID: <20140701184413.6d9aa16f@armhf>
+References: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
+ <20140629213510.GR32514@n2100.arm.linux.org.uk>
+ <53B154FE.80804@gmail.com>
+ <20140630124320.GZ32514@n2100.arm.linux.org.uk>
+ <20140630181347.6a4ad4a8@armhf>
+ <20140630162050.GC32514@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-145.synserver.de (smtp-out-145.synserver.de
- [212.40.185.145])
- by alsa0.perex.cz (Postfix) with ESMTP id E6F6B261691
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 18:42:13 +0200 (CEST)
-In-Reply-To: <20140701162540.GG2296@intel.com>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5639226571B
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 18:42:25 +0200 (CEST)
+In-Reply-To: <20140630162050.GC32514@n2100.arm.linux.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,41 +25,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, broonie@kernel.org, lgirdwood@gmail.com, Benoit Cousson <bcousson@baylibre.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Mark Brown <broonie@kernel.org>, Gregory Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/01/2014 06:25 PM, Vinod Koul wrote:
-> On Tue, Jul 01, 2014 at 03:49:51PM +0200, Lars-Peter Clausen wrote:
->> On 07/01/2014 09:47 AM, Benoit Cousson wrote:
-> And you should have cced me on this patch
->
->> [...]
->> for (i = 0; i < rtd->num_codecs; i++) {
->>> +		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
->>> +		/* check client and interface hw capabilities */
->>> +		snprintf(new_name, sizeof(new_name), "%s %s-%d",
->>> +			 rtd->dai_link->stream_name, codec_dai->name, num);
->>
->> We may need to rethink how to do the naming for multiple CODEC DAI
->> links here. This implementation will just keep overwriting new_name
->> with each loop iteration and end up using the last one. Vinod may
->> have some insights.
->
-> I am intrugued on how we do this for pcms with multi-codec support.
->
-> Looking at the patch series I dont think the soc_pcm_new() has been updated
-> (please point out if i missed, it is late in night)
-> Shouldnt this be updated for pcm too?
->
-> I would suggest makes sense is to keep appending the codec name for the
-> dai-link. But yes keep a check on the size. Unless we have better ideas.
->
-
-This is what the patch series does for normal PCMs
-
-  	snprintf(new_name, sizeof(new_name), "%s %s-%d",
--		rtd->dai_link->stream_name, codec_dai->name, num);
-+		rtd->dai_link->stream_name,
-+		(rtd->num_codecs > 1) ?
-+		"multicodec" : rtd->codec_dai->name, num);
+T24gTW9uLCAzMCBKdW4gMjAxNCAxNzoyMDo1MSArMDEwMApSdXNzZWxsIEtpbmcgLSBBUk0gTGlu
+dXggPGxpbnV4QGFybS5saW51eC5vcmcudWs+IHdyb3RlOgoKPiBBZGQgRFBDTSBzdXBwb3J0IHRv
+IGtpcmt3b29kLWkycyB0byBzdXBwb3J0IHRoZSBJMlMgYW5kIFNQRElGIHN0cmVhbXMuCj4gVGhp
+cyBjb25zaXN0cyBvZjoKPiAtIGEgc2luZ2xlIGZyb250IGVuZCBEQUkgY2FsbGVkICJraXJrd29v
+ZC1mZSIgd2l0aCAiZG1hLXR4IiBhbmQgImRtYS1yeCIKPiAgIHN0cmVhbXMuCj4gLSBvbmUgYmFj
+a2VuZCBEQUkgY2FsbGVkICJraXJrd29vZC1pMnMiIGZvciBJMlMgd2l0aCBzdHJlYW1zIG5hbWVk
+Cj4gICAiaTJzLXR4IiBhbmQgImkycy1yeCIKPiAtIG9uZSBiYWNrZW5kIERBSSBjYWxsZWQgImtp
+cmt3b29kLXNwZGlmIiBmb3IgU1BESUYgd2l0aCBhIHNpbmdsZSBzdHJlYW0KPiAgIG5hbWVkICJz
+cGRpZi10eCIuCgpJbiB0aGUgQ3Vib3gsIHlvdSBtYXkgaGF2ZSBraXJrd29vZCBTL1BESUYgd2l0
+aCBib3RoIEhETUkgYW5kIFMvUERJRgpvdXRwdXRzIGFuZCB0aGlzIGF2b2lkcyB0byBhY3RpdmF0
+ZSBib3RoIGtpcmt3b29kIEkyUyBhbmQgUy9QRElGIGluCm1vc3QgY2FzZXMuCgo+IC0JCS5yYXRl
+cyA9IFNORFJWX1BDTV9SQVRFX0NPTlRJTlVPVVMsCj4gLQkJLnJhdGVfbWluID0gNTUxMiwKPiAt
+CQkucmF0ZV9tYXggPSAxOTIwMDAsCj4gLQkJLmZvcm1hdHMgPSBLSVJLV09PRF9JMlNfRk9STUFU
+UywKPiArCQkucmF0ZXMgPSBTTkRSVl9QQ01fUkFURV84MDAwXzE5MjAwMCB8Cj4gKwkJCSBTTkRS
+Vl9QQ01fUkFURV9DT05USU5VT1VTIHwKPiArCQkJIFNORFJWX1BDTV9SQVRFX0tOT1QsCj4gKwkJ
+LmZvcm1hdHMgPSBLSVJLV09PRF9GRV9GT1JNQVRTLAoKVGhpcyBkb2VzIG5vdCB3b3JrOiBTTkRS
+Vl9QQ01fUkFURV9DT05USU5VT1VTIGFza3MgZm9yIHJhdGVfbWluIGFuZApyYXRlX21heC4gU05E
+UlZfUENNX1JBVEVfS05PVCBpcyBvZiBubyBpbnRlcmVzdCBoZXJlLgoKPiBkaWZmIC0tZ2l0IGEv
+c291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLW9wZW5yZC5jIGIvc291bmQvc29jL2tpcmt3b29k
+L2tpcmt3b29kLW9wZW5yZC5jCj4gaW5kZXggNjVmMmE1YjllYzNiLi43OGZiMDVmZjQ0YTggMTAw
+NjQ0Cj4gLS0tIGEvc291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLW9wZW5yZC5jCj4gKysrIGIv
+c291bmQvc29jL2tpcmt3b29kL2tpcmt3b29kLW9wZW5yZC5jCj4gQEAgLTQ5LDI0ICs0OSwzNCBA
+QCBzdGF0aWMgc3RydWN0IHNuZF9zb2Nfb3BzIG9wZW5yZF9jbGllbnRfb3BzID0gewo+ICAKPiAg
+Cj4gIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBvcGVucmRfY2xpZW50X2RhaVtdID0g
+ewo+ICsJS0lSS1dPT0RfRkVfREFJX0xJTksoIi4wIiwgMSwgMSksCj4gIHsKPiAgCS5uYW1lID0g
+IkNTNDJMNTEiLAo+ICAJLnN0cmVhbV9uYW1lID0gIkNTNDJMNTEgSGlGaSIsCj4gLQkuY3B1X2Rh
+aV9uYW1lID0gImkycyIsCj4gLQkucGxhdGZvcm1fbmFtZSA9ICJtdmVidS1hdWRpbyIsCj4gKwku
+Y3B1X25hbWUgPSAibXZlYnUtYXVkaW8uMCIsCj4gKwkuY3B1X2RhaV9uYW1lID0gImtpcmt3b29k
+LWkycyIsCj4gKwkucGxhdGZvcm1fbmFtZSA9ICJzbmQtc29jLWR1bW15IiwKPiAgCS5jb2RlY19k
+YWlfbmFtZSA9ICJjczQybDUxLWhpZmkiLAo+ICAJLmNvZGVjX25hbWUgPSAiY3M0Mmw1MS1jb2Rl
+Yy4wLTAwNGEiLAo+ICAJLmRhaV9mbXQgPSBTTkRfU09DX0RBSUZNVF9JMlMgfCBTTkRfU09DX0RB
+SUZNVF9DQlNfQ0ZTLAo+ICAJLm9wcyA9ICZvcGVucmRfY2xpZW50X29wcywKPiArCS5kcGNtX3Bs
+YXliYWNrID0gMSwKPiArCS5kcGNtX2NhcHR1cmUgPSAxLAo+ICB9LAo+ICB9OwoKVGhlcmUgaXMg
+bm8gbmVlZCB0byBjaGFuZ2UgdGhlIG9wZW5yZCBhbmQgdDUzMjUgZHJpdmVyczogdGhleSBtYXkg
+dXNlCnRoZSBraXJrd29vZCBEQUkncyBpbiBhIG5vbi1EUENNIHdheS4KCj4gZGlmZiAtLWdpdCBh
+L3NvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1zcGRpZi5jIGIvc291bmQvc29jL2tpcmt3b29k
+L2tpcmt3b29kLXNwZGlmLmMKPiBpbmRleCA5ZDQ5YmM1M2YwN2QuLjYwOThkZGU4NWZjOSAxMDA2
+NDQKPiAtLS0gYS9zb3VuZC9zb2Mva2lya3dvb2Qva2lya3dvb2Qtc3BkaWYuYwo+ICsrKyBiL3Nv
+dW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1zcGRpZi5jCgpXaGF0IGlzIHRoYXQgZmlsZT8KCkV2
+ZW50dWFsbHksIHlvdXIgY29kZSBpcyBjbG9zZSB0byB0aGUgb25lIEkgdGVzdGVkIGVuZCAyMDEz
+LiBCdXQsIG9uY2UKYWdhaW4sIHRoaXMgZG9lcyBub3Qgd29yayBiZWNhdXNlIERQQ00gZG9lcyBu
+b3QgaGFuZGxlIHRoZSBmb3JtYXQgYW5kCnJhdGUgY29uc3RyYWludHMgb2YgdGhlIGJhY2tlbmRz
+LiBUaGlzIGlzIGNyaXRpY2FsIGZvciB0aGUgZGV2aWNlIHdoaWNoCmlzIGNvbm5lY3RlZCB0byBI
+RE1JLgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRh
+diEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
