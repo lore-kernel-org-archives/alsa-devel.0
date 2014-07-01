@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: add driver for Rockchip RK3xxx
-	I2S controller
-Date: Tue, 1 Jul 2014 18:07:47 +0100
-Message-ID: <20140701170747.GA15028@sirena.org.uk>
-References: <1404203860-30712-1-git-send-email-xjq@rock-chips.com>
- <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
+Subject: Re: [PATCH v4 1/8] ASoC: core: Change
+ soc_link_dai_widgets signature for multiple codecs
+Date: Tue, 1 Jul 2014 18:17:35 +0100
+Message-ID: <20140701171735.GB15028@sirena.org.uk>
+References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
+ <1404200881-32253-2-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6651556296070768379=="
+Content-Type: multipart/mixed; boundary="===============2533033590348867860=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CF26D2650EE
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 19:08:35 +0200 (CEST)
-In-Reply-To: <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C5702650EE
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 19:17:49 +0200 (CEST)
+In-Reply-To: <1404200881-32253-2-git-send-email-bcousson@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,218 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jianqun <xjq@rock-chips.com>
-Cc: huangtao@rock-chips.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, tiwai@suse.de, linux-kernel@vger.kernel.org, zhangqing@rock-chips.com, lgirdwood@gmail.com, kever.yang@rock-chips.com, zyw@rock-chips.com, robh+dt@kernel.org, kfx@rock-chips.com, grant.likely@linaro.org, cf@rock-chips.com, hj@rock-chips.com, yzq@rock-chips.com, zhenfu.fang@rock-chips.com
+To: Benoit Cousson <bcousson@baylibre.com>
+Cc: misael.lopez@ti.com, lars@metafoo.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6651556296070768379==
+--===============2533033590348867860==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
+	protocol="application/pgp-signature"; boundary="E39vaYmALEf/7YXx"
 Content-Disposition: inline
 
 
---OXfL5xGRrasGEqWY
+--E39vaYmALEf/7YXx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 01, 2014 at 04:47:38PM +0800, jianqun wrote:
+On Tue, Jul 01, 2014 at 09:47:54AM +0200, Benoit Cousson wrote:
+> Since multiple codecs DAI will be usable in the future, remove
+> explicit unique codec_dai and cpu_dai parameters.
+> Replace them with snd_soc_pcm_runtime pointer that will contain
+> every instances.
 
-> --- /dev/null
-> +++ b/sound/soc/rockchip/i2s.h
-> @@ -0,0 +1,222 @@
-> +/*
-> + * i2s.h - ALSA IIS interface for the rockchip SoC
-> + *
-> + * Driver for rockchip iis audio
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/version.h>
+Applied, thanks.
 
-You should never need to include this.
-
-> +	bool i2s_tx_status;
-> +	bool i2s_rx_status;
-
-Can we have more meaningful names for these please?
-
-> +static inline void i2s_writel(struct rk_i2s_dev *i2s, u32 value,
-> +			      unsigned int offset)
-> +{
-> +	writel_relaxed(value, i2s->regs + offset);
-> +}
-> +
-> +static inline u32 i2s_readl(struct rk_i2s_dev *i2s, unsigned int offset)
-> +{
-> +	return readl_relaxed(i2s->regs + offset);
-> +}
-
-Perhaps use regmap?  The main advantage would be the debug
-infrastructure, though you could also use _update_bits() to reduce the
-amount of time spent locked.
-
-> +	if (need_delay) {
-> +		while (i2s_readl(i2s, I2S_CLR) && try_cnt) {
-> +			udelay(1);
-> +			try_cnt--;
-> +		}
-> +	}
-
-It's not reall a delay but rather a wait for the hardware to be ready I
-guess?  I'd expect to see some kind of message printed if we time out
-without the hardware reporting it's ready - that probably means
-something is going wrong.
-
-> +	case SND_SOC_DAIFMT_I2S:
-> +		tx_ctl &= ~I2S_TXCR_IBM_MASK;
-> +		tx_ctl |= I2S_TXCR_IBM_NORMAL;
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		goto exit;
-> +	}
-> +
-> +	i2s_writel(i2s, tx_ctl, I2S_TXCR);
-
-It's not a serious problem but it's more normal to defer the writes to
-the end of the function after all the error checking so that if the
-function fails we don't end up writing out part of the configuration.
-
-> +static int rockchip_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
-> +	int clk_id, unsigned int freq, int dir)
-> +{
-> +	struct rk_i2s_dev *i2s = to_info(cpu_dai);
-> +
-> +	clk_set_rate(i2s->clk, freq);
-
-You should check (or just directly return) the error code here.  It'd
-also be good to define and validate a clock number, even if there's only
-one right now, in order to avoid problems later on.
-
-> +static int rockchip_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
-> +	int div_id, int div)
-
-Why are you defining a set_clkdiv() operation?  The code appears to just
-support MCLK and BCLK dividers both of which the driver ought to be able
-to just configure automatically.
-
-> +
-> +static int i2s_runtime_resume(struct device *dev)
-> +{
-> +	struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
-> +
-> +	return clk_prepare_enable(i2s->clk);
-
-Error checking.
-
-> +	/* Try to set the I2S Channel id from dt */
-> +	pdev->id = of_alias_get_id(np, "i2s");
-> +	dev_set_name(&pdev->dev, "%s.%d",
-> +				pdev->dev.driver->name,
-> +				pdev->id);
-
-No, this is seriously broken - a driver should never attempt to change
-its own device name, just use the name that the kernel set.
-
-> +	ret = devm_snd_soc_register_component(&pdev->dev,
-> +				&rockchip_i2s_component,
-> +				&rockchip_i2s_dai[pdev->id], 1);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Could not register DAI\n");
-> +		goto err_clk_disable;
-> +	}
-> +
-> +	pm_runtime_enable(&pdev->dev);
-
-Error checking and I'd expect this to happen before the device is
-registered - remember that the device may be bound into a sound card
-within the component registration so it has to be able to run normally.
-
-> +	snd_soc_unregister_component(&pdev->dev);
-
-Not neeed with devm_snd_soc_register_component().
-
-> +static const struct of_device_id rockchip_i2s_match[] = {
-> +	{
-> +		.compatible = "rockchip,rk3066-i2s"
-> +	},
-> +};
-> +MODULE_DEVICE_TABLE(of, rockchip_i2s_match);
-
-Needs an empty terminating entry and the binding document listed two
-compatible strings.
-
-> @@ -0,0 +1,64 @@
-> +/* sound/soc/rockchip/pcm.c
-> + *
-> + * ALSA SoC Audio Layer - Rockchip I2S Controller driver
-
-Submit this as a separate patch.
-
-> +static const struct snd_pcm_hardware rockchip_pcm_hardware = {
-> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
-> +			SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> +			SNDRV_PCM_INFO_MMAP |
-> +			SNDRV_PCM_INFO_MMAP_VALID |
-> +			SNDRV_PCM_INFO_PAUSE |
-> +			SNDRV_PCM_INFO_RESUME,
-> +	.formats = SNDRV_PCM_FMTBIT_S24_LE |
-> +			SNDRV_PCM_FMTBIT_S20_3LE |
-> +			SNDRV_PCM_FMTBIT_S16_LE,
-> +	.channels_min = 2,
-> +	.channels_max = 8,
-> +	.buffer_bytes_max = 128*1024,
-> +	.period_bytes_min = 64,
-> +	.period_bytes_max = 2048*4,
-> +	.periods_min = 3,
-> +	.periods_max = 128,
-> +	.fifo_size = 16,
-> +};
-
-The framework is supposed to be able to figure this out automatically
-with current kernels - if there's something not working there we should
-at least understand what and ideally fix it.
-
-> +static const struct snd_dmaengine_pcm_config rockchip_dmaengine_pcm_config = {
-> +	.pcm_hardware = &rockchip_pcm_hardware,
-> +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-> +	.compat_filter_fn = NULL,
-
-No need to set NULL explicitly.
-
---OXfL5xGRrasGEqWY
+--E39vaYmALEf/7YXx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTsurfAAoJELSic+t+oim9XuIP/0ljuEl/+FtVQNnIsLLOGpiK
-6ptA/SYDPfwtfKMfxoT7ox9OEwFy1KKY9dn8lfEqzOf4P0jXhd+z6zLm/b6ZvQCY
-t5cHQ3JLJLsS08UwYc4wQD4simzih7QbhrHhyUpDSasQTAQLURTyUb87zo7ci1pV
-5k9MFV7hvIuZirohENJoAAgFs5CZthcjxJsevaF61Ws8+FyifikmvKzN5+ia8/mL
-CIpuxicyO+skz7oKyYKYbLO2DxriIoSXDaJtenJZ15+lXYCObVWdRjtMOg71cgWy
-LH6bdzwNbKR4n72bWW9uEPXDeL1IWKZCJwxwJqMch8wzqpLHCjzHc2w11zIrKHuC
-leZOeoBvKCMo/Oesjx7Jm4fdlBbVFhRz8tAPUhEkyu9my6h8vNCkfoC7USR5beZu
-K0uytTF3CQcKduoO55sYKzKWeqplmPkozf+o+aeF/K+pAg5lXIXt/YW5MXJXne3B
-Xaek2hmPUyVJ01Uqy8tNosTe2FOajLVGOEdf3w6uN4VPfI2713yS3hERmKz26Rw0
-8on89gauKUNPSv5nR0/jJgoVYqwjFrTGRV6ACLHZA73pL82sHuKIApzFFw+U3Z7G
-zi6Dw74hK09gpfHZKmWaRGQmpeQafV0v+s+Jxl4+7zRBoZ3nOBHVaLtxasmDPJ7C
-lJLdF/F4jZa7E27LiTyx
-=FP6f
+iQIcBAEBAgAGBQJTsu0sAAoJELSic+t+oim9+9UP/1sCiSJ/6jVHzWHD7KXWO18C
+KGhGVrWD1qdsJzBtrOm/p4zQCgB3CcMjMxx27bdOmGAKapVB3KAxiluTTgqXWV4O
+FSsKgqCHyhQl2XULXnrI2iBJpF6kbSH0isDLWXsMpvQSXIb4bDH67jj5nbBpGcuI
+Dp3vpARdy3lDMK0lrLhS6gTgdof1/jstSsPDEzsU8zTztHfBrqsuep6C2bTElmA8
+O5IayBsrkHWeQlbD8yxnOhCGgrgoXAPEDX5N+0AquuIp6liNMX2/K6CjuOkfEu88
+wj0g0QprwpFs+bGbrGyK9SatecC5WQDXVw3N8R5kT86caG0gdcK91eBLc/vrIWk5
+IpzWESJV6d//arf3STXjWCUKLdi+XbG6Z2dSoXCBSq+qx/8gtsxod9ClPp1+TT+R
+Mn5LhdoEpXb1L60L5ZmPHac8mwDizEeHWASzPQXi4MD74tYRY1Wrvwm7xVuVM2rD
+9pPGS/tOcSY050XpDTV3SZDU9ORqq2NpDBb8cJBQAtAmzPUet6oQYgSYSDHUA4Nu
+/xQxyUub5AQARknFBFg/H4y4R5KafaaJn9Vn14hu3jYgwBKird6dlwBeQi36WmyS
+WCQb8RcF7Tn41nOxjm+6A/4C7yhwnbOhx0JQ76+3YG5KmtssgC80enFtEfguujv/
+kRCSq5j0ugqPVeM53xAl
+=JS7s
 -----END PGP SIGNATURE-----
 
---OXfL5xGRrasGEqWY--
+--E39vaYmALEf/7YXx--
 
---===============6651556296070768379==
+--===============2533033590348867860==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6651556296070768379==--
+--===============2533033590348867860==--
