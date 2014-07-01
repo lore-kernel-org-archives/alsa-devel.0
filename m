@@ -1,71 +1,97 @@
-From: Rongjun Ying <rongjun.ying@csr.com>
-Subject: [PATCH 2/2] ASoC: sirf: Add device tree binding for the USP audio
- device
-Date: Tue, 1 Jul 2014 10:18:54 +0800
-Message-ID: <1404181134-21663-3-git-send-email-rongjun.ying@csr.com>
-References: <1404181134-21663-1-git-send-email-rongjun.ying@csr.com>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Enable HP machine to enable capture mute led
+	and	output mute led
+Date: Tue, 1 Jul 2014 11:50:06 +0800
+Message-ID: <B0BC998895E24EDD8F0A8F1953953826@realtek.com.tw>
+References: <44B3EABECDE540079327D32092FF47FF@realtek.com.tw>
+ <s5hions7x43.wl%tiwai@suse.de>
+Reply-To: Kailang <kailang@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1404181134-21663-1-git-send-email-rongjun.ying@csr.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Barry Song <baohua@kernel.org>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, Workgroup.linux@csr.com
-Cc: Rongjun Ying <rongjun.ying@csr.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9F39261B2A
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 05:50:12 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Rongjun Ying <rongjun.ying@csr.com>
----
- .../devicetree/bindings/sound/sirf-usp.txt         | 27 ++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/sirf-usp.txt
+Hi Takashi,
 
-diff --git a/Documentation/devicetree/bindings/sound/sirf-usp.txt b/Documentation/devicetree/bindings/sound/sirf-usp.txt
-new file mode 100644
-index 0000000..02f85b3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sirf-usp.txt
-@@ -0,0 +1,27 @@
-+* SiRF SoC USP module
-+
-+Required properties:
-+- compatible: "sirf,prima2-usp-pcm"
-+- reg: Base address and size entries:
-+- dmas: List of DMA controller phandle and DMA request line ordered pairs.
-+- dma-names: Identifier string for each DMA request line in the dmas property.
-+  These strings correspond 1:1 with the ordered pairs in dmas.
-+
-+  One of the DMA channels will be responsible for transmission (should be
-+  named "tx") and one for reception (should be named "rx").
-+
-+- clocks: USP controller clock source
-+- pinctrl-names: Must contain a "default" entry.
-+- pinctrl-NNN: One property must exist for each entry in pinctrl-names.
-+
-+Example:
-+usp0: usp@b0080000 {
-+	compatible = "sirf,prima2-usp-pcm";
-+	reg = <0xb0080000 0x10000>;
-+	clocks = <&clks 28>;
-+	dmas = <&dmac1 1>, <&dmac1 2>;
-+	dma-names = "rx", "tx";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usp0_only_utfs_pins_a>;
-+};
-+
--- 
-1.9.3
+Our AE didn't tell me the ID is codec subsystem ID.
+HP had some machine PCI subsystem ID and codec subsystem ID not the same.
+So, more machine will use one PCI subsystem ID.
+Use codec subsystem ID to filter models.
 
+BR,
+Kailang
 
-
-Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
-More information can be found at www.csr.com. Keep up to date with CSR on our technical blog, www.csr.com/blog, CSR people blog, www.csr.com/people, YouTube, www.youtube.com/user/CSRplc, Facebook, www.facebook.com/pages/CSR/191038434253534, or follow us on Twitter at www.twitter.com/CSR_plc.
-New for 2014, you can now access the wide range of products powered by aptX at www.aptx.com.
+> At Fri, 20 Jun 2014 15:55:58 +0800,
+> Kailang wrote:
+>>
+>> Hi Takashi,
+>>
+>> Maybe you don't receive.
+>> I repost again.
+>
+> Don't worry, it's been applied now.  I've been off for a few days.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>>
+>> BR,
+>> Kailang
+>>
+>>
+>> > Attach again.
+>> > It include below infomations.
+>> > Thanks.
+>> >
+>> >> At Wed, 18 Jun 2014 17:13:57 +0800,
+>> >> Kailang wrote:
+>> >>>
+>> >>> Hi Takashi,
+>> >>>
+>> >>> Attach was HP mute led support patch.
+>> >>> It use Line1 vref and Mic1 vref to control mute led for ALC282.
+>> >>> Line1 vref to control output mute led.
+>> >>> Mic1 vref to control input mute led.
+>> >>>
+>> >>> It use GPIO3 and Mic1 vref to control mute led for ALC280.
+>> >>> GPIO3 to control output mute led.
+>> >>> Mic1 vref to control input mute led.
+>> >>
+>> >> Could you include this kind of information in the patch changelog?
+>> >> The changelog text is way too short.
+>> >>
+>> >>> For the DMI string for output mute led application.
+>> >>> I already request from HP to support it in next release.
+>> >>>
+>> >>> HP_Mute_LED_0_A  => use Mic1 vref to control mute led.
+>> >>> Is the string right?
+>> >>> I have tested upper string for Mic1 mute led.
+>> >>
+>> >> Yes, this has been working for some machines, AFAIK.
+>> >>
+>> >>
+>> >> thanks,
+>> >>
+>> >> Takashi
+>> >>
+>> >> ------Please consider the environment before printing this e-mail.
+>> [2 0001-new-hp-mute-led.patch <application/octet-stream 
+>> (quoted-printable)>]
+>> 
