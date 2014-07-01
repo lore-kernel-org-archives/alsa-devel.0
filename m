@@ -1,20 +1,20 @@
-From: Dylan Reid <dgreid@google.com>
-Subject: Re: [PATCH 1/5] ALSA: hda: Remove unused variable
-Date: Tue, 1 Jul 2014 08:47:39 -0700
-Message-ID: <CAEUnVG7EF0_wv+FK_ysP4AXqpzE0wXp6K_8vG5S7Nw3O4=qMmQ@mail.gmail.com>
-References: <1404214378-24669-1-git-send-email-sachin.kamat@samsung.com>
- <53B2CEA3.1010905@wwwdotorg.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
+	multicodec
+Date: Tue, 01 Jul 2014 18:42:12 +0200
+Message-ID: <53B2E4E4.7020006@metafoo.de>
+References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
+ <1404200881-32253-7-git-send-email-bcousson@baylibre.com>
+ <53B2BC7F.2060909@metafoo.de> <20140701162540.GG2296@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f175.google.com (mail-qc0-f175.google.com
- [209.85.216.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B7EE2656DD
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 17:48:01 +0200 (CEST)
-Received: by mail-qc0-f175.google.com with SMTP id i8so8480223qcq.20
- for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 08:48:00 -0700 (PDT)
-In-Reply-To: <53B2CEA3.1010905@wwwdotorg.org>
+Received: from smtp-out-145.synserver.de (smtp-out-145.synserver.de
+ [212.40.185.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6F6B261691
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 18:42:13 +0200 (CEST)
+In-Reply-To: <20140701162540.GG2296@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,50 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Sachin Kamat <sachin.kamat@samsung.com>, Thierry Reding <thierry.reding@gmail.com>, spk.linux@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, broonie@kernel.org, lgirdwood@gmail.com, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 1, 2014 at 8:07 AM, Stephen Warren <swarren@wwwdotorg.org> wrote:
-> On 07/01/2014 05:32 AM, Sachin Kamat wrote:
->> 'status' is not used in the function. Remove it.
+On 07/01/2014 06:25 PM, Vinod Koul wrote:
+> On Tue, Jul 01, 2014 at 03:49:51PM +0200, Lars-Peter Clausen wrote:
+>> On 07/01/2014 09:47 AM, Benoit Cousson wrote:
+> And you should have cced me on this patch
 >
-> CCing Dylan Reid for comments/testing since he wrote or upstreamed this
-> code.
-
-Thanks, I gave this a try on a couple of systems this morning.  HDMI
-audio still works through suspend/resume cycles.
-
+>> [...]
+>> for (i = 0; i < rtd->num_codecs; i++) {
+>>> +		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
+>>> +		/* check client and interface hw capabilities */
+>>> +		snprintf(new_name, sizeof(new_name), "%s %s-%d",
+>>> +			 rtd->dai_link->stream_name, codec_dai->name, num);
+>>
+>> We may need to rethink how to do the naming for multiple CODEC DAI
+>> links here. This implementation will just keep overwriting new_name
+>> with each loop iteration and end up using the last one. Vinod may
+>> have some insights.
 >
->> Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
->> Cc: Stephen Warren <swarren@wwwdotorg.org>
-
-Tested-by: Dylan Reid <dgreid@chromium.org>
-
->> Cc: Thierry Reding <thierry.reding@gmail.com>
->> ---
->> All patches in this series only compile tested.
->> ---
->>  sound/pci/hda/hda_tegra.c |    4 ----
->>  1 file changed, 4 deletions(-)
->>
->> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
->> index a366ba9293a8..8cd7b06eecef 100644
->> --- a/sound/pci/hda/hda_tegra.c
->> +++ b/sound/pci/hda/hda_tegra.c
->> @@ -272,13 +272,9 @@ static int hda_tegra_resume(struct device *dev)
->>       struct snd_card *card = dev_get_drvdata(dev);
->>       struct azx *chip = card->private_data;
->>       struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
->> -     int status;
->>
->>       hda_tegra_enable_clocks(hda);
->>
->> -     /* Read STATESTS before controller reset */
->> -     status = azx_readw(chip, STATESTS);
->> -
->>       hda_tegra_init(hda);
->>
->>       azx_init_chip(chip, 1);
->>
+> I am intrugued on how we do this for pcms with multi-codec support.
 >
+> Looking at the patch series I dont think the soc_pcm_new() has been updated
+> (please point out if i missed, it is late in night)
+> Shouldnt this be updated for pcm too?
+>
+> I would suggest makes sense is to keep appending the codec name for the
+> dai-link. But yes keep a check on the size. Unless we have better ideas.
+>
+
+This is what the patch series does for normal PCMs
+
+  	snprintf(new_name, sizeof(new_name), "%s %s-%d",
+-		rtd->dai_link->stream_name, codec_dai->name, num);
++		rtd->dai_link->stream_name,
++		(rtd->num_codecs > 1) ?
++		"multicodec" : rtd->codec_dai->name, num);
