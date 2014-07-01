@@ -1,111 +1,51 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs for more Thinkpads
- with Conexant codec
-Date: Tue, 01 Jul 2014 10:15:59 +0800
-Message-ID: <53B219DF.6090807@canonical.com>
-References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com> <53AFF992.5030403@web.de> <53B0C596.6090007@canonical.com> <53B1078B.4090101@web.de>
+From: Rongjun Ying <rongjun.ying@csr.com>
+Subject: [PATCH 0/2] ASoC: add CSR SiRFSoC audio USP interface
+	driver
+Date: Tue, 1 Jul 2014 10:18:52 +0800
+Message-ID: <1404181134-21663-1-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <53B1078B.4090101@web.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jan Kiszka <jan.kiszka@web.de>
-Cc: Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org, alex.hung@canonical.com, yk@canonical.com, david.henningsson@canonical.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cluster-d.mailcontrol.com (cluster-d.mailcontrol.com
+ [85.115.60.190])
+ by alsa0.perex.cz (Postfix) with ESMTP id 104C72625D7
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 04:20:19 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Barry Song <baohua@kernel.org>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, Workgroup.linux@csr.com
+Cc: Rongjun Ying <rongjun.ying@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/30/2014 02:45 PM, Jan Kiszka wrote:
-> On 2014-06-30 04:04, Hui Wang wrote:
->> On 06/29/2014 07:33 PM, Jan Kiszka wrote:
->>> On 2013-11-27 07:47, Hui Wang wrote:
->>>> Most Thinkpad Edge series laptops use conexant codec, so far although
->>>> the codecs have different minor Vendor Id and minor Subsystem Id,
->>>> they all belong to the cxt5066 family, this change can make the
->>>> mute/mic-mute LEDs support more generic among cxt_5066 family.
->>>>
->>>> This design refers to the similar solution for the realtek codec
->>>> ALC269 family in the patch_realtek.c.
->>>>
->>>> Cc: Alex Hung <alex.hung@canonical.com>
->>>> Cc: David Henningsson <david.henningsson@canonical.com>
->>>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
->>>> ---
->>>>    sound/pci/hda/patch_conexant.c | 23 +++++++++++++++++++++++
->>>>    1 file changed, 23 insertions(+)
->>>>
->>>> diff --git a/sound/pci/hda/patch_conexant.c
->>>> b/sound/pci/hda/patch_conexant.c
->>>> index c205bb1..1f2717f 100644
->>>> --- a/sound/pci/hda/patch_conexant.c
->>>> +++ b/sound/pci/hda/patch_conexant.c
->>>> @@ -3244,9 +3244,29 @@ enum {
->>>>    #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
->>>>      #include <linux/thinkpad_acpi.h>
->>>> +#include <acpi/acpi.h>
->>>>      static int (*led_set_func)(int, bool);
->>>>    +static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, void
->>>> *context,
->>>> +                 void **rv)
->>>> +{
->>>> +    bool *found = context;
->>>> +    *found = true;
->>>> +    return AE_OK;
->>>> +}
->>>> +
->>>> +static bool is_thinkpad(struct hda_codec *codec)
->>>> +{
->>>> +    bool found = false;
->>>> +    if (codec->subsystem_id >> 16 != 0x17aa)
->>>> +        return false;
->>>> +    if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb,
->>>> &found, NULL)) && found)
->>>> +        return true;
->>>> +    found = false;
->>>> +    return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb,
->>>> &found, NULL)) && found;
->>>> +}
->>>> +
->>>>    static void update_tpacpi_mute_led(void *private_data, int enabled)
->>>>    {
->>>>        struct hda_codec *codec = private_data;
->>>> @@ -3279,6 +3299,8 @@ static void cxt_fixup_thinkpad_acpi(struct
->>>> hda_codec *codec,
->>>>        bool removefunc = false;
->>>>          if (action == HDA_FIXUP_ACT_PROBE) {
->>>> +        if (!is_thinkpad(codec))
->>>> +            return;
->>>>            if (!led_set_func)
->>>>                led_set_func = symbol_request(tpacpi_led_set);
->>>>            if (!led_set_func) {
->>>> @@ -3494,6 +3516,7 @@ static const struct snd_pci_quirk
->>>> cxt5066_fixups[] = {
->>>>        SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s",
->>>> CXT_FIXUP_STEREO_DMIC),
->>>>        SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310",
->>>> CXT_FIXUP_STEREO_DMIC),
->>>>        SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205",
->>>> CXT_FIXUP_STEREO_DMIC),
->>>> +    SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", CXT_FIXUP_THINKPAD_ACPI),
->>>>        SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004",
->>>> CXT_PINCFG_LEMOTE_A1004),
->>>>        SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205",
->>>> CXT_PINCFG_LEMOTE_A1205),
->>>>        {}
->>>>
->>> Starting with this patch, my Lenovo Thinkpad X121e netbook (it's without
->>> any mute LEDs, BTW, there is only a power LED) considers the power
->>> button as hard reset. I have to exclude my machine from that ACPI fixup
->>> (this is on top of current Linus master):
->> It seems more like a firmware issue, in the acpi code, the "SSMS" is for
->> mute led, and the "MMTS" is for micmute led, I don't know why your
->> machine can pass "SSMS" or "MMTS" scanning even without mute LEDs.
->>
-> Is there anything I can debug or any information I can collect from my
-> box to examine this?
-What is the linux distribution on your machine? And use showkey to catch 
-the keycode of that button.
+This patchset adds the SiRF USP controller driver, this
+driver uses the USP as I2S or DSP_A mode interface.
 
->
-> Jan
->
->
+Rongjun Ying (2):
+  ASoC: sirf: Add audio usp interface driver
+  ASoC: sirf: Add device tree binding for the USP audio device
+
+ .../devicetree/bindings/sound/sirf-usp.txt         |  27 ++
+ sound/soc/sirf/Kconfig                             |   6 +
+ sound/soc/sirf/Makefile                            |   2 +
+ sound/soc/sirf/sirf-usp.c                          | 409 +++++++++++++++++++++
+ sound/soc/sirf/sirf-usp.h                          | 293 +++++++++++++++
+ 5 files changed, 737 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-usp.txt
+ create mode 100644 sound/soc/sirf/sirf-usp.c
+ create mode 100644 sound/soc/sirf/sirf-usp.h
+
+-- 
+1.9.3
+
+
+
+Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
+More information can be found at www.csr.com. Keep up to date with CSR on our technical blog, www.csr.com/blog, CSR people blog, www.csr.com/people, YouTube, www.youtube.com/user/CSRplc, Facebook, www.facebook.com/pages/CSR/191038434253534, or follow us on Twitter at www.twitter.com/CSR_plc.
+New for 2014, you can now access the wide range of products powered by aptX at www.aptx.com.
