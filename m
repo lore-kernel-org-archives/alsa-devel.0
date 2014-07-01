@@ -1,18 +1,17 @@
-From: Kailang <kailang@realtek.com>
-Subject: Re: Enable HP machine to enable capture mute led
-	and	output mute led
-Date: Tue, 1 Jul 2014 11:50:06 +0800
-Message-ID: <B0BC998895E24EDD8F0A8F1953953826@realtek.com.tw>
-References: <44B3EABECDE540079327D32092FF47FF@realtek.com.tw>
- <s5hions7x43.wl%tiwai@suse.de>
-Reply-To: Kailang <kailang@realtek.com>
+From: Sachin Kamat <sachin.kamat@samsung.com>
+Subject: [PATCH 1/3] ASoC: twl4030: Remove unused variable
+Date: Tue,  1 Jul 2014 09:59:31 +0530
+Message-ID: <1404188973-1857-1-git-send-email-sachin.kamat@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id A9F39261B2A
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 05:50:12 +0200 (CEST)
+Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
+ [209.85.192.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF96A261B31
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 06:33:05 +0200 (CEST)
+Received: by mail-pd0-f182.google.com with SMTP id y13so9463497pdi.27
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jun 2014 21:33:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, spk.linux@gmail.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+'status' is not used in the function. Remove it.
 
-Our AE didn't tell me the ID is codec subsystem ID.
-HP had some machine PCI subsystem ID and codec subsystem ID not the same.
-So, more machine will use one PCI subsystem ID.
-Use codec subsystem ID to filter models.
+Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
+---
+ sound/soc/codecs/twl4030.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-BR,
-Kailang
-
-> At Fri, 20 Jun 2014 15:55:58 +0800,
-> Kailang wrote:
->>
->> Hi Takashi,
->>
->> Maybe you don't receive.
->> I repost again.
->
-> Don't worry, it's been applied now.  I've been off for a few days.
->
->
-> thanks,
->
-> Takashi
->
->>
->> BR,
->> Kailang
->>
->>
->> > Attach again.
->> > It include below infomations.
->> > Thanks.
->> >
->> >> At Wed, 18 Jun 2014 17:13:57 +0800,
->> >> Kailang wrote:
->> >>>
->> >>> Hi Takashi,
->> >>>
->> >>> Attach was HP mute led support patch.
->> >>> It use Line1 vref and Mic1 vref to control mute led for ALC282.
->> >>> Line1 vref to control output mute led.
->> >>> Mic1 vref to control input mute led.
->> >>>
->> >>> It use GPIO3 and Mic1 vref to control mute led for ALC280.
->> >>> GPIO3 to control output mute led.
->> >>> Mic1 vref to control input mute led.
->> >>
->> >> Could you include this kind of information in the patch changelog?
->> >> The changelog text is way too short.
->> >>
->> >>> For the DMI string for output mute led application.
->> >>> I already request from HP to support it in next release.
->> >>>
->> >>> HP_Mute_LED_0_A  => use Mic1 vref to control mute led.
->> >>> Is the string right?
->> >>> I have tested upper string for Mic1 mute led.
->> >>
->> >> Yes, this has been working for some machines, AFAIK.
->> >>
->> >>
->> >> thanks,
->> >>
->> >> Takashi
->> >>
->> >> ------Please consider the environment before printing this e-mail.
->> [2 0001-new-hp-mute-led.patch <application/octet-stream 
->> (quoted-printable)>]
->> 
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 955df35c5ab6..cf404505e7d1 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -344,17 +344,16 @@ static void twl4030_init_chip(struct snd_soc_codec *codec)
+ static void twl4030_apll_enable(struct snd_soc_codec *codec, int enable)
+ {
+ 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+-	int status = -1;
+ 
+ 	if (enable) {
+ 		twl4030->apll_enabled++;
+ 		if (twl4030->apll_enabled == 1)
+-			status = twl4030_audio_enable_resource(
++			twl4030_audio_enable_resource(
+ 							TWL4030_AUDIO_RES_APLL);
+ 	} else {
+ 		twl4030->apll_enabled--;
+ 		if (!twl4030->apll_enabled)
+-			status = twl4030_audio_disable_resource(
++			twl4030_audio_disable_resource(
+ 							TWL4030_AUDIO_RES_APLL);
+ 	}
+ }
+-- 
+1.7.9.5
