@@ -1,503 +1,83 @@
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: add driver for Rockchip RK3xxx I2S controller
-Date: Tue, 01 Jul 2014 12:11 +0200
-Message-ID: <2215812.f6I5Di9rh3@diego>
-References: <1404203972-30760-1-git-send-email-xjq@rock-chips.com> <53B28029.90408@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+From: jianqun <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH 1/2] ASoC: dt-bindings: add rockchip i2s bindings
+Date: Tue,  1 Jul 2014 18:08:37 +0800
+Message-ID: <1404209317-740-1-git-send-email-xjq@rock-chips.com>
+References: <20140701085442.GI28740@leverpostej>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <53B28029.90408-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <20140701085442.GI28740@leverpostej>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Varka Bhadram <varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: jianqun <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, zhangqing-TNX95d0MmH7DzftRWevZcw@public.gmane.org, hj-TNX95d0MmH7DzftRWevZcw@public.gmane.org, kever.yang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, huangtao-TNX95d0MmH7DzftRWevZcw@public.gmane.org, zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org, yzq-TNX95d0MmH7DzftRWevZcw@public.gmane.org, zhenfu.fang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, cf-TNX95d0MmH7DzftRWevZcw@public.gmane.org, kfx-TNX95d0MmH7DzftRWevZcw@public.gmane.org
+To: heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, zhangqing-TNX95d0MmH7DzftRWevZcw@public.gmane.org, hj-TNX95d0MmH7DzftRWevZcw@public.gmane.org, kever.yang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, huangtao-TNX95d0MmH7DzftRWevZcw@public.gmane.org, zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org, yzq-TNX95d0MmH7DzftRWevZcw@public.gmane.org, zhenfu.fang-TNX95d0MmH7DzftRWevZcw@public.gmane.org, cf-TNX95d0MmH7DzftRWevZcw@public.gmane.org, kfx-TNX95d0MmH7DzftRWevZcw@public.gmane.org, Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Varka,
+From: Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
 
-while you are right that the indentation can be improved in v2, the checks for 
-this do not seem to be in the regular set and only get enabled by the
-"--subjective" option to checkpatch.pl, so I'm not sure how strictly they are 
-enforced.
+Add devicetree bindings for i2s controller found on rk3066, rk3188 and rk3288
+processors from rockchip.
 
-But as another version seems to be necessary anyway when looking at Lars' 
-comments, Jianqun can fix the indentation there too :-) .
+Signed-off-by: Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+---
+Changes since v1:
+- dt-bindings: change dmas and clocks description, adviced by mark.rutland
 
 
-Heiko
+ .../devicetree/bindings/sound/rockchip-i2s.txt     |   44 ++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-i2s.txt
 
-Am Dienstag, 1. Juli 2014, 15:02:25 schrieb Varka Bhadram:
-> On 07/01/2014 02:09 PM, jianqun wrote:
-> > From: Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
-> 
-> [...]
-> 
-> > +
-> > +static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
-> > +	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-> 
-> Proper indentation for function arguments, otherwise checkpatch.pl will give
-> warning.
-> > +{
-> > +	struct rk_i2s_dev *i2s = to_info(dai);
-> > +	unsigned long flags;
-> > +	u32 tx_ctl, rx_ctl;
-> > +	u32 dmacr;
-> > +
-> > +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > +		dai->playback_dma_data = &i2s->playback_dma_data;
-> > +	else
-> > +		dai->capture_dma_data = &i2s->capture_dma_data;
-> > +
-> > +	spin_lock_irqsave(&i2s->lock, flags);
-> > +
-> > +	tx_ctl = i2s_readl(i2s, I2S_TXCR);
-> > +	tx_ctl &= ~I2S_TXCR_VDW_MASK;
-> > +	switch (params_format(params)) {
-> > +	case SNDRV_PCM_FORMAT_S8:
-> > +		tx_ctl |= I2S_TXCR_VDW(8);
-> > +		break;
-> > +	case SNDRV_PCM_FORMAT_S16_LE:
-> > +		tx_ctl |= I2S_TXCR_VDW(16);
-> > +		break;
-> > +	case SNDRV_PCM_FORMAT_S20_3LE:
-> > +		tx_ctl |= I2S_TXCR_VDW(20);
-> > +		break;
-> > +	case SNDRV_PCM_FORMAT_S24_LE:
-> > +		tx_ctl |= I2S_TXCR_VDW(24);
-> > +		break;
-> > +	case SNDRV_PCM_FORMAT_S32_LE:
-> > +		tx_ctl |= I2S_TXCR_VDW(32);
-> > +		break;
-> > +	}
-> > +
-> > +	i2s_writel(i2s, tx_ctl, I2S_TXCR);
-> > +
-> > +	rx_ctl = i2s_readl(i2s, I2S_TXCR);
-> > +	rx_ctl &= ~I2S_TXCR_VDW_MASK;
-> > +	switch (params_format(params)) {
-> > +	case SNDRV_PCM_FORMAT_S8:
-> > +		rx_ctl |= I2S_TXCR_VDW(8);
-> > +		break;
-> > +	case SNDRV_PCM_FORMAT_S16_LE:
-> > +		rx_ctl |= I2S_TXCR_VDW(16);
-> > +		break;
-> > +	case SNDRV_PCM_FORMAT_S20_3LE:
-> > +		rx_ctl |= I2S_TXCR_VDW(20);
-> > +		break;
-> > +	case SNDRV_PCM_FORMAT_S24_LE:
-> > +		rx_ctl |= I2S_TXCR_VDW(24);
-> > +		break;
-> > +	case SNDRV_PCM_FORMAT_S32_LE:
-> > +		rx_ctl |= I2S_TXCR_VDW(32);
-> > +		break;
-> > +	}
-> > +
-> > +	i2s_writel(i2s, rx_ctl, I2S_RXCR);
-> > +
-> > +	dmacr = i2s_readl(i2s, I2S_DMACR);
-> > +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> > +		dmacr = ((dmacr & ~I2S_DMACR_TDL_MASK) |
-> > +				I2S_DMACR_TDL(1) |
-> > +				I2S_DMACR_TDE_ENABLE);
-> > +	else
-> > +		dmacr = ((dmacr & ~I2S_DMACR_RDL_MASK) |
-> > +				I2S_DMACR_RDL(1) |
-> > +				I2S_DMACR_RDE_ENABLE);
-> > +
-> > +	i2s_writel(i2s, dmacr, I2S_DMACR);
-> > +
-> > +	spin_unlock_irqrestore(&i2s->lock, flags);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int rockchip_i2s_trigger(struct snd_pcm_substream *substream,
-> > +	int cmd, struct snd_soc_dai *dai)
-> 
-> same..
-> 
-> > +{
-> > +	struct rk_i2s_dev *i2s = to_info(dai);
-> > +	int ret = 0;
-> > +
-> > +	switch (cmd) {
-> > +	case SNDRV_PCM_TRIGGER_START:
-> > +	case SNDRV_PCM_TRIGGER_RESUME:
-> > +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> > +		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-> > +			rockchip_snd_rxctrl(i2s, 1);
-> > +		else
-> > +			rockchip_snd_txctrl(i2s, 1);
-> > +		break;
-> > +	case SNDRV_PCM_TRIGGER_SUSPEND:
-> > +	case SNDRV_PCM_TRIGGER_STOP:
-> > +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> > +		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-> > +			rockchip_snd_rxctrl(i2s, 0);
-> > +		else
-> > +			rockchip_snd_txctrl(i2s, 0);
-> > +		break;
-> > +	default:
-> > +		ret = -EINVAL;
-> > +		break;
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int rockchip_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
-> > +	int clk_id, unsigned int freq, int dir)
-> 
-> same
-> 
-> > +{
-> > +	struct rk_i2s_dev *i2s = to_info(cpu_dai);
-> > +
-> > +	clk_set_rate(i2s->clk, freq);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int rockchip_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
-> > +	int div_id, int div)
-> 
-> same
-> 
-> > +{
-> > +	struct rk_i2s_dev *i2s = to_info(cpu_dai);
-> > +	unsigned long flags;
-> > +	u32 reg;
-> > +	int ret;
-> > +
-> > +	spin_lock_irqsave(&i2s->lock, flags);
-> > +
-> > +	reg = i2s_readl(i2s, I2S_CKR);
-> > +	switch (div_id) {
-> > +	case ROCKCHIP_DIV_BCLK:
-> > +		reg &= ~I2S_CKR_TSD_MASK;
-> > +		reg |= I2S_CKR_TSD(div);
-> > +		reg &= ~I2S_CKR_RSD_MASK;
-> > +		reg |= I2S_CKR_RSD(div);
-> > +		break;
-> > +	case ROCKCHIP_DIV_MCLK:
-> > +		reg &= ~I2S_CKR_MDIV_MASK;
-> > +		reg |= I2S_CKR_MDIV(div);
-> > +		break;
-> > +	default:
-> > +		ret = -EINVAL;
-> > +		goto exit;
-> > +	}
-> > +
-> > +	i2s_writel(i2s, reg, I2S_CKR);
-> > +
-> > +exit:
-> > +	spin_unlock_irqrestore(&i2s->lock, flags);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static struct snd_soc_dai_ops rockchip_i2s_dai_ops = {
-> > +	.trigger = rockchip_i2s_trigger,
-> > +	.hw_params = rockchip_i2s_hw_params,
-> > +	.set_fmt = rockchip_i2s_set_fmt,
-> > +	.set_clkdiv = rockchip_i2s_set_clkdiv,
-> > +	.set_sysclk = rockchip_i2s_set_sysclk,
-> > +};
-> > +
-> > +#define ROCKCHIP_I2S_STEREO_RATES SNDRV_PCM_RATE_8000_96000
-> > +#define ROCKCHIP_I2S_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
-> > +		SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE | \
-> > +		SNDRV_PCM_FMTBIT_S8)
-> > +
-> > +struct snd_soc_dai_driver rockchip_i2s_dai[] = {
-> > +	{
-> > +		.name = "rockchip-i2s.0",
-> > +		.id = 0,
-> > +		.playback = {
-> > +			.channels_min = 2,
-> > +			.channels_max = 8,
-> > +			.rates = ROCKCHIP_I2S_STEREO_RATES,
-> > +			.formats = ROCKCHIP_I2S_FORMATS,
-> > +		},
-> > +		.capture = {
-> > +			.channels_min = 2,
-> > +			.channels_max = 2,
-> > +			.rates = ROCKCHIP_I2S_STEREO_RATES,
-> > +			.formats = ROCKCHIP_I2S_FORMATS,
-> > +		},
-> > +		.ops = &rockchip_i2s_dai_ops,
-> > +		.symmetric_rates = 1,
-> > +	},
-> > +	{
-> > +		.name = "rockchip-i2s.1",
-> > +		.id = 1,
-> > +		.playback = {
-> > +			.channels_min = 2,
-> > +			.channels_max = 2,
-> > +			.rates = ROCKCHIP_I2S_STEREO_RATES,
-> > +			.formats = ROCKCHIP_I2S_FORMATS,
-> > +		},
-> > +		.capture = {
-> > +			.channels_min = 2,
-> > +			.channels_max = 2,
-> > +			.rates = ROCKCHIP_I2S_STEREO_RATES,
-> > +			.formats = ROCKCHIP_I2S_FORMATS,
-> > +		},
-> > +		.ops = &rockchip_i2s_dai_ops,
-> > +		.symmetric_rates = 1,
-> > +	},
-> > +};
-> > +
-> > +static const struct snd_soc_component_driver rockchip_i2s_component = {
-> > +	.name	= DRV_NAME,
-> > +};
-> > +
-> > +#ifdef CONFIG_PM_RUNTIME
-> > +static int i2s_runtime_suspend(struct device *dev)
-> > +{
-> > +	struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
-> > +
-> > +	clk_disable_unprepare(i2s->clk);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int i2s_runtime_resume(struct device *dev)
-> > +{
-> > +	struct rk_i2s_dev *i2s = dev_get_drvdata(dev);
-> > +
-> > +	return clk_prepare_enable(i2s->clk);
-> > +}
-> > +#else
-> > +#define i2s_runtime_suspend NULL
-> > +#define i2s_runtime_resume NULL
-> > +#endif
-> > +
-> > +static int rockchip_i2s_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device_node *np = pdev->dev.of_node;
-> > +	struct rk_i2s_dev *i2s;
-> > +	struct resource *res;
-> > +	int ret;
-> > +
-> > +	i2s = devm_kzalloc(&pdev->dev, sizeof(struct rk_i2s_dev),
-> > +				GFP_KERNEL);
-> 
-> same
-> 
-> > +	if (!i2s)
-> > +		return -ENOMEM;
-> > +
-> > +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +	i2s->regs = devm_ioremap_resource(&pdev->dev, res);
-> > +	if (IS_ERR(i2s->regs)) {
-> > +		dev_err(&pdev->dev, "Could not get I2S source, %p\n",
-> > +				i2s->regs);
-> 
-> same...
-> 
-> > +		return PTR_ERR(i2s->regs);
-> > +	}
-> > +
-> > +	i2s->playback_dma_data.addr = res->start + I2S_TXDR;
-> > +	i2s->playback_dma_data.addr_width = 4;
-> > +	i2s->playback_dma_data.maxburst = 1;
-> > +
-> > +	i2s->capture_dma_data.addr = res->start + I2S_RXDR;
-> > +	i2s->capture_dma_data.addr_width = 4;
-> > +	i2s->capture_dma_data.maxburst = 1;
-> > +
-> > +	i2s->i2s_tx_status = false;
-> > +	i2s->i2s_rx_status = false;
-> > +
-> > +	spin_lock_init(&i2s->lock);
-> > +
-> > +	ret = rockchip_pcm_platform_register(&pdev->dev);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "Could not register PCM\n");
-> > +		goto err_pcm_register;
-> > +	}
-> > +
-> > +	/* Must success to get some clocks from dt */
-> > +	i2s->hclk = devm_clk_get(&pdev->dev, "i2s_hclk");
-> > +	if (IS_ERR(i2s->hclk)) {
-> > +		dev_err(&pdev->dev, "Could not get i2s_hclk\n");
-> > +		return PTR_ERR(i2s->hclk);
-> > +	}
-> > +
-> > +	i2s->clk = devm_clk_get(&pdev->dev, "i2s_clk");
-> > +	if (IS_ERR(i2s->clk)) {
-> > +		dev_err(&pdev->dev, "Could not get i2s_clk\n");
-> > +		return PTR_ERR(i2s->clk);
-> > +	}
-> > +
-> > +	ret = clk_prepare_enable(i2s->hclk);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "Could not enable i2s_hclk\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = clk_prepare_enable(i2s->clk);
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "Could not enable i2s_clk\n");
-> > +		goto err_hclk_disable;
-> > +	}
-> > +
-> > +	/* Try to set the I2S Channel id from dt */
-> > +	pdev->id = of_alias_get_id(np, "i2s");
-> > +	dev_set_name(&pdev->dev, "%s.%d",
-> > +				pdev->dev.driver->name,
-> > +				pdev->id);
-> 
-> same
-> 
-> > +
-> > +	i2s->dev = &pdev->dev;
-> > +	dev_set_drvdata(&pdev->dev, i2s);
-> > +
-> > +	ret = devm_snd_soc_register_component(&pdev->dev,
-> > +				&rockchip_i2s_component,
-> > +				&rockchip_i2s_dai[pdev->id], 1);
-> 
-> same
-> 
-> > +	if (ret) {
-> > +		dev_err(&pdev->dev, "Could not register DAI\n");
-> > +		goto err_clk_disable;
-> > +	}
-> > +
-> > +	pm_runtime_enable(&pdev->dev);
-> > +
-> > +	return 0;
-> > +
-> > +err_clk_disable:
-> > +	clk_disable_unprepare(i2s->clk);
-> > +err_hclk_disable:
-> > +	clk_disable_unprepare(i2s->hclk);
-> > +err_pcm_register:
-> > +	rockchip_pcm_platform_unregister(&pdev->dev);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int rockchip_i2s_remove(struct platform_device *pdev)
-> > +{
-> > +	struct rk_i2s_dev *i2s = dev_get_drvdata(&pdev->dev);
-> > +
-> > +	clk_disable_unprepare(i2s->clk);
-> > +	clk_disable_unprepare(i2s->hclk);
-> > +	rockchip_pcm_platform_unregister(&pdev->dev);
-> > +	snd_soc_unregister_component(&pdev->dev);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct of_device_id rockchip_i2s_match[] = {
-> > +	{
-> > +		.compatible = "rockchip,rk3066-i2s"
-> > +	},
-> > +};
-> > +MODULE_DEVICE_TABLE(of, rockchip_i2s_match);
-> > +
-> > +static const struct dev_pm_ops rockchip_i2s_pm_ops = {
-> > +	SET_RUNTIME_PM_OPS(i2s_runtime_suspend,
-> > +			i2s_runtime_resume, NULL)
-> > +};
-> > +
-> > +static struct platform_driver rockchip_i2s_driver = {
-> > +	.probe = rockchip_i2s_probe,
-> > +	.remove = rockchip_i2s_remove,
-> > +	.driver = {
-> > +		.name = DRV_NAME,
-> > +		.owner = THIS_MODULE,
-> > +		.of_match_table = of_match_ptr(rockchip_i2s_match),
-> > +		.pm = &rockchip_i2s_pm_ops,
-> > +	},
-> > +};
-> > +module_platform_driver(rockchip_i2s_driver);
-> > +
-> > +MODULE_DESCRIPTION("ROCKCHIP IIS ASoC Interface");
-> > +MODULE_AUTHOR("jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>");
-> > +MODULE_LICENSE("GPL v2");
-> > diff --git a/sound/soc/rockchip/rockchip_pcm.c
-> > b/sound/soc/rockchip/rockchip_pcm.c new file mode 100644
-> > index 0000000..454c609
-> > --- /dev/null
-> > +++ b/sound/soc/rockchip/rockchip_pcm.c
-> > @@ -0,0 +1,64 @@
-> > +/* sound/soc/rockchip/pcm.c
-> > + *
-> > + * ALSA SoC Audio Layer - Rockchip I2S Controller driver
-> > + *
-> > + * This program is free software; you can redistribute it and/or modify
-> > + * it under the terms of the GNU General Public License version 2 as
-> > + * published by the Free Software Foundation.
-> > + */
-> > +
-> > +#include <linux/module.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_gpio.h>
-> > +#include <sound/core.h>
-> > +#include <sound/pcm.h>
-> > +#include <sound/pcm_params.h>
-> > +#include <sound/soc.h>
-> > +#include <sound/dmaengine_pcm.h>
-> > +
-> > +#include "pcm.h"
-> > +
-> > +static const struct snd_pcm_hardware rockchip_pcm_hardware = {
-> > +	.info = SNDRV_PCM_INFO_INTERLEAVED |
-> > +			SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> > +			SNDRV_PCM_INFO_MMAP |
-> > +			SNDRV_PCM_INFO_MMAP_VALID |
-> > +			SNDRV_PCM_INFO_PAUSE |
-> > +			SNDRV_PCM_INFO_RESUME,
-> > +	.formats = SNDRV_PCM_FMTBIT_S24_LE |
-> > +			SNDRV_PCM_FMTBIT_S20_3LE |
-> > +			SNDRV_PCM_FMTBIT_S16_LE,
-> > +	.channels_min = 2,
-> > +	.channels_max = 8,
-> > +	.buffer_bytes_max = 128*1024,
-> > +	.period_bytes_min = 64,
-> > +	.period_bytes_max = 2048*4,
-> > +	.periods_min = 3,
-> > +	.periods_max = 128,
-> > +	.fifo_size = 16,
-> > +};
-> > +
-> > +static const struct snd_dmaengine_pcm_config
-> > rockchip_dmaengine_pcm_config = { +	.pcm_hardware =
-> > &rockchip_pcm_hardware,
-> > +	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-> > +	.compat_filter_fn = NULL,
-> > +	.prealloc_buffer_size = PAGE_SIZE * 8,
-> > +};
-> > +
-> > +int rockchip_pcm_platform_register(struct device *dev)
-> > +{
-> > +	return snd_dmaengine_pcm_register(dev, &rockchip_dmaengine_pcm_config,
-> > +			SND_DMAENGINE_PCM_FLAG_COMPAT|
-> > +			SND_DMAENGINE_PCM_FLAG_NO_RESIDUE);
-> 
-> same...
-> 
-> > +}
-> > +EXPORT_SYMBOL_GPL(rockchip_pcm_platform_register);
-> > +
-> > +void rockchip_pcm_platform_unregister(struct device *dev)
-> > +{
-> > +	snd_dmaengine_pcm_unregister(dev);
-> > +}
-> > +EXPORT_SYMBOL_GPL(rockchip_pcm_platform_unregister);
-> > +
-> > +MODULE_DESCRIPTION("ROCKCHIP PCM ASoC Interface");
-> > +MODULE_AUTHOR("jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>");
-> > +MODULE_LICENSE("GPL v2");
-> 
-> run checkpatch.pl on patches and fix them.
-> 
-> Thanks...
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+new file mode 100644
+index 0000000..db26e09
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+@@ -0,0 +1,44 @@
++* Rockchip I2S controller
++
++The I2S bus (Inter-IC sound bus) is a serial link for digital audio data transfer
++between devices in the system and be invented by Philips Semiconductor.
++
++Required properties:
++
++- compatible : should be one of the following.
++   "rockchip,rk3066-i2s": for rk3066
++   "rockchip,rk3188-i2s", "rockchip,rk3066-i2s" for rk3188
++   "rockchip,rk3288-i2s", "rockchip,rk3066-i2s" for rk3288
++- reg : physical base address of the controller and length of memory mapped
++  region.
++- interrupts : The interrupt number to the cpu. The interrupt specifier format
++  depends on the interrupt controller.
++- #address-cells : should be 1.
++- #size-cells : should be 0.
++- dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
++	Documentation/devicetree/bindings/dma/dma.txt
++- dma-names: DMA request names should include "tx" and "rx" if present.
++- clocks : a list of phandle + clock-specifer pairs, one for each entry in clock-names.
++- clock-names : Should include "i2s_hclk" and "i2s_clk",
++  - "i2s_hclk": support AHB bus interface
++  - "i2s_clk": work clock for i2s controller
++- aliases : Since device need i2s channel number as part of device's name,
++	driver will get its id by of_alias_get_id(np, "i2s").
++
++Example:
++
++aliases {
++	i2s0 = &i2s0;
++}
++
++i2s0: i2s@ff890000 {
++	compatible = "rockchip,rk3066-i2s";
++	reg = <0xff890000 0x10000>;
++	interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	dmas = <&pdma1 0>, <&pdma1 1>;
++	dma-names = "rx", "tx";
++	clock-names = "i2s_hclk", "i2s_clk";
++	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
++};
+-- 
+1.7.9.5
+
 
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
