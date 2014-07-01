@@ -1,20 +1,20 @@
-From: Huang Tao <huangtao@rock-chips.com>
-Subject: Re: [PATCH 2/2] ASoC: add driver for Rockchip RK3xxx
- I2S controller
-Date: Tue, 01 Jul 2014 23:17:35 +0800
-Message-ID: <53B2D10F.2020008@rock-chips.com>
-References: <1404203860-30712-1-git-send-email-xjq@rock-chips.com>
- <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
- <53B284A9.6050608@metafoo.de> <53B2CA5E.1060401@rock-chips.com>
- <53B2CC43.5090309@metafoo.de>
+From: Dylan Reid <dgreid@google.com>
+Subject: Re: [PATCH 1/5] ALSA: hda: Remove unused variable
+Date: Tue, 1 Jul 2014 08:47:39 -0700
+Message-ID: <CAEUnVG7EF0_wv+FK_ysP4AXqpzE0wXp6K_8vG5S7Nw3O4=qMmQ@mail.gmail.com>
+References: <1404214378-24669-1-git-send-email-sachin.kamat@samsung.com>
+ <53B2CEA3.1010905@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.132])
- by alsa0.perex.cz (Postfix) with ESMTP id D609F2656BB
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 17:17:39 +0200 (CEST)
-In-Reply-To: <53B2CC43.5090309@metafoo.de>
+Received: from mail-qc0-f175.google.com (mail-qc0-f175.google.com
+ [209.85.216.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B7EE2656DD
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 17:48:01 +0200 (CEST)
+Received: by mail-qc0-f175.google.com with SMTP id i8so8480223qcq.20
+ for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 08:48:00 -0700 (PDT)
+In-Reply-To: <53B2CEA3.1010905@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,26 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Sachin Kamat <sachin.kamat@samsung.com>, Thierry Reding <thierry.reding@gmail.com>, spk.linux@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-ICAg5LqOIDIwMTTlubQwN+aciDAx5pelIDIyOjU3LCBMYXJzLVBldGVyIENsYXVzZW4g5YaZ6YGT
-OgoKCuS6jiAyMDE05bm0MDfmnIgwMeaXpSAxNzo1MSwgTGFycy1QZXRlciBDbGF1c2VuIOWGmemB
-kzoKCisgICAgICAgLyogVHJ5IHRvIHNldCB0aGUgSTJTIENoYW5uZWwgaWQgZnJvbSBkdCAqLwoK
-KyAgICAgICBwZGV2LT5pZCA9IG9mX2FsaWFzX2dldF9pZChucCwgImkycyIpOworICAgICAgIGRl
-dl9zZXRfbmFtZSgmcGRldi0+ZGV2LCAiJXMuJWQiLAorICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHBkZXYtPmRldi5kcml2ZXItPm5hbWUsCisgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgcGRldi0+aWQpOwoKQSBkZXZpY2Ugc2hvdWxkIG5vdCBjaGFuZ2UgaXRzIGlkIG9yIG5h
-bWUuCgoKQ291bGQgeW91IHRlbGwgbWUgdGhlIHJlYXNvbj8KCgpXaGVuIHJlZ2lzdGVyaW5nIGEg
-ZGV2aWNlIHRoZSBMaW51eCBkZXZpY2UgY29yZSB0aGF0IHRoZSBpZCBhbmQgbmFtZSBhcmUKdW5p
-cXVlLiBJZiB5b3UgY2hhbmdlIHRoZW0gYmVoaW5kIHRoZSBiYWNrIG9mIHRoZSBjb3JlIHRoZXJl
-IGlzIG5vIGd1YXJhbnRlZQp0aGF0IHRoZXkgYXJlIHN0aWxsIHVuaXF1ZSBhbmQgdW5kZWZpbmVk
-IGJlaGF2aW9yIG1pZ2h0IG9jY3VyLiBBbHNvIGNoYW5naW5nCnRoZW0gY2FuIGNhdXNlIGFsbCBr
-aW5kIG9mIG90aGVyIHdlaXJkIGJlaGF2aW9yLCBlLmcuIHRoZSBuYW1lIG5vIGxvbmdlcgptYXRj
-aGVzIHRoZSBuYW1lIG9mIHRoZSBzeXNmcyBmaWxlcywgZXRjLgoKLSBMYXJzCgoKICAgT0suIFRo
-YW5rcyEgV2Ugd2lsbCBmb2xsb3cgdGhpcyBydWxlIG9uIHRoZSBmdXR1cmUgcGF0Y2hlcy4KCiAg
-IEJlc3QgUmVnYXJkcywKCgogICAgSHVhbmcgVGFvCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, Jul 1, 2014 at 8:07 AM, Stephen Warren <swarren@wwwdotorg.org> wrote:
+> On 07/01/2014 05:32 AM, Sachin Kamat wrote:
+>> 'status' is not used in the function. Remove it.
+>
+> CCing Dylan Reid for comments/testing since he wrote or upstreamed this
+> code.
+
+Thanks, I gave this a try on a couple of systems this morning.  HDMI
+audio still works through suspend/resume cycles.
+
+>
+>> Signed-off-by: Sachin Kamat <sachin.kamat@samsung.com>
+>> Cc: Stephen Warren <swarren@wwwdotorg.org>
+
+Tested-by: Dylan Reid <dgreid@chromium.org>
+
+>> Cc: Thierry Reding <thierry.reding@gmail.com>
+>> ---
+>> All patches in this series only compile tested.
+>> ---
+>>  sound/pci/hda/hda_tegra.c |    4 ----
+>>  1 file changed, 4 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+>> index a366ba9293a8..8cd7b06eecef 100644
+>> --- a/sound/pci/hda/hda_tegra.c
+>> +++ b/sound/pci/hda/hda_tegra.c
+>> @@ -272,13 +272,9 @@ static int hda_tegra_resume(struct device *dev)
+>>       struct snd_card *card = dev_get_drvdata(dev);
+>>       struct azx *chip = card->private_data;
+>>       struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
+>> -     int status;
+>>
+>>       hda_tegra_enable_clocks(hda);
+>>
+>> -     /* Read STATESTS before controller reset */
+>> -     status = azx_readw(chip, STATESTS);
+>> -
+>>       hda_tegra_init(hda);
+>>
+>>       azx_init_chip(chip, 1);
+>>
+>
