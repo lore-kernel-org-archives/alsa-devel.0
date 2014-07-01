@@ -1,18 +1,22 @@
-From: Valdis.Kletnieks@vt.edu
-Subject: Re: next-20140640 - fatal crash at boot time in sound
-	drivers...
-Date: Tue, 01 Jul 2014 12:53:52 -0400
-Message-ID: <6331.1404233632@turing-police.cc.vt.edu>
-References: <11205.1404146754@turing-police.cc.vt.edu>
- <s5hlhsd8mjs.wl%tiwai@suse.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
+Date: Tue, 1 Jul 2014 17:56:49 +0100
+Message-ID: <20140701165649.GZ32514@n2100.arm.linux.org.uk>
+References: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
+ <20140629213510.GR32514@n2100.arm.linux.org.uk> <53B154FE.80804@gmail.com>
+ <20140630124320.GZ32514@n2100.arm.linux.org.uk>
+ <20140630181347.6a4ad4a8@armhf>
+ <20140630162050.GC32514@n2100.arm.linux.org.uk>
+ <20140701184413.6d9aa16f@armhf>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3090414647776288340=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lennier.cc.vt.edu (lennier.cc.vt.edu [198.82.162.213])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AD4C26570F
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 18:54:00 +0200 (CEST)
-In-Reply-To: Your message of "Tue, 01 Jul 2014 11:18:15 +0200."
- <s5hlhsd8mjs.wl%tiwai@suse.de>
+Received: from pandora.arm.linux.org.uk (gw-1.arm.linux.org.uk [78.32.30.217])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FF182650EE
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 18:56:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20140701184413.6d9aa16f@armhf>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +26,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Mark Brown <broonie@kernel.org>, Gregory Clement <gregory.clement@free-electrons.com>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============3090414647776288340==
-Content-Type: multipart/signed; boundary="==_Exmh_1404233632_3099P";
-	 micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
+On Tue, Jul 01, 2014 at 06:44:13PM +0200, Jean-Francois Moine wrote:
+> On Mon, 30 Jun 2014 17:20:51 +0100
+> Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
+> 
+> > Add DPCM support to kirkwood-i2s to support the I2S and SPDIF streams.
+> > This consists of:
+> > - a single front end DAI called "kirkwood-fe" with "dma-tx" and "dma-rx"
+> >   streams.
+> > - one backend DAI called "kirkwood-i2s" for I2S with streams named
+> >   "i2s-tx" and "i2s-rx"
+> > - one backend DAI called "kirkwood-spdif" for SPDIF with a single stream
+> >   named "spdif-tx".
+> 
+> In the Cubox, you may have kirkwood S/PDIF with both HDMI and S/PDIF
+> outputs and this avoids to activate both kirkwood I2S and S/PDIF in
+> most cases.
 
---==_Exmh_1404233632_3099P
-Content-Type: text/plain; charset=us-ascii
+I run my Cubox with just SPDIF output to both.
 
-On Tue, 01 Jul 2014 11:18:15 +0200, Takashi Iwai said:
-> At Mon, 30 Jun 2014 12:45:54 -0400, Valdis Kletnieks wrote:
-> >
-> > Seeing this on a Dell Latitude E6530 - kernel lives for just a few
-> > seconds before committing hari-kiri trying to initialize the sound chipset.
->
-> The bug has been fixed yesterday, so today's next tree should work.
-> Let me know if you still see the issue.
+> > -		.rates = SNDRV_PCM_RATE_CONTINUOUS,
+> > -		.rate_min = 5512,
+> > -		.rate_max = 192000,
+> > -		.formats = KIRKWOOD_I2S_FORMATS,
+> > +		.rates = SNDRV_PCM_RATE_8000_192000 |
+> > +			 SNDRV_PCM_RATE_CONTINUOUS |
+> > +			 SNDRV_PCM_RATE_KNOT,
+> > +		.formats = KIRKWOOD_FE_FORMATS,
+> 
+> This does not work: SNDRV_PCM_RATE_CONTINUOUS asks for rate_min and
+> rate_max. SNDRV_PCM_RATE_KNOT is of no interest here.
 
-Confirming that next-20140701 boots without this issue, thanks...
+Yes, there was a recent discussion about that, but I've yet to update
+this driver for it.
 
---==_Exmh_1404233632_3099P
-Content-Type: application/pgp-signature
+> > diff --git a/sound/soc/kirkwood/kirkwood-openrd.c b/sound/soc/kirkwood/kirkwood-openrd.c
+> > index 65f2a5b9ec3b..78fb05ff44a8 100644
+> > --- a/sound/soc/kirkwood/kirkwood-openrd.c
+> > +++ b/sound/soc/kirkwood/kirkwood-openrd.c
+> > @@ -49,24 +49,34 @@ static struct snd_soc_ops openrd_client_ops = {
+> >  
+> >  
+> >  static struct snd_soc_dai_link openrd_client_dai[] = {
+> > +	KIRKWOOD_FE_DAI_LINK(".0", 1, 1),
+> >  {
+> >  	.name = "CS42L51",
+> >  	.stream_name = "CS42L51 HiFi",
+> > -	.cpu_dai_name = "i2s",
+> > -	.platform_name = "mvebu-audio",
+> > +	.cpu_name = "mvebu-audio.0",
+> > +	.cpu_dai_name = "kirkwood-i2s",
+> > +	.platform_name = "snd-soc-dummy",
+> >  	.codec_dai_name = "cs42l51-hifi",
+> >  	.codec_name = "cs42l51-codec.0-004a",
+> >  	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS,
+> >  	.ops = &openrd_client_ops,
+> > +	.dpcm_playback = 1,
+> > +	.dpcm_capture = 1,
+> >  },
+> >  };
+> 
+> There is no need to change the openrd and t5325 drivers: they may use
+> the kirkwood DAI's in a non-DPCM way.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Exmh version 2.5 07/13/2001
+With a proper DPCM solution, at least one backend must be linked so that
+the CPU side knows which interface(s) are in use.  This solution allows
+both to be used simultaneously, which, if you wish to use I2S on the
+Cubox to drive the TDA998x (against my advice, but I'm not going to
+stop you) and also have the SPDIF output on the side of the device
+working, this is required.
 
-iQIVAwUBU7LnoAdmEQWDXROgAQIOyRAAmt1eGiXxz276ZZaHFBUgHj7nbO3XBzES
-i1TzXCllIPauSS7IECt0j8tI1QH5ATyDNGiBnEHtLNwPjXnMMdklFKpzLYXJk/uS
-oOyeZ24KyKgiT3sLMu4P4ggDZVCrL/diDQTCbdxtub5Jsf9O/X4qVRnI5gRXX0Z9
-9UYuPVtqnxaE9JM75bGi3jmBqenB1uB2Fl3Yce+PmQtCM8w1p01sWHpgBqXneUgt
-fCHq+oJItAwcfwt8aBfbWKVM/fAF/rET2hkfoTF47cIp2pJDtBpZ10uuV/2WVYFU
-f1zwyb84uF95Wgz1w1jCgx1MIZ9+pwGS7JGiMj+tNZCvlnxaKF8Phv6WhwXxwdfr
-KComtFvbtitFilAuMRn2FjQs7iK/zjz3O9vwu9yToyIJ1SqaS+C8U3SNLS/x2oso
-Jc5VFfcWblF4Q7pfJ3knkPJ+zS6rcqsWEKFpqElngZrKHdKWhxaTfWmhV3ErDeik
-IvEX/mSxafliMbr+1Qq4Tl2APd8TjOA9AHa3PRWf+37a+ivjJ/VrltjBLK4O2+5x
-n8BY/HexDdAYGb9vScXFPeMI5e4NW7bdu/0VzYPwHBUV6/5KXQXGMdEc5raaoiOX
-JpZKUe+UqS4l3j6o+9UvnbXDTiCaxZLOSkUMhbiPjkaLM3TIlj31VTWFgzq8NaCR
-I7vqfIPH99M=
-=iDQ4
------END PGP SIGNATURE-----
+> > diff --git a/sound/soc/kirkwood/kirkwood-spdif.c b/sound/soc/kirkwood/kirkwood-spdif.c
+> > index 9d49bc53f07d..6098dde85fc9 100644
+> > --- a/sound/soc/kirkwood/kirkwood-spdif.c
+> > +++ b/sound/soc/kirkwood/kirkwood-spdif.c
+> 
+> What is that file?
 
---==_Exmh_1404233632_3099P--
+This is the file for supporting SPDIF on the Cubox.
 
---===============3090414647776288340==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> Eventually, your code is close to the one I tested end 2013. But, once
+> again, this does not work because DPCM does not handle the format and
+> rate constraints of the backends. This is critical for the device which
+> is connected to HDMI.
 
+DPCM may have these shortcomings, but this is how Mark Brown was telling
+me he wanted the hardware on Dove supported, and would not accept any
+other solution from me.
 
---===============3090414647776288340==--
+However, what you say does not hold for all cases - if you use the SPDIF
+output on the side of the Cubox (as I do) you are not limited to the
+constraints of the attached HDMI device - in fact, limiting this case to
+the constraints of the attached HDMI device is wrong.  The only time
+this makes sense is if you only want to use the HDMI device and not the
+optical out on the side.
+
+With a decoder box connected to the optical output, I can decode a wide
+range of sample rates beyond those which my TV can cope with, and I can
+also directly decode AC-3 and MPEG2 audio streams in hardware - even to
+decoding AC-3 to 5.1 audio without any load on the Dove CPU beyond
+sending the compressed audio stream.
+
+This is where getting this stuff correct is most important - the TV must
+not see valid audio being sent to it (with SPDIF, compressed audio is
+always sent with the valid bit not set.)  With I2S, the I2S output must
+be muted or disabled - exactly as the Dove manuals clearly state.
+
+Also bear in mind that HDMI is based on SPDIF (it's SPDIF with a few
+bits omitted) and HDMI also supports compressed audio, dependent on the
+attached device's capabilities, and the attached device will decode
+compressed audio when presented correctly - which is only possible via
+a SPDIF connection between the Dove and TDA998x.
+
+-- 
+FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
+improving, and getting towards what was expected from it.
