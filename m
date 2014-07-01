@@ -1,19 +1,18 @@
 From: Benoit Cousson <bcousson@baylibre.com>
-Subject: [PATCH v4 5/8] ASoC: dapm: Add support for DAI
+Subject: [PATCH v4 6/8] ASoC: compress: Add support for DAI
 	multicodec
-Date: Tue,  1 Jul 2014 09:47:58 +0200
-Message-ID: <1404200881-32253-6-git-send-email-bcousson@baylibre.com>
+Date: Tue,  1 Jul 2014 09:47:59 +0200
+Message-ID: <1404200881-32253-7-git-send-email-bcousson@baylibre.com>
 References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
- [209.85.212.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 20A8B2656FC
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 09:49:03 +0200 (CEST)
-Received: by mail-wi0-f180.google.com with SMTP id hi2so7225167wib.1
- for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 00:49:02 -0700 (PDT)
+Received: from mail-wg0-f43.google.com (mail-wg0-f43.google.com [74.125.82.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 795ED2656B4
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 09:49:04 +0200 (CEST)
+Received: by mail-wg0-f43.google.com with SMTP id k14so341217wgh.2
+ for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 00:49:04 -0700 (PDT)
 In-Reply-To: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,126 +24,174 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de
-Cc: Fabien Parent <fparent@baylibre.com>, misael.lopez@ti.com, alsa-devel@alsa-project.org, Benoit Cousson <bcousson@baylibre.com>
+Cc: misael.lopez@ti.com, alsa-devel@alsa-project.org, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add multicodec support in soc-dapm.c
+Add multicodec support in soc-compress.c
 
 Signed-off-by: Benoit Cousson <bcousson@baylibre.com>
-Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
+Cc: Misael Lopez Cruz <misael.lopez@ti.com>
 ---
- sound/soc/soc-dapm.c | 67 ++++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 47 insertions(+), 20 deletions(-)
+ sound/soc/soc-compress.c | 94 ++++++++++++++++++++++++++++++------------------
+ 1 file changed, 59 insertions(+), 35 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 4bf08cf..5c63c3b 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2084,12 +2084,8 @@ int snd_soc_dapm_mixer_update_power(struct snd_soc_dapm_context *dapm,
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_mixer_update_power);
- 
--/* show dapm widget status in sys fs */
--static ssize_t dapm_widget_show(struct device *dev,
--	struct device_attribute *attr, char *buf)
-+static ssize_t dapm_widget_show_codec(struct snd_soc_codec *codec, char *buf)
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index f96fb96..cd65b12 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -155,14 +155,17 @@ static void close_delayed_work(struct work_struct *work)
  {
--	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
--	struct snd_soc_codec *codec =rtd->codec;
- 	struct snd_soc_dapm_widget *w;
- 	int count = 0;
- 	char *state = "not set";
-@@ -2142,6 +2138,21 @@ static ssize_t dapm_widget_show(struct device *dev,
- 	return count;
- }
+ 	struct snd_soc_pcm_runtime *rtd =
+ 			container_of(work, struct snd_soc_pcm_runtime, delayed_work.work);
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int i;
  
-+/* show dapm widget status in sys fs */
-+static ssize_t dapm_widget_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
-+	int i, count = 0;
-+
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		struct snd_soc_codec *codec = rtd->codec_dais[i]->codec;
-+		count += dapm_widget_show_codec(codec, buf + count);
-+	}
-+
-+	return count;
-+}
-+
- static DEVICE_ATTR(dapm_widget, 0444, dapm_widget_show, NULL);
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
  
- int snd_soc_dapm_sys_add(struct device *dev)
-@@ -3395,25 +3406,18 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 	return 0;
- }
- 
--void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
-+static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
-+					  struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_pcm_runtime *rtd = card->rtd;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dapm_widget *sink, *source;
--	struct snd_soc_dai *cpu_dai, *codec_dai;
-+	struct snd_soc_dapm_route r;
- 	int i;
- 
--	/* for each BE DAI link... */
--	for (i = 0; i < card->num_rtd; i++) {
--		rtd = &card->rtd[i];
--		cpu_dai = rtd->cpu_dai;
--		codec_dai = rtd->codec_dai;
-+	memset(&r, 0, sizeof(r));
- 
--		/*
--		 * dynamic FE links have no fixed DAI mapping.
--		 * CODEC<->CODEC links have no direct connection.
--		 */
--		if (rtd->dai_link->dynamic || rtd->dai_link->params)
--			continue;
+-	dev_dbg(rtd->dev, "ASoC: pop wq checking: %s status: %s waiting: %s\n",
+-		 codec_dai->driver->playback.stream_name,
+-		 codec_dai->playback_active ? "active" : "inactive",
+-		 rtd->pop_wait ? "yes" : "no");
 +	for (i = 0; i < rtd->num_codecs; i++) {
 +		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
- 
- 		/* there is no point in connecting BE DAI links with dummies */
- 		if (snd_soc_dai_is_dummy(codec_dai) ||
-@@ -3475,11 +3479,34 @@ static void soc_dapm_dai_stream_event(struct snd_soc_dai *dai, int stream,
- 	}
- }
- 
-+void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
-+{
-+	struct snd_soc_pcm_runtime *rtd = card->rtd;
-+	int i;
-+
-+	/* for each BE DAI link... */
-+	for (i = 0; i < card->num_rtd; i++) {
-+		rtd = &card->rtd[i];
-+
-+		/*
-+		 * dynamic FE links have no fixed DAI mapping.
-+		 * CODEC<->CODEC links have no direct connection.
-+		 */
-+		if (rtd->dai_link->dynamic || rtd->dai_link->params)
-+			continue;
-+
-+		dapm_connect_dai_link_widgets(card, rtd);
++		dev_dbg(rtd->dev, "ASoC: pop wq checking: %s status: %s waiting: %s\n",
++			 codec_dai->driver->playback.stream_name,
++			 codec_dai->playback_active ? "active" : "inactive",
++			 rtd->pop_wait ? "yes" : "no");
 +	}
-+}
-+
- static void soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
- 	int event)
- {
-+	int i;
-+
- 	soc_dapm_dai_stream_event(rtd->cpu_dai, stream, event);
--	soc_dapm_dai_stream_event(rtd->codec_dai, stream, event);
-+	for (i = 0; i < rtd->num_codecs; i++)
-+		soc_dapm_dai_stream_event(rtd->codec_dais[i], stream, event);
  
- 	dapm_power_widgets(rtd->card, event);
- }
+ 	/* are we waiting on this codec DAI stream */
+ 	if (rtd->pop_wait == 1) {
+@@ -179,8 +182,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int stream;
++	int stream, i;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -191,14 +193,18 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+ 
+ 	snd_soc_runtime_deactivate(rtd, stream);
+ 
+-	snd_soc_dai_digital_mute(codec_dai, 1, cstream->direction);
++	for (i = 0; i < rtd->num_codecs; i++) {
++		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
++
++		snd_soc_dai_digital_mute(codec_dai, 1, cstream->direction);
++
++		if (!codec_dai->active)
++			codec_dai->rate = 0;
++	}
+ 
+ 	if (!cpu_dai->active)
+ 		cpu_dai->rate = 0;
+ 
+-	if (!codec_dai->active)
+-		codec_dai->rate = 0;
+-
+ 
+ 	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->shutdown)
+ 		rtd->dai_link->compr_ops->shutdown(cstream);
+@@ -283,8 +289,7 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_platform *platform = rtd->platform;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret = 0;
++	int i, ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -294,13 +299,19 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 			goto out;
+ 	}
+ 
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+-		snd_soc_dai_digital_mute(codec_dai, 0, cstream->direction);
+-		break;
+-	case SNDRV_PCM_TRIGGER_STOP:
+-		snd_soc_dai_digital_mute(codec_dai, 1, cstream->direction);
+-		break;
++	for (i = 0; i < rtd->num_codecs; i++) {
++		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
++
++		switch (cmd) {
++		case SNDRV_PCM_TRIGGER_START:
++			snd_soc_dai_digital_mute(codec_dai, 0,
++						 cstream->direction);
++			break;
++		case SNDRV_PCM_TRIGGER_STOP:
++			snd_soc_dai_digital_mute(codec_dai, 1,
++						 cstream->direction);
++			break;
++		}
+ 	}
+ 
+ out:
+@@ -622,23 +633,33 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_platform *platform = rtd->platform;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct snd_compr *compr;
+ 	struct snd_pcm *be_pcm;
+ 	char new_name[64];
+-	int ret = 0, direction = 0;
+-
+-	/* check client and interface hw capabilities */
+-	snprintf(new_name, sizeof(new_name), "%s %s-%d",
+-			rtd->dai_link->stream_name, codec_dai->name, num);
+-
+-	if (codec_dai->driver->playback.channels_min)
+-		direction = SND_COMPRESS_PLAYBACK;
+-	else if (codec_dai->driver->capture.channels_min)
+-		direction = SND_COMPRESS_CAPTURE;
+-	else
+-		return -EINVAL;
++	int i, ret = 0, direction = -1;
++
++	for (i = 0; i < rtd->num_codecs; i++) {
++		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
++		/* check client and interface hw capabilities */
++		snprintf(new_name, sizeof(new_name), "%s %s-%d",
++			 rtd->dai_link->stream_name, codec_dai->name, num);
++
++		if (direction < 0) {
++			if (codec_dai->driver->playback.channels_min)
++				direction = SND_COMPRESS_PLAYBACK;
++			else if (codec_dai->driver->capture.channels_min)
++				direction = SND_COMPRESS_CAPTURE;
++			else
++				return -EINVAL;
++		} else {
++			if ((codec_dai->driver->playback.channels_min &&
++					direction != SND_COMPRESS_PLAYBACK) ||
++			    (codec_dai->driver->capture.channels_min &&
++					direction != SND_COMPRESS_CAPTURE))
++				return -EINVAL;
++		}
++	}
+ 
+ 	compr = kzalloc(sizeof(*compr), GFP_KERNEL);
+ 	if (compr == NULL) {
+@@ -692,8 +713,11 @@ int soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 	rtd->compr = compr;
+ 	compr->private_data = rtd;
+ 
+-	printk(KERN_INFO "compress asoc: %s <-> %s mapping ok\n", codec_dai->name,
+-		cpu_dai->name);
++	for (i = 0; i < rtd->num_codecs; i++) {
++		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
++		printk(KERN_INFO "compress asoc: %s <-> %s mapping ok\n",
++		       codec_dai->name, cpu_dai->name);
++	}
+ 	return ret;
+ 
+ compr_err:
 -- 
 1.9.1
