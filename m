@@ -1,21 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
-	multicodec
-Date: Tue, 1 Jul 2014 22:15:49 +0530
-Message-ID: <20140701164549.GI2296@intel.com>
-References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
- <1404200881-32253-7-git-send-email-bcousson@baylibre.com>
- <53B2BC7F.2060909@metafoo.de> <20140701162540.GG2296@intel.com>
- <53B2E4E4.7020006@metafoo.de>
+From: Valdis.Kletnieks@vt.edu
+Subject: Re: next-20140640 - fatal crash at boot time in sound
+	drivers...
+Date: Tue, 01 Jul 2014 12:53:52 -0400
+Message-ID: <6331.1404233632@turing-police.cc.vt.edu>
+References: <11205.1404146754@turing-police.cc.vt.edu>
+ <s5hlhsd8mjs.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3090414647776288340=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 80F36261691
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 18:46:51 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <53B2E4E4.7020006@metafoo.de>
+Received: from lennier.cc.vt.edu (lennier.cc.vt.edu [198.82.162.213])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AD4C26570F
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 18:54:00 +0200 (CEST)
+In-Reply-To: Your message of "Tue, 01 Jul 2014 11:18:15 +0200."
+ <s5hlhsd8mjs.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,46 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, broonie@kernel.org, lgirdwood@gmail.com, Benoit Cousson <bcousson@baylibre.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 01, 2014 at 06:42:12PM +0200, Lars-Peter Clausen wrote:
-> On 07/01/2014 06:25 PM, Vinod Koul wrote:
-> >On Tue, Jul 01, 2014 at 03:49:51PM +0200, Lars-Peter Clausen wrote:
-> >>On 07/01/2014 09:47 AM, Benoit Cousson wrote:
-> >And you should have cced me on this patch
-> >
-> >>[...]
-> >>for (i = 0; i < rtd->num_codecs; i++) {
-> >>>+		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-> >>>+		/* check client and interface hw capabilities */
-> >>>+		snprintf(new_name, sizeof(new_name), "%s %s-%d",
-> >>>+			 rtd->dai_link->stream_name, codec_dai->name, num);
-> >>
-> >>We may need to rethink how to do the naming for multiple CODEC DAI
-> >>links here. This implementation will just keep overwriting new_name
-> >>with each loop iteration and end up using the last one. Vinod may
-> >>have some insights.
-> >
-> >I am intrugued on how we do this for pcms with multi-codec support.
-> >
-> >Looking at the patch series I dont think the soc_pcm_new() has been updated
-> >(please point out if i missed, it is late in night)
-> >Shouldnt this be updated for pcm too?
-> >
-> >I would suggest makes sense is to keep appending the codec name for the
-> >dai-link. But yes keep a check on the size. Unless we have better ideas.
-> >
-> 
-> This is what the patch series does for normal PCMs
-> 
->  	snprintf(new_name, sizeof(new_name), "%s %s-%d",
-> -		rtd->dai_link->stream_name, codec_dai->name, num);
-> +		rtd->dai_link->stream_name,
-> +		(rtd->num_codecs > 1) ?
-> +		"multicodec" : rtd->codec_dai->name, num);
-Sounds good to me!
+--===============3090414647776288340==
+Content-Type: multipart/signed; boundary="==_Exmh_1404233632_3099P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
 
--- 
-~Vinod
+--==_Exmh_1404233632_3099P
+Content-Type: text/plain; charset=us-ascii
+
+On Tue, 01 Jul 2014 11:18:15 +0200, Takashi Iwai said:
+> At Mon, 30 Jun 2014 12:45:54 -0400, Valdis Kletnieks wrote:
+> >
+> > Seeing this on a Dell Latitude E6530 - kernel lives for just a few
+> > seconds before committing hari-kiri trying to initialize the sound chipset.
+>
+> The bug has been fixed yesterday, so today's next tree should work.
+> Let me know if you still see the issue.
+
+Confirming that next-20140701 boots without this issue, thanks...
+
+--==_Exmh_1404233632_3099P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+Comment: Exmh version 2.5 07/13/2001
+
+iQIVAwUBU7LnoAdmEQWDXROgAQIOyRAAmt1eGiXxz276ZZaHFBUgHj7nbO3XBzES
+i1TzXCllIPauSS7IECt0j8tI1QH5ATyDNGiBnEHtLNwPjXnMMdklFKpzLYXJk/uS
+oOyeZ24KyKgiT3sLMu4P4ggDZVCrL/diDQTCbdxtub5Jsf9O/X4qVRnI5gRXX0Z9
+9UYuPVtqnxaE9JM75bGi3jmBqenB1uB2Fl3Yce+PmQtCM8w1p01sWHpgBqXneUgt
+fCHq+oJItAwcfwt8aBfbWKVM/fAF/rET2hkfoTF47cIp2pJDtBpZ10uuV/2WVYFU
+f1zwyb84uF95Wgz1w1jCgx1MIZ9+pwGS7JGiMj+tNZCvlnxaKF8Phv6WhwXxwdfr
+KComtFvbtitFilAuMRn2FjQs7iK/zjz3O9vwu9yToyIJ1SqaS+C8U3SNLS/x2oso
+Jc5VFfcWblF4Q7pfJ3knkPJ+zS6rcqsWEKFpqElngZrKHdKWhxaTfWmhV3ErDeik
+IvEX/mSxafliMbr+1Qq4Tl2APd8TjOA9AHa3PRWf+37a+ivjJ/VrltjBLK4O2+5x
+n8BY/HexDdAYGb9vScXFPeMI5e4NW7bdu/0VzYPwHBUV6/5KXQXGMdEc5raaoiOX
+JpZKUe+UqS4l3j6o+9UvnbXDTiCaxZLOSkUMhbiPjkaLM3TIlj31VTWFgzq8NaCR
+I7vqfIPH99M=
+=iDQ4
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1404233632_3099P--
+
+--===============3090414647776288340==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3090414647776288340==--
