@@ -1,94 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
- multicodec
-Date: Tue, 1 Jul 2014 18:41:17 +0100
-Message-ID: <20140701174117.GD15028@sirena.org.uk>
-References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
- <1404200881-32253-7-git-send-email-bcousson@baylibre.com>
- <20140701164134.GH2296@intel.com>
+Subject: Re: [PATCH 1/2] ASoC: sirf: Add audio usp interface driver
+Date: Tue, 1 Jul 2014 18:48:44 +0100
+Message-ID: <20140701174844.GA410@sirena.org.uk>
+References: <1404181134-21663-1-git-send-email-rongjun.ying@csr.com>
+ <1404181134-21663-2-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8938821885700509771=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C472026513B
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 19:41:32 +0200 (CEST)
-In-Reply-To: <20140701164134.GH2296@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, lars@metafoo.de, lgirdwood@gmail.com, Benoit Cousson <bcousson@baylibre.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HlL+5n6rz5pIUxbD"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1404181134-21663-2-git-send-email-rongjun.ying@csr.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rongjun Ying <rongjun.ying@csr.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Barry Song <baohua@kernel.org>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, Workgroup.linux@csr.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8938821885700509771==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bajzpZikUji1w+G9"
-Content-Disposition: inline
-
-
---bajzpZikUji1w+G9
+--HlL+5n6rz5pIUxbD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 01, 2014 at 10:11:34PM +0530, Vinod Koul wrote:
-> On Tue, Jul 01, 2014 at 09:47:59AM +0200, Benoit Cousson wrote:
+On Tue, Jul 01, 2014 at 10:18:53AM +0800, Rongjun Ying wrote:
 
-> > +	for (i = 0; i < rtd->num_codecs; i++) {
-> > +		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-> > +
-> > +		switch (cmd) {
-> > +		case SNDRV_PCM_TRIGGER_START:
-> > +			snd_soc_dai_digital_mute(codec_dai, 0,
-> > +						 cstream->direction);
-> > +			break;
-> > +		case SNDRV_PCM_TRIGGER_STOP:
-> > +			snd_soc_dai_digital_mute(codec_dai, 1,
-> > +						 cstream->direction);
+A few *really* trivial things below, otherwise this looks good:
 
-> Wouldnt it make sense to fix snd_soc_dai_digital_mute() for multi-codecs. Did
-> you do same thing for pcm?
+> +	if (usp->daifmt_format == SND_SOC_DAIFMT_I2S)
+> +		regmap_update_bits(usp->regmap, USP_RX_FRAME_CTRL,
+> +			USP_I2S_SYNC_CHG, USP_I2S_SYNC_CHG);
+> +	else if (usp->daifmt_format == SND_SOC_DAIFMT_DSP_A) {
+> +		regmap_update_bits(usp->regmap, USP_RX_FRAME_CTRL,
+> +			USP_I2S_SYNC_CHG, 0);
+> +		frame_len = data_len * params_channels(params);
+> +		data_len = frame_len;
+> +	}
 
-Yes, the other callers also iterate through all the CODECs.  It might be
-sensible to have a wrapper which does the iteration but I do think it's
-reasonable for _dai_digital_mute() to just operate on one DAI.
+Make this a switch statement for legibility, and if you do need to use {
+} make sure they're used consistently for all branches of an if ().
 
---bajzpZikUji1w+G9
+> +	int playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+
+I'm not sure the extra variable adds much here.
+
+> +static struct snd_soc_dai_driver sirf_usp_pcm_dai = {
+> +	.probe = sirf_usp_pcm_dai_probe,
+> +	.name		= "sirf-usp-pcm",
+> +	.id			= 0,
+
+Weird indentation here.
+
+--HlL+5n6rz5pIUxbD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTsvK6AAoJELSic+t+oim9uEcP/0OgsFCx1jthdd7nQXcSxLJi
-o5q0OInzibFJvzkcGQXkp8gseCQw+932RqNk7C7RKzc+6zeF7cRIDR3RUbz4EO7J
-opGZL1U325ikUY+IBQQ/9D7QQ5qDXIGccFbAU9O5c0kPwMjxwv808DcirZjpTbhX
-1eVWCAsTAXlYRrzp+wXv0E0eEkboEfbY6/TO3LmkoKNBQplOb94wBbeXoECCOfEN
-SgLWgGXjLYQ6aAOR2vBFouXd5D1HZhteizKY/kOcvklh6WGohQdrr5ghBdWR/NIL
-ado4n65hYS+VcJ5Zmk3yNty1r7yKLB7PdWeD4xIU9+6FCBua7fTErYKvEZtME1Q6
-g/BuihUhMnHxS4a160n1l/cEhYvyTEPhIymfzJRmJN39VgWewsJ3WaetTLt8oLpn
-YhgTRfBtRC7B2FILjI/rgn7K6XRoICsxvoOeLOhGWjFdmLPQqE6szubGkqtpOycG
-v9ri0zRm+ivYqZrZLHycT2uYcLJrO/1A8DTDAjclCz4QRacexwS17p31qzlHknvl
-qnXvBtYfiaLXahu9jHPfXfmW8vnsSsfMMgaWV7NHR1QtxJX76QitqKv+bgmnZfum
-AA3IBnry9MYDmpEgVs5o+DK3LoqHsx/6XNhB56dMipatZRm01DQ3S5ntldhrBbkF
-hJvThL+y6D+AESQzEQpi
-=I9fk
+iQIcBAEBAgAGBQJTsvR5AAoJELSic+t+oim9730QAIVOkmg4xp3NzxMusbbEZmNY
+UNank+PX00PQwAEUAlDaWuGTvrRNsKs974Un0l1uAmewsWfaZPR9q6CXab2QAfrp
+ld85dm+nbpK3LkDqk9pKMuih49pn4QPtl23g7cjCh1dFnD145hGd+aI9XBDdMR8B
+Bf6NViVoa6WPHbbmLno08FKsIX+p2hJHKC8Sl1xELk+cfyELlYF6ugWIRBvz3+18
+B+gV9O/uSfxFJn2GG0Jz2qxMhEVENii/j3bRuuJH6jeAiNRaCMu5bcB3QESs53wJ
+x1kepyijISEUjrjoR0GO1ptc763vJVkVPd2h0DgsPg0JVlxxsKBMustETo6+X8MS
+rREvAzkQ4CDdG9EjLPyTHPEhdksj5SQB2T1ay9ZgR/cZc2YYDSAeRqmAVLV2uXiZ
+5xlBYCZat6PNdyIzpB8KoDabH3F67FUYtk7hOMW7DEx6wPltRx/9kq44IN5YXJc1
+yWcbBqClTOdDWba6qZ/BojfPf4WFlIy6UW8cToXtSi6UxJpBBigCEPKQVPyUDQSE
+9VKwrTmLt0Yvr/6u7ws9D5MhCJulOFcgiSrP/s4hWRSMuDeSNOK05y7CU6gWRi6M
+1/F9mVgYqCM4605blRlYQhz6wmY09xN8B6wRNEse13s7HAoV6Gn3/yfHQA77PKWm
+QsTqA4+gEHRNW99qDyj3
+=EqWV
 -----END PGP SIGNATURE-----
 
---bajzpZikUji1w+G9--
-
---===============8938821885700509771==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8938821885700509771==--
+--HlL+5n6rz5pIUxbD--
