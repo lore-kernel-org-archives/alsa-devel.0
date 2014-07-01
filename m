@@ -1,19 +1,18 @@
-From: Josh Lehan <alsa@krellan.com>
-Subject: Re: [PATCH - alsa-utils 4/5] Documentation manual page
- for amidicat
-Date: Tue, 01 Jul 2014 00:34:21 -0700
-Message-ID: <53B2647D.3030200@krellan.com>
-References: <1404118503-22921-1-git-send-email-alsa@krellan.com>
- <1404118503-22921-5-git-send-email-alsa@krellan.com>
- <53B14AE4.20008@ladisch.de>
+From: Jan Kiszka <jan.kiszka@web.de>
+Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs
+ for more Thinkpads with Conexant codec
+Date: Tue, 01 Jul 2014 09:38:29 +0200
+Message-ID: <53B26575.1000003@web.de>
+References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com>
+ <53AFF992.5030403@web.de> <53B0C596.6090007@canonical.com>
+ <53B1078B.4090101@web.de> <53B219DF.6090807@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6032003321775545136=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www7.pairlite.com (www7.pairlite.com [64.130.10.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C3DC264F03
- for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 09:34:23 +0200 (CEST)
-In-Reply-To: <53B14AE4.20008@ladisch.de>
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CE6B264F03
+ for <alsa-devel@alsa-project.org>; Tue,  1 Jul 2014 09:38:37 +0200 (CEST)
+In-Reply-To: <53B219DF.6090807@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,34 +22,151 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Hui Wang <hui.wang@canonical.com>
+Cc: alsa-devel@alsa-project.org, Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alex.hung@canonical.com, yk@canonical.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On 06/30/2014 04:32 AM, Clemens Ladisch wrote:
-> Josh Lehan wrote:
->> +++ b/amidicat/amidicat.1
->> +.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
-> 
-> So this is not the actual source code?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--===============6032003321775545136==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="NmVLcdK0vSpIAsKlHTTHOVlfM85fQoi1G"
 
-It is.  In my original release I wrote the documentation page in DocBook
-format.  This was handy, because both HTML and manpage formats could be
-rendered from there.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--NmVLcdK0vSpIAsKlHTTHOVlfM85fQoi1G
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-However, I noticed DocBook wasn't used anywhere else in alsa-utils, and
-I didn't want to pull in an external package just for that, so I made
-the manpage format primary.  The "Generator" comment is now superfluous,
-I will remove it.
+On 2014-07-01 04:15, Hui Wang wrote:
+> On 06/30/2014 02:45 PM, Jan Kiszka wrote:
+>> On 2014-06-30 04:04, Hui Wang wrote:
+>>> On 06/29/2014 07:33 PM, Jan Kiszka wrote:
+>>>> On 2013-11-27 07:47, Hui Wang wrote:
+>>>>> Most Thinkpad Edge series laptops use conexant codec, so far althou=
+gh
+>>>>> the codecs have different minor Vendor Id and minor Subsystem Id,
+>>>>> they all belong to the cxt5066 family, this change can make the
+>>>>> mute/mic-mute LEDs support more generic among cxt_5066 family.
+>>>>>
+>>>>> This design refers to the similar solution for the realtek codec
+>>>>> ALC269 family in the patch_realtek.c.
+>>>>>
+>>>>> Cc: Alex Hung <alex.hung@canonical.com>
+>>>>> Cc: David Henningsson <david.henningsson@canonical.com>
+>>>>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>>>>> ---
+>>>>>    sound/pci/hda/patch_conexant.c | 23 +++++++++++++++++++++++
+>>>>>    1 file changed, 23 insertions(+)
+>>>>>
+>>>>> diff --git a/sound/pci/hda/patch_conexant.c
+>>>>> b/sound/pci/hda/patch_conexant.c
+>>>>> index c205bb1..1f2717f 100644
+>>>>> --- a/sound/pci/hda/patch_conexant.c
+>>>>> +++ b/sound/pci/hda/patch_conexant.c
+>>>>> @@ -3244,9 +3244,29 @@ enum {
+>>>>>    #if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+>>>>>      #include <linux/thinkpad_acpi.h>
+>>>>> +#include <acpi/acpi.h>
+>>>>>      static int (*led_set_func)(int, bool);
+>>>>>    +static acpi_status acpi_check_cb(acpi_handle handle, u32 lvl, v=
+oid
+>>>>> *context,
+>>>>> +                 void **rv)
+>>>>> +{
+>>>>> +    bool *found =3D context;
+>>>>> +    *found =3D true;
+>>>>> +    return AE_OK;
+>>>>> +}
+>>>>> +
+>>>>> +static bool is_thinkpad(struct hda_codec *codec)
+>>>>> +{
+>>>>> +    bool found =3D false;
+>>>>> +    if (codec->subsystem_id >> 16 !=3D 0x17aa)
+>>>>> +        return false;
+>>>>> +    if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb,
+>>>>> &found, NULL)) && found)
+>>>>> +        return true;
+>>>>> +    found =3D false;
+>>>>> +    return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb,=
 
->> +\fB\-\-hex\fR
->> ...
->> +If this option is not given, the default is raw binary data\&.
-> 
-> This is the only place in the documentation where the default input/
-> output format is described.  Please move it to a more prominent
-> location.
+>>>>> &found, NULL)) && found;
+>>>>> +}
+>>>>> +
+>>>>>    static void update_tpacpi_mute_led(void *private_data, int enabl=
+ed)
+>>>>>    {
+>>>>>        struct hda_codec *codec =3D private_data;
+>>>>> @@ -3279,6 +3299,8 @@ static void cxt_fixup_thinkpad_acpi(struct
+>>>>> hda_codec *codec,
+>>>>>        bool removefunc =3D false;
+>>>>>          if (action =3D=3D HDA_FIXUP_ACT_PROBE) {
+>>>>> +        if (!is_thinkpad(codec))
+>>>>> +            return;
+>>>>>            if (!led_set_func)
+>>>>>                led_set_func =3D symbol_request(tpacpi_led_set);
+>>>>>            if (!led_set_func) {
+>>>>> @@ -3494,6 +3516,7 @@ static const struct snd_pci_quirk
+>>>>> cxt5066_fixups[] =3D {
+>>>>>        SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s",
+>>>>> CXT_FIXUP_STEREO_DMIC),
+>>>>>        SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310",
+>>>>> CXT_FIXUP_STEREO_DMIC),
+>>>>>        SND_PCI_QUIRK(0x17aa, 0x397b, "Lenovo S205",
+>>>>> CXT_FIXUP_STEREO_DMIC),
+>>>>> +    SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad",
+>>>>> CXT_FIXUP_THINKPAD_ACPI),
+>>>>>        SND_PCI_QUIRK(0x1c06, 0x2011, "Lemote A1004",
+>>>>> CXT_PINCFG_LEMOTE_A1004),
+>>>>>        SND_PCI_QUIRK(0x1c06, 0x2012, "Lemote A1205",
+>>>>> CXT_PINCFG_LEMOTE_A1205),
+>>>>>        {}
+>>>>>
+>>>> Starting with this patch, my Lenovo Thinkpad X121e netbook (it's
+>>>> without
+>>>> any mute LEDs, BTW, there is only a power LED) considers the power
+>>>> button as hard reset. I have to exclude my machine from that ACPI fi=
+xup
+>>>> (this is on top of current Linus master):
+>>> It seems more like a firmware issue, in the acpi code, the "SSMS" is =
+for
+>>> mute led, and the "MMTS" is for micmute led, I don't know why your
+>>> machine can pass "SSMS" or "MMTS" scanning even without mute LEDs.
+>>>
+>> Is there anything I can debug or any information I can collect from my=
 
-Good idea, thanks.
+>> box to examine this?
+> What is the linux distribution on your machine? And use showkey to catc=
+h
+> the keycode of that button.
 
-Josh
+I'm running OpenSUSE 13.1. The reported keycode of the power button is 11=
+6.
+
+Jan
+
+
+
+--NmVLcdK0vSpIAsKlHTTHOVlfM85fQoi1G
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlOyZXUACgkQitSsb3rl5xQ9zACeIcjAxqON183YtX79atfxGoX1
+eAYAoNnelPb3XGqHDcoUn9Lu15yJwIB9
+=Qb3x
+-----END PGP SIGNATURE-----
+
+--NmVLcdK0vSpIAsKlHTTHOVlfM85fQoi1G--
+
+--===============6032003321775545136==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6032003321775545136==--
