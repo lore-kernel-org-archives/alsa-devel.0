@@ -1,19 +1,21 @@
-From: Huang Tao <huangtao@rock-chips.com>
-Subject: Re: [PATCH 2/2] ASoC: add driver for Rockchip RK3xxx
-	I2S controller
-Date: Wed, 02 Jul 2014 09:01:49 +0800
-Message-ID: <53B359FD.3080809@rock-chips.com>
-References: <1404203860-30712-1-git-send-email-xjq@rock-chips.com>
- <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
- <20140701170747.GA15028@sirena.org.uk>
+From: Xavier Hsu <xavier.hsu@linaro.org>
+Subject: Re: [PATCH] ASoC: add Wolfson WM8973 codec driver
+Date: Wed, 2 Jul 2014 09:24:49 +0800
+Message-ID: <CAHa2TOZeSVZZpRKXH2TEqZiX9Ra4kw8hDtDh++9AMAms_Ywtkg@mail.gmail.com>
+References: <1403852955-18974-1-git-send-email-xavier.hsu@linaro.org>
+ <53AD7ABB.7010201@metafoo.de>
+ <20140701110500.GA19534@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.131])
- by alsa0.perex.cz (Postfix) with ESMTP id BB3F2265150
- for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 03:01:56 +0200 (CEST)
-In-Reply-To: <20140701170747.GA15028@sirena.org.uk>
+Received: from mail-we0-f171.google.com (mail-we0-f171.google.com
+ [74.125.82.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECFF0265150
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 03:24:49 +0200 (CEST)
+Received: by mail-we0-f171.google.com with SMTP id q58so10597936wes.30
+ for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 18:24:49 -0700 (PDT)
+In-Reply-To: <20140701110500.GA19534@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,26 +25,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: yzq@rock-chips.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, tiwai@suse.de, linux-kernel@vger.kernel.org, zhangqing@rock-chips.com, lgirdwood@gmail.com, robh+dt@kernel.org, kever.yang@rock-chips.com, zyw@rock-chips.com, jianqun <xjq@rock-chips.com>, kfx@rock-chips.com, grant.likely@linaro.org, cf@rock-chips.com, hj@rock-chips.com, zhenfu.fang@rock-chips.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Andy Green <andy.green@linaro.org>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksIE1hcms6Cgrkuo4gMjAxNOW5tDA35pyIMDLml6UgMDE6MDcsIE1hcmsgQnJvd24g5YaZ6YGT
-Ogo+PiArc3RhdGljIGlubGluZSB2b2lkIGkyc193cml0ZWwoc3RydWN0IHJrX2kyc19kZXYgKmky
-cywgdTMyIHZhbHVlLAo+PiA+ICsJCQkgICAgICB1bnNpZ25lZCBpbnQgb2Zmc2V0KQo+PiA+ICt7
-Cj4+ID4gKwl3cml0ZWxfcmVsYXhlZCh2YWx1ZSwgaTJzLT5yZWdzICsgb2Zmc2V0KTsKPj4gPiAr
-fQo+PiA+ICsKPj4gPiArc3RhdGljIGlubGluZSB1MzIgaTJzX3JlYWRsKHN0cnVjdCBya19pMnNf
-ZGV2ICppMnMsIHVuc2lnbmVkIGludCBvZmZzZXQpCj4+ID4gK3sKPj4gPiArCXJldHVybiByZWFk
-bF9yZWxheGVkKGkycy0+cmVncyArIG9mZnNldCk7Cj4+ID4gK30KPiBQZXJoYXBzIHVzZSByZWdt
-YXA/ICBUaGUgbWFpbiBhZHZhbnRhZ2Ugd291bGQgYmUgdGhlIGRlYnVnCj4gaW5mcmFzdHJ1Y3R1
-cmUsIHRob3VnaCB5b3UgY291bGQgYWxzbyB1c2UgX3VwZGF0ZV9iaXRzKCkgdG8gcmVkdWNlIHRo
-ZQo+IGFtb3VudCBvZiB0aW1lIHNwZW50IGxvY2tlZC4KPgpBcmUgeW91IHN1cmU/IFRoaXMgaXMg
-YSBJMlMgZHJpdmVyLCB3ZSBjYW4gd3JpdGUgdGhlIHJlZ2lzdGVyIGRpcmVjdGx5LApkbyBub3Qg
-dGhyb3VnaCBJMkMgb3IgU1BJIGJ1cy4KV3JpdGUgYSByZWdpc3RlciBpcyBvbmx5IGEgZmV3IGlu
-c3RydWN0aW9ucyBvbiBBUk0sIGJ1dCB3cml0ZSB0aHJvdWdoCnJlZ21hcCwgaXQgbWF5IHRha2Ug
-YSBsb25nIHBhdGguCkkgdGhpbmsgaXQgd2lsbCBqdXN0IGNvbnN1bWUgQ1BVIHBvd2VyIGFuZCBt
-YWtlIHRoZSB3aG9sZSB0aGluZyBtb3JlCmNvbXBsZXguCkNvdWxkIHlvdSB0ZWxsIG1lIHdoYXQg
-YmVuZWZpdHMgd2UgY2FuIGdldCBpZiB1c2UgcmVnbWFwPyBPciBzb21ldGhpbmcgSQpqdXN0IG1p
-c3Npbmc/CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Everybody :
+
+I will provide an updated patch for supporting wm8971 and wm8973 soon.
+
+Many Thanks.
+Xavier
+
+
+2014-07-01 19:05 GMT+08:00 Charles Keepax <
+ckeepax@opensource.wolfsonmicro.com>:
+
+> On Fri, Jun 27, 2014 at 04:07:55PM +0200, Lars-Peter Clausen wrote:
+> > On 06/27/2014 09:09 AM, Xavier Hsu wrote:
+> >> This patch adds support for the wm8973 codec, based on the
+> >> existing wm8971 codec driver.
+> >>
+> >
+> > Those two look really similar. Do you think they can both be supported by
+> > the same driver, rather than duplicating most of the code?
+> >
+> > - Lars
+>
+> I am not super familiar with these two devices but looking
+> through the two datasheets it certainly seems they should be
+> supported by the same driver. I would like to see some reason if
+> we were to not go down this route.
+>
+> Thanks,
+> Charles
+>
