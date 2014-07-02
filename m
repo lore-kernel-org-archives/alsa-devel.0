@@ -1,65 +1,71 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: tda998x: add a codec to the HDMI transmitter
-Date: Wed, 2 Jul 2014 19:02:12 +0100
-Message-ID: <20140702180212.GS32514@n2100.arm.linux.org.uk>
-References: <20140702183841.7c964832@armhf> <20140702165628.GO20799@lunn.ch>
+Date: Wed, 2 Jul 2014 20:37:56 +0100
+Message-ID: <20140702193756.GM410@sirena.org.uk>
+References: <20140702183841.7c964832@armhf>
+ <20140702165628.GO20799@lunn.ch>
  <20140702195154.47d6f6b4@armhf>
+ <20140702180212.GS32514@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4oQnj4jcM03NhqPN"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140702195154.47d6f6b4@armhf>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20140702180212.GS32514@n2100.arm.linux.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Jean-Francois Moine <moinejf@free.fr>, Andrew Lunn <andrew@lunn.ch>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 02, 2014 at 07:51:54PM +0200, Jean-Francois Moine wrote:
-> On Wed, 2 Jul 2014 18:56:28 +0200
-> Andrew Lunn <andrew@lunn.ch> wrote:
-> 
-> > How well will this work with Russell concept of a front end and two
-> > backends? Can you uses your CODEC twice, once with the I2S backend and
-> > a second time with the S/PDIF backend?
-> 
-> Hi Andrew,
-> 
-> The TDA998x CODEC has two functions:
-> - it sets the possible formats and rates when the screen connects and
-> - it sets the audio input port when audio streaming starts.
-> 
-> I tested this CODEC with both DAPM and DPCM. If the audio subsystem
-> asks for streaming on both I2S and S/PDIF, only the last call is served
-> (this depends on the order of the DAI links in the audio card creation
-> table).
-> 
-> As I told to Russell, DPCM just asks for a 'system' DAI (front-end),
-> but it also asks for some additional code in the kirkwood DMA driver
-> because all PCMs are activated on streaming start.
 
-Well, as far as I'm concerned right now, it's for Mark to sort out this
-situation, and tell us what he wants to do with the Kirkwood stuff.  I
-suspect he's keeping quiet because he doesn't care about it.
+--4oQnj4jcM03NhqPN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Given that he's the one with the knowledge of DPCM, and he's the maintainer
-of ASoC, he has the ultimate responsibility for sorting out this and
-giving direction as to how he wants to proceed.
+On Wed, Jul 02, 2014 at 07:02:12PM +0100, Russell King - ARM Linux wrote:
 
-As I understand it though, my solution is the full and proper DPCM solution,
-and I believe that what's currently in mainline is not a DPCM solution.
+> Well, as far as I'm concerned right now, it's for Mark to sort out this
+> situation, and tell us what he wants to do with the Kirkwood stuff.  I
+> suspect he's keeping quiet because he doesn't care about it.
 
-Mark needs to correct that, because he is one of the few who knows this
-stuff.
+Well, that and the general level of stress around the support for these
+boards in general. =20
 
--- 
-FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
-improving, and getting towards what was expected from it.
+> Given that he's the one with the knowledge of DPCM, and he's the maintain=
+er
+> of ASoC, he has the ultimate responsibility for sorting out this and
+> giving direction as to how he wants to proceed.
+
+> As I understand it though, my solution is the full and proper DPCM soluti=
+on,
+> and I believe that what's currently in mainline is not a DPCM solution.
+
+That's right, from what I remember your last set of patches looked like
+it was pretty much there in terms of the code for the CPU.  Liam's
+obviously the most in depth expert with DPCM but he's incredibly snowed
+under with work right now.
+
+--4oQnj4jcM03NhqPN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTtF+RAAoJELSic+t+oim9utwP/jak9ChYQvNwMg96s8eXE9+w
+FugfXEoApjJcCQnsfkfP3x/6xgAKxBpS6JK8dw7VJqpIX76A8XxwavFOz769fyMD
+GcJDRQN8O9tN1q8lX1iP4BWcnb20ITloK7LqZha7C9qkxh3hMprHE3ewHfNATUDC
+TolfsY3mKseGkCS1s6t9fNWbZA5/r4P3uIeXCFFinpPyf4ifebnQzVHtVP6MFj+k
+dKY73UnKbhnnOIE8eKEjMhEAz3TS1PP6QshUtD70vjW/cn6/5xawC+v9cFgzdgE1
+ZvmDup3pTRT91QD0PAxWho52A/na0m/ouKgi4y66gktzJ4+rHy2SIJ2f54Efn6If
+SX0kEO8UCaz0Jt5SKm/UwlvmsmlP8BDFRFV2YRc6qC66ewmFJQDCSJt9iCNTq+/W
+pKgx/D1KfVjWNT5DiN9Itxz0JP5sZRJYVo0UQEcOJeNy3wsacK3xCk0nrIXLYh85
+d84nWmypXdmwbNtL1tka5O0pP9B+SkYDjBhG0LAmDPo7rdbdFi0yUOYBFH1wofXT
+FEvzzb4xVFYOmtK8vq9H1rUGQJdW63AnLR0wVowEkmXx4W9P3YTvk9ovFCSLvp9P
+gY7/AwUz14Ocsy2FBdrldVcrcdTsoIF3hDHpx663/1ewqnk0JfVwH0Ut9FusFi74
+8gUS6slP69bMZLyHguOR
+=Qfcs
+-----END PGP SIGNATURE-----
+
+--4oQnj4jcM03NhqPN--
