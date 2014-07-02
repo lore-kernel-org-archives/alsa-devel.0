@@ -1,62 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: add driver for Rockchip RK3xxx I2S controller
-Date: Wed, 2 Jul 2014 12:16:36 +0100
-Message-ID: <20140702111636.GD410@sirena.org.uk>
-References: <1404203860-30712-1-git-send-email-xjq@rock-chips.com>
- <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
- <20140701170747.GA15028@sirena.org.uk>
- <53B359FD.3080809@rock-chips.com>
- <53B3E5AA.9060300@rock-chips.com>
+From: =?UTF-8?q?J=C3=BCrg=20Billeter?= <j@bitron.ch>
+Subject: [PATCH] ASoC: rsnd: fixup index of SSI mod when SRC is used
+Date: Wed,  2 Jul 2014 13:18:51 +0200
+Message-ID: <1404299931-21384-1-git-send-email-j@bitron.ch>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0IvGJv3f9h+YhkrH"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <53B3E5AA.9060300@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jianqun <xjq@rock-chips.com>
-Cc: Huang Tao <huangtao@rock-chips.com>, heiko@sntech.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, grant.likely@linaro.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, zhangqing@rock-chips.com, hj@rock-chips.com, kever.yang@rock-chips.com, zyw@rock-chips.com, yzq@rock-chips.com, zhenfu.fang@rock-chips.com, cf@rock-chips.com, kfx@rock-chips.com
+To: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, =?UTF-8?q?J=C3=BCrg=20Billeter?= <j@bitron.ch>
 List-Id: alsa-devel@alsa-project.org
 
+The default index 1 was used as the loop was terminated before the
+following code could be reached:
 
---0IvGJv3f9h+YhkrH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	if (mod[i] =3D=3D this)
+		index =3D i;
 
-On Wed, Jul 02, 2014 at 06:57:46PM +0800, Jianqun wrote:
-> Hi Mark:
+Signed-off-by: J=C3=BCrg Billeter <j@bitron.ch>
+---
+ sound/soc/sh/rcar/core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Don't top post.
-
-> Since regmap_update_bits is int style, I have to error check every time after call it.
-> Also I find that the tegra_i2s.c call the function without error checking,
-
-> Could you tell me the right way to handle the regmap_update_bits ?
-
-With memory mapped I/O there's no real point in checking for errors so
-if you kno0w your device is memory mapped you can get away with just
-ignoring them.
-
---0IvGJv3f9h+YhkrH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTs+oRAAoJELSic+t+oim9RkIP/0FOx1emtxT47e3/VqSWsJLM
-hIOOZ5Hc1P9k0YHfUcNJNKJnDHhrivpfl8xVz4cSeXp72GYG4SPf/KnwtHzJa5oR
-kTzVWvlp3OPgb0mfNPIpCSLgG5LRwwrgD81qlhccDwM4Sg+3pStXmz5jKea3zdMf
-jcqBQ5PhlfH+vMOqHy+O6RjlEq7iBF7MZn/LeyfNrlIrJ3TDIiTJvkPiq1F7gEDy
-nEKCGOqZAlTGdcljcMAFchnKaUZGpJVKA4XdF+FA9mbYpHPKXFDaKtR0PqtIEyyJ
-BMEpBKBUXnY5jKoQYnxsf1Y+CmV17WKQ8rRFEl0hAe9si3IX4LynhZMxERpmQiU2
-a9Q9rA5+klJAqOd1FQLpNfRdFTmpz1HHwxIP+PJzr89Cz3WqT3O5XmXHtvld3by6
-uW4JqGS5WgZjMkpxZhbNSIuF6ZoGOGhin4Lb8A3kju9Y5Joa38Td84jlLjMlnEcc
-JIP+zb34PsFdXQ1q/uajUgvUpFVBFF0f+PRw0AF651JQeWJIRWVues31OlG4jVTI
-MqbgKIv7GRCtuFqEjuJaLAk+RFt9hKdH1AhFSLvpHFTSGr9CWrhZHJzqRZnV2iFN
-30Axuzqp1a+rIEDCrBizt+TO9/cHUJvEGNsXmtpIsZLIhhA82HvD6kyi+fx/B8eZ
-7Ishkn/gmsk7GmjfKEW0
-=W4rm
------END PGP SIGNATURE-----
-
---0IvGJv3f9h+YhkrH--
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 4e86265..d737fea 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -295,9 +295,11 @@ static void rsnd_dma_of_name(struct rsnd_dma *dma,
+ 	mod[0] =3D NULL; /* for "mem" */
+ 	index =3D 1;
+ 	for (i =3D 1; i < MOD_MAX; i++) {
+-		if (!src) {
+-			mod[i] =3D ssi;
++		if (!ssi) {
+ 			break;
++		} else if (!src) {
++			mod[i] =3D ssi;
++			ssi =3D NULL;
+ 		} else if (!dvc) {
+ 			mod[i] =3D src;
+ 			src =3D NULL;
+--=20
+2.0.1
