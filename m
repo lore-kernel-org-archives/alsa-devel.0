@@ -1,16 +1,19 @@
-From: "Brandon Yates" <Brandon.Yates@adaptivedigital.com>
-Subject: PCM Plugin Channel question
-Date: Tue, 1 Jul 2014 18:59:55 -0400
-Message-ID: <B02206F4ACA2904A8270028316B8DAFF011CC286@mercury.corp.adaptivedigital.com>
+From: Huang Tao <huangtao@rock-chips.com>
+Subject: Re: [PATCH 2/2] ASoC: add driver for Rockchip RK3xxx
+	I2S controller
+Date: Wed, 02 Jul 2014 09:01:49 +0800
+Message-ID: <53B359FD.3080809@rock-chips.com>
+References: <1404203860-30712-1-git-send-email-xjq@rock-chips.com>
+ <1404204458-30881-1-git-send-email-xjq@rock-chips.com>
+ <20140701170747.GA15028@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta12.messagelabs.com (mail1.bemta12.messagelabs.com
- [216.82.251.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 060482650F7
- for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 00:59:57 +0200 (CEST)
-Content-class: urn:content-classes:message
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB3F2265150
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 03:01:56 +0200 (CEST)
+In-Reply-To: <20140701170747.GA15028@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,22 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: yzq@rock-chips.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, heiko@sntech.de, tiwai@suse.de, linux-kernel@vger.kernel.org, zhangqing@rock-chips.com, lgirdwood@gmail.com, robh+dt@kernel.org, kever.yang@rock-chips.com, zyw@rock-chips.com, jianqun <xjq@rock-chips.com>, kfx@rock-chips.com, grant.likely@linaro.org, cf@rock-chips.com, hj@rock-chips.com, zhenfu.fang@rock-chips.com
 List-Id: alsa-devel@alsa-project.org
 
-
-Hello, I have developed a pcm ext plugin that applies some processing to the audio stream in the transfer callback.
-
-My plugin works for a mono (1 channel) stream. I'd now like to expand it to support stereo data in the form of 2 channels interleaved.  I can't find much information on how this works.  I have a couple questions that I'd greatly appreciate if anyone could help with.
-
-1) Is there any way in the 'SND_PCM_PLUGIN_DEFINE_FUNC' function that I can determine if the user application has opened the stream with 1 channel vs 2 channel? 
-
-2) I assume in the case of two channels my transfer function would need to: a)deinterleave the data from source so my processing routine can access it in a linear buffer and b) reinterleave the data before I copy it to destination.   Is this correct? Is there more to it or things I am overlooking?
-
-3) For IO-plugin I see there is a `SND_PCM_IOPLUG_HW_ACCESS` value I could use to restrict the stream type to `SND_PCM_ACCESS_RW_INTERLEAVED`.  Does there exist a similar function for External PCM Plugin?
-
-4)Is there some fundamental design idea here I am not grasping?
-
-Thanks much!
-
-Brandon
+SGksIE1hcms6Cgrkuo4gMjAxNOW5tDA35pyIMDLml6UgMDE6MDcsIE1hcmsgQnJvd24g5YaZ6YGT
+Ogo+PiArc3RhdGljIGlubGluZSB2b2lkIGkyc193cml0ZWwoc3RydWN0IHJrX2kyc19kZXYgKmky
+cywgdTMyIHZhbHVlLAo+PiA+ICsJCQkgICAgICB1bnNpZ25lZCBpbnQgb2Zmc2V0KQo+PiA+ICt7
+Cj4+ID4gKwl3cml0ZWxfcmVsYXhlZCh2YWx1ZSwgaTJzLT5yZWdzICsgb2Zmc2V0KTsKPj4gPiAr
+fQo+PiA+ICsKPj4gPiArc3RhdGljIGlubGluZSB1MzIgaTJzX3JlYWRsKHN0cnVjdCBya19pMnNf
+ZGV2ICppMnMsIHVuc2lnbmVkIGludCBvZmZzZXQpCj4+ID4gK3sKPj4gPiArCXJldHVybiByZWFk
+bF9yZWxheGVkKGkycy0+cmVncyArIG9mZnNldCk7Cj4+ID4gK30KPiBQZXJoYXBzIHVzZSByZWdt
+YXA/ICBUaGUgbWFpbiBhZHZhbnRhZ2Ugd291bGQgYmUgdGhlIGRlYnVnCj4gaW5mcmFzdHJ1Y3R1
+cmUsIHRob3VnaCB5b3UgY291bGQgYWxzbyB1c2UgX3VwZGF0ZV9iaXRzKCkgdG8gcmVkdWNlIHRo
+ZQo+IGFtb3VudCBvZiB0aW1lIHNwZW50IGxvY2tlZC4KPgpBcmUgeW91IHN1cmU/IFRoaXMgaXMg
+YSBJMlMgZHJpdmVyLCB3ZSBjYW4gd3JpdGUgdGhlIHJlZ2lzdGVyIGRpcmVjdGx5LApkbyBub3Qg
+dGhyb3VnaCBJMkMgb3IgU1BJIGJ1cy4KV3JpdGUgYSByZWdpc3RlciBpcyBvbmx5IGEgZmV3IGlu
+c3RydWN0aW9ucyBvbiBBUk0sIGJ1dCB3cml0ZSB0aHJvdWdoCnJlZ21hcCwgaXQgbWF5IHRha2Ug
+YSBsb25nIHBhdGguCkkgdGhpbmsgaXQgd2lsbCBqdXN0IGNvbnN1bWUgQ1BVIHBvd2VyIGFuZCBt
+YWtlIHRoZSB3aG9sZSB0aGluZyBtb3JlCmNvbXBsZXguCkNvdWxkIHlvdSB0ZWxsIG1lIHdoYXQg
+YmVuZWZpdHMgd2UgY2FuIGdldCBpZiB1c2UgcmVnbWFwPyBPciBzb21ldGhpbmcgSQpqdXN0IG1p
+c3Npbmc/CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
