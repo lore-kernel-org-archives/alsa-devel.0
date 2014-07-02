@@ -1,21 +1,16 @@
-From: Xavier Hsu <xavier.hsu@linaro.org>
-Subject: Re: [PATCH] ASoC: add Wolfson WM8973 codec driver
-Date: Wed, 2 Jul 2014 09:24:49 +0800
-Message-ID: <CAHa2TOZeSVZZpRKXH2TEqZiX9Ra4kw8hDtDh++9AMAms_Ywtkg@mail.gmail.com>
-References: <1403852955-18974-1-git-send-email-xavier.hsu@linaro.org>
- <53AD7ABB.7010201@metafoo.de>
- <20140701110500.GA19534@opensource.wolfsonmicro.com>
+From: Rongjun Ying <rongjun.ying@csr.com>
+Subject: [PATCH v2 0/2] ASoC: add CSR SiRFSoC audio USP
+	interface driver
+Date: Wed, 2 Jul 2014 10:45:40 +0800
+Message-ID: <1404269142-3557-1-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f171.google.com (mail-we0-f171.google.com
- [74.125.82.171])
- by alsa0.perex.cz (Postfix) with ESMTP id ECFF0265150
- for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 03:24:49 +0200 (CEST)
-Received: by mail-we0-f171.google.com with SMTP id q58so10597936wes.30
- for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 18:24:49 -0700 (PDT)
-In-Reply-To: <20140701110500.GA19534@opensource.wolfsonmicro.com>
+Received: from cluster-d.mailcontrol.com (cluster-d.mailcontrol.com
+ [85.115.60.190])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C078265218
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 04:46:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,37 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Andy Green <andy.green@linaro.org>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, patches@linaro.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Barry Song <baohua@kernel.org>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, Workgroup.linux@csr.com
+Cc: Rongjun Ying <rongjun.ying@csr.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Everybody :
+This patchset adds the SiRF USP controller driver, this
+driver uses the USP as I2S or DSP_A mode interface.
 
-I will provide an updated patch for supporting wm8971 and wm8973 soon.
+Rongjun Ying (2):
+  ASoC: sirf: Add audio usp interface driver
+  ASoC: sirf: Add device tree binding for the USP audio device
 
-Many Thanks.
-Xavier
+ .../devicetree/bindings/sound/sirf-usp.txt         |  27 ++
+ sound/soc/sirf/Kconfig                             |   6 +
+ sound/soc/sirf/Makefile                            |   2 +
+ sound/soc/sirf/sirf-usp.c                          | 415 +++++++++++++++++++++
+ sound/soc/sirf/sirf-usp.h                          | 293 +++++++++++++++
+ 5 files changed, 743 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/sirf-usp.txt
+ create mode 100644 sound/soc/sirf/sirf-usp.c
+ create mode 100644 sound/soc/sirf/sirf-usp.h
+
+-- 
+1.9.3
 
 
-2014-07-01 19:05 GMT+08:00 Charles Keepax <
-ckeepax@opensource.wolfsonmicro.com>:
 
-> On Fri, Jun 27, 2014 at 04:07:55PM +0200, Lars-Peter Clausen wrote:
-> > On 06/27/2014 09:09 AM, Xavier Hsu wrote:
-> >> This patch adds support for the wm8973 codec, based on the
-> >> existing wm8971 codec driver.
-> >>
-> >
-> > Those two look really similar. Do you think they can both be supported by
-> > the same driver, rather than duplicating most of the code?
-> >
-> > - Lars
->
-> I am not super familiar with these two devices but looking
-> through the two datasheets it certainly seems they should be
-> supported by the same driver. I would like to see some reason if
-> we were to not go down this route.
->
-> Thanks,
-> Charles
->
+Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
+More information can be found at www.csr.com. Keep up to date with CSR on our technical blog, www.csr.com/blog, CSR people blog, www.csr.com/people, YouTube, www.youtube.com/user/CSRplc, Facebook, www.facebook.com/pages/CSR/191038434253534, or follow us on Twitter at www.twitter.com/CSR_plc.
+New for 2014, you can now access the wide range of products powered by aptX at www.aptx.com.
