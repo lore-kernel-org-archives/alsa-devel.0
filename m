@@ -1,76 +1,35 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/4] ASoC: Aux dev initialization cleanup
-Date: Wed, 2 Jul 2014 21:24:33 +0100
-Message-ID: <20140702202433.GT410@sirena.org.uk>
-References: <1404245628-30877-1-git-send-email-lars@metafoo.de>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: Re: ASoC: samsung: MACH_SMDK6450
+Date: Thu, 03 Jul 2014 07:37:07 +0900
+Message-ID: <53B48993.5020809@samsung.com>
+References: <1404287238.12021.7.camel@x220> <20140702092347.GB410@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3757865075143793012=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 53B6E265361
- for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 22:24:45 +0200 (CEST)
-In-Reply-To: <1404245628-30877-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Benoit Cousson <bcousson@baylibre.com>, Sebastian Reichel <sre@kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20140702092347.GB410@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Paul Bolle <pebolle@tiscali.nl>, Kukjin Kim <kgene.kim@samsung.com>, Ben Dooks <ben-linux@fluff.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 07/02/14 18:23, Mark Brown wrote:
+> On Wed, Jul 02, 2014 at 09:47:18AM +0200, Paul Bolle wrote:
+>
+>> Your commit 0aeaa68cf509 ("ASoC: samsung: no more support for S5P6440
+>> and S5P6450 SoCs") landed in next-20140702. It removed references to
+>> MACH_SMDK6440 and MACH_SMDK6450 from sound/soc/samsung/.
+>
+Yeah, I missed the removing when I created the patch. Paul, thanks for 
+your pointing out and I'm resending the updated patch.
 
---===============3757865075143793012==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RvrrZ8vH9xW05bsQ"
-Content-Disposition: inline
+> This also wasn't sent to me for review, please always send patches to
+> maintainers.
 
+Mark, I always send patches to regarding maintainers and in this case 
+the patch missed the change. I'm resending new patch and if any 
+problems, please let me know. Just note, I just wanted to check whether 
+there is no problem with other maintainers' tree early in -next tree.
 
---RvrrZ8vH9xW05bsQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jul 01, 2014 at 10:13:44PM +0200, Lars-Peter Clausen wrote:
-> This patch cleans up the way a aux dev is initialized and bound to the rtd. This
-> is useful for both componentization (moving aux devs to the component level) as
-> well as for the multi-CODEC support patches.
-
-Applied all, thanks.
-
---RvrrZ8vH9xW05bsQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTtGp+AAoJELSic+t+oim9Pc0QAJpKAzMSIHDRrm8ySDA5hduK
-hKeYMfG/cdJC3hOgUrRuYOnjaNYhPWlkAbEAp+Pir0yV9mbZJsdpyHhMpM4Py8a3
-/mpQ2gEHzyFNccLBwfqYJ+WNQTOhXPIH8XpzC/hw+jnVItZGGI6tjAoGSuK4fUJD
-wcySLXADuU2/LhofO4s2BZj/AeKPh5oMKMhzmCZV6Bmnj0RfBqLHXmxEBcM6Dpu3
-NOLfAP3R/r8Fvbia6mQneyFDiZZu0IZlN8gq0a3ZsxHjof24Mu7/R1i3jWFk2oUc
-aOzubWZVe8QYC6Dl7/2S4dyTdgWVpUwIv2cD3yhvviQk3ZRehFMvwUvH4AkuAgiC
-CuRhKcH9SHxfd5jbZlP0kZ5ROM5bIno10mKuzr9cbdvqMe8tP/ZvOE00C7zJ8Oka
-X48EcrbXhJ1UoJpwRG/Xetj4qYv2LihqB0NAK/8H0ANxnIfZCeKeY5y28D7fXwCb
-Q85qCEZmA5o6xlcMqdwYt9II09xwgFty1Oj6E/c4Qo39GZe4XyeTE34rTYteqqGY
-Z/9ejd27HkOxRRg0Uls/rrx/K1WqCTpExU4okN61pv+0dpv2unpyJjFaqaKIMLVX
-OFxuJEBuGTBUpkfR5Pr5caswu4hhznMvXu1c6hTXniJ2gJ3w4PXksMgv4m7FHow7
-SaOUcMkKPgf5qu1eUOHQ
-=0GL0
------END PGP SIGNATURE-----
-
---RvrrZ8vH9xW05bsQ--
-
---===============3757865075143793012==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3757865075143793012==--
+Thanks,
+Kukjin
