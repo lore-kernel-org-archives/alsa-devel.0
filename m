@@ -1,18 +1,15 @@
-From: "Brandon Yates" <Brandon.Yates@adaptivedigital.com>
-Subject: Re: PCM Plugin Channel question
-Date: Wed, 2 Jul 2014 09:25:40 -0400
-Message-ID: <B02206F4ACA2904A8270028316B8DAFF01149F05@mercury.corp.adaptivedigital.com>
-References: <B02206F4ACA2904A8270028316B8DAFF011CC286@mercury.corp.adaptivedigital.com>
- <53B3804E.7010804@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 0/5] ALSA/ASoC/dmaengine: Fix 3 bytes
+	physical sample support
+Date: Wed, 2 Jul 2014 16:29:18 +0300
+Message-ID: <1404307763-30557-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta12.messagelabs.com (mail1.bemta12.messagelabs.com
- [216.82.251.1]) by alsa0.perex.cz (Postfix) with ESMTP id B71D0264F0F
- for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 15:25:42 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <53B3804E.7010804@gmail.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E2BE264F0F
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 15:29:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,106 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: vinod.koul@intel.com, dan.j.williams@intel.com, lars@metafoo.de, tiwai@suse.de, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, joelf@ti.com, nsekhar@ti.com
+Cc: dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Alex -  thanks. That was helpful. One follow up question.
+Hi,
 
-> if you use the areas-related parameters correctly, the plugin will
-also work with planar or complex layouts.
+Changes since v1:
+- the hw.formats mask preparation moved to dmaengine_pcm_set_runtime_hwparams()
+- we prepare the mask for all supported sample formats based on the physical
+  width of the sample and beased on the slave_caps information.
 
+I have noticed while switching the daVinci audio to dmaengine_pcm that the _3LE
+and _3BE support is not working correctly via dmaengine_pcm:
+In case of _3LE/_3BE formats the samples are stored in 3 consecutive bytes
+without padding it to 4 bytes. This means that the DMA needs to be able to
+support 3 bytes word length in order to read/write the samples from memory
+correctly. Originally the code treated 24 bits physical length samples as
+they were 32 bits which leads to corruption when playing or recording audio.
 
-I am not sure if I'm using snd_pcm_channel_area_t correctly. I don't
-really understand all the fields.  For 1 channel setup I stole the
-following function from the speex plugin 
+To fix the support for 3 bytes physical samples the dma driver also need to have
+support for such data arrangement. eDMA does have support for it in HW and the
+legacy davinci-pcm platform driver w/o dmaengine was able to support such
+formats.
 
-static inline void *area_addr(const snd_pcm_channel_area_t *area,
-			      snd_pcm_uframes_t offset)
-{
-	unsigned int bitofs = area->first + area->step * offset;
-	return (char *) area->addr + bitofs / 8;
-}
+First step is to add DMA_SLAVE_BUSWIDTH_3_BYTES to dma_slave_buswidth for
+engines and users to select 3 bytes as bus width.
 
-This works for 1 channel but I don't understand how I would use area for
-interleaved data.  My thoughts are just take the returned address from
-area_addr then use a for loop separating out odd and even shorts.   Is
-there a better way?
+Followed by:
+In dmaengine_pcm_set_runtime_hwparams() we should check the slave_caps of the
+dma if it supports the give sample physical width of the sample. Based on this
+information we initialize the hw.formats: masking out all non supported formats
+based on the physical width.
+In case the dma driver does not implement the slave_caps the default assumption
+is that it supports 1, 2 and 4 bytes widths.
 
+Regards,
+Peter
+---
+Peter Ujfalusi (5):
+  dma: Support for 3 bytes word size
+  ALSA: pcm_dmaengine: Use the available wrapper to get physical width
+  ASoC: generic-dmaengine-pcm: Prepare formats mask for valid physical
+    sample sizes
+  ALSA: pcm_dmaengine: Correct support for 24bits physical sample widths
+  dma: edma: Declare DMA_SLAVE_BUSWIDTH_3_BYTES as supported buswidth
 
+ drivers/dma/edma.c                    |  1 +
+ include/linux/dmaengine.h             |  1 +
+ sound/core/pcm_dmaengine.c            |  4 +++-
+ sound/soc/soc-generic-dmaengine-pcm.c | 26 +++++++++++++++++++++++++-
+ 4 files changed, 30 insertions(+), 2 deletions(-)
 
-Will consider your points about PulseAudio too.  This plugin is
-targeting embedded arm-linux systems so I'm not totally sure if Pulse
-would even be used.
-
-
-
------Original Message-----
-From: Alexander E. Patrakov [mailto:patrakov@gmail.com] 
-Sent: Tuesday, July 01, 2014 11:45 PM
-To: Brandon Yates
-Cc: ALSA Development Mailing List
-Subject: Re: [alsa-devel] PCM Plugin Channel question
-
-02.07.2014 04:59, Brandon Yates wrote:
-
-> Hello, I have developed a pcm ext plugin that applies some processing 
-> to the audio stream in the transfer callback.
-
-Yes, this is how extplug is supposed to be used.
-
-> My plugin works for a mono (1 channel) stream. I'd now like to expand 
-> it to support stereo data in the form of 2 channels interleaved.  I 
-> can't find much information on how this works.  I have a couple 
-> questions that I'd greatly appreciate if anyone could help with.
->
-> 1) Is there any way in the 'SND_PCM_PLUGIN_DEFINE_FUNC' function that 
-> I can determine if the user application has opened the stream with 1 
-> channel vs 2 channel?
-
-There certainly is such information, but not directly in
-SND_PCM_PLUGIN_DEFINE_FUNC. The code should be placed in the init
-callback. The argument of that callback has a parameter of type
-snd_pcm_extplug_t*, and that structure has a "channels" field.
-
-You can use https://gitorious.org/dtsenc/dtsenc/source/alsaplugin.c as a
-model (but it needs to be updated to support channel maps). All actual
-processing is done in the dcaenc_convert_s32 function which is called by
-the transfer callback.
-
->
-> 2) I assume in the case of two channels my transfer function would 
-> need to: a)deinterleave the data from source so my processing routine 
-> can access it in a linear buffer and b) reinterleave the data before
-> I copy it to destination.   Is this correct? Is there more to it or
-> things I am overlooking?
-
-This is more-or-less correct. Just be sure to use the areas-related
-parameters to do deinterleaving correctly, because they can describe not
-only a simple interleaved format.
-
-> 3) For IO-plugin I see there is a `SND_PCM_IOPLUG_HW_ACCESS` value I 
-> could use to restrict the stream type to 
-> `SND_PCM_ACCESS_RW_INTERLEAVED`.  Does there exist a similar function 
-> for External PCM Plugin?
-
-You just don't have to apply this restriction.
-
-SND_PCM_ACCESS_MMAP_INTERLEAVED will also work without any effort on
-your side, due to your transfer function being called on
-snd_pcm_mmap_commit. And, if you use the areas-related parameters
-correctly, the plugin will also work with planar or complex layouts.
-
-<troll>
-But... why are you writing an ALSA plugin? This means that your code
-will not be usable with PulseAudio out of the box, because PulseAudio
-can talk to custom PCMs only through module-alsa-sink, which means there
-will be no jack detection and similar card-related features.
-
-Both ALSA and PulseAudio can wrap LADSPA plugins. Write that. And
-PulseAudio knows how to use N copies of a mono plugin to process an
-N-channel stream, so you don't have to deal with that yourself.
-</troll>
-
---
-Alexander E. Patrakov
+-- 
+2.0.0
