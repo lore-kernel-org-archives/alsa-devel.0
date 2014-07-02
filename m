@@ -1,16 +1,16 @@
 From: mengdong.lin@intel.com
-Subject: [PATCH 1/3] drm/i915: provide interface for audio
-	driver to query cdclk
-Date: Wed,  2 Jul 2014 22:43:46 +0800
-Message-ID: <c92be0f2e8caa9f7c506f184f2f92bad02527fe8.1404311751.git.mengdong.lin@intel.com>
+Subject: [PATCH 2/3] ALSA: hda - define hda_get_display_clk to
+	query CDCLK for Haswell/Broadwell
+Date: Wed,  2 Jul 2014 22:43:55 +0800
+Message-ID: <8b11a79ce0c5e28330577c0d390ed87301677190.1404311751.git.mengdong.lin@intel.com>
 References: <cover.1404311751.git.mengdong.lin@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id B799A265151
- for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 16:40:48 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 192442657AD
+ for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 16:41:24 +0200 (CEST)
 In-Reply-To: <cover.1404311751.git.mengdong.lin@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,54 +22,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, tiwai@suse.de, jani.nikula@intel.com
+Cc: Mengdong Lin <mengdong.lin@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jani Nikula <jani.nikula@intel.com>
+From: Mengdong Lin <mengdong.lin@intel.com>
 
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+This patch defines hda_get_display_clk() to query Core Display Clock (CDCLK)
+from the i915 display driver, via a private API i915_get_cdclk_freq().
 
-diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-index a90fdbd..21170e5 100644
---- a/drivers/gpu/drm/i915/intel_pm.c
-+++ b/drivers/gpu/drm/i915/intel_pm.c
-@@ -6256,6 +6256,27 @@ int i915_release_power_well(void)
- }
- EXPORT_SYMBOL_GPL(i915_release_power_well);
+The audio driver will set M/N values as per the CDCLK for restoring BCLK of
+the display HD-A controller.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+
+diff --git a/sound/pci/hda/hda_i915.c b/sound/pci/hda/hda_i915.c
+index e9e8a4a..76db293 100644
+--- a/sound/pci/hda/hda_i915.c
++++ b/sound/pci/hda/hda_i915.c
+@@ -24,6 +24,7 @@
  
-+/*
-+ * Private interface for the audio driver to get CDCLK in kHz.
-+ *
-+ * Caller must request power well using i915_request_power_well() prior to
-+ * making the call.
-+ */
-+int i915_get_cdclk_freq(void)
+ static int (*get_power)(void);
+ static int (*put_power)(void);
++static int (*get_cdclk)(void);
+ 
+ int hda_display_power(bool enable)
+ {
+@@ -38,6 +39,14 @@ int hda_display_power(bool enable)
+ 		return put_power();
+ }
+ 
++int hda_get_display_clk(void)
 +{
-+	struct drm_i915_private *dev_priv;
-+
-+	if (!hsw_pwr)
++	if (!get_cdclk)
 +		return -ENODEV;
 +
-+	dev_priv = container_of(hsw_pwr, struct drm_i915_private,
-+				power_domains);
-+
-+	return intel_ddi_get_cdclk_freq(dev_priv);
++	return get_cdclk();
 +}
-+EXPORT_SYMBOL_GPL(i915_get_cdclk_freq);
 +
+ int hda_i915_init(void)
+ {
+ 	int err = 0;
+@@ -55,6 +64,15 @@ int hda_i915_init(void)
+ 		return -ENODEV;
+ 	}
+ 
++	get_cdclk = symbol_request(i915_get_cdclk_freq);
++	if (!get_cdclk) {
++		symbol_put(i915_request_power_well);
++		get_power = NULL;
++		symbol_put(i915_release_power_well);
++		put_power = NULL;
++		return -ENODEV;
++	}
 +
- #define POWER_DOMAIN_MASK (BIT(POWER_DOMAIN_NUM) - 1)
+ 	pr_debug("HDA driver get symbol successfully from i915 module\n");
  
- #define HSW_ALWAYS_ON_POWER_DOMAINS (			\
-diff --git a/include/drm/i915_powerwell.h b/include/drm/i915_powerwell.h
-index 2baba99..baa6f11 100644
---- a/include/drm/i915_powerwell.h
-+++ b/include/drm/i915_powerwell.h
-@@ -32,5 +32,6 @@
- /* For use by hda_i915 driver */
- extern int i915_request_power_well(void);
- extern int i915_release_power_well(void);
-+extern int i915_get_cdclk_freq(void);
+ 	return err;
+@@ -70,6 +88,10 @@ int hda_i915_exit(void)
+ 		symbol_put(i915_release_power_well);
+ 		put_power = NULL;
+ 	}
++	if (get_cdclk) {
++		symbol_put(i915_get_cdclk_freq);
++		get_cdclk = NULL;
++	}
  
- #endif				/* _I915_POWERWELL_H_ */
+ 	return 0;
+ }
+diff --git a/sound/pci/hda/hda_i915.h b/sound/pci/hda/hda_i915.h
+index bfd835f..b4420e1 100644
+--- a/sound/pci/hda/hda_i915.h
++++ b/sound/pci/hda/hda_i915.h
+@@ -18,6 +18,7 @@
+ 
+ #ifdef CONFIG_SND_HDA_I915
+ int hda_display_power(bool enable);
++int hda_get_display_clk(void);
+ int hda_i915_init(void);
+ int hda_i915_exit(void);
+ #else
 -- 
 1.8.1.2
