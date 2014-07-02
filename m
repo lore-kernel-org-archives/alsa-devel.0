@@ -1,91 +1,170 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: PCM Plugin Channel question
-Date: Wed, 02 Jul 2014 09:45:18 +0600
-Message-ID: <53B3804E.7010804@gmail.com>
-References: <B02206F4ACA2904A8270028316B8DAFF011CC286@mercury.corp.adaptivedigital.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f49.google.com (mail-la0-f49.google.com
- [209.85.215.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FAC7262618
- for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2014 05:45:21 +0200 (CEST)
-Received: by mail-la0-f49.google.com with SMTP id gf5so6594775lab.36
- for <alsa-devel@alsa-project.org>; Tue, 01 Jul 2014 20:45:20 -0700 (PDT)
-In-Reply-To: <B02206F4ACA2904A8270028316B8DAFF011CC286@mercury.corp.adaptivedigital.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Brandon Yates <Brandon.Yates@adaptivedigital.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+From: Konstantinos Tsimpoukas <kostaslinuxxx@gmail.com>
+Subject: [PATCH 1/1] ice1712: Aligning definitions in header file
+Date: Tue,  1 Jul 2014 23:58:45 -0500
+Message-ID: <1404277125-10064-1-git-send-email-kostaslinuxxx@gmail.com>
+Return-path: <linux-sound-owner@vger.kernel.org>
+Sender: linux-sound-owner@vger.kernel.org
+To: Konstantinos Tsimpoukas <kostaslinuxxx@gmail.com>, alsa-devel@alsa-project.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-02.07.2014 04:59, Brandon Yates wrote:
+Aligning #defines in ice1712.h file.
 
-> Hello, I have developed a pcm ext plugin that applies some processing
-> to the audio stream in the transfer callback.
+Signed-off-by: Konstantinos Tsimpoukas <kostaslinuxxx@gmail.com>
+---
+ sound/pci/ice1712/ice1712.h | 84 ++++++++++++++++++++++-----------------------
+ 1 file changed, 42 insertions(+), 42 deletions(-)
 
-Yes, this is how extplug is supposed to be used.
-
-> My plugin works for a mono (1 channel) stream. I'd now like to expand
-> it to support stereo data in the form of 2 channels interleaved.  I
-> can't find much information on how this works.  I have a couple
-> questions that I'd greatly appreciate if anyone could help with.
->
-> 1) Is there any way in the 'SND_PCM_PLUGIN_DEFINE_FUNC' function that
-> I can determine if the user application has opened the stream with 1
-> channel vs 2 channel?
-
-There certainly is such information, but not directly in 
-SND_PCM_PLUGIN_DEFINE_FUNC. The code should be placed in the init 
-callback. The argument of that callback has a parameter of type 
-snd_pcm_extplug_t*, and that structure has a "channels" field.
-
-You can use https://gitorious.org/dtsenc/dtsenc/source/alsaplugin.c as a 
-model (but it needs to be updated to support channel maps). All actual 
-processing is done in the dcaenc_convert_s32 function which is called by 
-the transfer callback.
-
->
-> 2) I assume in the case of two channels my transfer function would
-> need to: a)deinterleave the data from source so my processing routine
-> can access it in a linear buffer and b) reinterleave the data before
-> I copy it to destination.   Is this correct? Is there more to it or
-> things I am overlooking?
-
-This is more-or-less correct. Just be sure to use the areas-related 
-parameters to do deinterleaving correctly, because they can describe not 
-only a simple interleaved format.
-
-> 3) For IO-plugin I see there is a `SND_PCM_IOPLUG_HW_ACCESS` value I
-> could use to restrict the stream type to
-> `SND_PCM_ACCESS_RW_INTERLEAVED`.  Does there exist a similar function
-> for External PCM Plugin?
-
-You just don't have to apply this restriction.
-
-SND_PCM_ACCESS_MMAP_INTERLEAVED will also work without any effort on 
-your side, due to your transfer function being called on 
-snd_pcm_mmap_commit. And, if you use the areas-related parameters 
-correctly, the plugin will also work with planar or complex layouts.
-
-<troll>
-But... why are you writing an ALSA plugin? This means that your code 
-will not be usable with PulseAudio out of the box, because PulseAudio 
-can talk to custom PCMs only through module-alsa-sink, which means there 
-will be no jack detection and similar card-related features.
-
-Both ALSA and PulseAudio can wrap LADSPA plugins. Write that. And 
-PulseAudio knows how to use N copies of a mono plugin to process an 
-N-channel stream, so you don't have to deal with that yourself.
-</troll>
-
+diff --git a/sound/pci/ice1712/ice1712.h b/sound/pci/ice1712/ice1712.h
+index b209fc3..f88800a 100644
+--- a/sound/pci/ice1712/ice1712.h
++++ b/sound/pci/ice1712/ice1712.h
+@@ -41,18 +41,18 @@
+ #define ICEREG(ice, x) ((ice)->port + ICE1712_REG_##x)
+ 
+ #define ICE1712_REG_CONTROL		0x00	/* byte */
+-#define   ICE1712_RESET			0x80	/* reset whole chip */
+-#define   ICE1712_SERR_LEVEL		0x04	/* SERR# level otherwise edge */
+-#define   ICE1712_NATIVE		0x01	/* native mode otherwise SB */
++#define ICE1712_RESET			0x80	/* reset whole chip */
++#define ICE1712_SERR_LEVEL		0x04	/* SERR# level otherwise edge */
++#define ICE1712_NATIVE			0x01	/* native mode otherwise SB */
+ #define ICE1712_REG_IRQMASK		0x01	/* byte */
+-#define   ICE1712_IRQ_MPU1		0x80
+-#define   ICE1712_IRQ_TIMER		0x40
+-#define   ICE1712_IRQ_MPU2		0x20
+-#define   ICE1712_IRQ_PROPCM		0x10
+-#define   ICE1712_IRQ_FM		0x08	/* FM/MIDI - legacy */
+-#define   ICE1712_IRQ_PBKDS		0x04	/* playback DS channels */
+-#define   ICE1712_IRQ_CONCAP		0x02	/* consumer capture */
+-#define   ICE1712_IRQ_CONPBK		0x01	/* consumer playback */
++#define ICE1712_IRQ_MPU1		0x80
++#define ICE1712_IRQ_TIMER		0x40
++#define ICE1712_IRQ_MPU2		0x20
++#define ICE1712_IRQ_PROPCM		0x10
++#define ICE1712_IRQ_FM			0x08	/* FM/MIDI - legacy */
++#define ICE1712_IRQ_PBKDS		0x04	/* playback DS channels */
++#define ICE1712_IRQ_CONCAP		0x02	/* consumer capture */
++#define ICE1712_IRQ_CONPBK		0x01	/* consumer playback */
+ #define ICE1712_REG_IRQSTAT		0x02	/* byte */
+ /* look to ICE1712_IRQ_* */
+ #define ICE1712_REG_INDEX		0x03	/* byte - indirect CCIxx regs */
+@@ -62,23 +62,23 @@
+ #define ICE1712_REG_NMI_INDEX		0x07	/* byte */
+ #define ICE1712_REG_AC97_INDEX		0x08	/* byte */
+ #define ICE1712_REG_AC97_CMD		0x09	/* byte */
+-#define   ICE1712_AC97_COLD		0x80	/* cold reset */
+-#define   ICE1712_AC97_WARM		0x40	/* warm reset */
+-#define   ICE1712_AC97_WRITE		0x20	/* W: write, R: write in progress */
+-#define   ICE1712_AC97_READ		0x10	/* W: read, R: read in progress */
+-#define   ICE1712_AC97_READY		0x08	/* codec ready status bit */
+-#define   ICE1712_AC97_PBK_VSR		0x02	/* playback VSR */
+-#define   ICE1712_AC97_CAP_VSR		0x01	/* capture VSR */
++#define ICE1712_AC97_COLD		0x80	/* cold reset */
++#define ICE1712_AC97_WARM		0x40	/* warm reset */
++#define ICE1712_AC97_WRITE		0x20	/* W: write, R: write in progress */
++#define ICE1712_AC97_READ		0x10	/* W: read, R: read in progress */
++#define ICE1712_AC97_READY		0x08	/* codec ready status bit */
++#define ICE1712_AC97_PBK_VSR		0x02	/* playback VSR */
++#define ICE1712_AC97_CAP_VSR		0x01	/* capture VSR */
+ #define ICE1712_REG_AC97_DATA		0x0a	/* word (little endian) */
+ #define ICE1712_REG_MPU1_CTRL		0x0c	/* byte */
+ #define ICE1712_REG_MPU1_DATA		0x0d	/* byte */
+ #define ICE1712_REG_I2C_DEV_ADDR	0x10	/* byte */
+-#define   ICE1712_I2C_WRITE		0x01	/* write direction */
++#define ICE1712_I2C_WRITE		0x01	/* write direction */
+ #define ICE1712_REG_I2C_BYTE_ADDR	0x11	/* byte */
+ #define ICE1712_REG_I2C_DATA		0x12	/* byte */
+ #define ICE1712_REG_I2C_CTRL		0x13	/* byte */
+-#define   ICE1712_I2C_EEPROM		0x80	/* EEPROM exists */
+-#define   ICE1712_I2C_BUSY		0x01	/* busy bit */
++#define ICE1712_I2C_EEPROM		0x80	/* EEPROM exists */
++#define ICE1712_I2C_BUSY		0x01	/* busy bit */
+ #define ICE1712_REG_CONCAP_ADDR		0x14	/* dword - consumer capture */
+ #define ICE1712_REG_CONCAP_COUNT	0x18	/* word - current/base count */
+ #define ICE1712_REG_SERR_SHADOW		0x1b	/* byte */
+@@ -128,14 +128,14 @@
+ #define ICE1712_DSC_ADDR1		0x02	/* dword - base address 1 */
+ #define ICE1712_DSC_COUNT1		0x03	/* word - count 1 */
+ #define ICE1712_DSC_CONTROL		0x04	/* byte - control & status */
+-#define   ICE1712_BUFFER1		0x80	/* buffer1 is active */
+-#define   ICE1712_BUFFER1_AUTO		0x40	/* buffer1 auto init */
+-#define   ICE1712_BUFFER0_AUTO		0x20	/* buffer0 auto init */
+-#define   ICE1712_FLUSH			0x10	/* flush FIFO */
+-#define   ICE1712_STEREO		0x08	/* stereo */
+-#define   ICE1712_16BIT			0x04	/* 16-bit data */
+-#define   ICE1712_PAUSE			0x02	/* pause */
+-#define   ICE1712_START			0x01	/* start */
++#define ICE1712_BUFFER1			0x80	/* buffer1 is active */
++#define ICE1712_BUFFER1_AUTO		0x40	/* buffer1 auto init */
++#define ICE1712_BUFFER0_AUTO		0x20	/* buffer0 auto init */
++#define ICE1712_FLUSH			0x10	/* flush FIFO */
++#define ICE1712_STEREO			0x08	/* stereo */
++#define ICE1712_16BIT			0x04	/* 16-bit data */
++#define ICE1712_PAUSE			0x02	/* pause */
++#define ICE1712_START			0x01	/* start */
+ #define ICE1712_DSC_RATE		0x05	/* dword - rate */
+ #define ICE1712_DSC_VOLUME		0x06	/* word - volume control */
+ 
+@@ -146,12 +146,12 @@
+ #define ICEMT(ice, x) ((ice)->profi_port + ICE1712_MT_##x)
+ 
+ #define ICE1712_MT_IRQ			0x00	/* byte - interrupt mask */
+-#define   ICE1712_MULTI_CAPTURE		0x80	/* capture IRQ */
+-#define   ICE1712_MULTI_PLAYBACK	0x40	/* playback IRQ */
+-#define   ICE1712_MULTI_CAPSTATUS	0x02	/* capture IRQ status */
+-#define   ICE1712_MULTI_PBKSTATUS	0x01	/* playback IRQ status */
++#define ICE1712_MULTI_CAPTURE		0x80	/* capture IRQ */
++#define ICE1712_MULTI_PLAYBACK		0x40	/* playback IRQ */
++#define ICE1712_MULTI_CAPSTATUS		0x02	/* capture IRQ status */
++#define ICE1712_MULTI_PBKSTATUS		0x01	/* playback IRQ status */
+ #define ICE1712_MT_RATE			0x01	/* byte - sampling rate select */
+-#define   ICE1712_SPDIF_MASTER		0x10	/* S/PDIF input is master clock */
++#define ICE1712_SPDIF_MASTER		0x10	/* S/PDIF input is master clock */
+ #define ICE1712_MT_I2S_FORMAT		0x02	/* byte - I2S data format */
+ #define ICE1712_MT_AC97_INDEX		0x04	/* byte - AC'97 index */
+ #define ICE1712_MT_AC97_CMD		0x05	/* byte - AC'97 command & status */
+@@ -161,14 +161,14 @@
+ #define ICE1712_MT_PLAYBACK_SIZE	0x14	/* word - playback size */
+ #define ICE1712_MT_PLAYBACK_COUNT	0x16	/* word - playback count */
+ #define ICE1712_MT_PLAYBACK_CONTROL	0x18	/* byte - control */
+-#define   ICE1712_CAPTURE_START_SHADOW	0x04	/* capture start */
+-#define   ICE1712_PLAYBACK_PAUSE	0x02	/* playback pause */
+-#define   ICE1712_PLAYBACK_START	0x01	/* playback start */
++#define ICE1712_CAPTURE_START_SHADOW	0x04	/* capture start */
++#define ICE1712_PLAYBACK_PAUSE		0x02	/* playback pause */
++#define ICE1712_PLAYBACK_START		0x01	/* playback start */
+ #define ICE1712_MT_CAPTURE_ADDR		0x20	/* dword - capture address */
+ #define ICE1712_MT_CAPTURE_SIZE		0x24	/* word - capture size */
+ #define ICE1712_MT_CAPTURE_COUNT	0x26	/* word - capture count */
+ #define ICE1712_MT_CAPTURE_CONTROL	0x28	/* byte - control */
+-#define   ICE1712_CAPTURE_START		0x01	/* capture start */
++#define ICE1712_CAPTURE_START		0x01	/* capture start */
+ #define ICE1712_MT_ROUTE_PSDOUT03	0x30	/* word */
+ #define ICE1712_MT_ROUTE_SPDOUT		0x32	/* word */
+ #define ICE1712_MT_ROUTE_CAPTURE	0x34	/* dword */
+@@ -176,7 +176,7 @@
+ #define ICE1712_MT_MONITOR_INDEX	0x3a	/* byte */
+ #define ICE1712_MT_MONITOR_RATE		0x3b	/* byte */
+ #define ICE1712_MT_MONITOR_ROUTECTRL	0x3c	/* byte */
+-#define   ICE1712_ROUTE_AC97		0x01	/* route digital mixer output to AC'97 */
++#define ICE1712_ROUTE_AC97		0x01	/* route digital mixer output to AC'97 */
+ #define ICE1712_MT_MONITOR_PEAKINDEX	0x3e	/* byte */
+ #define ICE1712_MT_MONITOR_PEAKDATA	0x3f	/* byte */
+ 
+@@ -186,9 +186,9 @@
+ 
+ /* PCI[60] System Configuration */
+ #define ICE1712_CFG_CLOCK	0xc0
+-#define   ICE1712_CFG_CLOCK512	0x00	/* 22.5692Mhz, 44.1kHz*512 */
+-#define   ICE1712_CFG_CLOCK384  0x40	/* 16.9344Mhz, 44.1kHz*384 */
+-#define   ICE1712_CFG_EXT	0x80	/* external clock */
++#define ICE1712_CFG_CLOCK512	0x00	/* 22.5692Mhz, 44.1kHz*512 */
++#define ICE1712_CFG_CLOCK384    0x40	/* 16.9344Mhz, 44.1kHz*384 */
++#define ICE1712_CFG_EXT		0x80	/* external clock */
+ #define ICE1712_CFG_2xMPU401	0x20	/* two MPU401 UARTs */
+ #define ICE1712_CFG_NO_CON_AC97 0x10	/* consumer AC'97 codec is not present */
+ #define ICE1712_CFG_ADC_MASK	0x0c	/* one, two, three, four stereo ADCs */
 -- 
-Alexander E. Patrakov
+1.9.1
+
