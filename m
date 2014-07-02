@@ -1,71 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: tda998x: add a codec to the HDMI transmitter
-Date: Wed, 2 Jul 2014 20:37:56 +0100
-Message-ID: <20140702193756.GM410@sirena.org.uk>
+Date: Wed, 2 Jul 2014 20:42:52 +0100
+Message-ID: <20140702194252.GN410@sirena.org.uk>
 References: <20140702183841.7c964832@armhf>
  <20140702165628.GO20799@lunn.ch>
  <20140702195154.47d6f6b4@armhf>
- <20140702180212.GS32514@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4oQnj4jcM03NhqPN"
+	protocol="application/pgp-signature"; boundary="QGBKWVSgmlsIyJ+t"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140702180212.GS32514@n2100.arm.linux.org.uk>
+In-Reply-To: <20140702195154.47d6f6b4@armhf>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Jean-Francois Moine <moinejf@free.fr>, Andrew Lunn <andrew@lunn.ch>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Andrew Lunn <andrew@lunn.ch>, Russell King - ARM Linux <linux@arm.linux.org.uk>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---4oQnj4jcM03NhqPN
+--QGBKWVSgmlsIyJ+t
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 02, 2014 at 07:02:12PM +0100, Russell King - ARM Linux wrote:
+On Wed, Jul 02, 2014 at 07:51:54PM +0200, Jean-Francois Moine wrote:
 
-> Well, as far as I'm concerned right now, it's for Mark to sort out this
-> situation, and tell us what he wants to do with the Kirkwood stuff.  I
-> suspect he's keeping quiet because he doesn't care about it.
+> I tested this CODEC with both DAPM and DPCM. If the audio subsystem
+> asks for streaming on both I2S and S/PDIF, only the last call is served
+> (this depends on the order of the DAI links in the audio card creation
+> table).
 
-Well, that and the general level of stress around the support for these
-boards in general. =20
+I'd expect this to return an error for the busy DAI rather than just
+silently ignore it failing to start or (better) implement some control
+to let the user select which of the DAIs is active.
 
-> Given that he's the one with the knowledge of DPCM, and he's the maintain=
-er
-> of ASoC, he has the ultimate responsibility for sorting out this and
-> giving direction as to how he wants to proceed.
-
-> As I understand it though, my solution is the full and proper DPCM soluti=
-on,
-> and I believe that what's currently in mainline is not a DPCM solution.
-
-That's right, from what I remember your last set of patches looked like
-it was pretty much there in terms of the code for the CPU.  Liam's
-obviously the most in depth expert with DPCM but he's incredibly snowed
-under with work right now.
-
---4oQnj4jcM03NhqPN
+--QGBKWVSgmlsIyJ+t
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTtF+RAAoJELSic+t+oim9utwP/jak9ChYQvNwMg96s8eXE9+w
-FugfXEoApjJcCQnsfkfP3x/6xgAKxBpS6JK8dw7VJqpIX76A8XxwavFOz769fyMD
-GcJDRQN8O9tN1q8lX1iP4BWcnb20ITloK7LqZha7C9qkxh3hMprHE3ewHfNATUDC
-TolfsY3mKseGkCS1s6t9fNWbZA5/r4P3uIeXCFFinpPyf4ifebnQzVHtVP6MFj+k
-dKY73UnKbhnnOIE8eKEjMhEAz3TS1PP6QshUtD70vjW/cn6/5xawC+v9cFgzdgE1
-ZvmDup3pTRT91QD0PAxWho52A/na0m/ouKgi4y66gktzJ4+rHy2SIJ2f54Efn6If
-SX0kEO8UCaz0Jt5SKm/UwlvmsmlP8BDFRFV2YRc6qC66ewmFJQDCSJt9iCNTq+/W
-pKgx/D1KfVjWNT5DiN9Itxz0JP5sZRJYVo0UQEcOJeNy3wsacK3xCk0nrIXLYh85
-d84nWmypXdmwbNtL1tka5O0pP9B+SkYDjBhG0LAmDPo7rdbdFi0yUOYBFH1wofXT
-FEvzzb4xVFYOmtK8vq9H1rUGQJdW63AnLR0wVowEkmXx4W9P3YTvk9ovFCSLvp9P
-gY7/AwUz14Ocsy2FBdrldVcrcdTsoIF3hDHpx663/1ewqnk0JfVwH0Ut9FusFi74
-8gUS6slP69bMZLyHguOR
-=Qfcs
+iQIcBAEBAgAGBQJTtGC5AAoJELSic+t+oim9tb0QAJt+FzWAKa03Dm0MUFuXQ2DN
+no9KhfaolUNuxddftKE0sacoTgbDZNBMmNQ0HcIc8IbdDOPHscw4VplNB8Iie1JK
+aatHjwpQ98DWVlFAv7PZDp3dhOc/1TkUTwQCJkw6XuUMiodexdDEUn+aGw9Rn2Lu
+pSBZXr3lQ/GnHj/P2L2wqBeuMXB+6jokh6mzi6djQrjCtu0/BeznrOmWEVtagUMM
+nqa0lM+0ek1c4oznGvs9qhSBsBNTUt7YQGns6VMsVTqgnE2/ukIaezM2wbuMUH3n
+unhGNok+CO07nJeFj/TAoHBPZhFsyIQdFJJVFu7q/TdP3dPFGc0yquQt8fuTavZM
+PN9daXR1sUBUHO0LEiKrei0Q7E7tlWTLbIudHFLTduuIkJiry15xDE5XmXvDdH5U
+kdpWpJDBaaocK/c3WGgCQ5/BKuvmUfsfRozCWU5a+PcZ0V2kcMAgi7zWCJte25Uf
+bWlgGLQnh2qMLBKypIAoNMakEx5RThZEOqebJoRH4oOuPirXMiGn2GbvBF+uqa5W
+gP4vw787P/WbJsEq8PTJnNSw0Sk+sQ+q9l2OpJkuxv4gVsFLjNN2Igi77I8XtpQ+
+5HknLAsmKqvMXQRUfAxeTog+y5jFtBrQ4wMxQm6Gbzr9Unq1hXWO83kwcNeGzno/
+aHO3BAG3Q9pHezd5dkyx
+=0sKu
 -----END PGP SIGNATURE-----
 
---4oQnj4jcM03NhqPN--
+--QGBKWVSgmlsIyJ+t--
