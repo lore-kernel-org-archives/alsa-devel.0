@@ -1,35 +1,54 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/4] dma: edma: Declare DMA_SLAVE_BUSWIDTH_3_BYTES as supported buswidth
-Date: Wed, 2 Jul 2014 14:29:28 +0300
-Message-ID: <1404300570-14082-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1404300570-14082-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 10/10 v2] ASoC: rsnd: add DT support to DVC
+Date: Wed, 2 Jul 2014 12:36:21 +0100
+Message-ID: <20140702113621.GG410@sirena.org.uk>
+References: <87d2e6zjhf.wl%kuninori.morimoto.gx@gmail.com>
+ <8761jstphc.wl%kuninori.morimoto.gx@gmail.com>
+ <87r42gsaoa.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1404300570-14082-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: vinod.koul@intel.com, dan.j.williams@intel.com, lars@metafoo.de, tiwai@suse.de, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, joelf@ti.com, nsekhar@ti.com
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, dmaengine@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="m0vRWufqUC70IDnR"
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <87r42gsaoa.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-eDMA can be configured for 3bytes word size for source and destination.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/dma/edma.c | 1 +
- 1 file changed, 1 insertion(+)
+--m0vRWufqUC70IDnR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/dma/edma.c b/drivers/dma/edma.c
-index d08c4dedef35..b512caf46944 100644
---- a/drivers/dma/edma.c
-+++ b/drivers/dma/edma.c
-@@ -982,6 +982,7 @@ static void __init edma_chan_init(struct edma_cc *ecc,
- 
- #define EDMA_DMA_BUSWIDTHS	(BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) | \
- 				 BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) | \
-+				 BIT(DMA_SLAVE_BUSWIDTH_3_BYTES) | \
- 				 BIT(DMA_SLAVE_BUSWIDTH_4_BYTES))
- 
- static int edma_dma_device_slave_caps(struct dma_chan *dchan,
--- 
-2.0.0
+On Sun, Jun 22, 2014 at 05:59:28PM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Now, DVC can use DT
+
+Applied, thanks.
+
+--m0vRWufqUC70IDnR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTs+6xAAoJELSic+t+oim9cPYP/R1LCF6BhubsCOQp+iQQbhF9
+9+/gZIg+MbxrgR6AUYWcHWL1M/3JV2IqxgYywPyaGTcueY/c7DVaRzfGDViwS2sL
+Ikuoa7gR2781zkCWQfLfZzsQuEBLxKswPFgqsQ3TyK+bKSuk23abv6Quok+ExNS7
+/UoKDFOpodtePUz724XR/8BS9M9sro7gKx4WH18zZc5HbAMofAAAr7ePnI5yLwiJ
+qKUztJDW2cRyGK/6S8Cc08ASXBQ8k8I1xqFMSxHvLa6U/dlbChPRF2sVOsykbZQm
+IEJsk3Cv5fIGdJ6EHvNt1AvkdiALfHx8mtwQUsILJVfT01yMPrrIVPQ8JiF6a08i
+Rauc2GzODw9p9p/9kzNFBv+sKdbPhM5NaMuUAw0exhcT309O3uUxK5dThadSkDLD
+4GO6Tn6dgFaOZ6Yr/SHvg/AmB8AfU4VFIV2/z6FNhWiOqv4PB2ZJxpIOFgqr8Lu/
+476WXAVBbVNUd7BWxhEx5qF47lWWbwKfLVX/JKjZ+7eTHRU0LnIIb54vEN+VqAED
+75+gBc71iq+3CifBFch9lJE6lm6CI3j4GIyiyetBjqfcD+wW2tKQEeUM59/l2Bds
+ZWH62f2vp2zE+ChrP5MBT/kGSLp6iu5z2sigdrWHGOubkAm+g+XHAHhS8bKztyQw
+LB8JVw11dger0zTIFTUo
+=BQSi
+-----END PGP SIGNATURE-----
+
+--m0vRWufqUC70IDnR--
