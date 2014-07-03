@@ -1,85 +1,76 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] ASoC: tda998x: add a codec to the HDMI transmitter
-Date: Thu, 3 Jul 2014 16:43:25 +0100
-Message-ID: <20140703154325.GY32514@n2100.arm.linux.org.uk>
-References: <20140702165628.GO20799@lunn.ch> <20140702195154.47d6f6b4@armhf>
- <20140702194252.GN410@sirena.org.uk> <20140703074959.7c489912@armhf>
- <20140703104432.GV410@sirena.org.uk> <20140703133406.2d3e3a1d@armhf>
- <20140703115924.GY410@sirena.org.uk> <20140703152826.103c9d6c@armhf>
- <20140703134346.GW32514@n2100.arm.linux.org.uk>
- <20140703172909.60caf2c7@armhf>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 0/2] ASoC: add CSR SiRFSoC audio USP
+	interface driver
+Date: Thu, 3 Jul 2014 17:12:08 +0100
+Message-ID: <20140703161208.GJ410@sirena.org.uk>
+References: <1404269142-3557-1-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <20140703172909.60caf2c7@armhf>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============8738763226214636031=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C4C52658F4
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 18:12:30 +0200 (CEST)
+In-Reply-To: <1404269142-3557-1-git-send-email-rongjun.ying@csr.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rongjun Ying <rongjun.ying@csr.com>
+Cc: devicetree@vger.kernel.org, Barry Song <baohua@kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Workgroup.linux@csr.com, Rob Herring <robh+dt@kernel.org>, Grant Likely <grant.likely@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 03, 2014 at 05:29:09PM +0200, Jean-Francois Moine wrote:
-> I think that you did not look at my code.
-> 
-> Both S/PDIF and I2S work with the TDA998x. It is a choice of the audio
-> subsystem to do this choice, not Russell King.
 
-If you think I'm arguing because I personally want something, then we're
-not going to make any progress.
+--===============8738763226214636031==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4XBiSqiiHCIj6zoM"
+Content-Disposition: inline
 
-What I want is for this to be _correct_ and _not_ to introduce silly
-restrictions which break people's setups.
 
-> When DPCM will handle the formats and rates, the audio subsystem will
-> find by itself if such stream will go to the HDMI only or to the S/PDIF
-> only or to both. The kirwood audio driver will work as it is and the tda998x
-> CODEC will work as it is. There will be no need to change these drivers.
+--4XBiSqiiHCIj6zoM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Except, as Mark has already pointed out, and as I keep pointing out to
-you, and you keep refusing to accept, the kirkwood driver as it stands
-is *not* a DPCM driver.  It makes no use of that stuff at all.
+On Wed, Jul 02, 2014 at 10:45:40AM +0800, Rongjun Ying wrote:
+> This patchset adds the SiRF USP controller driver, this
+> driver uses the USP as I2S or DSP_A mode interface.
 
-What you're doing in kirkwood-i2s is providing two plain DAI links,
-and then insisting that only one can be active any any one time.
+Applied both, thanks.
 
-A DPCM solution provides at least one frontend DAI link and at least
-one backend DAI link.  Your code does not do this.
+--4XBiSqiiHCIj6zoM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-The second point is that - and as I keep telling you - that as soon
-as you couple your existing code (which restricts things like the
-sample rates) you can no longer output anything else through the
-optical out ON THE CUBOX.  For this statement, I'm not talking
-_generally_,  I'm talking _specifically_ about _one_ _platform_.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-> All we need actually is some more code in DPCM or multi-codec or
-> whatever mechanism which will route the stream according to the rates
-> and formats.
+iQIcBAEBAgAGBQJTtYDVAAoJELSic+t+oim93A8P/0+bY4t28ElyrfsZ0mfvmp3D
+luvKqIXa0hUm3tCUTpr5NNwBv198XUB4P0CC1WMFPIVQYSWQCjF7h4AdYp2dpCQm
+3YFIXB/t4Ub5upxkS6BAT+Q/ZcLlkIqtUg0xHeUxjuIxa8c/OiGiqN47zxjbXj11
+LcPn+/cr0sTTKQFgFs+g9Gy6RArOqx3r7QFyrGmqn5TbytAasdtSzoBDxQy1dojd
+u1HOLXyKaiN4fTH7mG66U9EKD5WGjm7yQ7T8jDjqyDD3/XoYhr/ObdF8kZxnDZpy
+XjxzJmSruCsaLyGnqkNH8PoGCFSTckE5nsZOuBDjt4m4F7y62ULcyEY95pGNAem/
+iCeqyxSkXnNd1m/Yhm1m2q/ekPeSOGdHkpH7SVmRwbeFG1M77Sh3/qDjm9Ls/D6M
+JX+S4l1LNFPcJY4sWOuWRjCU3ocl4N5m88NYESQbNfST/GPStqzXQ/LAz5upv3KZ
+lK9EGTmGSIveKGAGO9zYVpFEMJeb3JNl30EnZVrfpe/w1q5BlrMmUR3zqSZ+6kuI
+IoR5eXEGkPo3DDOysDfE/HU/wVRo8OAHzLdANuyskYovMiCN3s1IiGbEmTErOwsc
+WpaP7E+aXOXzXM/8wiv9vr78jglLcMpMIoJTd9mfsri6cabUXDpPBUcAOG+czj2D
+epy1KMZ8xVPk03FMMxss
+=9Fe3
+-----END PGP SIGNATURE-----
 
-Yes, DPCM currently lacks full support, that's been known about for
-some time - I've reported it to Mark, but it seems that this isn't
-something that is going to get fixed until others put work into it.
+--4XBiSqiiHCIj6zoM--
 
-> Eventually, the TDA998x is used in other machines. Are you sure that
-> the audio controllers of all these machines have a S/PDIF output
-> connected to the S/PDIF input of the tda998x?
+--===============8738763226214636031==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Which bit of "we need to support both I2S and SPDIF" in my previous
-emails was not clear.  Which bit of "We should only support SPDIF
-on the Cubox" was not clear?
 
-I *fully* acknowledge that we need to support both, but I'm putting
-a _strong_ recommendation to you _with_ technical reasons why we
-should _only_ support SPDIF on the Cubox.
-
--- 
-FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
-improving, and getting towards what was expected from it.
+--===============8738763226214636031==--
