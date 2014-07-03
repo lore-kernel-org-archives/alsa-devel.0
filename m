@@ -1,57 +1,109 @@
-From: Damien Lespiau <damien.lespiau@intel.com>
-Subject: Re: [PATCH v2 1/2] drm/i915: provide interface for
-	audio	driver to query cdclk
-Date: Thu, 3 Jul 2014 12:18:34 +0100
-Message-ID: <20140703111834.GA8285@strange.amr.corp.intel.com>
-References: <1404363651-4388-1-git-send-email-mengdong.lin@intel.com>
- <87mwcqew2x.fsf@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
+ multicodec
+Date: Thu, 03 Jul 2014 13:20:11 +0200
+Message-ID: <53B53C6B.8020707@metafoo.de>
+References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
+ <1404200881-32253-7-git-send-email-bcousson@baylibre.com>
+ <20140701164134.GH2296@intel.com> <53B400DE.3040205@baylibre.com>
+ <20140703064147.GK2296@intel.com> <53B539E8.1000301@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <87mwcqew2x.fsf@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-167.synserver.de (smtp-out-167.synserver.de
+ [212.40.185.167])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8ADFA265848
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 13:20:11 +0200 (CEST)
+In-Reply-To: <53B539E8.1000301@baylibre.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Benoit Cousson <bcousson@baylibre.com>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org
+Cc: misael.lopez@ti.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 03, 2014 at 10:32:38AM +0300, Jani Nikula wrote:
-> On Thu, 03 Jul 2014, mengdong.lin@intel.com wrote:
-> > From: Jani Nikula <jani.nikula@intel.com>
-> 
-> I wrote this as a quick hack patch to try as an alternative to [1] which
-> ended up not working on Haswell. Please reassure me that this is going
-> to be a temporary solution until we get a more generic interface between
-> the audio and display drivers. I don't much like this, but at least it's
-> isolated and small.
-> 
-> I'd like the commit message amended with something like:
-> 
-> """
-> If the display power well has been disabled, the display audio
-> controller divider values EM4 MVALUE and EM5 NVALUE will have been
-> lost. The CDCLK frequency is required for reprogramming them. Provide a
-> private interface for the audio driver to query CDCLK.
-> 
-> This is a stopgap solution until a more generic interface between audio
-> and display drivers has been implemented.
-> """
-> 
-> I'd also like to have an additional Reviewed-by from the i915
-> side. After that, I'm fine with merging this through alsa.
+On 07/03/2014 01:09 PM, Benoit Cousson wrote:
+> On 03/07/2014 08:41, Vinod Koul wrote:
+>> On Wed, Jul 02, 2014 at 02:53:50PM +0200, Benoit Cousson wrote:
+>>>>> @@ -622,23 +633,33 @@ int soc_new_compress(struct snd_soc_pcm_runtime
+>>>>> *rtd, int num)
+>>>>>   {
+>>>>>       struct snd_soc_codec *codec = rtd->codec;
+>>>>>       struct snd_soc_platform *platform = rtd->platform;
+>>>>> -    struct snd_soc_dai *codec_dai = rtd->codec_dai;
+>>>>>       struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>>>>>       struct snd_compr *compr;
+>>>>>       struct snd_pcm *be_pcm;
+>>>>>       char new_name[64];
+>>>>> -    int ret = 0, direction = 0;
+>>>>> -
+>>>>> -    /* check client and interface hw capabilities */
+>>>>> -    snprintf(new_name, sizeof(new_name), "%s %s-%d",
+>>>>> -            rtd->dai_link->stream_name, codec_dai->name, num);
+>>>>> -
+>>>>> -    if (codec_dai->driver->playback.channels_min)
+>>>>> -        direction = SND_COMPRESS_PLAYBACK;
+>>>>> -    else if (codec_dai->driver->capture.channels_min)
+>>>>> -        direction = SND_COMPRESS_CAPTURE;
+>>>>> -    else
+>>>>> -        return -EINVAL;
+>>>>> +    int i, ret = 0, direction = -1;
+>>>>> +
+>>>>> +    for (i = 0; i < rtd->num_codecs; i++) {
+>>>>> +        struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
+>>>>> +        /* check client and interface hw capabilities */
+>>>>> +        snprintf(new_name, sizeof(new_name), "%s %s-%d",
+>>>>> +             rtd->dai_link->stream_name, codec_dai->name, num);
+>>>>> +
+>>>>> +        if (direction < 0) {
+>>>>> +            if (codec_dai->driver->playback.channels_min)
+>>>>> +                direction = SND_COMPRESS_PLAYBACK;
+>>>>> +            else if (codec_dai->driver->capture.channels_min)
+>>>>> +                direction = SND_COMPRESS_CAPTURE;
+>>>> direction wont change with multiple codecs, so this loop makes no sense
+>>>> here.
+>>>> For simplcity perhaps we can use cpu_dai?
+>>>>> +            else
+>>>>> +                return -EINVAL;
+>>>>> +        } else {
+>>>> when will this get executed? You have initialized direction to -1 and if
+>>>> case is
+>>>> always true. I think compiler will simply remove the below sinppet.
+>>>
+>>> direction is set to -1, then the first iteration will set it to the
+>>> direction of the first codec_dai. The other iteration are just
+>>> checking that there are all in the same direction and will fail
+>>> otherwise.
+>>>
+>>>>> +            if ((codec_dai->driver->playback.channels_min &&
+>>>>> +                    direction != SND_COMPRESS_PLAYBACK) ||
+>>>>> +                (codec_dai->driver->capture.channels_min &&
+>>>>> +                    direction != SND_COMPRESS_CAPTURE))
+>>>> and what exactly are we trying to check here?
+>>>
+>>> That every codec_dai are in the same direction.
+>>>
+>>> If you think this is pointless since every DAI are always in the
+>>> same direction, we can just remove it.
+>> I think that will simplify it. we certainly dont expect different direction,
+>> right?
+>
+> Lars, Mark
+> Any thought on that? Does that sound reasonable to you to use only the first
+> codec_dai to figure out the direction?
+>
 
-Sure.
+I guess it is ok. But I'm wondering if the direction shouldn't depend on the 
+CPU dai rather than the CODEC dai? E.g. it is possible to have a CODEC with 
+both playback and capture support in two dai_links, one for capture, one for 
+playback. The check above would create a SND_COMPRESS_PLAYBACK stream in 
+both cases. Even if the CPU dai only supported capture in one of the cases.
 
-Reviewed-by: Damien Lespiau <damien.lespiau@intel.com>
-
--- 
-Damien
+- Lars
