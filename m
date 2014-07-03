@@ -1,82 +1,68 @@
-From: Jani Nikula <jani.nikula@intel.com>
-Subject: Re: [PATCH v2 1/2] drm/i915: provide interface for
-	audio	driver to query cdclk
-Date: Thu, 03 Jul 2014 13:20:19 +0300
-Message-ID: <874myyeobg.fsf@intel.com>
-References: <1404363651-4388-1-git-send-email-mengdong.lin@intel.com>
- <87mwcqew2x.fsf@intel.com>
- <F46914AEC2663F4A9BB62374E5EEF8F82B590623@SHSMSX101.ccr.corp.intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tda998x: add a codec to the HDMI transmitter
+Date: Thu, 3 Jul 2014 11:44:32 +0100
+Message-ID: <20140703104432.GV410@sirena.org.uk>
+References: <20140702183841.7c964832@armhf>
+ <20140702165628.GO20799@lunn.ch>
+ <20140702195154.47d6f6b4@armhf>
+ <20140702194252.GN410@sirena.org.uk>
+ <20140703074959.7c489912@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F82B590623@SHSMSX101.ccr.corp.intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="thwsKKN5whlRGe6j"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20140703074959.7c489912@armhf>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Clark <robdclark-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 03 Jul 2014, "Lin, Mengdong" <mengdong.lin@intel.com> wrote:
-> Hi Jani,
->
->> -----Original Message-----
->> From: Nikula, Jani
->> Sent: Thursday, July 03, 2014 3:33 PM
->  
->> I wrote this as a quick hack patch to try as an alternative to [1] which
->> ended up not working on Haswell. Please reassure me that this is going to
->> be a temporary solution until we get a more generic interface between the
->> audio and display drivers. I don't much like this, but at least it's isolated
->> and small.
->
-> Sure. We'll clean up code when the generic interface is ready. 
-> This is only a temporary solution, safer than the BIOS notifications.
 
-Thanks.
+--thwsKKN5whlRGe6j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> And would you like to further revise this patch? 
-> But please keep this API not changed at the moment since the audio
-> driver already queries the symbol name.
+On Thu, Jul 03, 2014 at 07:49:59AM +0200, Jean-Francois Moine wrote:
+> Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
 
-Please just take over the patch, and amend the commit message along the
-lines of what I proposed. I think it's easiest if it gets merged through
-the alsa tree - you have a dependency on it and your changes are much
-bigger. The i915 changes are isolated and not expected to conflict.
+> > I'd expect this to return an error for the busy DAI rather than just
+> > silently ignore it failing to start or (better) implement some control
+> > to let the user select which of the DAIs is active.
 
-But as I said, I'd like a Reviewed-by from another i915 developer
-first. I don't like to push/ack my own patches without review from
-others, no matter how small the patches.
+> This is not an error. If the audio subsystem (DPCM, not the user)
+> chooses to activate both I2S and S/PDIF, this means the HDMI audio may
+> be taken either from I2S or from S/PDIF: both inputs have the right
+> format and rate.
 
-Thanks,
-Jani.
+Your board happens to only be able to present the same input on both I2S
+and S/PDIF but that might not apply to other boards, they may be able to
+route different signals to each which would present a practical problem.
 
+--thwsKKN5whlRGe6j
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->
-> Thanks
-> Mengdong
->
->> I'd like the commit message amended with something like:
->> 
->> """
->> If the display power well has been disabled, the display audio controller
->> divider values EM4 MVALUE and EM5 NVALUE will have been lost. The
->> CDCLK frequency is required for reprogramming them. Provide a private
->> interface for the audio driver to query CDCLK.
->> 
->> This is a stopgap solution until a more generic interface between audio
->> and display drivers has been implemented.
->> """
->> 
->> I'd also like to have an additional Reviewed-by from the i915 side. After
->> that, I'm fine with merging this through alsa.
+iQIcBAEBAgAGBQJTtTQNAAoJELSic+t+oim9kCYP/1PZRjnVbG8twwFDebfaR2P9
+l/MsRKR4D68eHTLCkU1BzRNefr42P9v2ZiWmWVwBG/agQvpKp9MltfbR7AbUR4aS
+tYZtY+mkJ5DC7vwrNSMoUa2TcQdOJe6coqYk4qFO0SYDq/jXljajA4jYUrvX+LQa
+KomDovrCFWNDoliDHTSzinyk3zHYrDRH2t4HrRu0huIXiRBVLD1ipF20+kbTdsJu
+a0/2cyntUYOLJVwNBzp+egoEoreET8+4+02bb0SSoSk+XT5jv7EegtTtJEY3DBYN
+wP46S4OvtlpR0bI0nB5/UfamKD2GsccGO8gKzVpmeJghUcAgr1Rvkf5pKEZNW+8t
+3CoRCZr9ubaWiSAJ8cNT8FnrtIE6c3Tf480q/cfDLF6+bp5kJ0bzv/TRH3ZVrzyN
+Tetx3ifdnK9ciwRvESyw4ZdYn6KaZeG9lyiJv+EOVzvCbK1GRP8tdIc9lVf27AL7
+W9fYzlpuQ3SZQAJvUMiImIvucGvFSU5UjD0u8z1BuDK5NVDp0GYPphXseZvm1yaP
+1mVlBe5vpMESBmkseA08vtwg3zKTj3s3Y6qzeNAfRoRmIWVa8wtFc62eVo23nn+G
+NTRrU5YsSJtxG6DgEOXoXtSoIvNmaZxt70TlCI48Rm4JxAkWDyFK5qP17SYtdsG5
+lhIhHjGXg0wmUJMAggrk
+=r83t
+-----END PGP SIGNATURE-----
 
--- 
-Jani Nikula, Intel Open Source Technology Center
+--thwsKKN5whlRGe6j--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
