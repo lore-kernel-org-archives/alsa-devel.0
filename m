@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: tas5086: add regulator consumer
-	support
-Date: Thu, 3 Jul 2014 16:12:29 +0100
-Message-ID: <20140703151229.GF410@sirena.org.uk>
-References: <1404399403-6316-1-git-send-email-zonque@gmail.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v4] ASoC: tas2552: Support TI TAS2552
+	Amplifier
+Date: Thu, 3 Jul 2014 10:13:06 -0500
+Message-ID: <53B57302.8030100@ti.com>
+References: <1404398393-21497-1-git-send-email-dmurphy@ti.com>
+ <20140703145250.GO5814@saruman.home> <53B56F63.8000400@ti.com>
+ <20140703150621.GQ5814@saruman.home>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6159650160946051017=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 30DCE2654C6
- for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 17:12:46 +0200 (CEST)
-In-Reply-To: <1404399403-6316-1-git-send-email-zonque@gmail.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EFB32658EB
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 17:13:13 +0200 (CEST)
+In-Reply-To: <20140703150621.GQ5814@saruman.home>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +23,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: balbi@ti.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---===============6159650160946051017==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LsnByradU3Ze6UwI"
-Content-Disposition: inline
+On 07/03/2014 10:06 AM, Felipe Balbi wrote:
+> Hi,
+>
+> On Thu, Jul 03, 2014 at 09:57:39AM -0500, Dan Murphy wrote:
+>> On 07/03/2014 09:52 AM, Felipe Balbi wrote:
+>>> Hi,
+>>>
+>>> On Thu, Jul 03, 2014 at 09:39:53AM -0500, Dan Murphy wrote:
+>>>> +static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>>>> +{
+>>>> +	u8 serial_format;
+>>>> +	struct snd_soc_codec *codec = dai->codec;
+>>>> +
+>>>> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+>>>> +	case SND_SOC_DAIFMT_CBS_CFS:
+>>>> +		serial_format = 0x00;
+>>>> +		break;
+>>>> +	case SND_SOC_DAIFMT_CBS_CFM:
+>>>> +		serial_format = TAS2552_WORD_CLK_MASK;
+>>>> +		break;
+>>>> +	case SND_SOC_DAIFMT_CBM_CFS:
+>>>> +		serial_format = TAS2552_BIT_CLK_MASK;
+>>>> +		break;
+>>>> +	case SND_SOC_DAIFMT_CBM_CFM:
+>>>> +		serial_format = (TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK);
+>>>> +		break;
+>>>> +	default:
+>>>> +		return -EINVAL;
+>>>> +	}
+>>>> +
+>>>> +	pm_runtime_get_sync(codec->dev);
+>>>> +
+>>>> +	snd_soc_update_bits(codec, TAS2552_SER_CTRL_1,
+>>>> +			    (TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK),
+>>>> +			    serial_format);
+>>>> +
+>>>> +	pm_runtime_put(codec->dev);
+>>> I have a feeling it's better to just put at the end of the function.
+>>> Remember your pm_runtime_put() will issue i2c transfers which can take a
+>>> looooooong time ;-)
+>> I thought about that but the next switch case could return if the format
+>> mask is invalid which means the runtime calls would not be balanced.
+>>
+>> So I decided to wrap the snd_soc calls with the pm_runtime calls to keep it
+>> balanced.
+> it looks like you can do both switch statements outside of the
+> pm_runtime region and cache results on serial_format and do a single
+> write to CTRL_1 register (?). If not, then just use two local variables.
+>
 
+Yeah I could probably consolidate these into a single call.  And throw a debug statement
+in the default case to why the format was not set.
 
---LsnByradU3Ze6UwI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Dan
 
-On Thu, Jul 03, 2014 at 04:56:43PM +0200, Daniel Mack wrote:
-> The TAS5086 has two power domains, DVDD and AVDD. Enable them both as
-> long as the codec is in use.
->=20
-> Also, switch on the power to identify the chip at device probe level,
-> and switch it off again afterwards. The codec level will take care for
-> power handling later.
-
-Applied, thanks.  One small thing:
-
-> +	/*
-> +	 * The chip has been identified, so we can turn off the power
-> +	 * again until the dai link is set up.
-> +	 */
-> +	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
-> +
-> +	if (ret =3D=3D 0)
-> +		ret =3D snd_soc_register_codec(&i2c->dev, &soc_codec_dev_tas5086,
-> +					     &tas5086_dai, 1);
-
-It can be slightly smoother to do the disable after registering so that
-if we immediately cause a card to register and that causes the device to
-become active again we don't bounce the power.  Nobody is ever likely to
-notice the difference though.
-
---LsnByradU3Ze6UwI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTtXLaAAoJELSic+t+oim9dMgP/21akFsfljtOZkIp0MG9dEea
-cwT4YXwb3y/SNhv+H0Qy5y5LzjVGFFWx8W6uDME4bFA+7kh0MCSYdxRsMOhQUyWq
-u2qPXwBLHYxzgGOEjjHN81JYGRJHVGC3VMf0/MyM5JvfcvHRmSPwlruxFeuUYOKw
-jQPNdOPGsrAAznqkYgjfYSjFWK6bG8RGZCrVoEGuv/KF9fNqsPD+T1mKeHv/rI4o
-S1Pu6rPB/HZ8DIy5HR7LZlP23QR3GoyllrU8EhW+vfbe+3vAHO0crX5LaqQy0qn8
-pnSneF62b1voxLs/tuEQ09YvhjvRU3PnlPXWZ4YvcBUjQsATXPrpVwvRqMttpQM3
-5Av095PReV0+zAVO5dyag8a48ZWjJY5zXOOTPWSke+7OnfEFUNXaBmOjw2C6FHoU
-kcA2gBqqlTqfc35Draca5QyZBsJgKzDC3jiVzrMnyoz/h3Z/XVrxOkmDV125r8Fi
-ZmpskZFFnlV8mIHZ9FVcaIAlNJ1PKIXIWTnIdj0aX5qeu0KEfq6nuuUDwyQEEE6X
-S8wWCevn3joyREZwBOjsnlF7kSNbookKAfhHiP4YLqvBgHbABANsuvcbd5OhWw8M
-u324NAlMt5MpZnomC8PDSLCAT4CFoacvOX9upyIDfQvem5QVkUt9lvbAWAfPssas
-daTtL0mynkk8Gw7xgslK
-=T+aA
------END PGP SIGNATURE-----
-
---LsnByradU3Ze6UwI--
-
---===============6159650160946051017==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6159650160946051017==--
+-- 
+------------------
+Dan Murphy
