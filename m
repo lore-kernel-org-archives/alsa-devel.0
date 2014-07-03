@@ -1,89 +1,73 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v4] ASoC: tas2552: Support TI TAS2552
-	Amplifier
-Date: Thu, 3 Jul 2014 10:13:06 -0500
-Message-ID: <53B57302.8030100@ti.com>
-References: <1404398393-21497-1-git-send-email-dmurphy@ti.com>
- <20140703145250.GO5814@saruman.home> <53B56F63.8000400@ti.com>
- <20140703150621.GQ5814@saruman.home>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v2 1/2] drm/i915: provide interface for
+ audio	driver to query cdclk
+Date: Thu, 3 Jul 2014 15:14:29 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B5920DD@SHSMSX101.ccr.corp.intel.com>
+References: <1404363651-4388-1-git-send-email-mengdong.lin@intel.com>
+ <87mwcqew2x.fsf@intel.com> <20140703111834.GA8285@strange.amr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EFB32658EB
- for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 17:13:13 +0200 (CEST)
-In-Reply-To: <20140703150621.GQ5814@saruman.home>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: balbi@ti.com
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20140703111834.GA8285@strange.amr.corp.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Lespiau, Damien" <damien.lespiau@intel.com>, "Nikula, Jani" <jani.nikula@intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+> -----Original Message-----
+> From: Lespiau, Damien
+> Sent: Thursday, July 03, 2014 7:19 PM
+> To: Nikula, Jani
+> Cc: Lin, Mengdong; alsa-devel@alsa-project.org; tiwai@suse.de;
+> intel-gfx@lists.freedesktop.org
+> Subject: Re: [Intel-gfx] [PATCH v2 1/2] drm/i915: provide interface for audio
+> driver to query cdclk
+> 
+> On Thu, Jul 03, 2014 at 10:32:38AM +0300, Jani Nikula wrote:
+> > On Thu, 03 Jul 2014, mengdong.lin@intel.com wrote:
+> > > From: Jani Nikula <jani.nikula@intel.com>
+> >
+> > I wrote this as a quick hack patch to try as an alternative to [1]
+> > which ended up not working on Haswell. Please reassure me that this is
+> > going to be a temporary solution until we get a more generic interface
+> > between the audio and display drivers. I don't much like this, but at
+> > least it's isolated and small.
+> >
+> > I'd like the commit message amended with something like:
+> >
+> > """
+> > If the display power well has been disabled, the display audio
+> > controller divider values EM4 MVALUE and EM5 NVALUE will have been
+> > lost. The CDCLK frequency is required for reprogramming them. Provide
+> > a private interface for the audio driver to query CDCLK.
+> >
+> > This is a stopgap solution until a more generic interface between
+> > audio and display drivers has been implemented.
+> > """
+> >
+> > I'd also like to have an additional Reviewed-by from the i915 side.
+> > After that, I'm fine with merging this through alsa.
+> 
+> Sure.
+> 
+> Reviewed-by: Damien Lespiau <damien.lespiau@intel.com>
+> 
+> --
+> Damien
 
-On 07/03/2014 10:06 AM, Felipe Balbi wrote:
-> Hi,
->
-> On Thu, Jul 03, 2014 at 09:57:39AM -0500, Dan Murphy wrote:
->> On 07/03/2014 09:52 AM, Felipe Balbi wrote:
->>> Hi,
->>>
->>> On Thu, Jul 03, 2014 at 09:39:53AM -0500, Dan Murphy wrote:
->>>> +static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
->>>> +{
->>>> +	u8 serial_format;
->>>> +	struct snd_soc_codec *codec = dai->codec;
->>>> +
->>>> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
->>>> +	case SND_SOC_DAIFMT_CBS_CFS:
->>>> +		serial_format = 0x00;
->>>> +		break;
->>>> +	case SND_SOC_DAIFMT_CBS_CFM:
->>>> +		serial_format = TAS2552_WORD_CLK_MASK;
->>>> +		break;
->>>> +	case SND_SOC_DAIFMT_CBM_CFS:
->>>> +		serial_format = TAS2552_BIT_CLK_MASK;
->>>> +		break;
->>>> +	case SND_SOC_DAIFMT_CBM_CFM:
->>>> +		serial_format = (TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK);
->>>> +		break;
->>>> +	default:
->>>> +		return -EINVAL;
->>>> +	}
->>>> +
->>>> +	pm_runtime_get_sync(codec->dev);
->>>> +
->>>> +	snd_soc_update_bits(codec, TAS2552_SER_CTRL_1,
->>>> +			    (TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK),
->>>> +			    serial_format);
->>>> +
->>>> +	pm_runtime_put(codec->dev);
->>> I have a feeling it's better to just put at the end of the function.
->>> Remember your pm_runtime_put() will issue i2c transfers which can take a
->>> looooooong time ;-)
->> I thought about that but the next switch case could return if the format
->> mask is invalid which means the runtime calls would not be balanced.
->>
->> So I decided to wrap the snd_soc calls with the pm_runtime calls to keep it
->> balanced.
-> it looks like you can do both switch statements outside of the
-> pm_runtime region and cache results on serial_format and do a single
-> write to CTRL_1 register (?). If not, then just use two local variables.
->
+Thank you, Jani and Damien!
 
-Yeah I could probably consolidate these into a single call.  And throw a debug statement
-in the default case to why the format was not set.
+I'll add the comment message and submit the revised patch tomorrow.
 
-Dan
-
--- 
-------------------
-Dan Murphy
+Regards
+Mengdong
