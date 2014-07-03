@@ -1,67 +1,38 @@
-From: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [PATCH] ASoC: tda998x: add a codec to the HDMI transmitter
-Date: Thu, 3 Jul 2014 14:43:46 +0100
-Message-ID: <20140703134346.GW32514@n2100.arm.linux.org.uk>
-References: <20140702183841.7c964832@armhf> <20140702165628.GO20799@lunn.ch> <20140702195154.47d6f6b4@armhf> <20140702194252.GN410@sirena.org.uk> <20140703074959.7c489912@armhf> <20140703104432.GV410@sirena.org.uk> <20140703133406.2d3e3a1d@armhf> <20140703115924.GY410@sirena.org.uk> <20140703152826.103c9d6c@armhf>
+From: Putinei Ionut <messages-noreply@linkedin.com>
+Subject: abdul, please add me to your LinkedIn network
+Date: Thu, 3 Jul 2014 13:57:27 +0000 (UTC)
+Message-ID: <377019301.10901630.1404395847504.JavaMail.app@ela4-app3486.prod>
+Reply-To: putineiionut@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140703152826.103c9d6c@armhf>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Clark <robdclark-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailb-fa.linkedin.com (mailb-fa.linkedin.com [199.101.162.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96EA02619D0
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 15:57:30 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: abdul moiz <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 03, 2014 at 03:28:26PM +0200, Jean-Francois Moine wrote:
-> OK. no problem, I can do that: only the first stream is switched and
-> the second is rejected.
-> 
-> But, this means that there will be a lot of errors when DPCM will be
-> used, because, in most cases for the Cubox (kirkwood audio + tda998x),
-> both ways I2S and S/PDIF will be activated at the same time for a
-> single stream (you may note that the routes from the second input
-> cannot be blocked by the CODEC after it received the first input,
-> because these routes have already been computed).
+Hi abdul,
+I'd like to connect with you on LinkedIn.
 
-This is /very/ easy to solve on the Cubox, if only you would listen
-to me - I've stated many times that I2S should not be used there.
+Putinei Ionut
+Linux Engineer at Wind River
 
-Just because the hardware is wired up with both the SPDIF connected
-and the I2S connected, it does *not* mean that we have to wire them
-both up in software.
+Accept: http://www.linkedin.com/blink?simpleRedirect=1LiR9Pc516jzRVpkJApn9xq7cCczcOcjsUdP8UdzAQejkQc3AUdjR4imVLqnhxt6BSrCACe39vsClyrmlJnSlQqnpKqjRHpipBt6BSrCBTpmUJt71BoSdxbm8JrnpKqlZJrmZzbmNJpjRDrCBHoS5Ot2pBt6BSrABOpm9JpmQZoipLdiRGrCVFd3pUq2RzqSMSoj8ZpjYOtyZBbSRLoOVKqmhBqSVFr2VTtTsLbPFMt7hE&msgID=I560010934_135&markAsRead=
 
-Indeed, *everything* works with just SPDIF.  The same is not true of
-I2S.  So, what we do for the Cubox is we just wire up SPDIF in software
-and be done with it - we then get a fully functional setup.  So using
-I2S on the Cubox is mostly pointless - unless you wish to use I2S for
-testing purposes.
+View Putinei Ionut's profile: http://www.linkedin.com/blink?simpleRedirect=0Vej8Qd38Tcz8Zh4BOpm9JpmQCpmRxrzRBs7Bkq7hRoioRcP5vd3cVc34Mc3oRilYSejcScP0UcP4Zt71BoSd1rCZFt65QqnpKqipGhAdyfmVBqSZkq7hRoioUcBZOpm9JpmRvpnhFtCVFfmJB9ClQqnpKqntBryRBrm5Kbm8JrnpKqlZJrmZzbmNJpjRDrCBHoS5Ot2pSs6UZt2pLdiRGrCVFd3pUq2RzqSMSoj8ZpjYOtyZBbSRLoOVKqmhBqSVFr2VTtTsLbPFMt7hE&msgID=I560010934_135&markAsRead=
 
-Let me also point out that adding your changes - including the addition
-of this codec patch - explicitly deny the possibility of:
-* using compressed audio streams via the optical SPDIF out socket
-* using compressed audio streams over HDMI
-* using audio rates and formats not supported by the attached HDMI
-  device via the optical SPDIF socket.
+You are receiving Invitation emails. Unsubscribe here: http://www.linkedin.com/blink?simpleRedirect=54MkDhggDAUcjdcpQZSt3dCiDBPplpVlRh7ukVNrkdWhzBLoDsOmzxVk4t6hSNFbmMOs5gPlCNIjAh5cARWhkFLj4RWnSsUoBl1gk5TjRlHtk54dSRecQphgjRAqmZI9CYRbmFKrCAQdDxEbmdHr3pxczRAqmkCe39vsClyrmlJnSlQqnpKqjRHpipBt6BSrCBTpmUJoDlPrDkJpyRJtCVFnSRJrScJr6RBfmtKqmJzon9Q9DdRpjRQ9CYRbmFKrCAQdDxEbmdHr3pxczRBfP9SbSkLrmZzbCVFp6lHrCBIbDtTtOYLeDdMt7hE&msgID=I560010934_135&markAsRead=
 
-These are serious issues which thus far you have so far failed to
-respond on.  People who use the Cubox as a media platform rather
-than (presumably) just a music jukebox want things like compressed
-audio out and SPDIF out to work.
-
-Look, one reason to use the optical socket is because you want to
-push out a stream at (eg) 96kHz to your audio system, but your TV
-doesn't support it.  With your approach, you explicitly block that
-because the TDA998x codec assocated with the Kirkwood CPU DAI
-refuses to allow that sample rate.  Fine, if the attached device
-does not support that rate, then the right thing to do may be to
-disable audio transmission over HDMI, but with the Cubox hardware,
-limiting the sample rates is totally the wrong solution.
-
--- 
-FTTC broadband for 0.8mile line: now at 9.7Mbps down 460kbps up... slowly
-improving, and getting towards what was expected from it.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+This email was intended for abdul moiz (Software engineer at Vu TelePresence Inc.). Learn why we included this at the following link: http://www.linkedin.com/blink?simpleRedirect=e3wTd3RAimlIoSBQsC4Ce39vsClyrmlJnSlQqnpKqjRHpipIsBlBoSBSsCljsClJrThPtmcZoipLdiRGrCVFd3pUq2RzqSMSoj8ZpjYOtyZBbSRLoOVKqmhBqSVFr2VTtTsLbPFMt7hE&msgID=I560010934_135&markAsRead=
+&copy; 2014, LinkedIn Corporation. 2029 Stierlin Ct. Mountain View, CA 94043, USA
