@@ -1,111 +1,112 @@
-From: Jani Nikula <jani.nikula@intel.com>
-Subject: Re: [PATCH v2 1/2] drm/i915: provide interface for
-	audio	driver to query cdclk
-Date: Thu, 03 Jul 2014 10:32:38 +0300
-Message-ID: <87mwcqew2x.fsf@intel.com>
-References: <1404363651-4388-1-git-send-email-mengdong.lin@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v3 3/5] ASoC: generic-dmaengine-pcm:
+ Prepare formats mask for valid physical sample sizes
+Date: Thu, 03 Jul 2014 10:29:08 +0200
+Message-ID: <53B51454.2060704@metafoo.de>
+References: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
+ <1404363116-10538-4-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <1404363651-4388-1-git-send-email-mengdong.lin@intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: mengdong.lin@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-164.synserver.de (smtp-out-164.synserver.de
+ [212.40.185.164])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2FFD265872
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 10:29:09 +0200 (CEST)
+In-Reply-To: <1404363116-10538-4-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, vinod.koul@intel.com, dan.j.williams@intel.com, tiwai@suse.de, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, joelf@ti.com, nsekhar@ti.com
+Cc: dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 03 Jul 2014, mengdong.lin@intel.com wrote:
-> From: Jani Nikula <jani.nikula@intel.com>
-
-I wrote this as a quick hack patch to try as an alternative to [1] which
-ended up not working on Haswell. Please reassure me that this is going
-to be a temporary solution until we get a more generic interface between
-the audio and display drivers. I don't much like this, but at least it's
-isolated and small.
-
-I'd like the commit message amended with something like:
-
-"""
-If the display power well has been disabled, the display audio
-controller divider values EM4 MVALUE and EM5 NVALUE will have been
-lost. The CDCLK frequency is required for reprogramming them. Provide a
-private interface for the audio driver to query CDCLK.
-
-This is a stopgap solution until a more generic interface between audio
-and display drivers has been implemented.
-"""
-
-I'd also like to have an additional Reviewed-by from the i915
-side. After that, I'm fine with merging this through alsa.
-
-BR,
-Jani.
-
-
-[1] http://mid.gmane.org/cover.1404222047.git.jani.nikula@intel.com
-
-
+On 07/03/2014 06:51 AM, Peter Ujfalusi wrote:
+> Based on the dma_slave_caps's addr_widths queried from the dma driver
+> prepare the hw.formats mask to include only formats which is supported by
+> the DMA engine.
+> In case the dma driver does not implement the slave_caps the default
+> assumption is that it supports 1, 2 and 4 bytes widths.
 >
-> Signed-off-by: Jani Nikula <jani.nikula@intel.com>
-> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
->
-> diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-> index a90fdbd..21170e5 100644
-> --- a/drivers/gpu/drm/i915/intel_pm.c
-> +++ b/drivers/gpu/drm/i915/intel_pm.c
-> @@ -6256,6 +6256,27 @@ int i915_release_power_well(void)
->  }
->  EXPORT_SYMBOL_GPL(i915_release_power_well);
->  
-> +/*
-> + * Private interface for the audio driver to get CDCLK in kHz.
-> + *
-> + * Caller must request power well using i915_request_power_well() prior to
-> + * making the call.
-> + */
-> +int i915_get_cdclk_freq(void)
-> +{
-> +	struct drm_i915_private *dev_priv;
-> +
-> +	if (!hsw_pwr)
-> +		return -ENODEV;
-> +
-> +	dev_priv = container_of(hsw_pwr, struct drm_i915_private,
-> +				power_domains);
-> +
-> +	return intel_ddi_get_cdclk_freq(dev_priv);
-> +}
-> +EXPORT_SYMBOL_GPL(i915_get_cdclk_freq);
-> +
-> +
->  #define POWER_DOMAIN_MASK (BIT(POWER_DOMAIN_NUM) - 1)
->  
->  #define HSW_ALWAYS_ON_POWER_DOMAINS (			\
-> diff --git a/include/drm/i915_powerwell.h b/include/drm/i915_powerwell.h
-> index 2baba99..baa6f11 100644
-> --- a/include/drm/i915_powerwell.h
-> +++ b/include/drm/i915_powerwell.h
-> @@ -32,5 +32,6 @@
->  /* For use by hda_i915 driver */
->  extern int i915_request_power_well(void);
->  extern int i915_release_power_well(void);
-> +extern int i915_get_cdclk_freq(void);
->  
->  #endif				/* _I915_POWERWELL_H_ */
-> -- 
-> 1.8.1.2
->
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> http://lists.freedesktop.org/mailman/listinfo/intel-gfx
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
--- 
-Jani Nikula, Intel Open Source Technology Center
+Looks good, thanks.
+
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+
+> ---
+>
+> I know that the format validation could be done like this:
+>
+> +		if (bits > 0 && bits <=64 && !(bits % 8) &&
+> +		    (addr_widths & (1 << (bits / 8))))
+> +				hw.formats |= (1LL << i);
+>
+> But I think the switch() implementation is more readable.
+>
+>
+>   sound/soc/soc-generic-dmaengine-pcm.c | 37 ++++++++++++++++++++++++++++++++++-
+>   1 file changed, 36 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+> index 5bace124ef43..6307f85e871b 100644
+> --- a/sound/soc/soc-generic-dmaengine-pcm.c
+> +++ b/sound/soc/soc-generic-dmaengine-pcm.c
+> @@ -119,7 +119,10 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
+>   	struct snd_dmaengine_dai_dma_data *dma_data;
+>   	struct dma_slave_caps dma_caps;
+>   	struct snd_pcm_hardware hw;
+> -	int ret;
+> +	u32 addr_widths = BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) |
+> +			  BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) |
+> +			  BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
+> +	int i, ret;
+>
+>   	if (pcm->config && pcm->config->pcm_hardware)
+>   		return snd_soc_set_runtime_hwparams(substream,
+> @@ -146,6 +149,38 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
+>   			hw.info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
+>   		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
+>   			hw.info |= SNDRV_PCM_INFO_BATCH;
+> +
+> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +			addr_widths = dma_caps.dstn_addr_widths;
+> +		else
+> +			addr_widths = dma_caps.src_addr_widths;
+> +	}
+> +
+> +	/*
+> +	 * Prepare formats mask for valid/allowed sample types. If the dma does
+> +	 * not have support for the given physical word size, it needs to be
+> +	 * masked out so user space can not use the format which produces
+> +	 * corrupted audio.
+> +	 * In case the dma driver does not implement the slave_caps the default
+> +	 * assumption is that it supports 1, 2 and 4 bytes widths.
+> +	 */
+> +	for (i = 0; i <= SNDRV_PCM_FORMAT_LAST; i++) {
+> +		int bits = snd_pcm_format_physical_width(i);
+> +
+> +		/* Enable only samples with DMA supported physical widths */
+> +		switch (bits) {
+> +		case 8:
+> +		case 16:
+> +		case 24:
+> +		case 32:
+> +		case 64:
+> +			if (addr_widths & (1 << (bits / 8)))
+> +				hw.formats |= (1LL << i);
+> +			break;
+> +		default:
+> +			/* Unsupported types */
+> +			break;
+> +		}
+>   	}
+>
+>   	return snd_soc_set_runtime_hwparams(substream, &hw);
+>
