@@ -1,91 +1,111 @@
-From: Jan Kiszka <jan.kiszka@web.de>
-Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs for more Thinkpads
- with Conexant codec
-Date: Thu, 03 Jul 2014 09:04:02 +0200
-Message-ID: <53B50062.30200@web.de>
-References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com> <53AFF992.5030403@web.de> <53B0C596.6090007@canonical.com> <53B1078B.4090101@web.de> <53B219DF.6090807@canonical.com> <53B26575.1000003@web.de> <53B27ED7.4070401@canonical.com>
+From: Jani Nikula <jani.nikula@intel.com>
+Subject: Re: [PATCH v2 1/2] drm/i915: provide interface for
+	audio	driver to query cdclk
+Date: Thu, 03 Jul 2014 10:32:38 +0300
+Message-ID: <87mwcqew2x.fsf@intel.com>
+References: <1404363651-4388-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="wIRoUibvDoE2B02u7dbWPTjdw07uiX4bj"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <53B27ED7.4070401@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Hui Wang <hui.wang@canonical.com>
-Cc: Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org, alex.hung@canonical.com, yk@canonical.com, david.henningsson@canonical.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <1404363651-4388-1-git-send-email-mengdong.lin@intel.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: mengdong.lin@intel.com, alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wIRoUibvDoE2B02u7dbWPTjdw07uiX4bj
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Thu, 03 Jul 2014, mengdong.lin@intel.com wrote:
+> From: Jani Nikula <jani.nikula@intel.com>
 
-On 2014-07-01 11:26, Hui Wang wrote:
-> On 07/01/2014 03:38 PM, Jan Kiszka wrote:
->> On 2014-07-01 04:15, Hui Wang wrote:
->>> On 06/30/2014 02:45 PM, Jan Kiszka wrote:
->>>> On 2014-06-30 04:04, Hui Wang wrote:
->>>>> On 06/29/2014 07:33 PM, Jan Kiszka wrote:
->>>>>> On 2013-11-27 07:47, Hui Wang wrote:
->>>>>>> Most Thinkpad Edge series laptops use conexant codec, so far
->>>>>>> although
-> <snip>
->>>>>>>
->>>> Is there anything I can debug or any information I can collect from =
-my
->>>> box to examine this?
->>> What is the linux distribution on your machine? And use showkey to ca=
-tch
->>> the keycode of that button.
->> I'm running OpenSUSE 13.1. The reported keycode of the power button is=
+I wrote this as a quick hack patch to try as an alternative to [1] which
+ended up not working on Haswell. Please reassure me that this is going
+to be a temporary solution until we get a more generic interface between
+the audio and display drivers. I don't much like this, but at least it's
+isolated and small.
 
->> 116.
-> It seems the keycode is correct, it is power keycode rather the mute
-> keycode.
->=20
-> Could you please do some debug, let us find which line of code is the
-> root cause for this problem. for example:
->=20
-> after running the line, the problem shows up:
->=20
-> 1.     if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb,
-> &found, NULL)) && found) // in the sound/pci/hda/thinkpad_helper.c,
-> is_thinkpad()
+I'd like the commit message amended with something like:
 
-This evaluates to true
+"""
+If the display power well has been disabled, the display audio
+controller divider values EM4 MVALUE and EM5 NVALUE will have been
+lost. The CDCLK frequency is required for reprogramming them. Provide a
+private interface for the audio driver to query CDCLK.
 
->=20
-> 2.     return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb,
-> &found, NULL)) && found; // same as above
->=20
-> 3.         if (led_set_func(TPACPI_LED_MUTE, false) >=3D 0) { //in the
-> sound/pci/hda/thinkpad_helper.c, hda_fixup_thinkpad_acpi()
+This is a stopgap solution until a more generic interface between audio
+and display drivers has been implemented.
+"""
 
-=2E..and this
+I'd also like to have an additional Reviewed-by from the i915
+side. After that, I'm fine with merging this through alsa.
 
->=20
-> 4. if (led_set_func(TPACPI_LED_MICMUTE, false) >=3D 0) { // same as abo=
-ve
->=20
-
-=2E..and this as well. spec->num_adc_nids is 1.
-
-Jan
+BR,
+Jani.
 
 
+[1] http://mid.gmane.org/cover.1404222047.git.jani.nikula@intel.com
 
---wIRoUibvDoE2B02u7dbWPTjdw07uiX4bj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+>
+> Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+> Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+>
+> diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
+> index a90fdbd..21170e5 100644
+> --- a/drivers/gpu/drm/i915/intel_pm.c
+> +++ b/drivers/gpu/drm/i915/intel_pm.c
+> @@ -6256,6 +6256,27 @@ int i915_release_power_well(void)
+>  }
+>  EXPORT_SYMBOL_GPL(i915_release_power_well);
+>  
+> +/*
+> + * Private interface for the audio driver to get CDCLK in kHz.
+> + *
+> + * Caller must request power well using i915_request_power_well() prior to
+> + * making the call.
+> + */
+> +int i915_get_cdclk_freq(void)
+> +{
+> +	struct drm_i915_private *dev_priv;
+> +
+> +	if (!hsw_pwr)
+> +		return -ENODEV;
+> +
+> +	dev_priv = container_of(hsw_pwr, struct drm_i915_private,
+> +				power_domains);
+> +
+> +	return intel_ddi_get_cdclk_freq(dev_priv);
+> +}
+> +EXPORT_SYMBOL_GPL(i915_get_cdclk_freq);
+> +
+> +
+>  #define POWER_DOMAIN_MASK (BIT(POWER_DOMAIN_NUM) - 1)
+>  
+>  #define HSW_ALWAYS_ON_POWER_DOMAINS (			\
+> diff --git a/include/drm/i915_powerwell.h b/include/drm/i915_powerwell.h
+> index 2baba99..baa6f11 100644
+> --- a/include/drm/i915_powerwell.h
+> +++ b/include/drm/i915_powerwell.h
+> @@ -32,5 +32,6 @@
+>  /* For use by hda_i915 driver */
+>  extern int i915_request_power_well(void);
+>  extern int i915_release_power_well(void);
+> +extern int i915_get_cdclk_freq(void);
+>  
+>  #endif				/* _I915_POWERWELL_H_ */
+> -- 
+> 1.8.1.2
+>
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> http://lists.freedesktop.org/mailman/listinfo/intel-gfx
 
-iEYEARECAAYFAlO1AGIACgkQitSsb3rl5xQCvQCgyHPB2f7hTX5X9OPbMhnudaBz
-6iUAniHhhGy+m9CM12QO7+ROVDKvfF2W
-=mx87
------END PGP SIGNATURE-----
-
---wIRoUibvDoE2B02u7dbWPTjdw07uiX4bj--
+-- 
+Jani Nikula, Intel Open Source Technology Center
