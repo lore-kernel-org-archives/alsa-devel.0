@@ -1,68 +1,73 @@
-From: Sebastian Reimers <sebastian.reimers-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
-Subject: [PATCH 1/1] usb: gadget: f_uac2: Fix pcm sample size selection
-Date: Thu,  3 Jul 2014 20:15:28 +0200
-Message-ID: <1404411328-32566-1-git-send-email-sebastian.reimers@gmail.com>
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
-Cc: Sebastian Reimers <sebastian.reimers-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
+ multicodec
+Date: Thu, 03 Jul 2014 20:23:16 +0200
+Message-ID: <53B59F94.6040803@metafoo.de>
+References: <20140701164134.GH2296@intel.com> <53B400DE.3040205@baylibre.com>
+ <20140703064147.GK2296@intel.com> <53B539E8.1000301@baylibre.com>
+ <53B53C6B.8020707@metafoo.de> <53B540EE.30009@baylibre.com>
+ <53B541F0.1040105@metafoo.de> <53B5428F.9050100@baylibre.com>
+ <20140703120613.GP2296@intel.com> <20140703121846.GB410@sirena.org.uk>
+ <20140703161517.GQ2296@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-175.synserver.de (smtp-out-175.synserver.de
+ [212.40.185.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20D59261A74
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 20:24:25 +0200 (CEST)
+In-Reply-To: <20140703161517.GQ2296@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-The pcm playback and capture sample size format was fixed
-SNDRV_PCM_FMTBIT_S16_LE.
+On 07/03/2014 06:15 PM, Vinod Koul wrote:
+> On Thu, Jul 03, 2014 at 01:18:46PM +0100, Mark Brown wrote:
+>>> BUT Now thinking over this again, does this make sense do do with multiple
+>>> codecs??
+>>
+>>> For folks haveing decoders in DSP inside SoC, the compressed device will be
+>>> actually a FE. The BE will be PCM to which codec would be linked. The folks
+>>> supporting decoders inside codec like WM wont ever need this.
+>>
+>>> Mark, do you agree to this?
+>>
+>>> So re-thinking again on why we need this??
+>>
+>> The use case tends to be for applications that have one device per
+>> physical output.  This isn't normally mobile, it's normally high
+>> performance audio applications where people are doing things to try to
+>> electrically isolate the analogue outputs or dealing with high power so
+>> need to keep speaker outputs physically separate.  I can imagine set top
+>> box type applications (which do use offloaded media decode) doing this.
+>
+> Not sure if I follow you, I have no idea of how these systems work.
+>
+> But if sound card has compressed device it would need to represent using DPCM as
+> we don't know the decoder PCM output. The multiple codecs would then connect to
+> the PCM BE.
+> So on Compressed FE, we wont have multiple codecs.
+>
+> For codecs, the compressed audio will go to one codec, multiple ones wont make
+> sense.
+>
+> So how can we have a situation where we have compressed device linked to
+> multiple codecs?
+>
 
-This patch respects also 16, 24 and 32 bit p_ssize and c_ssize values.
+If the assumption is that a DAI link that has a compressed DAI on the CPU side 
+is never connected to a 'real' CODEC (or multiple CODECS) on the CODEC side. I 
+think we can just leave soc-compress.c alone and just add a sanity check to 
+make sure that num_codecs is always 1.
 
-Signed-off-by: Sebastian Reimers <sebastian.reimers-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- drivers/usb/gadget/f_uac2.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/gadget/f_uac2.c b/drivers/usb/gadget/f_uac2.c
-index 6261db4a..3ed89ec 100644
---- a/drivers/usb/gadget/f_uac2.c
-+++ b/drivers/usb/gadget/f_uac2.c
-@@ -348,14 +348,34 @@ static int uac2_pcm_open(struct snd_pcm_substream *substream)
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		spin_lock_init(&uac2->p_prm.lock);
- 		runtime->hw.rate_min = p_srate;
--		runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE; /* ! p_ssize ! */
-+		switch (p_ssize) {
-+		case 3:
-+			runtime->hw.formats = SNDRV_PCM_FMTBIT_S24_3LE;
-+			break;
-+		case 4:
-+			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
-+			break;
-+		default:
-+			runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+			break;
-+		}
- 		runtime->hw.channels_min = num_channels(p_chmask);
- 		runtime->hw.period_bytes_min = 2 * uac2->p_prm.max_psize
- 						/ runtime->hw.periods_min;
- 	} else {
- 		spin_lock_init(&uac2->c_prm.lock);
- 		runtime->hw.rate_min = c_srate;
--		runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE; /* ! c_ssize ! */
-+		switch (c_ssize) {
-+		case 3:
-+			runtime->hw.formats = SNDRV_PCM_FMTBIT_S24_3LE;
-+			break;
-+		case 4:
-+			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
-+			break;
-+		default:
-+			runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+			break;
-+		}
- 		runtime->hw.channels_min = num_channels(c_chmask);
- 		runtime->hw.period_bytes_min = 2 * uac2->c_prm.max_psize
- 						/ runtime->hw.periods_min;
--- 
-2.0.1
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+- Lars
