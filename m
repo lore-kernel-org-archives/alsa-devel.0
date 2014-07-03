@@ -1,45 +1,66 @@
-From: Matthew Bucknall <matthew.bucknall@gmail.com>
-Subject: Non-I2C/SPI ASoC codec
-Date: Thu, 3 Jul 2014 12:14:07 +0100
-Message-ID: <CAOr_jfL+fMBVi82RaLBAcnygNFhVXPoRoyFMGTp4HOEZecSyMA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASoC: samsung: MACH_SMDK6450
+Date: Thu, 3 Jul 2014 12:14:42 +0100
+Message-ID: <20140703111442.GW410@sirena.org.uk>
+References: <1404287238.12021.7.camel@x220>
+ <20140702092347.GB410@sirena.org.uk>
+ <53B48993.5020809@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f173.google.com (mail-ob0-f173.google.com
- [209.85.214.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 546592654BC
- for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 13:14:09 +0200 (CEST)
-Received: by mail-ob0-f173.google.com with SMTP id va2so47055obc.32
- for <alsa-devel@alsa-project.org>; Thu, 03 Jul 2014 04:14:08 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="deIB9lj0KCspTQvI"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <53B48993.5020809@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Kukjin Kim <kgene.kim@samsung.com>
+Cc: Paul Bolle <pebolle@tiscali.nl>, Ben Dooks <ben-linux@fluff.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I'm trying to get audio support for a custom ARM board to work and have
-written codec and machine drivers - The platform driver already existed
-(atmel_ssc_dai). The codec I am supporting is extremely simple and has no
-SPI/I2C interface for configuration and just accepts fixed format/fixed
-rate I2S.
+--deIB9lj0KCspTQvI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Previously, when I've gotten ASoC support for another board working, the
-codec it used (TLV320AIC32) had an I2C interface. Declaring I2C_BOARD_INFO
-for this in my board file seemed sufficient to get the machine driver to
-probe and initialize. For this new board, I have no SPI/I2C device to
-declare in the board file and its associated machine driver is not probing.
-All I get from the kernel is 'No soundcards found.'
+On Thu, Jul 03, 2014 at 07:37:07AM +0900, Kukjin Kim wrote:
+> On 07/02/14 18:23, Mark Brown wrote:
 
-My driver modules are getting compiled and are linked statically. What do I
-need to do to get the machine driver going?
+> >This also wasn't sent to me for review, please always send patches to
+> >maintainers.
 
-Matt.
+> Mark, I always send patches to regarding maintainers and in this case the
+> patch missed the change. I'm resending new patch and if any problems, ple=
+ase
+> let me know. Just note, I just wanted to check whether there is no problem
+> with other maintainers' tree early in -next tree.
+
+It looks like you've sent it to broonie@linaro.org not broonie@kernel.org=
+=20
+which is listed in MAINTAINERS and what I use for e-mail - upstream mail
+that goes to my work address often just gets dropped on the floor (and
+generally ends up at the bottom of my queue to look at) since it ends up
+in a completely different place to my personal mail.
+
+--deIB9lj0KCspTQvI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTtTsfAAoJELSic+t+oim94LkP/RKge2kU11C7/XX4vJoV5nfh
+H5aN4PKVK1G87POhwY5MBnSNbB9v/PxDNwJIdn5nH5CiCWe0mnfH1pbNcfncRFic
+w6DxB8JL9C+8jC6l+6V8kD4yn7YvKXexKTxG9M4iIGQTP8aKsWuFhphGQrGBn2Ti
+526CURaGZ/gwgRmqn1Umu6jnTVf1ZqDCq+mEWLST9oKt/hvbreRUjKqdB6F0Pghg
+GpXQ+8nODIQoHWCjtQbvHBVtHsTiL2rzDJWSRbSzaULo2BI6hbf5c1F1gc74/Njp
+wrqX36CE6VkzBAY+Dj6+pRRIKtK8oFDVhB+xug1oYUSNxPe28BE5lsx8yzPUqGmK
+cyG39KhdCbXtHhR1NLZeKm6ql/wEabFho+TFlMoDui946061ULP3//zdQsYQjWub
+8gpX1y0uNma8omJ/rG6vxkLPWlCfpAkVlS1UIfPbYROYoeUVdohxC//YjwyOoJrg
+N36vaL5wX4DvX8VAnAOo9RZkWzdkex56VfeDVu0WwOSnhdDdEyPeBlloGMnmY7gf
+x7zXzGVrlXdaR6uZrcDRDe3mdDpxL7P37TQv3VXw0HNg5BKIEwhvX2xEjJ00yAh8
+ZbgAA5rra06/NtKB22LSQR7SD8ler+ijym7O67tLRSusDkDvjrQW/UWSbmor6HlZ
+C36amDSGAQk7lMGd7bwk
+=SH9u
+-----END PGP SIGNATURE-----
+
+--deIB9lj0KCspTQvI--
