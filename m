@@ -1,61 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] regulator: arizona-ldo1: remove bypass functionality
-Date: Thu, 3 Jul 2014 17:58:13 +0100
-Message-ID: <20140703165813.GL410@sirena.org.uk>
-References: <1404400687-19035-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: adau1701: fix adau1701_reg_read()
+Date: Thu, 03 Jul 2014 19:21:58 +0200
+Message-ID: <53B59136.4020008@metafoo.de>
+References: <1404399096-4056-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9axOBMfiLLqytT81"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1404400687-19035-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-170.synserver.de (smtp-out-170.synserver.de
+ [212.40.185.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1AD2261A2C
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 19:21:58 +0200 (CEST)
+In-Reply-To: <1404399096-4056-1-git-send-email-zonque@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 07/03/2014 04:51 PM, Daniel Mack wrote:
+> Fix a long standing bug in the read register routing of adau1701.
+> The bytes arrive in the buffer in big-endian, so the result has to be
+> shifted before and-ing the bytes in the loop.
+>
+> Signed-off-by: Daniel Mack <zonque@gmail.com>
 
---9axOBMfiLLqytT81
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
-On Thu, Jul 03, 2014 at 04:18:07PM +0100, Nikesh Oswal wrote:
-> From: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
->=20
-> WM5110/8280 devices do not support bypass mode for LDO1 so remove
-> the bypass callbacks registered with regulator core.
->=20
-> Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Thanks.
 
-Please fix your configuration so that these two line up, it raises red
-flags that they don't even though it's fairly clear that they're most
-likely both for the same person.
-
-I'd recommend not using your corporate mail for community work since if
-you reply from it and get a mail footer added (as is standard) people
-will tend not to respond positively.
-
---9axOBMfiLLqytT81
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTtYuiAAoJELSic+t+oim9R44QAIAYeB4615iWhEuXN5S4bx65
-mSlk+vXmJfJBevmNx1jGA8pEN7yEW96Ba8tJGWVQX5kOPYS1qD+0i8CmSRvX3jUH
-Xtbpw6SEbTzQipVP16d+sJRdyew5Fiiv19ic2B9HGyagkG8lm2WENlJFnFkapOKp
-6VEfWGby2dJ87E63yu8GtQeDgPwdByeGkhfiiOsrjJ2ySF1aqwe6ez7FE+6FAccD
-4zNeU6rbMtsH9rjuXEzv9fxxrqZJc/gdHRJ2KnIuy0GDSzst1WarX4awDFTVGhnr
-rdUyClW/0ZvZ3fXVyJKsNsrxqmFvFT+NDw6SwtH0ISTuW8+lLlHatGWbUxfsqa5N
-lBVrTJbd0i0uUTWGr2MVOpLMVGrFvCyoMOaecN4vlIhiKU6i2VvYNj11JprxeR/m
-Ggm+mII12jHFymd6/B/A9yQ7TNfQH6PThjoYsr8fATU3A8r7E/VQIknwt/0vPZtE
-ES/NU/D30cLvI+QLvzNQaUep+IdgkUDZD8c2m2DXiVfoc2kaV2RogSFX8WI3ENDa
-8VRQf6Ip5E9ZgtH/WNfN+841u2bk5U73cw+q6U9dFauLn6jDAfzLpCa1OSzEfVSi
-ulNCfQJ7cJJwLZWS02i2+zzuGjQKuuHXtGrSOD4xDmXQaiR3Ta7zrkE9yDsI7qnI
-NP3yqF4XOTHcxJBzExpp
-=njBQ
------END PGP SIGNATURE-----
-
---9axOBMfiLLqytT81--
+> ---
+>   sound/soc/codecs/adau1701.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+> index defb277..15feb12 100644
+> --- a/sound/soc/codecs/adau1701.c
+> +++ b/sound/soc/codecs/adau1701.c
+> @@ -240,8 +240,10 @@ static int adau1701_reg_read(void *context, unsigned int reg,
+>
+>   	*value = 0;
+>
+> -	for (i = 0; i < size; i++)
+> -		*value |= recv_buf[i] << (i * 8);
+> +	for (i = 0; i < size; i++) {
+> +		*value <<= 8;
+> +		*value |= recv_buf[i];
+> +	}
+>
+>   	return 0;
+>   }
+>
