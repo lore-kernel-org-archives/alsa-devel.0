@@ -1,35 +1,71 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 5/5] dma: edma: Declare DMA_SLAVE_BUSWIDTH_3_BYTES as supported buswidth
-Date: Thu, 3 Jul 2014 07:51:56 +0300
-Message-ID: <1404363116-10538-6-git-send-email-peter.ujfalusi@ti.com>
-References: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
+From: mengdong.lin@intel.com
+Subject: [PATCH v2 1/2] drm/i915: provide interface for audio
+	driver to query cdclk
+Date: Thu,  3 Jul 2014 13:00:51 +0800
+Message-ID: <1404363651-4388-1-git-send-email-mengdong.lin@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: vinod.koul@intel.com, dan.j.williams@intel.com, lars@metafoo.de, tiwai@suse.de, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, joelf@ti.com, nsekhar@ti.com
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, dmaengine@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de, jani.nikula@intel.com, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-eDMA can be configured for 3bytes word size for source and destination.
+From: Jani Nikula <jani.nikula@intel.com>
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/dma/edma.c | 1 +
- 1 file changed, 1 insertion(+)
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
 
-diff --git a/drivers/dma/edma.c b/drivers/dma/edma.c
-index d08c4dedef35..b512caf46944 100644
---- a/drivers/dma/edma.c
-+++ b/drivers/dma/edma.c
-@@ -982,6 +982,7 @@ static void __init edma_chan_init(struct edma_cc *ecc,
+diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
+index a90fdbd..21170e5 100644
+--- a/drivers/gpu/drm/i915/intel_pm.c
++++ b/drivers/gpu/drm/i915/intel_pm.c
+@@ -6256,6 +6256,27 @@ int i915_release_power_well(void)
+ }
+ EXPORT_SYMBOL_GPL(i915_release_power_well);
  
- #define EDMA_DMA_BUSWIDTHS	(BIT(DMA_SLAVE_BUSWIDTH_1_BYTE) | \
- 				 BIT(DMA_SLAVE_BUSWIDTH_2_BYTES) | \
-+				 BIT(DMA_SLAVE_BUSWIDTH_3_BYTES) | \
- 				 BIT(DMA_SLAVE_BUSWIDTH_4_BYTES))
++/*
++ * Private interface for the audio driver to get CDCLK in kHz.
++ *
++ * Caller must request power well using i915_request_power_well() prior to
++ * making the call.
++ */
++int i915_get_cdclk_freq(void)
++{
++	struct drm_i915_private *dev_priv;
++
++	if (!hsw_pwr)
++		return -ENODEV;
++
++	dev_priv = container_of(hsw_pwr, struct drm_i915_private,
++				power_domains);
++
++	return intel_ddi_get_cdclk_freq(dev_priv);
++}
++EXPORT_SYMBOL_GPL(i915_get_cdclk_freq);
++
++
+ #define POWER_DOMAIN_MASK (BIT(POWER_DOMAIN_NUM) - 1)
  
- static int edma_dma_device_slave_caps(struct dma_chan *dchan,
+ #define HSW_ALWAYS_ON_POWER_DOMAINS (			\
+diff --git a/include/drm/i915_powerwell.h b/include/drm/i915_powerwell.h
+index 2baba99..baa6f11 100644
+--- a/include/drm/i915_powerwell.h
++++ b/include/drm/i915_powerwell.h
+@@ -32,5 +32,6 @@
+ /* For use by hda_i915 driver */
+ extern int i915_request_power_well(void);
+ extern int i915_release_power_well(void);
++extern int i915_get_cdclk_freq(void);
+ 
+ #endif				/* _I915_POWERWELL_H_ */
 -- 
-2.0.0
+1.8.1.2
