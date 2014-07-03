@@ -1,50 +1,60 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 0/5] ALSA/ASoC/dmaengine: Fix 3 bytes physical
- sample support
-Date: Thu, 3 Jul 2014 15:08:08 +0530
-Message-ID: <20140703093808.GN2296@intel.com>
-References: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v2 1/2] drm/i915: provide interface for
+ audio	driver to query cdclk
+Date: Thu, 3 Jul 2014 09:41:14 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F82B590623@SHSMSX101.ccr.corp.intel.com>
+References: <1404363651-4388-1-git-send-email-mengdong.lin@intel.com>
+ <87mwcqew2x.fsf@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: dan.j.williams@intel.com, lars@metafoo.de, tiwai@suse.de, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, joelf@ti.com, nsekhar@ti.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, dmaengine@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <87mwcqew2x.fsf@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Nikula, Jani" <jani.nikula@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 03, 2014 at 07:51:51AM +0300, Peter Ujfalusi wrote:
+Hi Jani,
+
+> -----Original Message-----
+> From: Nikula, Jani
+> Sent: Thursday, July 03, 2014 3:33 PM
  
-> I have noticed while switching the daVinci audio to dmaengine_pcm that the _3LE
-> and _3BE support is not working correctly via dmaengine_pcm:
-> In case of _3LE/_3BE formats the samples are stored in 3 consecutive bytes
-> without padding it to 4 bytes. This means that the DMA needs to be able to
-> support 3 bytes word length in order to read/write the samples from memory
-> correctly. Originally the code treated 24 bits physical length samples as
-> they were 32 bits which leads to corruption when playing or recording audio.
-> 
-> To fix the support for 3 bytes physical samples the dma driver also need to have
-> support for such data arrangement. eDMA does have support for it in HW and the
-> legacy davinci-pcm platform driver w/o dmaengine was able to support such
-> formats.
-> 
-> First step is to add DMA_SLAVE_BUSWIDTH_3_BYTES to dma_slave_buswidth for
-> engines and users to select 3 bytes as bus width.
-> 
-> Followed by:
-> In dmaengine_pcm_set_runtime_hwparams() we should check the slave_caps of the
-> dma if it supports the give sample physical width of the sample. Based on this
-> information we initialize the hw.formats: masking out all non supported formats
-> based on the physical width.
-> In case the dma driver does not implement the slave_caps the default assumption
-> is that it supports 1, 2 and 4 bytes widths.
+> I wrote this as a quick hack patch to try as an alternative to [1] which
+> ended up not working on Haswell. Please reassure me that this is going to
+> be a temporary solution until we get a more generic interface between the
+> audio and display drivers. I don't much like this, but at least it's isolated
+> and small.
 
-Whole series:
-Acked-by Vinod Koul <vinod.koul@intel.com>
+Sure. We'll clean up code when the generic interface is ready. 
+This is only a temporary solution, safer than the BIOS notifications.
 
-Yes makes sense to go thru ASoC tree. Mark can you keep this in immutable
-branch, which I can merge to my tree for any future fixes...
+And would you like to further revise this patch? 
+But please keep this API not changed at the moment since the audio driver already queries the symbol name.
 
--- 
-~Vinod
+Thanks
+Mengdong
+
+> I'd like the commit message amended with something like:
+> 
+> """
+> If the display power well has been disabled, the display audio controller
+> divider values EM4 MVALUE and EM5 NVALUE will have been lost. The
+> CDCLK frequency is required for reprogramming them. Provide a private
+> interface for the audio driver to query CDCLK.
+> 
+> This is a stopgap solution until a more generic interface between audio
+> and display drivers has been implemented.
+> """
+> 
+> I'd also like to have an additional Reviewed-by from the i915 side. After
+> that, I'm fine with merging this through alsa.
