@@ -1,51 +1,83 @@
-From: Konstantinos Tsimpoukas <kostaslinuxxx@gmail.com>
-Subject: [PATCH 1/1] ice1712: Correcting/completing #defines for REGS
-Date: Wed,  2 Jul 2014 23:25:27 -0500
-Message-ID: <1404361527-14068-1-git-send-email-kostaslinuxxx@gmail.com>
-Return-path: <linux-sound-owner@vger.kernel.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: Konstantinos Tsimpoukas <kostaslinuxxx@gmail.com>, alsa-devel@alsa-project.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v3 0/5] ALSA/ASoC/dmaengine: Fix 3 bytes
+	physical sample support
+Date: Thu, 3 Jul 2014 07:51:51 +0300
+Message-ID: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 986FD265610
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 06:52:03 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: vinod.koul@intel.com, dan.j.williams@intel.com, lars@metafoo.de, tiwai@suse.de, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, joelf@ti.com, nsekhar@ti.com
+Cc: dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This small patch completes #defines for Control/Status Register,
-adds comments for the missing ones there and on the Interrupt Mask
-Register and additionally corrects "#define ICE1712_SERR_LEVEL 0x04 -> 0x08",
-according to documentation.
+Hi,
 
-Signed-off-by: Konstantinos Tsimpoukas <kostaslinuxxx@gmail.com>
+Changes since v2 (in patch 3):
+- Replace BIT(bits / 8) with (1 << (bits / 8)) as pointed out by Takashi
+- Use switch (addr_widths) to filter non valid physical widths, like -EINVAL or
+  widths not dividable by 8.
+  The same check could be done with:
+  if (bits > 0 && bits <=64 && !(bits % 8) && (addr_widths & (1 << (bits / 8))))
+  But I think the switch() implementation is more readable.
+
+Changes since v1:
+- the hw.formats mask preparation moved to dmaengine_pcm_set_runtime_hwparams()
+- we prepare the mask for all supported sample formats based on the physical
+  width of the sample and on the slave_caps information.
+
+I have noticed while switching the daVinci audio to dmaengine_pcm that the _3LE
+and _3BE support is not working correctly via dmaengine_pcm:
+In case of _3LE/_3BE formats the samples are stored in 3 consecutive bytes
+without padding it to 4 bytes. This means that the DMA needs to be able to
+support 3 bytes word length in order to read/write the samples from memory
+correctly. Originally the code treated 24 bits physical length samples as
+they were 32 bits which leads to corruption when playing or recording audio.
+
+To fix the support for 3 bytes physical samples the dma driver also need to have
+support for such data arrangement. eDMA does have support for it in HW and the
+legacy davinci-pcm platform driver w/o dmaengine was able to support such
+formats.
+
+First step is to add DMA_SLAVE_BUSWIDTH_3_BYTES to dma_slave_buswidth for
+engines and users to select 3 bytes as bus width.
+
+Followed by:
+In dmaengine_pcm_set_runtime_hwparams() we should check the slave_caps of the
+dma if it supports the give sample physical width of the sample. Based on this
+information we initialize the hw.formats: masking out all non supported formats
+based on the physical width.
+In case the dma driver does not implement the slave_caps the default assumption
+is that it supports 1, 2 and 4 bytes widths.
+
+Regards,
+Peter
 ---
- sound/pci/ice1712/ice1712.h | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+Peter Ujfalusi (5):
+  dma: Support for 3 bytes word size
+  ALSA: pcm_dmaengine: Use the available wrapper to get physical width
+  ASoC: generic-dmaengine-pcm: Prepare formats mask for valid physical
+    sample sizes
+  ALSA: pcm_dmaengine: Correct support for 24bits physical sample widths
+  dma: edma: Declare DMA_SLAVE_BUSWIDTH_3_BYTES as supported buswidth
 
-diff --git a/sound/pci/ice1712/ice1712.h b/sound/pci/ice1712/ice1712.h
-index b209fc3..58f8f2a 100644
---- a/sound/pci/ice1712/ice1712.h
-+++ b/sound/pci/ice1712/ice1712.h
-@@ -41,14 +41,17 @@
- #define ICEREG(ice, x) ((ice)->port + ICE1712_REG_##x)
- 
- #define ICE1712_REG_CONTROL		0x00	/* byte */
--#define   ICE1712_RESET			0x80	/* reset whole chip */
--#define   ICE1712_SERR_LEVEL		0x04	/* SERR# level otherwise edge */
-+#define   ICE1712_RESET			0x80	/* soft reset whole chip */
-+#define   ICE1712_SERR_ASSERT_DS_DMA	0x40    /* disabled SERR# assertion for the DS DMA Ch-C irq otherwise enabled */
-+#define   ICE1712_DOS_VOL		0x10    /* DOS WT/FM volume control */
-+#define   ICE1712_SERR_LEVEL		0x08	/* SERR# level otherwise edge */
-+#define   ICE1712_SERR_ASSERT_SB	0x02	/* disabled SERR# assertion for SB irq otherwise enabled */
- #define   ICE1712_NATIVE		0x01	/* native mode otherwise SB */
- #define ICE1712_REG_IRQMASK		0x01	/* byte */
--#define   ICE1712_IRQ_MPU1		0x80
--#define   ICE1712_IRQ_TIMER		0x40
--#define   ICE1712_IRQ_MPU2		0x20
--#define   ICE1712_IRQ_PROPCM		0x10
-+#define   ICE1712_IRQ_MPU1		0x80	/* MIDI irq mask */
-+#define   ICE1712_IRQ_TIMER		0x40	/* Timer mask */
-+#define   ICE1712_IRQ_MPU2		0x20	/* Secondary MIDI irq mask */
-+#define   ICE1712_IRQ_PROPCM		0x10	/* professional multi-track */
- #define   ICE1712_IRQ_FM		0x08	/* FM/MIDI - legacy */
- #define   ICE1712_IRQ_PBKDS		0x04	/* playback DS channels */
- #define   ICE1712_IRQ_CONCAP		0x02	/* consumer capture */
+ drivers/dma/edma.c                    |  1 +
+ include/linux/dmaengine.h             |  1 +
+ sound/core/pcm_dmaengine.c            |  4 +++-
+ sound/soc/soc-generic-dmaengine-pcm.c | 37 ++++++++++++++++++++++++++++++++++-
+ 4 files changed, 41 insertions(+), 2 deletions(-)
+
 -- 
-1.9.1
-
+2.0.0
