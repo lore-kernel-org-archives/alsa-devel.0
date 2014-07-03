@@ -1,66 +1,61 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 3/5] ASoC: generic-dmaengine-pcm: Prepare formats
- mask for valid physical sample sizes
-Date: Thu, 3 Jul 2014 21:47:08 +0530
-Message-ID: <20140703161708.GR2296@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 3/5] ASoC: generic-dmaengine-pcm: Prepare formats mask
+ for valid physical sample sizes
+Date: Thu, 3 Jul 2014 17:21:10 +0100
+Message-ID: <20140703162110.GK410@sirena.org.uk>
 References: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
  <1404363116-10538-4-git-send-email-peter.ujfalusi@ti.com>
  <20140703120153.GZ410@sirena.org.uk>
  <20140703120256.GO2296@intel.com>
  <20140703134210.GC410@sirena.org.uk>
+ <20140703161708.GR2296@intel.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="G6nVm6DDWH/FONJq"
+	protocol="application/pgp-signature"; boundary="oqiVxqbeHx5cy56u"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140703134210.GC410@sirena.org.uk>
+In-Reply-To: <20140703161708.GR2296@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
+To: Vinod Koul <vinod.koul@intel.com>
 Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, dan.j.williams@intel.com, lars@metafoo.de, tiwai@suse.de, Liam Girdwood <lgirdwood@gmail.com>, joelf@ti.com, nsekhar@ti.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---G6nVm6DDWH/FONJq
+--oqiVxqbeHx5cy56u
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 03, 2014 at 02:42:10PM +0100, Mark Brown wrote:
-> On Thu, Jul 03, 2014 at 05:32:56PM +0530, Vinod Koul wrote:
-> > On Thu, Jul 03, 2014 at 01:01:53PM +0100, Mark Brown wrote:
->=20
-> > > Acked-by: Mark Brown <broonie@linaro.org>
->=20
-> > Do you want this to go thru dmaengine tree??
->=20
-> Well, I was expecting either ASoC or core ALSA.
-Ah okay, wasnt thinking ALSA, either ways am fine.
-Usually its asoc/dmaengine :)
+On Thu, Jul 03, 2014 at 09:47:08PM +0530, Vinod Koul wrote:
+> On Thu, Jul 03, 2014 at 02:42:10PM +0100, Mark Brown wrote:
 
---=20
-~Vinod
+> > Well, I was expecting either ASoC or core ALSA.
 
---G6nVm6DDWH/FONJq
+> Ah okay, wasnt thinking ALSA, either ways am fine.
+> Usually its asoc/dmaengine :)
+
+Yeah, I don't mind - I just figured if I ack then I won't be blocking if
+it's not ASoC.
+
+--oqiVxqbeHx5cy56u
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
-Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTtYIEAAoJEHwUBw8lI4NHohkP/18dbjAFf2WKADmVAG+UoBAl
-NHM+PjEMiWhvZOQ2MhCZsZ5skp8FE9AFZ8eqiRssrQtunF47o3MvFNqdY0Uao4f7
-T4I3jLjAZtex+cXA8+d+70p5OJTIvFBA7XmkolfyN6L50CdP5RYs1S1pRjOBBUfc
-cmwp5rjYjDLgvuObs6fdnFwqa+zAv/0Bt5wUpspsGPz8/Vywod1MG/fwspDnO9FY
-cXlA6/8asbtM9zw5XFH5wmWO+wGIbQSjWicmZtii/j9qE/Aj6u56ABYGH6kgXehj
-YlQo2+iDmRWNF1AmpRNFQSvIsYVJogqgI670W9w0EH/fJtfmivmNAlTeK2hEloab
-ZOcIrKjjXglaz6kANZPTtOKrqiPyt8TlLHYkUWNxcBYJLQZfUZUCkCL1HI9H57TQ
-8RkUxanLGiAaOh7rSN+PuySeFn6hJ3Xo7JFK91rzYqfI6sYKPFz5UIjLNx2seprB
-ZOH/SCqx67o0rhv+SDpb4g8VXau91RQwG9zXeQoi1vc8x/m44EeRRrrl+mvhrXP/
-TWPOMXLa9kLxoTcKhNxPSt1p1cLMBAZ+oZoxFZWv9k4cprA/2FZKT+zzMAfhpDQ3
-oHU3aylzPZyCj2Qgvc5LXiMh5aBMctIApA/lPy6Qm+0QZNp+fNo9hKBuawPl0hx5
-f2LUOIilwWSSZoSGYTMC
-=Us64
+iQIcBAEBAgAGBQJTtYLyAAoJELSic+t+oim91CkP/2QNb8/0aLn5Q+lgEE5q8hUV
+DxuGNyUg+QL3WDEKJHatF0cgnzauEvuBFu7dwY0MeKTF5ctOtVxMqyAFODpt/vaU
+2CPIB5DmW0navuMmya07nyjoWWm6lOhUq2eZhMQc41OgXuMrRNL0fGjK2jqzCdFe
+Tb/WEohuDFRrW3uc7ywTXA4pnJ/qQMuMTOVJKEw567cL5qCqZ39zGV00PPzsU4mh
+dBvbEGycss3S8qBCqaBwByFkjmqKMtDrfy81zmH4jofsW19sLX3LLtOkwqX0Rol4
+l3qPD64x80i/5tDB1ZZ7OD9lTXXZNYnKr3V5R0XGMm1mmunlki5GLp5diMtWovHC
+tA8mzn8SW2XNxJthK9+eJh0wUjzwCptDt+mg2j9qw68sk6dSyqENiG+gNglAROFz
+tCk0w89TuzvIBYgBh0qjisA89KaUHBBu3/ot9D12NVciNi5+37WYup/WQ1jkVEaj
+s2mk5sVfx5n+kap9x2F/4P9BYYGpZGxq0RUHBcwxAZ1lrnsO9dA3N+KvA9jbPWmo
++Xez42qJMSln+DdVC6Lz23nQPwaIe6XFg7OYsntGz5dkZed49WuIYcoQrqoAtMJ8
+QkZLMMM9kMuGiWYM34PI8+zO8f8JQf/ATb969jHLQRIoIlEBJUjllrQh9Z7lx5PL
+xxhr0rnt3AMNJK7ijwQ0
+=LYEL
 -----END PGP SIGNATURE-----
 
---G6nVm6DDWH/FONJq--
+--oqiVxqbeHx5cy56u--
