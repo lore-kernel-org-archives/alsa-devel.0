@@ -1,78 +1,61 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH v3] ASoC: tas5086: add regulator consumer
- support
-Date: Thu, 03 Jul 2014 18:50:49 +0200
-Message-ID: <53B589E9.3080608@zonque.org>
-References: <1404399403-6316-1-git-send-email-zonque@gmail.com>
- <20140703151229.GF410@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] regulator: arizona-ldo1: remove bypass functionality
+Date: Thu, 3 Jul 2014 17:58:13 +0100
+Message-ID: <20140703165813.GL410@sirena.org.uk>
+References: <1404400687-19035-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 938FF261A50
- for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 18:50:50 +0200 (CEST)
-In-Reply-To: <20140703151229.GF410@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="9axOBMfiLLqytT81"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1404400687-19035-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-On 07/03/2014 05:12 PM, Mark Brown wrote:
-> On Thu, Jul 03, 2014 at 04:56:43PM +0200, Daniel Mack wrote:
->> The TAS5086 has two power domains, DVDD and AVDD. Enable them
->> both as long as the codec is in use.
->> 
->> Also, switch on the power to identify the chip at device probe
->> level, and switch it off again afterwards. The codec level will
->> take care for power handling later.
-> 
-> Applied, thanks.  One small thing:
-> 
->> +	/* +	 * The chip has been identified, so we can turn off the
->> power +	 * again until the dai link is set up. +	 */ +
->> regulator_bulk_disable(ARRAY_SIZE(priv->supplies),
->> priv->supplies); + +	if (ret == 0) +		ret =
->> snd_soc_register_codec(&i2c->dev, &soc_codec_dev_tas5086, +
->> &tas5086_dai, 1);
-> 
-> It can be slightly smoother to do the disable after registering so
-> that if we immediately cause a card to register and that causes the
-> device to become active again we don't bounce the power.  Nobody is
-> ever likely to notice the difference though.
+--9axOBMfiLLqytT81
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-True. I'll keep an eye on that.
+On Thu, Jul 03, 2014 at 04:18:07PM +0100, Nikesh Oswal wrote:
+> From: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
+>=20
+> WM5110/8280 devices do not support bypass mode for LDO1 so remove
+> the bypass callbacks registered with regulator core.
+>=20
+> Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
 
+Please fix your configuration so that these two line up, it raises red
+flags that they don't even though it's fairly clear that they're most
+likely both for the same person.
 
-Thanks,
-Daniel
+I'd recommend not using your corporate mail for community work since if
+you reply from it and get a mail footer added (as is standard) people
+will tend not to respond positively.
+
+--9axOBMfiLLqytT81
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTtYnpAAoJELphMRr8Y1QkEfsP/07T02vEEjN76SW8gMrabEjX
-KbhWTkDWJz361hqpY6JaZ3a03t0tL7TV4aMTlKSdK34Ch3WdJtMN8SvrXObWI7mw
-iIgjxBmkrXO6OhZqDBwMSYA4OnTepnygM+zVwFqJjUo/k/bmWBWFZVYBaezHZLk8
-Qj5BxtgNqELvKneEPK2J1OSbYsrgo4UEQyAv8FLCq/wn+F49uqMx9VYas/xqXYls
-lCjoIS46MzhkP70mgdCRBchs5ngAXBxS4TFZByX9vmiwJJl0kyO2hQ9IEYiVUl5R
-bEFAGrjg7fscjwo3h1fYa2XearL9NaTcww8HdoiS3YJcvV/SMMGN8QBr4xL3rSy1
-RPCY8TD1rerGAfKtEYcqRoSx01ihKdx9uwo0qLffbcxjVG1suAuxlP0lFyuK+VQB
-1WsG6WLW+Emh4xNpwYzFdKe5xg5YHktc0jBweh83NjS6HTB6wySyD6a7TTq67NkO
-f3AxkJE39L+WklydsJHpt7Bl9oCRuWcQ2VLgnjLohoLx9VcyCik4sAZ7nfSeiZEh
-XXKgl1dqO2Mwa8oBkMEQM354Z3PGNSilliwBWkSGYuUpWINkpQ0VRcyz9aWsaoCG
-v+N+67mrCJ8kb6YZwSO4ir88dVi/pnga/U40LvJhpQ3zk9rhWLTt15B6qXqcszQq
-kJ4d0r2wUKGtzhHBJqqk
-=OduV
+iQIcBAEBAgAGBQJTtYuiAAoJELSic+t+oim9R44QAIAYeB4615iWhEuXN5S4bx65
+mSlk+vXmJfJBevmNx1jGA8pEN7yEW96Ba8tJGWVQX5kOPYS1qD+0i8CmSRvX3jUH
+Xtbpw6SEbTzQipVP16d+sJRdyew5Fiiv19ic2B9HGyagkG8lm2WENlJFnFkapOKp
+6VEfWGby2dJ87E63yu8GtQeDgPwdByeGkhfiiOsrjJ2ySF1aqwe6ez7FE+6FAccD
+4zNeU6rbMtsH9rjuXEzv9fxxrqZJc/gdHRJ2KnIuy0GDSzst1WarX4awDFTVGhnr
+rdUyClW/0ZvZ3fXVyJKsNsrxqmFvFT+NDw6SwtH0ISTuW8+lLlHatGWbUxfsqa5N
+lBVrTJbd0i0uUTWGr2MVOpLMVGrFvCyoMOaecN4vlIhiKU6i2VvYNj11JprxeR/m
+Ggm+mII12jHFymd6/B/A9yQ7TNfQH6PThjoYsr8fATU3A8r7E/VQIknwt/0vPZtE
+ES/NU/D30cLvI+QLvzNQaUep+IdgkUDZD8c2m2DXiVfoc2kaV2RogSFX8WI3ENDa
+8VRQf6Ip5E9ZgtH/WNfN+841u2bk5U73cw+q6U9dFauLn6jDAfzLpCa1OSzEfVSi
+ulNCfQJ7cJJwLZWS02i2+zzuGjQKuuHXtGrSOD4xDmXQaiR3Ta7zrkE9yDsI7qnI
+NP3yqF4XOTHcxJBzExpp
+=njBQ
 -----END PGP SIGNATURE-----
+
+--9axOBMfiLLqytT81--
