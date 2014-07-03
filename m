@@ -1,66 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: ASoC: samsung: MACH_SMDK6450
-Date: Thu, 3 Jul 2014 12:14:42 +0100
-Message-ID: <20140703111442.GW410@sirena.org.uk>
-References: <1404287238.12021.7.camel@x220>
- <20140702092347.GB410@sirena.org.uk>
- <53B48993.5020809@samsung.com>
+Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
+ multicodec
+Date: Thu, 3 Jul 2014 12:16:27 +0100
+Message-ID: <20140703111627.GX410@sirena.org.uk>
+References: <1404200881-32253-1-git-send-email-bcousson@baylibre.com>
+ <1404200881-32253-7-git-send-email-bcousson@baylibre.com>
+ <20140701164134.GH2296@intel.com> <53B400DE.3040205@baylibre.com>
+ <20140703064147.GK2296@intel.com> <53B539E8.1000301@baylibre.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="deIB9lj0KCspTQvI"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <53B48993.5020809@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Kukjin Kim <kgene.kim@samsung.com>
-Cc: Paul Bolle <pebolle@tiscali.nl>, Ben Dooks <ben-linux@fluff.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============7832758868041632335=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9DA172654BC
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 13:16:46 +0200 (CEST)
+In-Reply-To: <53B539E8.1000301@baylibre.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Benoit Cousson <bcousson@baylibre.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, misael.lopez@ti.com, lars@metafoo.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---deIB9lj0KCspTQvI
+--===============7832758868041632335==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4Ycl1UgPPPgGZoSL"
+Content-Disposition: inline
+
+
+--4Ycl1UgPPPgGZoSL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 03, 2014 at 07:37:07AM +0900, Kukjin Kim wrote:
-> On 07/02/14 18:23, Mark Brown wrote:
+On Thu, Jul 03, 2014 at 01:09:28PM +0200, Benoit Cousson wrote:
+> On 03/07/2014 08:41, Vinod Koul wrote:
 
-> >This also wasn't sent to me for review, please always send patches to
-> >maintainers.
+> >I think that will simplify it. we certainly dont expect different direction,
+> >right?
 
-> Mark, I always send patches to regarding maintainers and in this case the
-> patch missed the change. I'm resending new patch and if any problems, ple=
-ase
-> let me know. Just note, I just wanted to check whether there is no problem
-> with other maintainers' tree early in -next tree.
+> Any thought on that? Does that sound reasonable to you to use only the first
+> codec_dai to figure out the direction?
 
-It looks like you've sent it to broonie@linaro.org not broonie@kernel.org=
-=20
-which is listed in MAINTAINERS and what I use for e-mail - upstream mail
-that goes to my work address often just gets dropped on the floor (and
-generally ends up at the bottom of my queue to look at) since it ends up
-in a completely different place to my personal mail.
+Yes, it seems sensible enough to me.
 
---deIB9lj0KCspTQvI
+--4Ycl1UgPPPgGZoSL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTtTsfAAoJELSic+t+oim94LkP/RKge2kU11C7/XX4vJoV5nfh
-H5aN4PKVK1G87POhwY5MBnSNbB9v/PxDNwJIdn5nH5CiCWe0mnfH1pbNcfncRFic
-w6DxB8JL9C+8jC6l+6V8kD4yn7YvKXexKTxG9M4iIGQTP8aKsWuFhphGQrGBn2Ti
-526CURaGZ/gwgRmqn1Umu6jnTVf1ZqDCq+mEWLST9oKt/hvbreRUjKqdB6F0Pghg
-GpXQ+8nODIQoHWCjtQbvHBVtHsTiL2rzDJWSRbSzaULo2BI6hbf5c1F1gc74/Njp
-wrqX36CE6VkzBAY+Dj6+pRRIKtK8oFDVhB+xug1oYUSNxPe28BE5lsx8yzPUqGmK
-cyG39KhdCbXtHhR1NLZeKm6ql/wEabFho+TFlMoDui946061ULP3//zdQsYQjWub
-8gpX1y0uNma8omJ/rG6vxkLPWlCfpAkVlS1UIfPbYROYoeUVdohxC//YjwyOoJrg
-N36vaL5wX4DvX8VAnAOo9RZkWzdkex56VfeDVu0WwOSnhdDdEyPeBlloGMnmY7gf
-x7zXzGVrlXdaR6uZrcDRDe3mdDpxL7P37TQv3VXw0HNg5BKIEwhvX2xEjJ00yAh8
-ZbgAA5rra06/NtKB22LSQR7SD8ler+ijym7O67tLRSusDkDvjrQW/UWSbmor6HlZ
-C36amDSGAQk7lMGd7bwk
-=SH9u
+iQIcBAEBAgAGBQJTtTuIAAoJELSic+t+oim9MzwP+wfuI3BctB/qVoHVh+Yhb5Kt
+hrHH/EpZv7fmGveVutoCM5YYTzzY7r8/zrvxqoP3P3tm/5xoK4f9HesbiuoN2lNY
+LMkZwo+MmSA/kOOo5Xr4sTmLqq1LLviuC9Nv7P/RMN39BI5Qo34oGmBBes6YHXUO
+r5Ccd3pyg0qZ3zGprE2nc/Xws58Y5WujLBqhUlRKYB6xiNMjIr4j958u/1JZCuSI
+LiczEOdl9y92YPxZnHrjj+58LWAavBg5U0WsEhodpjXT02Sg+4XvazmrrNDFEhIh
+3fZS+bmj/xAbPAOlY/h/mIEslzh5iyp165eTJPk1weMt51B2FEXPBTl6vY/uelOO
+rioHoiCkCfrAMchbcu9wsuelfguWQFITCsI3j9tC44K1H/4NraV1InBxmOdNi3Mt
+404azgfefcxRxHNFcWV42OUpySuYu+/Lz+GT0t8fkaL0Pqx02UYMbwHV1VZbZ1OL
+3W8Mue9XjlEMH4QUXcnTnd/1e7zfiZ0oS4+4EnsXumDpyjx6gscF5zZQbovcmZV1
+mXEUXtB8pLaIEWpJmLVgn7z1Wyqh2RpyzCYj9iJt4SMItEQnfLkMC/IrogLQ6N89
+KZKNymCS9/z09wZr7bbzr3NgQhblvl4i8eQjyuWWq4R6MuDiMe6S0s54sYKCjyeh
+8w1NUN05tJYiilIJWkCo
+=uu/q
 -----END PGP SIGNATURE-----
 
---deIB9lj0KCspTQvI--
+--4Ycl1UgPPPgGZoSL--
+
+--===============7832758868041632335==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7832758868041632335==--
