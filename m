@@ -1,58 +1,82 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH] ASoC: tda998x: add a codec to the HDMI transmitter
-Date: Thu, 3 Jul 2014 15:28:26 +0200
-Message-ID: <20140703152826.103c9d6c@armhf>
-References: <20140702183841.7c964832@armhf> <20140702165628.GO20799@lunn.ch>
- <20140702195154.47d6f6b4@armhf>
- <20140702194252.GN410@sirena.org.uk>
- <20140703074959.7c489912@armhf>
- <20140703104432.GV410@sirena.org.uk>
- <20140703133406.2d3e3a1d@armhf>
- <20140703115924.GY410@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 3/5] ASoC: generic-dmaengine-pcm:
+ Prepare formats mask for valid physical sample sizes
+Date: Thu, 3 Jul 2014 14:42:10 +0100
+Message-ID: <20140703134210.GC410@sirena.org.uk>
+References: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
+ <1404363116-10538-4-git-send-email-peter.ujfalusi@ti.com>
+ <20140703120153.GZ410@sirena.org.uk>
+ <20140703120256.GO2296@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20140703115924.GY410@sirena.org.uk>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, devicetree@vger.kernel.org, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============7680642140298629575=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C8FA2619D0
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 15:42:32 +0200 (CEST)
+In-Reply-To: <20140703120256.GO2296@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, nsekhar@ti.com, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, joelf@ti.com, dmaengine@vger.kernel.org, dan.j.williams@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAzIEp1bCAyMDE0IDEyOjU5OjI0ICswMTAwCk1hcmsgQnJvd24gPGJyb29uaWVAa2Vy
-bmVsLm9yZz4gd3JvdGU6Cgo+ID4gPiBZb3VyIGJvYXJkIGhhcHBlbnMgdG8gb25seSBiZSBhYmxl
-IHRvIHByZXNlbnQgdGhlIHNhbWUgaW5wdXQgb24gYm90aCBJMlMKPiA+ID4gYW5kIFMvUERJRiBi
-dXQgdGhhdCBtaWdodCBub3QgYXBwbHkgdG8gb3RoZXIgYm9hcmRzLCB0aGV5IG1heSBiZSBhYmxl
-IHRvCj4gPiA+IHJvdXRlIGRpZmZlcmVudCBzaWduYWxzIHRvIGVhY2ggd2hpY2ggd291bGQgcHJl
-c2VudCBhIHByYWN0aWNhbCBwcm9ibGVtLiAgCj4gCj4gPiBJZiB0aGVyZSBhcmUgdHdvIGRpZmZl
-cmVudCBzdHJlYW1zcyBvbiBJMlMgYW5kIFMvUERJRiwgYW5kIGlmIHRoZSBhdWRpbwo+ID4gc3Vi
-c3lzdGVtIHdhbnRzIHRvIHJvdXRlIHRoZXNlIHN0cmVhbXMgdG8gdGhlIHNhbWUgY29ubmVjdG9y
-ICh3aWRnZXQKPiA+ICdoZG1pLW91dCcpLCB0aGVuLCBzb21ld2hlcmUsIHRoZXJlIHNob3VsZCBi
-ZSBhIHNvZnR3YXJlIG9yIGEgZGVzaWduCj4gPiBidWcuIE5vPyAgCj4gCj4gWWVzLCB3aGljaCBp
-cyB3aHkgdGhlIGRyaXZlciBzaG91bGRuJ3Qgc2lsZW50bHkgaWdub3JlIHRoZSBzaXR1YXRpb24u
-Cj4gCj4gPiBBbnl3YXksIHRoZSB0ZGE5OTh4IGNhbm5vdCBrbm93IGlmIHRoZSBkb3VibGUgcm91
-dGUgaXMgd2FudGVkIG9yIG5vdC4gIAo+IAo+IEl0IGRvZXNuJ3QgbmVlZCB0byBrbm93LCBpdCBq
-dXN0IG5lZWRzIHRvIGlkZW50aWZ5IHNvbWV0aGluZyBpdCBjYW4ndAo+IHN1cHBvcnQgZWl0aGVy
-IGJ5IHByb3ZpZGluZyBhIHdheSB0byBwaWNrIHdoaWNoIGludGVyZmFjZSBpcyB1c2VkIG9yIGJ5
-Cj4gcmVqZWN0aW5nIHRoZSBzZWNvbmQgaW50ZXJmYWNlLgoKT0suIG5vIHByb2JsZW0sIEkgY2Fu
-IGRvIHRoYXQ6IG9ubHkgdGhlIGZpcnN0IHN0cmVhbSBpcyBzd2l0Y2hlZCBhbmQKdGhlIHNlY29u
-ZCBpcyByZWplY3RlZC4KCkJ1dCwgdGhpcyBtZWFucyB0aGF0IHRoZXJlIHdpbGwgYmUgYSBsb3Qg
-b2YgZXJyb3JzIHdoZW4gRFBDTSB3aWxsIGJlCnVzZWQsIGJlY2F1c2UsIGluIG1vc3QgY2FzZXMg
-Zm9yIHRoZSBDdWJveCAoa2lya3dvb2QgYXVkaW8gKyB0ZGE5OTh4KSwKYm90aCB3YXlzIEkyUyBh
-bmQgUy9QRElGIHdpbGwgYmUgYWN0aXZhdGVkIGF0IHRoZSBzYW1lIHRpbWUgZm9yIGEKc2luZ2xl
-IHN0cmVhbSAoeW91IG1heSBub3RlIHRoYXQgdGhlIHJvdXRlcyBmcm9tIHRoZSBzZWNvbmQgaW5w
-dXQKY2Fubm90IGJlIGJsb2NrZWQgYnkgdGhlIENPREVDIGFmdGVyIGl0IHJlY2VpdmVkIHRoZSBm
-aXJzdCBpbnB1dCwKYmVjYXVzZSB0aGVzZSByb3V0ZXMgaGF2ZSBhbHJlYWR5IGJlZW4gY29tcHV0
-ZWQpLgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRh
-diEgKioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1k
-ZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cDovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+
+--===============7680642140298629575==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="b0bHyb0BmsSIM7d2"
+Content-Disposition: inline
+
+
+--b0bHyb0BmsSIM7d2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jul 03, 2014 at 05:32:56PM +0530, Vinod Koul wrote:
+> On Thu, Jul 03, 2014 at 01:01:53PM +0100, Mark Brown wrote:
+
+> > Acked-by: Mark Brown <broonie@linaro.org>
+
+> Do you want this to go thru dmaengine tree??
+
+Well, I was expecting either ASoC or core ALSA.
+
+--b0bHyb0BmsSIM7d2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTtV2vAAoJELSic+t+oim9750P/3ZhcDpb/Ow+iXpUUvYb7qcr
+pv/DqIAsz8ngjbFkw4aL6zgCgbC82wcl3Qy7OIJVSyFOsKmhaHLr4v3v+a+6Had9
+SBiCUUFG3W1QIWaPHbTUFAOFSTSu7ChWFkPdqXW+L69UmI1/4iGzcJpWYDMWv9CI
+59j7la5lEiGZ/IHQ6hD79MGf+Epi+CHU8FKcyUQJBk81NbfiszSlRhBjJqosR9kK
+dZvVYfEMlX6XevxadLhhwqkuKbTw2WjeS1b84Om9MohPi1L0VFn91NIEgq/JqiYw
+Dp7CHspwvECMmW22WX0XSOswcNFhDJaboVnbBv0B3DfSmnnVs47CCvP3JKJdj+uy
+SIQm1dqw8xvs/znKclvmqTCCKvv082WhW0iPtuokpLY3WL8JraOtkdo56ZYyBOAB
++9tbwLDlfBZP/1JC1+ZOpi1LFTwYLqOrqR6B7gYYwiaHIxxwxkyXAZw4dPvW4N0H
+1bxwqtqVU8lZ1tvOh0Cxzsw4vVHUdvUUS7i70B84qKMu+bg7h7gbkShpFD3/gYwd
+Ab8s8Ro+NjO5ESUATQeq4qpHTeadgU2sIXK+lz17RHbhCXDqperW922HU42AjsMK
+dyB9H+M0xJx5ddYKqZeZ5AmZzETHOM1G7V2gVz7qE05Ua6gIb16IDSw806+pxIG+
+QlIKgvLGDRgKc1Hx9tEZ
+=5iUA
+-----END PGP SIGNATURE-----
+
+--b0bHyb0BmsSIM7d2--
+
+--===============7680642140298629575==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7680642140298629575==--
