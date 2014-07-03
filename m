@@ -1,22 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
- multicodec
-Date: Thu, 3 Jul 2014 19:38:04 +0100
-Message-ID: <20140703183804.GO410@sirena.org.uk>
-References: <53B400DE.3040205@baylibre.com> <20140703064147.GK2296@intel.com>
- <53B539E8.1000301@baylibre.com> <53B53C6B.8020707@metafoo.de>
- <53B540EE.30009@baylibre.com> <53B541F0.1040105@metafoo.de>
- <53B5428F.9050100@baylibre.com> <20140703120613.GP2296@intel.com>
- <20140703121846.GB410@sirena.org.uk>
- <20140703161517.GQ2296@intel.com>
+Subject: Re: [PATCH] ASoC: adau1701: fix adau1701_reg_read()
+Date: Thu, 3 Jul 2014 19:43:02 +0100
+Message-ID: <20140703184302.GP410@sirena.org.uk>
+References: <1404399096-4056-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6175761138384711932=="
+Content-Type: multipart/mixed; boundary="===============1016329070879169273=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 93281261A74
- for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 20:38:21 +0200 (CEST)
-In-Reply-To: <20140703161517.GQ2296@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EB511261A74
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 20:43:19 +0200 (CEST)
+In-Reply-To: <1404399096-4056-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,73 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com, Benoit Cousson <bcousson@baylibre.com>
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6175761138384711932==
+--===============1016329070879169273==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9hGs/gFH0GqcBdeq"
+	protocol="application/pgp-signature"; boundary="pw8vfKuzsXn95o6p"
 Content-Disposition: inline
 
 
---9hGs/gFH0GqcBdeq
+--pw8vfKuzsXn95o6p
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 03, 2014 at 09:45:17PM +0530, Vinod Koul wrote:
-> On Thu, Jul 03, 2014 at 01:18:46PM +0100, Mark Brown wrote:
+On Thu, Jul 03, 2014 at 04:51:36PM +0200, Daniel Mack wrote:
+> Fix a long standing bug in the read register routing of adau1701.
+> The bytes arrive in the buffer in big-endian, so the result has to be
+> shifted before and-ing the bytes in the loop.
 
-> > The use case tends to be for applications that have one device per
-> > physical output.  This isn't normally mobile, it's normally high
-> > performance audio applications where people are doing things to try to
-> > electrically isolate the analogue outputs or dealing with high power so
-> > need to keep speaker outputs physically separate.  I can imagine set top
-> > box type applications (which do use offloaded media decode) doing this.
+Applied, thanks.
 
-> Not sure if I follow you, I have no idea of how these systems work.
-
-They're having the SoC play stereo (or whatever) data and then having
-multiple CODECs on the bus, each parsing some subset of the channels
-(typically one channel per CODEC).
-
-> So how can we have a situation where we have compressed device linked to
-> multiple codecs?
-
-If it's intended to be DPCM only (which it iss now I think about it) it
-sounds like you can't have it linked to *any* real CODECS, at least not
-directly!
-
---9hGs/gFH0GqcBdeq
+--pw8vfKuzsXn95o6p
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTtaMJAAoJELSic+t+oim9r0kP/2jWPCkFc5Q9WX4+OtmUgS9k
-R4YzIECaj3/ZsY3cfq4e8Tc/BF9rYcXu06ykhtG2vZS12uNmfnqCdg9T5BQJMqlY
-GisSDhiBME2p0fF++RTHDedM39uAzbpNxC9jcCHLGkXE/rtDIq2+mwRSlikM0yZA
-6+waQa/rp0zNzZRKIDCk8sHftj08CcA/dvPm+2gl16206mUeeJ+I13n7A+XP46SR
-cdzK4F9c3j1nZm+9Ls12hnICJWbs8zCNji5k8VxXSWjr44/QM6ZA1KSNjIU2B7Z2
-+46a0ZznlMiekzssI+VAAmElatcgQPMuGTO0sUGDjoQw6PJ1YXcH/BDaQq1OwURE
-Un6+xpmgaSqch0IYFRjB82NswbJAnoNNjGtNxqBOxFqR7ZnLuLxe1VMXqBgNxPRM
-KlwIUdyuLFws/z93+LD+A0dOKSjN03XaGBJvW1bpDkPFLL44P7Pr9H61PgoP7MGi
-Sxzyh3dnRIqzbqmJm/LZdayIy3CsdXl54v65dzln/KkXEpWh5y7L8bfJHvli9hzO
-UUcxiBewh3aSlA6HsExsfidv4LDmYrNsyJgHyEWXYGFG6zAakgSonjIv2esD7dbJ
-C/fxwVUq/6tDigit04f3FVDeoLhFLVeyf0Cpo5MEubBPPAL4cz4ydwezCU5drp5m
-dbCn5ul5eww7X2vxpnJF
-=pmt9
+iQIcBAEBAgAGBQJTtaQzAAoJELSic+t+oim9Zm8P/3vwcFCdi0ulop7jFuTn1/bt
+tyfV94iYmSAnyuO94qaaL1RyFBgU94vWBKIEpg+m9Y0hQ120cw4IscTHhjIdUwOL
+g6+2Dmi59mZOyJRwGIwZpATVPfiiAIpx0Cq4Y/FR48ozjlMAx4pjXOSTEjhozkea
+E8Llarp4scQKu2/NR/aO8PFV1LfrjjSzv4NDIEz9VkRAIz7OPrE3pP8OPzfXjADO
+I3RFmNYh3KBwz4uAHqZwcMxzzD1R219xbylBFFrRcsRJQK7bUEPemeMnoIdwRjFo
+Zj4aHx+MtUandiukEbSjDndADNbM+eV2Rp2w5nLasJe6/mxkwO8EUoyiOo4Jkmg0
+OckNJtR1KKmoDsWnxtKgKvlHAFrgRKbCufoh4bGAFqw/JDflBQc3ZyIYqu/tLvws
+//yn5uiCaFpgmvvvImUjWPmqhRzSJcegCupevTRAoisZMzg8ADkFtZackep6Pmjx
+NicKYV9abFL7tSh9r+HIoTw3F5+LKE1YCHLN1unXuPA12ybSloy54MypWX3ZufJh
+DIoPpEwbtpXgbsjJ+NT7nm79+sxXz1ieYB40OxkzPu1hhd6MpRmwGMRewRrj0OAn
+el0hIZlQmNynRBflPDJ65nhx/kC0iFnXEspGQdss8lkVR2Q0dij5JOdJ20ocxedt
+Mg5drspFTj5Yu4scOBYA
+=JyUy
 -----END PGP SIGNATURE-----
 
---9hGs/gFH0GqcBdeq--
+--pw8vfKuzsXn95o6p--
 
---===============6175761138384711932==
+--===============1016329070879169273==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6175761138384711932==--
+--===============1016329070879169273==--
