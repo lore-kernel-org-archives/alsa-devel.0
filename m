@@ -1,35 +1,92 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3 0/5] ALSA/ASoC/dmaengine: Fix 3 bytes physical sample
- support
-Date: Thu, 03 Jul 2014 10:33:34 +0200
-Message-ID: <53B5155E.7050103@metafoo.de>
-References: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [V2 PATCH] ALSA: hda - Enable mute/mic-mute LEDs for more Thinkpads
+ with Conexant codec
+Date: Thu, 03 Jul 2014 16:59:15 +0800
+Message-ID: <53B51B63.8060809@canonical.com>
+References: <1385534846-20829-1-git-send-email-hui.wang@canonical.com> <53AFF992.5030403@web.de> <53B0C596.6090007@canonical.com> <53B1078B.4090101@web.de> <53B219DF.6090807@canonical.com> <53B26575.1000003@web.de> <53B27ED7.4070401@canonical.com> <53B50062.30200@web.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
+In-Reply-To: <53B50062.30200@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, vinod.koul@intel.com, dan.j.williams@intel.com, tiwai@suse.de, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, joelf@ti.com, nsekhar@ti.com
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, dmaengine@vger.kernel.org
+To: Jan Kiszka <jan.kiszka@web.de>
+Cc: Hui Wang <jason77.wang@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org, alex.hung@canonical.com, yk@canonical.com, david.henningsson@canonical.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/03/2014 06:51 AM, Peter Ujfalusi wrote:
-[...]
+On 07/03/2014 03:04 PM, Jan Kiszka wrote:
+> On 2014-07-01 11:26, Hui Wang wrote:
+>> On 07/01/2014 03:38 PM, Jan Kiszka wrote:
+>>> On 2014-07-01 04:15, Hui Wang wrote:
+>>>> On 06/30/2014 02:45 PM, Jan Kiszka wrote:
+>>>>> On 2014-06-30 04:04, Hui Wang wrote:
+>>>>>> On 06/29/2014 07:33 PM, Jan Kiszka wrote:
+>>>>>>> On 2013-11-27 07:47, Hui Wang wrote:
+>>>>>>>> Most Thinkpad Edge series laptops use conexant codec, so far
+>>>>>>>> although
+>> <snip>
+>>>>> Is there anything I can debug or any information I can collect from my
+>>>>> box to examine this?
+>>>> What is the linux distribution on your machine? And use showkey to catch
+>>>> the keycode of that button.
+>>> I'm running OpenSUSE 13.1. The reported keycode of the power button is
+>>> 116.
+>> It seems the keycode is correct, it is power keycode rather the mute
+>> keycode.
+>>
+>> Could you please do some debug, let us find which line of code is the
+>> root cause for this problem. for example:
+>>
+>> after running the line, the problem shows up:
+>>
+>> 1.     if (ACPI_SUCCESS(acpi_get_devices("LEN0068", acpi_check_cb,
+>> &found, NULL)) && found) // in the sound/pci/hda/thinkpad_helper.c,
+>> is_thinkpad()
+> This evaluates to true
 >
-> First step is to add DMA_SLAVE_BUSWIDTH_3_BYTES to dma_slave_buswidth for
-> engines and users to select 3 bytes as bus width.
+>> 2.     return ACPI_SUCCESS(acpi_get_devices("IBM0068", acpi_check_cb,
+>> &found, NULL)) && found; // same as above
+>>
+>> 3.         if (led_set_func(TPACPI_LED_MUTE, false) >= 0) { //in the
+>> sound/pci/hda/thinkpad_helper.c, hda_fixup_thinkpad_acpi()
+> ...and this
 >
-> Followed by:
-> In dmaengine_pcm_set_runtime_hwparams() we should check the slave_caps of the
-> dma if it supports the give sample physical width of the sample. Based on this
-> information we initialize the hw.formats: masking out all non supported formats
-> based on the physical width.
-> In case the dma driver does not implement the slave_caps the default assumption
-> is that it supports 1, 2 and 4 bytes widths.
+>> 4. if (led_set_func(TPACPI_LED_MICMUTE, false) >= 0) { // same as above
+>>
+> ...and this as well. spec->num_adc_nids is 1.
 
-The whole series looks good to me. Since both the DMA and ALSA bits changed 
-in this series are fairly trivial I think it is best to merge the whole 
-series through the ASoC tree.
 
-- Lars
+If we change the code like below, does the power button can work well?
+
+in the thinkpad_helper.c, hda_fixup_thinkpad_acpi()
+
+
+         if (led_set_func(TPACPI_LED_MUTE, false) >= 0) {
+             /*
+             old_vmaster_hook = spec->vmaster_mute.hook;
+             spec->vmaster_mute.hook = update_tpacpi_mute_led;
+             removefunc = false;
+            */
+         }
+         if (led_set_func(TPACPI_LED_MICMUTE, false) >= 0) {
+           /*
+             if (spec->num_adc_nids > 1)
+                 codec_dbg(codec,
+                       "Skipping micmute LED control due to several ADCs");
+             else {
+                 spec->cap_sync_hook = update_tpacpi_micmute_led;
+                 removefunc = false;
+             }
+           */
+         }
+
+
+If power button can work well, please uncomment one section of the code 
+to find which section code introduce this problem.
+
+Regards,
+Hui.
+>
+> Jan
+>
+>
