@@ -1,102 +1,96 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH v4] ASoC: tas2552: Support TI TAS2552 Amplifier
-Date: Thu, 3 Jul 2014 10:06:22 -0500
-Message-ID: <20140703150621.GQ5814@saruman.home>
-References: <1404398393-21497-1-git-send-email-dmurphy@ti.com>
- <20140703145250.GO5814@saruman.home>
- <53B56F63.8000400@ti.com>
-Reply-To: <balbi@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: tas5086: add regulator consumer
+	support
+Date: Thu, 3 Jul 2014 16:12:29 +0100
+Message-ID: <20140703151229.GF410@sirena.org.uk>
+References: <1404399403-6316-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ivHc2SZskddb40s2"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <53B56F63.8000400@ti.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>
-Cc: balbi@ti.com, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, devicetree@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============6159650160946051017=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30DCE2654C6
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 17:12:46 +0200 (CEST)
+In-Reply-To: <1404399403-6316-1-git-send-email-zonque@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---ivHc2SZskddb40s2
+
+--===============6159650160946051017==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LsnByradU3Ze6UwI"
+Content-Disposition: inline
+
+
+--LsnByradU3Ze6UwI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Thu, Jul 03, 2014 at 09:57:39AM -0500, Dan Murphy wrote:
-> On 07/03/2014 09:52 AM, Felipe Balbi wrote:
-> > Hi,
-> >
-> > On Thu, Jul 03, 2014 at 09:39:53AM -0500, Dan Murphy wrote:
-> >> +static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int =
-fmt)
-> >> +{
-> >> +	u8 serial_format;
-> >> +	struct snd_soc_codec *codec =3D dai->codec;
-> >> +
-> >> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> >> +	case SND_SOC_DAIFMT_CBS_CFS:
-> >> +		serial_format =3D 0x00;
-> >> +		break;
-> >> +	case SND_SOC_DAIFMT_CBS_CFM:
-> >> +		serial_format =3D TAS2552_WORD_CLK_MASK;
-> >> +		break;
-> >> +	case SND_SOC_DAIFMT_CBM_CFS:
-> >> +		serial_format =3D TAS2552_BIT_CLK_MASK;
-> >> +		break;
-> >> +	case SND_SOC_DAIFMT_CBM_CFM:
-> >> +		serial_format =3D (TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK);
-> >> +		break;
-> >> +	default:
-> >> +		return -EINVAL;
-> >> +	}
-> >> +
-> >> +	pm_runtime_get_sync(codec->dev);
-> >> +
-> >> +	snd_soc_update_bits(codec, TAS2552_SER_CTRL_1,
-> >> +			    (TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK),
-> >> +			    serial_format);
-> >> +
-> >> +	pm_runtime_put(codec->dev);
-> > I have a feeling it's better to just put at the end of the function.
-> > Remember your pm_runtime_put() will issue i2c transfers which can take a
-> > looooooong time ;-)
+On Thu, Jul 03, 2014 at 04:56:43PM +0200, Daniel Mack wrote:
+> The TAS5086 has two power domains, DVDD and AVDD. Enable them both as
+> long as the codec is in use.
 >=20
-> I thought about that but the next switch case could return if the format
-> mask is invalid which means the runtime calls would not be balanced.
->=20
-> So I decided to wrap the snd_soc calls with the pm_runtime calls to keep =
-it
-> balanced.
+> Also, switch on the power to identify the chip at device probe level,
+> and switch it off again afterwards. The codec level will take care for
+> power handling later.
 
-it looks like you can do both switch statements outside of the
-pm_runtime region and cache results on serial_format and do a single
-write to CTRL_1 register (?). If not, then just use two local variables.
+Applied, thanks.  One small thing:
 
---=20
-balbi
+> +	/*
+> +	 * The chip has been identified, so we can turn off the power
+> +	 * again until the dai link is set up.
+> +	 */
+> +	regulator_bulk_disable(ARRAY_SIZE(priv->supplies), priv->supplies);
+> +
+> +	if (ret =3D=3D 0)
+> +		ret =3D snd_soc_register_codec(&i2c->dev, &soc_codec_dev_tas5086,
+> +					     &tas5086_dai, 1);
 
---ivHc2SZskddb40s2
+It can be slightly smoother to do the disable after registering so that
+if we immediately cause a card to register and that causes the device to
+become active again we don't bounce the power.  Nobody is ever likely to
+notice the difference though.
+
+--LsnByradU3Ze6UwI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTtXFsAAoJEIaOsuA1yqRERyoP/A+N2WCYmdSbDwoDNBzbxda7
-Q7BePfLWZwJ5AH7ScQKgcJZ3b98ivNbwHumNjri/H81fmRHfEgJOywruZ13WTgPN
-MN6fgtFKCVXc8AHp1qLUli/7VnBaLbv+lK0vPhkv36RnQ4tHZGG1G+hHm7Z1e7Tm
-urm/FcpXUQmeZKPRHWxCfVECFrb5TXeyQrfItEmgbifckFdxaJA1Y+XJUnC15ihH
-uI3VCq0TsKmDfy48ihbbQlfaeEquPoFguv/wbWV7mHDTp9OPeG/G38Mf/gpPF3Sx
-gF1XDj69NcP2lu3/AzKQyD0ByZ/NlWp46WBsPR791ZkYj5t2rEuGmyex/67SaLQo
-zScv/D0lakd5PyLmCv5AjRZ/1EtqD0ncbXrAxsZ8q7wNDETkhBavLzMRNLI7DjXv
-WsTkqU+h8o/jCtou9dVHeXxsH7fsegna3KFXRE3YXuIYww2fxpXg3hVLbPRbtagF
-ez69YtSppyNLXMJzqqmrUPrA1Y0iFIXMIpwv+Fa9ae/gMlhOX0SZuNYJD8QdxTB8
-PRRcbQDBeUkjcQ/9ghom2B5CP0cpbNSbziNppp/dS1frOOv5Gi+JMv8DHatJ5RrJ
-dPFMIKZT1+qI8NyUp5NX7VacW4g8R5l5cp6ydiNDxyKw4F/47JyRGLw0Qw7rGK4X
-TeFJ1HTWw6wNoWL75zBd
-=xw0x
+iQIcBAEBAgAGBQJTtXLaAAoJELSic+t+oim9dMgP/21akFsfljtOZkIp0MG9dEea
+cwT4YXwb3y/SNhv+H0Qy5y5LzjVGFFWx8W6uDME4bFA+7kh0MCSYdxRsMOhQUyWq
+u2qPXwBLHYxzgGOEjjHN81JYGRJHVGC3VMf0/MyM5JvfcvHRmSPwlruxFeuUYOKw
+jQPNdOPGsrAAznqkYgjfYSjFWK6bG8RGZCrVoEGuv/KF9fNqsPD+T1mKeHv/rI4o
+S1Pu6rPB/HZ8DIy5HR7LZlP23QR3GoyllrU8EhW+vfbe+3vAHO0crX5LaqQy0qn8
+pnSneF62b1voxLs/tuEQ09YvhjvRU3PnlPXWZ4YvcBUjQsATXPrpVwvRqMttpQM3
+5Av095PReV0+zAVO5dyag8a48ZWjJY5zXOOTPWSke+7OnfEFUNXaBmOjw2C6FHoU
+kcA2gBqqlTqfc35Draca5QyZBsJgKzDC3jiVzrMnyoz/h3Z/XVrxOkmDV125r8Fi
+ZmpskZFFnlV8mIHZ9FVcaIAlNJ1PKIXIWTnIdj0aX5qeu0KEfq6nuuUDwyQEEE6X
+S8wWCevn3joyREZwBOjsnlF7kSNbookKAfhHiP4YLqvBgHbABANsuvcbd5OhWw8M
+u324NAlMt5MpZnomC8PDSLCAT4CFoacvOX9upyIDfQvem5QVkUt9lvbAWAfPssas
+daTtL0mynkk8Gw7xgslK
+=T+aA
 -----END PGP SIGNATURE-----
 
---ivHc2SZskddb40s2--
+--LsnByradU3Ze6UwI--
+
+--===============6159650160946051017==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6159650160946051017==--
