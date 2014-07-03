@@ -1,7 +1,7 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 2/5] ALSA: pcm_dmaengine: Use the available wrapper to get physical width
-Date: Thu, 3 Jul 2014 07:51:53 +0300
-Message-ID: <1404363116-10538-3-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v3 4/5] ALSA: pcm_dmaengine: Correct support for 24bits physical sample widths
+Date: Thu, 3 Jul 2014 07:51:55 +0300
+Message-ID: <1404363116-10538-5-git-send-email-peter.ujfalusi@ti.com>
 References: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,26 +12,33 @@ To: vinod.koul@intel.com, dan.j.williams@intel.com, lars@metafoo.de, tiwai@suse.
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-params_physical_width() is available via pcm_params.h
+In case of _3LE/_3BE formats the samples are stored in 3 consecutive bytes
+without padding it to 4 bytes. This means that the DMA needs to be able to
+support 3 bytes word length in order to read/write the samples from memory
+correctly. Originally the code treated 24 bits physical length samples as
+they were 32 bits which leads to corruption when playing or recording audio.
+
+The hw.formats field has already been prepared to exclude formats not
+supported by the DMA engine in use, which means that only on platforms where
+3 bytes is supported by the DMA will be able to use this format.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/core/pcm_dmaengine.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/core/pcm_dmaengine.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index 76cbb9ec953a..d5611ec80381 100644
+index d5611ec80381..6542c4083594 100644
 --- a/sound/core/pcm_dmaengine.c
 +++ b/sound/core/pcm_dmaengine.c
-@@ -65,7 +65,7 @@ int snd_hwparams_to_dma_slave_config(const struct snd_pcm_substream *substream,
- 	enum dma_slave_buswidth buswidth;
- 	int bits;
- 
--	bits = snd_pcm_format_physical_width(params_format(params));
-+	bits = params_physical_width(params);
- 	if (bits < 8 || bits > 64)
- 		return -EINVAL;
- 	else if (bits == 8)
+@@ -72,6 +72,8 @@ int snd_hwparams_to_dma_slave_config(const struct snd_pcm_substream *substream,
+ 		buswidth = DMA_SLAVE_BUSWIDTH_1_BYTE;
+ 	else if (bits == 16)
+ 		buswidth = DMA_SLAVE_BUSWIDTH_2_BYTES;
++	else if (bits == 24)
++		buswidth = DMA_SLAVE_BUSWIDTH_3_BYTES;
+ 	else if (bits <= 32)
+ 		buswidth = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	else
 -- 
 2.0.0
