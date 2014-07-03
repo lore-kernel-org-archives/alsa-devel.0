@@ -1,30 +1,35 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3 4/5] ALSA: pcm_dmaengine: Correct support for 24bits
- physical sample widths
-Date: Thu, 03 Jul 2014 10:29:22 +0200
-Message-ID: <53B51462.1090805@metafoo.de>
-References: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com> <1404363116-10538-5-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v3 0/5] ALSA/ASoC/dmaengine: Fix 3 bytes physical sample
+ support
+Date: Thu, 03 Jul 2014 10:33:34 +0200
+Message-ID: <53B5155E.7050103@metafoo.de>
+References: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1404363116-10538-5-git-send-email-peter.ujfalusi@ti.com>
+In-Reply-To: <1404363116-10538-1-git-send-email-peter.ujfalusi@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Peter Ujfalusi <peter.ujfalusi@ti.com>, vinod.koul@intel.com, dan.j.williams@intel.com, tiwai@suse.de, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, joelf@ti.com, nsekhar@ti.com
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, dmaengine@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 On 07/03/2014 06:51 AM, Peter Ujfalusi wrote:
-> In case of _3LE/_3BE formats the samples are stored in 3 consecutive bytes
-> without padding it to 4 bytes. This means that the DMA needs to be able to
-> support 3 bytes word length in order to read/write the samples from memory
-> correctly. Originally the code treated 24 bits physical length samples as
-> they were 32 bits which leads to corruption when playing or recording audio.
+[...]
 >
-> The hw.formats field has already been prepared to exclude formats not
-> supported by the DMA engine in use, which means that only on platforms where
-> 3 bytes is supported by the DMA will be able to use this format.
+> First step is to add DMA_SLAVE_BUSWIDTH_3_BYTES to dma_slave_buswidth for
+> engines and users to select 3 bytes as bus width.
 >
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Followed by:
+> In dmaengine_pcm_set_runtime_hwparams() we should check the slave_caps of the
+> dma if it supports the give sample physical width of the sample. Based on this
+> information we initialize the hw.formats: masking out all non supported formats
+> based on the physical width.
+> In case the dma driver does not implement the slave_caps the default assumption
+> is that it supports 1, 2 and 4 bytes widths.
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+The whole series looks good to me. Since both the DMA and ALSA bits changed 
+in this series are fairly trivial I think it is best to merge the whole 
+series through the ASoC tree.
+
+- Lars
