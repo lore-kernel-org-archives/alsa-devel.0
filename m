@@ -1,60 +1,68 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: adau1701: fix adau1701_reg_read()
-Date: Thu, 03 Jul 2014 19:21:58 +0200
-Message-ID: <53B59136.4020008@metafoo.de>
-References: <1404399096-4056-1-git-send-email-zonque@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-170.synserver.de (smtp-out-170.synserver.de
- [212.40.185.170])
- by alsa0.perex.cz (Postfix) with ESMTP id F1AD2261A2C
- for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 19:21:58 +0200 (CEST)
-In-Reply-To: <1404399096-4056-1-git-send-email-zonque@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org
+From: Sebastian Reimers <sebastian.reimers-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Subject: [PATCH 1/1] usb: gadget: f_uac2: Fix pcm sample size selection
+Date: Thu,  3 Jul 2014 20:15:28 +0200
+Message-ID: <1404411328-32566-1-git-send-email-sebastian.reimers@gmail.com>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
+Cc: Sebastian Reimers <sebastian.reimers-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/03/2014 04:51 PM, Daniel Mack wrote:
-> Fix a long standing bug in the read register routing of adau1701.
-> The bytes arrive in the buffer in big-endian, so the result has to be
-> shifted before and-ing the bytes in the loop.
->
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
+The pcm playback and capture sample size format was fixed
+SNDRV_PCM_FMTBIT_S16_LE.
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+This patch respects also 16, 24 and 32 bit p_ssize and c_ssize values.
 
-Thanks.
+Signed-off-by: Sebastian Reimers <sebastian.reimers-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+---
+ drivers/usb/gadget/f_uac2.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-> ---
->   sound/soc/codecs/adau1701.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
-> index defb277..15feb12 100644
-> --- a/sound/soc/codecs/adau1701.c
-> +++ b/sound/soc/codecs/adau1701.c
-> @@ -240,8 +240,10 @@ static int adau1701_reg_read(void *context, unsigned int reg,
->
->   	*value = 0;
->
-> -	for (i = 0; i < size; i++)
-> -		*value |= recv_buf[i] << (i * 8);
-> +	for (i = 0; i < size; i++) {
-> +		*value <<= 8;
-> +		*value |= recv_buf[i];
-> +	}
->
->   	return 0;
->   }
->
+diff --git a/drivers/usb/gadget/f_uac2.c b/drivers/usb/gadget/f_uac2.c
+index 6261db4a..3ed89ec 100644
+--- a/drivers/usb/gadget/f_uac2.c
++++ b/drivers/usb/gadget/f_uac2.c
+@@ -348,14 +348,34 @@ static int uac2_pcm_open(struct snd_pcm_substream *substream)
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		spin_lock_init(&uac2->p_prm.lock);
+ 		runtime->hw.rate_min = p_srate;
+-		runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE; /* ! p_ssize ! */
++		switch (p_ssize) {
++		case 3:
++			runtime->hw.formats = SNDRV_PCM_FMTBIT_S24_3LE;
++			break;
++		case 4:
++			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
++			break;
++		default:
++			runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
++			break;
++		}
+ 		runtime->hw.channels_min = num_channels(p_chmask);
+ 		runtime->hw.period_bytes_min = 2 * uac2->p_prm.max_psize
+ 						/ runtime->hw.periods_min;
+ 	} else {
+ 		spin_lock_init(&uac2->c_prm.lock);
+ 		runtime->hw.rate_min = c_srate;
+-		runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE; /* ! c_ssize ! */
++		switch (c_ssize) {
++		case 3:
++			runtime->hw.formats = SNDRV_PCM_FMTBIT_S24_3LE;
++			break;
++		case 4:
++			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
++			break;
++		default:
++			runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
++			break;
++		}
+ 		runtime->hw.channels_min = num_channels(c_chmask);
+ 		runtime->hw.period_bytes_min = 2 * uac2->c_prm.max_psize
+ 						/ runtime->hw.periods_min;
+-- 
+2.0.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
