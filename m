@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: twl4030: Remove unused variable
-Date: Thu, 3 Jul 2014 19:46:48 +0100
-Message-ID: <20140703184648.GR410@sirena.org.uk>
-References: <1404188973-1857-1-git-send-email-sachin.kamat@samsung.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
+ multicodec
+Date: Thu, 03 Jul 2014 14:09:11 -0500
+Message-ID: <53B5AA57.5060804@linux.intel.com>
+References: <53B400DE.3040205@baylibre.com> <20140703064147.GK2296@intel.com>
+ <53B539E8.1000301@baylibre.com> <53B53C6B.8020707@metafoo.de>
+ <53B540EE.30009@baylibre.com> <53B541F0.1040105@metafoo.de>
+ <53B5428F.9050100@baylibre.com> <20140703120613.GP2296@intel.com>
+ <20140703121846.GB410@sirena.org.uk> <20140703161517.GQ2296@intel.com>
+ <20140703183804.GO410@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0635042108355348288=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B293F261A74
- for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 20:47:02 +0200 (CEST)
-In-Reply-To: <1404188973-1857-1-git-send-email-sachin.kamat@samsung.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7598A26590C
+ for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 21:09:17 +0200 (CEST)
+In-Reply-To: <20140703183804.GO410@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +26,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sachin Kamat <sachin.kamat@samsung.com>
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, spk.linux@gmail.com, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>, Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, misael.lopez@ti.com, Benoit Cousson <bcousson@baylibre.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0635042108355348288==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3M+s3upKwjqB7kL8"
-Content-Disposition: inline
+>>> The use case tends to be for applications that have one device per
+>>> physical output.  This isn't normally mobile, it's normally high
+>>> performance audio applications where people are doing things to try to
+>>> electrically isolate the analogue outputs or dealing with high power so
+>>> need to keep speaker outputs physically separate.  I can imagine set top
+>>> box type applications (which do use offloaded media decode) doing this.
+>
+>> Not sure if I follow you, I have no idea of how these systems work.
+>
+> They're having the SoC play stereo (or whatever) data and then having
+> multiple CODECs on the bus, each parsing some subset of the channels
+> (typically one channel per CODEC).
 
+This sort of stream aggregation/split is a very valid use case that's 
+coming to mobiles in the very near future with new interfaces being 
+standardized.
 
---3M+s3upKwjqB7kL8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>
+>> So how can we have a situation where we have compressed device linked to
+>> multiple codecs?
+>
+> If it's intended to be DPCM only (which it iss now I think about it) it
+> sounds like you can't have it linked to *any* real CODECS, at least not
+> directly!
 
-On Tue, Jul 01, 2014 at 09:59:31AM +0530, Sachin Kamat wrote:
-> 'status' is not used in the function. Remove it.
-
-Applied all, thanks.  Please remember to CC driver maintainers as well
-as subsystem maintainers.
-
---3M+s3upKwjqB7kL8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTtaUVAAoJELSic+t+oim9dpsP/iIrJAOQB0DM+pPLiiq3pKnM
-l6DrLPrQYldY//E0bH0AwpfZ79oscjPIwSsuVOn0C93/gjoPji0iWWXkkC80mSUo
-4skEwJDIHXz77eW9EnfKYiUl7nG8m828C2Z0WYnakCzwZIphSN+sR10EUeo/N1FN
-Puq+xsv3Ww5MNISPoN9lpSY2jkuQdZPh/r5cqpfDHuqi5bvUeljqZgqa4T18iUqp
-BmgBjkVdh/b8ngl82CCW5fCoUUNp8Xmx3LbnC5S+z+nwk+ttfP64qYY3PX5Ih3uX
-2KpU6gIvbYomcnyxUw7ZX31ijstatDNRp3ySXVt7Zl39R9RUfpQkVCc+GqSoUtNR
-PRiwhy77/iw32GLSPvq0NBlcmOjrmlMHyp2OW7cAXj1/TZAj8vK9tLk5a30oqsH9
-22Qnr/YEkOq6fXkY/XohAubYabUVEKZSHTejnHe2TjgO1Hq2YCMA4mlcpORSmM9p
-9wPQiPPEzptAPBWzM4dkWBVwhtQQdiNdLOi9ZD/Jw7AJfITqTRL9WGlC0nnJqhJc
-pDn9MgLudkoS9ay4xHZV1nQ+7loD6w5M6CKTFs7YE8yuH+uBIp6V2JS+p8f6gWe0
-B9kyl9VtZhhsnJuD9VvuDrrSGVEndHuFrrKdMP+rVekINH0vwpvG+txCgh9ETmKl
-/aR/lyzkmYaqjRUDo6pE
-=Xac3
------END PGP SIGNATURE-----
-
---3M+s3upKwjqB7kL8--
-
---===============0635042108355348288==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0635042108355348288==--
+there are very few references to codec_dais in soc-compress and some are 
+in sections copy/pasted from soc-pcm, which makes me wonder as well if 
+they needed to be there in the first place.
+-Pierre
