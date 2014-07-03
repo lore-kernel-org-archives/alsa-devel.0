@@ -1,136 +1,158 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH v4] ASoC: tas2552: Support TI TAS2552
-	Amplifier
-Date: Thu, 3 Jul 2014 10:19:44 -0500
-Message-ID: <20140703151944.GS5814@saruman.home>
-References: <1404398393-21497-1-git-send-email-dmurphy@ti.com>
- <20140703145250.GO5814@saruman.home> <53B56F63.8000400@ti.com>
- <20140703150621.GQ5814@saruman.home> <53B57302.8030100@ti.com>
-Reply-To: balbi@ti.com
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: Re: [PATCH] ASoC: tda998x: add a codec to the HDMI transmitter
+Date: Thu, 3 Jul 2014 17:29:09 +0200
+Message-ID: <20140703172909.60caf2c7@armhf>
+References: <20140702183841.7c964832@armhf>
+	<20140702165628.GO20799@lunn.ch>
+	<20140702195154.47d6f6b4@armhf>
+	<20140702194252.GN410@sirena.org.uk>
+	<20140703074959.7c489912@armhf>
+	<20140703104432.GV410@sirena.org.uk>
+	<20140703133406.2d3e3a1d@armhf>
+	<20140703115924.GY410@sirena.org.uk>
+	<20140703152826.103c9d6c@armhf>
+	<20140703134346.GW32514@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7744631260047914652=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 23D1D2654C6
- for <alsa-devel@alsa-project.org>; Thu,  3 Jul 2014 17:19:49 +0200 (CEST)
-In-Reply-To: <53B57302.8030100@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Murphy <dmurphy@ti.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, broonie@kernel.org, balbi@ti.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20140703134346.GW32514-l+eeeJia6m9vn6HldHNs0ANdhmdF6hFW@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Clark <robdclark-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
---===============7744631260047914652==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="CC5qiHV/f0UkyWC4"
-Content-Disposition: inline
+On Thu, 3 Jul 2014 14:43:46 +0100
+Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org> wrote:
 
---CC5qiHV/f0UkyWC4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jul 03, 2014 at 10:13:06AM -0500, Dan Murphy wrote:
-> Hi
+> > But, this means that there will be a lot of errors when DPCM will b=
+e
+> > used, because, in most cases for the Cubox (kirkwood audio + tda998=
+x),
+> > both ways I2S and S/PDIF will be activated at the same time for a
+> > single stream (you may note that the routes from the second input
+> > cannot be blocked by the CODEC after it received the first input,
+> > because these routes have already been computed). =20
 >=20
-> On 07/03/2014 10:06 AM, Felipe Balbi wrote:
-> > Hi,
-> >
-> > On Thu, Jul 03, 2014 at 09:57:39AM -0500, Dan Murphy wrote:
-> >> On 07/03/2014 09:52 AM, Felipe Balbi wrote:
-> >>> Hi,
-> >>>
-> >>> On Thu, Jul 03, 2014 at 09:39:53AM -0500, Dan Murphy wrote:
-> >>>> +static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned in=
-t fmt)
-> >>>> +{
-> >>>> +	u8 serial_format;
-> >>>> +	struct snd_soc_codec *codec =3D dai->codec;
-> >>>> +
-> >>>> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> >>>> +	case SND_SOC_DAIFMT_CBS_CFS:
-> >>>> +		serial_format =3D 0x00;
-> >>>> +		break;
-> >>>> +	case SND_SOC_DAIFMT_CBS_CFM:
-> >>>> +		serial_format =3D TAS2552_WORD_CLK_MASK;
-> >>>> +		break;
-> >>>> +	case SND_SOC_DAIFMT_CBM_CFS:
-> >>>> +		serial_format =3D TAS2552_BIT_CLK_MASK;
-> >>>> +		break;
-> >>>> +	case SND_SOC_DAIFMT_CBM_CFM:
-> >>>> +		serial_format =3D (TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK);
-> >>>> +		break;
-> >>>> +	default:
-> >>>> +		return -EINVAL;
-> >>>> +	}
-> >>>> +
-> >>>> +	pm_runtime_get_sync(codec->dev);
-> >>>> +
-> >>>> +	snd_soc_update_bits(codec, TAS2552_SER_CTRL_1,
-> >>>> +			    (TAS2552_BIT_CLK_MASK | TAS2552_WORD_CLK_MASK),
-> >>>> +			    serial_format);
-> >>>> +
-> >>>> +	pm_runtime_put(codec->dev);
-> >>> I have a feeling it's better to just put at the end of the function.
-> >>> Remember your pm_runtime_put() will issue i2c transfers which can tak=
-e a
-> >>> looooooong time ;-)
-> >> I thought about that but the next switch case could return if the form=
-at
-> >> mask is invalid which means the runtime calls would not be balanced.
-> >>
-> >> So I decided to wrap the snd_soc calls with the pm_runtime calls to ke=
-ep it
-> >> balanced.
-> > it looks like you can do both switch statements outside of the
-> > pm_runtime region and cache results on serial_format and do a single
-> > write to CTRL_1 register (?). If not, then just use two local variables.
-> >
+> This is /very/ easy to solve on the Cubox, if only you would listen
+> to me - I've stated many times that I2S should not be used there.
 >=20
-> Yeah I could probably consolidate these into a single call.  And throw
-> a debug statement in the default case to why the format was not set.
+> Just because the hardware is wired up with both the SPDIF connected
+> and the I2S connected, it does *not* mean that we have to wire them
+> both up in software.
+>=20
+> Indeed, *everything* works with just SPDIF.  The same is not true of
+> I2S.  So, what we do for the Cubox is we just wire up SPDIF in softwa=
+re
+> and be done with it - we then get a fully functional setup.  So using
+> I2S on the Cubox is mostly pointless - unless you wish to use I2S for
+> testing purposes.
+>=20
+> Let me also point out that adding your changes - including the additi=
+on
+> of this codec patch - explicitly deny the possibility of:
+> * using compressed audio streams via the optical SPDIF out socket
+> * using compressed audio streams over HDMI
+> * using audio rates and formats not supported by the attached HDMI
+>   device via the optical SPDIF socket.
+>=20
+> These are serious issues which thus far you have so far failed to
+> respond on.  People who use the Cubox as a media platform rather
+> than (presumably) just a music jukebox want things like compressed
+> audio out and SPDIF out to work.
+>=20
+> Look, one reason to use the optical socket is because you want to
+> push out a stream at (eg) 96kHz to your audio system, but your TV
+> doesn't support it.  With your approach, you explicitly block that
+> because the TDA998x codec assocated with the Kirkwood CPU DAI
+> refuses to allow that sample rate.  Fine, if the attached device
+> does not support that rate, then the right thing to do may be to
+> disable audio transmission over HDMI, but with the Cubox hardware,
+> limiting the sample rates is totally the wrong solution.
 
-that'd be cool.
+I think that you did not look at my code.
+
+Both S/PDIF and I2S work with the TDA998x. It is a choice of the audio
+subsystem to do this choice, not Russell King. If you want only S/PDIF,
+it is easy: just declare the S/PDIF DAIs, on both sides, source
+(kirkwood) and sinks (tda998x and S/PDIF):
+
+	dai-link@1 {		/* S/PDIF - HDMI */
+		cpu {
+			sound-dai =3D <&audio1 1>;
+		};
+		,codec {
+			sound-dai =3D <&hdmi 1>;
+		};
+	};
+
+	dai-link@2 {		/* S/PDIF - S/PDIF */
+		cpu {
+			sound-dai =3D <&audio1 1>;
+		};
+		codec {
+			sound-dai =3D <&spdif_codec>;
+		};
+	};
+
+When DPCM will handle the formats and rates, the audio subsystem will
+find by itself if such stream will go to the HDMI only or to the S/PDIF
+only or to both. The kirwood audio driver will work as it is and the td=
+a998x
+CODEC will work as it is. There will be no need to change these drivers=
+=2E
+All we need actually is some more code in DPCM or multi-codec or
+whatever mechanism which will route the stream according to the rates
+and formats.
+
+Actually, as DPCM does not work, the user has to choose which PCM to
+use, otherwise, the application does a format and rate translation.
+
+Anyway, if you want S/PDIF output with the actual kernel (3.16-rc3), in
+the DT, put:
+
+	spdif_codec: spdif-codec {
+		compatible =3D "linux,spdif-dit";
+		#sound-dai-cells =3D <0>;
+	};
+
+	sound {
+		compatible =3D "simple-audio-card";
+		simple-audio-card,name =3D "Cubox Audio";
+		simple-audio-card,format =3D "i2s";
+
+		simple-audio-card,dai-link {		/* S/PDIF - S/PDIF */
+			simple-audio-card,cpu {
+				sound-dai =3D <&audio1 1>;
+			};
+			simple-audio-card,codec {
+				sound-dai =3D <&spdif_codec>;
+			};
+		};
+	};
+
+&audio1 {
+	status =3D "okay";
+	clocks =3D <&gate_clk 13>, <&si5351 2>;
+	clock-names =3D "internal", "extclk";
+	pinctrl-0 =3D <&pmx_audio1_i2s1_spdifo &pmx_audio1_extclk>;
+	pinctrl-names =3D "default";
+	#sound-dai-cells =3D <1>;
+};
+
+and the sound should get out of your S/PDIF optical connector.
+
+Eventually, the TDA998x is used in other machines. Are you sure that
+the audio controllers of all these machines have a S/PDIF output
+connected to the S/PDIF input of the tda998x?
+
+The tda998x CODEC I propose works in all configurations.
 
 --=20
-balbi
-
---CC5qiHV/f0UkyWC4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJTtXSQAAoJEIaOsuA1yqRE/g4P/0eagtzicEo1kesEhcsm47bZ
-cG3f2uZyPaQXJlGNiMOBQe7afZv0lFQNmdGrV9WRWRh5AWePTvnvDQoCFzDdkypH
-o5X6qs3l9K01FVlDUq03wCwdiDTSYT0PtATd1BVgDIgvwUgBoPaT/F5IGlOc5kS8
-Mommdr/7HFyjX44Ao2EM0OPT6kb1U+vTQhmHintMv0/D3hNn2TpeHzPlzfwy3jay
-QtPFyUx6pCPV73uPTCfcm0ARNz+Hg6ewtar6mD/vm6YZYCSS3/3bAHmiduuEcABL
-yXrRsK2k43gPYTncTRE6+o/M7I+nNUDVorcU5/h3ORT3qrtok6AgmdexvDwvkrpa
-sZ6ayzE7Xd8gO7EK/ZjO6ypJgoX4HRtnhefF8YPMJExCZzQJTx1yQu+KLSOJjE9p
-Qo31zT2eKvRXdTQ6OpT6v66OqfaifvG2YCoIMGeKimOn9yCwXez5soBK660AZED3
-t7Q42FpwlulSOzOv7mFBznvgO8p3i4GYbLlo3m7PjB4zYyWG0x70dfrWiIbKdio6
-z8j2rPHZFWmWeqkW9cxxc2ceqq+Ao8qcY8BkshRlKTvAT1wJQjmpRoKqDLVd9AjC
-+IVK9FSEg2K2/e+yWH7h+j4yIyi2e0Cn6Ho4PgmCMlCrAAk0YkQzeaLOM8KzvP9S
-BWskmmrNiCABvntdqhsI
-=5Pyl
------END PGP SIGNATURE-----
-
---CC5qiHV/f0UkyWC4--
-
---===============7744631260047914652==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7744631260047914652==--
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
