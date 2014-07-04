@@ -1,53 +1,60 @@
 From: Tushar Behera <tushar.b@samsung.com>
-Subject: [PATCH 2/2] ASoC: max98090: Remove redundant max98090_handle_pdata()
-Date: Fri,  4 Jul 2014 14:42:17 +0530
-Message-ID: <1404465137-14295-2-git-send-email-tushar.b@samsung.com>
-References: <1404465137-14295-1-git-send-email-tushar.b@samsung.com>
+Subject: [PATCH 1/2] ASoC: max98090: Add check for CODEC type
+Date: Fri,  4 Jul 2014 14:42:16 +0530
+Message-ID: <1404465137-14295-1-git-send-email-tushar.b@samsung.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1404465137-14295-1-git-send-email-tushar.b@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, perex@perex.cz, broonie@kernel.org, lgirdwood@gmail.com, trblinux@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-max98090_handle_pdata() is not doing anything other than printing
-a message if pdata is not valid. This can be removed.
+CODEC type (MAX98090/MAX98091) can be specified from device-tree file,
+it can also be obtained from the CODEC during runtime.
+
+Add an explicit check to figure out if both are matching, else print
+a message warning about the same.
 
 Signed-off-by: Tushar Behera <tushar.b@samsung.com>
 ---
- sound/soc/codecs/max98090.c |   13 -------------
- 1 file changed, 13 deletions(-)
+ sound/soc/codecs/max98090.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 1ed06d9..b2b3286 100644
+index ca74f502..1ed06d9 100644
 --- a/sound/soc/codecs/max98090.c
 +++ b/sound/soc/codecs/max98090.c
-@@ -2200,17 +2200,6 @@ static struct snd_soc_dai_driver max98090_dai[] = {
- }
- };
- 
--static void max98090_handle_pdata(struct snd_soc_codec *codec)
--{
--	struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
--	struct max98090_pdata *pdata = max98090->pdata;
--
--	if (!pdata) {
--		dev_err(codec->dev, "No platform data\n");
--		return;
--	}
--}
--
- static int max98090_probe(struct snd_soc_codec *codec)
+@@ -2215,6 +2215,7 @@ static int max98090_probe(struct snd_soc_codec *codec)
  {
  	struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
-@@ -2310,8 +2299,6 @@ static int max98090_probe(struct snd_soc_codec *codec)
- 	snd_soc_update_bits(codec, M98090_REG_MIC_BIAS_VOLTAGE,
- 		M98090_MBVSEL_MASK, M98090_MBVSEL_2V8);
+ 	struct max98090_cdata *cdata;
++	enum max98090_type devtype;
+ 	int ret = 0;
  
--	max98090_handle_pdata(codec);
--
- 	max98090_add_widgets(codec);
+ 	dev_dbg(codec->dev, "max98090_probe\n");
+@@ -2250,16 +2251,21 @@ static int max98090_probe(struct snd_soc_codec *codec)
+ 	}
  
- err_access:
+ 	if ((ret >= M98090_REVA) && (ret <= M98090_REVA + 0x0f)) {
+-		max98090->devtype = MAX98090;
++		devtype = MAX98090;
+ 		dev_info(codec->dev, "MAX98090 REVID=0x%02x\n", ret);
+ 	} else if ((ret >= M98091_REVA) && (ret <= M98091_REVA + 0x0f)) {
+-		max98090->devtype = MAX98091;
++		devtype = MAX98091;
+ 		dev_info(codec->dev, "MAX98091 REVID=0x%02x\n", ret);
+ 	} else {
+-		max98090->devtype = MAX98090;
++		devtype = MAX98090;
+ 		dev_err(codec->dev, "Unrecognized revision 0x%02x\n", ret);
+ 	}
+ 
++	if (max98090->devtype != devtype) {
++		dev_warn(codec->dev, "Mismatch in DT specified CODEC type.\n");
++		max98090->devtype = devtype;
++	}
++
+ 	max98090->jack_state = M98090_JACK_STATE_NO_HEADSET;
+ 
+ 	INIT_DELAYED_WORK(&max98090->jack_work, max98090_jack_work);
 -- 
 1.7.9.5
