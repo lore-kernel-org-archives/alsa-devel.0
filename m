@@ -1,51 +1,61 @@
-From: Tushar Behera <tushar.b@samsung.com>
-Subject: [PATCH 2/2] ASoC: core: Fix possible NULL pointer dereference
-Date: Fri,  4 Jul 2014 14:23:00 +0530
-Message-ID: <1404463980-25027-2-git-send-email-tushar.b@samsung.com>
-References: <1404463980-25027-1-git-send-email-tushar.b@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1404463980-25027-1-git-send-email-tushar.b@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, dianders@chromium.org, tiwai@suse.de, perex@perex.cz, broonie@kernel.org, lgirdwood@gmail.com, galak@codeaurora.org, kgene.kim@samsung.com, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, trblinux@gmail.com
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: ASoC: samsung: MACH_SMDK6450
+Date: Fri, 04 Jul 2014 11:01:52 +0200
+Message-ID: <4203198.qV4EZfpui2@wuerfel>
+References: <1404287238.12021.7.camel@x220> <023d01cf9720$5ed32fc0$1c798f40$@samsung.com> <CAOesGMjdVrOfyrF6X3KoMQxBBYzNZskUsaMaHH653LJgwqpA+Q@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <CAOesGMjdVrOfyrF6X3KoMQxBBYzNZskUsaMaHH653LJgwqpA+Q@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Olof Johansson <olof@lixom.net>, Kukjin Kim <kgene.kim@samsung.com>, Paul Bolle <pebolle@tiscali.nl>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Ben Dooks <ben-linux@fluff.org>
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_of_parse_card_name() may be called before card->dev has been
-set, which results in a kernel panic.
+On Thursday 03 July 2014 20:39:41 Olof Johansson wrote:
+> On Thu, Jul 3, 2014 at 5:39 PM, Kukjin Kim <kgene.kim@samsung.com> wrote:
+> > Mark Brown wrote:
+> >>
+> >> On Thu, Jul 03, 2014 at 07:37:07AM +0900, Kukjin Kim wrote:
+> >> > On 07/02/14 18:23, Mark Brown wrote:
+> >>
+> >> > >This also wasn't sent to me for review, please always send patches to
+> >> > >maintainers.
+> >>
+> >> > Mark, I always send patches to regarding maintainers and in this case the
+> >> > patch missed the change. I'm resending new patch and if any problems, please
+> >> > let me know. Just note, I just wanted to check whether there is no problem
+> >> > with other maintainers' tree early in -next tree.
+> >>
+> >> It looks like you've sent it to broonie@linaro.org not broonie@kernel.org
+> >> which is listed in MAINTAINERS and what I use for e-mail - upstream mail
+> >> that goes to my work address often just gets dropped on the floor (and
+> >> generally ends up at the bottom of my queue to look at) since it ends up
+> >> in a completely different place to my personal mail.
+> >
+> > Mark, oh, I see. But I checked your e-mail address from recent your sign-off
+> > in git commit so, just thought it should be fine.
+> >
+> > I will use kernel.org for your e-mail address next time 
+> 
+> Mark is the _only_ linux developer in the world who will give you crap
+> for sending him patches to the very same email that he signs off all
+> his work with.
+> 
+> I really wish Linaro would just let him sign off with his
+> long-standing kernel.org email address instead so the rest of us
+> wouldn't have to keep track of this. 
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000210
-PC is at snd_soc_of_parse_card_name+0x18/0x54
-LR is at snow_probe+0x5c/0xd4
+FWIW David Miller has a similar policy: he only applies networking
+patches that are sent to the netdev mailing list. This seems like
+a good idea in general (to ensure they are getting exposed to the
+public).
 
-Add an error check in snd_soc_of_parse_card_name() to take care of this
-case and print out a message in case of error.
+Mark, any chance we could convince to pick up patches from
+alsa-devel in the future even if they are sent to the wrong
+personal email account of yours? I would assume that would only
+require a small change in your filter rules, not a change in your
+workflow.
 
-Signed-off-by: Tushar Behera <tushar.b@samsung.com>
----
- sound/soc/soc-core.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c4db07f..2e4bdc0 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -4391,9 +4391,16 @@ EXPORT_SYMBOL_GPL(snd_soc_unregister_codec);
- int snd_soc_of_parse_card_name(struct snd_soc_card *card,
- 			       const char *propname)
- {
--	struct device_node *np = card->dev->of_node;
-+	struct device_node *np;
- 	int ret;
- 
-+	if (!card->dev) {
-+		pr_err("card->dev is not set before calling %s\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	np = card->dev->of_node;
-+
- 	ret = of_property_read_string_index(np, propname, 0, &card->name);
- 	/*
- 	 * EINVAL means the property does not exist. This is fine providing
--- 
-1.7.9.5
+	Arnd
