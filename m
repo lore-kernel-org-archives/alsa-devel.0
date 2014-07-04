@@ -1,57 +1,57 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: samsung: Correct I2S DAI suspend/resume ops
-Date: Fri, 04 Jul 2014 16:05:45 +0200
-Message-ID: <1404482745-29177-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: sirf: provide pm-runtime functions when
+	needed
+Date: Fri, 04 Jul 2014 17:07:41 +0200
+Message-ID: <6778119.KeB0KTehn3@wuerfel>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id 844292659B8
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2014 17:07:49 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Rongjun Ying <rongjun.ying@csr.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-We should save/restore relevant I2S registers regardless of
-the dai->active flag, otherwise some settings are being lost
-after system suspend/resume cycle. E.g. I2S slave mode set only
-during dai initialization is not preserved and the device ends
-up in master mode after system resume.
+The newly introduced sirf-usp driver defines sirf_usp_pcm_{suspend,resume}
+functions only when PM_RUNTIME is enabled, but also uses them when that
+is disabled and only PM_SLEEP is turned on, resulting in this error:
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- sound/soc/samsung/i2s.c |   16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+../sound/soc/sirf/sirf-usp.c: In function 'sirf_usp_pcm_suspend':
+../sound/soc/sirf/sirf-usp.c:308:3: error: implicit declaration of function 'sirf_usp_pcm_runtime_suspend' [-Werror=implicit-function-declaration]
+   sirf_usp_pcm_runtime_suspend(dev);
+   ^
+../sound/soc/sirf/sirf-usp.c: In function 'sirf_usp_pcm_resume':
+../sound/soc/sirf/sirf-usp.c:319:3: error: implicit declaration of function 'sirf_usp_pcm_runtime_resume' [-Werror=implicit-function-declaration]
+   ret = sirf_usp_pcm_runtime_resume(dev);
+   ^
+cc1: some warnings being treated as errors
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 2ac76fa..5f9b255 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -920,11 +920,9 @@ static int i2s_suspend(struct snd_soc_dai *dai)
+To fix that, this patch changes the #ifdef to CONFIG_PM, which
+is enabled when at least one of PM_SLEEP or PM_RUNTIME are enabled.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/sound/soc/sirf/sirf-usp.c b/sound/soc/sirf/sirf-usp.c
+index bdf6aae..9693bc2 100644
+--- a/sound/soc/sirf/sirf-usp.c
++++ b/sound/soc/sirf/sirf-usp.c
+@@ -282,7 +282,7 @@ static struct snd_soc_dai_driver sirf_usp_pcm_dai = {
+ 	.ops = &sirf_usp_pcm_dai_ops,
+ };
+ 
+-#ifdef CONFIG_PM_RUNTIME
++#ifdef CONFIG_PM
+ static int sirf_usp_pcm_runtime_suspend(struct device *dev)
  {
- 	struct i2s_dai *i2s = to_info(dai);
- 
--	if (dai->active) {
--		i2s->suspend_i2smod = readl(i2s->addr + I2SMOD);
--		i2s->suspend_i2scon = readl(i2s->addr + I2SCON);
--		i2s->suspend_i2spsr = readl(i2s->addr + I2SPSR);
--	}
-+	i2s->suspend_i2smod = readl(i2s->addr + I2SMOD);
-+	i2s->suspend_i2scon = readl(i2s->addr + I2SCON);
-+	i2s->suspend_i2spsr = readl(i2s->addr + I2SPSR);
- 
- 	return 0;
- }
-@@ -933,11 +931,9 @@ static int i2s_resume(struct snd_soc_dai *dai)
- {
- 	struct i2s_dai *i2s = to_info(dai);
- 
--	if (dai->active) {
--		writel(i2s->suspend_i2scon, i2s->addr + I2SCON);
--		writel(i2s->suspend_i2smod, i2s->addr + I2SMOD);
--		writel(i2s->suspend_i2spsr, i2s->addr + I2SPSR);
--	}
-+	writel(i2s->suspend_i2scon, i2s->addr + I2SCON);
-+	writel(i2s->suspend_i2smod, i2s->addr + I2SMOD);
-+	writel(i2s->suspend_i2spsr, i2s->addr + I2SPSR);
- 
- 	return 0;
- }
--- 
-1.7.9.5
+ 	struct sirf_usp *usp = dev_get_drvdata(dev);
