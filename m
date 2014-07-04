@@ -1,250 +1,56 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH V3 2/2] ASoC: samsung: Add machine driver for Odroid X2/U3
-Date: Fri, 04 Jul 2014 15:13:45 +0200
-Message-ID: <1404479625-25385-2-git-send-email-s.nawrocki@samsung.com>
-References: <1404479625-25385-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1404479625-25385-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, Chen Zhen <zhen1.chen@samsung.com>
+From: Benoit Cousson <bcousson@baylibre.com>
+Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
+ multicodec
+Date: Fri, 04 Jul 2014 15:55:41 +0200
+Message-ID: <53B6B25D.4010605@baylibre.com>
+References: <20140701164134.GH2296@intel.com> <53B400DE.3040205@baylibre.com>
+ <20140703064147.GK2296@intel.com> <53B539E8.1000301@baylibre.com>
+ <53B53C6B.8020707@metafoo.de> <53B540EE.30009@baylibre.com>
+ <53B541F0.1040105@metafoo.de> <53B5428F.9050100@baylibre.com>
+ <20140703120613.GP2296@intel.com> <20140703121846.GB410@sirena.org.uk>
+ <20140703161517.GQ2296@intel.com> <53B59F94.6040803@metafoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f41.google.com (mail-wg0-f41.google.com [74.125.82.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id F09792659E6
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2014 15:55:43 +0200 (CEST)
+Received: by mail-wg0-f41.google.com with SMTP id a1so1741610wgh.24
+ for <alsa-devel@alsa-project.org>; Fri, 04 Jul 2014 06:55:43 -0700 (PDT)
+In-Reply-To: <53B59F94.6040803@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>
+Cc: misael.lopez@ti.com, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the sound subsystem driver for Odroid-X2 and
-Odroid-U3 boards. The codec works in I2S master mode; there
-are two separate audio routing paths defined, as there are
-differences in the signal routing between the X2 and U3 boards,
-i.e. U3 uses single jack for headphones and microphone.
+On 03/07/2014 20:23, Lars-Peter Clausen wrote:
 
-Signed-off-by: Chen Zhen <zhen1.chen@samsung.com>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
-Changes since v2:
- - clock settings moved to late_probe, odroidx2_ops removed;
- - added missing driver.pm ops initialization;
- - minor cleanups.
----
- sound/soc/samsung/Kconfig             |    8 ++
- sound/soc/samsung/Makefile            |    2 +
- sound/soc/samsung/odroidx2_max98090.c |  177 +++++++++++++++++++++++++++++++++
- 3 files changed, 187 insertions(+)
- create mode 100644 sound/soc/samsung/odroidx2_max98090.c
+[...]
 
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
-index 3be49cd..333d645 100644
---- a/sound/soc/samsung/Kconfig
-+++ b/sound/soc/samsung/Kconfig
-@@ -237,3 +237,11 @@ config SND_SOC_SNOW
- 	help
- 	  Say Y if you want to add audio support for various Snow
- 	  boards based on Exynos5 series of SoCs.
-+
-+config SND_SOC_ODROIDX2
-+	tristate "Audio support for Odroid-X2 and Odroid-U3"
-+	depends on SND_SOC_SAMSUNG
-+	select SND_SOC_MAX98090
-+	select SND_SAMSUNG_I2S
-+	help
-+	  Say Y here to enable audio support for the Odroid-X2/U3.
-diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
-index 6469199..e8d9ccd 100644
---- a/sound/soc/samsung/Makefile
-+++ b/sound/soc/samsung/Makefile
-@@ -44,6 +44,7 @@ snd-soc-tobermory-objs := tobermory.o
- snd-soc-lowland-objs := lowland.o
- snd-soc-littlemill-objs := littlemill.o
- snd-soc-bells-objs := bells.o
-+snd-soc-odroidx2-max98090-objs := odroidx2_max98090.o
+> If the assumption is that a DAI link that has a compressed DAI on the
+> CPU side is never connected to a 'real' CODEC (or multiple CODECS) on
+> the CODEC side. I think we can just leave soc-compress.c alone and just
+> add a sanity check to make sure that num_codecs is always 1.
 
- obj-$(CONFIG_SND_SOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
- obj-$(CONFIG_SND_SOC_SAMSUNG_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
-@@ -69,3 +70,4 @@ obj-$(CONFIG_SND_SOC_TOBERMORY) += snd-soc-tobermory.o
- obj-$(CONFIG_SND_SOC_LOWLAND) += snd-soc-lowland.o
- obj-$(CONFIG_SND_SOC_LITTLEMILL) += snd-soc-littlemill.o
- obj-$(CONFIG_SND_SOC_BELLS) += snd-soc-bells.o
-+obj-$(CONFIG_SND_SOC_ODROIDX2) += snd-soc-odroidx2-max98090.o
-diff --git a/sound/soc/samsung/odroidx2_max98090.c b/sound/soc/samsung/odroidx2_max98090.c
-new file mode 100644
-index 0000000..278edf9
---- /dev/null
-+++ b/sound/soc/samsung/odroidx2_max98090.c
-@@ -0,0 +1,177 @@
-+/*
-+ * Copyright (C) 2014 Samsung Electronics Co., Ltd.
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ */
-+
-+#include <linux/of.h>
-+#include <linux/module.h>
-+#include <sound/soc.h>
-+#include <sound/pcm_params.h>
-+#include "i2s.h"
-+
-+struct odroidx2_drv_data {
-+	const struct snd_soc_dapm_widget *dapm_widgets;
-+	unsigned int num_dapm_widgets;
-+};
-+
-+/* The I2S CDCLK output clock frequency for the MAX98090 codec */
-+#define MAX98090_MCLK 19200000
-+
-+static int odroidx2_late_probe(struct snd_soc_card *card)
-+{
-+	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
-+	struct snd_soc_dai *cpu_dai = card->rtd[0].cpu_dai;
-+	int ret;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, 0, MAX98090_MCLK,
-+						SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set the cpu DAI configuration in order to use CDCLK */
-+	return snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
-+					0, SND_SOC_CLOCK_OUT);
-+}
-+
-+static const struct snd_soc_dapm_widget odroidx2_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_MIC("DMIC", NULL),
-+};
-+
-+static const struct snd_soc_dapm_widget odroidu3_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_SPK("Speakers", NULL),
-+};
-+
-+static struct snd_soc_dai_link odroidx2_dai[] = {
-+	{
-+		.name		= "MAX98090",
-+		.stream_name	= "MAX98090 PCM",
-+		.codec_dai_name	= "HiFi",
-+		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBM_CFM,
-+	}
-+};
-+
-+static struct snd_soc_card odroidx2 = {
-+	.owner			= THIS_MODULE,
-+	.dai_link		= odroidx2_dai,
-+	.num_links		= ARRAY_SIZE(odroidx2_dai),
-+	.fully_routed		= true,
-+	.late_probe		= odroidx2_late_probe,
-+};
-+
-+struct odroidx2_drv_data odroidx2_drvdata = {
-+	.dapm_widgets		= odroidx2_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(odroidx2_dapm_widgets),
-+};
-+
-+struct odroidx2_drv_data odroidu3_drvdata = {
-+	.dapm_widgets		= odroidu3_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(odroidu3_dapm_widgets),
-+};
-+
-+static const struct of_device_id odroidx2_audio_of_match[] = {
-+	{
-+		.compatible	= "samsung,odroidx2-audio",
-+		.data		= &odroidx2_drvdata,
-+	}, {
-+		.compatible	= "samsung,odroidu3-audio",
-+		.data		= &odroidu3_drvdata,
-+	},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, odroidx2_audio_of_match);
-+
-+static int odroidx2_audio_probe(struct platform_device *pdev)
-+{
-+	struct device_node *snd_node = pdev->dev.of_node;
-+	struct snd_soc_card *card = &odroidx2;
-+	struct device_node *i2s_node, *codec_node;
-+	struct odroidx2_drv_data *dd;
-+	const struct of_device_id *of_id;
-+	int ret;
-+
-+	of_id = of_match_node(odroidx2_audio_of_match, snd_node);
-+	dd = (struct odroidx2_drv_data *)of_id->data;
-+
-+	card->num_dapm_widgets = dd->num_dapm_widgets;
-+	card->dapm_widgets = dd->dapm_widgets;
-+
-+	card->dev = &pdev->dev;
-+
-+	ret = snd_soc_of_parse_card_name(card, "samsung,model");
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_of_parse_audio_routing(card, "samsung,audio-routing");
-+	if (ret < 0)
-+		return ret;
-+
-+	codec_node = of_parse_phandle(snd_node, "samsung,audio-codec", 0);
-+	if (!codec_node) {
-+		dev_err(&pdev->dev,
-+			"Failed parsing samsung,i2s-codec property\n");
-+		return -EINVAL;
-+	}
-+
-+	i2s_node = of_parse_phandle(snd_node, "samsung,i2s-controller", 0);
-+	if (!i2s_node) {
-+		dev_err(&pdev->dev,
-+			"Failed parsing samsung,i2s-controller property\n");
-+		ret = -EINVAL;
-+		goto err_put_codec_n;
-+	}
-+
-+	odroidx2_dai[0].codec_of_node = codec_node;
-+	odroidx2_dai[0].cpu_of_node = i2s_node;
-+	odroidx2_dai[0].platform_of_node = i2s_node;
-+
-+	ret = snd_soc_register_card(card);
-+	if (ret) {
-+		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
-+			ret);
-+		goto err_put_i2s_n;
-+	}
-+	return 0;
-+
-+err_put_i2s_n:
-+	of_node_put(i2s_node);
-+err_put_codec_n:
-+	of_node_put(codec_node);
-+	return ret;
-+}
-+
-+static int odroidx2_audio_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_card(card);
-+
-+	of_node_put((struct device_node *)odroidx2_dai[0].cpu_of_node);
-+	of_node_put((struct device_node *)odroidx2_dai[0].codec_of_node);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver odroidx2_audio_driver = {
-+	.driver = {
-+		.name		= "odroidx2-audio",
-+		.owner		= THIS_MODULE,
-+		.of_match_table	= odroidx2_audio_of_match,
-+		.pm		= &snd_soc_pm_ops,
-+	},
-+	.probe	= odroidx2_audio_probe,
-+	.remove	= odroidx2_audio_remove,
-+};
-+module_platform_driver(odroidx2_audio_driver);
-+
-+MODULE_AUTHOR("Chen Zhen <zhen1.chen@samsung.com>");
-+MODULE_AUTHOR("Sylwester Nawrocki <s.nawrocki@samsung.com>");
-+MODULE_DESCRIPTION("ALSA SoC Odroid X2/U3 Audio Support");
-+MODULE_LICENSE("GPL v2");
---
-1.7.9.5
+OK, I'll repost the series without any change on soc-compress.c beside a =
+
+test.
+
+Thanks,
+Benoit
+
+-- =
+
+Beno=EEt Cousson
+BayLibre
+Embedded Linux Technology Lab
+www.baylibre.com
