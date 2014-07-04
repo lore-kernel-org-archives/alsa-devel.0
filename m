@@ -1,56 +1,57 @@
-From: Benoit Cousson <bcousson@baylibre.com>
-Subject: Re: [PATCH v4 6/8] ASoC: compress: Add support for DAI
- multicodec
-Date: Fri, 04 Jul 2014 15:55:41 +0200
-Message-ID: <53B6B25D.4010605@baylibre.com>
-References: <20140701164134.GH2296@intel.com> <53B400DE.3040205@baylibre.com>
- <20140703064147.GK2296@intel.com> <53B539E8.1000301@baylibre.com>
- <53B53C6B.8020707@metafoo.de> <53B540EE.30009@baylibre.com>
- <53B541F0.1040105@metafoo.de> <53B5428F.9050100@baylibre.com>
- <20140703120613.GP2296@intel.com> <20140703121846.GB410@sirena.org.uk>
- <20140703161517.GQ2296@intel.com> <53B59F94.6040803@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f41.google.com (mail-wg0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id F09792659E6
- for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2014 15:55:43 +0200 (CEST)
-Received: by mail-wg0-f41.google.com with SMTP id a1so1741610wgh.24
- for <alsa-devel@alsa-project.org>; Fri, 04 Jul 2014 06:55:43 -0700 (PDT)
-In-Reply-To: <53B59F94.6040803@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>
-Cc: misael.lopez@ti.com, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH] ASoC: samsung: Correct I2S DAI suspend/resume ops
+Date: Fri, 04 Jul 2014 16:05:45 +0200
+Message-ID: <1404482745-29177-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 03/07/2014 20:23, Lars-Peter Clausen wrote:
+We should save/restore relevant I2S registers regardless of
+the dai->active flag, otherwise some settings are being lost
+after system suspend/resume cycle. E.g. I2S slave mode set only
+during dai initialization is not preserved and the device ends
+up in master mode after system resume.
 
-[...]
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ sound/soc/samsung/i2s.c |   16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-> If the assumption is that a DAI link that has a compressed DAI on the
-> CPU side is never connected to a 'real' CODEC (or multiple CODECS) on
-> the CODEC side. I think we can just leave soc-compress.c alone and just
-> add a sanity check to make sure that num_codecs is always 1.
-
-OK, I'll repost the series without any change on soc-compress.c beside a =
-
-test.
-
-Thanks,
-Benoit
-
--- =
-
-Beno=EEt Cousson
-BayLibre
-Embedded Linux Technology Lab
-www.baylibre.com
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 2ac76fa..5f9b255 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -920,11 +920,9 @@ static int i2s_suspend(struct snd_soc_dai *dai)
+ {
+ 	struct i2s_dai *i2s = to_info(dai);
+ 
+-	if (dai->active) {
+-		i2s->suspend_i2smod = readl(i2s->addr + I2SMOD);
+-		i2s->suspend_i2scon = readl(i2s->addr + I2SCON);
+-		i2s->suspend_i2spsr = readl(i2s->addr + I2SPSR);
+-	}
++	i2s->suspend_i2smod = readl(i2s->addr + I2SMOD);
++	i2s->suspend_i2scon = readl(i2s->addr + I2SCON);
++	i2s->suspend_i2spsr = readl(i2s->addr + I2SPSR);
+ 
+ 	return 0;
+ }
+@@ -933,11 +931,9 @@ static int i2s_resume(struct snd_soc_dai *dai)
+ {
+ 	struct i2s_dai *i2s = to_info(dai);
+ 
+-	if (dai->active) {
+-		writel(i2s->suspend_i2scon, i2s->addr + I2SCON);
+-		writel(i2s->suspend_i2smod, i2s->addr + I2SMOD);
+-		writel(i2s->suspend_i2spsr, i2s->addr + I2SPSR);
+-	}
++	writel(i2s->suspend_i2scon, i2s->addr + I2SCON);
++	writel(i2s->suspend_i2smod, i2s->addr + I2SMOD);
++	writel(i2s->suspend_i2spsr, i2s->addr + I2SPSR);
+ 
+ 	return 0;
+ }
+-- 
+1.7.9.5
