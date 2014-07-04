@@ -1,91 +1,101 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: ASoC: samsung: MACH_SMDK6450
-Date: Fri, 4 Jul 2014 12:45:05 +0100
-Message-ID: <20140704114505.GA19453@sirena.org.uk>
-References: <1404287238.12021.7.camel@x220>
- <023d01cf9720$5ed32fc0$1c798f40$@samsung.com>
- <CAOesGMjdVrOfyrF6X3KoMQxBBYzNZskUsaMaHH653LJgwqpA+Q@mail.gmail.com>
- <4203198.qV4EZfpui2@wuerfel>
+Subject: Re: [PATCH] ASoC: wm-adsp: Add missing MODULE_LICENSE
+Date: Fri, 4 Jul 2014 12:47:23 +0100
+Message-ID: <20140704114723.GB19453@sirena.org.uk>
+References: <1404452861-8951-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4203198.qV4EZfpui2@wuerfel>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, Olof Johansson <olof@lixom.net>, Kukjin Kim <kgene.kim@samsung.com>, Paul Bolle <pebolle@tiscali.nl>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Ben Dooks <ben-linux@fluff.org>
+Content-Type: multipart/mixed; boundary="===============0472810757836926717=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BAC62659A3
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2014 13:47:36 +0200 (CEST)
+In-Reply-To: <1404452861-8951-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Praveen Diwakar <praveen.diwakar@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---UlVJffcvxoiEqYs2
+--===============0472810757836926717==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KFztAG8eRSV9hGtP"
+Content-Disposition: inline
+
+
+--KFztAG8eRSV9hGtP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 04, 2014 at 11:01:52AM +0200, Arnd Bergmann wrote:
-> On Thursday 03 July 2014 20:39:41 Olof Johansson wrote:
-> > On Thu, Jul 3, 2014 at 5:39 PM, Kukjin Kim <kgene.kim@samsung.com> wrot=
-e:
+On Fri, Jul 04, 2014 at 11:17:41AM +0530, Vinod Koul wrote:
+> From: Praveen Diwakar <praveen.diwakar@intel.com>
+>=20
+> Since MODULE_LICENSE is missing the module load fails,
+> so add this for module.
 
-> > Mark is the _only_ linux developer in the world who will give you crap
-> > for sending him patches to the very same email that he signs off all
-> > his work with.
+Always CC maintainers on patches (in this case the Wolfson people),
+especially for something like licensing.
 
-> > I really wish Linaro would just let him sign off with his
-> > long-standing kernel.org email address instead so the rest of us
-> > wouldn't have to keep track of this.=20
+> Signed-off-by: Praveen Diwakar <praveen.diwakar@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> ---
+> ---
+>  sound/soc/codecs/wm_adsp.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+>=20
+> diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+> index 0600271..2537725 100644
+> --- a/sound/soc/codecs/wm_adsp.c
+> +++ b/sound/soc/codecs/wm_adsp.c
+> @@ -1758,3 +1758,5 @@ int wm_adsp2_init(struct wm_adsp *adsp, bool dvfs)
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(wm_adsp2_init);
+> +
+> +MODULE_LICENSE("GPL v2");
+> --=20
+> 1.7.0.4
+>=20
+>=20
 
-Me too, it's a constant source of aggrivation.
-
-> FWIW David Miller has a similar policy: he only applies networking
-> patches that are sent to the netdev mailing list. This seems like
-> a good idea in general (to ensure they are getting exposed to the
-> public).
-
-Right, I do tend to insist on this as well (I also think some other
-patchwork users do this as well as davem, things need to hit the list to
-go into patchwork), plus including comaintainers where that's relevant.
-For the most part anything that ends up going to the work address also
-has one of those problems.
-
-> Mark, any chance we could convince to pick up patches from
-> alsa-devel in the future even if they are sent to the wrong
-> personal email account of yours? I would assume that would only
-> require a small change in your filter rules, not a change in your
-> workflow.
-
-I do look at the lists but it's very easy for things that only go there
-to get missed and it's fairly low priority, the volume is very high and
-obviously there's a lot of duplication from things that do land in my
-inbox.  Copying things into my inbox causes duplication problems due to
-things going to lkml, lakml and subsystem specific lists and alsa-devel
-being moderated for non-subscribers and subject mangling doesn't help
-anything.
-
-What's more likely to happen is that I just start ignoring the work
-policy which is something I've been considering anyway.
-
---UlVJffcvxoiEqYs2
+--KFztAG8eRSV9hGtP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTtpO9AAoJELSic+t+oim9CXgP/37k6EolG1DjJQUOJw9Ax3LR
-QiEofSrDa+xgy7+SJOWeYhKOglaGhmRNrXpzdBXsaHO+gjqDPDDnqeuSv3axwQDp
-l86hGn49MBVQ5bSYj01uOVJ5gw4YpdRyvqVMQiPhLUlicFJljW5LYYZ7xflEEQr9
-zDSW2tmHJNpaVrBjnStSm/3TeQ0CwT36d+06PKRQt6vVqdMJsa1LB6oKntRYya4c
-NNqGGesVNjZJu+JiqER0w5ROgzG3K+x04QxEu7zl3yjZHjUhqWx7FGlvUyqcXVUT
-m+BN6txHW0DFTFEjhskwujHBSA96hnlFJq8Th1U2NnjY3CjyOwsbGogtxNG9A3Sm
-6xx2lVazPcFAucF1pXBiTPkmtM35c6o39YH8+QaFDXXLRHQFVu442EE6U5ry8QyN
-8gKzbcPIZdawPRHQ4HW62QI43wXG77+A3OjOEwCHnvZh8UKTotci01JkbP5bx+x/
-pzHRH10WMWtlNL3i7zo3eGSrDhT7n/2/hJuwtJKh8otEWBpS2J37Yk+AYiHe1fVZ
-NIXDWTMCwps0PadyvUYkFu+U0U+00yKysZ0b/wB72B3j/pBOyJknByAvsi80fZv0
-cFecmcaK0hej18Vdo5yUv90WwOqEBaHtod58VRqaou7t8dOwjsR702pjLj3wBS/j
-1Tj3tmv0bmqZSoJ5vUK5
-=Gdbm
+iQIcBAEBAgAGBQJTtpRIAAoJELSic+t+oim9ZKgQAID0kMOkz2A0mjt00q6F9GFu
+np7RaT4A/IxK88eipu8eQOdXzzFe2nqaHdJzcz3meQkPj/Ejd12v6kuriQw3P776
+EZURhtrZ6UZyfxu0u0wqNfEYpyU95nQ7c0A1gxxN5QqxgTh42mVL/YUu4jF1LXvg
+jftOfEZTBKtTivw135zrDFYcBZrgqeWkKl76ccNP0tbBmS2ndUIs2F4AWYQwkkmz
+YqBpBX8T8PQUgE5b39PdMOjuwfHAPzn3EKcoM7KczWJEYQgV46r9Fxf4Y+vMaFja
+LjaCiXRLwTIoErpeUGpYZeK+tOSfvqE3afzlVDzmHqWgy8DU/E+PbyiYdn2znSt0
+O2sqNWWyh7jFfEf2hlRka/f7ruV0c5As4fWx/HqF9iIWyedTEBHwrLok3cf9Gd6W
+QCNwqHK/anbogxYx+oNWiunZ97qwhLlirRftjeFxsaW7oHqybrB1ZXaoRXkfsitc
+cb8ngDGXNklqsPvZ8GFMTPmdO22b5Y0RSy94Krmi4QcZ4azvvpVYyBzIK9OUtdr8
+AhtkmL4WaBawFayp0CySzqMpT8IC/drFPDeLddfPlB0n1SZsl6AvbXUSJr2y8x6E
+qECGorIXf5QRcmOyBeH2WSaiBltm/SCBvanvp1TA9MhLNOpfpyOq6EcudGxHRUUO
+zQKSDk703yVaacdZhElx
+=EZrf
 -----END PGP SIGNATURE-----
 
---UlVJffcvxoiEqYs2--
+--KFztAG8eRSV9hGtP--
+
+--===============0472810757836926717==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0472810757836926717==--
