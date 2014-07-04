@@ -1,60 +1,42 @@
-From: Tushar Behera <tushar.b@samsung.com>
-Subject: [PATCH 1/2] ASoC: max98090: Add check for CODEC type
-Date: Fri,  4 Jul 2014 14:42:16 +0530
-Message-ID: <1404465137-14295-1-git-send-email-tushar.b@samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, perex@perex.cz, broonie@kernel.org, lgirdwood@gmail.com, trblinux@gmail.com
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH 2/2] ASoC: samsung: Add machine driver for odroidx2
+Date: Fri, 04 Jul 2014 13:04:18 +0200
+Message-ID: <53B68A32.8000203@samsung.com>
+References: <1400759708-25831-1-git-send-email-s.nawrocki@samsung.com>
+ <1400759708-25831-2-git-send-email-s.nawrocki@samsung.com>
+ <20140522185334.GT12304@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <20140522185334.GT12304@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Chen Zhen <zhen1.chen@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-CODEC type (MAX98090/MAX98091) can be specified from device-tree file,
-it can also be obtained from the CODEC during runtime.
+On 22/05/14 20:53, Mark Brown wrote:
+>> +	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
+>> > +					| SND_SOC_DAIFMT_NB_NF
+>> > +					| SND_SOC_DAIFMT_CBM_CFM);
+>> > +	if (ret < 0)
+>> > +		return ret;
+>> > +
+>> > +	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
+>> > +					| SND_SOC_DAIFMT_NB_NF
+>> > +					| SND_SOC_DAIFMT_CBM_CFM);
+>> > +	if (ret < 0)
+>> > +		return ret;
+>
+> These are constant, set these in the dai_link.
 
-Add an explicit check to figure out if both are matching, else print
-a message warning about the same.
+set_fmt also sets master/slave mode of the I2S DAI, after I moved
+this into the cpu_dai link data structure after suspend/resume cycle
+the I2S IP block is not being properly re-configured. Should the
+format setting be added in resume_post callback, or is there any
+other preferred way ? Similarly the syclk settings are being lost
+over suspend/resume cycle and nothing restores them.
 
-Signed-off-by: Tushar Behera <tushar.b@samsung.com>
----
- sound/soc/codecs/max98090.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index ca74f502..1ed06d9 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2215,6 +2215,7 @@ static int max98090_probe(struct snd_soc_codec *codec)
- {
- 	struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
- 	struct max98090_cdata *cdata;
-+	enum max98090_type devtype;
- 	int ret = 0;
- 
- 	dev_dbg(codec->dev, "max98090_probe\n");
-@@ -2250,16 +2251,21 @@ static int max98090_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	if ((ret >= M98090_REVA) && (ret <= M98090_REVA + 0x0f)) {
--		max98090->devtype = MAX98090;
-+		devtype = MAX98090;
- 		dev_info(codec->dev, "MAX98090 REVID=0x%02x\n", ret);
- 	} else if ((ret >= M98091_REVA) && (ret <= M98091_REVA + 0x0f)) {
--		max98090->devtype = MAX98091;
-+		devtype = MAX98091;
- 		dev_info(codec->dev, "MAX98091 REVID=0x%02x\n", ret);
- 	} else {
--		max98090->devtype = MAX98090;
-+		devtype = MAX98090;
- 		dev_err(codec->dev, "Unrecognized revision 0x%02x\n", ret);
- 	}
- 
-+	if (max98090->devtype != devtype) {
-+		dev_warn(codec->dev, "Mismatch in DT specified CODEC type.\n");
-+		max98090->devtype = devtype;
-+	}
-+
- 	max98090->jack_state = M98090_JACK_STATE_NO_HEADSET;
- 
- 	INIT_DELAYED_WORK(&max98090->jack_work, max98090_jack_work);
--- 
-1.7.9.5
+--
+Thanks,
+Sylwester
