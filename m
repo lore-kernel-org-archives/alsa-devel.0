@@ -1,15 +1,17 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: sirf: provide pm-runtime functions when
-	needed
-Date: Fri, 04 Jul 2014 17:07:41 +0200
-Message-ID: <6778119.KeB0KTehn3@wuerfel>
+From: Benoit Cousson <bcousson@baylibre.com>
+Subject: [PATCH v5 0/5] ASoC: core: Add support for DAI
+	multicodec
+Date: Fri,  4 Jul 2014 18:07:50 +0200
+Message-ID: <1404490075-24997-1-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 844292659B8
- for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2014 17:07:49 +0200 (CEST)
+Received: from mail-wg0-f52.google.com (mail-wg0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9499B2659C4
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2014 18:08:02 +0200 (CEST)
+Received: by mail-wg0-f52.google.com with SMTP id b13so1848584wgh.35
+ for <alsa-devel@alsa-project.org>; Fri, 04 Jul 2014 09:08:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,39 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Rongjun Ying <rongjun.ying@csr.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de
+Cc: misael.lopez@ti.com, alsa-devel@alsa-project.org, Benoit Cousson <bcousson@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-The newly introduced sirf-usp driver defines sirf_usp_pcm_{suspend,resume}
-functions only when PM_RUNTIME is enabled, but also uses them when that
-is disabled and only PM_SLEEP is turned on, resulting in this error:
+Hi Lars, Mark and Liam,
 
-../sound/soc/sirf/sirf-usp.c: In function 'sirf_usp_pcm_suspend':
-../sound/soc/sirf/sirf-usp.c:308:3: error: implicit declaration of function 'sirf_usp_pcm_runtime_suspend' [-Werror=implicit-function-declaration]
-   sirf_usp_pcm_runtime_suspend(dev);
-   ^
-../sound/soc/sirf/sirf-usp.c: In function 'sirf_usp_pcm_resume':
-../sound/soc/sirf/sirf-usp.c:319:3: error: implicit declaration of function 'sirf_usp_pcm_runtime_resume' [-Werror=implicit-function-declaration]
-   ret = sirf_usp_pcm_runtime_resume(dev);
-   ^
-cc1: some warnings being treated as errors
+Here is the fifth version of the multicodec series.
 
-To fix that, this patch changes the #ifdef to CONFIG_PM, which
-is enabled when at least one of PM_SLEEP or PM_RUNTIME are enabled.
+It mostly fixes the remaining comments from Lars on the series.
+It removes as well the support for soc-compress.c based on Vinod
+comment.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Please note that I have a very simple setup based on BBB to check if the series
+is working, so it will be good to test it on various platforms to ensure
+this is not generating any regression.
 
-diff --git a/sound/soc/sirf/sirf-usp.c b/sound/soc/sirf/sirf-usp.c
-index bdf6aae..9693bc2 100644
---- a/sound/soc/sirf/sirf-usp.c
-+++ b/sound/soc/sirf/sirf-usp.c
-@@ -282,7 +282,7 @@ static struct snd_soc_dai_driver sirf_usp_pcm_dai = {
- 	.ops = &sirf_usp_pcm_dai_ops,
- };
- 
--#ifdef CONFIG_PM_RUNTIME
-+#ifdef CONFIG_PM
- static int sirf_usp_pcm_runtime_suspend(struct device *dev)
- {
- 	struct sirf_usp *usp = dev_get_drvdata(dev);
+The series is based on asoc/for-next (v3.16-rc3).
+
+Test and comments are welcome.
+
+Thanks,
+Benoit
+
+
+v1: http://comments.gmane.org/gmane.linux.alsa.devel/120532
+
+v2: http://comments.gmane.org/gmane.linux.alsa.devel/121024
+- Split the first version in several patches.
+- Remove the TDM fixup 
+
+v3: 
+- Fixed all the places that were not iterating over all the codecs.
+- Change the structure and split it.
+
+v4:
+- Improve the TDM management
+- Split the orginal patch in smaller chunks
+- Ignore the CODEC to CODEC link case for the moment
+- Add iteration for multicodecs everywhere
+
+v5:
+- Remove multicodec support for soc-compress
+- Simplify the code a little thanks to Lars component series
+
+
+Benoit Cousson (5):
+  ASoC: core: Add initial support for DAI multicodec
+  ASoC: pcm: Add support for DAI multicodec
+  ASoC: dapm: Add support for DAI multicodec
+  ASoC: compress: Prevent multicodec for compressed stream
+  ASoC: pcm: Add soc_dai_hw_params helper
+
+ include/sound/soc-dai.h  |   4 +
+ include/sound/soc.h      |  17 ++
+ sound/soc/soc-compress.c |   5 +
+ sound/soc/soc-core.c     | 293 +++++++++++++++++--------
+ sound/soc/soc-dapm.c     |  95 ++++----
+ sound/soc/soc-pcm.c      | 555 ++++++++++++++++++++++++++++++++---------------
+ 6 files changed, 665 insertions(+), 304 deletions(-)
+
+-- 
+1.9.1
