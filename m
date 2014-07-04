@@ -1,53 +1,59 @@
-From: Olof Johansson <olof@lixom.net>
-Subject: Re: ASoC: samsung: MACH_SMDK6450
-Date: Thu, 3 Jul 2014 20:39:41 -0700
-Message-ID: <CAOesGMjdVrOfyrF6X3KoMQxBBYzNZskUsaMaHH653LJgwqpA+Q@mail.gmail.com>
-References: <1404287238.12021.7.camel@x220>
-	<20140702092347.GB410@sirena.org.uk>
-	<53B48993.5020809@samsung.com>
-	<20140703111442.GW410@sirena.org.uk>
-	<023d01cf9720$5ed32fc0$1c798f40$@samsung.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC 19/19] ASoC: Intel: mrfld: add the DSP mixers
+Date: Fri, 4 Jul 2014 10:16:51 +0530
+Message-ID: <20140704044651.GT2296@intel.com>
+References: <1402662848-24534-1-git-send-email-vinod.koul@intel.com>
+ <1402662848-24534-20-git-send-email-vinod.koul@intel.com>
+ <539C6C9D.6020004@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <023d01cf9720$5ed32fc0$1c798f40$@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Kukjin Kim <kgene.kim@samsung.com>
-Cc: Mark Brown <broonie@kernel.org>, Paul Bolle <pebolle@tiscali.nl>, Ben Dooks <ben-linux@fluff.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id E11BB265977
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2014 06:48:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <539C6C9D.6020004@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 3, 2014 at 5:39 PM, Kukjin Kim <kgene.kim@samsung.com> wrote:
-> Mark Brown wrote:
->>
->> On Thu, Jul 03, 2014 at 07:37:07AM +0900, Kukjin Kim wrote:
->> > On 07/02/14 18:23, Mark Brown wrote:
->>
->> > >This also wasn't sent to me for review, please always send patches to
->> > >maintainers.
->>
->> > Mark, I always send patches to regarding maintainers and in this case the
->> > patch missed the change. I'm resending new patch and if any problems, please
->> > let me know. Just note, I just wanted to check whether there is no problem
->> > with other maintainers' tree early in -next tree.
->>
->> It looks like you've sent it to broonie@linaro.org not broonie@kernel.org
->> which is listed in MAINTAINERS and what I use for e-mail - upstream mail
->> that goes to my work address often just gets dropped on the floor (and
->> generally ends up at the bottom of my queue to look at) since it ends up
->> in a completely different place to my personal mail.
->
-> Mark, oh, I see. But I checked your e-mail address from recent your sign-off
-> in git commit so, just thought it should be fine.
->
-> I will use kernel.org for your e-mail address next time ;-)
+On Sat, Jun 14, 2014 at 05:39:09PM +0200, Lars-Peter Clausen wrote:
+> On 06/13/2014 02:34 PM, Vinod Koul wrote:
+> >The is RFC patch for adding the platform mixer controls. This requires the
+> >dapm_set-get to be exported. Or changes required after component series is
+> >merged
+> 
+> You are not using dapm_kcontrol_get_value() in this patch and
+> without that calling dapm_kcontrol_set_value() is pretty pointless
+> as the value is never read again. But it is still a good idea to use
+> the generic controls rather than having a custom copy&pasted
+> version.
 
-Mark is the _only_ linux developer in the world who will give you crap
-for sending him patches to the very same email that he signs off all
-his work with.
+Hey Lars,
 
-I really wish Linaro would just let him sign off with his
-long-standing kernel.org email address instead so the rest of us
-wouldn't have to keep track of this. :(
+Circling back on this one..
 
+We tried implementing based on the feedback. One question though remains.
 
--Olof
+We were able to remove the get/put widget handlers. Now only the callback is
+present. With this when widget is powered up for a mixer, we need to know the value
+of the mixer so that we can inform DSP using IPC.
+
+Now potentially looks like we should be able to remove the register file as well,
+but only problem would be how to get the mixer control value (how many and which
+inputs are on/off and tell DSP). This would need me to export the dapm_get
+function, is that approach fine, or do we have any other way to get the value of
+this in driver.
+
+-- 
+~Vinod
