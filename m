@@ -1,78 +1,112 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm-adsp: Add missing MODULE_LICENSE
-Date: Fri, 4 Jul 2014 17:53:49 +0100
-Message-ID: <20140704165349.GD19453@sirena.org.uk>
-References: <1404452861-8951-1-git-send-email-vinod.koul@intel.com>
+From: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Subject: Re: [PATCH v2 1/2] ASoC: dt-bindings: add rockchip i2s bindings
+Date: Fri, 4 Jul 2014 17:55:31 +0100
+Message-ID: <20140704165531.GD7106@leverpostej>
+References: <1404203860-30712-2-git-send-email-xjq@rock-chips.com>
+ <1404458796-6818-1-git-send-email-xjq@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6653718837865072062=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 193CC2659C7
- for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2014 18:53:56 +0200 (CEST)
-In-Reply-To: <1404452861-8951-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Praveen Diwakar <praveen.diwakar@intel.com>, lgirdwood@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1404458796-6818-1-git-send-email-xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: jianqun <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Cc: "heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org" <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org" <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "zhangqing-TNX95d0MmH7DzftRWevZcw@public.gmane.org" <zhangqing-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, "hj-TNX95d0MmH7DzftRWevZcw@public.gmane.org" <hj-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, "kever.yang-TNX95d0MmH7DzftRWevZcw@public.gmane.org" <kever.yang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, "huangtao-TNX95d0MmH7DzftRWevZcw@public.gmane.org" <huangtao-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, "zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org" <zyw-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, "yzq-TNX95d0MmH7DzftRWevZcw@public.gmane.org" <yzq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, "zhenfu.fang-TNX95d0MmH7DzftRWevZcw@public.gmane.org" <zhenfu.fang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, "cf-TNX95d0MmH7DzftRWevZcw@public.gmane.org" <cf-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, kfx@rock-chips
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jul 04, 2014 at 08:26:36AM +0100, jianqun wrote:
+> From: Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+> 
+> Add devicetree bindings for i2s controller found on
+> rk3066, rk3188 and rk3288 processors from rockchip.
+> 
+> Signed-off-by: Jianqun Xu <xjq-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+> ---
+> Changes since v1:
+> - modify the description of clock-names property, adviced by Mark Rutland.
+> - modify the example to fit for rk3288.
+> 
+>  .../devicetree/bindings/sound/rockchip-i2s.txt     |   36 ++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+> new file mode 100644
+> index 0000000..9fc577d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+> @@ -0,0 +1,36 @@
+> +* Rockchip I2S controller
+> +
+> +The I2S bus (Inter-IC sound bus) is a serial link for digital
+> +audio data transfer between devices in the system.
+> +
+> +Required properties:
+> +
+> +- compatible: should be one of the followings
+> +   - "rockchip,rk3066-i2s": for rk3066
+> +   - "rockchip,rk3188-i2s", "rockchip,rk3066-i2s": for rk3188
+> +   - "rockchip,rk3288-i2s", "rockchip,rk3066-i2s": for rk3288
+> +- reg: physical base address of the controller and length of memory mapped
+> +  region.
+> +- interrupts: The interrupt number to the cpu. The interrupt specifier format
+> +  depends on the interrupt controller.
 
---===============6653718837865072062==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hoZxPH4CaxYzWscb"
-Content-Disposition: inline
+Just state _which_ interrupt this is from the view of the device.
 
+> +- #address-cells: should be 1.
+> +- #size-cells: should be 0.
+> +- dmas: DMA specifiers for tx and rx dma. See the DMA client binding,
+> +	Documentation/devicetree/bindings/dma/dma.txt
+> +- dma-names: DMA request names should include "tx" and "rx" if present.
 
---hoZxPH4CaxYzWscb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just say:
 
-On Fri, Jul 04, 2014 at 11:17:41AM +0530, Vinod Koul wrote:
-> From: Praveen Diwakar <praveen.diwakar@intel.com>
->=20
-> Since MODULE_LICENSE is missing the module load fails,
-> so add this for module.
+- dma-names: should include "tx" and "rx"
 
-Applied, thanks.
+If we need more DMAs or descriptions thereof, expand into a bulleted
+list.
 
---hoZxPH4CaxYzWscb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> +- clocks: a list of phandle + clock-specifer pairs, one for each entry in clock-names.
+> +- clock-names: Shall be "i2s_hclk" for I2S bus and "i2s_clk" for master clock
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+This was easier to read as a bulleted list than inline:
 
-iQIcBAEBAgAGBQJTttwaAAoJELSic+t+oim9v5IP/jbKYvADetChHEljUZadYLtf
-EyJzIjYhgcciHid5Ww9J6InC56hViGwj2rRipv799ct29sRu6us5XWMJBffUty+A
-0uRzqv8prmLortHDuDcNRmtZKcG/Y1dNxPqN1EO2XGIhhNxHD8aqwqY0R5neBThk
-ZyXmYCo4Ce+DB6vQTBgSsdYySgtY3n5p0Yy5nvsV05wkVwlH0RHbGvZJ235b37ef
-FIhLOAJZpgG0frTM6j/fkdDOmHg9MQ8S6RUG+1T6H6V0q60ob2947ChQDHJDzayq
-+gpMzaTZHEBMXLhmpGDL9NZ7DojcObRyAV60+hmQ4f9GkcYkHmJXw4HdBKo0Vp58
-8BSwmS9POxPKwxaDLh1ExttffoMbSs4ltfEeEDAcFNyP5rxmsaU13BhPxrztgvAv
-yu8ekuDePc5NkesuyenBxSXlp12IvTuWIa/iORkkLiM+ewDRCbNR+WQeHX/lJtxp
-sI6jGevGeas/YIwV0sbazWJlsrl5s0MV5bfjxWCATOob/7ywZm0ZUpMiJcI+1usj
-8CMYogpIYMEvqzR+IkvxAzhwKbRUclNtInt1hcZqo+Z4k9twERTfEnY1Db7lY/AF
-t/mxnamml1BzJa+iBDSJmi/9/5N/xhB/HAOfIs+jWiVZo/zsXPEMQG5MvkMeKks6
-FAnu/qgKV4HvidYdfen0
-=aJ9L
------END PGP SIGNATURE-----
+- clock-names: should include:
+  - "i2s_hclk" for the I2S bus clock
+  - "i2s_clk" for the master clock
 
---hoZxPH4CaxYzWscb--
+> +
+> +Example, for rk3288 I2S controller:
+> +
+> +i2s0: i2s@ff890000 {
+> +	compatible = "rockchip,rk3066-i2s", "rockchip,rk3288-i2s";
 
---===============6653718837865072062==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This is the wrong way around per the documentation of the compatible
+string.
 
+Thanks,
+Mark.
 
---===============6653718837865072062==--
+> +	reg = <0xff890000 0x10000>;
+> +	interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	dmas = <&pdma1 0>, <&pdma1 1>;
+> +	dma-names = "rx", "tx";
+> +	clock-names = "i2s_hclk", "i2s_clk";
+> +	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
+> +};
+> -- 
+> 1.7.9.5
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
