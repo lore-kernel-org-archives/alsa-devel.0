@@ -1,24 +1,18 @@
-From: "siickwkc@gmail.com" <siickwkc@gmail.com>
-Subject: Fwd: Re: About your snd-firewire-improve
-Date: Fri, 04 Jul 2014 12:58:18 +0200
-Message-ID: <53B688CA.9020105@gmail.com>
-References: <53AEE210.3000201@sakamocchi.jp>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm-adsp: Add missing MODULE_LICENSE
+Date: Fri, 4 Jul 2014 13:47:24 +0100
+Message-ID: <20140704124724.GA16644@opensource.wolfsonmicro.com>
+References: <1404452861-8951-1-git-send-email-vinod.koul@intel.com>
+ <20140704114723.GB19453@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f50.google.com (mail-wg0-f50.google.com [74.125.82.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 53F5426587F
- for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2014 12:58:23 +0200 (CEST)
-Received: by mail-wg0-f50.google.com with SMTP id x13so463631wgg.21
- for <alsa-devel@alsa-project.org>; Fri, 04 Jul 2014 03:58:23 -0700 (PDT)
-Received: from [192.168.0.46] (gai69-4-82-228-194-100.fbx.proxad.net.
- [82.228.194.100])
- by mx.google.com with ESMTPSA id i4sm77928647wib.21.2014.07.04.03.58.20
- for <alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Fri, 04 Jul 2014 03:58:21 -0700 (PDT)
-In-Reply-To: <53AEE210.3000201@sakamocchi.jp>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4361B26587F
+ for <alsa-devel@alsa-project.org>; Fri,  4 Jul 2014 14:47:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20140704114723.GB19453@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,91 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Praveen Diwakar <praveen.diwakar@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jul 04, 2014 at 12:47:23PM +0100, Mark Brown wrote:
+> On Fri, Jul 04, 2014 at 11:17:41AM +0530, Vinod Koul wrote:
+> > From: Praveen Diwakar <praveen.diwakar@intel.com>
+> > 
+> > Since MODULE_LICENSE is missing the module load fails,
+> > so add this for module.
+> 
+> Always CC maintainers on patches (in this case the Wolfson people),
+> especially for something like licensing.
 
+Indeed we would definitely like to be in the loop on licensing
+changes :-)
 
+> 
+> > Signed-off-by: Praveen Diwakar <praveen.diwakar@intel.com>
+> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > ---
+> > ---
+> >  sound/soc/codecs/wm_adsp.c |    2 ++
+> >  1 files changed, 2 insertions(+), 0 deletions(-)
+> > 
+> > diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+> > index 0600271..2537725 100644
+> > --- a/sound/soc/codecs/wm_adsp.c
+> > +++ b/sound/soc/codecs/wm_adsp.c
+> > @@ -1758,3 +1758,5 @@ int wm_adsp2_init(struct wm_adsp *adsp, bool dvfs)
+> >  	return 0;
+> >  }
+> >  EXPORT_SYMBOL_GPL(wm_adsp2_init);
+> > +
+> > +MODULE_LICENSE("GPL v2");
 
--------- Message original --------
-Sujet: 	Re: About your snd-firewire-improve
-Date : 	Sun, 29 Jun 2014 00:41:04 +0900
-De : 	Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Pour : 	siickwkc@gmail.com <siickwkc@gmail.com>
+Yeah this is fine, I have been meaning to do that myself.
 
+Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-
-Hi Siick,
-
-(Jun 28 2014 20:18), siickwkc@gmail.com wrote:
-> Firstly, sorry for my english, i'm a french so i will make some mistakes.
-
-Don't worry. I'm also not good at english because I'm Japanese.
-
-> I'm a ubuntu long time user and i have a M-audio firewire audiophile for
-> MAO. Right now, i can just use it on Windows. That's why your project
-> have my interest.
-
-M-Audio Firewire Audiophile is one of my test devices. It means I own it
-and use it to debug my drivers. As long as I know, my driver (snd-bebob)
-can drive it.
-
-> I've installed like you explain it on you readme file here >
-> https://github.com/takaswie/snd-firewire-improve
-
-You can also use DKMS package from David Henningsson's PPA. He's a
-developer for ALSA/Pulseaudio and familiar with my developing. This
-package is for trusty.
-https://launchpad.net/~diwic/+archive/snd-firewire-improve
-
-> And now when i switch on my firewire souncard, it's different, it seems
-> to "work" because i don't have flashing light as usual.
-> I switch on, lights flash, and then it turns blue without flashing, like
-> on windows.
-
-It's correct behaviour. In detail, please see these patches:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-April/075885.html
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-April/075888.html
-
-> But now i try to make it works with audacious and it doesn't.
-> I try to configure audacious with ALSA out but in parameters all
-> firewire device listed seems don't work....
-
-About "snd_mixer_find_selem failed" message, this behaviour is correct
-because my drivers don't have ALSA Control Interface. This means users
-cannot control internal mixer via ALSA applications such like alsamixer.
-
-For this purpose, please use ffado-dbus-server/ffado-mixer. But Ubuntu
-package for FFADO is a bit old. I upload the package with latest source
-in my PPA for trusty.
-https://launchpad.net/~mocchi/+archive/instruments
-
-Or you should use upstream source.
-http://subversion.ffado.org/wiki/InstallingFfadoFromSource
-
-If you're successful to install, you can see GUI such like in this page:
-http://subversion.ffado.org/wiki/MaudioBebob
-
-About "snd_pcm_hw_params_set_channels failed", this behaviour is correct
-to your device because AudioPhile can just playback 6ch PCM, while you
-try to playback 2ch PCM. There is a mismatch of channels.
-
-Instead of using "hw:2,0" PCM device, use "plughw:2,0" PCM device. This
-PCM device can arrange channels and solve the mismatch.
-
-> I'm not familiar with all audio stuff on Linux, maybe i've done
-> something wrong?
-> I attached you screenshot maybe it can help....
-> Thanks for your reading and your future answer.
-
-No, you did correct things. Thanks for your report.
-
-If possible, would you please post your questions to alsa-devel? I
-believe our conversation may help to the other users.
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+Thanks,
+Charles
