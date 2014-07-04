@@ -1,50 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: max98090: Add check for CODEC type
-Date: Fri, 4 Jul 2014 20:30:44 +0100
-Message-ID: <20140704193044.GH14896@sirena.org.uk>
-References: <1404465137-14295-1-git-send-email-tushar.b@samsung.com>
+Subject: Re: [PATCH 1/2] ASoC: samsung: Update sound-card name for Snow
+Date: Fri, 4 Jul 2014 20:32:11 +0100
+Message-ID: <20140704193211.GJ14896@sirena.org.uk>
+References: <1404463980-25027-1-git-send-email-tushar.b@samsung.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4LFBTxd4L5NLO6ly"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="9aCKuHbn5v2q3RVc"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1404465137-14295-1-git-send-email-tushar.b@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <1404463980-25027-1-git-send-email-tushar.b@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Tushar Behera <tushar.b@samsung.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.de, perex@perex.cz, lgirdwood@gmail.com, trblinux@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, dianders@chromium.org, tiwai@suse.de, perex@perex.cz, lgirdwood@gmail.com, galak@codeaurora.org, kgene.kim@samsung.com, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, trblinux@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---4LFBTxd4L5NLO6ly
+--9aCKuHbn5v2q3RVc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 04, 2014 at 02:42:16PM +0530, Tushar Behera wrote:
-> CODEC type (MAX98090/MAX98091) can be specified from device-tree file,
-> it can also be obtained from the CODEC during runtime.
+On Fri, Jul 04, 2014 at 02:22:59PM +0530, Tushar Behera wrote:
+> Snow sound-card driver supports multiple boards with different
+> audio codecs. Updating the sound card name per board basis would provide
+> some more information to the end-user.
 
-Applied both, thanks.
+Applied, thanks.
 
---4LFBTxd4L5NLO6ly
+--9aCKuHbn5v2q3RVc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTtwDgAAoJELSic+t+oim98GYP/jM79yDXSwhxuY4ljCiQcwVg
-kp3Vjqqf7by891xrRyKnoFZHKyBVeTa3gdqtNtm9Luke+r9Y9o++ibWSEPNfVccr
-hUyRNXVNr6bvpZqZXV7mdTYGJqK+fif8/q/5huFlCRAuzJNM22JIw7d1LZ9Gok/c
-Hd7UvEWXHEpJIP7R3rIukOK/qdsVAc++Q1fAW1kJpQvCB5NT9njjoXvqfkTcNCFc
-pk/C+S/19Cpc3RRmdE10104g5HBfgEdktrsflSU6PG9RKsrsfrEuy7FG6K8wbWos
-AdsFHLoh5SmBkDsHOJkpx2KClbw2EiBw4dWJ1htRECkSTH0Om6jcBOdW9cMh/PpM
-q+wC1RUbPZqk3lBELGQp9mu/Zp1KFshUBI2BZwNEVsg75SvHHW3vKZB/v/3rDPFZ
-7uA+gRysAyiYqdNBxBRaG9QbAyCxbNvb0lqjwDPNXIZY/R2qyye0rG6SYXZR8SnP
-jg+3kGUKPuCa88wYWfxP5MSBw0KgLBetjk+XAQGQVeT6fMUReoT3zeK4fIU+gG9J
-5OhejM4RzuG19EOw0PLVpJu6sj/BUwdupZp+JlGQs33DLnaHjAHHjxww5UWVlauZ
-NMrPOlVTlGFrPWtnRGN9B3/ICKXlpWaeWuPRA7goI+pfD0I5W1pEYob5l4wqgpOq
-+BeApryJzq4Bxt/Wpb3r
-=8WWo
+iQIcBAEBAgAGBQJTtwE4AAoJELSic+t+oim9eBQP+wSTOTDTRhu+W6zH+JqKRs1z
+4k5RWU2uTnqSmdJQ3nP9NzbSg4r1RstICOwHY+SC39eTbTpG6J4aYyw0wUAgaQv/
+UnDeNqPFTiW9WMzJ01fIFlac8kiSONvB35si1uLf3NSEl3mLdOGd3HSub4sVrfE4
+VT156VXGg9oxDhWBWiqX/0ukV9xwW3x+TJ0raXTXGbB+AiQol2MU+bXxURs+v//y
+soVUPK1cTUApAU1KNVMOqzS7hIxa5Ijan6LafljJc4+Ef4nF0IN+rI1TF1ubHBDu
+QdMNrLKchEXRiGohqNhNjDLMby3lTLtnyDsrLhx/YeY836SGrgxh573rseQ47Dq/
+NnY8d5tnhgnv4y+8/BTgiEGJLwECEvMHL0EA0xPLWkPMSKUphhgtMqGACd+zljdV
+NsQjMTUWUtRYuO9+I9Nx0wjzWp5qZjtdFNHx5LeAiQz5urGoQN7kgyCw7KaWBAuo
+CF0+YULm1ifVl49i9DL3PuwmzKgPDKjdrESmQPs/KLJoZGDOAcmQhiKqAKjy8M/r
+adjnCzhTGlHanIpYYcihZlHW4sEiEnI1h37W9Wlwxvm0CL8julgLnPZWhm775RRj
+3ARGVrmw1RDMgV/zTur6RNBQotBtxWTBKm1kbMApCJw5hwbsINZJ/iEYAb+7RAuv
+R7vGX6KxRhf+fKpWxN8q
+=M42b
 -----END PGP SIGNATURE-----
 
---4LFBTxd4L5NLO6ly--
+--9aCKuHbn5v2q3RVc--
