@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: s6105-ipcam: Fix build for I2C
-	dependencies
-Date: Sat,  5 Jul 2014 18:01:26 +0100
-Message-ID: <1404579686-8491-1-git-send-email-broonie@kernel.org>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH] ALSA: hda - Fix and neaten
+	print_nid_path/debug_badness
+Date: Sat, 05 Jul 2014 13:02:02 -0700
+Message-ID: <1404590522.6384.62.camel@joe-AO725>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C5E4C265532
- for <alsa-devel@alsa-project.org>; Sat,  5 Jul 2014 19:01:40 +0200 (CEST)
+Received: from smtprelay.hostedemail.com (smtprelay0159.hostedemail.com
+ [216.40.44.159])
+ by alsa0.perex.cz (Postfix) with ESMTP id ECAFF26553B
+ for <alsa-devel@alsa-project.org>; Sat,  5 Jul 2014 22:02:05 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,42 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>, Lars-Peter Clausen <lars@metafoo.de>, =?UTF-8?q?Daniel=20Gl=C3=B6ckner?= <dg@emlix.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+print_nid_path has a possible buffer overflow if
+struct nid_path.path values are > 256.
 
-The s6105-ipcam driver calls i2c_register_board_info() which means that
-not only does it need I2C to be enabled to be built but since that
-symbol is not exported it means that the driver also can't be linked as
-a module.  Use a bool instead of a tristate and add a dependency on I2C
-to fix these issues.
+Avoid this and neaten the output to remove the leading ':'
 
-Commit b5dd60fd263 (ASoC: s6000: Allow to build when COMPILE_TEST is
-enabled) made this problem more visible since it enabled build of the
-driver on more common architectures but this has always been an issue.
+Neaten debug_badness to always verify arguments.
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- sound/soc/s6000/Kconfig | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_generic.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/s6000/Kconfig b/sound/soc/s6000/Kconfig
-index 4823e1e4daef..f244a2566f20 100644
---- a/sound/soc/s6000/Kconfig
-+++ b/sound/soc/s6000/Kconfig
-@@ -15,8 +15,9 @@ config SND_S6000_SOC_I2S
- 	tristate
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 589e47c..b293583 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -350,16 +350,16 @@ static void print_nid_path(struct hda_codec *codec,
+ 			   const char *pfx, struct nid_path *path)
+ {
+ 	char buf[40];
++	char *pos = buf;
+ 	int i;
  
- config SND_S6000_SOC_S6IPCAM
--	tristate "SoC Audio support for Stretch 6105 IP Camera"
--	depends on SND_S6000_SOC
-+	bool "SoC Audio support for Stretch 6105 IP Camera"
-+	depends on SND_S6000_SOC=y
-+	depends on I2C=y
- 	depends on XTENSA_PLATFORM_S6105 || COMPILE_TEST
- 	select SND_S6000_SOC_I2S
- 	select SND_SOC_TLV320AIC3X
--- 
-2.0.0
++	*pos = 0;
++	for (i = 0; i < path->depth; i++)
++		pos += scnprintf(pos, sizeof(buf) - (pos - buf), "%s%02x",
++				 pos != buf ? ":" : "",
++				 path->path[i]);
+ 
+-	buf[0] = 0;
+-	for (i = 0; i < path->depth; i++) {
+-		char tmp[4];
+-		sprintf(tmp, ":%02x", path->path[i]);
+-		strlcat(buf, tmp, sizeof(buf));
+-	}
+-	codec_dbg(codec, "%s path: depth=%d %s\n", pfx, path->depth, buf);
++	codec_dbg(codec, "%s path: depth=%d '%s'\n", pfx, path->depth, buf);
+ }
+ 
+ /* called recursively */
+@@ -1700,9 +1700,11 @@ static int fill_and_eval_dacs(struct hda_codec *codec,
+ #define DEBUG_BADNESS
+ 
+ #ifdef DEBUG_BADNESS
+-#define debug_badness(fmt, args...)	codec_dbg(codec, fmt, ##args)
++#define debug_badness(fmt, ...)						\
++	codec_dbg(codec, fmt, ##__VA_ARGS__)
+ #else
+-#define debug_badness(...)
++#define debug_badness(fmt, ...)						\
++	do { if (0) codec_dbg(codec, fmt, ##__VA_ARGS__); } while (0)
+ #endif
+ 
+ #ifdef DEBUG_BADNESS
