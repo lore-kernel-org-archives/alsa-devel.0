@@ -1,51 +1,44 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: samsung: Update sound-card name for Snow
-Date: Fri, 4 Jul 2014 20:32:11 +0100
-Message-ID: <20140704193211.GJ14896@sirena.org.uk>
-References: <1404463980-25027-1-git-send-email-tushar.b@samsung.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9aCKuHbn5v2q3RVc"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1404463980-25027-1-git-send-email-tushar.b@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tushar Behera <tushar.b@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, dianders@chromium.org, tiwai@suse.de, perex@perex.cz, lgirdwood@gmail.com, galak@codeaurora.org, kgene.kim@samsung.com, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, trblinux@gmail.com
+From: Manish Badarkhe <badarkhe.manish@gmail.com>
+Subject: [PATCH] ASoC: omap-mcbsp: Use devm_snd_soc_register_component
+Date: Sat,  5 Jul 2014 10:39:39 +0530
+Message-ID: <1404536979-5318-1-git-send-email-badarkhe.manish@gmail.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, peter.ujfalusi@ti.com, badarkhe.manish@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Replaced snd_soc_register_component with its devres equivalent,
+devm_snd_soc_register_component.
 
---9aCKuHbn5v2q3RVc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Manish Badarkhe <badarkhe.manish@gmail.com>
+---
+:100644 100644 efe2cd6... bfc8f8e... M	sound/soc/omap/omap-mcbsp.c
+ sound/soc/omap/omap-mcbsp.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-On Fri, Jul 04, 2014 at 02:22:59PM +0530, Tushar Behera wrote:
-> Snow sound-card driver supports multiple boards with different
-> audio codecs. Updating the sound card name per board basis would provide
-> some more information to the end-user.
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index efe2cd6..bfc8f8e 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -805,7 +805,7 @@ static int asoc_mcbsp_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = snd_soc_register_component(&pdev->dev, &omap_mcbsp_component,
++	ret = devm_snd_soc_register_component(&pdev->dev, &omap_mcbsp_component,
+ 					 &omap_mcbsp_dai, 1);
+ 	if (ret)
+ 		return ret;
+@@ -817,8 +817,6 @@ static int asoc_mcbsp_remove(struct platform_device *pdev)
+ {
+ 	struct omap_mcbsp *mcbsp = platform_get_drvdata(pdev);
+ 
+-	snd_soc_unregister_component(&pdev->dev);
+-
+ 	if (mcbsp->pdata->ops && mcbsp->pdata->ops->free)
+ 		mcbsp->pdata->ops->free(mcbsp->id);
+ 
+-- 
+1.7.10.4
 
-Applied, thanks.
-
---9aCKuHbn5v2q3RVc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTtwE4AAoJELSic+t+oim9eBQP+wSTOTDTRhu+W6zH+JqKRs1z
-4k5RWU2uTnqSmdJQ3nP9NzbSg4r1RstICOwHY+SC39eTbTpG6J4aYyw0wUAgaQv/
-UnDeNqPFTiW9WMzJ01fIFlac8kiSONvB35si1uLf3NSEl3mLdOGd3HSub4sVrfE4
-VT156VXGg9oxDhWBWiqX/0ukV9xwW3x+TJ0raXTXGbB+AiQol2MU+bXxURs+v//y
-soVUPK1cTUApAU1KNVMOqzS7hIxa5Ijan6LafljJc4+Ef4nF0IN+rI1TF1ubHBDu
-QdMNrLKchEXRiGohqNhNjDLMby3lTLtnyDsrLhx/YeY836SGrgxh573rseQ47Dq/
-NnY8d5tnhgnv4y+8/BTgiEGJLwECEvMHL0EA0xPLWkPMSKUphhgtMqGACd+zljdV
-NsQjMTUWUtRYuO9+I9Nx0wjzWp5qZjtdFNHx5LeAiQz5urGoQN7kgyCw7KaWBAuo
-CF0+YULm1ifVl49i9DL3PuwmzKgPDKjdrESmQPs/KLJoZGDOAcmQhiKqAKjy8M/r
-adjnCzhTGlHanIpYYcihZlHW4sEiEnI1h37W9Wlwxvm0CL8julgLnPZWhm775RRj
-3ARGVrmw1RDMgV/zTur6RNBQotBtxWTBKm1kbMApCJw5hwbsINZJ/iEYAb+7RAuv
-R7vGX6KxRhf+fKpWxN8q
-=M42b
------END PGP SIGNATURE-----
-
---9aCKuHbn5v2q3RVc--
