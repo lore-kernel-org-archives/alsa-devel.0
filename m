@@ -1,36 +1,51 @@
-From: Alexander Holler <holler@ahsoftware.de>
-Subject: Re: [rtc-linux] Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
-Date: Sun, 06 Jul 2014 11:49:38 +0200
-Message-ID: <53B91BB2.3090005@ahsoftware.de>
-References: <1404075603-31838-1-git-send-email-andrew@lunn.ch> <20140629213510.GR32514@n2100.arm.linux.org.uk> <53B154FE.80804@gmail.com> <20140630124320.GZ32514@n2100.arm.linux.org.uk> <53B164B2.7090902@gmail.com> <20140630142516.GA32514@n2100.arm.linux.org.uk> <53B183D5.8020708@gmail.com> <20140630165615.GE32514@n2100.arm.linux.org.uk> <20140630174351.GI18520@lunn.ch> <20140630180853.GF32514@n2100.arm.linux.org.uk> <20140630181640.GL18520@lunn.ch>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v5 0/5] ASoC: core: Add support for DAI
+	multicodec
+Date: Sun, 06 Jul 2014 16:16:39 +0200
+Message-ID: <53B95A47.8070108@metafoo.de>
+References: <1404490075-24997-1-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-pm-owner@vger.kernel.org>
-In-Reply-To: <20140630181640.GL18520@lunn.ch>
-Sender: linux-pm-owner@vger.kernel.org
-To: rtc-linux@googlegroups.com, Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Gregory Clement <gregory.clement@free-electrons.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, Alessandro Zummo <a.zummo@towertech.it>, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-152.synserver.de (smtp-out-155.synserver.de
+ [212.40.185.155])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7265264F1D
+ for <alsa-devel@alsa-project.org>; Sun,  6 Jul 2014 16:16:44 +0200 (CEST)
+In-Reply-To: <1404490075-24997-1-git-send-email-bcousson@baylibre.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Benoit Cousson <bcousson@baylibre.com>, broonie@kernel.org, lgirdwood@gmail.com
+Cc: misael.lopez@ti.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 30.06.2014 20:16, schrieb Andrew Lunn:
->> So, what do we do now with support for compressed audio streams via
->> SPDIF on kirkwood hardware?  As far as I can see, it's no longer
->> possible and mainline kernels will never support this.  Please tell
->> me I'm wrong...
-> 
-> Well, it would of been nice if you had made a comment to either v1 or
-> v2 of my patchset saying this is going to cause problems for some
-> devices.
-> 
-> So i will go look at your patch to add frontend and backend and see
-> what it means for the current DT binding. The nice thing about
-> kirkwood (and Dove) is, there is no uboot with DT support. Hence
-> nobody is flashing there DT blob. They are always using appended DT.
-> So i'm not against changing the binding. And it has only been in the
-> kernel for one cycle, so i doubt there are too many users at the
-> moment.
+On 07/04/2014 06:07 PM, Benoit Cousson wrote:
+> Hi Lars, Mark and Liam,
+>
+> Here is the fifth version of the multicodec series.
+>
+> It mostly fixes the remaining comments from Lars on the series.
+> It removes as well the support for soc-compress.c based on Vinod
+> comment.
+>
+> Please note that I have a very simple setup based on BBB to check if the series
+> is working, so it will be good to test it on various platforms to ensure
+> this is not generating any regression.
+>
+> The series is based on asoc/for-next (v3.16-rc3).
+>
+> Test and comments are welcome.
 
-And most people just don't care if some DT-binding changes as they can
-change the provided DT themself. At least on every sane device.
+Whole series:
 
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Tested-by: Lars-Peter Clausen <lars@metafoo.de>
+
+One tiny issue remaining though.
