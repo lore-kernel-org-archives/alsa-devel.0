@@ -1,7 +1,7 @@
 From: Manish Badarkhe <badarkhe.manish@gmail.com>
-Subject: [PATCH] ASoC: omap-hdmi: Use devm_snd_soc_register_component
-Date: Sun,  6 Jul 2014 12:19:43 +0530
-Message-ID: <1404629383-3225-1-git-send-email-badarkhe.manish@gmail.com>
+Subject: [PATCH] ASoC: omap-dmic: Use devm_snd_soc_register_component
+Date: Sun,  6 Jul 2014 12:20:14 +0530
+Message-ID: <1404629414-3263-1-git-send-email-badarkhe.manish@gmail.com>
 Return-path: <linux-omap-owner@vger.kernel.org>
 Sender: linux-omap-owner@vger.kernel.org
 To: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
@@ -13,32 +13,31 @@ devm_snd_soc_register_component.
 
 Signed-off-by: Manish Badarkhe <badarkhe.manish@gmail.com>
 ---
-:100644 100644 eb9c392... 1dc95b5... M	sound/soc/omap/omap-hdmi.c
- sound/soc/omap/omap-hdmi.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+:100644 100644 6925d71... 011e30e... M	sound/soc/omap/omap-dmic.c
+ sound/soc/omap/omap-dmic.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/omap/omap-hdmi.c b/sound/soc/omap/omap-hdmi.c
-index eb9c392..1dc95b5 100644
---- a/sound/soc/omap/omap-hdmi.c
-+++ b/sound/soc/omap/omap-hdmi.c
-@@ -322,7 +322,7 @@ static int omap_hdmi_probe(struct platform_device *pdev)
+diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
+index 6925d71..011e30e 100644
+--- a/sound/soc/omap/omap-dmic.c
++++ b/sound/soc/omap/omap-dmic.c
+@@ -490,7 +490,7 @@ static int asoc_dmic_probe(struct platform_device *pdev)
  	}
  
- 	dev_set_drvdata(&pdev->dev, hdmi_data);
--	ret = snd_soc_register_component(&pdev->dev, &omap_hdmi_component,
-+	ret = devm_snd_soc_register_component(&pdev->dev, &omap_hdmi_component,
- 					 &omap_hdmi_dai, 1);
  
+-	ret = snd_soc_register_component(&pdev->dev, &omap_dmic_component,
++	ret = devm_snd_soc_register_component(&pdev->dev, &omap_dmic_component,
+ 					 &omap_dmic_dai, 1);
  	if (ret)
-@@ -335,8 +335,6 @@ static int omap_hdmi_remove(struct platform_device *pdev)
+ 		goto err_put_clk;
+@@ -510,7 +510,6 @@ static int asoc_dmic_remove(struct platform_device *pdev)
  {
- 	struct hdmi_priv *hdmi_data = dev_get_drvdata(&pdev->dev);
+ 	struct omap_dmic *dmic = platform_get_drvdata(pdev);
  
 -	snd_soc_unregister_component(&pdev->dev);
--
- 	if (hdmi_data == NULL) {
- 		dev_err(&pdev->dev, "cannot obtain HDMi data\n");
- 		return -ENODEV;
+ 	clk_put(dmic->fclk);
+ 
+ 	return 0;
 -- 
 1.7.10.4
 
