@@ -1,19 +1,13 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v5 4/5] ASoC: compress: Prevent multicodec
- for compressed stream
-Date: Mon, 7 Jul 2014 14:20:20 +0530
-Message-ID: <20140707085020.GX2296@intel.com>
-References: <1404490075-24997-1-git-send-email-bcousson@baylibre.com>
- <1404490075-24997-5-git-send-email-bcousson@baylibre.com>
+From: Josef Gajdusek <atx@atx.name>
+Subject: [PATCH] amixer: Fix convert_prange1 not rounding
+	correctly
+Date: Sun, 6 Jul 2014 20:25:10 +0200
+Message-ID: <20140706182510.GA6314@dashie>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id CD7222654B7
- for <alsa-devel@alsa-project.org>; Mon,  7 Jul 2014 10:52:11 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1404490075-24997-5-git-send-email-bcousson@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,17 +17,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Benoit Cousson <bcousson@baylibre.com>
-Cc: alsa-devel@alsa-project.org, misael.lopez@ti.com, broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 04, 2014 at 06:07:54PM +0200, Benoit Cousson wrote:
-> Multiple codecs does not make sense in the case of compressed
-> stream.
-> 
-> Exit with error if it happens.
+The convert_prange1 macro was not the exact inverse of convert_prange.
+This was causing the volume percentage set by 'amixer set' to differ from the 
+one displayed by 'amixer get'.
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Josef Gajdusek <atx@atx.name>
+---
+ amixer/amixer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/amixer/amixer.c b/amixer/amixer.c
+index cf82892..577a2ca 100644
+--- a/amixer/amixer.c
++++ b/amixer/amixer.c
+@@ -201,7 +201,7 @@ static int convert_prange(long val, long min, long max)
+ /* Function to convert from percentage to volume. val = percentage */
+ 
+ #define convert_prange1(val, min, max) \
+-	ceil((val) * ((max) - (min)) * 0.01 + (min))
++	rint((val) * ((max) - (min)) * 0.01 + (min))
+ 
+ struct volume_ops {
+ 	int (*get_range)(snd_mixer_elem_t *elem, long *min, long *max);
 -- 
-~Vinod
+1.8.5.5
