@@ -1,36 +1,37 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v5 0/5] ASoC: core: Add support for DAI
-	multicodec
-Date: Sun, 06 Jul 2014 16:20:17 +0200
-Message-ID: <53B95B21.5080300@metafoo.de>
-References: <1404490075-24997-1-git-send-email-bcousson@baylibre.com>
- <53B95A47.8070108@metafoo.de>
+From: Himangi Saraogi <himangi774@gmail.com>
+Subject: [PATCH 0/5] Introduce a managed function for gpio_request_array
+Date: Sun, 6 Jul 2014 23:16:09 +0530
+Message-ID: <cover.1404665589.git.himangi774@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-152.synserver.de (smtp-out-155.synserver.de
- [212.40.185.155])
- by alsa0.perex.cz (Postfix) with ESMTP id A323A264F1D
- for <alsa-devel@alsa-project.org>; Sun,  6 Jul 2014 16:20:24 +0200 (CEST)
-In-Reply-To: <53B95A47.8070108@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Benoit Cousson <bcousson@baylibre.com>, broonie@kernel.org, lgirdwood@gmail.com
-Cc: misael.lopez@ti.com, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-doc-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-doc-owner@vger.kernel.org
+To: Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-arm-kernel@lists.infradead.org, Philipp Zabel <philipp.zabel@gmail.com>, Paul Parsons <lost.distance@yahoo.com>
+Cc: julia.lawall@lip6.fr
 List-Id: alsa-devel@alsa-project.org
 
-On 07/06/2014 04:16 PM, Lars-Peter Clausen wrote:
-[...]
-> Whole series:
->
-> Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+This patchset intoduces a new managed interface devm_gpio_request_array,
+adds it in the documentation and its declaration in the gpio.h include
+file. Some cases of gpio_request_array are changed to
+devm_gpio_request_array.
 
-That should have been a Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>, sorry
+Himangi Saraogi (5):
+  gpiolib: devres: Introduce the function devm_request_gpio_array
+  ASoC: wm1250-ev1: Use devm_gpio_request_array
+  ASoC: pxa: Use devm_gpio_request_array
+  ASoC: pxa: e800_wm9712: Introduce the use of devm_gpio_request_array
+  ASoC: pxa/hx4700: Introduce the use of devm_gpio_request_array
+
+ Documentation/driver-model/devres.txt |  1 +
+ drivers/gpio/devres.c                 | 21 +++++++++++++++++++++
+ include/linux/gpio.h                  |  2 ++
+ sound/soc/codecs/wm1250-ev1.c         | 24 +++++-------------------
+ sound/soc/pxa/e740_wm9705.c           |  9 +++------
+ sound/soc/pxa/e800_wm9712.c           |  9 +++------
+ sound/soc/pxa/hx4700.c                | 12 +++---------
+ 7 files changed, 38 insertions(+), 40 deletions(-)
+
+-- 
+1.9.1
+
