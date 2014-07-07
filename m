@@ -1,49 +1,53 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH] ASoC: sgtl5000: Use devm_ functions
-Date: Mon, 7 Jul 2014 16:58:24 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1407071655171.4757@hadrien>
-References: <20140706070800.GA2927@himangi-Dell> <20140707144832.GL30458@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: max98090: Fix build warning
+Date: Mon, 7 Jul 2014 17:06:55 +0200
+Message-ID: <20140707150655.GN30458@sirena.org.uk>
+References: <1404739099-20717-1-git-send-email-thierry.reding@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cs5saTBZh7UZl2eX"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140707144832.GL30458@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <1404739099-20717-1-git-send-email-thierry.reding@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Himangi Saraogi <himangi774@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--cs5saTBZh7UZl2eX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 7 Jul 2014, Mark Brown wrote:
+On Mon, Jul 07, 2014 at 03:18:19PM +0200, Thierry Reding wrote:
+> From: Thierry Reding <treding@nvidia.com>
+>=20
+> The max98090_{suspend,resume}() functions are used for system sleep and
+> therefore need to be guarded by CONFIG_PM_SLEEP rather than CONFIG_PM.
 
-> On Sun, Jul 06, 2014 at 12:38:00PM +0530, Himangi Saraogi wrote:
->
-> > diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-> > index 249fadb..0efd6d6 100644
-> > --- a/sound/soc/codecs/sgtl5000.c
-> > +++ b/sound/soc/codecs/sgtl5000.c
-> > @@ -841,14 +841,15 @@ static int ldo_regulator_register(struct snd_soc_codec *codec,
-> >  	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
-> >  	struct regulator_config config = { };
-> >
-> > -	ldo = kzalloc(sizeof(struct ldo_regulator), GFP_KERNEL);
-> > +	ldo = devm_kzalloc(codec->dev, sizeof(struct ldo_regulator),
-> > +			   GFP_KERNEL);
->
-> You're using the managed functions within the ASoC level probe functions
-> which doesn't work - devm_ is only usable as part of the driver model
-> binding and unbinding.  All this resource allocation needs to be moved
-> into the device level probe (which is a better thing anyway) before it
-> is converted to devm.
+Applied, thanks.
 
-Nevertheless, there is already a call to devm_regulator_bulk_get in
-sgtl5000_enable_regulators which calls sgtl5000_replace_vddd_with_ldo
-which calls ldo_regulator_register.  That call was introduced by
+--cs5saTBZh7UZl2eX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-commit 63e54cd9caa3ce03635810608519e2b37d8bc706
-Author: Fabio Estevam <fabio.estevam@freescale.com>
-Date:   Thu Apr 24 14:13:08 2014 -0300
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-It seems that that patch should be reverted?
+iQIcBAEBAgAGBQJTureGAAoJELSic+t+oim9kXoP/17Tj9SU1LtKiC9DRfPzXZnO
+1yJqtprF4Ki+TkJ1Ui0AkNjUvNpOcMiC121uVkKPO+OvtVus6xwKBNR8r4N80G3y
+YJG+vDwZkCBNrJqOfIwhRNpeaCFrpKerJtIdeXRYDgcCeHaQG7q+DQqeZhPajHVS
+fvSXuQnS1MPYt9KhRttuw+P8qVTzK7mRtWfziZKnOuOAnjztOccTliWDXlLzhE19
+B7nQzkjW1ba1F8RQoLkUPWoS0TCqrOAcP8iEklnij9zaPB4tSmV4coi6PKMaanfK
+8YfVMq2JiecQV0nxAv+Bon8JSOSS3wCOZmRO4VaLNlT8XUmcoegcNSzQnbwMDLh1
+DDRbpx4iErOKY1/ndDziN9F6WCIpyJQv9sAzxKG43yUAn3Gkjx6LvnQ2tg3pTJgZ
+/vZAgWvVMOIRe/Lp/neCxre/hGfeTWJZ4IayHNukKg0XUkbK9gekHamdYSRAwX0Z
+CfWhyI/j6yUYbhml9NF7Smncv61Gr+ghTCsKdom1lK+qx15vzIl/MTDSi2WuM5s+
+8wdv3JoWvoOCqmKD4BMRERrC7S5WTSP5potftcWncKxZiOP+gEUH9xlvKS0bYRTR
+J6FOKTeEOJqojM2s1s6WDhAkCmsc23fHmU5Zc/Gf30HWPAuBpD5aVz8oNZheQLQD
+l9Nc3ZhQW9cGXjvSxGT6
+=VTp2
+-----END PGP SIGNATURE-----
 
-julia
+--cs5saTBZh7UZl2eX--
