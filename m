@@ -1,52 +1,227 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 1/3] ASoC: rt5677: Remove the redundant
-	definition in head file
-Date: Mon, 7 Jul 2014 15:36:59 +0800
-Message-ID: <1404718621-15516-1-git-send-email-oder_chiou@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5] ASoC: tas2552: Support TI TAS2552 Amplifier
+Date: Mon, 7 Jul 2014 10:08:36 +0200
+Message-ID: <20140707080836.GD30458@sirena.org.uk>
+References: <1404404675-5948-1-git-send-email-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F307265468
- for <alsa-devel@alsa-project.org>; Mon,  7 Jul 2014 09:37:17 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/unnNtmY43mpUSKx"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1404404675-5948-1-git-send-email-dmurphy@ti.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Dan Murphy <dmurphy@ti.com>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch removes the redundant definition in head file
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5677.h | 7 -------
- 1 file changed, 7 deletions(-)
+--/unnNtmY43mpUSKx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 08252e7..863393e 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1393,13 +1393,6 @@
- #define RT5677_DSP_IB_9_L			(0x1 << 1)
- #define RT5677_DSP_IB_9_L_SFT			1
- 
--/* Debug String Length */
--#define RT5677_REG_DISP_LEN 23
--
--#define RT5677_NO_JACK		BIT(0)
--#define RT5677_HEADSET_DET	BIT(1)
--#define RT5677_HEADPHO_DET	BIT(2)
--
- /* System Clock Source */
- enum {
- 	RT5677_SCLK_S_MCLK,
--- 
-1.8.1.1.439.g50a6b54
+On Thu, Jul 03, 2014 at 11:24:35AM -0500, Dan Murphy wrote:
+
+> +static int tas2552_power(struct tas2552_data *data, u8 power)
+> +{
+> +	int	ret = 0;
+> +
+> +	mutex_lock(&data->mutex);
+> +
+> +	if (power) {
+> +		if (data->enable_gpio)
+> +			gpiod_set_value(data->enable_gpio, 1);
+> +
+> +		data->power_state = 1;
+> +	} else {
+> +		if (data->enable_gpio)
+> +			gpiod_set_value(data->enable_gpio, 0);
+> +
+> +		data->power_state = 0;
+> +	}
+> +
+> +	mutex_unlock(&data->mutex);
+> +	return ret;
+> +}
+
+I don't understand this function.  It appears to be the only place where
+either power_state or mutex is used so it's just adding some wrapping
+around setting the GPIO value which doesn't seem like it's doing much.
+Why are we tracking power_state?
+
+> +static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
+> +{
+> +	u8 cfg1_reg = 0x0;
+> +
+> +	if (sw_shutdown)
+> +		cfg1_reg |= TAS2552_SWS_MASK;
+> +	else
+> +		cfg1_reg &= ~TAS2552_SWS_MASK;
+> +
+> +	snd_soc_update_bits(tas_data->codec, TAS2552_CFG_1,
+> +						 TAS2552_SWS_MASK, cfg1_reg);
+
+Given that you're using _update_bits() clearing the bits in a register
+that was just initialised to zero doesn't make a huge amount of sense.
+
+> +	default:
+> +		dev_vdbg(codec->dev, "Substream sample rate is not found\n");
+> +		return -EINVAL;
+> +	}
+
+Better to print the rate.
+
+> +	pm_runtime_get_sync(codec->dev);
+> +
+> +	snd_soc_update_bits(codec, TAS2552_CFG_3, TAS2552_WCLK_MASK, wclk_reg);
+> +
+> +	pm_runtime_put(codec->dev);
+
+This seems really strange - why is the device being powered up to just
+set a bit and then potentially powered down immediately?  I'd expect to
+just update the cache if the device is not active.  You're also not
+checking that the power up worked.
+
+> +
+> +static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> +{
+> +	u8 serial_format;
+> +	u8 serial_control_mask = 0x00;
+
+> +	if (fmt & SND_SOC_DAIFMT_FORMAT_MASK)
+> +		serial_control_mask |= TAS2552_DATA_FORMAT_MASK;
+
+> +	if (serial_control_mask) {
+> +		pm_runtime_get_sync(codec->dev);
+> +
+> +		snd_soc_update_bits(codec, TAS2552_SER_CTRL_1, serial_control_mask,
+> +							serial_format);
+> +
+> +		pm_runtime_put(codec->dev);
+> +	}
+
+This seems broken - if the format mask ever gets set then it won't be
+cleared since we only do an update_bits() if the bit is being set.  Why
+isn't the driver just doing an _update_bits()?
+
+The comments about runtime PM also apply, they applies throughout the
+driver.
+
+> +static int tas2552_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+> +				  unsigned int freq, int dir)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +
+> +	/* Fill in the PLL control registers for J & D
+> +	 * PLL_CLK = (.5 * freq * J.D) / 2^p
+> +	 * Need to fill in J and D here based on incoming freq
+> +	 */
+> +	pm_runtime_get_sync(codec->dev);
+> +
+> +	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE, 0);
+> +
+> +	snd_soc_write(codec, TAS2552_PLL_CTRL_1, 0x10);
+> +	snd_soc_write(codec, TAS2552_PLL_CTRL_2, 0x00);
+> +	snd_soc_write(codec, TAS2552_PLL_CTRL_3, 0x00);
+> +
+> +	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE,
+> +						TAS2552_PLL_ENABLE);
+> +
+> +	pm_runtime_put(codec->dev);
+
+This makes no sense at all - please look at what other drivers are doing
+with set_sysclk().  It should be used to get information about how the
+device is clocked.
+
+> +static int tas2552_startup(struct snd_pcm_substream *substream,
+> +			   struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +
+> +	pm_runtime_get_sync(codec->dev);
+> +
+> +	/* Turn on Class D amplifier */
+> +	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN_MASK,
+> +						TAS2552_CLASSD_EN);
+
+This should be done using DAPM.
+
+> +static int tas2552_codec_probe(struct snd_soc_codec *codec)
+> +{
+> +	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
+> +	int ret;
+
+> +
+> +	tas2552_power(tas2552, 1);
+> +	tas2552_sw_shutdown(tas2552, 0);
+> +
+> +	pm_runtime_set_active(codec->dev);
+> +	pm_runtime_set_autosuspend_delay(codec->dev, 1000);
+> +	pm_runtime_use_autosuspend(codec->dev);
+> +	pm_runtime_enable(codec->dev);
+> +	pm_runtime_mark_last_busy(codec->dev);
+> +	pm_runtime_put_sync_autosuspend(codec->dev);
+
+This should all be done at the device level probe.
+
+> +	/* 0dB gain */
+> +	snd_soc_write(codec, TAS2552_PGA_GAIN, 0x10);
+
+Use the hardware default, your default might not be sensible for some
+other user.
+
+> +	/**
+> +	 * Data sheet indicates to write 0x0c to 0x0d during init but no
+> +	 * additional information is given to what it means.
+> +	 */
+> +	snd_soc_write(codec, TAS2552_LIMIT_LVL_CTRL, 0x0c);
+> +	/**
+> +	 * Data sheet indicates to write 0x20 to 0x0e during init but no
+> +	 * additional information is given to what it means.
+> +	 */
+> +
+> +	snd_soc_write(codec, TAS2552_LIMIT_RATE_HYS, 0x20);
+
+Use a regmap patch for these.
+
+> +static int tas2552_suspend(struct snd_soc_codec *codec)
+> +{
+> +	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
+> +	int ret;
+> +
+> +	pm_runtime_put(codec->dev);
+
+This won't work.  Let the frameworks worry about this, or check if the
+device is already runtime suspended and then call your runtime suspend
+operation directly.
+
+> +static const struct i2c_device_id tas2552_id[] = {
+> +	{ "tas2552-codec", 0 },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, tas2552_id);
+
+No -codec, look at what other drivers do.
+
+--/unnNtmY43mpUSKx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTulWBAAoJELSic+t+oim9/rcQAI4TREK1Q6jCMPrFIAHM/qYM
+I2FlA0RUV9jkOswmv9f5snOTAEnFtdcXXAcErPNRUxJ8VkVvlKNHc+ys8SFnO5Jq
+yEFkWz75e4lMS/IJDBBlZsJdYUmAfZJWl6RQSygRAdLsVRxkCIJrxDoxRA8j7eLx
+kgDgv16GH0K32zp3wxnAiLnCzGjsKh7osoh6kNiNJUPHVP5wsa/dJhTHr6sohfus
+x3JG7kewAgvQFeXb7dBMyNhn4J4CEaFabGz2v4LWcRPGpwMGjwL4BYsMibjAgbmc
+8NmcCZP9wsLkaVEdgj9F3pPpQXiXQ6Nnbsm9uShZ4PJLYTy9OP1OGokNtmoXMjy3
+a/dEEHuSaEsRVFW5yAhzy/kxoTQxeYTlHt25TCbFiBn98VYtMItfVPbpk9fmmY95
++EIv+c2j1z6Ab+vI9CpbIDc8pgXcFaaLCiyl2Ya1EMZc0sAyOYgFseHrdW+gSTb2
+f125c6qbat5Ok97BzfI1Ob3rxyKuZ5LkUBdd5jjS27q4/5cypQGdyxeg1eyEKhJq
+pghgApdVm6gZYh2CDJEh1KruTwS48IbF/4moDEYGuXSAeRgSNIhk/DDM3G4SusS2
+PV+hz+lRyuHQ3i4tzhnl+W3xW3k6b27dg5qmn+pvbQLWGuXZcqMtYns0DaaJlzNp
+vmLfi2Hr6GZ7UWyP0NSc
+=XjkJ
+-----END PGP SIGNATURE-----
+
+--/unnNtmY43mpUSKx--
