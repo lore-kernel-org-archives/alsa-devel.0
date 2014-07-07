@@ -1,53 +1,47 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: max98090: Fix build warning
-Date: Mon, 7 Jul 2014 17:06:55 +0200
-Message-ID: <20140707150655.GN30458@sirena.org.uk>
-References: <1404739099-20717-1-git-send-email-thierry.reding@gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Use devm_ functions
+Date: Mon, 7 Jul 2014 12:20:28 -0300
+Message-ID: <CAOMZO5AiFCnfTzo4TyB5e5c+xiHQiHUbhRVY7z=AbjOWZDX3NA@mail.gmail.com>
+References: <20140706070800.GA2927@himangi-Dell>
+ <20140707144832.GL30458@sirena.org.uk>
+ <alpine.DEB.2.10.1407071655171.4757@hadrien>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cs5saTBZh7UZl2eX"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1404739099-20717-1-git-send-email-thierry.reding@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Thierry Reding <thierry.reding@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
+ [209.85.217.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ABEF26516D
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jul 2014 17:20:28 +0200 (CEST)
+Received: by mail-lb0-f176.google.com with SMTP id w7so2938495lbi.7
+ for <alsa-devel@alsa-project.org>; Mon, 07 Jul 2014 08:20:28 -0700 (PDT)
+In-Reply-To: <alpine.DEB.2.10.1407071655171.4757@hadrien>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Himangi Saraogi <himangi774@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jul 7, 2014 at 11:58 AM, Julia Lawall <julia.lawall@lip6.fr> wrote:
 
---cs5saTBZh7UZl2eX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Nevertheless, there is already a call to devm_regulator_bulk_get in
+> sgtl5000_enable_regulators which calls sgtl5000_replace_vddd_with_ldo
+> which calls ldo_regulator_register.  That call was introduced by
+>
+> commit 63e54cd9caa3ce03635810608519e2b37d8bc706
+> Author: Fabio Estevam <fabio.estevam@freescale.com>
+> Date:   Thu Apr 24 14:13:08 2014 -0300
+>
+> It seems that that patch should be reverted?
 
-On Mon, Jul 07, 2014 at 03:18:19PM +0200, Thierry Reding wrote:
-> From: Thierry Reding <treding@nvidia.com>
->=20
-> The max98090_{suspend,resume}() functions are used for system sleep and
-> therefore need to be guarded by CONFIG_PM_SLEEP rather than CONFIG_PM.
+I think so. Russell also reported a kernel oops when unbinding this
+module, so I will prepare a patch reverting it.
 
-Applied, thanks.
-
---cs5saTBZh7UZl2eX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTureGAAoJELSic+t+oim9kXoP/17Tj9SU1LtKiC9DRfPzXZnO
-1yJqtprF4Ki+TkJ1Ui0AkNjUvNpOcMiC121uVkKPO+OvtVus6xwKBNR8r4N80G3y
-YJG+vDwZkCBNrJqOfIwhRNpeaCFrpKerJtIdeXRYDgcCeHaQG7q+DQqeZhPajHVS
-fvSXuQnS1MPYt9KhRttuw+P8qVTzK7mRtWfziZKnOuOAnjztOccTliWDXlLzhE19
-B7nQzkjW1ba1F8RQoLkUPWoS0TCqrOAcP8iEklnij9zaPB4tSmV4coi6PKMaanfK
-8YfVMq2JiecQV0nxAv+Bon8JSOSS3wCOZmRO4VaLNlT8XUmcoegcNSzQnbwMDLh1
-DDRbpx4iErOKY1/ndDziN9F6WCIpyJQv9sAzxKG43yUAn3Gkjx6LvnQ2tg3pTJgZ
-/vZAgWvVMOIRe/Lp/neCxre/hGfeTWJZ4IayHNukKg0XUkbK9gekHamdYSRAwX0Z
-CfWhyI/j6yUYbhml9NF7Smncv61Gr+ghTCsKdom1lK+qx15vzIl/MTDSi2WuM5s+
-8wdv3JoWvoOCqmKD4BMRERrC7S5WTSP5potftcWncKxZiOP+gEUH9xlvKS0bYRTR
-J6FOKTeEOJqojM2s1s6WDhAkCmsc23fHmU5Zc/Gf30HWPAuBpD5aVz8oNZheQLQD
-l9Nc3ZhQW9cGXjvSxGT6
-=VTp2
------END PGP SIGNATURE-----
-
---cs5saTBZh7UZl2eX--
+Thanks
