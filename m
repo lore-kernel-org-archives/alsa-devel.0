@@ -1,120 +1,87 @@
-From: <bardliao@realtek.com>
-Subject: [PATCH] ASoC: RT286: Fix silent at the beginning of
-	stream
-Date: Mon, 7 Jul 2014 19:15:30 +0800
-Message-ID: <1404731730-21364-1-git-send-email-bardliao@realtek.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 01/12] ARM: OMAP2+: Remove non working OMAP HDMI audio
+ initialization
+Date: Mon, 7 Jul 2014 04:46:25 -0700
+Message-ID: <20140707114625.GT28884@atomide.com>
+References: <cover.1403807781.git.jsarha@ti.com>
+ <b0764a3af8181db55db046d6139119def363e8eb.1403807781.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 730E026516B
- for <alsa-devel@alsa-project.org>; Mon,  7 Jul 2014 13:15:55 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <b0764a3af8181db55db046d6139119def363e8eb.1403807781.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, jyri.sarha@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard Liao <bardliao@realtek.com>
+* Jyri Sarha <jsarha@ti.com> [140626 12:26]:
+> This code is not working currently and it can be removed. There is a
+> conflict in sharing resources with the actual HDMI driver and with
+> the ASoC HDMI audio DAI driver.
 
-This patch fix the issue that the output is almost silent at the
-beginning of starting a playback.
+Is this OK to queue for v3.17 or do we need this for v3.16-rc series?
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt286.c | 20 +++++++++++++++++++-
- sound/soc/codecs/rt286.h |  5 +++++
- 2 files changed, 24 insertions(+), 1 deletion(-)
+Regards,
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index e6f33ab..8103315 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -54,6 +54,7 @@ static struct reg_default rt286_index_def[] = {
- 	{ 0x09, 0xd810 },
- 	{ 0x0a, 0x0060 },
- 	{ 0x0b, 0x0000 },
-+	{ 0x0d, 0x2800 },
- 	{ 0x0f, 0x0000 },
- 	{ 0x19, 0x0a17 },
- 	{ 0x20, 0x0020 },
-@@ -62,6 +63,9 @@ static struct reg_default rt286_index_def[] = {
- 	{ 0x4f, 0x50e9 },
- 	{ 0x50, 0x2c00 },
- 	{ 0x63, 0x2902 },
-+	{ 0x67, 0x1111 },
-+	{ 0x68, 0x1016 },
-+	{ 0x69, 0x273f },
- };
- #define INDEX_CACHE_SIZE ARRAY_SIZE(rt286_index_def)
+Tony
  
-@@ -902,14 +906,23 @@ static int rt286_set_bias_level(struct snd_soc_codec *codec,
- {
- 	switch (level) {
- 	case SND_SOC_BIAS_PREPARE:
--		if (SND_SOC_BIAS_STANDBY == codec->dapm.bias_level)
-+		if (SND_SOC_BIAS_STANDBY == codec->dapm.bias_level) {
- 			snd_soc_write(codec,
- 				RT286_SET_AUDIO_POWER, AC_PWRST_D0);
-+			snd_soc_update_bits(codec,
-+				RT286_DC_GAIN, 0x200, 0x200);
-+		}
-+		break;
-+
-+	case SND_SOC_BIAS_ON:
-+		mdelay(10);
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
- 		snd_soc_write(codec,
- 			RT286_SET_AUDIO_POWER, AC_PWRST_D3);
-+		snd_soc_update_bits(codec,
-+			RT286_DC_GAIN, 0x200, 0x0);
- 		break;
- 
- 	default:
-@@ -1152,6 +1165,11 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	/*Power down LDO2*/
- 	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL2, 0x8, 0x0);
- 
-+	/*Set depop parameter*/
-+	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL2, 0x403a, 0x401a);
-+	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL3, 0xf777, 0x4737);
-+	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL4, 0x00ff, 0x003f);
-+
- 	if (rt286->i2c->irq) {
- 		regmap_update_bits(rt286->regmap,
- 					RT286_IRQ_CTRL, 0x2, 0x2);
-diff --git a/sound/soc/codecs/rt286.h b/sound/soc/codecs/rt286.h
-index 21c570f..b539b73 100644
---- a/sound/soc/codecs/rt286.h
-+++ b/sound/soc/codecs/rt286.h
-@@ -127,6 +127,7 @@
- #define RT286_I2S_CTRL1		0x09
- #define RT286_I2S_CTRL2		0x0a
- #define RT286_CLK_DIV		0x0b
-+#define RT286_DC_GAIN		0x0d
- #define RT286_POWER_CTRL3	0x0f
- #define RT286_MIC1_DET_CTRL	0x19
- #define RT286_MISC_CTRL1	0x20
-@@ -135,6 +136,10 @@
- #define RT286_CBJ_CTRL1		0x4f
- #define RT286_CBJ_CTRL2		0x50
- #define RT286_PLL_CTRL		0x63
-+#define RT286_DEPOP_CTRL1	0x66
-+#define RT286_DEPOP_CTRL2	0x67
-+#define RT286_DEPOP_CTRL3	0x68
-+#define RT286_DEPOP_CTRL4	0x69
- 
- /* SPDIF (0x06) */
- #define RT286_SPDIF_SEL_SFT	0
--- 
-1.8.1.1.439.g50a6b54
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+>  arch/arm/mach-omap2/devices.c |   28 ----------------------------
+>  1 file changed, 28 deletions(-)
+> 
+> diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
+> index 592ba0a..b6f8f34 100644
+> --- a/arch/arm/mach-omap2/devices.c
+> +++ b/arch/arm/mach-omap2/devices.c
+> @@ -297,33 +297,6 @@ static void omap_init_audio(void)
+>  static inline void omap_init_audio(void) {}
+>  #endif
+>  
+> -#if defined(CONFIG_SND_OMAP_SOC_OMAP_HDMI) || \
+> -		defined(CONFIG_SND_OMAP_SOC_OMAP_HDMI_MODULE)
+> -
+> -static struct platform_device omap_hdmi_audio = {
+> -	.name	= "omap-hdmi-audio",
+> -	.id	= -1,
+> -};
+> -
+> -static void __init omap_init_hdmi_audio(void)
+> -{
+> -	struct omap_hwmod *oh;
+> -	struct platform_device *pdev;
+> -
+> -	oh = omap_hwmod_lookup("dss_hdmi");
+> -	if (!oh)
+> -		return;
+> -
+> -	pdev = omap_device_build("omap-hdmi-audio-dai", -1, oh, NULL, 0);
+> -	WARN(IS_ERR(pdev),
+> -	     "Can't build omap_device for omap-hdmi-audio-dai.\n");
+> -
+> -	platform_device_register(&omap_hdmi_audio);
+> -}
+> -#else
+> -static inline void omap_init_hdmi_audio(void) {}
+> -#endif
+> -
+>  #if defined(CONFIG_SPI_OMAP24XX) || defined(CONFIG_SPI_OMAP24XX_MODULE)
+>  
+>  #include <linux/platform_data/spi-omap2-mcspi.h>
+> @@ -459,7 +432,6 @@ static int __init omap2_init_devices(void)
+>  	 */
+>  	omap_init_audio();
+>  	omap_init_camera();
+> -	omap_init_hdmi_audio();
+>  	omap_init_mbox();
+>  	/* If dtb is there, the devices will be created dynamically */
+>  	if (!of_have_populated_dt()) {
+> -- 
+> 1.7.9.5
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
