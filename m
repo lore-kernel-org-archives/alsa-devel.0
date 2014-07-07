@@ -1,49 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: add SOC_VALUE_ENUM_EXT
-Date: Mon, 7 Jul 2014 16:37:01 +0200
-Message-ID: <20140707143701.GJ30458@sirena.org.uk>
-References: <20140707121644.GA26105@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: RT286: Fix silent at the beginning
+	of stream
+Date: Mon, 7 Jul 2014 16:39:22 +0200
+Message-ID: <20140707143922.GK30458@sirena.org.uk>
+References: <1404731730-21364-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IA03tywDYuoVKXrw"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140707121644.GA26105@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, ckeepax@opensource.wolfsonmicro.com
+Content-Type: multipart/mixed; boundary="===============2124688366892443206=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A06E1265232
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jul 2014 16:41:12 +0200 (CEST)
+In-Reply-To: <1404731730-21364-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---IA03tywDYuoVKXrw
-Content-Type: text/plain; charset=us-ascii
+--===============2124688366892443206==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1hKfHPzOXWu1rh0v"
 Content-Disposition: inline
 
-On Mon, Jul 07, 2014 at 01:16:54PM +0100, Richard Fitzgerald wrote:
-> Adds an equivalent of SOC_ENUM_EXT for value enums
+
+--1hKfHPzOXWu1rh0v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jul 07, 2014 at 07:15:30PM +0800, bardliao@realtek.com wrote:
+> From: Bard Liao <bardliao@realtek.com>
+>=20
+> This patch fix the issue that the output is almost silent at the
+> beginning of starting a playback.
 
 Applied, thanks.
 
---IA03tywDYuoVKXrw
+--1hKfHPzOXWu1rh0v
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTurCJAAoJELSic+t+oim9TdAP/2U4iWex39uQijYkBaMVU5Kg
-QomFIAHqprvjV9txjXWCe+2d35Fw5fcZrowyL1akvc9MXXPbw7N2tjVfN8MReCA/
-Jn6+sLLtQU9rgWrth/fcVxyPO/fV4E8Ry5MduEmweH1JpPNNSVPTZLLoj+XpexFf
-YVAtZbcqWF/zcMtgnxr4q9VPOJnlSBvJB/ZZETTyO3a3YltnEnCt+n05uLWIlI6F
-RhNfC8bMkoyBx1BTFCMBFWqNzIxZTmO+NdJg6vawIbkAbW67Ttm+20tp/n6/LKXu
-CQekRNBfEdREenMaoUx7krxNmRQZ3lARYCWkWpfKLPfT+l9K7FF+gye7yGIeSZ8p
-lE+aCRNtAnW5+Ii1OelBDU951JoxCAWYdR2sF8Odg+TpmY//GwO2FRyGTxlAWQ/6
-Sval+uh7XFBkaCgelTwTSunLPkTLgcXs0+mElZtYklC/RTBVjf5B9mSPQBPLxllP
-F/wSQpxrdNdlWLwAV+K4yRfN8E5a2Bf0M5tNoiCUWVGT9oi4EBm0F4tqPlTY7HzD
-SVVSnh0HsjAw3jRRB3qIQlColW+vgWEh/CbEdNIuE9VJf+V/UkjwvAnT0X3mKOqD
-GjQ6/onK/CckmynROC19nA3aOAyB2KWdyuoOZHXK5iw4aTzh6wirup4/keroG1Yp
-saP8GATPOiqI3JtxbjJd
-=yTip
+iQIcBAEBAgAGBQJTurEXAAoJELSic+t+oim9VH0P/3EOYAcT5v3cd8jce7NZpzME
+udgTOBqlCTFl6OtoPW2D2BLsd4rRbBq5q85YD2+mADUwW7D68NMFy1fHpVHAbYQP
+bk5e56Ko1LKrgukZy51sod4UGErHlGKJoVFMGo1Q+wvA9YjgzEjQCsenflPnkKuy
++uzmbOWwFJJKLLqdM8cktQCRRAyqg+82SF0ws7aPtIKgXTrMHmbbAVWYaQmJjvbF
+edPxDEA2mSvbIEXv95LOlEgoVPD6rQu+Cspfc4VkQeMyv6zbhy3bLDt8ulJXbFQh
+deamhwN+7w6Of6SO/pVG/EtP6/RvGmam5Ps/Dq5de6irvBNNC7N19mmN3SHDbK3C
+XAfjtvNx26QTBOYiHUxA92XvlYtTxk1eUtP5wf+E3vcK93ANgKUCZ5hFh37PW5vM
+LO9n8riXJJYV86/+LDT2EyvChmvavbxN89JT/IVcIPwcHAR+oxjjd7bJ+jfbFQXG
+k99S2FpSJlgNlZFNt46O2F5EPkkSXJZIZv5pEcxH2C4SjRdEbZDJSNyzdW6L1+Fc
+zmyEelwZPxjP79/66OoMuS2+kCthVSZaMT9NDaKFdbguONGeiKdeVYLHkSyYi7UH
+LdO/J+XHRwIYbSBIEfqiB4LUDUFrLALWbaNBTJLKpbtfbUUEYVOTM2j2Q0FaS3TE
+g/Vzh7T4i3h66YGLddpO
+=0M7/
 -----END PGP SIGNATURE-----
 
---IA03tywDYuoVKXrw--
+--1hKfHPzOXWu1rh0v--
+
+--===============2124688366892443206==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2124688366892443206==--
