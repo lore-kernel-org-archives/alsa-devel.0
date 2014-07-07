@@ -1,41 +1,48 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: add SOC_VALUE_ENUM_EXT
-Date: Mon, 7 Jul 2014 13:16:54 +0100
-Message-ID: <20140707121644.GA26105@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, ckeepax@opensource.wolfsonmicro.com
+From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH] ALSA: hda: Fix build warning
+Date: Mon,  7 Jul 2014 15:13:12 +0200
+Message-ID: <1404738792-20344-1-git-send-email-thierry.reding@gmail.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+Cc: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Adds an equivalent of SOC_ENUM_EXT for value enums
+From: Thierry Reding <treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-Strictly speaking SOC_ENUM_EXT can also be used to define
-a value enum since the only difference is the get and set
-functions. But this doesn't look good in code because it is
-inconsistent with the normal control definitions. Adding a
-specific SOC_VALUE_ENUM_EXT is better for code clarity.
+The hda_tegra_disable_clocks() function is only used by the suspend and
+resume code, so it needs to be included in the #ifdef CONFIG_PM_SLEEP
+block to prevent the following warning:
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+  CC      sound/pci/hda/hda_tegra.o
+sound/pci/hda/hda_tegra.c:238:13: warning: 'hda_tegra_disable_clocks' defined but not used [-Wunused-function]
+ static void hda_tegra_disable_clocks(struct hda_tegra *data)
+             ^
+
+Signed-off-by: Thierry Reding <treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 ---
- include/sound/soc.h |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ sound/pci/hda/hda_tegra.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 9a5b4f6..1483920 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -248,6 +248,8 @@
- 	.info = snd_soc_info_enum_double, \
- 	.get = xhandler_get, .put = xhandler_put, \
- 	.private_value = (unsigned long)&xenum }
-+#define SOC_VALUE_ENUM_EXT(xname, xenum, xhandler_get, xhandler_put) \
-+	SOC_ENUM_EXT(xname, xenum, xhandler_get, xhandler_put)
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index dc4bb21ed17b..227990bc02e3 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -235,6 +235,7 @@ disable_hda:
+ 	return rc;
+ }
  
- #define SND_SOC_BYTES(xname, xbase, xregs)		      \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,   \
++#ifdef CONFIG_PM_SLEEP
+ static void hda_tegra_disable_clocks(struct hda_tegra *data)
+ {
+ 	clk_disable_unprepare(data->hda2hdmi_clk);
+@@ -242,7 +243,6 @@ static void hda_tegra_disable_clocks(struct hda_tegra *data)
+ 	clk_disable_unprepare(data->hda_clk);
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+ /*
+  * power management
+  */
 -- 
-1.7.2.5
+2.0.1
