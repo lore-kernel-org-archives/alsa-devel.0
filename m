@@ -1,160 +1,233 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH] ASoC: sgtl5000: Fix driver unbound
-Date: Mon, 7 Jul 2014 14:26:48 -0300
-Message-ID: <1404754008-31861-1-git-send-email-fabio.estevam@freescale.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v5] ASoC: tas2552: Support TI TAS2552 Amplifier
+Date: Mon, 7 Jul 2014 12:34:40 -0500
+Message-ID: <53BADA30.1000808@ti.com>
+References: <1404404675-5948-1-git-send-email-dmurphy@ti.com> <20140707080836.GD30458@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0209.outbound.protection.outlook.com [207.46.163.209])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BCDE2652C6
- for <alsa-devel@alsa-project.org>; Mon,  7 Jul 2014 19:27:30 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Julia.Lawall@lip6.fr, alsa-devel@alsa-project.org, rmk@arm.linux.org.uk
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140707080836.GD30458@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Using the sgtl5000 codec driver as a module and trying to remove it causes the
-followig kernel oops:
+Mark
+Thanks for the review
 
-root@freescale /$ rmmod snd-soc-imx-sgtl5000                                    
-[  117.122920] ------------[ cut here ]------------                             
-[  117.127609] WARNING: CPU: 0 PID: 631 at drivers/regulator/core.c:3604 regula)
-[  117.137046] Modules linked in: snd_soc_imx_sgtl5000(-) snd_soc_sgtl5000 evbug
-[  117.144315] CPU: 0 PID: 631 Comm: rmmod Not tainted 3.16.0-rc3-next-201407043
-[  117.153366] Backtrace:                                                       
-[  117.155865] [<80011e5c>] (dump_backtrace) from [<80011ff8>] (show_stack+0x18)
-[  117.163484]  r6:802fcc48 r5:00000000 r4:00000000 r3:00000000                 
-[  117.169228] [<80011fe0>] (show_stack) from [<80668cc0>] (dump_stack+0x88/0xa)
-[  117.176508] [<80668c38>] (dump_stack) from [<80029a38>] (warn_slowpath_commo)
-[  117.184696]  r5:00000009 r4:00000000                                         
-[  117.188322] [<800299c8>] (warn_slowpath_common) from [<80029a80>] (warn_slow)
-[  117.197150]  r8:dd60d600 r7:ddfa6d00 r6:dd5d9064 r5:dd5e0f90 r4:dd5d9400     
-[  117.203983] [<80029a5c>] (warn_slowpath_null) from [<802fcc48>] (regulator_u)
-[  117.212828] [<802fcb74>] (regulator_unregister) from [<7f0047c4>] (ldo_regul)
-[  117.223475]  r4:dd59e300 r3:dd5e0f90                                         
-[  117.227100] [<7f00479c>] (ldo_regulator_remove [snd_soc_sgtl5000]) from [<7f)
-[  117.238959]  r4:dd5d8000 r3:ddd51420                                         
-[  117.242623] [<7f0047dc>] (sgtl5000_remove [snd_soc_sgtl5000]) from [<804e5b1)
-[  117.252489]  r5:00000000 r4:dd5d8000                                         
-[  117.256111] [<804e5af8>] (soc_remove_codec) from [<804e5ed4>] (soc_remove_da)
-[  117.264933]  r4:ddfb640c r3:00000000                                         
-[  117.268555] [<804e5c10>] (soc_remove_dai_links) from [<804e5fbc>] (snd_soc_u)
-[  117.277810]  r10:80359e48 r9:dd684000 r8:dd5ca800 r7:dd685e60 r6:00000001 r5c
-[  117.285761]  r4:dd5d9064                                                     
-[  117.288329] [<804e5f28>] (snd_soc_unregister_card) from [<804f29f0>] (devm_c)
-[  117.297324]  r6:00000004 r5:ddd0fc10 r4:dd5a7980 r3:804f29dc                 
-[  117.303095] [<804f29dc>] (devm_card_release) from [<8035a418>] (release_node)
-[  117.311369] [<8035a2a8>] (release_nodes) from [<8035aab4>] (devres_release_a)
-[  117.319583]  r10:00000000 r9:dd684000 r8:8000ed64 r7:00000081 r6:ddd0fc44 r54
-[  117.327543]  r4:ddd0fc10                                                     
-[  117.330108] [<8035aa7c>] (devres_release_all) from [<803571c8>] (__device_re)
-[  117.339214]  r4:ddd0fc10 r3:dd5d9010                                         
-[  117.342989] [<80357148>] (__device_release_driver) from [<80357a48>] (driver)
-[  117.351607]  r5:7f00c9e4 r4:ddd0fc10                                         
-[  117.355285] [<8035798c>] (driver_detach) from [<80357030>] (bus_remove_drive)
-[  117.363454]  r6:00000880 r5:00000000 r4:7f00c9e4 r3:dd6c3a80                 
-[  117.369195] [<80356fdc>] (bus_remove_driver) from [<803580b8>] (driver_unreg)
-[  117.377683]  r4:7f00c9e4 r3:dd60d480                                         
-[  117.381305] [<80358088>] (driver_unregister) from [<80358bb4>] (platform_dri)
-[  117.390642]  r4:7f00ca28 r3:7f00c35c                                         
-[  117.394309] [<80358ba0>] (platform_driver_unregister) from [<7f00c370>] (imx)
-[  117.406188] [<7f00c35c>] (imx_sgtl5000_driver_exit [snd_soc_imx_sgtl5000]) f)
-[  117.417452] [<8008c2b8>] (SyS_delete_module) from [<8000eba0>] (ret_fast_sys)
-[  117.425753]  r6:5f636f73 r5:5f646e73 r4:00016f40                             
-[  117.430428] ---[ end trace 8fd8a5cb39e46d0e ]---                             
+On 07/07/2014 03:08 AM, Mark Brown wrote:
+> On Thu, Jul 03, 2014 at 11:24:35AM -0500, Dan Murphy wrote:
+>
+>> +static int tas2552_power(struct tas2552_data *data, u8 power)
+>> +{
+>> +	int	ret = 0;
+>> +
+>> +	mutex_lock(&data->mutex);
+>> +
+>> +	if (power) {
+>> +		if (data->enable_gpio)
+>> +			gpiod_set_value(data->enable_gpio, 1);
+>> +
+>> +		data->power_state = 1;
+>> +	} else {
+>> +		if (data->enable_gpio)
+>> +			gpiod_set_value(data->enable_gpio, 0);
+>> +
+>> +		data->power_state = 0;
+>> +	}
+>> +
+>> +	mutex_unlock(&data->mutex);
+>> +	return ret;
+>> +}
+> I don't understand this function.  It appears to be the only place where
+> either power_state or mutex is used so it's just adding some wrapping
+> around setting the GPIO value which doesn't seem like it's doing much.
+> Why are we tracking power_state?
 
-This problem is well explained by Russell King:
+This function and mutex are artifacts from the development and probably can be consolidated
+into the runtime PM calls. 
 
-"The sgtl5000 uses a two-stage initialisation process.  The first stage
-is when the platform driver is probed, where some resources are found
-and initialised.  The second stage is via the codec driver's probe
-function, where regulators are found and initialised using the managed
-resource support.
+>
+>> +static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
+>> +{
+>> +	u8 cfg1_reg = 0x0;
+>> +
+>> +	if (sw_shutdown)
+>> +		cfg1_reg |= TAS2552_SWS_MASK;
+>> +	else
+>> +		cfg1_reg &= ~TAS2552_SWS_MASK;
+>> +
+>> +	snd_soc_update_bits(tas_data->codec, TAS2552_CFG_1,
+>> +						 TAS2552_SWS_MASK, cfg1_reg);
+> Given that you're using _update_bits() clearing the bits in a register
+> that was just initialised to zero doesn't make a huge amount of sense.
 
-The problem here is that this works fine until the codec driver is
-unbound.  When this occurs, sgtl5000_remove() is called which is a no-op
-as far as the managed resource code is concerned.  The regulators remain
-allocated, and their pointers in sgtl5000_priv remain valid.
+This was an artifact from RFC in which I was not using the snd_soc functions.
+I can remove the initialization of the variable.
 
-If the codec is now re-probed, it will again try and find the regulators,
-which will now be busy.  This will fail.
+>
+>> +	default:
+>> +		dev_vdbg(codec->dev, "Substream sample rate is not found\n");
+>> +		return -EINVAL;
+>> +	}
+> Better to print the rate.
 
-That's not the only problem - if using the LDO regulator, the regulator
-is unregistered from the regulator core code, but it still has a user.
-When the user is cleaned up (eg, by removing the module) it hits the
-free'd regulator, and this can oops the kernel.
+OK
 
-This bug was originally introduced by 63e54cd9caa3ce ("ASoC: sgtl5000:
-Use devm_regulator_bulk_get()")."
+>
+>> +	pm_runtime_get_sync(codec->dev);
+>> +
+>> +	snd_soc_update_bits(codec, TAS2552_CFG_3, TAS2552_WCLK_MASK, wclk_reg);
+>> +
+>> +	pm_runtime_put(codec->dev);
+> This seems really strange - why is the device being powered up to just
+> set a bit and then potentially powered down immediately?  I'd expect to
+> just update the cache if the device is not active.  You're also not
+> checking that the power up worked.
 
-This reverts commit 63e54cd9caa3ce.
+I wanted to make sure that the device was on.  I totally forgot that
+the device was using regmap and the values are cached when the device
+is not on.
 
-Tested on a imx53-qsb board.
+I can remove the get/put around the update calls.
 
-Reported-by: Russell King <rmk+kernel@arm.linux.org.uk>
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/codecs/sgtl5000.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+>
+>> +
+>> +static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+>> +{
+>> +	u8 serial_format;
+>> +	u8 serial_control_mask = 0x00;
+>> +	if (fmt & SND_SOC_DAIFMT_FORMAT_MASK)
+>> +		serial_control_mask |= TAS2552_DATA_FORMAT_MASK;
+>> +	if (serial_control_mask) {
+>> +		pm_runtime_get_sync(codec->dev);
+>> +
+>> +		snd_soc_update_bits(codec, TAS2552_SER_CTRL_1, serial_control_mask,
+>> +							serial_format);
+>> +
+>> +		pm_runtime_put(codec->dev);
+>> +	}
+> This seems broken - if the format mask ever gets set then it won't be
+> cleared since we only do an update_bits() if the bit is being set.  Why
+> isn't the driver just doing an _update_bits()?
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 249fadb..d739f83 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1275,7 +1275,7 @@ static int sgtl5000_enable_regulators(struct snd_soc_codec *codec)
- 			return ret;
- 	}
- 
--	ret = devm_regulator_bulk_get(codec->dev, ARRAY_SIZE(sgtl5000->supplies),
-+	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(sgtl5000->supplies),
- 				 sgtl5000->supplies);
- 	if (ret)
- 		goto err_ldo_remove;
-@@ -1283,13 +1283,16 @@ static int sgtl5000_enable_regulators(struct snd_soc_codec *codec)
- 	ret = regulator_bulk_enable(ARRAY_SIZE(sgtl5000->supplies),
- 					sgtl5000->supplies);
- 	if (ret)
--		goto err_ldo_remove;
-+		goto err_regulator_free;
- 
- 	/* wait for all power rails bring up */
- 	udelay(10);
- 
- 	return 0;
- 
-+err_regulator_free:
-+	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
-+				sgtl5000->supplies);
- err_ldo_remove:
- 	if (!external_vddd)
- 		ldo_regulator_remove(codec);
-@@ -1359,6 +1362,8 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- err:
- 	regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
- 						sgtl5000->supplies);
-+	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
-+				sgtl5000->supplies);
- 	ldo_regulator_remove(codec);
- 
- 	return ret;
-@@ -1372,6 +1377,8 @@ static int sgtl5000_remove(struct snd_soc_codec *codec)
- 
- 	regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
- 						sgtl5000->supplies);
-+	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
-+				sgtl5000->supplies);
- 	ldo_regulator_remove(codec);
- 
- 	return 0;
+I do not understand what this statement means.
+
+Are you saying snd_soc_update_bits will not clear the bit if the bit mask
+is set appropriately?
+
+>
+> The comments about runtime PM also apply, they applies throughout the
+> driver.
+>
+>> +static int tas2552_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
+>> +				  unsigned int freq, int dir)
+>> +{
+>> +	struct snd_soc_codec *codec = dai->codec;
+>> +
+>> +	/* Fill in the PLL control registers for J & D
+>> +	 * PLL_CLK = (.5 * freq * J.D) / 2^p
+>> +	 * Need to fill in J and D here based on incoming freq
+>> +	 */
+>> +	pm_runtime_get_sync(codec->dev);
+>> +
+>> +	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE, 0);
+>> +
+>> +	snd_soc_write(codec, TAS2552_PLL_CTRL_1, 0x10);
+>> +	snd_soc_write(codec, TAS2552_PLL_CTRL_2, 0x00);
+>> +	snd_soc_write(codec, TAS2552_PLL_CTRL_3, 0x00);
+>> +
+>> +	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE,
+>> +						TAS2552_PLL_ENABLE);
+>> +
+>> +	pm_runtime_put(codec->dev);
+> This makes no sense at all - please look at what other drivers are doing
+> with set_sysclk().  It should be used to get information about how the
+> device is clocked.
+>
+>> +static int tas2552_startup(struct snd_pcm_substream *substream,
+>> +			   struct snd_soc_dai *dai)
+>> +{
+>> +	struct snd_soc_codec *codec = dai->codec;
+>> +
+>> +	pm_runtime_get_sync(codec->dev);
+>> +
+>> +	/* Turn on Class D amplifier */
+>> +	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN_MASK,
+>> +						TAS2552_CLASSD_EN);
+> This should be done using DAPM.
+
+You mentioned this before.  Isn't the startup part of the DAPM calls?
+
+>
+>> +static int tas2552_codec_probe(struct snd_soc_codec *codec)
+>> +{
+>> +	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
+>> +	int ret;
+>> +
+>> +	tas2552_power(tas2552, 1);
+>> +	tas2552_sw_shutdown(tas2552, 0);
+>> +
+>> +	pm_runtime_set_active(codec->dev);
+>> +	pm_runtime_set_autosuspend_delay(codec->dev, 1000);
+>> +	pm_runtime_use_autosuspend(codec->dev);
+>> +	pm_runtime_enable(codec->dev);
+>> +	pm_runtime_mark_last_busy(codec->dev);
+>> +	pm_runtime_put_sync_autosuspend(codec->dev);
+> This should all be done at the device level probe.
+
+I went back and forth on this in my head whether this should be in the
+device probe of the codec probe.   I can move them to device probe.
+
+>
+>> +	/* 0dB gain */
+>> +	snd_soc_write(codec, TAS2552_PGA_GAIN, 0x10);
+> Use the hardware default, your default might not be sensible for some
+> other user.
+
+So would other users just patch their own code?
+I can leave it to the default value.  This is just what the hardware
+was tested with.
+
+>
+>> +	/**
+>> +	 * Data sheet indicates to write 0x0c to 0x0d during init but no
+>> +	 * additional information is given to what it means.
+>> +	 */
+>> +	snd_soc_write(codec, TAS2552_LIMIT_LVL_CTRL, 0x0c);
+>> +	/**
+>> +	 * Data sheet indicates to write 0x20 to 0x0e during init but no
+>> +	 * additional information is given to what it means.
+>> +	 */
+>> +
+>> +	snd_soc_write(codec, TAS2552_LIMIT_RATE_HYS, 0x20);
+> Use a regmap patch for these.
+
+OK.  I see that can be used for undocumented registers.
+
+>
+>> +static int tas2552_suspend(struct snd_soc_codec *codec)
+>> +{
+>> +	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
+>> +	int ret;
+>> +
+>> +	pm_runtime_put(codec->dev);
+> This won't work.  Let the frameworks worry about this, or check if the
+> device is already runtime suspended and then call your runtime suspend
+> operation directly.
+
+OK will fix
+
+>> +static const struct i2c_device_id tas2552_id[] = {
+>> +	{ "tas2552-codec", 0 },
+>> +	{ }
+>> +};
+>> +MODULE_DEVICE_TABLE(i2c, tas2552_id);
+> No -codec, look at what other drivers do.
+
+OK will remove.
+
 -- 
-1.8.3.2
+------------------
+Dan Murphy
