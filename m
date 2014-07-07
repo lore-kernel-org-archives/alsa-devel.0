@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: RT286: remove test code
-Date: Mon, 7 Jul 2014 12:27:18 +0200
-Message-ID: <20140707102718.GG30458@sirena.org.uk>
-References: <1404722918-17466-1-git-send-email-bardliao@realtek.com>
+From: <bardliao@realtek.com>
+Subject: [PATCH] ASoC: RT286: Fix silent at the beginning of
+	stream
+Date: Mon, 7 Jul 2014 19:15:30 +0800
+Message-ID: <1404731730-21364-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7675717031969149109=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF935265007
- for <alsa-devel@alsa-project.org>; Mon,  7 Jul 2014 12:28:37 +0200 (CEST)
-In-Reply-To: <1404722918-17466-1-git-send-email-bardliao@realtek.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 730E026516B
+ for <alsa-devel@alsa-project.org>; Mon,  7 Jul 2014 13:15:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,58 +19,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Bard Liao <bardliao@realtek.com>
 
---===============7675717031969149109==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="S5HS5MvDw4DmbRmb"
-Content-Disposition: inline
+This patch fix the issue that the output is almost silent at the
+beginning of starting a playback.
 
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt286.c | 20 +++++++++++++++++++-
+ sound/soc/codecs/rt286.h |  5 +++++
+ 2 files changed, 24 insertions(+), 1 deletion(-)
 
---S5HS5MvDw4DmbRmb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jul 07, 2014 at 04:48:36PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
->=20
-> Remove test code.
-
-Applied all, thanks.
-
---S5HS5MvDw4DmbRmb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTunX9AAoJELSic+t+oim9AeMQAIdADNsqqvgXno75K+Drm071
-NPVQgDAjx5cxD9CWlOvAbpEtHVinOlpGGHzof6aDilHwY/bymiY/uPZaLmiWDvyO
-Il9y1blEjhW6QJCPQkC0G6eBRp8Cc4viJD1WUYAFWeXawufsxn1IZuphOe4LJ72x
-17J1Qj5AvrPqci8fAGUuA6sPmZZpTDfZRxllEjVXAc7T6tBfMDCRHTvBXc0pCKQA
-dDkcvRlxr61SnCENSdoJhjHO9vAVBMJHits1Yo0k8MrarCbAZchy/M0//FUUnO/w
-0FWgIB3odx2dyjkriD68EkICy/y5NAvPf9BbVmIp6KiKcQ80qfVwCnNTX6dmJN7X
-nE6nDptzZJGRYX4J4E7p7C7xei+2NGQIID7FL/tCR7dX5+GyOKE172LDhwZPcqrd
-8Ke+UpxS1Zvk3iIU9ampkhKX3/cF6TC7DFFLofB0cQOX3Iz8XFh4qntfAAa/sB/l
-92TZqm5eBk29eWIAxRgAa0PgogWpVdeP0szVKusPn+tH/xDNkBcJPevhOiTkVbN8
-TZzeZhdxqQzhkNlOZjkUqQp6fjuR5/PFsaUiyzhJ+cGnncqv1u6AIrV94KxgMYoq
-9oT/m7ee3HcDJLi5OcM1sdFbb+PXBFmFiz5RfGjQAK+o/N05ASyuIHOVpVg/UbMo
-1cZ8XidPnWGnmPXGQeqM
-=tAbq
------END PGP SIGNATURE-----
-
---S5HS5MvDw4DmbRmb--
-
---===============7675717031969149109==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7675717031969149109==--
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index e6f33ab..8103315 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -54,6 +54,7 @@ static struct reg_default rt286_index_def[] = {
+ 	{ 0x09, 0xd810 },
+ 	{ 0x0a, 0x0060 },
+ 	{ 0x0b, 0x0000 },
++	{ 0x0d, 0x2800 },
+ 	{ 0x0f, 0x0000 },
+ 	{ 0x19, 0x0a17 },
+ 	{ 0x20, 0x0020 },
+@@ -62,6 +63,9 @@ static struct reg_default rt286_index_def[] = {
+ 	{ 0x4f, 0x50e9 },
+ 	{ 0x50, 0x2c00 },
+ 	{ 0x63, 0x2902 },
++	{ 0x67, 0x1111 },
++	{ 0x68, 0x1016 },
++	{ 0x69, 0x273f },
+ };
+ #define INDEX_CACHE_SIZE ARRAY_SIZE(rt286_index_def)
+ 
+@@ -902,14 +906,23 @@ static int rt286_set_bias_level(struct snd_soc_codec *codec,
+ {
+ 	switch (level) {
+ 	case SND_SOC_BIAS_PREPARE:
+-		if (SND_SOC_BIAS_STANDBY == codec->dapm.bias_level)
++		if (SND_SOC_BIAS_STANDBY == codec->dapm.bias_level) {
+ 			snd_soc_write(codec,
+ 				RT286_SET_AUDIO_POWER, AC_PWRST_D0);
++			snd_soc_update_bits(codec,
++				RT286_DC_GAIN, 0x200, 0x200);
++		}
++		break;
++
++	case SND_SOC_BIAS_ON:
++		mdelay(10);
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+ 		snd_soc_write(codec,
+ 			RT286_SET_AUDIO_POWER, AC_PWRST_D3);
++		snd_soc_update_bits(codec,
++			RT286_DC_GAIN, 0x200, 0x0);
+ 		break;
+ 
+ 	default:
+@@ -1152,6 +1165,11 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	/*Power down LDO2*/
+ 	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL2, 0x8, 0x0);
+ 
++	/*Set depop parameter*/
++	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL2, 0x403a, 0x401a);
++	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL3, 0xf777, 0x4737);
++	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL4, 0x00ff, 0x003f);
++
+ 	if (rt286->i2c->irq) {
+ 		regmap_update_bits(rt286->regmap,
+ 					RT286_IRQ_CTRL, 0x2, 0x2);
+diff --git a/sound/soc/codecs/rt286.h b/sound/soc/codecs/rt286.h
+index 21c570f..b539b73 100644
+--- a/sound/soc/codecs/rt286.h
++++ b/sound/soc/codecs/rt286.h
+@@ -127,6 +127,7 @@
+ #define RT286_I2S_CTRL1		0x09
+ #define RT286_I2S_CTRL2		0x0a
+ #define RT286_CLK_DIV		0x0b
++#define RT286_DC_GAIN		0x0d
+ #define RT286_POWER_CTRL3	0x0f
+ #define RT286_MIC1_DET_CTRL	0x19
+ #define RT286_MISC_CTRL1	0x20
+@@ -135,6 +136,10 @@
+ #define RT286_CBJ_CTRL1		0x4f
+ #define RT286_CBJ_CTRL2		0x50
+ #define RT286_PLL_CTRL		0x63
++#define RT286_DEPOP_CTRL1	0x66
++#define RT286_DEPOP_CTRL2	0x67
++#define RT286_DEPOP_CTRL3	0x68
++#define RT286_DEPOP_CTRL4	0x69
+ 
+ /* SPDIF (0x06) */
+ #define RT286_SPDIF_SEL_SFT	0
+-- 
+1.8.1.1.439.g50a6b54
