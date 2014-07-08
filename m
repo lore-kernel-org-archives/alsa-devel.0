@@ -1,16 +1,18 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: Split a 7.1 device into 4 stereo devices
-Date: Tue, 08 Jul 2014 21:26:37 +0300
-Message-ID: <53BC37DD.5060104@iki.fi>
-References: <1404832691.13359.9.camel@X230>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: Provide a CLOCK_MONOTONIC_RAW
+	timestamp type
+Date: Tue, 08 Jul 2014 21:54:32 +0200
+Message-ID: <53BC4C78.5030702@perex.cz>
+References: <1404831109-8008-1-git-send-email-broonie@kernel.org>
+ <s5hr41vopyt.wl%tiwai@suse.de> <20140708160036.GA30458@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail.tpnet.fi (webmail.tpnet.fi [62.106.63.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 16614261A7E
- for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 20:26:38 +0200 (CEST)
-In-Reply-To: <1404832691.13359.9.camel@X230>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92A3C261A92
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 21:54:32 +0200 (CEST)
+In-Reply-To: <20140708160036.GA30458@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,75 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xavier Claessens <xavier.claessens@collabora.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Daniel Thompson <daniel.thompson@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-08.07.2014 18:18, Xavier Claessens kirjoitti:
+Date 8.7.2014 18:00, Mark Brown wrote:
+> On Tue, Jul 08, 2014 at 05:00:26PM +0200, Takashi Iwai wrote:
+>> Mark Brown wrote:
 > 
-> Hello,
+>>> due to that. A raw monotonic time which does not include any adjustments
+>>> is available in the kernel from getrawmonotonic() so provide userspace with
+>>> a new timestamp type SNDRV_PCM_TSTAMP_TYPE_MONOTONIC_RAW which provides
+>>> timestamps based on this as an option.
 > 
-> I have a 7.1 sound device and speaker-test -c8 can output on each
-> speaker. But what I would like to do is using it as 4 stereo devices so
-> I could play different sounds on each of them.
+>> This looks good to me.  Or, thinking of the original use case, should
+>> we just replace ktime_get_ts() with getrawmonotonic()?  The MONOTONIC
+>> mode is really to be monotonic.
 > 
-> Ideally I would like to avoid dmix and friends to be able to have
-> gapless and bit-perfect output.
+> I'm totally OK with that as well if people don't mind that, I just added
+> a new clock as the most conservative option.  I can easily respin the
+> patch for this if you prefer?
+
+Note that the silent change would break the timestamp compatibility,
+because monotonic timestamp is used in alsa-lib by default. I would
+prefer to add a new type as originaly proposed and allow to choose
+between NTP monotonic and raw monotonic. Also the network timestamp
+might allow better synchronization for network apps (not sure about the
+real usage now, but we're working on an universal framework).
+
+>> While we're at it: there's been long-standing request from V4L guys
+>> for improving the timestamps to sync with video streams.  I suggested
+>> to add a new mode that can be set by the driver.  Worth to consider
+>> it, too?
 > 
-> On IRC "debianuser" said it is possible with hdajackretask to make it
-> appear as 4 different hw devices in "aplay -l" but we didn't succeed
-> doing that. Anyone knows what configuration is needed for that?
-> 
-> Here is my setting:
-> http://www.alsa-project.org/db/?f=bf0744873d5e6d42d3adc0076c5f66189e9191b7
+> Does the wall clock stuff address that?  I've no objection to adding a
+> further type if the existing ones (and this one aren't sufficient).
 
-I guess this really belongs on alsa-user@ list, but oh well...
+I'm curious about requested sync, too..
 
-No idea about hdajackretask, but you can use e.g. "dshare" plugin.
-
-Simple example below with 6ch split to three stereo devices, see
-documentation/Google for more information on options. You don't see the
-result in "aplay -l" but in "aplay -L".
-
-
-pcm_slave.shared_dev {
-        pcm "hw:CARD=PCH,DEV=7"
-        channels 6
-        rate 48000
-}
-
-pcm.kas {
-        type dshare
-        ipc_key 119922141
-        slave shared_dev
-        bindings {
-                0 0
-                1 1
-        }
-        hint.description "Channels 0 and 1"
-}
-
-pcm.mo {
-        type dshare
-        ipc_key 119922141
-        slave shared_dev
-        bindings {
-                0 2
-                1 3
-        }
-        hint.description "Channels 2 and 3"
-}
-
-pcm.foobar {
-        type dshare
-        ipc_key 119922141
-        slave shared_dev
-        bindings {
-                0 4
-                1 5
-        }
-        hint.description "Channels 4 and 5"
-}
-
+					Jaroslav
 
 -- 
-Anssi Hannula
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
