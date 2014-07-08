@@ -1,26 +1,20 @@
-From: Sangilikumar  <sangilikumar.muniyandi@marudham.co.in>
-Subject: Integrate WM8974 codec with AM1808 processor
-Date: Tue, 8 Jul 2014 07:46:45 +0000 (UTC)
-Message-ID: <loom.20140708T090201-172@post.gmane.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sgtl5000: Use devm_ functions
+Date: Tue, 8 Jul 2014 10:02:32 +0200
+Message-ID: <20140708080232.GQ30458@sirena.org.uk>
+References: <20140706070800.GA2927@himangi-Dell>
+ <20140707144832.GL30458@sirena.org.uk>
+ <alpine.DEB.2.10.1407071655171.4757@hadrien>
+ <CAOMZO5AiFCnfTzo4TyB5e5c+xiHQiHUbhRVY7z=AbjOWZDX3NA@mail.gmail.com>
+ <alpine.DEB.2.10.1407071721270.4757@hadrien>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5854399690467305105=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FDC62602AD
- for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 09:55:05 +0200 (CEST)
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1X4QEy-00038B-Cz
- for alsa-devel@alsa-project.org; Tue, 08 Jul 2014 09:55:04 +0200
-Received: from 115.114.95.155.static-Chennai.vsnl.net.in
- ([115.114.95.155.static-Chennai.vsnl.net.in])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Tue, 08 Jul 2014 09:55:04 +0200
-Received: from sangilikumar.muniyandi by
- 115.114.95.155.static-Chennai.vsnl.net.in with local (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <alsa-devel@alsa-project.org>; Tue, 08 Jul 2014 09:55:04 +0200
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C61A260309
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 10:05:48 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.10.1407071721270.4757@hadrien>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,87 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Himangi Saraogi <himangi774@gmail.com>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Engineers 
 
-      I'm working with TI's AM1808 ARM9 processor. My design in based on 
-OMAP-L138 LCDK board. Here i replaced the TLV320AIC310 codec with WM8974 
-mono codec. 
-      Added the codec driver in board file and registered the sound card by
- 
-static struct snd_soc_dai_link da850_evm_dai = {
-	.name = "TLV320AIC3X",
-	.stream_name = "AIC3X",
-	.cpu_dai_name= "davinci-mcasp.0",
-	.codec_dai_name = "wm8974-hifi",
-	.codec_name = "wm8974-codec.1-001a",
-	.platform_name = "davinci-pcm-audio",
-	.init = evm_aic3x_init,
-	.ops = &evm_ops,
-};
+--===============5854399690467305105==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dUqh8vgUBVXHzm9w"
+Content-Disposition: inline
 
-But got some errors
 
-Sound card registered successfully but i got some errors
+--dUqh8vgUBVXHzm9w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-wm8974-codec 1-001a: Failed to add route HPLOUT->Headphone Jack
-wm8974-codec 1-001a: dapm: unknown pin MONO_LOUT
-wm8974-codec 1-001a: dapm: unknown pin HPLCOM
-wm8974-codec 1-001a: dapm: unknown pin HPRCOM
-asoc: wm8974-hifi <-> davinci-mcasp.0 mapping ok
-ALSA device list:
-#0: DA850/OMAP-L138 EVM
-TCP cubic registered
-....
+On Mon, Jul 07, 2014 at 05:23:39PM +0200, Julia Lawall wrote:
 
-ALSA: Restoring mixer settings...
-Configuring network interfaces... Found hardware: "DA850_OMAP-L138" "" "" "" 
-""
-Hardware is initialized using a generic method
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #1 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #2 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #3 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #4 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #5 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #6 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #7 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #8 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #9 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #10 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #11 
-(No such file or directory)
-/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #12 
-(No such file or directory)
-davinci_mdio davinci_mdio.0: resetting idled controller
+> There is documentation about what kinds of devm functions exist, but it is
+> too bad that there is no documentation about where they can be used.
+> Often there are several levels of function pointers involved, so it can be
+> hard to figure out whether they can be used just by looking at the code.
+> I have only taken the strategy of using them in kinds of functions where
+> someone else has alreadyy figured out that they can be used.
 
-root@omapl138-lcdk:/aud# speaker-test
- 
-speaker-test 1.0.24.2
- 
-Playback device is default
-Stream parameters are 48000Hz, S16_LE, 1 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 128 to 32768
-Period size range asoc: machine hw_params failed
-from 8 to 2048
-Using max buffer size 32768
-Periods = 4
-Unable to set hw params for playback: Invalid argument
-Setting of hwparams failed: Invalid argument
-root@omapl138-lcdk:/aud# 
- 
-Please let me know what are the changes i need to do in Linux files and 
-drivers.
+It should be fairly clear given what they do I'd have thought - the
+devm_ functions tie the deallocation of a resource to the unbinding of
+a driver from a device so they can only be used to replace things that
+get cleaned up in a device model unbind path.  There's not usually a
+great deal of indirection going on in those.
+
+--dUqh8vgUBVXHzm9w
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTu6WUAAoJELSic+t+oim95awP/jjOLSCVkX3YiKWWl7qzeCSV
+cDIMQM8qaRoi6u8f2LVRYugp+kvCa3IZScM7L5nVywcS1mHgWxtVexuoQQbJ9UtY
+X5TjJA/SNzA2kyIFFcSK66+PmOoldszq+Yjefs7OHui8ecA3o4k60AJeA1IL8Nk/
+zit7PhMrJYeYgsTZ0pGX/MVV8ow0a3ayglXyvqGeGoK/2J44v1p6+MjPwcd2QQwl
+I9RHyPbMTUreFsLPDelQfHhHD0BoAF5qb/EDvmdQVpiWZ6PyJIR0WloLZepOiIoP
+DJ/FjhQozqa+s9qCA8GTXAAE1isRGvz9tHNJWL0s0tObHAHpwW2lqOXeKo1BRuxh
+6vVPBTfUYfN4+/ZGZ0ExNwmI6YRecG9tpWe2KX7uZjjocAI0NCHvlBzibXgKtwUd
+B8hXsIOjHXruESQmbZrfH4M8VPoc/BBqJ6xGGkq/Skg9EWvdIDgHofjU84ggBljD
+vygIgzRslvd3QoKA/oEBna+k91lJvdJt2GbhUw1Y3uYnhNpfv2UNSLnYGlbCyszF
+YEQj7yLXUM7kG82t+t8Eg/HBaA5coGFu9sNkZ9Muj4tUylgCLPZdpgbcjVVtLndd
+F+rFzAa/o3gMpNaevo5ka239PEEweDyXL+ERr7CV/Sbdx67yi/AvvNXIeWsT0fU1
+AIPRF/WSmpV9hoRwOZYL
+=Ccns
+-----END PGP SIGNATURE-----
+
+--dUqh8vgUBVXHzm9w--
+
+--===============5854399690467305105==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5854399690467305105==--
