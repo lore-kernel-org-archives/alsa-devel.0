@@ -1,15 +1,15 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: [PATCH] USB-Audio: Add second S/PDIF device on Phiree
-	U2
-Date: Tue,  8 Jul 2014 11:19:20 +0300
-Message-ID: <1404807560-17139-1-git-send-email-anssi.hannula@iki.fi>
+From: <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5670: add clock source selection
+	controls
+Date: Tue, 8 Jul 2014 16:27:24 +0800
+Message-ID: <1404808044-2747-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail.tpnet.fi (webmail.tpnet.fi [62.106.63.33])
- by alsa0.perex.cz (Postfix) with ESMTP id CAA4E2602AD
- for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 10:19:23 +0200 (CEST)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FD28260309
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 10:27:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,96 +19,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Phiree U2 has an unusual configuration. It only has S/PDIF output, but
-there are still two devices presented:
-- device 0: PCM audio, subject to volume control
-- device 1: non-PCM data (passthrough), not subject to volume control
+From: Bard Liao <bardliao@realtek.com>
 
-It looks like the AES bits are set according to the selected device,
-since outputting PCM data via device 1 will not work (silence).
+We can select the clock source of some digital widgets in rt5670.
+This patch adds the controls of those selections.
 
-Currently only the device 0 is shown via the "iec958" alias, and the
-second device is not accessible via hinted aliases.
-
-Simply provide access to both of these devices via the "iec958" alias.
-
-Reported-by: touc @ XBMC forum
-Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
+ sound/soc/codecs/rt5670.c | 117 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 117 insertions(+)
 
-This isn't really the optimal solution, but is probably one of the
-simplest (except maybe just using device 1 as the only iec958 device).
-
-I guess the kernel driver (or even config rules with sufficient @func
-support) could select the appropriate device according to AES0, but
-not sure if that is worth the effort?
-
-Also, I'm not 100% sure if this is actually uncommon or if we just
-hide it in on other such devices.
-
-
- src/conf/cards/USB-Audio.conf | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
-
-diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
-index ce3ae01..77a48b9 100644
---- a/src/conf/cards/USB-Audio.conf
-+++ b/src/conf/cards/USB-Audio.conf
-@@ -52,6 +52,11 @@ USB-Audio.pcm.iec958_device {
- 	"USB Device 0x46d:0x992" 999
- }
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 879d42e..91987e1 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -430,6 +430,105 @@ static const SOC_ENUM_SINGLE_DECL(rt5670_if2_dac_enum, RT5670_DIG_INF1_DATA,
+ static const SOC_ENUM_SINGLE_DECL(rt5670_if2_adc_enum, RT5670_DIG_INF1_DATA,
+ 				RT5670_IF2_ADC_SEL_SFT, rt5670_data_select);
  
-+# Second iec958 device number, if any.
-+USB-Audio.pcm.iec958_2_device {
-+	"PHIREE U2" 1  # 0 = PCM S/PDIF, 1 = non-PCM S/PDIF
-+}
++static const char * const rt5670_asrc_clk_source[] = {
++	"clk_sysy_div_out", "clk_i2s1_track", "clk_i2s2_track",
++	"clk_i2s3_track", "clk_i2s4_track", "clk_sys2", "clk_sys3",
++	"clk_sys4", "clk_sys5"
++};
 +
- 
- # If a device requires non-standard definitions for front, surround40,
- # surround51, surround71 or iec958, they can be defined here.
-@@ -422,4 +427,39 @@ USB-Audio.pcm.iec958.0 {
- 	}
- }
- 
-+USB-Audio.pcm.iec958.1 {
-+	@args [ CARD AES0 AES1 AES2 AES3 ]
-+	@args.CARD { type string }
-+	@args.AES0 { type integer }
-+	@args.AES1 { type integer }
-+	@args.AES2 { type integer }
-+	@args.AES3 { type integer }
-+	@func refer
-+	name {
-+		@func concat
-+		strings [
-+			"cards.USB-Audio."
-+			{ @func card_name card $CARD }
-+			".pcm.iec958_2:CARD=" $CARD
-+			",AES0=" $AES0 ",AES1=" $AES1 ",AES2=" $AES2 ",AES3=" $AES3
-+		]
++static const SOC_ENUM_SINGLE_DECL(rt5670_da_sto_asrc_enum, RT5670_ASRC_2,
++				12, rt5670_asrc_clk_source);
++
++static const SOC_ENUM_SINGLE_DECL(rt5670_da_monol_asrc_enum, RT5670_ASRC_2,
++				8, rt5670_asrc_clk_source);
++
++static const SOC_ENUM_SINGLE_DECL(rt5670_da_monor_asrc_enum, RT5670_ASRC_2,
++				4, rt5670_asrc_clk_source);
++
++static const SOC_ENUM_SINGLE_DECL(rt5670_ad_sto1_asrc_enum, RT5670_ASRC_2,
++				0, rt5670_asrc_clk_source);
++
++static const SOC_ENUM_SINGLE_DECL(rt5670_up_filter_asrc_enum, RT5670_ASRC_3,
++				12, rt5670_asrc_clk_source);
++
++static const SOC_ENUM_SINGLE_DECL(rt5670_down_filter_asrc_enum, RT5670_ASRC_3,
++				8, rt5670_asrc_clk_source);
++
++static const SOC_ENUM_SINGLE_DECL(rt5670_ad_monol_asrc_enum, RT5670_ASRC_3,
++				4, rt5670_asrc_clk_source);
++
++static const SOC_ENUM_SINGLE_DECL(rt5670_ad_monor_asrc_enum, RT5670_ASRC_3,
++				0, rt5670_asrc_clk_source);
++
++static const SOC_ENUM_SINGLE_DECL(rt5670_ad_sto2_asrc_enum, RT5670_ASRC_5,
++				12, rt5670_asrc_clk_source);
++
++static const SOC_ENUM_SINGLE_DECL(rt5670_dsp_asrc_enum, RT5670_DSP_CLK,
++				0, rt5670_asrc_clk_source);
++
++static int rt5670_clk_sel_put(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	unsigned int u_bit = 0, p_bit = 0;
++	struct soc_enum *em =
++		(struct soc_enum *)kcontrol->private_value;
++
++	switch (em->reg) {
++	case RT5670_ASRC_2:
++		switch (em->shift_l) {
++		case 0:
++			u_bit = 0x8;
++			p_bit = RT5670_PWR_ADC_S1F;
++			break;
++		case 4:
++			u_bit = 0x100;
++			p_bit = RT5670_PWR_DAC_MF_R;
++			break;
++		case 8:
++			u_bit = 0x200;
++			p_bit = RT5670_PWR_DAC_MF_L;
++			break;
++		case 12:
++			u_bit = 0x400;
++			p_bit = RT5670_PWR_DAC_S1F;
++			break;
++		}
++		break;
++	case RT5670_ASRC_3:
++		switch (em->shift_l) {
++		case 0:
++			u_bit = 0x1;
++			p_bit = RT5670_PWR_ADC_MF_R;
++			break;
++		case 4:
++			u_bit = 0x2;
++			p_bit = RT5670_PWR_ADC_MF_L;
++			break;
++		}
++		break;
++	case RT5670_ASRC_5:
++		u_bit = 0x4;
++		p_bit = RT5670_PWR_ADC_S2F;
++		break;
 +	}
-+	default {
-+		# FIXME: we cannot set the AES parameters
-+		type hw
-+		card $CARD
-+		device {
-+			@func refer
-+			name {
-+				@func concat
-+				strings [
-+					"cards.USB-Audio.pcm.iec958_2_device."
-+					{ @func card_name card $CARD }
-+				]
-+			}
-+			default 999
++
++	if (u_bit || p_bit) {
++		switch (ucontrol->value.integer.value[0]) {
++		case 1 ... 4: /*enable*/
++			if (snd_soc_read(codec, RT5670_PWR_DIG2) & p_bit)
++				snd_soc_update_bits(codec,
++					RT5670_ASRC_1, u_bit, u_bit);
++			break;
++		default: /*disable*/
++			snd_soc_update_bits(codec, RT5670_ASRC_1, u_bit, 0);
++			break;
 +		}
 +	}
++
++	return snd_soc_put_enum_double(kcontrol, ucontrol);
 +}
 +
- # vim: ft=alsaconf
+ static const struct snd_kcontrol_new rt5670_snd_controls[] = {
+ 	/* Headphone Output Volume */
+ 	SOC_DOUBLE("HP Playback Switch", RT5670_HP_VOL,
+@@ -482,6 +581,24 @@ static const struct snd_kcontrol_new rt5670_snd_controls[] = {
+ 
+ 	SOC_ENUM("ADC IF2 Data Switch", rt5670_if2_adc_enum),
+ 	SOC_ENUM("DAC IF2 Data Switch", rt5670_if2_dac_enum),
++
++	SOC_ENUM_EXT("DA STO Clk Sel", rt5670_da_sto_asrc_enum,
++		     snd_soc_get_enum_double, rt5670_clk_sel_put),
++	SOC_ENUM_EXT("DA MONOL Clk Sel", rt5670_da_monol_asrc_enum,
++		     snd_soc_get_enum_double, rt5670_clk_sel_put),
++	SOC_ENUM_EXT("DA MONOR Clk Sel", rt5670_da_monor_asrc_enum,
++		     snd_soc_get_enum_double, rt5670_clk_sel_put),
++	SOC_ENUM_EXT("AD STO1 Clk Sel", rt5670_ad_sto1_asrc_enum,
++		     snd_soc_get_enum_double, rt5670_clk_sel_put),
++	SOC_ENUM_EXT("AD MONOL Clk Sel", rt5670_ad_monol_asrc_enum,
++		     snd_soc_get_enum_double, rt5670_clk_sel_put),
++	SOC_ENUM_EXT("AD MONOR Clk Sel", rt5670_ad_monor_asrc_enum,
++		     snd_soc_get_enum_double, rt5670_clk_sel_put),
++	SOC_ENUM("UP Clk Sel", rt5670_up_filter_asrc_enum),
++	SOC_ENUM("DOWN Clk Sel", rt5670_down_filter_asrc_enum),
++	SOC_ENUM_EXT("AD STO2 Clk Sel", rt5670_ad_sto2_asrc_enum,
++		     snd_soc_get_enum_double, rt5670_clk_sel_put),
++	SOC_ENUM("DSP Clk Sel", rt5670_dsp_asrc_enum),
+ };
+ 
+ /**
 -- 
-1.8.4.5
+1.8.1.1.439.g50a6b54
