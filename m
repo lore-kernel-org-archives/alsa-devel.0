@@ -1,47 +1,46 @@
-From: Jason Cooper <jason@lakedaemon.net>
-Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
-Date: Tue, 8 Jul 2014 08:13:01 -0400
-Message-ID: <20140708121301.GU23978@titan.lakedaemon.net>
-References: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
+From: Sachin Kamat <sachin.kamat@samsung.com>
+Subject: Re: [PATCH 1/1] ASoC: core: Fix trivial typo
+Date: Tue, 8 Jul 2014 18:14:33 +0530
+Message-ID: <CAK5sBcEf7YQhcR=jFZWpQt4sPwLCOTN3imQ=81=SrwXGGaiNmw@mail.gmail.com>
+References: <1404809172-12151-1-git-send-email-sachin.kamat@samsung.com>
+ <20140708095833.GT30458@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-ide-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
-Sender: linux-ide-owner@vger.kernel.org
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Gregory Clement <gregory.clement@free-electrons.com>, rmk+kernel@arm.linux.org.uk, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f181.google.com (mail-lb0-f181.google.com
+ [209.85.217.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 367B526171D
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 14:44:34 +0200 (CEST)
+Received: by mail-lb0-f181.google.com with SMTP id p9so3844647lbv.26
+ for <alsa-devel@alsa-project.org>; Tue, 08 Jul 2014 05:44:33 -0700 (PDT)
+In-Reply-To: <20140708095833.GT30458@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Andrew,
+On Tue, Jul 8, 2014 at 3:28 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Jul 08, 2014 at 02:16:12PM +0530, Sachin Kamat wrote:
+>
+>>       /*
+>> -      * EINVAL means the property does not exist. This is fine providing
+>> +      * EINVAL means the property does not exist. This is fine provided
+>>        * card->name was previously set, which is checked later in
+>>        * snd_soc_register_card.
+>>        */
+>
+> This isn't actually a typo; both variants are equally good English.
 
-On Sun, Jun 29, 2014 at 10:59:47PM +0200, Andrew Lunn wrote:
-> This patchset removes arch/arm/mach-kirkwood and arch/arm/mach-dove.
-> These SoCs are now supported in arch/arm/mach-mvebu using device tree.
-> 
-> Change the dependencies for a number of drivers, either to use
-> ARCH_MVEBU where the drivers are generic, or MACH_KIRKWOOD and
-> MACH_DOVE where the drivers are specific to a SoC.
-> 
-> 
-> Andrew Lunn (13):
->   ARM: Kirkwood: Remove mach-kirkwood
->   ARM: Dove: Remove mach-dove
->   sound: ASoC: kirkwood: Remove unused drivers
->   sound: ASoC: kirkwood: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
->   cpuidle: kirkwood: Replace ARCH_KIRKWOOD dependency
->   ata: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
->   thermal: Replace ARCH_KIRKWOOD and ARCH_DOVE dependency
->   leds: Replace ARCH_KIRKWOOD dependency
->   PCI: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
->   phy: Replace ARCH_KIRKWOOD and ARCH_DOVE dependency
->   rtc: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
->   watchdog: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
->   Remove ARCH_DOVE dependency
+Oh OK. Wasn't sure if it was right usage.
 
-Let's just do mach-kirkwood/ removal this time around and we'll
-re-address mach-dove next window.
-
-thx,
-
-Jason.
+Regards,
+Sachin.
