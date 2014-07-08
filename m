@@ -1,19 +1,23 @@
-From: Benoit Cousson <bcousson@baylibre.com>
-Subject: [PATCH v6 5/5] ASoC: pcm: Add soc_dai_hw_params helper
-Date: Tue,  8 Jul 2014 23:19:38 +0200
-Message-ID: <1404854378-25828-6-git-send-email-bcousson@baylibre.com>
-References: <1404854378-25828-1-git-send-email-bcousson@baylibre.com>
+From: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
+Subject: Re:
+ =?utf-8?q?=5BPATCH_-_alsa-utils_5/5=5D_The_amidicat_?=
+ =?utf-8?q?program_itself=2C_better_late_than_never?=
+Date: Wed, 09 Jul 2014 03:55:18 +0400
+Message-ID: <1404863718.378573458@f135.i.mail.ru>
+References: <1404118503-22921-1-git-send-email-alsa@krellan.com>
+ <1404118503-22921-6-git-send-email-alsa@krellan.com>
+Reply-To: =?UTF-8?B?U2VyZ2V5?= <sergemp@mail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f176.google.com (mail-we0-f176.google.com
- [74.125.82.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A402261AA1
- for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 23:21:07 +0200 (CEST)
-Received: by mail-we0-f176.google.com with SMTP id u56so6512920wes.21
- for <alsa-devel@alsa-project.org>; Tue, 08 Jul 2014 14:21:07 -0700 (PDT)
-In-Reply-To: <1404854378-25828-1-git-send-email-bcousson@baylibre.com>
+Received: from f135.i.mail.ru (f135.i.mail.ru [128.140.171.235])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C9CC261AB0
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jul 2014 01:55:20 +0200 (CEST)
+Received: from mail by f135.i.mail.ru with local (envelope-from
+ <sergemp@mail.ru>) id 1X4fEF-0003Xk-28
+ for alsa-devel@alsa-project.org; Wed, 09 Jul 2014 03:55:19 +0400
+In-Reply-To: <1404118503-22921-6-git-send-email-alsa@krellan.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,145 +27,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, lars@metafoo.de
-Cc: misael.lopez@ti.com, alsa-devel@alsa-project.org, Benoit Cousson <bcousson@baylibre.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a function helper to factorize the hw_params code.
-
-Suggested by Lars-Peter Clausen <lars@metafoo.de>
-
-Signed-off-by: Benoit Cousson <bcousson@baylibre.com>
-Tested-by: Lars-Peter Clausen <lars@metafoo.de>
-Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
----
- include/sound/soc.h  |  4 ++++
- sound/soc/soc-dapm.c | 28 ++++++++--------------------
- sound/soc/soc-pcm.c  | 43 ++++++++++++++++++++++++-------------------
- 3 files changed, 36 insertions(+), 39 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index f2142cf..98555f8 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -436,6 +436,10 @@ int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
- int snd_soc_platform_trigger(struct snd_pcm_substream *substream,
- 		int cmd, struct snd_soc_platform *platform);
- 
-+int soc_dai_hw_params(struct snd_pcm_substream *substream,
-+		      struct snd_pcm_hw_params *params,
-+		      struct snd_soc_dai *dai);
-+
- /* Jack reporting */
- int snd_soc_jack_new(struct snd_soc_codec *codec, const char *id, int type,
- 		     struct snd_soc_jack *jack);
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 5c63c3b..9a047f3 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3214,27 +3214,15 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		if (source->driver->ops && source->driver->ops->hw_params) {
--			substream.stream = SNDRV_PCM_STREAM_CAPTURE;
--			ret = source->driver->ops->hw_params(&substream,
--							     params, source);
--			if (ret != 0) {
--				dev_err(source->dev,
--					"ASoC: hw_params() failed: %d\n", ret);
--				goto out;
--			}
--		}
-+		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+		ret = soc_dai_hw_params(&substream, params, source);
-+		if (ret < 0)
-+			goto out;
- 
--		if (sink->driver->ops && sink->driver->ops->hw_params) {
--			substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
--			ret = sink->driver->ops->hw_params(&substream, params,
--							   sink);
--			if (ret != 0) {
--				dev_err(sink->dev,
--					"ASoC: hw_params() failed: %d\n", ret);
--				goto out;
--			}
--		}
-+		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+		ret = soc_dai_hw_params(&substream, params, sink);
-+		if (ret < 0)
-+			goto out;
- 		break;
- 
- 	case SND_SOC_DAPM_POST_PMU:
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 5269abb..731fdb5 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -789,6 +789,24 @@ static void soc_pcm_codec_params_fixup(struct snd_pcm_hw_params *params,
- 	interval->max = channels;
- }
- 
-+int soc_dai_hw_params(struct snd_pcm_substream *substream,
-+		      struct snd_pcm_hw_params *params,
-+		      struct snd_soc_dai *dai)
-+{
-+	int ret;
-+
-+	if (dai->driver->ops && dai->driver->ops->hw_params) {
-+		ret = dai->driver->ops->hw_params(substream, params, dai);
-+		if (ret < 0) {
-+			dev_err(dai->dev, "ASoC: can't set %s hw params: %d\n",
-+				dai->name, ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Called by ALSA when the hardware params are set by application. This
-  * function can also be called multiple times and can allocate buffers
-@@ -832,17 +850,9 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 			soc_pcm_codec_params_fixup(&codec_params,
- 						   codec_dai->rx_mask);
- 
--		if (codec_dai->driver->ops &&
--		    codec_dai->driver->ops->hw_params) {
--			ret = codec_dai->driver->ops->hw_params(substream,
--						&codec_params, codec_dai);
--			if (ret < 0) {
--				dev_err(codec_dai->dev,
--					"ASoC: can't set %s hw params: %d\n",
--					codec_dai->name, ret);
--				goto codec_err;
--			}
--		}
-+		ret = soc_dai_hw_params(substream, &codec_params, codec_dai);
-+		if(ret < 0)
-+			goto codec_err;
- 
- 		codec_dai->rate = params_rate(&codec_params);
- 		codec_dai->channels = params_channels(&codec_params);
-@@ -850,14 +860,9 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 						params_format(&codec_params));
- 	}
- 
--	if (cpu_dai->driver->ops && cpu_dai->driver->ops->hw_params) {
--		ret = cpu_dai->driver->ops->hw_params(substream, params, cpu_dai);
--		if (ret < 0) {
--			dev_err(cpu_dai->dev, "ASoC: %s hw params failed: %d\n",
--				cpu_dai->name, ret);
--			goto interface_err;
--		}
--	}
-+	ret = soc_dai_hw_params(substream, params, cpu_dai);
-+	if (ret < 0)
-+		goto interface_err;
- 
- 	if (platform->driver->ops && platform->driver->ops->hw_params) {
- 		ret = platform->driver->ops->hw_params(substream, params);
--- 
-1.9.1
+SnVuIDMwIDIwMTQsIEpvc2ggTGVoYW4gd3JvdGU6Cj4gU2lnbmVkLW9mZi1ieTogSm9zaCBMZWhh
+biA8IGFsc2FAa3JlbGxhbi5jb20gPgo+IAo+IGRpZmYgLS1naXQgYS9hbWlkaWNhdC9hbWlkaWNh
+dC5jIGIvYW1pZGljYXQvYW1pZGljYXQuYwoKVGhpcyBpcyBraW5kIG9mIGEgYnVncmVwb3J0IGZv
+ciBhbWlkaWNhdC4KCkkgdGVzdGVkIGFtaWRpY2F0LiBUaGUgZmlyc3QgdXNlIGNhc2UgSSB0aG91
+Z2h0IHdhczoKW3JlbW90ZWhvc3RdJCB0aW1pZGl0eSAtaUEgLU9zIC1CMiw4ICYKW3JlbW90ZWhv
+c3RdJCBuYyAtbCAtcCAxMjM0NSB8IGFtaWRpY2F0IC0tcG9ydCAxMjk6MCAtLW5vcmVhZCAtLXZl
+cmJvc2UgLS1oZXgKW2xvY2FsaG9zdF0kIHZrZXliZCAmCltsb2NhbGhvc3RdJCBhbWlkaWNhdCAt
+LXBvcnQgMTI4OjAgLS1ub3dyaXRlIC0tdmVyYm9zZSAtLWhleCB8IG5jIHJlbW90ZWhvc3QgMTIz
+NDUKCkJ1dCB0aGF0IGhhdmUgbm90IHdvcmtlZCBmcm9tIHRoZSBiZWdpbm5pbmcuCgpGaXJzdCwg
+SSBub3RpY2VkIHRoYXQgImFtaWRpY2F0IiBpcyBub3QgbGlzdGVkIGluIGBhY29ubmVjdCAtaW9s
+YCBvdXRwdXQuIFdoeT8KJCB0aW1pZGl0eSAtaUEgLU9zIC1CMiw4ICYKJCBuYyAtbCAtcCAxMjM0
+NSB8IGFtaWRpY2F0IC0tcG9ydCAxMjg6MCAtLW5vcmVhZCAtLXZlcmJvc2UgLS1oZXgKVGhlbiBp
+biBhbm90aGVyIHRlcm1pbmFsOgokIGFjb25uZWN0IC1pb2wKY2xpZW50IDA6ICdTeXN0ZW0nIFt0
+eXBlPWtlcm5lbF0KwqDCoMKgwqAwICdUaW1lciAgICAgICAgICAgJwrCoMKgwqDCoDEgJ0Fubm91
+bmNlICAgICAgICAnCmNsaWVudCAxNDogJ01pZGkgVGhyb3VnaCcgW3R5cGU9a2VybmVsXQrCoMKg
+wqDCoDAgJ01pZGkgVGhyb3VnaCBQb3J0LTAnCmNsaWVudCAxMjg6ICdUaU1pZGl0eScgW3R5cGU9
+dXNlcl0KwqDCoMKgwqAwICdUaU1pZGl0eSBwb3J0IDAgJwpDb25uZWN0ZWQgRnJvbTogMTI5OjAK
+wqDCoMKgwqAxICdUaU1pZGl0eSBwb3J0IDEgJwrCoMKgwqDCoDIgJ1RpTWlkaXR5IHBvcnQgMiAn
+CsKgwqDCoMKgMyAnVGlNaWRpdHkgcG9ydCAzICcKTm90aWNlIHRoZSAiQ29ubmVjdGVkIEZyb206
+IDEyOTowIiBsaW5lLCBidXQgbm8gImNsaWVudCAxMjkiLiBIb3dldmVyOgokIGFtaWRpY2F0IC0t
+bGlzdArCoFBvcnQgICAgQ2xpZW50IG5hbWUgICAgICAgICAgICAgICAgICAgICAgUG9ydCBuYW1l
+ICAgICAgICAgICAgICAgICAgICAgICAgcndSVwrCoMKgMDowICAgIFN5c3RlbSAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIFRpbWVyICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJ3Ui0KwqDC
+oDA6MSAgICBTeXN0ZW0gICAgICAgICAgICAgICAgICAgICAgICAgICBBbm5vdW5jZSAgICAgICAg
+ICAgICAgICAgICAgICAgICByLVItCsKgMTQ6MCAgICBNaWRpIFRocm91Z2ggICAgICAgICAgICAg
+ICAgICAgICBNaWRpIFRocm91Z2ggUG9ydC0wICAgICAgICAgICAgICByd1JXCjEyODowICAgIFRp
+TWlkaXR5ICAgICAgICAgICAgICAgICAgICAgICAgIFRpTWlkaXR5IHBvcnQgMCAgICAgICAgICAg
+ICAgICAgIC13LVcKMTI4OjEgICAgVGlNaWRpdHkgICAgICAgICAgICAgICAgICAgICAgICAgVGlN
+aWRpdHkgcG9ydCAxICAgICAgICAgICAgICAgICAgLXctVwoxMjg6MiAgICBUaU1pZGl0eSAgICAg
+ICAgICAgICAgICAgICAgICAgICBUaU1pZGl0eSBwb3J0IDIgICAgICAgICAgICAgICAgICAtdy1X
+CjEyODozICAgIFRpTWlkaXR5ICAgICAgICAgICAgICAgICAgICAgICAgIFRpTWlkaXR5IHBvcnQg
+MyAgICAgICAgICAgICAgICAgIC13LVcKMTI5OjAgICAgYW1pZGljYXQgICAgICAgICAgICAgICAg
+ICAgICAgICAgYW1pZGljYXQgICAgICAgICAgICAgICAgICAgICAgICAgLXctLQoxMzA6MCAgICBh
+bWlkaWNhdCAgICAgICAgICAgICAgICAgICAgICAgICBhbWlkaWNhdCAgICAgICAgICAgICAgICAg
+ICAgICAgICByd1JXCgpBbHNvLCBpdCBwcmludHMgbm90aGluZyBpbiB0aGUgZm9sbG93aW5nIGNh
+c2U6CiQgdmtleWJkICYKJCBhbWlkaWNhdCAtLXBvcnQgMTI4OjAgLS1ub3dyaXRlIC0tdmVyYm9z
+ZSAtLWhleApleGNlcHQgaW5pdGlhbCAiQ29ubmVjdGVkIHRvIEFMU0Egc2VxdWVuY2VyIG9uIHBv
+cnQgMTMwOjAiIGxpbmUKd2hpY2ggaXRzZWxmIGxvb2tzIHN1c3BpY2lvdXMsIHNpbmNlIEkgYXNr
+ZWQgaXQgdG8gY29ubmVjdCBvbiBwb3J0IDEyODowLgoKTWF5YmUgdGhhdCBsaW5lIGNvdWxkIGJl
+IGxpa2U6CsKgwqBDcmVhdGVkIEFMU0Egc2VxdWVuY2VyIHBvcnQgMTMwOjAKb3IgZXZlbgrCoMKg
+Q3JlYXRlZCBBTFNBIHNlcXVlbmNlciBwb3J0IDEzMDowLCBjb25uZWN0ZWQgdG8gMTI4OjAKCkhv
+d2V2ZXIgYGFzZXFkdW1wYCB3b3JrcyBsaWtlIHRoYXQ6CiQgdmtleWJkICYKJCBhc2VxZHVtcCAt
+cCAxMjg6MAoKRXZlbiBtb3JlIGludGVyZXN0aW5nIHRlc3Q6IHJ1biB0aGVtIGFsbC4KW2NvbnNv
+bGUxXSQgdmtleWJkICYKW2NvbnNvbGUxXSQgYXNlcWR1bXAgLXAgMTI4OjAKcHJlc3MgYSBrZXks
+IGFzIGV4cGVjdGVkIEkgc2VlOgoxMjg6MCBOb3RlIG9uIDAsIG5vdGUgNjAsIHZlbG9jaXR5IDEy
+NwoxMjg6MCBOb3RlIG9mZiAwLCBub3RlIDYwLCB2ZWxvY2l0eSAwCndoaWxlIGBhc2VxZHVtcGAg
+aXMgc3RpbGwgcnVubmluZyBpbiBhbm90aGVyIHRlcm1pbmFsIEkgc3RhcnQgYGFtaWRpY2F0YDoK
+W2NvbnNvbGUyXSQgYW1pZGljYXQgLS1wb3J0IDEyODowIC0tbm93cml0ZSAtLXZlcmJvc2UgLS1o
+ZXgKdGhlbiBwcmVzcyBhIGZldyBrZXlzIGFuZCBpbiBhc2VxZHVtcCB0ZXJtaW5hbCBJIHNlZToK
+MTI4OjAgTm90ZSBvbiAwLCBub3RlIDYwLCB2ZWxvY2l0eSAxMjcKMTI4OjAgTm90ZSBvbiAwLCBu
+b3RlIDYwLCB2ZWxvY2l0eSAxMjcKMTI4OjAgTm90ZSBvbiAwLCBub3RlIDYwLCB2ZWxvY2l0eSAx
+MjcKMTI4OjAgTm90ZSBvbiAwLCBub3RlIDYwLCB2ZWxvY2l0eSAxMjcKMTI4OjAgTm90ZSBvbiAw
+LCBub3RlIDYwLCB2ZWxvY2l0eSAxMjcKMTI4OjAgTm90ZSBvbiAwLCBub3RlIDYwLCB2ZWxvY2l0
+eSAxMjcKMTI4OjAgTm90ZSBvbiAwLCBub3RlIDYwLCB2ZWxvY2l0eSAxMjcKMTI4OjAgTm90ZSBv
+biAwLCBub3RlIDYwLCB2ZWxvY2l0eSAxMjcKaG93IGNvdWxkIHRoYXQgYmU/IEkgcHJlc3NlZCBk
+aWZmZXJlbnQga2V5cywgd2h5IHNhbWUgIk5vdGUgb24iPwp0aGVuIEkgaW50ZXJydXB0IGBhbWlk
+aWNhdGAgd2l0aCBDdHJsK0MgYW5kIGluc3RhbnRseSBzZWU6CjEyODowIE5vdGUgb24gMCwgbm90
+ZSA2MCwgdmVsb2NpdHkgMTI3CjEyODowIE5vdGUgb2ZmIDAsIG5vdGUgNjAsIHZlbG9jaXR5IDAK
+MTI4OjAgTm90ZSBvbiAwLCBub3RlIDYyLCB2ZWxvY2l0eSAxMjcKMTI4OjAgTm90ZSBvZmYgMCwg
+bm90ZSA2MiwgdmVsb2NpdHkgMAoxMjg6MCBOb3RlIG9uIDAsIG5vdGUgNjQsIHZlbG9jaXR5IDEy
+NwoxMjg6MCBOb3RlIG9mZiAwLCBub3RlIDY0LCB2ZWxvY2l0eSAwCjEyODowIE5vdGUgb24gMCwg
+bm90ZSA2NSwgdmVsb2NpdHkgMTI3CjEyODowIE5vdGUgb2ZmIDAsIG5vdGUgNjUsIHZlbG9jaXR5
+IDAKMTI4OjAgTm90ZSBvbiAwLCBub3RlIDY3LCB2ZWxvY2l0eSAxMjcKMTI4OjAgTm90ZSBvZmYg
+MCwgbm90ZSA2NywgdmVsb2NpdHkgMAphbWlkaWNhdCB0ZXJtaW5hbCB3YXMgc3RpbGwgZW1wdHks
+IG5vdGhpbmcgZXhjZXB0IGluaXRpYWwgIkNvbm5lY3RlZCB0byAuLi4iIGxpbmUuCgpFeHBlY3Rl
+ZCByZXN1bHRzOgrCoMKgYW1pZGljYXQgcHJpbnRzIGV2ZW50cyBmcm9tIHZrZXliZArCoMKgZG9l
+cyBub3QgYWZmZWN0IG90aGVyIGFwcHMsIGUuZy4gYXNlcWR1bXAKwqDCoGFuZCBpcyBsaXN0ZWQg
+aW4gYGFjb25uZWN0IC1pb2xgIG91dHB1dAoKTm90ZTogSSB0ZXN0ZWQgdGhhdCBvbiBkZWJpYW4g
+b2xkc3RhYmxlIHdpdGggYWxzYSAxLjAuMjMsIGNvdWxkIHRoYXQgYmUgdGhlIHJlYXNvbj8KQ2Fu
+IHlvdSByZXByb2R1Y2UgdGhhdCBvbiB5b3VyIHN5c3RlbT8KClRoYW5rIHlvdSBmb3IgYW4gaW50
+ZXJlc3RpbmcgdG9vbC4KLS3CoAogwqBTZXJnZXkKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
