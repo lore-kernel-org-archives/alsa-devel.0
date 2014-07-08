@@ -1,46 +1,47 @@
-From: Manish Badarkhe <badarkhe.manish@gmail.com>
-Subject: Re: [PATCH] ASoC: omap-dmic: Use devm_snd_soc_register_component
-Date: Tue, 8 Jul 2014 17:18:13 +0530
-Message-ID: <CAKDJKT5+2jCDKzF9CcXZKksTmP4kep=p+6E7tJ_KuXi3yTX=Og@mail.gmail.com>
-References: <1404629414-3263-1-git-send-email-badarkhe.manish@gmail.com>
-	<53BA68B1.5040309@ti.com>
+From: Jason Cooper <jason@lakedaemon.net>
+Subject: Re: [PATCH 00/13] Remove mach-kirkwood and mach-dove
+Date: Tue, 8 Jul 2014 08:13:01 -0400
+Message-ID: <20140708121301.GU23978@titan.lakedaemon.net>
+References: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <53BA68B1.5040309@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-ide-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1404075603-31838-1-git-send-email-andrew@lunn.ch>
+Sender: linux-ide-owner@vger.kernel.org
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Gregory Clement <gregory.clement@free-electrons.com>, rmk+kernel@arm.linux.org.uk, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Tejun Heo <tj@kernel.org>, linux-ide@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, Alessandro Zummo <a.zummo@towertech.it>, rtc-linux@googlegroups.com, Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+Andrew,
 
-On Mon, Jul 7, 2014 at 3:00 PM, Peter Ujfalusi <peter.ujfalusi@ti.com> wrote:
-> On 07/06/2014 09:50 AM, Manish Badarkhe wrote:
->> Replaced snd_soc_register_component with its devres equivalent,
->> devm_snd_soc_register_component.
->>
->> Signed-off-by: Manish Badarkhe <badarkhe.manish@gmail.com>
->> ---
->> :100644 100644 6925d71... 011e30e... M        sound/soc/omap/omap-dmic.c
->>  sound/soc/omap/omap-dmic.c |    3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
->> index 6925d71..011e30e 100644
->> --- a/sound/soc/omap/omap-dmic.c
->> +++ b/sound/soc/omap/omap-dmic.c
->> @@ -490,7 +490,7 @@ static int asoc_dmic_probe(struct platform_device *pdev)
->>       }
->>
->>
->> -     ret = snd_soc_register_component(&pdev->dev, &omap_dmic_component,
->> +     ret = devm_snd_soc_register_component(&pdev->dev, &omap_dmic_component,
->>                                        &omap_dmic_dai, 1);
->
-> Would you align the parameters at the same time?
+On Sun, Jun 29, 2014 at 10:59:47PM +0200, Andrew Lunn wrote:
+> This patchset removes arch/arm/mach-kirkwood and arch/arm/mach-dove.
+> These SoCs are now supported in arch/arm/mach-mvebu using device tree.
+> 
+> Change the dependencies for a number of drivers, either to use
+> ARCH_MVEBU where the drivers are generic, or MACH_KIRKWOOD and
+> MACH_DOVE where the drivers are specific to a SoC.
+> 
+> 
+> Andrew Lunn (13):
+>   ARM: Kirkwood: Remove mach-kirkwood
+>   ARM: Dove: Remove mach-dove
+>   sound: ASoC: kirkwood: Remove unused drivers
+>   sound: ASoC: kirkwood: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
+>   cpuidle: kirkwood: Replace ARCH_KIRKWOOD dependency
+>   ata: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
+>   thermal: Replace ARCH_KIRKWOOD and ARCH_DOVE dependency
+>   leds: Replace ARCH_KIRKWOOD dependency
+>   PCI: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
+>   phy: Replace ARCH_KIRKWOOD and ARCH_DOVE dependency
+>   rtc: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
+>   watchdog: Remove ARCH_KIRKWOOD and ARCH_DOVE dependency
+>   Remove ARCH_DOVE dependency
 
-Sure, will do it and send next version.
+Let's just do mach-kirkwood/ removal this time around and we'll
+re-address mach-dove next window.
 
-Regards
-Manish Badarkhe
+thx,
+
+Jason.
