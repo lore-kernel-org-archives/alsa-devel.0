@@ -1,112 +1,116 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 01/12] ARM: OMAP2+: Remove non working OMAP HDMI audio
- initialization
-Date: Tue, 8 Jul 2014 10:30:16 +0300
-Message-ID: <53BB9E08.7090802@ti.com>
-References: <cover.1403807781.git.jsarha@ti.com> <b0764a3af8181db55db046d6139119def363e8eb.1403807781.git.jsarha@ti.com> <20140707114625.GT28884@atomide.com>
+From: Sangilikumar  <sangilikumar.muniyandi@marudham.co.in>
+Subject: Integrate WM8974 codec with AM1808 processor
+Date: Tue, 8 Jul 2014 07:46:45 +0000 (UTC)
+Message-ID: <loom.20140708T090201-172@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20140707114625.GT28884@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>, Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, jyri.sarha@iki.fi
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FDC62602AD
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 09:55:05 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1X4QEy-00038B-Cz
+ for alsa-devel@alsa-project.org; Tue, 08 Jul 2014 09:55:04 +0200
+Received: from 115.114.95.155.static-Chennai.vsnl.net.in
+ ([115.114.95.155.static-Chennai.vsnl.net.in])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Tue, 08 Jul 2014 09:55:04 +0200
+Received: from sangilikumar.muniyandi by
+ 115.114.95.155.static-Chennai.vsnl.net.in with local (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Tue, 08 Jul 2014 09:55:04 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tony,
+Hello Engineers 
 
-On 07/07/2014 02:46 PM, Tony Lindgren wrote:
-> * Jyri Sarha <jsarha@ti.com> [140626 12:26]:
->> This code is not working currently and it can be removed. There is a
->> conflict in sharing resources with the actual HDMI driver and with
->> the ASoC HDMI audio DAI driver.
->=20
-> Is this OK to queue for v3.17 or do we need this for v3.16-rc series?
+      I'm working with TI's AM1808 ARM9 processor. My design in based on 
+OMAP-L138 LCDK board. Here i replaced the TLV320AIC310 codec with WM8974 
+mono codec. 
+      Added the codec driver in board file and registered the sound card by
+ 
+static struct snd_soc_dai_link da850_evm_dai = {
+	.name = "TLV320AIC3X",
+	.stream_name = "AIC3X",
+	.cpu_dai_name= "davinci-mcasp.0",
+	.codec_dai_name = "wm8974-hifi",
+	.codec_name = "wm8974-codec.1-001a",
+	.platform_name = "davinci-pcm-audio",
+	.init = evm_aic3x_init,
+	.ops = &evm_ops,
+};
 
-Jyri is away currently, but I think it would be great if this patch goe=
-s in
-for 3.16. The patch does not introduce regression since the OMAP4/5 HDM=
-I is in
-non working state in the kernel so removing the platform device right n=
-ow will
-ease up the merger of the new and working code.
+But got some errors
 
-Regards,
-P=E9ter
+Sound card registered successfully but i got some errors
 
->=20
-> Regards,
->=20
-> Tony
-> =20
->> Signed-off-by: Jyri Sarha <jsarha@ti.com>
->> ---
->>  arch/arm/mach-omap2/devices.c |   28 ----------------------------
->>  1 file changed, 28 deletions(-)
->>
->> diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/dev=
-ices.c
->> index 592ba0a..b6f8f34 100644
->> --- a/arch/arm/mach-omap2/devices.c
->> +++ b/arch/arm/mach-omap2/devices.c
->> @@ -297,33 +297,6 @@ static void omap_init_audio(void)
->>  static inline void omap_init_audio(void) {}
->>  #endif
->> =20
->> -#if defined(CONFIG_SND_OMAP_SOC_OMAP_HDMI) || \
->> -		defined(CONFIG_SND_OMAP_SOC_OMAP_HDMI_MODULE)
->> -
->> -static struct platform_device omap_hdmi_audio =3D {
->> -	.name	=3D "omap-hdmi-audio",
->> -	.id	=3D -1,
->> -};
->> -
->> -static void __init omap_init_hdmi_audio(void)
->> -{
->> -	struct omap_hwmod *oh;
->> -	struct platform_device *pdev;
->> -
->> -	oh =3D omap_hwmod_lookup("dss_hdmi");
->> -	if (!oh)
->> -		return;
->> -
->> -	pdev =3D omap_device_build("omap-hdmi-audio-dai", -1, oh, NULL, 0)=
-;
->> -	WARN(IS_ERR(pdev),
->> -	     "Can't build omap_device for omap-hdmi-audio-dai.\n");
->> -
->> -	platform_device_register(&omap_hdmi_audio);
->> -}
->> -#else
->> -static inline void omap_init_hdmi_audio(void) {}
->> -#endif
->> -
->>  #if defined(CONFIG_SPI_OMAP24XX) || defined(CONFIG_SPI_OMAP24XX_MOD=
-ULE)
->> =20
->>  #include <linux/platform_data/spi-omap2-mcspi.h>
->> @@ -459,7 +432,6 @@ static int __init omap2_init_devices(void)
->>  	 */
->>  	omap_init_audio();
->>  	omap_init_camera();
->> -	omap_init_hdmi_audio();
->>  	omap_init_mbox();
->>  	/* If dtb is there, the devices will be created dynamically */
->>  	if (!of_have_populated_dt()) {
->> --=20
->> 1.7.9.5
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-omap=
-" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
+wm8974-codec 1-001a: Failed to add route HPLOUT->Headphone Jack
+wm8974-codec 1-001a: dapm: unknown pin MONO_LOUT
+wm8974-codec 1-001a: dapm: unknown pin HPLCOM
+wm8974-codec 1-001a: dapm: unknown pin HPRCOM
+asoc: wm8974-hifi <-> davinci-mcasp.0 mapping ok
+ALSA device list:
+#0: DA850/OMAP-L138 EVM
+TCP cubic registered
+....
 
+ALSA: Restoring mixer settings...
+Configuring network interfaces... Found hardware: "DA850_OMAP-L138" "" "" "" 
+""
+Hardware is initialized using a generic method
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #1 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #2 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #3 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #4 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #5 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #6 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #7 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #8 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #9 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #10 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #11 
+(No such file or directory)
+/usr/sbin/alsactl: set_control:1267: failed to obtain info for control #12 
+(No such file or directory)
+davinci_mdio davinci_mdio.0: resetting idled controller
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+root@omapl138-lcdk:/aud# speaker-test
+ 
+speaker-test 1.0.24.2
+ 
+Playback device is default
+Stream parameters are 48000Hz, S16_LE, 1 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 128 to 32768
+Period size range asoc: machine hw_params failed
+from 8 to 2048
+Using max buffer size 32768
+Periods = 4
+Unable to set hw params for playback: Invalid argument
+Setting of hwparams failed: Invalid argument
+root@omapl138-lcdk:/aud# 
+ 
+Please let me know what are the changes i need to do in Linux files and 
+drivers.
