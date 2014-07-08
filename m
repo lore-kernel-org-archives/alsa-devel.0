@@ -1,40 +1,41 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 01/12] ARM: OMAP2+: Remove non working OMAP HDMI audio
- initialization
-Date: Tue, 8 Jul 2014 01:09:45 -0700
-Message-ID: <20140708080945.GZ28884@atomide.com>
-References: <cover.1403807781.git.jsarha@ti.com>
- <b0764a3af8181db55db046d6139119def363e8eb.1403807781.git.jsarha@ti.com>
- <20140707114625.GT28884@atomide.com>
- <53BB9E08.7090802@ti.com>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: Use devm_ functions
+Date: Tue, 8 Jul 2014 10:15:20 +0200 (CEST)
+Message-ID: <alpine.DEB.2.10.1407081012400.2347@hadrien>
+References: <20140706070800.GA2927@himangi-Dell> <20140707144832.GL30458@sirena.org.uk> <alpine.DEB.2.10.1407071655171.4757@hadrien> <CAOMZO5AiFCnfTzo4TyB5e5c+xiHQiHUbhRVY7z=AbjOWZDX3NA@mail.gmail.com> <alpine.DEB.2.10.1407071721270.4757@hadrien>
+ <20140708080232.GQ30458@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <53BB9E08.7090802@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, jyri.sarha@iki.fi
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140708080232.GQ30458@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Julia Lawall <julia.lawall@lip6.fr>, Fabio Estevam <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Himangi Saraogi <himangi774@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@ti.com> [140708 00:32]:
-> Hi Tony,
-> 
-> On 07/07/2014 02:46 PM, Tony Lindgren wrote:
-> > * Jyri Sarha <jsarha@ti.com> [140626 12:26]:
-> >> This code is not working currently and it can be removed. There is a
-> >> conflict in sharing resources with the actual HDMI driver and with
-> >> the ASoC HDMI audio DAI driver.
-> > 
-> > Is this OK to queue for v3.17 or do we need this for v3.16-rc series?
-> 
-> Jyri is away currently, but I think it would be great if this patch goes in
-> for 3.16. The patch does not introduce regression since the OMAP4/5 HDMI is in
-> non working state in the kernel so removing the platform device right now will
-> ease up the merger of the new and working code.
 
-OK, will apply it into omap-for-v3.16/fixes as it just removes broken code.
 
-Regards,
+On Tue, 8 Jul 2014, Mark Brown wrote:
 
-Tony
+> On Mon, Jul 07, 2014 at 05:23:39PM +0200, Julia Lawall wrote:
+>
+> > There is documentation about what kinds of devm functions exist, but it is
+> > too bad that there is no documentation about where they can be used.
+> > Often there are several levels of function pointers involved, so it can be
+> > hard to figure out whether they can be used just by looking at the code.
+> > I have only taken the strategy of using them in kinds of functions where
+> > someone else has alreadyy figured out that they can be used.
+>
+> It should be fairly clear given what they do I'd have thought - the
+> devm_ functions tie the deallocation of a resource to the unbinding of
+> a driver from a device so they can only be used to replace things that
+> get cleaned up in a device model unbind path.  There's not usually a
+> great deal of indirection going on in those.
+
+It is completely clear what they do.  What is not clear is what device
+libraries are set up to call the freeing functions at what point.  For
+example, I know that that platform drivers are set up for this, but once I
+tried to find the lines of code that would justify that, but I could not.
+Perhaps I was not patient enough or missed something.
+
+julia
