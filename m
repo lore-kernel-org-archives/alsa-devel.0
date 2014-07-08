@@ -1,48 +1,48 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v2 6/7] ACPI: Cleanup useless ACPI inclusion.
-Date: Mon, 07 Jul 2014 23:24:11 +0200
-Message-ID: <2868763.c5IhTlySqm@vostro.rjw.lan>
-References: <cover.1387336613.git.lv.zheng@intel.com> <cover.1404706298.git.lv.zheng@intel.com> <cf869ff5e75e0973b065c3d3fe2fa453abcd5c97.1404706299.git.lv.zheng@intel.com>
+From: "Zheng, Lv" <lv.zheng@intel.com>
+Subject: RE: [PATCH v2 6/7] ACPI: Cleanup useless ACPI inclusion.
+Date: Tue, 8 Jul 2014 00:05:01 +0000
+Message-ID: <1AE640813FDE7649BE1B193DEA596E8802633449@SHSMSX101.ccr.corp.intel.com>
+References: <cover.1387336613.git.lv.zheng@intel.com>
+ <cover.1404706298.git.lv.zheng@intel.com>
+ <cf869ff5e75e0973b065c3d3fe2fa453abcd5c97.1404706299.git.lv.zheng@intel.com>
+ <2868763.c5IhTlySqm@vostro.rjw.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <cf869ff5e75e0973b065c3d3fe2fa453abcd5c97.1404706299.git.lv.zheng@intel.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Lv Zheng <lv.zheng@intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>, Lv Zheng <zetalog@gmail.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <2868763.c5IhTlySqm@vostro.rjw.lan>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>, "Brown, Len" <len.brown@intel.com>, Lv Zheng <zetalog@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday, July 07, 2014 12:17:40 PM Lv Zheng wrote:
-> The sst-haswell-dsp.c is an ACPI independent file, this patch removes
-> ACPI header files for it.
-
-This appears to be independent of the rest of the series.  Is that correct?
-
-> Signed-off-by: Lv Zheng <lv.zheng@intel.com>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: alsa-devel@alsa-project.org
-> ---
->  sound/soc/intel/sst-haswell-dsp.c |    3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
-> index 535f517..ecc5057 100644
-> --- a/sound/soc/intel/sst-haswell-dsp.c
-> +++ b/sound/soc/intel/sst-haswell-dsp.c
-> @@ -28,9 +28,6 @@
->  #include <linux/firmware.h>
->  #include <linux/pm_runtime.h>
->  
-> -#include <linux/acpi.h>
-> -#include <acpi/acpi_bus.h>
-> -
->  #include "sst-dsp.h"
->  #include "sst-dsp-priv.h"
->  #include "sst-haswell-ipc.h"
-> 
-
--- 
-I speak only for myself.
-Rafael J. Wysocki, Intel Open Source Technology Center.
+SGksDQoNCj4gRnJvbTogbGludXgtYWNwaS1vd25lckB2Z2VyLmtlcm5lbC5vcmcgW21haWx0bzps
+aW51eC1hY3BpLW93bmVyQHZnZXIua2VybmVsLm9yZ10gT24gQmVoYWxmIE9mIFJhZmFlbCBKLiBX
+eXNvY2tpDQo+IFNlbnQ6IFR1ZXNkYXksIEp1bHkgMDgsIDIwMTQgNToyNCBBTQ0KPiANCj4gT24g
+TW9uZGF5LCBKdWx5IDA3LCAyMDE0IDEyOjE3OjQwIFBNIEx2IFpoZW5nIHdyb3RlOg0KPiA+IFRo
+ZSBzc3QtaGFzd2VsbC1kc3AuYyBpcyBhbiBBQ1BJIGluZGVwZW5kZW50IGZpbGUsIHRoaXMgcGF0
+Y2ggcmVtb3Zlcw0KPiA+IEFDUEkgaGVhZGVyIGZpbGVzIGZvciBpdC4NCj4gDQo+IFRoaXMgYXBw
+ZWFycyB0byBiZSBpbmRlcGVuZGVudCBvZiB0aGUgcmVzdCBvZiB0aGUgc2VyaWVzLiAgSXMgdGhh
+dCBjb3JyZWN0Pw0KDQpZZXMuDQpOb3cgdGhlIDxhY3BpL2FjcGlfYnVzLmg+IGluY2x1c2lvbiBp
+biB0aGlzIGZpbGUgaXMgdGhlIG9ubHkgb25lIGFmdGVyIHdlJ3ZlIGNsZWFuZWQgdXAgdGhlIG90
+aGVycy4NCg0KQmVzdCByZWdhcmRzDQotTHYNCg0KPiA+IFNpZ25lZC1vZmYtYnk6IEx2IFpoZW5n
+IDxsdi56aGVuZ0BpbnRlbC5jb20+DQo+ID4gQ2M6IExpYW0gR2lyZHdvb2QgPGxnaXJkd29vZEBn
+bWFpbC5jb20+DQo+ID4gQ2M6IE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4NCj4gPiBD
+YzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnDQo+ID4gLS0tDQo+ID4gIHNvdW5kL3NvYy9p
+bnRlbC9zc3QtaGFzd2VsbC1kc3AuYyB8ICAgIDMgLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAz
+IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9zc3Qt
+aGFzd2VsbC1kc3AuYyBiL3NvdW5kL3NvYy9pbnRlbC9zc3QtaGFzd2VsbC1kc3AuYw0KPiA+IGlu
+ZGV4IDUzNWY1MTcuLmVjYzUwNTcgMTAwNjQ0DQo+ID4gLS0tIGEvc291bmQvc29jL2ludGVsL3Nz
+dC1oYXN3ZWxsLWRzcC5jDQo+ID4gKysrIGIvc291bmQvc29jL2ludGVsL3NzdC1oYXN3ZWxsLWRz
+cC5jDQo+ID4gQEAgLTI4LDkgKzI4LDYgQEANCj4gPiAgI2luY2x1ZGUgPGxpbnV4L2Zpcm13YXJl
+Lmg+DQo+ID4gICNpbmNsdWRlIDxsaW51eC9wbV9ydW50aW1lLmg+DQo+ID4NCj4gPiAtI2luY2x1
+ZGUgPGxpbnV4L2FjcGkuaD4NCj4gPiAtI2luY2x1ZGUgPGFjcGkvYWNwaV9idXMuaD4NCj4gPiAt
+DQo+ID4gICNpbmNsdWRlICJzc3QtZHNwLmgiDQo+ID4gICNpbmNsdWRlICJzc3QtZHNwLXByaXYu
+aCINCj4gPiAgI2luY2x1ZGUgInNzdC1oYXN3ZWxsLWlwYy5oIg0KPiA+DQo+IA0KPiAtLQ0KPiBJ
+IHNwZWFrIG9ubHkgZm9yIG15c2VsZi4NCj4gUmFmYWVsIEouIFd5c29ja2ksIEludGVsIE9wZW4g
+U291cmNlIFRlY2hub2xvZ3kgQ2VudGVyLg0KPiAtLQ0KPiBUbyB1bnN1YnNjcmliZSBmcm9tIHRo
+aXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtYWNwaSIgaW4NCj4gdGhl
+IGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcNCj4gTW9yZSBt
+YWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5o
+dG1sDQo=
