@@ -1,20 +1,16 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 2/2] ALSA: hda - add capture mute led support
-	in led_power_filter
-Date: Tue,  8 Jul 2014 17:56:15 +0800
-Message-ID: <1404813375-7602-2-git-send-email-hui.wang@canonical.com>
-References: <1404813375-7602-1-git-send-email-hui.wang@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/1] ASoC: core: Fix trivial typo
+Date: Tue, 8 Jul 2014 11:58:33 +0200
+Message-ID: <20140708095833.GT30458@sirena.org.uk>
+References: <1404809172-12151-1-git-send-email-sachin.kamat@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4827211932977923792=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f43.google.com (mail-pa0-f43.google.com
- [209.85.220.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 259A926109E
- for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 11:56:45 +0200 (CEST)
-Received: by mail-pa0-f43.google.com with SMTP id lf10so7090554pab.16
- for <alsa-devel@alsa-project.org>; Tue, 08 Jul 2014 02:56:43 -0700 (PDT)
-In-Reply-To: <1404813375-7602-1-git-send-email-hui.wang@canonical.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EC282610C1
+ for <alsa-devel@alsa-project.org>; Tue,  8 Jul 2014 11:59:58 +0200 (CEST)
+In-Reply-To: <1404809172-12151-1-git-send-email-sachin.kamat@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,44 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: hui.wang@canonical.com, kailang@realtek.com, david.henningsson@canonical.com
+To: Sachin Kamat <sachin.kamat@samsung.com>
+Cc: alsa-devel@alsa-project.org, spk.linux@gmail.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Now the led_power_filter() needs to handle 3 situations:
-    - only mute_led_nid is set
-    - only cap_mute_led_nid is set
-    - both mute_led_ind and cap_mute_led_nid are set
 
-BugLink: https://bugs.launchpad.net/bugs/1329580
-Cc: David Henningsson <david.henningsson@canonical.com>
-Cc: Kailang Yang <kailang@realtek.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+--===============4827211932977923792==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="8Bx+wEju+vH9ym24"
+Content-Disposition: inline
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 73b1759..512582b 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3403,7 +3403,8 @@ static unsigned int led_power_filter(struct hda_codec *codec,
- {
- 	struct alc_spec *spec = codec->spec;
- 
--	if (power_state != AC_PWRST_D3 || nid != spec->mute_led_nid)
-+	if (power_state != AC_PWRST_D3 || nid == 0 ||
-+	    (nid != spec->mute_led_nid && nid != spec->cap_mute_led_nid))
- 		return power_state;
- 
- 	/* Set pin ctl again, it might have just been set to 0 */
-@@ -3563,6 +3564,7 @@ static void alc269_fixup_hp_gpio_mic1_led(struct hda_codec *codec,
- 		spec->gpio_led = 0;
- 		spec->cap_mute_led_nid = 0x18;
- 		snd_hda_add_verbs(codec, gpio_init);
-+		codec->power_filter = led_power_filter;
- 	}
- }
- 
--- 
-1.8.1.2
+
+--8Bx+wEju+vH9ym24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 08, 2014 at 02:16:12PM +0530, Sachin Kamat wrote:
+
+>  	/*
+> -	 * EINVAL means the property does not exist. This is fine providing
+> +	 * EINVAL means the property does not exist. This is fine provided
+>  	 * card->name was previously set, which is checked later in
+>  	 * snd_soc_register_card.
+>  	 */
+
+This isn't actually a typo; both variants are equally good English.
+
+--8Bx+wEju+vH9ym24
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTu8C+AAoJELSic+t+oim9RosP/jPsP+OKKUUi98GqVM6XAF3A
+o87bDZ0j5rnBCvRMxljq8UNyZWLjSp/Ud0XFu/A56Nrk4aq31Xu3iQ30ZRCwvMyz
+z0LDo0dIb51UXwOCWQfFY2uch+kzzxWaEUTPd4NF53+9y0+0yOqC0YMQV19B6iFC
+QQjFwBt7Cam7atbuac1Uvjrps0tMVVHijwC3z4NLVAdOysL78A0Pbp9BHFEMWrr0
+JbtnB3TgpSIEtfbW3OyTn1usp/jPoeB3ykhjsK97SDrDcCNtG0u3PfxPb13/yxVN
+vy6ZBJUvNvkWQQAU8zO2glRqj85p3nBICFNG2O4MKErh38DoztN6/lt3cjui3ocT
+HjDjy85DFAPAYO/nB7CunXoiSbD7d/cgZkPFD58XOHcHBCkQFtXPjuKqmIfLWCKn
+UUr42iGtYZiQ2Btz53rG2VwJqGVHvvZB+xGliYO//BYsDvG1fumFGh4dfWl9PCVc
+16+Xh/Qg+arEu8yCnGHePnez42q7Ow2gC3AiJjwtD05djvqGe3hFYnyvRtRK1X/d
+S+4DxwG/Jeid5p8aa9ve1x6hrRod643n96jh4A4gQBmg+JkWo7wQr8RR0D/QdZ/r
+Sbqh86whvdykEILfh2jK3ZZzt3GseaR23nf2hCM073BHPqg2Q5auG7iP+pLmxF1I
+T8EzdywFGep2yuGc1h2t
+=IwGa
+-----END PGP SIGNATURE-----
+
+--8Bx+wEju+vH9ym24--
+
+--===============4827211932977923792==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4827211932977923792==--
