@@ -1,51 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: core: Fix possible NULL pointer dereference
-Date: Wed, 9 Jul 2014 10:07:01 +0200
-Message-ID: <20140709080700.GF30458@sirena.org.uk>
-References: <1404463980-25027-1-git-send-email-tushar.b@samsung.com>
- <1404463980-25027-2-git-send-email-tushar.b@samsung.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Fix driver unbound
+Date: Wed, 9 Jul 2014 10:13:15 +0200
+Message-ID: <20140709081315.GG30458@sirena.org.uk>
+References: <1404754008-31861-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HjNkcEWJ4DMx36DP"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1404463980-25027-2-git-send-email-tushar.b@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Tushar Behera <tushar.b@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, dianders@chromium.org, tiwai@suse.de, perex@perex.cz, lgirdwood@gmail.com, galak@codeaurora.org, kgene.kim@samsung.com, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, trblinux@gmail.com
+Content-Type: multipart/mixed; boundary="===============2639213243124849329=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7B93261B31
+ for <alsa-devel@alsa-project.org>; Wed,  9 Jul 2014 10:17:29 +0200 (CEST)
+In-Reply-To: <1404754008-31861-1-git-send-email-fabio.estevam@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <fabio.estevam@freescale.com>
+Cc: Julia.Lawall@lip6.fr, alsa-devel@alsa-project.org, rmk@arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
 
---HjNkcEWJ4DMx36DP
+--===============2639213243124849329==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gqO6s7S91gFL8ZIQ"
+Content-Disposition: inline
+
+
+--gqO6s7S91gFL8ZIQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 04, 2014 at 02:23:00PM +0530, Tushar Behera wrote:
-> snd_soc_of_parse_card_name() may be called before card->dev has been
-> set, which results in a kernel panic.
+On Mon, Jul 07, 2014 at 02:26:48PM -0300, Fabio Estevam wrote:
+> Using the sgtl5000 codec driver as a module and trying to remove it causes the
+> followig kernel oops:
 
 Applied, thanks.
 
---HjNkcEWJ4DMx36DP
+--gqO6s7S91gFL8ZIQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTvPghAAoJELSic+t+oim9L0gP/10MJ1Ugu7EX5SGw1JsVXRgH
-TD873eaNdAtN8/8/0OzDAgRxwoERcd84QqzXbx4wliaT1OFTLAW6eLwReb3wNYF1
-8tu83PQJW5bVvYVjfx4ZwoZ/F+I0KnoPZi48VV/Jhsq1wuHMWrmoN8jCR4VES/Rh
-S8NTTtW9Uq1FFGM56zcAV8cCJKvyKOtMywEjm+vDV6p0bdMQH+AEgQS2lUiB/iKU
-aipO6g4KhbOspq9eWnJFRClq4Xo5ZVm2pCHABRAgODBXWFsh9iOK1SuZ48GBZ681
-VjfVMxgY3DoOloQnGhzPve5cE3ni3+i/BenWPWM8aXZY2JS25TJ/tRYRTXATwv+q
-DbsS8ZGxQ3AXQaWn1nhfotYs1PqDAp6ooc/XoS0VO/wvyuHnVHHhIOkfjViGKV1s
-UCbV3DRf7QTeIM5FtKV0OGrivm11qEpjyzzb24cD7BP/hEMLD94xrhimzaTnKatf
-SmuNivvopypHuzLZpV8rZEGGa+IcepxP0LkGkGvcgMSGFjLxIw6f7O7bdEewWWWU
-zU/9uzGjQLD/SZsmWMVDUczf7deF1xZFWpNyIkKFk1SnrJvMPdDtNYbZeGXbgQI0
-qbDxnpqv1bPLLRL421EERkqUPO4dolPiXWhej8XeBp+qCrlChHnJR7VecoZorDV1
-DIbed7iFLN4pFZi5idtE
-=7iFk
+iQIcBAEBAgAGBQJTvPmYAAoJELSic+t+oim9npoP/0v7g8Hc2N916Xb2GG75nLUe
+i1aLcBWZF07LdMzRsKe3b3Cn5DIbqv5F1GHyMuerv/dTF5bJI8yXbcJj2PYwI8QU
+snM1DzYD6/i819zjkkskr3CRkPfTnqA39TbUXviIzYTUuF/mtE6cE6xTnBnV8oIQ
+r3HAXTqnYapAZDkIa0ChuI0fdo5nQcusErvOfofAUsGhXBiAm6/ut97sT5fMabiu
++cx2f0cE+TiC0h3uNgIBWJIm+tM+PTFlUqxHPB0p992HzrVNLjTUfAKPcupd5oWm
+LD5fBQae+zSZwnyuNoFjpCfVPyHdCV2IbjSwmh+go3c0s4ap3as8/wEy7A3Mnc57
+vle1pJJcrElJbxKu6gPpZqmcoonHW2MJZjBQLwyroOGZ8vP7u7T/a5sID7UaOVmE
+VDu/mC/9NQOEPH8sng9JbEMmAlEuJeKEfgUDZvFYDiTBeeqb0vjaHS3dIZpovZRD
+ennFyXE3+MGlkmon3Z/b+7u5VoHJOeCorF1LrptXF+/tptNmFMV6P6tmr/OhNOIm
+tw2NIARinbAb+POjqlv93guH9u2xKAnWb6/sIr24/g8KMer4x3y45g0HfFPlhg/h
+84jWs+bxDxpbxqeZ7Ag5HtoX4a1/bf80A49OW/qXX4WrSgN+ykRlq7hbh2riZx0/
+9h4D+n86grD3IUfkx4NC
+=KMfK
 -----END PGP SIGNATURE-----
 
---HjNkcEWJ4DMx36DP--
+--gqO6s7S91gFL8ZIQ--
+
+--===============2639213243124849329==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2639213243124849329==--
