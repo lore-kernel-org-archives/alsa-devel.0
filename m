@@ -1,63 +1,79 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 0/8] ASoC: Intel: sst - add the merrifield DSP
-	driver
-Date: Wed,  9 Jul 2014 14:57:56 +0530
-Message-ID: <1404898076-1882-9-git-send-email-vinod.koul@intel.com>
-References: <1404898076-1882-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: s3c64xx/smartq: use dynamic registration
+Date: Wed, 9 Jul 2014 11:36:28 +0200
+Message-ID: <20140709093628.GQ30458@sirena.org.uk>
+References: <1404898043-1160870-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id E6ECD26501B
- for <alsa-devel@alsa-project.org>; Wed,  9 Jul 2014 11:30:29 +0200 (CEST)
-In-Reply-To: <1404898076-1882-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: multipart/mixed; boundary="===============3307878329053062373=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1404898043-1160870-1-git-send-email-arnd@arndb.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, t.figa@samsung.com, Maurus Cuelenaere <mcuelenaere@gmail.com>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This path series add the Merrifield DSP driver which is used to load and managed
-the DSP along with sending and receiving IPCs for PCM and compressed audio
 
-Vinod Koul (8):
-  ASoC: Intel: add sst shim register start-end variables
-  ASoC: Intel: mfld: add dsp error codes
-  ASoC: Intel: mrlfd - add generic parameter interface
-  ASoC: Intel: mrfld - add the dsp sst driver
-  ASoC: Intel: sst: add power management handling
-  ASoC: Intel: sst: load firmware using async callback
-  ASoC: Intel: sst - add compressed ops handling
-  compile
+--===============3307878329053062373==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pndui+VhQ7yNUqd0"
+Content-Disposition: inline
 
- arch/x86/include/asm/platform_sst_audio.h |   33 +
- sound/soc/intel/Kconfig                   |    6 +-
- sound/soc/intel/Makefile                  |    3 +
- sound/soc/intel/sst-dsp.h                 |    4 +
- sound/soc/intel/sst-mfld-dsp.h            |   15 +
- sound/soc/intel/sst-mfld-platform.h       |    5 +-
- sound/soc/intel/sst/Makefile              |    3 +
- sound/soc/intel/sst/sst.c                 |  586 ++++++++++++++++++
- sound/soc/intel/sst/sst.h                 |  666 ++++++++++++++++++++
- sound/soc/intel/sst/sst_drv_interface.c   |  819 +++++++++++++++++++++++++
- sound/soc/intel/sst/sst_ipc.c             |  368 +++++++++++
- sound/soc/intel/sst/sst_loader.c          |  951 +++++++++++++++++++++++++++++
- sound/soc/intel/sst/sst_pvt.c             |  208 +++++++
- sound/soc/intel/sst/sst_stream.c          |  534 ++++++++++++++++
- 14 files changed, 4199 insertions(+), 2 deletions(-)
- create mode 100644 sound/soc/intel/sst/Makefile
- create mode 100644 sound/soc/intel/sst/sst.c
- create mode 100644 sound/soc/intel/sst/sst.h
- create mode 100644 sound/soc/intel/sst/sst_drv_interface.c
- create mode 100644 sound/soc/intel/sst/sst_ipc.c
- create mode 100644 sound/soc/intel/sst/sst_loader.c
- create mode 100644 sound/soc/intel/sst/sst_pvt.c
- create mode 100644 sound/soc/intel/sst/sst_stream.c
+
+--pndui+VhQ7yNUqd0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jul 09, 2014 at 11:27:23AM +0200, Arnd Bergmann wrote:
+
+>  arch/arm/mach-s3c64xx/mach-smartq.c | 10 +++++
+>  sound/soc/samsung/smartq_wm8987.c   | 73 ++++++++++++++-----------------------
+
+> +#include <linux/platform_data/asoc-s3c-smartq.h>
+
+Looks like you forgot to add this file to your commit so it won't build.
+
+--pndui+VhQ7yNUqd0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTvQ0ZAAoJELSic+t+oim9DaUP/Rub7J/qigVTXVlgBHHqPwtY
+OrP1G48JbwU9bb3R9cqj3wwEFPI/tpSTgFCzMLcvieWgviwJ9/Zqi9lkQRn008GC
+nPCe6uD7HIKqDsdE7XXFOtxFFfRHPXMt3V7t4NvL6F8tPr7gKyghqe1Byq4/YH1S
+DE5lUJoHKLwoOYfegvJTK7cZLb1zsSmPRscJt4j8Fhyl+tdz/m1A4YTrF3dFnRNy
+S4GGEoCz5ECyEB0ew/NXq8Ud0LA/sjJokWT4fbvD/LWtGEt9Vp+eU6AWxb5v2rXO
+vjjBySUqFRXMHvep/JEaBgoQNtagDswksHXk+K00kAnUAFaUdS2Ljc3S7XKo8WUS
+xOG9K/Z4LanNF853tdWXC2bQdyt7GRNNYxfGW54H7V+txQACfJU+56ZrEaR57NYN
+GeWh/WuRdG8i5qI6GRmFsklE5Etj7xfByVoRcrpvwh7RQ9Yn2+j2zt0WPujtNeeV
+QqEVi2DWPkgqNPBxO2TSnsPJoq4aK27E+hSNuOLPu8rj1ZHJrjg69Tuf7v4IVxES
++U3ZimkgZQEC4ZuujTZ/Y7+56E0onw3ej5I6i2OeQDpqqXTpVFp4ZH5FVpZ2J0DE
+LGGl5ek5ZIJBKN7YH2EVCtlkB3N/IYKpn05lj51Ym0iTPO7pRBACdmjMwXMArs+K
+CMWGYZOBtxdJIt4vrvVX
+=5f9K
+-----END PGP SIGNATURE-----
+
+--pndui+VhQ7yNUqd0--
+
+
+--===============3307878329053062373==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============3307878329053062373==--
