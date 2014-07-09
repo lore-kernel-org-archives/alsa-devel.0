@@ -1,60 +1,70 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 6/7] ASoC: arizona: FLL freerun only required
-	whilst disabling
-Date: Wed,  9 Jul 2014 17:41:48 +0100
-Message-ID: <1404924109-1750-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1404924109-1750-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [alsa-devel] [PATCH V3 2/2] ASoC: samsung: Add machine driver for
+ Odroid X2/U3
+Date: Wed, 09 Jul 2014 19:20:05 +0200
+Message-ID: <53BD79C5.3060604@samsung.com>
+References: <1404479625-25385-1-git-send-email-s.nawrocki@samsung.com>
+ <1404479625-25385-2-git-send-email-s.nawrocki@samsung.com>
+ <CAD8Lp44JFtbcD22c+0PVb5S4U1kVTTxHD=PgqiKzhVypFW5Prg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 251952650D1
- for <alsa-devel@alsa-project.org>; Wed,  9 Jul 2014 18:53:34 +0200 (CEST)
-In-Reply-To: <1404924109-1750-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <CAD8Lp44JFtbcD22c+0PVb5S4U1kVTTxHD=PgqiKzhVypFW5Prg@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Daniel Drake <drake@endlessm.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Chen Zhen <zhen1.chen@samsung.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The FLL freerun is only required whilst we disable the FLL not the
-entire time the FLL is disabled. This patch moves the FLL freerun
-disable from the enable sequence to the disable sequence.
+Hi,
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+On 08/07/14 11:15, Daniel Drake wrote:
+> On Fri, Jul 4, 2014 at 2:13 PM, Sylwester Nawrocki
+> <s.nawrocki@samsung.com> wrote:
+>> This patch adds the sound subsystem driver for Odroid-X2 and
+>> Odroid-U3 boards. The codec works in I2S master mode; there
+>> are two separate audio routing paths defined, as there are
+>> differences in the signal routing between the X2 and U3 boards,
+>> i.e. U3 uses single jack for headphones and microphone.
+>>
+>> Signed-off-by: Chen Zhen <zhen1.chen@samsung.com>
+>> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> 
+> Testing on ODROID-U2, v3 is not quite working for me, but v2 of the
+> patch was fine.
+> I boot up, run:
+> # speaker-test -c 2 -t wav
+> 
+> As soon as I hear the word "front" I press ctrl+c and then run the
+> command again.
+> Now the command hangs with no audible output.
+> 
+> Any ideas? Let me know if you have trouble reproducing.
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 1daa5cc..a044e29 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1837,8 +1837,6 @@ static int arizona_enable_fll(struct arizona_fll *fll)
- 	try_wait_for_completion(&fll->ok);
- 
- 	regmap_update_bits_async(arizona->regmap, fll->base + 1,
--				 ARIZONA_FLL1_FREERUN, 0);
--	regmap_update_bits_async(arizona->regmap, fll->base + 1,
- 				 ARIZONA_FLL1_ENA, ARIZONA_FLL1_ENA);
- 	if (use_sync)
- 		regmap_update_bits_async(arizona->regmap, fll->base + 0x11,
-@@ -1864,6 +1862,8 @@ static void arizona_disable_fll(struct arizona_fll *fll)
- 				 ARIZONA_FLL1_ENA, 0, &change);
- 	regmap_update_bits(arizona->regmap, fll->base + 0x11,
- 			   ARIZONA_FLL1_SYNC_ENA, 0);
-+	regmap_update_bits_async(arizona->regmap, fll->base + 1,
-+				 ARIZONA_FLL1_FREERUN, 0);
- 
- 	if (change)
- 		pm_runtime_put_autosuspend(arizona->dev);
--- 
-1.7.2.5
+Thanks the feedback, we have also noticed this issue.
+It sounds like a bug in the Samsung I2S driver, which sets the
+CDCLK pin to input mode in the i2s_shutdown callback and never
+restores it. AFAICS this setting should not be lost after a call
+to struct soc_snd_dai_ops::shutdown().
+I'm going will prepare a proper patch soon, until then you could
+try and see if this fixes the problem for you:
+
+---8<---
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index d80121e..42c4f3e 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -724,10 +724,6 @@ static void i2s_shutdown(struct snd_pcm_substream *substream,
+
+        spin_unlock_irqrestore(&lock, flags);
+
+-       /* Gate CDCLK by default */
+-       if (!is_opened(other))
+-               i2s_set_sysclk(dai, SAMSUNG_I2S_CDCLK,
+-                               0, SND_SOC_CLOCK_IN);
+ }
+--->8---
+
+--
+Thanks,
+Sylwester
