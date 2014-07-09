@@ -1,37 +1,51 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [alsa-devel] [PATCH] ASoC: sgtl5000: Use devm_ functions
-Date: Wed, 9 Jul 2014 10:10:01 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1407091009450.2375@hadrien>
-References: <20140706070800.GA2927@himangi-Dell> <20140707144832.GL30458@sirena.org.uk> <alpine.DEB.2.10.1407071655171.4757@hadrien> <CAOMZO5AiFCnfTzo4TyB5e5c+xiHQiHUbhRVY7z=AbjOWZDX3NA@mail.gmail.com> <alpine.DEB.2.10.1407071721270.4757@hadrien>
- <20140708080232.GQ30458@sirena.org.uk> <alpine.DEB.2.10.1407081012400.2347@hadrien> <20140708145249.GX30458@sirena.org.uk> <alpine.DEB.2.02.1407090727410.2022@localhost6.localdomain6> <20140709080134.GE30458@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: core: Fix possible NULL pointer dereference
+Date: Wed, 9 Jul 2014 10:07:01 +0200
+Message-ID: <20140709080700.GF30458@sirena.org.uk>
+References: <1404463980-25027-1-git-send-email-tushar.b@samsung.com>
+ <1404463980-25027-2-git-send-email-tushar.b@samsung.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140709080134.GE30458@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <festevam@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Himangi Saraogi <himangi774@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="HjNkcEWJ4DMx36DP"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1404463980-25027-2-git-send-email-tushar.b@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Tushar Behera <tushar.b@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, dianders@chromium.org, tiwai@suse.de, perex@perex.cz, lgirdwood@gmail.com, galak@codeaurora.org, kgene.kim@samsung.com, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, trblinux@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
+--HjNkcEWJ4DMx36DP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, 9 Jul 2014, Mark Brown wrote:
+On Fri, Jul 04, 2014 at 02:23:00PM +0530, Tushar Behera wrote:
+> snd_soc_of_parse_card_name() may be called before card->dev has been
+> set, which results in a kernel panic.
 
-> On Wed, Jul 09, 2014 at 07:30:40AM +0200, Julia Lawall wrote:
-> > On Tue, 8 Jul 2014, Mark Brown wrote:
->
-> > > All devices do this - it's done as part of the driver model core code so
-> > > there is no need for individual buses to do anything.
->
-> > How should one realize that this does not apply to the original file
-> > under discussion, sound/soc/codecs/sgtl5000.c?  The associated structure
-> > is snd_soc_codec_driver.  What code could one look for at the call sites
-> > of the probe and remove functions to know that managed memory can be used?
->
-> That's not a device model driver; the way you should realise this is
-> that there's no device being registered on a bus which is matched by the
-> driver core.
+Applied, thanks.
 
-OK, thanks for the clarification.
+--HjNkcEWJ4DMx36DP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-julia
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTvPghAAoJELSic+t+oim9L0gP/10MJ1Ugu7EX5SGw1JsVXRgH
+TD873eaNdAtN8/8/0OzDAgRxwoERcd84QqzXbx4wliaT1OFTLAW6eLwReb3wNYF1
+8tu83PQJW5bVvYVjfx4ZwoZ/F+I0KnoPZi48VV/Jhsq1wuHMWrmoN8jCR4VES/Rh
+S8NTTtW9Uq1FFGM56zcAV8cCJKvyKOtMywEjm+vDV6p0bdMQH+AEgQS2lUiB/iKU
+aipO6g4KhbOspq9eWnJFRClq4Xo5ZVm2pCHABRAgODBXWFsh9iOK1SuZ48GBZ681
+VjfVMxgY3DoOloQnGhzPve5cE3ni3+i/BenWPWM8aXZY2JS25TJ/tRYRTXATwv+q
+DbsS8ZGxQ3AXQaWn1nhfotYs1PqDAp6ooc/XoS0VO/wvyuHnVHHhIOkfjViGKV1s
+UCbV3DRf7QTeIM5FtKV0OGrivm11qEpjyzzb24cD7BP/hEMLD94xrhimzaTnKatf
+SmuNivvopypHuzLZpV8rZEGGa+IcepxP0LkGkGvcgMSGFjLxIw6f7O7bdEewWWWU
+zU/9uzGjQLD/SZsmWMVDUczf7deF1xZFWpNyIkKFk1SnrJvMPdDtNYbZeGXbgQI0
+qbDxnpqv1bPLLRL421EERkqUPO4dolPiXWhej8XeBp+qCrlChHnJR7VecoZorDV1
+DIbed7iFLN4pFZi5idtE
+=7iFk
+-----END PGP SIGNATURE-----
+
+--HjNkcEWJ4DMx36DP--
