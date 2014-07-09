@@ -1,54 +1,99 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] alsa-lib: Provide a CLOCK_MONOTONIC_RAW
- timestamp type
-Date: Wed, 09 Jul 2014 21:40:02 +0200
-Message-ID: <53BD9A92.6090806@ladisch.de>
-References: <1404831152-8064-1-git-send-email-broonie@kernel.org>
- <s5h7g3modn8.wl%tiwai@suse.de>
+From: Himangi Saraogi <himangi774@gmail.com>
+Subject: [PATCH] ASoC: omap-dmic: use managed interfaces
+Date: Thu, 10 Jul 2014 02:51:12 +0530
+Message-ID: <20140709212112.GA11848@himangi-Dell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id C954426510C
- for <alsa-devel@alsa-project.org>; Wed,  9 Jul 2014 21:40:52 +0200 (CEST)
-In-Reply-To: <s5h7g3modn8.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Daniel Thompson <daniel.thompson@linaro.org>, Mark Brown <broonie@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: julia.lawall@lip6.fr
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Currently, the timestamp mode is set implicitly in alsa-lib pcm_hw.c:
-> - When kernel PCM protocol version is high enough, alsa-lib hw prefers
->   the monotonic always (if available), then set pcm->monotonic = 1.
-> - Application can ask whether the current timestamp is monotonic or
->   not via snd_pcm_hw_params_is_monotonic().
-> So, only adding the flag above doesn't suffice.  If we need to add a
-> new mode, the API has to be extended as well.
->
-> But how?  The current API assumes that the monotonic mode was already
-> determined before hw_params.  We may add a set of new hw_params get
-> and set calls for tstamp mode while keeping the old API.  This would
-> be one option.  Another option would be to add a new PCM open flag
-> SND_PCM_TSTAMP_MONOTONIC_RAW, and snd_pcm_hw_params_is_monotonic_raw()
-> function.  The latter is easier (a simpler addition), while the former
-> is more extensible to newer formats in future.
+This patch moves data allocated using clk_put and
+snd_soc_register_component to the corresponding managed interfaces and
+does away with the functions to free memory in the probe and remove
+functions. The probe function is no longer required and is completely
+removed.
 
-These timestamps cannot be handled by hardware drivers; they are always
-read by the ALSA framework, in software.  Furthermore, switching between
-MONOTONIC and MONOTONIC_RAW is possible at any time.  Therefore, the
-timestamp mode should be made a part of sw_params; just add a field
-named tstamp_mode ...
+Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
+Acked-by: Julia Lawall <julia.lawall@lip6.fr>
+---
+ sound/soc/omap/omap-dmic.c | 35 ++++++++---------------------------
+ 1 file changed, 8 insertions(+), 27 deletions(-)
 
-
-Regards,
-Clemens
+diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
+index 6925d71..b315b27 100644
+--- a/sound/soc/omap/omap-dmic.c
++++ b/sound/soc/omap/omap-dmic.c
+@@ -466,7 +466,7 @@ static int asoc_dmic_probe(struct platform_device *pdev)
+ 
+ 	mutex_init(&dmic->mutex);
+ 
+-	dmic->fclk = clk_get(dmic->dev, "fck");
++	dmic->fclk = devm_clk_get(dmic->dev, "fck");
+ 	if (IS_ERR(dmic->fclk)) {
+ 		dev_err(dmic->dev, "cant get fck\n");
+ 		return -ENODEV;
+@@ -475,8 +475,7 @@ static int asoc_dmic_probe(struct platform_device *pdev)
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dma");
+ 	if (!res) {
+ 		dev_err(dmic->dev, "invalid dma memory resource\n");
+-		ret = -ENODEV;
+-		goto err_put_clk;
++		return -ENODEV;
+ 	}
+ 	dmic->dma_data.addr = res->start + OMAP_DMIC_DATA_REG;
+ 
+@@ -484,34 +483,17 @@ static int asoc_dmic_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
+ 	dmic->io_base = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(dmic->io_base)) {
+-		ret = PTR_ERR(dmic->io_base);
+-		goto err_put_clk;
+-	}
+-
++	if (IS_ERR(dmic->io_base))
++		return PTR_ERR(dmic->io_base);
+ 
+-	ret = snd_soc_register_component(&pdev->dev, &omap_dmic_component,
+-					 &omap_dmic_dai, 1);
++	ret = devm_snd_soc_register_component(&pdev->dev, &omap_dmic_component,
++					      &omap_dmic_dai, 1);
+ 	if (ret)
+-		goto err_put_clk;
++		return ret;
+ 
+ 	ret = omap_pcm_platform_register(&pdev->dev);
+ 	if (ret)
+-		goto err_put_clk;
+-
+-	return 0;
+-
+-err_put_clk:
+-	clk_put(dmic->fclk);
+-	return ret;
+-}
+-
+-static int asoc_dmic_remove(struct platform_device *pdev)
+-{
+-	struct omap_dmic *dmic = platform_get_drvdata(pdev);
+-
+-	snd_soc_unregister_component(&pdev->dev);
+-	clk_put(dmic->fclk);
++		return ret;
+ 
+ 	return 0;
+ }
+@@ -529,7 +511,6 @@ static struct platform_driver asoc_dmic_driver = {
+ 		.of_match_table = omap_dmic_of_match,
+ 	},
+ 	.probe = asoc_dmic_probe,
+-	.remove = asoc_dmic_remove,
+ };
+ 
+ module_platform_driver(asoc_dmic_driver);
+-- 
+1.9.1
