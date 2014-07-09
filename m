@@ -1,99 +1,62 @@
-From: Himangi Saraogi <himangi774@gmail.com>
-Subject: [PATCH] ASoC: omap-dmic: use managed interfaces
-Date: Thu, 10 Jul 2014 02:51:12 +0530
-Message-ID: <20140709212112.GA11848@himangi-Dell>
+From: Josh Lehan <alsa@krellan.com>
+Subject: Re: [PATCH - alsa-utils 5/5] The amidicat program
+ itself, better late than never
+Date: Wed, 09 Jul 2014 16:36:20 -0700
+Message-ID: <53BDD1F4.5030003@krellan.com>
+References: <1404118503-22921-1-git-send-email-alsa@krellan.com>
+ <1404118503-22921-6-git-send-email-alsa@krellan.com>
+ <1404863718.378573458@f135.i.mail.ru> <53BCD277.3040908@krellan.com>
+ <53BCF522.2080609@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: julia.lawall@lip6.fr
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from www7.pairlite.com (www7.pairlite.com [64.130.10.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E89926516B
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 01:36:24 +0200 (CEST)
+In-Reply-To: <53BCF522.2080609@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, Sergey <sergemp@mail.ru>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch moves data allocated using clk_put and
-snd_soc_register_component to the corresponding managed interfaces and
-does away with the functions to free memory in the probe and remove
-functions. The probe function is no longer required and is completely
-removed.
+On 07/09/2014 12:54 AM, Clemens Ladisch wrote:
+> Have a look at how aseqdump decides what PORT_CAP bits to set.
 
-Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
-Acked-by: Julia Lawall <julia.lawall@lip6.fr>
----
- sound/soc/omap/omap-dmic.c | 35 ++++++++---------------------------
- 1 file changed, 8 insertions(+), 27 deletions(-)
+Thanks, will do.
 
-diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
-index 6925d71..b315b27 100644
---- a/sound/soc/omap/omap-dmic.c
-+++ b/sound/soc/omap/omap-dmic.c
-@@ -466,7 +466,7 @@ static int asoc_dmic_probe(struct platform_device *pdev)
- 
- 	mutex_init(&dmic->mutex);
- 
--	dmic->fclk = clk_get(dmic->dev, "fck");
-+	dmic->fclk = devm_clk_get(dmic->dev, "fck");
- 	if (IS_ERR(dmic->fclk)) {
- 		dev_err(dmic->dev, "cant get fck\n");
- 		return -ENODEV;
-@@ -475,8 +475,7 @@ static int asoc_dmic_probe(struct platform_device *pdev)
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dma");
- 	if (!res) {
- 		dev_err(dmic->dev, "invalid dma memory resource\n");
--		ret = -ENODEV;
--		goto err_put_clk;
-+		return -ENODEV;
- 	}
- 	dmic->dma_data.addr = res->start + OMAP_DMIC_DATA_REG;
- 
-@@ -484,34 +483,17 @@ static int asoc_dmic_probe(struct platform_device *pdev)
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
- 	dmic->io_base = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(dmic->io_base)) {
--		ret = PTR_ERR(dmic->io_base);
--		goto err_put_clk;
--	}
--
-+	if (IS_ERR(dmic->io_base))
-+		return PTR_ERR(dmic->io_base);
- 
--	ret = snd_soc_register_component(&pdev->dev, &omap_dmic_component,
--					 &omap_dmic_dai, 1);
-+	ret = devm_snd_soc_register_component(&pdev->dev, &omap_dmic_component,
-+					      &omap_dmic_dai, 1);
- 	if (ret)
--		goto err_put_clk;
-+		return ret;
- 
- 	ret = omap_pcm_platform_register(&pdev->dev);
- 	if (ret)
--		goto err_put_clk;
--
--	return 0;
--
--err_put_clk:
--	clk_put(dmic->fclk);
--	return ret;
--}
--
--static int asoc_dmic_remove(struct platform_device *pdev)
--{
--	struct omap_dmic *dmic = platform_get_drvdata(pdev);
--
--	snd_soc_unregister_component(&pdev->dev);
--	clk_put(dmic->fclk);
-+		return ret;
- 
- 	return 0;
- }
-@@ -529,7 +511,6 @@ static struct platform_driver asoc_dmic_driver = {
- 		.of_match_table = omap_dmic_of_match,
- 	},
- 	.probe = asoc_dmic_probe,
--	.remove = asoc_dmic_remove,
- };
- 
- module_platform_driver(asoc_dmic_driver);
--- 
-1.9.1
+>> Also, what about ALSA permissions that amidicat itself advertises?  To
+>> make a long story short, I think I have this backwards.
+> 
+> These bits specify what _other_ clients can do with the port.
+
+Makes sense to me.
+
+> Does the thread actually read the delivered events from the kernel
+> buffer?
+
+Should be, I'm calling snd_seq_event_input() in a tight loop.  Hoping
+this is the appropriate function to be calling, and that all the various
+structures around it are initialized correctly.
+
+>> Also, try "amidicat --list", which will give you output similar to
+>> "aplaymidi -l" but include more devices (unlike aplaymidi, amidicat does
+>> no filtering, it shows you everything, even including itself in the list).
+> 
+> It should list only those ports it can use, i.e., connect from/to.
+
+It already does, in a way.  Anything that has read/write permission,
+direct and/or subscription, is usable.  I like showing everything, it's
+useful for diagnostics/troubleshooting.  If user wants filtered output
+they can apply that later (or perhaps I'll add it when adding the
+--quiet flag).  I still think the most complete/useful output should be
+the default.
+
+Josh
