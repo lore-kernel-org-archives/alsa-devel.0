@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/3] ALSA: pcm: simplify snd_pcm_tstamp()
-Date: Thu, 10 Jul 2014 15:04:16 +0200
-Message-ID: <1404997458-15377-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 3/3] ALSA: pcm: Add timestamp type to sw_params
+Date: Thu, 10 Jul 2014 15:04:18 +0200
+Message-ID: <1404997458-15377-4-git-send-email-tiwai@suse.de>
 References: <1404997458-15377-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A3EEF260786
+ by alsa0.perex.cz (Postfix) with ESMTP id B034826109E
  for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 15:04:22 +0200 (CEST)
 In-Reply-To: <1404997458-15377-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,27 +24,63 @@ To: alsa-devel@alsa-project.org
 Cc: Daniel Thompson <daniel.thompson@linaro.org>, Mark Brown <broonie@kernel.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-No functional change.
+For allowing adjusting the timestamp type on the fly, add it to
+sw_params.  The existing ioctl is still kept for compatibility.
+
+Along with this, increment the PCM protocol version.
+
+The extension was suggested by Clemens Ladisch.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm_native.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ include/uapi/sound/asound.h | 6 ++++--
+ sound/core/pcm_native.c     | 3 +++
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index cbf7dc850a46..a7e062f91f39 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -139,7 +139,7 @@ struct snd_hwdep_dsp_image {
+  *                                                                           *
+  *****************************************************************************/
+ 
+-#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 11)
++#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 12)
+ 
+ typedef unsigned long snd_pcm_uframes_t;
+ typedef signed long snd_pcm_sframes_t;
+@@ -391,7 +391,9 @@ struct snd_pcm_sw_params {
+ 	snd_pcm_uframes_t silence_threshold;	/* min distance from noise for silence filling */
+ 	snd_pcm_uframes_t silence_size;		/* silence block size */
+ 	snd_pcm_uframes_t boundary;		/* pointers wrap point */
+-	unsigned char reserved[64];		/* reserved for future */
++	unsigned int tstamp_type;		/* timestamp type */
++	int pads;				/* alignment, reserved */
++	unsigned char reserved[56];		/* reserved for future */
+ };
+ 
+ struct snd_pcm_channel_info {
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index b653ab001fba..2372c49a8e84 100644
+index 2372c49a8e84..81dedc381efd 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -2540,9 +2540,7 @@ static int snd_pcm_tstamp(struct snd_pcm_substream *substream, int __user *_arg)
- 		return -EFAULT;
- 	if (arg < 0 || arg > SNDRV_PCM_TSTAMP_TYPE_LAST)
+@@ -543,6 +543,8 @@ static int snd_pcm_sw_params(struct snd_pcm_substream *substream,
+ 
+ 	if (params->tstamp_mode > SNDRV_PCM_TSTAMP_LAST)
  		return -EINVAL;
--	runtime->tstamp_type = SNDRV_PCM_TSTAMP_TYPE_GETTIMEOFDAY;
--	if (arg == SNDRV_PCM_TSTAMP_TYPE_MONOTONIC)
--		runtime->tstamp_type = SNDRV_PCM_TSTAMP_TYPE_MONOTONIC;
-+	runtime->tstamp_type = arg;
- 	return 0;
- }
- 		
++	if (params->tstamp_type > SNDRV_PCM_TSTAMP_TYPE_LAST)
++		return -EINVAL;
+ 	if (params->avail_min == 0)
+ 		return -EINVAL;
+ 	if (params->silence_size >= runtime->boundary) {
+@@ -557,6 +559,7 @@ static int snd_pcm_sw_params(struct snd_pcm_substream *substream,
+ 	err = 0;
+ 	snd_pcm_stream_lock_irq(substream);
+ 	runtime->tstamp_mode = params->tstamp_mode;
++	runtime->tstamp_type = params->tstamp_type;
+ 	runtime->period_step = params->period_step;
+ 	runtime->control->avail_min = params->avail_min;
+ 	runtime->start_threshold = params->start_threshold;
 -- 
 2.0.1
