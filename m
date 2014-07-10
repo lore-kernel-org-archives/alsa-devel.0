@@ -1,82 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/7] ASoC: arizona: Correct checking of FLL
- ratio limitations
-Date: Thu, 10 Jul 2014 12:28:40 +0200
-Message-ID: <20140710102840.GW30458@sirena.org.uk>
-References: <1404924109-1750-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1404924109-1750-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: omap-dmic: use managed interfaces
+Date: Thu, 10 Jul 2014 12:32:31 +0200
+Message-ID: <20140710103231.GX30458@sirena.org.uk>
+References: <20140709212112.GA11848@himangi-Dell>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6208197597372703087=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 70FE5261A40
- for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 12:29:54 +0200 (CEST)
-In-Reply-To: <1404924109-1750-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GXtmylMy6DdaH5oR"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140709212112.GA11848@himangi-Dell>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Himangi Saraogi <himangi774@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6208197597372703087==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8c7vHYlrYOebzgj6"
-Content-Disposition: inline
-
-
---8c7vHYlrYOebzgj6
+--GXtmylMy6DdaH5oR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 09, 2014 at 05:41:44PM +0100, Charles Keepax wrote:
-> The check to ensure the Fref frequency is within the bounds for the
-> current ratio, was placed in the wrong loop. The initial configuration
-> will always be valid and the loop lowering the ratio will only reinforce
-> this validity. The check should be on the loop increasing the ratio.
-> This could on occasion cause an invalid ratio/Fref combination to be
-> selected.
+On Thu, Jul 10, 2014 at 02:51:12AM +0530, Himangi Saraogi wrote:
+> This patch moves data allocated using clk_put and
+> snd_soc_register_component to the corresponding managed interfaces and
+> does away with the functions to free memory in the probe and remove
+> functions. The probe function is no longer required and is completely
+> removed.
 
-Applied all, thanks.  You should really have put this and patch 3 first
-since they're bug fixes.
+This doesn't apply against current code, please check and resend.
 
---8c7vHYlrYOebzgj6
+--GXtmylMy6DdaH5oR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTvmrOAAoJELSic+t+oim99r0P/31GiS7LY8jtTvQyK967vCBU
-Um4+OCYwRE/noEd67mOW9cE1yM96MyEM1dWy6vM8PvRubxY7Cb/pHYaA3dX+jVm3
-Bwwht93PcRhV7nb5pyb54bTgo6V2hdgSCz5/4FLALogz5ceUVMCAjs2jYUeFvZ+g
-G5fGO75e8WCiMhCe3Z1LZWotkDLWLGHYxFZG15Ce52X+2xUvfH6IpsdlhcipTsQ5
-Y6x/DQN5uNBzgfX7V07xivtlUL6sc6+oGCXl+FnpyzZ0hF8yldQv65hO/wcYlPEQ
-TqAsvfgAthiEhnK/ob6O0hkqD8CTH5I2ruISLckWmN7uQ/zEaMPw1TAkdwkQhEcr
-tG9eLO/nOMn3gejM9YffYKEFvVw8jda2RZbXFR/oTxdGsY8gBXDUj9xrnFeteMpw
-lc8cv5yrTw5t7cGkYY4XJy4JLDzgF0gtefqZJjJTQc0Z7CcxOYweRvfOQw1un4vF
-EtpNFIeJ7pXJjzqOGfdBRVSiRJTggm1JfOrx6Z2RurRbc7Qy6oZWlRKzSWIy6IGr
-fAO6xhxMvhEipTs07jNuRWCX4fsQkzwPljZIbw4yAtPD677pX+0JFdIjWfaxrS5R
-NxI8v56bWYK71cCgh5NRggypwjVXXrh26SfwdbZpzCvhn6A3zkskMrdAVama9cE9
-Pmv9LLYh4Cnv5iXG7dD/
-=Ybnb
+iQIcBAEBAgAGBQJTvmu8AAoJELSic+t+oim9FugP/2GyegUIrlgk9vGDleDPuJSw
++tD8dO+SXOU8+C/+CEJs+QyDa4gJ904y3UszHMLD0pUFXxjQWdZawb46SYji9EQ1
+FOK1FCdhWe0vUcYti6e0Ej1bdO0lHvysFzUwhtEMFpzHTwlcRMkPRV/vY5+rO1vb
+nTCq577Tw7jLwfnM3MxWE71FqLWGqPRbgRfTIYZSNqTkTSHZMjGMKbuUcoCti42e
+lYZbPH5s45g1zMXV8hbuR2U3NBJizdh8Ps/c6H6YFxmtunkWtXoL+lJpolyQbOeX
+EFuKDu0Q2sUOXzsn+StBHrhBMFfACy9kaw4dYTAtbSe4VSqwsPfhgNuj28bcjvS7
+yAQJRIn1u1Hh/knKfatsnjGCUry8+ugXXonMpmy1ipLuMmPSpq9I1NBkS4Lubmal
+PFiXEubflX0KHoNSoVP9jy6I9Ep3a/OPbrw37F7pJEVzIuMoKVGFmHna+K1+ORDA
+LQaKcEPRHAjjz+1dHS5SHRLgg6zEYS16hKEyL+WKpQRa0scH1uL0+Clff4oM6JQA
+FqNy45f1lCuZce30JG8LyMCOKWXDeYK+pW9lKN1mT0PYRaUim2DvMpGDY0HprC5T
+XlkPYcYOKw82NcGh8z/u26X3H6uUY0KF/OFO+pm/K/bV5RQNaMKO7ReLJOJlB6Gs
+B2UqwJpS7TKecbwMdcTi
+=B5i8
 -----END PGP SIGNATURE-----
 
---8c7vHYlrYOebzgj6--
-
---===============6208197597372703087==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6208197597372703087==--
+--GXtmylMy6DdaH5oR--
