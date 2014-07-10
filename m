@@ -1,15 +1,14 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v2 03/13] ASoC: Intel: mrfld: set private data
-	for cpu-dai
-Date: Thu, 10 Jul 2014 10:14:47 +0530
-Message-ID: <1404967497-22537-4-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v2 01/13] ASoC: Export dapm_kcontrol_get_value
+Date: Thu, 10 Jul 2014 10:14:45 +0530
+Message-ID: <1404967497-22537-2-git-send-email-subhransu.s.prusty@intel.com>
 References: <1404967497-22537-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 79A442651E3
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D8832651E4
  for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 07:06:35 +0200 (CEST)
 In-Reply-To: <1404967497-22537-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,75 +24,46 @@ To: alsa-devel@alsa-project.org
 Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-We set the driver private data for media dai so that we can use in media
-operations
+The DSP driver needs to know widget control value in its event handler for
+widgets like mixers. This is required in the subsequent patches
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/sst-mfld-platform-pcm.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ include/sound/soc-dapm.h | 1 +
+ sound/soc/soc-dapm.c     | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
-index 3fcd35c73936..f0923561226e 100644
---- a/sound/soc/intel/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/sst-mfld-platform-pcm.c
-@@ -223,7 +223,7 @@ int sst_fill_stream_params(void *substream,
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index aac04ff84eea..6ae0a1952ad7 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -432,6 +432,7 @@ int snd_soc_dapm_force_enable_pin_unlocked(struct snd_soc_dapm_context *dapm,
+ int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
+ 				const char *pin);
+ void snd_soc_dapm_auto_nc_pins(struct snd_soc_card *card);
++unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol);
+ 
+ /* Mostly internal - should not normally be used */
+ void dapm_mark_io_dirty(struct snd_soc_dapm_context *dapm);
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 4bf08cffd1f1..31667e1d8879 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -326,12 +326,13 @@ static struct list_head *dapm_kcontrol_get_path_list(
+ 	list_for_each_entry(path, dapm_kcontrol_get_path_list(kcontrol), \
+ 		list_kcontrol)
+ 
+-static unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol)
++unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol)
+ {
+ 	struct dapm_kcontrol_data *data = snd_kcontrol_chip(kcontrol);
+ 
+ 	return data->value;
  }
++EXPORT_SYMBOL_GPL(dapm_kcontrol_get_value);
  
- static int sst_platform_alloc_stream(struct snd_pcm_substream *substream,
--		struct snd_soc_platform *platform)
-+		struct snd_soc_dai *dai)
- {
- 	struct sst_runtime_stream *stream =
- 			substream->runtime->private_data;
-@@ -231,7 +231,7 @@ static int sst_platform_alloc_stream(struct snd_pcm_substream *substream,
- 	struct snd_sst_params str_params = {0};
- 	struct snd_sst_alloc_params_ext alloc_params = {0};
- 	int ret_val = 0;
--	struct sst_data *ctx = snd_soc_platform_get_drvdata(platform);
-+	struct sst_data *ctx = snd_soc_dai_get_drvdata(dai);
- 
- 	/* set codec params and inform SST driver the same */
- 	sst_fill_pcm_params(substream, &param);
-@@ -349,10 +349,10 @@ static void sst_media_close(struct snd_pcm_substream *substream,
- 	kfree(stream);
- }
- 
--static inline unsigned int get_current_pipe_id(struct snd_soc_platform *platform,
-+static inline unsigned int get_current_pipe_id(struct snd_soc_dai *dai,
- 					       struct snd_pcm_substream *substream)
- {
--	struct sst_data *sst = snd_soc_platform_get_drvdata(platform);
-+	struct sst_data *sst = snd_soc_dai_get_drvdata(dai);
- 	struct sst_dev_stream_map *map = sst->pdata->pdev_strm_map;
- 	struct sst_runtime_stream *stream =
- 			substream->runtime->private_data;
-@@ -379,7 +379,7 @@ static int sst_media_prepare(struct snd_pcm_substream *substream,
- 		return ret_val;
- 	}
- 
--	ret_val = sst_platform_alloc_stream(substream, dai->platform);
-+	ret_val = sst_platform_alloc_stream(substream, dai);
- 	if (ret_val <= 0)
- 		return ret_val;
- 	snprintf(substream->pcm->id, sizeof(substream->pcm->id),
-@@ -415,8 +415,16 @@ static struct snd_soc_dai_ops sst_media_dai_ops = {
- 	.hw_free = sst_media_hw_free,
- };
- 
-+static int sst_media_dai_probe(struct snd_soc_dai *cpu_dai)
-+{
-+	struct sst_data *sst = dev_get_drvdata(cpu_dai->dev);
-+
-+	snd_soc_dai_set_drvdata(cpu_dai, sst);
-+	return 0;
-+}
- static struct snd_soc_dai_driver sst_platform_dai[] = {
- {
-+	.probe = sst_media_dai_probe,
- 	.name = "media-cpu-dai",
- 	.ops = &sst_media_dai_ops,
- 	.playback = {
+ static bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
+ 	unsigned int value)
 -- 
 1.9.0
