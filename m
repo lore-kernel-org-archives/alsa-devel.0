@@ -1,18 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 3/3] ALSA: pcm: Add timestamp type to
-	sw_params
-Date: Thu, 10 Jul 2014 19:57:38 +0200
-Message-ID: <53BED412.1030302@ladisch.de>
-References: <1404997458-15377-1-git-send-email-tiwai@suse.de>	<1404997458-15377-4-git-send-email-tiwai@suse.de>	<53BEAFF9.5070501@linux.intel.com>
- <s5hsim9kypi.wl%tiwai@suse.de> <53BED162.808@linux.intel.com>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: [PATCH v2 00/12] Remove mach-kirkwood
+Date: Thu, 10 Jul 2014 23:36:20 +0200
+Message-ID: <1405028192-9623-1-git-send-email-andrew@lunn.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B173B2607C8
- for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 19:58:28 +0200 (CEST)
-In-Reply-To: <53BED162.808@linux.intel.com>
+Received: from vps0.lunn.ch (vps0.lunn.ch [178.209.37.122])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97C082617BB
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 23:41:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +18,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Daniel Thompson <daniel.thompson@linaro.org>
+To: Jason Cooper <jason@lakedaemon.net>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, linux-pci@vger.kernel.org, linux-ide@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>, linux-leds@vger.kernel.org, Daniel Lezcano <daniel.lezcano@linaro.org>, Kishon Vijay Abraham I <kishon@ti.com>, Zhang Rui <rui.zhang@intel.com>, linux-watchdog@vger.kernel.org, rtc-linux@googlegroups.com, linux-pm@vger.kernel.org, Bryan Wu <cooloney@gmail.com>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Mark Brown <broonie@kernel.org>, Gregory Clement <gregory.clement@free-electrons.com>, linux ARM <linux-arm-kernel@lists.infradead.org>, Alessandro Zummo <a.zummo@towertech.it>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Richard Purdie <rpurdie@rpsys.net>, Tejun Heo <tj@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Pierre-Louis Bossart wrote:
-> On 7/10/14, 10:42 AM, Takashi Iwai wrote:
->> Pierre-Louis Bossart wrote:
->>> On 7/10/14, 8:04 AM, Takashi Iwai wrote:
->>>> For allowing adjusting the timestamp type on the fly, add it to
->>>> sw_params.  The existing ioctl is still kept for compatibility.
->>>
->>> I have strong objections to this extension. It will result in a
->>> discontinuity in the timestamps reported in pcm_status without a clear
->>> indication of what timestamp is reported (when does this change occur?),
->>> and it's completely unclear how userspace would handle a step (positive
->>> or negative) between ntp-adjusted and non-ntp-adjusted times.
->>
->> Well, I don't understand the logic; it's app itself who changes the
->> timestamp type.  It must know when it's changed (because app is
->> changing it), and how to handle (because app chooses the timestamp
->> type).  And the current type can be queried via sw_params_*_get()
->> thing.
->>
->> Of course, as default, there is no change from the current behavior --
->> it takes CLOCK_MONOTONIC.  So, there should be no breakage by this
->> change unless you change the application side to use the new call.
->>
->>> For apps
->>> that make use of the audio_time reported with a wall clock this could
->>> lead to complete nonsense.
->>> I would have no problems if this was a fixed parameter defined once
->>> before audio streaming starts.
->>
->> You don't have to change the setup after the stream starts.  It's
->> usually set before the stream starting.  The point of using sw_params
->> is that it's independent from the hardware driver, thus it fits better
->> than hw_params.  The switching after stream isn't the purpose.  It's
->> just a gratis bonus.
->
-> So we agree that the dynamic switch isn't the intended usage but we
-> allow for it anyway... I guess given that we can enable/disable
-> timestamps dynamically this follows the same logic, it's just weird to
-> have a sw_param whose intended use is really a hw_param, something you
-> set once and don't modify later.
+This patchset removes arch/arm/mach-kirkwood.  This SoCs is now
+supported in arch/arm/mach-mvebu using device tree.
 
-The difference between sw_params and hw_params is that the latter are
-affected by device constraints (and might have interdependencies).
-That sw_params can be changed at any time is just a consequence of that.
+V1 of this patchset also removed mach-dove. However it has been
+decided to leave it alone for a while to aid some developers get out
+of tree patches merged.
+                                                                         
+Change the dependencies for a number of drivers, either to use
+ARCH_MVEBU where the drivers are generic, or MACH_KIRKWOOD and where
+the drivers are specific to the SoC.
 
-> If we want user-space to do the right thing we should at least
-> document the consequences of a dynamic switch.
+Once Jason Cooper has Acked these patches, we would prefer that
+individual subsystem maintainers take these patches through their own
+trees.
 
-Changing the clock relative to which the timestamp is reported is not
-only the desired but the _only_ consequence of this parameter.  (And
-changing from/to GETTIMEOFDAY was already possible.)
+Thanks
+	Andrew
 
+Andrew Lunn (12):
+  ARM: Kirkwood: Remove mach-kirkwood
+  ARM: Kirkwood: Remove kirkwood_defconfig
+  ASoC: kirkwood: Remove unused drivers
+  ASoC: kirkwood: Remove ARCH_KIRKWOOD dependency
+  cpuidle: kirkwood: Remove ARCH_KIRKWOOD dependency
+  ata: Remove ARCH_KIRKWOOD dependency
+  thermal: Remove ARCH_KIRKWOOD dependency
+  leds: Remove ARCH_KIRKWOOD dependency
+  PCI: Remove ARCH_KIRKWOOD dependency
+  phy: Remove ARCH_KIRKWOOD dependency
+  rtc: Remove ARCH_KIRKWOOD dependency
+  watchdog: Remove ARCH_KIRKWOOD dependency
 
-Regards,
-Clemens
+ arch/arm/Kconfig                                  |  18 -
+ arch/arm/Kconfig.debug                            |   6 +-
+ arch/arm/Makefile                                 |   1 -
+ arch/arm/boot/dts/Makefile                        |   5 +-
+ arch/arm/configs/kirkwood_defconfig               | 181 ------
+ arch/arm/mach-kirkwood/Kconfig                    | 111 ----
+ arch/arm/mach-kirkwood/Makefile                   |  14 -
+ arch/arm/mach-kirkwood/Makefile.boot              |   3 -
+ arch/arm/mach-kirkwood/board-dt.c                 | 223 -------
+ arch/arm/mach-kirkwood/common.c                   | 746 ----------------------
+ arch/arm/mach-kirkwood/common.h                   |  74 ---
+ arch/arm/mach-kirkwood/d2net_v2-setup.c           | 231 -------
+ arch/arm/mach-kirkwood/include/mach/bridge-regs.h |  86 ---
+ arch/arm/mach-kirkwood/include/mach/entry-macro.S |  34 -
+ arch/arm/mach-kirkwood/include/mach/hardware.h    |  14 -
+ arch/arm/mach-kirkwood/include/mach/irqs.h        |  65 --
+ arch/arm/mach-kirkwood/include/mach/kirkwood.h    | 142 ----
+ arch/arm/mach-kirkwood/include/mach/uncompress.h  |  46 --
+ arch/arm/mach-kirkwood/irq.c                      |  82 ---
+ arch/arm/mach-kirkwood/lacie_v2-common.c          | 114 ----
+ arch/arm/mach-kirkwood/lacie_v2-common.h          |  16 -
+ arch/arm/mach-kirkwood/mpp.c                      |  43 --
+ arch/arm/mach-kirkwood/mpp.h                      | 348 ----------
+ arch/arm/mach-kirkwood/netxbig_v2-setup.c         | 422 ------------
+ arch/arm/mach-kirkwood/openrd-setup.c             | 255 --------
+ arch/arm/mach-kirkwood/pcie.c                     | 296 ---------
+ arch/arm/mach-kirkwood/pm.c                       |  76 ---
+ arch/arm/mach-kirkwood/pm.h                       |  26 -
+ arch/arm/mach-kirkwood/rd88f6192-nas-setup.c      |  89 ---
+ arch/arm/mach-kirkwood/rd88f6281-setup.c          | 128 ----
+ arch/arm/mach-kirkwood/t5325-setup.c              | 216 -------
+ arch/arm/mach-kirkwood/ts219-setup.c              | 142 ----
+ arch/arm/mach-kirkwood/ts41x-setup.c              | 186 ------
+ arch/arm/mach-kirkwood/tsx1x-common.c             | 113 ----
+ arch/arm/mach-kirkwood/tsx1x-common.h             |   7 -
+ arch/arm/mm/Kconfig                               |   2 +-
+ drivers/ata/Kconfig                               |   2 +-
+ drivers/cpuidle/Kconfig.arm                       |   2 +-
+ drivers/leds/Kconfig                              |   4 +-
+ drivers/pci/host/Kconfig                          |   2 +-
+ drivers/phy/Kconfig                               |   2 +-
+ drivers/rtc/Kconfig                               |   2 +-
+ drivers/thermal/Kconfig                           |   2 +-
+ drivers/watchdog/Kconfig                          |   2 +-
+ sound/soc/kirkwood/Kconfig                        |  19 +-
+ sound/soc/kirkwood/Makefile                       |   4 -
+ sound/soc/kirkwood/kirkwood-openrd.c              | 109 ----
+ sound/soc/kirkwood/kirkwood-t5325.c               | 116 ----
+ 48 files changed, 14 insertions(+), 4813 deletions(-)
+ delete mode 100644 arch/arm/configs/kirkwood_defconfig
+ delete mode 100644 arch/arm/mach-kirkwood/Kconfig
+ delete mode 100644 arch/arm/mach-kirkwood/Makefile
+ delete mode 100644 arch/arm/mach-kirkwood/Makefile.boot
+ delete mode 100644 arch/arm/mach-kirkwood/board-dt.c
+ delete mode 100644 arch/arm/mach-kirkwood/common.c
+ delete mode 100644 arch/arm/mach-kirkwood/common.h
+ delete mode 100644 arch/arm/mach-kirkwood/d2net_v2-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/bridge-regs.h
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/entry-macro.S
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/hardware.h
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/irqs.h
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/kirkwood.h
+ delete mode 100644 arch/arm/mach-kirkwood/include/mach/uncompress.h
+ delete mode 100644 arch/arm/mach-kirkwood/irq.c
+ delete mode 100644 arch/arm/mach-kirkwood/lacie_v2-common.c
+ delete mode 100644 arch/arm/mach-kirkwood/lacie_v2-common.h
+ delete mode 100644 arch/arm/mach-kirkwood/mpp.c
+ delete mode 100644 arch/arm/mach-kirkwood/mpp.h
+ delete mode 100644 arch/arm/mach-kirkwood/netxbig_v2-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/openrd-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/pcie.c
+ delete mode 100644 arch/arm/mach-kirkwood/pm.c
+ delete mode 100644 arch/arm/mach-kirkwood/pm.h
+ delete mode 100644 arch/arm/mach-kirkwood/rd88f6192-nas-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/rd88f6281-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/t5325-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/ts219-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/ts41x-setup.c
+ delete mode 100644 arch/arm/mach-kirkwood/tsx1x-common.c
+ delete mode 100644 arch/arm/mach-kirkwood/tsx1x-common.h
+ delete mode 100644 sound/soc/kirkwood/kirkwood-openrd.c
+ delete mode 100644 sound/soc/kirkwood/kirkwood-t5325.c
+
+-- 
+2.0.1
+
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+Cc: linux-pm@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>
+Cc: linux-ide@vger.kernel.org
+Cc: Zhang Rui <rui.zhang@intel.com>
+Cc: Bryan Wu <cooloney@gmail.com>
+Cc: Richard Purdie <rpurdie@rpsys.net>
+Cc: linux-leds@vger.kernel.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org
+Cc: Kishon Vijay Abraham I <kishon@ti.com>
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: rtc-linux@googlegroups.com
+Cc: Wim Van Sebroeck <wim@iguana.be>
+Cc: linux-watchdog@vger.kernel.org
