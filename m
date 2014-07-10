@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] Revised patch(es) for
-	CLOCK_MONOTONIC_RAW timestamp
-Date: Thu, 10 Jul 2014 16:51:25 +0200
-Message-ID: <20140710145125.GI30458@sirena.org.uk>
-References: <1404997458-15377-1-git-send-email-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] alsa-lib: Provide a CLOCK_MONOTONIC_RAW
+ timestamp type
+Date: Thu, 10 Jul 2014 10:10:56 -0500
+Message-ID: <53BEAD00.5050304@linux.intel.com>
+References: <1404831152-8064-1-git-send-email-broonie@kernel.org>
+ <s5h7g3modn8.wl%tiwai@suse.de> <53BD9A92.6090806@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3091843645764501200=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C92412610C1
- for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 16:53:04 +0200 (CEST)
-In-Reply-To: <1404997458-15377-1-git-send-email-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72AB7261B0E
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 17:11:19 +0200 (CEST)
+In-Reply-To: <53BD9A92.6090806@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Daniel Thompson <daniel.thompson@linaro.org>
+To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Daniel Thompson <daniel.thompson@linaro.org>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 7/9/14, 2:40 PM, Clemens Ladisch wrote:
+> Takashi Iwai wrote:
+>> Currently, the timestamp mode is set implicitly in alsa-lib pcm_hw.c:
+>> - When kernel PCM protocol version is high enough, alsa-lib hw prefers
+>>    the monotonic always (if available), then set pcm->monotonic = 1.
+>> - Application can ask whether the current timestamp is monotonic or
+>>    not via snd_pcm_hw_params_is_monotonic().
+>> So, only adding the flag above doesn't suffice.  If we need to add a
+>> new mode, the API has to be extended as well.
+>>
+>> But how?  The current API assumes that the monotonic mode was already
+>> determined before hw_params.  We may add a set of new hw_params get
+>> and set calls for tstamp mode while keeping the old API.  This would
+>> be one option.  Another option would be to add a new PCM open flag
+>> SND_PCM_TSTAMP_MONOTONIC_RAW, and snd_pcm_hw_params_is_monotonic_raw()
+>> function.  The latter is easier (a simpler addition), while the former
+>> is more extensible to newer formats in future.
+>
+> These timestamps cannot be handled by hardware drivers; they are always
+> read by the ALSA framework, in software.  Furthermore, switching between
+> MONOTONIC and MONOTONIC_RAW is possible at any time.  Therefore, the
+> timestamp mode should be made a part of sw_params; just add a field
+> named tstamp_mode ...
 
---===============3091843645764501200==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ARHwKispuqSRPZ/2"
-Content-Disposition: inline
-
-
---ARHwKispuqSRPZ/2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jul 10, 2014 at 03:04:15PM +0200, Takashi Iwai wrote:
-> Hi,
->=20
-> here is a series of revised kernel patches for adding
-> CLOCK_MONOTONIC_RAW timestamp type.  In addition to Mark's original
-> patch, the new field is added to sw_params.
-
-Reviewed-by: Mark Brown <broonie@linaro.org>
-
---ARHwKispuqSRPZ/2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTvqhqAAoJELSic+t+oim9dVoP/3K9zr5FKiAjn+4qJNThyePP
-gwIiyQxr7hkNppkj78+h8waSbZcl/DjV6SaNKpsr8AgTPVv3oupes92uTlWT+Xdi
-LiGrLFjres2VbJ0xBc5uFO9cFlpuJ6QtJ9RLEeSMJWv9iHAmTnSj0RG869Hi73y/
-eCf3LRZV5HWfHimsDavfsgErKh0jvMb75lCMUPT6kMIplD1PSU3U0jBHq20zSxvR
-ocpIVBAk3u/wPlibNB32vRuonPWfoiMcL2MOG3uTvWEUz05NPNouoWmhbnTWkwmD
-ApPJKQPeJupT130NGVvg51JUfIcvZfSE3qf2sX3JKpZ+Euu1HOT2w+4DjG2yp4hf
-WcX0kzuGZkFoWoV1/8pXrcBghtq0No1508Lc5MmjksQ2EaetcGNk/LqnNdFEdfnN
-wJn0u11j+VJGRvHWNWVJ0VPkCh65TP3aZHSRoJ0NcBeaTHSRQXYSZZgETHHr1KnO
-eRyNOGK+BjukovFlhcCJHyBQhqdWF0zCxbTpp3x22jYF6B8hJxitOffLp3VbIOwk
-amgz/aDDD1f702jbdzMaBAfFKfdYLqKFIAEwh4l0QwALx1/vA1K37UREdoMGT/+8
-xJ7lcnWaAk7lFBlTsqEo0vAFKnMg89i94ItBzwGDp5lEbgRWvD/cKGK1zOcA6sxO
-Dg2EHNIdaWDtNJr7/OWc
-=rXLs
------END PGP SIGNATURE-----
-
---ARHwKispuqSRPZ/2--
-
---===============3091843645764501200==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3091843645764501200==--
+Humm... why would anyone switch modes at run time during 
+playback/capture? I have seen timestamps being used mainly to track that 
+playback/capture is happening as predicted, improve A/V sync or sleep 
+for a predictable time with interrupts disabled (PulseAudio, Android, 
+ChromeOS, etc). NTP adjustments are really adding noise more than 
+information for those usages. I have yet to see a case where the use of 
+those NTP adjustments would matter for userspace, and for now I really 
+don't see the point of making this dynamically configurable as a 
+software parameter. I would personally make this new mode the default.
+-Pierre
