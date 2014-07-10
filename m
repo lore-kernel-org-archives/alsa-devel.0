@@ -1,81 +1,73 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt286: make rt286_i2c_driver static
-Date: Thu, 10 Jul 2014 12:44:11 +0200
-Message-ID: <20140710104411.GC30458@sirena.org.uk>
-References: <1404987297-18313-1-git-send-email-bardliao@realtek.com>
+From: Rob Jones <rob.jones@codethink.co.uk>
+Subject: Re: [PATCH 1/5] gpiolib: devres: Introduce the function devm_request_gpio_array
+Date: Thu, 10 Jul 2014 12:01:28 +0100
+Message-ID: <53BE7288.6060503@codethink.co.uk>
+References: <cover.1404665589.git.himangi774@gmail.com>	<1a1752ce7455bac8f2505a9790da891a830699f5.1404665589.git.himangi774@gmail.com>	<53BD2509.6070803@codethink.co.uk> <CACRpkdZWfYN14aki-UqvWp1K0exVj-mMK92q431QueSVvjZFuA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0658239002961922652=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B1FB1261A40
- for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 12:46:37 +0200 (CEST)
-In-Reply-To: <1404987297-18313-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Fengguang Wu <fengguang.wu@intel.com>, flove@realtek.com
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-doc-owner@vger.kernel.org>
+In-Reply-To: <CACRpkdZWfYN14aki-UqvWp1K0exVj-mMK92q431QueSVvjZFuA@mail.gmail.com>
+Sender: linux-doc-owner@vger.kernel.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Himangi Saraogi <himangi774@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Philipp Zabel <philipp.zabel@gmail.com>, Paul Parsons <lost.distance@yahoo.com>, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0658239002961922652==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BzhqTaE66jeIVBY0"
-Content-Disposition: inline
 
+On 10/07/14 10:21, Linus Walleij wrote:
+> On Wed, Jul 9, 2014 at 1:18 PM, Rob Jones <rob.jones@codethink.co.uk> wrote:
+>
+>> Please note that I submitted a patch on 02/07/14 to create this
+>> function which was acked by Linus Walleij on 05/07/14.
+>>
+>> Great minds think alike, and all that.
+>
+> My mind certainly isn't any great :-(
+>
 
---BzhqTaE66jeIVBY0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I doubt that :-)
 
-On Thu, Jul 10, 2014 at 06:14:57PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
->=20
-> Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
-> ---
-> This is reported by kbuild test robot. I don't know if my sob line
-> is needed or not.
+> My left hand seems to be unaware of what the right hand is doing.
+>
+> Did I ACK that for merging through some other tree then?
+>
 
-Yes, you should add a signed-off-by to any patch you forward from
-someone else.
+You did: https://lkml.org/lkml/2014/7/4/715
 
---BzhqTaE66jeIVBY0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> And I guess if Himangi want to submit these ASoC patches, they
+> will have to go through the same tree as those patches in that case?
+>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+I don't know enough to comment.
 
-iQIcBAEBAgAGBQJTvm53AAoJELSic+t+oim9EP0P/0XoGhJ8lQfMuTGx/flruinn
-HbSfeSMxSxR0fGk5wUX7SJpVFDx9vEQFsZQfeEfhjWmFaVkjoSbVwP9sRU3AD69S
-52kHs3fiKVc/CGuhRq7lRxxJOncZs7w2IUXmmPm9btFa5fbZO2itx5mas7n7Ng1o
-GZF7KxRNE5q7Bh2dAdQR7VxlwqPcomxFTr+8oGMP3rQrGjy6b8v+6VeIGxnmxB0A
-mrd446mTgwjTgKXdkw41wkPDGaC1zgwNNdm4Y6msu8ZNGhb3GhrmCLKbsXBlQJI1
-94qOCWI2u3X3Od2Ix7Cq3AiYkjxCqLpZYD+k4l7Pqjl+Jd4s2ZVIyL/rVOkM4LII
-/Z24B/KbTdrtYJyY1cVm/sXVJhHhirU/D/ODWqF6sw9t89v6cFEO43vxn72pZ4Wp
-BLNQkXEqyUsOikh+zI6Y+whU+PndCQPfk2LrkAZFP8x6aNK/b405Z8DvJpwwZEU6
-fbfkHzaM3bUYskYufGCgZxl4qL5SeXwQJE6rcjRYFPzbicm2/svqKGT0fKrnNJnC
-YjG/qd6C3dnv9m+qahdzGOwqGxUMn695I1jVOa95X0qA552HqQGWzfRlrYSjj9JH
-GSitOnvI0EtAqStItdN8Xo7S941M2FH3TBUqE8fHOL7rJnQ+s+fxCGIL55GCgFG5
-YPKJoLyTB1W2jmHfhQ52
-=KhJR
------END PGP SIGNATURE-----
+> And would you consider implementing a gpiod version...?
+>
 
---BzhqTaE66jeIVBY0--
+I will certainly consider it. I'm in the middle of something else right
+now but I should be available in a day or two and I'll have a look.
 
---===============0658239002961922652==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>> However, I think that the version I submitted better replicates the
+>> original (non devm) functionality, see below.
+>>
+>> I didn't, however, add it to the documentation. +1 on that.
+>
+> Can you include that oneliner in your patch then to reduce
+> problems?
+>
 
+Certainly, with acknowledgement to Himangi Saraogi. Should I resubmit
+the patch series with amendment or should I put it in as a separate
+patch? Sorry for the noobie question but I *am* new to the kernel
+lists.
 
---===============0658239002961922652==--
+> Yours,
+> Linus Walleij
+>
+>
+
+-- 
+Rob Jones
+Codethink Ltd
+mailto:rob.jones@codethink.co.uk
+tel:+44 161 236 5575
