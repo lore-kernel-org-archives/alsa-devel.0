@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v2 07/13] ASoC: Intel: mrfld: add bytes control
-	for modules
-Date: Thu, 10 Jul 2014 10:14:51 +0530
-Message-ID: <1404967497-22537-8-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v2 12/13] ASoC: Intel: mfld-pcm: add the fe &
+	be dai ops
+Date: Thu, 10 Jul 2014 10:14:56 +0530
+Message-ID: <1404967497-22537-13-git-send-email-subhransu.s.prusty@intel.com>
 References: <1404967497-22537-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 89B962651ED
- for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 07:06:37 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9AE026520E
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 07:06:40 +0200 (CEST)
 In-Reply-To: <1404967497-22537-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,347 +27,112 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vinod Koul <vinod.koul@intel.com>
 
-This patch add support for various modules like eq etc for mrfld DSP. All these
-modules will be exposed to usermode as bytes controls.
+Now that the DSP topology is added, add the FE and BE dai ops for controls DSP as
+well mute/unmute of FE through ASoC
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/sst-atom-controls.c | 176 ++++++++++++++++++++++++++++++++++++
- sound/soc/intel/sst-atom-controls.h | 130 ++++++++++++++++++++++++++
- 2 files changed, 306 insertions(+)
+ sound/soc/intel/sst-mfld-platform-pcm.c | 39 +++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/sound/soc/intel/sst-atom-controls.c b/sound/soc/intel/sst-atom-controls.c
-index 38731e3e5e95..d0a48af64746 100644
---- a/sound/soc/intel/sst-atom-controls.c
-+++ b/sound/soc/intel/sst-atom-controls.c
-@@ -25,6 +25,180 @@
- #include "sst-mfld-platform.h"
- #include "sst-atom-controls.h"
- 
-+static inline void sst_fill_byte_control(char *param,
-+					 u8 ipc_msg, u8 block,
-+					 u8 task_id, u8 pipe_id,
-+					 u16 len, void *cmd_data)
-+{
-+
-+	struct snd_sst_bytes_v2 *byte_data = (struct snd_sst_bytes_v2 *)param;
-+
-+	byte_data->type = SST_CMD_BYTES_SET;
-+	byte_data->ipc_msg = ipc_msg;
-+	byte_data->block = block;
-+	byte_data->task_id = task_id;
-+	byte_data->pipe_id = pipe_id;
-+
-+	if (len > SST_MAX_BIN_BYTES - sizeof(*byte_data)) {
-+		pr_err("%s: command length too big (%u)", __func__, len);
-+		len = SST_MAX_BIN_BYTES - sizeof(*byte_data);
-+		WARN_ON(1); /* this happens only if code is wrong */
-+	}
-+	byte_data->len = len;
-+	memcpy(byte_data->bytes, cmd_data, len);
-+	print_hex_dump_bytes("writing to lpe: ", DUMP_PREFIX_OFFSET,
-+			     byte_data, len + sizeof(*byte_data));
-+}
-+
-+static int sst_fill_and_send_cmd_unlocked(struct sst_data *drv,
-+				 u8 ipc_msg, u8 block, u8 task_id, u8 pipe_id,
-+				 void *cmd_data, u16 len)
-+{
-+	sst_fill_byte_control(drv->byte_stream, ipc_msg, block, task_id, pipe_id,
-+			      len, cmd_data);
-+	return sst->ops->set_generic_params(SST_SET_BYTE_STREAM,
-+						drv->byte_stream);
-+}
-+
-+/**
-+ * sst_fill_and_send_cmd - generate the IPC message and send it to the FW
-+ * @ipc_msg:	type of IPC (CMD, SET_PARAMS, GET_PARAMS)
-+ * @cmd_data:	the IPC payload
-+ */
-+static int sst_fill_and_send_cmd(struct sst_data *drv,
-+				 u8 ipc_msg, u8 block, u8 task_id, u8 pipe_id,
-+				 void *cmd_data, u16 len)
-+{
-+	int ret;
-+
-+	mutex_lock(&drv->lock);
-+	ret = sst_fill_and_send_cmd_unlocked(drv, ipc_msg, block, task_id, pipe_id,
-+					     cmd_data, len);
-+	mutex_unlock(&drv->lock);
-+
-+	return ret;
-+}
-+
-+static void sst_send_algo_cmd(struct sst_data *drv,
-+			      struct sst_algo_control *bc)
-+{
-+	int len;
-+	struct sst_cmd_set_params *cmd;
-+
-+	if (bc->params == NULL)
-+		return;
-+
-+	/* bc->max includes sizeof algos + length field */
-+	len = sizeof(cmd->dst) + sizeof(cmd->command_id) + bc->max;
-+
-+	cmd = kzalloc(len, GFP_KERNEL);
-+	if (cmd == NULL) {
-+		pr_err("Failed to send cmd, kzalloc failed\n");
-+		return;
-+	}
-+
-+	SST_FILL_DESTINATION(2, cmd->dst, bc->pipe_id, bc->module_id);
-+	cmd->command_id = bc->cmd_id;
-+	memcpy(cmd->params, bc->params, bc->max);
-+
-+	sst_fill_and_send_cmd(drv, SST_IPC_IA_SET_PARAMS, SST_FLAG_BLOCKED,
-+			      bc->task_id, 0, cmd, len);
-+	kfree(cmd);
-+}
-+
-+static int sst_algo_bytes_ctl_info(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_info *uinfo)
-+{
-+	struct sst_algo_control *bc = (void *)kcontrol->private_value;
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-+	uinfo->count = bc->max;
-+
-+	/* allocate space to cache the algo parameters in the driver */
-+	if (bc->params == NULL) {
-+		bc->params = devm_kzalloc(platform->dev, bc->max, GFP_KERNEL);
-+		if (bc->params == NULL) {
-+			pr_err("kzalloc failed\n");
-+			return -ENOMEM;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int sst_algo_control_get(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct sst_algo_control *bc = (void *)kcontrol->private_value;
-+
-+	switch (bc->type) {
-+	case SST_ALGO_PARAMS:
-+		if (bc->params)
-+			memcpy(ucontrol->value.bytes.data, bc->params, bc->max);
-+		break;
-+	case SST_ALGO_BYPASS:
-+		ucontrol->value.integer.value[0] = bc->bypass ? 1 : 0;
-+		pr_debug("%s: bypass  %d\n", __func__, bc->bypass);
-+		break;
-+	default:
-+		pr_err("Invalid Input- algo type:%d\n", bc->type);
-+		return -EINVAL;
-+
-+	}
-+	return 0;
-+}
-+
-+static int sst_algo_control_set(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
-+	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
-+	struct sst_algo_control *bc = (void *)kcontrol->private_value;
-+
-+	pr_debug("in %s control_name=%s\n", __func__, kcontrol->id.name);
-+	switch (bc->type) {
-+	case SST_ALGO_PARAMS:
-+		if (bc->params)
-+			memcpy(bc->params, ucontrol->value.bytes.data, bc->max);
-+		break;
-+	case SST_ALGO_BYPASS:
-+		bc->bypass = !!ucontrol->value.integer.value[0];
-+		break;
-+	default:
-+		pr_err("Invalid Input- algo type:%ld\n", ucontrol->value.integer.value[0]);
-+		return -EINVAL;
-+	}
-+	/*if pipe is enabled, need to send the algo params from here */
-+	if (bc->w && bc->w->power)
-+		sst_send_algo_cmd(drv, bc);
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new sst_algo_controls[] = {
-+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
-+		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "iir", 300, SST_MODULE_ID_IIR_24,
-+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-+		SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "fir", 272, SST_MODULE_ID_FIR_24,
-+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "iir", 300, SST_MODULE_ID_IIR_24,
-+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+	SST_ALGO_KCONTROL_BYTES("media_loop2_out", "mdrp", 286, SST_MODULE_ID_MDRP,
-+		SST_PATH_INDEX_MEDIA_LOOP2_OUT, 0, SST_TASK_SBA, SBA_SET_MDRP),
-+	SST_ALGO_KCONTROL_BYTES("sprot_loop_out", "lpro", 192, SST_MODULE_ID_SPROT,
-+		SST_PATH_INDEX_SPROT_LOOP_OUT, 0, SST_TASK_SBA, SBA_VB_LPRO),
-+	SST_ALGO_KCONTROL_BYTES("codec_in0", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-+		SST_PATH_INDEX_CODEC_IN0, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+	SST_ALGO_KCONTROL_BYTES("codec_in1", "dcr", 52, SST_MODULE_ID_FILT_DCR,
-+		SST_PATH_INDEX_CODEC_IN1, 0, SST_TASK_SBA, SBA_VB_SET_IIR),
-+
-+};
-+
- int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform)
- {
- 	int ret = 0;
-@@ -37,5 +211,7 @@ int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform)
- 		return -ENOMEM;
- 	}
- 
-+	snd_soc_add_platform_controls(platform, sst_algo_controls,
-+			ARRAY_SIZE(sst_algo_controls));
- 	return ret;
- }
-diff --git a/sound/soc/intel/sst-atom-controls.h b/sound/soc/intel/sst-atom-controls.h
-index 8554889c0694..a73e894b175c 100644
---- a/sound/soc/intel/sst-atom-controls.h
-+++ b/sound/soc/intel/sst-atom-controls.h
-@@ -309,4 +309,134 @@ enum sst_swm_state {
- 	SST_SWM_ON = 3,
+diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
+index 2fb079c6a931..d48d23bbf5cd 100644
+--- a/sound/soc/intel/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/sst-mfld-platform-pcm.c
+@@ -101,6 +101,11 @@ static struct sst_dev_stream_map dpcm_strm_map[] = {
+ 	{MERR_DPCM_AUDIO, 0, SNDRV_PCM_STREAM_CAPTURE, PIPE_PCM1_OUT, SST_TASK_ID_MEDIA, 0},
  };
  
-+#define SST_FILL_LOCATION_IDS(dst, cell_idx, pipe_id)		do {	\
-+		dst.location_id.p.cell_nbr_idx = (cell_idx);		\
-+		dst.location_id.p.path_id = (pipe_id);			\
-+	} while (0)
-+#define SST_FILL_LOCATION_ID(dst, loc_id)				(\
-+	dst.location_id.f = (loc_id))
-+#define SST_FILL_MODULE_ID(dst, mod_id)					(\
-+	dst.module_id = (mod_id))
++static int sst_media_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
++{
 +
-+#define SST_FILL_DESTINATION1(dst, id)				do {	\
-+		SST_FILL_LOCATION_ID(dst, (id) & 0xFFFF);		\
-+		SST_FILL_MODULE_ID(dst, ((id) & 0xFFFF0000) >> 16);	\
-+	} while (0)
-+#define SST_FILL_DESTINATION2(dst, loc_id, mod_id)		do {	\
-+		SST_FILL_LOCATION_ID(dst, loc_id);			\
-+		SST_FILL_MODULE_ID(dst, mod_id);			\
-+	} while (0)
-+#define SST_FILL_DESTINATION3(dst, cell_idx, path_id, mod_id)	do {	\
-+		SST_FILL_LOCATION_IDS(dst, cell_idx, path_id);		\
-+		SST_FILL_MODULE_ID(dst, mod_id);			\
-+	} while (0)
-+
-+#define SST_FILL_DESTINATION(level, dst, ...)				\
-+	SST_FILL_DESTINATION##level(dst, __VA_ARGS__)
-+#define SST_FILL_DEFAULT_DESTINATION(dst)				\
-+	SST_FILL_DESTINATION(2, dst, SST_DEFAULT_LOCATION_ID, SST_DEFAULT_MODULE_ID)
-+
-+struct sst_destination_id {
-+	union sst_location_id {
-+		struct {
-+			u8 cell_nbr_idx;	/* module index */
-+			u8 path_id;		/* pipe_id */
-+		} __packed	p;		/* part */
-+		u16		f;		/* full */
-+	} __packed location_id;
-+	u16	   module_id;
-+} __packed;
-+struct sst_dsp_header {
-+	struct sst_destination_id dst;
-+	u16 command_id;
-+	u16 length;
-+} __packed;
-+
-+/*
-+ *
-+ * Common Commands
-+ *
-+ */
-+struct sst_cmd_generic {
-+	struct sst_dsp_header header;
-+} __packed;
-+struct sst_cmd_set_params {
-+	struct sst_destination_id dst;
-+	u16 command_id;
-+	char params[0];
-+} __packed;
-+#define SST_CONTROL_NAME(xpname, xmname, xinstance, xtype) \
-+	xpname " " xmname " " #xinstance " " xtype
-+
-+#define SST_COMBO_CONTROL_NAME(xpname, xmname, xinstance, xtype, xsubmodule) \
-+	xpname " " xmname " " #xinstance " " xtype " " xsubmodule
-+enum sst_algo_kcontrol_type {
-+	SST_ALGO_PARAMS,
-+	SST_ALGO_BYPASS,
-+};
-+
-+struct sst_algo_control {
-+	enum sst_algo_kcontrol_type type;
-+	int max;
-+	u16 module_id;
-+	u16 pipe_id;
-+	u16 task_id;
-+	u16 cmd_id;
-+	bool bypass;
-+	unsigned char *params;
-+	struct snd_soc_dapm_widget *w;
-+};
-+
-+/* size of the control = size of params + size of length field */
-+#define SST_ALGO_CTL_VALUE(xcount, xtype, xpipe, xmod, xtask, xcmd)			\
-+	(struct sst_algo_control){							\
-+		.max = xcount + sizeof(u16), .type = xtype, .module_id = xmod,			\
-+		.pipe_id = xpipe, .task_id = xtask, .cmd_id = xcmd,			\
++	return sst_send_pipe_gains(dai, stream, mute);
++}
+ 
+ /* helper functions */
+ void sst_set_stream_status(struct sst_runtime_stream *stream,
+@@ -421,12 +426,41 @@ static int sst_media_hw_free(struct snd_pcm_substream *substream,
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
++static int sst_enable_ssp(struct snd_pcm_substream *substream,
++			struct snd_soc_dai *dai)
++{
++	if (!dai->active) {
++		sst_handle_vb_timer(dai, true);
++		send_ssp_cmd(dai, dai->name, 1);
 +	}
-+
-+#define SST_ALGO_KCONTROL(xname, xcount, xmod, xpipe,					\
-+			  xtask, xcmd, xtype, xinfo, xget, xput)			\
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,						\
-+	.name =  xname,									\
-+	.info = xinfo, .get = xget, .put = xput,					\
-+	.private_value = (unsigned long)&						\
-+			SST_ALGO_CTL_VALUE(xcount, xtype, xpipe,			\
-+					   xmod, xtask, xcmd),				\
++	return 0;
 +}
 +
-+#define SST_ALGO_KCONTROL_BYTES(xpname, xmname, xcount, xmod,				\
-+				xpipe, xinstance, xtask, xcmd)				\
-+	SST_ALGO_KCONTROL(SST_CONTROL_NAME(xpname, xmname, xinstance, "params"),	\
-+			  xcount, xmod, xpipe, xtask, xcmd, SST_ALGO_PARAMS,		\
-+			  sst_algo_bytes_ctl_info,					\
-+			  sst_algo_control_get, sst_algo_control_set)
++static void sst_disable_ssp(struct snd_pcm_substream *substream,
++			struct snd_soc_dai *dai)
++{
++	if (!dai->active) {
++		send_ssp_cmd(dai, dai->name, 0);
++		sst_handle_vb_timer(dai, false);
++	}
++}
 +
-+#define SST_ALGO_KCONTROL_BOOL(xpname, xmname, xmod, xpipe, xinstance, xtask)		\
-+	SST_ALGO_KCONTROL(SST_CONTROL_NAME(xpname, xmname, xinstance, "bypass"),	\
-+			  0, xmod, xpipe, xtask, 0, SST_ALGO_BYPASS,			\
-+			  snd_soc_info_bool_ext,					\
-+			  sst_algo_control_get, sst_algo_control_set)
-+
-+#define SST_ALGO_BYPASS_PARAMS(xpname, xmname, xcount, xmod, xpipe,			\
-+				xinstance, xtask, xcmd)					\
-+	SST_ALGO_KCONTROL_BOOL(xpname, xmname, xmod, xpipe, xinstance, xtask),		\
-+	SST_ALGO_KCONTROL_BYTES(xpname, xmname, xcount, xmod, xpipe, xinstance, xtask, xcmd)
-+
-+#define SST_COMBO_ALGO_KCONTROL_BYTES(xpname, xmname, xsubmod, xcount, xmod,		\
-+				      xpipe, xinstance, xtask, xcmd)			\
-+	SST_ALGO_KCONTROL(SST_COMBO_CONTROL_NAME(xpname, xmname, xinstance, "params",	\
-+						 xsubmod),				\
-+			  xcount, xmod, xpipe, xtask, xcmd, SST_ALGO_PARAMS,		\
-+			  sst_algo_bytes_ctl_info,					\
-+			  sst_algo_control_get, sst_algo_control_set)
-+
-+
-+struct sst_enum {
-+	bool tx;
-+	unsigned short reg;
-+	unsigned int max;
-+	const char * const *texts;
-+	struct snd_soc_dapm_widget *w;
+ static struct snd_soc_dai_ops sst_media_dai_ops = {
+ 	.startup = sst_media_open,
+ 	.shutdown = sst_media_close,
+ 	.prepare = sst_media_prepare,
+ 	.hw_params = sst_media_hw_params,
+ 	.hw_free = sst_media_hw_free,
++	.mute_stream = sst_media_digital_mute,
 +};
 +
- #endif
++static struct snd_soc_dai_ops sst_compr_dai_ops = {
++	.mute_stream = sst_media_digital_mute,
++};
++
++static struct snd_soc_dai_ops sst_be_dai_ops = {
++	.startup = sst_enable_ssp,
++	.shutdown = sst_disable_ssp,
+ };
+ 
+ static int sst_media_dai_probe(struct snd_soc_dai *cpu_dai)
+@@ -436,6 +470,7 @@ static int sst_media_dai_probe(struct snd_soc_dai *cpu_dai)
+ 	snd_soc_dai_set_drvdata(cpu_dai, sst);
+ 	return 0;
+ }
++
+ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ {
+ 	.probe = sst_media_dai_probe,
+@@ -459,6 +494,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ {
+ 	.name = "compress-cpu-dai",
+ 	.compress_dai = 1,
++	.ops = &sst_compr_dai_ops,
+ 	.playback = {
+ 		.stream_name = "Compress Playback",
+ 		.channels_min = SST_STEREO,
+@@ -470,6 +506,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ /*BE CPU  Dais */
+ {
+ 	.name = "ssp0-port",
++	.ops = &sst_be_dai_ops,
+ 	.playback = {
+ 		.stream_name = "ssp0 Tx",
+ 		.channels_min = SST_STEREO,
+@@ -487,6 +524,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ },
+ {
+ 	.name = "ssp1-port",
++	.ops = &sst_be_dai_ops,
+ 	.playback = {
+ 		.stream_name = "ssp1 Tx",
+ 		.channels_min = SST_STEREO,
+@@ -504,6 +542,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ },
+ {
+ 	.name = "ssp2-port",
++	.ops = &sst_be_dai_ops,
+ 	.playback = {
+ 		.stream_name = "ssp2 Tx",
+ 		.channels_min = SST_STEREO,
 -- 
 1.9.0
