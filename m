@@ -1,99 +1,67 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 3/3] ALSA: pcm: Add timestamp type to
-	sw_params
-Date: Thu, 10 Jul 2014 10:23:37 -0500
-Message-ID: <53BEAFF9.5070501@linux.intel.com>
-References: <1404997458-15377-1-git-send-email-tiwai@suse.de>
- <1404997458-15377-4-git-send-email-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F70E2655DC
- for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 17:23:41 +0200 (CEST)
-In-Reply-To: <1404997458-15377-4-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Daniel Thompson <daniel.thompson@linaro.org>, Mark Brown <broonie@kernel.org>, Clemens Ladisch <clemens@ladisch.de>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH] ASoC: samsung-i2s: Maintain CDCLK settings across
+ i2s_{shutdown/startup}
+Date: Thu, 10 Jul 2014 18:11:13 +0200
+Message-ID: <1405008673-15994-1-git-send-email-s.nawrocki@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: drake@endlessm.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, Chen Zhen <zhen1.chen@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/10/14, 8:04 AM, Takashi Iwai wrote:
-> For allowing adjusting the timestamp type on the fly, add it to
-> sw_params.  The existing ioctl is still kept for compatibility.
+Currently configuration of the CDCLK pad is being overwritten in
+the i2s_shutdown() callback in order to gate the SoC output clock.
+However if an ASoC machine driver doesn't restore that clock
+settings each time after opening the sound device this results
+in the CDCLK pin being permanently configured into input mode.
+I.e. the output clock will always stay disabled.
+Fix that by saving the CDCLKCON bit state in i2s_shutdown() and
+and restoring it in the i2s_startup() callback.
 
-I have strong objections to this extension. It will result in a 
-discontinuity in the timestamps reported in pcm_status without a clear 
-indication of what timestamp is reported (when does this change occur?), 
-and it's completely unclear how userspace would handle a step (positive 
-or negative) between ntp-adjusted and non-ntp-adjusted times. For apps 
-that make use of the audio_time reported with a wall clock this could 
-lead to complete nonsense.
-I would have no problems if this was a fixed parameter defined once 
-before audio streaming starts.
+Signed-off-by: Chen Zhen <zhen1.chen@samsung.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ sound/soc/samsung/i2s.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
->
-> Along with this, increment the PCM protocol version.
->
-> The extension was suggested by Clemens Ladisch.
->
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->   include/uapi/sound/asound.h | 6 ++++--
->   sound/core/pcm_native.c     | 3 +++
->   2 files changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> index cbf7dc850a46..a7e062f91f39 100644
-> --- a/include/uapi/sound/asound.h
-> +++ b/include/uapi/sound/asound.h
-> @@ -139,7 +139,7 @@ struct snd_hwdep_dsp_image {
->    *                                                                           *
->    *****************************************************************************/
->
-> -#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 11)
-> +#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 12)
->
->   typedef unsigned long snd_pcm_uframes_t;
->   typedef signed long snd_pcm_sframes_t;
-> @@ -391,7 +391,9 @@ struct snd_pcm_sw_params {
->   	snd_pcm_uframes_t silence_threshold;	/* min distance from noise for silence filling */
->   	snd_pcm_uframes_t silence_size;		/* silence block size */
->   	snd_pcm_uframes_t boundary;		/* pointers wrap point */
-> -	unsigned char reserved[64];		/* reserved for future */
-> +	unsigned int tstamp_type;		/* timestamp type */
-> +	int pads;				/* alignment, reserved */
-> +	unsigned char reserved[56];		/* reserved for future */
->   };
->
->   struct snd_pcm_channel_info {
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index 2372c49a8e84..81dedc381efd 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -543,6 +543,8 @@ static int snd_pcm_sw_params(struct snd_pcm_substream *substream,
->
->   	if (params->tstamp_mode > SNDRV_PCM_TSTAMP_LAST)
->   		return -EINVAL;
-> +	if (params->tstamp_type > SNDRV_PCM_TSTAMP_TYPE_LAST)
-> +		return -EINVAL;
->   	if (params->avail_min == 0)
->   		return -EINVAL;
->   	if (params->silence_size >= runtime->boundary) {
-> @@ -557,6 +559,7 @@ static int snd_pcm_sw_params(struct snd_pcm_substream *substream,
->   	err = 0;
->   	snd_pcm_stream_lock_irq(substream);
->   	runtime->tstamp_mode = params->tstamp_mode;
-> +	runtime->tstamp_type = params->tstamp_type;
->   	runtime->period_step = params->period_step;
->   	runtime->control->avail_min = params->avail_min;
->   	runtime->start_threshold = params->start_threshold;
->
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 2ac76fa..3cb3e95 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -68,6 +68,8 @@ struct i2s_dai {
+ #define DAI_OPENED	(1 << 0) /* Dai is opened */
+ #define DAI_MANAGER	(1 << 1) /* Dai is the manager */
+ 	unsigned mode;
++	/* CDCLK pin direction: 0  - input, 1 - output */
++	unsigned int cdclk_out:1;
+ 	/* Driver for this DAI */
+ 	struct snd_soc_dai_driver i2s_dai_drv;
+ 	/* DMA parameters */
+@@ -737,6 +739,9 @@ static int i2s_startup(struct snd_pcm_substream *substream,
+ 
+ 	spin_unlock_irqrestore(&lock, flags);
+ 
++	if (!is_opened(other) && i2s->cdclk_out)
++		i2s_set_sysclk(dai, SAMSUNG_I2S_CDCLK,
++				0, SND_SOC_CLOCK_OUT);
+ 	return 0;
+ }
+ 
+@@ -752,9 +757,13 @@ static void i2s_shutdown(struct snd_pcm_substream *substream,
+ 	i2s->mode &= ~DAI_OPENED;
+ 	i2s->mode &= ~DAI_MANAGER;
+ 
+-	if (is_opened(other))
++	if (is_opened(other)) {
+ 		other->mode |= DAI_MANAGER;
+-
++	} else {
++		u32 mod = readl(i2s->addr + I2SMOD);
++		i2s->cdclk_out = !(mod & MOD_CDCLKCON);
++		other->cdclk_out = i2s->cdclk_out;
++	}
+ 	/* Reset any constraint on RFS and BFS */
+ 	i2s->rfs = 0;
+ 	i2s->bfs = 0;
+-- 
+1.7.9.5
