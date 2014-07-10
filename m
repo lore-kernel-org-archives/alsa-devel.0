@@ -1,50 +1,44 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH - alsa-utils 5/5] The amidicat program
- itself, better late than never
-Date: Thu, 10 Jul 2014 08:53:26 +0200
-Message-ID: <53BE3866.1030806@ladisch.de>
-References: <1404118503-22921-1-git-send-email-alsa@krellan.com>
- <1404118503-22921-6-git-send-email-alsa@krellan.com>
- <1404863718.378573458@f135.i.mail.ru> <53BCD277.3040908@krellan.com>
- <53BCF522.2080609@ladisch.de> <53BDD1F4.5030003@krellan.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 1/5] gpiolib: devres: Introduce the function devm_request_gpio_array
+Date: Thu, 10 Jul 2014 11:21:32 +0200
+Message-ID: <CACRpkdZWfYN14aki-UqvWp1K0exVj-mMK92q431QueSVvjZFuA@mail.gmail.com>
+References: <cover.1404665589.git.himangi774@gmail.com>
+	<1a1752ce7455bac8f2505a9790da891a830699f5.1404665589.git.himangi774@gmail.com>
+	<53BD2509.6070803@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 125E22651EB
- for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 08:53:28 +0200 (CEST)
-In-Reply-To: <53BDD1F4.5030003@krellan.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Josh Lehan <alsa@krellan.com>
-Cc: Sergey <sergemp@mail.ru>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <53BD2509.6070803@codethink.co.uk>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Rob Jones <rob.jones@codethink.co.uk>
+Cc: Himangi Saraogi <himangi774@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Philipp Zabel <philipp.zabel@gmail.com>, Paul Parsons <lost.distance@yahoo.com>, Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Josh Lehan wrote:
-> On 07/09/2014 12:54 AM, Clemens Ladisch wrote:
->>> (unlike aplaymidi, amidicat does no filtering, it shows you
->>> everything, even including itself in the list).
->>
->> It should list only those ports it can use, i.e., connect from/to.
+On Wed, Jul 9, 2014 at 1:18 PM, Rob Jones <rob.jones@codethink.co.uk> wrote:
+
+> Please note that I submitted a patch on 02/07/14 to create this
+> function which was acked by Linus Walleij on 05/07/14.
 >
-> It already does, in a way.  Anything that has read/write permission,
-> direct and/or subscription, is usable.  I like showing everything, it's
-> useful for diagnostics/troubleshooting.
+> Great minds think alike, and all that.
 
-Showing unusable ports _will_ introduce user errors.
+My mind certainly isn't any great :-(
 
-If you are doing troubleshooting for something that does not involve
-amidicat, the complete port list is already available in
-/proc/asound/seq/clients.
+My left hand seems to be unaware of what the right hand is doing.
 
+Did I ACK that for merging through some other tree then?
 
-Regards,
-Clemens
+And I guess if Himangi want to submit these ASoC patches, they
+will have to go through the same tree as those patches in that case?
+
+And would you consider implementing a gpiod version...?
+
+> However, I think that the version I submitted better replicates the
+> original (non devm) functionality, see below.
+>
+> I didn't, however, add it to the documentation. +1 on that.
+
+Can you include that oneliner in your patch then to reduce
+problems?
+
+Yours,
+Linus Walleij
