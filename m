@@ -1,20 +1,14 @@
-From: Josh Lehan <alsa@krellan.com>
-Subject: Re: [PATCH - alsa-utils 5/5] The amidicat program
- itself, better late than never
-Date: Wed, 09 Jul 2014 16:36:20 -0700
-Message-ID: <53BDD1F4.5030003@krellan.com>
-References: <1404118503-22921-1-git-send-email-alsa@krellan.com>
- <1404118503-22921-6-git-send-email-alsa@krellan.com>
- <1404863718.378573458@f135.i.mail.ru> <53BCD277.3040908@krellan.com>
- <53BCF522.2080609@ladisch.de>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH v2 00/13] add mrfld DSP support
+Date: Thu, 10 Jul 2014 10:14:44 +0530
+Message-ID: <1404967497-22537-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www7.pairlite.com (www7.pairlite.com [64.130.10.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E89926516B
- for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 01:36:24 +0200 (CEST)
-In-Reply-To: <53BCF522.2080609@ladisch.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id ABF692651D3
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 07:06:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,39 +18,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Sergey <sergemp@mail.ru>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/09/2014 12:54 AM, Clemens Ladisch wrote:
-> Have a look at how aseqdump decides what PORT_CAP bits to set.
+Here is the patch series for adding DSP support for Intel's merrifield platform.
 
-Thanks, will do.
+Changes in v2:
+* Use standard dapm types instead for mixer controls
+* Removed register file, rather use dapm cached value for mixers
+* Removed read/write handlers for virtual registers
+* Removed accessing DAPM core data structures
 
->> Also, what about ALSA permissions that amidicat itself advertises?  To
->> make a long story short, I think I have this backwards.
-> 
-> These bits specify what _other_ clients can do with the port.
+Subhransu S. Prusty (2):
+  ASoC: Export dapm_kcontrol_get_value
+  ASoC: Intel: mrfld: set private data for cpu-dai
 
-Makes sense to me.
+Vinod Koul (11):
+  ASoC: Intel: mfld-pcm: add FE and BE ops
+  ASoC: intel: mfld-pcm: don't call trigger ops to DSP for internal
+    streams
+  ASoC: Intel: add generic parameter set interface
+  ASoC: Intel: add mrfld DSP defines
+  ASoC: Intel: mrfld: add bytes control for modules
+  ASoC: Intel: mrfld: add the gain controls
+  ASoC: Intel: mfld-pcm: add control for powering up/down dsp
+  ASoC: Intel: mrfld: add DSP core controls
+  ASoC: Intel: mrfld: add the DSP DAPM widgets
+  ASoC: Intel: mfld-pcm: add the fe & be dai ops
+  ASoC: Intel: mrfld: add the DSP mixers
 
-> Does the thread actually read the delivered events from the kernel
-> buffer?
+ include/sound/soc-dapm.h                |    1 +
+ sound/soc/intel/Makefile                |    3 +-
+ sound/soc/intel/sst-atom-controls.c     | 1256 +++++++++++++++++++++++++++++++
+ sound/soc/intel/sst-atom-controls.h     |  844 ++++++++++++++++++++-
+ sound/soc/intel/sst-mfld-platform-pcm.c |  192 ++++-
+ sound/soc/intel/sst-mfld-platform.h     |   16 +-
+ sound/soc/soc-dapm.c                    |    3 +-
+ 7 files changed, 2276 insertions(+), 39 deletions(-)
+ create mode 100644 sound/soc/intel/sst-atom-controls.c
 
-Should be, I'm calling snd_seq_event_input() in a tight loop.  Hoping
-this is the appropriate function to be calling, and that all the various
-structures around it are initialized correctly.
-
->> Also, try "amidicat --list", which will give you output similar to
->> "aplaymidi -l" but include more devices (unlike aplaymidi, amidicat does
->> no filtering, it shows you everything, even including itself in the list).
-> 
-> It should list only those ports it can use, i.e., connect from/to.
-
-It already does, in a way.  Anything that has read/write permission,
-direct and/or subscription, is usable.  I like showing everything, it's
-useful for diagnostics/troubleshooting.  If user wants filtered output
-they can apply that later (or perhaps I'll add it when adding the
---quiet flag).  I still think the most complete/useful output should be
-the default.
-
-Josh
+-- 
+1.9.0
