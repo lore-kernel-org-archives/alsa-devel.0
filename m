@@ -1,74 +1,87 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH RESEND v7 2/3] ASoC: add es8328 codec driver
-Date: Thu, 10 Jul 2014 14:55:18 +0200
-Message-ID: <20140710125518.GG30458@sirena.org.uk>
-References: <1404353989-19580-1-git-send-email-xobs@kosagi.com>
- <1404353989-19580-3-git-send-email-xobs@kosagi.com>
- <20140709094527.GA21251@opensource.wolfsonmicro.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2/3] ALSA: Provide a CLOCK_MONOTONIC_RAW
+	timestamp type
+Date: Thu, 10 Jul 2014 15:04:17 +0200
+Message-ID: <1404997458-15377-3-git-send-email-tiwai@suse.de>
+References: <1404997458-15377-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="j6Ejlva3tMw3xXYi"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140709094527.GA21251-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1A0126072A
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 15:04:22 +0200 (CEST)
+In-Reply-To: <1404997458-15377-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Daniel Thompson <daniel.thompson@linaro.org>, Mark Brown <broonie@kernel.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
+From: Mark Brown <broonie@linaro.org>
 
---j6Ejlva3tMw3xXYi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For applications which need to synchronise with external timebases such
+as broadcast TV applications the kernel monotonic time is not optimal as
+it includes adjustments from NTP and so may still include discontinuities
+due to that. A raw monotonic time which does not include any adjustments
+is available in the kernel from getrawmonotonic() so provide userspace with
+a new timestamp type SNDRV_PCM_TSTAMP_TYPE_MONOTONIC_RAW which provides
+timestamps based on this as an option.
 
-On Wed, Jul 09, 2014 at 10:45:27AM +0100, Charles Keepax wrote:
-> On Thu, Jul 03, 2014 at 10:19:48AM +0800, Sean Cross wrote:
+[dropped tstamp_type assignment code, as it's no longer needed -- tiwai]
 
-> > +static int es8328_codec_probe(struct snd_soc_codec *codec)
-> > +{
-> > +	struct es8328_priv *es8328;
-> > +	int ret;
-> > +	int i;
-> > +
-> > +	es8328 = snd_soc_codec_get_drvdata(codec);
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(es8328->supplies); i++)
-> > +		es8328->supplies[i].supply = supply_names[i];
-> > +
-> > +	ret = devm_regulator_bulk_get(codec->dev, ARRAY_SIZE(es8328->supplies),
-> > +				es8328->supplies);
+Reported-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/pcm.h         | 11 +++++++++--
+ include/uapi/sound/asound.h |  3 ++-
+ 2 files changed, 11 insertions(+), 3 deletions(-)
 
-> Is it safe to use devm_ from the ASoC level probe here? I think
-> there was a discussion recently that this can cause problems on
-> driver unbinding.
-
-No, it's not and there's a much bigger problem here that we shouldn't be
-doing resource allocation in the ASoC level probe().
-
---j6Ejlva3tMw3xXYi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTvo0rAAoJELSic+t+oim9c/YP/RcpnvP6BP/RlMb12WAyZczo
-ROORQCSf0amwSqFHb0vInmWLxAex+xgBwma6rN/8wjzhFVbH496Efuwq/Me5qw5y
-50RQAB6+hWtCwWAYQXOW/ZfiA/lBDo2s894SfjljF0CEZLhHnJMpM2K3OB+OqsJ6
-IMUafmfPj11YpPdfTsas8wSi8bH55HdaIPi02FVYQFR/l+i4McOo0cxR0gwjswz8
-H7JuvISyPDonr1HXL2mmr5nDMP84GDsM6AXzz69YZ+uLTv5byOq3fdgpnMItuvwh
-DaUmeM30A3P6ZaYNZYa+yfrZMzFhzSE6s7/SK37/x7EcJI/xPKqLRtmRJImn/KP2
-OtvqIOzzpyenV9YjRdpDdSnujFDw15YPc98tYztr4jFTFX1uzWeR3mQl0sslsP3T
-xI2gzGg5tos+KORfH6DwcpPMz5dOdyGIIT5WIE03uvjZUxpCHfOSdJo8Ul3f3u5M
-Sy3ZpXaJoSHlzzvNWCUBge/ECfndHkSCz+bBdpkAUZErJZ4RQNzvkuw2gTWDOGpV
-BKlEjji1KpIKLHG/kw6xR7pF7PAcoDAThrPppqWMfWyeEfHs/xn4thNmKKKRduKI
-lxnTbZJgS3Fe/pCBiFRbyk1xbgayvXWsn+GEuJX1QSMwhrE+7DVNWUJsf9ZD/103
-SY6zf1pJ6giO0evCFCzv
-=OAQ9
------END PGP SIGNATURE-----
-
---j6Ejlva3tMw3xXYi--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index d854fb31c000..6f3e10ca0e32 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -931,10 +931,17 @@ void snd_pcm_timer_done(struct snd_pcm_substream *substream);
+ static inline void snd_pcm_gettime(struct snd_pcm_runtime *runtime,
+ 				   struct timespec *tv)
+ {
+-	if (runtime->tstamp_type == SNDRV_PCM_TSTAMP_TYPE_MONOTONIC)
++	switch (runtime->tstamp_type) {
++	case SNDRV_PCM_TSTAMP_TYPE_MONOTONIC:
+ 		ktime_get_ts(tv);
+-	else
++		break;
++	case SNDRV_PCM_TSTAMP_TYPE_MONOTONIC_RAW:
++		getrawmonotonic(tv);
++		break;
++	default:
+ 		getnstimeofday(tv);
++		break;
++	}
+ }
+ 
+ /*
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 224948342f14..cbf7dc850a46 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -462,7 +462,8 @@ struct snd_xfern {
+ enum {
+ 	SNDRV_PCM_TSTAMP_TYPE_GETTIMEOFDAY = 0,	/* gettimeofday equivalent */
+ 	SNDRV_PCM_TSTAMP_TYPE_MONOTONIC,	/* posix_clock_monotonic equivalent */
+-	SNDRV_PCM_TSTAMP_TYPE_LAST = SNDRV_PCM_TSTAMP_TYPE_MONOTONIC,
++	SNDRV_PCM_TSTAMP_TYPE_MONOTONIC_RAW,    /* monotonic_raw (no NTP) */
++	SNDRV_PCM_TSTAMP_TYPE_LAST = SNDRV_PCM_TSTAMP_TYPE_MONOTONIC_RAW,
+ };
+ 
+ /* channel positions */
+-- 
+2.0.1
