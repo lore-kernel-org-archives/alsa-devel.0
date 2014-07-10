@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v2 02/13] ASoC: Intel: mfld-pcm: add FE and BE
-	ops
-Date: Thu, 10 Jul 2014 10:14:46 +0530
-Message-ID: <1404967497-22537-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v2 05/13] ASoC: Intel: add generic parameter
+	set interface
+Date: Thu, 10 Jul 2014 10:14:49 +0530
+Message-ID: <1404967497-22537-6-git-send-email-subhransu.s.prusty@intel.com>
 References: <1404967497-22537-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 426C02651EA
- for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 07:06:36 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id E24632651E6
+ for <alsa-devel@alsa-project.org>; Thu, 10 Jul 2014 07:06:35 +0200 (CEST)
 In-Reply-To: <1404967497-22537-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,145 +27,40 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vinod Koul <vinod.koul@intel.com>
 
-Now that we have added code for managing DSP pipelines we need to add the code
-for DSPs FrontEnd and Backend dai.
+This will be used by subsequent patches to send DSP cmds on DAPM widgets
+enable/disable
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/sst-mfld-platform-pcm.c | 113 ++++++++++++++++++++++++--------
- 1 file changed, 84 insertions(+), 29 deletions(-)
+ sound/soc/intel/sst-mfld-platform.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
-index 7de87887d9f8..3fcd35c73936 100644
---- a/sound/soc/intel/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/sst-mfld-platform-pcm.c
-@@ -101,35 +101,6 @@ static struct sst_dev_stream_map dpcm_strm_map[] = {
- 	{MERR_DPCM_AUDIO, 0, SNDRV_PCM_STREAM_CAPTURE, PIPE_PCM1_OUT, SST_TASK_ID_MEDIA, 0},
- };
- 
--/* MFLD - MSIC */
--static struct snd_soc_dai_driver sst_platform_dai[] = {
--{
--	.name = "Headset-cpu-dai",
--	.id = 0,
--	.playback = {
--		.channels_min = SST_STEREO,
--		.channels_max = SST_STEREO,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S24_LE,
--	},
--	.capture = {
--		.channels_min = 1,
--		.channels_max = 5,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S24_LE,
--	},
--},
--{
--	.name = "Compress-cpu-dai",
--	.compress_dai = 1,
--	.playback = {
--		.channels_min = SST_STEREO,
--		.channels_max = SST_STEREO,
--		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--},
--};
- 
- /* helper functions */
- void sst_set_stream_status(struct sst_runtime_stream *stream,
-@@ -444,6 +415,90 @@ static struct snd_soc_dai_ops sst_media_dai_ops = {
- 	.hw_free = sst_media_hw_free,
- };
- 
-+static struct snd_soc_dai_driver sst_platform_dai[] = {
-+{
-+	.name = "media-cpu-dai",
-+	.ops = &sst_media_dai_ops,
-+	.playback = {
-+		.stream_name = "Headset Playback",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "Headset Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
-+	.name = "compress-cpu-dai",
-+	.compress_dai = 1,
-+	.playback = {
-+		.stream_name = "Compress Playback",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+/*BE CPU  Dais */
-+{
-+	.name = "ssp0-port",
-+	.playback = {
-+		.stream_name = "ssp0 Tx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "ssp0 Rx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
-+	.name = "ssp1-port",
-+	.playback = {
-+		.stream_name = "ssp1 Tx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "ssp1 Rx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
-+	.name = "ssp2-port",
-+	.playback = {
-+		.stream_name = "ssp2 Tx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "ssp2 Rx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+};
+diff --git a/sound/soc/intel/sst-mfld-platform.h b/sound/soc/intel/sst-mfld-platform.h
+index 9dc962ff1e1d..79dfee1fbdfe 100644
+--- a/sound/soc/intel/sst-mfld-platform.h
++++ b/sound/soc/intel/sst-mfld-platform.h
+@@ -63,7 +63,12 @@ enum sst_controls {
+ 	SST_SND_BUFFER_POINTER =	0x05,
+ 	SST_SND_STREAM_INIT =		0x06,
+ 	SST_SND_START	 =		0x07,
+-	SST_MAX_CONTROLS =		0x07,
++	SST_SET_RUNTIME_PARAMS =	0x08,
++	SST_SET_ALGO_PARAMS =		0x09,
++	SST_SET_BYTE_STREAM =		0x0A,
++	SST_GET_BYTE_STREAM =		0x0B,
 +
- static int sst_platform_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime;
++	SST_MAX_CONTROLS =		SST_GET_BYTE_STREAM,
+ };
+ 
+ enum sst_stream_ops {
+@@ -127,6 +132,7 @@ struct compress_sst_ops {
+ struct sst_ops {
+ 	int (*open) (struct snd_sst_params *str_param);
+ 	int (*device_control) (int cmd, void *arg);
++	int (*set_generic_params)(enum sst_controls cmd, void *arg);
+ 	int (*close) (unsigned int str_id);
+ };
+ 
 -- 
 1.9.0
