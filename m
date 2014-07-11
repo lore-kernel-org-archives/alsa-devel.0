@@ -1,65 +1,179 @@
-From: Javier Martinez Canillas <javier@dowhile0.org>
-Subject: Re: [PATCH 1/5] gpiolib: devres: Introduce the function devm_request_gpio_array
-Date: Fri, 11 Jul 2014 12:07:45 +0200
-Message-ID: <CABxcv==adT6YPEekjD1y3ncrj9ghWE8UMuc64AeVWCPVb0ywFw@mail.gmail.com>
-References: <cover.1404665589.git.himangi774@gmail.com>
-	<1a1752ce7455bac8f2505a9790da891a830699f5.1404665589.git.himangi774@gmail.com>
-	<53BD2509.6070803@codethink.co.uk>
-	<CACRpkdZWfYN14aki-UqvWp1K0exVj-mMK92q431QueSVvjZFuA@mail.gmail.com>
-	<53BE7288.6060503@codethink.co.uk>
-	<CABxcv=mhMMQxqVRM28NucnSW62v_3ghnT58JqFxvK=2bjxizdw@mail.gmail.com>
-	<53BFB659.8050306@codethink.co.uk>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [RFC][PATCH 1/2] dma: imx-sdma: Add device to
+	device support
+Date: Fri, 11 Jul 2014 18:11:28 +0800
+Message-ID: <20140711101126.GA667@MrMyself>
+References: <cover.1402653667.git.nicoleotsuka@gmail.com>
+ <42744e778ce8a4b424d5642f86d18ef047bcc7cd.1402653667.git.nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <53BFB659.8050306@codethink.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Jones <rob.jones@codethink.co.uk>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Himangi Saraogi <himangi774@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Philipp Zabel <philipp.zabel@gmail.com>, Paul Parsons <lost.distance@yahoo.com>, Julia Lawall <julia.lawall@lip>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0242.outbound.protection.outlook.com [207.46.163.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id C16BF265083
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jul 2014 12:24:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <42744e778ce8a4b424d5642f86d18ef047bcc7cd.1402653667.git.nicoleotsuka@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: vinod.koul@intel.com
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, tiwai@suse.de, timur@tabi.org, lgirdwood@gmail.com, b42378@freescale.com, b02247@freescale.com, grant.likely@linaro.org, devicetree@vger.kernel.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, s.hauer@pengutronix.de, b38343@freescale.com, Nicolin Chen <nicoleotsuka@gmail.com>, robh+dt@kernel.org, dan.j.williams@intel.com, rdunlap@infradead.org, linux-kernel@vger.kernel.org, broonie@kernel.org, galak@codeaurora.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Rob,
+On Fri, Jun 13, 2014 at 06:07:04PM +0800, Nicolin Chen wrote:
+> This patch adds DEV_TO_DEV support for i.MX SDMA driver to support data
+> tranfer between two peripheral FIFOs. The per_2_per script requires two
+> peripheral addresses and two DMA requests. So this patch also adds them
+> into private structure.
+> 
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
-On Fri, Jul 11, 2014 at 12:03 PM, Rob Jones <rob.jones@codethink.co.uk> wrote:
->
->
-> On 11/07/14 01:35, Javier Martinez Canillas wrote:
->>
->> Hello Rob,
->>
->> On Thu, Jul 10, 2014 at 1:01 PM, Rob Jones <rob.jones@codethink.co.uk>
->> wrote:
->
->
-> <snip>
->
->
->>>
->>> I will certainly consider it. I'm in the middle of something else right
->>> now but I should be available in a day or two and I'll have a look.
->>>
->>>
->>
->> I'm working on a driver for a PMIC which uses a set of GPIO to select
->> a particular register. Right now I'm getting each GPIO independently
->> but Linus mentioned [0] the devm_gpio_request_array() patch you
->> posted.
->>
->> Now, I'm not using the integer-based GPIO API but the new
->> descriptor-based one so I was wondering if you are already
->> implementing a devm_gpiod_get_array() or if you want me to implement
->> it myself.
->>
->
-> As I said, I'm deep in something else for the next day or two so if you
-> need it urgently you should probably do it yourself but if you don't
-> mind waiting until next week, I can have a go.
->
-> Your call, let me know.
->
+Hi Vinod,
 
-I'm not in a hurry, just wanted to know if it was on your plate. I'll
-wait for your patch then, thanks!
+The patch has been here for a month without any comment.
 
-Best regards,
-Javier
+Could you please help on the review or give me an ack?
+
+I really hope my ASRC driver will be merged within this cycle.
+
+Thank you,
+Nicolin
+
+> ---
+>  drivers/dma/imx-sdma.c                | 40 ++++++++++++++++++++++++++++++-----
+>  include/linux/platform_data/dma-imx.h |  1 +
+>  2 files changed, 36 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+> index 85561dc..5af1a69 100644
+> --- a/drivers/dma/imx-sdma.c
+> +++ b/drivers/dma/imx-sdma.c
+> @@ -258,8 +258,9 @@ struct sdma_channel {
+>  	struct sdma_buffer_descriptor	*bd;
+>  	dma_addr_t			bd_phys;
+>  	unsigned int			pc_from_device, pc_to_device;
+> +	unsigned int			device_to_device;
+>  	unsigned long			flags;
+> -	dma_addr_t			per_address;
+> +	dma_addr_t			per_address, per_address2;
+>  	unsigned long			event_mask[2];
+>  	unsigned long			watermark_level;
+>  	u32				shp_addr, per_addr;
+> @@ -696,6 +697,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+>  
+>  	sdmac->pc_from_device = 0;
+>  	sdmac->pc_to_device = 0;
+> +	sdmac->device_to_device = 0;
+>  
+>  	switch (peripheral_type) {
+>  	case IMX_DMATYPE_MEMORY:
+> @@ -770,6 +772,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+>  
+>  	sdmac->pc_from_device = per_2_emi;
+>  	sdmac->pc_to_device = emi_2_per;
+> +	sdmac->device_to_device = per_2_per;
+>  }
+>  
+>  static int sdma_load_context(struct sdma_channel *sdmac)
+> @@ -782,11 +785,12 @@ static int sdma_load_context(struct sdma_channel *sdmac)
+>  	int ret;
+>  	unsigned long flags;
+>  
+> -	if (sdmac->direction == DMA_DEV_TO_MEM) {
+> +	if (sdmac->direction == DMA_DEV_TO_MEM)
+>  		load_address = sdmac->pc_from_device;
+> -	} else {
+> +	else if (sdmac->direction == DMA_DEV_TO_DEV)
+> +		load_address = sdmac->device_to_device;
+> +	else
+>  		load_address = sdmac->pc_to_device;
+> -	}
+>  
+>  	if (load_address < 0)
+>  		return load_address;
+> @@ -850,6 +854,12 @@ static int sdma_config_channel(struct sdma_channel *sdmac)
+>  		sdma_event_enable(sdmac, sdmac->event_id0);
+>  	}
+>  
+> +	if (sdmac->event_id1) {
+> +		if (sdmac->event_id1 >= sdmac->sdma->drvdata->num_events)
+> +			return -EINVAL;
+> +		sdma_event_enable(sdmac, sdmac->event_id1);
+> +	}
+> +
+>  	switch (sdmac->peripheral_type) {
+>  	case IMX_DMATYPE_DSP:
+>  		sdma_config_ownership(sdmac, false, true, true);
+> @@ -880,7 +890,12 @@ static int sdma_config_channel(struct sdma_channel *sdmac)
+>  		/* Watermark Level */
+>  		sdmac->watermark_level |= sdmac->watermark_level;
+>  		/* Address */
+> -		sdmac->shp_addr = sdmac->per_address;
+> +		if (sdmac->direction == DMA_DEV_TO_DEV) {
+> +			sdmac->shp_addr = sdmac->per_address2;
+> +			sdmac->per_addr = sdmac->per_address;
+> +		} else {
+> +			sdmac->shp_addr = sdmac->per_address;
+> +		}
+>  	} else {
+>  		sdmac->watermark_level = 0; /* FIXME: M3_BASE_ADDRESS */
+>  	}
+> @@ -974,6 +989,7 @@ static int sdma_alloc_chan_resources(struct dma_chan *chan)
+>  
+>  	sdmac->peripheral_type = data->peripheral_type;
+>  	sdmac->event_id0 = data->dma_request;
+> +	sdmac->event_id1 = data->dma_request2;
+>  
+>  	clk_enable(sdmac->sdma->clk_ipg);
+>  	clk_enable(sdmac->sdma->clk_ahb);
+> @@ -1213,6 +1229,19 @@ static int sdma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
+>  			sdmac->watermark_level = dmaengine_cfg->src_maxburst *
+>  						dmaengine_cfg->src_addr_width;
+>  			sdmac->word_size = dmaengine_cfg->src_addr_width;
+> +		} else if (dmaengine_cfg->direction == DMA_DEV_TO_DEV) {
+> +			sdmac->per_address = dmaengine_cfg->src_addr;
+> +			sdmac->per_address2 = dmaengine_cfg->dst_addr;
+> +			/*
+> +			 * For per_2_per sciprt, register r7 requires two
+> +			 * watermark levels: the lower placed at bits [0-7]
+> +			 * and the higher one placed at bits [16-23].
+> +			 */
+> +			sdmac->watermark_level =
+> +				dmaengine_cfg->src_maxburst & 0xff;
+> +			sdmac->watermark_level |=
+> +				(dmaengine_cfg->dst_maxburst & 0xff) << 16;
+> +			sdmac->word_size = dmaengine_cfg->dst_addr_width;
+>  		} else {
+>  			sdmac->per_address = dmaengine_cfg->dst_addr;
+>  			sdmac->watermark_level = dmaengine_cfg->dst_maxburst *
+> @@ -1433,6 +1462,7 @@ static struct dma_chan *sdma_xlate(struct of_phandle_args *dma_spec,
+>  	data.dma_request = dma_spec->args[0];
+>  	data.peripheral_type = dma_spec->args[1];
+>  	data.priority = dma_spec->args[2];
+> +	data.dma_request2 = 0;
+>  
+>  	return dma_request_channel(mask, sdma_filter_fn, &data);
+>  }
+> diff --git a/include/linux/platform_data/dma-imx.h b/include/linux/platform_data/dma-imx.h
+> index 7aa0e89..6a1357d 100644
+> --- a/include/linux/platform_data/dma-imx.h
+> +++ b/include/linux/platform_data/dma-imx.h
+> @@ -51,6 +51,7 @@ enum imx_dma_prio {
+>  
+>  struct imx_dma_data {
+>  	int dma_request; /* DMA request line */
+> +	int dma_request2; /* secondary DMA request line */
+>  	enum sdma_peripheral_type peripheral_type;
+>  	int priority;
+>  };
+> -- 
+> 1.8.4
+> 
