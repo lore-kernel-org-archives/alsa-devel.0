@@ -1,7 +1,7 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 2/4] ASoC: s3c64xx/smartq: use dynamic registration
-Date: Fri, 11 Jul 2014 15:45:05 +0200
-Message-ID: <1405086308-1461192-4-git-send-email-arnd@arndb.de>
+Subject: [PATCH 2/4] ASoC: samsung/smartq: use dynamic registration
+Date: Fri, 11 Jul 2014 15:45:06 +0200
+Message-ID: <1405086308-1461192-5-git-send-email-arnd@arndb.de>
 References: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
