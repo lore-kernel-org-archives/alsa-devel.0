@@ -1,20 +1,14 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [RFC][PATCH 1/2] dma: imx-sdma: Add device to
-	device support
-Date: Fri, 11 Jul 2014 18:11:28 +0800
-Message-ID: <20140711101126.GA667@MrMyself>
-References: <cover.1402653667.git.nicoleotsuka@gmail.com>
- <42744e778ce8a4b424d5642f86d18ef047bcc7cd.1402653667.git.nicoleotsuka@gmail.com>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH] ASoC: Intel: Add Broadwell Machine support
+Date: Fri, 11 Jul 2014 11:22:00 +0800
+Message-ID: <1405048920-25169-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0242.outbound.protection.outlook.com [207.46.163.242])
- by alsa0.perex.cz (Postfix) with ESMTP id C16BF265083
- for <alsa-devel@alsa-project.org>; Fri, 11 Jul 2014 12:24:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <42744e778ce8a4b424d5642f86d18ef047bcc7cd.1402653667.git.nicoleotsuka@gmail.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFE57261AE9
+ for <alsa-devel@alsa-project.org>; Fri, 11 Jul 2014 05:22:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,156 +18,312 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: vinod.koul@intel.com
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org, tiwai@suse.de, timur@tabi.org, lgirdwood@gmail.com, b42378@freescale.com, b02247@freescale.com, grant.likely@linaro.org, devicetree@vger.kernel.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, s.hauer@pengutronix.de, b38343@freescale.com, Nicolin Chen <nicoleotsuka@gmail.com>, robh+dt@kernel.org, dan.j.williams@intel.com, rdunlap@infradead.org, linux-kernel@vger.kernel.org, broonie@kernel.org, galak@codeaurora.org, dmaengine@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 13, 2014 at 06:07:04PM +0800, Nicolin Chen wrote:
-> This patch adds DEV_TO_DEV support for i.MX SDMA driver to support data
-> tranfer between two peripheral FIFOs. The per_2_per script requires two
-> peripheral addresses and two DMA requests. So this patch also adds them
-> into private structure.
-> 
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Hi Vinod,
+Add support for Broadwell based machines with SST DSP audio.
 
-The patch has been here for a month without any comment.
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ sound/soc/intel/Kconfig     |  12 +++
+ sound/soc/intel/Makefile    |   2 +
+ sound/soc/intel/broadwell.c | 251 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 265 insertions(+)
+ create mode 100644 sound/soc/intel/broadwell.c
 
-Could you please help on the review or give me an ack?
-
-I really hope my ASRC driver will be merged within this cycle.
-
-Thank you,
-Nicolin
-
-> ---
->  drivers/dma/imx-sdma.c                | 40 ++++++++++++++++++++++++++++++-----
->  include/linux/platform_data/dma-imx.h |  1 +
->  2 files changed, 36 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-> index 85561dc..5af1a69 100644
-> --- a/drivers/dma/imx-sdma.c
-> +++ b/drivers/dma/imx-sdma.c
-> @@ -258,8 +258,9 @@ struct sdma_channel {
->  	struct sdma_buffer_descriptor	*bd;
->  	dma_addr_t			bd_phys;
->  	unsigned int			pc_from_device, pc_to_device;
-> +	unsigned int			device_to_device;
->  	unsigned long			flags;
-> -	dma_addr_t			per_address;
-> +	dma_addr_t			per_address, per_address2;
->  	unsigned long			event_mask[2];
->  	unsigned long			watermark_level;
->  	u32				shp_addr, per_addr;
-> @@ -696,6 +697,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
->  
->  	sdmac->pc_from_device = 0;
->  	sdmac->pc_to_device = 0;
-> +	sdmac->device_to_device = 0;
->  
->  	switch (peripheral_type) {
->  	case IMX_DMATYPE_MEMORY:
-> @@ -770,6 +772,7 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
->  
->  	sdmac->pc_from_device = per_2_emi;
->  	sdmac->pc_to_device = emi_2_per;
-> +	sdmac->device_to_device = per_2_per;
->  }
->  
->  static int sdma_load_context(struct sdma_channel *sdmac)
-> @@ -782,11 +785,12 @@ static int sdma_load_context(struct sdma_channel *sdmac)
->  	int ret;
->  	unsigned long flags;
->  
-> -	if (sdmac->direction == DMA_DEV_TO_MEM) {
-> +	if (sdmac->direction == DMA_DEV_TO_MEM)
->  		load_address = sdmac->pc_from_device;
-> -	} else {
-> +	else if (sdmac->direction == DMA_DEV_TO_DEV)
-> +		load_address = sdmac->device_to_device;
-> +	else
->  		load_address = sdmac->pc_to_device;
-> -	}
->  
->  	if (load_address < 0)
->  		return load_address;
-> @@ -850,6 +854,12 @@ static int sdma_config_channel(struct sdma_channel *sdmac)
->  		sdma_event_enable(sdmac, sdmac->event_id0);
->  	}
->  
-> +	if (sdmac->event_id1) {
-> +		if (sdmac->event_id1 >= sdmac->sdma->drvdata->num_events)
-> +			return -EINVAL;
-> +		sdma_event_enable(sdmac, sdmac->event_id1);
-> +	}
-> +
->  	switch (sdmac->peripheral_type) {
->  	case IMX_DMATYPE_DSP:
->  		sdma_config_ownership(sdmac, false, true, true);
-> @@ -880,7 +890,12 @@ static int sdma_config_channel(struct sdma_channel *sdmac)
->  		/* Watermark Level */
->  		sdmac->watermark_level |= sdmac->watermark_level;
->  		/* Address */
-> -		sdmac->shp_addr = sdmac->per_address;
-> +		if (sdmac->direction == DMA_DEV_TO_DEV) {
-> +			sdmac->shp_addr = sdmac->per_address2;
-> +			sdmac->per_addr = sdmac->per_address;
-> +		} else {
-> +			sdmac->shp_addr = sdmac->per_address;
-> +		}
->  	} else {
->  		sdmac->watermark_level = 0; /* FIXME: M3_BASE_ADDRESS */
->  	}
-> @@ -974,6 +989,7 @@ static int sdma_alloc_chan_resources(struct dma_chan *chan)
->  
->  	sdmac->peripheral_type = data->peripheral_type;
->  	sdmac->event_id0 = data->dma_request;
-> +	sdmac->event_id1 = data->dma_request2;
->  
->  	clk_enable(sdmac->sdma->clk_ipg);
->  	clk_enable(sdmac->sdma->clk_ahb);
-> @@ -1213,6 +1229,19 @@ static int sdma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
->  			sdmac->watermark_level = dmaengine_cfg->src_maxburst *
->  						dmaengine_cfg->src_addr_width;
->  			sdmac->word_size = dmaengine_cfg->src_addr_width;
-> +		} else if (dmaengine_cfg->direction == DMA_DEV_TO_DEV) {
-> +			sdmac->per_address = dmaengine_cfg->src_addr;
-> +			sdmac->per_address2 = dmaengine_cfg->dst_addr;
-> +			/*
-> +			 * For per_2_per sciprt, register r7 requires two
-> +			 * watermark levels: the lower placed at bits [0-7]
-> +			 * and the higher one placed at bits [16-23].
-> +			 */
-> +			sdmac->watermark_level =
-> +				dmaengine_cfg->src_maxburst & 0xff;
-> +			sdmac->watermark_level |=
-> +				(dmaengine_cfg->dst_maxburst & 0xff) << 16;
-> +			sdmac->word_size = dmaengine_cfg->dst_addr_width;
->  		} else {
->  			sdmac->per_address = dmaengine_cfg->dst_addr;
->  			sdmac->watermark_level = dmaengine_cfg->dst_maxburst *
-> @@ -1433,6 +1462,7 @@ static struct dma_chan *sdma_xlate(struct of_phandle_args *dma_spec,
->  	data.dma_request = dma_spec->args[0];
->  	data.peripheral_type = dma_spec->args[1];
->  	data.priority = dma_spec->args[2];
-> +	data.dma_request2 = 0;
->  
->  	return dma_request_channel(mask, sdma_filter_fn, &data);
->  }
-> diff --git a/include/linux/platform_data/dma-imx.h b/include/linux/platform_data/dma-imx.h
-> index 7aa0e89..6a1357d 100644
-> --- a/include/linux/platform_data/dma-imx.h
-> +++ b/include/linux/platform_data/dma-imx.h
-> @@ -51,6 +51,7 @@ enum imx_dma_prio {
->  
->  struct imx_dma_data {
->  	int dma_request; /* DMA request line */
-> +	int dma_request2; /* secondary DMA request line */
->  	enum sdma_peripheral_type peripheral_type;
->  	int priority;
->  };
-> -- 
-> 1.8.4
-> 
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index c30fedb..0b305f9 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -58,3 +58,15 @@ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	help
+ 	  This adds audio driver for Intel Baytrail platform based boards
+ 	  with the MAX98090 audio codec.
++
++config SND_SOC_INTEL_BROADWELL_MACH
++	tristate "ASoC Audio DSP support for Intel Broadwell Wildcatpoint"
++	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS
++	select SND_SOC_INTEL_HASWELL
++	select SND_COMPRESS_OFFLOAD
++	select SND_SOC_RT286
++	help
++	  This adds support for the Wilcatpoint Audio DSP on Intel(R) Broadwell
++	  Ultrabook platforms.
++	  Say Y if you have such a device
++	  If unsure select "N".
+diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
+index 4bfca79..7acbfc4 100644
+--- a/sound/soc/intel/Makefile
++++ b/sound/soc/intel/Makefile
+@@ -24,7 +24,9 @@ obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += snd-soc-sst-baytrail-pcm.o
+ snd-soc-sst-haswell-objs := haswell.o
+ snd-soc-sst-byt-rt5640-mach-objs := byt-rt5640.o
+ snd-soc-sst-byt-max98090-mach-objs := byt-max98090.o
++snd-soc-sst-broadwell-objs := broadwell.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH) += snd-soc-sst-byt-max98090-mach.o
++obj-$(CONFIG_SND_SOC_INTEL_BROADWELL_MACH) += snd-soc-sst-broadwell.o
+diff --git a/sound/soc/intel/broadwell.c b/sound/soc/intel/broadwell.c
+new file mode 100644
+index 0000000..0e550f1
+--- /dev/null
++++ b/sound/soc/intel/broadwell.c
+@@ -0,0 +1,251 @@
++/*
++ * Intel Broadwell Wildcatpoint SST Audio
++ *
++ * Copyright (C) 2013, Intel Corporation. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License version
++ * 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
++
++#include "sst-dsp.h"
++#include "sst-haswell-ipc.h"
++
++#include "../codecs/rt286.h"
++
++static const struct snd_soc_dapm_widget broadwell_widgets[] = {
++	SND_SOC_DAPM_HP("Headphones", NULL),
++	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
++	SND_SOC_DAPM_MIC("DMIC1", NULL),
++	SND_SOC_DAPM_MIC("DMIC2", NULL),
++	SND_SOC_DAPM_LINE("Line Jack", NULL),
++};
++
++static const struct snd_soc_dapm_route broadwell_rt286_map[] = {
++
++	/* speaker */
++	{"Speaker", NULL, "SPOR"},
++	{"Speaker", NULL, "SPOL"},
++
++	/* HP jack connectors - unknown if we have jack deteck */
++	{"Headphones", NULL, "HPO Pin"},
++
++	/* other jacks */
++	{"MIC1", NULL, "Mic Jack"},
++	{"LINE1", NULL, "Line Jack"},
++
++	/* digital mics */
++	{"DMIC1 Pin", NULL, "DMIC1"},
++	{"DMIC2 Pin", NULL, "DMIC2"},
++
++	/* CODEC BE connections */
++	{"SSP0 CODEC IN", NULL, "AIF1 Capture"},
++	{"AIF1 Playback", NULL, "SSP0 CODEC OUT"},
++};
++
++static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
++			struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	/* The ADSP will covert the FE rate to 48k, stereo */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++
++	/* set SSP0 to 16 bit */
++	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
++				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
++				    SNDRV_PCM_FORMAT_S16_LE);
++	return 0;
++}
++
++static int broadwell_rt286_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret;
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT286_SCLK_S_PLL, 24000000,
++		SND_SOC_CLOCK_IN);
++
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
++		return ret;
++	}
++
++	return ret;
++}
++
++static struct snd_soc_ops broadwell_rt286_ops = {
++	.hw_params = broadwell_rt286_hw_params,
++};
++
++static int broadwell_rtd_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_codec *codec = rtd->codec;
++	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	struct sst_pdata *pdata = dev_get_platdata(rtd->platform->dev);
++	struct sst_hsw *broadwell = pdata->dsp;
++	int ret;
++
++	/* Set ADSP SSP port settings */
++	ret = sst_hsw_device_set_config(broadwell, SST_HSW_DEVICE_SSP_0,
++		SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
++		SST_HSW_DEVICE_CLOCK_MASTER, 9);
++	if (ret < 0) {
++		dev_err(rtd->dev, "error: failed to set device config\n");
++		return ret;
++	}
++
++	/* always connected - check HP for jack detect */
++	snd_soc_dapm_enable_pin(dapm, "Headphones");
++	snd_soc_dapm_enable_pin(dapm, "Speaker");
++	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
++	snd_soc_dapm_enable_pin(dapm, "Line Jack");
++	snd_soc_dapm_enable_pin(dapm, "DMIC1");
++	snd_soc_dapm_enable_pin(dapm, "DMIC2");
++
++	return 0;
++}
++
++/* broadwell digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link broadwell_rt286_dais[] = {
++	/* Front End DAI links */
++	{
++		.name = "System PCM",
++		.stream_name = "System Playback",
++		.cpu_dai_name = "System Pin",
++		.platform_name = "haswell-pcm-audio",
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.init = broadwell_rtd_init,
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_playback = 1,
++	},
++	{
++		.name = "Offload0",
++		.stream_name = "Offload0 Playback",
++		.cpu_dai_name = "Offload0 Pin",
++		.platform_name = "haswell-pcm-audio",
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_playback = 1,
++	},
++	{
++		.name = "Offload1",
++		.stream_name = "Offload1 Playback",
++		.cpu_dai_name = "Offload1 Pin",
++		.platform_name = "haswell-pcm-audio",
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_playback = 1,
++	},
++	{
++		.name = "Loopback PCM",
++		.stream_name = "Loopback",
++		.cpu_dai_name = "Loopback Pin",
++		.platform_name = "haswell-pcm-audio",
++		.dynamic = 0,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_capture = 1,
++	},
++	{
++		.name = "Capture PCM",
++		.stream_name = "Capture",
++		.cpu_dai_name = "Capture Pin",
++		.platform_name = "haswell-pcm-audio",
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_capture = 1,
++	},
++
++	/* Back End DAI links */
++	{
++		/* SSP0 - Codec */
++		.name = "Codec",
++		.be_id = 0,
++		.cpu_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "snd-soc-dummy",
++		.no_pcm = 1,
++		.codec_name = "i2c-INT343A:00",
++		.codec_dai_name = "rt286-aif1",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++		.ignore_suspend = 1,
++		.ignore_pmdown_time = 1,
++		.be_hw_params_fixup = broadwell_ssp0_fixup,
++		.ops = &broadwell_rt286_ops,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++	},
++};
++
++/* broadwell audio machine driver for WPT + RT286S */
++static struct snd_soc_card broadwell_rt286 = {
++	.name = "broadwell-rt286",
++	.owner = THIS_MODULE,
++	.dai_link = broadwell_rt286_dais,
++	.num_links = ARRAY_SIZE(broadwell_rt286_dais),
++	.dapm_widgets = broadwell_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(broadwell_widgets),
++	.dapm_routes = broadwell_rt286_map,
++	.num_dapm_routes = ARRAY_SIZE(broadwell_rt286_map),
++	.fully_routed = true,
++};
++
++static int broadwell_audio_probe(struct platform_device *pdev)
++{
++	broadwell_rt286.dev = &pdev->dev;
++
++	return snd_soc_register_card(&broadwell_rt286);
++}
++
++static int broadwell_audio_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_card(&broadwell_rt286);
++	return 0;
++}
++
++static struct platform_driver broadwell_audio = {
++	.probe = broadwell_audio_probe,
++	.remove = broadwell_audio_remove,
++	.driver = {
++		.name = "broadwell-audio",
++		.owner = THIS_MODULE,
++	},
++};
++
++module_platform_driver(broadwell_audio)
++
++/* Module information */
++MODULE_AUTHOR("Liam Girdwood, Xingchao Wang");
++MODULE_DESCRIPTION("Intel SST Audio for WPT/Broadwell");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:broadwell-audio");
+-- 
+1.8.3.2
