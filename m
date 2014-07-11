@@ -1,13 +1,11 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 2/4] ASoC: samsung/smartq: use dynamic registration
-Date: Fri, 11 Jul 2014 15:45:06 +0200
-Message-ID: <1405086308-1461192-5-git-send-email-arnd@arndb.de>
-References: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
+Subject: [PATCH] ASoC: s3c64xx/smartq: use dynamic registration
+Date: Fri, 11 Jul 2014 15:45:02 +0200
+Message-ID: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -33,14 +31,12 @@ Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Maurus Cuelenaere <mcuelenaere@gmail.com>
 Cc: Kukjin Kim <kgene.kim@samsung.com>
 ---
- arch/arm/mach-s3c64xx/mach-smartq.c           | 10 ++++
- include/linux/platform_data/asoc-s3c-smartq.h | 10 ++++
- sound/soc/samsung/smartq_wm8987.c             | 73 ++++++++++-----------------
- 3 files changed, 47 insertions(+), 46 deletions(-)
- create mode 100644 include/linux/platform_data/asoc-s3c-smartq.h
+ arch/arm/mach-s3c64xx/mach-smartq.c | 10 +++++
+ sound/soc/samsung/smartq_wm8987.c   | 73 ++++++++++++++-----------------------
+ 2 files changed, 37 insertions(+), 46 deletions(-)
 
 diff --git a/arch/arm/mach-s3c64xx/mach-smartq.c b/arch/arm/mach-s3c64xx/mach-smartq.c
-index b3d13537a7f0..4c111f60dbf2 100644
+index b3d1353..4c111f6 100644
 --- a/arch/arm/mach-s3c64xx/mach-smartq.c
 +++ b/arch/arm/mach-s3c64xx/mach-smartq.c
 @@ -20,6 +20,7 @@
@@ -72,24 +68,8 @@ index b3d13537a7f0..4c111f60dbf2 100644
 +				      &smartq_audio_pdata,
 +				      sizeof (smartq_audio_pdata));
  }
-diff --git a/include/linux/platform_data/asoc-s3c-smartq.h b/include/linux/platform_data/asoc-s3c-smartq.h
-new file mode 100644
-index 000000000000..5bddc3586802
---- /dev/null
-+++ b/include/linux/platform_data/asoc-s3c-smartq.h
-@@ -0,0 +1,10 @@
-+#ifndef __PLATFORM_DATA_ASOC_S3C_SMARTQ
-+#define __PLATFORM_DATA_ASOC_S3C_SMARTQ
-+
-+struct smartq_audio_pdata {
-+	int gpio_jack;
-+	int gpio_amp;
-+};
-+
-+#endif
-+
 diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
-index 9b0ffacab790..8c4a0a285ce7 100644
+index 9b0ffac..8c4a0a2 100644
 --- a/sound/soc/samsung/smartq_wm8987.c
 +++ b/sound/soc/samsung/smartq_wm8987.c
 @@ -19,8 +19,7 @@
