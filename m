@@ -1,12 +1,13 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rockchips: fix build error
-Date: Fri, 11 Jul 2014 14:48:48 +0100
-Message-ID: <20140711134848.GX30458@sirena.org.uk>
-References: <1405084028-1209898-1-git-send-email-arnd@arndb.de>
+Subject: Re: [PATCH 0/4] ASoC: samsung updates from arm testing
+Date: Fri, 11 Jul 2014 14:54:00 +0100
+Message-ID: <20140711135400.GY30458@sirena.org.uk>
+References: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
+ <1405086308-1461192-2-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5732481588957454393=="
+Content-Type: multipart/mixed; boundary="===============5263814657280680091=="
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1405084028-1209898-1-git-send-email-arnd@arndb.de>
+In-Reply-To: <1405086308-1461192-2-git-send-email-arnd@arndb.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -17,52 +18,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Jianqun Xu <xjq@rock-chips.com>, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
+Cc: t.figa@samsung.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5732481588957454393==
+--===============5263814657280680091==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pvGBTzZYFChjGQji"
+	protocol="application/pgp-signature"; boundary="u+HAydxlPP+oPOdi"
 Content-Disposition: inline
 
 
---pvGBTzZYFChjGQji
+--u+HAydxlPP+oPOdi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 11, 2014 at 03:07:08PM +0200, Arnd Bergmann wrote:
-> The newly added rockchip_i2s driver is lacking an include of
-> linux/module.h, causing a build error in some cases:
+On Fri, Jul 11, 2014 at 03:45:03PM +0200, Arnd Bergmann wrote:
 
-A fix for this has already been applied.
+> Here are a few patches from my randconfig and multiplatform series.
+> The smartq patch is a re-send of the one I screwed up the other day.
+> the dependencies and dma data removal should be trivial, the
+> dmaengine one probably needs some closer inspection.
 
---pvGBTzZYFChjGQji
+Hrm, can you check what's going on with the series - I've got two copies
+of patch 2 and an extra patch [PATCH] ASoC: s3c64xx/smartq: use dynamic
+registration which is threaded before this cover letter and looks like a
+resend of the prior copy with the platform_data header missing that got
+included by mistake?  The patches look OK but I just want to make sure
+I'm applying the right things.
+
+--u+HAydxlPP+oPOdi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTv+s4AAoJELSic+t+oim9d/EP/0nMhsAYcplyh5pEcmyKrn3r
-h2/QEMi+anbPW4xnY8WyoPBi+cjVidjVUJhVbaJwJWT9myDOkFCLD+S3zFUNprCT
-9cr0m9THQT4g1+m4zVLLHxjAokP2rdZ9nxNJlxFeQnia2jwYtKyMyO7UFGHeLJ2t
-kUSPV8M3dfhDBNm8Ky3tVQ0fwX6w/Ib2eX7eyKlKmtA2SVShAZ4QNRH7jfTfwsMy
-YPBHMVCQ7cOwur+6gJiZhGQLQfwJ8utE7JD1VGDwwF/sQvFwTt8nvF1OQA+4jDU1
-7wOd7beTxYBhGsxuKYFWZJM5mBAqVLeyQPZ9c29YMSfXWO8vMMTYiQR50IwcPxf9
-naeaoNUe0ZwxrqxDCpvXCUGQamNJV2PiVmMgtS8xOyZeba+NofK1AUElzFzm0IOV
-qUpDhjTOwpVE+cBSGhEvjMJ5z7dEigd1O/3BgDj+JoojxgRb7CqfwPEP3av7exyX
-ed0bIjFQAGIJSz9BmpFlMDklSZQZSOqffRgDDtD65FRwYW0wdnOtLE8hzfMJ2Yme
-0l1BqpsDc/D7FyshSAE0xn8Sdv1hOETl4P231+ZWn7eiHEJasROaArd+JoPt2h0j
-gQBPnksJSJKpOQfbRjvBscuO9Kz+DQsHz+gcrIRIrH4TB3xrVd44k4VePvwQRm1b
-5PnGRMurFJfC+1uN/gbU
-=aMvU
+iQIcBAEBAgAGBQJTv+xwAAoJELSic+t+oim9/IIP/2Ka8zRPXObUQfZIPgkJX0Oq
+cFTbVku8wCZ75AsrOyQRfWp0ecXu7MYM3LVDNYgC8Ra/YaxaSl47uAA8MNiKB/4Z
+rTH70uFSZTfPq/ITuFC3P/8sShHE/xOq9Cr2PAoesSC5FF+iuCP2IoeJu0TVQnpO
+mYoLf9w/WrWnqQwxdHmOHIwQc8Y0WB/y+LliE1KaEUJ4jz3NaCj+a/Lg0pWTSYnI
+/9F40EjOmbdfPjCVwq1fe1senasvYCBrz+LTGS5aTFEaAnDuZsSUr7Af1giEeRz6
+rFniQW49FtNx7z94nMTn3JPWMZN3HCSeWDW7cJS1Nozeu2E9xWvTtGN4mG9kUyPm
+1g2tMdiwrOlcn5rCIj3wKXy/E6+4DSjj7udwgeV/lYTxjdumueTlrhNry7rl4wP7
+a2UdUxxOrAouOtzvPT9WXOUdw8KN5iLMiZvpVZiz948SNGQA3Xhi1heZYQnNVh0u
+Mmi9WngHvpxLEG1BSjSryz/iCFH5KRwORD1h6bwWP2z14HnkfNR3f5MNfhUwr5Mb
+knweQGQwaCX8seyNdw0ZJzpv+e60ShD7pwvs3zDjUMTs37V4gbIGeIOjl5REjGyy
+tKfgFDy8R1Dff9cdsJJZP0m7J2UdCUHDCbrufyU0suxlF60VU3trhG9VXPayYZQh
+rGZ7fkcjEwwCUGklFbfq
+=5xEO
 -----END PGP SIGNATURE-----
 
---pvGBTzZYFChjGQji--
+--u+HAydxlPP+oPOdi--
 
 
---===============5732481588957454393==
+--===============5263814657280680091==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -73,4 +82,4 @@ linux-arm-kernel mailing list
 linux-arm-kernel@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============5732481588957454393==--
+--===============5263814657280680091==--
