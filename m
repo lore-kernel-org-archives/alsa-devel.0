@@ -1,44 +1,69 @@
-From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH 2/2] Documentation: dt: bindings: sound: Add bindings
- file for CS35L32
-Date: Thu, 31 Jul 2014 16:28:03 -0500
-Message-ID: <alpine.DEB.2.02.1407311626510.7394@heelrod>
-References: <1406664163-10506-1-git-send-email-brian.austin@cirrus.com>
- <1406664163-10506-2-git-send-email-brian.austin@cirrus.com>
- <20140731202149.GX17528@sirena.org.uk>
- <alpine.DEB.2.02.1407311528570.7394@heelrod>
- <20140731211828.GA17528@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140731211828.GA17528-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
-List-Id: alsa-devel@alsa-project.org
+Return-Path: <alsa-devel-bounces@alsa-project.org>
+Message-id: <53C3BEB9.7000706@samsung.com>
+Date: Mon, 14 Jul 2014 13:27:53 +0200
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+MIME-version: 1.0
+References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
+ <1403108551-25058-2-git-send-email-s.nawrocki@samsung.com>
+ <20140630184658.GE23300@sirena.org.uk>
+In-reply-to: <20140630184658.GE23300@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH V2 1/2] ASoC: samsung: Add machine driver
+	for Odroid X2/U3
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, pawel.moll@arm.com, zhen1.chen@samsung.com, kyungmin.park@samsung.com, galak@codeaurora.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
+List-ID: <alsa-devel@alsa-project.org>
 
-On Thu, 31 Jul 2014, Mark Brown wrote:
+On 30/06/14 20:46, Mark Brown wrote:
+> On Wed, Jun 18, 2014 at 06:22:30PM +0200, Sylwester Nawrocki wrote:
+> 
+>> +struct odroidx2_drv_data odroidx2_drvdata = {
+>> +	.dapm_widgets		= odroidx2_dapm_widgets,
+>> +	.num_dapm_widgets	= ARRAY_SIZE(odroidx2_dapm_widgets),
+>> +};
+>> +
+>> +struct odroidx2_drv_data odroidu3_drvdata = {
+>> +	.dapm_widgets		= odroidu3_dapm_widgets,
+>> +	.num_dapm_widgets	= ARRAY_SIZE(odroidu3_dapm_widgets),
+>> +};
+> 
+>> +	ret = snd_soc_of_parse_audio_routing(card, "samsung,audio-routing");
+>> +	if (ret < 0)
+>> +		return ret;
+> 
+> Given that the widgets don't have any actions defined and the routing is
+> all done by DT it might be easier and more flexible to just define all
+> the widgets all the time and let them hang there if they're not in use,
+> that way you don't need multiple compatible strings.  If you do that
+> you're then very close to being able to use simple-card...
 
-> On Thu, Jul 31, 2014 at 03:40:51PM -0500, Brian Austin wrote:
-> > On Thu, 31 Jul 2014, Mark Brown wrote:
-> > > On Tue, Jul 29, 2014 at 03:02:43PM -0500, Brian Austin wrote:
-> 
-> > > > +  - cirrus,gain-manager : Audio-gain management when LEDs are active.
-> > > > +  0 = (Default) Automatically reduces audio volume once by 3 dB, only if needed
-> > > > +  to avoid thermal shutdown or current limiting the boost converter.
-> > > > +  If the condition persists, the CS35L32 examine s ILED_MNG and responds accordingly.
-> > > > +  Audio recovers to original volume automatically at the end of the LED event.
-> > > > +  1 = User controls volume (nonautomatic).
-> 
-> > > This looks like something that should be a runtime control.
-> 
-> > I thought so too but "They" assure me it is not.
-> 
-> They may be unfamiliar with upstream policies and standards!
-> 
-That is a fair assumption. I can turn it into a Switch kcontrol and remove 
-it from DT.
+Too bad, I noticed this comment only just now.  I'll consider this and
+will try again and see how simple-card could be used.  There is also the
+samsung-i2s-sec secondary 'overlay' CPU DAI that would need to be handled,
+and we have it now internally specified in the machine driver through
+cpu_dai_name, rather than cpu_of_node.
+There might be some more work in the driver needed to support the
+secondary I2S interface generically with DT.
+
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Regards,
+Sylwester
+--
+To unsubscribe from this list: send the line "unsubscribe alsa-devel" in
+the body of a message to majordomo@vger.kernel.org
 More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
