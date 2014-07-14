@@ -1,16 +1,16 @@
 From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH 4/5] ASoC: Intel: Add dummy read for SRAM block
-	enable
-Date: Mon, 14 Jul 2014 16:37:54 +0800
-Message-ID: <1405327075-27831-5-git-send-email-yang.jie@intel.com>
+Subject: [PATCH 3/5] ASoC: Intel: Use a table for ADSP SRAM
+	shift
+Date: Mon, 14 Jul 2014 16:37:53 +0800
+Message-ID: <1405327075-27831-4-git-send-email-yang.jie@intel.com>
 References: <1405327075-27831-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id E09F72617AB
- for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 10:38:38 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EA9826172C
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 10:38:37 +0200 (CEST)
 In-Reply-To: <1405327075-27831-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,44 +25,67 @@ To: alsa-devel@alsa-project.org
 Cc: mengdong.lin@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Add dummy read after each block enable, to workaround
-SRAM write missing bytes issue.
+Use a table for ADSP IRAM/DRAM bit shift.
 
 Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
- sound/soc/intel/sst-haswell-dsp.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/intel/sst-haswell-dsp.c | 39 +++++++++++++++++++++++++++++----------
+ 1 file changed, 29 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
-index f4276fb..cc58b31 100644
+index 1b96344..f4276fb 100644
 --- a/sound/soc/intel/sst-haswell-dsp.c
 +++ b/sound/soc/intel/sst-haswell-dsp.c
-@@ -381,6 +381,17 @@ static u32 hsw_block_get_bit(struct sst_mem_block *block)
- 	return bit;
- }
- 
-+/*dummy read a SRAM block.*/
-+static void sst_mem_block_dummy_read(struct sst_mem_block *block)
-+{
-+	u32 size;
-+	u8 tmp_buf[4];
-+	struct sst_dsp *sst = block->dsp;
-+
-+	size = block->size > 4 ? 4 : block->size;
-+	memcpy_fromio(tmp_buf, sst->addr.lpe + block->offset, size);
-+}
-+
- /* enable 32kB memory block - locks held by caller */
- static int hsw_block_enable(struct sst_mem_block *block)
- {
-@@ -400,6 +411,8 @@ static int hsw_block_enable(struct sst_mem_block *block)
- 	/* wait 18 DSP clock ticks */
- 	udelay(10);
- 
-+	/*add a dummy read before the SRAM block is written, otherwise the writing may miss bytes sometimes.*/
-+	sst_mem_block_dummy_read(block);
+@@ -342,21 +342,40 @@ static int hsw_acpi_resource_map(struct sst_dsp *sst, struct sst_pdata *pdata)
  	return 0;
  }
  
++struct sst_sram_shift {
++	u32 dev_id;	/* SST Device IDs  */
++	u32 iram_shift;
++	u32 dram_shift;
++};
++
++static const struct sst_sram_shift sram_shift[] = {
++	{SST_DEV_ID_LYNX_POINT, 6, 16}, /* lp */
++	{SST_DEV_ID_WILDCAT_POINT, 2, 12}, /* wpt */
++};
+ static u32 hsw_block_get_bit(struct sst_mem_block *block)
+ {
+-	u32 bit = 0, shift = 0;
++	u32 bit = 0, shift = 0, index;
++	struct sst_dsp *sst = block->dsp;
+ 
+-	switch (block->type) {
+-	case SST_MEM_DRAM:
+-		shift = 16;
+-		break;
+-	case SST_MEM_IRAM:
+-		shift = 6;
+-		break;
+-	default:
+-		return 0;
++	for (index = 0; index < ARRAY_SIZE(sram_shift); index++) {
++		if (sram_shift[index].dev_id == sst->id)
++			break;
+ 	}
+ 
++	if (index < ARRAY_SIZE(sram_shift)) {
++		switch (block->type) {
++		case SST_MEM_DRAM:
++			shift = sram_shift[index].dram_shift;
++			break;
++		case SST_MEM_IRAM:
++			shift = sram_shift[index].iram_shift;
++			break;
++		default:
++			shift = 0;
++		}
++	} else
++		shift = 0;
++
+ 	bit = 1 << (block->index + shift);
+ 
+ 	return bit;
 -- 
 1.8.3.2
