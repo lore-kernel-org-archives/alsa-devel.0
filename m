@@ -1,78 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: samsung: add explicit i2c/spi
-	dependencies
-Date: Mon, 14 Jul 2014 19:51:26 +0100
-Message-ID: <20140714185126.GB6800@sirena.org.uk>
+Subject: Re: [PATCH 3/4] ASoC: samsung: s3c24xx dmaengine follow-up
+Date: Mon, 14 Jul 2014 19:51:58 +0100
+Message-ID: <20140714185158.GC6800@sirena.org.uk>
 References: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
- <1405086308-1461192-3-git-send-email-arnd@arndb.de>
+ <1405086308-1461192-6-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4201993954821336775=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2EC7E261B02
- for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 20:51:39 +0200 (CEST)
-In-Reply-To: <1405086308-1461192-3-git-send-email-arnd@arndb.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Oh6wehMCKJhhoxlo"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1405086308-1461192-6-git-send-email-arnd@arndb.de>
+Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: t.figa@samsung.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, lgirdwood@gmail.com, t.figa@samsung.com, Heiko Stuebner <heiko@sntech.de>, Sangbeom Kim <sbkim73@samsung.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4201993954821336775==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/w6WUUxYkubDgwa5"
-Content-Disposition: inline
-
-
---/w6WUUxYkubDgwa5
+--Oh6wehMCKJhhoxlo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 11, 2014 at 03:45:04PM +0200, Arnd Bergmann wrote:
-> I got another build error from SND_SOC_SMARTQ selecting
-> SND_SOC_WM8750 without ensuring that I2C is enabled,
-> in this example, i2c is a loadable module:
+On Fri, Jul 11, 2014 at 03:45:07PM +0200, Arnd Bergmann wrote:
+> Commit ae602456e83c92 ("ASoC: samsung: drop support for legacy
+> S3C24XX DMA API") removed the old code for the samsung specific
+> DMA interfaces, now that everybody can use dmaengine.
 
 Applied, thanks.
 
---/w6WUUxYkubDgwa5
+--Oh6wehMCKJhhoxlo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTxCarAAoJELSic+t+oim9p/sP/iG4pNFZtcM9fqzRRSmSbEal
-KlFKEFYyt6uhl00ilhhx/xvfyWRTUBNidlPPdsSsrjSihVOqPHatK5SI0NiiCsfT
-pcOXgvFBRmEY7ZSt9epziUiZ41RVNUadpCt2V2AKGd9igrp8mdt+ry97FjndK7Nx
-TupkWNVnhwYUmy/RufMzvdro7l2j2bfXoTz8b0L1k9g4WInZxW+/8QIDm/VAe12s
-AdrFK8KGZq83+IdKP/1gcA7keEOd1Z6VmE2/2Vw8aNqWJSPWKP/fqK6/Oz+tqm9y
-eExEXboH7s/uL2bQWv0AcW1FDxDhUTxIawcDgnsmT3y95+CzPZgHX4s+Rt6lLlaI
-CttIb2gzJi86ov/2ShuyDnYb972rAyV28CYsFtKk0ycgxvLVAmsfW0sRRvKj22bB
-NIGWAhs+QzYDzJW6qKWIlwbSn07Nuy8mnfEIiJPhlGZ9oIxzwU2rQhPY2neo1lnZ
-uWu785/rwo//dVtsxzW4um3W0+u8vQH8PhJl9mR/4h8enAtbF2eYS4VGuWWmRy1Z
-fatsYteaJjchPXUeXxyX8l1Ujmhk2Aq/Gol85DIJ+a58zfBcHpSmk7nru+MjRfVJ
-QpI5/8qeoFWajKMA4Wb8a/b3zg+WNt7vhR2rODmdJcInvWV7TwkCW35TK4ZyOfaC
-LtTYhGSgiZ9WGlDZgSX/
-=Mceo
+iQIcBAEBAgAGBQJTxCbLAAoJELSic+t+oim9ZRIP/2Ks2gRzcg1IfHpiVZ9kK72N
+/ssds4lgOJU85dmARbiLYx7V0s3N2IfGKio8NMqwkWOEoorG2uZX8NvsshqKrckO
+GNnPlGh2R50+x+pLtw/xNz2RfFtR6uSUiljPMLCeXdcKYsevNQZy+K821izza+K6
+YuDR7/X79ZQxSW9vfg+gi4rRdF1+n6tjGa44xIUXim5dFPT0V+8y019pqPaf4xw5
+MEYEIjehn916cOPDGl871WrM0ZmjqM6mOpFuowAGcFkA7zspB82PNBQMovbq4bIO
+/q3WlrkN2MVkVUu0y95riZiExsCkPYLKv1YmDLmsiT+5stuGgs27zVWcCxTpigB+
+0RMCBX5JSt+PpiP4KjVNYlcC9mmeGMqjxhwvjJ/GTay4YGd6qOVY8iUaSYw5kg6V
+v+gYiSInEC3+2MxAYBUY98tXc2ZjjzYZ4RdWFvgockWvyulXrW4iFxxjqPvWd5we
+69XQjfO8hj7Ln+zMTX+oMoVJVrdlDoxmwentL6cWCdLrgZApMV/Rghl+N4LM6hF/
+BDLOo8Ot2HhsTuoBDJ+hM6vCZ1uffNXToLXhe1D0uJ+TTFa9Doo84vBSgPmVLJ0K
+lYCBP2klpyJEN6upFTB/vD5llb0BNlGXyvZ4j3PdgCvqOVo6ALJMssZdrA9mJxpd
+B3CNXpnw79ATdUF+3Zbn
+=ujXQ
 -----END PGP SIGNATURE-----
 
---/w6WUUxYkubDgwa5--
-
---===============4201993954821336775==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4201993954821336775==--
+--Oh6wehMCKJhhoxlo--
