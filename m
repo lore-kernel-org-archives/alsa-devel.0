@@ -1,52 +1,122 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: samsung: remove unused DMA data
-Date: Mon, 14 Jul 2014 19:54:01 +0100
-Message-ID: <20140714185401.GD6800@sirena.org.uk>
-References: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
- <1405086308-1461192-7-git-send-email-arnd@arndb.de>
+From: "Murphy, Dan" <dmurphy@ti.com>
+Subject: Re: [PATCH v6] ASoC: tas2552: Support TI TAS2552 Amplifier
+Date: Mon, 14 Jul 2014 19:07:06 +0000
+Message-ID: <00FC9A978A94B7418C33AFAE8A35ED49D80B10@DFLE09.ent.ti.com>
+References: <1405093489-11897-1-git-send-email-dmurphy@ti.com>
+ <20140714184321.GW6800@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PLVMksexArUZ/iL3"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1405086308-1461192-7-git-send-email-arnd@arndb.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, lgirdwood@gmail.com, t.figa@samsung.com, Heiko Stuebner <heiko@sntech.de>, Sangbeom Kim <sbkim73@samsung.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 07/14/2014 01:43 PM, Mark Brown wrote:
+> On Fri, Jul 11, 2014 at 10:44:49AM -0500, Dan Murphy wrote:
+>
+>> @@ -754,4 +755,8 @@ config SND_SOC_TPA6130A2
+>>  	tristate "Texas Instruments TPA6130A2 headphone amplifier"
+>>  	depends on I2C
+>>  
+>> +config SND_SOC_TAS2552
+>> +	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
+>> +	depends on I2C
+>> +
+>>  endmenu
+> Keep this and Makefile sorted - since this is a proper CODEC driver it
+> should be in with the CODECs and also sorted in alphabetical order.
 
---PLVMksexArUZ/iL3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+OK.  I was trying to stay away from a conflict by adding to the
+bottom of the file.
 
-On Fri, Jul 11, 2014 at 03:45:08PM +0200, Arnd Bergmann wrote:
-> The s3c_dma_client structures and the 'ch' and 'ops' members in
-> s3c_dma_params were only used by the legacy DMA driver and serve
-> no function any more. This removes any reference to them.
+>
+>> +static int tas2552_startup(struct snd_pcm_substream *substream,
+>> +			   struct snd_soc_dai *dai)
+>> +{
+>> +	struct snd_soc_codec *codec = dai->codec;
+>> +
+>> +	pm_runtime_get_sync(codec->dev);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void tas2552_shutdown(struct snd_pcm_substream *substream,
+>> +			   struct snd_soc_dai *dai)
+>> +{
+>> +	struct snd_soc_codec *codec = dai->codec;
+>> +
+>> +	pm_runtime_put(codec->dev);
+>> +}
+> These runtime calls should be redundant, the framework should hold a
+> runtime PM reference on devices while they are active.  Does this not
+> work for you?
 
-Applied, thanks.
+I will verify that the calls get called.
 
---PLVMksexArUZ/iL3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>
+>> +	pm_runtime_get_sync(codec->dev);
+> Check the return value here.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+OK
 
-iQIcBAEBAgAGBQJTxCdGAAoJELSic+t+oim9EuwP/ieQi8HP/IYEeO1KjtP6ymOx
-FQSCouwLB0j7OKbYah6DjzpavQHa5EEvA2uCFwC3q9+eHUYBRp/QDQ4U4VfmEgGm
-UQA4gsnvRMlP1n7rFT0kg8OyPJWwT0dcrAyfVvvxr1jZW3mhqd1gxYcfzzdEkCUx
-pjMosidmprvMMBqIydIJOjtjglRMWyAHcyu5QF3MY1iTmPz71RbTpdxGRpx109D2
-QfiB/APcF189GxSGCQW5Jjowf4WgnJaxljBj5CU+rCwzs8mP3txt+yFIqUUbs8g4
-XvYLHe/fhSAxoin1/kRGVsL3XYy3RTAUV2m7lkhXjxSaSOvhTQbPBIkpWe+3j/aj
-KImwsK5L3Q4jgnJBNQTpEldzrQiVNuGYJOVvHx1kansm4DS09HgvsEexJ6YEn7H/
-yLWLMLNE3moQ6xH00dJjtYRcSFm1kzfyBDzOU2Ia4dNk6o+McBpBnzZ2qOUQmeRj
-5n05Mt7RhTrMb9NGLs95i+zOTa/inma7IC0bNvC3FJ1ycJWqy5qpwab1vjhoBJZ0
-5QW29fYqPwgJtyaVQBRMOx/PmSm7etDLJXOA14RubmCGQMySRm2YSfGzhvBjsP95
-39AHA3NPgJpilcCTWlqnmJUWlc979O2Oi+kYhQ0BlhbvzIR6NyxAXA0mb6ZNFy+A
-ILtDTKamgRL8WZeJH/bl
-=jVc0
------END PGP SIGNATURE-----
+>
+>> +	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN |
+>> +				  TAS2552_BOOST_EN | TAS2552_APT_EN |
+>> +				  TAS2552_PLL_ENABLE | TAS2552_LIM_EN);
+> The PLL is enabled all the time not via DAPM or similar (it's never
+> disabled)?
 
---PLVMksexArUZ/iL3--
+Good catch.  I will make sure the PLL Is disabled in the shutdown call.
+
+>
+>> +static int tas2552_resume(struct snd_soc_codec *codec)
+>> +{
+>> +	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
+>> +	int ret;
+>> +
+>> +	ret = regulator_bulk_enable(ARRAY_SIZE(tas2552->supplies),
+>> +				    tas2552->supplies);
+>> +
+>> +	if (ret != 0) {
+>> +		dev_err(codec->dev, "Failed to enable supplies: %d\n",
+>> +			ret);
+>> +	}
+>> +
+>> +	pm_runtime_get_sync(codec->dev);
+> Remove these runtime PM calls from suspend and resume, they're not doing
+> what you think (and will prevent runtime PM from doing anything).  Let
+> the frameworks worry about it for now, or explicitly call the runtime
+> suspend and resume operators if and only if the device is runtime
+> active.
+
+OK
+
+>
+>> +	for (i = 0; i < ARRAY_SIZE(data->supplies); i++)
+>> +		data->supplies[i].supply = tas2552_supply_names[i];
+>> +
+>> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(data->supplies),
+>> +				      data->supplies);
+>> +	if (ret != 0)
+>> +		dev_err(dev, "Failed to request supplies: %d\n", ret);
+> These supplies are mandatory (as they should be) but weren't mentioned
+> in the DT binding - please add them there.
+
+Will add
+
+>
+>> +static const struct i2c_device_id tas2552_id[] = {
+>> +	{ "tas2552-codec", 0 },
+>> +	{ }
+>> +};
+> No -codec.
+
+Missed this one
+
+-- 
+------------------
+Dan Murphy
+
