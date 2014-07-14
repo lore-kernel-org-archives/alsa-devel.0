@@ -1,14 +1,15 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] ASoC: Intel: Cleanup HSW pcm format support
-Date: Mon, 14 Jul 2014 17:37:36 +0800
-Message-ID: <1405330656-29569-1-git-send-email-yang.jie@intel.com>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: [PATCH] ASoC: cs42xx8: Add SND_SOC_DAIFMT_DSP_A support
+Date: Mon, 14 Jul 2014 18:39:31 +0800
+Message-ID: <1405334371-4248-1-git-send-email-shengjiu.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FB1C26172C
- for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 11:38:00 +0200 (CEST)
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0205.outbound.protection.outlook.com [207.46.163.205])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD1362619D0
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 13:01:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,106 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: mengdong.lin@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com
+To: broonie@linaro.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This change removes unsupported formats from System,
-Capture and Loopback FE DAIs.
-Also it fixes S24_LE support on all DAIs.
-While at this fix 24 bit flag for BYT as well.
+According to the spec, the definition of TDM and ONELINE_24 for
+CS42XX8_INTF_DAC and CS42XX8_INTF_ADC is wrong. correct them and enable
+SND_SOC_DAIFMT_DSP_A support.
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
 ---
- sound/soc/intel/sst-baytrail-pcm.c |  2 +-
- sound/soc/intel/sst-haswell-pcm.c  | 27 ++++++++++++++++++---------
- 2 files changed, 19 insertions(+), 10 deletions(-)
+ sound/soc/codecs/cs42xx8.c | 3 +++
+ sound/soc/codecs/cs42xx8.h | 8 ++++----
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/sst-baytrail-pcm.c b/sound/soc/intel/sst-baytrail-pcm.c
-index 8eab973..599401c 100644
---- a/sound/soc/intel/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/sst-baytrail-pcm.c
-@@ -32,7 +32,7 @@ static const struct snd_pcm_hardware sst_byt_pcm_hardware = {
- 				  SNDRV_PCM_INFO_PAUSE |
- 				  SNDRV_PCM_INFO_RESUME,
- 	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
--				  SNDRV_PCM_FORMAT_S24_LE,
-+				  SNDRV_PCM_FMTBIT_S24_LE,
- 	.period_bytes_min	= 384,
- 	.period_bytes_max	= 48000,
- 	.periods_min		= 2,
-diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index 7ec97d7..9ee82ae 100644
---- a/sound/soc/intel/sst-haswell-pcm.c
-+++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -81,7 +81,7 @@ static const struct snd_pcm_hardware hsw_pcm_hardware = {
- 				  SNDRV_PCM_INFO_PAUSE |
- 				  SNDRV_PCM_INFO_RESUME |
- 				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
--	.formats		= SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FORMAT_S24_LE |
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
- 				  SNDRV_PCM_FMTBIT_S32_LE,
- 	.period_bytes_min	= PAGE_SIZE,
- 	.period_bytes_max	= (HSW_PCM_PERIODS_MAX / HSW_PCM_PERIODS_MIN) * PAGE_SIZE,
-@@ -420,7 +420,15 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
- 		sst_hsw_stream_set_valid(hsw, pcm_data->stream, 16);
+diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
+index ec53ffc..02b1520 100644
+--- a/sound/soc/codecs/cs42xx8.c
++++ b/sound/soc/codecs/cs42xx8.c
+@@ -219,6 +219,9 @@ static int cs42xx8_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		val = CS42XX8_INTF_DAC_DIF_RIGHTJ | CS42XX8_INTF_ADC_DIF_RIGHTJ;
  		break;
- 	case SNDRV_PCM_FORMAT_S24_LE:
--		bits = SST_HSW_DEPTH_24BIT;
-+		bits = SST_HSW_DEPTH_32BIT;
-+		sst_hsw_stream_set_valid(hsw, pcm_data->stream, 24);
++	case SND_SOC_DAIFMT_DSP_A:
++		val = CS42XX8_INTF_DAC_DIF_TDM | CS42XX8_INTF_ADC_DIF_TDM;
 +		break;
-+	case SNDRV_PCM_FORMAT_S8:
-+		bits = SST_HSW_DEPTH_8BIT;
-+		sst_hsw_stream_set_valid(hsw, pcm_data->stream, 8);
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		bits = SST_HSW_DEPTH_32BIT;
- 		sst_hsw_stream_set_valid(hsw, pcm_data->stream, 32);
- 		break;
  	default:
-@@ -710,8 +718,9 @@ static int hsw_pcm_new(struct snd_soc_pcm_runtime *rtd)
- }
+ 		dev_err(codec->dev, "unsupported dai format\n");
+ 		return -EINVAL;
+diff --git a/sound/soc/codecs/cs42xx8.h b/sound/soc/codecs/cs42xx8.h
+index da0b94a..b2c10e5 100644
+--- a/sound/soc/codecs/cs42xx8.h
++++ b/sound/soc/codecs/cs42xx8.h
+@@ -128,8 +128,8 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap);
+ #define CS42XX8_INTF_DAC_DIF_RIGHTJ		(2 << CS42XX8_INTF_DAC_DIF_SHIFT)
+ #define CS42XX8_INTF_DAC_DIF_RIGHTJ_16		(3 << CS42XX8_INTF_DAC_DIF_SHIFT)
+ #define CS42XX8_INTF_DAC_DIF_ONELINE_20		(4 << CS42XX8_INTF_DAC_DIF_SHIFT)
+-#define CS42XX8_INTF_DAC_DIF_ONELINE_24		(6 << CS42XX8_INTF_DAC_DIF_SHIFT)
+-#define CS42XX8_INTF_DAC_DIF_TDM		(7 << CS42XX8_INTF_DAC_DIF_SHIFT)
++#define CS42XX8_INTF_DAC_DIF_ONELINE_24		(5 << CS42XX8_INTF_DAC_DIF_SHIFT)
++#define CS42XX8_INTF_DAC_DIF_TDM		(6 << CS42XX8_INTF_DAC_DIF_SHIFT)
+ #define CS42XX8_INTF_ADC_DIF_SHIFT		0
+ #define CS42XX8_INTF_ADC_DIF_WIDTH		3
+ #define CS42XX8_INTF_ADC_DIF_MASK		(((1 << CS42XX8_INTF_ADC_DIF_WIDTH) - 1) << CS42XX8_INTF_ADC_DIF_SHIFT)
+@@ -138,8 +138,8 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap);
+ #define CS42XX8_INTF_ADC_DIF_RIGHTJ		(2 << CS42XX8_INTF_ADC_DIF_SHIFT)
+ #define CS42XX8_INTF_ADC_DIF_RIGHTJ_16		(3 << CS42XX8_INTF_ADC_DIF_SHIFT)
+ #define CS42XX8_INTF_ADC_DIF_ONELINE_20		(4 << CS42XX8_INTF_ADC_DIF_SHIFT)
+-#define CS42XX8_INTF_ADC_DIF_ONELINE_24		(6 << CS42XX8_INTF_ADC_DIF_SHIFT)
+-#define CS42XX8_INTF_ADC_DIF_TDM		(7 << CS42XX8_INTF_ADC_DIF_SHIFT)
++#define CS42XX8_INTF_ADC_DIF_ONELINE_24		(5 << CS42XX8_INTF_ADC_DIF_SHIFT)
++#define CS42XX8_INTF_ADC_DIF_TDM		(6 << CS42XX8_INTF_ADC_DIF_SHIFT)
  
- #define HSW_FORMATS \
--	(SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S16_LE |\
--	 SNDRV_PCM_FMTBIT_S32_LE)
-+	(SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
-+	SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S16_LE |\
-+	SNDRV_PCM_FMTBIT_S8)
- 
- static struct snd_soc_dai_driver hsw_dais[] = {
- 	{
-@@ -721,7 +730,7 @@ static struct snd_soc_dai_driver hsw_dais[] = {
- 			.channels_min = 2,
- 			.channels_max = 2,
- 			.rates = SNDRV_PCM_RATE_48000,
--			.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+			.formats = SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE,
- 		},
- 	},
- 	{
-@@ -752,8 +761,8 @@ static struct snd_soc_dai_driver hsw_dais[] = {
- 			.stream_name = "Loopback Capture",
- 			.channels_min = 2,
- 			.channels_max = 2,
--			.rates = SNDRV_PCM_RATE_8000_192000,
--			.formats = HSW_FORMATS,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.formats = SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE,
- 		},
- 	},
- 	{
-@@ -762,8 +771,8 @@ static struct snd_soc_dai_driver hsw_dais[] = {
- 			.stream_name = "Analog Capture",
- 			.channels_min = 2,
- 			.channels_max = 2,
--			.rates = SNDRV_PCM_RATE_8000_192000,
--			.formats = HSW_FORMATS,
-+			.rates = SNDRV_PCM_RATE_48000,
-+			.formats = SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE,
- 		},
- 	},
- };
+ /* ADC Control & DAC De-Emphasis (Address 05h) */
+ #define CS42XX8_ADCCTL_ADC_HPF_FREEZE_SHIFT	7
 -- 
-1.8.3.2
+1.8.0
