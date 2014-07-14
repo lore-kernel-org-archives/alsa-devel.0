@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/7] ASoC: Intel: add sst shim register
- start-end variables
-Date: Mon, 14 Jul 2014 19:45:22 +0100
-Message-ID: <20140714184522.GX6800@sirena.org.uk>
+Subject: Re: [PATCH 2/7] ASoC: Intel: mfld: add dsp error codes
+Date: Mon, 14 Jul 2014 19:45:55 +0100
+Message-ID: <20140714184555.GY6800@sirena.org.uk>
 References: <1404898076-1882-1-git-send-email-vinod.koul@intel.com>
- <1404898076-1882-2-git-send-email-vinod.koul@intel.com>
+ <1404898076-1882-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5737222061555189950=="
+Content-Type: multipart/mixed; boundary="===============6546302768767319909=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8275E261B02
- for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 20:45:39 +0200 (CEST)
-In-Reply-To: <1404898076-1882-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 18C72261B28
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 20:46:09 +0200 (CEST)
+In-Reply-To: <1404898076-1882-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,51 +26,50 @@ Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, subhransu
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5737222061555189950==
+--===============6546302768767319909==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LmcuB6YxSMQAV95c"
+	protocol="application/pgp-signature"; boundary="XiX5sJQOWZsNRXst"
 Content-Disposition: inline
 
 
---LmcuB6YxSMQAV95c
+--XiX5sJQOWZsNRXst
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 09, 2014 at 02:57:49PM +0530, Vinod Koul wrote:
-> the shim registers start and end can be useful while parsing the shim addresses,
-> so add these
+On Wed, Jul 09, 2014 at 02:57:50PM +0530, Vinod Koul wrote:
+> DSP returns error codes for IPC return so add them in driver
 
 Applied, thanks.
 
---LmcuB6YxSMQAV95c
+--XiX5sJQOWZsNRXst
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIbBAEBAgAGBQJTxCU/AAoJELSic+t+oim9wJgP+Puhp5Uyu7Qw2ZeKDC2ZtPO+
-IJkOzI26glrI9+Iwq0NYrJFexUtoN/snjfvltco2Sh0Z+iqDpukWvucs8DF+cWaL
-BnIkxoTKKWvNizmshg8rda5TyrXX3FchLNaZosaAUDlqxcX5X9CKDOe8opuRfInA
-OP1tm8QWggEycLmKkChJZ5Krhmz6zoqcTadBd7TEJ8quETRhnryHDIsQp9KUk3uJ
-zWfsusJTBtrx1JYK4SBBrMLww4Ep27Z8O6cToyPxz2Knv6lfjk2x9YhmQ7VlO7Pm
-0C8vdiNs3tKGHQ1mhf/7VD8e9baCYxTlUXHeBS3OgMpnH5hKxKJyKK229bku8k93
-WJuEr6vGmU38NF9Fzpq++YhFTo4/JgpjDjJ1GBy1SKUiwE/Q9FVLTho7YZ8np/00
-8kbAPpNUFp9Ip0jMd3F9kwNcM2/trBSKu5glOLeN24euS2Z2xp28ay2GwNch4H9o
-210+G6GzkXnUBqiKWNqxs94HSQUReEZVtQHwqbNyUhH1NWCAbHmWRew1xv/VoAUU
-r5XOApgKuH76JUcLatEwUrfBqaeEf1xJS60GuAciU9UCLO0Xpn3NlQbVNWmmpaiQ
-WFVunF1QcIIm+bj36h1YeAqarkNS9WmqnPz2jJ45Q3PMegWUVM8w8ExGkANI9xiR
-sP135/VPc4BkmdPXZaA=
-=F7ke
+iQIcBAEBAgAGBQJTxCVfAAoJELSic+t+oim9ALMP/jVH7jetQ0Wt1P2NRr3Y9M3n
+H1fxN2jkkkUnjplcZMNr1NYXnmU2QFDjUaRmFmN9voWoOzVwIr1H24WgbtcT3C/L
+eDGYntQemmt7tci3yLs9j8p+Ic+c9uZDtSAsrITDEkOuAsVH5nOroD5pqT+qKCrQ
+pQvIvIBpnmJHB00rHRzrqL7cHj+BU+tHQRVJU/g+QAhbEDJjbm8xCWbJ+C5Y7fyj
+ZaywGsGQYuJTDoe4JriAQdo5jE1Qz1PHkVSZS3+071v9RrzKxsLNTHMVNY8P+KaN
+qcfftFdj69vfTiktMMKKzpqNze3+tVI1FUs2WAHx15cxW1ZyX2pd4dhs4f8WNc3t
+5XqcgbFsx5UEH7a/heKqjOO8ms4PtHuOAU7xBUABAnQ1bnpF2ASqgXCdJq0HOnLg
+O1o/Y+8fmajx5r3ngeaszFyU7tDArUx4oQdhG3dAG3I3aL6LRbAFBy7QWh+hBVBA
+RjQwzXwsvmp/cqtsr6MznLiGxKp7gHB2rvIxWXN8qYWHDNK1S+sXi5EkjaPXw3t4
+CHXroKmhIQTNkd9J7TcJTW7Ce+SRHJd9dk24UqP9Nud75YCd949g6PZ/TTxzWkgy
+Za4DqazMu8ql3oTHTK92MXC1+iok9gzbvhmOeeWUhLjJ33bLi1pBJoJadYbOPQjy
+XEz21QKcgJd/wptOvZ4c
+=emkX
 -----END PGP SIGNATURE-----
 
---LmcuB6YxSMQAV95c--
+--XiX5sJQOWZsNRXst--
 
---===============5737222061555189950==
+--===============6546302768767319909==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5737222061555189950==--
+--===============6546302768767319909==--
