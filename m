@@ -1,117 +1,53 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: omap-dmic: Use devm_clk_get
-Date: Mon, 14 Jul 2014 08:40:56 +0300
-Message-ID: <53C36D68.8070600@ti.com>
-References: <20140711041406.GA4207@himangi-Dell>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH 0/5] ASoC: Intel: Enable BDW/HSW SRAM power
+	gating
+Date: Mon, 14 Jul 2014 16:37:50 +0800
+Message-ID: <1405327075-27831-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20140711041406.GA4207@himangi-Dell>
-Sender: linux-omap-owner@vger.kernel.org
-To: Himangi Saraogi <himangi774@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: julia.lawall@lip6.fr
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D0B62610D2
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 10:38:35 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: mengdong.lin@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 07/11/2014 07:14 AM, Himangi Saraogi wrote:
-> This patch introduces the use of managed interfaces like devm_clk_get
-> and does away with the clk_puts in the probe and remove functions. A
-> label is also done away with.
+Hi Mark,
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Here is the patch series for enable Intel Broadwell/Haswell ADSP
+SRAM power gating feature.
 
->=20
-> Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
-> ---
-> This is a follow up to ASoC: omap-dmic: use managed interfaces which
-> failed to apply as the other devm_ functions were introduced by a pat=
-ch
-> ASoC: omap-dmic: Use devm_snd_soc_register_component.
->=20
->  sound/soc/omap/omap-dmic.c | 29 ++++++-----------------------
->  1 file changed, 6 insertions(+), 23 deletions(-)
->=20
-> diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
-> index f125eb9..0f34e28 100644
-> --- a/sound/soc/omap/omap-dmic.c
-> +++ b/sound/soc/omap/omap-dmic.c
-> @@ -466,7 +466,7 @@ static int asoc_dmic_probe(struct platform_device=
- *pdev)
-> =20
->  	mutex_init(&dmic->mutex);
-> =20
-> -	dmic->fclk =3D clk_get(dmic->dev, "fck");
-> +	dmic->fclk =3D devm_clk_get(dmic->dev, "fck");
->  	if (IS_ERR(dmic->fclk)) {
->  		dev_err(dmic->dev, "cant get fck\n");
->  		return -ENODEV;
-> @@ -475,8 +475,7 @@ static int asoc_dmic_probe(struct platform_device=
- *pdev)
->  	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "dma");
->  	if (!res) {
->  		dev_err(dmic->dev, "invalid dma memory resource\n");
-> -		ret =3D -ENODEV;
-> -		goto err_put_clk;
-> +		return -ENODEV;
->  	}
->  	dmic->dma_data.addr =3D res->start + OMAP_DMIC_DATA_REG;
-> =20
-> @@ -484,34 +483,19 @@ static int asoc_dmic_probe(struct platform_devi=
-ce *pdev)
-> =20
->  	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
->  	dmic->io_base =3D devm_ioremap_resource(&pdev->dev, res);
-> -	if (IS_ERR(dmic->io_base)) {
-> -		ret =3D PTR_ERR(dmic->io_base);
-> -		goto err_put_clk;
-> -	}
-> +	if (IS_ERR(dmic->io_base))
-> +		return PTR_ERR(dmic->io_base);
-> =20
-> =20
->  	ret =3D devm_snd_soc_register_component(&pdev->dev,
->  					      &omap_dmic_component,
->  					      &omap_dmic_dai, 1);
->  	if (ret)
-> -		goto err_put_clk;
-> +		return ret;
-> =20
->  	ret =3D omap_pcm_platform_register(&pdev->dev);
->  	if (ret)
-> -		goto err_put_clk;
-> -
-> -	return 0;
-> -
-> -err_put_clk:
-> -	clk_put(dmic->fclk);
-> -	return ret;
-> -}
-> -
-> -static int asoc_dmic_remove(struct platform_device *pdev)
-> -{
-> -	struct omap_dmic *dmic =3D platform_get_drvdata(pdev);
-> -
-> -	clk_put(dmic->fclk);
-> +		return ret;
-> =20
->  	return 0;
->  }
-> @@ -529,7 +513,6 @@ static struct platform_driver asoc_dmic_driver =3D=
- {
->  		.of_match_table =3D omap_dmic_of_match,
->  	},
->  	.probe =3D asoc_dmic_probe,
-> -	.remove =3D asoc_dmic_remove,
->  };
-> =20
->  module_platform_driver(asoc_dmic_driver);
->=20
+Patches 0001~0003 implement FW module persistent area allocate during
+FW parse;
+Patch 0004 add dummy read to workaround SRAM write missing bytes issue;
+Patch 0005 will make SRAM start with all memory banks disabled, and
+enabled required banks during boot procedure.
 
+thanks,
+Keyon
 
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Jie Yang (5):
+  ASoC: Intel: Add persistent area alloc
+  ASoC: Intel: Merge wild cat point ADSP DRAM regions
+  ASoC: Intel: Use a table for ADSP SRAM shift
+  ASoC: Intel: Add dummy read for SRAM block enable
+  ASoC: Intel: Start with all memory banks disabled
+
+ sound/soc/intel/sst-dsp-priv.h    |  2 ++
+ sound/soc/intel/sst-firmware.c    | 52 ++++++++++++++++++++++++++++++
+ sound/soc/intel/sst-haswell-dsp.c | 68 ++++++++++++++++++++++++++++++---------
+ 3 files changed, 106 insertions(+), 16 deletions(-)
+
+-- 
+1.8.3.2
