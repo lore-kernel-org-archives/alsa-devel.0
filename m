@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND] ASoC: rt286: make rt286_i2c_driver
-	static
-Date: Mon, 14 Jul 2014 19:15:11 +0100
-Message-ID: <20140714181511.GS6800@sirena.org.uk>
-References: <1405304284-25507-1-git-send-email-bardliao@realtek.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 2/4] ASoC: s3c64xx/smartq: use dynamic
+	registration
+Date: Mon, 14 Jul 2014 20:23:55 +0200
+Message-ID: <16507628.c6raaN50oI@wuerfel>
+References: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
+ <4494372.fAWcxQ0qku@wuerfel> <53C402C4.5090908@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4921480178308624336=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 88B92261B36
- for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 20:15:17 +0200 (CEST)
-In-Reply-To: <1405304284-25507-1-git-send-email-bardliao@realtek.com>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7B60261B36
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 20:24:05 +0200 (CEST)
+In-Reply-To: <53C402C4.5090908@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, Fengguang Wu <fengguang.wu@intel.com>, flove@realtek.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, t.figa@samsung.com, Maurus Cuelenaere <mcuelenaere@gmail.com>, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Monday 14 July 2014 18:18:12 Lars-Peter Clausen wrote:
+> On 07/14/2014 05:46 PM, Arnd Bergmann wrote:
+> [...]
+> >>> +static struct gpiod_lookup_table smartq_audio_gpios = {
+> >>> +   .dev_id = "smartq-audio",
+> >>> +   .table = {
+> >>> +           GPIO_LOOKUP("GPL", 12, "headphone detect", 0),
+> >>> +           GPIO_LOOKUP("GPK", 12, "amplifiers shutdown", GPIO_ACTIVE_HIGH),
+> >>
+> >> There is no such thing as GPIO_ACTIVE_HIGH, just 0 for flags.
+> >
+> > The original driver does gpio_direction_output(..., 1);
+> >
+> > For some reason I earlier concluded that this was what the '1' would need
+> > to get converted to. Are you sure '0' is correct then?
+> >
+> 
+> Yes. But now that you say it the gpiod_direction_output() call is missing 
+> from this patch.
 
---===============4921480178308624336==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="s9pXJW6w71JX4l3T"
-Content-Disposition: inline
+I'm lost now. The GPIO_ACTIVE_HIGH I added comes from Documentation/gpio/board.txt
+and as Linus Walleij explained to me the other day, the lookup is supposed
+to replace devm_gpio_request_one(), which in turn replaced both the
+gpio_request and the gpio_direction_output(). Do I need to put the
+gpiod_direction_output() back or is there another interface for that when
+registering the board gpios?
 
-
---s9pXJW6w71JX4l3T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jul 14, 2014 at 10:18:04AM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
-
-Applied, thanks.
-
---s9pXJW6w71JX4l3T
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTxB4rAAoJELSic+t+oim9nWIP/A0T5aeGAXv+2eiKPMsiCTFE
-UfPkyu7V3FbJgW1xRtDNBlLM9HqHXY1wTSfbJCPXL4CaBB000TvGVZEjiXe5Hzxp
-x3ZYdM3141q21ekaD8oGs99zizb84zlCE6UfJpzMJRKuTGjKXwvQZ4LJdwIYTk54
-LxHz1fvnJvBtoxmEo9YkUwlqgybypfYrE9YIRt00TOPIbcNRKfro6cgCmX2/ECjs
-vqWLFkoXhiQJ/Z+1CZzH6N8CsAC902nh5suffTJLid4YtICxGhsaY9bDIhmj8sDR
-bRetrrRttf7YRgomXuGhKy3hto+NmaZWYFBNnHNSGofmUHjWI8D9XUHEjrp34sVA
-HvO+HDKkbCvYXyGlUetBs/dZ/P5gqhSHm4hYjAZOrPbkPr4g+3BukCmSDIWHY+Bk
-ZjqPqW+WqnnKenh/Hh+92l4UzNoc7dm/zE4itM6+k+ZgJ+yBd/ZtiY+jdvwBwA0M
-2yXJh8jgdJZov4l7SZGHbYPT/EI5/3ymQneWieANsC93AivNQQsEvgdRU5yl287x
-KRVY85fhbJ39O44lQUz6rgkQHXQMZeMCLflubGlJ5yRfLz0kV77SquJdyh1Udu9w
-xx6EGA8uwdNm/UykFwY66pv4yNSwA13xLQ7VtXeofWNb5H6QbU/ut9mXsLHwm0jb
-nc1WulkZ9EQZ3IS+0F56
-=CIH+
------END PGP SIGNATURE-----
-
---s9pXJW6w71JX4l3T--
-
---===============4921480178308624336==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4921480178308624336==--
+	Arnd
