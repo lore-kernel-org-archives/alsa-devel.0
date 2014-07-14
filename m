@@ -1,122 +1,92 @@
-From: "Murphy, Dan" <dmurphy@ti.com>
-Subject: Re: [PATCH v6] ASoC: tas2552: Support TI TAS2552 Amplifier
-Date: Mon, 14 Jul 2014 19:07:06 +0000
-Message-ID: <00FC9A978A94B7418C33AFAE8A35ED49D80B10@DFLE09.ent.ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6] ASoC: tas2552: Support TI TAS2552
+	Amplifier
+Date: Mon, 14 Jul 2014 20:17:11 +0100
+Message-ID: <20140714191711.GI6800@sirena.org.uk>
 References: <1405093489-11897-1-git-send-email-dmurphy@ti.com>
  <20140714184321.GW6800@sirena.org.uk>
+ <00FC9A978A94B7418C33AFAE8A35ED49D80B10@DFLE09.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============4206703550393951933=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97EF6261B02
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 21:17:27 +0200 (CEST)
+In-Reply-To: <00FC9A978A94B7418C33AFAE8A35ED49D80B10@DFLE09.ent.ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Murphy, Dan" <dmurphy@ti.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/14/2014 01:43 PM, Mark Brown wrote:
-> On Fri, Jul 11, 2014 at 10:44:49AM -0500, Dan Murphy wrote:
->
->> @@ -754,4 +755,8 @@ config SND_SOC_TPA6130A2
->>  	tristate "Texas Instruments TPA6130A2 headphone amplifier"
->>  	depends on I2C
->>  
->> +config SND_SOC_TAS2552
->> +	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
->> +	depends on I2C
->> +
->>  endmenu
-> Keep this and Makefile sorted - since this is a proper CODEC driver it
-> should be in with the CODECs and also sorted in alphabetical order.
 
-OK.  I was trying to stay away from a conflict by adding to the
-bottom of the file.
+--===============4206703550393951933==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aJFFgG5QZHt5jcrP"
+Content-Disposition: inline
 
->
->> +static int tas2552_startup(struct snd_pcm_substream *substream,
->> +			   struct snd_soc_dai *dai)
->> +{
->> +	struct snd_soc_codec *codec = dai->codec;
->> +
->> +	pm_runtime_get_sync(codec->dev);
->> +
->> +	return 0;
->> +}
->> +
->> +static void tas2552_shutdown(struct snd_pcm_substream *substream,
->> +			   struct snd_soc_dai *dai)
->> +{
->> +	struct snd_soc_codec *codec = dai->codec;
->> +
->> +	pm_runtime_put(codec->dev);
->> +}
-> These runtime calls should be redundant, the framework should hold a
-> runtime PM reference on devices while they are active.  Does this not
-> work for you?
 
-I will verify that the calls get called.
+--aJFFgG5QZHt5jcrP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
->> +	pm_runtime_get_sync(codec->dev);
-> Check the return value here.
+On Mon, Jul 14, 2014 at 07:07:06PM +0000, Murphy, Dan wrote:
+> On 07/14/2014 01:43 PM, Mark Brown wrote:
 
-OK
+> >> +config SND_SOC_TAS2552
+> >> +	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
+> >> +	depends on I2C
+> >> +
+> >>  endmenu
 
->
->> +	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN |
->> +				  TAS2552_BOOST_EN | TAS2552_APT_EN |
->> +				  TAS2552_PLL_ENABLE | TAS2552_LIM_EN);
-> The PLL is enabled all the time not via DAPM or similar (it's never
-> disabled)?
+> > Keep this and Makefile sorted - since this is a proper CODEC driver it
+> > should be in with the CODECs and also sorted in alphabetical order.
 
-Good catch.  I will make sure the PLL Is disabled in the shutdown call.
+> OK.  I was trying to stay away from a conflict by adding to the
+> bottom of the file.
 
->
->> +static int tas2552_resume(struct snd_soc_codec *codec)
->> +{
->> +	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
->> +	int ret;
->> +
->> +	ret = regulator_bulk_enable(ARRAY_SIZE(tas2552->supplies),
->> +				    tas2552->supplies);
->> +
->> +	if (ret != 0) {
->> +		dev_err(codec->dev, "Failed to enable supplies: %d\n",
->> +			ret);
->> +	}
->> +
->> +	pm_runtime_get_sync(codec->dev);
-> Remove these runtime PM calls from suspend and resume, they're not doing
-> what you think (and will prevent runtime PM from doing anything).  Let
-> the frameworks worry about it for now, or explicitly call the runtime
-> suspend and resume operators if and only if the device is runtime
-> active.
+The whole point is to avoid conflicts - if everyone adds at the bottom
+of the file any two adds are pretty much guaranteed to conflict either
+on application or on merge.  Sorting avoids most of these and makes any
+that do occur much clearer.
 
-OK
+--aJFFgG5QZHt5jcrP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
->
->> +	for (i = 0; i < ARRAY_SIZE(data->supplies); i++)
->> +		data->supplies[i].supply = tas2552_supply_names[i];
->> +
->> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(data->supplies),
->> +				      data->supplies);
->> +	if (ret != 0)
->> +		dev_err(dev, "Failed to request supplies: %d\n", ret);
-> These supplies are mandatory (as they should be) but weren't mentioned
-> in the DT binding - please add them there.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Will add
+iQIcBAEBAgAGBQJTxCy0AAoJELSic+t+oim9ZC0P/0xXUNawujyd33X24/UV5qSp
+aloiKAIzyiIrQyCudGVQT541+Kida3csZi8U+xGD5AGrxohCR44sFdcZKfmSeIWH
+C1rJcmMdTrfv3GaPgUYJ5Vlq7UK25C76JjZ0x0VIuG2Tnaz7tbIPawdbV4ResHEq
+YWi1GKgqY59tGI8KQGM2vpg8LPa7n+MUQEA6XkBMTmqX6u631XWpHzo1h0UpcZvH
+ro48VsVg1wrUXixlQozPw8wyfJDvs72L/avOqx8XmeSVuIGNAHQNisBaCE1yPzhH
+reaYLPafKra3Eb/8gBuCUqSsqgOwKElfCsZVU8qoCU+yX4rsPBo1f+idgWdp+ASZ
+biy2NyNhnTqP8hLa+iNjArxHR+axUSPQvlXMpJz6GHBDK3+SIRkrcSTLzGo4EQ5w
+5OLGfxllX1u51YnjGhf5yVoXeXee4oNftPWVxrsslWSfOehAdZ5yj9W/nskweiA+
+xWz6EGMmq3tbHXExh7ZXjeAVlfoJmCRkOBEt8/EhQUtCbH2JEICQeXFtVROOwP1r
+/rDNp/nfsl4mERZjQu0/kmAXA5VoL9K+3fBRpSybSAii3B8fpy3DinwVcIc2v0nc
++4m7TNfzfcFJ/tqLr5DKK5iPNaqNqUAY/cJcCG2UvG3ZD7r3wvJR8GO641or3KKB
+i3XvoKw4thb1TRR2GB3F
+=g9z5
+-----END PGP SIGNATURE-----
 
->
->> +static const struct i2c_device_id tas2552_id[] = {
->> +	{ "tas2552-codec", 0 },
->> +	{ }
->> +};
-> No -codec.
+--aJFFgG5QZHt5jcrP--
 
-Missed this one
+--===============4206703550393951933==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--- 
-------------------
-Dan Murphy
 
+--===============4206703550393951933==--
