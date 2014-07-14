@@ -1,15 +1,15 @@
 From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH 5/5] ASoC: Intel: Start with all memory banks
-	disabled
-Date: Mon, 14 Jul 2014 16:37:55 +0800
-Message-ID: <1405327075-27831-6-git-send-email-yang.jie@intel.com>
+Subject: [PATCH 4/5] ASoC: Intel: Add dummy read for SRAM block
+	enable
+Date: Mon, 14 Jul 2014 16:37:54 +0800
+Message-ID: <1405327075-27831-5-git-send-email-yang.jie@intel.com>
 References: <1405327075-27831-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 208A42617B5
+ by alsa0.perex.cz (Postfix) with ESMTP id E09F72617AB
  for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 10:38:38 +0200 (CEST)
 In-Reply-To: <1405327075-27831-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,28 +25,44 @@ To: alsa-devel@alsa-project.org
 Cc: mengdong.lin@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-All required banks are enabled during boot procedure.
+Add dummy read after each block enable, to workaround
+SRAM write missing bytes issue.
 
 Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
- sound/soc/intel/sst-haswell-dsp.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/intel/sst-haswell-dsp.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
-index cc58b31..59c85a8 100644
+index f4276fb..cc58b31 100644
 --- a/sound/soc/intel/sst-haswell-dsp.c
 +++ b/sound/soc/intel/sst-haswell-dsp.c
-@@ -523,8 +523,9 @@ static int hsw_init(struct sst_dsp *sst, struct sst_pdata *pdata)
- 		}
- 	}
+@@ -381,6 +381,17 @@ static u32 hsw_block_get_bit(struct sst_mem_block *block)
+ 	return bit;
+ }
  
--	/* set default power gating mask */
--	writel(0x0, sst->addr.pci_cfg + SST_VDRTCTL0);
-+	/* set default power gating control, enable power gating control for all blocks. that is,
-+	can't be accessed, please enable each block before accessing. */
-+	writel(0xffffffff, sst->addr.pci_cfg + SST_VDRTCTL0);
++/*dummy read a SRAM block.*/
++static void sst_mem_block_dummy_read(struct sst_mem_block *block)
++{
++	u32 size;
++	u8 tmp_buf[4];
++	struct sst_dsp *sst = block->dsp;
++
++	size = block->size > 4 ? 4 : block->size;
++	memcpy_fromio(tmp_buf, sst->addr.lpe + block->offset, size);
++}
++
+ /* enable 32kB memory block - locks held by caller */
+ static int hsw_block_enable(struct sst_mem_block *block)
+ {
+@@ -400,6 +411,8 @@ static int hsw_block_enable(struct sst_mem_block *block)
+ 	/* wait 18 DSP clock ticks */
+ 	udelay(10);
  
++	/*add a dummy read before the SRAM block is written, otherwise the writing may miss bytes sometimes.*/
++	sst_mem_block_dummy_read(block);
  	return 0;
  }
+ 
 -- 
 1.8.3.2
