@@ -1,132 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6] ASoC: tas2552: Support TI TAS2552 Amplifier
-Date: Mon, 14 Jul 2014 19:43:21 +0100
-Message-ID: <20140714184321.GW6800@sirena.org.uk>
-References: <1405093489-11897-1-git-send-email-dmurphy@ti.com>
+Subject: Re: [PATCH 1/7] ASoC: Intel: add sst shim register
+ start-end variables
+Date: Mon, 14 Jul 2014 19:45:22 +0100
+Message-ID: <20140714184522.GX6800@sirena.org.uk>
+References: <1404898076-1882-1-git-send-email-vinod.koul@intel.com>
+ <1404898076-1882-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RMorpr61ug7CvG36"
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1405093489-11897-1-git-send-email-dmurphy@ti.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Dan Murphy <dmurphy@ti.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============5737222061555189950=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8275E261B02
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 20:45:39 +0200 (CEST)
+In-Reply-To: <1404898076-1882-2-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---RMorpr61ug7CvG36
+--===============5737222061555189950==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LmcuB6YxSMQAV95c"
+Content-Disposition: inline
+
+
+--LmcuB6YxSMQAV95c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 11, 2014 at 10:44:49AM -0500, Dan Murphy wrote:
+On Wed, Jul 09, 2014 at 02:57:49PM +0530, Vinod Koul wrote:
+> the shim registers start and end can be useful while parsing the shim addresses,
+> so add these
 
-> @@ -754,4 +755,8 @@ config SND_SOC_TPA6130A2
->  	tristate "Texas Instruments TPA6130A2 headphone amplifier"
->  	depends on I2C
-> =20
-> +config SND_SOC_TAS2552
-> +	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
-> +	depends on I2C
-> +
->  endmenu
+Applied, thanks.
 
-Keep this and Makefile sorted - since this is a proper CODEC driver it
-should be in with the CODECs and also sorted in alphabetical order.
-
-> +static int tas2552_startup(struct snd_pcm_substream *substream,
-> +			   struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_codec *codec =3D dai->codec;
-> +
-> +	pm_runtime_get_sync(codec->dev);
-> +
-> +	return 0;
-> +}
-> +
-> +static void tas2552_shutdown(struct snd_pcm_substream *substream,
-> +			   struct snd_soc_dai *dai)
-> +{
-> +	struct snd_soc_codec *codec =3D dai->codec;
-> +
-> +	pm_runtime_put(codec->dev);
-> +}
-
-These runtime calls should be redundant, the framework should hold a
-runtime PM reference on devices while they are active.  Does this not
-work for you?
-
-> +	pm_runtime_get_sync(codec->dev);
-
-Check the return value here.
-
-> +	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN |
-> +				  TAS2552_BOOST_EN | TAS2552_APT_EN |
-> +				  TAS2552_PLL_ENABLE | TAS2552_LIM_EN);
-
-The PLL is enabled all the time not via DAPM or similar (it's never
-disabled)?
-
-> +static int tas2552_resume(struct snd_soc_codec *codec)
-> +{
-> +	struct tas2552_data *tas2552 =3D snd_soc_codec_get_drvdata(codec);
-> +	int ret;
-> +
-> +	ret =3D regulator_bulk_enable(ARRAY_SIZE(tas2552->supplies),
-> +				    tas2552->supplies);
-> +
-> +	if (ret !=3D 0) {
-> +		dev_err(codec->dev, "Failed to enable supplies: %d\n",
-> +			ret);
-> +	}
-> +
-> +	pm_runtime_get_sync(codec->dev);
-
-Remove these runtime PM calls from suspend and resume, they're not doing
-what you think (and will prevent runtime PM from doing anything).  Let
-the frameworks worry about it for now, or explicitly call the runtime
-suspend and resume operators if and only if the device is runtime
-active.
-
-> +	for (i =3D 0; i < ARRAY_SIZE(data->supplies); i++)
-> +		data->supplies[i].supply =3D tas2552_supply_names[i];
-> +
-> +	ret =3D devm_regulator_bulk_get(dev, ARRAY_SIZE(data->supplies),
-> +				      data->supplies);
-> +	if (ret !=3D 0)
-> +		dev_err(dev, "Failed to request supplies: %d\n", ret);
-
-These supplies are mandatory (as they should be) but weren't mentioned
-in the DT binding - please add them there.
-
-> +static const struct i2c_device_id tas2552_id[] =3D {
-> +	{ "tas2552-codec", 0 },
-> +	{ }
-> +};
-
-No -codec.
-
---RMorpr61ug7CvG36
+--LmcuB6YxSMQAV95c
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTxCTGAAoJELSic+t+oim9nAgQAIrmTZMVO2kaoAnVjddXToCa
-9BDz7g38s+Fvv4xOyEVbfmb3S5nznqYQuWjVouRo6iFJH/O/mvsIffZVA4GqiyrF
-s2c6GTxgcnHewShoQLtVy9WMnhGIxCMb8fYzSHmU9Ml099HsknVSX9pJNZdn4UBD
-NyY8Iw2vihTAs+G+aZYqu80/O1ByqsF0no2qi8qgduBLg7NbQyOXPAE1mKkWUOkl
-P/sOtcnfr7sujjMIHC5e9/5DgrfrOwq2TzfaR9/yBP4wr+mq/ole3heisNdHHiPy
-wD+0Bemum/EiBT6RO3osJVvSc+jxsirH6Gz79wSX5xX0PAAebegsZe9/S4OM8lVP
-w732Qgftnog/+89/n5py5pz6LH2LV+Z96uqEAOpEa8ZQ8yk3EVpZYeTKZs4c7uK2
-BlreWhS/xp3NtCsU7BsuVgmK0RVcjjYUkWAKznWz38azFRSpIjrJhPNQee9OaBv8
-0RDVK6Sd8MtkNDo6oEEEGiXye76huK76lvteDsVXqRGDhH8Hlt59MRFw60W2FQih
-ZdUAwckYanRVjGJLWHkxzWpF00/P3bTqUy2F1r04B77+NLnz54+cIAAuj3I0yHcY
-DES5g6yGeqTHeAcGG3dr0eqGmV382F3V3Os9GgAbTvEHLAI/3XKH6udBulcIpQ3h
-rcf3baw4MIicb91j4b63
-=HxrG
+iQIbBAEBAgAGBQJTxCU/AAoJELSic+t+oim9wJgP+Puhp5Uyu7Qw2ZeKDC2ZtPO+
+IJkOzI26glrI9+Iwq0NYrJFexUtoN/snjfvltco2Sh0Z+iqDpukWvucs8DF+cWaL
+BnIkxoTKKWvNizmshg8rda5TyrXX3FchLNaZosaAUDlqxcX5X9CKDOe8opuRfInA
+OP1tm8QWggEycLmKkChJZ5Krhmz6zoqcTadBd7TEJ8quETRhnryHDIsQp9KUk3uJ
+zWfsusJTBtrx1JYK4SBBrMLww4Ep27Z8O6cToyPxz2Knv6lfjk2x9YhmQ7VlO7Pm
+0C8vdiNs3tKGHQ1mhf/7VD8e9baCYxTlUXHeBS3OgMpnH5hKxKJyKK229bku8k93
+WJuEr6vGmU38NF9Fzpq++YhFTo4/JgpjDjJ1GBy1SKUiwE/Q9FVLTho7YZ8np/00
+8kbAPpNUFp9Ip0jMd3F9kwNcM2/trBSKu5glOLeN24euS2Z2xp28ay2GwNch4H9o
+210+G6GzkXnUBqiKWNqxs94HSQUReEZVtQHwqbNyUhH1NWCAbHmWRew1xv/VoAUU
+r5XOApgKuH76JUcLatEwUrfBqaeEf1xJS60GuAciU9UCLO0Xpn3NlQbVNWmmpaiQ
+WFVunF1QcIIm+bj36h1YeAqarkNS9WmqnPz2jJ45Q3PMegWUVM8w8ExGkANI9xiR
+sP135/VPc4BkmdPXZaA=
+=F7ke
 -----END PGP SIGNATURE-----
 
---RMorpr61ug7CvG36--
+--LmcuB6YxSMQAV95c--
+
+--===============5737222061555189950==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5737222061555189950==--
