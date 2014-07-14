@@ -1,15 +1,16 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH] ASoC: cs42xx8: Add SND_SOC_DAIFMT_DSP_A support
-Date: Mon, 14 Jul 2014 18:39:31 +0800
-Message-ID: <1405334371-4248-1-git-send-email-shengjiu.wang@freescale.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH V2 1/2] ASoC: samsung: Add machine driver
+	for Odroid X2/U3
+Date: Mon, 14 Jul 2014 13:27:53 +0200
+Message-ID: <53C3BEB9.7000706__904.048389247869$1405337309$gmane$org@samsung.com>
+References: <1403108551-25058-1-git-send-email-s.nawrocki@samsung.com>
+ <1403108551-25058-2-git-send-email-s.nawrocki@samsung.com>
+ <20140630184658.GE23300@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0205.outbound.protection.outlook.com [207.46.163.205])
- by alsa0.perex.cz (Postfix) with ESMTP id BD1362619D0
- for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 13:01:13 +0200 (CEST)
+In-reply-to: <20140630184658.GE23300@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,59 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@linaro.org
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org, pawel.moll@arm.com, zhen1.chen@samsung.com, kyungmin.park@samsung.com, galak@codeaurora.org, alsa-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-According to the spec, the definition of TDM and ONELINE_24 for
-CS42XX8_INTF_DAC and CS42XX8_INTF_ADC is wrong. correct them and enable
-SND_SOC_DAIFMT_DSP_A support.
+On 30/06/14 20:46, Mark Brown wrote:
+> On Wed, Jun 18, 2014 at 06:22:30PM +0200, Sylwester Nawrocki wrote:
+> 
+>> +struct odroidx2_drv_data odroidx2_drvdata = {
+>> +	.dapm_widgets		= odroidx2_dapm_widgets,
+>> +	.num_dapm_widgets	= ARRAY_SIZE(odroidx2_dapm_widgets),
+>> +};
+>> +
+>> +struct odroidx2_drv_data odroidu3_drvdata = {
+>> +	.dapm_widgets		= odroidu3_dapm_widgets,
+>> +	.num_dapm_widgets	= ARRAY_SIZE(odroidu3_dapm_widgets),
+>> +};
+> 
+>> +	ret = snd_soc_of_parse_audio_routing(card, "samsung,audio-routing");
+>> +	if (ret < 0)
+>> +		return ret;
+> 
+> Given that the widgets don't have any actions defined and the routing is
+> all done by DT it might be easier and more flexible to just define all
+> the widgets all the time and let them hang there if they're not in use,
+> that way you don't need multiple compatible strings.  If you do that
+> you're then very close to being able to use simple-card...
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
----
- sound/soc/codecs/cs42xx8.c | 3 +++
- sound/soc/codecs/cs42xx8.h | 8 ++++----
- 2 files changed, 7 insertions(+), 4 deletions(-)
+Too bad, I noticed this comment only just now.  I'll consider this and
+will try again and see how simple-card could be used.  There is also the
+samsung-i2s-sec secondary 'overlay' CPU DAI that would need to be handled,
+and we have it now internally specified in the machine driver through
+cpu_dai_name, rather than cpu_of_node.
+There might be some more work in the driver needed to support the
+secondary I2S interface generically with DT.
 
-diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index ec53ffc..02b1520 100644
---- a/sound/soc/codecs/cs42xx8.c
-+++ b/sound/soc/codecs/cs42xx8.c
-@@ -219,6 +219,9 @@ static int cs42xx8_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		val = CS42XX8_INTF_DAC_DIF_RIGHTJ | CS42XX8_INTF_ADC_DIF_RIGHTJ;
- 		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		val = CS42XX8_INTF_DAC_DIF_TDM | CS42XX8_INTF_ADC_DIF_TDM;
-+		break;
- 	default:
- 		dev_err(codec->dev, "unsupported dai format\n");
- 		return -EINVAL;
-diff --git a/sound/soc/codecs/cs42xx8.h b/sound/soc/codecs/cs42xx8.h
-index da0b94a..b2c10e5 100644
---- a/sound/soc/codecs/cs42xx8.h
-+++ b/sound/soc/codecs/cs42xx8.h
-@@ -128,8 +128,8 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap);
- #define CS42XX8_INTF_DAC_DIF_RIGHTJ		(2 << CS42XX8_INTF_DAC_DIF_SHIFT)
- #define CS42XX8_INTF_DAC_DIF_RIGHTJ_16		(3 << CS42XX8_INTF_DAC_DIF_SHIFT)
- #define CS42XX8_INTF_DAC_DIF_ONELINE_20		(4 << CS42XX8_INTF_DAC_DIF_SHIFT)
--#define CS42XX8_INTF_DAC_DIF_ONELINE_24		(6 << CS42XX8_INTF_DAC_DIF_SHIFT)
--#define CS42XX8_INTF_DAC_DIF_TDM		(7 << CS42XX8_INTF_DAC_DIF_SHIFT)
-+#define CS42XX8_INTF_DAC_DIF_ONELINE_24		(5 << CS42XX8_INTF_DAC_DIF_SHIFT)
-+#define CS42XX8_INTF_DAC_DIF_TDM		(6 << CS42XX8_INTF_DAC_DIF_SHIFT)
- #define CS42XX8_INTF_ADC_DIF_SHIFT		0
- #define CS42XX8_INTF_ADC_DIF_WIDTH		3
- #define CS42XX8_INTF_ADC_DIF_MASK		(((1 << CS42XX8_INTF_ADC_DIF_WIDTH) - 1) << CS42XX8_INTF_ADC_DIF_SHIFT)
-@@ -138,8 +138,8 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap);
- #define CS42XX8_INTF_ADC_DIF_RIGHTJ		(2 << CS42XX8_INTF_ADC_DIF_SHIFT)
- #define CS42XX8_INTF_ADC_DIF_RIGHTJ_16		(3 << CS42XX8_INTF_ADC_DIF_SHIFT)
- #define CS42XX8_INTF_ADC_DIF_ONELINE_20		(4 << CS42XX8_INTF_ADC_DIF_SHIFT)
--#define CS42XX8_INTF_ADC_DIF_ONELINE_24		(6 << CS42XX8_INTF_ADC_DIF_SHIFT)
--#define CS42XX8_INTF_ADC_DIF_TDM		(7 << CS42XX8_INTF_ADC_DIF_SHIFT)
-+#define CS42XX8_INTF_ADC_DIF_ONELINE_24		(5 << CS42XX8_INTF_ADC_DIF_SHIFT)
-+#define CS42XX8_INTF_ADC_DIF_TDM		(6 << CS42XX8_INTF_ADC_DIF_SHIFT)
- 
- /* ADC Control & DAC De-Emphasis (Address 05h) */
- #define CS42XX8_ADCCTL_ADC_HPF_FREEZE_SHIFT	7
--- 
-1.8.0
+--
+Regards,
+Sylwester
