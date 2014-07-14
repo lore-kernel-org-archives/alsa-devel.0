@@ -1,17 +1,15 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH 3/5] ASoC: Intel: Use a table for ADSP SRAM
-	shift
-Date: Mon, 14 Jul 2014 16:37:53 +0800
-Message-ID: <1405327075-27831-4-git-send-email-yang.jie@intel.com>
-References: <1405327075-27831-1-git-send-email-yang.jie@intel.com>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: [PATCH] pcm: rate: fix hw_ptr exceed the boundary
+Date: Mon, 14 Jul 2014 16:55:48 +0800
+Message-ID: <1405328148-2270-1-git-send-email-shengjiu.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 2EA9826172C
- for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 10:38:37 +0200 (CEST)
-In-Reply-To: <1405327075-27831-1-git-send-email-yang.jie@intel.com>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0240.outbound.protection.outlook.com [207.46.163.240])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C6652610D2
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 10:55:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,71 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: mengdong.lin@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com
+To: perex@perex.cz, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use a table for ADSP IRAM/DRAM bit shift.
+For long time test case, the hw_ptr will exceed the boundary, then cause
+the avail size wrong.
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
 ---
- sound/soc/intel/sst-haswell-dsp.c | 39 +++++++++++++++++++++++++++++----------
- 1 file changed, 29 insertions(+), 10 deletions(-)
+ src/pcm/pcm_rate.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
-index 1b96344..f4276fb 100644
---- a/sound/soc/intel/sst-haswell-dsp.c
-+++ b/sound/soc/intel/sst-haswell-dsp.c
-@@ -342,21 +342,40 @@ static int hsw_acpi_resource_map(struct sst_dsp *sst, struct sst_pdata *pdata)
- 	return 0;
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index 7f667d4..2563d82 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -574,6 +574,8 @@ static inline void snd_pcm_rate_sync_hwptr(snd_pcm_t *pcm)
+ 	rate->hw_ptr =
+ 		(slave_hw_ptr / rate->gen.slave->period_size) * pcm->period_size +
+ 		rate->ops.input_frames(rate->obj, slave_hw_ptr % rate->gen.slave->period_size);
++
++	rate->hw_ptr %= pcm->boundary;
  }
  
-+struct sst_sram_shift {
-+	u32 dev_id;	/* SST Device IDs  */
-+	u32 iram_shift;
-+	u32 dram_shift;
-+};
-+
-+static const struct sst_sram_shift sram_shift[] = {
-+	{SST_DEV_ID_LYNX_POINT, 6, 16}, /* lp */
-+	{SST_DEV_ID_WILDCAT_POINT, 2, 12}, /* wpt */
-+};
- static u32 hsw_block_get_bit(struct sst_mem_block *block)
- {
--	u32 bit = 0, shift = 0;
-+	u32 bit = 0, shift = 0, index;
-+	struct sst_dsp *sst = block->dsp;
- 
--	switch (block->type) {
--	case SST_MEM_DRAM:
--		shift = 16;
--		break;
--	case SST_MEM_IRAM:
--		shift = 6;
--		break;
--	default:
--		return 0;
-+	for (index = 0; index < ARRAY_SIZE(sram_shift); index++) {
-+		if (sram_shift[index].dev_id == sst->id)
-+			break;
- 	}
- 
-+	if (index < ARRAY_SIZE(sram_shift)) {
-+		switch (block->type) {
-+		case SST_MEM_DRAM:
-+			shift = sram_shift[index].dram_shift;
-+			break;
-+		case SST_MEM_IRAM:
-+			shift = sram_shift[index].iram_shift;
-+			break;
-+		default:
-+			shift = 0;
-+		}
-+	} else
-+		shift = 0;
-+
- 	bit = 1 << (block->index + shift);
- 
- 	return bit;
+ static int snd_pcm_rate_hwsync(snd_pcm_t *pcm)
 -- 
-1.8.3.2
+1.7.9.5
