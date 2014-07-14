@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Cleanup HSW pcm format support
-Date: Mon, 14 Jul 2014 19:09:30 +0100
-Message-ID: <20140714180930.GM6800@sirena.org.uk>
-References: <1405330656-29569-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH v2 3/4] ASoC: Intel: Add dummy read for
+	SRAM block enable
+Date: Mon, 14 Jul 2014 19:11:44 +0100
+Message-ID: <20140714181144.GN6800@sirena.org.uk>
+References: <1405329072-28679-1-git-send-email-yang.jie@intel.com>
+ <1405329072-28679-4-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0442179060747510592=="
+Content-Type: multipart/mixed; boundary="===============5810858605180578698=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 559B8261B36
- for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 20:09:37 +0200 (CEST)
-In-Reply-To: <1405330656-29569-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A35AF261B36
+ for <alsa-devel@alsa-project.org>; Mon, 14 Jul 2014 20:11:58 +0200 (CEST)
+In-Reply-To: <1405329072-28679-4-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,53 +27,51 @@ Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.c
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0442179060747510592==
+--===============5810858605180578698==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sWvRP97dwRHm9fX+"
+	protocol="application/pgp-signature"; boundary="kUBUi7JBpjcBtem/"
 Content-Disposition: inline
 
 
---sWvRP97dwRHm9fX+
+--kUBUi7JBpjcBtem/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jul 14, 2014 at 05:37:36PM +0800, Jie Yang wrote:
-> This change removes unsupported formats from System,
-> Capture and Loopback FE DAIs.
-> Also it fixes S24_LE support on all DAIs.
-> While at this fix 24 bit flag for BYT as well.
+On Mon, Jul 14, 2014 at 05:11:11PM +0800, Jie Yang wrote:
+> Add dummy read after each block enable, to workaround
+> SRAM write missing bytes issue.
 
 Applied, thanks.
 
---sWvRP97dwRHm9fX+
+--kUBUi7JBpjcBtem/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTxBzXAAoJELSic+t+oim9kkgP/07/QnwqaN2hOLjzM38zNFR+
-e1BcoPAb+WXMUY9cFTNFWft1ODOar91VVKxaM+e3l7iL9BXbp8XBlNHhtcXJz+cn
-K8JXmxfdFEFeApqxmxBKSd/P6xLEfqul4f9Z+54EGO5sAg3FHk5HmcYFmNfC8sEh
-X8Z8EBHNUURv0s3As0BFb2vA+bX/owtJwuIT+m6vEZpMR9++p5miyEme1Hcx+YTa
-Esq9avwmYri795JA4pbi7Bkl1yWVEPYUwWs0d2vFDulMDxCAOPvmOG5pucQM5UIH
-3K72EWWfvJlG0upB6CnwzzvRfvlURR/8sX6P3ohb45vAIQUQoTh+UjWHerDtYyhI
-h/e2lSYe0A3c9DONTeHrYlAx7zKnJowlqQttK2iJIw0+UJXgR49Mi9evnxW8Gej0
-OeoNWlI+RCir/XTmhEcvpYXV/aIavc3/yzo8q80VbXqNMswlZkl8ShEew78aRZuP
-C2u1iS9AvnTad+w+bUsWYOhliaA2ZFWKXiRn0wH4rY20CWdkeQrWRdW7Nnthy05G
-hI6Gum9z3lg8ZWcsyY1V2lBMSJxuzz7HPqJFTa6H+pJKRCaspXsKf8o6HsyYtENm
-Xay2I/ieJxM183wBx6CjGYk0a7s/8m2JZDDJyQu9DlrWU8NH5IYXOukImKAKyDIN
-SQk1OzeMhs/oE9jiJEeE
-=jwlw
+iQIcBAEBAgAGBQJTxB1dAAoJELSic+t+oim9QbIP/ivasrjewT9aRL8ymSwIXlCe
+78FOGIPGW1ltyXbdd9U5tfkaCxJQh/lR8rDIB5x+kqSe3cGytIs2OYO0acd222el
+Oy7kPPqP3tFnM3TbGwZL8wn3/MMmy0w89ChXH78a3zRisMZ/RMMpATdVzymPCAgF
+8qQdSowAAdlQNAY3KpU6ll2gFn18cdT5Pbnu+BChylTmBCDqov6FgQZqoHVzUUNR
+2hVi8mzvQhGSWpUDclazS6gUQF6uWtElNM76iKMQeDJ4toIy4wG5MEZZO2mCCZNW
+bpnyPnkHSSx//nj9a+NM0n1TcXuomSKU1OhcZY9JT49wWC+EdW5jSrO5mBRVAKx+
+liLY5eKBfpG7jijV4xfn4Qh29hZLp2DTAnJ32q8XqfpvfvabgsJTAaoaKHunkzMh
+FjGwS/l/ZQ835Kwq1yCPUQtYh16L1p2vDNiMNjlTsJ16B1vXAheDyLdbKJN2nk1r
+AaZwbC4oL11dCZDhLVeooDjDg1YrtZSTcmMCShXQ1XdnErnnrJlnjddZtFbLhcAr
+tMpJ+aapOtP51OWBNz5p6O4pBIrzzKeI/o3r8+H9RatqgV8VVcFT9UPZ14dKgWc1
+cqg/nLz/FNXzY5xlnZIps3wFY14lGT2D6XB9Lt6puEmkJ4M7LGmiXbfNuqautbxX
+DRVoAiv+2fCOQWDKjLq3
+=HcjP
 -----END PGP SIGNATURE-----
 
---sWvRP97dwRHm9fX+--
+--kUBUi7JBpjcBtem/--
 
---===============0442179060747510592==
+--===============5810858605180578698==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0442179060747510592==--
+--===============5810858605180578698==--
