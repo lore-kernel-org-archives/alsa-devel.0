@@ -1,52 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/4] ASoC: samsung: s3c24xx dmaengine follow-up
-Date: Mon, 14 Jul 2014 19:51:58 +0100
-Message-ID: <20140714185158.GC6800@sirena.org.uk>
+Subject: Re: [PATCH 4/4] ASoC: samsung: remove unused DMA data
+Date: Mon, 14 Jul 2014 19:54:01 +0100
+Message-ID: <20140714185401.GD6800@sirena.org.uk>
 References: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
- <1405086308-1461192-6-git-send-email-arnd@arndb.de>
+ <1405086308-1461192-7-git-send-email-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Oh6wehMCKJhhoxlo"
+	protocol="application/pgp-signature"; boundary="PLVMksexArUZ/iL3"
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1405086308-1461192-6-git-send-email-arnd@arndb.de>
+In-Reply-To: <1405086308-1461192-7-git-send-email-arnd@arndb.de>
 Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
 Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, lgirdwood@gmail.com, t.figa@samsung.com, Heiko Stuebner <heiko@sntech.de>, Sangbeom Kim <sbkim73@samsung.com>, Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, linux-samsung-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Oh6wehMCKJhhoxlo
+--PLVMksexArUZ/iL3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 11, 2014 at 03:45:07PM +0200, Arnd Bergmann wrote:
-> Commit ae602456e83c92 ("ASoC: samsung: drop support for legacy
-> S3C24XX DMA API") removed the old code for the samsung specific
-> DMA interfaces, now that everybody can use dmaengine.
+On Fri, Jul 11, 2014 at 03:45:08PM +0200, Arnd Bergmann wrote:
+> The s3c_dma_client structures and the 'ch' and 'ops' members in
+> s3c_dma_params were only used by the legacy DMA driver and serve
+> no function any more. This removes any reference to them.
 
 Applied, thanks.
 
---Oh6wehMCKJhhoxlo
+--PLVMksexArUZ/iL3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTxCbLAAoJELSic+t+oim9ZRIP/2Ks2gRzcg1IfHpiVZ9kK72N
-/ssds4lgOJU85dmARbiLYx7V0s3N2IfGKio8NMqwkWOEoorG2uZX8NvsshqKrckO
-GNnPlGh2R50+x+pLtw/xNz2RfFtR6uSUiljPMLCeXdcKYsevNQZy+K821izza+K6
-YuDR7/X79ZQxSW9vfg+gi4rRdF1+n6tjGa44xIUXim5dFPT0V+8y019pqPaf4xw5
-MEYEIjehn916cOPDGl871WrM0ZmjqM6mOpFuowAGcFkA7zspB82PNBQMovbq4bIO
-/q3WlrkN2MVkVUu0y95riZiExsCkPYLKv1YmDLmsiT+5stuGgs27zVWcCxTpigB+
-0RMCBX5JSt+PpiP4KjVNYlcC9mmeGMqjxhwvjJ/GTay4YGd6qOVY8iUaSYw5kg6V
-v+gYiSInEC3+2MxAYBUY98tXc2ZjjzYZ4RdWFvgockWvyulXrW4iFxxjqPvWd5we
-69XQjfO8hj7Ln+zMTX+oMoVJVrdlDoxmwentL6cWCdLrgZApMV/Rghl+N4LM6hF/
-BDLOo8Ot2HhsTuoBDJ+hM6vCZ1uffNXToLXhe1D0uJ+TTFa9Doo84vBSgPmVLJ0K
-lYCBP2klpyJEN6upFTB/vD5llb0BNlGXyvZ4j3PdgCvqOVo6ALJMssZdrA9mJxpd
-B3CNXpnw79ATdUF+3Zbn
-=ujXQ
+iQIcBAEBAgAGBQJTxCdGAAoJELSic+t+oim9EuwP/ieQi8HP/IYEeO1KjtP6ymOx
+FQSCouwLB0j7OKbYah6DjzpavQHa5EEvA2uCFwC3q9+eHUYBRp/QDQ4U4VfmEgGm
+UQA4gsnvRMlP1n7rFT0kg8OyPJWwT0dcrAyfVvvxr1jZW3mhqd1gxYcfzzdEkCUx
+pjMosidmprvMMBqIydIJOjtjglRMWyAHcyu5QF3MY1iTmPz71RbTpdxGRpx109D2
+QfiB/APcF189GxSGCQW5Jjowf4WgnJaxljBj5CU+rCwzs8mP3txt+yFIqUUbs8g4
+XvYLHe/fhSAxoin1/kRGVsL3XYy3RTAUV2m7lkhXjxSaSOvhTQbPBIkpWe+3j/aj
+KImwsK5L3Q4jgnJBNQTpEldzrQiVNuGYJOVvHx1kansm4DS09HgvsEexJ6YEn7H/
+yLWLMLNE3moQ6xH00dJjtYRcSFm1kzfyBDzOU2Ia4dNk6o+McBpBnzZ2qOUQmeRj
+5n05Mt7RhTrMb9NGLs95i+zOTa/inma7IC0bNvC3FJ1ycJWqy5qpwab1vjhoBJZ0
+5QW29fYqPwgJtyaVQBRMOx/PmSm7etDLJXOA14RubmCGQMySRm2YSfGzhvBjsP95
+39AHA3NPgJpilcCTWlqnmJUWlc979O2Oi+kYhQ0BlhbvzIR6NyxAXA0mb6ZNFy+A
+ILtDTKamgRL8WZeJH/bl
+=jVc0
 -----END PGP SIGNATURE-----
 
---Oh6wehMCKJhhoxlo--
+--PLVMksexArUZ/iL3--
