@@ -1,87 +1,92 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH v2] ASoC: Intel: Update FW version readback
-Date: Tue, 15 Jul 2014 08:51:12 +0800
-Message-ID: <1405385472-32743-1-git-send-email-yang.jie@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BFFC2650A4
- for <alsa-devel@alsa-project.org>; Tue, 15 Jul 2014 02:51:53 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: mengdong.lin@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com
+From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v8 0/3] Add ES8328 audio codec
+Date: Tue, 15 Jul 2014 09:41:31 +0800
+Message-ID: <1405388494-21232-1-git-send-email-xobs@kosagi.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Update FW version readback. IPC_GLB_GET_FW_VERSION reads back
-the ABI version whilst the release version is in the mailbox.
-Update to use mailbox version for info logging.
+This patchset adds support for the Everest Semi ES8328 audio codec, used in
+the Novena open source laptop.  It also adds support for using the es8328 on
+IMX boards.
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- sound/soc/intel/sst-haswell-ipc.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+We write a machine driver rather than using simple-card because the machine
+driver needs to support regulators for the speaker amps and as well as
+supporting headphone jacks, in addition to the i.MX audmux routing.
 
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 4342363..96373ab 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -183,7 +183,7 @@ struct sst_hsw_ipc_fw_ready {
- 	u32 inbox_size;
- 	u32 outbox_size;
- 	u32 fw_info_size;
--	u8 fw_info[1];
-+	u8 fw_info[IPC_MAX_MAILBOX_BYTES - 5 * sizeof(u32)];
- } __attribute__((packed));
- 
- struct ipc_message {
-@@ -569,6 +569,9 @@ static void hsw_fw_ready(struct sst_hsw *hsw, u32 header)
- {
- 	struct sst_hsw_ipc_fw_ready fw_ready;
- 	u32 offset;
-+	u8 fw_info[IPC_MAX_MAILBOX_BYTES - 5 * sizeof(u32)];
-+	char *tmp[5], *pinfo;
-+	int i = 0;
- 
- 	offset = (header & 0x1FFFFFFF) << 3;
- 
-@@ -589,6 +592,19 @@ static void hsw_fw_ready(struct sst_hsw *hsw, u32 header)
- 		fw_ready.inbox_offset, fw_ready.inbox_size);
- 	dev_dbg(hsw->dev, " mailbox downstream 0x%x - size 0x%x\n",
- 		fw_ready.outbox_offset, fw_ready.outbox_size);
-+	if (fw_ready.fw_info_size < sizeof(fw_ready.fw_info)) {
-+		fw_ready.fw_info[fw_ready.fw_info_size] = 0;
-+		dev_dbg(hsw->dev, " Firmware info: %s \n", fw_ready.fw_info);
-+
-+		/* log the FW version info got from the mailbox here. */
-+		memcpy(fw_info, fw_ready.fw_info, fw_ready.fw_info_size);
-+		pinfo = &fw_info[0];
-+		for (i = 0; i < sizeof(tmp) / sizeof(char *); i++)
-+			tmp[i] = strsep(&pinfo, " ");
-+		dev_info(hsw->dev, "FW loaded, mailbox readback FW info: type %s, - "
-+			"version: %s.%s, build %s, source commit id: %s\n",
-+			tmp[0], tmp[1], tmp[2], tmp[3], tmp[4]);
-+	}
- }
- 
- static void hsw_notification_work(struct work_struct *work)
-@@ -1775,8 +1791,6 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
- 
- 	/* get the FW version */
- 	sst_hsw_fw_get_version(hsw, &version);
--	dev_info(hsw->dev, "FW loaded: type %d - version: %d.%d build %d\n",
--		version.type, version.major, version.minor, version.build);
- 
- 	/* get the globalmixer */
- 	ret = sst_hsw_mixer_get_info(hsw);
+Changes since v7:
+    - We now fetch the regulators in the device-level probe rather than
+      in the ASoC-level probe.
+
+Changes since v6:
+    - Minor clarification of AUDMUX in imx-audio-es8328.txt
+    - Use u32 instead of int in imx-es8328.c for int-mux and ext-mux
+    - Bounds checking on mux-int-port and mux-ext-port in imx-es8328.c
+    - Remove NULL checks before calling of_node_put()
+
+Changes since v5:
+    - Removed empty imx_set_frequency function from imx-es8328.c
+    - Move the clock from imx-audio-es8328 to the es8328 codec itself
+    - Add support for 2x (22.5792 MHz) and 1x (11.2896 MHz) source clocks
+    - Restore registers on resume
+    - Document pins for ES8328, including input pins
+
+Changes since v4:
+    - Simplify clock handling and use assigned-clock-parents
+    - Move the codec regulator from the machine driver to the codec
+    - Specify all four regulators, and require their presence
+    - Fix audio recording, such that it enables the PGA
+
+Changes since v3:
+    - Add OF bindings for everest,es8328
+    - Add back in patch to add everest as a vendor prefix
+    - Give clocks more generic names
+    - Document required clocks in DT bindings document
+
+Changes since v2:
+    - Change deemph to a bool, and update based on sample rate
+    - Replace value enums with regular enums
+    - Break SPI and I2C drivers into their own modules
+    - Rename everest,es8328 to es8328 as the module wasn't getting detected.
+      Because of this, the patch to vendor-prefixes.txt has been dropped.
+
+Changes since v1:
+    - Rename HP/Speaker to OUT1/OUT2
+    - Use DAPM widgets for startup/shutdown
+    - Add regulator support to machine driver
+
+Sean Cross (3):
+  devicetree: bindings: Add Everest Semicodunctor
+  ASoC: add es8328 codec driver
+  ASoC: fsl: add imx-es8328 machine driver
+
+ Documentation/devicetree/bindings/sound/es8328.txt |  38 ++
+ .../devicetree/bindings/sound/imx-audio-es8328.txt |  61 ++
+ .../devicetree/bindings/vendor-prefixes.txt        |   1 +
+ sound/soc/codecs/Kconfig                           |  13 +
+ sound/soc/codecs/Makefile                          |   6 +
+ sound/soc/codecs/es8328-i2c.c                      |  60 ++
+ sound/soc/codecs/es8328-spi.c                      |  49 ++
+ sound/soc/codecs/es8328.c                          | 719 +++++++++++++++++++++
+ sound/soc/codecs/es8328.h                          | 314 +++++++++
+ sound/soc/fsl/Kconfig                              |  14 +
+ sound/soc/fsl/Makefile                             |   2 +
+ sound/soc/fsl/imx-es8328.c                         | 233 +++++++
+ 12 files changed, 1510 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
+ create mode 100644 sound/soc/codecs/es8328-i2c.c
+ create mode 100644 sound/soc/codecs/es8328-spi.c
+ create mode 100644 sound/soc/codecs/es8328.c
+ create mode 100644 sound/soc/codecs/es8328.h
+ create mode 100644 sound/soc/fsl/imx-es8328.c
+
 -- 
-1.8.3.2
+2.0.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
