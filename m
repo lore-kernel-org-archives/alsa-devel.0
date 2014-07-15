@@ -1,70 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: s3c64xx/smartq: use dynamic
- registration
-Date: Tue, 15 Jul 2014 11:39:38 +0100
-Message-ID: <20140715103938.GJ6800@sirena.org.uk>
-References: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
- <16507628.c6raaN50oI@wuerfel>
- <20140714183624.GV6800@sirena.org.uk>
- <4657735.1VKsbQGuH6@wuerfel>
- <CAAVeFu+Z2xzUy6pGWu3H4MXdkBq39-USHbwNU9ih6AvvxPyu5A@mail.gmail.com>
+Subject: Re: [PATCH 3/7] ASoC: Intel: mrlfd - add generic
+	parameter interface
+Date: Tue, 15 Jul 2014 13:38:44 +0100
+Message-ID: <20140715123844.GC17528@sirena.org.uk>
+References: <1404898076-1882-1-git-send-email-vinod.koul@intel.com>
+ <1404898076-1882-4-git-send-email-vinod.koul@intel.com>
+ <20140714184632.GZ6800@sirena.org.uk>
+ <20140715052555.GE4387@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="LkBseQZEL/3d2JPd"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAAVeFu+Z2xzUy6pGWu3H4MXdkBq39-USHbwNU9ih6AvvxPyu5A@mail.gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Alexandre Courbot <gnurou@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kukjin Kim <kgene.kim@samsung.com>, Tomasz Figa <t.figa@samsung.com>, Maurus Cuelenaere <mcuelenaere@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linus Walleij <linus.walleij@linaro.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============5101277185925111142=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49A0326507F
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jul 2014 14:39:05 +0200 (CEST)
+In-Reply-To: <20140715052555.GE4387@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---LkBseQZEL/3d2JPd
+--===============5101277185925111142==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ALfTUftag+2gvp1h"
+Content-Disposition: inline
+
+
+--ALfTUftag+2gvp1h
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 15, 2014 at 04:36:20PM +0900, Alexandre Courbot wrote:
+On Tue, Jul 15, 2014 at 10:55:55AM +0530, Vinod Koul wrote:
+> On Mon, Jul 14, 2014 at 07:46:32PM +0100, Mark Brown wrote:
 
-> Direction and initial value, on the other hand, are clearly properties
-> that ought to be set by the driver itself. Thus my expectation here
-> would be that the driver sets the GPIO direction and initial value as
-> soon as it gets it using gpiod_direction_output(). In other words,
+> > Applied, thanks.  Please try to keep your subject lines consistent and
+> > word wrap your changelogs a bit more (they look like they go to exactly
+> > 80 columns which isn't good for replying).
 
-Well, it's a bit of a mix really - from a hardware point of view they
-normally are actually often fixed.
+> Yes set it to 80, i agree it cause issues while replying. What do you set, 76??
 
-> there is no replacement for gpio_request_one() with the gpiod
-> interface. Is there any use-case that cannot be covered by calling
-> gpiod_direction_output() right after gpiod_get()? AFAICT this is what
-> gpio_request_one() was doing anyway.
+Something like that (I actually do it by eye a lot of the time).
 
-Right, the original goal was to provide a better interface for
-requesting a GPIO - it saves a lot of error handling code throughout the
-kernel and avoids the possibility of bugs due to users forgetting to
-mark the directio for the GPIO.  Having a direct replacement also makes
-conversions to gpiod easier.
-
---LkBseQZEL/3d2JPd
+--ALfTUftag+2gvp1h
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTxQTnAAoJELSic+t+oim9MVIP/10zkYMLCdAJVQnZZUBU8mWy
-fuBhPCbPrneue715Ok/i/G24Yo2IMfkEjyYCpvEBVD1vMvLzUR9WVz0HorPjJoDQ
-hmDxQyYjkpUeYwDsZFKjF15fINLb7LX9/WS5JhYnJz6NMhi7ZF7nheYDUowC20J+
-2JZcZNcUqQrKoz9d/MqREXTdSsTKk0DKwRdIHPNWvaE5dYCNccLRN61GgFdAv/NM
-GLXwcEz/wxqGrHmnJ2NURZAqSBJZ53ucMRY1orN1PXLPHnolmvKr10Z8VwIQnxH/
-XmTXiTrb39KH8grdfYIs8tO9Bbi1N6wJnQ7cdu90OngmsdDaW7m8yCBUPESCv4gg
-snlbWjRBl3/ZF9pobcHw1zvPkGZ1VBjHXPQCgDMmpfX3GQstF/6UzCcmor/C9dNm
-KleqIMB6ftohJjaR/cynnJXSJsFC86UkKgmC1q9uNF7+ng1kKgNr4/nKS96msuIK
-ka1TxSaaWeh+N3c8Eppg94NywOl2fb7ty47xSDsmgCV3+qzKA2YeACSKLiO8lH1A
-nTx1N75cVjUBZjILgYvO2PFYRVGQuG52AMz83nTFFHijsjBpgrSFTkahyNbJFuN+
-Agzsy3hybDpxb39XjFMm7HxUhlWBsPK+yl8wAahItpjdgOZ/Yea8uHXL+fDyqNvE
-x8Vd3E56YHasjaHbUKZI
-=Lk2/
+iQIcBAEBAgAGBQJTxSDRAAoJELSic+t+oim90mQP/3QXnn7SXDNly+MBQ1/8mzH1
+7WdQc6+GXfQ+FLfUwSjR4+p7JvC9XTgwf0CpP6CpgyyjtvHFHwyralY0EtMN9lA9
+ENb/sPW3/K0dR/CnY3fofkQr9qMmLS74wmWzWPD926XjDZlrSP8Zk4U3XtRoN8lp
+KvpJAVLrz3XZBUKOKPSWQVDmEo/t2NIr9mhfpk4FIjcYtA1MP6RythrNDXLkEn78
+xIPoNSJ+gU/JVtBtyuRISoSdcAGIC2zmasB/hLwjl0jNWPTab0Olt8G/ITwFoOrW
+MV1VRKgNzPsHIKjod/NvZXTnu17oI8KSQpiqNAsVTxvvuoX0SP4h611OZ+aTozyU
+TNASq2pkeMhUBuDaUQ+DIJjAejz8ifJd6ENTbum58neoTeYygo5WvEGsUeyuqwIm
+Gh7keyZPlhFA9rx1ZxdHd8/sREYbT/sPmsiLpCyyrlNEBkMEk8bE5uKkg0GS2g+L
+xwKbPtYOY3HNYp1iAI5IX+xb1OQo5FSHbU75lHJpvmAvyPYdU5x1980QpXJp+Qy7
+kQ8OzCA1hihc+xYldiEU3TfCI6WpBMDjnvbqnRr/nRqlfl+gvSel453tebI1ocat
+e1SjUyvD6cm2pncPPjPkD4zygPT+b/rKotH6utxYWoiszKwUGCYm5qSQ/wUJyvxL
+kK9NOqClrUwIaq0E3Npg
+=TFOc
 -----END PGP SIGNATURE-----
 
---LkBseQZEL/3d2JPd--
+--ALfTUftag+2gvp1h--
+
+--===============5101277185925111142==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5101277185925111142==--
