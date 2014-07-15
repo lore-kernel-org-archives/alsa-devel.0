@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/7] ASoC: Intel: mrlfd - add generic
-	parameter interface
-Date: Tue, 15 Jul 2014 13:38:44 +0100
-Message-ID: <20140715123844.GC17528@sirena.org.uk>
-References: <1404898076-1882-1-git-send-email-vinod.koul@intel.com>
- <1404898076-1882-4-git-send-email-vinod.koul@intel.com>
- <20140714184632.GZ6800@sirena.org.uk>
- <20140715052555.GE4387@intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix broken PM due to incomplete
+	i915 initialization
+Date: Tue, 15 Jul 2014 15:25:05 +0200
+Message-ID: <1405430705-27859-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5101277185925111142=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 49A0326507F
- for <alsa-devel@alsa-project.org>; Tue, 15 Jul 2014 14:39:05 +0200 (CEST)
-In-Reply-To: <20140715052555.GE4387@intel.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2E9E2619F2
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jul 2014 15:25:05 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 7478FABA6
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jul 2014 13:25:05 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,61 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+When the initialization of Intel HDMI controller fails due to missing
+i915 kernel symbols (e.g. HD-audio is built in while i915 is module),
+the driver discontinues the probe.  However, since the probe was done
+asynchronously, the driver object still remains, thus the relevant PM
+ops are still called at suspend/resume. This results in the bad access
+to the incomplete audio card object, eventually leads to Oops or stall
+at PM.
 
---===============5101277185925111142==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ALfTUftag+2gvp1h"
-Content-Disposition: inline
+This patch adds the missing checks of chip->init_failed flag at each
+PM callback in order to fix the problem above.
 
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=79561
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---ALfTUftag+2gvp1h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jul 15, 2014 at 10:55:55AM +0530, Vinod Koul wrote:
-> On Mon, Jul 14, 2014 at 07:46:32PM +0100, Mark Brown wrote:
-
-> > Applied, thanks.  Please try to keep your subject lines consistent and
-> > word wrap your changelogs a bit more (they look like they go to exactly
-> > 80 columns which isn't good for replying).
-
-> Yes set it to 80, i agree it cause issues while replying. What do you set, 76??
-
-Something like that (I actually do it by eye a lot of the time).
-
---ALfTUftag+2gvp1h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTxSDRAAoJELSic+t+oim90mQP/3QXnn7SXDNly+MBQ1/8mzH1
-7WdQc6+GXfQ+FLfUwSjR4+p7JvC9XTgwf0CpP6CpgyyjtvHFHwyralY0EtMN9lA9
-ENb/sPW3/K0dR/CnY3fofkQr9qMmLS74wmWzWPD926XjDZlrSP8Zk4U3XtRoN8lp
-KvpJAVLrz3XZBUKOKPSWQVDmEo/t2NIr9mhfpk4FIjcYtA1MP6RythrNDXLkEn78
-xIPoNSJ+gU/JVtBtyuRISoSdcAGIC2zmasB/hLwjl0jNWPTab0Olt8G/ITwFoOrW
-MV1VRKgNzPsHIKjod/NvZXTnu17oI8KSQpiqNAsVTxvvuoX0SP4h611OZ+aTozyU
-TNASq2pkeMhUBuDaUQ+DIJjAejz8ifJd6ENTbum58neoTeYygo5WvEGsUeyuqwIm
-Gh7keyZPlhFA9rx1ZxdHd8/sREYbT/sPmsiLpCyyrlNEBkMEk8bE5uKkg0GS2g+L
-xwKbPtYOY3HNYp1iAI5IX+xb1OQo5FSHbU75lHJpvmAvyPYdU5x1980QpXJp+Qy7
-kQ8OzCA1hihc+xYldiEU3TfCI6WpBMDjnvbqnRr/nRqlfl+gvSel453tebI1ocat
-e1SjUyvD6cm2pncPPjPkD4zygPT+b/rKotH6utxYWoiszKwUGCYm5qSQ/wUJyvxL
-kK9NOqClrUwIaq0E3Npg
-=TFOc
------END PGP SIGNATURE-----
-
---ALfTUftag+2gvp1h--
-
---===============5101277185925111142==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5101277185925111142==--
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index d690c26a197c..83cd19017cf3 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -596,7 +596,7 @@ static int azx_suspend(struct device *dev)
+ 	struct azx *chip = card->private_data;
+ 	struct azx_pcm *p;
+ 
+-	if (chip->disabled)
++	if (chip->disabled || chip->init_failed)
+ 		return 0;
+ 
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+@@ -628,7 +628,7 @@ static int azx_resume(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip = card->private_data;
+ 
+-	if (chip->disabled)
++	if (chip->disabled || chip->init_failed)
+ 		return 0;
+ 
+ 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL) {
+@@ -665,7 +665,7 @@ static int azx_runtime_suspend(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip = card->private_data;
+ 
+-	if (chip->disabled)
++	if (chip->disabled || chip->init_failed)
+ 		return 0;
+ 
+ 	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
+@@ -692,7 +692,7 @@ static int azx_runtime_resume(struct device *dev)
+ 	struct hda_codec *codec;
+ 	int status;
+ 
+-	if (chip->disabled)
++	if (chip->disabled || chip->init_failed)
+ 		return 0;
+ 
+ 	if (!(chip->driver_caps & AZX_DCAPS_PM_RUNTIME))
+@@ -729,7 +729,7 @@ static int azx_runtime_idle(struct device *dev)
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip = card->private_data;
+ 
+-	if (chip->disabled)
++	if (chip->disabled || chip->init_failed)
+ 		return 0;
+ 
+ 	if (!power_save_controller ||
+-- 
+2.0.1
