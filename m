@@ -1,14 +1,14 @@
 From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] ASoC: Intel: Update FW version readback
-Date: Tue, 15 Jul 2014 08:45:33 +0800
-Message-ID: <1405385133-32200-1-git-send-email-yang.jie@intel.com>
+Subject: [PATCH v2] ASoC: Intel: Update FW version readback
+Date: Tue, 15 Jul 2014 08:51:12 +0800
+Message-ID: <1405385472-32743-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 726A42650A4
- for <alsa-devel@alsa-project.org>; Tue, 15 Jul 2014 02:45:58 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BFFC2650A4
+ for <alsa-devel@alsa-project.org>; Tue, 15 Jul 2014 02:51:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,7 +32,7 @@ Signed-off-by: Jie Yang <yang.jie@intel.com>
  1 file changed, 17 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 4342363..a8a2cf8 100644
+index 4342363..96373ab 100644
 --- a/sound/soc/intel/sst-haswell-ipc.c
 +++ b/sound/soc/intel/sst-haswell-ipc.c
 @@ -183,7 +183,7 @@ struct sst_hsw_ipc_fw_ready {
@@ -48,7 +48,7 @@ index 4342363..a8a2cf8 100644
  {
  	struct sst_hsw_ipc_fw_ready fw_ready;
  	u32 offset;
-+	u8 fw_info[IPC_MAX_MAILBOX_BYTES-5*sizeof(u32)];
++	u8 fw_info[IPC_MAX_MAILBOX_BYTES - 5 * sizeof(u32)];
 +	char *tmp[5], *pinfo;
 +	int i = 0;
  
