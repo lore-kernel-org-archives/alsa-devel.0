@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: Intel: Update FW version readback
-Date: Wed, 16 Jul 2014 22:27:50 +0100
-Message-ID: <20140716212750.GA17528@sirena.org.uk>
-References: <1405385472-32743-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH v2] ASoC: Intel: Add Broadwell Machine
+	support
+Date: Wed, 16 Jul 2014 22:32:42 +0100
+Message-ID: <20140716213242.GC17528@sirena.org.uk>
+References: <1405305340-8119-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4704953275643288479=="
+Content-Type: multipart/mixed; boundary="===============7035231903041473467=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 413C32654B0
- for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 23:28:02 +0200 (CEST)
-In-Reply-To: <1405385472-32743-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CE8B62654AC
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 23:32:52 +0200 (CEST)
+In-Reply-To: <1405305340-8119-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,55 +26,72 @@ Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.c
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4704953275643288479==
+--===============7035231903041473467==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4HoONH8zr3Mj5MZN"
+	protocol="application/pgp-signature"; boundary="D+UG5SQJKkIYNVx0"
 Content-Disposition: inline
 
 
---4HoONH8zr3Mj5MZN
+--D+UG5SQJKkIYNVx0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 15, 2014 at 08:51:12AM +0800, Jie Yang wrote:
-> Update FW version readback. IPC_GLB_GET_FW_VERSION reads back
-> the ABI version whilst the release version is in the mailbox.
-> Update to use mailbox version for info logging.
+On Mon, Jul 14, 2014 at 10:35:40AM +0800, Jie Yang wrote:
+> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+>=20
+> Add support for Broadwell based machines with SST DSP audio.
 
-Applied, thanks.  As I think I mentioned previously arranging for this
-to be readable via proc or sysfs would be good, it would allow the
-information to be picked up by alsa-info.sh which might be helpful for
-debugging.
+Applied, one tiny thing though:
 
---4HoONH8zr3Mj5MZN
+> +static int broadwell_rt286_hw_params(struct snd_pcm_substream *substream,
+> +	struct snd_pcm_hw_params *params)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
+> +	struct snd_soc_dai *codec_dai =3D rtd->codec_dai;
+> +	int ret;
+> +
+> +	ret =3D snd_soc_dai_set_sysclk(codec_dai, RT286_SCLK_S_PLL, 24000000,
+> +		SND_SOC_CLOCK_IN);
+> +
+> +	if (ret < 0) {
+> +		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
+> +		return ret;
+> +	}
+
+Since this is left the same all the time it'd be better to set it in
+rtd_init() or a late_probe() callback rather than resetting it each
+time.
+
+--D+UG5SQJKkIYNVx0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTxu5SAAoJELSic+t+oim9e0kP/2D/qHKAZYiag2hgJyjVTppo
-2Oc3ewrFlZsmalxZO0M6X0DhGNLzOE01vHASJCQfnaJpkb1zPyCLKDhhDFaaqvXL
-q8jOdKxhgFRrwdqm4wANA9B0CFwh5I2fU2Tq2TxMe+43a9pDf6LREkwwWI3HIsQr
-wwUkIqnSxYsEun7Mt3McoHEmIyIug1Dbw/sdw8kGM6UvfYrU5TzmwKbuemuZVvBE
-Z3MpOEdSLpGa2Gd9792ASKbitXhIe+gXQpUqt4kaarBrPGCfHl19kjOL9nSSqIGn
-/S4gxVwhN0NYPpLYRXndu99nltQxw+W3rfMWOeZ4QHLaIGebyAHhrn94OBDNjl/3
-j8W6daDbOA4yX/E6r2DgAeVN0ieSJxJT9Wksws+w47fY43SJAaDwynb4uuxvUm4O
-tgLVBUHGbXy6Q171Ui1BQpgouHl5wsC3RwxCq/VInQsIXYVsTPf1UPD1TB76tAav
-KT8V1yoQkoKPnNBy4hls34FakgKHaPONOLZGnnQYYfo7ClS4bF89BjzM3iXS+i+F
-k/VWx19Knq6wglY8ekE9KHtKZSgveLdBDlfN53n6QvPhWmgmNkUOk9ACTFXmjQL7
-HxQq+2FB7K5BPSvGCCdRnOgbQ0d593obQQeAgr6ScKNr1sou6Jk0hFY8GR52ZFMM
-xryLAKX/3BEjTrRaZtd3
-=zHBh
+iQIcBAEBAgAGBQJTxu93AAoJELSic+t+oim941UQAJvgh391Zh6qJWwsWdI0XWvY
+RXA8xB9WuQVQw0a/UzWM8hFCTYMPSiKH0DKl0JFjvfvOn1hYQmIyKkcZax19Msgc
+5TLNPWHjCxlfwHmfnZxiaLx0zDmqA8ZSoDu6cnlp4O/orCWtiaGlUP4J/SEfLtq4
+noHe3k/xAP4JdrQ+r7viSZf99Bi5r1oSIX5KGs4KgrbRyvQvoR0tFJd59yjW+F1Q
+nQDu8gRprBspWj+Mg1oZhds0e9jwq2KULCeD1wNLMYjFGUWM/Vs4GV9+aSo+QE2t
+vT8iK+tOPzdJQxo4+DdkAxcDW3heM7bF7fPthjJKJir3cHvspX2DJLcF9csFALXk
+F3Q8vUsD4amZJj+alWvngS/AnpfnUwT3d8lbScPYAYmlVZbL1qFmyi9SEpltncqJ
+TGANdVcsVYUZjFHIj4o2clqwTan0dyNpfwTJeub4oHToiviLppZbsQMs4GGuqLhH
+/Q01GGBve31Wuacky0L91ZZX7izV7XQPv3Av6JnpiPLyMb/rR0WpuxzrnrAq2dbW
+FoqsJ9VDQa4Jed3JTcG/S+GOsXj2GB/Fk7+nwprpeBMyACgk9yDevD1qlG0g8mJY
+FdsjXhZZRGrLKhpxDIR7zJRwLylIi0jbYhaI+DBW8vbYCbMscfzBmHnos6aBtrzL
+1LzCqFpT2929N2GjiOlB
+=4YR2
 -----END PGP SIGNATURE-----
 
---4HoONH8zr3Mj5MZN--
+--D+UG5SQJKkIYNVx0--
 
---===============4704953275643288479==
+--===============7035231903041473467==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4704953275643288479==--
+--===============7035231903041473467==--
