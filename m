@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: pcm: Introduce protocol version field to
-	sw_params
-Date: Wed, 16 Jul 2014 17:54:01 +0200
-Message-ID: <1405526041-18437-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH] alsa-lib: pcm: Fill sw_params proto field
+Date: Wed, 16 Jul 2014 17:54:43 +0200
+Message-ID: <1405526083-18484-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id ED68F265457
- for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 17:54:01 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B8F08AB5D
- for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 15:54:01 +0000 (UTC)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F80B265488
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 17:54:43 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 30978AB5D
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 15:54:43 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +24,22 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-For controlling the new fields more strictly, add sw_params.proto
-field indicating the protocol version of the user-space.  User-space
-should fill the SNDRV_PCM_VERSION value it's built with, then kernel
-can know whether the new fields should be evaluated or not.
-
-And now tstamp_type field is evaluated only when the valid value is
-set there.  This avoids the wrong override of tstamp_type to zero,
-which is SNDRV_PCM_TSTAMP_TYPE_GETTIMEOFDAY.
+Fill the new proto field introduced to sw_params with the current PCM
+protocol version.  This makes tstamp_type evaluated properly in the
+kernel.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/uapi/sound/asound.h | 4 ++--
- sound/core/pcm_native.c     | 6 ++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ include/sound/asound.h | 4 ++--
+ src/pcm/pcm.c          | 1 +
+ src/pcm/pcm_params.c   | 1 +
+ 3 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index a7e062f91f39..c9fd199b9330 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -391,8 +391,8 @@ struct snd_pcm_sw_params {
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index 552f41bd1ca9..98708c60c320 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -386,8 +386,8 @@ struct snd_pcm_sw_params {
  	snd_pcm_uframes_t silence_threshold;	/* min distance from noise for silence filling */
  	snd_pcm_uframes_t silence_size;		/* silence block size */
  	snd_pcm_uframes_t boundary;		/* pointers wrap point */
@@ -55,29 +50,29 @@ index a7e062f91f39..c9fd199b9330 100644
  	unsigned char reserved[56];		/* reserved for future */
  };
  
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 81dedc381efd..8cd2f930ad0b 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -543,7 +543,8 @@ static int snd_pcm_sw_params(struct snd_pcm_substream *substream,
- 
- 	if (params->tstamp_mode > SNDRV_PCM_TSTAMP_LAST)
- 		return -EINVAL;
--	if (params->tstamp_type > SNDRV_PCM_TSTAMP_TYPE_LAST)
-+	if (params->proto >= SNDRV_PROTOCOL_VERSION(2, 0, 12) &&
-+	    params->tstamp_type > SNDRV_PCM_TSTAMP_TYPE_LAST)
- 		return -EINVAL;
- 	if (params->avail_min == 0)
- 		return -EINVAL;
-@@ -559,7 +560,8 @@ static int snd_pcm_sw_params(struct snd_pcm_substream *substream,
- 	err = 0;
- 	snd_pcm_stream_lock_irq(substream);
- 	runtime->tstamp_mode = params->tstamp_mode;
--	runtime->tstamp_type = params->tstamp_type;
-+	if (params->proto >= SNDRV_PROTOCOL_VERSION(2, 0, 12))
-+		runtime->tstamp_type = params->tstamp_type;
- 	runtime->period_step = params->period_step;
- 	runtime->control->avail_min = params->avail_min;
- 	runtime->start_threshold = params->start_threshold;
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 89844430bf35..1399a5b2e671 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -5610,6 +5610,7 @@ int snd_pcm_sw_params_current(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
+ 		SNDMSG("PCM not set up");
+ 		return -EIO;
+ 	}
++	params->proto = SNDRV_PCM_VERSION;
+ 	params->tstamp_mode = pcm->tstamp_mode;
+ 	params->tstamp_type = pcm->tstamp_type;
+ 	params->period_step = pcm->period_step;
+diff --git a/src/pcm/pcm_params.c b/src/pcm/pcm_params.c
+index 4adbefae0530..6e57904e445b 100644
+--- a/src/pcm/pcm_params.c
++++ b/src/pcm/pcm_params.c
+@@ -2257,6 +2257,7 @@ static int snd_pcm_sw_params_default(snd_pcm_t *pcm, snd_pcm_sw_params_t *params
+ {
+ 	assert(pcm && params);
+ 	assert(pcm->setup);
++	params->proto = SNDRV_PCM_VERSION;
+ 	params->tstamp_mode = SND_PCM_TSTAMP_NONE;
+ 	params->tstamp_type = pcm->tstamp_type;
+ 	params->period_step = 1;
 -- 
 2.0.1
