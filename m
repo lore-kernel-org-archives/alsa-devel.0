@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] ASoC: davinci-mcasp/edma: Switch
- AM335x/43xx to edma-pcm
-Date: Wed, 16 Jul 2014 22:09:37 +0100
-Message-ID: <20140716210937.GW17528@sirena.org.uk>
-References: <1405512724-23628-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] ASoC: mcasp: don't override bclk divider
+ if it was provided by the machine
+Date: Wed, 16 Jul 2014 22:18:20 +0100
+Message-ID: <20140716211820.GX17528@sirena.org.uk>
+References: <1405512281-8188-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7443557320152623851=="
+Content-Type: multipart/mixed; boundary="===============4560923274261044924=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 387EC2654AC
- for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 23:10:05 +0200 (CEST)
-In-Reply-To: <1405512724-23628-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BB4B2654AC
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 23:18:38 +0200 (CEST)
+In-Reply-To: <1405512281-8188-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,60 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, zonque@gmail.com
+To: Daniel Mack <zonque@gmail.com>
+Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7443557320152623851==
+--===============4560923274261044924==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8Bx+wEju+vH9ym24"
+	protocol="application/pgp-signature"; boundary="kVhvBuyIzNBvw9vr"
 Content-Disposition: inline
 
 
---8Bx+wEju+vH9ym24
+--kVhvBuyIzNBvw9vr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 16, 2014 at 03:12:01PM +0300, Peter Ujfalusi wrote:
-> Hi,
->=20
-> This series will switch the AM335x/AM43xx SoCs to use the edma-pcm as pla=
-tform
-> driver instead of the old davinic-pcm.
+On Wed, Jul 16, 2014 at 02:04:41PM +0200, Daniel Mack wrote:
+> If a machine driver provides an BCLK divider to the McASP driver, skip the
+> automatic calculation.
 
-Applied all, thanks.
+Applied, thanks.  I had to merge with Peter's changes for the DMA but
+the resolution looked straightforward so hopefully it's OK - you
+probably want to check though.
 
---8Bx+wEju+vH9ym24
+--kVhvBuyIzNBvw9vr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTxuoOAAoJELSic+t+oim9rmsP/3Y/l+qAHlQXM5T7/zprwec9
-9oVyBwFl+NBB+NoIb/82NxqPXE6ZxwDXTJEhg1wrPvgWeyY7HZGaKYk130OWy10Y
-ONHESz+Y+wttZTgPWH9LteumDgzTpyc8irP6lrzTxJggAmCelgO/4XnY9ePgcbKX
-7QU06XUseC6dAFJe8APyMPF7UTWnhsNP/o3vjuGoAeazL8eZLIgDfkswzYEfOcxG
-koVGPE5iCJx1lJcl+yIegq1YYnEwv/GAnS6icKVzpJxR2ixmC/eHerrhXWOe2iAi
-7l/6L/HYHryx/K4NQTRViEdBdMxe3VdWwS0X4IHAZYBtVSnkoAeRxAFC41DcbDa2
-g5eNhWxMDD8TC5K4PS9ALj+z5LDIe5oKbWj610HzqKV6pJ/zrEns5ov3hQHgvJXT
-lsE7Tmqv+zut9VktRVdpiqVyUTPzsECLe22WZQF5zBt1c0t/+rW7r6ZsgqkgONvJ
-kTBe8efAfrnjPdSgmRblSX9fIqO9C5Jl9NddTYRl4/g1yX4GfL/HRslfsZEK7tGv
-eeCkAQGn4tJkIQuxvFcqJm5mbHde0avH/9bqMJOIWrr1mCGqXvxQ/kY0CQ1Qm0/h
-HBmLPQa0S2v8UaQ937iOU4l2hEGYyIyX9ANLoCt5wyclO7fmkxUxVLKJ23YZo97K
-bsevSiTaGJ6x3mJAo49w
-=7F6A
+iQIcBAEBAgAGBQJTxuwZAAoJELSic+t+oim9j3EP+gO0zrWOuSls1+srz+pLjNVD
+XwDkAQKrzsvaOrm5YYq6JF+TD7GYPXBJl3rZidJMH/1cN5wKWD32GtkHbOM3mStI
+74WUv6TPAiDzydO3ag1V4cjjrOLMSBCm5/UiTNMLDyrrS+sjMmYLUDW3Gk5KoVff
+jdJkXU1e949N1bhAekpUTKQv5//gyrqOiZTqFLUqEB7aKuu+hyx5ocZC/5+D0BsB
+n1mP+YlhYhQEb5ZaG+fAXy/QqBORv+yYc6LENsdt4oj42kA1JGUb82N2rD32ExRv
+hSkCYRMUkCPHkQOi7z+YlZJqrKAUI+cXklymvEhSTH0aEUxcmIHUWFfYZro19Gvn
+JmxfZ2+Xhn9xy3h2gKUykhYRC2ABGFKbghZit4df8CX/z5O/42EiLv0Ozj3jnwWI
++0eFDc2Bu6DrwCnuMLZtTDx/POkmpfXECjuzq8UHOUhX+mzWcXfD+KYebUBZiT5J
+IPcT89mYHiirnOMonJhk/UZd3l6DTukzWoNb4L5n7tBnGOBW1dYNxLGPpVQe3kp/
+NuBDd0dFKOOmfBhhfdQtlHi3kX95W4N/tkLgNcGwIQIkvILpkGRPNrWXmoTKzW1Y
+gIQGP9eHjun2QqQgB6C09Zmo6zsGWFjFZZk6+ri2m0LRsI4R+LWulZXNf4cJXeIU
+vZemlzGbFxXcEihgWDCG
+=Dhz3
 -----END PGP SIGNATURE-----
 
---8Bx+wEju+vH9ym24--
+--kVhvBuyIzNBvw9vr--
 
---===============7443557320152623851==
+--===============4560923274261044924==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7443557320152623851==--
+--===============4560923274261044924==--
