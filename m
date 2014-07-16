@@ -1,63 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 7/7] ACPI: Cleanup useless ACPI inclusion.
-Date: Wed, 16 Jul 2014 22:34:33 +0100
-Message-ID: <20140716213433.GD17528@sirena.org.uk>
-References: <cover.1387336613.git.lv.zheng@intel.com>
- <7ac00c9c5a32f7a3ec98f061080ba1573ae57d0d.1405500886.git.lv.zheng@intel.com>
- <20140716120750.GM17528@sirena.org.uk>
- <4307509.CpjlMkz69H@vostro.rjw.lan>
+Subject: Re: [PATCH v6 1/5] ASoC: core: Add initial support for
+	DAI multicodec
+Date: Wed, 16 Jul 2014 22:59:02 +0100
+Message-ID: <20140716215902.GG17528@sirena.org.uk>
+References: <1404854378-25828-1-git-send-email-bcousson@baylibre.com>
+ <1404854378-25828-2-git-send-email-bcousson@baylibre.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="P6PRkhImOxklJvkF"
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4307509.CpjlMkz69H@vostro.rjw.lan>
-Sender: linux-acpi-owner@vger.kernel.org
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Lv Zheng <lv.zheng@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>, Lv Zheng <zetalog@gmail.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============7548428070881536522=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1D1926535D
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 23:59:13 +0200 (CEST)
+In-Reply-To: <1404854378-25828-2-git-send-email-bcousson@baylibre.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Benoit Cousson <bcousson@baylibre.com>
+Cc: Fabien Parent <fparent@baylibre.com>, misael.lopez@ti.com, lars@metafoo.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---P6PRkhImOxklJvkF
+--===============7548428070881536522==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3IyuMspwcGTbYISR"
+Content-Disposition: inline
+
+
+--3IyuMspwcGTbYISR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 16, 2014 at 11:46:14PM +0200, Rafael J. Wysocki wrote:
-> On Wednesday, July 16, 2014 01:07:50 PM Mark Brown wrote:
-> > On Wed, Jul 16, 2014 at 04:59:02PM +0800, Lv Zheng wrote:
+On Tue, Jul 08, 2014 at 11:19:34PM +0200, Benoit Cousson wrote:
+> DAI link assumes a one to one mapping between CPU DAI and CODEC. In
+> some cases, the same CPU DAI can be connected to several codecs.
+> This is the case for example, if you connect two mono codecs to the
+> same I2S link in order to have a stereo card.
+> The current ASoC implementation does not allow such setup.
 
-> > > The sst-haswell-dsp.c is an ACPI independent file, this patch removes
-> > > ACPI header files for it.
+Applied, thanks.
 
-> > Applied, thanks.  Please use subject lines matching the style for the
-> > subsystem and send at least the cover letter for the series to everyone
-> > so that they know what's going on with dependencies and so on.
-
-> Lv thought that this would go through the ACPI tree I suppose.
-
-Even so the subject line should still line up (it's part of how some of
-us pick out which mail to read).
-
---P6PRkhImOxklJvkF
+--3IyuMspwcGTbYISR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTxu/lAAoJELSic+t+oim9wBkP/1QbAlgd9M7esohmJeMORy+S
-QWPqzk1Nw/fur4BH2EZO+fc3WRRtpIk7gWXWgV+S9SHu1xIm5qjQreQriEf6DRFC
-zH9iGs32EkRDq+6GAI1qlmHF2w153nQhMUt4MeD4GnaVfsZtc8Ny9x6AvOoDcdka
-JV78pmoZ2acIVLLEUGgztfFFEV4boq8fdgoyIdKZRD+1F+1PDTi4+sK7LY8aS/7p
-bXpdl6vF6SMLuLaC/nvVAdLHNDj6N61cDkpu/DF3ReTIdfCM8pGZyv3TgwnAYt6M
-lffxpgLCiyklhJ1cDph0TCu6IOWyAyMZhpUFDEw+b1wDr5xFtzdI/YoiEcJQ6t+y
-D3OAaAN2kNG70EskwH0yU8MCyDFqAnSbwQpUuxEzBCToIOT96HNvgGYDcpuYKAcY
-Pv/Hg3xQSIQvRc7nOP/NunSHFi6Iw1EsHmfKttiAzoIq0vpRNN9H78rs66XtTM+t
-rjyQ9zGNqZOQZIPclnmZoNFGv9gUK79X96CDU97NFib7kXm2rZOEfyxDLSEnSYkN
-v3+popRs6i/guW5yMv1SY2kAESE5l/Exdm5N8gWgKNZi7sFZBRez+4qQb8a4GnSH
-ewxUx98UerBq8QI1Mu2H/oefdGDj1o1IDaMTsezpEi6mQPe614CVTOAhTJyMhn0d
-imclPC3RSOh3tJXAApV/
-=MK6C
+iQIcBAEBAgAGBQJTxvWiAAoJELSic+t+oim9tXQP/3DgdlRXxG+Ub4YFT8/rZjS1
+FTuCYNZJnDSrc3uRqJePREnQhifXhaL4Ipa8SUZyYt14uKu9mfcFJRxjz15+PZGX
+ovBakILMInNTjHohdkSwHurIceaLO+7a0+Knwp9DxASoXiU3MSrElVlgNBLIntxN
+sO2Xx3kOG7FjJ0y79QqNv6dGqUcsopTdWBb6WTeT4+ze1XB70KQOT+c0DDuU41DF
+Qf6+9RVzq9gLMZc1AC4LAdKrSE1VT9PgY9pxSPvejzmvB7AwpGvmPcrsReFxKHWB
+gNIyO4Mvj5pvIV0mt5Z3TXaJ74ZRglBPrm6zSaVbZmlI6mTF8ZdB16aaPBqYKSC7
+neBdTrskuL7VJSL/dVBYhQ24+OH53arbrR1fkB6khS2KEd2h6ULq2bFlRJWwD2Mm
+uuxKICbj6YipNNuPXR+OYM4Iyc47U3R4zyWDVnjYJoa6bISebXhILFHCx7UP9qHe
+6vkeF4qqNm6phJi1bLCWiy2Tr98FIU5hlX1Btp8BGl7HFEgQ8A66KnHPh53mexk/
+SbGREiLJPWIniINlHgH/pjmrlxGil+89tphCAnsvSlAyXxxuotw8GPjle/6U4x0/
+p6dYeBzTwHhP9ck49bXUJT/wqWtjdgltxJNnulyiR9SW+G73DNsP2fWHFMtX7XEZ
+JqTOrfLomRkj9X3KWleI
+=ey95
 -----END PGP SIGNATURE-----
 
---P6PRkhImOxklJvkF--
+--3IyuMspwcGTbYISR--
+
+--===============7548428070881536522==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7548428070881536522==--
