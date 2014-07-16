@@ -1,39 +1,122 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH 01/12] ARM: OMAP2+: Remove non working OMAP HDMI audio
- initialization
-Date: Tue, 15 Jul 2014 22:25:41 +0300
-Message-ID: <53C58035.4050709@ti.com>
-References: <cover.1403807781.git.jsarha@ti.com> <b0764a3af8181db55db046d6139119def363e8eb.1403807781.git.jsarha@ti.com> <20140707114625.GT28884@atomide.com> <53BB9E08.7090802@ti.com> <20140708080945.GZ28884@atomide.com>
+From: Alexandre Courbot <gnurou@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: s3c64xx/smartq: use dynamic registration
+Date: Wed, 16 Jul 2014 12:00:45 +0900
+Message-ID: <CAAVeFuLfgG6W1qK2ATTbq_ydEOjUuM8Wvftm6N1RK3Kz_y1zHg@mail.gmail.com>
+References: <1405086308-1461192-1-git-send-email-arnd@arndb.de>
+ <16507628.c6raaN50oI@wuerfel> <20140714183624.GV6800@sirena.org.uk>
+ <4657735.1VKsbQGuH6@wuerfel> <CAAVeFu+Z2xzUy6pGWu3H4MXdkBq39-USHbwNU9ih6AvvxPyu5A@mail.gmail.com>
+ <53C4DF0D.8010208@metafoo.de> <CAAVeFuJRCwSwcEOng2M6s+mWhJT8sUtsh7YGE-hBTGUFWAhtrQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20140708080945.GZ28884@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, jyri.sarha@iki.fi
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <CAAVeFuJRCwSwcEOng2M6s+mWhJT8sUtsh7YGE-hBTGUFWAhtrQ@mail.gmail.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Thierry Reding <thierry.reding@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kukjin Kim <kgene.kim@samsung.com>, Tomasz Figa <t.figa@samsung.com>, Maurus Cuelenaere <mcuelenaere@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/08/2014 11:09 AM, Tony Lindgren wrote:
-> * Peter Ujfalusi <peter.ujfalusi@ti.com> [140708 00:32]:
->> Hi Tony,
->>
->> On 07/07/2014 02:46 PM, Tony Lindgren wrote:
->>> * Jyri Sarha <jsarha@ti.com> [140626 12:26]:
->>>> This code is not working currently and it can be removed. There is a
->>>> conflict in sharing resources with the actual HDMI driver and with
->>>> the ASoC HDMI audio DAI driver.
+On Tue, Jul 15, 2014 at 6:14 PM, Alexandre Courbot <gnurou@gmail.com> wrote:
+> On Tue, Jul 15, 2014 at 4:58 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+>> On 07/15/2014 09:36 AM, Alexandre Courbot wrote:
 >>>
->>> Is this OK to queue for v3.17 or do we need this for v3.16-rc series?
+>>> On Tue, Jul 15, 2014 at 4:19 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+>>>>
+>>>> On Monday 14 July 2014 19:36:24 Mark Brown wrote:
+>>>>>
+>>>>> On Mon, Jul 14, 2014 at 08:23:55PM +0200, Arnd Bergmann wrote:
+>>>>>>
+>>>>>> On Monday 14 July 2014 18:18:12 Lars-Peter Clausen wrote:
+>>>>>
+>>>>>
+>>>>>>> Yes. But now that you say it the gpiod_direction_output() call is
+>>>>>>> missing
+>>>>>>> from this patch.
+>>>>>
+>>>>>
+>>>>>> I'm lost now. The GPIO_ACTIVE_HIGH I added comes from
+>>>>>> Documentation/gpio/board.txt
+>>>>>> and as Linus Walleij explained to me the other day, the lookup is
+>>>>>> supposed
+>>>>>> to replace devm_gpio_request_one(), which in turn replaced both the
+>>>>>> gpio_request and the gpio_direction_output(). Do I need to put the
+>>>>>> gpiod_direction_output() back or is there another interface for that
+>>>>>> when
+>>>>>> registering the board gpios?
+>>>>>
+>>>>>
+>>>>> Indeed.  If you *do* need an explicit _output() then that sounds to me
+>>>>> like we either need a gpiod_get_one() or an extension to the table,
+>>>>> looking at the code it seems like this is indeed the case.  We can set
+>>>>> if the GPIO is active high/low, or open source/drain but there's no flag
+>>>>> for the initial state.
+>>>>
+>>>>
+>>>> (adding Alexandre and the gpio list)
+>>>>
+>>>> GPIO people: any guidance on how a board file should set a gpio to
+>>>> output/default-high in a GPIO_LOOKUP() table to replace a
+>>>> devm_gpio_request_one() call in a device driver with devm_gpiod_get()?
+>>>> Do we need to add an interface extension to do this, e.g. passing
+>>>> GPIOF_OUT_INIT_HIGH as the flags rather than GPIO_ACTIVE_HIGH?
+>>>
+>>>
+>>> The way I see it, GPIO mappings (whether they are done using the
+>>> lookup tables, DT, or ACPI) should only care about details that are
+>>> relevant to the device layout and that should be abstracted to the
+>>> driver (e.g. whether the GPIO is active low or open drain) so drivers
+>>> do not need to check X conditions every time they want to drive the
+>>> GPIO.
+>>>
+>>> Direction and initial value, on the other hand, are clearly properties
+>>> that ought to be set by the driver itself. Thus my expectation here
+>>> would be that the driver sets the GPIO direction and initial value as
+>>> soon as it gets it using gpiod_direction_output(). In other words,
+>>> there is no replacement for gpio_request_one() with the gpiod
+>>> interface. Is there any use-case that cannot be covered by calling
+>>> gpiod_direction_output() right after gpiod_get()? AFAICT this is what
+>>> gpio_request_one() was doing anyway.
 >>
->> Jyri is away currently, but I think it would be great if this patch goes in
->> for 3.16. The patch does not introduce regression since the OMAP4/5 HDMI is in
->> non working state in the kernel so removing the platform device right now will
->> ease up the merger of the new and working code.
+>>
+>> I agree with you that this is something that should be done in the driver
+>> and not in the lookup table. I think that it is still a good idea to have a
+>> replacement for gpio_request_one with the new GPIO descriptor API. A large
+>> share of the drivers want to call either gpio_direction_input() or
+>> gpio_direction_output() right after requesting the GPIO. Combining both the
+>> requesting and the configuration of the GPIO into one function call makes
+>> the code a bit shorter and also simplifies the error handling. Even more so
+>> if e.g. the GPIO is optional. This was one of the main reasons why
+>> gpio_request_one was introduced, see the commit[1] that added it.
 >
-> OK, will apply it into omap-for-v3.16/fixes as it just removes broken code.
->
+> I am not opposed to it as a convenience function. Note that since the
+> open-source and open-drain flags are already handled by the lookup
+> table, the only flags it should handle are those related to direction,
+> value, and (maybe) sysfs export.
 
-Thanks Tony and Peter!
+Problem is, too much convenience functions seems to ultimately kill convenience.
 
+The canonical way to request a GPIO is by providing a (device,
+function, index) triplet to gpiod_get_index(). Since most functions
+only need one GPIO, we have gpiod_get(device, function) which is
+basically an alias to gpiod_get_index(device, function, 0) (note to
+self: we should probably inline it).
 
+On top of these comes another set of convenience functions,
+gpiod_get_optional() and gpiod_get_index_optional(), which return NULL
+instead of -ENOENT if the requested GPIO mapping does not exist. This
+is useful for the common case where a driver can work without a GPIO.
+
+Of course these functions all have devm counterparts, so we currently
+have 8 (devm_)gpiod_get(_index)(_optional) functions.
+
+If we are to add functions with an init flags parameter, we will end
+with 16 functions. That starts to be a bit too much to my taste, and
+maybe that's where GPIO consumers should sacrifice some convenience to
+preserve a comprehensible GPIO API.
+
+There might be other ways to work around this though. For instance, we
+could replace the _optional functions by a GPIOF_OPTIONAL flag to be
+passed to a more generic function that would also accept direction and
+init value flags. Actually I am not seeing any user of the _optional
+variant in -next, so maybe we should just do this. Thierry, since you
+introduced the _optional functions, can we get your thoughts about
+this?
