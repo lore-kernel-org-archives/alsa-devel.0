@@ -1,76 +1,54 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: [PATCH] ASoC: mcasp: don't override bclk divider if it
-	was provided by the machine
-Date: Wed, 16 Jul 2014 14:04:41 +0200
-Message-ID: <1405512281-8188-1-git-send-email-zonque@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 7/7] ACPI: Cleanup useless ACPI inclusion.
+Date: Wed, 16 Jul 2014 13:07:50 +0100
+Message-ID: <20140716120750.GM17528@sirena.org.uk>
+References: <cover.1387336613.git.lv.zheng@intel.com>
+ <cover.1405500886.git.lv.zheng@intel.com>
+ <7ac00c9c5a32f7a3ec98f061080ba1573ae57d0d.1405500886.git.lv.zheng@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
- [209.85.212.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E28A2619E9
- for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 14:04:50 +0200 (CEST)
-Received: by mail-wi0-f172.google.com with SMTP id n3so6017342wiv.17
- for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 05:04:47 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5me2qT3T17SWzdxI"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <7ac00c9c5a32f7a3ec98f061080ba1573ae57d0d.1405500886.git.lv.zheng@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lv Zheng <lv.zheng@intel.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <len.brown@intel.com>, Lv Zheng <zetalog@gmail.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If a machine driver provides an BCLK divider to the McASP driver, skip the
-automatic calculation.
 
-This fixes machines on which the physical sample transport always works
-in 32 bits, even though not all of them are actually used.
-snd_soc_params_to_bclk() will fail to address such cases properly.
+--5me2qT3T17SWzdxI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Daniel Mack <zonque@gmail.com>
----
- sound/soc/davinci/davinci-mcasp.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+On Wed, Jul 16, 2014 at 04:59:02PM +0800, Lv Zheng wrote:
+> The sst-haswell-dsp.c is an ACPI independent file, this patch removes
+> ACPI header files for it.
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 0518f27..dbeb4fd 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -64,6 +64,7 @@ struct davinci_mcasp {
- 	u8	num_serializer;
- 	u8	*serial_dir;
- 	u8	version;
-+	u8	bclk_div;
- 	u16	bclk_lrclk_ratio;
- 	int	streams;
- 
-@@ -420,6 +421,7 @@ static int davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div
- 			       ACLKXDIV(div - 1), ACLKXDIV_MASK);
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG,
- 			       ACLKRDIV(div - 1), ACLKRDIV_MASK);
-+		mcasp->bclk_div = div;
- 		break;
- 
- 	case 2:		/* BCLK/LRCLK ratio */
-@@ -722,8 +724,11 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 	int period_size = params_period_size(params);
- 	int ret;
- 
--	/* If mcasp is BCLK master we need to set BCLK divider */
--	if (mcasp->bclk_master) {
-+	/*
-+	 * If mcasp is BCLK master, and a BCLK divider was not provided by
-+	 * the machine driver, we need to calculate the ratio.
-+	 */
-+	if (mcasp->bclk_master && mcasp->bclk_div == 0) {
- 		unsigned int bclk_freq = snd_soc_params_to_bclk(params);
- 		if (mcasp->sysclk_freq % bclk_freq != 0) {
- 			dev_err(mcasp->dev, "Can't produce required BCLK\n");
--- 
-1.9.3
+Applied, thanks.  Please use subject lines matching the style for the
+subsystem and send at least the cover letter for the series to everyone
+so that they know what's going on with dependencies and so on.
+
+--5me2qT3T17SWzdxI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTxmsTAAoJELSic+t+oim9wDgQAIGj1IsQmCiC9wzzx0I14JOl
+d70+ZlvbDYeXiL0fVaF7QdArfjt99hRdvn0KUSd/QcykHl0nSwYAT6MrAmkla44K
+3QXJmODQpC4TIXUDIlIVH1hMd/3uZvn2pzz6+QtqcrJk4BeMzYKGnbz90nUayx6p
+cAb1XEBTQJwVR8zdrSE2oXzYr9JbSMt+YTmgLlyz9te/FYQ8GwaFcj3bpF+1Ykbv
+plLSnY8pkG8YjgpLeuA//0XsCPLGYOn8oM77uRDkmJSYcE9EOWSAJBNuZicsIhOu
+kvkWONtvfIDBzT/2tcZJ37jpuRC/f9SLeMj/tk8ZgqaR7WxPMNuTRK/4eSPYqocr
+eP/xZOeul04gJa8tEg/gECwdPU61NCvgrr1g1/l19D76ItNlyOF1Tz/2hXrDadMh
+8ypSdoW/NBrWoq+rF3sZYpemD11AHO+wJ5T6H7WZyTDf+jA51uZGBK+Tijq98edL
+r6kZpyNNg8enhQNaN8qN6zG4x1kBcP9Ohfo8+L1e21D7PpEpWIcIAATFxvWETR+t
+4L0occpODtwYqY4XRs2YhXV2lJ3ljx42iLqRSsuELZuAVGCwrQArirMrIy6gRM0i
+S1icS3VbPXBvJHmqPTAI0cV0oHeF1M0gPSd4g1+h1hG9irbRRb4+rJxnFBaE3HFm
+yT1t5g6go3gfewKLMUpy
+=A3iP
+-----END PGP SIGNATURE-----
+
+--5me2qT3T17SWzdxI--
