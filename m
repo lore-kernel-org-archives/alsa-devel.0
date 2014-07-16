@@ -1,19 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v6 0/5] ASoC: core: Add support for DAI
-	multicodec
-Date: Wed, 16 Jul 2014 13:09:33 +0200
-Message-ID: <53C65D6D.6060400@metafoo.de>
-References: <1404854378-25828-1-git-send-email-bcousson@baylibre.com>
- <53C659B9.70904@baylibre.com>
+From: Daniel Mack <zonque@gmail.com>
+Subject: [PATCH] ASoC: mcasp: don't override bclk divider if it
+	was provided by the machine
+Date: Wed, 16 Jul 2014 14:04:41 +0200
+Message-ID: <1405512281-8188-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-124.synserver.de (smtp-out-125.synserver.de
- [212.40.185.125])
- by alsa0.perex.cz (Postfix) with ESMTP id AFB7B2651A5
- for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 13:09:30 +0200 (CEST)
-In-Reply-To: <53C659B9.70904@baylibre.com>
+Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
+ [209.85.212.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E28A2619E9
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 14:04:50 +0200 (CEST)
+Received: by mail-wi0-f172.google.com with SMTP id n3so6017342wiv.17
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 05:04:47 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,30 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Benoit Cousson <bcousson@baylibre.com>, broonie@kernel.org, lgirdwood@gmail.com
-Cc: misael.lopez@ti.com, alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/16/2014 12:53 PM, Benoit Cousson wrote:
-> Hi all,
->
-> On 08/07/2014 23:19, Benoit Cousson wrote:
->> Hi Lars, Mark and Liam,
->>
->> Here is the sixth, and hopefully the last, version of the multicodec series.
->>
->> I've just removed the broken test I forgot to remove last time.
->>
->> The series is based on asoc/for-next (v3.16-rc3).
->>
->> Test and comments are welcome.
->
-> Any comment on that version?
+If a machine driver provides an BCLK divider to the McASP driver, skip the
+automatic calculation.
 
-No comments is probably a good sign in this case. There is just a lot of 
-activity on the ALSA mailinglist and lots of patches to review and this is a 
-quite invasive patchset so it requires a bit more thorough review. Give it 
-maybe two or three weeks. I'm quite confident that this version has a good 
-chance of being merged.
+This fixes machines on which the physical sample transport always works
+in 32 bits, even though not all of them are actually used.
+snd_soc_params_to_bclk() will fail to address such cases properly.
 
-- Lars
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ sound/soc/davinci/davinci-mcasp.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 0518f27..dbeb4fd 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -64,6 +64,7 @@ struct davinci_mcasp {
+ 	u8	num_serializer;
+ 	u8	*serial_dir;
+ 	u8	version;
++	u8	bclk_div;
+ 	u16	bclk_lrclk_ratio;
+ 	int	streams;
+ 
+@@ -420,6 +421,7 @@ static int davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div
+ 			       ACLKXDIV(div - 1), ACLKXDIV_MASK);
+ 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG,
+ 			       ACLKRDIV(div - 1), ACLKRDIV_MASK);
++		mcasp->bclk_div = div;
+ 		break;
+ 
+ 	case 2:		/* BCLK/LRCLK ratio */
+@@ -722,8 +724,11 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 	int period_size = params_period_size(params);
+ 	int ret;
+ 
+-	/* If mcasp is BCLK master we need to set BCLK divider */
+-	if (mcasp->bclk_master) {
++	/*
++	 * If mcasp is BCLK master, and a BCLK divider was not provided by
++	 * the machine driver, we need to calculate the ratio.
++	 */
++	if (mcasp->bclk_master && mcasp->bclk_div == 0) {
+ 		unsigned int bclk_freq = snd_soc_params_to_bclk(params);
+ 		if (mcasp->sysclk_freq % bclk_freq != 0) {
+ 			dev_err(mcasp->dev, "Can't produce required BCLK\n");
+-- 
+1.9.3
