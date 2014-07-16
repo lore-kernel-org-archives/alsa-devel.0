@@ -1,17 +1,17 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH] ASoC: mcasp: don't override bclk divider
- if it was provided by the machine
-Date: Wed, 16 Jul 2014 23:19:52 +0200
-Message-ID: <53C6EC78.1010006@zonque.org>
-References: <1405512281-8188-1-git-send-email-zonque@gmail.com>
- <20140716211820.GX17528@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: core: add a helper for extended
+ byte controls using TLV
+Date: Wed, 16 Jul 2014 22:20:20 +0100
+Message-ID: <20140716212020.GY17528@sirena.org.uk>
+References: <1405440288-15958-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6495229714063909552=="
+Content-Type: multipart/mixed; boundary="===============4695298454967867251=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 72D1C2654BD
- for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 23:19:55 +0200 (CEST)
-In-Reply-To: <20140716211820.GX17528@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26DAD2654F1
+ for <alsa-devel@alsa-project.org>; Wed, 16 Jul 2014 23:20:34 +0200 (CEST)
+In-Reply-To: <1405440288-15958-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,67 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: peter.ujfalusi@ti.com, alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <Charles.Keepax@Wolfsonmicro.com>, Dimitris Papastamos <Dimitris.Papastamos@Wolfsonmicro.com>, tiwai@suse.de, lgirdwood@gmail.com, Omair Mohammed Abdullah <omair.m.abdullah@intel.com>, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============6495229714063909552==
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="km2ouIWK1mI24jSfXCMej0Wlsth9psGXP"
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---km2ouIWK1mI24jSfXCMej0Wlsth9psGXP
-Content-Type: text/plain; charset=UTF-8
+--===============4695298454967867251==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cUjMc5fB5G+GsIM6"
+Content-Disposition: inline
+
+
+--cUjMc5fB5G+GsIM6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 07/16/2014 11:18 PM, Mark Brown wrote:
-> On Wed, Jul 16, 2014 at 02:04:41PM +0200, Daniel Mack wrote:
->> If a machine driver provides an BCLK divider to the McASP driver, skip=
- the
->> automatic calculation.
+On Tue, Jul 15, 2014 at 09:34:48PM +0530, Vinod Koul wrote:
+> From: Omair Mohammed Abdullah <omair.m.abdullah@intel.com>
 >=20
-> Applied, thanks.  I had to merge with Peter's changes for the DMA but
-> the resolution looked straightforward so hopefully it's OK - you
-> probably want to check though.
+> ALSA supports arbitrary length TLVs for each kcontrol that can be used
+> to pass metadata about the control (e.g. volumes, enum information). The
+> same transport mechanism is now used for arbitrary length data by
+> defining a new helper.
 
-Looking good, thanks!
+Applied, thanks.
 
-
-
-
---km2ouIWK1mI24jSfXCMej0Wlsth9psGXP
+--cUjMc5fB5G+GsIM6
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTxux4AAoJELphMRr8Y1QklbwQALP9hK/fxqATF/pBxKmJvbFu
-IWkUGroG0w8f+qZ3VzYjRHTHV05D8qluC1Fn50LiVl+ZvDXwKdHWxru01zXRrfrY
-ThrpPqWZEM0zi2UDs+AHCQXsMS5p1+q5LIzzbg1kKbMGNRET8MXUJzuQ9c5guXtJ
-MUohRodqcTtbqX7PMtu5cvbDUUxUksx4wZqlHi9ceFtqCMbK0joID8FiSc7RuTcp
-6CsqRKb1agj4VkQaUexFPu67QqDyj+AN2XGbP69mxhtJwd1DsHcZIeJDvN/TyEsm
-I2TI3wkpKImZLsoEFZnbfVkPjplBCyXXgpAtCL47Gxq82Q/4OFQSHVGZXO3Ue88+
-ljoPljGf1FHgPVMxxLevDzgwPIHvg+cRQPXKs7TBh1q69P7/X9hs8+03Oq0nvRpS
-Y9nSZpHhrXBzT5XjZdZ+fTCmFhHXzoN8E6H2ikdTgR9twV+0kQeWV4/iPkD/bwrH
-R9BkOQoS99izihDstW/k1n/OZDKo26pDSZkSmmnyu0x8kCnz+ChomtS8QpP+VLM8
-SO3OMLlPt3jLbq6W6eRWfmxFtg+bC2khQblIE9Cs7zB32mx5DSQ6dsSLjGnSs8fK
-OqVkkbReJEzb0YqnlRkMEMt62iw2y560fYz/mflxj69/YjqVzJlWid8xrjYPXYzo
-xblf7Sg3c3HXrfSewYLF
-=nbMR
+iQIcBAEBAgAGBQJTxuyRAAoJELSic+t+oim9AAUP/iRXsxe9erKXiFj/Ww4LoJL3
+UmaDYelDYXTVlzjT6wkLmTWlTsOHMf+AXyPCGmaXc8yn65fER1yTUam9m5V0E5pF
+K6InlbwEIeFP4pcFjf/YEwrkvFrMnSbQphlPurzRqcNU6wo+Sp9rANLtRYeUCxH+
+COrcmyHuzgALuuMbZrFsY9ocigZlvG8aAaF0y2BoR3e2Ve10xVsvU/gEEXkMXK3O
+PhYWAW3wthGbMADTcVHGBBqU/30kDAfsfuk6t8huMLKF+vLyhOf5m6juObQ90ozj
+9KYJz/5Xg7WLCIHY41XPtMwTE0tFgK/kl0wAQ/rGKdKjXQdB+izo4gzjTYIz/YHZ
+9dD+2rQBa9nAy7yvOHYzQ8B+3iEJ29SdfbeCAFWnoj2Z4B+QFoMpfIWyBKpovpSv
+yN1NMZ9Y4togn0DzkpasU0RkUZXowFjcgaZ7PmAZEdd59tTDU9VfOgFGwFFSZJOp
+87PiXkPz6KT9gKhoARoLc6uD4mCBRZwW3GSwUVJbcFFZc1xfiRQjObW3cRgv/HLh
+rHoVNf4rUf5EIW4zn5Ogq/05ETexahy76I31fYVU9JNr7RKBcixdtoAP2h7sVv29
+RHcY3QfRafpDlvBVKOIJrByfHvh7pDUNHwf5hvnfhX7FrCcunc20uRQq6653Q0w5
+rJDpkHD9ivRETRJfcw3g
+=/dqS
 -----END PGP SIGNATURE-----
 
---km2ouIWK1mI24jSfXCMej0Wlsth9psGXP--
+--cUjMc5fB5G+GsIM6--
 
---===============6495229714063909552==
+--===============4695298454967867251==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6495229714063909552==--
+--===============4695298454967867251==--
