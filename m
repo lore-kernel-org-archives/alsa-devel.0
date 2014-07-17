@@ -1,57 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: arizona: Disable AIF TX/RX before configuring it
-Date: Thu, 17 Jul 2014 20:42:15 +0100
-Message-ID: <20140717194215.GH17528@sirena.org.uk>
-References: <20140716121029.GA22222@opensource.wolfsonmicro.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: pcm: Introduce protocol version
+ field to sw_params
+Date: Thu, 17 Jul 2014 21:48:02 +0200
+Message-ID: <53C82872.3040101@perex.cz>
+References: <1405526041-18437-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="U/fatWn3w9i48dtV"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140716121029.GA22222@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 487A126507D
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2014 21:48:20 +0200 (CEST)
+In-Reply-To: <1405526041-18437-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Date 16.7.2014 17:54, Takashi Iwai wrote:
+> For controlling the new fields more strictly, add sw_params.proto
+> field indicating the protocol version of the user-space.  User-space
+> should fill the SNDRV_PCM_VERSION value it's built with, then kernel
+> can know whether the new fields should be evaluated or not.
+> 
+> And now tstamp_type field is evaluated only when the valid value is
+> set there.  This avoids the wrong override of tstamp_type to zero,
+> which is SNDRV_PCM_TSTAMP_TYPE_GETTIMEOFDAY.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  include/uapi/sound/asound.h | 4 ++--
+>  sound/core/pcm_native.c     | 6 ++++--
+>  2 files changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+> index a7e062f91f39..c9fd199b9330 100644
+> --- a/include/uapi/sound/asound.h
+> +++ b/include/uapi/sound/asound.h
+> @@ -391,8 +391,8 @@ struct snd_pcm_sw_params {
+>  	snd_pcm_uframes_t silence_threshold;	/* min distance from noise for silence filling */
+>  	snd_pcm_uframes_t silence_size;		/* silence block size */
+>  	snd_pcm_uframes_t boundary;		/* pointers wrap point */
+> -	unsigned int tstamp_type;		/* timestamp type */
+> -	int pads;				/* alignment, reserved */
+> +	unsigned int tstamp_type;		/* timestamp type (req. proto >= 2.0.12) */
+> +	unsigned int proto;			/* protocol version */
 
---U/fatWn3w9i48dtV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I would switch the positions of tstamp_type and proto... It seems
+logical that all new member added after proto are dependent on this value.
 
-On Wed, Jul 16, 2014 at 01:10:39PM +0100, Richard Fitzgerald wrote:
+					Jaroslav
 
-> If we don't disable the AIF TX/RX then we may fall into a
-> situation where the new AIF settings are ignored by the device.
-> For example, this problem manifests when switching between
-> different sample rates.
-
-So, what this does is momentarily disable the AIF when reconfiguring.
-That will glitch any running audio, making me wonder if the driver
-shouldn't be returning an error or at least complaining if it has to
-reconfigure instead.  What's the use case where this might get
-triggered?
-
---U/fatWn3w9i48dtV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTyCcUAAoJELSic+t+oim9hiwQAJizNsa+8f4DamujnlTjXFA7
-rrC2kPZz0ICCV/qmok3MWo0uRC4oVZabUDQ7Q9FKpWDyr4if7OzCYPGJuBM07CMg
-qNYq/+5WQ1dI5Er6CPrVAaZ9n4icdgfqAqLAFZLnOWACasiw2f3LD/w0ROhMyZ20
-mgrmUst3OBiiJ2PJ7i4gzZIu+fOXlKeJd2Du4SIOpqrenrfhra5YJxsXap/F/NT6
-+tf1N0AmyEo7363X3FUVFYpi+nFyhKBRwqr0JLn8cbjCCFTcCyfrS29VNnx7VFDC
-/ljgUW4eQRT5ShTE356soYn+VqkEEZfdOzyxSbwZIo1suK6bXCN6xpI/bZIsmE/k
-GdGM1SvwPsS4f2d5WRHDMn+kFe7dqt7Ss60VatALNxxMTdIZJYIo7Js7i6vVYWdp
-leihBTFRR0otf60T9zzxgcrAORe0OVPbucHqfVkY3h5lFcJIM4aBQ5lYuL6/gZDa
-rFwK8FHdrdB94RF3B/n3hqAcAGVW4/BAUTM7c4aWJzOyOMha6ABo70f1FLwMEnls
-6LN33sk6vuiONKmMPnDYQy4RBXj2cZTUfCxUeORXwcao6zr/7s8HNF7PX45+FIrd
-PPwtv3YGI2AZpol5U+fsiwYmqwg778bWRyKfbKX6/iosWNUXmpZIGE1rcAcN9rl/
-XSMNL7bSUxNmznqiZ09o
-=lu0+
------END PGP SIGNATURE-----
-
---U/fatWn3w9i48dtV--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
