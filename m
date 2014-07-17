@@ -1,56 +1,63 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v8 3/3] ASoC: fsl: add imx-es8328 machine driver
-Date: Thu, 17 Jul 2014 21:00:31 +0100
-Message-ID: <20140717200031.GJ17528@sirena.org.uk>
-References: <1405388494-21232-1-git-send-email-xobs@kosagi.com>
- <1405388494-21232-4-git-send-email-xobs@kosagi.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 0/4] More componentization preparation
+Date: Thu, 17 Jul 2014 22:01:04 +0200
+Message-ID: <1405627268-23939-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NWFdL9cNbHaIJHRV"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1405388494-21232-4-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-180.synserver.de (smtp-out-180.synserver.de
+ [212.40.185.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC875265328
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2014 22:01:06 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
+Now that the multi-CODEC patches have been merged we can continue with the
+componentization. Since it is already rather late in the development cycle again
+this series only has a small set of cleanup and preparation patches so we have
+that out of the way. The first patch removes the unused snd_soc_card
+platform_list, the other three patches move the card field from the
+snd_soc_platform and snd_soc_codec struct and consolidates the registration of
+controls on top of that.
 
---NWFdL9cNbHaIJHRV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Series depends on topic/multi
 
-On Tue, Jul 15, 2014 at 09:41:34AM +0800, Sean Cross wrote:
-> This adds an initial machine driver for the ES8328 audio codec on Freescale
-> boards.  The driver supports headphones and an audio regulator for an onboard
-> speaker amp.
+- Lars
 
-Applied, thanks.
+Lars-Peter Clausen (4):
+  ASoC: Remove per card platform list
+  ASoC: tegra: Replace instances of rtd->codec->card with rtd->card
+  ASoC: Move card field form platform/codec to component
+  ASoC: Add function to register component controls
 
---NWFdL9cNbHaIJHRV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ include/sound/soc.h              | 12 ++++------
+ sound/soc/codecs/ac97.c          |  4 ++--
+ sound/soc/codecs/cx20442.c       |  6 ++---
+ sound/soc/codecs/uda134x.c       |  2 +-
+ sound/soc/codecs/wm8960.c        |  2 +-
+ sound/soc/codecs/wm_adsp.c       |  4 ++--
+ sound/soc/omap/ams-delta.c       |  2 +-
+ sound/soc/soc-core.c             | 52 +++++++++++++++++++++++++---------------
+ sound/soc/soc-dapm.c             |  2 +-
+ sound/soc/soc-jack.c             |  4 ++--
+ sound/soc/tegra/tegra_alc5632.c  |  5 ++--
+ sound/soc/tegra/tegra_max98090.c |  5 ++--
+ sound/soc/tegra/tegra_rt5640.c   |  5 ++--
+ sound/soc/tegra/tegra_wm8753.c   |  3 +--
+ sound/soc/tegra/tegra_wm8903.c   |  5 ++--
+ sound/soc/tegra/trimslice.c      |  3 +--
+ 16 files changed, 61 insertions(+), 55 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTyCtcAAoJELSic+t+oim9AV8P/jLO0K3AP8vOUKnqPd4Fcjql
-dePuEqfMgV4pbWgk9R4y4Ie0FrLlvGD5NDanJ2XFdDaes8zdNByUraBqRXI8tWwg
-upUqdoWblevoKZCx5McQY18zarjgAOI7cOpHOSPyccoDfAYGUM9pmsevuTtV9imm
-LQT0Yto2xh4Nwa9W9R0ZgAK6P+pfnJrgPgJkcCK0PszK+t2sf1eD6NoUnKfOoFuI
-5ns0Qdpd6bEBK72bixr55VfpLa1gtcNzjboU7DeR9NvSD1mIWObgErKeFgbA30yV
-XFPJYNZItrAWDi9c5SwPwpcE8wJY2FSQzNevHgdnF0sooWND/oA91lqSbhue+UE0
-DpPYtxJ+SiqMUwniFTsaSSqPeytV2bAoSfz9DclXSRMcA1lELCyCTO175S8CrafL
-XUByoqVDJS9zEJ43WM5Om+j1v6CYfJtBSgpOyku6rpbOjg/hRPZHuOHBPEMmFmHk
-6390rqn1rNytvCc9t3JVPB4ZryBA3y/Ygzu4Od8udZ/5PtfuH0s9SVjSXwrqiOx6
-Gv27UQDkWfl0t4UzAN9i0aoV0Ul9Oa5EW5dswIy7xaif9qcXh+4vuUWwZv7jJ+WM
-dS5vl2iih0fISz3hIwuJ5fEDTPU0G+tTV8qzPGu8yd9Hfw68zN0ptWHgdj40jM+T
-yL6u7AkJHuFHy218llZg
-=40O7
------END PGP SIGNATURE-----
-
---NWFdL9cNbHaIJHRV--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+1.8.0
