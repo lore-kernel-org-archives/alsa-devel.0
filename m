@@ -1,152 +1,65 @@
-From: <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5645: add clock source selection
-	controls
-Date: Thu, 17 Jul 2014 17:09:23 +0800
-Message-ID: <1405588163-31631-1-git-send-email-bardliao@realtek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: s3c64xx/smartq: use dynamic
+ registration
+Date: Thu, 17 Jul 2014 11:17:23 +0100
+Message-ID: <20140717101723.GR17528@sirena.org.uk>
+References: <53C4DF0D.8010208@metafoo.de>
+ <CAAVeFuJRCwSwcEOng2M6s+mWhJT8sUtsh7YGE-hBTGUFWAhtrQ@mail.gmail.com>
+ <CAAVeFuLfgG6W1qK2ATTbq_ydEOjUuM8Wvftm6N1RK3Kz_y1zHg@mail.gmail.com>
+ <20140716071237.GA7978@ulmo>
+ <CAAVeFuJEjMBX+7vsLk5zXV5Moy=WDmWidpVZjQ_=8VD45+QdHg@mail.gmail.com>
+ <20140716075107.GG7978@ulmo>
+ <53C63CBA.20809@codethink.co.uk>
+ <CAAVeFuK55XzwaU+eOWhfUxJ7wEwGqxRCPDZKf+gVeMgeV8ys6g@mail.gmail.com>
+ <20140717074444.GB18640@ulmo>
+ <CAAVeFuJQUA+92jGpgDkyQ+=Qu+okBHzS5aFi7gmdwh+qcFp3fg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 53C8B2654D9
- for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2014 11:09:44 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KQSGybwJm5+gcNx6"
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAAVeFuJQUA+92jGpgDkyQ+=Qu+okBHzS5aFi7gmdwh+qcFp3fg@mail.gmail.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Alexandre Courbot <gnurou@gmail.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>, Rob Jones <rob.jones@codethink.co.uk>, Rojhalat Ibrahim <imr@rtschenk.de>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kukjin Kim <kgene.kim@samsung.com>, Tomasz Figa <t.figa@samsung.com>, Maurus Cuelenaere <mcuelenaere@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linus Walleij <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard Liao <bardliao@realtek.com>
 
-We can select the clock source of some digital widgets in rt5645.
-This patch adds the controls of those selections.
+--KQSGybwJm5+gcNx6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5645.c | 97 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 97 insertions(+)
+On Thu, Jul 17, 2014 at 05:55:36PM +0900, Alexandre Courbot wrote:
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index a7762d0..e8e30b7 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -440,6 +440,89 @@ static SOC_ENUM_SINGLE_DECL(rt5645_tdm_adc_sel_enum,
- 				RT5645_TDM_CTRL_1, 8,
- 				rt5645_tdm_adc_data_select);
- 
-+static const char * const rt5645_asrc_clk_source[] = {
-+	"clk_sysy_div_out", "clk_i2s1_track", "clk_i2s2_track",
-+	"clk_i2s3_track", "clk_i2s4_track", "clk_sys2", "clk_sys3",
-+	"clk_sys4", "clk_sys5"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5645_da_sto_asrc_enum, RT5645_ASRC_2,
-+				12, rt5645_asrc_clk_source);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5645_da_monol_asrc_enum, RT5645_ASRC_2,
-+				8, rt5645_asrc_clk_source);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5645_da_monor_asrc_enum, RT5645_ASRC_2,
-+				4, rt5645_asrc_clk_source);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5645_ad_sto1_asrc_enum, RT5645_ASRC_2,
-+				0, rt5645_asrc_clk_source);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5645_ad_monol_asrc_enum, RT5645_ASRC_3,
-+				4, rt5645_asrc_clk_source);
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5645_ad_monor_asrc_enum, RT5645_ASRC_3,
-+				0, rt5645_asrc_clk_source);
-+
-+static int rt5645_clk_sel_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	unsigned int u_bit = 0, p_bit = 0;
-+	struct soc_enum *em =
-+		(struct soc_enum *)kcontrol->private_value;
-+
-+	switch (em->reg) {
-+	case RT5645_ASRC_2:
-+		switch (em->shift_l) {
-+		case 0:
-+			u_bit = 0x8;
-+			p_bit = RT5645_PWR_ADC_S1F;
-+			break;
-+		case 4:
-+			u_bit = 0x100;
-+			p_bit = RT5645_PWR_DAC_MF_R;
-+			break;
-+		case 8:
-+			u_bit = 0x200;
-+			p_bit = RT5645_PWR_DAC_MF_L;
-+			break;
-+		case 12:
-+			u_bit = 0x400;
-+			p_bit = RT5645_PWR_DAC_S1F;
-+			break;
-+		}
-+		break;
-+	case RT5645_ASRC_3:
-+		switch (em->shift_l) {
-+		case 0:
-+			u_bit = 0x1;
-+			p_bit = RT5645_PWR_ADC_MF_R;
-+			break;
-+		case 4:
-+			u_bit = 0x2;
-+			p_bit = RT5645_PWR_ADC_MF_L;
-+			break;
-+		}
-+		break;
-+	}
-+
-+	if (u_bit || p_bit) {
-+		switch (ucontrol->value.integer.value[0]) {
-+		case 1 ... 4: /*enable*/
-+			if (snd_soc_read(codec, RT5645_PWR_DIG2) & p_bit)
-+				snd_soc_update_bits(codec,
-+					RT5645_ASRC_1, u_bit, u_bit);
-+			break;
-+		default: /*disable*/
-+			snd_soc_update_bits(codec, RT5645_ASRC_1, u_bit, 0);
-+			break;
-+		}
-+	}
-+
-+	return snd_soc_put_enum_double(kcontrol, ucontrol);
-+}
-+
- static const struct snd_kcontrol_new rt5645_snd_controls[] = {
- 	/* Speaker Output Volume */
- 	SOC_DOUBLE("Speaker Channel Switch", RT5645_SPK_VOL,
-@@ -511,6 +594,20 @@ static const struct snd_kcontrol_new rt5645_snd_controls[] = {
- 	SOC_SINGLE("TDM IF1_DAC1_R Sel", RT5645_TDM_CTRL_3, 8, 7, 0),
- 	SOC_SINGLE("TDM IF1_DAC2_L Sel", RT5645_TDM_CTRL_3, 4, 7, 0),
- 	SOC_SINGLE("TDM IF1_DAC2_R Sel", RT5645_TDM_CTRL_3, 0, 7, 0),
-+
-+	/* Clock Source Selection*/
-+	SOC_ENUM_EXT("DA STO Clk Sel", rt5645_da_sto_asrc_enum,
-+		     snd_soc_get_enum_double, rt5645_clk_sel_put),
-+	SOC_ENUM_EXT("DA MONOL Clk Sel", rt5645_da_monol_asrc_enum,
-+		     snd_soc_get_enum_double, rt5645_clk_sel_put),
-+	SOC_ENUM_EXT("DA MONOR Clk Sel", rt5645_da_monor_asrc_enum,
-+		     snd_soc_get_enum_double, rt5645_clk_sel_put),
-+	SOC_ENUM_EXT("AD STO1 Clk Sel", rt5645_ad_sto1_asrc_enum,
-+		     snd_soc_get_enum_double, rt5645_clk_sel_put),
-+	SOC_ENUM_EXT("AD MONOL Clk Sel", rt5645_ad_monol_asrc_enum,
-+		     snd_soc_get_enum_double, rt5645_clk_sel_put),
-+	SOC_ENUM_EXT("AD MONOR Clk Sel", rt5645_ad_monor_asrc_enum,
-+		     snd_soc_get_enum_double, rt5645_clk_sel_put),
- };
- 
- /**
--- 
-1.8.1.1.439.g50a6b54
+> Right. It may very well be that a single flag specifier (as opposed to
+> an array) will be enough for this case. If you need to request some
+> GPIOs as input and some other as output then they are clearly
+> different functions and requesting them together would be an abuse of
+> the API.
+
+Not so sure about that - what about requesting GPIOs for a bidirectional
+bus?  Thinking about SPI bitbanging here.
+
+--KQSGybwJm5+gcNx6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTx6KwAAoJELSic+t+oim9YskP/2XBPXubFb540mtLrUM0CCyk
+EyRpMv9b48huDTsPeYjZ1nI3LFdj+Lg1pSR3gK4dZvPpV4Vb6/gneORgiD9Af+gE
+xLY7UScLPEQhKoZNoHUOBazV0cRnjZa4Hd9gXtj+RxGYwAV0sa1lrzqLsx6oxAOh
+5odgbmd0QVo9CQ9cRMXyU5gBll5+cLnbEvdQ1D/+dRJc/HyXEuD5BazINYqP3TaZ
+PvaNZC3uHIwVkeX1LcxIml8mspboWyyAEa6WFdBCyFDOdaZZHVRTBJ9K+9BcJ1Gn
+693WEdjmRijcxDR9542J8dQjmbIGFxEt7UtTTD8SjEM2e/DVo795xYK1myZdpFZa
+jXcBSzO9hqICUe/XC/WiSBTiqJJfHghszpVKQ9ccZu+Qi+9WsiFnawm7iJzwgyDO
+bW+MTMVrev3gYNrLMB+sopapLeAFVhNsejZ1I84RVK4mcUg4x8A3ccLX1fc+z0rM
+DastOf0qyrwWqZWxl6a6YdmJrw6/eARkkqu0g6AI8LmNKvqF2nBuFeVfEYtQ7GeF
++/QTYckkxKxxcnqhqJYFHeAg81KpxpoT6lSaRII4lcXNoZPvFw+jFmTArdU0R7W1
+Frko4hmGGlCxsw/AGM71wobtD6uc3O4t+rMU5WMfJ4BFIP1aPfClaQDMHSJx+gNV
+82DVbvqU035lzWzMjdHw
+=RuD1
+-----END PGP SIGNATURE-----
+
+--KQSGybwJm5+gcNx6--
