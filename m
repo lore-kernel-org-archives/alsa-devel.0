@@ -1,44 +1,41 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH 1/2] ASoC: fsl_sai: Reset FIFOs after disabling TE/RE
-Date: Thu, 17 Jul 2014 21:21:37 +0800
-Message-ID: <9ef07dc9cc98b19e3f81f8374617605bf0d9faeb.1405603108.git.nicoleotsuka@gmail.com>
-References: <cover.1405603108.git.nicoleotsuka@gmail.com>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: ASOC: support for Allwinner on-chip codec
+Date: Thu, 17 Jul 2014 10:18:06 -0400
+Message-ID: <CAKON4Ox19bhm47RG-phyzXkdKq3fuW8yQ4b0E6Rvhg0jDPuuyQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1405603108.git.nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, b02247@freescale.com, b42378@freescale.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-la0-f45.google.com (mail-la0-f45.google.com
+ [209.85.215.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F6ED265555
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2014 16:18:07 +0200 (CEST)
+Received: by mail-la0-f45.google.com with SMTP id ty20so1794193lab.32
+ for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2014 07:18:06 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SAI will not clear their FIFOs after disabling TE/RE. Therfore, the driver
-should take care the task so as not to let useless data remain in the FIFO.
+We have the first pass of the ASOC driver for the Allwinner on-chip
+codec making some noise that makes sense.  Code is here...
+https://github.com/jonsmirl/lpc31xx/blob/codec/sound/soc/sunxi/sunxi-codec.c
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl_sai.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Something isn't right in the channel assignments. If I play a mono
+clip I hear it. If I play a stereo clip I get silence. If I use
+speaker-test to play eight channels, I hear Center and Side Right
+channels.  Not Front left/right as expected. Device only does stereo.
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index c5a0e8a..b10dbd8 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -371,10 +371,13 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- 		/* Check if the opposite FRDE is also disabled */
- 		if (!(tx ? rcsr & FSL_SAI_CSR_FRDE : tcsr & FSL_SAI_CSR_FRDE)) {
-+			/* Disable both directions and reset their FIFOs */
- 			regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
--					   FSL_SAI_CSR_TERE, 0);
-+					   FSL_SAI_CSR_TERE | FSL_SAI_CSR_FR,
-+					   FSL_SAI_CSR_FR);
- 			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
--					   FSL_SAI_CSR_TERE, 0);
-+					   FSL_SAI_CSR_TERE | FSL_SAI_CSR_FR,
-+					   FSL_SAI_CSR_FR);
- 		}
- 		break;
- 	default:
+If anyone want to do a first pass code revue I can start making the
+needed changes.
+
 -- 
-1.8.4
+Jon Smirl
+jonsmirl@gmail.com
