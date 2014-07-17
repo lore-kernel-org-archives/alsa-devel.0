@@ -1,85 +1,98 @@
-From: Akshay Mishra <akshaymishra@gmail.com>
-Subject: Re: Overrun Errors - SAM9G
-Date: Thu, 17 Jul 2014 21:39:03 +0530
-Message-ID: <CABSY_ZuvvjsgGPJ90PU39zZ7nBYiWZOWWGSjenUWf9qoH5q34A@mail.gmail.com>
-References: <CABSY_ZsjSaZQA+KadBWnzR-9=YQby-Fnb9ZpBGZpXHtVsZZXMw@mail.gmail.com>
- <CABSY_Zsh44D19KtDYkc6ozSsxKpTk+cQJiy4rEGKqWgbv_a=tQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v7] ASoC: tas2552: Support TI TAS2552 Amplifier
+Date: Thu, 17 Jul 2014 17:58:16 +0100
+Message-ID: <20140717165816.GA17528@sirena.org.uk>
+References: <1405368645-4168-1-git-send-email-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f47.google.com (mail-oi0-f47.google.com
- [209.85.218.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F3D826559B
- for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2014 18:09:24 +0200 (CEST)
-Received: by mail-oi0-f47.google.com with SMTP id x69so1282701oia.34
- for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2014 09:09:23 -0700 (PDT)
-In-Reply-To: <CABSY_Zsh44D19KtDYkc6ozSsxKpTk+cQJiy4rEGKqWgbv_a=tQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="V8Y3+xXnhQGsvjWT"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1405368645-4168-1-git-send-email-dmurphy@ti.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Dan Murphy <dmurphy@ti.com>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 17 July 2014 18:24, Akshay Mishra <akshaymishra@gmail.com> wrote:
 
-> Hello,
->     I am trying a simple alsa capture on the Atmel ARM9 (SAM9G45). While
-> only capture runs fine, putting any os call on the same thread gives XRUNs.
->
-> Even a innocent usleep(1) seems to lead to regular XRUNs. Eventually I
-> want to dump this capture on the serial port and I am not able to get past
-> this.
->
->
-running pulseaudio gives me the following. I am not sure if this is related.
+--V8Y3+xXnhQGsvjWT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- snd_pcm_avail() returned a value that is exceptionally large: 414168 bytes
-(2347 ms).
-E: [alsa-sink] alsa-util.c: Most likely this is a bug in the ALSA driver
-'(null)'. Please report this issue to the ALSA developers.
-E: [alsa-sink] alsa-util.c: snd_pcm_dump():
-E: [alsa-sink] alsa-util.c: Hardware PCM card 0 'Atmel AC97C' device 0
-subdevice 0
-E: [alsa-sink] alsa-util.c: Its setup is:
-E: [alsa-sink] alsa-util.c:   stream       : PLAYBACK
-E: [alsa-sink] alsa-util.c:   access       : MMAP_INTERLEAVED
-E: [alsa-sink] alsa-util.c:   format       : S16_LE
-E: [alsa-sink] alsa-util.c:   subformat    : STD
-E: [alsa-sink] alsa-util.c:   channels     : 2
-E: [alsa-sink] alsa-util.c:   rate         : 44100
-E: [alsa-sink] alsa-util.c:   exact rate   : 44100 (44100/1)
-E: [alsa-sink] alsa-util.c:   msbits       : 16
-E: [alsa-sink] alsa-util.c:   buffer_size  : 8640
-E: [alsa-sink] alsa-util.c:   period_size  : 1440
-E: [alsa-sink] alsa-util.c:   period_time  : 32653
-E: [alsa-sink] alsa-util.c:   tstamp_mode  : ENABLE
-E: [alsa-sink] alsa-util.c:   period_step  : 1
-E: [alsa-sink] alsa-util.c:   avail_min    : 7759
-E: [alsa-sink] alsa-util.c:   period_event : 0
-E: [alsa-sink] alsa-util.c:   start_threshold  : -1
-E: [alsa-sink] alsa-util.c:   stop_threshold   : 1132462080
-E: [alsa-sink] alsa-util.c:   silence_threshold: 0
-E: [alsa-sink] alsa-util.c:   silence_size : 0
-E: [alsa-sink] alsa-util.c:   boundary     : 1132462080
-E: [alsa-sink] alsa-util.c:   appl_ptr     : 396378
-E: [alsa-sink] alsa-util.c:   hw_ptr       : 491280
+On Mon, Jul 14, 2014 at 03:10:45PM -0500, Dan Murphy wrote:
 
+There's a few smallish issues below but this is basically good so I've
+applied it, please send incremental fixed for the things below.
 
+> +	/* Turn on Class D amplifier */
+> +	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN_MASK,
+> +						TAS2552_CLASSD_EN);
+> +
 
+Why is this being done in hw_params() and not using DAPM?
 
+> +static int tas2552_runtime_suspend(struct device *dev)
+> +{
+> +	struct tas2552_data *tas2552 = dev_get_drvdata(dev);
+> +
+> +	tas2552_sw_shutdown(tas2552, 0);
+> +
+> +	if (tas2552->enable_gpio)
+> +		gpiod_set_value(tas2552->enable_gpio, 0);
+> +
+> +	regcache_cache_only(tas2552->regmap, true);
+> +	regcache_mark_dirty(tas2552->regmap);
 
+It's better to do the GPIO set after making the device cache only in
+order to be sure nothing can come in and try to use the register map
+between the two.
 
-> I have tried on AT91 linux as well as on kernel 3.10.10-rt7 with no
-> success.
->
-> Please advice,
-> Akshay
->
->
+> +static void tas2552_shutdown(struct snd_pcm_substream *substream,
+> +			   struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +
+> +	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE, 0);
+> +}
+
+I'd also expect the PLL power to be managed via DAPM.
+
+> +	ret = pm_runtime_get_sync(codec->dev);
+> +	if (ret < 0) {
+> +		dev_err(codec->dev, "Enabling device failed: %d\n",
+> +			ret);
+> +		goto probe_fail;
+> +	}
+
+There's no matching put for this in remove().
+
+> +	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN |
+> +				  TAS2552_BOOST_EN | TAS2552_APT_EN |
+> +				  TAS2552_LIM_EN);
+> +	return 0;
+
+The class D is still being enabled here.
+
+--V8Y3+xXnhQGsvjWT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTyAClAAoJELSic+t+oim9vFAQAIfAImcJxrutXsuM3Fsso8xF
+90mVS0WTPHQdt+T/DSBJddL36I3DywPm64r7kBCA3G8vpK77Gt8FanjzDMBj3Zkn
+UbPowIn158AB5UBGo9oxr6bV0pXlG8Eqcy8DatU1xyejzj1wOVfNsr5PUYpuzdCU
+a2nPjh6wAkrPjydBlLlzKzQnoaoMROssSBIcRHy0+PuiyERhfsB2mTbNLecqIohr
+R4GehaWEy23H1+YWGQhee2M3P5SrQd7ZsKfUEW4uZxvSqYJulvPT6EEewjJ80rRF
+akRoRaz6OyazUoqrHoGd75FAb5PCWcmwPk+zl5rTtGhd27NZUODcCMzYM1fd128G
+nqvUPiAPePSW82HbNyfgczLTGNpnfNjTWzDagsFeQhSg4QEdMXfFIlg3Kqmb7u17
+KHtobt6XI0tkFcYiKPGhtaThZ/L+PWcRoAq0liSpsn/36U/RU9Unz4bwvMgv238m
+tlJe7s08HwcHk2qI9ns5XzII2lpCbwWFh/8XSzi0Um7d3KRsQZGKxJ0plsV9B7SG
+5JEBfFylCkn8gc5CBSKCItstOGg0dLOg00b+Swqt6seMCLO8VuEFoL1M7oAvtXe9
+GXmxB9SquIBty5uRwgrr2my0LH4CxpsC9Hx1rrTXt5sn5Gzc1D+8I4jj/KRwCQ9D
+0W2Mr8L4OPHPkhMUxdsn
+=7QW7
+-----END PGP SIGNATURE-----
+
+--V8Y3+xXnhQGsvjWT--
