@@ -1,64 +1,137 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: pcm: Introduce protocol version
- field to sw_params
-Date: Thu, 17 Jul 2014 21:48:02 +0200
-Message-ID: <53C82872.3040101@perex.cz>
-References: <1405526041-18437-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v8 2/3] ASoC: add es8328 codec driver
+Date: Thu, 17 Jul 2014 20:57:09 +0100
+Message-ID: <20140717195709.GI17528@sirena.org.uk>
+References: <1405388494-21232-1-git-send-email-xobs@kosagi.com>
+ <1405388494-21232-3-git-send-email-xobs@kosagi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 487A126507D
- for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2014 21:48:20 +0200 (CEST)
-In-Reply-To: <1405526041-18437-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ARHwKispuqSRPZ/2"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1405388494-21232-3-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Date 16.7.2014 17:54, Takashi Iwai wrote:
-> For controlling the new fields more strictly, add sw_params.proto
-> field indicating the protocol version of the user-space.  User-space
-> should fill the SNDRV_PCM_VERSION value it's built with, then kernel
-> can know whether the new fields should be evaluated or not.
-> 
-> And now tstamp_type field is evaluated only when the valid value is
-> set there.  This avoids the wrong override of tstamp_type to zero,
-> which is SNDRV_PCM_TSTAMP_TYPE_GETTIMEOFDAY.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  include/uapi/sound/asound.h | 4 ++--
->  sound/core/pcm_native.c     | 6 ++++--
->  2 files changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> index a7e062f91f39..c9fd199b9330 100644
-> --- a/include/uapi/sound/asound.h
-> +++ b/include/uapi/sound/asound.h
-> @@ -391,8 +391,8 @@ struct snd_pcm_sw_params {
->  	snd_pcm_uframes_t silence_threshold;	/* min distance from noise for silence filling */
->  	snd_pcm_uframes_t silence_size;		/* silence block size */
->  	snd_pcm_uframes_t boundary;		/* pointers wrap point */
-> -	unsigned int tstamp_type;		/* timestamp type */
-> -	int pads;				/* alignment, reserved */
-> +	unsigned int tstamp_type;		/* timestamp type (req. proto >= 2.0.12) */
-> +	unsigned int proto;			/* protocol version */
 
-I would switch the positions of tstamp_type and proto... It seems
-logical that all new member added after proto are dependent on this value.
+--ARHwKispuqSRPZ/2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-					Jaroslav
+On Tue, Jul 15, 2014 at 09:41:33AM +0800, Sean Cross wrote:
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project; Red Hat, Inc.
+> Add a codec driver for the Everest ES8328.  It supports two separate audio
+> outputs and two separate audio inputs.
+
+This looks mostly fine so I've applied it, there are some issues below -
+please send followups fixing them.
+
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		reg = ES8328_DACCONTROL2;
+> +
+> +	else
+> +		reg = ES8328_ADCCONTROL5;
+
+Coding style, extra blank line in the middle of the if ().
+
+> +	switch (params_rate(params)) {
+> +	case 8000:
+> +		val = es8328_sample_ratios[ES8328_RATE_8019];
+> +		break;
+> +	case 11025:
+> +		val = es8328_sample_ratios[ES8328_RATE_11025];
+> +		break;
+> +	case 22050:
+> +		val = es8328_sample_ratios[ES8328_RATE_22050];
+> +		break;
+> +	case 44100:
+> +		val = es8328_sample_ratios[ES8328_RATE_44100];
+> +		break;
+> +	default:
+> +		dev_err(codec->dev, "%s: unknown rate %d\n",
+> +			 __func__, params_rate(params));
+> +		return -EINVAL;
+> +	}
+
+The array serves no function given that you're never iterating over it
+or anything - either have the array be a lookup table or just put the
+constants in the switch statement directly.  You're also calling the
+array "_sample_ratios" but it actually appears to be sample rates.
+
+> +	snd_soc_write(codec, ES8328_MASTERMODE, ES8328_MASTERMODE_MSC);
+> +
+> +	clk_rate = clk_get_rate(es8328->clk);
+> +	if (clk_rate == ES8328_SYSCLK_RATE_1X)
+> +		snd_soc_write(codec, ES8328_MASTERMODE,
+> +				ES8328_MASTERMODE_MSC);
+> +	else
+> +		snd_soc_write(codec, ES8328_MASTERMODE,
+> +				ES8328_MASTERMODE_MCLKDIV2 |
+> +				ES8328_MASTERMODE_MSC);
+
+update_bits().
+
+> +		snd_soc_write(codec, ES8328_CHIPPOWER,
+> +				ES8328_CHIPPOWER_ADCDIG_OFF |
+> +				ES8328_CHIPPOWER_DACDIG_OFF |
+> +				ES8328_CHIPPOWER_ADCSTM_RESET |
+> +				ES8328_CHIPPOWER_DACSTM_RESET |
+> +				ES8328_CHIPPOWER_ADCPLL_OFF |
+> +				ES8328_CHIPPOWER_DACPLL_OFF |
+> +				ES8328_CHIPPOWER_ADCVREF_OFF |
+> +				ES8328_CHIPPOWER_DACVREF_OFF);
+> +		break;
+
+This looks like most if not all of it should be in DAPM, especially the
+DAC and ADC power - the device is wasting power on the ADC during
+playback for example.  Looking at the code I suspect that some of these
+should be done as supply widgets.
+
+> +static int es8328_suspend(struct snd_soc_codec *codec)
+> +{
+> +	es8328_set_bias_level(codec, SND_SOC_BIAS_OFF);
+> +	return 0;
+> +}
+> +
+> +static int es8328_resume(struct snd_soc_codec *codec)
+> +{
+> +	struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
+> +
+> +	regcache_mark_dirty(regmap);
+> +	regcache_sync(regmap);
+> +
+> +	es8328_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+> +	return 0;
+> +}
+
+But leave the regulators and clocks enabled?
+
+--ARHwKispuqSRPZ/2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTyCqRAAoJELSic+t+oim9zvAP/3Z0A/prp9QSsXtN12Qmit2Z
+U0S9cBaKAScjCCUCV3KyPRx7n0jMpS/ZAzd7zkFBeKLom/R/nRPiJg+M40rlbeqn
+VME3zexiL2Nz2iMnac/awnn0Or/25wCj3AqND5hLxIJwMLknCmO2kZkvMzt0PilP
+0sR8PmRSFQZzMMWJMxIysShrmENki7K7nroqqNIrCT4EM68tfV79JvumR88EoMD3
+neg2kbbJqHauH8OCKXnu/yg+SsglMLYLXVlQ7xnHLH+/BECAeBW/JugPHb05NEcb
+mbpSkGraKcLsv54XZW+ReZq8h+Myncdqr4Bhjfpu/OQN+fUz3sQqb89Ioi/QALVE
+A4X/tPFOR0OIHYv8KGdm46m3B9m3EONQzRPIVm32l6fk7zKIdg3RrAJ34YsyvVk1
+E7SJwxM1XThgmWclkIVc04NwuY+ZBLvXxdlNNNrlZLeqf3koiX1e2Bw9XLWdbGi8
+9kc+jxRbL5TpdQxNlfzgElXtZf3Zp0cA2rCP/jiUvtr4cnkIigy2DXuPVYckSVrP
+ZDkcihjjq9fQEYoQVsFB/c6UaEVBbJ7I06Njn8rpgt+iBxuFTEzowKPGMCJGuDQj
+dDNjZsiKH/AQZvIsak3TREwgzsGKC4EBCfhjt1iNmNa+UIDyBYi1QKEi5qEPAoWA
+ujJRoSP0LVW0CT0LLnRr
+=D4Et
+-----END PGP SIGNATURE-----
+
+--ARHwKispuqSRPZ/2--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
