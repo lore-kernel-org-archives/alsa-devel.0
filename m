@@ -1,64 +1,58 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl_sai: Reset FIFOs after disabling TE/RE
-Date: Fri, 18 Jul 2014 18:18:12 +0800
-Message-ID: <20140718101810.GA15150@MrMyself>
-References: <cover.1405603108.git.nicoleotsuka@gmail.com>
- <9ef07dc9cc98b19e3f81f8374617605bf0d9faeb.1405603108.git.nicoleotsuka@gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: ALSA SOC Driver (mxs-wm8753)
+Date: Fri, 18 Jul 2014 11:53:23 +0100
+Message-ID: <20140718105323.GB12049@opensource.wolfsonmicro.com>
+References: <3c1cd0154ea542b992e00dce1cfc0a9a@DB4PR07MB252.eurprd07.prod.outlook.com>
+ <20140718084415.GA12049@opensource.wolfsonmicro.com>
+ <d387ffb22ab74e87aff415badb8b4dca@DB4PR07MB252.eurprd07.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8C1B726084D
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2014 13:00:41 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <9ef07dc9cc98b19e3f81f8374617605bf0d9faeb.1405603108.git.nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: broonie@kernel.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, b02247@freescale.com, b42378@freescale.com
+In-Reply-To: <d387ffb22ab74e87aff415badb8b4dca@DB4PR07MB252.eurprd07.prod.outlook.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kevin Startup <kevin@awcsl.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-	Please disregard this single patch. 
-
-On Thu, Jul 17, 2014 at 09:21:37PM +0800, Nicolin Chen wrote:
-> SAI will not clear their FIFOs after disabling TE/RE. Therfore, the driver
-> should take care the task so as not to let useless data remain in the FIFO.
+On Fri, Jul 18, 2014 at 10:14:16AM +0000, Kevin Startup wrote:
+> That's great info, thanks very much.  My DT looks like this, inside sound{} I have:
 > 
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  sound/soc/fsl/fsl_sai.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> compatible = "fs,imx28-tx28-wm8753", "fsl,mxs-audio-wm8753";
+> model = "wm8753";
+> saif-controllers = <&saif0 &saif1>;
+> audio-controllers = <&i2c0>;
+> audio-code = <&wm8753>;
 > 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index c5a0e8a..b10dbd8 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -371,10 +371,13 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
->  
->  		/* Check if the opposite FRDE is also disabled */
->  		if (!(tx ? rcsr & FSL_SAI_CSR_FRDE : tcsr & FSL_SAI_CSR_FRDE)) {
-> +			/* Disable both directions and reset their FIFOs */
->  			regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
-> -					   FSL_SAI_CSR_TERE, 0);
-> +					   FSL_SAI_CSR_TERE | FSL_SAI_CSR_FR,
-> +					   FSL_SAI_CSR_FR);
->  			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
-> -					   FSL_SAI_CSR_TERE, 0);
-> +					   FSL_SAI_CSR_TERE | FSL_SAI_CSR_FR,
-> +					   FSL_SAI_CSR_FR);
-
-
-The FR should be set _after_ clear TERE, not at the same time because it
-still may have tiny possibility to remain data.
-
-I'll send another version later for this patch.
-
-The other patch for isr() should be still fine.
-
-Thank you,
-Nicolin
-
->  		}
->  		break;
->  	default:
-> -- 
-> 1.8.4
+> Inside i2c0{} I have:
 > 
+> wm8753: wm8753@1a {
+>     Compatible = "wlf,wm8753";
+>     reg = <0x1a>;
+> 
+> I have tried changing model to "wm8753-voice" but still get the same error.
+> 
+> Am I changing it in the wrong place?  Or do I need another setting?
+> 
+> I'm very much a beginner at this DT stiff and also configuring and using sound devices so any info you can supply will be of great help.
+
+How exactly the DT needs to be specified depends on the machine
+driver, as it will be what parses the sound node. I would assume
+that you are writing this as well? Whatever in there is setting
+the codec_dai_name on the dai_link seems to be setting the wrong
+value.
+
+Thanks,
+Charles
