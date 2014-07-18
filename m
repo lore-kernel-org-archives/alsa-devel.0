@@ -1,17 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH alsa-lib v2] pcm: Fill sw_params proto field
-Date: Mon, 21 Jul 2014 13:52:53 +0200
-Message-ID: <1405943573-3547-1-git-send-email-tiwai@suse.de>
+From: "langkamp@tomblog.de" <langkamp@tomblog.de>
+Subject: [AMD OSS Driver Bug] Only 2 Channel Audio Detected
+	on	HDMI
+Date: Fri, 18 Jul 2014 10:45:15 +0200 (CEST)
+Message-ID: <548478449.455449.1405673115154.open-xchange@oxbaltgw08.schlund.de>
+Reply-To: "langkamp@tomblog.de" <langkamp@tomblog.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FF32265470
- for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 13:52:54 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id EEF11AD71
- for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 11:52:53 +0000 (UTC)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98A242655E3
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2014 10:45:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +23,47 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fill the new proto field introduced to sw_params with the current PCM
-protocol version.  This makes tstamp_type evaluated properly in the
-kernel.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
-v1->v2: rearrange proto and tstamp_type fields
-
- include/sound/asound.h | 4 ++--
- src/pcm/pcm.c          | 1 +
- src/pcm/pcm_params.c   | 1 +
- 3 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 552f41bd1ca9..c819df421434 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -386,8 +386,8 @@ struct snd_pcm_sw_params {
- 	snd_pcm_uframes_t silence_threshold;	/* min distance from noise for silence filling */
- 	snd_pcm_uframes_t silence_size;		/* silence block size */
- 	snd_pcm_uframes_t boundary;		/* pointers wrap point */
--	unsigned int tstamp_type;		/* timestamp type */
--	int pads;				/* alignment, reserved */
-+	unsigned int proto;			/* protocol version */
-+	unsigned int tstamp_type;		/* timestamp type (req. proto >= 2.0.12) */
- 	unsigned char reserved[56];		/* reserved for future */
- };
- 
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 89844430bf35..1399a5b2e671 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -5610,6 +5610,7 @@ int snd_pcm_sw_params_current(snd_pcm_t *pcm, snd_pcm_sw_params_t *params)
- 		SNDMSG("PCM not set up");
- 		return -EIO;
- 	}
-+	params->proto = SNDRV_PCM_VERSION;
- 	params->tstamp_mode = pcm->tstamp_mode;
- 	params->tstamp_type = pcm->tstamp_type;
- 	params->period_step = pcm->period_step;
-diff --git a/src/pcm/pcm_params.c b/src/pcm/pcm_params.c
-index 4adbefae0530..6e57904e445b 100644
---- a/src/pcm/pcm_params.c
-+++ b/src/pcm/pcm_params.c
-@@ -2257,6 +2257,7 @@ static int snd_pcm_sw_params_default(snd_pcm_t *pcm, snd_pcm_sw_params_t *params
- {
- 	assert(pcm && params);
- 	assert(pcm->setup);
-+	params->proto = SNDRV_PCM_VERSION;
- 	params->tstamp_mode = SND_PCM_TSTAMP_NONE;
- 	params->tstamp_type = pcm->tstamp_type;
- 	params->period_step = 1;
--- 
-2.0.1
+SGkgTWF0aGV3LAoKc2FtZSBoZXJlIG9uIGRpZmZlcmVudCBoYXJkd2FyZS4KVXNpbmcgb3BlblNV
+U0UgVHVtYmxld2VlZCAoMy4xNS41LCByYWRlb24gT1NTIGRyaXZlcnMpIEkgY2Fubm90IHBhc3Mg
+Ny4xCkxQQ00gYW5kIGNhbm5vdCBiaXRzdHJlYW0gSEQgQXVkaW8gZm9ybWF0cy4gWEJNQyBvbmx5
+IGRldGVjdHMgMiBjaGFubmVscy4KSSBjYW4gYml0c3RyZWFtIEFDMyAvIERUUy4KSGFyZHdhcmU6
+IEFNRCBBUFUgRS0zNTAgKFphY2F0ZSkKVGhpcyBpcyByb3VnaGx5IHNpbmNlIGtlcm5lbCAzLjE0
+CkRUUy1IRCB3b3JrZWQgYmVmb3JlLCBidXQgc2luY2UgMy4xNCBEVFMtSEQgb3B0aW9ucyBhcmUg
+bWlzc2luZyBpbiB4Ym1jCmF1ZGlvLXNldHRpbmdzLgoKYXBsYXkgc2F5cyAyIGNoYW5uZWxzIGFu
+ZCA5NjAwMCBrSHogYXJlIHN1cHBvcnRlZCBieSBteSBoYXJkd2FyZSwgd2hpY2ggY2Fubm90CmJl
+IHRydWUgc2luY2UgRFRTLUhEIHdvcmtlZCBpbiB0aGUgcGFzdCAoaXRzIGxvZ28gd2FzIGRpc3Bs
+YXllZCBvbiB0aGUKcmVjZWl2ZXIpLgoKb3V0cHV0cwoKOCBjaGFubmVscyBnaXZlIHNpbGVuY2UK
+W2NvZGVdYXBsYXkgLUQgaGRtaTpDQVJEPUdlbmVyaWMsREVWPTAgLWM4IC1mczE2X2xlIC1yMTky
+MDAwIHRoZC5zcGRpZgpXaWVkZXJnYWJlOiBSb2hkYXRlbiAnZHRzLnNwZGlmJyA6IFNpZ25lZCAx
+NiBiaXQgTGl0dGxlIEVuZGlhbiwgUmF0ZTogMTkyMDAwIEh6LAo4IEthbsOkbGUKYXBsYXk6IHNl
+dF9wYXJhbXM6MTIzOTogS2FuYWxhbnphaGwgbmljaHQgdW50ZXJzdMO8dHp0Wy9jb2RlXQoKMiBj
+aGFubmVscyAxOTIwMDBoeiBwbGF5cyBzdGF0aWMKW2NvZGVdYXBsYXkgLUQgaGRtaTpDQVJEPUdl
+bmVyaWMsREVWPTAgLWMyIC1mczE2X2xlIC1yMTkyMDAwIHRoZC5zcGRpZgpXaWVkZXJnYWJlOiBS
+b2hkYXRlbiAndGhkLnNwZGlmJyA6IFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVuZGlhbiwgUmF0ZTog
+MTkyMDAwIEh6LApzdGVyZW8KV2FybnVuZzogUmF0ZSBpc3QgbmljaHQgZXhha3QgKGFuZ2Vmb3Jk
+ZXJ0OiAxOTIwMDAgSHosIHVudGVyc3TDvHR6dDogOTYwMDAgSHopCnByb2JpZXJlbiBTaWUgYml0
+dGUgZGFzIHBsdWctUGx1Z2luOiBbL2NvZGVdCgoyIGNoYW5uZWxzIDk2MDAwIHBsYXlzIHN0YXRp
+YwpbY29kZV1hcGxheSAtRCBoZG1pOkNBUkQ9R2VuZXJpYyxERVY9MCAtYzIgLWZzMTZfbGUgLXI5
+NjAwMCB0aGQuc3BkaWYKV2llZGVyZ2FiZTogUm9oZGF0ZW4gJ3RoZC5zcGRpZicgOiBTaWduZWQg
+MTYgYml0IExpdHRsZSBFbmRpYW4sIFJhdGU6IDk2MDAwIEh6LApzdGVyZW9bL2NvZGVdCgpbY29k
+ZV1hcGxheSAtTAoKbnVsbApEaXNjYXJkIGFsbCBzYW1wbGVzIChwbGF5YmFjaykgb3IgZ2VuZXJh
+dGUgemVybyBzYW1wbGVzIChjYXB0dXJlKQpkZWZhdWx0CkRlZmF1bHQgQUxTQSBPdXRwdXQgKGN1
+cnJlbnRseSBQdWxzZUF1ZGlvIFNvdW5kIFNlcnZlcikKaGRtaTpDQVJEPUdlbmVyaWMsREVWPTAK
+SEQtQXVkaW8gR2VuZXJpYywgSERNSSAwCkhETUkgQXVkaW8gT3V0cHV0CnN5c2RlZmF1bHQ6Q0FS
+RD1TQgpIREEgQVRJIFNCLCBBTEM4OTIgQW5hbG9nCkRlZmF1bHQgQXVkaW8gRGV2aWNlCmZyb250
+OkNBUkQ9U0IsREVWPTAKSERBIEFUSSBTQiwgQUxDODkyIEFuYWxvZwpGcm9udCBzcGVha2Vycwpz
+dXJyb3VuZDQwOkNBUkQ9U0IsREVWPTAKSERBIEFUSSBTQiwgQUxDODkyIEFuYWxvZwo0LjAgU3Vy
+cm91bmQgb3V0cHV0IHRvIEZyb250IGFuZCBSZWFyIHNwZWFrZXJzCnN1cnJvdW5kNDE6Q0FSRD1T
+QixERVY9MApIREEgQVRJIFNCLCBBTEM4OTIgQW5hbG9nCjQuMSBTdXJyb3VuZCBvdXRwdXQgdG8g
+RnJvbnQsIFJlYXIgYW5kIFN1Yndvb2ZlciBzcGVha2VycwpzdXJyb3VuZDUwOkNBUkQ9U0IsREVW
+PTAKSERBIEFUSSBTQiwgQUxDODkyIEFuYWxvZwo1LjAgU3Vycm91bmQgb3V0cHV0IHRvIEZyb250
+LCBDZW50ZXIgYW5kIFJlYXIgc3BlYWtlcnMKc3Vycm91bmQ1MTpDQVJEPVNCLERFVj0wCkhEQSBB
+VEkgU0IsIEFMQzg5MiBBbmFsb2cKNS4xIFN1cnJvdW5kIG91dHB1dCB0byBGcm9udCwgQ2VudGVy
+LCBSZWFyIGFuZCBTdWJ3b29mZXIgc3BlYWtlcnMKc3Vycm91bmQ3MTpDQVJEPVNCLERFVj0wCkhE
+QSBBVEkgU0IsIEFMQzg5MiBBbmFsb2cKNy4xIFN1cnJvdW5kIG91dHB1dCB0byBGcm9udCwgQ2Vu
+dGVyLCBTaWRlLCBSZWFyIGFuZCBXb29mZXIgc3BlYWtlcnMKaGRtaTpDQVJEPVNCLERFVj0wCkhE
+QSBBVEkgU0IsIEFMQzg5MiBEaWdpdGFsCkhETUkgQXVkaW8gT3V0cHV0Wy9jb2RlXQoKVGhhbmtz
+IGZvciBsb29raW5nIGludG8gdGhpcyEKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
