@@ -1,15 +1,17 @@
 From: Scott Jiang <scott.jiang.linux@gmail.com>
 Subject: [PATCH] ASoC: blackfin: use samples to set silence
-Date: Fri, 18 Jul 2014 16:14:56 +0800
-Message-ID: <1405671297-17792-1-git-send-email-scott.jiang.linux@gmail.com>
+Date: Fri, 18 Jul 2014 16:14:57 +0800
+Message-ID: <1405671297-17792-2-git-send-email-scott.jiang.linux@gmail.com>
+References: <1405671297-17792-1-git-send-email-scott.jiang.linux@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1lp0142.outbound.protection.outlook.com [207.46.163.142])
- by alsa0.perex.cz (Postfix) with ESMTP id 74E82265522
+ (mail-bn1blp0182.outbound.protection.outlook.com [207.46.163.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4833265526
  for <alsa-devel@alsa-project.org>; Thu, 17 Jul 2014 10:18:46 +0200 (CEST)
+In-Reply-To: <1405671297-17792-1-git-send-email-scott.jiang.linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
