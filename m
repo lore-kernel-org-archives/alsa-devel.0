@@ -1,55 +1,43 @@
-From: Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH 1/2] ASoC: tas2552: Fix PM sequencing
-Date: Fri, 18 Jul 2014 12:31:07 -0500
-Message-ID: <1405704668-8038-1-git-send-email-dmurphy@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-sound@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, Dan Murphy <dmurphy@ti.com>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: [PATCH] ASoC: samsung: remove MACH_SMDKC100
+Date: Sat, 19 Jul 2014 04:01:27 +0900
+Message-ID: <1405710087-24327-1-git-send-email-kgene.kim@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, Kukjin Kim <kgene.kim@samsung.com>, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-In the pm suspend/resume it is better
-to disable the GPIO after the regmap_cache
-setting calls so that if the call is interrupted
-the new reg values will be cached and set on resume.
+This removes MACH_SMDKC100 because of no more support for SMDKC100.
 
-Also add pm_runtime_put in the remove call.
-
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
+Reported-by: Paul Bolle <pebolle@tiscali.nl>
+Signed-off-by: Kukjin Kim <kgene.kim@samsung.com>
+Cc: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/tas2552.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ sound/soc/samsung/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index f0760af..a3ae394 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -239,12 +239,12 @@ static int tas2552_runtime_suspend(struct device *dev)
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index 753b8c9..29459d9 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -63,7 +63,7 @@ config SND_SOC_SAMSUNG_JIVE_WM8750
  
- 	tas2552_sw_shutdown(tas2552, 0);
+ config SND_SOC_SAMSUNG_SMDK_WM8580
+ 	tristate "SoC I2S Audio support for WM8580 on SMDK"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDK6440 || MACH_SMDK6450 || MACH_SMDKV210 || MACH_SMDKC110)
++	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDK6440 || MACH_SMDK6450 || MACH_SMDKV210 || MACH_SMDKC110)
+ 	depends on REGMAP_I2C
+ 	select SND_SOC_WM8580
+ 	select SND_SAMSUNG_I2S
+@@ -146,7 +146,7 @@ config SND_SOC_SAMSUNG_RX1950_UDA1380
  
--	if (tas2552->enable_gpio)
--		gpiod_set_value(tas2552->enable_gpio, 0);
--
- 	regcache_cache_only(tas2552->regmap, true);
- 	regcache_mark_dirty(tas2552->regmap);
- 
-+	if (tas2552->enable_gpio)
-+		gpiod_set_value(tas2552->enable_gpio, 0);
-+
- 	return 0;
- }
- 
-@@ -382,6 +382,8 @@ static int tas2552_codec_remove(struct snd_soc_codec *codec)
- {
- 	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
- 
-+	pm_runtime_put(codec->dev);
-+
- 	if (tas2552->enable_gpio)
- 		gpiod_set_value(tas2552->enable_gpio, 0);
- 
+ config SND_SOC_SAMSUNG_SMDK_WM9713
+ 	tristate "SoC AC97 Audio support for SMDK with WM9713"
+-	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110)
++	depends on SND_SOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKV210 || MACH_SMDKC110)
+ 	select SND_SOC_WM9713
+ 	select SND_SAMSUNG_AC97
+ 	help
 -- 
-1.7.9.5
+1.8.2.1.339.g52a3e01
