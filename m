@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/7] ASoC: Intel: sst: add power management
-	handling
-Date: Fri, 18 Jul 2014 18:14:01 +0100
-Message-ID: <20140718171401.GR17528@sirena.org.uk>
-References: <1404898076-1882-1-git-send-email-vinod.koul@intel.com>
- <1404898076-1882-6-git-send-email-vinod.koul@intel.com>
- <20140718114611.GM17528@sirena.org.uk>
- <20140718142309.GF1985@intel.com>
+From: Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH 2/2] ASoC: tas2552: Add DAPM calls for amp and
+	PLL
+Date: Fri, 18 Jul 2014 12:31:08 -0500
+Message-ID: <1405704668-8038-2-git-send-email-dmurphy@ti.com>
+References: <1405704668-8038-1-git-send-email-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2792831062867063511=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 95BEF2608E8
- for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2014 19:14:10 +0200 (CEST)
-In-Reply-To: <20140718142309.GF1985@intel.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97A092608D3
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2014 19:31:13 +0200 (CEST)
+In-Reply-To: <1405704668-8038-1-git-send-email-dmurphy@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,86 +21,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: linux-sound@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, linux-kernel@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+Add DAPM calls to enable/disable the Class D amp.
+Also add a DAPM call to turn off the PLL upon
+the stream completing.
 
---===============2792831062867063511==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bebzX59uVWocTrAI"
-Content-Disposition: inline
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tas2552.c |   58 +++++++++++++++++++++++++++++++-------------
+ 1 file changed, 41 insertions(+), 17 deletions(-)
 
-
---bebzX59uVWocTrAI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jul 18, 2014 at 07:53:09PM +0530, Vinod Koul wrote:
-> On Fri, Jul 18, 2014 at 12:46:11PM +0100, Mark Brown wrote:
-
-> > > +	/* Move the SST state to Reset */
-> > > +	sst_set_fw_state_locked(ctx, SST_RESET);
-
-> > > +	flush_workqueue(ctx->post_msg_wq);
-> > > +	synchronize_irq(ctx->irq_num);
-
-> > This is very strange - we're flushing the work *after* resetting the DSP
-> > which suggests there might be something else trying to access the DSP
-> > while it is being put into reset.  Presumably that'd be bad.
-
-> the macro sst_set_fw_state_locked is used here :)
-
-> And state is marked reset, we dont do HW reset, so this is okay. After we return the
-> suspend handler, PCI will put the device to D3.
-
-It's still setting off alarm bells from a code review point of view -
-having the DSP marked as in reset may well break something that some of
-the other activity that's going on is doing.
-
-> > > +static int intel_sst_suspend(struct device *dev)
-> > > +{
-> > > +
-> > > +	return intel_sst_runtime_suspend(dev);
-> > > +}
-
-> > You currently need to check that the device isn't runtime suspended
-> > before you try to reuse runtime PM ops in suspend.
-
-> Sorry didnt quite get why?
-
-The driver should be restoring the device to the state it was in prior
-to suspend, and not repeating work that's already been done.
-
---bebzX59uVWocTrAI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTyVXWAAoJELSic+t+oim9gIgQAJRQ9yCc71ASdiP6Yg+pcQXY
-nqN3QZZwiSDkzOiUur2ajr3HSgUw25DxCX6qXnjTUareT4czgDIDHZCEFC48rd2O
-2ml4wJ5yHBp9ilhv+xyhR4lANMHhPgoa+EtXDlvgDW3gAI8VOqIWHnw0utT+lJ7C
-eMr45XVLWvlJgF8r3CMgQd593Auegq4P+va8FYg6716sIU0AphGwKyfmNA65aab6
-VXgus7VJxaXjjRmgRd3OCfEng8olOPLGJF5rdiF5ShSyHqL4PAIesMpdlPy7fFIh
-IcuOknH/qF0dZN4zSOXNFT2ixOAHnzROh3dtPm9Y/w6a3GUfpjqRp8pe42NNGtle
-4QMAHFl6WeFNpO44RDHAye1yPGhAHZEUrGuOZKP7aUUjUBOtQPC+YcF8ztLTGJ+n
-ylsU0L4q7Y7bW4ZVPv/cXQWxoGXNSdGewUGU9JpEOZc0nHw6l2khDlvD7U3x/5D4
-bLGBeURFkUTdhrhoaEdtCO9R9Z7NlnTyO5cMQ5hW/WaI/T91zqlF7NeIiprvuDLy
-1P6FCvHKOU009xwmnhfcqTt7Gmo53Ddo5nFZcOyk5ZDQ07iaJ7a2FFjGX5VoOwpl
-+FZDIF79KxQ+lLbS9aOb4atbpCX+3IAinMYaLT0gM2GFE7WRr1x6Z2SL1/nPOWW+
-T8D6DUiz6w+YSRcdmlK7
-=uJWV
------END PGP SIGNATURE-----
-
---bebzX59uVWocTrAI--
-
---===============2792831062867063511==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2792831062867063511==--
+diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
+index a3ae394..3fdb173 100644
+--- a/sound/soc/codecs/tas2552.c
++++ b/sound/soc/codecs/tas2552.c
+@@ -78,6 +78,40 @@ struct tas2552_data {
+ 	unsigned int mclk;
+ };
+ 
++
++static int tas2552_pll_disable(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	if (event == SND_SOC_DAPM_POST_PMD)
++		snd_soc_update_bits(w->codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE, 0);
++
++	return 0;
++}
++
++static int tas2552_class_d_en(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol, int event)
++{
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(w->codec, TAS2552_CFG_2,
++						 TAS2552_CLASSD_EN_MASK, TAS2552_CLASSD_EN_MASK);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_update_bits(w->codec, TAS2552_CFG_2,
++						 TAS2552_CLASSD_EN_MASK, 0);
++		break;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
++{
++SND_SOC_DAPM_PRE("Class D Enable", tas2552_class_d_en),
++SND_SOC_DAPM_POST("Class D Disable", tas2552_class_d_en),
++SND_SOC_DAPM_POST("PLL Disable", tas2552_pll_disable),
++};
++
+ static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
+ {
+ 	u8 cfg1_reg;
+@@ -101,10 +135,6 @@ static int tas2552_hw_params(struct snd_pcm_substream *substream,
+ 	int d;
+ 	u8 p, j;
+ 
+-	/* Turn on Class D amplifier */
+-	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN_MASK,
+-						TAS2552_CLASSD_EN);
+-
+ 	if (!tas2552->mclk)
+ 		return -EINVAL;
+ 
+@@ -149,7 +179,6 @@ static int tas2552_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE,
+ 						TAS2552_PLL_ENABLE);
+-
+ 	return 0;
+ }
+ 
+@@ -269,19 +298,10 @@ static const struct dev_pm_ops tas2552_pm = {
+ 			   NULL)
+ };
+ 
+-static void tas2552_shutdown(struct snd_pcm_substream *substream,
+-			   struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_codec *codec = dai->codec;
+-
+-	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE, 0);
+-}
+-
+ static struct snd_soc_dai_ops tas2552_speaker_dai_ops = {
+ 	.hw_params	= tas2552_hw_params,
+ 	.set_sysclk	= tas2552_set_dai_sysclk,
+ 	.set_fmt	= tas2552_set_dai_fmt,
+-	.shutdown	= tas2552_shutdown,
+ 	.digital_mute = tas2552_mute,
+ };
+ 
+@@ -321,6 +341,7 @@ static const struct reg_default tas2552_init_regs[] = {
+ static int tas2552_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret;
+ 
+ 	tas2552->codec = codec;
+@@ -362,9 +383,12 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
+ 		goto patch_fail;
+ 	}
+ 
+-	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN |
+-				  TAS2552_BOOST_EN | TAS2552_APT_EN |
+-				  TAS2552_LIM_EN);
++	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_BOOST_EN |
++				  TAS2552_APT_EN | TAS2552_LIM_EN);
++
++	snd_soc_dapm_new_controls(dapm, tas2552_dapm_widgets,
++				ARRAY_SIZE(tas2552_dapm_widgets));
++
+ 	return 0;
+ 
+ patch_fail:
+-- 
+1.7.9.5
