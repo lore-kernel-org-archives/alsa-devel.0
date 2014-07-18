@@ -1,18 +1,21 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH] ASoC: rsnd: add missing src/dst_addr_width
-	for DMAEngine
-Date: Fri, 18 Jul 2014 14:44:51 +0200
-Message-ID: <7811387.1D8yB9HfiA@avalon>
-References: <87sim0ece5.wl%kuninori.morimoto.gx@gmail.com>
+From: Kevin Startup <kevin@awcsl.com>
+Subject: Re: ALSA SOC Driver (mxs-wm8753)
+Date: Fri, 18 Jul 2014 13:02:41 +0000
+Message-ID: <f889954bfaf244cab1b9eb096c66fa81@DB4PR07MB252.eurprd07.prod.outlook.com>
+References: <3c1cd0154ea542b992e00dce1cfc0a9a@DB4PR07MB252.eurprd07.prod.outlook.com>
+ <20140718084415.GA12049@opensource.wolfsonmicro.com>
+ <d387ffb22ab74e87aff415badb8b4dca@DB4PR07MB252.eurprd07.prod.outlook.com>
+ <20140718105323.GB12049@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
- [95.142.166.194])
- by alsa0.perex.cz (Postfix) with ESMTP id BAA1C2655ED
- for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2014 14:44:41 +0200 (CEST)
-In-Reply-To: <87sim0ece5.wl%kuninori.morimoto.gx@gmail.com>
+Received: from emea01-am1-obe.outbound.protection.outlook.com
+ (mail-am1lp0017.outbound.protection.outlook.com [213.199.154.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0FEE2655ED
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2014 15:02:43 +0200 (CEST)
+In-Reply-To: <20140718105323.GB12049@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,45 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Morimoto <kuninori.morimoto.gx@renesas.com>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san,
+Hi Charles
 
-On Wednesday 16 July 2014 23:18:44 Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Renesas new DMAEngine driver requests src/dst_addr_width
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
-> 
-> >> Laurent
-> 
-> Could you please check and give your Ack to this patch?
+Thanks very much, the pointers you gave me have helped a lot.  I have changed the reference to .codec_dai_name to "wm8753-hifi" in the mxs-wm8753.c program which has made my CPU recognise the WM8753 as a valid ALSA device!
+This makes me very happy as I have been trying to get this to happen for several weeks now!
 
-What tree is the patch based on ? It doesn't apply on Takashi's latest master 
-branch. I need a bit of context to review it.
+I still don't seem to be able to send sound to the device though.
+I am now receiving this message:
 
->  sound/soc/sh/rcar/core.c |    2 ++
->  1 file changed, 2 insertions(+)
+mxs-i2c 80058000.i2c: PIO: Failed to finish WRITE cmd!
+
+This happens a dozen times or so on bootup and any time that I try to write to one of the PCM devices ....
+I wonder if you could give me any more pointers?
+
+Many Thanks
+Kevin
+
+Kevin Startup
+A.W. Communication Systems Ltd. 
+email: kevin@awcsl.com
+Tel: +44(0)1697 748717
+Fax: +44(0)1697 748778
+
+A.W. Communication Systems Ltd
+VAT No. GB 827 4389 00
+Registered No. 4891652
+Registered Office Crook Barn, The Crook, Roweltown, Carlisle, UK
+
+-----Original Message-----
+From: Charles Keepax [mailto:ckeepax@opensource.wolfsonmicro.com] 
+Sent: 18 July 2014 11:53
+To: Kevin Startup
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] ALSA SOC Driver (mxs-wm8753)
+
+On Fri, Jul 18, 2014 at 10:14:16AM +0000, Kevin Startup wrote:
+> That's great info, thanks very much.  My DT looks like this, inside sound{} I have:
 > 
-> diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-> index 907d480..c48d999 100644
-> --- a/sound/soc/sh/rcar/core.c
-> +++ b/sound/soc/sh/rcar/core.c
-> @@ -338,6 +338,8 @@ int rsnd_dma_init(struct rsnd_priv *priv, struct
-> rsnd_dma *dma, cfg.direction	= is_play ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
->  	cfg.src_addr	= rsnd_gen_dma_addr(priv, mod_from, is_play, 1);
->  	cfg.dst_addr	= rsnd_gen_dma_addr(priv, mod_to,   is_play, 0);
-> +	cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> +	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> compatible = "fs,imx28-tx28-wm8753", "fsl,mxs-audio-wm8753"; model = 
+> "wm8753"; saif-controllers = <&saif0 &saif1>; audio-controllers = 
+> <&i2c0>; audio-code = <&wm8753>;
 > 
->  	dev_dbg(dev, "dma : %s %pad -> %pad\n",
->  		dma_name, &cfg.src_addr, &cfg.dst_addr);
+> Inside i2c0{} I have:
+> 
+> wm8753: wm8753@1a {
+>     Compatible = "wlf,wm8753";
+>     reg = <0x1a>;
+> 
+> I have tried changing model to "wm8753-voice" but still get the same error.
+> 
+> Am I changing it in the wrong place?  Or do I need another setting?
+> 
+> I'm very much a beginner at this DT stiff and also configuring and using sound devices so any info you can supply will be of great help.
 
--- 
-Regards,
+How exactly the DT needs to be specified depends on the machine driver, as it will be what parses the sound node. I would assume that you are writing this as well? Whatever in there is setting the codec_dai_name on the dai_link seems to be setting the wrong value.
 
-Laurent Pinchart
+Thanks,
+Charles
