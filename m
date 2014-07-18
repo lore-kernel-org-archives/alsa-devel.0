@@ -1,18 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 5/7] ASoC: Intel: sst: add power management
+Subject: Re: [PATCH 7/7] ASoC: Intel: sst - add compressed ops
 	handling
-Date: Fri, 18 Jul 2014 19:53:09 +0530
-Message-ID: <20140718142309.GF1985@intel.com>
+Date: Fri, 18 Jul 2014 19:53:39 +0530
+Message-ID: <20140718142339.GG1985@intel.com>
 References: <1404898076-1882-1-git-send-email-vinod.koul@intel.com>
- <1404898076-1882-6-git-send-email-vinod.koul@intel.com>
- <20140718114611.GM17528@sirena.org.uk>
+ <1404898076-1882-8-git-send-email-vinod.koul@intel.com>
+ <20140718114823.GN17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5975677630814844165=="
+Content-Type: multipart/mixed; boundary="===============7167989612396460803=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E0182608D3
- for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2014 16:27:19 +0200 (CEST)
-In-Reply-To: <20140718114611.GM17528@sirena.org.uk>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9561265649
+ for <alsa-devel@alsa-project.org>; Fri, 18 Jul 2014 16:28:05 +0200 (CEST)
+In-Reply-To: <20140718114823.GN17528@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,102 +27,43 @@ Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, subhransu
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5975677630814844165==
+--===============7167989612396460803==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hOcCNbCCxyk/YU74"
+	protocol="application/pgp-signature"; boundary="BRE3mIcgqKzpedwo"
 Content-Disposition: inline
 
 
---hOcCNbCCxyk/YU74
+--BRE3mIcgqKzpedwo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 18, 2014 at 12:46:11PM +0100, Mark Brown wrote:
-> On Wed, Jul 09, 2014 at 02:57:53PM +0530, Vinod Koul wrote:
+On Fri, Jul 18, 2014 at 12:48:23PM +0100, Mark Brown wrote:
+> On Wed, Jul 09, 2014 at 02:57:55PM +0530, Vinod Koul wrote:
 >=20
-> > +static int sst_save_dsp_context_v2(struct intel_sst_drv *sst)
+> > +	if (codec->codec =3D=3D SND_AUDIOCODEC_MP3) {
+> > +		codec->num_descriptors =3D 2;
+> > +		codec->descriptor[0].max_ch =3D 2;
+> > +		codec->descriptor[0].sample_rates[0] =3D 48000;
+> > +		codec->descriptor[0].sample_rates[1] =3D 44100;
+> > +		codec->descriptor[0].sample_rates[2] =3D 32000;
+> > +		codec->descriptor[0].sample_rates[3] =3D 16000;
+> > +		codec->descriptor[0].sample_rates[4] =3D 8000;
+> > +		codec->descriptor[0].num_sample_rates =3D 5;
+> > +		codec->descriptor[0].bit_rate[0] =3D 320; /* 320kbps */
+> > +		codec->descriptor[0].bit_rate[1] =3D 192;
+> > +		codec->descriptor[0].num_bitrates =3D 2;
+> > +		codec->descriptor[0].profiles =3D 0;
+> > +		codec->descriptor[0].modes =3D SND_AUDIOCHANMODE_MP3_STEREO;
+> > +		codec->descriptor[0].formats =3D 0;
 >=20
-> _v2?
-v1 support older moorestown platforms. SO v2 here :)
->=20
-> > +static int intel_sst_runtime_suspend(struct device *dev)
-> > +{
-> > +	int ret =3D 0;
-> > +	struct intel_sst_drv *ctx =3D dev_get_drvdata(dev);
-> > +
-> > +	pr_info("runtime_suspend called\n");
->=20
-> This is way too noisy.
->=20
-> > +	if (ctx->sst_state =3D=3D SST_RESET) {
-> > +		pr_debug("LPE is already in RESET state, No action");
-> > +		return 0;
-> > +	}
-> > +	/*save fw context*/
-> > +	if (ctx->ops->save_dsp_context(ctx))
-> > +		return -EBUSY;
-> > +
-> > +	/* Move the SST state to Reset */
-> > +	sst_set_fw_state_locked(ctx, SST_RESET);
-> > +
-> > +	flush_workqueue(ctx->post_msg_wq);
-> > +	synchronize_irq(ctx->irq_num);
->=20
-> This is very strange - we're flushing the work *after* resetting the DSP
-> which suggests there might be something else trying to access the DSP
-> while it is being put into reset.  Presumably that'd be bad.
-the macro sst_set_fw_state_locked is used here :)
-
-And state is marked reset, we dont do HW reset, so this is okay. After we r=
-eturn the
-suspend handler, PCI will put the device to D3.
-=20
-> > +	/* When fw_clear_cache is set, clear the cached firmware copy */
-> > +	/* fw_clear_cache is set through debugfs support */
-> > +	if (atomic_read(&ctx->fw_clear_cache) && ctx->fw_in_mem) {
->=20
-> Why?  It'd seem more direct to just have the debugfs write trigger
-> trashing of the firmware on demand...
-That would work too but then sequencing the DSP while running would cause
-issues elsewhere. Since we dont have debugs support in the series we cna
-push this bits later when we send debugfs series amoung others :)
-
-> > +static int intel_sst_suspend(struct device *dev)
-> > +{
-> > +
-> > +	return intel_sst_runtime_suspend(dev);
-> > +}
->=20
-> You currently need to check that the device isn't runtime suspended
-> before you try to reuse runtime PM ops in suspend.
-Sorry didnt quite get why?
-
->=20
-> > +static int intel_sst_runtime_idle(struct device *dev)
-> > +{
-> > +	struct intel_sst_drv *ctx =3D dev_get_drvdata(dev);
-> > +
-> > +	pr_info("runtime_idle called\n");
-> > +	if (ctx->sst_state !=3D SST_RESET) {
-> > +		pm_schedule_suspend(dev, SST_SUSPEND_DELAY);
-> > +		return -EBUSY;
-> > +	} else {
-> > +		return 0;
-> > +	}
-> > +	return -EBUSY;
-> > +
-> > +}
->=20
-> This is very strange, what is going on?
-schedule suspend after SST_SUSPEND_DELAY. This should be updated with PM
-framework calls for delay, will update
-
+> It'd be more idiomatic to copy a static variable.
+will update...
 
 --=20
 ~Vinod
 
---hOcCNbCCxyk/YU74
+--BRE3mIcgqKzpedwo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -130,28 +71,28 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQIcBAEBAgAGBQJTyS3NAAoJEHwUBw8lI4NHFoUP/2B3PvowkNwG8F530ZKfhl6V
-kxjtyAQtrdu3upSp1rXAceMbBGv7m0uVPiK7DgDvOd3kJ3VMzY1VDTBDVzbfbfxR
-QeLwG/akUI8layudKgfYMPvbAjBxpeZ92M/dg0NnEdQfDZr5qApWL0uNMwFwKaql
-tT2FWOJG1+4e/fczWA4gHm1KSrmojcIhkfXg2Q+m5kT6Or3yxMPSzHm8X85ZnUK5
-yACIfX232ZZE4wqmv77WHwWXRhAcmwLdg3g2WMUXivw9KuLwJ0zHpLAI3wLbHViI
-Frrh46GOxanJ29LjZluv33H1lHxtJOy9KERKmHcEn4o9GFL+kGFvuAorNXOqWUsz
-TL5Zi5WwsfaEsnxZmqROLrZsctQVDtKKyea7QYPPDwXcccnoc2/Yq9DpMnrYvxr5
-OGE5qwhQ0xioCA1wKx68vvSlrJZxKn6foQT+JbDxpuyEt8QERHKUOieivHv+b7jB
-WasS7H2+0NimB1ZPtAYB2QdbuQSeZDUQRj/EVuJQaeYiNTjF59O1yBBDHpV0isFm
-NojkX/SWUg7bWmKqDrYij+ppvNUFqh1+bSvVF2GRSuAfbEJCkucBT0wdZBHrwJmQ
-OORJS+hbjjlDbBuenefhd3uOqKxAFAHpEjNDdNqAIPo9Lbp/WvV3ysoqEZmWws3V
-DF0eQZO7LEAGz2G+JEf1
-=Zkqk
+iQIcBAEBAgAGBQJTyS3rAAoJEHwUBw8lI4NHCNMQAM21yNnwzj4nsBy1QjT3SeaH
+kxk653kDjexfaCKsW3B7UBPBpSOMQz7t+zApda3i1IpXOVvqfA8lM/M8Hw+gzcVn
+1CGoNgVoCtCtPyKRJrVXP+twSN5bPpk/ZS9DPZTJ9PmcIZJyPCC7EIxLGfY1DE/t
+DtZfvOBdrq5FgTIxHENCgm6peiWvS2FirRxPbh6F72u29kICopfjqDkBLGXkLs0c
+W+fU/4UAaxwPg6dByyRaAUveRKVaxJMwdU92NNPFNJlbFe1FiPmxU2r5X0QnJBk9
+j/fb8Q7eROC+gYvlyBxns24+CbduRy+1PafkSVBef5nTFHl5P1viY2Dnfnhd/V6K
+6w8kv5TjBkFmR+sX90lIds0kdMXIe9004KFD34zFOhzUWyQ78m4+zEdG4Nh5eVG8
+p6pQuId1xMrZp7DQ96LFU+AwFzZwu3zdHDTdCrZph8WZHYgwph5YWJ1cDIb+LhUV
+SVJLTEseYW/tyx6Kev6E3Fz3u3w6V7gR43YDyAjtLCMZ+/ryudqJztOdD1cdYf5w
+gvmceQk92uBO/GsINyA5n44CWLiUlGDMhplb//dEtRVyCVGA3muMpUH3/NU0eYQI
+M+nn76exOlvP78He7QeJT0KXRLCSMeuXu69c+abHgI4bx/1yDm6GTnwzcqq9JDRE
+JeOmKLAoxEEafOdEweJt
+=O4fk
 -----END PGP SIGNATURE-----
 
---hOcCNbCCxyk/YU74--
+--BRE3mIcgqKzpedwo--
 
---===============5975677630814844165==
+--===============7167989612396460803==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5975677630814844165==--
+--===============7167989612396460803==--
