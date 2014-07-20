@@ -1,66 +1,44 @@
-From: Killer{R} <support@killprog.com>
-Subject: mpd + emu 0404 USB automatic sample rate
-Date: Sun, 20 Jul 2014 00:50:33 +0300
-Message-ID: <42535576562.20140720005033@killprog.com>
-Reply-To: Killer{R} <support@killprog.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: weiyj_lk@163.com
+Subject: [PATCH -next] ASoC: samsung: Fix return value check in s3c2412_iis_dev_probe()
+Date: Sun, 20 Jul 2014 11:43:07 +0800
+Message-ID: <1405827787-26055-1-git-send-email-weiyj_lk@163.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.z8.ru (smtp.z8.ru [80.93.62.204])
- by alsa0.perex.cz (Postfix) with ESMTP id 173E8261B1B
- for <alsa-devel@alsa-project.org>; Sat, 19 Jul 2014 23:50:58 +0200 (CEST)
-Received: from [212.98.162.147] (helo=kllr)
- by smtp.z8.ru with esmtpa (Exim 4.71 (FreeBSD))
- (envelope-from <support@killprog.com>) id 1X8cWW-000GYs-9x
- for alsa-devel@alsa-project.org; Sun, 20 Jul 2014 01:50:32 +0400
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello alsa-devel,
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-  I'm trying to build bit-perfect music playback box using Olinuxino board
-  and EMU 0404 USB sound card running MPD. I have wide collection of lossless
-  songs with different sampling rates - from 44100 to 192000. I set MPD config
-  to play sound via correct alsa device and it works, however whenever I start
-  play song with different sampling rate - MPD (or ALSA?) 'forgets' to switch
-  sampling rate frequency and I hear buzzing sound instead of music. If I run
-  alsamixer and manually switch there sampling rate - it plays OK until I
-  select song with again different sampling rate.
-  It seems I'm not first with such a problem, here is same complain
-  with a workadound: http://murga-linux.com/puppy/viewtopic.php?p=745547#745547
+In case of error, the function devm_ioremap_resource() returns ERR_PTR()
+and never returns NULL. The NULL test in the return value check should be
+replaced with IS_ERR(). Also remove redundant return value check of
+platform_get_resource().
 
-  Currently I'm running sunxi Linux kernel: 3.4.90, but same bug reproduced when I
-  used Raspberry PI with kernel 3.6.11
-  ALSA's version: cat /proc/asound/version
-  Advanced Linux Sound Architecture Driver Version 1.0.25.
-  Seems I was able to fix this on my system, but not sure if this fix is
-  correct, here is diff:
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ sound/soc/samsung/s3c2412-i2s.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- quirks.c   Fri Jul 18 01:20:16 2014
-+++ quirks.c   Sun Jul 20 00:20:49 2014
-@@ -723,7 +723,8 @@ static void set_format_emu_quirk(struct
-         * by playback substream
-         */
-        if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK) {
--               if (subs->stream->substream[SNDRV_PCM_STREAM_CAPTURE].interface != -1)
-+               if (subs->stream->substream[SNDRV_PCM_STREAM_CAPTURE].interface != -1 &&
-+                       subs->stream->substream[SNDRV_PCM_STREAM_CAPTURE].running)
-                        return;
-        }  
-  
-  
-  
-
--- 
-Best regards,
- Killer{R}                          mailto:support@killprog.com
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index 9180310..27b339c 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -154,13 +154,9 @@ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res) {
+-		dev_err(&pdev->dev, "Can't get IO resource.\n");
+-		return -ENOENT;
+-	}
+ 	s3c2412_i2s.regs = devm_ioremap_resource(&pdev->dev, res);
+-	if (s3c2412_i2s.regs == NULL)
+-		return -ENXIO;
++	if (IS_ERR(s3c2412_i2s.regs))
++		return PTR_ERR(s3c2412_i2s.regs);
+ 
+ 	s3c2412_i2s_pcm_stereo_out.dma_addr = res->start + S3C2412_IISTXD;
+ 	s3c2412_i2s_pcm_stereo_in.dma_addr = res->start + S3C2412_IISRXD;
