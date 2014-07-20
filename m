@@ -1,17 +1,23 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH -next] ALSA: bebob: Fix missing unlock on
-	error in special_clk_ctl_put()
-Date: Sun, 20 Jul 2014 16:51:52 +0900
-Message-ID: <53CB7518.9080502@sakamocchi.jp>
-References: <1405831835-26499-1-git-send-email-weiyj_lk@163.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Fwd: USB MIDI Specification Update Proposal
+Date: Sun, 20 Jul 2014 20:52:34 +0200
+Message-ID: <53CC0FF2.8000702@canonical.com>
+References: <20140715234123.11232.qmail@vps-1011917-539.manage.myhosting.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DEA5262626
- for <alsa-devel@alsa-project.org>; Sun, 20 Jul 2014 09:51:59 +0200 (CEST)
-In-Reply-To: <1405831835-26499-1-git-send-email-weiyj_lk@163.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id D51B626500C
+ for <alsa-devel@alsa-project.org>; Sun, 20 Jul 2014 20:52:33 +0200 (CEST)
+Received: from hd9483857.selulk5.dyn.perspektivbredband.net ([217.72.56.87]
+ helo=[192.168.8.102])
+ by youngberry.canonical.com with esmtpsa (TLS1.0:DHE_RSA_AES_128_CBC_SHA1:16)
+ (Exim 4.71) (envelope-from <david.henningsson@canonical.com>)
+ id 1X8wDp-0001hi-CS
+ for alsa-devel@alsa-project.org; Sun, 20 Jul 2014 18:52:33 +0000
+In-Reply-To: <20140715234123.11232.qmail@vps-1011917-539.manage.myhosting.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +27,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: weiyj_lk@163.com, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Forwarding this in case anyone is interested in influencing this 
+standard somehow, to make sure they don't do anything problematic for 
+us...? Are we interested?
 
-Hi Wei,
+// David
 
-Thanks for this patch, while I found the other issues in this file. I
-would like to post new patches instead of yours, later.
+-------- Original Message --------
+Subject: 	USB MIDI Specification Update Proposal
+Date: 	15 Jul 2014 19:41:23 -0400
+From: 	MMA/IASIG Announcements <info@midi.org>
+To: 	
 
 
-Thanks
 
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+July 15, 2014
 
-(Jul 20 2014 13:50), weiyj_lk@163.com wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-> 
-> Add the missing unlock before return from function
-> special_clk_ctl_put() in the error handling case.
-> 
-> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn> --- 
-> sound/firewire/bebob/bebob_maudio.c | 4 +++- 1 file changed, 3
-> insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/firewire/bebob/bebob_maudio.c
-> b/sound/firewire/bebob/bebob_maudio.c index 6af50eb..6748515
-> 100644 --- a/sound/firewire/bebob/bebob_maudio.c +++
-> b/sound/firewire/bebob/bebob_maudio.c @@ -382,8 +382,10 @@ static
-> int special_clk_ctl_put(struct snd_kcontrol *kctl, 
-> mutex_lock(&bebob->mutex);
-> 
-> id = uval->value.enumerated.item[0]; -	if (id >=
-> ARRAY_SIZE(special_clk_labels)) +	if (id >=
-> ARRAY_SIZE(special_clk_labels)) { +		mutex_unlock(&bebob->mutex); 
-> return 0; +	}
-> 
-> err = avc_maudio_set_special_clk(bebob, id, params->dig_in_fmt,
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+Greetings,
 
-iQEcBAEBAgAGBQJTy3UIAAoJENbkvsBXhK8as9AH+wYN2lxFlzBdMhPgRigp/bkv
-mw770Hpyb50TE3ILkIcGpgec1TFrK/QwQjUmunmJLQnvXPBNVNGiVaKsOhhHwmqG
-7hDWp8swTSdxZQeSFWjjxAc+AntjEoUkOdiwclzT+1M1tO1vjZdRoXAos4o3G6Od
-xKSl0xO4Qi+Wv6ib1p5yneOKEGZLmEZTLJY2PXXKhHQjybzYS1cRRlK9+afJYLhT
-sEHPknz00OCbvFRAXIK0GMuaQzncZOFYA2Ovczei7Y+ugJuGJbvNfxhxYO6j7Zc6
-j1dE79iBY0hhH32zdUn7zcWR8Zbxbpfv8oA0dkeQRisV3RB9F2P7bSKHtNj0cOw=
-=Or5u
------END PGP SIGNATURE-----
+The MIDI Manufacturers Association ("MMA") Technical Standards Board
+("TSB") has formed a working group to update the USB Class Specification
+for MIDI Devices.
+
+The original version 1.0 specification was published in 1999 by the USB
+Implementors Forum (USB-IF). It has been implemented in hundreds
+(thousands?) of devices from many different manufacturers, and all of
+the major operating systems include "class drivers" that allow MIDI
+devices to connect by USB without the user needing to install a driver.
+
+Meanwhile, the technology and the environment around MIDI and USB have
+changed:
+
+   * Processors are faster, and USB itself is faster
+   * Many music devices are equipped with USB ports for MIDI, and some of
+     those can operate at faster than MIDI-DIN speed (typically via
+     custom USB drivers)
+   * Popular mobile systems now also support MIDI via USB, but do not
+     allow manufacturers to install custom drivers
+   * Mobile has low power requirements
+
+Given all of these factors, we think the USB-MIDI Specification could
+benefit from an update. We do not propose a major overhaul or any change
+of basic architecture, but rather a minor update that we expect to label
+as a version 1.1. The update will be done in collaboration with the
+USB-IF. Components of the proposed Version 1.1 Update that we plan to
+discuss include:
+
+   * Additional Device Attributes
+   * Bandwidth Descriptors
+   * Add Interrupt Mode
+   * Transfer Non-MIDI Data / Meta Event
+   * Product Identification (Logos)
+
+We would like all commercial manufacturers of USB MIDI hardware and
+software to join us in this effort. If you would like to comment, ask
+questions, voice an opinion or suggestion, or simply have early access
+to the specification, please join the MMA and subscribe to the working
+group email mailing list.
+
+Regards,
+
+Mike Kent, WG Chair (Roland Corp.)
+Tom White, President/CEO, MMA
+
+
+
+------------------------------------------------------------------------
+
+(C) 2014 MIDI Manufacturers Association Incorporated.
