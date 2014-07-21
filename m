@@ -1,56 +1,72 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] pcm: route: Use get/put labels for all 3 byte
-	formats
-Date: Mon, 21 Jul 2014 16:33:49 +0200
-Message-ID: <1405953229-9948-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: arizona: Disable AIF TX/RX before configuring it
+Date: Mon, 21 Jul 2014 17:24:48 +0100
+Message-ID: <20140721162448.GD17528@sirena.org.uk>
+References: <20140716121029.GA22222@opensource.wolfsonmicro.com>
+ <20140717194215.GH17528@sirena.org.uk>
+ <20140721090104.GA21400@opensource.wolfsonmicro.com>
+ <s5hsilvnkuf.wl%tiwai@suse.de>
+ <20140721103327.GA29141@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 501C3261A33
- for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 16:33:50 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E741DAC97
- for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 14:33:49 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5JJEVRmBpje5aLKk"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140721103327.GA29141@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, perex@perex.cz, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-So far, use_getput flag is set only when the src or dest format is
-24bit physical width.  But, also 18 and 20 bit physical width formats
-should set the flag, too.  This patch makes the check broader to cover
-all 3 bytes formats.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- src/pcm/pcm_route.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+--5JJEVRmBpje5aLKk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
-index 2f0be38b1906..72c198cb25d2 100644
---- a/src/pcm/pcm_route.c
-+++ b/src/pcm/pcm_route.c
-@@ -644,8 +644,10 @@ static int snd_pcm_route_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
- 	}
- 	if (err < 0)
- 		return err;
--	route->params.use_getput = snd_pcm_format_physical_width(src_format) == 24 ||
--		snd_pcm_format_physical_width(dst_format) == 24;
-+	/* 3 bytes formats? */
-+	route->params.use_getput =
-+		(snd_pcm_format_physical_width(src_format) + 7) / 3 == 3 ||
-+		(snd_pcm_format_physical_width(dst_format) + 7) / 3 == 3;
- 	route->params.get_idx = snd_pcm_linear_get_index(src_format, SND_PCM_FORMAT_S16);
- 	route->params.put_idx = snd_pcm_linear_put32_index(SND_PCM_FORMAT_S32, dst_format);
- 	route->params.conv_idx = snd_pcm_linear_convert_index(src_format, dst_format);
--- 
-2.0.1
+On Mon, Jul 21, 2014 at 11:33:27AM +0100, Richard Fitzgerald wrote:
+> On Mon, Jul 21, 2014 at 11:04:56AM +0200, Takashi Iwai wrote:
+> > Richard Fitzgerald wrote:
+
+> > > The case being fixed is like this:
+
+> > > aplay 48kHz.wav; aplay 96kHz.wav
+
+> > > The second open happens before pmdown_time so the AIF is still enabled.
+> > > Writes to the AIF config registers only take effect if the AIF is disabled.
+> > > Without this patch, the 96kHz.wav will play at 48kHz
+
+> > If the glitch really matters, the driver can minimize by checking the
+> > change of sample rate and doing temporary turn on/off only when
+> > required.
+
+> That's a fair point.
+
+The case I was particularly worrying about here was simultaneous
+playback and capture - we won't be changing rates here since these
+devices currently require symmetry which is enforced via constraints but
+we are likely to at least be starting multiple streams close to each
+other frequently.
+
+--5JJEVRmBpje5aLKk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTzT7MAAoJELSic+t+oim9v/oP/RvaN2sXIp6/pczl+SuIWu4Z
+GBqN6tyBw4krZ7Go3CwrdS7e4pp+4KTtb2FVJGZL5r5u24O3zld67wfyYQohbyrb
+1xEsRy51FM2wOGHaVC+wqqQrUgpKPRIHvNbhO7TSTDrSWWnFldXRzJdIttFUKY2h
+KDyDD4f6+gOC4UamVLRG2T+wuX/N+i6ey/Nk4cVE/gF1ZvGbJiL2WLoQSQcpFS+K
+7PDECrQSWxklo9cVETTs0i2Uz1HxSytdhFvmzUuL90pFtjkxAVD5AbB9d8R2LyiG
+kkYU8+wja770a1D0qtTHDPDHMa4/7VMfNML8n2HLQaHF9aCNG2hwzzAGDbV85270
+qjOe2OUplf5/T5pBAaV3fSOeFaR+uVU4Ubp1dNgYncmTZL1L+G/0kW3agetUlzGx
+rx/0D16pRUwbH6HTHLPEMal+MwQJXme9jgxmivaYXRPnJrtLvjQvnmWg61lY/Kd0
+/CV9m6Dtauc1x1gGzT6c8An92vbggo/iGRQegkuNK6EFmGR3lqxLv/o/CueX6DDw
+KMYxM9HWuz+1YrNuOL/gTwowtpReiKoSaI5E91rqw5pm+jyFUNpQJ5CVcFQ92hpM
+Lc3HvILfip2vkInkoxbJPCBm0G8N4eZaD5+0IK55x5lvKqhVpoqMrXYNy7xF1SA9
+M2J40n8BpmF73bWqWPPD
+=tlur
+-----END PGP SIGNATURE-----
+
+--5JJEVRmBpje5aLKk--
