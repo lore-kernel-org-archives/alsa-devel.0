@@ -1,150 +1,54 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 6/6] bebob: Arrangement for a control element
-	to which two settings relate
-Date: Mon, 21 Jul 2014 11:10:05 +0900
-Message-ID: <1405908605-8105-7-git-send-email-o-takashi@sakamocchi.jp>
-References: <1405831835-26499-1-git-send-email-weiyj_lk@163.com>
- <1405908605-8105-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Alexandre Courbot <gnurou@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: s3c64xx/smartq: use dynamic registration
+Date: Mon, 21 Jul 2014 12:36:43 +0900
+Message-ID: <CAAVeFuKQuvTH=5U8chZeMNLjCkfo78+_r2Gx5WUfy+q3F4QZpQ@mail.gmail.com>
+References: <CAAVeFuLfgG6W1qK2ATTbq_ydEOjUuM8Wvftm6N1RK3Kz_y1zHg@mail.gmail.com>
+ <20140716071237.GA7978@ulmo> <CAAVeFuJEjMBX+7vsLk5zXV5Moy=WDmWidpVZjQ_=8VD45+QdHg@mail.gmail.com>
+ <20140716075107.GG7978@ulmo> <53C63CBA.20809@codethink.co.uk>
+ <CAAVeFuK55XzwaU+eOWhfUxJ7wEwGqxRCPDZKf+gVeMgeV8ys6g@mail.gmail.com>
+ <20140717074444.GB18640@ulmo> <CAAVeFuJQUA+92jGpgDkyQ+=Qu+okBHzS5aFi7gmdwh+qcFp3fg@mail.gmail.com>
+ <20140717101723.GR17528@sirena.org.uk> <20140717104121.GF17877@ulmo> <20140717110540.GS17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id D5A85265109
- for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 04:10:20 +0200 (CEST)
-In-Reply-To: <1405908605-8105-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, darrena092@gmail.com, ffado-devel@lists.sf.net
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <20140717110540.GS17528@sirena.org.uk>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Thierry Reding <thierry.reding@gmail.com>, Rob Jones <rob.jones@codethink.co.uk>, Rojhalat Ibrahim <imr@rtschenk.de>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kukjin Kim <kgene.kim@samsung.com>, Tomasz Figa <t.figa@samsung.com>, Maurus Cuelenaere <mcuelenaere@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linus Walleij <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-A control element for digital input interface includes two settings; one
-is for digital format (S/PDIF or ADAT), another is for interface (optical or
-coaxial).
+On Thu, Jul 17, 2014 at 8:05 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Jul 17, 2014 at 12:41:23PM +0200, Thierry Reding wrote:
+>> On Thu, Jul 17, 2014 at 11:17:23AM +0100, Mark Brown wrote:
+>
+>> > Not so sure about that - what about requesting GPIOs for a bidirectional
+>> > bus?  Thinking about SPI bitbanging here.
+>
+>> Wouldn't you want to use a different means that the gpiod_array_*() API
+>> to handle those cases? gpiod_array_*() is probably most useful to handle
+>> bulk operations on a set of GPIOs that do essentially the same thing. If
+>> you get and then need to index into that array to handle them all
+>> differently then you don't gain very much.
+>
+> For set and get, sure - but it's still useful to be able to do bulk
+> requests for GPIOs especially since that's the only bit of the interface
+> that requires error handling.
 
-The setting for interface is meaningful just for S/PDIF, therefore to consider
-recovery at failure of a operation for the second setting, a operation for
-the first setting should be for interface, not digital format.
+I foresee many problems if people start using gpiod_array_get() as a
+way to spare a few lines of error-checking code. First all the GPIOs
+would end into an array instead of members with meaningful names -
+unless they are moved later on, but doing so would add extra code and
+somewhat kill the purpose. It also becomes more difficult to maintain
+as you are dealing with array indexes to update all over the code.
+Finally, it will make it more difficult to use gpiod_array_*() the way
+it is intended to be used, as you would have to discriminate between
+GPIOs of the same function and the rest by yourself.
 
-Additionally, this commit changes special_dig_in_iface_ctl_get() to reduce
-needless processing for the interface when the digital format is ADAT.
+Also, if such a convenience function is legitimate for GPIO, shouldn't
+it also apply to other sub-systems? E.g. regulator_array_get()?
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob_maudio.c | 70 +++++++++++++++++++++----------------
- 1 file changed, 40 insertions(+), 30 deletions(-)
-
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-index acfe94a..7899b56 100644
---- a/sound/firewire/bebob/bebob_maudio.c
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -471,21 +471,24 @@ static int special_dig_in_iface_ctl_get(struct snd_kcontrol *kctl,
- 
- 	mutex_lock(&bebob->mutex);
- 
--	err = avc_audio_get_selector(bebob->unit, 0x00, 0x04,
--				     &dig_in_iface);
--	if (err < 0) {
--		dev_err(&bebob->unit->device,
--			"fail to get digital input interface: %d\n", err);
--		goto end;
-+	/* For ADAT, optical interface is only available. */
-+	if (params->dig_in_fmt > 0) {
-+		err = 0;
-+		dig_in_iface = 0;
-+	} else {
-+		err = avc_audio_get_selector(bebob->unit, 0x00, 0x04,
-+					     &dig_in_iface);
-+		if (err < 0) {
-+			dev_err(&bebob->unit->device,
-+				"fail to get digital input interface: %d\n",
-+				err);
-+			goto end;
-+		}
- 	}
- 
- 	/* encoded id for user value */
- 	val = (params->dig_in_fmt << 1) | (dig_in_iface & 0x01);
- 
--	/* for ADAT Optical */
--	if (val > 2)
--		val = 2;
--
- 	uval->value.enumerated.item[0] = val;
- end:
- 	mutex_unlock(&bebob->mutex);
-@@ -497,7 +500,7 @@ static int special_dig_in_iface_ctl_set(struct snd_kcontrol *kctl,
- 	struct snd_bebob *bebob = snd_kcontrol_chip(kctl);
- 	struct special_params *params = bebob->maudio_special_quirk;
- 	unsigned int id, dig_in_fmt, dig_in_iface;
--	int err;
-+	int err = 0;
- 
- 	id = uval->value.enumerated.item[0];
- 	if (id >= ARRAY_SIZE(special_dig_in_iface_labels))
-@@ -509,29 +512,36 @@ static int special_dig_in_iface_ctl_set(struct snd_kcontrol *kctl,
- 
- 	mutex_lock(&bebob->mutex);
- 
--	err = avc_maudio_set_special_clk(bebob,
--					 params->clk_src,
--					 dig_in_fmt,
--					 params->dig_out_fmt,
--					 params->clk_lock);
--	if (err < 0) {
--		dev_err(&bebob->unit->device,
--			"fail to change clock source: %d\n", err);
--		goto end;
--	}
--
--	/* For ADAT, optical interface is only available. */
--	if (params->dig_in_fmt > 0) {
-+	/* For S/PDIF, optical/coaxial interfaces are selectable. */
-+	if (dig_in_fmt == 0) {
-+		if (amdtp_stream_running(&bebob->rx_stream))
-+			goto end;
-+
-+		err = avc_audio_set_selector(bebob->unit, 0x00, 0x04,
-+					     dig_in_iface);
-+		if (err < 0) {
-+			dev_err(&bebob->unit->device,
-+				"fail to change digital input interface: %d\n",
-+				err);
-+			goto end;
-+		}
- 		err = 1;
--		goto end;
- 	}
- 
--	err = avc_audio_set_selector(bebob->unit, 0x00, 0x04, dig_in_iface);
--	if (err < 0)
--		dev_err(&bebob->unit->device,
--			"fail to set digital input interface: %d\n", err);
--	else
-+	if (params->dig_in_fmt != dig_in_fmt) {
-+		err = avc_maudio_set_special_clk(bebob,
-+						 params->clk_src,
-+						 dig_in_fmt,
-+						 params->dig_out_fmt,
-+						 params->clk_lock);
-+		if (err < 0) {
-+			dev_err(&bebob->unit->device,
-+				"fail to change digital input format: %d\n",
-+				err);
-+			goto end;
-+		}
- 		err = 1;
-+	}
- end:
- 	mutex_unlock(&bebob->mutex);
- 	return err;
--- 
-1.9.1
+Maybe I am missing your point, but I still think some error-handling
+code really doesn't hurt here, and the few drivers that would actually
+benefit from a more automated GPIO request error handling can easily
+implement it themselves. Let's keep gpiod_array_*() single-purposed
+and to the point.
