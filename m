@@ -1,75 +1,56 @@
-From: Alexandre Courbot <gnurou@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: s3c64xx/smartq: use dynamic registration
-Date: Mon, 21 Jul 2014 23:19:37 +0900
-Message-ID: <CAAVeFuJVPSxfWx-fw-duhO0KG=nG6AfgC1EGQcDw=ZtmjOZV-Q@mail.gmail.com>
-References: <CAAVeFuJEjMBX+7vsLk5zXV5Moy=WDmWidpVZjQ_=8VD45+QdHg@mail.gmail.com>
- <20140716075107.GG7978@ulmo> <53C63CBA.20809@codethink.co.uk>
- <CAAVeFuK55XzwaU+eOWhfUxJ7wEwGqxRCPDZKf+gVeMgeV8ys6g@mail.gmail.com>
- <20140717074444.GB18640@ulmo> <CAAVeFuJQUA+92jGpgDkyQ+=Qu+okBHzS5aFi7gmdwh+qcFp3fg@mail.gmail.com>
- <20140717101723.GR17528@sirena.org.uk> <20140717104121.GF17877@ulmo>
- <20140717110540.GS17528@sirena.org.uk> <CAAVeFuKQuvTH=5U8chZeMNLjCkfo78+_r2Gx5WUfy+q3F4QZpQ@mail.gmail.com>
- <20140721100412.GT17528@sirena.org.uk>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] pcm: route: Use get/put labels for all 3 byte
+	formats
+Date: Mon, 21 Jul 2014 16:33:49 +0200
+Message-ID: <1405953229-9948-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <20140721100412.GT17528@sirena.org.uk>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Thierry Reding <thierry.reding@gmail.com>, Rob Jones <rob.jones@codethink.co.uk>, Rojhalat Ibrahim <imr@rtschenk.de>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kukjin Kim <kgene.kim@samsung.com>, Tomasz Figa <t.figa@samsung.com>, Maurus Cuelenaere <mcuelenaere@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linus Walleij <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 501C3261A33
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 16:33:50 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E741DAC97
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 14:33:49 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 21, 2014 at 7:04 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Jul 21, 2014 at 12:36:43PM +0900, Alexandre Courbot wrote:
->> On Thu, Jul 17, 2014 at 8:05 PM, Mark Brown <broonie@kernel.org> wrote:
->
->> > For set and get, sure - but it's still useful to be able to do bulk
->> > requests for GPIOs especially since that's the only bit of the interface
->> > that requires error handling.
->
->> I foresee many problems if people start using gpiod_array_get() as a
->> way to spare a few lines of error-checking code. First all the GPIOs
->> would end into an array instead of members with meaningful names -
->> unless they are moved later on, but doing so would add extra code and
->> somewhat kill the purpose. It also becomes more difficult to maintain
->> as you are dealing with array indexes to update all over the code.
->
-> You just need a few defines for the names, it's not a big deal.
->
->> Finally, it will make it more difficult to use gpiod_array_*() the way
->> it is intended to be used, as you would have to discriminate between
->> GPIOs of the same function and the rest by yourself.
->
-> Yes, you probably shouldn't mix and match here but that's fine.
->
->> Also, if such a convenience function is legitimate for GPIO, shouldn't
->> it also apply to other sub-systems? E.g. regulator_array_get()?
->
-> It's certainly a totally reasonable and expected way of using
-> regulator_bulk_get().
->
->> Maybe I am missing your point, but I still think some error-handling
->> code really doesn't hurt here, and the few drivers that would actually
->> benefit from a more automated GPIO request error handling can easily
->> implement it themselves. Let's keep gpiod_array_*() single-purposed
->> and to the point.
->
-> I'm not sure I see the massive complication TBH - it's not so much about
-> complexity as it is about reducing the amount of boilerplate that people
-> need to get right.
+So far, use_getput flag is set only when the src or dest format is
+24bit physical width.  But, also 18 and 20 bit physical width formats
+should set the flag, too.  This patch makes the check broader to cover
+all 3 bytes formats.
 
-I guess our disagreement came from the fact that we want the same
-function to perform two different things. GPIOs are different from
-regulators in that the former are really requested using a (dev,
-function, index) vs. a (dev, function) tuple for regulators. I want a
-convenience function to easily request all the GPIOs that match (dev,
-function) so that functionally identical GPIOs can be manipulated as
-an "atomic" set using the rest of the gpiod_array API (which would
-make no sense for regulators which have no "index". You want an
-equivalent to regulator_bulk_get() so a driver can conveniently
-request all its GPIOs no matter the function they fullfil.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ src/pcm/pcm_route.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-These should really be two different functions for two different
-use-cases - gpiod_array_get() that returns an array suitable for being
-manipulated using the rest of the gpiod_array API ; gpiod_bulk_get()
-that takes the equivalent of regulator_bulk_data for GPIOs and fills
-it the same way.
+diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
+index 2f0be38b1906..72c198cb25d2 100644
+--- a/src/pcm/pcm_route.c
++++ b/src/pcm/pcm_route.c
+@@ -644,8 +644,10 @@ static int snd_pcm_route_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
+ 	}
+ 	if (err < 0)
+ 		return err;
+-	route->params.use_getput = snd_pcm_format_physical_width(src_format) == 24 ||
+-		snd_pcm_format_physical_width(dst_format) == 24;
++	/* 3 bytes formats? */
++	route->params.use_getput =
++		(snd_pcm_format_physical_width(src_format) + 7) / 3 == 3 ||
++		(snd_pcm_format_physical_width(dst_format) + 7) / 3 == 3;
+ 	route->params.get_idx = snd_pcm_linear_get_index(src_format, SND_PCM_FORMAT_S16);
+ 	route->params.put_idx = snd_pcm_linear_put32_index(SND_PCM_FORMAT_S32, dst_format);
+ 	route->params.conv_idx = snd_pcm_linear_convert_index(src_format, dst_format);
+-- 
+2.0.1
