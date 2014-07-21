@@ -1,16 +1,21 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH] pcm: plugin_ops.h: Add S24_3LE support in
-	gets_label
-Date: Mon, 21 Jul 2014 18:10:15 +0800
-Message-ID: <1405937415-9828-1-git-send-email-shengjiu.wang@freescale.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: arizona: Disable AIF TX/RX before
+	configuring it
+Date: Mon, 21 Jul 2014 11:33:27 +0100
+Message-ID: <20140721103327.GA29141@opensource.wolfsonmicro.com>
+References: <20140716121029.GA22222@opensource.wolfsonmicro.com>
+ <20140717194215.GH17528@sirena.org.uk>
+ <20140721090104.GA21400@opensource.wolfsonmicro.com>
+ <s5hsilvnkuf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0237.outbound.protection.outlook.com [207.46.163.237])
- by alsa0.perex.cz (Postfix) with ESMTP id 80A6426516A
- for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 12:10:09 +0200 (CEST)
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 51067265163
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 12:33:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hsilvnkuf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,53 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-When route_policy is average, src format is S24_3LE, the get_idx will exceed
-length of table gets_label. So add items for S24_3LE in the table.
+On Mon, Jul 21, 2014 at 11:04:56AM +0200, Takashi Iwai wrote:
+> At Mon, 21 Jul 2014 10:01:22 +0100,
+> Richard Fitzgerald wrote:
+> > 
+> > On Thu, Jul 17, 2014 at 08:42:15PM +0100, Mark Brown wrote:
+> > > On Wed, Jul 16, 2014 at 01:10:39PM +0100, Richard Fitzgerald wrote:
+> > > 
+> > > > If we don't disable the AIF TX/RX then we may fall into a
+> > > > situation where the new AIF settings are ignored by the device.
+> > > > For example, this problem manifests when switching between
+> > > > different sample rates.
+> > > 
+> > > So, what this does is momentarily disable the AIF when reconfiguring.
+> > > That will glitch any running audio, making me wonder if the driver
+> > > shouldn't be returning an error or at least complaining if it has to
+> > > reconfigure instead.  What's the use case where this might get
+> > > triggered?
+> > 
+> > The case being fixed is like this:
+> > 
+> > aplay 48kHz.wav; aplay 96kHz.wav
+> > 
+> > The second open happens before pmdown_time so the AIF is still enabled.
+> > Writes to the AIF config registers only take effect if the AIF is disabled.
+> > Without this patch, the 96kHz.wav will play at 48kHz
+> 
+> If the glitch really matters, the driver can minimize by checking the
+> change of sample rate and doing temporary turn on/off only when
+> required.
+> 
+> 
+> Takashi
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
----
- src/pcm/plugin_ops.h |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/src/pcm/plugin_ops.h b/src/pcm/plugin_ops.h
-index 21535c9..e02d198 100644
---- a/src/pcm/plugin_ops.h
-+++ b/src/pcm/plugin_ops.h
-@@ -670,7 +670,7 @@ getu_1234_C321: sample = bswap_32(as_u32c(src) ^ 0x80); goto GETU_END;
- 
- #ifdef GETS_LABELS
- /* width endswap sign_toggle */
--static void *const gets_labels[4 * 2 * 2] = {
-+static void *const gets_labels[4 * 2 * 2 + 4 * 1] = {
- 	&&gets_1_1,		/*  8h ->  8h */
- 	&&gets_1_9,		/*  8h ^>  8h */
- 	&&gets_1_1,		/*  8s ->  8h */
-@@ -687,6 +687,11 @@ static void *const gets_labels[4 * 2 * 2] = {
- 	&&gets_1234_9234,	/* 32h ^> 32h */
- 	&&gets_1234_4321,	/* 32s -> 32h */
- 	&&gets_1234_C321,	/* 32s ^> 32h */
-+	/* 3bytes format */
-+	&&gets_123_0123,	/* 24h -> 24h */
-+	&&gets_123_0923,	/* 24h ^> 24h */
-+	&&gets_123_0321,	/* 24s -> 24h */
-+	&&gets_123_0B21,	/* 24s ^> 24h */
- };
- #endif
- 
-@@ -706,6 +711,10 @@ gets_1234_1234: sample = as_s32c(src); goto GETS_END;
- gets_1234_9234: sample = (int32_t)(as_s32c(src) ^ 0x80000000); goto GETS_END;
- gets_1234_4321: sample = (int32_t)bswap_32(as_s32c(src)); goto GETS_END;
- gets_1234_C321: sample = (int32_t)bswap_32(as_s32c(src) ^ 0x80); goto GETS_END;
-+gets_123_0123: sample = sx24(_get_triple(src)); goto GETS_END;
-+gets_123_0923: sample = sx24(_get_triple(src) ^ 0x800000); goto GETS_END;
-+gets_123_0321: sample = sx24(_get_triple_s(src)); goto GETS_END;
-+gets_123_0B21: sample = sx24(_get_triple_s(src) ^ 0x800000); goto GETS_END;
- }
- #endif
- 
--- 
-1.7.9.5
+That's a fair point.
