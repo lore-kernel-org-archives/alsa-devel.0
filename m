@@ -1,55 +1,46 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: remove MACH_SMDKC100
-Date: Mon, 21 Jul 2014 13:21:26 +0100
-Message-ID: <20140721122126.GY17528@sirena.org.uk>
-References: <1405710087-24327-1-git-send-email-kgene.kim@samsung.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Fwd: USB MIDI Specification Update Proposal
+Date: Mon, 21 Jul 2014 14:48:03 +0200
+Message-ID: <53CD0C03.4080503@ladisch.de>
+References: <20140715234123.11232.qmail@vps-1011917-539.manage.myhosting.com>
+ <53CC0FF2.8000702@canonical.com> <53CCCC9E.80402@ladisch.de>
+ <53CCCD6D.7030100@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="u+HAydxlPP+oPOdi"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1405710087-24327-1-git-send-email-kgene.kim@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Kukjin Kim <kgene.kim@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B9DA826513B
+ for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 14:48:04 +0200 (CEST)
+In-Reply-To: <53CCCD6D.7030100@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+David Henningsson wrote:
+> On 2014-07-21 10:17, Clemens Ladisch wrote:
+>> David Henningsson wrote:
+>>> Forwarding this in case anyone is interested in influencing this
+>>> standard somehow
+>>
+>> MMA membership is available only for commercial entities, and begins
+>> at $500/year.
+>
+> Yup. Not something for a private person, but maybe something for the
+> Linux Foundation?
 
---u+HAydxlPP+oPOdi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This would make sense only if there were some standard we'd want to
+influence.  (Buying a company_id/MAC address block from the IEEE would
+be a better use of LF's money.)
 
-On Sat, Jul 19, 2014 at 04:01:27AM +0900, Kukjin Kim wrote:
-> This removes MACH_SMDKC100 because of no more support for SMDKC100.
->=20
-> Reported-by: Paul Bolle <pebolle@tiscali.nl>
-> Signed-off-by: Kukjin Kim <kgene.kim@samsung.com>
-> Cc: Mark Brown <broonie@linaro.org>
 
-This doesn't apply against current -next, can you please check what's
-going on there?
-
---u+HAydxlPP+oPOdi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTzQXDAAoJELSic+t+oim9E+UP/0bzpX2HSpQrnk1KOElkdE37
-zJw60VruWX1aZV8yC5GBBb9oZILehY8ukXa35pNyI2gXVQxSGzaeByFNf+Y6CxLS
-iEjhZnnxySmHc/OayQ1dwoK/LK/aKo7Idie1h4ARNSpxukEEMEu+HK1fkjTujwOT
-UAc+XcRh9cPfDpGQKPCF66jDcJyeUtmdo3HEXgu0sulLCaTiwPfkDxno7svIrSpu
-up9MDmYufOjrlZ1BRwCudx/ByTRrqFZtT83WpydK6YvAsCwLdQBdG3NIIYYstPvy
-Uf/MB4lFqa6LMvfJPtN6Rv4ajatLCn5vIR24EcpWD34EVeq7isQ11mRaWykAq4DQ
-OC8ir4dCrelXd/OQf/jcEYdqFwqHbJyQ6O8xbl86GvwDC3JKsNxJzzDtcsoEpXib
-f81BC7H3V3D57q2Myua7hyWoRwFnvnPxnEjK70I/Tqhs0bMBaqaXgjYPpoA9oD5t
-Vtyx0XhsEFfRBf7wp48cctmoTbWlkxNTwVgogfW7GDrYQkHIW6TeAtpX5cvXNuva
-rAjDDV/o4AdVTpQ5Mahp/lFBp95qPhUzDWDdPe3lnX81bYCnSWIgcncDKzze7z3G
-GIotJGqW0tc5LD/xQR1dEhvpcdHyW8VcJf2YaYIXBsEgsV7uIxRKjbgYvjve4sam
-mpqI9jp1mq3/uWkELY+h
-=XGr+
------END PGP SIGNATURE-----
-
---u+HAydxlPP+oPOdi--
+Regards,
+Clemens
