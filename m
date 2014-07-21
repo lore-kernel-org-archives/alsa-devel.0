@@ -1,46 +1,40 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Fwd: USB MIDI Specification Update Proposal
-Date: Mon, 21 Jul 2014 14:48:03 +0200
-Message-ID: <53CD0C03.4080503@ladisch.de>
-References: <20140715234123.11232.qmail@vps-1011917-539.manage.myhosting.com>
- <53CC0FF2.8000702@canonical.com> <53CCCC9E.80402@ladisch.de>
- <53CCCD6D.7030100@canonical.com>
+From: "Murphy, Dan" <dmurphy@ti.com>
+Subject: Re: [PATCH 1/2] ASoC: tas2552: Fix PM sequencing
+Date: Mon, 21 Jul 2014 13:23:17 +0000
+Message-ID: <00FC9A978A94B7418C33AFAE8A35ED49D88593@DFLE09.ent.ti.com>
+References: <1405704668-8038-1-git-send-email-dmurphy@ti.com>
+ <20140721121931.GX17528@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B9DA826513B
- for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 14:48:04 +0200 (CEST)
-In-Reply-To: <53CCCD6D.7030100@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-sound-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote:
-> On 2014-07-21 10:17, Clemens Ladisch wrote:
->> David Henningsson wrote:
->>> Forwarding this in case anyone is interested in influencing this
->>> standard somehow
+Mark
+
+On 07/21/2014 07:19 AM, Mark Brown wrote:
+> On Fri, Jul 18, 2014 at 12:31:07PM -0500, Dan Murphy wrote:
+>> In the pm suspend/resume it is better
+>> to disable the GPIO after the regmap_cache
+>> setting calls so that if the call is interrupted
+>> the new reg values will be cached and set on resume.
 >>
->> MMA membership is available only for commercial entities, and begins
->> at $500/year.
->
-> Yup. Not something for a private person, but maybe something for the
-> Linux Foundation?
+>> Also add pm_runtime_put in the remove call.
+> Applied, thanks, but please don't mix multiple changes into one commit
+> like this especially when there's no textual overlap.
 
-This would make sense only if there were some standard we'd want to
-influence.  (Buying a company_id/MAC address block from the IEEE would
-be a better use of LF's money.)
+I usually don't mix changes like this as I like to have a single change per
+commit.
 
+But I find each maintainer is a little different but now I know for next time.
 
-Regards,
-Clemens
+Thanks
+
+-- 
+------------------
+Dan Murphy
+
