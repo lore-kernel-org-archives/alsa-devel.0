@@ -1,40 +1,75 @@
-From: "Murphy, Dan" <dmurphy@ti.com>
-Subject: Re: [PATCH 1/2] ASoC: tas2552: Fix PM sequencing
-Date: Mon, 21 Jul 2014 13:23:17 +0000
-Message-ID: <00FC9A978A94B7418C33AFAE8A35ED49D88593@DFLE09.ent.ti.com>
-References: <1405704668-8038-1-git-send-email-dmurphy@ti.com>
- <20140721121931.GX17528@sirena.org.uk>
+From: Alexandre Courbot <gnurou@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 2/4] ASoC: s3c64xx/smartq: use dynamic registration
+Date: Mon, 21 Jul 2014 23:19:37 +0900
+Message-ID: <CAAVeFuJVPSxfWx-fw-duhO0KG=nG6AfgC1EGQcDw=ZtmjOZV-Q@mail.gmail.com>
+References: <CAAVeFuJEjMBX+7vsLk5zXV5Moy=WDmWidpVZjQ_=8VD45+QdHg@mail.gmail.com>
+ <20140716075107.GG7978@ulmo> <53C63CBA.20809@codethink.co.uk>
+ <CAAVeFuK55XzwaU+eOWhfUxJ7wEwGqxRCPDZKf+gVeMgeV8ys6g@mail.gmail.com>
+ <20140717074444.GB18640@ulmo> <CAAVeFuJQUA+92jGpgDkyQ+=Qu+okBHzS5aFi7gmdwh+qcFp3fg@mail.gmail.com>
+ <20140717101723.GR17528@sirena.org.uk> <20140717104121.GF17877@ulmo>
+ <20140717110540.GS17528@sirena.org.uk> <CAAVeFuKQuvTH=5U8chZeMNLjCkfo78+_r2Gx5WUfy+q3F4QZpQ@mail.gmail.com>
+ <20140721100412.GT17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-sound-owner@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <20140721100412.GT17528@sirena.org.uk>
+Sender: linux-gpio-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Thierry Reding <thierry.reding@gmail.com>, Rob Jones <rob.jones@codethink.co.uk>, Rojhalat Ibrahim <imr@rtschenk.de>, Lars-Peter Clausen <lars@metafoo.de>, Arnd Bergmann <arnd@arndb.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kukjin Kim <kgene.kim@samsung.com>, Tomasz Figa <t.figa@samsung.com>, Maurus Cuelenaere <mcuelenaere@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linus Walleij <linus.walleij@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark
+On Mon, Jul 21, 2014 at 7:04 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Jul 21, 2014 at 12:36:43PM +0900, Alexandre Courbot wrote:
+>> On Thu, Jul 17, 2014 at 8:05 PM, Mark Brown <broonie@kernel.org> wrote:
+>
+>> > For set and get, sure - but it's still useful to be able to do bulk
+>> > requests for GPIOs especially since that's the only bit of the interface
+>> > that requires error handling.
+>
+>> I foresee many problems if people start using gpiod_array_get() as a
+>> way to spare a few lines of error-checking code. First all the GPIOs
+>> would end into an array instead of members with meaningful names -
+>> unless they are moved later on, but doing so would add extra code and
+>> somewhat kill the purpose. It also becomes more difficult to maintain
+>> as you are dealing with array indexes to update all over the code.
+>
+> You just need a few defines for the names, it's not a big deal.
+>
+>> Finally, it will make it more difficult to use gpiod_array_*() the way
+>> it is intended to be used, as you would have to discriminate between
+>> GPIOs of the same function and the rest by yourself.
+>
+> Yes, you probably shouldn't mix and match here but that's fine.
+>
+>> Also, if such a convenience function is legitimate for GPIO, shouldn't
+>> it also apply to other sub-systems? E.g. regulator_array_get()?
+>
+> It's certainly a totally reasonable and expected way of using
+> regulator_bulk_get().
+>
+>> Maybe I am missing your point, but I still think some error-handling
+>> code really doesn't hurt here, and the few drivers that would actually
+>> benefit from a more automated GPIO request error handling can easily
+>> implement it themselves. Let's keep gpiod_array_*() single-purposed
+>> and to the point.
+>
+> I'm not sure I see the massive complication TBH - it's not so much about
+> complexity as it is about reducing the amount of boilerplate that people
+> need to get right.
 
-On 07/21/2014 07:19 AM, Mark Brown wrote:
-> On Fri, Jul 18, 2014 at 12:31:07PM -0500, Dan Murphy wrote:
->> In the pm suspend/resume it is better
->> to disable the GPIO after the regmap_cache
->> setting calls so that if the call is interrupted
->> the new reg values will be cached and set on resume.
->>
->> Also add pm_runtime_put in the remove call.
-> Applied, thanks, but please don't mix multiple changes into one commit
-> like this especially when there's no textual overlap.
+I guess our disagreement came from the fact that we want the same
+function to perform two different things. GPIOs are different from
+regulators in that the former are really requested using a (dev,
+function, index) vs. a (dev, function) tuple for regulators. I want a
+convenience function to easily request all the GPIOs that match (dev,
+function) so that functionally identical GPIOs can be manipulated as
+an "atomic" set using the rest of the gpiod_array API (which would
+make no sense for regulators which have no "index". You want an
+equivalent to regulator_bulk_get() so a driver can conveniently
+request all its GPIOs no matter the function they fullfil.
 
-I usually don't mix changes like this as I like to have a single change per
-commit.
-
-But I find each maintainer is a little different but now I know for next time.
-
-Thanks
-
--- 
-------------------
-Dan Murphy
-
+These should really be two different functions for two different
+use-cases - gpiod_array_get() that returns an array suitable for being
+manipulated using the rest of the gpiod_array API ; gpiod_bulk_get()
+that takes the equivalent of regulator_bulk_data for GPIOs and fills
+it the same way.
