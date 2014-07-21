@@ -1,66 +1,76 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 2/2] ALSA: pcm: Add tstamp_type and proto to
-	sw_params compat layer
-Date: Mon, 21 Jul 2014 13:51:37 +0200
-Message-ID: <1405943497-3482-2-git-send-email-tiwai@suse.de>
-References: <1405943497-3482-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: tas2552: Add DAPM calls for amp and PLL
+Date: Mon, 21 Jul 2014 12:53:53 +0100
+Message-ID: <20140721115353.GV17528@sirena.org.uk>
+References: <1405704668-8038-1-git-send-email-dmurphy@ti.com>
+ <1405704668-8038-2-git-send-email-dmurphy@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D5F5B265327
- for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 13:51:37 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 98466AD77
- for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 11:51:37 +0000 (UTC)
-In-Reply-To: <1405943497-3482-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="BO2dbX1J/fdLEy+S"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1405704668-8038-2-git-send-email-dmurphy@ti.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Dan Murphy <dmurphy@ti.com>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I forgot to add the new fields in sw_params to 32bit compat layer.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
-v1->v2: rearrange the order of proto and tstamp_type fields
+--BO2dbX1J/fdLEy+S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- sound/core/pcm_compat.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+On Fri, Jul 18, 2014 at 12:31:08PM -0500, Dan Murphy wrote:
 
-diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-index af49721ba0e3..102e8fd1d450 100644
---- a/sound/core/pcm_compat.c
-+++ b/sound/core/pcm_compat.c
-@@ -101,7 +101,9 @@ struct snd_pcm_sw_params32 {
- 	u32 silence_threshold;
- 	u32 silence_size;
- 	u32 boundary;
--	unsigned char reserved[64];
-+	u32 proto;
-+	u32 tstamp_type;
-+	unsigned char reserved[56];
- };
- 
- /* recalcuate the boundary within 32bit */
-@@ -133,7 +135,9 @@ static int snd_pcm_ioctl_sw_params_compat(struct snd_pcm_substream *substream,
- 	    get_user(params.start_threshold, &src->start_threshold) ||
- 	    get_user(params.stop_threshold, &src->stop_threshold) ||
- 	    get_user(params.silence_threshold, &src->silence_threshold) ||
--	    get_user(params.silence_size, &src->silence_size))
-+	    get_user(params.silence_size, &src->silence_size) ||
-+	    get_user(params.tstamp_type, &src->tstamp_type) ||
-+	    get_user(params.proto, &src->proto))
- 		return -EFAULT;
- 	/*
- 	 * Check silent_size parameter.  Since we have 64bit boundary,
--- 
-2.0.1
+> +static int tas2552_class_d_en(struct snd_soc_dapm_widget *w,
+> +			   struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		snd_soc_update_bits(w->codec, TAS2552_CFG_2,
+> +						 TAS2552_CLASSD_EN_MASK, TAS2552_CLASSD_EN_MASK);
+> +		break;
+> +	case SND_SOC_DAPM_POST_PMD:
+> +		snd_soc_update_bits(w->codec, TAS2552_CFG_2,
+> +						 TAS2552_CLASSD_EN_MASK, 0);
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
+> +{
+> +SND_SOC_DAPM_PRE("Class D Enable", tas2552_class_d_en),
+> +SND_SOC_DAPM_POST("Class D Disable", tas2552_class_d_en),
+> +SND_SOC_DAPM_POST("PLL Disable", tas2552_pll_disable),
+> +};
+
+This seems broken, having to use _PRE or _POST widgets for simple
+register writes (or almost anything really) should never be required and
+error prone - what is this actually trying to do?  I'd expect the class
+D to be a PGA or OUTPUT widget and the PLL to be a SUPPLY widget.
+
+--BO2dbX1J/fdLEy+S
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTzP9OAAoJELSic+t+oim9x2oP/3zZDeDa9epGi3MzHEvbv5Ar
+AZd7beM0xMWlGxoNxN0arkv/RyAYmgAEdLTGxAMnkfPVoF0xpJXaOU1scXgKhkMQ
+wnFXLFZMdPHTA5znGbnvd4SP+iQiAMKYYSqDvU3GDe9/tEmE7yq4RodKJtwj2qQ6
+UpWCv7RrqPrljw1O1LQmqwANc/WsAto/vXxu04VYTExv1fTRuCd65aacIX5ga6ub
+RQGy7WL/++Om+s0I/ZQJm6iSfJbW7XmKsGCgd+4bEH/Qwa2WPIstMgCiyuK19HhM
+OxX0K7T6Xu5fApK2OrRRpA89ncAOZ05GBOJ0fT4ftxMfYs+/tNMF3iWCl7EIsYMd
+NTvjMfVNoK4exQa3GvDvueh0ncakVp4G9wXgJ/HFRhtHB2oYuGJ6fGJ0e/EtCtqA
+xhD8azvcRZjtylOiZu4h1AQ7QBsfE34yK4D0hAhx6jHfgIJ8yW3WR7FznBU6gB6B
+42OkWx8gDpG46FisI3aFkr+shErHxUvk1eN7wNna56gN5Ygbt7qLCXa2GLKohxBt
+VppaaDFxJwNCf5mzNOrQ7oQURBfgtSj22g8bDuotkEHH6P1gztYijAqwxbgSQrRT
+7CuB7DalS0r7aMmh9tzG2d/DnG2BXHJSnyAk1E3j7bokvvdHHVH3JlH4+IOwb3MB
+ThhWYIc8iVJsS463DHa4
+=MSE1
+-----END PGP SIGNATURE-----
+
+--BO2dbX1J/fdLEy+S--
