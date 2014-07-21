@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/6] bebob: Correction for return value of .put
-	callback functions
-Date: Mon, 21 Jul 2014 11:10:04 +0900
-Message-ID: <1405908605-8105-6-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/6] bebob: Use different labels for digital
+	input/output interfaces
+Date: Mon, 21 Jul 2014 11:10:03 +0900
+Message-ID: <1405908605-8105-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1405831835-26499-1-git-send-email-weiyj_lk@163.com>
  <1405908605-8105-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
@@ -10,7 +10,7 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id F10742650FF
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B9CA2650FA
  for <alsa-devel@alsa-project.org>; Mon, 21 Jul 2014 04:10:18 +0200 (CEST)
 In-Reply-To: <1405908605-8105-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,65 +26,97 @@ To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, darrena092@gmail.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit is for correction of my misunderstanding for return value of
-.put callback of ALSA Control interface.
+This commit use different labels for control elements of digital input/output
+interfaces to correct my misunderstanding about M-Audio Firewire 1814 and
+ProjectMix I/O.
 
-According to 'Writing ALSA Driver' (*1), return value of the callback has
-three patterns; 1: changed, 0: not changed, an negative value: fatal error.
+According to user manuals for these two models, they have two modes for
+digital input; one is S/PDIF in both of optical and coaxial interfaces,
+another is ADAT in optical interface only.
 
-But I misunderstood that it's boolean; zero or nonzero.
-
-*1: Writing an ALSA Driver (2005, Takashi Iwai)
-http://www.alsa-project.org/main/index.php/ALSA_Driver_Documentation
+But in current implementation, a control element for digital input uses
+reduced labels which a control element for digital output uses because of my
+misunderstanding that optical interface is not available for digital input
+with S/PDIF mode.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob_maudio.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ sound/firewire/bebob/bebob_maudio.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-index f2277ce..acfe94a 100644
+index 008ff2c..f2277ce 100644
 --- a/sound/firewire/bebob/bebob_maudio.c
 +++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -396,8 +396,10 @@ static int special_clk_ctl_set(struct snd_kcontrol *kctl,
- 	if (err < 0)
- 		dev_err(&bebob->unit->device,
- 			"fail to change clock source: %d\n", err);
-+	else
-+		err = 1;
+@@ -440,8 +440,8 @@ static struct snd_kcontrol_new special_sync_ctl = {
+ 	.get	= special_sync_ctl_get,
+ };
  
--	return err >= 0;
-+	return err;
+-/* Digital interface control for special firmware */
+-static char *const special_dig_iface_labels[] = {
++/* Digital input interface control for special firmware */
++static char *const special_dig_in_iface_labels[] = {
+ 	"S/PDIF Optical", "S/PDIF Coaxial", "ADAT Optical"
+ };
+ static int special_dig_in_iface_ctl_info(struct snd_kcontrol *kctl,
+@@ -449,13 +449,13 @@ static int special_dig_in_iface_ctl_info(struct snd_kcontrol *kctl,
+ {
+ 	einf->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	einf->count = 1;
+-	einf->value.enumerated.items = ARRAY_SIZE(special_dig_iface_labels);
++	einf->value.enumerated.items = ARRAY_SIZE(special_dig_in_iface_labels);
+ 
+ 	if (einf->value.enumerated.item >= einf->value.enumerated.items)
+ 		einf->value.enumerated.item = einf->value.enumerated.items - 1;
+ 
+ 	strcpy(einf->value.enumerated.name,
+-	       special_dig_iface_labels[einf->value.enumerated.item]);
++	       special_dig_in_iface_labels[einf->value.enumerated.item]);
+ 
+ 	return 0;
  }
- static struct snd_kcontrol_new special_clk_ctl = {
- 	.name	= "Clock Source",
-@@ -519,13 +521,17 @@ static int special_dig_in_iface_ctl_set(struct snd_kcontrol *kctl,
- 	}
+@@ -498,6 +498,8 @@ static int special_dig_in_iface_ctl_set(struct snd_kcontrol *kctl,
+ 	int err;
  
- 	/* For ADAT, optical interface is only available. */
--	if (params->dig_in_fmt > 0)
-+	if (params->dig_in_fmt > 0) {
-+		err = 1;
- 		goto end;
-+	}
+ 	id = uval->value.enumerated.item[0];
++	if (id >= ARRAY_SIZE(special_dig_in_iface_labels))
++		return 0;
  
- 	err = avc_audio_set_selector(bebob->unit, 0x00, 0x04, dig_in_iface);
- 	if (err < 0)
- 		dev_err(&bebob->unit->device,
- 			"fail to set digital input interface: %d\n", err);
-+	else
-+		err = 1;
- end:
- 	mutex_unlock(&bebob->mutex);
- 	return err;
-@@ -592,6 +598,8 @@ static int special_dig_out_iface_ctl_set(struct snd_kcontrol *kctl,
- 	if (err < 0)
- 		dev_err(&bebob->unit->device,
- 			"fail to change digital output interface: %d\n", err);
-+	else
-+		err = 1;
+ 	/* decode user value */
+ 	dig_in_fmt = (id >> 1) & 0x01;
+@@ -537,18 +539,22 @@ static struct snd_kcontrol_new special_dig_in_iface_ctl = {
+ 	.put	= special_dig_in_iface_ctl_set
+ };
  
- 	return err;
++/* Digital output interface control for special firmware */
++static char *const special_dig_out_iface_labels[] = {
++	"S/PDIF Optical and Coaxial", "ADAT Optical"
++};
+ static int special_dig_out_iface_ctl_info(struct snd_kcontrol *kctl,
+ 					  struct snd_ctl_elem_info *einf)
+ {
+ 	einf->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	einf->count = 1;
+-	einf->value.enumerated.items = ARRAY_SIZE(special_dig_iface_labels) - 1;
++	einf->value.enumerated.items = ARRAY_SIZE(special_dig_out_iface_labels);
+ 
+ 	if (einf->value.enumerated.item >= einf->value.enumerated.items)
+ 		einf->value.enumerated.item = einf->value.enumerated.items - 1;
+ 
+ 	strcpy(einf->value.enumerated.name,
+-	       special_dig_iface_labels[einf->value.enumerated.item + 1]);
++	       special_dig_out_iface_labels[einf->value.enumerated.item]);
+ 
+ 	return 0;
  }
+@@ -571,6 +577,8 @@ static int special_dig_out_iface_ctl_set(struct snd_kcontrol *kctl,
+ 	int err;
+ 
+ 	id = uval->value.enumerated.item[0];
++	if (id >= ARRAY_SIZE(special_dig_out_iface_labels))
++		return 0;
+ 
+ 	mutex_lock(&bebob->mutex);
+ 
 -- 
 1.9.1
