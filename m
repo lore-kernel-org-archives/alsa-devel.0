@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] driver:gpio remove all usage of
- gpio_remove retval in driver
-Date: Tue, 22 Jul 2014 16:11:25 +0100
-Message-ID: <20140722151125.GS17528@sirena.org.uk>
-References: <CACRpkda6mzVdaN0cvOxpbsxWyCv2nGyDXOjZg_5aT8u7SSQeUw@mail.gmail.com>
- <1405197014-25225-1-git-send-email-berthe.ab@gmail.com>
- <1405197014-25225-4-git-send-email-berthe.ab@gmail.com>
- <CACRpkdasp9bLULT7NJM9nYX58rRSsQKXFddOLz9Ah6kp-j-3=Q@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/3] bebob: Fix a missing to unlock mutex
+ in error handling case
+Date: Wed, 23 Jul 2014 00:23:05 +0900
+Message-ID: <53CE81D9.4090305@sakamocchi.jp>
+References: <1405831835-26499-1-git-send-email-weiyj_lk@163.com>
+ <1406038263-18558-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hmwc1lb9x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6413639885557492536=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C185265538
- for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 17:12:14 +0200 (CEST)
-In-Reply-To: <CACRpkdasp9bLULT7NJM9nYX58rRSsQKXFddOLz9Ah6kp-j-3=Q@mail.gmail.com>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9258C265545
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 17:23:12 +0200 (CEST)
+In-Reply-To: <s5hmwc1lb9x.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-mips@linux-mips.org, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>, Matthew Garrett <matthew.garrett@nebula.com>, Samuel Ortiz <sameo@linux.intel.com>, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, abdoulaye berthe <berthe.ab@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, Bryan Wu <cooloney@gmail.com>, "arm@kernel.org" <arm@kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Michael Buesch <m@bues.ch>, Greg KH <gregkh>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+(Jul 22 2014 23:26), Takashi Iwai wrote:
+> BTW, at the next time, put "v2" or such in the subject line so that
+> people can distinguish the new patch series from the previous ones.
+> You can use --subject-prefix option for git-format-patch or else.
 
---===============6413639885557492536==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="11IAkegDWp8TRrA/"
-Content-Disposition: inline
+In this time I newly revised these patches, thus there was a lack of
+patches in previous series. I thought it better to post them as a new
+series.
 
+But I should have added v2 for the series as you indicate.
 
---11IAkegDWp8TRrA/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Preferably, write the changes since the previous revision, too
+> (usually below the --- line, so that it's not merged into the git
+>  changelog; some people like to have them in the final commit,
+>  though.)
 
-On Tue, Jul 22, 2014 at 05:08:13PM +0200, Linus Walleij wrote:
+OK.
 
-> Heads up. Requesting ACKs for this patch or I'm atleast warning that it will be
-> applied. We're getting rid of the return value from gpiochip_remove().
+> Last but not least, don't forget to put a proper subject prefix.
+> For ALSA codes, we put "ALSA:" prefix in the subject.  Study git
+> changelogs.
 
-Can someone send the patch please?  Splitting it up per-subsystem would
-probably be easier...
-
---11IAkegDWp8TRrA/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJTzn8aAAoJELSic+t+oim9qWYP/j2SOMQLkG2CavmmSFDKr57D
-I8wsXXkl2SzMR1t1T8XQHH4/i1kTxROPWDX81ujrkwpEMcbMvQhM6Mewj+1BHgij
-KGTeP2cMT97Oo0b6U2JRsumyLep0kVo/nheFLTUkD78Vp8abIyi1FuRdppKEjYts
-Fu+jJIWQJEw/HKcmdZsTaeQawLXmJ4qOUVjB5+X/sspavG0Nji8JtSXN2MHyCr9j
-t52GpALDSl4wctfIYg76S/TQxRCd150MKupuUhheMYsVtGfWjqay5fQWd9GACjhC
-/74HdiFf1O6nSU2dwbGVntfmU+6CBmkD8XSI0PnyV/4GQR8zofnqzcsHrUXihkzd
-TcgtL0CMizQ5kJPONMoZAFIoZwNHBTxmuFJgoUV2ChU/EyXTVsX9xLs6pgUtnd1E
-Y7B23ErhwwTuXN0qG3Od6OIg2QhAMGKHzBA7HJgtSFVkvtXq1DdCZyYVfttUo+Xi
-KcCZEnXPu/4Ore7cYhQmxqmoeC4Qm86iklGxLgW6jq7u5bRs9Y879NX3c6IZoJuO
-6xIzE8ZtOdlMqpkBELCEZw8/1A9batmaMqEBRbtn4hTpyGouH4QUyypPy41kHC1H
-uYEOJMmAwo51acA4PNGyNPxGclD+fHd+Y4GAfbjX+OoCFcyJIQ3e46F3BQlNs2bS
-da/t3Z8Wx+xtFh0M1tdp
-=XaZs
------END PGP SIGNATURE-----
-
---11IAkegDWp8TRrA/--
-
---===============6413639885557492536==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Next time, I remember to add the prefix. In my repository, I use the
+prefix to distinguish my local patches from upstream patches. But I
+should change this workflow.
 
 
---===============6413639885557492536==--
+Regards
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
