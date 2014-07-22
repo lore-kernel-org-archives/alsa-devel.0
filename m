@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: wm5110: Set symmetric samplebits
-	on AIFs
-Date: Tue, 22 Jul 2014 23:21:45 +0100
-Message-ID: <20140722222145.GX17528@sirena.org.uk>
-References: <20140722105022.GB19663@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: arizona: Disable AIF TX/RX before
+	configuring it
+Date: Tue, 22 Jul 2014 23:22:32 +0100
+Message-ID: <20140722222232.GY17528@sirena.org.uk>
+References: <20140716121029.GA22222@opensource.wolfsonmicro.com>
+ <20140722104206.GA19663@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0145336777783406133=="
+Content-Type: multipart/mixed; boundary="===============5854638652442181381=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E569265328
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 00:22:03 +0200 (CEST)
-In-Reply-To: <20140722105022.GB19663@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E18D26555A
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 00:22:49 +0200 (CEST)
+In-Reply-To: <20140722104206.GA19663@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Li.Xiubo@freescale.com
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0145336777783406133==
+--===============5854638652442181381==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cLlE6j+44ygFdGhU"
+	protocol="application/pgp-signature"; boundary="j5abB2DrWbqmv6QP"
 Content-Disposition: inline
 
 
---cLlE6j+44ygFdGhU
+--j5abB2DrWbqmv6QP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 22, 2014 at 11:50:22AM +0100, Richard Fitzgerald wrote:
-> Different playback and capture bits-per-sample
-> are not supported on the AIFs
+On Tue, Jul 22, 2014 at 11:42:06AM +0100, Richard Fitzgerald wrote:
+> Changes to the AIF configuration registers only take
+> effect when the AIF is disabled. If the configuration
+> is being changed from the previous setup, temporarily
+> disable the AIF.
 
-Applied all, thanks.
+Applied, thanks.
 
---cLlE6j+44ygFdGhU
+--j5abB2DrWbqmv6QP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTzuP2AAoJELSic+t+oim9KykP/ibYuP5YiijWULlM1ij5RTzv
-XgdH8jkfYXdAOp43rxwiQYYYMYzAl2ve2ZVFBLUEJmSv/qpkVs/jCuezsJg1RXB4
-Qsklwg3CI3x+zVzH02S3TYCVtuT4tYFxyw2iboHXLDqpS/bhOn7IwOqR8sRfn+Cr
-6uFRNg9148Ie6BWPeCipJMHwhuQivDIM+JPW3QAYyR+YKfP/v/UJ+Nr2mx1wo/uu
-g47iVcEsmldKaLhbRLbFKNxXnTKmQo/1v8o0G8YOQBAybSBZSk7FD0+K8+6nnKVX
-6b9nKlFe07lE6wxdqYyzV8aEKYNetOK1N7D2n8DpE2sa0QX0xDjK+vq6FN8TN1V6
-+A+SmFcnjlLXdlJ9WsOsk5WVx1g3bofJXd6J8mTDl2vkgEoOrbWSE76911CSHNEl
-LoM59deRtuQzJ9k2LYJ9cgw1orPvnBphI6lHTI35KGUJ/a8rrHyJZvdcYpENXKYE
-mkDA3krTHkdaqE6AwNTIPB8dwINTlR+F6Z4emMLtehVEl3eJ42/cmXDXCxLG90V0
-JZnlHYCKEW4oYyXhkR9YAhs6CxdW+nyb4hkFmYCWFXPNlpfQhwosrM9vqeSEg7JU
-IqPhiVlK3J0LTtVEelsur10E9FNPDt0BcQOWDbeYDfwF+Ijk1rDAgSNlaGwLtQcs
-4W8GSQnmgtVrDhgS+hTz
-=MXRW
+iQIcBAEBAgAGBQJTzuQlAAoJELSic+t+oim9BboQAIveeqw4GRQCvQFnyR9MBvf6
+htIWqvpbBWU48Z3fLLX5afA9TdSmwvD0wBToyTLS19t+tBk4YpGEUHcS6tuaU/8D
+hR8w0iir/CTsm21LRCvkJGYNHiQ6TX5RgKSqXQBcz9tfYSbsuwsUwlOGU2KGEfqK
+GSYltt4TIcYxTnVDcFAPzBK1xssZmgMi9QYgIxqRYXnV6HnAOPFv6M2HNAM9Gm5S
+LJyN4dd94/LHpiwOMiabNr87daIINIiTa2xpSc3V9742xpwLh27fNnKR+ZQ6IhE7
+qEAbvpvtGxpuuIFsZbdR/qeeRg46Y3mgyRupbV3yoSTqAv6uJc0BzkdPU8miKvfx
+ropAw10Dt3C3fiNnwgzbbfQjL2zbZt+U+mDzzUCnI3gXazHRxfQ+NRfFHw8lWDMm
+rHSTUaai229+XTkZfSoiEAwcB18/5h+BqyE3Sz+noWN1NvH+AiE37f76eaUb9qXi
+431Vwn0o+pNsXU76PD4V5auQuu0ulfnamYqZaMG1ZqCfcRes7p6s5JLwFLXciR76
+AaNvS9sAlaYR8W/fs44ROhiZiydExHZ4vTGyCkqr16gfsD2H86SS0ieFDWhfnyXJ
+FGKWDq4hJmn2NLRXwIQJI8OWTY8xR727ZKbU6PTKw5TEwxMEP743o6356x8eBotm
+busjhyV0dr7s+EZcVhP1
+=USZ6
 -----END PGP SIGNATURE-----
 
---cLlE6j+44ygFdGhU--
+--j5abB2DrWbqmv6QP--
 
---===============0145336777783406133==
+--===============5854638652442181381==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0145336777783406133==--
+--===============5854638652442181381==--
