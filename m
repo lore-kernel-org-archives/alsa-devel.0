@@ -1,19 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/3] bebob: Fix a missing to unlock mutex
- in error handling case
-Date: Wed, 23 Jul 2014 00:23:05 +0900
-Message-ID: <53CE81D9.4090305@sakamocchi.jp>
-References: <1405831835-26499-1-git-send-email-weiyj_lk@163.com>
- <1406038263-18558-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hmwc1lb9x.wl%tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix loopback noise on Dell XPS 15
+Date: Tue, 22 Jul 2014 17:36:18 +0200
+Message-ID: <1406043378-7087-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 9258C265545
- for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 17:23:12 +0200 (CEST)
-In-Reply-To: <s5hmwc1lb9x.wl%tiwai@suse.de>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71441265549
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 17:36:19 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 43D96AC05
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 15:36:19 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,38 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-(Jul 22 2014 23:26), Takashi Iwai wrote:
-> BTW, at the next time, put "v2" or such in the subject line so that
-> people can distinguish the new patch series from the previous ones.
-> You can use --subject-prefix option for git-format-patch or else.
+Dell XPS 15 (1028:05fe) gives the bad feedback noise from analog
+loopback line even if the channels are muted.  The similar problem has
+been seen on XPS 13, and it was fixed by simply disabling loopback.
+The same fixup was confirmed to be applicable and fix the problem on
+XPS 15, too.
 
-In this time I newly revised these patches, thus there was a lack of
-patches in previous series. I thought it better to post them as a new
-series.
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=80821
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-But I should have added v2 for the series as you indicate.
-
-> Preferably, write the changes since the previous revision, too
-> (usually below the --- line, so that it's not merged into the git
->  changelog; some people like to have them in the final commit,
->  though.)
-
-OK.
-
-> Last but not least, don't forget to put a proper subject prefix.
-> For ALSA codes, we put "ALSA:" prefix in the subject.  Study git
-> changelogs.
-
-Next time, I remember to add the prefix. In my repository, I use the
-prefix to distinguish my local patches from upstream patches. But I
-should change this workflow.
-
-
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 86a8186b7661..2f755adfbe7c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6004,6 +6004,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
+ 	SND_PCI_QUIRK(0x1028, 0x05d8, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x05db, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x05fe, "Dell XPS 15", ALC668_FIXUP_DELL_XPS13),
+ 	SND_PCI_QUIRK(0x1028, 0x060a, "Dell XPS 13", ALC668_FIXUP_DELL_XPS13),
+ 	SND_PCI_QUIRK(0x1028, 0x0625, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0626, "Dell", ALC668_FIXUP_DELL_MIC_NO_PRESENCE),
+-- 
+2.0.1
