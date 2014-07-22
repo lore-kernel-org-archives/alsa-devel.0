@@ -1,26 +1,16 @@
-From: Mauro Carvalho Chehab <m.chehab@samsung.com>
-Subject: Re: [PATCH 3/3] driver:gpio remove all usage of
- gpio_remove retval in driver
-Date: Tue, 22 Jul 2014 16:17:28 -0300
-Message-ID: <20140722161728.712d961e.m.chehab@samsung.com>
-References: <CACRpkda6mzVdaN0cvOxpbsxWyCv2nGyDXOjZg_5aT8u7SSQeUw@mail.gmail.com>
- <1405197014-25225-1-git-send-email-berthe.ab@gmail.com>
- <1405197014-25225-4-git-send-email-berthe.ab@gmail.com>
- <CACRpkdasp9bLULT7NJM9nYX58rRSsQKXFddOLz9Ah6kp-j-3=Q@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/4] More componentization preparation
+Date: Tue, 22 Jul 2014 23:14:53 +0100
+Message-ID: <20140722221453.GU17528@sirena.org.uk>
+References: <1405627268-23939-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8246270712927155941=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from usmailout2.samsung.com (mailout2.w2.samsung.com
- [211.189.100.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 32F20265558
- for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 21:17:41 +0200 (CEST)
-Received: from uscpsbgm2.samsung.com
- (u115.gpu85.samsung.co.kr [203.254.195.115]) by mailout2.w2.samsung.com
- (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
- 17 2011)) with ESMTP id <0N9400FS9O9FSP80@mailout2.w2.samsung.com> for
- alsa-devel@alsa-project.org; Tue, 22 Jul 2014 15:17:40 -0400 (EDT)
-In-reply-to: <CACRpkdasp9bLULT7NJM9nYX58rRSsQKXFddOLz9Ah6kp-j-3=Q@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6077265176
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 00:15:19 +0200 (CEST)
+In-Reply-To: <1405627268-23939-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,45 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-mips@linux-mips.org, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>, Matthew Garrett <matthew.garrett@nebula.com>, Samuel Ortiz <sameo@linux.intel.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, abdoulaye berthe <berthe.ab@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, Bryan Wu <cooloney@gmail.com>, "arm@kernel.org" <arm@kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Michael
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
 List-Id: alsa-devel@alsa-project.org
 
-Em Tue, 22 Jul 2014 17:08:13 +0200
-Linus Walleij <linus.walleij@linaro.org> escreveu:
 
-> On Sat, Jul 12, 2014 at 10:30 PM, abdoulaye berthe <berthe.ab@gmail.com> wrote:
-> 
-> Heads up. Requesting ACKs for this patch or I'm atleast warning that it will be
-> applied. We're getting rid of the return value from gpiochip_remove().
-> 
-> > this remove all reference to gpio_remove retval in all driver
-> > except pinctrl and gpio. the same thing is done for gpio and
-> > pinctrl in two different patches.
-> >
-> > Signed-off-by: abdoulaye berthe <berthe.ab@gmail.com>
-> (...)
-> 
-> I think this patch probably needs to be broken down per-subsystem as it
-> hits all over the map. But let's start requesting ACKs for the
-> individual pieces.
-> Actually I think it will be OK to merge because there is likely not much churn
-> around these code sites.
-> 
-> I'm a bit torn between just wanting a big patch for this hitting drivers/gpio
-> and smaller patches hitting one subsystem at a time. We should be able
-> to hammer this in one switch strike.
-> 
-...
-> >  drivers/media/dvb-frontends/cxd2820r_core.c    | 10 +++-------
-> 
-> Mauro can you ACK this?
+--===============8246270712927155941==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ltihE5wS63FR6l1A"
+Content-Disposition: inline
 
-Acked-by: Mauro Carvalho Chehab <m.chehab@samsung.com>
-> 
-> (Hm that looks weird. Mental note to look closer at this.)
 
-What's weird there?
+--ltihE5wS63FR6l1A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Regards,
-Mauro
+On Thu, Jul 17, 2014 at 10:01:04PM +0200, Lars-Peter Clausen wrote:
+> Now that the multi-CODEC patches have been merged we can continue with the
+> componentization. Since it is already rather late in the development cycle again
+> this series only has a small set of cleanup and preparation patches so we have
+> that out of the way. The first patch removes the unused snd_soc_card
+> platform_list, the other three patches move the card field from the
+> snd_soc_platform and snd_soc_codec struct and consolidates the registration of
+> controls on top of that.
+
+Applied all, thanks.
+
+--ltihE5wS63FR6l1A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJTzuJUAAoJELSic+t+oim9q+MP/jqa+b6TRuNupwp+dnoIE8vl
+oOtD3Z5T1TkwTRXjYPVu6BKDjA2aas4H/7z6wn4qu+WTD11BLKr1VyRZUSUurw49
+Izt5DpybW0vanSEvyGbrOfiJBAJIZFT4uMNXLT1hXJs1ewPTCqN5wdE8HYUv8TNh
+avmf7VNeGlcAkgiz2cqKRVU5sem2ikF6dI2/l7fE1TnM/SqTXawBQ2ciTGVDmPEt
+7Y+LdeVt2h2FzKm8MGSM0lOLPyR6YXMy6OqdlPPvPRfGHvjlV/uoT071r2ptFfqN
+Psi7kbF6H4XoQ+gxXgVhrpuCI6zFO9fA1h+Pbvyq6KP8VM0pCbx5dH6oGvc0qEeH
+bQIFvZBrvUsslFbOYY8P5uRMCAZ6xhaKE7tj32j+yrdWoNpNMHxBGZALh+1RYH06
+TUCxnhzcax65gs6U3hVA3zOBZ9R8ATlMnwpL2a145kLi0PXtDJ5TKkRo1dNJs9lh
+URuq1s/WUVCaKCThPlnh+QncQ4zdEpyi1FDZ/ay3Mi0H04QaDjpc+ESI3gXfU6on
+6Q8as4f5xuNt/j9xgjPw2zYX9AUuxvESnrJtP9+uSo9DlcwtMVohAfYXzUZVdt2Z
+0lRP0uDpq/eh4QpBz1U/meBZ+uKLxl2520wIObirroRdTKiu712iBCCaDAc3zgTo
+4+TTccMNTw9sdY+BAo35
+=6K9C
+-----END PGP SIGNATURE-----
+
+--ltihE5wS63FR6l1A--
+
+--===============8246270712927155941==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8246270712927155941==--
