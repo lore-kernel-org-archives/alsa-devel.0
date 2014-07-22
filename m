@@ -1,18 +1,16 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/2] ALSA: hda - Make vendor quirks lowest prio
-	for ALC2xx
-Date: Tue, 22 Jul 2014 14:09:35 +0200
-Message-ID: <1406030975-10499-2-git-send-email-david.henningsson@canonical.com>
-References: <1406030975-10499-1-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 1/2] ALSA: hda - Refactor quirk picking and
+	change quirk priority
+Date: Tue, 22 Jul 2014 14:09:34 +0200
+Message-ID: <1406030975-10499-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B6FD2656BE
- for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 14:09:38 +0200 (CEST)
-In-Reply-To: <1406030975-10499-1-git-send-email-david.henningsson@canonical.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 042912656BB
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 14:09:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,73 +24,149 @@ To: tiwai@suse.de, alsa-devel@alsa-project.org
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add a new quirk table to make sure that pin quirks have a higher
-priority than quirks that apply to an entire vendor.
+Previously, calling one quirk function first and another later
+would make the latter one take priority, this is now changed
+to make the former take priority.
+
+By adding two special values for fixup_id we can also get rid of the
+fixup_forced flag.
 
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/pci/hda/patch_realtek.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ sound/pci/hda/hda_auto_parser.c | 15 ++++++++-------
+ sound/pci/hda/hda_codec.c       |  1 +
+ sound/pci/hda/hda_codec.h       |  1 -
+ sound/pci/hda/hda_local.h       |  2 ++
+ sound/pci/hda/patch_cirrus.c    |  4 +++-
+ sound/pci/hda/patch_sigmatel.c  |  4 +++-
+ 6 files changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 124272b..86a8186 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4809,7 +4809,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x047c, "Acer AC700", ALC269_FIXUP_ACER_AC700),
- 	SND_PCI_QUIRK(0x1025, 0x0740, "Acer AO725", ALC271_FIXUP_HP_GATE_MIC_JACK),
- 	SND_PCI_QUIRK(0x1025, 0x0742, "Acer AO756", ALC271_FIXUP_HP_GATE_MIC_JACK),
--	SND_PCI_QUIRK_VENDOR(0x1025, "Acer Aspire", ALC271_FIXUP_DMIC),
- 	SND_PCI_QUIRK(0x1025, 0x0775, "Acer Aspire E1-572", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
- 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
- 	SND_PCI_QUIRK(0x1028, 0x05bd, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
-@@ -4971,7 +4970,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x2335, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x2336, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x2337, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
--	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
- 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x1043, 0x115d, "Asus 1015E", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-@@ -4992,7 +4990,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x104d, 0x907b, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
- 	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
- 	SND_PCI_QUIRK(0x104d, 0x9099, "Sony VAIO S13", ALC275_FIXUP_SONY_DISABLE_AAMIX),
--	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
- 	SND_PCI_QUIRK(0x10cf, 0x1475, "Lifebook", ALC269_FIXUP_LIFEBOOK),
- 	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_EXTMIC),
- 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_BXBT2807_MIC),
-@@ -5020,7 +5017,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
--	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index a979019..51dea49 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -854,7 +854,7 @@ void snd_hda_pick_pin_fixup(struct hda_codec *codec,
+ {
+ 	const struct snd_hda_pin_quirk *pq;
  
- #if 0
-@@ -5074,6 +5070,14 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	{}
- };
+-	if (codec->fixup_forced)
++	if (codec->fixup_id != HDA_FIXUP_ID_NOT_SET)
+ 		return;
  
-+static const struct snd_pci_quirk alc269_fixup_vendor_tbl[] = {
-+	SND_PCI_QUIRK_VENDOR(0x1025, "Acer Aspire", ALC271_FIXUP_DMIC),
-+	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),
-+	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
-+	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
-+	{}
-+};
+ 	for (pq = pin_quirk; pq->subvendor; pq++) {
+@@ -880,14 +880,17 @@ void snd_hda_pick_fixup(struct hda_codec *codec,
+ 			const struct hda_fixup *fixlist)
+ {
+ 	const struct snd_pci_quirk *q;
+-	int id = -1;
++	int id = HDA_FIXUP_ID_NOT_SET;
+ 	const char *name = NULL;
+ 
++	if (codec->fixup_id != HDA_FIXUP_ID_NOT_SET)
++		return;
 +
- static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC269_FIXUP_AMIC, .name = "laptop-amic"},
- 	{.id = ALC269_FIXUP_DMIC, .name = "laptop-dmic"},
-@@ -5302,6 +5306,8 @@ static int patch_alc269(struct hda_codec *codec)
- 	snd_hda_pick_fixup(codec, alc269_fixup_models,
- 		       alc269_fixup_tbl, alc269_fixups);
- 	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups);
-+	snd_hda_pick_fixup(codec, NULL,	alc269_fixup_vendor_tbl,
-+			   alc269_fixups);
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+ 	/* when model=nofixup is given, don't pick up any fixups */
+ 	if (codec->modelname && !strcmp(codec->modelname, "nofixup")) {
+ 		codec->fixup_list = NULL;
+-		codec->fixup_id = -1;
+-		codec->fixup_forced = 1;
++		codec->fixup_name = NULL;
++		codec->fixup_id = HDA_FIXUP_ID_NO_FIXUP;
+ 		return;
+ 	}
  
- 	alc_auto_parse_customize_define(codec);
+@@ -897,13 +900,12 @@ void snd_hda_pick_fixup(struct hda_codec *codec,
+ 				codec->fixup_id = models->id;
+ 				codec->fixup_name = models->name;
+ 				codec->fixup_list = fixlist;
+-				codec->fixup_forced = 1;
+ 				return;
+ 			}
+ 			models++;
+ 		}
+ 	}
+-	if (id < 0 && quirk) {
++	if (quirk) {
+ 		q = snd_pci_quirk_lookup(codec->bus->pci, quirk);
+ 		if (q) {
+ 			id = q->value;
+@@ -927,7 +929,6 @@ void snd_hda_pick_fixup(struct hda_codec *codec,
+ 		}
+ 	}
+ 
+-	codec->fixup_forced = 0;
+ 	codec->fixup_id = id;
+ 	if (id >= 0) {
+ 		codec->fixup_list = fixlist;
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 47a6177..ec6a7d0 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1476,6 +1476,7 @@ int snd_hda_codec_new(struct hda_bus *bus,
+ 
+ 	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
+ 	codec->depop_delay = -1;
++	codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
+ 
+ #ifdef CONFIG_PM
+ 	spin_lock_init(&codec->power_lock);
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index f84a40e..bbc5a13 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -402,7 +402,6 @@ struct hda_codec {
+ 
+ 	/* fix-up list */
+ 	int fixup_id;
+-	unsigned int fixup_forced:1; /* fixup explicitly set by user */
+ 	const struct hda_fixup *fixup_list;
+ 	const char *fixup_name;
+ 
+diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+index aa374ad..364bb41 100644
+--- a/sound/pci/hda/hda_local.h
++++ b/sound/pci/hda/hda_local.h
+@@ -438,6 +438,8 @@ struct snd_hda_pin_quirk {
+ 
+ #endif
+ 
++#define HDA_FIXUP_ID_NOT_SET -1
++#define HDA_FIXUP_ID_NO_FIXUP -2
+ 
+ /* fixup types */
+ enum {
+diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
+index 387f0b5..3db724e 100644
+--- a/sound/pci/hda/patch_cirrus.c
++++ b/sound/pci/hda/patch_cirrus.c
+@@ -657,8 +657,10 @@ static void cs4208_fixup_mac(struct hda_codec *codec,
+ {
+ 	if (action != HDA_FIXUP_ACT_PRE_PROBE)
+ 		return;
++
++	codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
+ 	snd_hda_pick_fixup(codec, NULL, cs4208_mac_fixup_tbl, cs4208_fixups);
+-	if (codec->fixup_id < 0 || codec->fixup_id == CS4208_MAC_AUTO)
++	if (codec->fixup_id == HDA_FIXUP_ID_NOT_SET)
+ 		codec->fixup_id = CS4208_GPIO0; /* default fixup */
+ 	snd_hda_apply_fixup(codec, action);
+ }
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 946ae40..8dc6815 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -3449,9 +3449,11 @@ static void stac922x_fixup_intel_mac_auto(struct hda_codec *codec,
+ {
+ 	if (action != HDA_FIXUP_ACT_PRE_PROBE)
+ 		return;
++
++	codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
+ 	snd_hda_pick_fixup(codec, NULL, stac922x_intel_mac_fixup_tbl,
+ 			   stac922x_fixups);
+-	if (codec->fixup_id != STAC_INTEL_MAC_AUTO)
++	if (codec->fixup_id != HDA_FIXUP_ID_NOT_SET)
+ 		snd_hda_apply_fixup(codec, action);
+ }
+ 
 -- 
 1.9.1
