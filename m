@@ -1,67 +1,47 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH] ASoC: rsnd: add missing src/dst_addr_width
-	for DMAEngine
-Date: Tue, 22 Jul 2014 15:16:53 +0200
-Message-ID: <2950078.WJQuDn5Q4k@avalon>
-References: <87sim0ece5.wl%kuninori.morimoto.gx@gmail.com>
- <3713363.Y2xICgEKrb@avalon> <87lhrmi0jp.wl%kuninori.morimoto.gx@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
- [95.142.166.194])
- by alsa0.perex.cz (Postfix) with ESMTP id E18042654E9
- for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 15:16:44 +0200 (CEST)
-In-Reply-To: <87lhrmi0jp.wl%kuninori.morimoto.gx@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/3] bebob: Fix a missing to unlock mutex in error handling case
+Date: Tue, 22 Jul 2014 23:11:03 +0900
+Message-ID: <1406038263-18558-1-git-send-email-o-takashi@sakamocchi.jp>
+References: <1405831835-26499-1-git-send-email-weiyj_lk@163.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1405831835-26499-1-git-send-email-weiyj_lk@163.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, darrena092@gmail.com, weiyj_lk@163.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san,
+In error handling case, special_clk_ctl_put() returns without unlock_mutex(),
+therefore the mutex is still locked. This commit moves mutex_lock() after
+the error handling case.
 
-On Monday 21 July 2014 19:34:36 Kuninori Morimoto wrote:
-> Hi Laurent
-> 
-> > > > What tree is the patch based on ? It doesn't apply on Takashi's latest
-> > > > master branch. I need a bit of context to review it.
-> 
-> (snip)
-> 
-> > I've tried to understand the driver and couldn't even find out which DMA
-> > controller was used :-/ I suspect it's the audio peri-peri DMAC, but I
-> > haven't been able to confirm that from the source code. If the assumption
-> > is true the patch looks OK to me, but if you need a formal Acked-by then
-> > I'll need you to guide me through the driver I'm afraid.
-> 
-> Ahh I'm sorry about this confusion.
-> It uses audio peri-peri DMAC, and, your rcar-dmac (as audio DMAC)
-> The platform side is not upstreamed yet.
-> (Because it depends on rcar-dmac)
-> 
-> But, I posted RFC audio DMAC support patches which
-> was based on Ben's DMAC before.
-> 
->     http://www.spinics.net/lists/linux-sh/msg32949.html
-> 
-> I can re-post this patch if all DMAC was ready
+This commit is my solution for this post.
 
-No need to, that was enough. Thank you. I've acked the patch.
+[PATCH -next] ALSA: bebob: Fix missing unlock on error in special_clk_ctl_put()
+https://lkml.org/lkml/2014/7/20/12
 
-By the way, I'd like to test cyclic transfers with the rcar-dmac driver. Is 
-there an easy (or at least not too difficult) way to do so with your audio 
-driver ?
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/bebob/bebob_maudio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
+index 6af50eb..fc470c6 100644
+--- a/sound/firewire/bebob/bebob_maudio.c
++++ b/sound/firewire/bebob/bebob_maudio.c
+@@ -379,12 +379,12 @@ static int special_clk_ctl_put(struct snd_kcontrol *kctl,
+ 	struct special_params *params = bebob->maudio_special_quirk;
+ 	int err, id;
+ 
+-	mutex_lock(&bebob->mutex);
+-
+ 	id = uval->value.enumerated.item[0];
+ 	if (id >= ARRAY_SIZE(special_clk_labels))
+ 		return 0;
+ 
++	mutex_lock(&bebob->mutex);
++
+ 	err = avc_maudio_set_special_clk(bebob, id,
+ 					 params->dig_in_fmt,
+ 					 params->dig_out_fmt,
 -- 
-Regards,
-
-Laurent Pinchart
+1.9.1
