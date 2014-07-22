@@ -1,22 +1,18 @@
-From: "shengjiu.wang@freescale.com" <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V2] pcm: plugin_ops.h: Add
- S24_3LE/S20_3LE/S18_3LE support in gets_label
-Date: Tue, 22 Jul 2014 11:38:05 +0000
-Message-ID: <989d6263e2ee4868b0fad3aa4a646ef9@BY2PR03MB332.namprd03.prod.outlook.com>
-References: <1405996241-24764-1-git-send-email-shengjiu.wang@freescale.com>
- <s5h38duhrig.wl%tiwai@suse.de>
- <5433ce5bb4f24318a9ee2bddde352995@BY2PR03MB332.namprd03.prod.outlook.com>
- <s5hha29n1pa.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 2/2] ALSA: hda - Make vendor quirks lowest prio
+	for ALC2xx
+Date: Tue, 22 Jul 2014 14:09:35 +0200
+Message-ID: <1406030975-10499-2-git-send-email-david.henningsson@canonical.com>
+References: <1406030975-10499-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0238.outbound.protection.outlook.com [207.46.163.238])
- by alsa0.perex.cz (Postfix) with ESMTP id 2BA61265368
- for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 13:38:09 +0200 (CEST)
-In-Reply-To: <s5hha29n1pa.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B6FD2656BE
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 14:09:38 +0200 (CEST)
+In-Reply-To: <1406030975-10499-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,312 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Iwai
+Add a new quirk table to make sure that pin quirks have a higher
+priority than quirks that apply to an entire vendor.
 
-     Get32_labels has left shift the data to 32bit, but gets_labels don't shift bits. So the index for norm_labels need to be updated too.
-
-     I am not sure which change is better, fix the params->src_size to 4, or remove the norm table ( but there is norm_xx_att, norm_xx_noatt choices)? 
-
-     
-Best regards
-Wang shengjiu
-
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Tuesday, July 22, 2014 6:11 PM
-To: Wang Shengjiu-B02247
-Cc: perex@perex.cz; alsa-devel@alsa-project.org
-Subject: Re: [PATCH V2] pcm: plugin_ops.h: Add S24_3LE/S20_3LE/S18_3LE support in gets_label
-
-At Tue, 22 Jul 2014 07:59:03 +0000,
-shengjiu.wang@freescale.com wrote:
-> 
-> Hi Iwai
-> 
->    According to your comments, Should I define sx20 and sx18, because sx24 is for 24bit?
-
-Right, they need the corresponding ones.
-
-However, looking through the code again, it cannot work properly when the format isn't 32bit and float isn't used.  It reads the value with get label while it writes with put32 label.  The former reads the value as is, but the latter assumes that the source value is normalized to 32bit.
-
-So, I guess the best way would be to use always 64bit int for route multi-source case (unless float is available).  This fixes the bug and simplifies a lot.  An untested patch is below.  Could you check whether this works for you?
-
-
-thanks,
-
-Takashi
-
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] pcm: route: Use get32 for multi-source route calculation
+ sound/pci/hda/patch_realtek.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-The PCM route plugin can assign the destination value from average of multiple sources with attenuation.  This requires the read of each channel value, sums and writes the resultant value in the requested format.
-
-Currently, get_labels is used for reading source values while put32_labels is used for writing the dest value.  This is, however, a buggy implementation; get_labels gives the value as is only with endianness and signedness conversions, but put32_labels assumes that the value is normalized to 32bit int and it shifts down to the dest format.  In addition, the current code lacks get_labels entries for the 24bit formats, as Shengjiu Wang spotted out.
-
-For fixing these bugs, this patch replaces the read with get32_labels and use always 64bit int for sum.  This simplifies the code a lot and drops many lines.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- src/pcm/pcm_route.c  | 62 +++++++++-------------------------------
- src/pcm/plugin_ops.h | 81 ----------------------------------------------------
- 2 files changed, 14 insertions(+), 129 deletions(-)
-
-diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c index 72c198cb25d2..36a74ba661a9 100644
---- a/src/pcm/pcm_route.c
-+++ b/src/pcm/pcm_route.c
-@@ -60,7 +60,7 @@ typedef struct {
- typedef struct snd_pcm_route_ttable_dst snd_pcm_route_ttable_dst_t;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 124272b..86a8186 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4809,7 +4809,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x047c, "Acer AC700", ALC269_FIXUP_ACER_AC700),
+ 	SND_PCI_QUIRK(0x1025, 0x0740, "Acer AO725", ALC271_FIXUP_HP_GATE_MIC_JACK),
+ 	SND_PCI_QUIRK(0x1025, 0x0742, "Acer AO756", ALC271_FIXUP_HP_GATE_MIC_JACK),
+-	SND_PCI_QUIRK_VENDOR(0x1025, "Acer Aspire", ALC271_FIXUP_DMIC),
+ 	SND_PCI_QUIRK(0x1025, 0x0775, "Acer Aspire E1-572", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
+ 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
+ 	SND_PCI_QUIRK(0x1028, 0x05bd, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
+@@ -4971,7 +4970,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x2335, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x2336, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x2337, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+-	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x1043, 0x115d, "Asus 1015E", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+@@ -4992,7 +4990,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x104d, 0x907b, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+ 	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+ 	SND_PCI_QUIRK(0x104d, 0x9099, "Sony VAIO S13", ALC275_FIXUP_SONY_DISABLE_AAMIX),
+-	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
+ 	SND_PCI_QUIRK(0x10cf, 0x1475, "Lifebook", ALC269_FIXUP_LIFEBOOK),
+ 	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_EXTMIC),
+ 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_BXBT2807_MIC),
+@@ -5020,7 +5017,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+-	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
+ 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
  
- typedef struct {
--	enum {UINT32=0, UINT64=1, FLOAT=2} sum_idx;
-+	enum {UINT64, FLOAT} sum_idx;
- 	unsigned int get_idx;
- 	unsigned int put_idx;
- 	unsigned int conv_idx;
-@@ -233,35 +233,26 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 					const snd_pcm_route_ttable_dst_t* ttable,
- 					const snd_pcm_route_params_t *params)  { -#define GETS_LABELS
-+#define GET32_LABELS
- #define PUT32_LABELS
- #include "plugin_ops.h"
--#undef GETS_LABELS
-+#undef GET32_LABELS
- #undef PUT32_LABELS
--	static void *const zero_labels[3] = {
--		&&zero_int32, &&zero_int64,
-+	static void *const zero_labels[2] = {
-+		&&zero_int64,
- #if SND_PCM_PLUGIN_ROUTE_FLOAT
- 		&&zero_float
- #endif
- 	};
- 	/* sum_type att */
--	static void *const add_labels[3 * 2] = {
--		&&add_int32_noatt, &&add_int32_att,
-+	static void *const add_labels[2 * 2] = {
- 		&&add_int64_noatt, &&add_int64_att,
- #if SND_PCM_PLUGIN_ROUTE_FLOAT
- 		&&add_float_noatt, &&add_float_att
- #endif
- 	};
- 	/* sum_type att shift */
--	static void *const norm_labels[3 * 2 * 4] = {
--		0,
--		&&norm_int32_8_noatt,
--		&&norm_int32_16_noatt,
--		&&norm_int32_24_noatt,
--		0,
--		&&norm_int32_8_att,
--		&&norm_int32_16_att,
--		&&norm_int32_24_att,
-+	static void *const norm_labels[2 * 2 * 4] = {
- 		&&norm_int64_0_noatt,
- 		&&norm_int64_8_noatt,
- 		&&norm_int64_16_noatt,
-@@ -281,7 +272,7 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 		&&norm_float_24,
- #endif
- 	};
--	void *zero, *get, *add, *norm, *put32;
-+	void *zero, *get32, *add, *norm, *put32;
- 	int nsrcs = ttable->nsrcs;
- 	char *dst;
- 	int dst_step;
-@@ -323,7 +314,7 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 	}
+ #if 0
+@@ -5074,6 +5070,14 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	{}
+ };
  
- 	zero = zero_labels[params->sum_idx];
--	get = gets_labels[params->get_idx];
-+	get32 = get32_labels[params->get_idx];
- 	add = add_labels[params->sum_idx * 2 + ttable->att];
- 	norm = norm_labels[params->sum_idx * 8 + ttable->att * 4 + 4 - params->src_size];
- 	put32 = put32_labels[params->put_idx]; @@ -336,9 +327,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
++static const struct snd_pci_quirk alc269_fixup_vendor_tbl[] = {
++	SND_PCI_QUIRK_VENDOR(0x1025, "Acer Aspire", ALC271_FIXUP_DMIC),
++	SND_PCI_QUIRK_VENDOR(0x103c, "HP", ALC269_FIXUP_HP_MUTE_LED),
++	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
++	SND_PCI_QUIRK_VENDOR(0x17aa, "Thinkpad", ALC269_FIXUP_THINKPAD_ACPI),
++	{}
++};
++
+ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC269_FIXUP_AMIC, .name = "laptop-amic"},
+ 	{.id = ALC269_FIXUP_DMIC, .name = "laptop-dmic"},
+@@ -5302,6 +5306,8 @@ static int patch_alc269(struct hda_codec *codec)
+ 	snd_hda_pick_fixup(codec, alc269_fixup_models,
+ 		       alc269_fixup_tbl, alc269_fixups);
+ 	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups);
++	snd_hda_pick_fixup(codec, NULL,	alc269_fixup_vendor_tbl,
++			   alc269_fixups);
+ 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
  
- 		/* Zero sum */
- 		goto *zero;
--	zero_int32:
--		sum.as_sint32 = 0;
--		goto zero_end;
- 	zero_int64: 
- 		sum.as_sint64 = 0;
- 		goto zero_end;
-@@ -352,21 +340,14 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 			const char *src = srcs[srcidx];
- 			
- 			/* Get sample */
--			goto *get;
--#define GETS_END after_get
-+			goto *get32;
-+#define GET32_END after_get
- #include "plugin_ops.h"
--#undef GETS_END
-+#undef GET32_END
- 		after_get:
- 
- 			/* Sum */
- 			goto *add;
--		add_int32_att:
--			sum.as_sint32 += sample * ttp->as_int;
--			goto after_sum;
--		add_int32_noatt:
--			if (ttp->as_int)
--				sum.as_sint32 += sample;
--			goto after_sum;
- 		add_int64_att:
- 			sum.as_sint64 += (int64_t) sample * ttp->as_int;
- 			goto after_sum;
-@@ -390,42 +371,30 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 		
- 		/* Normalization */
- 		goto *norm;
--	norm_int32_8_att:
--		sum.as_sint64 = sum.as_sint32;
- 	norm_int64_8_att:
- 		sum.as_sint64 <<= 8;
- 	norm_int64_0_att:
- 		div(sum.as_sint64);
- 		goto norm_int;
- 
--	norm_int32_16_att:
--		sum.as_sint64 = sum.as_sint32;
- 	norm_int64_16_att:
- 		sum.as_sint64 <<= 16;
- 		div(sum.as_sint64);
- 		goto norm_int;
- 
--	norm_int32_24_att:
--		sum.as_sint64 = sum.as_sint32;
- 	norm_int64_24_att:
- 		sum.as_sint64 <<= 24;
- 		div(sum.as_sint64);
- 		goto norm_int;
- 
--	norm_int32_8_noatt:
--		sum.as_sint64 = sum.as_sint32;
- 	norm_int64_8_noatt:
- 		sum.as_sint64 <<= 8;
- 		goto norm_int;
- 
--	norm_int32_16_noatt:
--		sum.as_sint64 = sum.as_sint32;
- 	norm_int64_16_noatt:
- 		sum.as_sint64 <<= 16;
- 		goto norm_int;
- 
--	norm_int32_24_noatt:
--		sum.as_sint64 = sum.as_sint32;
- 	norm_int64_24_noatt:
- 		sum.as_sint64 <<= 24;
- 		goto norm_int;
-@@ -648,7 +617,7 @@ static int snd_pcm_route_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
- 	route->params.use_getput =
- 		(snd_pcm_format_physical_width(src_format) + 7) / 3 == 3 ||
- 		(snd_pcm_format_physical_width(dst_format) + 7) / 3 == 3;
--	route->params.get_idx = snd_pcm_linear_get_index(src_format, SND_PCM_FORMAT_S16);
-+	route->params.get_idx = snd_pcm_linear_get32_index(src_format, 
-+SND_PCM_FORMAT_S32);
- 	route->params.put_idx = snd_pcm_linear_put32_index(SND_PCM_FORMAT_S32, dst_format);
- 	route->params.conv_idx = snd_pcm_linear_convert_index(src_format, dst_format);
- 	route->params.src_size = snd_pcm_format_width(src_format) / 8; @@ -656,10 +625,7 @@ static int snd_pcm_route_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)  #if SND_PCM_PLUGIN_ROUTE_FLOAT
- 	route->params.sum_idx = FLOAT;
- #else
--	if (snd_pcm_format_width(src_format) == 32)
--		route->params.sum_idx = UINT64;
--	else
--		route->params.sum_idx = UINT32;
-+	route->params.sum_idx = UINT64;
- #endif
- 	return 0;
- }
-diff --git a/src/pcm/plugin_ops.h b/src/pcm/plugin_ops.h index 21535c9ca8d6..eb8c2c4f4dac 100644
---- a/src/pcm/plugin_ops.h
-+++ b/src/pcm/plugin_ops.h
-@@ -668,87 +668,6 @@ getu_1234_C321: sample = bswap_32(as_u32c(src) ^ 0x80); goto GETU_END;  }  #endif
- 
--#ifdef GETS_LABELS
--/* width endswap sign_toggle */
--static void *const gets_labels[4 * 2 * 2] = {
--	&&gets_1_1,		/*  8h ->  8h */
--	&&gets_1_9,		/*  8h ^>  8h */
--	&&gets_1_1,		/*  8s ->  8h */
--	&&gets_1_9,		/*  8s ^>  8h */
--	&&gets_12_12,		/* 16h -> 16h */
--	&&gets_12_92,		/* 16h ^> 16h */
--	&&gets_12_21,		/* 16s -> 16h */
--	&&gets_12_A1,		/* 16s ^> 16h */
--	&&gets_0123_0123,	/* 24h -> 24h */
--	&&gets_0123_0923,	/* 24h ^> 24h */
--	&&gets_1230_0321,	/* 24s -> 24h */
--	&&gets_1230_0B21,	/* 24s ^> 24h */
--	&&gets_1234_1234,	/* 32h -> 32h */
--	&&gets_1234_9234,	/* 32h ^> 32h */
--	&&gets_1234_4321,	/* 32s -> 32h */
--	&&gets_1234_C321,	/* 32s ^> 32h */
--};
--#endif
--
--#ifdef GETS_END
--while (0) {
--gets_1_1: sample = as_s8c(src); goto GETS_END;
--gets_1_9: sample = (int8_t)(as_s8c(src) ^ 0x80); goto GETS_END;
--gets_12_12: sample = as_s16c(src); goto GETS_END;
--gets_12_92: sample = (int16_t)(as_s16c(src) ^ 0x8000); goto GETS_END;
--gets_12_21: sample = (int16_t)bswap_16(as_s16c(src)); goto GETS_END;
--gets_12_A1: sample = (int16_t)bswap_16(as_s16c(src) ^ 0x80); goto GETS_END;
--gets_0123_0123: sample = sx24((int32_t)(as_s32c(src) << 8) >> 8); goto GETS_END;
--gets_0123_0923: sample = sx24((int32_t)((as_s32c(src) ^ 0x800000) << 8) >> 8); goto GETS_END;
--gets_1230_0321: sample = sx24((int32_t)(bswap_32(as_s32c(src)) << 8) >> 8); goto GETS_END;
--gets_1230_0B21: sample = sx24((int32_t)(bswap_32(as_s32c(src) ^ 0x8000) << 8) >> 8); goto GETS_END;
--gets_1234_1234: sample = as_s32c(src); goto GETS_END;
--gets_1234_9234: sample = (int32_t)(as_s32c(src) ^ 0x80000000); goto GETS_END;
--gets_1234_4321: sample = (int32_t)bswap_32(as_s32c(src)); goto GETS_END;
--gets_1234_C321: sample = (int32_t)bswap_32(as_s32c(src) ^ 0x80); goto GETS_END; -} -#endif
--
--#ifdef PUT_LABELS
--/* width endswap sign_toggle */
--static void *const put_labels[4 * 2 * 2] = {
--	&&put_1_1,		/*  8h ->  8h */
--	&&put_1_9,		/*  8h ^>  8h */
--	&&put_1_1,		/*  8h ->  8s */
--	&&put_1_9,		/*  8h ^>  8s */
--	&&put_12_12,		/* 16h -> 16h */
--	&&put_12_92,		/* 16h ^> 16h */
--	&&put_12_21,		/* 16h -> 16s */
--	&&put_12_29,		/* 16h ^> 16s */
--	&&put_0123_0123,	/* 24h -> 24h */
--	&&put_0123_0923,	/* 24h ^> 24h */
--	&&put_0123_3210,	/* 24h -> 24s */
--	&&put_0123_3290,	/* 24h ^> 24s */
--	&&put_1234_1234,	/* 32h -> 32h */
--	&&put_1234_9234,	/* 32h ^> 32h */
--	&&put_1234_4321,	/* 32h -> 32s */
--	&&put_1234_4329,	/* 32h ^> 32s */
--};
--#endif
--
--#ifdef PUT_END
--put_1_1: as_s8(dst) = sample; goto PUT_END;
--put_1_9: as_u8(dst) = sample ^ 0x80; goto PUT_END;
--put_12_12: as_s16(dst) = sample; goto PUT_END;
--put_12_92: as_u16(dst) = sample ^ 0x8000; goto PUT_END;
--put_12_21: as_s16(dst) = bswap_16(sample); goto PUT_END;
--put_12_29: as_u16(dst) = bswap_16(sample) ^ 0x80; goto PUT_END;
--/* this always writes the unused byte in 24-bit formats as 0x00 */
--put_0123_0123: as_s32(dst) = sx24(sample & 0x00ffffff); goto PUT_END;
--put_0123_0923: as_u32(dst) = sx24((sample & 0x00ffffff) ^ 0x800000); goto PUT_END;
--put_0123_3210: as_s32(dst) = sx24s(bswap_32(sample) & 0xffffff00); goto PUT_END;
--put_0123_3290: as_u32(dst) = sx24s((bswap_32(sample) & 0xffffff00) ^ 0x8000); goto PUT_END;
--put_1234_1234: as_s32(dst) = sample; goto PUT_END;
--put_1234_9234: as_u32(dst) = sample ^ 0x80000000; goto PUT_END;
--put_1234_4321: as_s32(dst) = bswap_32(sample); goto PUT_END;
--put_1234_4329: as_u32(dst) = bswap_32(sample) ^ 0x80; goto PUT_END; -#endif
--
- #ifdef PUT32F_LABELS
- /* type (0 = float, 1 = float64), endswap */  static void *const put32float_labels[2 * 2] = {
---
-2.0.1
+ 	alc_auto_parse_customize_define(codec);
+-- 
+1.9.1
