@@ -1,66 +1,103 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 3/3] driver:gpio remove all usage of
- gpio_remove retval in driver
-Date: Tue, 22 Jul 2014 17:01:58 +0100
-Message-ID: <20140722160158.GE23210@lee--X1>
-References: <CACRpkda6mzVdaN0cvOxpbsxWyCv2nGyDXOjZg_5aT8u7SSQeUw@mail.gmail.com>
- <1405197014-25225-1-git-send-email-berthe.ab@gmail.com>
- <1405197014-25225-4-git-send-email-berthe.ab@gmail.com>
- <CACRpkdasp9bLULT7NJM9nYX58rRSsQKXFddOLz9Ah6kp-j-3=Q@mail.gmail.com>
+From: Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 1/1] usb: gadget: f_uac2: Fix pcm sample
+ size selection
+Date: Tue, 22 Jul 2014 19:09:51 +0200
+Message-ID: <53CE9ADF.80604@zonque.org>
+References: <1404411328-32566-1-git-send-email-sebastian.reimers@gmail.com> <s5hha2xu19g.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f169.google.com (mail-ig0-f169.google.com
- [209.85.213.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 87329261A5A
- for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 18:02:08 +0200 (CEST)
-Received: by mail-ig0-f169.google.com with SMTP id r2so4361453igi.0
- for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 09:02:07 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CACRpkdasp9bLULT7NJM9nYX58rRSsQKXFddOLz9Ah6kp-j-3=Q@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-mips@linux-mips.org, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Matthew Garrett <matthew.garrett@nebula.com>, Samuel Ortiz <sameo@linux.intel.com>, =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, abdoulaye berthe <berthe.ab@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, Bryan Wu <cooloney@gmail.com>, "arm@kernel.org" <arm@kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Michael Buesch <m@bues.ch>, Greg KH <gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <s5hha2xu19g.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Felipe Balbi <balbi-l0cyMroinI0@public.gmane.org>
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Sebastian Reimers <sebastian.reimers-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Sebastian Reimers <sebastian.reimers-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMiBKdWwgMjAxNCwgTGludXMgV2FsbGVpaiB3cm90ZToKCj4gT24gU2F0LCBKdWwg
-MTIsIDIwMTQgYXQgMTA6MzAgUE0sIGFiZG91bGF5ZSBiZXJ0aGUgPGJlcnRoZS5hYkBnbWFpbC5j
-b20+IHdyb3RlOgo+IAo+IEhlYWRzIHVwLiBSZXF1ZXN0aW5nIEFDS3MgZm9yIHRoaXMgcGF0Y2gg
-b3IgSSdtIGF0bGVhc3Qgd2FybmluZyB0aGF0IGl0IHdpbGwgYmUKPiBhcHBsaWVkLiBXZSdyZSBn
-ZXR0aW5nIHJpZCBvZiB0aGUgcmV0dXJuIHZhbHVlIGZyb20gZ3Bpb2NoaXBfcmVtb3ZlKCkuCj4g
-Cj4gPiB0aGlzIHJlbW92ZSBhbGwgcmVmZXJlbmNlIHRvIGdwaW9fcmVtb3ZlIHJldHZhbCBpbiBh
-bGwgZHJpdmVyCj4gPiBleGNlcHQgcGluY3RybCBhbmQgZ3Bpby4gdGhlIHNhbWUgdGhpbmcgaXMg
-ZG9uZSBmb3IgZ3BpbyBhbmQKPiA+IHBpbmN0cmwgaW4gdHdvIGRpZmZlcmVudCBwYXRjaGVzLgo+
-ID4KPiA+IFNpZ25lZC1vZmYtYnk6IGFiZG91bGF5ZSBiZXJ0aGUgPGJlcnRoZS5hYkBnbWFpbC5j
-b20+Cj4gKC4uLikKPiAKPiBJIHRoaW5rIHRoaXMgcGF0Y2ggcHJvYmFibHkgbmVlZHMgdG8gYmUg
-YnJva2VuIGRvd24gcGVyLXN1YnN5c3RlbSBhcyBpdAo+IGhpdHMgYWxsIG92ZXIgdGhlIG1hcC4g
-QnV0IGxldCdzIHN0YXJ0IHJlcXVlc3RpbmcgQUNLcyBmb3IgdGhlCj4gaW5kaXZpZHVhbCBwaWVj
-ZXMuCj4gQWN0dWFsbHkgSSB0aGluayBpdCB3aWxsIGJlIE9LIHRvIG1lcmdlIGJlY2F1c2UgdGhl
-cmUgaXMgbGlrZWx5IG5vdCBtdWNoIGNodXJuCj4gYXJvdW5kIHRoZXNlIGNvZGUgc2l0ZXMuCj4g
-Cj4gSSdtIGEgYml0IHRvcm4gYmV0d2VlbiBqdXN0IHdhbnRpbmcgYSBiaWcgcGF0Y2ggZm9yIHRo
-aXMgaGl0dGluZyBkcml2ZXJzL2dwaW8KPiBhbmQgc21hbGxlciBwYXRjaGVzIGhpdHRpbmcgb25l
-IHN1YnN5c3RlbSBhdCBhIHRpbWUuIFdlIHNob3VsZCBiZSBhYmxlCj4gdG8gaGFtbWVyIHRoaXMg
-aW4gb25lIHN3aXRjaCBzdHJpa2UuCgpJdCB3b3VsZCBiZSBiZXR0ZXIgaWYgeW91IGNvdWxkIGRl
-dmlzZSBhIHBsYW4gdG8gbWFrZSB0aGUgc3dpdGNoIGEKc3Vic3lzdGVtIGF0IGEgdGltZS4KClsu
-Li5dCgo+ID4gIGRyaXZlcnMvbWZkL2FzaWMzLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMyArKy0KPiA+ICBkcml2ZXJzL21mZC9odGMtaTJjcGxkLmMgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDggKy0tLS0tLS0KPiA+ICBkcml2ZXJzL21mZC9zbTUwMS5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHwgMTcgKysrLS0tLS0tLS0tLS0tLS0KPiA+ICBkcml2ZXJzL21mZC90YzYz
-OTN4Yi5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTMgKysrKy0tLS0tLS0tLQo+ID4gIGRy
-aXZlcnMvbWZkL3VjYjF4MDAtY29yZS5jICAgICAgICAgICAgICAgICAgICAgfCAgOCArKy0tLS0t
-LQo+IAo+IExlZS9TYW0gY2FuIGVpdGhlciBvZiB5b3UgQUNLIHRoaXM/CgpJIGRvbid0IHNlZSBh
-bnkgY29kZT8KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNUTWljcm9lbGVjdHJvbmljcyBMYW5kaW5n
-IFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBzb2Z0d2FyZSBmb3IgQVJNIFNv
-Q3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwgQmxvZwpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On 07/04/2014 07:43 AM, Takashi Iwai wrote:
+> At Thu,  3 Jul 2014 20:15:28 +0200,
+> Sebastian Reimers wrote:
+>>
+>> The pcm playback and capture sample size format was fixed
+>> SNDRV_PCM_FMTBIT_S16_LE.
+>>
+>> This patch respects also 16, 24 and 32 bit p_ssize and c_ssize values.
+>>
+>> Signed-off-by: Sebastian Reimers <sebastian.reimers-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> 
+> In general, this driver should check more on p_ssize.  This can be any
+> integer value passed as a module parameter.  It should be cut to a
+> sane value or give an error in the probe function when an invalid
+> value is given.  Ditto for p_srate and other parameters.
+> 
+> Also, I don't understand the logic of the code
+> 	runtime->hw.period_bytes_min = 2 * uac2->p_prm.max_psize
+> 					/ runtime->hw.periods_min;
+> 
+> But this is mostly irrelevant with this patch, so for this patch:
+>    Reviewed-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+
+Felipe, are you fine with this one?
+
+
+Thanks,
+Daniel
+
+>> ---
+>>  drivers/usb/gadget/f_uac2.c | 24 ++++++++++++++++++++++--
+>>  1 file changed, 22 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/usb/gadget/f_uac2.c b/drivers/usb/gadget/f_uac2.c
+>> index 6261db4a..3ed89ec 100644
+>> --- a/drivers/usb/gadget/f_uac2.c
+>> +++ b/drivers/usb/gadget/f_uac2.c
+>> @@ -348,14 +348,34 @@ static int uac2_pcm_open(struct snd_pcm_substream *substream)
+>>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>>  		spin_lock_init(&uac2->p_prm.lock);
+>>  		runtime->hw.rate_min = p_srate;
+>> -		runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE; /* ! p_ssize ! */
+>> +		switch (p_ssize) {
+>> +		case 3:
+>> +			runtime->hw.formats = SNDRV_PCM_FMTBIT_S24_3LE;
+>> +			break;
+>> +		case 4:
+>> +			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
+>> +			break;
+>> +		default:
+>> +			runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
+>> +			break;
+>> +		}
+>>  		runtime->hw.channels_min = num_channels(p_chmask);
+>>  		runtime->hw.period_bytes_min = 2 * uac2->p_prm.max_psize
+>>  						/ runtime->hw.periods_min;
+>>  	} else {
+>>  		spin_lock_init(&uac2->c_prm.lock);
+>>  		runtime->hw.rate_min = c_srate;
+>> -		runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE; /* ! c_ssize ! */
+>> +		switch (c_ssize) {
+>> +		case 3:
+>> +			runtime->hw.formats = SNDRV_PCM_FMTBIT_S24_3LE;
+>> +			break;
+>> +		case 4:
+>> +			runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
+>> +			break;
+>> +		default:
+>> +			runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
+>> +			break;
+>> +		}
+>>  		runtime->hw.channels_min = num_channels(c_chmask);
+>>  		runtime->hw.period_bytes_min = 2 * uac2->c_prm.max_psize
+>>  						/ runtime->hw.periods_min;
+>> -- 
+>> 2.0.1
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
