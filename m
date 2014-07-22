@@ -1,25 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Audio mini conference 2014?
-Date: Tue, 22 Jul 2014 23:20:38 +0100
-Message-ID: <20140722222038.GW17528@sirena.org.uk>
-References: <s5hwqd9elq9.wl%tiwai@suse.de>
- <1402479799.2366.31.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5hk38mxvai.wl%tiwai@suse.de>
- <20140612104634.GU5099@sirena.org.uk>
- <s5hha3qxuoa.wl%tiwai@suse.de>
- <20140612110049.GV5099@sirena.org.uk>
- <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5h4myhpcby.wl%tiwai@suse.de>
- <20140721232054.GN17528@sirena.org.uk>
- <s5h1ttehr91.wl%tiwai@suse.de>
+Subject: Re: [PATCH 1/3] ASoC: wm5110: Set symmetric samplebits
+	on AIFs
+Date: Tue, 22 Jul 2014 23:21:45 +0100
+Message-ID: <20140722222145.GX17528@sirena.org.uk>
+References: <20140722105022.GB19663@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0602706953482333268=="
+Content-Type: multipart/mixed; boundary="===============0145336777783406133=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C3E6B265176
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 00:20:49 +0200 (CEST)
-In-Reply-To: <s5h1ttehr91.wl%tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E569265328
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 00:22:03 +0200 (CEST)
+In-Reply-To: <20140722105022.GB19663@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,59 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Li.Xiubo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0602706953482333268==
+--===============0145336777783406133==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5N2+S1LJ+nNsdJJZ"
+	protocol="application/pgp-signature"; boundary="cLlE6j+44ygFdGhU"
 Content-Disposition: inline
 
 
---5N2+S1LJ+nNsdJJZ
+--cLlE6j+44ygFdGhU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Jul 22, 2014 at 07:55:22AM +0200, Takashi Iwai wrote:
+On Tue, Jul 22, 2014 at 11:50:22AM +0100, Richard Fitzgerald wrote:
+> Different playback and capture bits-per-sample
+> are not supported on the AIFs
 
-> Of course it's possible to hold a meeting in a different place at
-> different time.  I can book a meeting room in my office in Nuremberg,
-> too, for example.  Let's see.
+Applied all, thanks.
 
-Right, though that might get more difficult for people to organize
-travel.  Trying to find some space ad hoc in Dusseldorf might also work.
-
---5N2+S1LJ+nNsdJJZ
+--cLlE6j+44ygFdGhU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTzuOzAAoJELSic+t+oim9B4QP/iSVKLVMHCjcSy567L9AawGB
-cCjbSsi7k4XpLy2PuLRQZTfeBBEhVhGOXP80lxIi17BTVsiDeV60ypmIIA2updGO
-wugZMw2aV5bRnuysns6rGmSyEqPbU/OqMIWFUXpFhp7UD9kODNqjm4S/QlNCa8yC
-BJkRcAc6R9C0hso5qS6E6JGiAc2uJK1QmxZJBmIz/KMi16M8yJFnBV0ywZofEBdg
-t8s89P/jVWeFR7VVNXBRuH6C4ATjnpTG6nxynCpZWyZjgHjG3Q4UxbqxhZMR3FTp
-ZRWca2Ivc9CLXhfQTufI7SvMl9Xb8Vv7yKeOYCA7NZq6DiryZz4dvxociWNB2eyw
-HZEFgpdBXgQf94lC8Gx5GyBD/X518mdRQeYhPfuP8oWdEnkUOLUnRCNvuXeFPuWV
-/ZqVa29ZEGH4InJ/J3O+JkGivBL5MGlrkyGNV3oDCJLMWBDz1j5QNub19TRTUCUa
-dpLMAKk8Oy3+V7e7hs/vIC1zEL73hqVc2F1N7rwrMNkFSE4frX9qqPffgqXgU1X4
-7v7HSlLUime7rd4jYJ0ALuOiUzDuZkUHschTh5o3xrMhpS0NM2j4fAimCgHogL/P
-SEvtJ2GBPsmZnhHPgNoAfrtcYk9LmrTkeG6Ql2DlzuASplmUPKj7MdwcO5YR7M7z
-ElvQdXtftAc4ii8G9+rB
-=oA6E
+iQIcBAEBAgAGBQJTzuP2AAoJELSic+t+oim9KykP/ibYuP5YiijWULlM1ij5RTzv
+XgdH8jkfYXdAOp43rxwiQYYYMYzAl2ve2ZVFBLUEJmSv/qpkVs/jCuezsJg1RXB4
+Qsklwg3CI3x+zVzH02S3TYCVtuT4tYFxyw2iboHXLDqpS/bhOn7IwOqR8sRfn+Cr
+6uFRNg9148Ie6BWPeCipJMHwhuQivDIM+JPW3QAYyR+YKfP/v/UJ+Nr2mx1wo/uu
+g47iVcEsmldKaLhbRLbFKNxXnTKmQo/1v8o0G8YOQBAybSBZSk7FD0+K8+6nnKVX
+6b9nKlFe07lE6wxdqYyzV8aEKYNetOK1N7D2n8DpE2sa0QX0xDjK+vq6FN8TN1V6
++A+SmFcnjlLXdlJ9WsOsk5WVx1g3bofJXd6J8mTDl2vkgEoOrbWSE76911CSHNEl
+LoM59deRtuQzJ9k2LYJ9cgw1orPvnBphI6lHTI35KGUJ/a8rrHyJZvdcYpENXKYE
+mkDA3krTHkdaqE6AwNTIPB8dwINTlR+F6Z4emMLtehVEl3eJ42/cmXDXCxLG90V0
+JZnlHYCKEW4oYyXhkR9YAhs6CxdW+nyb4hkFmYCWFXPNlpfQhwosrM9vqeSEg7JU
+IqPhiVlK3J0LTtVEelsur10E9FNPDt0BcQOWDbeYDfwF+Ijk1rDAgSNlaGwLtQcs
+4W8GSQnmgtVrDhgS+hTz
+=MXRW
 -----END PGP SIGNATURE-----
 
---5N2+S1LJ+nNsdJJZ--
+--cLlE6j+44ygFdGhU--
 
---===============0602706953482333268==
+--===============0145336777783406133==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0602706953482333268==--
+--===============0145336777783406133==--
