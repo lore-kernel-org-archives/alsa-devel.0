@@ -1,80 +1,74 @@
-From: Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 1/1] usb: gadget: f_uac2: Fix pcm sample
- size selection
-Date: Tue, 22 Jul 2014 20:02:12 +0200
-Message-ID: <53CEA724.2020507@zonque.org>
-References: <1404411328-32566-1-git-send-email-sebastian.reimers@gmail.com> <s5hha2xu19g.wl%tiwai@suse.de> <53CE9ADF.80604@zonque.org> <20140722174448.GL20588@saruman.home>
+From: Mauro Carvalho Chehab <m.chehab@samsung.com>
+Subject: Re: [PATCH 3/3] driver:gpio remove all usage of
+ gpio_remove retval in driver
+Date: Tue, 22 Jul 2014 16:17:28 -0300
+Message-ID: <20140722161728.712d961e.m.chehab@samsung.com>
+References: <CACRpkda6mzVdaN0cvOxpbsxWyCv2nGyDXOjZg_5aT8u7SSQeUw@mail.gmail.com>
+ <1405197014-25225-1-git-send-email-berthe.ab@gmail.com>
+ <1405197014-25225-4-git-send-email-berthe.ab@gmail.com>
+ <CACRpkdasp9bLULT7NJM9nYX58rRSsQKXFddOLz9Ah6kp-j-3=Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140722174448.GL20588-HgARHv6XitL9zxVx7UNMDg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: balbi-l0cyMroinI0@public.gmane.org
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Sebastian Reimers <sebastian.reimers-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Sebastian Reimers <sebastian.reimers-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from usmailout2.samsung.com (mailout2.w2.samsung.com
+ [211.189.100.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32F20265558
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 21:17:41 +0200 (CEST)
+Received: from uscpsbgm2.samsung.com
+ (u115.gpu85.samsung.co.kr [203.254.195.115]) by mailout2.w2.samsung.com
+ (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
+ 17 2011)) with ESMTP id <0N9400FS9O9FSP80@mailout2.w2.samsung.com> for
+ alsa-devel@alsa-project.org; Tue, 22 Jul 2014 15:17:40 -0400 (EDT)
+In-reply-to: <CACRpkdasp9bLULT7NJM9nYX58rRSsQKXFddOLz9Ah6kp-j-3=Q@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-mips@linux-mips.org, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>, Matthew Garrett <matthew.garrett@nebula.com>, Samuel Ortiz <sameo@linux.intel.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, abdoulaye berthe <berthe.ab@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, Bryan Wu <cooloney@gmail.com>, "arm@kernel.org" <arm@kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Michael
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Em Tue, 22 Jul 2014 17:08:13 +0200
+Linus Walleij <linus.walleij@linaro.org> escreveu:
 
-On 07/22/2014 07:44 PM, Felipe Balbi wrote:
-> On Tue, Jul 22, 2014 at 07:09:51PM +0200, Daniel Mack wrote:
->> On 07/04/2014 07:43 AM, Takashi Iwai wrote:
->>> At Thu,  3 Jul 2014 20:15:28 +0200, Sebastian Reimers wrote:
->>>> 
->>>> The pcm playback and capture sample size format was fixed 
->>>> SNDRV_PCM_FMTBIT_S16_LE.
->>>> 
->>>> This patch respects also 16, 24 and 32 bit p_ssize and
->>>> c_ssize values.
->>>> 
->>>> Signed-off-by: Sebastian Reimers
->>>> <sebastian.reimers-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
->>> 
->>> In general, this driver should check more on p_ssize.  This can
->>> be any integer value passed as a module parameter.  It should
->>> be cut to a sane value or give an error in the probe function
->>> when an invalid value is given.  Ditto for p_srate and other
->>> parameters.
->>> 
->>> Also, I don't understand the logic of the code 
->>> runtime->hw.period_bytes_min = 2 * uac2->p_prm.max_psize /
->>> runtime->hw.periods_min;
->>> 
->>> But this is mostly irrelevant with this patch, so for this
->>> patch: Reviewed-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
->> 
->> Felipe, are you fine with this one?
+> On Sat, Jul 12, 2014 at 10:30 PM, abdoulaye berthe <berthe.ab@gmail.com> wrote:
 > 
-> seems like I missed this one, do you mind if we take it during
-> v3.17-rc and add Cc: stable ?
+> Heads up. Requesting ACKs for this patch or I'm atleast warning that it will be
+> applied. We're getting rid of the return value from gpiochip_remove().
+> 
+> > this remove all reference to gpio_remove retval in all driver
+> > except pinctrl and gpio. the same thing is done for gpio and
+> > pinctrl in two different patches.
+> >
+> > Signed-off-by: abdoulaye berthe <berthe.ab@gmail.com>
+> (...)
+> 
+> I think this patch probably needs to be broken down per-subsystem as it
+> hits all over the map. But let's start requesting ACKs for the
+> individual pieces.
+> Actually I think it will be OK to merge because there is likely not much churn
+> around these code sites.
+> 
+> I'm a bit torn between just wanting a big patch for this hitting drivers/gpio
+> and smaller patches hitting one subsystem at a time. We should be able
+> to hammer this in one switch strike.
+> 
+...
+> >  drivers/media/dvb-frontends/cxd2820r_core.c    | 10 +++-------
+> 
+> Mauro can you ACK this?
 
-I guess that was what Sebastian intended :)
+Acked-by: Mauro Carvalho Chehab <m.chehab@samsung.com>
+> 
+> (Hm that looks weird. Mental note to look closer at this.)
 
-Thanks for taking care of it!
+What's weird there?
 
-
-Daniel
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iQIcBAEBAgAGBQJTzqckAAoJELphMRr8Y1QkzXYP/iWtHkczgDurT5s/6JNGJSv1
-UsVTueRVepMLfVVFRW0mMiHHVfZVD/JoLMTAl0LkODBf95Vxgd0OR9WmHm1FVYdW
-oJ80LTCkGEEjeZlZTcHJFIqfgwB6ryUsPoC+BAWvWpVSjvp2uHME8JmipYiNrwLS
-fJNJSwL4lT5PFESQ27seonkDneAUk8FQObZCSOnqJsqqZpAWHmRQOPTQSyRsJ/fA
-wOj/jo9gWJXqMtow2mfDteM/doiblBJaquKoQDIlj1UuEv4Ta97a1f/0N/O0q8kP
-+4VqynEgCOhr8TNR8x7a6YTlzYQkonddFUGZuuJLLf5//Z5SA1zGdBl+bnZ3OPVV
-7oVJZPakVaG/1ImkkPh+yUmPg6jRjaEbW6f2Y9p1t2iitnEGsi/doQpBS7xEf3+n
-kHehgcKBUXCGzrJ25vxu9Q1/wUQXDXqsb3Q+PorcbhSF86OOe9pll9GvGjJbc7VY
-zEitPPPKMmmLVUgyfFcsyz94NkZeAYMOCPZIBIZXtshoQGMvujUKB/qRbK5tO7x3
-Y7cUnb5rSlfSuNCuRz4kKGIVK+ULr8XtdT6sSzm5kmNnqwYlxh2zt4XEPflIiRg9
-4Z0MMHW4mRN0rUikfJofjsHObx/B6BvbFj7EBhyFipRZZW32b5jEn7kL5pOQRq1K
-pANkTdVOnKGmgJ1VI6x8
-=3cTI
------END PGP SIGNATURE-----
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards,
+Mauro
