@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/4] More componentization preparation
-Date: Tue, 22 Jul 2014 23:14:53 +0100
-Message-ID: <20140722221453.GU17528@sirena.org.uk>
-References: <1405627268-23939-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: rsnd: add missing src/dst_addr_width
+	for DMAEngine
+Date: Tue, 22 Jul 2014 23:17:13 +0100
+Message-ID: <20140722221713.GV17528@sirena.org.uk>
+References: <87sim0ece5.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8246270712927155941=="
+Content-Type: multipart/mixed; boundary="===============1594915872280734771=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D6077265176
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 00:15:19 +0200 (CEST)
-In-Reply-To: <1405627268-23939-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id C71DB265176
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 00:17:24 +0200 (CEST)
+In-Reply-To: <87sim0ece5.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Morimoto <kuninori.morimoto.gx@renesas.com>, Laurent <laurent.pinchart@ideasonboard.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8246270712927155941==
+--===============1594915872280734771==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ltihE5wS63FR6l1A"
+	protocol="application/pgp-signature"; boundary="z5jwahX8Ql4zxomt"
 Content-Disposition: inline
 
 
---ltihE5wS63FR6l1A
+--z5jwahX8Ql4zxomt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 17, 2014 at 10:01:04PM +0200, Lars-Peter Clausen wrote:
-> Now that the multi-CODEC patches have been merged we can continue with the
-> componentization. Since it is already rather late in the development cycle again
-> this series only has a small set of cleanup and preparation patches so we have
-> that out of the way. The first patch removes the unused snd_soc_card
-> platform_list, the other three patches move the card field from the
-> snd_soc_platform and snd_soc_codec struct and consolidates the registration of
-> controls on top of that.
+On Wed, Jul 16, 2014 at 11:18:44PM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Renesas new DMAEngine driver requests src/dst_addr_width
 
-Applied all, thanks.
+Applied, thanks.
 
---ltihE5wS63FR6l1A
+--z5jwahX8Ql4zxomt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJTzuJUAAoJELSic+t+oim9q+MP/jqa+b6TRuNupwp+dnoIE8vl
-oOtD3Z5T1TkwTRXjYPVu6BKDjA2aas4H/7z6wn4qu+WTD11BLKr1VyRZUSUurw49
-Izt5DpybW0vanSEvyGbrOfiJBAJIZFT4uMNXLT1hXJs1ewPTCqN5wdE8HYUv8TNh
-avmf7VNeGlcAkgiz2cqKRVU5sem2ikF6dI2/l7fE1TnM/SqTXawBQ2ciTGVDmPEt
-7Y+LdeVt2h2FzKm8MGSM0lOLPyR6YXMy6OqdlPPvPRfGHvjlV/uoT071r2ptFfqN
-Psi7kbF6H4XoQ+gxXgVhrpuCI6zFO9fA1h+Pbvyq6KP8VM0pCbx5dH6oGvc0qEeH
-bQIFvZBrvUsslFbOYY8P5uRMCAZ6xhaKE7tj32j+yrdWoNpNMHxBGZALh+1RYH06
-TUCxnhzcax65gs6U3hVA3zOBZ9R8ATlMnwpL2a145kLi0PXtDJ5TKkRo1dNJs9lh
-URuq1s/WUVCaKCThPlnh+QncQ4zdEpyi1FDZ/ay3Mi0H04QaDjpc+ESI3gXfU6on
-6Q8as4f5xuNt/j9xgjPw2zYX9AUuxvESnrJtP9+uSo9DlcwtMVohAfYXzUZVdt2Z
-0lRP0uDpq/eh4QpBz1U/meBZ+uKLxl2520wIObirroRdTKiu712iBCCaDAc3zgTo
-4+TTccMNTw9sdY+BAo35
-=6K9C
+iQIcBAEBAgAGBQJTzuLmAAoJELSic+t+oim9l1gP/12tsrtmKW/XiRJxGanTUQWl
+XlXExl23JwrM/whMfkYB2LPphYvGvoiHcd4OL3ESfv0RKziUrpuR9jWTIoI4yBTM
+eTs/BxL1BMqzKQRp4bBkF8gecNwoTOT4tSL2cuozbQap6jRv6B/3nALBrRWyeGbC
+OsCQELfK7IumZUYQbJ1XYm1tR35yP0ajXpptuhVvoQqfGjw3Z+nCnZHdf91PjxEk
+mBJ+NHfw8wEyBYr0CuLFDfzdBd1PR3OMHS3J+etqrBYSAUlSkzd5oJ16cCzWUIE+
+W65yMzr70TjMS9+U0Jug8YAss6wbdfgreB4dY5Mh/xpVpagzLReWuvDl0XaelGWE
+hlxWFf0s8Ijh+SZ4D9XaWQ0l82z14nwISgWQ8bdh+bp9gaDNMg+38TqL8qUBmZij
+nV5TrUlPZHLzt4qzKrR4SZrzCJy13EmlR2bC93mVHBtjId+6tK73TFtUKnzrSFo4
+Ko/D3b6k06M+U5s1krIA1EvltLccOEKzfMO8DdWOH3SfT+ojchH41mdQU2qpMI8I
+KqSDiUVnc91MXtdJT3Sv7wpElZPvYqYCJjFc1JmTRTL52jlnw/kchZDLlvKOZnXe
+8HkdQge6gereSuMdsYvxz+Gge57PQvfwTGUr0X/wwJmtoAsvyQ6fI0CJTTHjuc/x
+Wn6LUSynJQxzs6xF5/Jt
+=Y2Wq
 -----END PGP SIGNATURE-----
 
---ltihE5wS63FR6l1A--
+--z5jwahX8Ql4zxomt--
 
---===============8246270712927155941==
+--===============1594915872280734771==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8246270712927155941==--
+--===============1594915872280734771==--
