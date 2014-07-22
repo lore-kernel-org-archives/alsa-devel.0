@@ -1,20 +1,16 @@
-From: "shengjiu.wang@freescale.com" <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V2] pcm: plugin_ops.h: Add
- S24_3LE/S20_3LE/S18_3LE support in gets_label
-Date: Tue, 22 Jul 2014 07:59:03 +0000
-Message-ID: <5433ce5bb4f24318a9ee2bddde352995@BY2PR03MB332.namprd03.prod.outlook.com>
-References: <1405996241-24764-1-git-send-email-shengjiu.wang@freescale.com>
- <s5h38duhrig.wl%tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: hda - Add mute LED pin quirk for HP 15
+	touchsmart
+Date: Tue, 22 Jul 2014 11:42:17 +0200
+Message-ID: <1406022137-7363-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1lp0140.outbound.protection.outlook.com [207.46.163.140])
- by alsa0.perex.cz (Postfix) with ESMTP id 95A122654AD
- for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 09:59:07 +0200 (CEST)
-In-Reply-To: <s5h38duhrig.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FFA9265511
+ for <alsa-devel@alsa-project.org>; Tue, 22 Jul 2014 11:42:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,103 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Iwai
+This makes the mute LED work on a HP 15 touchsmart machine.
 
-   According to your comments, Should I define sx20 and sx18, because sx24 is for 24bit?
+BugLink: https://bugs.launchpad.net/bugs/1334950
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Best regards
-Wang shengjiu
+Hi Takashi,
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Tuesday, July 22, 2014 1:50 PM
-To: Wang Shengjiu-B02247
-Cc: perex@perex.cz; alsa-devel@alsa-project.org
-Subject: Re: [PATCH V2] pcm: plugin_ops.h: Add S24_3LE/S20_3LE/S18_3LE support in gets_label
+This quirk patch is quite straight forward, but when I was working on it
+I discovered something else: the pin_quirk actually overrides the
+regular quirk (there is a vendor quirk for HP in the other quirk table).
 
-At Tue, 22 Jul 2014 10:30:41 +0800,
-Shengjiu Wang wrote:
-> 
-> When route_policy is average, src format is S24_3LE, the get_idx will 
-> exceed length of table gets_label. So add items for 
-> S24_3LE/S20_3LE/S18_3LE in the table.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
-> ---
->  src/pcm/plugin_ops.h |   27 ++++++++++++++++++++++++++-
->  1 file changed, 26 insertions(+), 1 deletion(-)
-> 
-> diff --git a/src/pcm/plugin_ops.h b/src/pcm/plugin_ops.h index 
-> 21535c9..1213b69 100644
-> --- a/src/pcm/plugin_ops.h
-> +++ b/src/pcm/plugin_ops.h
-> @@ -670,7 +670,7 @@ getu_1234_C321: sample = bswap_32(as_u32c(src) ^ 
-> 0x80); goto GETU_END;
->  
->  #ifdef GETS_LABELS
->  /* width endswap sign_toggle */
-> -static void *const gets_labels[4 * 2 * 2] = {
-> +static void *const gets_labels[4 * 2 * 2 + 4 * 3] = {
->  	&&gets_1_1,		/*  8h ->  8h */
->  	&&gets_1_9,		/*  8h ^>  8h */
->  	&&gets_1_1,		/*  8s ->  8h */
-> @@ -687,6 +687,19 @@ static void *const gets_labels[4 * 2 * 2] = {
->  	&&gets_1234_9234,	/* 32h ^> 32h */
->  	&&gets_1234_4321,	/* 32s -> 32h */
->  	&&gets_1234_C321,	/* 32s ^> 32h */
-> +	/* 3bytes format */
-> +	&&gets_123_0123,	/* 24h -> 24h */
-> +	&&gets_123_0923,	/* 24h ^> 24h */
-> +	&&gets_123_0321,	/* 24s -> 24h */
-> +	&&gets_123_0B21,	/* 24s ^> 24h */
-> +	&&gets_123_0123_20,	/* 20h -> 24h */
-> +	&&gets_123_0923_20,	/* 20h ^> 24h */
-> +	&&gets_123_0321_20,	/* 20s -> 24h */
-> +	&&gets_123_0B21_20,	/* 20s ^> 24h */
-> +	&&gets_123_0123_18,	/* 18h -> 24h */
-> +	&&gets_123_0923_18,	/* 18h ^> 24h */
-> +	&&gets_123_0321_18,	/* 18s -> 24h */
-> +	&&gets_123_0B21_18,	/* 18s ^> 24h */
->  };
->  #endif
->  
-> @@ -706,6 +719,18 @@ gets_1234_1234: sample = as_s32c(src); goto 
-> GETS_END;
->  gets_1234_9234: sample = (int32_t)(as_s32c(src) ^ 0x80000000); goto 
-> GETS_END;
->  gets_1234_4321: sample = (int32_t)bswap_32(as_s32c(src)); goto 
-> GETS_END;
->  gets_1234_C321: sample = (int32_t)bswap_32(as_s32c(src) ^ 0x80); goto 
-> GETS_END;
-> +gets_123_0123: sample = sx24(_get_triple(src)); goto GETS_END;
-> +gets_123_0923: sample = sx24(_get_triple(src) ^ 0x800000); goto 
-> +GETS_END;
-> +gets_123_0321: sample = sx24(_get_triple_s(src)); goto GETS_END;
-> +gets_123_0B21: sample = sx24(_get_triple_s(src) ^ 0x800000); goto 
-> +GETS_END;
-> +gets_123_0123_20: sample = sx24(_get_triple(src) << 4); goto 
-> +GETS_END;
-> +gets_123_0923_20: sample = sx24((_get_triple(src) << 4) ^ 0x800000); 
-> +goto GETS_END;
+While the optimal order would be 
+ 1) ssid specific quirks
+ 2) pin quirks
+ 3) vendor specific quirks
+...this is not that easy to accomplish given the current structure given that
+1) and 3) is in one table and 2) is in another table. But before I go ahead
+and make any changes, I wanted to hear your thoughts about it.
 
-gets_* are just to convert the endianess and signedness, thus you must not shift bits.  I think the code should be like:
-
-> +gets_123_0123_20: sample = sx24(_get_triple(src)); goto GETS_END;
-> +gets_123_0923_20: sample = sx24(_get_triple(src) ^ 0x80000); goto 
-> +GETS_END;
-
-... and...
-
-
-> +gets_123_0123_18: sample = sx24(_get_triple(src)); goto GETS_END;
-> +gets_123_0923_18: sample = sx24(_get_triple(src) ^ 0x20000); goto 
-> +GETS_END;
-
-
-thanks,
-
-Takashi
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 512582b..6f204ba 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5160,6 +5160,17 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x1d, 0x40700001},
+ 		{0x1e, 0x411111f0},
+ 		{0x21, 0x02211040}),
++	SND_HDA_PIN_QUIRK(0x10ec0282, 0x103c, "HP 15 Touchsmart", ALC269_FIXUP_HP_MUTE_LED_MIC1,
++		{0x12, 0x99a30130},
++		{0x14, 0x90170110},
++		{0x17, 0x40000000},
++		{0x18, 0x411111f0},
++		{0x19, 0x03a11020},
++		{0x1a, 0x411111f0},
++		{0x1b, 0x411111f0},
++		{0x1d, 0x40f41905},
++		{0x1e, 0x411111f0},
++		{0x21, 0x0321101f}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0283, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x12, 0x90a60130},
+ 		{0x14, 0x90170110},
+-- 
+1.9.1
