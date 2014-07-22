@@ -1,7 +1,7 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/3] ASoC: wm5102: Set symmetric samplebits on AIFs
-Date: Tue, 22 Jul 2014 11:51:57 +0100
-Message-ID: <20140722105157.GC19663@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/3] ASoC: wm8997: Set symmetric samplebits on AIFs
+Date: Tue, 22 Jul 2014 11:52:56 +0100
+Message-ID: <20140722105256.GD19663@opensource.wolfsonmicro.com>
 References: <20140722105022.GB19663@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -18,36 +18,28 @@ are not supported on the AIFs
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm5102.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+ sound/soc/codecs/wm8997.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index fa24d55..f602349 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -1715,6 +1715,7 @@ static struct snd_soc_dai_driver wm5102_dai[] = {
+diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
+index bb9b47b..ab33fe5 100644
+--- a/sound/soc/codecs/wm8997.c
++++ b/sound/soc/codecs/wm8997.c
+@@ -967,6 +967,7 @@ static struct snd_soc_dai_driver wm8997_dai[] = {
  		 },
  		.ops = &arizona_dai_ops,
  		.symmetric_rates = 1,
 +		.symmetric_samplebits = 1,
  	},
  	{
- 		.name = "wm5102-aif2",
-@@ -1736,6 +1737,7 @@ static struct snd_soc_dai_driver wm5102_dai[] = {
+ 		.name = "wm8997-aif2",
+@@ -988,6 +989,7 @@ static struct snd_soc_dai_driver wm8997_dai[] = {
  		 },
  		.ops = &arizona_dai_ops,
  		.symmetric_rates = 1,
 +		.symmetric_samplebits = 1,
  	},
  	{
- 		.name = "wm5102-aif3",
-@@ -1757,6 +1759,7 @@ static struct snd_soc_dai_driver wm5102_dai[] = {
- 		 },
- 		.ops = &arizona_dai_ops,
- 		.symmetric_rates = 1,
-+		.symmetric_samplebits = 1,
- 	},
- 	{
- 		.name = "wm5102-slim1",
+ 		.name = "wm8997-slim1",
 -- 
 1.7.2.5
