@@ -1,22 +1,21 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: Audio mini conference 2014?
-Date: Wed, 23 Jul 2014 11:40:22 +0200
-Message-ID: <53CF8306.3090009@zonque.org>
-References: <s5hwqd9elq9.wl%tiwai@suse.de>
- <1402479799.2366.31.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5hk38mxvai.wl%tiwai@suse.de> <20140612104634.GU5099@sirena.org.uk>
- <s5hha3qxuoa.wl%tiwai@suse.de> <20140612110049.GV5099@sirena.org.uk>
- <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5h4myhpcby.wl%tiwai@suse.de> <20140721232054.GN17528@sirena.org.uk>
- <s5h1ttehr91.wl%tiwai@suse.de> <20140722222038.GW17528@sirena.org.uk>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: I2S driver for implants
+Date: Wed, 23 Jul 2014 12:52:45 +0300
+Message-ID: <9397069.ggOniReSfE@vasilykh-desktop-i5>
+References: <53CF6DD8.3000507@flatmax.org>
+ <CA+E=qVfJ47g76=Zzq+smQUR5UY0zRWjV8Aswx5D7AAfdKLPQmA@mail.gmail.com>
+ <53CF83CA.3030004@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 977BB2655E4
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 11:40:24 +0200 (CEST)
-In-Reply-To: <20140722222038.GW17528@sirena.org.uk>
+Received: from mail-we0-f169.google.com (mail-we0-f169.google.com
+ [74.125.82.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB2A42655E4
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 11:54:41 +0200 (CEST)
+Received: by mail-we0-f169.google.com with SMTP id u56so907616wes.28
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 02:54:41 -0700 (PDT)
+In-Reply-To: <53CF83CA.3030004@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,47 +25,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-Cc: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+To: Matt Flax <flatmax@flatmax.org>
+Cc: vano@ivankiten.com, cw00.choi@samsung.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-On 07/23/2014 12:20 AM, Mark Brown wrote:
-> On Tue, Jul 22, 2014 at 07:55:22AM +0200, Takashi Iwai wrote:
+On 23 July 2014 19:43:38 Matt Flax wrote:
+> On 23/07/14 18:23, Vasily Khoruzhick wrote:
+> > On Wed, Jul 23, 2014 at 11:10 AM, Matt Flax <flatmax@flatmax.org> wrote:
+> >> Hi there,
+> > 
+> > Hi Matt,
+> > 
+> > I'd suggest you include alsa-devel ML next time (added it to CC)
+> > 
+> >> I saw your driver sound/soc/samsung
+> >> 
+> >> I am wanting to look into an I2S driver for the Exynos 5250 for eye
+> >> implants.
+> > 
+> > Driver for I2S in Exynos 5 is already included in mainline kernel.
+> > 
+> >> The implants use a serial bus and I am wanting to specify an I2S
+> >> connection
+> >> to them.
+> >> 
+> >> In order to do that I would need to write an I2S driver to talk to them.
+> >> Their bit rates are either 300 kbps or 600 kbps.
+> >> They only need I2S and not I2C ... there are not controls, simply serial
+> >> data in and out.
+> > 
+> > Are you sure that your implants can talk over I2S?
 > 
->> Of course it's possible to hold a meeting in a different place
->> at different time.  I can book a meeting room in my office in
->> Nuremberg, too, for example.  Let's see.
+> Yes, we do/will have custom hardware to reconstruct the required signals
+> from the I2S lines.
 > 
-> Right, though that might get more difficult for people to organize 
-> travel.
+> >> I am wondering if I can do something simple ... I notice that your driver
+> >> doesn't require too much code ...
+> >> Do you think it is possible for me to take a similar approach in writing
+> >> my
+> >> implant driver ?
+> > 
+> > Don't know, you didn't share much details on your hardware.
 > 
-> Trying to find some space ad hoc in Dusseldorf might also work.
+> The hardware requires one I2S output line and one I2S input line + the
+> clock line.
+> 
+> You say "Driver for I2S in Exynos 5 is already included in mainline
+> kernel." ... do you mean that all I need is a device tree file to enable
+> it ? If so, then can you please link me to an example device tree ... my
+> assumption is that this I2S device will show up in alsa once the device
+> tree is setup ?
 
-I emailed some people from Duesseldorf and asked about ideas for such
-a location. Let's see.
+You'd probably need some codec stub, I'm not sure if it's possible to 
+instantiate soundcard with only i2s and without a codec.
 
+Regards
+Vasily
 
-
-Daniel
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iQIcBAEBAgAGBQJTz4MGAAoJELphMRr8Y1QkpUMQAIg23lhakqg+6RI3Szj9k4+P
-XpVjq2loGJtLLGEUofyBjMtVsexmY/ZiRVaEJH+ewjxPQZrH8+ivbPYqQxPJ9GOW
-0bA9kQGrk/ZDECl8az+wl4NHVskjdFdh5soKG3ee9xEwcr+JrqWfGJcoiuPCeu1b
-4m70J6JhWzr9eeXJDM4RAdlIRYSXbd2MUwJ6hqZmoj6tqKM29Utyl9lL3fHm+zY8
-k2OzbHpINgljKDXwnOQ/tz0HUmsnm6oZU+w93ISqaDU/wK+9G5iNkwv0KKPVy/hV
-d6q3Ba/yTR1WtDYnsAzPqYfTHFcYGtlfLWSpQPxr1n0akv2odsYwooqTXZnebxeg
-Joqy+Xk9NWhyh8DEr7Yq92lvHeHdXVnxFnsGT+5i7c1DODL0hOdS0Jv3eYPPkDv9
-zlAwnyNgG+905Lb6tUjP2jAZGyJvicITDujI3b5a0H9d1W+vAlFkF518zdiHsQG7
-p9U9ymZEaBN4VREmJpeZB/fliy5d7blxMRvGS0NqLQlcMbquT9ENyWgZ4m04h1k9
-8prrHYo/JyBGmlK7/afmyYJw0aW9gpJPkolbT7BO2HPK4zhOCKfSosdTdHo+Fi1w
-+b/fDlJaQeL1sOLTCPezzO0f1rGEdGhWGGHgasy5Z2t9Kll0Xyc8wsNiJoadTSd1
-OYQrtN8Ugf7/gf23DVcx
-=rBxr
------END PGP SIGNATURE-----
+> >> Can you give me advice - how to start ?
+> > 
+> > Start with reading specs and try to understand how your implants work,
+> > then look at existing code and try to adapt it for your usage.
+> > Then clean it up and prepare for submitting into mainline.
+> > 
+> >> thanks
+> >> Matt
+> > 
+> > Regards,
+> > Vasily
