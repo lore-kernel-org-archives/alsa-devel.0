@@ -1,94 +1,69 @@
-From: Varka Bhadram <varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v10 3/3] ASoC: fsl: add imx-es8328 machine driver
-Date: Wed, 23 Jul 2014 14:48:21 +0530
-Message-ID: <53CF7DDD.6020908@gmail.com>
-References: <1406101453-3088-1-git-send-email-xobs@kosagi.com> <1406101453-3088-4-git-send-email-xobs@kosagi.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: A report about an enhancement for ALSA firewire stack
+Date: Wed, 23 Jul 2014 18:17:18 +0900
+Message-ID: <53CF7D9E.2050908@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1406101453-3088-4-git-send-email-xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ffado-devel@lists.sf.net" <ffado-devel@lists.sf.net>, JACK <jack-devel@lists.jackaudio.org>, linux1394-devel@lists.sourceforge.net, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+Cc: Maximilian Engelhardt <maxi@daemonizer.de>, Daniel Wagner <wagi@monom.org>, Darren Anderson <darrena092@gmail.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07/23/2014 01:14 PM, Sean Cross wrote:
-> +Required properties:
-> +- compatible : "fsl,imx-audio-es8328"
-> +- model : The user-visible name of this sound complex
-> +- ssi-controller : The phandle of the i.MX SSI controller
-> +- jack-gpio : Optional GPIO for headphone jack
-> +- audio-amp-supply : Power regulator for speaker amps
-> +- audio-codec : The phandle of the ES8328 audio codec
-> +- audio-routing : A list of the connections between audio components.
-> +  Each entry is a pair of strings, the first being the connection's sink,
-> +  the second being the connection's source. Valid names could be power
-> +  supplies, ES8328 pins, and the jacks on the board:
-> +
+Dear all,
 
-It would be readable if
-Required properties:
-- compatible		: "fsl,imx-audio-es8328"
-- model			: The user-visible name of this sound complex
-- ssi-controller	: The phandle of the i.MX SSI controller
-- jack-gpio		: Optional GPIO for headphone jack
-...
+My work for ALSA firewire stack was pulled into Linux 3.16, therefore
+Linux 3.16 newly supports 60-70 firewire sound devices. The work may
+affects user-space applications such like FFADO. Additionally, I leave
+some issues for the stack.
 
-(...)
+So I wrote a report about my work.
 
-> +static int imx_es8328_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +	struct device_node *ssi_np, *codec_np;
-> +	struct platform_device *ssi_pdev;
-> +	struct imx_es8328_data *data;
-> +	u32 int_port, ext_port;
-> +	int ret;
-> +	struct device *dev = &pdev->dev;
-> +
-> +	ret = of_property_read_u32(np, "mux-int-port", &int_port);
-> +	if (ret) {
-> +		dev_err(dev, "mux-int-port missing or invalid\n");
-> +		goto fail;
-> +	}
-> +	if (int_port > MUX_PORT_MAX || int_port == 0) {
-> +		dev_err(dev, "mux-int-port: hardware only has %d mux ports\n",
-> +				MUX_PORT_MAX);
+PDF:
+https://github.com/takaswie/alsa-firewire-report/blob/master/firewire.pdf
 
-should match open parenthesis:
-	dev_err(dev, "mux-int-port: hardware only has %d mux ports\n",
-		MUX_PORT_MAX);
+Repository:
+https://github.com/takaswie/alsa-firewire-report
 
-> +		goto fail;
-> +	}
-> +
-> +	ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
-> +	if (ret) {
-> +		dev_err(dev, "mux-ext-port missing or invalid\n");
-> +		goto fail;
-> +	}
-> +	if (ext_port > MUX_PORT_MAX || ext_port == 0) {
-> +		dev_err(dev, "mux-ext-port: hardware only has %d mux ports\n",
-> +				MUX_PORT_MAX);
+Table of contents
+ 1. Introduction
+ 2. Common Specifications
+ 3. Device features
+ 4. Existing drivers
+ 5. Investigation for user-land driver
+ 6. Investigation for kernel-land driver
+ 7. Enhancement of ALSA firewire stack
+ 8. Driver implementation
+ 9. Rest of issue
 
-Dto..
+I hope ALSA maintainers to read section 8 and 9.
 
-(...)
+For FFADO developers, section 3, 5, 8 will be good information.
 
-> +static struct platform_driver imx_es8328_driver = {
-> +	.driver = {
-> +		.name = "imx-es8328",
-> +		.owner = THIS_MODULE,
+For JACK/PulseAudio and Linux firewire subsystem developers, section 4,
+5, 6, 7, 9 will be good information.
 
-This field updated by module_platform_driver()... No need to do manually..
+I'm not a good English writer and have a little experiences to write
+technical documents. It's my glad to receive some corrections,
+indications, supplements and so on from you.
 
 
--- 
-Regards,
-Varka Bhadram.
+Regards
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
+
+------------------------------------------------------------------------------
+Want fast and easy access to all the code in your enterprise? Index and
+search up to 200,000 lines of code with a free copy of Black Duck
+Code Sight - the same software that powers the world's largest code
+search on Ohloh, the Black Duck Open Hub! Try it now.
+http://p.sf.net/sfu/bds
