@@ -1,19 +1,23 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: I2S driver for implants
-Date: Wed, 23 Jul 2014 11:23:00 +0300
-Message-ID: <CA+E=qVfJ47g76=Zzq+smQUR5UY0zRWjV8Aswx5D7AAfdKLPQmA@mail.gmail.com>
-References: <53CF6DD8.3000507@flatmax.org>
+From: Kevin Startup <kevin@awcsl.com>
+Subject: Re: ALSA SOC Driver (mxs-wm8753)
+Date: Wed, 23 Jul 2014 08:40:47 +0000
+Message-ID: <70b465c86c5f4e868db55b1d08211e1f@DB4PR07MB252.eurprd07.prod.outlook.com>
+References: <3c1cd0154ea542b992e00dce1cfc0a9a@DB4PR07MB252.eurprd07.prod.outlook.com>
+ <20140718084415.GA12049@opensource.wolfsonmicro.com>
+ <d387ffb22ab74e87aff415badb8b4dca@DB4PR07MB252.eurprd07.prod.outlook.com>
+ <20140718105323.GB12049@opensource.wolfsonmicro.com>
+ <f889954bfaf244cab1b9eb096c66fa81@DB4PR07MB252.eurprd07.prod.outlook.com>
+ <20140718142830.GC12049@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f48.google.com (mail-oi0-f48.google.com
- [209.85.218.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 9993826563F
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 10:23:21 +0200 (CEST)
-Received: by mail-oi0-f48.google.com with SMTP id h136so609656oig.35
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 01:23:20 -0700 (PDT)
-In-Reply-To: <53CF6DD8.3000507@flatmax.org>
+Received: from emea01-am1-obe.outbound.protection.outlook.com
+ (mail-am1lp0017.outbound.protection.outlook.com [213.199.154.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id E167D265635
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 10:40:49 +0200 (CEST)
+In-Reply-To: <20140718142830.GC12049@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,49 +27,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>, alsa-devel@alsa-project.org
-Cc: vano@ivankiten.com, cw00.choi@samsung.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 23, 2014 at 11:10 AM, Matt Flax <flatmax@flatmax.org> wrote:
-> Hi there,
+Hi Charles
 
-Hi Matt,
+Thanks, we've started having a look at this but still not sure what the issue is, I'm hoping to employ some help from the i.MX manufacturer's support (it's quite expensive though!) but what is worrying us at the moment is that one of our suppliers is marking the WM8753 as "Obsolete" ?  I wonder if you knew what the lifetime for manufacturing this chip might be from Wolfson themselves?
 
-I'd suggest you include alsa-devel ML next time (added it to CC)
+Cheerz
+Kevin
 
-> I saw your driver sound/soc/samsung
->
-> I am wanting to look into an I2S driver for the Exynos 5250 for eye
-> implants.
+Kevin Startup
+A.W. Communication Systems Ltd. 
+email: kevin@awcsl.com
+Tel: +44(0)1697 748717
+Fax: +44(0)1697 748778
 
-Driver for I2S in Exynos 5 is already included in mainline kernel.
+A.W. Communication Systems Ltd
+VAT No. GB 827 4389 00
+Registered No. 4891652
+Registered Office Crook Barn, The Crook, Roweltown, Carlisle, UK
 
-> The implants use a serial bus and I am wanting to specify an I2S connection
-> to them.
->
-> In order to do that I would need to write an I2S driver to talk to them.
-> Their bit rates are either 300 kbps or 600 kbps.
-> They only need I2S and not I2C ... there are not controls, simply serial
-> data in and out.
+-----Original Message-----
+From: Charles Keepax [mailto:ckeepax@opensource.wolfsonmicro.com] 
+Sent: 18 July 2014 15:29
+To: Kevin Startup
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] ALSA SOC Driver (mxs-wm8753)
 
-Are you sure that your implants can talk over I2S?
+On Fri, Jul 18, 2014 at 01:02:41PM +0000, Kevin Startup wrote:
+> Hi Charles
+> 
+> Thanks very much, the pointers you gave me have helped a lot.  I have changed the reference to .codec_dai_name to "wm8753-hifi" in the mxs-wm8753.c program which has made my CPU recognise the WM8753 as a valid ALSA device!
+> This makes me very happy as I have been trying to get this to happen for several weeks now!
+> 
+> I still don't seem to be able to send sound to the device though.
+> I am now receiving this message:
+> 
+> mxs-i2c 80058000.i2c: PIO: Failed to finish WRITE cmd!
+> 
+> This happens a dozen times or so on bootup and any time that I try to write to one of the PCM devices ....
+> I wonder if you could give me any more pointers?
+> 
+> Many Thanks
+> Kevin
 
-> I am wondering if I can do something simple ... I notice that your driver
-> doesn't require too much code ...
-> Do you think it is possible for me to take a similar approach in writing my
-> implant driver ?
+Looks like probably the i2c transactions are not being acked, afraid I don't know much about the i2c driver in question so not really sure. I assume this is the i2c link to the CODEC, so I would check the CODECs reset lines and supplies to make sure it has everything it needs to respond.
 
-Don't know, you didn't share much details on your hardware.
-
-> Can you give me advice - how to start ?
-
-Start with reading specs and try to understand how your implants work,
-then look at existing code and try to adapt it for your usage.
-Then clean it up and prepare for submitting into mainline.
-
-> thanks
-> Matt
-
-Regards,
-Vasily
+Thanks,
+Charles
