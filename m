@@ -1,14 +1,17 @@
 From: libin.yang@intel.com
-Subject: [PATCH 1/2] ALSA: hda - add PCI IDs for Intel Braswell
-Date: Wed, 23 Jul 2014 08:55:37 +0800
-Message-ID: <1406076938-97633-1-git-send-email-libin.yang@intel.com>
+Subject: [PATCH 2/2] ALSA: hda - add codec ID for Braswell
+	display audio codec
+Date: Wed, 23 Jul 2014 08:55:38 +0800
+Message-ID: <1406076938-97633-2-git-send-email-libin.yang@intel.com>
+References: <1406076938-97633-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D9162654E2
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 02:58:06 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A13D12654FB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 02:58:07 +0200 (CEST)
+In-Reply-To: <1406076938-97633-1-git-send-email-libin.yang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,26 +27,33 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Libin Yang <libin.yang@intel.com>
 
-Add HD Audio Device PCI ID for the Intel Braswell platform.
+This patch adds codec ID (0x80862883) and module alias for Braswell
+display codec.
 
 Signed-off-by: Libin Yang <libin.yang@intel.com>
 ---
- sound/pci/hda/hda_intel.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/hda/patch_hdmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 387fc73..f758729 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2017,6 +2017,9 @@ static const struct pci_device_id azx_ids[] = {
- 	/* BayTrail */
- 	{ PCI_DEVICE(0x8086, 0x0f04),
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
-+	/* Braswell */
-+	{ PCI_DEVICE(0x8086, 0x2284),
-+	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH_NOPM },
- 	/* ICH */
- 	{ PCI_DEVICE(0x8086, 0x2668),
- 	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index a21090b..36badba 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -3356,6 +3356,7 @@ static const struct hda_codec_preset snd_hda_preset_hdmi[] = {
+ { .id = 0x80862808, .name = "Broadwell HDMI",	.patch = patch_generic_hdmi },
+ { .id = 0x80862880, .name = "CedarTrail HDMI",	.patch = patch_generic_hdmi },
+ { .id = 0x80862882, .name = "Valleyview2 HDMI",	.patch = patch_generic_hdmi },
++{ .id = 0x80862883, .name = "Braswell HDMI",	.patch = patch_generic_hdmi },
+ { .id = 0x808629fb, .name = "Crestline HDMI",	.patch = patch_generic_hdmi },
+ {} /* terminator */
+ };
+@@ -3415,6 +3416,7 @@ MODULE_ALIAS("snd-hda-codec-id:80862807");
+ MODULE_ALIAS("snd-hda-codec-id:80862808");
+ MODULE_ALIAS("snd-hda-codec-id:80862880");
+ MODULE_ALIAS("snd-hda-codec-id:80862882");
++MODULE_ALIAS("snd-hda-codec-id:80862883");
+ MODULE_ALIAS("snd-hda-codec-id:808629fb");
+ 
+ MODULE_LICENSE("GPL");
 -- 
 1.9.1
