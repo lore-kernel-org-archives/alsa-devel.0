@@ -1,24 +1,16 @@
-From: "shengjiu.wang@freescale.com" <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V2] pcm: plugin_ops.h: Add
- S24_3LE/S20_3LE/S18_3LE support in gets_label
-Date: Wed, 23 Jul 2014 02:08:33 +0000
-Message-ID: <0b74ef924ab5410ca6ff1ef6f67cfc79@BY2PR03MB332.namprd03.prod.outlook.com>
-References: <1405996241-24764-1-git-send-email-shengjiu.wang@freescale.com>
- <s5h38duhrig.wl%tiwai@suse.de>
- <5433ce5bb4f24318a9ee2bddde352995@BY2PR03MB332.namprd03.prod.outlook.com>
- <s5hha29n1pa.wl%tiwai@suse.de>
- <989d6263e2ee4868b0fad3aa4a646ef9@BY2PR03MB332.namprd03.prod.outlook.com>
- <s5h38dtmvj1.wl%tiwai@suse.de>
+From: Rongjun Ying <rongjun.ying@csr.com>
+Subject: [PATCH 1/1] ASoC: sirf-usp: Fixed a bug for playback
+	and capture work at the same time
+Date: Wed, 23 Jul 2014 13:19:32 +0800
+Message-ID: <1406092772-26371-1-git-send-email-rongjun.ying@csr.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0207.outbound.protection.outlook.com [207.46.163.207])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CB7026554F
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 04:08:37 +0200 (CEST)
-In-Reply-To: <s5h38dtmvj1.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from cluster-d.mailcontrol.com (cluster-d.mailcontrol.com
+ [85.115.60.190])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EF952655A1
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 07:20:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,354 +20,164 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Barry Song <baohua@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: Workgroup.Linux@csr.com, Rongjun Ying <rongjun.ying@csr.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Iwai
+1. The startup function invoked when the playback and capture.
+   If start playback when capturing, the registers are re-initinitialised.
+   That cause the playback fail. So move the startup code into runtime resume.
+2. Modified: If non RUNTIME_PM support, the probe need enable clock and
+   initinitialise registers.
+3. Refine code.
 
-   I have tested your patch,  it is ok for me. Thanks.
-
-Best regards
-Wang shengjiu
-
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Tuesday, July 22, 2014 8:24 PM
-To: Wang Shengjiu-B02247
-Cc: perex@perex.cz; alsa-devel@alsa-project.org
-Subject: Re: [PATCH V2] pcm: plugin_ops.h: Add S24_3LE/S20_3LE/S18_3LE support in gets_label
-
-At Tue, 22 Jul 2014 11:38:05 +0000,
-shengjiu.wang@freescale.com wrote:
-> 
-> Hi Iwai
-> 
->      Get32_labels has left shift the data to 32bit, but gets_labels don't shift bits. So the index for norm_labels need to be updated too.
-
-Oh yes, this was forgotten.
-
->      I am not sure which change is better, fix the params->src_size to 4, or remove the norm table ( but there is norm_xx_att, norm_xx_noatt choices)? 
-
-The norm table can be simply removed.  The att and noatt are needed for integer case.  The revised patch is below.
-
-
-thanks,
-
-Takashi
-
+Signed-off-by: Rongjun Ying <rongjun.ying@csr.com>
 ---
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2] pcm: route: Use get32 for multi-source route calculation
+ sound/soc/sirf/sirf-usp.c | 54 +++++++++++++++++++++++------------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-The PCM route plugin can assign the destination value from average of multiple sources with attenuation.  This requires the read of each channel value, sums and writes the resultant value in the requested format.
-
-Currently, get_labels is used for reading source values while put32_labels is used for writing the dest value.  This is, however, a buggy implementation; get_labels gives the value as is only with endianness and signedness conversions, but put32_labels assumes that the value is normalized to 32bit int and it shifts down to the dest format.  In addition, the current code lacks get_labels entries for the 24bit formats, as Shengjiu Wang spotted out.
-
-For fixing these bugs, this patch replaces the read with get32_labels and use always 64bit int for sum.  This simplifies the code a lot and drops many lines.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- src/pcm/pcm_route.c  | 128 +++++++++------------------------------------------
- src/pcm/plugin_ops.h |  81 --------------------------------
- 2 files changed, 23 insertions(+), 186 deletions(-)
-
-diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c index 72c198cb25d2..5dac7ebcb7df 100644
---- a/src/pcm/pcm_route.c
-+++ b/src/pcm/pcm_route.c
-@@ -60,7 +60,7 @@ typedef struct {
- typedef struct snd_pcm_route_ttable_dst snd_pcm_route_ttable_dst_t;
- 
- typedef struct {
--	enum {UINT32=0, UINT64=1, FLOAT=2} sum_idx;
-+	enum {UINT64, FLOAT} sum_idx;
- 	unsigned int get_idx;
- 	unsigned int put_idx;
- 	unsigned int conv_idx;
-@@ -233,55 +233,34 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 					const snd_pcm_route_ttable_dst_t* ttable,
- 					const snd_pcm_route_params_t *params)  { -#define GETS_LABELS
-+#define GET32_LABELS
- #define PUT32_LABELS
- #include "plugin_ops.h"
--#undef GETS_LABELS
-+#undef GET32_LABELS
- #undef PUT32_LABELS
--	static void *const zero_labels[3] = {
--		&&zero_int32, &&zero_int64,
-+	static void *const zero_labels[2] = {
-+		&&zero_int64,
- #if SND_PCM_PLUGIN_ROUTE_FLOAT
- 		&&zero_float
- #endif
- 	};
- 	/* sum_type att */
--	static void *const add_labels[3 * 2] = {
--		&&add_int32_noatt, &&add_int32_att,
-+	static void *const add_labels[2 * 2] = {
- 		&&add_int64_noatt, &&add_int64_att,
- #if SND_PCM_PLUGIN_ROUTE_FLOAT
- 		&&add_float_noatt, &&add_float_att
- #endif
- 	};
--	/* sum_type att shift */
--	static void *const norm_labels[3 * 2 * 4] = {
--		0,
--		&&norm_int32_8_noatt,
--		&&norm_int32_16_noatt,
--		&&norm_int32_24_noatt,
--		0,
--		&&norm_int32_8_att,
--		&&norm_int32_16_att,
--		&&norm_int32_24_att,
--		&&norm_int64_0_noatt,
--		&&norm_int64_8_noatt,
--		&&norm_int64_16_noatt,
--		&&norm_int64_24_noatt,
--		&&norm_int64_0_att,
--		&&norm_int64_8_att,
--		&&norm_int64_16_att,
--		&&norm_int64_24_att,
-+	/* sum_type att */
-+	static void *const norm_labels[2 * 2] = {
-+		&&norm_int64_noatt,
-+		&&norm_int64_att,
- #if SND_PCM_PLUGIN_ROUTE_FLOAT
--		&&norm_float_0,
--		&&norm_float_8,
--		&&norm_float_16,
--		&&norm_float_24,
--		&&norm_float_0,
--		&&norm_float_8,
--		&&norm_float_16,
--		&&norm_float_24,
-+		&&norm_float,
-+		&&norm_float,
- #endif
- 	};
--	void *zero, *get, *add, *norm, *put32;
-+	void *zero, *get32, *add, *norm, *put32;
- 	int nsrcs = ttable->nsrcs;
- 	char *dst;
- 	int dst_step;
-@@ -323,9 +302,9 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 	}
- 
- 	zero = zero_labels[params->sum_idx];
--	get = gets_labels[params->get_idx];
-+	get32 = get32_labels[params->get_idx];
- 	add = add_labels[params->sum_idx * 2 + ttable->att];
--	norm = norm_labels[params->sum_idx * 8 + ttable->att * 4 + 4 - params->src_size];
-+	norm = norm_labels[params->sum_idx * 2 + ttable->att];
- 	put32 = put32_labels[params->put_idx];
- 	dst = snd_pcm_channel_area_addr(dst_area, dst_offset);
- 	dst_step = snd_pcm_channel_area_step(dst_area);
-@@ -336,9 +315,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 
- 		/* Zero sum */
- 		goto *zero;
--	zero_int32:
--		sum.as_sint32 = 0;
--		goto zero_end;
- 	zero_int64: 
- 		sum.as_sint64 = 0;
- 		goto zero_end;
-@@ -352,21 +328,14 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 			const char *src = srcs[srcidx];
- 			
- 			/* Get sample */
--			goto *get;
--#define GETS_END after_get
-+			goto *get32;
-+#define GET32_END after_get
- #include "plugin_ops.h"
--#undef GETS_END
-+#undef GET32_END
- 		after_get:
- 
- 			/* Sum */
- 			goto *add;
--		add_int32_att:
--			sum.as_sint32 += sample * ttp->as_int;
--			goto after_sum;
--		add_int32_noatt:
--			if (ttp->as_int)
--				sum.as_sint32 += sample;
--			goto after_sum;
- 		add_int64_att:
- 			sum.as_sint64 += (int64_t) sample * ttp->as_int;
- 			goto after_sum;
-@@ -390,48 +359,10 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 		
- 		/* Normalization */
- 		goto *norm;
--	norm_int32_8_att:
--		sum.as_sint64 = sum.as_sint32;
--	norm_int64_8_att:
--		sum.as_sint64 <<= 8;
--	norm_int64_0_att:
-+	norm_int64_att:
- 		div(sum.as_sint64);
--		goto norm_int;
--
--	norm_int32_16_att:
--		sum.as_sint64 = sum.as_sint32;
--	norm_int64_16_att:
--		sum.as_sint64 <<= 16;
--		div(sum.as_sint64);
--		goto norm_int;
--
--	norm_int32_24_att:
--		sum.as_sint64 = sum.as_sint32;
--	norm_int64_24_att:
--		sum.as_sint64 <<= 24;
--		div(sum.as_sint64);
--		goto norm_int;
--
--	norm_int32_8_noatt:
--		sum.as_sint64 = sum.as_sint32;
--	norm_int64_8_noatt:
--		sum.as_sint64 <<= 8;
--		goto norm_int;
--
--	norm_int32_16_noatt:
--		sum.as_sint64 = sum.as_sint32;
--	norm_int64_16_noatt:
--		sum.as_sint64 <<= 16;
--		goto norm_int;
--
--	norm_int32_24_noatt:
--		sum.as_sint64 = sum.as_sint32;
--	norm_int64_24_noatt:
--		sum.as_sint64 <<= 24;
--		goto norm_int;
--
--	norm_int64_0_noatt:
--	norm_int:
-+		/* fallthru */
-+	norm_int64_noatt:
- 		if (sum.as_sint64 > (int64_t)0x7fffffff)
- 			sample = 0x7fffffff;	/* maximum positive value */
- 		else if (sum.as_sint64 < -(int64_t)0x80000000) @@ -441,16 +372,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
- 		goto after_norm;
- 
- #if SND_PCM_PLUGIN_ROUTE_FLOAT
--	norm_float_8:
--		sum.as_float *= 1 << 8;
--		goto norm_float;
--	norm_float_16:
--		sum.as_float *= 1 << 16;
--		goto norm_float;
--	norm_float_24:
--		sum.as_float *= 1 << 24;
--		goto norm_float;
--	norm_float_0:
- 	norm_float:
- 		sum.as_float = rint(sum.as_float);
- 		if (sum.as_float > (int64_t)0x7fffffff) @@ -648,7 +569,7 @@ static int snd_pcm_route_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
- 	route->params.use_getput =
- 		(snd_pcm_format_physical_width(src_format) + 7) / 3 == 3 ||
- 		(snd_pcm_format_physical_width(dst_format) + 7) / 3 == 3;
--	route->params.get_idx = snd_pcm_linear_get_index(src_format, SND_PCM_FORMAT_S16);
-+	route->params.get_idx = snd_pcm_linear_get32_index(src_format, 
-+SND_PCM_FORMAT_S32);
- 	route->params.put_idx = snd_pcm_linear_put32_index(SND_PCM_FORMAT_S32, dst_format);
- 	route->params.conv_idx = snd_pcm_linear_convert_index(src_format, dst_format);
- 	route->params.src_size = snd_pcm_format_width(src_format) / 8; @@ -656,10 +577,7 @@ static int snd_pcm_route_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)  #if SND_PCM_PLUGIN_ROUTE_FLOAT
- 	route->params.sum_idx = FLOAT;
- #else
--	if (snd_pcm_format_width(src_format) == 32)
--		route->params.sum_idx = UINT64;
--	else
--		route->params.sum_idx = UINT32;
-+	route->params.sum_idx = UINT64;
- #endif
+diff --git a/sound/soc/sirf/sirf-usp.c b/sound/soc/sirf/sirf-usp.c
+index 9693bc2..3a73037 100644
+--- a/sound/soc/sirf/sirf-usp.c
++++ b/sound/soc/sirf/sirf-usp.c
+@@ -103,11 +103,8 @@ static int sirf_usp_pcm_set_dai_fmt(struct snd_soc_dai *dai,
  	return 0;
  }
-diff --git a/src/pcm/plugin_ops.h b/src/pcm/plugin_ops.h index 21535c9ca8d6..eb8c2c4f4dac 100644
---- a/src/pcm/plugin_ops.h
-+++ b/src/pcm/plugin_ops.h
-@@ -668,87 +668,6 @@ getu_1234_C321: sample = bswap_32(as_u32c(src) ^ 0x80); goto GETU_END;  }  #endif
  
--#ifdef GETS_LABELS
--/* width endswap sign_toggle */
--static void *const gets_labels[4 * 2 * 2] = {
--	&&gets_1_1,		/*  8h ->  8h */
--	&&gets_1_9,		/*  8h ^>  8h */
--	&&gets_1_1,		/*  8s ->  8h */
--	&&gets_1_9,		/*  8s ^>  8h */
--	&&gets_12_12,		/* 16h -> 16h */
--	&&gets_12_92,		/* 16h ^> 16h */
--	&&gets_12_21,		/* 16s -> 16h */
--	&&gets_12_A1,		/* 16s ^> 16h */
--	&&gets_0123_0123,	/* 24h -> 24h */
--	&&gets_0123_0923,	/* 24h ^> 24h */
--	&&gets_1230_0321,	/* 24s -> 24h */
--	&&gets_1230_0B21,	/* 24s ^> 24h */
--	&&gets_1234_1234,	/* 32h -> 32h */
--	&&gets_1234_9234,	/* 32h ^> 32h */
--	&&gets_1234_4321,	/* 32s -> 32h */
--	&&gets_1234_C321,	/* 32s ^> 32h */
--};
+-static int sirf_usp_i2s_startup(struct snd_pcm_substream *substream,
+-		struct snd_soc_dai *dai)
++static void sirf_usp_i2s_init(struct sirf_usp *usp)
+ {
+-	struct sirf_usp *usp = snd_soc_dai_get_drvdata(dai);
+-
+ 	/* Configure RISC mode */
+ 	regmap_update_bits(usp->regmap, USP_RISC_DSP_MODE,
+ 		USP_RISC_DSP_SEL, ~USP_RISC_DSP_SEL);
+@@ -119,19 +116,16 @@ static int sirf_usp_i2s_startup(struct snd_pcm_substream *substream,
+ 	regmap_write(usp->regmap, USP_TX_DMA_IO_LEN, 0);
+ 	regmap_write(usp->regmap, USP_RX_DMA_IO_LEN, 0);
+ 
+-	regmap_write(usp->regmap, USP_RX_FRAME_CTRL, USP_SINGLE_SYNC_MODE);
+-
+-	regmap_write(usp->regmap, USP_TX_FRAME_CTRL, USP_TXC_SLAVE_CLK_SAMPLE);
+-
+ 	/* Configure Mode2 register */
+ 	regmap_write(usp->regmap, USP_MODE2, (1 << USP_RXD_DELAY_LEN_OFFSET) |
+-		(0 << USP_TXD_DELAY_LEN_OFFSET));
++		(0 << USP_TXD_DELAY_LEN_OFFSET) |
++		USP_TFS_CLK_SLAVE_MODE | USP_RFS_CLK_SLAVE_MODE);
+ 
+ 	/* Configure Mode1 register */
+ 	regmap_write(usp->regmap, USP_MODE1,
+ 		USP_SYNC_MODE | USP_EN | USP_TXD_ACT_EDGE_FALLING |
+ 		USP_RFS_ACT_LEVEL_LOGIC1 | USP_TFS_ACT_LEVEL_LOGIC1 |
+-		USP_TX_UFLOW_REPEAT_ZERO);
++		USP_TX_UFLOW_REPEAT_ZERO | USP_CLOCK_MODE_SLAVE);
+ 
+ 	/* Configure RX DMA IO Control register */
+ 	regmap_write(usp->regmap, USP_RX_DMA_IO_CTRL, 0);
+@@ -155,8 +149,6 @@ static int sirf_usp_i2s_startup(struct snd_pcm_substream *substream,
+ 	/* Congiure TX FIFO Level Check register */
+ 	regmap_write(usp->regmap, USP_TX_FIFO_LEVEL_CHK,
+ 		TX_FIFO_SC(0x1B) | TX_FIFO_LC(0x0E) | TX_FIFO_HC(0x04));
+-
+-	return 0;
+ }
+ 
+ static int sirf_usp_pcm_hw_params(struct snd_pcm_substream *substream,
+@@ -204,23 +196,19 @@ static int sirf_usp_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		regmap_update_bits(usp->regmap, USP_TX_FRAME_CTRL,
+ 			USP_TXC_DATA_LEN_MASK | USP_TXC_FRAME_LEN_MASK
+-			| USP_TXC_SHIFTER_LEN_MASK,
++			| USP_TXC_SHIFTER_LEN_MASK | USP_TXC_SLAVE_CLK_SAMPLE,
+ 			((data_len - 1) << USP_TXC_DATA_LEN_OFFSET)
+ 			| ((frame_len - 1) << USP_TXC_FRAME_LEN_OFFSET)
+-			| ((shifter_len - 1) << USP_TXC_SHIFTER_LEN_OFFSET));
++			| ((shifter_len - 1) << USP_TXC_SHIFTER_LEN_OFFSET)
++			| USP_TXC_SLAVE_CLK_SAMPLE);
+ 	else
+ 		regmap_update_bits(usp->regmap, USP_RX_FRAME_CTRL,
+ 			USP_RXC_DATA_LEN_MASK | USP_RXC_FRAME_LEN_MASK
+-			| USP_RXC_SHIFTER_LEN_MASK,
++			| USP_RXC_SHIFTER_LEN_MASK | USP_SINGLE_SYNC_MODE,
+ 			((data_len - 1) << USP_RXC_DATA_LEN_OFFSET)
+ 			| ((frame_len - 1) << USP_RXC_FRAME_LEN_OFFSET)
+-			| ((shifter_len - 1) << USP_RXC_SHIFTER_LEN_OFFSET));
+-
+-	regmap_update_bits(usp->regmap, USP_MODE1,
+-			USP_CLOCK_MODE_SLAVE, USP_CLOCK_MODE_SLAVE);
+-	regmap_update_bits(usp->regmap, USP_MODE2,
+-			USP_TFS_CLK_SLAVE_MODE | USP_RFS_CLK_SLAVE_MODE,
+-			USP_TFS_CLK_SLAVE_MODE | USP_RFS_CLK_SLAVE_MODE);
++			| ((shifter_len - 1) << USP_RXC_SHIFTER_LEN_OFFSET)
++			| USP_SINGLE_SYNC_MODE);
+ 
+ 	return 0;
+ }
+@@ -253,7 +241,6 @@ static int sirf_usp_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ }
+ 
+ static const struct snd_soc_dai_ops sirf_usp_pcm_dai_ops = {
+-	.startup = sirf_usp_i2s_startup,
+ 	.trigger = sirf_usp_pcm_trigger,
+ 	.set_fmt = sirf_usp_pcm_set_dai_fmt,
+ 	.hw_params = sirf_usp_pcm_hw_params,
+@@ -282,7 +269,6 @@ static struct snd_soc_dai_driver sirf_usp_pcm_dai = {
+ 	.ops = &sirf_usp_pcm_dai_ops,
+ };
+ 
+-#ifdef CONFIG_PM
+ static int sirf_usp_pcm_runtime_suspend(struct device *dev)
+ {
+ 	struct sirf_usp *usp = dev_get_drvdata(dev);
+@@ -293,9 +279,15 @@ static int sirf_usp_pcm_runtime_suspend(struct device *dev)
+ static int sirf_usp_pcm_runtime_resume(struct device *dev)
+ {
+ 	struct sirf_usp *usp = dev_get_drvdata(dev);
+-	return clk_prepare_enable(usp->clk);
++	int ret;
++	ret = clk_prepare_enable(usp->clk);
++	if (ret) {
++		dev_err(dev, "clk_enable failed: %d\n", ret);
++		return ret;
++	}
++	sirf_usp_i2s_init(usp);
++	return 0;
+ }
 -#endif
--
--#ifdef GETS_END
--while (0) {
--gets_1_1: sample = as_s8c(src); goto GETS_END;
--gets_1_9: sample = (int8_t)(as_s8c(src) ^ 0x80); goto GETS_END;
--gets_12_12: sample = as_s16c(src); goto GETS_END;
--gets_12_92: sample = (int16_t)(as_s16c(src) ^ 0x8000); goto GETS_END;
--gets_12_21: sample = (int16_t)bswap_16(as_s16c(src)); goto GETS_END;
--gets_12_A1: sample = (int16_t)bswap_16(as_s16c(src) ^ 0x80); goto GETS_END;
--gets_0123_0123: sample = sx24((int32_t)(as_s32c(src) << 8) >> 8); goto GETS_END;
--gets_0123_0923: sample = sx24((int32_t)((as_s32c(src) ^ 0x800000) << 8) >> 8); goto GETS_END;
--gets_1230_0321: sample = sx24((int32_t)(bswap_32(as_s32c(src)) << 8) >> 8); goto GETS_END;
--gets_1230_0B21: sample = sx24((int32_t)(bswap_32(as_s32c(src) ^ 0x8000) << 8) >> 8); goto GETS_END;
--gets_1234_1234: sample = as_s32c(src); goto GETS_END;
--gets_1234_9234: sample = (int32_t)(as_s32c(src) ^ 0x80000000); goto GETS_END;
--gets_1234_4321: sample = (int32_t)bswap_32(as_s32c(src)); goto GETS_END;
--gets_1234_C321: sample = (int32_t)bswap_32(as_s32c(src) ^ 0x80); goto GETS_END; -} -#endif
--
--#ifdef PUT_LABELS
--/* width endswap sign_toggle */
--static void *const put_labels[4 * 2 * 2] = {
--	&&put_1_1,		/*  8h ->  8h */
--	&&put_1_9,		/*  8h ^>  8h */
--	&&put_1_1,		/*  8h ->  8s */
--	&&put_1_9,		/*  8h ^>  8s */
--	&&put_12_12,		/* 16h -> 16h */
--	&&put_12_92,		/* 16h ^> 16h */
--	&&put_12_21,		/* 16h -> 16s */
--	&&put_12_29,		/* 16h ^> 16s */
--	&&put_0123_0123,	/* 24h -> 24h */
--	&&put_0123_0923,	/* 24h ^> 24h */
--	&&put_0123_3210,	/* 24h -> 24s */
--	&&put_0123_3290,	/* 24h ^> 24s */
--	&&put_1234_1234,	/* 32h -> 32h */
--	&&put_1234_9234,	/* 32h ^> 32h */
--	&&put_1234_4321,	/* 32h -> 32s */
--	&&put_1234_4329,	/* 32h ^> 32s */
--};
--#endif
--
--#ifdef PUT_END
--put_1_1: as_s8(dst) = sample; goto PUT_END;
--put_1_9: as_u8(dst) = sample ^ 0x80; goto PUT_END;
--put_12_12: as_s16(dst) = sample; goto PUT_END;
--put_12_92: as_u16(dst) = sample ^ 0x8000; goto PUT_END;
--put_12_21: as_s16(dst) = bswap_16(sample); goto PUT_END;
--put_12_29: as_u16(dst) = bswap_16(sample) ^ 0x80; goto PUT_END;
--/* this always writes the unused byte in 24-bit formats as 0x00 */
--put_0123_0123: as_s32(dst) = sx24(sample & 0x00ffffff); goto PUT_END;
--put_0123_0923: as_u32(dst) = sx24((sample & 0x00ffffff) ^ 0x800000); goto PUT_END;
--put_0123_3210: as_s32(dst) = sx24s(bswap_32(sample) & 0xffffff00); goto PUT_END;
--put_0123_3290: as_u32(dst) = sx24s((bswap_32(sample) & 0xffffff00) ^ 0x8000); goto PUT_END;
--put_1234_1234: as_s32(dst) = sample; goto PUT_END;
--put_1234_9234: as_u32(dst) = sample ^ 0x80000000; goto PUT_END;
--put_1234_4321: as_s32(dst) = bswap_32(sample); goto PUT_END;
--put_1234_4329: as_u32(dst) = bswap_32(sample) ^ 0x80; goto PUT_END; -#endif
--
- #ifdef PUT32F_LABELS
- /* type (0 = float, 1 = float64), endswap */  static void *const put32float_labels[2 * 2] = {
---
-2.0.1
+ 
+ #ifdef CONFIG_PM_SLEEP
+ static int sirf_usp_pcm_suspend(struct device *dev)
+@@ -369,6 +361,11 @@ static int sirf_usp_pcm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = sirf_usp_pcm_runtime_resume(&pdev->dev);
++		if (ret)
++			return ret;
++	}
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &sirf_usp_component,
+ 		&sirf_usp_pcm_dai, 1);
+@@ -381,7 +378,10 @@ static int sirf_usp_pcm_probe(struct platform_device *pdev)
+ 
+ static int sirf_usp_pcm_remove(struct platform_device *pdev)
+ {
+-	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev))
++		sirf_usp_pcm_runtime_suspend(&pdev->dev);
++	else
++		pm_runtime_disable(&pdev->dev);
+ 	return 0;
+ }
+ 
+-- 
+1.9.3
+
+
+
+Member of the CSR plc group of companies. CSR plc registered in England and Wales, registered number 4187346, registered office Churchill House, Cambridge Business Park, Cowley Road, Cambridge, CB4 0WZ, United Kingdom
+More information can be found at www.csr.com. Keep up to date with CSR on our technical blog, www.csr.com/blog, CSR people blog, www.csr.com/people, YouTube, www.youtube.com/user/CSRplc, Facebook, www.facebook.com/pages/CSR/191038434253534, or follow us on Twitter at www.twitter.com/CSR_plc.
+New for 2014, you can now access the wide range of products powered by aptX at www.aptx.com.
