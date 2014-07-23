@@ -1,65 +1,53 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH 3/3] ASoC: fsl_sai: Improve enable flow in fsl_sai_trigger()
-Date: Wed, 23 Jul 2014 19:23:40 +0800
-Message-ID: <b567391b537690c473414304078d9090ee94954f.1406113865.git.nicoleotsuka@gmail.com>
-References: <cover.1406113865.git.nicoleotsuka@gmail.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: I2S driver for implants
+Date: Wed, 23 Jul 2014 17:16:02 +0300
+Message-ID: <2430756.lOJscA1gsc@vasilykh-desktop-i5>
+References: <53CF6DD8.3000507@flatmax.org>
+ <9397069.ggOniReSfE@vasilykh-desktop-i5> <53CF979B.30702@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1406113865.git.nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, b42378@freescale.com, b02247@freescale.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-we0-f176.google.com (mail-we0-f176.google.com
+ [74.125.82.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id D30812655FE
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 16:18:02 +0200 (CEST)
+Received: by mail-we0-f176.google.com with SMTP id q58so1227710wes.7
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 07:17:59 -0700 (PDT)
+In-Reply-To: <53CF979B.30702@flatmax.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>, cw00.choi@samsung.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
+On 23 July 2014 21:08:11 Matt Flax wrote:
 
-The previous enable flow:
-1, Enable TE&RE (SAI starts to consume tx FIFO and feed rx FIFO)
-2, Mask IRQ of Tx/Rx to enable its interrupt.
-3, Enable DMA request of Tx/Rx.
+> > You'd probably need some codec stub, I'm not sure if it's possible to
+> > instantiate soundcard with only i2s and without a codec.
+> 
+> Thats fine, I can implement the codec stub. I guess I was originally
+> contacting you (and others) to get some pointers on how to do that. Is
+> there perhaps a codec stub for some very simple hardware (only I2S)
+> which I could use as a reference ?
 
-As this flow would enable DMA request later than TERE, the Tx FIFO
-would be easily emptied into underrun while Rx FIFO would be easily
-stuffed into overrun due to the delayed DMA transfering.
+You already have cpu dai (i2s), now you need codec dai (which is dummy).
+Maybe I'm wrong, and you don't need a codec stub, I'm not an ASoC expert.
 
-This issue happened merely occational before the patch 'ASoC: fsl_sai:
-Reset FIFOs after disabling TE/RE' because there were useless data
-remaining in the FIFO for the gap. However, it manifested after FIFO
-reset's implemented.
+> Also would require an example dts
+> file ... all for the Exynos.
 
-After this patch, the new flow:
-1, Enable DMA request of Tx/Rx.
-2, Enable TE&RE (SAI starts to consume tx FIFO and feed rx FIFO)
-3, Mask IRQ of Tx/Rx to enable its interrupt.
+Look for one in arch/arm/boot/dts?
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl_sai.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> thanks
+> Matt
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index a79a9b0..364410b 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -346,6 +346,9 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
-+				   FSL_SAI_CSR_FRDE, FSL_SAI_CSR_FRDE);
-+
- 		regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
- 				   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
- 		regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
-@@ -353,8 +356,6 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- 		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
- 				   FSL_SAI_CSR_xIE_MASK, FSL_SAI_FLAGS);
--		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
--				   FSL_SAI_CSR_FRDE, FSL_SAI_CSR_FRDE);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--- 
-1.8.4
+Regards
+Vasily
