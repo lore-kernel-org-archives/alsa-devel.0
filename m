@@ -1,21 +1,21 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: I2S driver for implants
-Date: Wed, 23 Jul 2014 12:52:45 +0300
-Message-ID: <9397069.ggOniReSfE@vasilykh-desktop-i5>
-References: <53CF6DD8.3000507@flatmax.org>
- <CA+E=qVfJ47g76=Zzq+smQUR5UY0zRWjV8Aswx5D7AAfdKLPQmA@mail.gmail.com>
- <53CF83CA.3030004@flatmax.org>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: [PATCH 1/2] ASoC: fsl_sai: Reset FIFOs after
+	disabling TE/RE
+Date: Wed, 23 Jul 2014 17:52:32 +0800
+Message-ID: <20140723095229.GA25639@MrMyself>
+References: <cover.1405603108.git.nicoleotsuka@gmail.com>
+ <9ef07dc9cc98b19e3f81f8374617605bf0d9faeb.1405603108.git.nicoleotsuka@gmail.com>
+ <20140718101810.GA15150@MrMyself>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f169.google.com (mail-we0-f169.google.com
- [74.125.82.169])
- by alsa0.perex.cz (Postfix) with ESMTP id DB2A42655E4
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 11:54:41 +0200 (CEST)
-Received: by mail-we0-f169.google.com with SMTP id u56so907616wes.28
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 02:54:41 -0700 (PDT)
-In-Reply-To: <53CF83CA.3030004@flatmax.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0139.outbound.protection.outlook.com [207.46.163.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id 974D92655E4
+ for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 12:03:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20140718101810.GA15150@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,71 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: vano@ivankiten.com, cw00.choi@samsung.com, alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, b42378@freescale.com, b02247@freescale.com, linux-kernel@vger.kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On 23 July 2014 19:43:38 Matt Flax wrote:
-> On 23/07/14 18:23, Vasily Khoruzhick wrote:
-> > On Wed, Jul 23, 2014 at 11:10 AM, Matt Flax <flatmax@flatmax.org> wrote:
-> >> Hi there,
-> > 
-> > Hi Matt,
-> > 
-> > I'd suggest you include alsa-devel ML next time (added it to CC)
-> > 
-> >> I saw your driver sound/soc/samsung
-> >> 
-> >> I am wanting to look into an I2S driver for the Exynos 5250 for eye
-> >> implants.
-> > 
-> > Driver for I2S in Exynos 5 is already included in mainline kernel.
-> > 
-> >> The implants use a serial bus and I am wanting to specify an I2S
-> >> connection
-> >> to them.
-> >> 
-> >> In order to do that I would need to write an I2S driver to talk to them.
-> >> Their bit rates are either 300 kbps or 600 kbps.
-> >> They only need I2S and not I2C ... there are not controls, simply serial
-> >> data in and out.
-> > 
-> > Are you sure that your implants can talk over I2S?
-> 
-> Yes, we do/will have custom hardware to reconstruct the required signals
-> from the I2S lines.
-> 
-> >> I am wondering if I can do something simple ... I notice that your driver
-> >> doesn't require too much code ...
-> >> Do you think it is possible for me to take a similar approach in writing
-> >> my
-> >> implant driver ?
-> > 
-> > Don't know, you didn't share much details on your hardware.
-> 
-> The hardware requires one I2S output line and one I2S input line + the
-> clock line.
-> 
-> You say "Driver for I2S in Exynos 5 is already included in mainline
-> kernel." ... do you mean that all I need is a device tree file to enable
-> it ? If so, then can you please link me to an example device tree ... my
-> assumption is that this I2S device will show up in alsa once the device
-> tree is setup ?
+Sir,
 
-You'd probably need some codec stub, I'm not sure if it's possible to 
-instantiate soundcard with only i2s and without a codec.
+I found this two patches are merged into for-next branch, although I haven't
+got the 'applied' email. 
 
-Regards
-Vasily
+Is that possible for you to drop this one? If not, I'll send another patch
+to fix this.
 
-> >> Can you give me advice - how to start ?
+Thank you,
+Nicolin
+
+On Fri, Jul 18, 2014 at 06:18:12PM +0800, Nicolin Chen wrote:
+> Mark,
+> 
+> 	Please disregard this single patch. 
+> 
+> On Thu, Jul 17, 2014 at 09:21:37PM +0800, Nicolin Chen wrote:
+> > SAI will not clear their FIFOs after disabling TE/RE. Therfore, the driver
+> > should take care the task so as not to let useless data remain in the FIFO.
 > > 
-> > Start with reading specs and try to understand how your implants work,
-> > then look at existing code and try to adapt it for your usage.
-> > Then clean it up and prepare for submitting into mainline.
+> > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> > ---
+> >  sound/soc/fsl/fsl_sai.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
 > > 
-> >> thanks
-> >> Matt
+> > diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> > index c5a0e8a..b10dbd8 100644
+> > --- a/sound/soc/fsl/fsl_sai.c
+> > +++ b/sound/soc/fsl/fsl_sai.c
+> > @@ -371,10 +371,13 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+> >  
+> >  		/* Check if the opposite FRDE is also disabled */
+> >  		if (!(tx ? rcsr & FSL_SAI_CSR_FRDE : tcsr & FSL_SAI_CSR_FRDE)) {
+> > +			/* Disable both directions and reset their FIFOs */
+> >  			regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
+> > -					   FSL_SAI_CSR_TERE, 0);
+> > +					   FSL_SAI_CSR_TERE | FSL_SAI_CSR_FR,
+> > +					   FSL_SAI_CSR_FR);
+> >  			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
+> > -					   FSL_SAI_CSR_TERE, 0);
+> > +					   FSL_SAI_CSR_TERE | FSL_SAI_CSR_FR,
+> > +					   FSL_SAI_CSR_FR);
+> 
+> 
+> The FR should be set _after_ clear TERE, not at the same time because it
+> still may have tiny possibility to remain data.
+> 
+> I'll send another version later for this patch.
+> 
+> The other patch for isr() should be still fine.
+> 
+> Thank you,
+> Nicolin
+> 
+> >  		}
+> >  		break;
+> >  	default:
+> > -- 
+> > 1.8.4
 > > 
-> > Regards,
-> > Vasily
