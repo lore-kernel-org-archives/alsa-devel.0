@@ -1,77 +1,80 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: Re: I2S driver for implants
-Date: Wed, 23 Jul 2014 19:43:38 +1000
-Message-ID: <53CF83CA.3030004@flatmax.org>
-References: <53CF6DD8.3000507@flatmax.org>
- <CA+E=qVfJ47g76=Zzq+smQUR5UY0zRWjV8Aswx5D7AAfdKLPQmA@mail.gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH 1/3] ASoC: fsl_sai: Reduce race condition during TE/RE enabling
+Date: Wed, 23 Jul 2014 19:23:38 +0800
+Message-ID: <3eb17601f37a686322db6fdf0a6749a592a751e8.1406113865.git.nicoleotsuka@gmail.com>
+References: <cover.1406113865.git.nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ipmail06.adl6.internode.on.net (ipmail06.adl6.internode.on.net
- [150.101.137.145])
- by alsa0.perex.cz (Postfix) with ESMTP id 5CD5E2655F4
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 11:43:43 +0200 (CEST)
-In-Reply-To: <CA+E=qVfJ47g76=Zzq+smQUR5UY0zRWjV8Aswx5D7AAfdKLPQmA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>, alsa-devel@alsa-project.org
-Cc: vano@ivankiten.com, cw00.choi@samsung.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1406113865.git.nicoleotsuka@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, b42378@freescale.com, b02247@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
 
-On 23/07/14 18:23, Vasily Khoruzhick wrote:
-> On Wed, Jul 23, 2014 at 11:10 AM, Matt Flax <flatmax@flatmax.org> wrote:
->> Hi there,
-> Hi Matt,
->
-> I'd suggest you include alsa-devel ML next time (added it to CC)
->
->> I saw your driver sound/soc/samsung
->>
->> I am wanting to look into an I2S driver for the Exynos 5250 for eye
->> implants.
-> Driver for I2S in Exynos 5 is already included in mainline kernel.
->
->> The implants use a serial bus and I am wanting to specify an I2S connection
->> to them.
->>
->> In order to do that I would need to write an I2S driver to talk to them.
->> Their bit rates are either 300 kbps or 600 kbps.
->> They only need I2S and not I2C ... there are not controls, simply serial
->> data in and out.
-> Are you sure that your implants can talk over I2S?
+For trigger start, we don't need to check if it's the first time to
+enable TE/RE or second time. It doesn't hurt to enable them any way,
+which in the meantime can reduce race condition for TE/RE enabling.
 
-Yes, we do/will have custom hardware to reconstruct the required signals 
-from the I2S lines.
->> I am wondering if I can do something simple ... I notice that your driver
->> doesn't require too much code ...
->> Do you think it is possible for me to take a similar approach in writing my
->> implant driver ?
-> Don't know, you didn't share much details on your hardware.
+For trigger stop, we will definitely clear FRDE of current direction.
+Thus the driver only needs to read the opposite one's.
 
-The hardware requires one I2S output line and one I2S input line + the 
-clock line.
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+ sound/soc/fsl/fsl_sai.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-You say "Driver for I2S in Exynos 5 is already included in mainline 
-kernel." ... do you mean that all I need is a device tree file to enable 
-it ? If so, then can you please link me to an example device tree ... my 
-assumption is that this I2S device will show up in alsa once the device 
-tree is setup ?
-
->> Can you give me advice - how to start ?
-> Start with reading specs and try to understand how your implants work,
-> then look at existing code and try to adapt it for your usage.
-> Then clean it up and prepare for submitting into mainline.
-
->> thanks
->> Matt
-> Regards,
-> Vasily
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 1b6ee2c..a437899 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -327,7 +327,7 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ {
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+-	u32 tcsr, rcsr;
++	u32 xcsr;
+ 
+ 	/*
+ 	 * The transmitter bit clock and frame sync are to be
+@@ -338,9 +338,6 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	regmap_update_bits(sai->regmap, FSL_SAI_RCR2, FSL_SAI_CR2_SYNC,
+ 			   FSL_SAI_CR2_SYNC);
+ 
+-	regmap_read(sai->regmap, FSL_SAI_TCSR, &tcsr);
+-	regmap_read(sai->regmap, FSL_SAI_RCSR, &rcsr);
+-
+ 	/*
+ 	 * It is recommended that the transmitter is the last enabled
+ 	 * and the first disabled.
+@@ -349,12 +346,10 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		if (!(tcsr & FSL_SAI_CSR_FRDE || rcsr & FSL_SAI_CSR_FRDE)) {
+-			regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
+-					   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
+-			regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
+-					   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
+-		}
++		regmap_update_bits(sai->regmap, FSL_SAI_RCSR,
++				   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
++		regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
++				   FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
+ 
+ 		regmap_update_bits(sai->regmap, FSL_SAI_xCSR(tx),
+ 				   FSL_SAI_CSR_xIE_MASK, FSL_SAI_FLAGS);
+@@ -370,7 +365,8 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 				   FSL_SAI_CSR_xIE_MASK, 0);
+ 
+ 		/* Check if the opposite FRDE is also disabled */
+-		if (!(tx ? rcsr & FSL_SAI_CSR_FRDE : tcsr & FSL_SAI_CSR_FRDE)) {
++		regmap_read(sai->regmap, FSL_SAI_xCSR(!tx), &xcsr);
++		if (!(xcsr & FSL_SAI_CSR_FRDE)) {
+ 			/* Disable both directions and reset their FIFOs */
+ 			regmap_update_bits(sai->regmap, FSL_SAI_TCSR,
+ 					   FSL_SAI_CSR_TERE | FSL_SAI_CSR_FR,
+-- 
+1.8.4
