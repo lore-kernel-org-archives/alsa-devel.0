@@ -1,48 +1,107 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH] pcm: pcm_local.h: include <time.h> to enable
-	CLOCK_MONOTONIC
-Date: Wed, 23 Jul 2014 15:09:58 +0800
-Message-ID: <1406099398-28758-1-git-send-email-shengjiu.wang@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1blp0188.outbound.protection.outlook.com [207.46.163.188])
- by alsa0.perex.cz (Postfix) with ESMTP id 396D6265618
- for <alsa-devel@alsa-project.org>; Wed, 23 Jul 2014 09:09:49 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+From: Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v10 0/3] Add ES8328 audio codec
+Date: Wed, 23 Jul 2014 15:44:10 +0800
+Message-ID: <1406101453-3088-1-git-send-email-xobs@kosagi.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Fabio Estevam <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Nicolin Chen <b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: bunnie-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org, Sean Cross <xobs-nXMMniAx+RbQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-CLOCK_MONITONIC is defined in <bits/time.h>, add <time.h> before
-<sys/time.h>.
+This patchset adds support for the Everest Semi ES8328 audio codec, used in
+the Novena open source laptop.  It also adds support for using the es8328 on
+IMX boards.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
----
- src/pcm/pcm_local.h |    1 +
- 1 file changed, 1 insertion(+)
+We write a machine driver rather than using simple-card because the machine
+driver needs to support regulators for the speaker amps and as well as
+supporting headphone jacks, in addition to the i.MX audmux routing.
 
-diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
-index 2206afe..80bbe59 100644
---- a/src/pcm/pcm_local.h
-+++ b/src/pcm/pcm_local.h
-@@ -24,6 +24,7 @@
- #include <stdlib.h>
- #include <limits.h>
- #include <sys/uio.h>
-+#include <time.h>
- #include <sys/time.h>
- 
- #define _snd_mask sndrv_mask
+Changes since v9:
+    - Minor formatting corrections
+    - Rework DAPM registers in es8328.h.  DAPM widgets use offsets, and the
+      v9 patch turned snd_soc_write() calls into widgets without converting
+      from i2c masks to offsets first.
+    - Rename DAC and ADC PLL to DLL, to reflect latest documentation.
+
+Changes since v8:
+    - For the mclk ratios, move from an array to a lookup table, and rename
+      the variable to be clearer.
+    - Move all CHIPPOWER accesses into DAPM supplies.
+    - Fix sloppy compile problems introduced in v8.
+    - Shut down clocks and supplies on suspend, and enable them on resume.
+    - Remove double set of ES8328_MASTERMODE_MSC.
+
+Changes since v7:
+    - We now fetch the regulators in the device-level probe rather than
+      in the ASoC-level probe.
+
+Changes since v6:
+    - Minor clarification of AUDMUX in imx-audio-es8328.txt
+    - Use u32 instead of int in imx-es8328.c for int-mux and ext-mux
+    - Bounds checking on mux-int-port and mux-ext-port in imx-es8328.c
+    - Remove NULL checks before calling of_node_put()
+
+Changes since v5:
+    - Removed empty imx_set_frequency function from imx-es8328.c
+    - Move the clock from imx-audio-es8328 to the es8328 codec itself
+    - Add support for 2x (22.5792 MHz) and 1x (11.2896 MHz) source clocks
+    - Restore registers on resume
+    - Document pins for ES8328, including input pins
+
+Changes since v4:
+    - Simplify clock handling and use assigned-clock-parents
+    - Move the codec regulator from the machine driver to the codec
+    - Specify all four regulators, and require their presence
+    - Fix audio recording, such that it enables the PGA
+
+Changes since v3:
+    - Add OF bindings for everest,es8328
+    - Add back in patch to add everest as a vendor prefix
+    - Give clocks more generic names
+    - Document required clocks in DT bindings document
+
+Changes since v2:
+    - Change deemph to a bool, and update based on sample rate
+    - Replace value enums with regular enums
+    - Break SPI and I2C drivers into their own modules
+    - Rename everest,es8328 to es8328 as the module wasn't getting detected.
+      Because of this, the patch to vendor-prefixes.txt has been dropped.
+
+Changes since v1:
+    - Rename HP/Speaker to OUT1/OUT2
+    - Use DAPM widgets for startup/shutdown
+    - Add regulator support to machine driver
+
+Sean Cross (3):
+  devicetree: bindings: Add Everest Semicodunctor
+  ASoC: add es8328 codec driver
+  ASoC: fsl: add imx-es8328 machine driver
+
+ Documentation/devicetree/bindings/sound/es8328.txt |  38 ++
+ .../devicetree/bindings/sound/imx-audio-es8328.txt |  61 ++
+ .../devicetree/bindings/vendor-prefixes.txt        |   1 +
+ sound/soc/codecs/Kconfig                           |  13 +
+ sound/soc/codecs/Makefile                          |   6 +
+ sound/soc/codecs/es8328-i2c.c                      |  60 ++
+ sound/soc/codecs/es8328-spi.c                      |  49 ++
+ sound/soc/codecs/es8328.c                          | 756 +++++++++++++++++++++
+ sound/soc/codecs/es8328.h                          | 314 +++++++++
+ sound/soc/fsl/Kconfig                              |  14 +
+ sound/soc/fsl/Makefile                             |   2 +
+ sound/soc/fsl/imx-es8328.c                         | 233 +++++++
+ 12 files changed, 1547 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/es8328.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-es8328.txt
+ create mode 100644 sound/soc/codecs/es8328-i2c.c
+ create mode 100644 sound/soc/codecs/es8328-spi.c
+ create mode 100644 sound/soc/codecs/es8328.c
+ create mode 100644 sound/soc/codecs/es8328.h
+ create mode 100644 sound/soc/fsl/imx-es8328.c
+
 -- 
-1.7.9.5
+2.0.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
