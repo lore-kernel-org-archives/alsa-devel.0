@@ -1,77 +1,101 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC
-	hardware descriptor list support)
-Date: Thu, 24 Jul 2014 13:51:21 +0100
-Message-ID: <20140724125120.GN21766@n2100.arm.linux.org.uk>
-References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com> <87d2cwvmxa.wl%kuninori.morimoto.gx@gmail.com> <3361994.F0HgAeJkR9@avalon> <28702317.aD0C1Ga3DS@avalon>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH 1/2] ALSA: hda - add PCI IDs for Intel
+	Braswell
+Date: Thu, 24 Jul 2014 12:59:55 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19543F13@SHSMSX103.ccr.corp.intel.com>
+References: <1406076938-97633-1-git-send-email-libin.yang@intel.com>
+ <s5hwqb4jslx.wl%tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19543D84@SHSMSX103.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <28702317.aD0C1Ga3DS@avalon>
-Sender: linux-sh-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, dmaengine@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE1DF2655BA
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 14:59:59 +0200 (CEST)
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D19543D84@SHSMSX103.ccr.corp.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 23, 2014 at 01:07:43PM +0200, Laurent Pinchart wrote:
-> Now we have a core issue. On one side there's rsnd_soc_dai_trigger() being 
-> called in atomic context, and on the other side the function ends up calling 
-> dmaengine_prep_dma_cyclic() which needs to allocate memory. To make this more 
-> func the DMA engine API is undocumented and completely silent on whether the 
-> prep functions are allowed to sleep. The question is, who's wrong ?
+Hi Takashi,
 
-For slave DMA drivers, there is the expectation that the prepare
-functions will be callable from tasklet context, without any locks
-held by the driver.  So, it's expected that the prepare functions
-will work from tasklet context.
+After checking the HW, the HDMI audio codec doesn't support EPSS. If we force it to support runtime PM, there is risk. Besides, as the codec doesn't support EPSS, if we want to support runtime PM, simply add the AZX_DCAPS_PM_RUNTIME flag doesn't help. We must think out a method to ensure the driver enter pm runtime even the codec doesn't support.
 
-I don't think we've ever specified whether they should be callable
-from interrupt context, but in practice, we have drivers which do
-exactly that, so I think the decision has already been made - they
-will be callable from IRQ context, and so GFP_ATOMIC is required
-in the driver.
+What do you think whether we can merge the patch firstly, and on the meantime, I will ask our QA team to do a full test with pm runtime enabled and decide the next step?
 
-> The rcar-dmac DMA engine driver uses runtime PM. When not used, the device is 
-> suspended. The driver calls pm_runtime_get_sync() to resume the device, and 
-> needs to do so when a descriptor is submitted. This operation, currently 
-> performed in the tx_submit handler, could be moved to the prep_dma_cyclic or 
-> issue_pending handler, but the three operations are called in a row from 
-> rsnd_dma_start(), itself ultimately called from snd_pcm_lib_write1() with the 
-> spinlock held. This means I have no place in my DMA engine driver where I can 
-> resume the device.
 
-Right, runtime PM with DMA engine drivers is hard.  The best that can
-be done right now is to pm_runtime_get() in the alloc_chan_resources()
-method and put it in free_chan_resources() if you don't want to do the
-workqueue thing.
+Regards,
+Libin
 
-There's a problem with the workqueue thing though - by doing so, you
-make it asynchronous to the starting of the DMA.  The DMA engine API
-allows for delayed starting (it's actually the normal thing for DMA
-engine), but that may not always be appropriate or desirable.
-
-> One could argue that the rcar-dmac driver could use a work queue to
-> handle power management. That's correct, but the additional complexity,
-> which would be required in *all* DMA engine drivers, seem too high to
-> me. If we need to go that way, this is really a task that the DMA
-> engine core should handle.
-
-As I mention above, the problem with that is getting the workqueue to
-run soon enough that it doesn't cause a performance degredation or
-other issues.
-
-There's also expectations from other code - OMAP for example explicitly
-needs DMA to be started on the hardware before the audio block can be
-enabled (from what I remember, it tickless an erratum if this is not
-done.)
-
-> Let's start by answering the background question and updating the DMA engine 
-> API documentation once and for good : in which context are drivers allowed to 
-> call the prep, tx_submit and issue_pending functions ?
-
-IRQs-off contexts. :)
-
--- 
-FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
-according to speedtest.net.
+> -----Original Message-----
+> From: Yang, Libin
+> Sent: Thursday, July 24, 2014 11:57 AM
+> To: Takashi Iwai
+> Cc: alsa-devel@alsa-project.org; Lin, Mengdong
+> Subject: RE: [PATCH 1/2] ALSA: hda - add PCI IDs for Intel Braswell
+> 
+> Hi Takashi,
+> 
+> > -----Original Message-----
+> > From: Takashi Iwai [mailto:tiwai@suse.de]
+> > Sent: Wednesday, July 23, 2014 6:08 PM
+> > To: Yang, Libin
+> > Cc: alsa-devel@alsa-project.org; Lin, Mengdong
+> > Subject: Re: [PATCH 1/2] ALSA: hda - add PCI IDs for Intel Braswell
+> >
+> > At Wed, 23 Jul 2014 08:55:37 +0800,
+> > libin.yang@intel.com wrote:
+> > >
+> > > From: Libin Yang <libin.yang@intel.com>
+> > >
+> > > Add HD Audio Device PCI ID for the Intel Braswell platform.
+> > >
+> > > Signed-off-by: Libin Yang <libin.yang@intel.com>
+> > > ---
+> > >  sound/pci/hda/hda_intel.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> > > index 387fc73..f758729 100644
+> > > --- a/sound/pci/hda/hda_intel.c
+> > > +++ b/sound/pci/hda/hda_intel.c
+> > > @@ -2017,6 +2017,9 @@ static const struct pci_device_id azx_ids[] = {
+> > >  	/* BayTrail */
+> > >  	{ PCI_DEVICE(0x8086, 0x0f04),
+> > >  	  .driver_data = AZX_DRIVER_PCH |
+> > AZX_DCAPS_INTEL_PCH_NOPM },
+> > > +	/* Braswell */
+> > > +	{ PCI_DEVICE(0x8086, 0x2284),
+> > > +	  .driver_data = AZX_DRIVER_PCH |
+> > AZX_DCAPS_INTEL_PCH_NOPM },
+> >
+> > Doesn't really this new chip support runtime PM?
+> 
+> Braswell is more like Baytrail, which doesn't support runtime PM.
+> 
+> Anyway, I will test the pm-runtime on braswell and update the result later.
+> 
+> >
+> >
+> > Takashi
+> >
+> > >  	/* ICH */
+> > >  	{ PCI_DEVICE(0x8086, 0x2668),
+> > >  	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
+> > > --
+> > > 1.9.1
+> > >
+> 
+> Regards,
+> Libin
