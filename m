@@ -1,92 +1,112 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC
- hardware descriptor list support)
-Date: Thu, 24 Jul 2014 10:23:56 +0530
-Message-ID: <20140724045356.GC8181@intel.com>
-References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <87d2cwvmxa.wl%kuninori.morimoto.gx@gmail.com>
- <3361994.F0HgAeJkR9@avalon>
- <28702317.aD0C1Ga3DS@avalon>
- <87wqb3a8jd.wl%kuninori.morimoto.gx@gmail.com>
- <87vbqna699.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH v2 11/13] ASoC: Intel: mrfld: add the DSP
+	DAPM widgets
+Date: Thu, 24 Jul 2014 11:48:03 +0530
+Message-ID: <20140724061803.GD8181@intel.com>
+References: <1404967497-22537-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1404967497-22537-12-git-send-email-subhransu.s.prusty@intel.com>
+ <20140718121920.GO17528@sirena.org.uk>
+ <20140718142623.GH1985@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87vbqna699.wl%kuninori.morimoto.gx@gmail.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, dmaengine@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, Maxime Ripard <maxime.ripard@free-electrons.com>
+Content-Type: multipart/mixed; boundary="===============7071480984978788406=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id D37A5265765
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 08:24:06 +0200 (CEST)
+In-Reply-To: <20140718142623.GH1985@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 23, 2014 at 06:35:17PM -0700, Kuninori Morimoto wrote:
-> 
-> Hi Laurent again
-> 
-> > > > The rsnd_soc_dai_trigger() function takes a spinlock, making the context
-> > > > atomic, which regmap doesn't like as it locks a mutex.
-> > > > 
-> > > > It might be possible to fix this by setting the fast_io field in both the
-> > > > regmap_config and regmap_bus structures in sound/soc/sh/rcar/gen.c. regmap
-> > > > will then use a spinlock instead of a mutex. However, even if I believe that
-> > > > change makes sense and should be done, another atomic context issue will
-> > > > come from the rcar-dmac driver which allocates memory in the
-> > > > prep_dma_cyclic function, called by rsnd_dma_start() from
-> > > > rsnd_soc_dai_trigger() with the spinlock help.
-> > > > 
-> > > > What context is the rsnd_soc_dai_trigger() function called in by the alsa
-> > > > core ? If it's guaranteed to be a sleepable context, would it make sense to
-> > > > replace the rsnd_priv spinlock with a mutex ?
-> > > 
-> > > Answering myself here, that's not an option, as the trigger function is called 
-> > > in atomic context (replacing the spinlock with a mutex produced a clear BUG) 
-> > > due to snd_pcm_lib_write1() taking a spinlock.
-> > > 
-> > > Now we have a core issue. On one side there's rsnd_soc_dai_trigger() being 
-> > > called in atomic context, and on the other side the function ends up calling 
-> > > dmaengine_prep_dma_cyclic() which needs to allocate memory. To make this more 
-> > > func the DMA engine API is undocumented and completely silent on whether the 
-> > > prep functions are allowed to sleep. The question is, who's wrong ?
-> > > 
-> > > Now, if you're tempted to say that I'm wrong by allocating memory with 
-> > > GFP_KERNEL in the DMA engine driver, please read on first :-) I've tried 
-> > > replacing GFP_KERNEL with GFP_ATOMIC allocations, and then ran into a problem 
-> > > more complex to solve.
-> > > 
-> > > The rcar-dmac DMA engine driver uses runtime PM. When not used, the device is 
-> > > suspended. The driver calls pm_runtime_get_sync() to resume the device, and 
-> > > needs to do so when a descriptor is submitted. This operation, currently 
-> > > performed in the tx_submit handler, could be moved to the prep_dma_cyclic or 
-> > > issue_pending handler, but the three operations are called in a row from 
-> > > rsnd_dma_start(), itself ultimately called from snd_pcm_lib_write1() with the 
-> > > spinlock held. This means I have no place in my DMA engine driver where I can 
-> > > resume the device.
-> > > 
-> > > One could argue that the rcar-dmac driver could use a work queue to handle 
-> > > power management. That's correct, but the additional complexity, which would 
-> > > be required in *all* DMA engine drivers, seem too high to me. If we need to go 
-> > > that way, this is really a task that the DMA engine core should handle.
-> > > 
-> > > Let's start by answering the background question and updating the DMA engine 
-> > > API documentation once and for good : in which context are drivers allowed to 
-> > > call the prep, tx_submit and issue_pending functions ?
-> > 
-> > rsnd driver (and sound/soc/sh/fsi driver too) is using prep_dma_cyclic() now,
-> > but, it had been used prep_slave_single() before.
-> > Then, it used work queue in dai_trigger function.
-> > How about to use same method in prep_dma_cyclic() ?
-> > Do you think your issue will be solved if sound driver calls prep_dma_cyclic()
-> > from work queue ?
-> 
-> Sorry, this doesn't solve issue.
-> dmaengine_prep_dma_cyclic() is used in
-> ${LINUX}/sound/core/pcm_dmaengine.c,
-> and the situation is same as ours.
-> 
-> Hmm..
-> In my quick check, other DMAEngine drivers are using GFP_ATOMIC
-> in cyclic/prep_slave_sg functions...
-And thats partially right. You need to use GFP_NOWAIT.
 
--- 
+--===============7071480984978788406==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VS++wcV0S1rZb1Fb"
+Content-Disposition: inline
+
+
+--VS++wcV0S1rZb1Fb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Jul 18, 2014 at 07:56:23PM +0530, Vinod Koul wrote:
+> On Fri, Jul 18, 2014 at 01:19:20PM +0100, Mark Brown wrote:
+> > On Thu, Jul 10, 2014 at 10:14:55AM +0530, Subhransu S. Prusty wrote:
+> >=20
+> > > +	pr_debug("%s: widget =3D %s\n", __func__, w->name);
+> > > +	for (i =3D 0; i < w->num_kcontrols; i++) {
+> > > +		if (dapm_kcontrol_get_value(w->kcontrols[i])) {
+> > > +			mc =3D (struct soc_mixer_control *)(w->kcontrols[i])->private_val=
+ue;
+> > > +			val |=3D 1 << mc->shift;
+> > > +		}
+> > > +	}
+> >=20
+> > So, this is the usage of dapm_kcontrol_get_value() (quite a way away
+> > from the patch exporting it!).  The usage here looks *very* strange.
+> > We're calling the function but treating the result as a boolean and
+> > manually decoding the DAPM data structures in order to get the control
+> > shift...  that's odd to say the least.
+> >=20
+> > > +	SST_FILL_DESTINATION(2, cmd.output_id,
+> > > +			     ids->location_id, SST_DEFAULT_MODULE_ID);
+> > > +	cmd.nb_inputs =3D	fill_swm_input(&cmd.input[0], val);
+> >=20
+> > So what we're doing here is parsing the controls to get which inputs are
+> > enabled...  it's not altogether clear to me that we shouldn't be doing
+> > this at control update time.  Presumably we'll also need to be sending
+> > these messages when the controls are updated to account for changes that
+> > happen while streams are active.
+> yes thats the idea. Here we send as mixer path is On. Yes the mixer update
+> if On does send this as well.
+
+Wanted to check if there is anything else required to be done for thsi
+series, if not can you pls merge the ones before this in series, if okay.
+
+Thanks
+--=20
 ~Vinod
+
+--VS++wcV0S1rZb1Fb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQIcBAEBAgAGBQJT0KUbAAoJEHwUBw8lI4NHECYP/2qrZfWgbnxWf1vIOQSHSNDA
+dW3FgGikdechfAByYD+EqQ6H8bSF0rkM9MKdbe98RkbwIueIbR3rDKnm8jAldaWy
+nAYhA8ZRUDChD/gQ1/uvcBZ4jTfOnXry3BG7Kl8uMO0SJA8K8o0zK7Fjup5W86Eq
+huMisGbHDwpgfsP0d0KXbI8ZGec4bOa/MTNUCRKzrpGdOPLxUTaaoLAdqhBYU4X9
+OaqDkNtnjP3/GJOCk2zsUYNqCx2+36sjWXOKt803Z+RaBlgCUJYtyZAxkDs7JYNf
+q6eL0MowAheGItToY9Q0FNf542tAt3MLL7ittA8V/xlTlwhMEyI+VGcpm84yx7nj
++sUNxu9itq9F/kGCRffNDYmT0UZjOq6Nt3uG0XUYOkc+punAYVRynXTFJEBT2q0K
+4EfRTbpz3uMPr4eCA7b4tIGb+ngQWpHvddMANzEzzI0VmJwWEpSLF8jccZzjLs1o
+0XVgOTuM/HNIVns31qH+T5OjQzp4QUn0/YCG7NX6UQVzGnTZYNxetGtM/RjzNyWB
+jprRLZ3o+Gz0rvSbrEKvolLNlkLkfJw5L8nPlVuYRd5qeeOsQzQ9zcVgm7o3Mjnr
+ICTWKOer5ABIPtE5hH0UPGc3LQGvmq6D6EGq+U/05ZINVSUmWtaCMActoS1yMbKt
+Pu7b8uqEii77zRp9uQh3
+=arxs
+-----END PGP SIGNATURE-----
+
+--VS++wcV0S1rZb1Fb--
+
+--===============7071480984978788406==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7071480984978788406==--
