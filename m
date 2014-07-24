@@ -1,83 +1,87 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [PATCH 1/2] ALSA: hda - add PCI IDs for Intel
-	Braswell
-Date: Thu, 24 Jul 2014 03:57:12 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19543D84@SHSMSX103.ccr.corp.intel.com>
-References: <1406076938-97633-1-git-send-email-libin.yang@intel.com>
- <s5hwqb4jslx.wl%tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC
+ hardware descriptor list support)
+Date: Thu, 24 Jul 2014 10:22:48 +0530
+Message-ID: <20140724045248.GB8181@intel.com>
+References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+ <87d2cwvmxa.wl%kuninori.morimoto.gx@gmail.com>
+ <3361994.F0HgAeJkR9@avalon>
+ <28702317.aD0C1Ga3DS@avalon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 0878D26573F
- for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 05:57:31 +0200 (CEST)
-In-Reply-To: <s5hwqb4jslx.wl%tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <28702317.aD0C1Ga3DS@avalon>
+Sender: linux-sh-owner@vger.kernel.org
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, dmaengine@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, July 23, 2014 6:08 PM
-> To: Yang, Libin
-> Cc: alsa-devel@alsa-project.org; Lin, Mengdong
-> Subject: Re: [PATCH 1/2] ALSA: hda - add PCI IDs for Intel Braswell
+On Wed, Jul 23, 2014 at 01:07:43PM +0200, Laurent Pinchart wrote:
+> > The rsnd_soc_dai_trigger() function takes a spinlock, making the context
+> > atomic, which regmap doesn't like as it locks a mutex.
+> > 
+> > It might be possible to fix this by setting the fast_io field in both the
+> > regmap_config and regmap_bus structures in sound/soc/sh/rcar/gen.c. regmap
+> > will then use a spinlock instead of a mutex. However, even if I believe that
+> > change makes sense and should be done, another atomic context issue will
+> > come from the rcar-dmac driver which allocates memory in the
+> > prep_dma_cyclic function, called by rsnd_dma_start() from
+> > rsnd_soc_dai_trigger() with the spinlock help.
+> > 
+> > What context is the rsnd_soc_dai_trigger() function called in by the alsa
+> > core ? If it's guaranteed to be a sleepable context, would it make sense to
+> > replace the rsnd_priv spinlock with a mutex ?
 > 
-> At Wed, 23 Jul 2014 08:55:37 +0800,
-> libin.yang@intel.com wrote:
-> >
-> > From: Libin Yang <libin.yang@intel.com>
-> >
-> > Add HD Audio Device PCI ID for the Intel Braswell platform.
-> >
-> > Signed-off-by: Libin Yang <libin.yang@intel.com>
-> > ---
-> >  sound/pci/hda/hda_intel.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> > index 387fc73..f758729 100644
-> > --- a/sound/pci/hda/hda_intel.c
-> > +++ b/sound/pci/hda/hda_intel.c
-> > @@ -2017,6 +2017,9 @@ static const struct pci_device_id azx_ids[] = {
-> >  	/* BayTrail */
-> >  	{ PCI_DEVICE(0x8086, 0x0f04),
-> >  	  .driver_data = AZX_DRIVER_PCH |
-> AZX_DCAPS_INTEL_PCH_NOPM },
-> > +	/* Braswell */
-> > +	{ PCI_DEVICE(0x8086, 0x2284),
-> > +	  .driver_data = AZX_DRIVER_PCH |
-> AZX_DCAPS_INTEL_PCH_NOPM },
+> Answering myself here, that's not an option, as the trigger function is called 
+> in atomic context (replacing the spinlock with a mutex produced a clear BUG) 
+> due to snd_pcm_lib_write1() taking a spinlock.
 > 
-> Doesn't really this new chip support runtime PM?
-
-Braswell is more like Baytrail, which doesn't support runtime PM. 
-
-Anyway, I will test the pm-runtime on braswell and update the result later.
-
+> Now we have a core issue. On one side there's rsnd_soc_dai_trigger() being 
+> called in atomic context, and on the other side the function ends up calling 
+> dmaengine_prep_dma_cyclic() which needs to allocate memory. To make this more 
+> func the DMA engine API is undocumented and completely silent on whether the 
+> prep functions are allowed to sleep. The question is, who's wrong ?
 > 
+> Now, if you're tempted to say that I'm wrong by allocating memory with 
+> GFP_KERNEL in the DMA engine driver, please read on first :-) I've tried 
+> replacing GFP_KERNEL with GFP_ATOMIC allocations, and then ran into a problem 
+> more complex to solve.
 > 
-> Takashi
+> The rcar-dmac DMA engine driver uses runtime PM. When not used, the device is 
+> suspended. The driver calls pm_runtime_get_sync() to resume the device, and 
+> needs to do so when a descriptor is submitted. This operation, currently 
+> performed in the tx_submit handler, could be moved to the prep_dma_cyclic or 
+> issue_pending handler, but the three operations are called in a row from 
+> rsnd_dma_start(), itself ultimately called from snd_pcm_lib_write1() with the 
+> spinlock held. This means I have no place in my DMA engine driver where I can 
+> resume the device.
 > 
-> >  	/* ICH */
-> >  	{ PCI_DEVICE(0x8086, 0x2668),
-> >  	  .driver_data = AZX_DRIVER_ICH | AZX_DCAPS_OLD_SSYNC |
-> > --
-> > 1.9.1
-> >
+> One could argue that the rcar-dmac driver could use a work queue to handle 
+> power management. That's correct, but the additional complexity, which would 
+> be required in *all* DMA engine drivers, seem too high to me. If we need to go 
+> that way, this is really a task that the DMA engine core should handle.
+> 
+> Let's start by answering the background question and updating the DMA engine 
+> API documentation once and for good : in which context are drivers allowed to 
+> call the prep, tx_submit and issue_pending functions ?
+I think this was bought up sometime back and we have cleared that all
+_prep functions can be invoked in atomic context.
 
-Regards,
-Libin
+This is the reason why we have been pushing folks to use GFP_NOWAIT is
+memory allocations during prepare.
+
+Thanks for pointing out documentation doesn't say so, will send a patch for
+that.
+
+On issue_pending and tx_submit, yes these should be allowed to be called
+from atomic context too.
+
+Lastly, just to clarify the callback invoked after descriptor is complete
+can also be used to submit new descriptors, so folks are dropping locking
+before invoking the callback
+
+HTH
+
+-- 
+~Vinod
