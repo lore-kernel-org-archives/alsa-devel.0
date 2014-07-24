@@ -1,19 +1,24 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 11/13] ASoC: Intel: mrfld: add the DSP
-	DAPM widgets
-Date: Thu, 24 Jul 2014 11:48:03 +0530
-Message-ID: <20140724061803.GD8181@intel.com>
-References: <1404967497-22537-1-git-send-email-subhransu.s.prusty@intel.com>
- <1404967497-22537-12-git-send-email-subhransu.s.prusty@intel.com>
- <20140718121920.GO17528@sirena.org.uk>
- <20140718142623.GH1985@intel.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 3/3] driver:gpio remove all usage of
+	gpio_remove retval in driver
+Date: Thu, 24 Jul 2014 10:29:22 +0200
+Message-ID: <CACRpkdaEF14cB+=SjTHgwGH0z88v82Q_UNPvjzDAbpOb_2ec5Q@mail.gmail.com>
+References: <CACRpkda6mzVdaN0cvOxpbsxWyCv2nGyDXOjZg_5aT8u7SSQeUw@mail.gmail.com>
+ <1405197014-25225-1-git-send-email-berthe.ab@gmail.com>
+ <1405197014-25225-4-git-send-email-berthe.ab@gmail.com>
+ <CACRpkdasp9bLULT7NJM9nYX58rRSsQKXFddOLz9Ah6kp-j-3=Q@mail.gmail.com>
+ <20140722151125.GS17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7071480984978788406=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id D37A5265765
- for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 08:24:06 +0200 (CEST)
-In-Reply-To: <20140718142623.GH1985@intel.com>
+Received: from mail-oi0-f52.google.com (mail-oi0-f52.google.com
+ [209.85.218.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 098CC26577D
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 10:29:23 +0200 (CEST)
+Received: by mail-oi0-f52.google.com with SMTP id h136so1798101oig.39
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 01:29:22 -0700 (PDT)
+In-Reply-To: <20140722151125.GS17528@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,89 +29,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Cc: linux-mips@linux-mips.org, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>, Matthew Garrett <matthew.garrett@nebula.com>, Samuel Ortiz <sameo@linux.intel.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, abdoulaye berthe <berthe.ab@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, Bryan Wu <cooloney@gmail.com>, "arm@kernel.org" <arm@kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Michael Buesch <m@bues.ch>, Greg KH <gregkh>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jul 22, 2014 at 5:11 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Jul 22, 2014 at 05:08:13PM +0200, Linus Walleij wrote:
+>
+>> Heads up. Requesting ACKs for this patch or I'm atleast warning that it will be
+>> applied. We're getting rid of the return value from gpiochip_remove().
+>
+> Can someone send the patch please?  Splitting it up per-subsystem would
+> probably be easier...
 
---===============7071480984978788406==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VS++wcV0S1rZb1Fb"
-Content-Disposition: inline
+OK Abdoulaye maybe we can do it a piece at a time?
 
+I have removed the __must_check attribute from gpiochip_remove()
+in the gpiolib, so the compiler won't complain about this being missing
+anymore as of kernel v3.17. I also dropped the check in the GPIO
+and pin control subsystem, and other subsystems can start
+dropping the checks too if they are OK with the build warnings
+from the kautobuild until the __must_check removal has propagated
+upstream.
 
---VS++wcV0S1rZb1Fb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jul 18, 2014 at 07:56:23PM +0530, Vinod Koul wrote:
-> On Fri, Jul 18, 2014 at 01:19:20PM +0100, Mark Brown wrote:
-> > On Thu, Jul 10, 2014 at 10:14:55AM +0530, Subhransu S. Prusty wrote:
-> >=20
-> > > +	pr_debug("%s: widget =3D %s\n", __func__, w->name);
-> > > +	for (i =3D 0; i < w->num_kcontrols; i++) {
-> > > +		if (dapm_kcontrol_get_value(w->kcontrols[i])) {
-> > > +			mc =3D (struct soc_mixer_control *)(w->kcontrols[i])->private_val=
-ue;
-> > > +			val |=3D 1 << mc->shift;
-> > > +		}
-> > > +	}
-> >=20
-> > So, this is the usage of dapm_kcontrol_get_value() (quite a way away
-> > from the patch exporting it!).  The usage here looks *very* strange.
-> > We're calling the function but treating the result as a boolean and
-> > manually decoding the DAPM data structures in order to get the control
-> > shift...  that's odd to say the least.
-> >=20
-> > > +	SST_FILL_DESTINATION(2, cmd.output_id,
-> > > +			     ids->location_id, SST_DEFAULT_MODULE_ID);
-> > > +	cmd.nb_inputs =3D	fill_swm_input(&cmd.input[0], val);
-> >=20
-> > So what we're doing here is parsing the controls to get which inputs are
-> > enabled...  it's not altogether clear to me that we shouldn't be doing
-> > this at control update time.  Presumably we'll also need to be sending
-> > these messages when the controls are updated to account for changes that
-> > happen while streams are active.
-> yes thats the idea. Here we send as mixer path is On. Yes the mixer update
-> if On does send this as well.
-
-Wanted to check if there is anything else required to be done for thsi
-series, if not can you pls merge the ones before this in series, if okay.
-
-Thanks
---=20
-~Vinod
-
---VS++wcV0S1rZb1Fb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJT0KUbAAoJEHwUBw8lI4NHECYP/2qrZfWgbnxWf1vIOQSHSNDA
-dW3FgGikdechfAByYD+EqQ6H8bSF0rkM9MKdbe98RkbwIueIbR3rDKnm8jAldaWy
-nAYhA8ZRUDChD/gQ1/uvcBZ4jTfOnXry3BG7Kl8uMO0SJA8K8o0zK7Fjup5W86Eq
-huMisGbHDwpgfsP0d0KXbI8ZGec4bOa/MTNUCRKzrpGdOPLxUTaaoLAdqhBYU4X9
-OaqDkNtnjP3/GJOCk2zsUYNqCx2+36sjWXOKt803Z+RaBlgCUJYtyZAxkDs7JYNf
-q6eL0MowAheGItToY9Q0FNf542tAt3MLL7ittA8V/xlTlwhMEyI+VGcpm84yx7nj
-+sUNxu9itq9F/kGCRffNDYmT0UZjOq6Nt3uG0XUYOkc+punAYVRynXTFJEBT2q0K
-4EfRTbpz3uMPr4eCA7b4tIGb+ngQWpHvddMANzEzzI0VmJwWEpSLF8jccZzjLs1o
-0XVgOTuM/HNIVns31qH+T5OjQzp4QUn0/YCG7NX6UQVzGnTZYNxetGtM/RjzNyWB
-jprRLZ3o+Gz0rvSbrEKvolLNlkLkfJw5L8nPlVuYRd5qeeOsQzQ9zcVgm7o3Mjnr
-ICTWKOer5ABIPtE5hH0UPGc3LQGvmq6D6EGq+U/05ZINVSUmWtaCMActoS1yMbKt
-Pu7b8uqEii77zRp9uQh3
-=arxs
------END PGP SIGNATURE-----
-
---VS++wcV0S1rZb1Fb--
-
---===============7071480984978788406==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7071480984978788406==--
+Yours,
+Linus Walleij
