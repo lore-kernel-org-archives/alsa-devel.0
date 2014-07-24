@@ -1,55 +1,52 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 3/3] driver:gpio remove all usage of
-	gpio_remove retval in driver
-Date: Thu, 24 Jul 2014 10:29:22 +0200
-Message-ID: <CACRpkdaEF14cB+=SjTHgwGH0z88v82Q_UNPvjzDAbpOb_2ec5Q@mail.gmail.com>
-References: <CACRpkda6mzVdaN0cvOxpbsxWyCv2nGyDXOjZg_5aT8u7SSQeUw@mail.gmail.com>
- <1405197014-25225-1-git-send-email-berthe.ab@gmail.com>
- <1405197014-25225-4-git-send-email-berthe.ab@gmail.com>
- <CACRpkdasp9bLULT7NJM9nYX58rRSsQKXFddOLz9Ah6kp-j-3=Q@mail.gmail.com>
- <20140722151125.GS17528@sirena.org.uk>
+From: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v2 0/2] Add Freescale ASRC driver
+Date: Thu, 24 Jul 2014 16:35:27 +0800
+Message-ID: <cover.1406189745.git.nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f52.google.com (mail-oi0-f52.google.com
- [209.85.218.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 098CC26577D
- for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 10:29:23 +0200 (CEST)
-Received: by mail-oi0-f52.google.com with SMTP id h136so1798101oig.39
- for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 01:29:22 -0700 (PDT)
-In-Reply-To: <20140722151125.GS17528@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-mips@linux-mips.org, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>, Matthew Garrett <matthew.garrett@nebula.com>, Samuel Ortiz <sameo@linux.intel.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, abdoulaye berthe <berthe.ab@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, Bryan Wu <cooloney@gmail.com>, "arm@kernel.org" <arm@kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Michael Buesch <m@bues.ch>, Greg KH <gregkh>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, rdunlap-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, b02247-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 22, 2014 at 5:11 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Jul 22, 2014 at 05:08:13PM +0200, Linus Walleij wrote:
->
->> Heads up. Requesting ACKs for this patch or I'm atleast warning that it will be
->> applied. We're getting rid of the return value from gpiochip_remove().
->
-> Can someone send the patch please?  Splitting it up per-subsystem would
-> probably be easier...
+This series of patches add Freescale ASRC module driver support along
+with the extra request in imx-sdma structure required by SDMA Device
+to Device script.
 
-OK Abdoulaye maybe we can do it a piece at a time?
+The previous version has been in the maillist for nearly six months
+without any comment and reply. So I decide to drop the SDMA part's
+change since this series focus on ASRC support (Later, we can send
+SDMA part separately.) so that ASRC driver may get upstream first.
 
-I have removed the __must_check attribute from gpiochip_remove()
-in the gpiolib, so the compiler won't complain about this being missing
-anymore as of kernel v3.17. I also dropped the check in the GPIO
-and pin control subsystem, and other subsystems can start
-dropping the checks too if they are OK with the build warnings
-from the kautobuild until the __must_check removal has propagated
-upstream.
+Changelog
+v2:
+ * PATCH-1: Dropped the change to SDMA driver.
+ * PATCH-2: Dropped useless member in private data structures.
+ * PATCH-2: Refined some comments in fsl_asrc_dma.c driver.
+ * PATCH-2: Refined commit comments.
 
-Yours,
-Linus Walleij
+Nicolin Chen (2):
+  ARM: imx: Add the secondary request into the structure for imx-sdma
+  ASoC: fsl_asrc: Add ASRC ASoC CPU DAI and platform drivers
+
+ .../devicetree/bindings/sound/fsl,asrc.txt         |   62 ++
+ include/linux/platform_data/dma-imx.h              |    1 +
+ sound/soc/fsl/Kconfig                              |    9 +
+ sound/soc/fsl/Makefile                             |    2 +
+ sound/soc/fsl/fsl_asrc.c                           | 1031 ++++++++++++++++++++
+ sound/soc/fsl/fsl_asrc.h                           |  461 +++++++++
+ sound/soc/fsl/fsl_asrc_dma.c                       |  384 ++++++++
+ 7 files changed, 1950 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,asrc.txt
+ create mode 100644 sound/soc/fsl/fsl_asrc.c
+ create mode 100644 sound/soc/fsl/fsl_asrc.h
+ create mode 100644 sound/soc/fsl/fsl_asrc_dma.c
+
+-- 
+1.8.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
