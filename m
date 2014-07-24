@@ -1,42 +1,77 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: DMA engine API issue
-Date: Thu, 24 Jul 2014 14:29:09 +0200
-Message-ID: <53D0FC15.6050601@metafoo.de>
-References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <87d2cwvmxa.wl%kuninori.morimoto.gx@gmail.com> <3361994.F0HgAeJkR9@avalon>
- <28702317.aD0C1Ga3DS@avalon>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC
+	hardware descriptor list support)
+Date: Thu, 24 Jul 2014 13:51:21 +0100
+Message-ID: <20140724125120.GN21766@n2100.arm.linux.org.uk>
+References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com> <87d2cwvmxa.wl%kuninori.morimoto.gx@gmail.com> <3361994.F0HgAeJkR9@avalon> <28702317.aD0C1Ga3DS@avalon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-248.synserver.de (smtp-out-248.synserver.de
- [212.40.185.248])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A338265580
- for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 14:29:10 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
 In-Reply-To: <28702317.aD0C1Ga3DS@avalon>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, dmaengine@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+Sender: linux-sh-owner@vger.kernel.org
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-sh@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, dmaengine@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/23/2014 01:07 PM, Laurent Pinchart wrote:
-[...]
-> Let's start by answering the background question and updating the DMA engine
-> API documentation once and for good : in which context are drivers allowed to
+On Wed, Jul 23, 2014 at 01:07:43PM +0200, Laurent Pinchart wrote:
+> Now we have a core issue. On one side there's rsnd_soc_dai_trigger() being 
+> called in atomic context, and on the other side the function ends up calling 
+> dmaengine_prep_dma_cyclic() which needs to allocate memory. To make this more 
+> func the DMA engine API is undocumented and completely silent on whether the 
+> prep functions are allowed to sleep. The question is, who's wrong ?
+
+For slave DMA drivers, there is the expectation that the prepare
+functions will be callable from tasklet context, without any locks
+held by the driver.  So, it's expected that the prepare functions
+will work from tasklet context.
+
+I don't think we've ever specified whether they should be callable
+from interrupt context, but in practice, we have drivers which do
+exactly that, so I think the decision has already been made - they
+will be callable from IRQ context, and so GFP_ATOMIC is required
+in the driver.
+
+> The rcar-dmac DMA engine driver uses runtime PM. When not used, the device is 
+> suspended. The driver calls pm_runtime_get_sync() to resume the device, and 
+> needs to do so when a descriptor is submitted. This operation, currently 
+> performed in the tx_submit handler, could be moved to the prep_dma_cyclic or 
+> issue_pending handler, but the three operations are called in a row from 
+> rsnd_dma_start(), itself ultimately called from snd_pcm_lib_write1() with the 
+> spinlock held. This means I have no place in my DMA engine driver where I can 
+> resume the device.
+
+Right, runtime PM with DMA engine drivers is hard.  The best that can
+be done right now is to pm_runtime_get() in the alloc_chan_resources()
+method and put it in free_chan_resources() if you don't want to do the
+workqueue thing.
+
+There's a problem with the workqueue thing though - by doing so, you
+make it asynchronous to the starting of the DMA.  The DMA engine API
+allows for delayed starting (it's actually the normal thing for DMA
+engine), but that may not always be appropriate or desirable.
+
+> One could argue that the rcar-dmac driver could use a work queue to
+> handle power management. That's correct, but the additional complexity,
+> which would be required in *all* DMA engine drivers, seem too high to
+> me. If we need to go that way, this is really a task that the DMA
+> engine core should handle.
+
+As I mention above, the problem with that is getting the workqueue to
+run soon enough that it doesn't cause a performance degredation or
+other issues.
+
+There's also expectations from other code - OMAP for example explicitly
+needs DMA to be started on the hardware before the audio block can be
+enabled (from what I remember, it tickless an erratum if this is not
+done.)
+
+> Let's start by answering the background question and updating the DMA engine 
+> API documentation once and for good : in which context are drivers allowed to 
 > call the prep, tx_submit and issue_pending functions ?
->
 
-I think the expectation is that these functions can be called in any 
-context. Maybe what's missing is a way to tell the DMA engine driver to get 
-ready and that it is going to be used very soon. This could be done from the 
-sound devices open() callback.
+IRQs-off contexts. :)
 
-- Lars
+-- 
+FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
+according to speedtest.net.
