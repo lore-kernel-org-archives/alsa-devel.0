@@ -1,72 +1,57 @@
-From: Alexandre Courbot <gnurou@gmail.com>
-Subject: Re: [PATCH] gpio: extend gpiod_get*() with flags parameter
-Date: Fri, 25 Jul 2014 10:32:45 +0900
-Message-ID: <CAAVeFuLK2qf1n6ipnW1tK_ur2_j7NOWLegMWYAQGwKw85fnwpA@mail.gmail.com>
-References: <1406214298-20062-1-git-send-email-acourbot@nvidia.com>
- <6059032.T3tqvLkWTo@wuerfel>
+From: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v3 0/2] Add Freescale ASRC driver
+Date: Fri, 25 Jul 2014 12:03:57 +0800
+Message-ID: <cover.1406259578.git.nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <6059032.T3tqvLkWTo@wuerfel>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Wolfram Sang <wsa@the-dreams.de>, linux-mmc <linux-mmc@vger.kernel.org>, Chris Ball <chris@printf.net>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Pavel Machek <pavel@ucw.cz>, Jiri Slaby <jslaby@suse.cz>, Florian Fainelli <f.fainelli@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Alexander Shiyan <shc_work@mail.ru>, Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Paul Handrigan <Paul.Handrigan@cirrus.com>, linux-iio@vger.kernel.org, linux-omap@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>, Hans Verkuil <hans.verkuil@cisco.com>, linux-serial@vger.kernel.org, linux-input@vger.kernel.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, rdunlap-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, b02247-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org, tklauser-93Khv+1bN0NyDzI6CaY1VQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 25, 2014 at 1:10 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Friday 25 July 2014 00:04:58 Alexandre Courbot wrote:
->> I'm not sure how this could be applied harmlessly though - maybe through
->> a dedicated branch for -next? Problem is that a lot of new code is not
->> yet merged into mainline, and conflicts are very likely to occur. Linus,
->> do you have any suggestion as to how this can be done without blood being
->> spilled?
->
-> There is a trick that we sometime use in this situation,
-> though it has to be done carefully:
->
->> diff --git a/Documentation/gpio/consumer.txt b/Documentation/gpio/consumer.txt
->> index 7ff30d2..a3fb1d7 100644
->> --- a/Documentation/gpio/consumer.txt
->> +++ b/Documentation/gpio/consumer.txt
->> @@ -29,13 +29,24 @@ gpiod_get() functions. Like many other kernel subsystems, gpiod_get() takes the
->>  device that will use the GPIO and the function the requested GPIO is supposed to
->>  fulfill:
->>
->> -       struct gpio_desc *gpiod_get(struct device *dev, const char *con_id)
->> +       struct gpio_desc *gpiod_get(struct device *dev, const char *con_id,
->> +                                   enum gpio_flags flags)
->>
->>
->
->
-> -       struct gpio_desc *gpiod_get(struct device *dev, const char *con_id)
-> +       struct gpio_desc *__gpiod_get(struct device *dev, const char *con_id,
-> +                                       enum gpio_flags flags);
-> +
-> +#define __gpiod_get(dev, con_id, flags, ...) __gpiod_get(dev, con_id, flags)
-> +#define gpiod_get(varargs ...) __gpiod_get(varargs, 0)
->
-> This will allow both variants to be called, and any users of the three-argument
-> version will pass zero as the fourth argument (or whatever you choose there).
->
-> Once the conversion is complete, the macros can be removed.
+This series of patches add Freescale ASRC module driver support along
+with the extra request in imx-sdma structure required by SDMA Device
+to Device script.
 
-Wow, that works great, thanks! Indeed, this will allow me to send more
-localized patches and to not spam half of the kernel developers. Sorry
-about the noise.
+The previous version has been in the maillist for nearly six months
+without any comment and reply. So I decide to drop the SDMA part's
+change since this series focus on ASRC support (Later, we can send
+SDMA part separately.) so that ASRC driver may get upstream first.
 
-Let's close this thread, I will submit the gpiolib update with this
-trick first, then update each user before eventually removing the
-macros.
+Changelog
+v3:
+ * PATCH-1: Added an Acked-by from Shawn Guo
+ * PATCH-2: Dropped THIS_MODULE as Tobias suggests
+ * PATCH-2: Use dma_coerce_mask_and_coherent() in fsl_asrc_dma_pcm_new()
+ * PATCH-2: Added substream check in fsl_asrc_dma_pcm_new()
+v2:
+ * PATCH-1: Dropped the change to SDMA driver.
+ * PATCH-2: Dropped useless member in private data structures.
+ * PATCH-2: Refined some comments in fsl_asrc_dma.c driver.
+ * PATCH-2: Refined commit comments.
 
-Thanks,
-Alex.
+Nicolin Chen (2):
+  ARM: imx: Add the secondary request into the structure for imx-sdma
+  ASoC: fsl_asrc: Add ASRC ASoC CPU DAI and platform drivers
+
+ .../devicetree/bindings/sound/fsl,asrc.txt         |   62 ++
+ include/linux/platform_data/dma-imx.h              |    1 +
+ sound/soc/fsl/Kconfig                              |    9 +
+ sound/soc/fsl/Makefile                             |    2 +
+ sound/soc/fsl/fsl_asrc.c                           | 1030 ++++++++++++++++++++
+ sound/soc/fsl/fsl_asrc.h                           |  461 +++++++++
+ sound/soc/fsl/fsl_asrc_dma.c                       |  386 ++++++++
+ 7 files changed, 1951 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,asrc.txt
+ create mode 100644 sound/soc/fsl/fsl_asrc.c
+ create mode 100644 sound/soc/fsl/fsl_asrc.h
+ create mode 100644 sound/soc/fsl/fsl_asrc_dma.c
+
+-- 
+1.8.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
