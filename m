@@ -1,21 +1,18 @@
-From: Varka Bhadram <varkabhadram@gmail.com>
-Subject: Re: [PATCH v3 2/2] ASoC: fsl_asrc: Add ASRC ASoC CPU
- DAI and platform drivers
-Date: Fri, 25 Jul 2014 09:54:43 +0530
-Message-ID: <53D1DC0B.1000905@gmail.com>
+From: "Patrick Shirkey" <pshirkey@boosthardware.com>
+Subject: Testing/Debugging alc668 with ASUS N750JK
+Date: Fri, 25 Jul 2014 15:40:36 +1000 (EST)
+Message-ID: <63638.86.107.254.57.1406266836.squirrel@boosthardware.com>
 References: <cover.1406259578.git.nicoleotsuka@gmail.com>
  <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
+ <53D1DC0B.1000905@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f50.google.com (mail-pa0-f50.google.com
- [209.85.220.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 05D1126579C
- for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2014 06:26:08 +0200 (CEST)
-Received: by mail-pa0-f50.google.com with SMTP id et14so5346523pad.9
- for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 21:26:07 -0700 (PDT)
-In-Reply-To: <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
+Received: from boosthardware.localdomain (boosthardware.com [88.198.122.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA70A2602AD
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2014 07:40:39 +0200 (CEST)
+In-Reply-To: <53D1DC0B.1000905@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,202 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, b42378@freescale.com, timur@tabi.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, tiwai@suse.de, linux-kernel@vger.kernel.org, rdunlap@infradead.org, b02247@freescale.com, lgirdwood@gmail.com, robh+dt@kernel.org, galak@codeaurora.org, grant.likely@linaro.org, tklauser@distanz.ch, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/25/2014 09:33 AM, Nicolin Chen wrote:
-> The Asynchronous Sample Rate Converter (ASRC) converts the sampling rate of a
-> signal associated with an input clock into a signal associated with a different
-> output clock. The driver currently works as a Front End of DPCM with other Back
-> Ends DAI links such as ESAI<->CS42888 and SSI<->WM8962 and SAI. It converts the
-> original sample rate to a common rate supported by Back Ends for playback while
-> converts the common rate of Back Ends to a desired rate for capture. It has 3
-> pairs to support three different substreams within totally 10 channels.
->
-(...)
+Hi,
 
-> +Required properties:
-> +
-> +  - compatible : Compatible list, must contain "fsl,imx35-asrc" or
-> +    "fsl,imx53-asrc".
-> +
-> +  - reg : Offset and length of the register set for the device.
-> +
-> +  - interrupts : Contains the spdif interrupt.
-> +
-> +  - dmas : Generic dma devicetree binding as described in
-> +	   Documentation/devicetree/bindings/dma/dma.txt.
-> +
-> +  - dma-names : Six dmas have to be defined: "rxa", "rxb", "rxc", "txa", "txb",
-> +		and "txc".
-> +
-> +  - clocks : Contains an entry for each entry in clock-names.
-> +
-> +  - clock-names : Includes the following entries:
-> +	"mem"		Peripheral access clock to access registers.
-> +	"ipg"		Peripheral clock to driver module.
-> +	"asrck_<0-f>"	Clock sources for input and output clock.
-> +
-> +   - big-endian : If this property is absent, the native endian mode will
-> +		  be in use as default, or the big endian mode will be in use
-> +		  for all the device registers.
-> +
-> +   - fsl,asrc-rate : Defines a mutual sample rate used by Back End DAI link.
-> +
-> +   - fsl,asrc-width : Defines a mutual sample width used by Back End DAI link.
-> +
+What is the best way to test/debug the alc668 driver these days?
 
-indentation for the properties....
+I am running kernel 3.14.1 (debian testing/sid).
 
-- compatible		: Should be "fsl,imx35-asrc" or "fsl,imx53-asrc".
-- reg			: Offset and length of the register set for the device.
-....
+The laptop is an ASUS N750JK.
 
-(...)
+Sound works for front left/right speakers but the back speakers and
+external lfe channel is not working on this laptop.
 
-> +
-> +static const struct platform_device_id fsl_asrc_devtype[] = {
-> +	{
-> +		.name = "imx35-asrc",
-> +		.driver_data = IMX35_ASRC,
-> +	}, {
-> +		.name = "imx53-asrc",
-> +		.driver_data = IMX53_ASRC,
-> +	}, {
-> +		/* sentinel */
-> +	}
-> +};
-> +MODULE_DEVICE_TABLE(platform, fsl_asrc_devtype);
-> +
-> +static const struct of_device_id fsl_asrc_ids[] = {
-> +	{
-> +		.compatible = "fsl,imx35-asrc",
-> +		.data = &fsl_asrc_devtype[IMX35_ASRC],
-> +	}, {
-> +		.compatible = "fsl,imx53-asrc",
-> +		.data = &fsl_asrc_devtype[IMX53_ASRC],
-> +	}, {
-> +		/* sentinel */
-> +	}
-> +};
-> +MODULE_DEVICE_TABLE(of, fsl_asrc_ids);
-> +
+- I have found a couple of kernel bug reports  for other ASUS models with
+this chipset but they are both marked resolved. Should I open a new ticket
+?
 
-move these ids after probe/remove... every driver follows same thing...
+https://bugzilla.kernel.org/show_bug.cgi?id=65091
+https://bugzilla.kernel.org/show_bug.cgi?id=66271
 
-> +static irqreturn_t fsl_asrc_isr(int irq, void *dev_id)
-> +{
-> +	struct fsl_asrc *asrc_priv = (struct fsl_asrc *)dev_id;
-> +	struct device *dev = &asrc_priv->pdev->dev;
-> +	enum asrc_pair_index index;
-> +	u32 status;
-> +
-> +	regmap_read(asrc_priv->regmap, REG_ASRSTR, &status);
-> +
-> +	/* Clean overload error */
-> +	regmap_write(asrc_priv->regmap, REG_ASRSTR, ASRSTR_AOLE);
-> +
-> +	/*
-> +	 * We here use dev_dbg() for all exceptions because ASRC itself does
-> +	 * not care if FIFO overflowed or underrun while a warning in the
-> +	 * interrupt would result a ridged conversion.
-> +	 */
-> +	for (index = ASRC_PAIR_A; index < ASRC_PAIR_MAX_NUM; index++) {
-> +		if (!asrc_priv->pair[index])
-> +			continue;
-> +
-> +		if (status & ASRSTR_ATQOL) {
-> +			asrc_priv->pair[index]->error |= ASRC_TASK_Q_OVERLOAD;
-> +			dev_dbg(dev, "ASRC Task Queue FIFO overload");
+- I can hear static through the front speakers (with pulseaudio test)  if
+I set pins 0x19 and 0x1a to Line Out (Center/LFE) and Internal
+(Center/LFE) or vice versa with hdajackretask.
 
-missed terminating new line (\n)...
+Pin 0x16 does not appear to work at all.
 
-> +		}
-> +
-> +		if (status & ASRSTR_AOOL(index)) {
-> +			asrc_priv->pair[index]->error |= ASRC_OUTPUT_TASK_OVERLOAD;
-> +			pair_dbg("Output Task Overload");
+I see this output when I apply the config in hdajackretask.
 
-same
+0x12 0x90a60140
+0x14 0x99130110
+0x15 0x04211020
+0x16 0x99134111
+0x18 0x01a19840
+0x19 0x01014011
+0x1a 0x411111f0
+0x1b 0x411111f0
+0x1d 0x40c6852d
+0x1e 0x014b1180
+0x1f 0x411111f0
+1
 
-> +		}
-> +
-> +		if (status & ASRSTR_AIOL(index)) {
-> +			asrc_priv->pair[index]->error |= ASRC_INPUT_TASK_OVERLOAD;
-> +			pair_dbg("Input Task Overload");
 
-same
 
-> +		}
-> +
-> +		if (status & ASRSTR_AODO(index)) {
-> +			asrc_priv->pair[index]->error |= ASRC_OUTPUT_BUFFER_OVERFLOW;
-> +			pair_dbg("Output Data Buffer has overflowed");
 
-same
 
-> +		}
-> +
-> +		if (status & ASRSTR_AIDU(index)) {
-> +			asrc_priv->pair[index]->error |= ASRC_INPUT_BUFFER_UNDERRUN;
-> +			pair_dbg("Input Data Buffer has underflowed");
 
-same..
-
-> +		}
-> +	}
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-
-(...)
-
-> +/**
-> + * Configure input and output thresholds
-> + */
-> +static int fsl_asrc_set_watermarks(struct fsl_asrc_pair *pair, u32 in, u32 out)
-> +{
-
-static void for function..?
-
-> +	struct fsl_asrc *asrc_priv = pair->asrc_priv;
-> +	enum asrc_pair_index index = pair->index;
-> +
-> +	regmap_update_bits(asrc_priv->regmap, REG_ASRMCR(index),
-> +			   ASRMCRi_EXTTHRSHi_MASK |
-> +			   ASRMCRi_INFIFO_THRESHOLD_MASK |
-> +			   ASRMCRi_OUTFIFO_THRESHOLD_MASK,
-> +			   ASRMCRi_EXTTHRSHi |
-> +			   ASRMCRi_INFIFO_THRESHOLD(in) |
-> +			   ASRMCRi_OUTFIFO_THRESHOLD(out));
-> +
-> +	return 0;
-> +}
-
-(...)
-
-> +static const struct dev_pm_ops fsl_asrc_pm = {
-> +	SET_RUNTIME_PM_OPS(fsl_asrc_runtime_suspend, fsl_asrc_runtime_resume, NULL)
-> +	SET_SYSTEM_SLEEP_PM_OPS(fsl_asrc_suspend, fsl_asrc_resume)
-> +};
-> +
-
-move device ids to here...
-
-> +static struct platform_driver fsl_asrc_driver = {
-> +	.probe = fsl_asrc_probe,
-> +	.driver = {
-> +		.name = "fsl-asrc",
-> +		.of_match_table = fsl_asrc_ids,
-> +		.pm = &fsl_asrc_pm,
-> +	},
-> +};
-> +module_platform_driver(fsl_asrc_driver);
-
-Thanks...
-
--- 
-Regards,
-Varka Bhadram.
+--
+Patrick Shirkey
+Boost Hardware Ltd
