@@ -1,18 +1,21 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v3 1/2] ARM: imx: Add the secondary request
-	into the structure for imx-sdma
-Date: Fri, 25 Jul 2014 12:03:58 +0800
-Message-ID: <a2ded5bde6f54756b5a6a6abf27baa46c4a9c038.1406259578.git.nicoleotsuka@gmail.com>
+From: Varka Bhadram <varkabhadram@gmail.com>
+Subject: Re: [PATCH v3 2/2] ASoC: fsl_asrc: Add ASRC ASoC CPU
+ DAI and platform drivers
+Date: Fri, 25 Jul 2014 09:54:43 +0530
+Message-ID: <53D1DC0B.1000905@gmail.com>
 References: <cover.1406259578.git.nicoleotsuka@gmail.com>
+ <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0244.outbound.protection.outlook.com [207.46.163.244])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DC5B2657A3
- for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2014 06:01:48 +0200 (CEST)
-In-Reply-To: <cover.1406259578.git.nicoleotsuka@gmail.com>
+Received: from mail-pa0-f50.google.com (mail-pa0-f50.google.com
+ [209.85.220.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05D1126579C
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2014 06:26:08 +0200 (CEST)
+Received: by mail-pa0-f50.google.com with SMTP id et14so5346523pad.9
+ for <alsa-devel@alsa-project.org>; Thu, 24 Jul 2014 21:26:07 -0700 (PDT)
+In-Reply-To: <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +25,202 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, b42378@freescale.com, timur@tabi.org, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, tiwai@suse.de, linux-kernel@vger.kernel.org, rdunlap@infradead.org, b02247@freescale.com, lgirdwood@gmail.com, robh+dt@kernel.org, galak@codeaurora.org, grant.likely@linaro.org, tklauser@distanz.ch, shawn.guo@linaro.org, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-SDMA supports device to device (per_2_per) scripts to handle DMA transfering
-between two peripheral devices. The per_2_per script, however, needs two dma
-requests from two sides while the current structure only defined one request.
+On 07/25/2014 09:33 AM, Nicolin Chen wrote:
+> The Asynchronous Sample Rate Converter (ASRC) converts the sampling rate of a
+> signal associated with an input clock into a signal associated with a different
+> output clock. The driver currently works as a Front End of DPCM with other Back
+> Ends DAI links such as ESAI<->CS42888 and SSI<->WM8962 and SAI. It converts the
+> original sample rate to a common rate supported by Back Ends for playback while
+> converts the common rate of Back Ends to a desired rate for capture. It has 3
+> pairs to support three different substreams within totally 10 channels.
+>
+(...)
 
-So this patch just simply adds the secondary request so as to let SDMA and
-its user to add its implementation later.
+> +Required properties:
+> +
+> +  - compatible : Compatible list, must contain "fsl,imx35-asrc" or
+> +    "fsl,imx53-asrc".
+> +
+> +  - reg : Offset and length of the register set for the device.
+> +
+> +  - interrupts : Contains the spdif interrupt.
+> +
+> +  - dmas : Generic dma devicetree binding as described in
+> +	   Documentation/devicetree/bindings/dma/dma.txt.
+> +
+> +  - dma-names : Six dmas have to be defined: "rxa", "rxb", "rxc", "txa", "txb",
+> +		and "txc".
+> +
+> +  - clocks : Contains an entry for each entry in clock-names.
+> +
+> +  - clock-names : Includes the following entries:
+> +	"mem"		Peripheral access clock to access registers.
+> +	"ipg"		Peripheral clock to driver module.
+> +	"asrck_<0-f>"	Clock sources for input and output clock.
+> +
+> +   - big-endian : If this property is absent, the native endian mode will
+> +		  be in use as default, or the big endian mode will be in use
+> +		  for all the device registers.
+> +
+> +   - fsl,asrc-rate : Defines a mutual sample rate used by Back End DAI link.
+> +
+> +   - fsl,asrc-width : Defines a mutual sample width used by Back End DAI link.
+> +
 
-[ Both change in the SDMA driver and its users like Freescale ASRC ASoC driver
-  should be taken along with this change in order to truly support per_2_per
-  sciprts. However, we here make an expediency by adding this first so that
-  we can add either side later since this patch won't break any function and
-  meanwhile it can make merge window more smoothly: we don't need to apply the
-  change inside dmaengine branch via ASoC tree any more. -- Nicolin ]
+indentation for the properties....
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
----
- include/linux/platform_data/dma-imx.h | 1 +
- 1 file changed, 1 insertion(+)
+- compatible		: Should be "fsl,imx35-asrc" or "fsl,imx53-asrc".
+- reg			: Offset and length of the register set for the device.
+....
 
-diff --git a/include/linux/platform_data/dma-imx.h b/include/linux/platform_data/dma-imx.h
-index 7aa0e89..6a1357d 100644
---- a/include/linux/platform_data/dma-imx.h
-+++ b/include/linux/platform_data/dma-imx.h
-@@ -51,6 +51,7 @@ enum imx_dma_prio {
- 
- struct imx_dma_data {
- 	int dma_request; /* DMA request line */
-+	int dma_request2; /* secondary DMA request line */
- 	enum sdma_peripheral_type peripheral_type;
- 	int priority;
- };
+(...)
+
+> +
+> +static const struct platform_device_id fsl_asrc_devtype[] = {
+> +	{
+> +		.name = "imx35-asrc",
+> +		.driver_data = IMX35_ASRC,
+> +	}, {
+> +		.name = "imx53-asrc",
+> +		.driver_data = IMX53_ASRC,
+> +	}, {
+> +		/* sentinel */
+> +	}
+> +};
+> +MODULE_DEVICE_TABLE(platform, fsl_asrc_devtype);
+> +
+> +static const struct of_device_id fsl_asrc_ids[] = {
+> +	{
+> +		.compatible = "fsl,imx35-asrc",
+> +		.data = &fsl_asrc_devtype[IMX35_ASRC],
+> +	}, {
+> +		.compatible = "fsl,imx53-asrc",
+> +		.data = &fsl_asrc_devtype[IMX53_ASRC],
+> +	}, {
+> +		/* sentinel */
+> +	}
+> +};
+> +MODULE_DEVICE_TABLE(of, fsl_asrc_ids);
+> +
+
+move these ids after probe/remove... every driver follows same thing...
+
+> +static irqreturn_t fsl_asrc_isr(int irq, void *dev_id)
+> +{
+> +	struct fsl_asrc *asrc_priv = (struct fsl_asrc *)dev_id;
+> +	struct device *dev = &asrc_priv->pdev->dev;
+> +	enum asrc_pair_index index;
+> +	u32 status;
+> +
+> +	regmap_read(asrc_priv->regmap, REG_ASRSTR, &status);
+> +
+> +	/* Clean overload error */
+> +	regmap_write(asrc_priv->regmap, REG_ASRSTR, ASRSTR_AOLE);
+> +
+> +	/*
+> +	 * We here use dev_dbg() for all exceptions because ASRC itself does
+> +	 * not care if FIFO overflowed or underrun while a warning in the
+> +	 * interrupt would result a ridged conversion.
+> +	 */
+> +	for (index = ASRC_PAIR_A; index < ASRC_PAIR_MAX_NUM; index++) {
+> +		if (!asrc_priv->pair[index])
+> +			continue;
+> +
+> +		if (status & ASRSTR_ATQOL) {
+> +			asrc_priv->pair[index]->error |= ASRC_TASK_Q_OVERLOAD;
+> +			dev_dbg(dev, "ASRC Task Queue FIFO overload");
+
+missed terminating new line (\n)...
+
+> +		}
+> +
+> +		if (status & ASRSTR_AOOL(index)) {
+> +			asrc_priv->pair[index]->error |= ASRC_OUTPUT_TASK_OVERLOAD;
+> +			pair_dbg("Output Task Overload");
+
+same
+
+> +		}
+> +
+> +		if (status & ASRSTR_AIOL(index)) {
+> +			asrc_priv->pair[index]->error |= ASRC_INPUT_TASK_OVERLOAD;
+> +			pair_dbg("Input Task Overload");
+
+same
+
+> +		}
+> +
+> +		if (status & ASRSTR_AODO(index)) {
+> +			asrc_priv->pair[index]->error |= ASRC_OUTPUT_BUFFER_OVERFLOW;
+> +			pair_dbg("Output Data Buffer has overflowed");
+
+same
+
+> +		}
+> +
+> +		if (status & ASRSTR_AIDU(index)) {
+> +			asrc_priv->pair[index]->error |= ASRC_INPUT_BUFFER_UNDERRUN;
+> +			pair_dbg("Input Data Buffer has underflowed");
+
+same..
+
+> +		}
+> +	}
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+
+(...)
+
+> +/**
+> + * Configure input and output thresholds
+> + */
+> +static int fsl_asrc_set_watermarks(struct fsl_asrc_pair *pair, u32 in, u32 out)
+> +{
+
+static void for function..?
+
+> +	struct fsl_asrc *asrc_priv = pair->asrc_priv;
+> +	enum asrc_pair_index index = pair->index;
+> +
+> +	regmap_update_bits(asrc_priv->regmap, REG_ASRMCR(index),
+> +			   ASRMCRi_EXTTHRSHi_MASK |
+> +			   ASRMCRi_INFIFO_THRESHOLD_MASK |
+> +			   ASRMCRi_OUTFIFO_THRESHOLD_MASK,
+> +			   ASRMCRi_EXTTHRSHi |
+> +			   ASRMCRi_INFIFO_THRESHOLD(in) |
+> +			   ASRMCRi_OUTFIFO_THRESHOLD(out));
+> +
+> +	return 0;
+> +}
+
+(...)
+
+> +static const struct dev_pm_ops fsl_asrc_pm = {
+> +	SET_RUNTIME_PM_OPS(fsl_asrc_runtime_suspend, fsl_asrc_runtime_resume, NULL)
+> +	SET_SYSTEM_SLEEP_PM_OPS(fsl_asrc_suspend, fsl_asrc_resume)
+> +};
+> +
+
+move device ids to here...
+
+> +static struct platform_driver fsl_asrc_driver = {
+> +	.probe = fsl_asrc_probe,
+> +	.driver = {
+> +		.name = "fsl-asrc",
+> +		.of_match_table = fsl_asrc_ids,
+> +		.pm = &fsl_asrc_pm,
+> +	},
+> +};
+> +module_platform_driver(fsl_asrc_driver);
+
+Thanks...
+
 -- 
-1.8.4
+Regards,
+Varka Bhadram.
