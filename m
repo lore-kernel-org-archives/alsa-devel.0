@@ -1,225 +1,96 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH v3 2/2] ASoC: fsl_asrc: Add ASRC ASoC CPU DAI and
- platform drivers
-Date: Fri, 25 Jul 2014 13:30:52 +0800
-Message-ID: <20140725053051.GB29136@MrMyself>
-References: <cover.1406259578.git.nicoleotsuka@gmail.com>
- <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
- <53D1DC0B.1000905@gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 11/13] ASoC: Intel: mrfld: add the DSP
+	DAPM widgets
+Date: Fri, 25 Jul 2014 11:16:46 +0530
+Message-ID: <20140725054646.GE8181@intel.com>
+References: <1404967497-22537-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1404967497-22537-12-git-send-email-subhransu.s.prusty@intel.com>
+ <20140718121920.GO17528@sirena.org.uk>
+ <20140718142623.GH1985@intel.com> <20140724061803.GD8181@intel.com>
+ <20140724115040.GI17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <53D1DC0B.1000905@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Varka Bhadram <varkabhadram@gmail.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, rdunlap@infradead.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, timur@tabi.org, grant.likely@linaro.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, shawn.guo@linaro.org, b02247@freescale.com, b42378@freescale.com, tklauser@distanz.ch
+Content-Type: multipart/mixed; boundary="===============4380066533374059424=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AAF02602F3
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2014 07:53:03 +0200 (CEST)
+In-Reply-To: <20140724115040.GI17528@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Varka,
 
-On Fri, Jul 25, 2014 at 09:54:43AM +0530, Varka Bhadram wrote:
-> On 07/25/2014 09:33 AM, Nicolin Chen wrote:
-> >The Asynchronous Sample Rate Converter (ASRC) converts the sampling rate of a
-> >signal associated with an input clock into a signal associated with a different
-> >output clock. The driver currently works as a Front End of DPCM with other Back
-> >Ends DAI links such as ESAI<->CS42888 and SSI<->WM8962 and SAI. It converts the
-> >original sample rate to a common rate supported by Back Ends for playback while
-> >converts the common rate of Back Ends to a desired rate for capture. It has 3
-> >pairs to support three different substreams within totally 10 channels.
-> >
-> (...)
-> 
-> >+Required properties:
-> >+
-> >+  - compatible : Compatible list, must contain "fsl,imx35-asrc" or
-> >+    "fsl,imx53-asrc".
-> >+
-> >+  - reg : Offset and length of the register set for the device.
-> >+
-> >+  - interrupts : Contains the spdif interrupt.
-> >+
-> >+  - dmas : Generic dma devicetree binding as described in
-> >+	   Documentation/devicetree/bindings/dma/dma.txt.
-> >+
-> >+  - dma-names : Six dmas have to be defined: "rxa", "rxb", "rxc", "txa", "txb",
-> >+		and "txc".
-> >+
-> >+  - clocks : Contains an entry for each entry in clock-names.
-> >+
-> >+  - clock-names : Includes the following entries:
-> >+	"mem"		Peripheral access clock to access registers.
-> >+	"ipg"		Peripheral clock to driver module.
-> >+	"asrck_<0-f>"	Clock sources for input and output clock.
-> >+
-> >+   - big-endian : If this property is absent, the native endian mode will
-> >+		  be in use as default, or the big endian mode will be in use
-> >+		  for all the device registers.
-> >+
-> >+   - fsl,asrc-rate : Defines a mutual sample rate used by Back End DAI link.
-> >+
-> >+   - fsl,asrc-width : Defines a mutual sample width used by Back End DAI link.
-> >+
-> 
-> indentation for the properties....
-> 
-> - compatible		: Should be "fsl,imx35-asrc" or "fsl,imx53-asrc".
-> - reg			: Offset and length of the register set for the device.
-> ....
-> 
-> (...)
-> 
-> >+
-> >+static const struct platform_device_id fsl_asrc_devtype[] = {
-> >+	{
-> >+		.name = "imx35-asrc",
-> >+		.driver_data = IMX35_ASRC,
-> >+	}, {
-> >+		.name = "imx53-asrc",
-> >+		.driver_data = IMX53_ASRC,
-> >+	}, {
-> >+		/* sentinel */
-> >+	}
-> >+};
-> >+MODULE_DEVICE_TABLE(platform, fsl_asrc_devtype);
-> >+
-> >+static const struct of_device_id fsl_asrc_ids[] = {
-> >+	{
-> >+		.compatible = "fsl,imx35-asrc",
-> >+		.data = &fsl_asrc_devtype[IMX35_ASRC],
-> >+	}, {
-> >+		.compatible = "fsl,imx53-asrc",
-> >+		.data = &fsl_asrc_devtype[IMX53_ASRC],
-> >+	}, {
-> >+		/* sentinel */
-> >+	}
-> >+};
-> >+MODULE_DEVICE_TABLE(of, fsl_asrc_ids);
-> >+
-> 
-> move these ids after probe/remove... every driver follows same thing...
-> 
-> >+static irqreturn_t fsl_asrc_isr(int irq, void *dev_id)
-> >+{
-> >+	struct fsl_asrc *asrc_priv = (struct fsl_asrc *)dev_id;
-> >+	struct device *dev = &asrc_priv->pdev->dev;
-> >+	enum asrc_pair_index index;
-> >+	u32 status;
-> >+
-> >+	regmap_read(asrc_priv->regmap, REG_ASRSTR, &status);
-> >+
-> >+	/* Clean overload error */
-> >+	regmap_write(asrc_priv->regmap, REG_ASRSTR, ASRSTR_AOLE);
-> >+
-> >+	/*
-> >+	 * We here use dev_dbg() for all exceptions because ASRC itself does
-> >+	 * not care if FIFO overflowed or underrun while a warning in the
-> >+	 * interrupt would result a ridged conversion.
-> >+	 */
-> >+	for (index = ASRC_PAIR_A; index < ASRC_PAIR_MAX_NUM; index++) {
-> >+		if (!asrc_priv->pair[index])
-> >+			continue;
-> >+
-> >+		if (status & ASRSTR_ATQOL) {
-> >+			asrc_priv->pair[index]->error |= ASRC_TASK_Q_OVERLOAD;
-> >+			dev_dbg(dev, "ASRC Task Queue FIFO overload");
-> 
-> missed terminating new line (\n)...
-> 
-> >+		}
-> >+
-> >+		if (status & ASRSTR_AOOL(index)) {
-> >+			asrc_priv->pair[index]->error |= ASRC_OUTPUT_TASK_OVERLOAD;
-> >+			pair_dbg("Output Task Overload");
-> 
-> same
-> 
-> >+		}
-> >+
-> >+		if (status & ASRSTR_AIOL(index)) {
-> >+			asrc_priv->pair[index]->error |= ASRC_INPUT_TASK_OVERLOAD;
-> >+			pair_dbg("Input Task Overload");
-> 
-> same
-> 
-> >+		}
-> >+
-> >+		if (status & ASRSTR_AODO(index)) {
-> >+			asrc_priv->pair[index]->error |= ASRC_OUTPUT_BUFFER_OVERFLOW;
-> >+			pair_dbg("Output Data Buffer has overflowed");
-> 
-> same
-> 
-> >+		}
-> >+
-> >+		if (status & ASRSTR_AIDU(index)) {
-> >+			asrc_priv->pair[index]->error |= ASRC_INPUT_BUFFER_UNDERRUN;
-> >+			pair_dbg("Input Data Buffer has underflowed");
-> 
-> same..
-> 
-> >+		}
-> >+	}
-> >+
-> >+	return IRQ_HANDLED;
-> >+}
-> >+
-> 
-> (...)
-> 
-> >+/**
-> >+ * Configure input and output thresholds
-> >+ */
-> >+static int fsl_asrc_set_watermarks(struct fsl_asrc_pair *pair, u32 in, u32 out)
-> >+{
-> 
-> static void for function..?
-> 
-> >+	struct fsl_asrc *asrc_priv = pair->asrc_priv;
-> >+	enum asrc_pair_index index = pair->index;
-> >+
-> >+	regmap_update_bits(asrc_priv->regmap, REG_ASRMCR(index),
-> >+			   ASRMCRi_EXTTHRSHi_MASK |
-> >+			   ASRMCRi_INFIFO_THRESHOLD_MASK |
-> >+			   ASRMCRi_OUTFIFO_THRESHOLD_MASK,
-> >+			   ASRMCRi_EXTTHRSHi |
-> >+			   ASRMCRi_INFIFO_THRESHOLD(in) |
-> >+			   ASRMCRi_OUTFIFO_THRESHOLD(out));
-> >+
-> >+	return 0;
-> >+}
-> 
-> (...)
-> 
-> >+static const struct dev_pm_ops fsl_asrc_pm = {
-> >+	SET_RUNTIME_PM_OPS(fsl_asrc_runtime_suspend, fsl_asrc_runtime_resume, NULL)
-> >+	SET_SYSTEM_SLEEP_PM_OPS(fsl_asrc_suspend, fsl_asrc_resume)
-> >+};
-> >+
-> 
-> move device ids to here...
+--===============4380066533374059424==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="LyciRD1jyfeSSjG0"
+Content-Disposition: inline
 
-I'll fix them all in v4.
 
-Thank you,
-Nicolin
+--LyciRD1jyfeSSjG0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
----
+On Thu, Jul 24, 2014 at 12:50:40PM +0100, Mark Brown wrote:
+> On Thu, Jul 24, 2014 at 11:48:03AM +0530, Vinod Koul wrote:
+> > On Fri, Jul 18, 2014 at 07:56:23PM +0530, Vinod Koul wrote:
+>=20
+> > Wanted to check if there is anything else required to be done for thsi
+> > series, if not can you pls merge the ones before this in series, if oka=
+y.
+>=20
+> It's been less than a week...  I've not really looked at anything else
+> beyond the export (which I'm still not convinced about).  Patch 2 was
+> very surprising, it looked like it ought to have some dependency on the
+> rest of the series.
+Patch 2 just adds the DAIs the ops are added later, so this can get applied.
 
-> 
-> >+static struct platform_driver fsl_asrc_driver = {
-> >+	.probe = fsl_asrc_probe,
-> >+	.driver = {
-> >+		.name = "fsl-asrc",
-> >+		.of_match_table = fsl_asrc_ids,
-> >+		.pm = &fsl_asrc_pm,
-> >+	},
-> >+};
-> >+module_platform_driver(fsl_asrc_driver);
-> 
-> Thanks...
-> 
-> -- 
-> Regards,
-> Varka Bhadram.
-> 
+We discussed that with Lar's as well. yes the approach will be modfied a bit
+more based on his feedback and we are done with that. if you wnat we will
+send updated series completely for you to review :)
+
+--=20
+~Vinod
+
+--LyciRD1jyfeSSjG0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQIcBAEBAgAGBQJT0e9GAAoJEHwUBw8lI4NHHagP/A0jn/FxFWPrOMJEWaWFQtWY
+G0Jwr5jmoCmmNY14mtIW+tQgN8h8qRT5FvGHrsyVHG5ELu5fNMfg+RkeEhxx89KO
+b+2oa3LonaI+Ga5PaNmbE5CHW6SaW6/fB1VyZUCnMTSUK4tJLiM2ysC6UYZhjKTA
+sjL+515o2HfFNNZ+PNq5yoZcc6d+I+xsVRkMWXRp648NLUgJjkdhZxl/omd6KWb3
+IVGN7Rm3m+A//RrfWjN6f4rs/aAo85Tw0L3nhkXLKVO363m09yDTmoIbPRG553pQ
+dR95MeyVJy4oWTC+/SmvjtVMe1Ox3paECUrspZmDKKEy++qjaODwzByF5vxRr//q
+XB9sC7tMnKdE3+iA5sFXsAqzDFTwnFfxcjzth7L/d85fnrablaJzcRvNxSTO91pU
+I2yJFpdf2DPe2zvKr1DUqXPU7ISjdIjhoe0y5f6dVp/ik147HJw0C9tCxb4m/OiF
+2q42XT1We7cBns/qEvdzas/pcC6QtXFqI+hdpJtPSV59t/ZbHLjLI5JZRFdLQ1d+
+9BW65girfIPRXAN5Z4Eb3kX1qAwRih2X9j/lihtl4m93q9dbdrNbRKBXQs76MGXf
+GtqOcmZwlLPRSe1zwSBOVC0IrukuI2bEfcl4ZHIiNURTqgtTmep2sDoixCieGm+F
+3qmPZ8jCh2/TOSihhm0M
+=1OKf
+-----END PGP SIGNATURE-----
+
+--LyciRD1jyfeSSjG0--
+
+--===============4380066533374059424==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4380066533374059424==--
