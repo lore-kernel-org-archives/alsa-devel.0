@@ -1,55 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: sirf-usp: Fixed a bug for playback and capture
- work at the same time
-Date: Fri, 25 Jul 2014 18:55:05 +0100
-Message-ID: <20140725175505.GH17528@sirena.org.uk>
-References: <1406092772-26371-1-git-send-email-rongjun.ying@csr.com>
+Subject: Re: [PATCH] ASoC: tlv320aic31xx: Do not ignore errors
+ in aic31xx_device_init()
+Date: Fri, 25 Jul 2014 19:00:46 +0100
+Message-ID: <20140725180046.GI17528@sirena.org.uk>
+References: <1406283174-32271-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dZoxY5VDSg+7Vbn9"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1406092772-26371-1-git-send-email-rongjun.ying@csr.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rongjun Ying <rongjun.ying@csr.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Barry Song <baohua@kernel.org>, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Workgroup.Linux@csr.com
+Content-Type: multipart/mixed; boundary="===============5223458475890832187=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C0ED2608C9
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2014 20:00:53 +0200 (CEST)
+In-Reply-To: <1406283174-32271-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---dZoxY5VDSg+7Vbn9
+--===============5223458475890832187==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZZTOI0WqqOZ0yWqI"
+Content-Disposition: inline
+
+
+--ZZTOI0WqqOZ0yWqI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jul 23, 2014 at 01:19:32PM +0800, Rongjun Ying wrote:
-> 1. The startup function invoked when the playback and capture.
->    If start playback when capturing, the registers are re-initinitialised.
->    That cause the playback fail. So move the startup code into runtime resume.
-> 2. Modified: If non RUNTIME_PM support, the probe need enable clock and
->    initinitialise registers.
-> 3. Refine code.
+On Fri, Jul 25, 2014 at 01:12:54PM +0300, Peter Ujfalusi wrote:
+> We need to return the error codes from aic31xx_device_init() and return
+> from the i2c_probe with the error code.
 
 Applied, thanks.
 
---dZoxY5VDSg+7Vbn9
+> Would it be possible to get this patch into 3.16?
+
+I've got rather too many patches queued up already that ought to have
+gone in but didn't get sent yet so it's questionable if anything can go
+in at this point, we've hopefully got at most one more spin before
+release.  I've added a stable tag to it so if it doesn't make it then
+it'll appear in a point release.
+
+--ZZTOI0WqqOZ0yWqI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT0pn1AAoJELSic+t+oim9DFMQAIws5eN0VV2xP7jYfK65dgA3
-u3mBFQE1Hfo2gWf6YVdd45IW53mKC8nJRgUA5LzijQl0HSZZBFMqyLd1teRECxyU
-Dry4HS4EyOVH2oMzf2CbfWSGgVVN3qqfkgew0L3VlZDA+AD4nJ9NzdtvytrEuW1K
-SYGfuwBdpVKASE9HSKkwOfZ/DkNrVBPBozuepUne+WbfHmoWM0gelQ8HggAkNjpL
-y5Ity/a6LZkmwtVr3kVqqEtcPH0kMNHs1xh1EkHOoux+Al2Euaw0Su9N69ZY8V7d
-ftfH0r2/iZ+fOE+pqkwjHIe7LGwgEQYmH2ez+XEVoY+S2v9kJ0nf18RQAifggvvL
-SCiKgHmQBHOOr6P0myE6R13uI4eLrBOMEdQ7fMIBbmtM5Ai8V/P4+gpDI9GGtjND
-zNrx84PrzCMBXGe9Ew7kPGc/bYDR4iK5gTgiWGU3AkhPoGAqFu7zXt0ZsliYUUf2
-FpYHH0D8kRoJZ7dvMJaNnWO95X3XjrIUAcAWexC5uYGPGOoqwR8AaOAXfzzKPgtt
-fhVn+1tK0NcR5+BJQpU+EJP7+M82hfvlQqb6A9bfGQOeh+g1ee+4zWRw+p7a8Q0N
-lkWui/5XOhrGg7MpSb8yQV36xo0zPeSdO4k5dD53kFDxoeKyA8dSVnqKnv6S96QB
-SEvoksDsVzX3TbIMTjEF
-=KquA
+iQIcBAEBAgAGBQJT0ptLAAoJELSic+t+oim9NzYQAJexSGYyGmPzYmEZB1CF5h5/
+uGFea/XubzFJP8dvdDl13UMdwZinwHB9u6piy+Do6udYCwsOtMRaAevtlShZRDyH
+4OAcXmAEJVV1LORiivx2A6LHnZR9val8+CPfH7QHUuz6cUTEiMld4glqxTUh41uM
+txSm0HHLv9jXvyRvlGguSYtgOjZ8lNUefLkCHWTc4GEWqvkT2vZ5RQjN6U2cPTnG
+kj+Z/cqw2oLEOHp9RK/dHzSQqgUPOxCqz3USgKCT8yzWFwm6eSlhiQ68q9h9m4jn
+5XfLcP7jL+ghbCLFpg7rnYJY9au98+fEcUXT2NiGJdxixT/fgB3/CjgC0tbf19Ti
+KaaqlhSmA68k+0fwRctDyy20SpcVS0clqojcrhFIzptNFvSYhy3Qs7FnKDXd5MI/
+4RlgXtiVpptlFnf5NumNIlhaUwRuZl/oloEO5JhIyePeenM4sTKPAAyJr9pcW9GC
+dkX+HV8rBrr+lvsmLunwiz5t66/nFCvM8Jjz/HzXfYXhmtNYj/nOVLvYwUiPHgaY
+9BkA1GOKkFvP0rmY9G+mPQwgdGbFxRRYnpbTs5MbYJD0TlqiC0IgQ46H2Z1we2Mq
+eQFteFWeTn2xbKTB2S68lcjmIntMC/HS7YjmIRzp+aYB5DAO6kIRF8DrfXnH8T53
+xB5YcVRP/JBqxxqbKYwe
+=6uIN
 -----END PGP SIGNATURE-----
 
---dZoxY5VDSg+7Vbn9--
+--ZZTOI0WqqOZ0yWqI--
+
+--===============5223458475890832187==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5223458475890832187==--
