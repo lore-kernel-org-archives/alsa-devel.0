@@ -1,84 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: fixup dai remove callback
-	operation
-Date: Fri, 25 Jul 2014 18:50:47 +0100
-Message-ID: <20140725175047.GC17528@sirena.org.uk>
-References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <87d2cwvmxa.wl%kuninori.morimoto.gx@gmail.com>
- <1815783.Bld4nzvI29@avalon>
- <87zjfzaata.wl%kuninori.morimoto.gx@gmail.com>
- <87lhrj9m26.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH 0/3] ASoC: fsl_sai: Fix some issues in fsl_sai_trigger()
+Date: Fri, 25 Jul 2014 18:52:53 +0100
+Message-ID: <20140725175253.GE17528@sirena.org.uk>
+References: <cover.1406113865.git.nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6154161115165345207=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DA012608E8
- for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2014 19:50:59 +0200 (CEST)
-In-Reply-To: <87lhrj9m26.wl%kuninori.morimoto.gx@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="c3iVMYArYos8XHMA"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <cover.1406113865.git.nicoleotsuka@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, b42378@freescale.com, b02247@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6154161115165345207==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ClpMRN7ztK9mBQjN"
-Content-Disposition: inline
-
-
---ClpMRN7ztK9mBQjN
+--c3iVMYArYos8XHMA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 24, 2014 at 01:51:31AM -0700, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> rsnd driver is using SSI/SRC/DVC which are
-> using "mod" base operation.
-> These "mod" are supporting "probe" and "remove" callbacks.
+On Wed, Jul 23, 2014 at 07:23:37PM +0800, Nicolin Chen wrote:
+> The series of patches focus on issue fix inside fsl_sai_trigger().
 
-Applied, thanks.
+Applied all, thanks.
 
---ClpMRN7ztK9mBQjN
+--c3iVMYArYos8XHMA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT0pjzAAoJELSic+t+oim9BRkP/RqUW9xk9cffrVJkPYd42h0x
-K6/rE+d017gaaRChR/iUjLogxUrJH9XraFSq8Yaa8OflpFn3WVdVmQCeoRtU0Dva
-QxHnadE4IMory2Et0E0VN3hfyCgei2sJAYkyKObiwjYdL+nW8LwRJQYPZfwzEq4G
-1os37PG9i8aOxFPRkCj1UOMNlu6j194P4mjtHXll5KzOeN5UvVWbEhE90iKG7dUA
-K/sTMw0fu1MLaHAKXleVGU6D1O6paMYlbkkCi2wWwMWRnbQckIGcy9pfOzPxDJrk
-6A5xP64OjHVSA6jkV6ipCwxOITluF9XyEYQekD+SsMHhYn/+v0L4obwxQ+J6I/ZE
-DIyvfdDFD/DLMukyOduNgbJn+T26p2sdAqmUuJlSwJD70J+HG4WTLt9nML09/n+5
-XycbV9UL0Jm9xNFYS5lPEqivJY+e5zEaKyTq5mkWkVxU0h2LHzDYGt9B1p08UcX5
-JagTlZ2mNySJcHlS9zsnhC0RmzI1TFecE4n1DXR/JWXFwaH/8/NQeD+vDy9l7/hu
-HB/dBPtjpaAr+4+IaO4DRgPcadbug6R0kLxiL8TJoWZhZHy0IXar+tudohPRMuwJ
-JH9i229YMtuyZCtCjoLIWJst22Rm434G2K3VJIgkmEaE0Tl7dorzf2E714EIML/Z
-3hgy/50xwYe9shnDokW4
-=SUFE
+iQIcBAEBAgAGBQJT0plyAAoJELSic+t+oim9KhwP/iJUWnRWzAWt1e1ucmBqe+8f
+rLLA6Zes9+GPBZCwg6UCV+z3eGeLv6Hx59ncrIkU9Gwll1DyZCbb1yZ5bJkQHLH5
+Ji3/W39Zrw/wo/6VhJigpQ9CSLjXv4R7biDo8swb0paaFSufdoGfn5gaMv+s3b7z
+xdRInW56bwv2Zs1K1xwyzN5zx99uejppLKXcRc87aaV+SkvTsxsI0xFRqGUUfZyC
+zfXyMOIofkpxQUOGTrudJdFSLI4pRf/f+jlweOc4t8TUa/Ji03IUmkfZeKB3hvrS
+Zxt1DXjAlk90MT7H9I3SoYVHeXCUHy+X9kqxvkPK+8ybMJN+h3ttFJf5JcmftiOt
+tx4INRvklFIiKkbvWopnj2ET6qQCLxyx73hI/lmHgPT4EkOXGbp28TagCU1K/oVE
+4sX4ENkgb2N/ctrAzbF0ZLnBcmWW6dpNcEbeKQyZa3GnJMBT1Egli4XIvGGSdsK6
+djLOWDTNCoq8nX5C9Ihu0J1VltyJUqjaaykbpEt/40oz3J0LzgyBQuLyQNyyCPJo
+YmaToSoDMZbw3W/YTaEjKl/CO1Rc8BfclAAqq9OU3qbnCJOzeh7DBo39yHThcdwD
+Qwvz6Rg7B1Ihx21zNN9Oxw1yc/WTO7CTnxAqsacXsAuXQdVzZyHzQiRfuga1F/1d
+O/QrdayyF+TZrqEPmXhV
+=yDHp
 -----END PGP SIGNATURE-----
 
---ClpMRN7ztK9mBQjN--
-
---===============6154161115165345207==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6154161115165345207==--
+--c3iVMYArYos8XHMA--
