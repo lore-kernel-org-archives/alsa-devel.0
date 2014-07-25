@@ -1,49 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ak4642: Make of_device_id array const
-Date: Fri, 25 Jul 2014 18:21:26 +0100
-Message-ID: <20140725172126.GA24306@sirena.org.uk>
-References: <1406203117-2767-1-git-send-email-kiran.padwal21@gmail.com>
+Subject: Re: [PATCH] ASoC: rsnd: fixup dai remove callback
+	operation
+Date: Fri, 25 Jul 2014 18:50:47 +0100
+Message-ID: <20140725175047.GC17528@sirena.org.uk>
+References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+ <87d2cwvmxa.wl%kuninori.morimoto.gx@gmail.com>
+ <1815783.Bld4nzvI29@avalon>
+ <87zjfzaata.wl%kuninori.morimoto.gx@gmail.com>
+ <87lhrj9m26.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1406203117-2767-1-git-send-email-kiran.padwal21@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kiran Padwal <kiran.padwal21@gmail.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, s.hauer@pengutronix.de, fabio.estevam@freescale.com, kuninori.morimoto.gx@renesas.com, Li.Xiubo@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============6154161115165345207=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DA012608E8
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2014 19:50:59 +0200 (CEST)
+In-Reply-To: <87lhrj9m26.wl%kuninori.morimoto.gx@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---huq684BweRXVnRxX
-Content-Type: text/plain; charset=us-ascii
+--===============6154161115165345207==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ClpMRN7ztK9mBQjN"
 Content-Disposition: inline
 
-On Thu, Jul 24, 2014 at 05:28:36PM +0530, Kiran Padwal wrote:
-> Make of_device_id array const, because all OF functions handle it as const
 
-...and reverted because it fails to build.
+--ClpMRN7ztK9mBQjN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---huq684BweRXVnRxX
+On Thu, Jul 24, 2014 at 01:51:31AM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> rsnd driver is using SSI/SRC/DVC which are
+> using "mod" base operation.
+> These "mod" are supporting "probe" and "remove" callbacks.
+
+Applied, thanks.
+
+--ClpMRN7ztK9mBQjN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT0pITAAoJELSic+t+oim90m8P/0Z6XasRx3l1R/qerJgbyDFy
-UfPzmJ4vFMqWMqdFPXfqBXaI3H/Dt/3Dmeemeyqc567MghJf+eBWFYvob+EE9cmM
-BM3wfp/6gxf6VlA6Oec621+g5yVpGVRfFZBgwwpB8Ao4/91xt6sejD9AP6Cl2sUy
-owNrLpN1+HgeFK8ZoXkjLPqmjtNzOaQ2HRU3ZqC6Cr7WHGUVyiAO/xDzZlIx7lSo
-J53VnIASPirknSny2pjAXv5Rb/SAzXm30adhTU+UCycuEI9j83OQRuw06xHmxFhE
-A2vFY5Ej58U++jZAijWuBIizL8CiNNYVAqLH7C1h6q0MrABLeDDk4A5recw0jKlV
-mZQW5UcTA9zeR2H6NHmLFy4pn70QXXPKWAwFv59svd0GzuJIFx1MfCpW8pNuJdCR
-NT9hdkTnmTw0gCl+THXya+TfWAUGrWHjWcPcXc3TNir8A+261T/z917QNzqbBM5Z
-owfp3dM8moNokbdYkEVepwu4CcxFiaLS3NvQBGfKJJAlWhW41gyuPwqlM0+JJQaZ
-HfI8P4zQX6cSF4w7mnCJrOLMdmcvCdgSLOEGYxT76rQTIAAeEznvL2h2vOXPXmYk
-TY8kUo1uDRnuumakkwIvKh51iW+hNrObWaoCy4ZXLIwydSmXGF/sPTHBbw3eGTvs
-dbj4HkHV/4UmgMWTaVuv
-=g2vR
+iQIcBAEBAgAGBQJT0pjzAAoJELSic+t+oim9BRkP/RqUW9xk9cffrVJkPYd42h0x
+K6/rE+d017gaaRChR/iUjLogxUrJH9XraFSq8Yaa8OflpFn3WVdVmQCeoRtU0Dva
+QxHnadE4IMory2Et0E0VN3hfyCgei2sJAYkyKObiwjYdL+nW8LwRJQYPZfwzEq4G
+1os37PG9i8aOxFPRkCj1UOMNlu6j194P4mjtHXll5KzOeN5UvVWbEhE90iKG7dUA
+K/sTMw0fu1MLaHAKXleVGU6D1O6paMYlbkkCi2wWwMWRnbQckIGcy9pfOzPxDJrk
+6A5xP64OjHVSA6jkV6ipCwxOITluF9XyEYQekD+SsMHhYn/+v0L4obwxQ+J6I/ZE
+DIyvfdDFD/DLMukyOduNgbJn+T26p2sdAqmUuJlSwJD70J+HG4WTLt9nML09/n+5
+XycbV9UL0Jm9xNFYS5lPEqivJY+e5zEaKyTq5mkWkVxU0h2LHzDYGt9B1p08UcX5
+JagTlZ2mNySJcHlS9zsnhC0RmzI1TFecE4n1DXR/JWXFwaH/8/NQeD+vDy9l7/hu
+HB/dBPtjpaAr+4+IaO4DRgPcadbug6R0kLxiL8TJoWZhZHy0IXar+tudohPRMuwJ
+JH9i229YMtuyZCtCjoLIWJst22Rm434G2K3VJIgkmEaE0Tl7dorzf2E714EIML/Z
+3hgy/50xwYe9shnDokW4
+=SUFE
 -----END PGP SIGNATURE-----
 
---huq684BweRXVnRxX--
+--ClpMRN7ztK9mBQjN--
+
+--===============6154161115165345207==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6154161115165345207==--
