@@ -1,85 +1,106 @@
-From: "Murphy, Dan" <dmurphy@ti.com>
-Subject: Re: [PATCH 2/2] ASoC: tas2552: Add DAPM calls for amp and PLL
-Date: Fri, 25 Jul 2014 18:54:19 +0000
-Message-ID: <00FC9A978A94B7418C33AFAE8A35ED49DA8D1E@DFLE09.ent.ti.com>
-References: <1405704668-8038-1-git-send-email-dmurphy@ti.com>
- <1405704668-8038-2-git-send-email-dmurphy@ti.com>
- <20140721115353.GV17528@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Testing/Debugging alc668 with ASUS N750JK
+Date: Sat, 26 Jul 2014 12:01:41 +0800
+Message-ID: <CAN8cciboNrRRFBQjX66qud7KoTCqsDHxvFAws9-ywasjemtYbQ@mail.gmail.com>
+References: <cover.1406259578.git.nicoleotsuka@gmail.com>
+ <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
+ <53D1DC0B.1000905@gmail.com>
+ <63638.86.107.254.57.1406266836.squirrel@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-sound-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qg0-f43.google.com (mail-qg0-f43.google.com
+ [209.85.192.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9F4F261B0D
+ for <alsa-devel@alsa-project.org>; Sat, 26 Jul 2014 06:01:42 +0200 (CEST)
+Received: by mail-qg0-f43.google.com with SMTP id a108so6066712qge.16
+ for <alsa-devel@alsa-project.org>; Fri, 25 Jul 2014 21:01:41 -0700 (PDT)
+In-Reply-To: <63638.86.107.254.57.1406266836.squirrel@boosthardware.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/21/2014 06:54 AM, Mark Brown wrote:
-> On Fri, Jul 18, 2014 at 12:31:08PM -0500, Dan Murphy wrote:
-> 
->> +static int tas2552_class_d_en(struct snd_soc_dapm_widget *w,
->> +			   struct snd_kcontrol *kcontrol, int event)
->> +{
->> +	switch (event) {
->> +	case SND_SOC_DAPM_PRE_PMU:
->> +		snd_soc_update_bits(w->codec, TAS2552_CFG_2,
->> +						 TAS2552_CLASSD_EN_MASK, TAS2552_CLASSD_EN_MASK);
->> +		break;
->> +	case SND_SOC_DAPM_POST_PMD:
->> +		snd_soc_update_bits(w->codec, TAS2552_CFG_2,
->> +						 TAS2552_CLASSD_EN_MASK, 0);
->> +		break;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
->> +{
->> +SND_SOC_DAPM_PRE("Class D Enable", tas2552_class_d_en),
->> +SND_SOC_DAPM_POST("Class D Disable", tas2552_class_d_en),
->> +SND_SOC_DAPM_POST("PLL Disable", tas2552_pll_disable),
->> +};
-> 
-> This seems broken, having to use _PRE or _POST widgets for simple
-> register writes (or almost anything really) should never be required and
-> error prone - what is this actually trying to do?  I'd expect the class
-> D to be a PGA or OUTPUT widget and the PLL to be a SUPPLY widget.
-> 
+>
+> What is the best way to test/debug the alc668 driver these days?
+>
+> I am running kernel 3.14.1 (debian testing/sid).
+>
+> The laptop is an ASUS N750JK.
+>
+> Sound works for front left/right speakers but the back speakers and
+> external lfe channel is not working on this laptop.
 
-I need a little help here.
-I am not seeing the PLL being disabled or Class D being disabled when
-I am using the DAPM calls
+You have to post output of alsa-info.sh
 
-My implementation is like this.  And I use set these widgets and audio
-map in the call back functions in the struct snd_soc_codec_driver.
+Do the BIOS setup all the pin default ?
 
-When I look at the registers after stream playback I see that
-the TAS2552_CFG_2 register is untouched
+How many audio jacks ?
 
-static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
-{
-SND_SOC_DAPM_AIF_IN("DAC IN", NULL, 0, SND_SOC_NOPM, 0, 0),
-SND_SOC_DAPM_DAC("DAC", NULL, SND_SOC_NOPM, 0, 0),
-SND_SOC_DAPM_OUT_DRV("ClassD Enable", TAS2552_CFG_2, 7, 0, NULL, 0),
-SND_SOC_DAPM_OUT_DRV("ClassD Disable", TAS2552_CFG_2, 7, 1, NULL, 0),
-SND_SOC_DAPM_SUPPLY("PLL Disable", TAS2552_CFG_2, 3, 1, NULL, 0),
-SND_SOC_DAPM_OUTPUT("OUT")
-};
+Do it support headset or headphone ?
 
-static const struct snd_soc_dapm_route tas2552_audio_map[] = {
-    {"DAC", NULL, "DAC IN"},
-    {"ClassD Enable", NULL, "DAC"},
-    {"OUT", NULL, "ClassD Enable"},
-    {"ClassD Disable", NULL, "OUT"},
-    {"PLL Disable", NULL, "ClassD Disable"}
-};
+Do you mean there are four internal speakers ?
 
-Any information would help here
+Do it support surround40 in windows ?
 
-Thanks in advance
+The external sonic master and headphone need two volume controls but alc668
+only have three
 
--- 
-------------------
-Dan Murphy
+The best way to test is using latest git version and hda jack retask to
+
+1) four internal speaker and headphone
+2) two internal speaker, headphone and external subwoofer
+
+Once you confirm the nodes of the speakers, subwooder
+You need to decide whether headphone share the volume controls with the
+speaker/subwoofer
+>
+> - I have found a couple of kernel bug reports  for other ASUS models with
+> this chipset but they are both marked resolved. Should I open a new ticket
+> ?
+>
+> https://bugzilla.kernel.org/show_bug.cgi?id=65091
+> https://bugzilla.kernel.org/show_bug.cgi?id=66271
+>
+> - I can hear static through the front speakers (with pulseaudio test)  if
+> I set pins 0x19 and 0x1a to Line Out (Center/LFE) and Internal
+> (Center/LFE) or vice versa with hdajackretask.
+>
+> Pin 0x16 does not appear to work at all.
+>
+> I see this output when I apply the config in hdajackretask.
+>
+> 0x12 0x90a60140
+> 0x14 0x99130110
+> 0x15 0x04211020
+> 0x16 0x99134111
+> 0x18 0x01a19840
+> 0x19 0x01014011
+> 0x1a 0x411111f0
+> 0x1b 0x411111f0
+> 0x1d 0x40c6852d
+> 0x1e 0x014b1180
+> 0x1f 0x411111f0
+> 1
+>
+>
+>
+>
+>
+>
+> --
+> Patrick Shirkey
+> Boost Hardware Ltd
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
