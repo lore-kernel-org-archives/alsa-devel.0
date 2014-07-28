@@ -1,103 +1,74 @@
-From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Subject: Re: ASoC: Device tree binding to dummy codec
-Date: Mon, 28 Jul 2014 09:49:27 -0400
-Message-ID: <CAKON4Owhhw6WvJBvZC6KYpS+rtvbPymAqEb1+4iZ=e6OokGeng@mail.gmail.com>
-References: <CAKON4Oynu5HE-jDETrNRBY3dYtwuh6XmOgyDOQuc4jmCzmNhNg@mail.gmail.com>
- <53D5ECA7.5090106@metafoo.de>
- <20140728112055.GM17528@sirena.org.uk>
- <CAKON4OzXfq+gDLdzs0VYh+X+4RBU=2Nds45P7+kBd+02eY+zHA@mail.gmail.com>
+From: Daniel Wagner <wagi@monom.org>
+Subject: Re: A report about an enhancement for ALSA firewire stack
+Date: Mon, 28 Jul 2014 16:06:37 +0200
+Message-ID: <53D658ED.8060903@monom.org>
+References: <53CF7D9E.2050908@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f178.google.com (mail-lb0-f178.google.com
- [209.85.217.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E4BE261B1B
- for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 15:49:28 +0200 (CEST)
-Received: by mail-lb0-f178.google.com with SMTP id c11so5719779lbj.23
- for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 06:49:27 -0700 (PDT)
-In-Reply-To: <CAKON4OzXfq+gDLdzs0VYh+X+4RBU=2Nds45P7+kBd+02eY+zHA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <53CF7D9E.2050908@sakamocchi.jp>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ffado-devel@lists.sf.net" <ffado-devel@lists.sf.net>, JACK <jack-devel@lists.jackaudio.org>, linux1394-devel@lists.sourceforge.net, General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
+Cc: Maximilian Engelhardt <maxi@daemonizer.de>, Darren Anderson <darrena092@gmail.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 28, 2014 at 8:54 AM, jonsmirl@gmail.com <jonsmirl@gmail.com> wrote:
-> On Mon, Jul 28, 2014 at 7:20 AM, Mark Brown <broonie@kernel.org> wrote:
->> On Mon, Jul 28, 2014 at 08:24:39AM +0200, Lars-Peter Clausen wrote:
->>> Cc ASoC maintainers.
->>
->> Jon, you should really know to CC maintainers.
->
-> Are the all CC'd now? I thought the ALSA list was sufficient.
->
-> So how do I set this hardware up?
->
-> on-chip codec - it is ADC/DAC with FIFIO directly attached. There is
-> no separate bus. on-chip codec supports things like mic1, mic2, line
-> in, line out, hp out. Most boards populate only a subset of the jacks.
-> Right now the device driver makes a dummy codec and internally creates
-> a card and links everything together.
-> http://git.elopez.com.ar/linux/src/abc050fbbaa5302b76ac585954cd207961fc9159/sound/soc/sunxi/sunxi-codec.c?at=sunxi-codec
->
-> Then someone came along and wanted to add a MAX9768. We're stuck
-> because the way the driver is built it doesn't support the external
-> MAX9768 codec driver.  MAX9768 is just an amp with I2C control of
-> volume.
->
-> So how should the device tree look for no external amp? Right now
-> there is just a device node and the driver makes a card/dummy-codec
-> internally.
->
-> How should the device tree look when there is an external amp?  Maybe
-> this amp should just be a chip of the device node?
+Hi Takashi,
 
-Maybe something like this.....
+On 07/23/2014 11:17 AM, Takashi Sakamoto wrote:
+> Dear all,
+> 
+> My work for ALSA firewire stack was pulled into Linux 3.16, therefore
+> Linux 3.16 newly supports 60-70 firewire sound devices. The work may
+> affects user-space applications such like FFADO. Additionally, I leave
+> some issues for the stack.
+> 
+> So I wrote a report about my work.
+> 
+> PDF:
+> https://github.com/takaswie/alsa-firewire-report/blob/master/firewire.pdf
+> 
+> Repository:
+> https://github.com/takaswie/alsa-firewire-report
+> 
+> Table of contents
+>  1. Introduction
+>  2. Common Specifications
+>  3. Device features
+>  4. Existing drivers
+>  5. Investigation for user-land driver
+>  6. Investigation for kernel-land driver
+>  7. Enhancement of ALSA firewire stack
+>  8. Driver implementation
+>  9. Rest of issue
+> 
+> I hope ALSA maintainers to read section 8 and 9.
+> 
+> For FFADO developers, section 3, 5, 8 will be good information.
+> 
+> For JACK/PulseAudio and Linux firewire subsystem developers, section 4,
+> 5, 6, 7, 9 will be good information.
+> 
+> I'm not a good English writer and have a little experiences to write
+> technical documents. It's my glad to receive some corrections,
+> indications, supplements and so on from you.
 
-i2c1: i2c@01c2b000 {
-   pinctrl-names = "default";
-   pinctrl-0 = <&i2c1_pins_a>;
-   status = "okay";
+Great work! I really appreciate your hard work. Unfortunately I am a
+little busy and don't have time to review soon.
 
-   max9768: max9768@36 {
-      compatible = "max,9768";
-      reg = <0x36>;
-   };
-};
+cheers,
+daniel
 
-codec: codec@01c22c00 {
-   compatible = "allwinner,sun7i-a20-codec";
-   reg = <0x01c22c00 0x40>;
-   interrupts = <0 30 4>;
-   clocks = <&pll2 0>, <&apb0_gates 0>, <&codec_clk>;
-   clock-names = "pll", "apb", "codec";
-   dmas = <&dma 0 19>, <&dma 0 19>;
-   dma-names = "rx", "tx";
-   widgets = "Mic1 Jack", "Headphone Jack";
-   external-amp = <&max9768>
-   status = "okay";
-};
-
-If external amp is missing I just bind to my internal dummy-codec.
-
-
->
-> How should the various jack populations be handled in the device tree?
->
-> --
-> Jon Smirl
-> jonsmirl@gmail.com
-
-
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
+------------------------------------------------------------------------------
+Infragistics Professional
+Build stunning WinForms apps today!
+Reboot your WinForms applications with our WinForms controls. 
+Build a bridge from your legacy apps to the future.
+http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
