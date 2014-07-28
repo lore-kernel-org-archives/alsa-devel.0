@@ -1,22 +1,17 @@
-From: Benoit Cousson <bcousson@baylibre.com>
-Subject: Re: [PATCH v6 0/5] ASoC: core: Add support for DAI
-	multicodec
-Date: Mon, 28 Jul 2014 14:40:47 +0200
-Message-ID: <53D644CF.4030500@baylibre.com>
-References: <1404854378-25828-1-git-send-email-bcousson@baylibre.com>
- <53C659B9.70904@baylibre.com> <53C65D6D.6060400@metafoo.de>
- <20140716221904.GL17528@sirena.org.uk>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: [RFC PATCH] ASoC: fsl-ssi: Add support for CBM_CFS
+	16/24 bit
+Date: Mon, 28 Jul 2014 14:46:38 +0200
+Message-ID: <1406551598-14740-1-git-send-email-michael@amarulasolutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f176.google.com (mail-we0-f176.google.com
- [74.125.82.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 8319B261740
- for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 14:40:53 +0200 (CEST)
-Received: by mail-we0-f176.google.com with SMTP id q58so7190104wes.7
- for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 05:40:51 -0700 (PDT)
-In-Reply-To: <20140716221904.GL17528@sirena.org.uk>
+Received: from mail-wg0-f46.google.com (mail-wg0-f46.google.com [74.125.82.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id D85432619FE
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 14:46:44 +0200 (CEST)
+Received: by mail-wg0-f46.google.com with SMTP id m15so7263605wgh.5
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 05:46:41 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,54 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: misael.lopez@ti.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+To: Timur Tabi <timur@tabi.org>
+Cc: Markus Pargmann <mpa@pengutronix.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark and Lars,
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-On 17/07/2014 00:19, Mark Brown wrote:
-> On Wed, Jul 16, 2014 at 01:09:33PM +0200, Lars-Peter Clausen wrote:
->> On 07/16/2014 12:53 PM, Benoit Cousson wrote:
->
->>> Any comment on that version?
->
->> No comments is probably a good sign in this case. There is just a lot of
->> activity on the ALSA mailinglist and lots of patches to review and this =
-is a
->> quite invasive patchset so it requires a bit more thorough review. Give =
-it
->> maybe two or three weeks. I'm quite confident that this version has a go=
-od
->> chance of being merged.
->
-> Right, if you make multi-hundred line changes to most of the core files
-> it shouldn't be that surprising if it gets some careful review!
-
-Sorry, I perfectly understand and did not mean to push you.
-Since the series was quite intrusive, I was just expecting some more =
-
-feedbacks from hackers complaining about regression on their audio =
-
-system. So I was just surprised to not get any of that :-)
-
-> Anyway,
-> that should be everything merged now - thanks for stepping up and doing
-> this, it's something people have been looking for for years.
-
-You're welcome. And thanks a lot to Lars who was really helpful to help =
-
-me getting the series ready for upstream.
-
-I owe him a couple of beers if I can meet him at ELC-E / LPC :-)
-
-
-Thanks,
-Benoit
-
--- =
-
-Beno=EEt Cousson
-BayLibre
-Embedded Linux Technology Lab
-www.baylibre.com
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 9bfef55..743e50d 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -724,10 +724,19 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 		regmap_update_bits(regs, CCSR_SSI_SRCCR, CCSR_SSI_SxCCR_WL_MASK,
+ 				wl);
+ 
+-	if (!fsl_ssi_is_ac97(ssi_private))
++	if (!fsl_ssi_is_ac97(ssi_private)) {
++		u8 i2smode;
++
++		if (ssi_private->i2s_mode == (CCSR_SSI_SCR_I2S_MODE_NORMAL |
++		    CCSR_SSI_SCR_NET) && sample_size >= 24)
++			i2smode = CCSR_SSI_SCR_I2S_MODE_MASTER;
++		else
++			i2smode = ssi_private->i2s_mode;
++
+ 		regmap_update_bits(regs, CCSR_SSI_SCR,
+ 				CCSR_SSI_SCR_NET | CCSR_SSI_SCR_I2S_MODE_MASK,
+-				channels == 1 ? 0 : ssi_private->i2s_mode);
++				channels == 1 ? 0 : i2smode);
++	}
+ 
+ 	return 0;
+ }
+@@ -789,6 +798,15 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi_private *ssi_private,
+ 					CCSR_SSI_SxCCR_DC_MASK,
+ 					CCSR_SSI_SxCCR_DC(2));
+ 			break;
++		case SND_SOC_DAIFMT_CBM_CFS:
++			ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_NORMAL;
++			regmap_update_bits(regs, CCSR_SSI_STCCR,
++					CCSR_SSI_SxCCR_DC_MASK,
++					CCSR_SSI_SxCCR_DC(2));
++			regmap_update_bits(regs, CCSR_SSI_SRCCR,
++					CCSR_SSI_SxCCR_DC_MASK,
++					CCSR_SSI_SxCCR_DC(2));
++			break;
+ 		case SND_SOC_DAIFMT_CBM_CFM:
+ 			ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_SLAVE;
+ 			break;
+@@ -853,6 +871,11 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi_private *ssi_private,
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
+ 		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		strcr &= ~CCSR_SSI_STCR_TXDIR;
++		strcr |= CCSR_SSI_STCR_TFDIR;
++		scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+1.8.1.2
