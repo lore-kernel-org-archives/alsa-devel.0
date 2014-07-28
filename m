@@ -1,64 +1,103 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 01/12] ASoC: rsnd: fixup rsnd_gen_dma_addr() for Gen1
-Date: Mon, 28 Jul 2014 14:48:04 +0100
-Message-ID: <20140728134804.GW17528@sirena.org.uk>
-References: <87d2e6zjhf.wl%kuninori.morimoto.gx@gmail.com>
- <87bntqzjfw.wl%kuninori.morimoto.gx@renesas.com>
- <20140618100654.GF5099@sirena.org.uk>
- <20140728125840.GA10125@verge.net.au>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: Re: ASoC: Device tree binding to dummy codec
+Date: Mon, 28 Jul 2014 09:49:27 -0400
+Message-ID: <CAKON4Owhhw6WvJBvZC6KYpS+rtvbPymAqEb1+4iZ=e6OokGeng@mail.gmail.com>
+References: <CAKON4Oynu5HE-jDETrNRBY3dYtwuh6XmOgyDOQuc4jmCzmNhNg@mail.gmail.com>
+ <53D5ECA7.5090106@metafoo.de>
+ <20140728112055.GM17528@sirena.org.uk>
+ <CAKON4OzXfq+gDLdzs0VYh+X+4RBU=2Nds45P7+kBd+02eY+zHA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7TOlKqtLs8Nv5Cm2"
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140728125840.GA10125@verge.net.au>
-Sender: linux-sh-owner@vger.kernel.org
-To: Simon Horman <horms@verge.net.au>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-sh@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f178.google.com (mail-lb0-f178.google.com
+ [209.85.217.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E4BE261B1B
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 15:49:28 +0200 (CEST)
+Received: by mail-lb0-f178.google.com with SMTP id c11so5719779lbj.23
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 06:49:27 -0700 (PDT)
+In-Reply-To: <CAKON4OzXfq+gDLdzs0VYh+X+4RBU=2Nds45P7+kBd+02eY+zHA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jul 28, 2014 at 8:54 AM, jonsmirl@gmail.com <jonsmirl@gmail.com> wrote:
+> On Mon, Jul 28, 2014 at 7:20 AM, Mark Brown <broonie@kernel.org> wrote:
+>> On Mon, Jul 28, 2014 at 08:24:39AM +0200, Lars-Peter Clausen wrote:
+>>> Cc ASoC maintainers.
+>>
+>> Jon, you should really know to CC maintainers.
+>
+> Are the all CC'd now? I thought the ALSA list was sufficient.
+>
+> So how do I set this hardware up?
+>
+> on-chip codec - it is ADC/DAC with FIFIO directly attached. There is
+> no separate bus. on-chip codec supports things like mic1, mic2, line
+> in, line out, hp out. Most boards populate only a subset of the jacks.
+> Right now the device driver makes a dummy codec and internally creates
+> a card and links everything together.
+> http://git.elopez.com.ar/linux/src/abc050fbbaa5302b76ac585954cd207961fc9159/sound/soc/sunxi/sunxi-codec.c?at=sunxi-codec
+>
+> Then someone came along and wanted to add a MAX9768. We're stuck
+> because the way the driver is built it doesn't support the external
+> MAX9768 codec driver.  MAX9768 is just an amp with I2C control of
+> volume.
+>
+> So how should the device tree look for no external amp? Right now
+> there is just a device node and the driver makes a card/dummy-codec
+> internally.
+>
+> How should the device tree look when there is an external amp?  Maybe
+> this amp should just be a chip of the device node?
 
---7TOlKqtLs8Nv5Cm2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Maybe something like this.....
 
-On Mon, Jul 28, 2014 at 09:58:43PM +0900, Simon Horman wrote:
-> On Wed, Jun 18, 2014 at 11:06:54AM +0100, Mark Brown wrote:
+i2c1: i2c@01c2b000 {
+   pinctrl-names = "default";
+   pinctrl-0 = <&i2c1_pins_a>;
+   status = "okay";
 
-> > > ad32d0c7b0e993433df152ae747652647eb65a27
-> > > (ASoC: rsnd: add rsnd_gen_dma_addr() for DMAC addr)
-> > > added rsnd_gen_dma_addr() to calculate DMA addr,
+   max9768: max9768@36 {
+      compatible = "max,9768";
+      reg = <0x36>;
+   };
+};
 
-> > Applied, thanks.
+codec: codec@01c22c00 {
+   compatible = "allwinner,sun7i-a20-codec";
+   reg = <0x01c22c00 0x40>;
+   interrupts = <0 30 4>;
+   clocks = <&pll2 0>, <&apb0_gates 0>, <&codec_clk>;
+   clock-names = "pll", "apb", "codec";
+   dmas = <&dma 0 19>, <&dma 0 19>;
+   dma-names = "rx", "tx";
+   widgets = "Mic1 Jack", "Headphone Jack";
+   external-amp = <&max9768>
+   status = "okay";
+};
 
-> I guess its a little too late in the cycle and I apologise
-> for not having noticed this earlier. It seems that while
-> this problem was added in v3.16-rc1 (by the patch detailed above)
-> the fix (this patch) is not present in v3.16-rc7.
+If external amp is missing I just bind to my internal dummy-codec.
 
-Yeah, I've got too big a backlog of fixes to actually send to Linus at
-this point.
 
---7TOlKqtLs8Nv5Cm2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>
+> How should the various jack populations be handled in the device tree?
+>
+> --
+> Jon Smirl
+> jonsmirl@gmail.com
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT1lSRAAoJELSic+t+oim9QPwQAINaQN7HeOnJ4EhOMycFaQ/E
-OEXFlDHpxp3X0RM0Ew7Q4evx2BD9X9CXqQs409w5aaL5fr6e+2sUCK7UDq4tAi3n
-c6n4uzRedDByEk3lXc9hdZ0X78qAWO79u1U4Tyltgjs71AyDGUvT0xGOYKwOAf2j
-kKF8MDFV9WTAEQO8OUclc+kg2Lnpba8kbW0aGnNEWtu/GzIR6AFLFEJHadyJ7ASk
-0hcUWfDxQtqAI4vukAVdGSoytqh3fIUrg+QxBWWgSPo+i/ZkUM6tmK6r5fEAw2Xa
-QZ4IfN9qd9dlRS9OjJcQMexAy7F+ioSHxYBqK4iKLI9Z3qrhnqV94lovDX+yO9hh
-j5oMCEcpcGXjytmPGZdR8D382lWx5/JjMFXFRKNvhmbNOZGU2goc8zrucAW5tNHM
-hKbpzox7tPkaTwVgJqXj/OLP4t55S1WQaMFVeGHffDxgNFtU4ho9B5j4oo98ecyo
-wDV73UHhHXcUJ8jenspA16XN/QYgN3mzh/Tc6W9HMMp9xFaOZoOw97KS0er3+NrI
-1Bp96BODPg1vXfpbDofJON/No46AG8TmxgDklt/TMRSNUfJjGrnCEYEeT9V6Cp1x
-cruh0swzjWjj9JDfaeH3SeOV4cinvJJFsA3tA9rhOYZZ8v35p1ExRzl/gadOrhkf
-VPVn3rQhvVEpkbDeMiUC
-=PUW1
------END PGP SIGNATURE-----
 
---7TOlKqtLs8Nv5Cm2--
+-- 
+Jon Smirl
+jonsmirl@gmail.com
