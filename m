@@ -1,35 +1,52 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH 01/12] ASoC: rsnd: fixup rsnd_gen_dma_addr() for Gen1
-Date: Mon, 28 Jul 2014 21:58:43 +0900
-Message-ID: <20140728125840.GA10125@verge.net.au>
-References: <87d2e6zjhf.wl%kuninori.morimoto.gx@gmail.com>
- <87bntqzjfw.wl%kuninori.morimoto.gx@renesas.com>
- <20140618100654.GF5099@sirena.org.uk>
+From: weiyj_lk@163.com
+Subject: [PATCH -next] ASoC: rockchip: remove redundant dev_err
+	call in rockchip_i2s_probe()
+Date: Mon, 28 Jul 2014 21:21:00 +0800
+Message-ID: <1406553660-30014-1-git-send-email-weiyj_lk@163.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140618100654.GF5099@sirena.org.uk>
-Sender: linux-sh-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-sh@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from m12-12.163.com (m12-12.163.com [220.181.12.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E1D6261740
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 15:21:04 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, Jianqun Xu <xjq@rock-chips.com>
+Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 18, 2014 at 11:06:54AM +0100, Mark Brown wrote:
-> On Wed, Jun 18, 2014 at 05:54:43PM +0900, Kuninori Morimoto wrote:
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > ad32d0c7b0e993433df152ae747652647eb65a27
-> > (ASoC: rsnd: add rsnd_gen_dma_addr() for DMAC addr)
-> > added rsnd_gen_dma_addr() to calculate DMA addr,
-> 
-> Applied, thanks.
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Hi,
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
 
-I guess its a little too late in the cycle and I apologise
-for not having noticed this earlier. It seems that while
-this problem was added in v3.16-rc1 (by the patch detailed above)
-the fix (this patch) is not present in v3.16-rc7.
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ sound/soc/rockchip/rockchip_i2s.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index af1d8eb..52ccced 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -427,10 +427,8 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	regs = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(regs)) {
+-		dev_err(&pdev->dev, "No memory resource\n");
++	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+-	}
+ 
+ 	i2s->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
+ 					    &rockchip_i2s_regmap_config);
