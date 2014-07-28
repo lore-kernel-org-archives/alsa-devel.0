@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: ASoC: Device tree binding to dummy codec
-Date: Mon, 28 Jul 2014 17:18:23 +0100
-Message-ID: <20140728161823.GY17528@sirena.org.uk>
+Date: Mon, 28 Jul 2014 17:27:15 +0100
+Message-ID: <20140728162715.GZ17528@sirena.org.uk>
 References: <CAKON4Oynu5HE-jDETrNRBY3dYtwuh6XmOgyDOQuc4jmCzmNhNg@mail.gmail.com>
  <53D5ECA7.5090106@metafoo.de>
  <20140728112055.GM17528@sirena.org.uk>
  <CAKON4OzXfq+gDLdzs0VYh+X+4RBU=2Nds45P7+kBd+02eY+zHA@mail.gmail.com>
+ <CAKON4Owhhw6WvJBvZC6KYpS+rtvbPymAqEb1+4iZ=e6OokGeng@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2042728154919013917=="
+Content-Type: multipart/mixed; boundary="===============7218583528568422104=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5112E265125
- for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 18:18:32 +0200 (CEST)
-In-Reply-To: <CAKON4OzXfq+gDLdzs0VYh+X+4RBU=2Nds45P7+kBd+02eY+zHA@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A9C0265125
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 18:27:36 +0200 (CEST)
+In-Reply-To: <CAKON4Owhhw6WvJBvZC6KYpS+rtvbPymAqEb1+4iZ=e6OokGeng@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,93 +29,67 @@ Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <l
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2042728154919013917==
+--===============7218583528568422104==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="frK4hI1X9U277v5Y"
+	protocol="application/pgp-signature"; boundary="C5feqNWLfuTauAvZ"
 Content-Disposition: inline
 
 
---frK4hI1X9U277v5Y
+--C5feqNWLfuTauAvZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jul 28, 2014 at 08:54:13AM -0400, jonsmirl@gmail.com wrote:
-> On Mon, Jul 28, 2014 at 7:20 AM, Mark Brown <broonie@kernel.org> wrote:
-> > On Mon, Jul 28, 2014 at 08:24:39AM +0200, Lars-Peter Clausen wrote:
-> >> Cc ASoC maintainers.
+On Mon, Jul 28, 2014 at 09:49:27AM -0400, jonsmirl@gmail.com wrote:
 
-> > Jon, you should really know to CC maintainers.
+> codec: codec@01c22c00 {
+>    compatible = "allwinner,sun7i-a20-codec";
+>    reg = <0x01c22c00 0x40>;
+>    interrupts = <0 30 4>;
+>    clocks = <&pll2 0>, <&apb0_gates 0>, <&codec_clk>;
+>    clock-names = "pll", "apb", "codec";
+>    dmas = <&dma 0 19>, <&dma 0 19>;
+>    dma-names = "rx", "tx";
+>    widgets = "Mic1 Jack", "Headphone Jack";
+>    external-amp = <&max9768>
+>    status = "okay";
+> };
 
-> Are the all CC'd now? I thought the ALSA list was sufficient.
+> If external amp is missing I just bind to my internal dummy-codec.
 
-No, you should always CC maintainers - never assume anything sent only
-to a mailing list is going to be seen or read, certainly not with any
-degree of promptness.
+No, the CODEC that's in the device should be there all the time - it's
+just the same as connecting an external amp to any other device,
+describe the hardware in the SoC the same way all the time and then
+connect any attached devices to it.
 
-> on-chip codec - it is ADC/DAC with FIFIO directly attached. There is
-> no separate bus. on-chip codec supports things like mic1, mic2, line
-> in, line out, hp out. Most boards populate only a subset of the jacks.
-> Right now the device driver makes a dummy codec and internally creates
-> a card and links everything together.
-
-> http://git.elopez.com.ar/linux/src/abc050fbbaa5302b76ac585954cd207961fc9159/sound/soc/sunxi/sunxi-codec.c?at=sunxi-codec
-
-> Then someone came along and wanted to add a MAX9768. We're stuck
-> because the way the driver is built it doesn't support the external
-> MAX9768 codec driver.  MAX9768 is just an amp with I2C control of
-> volume.
-
-This doesn't seem hard - just extend the binding for the device/card to
-allow auxiliary devices to be specified (the matching code supports
-that).
-
-> So how should the device tree look for no external amp? Right now
-> there is just a device node and the driver makes a card/dummy-codec
-> internally.
-
-Your CODEC shouldn't be a completely dummy one, at a minimum it has some
-external pins which need to be described and documented.
-
-> How should the device tree look when there is an external amp?  Maybe
-> this amp should just be a chip of the device node?
-
-Just the same as any other card - allow a phandle to be provided to the
-amplifier.
-
-> How should the various jack populations be handled in the device tree?
-
-Assuming "jack populations" are DAPM links just do it the same way as
-anything else and use snd_soc_of_parse_audio_routing().
-
---frK4hI1X9U277v5Y
+--C5feqNWLfuTauAvZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT1nfMAAoJELSic+t+oim9XhIP/RETBsQkgsVAyQkAlcP4AwT5
-A0kIfvZa1OhYPpfvVEml5MAF01DDdrL+fSWWH3FcS91WkaGqbZt7tsIB0dDrzY6P
-SEUmAsSPjczsYvMdNaAcH+NJ/gDVIxf72qhv/fUzzRjVpjpxiWQlbD4m+dkYVOfz
-ldse0/uneXA0bbB+he+WtKiFA5jFX7ByETLgs/k/GPS7tFbIIUAg+1fjFkqD+mE9
-DYo2VCq2DkYP5pWrTc6v6vrJ5jBmna+ukQyuHb/FgQ9z9B1hylcqqXlns4RsjlrU
-aK6glAkEXvDfc4pGqKa7tTvvaymgPsNL/oijn4skOMq0cyT4PKATw4fOFZ4CJA5b
-zfoMlsf+j49vw0PEAMFbZifUoA0h5NrpVG0rXFPb1cjA0K10BG22Q7d+AC2DV5mc
-Pwb3TotasjmwNtB3n0hEGLagCOMzB8RA1q/Q7s4Oou3jb9t3arDhK4AHZuw8vqAi
-yNv6CXikS2HTckk+dxd6K7x2mZp1hf5Hv8cOu7pLlz21q4J1CZSDGDrqkIl65Ar8
-qgOO6aR8+BxlJDARCPpNiRsRjKJhzCUYJv6IjdU5aFUeQM6NQMJkTKSlx5XzIfRf
-emdCRHd18ZRg1fASEsPUXbfwEv8uNVItcV06y++TnLe9Y1zMWkbhyNv2uRYJU31P
-kGHtk0EmJW1nJyeMCunw
-=EO7x
+iQIcBAEBAgAGBQJT1nngAAoJELSic+t+oim92IgP/1blDtvAUoafSTUEGkjq0RTy
+0i18yzcVneHapdAF8WsdMByr5rsIc+KnIhfKoirkuY41M+0KCysIfeofLVW0M6Om
+xgiRCFc7HdbhiJlig5JxblQJvBGJg1HroZ7inhACSwdzsHz6VLfFe4u98gMHQcfJ
+DijwSAXJ0lZHWMO7Db5hXgqQKxQd/aT96IULlyc0j3vcFbLuQIuvP71FYk9Cv6ir
+ylmI7RRVVuo0K7Z+ldh7MwHy9X4rtljCAkO+qWaUunuoOHR936mpL4G1MPvgna6V
+IEtZzdapxyg5esTBiNmDDMBZ3TtcVM6SD3CVBXJCiDJvZ5EifYjBIaD8giGna17o
+tGVnqVti7vpKDacCbuWUOexAefu2hQSTr7hzWLTq1dGV1TEltToKM9TzUmSwWhyg
+ou5X73rD0a/4LoKcuaTP7NiUgJEMQcMWhlJ64QeR5N9pIoXQmlrhGoymTH2QYjUq
+KeFRQZfvHQCbQQtTk9IqYpEk9S47TPGLS+nExXSOVMlq6c0PQWVUuJR1maxY0S0R
+QYCgl0IMeklJWi3e0TDRz2ukO0xeiz7e3Z+EfFAs72/6oG86IZyDCBOIOXu4OSbK
+8BsQyyX4vyVrzIaPQWpD0b1Ut4RBlf7PKOkZTw/UomPYTe0VsGTcvPqS6yXxz4Gd
+9d/o4EYH3mlM9VqoYqSm
+=fuvv
 -----END PGP SIGNATURE-----
 
---frK4hI1X9U277v5Y--
+--C5feqNWLfuTauAvZ--
 
---===============2042728154919013917==
+--===============7218583528568422104==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2042728154919013917==--
+--===============7218583528568422104==--
