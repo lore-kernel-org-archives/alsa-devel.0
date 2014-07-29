@@ -1,42 +1,43 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Fast track Ultra external clock control in ALSA
-Date: Tue, 29 Jul 2014 22:09:51 +0200
-Message-ID: <CAFz=ag4wanE4hKQR9XQGgpebsN62HOJr9VaqNAgx0SQB9w8DNQ@mail.gmail.com>
-References: <2823842.eCxdcGNAIP@lightsaber>
- <CAFz=ag4u7e6bWgm4uN-5RLJBr4sJLWRvBB0kvRfnj7fqDCc3JA@mail.gmail.com>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH v2 03/12] ASoC: kirkwood: Remove unused drivers
+Date: Tue, 29 Jul 2014 22:48:53 +0200
+Message-ID: <20140729204853.GC17763@lunn.ch>
+References: <1405028192-9623-1-git-send-email-andrew@lunn.ch>
+ <1405028192-9623-4-git-send-email-andrew@lunn.ch>
+ <20140729193509.GK17528@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f54.google.com (mail-qa0-f54.google.com
- [209.85.216.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A49E265309
- for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 22:09:52 +0200 (CEST)
-Received: by mail-qa0-f54.google.com with SMTP id k15so233122qaq.13
- for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 13:09:51 -0700 (PDT)
-In-Reply-To: <CAFz=ag4u7e6bWgm4uN-5RLJBr4sJLWRvBB0kvRfnj7fqDCc3JA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Marcelo <marcelovborro@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20140729193509.GK17528@sirena.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Sebastian Hesselbarth <sebastian.hesselbarth@googlemail.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux ARM <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Am 29.07.2014 13:01 schrieb "Marcelo" <marcelovborro@gmail.com>:
->
-> My question is: was it implemented?
+On Tue, Jul 29, 2014 at 08:35:09PM +0100, Mark Brown wrote:
+> On Thu, Jul 10, 2014 at 11:36:23PM +0200, Andrew Lunn wrote:
+> > Both kirkwood-openrd and kirkwood-t5325 drivers have been replaced
+> > with DT based simple-card equivelents. So remove these drivers.
+> 
+> Applied.  Please send patches against current code, I needed to hand
+> apply this.
 
-It has not been implemented, yet.
+Hi Mark
 
-@Daniel:
-Do you still remember how this would have to be done? I think I can find
-something in my usbmon sniffs from 2010 but I still don't have a second
-device I could test this with.
+By current do you mean asoc-next? That would not be very easy, since
+i'm patching a large number of subsystems here. I don't think the
+gpio, or the libata, or the led maintainer would be too happy if i
+based the patches on asoc-next! So i picked a plain -rcX kernel,
+something neutral to everybody.
 
-Kind regards,
-Felix
+	  Andrew
