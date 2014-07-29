@@ -1,49 +1,39 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ak4642: Make of_device_id array const
-Date: Mon, 28 Jul 2014 22:29:57 +0100
-Message-ID: <20140728212957.GG17528@sirena.org.uk>
-References: <1406527864-22092-1-git-send-email-kiran.padwal21@gmail.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 01/12] ASoC: rsnd: fixup rsnd_gen_dma_addr() for Gen1
+Date: Tue, 29 Jul 2014 09:52:28 +0900
+Message-ID: <20140729005228.GD19235@verge.net.au>
+References: <87d2e6zjhf.wl%kuninori.morimoto.gx@gmail.com>
+ <87bntqzjfw.wl%kuninori.morimoto.gx@renesas.com>
+ <20140618100654.GF5099@sirena.org.uk>
+ <20140728125840.GA10125@verge.net.au>
+ <20140728134804.GW17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4ZYwxBGyy4rg4AI1"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1406527864-22092-1-git-send-email-kiran.padwal21@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kiran Padwal <kiran.padwal21@gmail.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, s.hauer@pengutronix.de, fabio.estevam@freescale.com, kuninori.morimoto.gx@renesas.com, Li.Xiubo@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20140728134804.GW17528@sirena.org.uk>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jul 28, 2014 at 02:48:04PM +0100, Mark Brown wrote:
+> On Mon, Jul 28, 2014 at 09:58:43PM +0900, Simon Horman wrote:
+> > On Wed, Jun 18, 2014 at 11:06:54AM +0100, Mark Brown wrote:
+> 
+> > > > ad32d0c7b0e993433df152ae747652647eb65a27
+> > > > (ASoC: rsnd: add rsnd_gen_dma_addr() for DMAC addr)
+> > > > added rsnd_gen_dma_addr() to calculate DMA addr,
+> 
+> > > Applied, thanks.
+> 
+> > I guess its a little too late in the cycle and I apologise
+> > for not having noticed this earlier. It seems that while
+> > this problem was added in v3.16-rc1 (by the patch detailed above)
+> > the fix (this patch) is not present in v3.16-rc7.
+> 
+> Yeah, I've got too big a backlog of fixes to actually send to Linus at
+> this point.
 
---4ZYwxBGyy4rg4AI1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks. So long as it isn't completely lost I'm happy :)
 
-On Mon, Jul 28, 2014 at 11:41:04AM +0530, Kiran Padwal wrote:
-> Make of_device_id array const, because all OF functions handle it as const
-
-Applied, thanks.
-
---4ZYwxBGyy4rg4AI1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT1sDSAAoJELSic+t+oim9d/gP/2zKo2JdEWh8BpV0dUOnvSx5
-as8Wit+TGLzNkVi8sNCxPn1hfYS3actOC8uJpDSU3mspYXNowi4nnlcYUE9a+duq
-AmwRg58GN2tVDiie5Av+hye8Z3z4UH3kNjII5QkUlBPjHP9KCbNRX52rtV1islbE
-XMNeLumGIcaPHUg4M7QYGV6UPnlQJw8BaSKTMb9iJfftKytemkxC9vmPRqwJM3ai
-HBb6mGzJYuSDF+4iuENTB6Vw1wbULrfa2pJaOIg46WgCB0XyA5DJCysXZJYLgFwy
-MsxdQVqhsgcFKVw1+gLFrFY3LgLKyl/WyyN25OWgYpa+N2LZpM9KWvunWx6LoTTx
-mV1TjyD8/VgRJUxF956XgLS+gMil9uQ7r5EFMtjo1Gk2A6lHV+XIu8p0Z+EmEX2f
-koriGqb1xG0GlzJM17IBDSrnRKtzM4HIDYHFzeMtzBalIDnhtqxXkfF13rvXcgja
-oKMxHW3sPuged1Pk2uYmB1NvScepk425ZQpo9PjUrVMWiAkdsDQ/0fEP0Dnk5GD5
-DtK2Rbv5P9FprXpU3lzNpJ2IGPmymToYfQ2a9rcDxMdEzEU4ISlnPys+/TL/eKNo
-+Yo1zmOzzEC0yV7N4GhOa25XKrDcIEYwlkynHZK9MOEP2oGnnqzo1PgV0OuK9a/Q
-MGKU2PaQpS9hCdWyKgeA
-=SDSD
------END PGP SIGNATURE-----
-
---4ZYwxBGyy4rg4AI1--
