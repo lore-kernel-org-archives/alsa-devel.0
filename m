@@ -1,40 +1,109 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [alsa-devel] [PATCH v2] ASoC: wm8962: Let CODEC driver enable
- and disable its own MCLK
-Date: Tue, 29 Jul 2014 18:19:51 +0800
-Message-ID: <20140729101950.GB5495@MrMyself>
-References: <1406547718-21498-1-git-send-email-nicoleotsuka@gmail.com>
- <20140728122211.GS17528@sirena.org.uk>
- <CAOMZO5DgE9RjC9MG7FbGPKwsgxunntw70W6Sj8WQKFYG+j8BsA@mail.gmail.com>
- <20140729025518.GB3350@MrMyself> <20140729095203.GK17528@sirena.org.uk>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH v3] ASoC: wm8962: Let CODEC driver enable and disable its own MCLK
+Date: Tue, 29 Jul 2014 18:38:39 +0800
+Message-ID: <1406630319-5302-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140729095203.GK17528@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patches@opensource.wolfsonmicro.com, b02247@freescale.com, linux-kernel <linux-kernel@vger.kernel.org>, Nicolin Chen <b42378@freescale.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, b42378@freescale.com, b02247@freescale.com, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 29, 2014 at 10:52:03AM +0100, Mark Brown wrote:
-> On Tue, Jul 29, 2014 at 10:55:19AM +0800, Nicolin Chen wrote:
-> > On Mon, Jul 28, 2014 at 03:19:43PM -0300, Fabio Estevam wrote:
-> 
-> > > >> +     pdata->mclk = devm_clk_get(&i2c->dev, NULL);
-> 
-> > > > This is broken for deferred probe.
-> 
-> > Sorry. I don't get why deferred probe would be broken by this.
-> > And I just took a test by adding this:
-> 
-> I don't see the code that actually pays attention to the return value
-> from devm_clk_get() - in the main probe function the code just treats
-> all errors as a missing MCLK.
+snd_soc_open() will trigger pm_runtime resume() which will then enable
+the regulator and initialization. So we should make sure the MCLK is
+enabled before this resume().
 
-Just checked the clk_get() code and got the point.
+Previously we let the machine driver get the clock and enable it in
+its probe(). However, considering about power saving, it'll be better
+to enable it when it's going to be used and disable it after using.
 
-I will add a check to it and return for EPROBE_DEFER.
+So this patch just simply adds clk_get() and clk_enable() to WM8962
+driver. Meanwhile, it marks clock pointer to NULL if no clock assigned
+to it so it will not break any current function.
 
-Thank you,
-Nicolin
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+Changelog:
+v3
+ * Added return check for clk_prepare_enable()
+ * Check error for clk_get() and return for deferred probe.
+v2
+ * Use wm8962->pdata.mclk instead.
+
+ include/sound/wm8962.h    |  1 +
+ sound/soc/codecs/wm8962.c | 19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+)
+
+diff --git a/include/sound/wm8962.h b/include/sound/wm8962.h
+index 79e6d42..0af7c16 100644
+--- a/include/sound/wm8962.h
++++ b/include/sound/wm8962.h
+@@ -37,6 +37,7 @@
+ #define WM8962_GPIO_FN_MICSCD          22
+ 
+ struct wm8962_pdata {
++	struct clk *mclk;
+ 	int gpio_base;
+ 	u32 gpio_init[WM8962_MAX_GPIO];
+ 
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index ca2fda9..eac29031 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -14,6 +14,7 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/init.h>
++#include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/pm.h>
+ #include <linux/gcd.h>
+@@ -3541,6 +3542,8 @@ static int wm8962_set_pdata_from_of(struct i2c_client *i2c,
+ 				pdata->gpio_init[i] = 0x0;
+ 		}
+ 
++	pdata->mclk = devm_clk_get(&i2c->dev, NULL);
++
+ 	return 0;
+ }
+ 
+@@ -3572,6 +3575,14 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 			return ret;
+ 	}
+ 
++	/* Mark the mclk pointer to NULL if no mclk assigned */
++	if (IS_ERR(wm8962->pdata.mclk)) {
++		/* But do not ignore the request for probe defer */
++		if (PTR_ERR(wm8962->pdata.mclk) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++		wm8962->pdata.mclk = NULL;
++	}
++
+ 	for (i = 0; i < ARRAY_SIZE(wm8962->supplies); i++)
+ 		wm8962->supplies[i].supply = wm8962_supply_names[i];
+ 
+@@ -3780,6 +3791,12 @@ static int wm8962_runtime_resume(struct device *dev)
+ 	struct wm8962_priv *wm8962 = dev_get_drvdata(dev);
+ 	int ret;
+ 
++	ret = clk_prepare_enable(wm8962->pdata.mclk);
++	if (ret) {
++		dev_err(dev, "Failed to enable MCLK: %d\n", ret);
++		return ret;
++	}
++
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8962->supplies),
+ 				    wm8962->supplies);
+ 	if (ret != 0) {
+@@ -3839,6 +3856,8 @@ static int wm8962_runtime_suspend(struct device *dev)
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8962->supplies),
+ 			       wm8962->supplies);
+ 
++	clk_disable_unprepare(wm8962->pdata.mclk);
++
+ 	return 0;
+ }
+ #endif
+-- 
+1.8.4
