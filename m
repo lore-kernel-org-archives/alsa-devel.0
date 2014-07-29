@@ -1,109 +1,71 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v3] ASoC: wm8962: Let CODEC driver enable and disable its own MCLK
-Date: Tue, 29 Jul 2014 18:38:39 +0800
-Message-ID: <1406630319-5302-1-git-send-email-nicoleotsuka@gmail.com>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: [PATCH V2] ASoC: cs42xx8: Add SND_SOC_DAIFMT_DSP_A support
+Date: Tue, 29 Jul 2014 18:39:37 +0800
+Message-ID: <d30e88a9fa8c0e52acb48755a1b6dbd2b9e4bacf.1406629932.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, b42378@freescale.com, b02247@freescale.com, festevam@gmail.com
+To: alsa-devel@alsa-project.org, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_open() will trigger pm_runtime resume() which will then enable
-the regulator and initialization. So we should make sure the MCLK is
-enabled before this resume().
+According to the spec, the definition of TDM and ONELINE_24 for
+CS42XX8_INTF_DAC and CS42XX8_INTF_ADC is wrong. correct them and enable
+SND_SOC_DAIFMT_DSP_A support.
 
-Previously we let the machine driver get the clock and enable it in
-its probe(). However, considering about power saving, it'll be better
-to enable it when it's going to be used and disable it after using.
-
-So this patch just simply adds clk_get() and clk_enable() to WM8962
-driver. Meanwhile, it marks clock pointer to NULL if no clock assigned
-to it so it will not break any current function.
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+Acked-by: Brian Austin <brian.austin@cirrus.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
 Changelog:
-v3
- * Added return check for clk_prepare_enable()
- * Check error for clk_get() and return for deferred probe.
+
 v2
- * Use wm8962->pdata.mclk instead.
+ * Resend this patch, v1 missed some maintainers.
+ * Add Acked info.
 
- include/sound/wm8962.h    |  1 +
- sound/soc/codecs/wm8962.c | 19 +++++++++++++++++++
- 2 files changed, 20 insertions(+)
+ sound/soc/codecs/cs42xx8.c | 3 +++
+ sound/soc/codecs/cs42xx8.h | 8 ++++----
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/wm8962.h b/include/sound/wm8962.h
-index 79e6d42..0af7c16 100644
---- a/include/sound/wm8962.h
-+++ b/include/sound/wm8962.h
-@@ -37,6 +37,7 @@
- #define WM8962_GPIO_FN_MICSCD          22
+diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
+index ec53ffc..02b1520 100644
+--- a/sound/soc/codecs/cs42xx8.c
++++ b/sound/soc/codecs/cs42xx8.c
+@@ -219,6 +219,9 @@ static int cs42xx8_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		val = CS42XX8_INTF_DAC_DIF_RIGHTJ | CS42XX8_INTF_ADC_DIF_RIGHTJ;
+ 		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		val = CS42XX8_INTF_DAC_DIF_TDM | CS42XX8_INTF_ADC_DIF_TDM;
++		break;
+ 	default:
+ 		dev_err(codec->dev, "unsupported dai format\n");
+ 		return -EINVAL;
+diff --git a/sound/soc/codecs/cs42xx8.h b/sound/soc/codecs/cs42xx8.h
+index da0b94a..b2c10e5 100644
+--- a/sound/soc/codecs/cs42xx8.h
++++ b/sound/soc/codecs/cs42xx8.h
+@@ -128,8 +128,8 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap);
+ #define CS42XX8_INTF_DAC_DIF_RIGHTJ		(2 << CS42XX8_INTF_DAC_DIF_SHIFT)
+ #define CS42XX8_INTF_DAC_DIF_RIGHTJ_16		(3 << CS42XX8_INTF_DAC_DIF_SHIFT)
+ #define CS42XX8_INTF_DAC_DIF_ONELINE_20		(4 << CS42XX8_INTF_DAC_DIF_SHIFT)
+-#define CS42XX8_INTF_DAC_DIF_ONELINE_24		(6 << CS42XX8_INTF_DAC_DIF_SHIFT)
+-#define CS42XX8_INTF_DAC_DIF_TDM		(7 << CS42XX8_INTF_DAC_DIF_SHIFT)
++#define CS42XX8_INTF_DAC_DIF_ONELINE_24		(5 << CS42XX8_INTF_DAC_DIF_SHIFT)
++#define CS42XX8_INTF_DAC_DIF_TDM		(6 << CS42XX8_INTF_DAC_DIF_SHIFT)
+ #define CS42XX8_INTF_ADC_DIF_SHIFT		0
+ #define CS42XX8_INTF_ADC_DIF_WIDTH		3
+ #define CS42XX8_INTF_ADC_DIF_MASK		(((1 << CS42XX8_INTF_ADC_DIF_WIDTH) - 1) << CS42XX8_INTF_ADC_DIF_SHIFT)
+@@ -138,8 +138,8 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap);
+ #define CS42XX8_INTF_ADC_DIF_RIGHTJ		(2 << CS42XX8_INTF_ADC_DIF_SHIFT)
+ #define CS42XX8_INTF_ADC_DIF_RIGHTJ_16		(3 << CS42XX8_INTF_ADC_DIF_SHIFT)
+ #define CS42XX8_INTF_ADC_DIF_ONELINE_20		(4 << CS42XX8_INTF_ADC_DIF_SHIFT)
+-#define CS42XX8_INTF_ADC_DIF_ONELINE_24		(6 << CS42XX8_INTF_ADC_DIF_SHIFT)
+-#define CS42XX8_INTF_ADC_DIF_TDM		(7 << CS42XX8_INTF_ADC_DIF_SHIFT)
++#define CS42XX8_INTF_ADC_DIF_ONELINE_24		(5 << CS42XX8_INTF_ADC_DIF_SHIFT)
++#define CS42XX8_INTF_ADC_DIF_TDM		(6 << CS42XX8_INTF_ADC_DIF_SHIFT)
  
- struct wm8962_pdata {
-+	struct clk *mclk;
- 	int gpio_base;
- 	u32 gpio_init[WM8962_MAX_GPIO];
- 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index ca2fda9..eac29031 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -14,6 +14,7 @@
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/init.h>
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
- #include <linux/gcd.h>
-@@ -3541,6 +3542,8 @@ static int wm8962_set_pdata_from_of(struct i2c_client *i2c,
- 				pdata->gpio_init[i] = 0x0;
- 		}
- 
-+	pdata->mclk = devm_clk_get(&i2c->dev, NULL);
-+
- 	return 0;
- }
- 
-@@ -3572,6 +3575,14 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
- 			return ret;
- 	}
- 
-+	/* Mark the mclk pointer to NULL if no mclk assigned */
-+	if (IS_ERR(wm8962->pdata.mclk)) {
-+		/* But do not ignore the request for probe defer */
-+		if (PTR_ERR(wm8962->pdata.mclk) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		wm8962->pdata.mclk = NULL;
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(wm8962->supplies); i++)
- 		wm8962->supplies[i].supply = wm8962_supply_names[i];
- 
-@@ -3780,6 +3791,12 @@ static int wm8962_runtime_resume(struct device *dev)
- 	struct wm8962_priv *wm8962 = dev_get_drvdata(dev);
- 	int ret;
- 
-+	ret = clk_prepare_enable(wm8962->pdata.mclk);
-+	if (ret) {
-+		dev_err(dev, "Failed to enable MCLK: %d\n", ret);
-+		return ret;
-+	}
-+
- 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8962->supplies),
- 				    wm8962->supplies);
- 	if (ret != 0) {
-@@ -3839,6 +3856,8 @@ static int wm8962_runtime_suspend(struct device *dev)
- 	regulator_bulk_disable(ARRAY_SIZE(wm8962->supplies),
- 			       wm8962->supplies);
- 
-+	clk_disable_unprepare(wm8962->pdata.mclk);
-+
- 	return 0;
- }
- #endif
+ /* ADC Control & DAC De-Emphasis (Address 05h) */
+ #define CS42XX8_ADCCTL_ADC_HPF_FREEZE_SHIFT	7
 -- 
-1.8.4
+1.8.0
