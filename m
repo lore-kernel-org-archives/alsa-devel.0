@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: use regmap_mmio instead of
- original regmap bus
-Date: Tue, 29 Jul 2014 13:07:24 +0100
-Message-ID: <20140729120724.GT17528@sirena.org.uk>
-References: <87r414obt2.wl%kuninori.morimoto.gx@gmail.com>
+From: "Patrick Shirkey" <pshirkey@boosthardware.com>
+Subject: hda_analyzer vs alc668 asus NJ750k
+Date: Tue, 29 Jul 2014 23:09:02 +1000 (EST)
+Message-ID: <59001.86.107.254.57.1406639342.squirrel@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6519480275600467982=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 63E6B2651B8
- for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 14:07:35 +0200 (CEST)
-In-Reply-To: <87r414obt2.wl%kuninori.morimoto.gx@gmail.com>
+Received: from boosthardware.localdomain (boosthardware.com [88.198.122.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id 988FB2650C3
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 15:09:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +18,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Laurent <laurent.pinchart@ideasonboard.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============6519480275600467982==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zLaDioFsM0hUAvZz"
-Content-Disposition: inline
+I get some errors running hda_analyzer with this alc668 chipset.
 
-
---zLaDioFsM0hUAvZz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jul 29, 2014 at 12:37:31AM -0700, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current rsnd driver is using regmap and regmap_field.
-> It used original regmap bus which is
-> single regmap instance for multi register mapping.
-> This patch modifies it to use regmap_mmio bus,
-> and tidyuped probe method
-
-Applied, thanks.
-
---zLaDioFsM0hUAvZz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT1455AAoJELSic+t+oim930gP/1tNk7sWtUb/U7NhLlHpz5JV
-K6kMRNEz3yXYK7cFLFfBIUOYJk4lmVHtrZxUFONu7IgAWG/3Dhue9Bp+3wqoA33m
-TsBHJM8cKE/zuumt35mLWGjp8JA61OABgVCHZeUCAavxmVB5byaNSMiQGKyKzR3e
-D1w8eNO2HEwcvdKap5RW0fBP6ysw56Yt3NfV+lFy9YjwjOEK+Hp3/TZ2HBq4U6AZ
-eFRfGXgQ3aAGOYo1f3KcoLpv3zs5P2SE8+VD66x/0jB4xuP8Sju1BU8xNWQxJdZ/
-PoOdz1XJE5UZLW6/ayMydizuu9cDCYocsOO7xV+HA+Kueu+dNuml4R6izyF1ocH0
-QkfK9fNRaNWCTbutvseInNh4N4JuBvY/luCDkFDK9bv5mX5vG+qseFcEH+BwyYUn
-/TalDHqVwg3gYa8DyjVBX+E5Cq1xwcBgl3ROMXtkP+QfXXB8wLGNoZmG9aUdffru
-Y98JXDielOUMKtb4kbnS9ndEW+djDKMoQxSK7+Wk4tCKSnDBwwhFCKXxc/v0K9+W
-7KPnZQtcq6/EJz7gT3ECTENBRT5xXLbR8O/YhwunsQAEAAyDbwaJ/yKyWaOfT8WI
-G3mclFKEMgntq3qdwUMyJLZ4/4ulYakqbAIcRwJz+yhXGONm14Tq4iOHT2vFKL8l
-WzAYuGxxACyNoEPHxL89
-=XwNx
------END PGP SIGNATURE-----
-
---zLaDioFsM0hUAvZz--
-
---===============6519480275600467982==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Traceback (most recent call last):
+  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 546, in <module>
+    sys.exit(main(sys.argv))
+  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 523, in main
+    if read_nodes(sys.argv[1:]) == 0:
+  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 89, in read_nodes
+    read_nodes2(c.card, i)
+  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 60, in read_nodes2
+    c = HDACodec(card, codec)
+  File "/dev/shm/hda-analyzer/hda_codec.py", line 1041, in __init__
+    self.parse_proc()
+  File "/dev/shm/hda-analyzer/hda_codec.py", line 1140, in parse_proc
+    self.proc_codec = HDACodecProc(self.card, self.device, file)
+  File "/dev/shm/hda-analyzer/hda_proc.py", line 479, in __init__
+    self.parse(proc_file)
+  File "/dev/shm/hda-analyzer/hda_proc.py", line 677, in parse
+    node.add_digital(line[11:])
+  File "/dev/shm/hda-analyzer/hda_proc.py", line 296, in add_digital
+    self.wrongfile('unknown dig1 bit %s' % repr(b))
+  File "/dev/shm/hda-analyzer/hda_proc.py", line 143, in wrongfile
+    raise ValueError, "wrong proc file format (%s)" % msg
+ValueError: wrong proc file format (unknown dig1 bit 'KAE')
 
 
---===============6519480275600467982==--
+If I disable the check for add_digital I get this error:
+
+ValueError: wrong proc file format (  Digital: Enabled KAE)
+
+- Is it a problem to add a new DIG1_BIT to hda_proc.py:277
+
+ def add_digital(self, line):
+    bits = {
+      'Enabled': DIG1_BITS['ENABLE'],
+      'Validity': DIG1_BITS['VALIDITY'],
+      'ValidityCfg': DIG1_BITS['VALIDITYCFG'],
+      'Preemphasis': DIG1_BITS['EMPHASIS'],
+      'Copyright': DIG1_BITS['COPYRIGHT'], # old buggy format
+      'Non-Copyright': DIG1_BITS['COPYRIGHT'],
+      'Non-Audio': DIG1_BITS['NONAUDIO'],
+      'Pro': DIG1_BITS['PROFESSIONAL'],
+      'GenLevel': DIG1_BITS['LEVEL'],
+      'KAE': DIG1_BITS['KAE'],
+    }
+
+hda_codec.py:224
+
+ DIG1_BITS = {
+  'ENABLE': 0,
+  'VALIDITY': 1,
+  'VALIDITYCFG': 2,
+  'EMPHASIS': 3,
+  'COPYRIGHT': 4,
+  'NONAUDIO': 5,
+  'PROFESSIONAL': 6,
+  'LEVEL': 7,
+  'KAE': 8
+}
+
+
+- If I do that I get this error:
+
+
+Traceback (most recent call last):
+  File "hda_analyzer.py", line 546, in <module>
+    sys.exit(main(sys.argv))
+  File "hda_analyzer.py", line 523, in main
+    if read_nodes(sys.argv[1:]) == 0:
+  File "hda_analyzer.py", line 89, in read_nodes
+    read_nodes2(c.card, i)
+  File "hda_analyzer.py", line 60, in read_nodes2
+    c = HDACodec(card, codec)
+  File "/home/patrick/code/alsa-utilities/hda-analyzer/hda_codec.py", line
+1043, in __init__
+    self.parse_proc()
+  File "/home/patrick/code/alsa-utilities/hda-analyzer/hda_codec.py", line
+1142, in parse_proc
+    self.proc_codec = HDACodecProc(self.card, self.device, file)
+  File "/home/patrick/code/alsa-utilities/hda-analyzer/hda_proc.py", line
+480, in __init__
+    self.parse(proc_file)
+  File "/home/patrick/code/alsa-utilities/hda-analyzer/hda_proc.py", line
+732, in parse
+    self.wrongfile(line)
+  File "/home/patrick/code/alsa-utilities/hda-analyzer/hda_proc.py", line
+143, in wrongfile
+    raise ValueError, "wrong proc file format (%s)" % msg
+ValueError: wrong proc file format (  Devices: 0)
+
+- If I replace the call in hda_proc.py:734 to self.wrongfile() with a
+print command
+
+ex.
+        else:
+           print ('strange line : %s' % line)
+         # self.wrongfile(line)
+
+I get this output and hda_analyzer interface starts:
+
+# python hda_analyzer.py
+strange line :   Devices: 0
+strange line :   In-driver Connection: 3
+strange line :      0x02 0x03 0x04
+strange line :   Devices: 0
+strange line :   In-driver Connection: 3
+strange line :      0x02 0x03 0x04
+strange line :   Devices: 0
+strange line :   In-driver Connection: 3
+strange line :      0x02 0x03 0x04
+
+
+- If I run "alsa-jack-sense-test -a"  I get this output:
+
+
+# python alsa-jack-sense-test.py -a
+strange line :   Devices: 0
+strange line :   In-driver Connection: 3
+strange line :      0x02 0x03 0x04
+strange line :   Devices: 0
+strange line :   In-driver Connection: 3
+strange line :      0x02 0x03 0x04
+strange line :   Devices: 0
+strange line :   In-driver Connection: 3
+strange line :      0x02 0x03 0x04
+Pin 0x05 (Unknown Digital Out): present = No
+Pin 0x06 (Unknown Digital Out): present = No
+Pin 0x07 (Unknown Digital Out): present = No
+
+
+--
+Patrick Shirkey
+Boost Hardware Ltd
