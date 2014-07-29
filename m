@@ -1,96 +1,56 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: tas2552: Add DAPM calls for amp and PLL
-Date: Tue, 29 Jul 2014 19:51:46 +0100
-Message-ID: <20140729185146.GF17528@sirena.org.uk>
-References: <1405704668-8038-1-git-send-email-dmurphy@ti.com>
- <1405704668-8038-2-git-send-email-dmurphy@ti.com>
- <20140721115353.GV17528@sirena.org.uk>
- <00FC9A978A94B7418C33AFAE8A35ED49DA8D1E@DFLE09.ent.ti.com>
+Subject: Re: [PATCH -next] ASoC: samsung: Fix return value check in
+ s3c2412_iis_dev_probe()
+Date: Tue, 29 Jul 2014 19:56:09 +0100
+Message-ID: <20140729185609.GH17528@sirena.org.uk>
+References: <1405827787-26055-1-git-send-email-weiyj_lk@163.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oKuqsEW27CKFx7x1"
-Return-path: <linux-sound-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="lAQf9ELXiMBEg3QV"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <00FC9A978A94B7418C33AFAE8A35ED49DA8D1E@DFLE09.ent.ti.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: "Murphy, Dan" <dmurphy@ti.com>
-Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+In-Reply-To: <1405827787-26055-1-git-send-email-weiyj_lk@163.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: weiyj_lk@163.com
+Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---oKuqsEW27CKFx7x1
+--lAQf9ELXiMBEg3QV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 25, 2014 at 06:54:19PM +0000, Murphy, Dan wrote:
-> On 07/21/2014 06:54 AM, Mark Brown wrote:
-> > On Fri, Jul 18, 2014 at 12:31:08PM -0500, Dan Murphy wrote:
+On Sun, Jul 20, 2014 at 11:43:07AM +0800, weiyj_lk@163.com wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> In case of error, the function devm_ioremap_resource() returns ERR_PTR()
+> and never returns NULL. The NULL test in the return value check should be
+> replaced with IS_ERR(). Also remove redundant return value check of
+> platform_get_resource().
 
-> >> +static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
-> >> +{
-> >> +SND_SOC_DAPM_PRE("Class D Enable", tas2552_class_d_en),
-> >> +SND_SOC_DAPM_POST("Class D Disable", tas2552_class_d_en),
-> >> +SND_SOC_DAPM_POST("PLL Disable", tas2552_pll_disable),
-> >> +};
+Applied, thanks.
 
-> > This seems broken, having to use _PRE or _POST widgets for simple
-> > register writes (or almost anything really) should never be required and
-> > error prone - what is this actually trying to do?  I'd expect the class
-> > D to be a PGA or OUTPUT widget and the PLL to be a SUPPLY widget.
-
-> I need a little help here.
-> I am not seeing the PLL being disabled or Class D being disabled when
-> I am using the DAPM calls
-
-> My implementation is like this.  And I use set these widgets and audio
-> map in the call back functions in the struct snd_soc_codec_driver.
-
-> When I look at the registers after stream playback I see that
-> the TAS2552_CFG_2 register is untouched
-
-> static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
-> {
-> SND_SOC_DAPM_AIF_IN("DAC IN", NULL, 0, SND_SOC_NOPM, 0, 0),
-> SND_SOC_DAPM_DAC("DAC", NULL, SND_SOC_NOPM, 0, 0),
-> SND_SOC_DAPM_OUT_DRV("ClassD Enable", TAS2552_CFG_2, 7, 0, NULL, 0),
-> SND_SOC_DAPM_OUT_DRV("ClassD Disable", TAS2552_CFG_2, 7, 1, NULL, 0),
-> SND_SOC_DAPM_SUPPLY("PLL Disable", TAS2552_CFG_2, 3, 1, NULL, 0),
-> SND_SOC_DAPM_OUTPUT("OUT")
-> };
-
-> static const struct snd_soc_dapm_route tas2552_audio_map[] = {
->     {"DAC", NULL, "DAC IN"},
->     {"ClassD Enable", NULL, "DAC"},
->     {"OUT", NULL, "ClassD Enable"},
->     {"ClassD Disable", NULL, "OUT"},
->     {"PLL Disable", NULL, "ClassD Disable"}
-> };
-
-This looks very confused, why do you have separate enable and disable
-things - what do you think the effect of the above should be?  That's
-probably what's going wrong.  I'd expect to see one DAPM widget for the
-class D and one for the PLL.
-
---oKuqsEW27CKFx7x1
+--lAQf9ELXiMBEg3QV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT1+0/AAoJELSic+t+oim9VawP/jRdz6vZL+DGv+WlPT/siM2q
-QDvUQPa9Zqp3heZRC2aMQ/6TfM2cNJQPjYcS28yKRatwDs4tqxiMDDpiqxxR9E4h
-2YaLhaLmPHzR8jafYDpvbnTnWwIW5tGfen8bSsvCGa8u5bYKU/omMH9RJKvhli3d
-xfOPdKsKz2dCKhE8124qY6OfIDlARXATB2/X6TQfuGq0BUNpfIugB2pqnSlVKn4J
-DrHNxBRx2/LF1rCuehI7fUk8iHejVmJgYYmKSGE02Rwt47jYrrj6fzQrDhFiYXW+
-sCAkGJh9O3e0LFrQ6aJ0aPi7P+Ijptp3HepZoVQOmdWVJUBPTNeCrLe+FejjZ1aS
-xDZJvz5Gp4curq5M+286DcLUbNrOvdS4Y40vFItvunrG3px0wS3MSaummnHmSEoD
-/IaU1rTenmPdBKpHKGi/6CQRjqU3RN9lvLUjJE+tGyLX53VzDouCattX0GCcB1RO
-mkJtPbWMkZIh18fLEfikDxnx9uzjZmZ/qCrT3oYksDg891L3qc9Y/eHMKPGhhtKe
-QXLjeptXdGESjlffVZltaRlmbAkdN1hHiEBxMOAkZvhCBfs9xGdptzECavN9bxlc
-6CFVXQxE7QNVwb78jA8C9y7kvjjRrOrItcnWiX1DC4a4Wfr2g/E2jpD6MuvwKCG/
-4ujYVPng14ymBjcrJQsN
-=j1jy
+iQIcBAEBAgAGBQJT1+5GAAoJELSic+t+oim90NwQAIwabohwhJ3kXXnMlvMNj/at
+T5x6oYclecVnLev+xxbhwyFWwOe5I+btQ2cksZaODLAp1Ula8XdOngSOusH9uvoS
+qBnrcIJi47+nb7g422QOki1AADMeADwa62iqqqeUfQPBRAk69sycOTRpm9cVHLdF
+wA2XMUKKfoAIpOLyYo3YWvhhpWFNU31UM+ngBh2Clt3y4Fm/ik34vLyrWcfYnnLr
+IYOKcuG0ZDyzgjTWo5kh3ZcCyx4nrVhVfIJEHKQhxv+ehToCG6A74oJCvEmbI5ef
+2iJ4thuvhq+CloLOe9xjhypLkDtnqO0SLsPApVx7hUhDQbEBUAdH/oLnn1p424vO
+4mXP4dVF2iwcZga3mC8uiBt9N3cdkmYph/XQYM90aSn8ZJZll+i52uGbTU+Lr4Rc
+SPxkJRbxMk4wntjnOMnCpcQgpB3GOFu9o/26NCIuM2EyjaDuHr1vKgNsQ8pjv/SF
+Io8/2o/hsSI7E4hrL/1/Ec35MuPmqClItqFXH3SlSBH9N9LDQL+2ZZs/GI7Ouc84
+huFECiM1+CBnyrlkX0ajYD/FRchs8nb/z8C8pMrMCRmjZJ/wA8b0UqhwTGcp7mvW
+mzoQi6gz9n+TN9CuJ4zfnB0YcGkswwLD0w6fqtLH2RJmL1XeEfRNJC/21vx0aWdI
+65j9OWXIHXgBDxvyb2Y0
+=IfyT
 -----END PGP SIGNATURE-----
 
---oKuqsEW27CKFx7x1--
+--lAQf9ELXiMBEg3QV--
