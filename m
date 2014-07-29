@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt286: Fix null pointer issue
-Date: Tue, 29 Jul 2014 13:04:29 +0100
-Message-ID: <20140729120429.GR17528@sirena.org.uk>
-References: <1406613057-17359-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: rsnd: use regmap_mmio instead of
+ original regmap bus
+Date: Tue, 29 Jul 2014 13:07:24 +0100
+Message-ID: <20140729120724.GT17528@sirena.org.uk>
+References: <87r414obt2.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5722241619032692506=="
+Content-Type: multipart/mixed; boundary="===============6519480275600467982=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A46042650C3
- for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 14:04:40 +0200 (CEST)
-In-Reply-To: <1406613057-17359-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 63E6B2651B8
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 14:07:35 +0200 (CEST)
+In-Reply-To: <87r414obt2.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Simon <horms@verge.net.au>, Laurent <laurent.pinchart@ideasonboard.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5722241619032692506==
+--===============6519480275600467982==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kGQGJjO6+plzktLY"
+	protocol="application/pgp-signature"; boundary="zLaDioFsM0hUAvZz"
 Content-Disposition: inline
 
 
---kGQGJjO6+plzktLY
+--zLaDioFsM0hUAvZz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 29, 2014 at 01:50:57PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
+On Tue, Jul 29, 2014 at 12:37:31AM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> To make the interrupt safe if it happens to be called before the card is
-> ready, we use regmap read/write in the interrupt handler. Also, we try to
-> prevent the interrupt happen before the card is ready by enabling codec's
-> IRQ in the ASoC probe.
+> Current rsnd driver is using regmap and regmap_field.
+> It used original regmap bus which is
+> single regmap instance for multi register mapping.
+> This patch modifies it to use regmap_mmio bus,
+> and tidyuped probe method
 
 Applied, thanks.
 
---kGQGJjO6+plzktLY
+--zLaDioFsM0hUAvZz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT143KAAoJELSic+t+oim9+lYP/jo2e+MC7JoOUQcYKWmN9SeF
-VoxNaxxe0vXWemxQUDeZ9+TvfmgWy53oW3qCNdn/LBm1snUGF1RotIl2BxPB65Pn
-wfJcKsQbMIafXwzsAaMfyQhklYzJPkHkt47A7oWhZI4445SIylZSgTt8HLn3e15N
-W1XBS2qINU5YsVi4/a6RrVmxHq5qpFHeFkywmStxDr8bbOPSzhxVdZzJZRljxluU
-Q4+p5obqHNvm6poovEoUJCW84rq+lt1M5aftVP1KIWkSEDKJygB4B0Fev4KnwHnm
-Rr3bWjcRnAQWafGalTiRVElVUNTVQGsuj4tSeFAM8pKRrwKMAFTtLhrlt+xxyw+n
-hxdftjAjy50CF3BpFZhgw6Qi24G0nRyqdXSgi4GbQJR3Ujt4mAf2ETZfqbr90AZR
-dBP+t0hCZTzDgk252w2lmdyG+PVdhWR9aHxCLVj2e7m47n574e6aXEsh0uVCGBqY
-gjHGWtIyI3V+z//3fwyEwmK4lKnizlMrUl4D1rPEmfZTWgawLX2uXAnn/J9DM+bj
-1u2LGvGigvXExtzMPEPzwN6qHgizbL4tgEreY4xPYlhfMokF2kb02lOlge+aDpVz
-HAV7SVCo+19HnfZ1Dc3xMN6F1vQATATBLgmBkRqEQeq3pNChUiCe1IxFi3FJRe23
-Czl6ooQMjDSMmelW3G3M
-=pvYf
+iQIcBAEBAgAGBQJT1455AAoJELSic+t+oim930gP/1tNk7sWtUb/U7NhLlHpz5JV
+K6kMRNEz3yXYK7cFLFfBIUOYJk4lmVHtrZxUFONu7IgAWG/3Dhue9Bp+3wqoA33m
+TsBHJM8cKE/zuumt35mLWGjp8JA61OABgVCHZeUCAavxmVB5byaNSMiQGKyKzR3e
+D1w8eNO2HEwcvdKap5RW0fBP6ysw56Yt3NfV+lFy9YjwjOEK+Hp3/TZ2HBq4U6AZ
+eFRfGXgQ3aAGOYo1f3KcoLpv3zs5P2SE8+VD66x/0jB4xuP8Sju1BU8xNWQxJdZ/
+PoOdz1XJE5UZLW6/ayMydizuu9cDCYocsOO7xV+HA+Kueu+dNuml4R6izyF1ocH0
+QkfK9fNRaNWCTbutvseInNh4N4JuBvY/luCDkFDK9bv5mX5vG+qseFcEH+BwyYUn
+/TalDHqVwg3gYa8DyjVBX+E5Cq1xwcBgl3ROMXtkP+QfXXB8wLGNoZmG9aUdffru
+Y98JXDielOUMKtb4kbnS9ndEW+djDKMoQxSK7+Wk4tCKSnDBwwhFCKXxc/v0K9+W
+7KPnZQtcq6/EJz7gT3ECTENBRT5xXLbR8O/YhwunsQAEAAyDbwaJ/yKyWaOfT8WI
+G3mclFKEMgntq3qdwUMyJLZ4/4ulYakqbAIcRwJz+yhXGONm14Tq4iOHT2vFKL8l
+WzAYuGxxACyNoEPHxL89
+=XwNx
 -----END PGP SIGNATURE-----
 
---kGQGJjO6+plzktLY--
+--zLaDioFsM0hUAvZz--
 
---===============5722241619032692506==
+--===============6519480275600467982==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5722241619032692506==--
+--===============6519480275600467982==--
