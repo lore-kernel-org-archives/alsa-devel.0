@@ -1,103 +1,96 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rsnd: enable SRC setting via DT
-Date: Tue, 29 Jul 2014 19:28:16 +0100
-Message-ID: <20140729182816.GC17528@sirena.org.uk>
-References: <87oawzum8z.wl%kuninori.morimoto.gx@gmail.com>
- <20140711123026.GK30458@sirena.org.uk>
- <87oaws1rhm.wl%kuninori.morimoto.gx@renesas.com>
- <877g32gpgu.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: tas2552: Add DAPM calls for amp and PLL
+Date: Tue, 29 Jul 2014 19:51:46 +0100
+Message-ID: <20140729185146.GF17528@sirena.org.uk>
+References: <1405704668-8038-1-git-send-email-dmurphy@ti.com>
+ <1405704668-8038-2-git-send-email-dmurphy@ti.com>
+ <20140721115353.GV17528@sirena.org.uk>
+ <00FC9A978A94B7418C33AFAE8A35ED49DA8D1E@DFLE09.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1436795535524635081=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DB8802652AC
- for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 20:28:21 +0200 (CEST)
-In-Reply-To: <877g32gpgu.wl%kuninori.morimoto.gx@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="oKuqsEW27CKFx7x1"
+Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <00FC9A978A94B7418C33AFAE8A35ED49DA8D1E@DFLE09.ent.ti.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: "Murphy, Dan" <dmurphy@ti.com>
+Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1436795535524635081==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dMULN7IjMgCcEAKn"
-Content-Disposition: inline
-
-
---dMULN7IjMgCcEAKn
+--oKuqsEW27CKFx7x1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 24, 2014 at 07:08:19PM -0700, Kuninori Morimoto wrote:
+On Fri, Jul 25, 2014 at 06:54:19PM +0000, Murphy, Dan wrote:
+> On 07/21/2014 06:54 AM, Mark Brown wrote:
+> > On Fri, Jul 18, 2014 at 12:31:08PM -0500, Dan Murphy wrote:
 
-> > > >   48kHz   --->      48kHz
-> > > >   44.1kHz ---> [SRC] ---> [codec]
-> > > >   96kHz   --->
+> >> +static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
+> >> +{
+> >> +SND_SOC_DAPM_PRE("Class D Enable", tas2552_class_d_en),
+> >> +SND_SOC_DAPM_POST("Class D Disable", tas2552_class_d_en),
+> >> +SND_SOC_DAPM_POST("PLL Disable", tas2552_pll_disable),
+> >> +};
 
-> > > This is something which really should be implemented using the
-> > > frameworks (DPCM mainly in this case as previously discussed for this
-> > > and other bits of the hardware) rather than with something custom to the
-> > > driver - we already have a way of forcing a DAI link into a single
-> > > configuration, we should be using it.
+> > This seems broken, having to use _PRE or _POST widgets for simple
+> > register writes (or almost anything really) should never be required and
+> > error prone - what is this actually trying to do?  I'd expect the class
+> > D to be a PGA or OUTPUT widget and the PLL to be a SUPPLY widget.
 
-> If my understand is correct,
-> current upstream code doesn't have above feature at this point,
-> and, I can update DPCM feature for it ?
+> I need a little help here.
+> I am not seeing the PLL being disabled or Class D being disabled when
+> I am using the DAPM calls
 
-> If yes, and if I want to exchange rate from 96kHz -> 48kHz,
-> I can use be->dai_link->be_hw_params_fixup() for 48kHz settings ?
+> My implementation is like this.  And I use set these widgets and audio
+> map in the call back functions in the struct snd_soc_codec_driver.
 
-That's the idea, yes.
+> When I look at the registers after stream playback I see that
+> the TAS2552_CFG_2 register is untouched
 
-> Then, FE side want to know this result (= BE want to use 48kHz).
-> I can add something new method for it ?
+> static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
+> {
+> SND_SOC_DAPM_AIF_IN("DAC IN", NULL, 0, SND_SOC_NOPM, 0, 0),
+> SND_SOC_DAPM_DAC("DAC", NULL, SND_SOC_NOPM, 0, 0),
+> SND_SOC_DAPM_OUT_DRV("ClassD Enable", TAS2552_CFG_2, 7, 0, NULL, 0),
+> SND_SOC_DAPM_OUT_DRV("ClassD Disable", TAS2552_CFG_2, 7, 1, NULL, 0),
+> SND_SOC_DAPM_SUPPLY("PLL Disable", TAS2552_CFG_2, 3, 1, NULL, 0),
+> SND_SOC_DAPM_OUTPUT("OUT")
+> };
 
-Let's have a look at the code - it might be easier to do it within the
-driver but a framework feature is also OK.
+> static const struct snd_soc_dapm_route tas2552_audio_map[] = {
+>     {"DAC", NULL, "DAC IN"},
+>     {"ClassD Enable", NULL, "DAC"},
+>     {"OUT", NULL, "ClassD Enable"},
+>     {"ClassD Disable", NULL, "OUT"},
+>     {"PLL Disable", NULL, "ClassD Disable"}
+> };
 
-> Or does current upstream code already have something this feature ?
+This looks very confused, why do you have separate enable and disable
+things - what do you think the effect of the above should be?  That's
+probably what's going wrong.  I'd expect to see one DAPM widget for the
+class D and one for the PLL.
 
-No, just the fixup functions.
-
---dMULN7IjMgCcEAKn
+--oKuqsEW27CKFx7x1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT1+e8AAoJELSic+t+oim9zEIQAJryjOjwaQZenmkG3gdvyNNh
-8P5XWQp+K4f/hsw5/nnECnu5FpT2/aM+RJHFAADsyLdXzOeFz0b2UPGjSRXORR3N
-4zP0nmyYQFZq1BO5FuQO0KJqE0u6Ze3hXAR7xhz7qb3A52SCEI8q50LuN9Tnh2Qp
-w0QcRuCiMDPiechYhC70Q5fz3VixtPdyC/WqfYGAWN5N8RhsmGJ2/g7V/7b4xCK9
-/kHwaSZeZLQ6VJvDFsw6tiaX0rnjjqgOy8lqpE3Jzz3K6jqKDkEVxGgdsq5STzjH
-8c2gMjs9l0typ2q9mdIs3715ZUSS//d5P1u2+uJmF47a8xZPA6KH0Uq3PPQJ3UFH
-dKaM7JDtauP0x517DEUFaznhB90P2xksQ5HtwqM8BaTCWSuFnxn9l/vpScxwXC3I
-r6RhX9QaLqQxev4zcrtsaXBbhMXcCPUrQO8iqiHiu17U95Uz/hIalPtoPqV3s2ts
-pE6odrZUuwt03xC52YqHFdsLHUHLuIanqXUPQSN7PrHGumXy4umAnUMhUFUhIcCN
-0Eq0tmttNSCIKQ+DCuNtrKAz04HdJQy1vvHGabBGCD2RC/KAmzVpvY7L3sovghaH
-WM7VE3w4LTWWAB8TW18twZntkiYmkElFsQMiWzJkGy8qyw80Q9TxWqthHZqDYde9
-SkM1o/Gg4/vH277mHzaM
-=nQRu
+iQIcBAEBAgAGBQJT1+0/AAoJELSic+t+oim9VawP/jRdz6vZL+DGv+WlPT/siM2q
+QDvUQPa9Zqp3heZRC2aMQ/6TfM2cNJQPjYcS28yKRatwDs4tqxiMDDpiqxxR9E4h
+2YaLhaLmPHzR8jafYDpvbnTnWwIW5tGfen8bSsvCGa8u5bYKU/omMH9RJKvhli3d
+xfOPdKsKz2dCKhE8124qY6OfIDlARXATB2/X6TQfuGq0BUNpfIugB2pqnSlVKn4J
+DrHNxBRx2/LF1rCuehI7fUk8iHejVmJgYYmKSGE02Rwt47jYrrj6fzQrDhFiYXW+
+sCAkGJh9O3e0LFrQ6aJ0aPi7P+Ijptp3HepZoVQOmdWVJUBPTNeCrLe+FejjZ1aS
+xDZJvz5Gp4curq5M+286DcLUbNrOvdS4Y40vFItvunrG3px0wS3MSaummnHmSEoD
+/IaU1rTenmPdBKpHKGi/6CQRjqU3RN9lvLUjJE+tGyLX53VzDouCattX0GCcB1RO
+mkJtPbWMkZIh18fLEfikDxnx9uzjZmZ/qCrT3oYksDg891L3qc9Y/eHMKPGhhtKe
+QXLjeptXdGESjlffVZltaRlmbAkdN1hHiEBxMOAkZvhCBfs9xGdptzECavN9bxlc
+6CFVXQxE7QNVwb78jA8C9y7kvjjRrOrItcnWiX1DC4a4Wfr2g/E2jpD6MuvwKCG/
+4ujYVPng14ymBjcrJQsN
+=j1jy
 -----END PGP SIGNATURE-----
 
---dMULN7IjMgCcEAKn--
-
---===============1436795535524635081==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1436795535524635081==--
+--oKuqsEW27CKFx7x1--
