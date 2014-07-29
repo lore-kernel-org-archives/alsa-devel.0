@@ -1,56 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH -next] ASoC: samsung: Fix return value check in
- s3c2412_iis_dev_probe()
-Date: Tue, 29 Jul 2014 19:56:09 +0100
-Message-ID: <20140729185609.GH17528@sirena.org.uk>
-References: <1405827787-26055-1-git-send-email-weiyj_lk@163.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl_asrc: Use 'ifdef' for config options
+Date: Tue, 29 Jul 2014 16:10:16 -0300
+Message-ID: <1406661016-1478-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lAQf9ELXiMBEg3QV"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1405827787-26055-1-git-send-email-weiyj_lk@163.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: weiyj_lk@163.com
-Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vc0-f179.google.com (mail-vc0-f179.google.com
+ [209.85.220.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D7E82651F2
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 21:10:43 +0200 (CEST)
+Received: by mail-vc0-f179.google.com with SMTP id hq11so205867vcb.10
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 12:10:41 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Guangyu.Chen@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
---lAQf9ELXiMBEg3QV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fix the following build errors that were observed by building with
+make ARCH=microblaze allyesconfig:
 
-On Sun, Jul 20, 2014 at 11:43:07AM +0800, weiyj_lk@163.com wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> In case of error, the function devm_ioremap_resource() returns ERR_PTR()
-> and never returns NULL. The NULL test in the return value check should be
-> replaced with IS_ERR(). Also remove redundant return value check of
-> platform_get_resource().
+>> sound/soc/fsl/fsl_asrc.c:906:5: warning: "CONFIG_PM_RUNTIME" is not defined [-Wundef]
+    #if CONFIG_PM_RUNTIME
+        ^
+>> sound/soc/fsl/fsl_asrc.c:934:5: warning: "CONFIG_PM_SLEEP" is not defined [-Wundef]
+    #if CONFIG_PM_SLEEP
+        ^
+>> sound/soc/fsl/fsl_asrc.c:906:5: warning: "CONFIG_PM_RUNTIME" is not defined [-Wundef]
+    #if CONFIG_PM_RUNTIME
+        ^
+>> sound/soc/fsl/fsl_asrc.c:934:5: warning: "CONFIG_PM_SLEEP" is not defined [-Wundef]
+    #if CONFIG_PM_SLEEP
 
-Applied, thanks.
+Reported-by: kbuild test robot <fengguang.wu@intel.com> 
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/fsl_asrc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---lAQf9ELXiMBEg3QV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT1+5GAAoJELSic+t+oim90NwQAIwabohwhJ3kXXnMlvMNj/at
-T5x6oYclecVnLev+xxbhwyFWwOe5I+btQ2cksZaODLAp1Ula8XdOngSOusH9uvoS
-qBnrcIJi47+nb7g422QOki1AADMeADwa62iqqqeUfQPBRAk69sycOTRpm9cVHLdF
-wA2XMUKKfoAIpOLyYo3YWvhhpWFNU31UM+ngBh2Clt3y4Fm/ik34vLyrWcfYnnLr
-IYOKcuG0ZDyzgjTWo5kh3ZcCyx4nrVhVfIJEHKQhxv+ehToCG6A74oJCvEmbI5ef
-2iJ4thuvhq+CloLOe9xjhypLkDtnqO0SLsPApVx7hUhDQbEBUAdH/oLnn1p424vO
-4mXP4dVF2iwcZga3mC8uiBt9N3cdkmYph/XQYM90aSn8ZJZll+i52uGbTU+Lr4Rc
-SPxkJRbxMk4wntjnOMnCpcQgpB3GOFu9o/26NCIuM2EyjaDuHr1vKgNsQ8pjv/SF
-Io8/2o/hsSI7E4hrL/1/Ec35MuPmqClItqFXH3SlSBH9N9LDQL+2ZZs/GI7Ouc84
-huFECiM1+CBnyrlkX0ajYD/FRchs8nb/z8C8pMrMCRmjZJ/wA8b0UqhwTGcp7mvW
-mzoQi6gz9n+TN9CuJ4zfnB0YcGkswwLD0w6fqtLH2RJmL1XeEfRNJC/21vx0aWdI
-65j9OWXIHXgBDxvyb2Y0
-=IfyT
------END PGP SIGNATURE-----
-
---lAQf9ELXiMBEg3QV--
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 27a4a70..b9a2888 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -903,7 +903,7 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-#if CONFIG_PM_RUNTIME
++#ifdef CONFIG_PM_RUNTIME
+ static int fsl_asrc_runtime_resume(struct device *dev)
+ {
+ 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
+@@ -931,7 +931,7 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
+ }
+ #endif /* CONFIG_PM_RUNTIME */
+ 
+-#if CONFIG_PM_SLEEP
++#ifdef CONFIG_PM_SLEEP
+ static int fsl_asrc_suspend(struct device *dev)
+ {
+ 	struct fsl_asrc *asrc_priv = dev_get_drvdata(dev);
+-- 
+1.8.3.2
