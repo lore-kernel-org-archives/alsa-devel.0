@@ -1,80 +1,166 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [alsa-devel] [PATCH v2] ASoC: wm8962: Let CODEC driver enable
- and disable its own MCLK
-Date: Tue, 29 Jul 2014 10:55:19 +0800
-Message-ID: <20140729025518.GB3350@MrMyself>
-References: <1406547718-21498-1-git-send-email-nicoleotsuka@gmail.com>
- <20140728122211.GS17528@sirena.org.uk>
- <CAOMZO5DgE9RjC9MG7FbGPKwsgxunntw70W6Sj8WQKFYG+j8BsA@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Testing/Debugging alc668 with ASUS N750JK
+Date: Tue, 29 Jul 2014 11:58:33 +0800
+Message-ID: <CAN8cciax7RreogV0otMdLt0y-dOTrZD3D_ih0doAC9F_XkJ1ew@mail.gmail.com>
+References: <cover.1406259578.git.nicoleotsuka@gmail.com>
+ <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
+ <53D1DC0B.1000905@gmail.com>
+ <63638.86.107.254.57.1406266836.squirrel@boosthardware.com>
+ <CAN8cciboNrRRFBQjX66qud7KoTCqsDHxvFAws9-ywasjemtYbQ@mail.gmail.com>
+ <59187.86.107.254.57.1406362728.squirrel@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5DgE9RjC9MG7FbGPKwsgxunntw70W6Sj8WQKFYG+j8BsA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, patches@opensource.wolfsonmicro.com, b02247@freescale.com, linux-kernel <linux-kernel@vger.kernel.org>, Nicolin Chen <b42378@freescale.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qg0-f42.google.com (mail-qg0-f42.google.com
+ [209.85.192.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F86A2651F0
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 05:58:36 +0200 (CEST)
+Received: by mail-qg0-f42.google.com with SMTP id j5so9689123qga.1
+ for <alsa-devel@alsa-project.org>; Mon, 28 Jul 2014 20:58:33 -0700 (PDT)
+In-Reply-To: <59187.86.107.254.57.1406362728.squirrel@boosthardware.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 28, 2014 at 03:19:43PM -0300, Fabio Estevam wrote:
-> Hi Nicolin,
-> 
-> On Mon, Jul 28, 2014 at 9:22 AM, Mark Brown <broonie@kernel.org> wrote:
-> > On Mon, Jul 28, 2014 at 07:41:58PM +0800, Nicolin Chen wrote:
+> >>
+> >> What is the best way to test/debug the alc668 driver these days?
+> >>
+> >> I am running kernel 3.14.1 (debian testing/sid).
+> >>
+> >> The laptop is an ASUS N750JK.
+> >>
+> >> Sound works for front left/right speakers but the back speakers and
+> >> external lfe channel is not working on this laptop.
 > >
-> >> +     pdata->mclk = devm_clk_get(&i2c->dev, NULL);
-> >> +
+> > You have to post output of alsa-info.sh
 > >
-> > This is broken for deferred probe.
+>
+> http://boosthardware.com/alsa-info-alc668-n750jk.txt
 
-Hi Mark,
+Seem BIOS only set up the front speakers
 
-Sorry. I don't get why deferred probe would be broken by this.
-And I just took a test by adding this:
+> >
+> > How many audio jacks ?
+> >
+>
+> Standard headphone/mic + yellow external lfe (sonic master). There is also
+> hdmi but I am not testing that at the moment.
 
-[...]
-@@ -3545,10 +3545,11 @@ static int wm8962_set_pdata_from_of(struct i2c_client *i2c,
-	}
+http://www.asus.com/Notebooks_Ultrabooks/N750JK/specifications/
 
-+bool letstry = true;
-static int wm8962_i2c_probe(struct i2c_client *i2c,
-			const struct i2c_device_id *id)
-@@ -3573,10 +3574,15 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
-		ret = wm8962_set_pdata_from_of(i2c, &wm8962->pdata);
-		if (ret != 0)
-			return ret;
-	}
-+       if (letstry) {
-+               letstry = false;
-+               return -EPROBE_DEFER;
-+       }
-	/* Mark the mclk pointer to NULL if no mclk assigned */
-	if (IS_ERR(wm8962->pdata.mclk))
-		wm8962->pdata.mclk = NULL;
-[...]
+Do you mean headset ?
 
-And it still works for me with a deferred probe:
+>
+> > Do it support headset or headphone ?
+> >
+> > Do you mean there are four internal speakers ?
+> >
+>
+> There are two front speakers which produce sound through the front bottom
+> of the case. There are also two back speakers which do not produce sound
+> in my tests so far.
+>
+> > Do it support surround40 in windows ?
+> >
+>
+> I am not running windows OS on this machine but I suspect it does.
+>
+> > The external sonic master and headphone need two volume controls but
+> > alc668 only have three
+> >
+> > The best way to test is using latest git version and hda jack retask to
+> >
+>
+> The process has changed somewhat since I last did this.
+>
 
-[] i2c 0-001a: Driver wm8962 requests probe deferral
-[]...
-[]wm8962 0-001a: customer id 0 revision D
-[]input: WM8962 Beep Generator as /devices/soc0/soc/2100000......
-[]fsl-asoc-card sound: wm8962 <-> 202c000.ssi mapping ok
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/log/sound/pci/hda?qt=grep&q=alc668
 
-> 
-> You can take a look at sgtl5000 to see how we handle deferred probe in
-> devm_clk_get().
+>
+> > 1) four internal speaker and headphone
+> > 2) two internal speaker, headphone and external subwoofer
+> >
+> > Once you confirm the nodes of the speakers, subwooder
+> > You need to decide whether headphone share the volume controls with the
+> > speaker/subwoofer
+> >>
+>
+> I have spent some time on this step already with 3.14.1
 
-Hi Fabio,
+Did you retask the node of subwoofer as speaker or line out ?
 
-Thank you for the hint.
+For multi channel, the sequence number is ascending and the driver expect
+they have same type i.e, all speakers or all line out jacks
 
-But actually, unlike sgtl5000, this patch doesn't error out for
-IS_ERR(mclk) case.
+Did you find the node of the rear speakers in  (1) ?
 
-There might be a machine driver that has already got and enabled
-the clock while getting the clock from other way or other DT node
-rather than WM8962's.
+Did surround 4.0 work when you fix the rear speaker ?
 
-Thank you.
-Nicolin
+Did you find the node of the external subwoofer  in (2) ?
+
+Did the sonic master subwoofer detected   ?
+hda jack sense test -a
+
+Do the subwoofer only use right channel ?
+
+Do surround 2.1 works ?
+
+>
+> Is there a specific reason this process is not already scripted other than
+> no one has taken the time to do it?
+
+Do surround 4.1 or 5.1 work when you fix both speaker and subwoofer ?
+
+Do  you prefer driver create  headphone volume control or subwoofer volume
+control ?
+
+>
+> Can we not create a test script that will run through all the logical
+> combinations and provide all the relevant info?
+>
+
+The driver hardcore the name of volume control to bass when there are two
+speaker nodes for those 2.1
+
+>
+> >> - I have found a couple of kernel bug reports  for other ASUS models
+> >> with
+> >> this chipset but they are both marked resolved. Should I open a new
+> >> ticket
+> >> ?
+> >>
+> >> https://bugzilla.kernel.org/show_bug.cgi?id=65091
+> >> https://bugzilla.kernel.org/show_bug.cgi?id=66271
+> >>
+> >> - I can hear static through the front speakers (with pulseaudio test)
+> >> if
+> >> I set pins 0x19 and 0x1a to Line Out (Center/LFE) and Internal
+> >> (Center/LFE) or vice versa with hdajackretask.
+> >>
+> >> Pin 0x16 does not appear to work at all.
+> >>
+> >> I see this output when I apply the config in hdajackretask.
+> >>
+> >> 0x12 0x90a60140
+> >> 0x14 0x99130110
+> >> 0x15 0x04211020
+> >> 0x16 0x99134111
+> >> 0x18 0x01a19840
+> >> 0x19 0x01014011
+> >> 0x1a 0x411111f0
+> >> 0x1b 0x411111f0
+> >> 0x1d 0x40c6852d
+> >> 0x1e 0x014b1180
+> >> 0x1f 0x411111f0
+> >> 1
+> >>
