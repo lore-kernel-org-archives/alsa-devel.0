@@ -1,71 +1,50 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V2] ASoC: cs42xx8: Add SND_SOC_DAIFMT_DSP_A support
-Date: Tue, 29 Jul 2014 18:39:37 +0800
-Message-ID: <d30e88a9fa8c0e52acb48755a1b6dbd2b9e4bacf.1406629932.git.shengjiu.wang@freescale.com>
+From: Tanu Kaskinen <tanu.kaskinen@linux.intel.com>
+Subject: Re: Audio mini conference 2014?
+Date: Tue, 29 Jul 2014 12:16:59 +0300
+Message-ID: <1406625419.2531.12.camel@tkkaskin-mobl3.ger.corp.intel.com>
+References: <s5hwqd9elq9.wl%tiwai@suse.de>
+ <1402479799.2366.31.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5hk38mxvai.wl%tiwai@suse.de> <20140612104634.GU5099@sirena.org.uk>
+ <s5hha3qxuoa.wl%tiwai@suse.de> <20140612110049.GV5099@sirena.org.uk>
+ <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5h4myhpcby.wl%tiwai@suse.de> <20140721232054.GN17528@sirena.org.uk>
+ <s5h1ttehr91.wl%tiwai@suse.de> <20140722222038.GW17528@sirena.org.uk>
+ <53D74507.4020209@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id A111B2656F9
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 11:17:04 +0200 (CEST)
+In-Reply-To: <53D74507.4020209@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-According to the spec, the definition of TDM and ONELINE_24 for
-CS42XX8_INTF_DAC and CS42XX8_INTF_ADC is wrong. correct them and enable
-SND_SOC_DAIFMT_DSP_A support.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
-Changelog:
-
-v2
- * Resend this patch, v1 missed some maintainers.
- * Add Acked info.
-
- sound/soc/codecs/cs42xx8.c | 3 +++
- sound/soc/codecs/cs42xx8.h | 8 ++++----
- 2 files changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index ec53ffc..02b1520 100644
---- a/sound/soc/codecs/cs42xx8.c
-+++ b/sound/soc/codecs/cs42xx8.c
-@@ -219,6 +219,9 @@ static int cs42xx8_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		val = CS42XX8_INTF_DAC_DIF_RIGHTJ | CS42XX8_INTF_ADC_DIF_RIGHTJ;
- 		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		val = CS42XX8_INTF_DAC_DIF_TDM | CS42XX8_INTF_ADC_DIF_TDM;
-+		break;
- 	default:
- 		dev_err(codec->dev, "unsupported dai format\n");
- 		return -EINVAL;
-diff --git a/sound/soc/codecs/cs42xx8.h b/sound/soc/codecs/cs42xx8.h
-index da0b94a..b2c10e5 100644
---- a/sound/soc/codecs/cs42xx8.h
-+++ b/sound/soc/codecs/cs42xx8.h
-@@ -128,8 +128,8 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap);
- #define CS42XX8_INTF_DAC_DIF_RIGHTJ		(2 << CS42XX8_INTF_DAC_DIF_SHIFT)
- #define CS42XX8_INTF_DAC_DIF_RIGHTJ_16		(3 << CS42XX8_INTF_DAC_DIF_SHIFT)
- #define CS42XX8_INTF_DAC_DIF_ONELINE_20		(4 << CS42XX8_INTF_DAC_DIF_SHIFT)
--#define CS42XX8_INTF_DAC_DIF_ONELINE_24		(6 << CS42XX8_INTF_DAC_DIF_SHIFT)
--#define CS42XX8_INTF_DAC_DIF_TDM		(7 << CS42XX8_INTF_DAC_DIF_SHIFT)
-+#define CS42XX8_INTF_DAC_DIF_ONELINE_24		(5 << CS42XX8_INTF_DAC_DIF_SHIFT)
-+#define CS42XX8_INTF_DAC_DIF_TDM		(6 << CS42XX8_INTF_DAC_DIF_SHIFT)
- #define CS42XX8_INTF_ADC_DIF_SHIFT		0
- #define CS42XX8_INTF_ADC_DIF_WIDTH		3
- #define CS42XX8_INTF_ADC_DIF_MASK		(((1 << CS42XX8_INTF_ADC_DIF_WIDTH) - 1) << CS42XX8_INTF_ADC_DIF_SHIFT)
-@@ -138,8 +138,8 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap);
- #define CS42XX8_INTF_ADC_DIF_RIGHTJ		(2 << CS42XX8_INTF_ADC_DIF_SHIFT)
- #define CS42XX8_INTF_ADC_DIF_RIGHTJ_16		(3 << CS42XX8_INTF_ADC_DIF_SHIFT)
- #define CS42XX8_INTF_ADC_DIF_ONELINE_20		(4 << CS42XX8_INTF_ADC_DIF_SHIFT)
--#define CS42XX8_INTF_ADC_DIF_ONELINE_24		(6 << CS42XX8_INTF_ADC_DIF_SHIFT)
--#define CS42XX8_INTF_ADC_DIF_TDM		(7 << CS42XX8_INTF_ADC_DIF_SHIFT)
-+#define CS42XX8_INTF_ADC_DIF_ONELINE_24		(5 << CS42XX8_INTF_ADC_DIF_SHIFT)
-+#define CS42XX8_INTF_ADC_DIF_TDM		(6 << CS42XX8_INTF_ADC_DIF_SHIFT)
- 
- /* ADC Control & DAC De-Emphasis (Address 05h) */
- #define CS42XX8_ADCCTL_ADC_HPF_FREEZE_SHIFT	7
--- 
-1.8.0
+T24gVHVlLCAyMDE0LTA3LTI5IGF0IDA4OjUzICswMjAwLCBEYXZpZCBIZW5uaW5nc3NvbiB3cm90
+ZToKPiAKPiBPbiAyMDE0LTA3LTIzIDAwOjIwLCBNYXJrIEJyb3duIHdyb3RlOgo+ID4gT24gVHVl
+LCBKdWwgMjIsIDIwMTQgYXQgMDc6NTU6MjJBTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+
+ID4KPiA+PiBPZiBjb3Vyc2UgaXQncyBwb3NzaWJsZSB0byBob2xkIGEgbWVldGluZyBpbiBhIGRp
+ZmZlcmVudCBwbGFjZSBhdAo+ID4+IGRpZmZlcmVudCB0aW1lLiAgSSBjYW4gYm9vayBhIG1lZXRp
+bmcgcm9vbSBpbiBteSBvZmZpY2UgaW4gTnVyZW1iZXJnLAo+ID4+IHRvbywgZm9yIGV4YW1wbGUu
+ICBMZXQncyBzZWUuCj4gPgo+ID4gUmlnaHQsIHRob3VnaCB0aGF0IG1pZ2h0IGdldCBtb3JlIGRp
+ZmZpY3VsdCBmb3IgcGVvcGxlIHRvIG9yZ2FuaXplCj4gPiB0cmF2ZWwuICBUcnlpbmcgdG8gZmlu
+ZCBzb21lIHNwYWNlIGFkIGhvYyBpbiBEdXNzZWxkb3JmIG1pZ2h0IGFsc28gd29yay4KPiAKPiBX
+aGlsZSB3ZSdyZSB0cnlpbmcgdG8gc29ydCBvdXQgdGhlIGxvY2F0aW9uLCBjb3VsZCB3ZSBoYXZl
+IGEgcXVpY2sgcG9sbCAKPiB3IHIgdCB3aGljaCBkYXRlcyBwZW9wbGUgcHJlZmVyPyBTZXR0aW5n
+IGEgZGF0ZSBjb3VsZCBoZWxwIHBlb3BsZSBib29rIAo+IHRyYXZlbCB0byBEw7xzc2VsZG9yZi4K
+PiAKPiBGb3IgbXkgb3duIHBhcnQsIEknbSBwcmV0dHkgZmxleGlibGUuCgpJJ20gZmxleGlibGUg
+dG9vLCBhbnkgZGF5IGlzIGZpbmUuCgotLSAKVGFudQoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
