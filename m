@@ -1,16 +1,17 @@
-From: Marcelo <marcelovborro@gmail.com>
-Subject: Fast track Ultra external clock control in ALSA
-Date: Tue, 29 Jul 2014 08:01:16 -0300
-Message-ID: <2823842.eCxdcGNAIP@lightsaber>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V2] ASoC: cs42xx8: Add SND_SOC_DAIFMT_DSP_A
+	support
+Date: Tue, 29 Jul 2014 13:04:06 +0100
+Message-ID: <20140729120406.GQ17528@sirena.org.uk>
+References: <d30e88a9fa8c0e52acb48755a1b6dbd2b9e4bacf.1406629932.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0884764272303633660=="
+Content-Type: multipart/mixed; boundary="===============0051439159774596781=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f54.google.com (mail-yh0-f54.google.com
- [209.85.213.54])
- by alsa0.perex.cz (Postfix) with ESMTP id B2D2C26554D
- for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 13:01:41 +0200 (CEST)
-Received: by mail-yh0-f54.google.com with SMTP id v1so5535236yhn.41
- for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 04:01:40 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 543EA260320
+ for <alsa-devel@alsa-project.org>; Tue, 29 Jul 2014 14:04:25 +0200 (CEST)
+In-Reply-To: <d30e88a9fa8c0e52acb48755a1b6dbd2b9e4bacf.1406629932.git.shengjiu.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: daniel@zonque.org, showlabor.felixhomann@gmail.com
+To: Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0884764272303633660==
-Content-Type: multipart/signed; boundary="nextPart20099679.Xg63NZP1u3"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+--===============0051439159774596781==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="uJIW2pRtnvuncvpR"
+Content-Disposition: inline
 
 
---nextPart20099679.Xg63NZP1u3
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+--uJIW2pRtnvuncvpR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Good Morning
+On Tue, Jul 29, 2014 at 06:39:37PM +0800, Shengjiu Wang wrote:
+> According to the spec, the definition of TDM and ONELINE_24 for
+> CS42XX8_INTF_DAC and CS42XX8_INTF_ADC is wrong. correct them and enable
+> SND_SOC_DAIFMT_DSP_A support.
 
-I recently bought a Fast Track Ultra and I've been studying it for use on live records.
+Applied, thanks.
 
-But I am stuck with the 2 spdif tracks not working on Linux.  The point is that to use then it's 
-necessary to set the FTU clock to external and there's no such visible option on Alsamixer.
-
-Googling, I found an old alsa-devel topic that this question was discussed - I've emailed Felix 
-Homann, that asked me to post this question in the list - Thanks for the quick response! :-)
-
-My question is:  was it implemented? If not, are there any future plan to make it work, or any 
-module option (or hack) to set clock to external on this board?
-
-It seems that there are more people stuck with this problem :-/
-http://heikki.ketoharju.info/2013/03/linux-and-fasttrackultra/#comment-15869
-
-Thanks in advance!
--- 
-Marcelo Vivan Borro
-Linux User # 277064
-
---nextPart20099679.Xg63NZP1u3
+--uJIW2pRtnvuncvpR
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Version: GnuPG v2
 
-iEYEABECAAYFAlPXfw4ACgkQEWu/s0g9DSbYOwCfSYEUQS4/f1oz/06BbzpDYkcw
-JAQAn1W3h+btUPnYnirY9tAXboKuh+Pt
-=GA8X
+iQIcBAEBAgAGBQJT142zAAoJELSic+t+oim97/IQAIodZt4qnzpEYc7VoBD9do/y
+pEYNWMMEPxfRriQ/VkdYC8O+DerHoH+VDxQe29v+ZEHS63RiIDoxzFMStEXn0q+p
+aq6uDXkxJLe2Oa/GxCJc7HMBDoy3duhsSZ5XzsWk97cCp/BOCU57hk64vvm0urp0
+PqGFy4cZZmZdhpvLafd3FsHZRJ6nNfdfm/Ia6LUTv0FcMGMTuBxGy4RlbWNAaHXw
+RS/X5j9oxLvFAk0SL3kJr4RmSWc4QfP1pHwv4CHX8Ik1WXQsBNNw9s2uA+8aYxdG
+f5oQB0Ep+2TdwS5ZP5t58XgCgQzgcOShwNFN3vdgLj8yqANmp33SfksI44DHuDG1
+ogP/LWpcoDC48KOFanSqOLh5SXu6ci7sLqHkx6cHh+CBeo2xZeElJXwjhHoofsAB
+tHBL8DaqoLabC7tRvWa3kH1CrpeOXNwvIt8fzR6gBIL5AID7budb34VF0zUq0HZ8
+MRmUbpErjvPE7IdcbVLS54XOK2DuNevyblm+qp+hh2yathqz98Ymk2Lq0jyqrxng
+FTKjEeIK86TtHijwpY2DtYgBBs0OYafgss05keDI70FCmVcrQSEpkhxyX6CP08BI
+zenIn3+pwF3ANyVy1eq6O2Sy1d4gv02z9c3Hy1gFFsyu+5GUTrit2AvyCcUSSaVX
+J3V+HwFH96d11vkZ3s24
+=2IYL
 -----END PGP SIGNATURE-----
 
---nextPart20099679.Xg63NZP1u3--
+--uJIW2pRtnvuncvpR--
 
-
---===============0884764272303633660==
+--===============0051439159774596781==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0884764272303633660==--
+--===============0051439159774596781==--
