@@ -1,16 +1,15 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [v3 13/13] ASoC: Intel: mrfld: add the DSP mixers
-Date: Wed, 30 Jul 2014 18:32:30 +0530
-Message-ID: <1406725350-23275-14-git-send-email-subhransu.s.prusty@intel.com>
-References: <1406725350-23275-1-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH] ASoC: Intel: mfld-pcm: Fix to use correct
+	sst_data pointer
+Date: Wed, 30 Jul 2014 18:36:00 +0530
+Message-ID: <1406725560-27726-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D955261734
- for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 15:24:23 +0200 (CEST)
-In-Reply-To: <1406725350-23275-1-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 22DB52618ED
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 15:27:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,50 +23,24 @@ To: alsa-devel@alsa-project.org
 Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
-
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/sst-atom-controls.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ sound/soc/intel/sst-mfld-platform-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/sst-atom-controls.c b/sound/soc/intel/sst-atom-controls.c
-index 98b7215261dd..b0299bc24914 100644
---- a/sound/soc/intel/sst-atom-controls.c
-+++ b/sound/soc/intel/sst-atom-controls.c
-@@ -858,6 +858,32 @@ static const struct snd_soc_dapm_widget sst_dapm_widgets[] = {
- 	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop2_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2, SST_FMT_STEREO, sst_set_media_loop),
+diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
+index d48d23bbf5cd..dbff2965a6e3 100644
+--- a/sound/soc/intel/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/sst-mfld-platform-pcm.c
+@@ -697,7 +697,7 @@ static int sst_platform_probe(struct platform_device *pdev)
+ 	struct sst_platform_data *pdata = pdev->dev.platform_data;
  
- 	/* Media Mixers */
-+	SST_SWM_MIXER("media0_out mix 0", SND_SOC_NOPM, SST_TASK_MMX, SST_SWM_OUT_MEDIA0,
-+		      sst_mix_media0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media1_out mix 0", SND_SOC_NOPM, SST_TASK_MMX, SST_SWM_OUT_MEDIA1,
-+		      sst_mix_media1_controls, sst_swm_mixer_event),
-+
-+	/* SBA PCM mixers */
-+	SST_SWM_MIXER("pcm0_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM0,
-+		      sst_mix_pcm0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("pcm1_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM1,
-+		      sst_mix_pcm1_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("pcm2_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM2,
-+		      sst_mix_pcm2_controls, sst_swm_mixer_event),
-+
-+	/* SBA Loop mixers */
-+	SST_SWM_MIXER("sprot_loop_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP,
-+		      sst_mix_sprot_l0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media_loop1_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1,
-+		      sst_mix_media_l1_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media_loop2_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2,
-+		      sst_mix_media_l2_controls, sst_swm_mixer_event),
-+
-+	/* SBA Backend mixers */
-+	SST_SWM_MIXER("codec_out0 mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_CODEC0,
-+		      sst_mix_codec0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("codec_out1 mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_CODEC1,
-+		      sst_mix_codec1_controls, sst_swm_mixer_event),
- };
- 
- static const struct snd_soc_dapm_route intercon[] = {
+ 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
+-	if (sst == NULL) {
++	if (drv == NULL) {
+ 		pr_err("kzalloc failed\n");
+ 		return -ENOMEM;
+ 	}
 -- 
 1.9.0
