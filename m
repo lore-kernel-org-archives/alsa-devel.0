@@ -1,15 +1,14 @@
 From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] ASoC: Intel: Add macros for SST shim register
-	bits.
-Date: Wed, 30 Jul 2014 20:08:18 +0800
-Message-ID: <1406722098-7983-1-git-send-email-yang.jie@intel.com>
+Subject: [PATCH] ASoC: Intel: Add notification trace for reset.
+Date: Wed, 30 Jul 2014 20:09:47 +0800
+Message-ID: <1406722187-8076-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 4653F260859
- for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 14:07:20 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4AEB2608D3
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 14:08:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,77 +24,27 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 
-Add some register definitions for other shim register bits.
+Add trace notification of IPC stream reset.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
- sound/soc/intel/sst-dsp.h | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ sound/soc/intel/sst-haswell-ipc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/sst-dsp.h b/sound/soc/intel/sst-dsp.h
-index 21a85eb..3165dfa 100644
---- a/sound/soc/intel/sst-dsp.h
-+++ b/sound/soc/intel/sst-dsp.h
-@@ -77,6 +77,8 @@
- #define SST_CSR_S0IOCS		(0x1 << 21)
- #define SST_CSR_S1IOCS		(0x1 << 23)
- #define SST_CSR_LPCS		(0x1 << 31)
-+#define SST_CSR_24MHZ_LPCS	(SST_CSR_SBCS0 | SST_CSR_SBCS1 | SST_CSR_LPCS)
-+#define SST_CSR_24MHZ_NO_LPCS	(SST_CSR_SBCS0 | SST_CSR_SBCS1)
- #define SST_BYT_CSR_RST		(0x1 << 0)
- #define SST_BYT_CSR_VECTOR_SEL	(0x1 << 1)
- #define SST_BYT_CSR_STALL	(0x1 << 2)
-@@ -96,6 +98,14 @@
- #define SST_IMRX_DONE		(0x1 << 0)
- #define SST_BYT_IMRX_REQUEST	(0x1 << 1)
- 
-+/* IMRD / IMD */
-+#define SST_IMRD_DONE		(0x1 << 0)
-+#define SST_IMRD_BUSY		(0x1 << 1)
-+#define SST_IMRD_SSP0		(0x1 << 16)
-+#define SST_IMRD_DMAC0		(0x1 << 21)
-+#define SST_IMRD_DMAC1		(0x1 << 22)
-+#define SST_IMRD_DMAC		(SST_IMRD_DMAC0 | SST_IMRD_DMAC1)
-+
- /*  IPCX / IPCC */
- #define	SST_IPCX_DONE		(0x1 << 30)
- #define	SST_IPCX_BUSY		(0x1 << 31)
-@@ -125,6 +135,18 @@
- /* HMDC */
- #define SST_HMDC_HDDA0(x)	(x << 0)
- #define SST_HMDC_HDDA1(x)	(x << 7)
-+#define SST_HMDC_HDDA_E0_CH0	1
-+#define SST_HMDC_HDDA_E0_CH1	2
-+#define SST_HMDC_HDDA_E0_CH2	4
-+#define SST_HMDC_HDDA_E0_CH3	8
-+#define SST_HMDC_HDDA_E1_CH0	SST_HMDC_HDDA1(SST_HMDC_HDDA_E0_CH0)
-+#define SST_HMDC_HDDA_E1_CH1	SST_HMDC_HDDA1(SST_HMDC_HDDA_E0_CH1)
-+#define SST_HMDC_HDDA_E1_CH2	SST_HMDC_HDDA1(SST_HMDC_HDDA_E0_CH2)
-+#define SST_HMDC_HDDA_E1_CH3	SST_HMDC_HDDA1(SST_HMDC_HDDA_E0_CH3)
-+#define SST_HMDC_HDDA_E0_ALLCH	(SST_HMDC_HDDA_E0_CH0 | SST_HMDC_HDDA_E0_CH1 | \
-+				 SST_HMDC_HDDA_E0_CH2 | SST_HMDC_HDDA_E0_CH3)
-+#define SST_HMDC_HDDA_E1_ALLCH	(SST_HMDC_HDDA_E1_CH0 | SST_HMDC_HDDA_E1_CH1 | \
-+				 SST_HMDC_HDDA_E1_CH2 | SST_HMDC_HDDA_E1_CH3)
- 
- 
- /* SST Vendor Defined Registers and bits */
-@@ -134,11 +156,16 @@
- #define SST_VDRTCTL3		0xaC
- 
- /* VDRTCTL0 */
-+#define SST_VDRTCL0_APLLSE_MASK		1
- #define SST_VDRTCL0_DSRAMPGE_SHIFT	16
- #define SST_VDRTCL0_DSRAMPGE_MASK	(0xffff << SST_VDRTCL0_DSRAMPGE_SHIFT)
- #define SST_VDRTCL0_ISRAMPGE_SHIFT	6
- #define SST_VDRTCL0_ISRAMPGE_MASK	(0x3ff << SST_VDRTCL0_ISRAMPGE_SHIFT)
- 
-+/* PMCS */
-+#define SST_PMCS		0x84
-+#define SST_PMCS_PS_MASK	0x3
-+
- struct sst_dsp;
- 
- /*
+diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
+index 96373ab..436c2fa 100644
+--- a/sound/soc/intel/sst-haswell-ipc.c
++++ b/sound/soc/intel/sst-haswell-ipc.c
+@@ -687,7 +687,9 @@ static void hsw_stream_update(struct sst_hsw *hsw, struct ipc_message *msg)
+ 	switch (stream_msg) {
+ 	case IPC_STR_STAGE_MESSAGE:
+ 	case IPC_STR_NOTIFICATION:
++		break;
+ 	case IPC_STR_RESET:
++		trace_ipc_notification("stream reset", stream->reply.stream_hw_id);
+ 		break;
+ 	case IPC_STR_PAUSE:
+ 		stream->running = false;
 -- 
 1.8.3.2
