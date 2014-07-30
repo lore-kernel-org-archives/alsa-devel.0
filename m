@@ -1,15 +1,23 @@
-From: weiyj_lk@163.com
-Subject: [PATCH] ASoC: sirf-audio-codec: Fix return value check
-	in sirf_audio_codec_driver_probe()
-Date: Wed, 30 Jul 2014 08:04:12 +0800
-Message-ID: <1406678652-31950-1-git-send-email-weiyj_lk@163.com>
+From: Paul Handrigan <paul.handrigan@cirrus.com>
+Subject: Re: Audio mini conference 2014?
+Date: Tue, 29 Jul 2014 19:27:34 -0500
+Message-ID: <alpine.DEB.2.00.1407291450550.30818@phandrigan-desktop>
+References: <20140612104634.GU5099@sirena.org.uk>
+ <s5hha3qxuoa.wl%tiwai@suse.de> <20140612110049.GV5099@sirena.org.uk>
+ <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5h4myhpcby.wl%tiwai@suse.de> <20140721232054.GN17528@sirena.org.uk>
+ <s5h1ttehr91.wl%tiwai@suse.de> <20140722222038.GW17528@sirena.org.uk>
+ <53D74507.4020209@canonical.com>
+ <1406625419.2531.12.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <20140729193133.GJ17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="8323329-1810236067-1406680055=:30818"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m12-18.163.com (m12-18.163.com [220.181.12.18])
- by alsa0.perex.cz (Postfix) with ESMTP id D057426549D
- for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 02:04:17 +0200 (CEST)
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0208.outbound.protection.outlook.com [207.46.163.208])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E7E12654C5
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 02:37:16 +0200 (CEST)
+In-Reply-To: <20140729193133.GJ17528@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,33 +27,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Barry Song <baohua@kernel.org>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, Rongjun Ying <rongjun.ying@csr.com>, Lars-Peter Clausen <lars@metafoo.de>, Axel Lin <axel.lin@ingics.com>
-Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+--8323329-1810236067-1406680055=:30818
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-In case of error, the function devm_ioremap_resource() returns ERR_PTR()
-and never returns NULL. The NULL test in the return value check should
-be replaced with IS_ERR().
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- sound/soc/codecs/sirf-audio-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/sirf-audio-codec.c b/sound/soc/codecs/sirf-audio-codec.c
-index d90cb0f..06ba492 100644
---- a/sound/soc/codecs/sirf-audio-codec.c
-+++ b/sound/soc/codecs/sirf-audio-codec.c
-@@ -471,8 +471,8 @@ static int sirf_audio_codec_driver_probe(struct platform_device *pdev)
- 
- 	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	base = devm_ioremap_resource(&pdev->dev, mem_res);
--	if (base == NULL)
--		return -ENOMEM;
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
- 
- 	sirf_audio_codec->regmap = devm_regmap_init_mmio(&pdev->dev, base,
- 					    &sirf_audio_codec_regmap_config);
+On Tue, 29 Jul 2014, Mark Brown wrote:
+
+> On Tue, Jul 29, 2014 at 12:16:59PM +0300, Tanu Kaskinen wrote:
+>> On Tue, 2014-07-29 at 08:53 +0200, David Henningsson wrote:
+>
+>>> While we're trying to sort out the location, could we have a quick po=
+ll
+>>> w r t which dates people prefer? Setting a date could help people boo=
+k
+>>> travel to D=FCsseldorf.
+>
+>>> For my own part, I'm pretty flexible.
+>
+>> I'm flexible too, any day is fine.
+>
+> Me too, I'd prefer not to have a day that's a LPC day but it isn't the
+> end of the world.
+>
+
+After LPC would be good if possible. Any thoughts?
+--8323329-1810236067-1406680055=:30818
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--8323329-1810236067-1406680055=:30818--
