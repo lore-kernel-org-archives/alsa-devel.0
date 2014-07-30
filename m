@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Check ops before we
-	derefference pointers.
-Date: Wed, 30 Jul 2014 13:24:35 +0100
-Message-ID: <20140730122435.GW17528@sirena.org.uk>
-References: <1406722712-8323-1-git-send-email-yang.jie@intel.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [v3 00/13] Add mrfld DSP topology and widgets
+Date: Wed, 30 Jul 2014 18:32:17 +0530
+Message-ID: <1406725350-23275-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6458168351230272520=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 040262608EA
- for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 14:24:46 +0200 (CEST)
-In-Reply-To: <1406722712-8323-1-git-send-email-yang.jie@intel.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id B44C1261615
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 15:23:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +18,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+This patch series adds DPCM and DAPM widgets to handle DSP topology in the
+SST platform driver for merrifield.
 
---===============6458168351230272520==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JHuICPdih4kARifA"
-Content-Disposition: inline
+Changes in V3:
+Addressed some review comments:
+	- Using snd_soc_kcontrol_platform
+	- Added lock for put handlersa
+	- Fix to use send_byte_stream ops instead of generic_params ioctl
 
+Subhransu S. Prusty (2):
+  ASoC: Intel: mrfld: set private data for cpu-dai
+  ASoC: Export dapm_kcontrol_get_value
 
---JHuICPdih4kARifA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Vinod Koul (11):
+  ASoC: Intel: mfld-pcm: add FE and BE ops
+  ASoC: intel: mfld-pcm: don't call trigger ops to DSP for internal
+    streams
+  ASoC: Intel: Fix to use byte control interface
+  ASoC: Intel: add mrfld DSP defines
+  ASoC: Intel: mrfld: add bytes control for modules
+  ASoC: Intel: mrfld: add the gain controls
+  ASoC: Intel: mfld-pcm: add control for powering up/down dsp
+  ASoC: Intel: mrfld: add DSP core controls
+  ASoC: Intel: mrfld: add the DSP DAPM widgets
+  ASoC: Intel: mfld-pcm: add the fe & be dai ops
+  ASoC: Intel: mrfld: add the DSP mixers
 
-On Wed, Jul 30, 2014 at 08:18:32PM +0800, Jie Yang wrote:
-> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
->=20
-> Check ops pointer members before we can derefference them.
+ include/sound/soc-dapm.h                |    1 +
+ sound/soc/intel/Makefile                |    3 +-
+ sound/soc/intel/sst-atom-controls.c     | 1263 +++++++++++++++++++++++++++++++
+ sound/soc/intel/sst-atom-controls.h     |  844 ++++++++++++++++++++-
+ sound/soc/intel/sst-mfld-platform-pcm.c |  192 ++++-
+ sound/soc/intel/sst-mfld-platform.h     |   12 +-
+ sound/soc/soc-dapm.c                    |    3 +-
+ 7 files changed, 2279 insertions(+), 39 deletions(-)
+ create mode 100644 sound/soc/intel/sst-atom-controls.c
 
-Applied, thanks.
-
---JHuICPdih4kARifA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT2OQAAAoJELSic+t+oim9EigP/1DFn8tl3zQqBj1O+P2EbKKi
-drSDJ47ZcawDJCQ7hZUFQiRHW9dvZBOdd0VwaNadW67pis3LT5eXWEQfK3SKWPdp
-bPeaCTv91sccl4w/v9/RdKplbWNYE97g8Dx+0wBAMf0hvLRfTmbA4/YnGJ9uYcGh
-Gx4pQbHNtVYtxzXJh3jqtbs8Yh8MrBAddYiz3W9kS8ecwuUREOJhlCkmc24Q0nrH
-kbTJ1o+lHjlltSymN42m/noV2uvtVKVyeWHF4uoYxeB5iYWAvIugwHTGdrchqy3n
-7auiCvnPNYkzvfqxsvhMboV/HfofrW9+PjCdsMPGwkn3Q3/B5+AvVzIShFPzsrOI
-+I7Ay+1votBP0xj12OfnpQE/mc9Hhc7PvDP6iS0vp42KGATn3g3gSb4QYrHH5cST
-12VDT7kEWFOxHiS6+I4e6JukVyAqZmcxl2mBU1Ea+z/MRdj7w0pkPFvuu1giip/i
-YM4+9BmC2519FCawFJY8ATeXH/ZB8NbLteQtQufceeaY03a/wDgoX9webpCbTFNf
-CZDd0aC7kIcvbJKNfRpPV/Nn//gHWYv9LBLfayCjptCEbDJpywylzPS2iZe5cKPD
-n10SSHrNFQ7y6zfWR+c05dpT8yyZQ71rrazYy0FrF3iN/jrlvubh9vH6S+HA68y1
-3ILQpabYLWoNkfWGTEhQ
-=g70r
------END PGP SIGNATURE-----
-
---JHuICPdih4kARifA--
-
---===============6458168351230272520==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6458168351230272520==--
+-- 
+1.9.0
