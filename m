@@ -1,79 +1,37 @@
-From: Jianqun <xjq@rock-chips.com>
-Subject: Re: [PATCH] ASoC: max98090 not need to return fail if fail to request
- hpdet irq.
-Date: Wed, 30 Jul 2014 17:00:16 +0800
-Message-ID: <53D8B420.9050504@rock-chips.com>
-References: <1406685010-25108-1-git-send-email-xjq@rock-chips.com> <53D890C7.4080201@linux.intel.com>
+From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
+Subject: If underloading is possible what about overloading?
+Date: Wed, 30 Jul 2014 11:48:36 +0200
+Message-ID: <53D8BF74.5060204@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <53D890C7.4080201@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, tbleung@chromium.org, dgreid@chromium.org, kevin.strasser@intel.com, swarren@nvidia.com, ralph.birt@maximintegrated.com
-Cc: heiko@sntech.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-we0-f174.google.com (mail-we0-f174.google.com
+ [74.125.82.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6CCE26084B
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 11:48:48 +0200 (CEST)
+Received: by mail-we0-f174.google.com with SMTP id x48so913555wes.19
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 02:48:47 -0700 (PDT)
+Received: from [192.168.1.55] (124-45.195-178.cust.bluewin.ch.
+ [178.195.45.124])
+ by mx.google.com with ESMTPSA id gq4sm7779609wib.8.2014.07.30.02.48.46
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 30 Jul 2014 02:48:47 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi all, short question: If underloading is possible what about =
 
+overloading? Is nanosleep overclocking safe?
 
-On 2014=E5=B9=B407=E6=9C=8830=E6=97=A5 14:29, Jarkko Nikula wrote:
-> On 07/30/2014 04:50 AM, jianqun wrote:
->> From: xujianqun <xjq@rock-chips.com>
->>
->> Since hardware may not MUST to use IRQ pin of max98090 as jack detec=
-t, the
->> driver can work well without it, can report jack trigger to CPU by a=
- GPIO.
->>
->> But here driver will register fail caused by failed to request irq.
->>
->> Signed-off-by: xujianqun <xjq@rock-chips.com>
->> ---
->>   sound/soc/codecs/max98090.c |    2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090=
-=2Ec
->> index 566919c..bc124ff 100644
->> --- a/sound/soc/codecs/max98090.c
->> +++ b/sound/soc/codecs/max98090.c
->> @@ -2515,6 +2515,8 @@ static int max98090_probe(struct snd_soc_codec=
- *codec)
->>         max98090_add_widgets(codec);
->>   +    return 0;
->> +
->>   err_access:
->>       return ret;
->>   }
-> I would say it's better to call request_threaded_irq() conditionally =
-when max98090->irq is valid in the same max98090_probe(). Also code sho=
-uld return instantly in case of request_threaded_irq() fails for valid =
-irq.
->=20
-> Now code is still printing needless error message in case max98090->i=
-rq is invalid or not specified and continue probing in case request_thr=
-eaded_irq() fails for valid irq.
->=20
-
-Add a valid check could be better, thanks Jarkko~
-
-I'm working a board with max98090, this is a really problem for me now,
-the IRQ shouldn't cause the driver fail to register.
-
---=20
--------------
-=E8=AE=B8 =E5=89=91 =E7=BE=A4 Jay
-Rockchip Electronics Co.Ltd
-***********************************************************************=
-*****
-*IMPORTANT NOTICE:*This email is from Fuzhou Rockchip Electronics Co.,
-Ltd .The contents of this email and any attachments may contain
-information that is privileged, confidential and/or exempt from
-disclosure under applicable law and relevant NDA. If you are not the
-intended recipient, you are hereby notified that any disclosure,
-copying, distribution, or use of the information is STRICTLY PROHIBITED=
-=2E
-Please immediately contact the sender as soon as possible and destroy
-the material in its entirety in any format. Thank you.
-***********************************************************************=
-*****
+regards Jo=EBl
