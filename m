@@ -1,15 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [v3 10/13] ASoC: Export dapm_kcontrol_get_value
-Date: Wed, 30 Jul 2014 18:32:27 +0530
-Message-ID: <1406725350-23275-11-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [v3 08/13] ASoC: Intel: mfld-pcm: add control for
+	powering up/down dsp
+Date: Wed, 30 Jul 2014 18:32:25 +0530
+Message-ID: <1406725350-23275-9-git-send-email-subhransu.s.prusty@intel.com>
 References: <1406725350-23275-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id E3C70261A3D
- for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 15:24:14 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AAB6C26168D
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 15:24:09 +0200 (CEST)
 In-Reply-To: <1406725350-23275-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,46 +25,69 @@ To: alsa-devel@alsa-project.org
 Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The DSP driver needs to know widget control value in its event handler for
-widgets like mixers. This is required in the subsequent patches
+From: Vinod Koul <vinod.koul@intel.com>
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+When we have PCM (FE/BE) opened or DAPM widgets triggered we need power up/down
+DSP accordingly. The DSP will do ref count of these requests i.e. link these
+runtime_get/put calls of DSP
+
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- include/sound/soc-dapm.h | 1 +
- sound/soc/soc-dapm.c     | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/intel/sst-mfld-platform-pcm.c | 14 ++++++++++++++
+ sound/soc/intel/sst-mfld-platform.h     |  1 +
+ 2 files changed, 15 insertions(+)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index aac04ff84eea..6ae0a1952ad7 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -432,6 +432,7 @@ int snd_soc_dapm_force_enable_pin_unlocked(struct snd_soc_dapm_context *dapm,
- int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
- 				const char *pin);
- void snd_soc_dapm_auto_nc_pins(struct snd_soc_card *card);
-+unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol);
+diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
+index eed4d2f080f6..2fb079c6a931 100644
+--- a/sound/soc/intel/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/sst-mfld-platform-pcm.c
+@@ -292,6 +292,16 @@ static int sst_platform_init_stream(struct snd_pcm_substream *substream)
+ 	return ret_val;
  
- /* Mostly internal - should not normally be used */
- void dapm_mark_io_dirty(struct snd_soc_dapm_context *dapm);
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 8348352dc2c6..08c79f09034f 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -326,12 +326,13 @@ static struct list_head *dapm_kcontrol_get_path_list(
- 	list_for_each_entry(path, dapm_kcontrol_get_path_list(kcontrol), \
- 		list_kcontrol)
- 
--static unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol)
-+unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol)
- {
- 	struct dapm_kcontrol_data *data = snd_kcontrol_chip(kcontrol);
- 
- 	return data->value;
  }
-+EXPORT_SYMBOL_GPL(dapm_kcontrol_get_value);
++
++static inline int power_up_sst(struct sst_runtime_stream *sst)
++{
++	return sst->ops->power(true);
++}
++
++static inline int power_down_sst(struct sst_runtime_stream *sst)
++{
++	return sst->ops->power(false);
++}
+ /* end -- helper functions */
  
- static bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
- 	unsigned int value)
+ static int sst_media_open(struct snd_pcm_substream *substream,
+@@ -323,6 +333,8 @@ static int sst_media_open(struct snd_pcm_substream *substream,
+ 	/* allocate memory for SST API set */
+ 	runtime->private_data = stream;
+ 
++	power_up_sst(stream);
++
+ 	/* Make sure, that the period size is always even */
+ 	snd_pcm_hw_constraint_step(substream->runtime, 0,
+ 			   SNDRV_PCM_HW_PARAM_PERIODS, 2);
+@@ -342,6 +354,8 @@ static void sst_media_close(struct snd_pcm_substream *substream,
+ 	int ret_val = 0, str_id;
+ 
+ 	stream = substream->runtime->private_data;
++	power_down_sst(stream);
++
+ 	str_id = stream->stream_info.str_id;
+ 	if (str_id)
+ 		ret_val = stream->ops->close(str_id);
+diff --git a/sound/soc/intel/sst-mfld-platform.h b/sound/soc/intel/sst-mfld-platform.h
+index 7526ac1b5cd7..6f476d586b66 100644
+--- a/sound/soc/intel/sst-mfld-platform.h
++++ b/sound/soc/intel/sst-mfld-platform.h
+@@ -133,6 +133,7 @@ struct sst_ops {
+ 	int (*device_control) (int cmd, void *arg);
+ 	int (*send_byte_stream)(void *arg);
+ 	int (*close) (unsigned int str_id);
++	int (*power)(bool state);
+ };
+ 
+ struct sst_runtime_stream {
 -- 
 1.9.0
