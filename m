@@ -1,37 +1,45 @@
-From: jianqun <xjq@rock-chips.com>
-Subject: [PATCH] ASoC: max98090 not need to return fail if fail to request hpdet irq.
-Date: Wed, 30 Jul 2014 09:50:10 +0800
-Message-ID: <1406685010-25108-1-git-send-email-xjq@rock-chips.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH 1/4] ASoC: fsl_esai: Add stream names for DPCM usage
+Date: Wed, 30 Jul 2014 11:10:26 +0800
+Message-ID: <fb152c2ad8460daea68b0ccf00e787579483b7ab.1406688049.git.nicoleotsuka@gmail.com>
+References: <cover.1406688048.git.nicoleotsuka@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cover.1406688048.git.nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, tbleung@chromium.org, dgreid@chromium.org, kevin.strasser@intel.com, jarkko.nikula@linux.intel.com, swarren@nvidia.com, ralph.birt@maximintegrated.com
-Cc: heiko@sntech.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, xujianqun <xjq@rock-chips.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, perex@perex.cz, linux-kernel@vger.kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, linuxppc-dev@lists.ozlabs.org, b42378@freescale.com, b02247@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-From: xujianqun <xjq@rock-chips.com>
+DPCM needs extra dapm routes in the machine driver to route audio
+between Front-End and Back-End. In order to differ the stream names
+in the route map from CODECs, we here add specific stream names to
+ESAI driver so that we can implement ASRC via DPCM to it.
 
-Since hardware may not MUST to use IRQ pin of max98090 as jack detect, the
-driver can work well without it, can report jack trigger to CPU by a GPIO.
-
-But here driver will register fail caused by failed to request irq.
-
-Signed-off-by: xujianqun <xjq@rock-chips.com>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- sound/soc/codecs/max98090.c |    2 ++
+ sound/soc/fsl/fsl_esai.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 566919c..bc124ff 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2515,6 +2515,8 @@ static int max98090_probe(struct snd_soc_codec *codec)
- 
- 	max98090_add_widgets(codec);
- 
-+	return 0;
-+
- err_access:
- 	return ret;
- }
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index d719caf..72d154e 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -624,12 +624,14 @@ static int fsl_esai_dai_probe(struct snd_soc_dai *dai)
+ static struct snd_soc_dai_driver fsl_esai_dai = {
+ 	.probe = fsl_esai_dai_probe,
+ 	.playback = {
++		.stream_name = "CPU-Playback",
+ 		.channels_min = 1,
+ 		.channels_max = 12,
+ 		.rates = FSL_ESAI_RATES,
+ 		.formats = FSL_ESAI_FORMATS,
+ 	},
+ 	.capture = {
++		.stream_name = "CPU-Capture",
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+ 		.rates = FSL_ESAI_RATES,
 -- 
-1.7.9.5
+1.8.4
