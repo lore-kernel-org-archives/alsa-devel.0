@@ -1,72 +1,58 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: max98090 add irq valid check
-Date: Wed, 30 Jul 2014 17:21:42 +0300
-Message-ID: <53D8FF76.7090707@linux.intel.com>
-References: <1406685010-25108-1-git-send-email-xjq@rock-chips.com> <1406710457-6195-1-git-send-email-xjq@rock-chips.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl: fsl_asrc: Select
+	SND_SOC_GENERIC_DMAENGINE_PCM
+Date: Wed, 30 Jul 2014 11:27:06 -0300
+Message-ID: <1406730426-11023-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1406710457-6195-1-git-send-email-xjq@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: jianqun <xjq@rock-chips.com>, broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, tbleung@chromium.org, dgreid@chromium.org, kevin.strasser@intel.com, swarren@nvidia.com, ralph.birt@maximintegrated.com
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vc0-f176.google.com (mail-vc0-f176.google.com
+ [209.85.220.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id C681C261647
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 16:27:30 +0200 (CEST)
+Received: by mail-vc0-f176.google.com with SMTP id id10so1883857vcb.7
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 07:27:29 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-On 07/30/2014 11:54 AM, jianqun wrote:
-> From: Jianqun <xjq@rock-chips.com>
->
-> Since IRQ pin from max98090 may NC, the irq number will be zero, that is
-> invalid for request_threaded_irq, so just add irq valid check there.
->
-> Since hardware may not MUST to use IRQ pin of max98090 as jack detect, the
-> driver can work well without it, can report jack trigger to CPU by a GPIO.
->
-> But here driver will register fail caused by failed to request irq.
->
-> Signed-off-by: Jianqun <xjq@rock-chips.com>
-> ---
->   sound/soc/codecs/max98090.c |   14 ++++++++------
->   1 file changed, 8 insertions(+), 6 deletions(-)
->
-> diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-> index 566919c..9dc0e8c 100644
-> --- a/sound/soc/codecs/max98090.c
-> +++ b/sound/soc/codecs/max98090.c
-> @@ -2478,12 +2478,14 @@ static int max98090_probe(struct snd_soc_codec *codec)
->   	/* Register for interrupts */
->   	dev_dbg(codec->dev, "irq = %d\n", max98090->irq);
->   
-> -	ret = request_threaded_irq(max98090->irq, NULL,
-> -		max98090_interrupt, IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-> -		"max98090_interrupt", codec);
-> -	if (ret < 0) {
-> -		dev_err(codec->dev, "request_irq failed: %d\n",
-> -			ret);
-> +	if (max98090->irq) {
-> +		ret = request_threaded_irq(max98090->irq, NULL,
-> +			max98090_interrupt, IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-> +			"max98090_interrupt", codec);
-> +		if (ret < 0) {
-> +			dev_err(codec->dev, "request_irq failed: %d\n",
-> +				ret);
-> +		}
->   	}
->   
-Remember to add also "return ret;" at the end of if () {} in case 
-request_threaded_irq() fails since code should not continue probing now 
-after adding a test for valid irq.
+Building a kernel with SND_SOC_GENERIC_DMAENGINE_PCM=n leads to the following
+error:
 
-Should the if (max98090->irq) test be >0? I'm not sure is there 
-possibility that can i2c->irq actually pass both -1 and 0 depending how 
-struct i2c_board_info etc are initialized?
+ERROR: "snd_dmaengine_pcm_prepare_slave_config" [sound/soc/fsl/snd-soc-fsl-asrc.ko] undefined!
 
-I forgot that I have a fix changing request_threaded_irq() to 
-devm_request_threaded_irq() so you should redo your patch on top of 
-for-next branch of 
-git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git.
+Let SND_SOC_FSL_ASRC select SND_SOC_GENERIC_DMAENGINE_PCM in order to fix such
+error.
 
+Reported-by: kbuild test robot <fengguang.wu@intel.com> 
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ sound/soc/fsl/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 2fb8a43..f54a8fc 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -5,6 +5,7 @@ comment "Common SoC Audio options for Freescale CPUs:"
+ config SND_SOC_FSL_ASRC
+ 	tristate "Asynchronous Sample Rate Converter (ASRC) module support"
+ 	select REGMAP_MMIO
++	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+ 	  Say Y if you want to add Asynchronous Sample Rate Converter (ASRC)
+ 	  support for the Freescale CPUs.
 -- 
-Jarkko
+1.9.1
