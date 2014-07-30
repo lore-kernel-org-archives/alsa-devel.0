@@ -1,18 +1,17 @@
-From: Timur Tabi <timur@tabi.org>
-Subject: Re: [PATCH 4/4] ASoC: fsl_ssi: Add stream names for
-	DPCM usage
-Date: Wed, 30 Jul 2014 07:19:00 -0500
-Message-ID: <53D8E2B4.6060009@tabi.org>
-References: <cover.1406688048.git.nicoleotsuka@gmail.com>
- <891b9f4edbba81a03c2b8350abc5ccf923db9260.1406688049.git.nicoleotsuka@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Intel: Check ops before we
+	derefference pointers.
+Date: Wed, 30 Jul 2014 13:24:35 +0100
+Message-ID: <20140730122435.GW17528@sirena.org.uk>
+References: <1406722712-8323-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6458168351230272520=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muin.pair.com (muin.pair.com [209.68.1.55])
- by alsa0.perex.cz (Postfix) with ESMTP id 482CA2608EA
- for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 14:19:07 +0200 (CEST)
-In-Reply-To: <891b9f4edbba81a03c2b8350abc5ccf923db9260.1406688049.git.nicoleotsuka@gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 040262608EA
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 14:24:46 +0200 (CEST)
+In-Reply-To: <1406722712-8323-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,16 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, b42378@freescale.com, b02247@freescale.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Li.Xiubo@freescale.com, linuxppc-dev@lists.ozlabs.org
+To: Jie Yang <yang.jie@intel.com>
+Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Nicolin Chen wrote:
-> DPCM needs extra dapm routes in the machine driver to route audio
-> between Front-End and Back-End. In order to differ the stream names
-> in the route map from CODECs, we here add specific stream names to
-> SSI driver so that we can implement ASRC via DPCM to it.
->
-> Signed-off-by: Nicolin Chen<nicoleotsuka@gmail.com>
 
-Acked-by: Timur Tabi <timur@tabi.org>
+--===============6458168351230272520==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JHuICPdih4kARifA"
+Content-Disposition: inline
+
+
+--JHuICPdih4kARifA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jul 30, 2014 at 08:18:32PM +0800, Jie Yang wrote:
+> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+>=20
+> Check ops pointer members before we can derefference them.
+
+Applied, thanks.
+
+--JHuICPdih4kARifA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT2OQAAAoJELSic+t+oim9EigP/1DFn8tl3zQqBj1O+P2EbKKi
+drSDJ47ZcawDJCQ7hZUFQiRHW9dvZBOdd0VwaNadW67pis3LT5eXWEQfK3SKWPdp
+bPeaCTv91sccl4w/v9/RdKplbWNYE97g8Dx+0wBAMf0hvLRfTmbA4/YnGJ9uYcGh
+Gx4pQbHNtVYtxzXJh3jqtbs8Yh8MrBAddYiz3W9kS8ecwuUREOJhlCkmc24Q0nrH
+kbTJ1o+lHjlltSymN42m/noV2uvtVKVyeWHF4uoYxeB5iYWAvIugwHTGdrchqy3n
+7auiCvnPNYkzvfqxsvhMboV/HfofrW9+PjCdsMPGwkn3Q3/B5+AvVzIShFPzsrOI
++I7Ay+1votBP0xj12OfnpQE/mc9Hhc7PvDP6iS0vp42KGATn3g3gSb4QYrHH5cST
+12VDT7kEWFOxHiS6+I4e6JukVyAqZmcxl2mBU1Ea+z/MRdj7w0pkPFvuu1giip/i
+YM4+9BmC2519FCawFJY8ATeXH/ZB8NbLteQtQufceeaY03a/wDgoX9webpCbTFNf
+CZDd0aC7kIcvbJKNfRpPV/Nn//gHWYv9LBLfayCjptCEbDJpywylzPS2iZe5cKPD
+n10SSHrNFQ7y6zfWR+c05dpT8yyZQ71rrazYy0FrF3iN/jrlvubh9vH6S+HA68y1
+3ILQpabYLWoNkfWGTEhQ
+=g70r
+-----END PGP SIGNATURE-----
+
+--JHuICPdih4kARifA--
+
+--===============6458168351230272520==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6458168351230272520==--
