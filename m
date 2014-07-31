@@ -1,74 +1,32 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH] MAINTAINERS: Add entry for Realtek CODECs
-Date: Thu, 31 Jul 2014 12:32:10 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D760670A@RTITMBSV03.realtek.com.tw>
-References: <1406807040-3084-1-git-send-email-broonie@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: pxa: pxa-ssp: small leak in probe()
+Date: Thu, 31 Jul 2014 15:57:51 +0300
+Message-ID: <20140731125751.GA31539@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 0899726551F
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 14:32:14 +0200 (CEST)
-In-Reply-To: <1406807040-3084-1-git-send-email-broonie@kernel.org>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linaro-kernel@lists.linaro.org" <linaro-kernel@lists.linaro.org>, Mark Brown <broonie@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Eric Miao <eric.y.miao@gmail.com>
+Cc: Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Thursday, July 31, 2014 7:44 PM
-> To: Bard Liao; Oder Chiou
-> Cc: alsa-devel@alsa-project.org; linaro-kernel@lists.linaro.org; Mark
-> Brown
-> Subject: [PATCH] MAINTAINERS: Add entry for Realtek CODECs
-> 
-> From: Mark Brown <broonie@linaro.org>
-> 
-> Help ensure that patches get sent to the Realtek developers for review by
-> adding an explicit MAINTAINERS entry for them.
-> 
-> Signed-off-by: Mark Brown <broonie@linaro.org>
-> ---
-> 
-> Bard, Oder - are you OK with this being added?
+There is a small memory leak if probe() fails.
 
-Yes, we are OK and thanks for doing that.
+Fixes: 2023c90c3a2c ('ASoC: pxa: pxa-ssp: add DT bindings')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-> 
->  MAINTAINERS | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index fcdcaf0fd486..9f72e72a604d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7533,6 +7533,13 @@ F:	drivers/rtc/
->  F:	include/linux/rtc.h
->  F:	include/uapi/linux/rtc.h
-> 
-> +REALTEK AUDIO CODECS
-> +M:	Bard Liao <bardliao@realtek.com>
-> +M:	Oder Chiou <oder_chiou@realtek.com>
-> +S:	Maintained
-> +F:	sound/soc/codecs/rt*
-> +F:	include/sound/rt*.h
-> +
->  REISERFS FILE SYSTEM
->  L:	reiserfs-devel@vger.kernel.org
->  S:	Supported
-> --
-> 2.0.1
-> 
-> 
-> ------Please consider the environment before printing this e-mail.
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 199a8b3..0109f6c2 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -723,7 +723,8 @@ static int pxa_ssp_probe(struct snd_soc_dai *dai)
+ 		ssp_handle = of_parse_phandle(dev->of_node, "port", 0);
+ 		if (!ssp_handle) {
+ 			dev_err(dev, "unable to get 'port' phandle\n");
+-			return -ENODEV;
++			ret = -ENODEV;
++			goto err_priv;
+ 		}
+ 
+ 		priv->ssp = pxa_ssp_request_of(ssp_handle, "SoC audio");
