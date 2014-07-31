@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 03/35] ASoC: wm8510: Convert to params_width()
-Date: Thu, 31 Jul 2014 12:57:46 +0100
-Message-ID: <1406807898-5927-3-git-send-email-broonie@kernel.org>
+Subject: [PATCH 04/35] ASoC: wm8523: Convert to params_width()
+Date: Thu, 31 Jul 2014 12:57:47 +0100
+Message-ID: <1406807898-5927-4-git-send-email-broonie@kernel.org>
 References: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,7 +9,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 55F9A264F10
+ by alsa0.perex.cz (Postfix) with ESMTP id AC2D2264F1D
  for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:30 +0200 (CEST)
 In-Reply-To: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,17 +31,17 @@ The CODEC doesn't care how data is laid out in memory.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/wm8510.c | 10 +++++-----
+ sound/soc/codecs/wm8523.c | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
-index 1c1e328feeb8..e11127f9069e 100644
---- a/sound/soc/codecs/wm8510.c
-+++ b/sound/soc/codecs/wm8510.c
-@@ -449,16 +449,16 @@ static int wm8510_pcm_hw_params(struct snd_pcm_substream *substream,
- 	u16 adn = snd_soc_read(codec, WM8510_ADD) & 0x1f1;
+diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
+index 601ee8178af1..ec1f5740dbd0 100644
+--- a/sound/soc/codecs/wm8523.c
++++ b/sound/soc/codecs/wm8523.c
+@@ -163,16 +163,16 @@ static int wm8523_hw_params(struct snd_pcm_substream *substream,
+ 	aifctrl2 |= lrclk_ratios[i].value;
  
- 	/* bit size */
+ 	aifctrl1 &= ~WM8523_WL_MASK;
 -	switch (params_format(params)) {
 -	case SNDRV_PCM_FORMAT_S16_LE:
 +	switch (params_width(params)) {
@@ -49,15 +49,15 @@ index 1c1e328feeb8..e11127f9069e 100644
  		break;
 -	case SNDRV_PCM_FORMAT_S20_3LE:
 +	case 20:
- 		iface |= 0x0020;
+ 		aifctrl1 |= 0x8;
  		break;
 -	case SNDRV_PCM_FORMAT_S24_LE:
 +	case 24:
- 		iface |= 0x0040;
+ 		aifctrl1 |= 0x10;
  		break;
 -	case SNDRV_PCM_FORMAT_S32_LE:
 +	case 32:
- 		iface |= 0x0060;
+ 		aifctrl1 |= 0x18;
  		break;
  	}
 -- 
