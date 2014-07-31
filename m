@@ -1,60 +1,138 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH] ASoC: fsl_asrc: Fix sparse warnings in FSL_ASRC_FORMATS due to typo
-Date: Thu, 31 Jul 2014 12:07:40 +0800
-Message-ID: <1406779660-17177-1-git-send-email-nicoleotsuka@gmail.com>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [RFC PATCH] ASoC: fsl-ssi: Add support for CBM_CFS
+	16/24 bit
+Date: Thu, 31 Jul 2014 07:09:47 +0200
+Message-ID: <CAOf5uwkb5bsNa8bE+nf-PeThDhY1Nhd4uOjAiYfkiSC8-vZ1ow@mail.gmail.com>
+References: <1406551598-14740-1-git-send-email-michael@amarulasolutions.com>
+ <20140729061814.GD13842@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, b42378@freescale.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f42.google.com (mail-wg0-f42.google.com [74.125.82.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73251261A60
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 07:09:48 +0200 (CEST)
+Received: by mail-wg0-f42.google.com with SMTP id l18so2134100wgh.1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 22:09:48 -0700 (PDT)
+In-Reply-To: <20140729061814.GD13842@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-reproduce: make C=1 CF=-D__CHECK_ENDIAN__
+Hi
 
-sparse warnings: (new ones prefixed by >>)
+Il 29/lug/2014 08:18 "Markus Pargmann" <mpa@pengutronix.de> ha scritto:
+>
+> Hi,
+>
+> On Mon, Jul 28, 2014 at 02:46:38PM +0200, Michael Trimarchi wrote:
+> > Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+>
+> A commit description what you are doing in this patch and how your setup
+> looks like would be good.
+>
+> > ---
+> >  sound/soc/fsl/fsl_ssi.c | 27 +++++++++++++++++++++++++--
+> >  1 file changed, 25 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> > index 9bfef55..743e50d 100644
+> > --- a/sound/soc/fsl/fsl_ssi.c
+> > +++ b/sound/soc/fsl/fsl_ssi.c
+> > @@ -724,10 +724,19 @@ static int fsl_ssi_hw_params(struct
+snd_pcm_substream *substream,
+> >               regmap_update_bits(regs, CCSR_SSI_SRCCR,
+CCSR_SSI_SxCCR_WL_MASK,
+> >                               wl);
+> >
+> > -     if (!fsl_ssi_is_ac97(ssi_private))
+> > +     if (!fsl_ssi_is_ac97(ssi_private)) {
+> > +             u8 i2smode;
+> > +
+> > +             if (ssi_private->i2s_mode ==
+(CCSR_SSI_SCR_I2S_MODE_NORMAL |
+> > +                 CCSR_SSI_SCR_NET) && sample_size >= 24)
+>
+> This condition seems a bit fragile using the i2s_mode variable.
+>
+> I don't know about this bitclock master mode, why is this condition
+> necessary, what is the difference with sample_size >= 24?
+>
 
->> sound/soc/fsl/fsl_asrc.c:563:28: sparse: restricted snd_pcm_format_t degrades to integer
->> sound/soc/fsl/fsl_asrc.c:570:28: sparse: restricted snd_pcm_format_t degrades to integer
+I will do in better way and cleanup. Problem is how data is packed in 32
+bit sample. So 24/32 should be master but 16/32 seems a different story. It
+packs like 16/16 bit.
 
-vim +563 sound/soc/fsl/fsl_asrc.c
+I will take a look during the weekend
 
-  557          .probe = fsl_asrc_dai_probe,
-  558          .playback = {
-  559                  .stream_name = "ASRC-Playback",
-  560                  .channels_min = 1,
-  561                  .channels_max = 10,
-  562                  .rates = FSL_ASRC_RATES,
-> 563                  .formats = FSL_ASRC_FORMATS,
-  564          },
-  565          .capture = {
-  566                  .stream_name = "ASRC-Capture",
-  567                  .channels_min = 1,
-  568                  .channels_max = 10,
-  569                  .rates = FSL_ASRC_RATES,
-> 570                  .formats = FSL_ASRC_FORMATS,
-  571          },
-  572          .ops = &fsl_asrc_dai_ops,
-  573  };
+Michael
 
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl_asrc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 41699f7..cdb5779 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -551,7 +551,7 @@ static int fsl_asrc_dai_probe(struct snd_soc_dai *dai)
- #define FSL_ASRC_RATES		 SNDRV_PCM_RATE_8000_192000
- #define FSL_ASRC_FORMATS	(SNDRV_PCM_FMTBIT_S24_LE | \
- 				 SNDRV_PCM_FMTBIT_S16_LE | \
--				 SNDRV_PCM_FORMAT_S20_3LE)
-+				 SNDRV_PCM_FMTBIT_S20_3LE)
- 
- static struct snd_soc_dai_driver fsl_asrc_dai = {
- 	.probe = fsl_asrc_dai_probe,
--- 
-1.8.4
+> Regards,
+>
+> Markus
+>
+> > +                     i2smode = CCSR_SSI_SCR_I2S_MODE_MASTER;
+> > +             else
+> > +                     i2smode = ssi_private->i2s_mode;
+> > +
+> >               regmap_update_bits(regs, CCSR_SSI_SCR,
+> >                               CCSR_SSI_SCR_NET |
+CCSR_SSI_SCR_I2S_MODE_MASK,
+> > -                             channels == 1 ? 0 :
+ssi_private->i2s_mode);
+> > +                             channels == 1 ? 0 : i2smode);
+> > +     }
+> >
+> >       return 0;
+> >  }
+> > @@ -789,6 +798,15 @@ static int _fsl_ssi_set_dai_fmt(struct
+fsl_ssi_private *ssi_private,
+> >                                       CCSR_SSI_SxCCR_DC_MASK,
+> >                                       CCSR_SSI_SxCCR_DC(2));
+> >                       break;
+> > +             case SND_SOC_DAIFMT_CBM_CFS:
+> > +                     ssi_private->i2s_mode |=
+CCSR_SSI_SCR_I2S_MODE_NORMAL;
+> > +                     regmap_update_bits(regs, CCSR_SSI_STCCR,
+> > +                                     CCSR_SSI_SxCCR_DC_MASK,
+> > +                                     CCSR_SSI_SxCCR_DC(2));
+> > +                     regmap_update_bits(regs, CCSR_SSI_SRCCR,
+> > +                                     CCSR_SSI_SxCCR_DC_MASK,
+> > +                                     CCSR_SSI_SxCCR_DC(2));
+> > +                     break;
+> >               case SND_SOC_DAIFMT_CBM_CFM:
+> >                       ssi_private->i2s_mode |=
+CCSR_SSI_SCR_I2S_MODE_SLAVE;
+> >                       break;
+> > @@ -853,6 +871,11 @@ static int _fsl_ssi_set_dai_fmt(struct
+fsl_ssi_private *ssi_private,
+> >       case SND_SOC_DAIFMT_CBM_CFM:
+> >               scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
+> >               break;
+> > +     case SND_SOC_DAIFMT_CBM_CFS:
+> > +             strcr &= ~CCSR_SSI_STCR_TXDIR;
+> > +             strcr |= CCSR_SSI_STCR_TFDIR;
+> > +             scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
+> > +             break;
+> >       default:
+> >               return -EINVAL;
+> >       }
+> > --
+> > 1.8.1.2
+> >
+> >
+>
+> --
+> Pengutronix e.K.                           |                             |
+> Industrial Linux Solutions                 |http://www.pengutronix.de/ |
+> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone:+49-5121-206917-0   |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:  +49-5121-206917-5555|
