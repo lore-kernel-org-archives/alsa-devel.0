@@ -1,18 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 6/7] ASoC: tlv320dac33: Convert to
+Subject: Re: [PATCH 7/7] ASoC: twl4030: Convert to
 	params_width()
-Date: Thu, 31 Jul 2014 15:40:29 +0300
-Message-ID: <53DA393D.40803@ti.com>
+Date: Thu, 31 Jul 2014 15:40:03 +0300
+Message-ID: <53DA3923.7080700@ti.com>
 References: <1406808978-16175-1-git-send-email-broonie@kernel.org>
- <1406808978-16175-6-git-send-email-broonie@kernel.org>
+ <1406808978-16175-7-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 15FDD2655CD
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 14:40:32 +0200 (CEST)
-In-Reply-To: <1406808978-16175-6-git-send-email-broonie@kernel.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 870F82654E9
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 14:40:20 +0200 (CEST)
+In-Reply-To: <1406808978-16175-7-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,38 +38,34 @@ Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
 > Signed-off-by: Mark Brown <broonie@linaro.org>
 > ---
->  sound/soc/codecs/tlv320dac33.c | 10 +++++-----
+>  sound/soc/codecs/twl4030.c | 10 +++++-----
 >  1 file changed, 5 insertions(+), 5 deletions(-)
 > =
 
-> diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac3=
-3.c
-> index ff006cc95520..e21ed934bdbf 100644
-> --- a/sound/soc/codecs/tlv320dac33.c
-> +++ b/sound/soc/codecs/tlv320dac33.c
-> @@ -832,18 +832,18 @@ static int dac33_hw_params(struct snd_pcm_substream=
- *substream,
->  		return -EINVAL;
->  	}
->  =
-
+> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+> index cf404505e7d1..b6b0cb399599 100644
+> --- a/sound/soc/codecs/twl4030.c
+> +++ b/sound/soc/codecs/twl4030.c
+> @@ -1763,16 +1763,16 @@ static int twl4030_hw_params(struct snd_pcm_subst=
+ream *substream,
+>  	old_format =3D twl4030_read(codec, TWL4030_REG_AUDIO_IF);
+>  	format =3D old_format;
+>  	format &=3D ~TWL4030_DATA_WIDTH;
 > -	switch (params_format(params)) {
 > -	case SNDRV_PCM_FORMAT_S16_LE:
 > +	switch (params_width(params)) {
 > +	case 16:
->  		dac33->fifo_size =3D DAC33_FIFO_SIZE_16BIT;
->  		dac33->burst_rate =3D CALC_BURST_RATE(dac33->burst_bclkdiv, 32);
+>  		format |=3D TWL4030_DATA_WIDTH_16S_16W;
 >  		break;
 > -	case SNDRV_PCM_FORMAT_S32_LE:
 > +	case 32:
->  		dac33->fifo_size =3D DAC33_FIFO_SIZE_24BIT;
->  		dac33->burst_rate =3D CALC_BURST_RATE(dac33->burst_bclkdiv, 64);
+>  		format |=3D TWL4030_DATA_WIDTH_32S_24W;
 >  		break;
 >  	default:
-> -		dev_err(codec->dev, "unsupported format %d\n",
+> -		dev_err(codec->dev, "%s: unknown format %d\n", __func__,
 > -			params_format(params));
-> +		dev_err(codec->dev, "unsupported width %d\n",
-> +			params_width(params));
+> +		dev_err(codec->dev, "%s: unsupported bits/sample %d\n",
+> +			__func__, params_width(params));
 >  		return -EINVAL;
 >  	}
 >  =
