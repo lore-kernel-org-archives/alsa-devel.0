@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: care detail of SRC_BSDSR
-Date: Thu, 31 Jul 2014 20:36:48 +0100
-Message-ID: <20140731193648.GQ17528@sirena.org.uk>
-References: <87fvhiuijw.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH] ASoC: rsnd: care audio local bus data
+	format consistency
+Date: Thu, 31 Jul 2014 20:37:03 +0100
+Message-ID: <20140731193702.GR17528@sirena.org.uk>
+References: <87egx2uijb.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5127662285313049542=="
+Content-Type: multipart/mixed; boundary="===============7820435910773790442=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 502402619F0
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 21:36:59 +0200 (CEST)
-In-Reply-To: <87fvhiuijw.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 97035261A81
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 21:37:11 +0200 (CEST)
+In-Reply-To: <87egx2uijb.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jun Watanabe <jun.watanabe.ue@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5127662285313049542==
+--===============7820435910773790442==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="o+1GFxID9PnI/U+e"
+	protocol="application/pgp-signature"; boundary="Kqd38pRE59fk0lc2"
 Content-Disposition: inline
 
 
---o+1GFxID9PnI/U+e
+--Kqd38pRE59fk0lc2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 30, 2014 at 11:52:04PM -0700, Kuninori Morimoto wrote:
+On Wed, Jul 30, 2014 at 11:52:26PM -0700, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> Driver should care more detail of SRC_BSDSR settings.
-> The sound includes noise without this patch
-> if it used SRC.
+> R-Car sound uses Audio Local Bus which uses Lch/Rch format.
+> This bus is used if driver uses BUSIF.
 
 Applied, thanks.
 
---o+1GFxID9PnI/U+e
+--Kqd38pRE59fk0lc2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT2prNAAoJELSic+t+oim99d4P/2HPi7qwJ2H4JbmvLD17B6p/
-QZNUNBGB9TQlg8oVSiPI0yeIkX4cDPqJ0JaJjsiRddrGD54oZoxt/BNshaD4N0xX
-Vo4C0ddCZVBlU08zCHFKfQh4idnZHb0aKZKEM+GpDITbWMACrAgDDW/NtReQTMj2
-4DK1Uq539b2TUAtyu1Xxs7ruwz+bcn2uwvHdP84zSXL5oOuFMKDDHJwZertvLVHR
-R6qOQNm14ZNpROU0JqRz2w8LqTarkwHbEf5m0dG2VyGT9DdvXG3PNOTOrbXNRUS1
-4ucsQT4rjY3yHzBQ/6ixn/cx8dzyjTRdCD1wE5p77AJZi6A9PVz5QSejlS1LRu3j
-2bRcGGlbs82qegoBH7od3y1pt0TFKTETWhMVRKGLosJavYZvHzkRwnoZXupiEFY+
-T/qMFEGZ74mWnM6x7MWPGD/M8B0Aqr5FVrPnzTXj2NZ0AHMc7fjE7JbWE1zj3qzP
-hs/Crsv1IGsrKZ40EgYFUVp/4lb50YD38Wpei9Kip5QL8zfhHC9rRcDIFiGtbkIo
-UASsMIUk9J/4AkDj7lKLnZ8Fk/KsJ26qsOtWlm+xdaUy33qlMUuRcvyQvk+1r+l8
-+0O+O8/yjGVhMdYjbm8dAQbjkBdabELW+6xq4J1RmcAX7pA+a3LpKzwY/AEsoUlk
-/qg2klNedgyHrYhu2F5B
-=KWg+
+iQIcBAEBAgAGBQJT2prbAAoJELSic+t+oim9k2wP/i829t5hgayUdNbmU0j73sQO
+nv68W2mpgSSR57BzdMHOBynmbdBpXYXsZFPFRU1K1aw4EiXQMXWCsfDRyg+I/cXj
+1f+i+0iyZHp0sAh0RlI+fmEDQC13tmqHpluwbcDMbuLCDUEVIOT54D/JR5U2PNKi
+SBemM3smLdpS/PA7+nvPgDveQz1J/BG35hDaeg2tT9unNORctdBRuDieL7u/tNDi
+CYfywuk+PBYFazkjibRrKrm6bV20EyS1Tk+vnIIHAEPw5ZF8Klb8DDNr1SQ/hcQc
+X0PiSXhbuaz0Z3XFnfe6Ou5Abbu0K2DcGYqLH5sXVheoFRnJ5PkOEliJGJjJ5Tu+
+sYMsM3wy3KV8y6Gau1oUu/2IIfxO+aFTJ4fwYwijsIn6i1jvEAFH+r0JWLqTq4yy
+95XTJwWMFP7zMIiBQ4CRf23woFMey+Zkg8mKifINL1Uys+TkQIuantUdTpyadKC3
+9ZXLBCWIugG1v+MQlBP8ihmpo/Zjw9a+FHPZsN/doVOK6IqQosPuWn0G4Un4ntIM
+2r/nG7Dh18djOWWlNmEfUKEH8m2nIvANrqZvLxmcuFB3KH8OQlSv6Om+XJ45N/tC
++GAP670suX2DazA7C/wlmKdNum4rTzN8QRMf88EDVR3BuCtcZerFJpnBCE7koVx9
+48gUqthcceBEv25F+nKb
+=R7xj
 -----END PGP SIGNATURE-----
 
---o+1GFxID9PnI/U+e--
+--Kqd38pRE59fk0lc2--
 
---===============5127662285313049542==
+--===============7820435910773790442==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5127662285313049542==--
+--===============7820435910773790442==--
