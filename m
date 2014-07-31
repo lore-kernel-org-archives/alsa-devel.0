@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 10/35] ASoC: wm8741: Convert to params_width()
-Date: Thu, 31 Jul 2014 12:57:53 +0100
-Message-ID: <1406807898-5927-10-git-send-email-broonie@kernel.org>
+Subject: [PATCH 02/35] ASoC: wm8400: Convert to params_width()
+Date: Thu, 31 Jul 2014 12:57:45 +0100
+Message-ID: <1406807898-5927-2-git-send-email-broonie@kernel.org>
 References: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 481E026517A
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:34 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 46ECF265162
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:33 +0200 (CEST)
 In-Reply-To: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,16 +31,16 @@ The CODEC doesn't care how data is laid out in memory.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/wm8741.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/codecs/wm8400.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index b33542a04607..a237f1627f61 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -241,26 +241,26 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
- 	}
+diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
+index 06e913d3fea1..72471bef2e9a 100644
+--- a/sound/soc/codecs/wm8400.c
++++ b/sound/soc/codecs/wm8400.c
+@@ -1095,16 +1095,16 @@ static int wm8400_hw_params(struct snd_pcm_substream *substream,
  
+ 	audio1 &= ~WM8400_AIF_WL_MASK;
  	/* bit size */
 -	switch (params_format(params)) {
 -	case SNDRV_PCM_FORMAT_S16_LE:
@@ -49,28 +49,16 @@ index b33542a04607..a237f1627f61 100644
  		break;
 -	case SNDRV_PCM_FORMAT_S20_3LE:
 +	case 20:
- 		iface |= 0x0001;
+ 		audio1 |= WM8400_AIF_WL_20BITS;
  		break;
 -	case SNDRV_PCM_FORMAT_S24_LE:
 +	case 24:
- 		iface |= 0x0002;
+ 		audio1 |= WM8400_AIF_WL_24BITS;
  		break;
 -	case SNDRV_PCM_FORMAT_S32_LE:
 +	case 32:
- 		iface |= 0x0003;
+ 		audio1 |= WM8400_AIF_WL_32BITS;
  		break;
- 	default:
- 		dev_dbg(codec->dev, "wm8741_hw_params:    Unsupported bit size param = %d",
--			params_format(params));
-+			params_width(params));
- 		return -EINVAL;
  	}
- 
- 	dev_dbg(codec->dev, "wm8741_hw_params:    bit size param = %d",
--		params_format(params));
-+		params_width(params));
- 
- 	snd_soc_write(codec, WM8741_FORMAT_CONTROL, iface);
- 	return 0;
 -- 
 2.0.1
