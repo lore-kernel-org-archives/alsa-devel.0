@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 12/35] ASoC: wm8753: Convert to params_width()
-Date: Thu, 31 Jul 2014 12:57:55 +0100
-Message-ID: <1406807898-5927-12-git-send-email-broonie@kernel.org>
+Subject: [PATCH 15/35] ASoC: wm8900: Convert to params_width()
+Date: Thu, 31 Jul 2014 12:57:58 +0100
+Message-ID: <1406807898-5927-15-git-send-email-broonie@kernel.org>
 References: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F7C2265232
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:38 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4958B265268
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:39 +0200 (CEST)
 In-Reply-To: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,17 +31,17 @@ The CODEC doesn't care how data is laid out in memory.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/wm8753.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ sound/soc/codecs/wm8900.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 53e57b4049a8..e54e097f4fcb 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -937,16 +937,16 @@ static int wm8753_pcm_hw_params(struct snd_pcm_substream *substream,
- 	u16 srate = snd_soc_read(codec, WM8753_SRATE1) & 0x017f;
+diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
+index d09fdce57f5a..44a5f1511f0f 100644
+--- a/sound/soc/codecs/wm8900.c
++++ b/sound/soc/codecs/wm8900.c
+@@ -640,16 +640,16 @@ static int wm8900_hw_params(struct snd_pcm_substream *substream,
  
- 	/* bit size */
+ 	reg = snd_soc_read(codec, WM8900_REG_AUDIO1) & ~0x60;
+ 
 -	switch (params_format(params)) {
 -	case SNDRV_PCM_FORMAT_S16_LE:
 +	switch (params_width(params)) {
@@ -49,38 +49,16 @@ index 53e57b4049a8..e54e097f4fcb 100644
  		break;
 -	case SNDRV_PCM_FORMAT_S20_3LE:
 +	case 20:
- 		voice |= 0x0004;
+ 		reg |= 0x20;
  		break;
 -	case SNDRV_PCM_FORMAT_S24_LE:
 +	case 24:
- 		voice |= 0x0008;
+ 		reg |= 0x40;
  		break;
 -	case SNDRV_PCM_FORMAT_S32_LE:
 +	case 32:
- 		voice |= 0x000c;
+ 		reg |= 0x60;
  		break;
- 	}
-@@ -1176,16 +1176,16 @@ static int wm8753_i2s_hw_params(struct snd_pcm_substream *substream,
- 		coeff_div[coeff].usb);
- 
- 	/* bit size */
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S16_LE:
-+	switch (params_width(params)) {
-+	case 16:
- 		break;
--	case SNDRV_PCM_FORMAT_S20_3LE:
-+	case 20:
- 		hifi |= 0x0004;
- 		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
-+	case 24:
- 		hifi |= 0x0008;
- 		break;
--	case SNDRV_PCM_FORMAT_S32_LE:
-+	case 32:
- 		hifi |= 0x000c;
- 		break;
- 	}
+ 	default:
 -- 
 2.0.1
