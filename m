@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: add missing dev_dbg() in
-	rsnd_bset()
-Date: Thu, 31 Jul 2014 20:37:12 +0100
-Message-ID: <20140731193712.GS17528@sirena.org.uk>
-References: <87d2cmuiin.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH] ASoC: rsnd: fixup pcm_new callback method
+Date: Thu, 31 Jul 2014 20:37:26 +0100
+Message-ID: <20140731193726.GT17528@sirena.org.uk>
+References: <87bns6uiia.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1447822095624023592=="
+Content-Type: multipart/mixed; boundary="===============6793431321986122572=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EA71262631
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 21:37:21 +0200 (CEST)
-In-Reply-To: <87d2cmuiin.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E5D272619FF
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 21:37:34 +0200 (CEST)
+In-Reply-To: <87bns6uiia.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +25,57 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam G
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1447822095624023592==
+--===============6793431321986122572==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dYsPnCVH0s/ug5Kd"
+	protocol="application/pgp-signature"; boundary="nMMm0HmtHvBQBrqC"
 Content-Disposition: inline
 
 
---dYsPnCVH0s/ug5Kd
+--nMMm0HmtHvBQBrqC
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 30, 2014 at 11:52:50PM -0700, Kuninori Morimoto wrote:
+On Wed, Jul 30, 2014 at 11:53:03PM -0700, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> b8c637864a6904a9ba8e0df556d5bdf9f26b2c54
-> (ASoC: rsnd: use regmap_mmio instead of original regmap bus)
-> used regmap_mmio and modified dev_dbg() for rsnd_read/write().
-> But rsnd_bset() is missing it.
+> bff58ea4f43d9b4a9fd6fb05fabc8f50f68131f5
+> (ASoC: rsnd: add DVC support) added DVC support,
+> and it added pcm_new callback feature for it.
+> Then it called all DAI's pcm_new callback, and it was wrong.
+> This patch fixup it and call correct callback.
 
 Applied, thanks.
 
---dYsPnCVH0s/ug5Kd
+--nMMm0HmtHvBQBrqC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT2prlAAoJELSic+t+oim9wkcQAI7uJcbp0BHqYYVHiPOARRyN
-lFnQGn93v0zWMsbI0gXAvcX9jjXFeZUrDNp/dRPnQsUCKcQIeZ2Fn65K472na4fd
-XxTwBJoQSN8lb0QfcC6XhSP3IkSAlymCLGFKoOk35NM0FwkA7bmrfZgMl1dZ5S3s
-3p1BM56O3rL3XWYDqeEI18tb952+0215BtKnFlYw6CWMh22DYinM1/N7F0/2CcB2
-kvYi5Eb107KfbshAWmQ2Ti5sqdk7k63djw0QbsLk+aUl4vdj382/jPo+uBoh4TaT
-G36Zpn3JPeBpZwOFuqS9PYjxRCJi6WuaCtKhDw7a2TkrLASGgdYqraF1oIAojJ/e
-WTHnluy7UI3AXmQ4MutpEKJkj31YRoz1jz28VWSbFX1z1pTIFNpsWS4gF9u1XG6j
-G5/InrFZ4c6iPKCFSKRq6Qmq+uE1HWghQ40i5gDaDSEv74mcbD935HJgPXA0avOh
-06al7XOyRR2ptKfgXPuJIke4HR+YVzcKyZpTkURwmaX7ZygqdktVHYnNjKETmFAD
-91KQ8O9xrU6+VbVPcFj4AGwvPpr8Ii2rH66i2cEeLE6kF7Lm9TB3Sn13sjsZpEwG
-4BwXa9yj0lXI8QnR8SqQ5qCBsoyIIIBiYul/o2XSRizjk/mz9084gmP0LYOaW9fW
-y5lDoA5L+k05SzdgSfRJ
-=qigM
+iQIcBAEBAgAGBQJT2pryAAoJELSic+t+oim9UwkQAJry1H6ZCq5UwfK+gBGhPo88
+9cGbrY/wulauzZe6ZZS7lvSk/zljAsK/36YVw45aZKj5Iy/MrrPmx1CbR2Qh0rAT
+cvP73LxW8Z5YP8Ux0pIo10FLVYRVdAulAUSZ8N4B/5ZECMqA2tqY2pbvHRrtUYYz
+r+atIqX1KlFc1FZnBliMf03GD/mjQ7sCKk6uOA0p+Mb6kFShci/UhTQGAo0U3g6G
+6l+29vW4r6ZDHaSKZvEqt51I9citTlmSqOQ0/Mi+4afRYshFHXuNtZlO1orfmTy/
+DXhT/wYZDP+DX0bkkmh0rubbFkwNU1jkdgKIEia635pkhxnX4gXltTaINNN3gpqi
+QiSpmkwKNbAQmPHOSGjCJyp62bNHe14dlqzWvn4SsStdOwkTCggVOWDQk4K7WWa6
+5tAfDrjW0wFTHmniFOnkbxfwjRF0ixjgERapvcMTRRLgtsj1WUOOUM+VYkHP681Z
+JUL74hGGMjRsvTeMqA8Vwn6TJ1XyprIGso3P6WunmHrTGHBdG0D3o7/evOFrvV6s
+s95moSNV5lO1tU6jT8gXOEKY47/vbxw9ggl2BRMoxzYFfT2pd4rzviDIIsl4GaP5
+sWvPoFxIvimpvtwRP1gEhJZ/egP1uxWfesbKjHF6Fyes2D9ZYb748VqEBSsrEI5G
+UoOYoGvkhfErlFcgClGV
+=c2fQ
 -----END PGP SIGNATURE-----
 
---dYsPnCVH0s/ug5Kd--
+--nMMm0HmtHvBQBrqC--
 
---===============1447822095624023592==
+--===============6793431321986122572==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1447822095624023592==--
+--===============6793431321986122572==--
