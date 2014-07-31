@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/7] ASoC: tlv320aic31xx: Convert to
+Subject: [PATCH 4/7] ASoC: tlv320aic32x4: Convert to
 	params_width()
-Date: Thu, 31 Jul 2014 13:16:14 +0100
-Message-ID: <1406808978-16175-3-git-send-email-broonie@kernel.org>
+Date: Thu, 31 Jul 2014 13:16:15 +0100
+Message-ID: <1406808978-16175-4-git-send-email-broonie@kernel.org>
 References: <1406808978-16175-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E292E265602
+ by alsa0.perex.cz (Postfix) with ESMTP id EB41A265605
  for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 14:16:35 +0200 (CEST)
 In-Reply-To: <1406808978-16175-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,34 +32,34 @@ The CODEC doesn't care how data is laid out in memory.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/tlv320aic32x4.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 095f4556ab1b..0f64c7890eed 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -760,8 +760,8 @@ static int aic31xx_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_codec *codec = dai->codec;
- 	u8 data = 0;
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 89e41d2f7586..6ea662db2410 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -450,16 +450,16 @@ static int aic32x4_hw_params(struct snd_pcm_substream *substream,
  
--	dev_dbg(codec->dev, "## %s: format %d width %d rate %d\n",
--		__func__, params_format(params), params_width(params),
-+	dev_dbg(codec->dev, "## %s: width %d rate %d\n",
-+		__func__, params_width(params),
- 		params_rate(params));
- 
- 	switch (params_width(params)) {
-@@ -780,8 +780,8 @@ static int aic31xx_hw_params(struct snd_pcm_substream *substream,
- 			AIC31XX_IFACE1_DATALEN_SHIFT);
+ 	data = snd_soc_read(codec, AIC32X4_IFACE1);
+ 	data = data & ~(3 << 4);
+-	switch (params_format(params)) {
+-	case SNDRV_PCM_FORMAT_S16_LE:
++	switch (params_width(params)) {
++	case 16:
  		break;
- 	default:
--		dev_err(codec->dev, "%s: Unsupported format %d\n",
--			__func__, params_format(params));
-+		dev_err(codec->dev, "%s: Unsupported width %d\n",
-+			__func__, params_width(params));
- 		return -EINVAL;
+-	case SNDRV_PCM_FORMAT_S20_3LE:
++	case 20:
+ 		data |= (AIC32X4_WORD_LEN_20BITS << AIC32X4_DOSRMSB_SHIFT);
+ 		break;
+-	case SNDRV_PCM_FORMAT_S24_LE:
++	case 24:
+ 		data |= (AIC32X4_WORD_LEN_24BITS << AIC32X4_DOSRMSB_SHIFT);
+ 		break;
+-	case SNDRV_PCM_FORMAT_S32_LE:
++	case 32:
+ 		data |= (AIC32X4_WORD_LEN_32BITS << AIC32X4_DOSRMSB_SHIFT);
+ 		break;
  	}
- 
 -- 
 2.0.1
