@@ -1,26 +1,28 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Audio mini conference 2014?
-Date: Thu, 31 Jul 2014 18:39:22 +0530
-Message-ID: <20140731130922.GW8181@intel.com>
-References: <20140612110049.GV5099@sirena.org.uk>
- <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5h4myhpcby.wl%tiwai@suse.de>
- <20140721232054.GN17528@sirena.org.uk>
- <s5h1ttehr91.wl%tiwai@suse.de>
- <20140722222038.GW17528@sirena.org.uk>
- <53D74507.4020209@canonical.com>
- <1406625419.2531.12.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <20140729193133.GJ17528@sirena.org.uk>
- <alpine.DEB.2.00.1407291450550.30818@phandrigan-desktop>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Testing/Debugging alc668 with ASUS N750JK
+Date: Thu, 31 Jul 2014 21:38:24 +0800
+Message-ID: <CAN8cciZ_KT9HG3K3xW-X-PFvWya1zW46JXccq-jd5v6uaeTjOA@mail.gmail.com>
+References: <cover.1406259578.git.nicoleotsuka@gmail.com>
+ <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
+ <53D1DC0B.1000905@gmail.com>
+ <63638.86.107.254.57.1406266836.squirrel@boosthardware.com>
+ <CAN8cciboNrRRFBQjX66qud7KoTCqsDHxvFAws9-ywasjemtYbQ@mail.gmail.com>
+ <59187.86.107.254.57.1406362728.squirrel@boosthardware.com>
+ <CAN8cciax7RreogV0otMdLt0y-dOTrZD3D_ih0doAC9F_XkJ1ew@mail.gmail.com>
+ <57315.86.107.254.57.1406609183.squirrel@boosthardware.com>
+ <CAN8ccia3mi9G2oyaYyvJx14xu6F8dLhNZ6r0dpraO1F8qeLjBg@mail.gmail.com>
+ <55293.86.107.254.57.1406791952.squirrel@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id C7F63260786
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 15:18:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1407291450550.30818@phandrigan-desktop>
+Received: from mail-qg0-f54.google.com (mail-qg0-f54.google.com
+ [209.85.192.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id A02E32607B6
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 15:38:25 +0200 (CEST)
+Received: by mail-qg0-f54.google.com with SMTP id z60so3989995qgd.27
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 06:38:24 -0700 (PDT)
+In-Reply-To: <55293.86.107.254.57.1406791952.squirrel@boosthardware.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,41 +32,193 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Handrigan <paul.handrigan@cirrus.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, pierre-louis.bossart@linux.jf.intel.com, Mark Brown <broonie@kernel.org>, liam.r.girdwood@intel.com, David Henningsson <david.henningsson@canonical.com>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 29, 2014 at 07:27:34PM -0500, Paul Handrigan wrote:
-> =
+http://git.alsa-project.org/?p=alsa.git;a=commitdiff;h=48ed9474fc6724dc1486d30e9a274ab27ec001da;hp=56c640a98975b03a6a78a44b2c01e49dfd7b5263
 
-> =
-
-> On Tue, 29 Jul 2014, Mark Brown wrote:
-> =
-
-> >On Tue, Jul 29, 2014 at 12:16:59PM +0300, Tanu Kaskinen wrote:
-> >>On Tue, 2014-07-29 at 08:53 +0200, David Henningsson wrote:
+Have you try the fix ?
+>
 > >
-> >>>While we're trying to sort out the location, could we have a quick poll
-> >>>w r t which dates people prefer? Setting a date could help people book
-> >>>travel to D=FCsseldorf.
+> > You can use hda-verb GET_PIN_SENSE to test all the pin complex nodes
+which
+> > pincap support DETECT
 > >
-> >>>For my own part, I'm pretty flexible.
+>
+> I have tried a few attempts but it's pretty confusing.
+>
+> These ones don't do anything:
+>
+> # hda-verb /dev/snd/hwC1D0  GET_PIN_SENSE
+> # hda-verb /dev/snd/hwC1D0  0x0 GET_PIN_SENSE
+>
+>
+> I don't know what to make of this output:
+
+Bit 31 is PD
+
+VALUE should return 0 when  Jack is UNplugged and 0x80000000 when Jack is
+plugged for those pin which support DETECT
+
+>
+> # hda-verb /dev/snd/hwC1D0  0x0 GET_PIN_SENSE PIN_CAP
+> nid = 0x0, verb = 0xf09, param = 0xc
+> value = 0x0
+> # hda-verb /dev/snd/hwC0D0  0x0 GET_PIN_SENSE PIN_CAP
+> nid = 0x0, verb = 0xf09, param = 0xc
+> value = 0x0
+> # hda-verb /dev/snd/hwC0D0  0x16 GET_PIN_SENSE PIN_CAP
+> nid = 0x16, verb = 0xf09, param = 0xc
+> value = 0xffffffff
+> # hda-verb /dev/snd/hwC0D0  0x19 GET_PIN_SENSE PIN_CAP
+> nid = 0x19, verb = 0xf09, param = 0xc
+> value = 0xffffffff
+> # hda-verb /dev/snd/hwC0D0  0x1a GET_PIN_SENSE PIN_CAP
+> nid = 0x1a, verb = 0xf09, param = 0xc
+> value = 0xffffffff
+> # hda-verb /dev/snd/hwC0D0  0x1b GET_PIN_SENSE PIN_CAP
+> nid = 0x1b, verb = 0xf09, param = 0xc
+> value = 0xffffffff
+>
+
+But your alc668 is on card 1 , the second hda controller
+
+>
+>
+> >> > Do surround 2.1 works ?
+> >> >
+> >>
+> >> It says it is working but I do not get sound out of the sub woofer.  I
+> >> can
+> >> hear static(whitenoise) through the front speakers (with pulseaudio
+> >> test)
+> >> if  I set pins 0x19 and 0x1a to Line Out (Center/LFE) and Internal
+> >> (Center/LFE) or vice versa with hdajackretask.
+> >>
 > >
-> >>I'm flexible too, any day is fine.
 > >
-> >Me too, I'd prefer not to have a day that's a LPC day but it isn't the
-> >end of the world.
+http://git.alsa-project.org/?p=alsa-tools.git;a=blob;f=hdajackretask/README;hb=HEAD
 > >
-> =
+> > Did you use apply button(dyanmic reconfiguartion) or installment boot
+> > override (early patching) ?
+> >
+>
+> I have tried both options.
+>
+> After rebooting with the apply option set I don't hear any static or audio
+> with the PA test app.
+>
+> >>
+> >> I do not see any controls for the bass volume in alsamixer
+> >>
+> >>
+> >
+> >
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=f37bc7a88d374448a1f4bba9267d308606d78bf2
+> >
+>
+> I have checked alsamixer again after the last round of tinkering with
+> hdajackretask and" Speaker CLFE" is now showing up but it does not have
+> volume control just mute on/off.
+>
+> I see the following new controls
+>
+> Speaker CFLE (mute only)
+> Speaker Front (mute + vol)
+> Speaker Side (mute only)
+> Speaker Surround (mute + vol)
 
-> After LPC would be good if possible. Any thoughts?
-Okay joining this bit late :)
+hda-jack-retask won't check whether your codec have enough audio output if
+you changed all the nodes to speaker
 
-I am planning to come. After/before LPC is fine with me.
+But the driver expect multiout support up to 8 channels when parsing the pin
 
-So who else is attending and what are the topics being planned?
+As alc668 only support 6 channels,  hda_generic.c just assign audio output
+and create volume control but Jack detection controls and mute switch are
+created according to the number of parsed pins which support Jack detect
+and mute switch
 
--- =
+Do the headphone still work with pulseaudio since there is no headphone
+playback volume and headphone is share SPEAKER FRONT PLAYBAACK VOLUME
+control with front speaker ?
 
-~Vinod
+>
+>
+> >> >>
+> >> >> >> - I have found a couple of kernel bug reports  for other ASUS
+> >> models
+> >> >> >> with
+> >> >> >> this chipset but they are both marked resolved. Should I open a
+> >> new
+> >> >> >> ticket
+> >> >> >> ?
+> >> >> >>
+> >> >> >> https://bugzilla.kernel.org/show_bug.cgi?id=65091
+> >> >> >> https://bugzilla.kernel.org/show_bug.cgi?id=66271
+> >> >> >>
+> >> >> >> - I can hear static through the front speakers (with pulseaudio
+> > test)
+> >> >> >> if
+> >> >> >> I set pins 0x19 and 0x1a to Line Out (Center/LFE) and Internal
+> >> >> >> (Center/LFE) or vice versa with hdajackretask.
+> >> >> >>
+> >
+> >> > For multi channel, the sequence number is ascending and the driver
+> > expect
+> >> > they have same type i.e, all speakers or all line out jacks
+> >> >
+> >
+> > Pin Default 0x90170110: [Fixed] Speaker at Int N/A
+> >     Conn = Analog, Color = Unknown
+> >     DefAssociation = 0x1, Sequence = 0x0
+> >     Misc = NO_PRESENCE
+> >
+> > The rear speaker need  same default association but  sequence number
+> > higher than that of the front speaker
+> >
+> > The external subwoofer may use [jack] speaker with same default
+> > association and higher sequence number if it can be detected
+> >
+> > The driver won't use all of them for multi channel if you retasked it as
+> > line out
+> >
+>
+> I have tried several combinations with hdajackretask
+>
+> I am not able to get audio out of the physical rear speakers or sonic
+> master output.
+>:
+>
+> So what do I need to do to write a script that will test all the
+> combinations and play audio through them? Or am I missing something that
+> someone else has already written for this purpose?
+>
+> Currently I am using this process:
+>
+> 1: hdajackretask - modify params
+> 2: pulseaudio -k
+> 3: hdajackretask : apply settings
+> 4: pulseaudio -D
+> 5: open PA audio config
+> 6: select audio output option and press test speakers button
+> 7: manually press every button
+>
+
+Use install boot option and reboot to test the driver with
+hda-jack-retask.fw patch
+
+Should not use pulseaudio when testing
+
+speaker-test -c2 -t wav -D hw:1,0
+
+speaker-test -c4 -t wav -D hw:1,0
+
+Test 6 channel only after you find both rear speaker and subwoofer
+
+speaker-test -c6 -t wav -D hw:1,0
+
+if the connected retasked pin is not the correct pin
+,you can use hda_analyzer to  change the pin ctls of the remaining
+unconnected pin to OUT, unmute and coonect the pin to second/third dac
+through audio mixers
