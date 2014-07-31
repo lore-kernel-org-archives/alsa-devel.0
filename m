@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 02/35] ASoC: wm8400: Convert to params_width()
-Date: Thu, 31 Jul 2014 12:57:45 +0100
-Message-ID: <1406807898-5927-2-git-send-email-broonie@kernel.org>
-References: <1406807898-5927-1-git-send-email-broonie@kernel.org>
+Subject: [PATCH 01/35] ASoC: wm8350: Convert to params_width()
+Date: Thu, 31 Jul 2014 12:57:44 +0100
+Message-ID: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 46ECF265162
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:33 +0200 (CEST)
-In-Reply-To: <1406807898-5927-1-git-send-email-broonie@kernel.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id AF5FE265087
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,16 +29,16 @@ The CODEC doesn't care how data is laid out in memory.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/wm8400.c | 10 +++++-----
+ sound/soc/codecs/wm8350.c | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
-index 06e913d3fea1..72471bef2e9a 100644
---- a/sound/soc/codecs/wm8400.c
-+++ b/sound/soc/codecs/wm8400.c
-@@ -1095,16 +1095,16 @@ static int wm8400_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index d9e634c55e81..3dfdcc4197fa 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -918,16 +918,16 @@ static int wm8350_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	    ~WM8350_AIF_WL_MASK;
  
- 	audio1 &= ~WM8400_AIF_WL_MASK;
  	/* bit size */
 -	switch (params_format(params)) {
 -	case SNDRV_PCM_FORMAT_S16_LE:
@@ -49,15 +47,15 @@ index 06e913d3fea1..72471bef2e9a 100644
  		break;
 -	case SNDRV_PCM_FORMAT_S20_3LE:
 +	case 20:
- 		audio1 |= WM8400_AIF_WL_20BITS;
+ 		iface |= 0x1 << 10;
  		break;
 -	case SNDRV_PCM_FORMAT_S24_LE:
 +	case 24:
- 		audio1 |= WM8400_AIF_WL_24BITS;
+ 		iface |= 0x2 << 10;
  		break;
 -	case SNDRV_PCM_FORMAT_S32_LE:
 +	case 32:
- 		audio1 |= WM8400_AIF_WL_32BITS;
+ 		iface |= 0x3 << 10;
  		break;
  	}
 -- 
