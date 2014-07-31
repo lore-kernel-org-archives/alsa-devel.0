@@ -1,81 +1,55 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rsnd: fixup pcm_new callback method
-Date: Thu, 31 Jul 2014 20:37:26 +0100
-Message-ID: <20140731193726.GT17528@sirena.org.uk>
-References: <87bns6uiia.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH v3] ASoC: wm8962: Let CODEC driver enable and disable its
+ own MCLK
+Date: Thu, 31 Jul 2014 20:53:23 +0100
+Message-ID: <20140731195323.GU17528@sirena.org.uk>
+References: <1406630319-5302-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6793431321986122572=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E5D272619FF
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 21:37:34 +0200 (CEST)
-In-Reply-To: <87bns6uiia.wl%kuninori.morimoto.gx@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PrI1xm21m7BS25/2"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1406630319-5302-1-git-send-email-nicoleotsuka@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, b42378@freescale.com, b02247@freescale.com, festevam@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6793431321986122572==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nMMm0HmtHvBQBrqC"
-Content-Disposition: inline
-
-
---nMMm0HmtHvBQBrqC
+--PrI1xm21m7BS25/2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 30, 2014 at 11:53:03PM -0700, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> bff58ea4f43d9b4a9fd6fb05fabc8f50f68131f5
-> (ASoC: rsnd: add DVC support) added DVC support,
-> and it added pcm_new callback feature for it.
-> Then it called all DAI's pcm_new callback, and it was wrong.
-> This patch fixup it and call correct callback.
+On Tue, Jul 29, 2014 at 06:38:39PM +0800, Nicolin Chen wrote:
+> snd_soc_open() will trigger pm_runtime resume() which will then enable
+> the regulator and initialization. So we should make sure the MCLK is
+> enabled before this resume().
 
-Applied, thanks.
+Applied, thanks.  However the clock should really be being enabled in
+the probe() as well so that runtime PM can then disable it - the current
+probe() gets this wrong for the regulators though so this is fine for
+now.
 
---nMMm0HmtHvBQBrqC
+--PrI1xm21m7BS25/2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT2pryAAoJELSic+t+oim9UwkQAJry1H6ZCq5UwfK+gBGhPo88
-9cGbrY/wulauzZe6ZZS7lvSk/zljAsK/36YVw45aZKj5Iy/MrrPmx1CbR2Qh0rAT
-cvP73LxW8Z5YP8Ux0pIo10FLVYRVdAulAUSZ8N4B/5ZECMqA2tqY2pbvHRrtUYYz
-r+atIqX1KlFc1FZnBliMf03GD/mjQ7sCKk6uOA0p+Mb6kFShci/UhTQGAo0U3g6G
-6l+29vW4r6ZDHaSKZvEqt51I9citTlmSqOQ0/Mi+4afRYshFHXuNtZlO1orfmTy/
-DXhT/wYZDP+DX0bkkmh0rubbFkwNU1jkdgKIEia635pkhxnX4gXltTaINNN3gpqi
-QiSpmkwKNbAQmPHOSGjCJyp62bNHe14dlqzWvn4SsStdOwkTCggVOWDQk4K7WWa6
-5tAfDrjW0wFTHmniFOnkbxfwjRF0ixjgERapvcMTRRLgtsj1WUOOUM+VYkHP681Z
-JUL74hGGMjRsvTeMqA8Vwn6TJ1XyprIGso3P6WunmHrTGHBdG0D3o7/evOFrvV6s
-s95moSNV5lO1tU6jT8gXOEKY47/vbxw9ggl2BRMoxzYFfT2pd4rzviDIIsl4GaP5
-sWvPoFxIvimpvtwRP1gEhJZ/egP1uxWfesbKjHF6Fyes2D9ZYb748VqEBSsrEI5G
-UoOYoGvkhfErlFcgClGV
-=c2fQ
+iQIcBAEBAgAGBQJT2p6wAAoJELSic+t+oim9vUwP/1Xkqvm5jyNp/6cs/V2qsyVI
+ZV0oZqZUphGb8hf3e56eKJJdFEImrKMleY2Uqr/c71OpXrFXqcMpVZ5hNabt0EfE
+WUY9PSnfAMWA9UGGdlY/ZWmBkfHaJplKDebyM327mFQ1eykp0emqG7tkBByzbqfg
+iO96j5cs1k2b0ugS7tBErDZ1SwL5USbCy9SWmisIWdgdjjJH3c/vhKSDnHM+g3kw
+At/KpDq4zRVTgAx/ZqwBmgbJNEmylu/FZGZ/5GbfNPqdMFwYmeJbz/GTRM8sKJF1
+b1DDOREVjomQQ0G5vDMXIVhD4+JllW9r8ODV3YPSSYupM50F78XE6OHqr3oyo8WC
+fWykn/jS0wGUaX+jXWMywgoBtvh1B7xGqNxraJmTji4scxmtkkbxEfM4ZANwLdD0
+WTQ7IOx6aro0e6Tty+dZnZ00xss1qtbWZ5m4hotGW0bPBzoKm3NFkRDnjX/eJdNh
+TmWiRzfU+nqGKfQy2a7WpvJypmxphFmQvJ7mXkE5Ls3IR0HU2fPewIqtU6Mj5yMa
+i+8hpWJXSDIDpdQ1n2Rge/QydoeZSvtGlLwrWyZ+geAllLG3K96Rhk9K1d/LFxFt
+qbTQUB2/ymbeVlViIwSaovf3D4It5WgVqIlLVS33avhSoHAZfiaO0ZAVDQisaE1A
+T/TAcv455MyW+qUrRXhM
+=Powt
 -----END PGP SIGNATURE-----
 
---nMMm0HmtHvBQBrqC--
-
---===============6793431321986122572==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6793431321986122572==--
+--PrI1xm21m7BS25/2--
