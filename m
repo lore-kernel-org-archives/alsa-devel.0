@@ -1,31 +1,54 @@
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch -next] ASoC: fsl_asrc: fix an error code in fsl_asrc_probe()
-Date: Thu, 31 Jul 2014 12:32:09 +0300
-Message-ID: <20140731093209.GF30276@mwanda>
+Subject: Re: ASoC: fsl_asrc: Add ASRC ASoC CPU DAI and platform
+	drivers
+Date: Thu, 31 Jul 2014 12:33:16 +0300
+Message-ID: <20140731093316.GG30276@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id E78FD265051
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 11:33:55 +0200 (CEST)
 Content-Disposition: inline
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Timur Tabi <timur@tabi.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Grant Likely <grant.likely@linaro.org>, Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, kernel-janitors@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: nicoleotsuka@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There is a cut and paste bug so it returns success instead of the error
-code.
+Hello Nicolin Chen,
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+This is a semi-automatic email about new static checker warnings.
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index b9a2888..b04438c 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -826,7 +826,7 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 	asrc_priv->mem_clk = devm_clk_get(&pdev->dev, "mem");
- 	if (IS_ERR(asrc_priv->mem_clk)) {
- 		dev_err(&pdev->dev, "failed to get mem clock\n");
--		return PTR_ERR(asrc_priv->ipg_clk);
-+		return PTR_ERR(asrc_priv->mem_clk);
- 	}
- 
- 	asrc_priv->ipg_clk = devm_clk_get(&pdev->dev, "ipg");
+The patch 3117bb3109dc: "ASoC: fsl_asrc: Add ASRC ASoC CPU DAI and 
+platform drivers" from Jul 29, 2014, leads to the following Smatch 
+complaint:
+
+sound/soc/fsl/fsl_asrc_dma.c:304 fsl_asrc_dma_shutdown()
+	 warn: variable dereferenced before check 'pair' (see line 302)
+
+sound/soc/fsl/fsl_asrc_dma.c
+   301		struct fsl_asrc_pair *pair = runtime->private_data;
+   302		struct fsl_asrc *asrc_priv = pair->asrc_priv;
+                                             ^^^^^^^^^^^^^^^
+Dereference.
+
+   303	
+   304		if (pair && asrc_priv->pair[pair->index] == pair)
+                    ^^^^
+
+Check.
+
+   305			asrc_priv->pair[pair->index] = NULL;
+   306	
+
+regards,
+dan carpenter
