@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 14/35] ASoC: wm8804: Convert to params_width()
-Date: Thu, 31 Jul 2014 12:57:57 +0100
-Message-ID: <1406807898-5927-14-git-send-email-broonie@kernel.org>
+Subject: [PATCH 07/35] ASoC: wm8728: Convert to params_width()
+Date: Thu, 31 Jul 2014 12:57:50 +0100
+Message-ID: <1406807898-5927-7-git-send-email-broonie@kernel.org>
 References: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 85966265206
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:36 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id EC9E42651C9
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:34 +0200 (CEST)
 In-Reply-To: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,37 +31,30 @@ The CODEC doesn't care how data is laid out in memory.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/wm8804.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wm8728.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index d96e5963ee35..0ea01dfcb6e1 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -270,19 +270,19 @@ static int wm8804_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
+index bac7fc28fe71..38ff826f589a 100644
+--- a/sound/soc/codecs/wm8728.c
++++ b/sound/soc/codecs/wm8728.c
+@@ -94,13 +94,13 @@ static int wm8728_hw_params(struct snd_pcm_substream *substream,
  
- 	codec = dai->codec;
+ 	dac &= ~0x18;
  
 -	switch (params_format(params)) {
 -	case SNDRV_PCM_FORMAT_S16_LE:
 +	switch (params_width(params)) {
 +	case 16:
- 		blen = 0x0;
  		break;
 -	case SNDRV_PCM_FORMAT_S20_3LE:
 +	case 20:
- 		blen = 0x1;
+ 		dac |= 0x10;
  		break;
 -	case SNDRV_PCM_FORMAT_S24_LE:
 +	case 24:
- 		blen = 0x2;
+ 		dac |= 0x08;
  		break;
  	default:
- 		dev_err(dai->dev, "Unsupported word length: %u\n",
--			params_format(params));
-+			params_width(params));
- 		return -EINVAL;
- 	}
- 
 -- 
 2.0.1
