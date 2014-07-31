@@ -1,26 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Testing/Debugging alc668 with ASUS N750JK
-Date: Thu, 31 Jul 2014 11:27:20 +0800
-Message-ID: <CAN8ccia3mi9G2oyaYyvJx14xu6F8dLhNZ6r0dpraO1F8qeLjBg@mail.gmail.com>
-References: <cover.1406259578.git.nicoleotsuka@gmail.com>
- <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
- <53D1DC0B.1000905@gmail.com>
- <63638.86.107.254.57.1406266836.squirrel@boosthardware.com>
- <CAN8cciboNrRRFBQjX66qud7KoTCqsDHxvFAws9-ywasjemtYbQ@mail.gmail.com>
- <59187.86.107.254.57.1406362728.squirrel@boosthardware.com>
- <CAN8cciax7RreogV0otMdLt0y-dOTrZD3D_ih0doAC9F_XkJ1ew@mail.gmail.com>
- <57315.86.107.254.57.1406609183.squirrel@boosthardware.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - add mic mute led hook for dell
+	machines
+Date: Thu, 31 Jul 2014 11:52:38 +0800
+Message-ID: <1406778758-5067-1-git-send-email-hui.wang@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f45.google.com (mail-qg0-f45.google.com
- [209.85.192.45])
- by alsa0.perex.cz (Postfix) with ESMTP id DF659261A01
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 05:27:21 +0200 (CEST)
-Received: by mail-qg0-f45.google.com with SMTP id f51so3042150qge.18
- for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 20:27:20 -0700 (PDT)
-In-Reply-To: <57315.86.107.254.57.1406609183.squirrel@boosthardware.com>
+Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
+ [209.85.192.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0FE8D261A01
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 05:53:06 +0200 (CEST)
+Received: by mail-pd0-f169.google.com with SMTP id y10so2654550pdj.14
+ for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 20:53:05 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,219 +22,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: hui.wang@canonical.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-> >> >>
-> >> >> What is the best way to test/debug the alc668 driver these days?
-> >> >>
-> >> >> I am running kernel 3.14.1 (debian testing/sid).
-> >> >>
-> >> >> The laptop is an ASUS N750JK.
-> >> >>
-> >> >> Sound works for front left/right speakers but the back speakers and
-> >> >> external lfe channel is not working on this laptop.
-> >> >
-> >> > You have to post output of alsa-info.sh
-> >> >
-> >>
-> >> http://boosthardware.com/alsa-info-alc668-n750jk.txt
-> >
-> > Seem BIOS only set up the front speakers
-> >
->
-> There is nothing in the bios to configure the audio device
->
->
-> >> >
-> >> > How many audio jacks ?
-> >> >
-> >>
-> >> Standard headphone/mic + yellow external lfe (sonic master). There is
-> >> also
-> >> hdmi but I am not testing that at the moment.
-> >
-> > http://www.asus.com/Notebooks_Ultrabooks/N750JK/specifications/
-> >
-> > Do you mean headset ?
-> >
->
-> There are the following jacks:
->
-> 1 x headphone
+The mic mute led on dell laptops is controlled by the wmi driver.
+Followed this part being merged to the kernel, we add the mic mute led
+hook in the hda driver.
 
-Do you mean no optical spdif ?
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/dell_wmi_helper.c | 76 +++++++++++++++++++++++++++++++++++++++++
+ sound/pci/hda/patch_realtek.c   | 13 +++++++
+ 2 files changed, 89 insertions(+)
+ create mode 100644 sound/pci/hda/dell_wmi_helper.c
 
-> 1 x mic(line in)
-
-Switching Mic Jack to line in can be performed by mic Jack mode switch
-using hint add_jack_modes=true
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/Documentation/sound/alsa/HD-Audio.txt
-
-> 1 x sonic master (yellow)
-> 1 x hdmi (intel Haswell hdmi)
->
->
-> >>
-> >> > Do it support headset or headphone ?
-> >> >
-> >> > Do you mean there are four internal speakers ?
-> >> >
-> >>
-> >> There are two front speakers which produce sound through the front
-> >> bottom
-> >> of the case. There are also two back speakers which do not produce
-sound
-> >> in my tests so far.
-> >>
-> >> > Do it support surround40 in windows ?
-> >> >
-> >>
-> >> I am not running windows OS on this machine but I suspect it does.
-> >>
-> >> > The external sonic master and headphone need two volume controls but
-> >> > alc668 only have three
-> >> >
-> >> > The best way to test is using latest git version and hda jack retask
-> >> to
-> >> >
->
-> >>
-> >> > 1) four internal speaker and headphone
-> >> > 2) two internal speaker, headphone and external subwoofer
-> >> >
-> >> > Once you confirm the nodes of the speakers, subwooder
-> >> > You need to decide whether headphone share the volume controls with
-> >> the
-> >> > speaker/subwoofer
-> >> >>
-> >>
-> >> I have spent some time on this step already with 3.14.1
-> >
-> > Did you retask the node of subwoofer as speaker or line out ?
-> >
->
-> I have tried both but I have not been able to identify the subwoofer.
->
-> I have tried playing with: 16, 19, 1a
->
-
-> > Did you find the node of the rear speakers in  (1) ?
-> >
->
-> I have not found them yet.
->
-> > Did surround 4.0 work when you fix the rear speaker ?
-> >
->
-> Only the front speakers play audio but they don't work with 4.0 enabled
->
-> > Did you find the node of the external subwoofer  in (2) ?
-> >
->
-> Not yet.
->
-> > Did the sonic master subwoofer detected   ?
-> > hda jack sense test -a
-> >
->
-> I have grabbed the scripts but I get this error when running hda-analyzer:
->
-
-You can use hda-verb GET_PIN_SENSE to test all the pin complex nodes which
-pincap support DETECT
-
->
-> > Do the subwoofer only use right channel ?
-> >
->
-> I cannot hear the subwoofer at this point
->
-> > Do surround 2.1 works ?
-> >
->
-> It says it is working but I do not get sound out of the sub woofer.  I can
-> hear static(whitenoise) through the front speakers (with pulseaudio test)
-> if  I set pins 0x19 and 0x1a to Line Out (Center/LFE) and Internal
-> (Center/LFE) or vice versa with hdajackretask.
->
-
-http://git.alsa-project.org/?p=alsa-tools.git;a=blob;f=hdajackretask/README;hb=HEAD
-
-Did you use apply button(dyanmic reconfiguartion) or installment boot
-override (early patching) ?
-
-> >>
-> >> Is there a specific reason this process is not already scripted other
-> >> than
-> >> no one has taken the time to do it?
-> >
-> > Do surround 4.1 or 5.1 work when you fix both speaker and subwoofer ?
-> >
->
-> Surround 4.1/5/1 do not produce any sound from my tests so far (using PA
-> Test)
->
-> > Do  you prefer driver create  headphone volume control or subwoofer
-volume
-> > control ?
-> >
->
-> I would like the lfe to be sent through the yellow sonic master jack. I am
-> not concerned with the headset jack at the moment. A cursory test shows
-> just the right channel is working on the headset jack.
->
->
-> >>
-> >> Can we not create a test script that will run through all the logical
-> >> combinations and provide all the relevant info?
-> >>
-> >
-> > The driver hardcore the name of volume control to bass when there are
-two
-> > speaker nodes for those 2.1
-> >
->
-> I do not see any controls for the bass volume in alsamixer
->
->
-
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/pci/hda?id=f37bc7a88d374448a1f4bba9267d308606d78bf2
-
-> >>
-> >> >> - I have found a couple of kernel bug reports  for other ASUS models
-> >> >> with
-> >> >> this chipset but they are both marked resolved. Should I open a new
-> >> >> ticket
-> >> >> ?
-> >> >>
-> >> >> https://bugzilla.kernel.org/show_bug.cgi?id=65091
-> >> >> https://bugzilla.kernel.org/show_bug.cgi?id=66271
-> >> >>
-> >> >> - I can hear static through the front speakers (with pulseaudio
-test)
-> >> >> if
-> >> >> I set pins 0x19 and 0x1a to Line Out (Center/LFE) and Internal
-> >> >> (Center/LFE) or vice versa with hdajackretask.
-> >> >>
-
-> > For multi channel, the sequence number is ascending and the driver
-expect
-> > they have same type i.e, all speakers or all line out jacks
-> >
-
-Pin Default 0x90170110: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-
-The rear speaker need  same default association but  sequence number higher
-than that of the front speaker
-
-The external subwoofer may use [jack] speaker with same default association
-and higher sequence number if it can be detected
-
-The driver won't use all of them for multi channel if you retasked it as
-line out
+diff --git a/sound/pci/hda/dell_wmi_helper.c b/sound/pci/hda/dell_wmi_helper.c
+new file mode 100644
+index 0000000..9c22f95
+--- /dev/null
++++ b/sound/pci/hda/dell_wmi_helper.c
+@@ -0,0 +1,76 @@
++/* Helper functions for Dell Mic Mute LED control;
++ * to be included from codec driver
++ */
++
++#if IS_ENABLED(CONFIG_LEDS_DELL_NETBOOKS)
++#include <linux/dell-led.h>
++
++static int dell_led_value;
++static int (*dell_led_set_func)(int, int);
++static void (*dell_old_cap_hook)(struct hda_codec *,
++			         struct snd_kcontrol *,
++				 struct snd_ctl_elem_value *);
++
++static void update_dell_wmi_micmute_led(struct hda_codec *codec,
++				        struct snd_kcontrol *kcontrol,
++					struct snd_ctl_elem_value *ucontrol)
++{
++	if (dell_old_cap_hook)
++		dell_old_cap_hook(codec, kcontrol, ucontrol);
++
++	if (!ucontrol || !dell_led_set_func)
++		return;
++	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
++		/* TODO: How do I verify if it's a mono or stereo here? */
++		int val = (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1]) ? 0 : 1;
++		if (val == dell_led_value)
++			return;
++		dell_led_value = val;
++		if (dell_led_set_func)
++			dell_led_set_func(DELL_LED_MICMUTE, dell_led_value);
++	}
++}
++
++
++static void alc_fixup_dell_wmi(struct hda_codec *codec,
++			       const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++	bool removefunc = false;
++
++	if (action == HDA_FIXUP_ACT_PROBE) {
++		if (!dell_led_set_func)
++			dell_led_set_func = symbol_request(dell_app_wmi_led_set);
++		if (!dell_led_set_func) {
++			codec_warn(codec, "Failed to find dell wmi symbol dell_app_wmi_led_set\n");
++			return;
++		}
++
++		removefunc = true;
++		if (dell_led_set_func(DELL_LED_MICMUTE, false) >= 0) {
++			dell_led_value = 0;
++			if (spec->gen.num_adc_nids > 1)
++				codec_dbg(codec, "Skipping micmute LED control due to several ADCs");
++			else {
++				dell_old_cap_hook = spec->gen.cap_sync_hook;
++				spec->gen.cap_sync_hook = update_dell_wmi_micmute_led;
++				removefunc = false;
++			}
++		}
++
++	}
++
++	if (dell_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
++		symbol_put(dell_app_wmi_led_set);
++		dell_led_set_func = NULL;
++		dell_old_cap_hook = NULL;
++	}
++}
++
++#else /* CONFIG_LEDS_DELL_NETBOOKS */
++static void alc_fixup_dell_wmi(struct hda_codec *codec,
++			       const struct hda_fixup *fix, int action)
++{
++}
++
++#endif /* CONFIG_LEDS_DELL_NETBOOKS */
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2f755ad..654c8f1 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4295,6 +4295,9 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
+ /* for hda_fixup_thinkpad_acpi() */
+ #include "thinkpad_helper.c"
+ 
++/* for dell wmi mic mute led */
++#include "dell_wmi_helper.c"
++
+ enum {
+ 	ALC269_FIXUP_SONY_VAIO,
+ 	ALC275_FIXUP_SONY_VAIO_GPIO2,
+@@ -4359,6 +4362,7 @@ enum {
+ 	ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC292_FIXUP_TPT440_DOCK,
+ 	ALC283_FIXUP_BXBT2807_MIC,
++	ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -4800,6 +4804,13 @@ static const struct hda_fixup alc269_fixups[] = {
+ 			{ },
+ 		},
+ 	},
++	[ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_dell_wmi,
++		.chained_before = true,
++		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
++	},
++
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -4842,10 +4853,12 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0606, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0608, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0609, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1028, 0x0610, "Dell", ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED),
+ 	SND_PCI_QUIRK(0x1028, 0x0613, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0614, "Dell Inspiron 3135", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0615, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
+ 	SND_PCI_QUIRK(0x1028, 0x0616, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
++	SND_PCI_QUIRK(0x1028, 0x061f, "Dell", ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED),
+ 	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS_HSJACK),
+ 	SND_PCI_QUIRK(0x1028, 0x063f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x064a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+-- 
+1.9.1
