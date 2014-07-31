@@ -1,68 +1,70 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: Add support for CS35L32 Boosted Amplifier
-Date: Thu, 31 Jul 2014 21:27:18 +0100
-Message-ID: <20140731202718.GZ17528@sirena.org.uk>
+From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH 2/2] Documentation: dt: bindings: sound: Add bindings
+ file for CS35L32
+Date: Thu, 31 Jul 2014 15:40:51 -0500
+Message-ID: <alpine.DEB.2.02.1407311528570.7394@heelrod>
 References: <1406664163-10506-1-git-send-email-brian.austin@cirrus.com>
- <20140731200729.GW17528@sirena.org.uk>
- <alpine.DEB.2.02.1407311520490.7394@heelrod>
+ <1406664163-10506-2-git-send-email-brian.austin@cirrus.com>
+ <20140731202149.GX17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZKE/1Mm+6y0nReWg"
+Content-Type: text/plain; charset="US-ASCII"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.02.1407311520490.7394@heelrod>
+In-Reply-To: <20140731202149.GX17528-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 31 Jul 2014, Mark Brown wrote:
 
---ZKE/1Mm+6y0nReWg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Tue, Jul 29, 2014 at 03:02:43PM -0500, Brian Austin wrote:
+> 
+> > This patch adds the devicetree bindings file for the Cirrus Logic CS35L32 Boosted Amplifier
+> 
+> Word wrapping in the commit message please.
+> 
+> > +  - cirrus,sdout-datacfg : Data configuration for dual CS35L32 applications only.
+> > +  Determines the data packed in a two-CS35L32 configuration.
+> > +  0 = Left/right channels VMON[11:0], IMON[11:0], VPMON[7:0].
+> > +  1 = Left/right channels VMON[11:0], IMON[11:0], STATUS.
+> > +  2 = (Default) left/right channels VMON[15:0], IMON [15:0].
+> > +  3 = Left/right channels VPMON[7:0], STATUS.
+> 
+> > +  - cirrus,sdout-share : SDOUT sharing. Determines whether one or two CS35L32
+> > +  devices are on board sharing SDOUT.
+> > +  0 = (Default) One IC.
+> > +  1 = Two IC's.
+> 
+> So, this was all a bit non-obvious but I found a datasheet so was able
+> to figure it out.  The device is using the I2S input channels to stream
+> monitoring data back to the host and can do this in TDM mode.  That's a
+> bit fun, and would ideally mean we'd have to play with hwmon, but it's
+> possibly better not to worry about that for now.
+Good. I didn't want to have to mess with anything on this part. At least 
+for now
+> 
+> Looking at the datasheet I also see a VP supply which is omitted from
+> the driver and bindings - in battery powered devices like phones it'll
+> be connected directly to the battery so have no effect but it's still
+> better to represent it in case someone wants to use it some other way
+> that does merit software control (eg, a system running off 12V batteries
+> will need to regulate it down).
+> 
+I was wondering about that. I didn't think representing a battery as a 
+regulator was gonna be accepted but I can add that back in for sure
 
-On Thu, Jul 31, 2014 at 03:27:13PM -0500, Brian Austin wrote:
-> On Thu, 31 Jul 2014, Mark Brown wrote:
+> > +  - cirrus,gain-manager : Audio-gain management when LEDs are active.
+> > +  0 = (Default) Automatically reduces audio volume once by 3 dB, only if needed
+> > +  to avoid thermal shutdown or current limiting the boost converter.
+> > +  If the condition persists, the CS35L32 examine s ILED_MNG and responds accordingly.
+> > +  Audio recovers to original volume automatically at the end of the LED event.
+> > +  1 = User controls volume (nonautomatic).
+> 
+> This looks like something that should be a runtime control.
+> 
+I thought so too but "They" assure me it is not.
 
-> > Should the interrupt and LED status registers not also be volatile?
-
-> Sure. I guess precious doesn't have any effect on cache then?
-
-It doesn't.
-
-> > > +	case CS35L32_MCLK_6144MHZ:
-
-> > Not sure these defines add anything over just using the numbers and it
-> > avoids ickyness with the fact that I bet this isn't really 6.144GHz.
-
-> I was trying to avoid using numbers, but if it is OK I can do that.
-
-If the define just ends up shoving some characters in front of a number
-it's not really adding anything.
-
---ZKE/1Mm+6y0nReWg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT2qaiAAoJELSic+t+oim9y+MP/j8G1XxyhXeU6D4BB9TXdmF6
-MC7V1LmOodCsORt9hbXQNig+YSAhESLP1BJbXyQXaQ7ClyEZrSBhVyyiSyBNJPkG
-lRu7Y3s2pPHI8bSTTPGQzdOPPyOEON4KIDA8junvfvCRneV0n4KFTJTDvwo/cW9H
-yLnPEXuwzBqcjlf3L/udEAr6kjn++ea59WxUkgoDDk1nhG+MxOu8T1e4HcHwOjgL
-dvIehmK0J/4PquZkbt6DyB2826xwbEYB0AfxdGVr8KVwmJhD6RsSDdx82SN2gkfh
-V/8NqTecatp/quxBGKECk9M8AIGlm+p9kW42B43aVNx5Cml9vc8FR6Fzff+TYg2B
-GOnXx/oGIrsJQCwyxuWnqailNsKBWmwTawlnbgY5DTc12CaU9nwjAsL5Bqg+PF5d
-H57xteL2IBYHXF5fcb70vNZbXiOUsfIaD5kxrYNKVy/2vo7K7Mq95Klf2w7vjUUw
-HvRSwcIClQwLiNHHSQ7j5o26jsoFW3HyaHxIGQTV5fAOea6TAk6TRyGzQPwKg476
-5JJfhWe9f8nOTiakaCpyllnkXFpS0zcEB4kKeDCz00qb1jskm6i/+j3/0beAPB8m
-g59aTCTMOgngZd14YxIBTfjsCpQ2IOaKSIO3GkFrdEmVoQ0fWLKhJ339cBFDxH9G
-U6MOPvx1nffRFPeyPuwa
-=xjKW
------END PGP SIGNATURE-----
-
---ZKE/1Mm+6y0nReWg--
+Thanks Mark
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
