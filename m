@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 08/35] ASoC: wm8731: Convert to params_width()
-Date: Thu, 31 Jul 2014 12:57:51 +0100
-Message-ID: <1406807898-5927-8-git-send-email-broonie@kernel.org>
+Subject: [PATCH 06/35] ASoC: wm8711: Convert to params_width()
+Date: Thu, 31 Jul 2014 12:57:49 +0100
+Message-ID: <1406807898-5927-6-git-send-email-broonie@kernel.org>
 References: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,7 +9,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 701CB265041
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F5D8264F45
  for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:31 +0200 (CEST)
 In-Reply-To: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,15 +31,15 @@ The CODEC doesn't care how data is laid out in memory.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/wm8731.c | 8 ++++----
+ sound/soc/codecs/wm8711.c | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 5ada61611324..eebb3280bfad 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -348,13 +348,13 @@ static int wm8731_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_write(codec, WM8731_SRATE, srate);
+diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
+index b0fbcb377baf..32187e739b4f 100644
+--- a/sound/soc/codecs/wm8711.c
++++ b/sound/soc/codecs/wm8711.c
+@@ -169,13 +169,13 @@ static int wm8711_hw_params(struct snd_pcm_substream *substream,
+ 	snd_soc_write(codec, WM8711_SRATE, srate);
  
  	/* bit size */
 -	switch (params_format(params)) {
