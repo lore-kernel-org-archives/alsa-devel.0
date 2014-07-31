@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 13/35] ASoC: wm8770: Convert to params_width()
-Date: Thu, 31 Jul 2014 12:57:56 +0100
-Message-ID: <1406807898-5927-13-git-send-email-broonie@kernel.org>
+Subject: [PATCH 12/35] ASoC: wm8753: Convert to params_width()
+Date: Thu, 31 Jul 2014 12:57:55 +0100
+Message-ID: <1406807898-5927-12-git-send-email-broonie@kernel.org>
 References: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,7 +9,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E0C26264F10
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F7C2265232
  for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:38 +0200 (CEST)
 In-Reply-To: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,17 +31,17 @@ The CODEC doesn't care how data is laid out in memory.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/wm8770.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wm8753.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8770.c b/sound/soc/codecs/wm8770.c
-index c61aeb38efb8..180e7a098726 100644
---- a/sound/soc/codecs/wm8770.c
-+++ b/sound/soc/codecs/wm8770.c
-@@ -426,16 +426,16 @@ static int wm8770_hw_params(struct snd_pcm_substream *substream,
- 	wm8770 = snd_soc_codec_get_drvdata(codec);
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 53e57b4049a8..e54e097f4fcb 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -937,16 +937,16 @@ static int wm8753_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	u16 srate = snd_soc_read(codec, WM8753_SRATE1) & 0x017f;
  
- 	iface = 0;
+ 	/* bit size */
 -	switch (params_format(params)) {
 -	case SNDRV_PCM_FORMAT_S16_LE:
 +	switch (params_width(params)) {
@@ -49,15 +49,37 @@ index c61aeb38efb8..180e7a098726 100644
  		break;
 -	case SNDRV_PCM_FORMAT_S20_3LE:
 +	case 20:
- 		iface |= 0x10;
+ 		voice |= 0x0004;
  		break;
 -	case SNDRV_PCM_FORMAT_S24_LE:
 +	case 24:
- 		iface |= 0x20;
+ 		voice |= 0x0008;
  		break;
 -	case SNDRV_PCM_FORMAT_S32_LE:
 +	case 32:
- 		iface |= 0x30;
+ 		voice |= 0x000c;
+ 		break;
+ 	}
+@@ -1176,16 +1176,16 @@ static int wm8753_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		coeff_div[coeff].usb);
+ 
+ 	/* bit size */
+-	switch (params_format(params)) {
+-	case SNDRV_PCM_FORMAT_S16_LE:
++	switch (params_width(params)) {
++	case 16:
+ 		break;
+-	case SNDRV_PCM_FORMAT_S20_3LE:
++	case 20:
+ 		hifi |= 0x0004;
+ 		break;
+-	case SNDRV_PCM_FORMAT_S24_LE:
++	case 24:
+ 		hifi |= 0x0008;
+ 		break;
+-	case SNDRV_PCM_FORMAT_S32_LE:
++	case 32:
+ 		hifi |= 0x000c;
  		break;
  	}
 -- 
