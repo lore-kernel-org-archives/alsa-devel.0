@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/2] ASoC: rt5651: Convert to params_width()
-Date: Thu, 31 Jul 2014 12:36:31 +0100
-Message-ID: <1406806591-2427-2-git-send-email-broonie@kernel.org>
-References: <1406806591-2427-1-git-send-email-broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: rt5631: Convert to params_width()
+Date: Thu, 31 Jul 2014 12:36:30 +0100
+Message-ID: <1406806591-2427-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EADC8264E9F
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:36:39 +0200 (CEST)
-In-Reply-To: <1406806591-2427-1-git-send-email-broonie@kernel.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id A2A13264EFF
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:36:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,16 +29,16 @@ The CODEC doesn't care how data is laid out in memory.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/rt5651.c | 10 +++++-----
+ sound/soc/codecs/rt5631.c | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index ea4b1c652a26..bb0a3ab5416c 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -1366,16 +1366,16 @@ static int rt5651_hw_params(struct snd_pcm_substream *substream,
- 	dev_dbg(dai->dev, "bclk_ms is %d and pre_div is %d for iis %d\n",
- 				bclk_ms, pre_div, dai->id);
+diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
+index 30e234708579..1ba27db660a6 100644
+--- a/sound/soc/codecs/rt5631.c
++++ b/sound/soc/codecs/rt5631.c
+@@ -1370,16 +1370,16 @@ static int rt5631_hifi_pcm_params(struct snd_pcm_substream *substream,
+ 		return coeff;
+ 	}
  
 -	switch (params_format(params)) {
 -	case SNDRV_PCM_FORMAT_S16_LE:
@@ -49,15 +47,15 @@ index ea4b1c652a26..bb0a3ab5416c 100644
  		break;
 -	case SNDRV_PCM_FORMAT_S20_3LE:
 +	case 20:
- 		val_len |= RT5651_I2S_DL_20;
+ 		iface |= RT5631_SDP_I2S_DL_20;
  		break;
 -	case SNDRV_PCM_FORMAT_S24_LE:
 +	case 24:
- 		val_len |= RT5651_I2S_DL_24;
+ 		iface |= RT5631_SDP_I2S_DL_24;
  		break;
 -	case SNDRV_PCM_FORMAT_S8:
 +	case 8:
- 		val_len |= RT5651_I2S_DL_8;
+ 		iface |= RT5631_SDP_I2S_DL_8;
  		break;
  	default:
 -- 
