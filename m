@@ -1,61 +1,67 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: Audio mini conference 2014?
-Date: Thu, 31 Jul 2014 09:04:00 -0700
-Message-ID: <CAEUnVG6Z24ANddZp1GG=YQ5-nTAqginUYd=0tV4wvAHTBX=bpQ@mail.gmail.com>
-References: <20140612110049.GV5099@sirena.org.uk>
- <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5h4myhpcby.wl%tiwai@suse.de> <20140721232054.GN17528@sirena.org.uk>
- <s5h1ttehr91.wl%tiwai@suse.de> <20140722222038.GW17528@sirena.org.uk>
- <53D74507.4020209@canonical.com>
- <1406625419.2531.12.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <20140729193133.GJ17528@sirena.org.uk>
- <alpine.DEB.2.00.1407291450550.30818@phandrigan-desktop>
- <20140731130922.GW8181@intel.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH v4 6/6] clk: Add floor and ceiling constraints to clock
+ rates
+Date: Thu, 31 Jul 2014 11:51:20 -0600
+Message-ID: <53DA8218.7070300@wwwdotorg.org>
+References: <1405606399-26608-1-git-send-email-tomeu.vizoso@collabora.com>
+ <1405606399-26608-7-git-send-email-tomeu.vizoso@collabora.com>
+ <53CEA483.6090704@wwwdotorg.org> <53DA2CCB.2080300@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f181.google.com (mail-ig0-f181.google.com
- [209.85.213.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 59B57261735
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 18:04:22 +0200 (CEST)
-Received: by mail-ig0-f181.google.com with SMTP id h3so5299335igd.2
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 09:04:21 -0700 (PDT)
-In-Reply-To: <20140731130922.GW8181@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, pierre-louis.bossart@linux.jf.intel.com, Paul Handrigan <paul.handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@intel.com>, David Henningsson <david.henningsson@canonical.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <53DA2CCB.2080300@collabora.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Tomeu Vizoso <tomeu.vizoso@collabora.com>, Mike Turquette <mturquette@linaro.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Prashant Gaikwad <pgaikwad@nvidia.com>, Tony Lindgren <tony@atomide.com>, Tomasz Figa <t.figa@samsung.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Thierry Reding <thierry.reding@gmail.com>, Paul Mackerras <paulus@samba.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Daniel Walker <dwalker@fifo99.com>, linux-arch@vger.kernel.org, Boris Brezillon <boris.brezillon@free-electrons.com>, linux-samsung-soc@vger.kernel.org, Kukjin Kim <kgene.kim@samsung.com>, Russell King <linux@arm.linux.org.uk>, =?windows-1252?Q?Emilio_L=F3pez?= <emilio@elopez.com.ar>, Takashi Iwai <tiwai@suse.de>, Michal Simek <michal.simek@xilinx.com>, Kyungmin Park <kyungmin.park@samsung.com>, Kevin Hilman <khilman@deeprootsystems.com>, linux-arm-kernel@lists.infradead.org, patches@opensource.wolfsonmicro.com, Vi
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBKdWwgMzEsIDIwMTQgYXQgNjowOSBBTSwgVmlub2QgS291bCA8dmlub2Qua291bEBp
-bnRlbC5jb20+IHdyb3RlOgo+IE9uIFR1ZSwgSnVsIDI5LCAyMDE0IGF0IDA3OjI3OjM0UE0gLTA1
-MDAsIFBhdWwgSGFuZHJpZ2FuIHdyb3RlOgo+Pgo+Pgo+PiBPbiBUdWUsIDI5IEp1bCAyMDE0LCBN
-YXJrIEJyb3duIHdyb3RlOgo+Pgo+PiA+T24gVHVlLCBKdWwgMjksIDIwMTQgYXQgMTI6MTY6NTlQ
-TSArMDMwMCwgVGFudSBLYXNraW5lbiB3cm90ZToKPj4gPj5PbiBUdWUsIDIwMTQtMDctMjkgYXQg
-MDg6NTMgKzAyMDAsIERhdmlkIEhlbm5pbmdzc29uIHdyb3RlOgo+PiA+Cj4+ID4+PldoaWxlIHdl
-J3JlIHRyeWluZyB0byBzb3J0IG91dCB0aGUgbG9jYXRpb24sIGNvdWxkIHdlIGhhdmUgYSBxdWlj
-ayBwb2xsCj4+ID4+PncgciB0IHdoaWNoIGRhdGVzIHBlb3BsZSBwcmVmZXI/IFNldHRpbmcgYSBk
-YXRlIGNvdWxkIGhlbHAgcGVvcGxlIGJvb2sKPj4gPj4+dHJhdmVsIHRvIETDvHNzZWxkb3JmLgo+
-PiA+Cj4+ID4+PkZvciBteSBvd24gcGFydCwgSSdtIHByZXR0eSBmbGV4aWJsZS4KPj4gPgo+PiA+
-PkknbSBmbGV4aWJsZSB0b28sIGFueSBkYXkgaXMgZmluZS4KPj4gPgo+PiA+TWUgdG9vLCBJJ2Qg
-cHJlZmVyIG5vdCB0byBoYXZlIGEgZGF5IHRoYXQncyBhIExQQyBkYXkgYnV0IGl0IGlzbid0IHRo
-ZQo+PiA+ZW5kIG9mIHRoZSB3b3JsZC4KPj4gPgo+Pgo+PiBBZnRlciBMUEMgd291bGQgYmUgZ29v
-ZCBpZiBwb3NzaWJsZS4gQW55IHRob3VnaHRzPwo+IE9rYXkgam9pbmluZyB0aGlzIGJpdCBsYXRl
-IDopCj4KPiBJIGFtIHBsYW5uaW5nIHRvIGNvbWUuIEFmdGVyL2JlZm9yZSBMUEMgaXMgZmluZSB3
-aXRoIG1lLgo+Cj4gU28gd2hvIGVsc2UgaXMgYXR0ZW5kaW5nIGFuZCB3aGF0IGFyZSB0aGUgdG9w
-aWNzIGJlaW5nIHBsYW5uZWQ/CgpJJ20gcGxhbm5pbmcgb24gYXR0ZW5kaW5nLCBhbnkgdGltZSBh
-bmQgcGxhY2UgY2xvc2UgdG8gTFBDIHdvcmtzIGZvciBtZS4KCi1EeWxhbgoKPgo+IC0tCj4gflZp
-bm9kCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+T24gMDcvMzEvMjAxNCAwNTo0NyBBTSwgVG9tZXUgVml6b3NvIHdyb3RlOgo+IE9uIDA3LzIyLzIw
+MTQgMDc6NTAgUE0sIFN0ZXBoZW4gV2FycmVuIHdyb3RlOgo+PiBPbiAwNy8xNy8yMDE0IDA4OjEz
+IEFNLCBUb21ldSBWaXpvc28gd3JvdGU6Cj4+PiBBZGRzIGEgd2F5IGZvciBjbG9jayBjb25zdW1l
+cnMgdG8gc2V0IG1heGltdW0gYW5kIG1pbmltdW0gcmF0ZXMuIFRoaXMKPj4+IGNhbiBiZQo+Pj4g
+dXNlZCBmb3IgdGhlcm1hbCBkcml2ZXJzIHRvIHNldCBjZWlsaW5nIHJhdGVzLCBvciBieSBtaXNj
+LiBkcml2ZXJzIHRvCj4+PiBzZXQKPj4+IGZsb29yIHJhdGVzIHRvIGFzc3VyZSBhIG1pbmltdW0g
+cGVyZm9ybWFuY2UgbGV2ZWwuCj4+Cj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvY2xrLmMg
+Yi9kcml2ZXJzL2Nsay9jbGsuYwo+Pgo+Pj4gK3N0cnVjdCByYXRlX2NvbnN0cmFpbnQgewo+Pj4g
+KyAgICBzdHJ1Y3QgaGxpc3Rfbm9kZSAgICBub2RlOwo+Pj4gKyAgICBjb25zdCBjaGFyICAgICAg
+ICAqZGV2X2lkOwo+Pj4gKyAgICBjb25zdCBjaGFyICAgICAgICAqY29uX2lkOwo+Pj4gKyAgICBl
+bnVtIGNvbnN0cmFpbnRfdHlwZSAgICB0eXBlOwo+Pj4gKyAgICB1bnNpZ25lZCBsb25nICAgICAg
+ICByYXRlOwo+Pj4gK307Cj4+Cj4+IEkgd291bGQgcGVyc29uYWxseSBzdGlsbCBwcmVmZXIgZWl0
+aGVyOgo+Pgo+PiBhKSBUaGUgc3RydWN0IHJhdGVfY29uc3RyYWludHMgYmUgc3RvcmVkIGluIHN0
+cnVjdCBjbGsgcmF0aGVyIHRoYW4KPj4gc3RydWN0IGNsa19jb3JlLCBzbyB0aGV5J3JlIHN0b3Jl
+ZCBpbiB0aGUgY29udGFpbmVyIHRoYXQgInNldCIgdGhlCj4+IGNvbnN0cmFpbnRzLiBUaGlzIHdv
+dWxkIG1lYW4gaXRlcmF0aW5nIG92ZXIgYSBzdHJ1Y3QgY2xrX2NvcmUncwo+PiBhc3NvY2lhdGVk
+IHN0cnVjdCBjbGtzLCB0aGVuIGl0ZXJhdGluZyBvdmVyIHRoZSBzdHJ1Y3QgcmF0ZV9jb25zdHJh
+aW50cwo+PiB3aXRoaW4gZWFjaCBzdHJ1Y3QgY2xrLgo+Pgo+PiBvcjoKPj4KPj4gYikgc3RydWN0
+IHJhdGVfY29uc3RyYWludCB0byBjb250YWluIGEgcG9pbnRlciB0byB0aGUgc3RydWN0IGNsayB0
+aGF0Cj4+IGNyZWF0ZWQgdGhlIGNvbnN0cmFpbnQsIHJhdGhlciB0aGFuIGNvcHlpbmcgdGhlIGRl
+dl9pZC9jb25faWQgZnJvbSB0aGF0Cj4+IHN0cnVjdCBjbGsgaW50byB0aGUgc3RydWN0IHJhdGVf
+Y29uc3RyYWludC4KPj4KPj4gV2l0aCBlaXRoZXIgb2YgdGhvc2UgY2hhbmdlcywgdGhlIGNvbnN0
+cmFpbnRzIGFyZSBkaXJlY3RseSBhc3NvY2lhdGVkCj4+IHdpdGggdGhlIGNsb2NrIGNsaWVudCBv
+YmplY3QgdGhhdCBjcmVhdGVkIHRoZSBjb25zdHJhaW50IG11Y2ggYmV0dGVyCj4+IHRoYW4gcmln
+aHQgbm93LCB3aGVyZSB0aGUgbWF0Y2hpbmcgaXMgb25seSBiZWNhdXNlIHRoZSBzdHJ1Y3QgY2xr
+IGFuZAo+PiBzdHJ1Y3QgcmF0ZV9jb25zdHJhaW50ICJoYXBwZW4gdG8iIGhhdmUgdGhlIHNhbWUg
+ZGV2X2lkL2Nvbl9pZCB2YWx1ZXMuCj4+Cj4+IFN0aWxsLCB0aGlzIGlzIGEgcHJldHR5IG1pbm9y
+IGlzc3VlLCBhbmQgb3ZlcmFsbCB0aGlzIHNlcmllcyBsb29rcwo+PiByZWFzb25hYmxlIHRvIG1l
+IGF0IGEgcXVpY2sgbG9vay4KPgo+IFllYWgsIEkgYWdyZWUgYW5kIHBlcnNvbmFsbHkgcHJlZmVy
+IGEpLCBidXQgZ2l2ZW4gdGhlIGxpdHRsZSBmZWVkYmFjawo+IHRoYXQgSSBoYXZlIGdvdHRlbiBz
+byBmYXIgb24gdGhlIHJlZmFjdG9yaW5nLCBJJ20gc3RhcnRpbmcgdG8gY29uc2lkZXIKPiBmb3Jn
+ZXR0aW5nIGFib3V0IHRoZSBwZXItdXNlciBjbGsgc3RydWN0IGFuZCBnbyBpbnN0ZWFkIHdpdGgg
+YQo+IHJlcXVlc3QtYmFzZWQgQVBJIHNpbWlsYXIgdG8gdGhhdCBvZiBwbV9xb3MsIGZvciBzZXR0
+aW5nIGZsb29yIGFuZAo+IGNlaWxpbmcgZnJlcXVlbmNpZXMuCgpJIHdvdWxkIG9idmlvdXNseSBl
+bmNvdXJhZ2UgeW91IHRvIGNvbnRpbnVlIHB1c2hpbmcgZm9yIHRoaXMgZmVhdHVyZSwgCmFsdGhv
+dWdoIEkgdW5kZXJzdGFuZCBpdCBjYW4gYmUgZGlmZmljdWx0IHRvIGJlIG1vdGl2YXRlZCB3aGVu
+IHRoZSAKcGF0Y2hlcyBkb24ndCBnZXQgbXVjaCBmZWVkYmFjay4KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXhwcGMtZGV2IG1haWxpbmcgbGlzdApM
+aW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9yZwpodHRwczovL2xpc3RzLm96bGFicy5vcmcvbGlz
+dGluZm8vbGludXhwcGMtZGV2
