@@ -1,88 +1,155 @@
-From: Mike Turquette <mturquette@linaro.org>
-Subject: Re: [PATCH v4 6/6] clk: Add floor and ceiling constraints to clock
- rates
-Date: Thu, 31 Jul 2014 11:54:44 -0700
-Message-ID: <20140731185444.4463.35237@quantum>
-References: <1405606399-26608-1-git-send-email-tomeu.vizoso@collabora.com>
- <1405606399-26608-7-git-send-email-tomeu.vizoso@collabora.com>
- <53CEA483.6090704@wwwdotorg.org> <53DA2CCB.2080300@collabora.com>
- <53DA8218.7070300@wwwdotorg.org>
+From: "Patrick Shirkey" <pshirkey@boosthardware.com>
+Subject: Re: Testing/Debugging alc668 with ASUS N750JK
+Date: Fri, 1 Aug 2014 04:25:44 +1000 (EST)
+Message-ID: <59490.86.107.254.57.1406831144.squirrel@boosthardware.com>
+References: <cover.1406259578.git.nicoleotsuka@gmail.com>
+ <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
+ <53D1DC0B.1000905@gmail.com>
+ <63638.86.107.254.57.1406266836.squirrel@boosthardware.com>
+ <CAN8cciboNrRRFBQjX66qud7KoTCqsDHxvFAws9-ywasjemtYbQ@mail.gmail.com>
+ <59187.86.107.254.57.1406362728.squirrel@boosthardware.com>
+ <CAN8cciax7RreogV0otMdLt0y-dOTrZD3D_ih0doAC9F_XkJ1ew@mail.gmail.com>
+ <57315.86.107.254.57.1406609183.squirrel@boosthardware.com>
+ <CAN8ccia3mi9G2oyaYyvJx14xu6F8dLhNZ6r0dpraO1F8qeLjBg@mail.gmail.com>
+ <55293.86.107.254.57.1406791952.squirrel@boosthardware.com>
+ <CAN8cciZ_KT9HG3K3xW-X-PFvWya1zW46JXccq-jd5v6uaeTjOA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <53DA8218.7070300@wwwdotorg.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Stephen Warren <swarren@wwwdotorg.org>, Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, Prashant Gaikwad <pgaikwad@nvidia.com>, "Jason Cooper  <jason@lakedaemon.net>,
- Andrew Lunn  <andrew@lunn.ch>,
- Sebastian Hesselbarth  <sebastian.hesselbarth@gmail.com>,
- Russell King  <linux@arm.linux.org.uk>,
- Shawn Guo  <shawn.guo@freescale.com>,
- Sascha Hauer  <kernel@pengutronix.de>,
- David Brown  <davidb@codeaurora.org>,  Daniel Walker  <dwalker@fifo99.com>,
- Bryan Huntsman  <bryanh@codeaurora.org>,  Paul Walmsley  <paul@pwsan.com>,
- Tony Lindgren  <tony@atomide.com>,
- =?utf-8?q?=22_Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
- Kevin Hilman" <khilman@deeprootsystems.com>, Tomasz Figa <t.figa@samsung.com>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Thierry Reding <thierry.reding@gmail.com>, Paul Mackerras <paulus@samba.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, linux-arch@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from boosthardware.localdomain (boosthardware.com [88.198.122.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86881265474
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 20:25:49 +0200 (CEST)
+In-Reply-To: <CAN8cciZ_KT9HG3K3xW-X-PFvWya1zW46JXccq-jd5v6uaeTjOA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-UXVvdGluZyBTdGVwaGVuIFdhcnJlbiAoMjAxNC0wNy0zMSAxMDo1MToyMCkKPiBPbiAwNy8zMS8y
-MDE0IDA1OjQ3IEFNLCBUb21ldSBWaXpvc28gd3JvdGU6Cj4gPiBPbiAwNy8yMi8yMDE0IDA3OjUw
-IFBNLCBTdGVwaGVuIFdhcnJlbiB3cm90ZToKPiA+PiBPbiAwNy8xNy8yMDE0IDA4OjEzIEFNLCBU
-b21ldSBWaXpvc28gd3JvdGU6Cj4gPj4+IEFkZHMgYSB3YXkgZm9yIGNsb2NrIGNvbnN1bWVycyB0
-byBzZXQgbWF4aW11bSBhbmQgbWluaW11bSByYXRlcy4gVGhpcwo+ID4+PiBjYW4gYmUKPiA+Pj4g
-dXNlZCBmb3IgdGhlcm1hbCBkcml2ZXJzIHRvIHNldCBjZWlsaW5nIHJhdGVzLCBvciBieSBtaXNj
-LiBkcml2ZXJzIHRvCj4gPj4+IHNldAo+ID4+PiBmbG9vciByYXRlcyB0byBhc3N1cmUgYSBtaW5p
-bXVtIHBlcmZvcm1hbmNlIGxldmVsLgo+ID4+Cj4gPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2Ns
-ay9jbGsuYyBiL2RyaXZlcnMvY2xrL2Nsay5jCj4gPj4KPiA+Pj4gK3N0cnVjdCByYXRlX2NvbnN0
-cmFpbnQgewo+ID4+PiArICAgIHN0cnVjdCBobGlzdF9ub2RlICAgIG5vZGU7Cj4gPj4+ICsgICAg
-Y29uc3QgY2hhciAgICAgICAgKmRldl9pZDsKPiA+Pj4gKyAgICBjb25zdCBjaGFyICAgICAgICAq
-Y29uX2lkOwo+ID4+PiArICAgIGVudW0gY29uc3RyYWludF90eXBlICAgIHR5cGU7Cj4gPj4+ICsg
-ICAgdW5zaWduZWQgbG9uZyAgICAgICAgcmF0ZTsKPiA+Pj4gK307Cj4gPj4KPiA+PiBJIHdvdWxk
-IHBlcnNvbmFsbHkgc3RpbGwgcHJlZmVyIGVpdGhlcjoKPiA+Pgo+ID4+IGEpIFRoZSBzdHJ1Y3Qg
-cmF0ZV9jb25zdHJhaW50cyBiZSBzdG9yZWQgaW4gc3RydWN0IGNsayByYXRoZXIgdGhhbgo+ID4+
-IHN0cnVjdCBjbGtfY29yZSwgc28gdGhleSdyZSBzdG9yZWQgaW4gdGhlIGNvbnRhaW5lciB0aGF0
-ICJzZXQiIHRoZQo+ID4+IGNvbnN0cmFpbnRzLiBUaGlzIHdvdWxkIG1lYW4gaXRlcmF0aW5nIG92
-ZXIgYSBzdHJ1Y3QgY2xrX2NvcmUncwo+ID4+IGFzc29jaWF0ZWQgc3RydWN0IGNsa3MsIHRoZW4g
-aXRlcmF0aW5nIG92ZXIgdGhlIHN0cnVjdCByYXRlX2NvbnN0cmFpbnRzCj4gPj4gd2l0aGluIGVh
-Y2ggc3RydWN0IGNsay4KPiA+Pgo+ID4+IG9yOgo+ID4+Cj4gPj4gYikgc3RydWN0IHJhdGVfY29u
-c3RyYWludCB0byBjb250YWluIGEgcG9pbnRlciB0byB0aGUgc3RydWN0IGNsayB0aGF0Cj4gPj4g
-Y3JlYXRlZCB0aGUgY29uc3RyYWludCwgcmF0aGVyIHRoYW4gY29weWluZyB0aGUgZGV2X2lkL2Nv
-bl9pZCBmcm9tIHRoYXQKPiA+PiBzdHJ1Y3QgY2xrIGludG8gdGhlIHN0cnVjdCByYXRlX2NvbnN0
-cmFpbnQuCj4gPj4KPiA+PiBXaXRoIGVpdGhlciBvZiB0aG9zZSBjaGFuZ2VzLCB0aGUgY29uc3Ry
-YWludHMgYXJlIGRpcmVjdGx5IGFzc29jaWF0ZWQKPiA+PiB3aXRoIHRoZSBjbG9jayBjbGllbnQg
-b2JqZWN0IHRoYXQgY3JlYXRlZCB0aGUgY29uc3RyYWludCBtdWNoIGJldHRlcgo+ID4+IHRoYW4g
-cmlnaHQgbm93LCB3aGVyZSB0aGUgbWF0Y2hpbmcgaXMgb25seSBiZWNhdXNlIHRoZSBzdHJ1Y3Qg
-Y2xrIGFuZAo+ID4+IHN0cnVjdCByYXRlX2NvbnN0cmFpbnQgImhhcHBlbiB0byIgaGF2ZSB0aGUg
-c2FtZSBkZXZfaWQvY29uX2lkIHZhbHVlcy4KPiA+Pgo+ID4+IFN0aWxsLCB0aGlzIGlzIGEgcHJl
-dHR5IG1pbm9yIGlzc3VlLCBhbmQgb3ZlcmFsbCB0aGlzIHNlcmllcyBsb29rcwo+ID4+IHJlYXNv
-bmFibGUgdG8gbWUgYXQgYSBxdWljayBsb29rLgo+ID4KPiA+IFllYWgsIEkgYWdyZWUgYW5kIHBl
-cnNvbmFsbHkgcHJlZmVyIGEpLCBidXQgZ2l2ZW4gdGhlIGxpdHRsZSBmZWVkYmFjawo+ID4gdGhh
-dCBJIGhhdmUgZ290dGVuIHNvIGZhciBvbiB0aGUgcmVmYWN0b3JpbmcsIEknbSBzdGFydGluZyB0
-byBjb25zaWRlcgo+ID4gZm9yZ2V0dGluZyBhYm91dCB0aGUgcGVyLXVzZXIgY2xrIHN0cnVjdCBh
-bmQgZ28gaW5zdGVhZCB3aXRoIGEKPiA+IHJlcXVlc3QtYmFzZWQgQVBJIHNpbWlsYXIgdG8gdGhh
-dCBvZiBwbV9xb3MsIGZvciBzZXR0aW5nIGZsb29yIGFuZAo+ID4gY2VpbGluZyBmcmVxdWVuY2ll
-cy4KPiAKPiBJIHdvdWxkIG9idmlvdXNseSBlbmNvdXJhZ2UgeW91IHRvIGNvbnRpbnVlIHB1c2hp
-bmcgZm9yIHRoaXMgZmVhdHVyZSwgCj4gYWx0aG91Z2ggSSB1bmRlcnN0YW5kIGl0IGNhbiBiZSBk
-aWZmaWN1bHQgdG8gYmUgbW90aXZhdGVkIHdoZW4gdGhlIAo+IHBhdGNoZXMgZG9uJ3QgZ2V0IG11
-Y2ggZmVlZGJhY2suCgpTb3JyeSBmb3Igbm90IGdpdmluZyB0aGlzIG1vcmUgb2YgYSBsb29rLiBN
-eSBzZWNyZXQgcGxhbiB3YXMgdG8gcmV2aWV3CnRoaXMgaW4gbW9yZSBkZXRhaWwgb25jZSB3ZSdy
-ZSBjbG9zZXIgdG8gdGhlIG1lcmdlIHdpbmRvdyBhbmQsIGlmCmFwcHJvcHJpYXRlLCBhcHBseSBp
-dCBhcyBvbmUgb2YgdGhlIGZpcnN0IHRoaW5ncyBzaW5jZSB0aGlzIGlzIGJvdW5kIHRvCmNhdXNl
-IHNvbWUgYnJlYWthZ2UgZWFybHkgb24gd2hpY2ggbmVlZHMgdG8gYmUgY2F1Z2h0IGFuZCBmaXhl
-ZCB1cApxdWlja2x5LgoKV2UgYXJlIHZlcnkgY2xvc2UgdG8gdGhlIG1lcmdlIHdpbmRvdyBzbyBJ
-IHdpbGwgdHJ5IHRvIGdldCB0byB0aGlzIGxhdGVyCnRoaXMgd2Vlay4gSSBsaWtlIHRoZSBwZXIt
-dXNlciBzdHJ1Y3QgY2xrIG15c2VsZiBhbmQgSSBob3BlIHdlIGNhbiBnZXQKdGhpcyBpbiBmb3Ig
-My4xOC4KClJlZ2FyZHMsCk1pa2UKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTGludXhwcGMtZGV2IG1haWxpbmcgbGlzdApMaW51eHBwYy1kZXZAbGlzdHMu
-b3psYWJzLm9yZwpodHRwczovL2xpc3RzLm96bGFicy5vcmcvbGlzdGluZm8vbGludXhwcGMtZGV2
+
+On Thu, July 31, 2014 11:38 pm, Raymond Yau wrote:
+> http://git.alsa-project.org/?p=alsa.git;a=commitdiff;h=48ed9474fc6724dc1486d30e9a274ab27ec001da;hp=56c640a98975b03a6a78a44b2c01e49dfd7b5263
+>
+> Have you try the fix ?
+>>
+
+I did not see that update.
+
+run.py works now without any modifications on this machine.
+
+I have generated a graph.
+
+http://boosthardware.com/hda_graph-1.png
+
+
+>> >
+>> > You can use hda-verb GET_PIN_SENSE to test all the pin complex nodes
+> which
+>> > pincap support DETECT
+>> >
+>>
+>> I have tried a few attempts but it's pretty confusing.
+>>
+>> These ones don't do anything:
+>>
+>> # hda-verb /dev/snd/hwC1D0  GET_PIN_SENSE
+>> # hda-verb /dev/snd/hwC1D0  0x0 GET_PIN_SENSE
+>>
+>>
+>> I don't know what to make of this output:
+>
+> Bit 31 is PD
+>
+> VALUE should return 0 when  Jack is UNplugged and 0x80000000 when Jack is
+> plugged for those pin which support DETECT
+>
+>
+> But your alc668 is on card 1 , the second hda controller
+>
+
+Sorry. Missed that one.
+
+# hda-verb /dev/snd/hwC1D0  0x16 GET_PIN_SENSE PIN_CAP
+nid = 0x16, verb = 0xf09, param = 0xc
+value = 0x0
+# hda-verb /dev/snd/hwC1D0  0x19 GET_PIN_SENSE PIN_CAP
+nid = 0x19, verb = 0xf09, param = 0xc
+value = 0x0
+# hda-verb /dev/snd/hwC1D0  0x11a GET_PIN_SENSE PIN_CAP
+invalid nid 0x11a
+# hda-verb /dev/snd/hwC1D0  0x1a GET_PIN_SENSE PIN_CAP
+nid = 0x1a, verb = 0xf09, param = 0xc
+value = 0x0
+# hda-verb /dev/snd/hwC1D0  0x1b GET_PIN_SENSE PIN_CAP
+nid = 0x1b, verb = 0xf09, param = 0xc
+value = 0x0
+
+
+>> I see the following new controls
+>>
+>> Speaker CFLE (mute only)
+>> Speaker Front (mute + vol)
+>> Speaker Side (mute only)
+>> Speaker Surround (mute + vol)
+>
+> hda-jack-retask won't check whether your codec have enough audio output if
+> you changed all the nodes to speaker
+>
+> But the driver expect multiout support up to 8 channels when parsing the
+> pin
+>
+> As alc668 only support 6 channels,  hda_generic.c just assign audio output
+> and create volume control but Jack detection controls and mute switch are
+> created according to the number of parsed pins which support Jack detect
+> and mute switch
+>
+> Do the headphone still work with pulseaudio since there is no headphone
+> playback volume and headphone is share SPEAKER FRONT PLAYBAACK VOLUME
+> control with front speaker ?
+>
+
+With speaker-test I can hear audio on the right channel
+
+speaker-test -c2 -t wav -D hw:1,0
+
+audio comes out of front left/right
+
+speaker-test -c4 -t wav -D hw:1,0
+
+front left/right has no audio
+rear left/right audio comes out of front left/right speakers
+
+# speaker-test -c6 -t wav -D hw:1,0
+
+speaker-test 1.0.28
+
+Playback device is hw:1,0
+Stream parameters are 48000Hz, S16_LE, 6 channels
+WAV file(s)
+Channels count (6) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+
+
+>
+> if the connected retasked pin is not the correct pin
+> ,you can use hda_analyzer to  change the pin ctls of the remaining
+> unconnected pin to OUT, unmute and coonect the pin to second/third dac
+> through audio mixers
+>
+
+This is a bit confusing to master. How should I approach it given the
+layout of the graph linked above?
+
+
+
+
+--
+Patrick Shirkey
+Boost Hardware Ltd
