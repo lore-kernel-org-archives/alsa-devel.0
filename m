@@ -1,7 +1,7 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 04/35] ASoC: wm8523: Convert to params_width()
-Date: Thu, 31 Jul 2014 12:57:47 +0100
-Message-ID: <1406807898-5927-4-git-send-email-broonie@kernel.org>
+Subject: [PATCH 05/35] ASoC: wm8580: Convert to params_width()
+Date: Thu, 31 Jul 2014 12:57:48 +0100
+Message-ID: <1406807898-5927-5-git-send-email-broonie@kernel.org>
 References: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AC2D2264F1D
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:30 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A419C265083
+ for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 13:59:32 +0200 (CEST)
 In-Reply-To: <1406807898-5927-1-git-send-email-broonie@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,34 +31,37 @@ The CODEC doesn't care how data is laid out in memory.
 
 Signed-off-by: Mark Brown <broonie@linaro.org>
 ---
- sound/soc/codecs/wm8523.c | 10 +++++-----
+ sound/soc/codecs/wm8580.c | 10 +++++-----
  1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
-index 601ee8178af1..ec1f5740dbd0 100644
---- a/sound/soc/codecs/wm8523.c
-+++ b/sound/soc/codecs/wm8523.c
-@@ -163,16 +163,16 @@ static int wm8523_hw_params(struct snd_pcm_substream *substream,
- 	aifctrl2 |= lrclk_ratios[i].value;
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index 7665ff6aea6d..911605ee25b0 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -511,19 +511,19 @@ static int wm8580_paif_hw_params(struct snd_pcm_substream *substream,
+ 	int i, ratio, osr;
  
- 	aifctrl1 &= ~WM8523_WL_MASK;
+ 	/* bit size */
 -	switch (params_format(params)) {
 -	case SNDRV_PCM_FORMAT_S16_LE:
 +	switch (params_width(params)) {
 +	case 16:
+ 		paifa |= 0x8;
  		break;
 -	case SNDRV_PCM_FORMAT_S20_3LE:
 +	case 20:
- 		aifctrl1 |= 0x8;
+ 		paifa |= 0x0;
+ 		paifb |= WM8580_AIF_LENGTH_20;
  		break;
 -	case SNDRV_PCM_FORMAT_S24_LE:
 +	case 24:
- 		aifctrl1 |= 0x10;
+ 		paifa |= 0x0;
+ 		paifb |= WM8580_AIF_LENGTH_24;
  		break;
 -	case SNDRV_PCM_FORMAT_S32_LE:
 +	case 32:
- 		aifctrl1 |= 0x18;
+ 		paifa |= 0x0;
+ 		paifb |= WM8580_AIF_LENGTH_32;
  		break;
- 	}
 -- 
 2.0.1
