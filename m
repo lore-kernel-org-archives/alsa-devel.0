@@ -1,173 +1,60 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - add mic mute led hook for dell
-	machines
-Date: Thu, 31 Jul 2014 11:52:38 +0800
-Message-ID: <1406778758-5067-1-git-send-email-hui.wang@canonical.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH] ASoC: fsl_asrc: Fix sparse warnings in FSL_ASRC_FORMATS due to typo
+Date: Thu, 31 Jul 2014 12:07:40 +0800
+Message-ID: <1406779660-17177-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
- [209.85.192.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FE8D261A01
- for <alsa-devel@alsa-project.org>; Thu, 31 Jul 2014 05:53:06 +0200 (CEST)
-Received: by mail-pd0-f169.google.com with SMTP id y10so2654550pdj.14
- for <alsa-devel@alsa-project.org>; Wed, 30 Jul 2014 20:53:05 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: hui.wang@canonical.com, david.henningsson@canonical.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, b42378@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-The mic mute led on dell laptops is controlled by the wmi driver.
-Followed this part being merged to the kernel, we add the mic mute led
-hook in the hda driver.
+reproduce: make C=1 CF=-D__CHECK_ENDIAN__
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+sparse warnings: (new ones prefixed by >>)
+
+>> sound/soc/fsl/fsl_asrc.c:563:28: sparse: restricted snd_pcm_format_t degrades to integer
+>> sound/soc/fsl/fsl_asrc.c:570:28: sparse: restricted snd_pcm_format_t degrades to integer
+
+vim +563 sound/soc/fsl/fsl_asrc.c
+
+  557          .probe = fsl_asrc_dai_probe,
+  558          .playback = {
+  559                  .stream_name = "ASRC-Playback",
+  560                  .channels_min = 1,
+  561                  .channels_max = 10,
+  562                  .rates = FSL_ASRC_RATES,
+> 563                  .formats = FSL_ASRC_FORMATS,
+  564          },
+  565          .capture = {
+  566                  .stream_name = "ASRC-Capture",
+  567                  .channels_min = 1,
+  568                  .channels_max = 10,
+  569                  .rates = FSL_ASRC_RATES,
+> 570                  .formats = FSL_ASRC_FORMATS,
+  571          },
+  572          .ops = &fsl_asrc_dai_ops,
+  573  };
+
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- sound/pci/hda/dell_wmi_helper.c | 76 +++++++++++++++++++++++++++++++++++++++++
- sound/pci/hda/patch_realtek.c   | 13 +++++++
- 2 files changed, 89 insertions(+)
- create mode 100644 sound/pci/hda/dell_wmi_helper.c
+ sound/soc/fsl/fsl_asrc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/dell_wmi_helper.c b/sound/pci/hda/dell_wmi_helper.c
-new file mode 100644
-index 0000000..9c22f95
---- /dev/null
-+++ b/sound/pci/hda/dell_wmi_helper.c
-@@ -0,0 +1,76 @@
-+/* Helper functions for Dell Mic Mute LED control;
-+ * to be included from codec driver
-+ */
-+
-+#if IS_ENABLED(CONFIG_LEDS_DELL_NETBOOKS)
-+#include <linux/dell-led.h>
-+
-+static int dell_led_value;
-+static int (*dell_led_set_func)(int, int);
-+static void (*dell_old_cap_hook)(struct hda_codec *,
-+			         struct snd_kcontrol *,
-+				 struct snd_ctl_elem_value *);
-+
-+static void update_dell_wmi_micmute_led(struct hda_codec *codec,
-+				        struct snd_kcontrol *kcontrol,
-+					struct snd_ctl_elem_value *ucontrol)
-+{
-+	if (dell_old_cap_hook)
-+		dell_old_cap_hook(codec, kcontrol, ucontrol);
-+
-+	if (!ucontrol || !dell_led_set_func)
-+		return;
-+	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
-+		/* TODO: How do I verify if it's a mono or stereo here? */
-+		int val = (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1]) ? 0 : 1;
-+		if (val == dell_led_value)
-+			return;
-+		dell_led_value = val;
-+		if (dell_led_set_func)
-+			dell_led_set_func(DELL_LED_MICMUTE, dell_led_value);
-+	}
-+}
-+
-+
-+static void alc_fixup_dell_wmi(struct hda_codec *codec,
-+			       const struct hda_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	bool removefunc = false;
-+
-+	if (action == HDA_FIXUP_ACT_PROBE) {
-+		if (!dell_led_set_func)
-+			dell_led_set_func = symbol_request(dell_app_wmi_led_set);
-+		if (!dell_led_set_func) {
-+			codec_warn(codec, "Failed to find dell wmi symbol dell_app_wmi_led_set\n");
-+			return;
-+		}
-+
-+		removefunc = true;
-+		if (dell_led_set_func(DELL_LED_MICMUTE, false) >= 0) {
-+			dell_led_value = 0;
-+			if (spec->gen.num_adc_nids > 1)
-+				codec_dbg(codec, "Skipping micmute LED control due to several ADCs");
-+			else {
-+				dell_old_cap_hook = spec->gen.cap_sync_hook;
-+				spec->gen.cap_sync_hook = update_dell_wmi_micmute_led;
-+				removefunc = false;
-+			}
-+		}
-+
-+	}
-+
-+	if (dell_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
-+		symbol_put(dell_app_wmi_led_set);
-+		dell_led_set_func = NULL;
-+		dell_old_cap_hook = NULL;
-+	}
-+}
-+
-+#else /* CONFIG_LEDS_DELL_NETBOOKS */
-+static void alc_fixup_dell_wmi(struct hda_codec *codec,
-+			       const struct hda_fixup *fix, int action)
-+{
-+}
-+
-+#endif /* CONFIG_LEDS_DELL_NETBOOKS */
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 2f755ad..654c8f1 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4295,6 +4295,9 @@ static void alc290_fixup_mono_speakers(struct hda_codec *codec,
- /* for hda_fixup_thinkpad_acpi() */
- #include "thinkpad_helper.c"
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 41699f7..cdb5779 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -551,7 +551,7 @@ static int fsl_asrc_dai_probe(struct snd_soc_dai *dai)
+ #define FSL_ASRC_RATES		 SNDRV_PCM_RATE_8000_192000
+ #define FSL_ASRC_FORMATS	(SNDRV_PCM_FMTBIT_S24_LE | \
+ 				 SNDRV_PCM_FMTBIT_S16_LE | \
+-				 SNDRV_PCM_FORMAT_S20_3LE)
++				 SNDRV_PCM_FMTBIT_S20_3LE)
  
-+/* for dell wmi mic mute led */
-+#include "dell_wmi_helper.c"
-+
- enum {
- 	ALC269_FIXUP_SONY_VAIO,
- 	ALC275_FIXUP_SONY_VAIO_GPIO2,
-@@ -4359,6 +4362,7 @@ enum {
- 	ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC292_FIXUP_TPT440_DOCK,
- 	ALC283_FIXUP_BXBT2807_MIC,
-+	ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -4800,6 +4804,13 @@ static const struct hda_fixup alc269_fixups[] = {
- 			{ },
- 		},
- 	},
-+	[ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_dell_wmi,
-+		.chained_before = true,
-+		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
-+	},
-+
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -4842,10 +4853,12 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0606, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0608, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0609, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1028, 0x0610, "Dell", ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED),
- 	SND_PCI_QUIRK(0x1028, 0x0613, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0614, "Dell Inspiron 3135", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0615, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
- 	SND_PCI_QUIRK(0x1028, 0x0616, "Dell Vostro 5470", ALC290_FIXUP_SUBWOOFER_HSJACK),
-+	SND_PCI_QUIRK(0x1028, 0x061f, "Dell", ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED),
- 	SND_PCI_QUIRK(0x1028, 0x0638, "Dell Inspiron 5439", ALC290_FIXUP_MONO_SPEAKERS_HSJACK),
- 	SND_PCI_QUIRK(0x1028, 0x063f, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x064a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ static struct snd_soc_dai_driver fsl_asrc_dai = {
+ 	.probe = fsl_asrc_dai_probe,
 -- 
-1.9.1
+1.8.4
