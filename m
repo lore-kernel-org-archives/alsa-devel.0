@@ -1,89 +1,75 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC
- hardware descriptor list support)
-Date: Fri, 1 Aug 2014 22:39:18 +0530
-Message-ID: <20140801170918.GE8181@intel.com>
-References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <28702317.aD0C1Ga3DS@avalon>
- <20140724045248.GB8181@intel.com>
- <18522523.T2zy7HfoJ2@avalon>
- <20140801143020.GQ30282@n2100.arm.linux.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: imx-audmux: Use uintptr_t for port
+	numbers
+Date: Fri,  1 Aug 2014 17:56:50 +0100
+Message-ID: <1406912210-30223-1-git-send-email-broonie@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140801143020.GQ30282@n2100.arm.linux.org.uk>
-Sender: linux-sh-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, dmaengine@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, Maxime Ripard <maxime.ripard@free-electrons.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A439265681
+ for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2014 19:22:59 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <fabio.estevam@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 01, 2014 at 03:30:20PM +0100, Russell King - ARM Linux wrote:
-> On Fri, Aug 01, 2014 at 10:51:26AM +0200, Laurent Pinchart wrote:
-> > I'll take this opportunity to question why we have a separation between 
-> > tx_submit and issue_pending. What's the rationale for that, especially given 
-> > that dma_issue_pending_all() might kick in at any point and issue pending 
-> > transfers for all devices. A driver could thus see its submitted but not 
-> > issued transactions being issued before it explicitly calls 
-> > dma_async_issue_pending().
-> 
-> A prepared but not submitted transaction is not a pending transaction.
-> 
-> The split is necessary so that a callback can be attached to the
-> transaction.  This partially comes from the async-tx API, and also
-> gets a lot of use with the slave API.
-> 
-> The prepare function allocates the descriptor and does the initial
-> setup, but does not mark the descriptor as a pending transaction.
-> It returns the descriptor, and the caller is then free to add a
-> callback function and data pointer to the descriptor before finally
-> submitting it.  This sequence must occur in a timely manner as some
-> DMA engine implementations hold a lock between the prepare and submit
-> callbacks (Dan explicitly permits this as part of the API.)
-> 
-> > The DMA_PRIVATE capability flag seems to play a role here, but it's far from 
-> > being clear how that mechanism is supposed to work. This should be documented 
-> > as well, and any light you could shed on this dark corner of the API would 
-> > help.
-> 
-> Why do you think that DMA_PRIVATE has a bearing in the callbacks?  It
-> doesn't.  DMA_PRIVATE is all about channel allocation as I explained
-> yesterday, and whether the channel is available for async_tx usage.
-> 
-> A channel marked DMA_PRIVATE is not available for async_tx usage at
-> any moment.  A channel without DMA_PRIVATE is available for async_tx
-> usage until it is allocated for the slave API - at which point the
-> generic DMA engine code will mark the channel with DMA_PRIVATE,
-> thereby taking it away from async_tx API usage.  When the slave API
-> frees the channel, DMA_PRIVATE will be cleared, making the channel
-> available for async_tx usage.
-> 
-> So, basically, DMA_PRIVATE set -> async_tx usage not allowed.
-> DMA_PRIVATE clear -> async_tx usage permitted.  It really is that
-> simple.
-> 
-> > Similarly, the DMA engine API is split in functions with different
-> > prefixes (mostly dmaengine_*, dma_async_*, dma_*, and various
-> > unprefixed niceties such as async_tx_ack or txd_lock. If there's a
-> > rationale for that (beyond just historical reasons) it should also
-> > be documented, otherwise a cleanup would help all the confused DMA
-> > engine users (myself included).
-> 
-> dmaengine_* are generally the interface functions to the DMA engine code,
-> which have been recently introduced to avoid the multiple levels of
-> pointer indirection having to be typed in every driver.
-> 
-> dma_async_* are the DMA engine interface functions for the async_tx API.
-> 
-> dma_* predate the dmaengine_* naming, and are probably too generic, so
-> should probably end up being renamed to dmaengine_*.
-> 
-> txd_* are all about the DMA engine descriptors.
-> 
-> async_tx_* are the higher level async_tx API functions.
+From: Mark Brown <broonie@linaro.org>
 
-Ah looks like I repeated the good answers from you. Should have read all
-replied first
+Since we pass the port number through file private data for debugfs we cast
+it to and from a pointer so use uintptr_t in order to ensure that the
+types are compatible, avoiding warnings on 64 bit platforms where pointers
+are 64 bit and unsigned integers 32 bit.
 
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+ sound/soc/fsl/imx-audmux.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index 267717a..46f9beb 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -67,7 +67,7 @@ static ssize_t audmux_read_file(struct file *file, char __user *user_buf,
+ {
+ 	ssize_t ret;
+ 	char *buf;
+-	int port = (int)file->private_data;
++	uintptr_t port = (uintptr_t)file->private_data;
+ 	u32 pdcr, ptcr;
+ 
+ 	if (audmux_clk) {
+@@ -147,7 +147,7 @@ static const struct file_operations audmux_debugfs_fops = {
+ 
+ static void audmux_debugfs_init(void)
+ {
+-	int i;
++	uintptr_t i;
+ 	char buf[20];
+ 
+ 	audmux_debugfs_root = debugfs_create_dir("audmux", NULL);
+@@ -157,10 +157,10 @@ static void audmux_debugfs_init(void)
+ 	}
+ 
+ 	for (i = 0; i < MX31_AUDMUX_PORT7_SSI_PINS_7 + 1; i++) {
+-		snprintf(buf, sizeof(buf), "ssi%d", i);
++		snprintf(buf, sizeof(buf), "ssi%lu", i);
+ 		if (!debugfs_create_file(buf, 0444, audmux_debugfs_root,
+ 					 (void *)i, &audmux_debugfs_fops))
+-			pr_warning("Failed to create AUDMUX port %d debugfs file\n",
++			pr_warning("Failed to create AUDMUX port %lu debugfs file\n",
+ 				   i);
+ 	}
+ }
 -- 
-~Vinod
+2.0.0
