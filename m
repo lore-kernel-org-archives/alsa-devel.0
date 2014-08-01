@@ -1,21 +1,35 @@
-From: thomas schorpp <thomas.schorpp-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+From: thomas schorpp <thomas.schorpp@gmail.com>
 Subject: [PATCH] ARM: sun7i: Fix HDMI Audio driver's Alsa
  interface and do 8CH IEC60958 output
-Date: Fri, 01 Aug 2014 13:40:31 +0200
-Message-ID: <53DB7CAF.4020402@gmail.com>
-Reply-To: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Date: Fri, 01 Aug 2014 13:54:21 +0200
+Message-ID: <53DB7FED.3000107@gmail.com>
+Reply-To: thomas.schorpp@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Return-path: <linux-sunxi+bncBDYY3S6C5QNBBM7Z5WPAKGQES77HXPI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vc0-f173.google.com (mail-vc0-f173.google.com
+ [209.85.220.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C89A265054
+ for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2014 13:54:25 +0200 (CEST)
+Received: by mail-vc0-f173.google.com with SMTP id hy10so6401595vcb.32
+ for <alsa-devel@alsa-project.org>; Fri, 01 Aug 2014 04:54:24 -0700 (PDT)
+Received: from [192.168.0.105]
+ (HSI-KBW-109-192-117-071.hsi6.kabel-badenwuerttemberg.de. [109.192.117.71])
+ by mx.google.com with ESMTPSA id td9sm6091321veb.8.2014.08.01.04.54.23
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 01 Aug 2014 04:54:23 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 First shot. HDMI backend seems to work with speaker-test but stream samples wrong order /mapping issues and the Alsa frontend is a stub,
