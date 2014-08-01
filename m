@@ -1,82 +1,101 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC
-	hardware descriptor list support)
-Date: Fri, 1 Aug 2014 15:30:20 +0100
-Message-ID: <20140801143020.GQ30282@n2100.arm.linux.org.uk>
-References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com> <28702317.aD0C1Ga3DS@avalon> <20140724045248.GB8181@intel.com> <18522523.T2zy7HfoJ2@avalon>
+From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: [PATCH v2 2/2] Documentation: dt: bindings: sound: Add bindings file for CS35L32
+Date: Fri, 1 Aug 2014 09:45:31 -0500
+Message-ID: <1406904331-13860-2-git-send-email-brian.austin@cirrus.com>
+References: <1406904331-13860-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <18522523.T2zy7HfoJ2@avalon>
-Sender: linux-sh-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, dmaengine@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, Maxime Ripard <maxime.ripard@free-electrons.com>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1406904331-13860-1-git-send-email-brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: =broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 01, 2014 at 10:51:26AM +0200, Laurent Pinchart wrote:
-> I'll take this opportunity to question why we have a separation between 
-> tx_submit and issue_pending. What's the rationale for that, especially given 
-> that dma_issue_pending_all() might kick in at any point and issue pending 
-> transfers for all devices. A driver could thus see its submitted but not 
-> issued transactions being issued before it explicitly calls 
-> dma_async_issue_pending().
+This patch adds device tree bindings file for the Cirrus Logic CS35L32
 
-A prepared but not submitted transaction is not a pending transaction.
+Changes for v2:
+- Remove Gain Manager from DT and move to driver kcontrol
+- Add VP-Supply for regulator
 
-The split is necessary so that a callback can be attached to the
-transaction.  This partially comes from the async-tx API, and also
-gets a lot of use with the slave API.
+Signed-off-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+---
+ .../devicetree/bindings/sound/cs35l32.txt          |   62 ++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs35l32.txt
 
-The prepare function allocates the descriptor and does the initial
-setup, but does not mark the descriptor as a pending transaction.
-It returns the descriptor, and the caller is then free to add a
-callback function and data pointer to the descriptor before finally
-submitting it.  This sequence must occur in a timely manner as some
-DMA engine implementations hold a lock between the prepare and submit
-callbacks (Dan explicitly permits this as part of the API.)
-
-> The DMA_PRIVATE capability flag seems to play a role here, but it's far from 
-> being clear how that mechanism is supposed to work. This should be documented 
-> as well, and any light you could shed on this dark corner of the API would 
-> help.
-
-Why do you think that DMA_PRIVATE has a bearing in the callbacks?  It
-doesn't.  DMA_PRIVATE is all about channel allocation as I explained
-yesterday, and whether the channel is available for async_tx usage.
-
-A channel marked DMA_PRIVATE is not available for async_tx usage at
-any moment.  A channel without DMA_PRIVATE is available for async_tx
-usage until it is allocated for the slave API - at which point the
-generic DMA engine code will mark the channel with DMA_PRIVATE,
-thereby taking it away from async_tx API usage.  When the slave API
-frees the channel, DMA_PRIVATE will be cleared, making the channel
-available for async_tx usage.
-
-So, basically, DMA_PRIVATE set -> async_tx usage not allowed.
-DMA_PRIVATE clear -> async_tx usage permitted.  It really is that
-simple.
-
-> Similarly, the DMA engine API is split in functions with different
-> prefixes (mostly dmaengine_*, dma_async_*, dma_*, and various
-> unprefixed niceties such as async_tx_ack or txd_lock. If there's a
-> rationale for that (beyond just historical reasons) it should also
-> be documented, otherwise a cleanup would help all the confused DMA
-> engine users (myself included).
-
-dmaengine_* are generally the interface functions to the DMA engine code,
-which have been recently introduced to avoid the multiple levels of
-pointer indirection having to be typed in every driver.
-
-dma_async_* are the DMA engine interface functions for the async_tx API.
-
-dma_* predate the dmaengine_* naming, and are probably too generic, so
-should probably end up being renamed to dmaengine_*.
-
-txd_* are all about the DMA engine descriptors.
-
-async_tx_* are the higher level async_tx API functions.
-
+diff --git a/Documentation/devicetree/bindings/sound/cs35l32.txt b/Documentation/devicetree/bindings/sound/cs35l32.txt
+new file mode 100644
+index 0000000..1417d3f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cs35l32.txt
+@@ -0,0 +1,62 @@
++CS35L32 audio CODEC
++
++Required properties:
++
++  - compatible : "cirrus,cs35l32"
++
++  - reg : the I2C address of the device for I2C. Address is determined by the level
++  of the AD0 pin. Level 0 is 0x40 while Level 1 is 0x41.
++
++  - VA-supply, VP-supply : power supplies for the device,
++  as covered in Documentation/devicetree/bindings/regulator/regulator.txt.
++
++Optional properties:
++
++  - reset-gpios : a GPIO spec for the reset pin. If specified, it will be
++  deasserted before communication to the codec starts.
++
++  - cirrus,boost-manager : Boost voltage control.
++  0 = Automatically managed.  Boost-converter output voltage is the higher
++  of the two: Class G or adaptive LED voltage.
++  1 = Automatically managed irrespective of audio, adapting for low-power
++  dissipation when LEDs are ON, and operating in Fixed-Boost Bypass Mode
++  if LEDs are OFF (VBST = VP).
++  2 = (Default) Boost voltage fixed in Bypass Mode (VBST = VP).
++  3 = Boost voltage fixed at 5 V.
++
++  - cirrus,sdout-datacfg : Data configuration for dual CS35L32 applications only.
++  Determines the data packed in a two-CS35L32 configuration.
++  0 = Left/right channels VMON[11:0], IMON[11:0], VPMON[7:0].
++  1 = Left/right channels VMON[11:0], IMON[11:0], STATUS.
++  2 = (Default) left/right channels VMON[15:0], IMON [15:0].
++  3 = Left/right channels VPMON[7:0], STATUS.
++
++  - cirrus,sdout-share : SDOUT sharing. Determines whether one or two CS35L32
++  devices are on board sharing SDOUT.
++  0 = (Default) One IC.
++  1 = Two IC's.
++
++  - cirrus,battery-recovery : Low battery nominal recovery threshold, rising VP.
++  0 = 3.1V
++  1 = 3.2V
++  2 = 3.3V (Default)
++  3 = 3.4V
++
++  - cirrus,battery-threshold : Low battery nominal threshold, falling VP.
++  0 = 3.1V
++  1 = 3.2V
++  2 = 3.3V
++  3 = 3.4V (Default)
++  4 = 3.5V
++  5 = 3.6V
++
++Example:
++
++codec: codec@40 {
++	compatible = "cirrus,cs35l32";
++	reg = <0x40>;
++	reset-gpios = <&gpio 10 0>;
++	cirrus,boost-manager = <0x03>;
++	cirrus,sdout-datacfg = <0x02>;
++	VA-supply = <&reg_audio>;
++};
 -- 
-FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
-according to speedtest.net.
+1.7.9.5
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
