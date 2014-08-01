@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: rsnd: adds Mute support
-Date: Fri, 1 Aug 2014 18:46:42 +0100
-Message-ID: <20140801174642.GC30458@sirena.org.uk>
-References: <877g2splkm.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH] ASoC: Intel: Add dependency to DW_DMAC for
+	BDW platform
+Date: Fri, 1 Aug 2014 19:11:42 +0100
+Message-ID: <20140801181142.GE30458@sirena.org.uk>
+References: <1406904859-30514-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8972980942481774408=="
+Content-Type: multipart/mixed; boundary="===============7063419197180921200=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F4F52658F5
- for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2014 19:47:55 +0200 (CEST)
-In-Reply-To: <877g2splkm.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B66126576F
+ for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2014 20:12:31 +0200 (CEST)
+In-Reply-To: <1406904859-30514-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Jie Yang <yang.jie@intel.com>
+Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8972980942481774408==
+--===============7063419197180921200==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5JJEVRmBpje5aLKk"
+	protocol="application/pgp-signature"; boundary="FVm6dlxF4pQlpRQl"
 Content-Disposition: inline
 
 
---5JJEVRmBpje5aLKk
+--FVm6dlxF4pQlpRQl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 01, 2014 at 03:10:18AM -0700, Kuninori Morimoto wrote:
->=20
-> Hi Mark
->=20
-> These patch adds Mute support to Renesas R-Car sound
+On Fri, Aug 01, 2014 at 10:54:19PM +0800, Jie Yang wrote:
+> Add dependency to DW_DMAC for broadwell machine, which
+> have built in DW dma engines.
 
-Applied both, thanks.
+Applied, thanks.
 
---5JJEVRmBpje5aLKk
+--FVm6dlxF4pQlpRQl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT29J+AAoJELSic+t+oim9r2EP/0gACgIVOybyTWPlESySupOv
-Kz9Z7zLAd4/HWXLnwIqzWz4hc8wV+nQY6iO+Kzns46L/8eB1kufl/agAwPGsQds6
-z0r49vVBh1V4XKa6p5+SdKo6AFyVv894gGeNGltrumIlQY+/so9UNsJm3xaIB2sr
-sQlUV1Hu5AFA7yWBM/0pcoGzWTQhagBJeL8qIIptPIavSy+V9PQWLMJSpnx96ua8
-Vxf14DcO00yJZJDLpTaE5r/dabNuhMquWF5YE25Xm/1rDZv77YoxDF0rW8LgEK2X
-gEGmvJddoZ50OOvbi3IqBpoyyVU+NuY8i8VmQXCBpk53KM6sjVet20zSB7hkaOp5
-CCbllQ/BIATr/hgfiNCA6f0AD+lSXlPQORkuy8roPf16snABsoTb8mrV2RSGypr6
-QytGI7JSxPr4VhSRoxf6AiLMk1oN2Nj82lRsnLA3gIuZF2N7BQ81BtQhKDWJt+gL
-eKRQwGO1F6u8U3DtXqqDQAxS63mPTHWgh99Nh8gSnjhk1n8DsmnYLo23u6fvvCpu
-Z50uqsmCAk+pqRALOwVplmiwuE1sjUzSQlTwW4nQ4+Zpo0eqwp5NrMwgg0+tXdgk
-jD2Ivtr67CzQNK+NbZ96PwTmlgoF/SSJ/+zzEYFDovYSjR9MLm2pded/1Xk+6OTb
-hB9B7uvxSPfjBwYn+ouF
-=WlTY
+iQIcBAEBAgAGBQJT29hbAAoJELSic+t+oim9WVcQAJDE27XxTwj3JCPFGqKAhPyd
+7ukElYpEF55AErTyAsT6kIMd480uAnFOW9qs6UsTb8lfdhN3YTz9oZ4jpWObxvRE
+DqalDagVov5eiVsXZNZITYiPZ/qSIkMwp9oxd+F+CVmjyoh+PNk01VzKoOYqGRgt
+VGnSI7z5WzPL7SSkMJO9OtIWOk+HtJGU5iybtT5Xkg+Nq4ivQIBnVCCZOn6LZMuW
+jMzWkxyeLgAPAEw5KcgQk4sqfOj4TawQ+WoYB7GVnypZWNolT7vFb69ONkMM+UJh
+/++HWimjEj+juGEwRIp6ijwf7dAEMN8ZNcjnIY4I0Ef3HuB5Fb/iPOtLO3fxiPcq
+Hn9EkUanCW13zl2bO5B1ZM4FP2PgtcVCI6mY9/QbL2DDc8NR8+QZC/JRNo2zWhXz
+7DQGztvEzZ3U0/CiaFK9Zm+N3IecPMywriHG2Je23eb5DzemH9syMi2wz3UW58u7
+JlmGhn1iglnl0OFeVzd8gg7H2R6X3xOnI3V4bp6YypV8DRmgJZMDvuEK0yuhPi8d
++jeDFeWUTCE2mAMcutkHbxBSyw4SeSKrTu43kwe0RecT9JWkxmRUPQaAWARSSYcv
+tqtR2m9t55l+sZWH/ml823nEpZVF7uXexOp3H4DmgGP9oYggvCXh1+WczfZHUPe3
+WpDGAtMOE9rIKExU+0MY
+=3hD+
 -----END PGP SIGNATURE-----
 
---5JJEVRmBpje5aLKk--
+--FVm6dlxF4pQlpRQl--
 
---===============8972980942481774408==
+--===============7063419197180921200==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8972980942481774408==--
+--===============7063419197180921200==--
