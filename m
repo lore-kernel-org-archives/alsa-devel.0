@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Add dependency to DW_DMAC for
-	BDW platform
-Date: Fri, 1 Aug 2014 19:11:42 +0100
-Message-ID: <20140801181142.GE30458@sirena.org.uk>
-References: <1406904859-30514-1-git-send-email-yang.jie@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Delete message when IPC
+	timeout occurs
+Date: Fri, 1 Aug 2014 19:12:17 +0100
+Message-ID: <20140801181217.GF30458@sirena.org.uk>
+References: <1406905718-31142-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7063419197180921200=="
+Content-Type: multipart/mixed; boundary="===============7779594213633840888=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B66126576F
- for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2014 20:12:31 +0200 (CEST)
-In-Reply-To: <1406904859-30514-1-git-send-email-yang.jie@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CC083265692
+ for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2014 20:12:49 +0200 (CEST)
+In-Reply-To: <1406905718-31142-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +26,54 @@ Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.c
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7063419197180921200==
+--===============7779594213633840888==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="FVm6dlxF4pQlpRQl"
+	protocol="application/pgp-signature"; boundary="w47z9evyjOavafUr"
 Content-Disposition: inline
 
 
---FVm6dlxF4pQlpRQl
+--w47z9evyjOavafUr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 01, 2014 at 10:54:19PM +0800, Jie Yang wrote:
-> Add dependency to DW_DMAC for broadwell machine, which
-> have built in DW dma engines.
+On Fri, Aug 01, 2014 at 11:08:38PM +0800, Jie Yang wrote:
+> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+>=20
+> This fixes a bug where we dont delete the current message when an
+> IPC message timeout occurs.
 
 Applied, thanks.
 
---FVm6dlxF4pQlpRQl
+--w47z9evyjOavafUr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT29hbAAoJELSic+t+oim9WVcQAJDE27XxTwj3JCPFGqKAhPyd
-7ukElYpEF55AErTyAsT6kIMd480uAnFOW9qs6UsTb8lfdhN3YTz9oZ4jpWObxvRE
-DqalDagVov5eiVsXZNZITYiPZ/qSIkMwp9oxd+F+CVmjyoh+PNk01VzKoOYqGRgt
-VGnSI7z5WzPL7SSkMJO9OtIWOk+HtJGU5iybtT5Xkg+Nq4ivQIBnVCCZOn6LZMuW
-jMzWkxyeLgAPAEw5KcgQk4sqfOj4TawQ+WoYB7GVnypZWNolT7vFb69ONkMM+UJh
-/++HWimjEj+juGEwRIp6ijwf7dAEMN8ZNcjnIY4I0Ef3HuB5Fb/iPOtLO3fxiPcq
-Hn9EkUanCW13zl2bO5B1ZM4FP2PgtcVCI6mY9/QbL2DDc8NR8+QZC/JRNo2zWhXz
-7DQGztvEzZ3U0/CiaFK9Zm+N3IecPMywriHG2Je23eb5DzemH9syMi2wz3UW58u7
-JlmGhn1iglnl0OFeVzd8gg7H2R6X3xOnI3V4bp6YypV8DRmgJZMDvuEK0yuhPi8d
-+jeDFeWUTCE2mAMcutkHbxBSyw4SeSKrTu43kwe0RecT9JWkxmRUPQaAWARSSYcv
-tqtR2m9t55l+sZWH/ml823nEpZVF7uXexOp3H4DmgGP9oYggvCXh1+WczfZHUPe3
-WpDGAtMOE9rIKExU+0MY
-=3hD+
+iQIcBAEBAgAGBQJT29h+AAoJELSic+t+oim9VLMP/2IrqmY7JwMg9JL069oQ1YDu
+WLqLHtMY97kbITAPUy2Kj7EaXqjA/wIO/ACAsSuiKzKro8bdqXwX2gBf7vRCukIg
+otModgzNdOQK9N0l7faW0xKrM/ZeUIACI3koVbL5Vh40sJzAbhkJpI2QVG1Vc6xL
+QxkKUb9RwmPA/TTldg8cj8zwrxEhFO7I5dCxgljactQ13rgbUnmxbffBJ3/s/TkH
+nCyUshHFHZQzs+md/v/ekWHr9HjfKrHP0m4Quf/wix3oAiThC+zydnN41nzfSrDT
+OckxmjGEmY+hD7iTP0z/a6WtluZRjyScw1BguYaeY+cBWMLPw0rdkRo/H+pmE8KC
+wyBIsbD8wK2TcbN2qVRJ0CAOTEQIH46lLoEBdHt3oUQjfhaHaJSOpFVBA3QutSQl
+wpyaVcF0U0lT1dimjGL00pKNwxOMDWcHpgGX43U/sgYvFPPKOXMDqNbCt6RflQ/u
+N3PvUeZAdCi5r0CuECXG23jRHwCRUHDLr662dDSRofMDSjy3JdEvxyr0Uu0x62k2
+SSnq7VxPUx6yGgkQN5eyUYxFkAP+Eb6zJZskYyPiAv7Djp3XVy/l7GVOVpwJ+JaT
+R5CcvltKib8Bz4NajiMZZQCd+AcGMYRvhoxu3SO16jpGzT0ZTEiDv0ArZd8nBwQg
+bf4MQyEOjL0H741g60Eo
+=k683
 -----END PGP SIGNATURE-----
 
---FVm6dlxF4pQlpRQl--
+--w47z9evyjOavafUr--
 
---===============7063419197180921200==
+--===============7779594213633840888==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7063419197180921200==--
+--===============7779594213633840888==--
