@@ -1,19 +1,28 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car
-	Gen2 DMAC hardware descriptor list support)
-Date: Fri, 01 Aug 2014 10:51:26 +0200
-Message-ID: <18522523.T2zy7HfoJ2@avalon>
-References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <28702317.aD0C1Ga3DS@avalon> <20140724045248.GB8181@intel.com>
+From: "Patrick Shirkey" <pshirkey@boosthardware.com>
+Subject: Re: Testing/Debugging alc668 with ASUS N750JK
+Date: Fri, 1 Aug 2014 19:07:08 +1000 (EST)
+Message-ID: <61402.86.107.254.57.1406884028.squirrel@boosthardware.com>
+References: <cover.1406259578.git.nicoleotsuka@gmail.com>
+ <f4ff79269a1680f9ce128e0e98fea926d3a41834.1406259578.git.nicoleotsuka@gmail.com>
+ <53D1DC0B.1000905@gmail.com>
+ <63638.86.107.254.57.1406266836.squirrel@boosthardware.com>
+ <CAN8cciboNrRRFBQjX66qud7KoTCqsDHxvFAws9-ywasjemtYbQ@mail.gmail.com>
+ <59187.86.107.254.57.1406362728.squirrel@boosthardware.com>
+ <CAN8cciax7RreogV0otMdLt0y-dOTrZD3D_ih0doAC9F_XkJ1ew@mail.gmail.com>
+ <57315.86.107.254.57.1406609183.squirrel@boosthardware.com>
+ <CAN8ccia3mi9G2oyaYyvJx14xu6F8dLhNZ6r0dpraO1F8qeLjBg@mail.gmail.com>
+ <55293.86.107.254.57.1406791952.squirrel@boosthardware.com>
+ <CAN8cciZ_KT9HG3K3xW-X-PFvWya1zW46JXccq-jd5v6uaeTjOA@mail.gmail.com>
+ <59490.86.107.254.57.1406831144.squirrel@boosthardware.com>
+ <CAN8cciYrj25NfmjD86ndzJd5r=D0bMNHE55JuEKichznAkAUHA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from galahad.ideasonboard.com (galahad.ideasonboard.com
- [185.26.127.97])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D0832607B6
- for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2014 10:51:03 +0200 (CEST)
-In-Reply-To: <20140724045248.GB8181@intel.com>
+Received: from boosthardware.localdomain (boosthardware.com [88.198.122.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EFA72607C8
+ for <alsa-devel@alsa-project.org>; Fri,  1 Aug 2014 11:07:10 +0200 (CEST)
+In-Reply-To: <CAN8cciYrj25NfmjD86ndzJd5r=D0bMNHE55JuEKichznAkAUHA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,111 +32,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, dmaengine@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vinod,
 
-On Thursday 24 July 2014 10:22:48 Vinod Koul wrote:
-> On Wed, Jul 23, 2014 at 01:07:43PM +0200, Laurent Pinchart wrote:
-> > > The rsnd_soc_dai_trigger() function takes a spinlock, making the context
-> > > atomic, which regmap doesn't like as it locks a mutex.
-> > > 
-> > > It might be possible to fix this by setting the fast_io field in both
-> > > the regmap_config and regmap_bus structures in sound/soc/sh/rcar/gen.c.
-> > > regmap will then use a spinlock instead of a mutex. However, even if I
-> > > believe that change makes sense and should be done, another atomic
-> > > context issue will come from the rcar-dmac driver which allocates memory
-> > > in the prep_dma_cyclic function, called by rsnd_dma_start() from
-> > > rsnd_soc_dai_trigger() with the spinlock help.
-> > > 
-> > > What context is the rsnd_soc_dai_trigger() function called in by the
-> > > alsa core ? If it's guaranteed to be a sleepable context, would it make
-> > > sense to replace the rsnd_priv spinlock with a mutex ?
-> > 
-> > Answering myself here, that's not an option, as the trigger function is
-> > called in atomic context (replacing the spinlock with a mutex produced a
-> > clear BUG) due to snd_pcm_lib_write1() taking a spinlock.
-> > 
-> > Now we have a core issue. On one side there's rsnd_soc_dai_trigger() being
-> > called in atomic context, and on the other side the function ends up
-> > calling dmaengine_prep_dma_cyclic() which needs to allocate memory. To
-> > make this more func the DMA engine API is undocumented and completely
-> > silent on whether the prep functions are allowed to sleep. The question
-> > is, who's wrong ?
-> > 
-> > Now, if you're tempted to say that I'm wrong by allocating memory with
-> > GFP_KERNEL in the DMA engine driver, please read on first :-) I've tried
-> > replacing GFP_KERNEL with GFP_ATOMIC allocations, and then ran into a
-> > problem more complex to solve.
-> > 
-> > The rcar-dmac DMA engine driver uses runtime PM. When not used, the device
-> > is suspended. The driver calls pm_runtime_get_sync() to resume the
-> > device, and needs to do so when a descriptor is submitted. This
-> > operation, currently performed in the tx_submit handler, could be moved
-> > to the prep_dma_cyclic or issue_pending handler, but the three operations
-> > are called in a row from rsnd_dma_start(), itself ultimately called from
-> > snd_pcm_lib_write1() with the spinlock held. This means I have no place
-> > in my DMA engine driver where I can resume the device.
-> > 
-> > One could argue that the rcar-dmac driver could use a work queue to handle
-> > power management. That's correct, but the additional complexity, which
-> > would be required in *all* DMA engine drivers, seem too high to me. If we
-> > need to go that way, this is really a task that the DMA engine core
-> > should handle.
-> > 
-> > Let's start by answering the background question and updating the DMA
-> > engine API documentation once and for good : in which context are drivers
-> > allowed to call the prep, tx_submit and issue_pending functions ?
-> 
-> I think this was bought up sometime back and we have cleared that all _prep
-> functions can be invoked in atomic context.
-> 
-> This is the reason why we have been pushing folks to use GFP_NOWAIT is
-> memory allocations during prepare.
+On Fri, August 1, 2014 5:19 pm, Raymond Yau wrote:
+>
 
->From the replies I've received it's pretty clear that the prep functions need 
-to be callable from atomic context. I'll respond to this in more depth in a 
-reply to Russell's e-mail.
+alsa-info:
 
-> Thanks for pointing out documentation doesn't say so, will send a patch for
-> that.
+retask and apply
+http://boosthardware.com/alsa-info1.txt
 
-I wish that was all that is missing from the documentation ;-) Luckily Maxime 
-Ripard has sent a patch that documents DMA engine from a DMA engine driver's 
-point of view. While not perfect (I'm going to review it), it's a nice 
-starting point to (hopefully) get to a properly documented framework.
+store and reboot
+http://boosthardware.com/alsa-info2.txt
 
-> On issue_pending and tx_submit, yes these should be allowed to be called
-> from atomic context too.
 
-I'll take this opportunity to question why we have a separation between 
-tx_submit and issue_pending. What's the rationale for that, especially given 
-that dma_issue_pending_all() might kick in at any point and issue pending 
-transfers for all devices. A driver could thus see its submitted but not 
-issued transactions being issued before it explicitly calls 
-dma_async_issue_pending().
 
-The DMA_PRIVATE capability flag seems to play a role here, but it's far from 
-being clear how that mechanism is supposed to work. This should be documented 
-as well, and any light you could shed on this dark corner of the API would 
-help.
+>
+> Do you mean the plugging of subwoofer cannot be detected
+>
+> hda-jack-sense-test -c 1 -a
+>
 
-Similarly, the DMA engine API is split in functions with different prefixes 
-(mostly dmaengine_*, dma_async_*, dma_*, and various unprefixed niceties such 
-as async_tx_ack or txd_lock. If there's a rationale for that (beyond just 
-historical reasons) it should also be documented, otherwise a cleanup would 
-help all the confused DMA engine users (myself included). I might be able to 
-find a bit of time to work on that, but I'll first need to correctly 
-understand where we come from and where we are. Again, information would be 
-welcome and fully appreciated.
+prior to latest changes with hdajackretask:
 
-> Lastly, just to clarify the callback invoked after descriptor is complete
-> can also be used to submit new descriptors, so folks are dropping locking
-> before invoking the callback
+# python alsa-jack-sense-test.py -c 1 -a
+Pin 0x12 (Internal Mic): present = No
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x15 (Black HP Out): present = No
+Pin 0x16 (Not connected): present = No
+Pin 0x18 (Black Mic): present = No
+Pin 0x19 (Not connected): present = No
+Pin 0x1a (Not connected): present = No
+Pin 0x1b (Not connected): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Black SPDIF Out): present = No
+Pin 0x1f (Not connected): present = No
 
--- 
-Regards,
+headset connected:
 
-Laurent Pinchart
+# python alsa-jack-sense-test.py -c 1 -a
+Pin 0x12 (Internal Mic): present = No
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x15 (Black HP Out): present = Yes
+Pin 0x16 (Not connected): present = No
+Pin 0x18 (Black Mic): present = No
+Pin 0x19 (Not connected): present = No
+Pin 0x1a (Not connected): present = No
+Pin 0x1b (Not connected): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Black SPDIF Out): present = No
+Pin 0x1f (Not connected): present = No
+
+after latest reboot (alsa-info2.txt):
+
+# python alsa-jack-sense-test.py -c 1 -a
+Pin 0x12 (Internal Mic): present = No
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x15 (Black HP Out): present = No
+Pin 0x16 (Not connected): present = No
+Pin 0x18 (Black Mic): present = No
+Pin 0x19 (Not connected): present = No
+Pin 0x1a (Not connected): present = No
+Pin 0x1b (Not connected): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Black SPDIF Out): present = No
+Pin 0x1f (Not connected): present = No
+
+headset connected:
+
+# python alsa-jack-sense-test.py -c 1 -a
+Pin 0x12 (Internal Mic): present = No
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x15 (Black HP Out): present = Yes
+Pin 0x16 (Not connected): present = No
+Pin 0x18 (Black Mic): present = No
+Pin 0x19 (Not connected): present = No
+Pin 0x1a (Not connected): present = No
+Pin 0x1b (Not connected): present = No
+Pin 0x1d (Not connected): present = No
+Pin 0x1e (Black SPDIF Out): present = No
+Pin 0x1f (Not connected): present = No
+
+
+
+>
+> The graph don't contain enough into for debugg
+>
+> Post output of alsa-info.sh after retasked
+>
+> Seem headphone is more important than multichannel speaker when evaluating
+> the badness of config
+>
+> You may need to configure alsa driver --with-debug=verbose to produce more
+> information in system log about how it evaluate the badness
+>
+
+Easier said than done.  I have to build a custom kernel in order to get
+custom alsa-drivers to build on this machine so at the moment I am stuck
+with whatever I got in 3.14.1.  From the list above can you make a
+recommendation for the best options to test?
+
+According to hdajackretask the pins I can retask for output are the
+following:
+
+Pin 0x14 (Internal Speaker): present = No
+Pin 0x15 (Black HP Out): present = No
+Pin 0x16 (Not connected): present = No
+Pin 0x18 (Black Mic): present = No
+Pin 0x19 (Not connected): present = No
+Pin 0x1a (Not connected): present = No
+
+
+- The other pins present just a few options for input ex, mic, line in,
+spdif.
+
+
+
+
+--
+Patrick Shirkey
+Boost Hardware Ltd
