@@ -1,98 +1,116 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: ASoC updates for v3.17
-Date: Mon, 4 Aug 2014 18:29:24 +0100
-Message-ID: <20140804172924.GD17528@sirena.org.uk>
-References: <20140804161750.GV30458@sirena.org.uk>
- <s5hppgg6wj5.wl%tiwai@suse.de> <53DFBB7B.2030804@metafoo.de>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC
+	hardware descriptor list support)
+Date: Mon, 4 Aug 2014 18:54:58 +0100
+Message-ID: <20140804175458.GH30282@n2100.arm.linux.org.uk>
+References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com> <18522523.T2zy7HfoJ2@avalon> <20140801143020.GQ30282@n2100.arm.linux.org.uk> <2568292.I2Yo4lJlu6@avalon>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6336340705562635379=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A6A8B261AB0
- for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 19:29:44 +0200 (CEST)
-In-Reply-To: <53DFBB7B.2030804@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2568292.I2Yo4lJlu6@avalon>
+Sender: linux-sh-owner@vger.kernel.org
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, dmaengine@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Aug 04, 2014 at 07:00:36PM +0200, Laurent Pinchart wrote:
+> Hi Russell,
+> 
+> On Friday 01 August 2014 15:30:20 Russell King - ARM Linux wrote:
+> >  This sequence must occur in a timely manner as some DMA engine
+> > implementations hold a lock between the prepare and submit callbacks (Dan
+> > explicitly permits this as part of the API.)
+> 
+> That really triggers a red alarm in the part of my brain that deals with API 
+> design, but I suppose it would be too difficult to change that.
 
---===============6336340705562635379==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="k6sXTxdZLCwjPj85"
-Content-Disposition: inline
+Mine to, but there's not a lot which can be done about it without
+changing a lot of users.
 
+> > > The DMA_PRIVATE capability flag seems to play a role here, but it's far
+> > > from being clear how that mechanism is supposed to work. This should be
+> > > documented as well, and any light you could shed on this dark corner of
+> > > the API would help.
+> > 
+> > Why do you think that DMA_PRIVATE has a bearing in the callbacks? It
+> > doesn't.
+> 
+> Not on callbacks, but on how pending descriptors are pushed to the hardware. 
+> The flag is explicitly checked in dma_issue_pending_all().
 
---k6sXTxdZLCwjPj85
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right.  So, let me put a question to you - what do you think is the
+effect of the check in dma_issue_pending_all()?
 
-On Mon, Aug 04, 2014 at 06:57:31PM +0200, Lars-Peter Clausen wrote:
-> On 08/04/2014 06:37 PM, Takashi Iwai wrote:
+I'll give you a hint - disregard the comment at the top of the function,
+because that's out of date.
 
-> >Thanks, pulled now.  The only build regression I've seen is the
-> >warning:
+> > DMA_PRIVATE is all about channel allocation as I explained yesterday, and
+> > whether the channel is available for async_tx usage.
+> > 
+> > A channel marked DMA_PRIVATE is not available for async_tx usage at
+> > any moment.  A channel without DMA_PRIVATE is available for async_tx
+> > usage until it is allocated for the slave API - at which point the
+> > generic DMA engine code will mark the channel with DMA_PRIVATE,
+> > thereby taking it away from async_tx API usage.  When the slave API
+> > frees the channel, DMA_PRIVATE will be cleared, making the channel
+> > available for async_tx usage.
+> > 
+> > So, basically, DMA_PRIVATE set -> async_tx usage not allowed.
+> > DMA_PRIVATE clear -> async_tx usage permitted.  It really is that
+> > simple.
+> 
+> DMA_PRIVATE is a dma_device flag, not a dma_chan flag. As soon as one channel 
+> is allocated by __dma_request_channel() the whole device is marked with 
+> DMA_PRIVATE, making all channels private. What am I missing ?
 
-> >sound/soc/soc-dapm.c: In function =E2=80=98snd_soc_dapm_get_enum_double=
-=E2=80=99:
-> >sound/soc/soc-dapm.c:2862:15: warning: =E2=80=98reg_val=E2=80=99 may be =
-used uninitialized in this function [-Wmaybe-uninitialized]
+I can't answer that - I don't know why the previous authors decided to
+make it a DMA-device wide property - presumably there are DMA controllers
+where this matters.
 
-> >I guess it came from the recent Lars' change.
-> >It just gives the garbage value and shouldn't be serious, but it'd be
-> >better to be fixed in anyways.
+However, one thing to realise is that a dma_device is a virtual concept -
+it is a set of channels which share a common set of properties.  It is not
+a physical device.  It is entirely reasonable for a set of channels on a
+physical device to be shared between two different dma_device instances
+and handed out by the driver code as needed.
 
-> yep. looks like your compiler is a bit smarter than mine. I'll send a pat=
-ch.
-> The issue itself is harmless though since we even though we do some
-> transformations on the uninitialized value the result of that is never us=
-ed
-> since we return a error code.
+> > > Similarly, the DMA engine API is split in functions with different
+> > > prefixes (mostly dmaengine_*, dma_async_*, dma_*, and various
+> > > unprefixed niceties such as async_tx_ack or txd_lock. If there's a
+> > > rationale for that (beyond just historical reasons) it should also
+> > > be documented, otherwise a cleanup would help all the confused DMA
+> > > engine users (myself included).
+> > 
+> > dmaengine_* are generally the interface functions to the DMA engine code,
+> > which have been recently introduced to avoid the multiple levels of
+> > pointer indirection having to be typed in every driver.
+> > 
+> > dma_async_* are the DMA engine interface functions for the async_tx API.
+> > 
+> > dma_* predate the dmaengine_* naming, and are probably too generic, so
+> > should probably end up being renamed to dmaengine_*.
+> 
+> Thank you for the confirmation. I'll see if I can cook up a patch. It will 
+> likely be pretty large and broad though, but I guess there's no way around it. 
+> 
+> > txd_* are all about the DMA engine descriptors.
+> > 
+> > async_tx_* are the higher level async_tx API functions.
+> 
+> Thank you for the information. How about the dma_async_* functions, should 
+> they be renamed to dmaengine_* as well ? Or are some of them part of the 
+> async_tx_* API ?
 
-I'm not seeing that warning either.  It might actually be that your
-compiler is smarter than Takashi's here - IIRC some of those warnings
-get suppressed if the compiler works out that the uninitialised value is
-never referenced.
+Well, these:
 
---k6sXTxdZLCwjPj85
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+dma_async_device_register
+dma_async_device_unregister
+dma_async_tx_descriptor_init
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+are more DMA engine core <-> DMA engine driver interface functions than
+user functions.  The remainder of the dma_async_* functions are internal
+to the async_tx API.
 
-iQIcBAEBAgAGBQJT38LoAAoJELSic+t+oim9DUsP/R8SaXOEml48x3r54T+Oq+YA
-Rq/c7sU0kg71NggaEBWK2cIQnYRWaYLmftoWxebYqpuy1BrrNp2MRNt33JPTaFAN
-NNk0D0ZvKR+ed/7Rh0G7JI6BjPB3T4HF2nVG0xUb6m2iyMhtLK8J6IpvFgoAFcaF
-9DDJ7vq8WKyhEw8OSFxKnfJJjV7/404DXIN3v/b7zQdQEF66QAZxE0bETSC0id28
-WN8trZNeGQ/JSyHwoOs01kBsHZjisGvTq2Fb/yBPJEG9LCsEZbwNIdR8Tx2x4KFQ
-m52gIE87nuKlBaJ8+3Aoq3j84CUv7qnYy4ANWOgJMkwQ0KQaVgCw4vErJVpcVRLT
-sbOAGWY0K5GKBQ8mThb6wM06vamW23LM38t669NMWtE9O+Vrd1HmZ8mu4rJYQMT/
-tJw7s/rHlP4xHec71880eT70Q8wCerkLgle+QMYZyUWpR8AX5aUoN3CzmbDPyP/r
-mfrz94ZRsDzLAhTRgLqZW3+GxKP63aRGusnIXBV8bxx8ZndS+bOMRQYXatVpx7y5
-kkaJAr88U8P5KKpoem9aUQWmdB0kEkeIHETbTgpKSyC7MpLvqw9MLZNsCc7Vysuy
-pJ1a+JMrokNeql78IwGeU6iwPN4UCWL0WdWQZUkS5+j4Exf0es/1fONIoCUKH1UQ
-z1EhdMFfCmhz3GaqEi40
-=7GK/
------END PGP SIGNATURE-----
-
---k6sXTxdZLCwjPj85--
-
---===============6336340705562635379==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6336340705562635379==--
+-- 
+FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
+according to speedtest.net.
