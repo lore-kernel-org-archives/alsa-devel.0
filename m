@@ -1,38 +1,39 @@
-From: thomas schorpp <thomas.schorpp-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH] ARM: sun7i: Fix HDMI Audio driver's Alsa
- interface and do 8CH IEC60958 output
-Date: Mon, 04 Aug 2014 02:15:33 +0200
-Message-ID: <53DED0A5.1090009@gmail.com>
-Reply-To: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Return-path: <linux-sunxi+bncBDYY3S6C5QNBBKNB7OPAKGQEBMRI2RQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Post: <http://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <http://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <http://groups.google.com/group/linux-sunxi
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Subscribe: <http://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <http://groups.google.com/group/linux-sunxi/subscribe>
-To: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Hans Wennborg <hans@hanshq.net>
+Subject: [PATCH 18/19] sound: fireworks: fix %d confusingly prefixed with 0x in format strings
+Date: Sun,  3 Aug 2014 17:21:16 -0700
+Message-ID: <1407111676-15309-1-git-send-email-hans@hanshq.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: clemens@ladisch.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Hans Wennborg <hans@hanshq.net>
 List-Id: alsa-devel@alsa-project.org
 
-Version 0.2
+Signed-off-by: Hans Wennborg <hans@hanshq.net>
+---
+ sound/firewire/fireworks/fireworks_proc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Users doc:
-
-All You need to get a HDMI- Pulseaudio Server on Your sunxi board to output Multichannel PCM is this line in default.pa, ttable pcms in asound.conf get ignored:
-
-+load-module module-alsa-sink device="hw:1,0" channels=8 channel_map="front-left,front-right,lfe,front-center,rear-left,rear-right,side-left,side-right"
-
-### Automatically load driver modules depending on the hardware available
-.ifexists module-udev-detect.so
-load-module module-udev-detect
-
-Probe with speaker-test, You may need other channel mapping than I.
-
-If you run PA in system mode please read the security documentation before, see PA log for link.
-
-y
-tom
+diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
+index f29d4aa..02bf394 100644
+--- a/sound/firewire/fireworks/fireworks_proc.c
++++ b/sound/firewire/fireworks/fireworks_proc.c
+@@ -64,7 +64,7 @@ proc_read_hwinfo(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
+ 		    hwinfo->phys_in_grp_count);
+ 	for (i = 0; i < hwinfo->phys_in_grp_count; i++) {
+ 		snd_iprintf(buffer,
+-			    "phys in grp[0x%d]: type 0x%d, count 0x%d\n",
++			    "phys in grp[0x%d]: type 0x%d, count 0x%x\n",
+ 			    i, hwinfo->phys_out_grps[i].type,
+ 			    hwinfo->phys_out_grps[i].count);
+ 	}
+@@ -73,7 +73,7 @@ proc_read_hwinfo(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
+ 		    hwinfo->phys_out_grp_count);
+ 	for (i = 0; i < hwinfo->phys_out_grp_count; i++) {
+ 		snd_iprintf(buffer,
+-			    "phys out grps[0x%d]: type 0x%d, count 0x%d\n",
++			    "phys out grps[0x%d]: type 0x%d, count 0x%x\n",
+ 			    i, hwinfo->phys_out_grps[i].type,
+ 			    hwinfo->phys_out_grps[i].count);
+ 	}
+-- 
+2.0.0.526.g5318336
