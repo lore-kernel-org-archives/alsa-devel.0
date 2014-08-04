@@ -1,60 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC
- hardware descriptor list support)
-Date: Mon, 4 Aug 2014 15:47:51 +0200
-Message-ID: <CAMuHMdWSe8m2yRV5fhLfZ=gbGUev6ExD+0eQ_nKK84SRs1DEwQ@mail.gmail.com>
-References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
-	<28702317.aD0C1Ga3DS@avalon>
-	<20140724045248.GB8181@intel.com>
-	<18522523.T2zy7HfoJ2@avalon>
-	<20140801143020.GQ30282@n2100.arm.linux.org.uk>
+From: =?UTF-8?B?QnVyYWsgTUVUxLBO?= <metinburak@gmail.com>
+Subject: Alsa simultaneous use of usb-sound card - BW problem
+Date: Mon, 4 Aug 2014 17:19:39 +0300
+Message-ID: <CADG_eVr=n8EgFpyST2=g9xUDThr+JeKFMKMoWyO=epX0Wyo4QA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20140801143020.GQ30282@n2100.arm.linux.org.uk>
-Sender: linux-sh-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Vinod Koul <vinod.koul@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, dmaengine@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, Magnus Damm <magnus.damm@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Maxime Ripard <maxime.ripard@free-electrons.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vc0-f182.google.com (mail-vc0-f182.google.com
+ [209.85.220.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85B3526084B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 16:19:49 +0200 (CEST)
+Received: by mail-vc0-f182.google.com with SMTP id hy4so11361301vcb.13
+ for <alsa-devel@alsa-project.org>; Mon, 04 Aug 2014 07:19:40 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Russell,
-
-On Fri, Aug 1, 2014 at 4:30 PM, Russell King - ARM Linux
-<linux@arm.linux.org.uk> wrote:
-> On Fri, Aug 01, 2014 at 10:51:26AM +0200, Laurent Pinchart wrote:
->> I'll take this opportunity to question why we have a separation between
->> tx_submit and issue_pending. What's the rationale for that, especially given
->> that dma_issue_pending_all() might kick in at any point and issue pending
->> transfers for all devices. A driver could thus see its submitted but not
->> issued transactions being issued before it explicitly calls
->> dma_async_issue_pending().
->
-> A prepared but not submitted transaction is not a pending transaction.
->
-> The split is necessary so that a callback can be attached to the
-> transaction.  This partially comes from the async-tx API, and also
-> gets a lot of use with the slave API.
->
-> The prepare function allocates the descriptor and does the initial
-> setup, but does not mark the descriptor as a pending transaction.
-> It returns the descriptor, and the caller is then free to add a
-> callback function and data pointer to the descriptor before finally
-> submitting it.  This sequence must occur in a timely manner as some
-> DMA engine implementations hold a lock between the prepare and submit
-> callbacks (Dan explicitly permits this as part of the API.)
-
-I think you misunderstood the question: Laurent asked about
-dmaengine_submit() (step 2) and dma_async_issue_pending() (step 3),
-while your answer is about dmaengine_prep_slave_*() (step 1) and
-dmaengine_submit() (step 2).
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+SGksCgpJIGhhdmUgMiBDTTY1NzEgdXNiIHNvdW5kIGNhcmRzLgoKSW4gVWJ1bnR1LCBpIHdhbnQg
+dG8gdXNlIHRoZXNlIDIgY2FyZGRzIHNpbXVsdGFuZW91c2x5LiBJIG9wZW4gMiB0ZXJtaW5hbHMs
+CmFuZCBhcmVjb3JkIC1EIHBsdWdodzoxLDAgfCBhcGxheSAtRCBwbHVnaHc6MSwwIGluIG9uZSB0
+ZXJtaW5hbCwgaXQgd29ya3MKd2VsbC4gYnV0IHdoZW4gaSB0eXBlIGFyZWNvcmQgLUQgcGx1Z2h3
+OjIsMCB8IGFwbGF5IC1EIHBsdWdodzoyLDAgaW4KYW5vdGhlciB0ZXJtaW5hbCwgaW4gc2Vjb25k
+IHRlcm1pbmFsLCBpdCBzYXlzCgpSZWNvcmRpbmcgV0FWRSAnc3RkaW4nIDogVW5zaWduZWQgOCBi
+aXQsIFJhdGUgODAwMCBIeiwgTW9ubwphcmVjb3JkOiB4cnVuOjE1NTI6IFBsYXlpbmcgV0FWRSAn
+c3RkaW4nIDogcmVhZC93cml0ZSBlcnJvciwgc3RhdGUgPQpQUkVQQVJFRFVuc2lnbmVkIDggYml0
+LApSYXRlIDgwMDAgSHosIE1vbm8KYXBsYXk6IHNldF9wYXJhbXM6MTI5NzogVW5hYmxlIHRvIGlu
+c3RhbGwgaHcgcGFyYW1zOgpBQ0NFU1M6ICBSV19JTlRFUkxFQVZFRApGT1JNQVQ6ICBVOApTVUJG
+T1JNQVQ6ICBTVEQKU0FNUExFX0JJVFM6IDgKRlJBTUVfQklUUzogOApDSEFOTkVMUzogMQpSQVRF
+OiA4MDAwClBFUklPRF9USU1FOiAxMjUwMDAKUEVSSU9EX1NJWkU6IDEwMDAKUEVSSU9EX0JZVEVT
+OiAxMDAwClBFUklPRFM6IDQKQlVGRkVSX1RJTUU6IDUwMDAwMApCVUZGRVJfU0laRTogNDAwMApC
+VUZGRVJfQllURVM6IDQwMDAKVElDS19USU1FOiAwCgpXaGVuIMSxIGRtZXNnLCBpdCBzYXlzOgoK
+WyA1NDE4LjkxMzE2MF0gcmV0aXJlX3BsYXliYWNrX3VyYjogMTY3MyBjYWxsYmFja3Mgc3VwcHJl
+c3NlZApbIDU0MTkuMjUzNDM2XSBjYW5ub3Qgc3VibWl0IHVyYiAwLCBlcnJvciAtMjg6IG5vdCBl
+bm91Z2ggYmFuZHdpZHRoClsgNTQxOS4yNTQ4ODddIGNhbm5vdCBzdWJtaXQgdXJiIDAsIGVycm9y
+IC0yODogbm90IGVub3VnaCBiYW5kd2lkdGgKCkkgdGhpbmsgaXQgaXMgYWJvdXQgdGhlIHVzYiBk
+cml2ZXIgaW4gYWxzYSwgYW55IGlkZWFzPwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
