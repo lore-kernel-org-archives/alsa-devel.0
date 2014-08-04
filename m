@@ -1,77 +1,111 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC updates for v3.17
-Date: Mon, 04 Aug 2014 18:57:31 +0200
-Message-ID: <53DFBB7B.2030804@metafoo.de>
-References: <20140804161750.GV30458@sirena.org.uk>
- <s5hppgg6wj5.wl%tiwai@suse.de>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC hardware descriptor list support)
+Date: Mon, 04 Aug 2014 19:00:36 +0200
+Message-ID: <2568292.I2Yo4lJlu6@avalon>
+References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com> <18522523.T2zy7HfoJ2@avalon> <20140801143020.GQ30282@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-058.synserver.de (smtp-out-058.synserver.de
- [212.40.185.58])
- by alsa0.perex.cz (Postfix) with ESMTP id 7537F2619E6
- for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 18:57:32 +0200 (CEST)
-In-Reply-To: <s5hppgg6wj5.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20140801143020.GQ30282@n2100.arm.linux.org.uk>
+Sender: linux-sh-owner@vger.kernel.org
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Vinod Koul <vinod.koul@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, dmaengine@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDgvMDQvMjAxNCAwNjozNyBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IE1vbiwgNCBB
-dWcgMjAxNCAxNzoxNzo1MCArMDEwMCwKPiBNYXJrIEJyb3duIHdyb3RlOgo+Pgo+PiBUaGUgZm9s
-bG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDE5NTgzY2E1ODRkNmY1NzQzODRlMTdmZTc2MTNk
-ZmFlYWRjZGM0YTY6Cj4+Cj4+ICAgIExpbnV4IDMuMTYgKDIwMTQtMDgtMDMgMTU6MjU6MDIgLTA3
-MDApCj4+Cj4+IGFyZSBhdmFpbGFibGUgaW4gdGhlIGdpdCByZXBvc2l0b3J5IGF0Ogo+Pgo+PiAg
-ICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvYnJvb25pZS9z
-b3VuZC5naXQgdGFncy9hc29jLXYzLjE3Cj4+Cj4+IGZvciB5b3UgdG8gZmV0Y2ggY2hhbmdlcyB1
-cCB0byBhZTM0YTc4YzQzMGMzN2MwNjQwNGYwMzJmYjA0ZTUxMzE1MjA0MjgxOgo+Pgo+PiAgICBN
-ZXJnZSByZW1vdGUtdHJhY2tpbmcgYnJhbmNoICdhc29jL3RvcGljL3dtODk4NScgaW50byBhc29j
-LW5leHQgKDIwMTQtMDgtMDQgMTY6MzI6MjUgKzAxMDApCj4+Cj4+IC0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4KPj4gQVNv
-QzogVXBkYXRlcyBmb3IgdjMuMTcKPj4KPj4gVGhpcyBoYXMgYmVlbiBhIHByZXR0eSBleGNpdGlu
-ZyByZWxlYXNlIGluIHRlcm1zIG9mIHRoZSBmcmFtZXdvcmssIHdlJ3ZlCj4+IGZpbmFsbHkgZ290
-IHN1cHBvcnQgZm9yIG11bHRpcGxlIENPREVDcyBhdHRhY2hlZCB0byBhIHNpbmdsZSBEQUkgbGlu
-awo+PiB3aGljaCBoYXMgYmVlbiBzb21ldGhpbmcgdGhlcmUncyBiZWVuIGludGVyZXN0IGluIGFz
-IGxvbmcgYXMgSSd2ZSBiZWVuCj4+IHdvcmtpbmcgb24gQVNvQy4gIEEgYmlnIHRoYW5rcyB0byBC
-ZW5vaXQgYW5kIE1pc2FlbCBmb3IgdGhlaXIgd29yayBvbgo+PiB0aGlzLgo+Pgo+PiBPdGhlcndp
-c2UgaXQncyBiZWVuIGEgZmFpcmx5IHN0YW5kYXJkIHJlbGVhc2UgZm9yIGRldmVsb3BtZW50LCBp
-bmNsdWRpbmcKPj4gbW9yZSBjb21wb25lbnRpc2F0aW9uIHdvcmsgZnJvbSBMYXJzLVBldGVyIGFu
-ZCBhIGdvb2Qgc2VsZWN0aW9uIG9mIGJvdGgKPj4gQ09ERUMgYW5kIENQVSBkcml2ZXJzLgo+Pgo+
-PiAgIC0gU3VwcG9ydCBmb3IgbXVsdGlwbGUgQ09ERUNzIGF0dGFjaGVkIHRvIGEgc2luZ2xlIERB
-SSwgZW5hYmxpbmcKPj4gICAgIHN5c3RlbXMgd2l0aCBmb3IgZXhhbXBsZSBtdWx0aXBsZSBEQUMv
-c3BlYWtlciBkcml2ZXJzIG9uIGEgc2luZ2xlCj4+ICAgICBsaW5rLCBjb250cmlidXRlZCBieSBC
-ZW5vaXQgQ291c3NvbiBiYXNlZCBvbiB3b3JrIGZyb20gTWlzYWVsIExvcGV6Cj4+ICAgICBDcnV6
-Lgo+PiAgIC0gU3VwcG9ydCBmb3IgYnl0ZSBjb250cm9scyBsYXJnZXIgdGhhbiAyNTYgYnl0ZXMg
-YmFzZWQgb24gdGhlIHVzZSBvZgo+PiAgICAgVExWcyBjb250cmlidXRlZCBieSBPbWFpciBNb2hh
-bW1lZCBBYmR1bGxhaC4KPj4gICAtIE1vcmUgY29tcG9uZW50aXNhdGlvbiB3b3JrIGZyb20gTGFy
-cy1QZXRlciBDbGF1c2VuLgo+PiAgIC0gVGhlIHJlbWFpbmRlciBvZiB0aGUgY29udmVyc2lvbnMg
-b2YgQ09ERUMgZHJpdmVycyB0byBwYXJhbXNfd2lkdGgoKQo+PiAgIC0gRHJpdmVycyBmb3IgQ2ly
-cnVzIExvZ2ljIENTNDI2NSwgRnJlZXNjYWxlIGkuTVggQVNSQyBibG9ja3MsIFJlYWx0ZWsKPj4g
-ICAgIFJUMjg2IGFuZCBSVDU2NzAsIFJvY2tjaGlwIFJLM3h4eCBJMlMgY29udHJvbGxlcnMgYW5k
-IFRleGFzIEluc3RydW1lbnRzCj4+ICAgICBUQVMyNTUyLgo+PiAgIC0gTG90cyBvZiB1cGRhdGVz
-IGFuZCBmaXhlcywgZXNwZWNpYWxseSB0byB0aGUgRGFWaW5jaSwgSW50ZWwsCj4+ICAgICBGcmVl
-c2NhbGUsIFJlYWx0ZWssIGFuZCByY2FyIGRyaXZlcnMuCj4KPiBUaGFua3MsIHB1bGxlZCBub3cu
-ICBUaGUgb25seSBidWlsZCByZWdyZXNzaW9uIEkndmUgc2VlbiBpcyB0aGUKPiB3YXJuaW5nOgo+
-Cj4gc291bmQvc29jL3NvYy1kYXBtLmM6IEluIGZ1bmN0aW9uIOKAmHNuZF9zb2NfZGFwbV9nZXRf
-ZW51bV9kb3VibGXigJk6Cj4gc291bmQvc29jL3NvYy1kYXBtLmM6Mjg2MjoxNTogd2FybmluZzog
-4oCYcmVnX3ZhbOKAmSBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24g
-Wy1XbWF5YmUtdW5pbml0aWFsaXplZF0KPgo+IEkgZ3Vlc3MgaXQgY2FtZSBmcm9tIHRoZSByZWNl
-bnQgTGFycycgY2hhbmdlLgo+IEl0IGp1c3QgZ2l2ZXMgdGhlIGdhcmJhZ2UgdmFsdWUgYW5kIHNo
-b3VsZG4ndCBiZSBzZXJpb3VzLCBidXQgaXQnZCBiZQo+IGJldHRlciB0byBiZSBmaXhlZCBpbiBh
-bnl3YXlzLgo+Cgp5ZXAuIGxvb2tzIGxpa2UgeW91ciBjb21waWxlciBpcyBhIGJpdCBzbWFydGVy
-IHRoYW4gbWluZS4gSSdsbCBzZW5kIGEgcGF0Y2guIApUaGUgaXNzdWUgaXRzZWxmIGlzIGhhcm1s
-ZXNzIHRob3VnaCBzaW5jZSB3ZSBldmVuIHRob3VnaCB3ZSBkbyBzb21lIAp0cmFuc2Zvcm1hdGlv
-bnMgb24gdGhlIHVuaW5pdGlhbGl6ZWQgdmFsdWUgdGhlIHJlc3VsdCBvZiB0aGF0IGlzIG5ldmVy
-IHVzZWQgCnNpbmNlIHdlIHJldHVybiBhIGVycm9yIGNvZGUuCgotIExhcnMKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi Russell,
+
+On Friday 01 August 2014 15:30:20 Russell King - ARM Linux wrote:
+> On Fri, Aug 01, 2014 at 10:51:26AM +0200, Laurent Pinchart wrote:
+> > I'll take this opportunity to question why we have a separation between
+> > tx_submit and issue_pending. What's the rationale for that, especially
+> > given that dma_issue_pending_all() might kick in at any point and issue
+> > pending transfers for all devices. A driver could thus see its submitted
+> > but not issued transactions being issued before it explicitly calls
+> > dma_async_issue_pending().
+> 
+> A prepared but not submitted transaction is not a pending transaction.
+> 
+> The split is necessary so that a callback can be attached to the
+> transaction.  This partially comes from the async-tx API, and also
+> gets a lot of use with the slave API.
+> 
+> The prepare function allocates the descriptor and does the initial
+> setup, but does not mark the descriptor as a pending transaction.
+> It returns the descriptor, and the caller is then free to add a
+> callback function and data pointer to the descriptor before finally
+> submitting it.
+
+No disagreement on that. However, as Geert pointed out, my question was 
+related to the split between dmaengine_submit() and dma_async_issue_pending(), 
+not between the prep_* functions and dmaengine_submit().
+
+>  This sequence must occur in a timely manner as some DMA engine
+> implementations hold a lock between the prepare and submit callbacks (Dan
+> explicitly permits this as part of the API.)
+
+That really triggers a red alarm in the part of my brain that deals with API 
+design, but I suppose it would be too difficult to change that.
+
+> > The DMA_PRIVATE capability flag seems to play a role here, but it's far
+> > from being clear how that mechanism is supposed to work. This should be
+> > documented as well, and any light you could shed on this dark corner of
+> > the API would help.
+> 
+> Why do you think that DMA_PRIVATE has a bearing in the callbacks? It
+> doesn't.
+
+Not on callbacks, but on how pending descriptors are pushed to the hardware. 
+The flag is explicitly checked in dma_issue_pending_all().
+
+> DMA_PRIVATE is all about channel allocation as I explained yesterday, and
+> whether the channel is available for async_tx usage.
+> 
+> A channel marked DMA_PRIVATE is not available for async_tx usage at
+> any moment.  A channel without DMA_PRIVATE is available for async_tx
+> usage until it is allocated for the slave API - at which point the
+> generic DMA engine code will mark the channel with DMA_PRIVATE,
+> thereby taking it away from async_tx API usage.  When the slave API
+> frees the channel, DMA_PRIVATE will be cleared, making the channel
+> available for async_tx usage.
+> 
+> So, basically, DMA_PRIVATE set -> async_tx usage not allowed.
+> DMA_PRIVATE clear -> async_tx usage permitted.  It really is that
+> simple.
+
+DMA_PRIVATE is a dma_device flag, not a dma_chan flag. As soon as one channel 
+is allocated by __dma_request_channel() the whole device is marked with 
+DMA_PRIVATE, making all channels private. What am I missing ?
+
+> > Similarly, the DMA engine API is split in functions with different
+> > prefixes (mostly dmaengine_*, dma_async_*, dma_*, and various
+> > unprefixed niceties such as async_tx_ack or txd_lock. If there's a
+> > rationale for that (beyond just historical reasons) it should also
+> > be documented, otherwise a cleanup would help all the confused DMA
+> > engine users (myself included).
+> 
+> dmaengine_* are generally the interface functions to the DMA engine code,
+> which have been recently introduced to avoid the multiple levels of
+> pointer indirection having to be typed in every driver.
+> 
+> dma_async_* are the DMA engine interface functions for the async_tx API.
+> 
+> dma_* predate the dmaengine_* naming, and are probably too generic, so
+> should probably end up being renamed to dmaengine_*.
+
+Thank you for the confirmation. I'll see if I can cook up a patch. It will 
+likely be pretty large and broad though, but I guess there's no way around it. 
+
+> txd_* are all about the DMA engine descriptors.
+> 
+> async_tx_* are the higher level async_tx API functions.
+
+Thank you for the information. How about the dma_async_* functions, should 
+they be renamed to dmaengine_* as well ? Or are some of them part of the 
+async_tx_* API ?
+
+-- 
+Regards,
+
+Laurent Pinchart
+
