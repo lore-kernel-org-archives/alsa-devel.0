@@ -1,14 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [v4 00/12] Add mrfld DSP topology and widgets
-Date: Mon,  4 Aug 2014 15:15:51 +0530
-Message-ID: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [v4 01/12] ASoC: Intel: mfld-pcm: add FE and BE ops
+Date: Mon,  4 Aug 2014 15:15:52 +0530
+Message-ID: <1407145563-1303-2-git-send-email-subhransu.s.prusty@intel.com>
+References: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id DC75726087E
- for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 12:07:23 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id EAA562608C9
+ for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 12:07:25 +0200 (CEST)
+In-Reply-To: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +24,147 @@ To: alsa-devel@alsa-project.org
 Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series adds DPCM and DAPM widgets to handle DSP topology in the
-SST platform driver for merrifield.
+From: Vinod Koul <vinod.koul@intel.com>
 
-Changes in v4:
-	Removed print messages for kzalloc failure as per review comments from
-	Takashi.
-	
-Subhransu S. Prusty (2):
-  ASoC: Intel: mrfld: set private data for cpu-dai
-  ASoC: Export dapm_kcontrol_get_value
+Now that we have added code for managing DSP pipelines we need to add the code
+for DSPs FrontEnd and Backend dai.
 
-Vinod Koul (10):
-  ASoC: Intel: mfld-pcm: add FE and BE ops
-  ASoC: intel: mfld-pcm: don't call trigger ops to DSP for internal
-    streams
-  ASoC: Intel: add mrfld DSP defines
-  ASoC: Intel: mrfld: add bytes control for modules
-  ASoC: Intel: mrfld: add the gain controls
-  ASoC: Intel: mfld-pcm: add control for powering up/down dsp
-  ASoC: Intel: mrfld: add DSP core controls
-  ASoC: Intel: mrfld: add the DSP DAPM widgets
-  ASoC: Intel: mfld-pcm: add the fe & be dai ops
-  ASoC: Intel: mrfld: add the DSP mixers
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+---
+ sound/soc/intel/sst-mfld-platform-pcm.c | 113 ++++++++++++++++++++++++--------
+ 1 file changed, 84 insertions(+), 29 deletions(-)
 
- include/sound/soc-dapm.h                |    1 +
- sound/soc/intel/Makefile                |    3 +-
- sound/soc/intel/sst-atom-controls.c     | 1256 +++++++++++++++++++++++++++++++
- sound/soc/intel/sst-atom-controls.h     |  844 ++++++++++++++++++++-
- sound/soc/intel/sst-mfld-platform-pcm.c |  192 ++++-
- sound/soc/intel/sst-mfld-platform.h     |    8 +
- sound/soc/soc-dapm.c                    |    3 +-
- 7 files changed, 2269 insertions(+), 38 deletions(-)
- create mode 100644 sound/soc/intel/sst-atom-controls.c
-
+diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
+index a89ff7e18e1a..364034024cee 100644
+--- a/sound/soc/intel/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/sst-mfld-platform-pcm.c
+@@ -101,35 +101,6 @@ static struct sst_dev_stream_map dpcm_strm_map[] = {
+ 	{MERR_DPCM_AUDIO, 0, SNDRV_PCM_STREAM_CAPTURE, PIPE_PCM1_OUT, SST_TASK_ID_MEDIA, 0},
+ };
+ 
+-/* MFLD - MSIC */
+-static struct snd_soc_dai_driver sst_platform_dai[] = {
+-{
+-	.name = "Headset-cpu-dai",
+-	.id = 0,
+-	.playback = {
+-		.channels_min = SST_STEREO,
+-		.channels_max = SST_STEREO,
+-		.rates = SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S24_LE,
+-	},
+-	.capture = {
+-		.channels_min = 1,
+-		.channels_max = 5,
+-		.rates = SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S24_LE,
+-	},
+-},
+-{
+-	.name = "Compress-cpu-dai",
+-	.compress_dai = 1,
+-	.playback = {
+-		.channels_min = SST_STEREO,
+-		.channels_max = SST_STEREO,
+-		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+-	},
+-},
+-};
+ 
+ /* helper functions */
+ void sst_set_stream_status(struct sst_runtime_stream *stream,
+@@ -441,6 +412,90 @@ static struct snd_soc_dai_ops sst_media_dai_ops = {
+ 	.hw_free = sst_media_hw_free,
+ };
+ 
++static struct snd_soc_dai_driver sst_platform_dai[] = {
++{
++	.name = "media-cpu-dai",
++	.ops = &sst_media_dai_ops,
++	.playback = {
++		.stream_name = "Headset Playback",
++		.channels_min = SST_STEREO,
++		.channels_max = SST_STEREO,
++		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "Headset Capture",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++{
++	.name = "compress-cpu-dai",
++	.compress_dai = 1,
++	.playback = {
++		.stream_name = "Compress Playback",
++		.channels_min = SST_STEREO,
++		.channels_max = SST_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++/*BE CPU  Dais */
++{
++	.name = "ssp0-port",
++	.playback = {
++		.stream_name = "ssp0 Tx",
++		.channels_min = SST_STEREO,
++		.channels_max = SST_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "ssp0 Rx",
++		.channels_min = SST_STEREO,
++		.channels_max = SST_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++{
++	.name = "ssp1-port",
++	.playback = {
++		.stream_name = "ssp1 Tx",
++		.channels_min = SST_STEREO,
++		.channels_max = SST_STEREO,
++		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "ssp1 Rx",
++		.channels_min = SST_STEREO,
++		.channels_max = SST_STEREO,
++		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++{
++	.name = "ssp2-port",
++	.playback = {
++		.stream_name = "ssp2 Tx",
++		.channels_min = SST_STEREO,
++		.channels_max = SST_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.stream_name = "ssp2 Rx",
++		.channels_min = SST_STEREO,
++		.channels_max = SST_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++};
++
+ static int sst_platform_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime;
 -- 
 1.9.0
