@@ -1,15 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [v4 09/12] ASoC: Export dapm_kcontrol_get_value
-Date: Mon,  4 Aug 2014 15:16:00 +0530
-Message-ID: <1407145563-1303-10-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [v4 11/12] ASoC: Intel: mfld-pcm: add the fe & be dai
+	ops
+Date: Mon,  4 Aug 2014 15:16:02 +0530
+Message-ID: <1407145563-1303-12-git-send-email-subhransu.s.prusty@intel.com>
 References: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E8FF2610AE
- for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 12:07:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E7EA26548D
+ for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 12:07:51 +0200 (CEST)
 In-Reply-To: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,46 +25,114 @@ To: alsa-devel@alsa-project.org
 Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The DSP driver needs to know widget control value in its event handler for
-widgets like mixers. This is required in the subsequent patches
+From: Vinod Koul <vinod.koul@intel.com>
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Now that the DSP topology is added, add the FE and BE dai ops for controls DSP as
+well mute/unmute of FE through ASoC
+
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- include/sound/soc-dapm.h | 1 +
- sound/soc/soc-dapm.c     | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/intel/sst-mfld-platform-pcm.c | 39 +++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index aac04ff84eea..6ae0a1952ad7 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -432,6 +432,7 @@ int snd_soc_dapm_force_enable_pin_unlocked(struct snd_soc_dapm_context *dapm,
- int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
- 				const char *pin);
- void snd_soc_dapm_auto_nc_pins(struct snd_soc_card *card);
-+unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol);
+diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
+index 60ee6ad4b626..4e5d2f379a26 100644
+--- a/sound/soc/intel/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/sst-mfld-platform-pcm.c
+@@ -101,6 +101,11 @@ static struct sst_dev_stream_map dpcm_strm_map[] = {
+ 	{MERR_DPCM_AUDIO, 0, SNDRV_PCM_STREAM_CAPTURE, PIPE_PCM1_OUT, SST_TASK_ID_MEDIA, 0},
+ };
  
- /* Mostly internal - should not normally be used */
- void dapm_mark_io_dirty(struct snd_soc_dapm_context *dapm);
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 8348352dc2c6..08c79f09034f 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -326,12 +326,13 @@ static struct list_head *dapm_kcontrol_get_path_list(
- 	list_for_each_entry(path, dapm_kcontrol_get_path_list(kcontrol), \
- 		list_kcontrol)
++static int sst_media_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
++{
++
++	return sst_send_pipe_gains(dai, stream, mute);
++}
  
--static unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol)
-+unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol)
- {
- 	struct dapm_kcontrol_data *data = snd_kcontrol_chip(kcontrol);
- 
- 	return data->value;
+ /* helper functions */
+ void sst_set_stream_status(struct sst_runtime_stream *stream,
+@@ -418,12 +423,41 @@ static int sst_media_hw_free(struct snd_pcm_substream *substream,
+ 	return snd_pcm_lib_free_pages(substream);
  }
-+EXPORT_SYMBOL_GPL(dapm_kcontrol_get_value);
  
- static bool dapm_kcontrol_set_value(const struct snd_kcontrol *kcontrol,
- 	unsigned int value)
++static int sst_enable_ssp(struct snd_pcm_substream *substream,
++			struct snd_soc_dai *dai)
++{
++	if (!dai->active) {
++		sst_handle_vb_timer(dai, true);
++		send_ssp_cmd(dai, dai->name, 1);
++	}
++	return 0;
++}
++
++static void sst_disable_ssp(struct snd_pcm_substream *substream,
++			struct snd_soc_dai *dai)
++{
++	if (!dai->active) {
++		send_ssp_cmd(dai, dai->name, 0);
++		sst_handle_vb_timer(dai, false);
++	}
++}
++
+ static struct snd_soc_dai_ops sst_media_dai_ops = {
+ 	.startup = sst_media_open,
+ 	.shutdown = sst_media_close,
+ 	.prepare = sst_media_prepare,
+ 	.hw_params = sst_media_hw_params,
+ 	.hw_free = sst_media_hw_free,
++	.mute_stream = sst_media_digital_mute,
++};
++
++static struct snd_soc_dai_ops sst_compr_dai_ops = {
++	.mute_stream = sst_media_digital_mute,
++};
++
++static struct snd_soc_dai_ops sst_be_dai_ops = {
++	.startup = sst_enable_ssp,
++	.shutdown = sst_disable_ssp,
+ };
+ 
+ static int sst_media_dai_probe(struct snd_soc_dai *cpu_dai)
+@@ -433,6 +467,7 @@ static int sst_media_dai_probe(struct snd_soc_dai *cpu_dai)
+ 	snd_soc_dai_set_drvdata(cpu_dai, sst);
+ 	return 0;
+ }
++
+ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ {
+ 	.probe = sst_media_dai_probe,
+@@ -456,6 +491,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ {
+ 	.name = "compress-cpu-dai",
+ 	.compress_dai = 1,
++	.ops = &sst_compr_dai_ops,
+ 	.playback = {
+ 		.stream_name = "Compress Playback",
+ 		.channels_min = SST_STEREO,
+@@ -467,6 +503,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ /*BE CPU  Dais */
+ {
+ 	.name = "ssp0-port",
++	.ops = &sst_be_dai_ops,
+ 	.playback = {
+ 		.stream_name = "ssp0 Tx",
+ 		.channels_min = SST_STEREO,
+@@ -484,6 +521,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ },
+ {
+ 	.name = "ssp1-port",
++	.ops = &sst_be_dai_ops,
+ 	.playback = {
+ 		.stream_name = "ssp1 Tx",
+ 		.channels_min = SST_STEREO,
+@@ -501,6 +539,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
+ },
+ {
+ 	.name = "ssp2-port",
++	.ops = &sst_be_dai_ops,
+ 	.playback = {
+ 		.stream_name = "ssp2 Tx",
+ 		.channels_min = SST_STEREO,
 -- 
 1.9.0
