@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: fsl_asrc: Fix two dereferenced
- variable before check
-Date: Mon, 4 Aug 2014 15:48:57 +0100
-Message-ID: <20140804144857.GS30458@sirena.org.uk>
-References: <cover.1407125653.git.nicoleotsuka@gmail.com>
+From: Fabio Falzoi <fabio.falzoi84@gmail.com>
+Subject: [PATCH] ASoC: fsl-ssi: Support for
+	SND_SOC_DAIFMT_CBM_CFS
+Date: Mon,  4 Aug 2014 17:08:07 +0200
+Message-ID: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1239208845144038483=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BD22B26084B
- for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 16:50:29 +0200 (CEST)
-In-Reply-To: <cover.1407125653.git.nicoleotsuka@gmail.com>
+Received: from mail-wi0-f171.google.com (mail-wi0-f171.google.com
+ [209.85.212.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 045CA26084B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 17:08:34 +0200 (CEST)
+Received: by mail-wi0-f171.google.com with SMTP id hi2so5279279wib.10
+ for <alsa-devel@alsa-project.org>; Mon, 04 Aug 2014 08:08:32 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +22,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, timur@tabi.org
+To: alsa-devel@alsa-project.org
+Cc: adamo.a60@gmail.com, timur@tabi.org, lgirdwood@gmail.com, broonie@kernel.org, Fabio Falzoi <fabio.falzoi84@gmail.com>, mpa@pengutronix.de, michael@amarulasolutions.com
 List-Id: alsa-devel@alsa-project.org
 
+Add SND_SOC_DAIFMT_CBM_CFS support for Freescale architecture.
+Successfully tested on i.MX 6Quad Wandboard and UDOO boards connected to
+the pcm1792a codec.
+In CBM_CFS mode, when using a sample size of 16 bits, we cannot use
+CCSR_SSI_SCR_I2S_MODE_MASTER since we get a frame sync every 16 bits.
 
---===============1239208845144038483==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cLlE6j+44ygFdGhU"
-Content-Disposition: inline
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+Signed-off-by: Fabio Falzoi <fabio.falzoi84@gmail.com>
+Tested-by: Angelo Adamo <adamo.a60@gmail.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 33 ++++++++++++++++++++++++++++-----
+ 1 file changed, 28 insertions(+), 5 deletions(-)
 
-
---cLlE6j+44ygFdGhU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Aug 04, 2014 at 12:19:47PM +0800, Nicolin Chen wrote:
-> These two patches fixes two warning of dereferenced variable reported by
-> Dan Carpenter <dan.carpenter@oracle.com>
-
-Applied both, thanks.
-
---cLlE6j+44ygFdGhU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT351WAAoJELSic+t+oim9NToQAJUF1XjbsAlLJBtudz22BZB4
-pT0zwdKzezTIWkiCRqJA6WLcI2uotofSUEOyj+Oyp1/DfcS1/1GPPGKRV5g/sZn8
-lKJAQhD7K+dJXqVgYcjz42DhTGZq55Drva9T+tA6aP4745GYsYqOWnTDZONNBB3d
-rbIPUgXCiL47Kwnn/dHSQLsFEzwUdiQc2cOBzBlykim5k1eQWefhZp8Kw85wN+ea
-cNg3T8eWNP/FFbVxF7l/des/7KY6y3QAm5wRNFPDSOOhcoN87OhYmmeZpoDl7WqO
-Kc1pxGjKY8EOMd6nZSC3uID5vqQwuBRHWU42I0VAHO7/HLAJSGPYIzOBTsYDUNnB
-vD0z0HnWa7kWnuqVi7pAc0y9v37Am/xSZn8L3L9Fga3SQxPvxMtxDxZNP2uqJFEY
-9pqLigIw/aXSFm6fjVK98ZJgbMNU8+sFjhtKfjdU5UXZQ8cNaHT9GlJwlrroXmPF
-ruyI0WDklicdatlInhbs3WjyiHCWX+Awr0ZDmeRVd9cEzhY22SEDIqd0HZK/gu6+
-g1th0bZrPjSMb7Eofdl4gOoeyEhv3HQH9Dtwd6VxnySaTj4YzFYldtHELiyNQFpH
-PIwcAp2eyOAdVWTARiH6jUXO5M9sLuo12YmMenuByvq7QrbRyEzgvSpkjULI/X1H
-p5iIxT6ioswgvNtQnXuM
-=22xm
------END PGP SIGNATURE-----
-
---cLlE6j+44ygFdGhU--
-
---===============1239208845144038483==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1239208845144038483==--
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 87eb577..2fc3e66 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -259,6 +259,11 @@ static bool fsl_ssi_is_i2s_master(struct fsl_ssi_private *ssi_private)
+ 		SND_SOC_DAIFMT_CBS_CFS;
+ }
+ 
++static bool fsl_ssi_is_i2s_cbm_cfs(struct fsl_ssi_private *ssi_private)
++{
++	return (ssi_private->dai_fmt & SND_SOC_DAIFMT_MASTER_MASK) ==
++		SND_SOC_DAIFMT_CBM_CFS;
++}
+ /**
+  * fsl_ssi_isr: SSI interrupt handler
+  *
+@@ -705,6 +710,23 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 	}
+ 
++	if (!fsl_ssi_is_ac97(ssi_private)) {
++		u8 i2smode;
++		/*
++		 * Switch to normal net mode in order to have a frame sync
++		 * signal every 32 bits instead of 16 bits
++		 */
++		if (fsl_ssi_is_i2s_cbm_cfs(ssi_private) && sample_size == 16)
++			i2smode = CCSR_SSI_SCR_I2S_MODE_NORMAL |
++				CCSR_SSI_SCR_NET;
++		else
++			i2smode = ssi_private->i2s_mode;
++
++		regmap_update_bits(regs, CCSR_SSI_SCR,
++				CCSR_SSI_SCR_NET | CCSR_SSI_SCR_I2S_MODE_MASK,
++				channels == 1 ? 0 : i2smode);
++	}
++
+ 	/*
+ 	 * FIXME: The documentation says that SxCCR[WL] should not be
+ 	 * modified while the SSI is enabled.  The only time this can
+@@ -724,11 +746,6 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 		regmap_update_bits(regs, CCSR_SSI_SRCCR, CCSR_SSI_SxCCR_WL_MASK,
+ 				wl);
+ 
+-	if (!fsl_ssi_is_ac97(ssi_private))
+-		regmap_update_bits(regs, CCSR_SSI_SCR,
+-				CCSR_SSI_SCR_NET | CCSR_SSI_SCR_I2S_MODE_MASK,
+-				channels == 1 ? 0 : ssi_private->i2s_mode);
+-
+ 	return 0;
+ }
+ 
+@@ -780,6 +797,7 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi_private *ssi_private,
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+ 		switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++		case SND_SOC_DAIFMT_CBM_CFS:
+ 		case SND_SOC_DAIFMT_CBS_CFS:
+ 			ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_MASTER;
+ 			regmap_update_bits(regs, CCSR_SSI_STCCR,
+@@ -853,6 +871,11 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi_private *ssi_private,
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
+ 		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		strcr &= ~CCSR_SSI_STCR_TXDIR;
++		strcr |= CCSR_SSI_STCR_TFDIR;
++		scr &= ~CCSR_SSI_SCR_SYS_CLK_EN;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+-- 
+2.0.0
