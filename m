@@ -1,62 +1,31 @@
-From: Hans Wennborg <hans@hanshq.net>
-Subject: [PATCH 19/19] alsa: riptide: fix %d confusingly prefixed with 0x in format strings
-Date: Sun,  3 Aug 2014 17:21:25 -0700
-Message-ID: <1407111685-15351-1-git-send-email-hans@hanshq.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: clemens@ladisch.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Hans Wennborg <hans@hanshq.net>
+From: Hans Wennborg <hans-7z9IcJk4adCsTnJN9+BGXg@public.gmane.org>
+Subject: Re: [PATCH 1/1] cris: fix %d confusingly prefixed with 0x in format
+ string
+Date: Sun, 03 Aug 2014 17:25:13 -0700
+Message-ID: <53DED2E9.5090205@hanshq.net>
+References: <1407018043-648-1-git-send-email-hans@hanshq.net>	 <1407026806.1835.21.camel@joe-AO725> <53DD8E17.1@hanshq.net> <1407046215.1835.24.camel@joe-AO725>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-cifs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1407046215.1835.24.camel@joe-AO725>
+Sender: linux-cifs-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
+Cc: starvik-VrBV9hrLPhE@public.gmane.org, linux-cris-kernel-VrBV9hrLPhE@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kernel-janitors <kernel-janitors-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, netdev <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, devel <devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org>, linux-cifs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Hans Wennborg <hans@hanshq.net>
----
- sound/firewire/fireworks/fireworks_proc.c | 4 ++--
- sound/pci/riptide/riptide.c               | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+On 08/02/2014 11:10 PM, Joe Perches wrote:
+> On Sat, 2014-08-02 at 18:19 -0700, Hans Wennborg wrote:
+>> Yes, I have a patch for a bunch of these, but I figured it would be
+>> easier to get it merged if I split it up. (Complete kernel newbie here.)
+>
+> You as a kernel newbie did good, thanks.
+>
+> A small tip would be to do all of them in a single series
+> cc'ing each individual patch to the appropriate maintainers
+> and mailing lists.
 
-diff --git a/sound/firewire/fireworks/fireworks_proc.c b/sound/firewire/fireworks/fireworks_proc.c
-index 02bf394..23bb274 100644
---- a/sound/firewire/fireworks/fireworks_proc.c
-+++ b/sound/firewire/fireworks/fireworks_proc.c
-@@ -64,7 +64,7 @@ proc_read_hwinfo(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 		    hwinfo->phys_in_grp_count);
- 	for (i = 0; i < hwinfo->phys_in_grp_count; i++) {
- 		snd_iprintf(buffer,
--			    "phys in grp[0x%d]: type 0x%d, count 0x%x\n",
-+			    "phys in grp[0x%x]: type 0x%x, count 0x%x\n",
- 			    i, hwinfo->phys_out_grps[i].type,
- 			    hwinfo->phys_out_grps[i].count);
- 	}
-@@ -73,7 +73,7 @@ proc_read_hwinfo(struct snd_info_entry *entry, struct snd_info_buffer *buffer)
- 		    hwinfo->phys_out_grp_count);
- 	for (i = 0; i < hwinfo->phys_out_grp_count; i++) {
- 		snd_iprintf(buffer,
--			    "phys out grps[0x%d]: type 0x%d, count 0x%x\n",
-+			    "phys out grps[0x%x]: type 0x%x, count 0x%x\n",
- 			    i, hwinfo->phys_out_grps[i].type,
- 			    hwinfo->phys_out_grps[i].count);
- 	}
-diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
-index b4a8278..f0315c3 100644
---- a/sound/pci/riptide/riptide.c
-+++ b/sound/pci/riptide/riptide.c
-@@ -941,7 +941,7 @@ setmixer(struct cmdif *cif, short num, unsigned short rval, unsigned short lval)
- 	union cmdret rptr = CMDRET_ZERO;
- 	int i = 0;
- 
--	snd_printdd("sent mixer %d: 0x%d 0x%d\n", num, rval, lval);
-+	snd_printdd("sent mixer %d: 0x%x 0x%x\n", num, rval, lval);
- 	do {
- 		SEND_SDGV(cif, num, num, rval, lval);
- 		SEND_RDGV(cif, num, num, &rptr);
-@@ -1080,7 +1080,7 @@ getmixer(struct cmdif *cif, short num, unsigned short *rval,
- 		return -EIO;
- 	*rval = rptr.retwords[0];
- 	*lval = rptr.retwords[1];
--	snd_printdd("got mixer %d: 0x%d 0x%d\n", num, *rval, *lval);
-+	snd_printdd("got mixer %d: 0x%x 0x%x\n", num, *rval, *lval);
- 	return 0;
- }
- 
--- 
-2.0.0.526.g5318336
+Thanks for the advice! I have split up and sent out the big patch as a 
+series, with hopefully the right folks CC'd.
+
+  - Hans
