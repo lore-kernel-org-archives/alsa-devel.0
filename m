@@ -1,191 +1,77 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC hardware descriptor list support)
-Date: Mon, 04 Aug 2014 18:50:17 +0200
-Message-ID: <1621896.RqTTnmY7rK@avalon>
-References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com> <18522523.T2zy7HfoJ2@avalon> <20140801170744.GD8181@intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: ASoC updates for v3.17
+Date: Mon, 04 Aug 2014 18:57:31 +0200
+Message-ID: <53DFBB7B.2030804@metafoo.de>
+References: <20140804161750.GV30458@sirena.org.uk>
+ <s5hppgg6wj5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20140801170744.GD8181@intel.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, dmaengine@vger.kernel.org, linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel@lists.infradead.org, Maxime Ripard <maxime.ripard@free-electrons.com>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-058.synserver.de (smtp-out-058.synserver.de
+ [212.40.185.58])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7537F2619E6
+ for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 18:57:32 +0200 (CEST)
+In-Reply-To: <s5hppgg6wj5.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vinod,
-
-On Friday 01 August 2014 22:37:44 Vinod Koul wrote:
-> On Fri, Aug 01, 2014 at 10:51:26AM +0200, Laurent Pinchart wrote:
-> > On Thursday 24 July 2014 10:22:48 Vinod Koul wrote:
-> >> On Wed, Jul 23, 2014 at 01:07:43PM +0200, Laurent Pinchart wrote:
-> >>>> The rsnd_soc_dai_trigger() function takes a spinlock, making the
-> >>>> context atomic, which regmap doesn't like as it locks a mutex.
-> >>>> 
-> >>>> It might be possible to fix this by setting the fast_io field in
-> >>>> both the regmap_config and regmap_bus structures in
-> >>>> sound/soc/sh/rcar/gen.c.
-> >>>> regmap will then use a spinlock instead of a mutex. However, even if
-> >>>> I believe that change makes sense and should be done, another atomic
-> >>>> context issue will come from the rcar-dmac driver which allocates
-> >>>> memory in the prep_dma_cyclic function, called by rsnd_dma_start()
-> >>>> from rsnd_soc_dai_trigger() with the spinlock help.
-> >>>> 
-> >>>> What context is the rsnd_soc_dai_trigger() function called in by the
-> >>>> alsa core ? If it's guaranteed to be a sleepable context, would it
-> >>>> make sense to replace the rsnd_priv spinlock with a mutex ?
-> >>> 
-> >>> Answering myself here, that's not an option, as the trigger function
-> >>> is called in atomic context (replacing the spinlock with a mutex
-> >>> produced a clear BUG) due to snd_pcm_lib_write1() taking a spinlock.
-> >>> 
-> >>> Now we have a core issue. On one side there's rsnd_soc_dai_trigger()
-> >>> being called in atomic context, and on the other side the function
-> >>> ends up calling dmaengine_prep_dma_cyclic() which needs to allocate
-> >>> memory. To make this more func the DMA engine API is undocumented and
-> >>> completely silent on whether the prep functions are allowed to sleep.
-> >>> The question is, who's wrong ?
-> >>> 
-> >>> Now, if you're tempted to say that I'm wrong by allocating memory with
-> >>> GFP_KERNEL in the DMA engine driver, please read on first :-) I've
-> >>> tried replacing GFP_KERNEL with GFP_ATOMIC allocations, and then ran
-> >>> into a problem more complex to solve.
-> >>> 
-> >>> The rcar-dmac DMA engine driver uses runtime PM. When not used, the
-> >>> device is suspended. The driver calls pm_runtime_get_sync() to resume
-> >>> the device, and needs to do so when a descriptor is submitted. This
-> >>> operation, currently performed in the tx_submit handler, could be
-> >>> moved to the prep_dma_cyclic or issue_pending handler, but the three
-> >>> operations are called in a row from rsnd_dma_start(), itself
-> >>> ultimately called from snd_pcm_lib_write1() with the spinlock held.
-> >>> This means I have no place in my DMA engine driver where I can resume
-> >>> the device.
-> >>> 
-> >>> One could argue that the rcar-dmac driver could use a work queue to
-> >>> handle power management. That's correct, but the additional
-> >>> complexity, which would be required in *all* DMA engine drivers, seem
-> >>> too high to me. If we need to go that way, this is really a task that
-> >>> the DMA engine core should handle.
-> >>> 
-> >>> Let's start by answering the background question and updating the DMA
-> >>> engine API documentation once and for good : in which context are
-> >>> drivers allowed to call the prep, tx_submit and issue_pending
-> >>> functions ?
-> >> 
-> >> I think this was bought up sometime back and we have cleared that all
-> >> _prep functions can be invoked in atomic context.
-> >> 
-> >> This is the reason why we have been pushing folks to use GFP_NOWAIT is
-> >> memory allocations during prepare.
-> > 
-> > From the replies I've received it's pretty clear that the prep functions
-> > need to be callable from atomic context. I'll respond to this in more
-> > depth in a reply to Russell's e-mail.
-> > 
-> > > Thanks for pointing out documentation doesn't say so, will send a patch
-> > > for that.
-> > 
-> > I wish that was all that is missing from the documentation ;-) Luckily
-> > Maxime Ripard has sent a patch that documents DMA engine from a DMA
-> > engine driver's point of view. While not perfect (I'm going to review
-> > it), it's a nice starting point to (hopefully) get to a properly
-> > documented framework.
->
-> Sure, please do point out any other instance.
-
-Don't worry, I will :-)
-
-> Russell did improve it a lot. But then Documentation gets not so quick
-> updates. Yes new users like you can list issues far more easily than others.
-> 
-> Also now commit log provides a very valuable source of why a particular
-> thing was done.
-
-Come on. That's the theory (and we should of course aim for it). We all know 
-the difference between theory and practice : in theory they're the same.
-
-More seriously speaking, I've dived into the git history more times than I 
-should have to retain some mental sanity, and it leaves way too many questions 
-unanswered.
-
-> > > from atomic context too.
-> > 
-> > I'll take this opportunity to question why we have a separation between
-> > tx_submit and issue_pending. What's the rationale for that, especially
-> > given that dma_issue_pending_all() might kick in at any point and issue
-> > pending transfers for all devices. A driver could thus see its submitted
-> > but not issued transactions being issued before it explicitly calls
-> > dma_async_issue_pending().
-> 
-> The  API states that you need to get a channel, then prepare a descriptor
-> and submit it back. Prepare can be in any order. The submit order is the one
-> which is run on dmaengine. The submit marks the descriptor as pending.
-> Typically you should have a pending_list which the descriptor should be
-> pushed to.
-> 
-> And lastly invoke dma_async_issue_pending() to start the pending ones.
-> 
-> You have the flexibility to prepare descriptors and issue in the order you
-> like. You can also attach the callback required for descriptors here.
-
-The question was why is there a dma_async_issue_pending() operation at all ? 
-Why can't dmaengine_submit() triggers the transfer start ? The only 
-explanation is a small comment in dmaengine.h that states
-
- * This allows drivers to push copies to HW in batches,
- * reducing MMIO writes where possible.
-
-I don't think that's applicable for DMA slave transfers. Is it still 
-applicable for anything else ?
-
-Quoting git log, the reason is
-
-commit c13c8260da3155f2cefb63b0d1b7dcdcb405c644
-Author: Chris Leech <christopher.leech@intel.com>
-Date:   Tue May 23 17:18:44 2006 -0700
-
-    [I/OAT]: DMA memcpy subsystem
-    
-    Provides an API for offloading memory copies to DMA devices
-    
-    Signed-off-by: Chris Leech <christopher.leech@intel.com>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
-
-;-)
-
-> > The DMA_PRIVATE capability flag seems to play a role here, but it's far
-> > from being clear how that mechanism is supposed to work. This should be
-> > documented as well, and any light you could shed on this dark corner of
-> > the API would help.
-> 
-> Ah it is not so dark.
-> 
-> if you look closely at dmaengine channel allocation it is only for marking
-> if channel is privately to be used or for async_tx.
-> Thus slave devices must set DMA_PRIVATE
-
-In order to avoid scattering one topic across multiple mails, I'll pursue this 
-one in a reply to Russell.
-
-> > Similarly, the DMA engine API is split in functions with different
-> > prefixes (mostly dmaengine_*, dma_async_*, dma_*, and various unprefixed
-> > niceties such as async_tx_ack or txd_lock. If there's a rationale for that
-> > (beyond just historical reasons) it should also be documented, otherwise a
-> > cleanup would help all the confused DMA engine users (myself included). I
-> > might be able to find a bit of time to work on that, but I'll first need
-> > to correctly understand where we come from and where we are. Again,
-> > information would be welcome and fully appreciated.
-> 
-> History. DMA engine was developed for async_tx. (hence async_tx)
-> 
-> I think most of dmaengine APIs are dmaengine_. the async_ ones are
-> specifically for async_tx usage.
-> txd ones are descriptor related.
-
-Ditto here.
-
--- 
-Regards,
-
-Laurent Pinchart
-
+T24gMDgvMDQvMjAxNCAwNjozNyBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IE1vbiwgNCBB
+dWcgMjAxNCAxNzoxNzo1MCArMDEwMCwKPiBNYXJrIEJyb3duIHdyb3RlOgo+Pgo+PiBUaGUgZm9s
+bG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IDE5NTgzY2E1ODRkNmY1NzQzODRlMTdmZTc2MTNk
+ZmFlYWRjZGM0YTY6Cj4+Cj4+ICAgIExpbnV4IDMuMTYgKDIwMTQtMDgtMDMgMTU6MjU6MDIgLTA3
+MDApCj4+Cj4+IGFyZSBhdmFpbGFibGUgaW4gdGhlIGdpdCByZXBvc2l0b3J5IGF0Ogo+Pgo+PiAg
+ICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvYnJvb25pZS9z
+b3VuZC5naXQgdGFncy9hc29jLXYzLjE3Cj4+Cj4+IGZvciB5b3UgdG8gZmV0Y2ggY2hhbmdlcyB1
+cCB0byBhZTM0YTc4YzQzMGMzN2MwNjQwNGYwMzJmYjA0ZTUxMzE1MjA0MjgxOgo+Pgo+PiAgICBN
+ZXJnZSByZW1vdGUtdHJhY2tpbmcgYnJhbmNoICdhc29jL3RvcGljL3dtODk4NScgaW50byBhc29j
+LW5leHQgKDIwMTQtMDgtMDQgMTY6MzI6MjUgKzAxMDApCj4+Cj4+IC0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4KPj4gQVNv
+QzogVXBkYXRlcyBmb3IgdjMuMTcKPj4KPj4gVGhpcyBoYXMgYmVlbiBhIHByZXR0eSBleGNpdGlu
+ZyByZWxlYXNlIGluIHRlcm1zIG9mIHRoZSBmcmFtZXdvcmssIHdlJ3ZlCj4+IGZpbmFsbHkgZ290
+IHN1cHBvcnQgZm9yIG11bHRpcGxlIENPREVDcyBhdHRhY2hlZCB0byBhIHNpbmdsZSBEQUkgbGlu
+awo+PiB3aGljaCBoYXMgYmVlbiBzb21ldGhpbmcgdGhlcmUncyBiZWVuIGludGVyZXN0IGluIGFz
+IGxvbmcgYXMgSSd2ZSBiZWVuCj4+IHdvcmtpbmcgb24gQVNvQy4gIEEgYmlnIHRoYW5rcyB0byBC
+ZW5vaXQgYW5kIE1pc2FlbCBmb3IgdGhlaXIgd29yayBvbgo+PiB0aGlzLgo+Pgo+PiBPdGhlcndp
+c2UgaXQncyBiZWVuIGEgZmFpcmx5IHN0YW5kYXJkIHJlbGVhc2UgZm9yIGRldmVsb3BtZW50LCBp
+bmNsdWRpbmcKPj4gbW9yZSBjb21wb25lbnRpc2F0aW9uIHdvcmsgZnJvbSBMYXJzLVBldGVyIGFu
+ZCBhIGdvb2Qgc2VsZWN0aW9uIG9mIGJvdGgKPj4gQ09ERUMgYW5kIENQVSBkcml2ZXJzLgo+Pgo+
+PiAgIC0gU3VwcG9ydCBmb3IgbXVsdGlwbGUgQ09ERUNzIGF0dGFjaGVkIHRvIGEgc2luZ2xlIERB
+SSwgZW5hYmxpbmcKPj4gICAgIHN5c3RlbXMgd2l0aCBmb3IgZXhhbXBsZSBtdWx0aXBsZSBEQUMv
+c3BlYWtlciBkcml2ZXJzIG9uIGEgc2luZ2xlCj4+ICAgICBsaW5rLCBjb250cmlidXRlZCBieSBC
+ZW5vaXQgQ291c3NvbiBiYXNlZCBvbiB3b3JrIGZyb20gTWlzYWVsIExvcGV6Cj4+ICAgICBDcnV6
+Lgo+PiAgIC0gU3VwcG9ydCBmb3IgYnl0ZSBjb250cm9scyBsYXJnZXIgdGhhbiAyNTYgYnl0ZXMg
+YmFzZWQgb24gdGhlIHVzZSBvZgo+PiAgICAgVExWcyBjb250cmlidXRlZCBieSBPbWFpciBNb2hh
+bW1lZCBBYmR1bGxhaC4KPj4gICAtIE1vcmUgY29tcG9uZW50aXNhdGlvbiB3b3JrIGZyb20gTGFy
+cy1QZXRlciBDbGF1c2VuLgo+PiAgIC0gVGhlIHJlbWFpbmRlciBvZiB0aGUgY29udmVyc2lvbnMg
+b2YgQ09ERUMgZHJpdmVycyB0byBwYXJhbXNfd2lkdGgoKQo+PiAgIC0gRHJpdmVycyBmb3IgQ2ly
+cnVzIExvZ2ljIENTNDI2NSwgRnJlZXNjYWxlIGkuTVggQVNSQyBibG9ja3MsIFJlYWx0ZWsKPj4g
+ICAgIFJUMjg2IGFuZCBSVDU2NzAsIFJvY2tjaGlwIFJLM3h4eCBJMlMgY29udHJvbGxlcnMgYW5k
+IFRleGFzIEluc3RydW1lbnRzCj4+ICAgICBUQVMyNTUyLgo+PiAgIC0gTG90cyBvZiB1cGRhdGVz
+IGFuZCBmaXhlcywgZXNwZWNpYWxseSB0byB0aGUgRGFWaW5jaSwgSW50ZWwsCj4+ICAgICBGcmVl
+c2NhbGUsIFJlYWx0ZWssIGFuZCByY2FyIGRyaXZlcnMuCj4KPiBUaGFua3MsIHB1bGxlZCBub3cu
+ICBUaGUgb25seSBidWlsZCByZWdyZXNzaW9uIEkndmUgc2VlbiBpcyB0aGUKPiB3YXJuaW5nOgo+
+Cj4gc291bmQvc29jL3NvYy1kYXBtLmM6IEluIGZ1bmN0aW9uIOKAmHNuZF9zb2NfZGFwbV9nZXRf
+ZW51bV9kb3VibGXigJk6Cj4gc291bmQvc29jL3NvYy1kYXBtLmM6Mjg2MjoxNTogd2FybmluZzog
+4oCYcmVnX3ZhbOKAmSBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24g
+Wy1XbWF5YmUtdW5pbml0aWFsaXplZF0KPgo+IEkgZ3Vlc3MgaXQgY2FtZSBmcm9tIHRoZSByZWNl
+bnQgTGFycycgY2hhbmdlLgo+IEl0IGp1c3QgZ2l2ZXMgdGhlIGdhcmJhZ2UgdmFsdWUgYW5kIHNo
+b3VsZG4ndCBiZSBzZXJpb3VzLCBidXQgaXQnZCBiZQo+IGJldHRlciB0byBiZSBmaXhlZCBpbiBh
+bnl3YXlzLgo+Cgp5ZXAuIGxvb2tzIGxpa2UgeW91ciBjb21waWxlciBpcyBhIGJpdCBzbWFydGVy
+IHRoYW4gbWluZS4gSSdsbCBzZW5kIGEgcGF0Y2guIApUaGUgaXNzdWUgaXRzZWxmIGlzIGhhcm1s
+ZXNzIHRob3VnaCBzaW5jZSB3ZSBldmVuIHRob3VnaCB3ZSBkbyBzb21lIAp0cmFuc2Zvcm1hdGlv
+bnMgb24gdGhlIHVuaW5pdGlhbGl6ZWQgdmFsdWUgdGhlIHJlc3VsdCBvZiB0aGF0IGlzIG5ldmVy
+IHVzZWQgCnNpbmNlIHdlIHJldHVybiBhIGVycm9yIGNvZGUuCgotIExhcnMKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
