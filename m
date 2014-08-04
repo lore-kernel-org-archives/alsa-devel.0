@@ -1,47 +1,57 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: [PATCH] ASoC: fsl-ssi: Support for
-	SND_SOC_DAIFMT_CBM_CFS
-Date: Mon, 4 Aug 2014 17:29:12 +0200
-Message-ID: <CAOf5uwkz-ZpNTo8A9MDooNKeF6tSnC8Yvj4_gm3rTCD5ANMdmQ@mail.gmail.com>
-References: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
- <CAOMZO5D4OXxG346LZjGOCGjzoAZSz0N97XnWmUE09OYTDid-YQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_sai: Set SYNC bit of TCR2 to Asynchronous Mode
+Date: Mon, 4 Aug 2014 16:22:52 +0100
+Message-ID: <20140804152252.GT30458@sirena.org.uk>
+References: <1407136045-8940-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f50.google.com (mail-wg0-f50.google.com [74.125.82.50])
- by alsa0.perex.cz (Postfix) with ESMTP id C73AB261683
- for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 17:29:13 +0200 (CEST)
-Received: by mail-wg0-f50.google.com with SMTP id n12so7899696wgh.33
- for <alsa-devel@alsa-project.org>; Mon, 04 Aug 2014 08:29:13 -0700 (PDT)
-In-Reply-To: <CAOMZO5D4OXxG346LZjGOCGjzoAZSz0N97XnWmUE09OYTDid-YQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Angelo Adamo <adamo.a60@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Fabio Falzoi <fabio.falzoi84@gmail.com>, Markus Pargmann <mpa@pengutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="j5abB2DrWbqmv6QP"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1407136045-8940-1-git-send-email-nicoleotsuka@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabio
 
-On Mon, Aug 4, 2014 at 5:27 PM, Fabio Estevam <festevam@gmail.com> wrote:
-> On Mon, Aug 4, 2014 at 12:08 PM, Fabio Falzoi <fabio.falzoi84@gmail.com> wrote:
->> Add SND_SOC_DAIFMT_CBM_CFS support for Freescale architecture.
->> Successfully tested on i.MX 6Quad Wandboard and UDOO boards connected to
->> the pcm1792a codec.
->
-> Great, do you plan to submit the audio support into imx6q-udoo.dts?
->
-> Thanks
+--j5abB2DrWbqmv6QP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-udoo is not based on pcm1792a but on ac97 codec. I have seen somewhere
-the driver I can cleanup and let it go. We have solded the pcm1792a on wandboard
-and udoo ;) and on pandaboard es :D.
+On Mon, Aug 04, 2014 at 03:07:25PM +0800, Nicolin Chen wrote:
+> From: Nicolin Chen <Guangyu.Chen@freescale.com>
+>=20
+> There is one design rule according to SAI's reference manual:
+> If the transmitter bit clock and frame sync are to be used by both transm=
+itter
+> and receiver, the transmitter must be configured for asynchronous operati=
+on
+> and the receiver for synchronous operation.
 
-Michael
+Applied, thanks.
+
+--j5abB2DrWbqmv6QP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT36VJAAoJELSic+t+oim9ABwP/3ndUI2+gdawDpjqFp0aOxaJ
+87fp0zku0Hqk/rH+W4yGDj2erflkRkZz3wvfMh0cUfIACltX3VkDh2oqX94wVXy0
+y5BsJOfQB3o+FFMqUsgtYIms8DMBrM6ZWoqwNNo4khnbtwwmC0ZBahCrbsGpMTUp
+oALZXwBbLaR8HM9rPxYOM23qMZYi2S+3w56LYko2tE98xI6pooTHYcH4RvhgemmC
+quLeG1lM/Pab6NLr5Vfnbf8dcQPoCuXMT7ql/97aAJaG+hqSgMaUXVvuEfFlALtm
+cNjE9tWTtkXcak04EriQSyOXeW3WWQbkI0gb9IPehQ/Qv9deOtilgFHzOSagDjS0
+U6XROBeeiJNVr1ypyAaH2dqEKc0JCZavZapwlwfX8SKLOwmT2PEIBjkgXiF1moqm
+WeoDUMBcpioNkGcpDeDj7UrHQC5xYjoKn3O7IqWKZqnMDi6EpBPG1esVUc7ocz6T
+jc55+ZKHEkUgTWX+ajOoO4H0TVFTTSBBpCb3ssmugNZNfaqj04WkAMkd594nxLF/
+RGLDAl/v4ZgRgZCkVUbJO3A8Zz0jg03yfVbaEroWav3wJA6x86BiY8U7N4WxZo42
+OzQh4udzNgvA80IIQU+dAIyIczpRoVxPUBvw3N7aOA2QQz2aAsn1x3rTlf1q/B9a
+Rmy/wCcilXiBxFuWb90a
+=348I
+-----END PGP SIGNATURE-----
+
+--j5abB2DrWbqmv6QP--
