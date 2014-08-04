@@ -1,15 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: fsl_sai: Don't use ~FSL_SAI_CR2_SYNC
-Date: Mon,  4 Aug 2014 16:17:44 +0100
-Message-ID: <1407165464-18578-1-git-send-email-broonie@kernel.org>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-ssi: Support for
+	SND_SOC_DAIFMT_CBM_CFS
+Date: Mon, 4 Aug 2014 12:27:27 -0300
+Message-ID: <CAOMZO5D4OXxG346LZjGOCGjzoAZSz0N97XnWmUE09OYTDid-YQ@mail.gmail.com>
+References: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ABDC926084B
- for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 17:18:10 +0200 (CEST)
+Received: from mail-la0-f48.google.com (mail-la0-f48.google.com
+ [209.85.215.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2A3826084B
+ for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 17:27:27 +0200 (CEST)
+Received: by mail-la0-f48.google.com with SMTP id gl10so5481095lab.21
+ for <alsa-devel@alsa-project.org>; Mon, 04 Aug 2014 08:27:27 -0700 (PDT)
+In-Reply-To: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,35 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, linaro-kernel@lists.linaro.org, Mark Brown <broonie@linaro.org>
+To: Fabio Falzoi <fabio.falzoi84@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, adamo.a60@gmail.com, Timur Tabi <timur@tabi.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Markus Pargmann <mpa@pengutronix.de>, michael@amarulasolutions.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@linaro.org>
+On Mon, Aug 4, 2014 at 12:08 PM, Fabio Falzoi <fabio.falzoi84@gmail.com> wrote:
+> Add SND_SOC_DAIFMT_CBM_CFS support for Freescale architecture.
+> Successfully tested on i.MX 6Quad Wandboard and UDOO boards connected to
+> the pcm1792a codec.
 
-On 64 bit systems ~FSL_SAI_CR2_SYNC generates a constant that won't fit in
-an unsigned int, causing GCC to warn.  Since we're already only updating
-one bit due to the masking in update bits just write the value
-explicitly as zero.
+Great, do you plan to submit the audio support into imx6q-udoo.dts?
 
-Signed-off-by: Mark Brown <broonie@linaro.org>
----
- sound/soc/fsl/fsl_sai.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index faa0497..9f10575 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -333,8 +333,7 @@ static int fsl_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	 * The transmitter bit clock and frame sync are to be
- 	 * used by both the transmitter and receiver.
- 	 */
--	regmap_update_bits(sai->regmap, FSL_SAI_TCR2, FSL_SAI_CR2_SYNC,
--			   ~FSL_SAI_CR2_SYNC);
-+	regmap_update_bits(sai->regmap, FSL_SAI_TCR2, FSL_SAI_CR2_SYNC, 0);
- 	regmap_update_bits(sai->regmap, FSL_SAI_RCR2, FSL_SAI_CR2_SYNC,
- 			   FSL_SAI_CR2_SYNC);
- 
--- 
-2.0.0
+Thanks
