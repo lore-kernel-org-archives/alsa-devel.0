@@ -1,17 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: davinci: Enable menuconfig entry for
-	McASP
-Date: Mon, 4 Aug 2014 16:28:51 +0100
-Message-ID: <20140804152851.GU30458@sirena.org.uk>
-References: <1407131787-17171-1-git-send-email-peter.ujfalusi@ti.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-ssi: Support for
+	SND_SOC_DAIFMT_CBM_CFS
+Date: Mon, 4 Aug 2014 12:51:57 -0300
+Message-ID: <CAOMZO5BEZOYCwyvGaWPje+=bKHsfOWJ6Qxjnka3kYyk2GBK-uw@mail.gmail.com>
+References: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
+ <CAOMZO5D4OXxG346LZjGOCGjzoAZSz0N97XnWmUE09OYTDid-YQ@mail.gmail.com>
+ <CAOf5uwkz-ZpNTo8A9MDooNKeF6tSnC8Yvj4_gm3rTCD5ANMdmQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0301908669544522345=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1207326084B
- for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 17:29:32 +0200 (CEST)
-In-Reply-To: <1407131787-17171-1-git-send-email-peter.ujfalusi@ti.com>
+Received: from mail-la0-f43.google.com (mail-la0-f43.google.com
+ [209.85.215.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4A22261683
+ for <alsa-devel@alsa-project.org>; Mon,  4 Aug 2014 17:51:58 +0200 (CEST)
+Received: by mail-la0-f43.google.com with SMTP id hr17so5642572lab.30
+ for <alsa-devel@alsa-project.org>; Mon, 04 Aug 2014 08:51:57 -0700 (PDT)
+In-Reply-To: <CAOf5uwkz-ZpNTo8A9MDooNKeF6tSnC8Yvj4_gm3rTCD5ANMdmQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +26,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, zonque@gmail.com
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Angelo Adamo <adamo.a60@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Fabio Falzoi <fabio.falzoi84@gmail.com>, Markus Pargmann <mpa@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Aug 4, 2014 at 12:29 PM, Michael Trimarchi
+<michael@amarulasolutions.com> wrote:
 
---===============0301908669544522345==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="16g62bNiOXHZyjZa"
-Content-Disposition: inline
+> udoo is not based on pcm1792a but on ac97 codec. I have seen somewhere
+> the driver I can cleanup and let it go. We have solded the pcm1792a on wandboard
+> and udoo ;) and on pandaboard es :D.
 
+Ah, good point :-)
 
---16g62bNiOXHZyjZa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, Udoo has the vt1613 codec
+(https://github.com/UDOOboard/Kernel_Unico/blob/master/sound/soc/codecs/vt1613.c
+), which has not been upstreamed yet.
 
-On Mon, Aug 04, 2014 at 08:56:27AM +0300, Peter Ujfalusi wrote:
-> In order to be able to use simple-card with McASP on TI SoC based boards we
-> need to be able to select the McASP via menuconfig.
-
-Applied, thanks.
-
---16g62bNiOXHZyjZa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT36awAAoJELSic+t+oim9PL0P/1bJLkd5W9ks5eZRtolmN3Sc
-CFEHkYggMsZlovkso29n9Cj1ObfpMZjsm5gnzMlAanFhth+NHIFzsCIJ9od9bOUe
-Erv3XQicrL0L2kEp0j3mWpLsDPnatLxMk+G81dDb1Ce12vZTu0rfhtiycF3CFPYQ
-+j1ctMluFbpKXULAM2uGqLyvFPyV9T18z9ZNFet8urGi542OJNsHxn5JQgFK9aQm
-H1p2RzSWGN/tyA61y85H/IkWTVQwC+JqzgoOFG+G0MmIWhIFUot4son5WqFNMPqo
-OSpPa224qSJymhwPkSzaLKMW1UU1x4r0GqRH7B1snq2/W+rm91DJRGvq8wWt31hM
-cwGb/eln65b7eUQ70TxMlR05M0QHr5jAS9RU3RsKNodBm0c1xwehqT/S5JG/bi0q
-N796vrMaGs0hMxngXsAUxgvMro8CHnKd2WPVUztcNhn0o87ex3g16z1ZzYqT0yTE
-1iWDKL47nZbtL0t++cZfvnbzscamzcq7Vhtlcezj6vqXN8ImA6cd6uXB9pYtGN7Y
-4MHGhtumG8rITXNryrzhFsO95XHYxaZI1A2t1MCklDLe441Ww2ysF2y/MGYrij0v
-Zfjby1Wzvh/YZjBrbd7ZOos3SPxB0Nvdkuh03vbpsqLpobDYGKvs0Pc9wGzJwfK8
-GxrEODe63hh3bk/ntskJ
-=j+lE
------END PGP SIGNATURE-----
-
---16g62bNiOXHZyjZa--
-
---===============0301908669544522345==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0301908669544522345==--
+Thanks
