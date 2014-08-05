@@ -1,63 +1,66 @@
-From: Varka Bhadram <varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: Add asynchronous mode support
-Date: Tue, 05 Aug 2014 16:44:29 +0530
-Message-ID: <53E0BC95.7040208@gmail.com>
-References: <1407223925-29678-1-git-send-email-nicoleotsuka@gmail.com> <53E0B926.9010103@gmail.com> <20140805110735.GA16503@MrMyself>
+From: Himangi Saraogi <himangi774@gmail.com>
+Subject: [PATCH] sound/oss/opl3: Remove typedef opl_devinfo
+Date: Tue, 5 Aug 2014 17:37:18 +0530
+Message-ID: <20140805120718.GA12767@himangi-Dell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140805110735.GA16503@MrMyself>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Nicolin Chen <Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b02247-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: julia.lawall@lip6.fr
 List-Id: alsa-devel@alsa-project.org
 
-On 08/05/2014 04:37 PM, Nicolin Chen wrote:
-> Hi Varka,
->
-> On Tue, Aug 05, 2014 at 04:29:50PM +0530, Varka Bhadram wrote:
->>> diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
->>> index 0f4e238..77864f4 100644
->>> --- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
->>> +++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
->>> @@ -24,6 +24,22 @@ Required properties:
->>>   - big-endian-data: If this property is absent, the little endian mode will
->>>     be in use as default, or the big endian mode will be in use for all the
->>>     fifo data.
->>> +- fsl,sai-synchronous-rx: This is a boolean property. If present, indicating
->>> +  that SAI will work in the synchronous mode (sync Tx with Rx) which means
->>> +  both the transimitter and receiver will send and receive data by following
->>> +  receiver's bit clocks and frame sync clocks.
->>> +- fsl,sai-asynchronous: This is a boolean property. If present, indicating
->>> +  that SAI will work in the asynchronous mode, which means both transimitter
->>> +  and receiver will send and receive data by following their own bit clocks
->>> +  and frame sync clocks separately.
->>>
->> Would be readable if it like this...
->>
->> fsl,sai-synchronous-rx: This is a boolean property. If present, indicating
->> 			that SAI will work in the synchronous mode (sync Tx with Rx) which means
->> 			both the transimitter and receiver will send and receive data by following
->> 			receiver's bit clocks and frame sync clocks.
->> - fsl,sai-asynchronous: This is a boolean property. If present, indicating
->> 			that SAI will work in the asynchronous mode, which means both transimitter
->> 			and receiver will send and receive data by following their own bit clocks
->> 			and frame sync clocks separately.
-> I agree, however, the doc was initialized in that format. Adding
-> indentations for these two appended lines makes the whole text
-> look weird. :(
+This typedef is unnecessary and should just be removed as they are
+never used.
 
-Reading comfortably is important for us...  :-)
-see this:http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt#L46
+The following Coccinelle semantic patch detects the case.
 
-Thanks....
+@tn@
+identifier i;
+type td;
+@@
 
+-typedef
+ struct i { ... }
+-td
+ ;
+
+@@
+type tn.td;
+identifier tn.i;
+@@
+
+-td
++ struct i
+
+Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
+Acked-by: Julia Lawall <julia.lawall@lip6.fr>
+---
+ sound/oss/opl3.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/oss/opl3.c b/sound/oss/opl3.c
+index 4709e59..607cee4 100644
+--- a/sound/oss/opl3.c
++++ b/sound/oss/opl3.c
+@@ -52,7 +52,7 @@ struct voice_info
+ 	int             panning;	/* 0xffff means not set */
+ };
+ 
+-typedef struct opl_devinfo
++struct opl_devinfo
+ {
+ 	int             base;
+ 	int             left_io, right_io;
+@@ -73,7 +73,7 @@ typedef struct opl_devinfo
+ 	unsigned char   cmask;
+ 
+ 	int             is_opl4;
+-} opl_devinfo;
++};
+ 
+ static struct opl_devinfo *devc = NULL;
+ 
 -- 
-Regards,
-Varka Bhadram.
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.9.1
