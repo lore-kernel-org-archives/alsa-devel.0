@@ -1,15 +1,13 @@
 From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH v3 2/2] Documentation: dt: bindings: sound: Add bindings
- for CS35L32
-Date: Tue, 5 Aug 2014 09:28:17 -0500
-Message-ID: <alpine.DEB.2.02.1408050926260.7394@heelrod>
+Subject: Re: [PATCH v3 1/2] ASoC: Add support for CS35L32 Boosted Amplifier
+Date: Tue, 5 Aug 2014 09:31:13 -0500
+Message-ID: <alpine.DEB.2.02.1408050928220.7394@heelrod>
 References: <1407183077-23807-1-git-send-email-brian.austin@cirrus.com>
- <1407183077-23807-2-git-send-email-brian.austin@cirrus.com>
- <53E05737.3000601@gmail.com>
+ <53E05458.6080605@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <53E05737.3000601-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+In-Reply-To: <53E05458.6080605-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Varka Bhadram <varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Cc: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
@@ -17,69 +15,66 @@ List-Id: alsa-devel@alsa-project.org
 
 
 On Mon, 4 Aug 2014, Varka Bhadram wrote:
-> > +  0 = Left/right channels VMON[11:0], IMON[11:0], VPMON[7:0].
-> > +  1 = Left/right channels VMON[11:0], IMON[11:0], STATUS.
-> > +  2 = (Default) left/right channels VMON[15:0], IMON [15:0].
-> > +  3 = Left/right channels VPMON[7:0], STATUS.
+
+> On 08/05/2014 01:41 AM, Brian Austin wrote:
+> > +#include <linux/module.h>
+> > +#include <linux/moduleparam.h>
+> > +#include <linux/version.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/init.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/i2c.h>
+> > +#include <linux/gpio.h>
+> > +#include <linux/regmap.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/regulator/consumer.h>
+> > +#include <linux/gpio/consumer.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/slab.h>
+> > +#include <sound/core.h>
+> > +#include <sound/pcm.h>
+> > +#include <sound/pcm_params.h>
+> > +#include <sound/soc.h>
+> > +#include <sound/soc-dapm.h>
+> > +#include <sound/initval.h>
+> > +#include <sound/tlv.h>
+> > +#include <dt-bindings/sound/cs35l32.h>
 > > +
-> > +  - cirrus,sdout-share : SDOUT sharing. Determines whether one or two
-> > CS35L32
-> > +  devices are on board sharing SDOUT.
-> > +  0 = (Default) One IC.
-> > +  1 = Two IC's.
-> > +
-> > +  - cirrus,battery-recovery : Low battery nominal recovery threshold,
-> > rising VP.
-> > +  0 = 3.1V
-> > +  1 = 3.2V
-> > +  2 = 3.3V (Default)
-> > +  3 = 3.4V
-> > +
-> > +  - cirrus,battery-threshold : Low battery nominal threshold, falling VP.
-> > +  0 = 3.1V
-> > +  1 = 3.2V
-> > +  2 = 3.3V
-> > +  3 = 3.4V (Default)
-> > +  4 = 3.5V
-> > +  5 = 3.6V
+> > +#include "cs35l32.h"
 > > +
 > 
-> Proper indentation for all the properties... These are not readable like
-> this...
+> includes in alphabetical order...
+
+I don't think that applies to included files outside of standard include 
+directories does it?
 > 
-> Required properties:
->  - compatible:		"cirrus,cs35l32"
->  - reg:			the I2C address of the device for I2C. Address is
-> determined by the level
-> 			of the AD0 pin. Level 0 is 0x40 while Level 1 is 0x41.
->  - VA-supply,VP-supply:	power supplies for the device,
-> 			as covered in
-> Documentation/devicetree/bindings/regulator/regulator.txt.
+> > +{
+> > +	struct snd_soc_codec *codec = dai->codec;
+> > +
+> > +	return snd_soc_update_bits(codec, CS35L32_PWRCTL2,
+> > +					CS35L32_SDOUT_3ST, tristate << 3);
 > 
-> Optional properties:
->  - reset-gpios:		a GPIO spec for the reset pin. If specified, it will
-> be
-> 			deasserted before communication to the codec starts.
->  - cirrus,boost-manager:Boost voltage control.
-> 			0 = Automatically managed.
-> 				Boost-converter output voltage is the higher
-> 				of the two: Class G or adaptive LED voltage.
-> 			1 = Automatically managed irrespective of audio,
-> adapting for low-power
+> return snd_soc_update_bits(codec, CS35L32_PWRCTL2,
+> 			   CS35L32_SDOUT_3ST, tristate << 3);
 > 
+If that is a style issue for submission checkpatch should warn on this 
+correct?
+
+> 
+> should match open parenthesis's...
+> 
+>  devm_kzalloc(&i2c_client->dev,
+> 	      sizeof(struct cs35l32_platform_data),
+> 	      GFP_KERNEL);
+> 
+checkpatch?
+
 > -- 
 > Regards,
 > Varka Bhadram.
 > 
 > 
-Well when I look at your example that makes it more difficult for me to 
-read ;)
-
-I think if there is a mandatory style we are looking for I would expect it 
-to be documented. Maybe I have missed that? I take my bindings file from 
-examples already in the mainline and find this to be acceptable and 
-readable for me.
-
 Thanks,
 Brian
 --
