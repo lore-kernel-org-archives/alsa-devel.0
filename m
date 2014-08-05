@@ -1,131 +1,101 @@
-From: Varka Bhadram <varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v3 2/2] Documentation: dt: bindings: sound: Add bindings
- for CS35L32
-Date: Tue, 05 Aug 2014 09:31:59 +0530
-Message-ID: <53E05737.3000601@gmail.com>
-References: <1407183077-23807-1-git-send-email-brian.austin@cirrus.com> <1407183077-23807-2-git-send-email-brian.austin@cirrus.com>
+From: <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt286: Add API to set supported jack type
+Date: Tue, 5 Aug 2014 13:52:50 +0800
+Message-ID: <1407217970-20126-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1407183077-23807-2-git-send-email-brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id D510D261ABF
+ for <alsa-devel@alsa-project.org>; Tue,  5 Aug 2014 07:53:24 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 08/05/2014 01:41 AM, Brian Austin wrote:
-> The patch adds device tree bindings file for the Cirrus Logic CS35L32
->
-> Changes for v2:
-> - Remove Gain Manager from DT and move to driver kcontrol
-> - Add VP-Supply for regulator
->
-> Changes for v3:
-> - Add regulator disable for error return in i2c_probe
->
-> Signed-off-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-> ---
->   .../devicetree/bindings/sound/cs35l32.txt          |   62 ++++++++++++++++++++
->   1 file changed, 62 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/sound/cs35l32.txt
->
-> diff --git a/Documentation/devicetree/bindings/sound/cs35l32.txt b/Documentation/devicetree/bindings/sound/cs35l32.txt
-> new file mode 100644
-> index 0000000..1417d3f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/cs35l32.txt
-> @@ -0,0 +1,62 @@
-> +CS35L32 audio CODEC
-> +
-> +Required properties:
-> +
-> +  - compatible : "cirrus,cs35l32"
-> +
-> +  - reg : the I2C address of the device for I2C. Address is determined by the level
-> +  of the AD0 pin. Level 0 is 0x40 while Level 1 is 0x41.
-> +
-> +  - VA-supply, VP-supply : power supplies for the device,
-> +  as covered in Documentation/devicetree/bindings/regulator/regulator.txt.
-> +
-> +Optional properties:
-> +
-> +  - reset-gpios : a GPIO spec for the reset pin. If specified, it will be
-> +  deasserted before communication to the codec starts.
-> +
-> +  - cirrus,boost-manager : Boost voltage control.
-> +  0 = Automatically managed.  Boost-converter output voltage is the higher
-> +  of the two: Class G or adaptive LED voltage.
-> +  1 = Automatically managed irrespective of audio, adapting for low-power
-> +  dissipation when LEDs are ON, and operating in Fixed-Boost Bypass Mode
-> +  if LEDs are OFF (VBST = VP).
-> +  2 = (Default) Boost voltage fixed in Bypass Mode (VBST = VP).
-> +  3 = Boost voltage fixed at 5 V.
-> +
-> +  - cirrus,sdout-datacfg : Data configuration for dual CS35L32 applications only.
-> +  Determines the data packed in a two-CS35L32 configuration.
-> +  0 = Left/right channels VMON[11:0], IMON[11:0], VPMON[7:0].
-> +  1 = Left/right channels VMON[11:0], IMON[11:0], STATUS.
-> +  2 = (Default) left/right channels VMON[15:0], IMON [15:0].
-> +  3 = Left/right channels VPMON[7:0], STATUS.
-> +
-> +  - cirrus,sdout-share : SDOUT sharing. Determines whether one or two CS35L32
-> +  devices are on board sharing SDOUT.
-> +  0 = (Default) One IC.
-> +  1 = Two IC's.
-> +
-> +  - cirrus,battery-recovery : Low battery nominal recovery threshold, rising VP.
-> +  0 = 3.1V
-> +  1 = 3.2V
-> +  2 = 3.3V (Default)
-> +  3 = 3.4V
-> +
-> +  - cirrus,battery-threshold : Low battery nominal threshold, falling VP.
-> +  0 = 3.1V
-> +  1 = 3.2V
-> +  2 = 3.3V
-> +  3 = 3.4V (Default)
-> +  4 = 3.5V
-> +  5 = 3.6V
-> +
+From: Bard Liao <bardliao@realtek.com>
 
-Proper indentation for all the properties... These are not readable like this...
+RT286 need to configure the jack type (combo or non-combo) according to the
+HW design. This function is given a easy way to set the correct jacy type
+for those without platform data supported.
 
-Required properties:
-  - compatible:		"cirrus,cs35l32"
-  - reg:			the I2C address of the device for I2C. Address is determined by the level
-			of the AD0 pin. Level 0 is 0x40 while Level 1 is 0x41.
-  - VA-supply,VP-supply:	power supplies for the device,
-			as covered in Documentation/devicetree/bindings/regulator/regulator.txt.
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt286.c | 33 +++++++++++++++++++++++++++++++++
+ sound/soc/codecs/rt286.h |  7 +++++++
+ 2 files changed, 40 insertions(+)
 
-Optional properties:
-  - reset-gpios:		a GPIO spec for the reset pin. If specified, it will be
-			deasserted before communication to the codec starts.
-  - cirrus,boost-manager:Boost voltage control.
-			0 = Automatically managed.
-				Boost-converter output voltage is the higher
-				of the two: Class G or adaptive LED voltage.
-			1 = Automatically managed irrespective of audio, adapting for low-power
-
-......
-
-> +Example:
-> +
-> +codec: codec@40 {
-> +	compatible = "cirrus,cs35l32";
-> +	reg = <0x40>;
-> +	reset-gpios = <&gpio 10 0>;
-> +	cirrus,boost-manager = <0x03>;
-> +	cirrus,sdout-datacfg = <0x02>;
-> +	VA-supply = <&reg_audio>;
-> +};
-
-
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index e4f6102..dd6b454 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -414,6 +414,39 @@ int rt286_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
+ }
+ EXPORT_SYMBOL_GPL(rt286_mic_detect);
+ 
++/**
++ * rt286_set_jack_type - Configure the HW supported jack type
++ *
++ * @codec:   RT286 codec
++ * @type:    supported jack type
++ *
++ * RT286 need to configure the jack type (combo or non-combo) according to the
++ * HW design. This function is given a easy way to set the correct jacy type
++ * for those without platform data supported.
++ */
++void rt286_set_jack_type(struct snd_soc_codec *codec,
++				enum rt286_jack_type type)
++{
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
++
++	if (RT286_TYPE_COMBO == type)
++		rt286->pdata.cbj_en = true;
++	else
++		rt286->pdata.cbj_en = false;
++
++	if (!rt286->pdata.cbj_en) {
++		regmap_write(rt286->regmap, RT286_CBJ_CTRL2, 0x0000);
++		regmap_write(rt286->regmap, RT286_MIC1_DET_CTRL, 0x0816);
++		regmap_write(rt286->regmap, RT286_MISC_CTRL1, 0x0000);
++		regmap_update_bits(rt286->regmap,
++					RT286_CBJ_CTRL1, 0xf000, 0xb000);
++	} else {
++		regmap_update_bits(rt286->regmap,
++					RT286_CBJ_CTRL1, 0xf000, 0x5000);
++	}
++}
++EXPORT_SYMBOL_GPL(rt286_set_jack_type);
++
+ static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -6350, 50, 0);
+ static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, 0, 1000, 0);
+ 
+diff --git a/sound/soc/codecs/rt286.h b/sound/soc/codecs/rt286.h
+index b539b73..2b1cbe6 100644
+--- a/sound/soc/codecs/rt286.h
++++ b/sound/soc/codecs/rt286.h
+@@ -192,7 +192,14 @@ enum {
+ 	RT286_AIFS,
+ };
+ 
++enum rt286_jack_type {
++	RT286_TYPE_COMBO,
++	RT286_TYPE_NONCOMBO,
++};
++
+ int rt286_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack);
++void rt286_set_jack_type(struct snd_soc_codec *codec,
++				enum rt286_jack_type type);
+ 
+ #endif /* __RT286_H__ */
+ 
 -- 
-Regards,
-Varka Bhadram.
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+1.8.1.1.439.g50a6b54
