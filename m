@@ -1,217 +1,88 @@
-From: Himangi Saraogi <himangi774@gmail.com>
-Subject: [PATCH] sound/oss/pss: Remove typedefs pss_mixerdata and pss_confdata
-Date: Tue, 5 Aug 2014 18:56:47 +0530
-Message-ID: <20140805132647.GA17360@himangi-Dell>
+From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH v3 2/2] Documentation: dt: bindings: sound: Add bindings
+ for CS35L32
+Date: Tue, 5 Aug 2014 09:28:17 -0500
+Message-ID: <alpine.DEB.2.02.1408050926260.7394@heelrod>
+References: <1407183077-23807-1-git-send-email-brian.austin@cirrus.com>
+ <1407183077-23807-2-git-send-email-brian.austin@cirrus.com>
+ <53E05737.3000601@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Julia Lawall <julia.lawall@lip6.fr>
+Content-Type: text/plain; charset="US-ASCII"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <53E05737.3000601-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Varka Bhadram <varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The Linux kernel coding style guidelines suggest not using typedefs
-for structure types. This patch gets rid of the typedefs for pss_mixerdata
-and pss_confdata.
 
-The following Coccinelle semantic patch is used to make the change.
+On Mon, 4 Aug 2014, Varka Bhadram wrote:
+> > +  0 = Left/right channels VMON[11:0], IMON[11:0], VPMON[7:0].
+> > +  1 = Left/right channels VMON[11:0], IMON[11:0], STATUS.
+> > +  2 = (Default) left/right channels VMON[15:0], IMON [15:0].
+> > +  3 = Left/right channels VPMON[7:0], STATUS.
+> > +
+> > +  - cirrus,sdout-share : SDOUT sharing. Determines whether one or two
+> > CS35L32
+> > +  devices are on board sharing SDOUT.
+> > +  0 = (Default) One IC.
+> > +  1 = Two IC's.
+> > +
+> > +  - cirrus,battery-recovery : Low battery nominal recovery threshold,
+> > rising VP.
+> > +  0 = 3.1V
+> > +  1 = 3.2V
+> > +  2 = 3.3V (Default)
+> > +  3 = 3.4V
+> > +
+> > +  - cirrus,battery-threshold : Low battery nominal threshold, falling VP.
+> > +  0 = 3.1V
+> > +  1 = 3.2V
+> > +  2 = 3.3V
+> > +  3 = 3.4V (Default)
+> > +  4 = 3.5V
+> > +  5 = 3.6V
+> > +
+> 
+> Proper indentation for all the properties... These are not readable like
+> this...
+> 
+> Required properties:
+>  - compatible:		"cirrus,cs35l32"
+>  - reg:			the I2C address of the device for I2C. Address is
+> determined by the level
+> 			of the AD0 pin. Level 0 is 0x40 while Level 1 is 0x41.
+>  - VA-supply,VP-supply:	power supplies for the device,
+> 			as covered in
+> Documentation/devicetree/bindings/regulator/regulator.txt.
+> 
+> Optional properties:
+>  - reset-gpios:		a GPIO spec for the reset pin. If specified, it will
+> be
+> 			deasserted before communication to the codec starts.
+>  - cirrus,boost-manager:Boost voltage control.
+> 			0 = Automatically managed.
+> 				Boost-converter output voltage is the higher
+> 				of the two: Class G or adaptive LED voltage.
+> 			1 = Automatically managed irrespective of audio,
+> adapting for low-power
+> 
+> -- 
+> Regards,
+> Varka Bhadram.
+> 
+> 
+Well when I look at your example that makes it more difficult for me to 
+read ;)
 
-@tn@
-identifier i;
-type td;
-@@
+I think if there is a mandatory style we are looking for I would expect it 
+to be documented. Maybe I have missed that? I take my bindings file from 
+examples already in the mainline and find this to be acceptable and 
+readable for me.
 
--typedef
- struct i { ... }
--td
- ;
-
-@@
-type tn.td;
-identifier tn.i;
-@@
-
--td
-+ struct i
-
-Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
-Acked-by: Julia Lawall <julia.lawall@lip6.fr>
----
- sound/oss/pss.c | 46 ++++++++++++++++++++++++----------------------
- 1 file changed, 24 insertions(+), 22 deletions(-)
-
-diff --git a/sound/oss/pss.c b/sound/oss/pss.c
-index 145e36b..ca0d6e9 100644
---- a/sound/oss/pss.c
-+++ b/sound/oss/pss.c
-@@ -123,25 +123,25 @@ static bool pss_mixer;
- #endif
- 
- 
--typedef struct pss_mixerdata {
-+struct pss_mixerdata {
- 	unsigned int volume_l;
- 	unsigned int volume_r;
- 	unsigned int bass;
- 	unsigned int treble;
- 	unsigned int synth;
--} pss_mixerdata;
-+};
- 
--typedef struct pss_confdata {
-+struct pss_confdata {
- 	int             base;
- 	int             irq;
- 	int             dma;
- 	int            *osp;
--	pss_mixerdata   mixer;
-+	struct pss_mixerdata mixer;
- 	int             ad_mixer_dev;
--} pss_confdata;
-+};
-   
--static pss_confdata pss_data;
--static pss_confdata *devc = &pss_data;
-+static struct pss_confdata pss_data;
-+static struct pss_confdata *devc = &pss_data;
- static DEFINE_SPINLOCK(lock);
- 
- static int      pss_initialized;
-@@ -150,7 +150,7 @@ static int	pss_cdrom_port = -1;	/* Parameter for the PSS cdrom port */
- static bool	pss_enable_joystick;    /* Parameter for enabling the joystick */
- static coproc_operations pss_coproc_operations;
- 
--static void pss_write(pss_confdata *devc, int data)
-+static void pss_write(struct pss_confdata *devc, int data)
- {
- 	unsigned long i, limit;
- 
-@@ -206,7 +206,7 @@ static int __init probe_pss(struct address_info *hw_config)
- 	return 1;
- }
- 
--static int set_irq(pss_confdata * devc, int dev, int irq)
-+static int set_irq(struct pss_confdata *devc, int dev, int irq)
- {
- 	static unsigned short irq_bits[16] =
- 	{
-@@ -232,7 +232,7 @@ static int set_irq(pss_confdata * devc, int dev, int irq)
- 	return 1;
- }
- 
--static void set_io_base(pss_confdata * devc, int dev, int base)
-+static void set_io_base(struct pss_confdata *devc, int dev, int base)
- {
- 	unsigned short  tmp = inw(REG(dev)) & 0x003f;
- 	unsigned short  bits = (base & 0x0ffc) << 4;
-@@ -240,7 +240,7 @@ static void set_io_base(pss_confdata * devc, int dev, int base)
- 	outw(bits | tmp, REG(dev));
- }
- 
--static int set_dma(pss_confdata * devc, int dev, int dma)
-+static int set_dma(struct pss_confdata *devc, int dev, int dma)
- {
- 	static unsigned short dma_bits[8] =
- 	{
-@@ -264,7 +264,7 @@ static int set_dma(pss_confdata * devc, int dev, int dma)
- 	return 1;
- }
- 
--static int pss_reset_dsp(pss_confdata * devc)
-+static int pss_reset_dsp(struct pss_confdata *devc)
- {
- 	unsigned long   i, limit = jiffies + HZ/10;
- 
-@@ -275,7 +275,7 @@ static int pss_reset_dsp(pss_confdata * devc)
- 	return 1;
- }
- 
--static int pss_put_dspword(pss_confdata * devc, unsigned short word)
-+static int pss_put_dspword(struct pss_confdata *devc, unsigned short word)
- {
- 	int i, val;
- 
-@@ -291,7 +291,7 @@ static int pss_put_dspword(pss_confdata * devc, unsigned short word)
- 	return 0;
- }
- 
--static int pss_get_dspword(pss_confdata * devc, unsigned short *word)
-+static int pss_get_dspword(struct pss_confdata *devc, unsigned short *word)
- {
- 	int i, val;
- 
-@@ -307,7 +307,8 @@ static int pss_get_dspword(pss_confdata * devc, unsigned short *word)
- 	return 0;
- }
- 
--static int pss_download_boot(pss_confdata * devc, unsigned char *block, int size, int flags)
-+static int pss_download_boot(struct pss_confdata *devc, unsigned char *block,
-+			     int size, int flags)
- {
- 	int i, val, count;
- 	unsigned long limit;
-@@ -397,7 +398,7 @@ static int pss_download_boot(pss_confdata * devc, unsigned char *block, int size
- }
- 
- /* Mixer */
--static void set_master_volume(pss_confdata *devc, int left, int right)
-+static void set_master_volume(struct pss_confdata *devc, int left, int right)
- {
- 	static unsigned char log_scale[101] =  {
- 		0xdb, 0xe0, 0xe3, 0xe5, 0xe7, 0xe9, 0xea, 0xeb, 0xec, 0xed, 0xed, 0xee,
-@@ -416,7 +417,7 @@ static void set_master_volume(pss_confdata *devc, int left, int right)
- 	pss_write(devc, log_scale[right] | 0x0100);
- }
- 
--static void set_synth_volume(pss_confdata *devc, int volume)
-+static void set_synth_volume(struct pss_confdata *devc, int volume)
- {
- 	int vol = ((0x8000*volume)/100L);
- 	pss_write(devc, 0x0080);
-@@ -425,21 +426,21 @@ static void set_synth_volume(pss_confdata *devc, int volume)
- 	pss_write(devc, vol);
- }
- 
--static void set_bass(pss_confdata *devc, int level)
-+static void set_bass(struct pss_confdata *devc, int level)
- {
- 	int vol = (int)(((0xfd - 0xf0) * level)/100L) + 0xf0;
- 	pss_write(devc, 0x0010);
- 	pss_write(devc, vol | 0x0200);
- };
- 
--static void set_treble(pss_confdata *devc, int level)
-+static void set_treble(struct pss_confdata *devc, int level)
- {	
- 	int vol = (((0xfd - 0xf0) * level)/100L) + 0xf0;
- 	pss_write(devc, 0x0010);
- 	pss_write(devc, vol | 0x0300);
- };
- 
--static void pss_mixer_reset(pss_confdata *devc)
-+static void pss_mixer_reset(struct pss_confdata *devc)
- {
- 	set_master_volume(devc, 33, 33);
- 	set_bass(devc, 50);
-@@ -499,7 +500,8 @@ static int ret_vol_stereo(int left, int right)
- 	return ((right << 8) | left);
- }
- 
--static int call_ad_mixer(pss_confdata *devc,unsigned int cmd, void __user *arg)
-+static int call_ad_mixer(struct pss_confdata *devc, unsigned int cmd,
-+			 void __user *arg)
- {
- 	if (devc->ad_mixer_dev != NO_WSS_MIXER) 
- 		return mixer_devs[devc->ad_mixer_dev]->ioctl(devc->ad_mixer_dev, cmd, arg);
-@@ -509,7 +511,7 @@ static int call_ad_mixer(pss_confdata *devc,unsigned int cmd, void __user *arg)
- 
- static int pss_mixer_ioctl (int dev, unsigned int cmd, void __user *arg)
- {
--	pss_confdata *devc = mixer_devs[dev]->devc;
-+	struct pss_confdata *devc = mixer_devs[dev]->devc;
- 	int cmdf = cmd & 0xff;
- 	
- 	if ((cmdf != SOUND_MIXER_VOLUME) && (cmdf != SOUND_MIXER_BASS) &&
--- 
-1.9.1
+Thanks,
+Brian
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
