@@ -1,69 +1,74 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH] ASoC: fsl_sai: Initialize with software reset
-Date: Tue, 5 Aug 2014 17:20:21 +0800
-Message-ID: <1407230421-20953-1-git-send-email-nicoleotsuka@gmail.com>
+From: Varka Bhadram <varkabhadram@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Add asynchronous mode support
+Date: Tue, 05 Aug 2014 16:29:50 +0530
+Message-ID: <53E0B926.9010103@gmail.com>
+References: <1407223925-29678-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (dns-bn1lp0143.outbound.protection.outlook.com [207.46.163.143])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E5D5261AFF
- for <alsa-devel@alsa-project.org>; Tue,  5 Aug 2014 11:18:10 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Li.Xiubo@freescale.com, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, timur@tabi.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1407223925-29678-1-git-send-email-nicoleotsuka@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, devicetree@vger.kernel.org, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, b42378@freescale.com, b02247@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds software reset code in dai_probe() so as to make a true init
-by clearing SAI's internal logic, including the bit clock generation, status
-flags, and FIFO pointers.
+On 08/05/2014 01:02 PM, Nicolin Chen wrote:
+> From: Nicolin Chen <Guangyu.Chen@freescale.com>
+>
+> SAI supports these operation modes:
+> 1) asynchronous mode
+>     Both Tx and Rx are set to be asynchronous.
+> 2) synchronous mode (Rx sync with Tx)
+>     Tx is set to be asynchronous, Rx is set to be synchronous.
+> 3) synchronous mode (Tx sync with Rx)
+>     Rx is set to be asynchronous, Tx is set to be synchronous.
+> 4) synchronous mode (Tx/Rx sync with another SAI's Tx)
+> 5) synchronous mode (Tx/Rx sync with another SAI's Rx)
+>
+> * 4) and 5) are beyond this patch because they are related with another SAI.
+>
+> As the initial version of this SAI driver, it supported 2) as default while
+> the others were totally missing.
+>
+> So this patch just adds supports for 1) and 3).
+>
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+>   .../devicetree/bindings/sound/fsl-sai.txt          | 16 ++++++++++++
+>   sound/soc/fsl/fsl_sai.c                            | 30 +++++++++++++++++++---
+>   sound/soc/fsl/fsl_sai.h                            |  4 +++
+>   3 files changed, 46 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+> index 0f4e238..77864f4 100644
+> --- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
+> +++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+> @@ -24,6 +24,22 @@ Required properties:
+>   - big-endian-data: If this property is absent, the little endian mode will
+>     be in use as default, or the big endian mode will be in use for all the
+>     fifo data.
+> +- fsl,sai-synchronous-rx: This is a boolean property. If present, indicating
+> +  that SAI will work in the synchronous mode (sync Tx with Rx) which means
+> +  both the transimitter and receiver will send and receive data by following
+> +  receiver's bit clocks and frame sync clocks.
+> +- fsl,sai-asynchronous: This is a boolean property. If present, indicating
+> +  that SAI will work in the asynchronous mode, which means both transimitter
+> +  and receiver will send and receive data by following their own bit clocks
+> +  and frame sync clocks separately.
+>
+Would be readable if it like this...
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl_sai.c | 9 +++++++--
- sound/soc/fsl/fsl_sai.h | 1 +
- 2 files changed, 8 insertions(+), 2 deletions(-)
+fsl,sai-synchronous-rx: This is a boolean property. If present, indicating
+			that SAI will work in the synchronous mode (sync Tx with Rx) which means
+			both the transimitter and receiver will send and receive data by following
+			receiver's bit clocks and frame sync clocks.
+- fsl,sai-asynchronous: This is a boolean property. If present, indicating
+			that SAI will work in the asynchronous mode, which means both transimitter
+			and receiver will send and receive data by following their own bit clocks
+			and frame sync clocks separately.
+.....
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index dc84f98..ef7c758 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -438,8 +438,13 @@ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_sai *sai = dev_get_drvdata(cpu_dai->dev);
- 
--	regmap_update_bits(sai->regmap, FSL_SAI_TCSR, 0xffffffff, 0x0);
--	regmap_update_bits(sai->regmap, FSL_SAI_RCSR, 0xffffffff, 0x0);
-+	/* Software Reset for both Tx and Rx */
-+	regmap_write(sai->regmap, FSL_SAI_TCSR, FSL_SAI_CSR_SR);
-+	regmap_write(sai->regmap, FSL_SAI_RCSR, FSL_SAI_CSR_SR);
-+	/* Clear SR bit to finish the reset */
-+	regmap_write(sai->regmap, FSL_SAI_TCSR, 0);
-+	regmap_write(sai->regmap, FSL_SAI_RCSR, 0);
-+
- 	regmap_update_bits(sai->regmap, FSL_SAI_TCR1, FSL_SAI_CR1_RFW_MASK,
- 			   FSL_SAI_MAXBURST_TX * 2);
- 	regmap_update_bits(sai->regmap, FSL_SAI_RCR1, FSL_SAI_CR1_RFW_MASK,
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index c24d3fd..b3d8864 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -48,6 +48,7 @@
- /* SAI Transmit/Recieve Control Register */
- #define FSL_SAI_CSR_TERE	BIT(31)
- #define FSL_SAI_CSR_FR		BIT(25)
-+#define FSL_SAI_CSR_SR		BIT(24)
- #define FSL_SAI_CSR_xF_SHIFT	16
- #define FSL_SAI_CSR_xF_W_SHIFT	18
- #define FSL_SAI_CSR_xF_MASK	(0x1f << FSL_SAI_CSR_xF_SHIFT)
 -- 
-1.8.4
+Regards,
+Varka Bhadram.
