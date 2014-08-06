@@ -1,26 +1,23 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: Audio mini conference 2014?
-Date: Wed, 06 Aug 2014 15:45:56 +0200
-Message-ID: <53E23194.4060206@zonque.org>
-References: <s5hwqd9elq9.wl%tiwai@suse.de>	
- <1402479799.2366.31.camel@tkkaskin-mobl3.ger.corp.intel.com>	
- <s5hk38mxvai.wl%tiwai@suse.de> <20140612104634.GU5099@sirena.org.uk>	
- <s5hha3qxuoa.wl%tiwai@suse.de> <20140612110049.GV5099@sirena.org.uk>	
- <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>	
- <s5h4myhpcby.wl%tiwai@suse.de> <20140721232054.GN17528@sirena.org.uk>	
- <s5h1ttehr91.wl%tiwai@suse.de> <20140722222038.GW17528@sirena.org.uk>	
- <53CF8306.3090009@zonque.org>
- <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <53E1E432.9000707@zonque.org>,
- <53E1F58A.605@zonque.org> <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH 0/9] Beaglebone-Black HDMI audio
+Date: Wed, 6 Aug 2014 16:52:37 +0300
+Message-ID: <cover.1407332062.git.jsarha__4882.55832246995$1407333196$gmane$org@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DF6F260786
- for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 15:45:58 +0200 (CEST)
-In-Reply-To: <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BC642607B6
+ for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 15:52:50 +0200 (CEST)
+Received: from dflxv15.itg.ti.com ([128.247.5.124])
+ by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id s76Dqmbx006555
+ for <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:48 -0500
+Received: from DLEE70.ent.ti.com (dlee70.ent.ti.com [157.170.170.113])
+ by dflxv15.itg.ti.com (8.14.3/8.13.8) with ESMTP id s76DqmOS023284
+ for <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:48 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])	by
+ dlep32.itg.ti.com (8.14.3/8.13.8) with ESMTP id s76DqlHs026314	for
+ <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:48 -0500
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,47 +27,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.intel.com>, Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/06/2014 03:42 PM, Handrigan, Paul wrote:
-> 
-> 
->> On Aug 6, 2014, at 7:00 AM, "Daniel Mack" <daniel@zonque.org> wrote:
->>
->>> On 08/06/2014 10:15 AM, Daniel Mack wrote:
->>> On 08/06/2014 10:13 AM, Tanu Kaskinen wrote:
->>
->>>> Did you get any responses?
->>>
->>> Unfortunately not. I'll try again.
->>
->> Ok, they guys from ChaosDorf now got back to me. They need to make a
->> final discussion internally yet, but it appears to be working. I'll hear
->> back from them next Wednesday with a final decision.
->>
->> The ChaosDorf is a CCC hack space that hosts all sort of user group
->> meetings and the like. Their website is here:
->>
->>  http://chaosdorf.de/
->>
->> I told them we'd be ~20ppl and they think they can accommodate that
->> number, and they also have a beamer. Or do we expect to be more?
->>
->> They have a room layout and some pictures here:
->>
->>  https://wiki.chaosdorf.de/Clubraum
->>
->> I've never been there myself, so I can't say anything about it, but
->> usually, these Hackspaces are quite nice. They're no typical conference
->> rooms though.
->>
->> What date would we prefer? There's an event on Tuesday night (~6pm), but
->> I guess we wouldn't need the room longer than that anyway, right?
-> It would be best that it is not during LPC as mentioned before.  Will Saturday after LPC work as well?
+The code has a functional dependency to:
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg108199.html
 
-I'll ask them.
+Without the above patch the audio card does not probe.
 
+The code has been rebased on top of Linux 3.16 merged with 
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+with http://www.mail-archive.com/linux-omap@vger.kernel.org/msg108199.html
+cherry-picked on top.
 
-Daniel
+All patches have gone trough some cleaning up since the RFC version of
+these patches over half a year ago.
+
+ps. I forgot to send these patches to alsa-devel@alsa-project.org
+    first time around. The original mailing can be found here:
+    http://www.mail-archive.com/linux-omap@vger.kernel.org/msg108229.html
+
+Jyri Sarha (9):
+  ASoC: mcasp: Fix implicit BLCK divider setting
+  clk: add gpio controlled clock
+  drm/tilcdc: Add I2S HDMI audio config for tda998x
+  ASoC: davinci-evm: HDMI audio support for TDA998x trough McASP I2S
+    bus
+  ASoC: davinci: HDMI audio build for AM33XX and TDA998x
+  ARM: dts: am33xx: Add external clock provider
+  ARM: dts: am335x-boneblack: Add HDMI audio support
+  ARM: OMAP2+: omap2plus_defconfig: TDA998X HDMI trough tilcdc,slave
+  ARM: OMAP2+: omap2plus_defconfig: Enable BeagleBone Black HDMI audio
+    support
+
+ .../devicetree/bindings/clock/gpio-clock.txt       |   21 ++
+ .../bindings/sound/davinci-evm-audio.txt           |    4 +-
+ arch/arm/boot/dts/am335x-boneblack.dts             |   54 +++++
+ arch/arm/boot/dts/am33xx.dtsi                      |   10 +
+ arch/arm/configs/omap2plus_defconfig               |    5 +
+ drivers/clk/Makefile                               |    1 +
+ drivers/clk/clk-gpio.c                             |  206 ++++++++++++++++++++
+ drivers/gpu/drm/tilcdc/tilcdc_slave.c              |   24 ++-
+ include/linux/clk-provider.h                       |   23 +++
+ sound/soc/davinci/Kconfig                          |   12 ++
+ sound/soc/davinci/davinci-evm.c                    |   82 +++++++-
+ sound/soc/davinci/davinci-mcasp.c                  |   14 +-
+ 12 files changed, 449 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/gpio-clock.txt
+ create mode 100644 drivers/clk/clk-gpio.c
+
+-- 
+1.7.9.5
