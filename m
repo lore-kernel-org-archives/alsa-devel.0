@@ -1,19 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: hda - Fix parsing of CMI8888 codec
-Date: Wed,  6 Aug 2014 14:39:15 +0200
-Message-ID: <1407328755-1021-2-git-send-email-tiwai@suse.de>
-References: <1407328755-1021-1-git-send-email-tiwai@suse.de>
+From: Himangi Saraogi <himangi774@gmail.com>
+Subject: [PATCH] sound: oss: uart401: Remove typedef
+	uart401_devc
+Date: Wed, 6 Aug 2014 18:17:25 +0530
+Message-ID: <20140806124725.GA7931@himangi-Dell>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C3ADC2610A1
- for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 14:39:15 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 3419BAD8A
- for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 12:39:15 +0000 (UTC)
-In-Reply-To: <1407328755-1021-1-git-send-email-tiwai@suse.de>
+Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
+ [209.85.220.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD76F260786
+ for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 14:47:30 +0200 (CEST)
+Received: by mail-pa0-f46.google.com with SMTP id lj1so3418728pab.33
+ for <alsa-devel@alsa-project.org>; Wed, 06 Aug 2014 05:47:29 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,94 +23,187 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Julia Lawall <julia.lawall@lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
-CMI8888 codec chip has a boost amp (only) on the headphone pin, and
-this confuses the generic parser, which tends to pick up the most
-outside amp.  This results in the wrong volume setup, as the driver
-complains like:
-  hda_codec: Mismatching dB step for vmaster slave (-100!=1000)
+The Linux kernel coding style guidelines suggest not using typedefs
+for structure types. This patch gets rid of the typedef for uart401_devc.
 
-For avoiding this problem, rule out the amp on NID 0x10 and create
-"Headphone Amp" volume control manually instead.
+The following Coccinelle semantic patch detects the case.
 
-Note that this patch still doesn't fix all problems yet.  The sound
-output from the line out seems still too low.  It will be fixed in
-another patch (hopefully).
+@tn@
+identifier i;
+type td;
+@@
 
-Reported-and-tested-by: Vincent Lejeune <vljn@ovi.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+-typedef
+ struct i { ... }
+-td
+ ;
+
+@@
+type tn.td;
+identifier tn.i;
+@@
+
+-td
++ struct i
+
+Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
+Acked-by: Julia Lawall <julia.lawall@lip6.fr>
 ---
- sound/pci/hda/patch_cmedia.c | 47 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ sound/oss/uart401.c | 40 +++++++++++++++++++++-------------------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
 
-diff --git a/sound/pci/hda/patch_cmedia.c b/sound/pci/hda/patch_cmedia.c
-index ed3d133ffbb6..c895a8f21192 100644
---- a/sound/pci/hda/patch_cmedia.c
-+++ b/sound/pci/hda/patch_cmedia.c
-@@ -75,15 +75,62 @@ static int patch_cmi9880(struct hda_codec *codec)
- 	return err;
+diff --git a/sound/oss/uart401.c b/sound/oss/uart401.c
+index 62b8869..279bc56 100644
+--- a/sound/oss/uart401.c
++++ b/sound/oss/uart401.c
+@@ -30,7 +30,7 @@
+ 
+ #include "mpu401.h"
+ 
+-typedef struct uart401_devc
++struct uart401_devc
+ {
+ 	int             base;
+ 	int             irq;
+@@ -41,14 +41,13 @@ typedef struct uart401_devc
+ 	int             my_dev;
+ 	int             share_irq;
+ 	spinlock_t	lock;
+-}
+-uart401_devc;
++};
+ 
+ #define	DATAPORT   (devc->base)
+ #define	COMDPORT   (devc->base+1)
+ #define	STATPORT   (devc->base+1)
+ 
+-static int uart401_status(uart401_devc * devc)
++static int uart401_status(struct uart401_devc *devc)
+ {
+ 	return inb(STATPORT);
+ }
+@@ -56,17 +55,17 @@ static int uart401_status(uart401_devc * devc)
+ #define input_avail(devc) (!(uart401_status(devc)&INPUT_AVAIL))
+ #define output_ready(devc)	(!(uart401_status(devc)&OUTPUT_READY))
+ 
+-static void uart401_cmd(uart401_devc * devc, unsigned char cmd)
++static void uart401_cmd(struct uart401_devc *devc, unsigned char cmd)
+ {
+ 	outb((cmd), COMDPORT);
  }
  
-+static int patch_cmi8888(struct hda_codec *codec)
-+{
-+	struct cmi_spec *spec;
-+	struct auto_pin_cfg *cfg;
-+	int err;
-+
-+	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
-+	if (!spec)
-+		return -ENOMEM;
-+
-+	codec->spec = spec;
-+	cfg = &spec->gen.autocfg;
-+	snd_hda_gen_spec_init(&spec->gen);
-+
-+	/* mask NID 0x10 from the playback volume selection;
-+	 * it's a headphone boost volume handled manually below
-+	 */
-+	spec->gen.out_vol_mask = (1ULL << 0x10);
-+
-+	err = snd_hda_parse_pin_defcfg(codec, cfg, NULL, 0);
-+	if (err < 0)
-+		goto error;
-+	err = snd_hda_gen_parse_auto_config(codec, cfg);
-+	if (err < 0)
-+		goto error;
-+
-+	if (get_defcfg_device(snd_hda_codec_get_pincfg(codec, 0x10)) ==
-+	    AC_JACK_HP_OUT) {
-+		static const struct snd_kcontrol_new amp_kctl =
-+			HDA_CODEC_VOLUME("Headphone Amp Playback Volume",
-+					 0x10, 0, HDA_OUTPUT);
-+		if (!snd_hda_gen_add_kctl(&spec->gen, NULL, &amp_kctl)) {
-+			err = -ENOMEM;
-+			goto error;
-+		}
-+	}
-+
-+	codec->patch_ops = cmi_auto_patch_ops;
-+	return 0;
-+
-+ error:
-+	snd_hda_gen_free(codec);
-+	return err;
-+}
-+
- /*
-  * patch entries
-  */
- static const struct hda_codec_preset snd_hda_preset_cmedia[] = {
-+	{ .id = 0x13f68888, .name = "CMI8888", .patch = patch_cmi8888 },
- 	{ .id = 0x13f69880, .name = "CMI9880", .patch = patch_cmi9880 },
-  	{ .id = 0x434d4980, .name = "CMI9880", .patch = patch_cmi9880 },
- 	{} /* terminator */
+-static int uart401_read(uart401_devc * devc)
++static int uart401_read(struct uart401_devc *devc)
+ {
+ 	return inb(DATAPORT);
+ }
+ 
+-static void uart401_write(uart401_devc * devc, unsigned char byte)
++static void uart401_write(struct uart401_devc *devc, unsigned char byte)
+ {
+ 	outb((byte), DATAPORT);
+ }
+@@ -77,10 +76,10 @@ static void uart401_write(uart401_devc * devc, unsigned char byte)
+ #define	MPU_RESET	0xFF
+ #define	UART_MODE_ON	0x3F
+ 
+-static int      reset_uart401(uart401_devc * devc);
+-static void     enter_uart_mode(uart401_devc * devc);
++static int      reset_uart401(struct uart401_devc *devc);
++static void     enter_uart_mode(struct uart401_devc *devc);
+ 
+-static void uart401_input_loop(uart401_devc * devc)
++static void uart401_input_loop(struct uart401_devc *devc)
+ {
+ 	int work_limit=30000;
+ 	
+@@ -99,7 +98,7 @@ static void uart401_input_loop(uart401_devc * devc)
+ 
+ irqreturn_t uart401intr(int irq, void *dev_id)
+ {
+-	uart401_devc *devc = dev_id;
++	struct uart401_devc *devc = dev_id;
+ 
+ 	if (devc == NULL)
+ 	{
+@@ -118,7 +117,8 @@ uart401_open(int dev, int mode,
+ 	     void            (*output) (int dev)
+ )
+ {
+-	uart401_devc *devc = (uart401_devc *) midi_devs[dev]->devc;
++	struct uart401_devc *devc = (struct uart401_devc *)
++				    midi_devs[dev]->devc;
+ 
+ 	if (devc->opened)
+ 		return -EBUSY;
+@@ -138,7 +138,8 @@ uart401_open(int dev, int mode,
+ 
+ static void uart401_close(int dev)
+ {
+-	uart401_devc *devc = (uart401_devc *) midi_devs[dev]->devc;
++	struct uart401_devc *devc = (struct uart401_devc *)
++				    midi_devs[dev]->devc;
+ 
+ 	reset_uart401(devc);
+ 	devc->opened = 0;
+@@ -148,7 +149,8 @@ static int uart401_out(int dev, unsigned char midi_byte)
+ {
+ 	int timeout;
+ 	unsigned long flags;
+-	uart401_devc *devc = (uart401_devc *) midi_devs[dev]->devc;
++	struct uart401_devc *devc = (struct uart401_devc *)
++				    midi_devs[dev]->devc;
+ 
+ 	if (devc->disabled)
+ 		return 1;
+@@ -219,7 +221,7 @@ static const struct midi_operations uart401_operations =
+ 	.buffer_status	= uart401_buffer_status,
  };
  
-+MODULE_ALIAS("snd-hda-codec-id:13f68888");
- MODULE_ALIAS("snd-hda-codec-id:13f69880");
- MODULE_ALIAS("snd-hda-codec-id:434d4980");
+-static void enter_uart_mode(uart401_devc * devc)
++static void enter_uart_mode(struct uart401_devc *devc)
+ {
+ 	int ok, timeout;
+ 	unsigned long flags;
+@@ -241,7 +243,7 @@ static void enter_uart_mode(uart401_devc * devc)
+ 	spin_unlock_irqrestore(&devc->lock,flags);
+ }
  
+-static int reset_uart401(uart401_devc * devc)
++static int reset_uart401(struct uart401_devc *devc)
+ {
+ 	int ok, timeout, n;
+ 
+@@ -285,7 +287,7 @@ static int reset_uart401(uart401_devc * devc)
+ 
+ int probe_uart401(struct address_info *hw_config, struct module *owner)
+ {
+-	uart401_devc *devc;
++	struct uart401_devc *devc;
+ 	char *name = "MPU-401 (UART) MIDI";
+ 	int ok = 0;
+ 	unsigned long flags;
+@@ -300,7 +302,7 @@ int probe_uart401(struct address_info *hw_config, struct module *owner)
+ 		return 0;
+ 	}
+ 
+-	devc = kmalloc(sizeof(uart401_devc), GFP_KERNEL);
++	devc = kmalloc(sizeof(struct uart401_devc), GFP_KERNEL);
+ 	if (!devc) {
+ 		printk(KERN_WARNING "uart401: Can't allocate memory\n");
+ 		goto cleanup_region;
+@@ -392,7 +394,7 @@ cleanup_region:
+ 
+ void unload_uart401(struct address_info *hw_config)
+ {
+-	uart401_devc *devc;
++	struct uart401_devc *devc;
+ 	int n=hw_config->slots[4];
+ 	
+ 	/* Not set up */
 -- 
-2.0.3
+1.9.1
