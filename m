@@ -1,110 +1,61 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V1 1/2] ASoC: fsl: esai: refine esai for tdm support
-Date: Wed, 6 Aug 2014 18:23:03 +0800
-Message-ID: <e68d8fbaaed7000b13688b0f1757b5b9557889d7.1407320232.git.shengjiu.wang@freescale.com>
-References: <cover.1407320232.git.shengjiu.wang@freescale.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: DMA engine API issue (was: [PATCH/RFC 0/5] R-Car Gen2 DMAC hardware descriptor list support)
+Date: Wed, 6 Aug 2014 13:04:40 +0200
+Message-ID: <201408061304.41105.arnd@arndb.de>
+References: <1406032431-3807-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com> <1877927.dGcJCfKbeH@avalon> <CAMuHMdVz8hNus5x1hn0feqb1SYsUuhA4QHHfPGyebiKLZJwfEQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1407320232.git.shengjiu.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, timur@tabi.org, perex@perex.cz, tiwai@suse.de, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, shc_work@mail.ru, fabio.estevam@freescale.com, arnd@arndb.de
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <CAMuHMdVz8hNus5x1hn0feqb1SYsUuhA4QHHfPGyebiKLZJwfEQ@mail.gmail.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>, Linux-sh list <linux-sh@vger.kernel.org>, Vinod Koul <vinod.koul@intel.com>, Magnus Damm <magnus.damm@gmail.com>, dmaengine@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add parameter for slots, and caculate the number of TX/RX pins and bclk with
-slots. Then driver will be compatible with slots > 2 in TDM mode.
+On Wednesday 06 August 2014, Geert Uytterhoeven wrote:
+> > I actually have the opposite problem, in my case channels of physically
+> > separate DMA engines can be used interchangeably to serve the system's slaves.
+> > Using the DMA engine DT bindings, DT nodes of the slaves currently reference a
+> > specific DMA engine, even if they can be served by both. This leads to limited
+> > dynamic channel allocation capabilities (especially when taking into account
+> > lazy channel allocation as mentioned in another mail in this thread).
+> 
+> What about adding a property to the first one, referencing the second
+> (or the other way around, don't know what's the easiest to implement)?
+> 
+>         dmac0: dma-controller@e6700000 {
+>                 ...
+>                 renesas,alternative = <&dmac1>;
+>                 ...
+>         };
+> 
+>         dmac1: dma-controller@e6720000 {
+>                 ...
+>         };
+> 
+> That would avoid having to bind a slave device explicitly to a single
+> dmac, or having to bind all slave devices to all dmacs.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
----
- sound/soc/fsl/fsl_esai.c |   10 +++++++---
- sound/soc/fsl/fsl_esai.h |    8 ++++----
- 2 files changed, 11 insertions(+), 7 deletions(-)
+We have a perfectly fine way to express this with the existing binding
+already: you just list channels for both (or more) controllers for each
+slave, and let the dma subsystem pick one. This was a compromise we
+reached when we initially introduced the dma slave binding, the downside
+being that we have to name every reference from a slave to a controller,
+even though almost all of them are "rx", "tx" or "data".
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 72d154e..89aa531 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -56,6 +56,7 @@ struct fsl_esai {
- 	struct clk *fsysclk;
- 	u32 fifo_depth;
- 	u32 slot_width;
-+	u32 slots;
- 	u32 hck_rate[2];
- 	u32 sck_rate[2];
- 	bool hck_dir[2];
-@@ -363,6 +364,7 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
- 			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
- 
- 	esai_priv->slot_width = slot_width;
-+	esai_priv->slots      = slots;
- 
- 	return 0;
- }
-@@ -510,10 +512,11 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	u32 width = snd_pcm_format_width(params_format(params));
- 	u32 channels = params_channels(params);
-+	u32 pin = DIV_ROUND_UP(channels, esai_priv->slots);
- 	u32 bclk, mask, val;
- 	int ret;
- 
--	bclk = params_rate(params) * esai_priv->slot_width * 2;
-+	bclk = params_rate(params) * esai_priv->slot_width * esai_priv->slots;
- 
- 	ret = fsl_esai_set_bclk(dai, tx, bclk);
- 	if (ret)
-@@ -530,7 +533,7 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
- 	mask = ESAI_xFCR_xFR_MASK | ESAI_xFCR_xWA_MASK | ESAI_xFCR_xFWM_MASK |
- 	      (tx ? ESAI_xFCR_TE_MASK | ESAI_xFCR_TIEN : ESAI_xFCR_RE_MASK);
- 	val = ESAI_xFCR_xWA(width) | ESAI_xFCR_xFWM(esai_priv->fifo_depth) |
--	     (tx ? ESAI_xFCR_TE(channels) | ESAI_xFCR_TIEN : ESAI_xFCR_RE(channels));
-+	     (tx ? ESAI_xFCR_TE(pin) | ESAI_xFCR_TIEN : ESAI_xFCR_RE(pin));
- 
- 	regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx), mask, val);
- 
-@@ -565,6 +568,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	u8 i, channels = substream->runtime->channels;
-+	u32 pin = DIV_ROUND_UP(channels, esai_priv->slots);
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -579,7 +583,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
- 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
--				   tx ? ESAI_xCR_TE(channels) : ESAI_xCR_RE(channels));
-+				   tx ? ESAI_xCR_TE(pin) : ESAI_xCR_RE(pin));
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
-diff --git a/sound/soc/fsl/fsl_esai.h b/sound/soc/fsl/fsl_esai.h
-index 75e1403..91a550f 100644
---- a/sound/soc/fsl/fsl_esai.h
-+++ b/sound/soc/fsl/fsl_esai.h
-@@ -130,8 +130,8 @@
- #define ESAI_xFCR_RE_WIDTH	4
- #define ESAI_xFCR_TE_MASK	(((1 << ESAI_xFCR_TE_WIDTH) - 1) << ESAI_xFCR_xE_SHIFT)
- #define ESAI_xFCR_RE_MASK	(((1 << ESAI_xFCR_RE_WIDTH) - 1) << ESAI_xFCR_xE_SHIFT)
--#define ESAI_xFCR_TE(x) 	((ESAI_xFCR_TE_MASK >> (ESAI_xFCR_TE_WIDTH - ((x + 1) >> 1))) & ESAI_xFCR_TE_MASK)
--#define ESAI_xFCR_RE(x) 	((ESAI_xFCR_RE_MASK >> (ESAI_xFCR_RE_WIDTH - ((x + 1) >> 1))) & ESAI_xFCR_RE_MASK)
-+#define ESAI_xFCR_TE(x) 	((ESAI_xFCR_TE_MASK >> (ESAI_xFCR_TE_WIDTH - x)) & ESAI_xFCR_TE_MASK)
-+#define ESAI_xFCR_RE(x) 	((ESAI_xFCR_RE_MASK >> (ESAI_xFCR_RE_WIDTH - x)) & ESAI_xFCR_RE_MASK)
- #define ESAI_xFCR_xFR_SHIFT	1
- #define ESAI_xFCR_xFR_MASK	(1 << ESAI_xFCR_xFR_SHIFT)
- #define ESAI_xFCR_xFR		(1 << ESAI_xFCR_xFR_SHIFT)
-@@ -272,8 +272,8 @@
- #define ESAI_xCR_RE_WIDTH	4
- #define ESAI_xCR_TE_MASK	(((1 << ESAI_xCR_TE_WIDTH) - 1) << ESAI_xCR_xE_SHIFT)
- #define ESAI_xCR_RE_MASK	(((1 << ESAI_xCR_RE_WIDTH) - 1) << ESAI_xCR_xE_SHIFT)
--#define ESAI_xCR_TE(x) 		((ESAI_xCR_TE_MASK >> (ESAI_xCR_TE_WIDTH - ((x + 1) >> 1))) & ESAI_xCR_TE_MASK)
--#define ESAI_xCR_RE(x) 		((ESAI_xCR_RE_MASK >> (ESAI_xCR_RE_WIDTH - ((x + 1) >> 1))) & ESAI_xCR_RE_MASK)
-+#define ESAI_xCR_TE(x) 		((ESAI_xCR_TE_MASK >> (ESAI_xCR_TE_WIDTH - x)) & ESAI_xCR_TE_MASK)
-+#define ESAI_xCR_RE(x) 		((ESAI_xCR_RE_MASK >> (ESAI_xCR_RE_WIDTH - x)) & ESAI_xCR_RE_MASK)
- 
- /*
-  * Transmit Clock Control Register -- REG_ESAI_TCCR 0xD8
--- 
-1.7.9.5
+I believe what happened though is that the initial implementation in the
+kernel was to just pick the first channel for a given name and try that
+but give up if it fails. This works for the majority of users and I had
+expected someone to implement a smarter strategy as needed.
+
+The easiest way would be to just randomize the order of the channels
+during lookup and then try them all, but there is a potential problem
+with this failing sometimes in nondeterministic ways.
+Another alternative would be for the dma controller to report back
+some form of "utilization" number to the dma subsystem and have the
+common code pick the least utilized engine that is connected to that
+slave.
+
+	Arnd
