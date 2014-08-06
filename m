@@ -1,77 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Update Baytrail ADSP firmware
-	name
-Date: Wed, 6 Aug 2014 20:36:37 +0100
-Message-ID: <20140806193637.GK17528@sirena.org.uk>
-References: <1407307694-30730-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 1/2] ASoC: Add support for CS35L32 Boosted Amplifier
+Date: Wed, 6 Aug 2014 20:43:23 +0100
+Message-ID: <20140806194323.GM17528@sirena.org.uk>
+References: <1407183077-23807-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4808896263248617961=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 04E782619D8
- for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 21:36:45 +0200 (CEST)
-In-Reply-To: <1407307694-30730-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Mengdong Lin <mengdong.lin@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XC5GIdCAi0ueCExh"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1407183077-23807-1-git-send-email-brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4808896263248617961==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bQJl1/qmBFqVu4Ij"
-Content-Disposition: inline
-
-
---bQJl1/qmBFqVu4Ij
+--XC5GIdCAi0ueCExh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 06, 2014 at 09:48:14AM +0300, Jarkko Nikula wrote:
-> Update the initial Baytrail ADSP firmware file name with the one that is now
-> in linux-firmware.git. Please see linux-firmware.git commit 7551a3a78453
-> ("fw_sst_0f28: Add firmware for Intel Baytrail SST DSP").
+On Mon, Aug 04, 2014 at 03:11:16PM -0500, Brian Austin wrote:
+> This patch adds support for the Cirrus Logic CS35L32 Boosted Amplifier
+> I2S output provides monitor data to the SOC/CODEC/DSP for speaker protection/enhancement algorithms
 
 Applied, thanks.
 
---bQJl1/qmBFqVu4Ij
+> Changes for v2:
+> - Interrupt Status Registers added to regmap volatile
+
+Please word wrap your commit logs and if you're going to include a
+changelog place it after the --- so that it gets stripped out by the
+tools.
+
+--XC5GIdCAi0ueCExh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT4oPCAAoJELSic+t+oim9lqQP/jz5+88uChZu2fLOGx78n/Q1
-Fxj7tvifPk64AzF8KSo4h7Bqbi0ayegE5FaKlEruW5yLdcAayBYWe5fHp/4RVF3w
-ZwhOtzjsHiTZCl5HVd5YShsCuaZ3IZiNs7sNpwZ/a9qUKsF6vX2INirGOA4O6Ng1
-oC3paaz6nXzuMZZG3SOBadbpKd9sx2koYq3UZ1wzp6kGQ12hZsPC2tPnT605Iz5C
-O5RVfIOBZRM54iIcXCzQxXoFXquwLCRj03Ph0iAQheJVwt9HoX7QEj9eAQLdBCbd
-xMnzkNhnWxuVA7y/gZDslH807I5DKKl7xz5YzYknDK7I+K6nWSfPdqc6hJviL9dW
-rEXA8xF+X7nqEWkv9P/YUXNBUbl9wQE03o3AjpajEp3xptXDVpgtnzQJ8B/Zsdis
-7cLw7JomYTw8Q21hc5/x54pBoTPm11hhUwzSkEagwnRZwJtsnJjlvsdoK3rd8uRJ
-bNMisR2GBa13dtEFN3LoGi2EaNP4L8cZbTzVCe1KeM6Ah3xvOGppEu1c6X9LiCIQ
-iSI+UnudkcK+OBEtDVPVCA93p/l8oIWV2y4mJ4REYPrcmV8UQk9tPNQ9qyGYQPJU
-FQl1lXSPba5+E4kuePrE3SkIl96kJvKaV9sGnnsFW7/WkfoJtqBxyRpRUW25y59G
-o6VGZw5mwcO/TJfAJbTa
-=TKYb
+iQIcBAEBAgAGBQJT4oVYAAoJELSic+t+oim9a5AP/iAIJMTzpmPt/1sndDQcy+Uj
+lV0l5OlwPq5fz/1l6ykrCqLUDeCR/nLeMMU+gM6vWaJ1kdsE3rO359k6p93gtQzp
+VTKGmod64yAIoveedIWWQtjczVWJasnn6bZCMndw1g9UvYYs51N2JmKmw/2AVMb+
+T0UOWoOL5tBxqP+6uge2zWmXhTRUw4ADbY4dogRpVDnDkUan+kxx1HuV7LvKL7K/
+2F8P/uGRr5tpvd9AXCow8Yqo8THj6ysU4UXQhgGobjTi5GNl/u1c+em4sBLXH1A9
+kvAMDkQyM8D9fXBB0RdzYGpAvMW4Lt8xvIMbsKhIyu3DMu+lHCcSNqoV5FPKmRIN
+LMmuyRkF4xMeHFg8+Atf+DSNWhbfj2El5xkhI4b1no7YaURnFE7EGEgAjl5MEVAe
+7IoxtWDRwsn5vV3LCwSG0QpYFpG2lu4K659itE89GCMzUIIdJUir3ZcX7ZtkyzIw
+uXKP0B8fppPhFN3X1DCNVX+WFhKZNjwvusp986gVR8krq28DEWBsHW4h+V/pM4nm
+hMr7Qb8lSKdd+rJqPx9owaWKj8QdEJsd0UEtSS5sl5E0xldJdIn4t9WeFEQAMN0t
+w2/v4UMi4GofkCROWcByBgYWWUjJKfqJtxvubXMC1SbvzGUx66ZC9wG2VK13Pcbz
++oApceOmjX3PvpxXd1Ol
+=1FIR
 -----END PGP SIGNATURE-----
 
---bQJl1/qmBFqVu4Ij--
-
---===============4808896263248617961==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4808896263248617961==--
+--XC5GIdCAi0ueCExh--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
