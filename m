@@ -1,79 +1,81 @@
-From: Nicolin Chen <Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: Add asynchronous mode support
-Date: Wed, 6 Aug 2014 10:42:37 +0800
-Message-ID: <20140806024236.GA17879@MrMyself>
-References: <1407223925-29678-1-git-send-email-nicoleotsuka@gmail.com>
- <53E0B926.9010103@gmail.com> <20140805110735.GA16503@MrMyself>
- <53E0BC95.7040208@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <53E0BC95.7040208-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Varka Bhadram <varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b02247-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+From: Hans Wennborg <hans@hanshq.net>
+Subject: [PATCH 15/15] ASoC: fix decimal printf format specifiers prefixed with 0x
+Date: Tue,  5 Aug 2014 21:44:26 -0700
+Message-ID: <1407300266-534-1-git-send-email-hans@hanshq.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Hans Wennborg <hans@hanshq.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Varka,
+The prefix suggests the number should be printed in hex, so use
+the %x specifier to do that.
 
-On Tue, Aug 05, 2014 at 04:44:29PM +0530, Varka Bhadram wrote:
-> On 08/05/2014 04:37 PM, Nicolin Chen wrote:
-> >Hi Varka,
-> >
-> >On Tue, Aug 05, 2014 at 04:29:50PM +0530, Varka Bhadram wrote:
-> >>>diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> >>>index 0f4e238..77864f4 100644
-> >>>--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> >>>+++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> >>>@@ -24,6 +24,22 @@ Required properties:
-> >>>  - big-endian-data: If this property is absent, the little endian mode will
-> >>>    be in use as default, or the big endian mode will be in use for all the
-> >>>    fifo data.
-> >>>+- fsl,sai-synchronous-rx: This is a boolean property. If present, indicating
-> >>>+  that SAI will work in the synchronous mode (sync Tx with Rx) which means
-> >>>+  both the transimitter and receiver will send and receive data by following
-> >>>+  receiver's bit clocks and frame sync clocks.
-> >>>+- fsl,sai-asynchronous: This is a boolean property. If present, indicating
-> >>>+  that SAI will work in the asynchronous mode, which means both transimitter
-> >>>+  and receiver will send and receive data by following their own bit clocks
-> >>>+  and frame sync clocks separately.
-> >>>
-> >>Would be readable if it like this...
-> >>
-> >>fsl,sai-synchronous-rx: This is a boolean property. If present, indicating
-> >>			that SAI will work in the synchronous mode (sync Tx with Rx) which means
-> >>			both the transimitter and receiver will send and receive data by following
-> >>			receiver's bit clocks and frame sync clocks.
-> >>- fsl,sai-asynchronous: This is a boolean property. If present, indicating
-> >>			that SAI will work in the asynchronous mode, which means both transimitter
-> >>			and receiver will send and receive data by following their own bit clocks
-> >>			and frame sync clocks separately.
-> >I agree, however, the doc was initialized in that format. Adding
-> >indentations for these two appended lines makes the whole text
-> >look weird. :(
-> 
-> Reading comfortably is important for us...  :-)
-> see this:http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt#L46
+Found by using regex suggested by Joe Perches.
 
-I know how to write a binding doc with indentations to make it clear.
+Signed-off-by: Hans Wennborg <hans@hanshq.net>
+---
+ sound/soc/atmel/atmel_ssc_dai.c | 2 +-
+ sound/soc/sh/dma-sh7760.c       | 2 +-
+ sound/soc/sh/rcar/gen.c         | 6 +++---
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-What I'm talking about is that the doc was created without indentations,
-so I don't feel comfortable to add indentations starting from this patch
-while leaving the old lines in totally a different style because It's not
-helpful to make people read comfortably at all but only forcing people to
-think why these two lines are so special to take some steps back here.
-
-So personally I agree with your idea to make doc more readable. But what
-I prefer to do is not having a conversation on the style within this patch
-but to create an extra style-refinement patch later after this one.
-
-Let's just focus on the function itself right now. We can later send a
-patch to refine this entire doc. Won't you think it's a better idea? :)
-
-Thank you
-Nicolin
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index f403f39..eb2ed21 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -201,7 +201,7 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
+ 	struct atmel_pcm_dma_params *dma_params;
+ 	int dir, dir_mask;
+ 
+-	pr_debug("atmel_ssc_startup: SSC_SR=0x%u\n",
++	pr_debug("atmel_ssc_startup: SSC_SR=0x%x\n",
+ 		ssc_readl(ssc_p->ssc->regs, SR));
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
+index c85f8eb..5a71f74 100644
+--- a/sound/soc/sh/dma-sh7760.c
++++ b/sound/soc/sh/dma-sh7760.c
+@@ -204,7 +204,7 @@ static int camelot_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct camelot_pcm *cam = &cam_pcm_data[rtd->cpu_dai->id];
+ 
+-	pr_debug("PCM data: addr 0x%08ulx len %d\n",
++	pr_debug("PCM data: addr 0x%08lx len %d\n",
+ 		 (u32)runtime->dma_addr, runtime->dma_bytes);
+  
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index 3fdf3be..0f25ee6 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -69,7 +69,7 @@ u32 rsnd_read(struct rsnd_priv *priv,
+ 
+ 	regmap_fields_read(gen->regs[reg], rsnd_mod_id(mod), &val);
+ 
+-	dev_dbg(dev, "r %s - 0x%04d : %08x\n", rsnd_mod_name(mod), reg, val);
++	dev_dbg(dev, "r %s - 0x%04x : %08x\n", rsnd_mod_name(mod), reg, val);
+ 
+ 	return val;
+ }
+@@ -86,7 +86,7 @@ void rsnd_write(struct rsnd_priv *priv,
+ 
+ 	regmap_fields_write(gen->regs[reg], rsnd_mod_id(mod), data);
+ 
+-	dev_dbg(dev, "w %s - 0x%04d : %08x\n", rsnd_mod_name(mod), reg, data);
++	dev_dbg(dev, "w %s - 0x%04x : %08x\n", rsnd_mod_name(mod), reg, data);
+ }
+ 
+ void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod,
+@@ -101,7 +101,7 @@ void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod,
+ 	regmap_fields_update_bits(gen->regs[reg], rsnd_mod_id(mod),
+ 				  mask, data);
+ 
+-	dev_dbg(dev, "b %s - 0x%04d : %08x/%08x\n",
++	dev_dbg(dev, "b %s - 0x%04x : %08x/%08x\n",
+ 		rsnd_mod_name(mod), reg, data, mask);
+ }
+ 
+-- 
+2.0.0.526.g5318336
