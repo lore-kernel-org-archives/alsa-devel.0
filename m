@@ -1,24 +1,24 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
 Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FBAD260815
- for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 15:52:51 +0200 (CEST)
-Received: from dlelxv90.itg.ti.com ([172.17.2.17])
- by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id s76DqoLb029189
- for <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:50 -0500
-Received: from DLEE70.ent.ti.com (dlee70.ent.ti.com [157.170.170.113])
- by dlelxv90.itg.ti.com (8.14.3/8.13.8) with ESMTP id s76Dqo1S003413
- for <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:50 -0500
+ by alsa0.perex.cz (Postfix) with ESMTP id ADF6026084B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 15:52:53 +0200 (CEST)
+Received: from dflxv15.itg.ti.com ([128.247.5.124])
+ by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id s76DqqMs029194
+ for <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:52 -0500
+Received: from DLEE70.ent.ti.com (dlemailx.itg.ti.com [157.170.170.113])
+ by dflxv15.itg.ti.com (8.14.3/8.13.8) with ESMTP id s76Dqqwk023302
+ for <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:52 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])	by
- dflp32.itg.ti.com (8.14.3/8.13.8) with ESMTP id s76Dqmkn006158	for
- <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:49 -0500
+ dflp32.itg.ti.com (8.14.3/8.13.8) with ESMTP id s76Dqpoq006168	for
+ <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:52 -0500
 From: Jyri Sarha <jsarha@ti.com>
-Date: Wed, 6 Aug 2014 16:52:38 +0300
-Message-ID: <5e5987c830439e39d26a44580ebe01de631c10cc.1407332062.git.jsarha@ti.com>
+Date: Wed, 6 Aug 2014 16:52:40 +0300
+Message-ID: <6809e37af0cd57f89e5f9103ae616d51f3b06e12.1407332062.git.jsarha@ti.com>
 In-Reply-To: <cover.1407332062.git.jsarha@ti.com>
 References: <cover.1407332062.git.jsarha@ti.com>
 MIME-Version: 1.0
-Subject: [alsa-devel] [PATCH 1/9] ASoC: mcasp: Fix implicit BLCK divider
-	setting
+Subject: [alsa-devel] [PATCH 3/9] drm/tilcdc: Add I2S HDMI audio config for
+	tda998x
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,63 +33,58 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-ID: <alsa-devel@alsa-project.org>
 
-The implicit BLCK divider setting was broken by "ASoC: mcasp: don't
-override bclk divider if it was provided by the machine"-patch. After
-the BCLK divider is implicitly set for the first time the
-mcasp->bclk_div gets a non zero value and the implicit setting is
-"turned off".
+The configuration is needed for HDMI audio. The "swap" and "mirr"
+parameters have to be correctly set in the configuration in order to
+have proper colors in the HDMI picture.
 
 Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
- sound/soc/davinci/davinci-mcasp.c |   14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/tilcdc/tilcdc_slave.c |   24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index c28508d..6a6b2ff 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -403,7 +403,8 @@ out:
- 	return ret;
- }
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_slave.c b/drivers/gpu/drm/tilcdc/tilcdc_slave.c
+index 595068b..e43240a 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_slave.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_slave.c
+@@ -19,6 +19,7 @@
+ #include <linux/pinctrl/pinmux.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <drm/drm_encoder_slave.h>
++#include <drm/i2c/tda998x.h>
  
--static int davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
-+static int __davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
-+				      int div, bool explicit)
- {
- 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
+ #include "tilcdc_drv.h"
  
-@@ -420,7 +421,8 @@ static int davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div
- 			       ACLKXDIV(div - 1), ACLKXDIV_MASK);
- 		mcasp_mod_bits(mcasp, DAVINCI_MCASP_ACLKRCTL_REG,
- 			       ACLKRDIV(div - 1), ACLKRDIV_MASK);
--		mcasp->bclk_div = div;
-+		if (explicit)
-+			mcasp->bclk_div = div;
- 		break;
+@@ -111,8 +112,29 @@ static const struct drm_encoder_helper_funcs slave_encoder_helper_funcs = {
+ 		.restore        = drm_i2c_encoder_restore,
+ };
  
- 	case 2:		/* BCLK/LRCLK ratio */
-@@ -434,6 +436,12 @@ static int davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div
- 	return 0;
- }
- 
-+static int davinci_mcasp_set_clkdiv(struct snd_soc_dai *dai, int div_id,
-+				    int div)
-+{
-+	return __davinci_mcasp_set_clkdiv(dai, div_id, div, 1);
-+}
++static struct tda998x_encoder_params tda998x_pdata = {
++	.swap_b = 0x3,
++	.mirr_b = 0x0,
++	.swap_a = 0x2,
++	.mirr_a = 0x0,
++	.swap_d = 0x1,
++	.mirr_d = 0x0,
++	.swap_c = 0x0,
++	.mirr_c = 0x0,
++	.swap_f = 0x5,
++	.mirr_f = 0x0,
++	.swap_e = 0x4,
++	.mirr_e = 0x0,
++	.audio_cfg = 0x3,	/* I2S mode */
++	.audio_clk_cfg = 1,	/* select clock pin */
++	.audio_frame[1] = 1,	/* channels - 1 */
++	.audio_format = AFMT_I2S,
++	.audio_sample_rate = 48000,
++};
 +
- static int davinci_mcasp_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 				    unsigned int freq, int dir)
- {
-@@ -738,7 +746,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
- 				 "Inaccurate BCLK: %u Hz / %u != %u Hz\n",
- 				 mcasp->sysclk_freq, div, bclk_freq);
- 		}
--		davinci_mcasp_set_clkdiv(cpu_dai, 1, div);
-+		__davinci_mcasp_set_clkdiv(cpu_dai, 1, div, 0);
- 	}
+ static const struct i2c_board_info info = {
+-		I2C_BOARD_INFO("tda998x", 0x70)
++		I2C_BOARD_INFO("tda998x", 0x70),
++		.platform_data = &tda998x_pdata,
+ };
  
- 	ret = mcasp_common_hw_param(mcasp, substream->stream,
+ static struct drm_encoder *slave_encoder_create(struct drm_device *dev,
 -- 
 1.7.9.5
 
