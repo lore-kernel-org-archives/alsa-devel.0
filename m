@@ -1,18 +1,21 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: [PATCH alsa-lib] pcm: fix snd_pcm_mmap_hw_avail() near
-	the boundary
-Date: Sun, 31 Aug 2014 22:23:47 +0600
-Message-ID: <1409502227-4505-1-git-send-email-patrakov@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f169.google.com (mail-lb0-f169.google.com
- [209.85.217.169])
- by alsa0.perex.cz (Postfix) with ESMTP id DB0AC261B0A
- for <alsa-devel@alsa-project.org>; Sun, 31 Aug 2014 18:23:58 +0200 (CEST)
-Received: by mail-lb0-f169.google.com with SMTP id l4so4811408lbv.0
- for <alsa-devel@alsa-project.org>; Sun, 31 Aug 2014 09:23:58 -0700 (PDT)
+Return-Path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BC642607B6
+ for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 15:52:50 +0200 (CEST)
+Received: from dflxv15.itg.ti.com ([128.247.5.124])
+ by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id s76Dqmbx006555
+ for <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:48 -0500
+Received: from DLEE70.ent.ti.com (dlee70.ent.ti.com [157.170.170.113])
+ by dflxv15.itg.ti.com (8.14.3/8.13.8) with ESMTP id s76DqmOS023284
+ for <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:48 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])	by
+ dlep32.itg.ti.com (8.14.3/8.13.8) with ESMTP id s76DqlHs026314	for
+ <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:52:48 -0500
+From: Jyri Sarha <jsarha@ti.com>
+Date: Wed, 6 Aug 2014 16:52:37 +0300
+Message-ID: <cover.1407332062.git.jsarha@ti.com>
+MIME-Version: 1.0
+Subject: [alsa-devel] [PATCH 0/9] Beaglebone-Black HDMI audio
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,42 +23,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Alexander E. Patrakov" <patrakov@gmail.com>
-List-Id: alsa-devel@alsa-project.org
+List-ID: <alsa-devel@alsa-project.org>
 
-This function returned incorrect results when hw.ptr was near the
-boundary and hw.appl_ptr was near zero. Here "incorrect" means "greater
-than the boundary".
+The code has a functional dependency to:
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg108199.html
 
-The result was incorrect, because it was used as a return value of
-various *_rewindable() functions and also as the delay for ioplug.
+Without the above patch the audio card does not probe.
 
-Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
----
- src/pcm/pcm_local.h | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+The code has been rebased on top of Linux 3.16 merged with 
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+with http://www.mail-archive.com/linux-omap@vger.kernel.org/msg108199.html
+cherry-picked on top.
 
-diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
-index 80bbe59..74ebd60 100644
---- a/src/pcm/pcm_local.h
-+++ b/src/pcm/pcm_local.h
-@@ -461,13 +461,7 @@ static inline snd_pcm_sframes_t snd_pcm_mmap_capture_hw_avail(snd_pcm_t *pcm)
- 
- static inline snd_pcm_sframes_t snd_pcm_mmap_hw_avail(snd_pcm_t *pcm)
- {
--	snd_pcm_sframes_t avail;
--	avail = *pcm->hw.ptr - *pcm->appl.ptr;
--	if (pcm->stream == SND_PCM_STREAM_PLAYBACK)
--		avail += pcm->buffer_size;
--	if (avail < 0)
--		avail += pcm->boundary;
--	return pcm->buffer_size - avail;
-+	return pcm->buffer_size - snd_pcm_mmap_avail(pcm);
- }
- 
- static inline const snd_pcm_channel_area_t *snd_pcm_mmap_areas(snd_pcm_t *pcm)
+All patches have gone trough some cleaning up since the RFC version of
+these patches over half a year ago.
+
+ps. I forgot to send these patches to alsa-devel@alsa-project.org
+    first time around. The original mailing can be found here:
+    http://www.mail-archive.com/linux-omap@vger.kernel.org/msg108229.html
+
+Jyri Sarha (9):
+  ASoC: mcasp: Fix implicit BLCK divider setting
+  clk: add gpio controlled clock
+  drm/tilcdc: Add I2S HDMI audio config for tda998x
+  ASoC: davinci-evm: HDMI audio support for TDA998x trough McASP I2S
+    bus
+  ASoC: davinci: HDMI audio build for AM33XX and TDA998x
+  ARM: dts: am33xx: Add external clock provider
+  ARM: dts: am335x-boneblack: Add HDMI audio support
+  ARM: OMAP2+: omap2plus_defconfig: TDA998X HDMI trough tilcdc,slave
+  ARM: OMAP2+: omap2plus_defconfig: Enable BeagleBone Black HDMI audio
+    support
+
+ .../devicetree/bindings/clock/gpio-clock.txt       |   21 ++
+ .../bindings/sound/davinci-evm-audio.txt           |    4 +-
+ arch/arm/boot/dts/am335x-boneblack.dts             |   54 +++++
+ arch/arm/boot/dts/am33xx.dtsi                      |   10 +
+ arch/arm/configs/omap2plus_defconfig               |    5 +
+ drivers/clk/Makefile                               |    1 +
+ drivers/clk/clk-gpio.c                             |  206 ++++++++++++++++++++
+ drivers/gpu/drm/tilcdc/tilcdc_slave.c              |   24 ++-
+ include/linux/clk-provider.h                       |   23 +++
+ sound/soc/davinci/Kconfig                          |   12 ++
+ sound/soc/davinci/davinci-evm.c                    |   82 +++++++-
+ sound/soc/davinci/davinci-mcasp.c                  |   14 +-
+ 12 files changed, 449 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/gpio-clock.txt
+ create mode 100644 drivers/clk/clk-gpio.c
+
 -- 
-2.1.0
+1.7.9.5
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
