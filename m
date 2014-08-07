@@ -1,103 +1,58 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH V1 1/2] ASoC: fsl: esai: refine esai for
- tdm support
-Date: Thu, 7 Aug 2014 12:26:27 +0800
-Message-ID: <20140807042626.GA2709@MrMyself>
-References: <cover.1407320232.git.shengjiu.wang@freescale.com>
- <e68d8fbaaed7000b13688b0f1757b5b9557889d7.1407320232.git.shengjiu.wang@freescale.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v2 04/13] OMAPDSS: hdmi: Make hdmi structure public
+Date: Thu, 7 Aug 2014 10:04:27 +0300
+Message-ID: <53E324FB.7060000@ti.com>
+References: <cover.1403894190.git.jsarha@ti.com> <536afa4069bd73195b05aee3097c86d7e517ae7e.1403894190.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1blp0189.outbound.protection.outlook.com [207.46.163.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 28095261B1E
- for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 06:35:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <e68d8fbaaed7000b13688b0f1757b5b9557889d7.1407320232.git.shengjiu.wang@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, timur@tabi.org, arnd@arndb.de, shc_work@mail.ru, tiwai@suse.de, Li.Xiubo@freescale.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="mO8tOErt0ND4aRjh2qJqpRa9U8GsXWd2F"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <536afa4069bd73195b05aee3097c86d7e517ae7e.1403894190.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, detheridge@ti.com, jyri.sarha@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
-About the title, please follow the old pattern:
+--mO8tOErt0ND4aRjh2qJqpRa9U8GsXWd2F
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-ASoC: fsl_esai: Refine....
+On 27/06/14 21:38, Jyri Sarha wrote:
+> Name the anonymous hdmi struct as omap_hdmi. Move the struct definition=
+ to
+> hdmi.h and turn core member into a pointer to deal with it's different
+> definitions for omap4 and omap5. Make associated changes to hdmi4.c
+> and hdmi5.c.
 
-You can get the history from 'git log --oneline sound/soc/fsl/fsl_esai.c'
+I didn't understand this one. Why did you make struct hdmi_core_data a
+pointer?
 
-On Wed, Aug 06, 2014 at 06:23:03PM +0800, Shengjiu Wang wrote:
-> Add parameter for slots, and caculate the number of TX/RX pins and bclk with
-> slots. Then driver will be compatible with slots > 2 in TDM mode.
+ Tomi
 
-Hmm...although I totally understand what the patch's exactly improving,
-I suggest to describe more so that other people can get a quick idea
-even without looking at the code, like what the original driver lacks
-or what's the problem of the original design, how this patch fulfills
-this feature and why some change have to be done, those change in the
-header file for example.
 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
-> ---
->  sound/soc/fsl/fsl_esai.c |   10 +++++++---
->  sound/soc/fsl/fsl_esai.h |    8 ++++----
->  2 files changed, 11 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index 72d154e..89aa531 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -56,6 +56,7 @@ struct fsl_esai {
->  	struct clk *fsysclk;
->  	u32 fifo_depth;
->  	u32 slot_width;
-> +	u32 slots;
->  	u32 hck_rate[2];
->  	u32 sck_rate[2];
->  	bool hck_dir[2];
 
-Please append a description for the new member to the existing comments
-above the structure define.
+--mO8tOErt0ND4aRjh2qJqpRa9U8GsXWd2F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-> @@ -363,6 +364,7 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
->  			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
->  
->  	esai_priv->slot_width = slot_width;
-> +	esai_priv->slots      = slots;
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-I prefer not to add indentation here, even thought this doesn't hurt.
-Just...If there's going to be a subsequent patch adding a new member
-assignment whose name's longer than slot_width, the style'll be broken
-as well. For example:
-	esai_priv->slot_width = slot_width;
-	esai_priv->slots      = slots;
-	esai_priv->slot_samplebit = slots;
+iQIcBAEBAgAGBQJT4yT7AAoJEPo9qoy8lh71I28P/jaUn4Q8HixcB++Q12K80hmM
+XLDcy5LKMAvXf7E+1evvwiZN4nG8d7/lnd7bqoQ2JXldESDw4UdKiJjevhPY8DBx
+2tN5roZvb1TMDUovyl9uDiofiv+lFi9nOPVQ6Rss738x8+t+ncug3tss0Pf+zYJt
+oSHtNuCEfLSghqjFPuROW3alNFk8lKBng+z1/DP/mEIPon/oOwSRPkQBTP74UIpV
+9NzSYYp8ITILMS7PCwmTQdvswSgNaZjAQmzFrqP6gXEQpKcaZHXKt27Ni6Ocfe6+
+Ud5vtAjgBjh8umownRTMJcB4HUdMRW8VLyeld6LEpYku2yLbFyseevFMOTmQdBgZ
+p/zi6urX3HKWM7+Q6EH6z7c15ejqQhvJ1r/F+/Aax8c/tR8hlSJzji7pqGC3c+0K
+mhMbK5yrsv+UTsvZLGrImpF4hsZcggc6yHlfKYD9VgFqdv28rLhB5TNPM/lGXzOF
+pGequeCW88JYlhicyh7IF208oaqOXnSJYazEXAhBdlymo4gEG9YHBjB7vRYcKhrv
+SMRPA85d9ItWR0/B0yk+r/3jSfoAVp6Kdz/IluC/llQuG5C7RAfQNM2TKZmKxYbf
+lq6Su7pE5T59+rjA6jgdMbNFMg48JM9hipl56NiGmTcux4NQpdc4TmSW9omcUOJS
+UY4ZFuqBD3fRucfQSCri
+=xkXO
+-----END PGP SIGNATURE-----
 
-The indentation for the 'slots' will look abnormal.
-	
->  
->  	return 0;
->  }
-> @@ -510,10 +512,11 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
->  	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
->  	u32 width = snd_pcm_format_width(params_format(params));
->  	u32 channels = params_channels(params);
-> +	u32 pin = DIV_ROUND_UP(channels, esai_priv->slots);
-
-This may cause a 'Division by zero' here. The 'slots' is only assigned
-in set_dai_tdm_slot(). As default, a machine driver who does not call
-set_dai_tdm_slot() will get a zero slot. We must give 'slots' a default
-value (2 for example) somewhere during initialization.
-
-And another personal suggestion -- using name 'pins' might be better.
-
-Thank you Shengjiu,
-Nicolin
+--mO8tOErt0ND4aRjh2qJqpRa9U8GsXWd2F--
