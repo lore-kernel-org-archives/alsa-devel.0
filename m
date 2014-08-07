@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt286: Add API to set supported jack
-	type
-Date: Wed, 6 Aug 2014 21:54:21 +0100
-Message-ID: <20140806205421.GZ17528@sirena.org.uk>
-References: <1407217970-20126-1-git-send-email-bardliao@realtek.com>
+From: pshou <pshou@realtek.com>
+Subject: Re: ALC286 recording delay
+Date: Thu, 7 Aug 2014 09:35:19 +0800
+Message-ID: <FC74147A4CCE4A52AA3859F3065CD45D@realtek.com.tw>
+References: <47FBF9D5C0344672B688411191680B7A@realtek.com.tw>
+ <s5hfvh94r40.wl%tiwai@suse.de>
+Reply-To: pshou <pshou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2578459888023934088=="
+Content-Type: multipart/mixed;
+ boundary="----=_NextPart_000_00A0_01CFB222.E76EBC60"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 525622619D8
- for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 22:54:34 +0200 (CEST)
-In-Reply-To: <1407217970-20126-1-git-send-email-bardliao@realtek.com>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id B498C261B02
+ for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 03:35:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +21,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Kailang <kailang@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
+------=_NextPart_000_00A0_01CFB222.E76EBC60
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
 
---===============2578459888023934088==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="nwFUwwwa9Vid+Y3g"
-Content-Disposition: inline
+Sorry, I put the patch file will be sent to you.
+
+Best regards
+pshou
+
+----- Original Message ----- 
+From: "Takashi Iwai" <tiwai@suse.de>
+To: "pshou" <pshou@realtek.com>
+Cc: "Kailang" <kailang@realtek.com>; <alsa-devel@alsa-project.org>
+Sent: Wednesday, August 06, 2014 10:42 PM
+Subject: Re: ALC286 recording delay
 
 
---nwFUwwwa9Vid+Y3g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> At Wed, 6 Aug 2014 14:53:27 +0800,
+> pshou wrote:
+>>
+>> Hi Takashi:
+>>
+>> It will be recording voice delay for resume back recording for Headset 
+>> Mic.
+>> This alc286 will quickly open Headset Mic, to prevent avoid recording 
+>> files are missing.
+>> The issue was fixed. This is follow ALC286 programing guide.
+>
+> So, do you mean that there is no need to have a workaround in the
+> driver side for now?
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ------Please consider the environment before printing this e-mail. 
+
+------=_NextPart_000_00A0_01CFB222.E76EBC60
+Content-Type: application/octet-stream;
+	name="0001-alc286-fixed-recording-delay.patch"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="0001-alc286-fixed-recording-delay.patch"
 
-On Tue, Aug 05, 2014 at 01:52:50PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
->=20
-> RT286 need to configure the jack type (combo or non-combo) according to t=
-he
-> HW design. This function is given a easy way to set the correct jacy type
-> for those without platform data supported.
+>From 5d7ae195257daaffa1497d2c79d06aa01b9754b0 Mon Sep 17 00:00:00 2001=0A=
+From: Kailang Yang <kailang@realtek.com>=0A=
+Date: Mon, 30 Jun 2014 16:10:37 +0800=0A=
+Subject: [PATCH] ALSA: hda/realtek - Fixed ALC286/ALC288 recording delay =
+for=0A=
+ Headset Mic=0A=
+=0A=
+It will be recording voice delay for resume back recording for Headset =
+Mic.=0A=
+This alc286 will quickly open Headset Mic, to prevent avoid recording =
+files are missing. =0A=
+The issue was fixed. This is follow ALC286 programing guide.=0A=
+=0A=
+Signed-off-by: Kailang Yang <kailang@realtek.com>=0A=
+=0A=
+diff --git a/sound/pci/hda/patch_realtek.c =
+b/sound/pci/hda/patch_realtek.c=0A=
+index 60bf5ee..13cdefb 100644=0A=
+--- a/sound/pci/hda/patch_realtek.c=0A=
++++ b/sound/pci/hda/patch_realtek.c=0A=
+@@ -2782,6 +2782,25 @@ static int alc269_parse_auto_config(struct =
+hda_codec *codec)=0A=
+ 	return alc_parse_auto_config(codec, alc269_ignore, ssids);=0A=
+ }=0A=
+ =0A=
++void alc_snd_hda_shutup_pins(struct hda_codec *codec)=0A=
++{=0A=
++	int i;=0A=
++	int mic_pin =3D find_ext_mic_pin(codec);=0A=
++	/* don't shut up pins when unloading the driver; otherwise it breaks=0A=
++	 * the default pin setup at the next load of the driver=0A=
++	 */=0A=
++	if (codec->bus->shutdown)=0A=
++		return;=0A=
++	for (i =3D 0; i < codec->init_pins.used; i++) {=0A=
++		struct hda_pincfg *pin =3D snd_array_elem(&codec->init_pins, i);=0A=
++		/* use read here for syncing after issuing each verb */=0A=
++		if (pin->nid !=3D mic_pin)=0A=
++			snd_hda_codec_read(codec, pin->nid, 0,=0A=
++					AC_VERB_SET_PIN_WIDGET_CONTROL, 0);=0A=
++	}=0A=
++	codec->pins_shutup =3D 1;=0A=
++}=0A=
++=0A=
+ static void alc269vb_toggle_power_output(struct hda_codec *codec, int =
+power_up)=0A=
+ {=0A=
+ 	int val =3D alc_read_coef_idx(codec, 0x04);=0A=
+@@ -5326,6 +5345,7 @@ static int patch_alc269(struct hda_codec *codec)=0A=
+ 	case 0x10ec0286:=0A=
+ 	case 0x10ec0288:=0A=
+ 		spec->codec_variant =3D ALC269_TYPE_ALC286;=0A=
++		spec->shutup =3D alc_snd_hda_shutup_pins;=0A=
+ 		break;=0A=
+ 	case 0x10ec0255:=0A=
+ 		spec->codec_variant =3D ALC269_TYPE_ALC255;=0A=
 
-If this is coming from the hardware design I'd expect this to be
-configured via platform data or firmware data rather than with an API.
-Why do it this way?
-
---nwFUwwwa9Vid+Y3g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT4pX6AAoJELSic+t+oim9V6IP/3uxfVC4mhfTAs0f73vYZWpD
-sYPpJhQtB15OJsMEN+SUyJa770GZRfnYugoZxUCoxki9E0f/IGkgKYOhyZyeB76V
-zpXZTjDoext38Hj2sDI3TqGc9hs9Mhzek1/T+TgX1M6jcITcOSqxxhxsJM4uGDWY
-w9JDTfOD9ErgqrpPQJ269F0PKUqBsvcX9imjimBiXDga5uxtjnnU22qCFIfqEkNI
-pdEcP2hYgGxu48PX7tmUFufrALcqC0GaY9QQbbgpbCtHjDmgfSmjEp1g/aipso0l
-25K8biFPA/ngoldyi6lbFz92BP6dWik2JnBd+ljzRxGCOkFhX5X8yhIvs+u4M2sz
-8XW/OzIMu9soytCc+uUZlm7Skyae9c/bAP98p9wV6OnFd4vJa5RhmS84XR93FYuC
-WQu+56QI/IN6WzVOe1ROtQcNTzAzoz79E9gO8LG50UPpYcl0VzzA5O8z8Q5VE8h4
-ni1yztChmz0vN4oBvjctkaDNtytLAhSXgSfOoNG1Z8wHCRsgT/dr9aWwl99xlEds
-bE1bLAgEWyzU2fJmkIdn6R2mhMBgD6ufdltm7UKTTqiKQu8dTEVAHJOIap0Pdfjh
-sWiac/igfC71712ktvVc9V/pzaXn5qiF2KklBN9rVx8youOf4Cq4k6GFzYWafzRy
-C3fmR86gXYQ3/9sCWmVR
-=3+r8
------END PGP SIGNATURE-----
-
---nwFUwwwa9Vid+Y3g--
-
---===============2578459888023934088==
+------=_NextPart_000_00A0_01CFB222.E76EBC60
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2578459888023934088==--
+------=_NextPart_000_00A0_01CFB222.E76EBC60--
