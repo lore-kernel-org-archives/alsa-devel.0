@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt286: Add API to set supported jack
-	type
-Date: Thu, 7 Aug 2014 18:31:36 +0100
-Message-ID: <20140807173136.GN17528@sirena.org.uk>
-References: <1407217970-20126-1-git-send-email-bardliao@realtek.com>
- <20140806205421.GZ17528@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D7608E00@RTITMBSV03.realtek.com.tw>
+Subject: Re: [PATCH] ASoC: fsl-ssi: Support for
+	SND_SOC_DAIFMT_CBM_CFS
+Date: Thu, 7 Aug 2014 18:45:47 +0100
+Message-ID: <20140807174547.GQ17528@sirena.org.uk>
+References: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7567909389350407500=="
+Content-Type: multipart/mixed; boundary="===============1917195372184170860=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A37A2652D7
- for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 19:31:47 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D7608E00@RTITMBSV03.realtek.com.tw>
+ by alsa0.perex.cz (Postfix) with ESMTP id F3AAE2652D0
+ for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 19:46:00 +0200 (CEST)
+In-Reply-To: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,76 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, Graeme.Gregory@linaro.org, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Flove <flove@realtek.com>
+To: Fabio Falzoi <fabio.falzoi84@gmail.com>
+Cc: alsa-devel@alsa-project.org, adamo.a60@gmail.com, timur@tabi.org, lgirdwood@gmail.com, mpa@pengutronix.de, michael@amarulasolutions.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7567909389350407500==
+--===============1917195372184170860==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dy55e8aolw+8fmws"
+	protocol="application/pgp-signature"; boundary="Pga57YAdUfKQcdIT"
 Content-Disposition: inline
 
 
---dy55e8aolw+8fmws
+--Pga57YAdUfKQcdIT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Aug 07, 2014 at 01:43:24AM +0000, Bard Liao wrote:
+On Mon, Aug 04, 2014 at 05:08:07PM +0200, Fabio Falzoi wrote:
+> Add SND_SOC_DAIFMT_CBM_CFS support for Freescale architecture.
+> Successfully tested on i.MX 6Quad Wandboard and UDOO boards connected to
+> the pcm1792a codec.
+> In CBM_CFS mode, when using a sample size of 16 bits, we cannot use
+> CCSR_SSI_SCR_I2S_MODE_MASTER since we get a frame sync every 16 bits.
 
-> > If this is coming from the hardware design I'd expect this to be configured
-> > via platform data or firmware data rather than with an API.
-> > Why do it this way?
+Applied, thanks.
 
-> Actually, this patch is for Intel platform which doesn't support platform data
-> yet. That's why we create an API so they can call the API in machine driver.
-
-So, this is something that the people wanting to use ACPI in platforms
-with devices like this are going to have to deal with - we need a way of
-getting configuration to devices.  Traditionally small tweaks have been
-done based on DMI information but that's not at all scalable.  I believe
-newer ACPI specs are trying to accomodate this due to the expanding
-range of systems supporting ACPI.  Punting to the machine driver just
-moves the problem around, it doesn't really address it.
-
-I've CCed in Graeme Gregory who's been writing some guidelines for this
-sort of thing in the context of ARMv8 serviers - the most recent patch
-is:
-
-   http://thread.gmane.org/gmane.linux.acpi.devel/69757
-
-The advice there looks good to me - see the "Device Enumeration"
-section.
-
---dy55e8aolw+8fmws
+--Pga57YAdUfKQcdIT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT47f1AAoJELSic+t+oim90CIP/1jle7x4Fjzl9nPR3oVLZUA+
-H7z02/HEioT6OGOGZkHZnrpho1Ih6yNeUhQNiJP1T/0YjUWzZgvcv3C8Gz/IoWbH
-/s2xbiV0uTC2qboSPKbciRBztixCJcCRVyL7dVn11qTNpHCXsmR9Nwvm/0dLHvd9
-tjwyR0YM3SAx2y+xZk4HSxtQrb8fq896DXKCH/gT1F/WBSlqrG4ryutOOMtN8PX1
-TL3ZgwMDFrVBhxXym4PcQXeml2PODkawVaIFej5vjtmx8LuQltXIEB/xG5VfaGYe
-ONJL8bfeNeIi1MBY7UsIYFVI6sVrW4E1mqSY3d9SKXhOoCDEjwfFtIOe9a3S8eNm
-SLaApuZMnmDpUD7UJ6bvegEEetoioIDRIPQ5PPPxbkK6ERxOkcgsg1haNa+yaOEq
-ED2qAMWcVbQaTVzT1pi47PIsGkUKIPlAWVqxMIOFTDLHx8rqOifIdk3SnkAdVsVy
-NmVVUWgWc1NyxzF33BdELgBHc9FRYcVHrnFmLst/6KFkb99YMfZTcMAovJwj2RW0
-0p9xlx04iSMhWGWeW2t5DllmU38sIrpQ5U/Uvr+m4uJB5aJgepqkWTZtWKsUXKLW
-CqOxtmhzDBnc1V+SAX6UYacoug+4Axo+Op9VnQUOqsYlVnQQuzTJOypn7ZZHaK6R
-lHTSlNRojap+DGxjFg79
-=BMoP
+iQIcBAEBAgAGBQJT47tIAAoJELSic+t+oim99hkP/R3b1JfMQURCx1oEoz72OGK8
+lg6mz5vsO0kbtFMOR5XpunD3/oQIJq7SSJZXybXAD4BK8mVqVqxYL5wVrS4SPyJk
+XStTkYILoS7zebvRqMI+sX+nAGn0s38mQvisLEa30kFquN2y1Mjd0KmVRgr+mDc8
+k1lh1oiJ9vNtnItMHXRPxHUS466CUQ2x0Ubj/Np+gvGYUlJYDMof7GGnvEqImleM
+xkp/V7asWGoZBtRonCvye5a9EYV5G+THytTHTG2m9DVObjce+IsNKl0BPVVhBVkp
+rPsQR/XMVCz5zQAPzH2pBMw+4N+gTmzzdhlxmXz9tJl+n5eIj85336cZl+ILM7bA
+F7UUUg27fYIKjcfXrwx6KZ0u4y4940XYQ5O3FpljRlJt7oHMTx34WRWF/mduSd1I
+mesZ/y4x7IDN8Q3U8IBq02IvMCMcswZ+pD2vu6L0PGW/UICZym7HFkISt2Sv5vrV
+7IT9yBI8V1Qxb0kIA+eAQF583YilOaIY7huVVsYjV7EfjopNzGaoZ0qPZqugwnLA
+lNLIGxIdRuwxEEoYU9KoYGF+TBqaFEGOLZV/eacbTL4f8MoBoBZOjx6HlrNWihQM
+dyE9iuR7EfI7B1qpsWatgNKpypGMuldrGFHowj/8aJF6zyok5TatVOdMySNdbDCl
+V+84DqIWZL5Xv8JwVMl3
+=1+lf
 -----END PGP SIGNATURE-----
 
---dy55e8aolw+8fmws--
+--Pga57YAdUfKQcdIT--
 
---===============7567909389350407500==
+--===============1917195372184170860==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7567909389350407500==--
+--===============1917195372184170860==--
