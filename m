@@ -1,131 +1,51 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V2 1/2] ASoC: fsl_esai: refine esai for TDM support
-Date: Thu, 7 Aug 2014 17:33:24 +0800
-Message-ID: <5428d24b20316f690b2b1119724ebf5cbd0fa1c0.1407403727.git.shengjiu.wang@freescale.com>
-References: <cover.1407403727.git.shengjiu.wang@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_sai: Initialize with software reset
+Date: Thu, 7 Aug 2014 10:38:51 +0100
+Message-ID: <20140807093851.GB17528@sirena.org.uk>
+References: <1407230421-20953-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="t+aXE7hLC8APFkG0"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1407403727.git.shengjiu.wang@freescale.com>
+Content-Disposition: inline
+In-Reply-To: <1407230421-20953-1-git-send-email-nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, timur@tabi.org, perex@perex.cz, tiwai@suse.de, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, shc_work@mail.ru, fabio.estevam@freescale.com, arnd@arndb.de
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-Original driver didn't store the number of slots, just fix the slot number
-to 2, use this default number to calculate bclk and pins for TX/RX.
-In this patch, add one parameter for slots, and update the calculation of
-bclk and pins of TX/RX. Then driver will be compatible with slots > 2 in
-TDM mode.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
----
- sound/soc/fsl/fsl_esai.c |   14 +++++++++++---
- sound/soc/fsl/fsl_esai.h |    8 ++++----
- 2 files changed, 15 insertions(+), 7 deletions(-)
+--t+aXE7hLC8APFkG0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 72d154e..f252370 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -38,6 +38,7 @@
-  * @fsysclk: system clock source to derive HCK, SCK and FS
-  * @fifo_depth: depth of tx/rx FIFO
-  * @slot_width: width of each DAI slot
-+ * @slots: number of slots
-  * @hck_rate: clock rate of desired HCKx clock
-  * @sck_rate: clock rate of desired SCKx clock
-  * @hck_dir: the direction of HCKx pads
-@@ -56,6 +57,7 @@ struct fsl_esai {
- 	struct clk *fsysclk;
- 	u32 fifo_depth;
- 	u32 slot_width;
-+	u32 slots;
- 	u32 hck_rate[2];
- 	u32 sck_rate[2];
- 	bool hck_dir[2];
-@@ -363,6 +365,7 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
- 			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
- 
- 	esai_priv->slot_width = slot_width;
-+	esai_priv->slots = slots;
- 
- 	return 0;
- }
-@@ -510,10 +513,11 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	u32 width = snd_pcm_format_width(params_format(params));
- 	u32 channels = params_channels(params);
-+	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
- 	u32 bclk, mask, val;
- 	int ret;
- 
--	bclk = params_rate(params) * esai_priv->slot_width * 2;
-+	bclk = params_rate(params) * esai_priv->slot_width * esai_priv->slots;
- 
- 	ret = fsl_esai_set_bclk(dai, tx, bclk);
- 	if (ret)
-@@ -530,7 +534,7 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
- 	mask = ESAI_xFCR_xFR_MASK | ESAI_xFCR_xWA_MASK | ESAI_xFCR_xFWM_MASK |
- 	      (tx ? ESAI_xFCR_TE_MASK | ESAI_xFCR_TIEN : ESAI_xFCR_RE_MASK);
- 	val = ESAI_xFCR_xWA(width) | ESAI_xFCR_xFWM(esai_priv->fifo_depth) |
--	     (tx ? ESAI_xFCR_TE(channels) | ESAI_xFCR_TIEN : ESAI_xFCR_RE(channels));
-+	     (tx ? ESAI_xFCR_TE(pins) | ESAI_xFCR_TIEN : ESAI_xFCR_RE(pins));
- 
- 	regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx), mask, val);
- 
-@@ -565,6 +569,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
- 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
- 	u8 i, channels = substream->runtime->channels;
-+	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -579,7 +584,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
- 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
--				   tx ? ESAI_xCR_TE(channels) : ESAI_xCR_RE(channels));
-+				   tx ? ESAI_xCR_TE(pins) : ESAI_xCR_RE(pins));
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
-@@ -783,6 +788,9 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 	/* Set a default slot size */
- 	esai_priv->slot_width = 32;
- 
-+	/* Set a default slot number */
-+	esai_priv->slots = 2;
-+
- 	/* Set a default master/slave state */
- 	esai_priv->slave_mode = true;
- 
-diff --git a/sound/soc/fsl/fsl_esai.h b/sound/soc/fsl/fsl_esai.h
-index 75e1403..91a550f 100644
---- a/sound/soc/fsl/fsl_esai.h
-+++ b/sound/soc/fsl/fsl_esai.h
-@@ -130,8 +130,8 @@
- #define ESAI_xFCR_RE_WIDTH	4
- #define ESAI_xFCR_TE_MASK	(((1 << ESAI_xFCR_TE_WIDTH) - 1) << ESAI_xFCR_xE_SHIFT)
- #define ESAI_xFCR_RE_MASK	(((1 << ESAI_xFCR_RE_WIDTH) - 1) << ESAI_xFCR_xE_SHIFT)
--#define ESAI_xFCR_TE(x) 	((ESAI_xFCR_TE_MASK >> (ESAI_xFCR_TE_WIDTH - ((x + 1) >> 1))) & ESAI_xFCR_TE_MASK)
--#define ESAI_xFCR_RE(x) 	((ESAI_xFCR_RE_MASK >> (ESAI_xFCR_RE_WIDTH - ((x + 1) >> 1))) & ESAI_xFCR_RE_MASK)
-+#define ESAI_xFCR_TE(x) 	((ESAI_xFCR_TE_MASK >> (ESAI_xFCR_TE_WIDTH - x)) & ESAI_xFCR_TE_MASK)
-+#define ESAI_xFCR_RE(x) 	((ESAI_xFCR_RE_MASK >> (ESAI_xFCR_RE_WIDTH - x)) & ESAI_xFCR_RE_MASK)
- #define ESAI_xFCR_xFR_SHIFT	1
- #define ESAI_xFCR_xFR_MASK	(1 << ESAI_xFCR_xFR_SHIFT)
- #define ESAI_xFCR_xFR		(1 << ESAI_xFCR_xFR_SHIFT)
-@@ -272,8 +272,8 @@
- #define ESAI_xCR_RE_WIDTH	4
- #define ESAI_xCR_TE_MASK	(((1 << ESAI_xCR_TE_WIDTH) - 1) << ESAI_xCR_xE_SHIFT)
- #define ESAI_xCR_RE_MASK	(((1 << ESAI_xCR_RE_WIDTH) - 1) << ESAI_xCR_xE_SHIFT)
--#define ESAI_xCR_TE(x) 		((ESAI_xCR_TE_MASK >> (ESAI_xCR_TE_WIDTH - ((x + 1) >> 1))) & ESAI_xCR_TE_MASK)
--#define ESAI_xCR_RE(x) 		((ESAI_xCR_RE_MASK >> (ESAI_xCR_RE_WIDTH - ((x + 1) >> 1))) & ESAI_xCR_RE_MASK)
-+#define ESAI_xCR_TE(x) 		((ESAI_xCR_TE_MASK >> (ESAI_xCR_TE_WIDTH - x)) & ESAI_xCR_TE_MASK)
-+#define ESAI_xCR_RE(x) 		((ESAI_xCR_RE_MASK >> (ESAI_xCR_RE_WIDTH - x)) & ESAI_xCR_RE_MASK)
- 
- /*
-  * Transmit Clock Control Register -- REG_ESAI_TCCR 0xD8
--- 
-1.7.9.5
+On Tue, Aug 05, 2014 at 05:20:21PM +0800, Nicolin Chen wrote:
+> This patch adds software reset code in dai_probe() so as to make a true init
+> by clearing SAI's internal logic, including the bit clock generation, status
+> flags, and FIFO pointers.
+
+Applied, thanks.
+
+--t+aXE7hLC8APFkG0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT40koAAoJELSic+t+oim9KpYQAJlYBddSHjSnX4yqwAZKyQcd
+9EWSfckY5xV9Ci+qiSCbJ7GIcOsHunIqyReBvlF3KwshyKjNo0OmTVWh8fZ6L+gI
+pc13E/Yu/iW7h8QJN3klEI38ZxXD6RgMec1pLCU0IvYs/zUFTUzCHNKGCFceRaHN
+vV4nE/JC8Wz8Pbie1+rBmZOxgP1jQ1VcSMDLNGZhZOTJyhaf0O+idoJeVKcN6buE
+reZOq4Ede8tt++G+u6Xwna1BFwT/xOnsCtrEn7Ev8Ou35237tB9mTwtQycP4YUGz
+5SLc+QJfasR7Lou5bnUFl4T3fvO6JjyWvMCjskLLzn7fWM3DBO1HCiYFJMV6ZCUG
+/KgXxTuSA5V9BcvaZx6XmsZ5rnq88zas8eJkxyD6noICor9OCdp8+sRV2Pmx9Z8N
+aDjVe58mhU3B5g0MHi51BLWKkrT5J9S63NSqvi2TLMLzdHEPPTdA4aP4zrlriL3x
+9fnTBZB9rdC7I+j0vjsILn1bZFGiz9Mly1TCXOHS7crWie2P6nGGTt8/AdULWoo8
+PP12ucY2wQaOY2MnSb88VV7wtQafMhrilDmkJm0mQH0li/IVeiJII9niVrXQjcQb
+dayUqWYvMtKWV/xwj6ZpHYWtNEoU1k/A39W7t4PwDTwjCTcwMQUvVYNC9dS8Q9VV
+KogLUWEJ9UfV393gQBHd
+=pV9C
+-----END PGP SIGNATURE-----
+
+--t+aXE7hLC8APFkG0--
