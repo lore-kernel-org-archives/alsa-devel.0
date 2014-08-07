@@ -1,20 +1,25 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH V2 2/2] Revert "ASoC: fsl-esai: Add
- .xlate_tdm_slot_mask() support."
-Date: Thu, 7 Aug 2014 20:09:11 +0800
-Message-ID: <20140807120909.GA4153@MrMyself>
-References: <cover.1407403727.git.shengjiu.wang@freescale.com>
- <5627d0f839900c33b1c15de4c21f745015d3e19d.1407403727.git.shengjiu.wang@freescale.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Audio mini conference 2014?
+Date: Thu, 7 Aug 2014 19:39:57 +0530
+Message-ID: <20140807140957.GI8181@intel.com>
+References: <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5h4myhpcby.wl%tiwai@suse.de>
+ <20140721232054.GN17528@sirena.org.uk>
+ <s5h1ttehr91.wl%tiwai@suse.de>
+ <20140722222038.GW17528@sirena.org.uk>
+ <53CF8306.3090009@zonque.org>
+ <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
+ <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1blp0189.outbound.protection.outlook.com [207.46.163.189])
- by alsa0.perex.cz (Postfix) with ESMTP id EBFD32650FA
- for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 14:11:03 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 023482650E4
+ for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 16:21:33 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <5627d0f839900c33b1c15de4c21f745015d3e19d.1407403727.git.shengjiu.wang@freescale.com>
+In-Reply-To: <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,67 +29,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: fabio.estevam@freescale.com, alsa-devel@alsa-project.org, timur@tabi.org, arnd@arndb.de, shc_work@mail.ru, tiwai@suse.de, Li.Xiubo@freescale.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shengjiu,
-   
-On Thu, Aug 07, 2014 at 05:33:25PM +0800, Shengjiu Wang wrote:
-> This reverts commit a603c8ee526f5ea9ad9b40710308766299ad8a69.
+On Wed, Aug 06, 2014 at 01:42:36PM +0000, Handrigan, Paul wrote:
 > 
-> fsl_asoc_xlate_tdm_slot_mask() will invert the mask, which isn't fit for
-> esai. The default function snd_soc_xlate_tdm_slot_mask() is ok for esai.
+> 
+> > On Aug 6, 2014, at 7:00 AM, "Daniel Mack" <daniel@zonque.org> wrote:
+> > 
+> >> On 08/06/2014 10:15 AM, Daniel Mack wrote:
+> >> On 08/06/2014 10:13 AM, Tanu Kaskinen wrote:
+> > 
+> >>> Did you get any responses?
+> >> 
+> >> Unfortunately not. I'll try again.
+> > 
+> > Ok, they guys from ChaosDorf now got back to me. They need to make a
+> > final discussion internally yet, but it appears to be working. I'll hear
+> > back from them next Wednesday with a final decision.
+> > 
+> > The ChaosDorf is a CCC hack space that hosts all sort of user group
+> > meetings and the like. Their website is here:
+> > 
+> >  http://chaosdorf.de/
+> > 
+> > I told them we'd be ~20ppl and they think they can accommodate that
+> > number, and they also have a beamer. Or do we expect to be more?
+> > 
+> > They have a room layout and some pictures here:
+> > 
+> >  https://wiki.chaosdorf.de/Clubraum
+> > 
+> > I've never been there myself, so I can't say anything about it, but
+> > usually, these Hackspaces are quite nice. They're no typical conference
+> > rooms though.
+> > 
+> > What date would we prefer? There's an event on Tuesday night (~6pm), but
+> > I guess we wouldn't need the room longer than that anyway, right?
+> It would be best that it is not during LPC as mentioned before.  Will Saturday after LPC work as well?
+Plumbers starts Wed.. So tue can work too :)
 
-You should describe why that doesn't fit for ESAI and what's the result
-if keeping it.
+Btw should we request a LPC track for backup.
 
-Thank you,
-Nicolin
-
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
-> ---
->  sound/soc/fsl/Kconfig    |    1 -
->  sound/soc/fsl/fsl_esai.c |    2 --
->  2 files changed, 3 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-> index f54a8fc..f3012b6 100644
-> --- a/sound/soc/fsl/Kconfig
-> +++ b/sound/soc/fsl/Kconfig
-> @@ -49,7 +49,6 @@ config SND_SOC_FSL_ESAI
->  	tristate "Enhanced Serial Audio Interface (ESAI) module support"
->  	select REGMAP_MMIO
->  	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
-> -	select SND_SOC_FSL_UTILS
->  	help
->  	  Say Y if you want to add Enhanced Synchronous Audio Interface
->  	  (ESAI) support for the Freescale CPUs.
-> diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-> index f252370..b2f6b3e 100644
-> --- a/sound/soc/fsl/fsl_esai.c
-> +++ b/sound/soc/fsl/fsl_esai.c
-> @@ -18,7 +18,6 @@
->  
->  #include "fsl_esai.h"
->  #include "imx-pcm.h"
-> -#include "fsl_utils.h"
->  
->  #define FSL_ESAI_RATES		SNDRV_PCM_RATE_8000_192000
->  #define FSL_ESAI_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
-> @@ -612,7 +611,6 @@ static struct snd_soc_dai_ops fsl_esai_dai_ops = {
->  	.hw_params = fsl_esai_hw_params,
->  	.set_sysclk = fsl_esai_set_dai_sysclk,
->  	.set_fmt = fsl_esai_set_dai_fmt,
-> -	.xlate_tdm_slot_mask = fsl_asoc_xlate_tdm_slot_mask,
->  	.set_tdm_slot = fsl_esai_set_dai_tdm_slot,
->  };
->  
-> -- 
-> 1.7.9.5
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-- 
+~Vinod
