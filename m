@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl-ssi: Support for
-	SND_SOC_DAIFMT_CBM_CFS
-Date: Thu, 7 Aug 2014 18:45:47 +0100
-Message-ID: <20140807174547.GQ17528@sirena.org.uk>
-References: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: SGTL500 and its external MCLK
+Date: Thu, 7 Aug 2014 15:37:47 -0400
+Message-ID: <CAKON4OxRr-igCSZ2HwXcKGFT7O6sQjJUMP_aF19kSRP59ZxFew@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1917195372184170860=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F3AAE2652D0
- for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 19:46:00 +0200 (CEST)
-In-Reply-To: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
+Received: from mail-lb0-f171.google.com (mail-lb0-f171.google.com
+ [209.85.217.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F08026530D
+ for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 21:37:48 +0200 (CEST)
+Received: by mail-lb0-f171.google.com with SMTP id l4so3113126lbv.16
+ for <alsa-devel@alsa-project.org>; Thu, 07 Aug 2014 12:37:48 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Falzoi <fabio.falzoi84@gmail.com>
-Cc: alsa-devel@alsa-project.org, adamo.a60@gmail.com, timur@tabi.org, lgirdwood@gmail.com, mpa@pengutronix.de, michael@amarulasolutions.com
+To: Mark Brown <broonie@kernel.org>, zengzm.kernel@gmail.com
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+For testing purposes I have a SGTL5000 wired up to I2S on my Allwinner
+A20.  SGTL5000 needs an external MCLK. It attaches to it like this:
 
---===============1917195372184170860==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Pga57YAdUfKQcdIT"
-Content-Disposition: inline
+sgtl5000: sgtl5000@a {
+   compatible = "fsl,sgtl5000";
+   reg = <0x0a>;
+   clocks = <&iis0>;
 
+And in the probe code....
+(this should use a name for the clock in the DTS)
 
---Pga57YAdUfKQcdIT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+sgtl5000->mclk = devm_clk_get(&client->dev, NULL);
+if (IS_ERR(sgtl5000->mclk)) {
+   ret = PTR_ERR(sgtl5000->mclk);
+   dev_err(&client->dev, "Failed to get mclock: %d\n", ret);
+   /* Defer the probe to see if the clk will be provided later */
+   if (ret == -ENOENT)
+      return -EPROBE_DEFER;
+   return ret;
+}
 
-On Mon, Aug 04, 2014 at 05:08:07PM +0200, Fabio Falzoi wrote:
-> Add SND_SOC_DAIFMT_CBM_CFS support for Freescale architecture.
-> Successfully tested on i.MX 6Quad Wandboard and UDOO boards connected to
-> the pcm1792a codec.
-> In CBM_CFS mode, when using a sample size of 16 bits, we cannot use
-> CCSR_SSI_SCR_I2S_MODE_MASTER since we get a frame sync every 16 bits.
+ret = clk_prepare_enable(sgtl5000->mclk);
+if (ret)
+   return ret;
 
-Applied, thanks.
+So the sgtl5000 driver has a handle to the clock. But then the driver
+implements set_dai_sysclk() to get the rate. And a board specific
+machine driver like imx-sgtl5000.c is used to set this rate into the
+sgtl5000 driver.
 
---Pga57YAdUfKQcdIT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+/* set codec sysclk */
+static int sgtl5000_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+  int clk_id, unsigned int freq, int dir)
+{
+   struct snd_soc_codec *codec = codec_dai->codec;
+   struct sgtl5000_priv *sgtl5000 =      snd_soc_codec_get_drvdata(codec);
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+switch (clk_id) {
+   case SGTL5000_SYSCLK:
+   sgtl5000->sysclk = freq;
+      break;
+default:
+   return -EINVAL;
+  }
 
-iQIcBAEBAgAGBQJT47tIAAoJELSic+t+oim99hkP/R3b1JfMQURCx1oEoz72OGK8
-lg6mz5vsO0kbtFMOR5XpunD3/oQIJq7SSJZXybXAD4BK8mVqVqxYL5wVrS4SPyJk
-XStTkYILoS7zebvRqMI+sX+nAGn0s38mQvisLEa30kFquN2y1Mjd0KmVRgr+mDc8
-k1lh1oiJ9vNtnItMHXRPxHUS466CUQ2x0Ubj/Np+gvGYUlJYDMof7GGnvEqImleM
-xkp/V7asWGoZBtRonCvye5a9EYV5G+THytTHTG2m9DVObjce+IsNKl0BPVVhBVkp
-rPsQR/XMVCz5zQAPzH2pBMw+4N+gTmzzdhlxmXz9tJl+n5eIj85336cZl+ILM7bA
-F7UUUg27fYIKjcfXrwx6KZ0u4y4940XYQ5O3FpljRlJt7oHMTx34WRWF/mduSd1I
-mesZ/y4x7IDN8Q3U8IBq02IvMCMcswZ+pD2vu6L0PGW/UICZym7HFkISt2Sv5vrV
-7IT9yBI8V1Qxb0kIA+eAQF583YilOaIY7huVVsYjV7EfjopNzGaoZ0qPZqugwnLA
-lNLIGxIdRuwxEEoYU9KoYGF+TBqaFEGOLZV/eacbTL4f8MoBoBZOjx6HlrNWihQM
-dyE9iuR7EfI7B1qpsWatgNKpypGMuldrGFHowj/8aJF6zyok5TatVOdMySNdbDCl
-V+84DqIWZL5Xv8JwVMl3
-=1+lf
------END PGP SIGNATURE-----
+  return 0;
+}
 
---Pga57YAdUfKQcdIT--
+Since the sgtl5000 driver has the handle to the clock, can't it just
+ask the clock for its rate? If it directly asked the clock for its
+rate it looks like this codec could be bound with simple-audio-card
+and not need a machine driver.
 
---===============1917195372184170860==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1917195372184170860==--
+-- 
+Jon Smirl
+jonsmirl@gmail.com
