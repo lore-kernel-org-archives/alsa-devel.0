@@ -1,25 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Audio mini conference 2014?
-Date: Thu, 7 Aug 2014 19:39:57 +0530
-Message-ID: <20140807140957.GI8181@intel.com>
-References: <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5h4myhpcby.wl%tiwai@suse.de>
- <20140721232054.GN17528@sirena.org.uk>
- <s5h1ttehr91.wl%tiwai@suse.de>
- <20140722222038.GW17528@sirena.org.uk>
- <53CF8306.3090009@zonque.org>
- <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
- <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
+Subject: Re: [PATCH v3] ASOC: dapm: add code to configure dai
+ link parameters
+Date: Thu, 7 Aug 2014 19:46:05 +0530
+Message-ID: <20140807141604.GJ8181@intel.com>
+References: <1407341786-14990-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 023482650E4
- for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 16:21:33 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEC792650E4
+ for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 16:27:07 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
+In-Reply-To: <1407341786-14990-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,48 +22,305 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Handrigan, Paul" <Paul.Handrigan@cirrus.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
+To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 06, 2014 at 01:42:36PM +0000, Handrigan, Paul wrote:
-> 
-> 
-> > On Aug 6, 2014, at 7:00 AM, "Daniel Mack" <daniel@zonque.org> wrote:
-> > 
-> >> On 08/06/2014 10:15 AM, Daniel Mack wrote:
-> >> On 08/06/2014 10:13 AM, Tanu Kaskinen wrote:
-> > 
-> >>> Did you get any responses?
-> >> 
-> >> Unfortunately not. I'll try again.
-> > 
-> > Ok, they guys from ChaosDorf now got back to me. They need to make a
-> > final discussion internally yet, but it appears to be working. I'll hear
-> > back from them next Wednesday with a final decision.
-> > 
-> > The ChaosDorf is a CCC hack space that hosts all sort of user group
-> > meetings and the like. Their website is here:
-> > 
-> >  http://chaosdorf.de/
-> > 
-> > I told them we'd be ~20ppl and they think they can accommodate that
-> > number, and they also have a beamer. Or do we expect to be more?
-> > 
-> > They have a room layout and some pictures here:
-> > 
-> >  https://wiki.chaosdorf.de/Clubraum
-> > 
-> > I've never been there myself, so I can't say anything about it, but
-> > usually, these Hackspaces are quite nice. They're no typical conference
-> > rooms though.
-> > 
-> > What date would we prefer? There's an event on Tuesday night (~6pm), but
-> > I guess we wouldn't need the room longer than that anyway, right?
-> It would be best that it is not during LPC as mentioned before.  Will Saturday after LPC work as well?
-Plumbers starts Wed.. So tue can work too :)
+On Wed, Aug 06, 2014 at 05:16:26PM +0100, Nikesh Oswal wrote:
+> dai-link params for codec-codec links were fixed. The fixed
+> link between codec and another chip which may be another codec,
+> baseband, bluetooth codec etc may require run time configuaration
+> changes. This change provides an optional alsa control to select
+> one of the params from a list of params.
 
-Btw should we request a LPC track for backup.
+Sorry haven't followed the previous versions, so excuse me if questions were
+discussed already.
+
+I was thinking about this as well a while back, wont it make sense to let
+machine driver expose meaningful controls for this. Just like we have fixup
+for back-ends, we can add fixups for codec-codec links and let machine tell
+you the parameters to configure.
+
+Thoughts...?
 
 -- 
 ~Vinod
+
+> 
+> Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+> ---
+>  include/sound/soc-dapm.h |    3 +
+>  include/sound/soc.h      |    1 +
+>  sound/soc/soc-core.c     |    4 +-
+>  sound/soc/soc-dapm.c     |  140 ++++++++++++++++++++++++++++++++++++++++++++--
+>  4 files changed, 141 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+> index 6b59471..3ee031e 100644
+> --- a/include/sound/soc-dapm.h
+> +++ b/include/sound/soc-dapm.h
+> @@ -378,6 +378,7 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
+>  void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
+>  int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+>  			 const struct snd_soc_pcm_stream *params,
+> +			 unsigned int num_params,
+>  			 struct snd_soc_dapm_widget *source,
+>  			 struct snd_soc_dapm_widget *sink);
+>  
+> @@ -531,6 +532,8 @@ struct snd_soc_dapm_widget {
+>  	void *priv;				/* widget specific data */
+>  	struct regulator *regulator;		/* attached regulator */
+>  	const struct snd_soc_pcm_stream *params; /* params for dai links */
+> +	unsigned int num_params; /* number of params for dai links */
+> +	unsigned int params_select; /* currently selected param for dai link */
+>  
+>  	/* dapm control */
+>  	int reg;				/* negative reg = no direct dapm */
+> diff --git a/include/sound/soc.h b/include/sound/soc.h
+> index ed9e2d7..51c6c4f 100644
+> --- a/include/sound/soc.h
+> +++ b/include/sound/soc.h
+> @@ -906,6 +906,7 @@ struct snd_soc_dai_link {
+>  	int be_id;	/* optional ID for machine driver BE identification */
+>  
+>  	const struct snd_soc_pcm_stream *params;
+> +	unsigned int num_params;
+>  
+>  	unsigned int dai_fmt;           /* format to set on init */
+>  
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index b87d7d8..db1572a 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1461,7 +1461,7 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
+>  	capture_w = cpu_dai->capture_widget;
+>  	if (play_w && capture_w) {
+>  		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
+> -					   capture_w, play_w);
+> +					   dai_link->num_params, capture_w, play_w);
+>  		if (ret != 0) {
+>  			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
+>  				play_w->name, capture_w->name, ret);
+> @@ -1473,7 +1473,7 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
+>  	capture_w = codec_dai->capture_widget;
+>  	if (play_w && capture_w) {
+>  		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
+> -					   capture_w, play_w);
+> +					   dai_link->num_params, capture_w, play_w);
+>  		if (ret != 0) {
+>  			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
+>  				play_w->name, capture_w->name, ret);
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index cdc837e..41f835b 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -729,6 +729,33 @@ static int dapm_new_pga(struct snd_soc_dapm_widget *w)
+>  	return 0;
+>  }
+>  
+> +/* create new dapm dai link control */
+> +static int dapm_new_dai_link(struct snd_soc_dapm_widget *w)
+> +{
+> +	int i, ret;
+> +	struct snd_kcontrol *kcontrol;
+> +	struct snd_soc_dapm_context *dapm = w->dapm;
+> +	struct snd_card *card = dapm->card->snd_card;
+> +
+> +
+> +	/* add kcontrol */
+> +	for (i = 0; i < w->num_kcontrols; i++) {
+> +		kcontrol = snd_soc_cnew(&w->kcontrol_news[i], w,
+> +		w->name, NULL);
+> +		ret = snd_ctl_add(card, kcontrol);
+> +		if (ret < 0) {
+> +			dev_err(dapm->dev,
+> +			"ASoC: failed to add widget %s dapm kcontrol %s: %d\n",
+> +			w->name, w->kcontrol_news[i].name, ret);
+> +			return ret;
+> +		}
+> +		kcontrol->private_data = w;
+> +		w->kcontrols[i] = kcontrol;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /* reset 'walked' bit for each dapm path */
+>  static void dapm_clear_walk_output(struct snd_soc_dapm_context *dapm,
+>  				   struct list_head *sink)
+> @@ -2664,6 +2691,9 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
+>  		case snd_soc_dapm_out_drv:
+>  			dapm_new_pga(w);
+>  			break;
+> +		case snd_soc_dapm_dai_link:
+> +			dapm_new_dai_link(w);
+> +			break;
+>  		default:
+>  			break;
+>  		}
+> @@ -3142,6 +3172,9 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+>  	source = source_p->source->priv;
+>  	sink = sink_p->sink->priv;
+>  
+> +	/* Select the configuration set by alsa control */
+> +	config += w->params_select;
+> +
+>  	/* Be a little careful as we don't want to overflow the mask array */
+>  	if (config->formats) {
+>  		fmt = ffs(config->formats) - 1;
+> @@ -3222,8 +3255,35 @@ out:
+>  	return ret;
+>  }
+>  
+> +static int snd_soc_dapm_dai_link_get(struct snd_kcontrol *kcontrol,
+> +			  struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
+> +
+> +	ucontrol->value.integer.value[0] = w->params_select;
+> +
+> +	return 0;
+> +}
+> +
+> +static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
+> +			  struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
+> +
+> +	if (ucontrol->value.integer.value[0] == w->params_select)
+> +		return 0;
+> +
+> +	if (ucontrol->value.integer.value[0] >= w->num_params)
+> +		return -EINVAL;
+> +
+> +	w->params_select = ucontrol->value.integer.value[0];
+> +
+> +	return 0;
+> +}
+> +
+>  int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+>  			 const struct snd_soc_pcm_stream *params,
+> +			 unsigned int num_params,
+>  			 struct snd_soc_dapm_widget *source,
+>  			 struct snd_soc_dapm_widget *sink)
+>  {
+> @@ -3231,12 +3291,44 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+>  	struct snd_soc_dapm_widget *w;
+>  	size_t len;
+>  	char *link_name;
+> -	int ret;
+> +	int ret, count;
+> +	unsigned long private_value;
+> +	char **w_param_text;
+> +	struct soc_enum w_param_enum[] = {
+> +		SOC_ENUM_SINGLE(0, 0, 0, NULL),
+> +	};
+> +	struct snd_kcontrol_new kcontrol_dai_link[] = {
+> +		SOC_ENUM_EXT(NULL, w_param_enum[0],
+> +			     snd_soc_dapm_dai_link_get, snd_soc_dapm_dai_link_put),
+> +	};
+> +	const struct snd_soc_pcm_stream *config = params;
+> +
+> +	w_param_text = kzalloc(sizeof(char *) * num_params, GFP_KERNEL);
+> +	if (!w_param_text)
+> +		return -ENOMEM;
+> +
+> +	for (count = 0 ; count < num_params; count++) {
+> +		w_param_text[count] =  kzalloc(sizeof(char) * 100, GFP_KERNEL);
+> +		if (!w_param_text) {
+> +			ret = -ENOMEM;
+> +			goto  outfree_w_param;
+> +		}
+> +
+> +		sprintf(w_param_text[count], "SampleRate=%d:Channels=%d:BitsPerSample=%d",
+> +			config->rate_min, config->channels_min,
+> +			snd_pcm_format_width(ffs(config->formats) - 1));
+> +		config++;
+> +	}
+> +	w_param_enum[0].items = num_params;
+> +	w_param_enum[0].texts = (const char * const *) w_param_text;
+>  
+>  	len = strlen(source->name) + strlen(sink->name) + 2;
+>  	link_name = devm_kzalloc(card->dev, len, GFP_KERNEL);
+> -	if (!link_name)
+> -		return -ENOMEM;
+> +	if (!link_name) {
+> +		ret = -ENOMEM;
+> +		goto  outfree_w_param;
+> +	}
+> +
+>  	snprintf(link_name, len, "%s-%s", source->name, sink->name);
+>  
+>  	memset(&template, 0, sizeof(template));
+> @@ -3246,6 +3338,25 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+>  	template.event = snd_soc_dai_link_event;
+>  	template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+>  		SND_SOC_DAPM_PRE_PMD;
+> +	template.num_kcontrols = 1;
+> +	private_value =
+> +	(unsigned long) kmemdup((void *)(kcontrol_dai_link[0].private_value),
+> +	sizeof(struct soc_enum), GFP_KERNEL);
+> +	if (!private_value) {
+> +		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
+> +			link_name);
+> +		ret = -ENOMEM;
+> +		goto outfree_link_name;
+> +	}
+> +	kcontrol_dai_link[0].private_value = private_value;
+> +	template.kcontrol_news = kmemdup(&kcontrol_dai_link[0],
+> +			sizeof(struct snd_kcontrol_new), GFP_KERNEL);
+> +	if (!template.kcontrol_news) {
+> +		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
+> +			link_name);
+> +		ret = -ENOMEM;
+> +		goto outfree_private_value;
+> +	}
+>  
+>  	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
+>  
+> @@ -3253,15 +3364,34 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+>  	if (!w) {
+>  		dev_err(card->dev, "ASoC: Failed to create %s widget\n",
+>  			link_name);
+> -		return -ENOMEM;
+> +		ret = -ENOMEM;
+> +		goto outfree_kcontrol_news;
+>  	}
+>  
+>  	w->params = params;
+> +	w->num_params = num_params;
+>  
+>  	ret = snd_soc_dapm_add_path(&card->dapm, source, w, NULL, NULL);
+>  	if (ret)
+> -		return ret;
+> +		goto outfree_w;
+>  	return snd_soc_dapm_add_path(&card->dapm, w, sink, NULL, NULL);
+> +
+> +outfree_w:
+> +	kfree(w);
+> +outfree_kcontrol_news:
+> +	kfree(template.kcontrol_news);
+> +outfree_private_value:
+> +	kfree((void *)private_value);
+> +outfree_link_name:
+> +	kfree(link_name);
+> +outfree_w_param:
+> +	for (count = 0 ; count < num_params; count++) {
+> +		if (w_param_text[count])
+> +			kfree(w_param_text[count]);
+> +	}
+> +	kfree(w_param_text);
+> +
+> +	return ret;
+>  }
+>  
+>  int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+> -- 
+> 1.7.9.5
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+-- 
