@@ -1,80 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Add i.MX maintainers and
- paths to Freescale ASoC entry
-Date: Thu, 7 Aug 2014 12:19:17 +0100
-Message-ID: <20140807111917.GG17528@sirena.org.uk>
-References: <1407404939-14950-1-git-send-email-broonie@kernel.org>
- <20140807104533.GA3295@MrMyself>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: fsl_sai: Add asynchronous mode support
+Date: Thu, 7 Aug 2014 12:19:41 +0100
+Message-ID: <20140807111941.GH17528@sirena.org.uk>
+References: <1407223925-29678-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5838720792676005204=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B79512650E1
- for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 13:19:28 +0200 (CEST)
-In-Reply-To: <20140807104533.GA3295@MrMyself>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Timur Tabi <timur@tabi.org>, linaro-kernel@lists.linaro.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Va8DSfvMR3bM4AuH"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1407223925-29678-1-git-send-email-nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b02247-KZfg59tc24xl57MIdRCFDg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5838720792676005204==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="V3ENGWVrnMOBWwz8"
-Content-Disposition: inline
-
-
---V3ENGWVrnMOBWwz8
+--Va8DSfvMR3bM4AuH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 07, 2014 at 06:45:34PM +0800, Nicolin Chen wrote:
+On Tue, Aug 05, 2014 at 03:32:05PM +0800, Nicolin Chen wrote:
+> From: Nicolin Chen <Guangyu.Chen-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+>=20
+> SAI supports these operation modes:
+> 1) asynchronous mode
+>    Both Tx and Rx are set to be asynchronous.
 
-> Although this change hasn't been decided yet, may I ask for a mail address
-> update with my Gmail which I set for mail list usage only?
+Applied, thanks.
 
-> <nicoleotsuka@gmail.com>
-
-Of course.
-
---V3ENGWVrnMOBWwz8
+--Va8DSfvMR3bM4AuH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT42CyAAoJELSic+t+oim9NXIP/1GP0Ja0e58MeYASOA7kw2a/
-1/KvVVhO1B7HcW8rfL1YaHT4gm5qrEqXEUS367v4suwLkpIk70yQAphSXf8K9s23
-1x5e6BZLEWojRDdtCM36EiqnV26W1uwzA7xBf0uyQNPvW/tPXZjy0OsFSW+Ajz7t
-dWqcDraeknjmVxAx5oRA4c67Ghg8ZsATuxRwblMQlT8T9ttgnEpuXJonydVPdjhj
-7BaHykdzsJT1IhNZVL4DmDQXLU78r8ps4HCG/MTI6QT0DdmFfoQO/cpzupmI4RPh
-D2AgiHhQ/P9MjcYbbAfuGgKIBymjqkDwMjTtSGTUK9xvwDPBBi7LgY9BfLWoIVw3
-f+j1Jsroym93RAKAeYJRsOnNxOOwx3+vj1hz4Iyl0fLDQzwo58Z225XX4AoaQ4Zm
-0qjHppAzIXlrYRxXY9SoYleaunliVnZr90P6JzprIDDzQXgF4NbVcWq0BUBa4NJY
-IaV0Y0Ji5fWpByDqkwRVeyLoJ8iKRxT6vU/+by/D4SZdLA8btX5whvp/tyW6OW3Y
-HbwwQr/Tjz1C8B80SOF4zjp1F3ffXOLNWl8XkymPbjRpRNRkidLjhNbdHyaExtS6
-xtrw8RRBWMDaShdVsxRp5qwAruaC82Hfb5drtEqS1nW3VmiSkArN3fjI/udPBZMA
-lDvUiKQOZSxUCKt7GsJf
-=/Gdp
+iQIcBAEBAgAGBQJT42DJAAoJELSic+t+oim9Y6EQAIWj1A+/REEmCFveYNytG/KU
+ZTNjv3KXMmX8j6yRM4XaWoM0ZK6C2Mn0Lz611Xl4WVA1hlFmqzBGUQXuOqBig0rJ
+hxGRYS2DmcB3Aq2IugEtyHRkdhBc+wtgVToMRHKDiaVNDBgXU8zVmp0/n9ZH3wz9
+svhR4vwd1JVhl4kkn13rWTEdQdsMAbQT+kl4gQjIDRNmm8jB8XF3q6ADyQ2SqNW9
+VcFnCZ0CIkReuHURw6vxNSHhLKdZD6CcMUr4f2ZujiBBcSStxI9s9jl8Cnf09XwI
+h4w9SLc5SfiV+gtHCeni+j6mv7YljgnEMXibUe3/P+dhIJkzUR9F8umX6FtcHUTa
+qsTjfsLGNdOFmu9aXfiBEWtEJ3E4HEl745XsixwDs4nzMtjyz7E4MCzmHfW4/gXv
+Qd2vrRo69e9oAVO9hCdOv+JMFZbX8sZPKdn8VZelyK1BImf+NTgjDrWDlBVIncjd
+6FlTkGZVnQs2JDIK72Ic+76NfFYuubtdietksjyh3vwbLBUgKqgk/bXf/LzuIzkC
+eWU5ZhDwAgem6WTdD41cul3uFM1KAfI1ylqIsxHjQC2pfvhnD8oMQ9ZKPkB2YGrz
+06IOeERo3UlLzZPgDxK0mRpA324IwhjRIMybkrh6AZR41lIZ081UeCdYxcdS/Ek7
+38BqAyxYaaQkAFV5eXTU
+=/x+C
 -----END PGP SIGNATURE-----
 
---V3ENGWVrnMOBWwz8--
-
---===============5838720792676005204==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5838720792676005204==--
+--Va8DSfvMR3bM4AuH--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
