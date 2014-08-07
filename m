@@ -1,17 +1,19 @@
-From: pshou <pshou@realtek.com>
-Subject: Re: ALC286 recording delay
-Date: Thu, 7 Aug 2014 09:35:19 +0800
-Message-ID: <FC74147A4CCE4A52AA3859F3065CD45D@realtek.com.tw>
-References: <47FBF9D5C0344672B688411191680B7A@realtek.com.tw>
- <s5hfvh94r40.wl%tiwai@suse.de>
-Reply-To: pshou <pshou@realtek.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: rt286: Add API to set supported jack
+	type
+Date: Thu, 7 Aug 2014 01:43:24 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D7608E00@RTITMBSV03.realtek.com.tw>
+References: <1407217970-20126-1-git-send-email-bardliao@realtek.com>
+ <20140806205421.GZ17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=_NextPart_000_00A0_01CFB222.E76EBC60"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id B498C261B02
- for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 03:35:21 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DC769261B02
+ for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 03:43:30 +0200 (CEST)
+In-Reply-To: <20140806205421.GZ17528@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,118 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Kailang <kailang@realtek.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-------=_NextPart_000_00A0_01CFB222.E76EBC60
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Thursday, August 07, 2014 4:54 AM
+> To: Bard Liao
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; lars@metafoo.de;
+> Flove; Oder Chiou
+> Subject: Re: [PATCH] ASoC: rt286: Add API to set supported jack type
+> 
+> On Tue, Aug 05, 2014 at 01:52:50PM +0800, bardliao@realtek.com wrote:
+> > From: Bard Liao <bardliao@realtek.com>
+> >
+> > RT286 need to configure the jack type (combo or non-combo) according
+> > to the HW design. This function is given a easy way to set the correct
+> > jacy type for those without platform data supported.
+> 
+> If this is coming from the hardware design I'd expect this to be configured
+> via platform data or firmware data rather than with an API.
+> Why do it this way?
 
-Sorry, I put the patch file will be sent to you.
+Actually, this patch is for Intel platform which doesn't support platform data
+yet. That's why we create an API so they can call the API in machine driver.
 
-Best regards
-pshou
-
------ Original Message ----- 
-From: "Takashi Iwai" <tiwai@suse.de>
-To: "pshou" <pshou@realtek.com>
-Cc: "Kailang" <kailang@realtek.com>; <alsa-devel@alsa-project.org>
-Sent: Wednesday, August 06, 2014 10:42 PM
-Subject: Re: ALC286 recording delay
-
-
-> At Wed, 6 Aug 2014 14:53:27 +0800,
-> pshou wrote:
->>
->> Hi Takashi:
->>
->> It will be recording voice delay for resume back recording for Headset 
->> Mic.
->> This alc286 will quickly open Headset Mic, to prevent avoid recording 
->> files are missing.
->> The issue was fixed. This is follow ALC286 programing guide.
->
-> So, do you mean that there is no need to have a workaround in the
-> driver side for now?
->
->
-> thanks,
->
-> Takashi
->
-> ------Please consider the environment before printing this e-mail. 
-
-------=_NextPart_000_00A0_01CFB222.E76EBC60
-Content-Type: application/octet-stream;
-	name="0001-alc286-fixed-recording-delay.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="0001-alc286-fixed-recording-delay.patch"
-
->From 5d7ae195257daaffa1497d2c79d06aa01b9754b0 Mon Sep 17 00:00:00 2001=0A=
-From: Kailang Yang <kailang@realtek.com>=0A=
-Date: Mon, 30 Jun 2014 16:10:37 +0800=0A=
-Subject: [PATCH] ALSA: hda/realtek - Fixed ALC286/ALC288 recording delay =
-for=0A=
- Headset Mic=0A=
-=0A=
-It will be recording voice delay for resume back recording for Headset =
-Mic.=0A=
-This alc286 will quickly open Headset Mic, to prevent avoid recording =
-files are missing. =0A=
-The issue was fixed. This is follow ALC286 programing guide.=0A=
-=0A=
-Signed-off-by: Kailang Yang <kailang@realtek.com>=0A=
-=0A=
-diff --git a/sound/pci/hda/patch_realtek.c =
-b/sound/pci/hda/patch_realtek.c=0A=
-index 60bf5ee..13cdefb 100644=0A=
---- a/sound/pci/hda/patch_realtek.c=0A=
-+++ b/sound/pci/hda/patch_realtek.c=0A=
-@@ -2782,6 +2782,25 @@ static int alc269_parse_auto_config(struct =
-hda_codec *codec)=0A=
- 	return alc_parse_auto_config(codec, alc269_ignore, ssids);=0A=
- }=0A=
- =0A=
-+void alc_snd_hda_shutup_pins(struct hda_codec *codec)=0A=
-+{=0A=
-+	int i;=0A=
-+	int mic_pin =3D find_ext_mic_pin(codec);=0A=
-+	/* don't shut up pins when unloading the driver; otherwise it breaks=0A=
-+	 * the default pin setup at the next load of the driver=0A=
-+	 */=0A=
-+	if (codec->bus->shutdown)=0A=
-+		return;=0A=
-+	for (i =3D 0; i < codec->init_pins.used; i++) {=0A=
-+		struct hda_pincfg *pin =3D snd_array_elem(&codec->init_pins, i);=0A=
-+		/* use read here for syncing after issuing each verb */=0A=
-+		if (pin->nid !=3D mic_pin)=0A=
-+			snd_hda_codec_read(codec, pin->nid, 0,=0A=
-+					AC_VERB_SET_PIN_WIDGET_CONTROL, 0);=0A=
-+	}=0A=
-+	codec->pins_shutup =3D 1;=0A=
-+}=0A=
-+=0A=
- static void alc269vb_toggle_power_output(struct hda_codec *codec, int =
-power_up)=0A=
- {=0A=
- 	int val =3D alc_read_coef_idx(codec, 0x04);=0A=
-@@ -5326,6 +5345,7 @@ static int patch_alc269(struct hda_codec *codec)=0A=
- 	case 0x10ec0286:=0A=
- 	case 0x10ec0288:=0A=
- 		spec->codec_variant =3D ALC269_TYPE_ALC286;=0A=
-+		spec->shutup =3D alc_snd_hda_shutup_pins;=0A=
- 		break;=0A=
- 	case 0x10ec0255:=0A=
- 		spec->codec_variant =3D ALC269_TYPE_ALC255;=0A=
-
-------=_NextPart_000_00A0_01CFB222.E76EBC60
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
-------=_NextPart_000_00A0_01CFB222.E76EBC60--
+> 
+> ------Please consider the environment before printing this e-mail.
