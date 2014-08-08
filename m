@@ -1,139 +1,167 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v3 10/14] OMAPDSS: hdmi5: Register HDMI audio ASoC drivers from HDMI driver
-Date: Fri, 8 Aug 2014 16:23:51 +0300
-Message-ID: <be0d313cea0b6c5fab98a3adb189a54aae11f56c.1407503813.git.jsarha@ti.com>
-References: <cover.1407503813.git.jsarha@ti.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3 v4 RESEND] mfd: arizona: Export function to control
+	subsystem DVFS
+Date: Fri, 8 Aug 2014 14:32:34 +0100
+Message-ID: <20140808133233.GA2665@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <cover.1407503813.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@linaro.org, lee.jones@linaro.org, sameo@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Initialize the callbacks in struct hdmi_audio_data and call register
-and unregister functions form hdmi_audio.c. Register function
-registers the integrated cpu dai, dummy HDMI codec, and simple-card
-machine driver for complete HDMI audio support.
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
+Moving this control from being a side-effect of the LDO1
+regulator driver to a specific exported function.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- drivers/video/fbdev/omap2/dss/hdmi5.c |   80 +++++++++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
+ drivers/mfd/arizona-core.c       |   89 ++++++++++++++++++++++++++++++++++++++
+ include/linux/mfd/arizona/core.h |   12 +++++
+ 2 files changed, 101 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/video/fbdev/omap2/dss/hdmi5.c b/drivers/video/fbdev/omap2/dss/hdmi5.c
-index 90410f5..d796071 100644
---- a/drivers/video/fbdev/omap2/dss/hdmi5.c
-+++ b/drivers/video/fbdev/omap2/dss/hdmi5.c
-@@ -39,6 +39,9 @@
- #include <linux/regulator/consumer.h>
- #include <video/omapdss.h>
- 
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+
- #include "hdmi5_core.h"
- #include "dss.h"
- #include "dss_features.h"
-@@ -679,6 +682,66 @@ err:
- 	return r;
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index cfc191a..04cde4b 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -94,6 +94,94 @@ int arizona_clk32k_disable(struct arizona *arizona)
  }
+ EXPORT_SYMBOL_GPL(arizona_clk32k_disable);
  
-+#if defined(CONFIG_OMAP5_DSS_HDMI_AUDIO)
-+static int mode_has_audio(struct omap_hdmi *hd)
++int arizona_dvfs_up(struct arizona *arizona, unsigned int flags)
 +{
-+	int ret;
++	unsigned int new_flags;
++	int ret = 0;
 +
-+	mutex_lock(&hd->lock);
-+	ret = hdmi_mode_has_audio(&hd->cfg);
-+	mutex_unlock(&hd->lock);
++	mutex_lock(&arizona->subsys_max_lock);
 +
-+	return ret;
-+}
++	new_flags = arizona->subsys_max_rq | flags;
 +
-+static int audio_enable(struct omap_hdmi *hd, bool enable)
-+{
-+	int ret;
++	if (arizona->subsys_max_rq != new_flags) {
++		switch (arizona->type) {
++		case WM5102:
++		case WM8997:
++			ret = regulator_set_voltage(arizona->dcvdd,
++						    1800000, 1800000);
++			if (ret != 0) {
++				dev_err(arizona->dev,
++					"Failed to set DCVDD (DVFS up): %d\n",
++					ret);
++				goto err;
++			}
 +
-+	mutex_lock(&hd->lock);
-+	if (!hdmi_mode_has_audio(&hd->cfg))
-+		ret = -EPERM;
-+	else
-+		ret = hdmi_wp_audio_enable(&hd->wp, enable);
-+	mutex_unlock(&hd->lock);
++			ret = regmap_update_bits(arizona->regmap,
++					ARIZONA_DYNAMIC_FREQUENCY_SCALING_1,
++					ARIZONA_SUBSYS_MAX_FREQ, 1);
++			if (ret != 0) {
++				dev_err(arizona->dev,
++					"Failed to enable subsys max: %d\n",
++					ret);
++				regulator_set_voltage(arizona->dcvdd,
++						      1200000, 1800000);
++				goto err;
++			}
++			break;
 +
-+	return ret;
-+}
++		default:
++			break;
++		}
 +
-+static int audio_start(struct omap_hdmi *hd, bool enable)
-+{
-+	return hdmi_wp_audio_core_req_enable(&hd->wp, enable);
-+}
-+
-+static int audio_config(struct omap_hdmi *hd, struct omap_dss_audio *dss_audio)
-+{
-+	int ret;
-+
-+	mutex_lock(&hd->lock);
-+	if (!hdmi_mode_has_audio(&hd->cfg))
-+		ret = -EPERM;
-+	else
-+		ret = hdmi5_audio_config(&hd->core, &hd->wp, dss_audio,
-+					 hd->cfg.timings.pixelclock);
-+	mutex_unlock(&hd->lock);
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_dai_driver omap_hdmi_dai = {
-+	.name = "omap5-hdmi-dai",
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 8,
-+		.rates = (SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
-+			  SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |
-+			  SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_176400 |
-+			  SNDRV_PCM_RATE_192000),
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+};
-+#endif
-+
- /* HDMI HW IP initialisation */
- static int omapdss_hdmihw_probe(struct platform_device *pdev)
- {
-@@ -736,6 +799,20 @@ static int omapdss_hdmihw_probe(struct platform_device *pdev)
- 
- 	hdmi_init_output(pdev);
- 
-+#if defined(CONFIG_OMAP5_DSS_HDMI_AUDIO)
-+	hdmi.audio.hdmi_dai_drv = &omap_hdmi_dai;
-+	hdmi.audio.mode_has_audio = mode_has_audio;
-+	hdmi.audio.audio_enable = audio_enable;
-+	hdmi.audio.audio_start = audio_start;
-+	hdmi.audio.audio_config = audio_config;
-+	r = hdmi_audio_register(pdev);
-+	if (r) {
-+		DSSERR("Registering HDMI audio failed\n");
-+		hdmi_uninit_output(pdev);
-+		pm_runtime_disable(&pdev->dev);
-+		return r;
++		arizona->subsys_max_rq = new_flags;
 +	}
-+#endif
- 	dss_debugfs_create_file("hdmi", hdmi_dump_regs);
- 
- 	return 0;
-@@ -743,6 +820,9 @@ static int omapdss_hdmihw_probe(struct platform_device *pdev)
- 
- static int __exit omapdss_hdmihw_remove(struct platform_device *pdev)
++err:
++	mutex_unlock(&arizona->subsys_max_lock);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(arizona_dvfs_up);
++
++int arizona_dvfs_down(struct arizona *arizona, unsigned int flags)
++{
++	int ret = 0;
++
++	mutex_lock(&arizona->subsys_max_lock);
++
++	if ((arizona->subsys_max_rq & flags) != flags)
++		dev_warn(arizona->dev, "Unbalanced DVFS down: %x\n", flags);
++
++	arizona->subsys_max_rq &= ~flags;
++
++	if (arizona->subsys_max_rq == 0) {
++		switch (arizona->type) {
++		case WM5102:
++		case WM8997:
++			ret = regmap_update_bits(arizona->regmap,
++					ARIZONA_DYNAMIC_FREQUENCY_SCALING_1,
++					ARIZONA_SUBSYS_MAX_FREQ, 0);
++			if (ret != 0)
++				dev_err(arizona->dev,
++					"Failed to disable subsys max: %d\n",
++					ret);
++
++			ret = regulator_set_voltage(arizona->dcvdd,
++						    1200000, 1800000);
++			if (ret != 0)
++				dev_err(arizona->dev,
++					"Failed to set DCVDD (DVFS down): %d\n",
++					ret);
++			break;
++
++		default:
++			break;
++		}
++	}
++
++	mutex_unlock(&arizona->subsys_max_lock);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(arizona_dvfs_down);
++
+ static irqreturn_t arizona_clkgen_err(int irq, void *data)
  {
-+#if defined(CONFIG_OMAP5_DSS_HDMI_AUDIO)
-+	hdmi_audio_unregister(pdev);
-+#endif
- 	hdmi_uninit_output(pdev);
+ 	struct arizona *arizona = data;
+@@ -641,6 +729,7 @@ int arizona_dev_init(struct arizona *arizona)
  
- 	pm_runtime_disable(&pdev->dev);
+ 	dev_set_drvdata(arizona->dev, arizona);
+ 	mutex_init(&arizona->clk_lock);
++	mutex_init(&arizona->subsys_max_lock);
+ 
+ 	if (dev_get_platdata(arizona->dev))
+ 		memcpy(&arizona->pdata, dev_get_platdata(arizona->dev),
+diff --git a/include/linux/mfd/arizona/core.h b/include/linux/mfd/arizona/core.h
+index a614b33..4aec6a3 100644
+--- a/include/linux/mfd/arizona/core.h
++++ b/include/linux/mfd/arizona/core.h
+@@ -109,6 +109,9 @@ struct arizona {
+ 	struct mutex clk_lock;
+ 	int clk32k_ref;
+ 
++	struct mutex subsys_max_lock;
++	unsigned int subsys_max_rq;
++
+ 	struct snd_soc_dapm_context *dapm;
+ 
+ 	int tdm_width[ARIZONA_MAX_AIF];
+@@ -118,8 +121,17 @@ struct arizona {
+ 	uint8_t dac_comp_enabled;
+ };
+ 
++#define ARIZONA_DVFS_SR1_RQ          0x00000001
++#define ARIZONA_DVFS_SR2_RQ          0x00000002
++#define ARIZONA_DVFS_SR3_RQ          0x00000004
++#define ARIZONA_DVFS_ASR1_RQ         0x00000010
++#define ARIZONA_DVFS_ASR2_RQ         0x00000020
++#define ARIZONA_DVFS_ADSP1_RQ        0x00010000
++
+ int arizona_clk32k_enable(struct arizona *arizona);
+ int arizona_clk32k_disable(struct arizona *arizona);
++int arizona_dvfs_up(struct arizona *arizona, unsigned int mask);
++int arizona_dvfs_down(struct arizona *arizona, unsigned int mask);
+ 
+ int arizona_request_irq(struct arizona *arizona, int irq, char *name,
+ 			irq_handler_t handler, void *data);
 -- 
-1.7.9.5
-
+1.7.2.5
