@@ -1,50 +1,67 @@
 From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [alsa-devel] [PATCH V4 0/2]  refine esai for tdm support
-Date: Fri, 8 Aug 2014 14:42:43 +0800
-Message-ID: <20140808064243.GA6333@MrMyself>
-References: <cover.1407480333.git.shengjiu.wang@freescale.com>
+Subject: Re: [PATCH] ASoC: wm8962: Correct the bit offset to
+ enable mono speaker output
+Date: Fri, 8 Aug 2014 16:20:44 +0800
+Message-ID: <20140808082043.GB6333@MrMyself>
+References: <1407412549-14983-1-git-send-email-nicoleotsuka@gmail.com>
+ <20140807165836.GL17528@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2lp0211.outbound.protection.outlook.com [207.46.163.211])
+ by alsa0.perex.cz (Postfix) with ESMTP id E56902654A6
+ for <alsa-devel@alsa-project.org>; Fri,  8 Aug 2014 10:40:47 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <cover.1407480333.git.shengjiu.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, timur@tabi.org, perex@perex.cz, tiwai@suse.de, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, shc_work@mail.ru, fabio.estevam@freescale.com, arnd@arndb.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20140807165836.GL17528@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, b02247@freescale.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, B18700@freescale.com, ckeepax@opensource.wolfsonmicro.com, rf@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 08, 2014 at 02:47:20PM +0800, Shengjiu Wang wrote:
-> These patchs is to refine esai for tdm support.
+On Thu, Aug 07, 2014 at 05:58:36PM +0100, Mark Brown wrote:
+> On Thu, Aug 07, 2014 at 07:55:49PM +0800, Nicolin Chen wrote:
+> > As WM8962 datasheet describes for SPK_MONO bit of R51: When SPK_MONO
+> > is set to '1', both speakers output the signal from the left channel.
 > 
-> Changes for V4
-> - update the comments for patch 2
+> > So for mono speaker widget, we shall enable Left Channel whose enable
+> > bit is 6 instead of 7 (Right Channel).
+> > 
+> > This patches just simply corrects the bit offset.
 > 
-> Changes for V3
-> - update the comments for patch 2
+> >  		   spkmixl, ARRAY_SIZE(spkmixl)),
+> >  SND_SOC_DAPM_MUX_E("Speaker PGA", WM8962_PWR_MGMT_2, 4, 0, &spkoutl_mux,
+> >  		   out_pga_event, SND_SOC_DAPM_POST_PMU),
+> > -SND_SOC_DAPM_PGA("Speaker Output", WM8962_CLASS_D_CONTROL_1, 7, 0, NULL, 0),
+> > +SND_SOC_DAPM_PGA("Speaker Output", WM8962_CLASS_D_CONTROL_1, 6, 0, NULL, 0),
+> >  SND_SOC_DAPM_OUTPUT("SPKOUT"),
+> >  };
 > 
-> Changes for V2
-> - update the comments according the reviewer's suggestion
-> - add init value for slots and change pin to pins.
-> 
-> 
-> Shengjiu Wang (2):
->   ASoC: fsl_esai: refine esai for TDM support
->   Revert "ASoC: fsl-esai: Add .xlate_tdm_slot_mask() support."
-> 
->  sound/soc/fsl/Kconfig    |    1 -
->  sound/soc/fsl/fsl_esai.c |   16 +++++++++++-----
->  sound/soc/fsl/fsl_esai.h |    8 ++++----
->  3 files changed, 15 insertions(+), 10 deletions(-)
+> Someone who's name I'd need to look up submitted an identical fix off
+> list recently - I checked the datasheet and it seems that in mono mode
+> the speaker output actually wants both left and right channels active so
+> there is a bug here but this isn't the fix.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+I rechecked the datasheet and found that the hardware needs to tie
+both outputs and enable both bits. So the patch should be invalid.
+
+But our customer reported that they did try to set both SPKOUTR_ENA
+and SPKOUTL_ENA bits in mono mode but the sound is lousy. If setting
+SPKOUTR_ENA alone, the speaker has no sound. Only setting SPKOUTL_ENA
+bit get the correct speaker output in mono mode.
+
+And I just confirmed with our engineer who supports the customer
+that they are using the correct hardware design as the datasheet
+suggests. So I'm wondering if there's any other part we're missing.
 
 Thank you
-
-> 
-> -- 
-> 1.7.9.5
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Nicolin
