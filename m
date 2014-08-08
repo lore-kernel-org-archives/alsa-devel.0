@@ -1,17 +1,18 @@
-From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Subject: SGTL500 and its external MCLK
-Date: Thu, 7 Aug 2014 15:37:47 -0400
-Message-ID: <CAKON4OxRr-igCSZ2HwXcKGFT7O6sQjJUMP_aF19kSRP59ZxFew@mail.gmail.com>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: [PATCH V3 1/2] ASoC: fsl_esai: refine esai for TDM
+	support
+Date: Fri, 8 Aug 2014 13:21:23 +0800
+Message-ID: <5428d24b20316f690b2b1119724ebf5cbd0fa1c0.1407475184.git.shengjiu.wang@freescale.com>
+References: <cover.1407475184.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f171.google.com (mail-lb0-f171.google.com
- [209.85.217.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F08026530D
- for <alsa-devel@alsa-project.org>; Thu,  7 Aug 2014 21:37:48 +0200 (CEST)
-Received: by mail-lb0-f171.google.com with SMTP id l4so3113126lbv.16
- for <alsa-devel@alsa-project.org>; Thu, 07 Aug 2014 12:37:48 -0700 (PDT)
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0140.outbound.protection.outlook.com [207.46.163.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id E696F2654A6
+ for <alsa-devel@alsa-project.org>; Fri,  8 Aug 2014 07:21:36 +0200 (CEST)
+In-Reply-To: <cover.1407475184.git.shengjiu.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +22,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, zengzm.kernel@gmail.com
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+To: broonie@kernel.org, lgirdwood@gmail.com, timur@tabi.org, perex@perex.cz, tiwai@suse.de, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, shc_work@mail.ru, fabio.estevam@freescale.com, arnd@arndb.de
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-For testing purposes I have a SGTL5000 wired up to I2S on my Allwinner
-A20.  SGTL5000 needs an external MCLK. It attaches to it like this:
+Original driver didn't store the number of slots, just fix the slot number
+to 2, use this default number to calculate bclk and pins for TX/RX.
+In this patch, add one parameter for slots, and update the calculation of
+bclk and pins of TX/RX. Then driver will be compatible with slots > 2 in
+TDM mode.
 
-sgtl5000: sgtl5000@a {
-   compatible = "fsl,sgtl5000";
-   reg = <0x0a>;
-   clocks = <&iis0>;
+Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+---
+ sound/soc/fsl/fsl_esai.c |   14 +++++++++++---
+ sound/soc/fsl/fsl_esai.h |    8 ++++----
+ 2 files changed, 15 insertions(+), 7 deletions(-)
 
-And in the probe code....
-(this should use a name for the clock in the DTS)
-
-sgtl5000->mclk = devm_clk_get(&client->dev, NULL);
-if (IS_ERR(sgtl5000->mclk)) {
-   ret = PTR_ERR(sgtl5000->mclk);
-   dev_err(&client->dev, "Failed to get mclock: %d\n", ret);
-   /* Defer the probe to see if the clk will be provided later */
-   if (ret == -ENOENT)
-      return -EPROBE_DEFER;
-   return ret;
-}
-
-ret = clk_prepare_enable(sgtl5000->mclk);
-if (ret)
-   return ret;
-
-So the sgtl5000 driver has a handle to the clock. But then the driver
-implements set_dai_sysclk() to get the rate. And a board specific
-machine driver like imx-sgtl5000.c is used to set this rate into the
-sgtl5000 driver.
-
-/* set codec sysclk */
-static int sgtl5000_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-  int clk_id, unsigned int freq, int dir)
-{
-   struct snd_soc_codec *codec = codec_dai->codec;
-   struct sgtl5000_priv *sgtl5000 =      snd_soc_codec_get_drvdata(codec);
-
-switch (clk_id) {
-   case SGTL5000_SYSCLK:
-   sgtl5000->sysclk = freq;
-      break;
-default:
-   return -EINVAL;
-  }
-
-  return 0;
-}
-
-Since the sgtl5000 driver has the handle to the clock, can't it just
-ask the clock for its rate? If it directly asked the clock for its
-rate it looks like this codec could be bound with simple-audio-card
-and not need a machine driver.
-
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 72d154e..f252370 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -38,6 +38,7 @@
+  * @fsysclk: system clock source to derive HCK, SCK and FS
+  * @fifo_depth: depth of tx/rx FIFO
+  * @slot_width: width of each DAI slot
++ * @slots: number of slots
+  * @hck_rate: clock rate of desired HCKx clock
+  * @sck_rate: clock rate of desired SCKx clock
+  * @hck_dir: the direction of HCKx pads
+@@ -56,6 +57,7 @@ struct fsl_esai {
+ 	struct clk *fsysclk;
+ 	u32 fifo_depth;
+ 	u32 slot_width;
++	u32 slots;
+ 	u32 hck_rate[2];
+ 	u32 sck_rate[2];
+ 	bool hck_dir[2];
+@@ -363,6 +365,7 @@ static int fsl_esai_set_dai_tdm_slot(struct snd_soc_dai *dai, u32 tx_mask,
+ 			   ESAI_xSMB_xS_MASK, ESAI_xSMB_xS(rx_mask));
+ 
+ 	esai_priv->slot_width = slot_width;
++	esai_priv->slots = slots;
+ 
+ 	return 0;
+ }
+@@ -510,10 +513,11 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	u32 width = snd_pcm_format_width(params_format(params));
+ 	u32 channels = params_channels(params);
++	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
+ 	u32 bclk, mask, val;
+ 	int ret;
+ 
+-	bclk = params_rate(params) * esai_priv->slot_width * 2;
++	bclk = params_rate(params) * esai_priv->slot_width * esai_priv->slots;
+ 
+ 	ret = fsl_esai_set_bclk(dai, tx, bclk);
+ 	if (ret)
+@@ -530,7 +534,7 @@ static int fsl_esai_hw_params(struct snd_pcm_substream *substream,
+ 	mask = ESAI_xFCR_xFR_MASK | ESAI_xFCR_xWA_MASK | ESAI_xFCR_xFWM_MASK |
+ 	      (tx ? ESAI_xFCR_TE_MASK | ESAI_xFCR_TIEN : ESAI_xFCR_RE_MASK);
+ 	val = ESAI_xFCR_xWA(width) | ESAI_xFCR_xFWM(esai_priv->fifo_depth) |
+-	     (tx ? ESAI_xFCR_TE(channels) | ESAI_xFCR_TIEN : ESAI_xFCR_RE(channels));
++	     (tx ? ESAI_xFCR_TE(pins) | ESAI_xFCR_TIEN : ESAI_xFCR_RE(pins));
+ 
+ 	regmap_update_bits(esai_priv->regmap, REG_ESAI_xFCR(tx), mask, val);
+ 
+@@ -565,6 +569,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	struct fsl_esai *esai_priv = snd_soc_dai_get_drvdata(dai);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	u8 i, channels = substream->runtime->channels;
++	u32 pins = DIV_ROUND_UP(channels, esai_priv->slots);
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -579,7 +584,7 @@ static int fsl_esai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_xCR(tx),
+ 				   tx ? ESAI_xCR_TE_MASK : ESAI_xCR_RE_MASK,
+-				   tx ? ESAI_xCR_TE(channels) : ESAI_xCR_RE(channels));
++				   tx ? ESAI_xCR_TE(pins) : ESAI_xCR_RE(pins));
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_STOP:
+@@ -783,6 +788,9 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 	/* Set a default slot size */
+ 	esai_priv->slot_width = 32;
+ 
++	/* Set a default slot number */
++	esai_priv->slots = 2;
++
+ 	/* Set a default master/slave state */
+ 	esai_priv->slave_mode = true;
+ 
+diff --git a/sound/soc/fsl/fsl_esai.h b/sound/soc/fsl/fsl_esai.h
+index 75e1403..91a550f 100644
+--- a/sound/soc/fsl/fsl_esai.h
++++ b/sound/soc/fsl/fsl_esai.h
+@@ -130,8 +130,8 @@
+ #define ESAI_xFCR_RE_WIDTH	4
+ #define ESAI_xFCR_TE_MASK	(((1 << ESAI_xFCR_TE_WIDTH) - 1) << ESAI_xFCR_xE_SHIFT)
+ #define ESAI_xFCR_RE_MASK	(((1 << ESAI_xFCR_RE_WIDTH) - 1) << ESAI_xFCR_xE_SHIFT)
+-#define ESAI_xFCR_TE(x) 	((ESAI_xFCR_TE_MASK >> (ESAI_xFCR_TE_WIDTH - ((x + 1) >> 1))) & ESAI_xFCR_TE_MASK)
+-#define ESAI_xFCR_RE(x) 	((ESAI_xFCR_RE_MASK >> (ESAI_xFCR_RE_WIDTH - ((x + 1) >> 1))) & ESAI_xFCR_RE_MASK)
++#define ESAI_xFCR_TE(x) 	((ESAI_xFCR_TE_MASK >> (ESAI_xFCR_TE_WIDTH - x)) & ESAI_xFCR_TE_MASK)
++#define ESAI_xFCR_RE(x) 	((ESAI_xFCR_RE_MASK >> (ESAI_xFCR_RE_WIDTH - x)) & ESAI_xFCR_RE_MASK)
+ #define ESAI_xFCR_xFR_SHIFT	1
+ #define ESAI_xFCR_xFR_MASK	(1 << ESAI_xFCR_xFR_SHIFT)
+ #define ESAI_xFCR_xFR		(1 << ESAI_xFCR_xFR_SHIFT)
+@@ -272,8 +272,8 @@
+ #define ESAI_xCR_RE_WIDTH	4
+ #define ESAI_xCR_TE_MASK	(((1 << ESAI_xCR_TE_WIDTH) - 1) << ESAI_xCR_xE_SHIFT)
+ #define ESAI_xCR_RE_MASK	(((1 << ESAI_xCR_RE_WIDTH) - 1) << ESAI_xCR_xE_SHIFT)
+-#define ESAI_xCR_TE(x) 		((ESAI_xCR_TE_MASK >> (ESAI_xCR_TE_WIDTH - ((x + 1) >> 1))) & ESAI_xCR_TE_MASK)
+-#define ESAI_xCR_RE(x) 		((ESAI_xCR_RE_MASK >> (ESAI_xCR_RE_WIDTH - ((x + 1) >> 1))) & ESAI_xCR_RE_MASK)
++#define ESAI_xCR_TE(x) 		((ESAI_xCR_TE_MASK >> (ESAI_xCR_TE_WIDTH - x)) & ESAI_xCR_TE_MASK)
++#define ESAI_xCR_RE(x) 		((ESAI_xCR_RE_MASK >> (ESAI_xCR_RE_WIDTH - x)) & ESAI_xCR_RE_MASK)
+ 
+ /*
+  * Transmit Clock Control Register -- REG_ESAI_TCCR 0xD8
 -- 
-Jon Smirl
-jonsmirl@gmail.com
+1.7.9.5
