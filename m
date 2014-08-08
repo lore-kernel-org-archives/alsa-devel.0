@@ -1,20 +1,20 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: [PATCH] ASoC: wm8962: Correct the bit offset to
- enable mono speaker output
-Date: Fri, 8 Aug 2014 16:20:44 +0800
-Message-ID: <20140808082043.GB6333@MrMyself>
-References: <1407412549-14983-1-git-send-email-nicoleotsuka@gmail.com>
- <20140807165836.GL17528@sirena.org.uk>
+From: Gabriele Mazzotta <gabriele.mzt@gmail.com>
+Subject: Re: [PATCH] ALSA: hda - More pop noise fixes for Dell
+	XPS	13 9333
+Date: Fri, 08 Aug 2014 10:49:25 +0200
+Message-ID: <2131050.SRuQOBkUIZ@xps13>
+References: <20698834.dnBpTPPJ84@xps13> <s5hha1nmry1.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2lp0211.outbound.protection.outlook.com [207.46.163.211])
- by alsa0.perex.cz (Postfix) with ESMTP id E56902654A6
- for <alsa-devel@alsa-project.org>; Fri,  8 Aug 2014 10:40:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140807165836.GL17528@sirena.org.uk>
+Received: from mail-wi0-f170.google.com (mail-wi0-f170.google.com
+ [209.85.212.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4ADDE2654A6
+ for <alsa-devel@alsa-project.org>; Fri,  8 Aug 2014 10:49:47 +0200 (CEST)
+Received: by mail-wi0-f170.google.com with SMTP id f8so2192964wiw.5
+ for <alsa-devel@alsa-project.org>; Fri, 08 Aug 2014 01:49:46 -0700 (PDT)
+In-Reply-To: <s5hha1nmry1.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,44 +24,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, b02247@freescale.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, B18700@freescale.com, ckeepax@opensource.wolfsonmicro.com, rf@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 07, 2014 at 05:58:36PM +0100, Mark Brown wrote:
-> On Thu, Aug 07, 2014 at 07:55:49PM +0800, Nicolin Chen wrote:
-> > As WM8962 datasheet describes for SPK_MONO bit of R51: When SPK_MONO
-> > is set to '1', both speakers output the signal from the left channel.
-> 
-> > So for mono speaker widget, we shall enable Left Channel whose enable
-> > bit is 6 instead of 7 (Right Channel).
+On Friday 08 August 2014 08:11:18 Takashi Iwai wrote:
+> At Thu, 07 Aug 2014 18:35:39 +0200,
+> Gabriele Mazzotta wrote:
 > > 
-> > This patches just simply corrects the bit offset.
+> > On init, mic-in is always set as input source, indipendently on what
+> > is plugged in. Since setting/unsetting mic-in as input source causes
+> > a pop noise, make sure the internal microphone is selected as input
+> > source on boot.
+> > 
+> > On shutdown, make sure the codec is not suspended as that would cause
+> > a pop noise.
+> > 
+> > Signed-off-by: Gabriele Mazzotta <gabriele.mzt@gmail.com>
+> > ---
+> >  sound/pci/hda/hda_codec.c     |  2 ++
+> >  sound/pci/hda/hda_codec.h     |  1 +
+> >  sound/pci/hda/patch_realtek.c | 12 ++++++++++++
+> >  3 files changed, 15 insertions(+)
+> > 
+> > diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> > index 4c20277..92d8292 100644
+> > --- a/sound/pci/hda/hda_codec.c
+> > +++ b/sound/pci/hda/hda_codec.c
+> > @@ -5348,6 +5348,8 @@ void snd_hda_bus_reboot_notify(struct hda_bus *bus)
+> >  	if (!bus)
+> >  		return;
+> >  	list_for_each_entry(codec, &bus->codec_list, list) {
+> > +		if (codec->resume_at_reboot)
+> > +			hda_call_codec_resume(codec);
 > 
-> >  		   spkmixl, ARRAY_SIZE(spkmixl)),
-> >  SND_SOC_DAPM_MUX_E("Speaker PGA", WM8962_PWR_MGMT_2, 4, 0, &spkoutl_mux,
-> >  		   out_pga_event, SND_SOC_DAPM_POST_PMU),
-> > -SND_SOC_DAPM_PGA("Speaker Output", WM8962_CLASS_D_CONTROL_1, 7, 0, NULL, 0),
-> > +SND_SOC_DAPM_PGA("Speaker Output", WM8962_CLASS_D_CONTROL_1, 6, 0, NULL, 0),
-> >  SND_SOC_DAPM_OUTPUT("SPKOUT"),
-> >  };
+> Do you really need the resume at reboot?  I thought the codec needs
+> power down at reboot, i.e. rather it needs suspend.
+
+Yes, the pop noise happens if it's suspended.
+Now that I payed more attention, the pop noise happens only when 
+rebooting the laptop and not when powering it down.
+Also, the noise is heard quite late, I think the kernel is no longer 
+running when I hear it.
+I will try to better understand what is actually happening and why
+resuming prevents the noise.
+
+> Since you apply actually two individual changes, it's better to split
+> patches: one for adding the power-down at reboot, another for
+> initializing cur_mux properly.
 > 
-> Someone who's name I'd need to look up submitted an identical fix off
-> list recently - I checked the datasheet and it seems that in mono mode
-> the speaker output actually wants both left and right channels active so
-> there is a bug here but this isn't the fix.
+> Also, it's recommended to put a bugzilla link in the changelog, so
+> that other people can follow the information and discussion.
+> 
+> Last but not least, please put maintainers to Cc at the next time, so
+> that it won't be missed.
 
-I rechecked the datasheet and found that the hardware needs to tie
-both outputs and enable both bits. So the patch should be invalid.
+I will do it.
 
-But our customer reported that they did try to set both SPKOUTR_ENA
-and SPKOUTL_ENA bits in mono mode but the sound is lousy. If setting
-SPKOUTR_ENA alone, the speaker has no sound. Only setting SPKOUTL_ENA
-bit get the correct speaker output in mono mode.
+Thanks,
 
-And I just confirmed with our engineer who supports the customer
-that they are using the correct hardware design as the datasheet
-suggests. So I'm wondering if there's any other part we're missing.
+Gabriele
 
-Thank you
-Nicolin
+> 
+> thanks,
+> 
+> Takashi
+> 
+> >  		if (hda_codec_is_power_on(codec) &&
+> >  		    codec->patch_ops.reboot_notify)
+> >  			codec->patch_ops.reboot_notify(codec);
+> > diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+> > index 5825aa1..5c3c66e 100644
+> > --- a/sound/pci/hda/hda_codec.h
+> > +++ b/sound/pci/hda/hda_codec.h
+> > @@ -366,6 +366,7 @@ struct hda_codec {
+> >  	unsigned int cached_write:1;	/* write only to caches */
+> >  	unsigned int dp_mst:1; /* support DP1.2 Multi-stream transport */
+> >  	unsigned int dump_coef:1; /* dump processing coefs in codec proc file */
+> > +	unsigned int resume_at_reboot:1; /* resume codec at reboot */
+> >  #ifdef CONFIG_PM
+> >  	unsigned int power_on :1;	/* current (global) power-state */
+> >  	unsigned int d3_stop_clk:1;	/* support D3 operation without BCLK */
+> > diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> > index b60824e..defaa2a 100644
+> > --- a/sound/pci/hda/patch_realtek.c
+> > +++ b/sound/pci/hda/patch_realtek.c
+> > @@ -4018,8 +4018,20 @@ static void alc_fixup_dell_xps13(struct hda_codec *codec,
+> >  {
+> >  	if (action == HDA_FIXUP_ACT_PROBE) {
+> >  		struct alc_spec *spec = codec->spec;
+> > +		struct hda_input_mux *imux = &spec->gen.input_mux;
+> > +		int i;
+> > +
+> >  		spec->shutup = alc_no_shutup;
+> >  		codec->power_filter = alc_power_filter_xps13;
+> > +		codec->resume_at_reboot = 1;
+> > +
+> > +		/* Make the internal mic the default input source. */
+> > +		for (i = 0; i < imux->num_items; i++) {
+> > +			if (spec->gen.imux_pins[i] == 0x12) {
+> > +				spec->gen.cur_mux[0] = i;
+> > +				break;
+> > +			}
+> > +		}
+> >  	}
+> >  }
+> >  
+> 
