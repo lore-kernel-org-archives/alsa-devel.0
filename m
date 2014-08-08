@@ -1,33 +1,48 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V3 0/2] refine esai for tdm support
-Date: Fri, 8 Aug 2014 13:21:22 +0800
-Message-ID: <cover.1407475184.git.shengjiu.wang@freescale.com>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: SGTL500 and its external MCLK
+Date: Fri, 8 Aug 2014 13:29:20 +0800
+Message-ID: <20140808052901.GA6028@MrMyself>
+References: <CAKON4OxRr-igCSZ2HwXcKGFT7O6sQjJUMP_aF19kSRP59ZxFew@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, timur@tabi.org, perex@perex.cz, tiwai@suse.de, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, shc_work@mail.ru, fabio.estevam@freescale.com, arnd@arndb.de
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1blp0186.outbound.protection.outlook.com [207.46.163.186])
+ by alsa0.perex.cz (Postfix) with ESMTP id D797D2654A6
+ for <alsa-devel@alsa-project.org>; Fri,  8 Aug 2014 07:31:05 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAKON4OxRr-igCSZ2HwXcKGFT7O6sQjJUMP_aF19kSRP59ZxFew@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, zengzm.kernel@gmail.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-These patchs is to refine esai for tdm support.
+On Thu, Aug 07, 2014 at 03:37:47PM -0400, jonsmirl@gmail.com wrote:
+> Since the sgtl5000 driver has the handle to the clock, can't it just
+> ask the clock for its rate? If it directly asked the clock for its
+> rate it looks like this codec could be bound with simple-audio-card
+> and not need a machine driver.
 
-Changes for V3
-- update the comments for patch 2
+I think Simple Card should already have the capability to support
+this without changing sgtl5000's code. It has two properties that
+can make it call set_sysclk() for you during the init(). They are
+'clocks' and 'system-clock-frequency'. Please refer to its binding
+doc for details.
 
-Changes for V2
-- update the comments according the reviewer's suggestion
-- add init value for slots and change pin to pins.
+And the topic why not let sgtl5000 fully control the clock has been
+discussed in this thread:
+http://comments.gmane.org/gmane.linux.alsa.devel/109093
 
+So I think the change can be done as well?
 
-Shengjiu Wang (2):
-  ASoC: fsl_esai: refine esai for TDM support
-  Revert "ASoC: fsl-esai: Add .xlate_tdm_slot_mask() support."
-
- sound/soc/fsl/Kconfig    |    1 -
- sound/soc/fsl/fsl_esai.c |   16 +++++++++++-----
- sound/soc/fsl/fsl_esai.h |    8 ++++----
- 3 files changed, 15 insertions(+), 10 deletions(-)
-
--- 
-1.7.9.5
+Best regards,
+Nicolin
