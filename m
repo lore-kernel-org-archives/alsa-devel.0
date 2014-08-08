@@ -1,22 +1,12 @@
-From: Gabriele Mazzotta <gabriele.mzt@gmail.com>
-Subject: [PATCH 2/2] ALSA: hda - Fix pop noises on reboot for
-	Dell XPS 13 9333
-Date: Fri,  8 Aug 2014 19:34:41 +0200
-Message-ID: <34179b6c336cb5837c0dc239a3b0daf6ac6384c3.1407518135.git.gabriele.mzt@gmail.com>
-References: <cover.1407518135.git.gabriele.mzt@gmail.com>
+From: branan@gmail.com
+Subject: [PATCH - pcm_jack plugin 1/1] Restore PID to jack
+	client name when not specified explicitly
+Date: Fri,  8 Aug 2014 14:31:06 -0700
+Message-ID: <1407533466-26581-1-git-send-email-branan@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f175.google.com (mail-we0-f175.google.com
- [74.125.82.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AD6926555C
- for <alsa-devel@alsa-project.org>; Fri,  8 Aug 2014 19:35:18 +0200 (CEST)
-Received: by mail-we0-f175.google.com with SMTP id t60so5808639wes.6
- for <alsa-devel@alsa-project.org>; Fri, 08 Aug 2014 10:35:17 -0700 (PDT)
-In-Reply-To: <cover.1407518135.git.gabriele.mzt@gmail.com>
-In-Reply-To: <cover.1407518135.git.gabriele.mzt@gmail.com>
-References: <cover.1407518135.git.gabriele.mzt@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,32 +16,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, superquad.vortex2@gmail.com, Gabriele Mazzotta <gabriele.mzt@gmail.com>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Branan Purvine-Riley <branan@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-If nid 0x15 (Headphone Playback Switch) is in D3 and headphones are
-plugged in when the laptop reboots, a pop noise is generated.
-Prevent this by keeping nid 0x15 in D0 when headphones are plugged in.
+From: Branan Purvine-Riley <branan@gmail.com>
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=76611
-Signed-off-by: Gabriele Mazzotta <gabriele.mzt@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Commit 14190cd8 added a facility to explicitly name Jack clients with
+a 'name' option, but did so in a way that was not fully
+backwards-compatible with older versions of the alsa-plugins. There
+were two issues:
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 85cd80c..12fc3e9a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4008,7 +4008,7 @@ static unsigned int alc_power_filter_xps13(struct hda_codec *codec,
+1. Re-using the magical "name" variable, which comes preloaded with
+the name of the PCM
+
+2. The code assumed snd_config_get_string sets a variable to NULL if
+the config entry does not exist. Instead, this function leaves the
+variable unchanged.
+
+The result of these two errors meant that the PCM name would be
+treated as if it were a user-defined name, and the old code which
+embedded the PID would never be run
+
+This code uses a completely new variable to store the explicitly-set
+client name, so that the two code paths no longer collide.
+
+Signed-off-by: Branan Purvine-Riley <branan@gmail.com>
+
+diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
+index f5b7129..33f87b1 100644
+--- a/jack/pcm_jack.c
++++ b/jack/pcm_jack.c
+@@ -372,6 +372,7 @@ static int make_nonblock(int fd)
+ }
  
- 	/* Avoid pop noises when headphones are plugged in */
- 	if (spec->gen.hp_jack_present)
--		if (nid == codec->afg || nid == 0x02)
-+		if (nid == codec->afg || nid == 0x02 || nid == 0x15)
- 			return AC_PWRST_D0;
- 	return power_state;
+ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
++			     const char* client_name,
+ 			     snd_config_t *playback_conf,
+ 			     snd_config_t *capture_conf,
+ 			     snd_pcm_stream_t stream, int mode)
+@@ -405,14 +406,14 @@ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (name == NULL)
++	if (client_name == NULL)
+ 		err = snprintf(jack_client_name, sizeof(jack_client_name),
+ 			       "alsa-jack.%s%s.%d.%d", name,
+ 			       stream == SND_PCM_STREAM_PLAYBACK ? "P" : "C",
+ 			       getpid(), num++);
+ 	else
+ 		err = snprintf(jack_client_name, sizeof(jack_client_name),
+-			       "%s", name);
++			       "%s", client_name);
+ 
+ 	if (err >= (int)sizeof(jack_client_name)) {
+ 		fprintf(stderr, "%s: WARNING: JACK client name '%s' truncated to %d characters, might not be unique\n",
+@@ -470,6 +471,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(jack)
+ 	snd_config_iterator_t i, next;
+ 	snd_config_t *playback_conf = NULL;
+ 	snd_config_t *capture_conf = NULL;
++	const char* client_name = NULL;
+ 	int err;
+ 	
+ 	snd_config_for_each(i, next, conf) {
+@@ -480,7 +482,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(jack)
+ 		if (strcmp(id, "comment") == 0 || strcmp(id, "type") == 0 || strcmp(id, "hint") == 0)
+ 			continue;
+ 		if (strcmp(id, "name") == 0) {
+-			snd_config_get_string(n, &name);
++			snd_config_get_string(n, &client_name);
+ 			continue;
+ 		}
+ 		if (strcmp(id, "playback_ports") == 0) {
+@@ -503,7 +505,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(jack)
+ 		return -EINVAL;
+ 	}
+ 
+-	err = snd_pcm_jack_open(pcmp, name, playback_conf, capture_conf, stream, mode);
++	err = snd_pcm_jack_open(pcmp, name, client_name, playback_conf, capture_conf, stream, mode);
+ 
+ 	return err;
  }
 -- 
-2.1.0.rc1
+2.0.4
