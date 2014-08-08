@@ -1,60 +1,63 @@
 From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v3 09/14] OMAPDSS: Kconfig: Update
-	OMAP5_DSS_HDMI_AUDIO option
-Date: Fri, 8 Aug 2014 16:23:50 +0300
-Message-ID: <7c6c5be0fd1df38f8b28e82f24f9cc012fa32b40.1407503813.git.jsarha@ti.com>
+Subject: [PATCH v3 07/14] OMAPDSS: Kconfig: Update OMAP4_DSS_HDMI_AUDIO option
+Date: Fri, 8 Aug 2014 16:23:48 +0300
+Message-ID: <daa20965e48245a7a751ea6d3989579a293d1443.1407503813.git.jsarha@ti.com>
 References: <cover.1407503813.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A77F265055
- for <alsa-devel@alsa-project.org>; Fri,  8 Aug 2014 15:24:13 +0200 (CEST)
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
 In-Reply-To: <cover.1407503813.git.jsarha@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-omap-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: liam.r.girdwood@linux.intel.com, detheridge@ti.com, broonie@kernel.org, Jyri Sarha <jsarha@ti.com>, peter.ujfalusi@ti.com, tomi.valkeinen@ti.com
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add help section to OMAP5_DSS_HDMI_AUDIO with dependency to
-OMAP5_DSS_HDMI and select for OMAP_DSS_HDMI_AUDIO.
+Add help section to OMAP4_DSS_HDMI_AUDIO with dependency to
+OMAP4_DSS_HDMI and select for newly created OMAP_DSS_HDMI_AUDIO. The
+OMAP_DSS_HDMI_AUDIO option is for common HDMI audio support and it is
+is dependent on SND_SOC.
+
+Also selects SND_OMAP_SOC, SND_SOC_HDMI_CODEC, and SND_SIMPLE_CARD for
+OMAP2_DSS if OMAP_DSS_HDMI_AUDIO is enabled.
 
 Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
- drivers/video/fbdev/omap2/dss/Kconfig |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/video/fbdev/omap2/dss/Kconfig |   15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/video/fbdev/omap2/dss/Kconfig b/drivers/video/fbdev/omap2/dss/Kconfig
-index 701164a..abd2e92 100644
+index 41fb8ac..701164a 100644
 --- a/drivers/video/fbdev/omap2/dss/Kconfig
 +++ b/drivers/video/fbdev/omap2/dss/Kconfig
-@@ -103,8 +103,17 @@ config OMAP5_DSS_HDMI
- 	  specification.
+@@ -6,6 +6,9 @@ menuconfig OMAP2_DSS
+ 	select VIDEOMODE_HELPERS
+ 	select OMAP2_DSS_INIT
+ 	select HDMI
++	select SND_OMAP_SOC if OMAP_DSS_HDMI_AUDIO
++	select SND_SOC_HDMI_CODEC if OMAP_DSS_HDMI_AUDIO
++	select SND_SIMPLE_CARD if OMAP_DSS_HDMI_AUDIO
+         help
+ 	  OMAP2+ Display Subsystem support.
  
- config OMAP5_DSS_HDMI_AUDIO
-+	bool "HDMI audio support for OMAP5"
- 	depends on OMAP5_DSS_HDMI
+@@ -78,7 +81,17 @@ config OMAP4_DSS_HDMI
+ 	  HDMI support for OMAP4 based SoCs.
+ 
+ config OMAP4_DSS_HDMI_AUDIO
 -	bool
++	bool "HDMI audio support for OMAP4"
++	depends on OMAP4_DSS_HDMI
 +	depends on SND_SOC=y || OMAP2_DSS = SND_SOC
 +	select OMAP_DSS_HDMI_AUDIO
 +	default y
 +	help
-+	  HDMI audio support for OMAP5 based SoCs. Adds integrated
++	  HDMI audio support for OMAP4 based SoCs. Adds integrated
 +	  ASoC Digital Audio Interface component driver into OMAPDSS
 +	  module. If enabled OMAP2_DSS selects SND_OMAP_SOC,
 +	  SND_SOC_HDMI_CODEC, and SND_SIMPLE_CARD for full HDMI
 +	  audio support.
  
- config OMAP2_DSS_SDI
- 	bool "SDI support"
+ config OMAP5_DSS_HDMI
+ 	bool "HDMI support for OMAP5"
 -- 
 1.7.9.5
+
