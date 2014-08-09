@@ -1,24 +1,14 @@
-From: Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de>
-Subject: Re: can't insmod patched snd-usb-audio
-Date: Sat, 9 Aug 2014 14:46:30 +0200
-Message-ID: <20140809124630.GB7938@x1-orm>
-References: <20140809114001.GA7938@x1-orm>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] ALSA: usb-audio: fix BOSS ME-25 MIDI regression
+Date: Sat, 09 Aug 2014 17:19:41 +0200
+Message-ID: <53E63C0D.2020809@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.selma.hfmdk-frankfurt.de (selma.hfmdk-frankfurt.de
- [178.63.26.132])
- by alsa0.perex.cz (Postfix) with ESMTP id E23FE2610C5
- for <alsa-devel@alsa-project.org>; Sat,  9 Aug 2014 14:46:31 +0200 (CEST)
-Received: from X1-orm (dslb-088-074-106-134.088.074.pools.vodafone-ip.de
- [88.74.106.134])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (Client did not present a certificate)
- by mail.selma.hfmdk-frankfurt.de (Postfix) with ESMTPSA id 9148C3380330
- for <alsa-devel@alsa-project.org>; Sat,  9 Aug 2014 14:46:31 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140809114001.GA7938@x1-orm>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 47C622610C5
+ for <alsa-devel@alsa-project.org>; Sat,  9 Aug 2014 17:20:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,38 +18,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Got it working. An additional "make modules_prepare" seemed to do the
-trick. sorry for the noise...
+The BOSS ME-25 turns out not to have any useful descriptors in its MIDI
+interface, so its needs a quirk entry after all.
 
---
-Orm
+Reported-and-tested-by: Kees van Veen <kees.vanveen@gmail.com>
+Fixes: 8e5ced83dd1c ("ALSA: usb-audio: remove superfluous Roland quirks")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/usb/quirks-table.h |   29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-Am Samstag, den 09. August 2014 um 13:40:01 Uhr (+0200) schrieb Orm Finnendahl:
-> Hi,
-> 
->  hope it's ok to post it here as it's not (yet) official alsa: After
-> having no issues with Tobias Hoffmann's scarlett alsa mixer patch on
-> my older kernels, trying to insmod the patched kernel modules on my
-> most current kernel (the patch and documentation obtained with
-> "git clone http://github.com/trrichard/alsa-driver_scarlett.git")
-> fails with the following message:
-> 
-> root@x1-orm:/usr/src/linux-source-3.14# insmod sound/usb/snd-usbmidi-lib.ko 
-> insmod: ERROR: could not insert module sound/usb/snd-usbmidi-lib.ko: Unknown symbol in module
-> 
-> root@x1-orm:/usr/src/linux-source-3.14# insmod sound/usb/snd-usb-audio.ko 
-> insmod: ERROR: could not insert module sound/usb/snd-usb-audio.ko: Unknown symbol in module
-> 
-> I'm on debian testing with 3.14-2-amd64 kernel and followed all the
-> instructions in the scarlett kernel patch README (I tried three times
-> each with a fresh kernel source tree from scratch to be sure). The
-> patch has worked for me on older kernels without any problems.
-> 
-> Does anybody know how to deal with this? Let me know if you need
-> further information.
-> 
-> Yours,
-> Orm
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index f652b10..223c47b 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -1581,6 +1581,35 @@
+ 	}
+ },
+ {
++	/* BOSS ME-25 */
++	USB_DEVICE(0x0582, 0x0113),
++	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 2,
++				.type = QUIRK_MIDI_FIXED_ENDPOINT,
++				.data = & (const struct snd_usb_midi_endpoint_info) {
++					.out_cables = 0x0001,
++					.in_cables  = 0x0001
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
++{
+ 	/* only 44.1 kHz works at the moment */
+ 	USB_DEVICE(0x0582, 0x0120),
+ 	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
