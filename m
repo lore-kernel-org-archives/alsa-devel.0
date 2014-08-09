@@ -1,15 +1,22 @@
-From: Jurgen Kramer <gtmkramer@xs4all.nl>
-Subject: [PATCH] Fix DSD formats userland usability
-Date: Sat,  9 Aug 2014 12:09:21 +0200
-Message-ID: <1407578961-13291-1-git-send-email-gtmkramer@xs4all.nl>
+From: Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de>
+Subject: can't insmod patched snd-usb-audio
+Date: Sat, 9 Aug 2014 13:40:01 +0200
+Message-ID: <20140809114001.GA7938@x1-orm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lb2-smtp-cloud3.xs4all.net (lb2-smtp-cloud3.xs4all.net
- [194.109.24.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DEE026163C
- for <alsa-devel@alsa-project.org>; Sat,  9 Aug 2014 12:09:41 +0200 (CEST)
+Received: from mail.selma.hfmdk-frankfurt.de (selma.hfmdk-frankfurt.de
+ [178.63.26.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id E320926072A
+ for <alsa-devel@alsa-project.org>; Sat,  9 Aug 2014 13:40:02 +0200 (CEST)
+Received: from X1-orm (dslb-088-074-106-134.088.074.pools.vodafone-ip.de
+ [88.74.106.134])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (Client did not present a certificate)
+ by mail.selma.hfmdk-frankfurt.de (Postfix) with ESMTPSA id 6BC04338065E
+ for <alsa-devel@alsa-project.org>; Sat,  9 Aug 2014 13:40:02 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,63 +27,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Jurgen Kramer <gtmkramer@xs4all.nl>
 List-Id: alsa-devel@alsa-project.org
 
-Support for DSD sample formats has been added a while ago. This patch makes
-those sample formats beter usable from userland (e.g. aplay).
+Hi,
 
----
- include/sound/asound.h | 4 +++-
- src/pcm/pcm_misc.c     | 4 ++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ hope it's ok to post it here as it's not (yet) official alsa: After
+having no issues with Tobias Hoffmann's scarlett alsa mixer patch on
+my older kernels, trying to insmod the patched kernel modules on my
+most current kernel (the patch and documentation obtained with
+"git clone http://github.com/trrichard/alsa-driver_scarlett.git")
+fails with the following message:
 
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index c819df4..5194524 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -214,7 +214,9 @@ typedef int __bitwise snd_pcm_format_t;
- #define	SNDRV_PCM_FORMAT_G723_24_1B	((__force snd_pcm_format_t) 45) /* 1 sample in 1 byte */
- #define	SNDRV_PCM_FORMAT_G723_40	((__force snd_pcm_format_t) 46) /* 8 Samples in 5 bytes */
- #define	SNDRV_PCM_FORMAT_G723_40_1B	((__force snd_pcm_format_t) 47) /* 1 sample in 1 byte */
--#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_G723_40_1B
-+#define SNDRV_PCM_FORMAT_DSD_U8		((__force snd_pcm_format_t) 48) /* 8 1-bit samples in 1 byte */
-+#define SNDRV_PCM_FORMAT_DSD_U16_LE	((__force snd_pcm_format_t) 49) /* 16 1-bit samples in 2 bytes */
-+#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U16_LE
- 
- #ifdef SNDRV_LITTLE_ENDIAN
- #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
-diff --git a/src/pcm/pcm_misc.c b/src/pcm/pcm_misc.c
-index d52160c..44bb89c 100644
---- a/src/pcm/pcm_misc.c
-+++ b/src/pcm/pcm_misc.c
-@@ -195,11 +195,13 @@ int snd_pcm_format_width(snd_pcm_format_t format)
- 	switch (format) {
- 	case SNDRV_PCM_FORMAT_S8:
- 	case SNDRV_PCM_FORMAT_U8:
-+	case SNDRV_PCM_FORMAT_DSD_U8:
- 		return 8;
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 	case SNDRV_PCM_FORMAT_S16_BE:
- 	case SNDRV_PCM_FORMAT_U16_LE:
- 	case SNDRV_PCM_FORMAT_U16_BE:
-+	case SNDRV_PCM_FORMAT_DSD_U16_LE:
- 		return 16;
- 	case SNDRV_PCM_FORMAT_S18_3LE:
- 	case SNDRV_PCM_FORMAT_S18_3BE:
-@@ -253,11 +255,13 @@ int snd_pcm_format_physical_width(snd_pcm_format_t format)
- 	switch (format) {
- 	case SNDRV_PCM_FORMAT_S8:
- 	case SNDRV_PCM_FORMAT_U8:
-+	case SNDRV_PCM_FORMAT_DSD_U8:
- 		return 8;
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 	case SNDRV_PCM_FORMAT_S16_BE:
- 	case SNDRV_PCM_FORMAT_U16_LE:
- 	case SNDRV_PCM_FORMAT_U16_BE:
-+	case SNDRV_PCM_FORMAT_DSD_U16_LE:
- 		return 16;
- 	case SNDRV_PCM_FORMAT_S18_3LE:
- 	case SNDRV_PCM_FORMAT_S18_3BE:
--- 
-1.9.3
+root@x1-orm:/usr/src/linux-source-3.14# insmod sound/usb/snd-usbmidi-lib.ko 
+insmod: ERROR: could not insert module sound/usb/snd-usbmidi-lib.ko: Unknown symbol in module
+
+root@x1-orm:/usr/src/linux-source-3.14# insmod sound/usb/snd-usb-audio.ko 
+insmod: ERROR: could not insert module sound/usb/snd-usb-audio.ko: Unknown symbol in module
+
+I'm on debian testing with 3.14-2-amd64 kernel and followed all the
+instructions in the scarlett kernel patch README (I tried three times
+each with a fresh kernel source tree from scratch to be sure). The
+patch has worked for me on older kernels without any problems.
+
+Does anybody know how to deal with this? Let me know if you need
+further information.
+
+Yours,
+Orm
