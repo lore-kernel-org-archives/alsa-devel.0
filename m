@@ -1,12 +1,21 @@
-From: branan@gmail.com
-Subject: [PATCH - pcm_jack plugin 1/1] Restore PID to jack
-	client name when not specified explicitly
-Date: Fri,  8 Aug 2014 14:31:06 -0700
-Message-ID: <1407533466-26581-1-git-send-email-branan@gmail.com>
+From: Inha Song <ideal.song@samsung.com>
+Subject: [PATCH 1/2] mfd: arizona: Add support for INn_MODE
+ register control
+Date: Sat, 09 Aug 2014 17:31:38 +0900
+Message-ID: <20140809173138.767b97fd@songinha-Samsung-DeskTop-System>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B53726163C
+ for <alsa-devel@alsa-project.org>; Sat,  9 Aug 2014 10:31:43 +0200 (CEST)
+Received: from epcpsbgr2.samsung.com
+ (u142.gpu120.samsung.co.kr [203.254.230.142])
+ by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0NA100LFG6CRCE10@mailout3.samsung.com> for
+ alsa-devel@alsa-project.org; Sat, 09 Aug 2014 17:31:39 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,87 +25,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Branan Purvine-Riley <branan@gmail.com>
+To: broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, sameo@linux.intel.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, cw00.choi@samsung.com, robh+dt@kernel.org, galak@codeaurora.org, ckeepax@opensource.wolfsonmicro.com, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Branan Purvine-Riley <branan@gmail.com>
+Some boards need to set the INn_MODE[1:0] register to change
+the input signal patch. This wlf,inmode property is optional.
+If present values must be specified by the number of
+ARIZONA_MAX_INPUT.
 
-Commit 14190cd8 added a facility to explicitly name Jack clients with
-a 'name' option, but did so in a way that was not fully
-backwards-compatible with older versions of the alsa-plugins. There
-were two issues:
+Example:
+   - wlf,inmode = <2 0 2 0>;	/* IN1, IN3 use DMIC */
 
-1. Re-using the magical "name" variable, which comes preloaded with
-the name of the PCM
+Signed-off-by: Inha Song <ideal.song@samsung.com>
+---
+ drivers/mfd/arizona-core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-2. The code assumed snd_config_get_string sets a variable to NULL if
-the config entry does not exist. Instead, this function leaves the
-variable unchanged.
-
-The result of these two errors meant that the PCM name would be
-treated as if it were a user-defined name, and the old code which
-embedded the PID would never be run
-
-This code uses a completely new variable to store the explicitly-set
-client name, so that the two code paths no longer collide.
-
-Signed-off-by: Branan Purvine-Riley <branan@gmail.com>
-
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index f5b7129..33f87b1 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -372,6 +372,7 @@ static int make_nonblock(int fd)
- }
- 
- static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
-+			     const char* client_name,
- 			     snd_config_t *playback_conf,
- 			     snd_config_t *capture_conf,
- 			     snd_pcm_stream_t stream, int mode)
-@@ -405,14 +406,14 @@ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
- 		return -EINVAL;
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 10a0cb9..4b2eb73 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -560,6 +560,10 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
+ 			ret);
  	}
  
--	if (name == NULL)
-+	if (client_name == NULL)
- 		err = snprintf(jack_client_name, sizeof(jack_client_name),
- 			       "alsa-jack.%s%s.%d.%d", name,
- 			       stream == SND_PCM_STREAM_PLAYBACK ? "P" : "C",
- 			       getpid(), num++);
- 	else
- 		err = snprintf(jack_client_name, sizeof(jack_client_name),
--			       "%s", name);
-+			       "%s", client_name);
- 
- 	if (err >= (int)sizeof(jack_client_name)) {
- 		fprintf(stderr, "%s: WARNING: JACK client name '%s' truncated to %d characters, might not be unique\n",
-@@ -470,6 +471,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(jack)
- 	snd_config_iterator_t i, next;
- 	snd_config_t *playback_conf = NULL;
- 	snd_config_t *capture_conf = NULL;
-+	const char* client_name = NULL;
- 	int err;
- 	
- 	snd_config_for_each(i, next, conf) {
-@@ -480,7 +482,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(jack)
- 		if (strcmp(id, "comment") == 0 || strcmp(id, "type") == 0 || strcmp(id, "hint") == 0)
- 			continue;
- 		if (strcmp(id, "name") == 0) {
--			snd_config_get_string(n, &name);
-+			snd_config_get_string(n, &client_name);
- 			continue;
- 		}
- 		if (strcmp(id, "playback_ports") == 0) {
-@@ -503,7 +505,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(jack)
- 		return -EINVAL;
- 	}
- 
--	err = snd_pcm_jack_open(pcmp, name, playback_conf, capture_conf, stream, mode);
-+	err = snd_pcm_jack_open(pcmp, name, client_name, playback_conf, capture_conf, stream, mode);
- 
- 	return err;
++	of_property_read_u32_array(arizona->dev->of_node,
++					 "wlf,inmode",
++					 arizona->pdata.inmode,
++					 ARRAY_SIZE(arizona->pdata.inmode));
+ 	return 0;
  }
+ 
 -- 
-2.0.4
+2.0.0.390.gcb682f8
