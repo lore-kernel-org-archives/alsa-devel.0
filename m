@@ -1,61 +1,39 @@
 From: Inha Song <ideal.song@samsung.com>
-Subject: [PATCH 1/2] mfd: arizona: Add support for INn_MODE
- register control
-Date: Sat, 09 Aug 2014 17:31:38 +0900
-Message-ID: <20140809173138.767b97fd@songinha-Samsung-DeskTop-System>
+Subject: [alsa-devel] [PATCH 2/2] mfd: arizona: Update DT binding to support
+ INn_MODE
+Date: Sat, 09 Aug 2014 17:35:45 +0900
+Message-ID: <20140809173545.2fc1f72e@songinha-Samsung-DeskTop-System>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B53726163C
- for <alsa-devel@alsa-project.org>; Sat,  9 Aug 2014 10:31:43 +0200 (CEST)
-Received: from epcpsbgr2.samsung.com
- (u142.gpu120.samsung.co.kr [203.254.230.142])
- by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0NA100LFG6CRCE10@mailout3.samsung.com> for
- alsa-devel@alsa-project.org; Sat, 09 Aug 2014 17:31:39 +0900 (KST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, sameo@linux.intel.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, cw00.choi@samsung.com, robh+dt@kernel.org, galak@codeaurora.org, ckeepax@opensource.wolfsonmicro.com, lee.jones@linaro.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lee.jones@linaro.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sameo@linux.intel.com, devicetree@vger.kernel.org, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, cw00.choi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Some boards need to set the INn_MODE[1:0] register to change
-the input signal patch. This wlf,inmode property is optional.
-If present values must be specified by the number of
-ARIZONA_MAX_INPUT.
-
-Example:
-   - wlf,inmode = <2 0 2 0>;	/* IN1, IN3 use DMIC */
+This patch update DT binding to support INn_MODE init_data
 
 Signed-off-by: Inha Song <ideal.song@samsung.com>
 ---
- drivers/mfd/arizona-core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ Documentation/devicetree/bindings/mfd/arizona.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index 10a0cb9..4b2eb73 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -560,6 +560,10 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
- 			ret);
- 	}
+diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
+index 5c7e723..c21a30e 100644
+--- a/Documentation/devicetree/bindings/mfd/arizona.txt
++++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+@@ -42,6 +42,11 @@ Optional properties:
+     the chip default will be used.  If present exactly five values must
+     be specified.
  
-+	of_property_read_u32_array(arizona->dev->of_node,
-+					 "wlf,inmode",
-+					 arizona->pdata.inmode,
-+					 ARRAY_SIZE(arizona->pdata.inmode));
- 	return 0;
- }
- 
++  - wlf,inmode : A list of INn_MODE register values. If absent, INn_MODE register
++    set to 0 by default. The size of this list depends on ARIZONA_MAX_INPUT values.
++    ARIZONA_MAX_INPUT is defined in include/linux/mfd/arizona/pdata.h. If present,
++    exactly ARIZONA_MAX_INPUT values must be specified.
++
+   - DCVDD-supply, MICVDD-supply : Power supplies, only need to be specified if
+     they are being externally supplied. As covered in
+     Documentation/devicetree/bindings/regulator/regulator.txt
 -- 
 2.0.0.390.gcb682f8
