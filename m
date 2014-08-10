@@ -1,17 +1,17 @@
-From: Jurgen Kramer <gtmkramer@xs4all.nl>
-Subject: Re: [PATCH] Fix DSD formats userland usability
-Date: Sun, 10 Aug 2014 15:38:42 +0200
-Message-ID: <1407677922.4862.3.camel@xs4all.nl>
-References: <1407578961-13291-1-git-send-email-gtmkramer@xs4all.nl>
- <s5h7g2gh8m1.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC][PATCH 00/15 v4] OXFW driver,
+	a succesor to	firewire-speakers
+Date: Sun, 10 Aug 2014 17:54:37 +0200
+Message-ID: <53E795BD.1070100@ladisch.de>
+References: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr4.xs4all.nl (smtp-vbr4.xs4all.nl [194.109.24.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 19A4C261B0A
- for <alsa-devel@alsa-project.org>; Sun, 10 Aug 2014 15:38:44 +0200 (CEST)
-In-Reply-To: <s5h7g2gh8m1.wl%tiwai@suse.de>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id C8A3E2610AA
+ for <alsa-devel@alsa-project.org>; Sun, 10 Aug 2014 17:55:40 +0200 (CEST)
+In-Reply-To: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, fenlason@redhat.com, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2014-08-10 at 13:44 +0200, Takashi Iwai wrote:
-> At Sat,  9 Aug 2014 12:09:21 +0200,
-> Jurgen Kramer wrote:
-> > 
-> > Support for DSD sample formats has been added a while ago. This patch makes
-> > those sample formats beter usable from userland (e.g. aplay).
-> > 
-> > ---
-> >  include/sound/asound.h | 4 +++-
-> >  src/pcm/pcm_misc.c     | 4 ++++
-> 
-> The new definitions are still missing in include/pcm.h?
-> include/sound/asound.h is a copy from the kernel, and the user-land
-> API is defined rather in include/pcm.h.
-> 
-OK, the updates to alsa-lib pcm_misc.c are still valid but do not
-compile without my proposed update to include/sound/asound.h:
+Takashi Sakamoto wrote:
+> I have an issue for Griffin Firewave.
+>
+> This device can handle AV/C Stream Format Information command and
+> driver can get to know stream formations via the command.
+>
+> According to these responses, supported formations are:
+> Input Stream to device:
+> 	Rate	PCM	MIDI
+> 	32000	6	0
+> 	44100	6	0
+> 	48000	6	0
+> 	96000	6	0
+> 	32000	2	0
+> 	44100	2	0
+> 	48000	2	0
+>
+> But current 'firewire-speakers' has PCM constraints below:
+>  - 6ch at 32/44.1/48/96 kHz
+>  - 2ch at 48/96 kHz
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/073562.html
+>
+> So this OXFW driver may lost a support for 2ch/96.0kHz for FireWave
+> and gain 2ch/32.0kHz and 2ch/44.1kHz.
+>
+> I don't know exactly the reason of these gaps.
 
-Compiling alsa-lib from git with update pcm_misc.c gives:
-pcm_misc.c: In function 'snd_pcm_format_width':
-pcm_misc.c:198:7: error: 'SNDRV_PCM_FORMAT_DSD_U8' undeclared (first use
-in this function)
-  case SNDRV_PCM_FORMAT_DSD_U8:
-       ^
-pcm_misc.c:198:7: note: each undeclared identifier is reported only once
-for each function it appears in
-pcm_misc.c:209:7: error: 'SNDRV_PCM_FORMAT_DSD_U16_LE' undeclared (first
-use in this function)
-  case SNDRV_PCM_FORMAT_DSD_U16_LE:
-       ^
-pcm_misc.c: In function 'snd_pcm_format_physical_width':
-pcm_misc.c:258:7: error: 'SNDRV_PCM_FORMAT_DSD_U8' undeclared (first use
-in this function)
-  case SNDRV_PCM_FORMAT_DSD_U8:
-       ^
-pcm_misc.c:264:7: error: 'SNDRV_PCM_FORMAT_DSD_U16' undeclared (first
-use in this function)
-  case SNDRV_PCM_FORMAT_DSD_U16:
+The old driver configured nothing but the rate.  Is there any mechanism
+to set the stream format?
 
-The SNDRV_PCM_FORMAT_DSD??? are there in /usr/include/sound/asound.h
-It seems alsa-lib uses it own asound.h which does not have the DSD
-defines. See 'include/sound/asound.h' is this intentional?
 
-Jurgen
+Regards,
+Clemens
