@@ -1,16 +1,21 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: can't insmod patched snd-usb-audio
-Date: Sun, 10 Aug 2014 13:57:04 +0200
-Message-ID: <53E75E10.7080805@zonque.org>
-References: <20140809114001.GA7938@x1-orm>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: Re: Choosing the sysclk in simple-card looks broken to
+	me.
+Date: Sun, 10 Aug 2014 08:34:20 -0400
+Message-ID: <CAKON4OzhSFJ4-cGkbr10LNorb+ihi6gqm1V4-YhTMHq8kmcWGg@mail.gmail.com>
+References: <CAKON4Oxusv_VuHNgbum1wBBz_N_V-a11N_rPu8m-rLFYAcQ_sQ@mail.gmail.com>
+ <20140810105405.GW17528@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CF2F2610A3
- for <alsa-devel@alsa-project.org>; Sun, 10 Aug 2014 13:57:06 +0200 (CEST)
-In-Reply-To: <20140809114001.GA7938@x1-orm>
+Received: from mail-la0-f42.google.com (mail-la0-f42.google.com
+ [209.85.215.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 926B62610A3
+ for <alsa-devel@alsa-project.org>; Sun, 10 Aug 2014 14:34:21 +0200 (CEST)
+Received: by mail-la0-f42.google.com with SMTP id pv20so5967532lab.15
+ for <alsa-devel@alsa-project.org>; Sun, 10 Aug 2014 05:34:21 -0700 (PDT)
+In-Reply-To: <20140810105405.GW17528@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,31 +25,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, zengzm.kernel@gmail.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-On 08/09/2014 01:40 PM, Orm Finnendahl wrote:
->  hope it's ok to post it here as it's not (yet) official alsa: After
-> having no issues with Tobias Hoffmann's scarlett alsa mixer patch on
-> my older kernels, trying to insmod the patched kernel modules on my
-> most current kernel (the patch and documentation obtained with
-> "git clone http://github.com/trrichard/alsa-driver_scarlett.git")
-> fails with the following message:
+On Sun, Aug 10, 2014 at 6:54 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Sat, Aug 09, 2014 at 08:08:45PM -0400, jonsmirl@gmail.com wrote:
+>
+>> The problem is in asoc_simple_card_sub_parse_of()
+>> in the else case..
+>
+>> } else {
+>> clk = of_clk_get(node, 0);
+>> if (!IS_ERR(clk))
+>> dai->sysclk = clk_get_rate(clk);
+>> }
+>
+>> This is picking up the input clocks to the devices.  On the cpu-dai
+>> you want to pick up the ouput mclk (my first input clock is an 80Mhz
+>> bus clock).  My IIS output clock is: clock-output-names = "mclk0";
+>
+>> Setting clocks="" doesn't work either, it also picks up the input clock.
+>
+> I'm sorry but I'm having an awfully hard time working out what you are
+> trying to say in this mail.  When you say things like "you want to pick
+> up the ouput mclk" it's really not clear what any of that means - why do
+> you want to pick it and what is it being picked for?
 
-Interesting. Why isn't this patch mainline? Keeping such things
-out-of-tree are likely to cause maintenance overhead in the future, and
-people who don't want to (or are unable to) compile a kernel themselves
-will not benefit from it.
+Inside simple audio card,  __asoc_simple_card_dai_init() calls
+snd_soc_dai_set_sysclk(). So where is it getting the clock values used
+in __asoc_simple_card_dai_init()?
 
-Tobias doesn't seem to have a public mail address (at least I didn't
-find any in his GH profile), so I can't ask him whether he considers
-sending a patch for inclusion.
+Here is my DTS for my cpu-dai...
 
-Orm, would you be up for it? It needs to be done by someone with access
-to the hardware for testing. There are some things that need cleanup,
-but we can best discuss those in replies to a patch.
+iis0: iis@01c22400 {
+  #clock-cells = <0>;
+  #sound-dai-cells = <0>;
+  compatible = "allwinner,sun7i-a20-iis";
+  reg = <0x01C22400 0x40>;
+  interrupts = <0 16 4>;
+  clocks = <&apb0_gates 3>, <&i2s0_clk>;
+  clock-names = "apb", "iis";
+  clock-output-names = "mclk0";
+  dmas = <&dma 0 3>, <&dma 0 3>;
+  dma-names = "rx", "tx";
+  status = "disabled";
+};
+
+This unit has three clocks.
+apb - bus input 80Mhz to run the unit
+iis - a programable input from a system PLL
+mclk0 - a clock that is output to the MCLK pin
+
+This is my codec
+
+sgtl5000: sgtl5000@a {
+   compatible = "fsl,sgtl5000";
+   reg = <0x0a>;
+   clocks = <&iis0>;
+
+   #sound-dai-cells = <0>;
+   VDDA-supply = <&reg_vcc3v3>;
+   VDDIO-supply = <&reg_vcc3v3>;
+};
+
+It has single input clock
+clocks (unnamed) - it is wired to the MCLK pin
+
+My simple audio card section...
+
+sound {
+  compatible = "simple-audio-card";
+  simple-audio-card,format = "i2s";
+  simple-audio-card,mclk-fs = <256>;
+
+  simple-audio-card,cpu {
+    sound-dai = <&iis0>;
+  };
+
+  simple-audio-card,codec {
+    sound-dai = <&sgtl5000>;
+   };
+};
+
+Now look at what simple_card_dai_link_of() does. It parse this section
+and then calls asoc_simple_card_sub_parse_of() for each of the two
+DAI's.
+
+Now look look at what asoc_simple_card_sub_parse_of() does when it
+parses each of those subnodes.  It looks up the first input clock off
+from both of those nodes and saves it as dai->sysclk. Then in
+__asoc_simple_card_dai_init() it pokes those values back into my
+driver via snd_soc_dai_set_sysclk().
+
+So on the first node.
+ simple-audio-card,cpu {
+    sound-dai = <&iis0>;
+  };
+It goes over to the iis driver and gets rate from the first input
+clock for iis0 - apb (80Mhz) and sets this back into my driver via
+snd_soc_dai_set_sysclk().
+
+On the second node
+  simple-audio-card,codec {
+    sound-dai = <&sgtl5000>;
+   };
+Then it does a getrate() on the first input clock for sgtl5000. But
+that clock has not been initialized yet. And then it sets the value
+back in via snd_soc_dai_set_sysclk().
+
+------
+
+The problem is that asoc_simple_card_sub_parse_of() is doing getrate()
+on input clocks when it should be doing it on output clocks.
+
+So in my case, iis has a single output clock 'mclk0'. simple can
+getrate() on it and then set the rate back in via
+snd_soc_dai_set_sysclk(). Codec has no output clocks so it does
+nothing with sysclk.
 
 
-Thanks,
-Daniel
+
+
+
+>
+>> But then simple goes and tries to set both system clocks - my 80Mhz
+>> bus clock and the 22.5 true sysclk. And my cpu-dai barfs when it is
+>> passed a 80Mhz sysclk.
+>
+> Naturally...  this does suggest you're doing something wrong but like I
+> say I really don't understand what's going on.  What does your system
+> look like, what are you trying to get it to do and how are you going
+> about that?
+
+
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
