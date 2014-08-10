@@ -1,17 +1,23 @@
-From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Subject: Choosing the sysclk in simple-card looks broken to me.
-Date: Sat, 9 Aug 2014 20:08:45 -0400
-Message-ID: <CAKON4Oxusv_VuHNgbum1wBBz_N_V-a11N_rPu8m-rLFYAcQ_sQ@mail.gmail.com>
+From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
+Subject: fast additive copy and morph functions
+Date: Sun, 10 Aug 2014 08:00:53 +0200
+Message-ID: <1407650453.15843.8.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f169.google.com (mail-lb0-f169.google.com
- [209.85.217.169])
- by alsa0.perex.cz (Postfix) with ESMTP id D5DD42619F3
- for <alsa-devel@alsa-project.org>; Sun, 10 Aug 2014 02:08:45 +0200 (CEST)
-Received: by mail-lb0-f169.google.com with SMTP id s7so4874263lbd.14
- for <alsa-devel@alsa-project.org>; Sat, 09 Aug 2014 17:08:45 -0700 (PDT)
+Received: from mail-we0-f173.google.com (mail-we0-f173.google.com
+ [74.125.82.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5ABAA261AF0
+ for <alsa-devel@alsa-project.org>; Sun, 10 Aug 2014 08:01:11 +0200 (CEST)
+Received: by mail-we0-f173.google.com with SMTP id q58so7321538wes.4
+ for <alsa-devel@alsa-project.org>; Sat, 09 Aug 2014 23:01:11 -0700 (PDT)
+Received: from [192.168.42.170] (201-227.197-178.cust.bluewin.ch.
+ [178.197.227.201])
+ by mx.google.com with ESMTPSA id wr6sm14947268wjc.24.2014.08.09.23.01.09
+ for <alsa-devel@alsa-project.org>
+ (version=SSLv3 cipher=RC4-SHA bits=128/128);
+ Sat, 09 Aug 2014 23:01:10 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,40 +28,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel mailing list <alsa-devel@alsa-project.org>
-Cc: kuninori.morimoto.gx@renesas.com, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, zengzm.kernel@gmail.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The problem is in asoc_simple_card_sub_parse_of()
-in the else case..
-} else {
-clk = of_clk_get(node, 0);
-if (!IS_ERR(clk))
-dai->sysclk = clk_get_rate(clk);
-}
-
-This is picking up the input clocks to the devices.  On the cpu-dai
-you want to pick up the ouput mclk (my first input clock is an 80Mhz
-bus clock).  My IIS output clock is: clock-output-names = "mclk0";
-
-Setting clocks="" doesn't work either, it also picks up the input clock.
-
-if (of_property_read_bool(np, "clocks")) {
-  clk = of_clk_get(np, 0);
-  if (IS_ERR(clk)) {
-     ret = PTR_ERR(clk);
-  return ret;
-
-When the codec-dai bit runs it finds the input clock on the codec,
-which is really my cpu-dai's output clock and it gets the correct
-value.
-
-But then simple goes and tries to set both system clocks - my 80Mhz
-bus clock and the 22.5 true sysclk. And my cpu-dai barfs when it is
-passed a 80Mhz sysclk.
-
-How to fix? Is anyone using this feature?  This needs to be fixed to
-pick up output clocks, not input ones.
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
+RG9lcyBzb21lb25lIGhvdyB0byBkbyBmYXN0IGFkZGl0aXZlIGNvcHkgYW5kIG1vcnBoIGZ1bmN0
+aW9ucz8KClRoaXMgaXMgdGhlIGhlYWRlciBvZiB0aGUgY29ycmVzcG9uZGluZyAqLmMgZmlsZQoK
+aHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvcC9hZ3MvY29kZS9IRUFEL3RyZWUvc3JjL2Fncy9hdWRp
+by9hZ3NfYXVkaW9fc2lnbmFsLmgKaHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvcC9hZ3MvY29kZS9I
+RUFEL3RyZWUvc3JjL2Fncy9hdWRpby9hZ3NfYXVkaW9fc2lnbmFsLmMKCllvdXIgY29udHJpYnV0
+aW9uIHdpbGwgYmUgbm90ZWQgaW4gdGhlc2UgZmlsZXMhCgpiZXN0IHJlZ2FyZHMKSm/Dq2wKCgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
