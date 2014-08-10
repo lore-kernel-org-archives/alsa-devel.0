@@ -1,18 +1,16 @@
-From: Swen Wenzel <swen.wenzel@t-online.de>
-Subject: Disabled jacks on motherboard 'Gigabyte G1 Sniper Z87'
-	(CA0132-based)
-Date: Sat, 09 Aug 2014 16:55:32 +0200
-Message-ID: <53E63664.5000005@t-online.de>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: can't insmod patched snd-usb-audio
+Date: Sun, 10 Aug 2014 13:57:04 +0200
+Message-ID: <53E75E10.7080805@zonque.org>
+References: <20140809114001.GA7938@x1-orm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout02.t-online.de (mailout02.t-online.de [194.25.134.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E7BA2610C5
- for <alsa-devel@alsa-project.org>; Sat,  9 Aug 2014 16:55:45 +0200 (CEST)
-Received: from fwd27.aul.t-online.de (fwd27.aul.t-online.de [172.20.26.132])
- by mailout02.t-online.de (Postfix) with SMTP id 23EC7485251
- for <alsa-devel@alsa-project.org>; Sat,  9 Aug 2014 16:55:45 +0200 (CEST)
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CF2F2610A3
+ for <alsa-devel@alsa-project.org>; Sun, 10 Aug 2014 13:57:06 +0200 (CEST)
+In-Reply-To: <20140809114001.GA7938@x1-orm>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,26 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello guys,
+On 08/09/2014 01:40 PM, Orm Finnendahl wrote:
+>  hope it's ok to post it here as it's not (yet) official alsa: After
+> having no issues with Tobias Hoffmann's scarlett alsa mixer patch on
+> my older kernels, trying to insmod the patched kernel modules on my
+> most current kernel (the patch and documentation obtained with
+> "git clone http://github.com/trrichard/alsa-driver_scarlett.git")
+> fails with the following message:
 
-I own the motherboard mentioned in the subject and experienced problems 
-when I tried to get it to work.
-After some conversation <http://pastebin.com/HnmxuU1Q> in IRC we found 
-out, that probably the jack I used was deactivated. I had to use the 
-lineout jack instead of the headphone/speaker jack.
-However the headphone/speaker jack could be enabled to give the same 
-output as the lineout jack with 'hda-verb'.
-Here is my alsa information:
-http://www.alsa-project.org/db/?f=8f57f0b72d65046469b8b6ce8a57ff6fe0371769
+Interesting. Why isn't this patch mainline? Keeping such things
+out-of-tree are likely to cause maintenance overhead in the future, and
+people who don't want to (or are unable to) compile a kernel themselves
+will not benefit from it.
 
-Maybe you can have a look at it. You can also always contact me if you 
-have further questions or want me to try something out.
-I am also a programmer, and studied something related to computer 
-science so you don't have to fear completely useless answers or too dumb 
-questions. :D
+Tobias doesn't seem to have a public mail address (at least I didn't
+find any in his GH profile), so I can't ask him whether he considers
+sending a patch for inclusion.
 
-kind regards
-Swen
+Orm, would you be up for it? It needs to be done by someone with access
+to the hardware for testing. There are some things that need cleanup,
+but we can best discuss those in replies to a patch.
+
+
+Thanks,
+Daniel
