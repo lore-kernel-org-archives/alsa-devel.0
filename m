@@ -1,79 +1,76 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 12/15] oxfw: Add support for
-	Behringer/Mackie devices
-Date: Tue, 12 Aug 2014 08:48:52 +0900
-Message-ID: <53E95664.7020707@sakamocchi.jp>
+Subject: Re: [RFC][PATCH 00/15 v4] OXFW driver, a succesor to	firewire-speakers
+Date: Tue, 12 Aug 2014 08:55:22 +0900
+Message-ID: <53E957EA.3030601@sakamocchi.jp>
 References: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
- <1399991272-5807-13-git-send-email-o-takashi@sakamocchi.jp>
- <53E795C5.1010506@ladisch.de>
+	<53E795BD.1070100@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id B0C28261A53
- for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 01:48:59 +0200 (CEST)
-In-Reply-To: <53E795C5.1010506@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <53E795BD.1070100@ladisch.de>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
+List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
+List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
+	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: linux1394-devel-bounces@lists.sourceforge.net
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, fenlason@redhat.com, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org, fenlason@redhat.com, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Aug 11 2014 00:54, Clemens Ladisch wrote:
 > Takashi Sakamoto wrote:
->> Some devices produced by Behringer/Mackie are based on OXFW970/971. This
->> commit adds support for them.
+>> I have an issue for Griffin Firewave.
 >>
->> +++ b/sound/firewire/oxfw/oxfw.c
->> @@ -16,6 +16,8 @@
+>> This device can handle AV/C Stream Format Information command and
+>> driver can get to know stream formations via the command.
 >>
->>  #define VENDOR_GRIFFIN		0x001292
->>  #define VENDOR_LACIE		0x00d04b
->> +#define VEN_BEHRINGER		0x001564
->> +#define VEN_LOUD		0x000ff2
+>> According to these responses, supported formations are:
+>> Input Stream to device:
+>> 	Rate	PCM	MIDI
+>> 	32000	6	0
+>> 	44100	6	0
+>> 	48000	6	0
+>> 	96000	6	0
+>> 	32000	2	0
+>> 	44100	2	0
+>> 	48000	2	0
+>>
+>> But current 'firewire-speakers' has PCM constraints below:
+>>  - 6ch at 32/44.1/48/96 kHz
+>>  - 2ch at 48/96 kHz
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/073562.html
+>>
+>> So this OXFW driver may lost a support for 2ch/96.0kHz for FireWave
+>> and gain 2ch/32.0kHz and 2ch/44.1kHz.
+>>
+>> I don't know exactly the reason of these gaps.
 > 
-> These IDs were supposed to be ordered. :)
+> The old driver configured nothing but the rate.  Is there any mechanism
+> to set the stream format?
 
-OK, indeed.
+Yes. It's AV/C stream format information command.
 
-> And why "VEN_" instead of "VENDOR_"?
+The old driver uses AV/C plug signal format command. This command
+basically get/set sampling rate.
 
-I avoided to type three letters "DOR" and use the same way as BeBoB
-driver. But I don't mind to use "VENDOR_" instead.
+But the stream format information command can be available to get/set
+stream format and some models with OXFW, especially FireWave, uses this
+command.
 
->> +	...
->> +	{
->> +		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
->> +				  IEEE1394_MATCH_MODEL_ID,
->> +		.vendor_id	= VEN_LOUD,
->> +		.model_id	= 0x000460,
->> +	},
->> +	/* IDs are unknown but able to be supported */
->> +	/*  Mackie(Loud), d.2 pro */
->> +	/*  Mackie(Loud), d.4 pro */
->> +	/*  Mackie(Loud), U.420 */
->> +	/*  Mackie(Loud), U.420d */
-> 
-> To support all Mackie devices, use one ID entry with only the vendor ID,
-> and abort with -ENODEV from the _probe function if the hardware is not
-> actually an OXFW97x device (try to read the HARDWARE_ID and/or
-> FIRMWARE_ID registers).
-
-In this idea, OXFW driver transfers the transaction(s) for all of
-Mackie(Loud) devices on IEEE 1394 bus when they're probed. I want to
-avoid such changes possible to affects the other models on the same bus
-because I'm afraid of side effects.
+But in this series of patches, I don't use this command. I expected the
+models to change stream format according to parameters in AMDTP packets
+such like the value of dbs field.
 
 
-Thanks
+Regards
 
 Takashi Sakamoto
+(In summer vacation)
 o-takashi@sakamocchi.jp
+
+
+------------------------------------------------------------------------------
