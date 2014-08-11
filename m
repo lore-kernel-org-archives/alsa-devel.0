@@ -1,80 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] ASoC: Intel: Baytrail: Fix stream
- restore after aborted suspend
-Date: Mon, 11 Aug 2014 13:41:03 +0100
-Message-ID: <20140811124103.GC17528@sirena.org.uk>
-References: <1407755738-31693-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: wm8962: Correct the bit offset to
+	enable mono speaker output
+Date: Mon, 11 Aug 2014 14:19:49 +0100
+Message-ID: <20140811131949.GA28085@opensource.wolfsonmicro.com>
+References: <1407412549-14983-1-git-send-email-nicoleotsuka@gmail.com> <20140807165836.GL17528@sirena.org.uk> <20140808082043.GB6333@MrMyself> <39712b9fd56546f8a943d605230a2f18@BL2PR03MB371.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6517321694546007000=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF005265196
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 14:41:18 +0200 (CEST)
-In-Reply-To: <1407755738-31693-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <39712b9fd56546f8a943d605230a2f18@BL2PR03MB371.namprd03.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Chan <peter.chan@freescale.com>
+Cc: "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, Mark Brown <broonie@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "shengjiu.wang@freescale.com" <shengjiu.wang@freescale.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "rf@opensource.wolfsonmicro.com" <rf@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Aug 08, 2014 at 09:55:43AM +0000, Peter Chan wrote:
+> I have a question about the wm8962 mono speaker mode. In SPK_MONO description at table 73, it says "When SPK_MONO is enabled, both speakers output the signal from the left channel". Does it mean only the left channel control the output in mono speaker mode?
+> 
+> Thanks,
+> Peter
+> 
+> -----Original Message-----
+> From: Nicolin Chen [mailto:Guangyu.Chen@freescale.com] 
+> Sent: Friday, August 08, 2014 4:21 PM
+> To: Mark Brown
+> Cc: Nicolin Chen; alsa-devel@alsa-project.org; tiwai@suse.de; patches@opensource.wolfsonmicro.com; Wang Shengjiu-B02247; lgirdwood@gmail.com; linux-kernel@vger.kernel.org; CHAN Peter-B18700; ckeepax@opensource.wolfsonmicro.com; rf@opensource.wolfsonmicro.com
+> Subject: Re: [alsa-devel] [PATCH] ASoC: wm8962: Correct the bit offset to enable mono speaker output
+> 
+> On Thu, Aug 07, 2014 at 05:58:36PM +0100, Mark Brown wrote:
+> > On Thu, Aug 07, 2014 at 07:55:49PM +0800, Nicolin Chen wrote:
+> > > As WM8962 datasheet describes for SPK_MONO bit of R51: When SPK_MONO 
+> > > is set to '1', both speakers output the signal from the left channel.
+> > 
+> > > So for mono speaker widget, we shall enable Left Channel whose 
+> > > enable bit is 6 instead of 7 (Right Channel).
+> > > 
+> > > This patches just simply corrects the bit offset.
+> > 
+> > >  		   spkmixl, ARRAY_SIZE(spkmixl)),  SND_SOC_DAPM_MUX_E("Speaker 
+> > > PGA", WM8962_PWR_MGMT_2, 4, 0, &spkoutl_mux,
+> > >  		   out_pga_event, SND_SOC_DAPM_POST_PMU), 
+> > > -SND_SOC_DAPM_PGA("Speaker Output", WM8962_CLASS_D_CONTROL_1, 7, 0, 
+> > > NULL, 0),
+> > > +SND_SOC_DAPM_PGA("Speaker Output", WM8962_CLASS_D_CONTROL_1, 6, 0, 
+> > > +NULL, 0),
+> > >  SND_SOC_DAPM_OUTPUT("SPKOUT"),
+> > >  };
+> > 
+> > Someone who's name I'd need to look up submitted an identical fix off 
+> > list recently - I checked the datasheet and it seems that in mono mode 
+> > the speaker output actually wants both left and right channels active 
+> > so there is a bug here but this isn't the fix.
+> 
+> I rechecked the datasheet and found that the hardware needs to tie both outputs and enable both bits. So the patch should be invalid.
+> 
+> But our customer reported that they did try to set both SPKOUTR_ENA and SPKOUTL_ENA bits in mono mode but the sound is lousy. If setting SPKOUTR_ENA alone, the speaker has no sound. Only setting SPKOUTL_ENA bit get the correct speaker output in mono mode.
 
---===============6517321694546007000==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ic9dmA6AaBNtx8DN"
-Content-Disposition: inline
+>From the wording of "tie both outputs together" in the datasheet
+I would assume that means both should be fed the same audio? Was
+this done? I will try to give the hardware guys here a shout and
+see if I can get some clarification on mono mode on this device.
 
-
---Ic9dmA6AaBNtx8DN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Aug 11, 2014 at 02:15:35PM +0300, Jarkko Nikula wrote:
-> It was found that resuming active stream fails on Baytrail ADSP in case
-> of aborted suspend or when testing only partial suspend. Reason for
-> this is that in those cases ADSP doesn't reach reset even though resume
-> path is expecting so and fails to restart stream.
-
-Applied all, thanks.  It'd have been helpful if the commit messages for
-the second and theard patches had made it clearer that these were bug
-fixes.
-
---Ic9dmA6AaBNtx8DN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT6LncAAoJELSic+t+oim9ryIP/07GoK6Ix+2+kd0zU9iQn0kb
-i2I3URmiPh03HD2uT4AIX0exaR1JqC022JLW8UX+5TF5xcREe1Ywh4q8FoU0kLRa
-G1rnAdCTYJvq5hq8pR91ZqRmE8Po6tQfTvABSFYlbLRJ+xAkzGLrZv2QYcZZEFyx
-BpmJMI7yJw7rwKjwZfqQUIcNdbEectqahiWm8RQwCtmQ+FYz6eE+eWy0//FY6diI
-D/ddbhmT12/asyc8nrpGMm3UWfb5hg+PJCCrKYCkpS7APt173PRzDZYXADsQmwXK
-TvdBeemi+RMpXOTPSvV4/MFsHiWi4wtBPR1Wiqhx7mybnEQ/H8DPHoy6uXP7/X/3
-bG/OvxGUWLqvz8TASybHXK5t8oUA85Zu4k4rQN9EoGphH3AC9H0gf14YnUkcuPDh
-+ApXrBXbNsf/7i1z1+jw9N2Ct1VVdo+X5qxcIKA+D0azq9AGX8l/GHpyNELElyqZ
-v8gAy89zGvJbDbEhcpFvg0RR7KTEo5A/hyKvRk812g8y+92pIs8mF5Z5LgUYK8Ls
-L++Z3TVkgC2Rc3SBek0+OTW0AZjWbY+asobnQctkkCOUhH8DKC6mtbHCA6eR3MeN
-2r+6b4lo1L6LhYIonGX4T8A9ErEoxtai3sX5VKG01nEmdMQ5ULUVbyWeHwRvPO/T
-EDhJ2UidPceMYN5XGt84
-=li77
------END PGP SIGNATURE-----
-
---Ic9dmA6AaBNtx8DN--
-
---===============6517321694546007000==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6517321694546007000==--
+Thanks,
+Charles
