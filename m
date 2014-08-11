@@ -1,24 +1,20 @@
-From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Subject: Re: Choosing the sysclk in simple-card looks broken to
-	me.
-Date: Sun, 10 Aug 2014 22:10:51 -0400
-Message-ID: <CAKON4Oz0VbZ=j-0YqkN=9C+yXbWycc8TvsdTCNH0UzuvrcXs_w@mail.gmail.com>
-References: <CAKON4Oxusv_VuHNgbum1wBBz_N_V-a11N_rPu8m-rLFYAcQ_sQ@mail.gmail.com>
- <20140810105405.GW17528@sirena.org.uk>
- <CAKON4OzhSFJ4-cGkbr10LNorb+ihi6gqm1V4-YhTMHq8kmcWGg@mail.gmail.com>
- <CAKON4OxvoLBiq64t6Oh1i3CgA=Zy5DU7xYEe2kkpVdWkXMmqsg@mail.gmail.com>
- <CAKON4Ozth8VHa3OK+HNU7Lp29MqCbvVD7mh3v6KM7ejF0CGDpA@mail.gmail.com>
+From: Swen Wenzel <swen.wenzel@t-online.de>
+Subject: Re: Disabled jacks on motherboard 'Gigabyte G1 Sniper
+	Z87' (CA0132-based)
+Date: Mon, 11 Aug 2014 07:48:48 +0200
+Message-ID: <53E85940.1020208@t-online.de>
+References: <53E63664.5000005@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
- [209.85.215.51])
- by alsa0.perex.cz (Postfix) with ESMTP id BAC4D264FF9
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 04:10:51 +0200 (CEST)
-Received: by mail-la0-f51.google.com with SMTP id pn19so6161680lab.38
- for <alsa-devel@alsa-project.org>; Sun, 10 Aug 2014 19:10:51 -0700 (PDT)
-In-Reply-To: <CAKON4Ozth8VHa3OK+HNU7Lp29MqCbvVD7mh3v6KM7ejF0CGDpA@mail.gmail.com>
+Received: from mailout05.t-online.de (mailout05.t-online.de [194.25.134.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id EDD1F26506E
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 07:48:56 +0200 (CEST)
+Received: from fwd39.aul.t-online.de (fwd39.aul.t-online.de [172.20.27.138])
+ by mailout05.t-online.de (Postfix) with SMTP id 96E0E3792C3
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 07:48:56 +0200 (CEST)
+In-Reply-To: <53E63664.5000005@t-online.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,54 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, zengzm.kernel@gmail.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As I debug further I am getting a better understanding of the problem.
-This is my simple-audio binding.
+Today I got different codec information. Now the headphone jack on the 
+front was the only one working.
+Here is the updated alsa information:
+http://www.alsa-project.org/db/?f=c1fe9533df93a4b119cfcbe5a8f5b66dbfd50768
+I have no idea what changed my system... the only thing I did was 
+installing Skype, but it is not running atm.
 
-sound {
-compatible = "simple-audio-card";
-simple-audio-card,format = "i2s";
-
-simple-audio-card,cpu {
-sound-dai = <&iis0>;
-};
-
-simple-audio-card,codec {
-clocks = <&iis0>;
-sound-dai = <&sgtl5000>;
-};
-};
-
-I'm having trouble with the simple-audio-card,cpu node, not the
-simple-audio-card,codec node.  As simple-audio is currently
-implemented when simple-audio-card,cpu is processed it will pick up my
-80Mhz apb clock and set it as sysclk.
-
-After spending all day trying to fix that else clause, I'm coming to
-the conclusion that the else clause simply shouldn't be there at all.
-I just hit this because I had code checking for bogus values in
-setsysclk.
-
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 03a7fdc..b389d9c2 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -155,10 +155,6 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
-  of_property_read_u32(np,
-      "system-clock-frequency",
-      &dai->sysclk);
-- } else {
-- clk = of_clk_get(node, 0);
-- if (!IS_ERR(clk))
-- dai->sysclk = clk_get_rate(clk);
-  }
-
-  return 0;
-
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
+On 09.08.2014 16:55, Swen Wenzel wrote:
+> Hello guys,
+>
+> I own the motherboard mentioned in the subject and experienced 
+> problems when I tried to get it to work.
+> After some conversation <http://pastebin.com/HnmxuU1Q> in IRC we found 
+> out, that probably the jack I used was deactivated. I had to use the 
+> lineout jack instead of the headphone/speaker jack.
+> However the headphone/speaker jack could be enabled to give the same 
+> output as the lineout jack with 'hda-verb'.
+> Here is my alsa information:
+> http://www.alsa-project.org/db/?f=8f57f0b72d65046469b8b6ce8a57ff6fe0371769
+>
+> Maybe you can have a look at it. You can also always contact me if you 
+> have further questions or want me to try something out.
+> I am also a programmer, and studied something related to computer 
+> science so you don't have to fear completely useless answers or too 
+> dumb questions. :D
+>
+> kind regards
+> Swen
