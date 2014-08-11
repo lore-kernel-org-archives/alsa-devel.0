@@ -1,23 +1,17 @@
-From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Subject: Re: SGTL500 and its external MCLK
-Date: Mon, 11 Aug 2014 08:29:01 -0400
-Message-ID: <CAKON4OwMSTGv4W-7Z5pQcZcPyE6mV1NbeUcXw7qbt2UCQLdz=w@mail.gmail.com>
-References: <CAKON4OxRr-igCSZ2HwXcKGFT7O6sQjJUMP_aF19kSRP59ZxFew@mail.gmail.com>
- <20140808052901.GA6028@MrMyself>
- <CAKON4OwgT8=moQUPugpR8CfPNkJomDGpHob0CRnzRSd4eC7kQg@mail.gmail.com>
- <CAKON4OzHeB-bJKj_hB=L84jMROz-7vRgp7uqb45KLg4VHva2Zw@mail.gmail.com>
- <20140811055015.GA12969@MrMyself>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/3] ASoC: Intel: Baytrail: Fix stream
+ restore after aborted suspend
+Date: Mon, 11 Aug 2014 13:41:03 +0100
+Message-ID: <20140811124103.GC17528@sirena.org.uk>
+References: <1407755738-31693-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6517321694546007000=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
- [209.85.217.176])
- by alsa0.perex.cz (Postfix) with ESMTP id F3CAC265196
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 14:29:01 +0200 (CEST)
-Received: by mail-lb0-f176.google.com with SMTP id u10so5725120lbd.21
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 05:29:01 -0700 (PDT)
-In-Reply-To: <20140811055015.GA12969@MrMyself>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF005265196
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 14:41:18 +0200 (CEST)
+In-Reply-To: <1407755738-31693-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,66 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <Guangyu.Chen@freescale.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, zengzm.kernel@gmail.com, Liam Girdwood <lgirdwood@gmail.com>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 11, 2014 at 1:50 AM, Nicolin Chen
-<Guangyu.Chen@freescale.com> wrote:
-> On Sat, Aug 09, 2014 at 12:42:43PM -0400, jonsmirl@gmail.com wrote:
->> On Fri, Aug 8, 2014 at 1:07 PM, jonsmirl@gmail.com <jonsmirl@gmail.com> wrote:
->> > On Fri, Aug 8, 2014 at 1:29 AM, Nicolin Chen <Guangyu.Chen@freescale.com> wrote:
->> >> On Thu, Aug 07, 2014 at 03:37:47PM -0400, jonsmirl@gmail.com wrote:
->> >>> Since the sgtl5000 driver has the handle to the clock, can't it just
->> >>> ask the clock for its rate? If it directly asked the clock for its
->> >>> rate it looks like this codec could be bound with simple-audio-card
->> >>> and not need a machine driver.
->> >>
->> >> I think Simple Card should already have the capability to support
->> >> this without changing sgtl5000's code. It has two properties that
->> >> can make it call set_sysclk() for you during the init(). They are
->> >> 'clocks' and 'system-clock-frequency'. Please refer to its binding
->> >> doc for details.
->>
->> Simple has a hard coded clock ID of zero. Which just happens to match
->> codecs/sgtl5000.h:#define SGTL5000_SYSCLK 0x00
->>
->> Lucky coincidence?
->
-> It's also pretty fair to think that Simple Card only supports CODEC
-> using the main sysclk -- id is 0x00. And I believe this also works
-> out for other CODECs whose sysclk configurations aren't complicated
-> since the name is Simple Card :)
->
->> >> And the topic why not let sgtl5000 fully control the clock has been
->> >> discussed in this thread:
->> >> http://comments.gmane.org/gmane.linux.alsa.devel/109093
->> >>
->> >> So I think the change can be done as well?
->> >
->> > I tried hacking on it some. One problem is with clocks that aren't
->> > 100% accurate. For example my clock is off a little - 22.571428. So
->> > when the code divides that by 44100 it gets 511.8 which truncates to
->> > 511 and the test for equal to 512 fails.
->
-> This is a clock dividing accuracy issue. We can try DIV_ROUND_UP()
-> instead of the truncating division.
 
-Mark - how is clock accuracy supposed to be handled in ALSA? Should my
-clocks tell their true rate 22.571428Mhz or lie and say they are
-22.5792Mhz?
-
-Are there problems with division truncation from the slightly low
-clock rate lurking in the ALSA code that I need to avoid?
+--===============6517321694546007000==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Ic9dmA6AaBNtx8DN"
+Content-Disposition: inline
 
 
+--Ic9dmA6AaBNtx8DN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> Best regards,
-> Nicolin
+On Mon, Aug 11, 2014 at 02:15:35PM +0300, Jarkko Nikula wrote:
+> It was found that resuming active stream fails on Baytrail ADSP in case
+> of aborted suspend or when testing only partial suspend. Reason for
+> this is that in those cases ADSP doesn't reach reset even though resume
+> path is expecting so and fails to restart stream.
+
+Applied all, thanks.  It'd have been helpful if the commit messages for
+the second and theard patches had made it clearer that these were bug
+fixes.
+
+--Ic9dmA6AaBNtx8DN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT6LncAAoJELSic+t+oim9ryIP/07GoK6Ix+2+kd0zU9iQn0kb
+i2I3URmiPh03HD2uT4AIX0exaR1JqC022JLW8UX+5TF5xcREe1Ywh4q8FoU0kLRa
+G1rnAdCTYJvq5hq8pR91ZqRmE8Po6tQfTvABSFYlbLRJ+xAkzGLrZv2QYcZZEFyx
+BpmJMI7yJw7rwKjwZfqQUIcNdbEectqahiWm8RQwCtmQ+FYz6eE+eWy0//FY6diI
+D/ddbhmT12/asyc8nrpGMm3UWfb5hg+PJCCrKYCkpS7APt173PRzDZYXADsQmwXK
+TvdBeemi+RMpXOTPSvV4/MFsHiWi4wtBPR1Wiqhx7mybnEQ/H8DPHoy6uXP7/X/3
+bG/OvxGUWLqvz8TASybHXK5t8oUA85Zu4k4rQN9EoGphH3AC9H0gf14YnUkcuPDh
++ApXrBXbNsf/7i1z1+jw9N2Ct1VVdo+X5qxcIKA+D0azq9AGX8l/GHpyNELElyqZ
+v8gAy89zGvJbDbEhcpFvg0RR7KTEo5A/hyKvRk812g8y+92pIs8mF5Z5LgUYK8Ls
+L++Z3TVkgC2Rc3SBek0+OTW0AZjWbY+asobnQctkkCOUhH8DKC6mtbHCA6eR3MeN
+2r+6b4lo1L6LhYIonGX4T8A9ErEoxtai3sX5VKG01nEmdMQ5ULUVbyWeHwRvPO/T
+EDhJ2UidPceMYN5XGt84
+=li77
+-----END PGP SIGNATURE-----
+
+--Ic9dmA6AaBNtx8DN--
+
+--===============6517321694546007000==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-
--- 
-Jon Smirl
-jonsmirl@gmail.com
+--===============6517321694546007000==--
