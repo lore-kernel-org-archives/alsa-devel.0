@@ -1,20 +1,21 @@
-From: Swen Wenzel <swen.wenzel@t-online.de>
-Subject: Re: Disabled jacks on motherboard 'Gigabyte G1 Sniper
-	Z87' (CA0132-based)
-Date: Mon, 11 Aug 2014 07:48:48 +0200
-Message-ID: <53E85940.1020208@t-online.de>
-References: <53E63664.5000005@t-online.de>
+From: Nicolin Chen <Guangyu.Chen@freescale.com>
+Subject: Re: SGTL500 and its external MCLK
+Date: Mon, 11 Aug 2014 13:50:17 +0800
+Message-ID: <20140811055015.GA12969@MrMyself>
+References: <CAKON4OxRr-igCSZ2HwXcKGFT7O6sQjJUMP_aF19kSRP59ZxFew@mail.gmail.com>
+ <20140808052901.GA6028@MrMyself>
+ <CAKON4OwgT8=moQUPugpR8CfPNkJomDGpHob0CRnzRSd4eC7kQg@mail.gmail.com>
+ <CAKON4OzHeB-bJKj_hB=L84jMROz-7vRgp7uqb45KLg4VHva2Zw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout05.t-online.de (mailout05.t-online.de [194.25.134.82])
- by alsa0.perex.cz (Postfix) with ESMTP id EDD1F26506E
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 07:48:56 +0200 (CEST)
-Received: from fwd39.aul.t-online.de (fwd39.aul.t-online.de [172.20.27.138])
- by mailout05.t-online.de (Postfix) with SMTP id 96E0E3792C3
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 07:48:56 +0200 (CEST)
-In-Reply-To: <53E63664.5000005@t-online.de>
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2lp0244.outbound.protection.outlook.com [207.46.163.244])
+ by alsa0.perex.cz (Postfix) with ESMTP id 390FA26506E
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 08:01:14 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAKON4OzHeB-bJKj_hB=L84jMROz-7vRgp7uqb45KLg4VHva2Zw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, zengzm.kernel@gmail.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Today I got different codec information. Now the headphone jack on the 
-front was the only one working.
-Here is the updated alsa information:
-http://www.alsa-project.org/db/?f=c1fe9533df93a4b119cfcbe5a8f5b66dbfd50768
-I have no idea what changed my system... the only thing I did was 
-installing Skype, but it is not running atm.
+On Sat, Aug 09, 2014 at 12:42:43PM -0400, jonsmirl@gmail.com wrote:
+> On Fri, Aug 8, 2014 at 1:07 PM, jonsmirl@gmail.com <jonsmirl@gmail.com> wrote:
+> > On Fri, Aug 8, 2014 at 1:29 AM, Nicolin Chen <Guangyu.Chen@freescale.com> wrote:
+> >> On Thu, Aug 07, 2014 at 03:37:47PM -0400, jonsmirl@gmail.com wrote:
+> >>> Since the sgtl5000 driver has the handle to the clock, can't it just
+> >>> ask the clock for its rate? If it directly asked the clock for its
+> >>> rate it looks like this codec could be bound with simple-audio-card
+> >>> and not need a machine driver.
+> >>
+> >> I think Simple Card should already have the capability to support
+> >> this without changing sgtl5000's code. It has two properties that
+> >> can make it call set_sysclk() for you during the init(). They are
+> >> 'clocks' and 'system-clock-frequency'. Please refer to its binding
+> >> doc for details.
+> 
+> Simple has a hard coded clock ID of zero. Which just happens to match
+> codecs/sgtl5000.h:#define SGTL5000_SYSCLK 0x00
+> 
+> Lucky coincidence?
 
-On 09.08.2014 16:55, Swen Wenzel wrote:
-> Hello guys,
->
-> I own the motherboard mentioned in the subject and experienced 
-> problems when I tried to get it to work.
-> After some conversation <http://pastebin.com/HnmxuU1Q> in IRC we found 
-> out, that probably the jack I used was deactivated. I had to use the 
-> lineout jack instead of the headphone/speaker jack.
-> However the headphone/speaker jack could be enabled to give the same 
-> output as the lineout jack with 'hda-verb'.
-> Here is my alsa information:
-> http://www.alsa-project.org/db/?f=8f57f0b72d65046469b8b6ce8a57ff6fe0371769
->
-> Maybe you can have a look at it. You can also always contact me if you 
-> have further questions or want me to try something out.
-> I am also a programmer, and studied something related to computer 
-> science so you don't have to fear completely useless answers or too 
-> dumb questions. :D
->
-> kind regards
-> Swen
+It's also pretty fair to think that Simple Card only supports CODEC
+using the main sysclk -- id is 0x00. And I believe this also works
+out for other CODECs whose sysclk configurations aren't complicated
+since the name is Simple Card :)
+
+> >> And the topic why not let sgtl5000 fully control the clock has been
+> >> discussed in this thread:
+> >> http://comments.gmane.org/gmane.linux.alsa.devel/109093
+> >>
+> >> So I think the change can be done as well?
+> >
+> > I tried hacking on it some. One problem is with clocks that aren't
+> > 100% accurate. For example my clock is off a little - 22.571428. So
+> > when the code divides that by 44100 it gets 511.8 which truncates to
+> > 511 and the test for equal to 512 fails.
+
+This is a clock dividing accuracy issue. We can try DIV_ROUND_UP()
+instead of the truncating division.
+
+Best regards,
+Nicolin
