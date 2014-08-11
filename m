@@ -1,72 +1,70 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: SGTL500 and its external MCLK
-Date: Mon, 11 Aug 2014 13:50:17 +0800
-Message-ID: <20140811055015.GA12969@MrMyself>
-References: <CAKON4OxRr-igCSZ2HwXcKGFT7O6sQjJUMP_aF19kSRP59ZxFew@mail.gmail.com>
- <20140808052901.GA6028@MrMyself>
- <CAKON4OwgT8=moQUPugpR8CfPNkJomDGpHob0CRnzRSd4eC7kQg@mail.gmail.com>
- <CAKON4OzHeB-bJKj_hB=L84jMROz-7vRgp7uqb45KLg4VHva2Zw@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [alsa-devel] [PATCH v3] ASOC: dapm: add code to configure dai
+ link parameters
+Date: Mon, 11 Aug 2014 11:54:29 +0530
+Message-ID: <20140811062429.GC13288@intel.com>
+References: <1407341786-14990-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+ <20140807141604.GJ8181@intel.com>
+ <20140807171324.GM17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0244.outbound.protection.outlook.com [207.46.163.244])
- by alsa0.perex.cz (Postfix) with ESMTP id 390FA26506E
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 08:01:14 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CdrF4e02JqNVZeln"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAKON4OzHeB-bJKj_hB=L84jMROz-7vRgp7uqb45KLg4VHva2Zw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, zengzm.kernel@gmail.com, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20140807171324.GM17528@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 09, 2014 at 12:42:43PM -0400, jonsmirl@gmail.com wrote:
-> On Fri, Aug 8, 2014 at 1:07 PM, jonsmirl@gmail.com <jonsmirl@gmail.com> wrote:
-> > On Fri, Aug 8, 2014 at 1:29 AM, Nicolin Chen <Guangyu.Chen@freescale.com> wrote:
-> >> On Thu, Aug 07, 2014 at 03:37:47PM -0400, jonsmirl@gmail.com wrote:
-> >>> Since the sgtl5000 driver has the handle to the clock, can't it just
-> >>> ask the clock for its rate? If it directly asked the clock for its
-> >>> rate it looks like this codec could be bound with simple-audio-card
-> >>> and not need a machine driver.
-> >>
-> >> I think Simple Card should already have the capability to support
-> >> this without changing sgtl5000's code. It has two properties that
-> >> can make it call set_sysclk() for you during the init(). They are
-> >> 'clocks' and 'system-clock-frequency'. Please refer to its binding
-> >> doc for details.
-> 
-> Simple has a hard coded clock ID of zero. Which just happens to match
-> codecs/sgtl5000.h:#define SGTL5000_SYSCLK 0x00
-> 
-> Lucky coincidence?
 
-It's also pretty fair to think that Simple Card only supports CODEC
-using the main sysclk -- id is 0x00. And I believe this also works
-out for other CODECs whose sysclk configurations aren't complicated
-since the name is Simple Card :)
+--CdrF4e02JqNVZeln
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> >> And the topic why not let sgtl5000 fully control the clock has been
-> >> discussed in this thread:
-> >> http://comments.gmane.org/gmane.linux.alsa.devel/109093
-> >>
-> >> So I think the change can be done as well?
-> >
-> > I tried hacking on it some. One problem is with clocks that aren't
-> > 100% accurate. For example my clock is off a little - 22.571428. So
-> > when the code divides that by 44100 it gets 511.8 which truncates to
-> > 511 and the test for equal to 512 fails.
+On Thu, Aug 07, 2014 at 06:13:24PM +0100, Mark Brown wrote:
+> On Thu, Aug 07, 2014 at 07:46:05PM +0530, Vinod Koul wrote:
+>=20
+> > I was thinking about this as well a while back, wont it make sense to l=
+et
+> > machine driver expose meaningful controls for this. Just like we have f=
+ixup
+> > for back-ends, we can add fixups for codec-codec links and let machine =
+tell
+> > you the parameters to configure.
+>=20
+> This is supposed to be pretty much the same thing (not looked at the
+> patch yet) - the machine driver passes in a list of possible settings
+> and then a control gets generated allowing the user to pick one.
+Yes but this is bit different from the current way of using fixups for BEs.
+So it would be bit incosistent. For pcms it would be only fixups and for
+loops it would be machine controls
 
-This is a clock dividing accuracy issue. We can try DIV_ROUND_UP()
-instead of the truncating division.
+--=20
+~Vinod
 
-Best regards,
-Nicolin
+--CdrF4e02JqNVZeln
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQIcBAEBAgAGBQJT6GGdAAoJEHwUBw8lI4NHO10P/jLg7pbaz5115CPquENsYLcL
+CIBTMl+9iwMijhWUDMouyzXwfo93G4apWZy8mEO9EE9E3s+lNhs2cyoQq+e/ots/
+/dxRRyPG+m9n8JRYQRf0IjE1JTXZLYcksEzXyhZxv30bPvI7N1v4KQAz1vynCX2g
+QNhVkyT7ot9oXIPRNL2fn8Hfbr93oTHGdnICf3XJLeJlBC8BpWRbcOnqtOHDVvLs
+yr25JYzqTCGSScNgWsMddQ0yiBpl6NRsRd5zhBMQKXRJX5l6gubYVWJgjr5QriSt
+d0V61rP5YKos+1maPmbJKUxK19TO5OsTSz1Gaa6C26JV8PSl8AVrwL00BGsWUvMO
+XE6rSCER4pgzf/oC3D4vF+OqLS+VQvWKuKjLG/uCArUU2CWn2OXDpeXpu8pqsciN
+cPwq8vE6pzWzFKDJONRLqh6PNhoKFlruyphio4bdvHYLDJDCo4l6GmUFFRp0AOVC
+muvarb5suc3PdAqgOuUcAMjtifY+aMIu8HFAaXYxAKDQzcIhQuUPaziDjgvUH2hu
+GTPXUbmc5lcQV85bMXmktBC6MUG9//mIwm0ywtTYGeIsHZoYg1zqZN3IezNuKylr
+apWGfHN6W9vYM0bEWMGMyd89TOwLNDzF3uzL/d7vMswNSx9ow1m81L/1kVExBd+v
+D/jLrbcIFGe3eVlZZRRW
+=HjRZ
+-----END PGP SIGNATURE-----
+
+--CdrF4e02JqNVZeln--
