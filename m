@@ -1,26 +1,20 @@
-From: Nicolin Chen <Guangyu.Chen@freescale.com>
-Subject: Re: Choosing the sysclk in simple-card looks broken to
- me.
-Date: Mon, 11 Aug 2014 19:49:29 +0800
-Message-ID: <20140811114928.GA13617@MrMyself>
-References: <CAKON4Oxusv_VuHNgbum1wBBz_N_V-a11N_rPu8m-rLFYAcQ_sQ@mail.gmail.com>
- <20140810105405.GW17528@sirena.org.uk>
- <CAKON4OzhSFJ4-cGkbr10LNorb+ihi6gqm1V4-YhTMHq8kmcWGg@mail.gmail.com>
- <CAKON4OxvoLBiq64t6Oh1i3CgA=Zy5DU7xYEe2kkpVdWkXMmqsg@mail.gmail.com>
- <CAKON4Ozth8VHa3OK+HNU7Lp29MqCbvVD7mh3v6KM7ejF0CGDpA@mail.gmail.com>
- <CAKON4Oz0VbZ=j-0YqkN=9C+yXbWycc8TvsdTCNH0UzuvrcXs_w@mail.gmail.com>
- <20140811072751.GB12969@MrMyself>
- <CAKON4OxubPg8+75Fhp8MBjgJGRN0C5dACpHX2OxeOQzbc1XmYw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASOC: dapm: add code to configure dai
+ link parameters
+Date: Mon, 11 Aug 2014 13:19:12 +0100
+Message-ID: <20140811121912.GY17528@sirena.org.uk>
+References: <1407341786-14990-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+ <20140807141604.GJ8181@intel.com>
+ <20140807171324.GM17528@sirena.org.uk>
+ <20140811062429.GC13288@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5571998731941250535=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1blp0185.outbound.protection.outlook.com [207.46.163.185])
- by alsa0.perex.cz (Postfix) with ESMTP id BCBC02651A2
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 14:06:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAKON4OxubPg8+75Fhp8MBjgJGRN0C5dACpHX2OxeOQzbc1XmYw@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6EAB265196
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 14:19:25 +0200 (CEST)
+In-Reply-To: <20140811062429.GC13288@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,37 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, zengzm.kernel@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 11, 2014 at 07:56:12AM -0400, jonsmirl@gmail.com wrote:
-> > It looks like the problem is that Simple Card also configures cpu-dai
-> > via set_sysclk() with direction SND_SOC_CLOCK_IN while it fetches the
-> > sysclk rate not from MCLK source but from 'sound-dai' -- cpu-dai node
-> > itself, when the binding for sound-dai doesn't have clock or frequency
-> > assignment, although this fetching works out for codec-dai side.
-> >
-> > In your case, Simple Card sets both sides of dai with different sysclk
-> > rates, and meanwhile the sysclk rate for cpu-dai is incorrect.
-> >
-> > Is it true?
-> 
-> Yes, that is what is going on.  Trying to use sgtl5000 with
-> simple-audio exposed that issue. Without removing that 'else' clause
-> there is no way to tell simple-audio just to leave the cpu-dai alone.
 
-This issue remained in Simple Card shall be fixed. But I don't think
-it's a good idea to _just_ remove that 'else' since its does work for
-codec-dai. Instead, I think you might need to check the set_sysclk()
-of cpu-dai driver as I mentioned in the last mail:
+--===============5571998731941250535==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7GWBejRy/Pz6SUcf"
+Content-Disposition: inline
 
- The sysclk direction is only valid when indicating MCLK as sysclk
- (FSYNC or BCLK shall follow CBS_CFS/CBM_CFM setting).So basically
- if cpu-dai driver gets sysclk configuration with SND_SOC_CLOCK_IN,
- shouldn't it just set the internal direction for MCLK's PAD and
- return the call directly? (I'm guessing there also might be some
- tiny work for your cpu-dai driver to enhance the validation part.)
 
-Best regards,
-Nicolin
+--7GWBejRy/Pz6SUcf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Aug 11, 2014 at 11:54:29AM +0530, Vinod Koul wrote:
+> On Thu, Aug 07, 2014 at 06:13:24PM +0100, Mark Brown wrote:
+> > On Thu, Aug 07, 2014 at 07:46:05PM +0530, Vinod Koul wrote:
+
+> > > I was thinking about this as well a while back, wont it make sense to let
+> > > machine driver expose meaningful controls for this. Just like we have fixup
+> > > for back-ends, we can add fixups for codec-codec links and let machine tell
+> > > you the parameters to configure.
+
+> > This is supposed to be pretty much the same thing (not looked at the
+> > patch yet) - the machine driver passes in a list of possible settings
+> > and then a control gets generated allowing the user to pick one.
+
+> Yes but this is bit different from the current way of using fixups for BEs.
+> So it would be bit incosistent. For pcms it would be only fixups and for
+> loops it would be machine controls
+
+That doesn't mean it's the best way to go in the end though - long term
+I expect to see us move away from that to something more data driven and
+DAPM integrated.  Requiring drivers to open code things rather than
+factoring out the code doesn't seem like the right way forwards.
+
+--7GWBejRy/Pz6SUcf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT6LS9AAoJELSic+t+oim9ePEP+gN40rIzGUUFzVUWvY9BySgJ
+FJkXpoLJR7GWmVdWlcWYOy3ehOTTMzJvv5UwGCpzfKFQEwqvw2817kyaeq0Z+7Sx
+K9LnCXpZLgeq+hjULi5qLNzKvj+ur5iUtIkuG7y2ZXszOraSL4acA5DVBkXxMdOA
+noY58Y6nwVDGgwOi0X+sF9Z7PiUK7pTpBNT/sYulm/LbOxEVq13Wf2WzLUmxMyB6
+r/3+IS8ReP77BiNiuWJu0YDpeQt7xOqt2FQQleTUM9mlAexvP2GWjCWN1bTpTu0u
+VCTt9HodU299Bug3YEdR81gRUZTFXgdHkPZLGe6/a5TlkFEc+HakEu7HKOyUVKpu
+imnl3I9pMS4RDSw7ZU1AGFhWfGHrEgvCWYiXx3J5y9iv3Z7Ix4mp5uP3pJOyQPfJ
+IUuvarMYajlCt1qWaRWxbDmGd60ovwBRKjmaDpmWa48DhfoEoXD7y3ayVEVnn3Ir
+gK+6eZKG5IbqQaJ/0gPK4XEnETMF3jXTjGfOApJKpAfhNMry8fC2LWIaNvZgWNhG
+fI61kzFvFNFuaAigUK2qKEDOFy34oCXLGMuSiClJNbet7cvgorFoj92vto+DZ+rZ
+JMIfa0FKk6IT9pLhMgpN6+QZW39dSeifYXok1PA1TNvhW3lFyAUtTtuzFfodE0++
+/cs7lNWrcuha8qSEmSwD
+=3Rhm
+-----END PGP SIGNATURE-----
+
+--7GWBejRy/Pz6SUcf--
+
+--===============5571998731941250535==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5571998731941250535==--
