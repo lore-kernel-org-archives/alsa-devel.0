@@ -1,21 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt286: Add API to set supported jack
- type
-Date: Mon, 11 Aug 2014 13:24:15 +0100
-Message-ID: <20140811122415.GZ17528@sirena.org.uk>
-References: <1407217970-20126-1-git-send-email-bardliao@realtek.com>
- <20140806205421.GZ17528@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D7608E00@RTITMBSV03.realtek.com.tw>
- <20140807173136.GN17528@sirena.org.uk>
- <1407751185.2487.150.camel@loki>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: Re: Choosing the sysclk in simple-card looks broken to
+	me.
+Date: Mon, 11 Aug 2014 08:24:54 -0400
+Message-ID: <CAKON4OyK08dPEHCpUTWdv_Z8Q0Fyh_4-Uf5orNR9PeBdq=Jiig@mail.gmail.com>
+References: <CAKON4Oxusv_VuHNgbum1wBBz_N_V-a11N_rPu8m-rLFYAcQ_sQ@mail.gmail.com>
+ <20140810105405.GW17528@sirena.org.uk>
+ <CAKON4OzhSFJ4-cGkbr10LNorb+ihi6gqm1V4-YhTMHq8kmcWGg@mail.gmail.com>
+ <CAKON4OxvoLBiq64t6Oh1i3CgA=Zy5DU7xYEe2kkpVdWkXMmqsg@mail.gmail.com>
+ <CAKON4Ozth8VHa3OK+HNU7Lp29MqCbvVD7mh3v6KM7ejF0CGDpA@mail.gmail.com>
+ <CAKON4Oz0VbZ=j-0YqkN=9C+yXbWycc8TvsdTCNH0UzuvrcXs_w@mail.gmail.com>
+ <20140811072751.GB12969@MrMyself>
+ <CAKON4OxubPg8+75Fhp8MBjgJGRN0C5dACpHX2OxeOQzbc1XmYw@mail.gmail.com>
+ <20140811114928.GA13617@MrMyself>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2683628162576172842=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CD5F7265196
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 14:24:31 +0200 (CEST)
-In-Reply-To: <1407751185.2487.150.camel@loki>
+Received: from mail-la0-f49.google.com (mail-la0-f49.google.com
+ [209.85.215.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F8DA265457
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 14:24:54 +0200 (CEST)
+Received: by mail-la0-f49.google.com with SMTP id hz20so6479025lab.8
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 05:24:54 -0700 (PDT)
+In-Reply-To: <20140811114928.GA13617@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,72 +32,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, Graeme.Gregory@linaro.org, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>, Bard Liao <bardliao@realtek.com>, linux-arm-kernel@lists.infradead.org
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, zengzm.kernel@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Aug 11, 2014 at 7:49 AM, Nicolin Chen
+<Guangyu.Chen@freescale.com> wrote:
+> On Mon, Aug 11, 2014 at 07:56:12AM -0400, jonsmirl@gmail.com wrote:
+>> > It looks like the problem is that Simple Card also configures cpu-dai
+>> > via set_sysclk() with direction SND_SOC_CLOCK_IN while it fetches the
+>> > sysclk rate not from MCLK source but from 'sound-dai' -- cpu-dai node
+>> > itself, when the binding for sound-dai doesn't have clock or frequency
+>> > assignment, although this fetching works out for codec-dai side.
+>> >
+>> > In your case, Simple Card sets both sides of dai with different sysclk
+>> > rates, and meanwhile the sysclk rate for cpu-dai is incorrect.
+>> >
+>> > Is it true?
+>>
+>> Yes, that is what is going on.  Trying to use sgtl5000 with
+>> simple-audio exposed that issue. Without removing that 'else' clause
+>> there is no way to tell simple-audio just to leave the cpu-dai alone.
+>
+> This issue remained in Simple Card shall be fixed. But I don't think
+> it's a good idea to _just_ remove that 'else' since its does work for
+> codec-dai. Instead, I think you might need to check the set_sysclk()
+> of cpu-dai driver as I mentioned in the last mail:
 
---===============2683628162576172842==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9HywjR4dOKKj5Bzg"
-Content-Disposition: inline
+The code in that else case is just getting lucky. It is picking up the
+rate from the first input clock defined in the DTS for the device.
 
+For my cpu-dai the first input clock is the apb bus clock which is
+running at 80Mhz. In this case the default did the totally wrong
+thing. On my CPU you really can set the sysclk to 80Mhz and that way
+exceeds the input spec for sgtl5000. I just happen to notice because I
+had some debug code telling what clock rates were being set.
 
---9HywjR4dOKKj5Bzg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For the sgtl5000 the first input clock happens to be the link back to the codec.
 
-On Mon, Aug 11, 2014 at 10:59:45AM +0100, Liam Girdwood wrote:
-> On Thu, 2014-08-07 at 18:31 +0100, Mark Brown wrote:
-
-> > I've CCed in Graeme Gregory who's been writing some guidelines for this
-> > sort of thing in the context of ARMv8 serviers - the most recent patch
-> > is:
-
-> >    http://thread.gmane.org/gmane.linux.acpi.devel/69757
-
-> > The advice there looks good to me - see the "Device Enumeration"
-> > section.
-
-> This is indeed good, just too late for the initial Broadwell BIOSes that
-> wont have this _DSD field for the codec (it will be hard coded for
-> Windows anyway).
-
-Sounds like DMI is going to be needed then - whatever ends up being done
-I'd expect it should just be a case of putting the checks done to work
-out the machine configuration into the CODEC driver instead of the
-machine driver.  If it looks ugly this can be used to explain to people
-why we need something more sensible!
-
---9HywjR4dOKKj5Bzg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT6LXsAAoJELSic+t+oim9iiMP/0cUX73IYytEfRC/gHmG06gR
-YKoSstJEgrlpcqW82HCnEUDnvl7z1r2dc1b72F2aC3WuU2VViBMG9suGduWJzkRs
-X2q0GXpOI0J7NmgqLyQvGP/pEqur3eIhMmK3fMFhescTwiwd2W3pGYt+Uf/y/e/+
-vRNXGqgLBOJs1l5f39/dh9VZIGEkf491EfLNpiSG8p01iy2GeNKjwuxrD9roJVln
-icY4DlrZG6aX9HmIZz5A/m1rOMUV6ZyNvTeXEvr4cQtUSF15B5B5XsI+/uxv7wYZ
-RN2ONgzmQgUwZhN2/CcRpCzn/QPOYC8kj610ct6itGggCsskXwPNaF9dGkivWeIL
-iuFRGGY8qaqjfKxu2Xihrgw3sQuXG4YpBWL7jt1SSnd2PWKkiUhoSjiJBzE726tS
-31vQzgyvrW2atzoBr/S9fDuNOVM5Ft4Mgbv5roXgMiiyJntp7Rt+WBeTxCGwGJLc
-aH5s6wRY4CCTpCffpvPLP24xM+C+jITv7Sd+KNa+Hz2slizGDnw/L8CCD1F+O72E
-R4ptuMeWLuN/ezM+NAG7Oarw1KKHjpmfB/VzYTvmleOykJ9Py20GhUb24iiFw7u3
-DpcJQUMTUBAxzTdMOv0TgKL04ApAeWqgc6iairQ85Sm0iMllj+r/M+eMLbmt4Mgg
-g06a8TUWBHsgN7h4QDau
-=K7q2
------END PGP SIGNATURE-----
-
---9HywjR4dOKKj5Bzg--
-
---===============2683628162576172842==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+So maybe the fix is to only run that else case for for the codec-dai?
 
 
---===============2683628162576172842==--
+>
+>  The sysclk direction is only valid when indicating MCLK as sysclk
+>  (FSYNC or BCLK shall follow CBS_CFS/CBM_CFM setting).So basically
+>  if cpu-dai driver gets sysclk configuration with SND_SOC_CLOCK_IN,
+>  shouldn't it just set the internal direction for MCLK's PAD and
+>  return the call directly? (I'm guessing there also might be some
+>  tiny work for your cpu-dai driver to enhance the validation part.)
+>
+> Best regards,
+> Nicolin
+
+
+
+-- 
+Jon Smirl
+jonsmirl@gmail.com
