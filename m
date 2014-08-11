@@ -1,67 +1,52 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH] ASoC: rt286: Add API to set supported jack
- type
-Date: Mon, 11 Aug 2014 10:59:45 +0100
-Message-ID: <1407751185.2487.150.camel@loki>
-References: <1407217970-20126-1-git-send-email-bardliao@realtek.com>
- <20140806205421.GZ17528@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D7608E00@RTITMBSV03.realtek.com.tw>
- <20140807173136.GN17528@sirena.org.uk>
+From: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/2] mfd: arizona: Update DT binding to
+ support INn_MODE
+Date: Mon, 11 Aug 2014 11:06:06 +0100
+Message-ID: <20140811100606.GB17745@leverpostej>
+References: <20140809173545.2fc1f72e@songinha-Samsung-DeskTop-System>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id CA309265114
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 12:00:04 +0200 (CEST)
-In-Reply-To: <20140807173136.GN17528@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, Graeme.Gregory@linaro.org, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>, Bard Liao <bardliao@realtek.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20140809173545.2fc1f72e@songinha-Samsung-DeskTop-System>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Cc: "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org" <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org" <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org" <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <Pawel.Moll-5wv7dgnIgG8@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org" <cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2014-08-07 at 18:31 +0100, Mark Brown wrote:
-> On Thu, Aug 07, 2014 at 01:43:24AM +0000, Bard Liao wrote:
+On Sat, Aug 09, 2014 at 09:35:45AM +0100, Inha Song wrote:
+> This patch update DT binding to support INn_MODE init_data
 > 
-> > > If this is coming from the hardware design I'd expect this to be configured
-> > > via platform data or firmware data rather than with an API.
-> > > Why do it this way?
+> Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+> ---
+>  Documentation/devicetree/bindings/mfd/arizona.txt | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> > Actually, this patch is for Intel platform which doesn't support platform data
-> > yet. That's why we create an API so they can call the API in machine driver.
-> 
-> So, this is something that the people wanting to use ACPI in platforms
-> with devices like this are going to have to deal with - we need a way of
-> getting configuration to devices.  Traditionally small tweaks have been
-> done based on DMI information but that's not at all scalable.  I believe
-> newer ACPI specs are trying to accomodate this due to the expanding
-> range of systems supporting ACPI.  Punting to the machine driver just
-> moves the problem around, it doesn't really address it.
-> 
+> diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
+> index 5c7e723..c21a30e 100644
+> --- a/Documentation/devicetree/bindings/mfd/arizona.txt
+> +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+> @@ -42,6 +42,11 @@ Optional properties:
+>      the chip default will be used.  If present exactly five values must
+>      be specified.
+>  
+> +  - wlf,inmode : A list of INn_MODE register values. If absent, INn_MODE register
+> +    set to 0 by default. The size of this list depends on ARIZONA_MAX_INPUT values.
+> +    ARIZONA_MAX_INPUT is defined in include/linux/mfd/arizona/pdata.h. If present,
+> +    exactly ARIZONA_MAX_INPUT values must be specified.
 
-Unfortunately this will be needed for some Broadwell based BIOSes since
-the timing of the ACPI spec/implementation has meant that some Broadwell
-BIOSes will contain the data whilst most others wont atm :( 
+Please don't refer to Linux internals here. How many INn_MODE registers
+can this hardware have?
 
-> I've CCed in Graeme Gregory who's been writing some guidelines for this
-> sort of thing in the context of ARMv8 serviers - the most recent patch
-> is:
-> 
->    http://thread.gmane.org/gmane.linux.acpi.devel/69757
-> 
-> The advice there looks good to me - see the "Device Enumeration"
-> section.
+Why does this need to be overriden? Please mention this in the commit
+message and documentation.
 
-This is indeed good, just too late for the initial Broadwell BIOSes that
-wont have this _DSD field for the codec (it will be hard coded for
-Windows anyway).
+Why is exposing a raw register value the best way of doing this?
 
-Liam
+Thanks,
+Mark.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
