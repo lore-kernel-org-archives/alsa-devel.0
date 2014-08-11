@@ -1,17 +1,26 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 3/3] ASoC: Intel: Restore Baytrail ADSP streams
-	only when ADSP was in reset
-Date: Mon, 11 Aug 2014 14:15:38 +0300
-Message-ID: <1407755738-31693-4-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1407755738-31693-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Subject: Re: Choosing the sysclk in simple-card looks broken to
+	me.
+Date: Mon, 11 Aug 2014 07:56:12 -0400
+Message-ID: <CAKON4OxubPg8+75Fhp8MBjgJGRN0C5dACpHX2OxeOQzbc1XmYw@mail.gmail.com>
+References: <CAKON4Oxusv_VuHNgbum1wBBz_N_V-a11N_rPu8m-rLFYAcQ_sQ@mail.gmail.com>
+ <20140810105405.GW17528@sirena.org.uk>
+ <CAKON4OzhSFJ4-cGkbr10LNorb+ihi6gqm1V4-YhTMHq8kmcWGg@mail.gmail.com>
+ <CAKON4OxvoLBiq64t6Oh1i3CgA=Zy5DU7xYEe2kkpVdWkXMmqsg@mail.gmail.com>
+ <CAKON4Ozth8VHa3OK+HNU7Lp29MqCbvVD7mh3v6KM7ejF0CGDpA@mail.gmail.com>
+ <CAKON4Oz0VbZ=j-0YqkN=9C+yXbWycc8TvsdTCNH0UzuvrcXs_w@mail.gmail.com>
+ <20140811072751.GB12969@MrMyself>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 8584E264ED5
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 13:15:49 +0200 (CEST)
-In-Reply-To: <1407755738-31693-1-git-send-email-jarkko.nikula@linux.intel.com>
+Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
+ [209.85.217.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 216EF26518A
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 13:56:13 +0200 (CEST)
+Received: by mail-lb0-f176.google.com with SMTP id u10so5669210lbd.7
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 04:56:12 -0700 (PDT)
+In-Reply-To: <20140811072751.GB12969@MrMyself>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,84 +30,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, yang fang <yang.a.fang@intel.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Nicolin Chen <Guangyu.Chen@freescale.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, zengzm.kernel@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-There is no need to restore and restart PCM streams in case ADSP didn't
-reach reset and power off state during system suspend/resume cycle. In that
-case stream is still active but paused and firmware doesn't allow allocating
-a new stream before paused stream is freed.
+On Mon, Aug 11, 2014 at 3:28 AM, Nicolin Chen
+<Guangyu.Chen@freescale.com> wrote:
+> On Sun, Aug 10, 2014 at 10:10:51PM -0400, jonsmirl@gmail.com wrote:
+>> As I debug further I am getting a better understanding of the problem.
+>> This is my simple-audio binding.
+>>
+>> sound {
+>> compatible = "simple-audio-card";
+>> simple-audio-card,format = "i2s";
+>>
+>> simple-audio-card,cpu {
+>> sound-dai = <&iis0>;
+>> };
+>>
+>> simple-audio-card,codec {
+>> clocks = <&iis0>;
+>> sound-dai = <&sgtl5000>;
+>> };
+>> };
+>>
+>> I'm having trouble with the simple-audio-card,cpu node, not the
+>> simple-audio-card,codec node.  As simple-audio is currently
+>> implemented when simple-audio-card,cpu is processed it will pick up my
+>> 80Mhz apb clock and set it as sysclk.
+>
+> It looks like the problem is that Simple Card also configures cpu-dai
+> via set_sysclk() with direction SND_SOC_CLOCK_IN while it fetches the
+> sysclk rate not from MCLK source but from 'sound-dai' -- cpu-dai node
+> itself, when the binding for sound-dai doesn't have clock or frequency
+> assignment, although this fetching works out for codec-dai side.
+>
+> In your case, Simple Card sets both sides of dai with different sysclk
+> rates, and meanwhile the sysclk rate for cpu-dai is incorrect.
+>
+> Is it true?
 
-ADSP remains active in case suspend sequence didn't go to suspend_late
-stage. This can happen when either suspend sequence is aborted by a wakeup
-or by letting only devices suspend by "echo devices >/sys/power/pm_test".
+Yes, that is what is going on.  Trying to use sgtl5000 with
+simple-audio exposed that issue. Without removing that 'else' clause
+there is no way to tell simple-audio just to leave the cpu-dai alone.
 
-Currently stream restoring fails in these suspend cases. Fix this by adding
-a flag that indicates is complete stream reinitialization needed or is it
-enough to resume paused stream. Flag is set when we know that ADSP reached
-suspend_late.
+>
+>> After spending all day trying to fix that else clause, I'm coming to
+>> the conclusion that the else clause simply shouldn't be there at all.
+>> I just hit this because I had code checking for bogus values in
+>> setsysclk.
+>
+> Well, even if there's a problem at this point for Simple Card, I'm
+> still curious for the reason why setting cpu-dai with an incorrect
+> rate but direction SND_SOC_CLOCK_IN would result some breaks here.
+>
+> The sysclk direction is only valid when indicating MCLK as sysclk
+> (FSYNC or BCLK shall follow CBS_CFS/CBM_CFM setting).So basically
+> if cpu-dai driver gets sysclk configuration with SND_SOC_CLOCK_IN,
+> shouldn't it just set the internal direction for MCLK's PAD and
+> return the call directly? (I'm guessing there also might be some
+> tiny work for your cpu-dai driver to enhance the validation part.)
+>
+> Best regards,
+> Nicolin
 
-Initial fix to this issue came from Fang Yang. I modified it a little and
-forward ported it to top of two other suspend/resume patches from me.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Tested-by: Borun Fu <borun.fu@intel.com>
-Cc: yang fang <yang.a.fang@intel.com>
----
- sound/soc/intel/sst-baytrail-pcm.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/sst-baytrail-pcm.c b/sound/soc/intel/sst-baytrail-pcm.c
-index eb7b31e13565..eab1c7d85187 100644
---- a/sound/soc/intel/sst-baytrail-pcm.c
-+++ b/sound/soc/intel/sst-baytrail-pcm.c
-@@ -59,6 +59,9 @@ struct sst_byt_priv_data {
- 
- 	/* DAI data */
- 	struct sst_byt_pcm_data pcm[BYT_PCM_COUNT];
-+
-+	/* flag indicating is stream context restore needed after suspend */
-+	bool restore_stream;
- };
- 
- /* this may get called several times by oss emulation */
-@@ -184,7 +187,10 @@ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 		sst_byt_stream_start(byt, pcm_data->stream, 0);
- 		break;
- 	case SNDRV_PCM_TRIGGER_RESUME:
--		schedule_work(&pcm_data->work);
-+		if (pdata->restore_stream == true)
-+			schedule_work(&pcm_data->work);
-+		else
-+			sst_byt_stream_resume(byt, pcm_data->stream);
- 		break;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		sst_byt_stream_resume(byt, pcm_data->stream);
-@@ -193,6 +199,7 @@ static int sst_byt_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 		sst_byt_stream_stop(byt, pcm_data->stream);
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		pdata->restore_stream = false;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		sst_byt_stream_pause(byt, pcm_data->stream);
- 		break;
-@@ -407,6 +414,7 @@ static const struct snd_soc_component_driver byt_dai_component = {
- static int sst_byt_pcm_dev_suspend_late(struct device *dev)
- {
- 	struct sst_pdata *sst_pdata = dev_get_platdata(dev);
-+	struct sst_byt_priv_data *priv_data = dev_get_drvdata(dev);
- 	int ret;
- 
- 	dev_dbg(dev, "suspending late\n");
-@@ -417,6 +425,8 @@ static int sst_byt_pcm_dev_suspend_late(struct device *dev)
- 		return ret;
- 	}
- 
-+	priv_data->restore_stream = true;
-+
- 	return ret;
- }
- 
 -- 
-2.0.1
+Jon Smirl
+jonsmirl@gmail.com
