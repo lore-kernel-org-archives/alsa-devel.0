@@ -1,7 +1,7 @@
 From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
 Subject: Re: Ordering in soc_pcm_hw_params()
-Date: Mon, 11 Aug 2014 14:00:22 -0400
-Message-ID: <CAKON4OyyPhH9=kRRxkmFJGcvzWTBdZ2_d449FCAzE+6jy5XFKg@mail.gmail.com>
+Date: Mon, 11 Aug 2014 14:08:48 -0400
+Message-ID: <CAKON4OyJWjope2=cU=ko4Dr-pNzRWZb_bFF9Gw5YWYSZcUzoKA@mail.gmail.com>
 References: <CAKON4OzQF8sDigvcDFsJaJRVX9o4X1FiC2FEU8D6n=oaQkX+Uw@mail.gmail.com>
  <20140811153342.GE17528@sirena.org.uk>
  <CAKON4OyxjSL4ziaJGdGXhVXGVoL9M4qq9qdtYYuGz_hnCA3muA@mail.gmail.com>
@@ -10,12 +10,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f48.google.com (mail-la0-f48.google.com
- [209.85.215.48])
- by alsa0.perex.cz (Postfix) with ESMTP id C08D9261647
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 20:00:22 +0200 (CEST)
-Received: by mail-la0-f48.google.com with SMTP id gl10so6902137lab.21
- for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 11:00:22 -0700 (PDT)
+Received: from mail-lb0-f170.google.com (mail-lb0-f170.google.com
+ [209.85.217.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 639D726164D
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 20:08:49 +0200 (CEST)
+Received: by mail-lb0-f170.google.com with SMTP id l4so4307697lbv.15
+ for <alsa-devel@alsa-project.org>; Mon, 11 Aug 2014 11:08:49 -0700 (PDT)
 In-Reply-To: <20140811171133.GG17528@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -68,8 +68,18 @@ On Mon, Aug 11, 2014 at 1:11 PM, Mark Brown <broonie@kernel.org> wrote:
 > have the clock rate reprogrammed when it has something deriving a clock
 > from it (after all if that thing is running it might be disrupted).
 
-We probably need something like EPROBE_DEFER that is used in the
-driver subsystem to allow that various pieces to so this out.
+Also, I do have to do a codec_set_sysclk when I change it to notify
+the sgtl5000 codec that it has been changed.
+
+The TI codecs are nicer in this regard. They have an external crystal
+and can then autolock onto whatever combo of MCLK/SCLK/LRCLK is being
+sent to them.  My board with the TI codec aren't ready yet so I'm
+playing around trying to get this sgtl5000 working. AKAIK Wolfson
+still doesn't have anything comparable to the TAS5716.  We run two 20W
+channels through it and then an external 40W FET for the sub.
+
+
+
 
 -- 
 Jon Smirl
