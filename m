@@ -1,52 +1,35 @@
 From: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm8994: register irq handler for mic1
-	detect
-Date: Tue, 12 Aug 2014 12:43:49 +0100
-Message-ID: <1407843829-4908-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 188AE264F10
- for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 13:43:56 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH] gpiolib: wm8994: Fix irq offset for gpio_to_irq
+Date: Tue, 12 Aug 2014 12:44:20 +0100
+Message-ID: <1407843860-4957-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
+
+Earlier code was using the gpio offset as is to get the irq.
+For wm8994 driver the gpio related irq's starts from a fixed
+offset as fixed by this patch.
 
 Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8994.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/gpio/gpio-wm8994.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 247b390..24bcbe3 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -4099,6 +4099,15 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 				dev_warn(codec->dev,
- 					 "Failed to request Mic1 detect IRQ: %d\n",
- 					 ret);
-+		} else {
-+			ret = wm8994_request_irq(wm8994->wm8994,
-+					WM8994_IRQ_MIC1_DET,
-+					wm8994_mic_irq, "Mic 1 detect",
-+					wm8994);
-+			if (ret != 0)
-+				dev_warn(codec->dev,
-+				"Failed to request Mic1 detect IRQ: %d\n",
-+				ret);
- 		}
+diff --git a/drivers/gpio/gpio-wm8994.c b/drivers/gpio/gpio-wm8994.c
+index d93b6b5..dec47c2 100644
+--- a/drivers/gpio/gpio-wm8994.c
++++ b/drivers/gpio/gpio-wm8994.c
+@@ -113,7 +113,8 @@ static int wm8994_gpio_to_irq(struct gpio_chip *chip, unsigned offset)
+ 	struct wm8994_gpio *wm8994_gpio = to_wm8994_gpio(chip);
+ 	struct wm8994 *wm8994 = wm8994_gpio->wm8994;
  
- 		ret = wm8994_request_irq(wm8994->wm8994,
+-	return regmap_irq_get_virq(wm8994->irq_data, offset);
++	return regmap_irq_get_virq(wm8994->irq_data,
++			WM8994_IRQ_GPIO(offset + 1));
+ }
+ 
+ 
 -- 
 1.7.9.5
