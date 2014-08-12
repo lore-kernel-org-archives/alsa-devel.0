@@ -1,52 +1,51 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 1/2] mfd: arizona: Add support for
-	INn_MODE register control
-Date: Tue, 12 Aug 2014 09:28:11 +0100
-Message-ID: <20140812082811.GB15833@opensource.wolfsonmicro.com>
-References: <20140809173138.767b97fd@songinha-Samsung-DeskTop-System>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Ordering in soc_pcm_hw_params()
+Date: Tue, 12 Aug 2014 10:42:43 +0200
+Message-ID: <53E9D383.5060103@metafoo.de>
+References: <CAKON4OzQF8sDigvcDFsJaJRVX9o4X1FiC2FEU8D6n=oaQkX+Uw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140809173138.767b97fd@songinha-Samsung-DeskTop-System>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
+ [212.40.185.205])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2466261A83
+ for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 10:42:47 +0200 (CEST)
+In-Reply-To: <CAKON4OzQF8sDigvcDFsJaJRVX9o4X1FiC2FEU8D6n=oaQkX+Uw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>, alsa-devel mailing list <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <Guangyu.Chen@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 09, 2014 at 05:31:38PM +0900, Inha Song wrote:
-> Some boards need to set the INn_MODE[1:0] register to change
-> the input signal patch. This wlf,inmode property is optional.
-> If present values must be specified by the number of
-> ARIZONA_MAX_INPUT.
-> 
-> Example:
->    - wlf,inmode = <2 0 2 0>;	/* IN1, IN3 use DMIC */
-> 
-> Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-> ---
->  drivers/mfd/arizona-core.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-> index 10a0cb9..4b2eb73 100644
-> --- a/drivers/mfd/arizona-core.c
-> +++ b/drivers/mfd/arizona-core.c
-> @@ -560,6 +560,10 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
->  			ret);
->  	}
->  
-> +	of_property_read_u32_array(arizona->dev->of_node,
-> +					 "wlf,inmode",
-> +					 arizona->pdata.inmode,
-> +					 ARRAY_SIZE(arizona->pdata.inmode));
+On 08/11/2014 03:35 PM, jonsmirl@gmail.com wrote:
+> soc_pcm_hw_params() sets the parameters in this order:
+> link, codec, cpu, platform
+>
+> This is tripping me up when switching between the 44100 and 48000
+> families.  If previous song was 44100 then the codec has sysclk set to
+> the 44100 family.
+>
+> Now I play a 48000 family song. codec gets new hardware params and
+> errors out because sysclk is still in the 44100 family.
+>
+> I have code in the cpu set_hw_params which will switch the sysclk, but
+> it never gets to run because the codec set_hw_params() has already
+> errored out.
+>
+> Shouldn't this order be:
+> platform, link, cpu, codec
 
-Might be better to allow the device tree to be shorter than the
-array in pdata, should this get expanded on future devices.
+What I don't understand is why does the CPU DAI driver change the sysclk for 
+the CODEC DAI driver? What I'd expect is that the machine driver sets the 
+sysclk for both the CODEC and the CPU DAI. In this case everything should 
+work fine.
 
-Thanks,
-Charles
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+- Lars
