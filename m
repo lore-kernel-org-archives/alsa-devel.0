@@ -1,34 +1,52 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: wm8962: Correct the bit offset to
-	enable mono speaker output
-Date: Tue, 12 Aug 2014 09:24:16 +0100
-Message-ID: <20140812082416.GA15833@opensource.wolfsonmicro.com>
-References: <1407412549-14983-1-git-send-email-nicoleotsuka@gmail.com> <20140807165836.GL17528@sirena.org.uk> <20140808082043.GB6333@MrMyself> <39712b9fd56546f8a943d605230a2f18@BL2PR03MB371.namprd03.prod.outlook.com> <20140811131949.GA28085@opensource.wolfsonmicro.com>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 1/2] mfd: arizona: Add support for
+	INn_MODE register control
+Date: Tue, 12 Aug 2014 09:28:11 +0100
+Message-ID: <20140812082811.GB15833@opensource.wolfsonmicro.com>
+References: <20140809173138.767b97fd@songinha-Samsung-DeskTop-System>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <20140811131949.GA28085@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Chan <peter.chan@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "shengjiu.wang@freescale.com" <shengjiu.wang@freescale.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, "guangyu.chen@freescale.com" <guangyu.chen@freescale.com>, "rf@opensource.wolfsonmicro.com" <rf@opensource.wolfsonmicro.com>
+In-Reply-To: <20140809173138.767b97fd@songinha-Samsung-DeskTop-System>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 11, 2014 at 02:19:49PM +0100, Charles Keepax wrote:
-> On Fri, Aug 08, 2014 at 09:55:43AM +0000, Peter Chan wrote:
-> > 
-> > But our customer reported that they did try to set both SPKOUTR_ENA and SPKOUTL_ENA bits in mono mode but the sound is lousy. If setting SPKOUTR_ENA alone, the speaker has no sound. Only setting SPKOUTL_ENA bit get the correct speaker output in mono mode.
+On Sat, Aug 09, 2014 at 05:31:38PM +0900, Inha Song wrote:
+> Some boards need to set the INn_MODE[1:0] register to change
+> the input signal patch. This wlf,inmode property is optional.
+> If present values must be specified by the number of
+> ARIZONA_MAX_INPUT.
 > 
-> From the wording of "tie both outputs together" in the datasheet
-> I would assume that means both should be fed the same audio? Was
-> this done? I will try to give the hardware guys here a shout and
-> see if I can get some clarification on mono mode on this device.
+> Example:
+>    - wlf,inmode = <2 0 2 0>;	/* IN1, IN3 use DMIC */
+> 
+> Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+> ---
+>  drivers/mfd/arizona-core.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+> index 10a0cb9..4b2eb73 100644
+> --- a/drivers/mfd/arizona-core.c
+> +++ b/drivers/mfd/arizona-core.c
+> @@ -560,6 +560,10 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
+>  			ret);
+>  	}
+>  
+> +	of_property_read_u32_array(arizona->dev->of_node,
+> +					 "wlf,inmode",
+> +					 arizona->pdata.inmode,
+> +					 ARRAY_SIZE(arizona->pdata.inmode));
 
-I have had a word with the hardware team here and both channels
-do need to be enabled but audio should only be fed to the left
-channel. So the driver definitely needs updated for the mono
-case, but I am unclear as to what is causing your poor audio
-quality issue.
+Might be better to allow the device tree to be shorter than the
+array in pdata, should this get expanded on future devices.
 
 Thanks,
 Charles
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
