@@ -1,168 +1,139 @@
-From: "Murphy, Dan" <dmurphy@ti.com>
-Subject: Re: [PATCH v2] ASoC: tas2552: Add DAPM calls for amp and PLL
-Date: Tue, 12 Aug 2014 18:05:25 +0000
-Message-ID: <00FC9A978A94B7418C33AFAE8A35ED49DE4E68@DFLE09.ent.ti.com>
-References: <1406908624-15290-1-git-send-email-dmurphy@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Ordering in soc_pcm_hw_params()
+Date: Tue, 12 Aug 2014 19:20:29 +0100
+Message-ID: <20140812182029.GX17528@sirena.org.uk>
+References: <CAKON4OzQF8sDigvcDFsJaJRVX9o4X1FiC2FEU8D6n=oaQkX+Uw@mail.gmail.com>
+ <53E9D383.5060103@metafoo.de>
+ <CAKON4Ow3HFL0Sv2AV7+-XS0PBHnP9WW_8FBgrV=cKp14LER9XA@mail.gmail.com>
+ <CAKON4OzrJSAD0RUL5TO6n8mxG0q9rRau0MWaAXvXVo+bSB8Ygg@mail.gmail.com>
+ <20140812115755.GO17528@sirena.org.uk>
+ <CAKON4OyOL2asou5NvL0crcAy=wYdguBYpc7w+x0xcUUf93FxUw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-sound-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-sound-owner@vger.kernel.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Type: multipart/mixed; boundary="===============7153751895884838199=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4985726529F
+ for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 20:20:38 +0200 (CEST)
+In-Reply-To: <CAKON4OyOL2asou5NvL0crcAy=wYdguBYpc7w+x0xcUUf93FxUw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <Guangyu.Chen@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Bump for review
 
-On 08/01/2014 10:57 AM, Murphy, Dan wrote:
-> Add DAPM calls to enable/disable the Class D amp.
-> Also add a DAPM call to turn off the PLL upon
-> the stream completing.
-> 
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
-> 
-> v2 - Added proper audio routing map for ClassD and PLL enable/disable - https://patchwork.kernel.org/patch/4586831/
-> 
->  sound/soc/codecs/tas2552.c |   68 +++++++++++++++++++++++++++++++-------------
->  1 file changed, 48 insertions(+), 20 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-> index 23b3296..1ed57a7 100644
-> --- a/sound/soc/codecs/tas2552.c
-> +++ b/sound/soc/codecs/tas2552.c
-> @@ -78,6 +78,43 @@ struct tas2552_data {
->  	unsigned int mclk;
->  };
->  
-> +/* Input mux controls */
-> +static const char *tas2552_input_texts[] = {
-> +	"Digital", "Analog"
-> +};
-> +
-> +static SOC_ENUM_SINGLE_DECL(tas2552_input_mux_enum, TAS2552_CFG_3, 7,
-> +			    tas2552_input_texts);
-> +
-> +static const struct snd_kcontrol_new tas2552_input_mux_control[] = {
-> +	SOC_DAPM_ENUM("Input selection", tas2552_input_mux_enum)
-> +};
-> +
-> +static const struct snd_soc_dapm_widget tas2552_dapm_widgets[] =
-> +{
-> +	SND_SOC_DAPM_INPUT("IN"),
-> +
-> +	/* MUX Controls */
-> +	SND_SOC_DAPM_MUX("Input selection", SND_SOC_NOPM, 0, 0,
-> +				tas2552_input_mux_control),
-> +
-> +	SND_SOC_DAPM_AIF_IN("DAC IN", "DAC Playback", 0, SND_SOC_NOPM, 0, 0),
-> +	SND_SOC_DAPM_DAC("DAC", NULL, SND_SOC_NOPM, 0, 0),
-> +	SND_SOC_DAPM_OUT_DRV("ClassD", TAS2552_CFG_2, 7, 0, NULL, 0),
-> +	SND_SOC_DAPM_SUPPLY("PLL", TAS2552_CFG_2, 3, 0, NULL, 0),
-> +
-> +	SND_SOC_DAPM_OUTPUT("OUT")
-> +};
-> +
-> +static const struct snd_soc_dapm_route tas2552_audio_map[] = {
-> +	{"DAC", NULL, "DAC IN"},
-> +	{"Input selection", "Digital", "DAC"},
-> +	{"Input selection", "Analog", "IN"},
-> +	{"ClassD", NULL, "Input selection"},
-> +	{"OUT", NULL, "ClassD"},
-> +	{"ClassD", NULL, "PLL"},
-> +};
-> +
->  static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
->  {
->  	u8 cfg1_reg;
-> @@ -101,10 +138,6 @@ static int tas2552_hw_params(struct snd_pcm_substream *substream,
->  	int d;
->  	u8 p, j;
->  
-> -	/* Turn on Class D amplifier */
-> -	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN_MASK,
-> -						TAS2552_CLASSD_EN);
-> -
->  	if (!tas2552->mclk)
->  		return -EINVAL;
->  
-> @@ -147,9 +180,6 @@ static int tas2552_hw_params(struct snd_pcm_substream *substream,
->  
->  	}
->  
-> -	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE,
-> -						TAS2552_PLL_ENABLE);
-> -
->  	return 0;
->  }
->  
-> @@ -269,19 +299,10 @@ static const struct dev_pm_ops tas2552_pm = {
->  			   NULL)
->  };
->  
-> -static void tas2552_shutdown(struct snd_pcm_substream *substream,
-> -			   struct snd_soc_dai *dai)
-> -{
-> -	struct snd_soc_codec *codec = dai->codec;
-> -
-> -	snd_soc_update_bits(codec, TAS2552_CFG_2, TAS2552_PLL_ENABLE, 0);
-> -}
-> -
->  static struct snd_soc_dai_ops tas2552_speaker_dai_ops = {
->  	.hw_params	= tas2552_hw_params,
->  	.set_sysclk	= tas2552_set_dai_sysclk,
->  	.set_fmt	= tas2552_set_dai_fmt,
-> -	.shutdown	= tas2552_shutdown,
->  	.digital_mute = tas2552_mute,
->  };
->  
-> @@ -294,7 +315,7 @@ static struct snd_soc_dai_driver tas2552_dai[] = {
->  	{
->  		.name = "tas2552-amplifier",
->  		.playback = {
-> -			.stream_name = "Speaker",
-> +			.stream_name = "Playback",
->  			.channels_min = 2,
->  			.channels_max = 2,
->  			.rates = SNDRV_PCM_RATE_8000_192000,
-> @@ -312,6 +333,7 @@ static DECLARE_TLV_DB_SCALE(dac_tlv, -7, 100, 24);
->  static const struct snd_kcontrol_new tas2552_snd_controls[] = {
->  	SOC_SINGLE_TLV("Speaker Driver Playback Volume",
->  			 TAS2552_PGA_GAIN, 0, 0x1f, 1, dac_tlv),
-> +	SOC_DAPM_SINGLE("Playback AMP", SND_SOC_NOPM, 0, 1, 0),
->  };
->  
->  static const struct reg_default tas2552_init_regs[] = {
-> @@ -321,6 +343,7 @@ static const struct reg_default tas2552_init_regs[] = {
->  static int tas2552_codec_probe(struct snd_soc_codec *codec)
->  {
->  	struct tas2552_data *tas2552 = snd_soc_codec_get_drvdata(codec);
-> +	struct snd_soc_dapm_context *dapm = &codec->dapm;
->  	int ret;
->  
->  	tas2552->codec = codec;
-> @@ -362,9 +385,14 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
->  		goto patch_fail;
->  	}
->  
-> -	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_CLASSD_EN |
-> -				  TAS2552_BOOST_EN | TAS2552_APT_EN |
-> -				  TAS2552_LIM_EN);
-> +	snd_soc_write(codec, TAS2552_CFG_2, TAS2552_BOOST_EN |
-> +				  TAS2552_APT_EN | TAS2552_LIM_EN);
-> +
-> +	snd_soc_dapm_new_controls(dapm, tas2552_dapm_widgets,
-> +				ARRAY_SIZE(tas2552_dapm_widgets));
-> +	snd_soc_dapm_add_routes(dapm, tas2552_audio_map,
-> +				ARRAY_SIZE(tas2552_audio_map));
-> +
->  	return 0;
->  
->  patch_fail:
-> 
+--===============7153751895884838199==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s4SVo4+dQCTUzKvM"
+Content-Disposition: inline
 
 
--- 
-------------------
-Dan Murphy
+--s4SVo4+dQCTUzKvM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Aug 12, 2014 at 08:45:22AM -0400, jonsmirl@gmail.com wrote:
+> On Tue, Aug 12, 2014 at 7:57 AM, Mark Brown <broonie@kernel.org> wrote:
+
+> > Yes, as has been said several times now it's the responsibility of the
+> > machine driver to coordinate clocking in the card so if you want to use
+
+> I hear this, but I'm conflicted about putting a generic capability
+> into the machine driver.
+
+It's a generic machine driver so having generic code in there seems
+reasonable.
+
+> 1) Are sysclk and mclk the same thing? Inside of simple-card they seem
+> to be but I can possibly see arguments that they aren't.
+
+Probably in the context of systems simple enough to use simple-card.
+
+> 2) Should sysclk for the cpu-dai and codec-dai be set independently?
+> In simple-card they can be set to conflicting values on the two nodes
+> in the DTS. Should sysclk be a single property for the machine?
+
+No, clocks might be at different rates for different devices.  One
+device might divide down the clock to the other.
+
+> 3) If sysclk is defined by a phandle to a clock, how should clock
+> accuracy be handled? For example in my CPU the best clock that can be
+> made is about 0.01% less than what it should be. If you take that
+> frequency number and start doing integer division on it you won't get
+> the expect results because of truncation effects. Diving by 44100
+> gives 511.95 which truncates to 511 instead of 512.
+
+I'm not sure it's worth worrying about systems that can't generate
+accurate clocks at this point, but perhaps someone will think of
+something sensible to do.
+
+> 4) If the sysclk is going to change based on the music, should it just
+> flip between 22.5/24.5 or should it use the FS multiplier in the
+> simple DTS and always be set to FS*music? For example FS=512 so for
+> 44100 it is set to 22.5Mhz and 8000 it is set to 4Mhz.
+
+If a fixed multiplier is set I'd expect to see it observed; obviously a
+device may be constrained in what it can actually use though and a fixed
+multiplier might not be the best configuration.
+
+> 5) What should the syntax for this look like in simple?
+
+It really depends what the "this" is; try to think of something
+tasteful.
+
+> 6) Longer term set-sysclk could be replaced by using phandles for the
+> clock and then clk notifiers in the components to listen for it being
+> changed. That would remove this problem of having multiple sysclks in
+> the system and the DTS syntax for identifying them.
+
+> So in my case I expose a MCLK clk. sgtl5000 codec references that
+> clock with a phandle. As the cpu-dai looks at the music it changes the
+> rate on MCLK. Codec gets notified of that change (if it is listening)
+> and can act on it.
+
+OK, but that's not meaningfully different to just having the machine
+driver call set_sysclk() and only works if the best way to change the
+clock rate is to change the clocking inside the CPU which isn't going
+to be the case for all systems.  That's the hard part, we have to be
+able to scale up to handling it.
+
+--s4SVo4+dQCTUzKvM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT6lrqAAoJELSic+t+oim9pHYQAJ3lrpJf03lFJRLTCgl133dO
+96ojSEsxW4JhT7W35A8VvZiPI5YTrrF3+TQR63ukC87clLePdeUsBB292RwHkk1U
+aMR6jGB3uoBxlWhZrR/nvFwcL2JaM1owQCMcdXNdH7TLo97laGJvVB3eUK3/iuya
+knfsuNImqIlEnl2orD4lDJD0LWb80mjR07ZNC4v+SrVSRALL+oL3vYezunn4X/f2
+pHC4n8y+63pqvhAt+2Ljb2TxKlrosx0Pg4fOHK/3dis/p09gyx+myOYijF9aA+VT
+zDOkKE0ffu86k/dnZ0JumoygMVQZfxGn2a6EmqJBNr0bJ5NRYXLPpAK3jaGsY5hA
+FO3wjS0jaVbqNoovM0LVO3V6OQYqMcwjjsrnS9BUqIMFiBMJt37INeUYV31XWpCA
+Too8eD+4S15cOLGgoapMnNaxlrWBQAoPlQI+inat+Uod3xWNtTkmq8oQb1dp/Sa2
+SVB+ZanM0i7Il/gTcYJxwackXo7GWunqhjVswE9RP4v/MCsqpXABjR5VSjiJsReb
+w9zAnhD4GOC1DQw6tvmzwPMafA/dLYeLd7iQBn3zqj30OJhIr8EOX295EZOqnK7N
+LUxi+zpfnFd/YSHbx82vLtDpK3LPrZtBK+FoQSDNoqyD3t5R+6iY7Gcf0J3ss9E1
+CE+j0zGbxg1kfrldEzeF
+=QehS
+-----END PGP SIGNATURE-----
+
+--s4SVo4+dQCTUzKvM--
+
+--===============7153751895884838199==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7153751895884838199==--
