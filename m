@@ -1,15 +1,24 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: arizona: Fix TDM slot length handling in
-	arizona_hw_params
-Date: Tue, 12 Aug 2014 15:30:32 +0100
-Message-ID: <1407853832-7176-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Paul Handrigan <paul.handrigan@cirrus.com>
+Subject: Re: Audio mini conference 2014?
+Date: Tue, 12 Aug 2014 10:14:39 -0500
+Message-ID: <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
+References: <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5h4myhpcby.wl%tiwai@suse.de> <20140721232054.GN17528@sirena.org.uk>
+ <s5h1ttehr91.wl%tiwai@suse.de> <20140722222038.GW17528@sirena.org.uk>
+ <53CF8306.3090009@zonque.org>
+ <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
+ <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
+ <20140807140957.GI8181@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2531D2651C9
- for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 16:39:10 +0200 (CEST)
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0144.outbound.protection.outlook.com [207.46.163.144])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC2F02650FE
+ for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 17:14:45 +0200 (CEST)
+In-Reply-To: <20140807140957.GI8181@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,52 +28,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, "Handrigan, Paul" <Paul.Handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>, David Henningsson <david.henningsson@canonical.com>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
 
-TDM slot length was set same as word length, regardless of the value
-received in set_tdm_slot. This patch sets the TDM slot length correctly
-as received in set_tdm_slot DAI callback
 
-Signed-off-by: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
+On Thu, 7 Aug 2014, Vinod Koul wrote:
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index 2f2e91a..4dfab95 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1278,6 +1278,8 @@ static int arizona_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		rates = &arizona_48k_bclk_rates[0];
- 
-+	wl = snd_pcm_format_width(params_format(params));
-+
- 	if (tdm_slots) {
- 		arizona_aif_dbg(dai, "Configuring for %d %d bit TDM slots\n",
- 				tdm_slots, tdm_width);
-@@ -1285,6 +1287,7 @@ static int arizona_hw_params(struct snd_pcm_substream *substream,
- 		channels = tdm_slots;
- 	} else {
- 		bclk_target = snd_soc_params_to_bclk(params);
-+		tdm_width = wl;
- 	}
- 
- 	if (chan_limit && chan_limit < channels) {
-@@ -1319,8 +1322,7 @@ static int arizona_hw_params(struct snd_pcm_substream *substream,
- 	arizona_aif_dbg(dai, "BCLK %dHz LRCLK %dHz\n",
- 			rates[bclk], rates[bclk] / lrclk);
- 
--	wl = snd_pcm_format_width(params_format(params));
--	frame = wl << ARIZONA_AIF1TX_WL_SHIFT | wl;
-+	frame = wl << ARIZONA_AIF1TX_WL_SHIFT | tdm_width;
- 
- 	reconfig = arizona_aif_cfg_changed(codec, base, bclk, lrclk, frame);
- 
--- 
-1.7.2.5
+> On Wed, Aug 06, 2014 at 01:42:36PM +0000, Handrigan, Paul wrote:
+>>
+>>
+>>> On Aug 6, 2014, at 7:00 AM, "Daniel Mack" <daniel@zonque.org> wrote:
+>>>
+>>>> On 08/06/2014 10:15 AM, Daniel Mack wrote:
+>>>> On 08/06/2014 10:13 AM, Tanu Kaskinen wrote:
+>>>
+>>>>> Did you get any responses?
+>>>>
+>>>> Unfortunately not. I'll try again.
+>>>
+>>> Ok, they guys from ChaosDorf now got back to me. They need to make a
+>>> final discussion internally yet, but it appears to be working. I'll hear
+>>> back from them next Wednesday with a final decision.
+>>>
+>>> The ChaosDorf is a CCC hack space that hosts all sort of user group
+>>> meetings and the like. Their website is here:
+>>>
+>>>  http://chaosdorf.de/
+>>>
+>>> I told them we'd be ~20ppl and they think they can accommodate that
+>>> number, and they also have a beamer. Or do we expect to be more?
+>>>
+>>> They have a room layout and some pictures here:
+>>>
+>>>  https://wiki.chaosdorf.de/Clubraum
+>>>
+>>> I've never been there myself, so I can't say anything about it, but
+>>> usually, these Hackspaces are quite nice. They're no typical conference
+>>> rooms though.
+>>>
+>>> What date would we prefer? There's an event on Tuesday night (~6pm), but
+>>> I guess we wouldn't need the room longer than that anyway, right?
+>> It would be best that it is not during LPC as mentioned before.  Will Saturday after LPC work as well?
+> Plumbers starts Wed.. So tue can work too :)
+>
+> Btw should we request a LPC track for backup.
+>
+I believe it is too late to request a LPC track.
+
+Tuesday would be good as well. Should we go with that since we may have a 
+place for it?
