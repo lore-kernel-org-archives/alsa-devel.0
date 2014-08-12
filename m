@@ -1,19 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC][PATCH 00/15 v4] OXFW driver,
-	a succesor to	firewire-speakers
-Date: Wed, 13 Aug 2014 07:45:21 +0900
-Message-ID: <53EA9901.40306@sakamocchi.jp>
+Subject: Re: [PATCH 12/15] oxfw: Add support for
+	Behringer/Mackie	devices
+Date: Wed, 13 Aug 2014 08:21:01 +0900
+Message-ID: <53EAA15D.1030306@sakamocchi.jp>
 References: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
- <53E795BD.1070100@ladisch.de> <53E957EA.3030601@sakamocchi.jp>
- <53E9BDC2.3000801@ladisch.de>
+ <1399991272-5807-13-git-send-email-o-takashi@sakamocchi.jp>
+ <53E795C5.1010506@ladisch.de> <53E95664.7020707@sakamocchi.jp>
+ <53E9C33A.2090508@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
- by alsa0.perex.cz (Postfix) with ESMTP id D5807265357
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 00:45:29 +0200 (CEST)
-In-Reply-To: <53E9BDC2.3000801@ladisch.de>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 132AC265357
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 01:21:06 +0200 (CEST)
+In-Reply-To: <53E9C33A.2090508@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, fenlason@redhat.com
+Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, "fen >> Jay Fenlason" <fenlason@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-On Aug 12 2014 16:09, Clemens Ladisch wrote:
+On Aug 12 2014 16:33, Clemens Ladisch wrote:
 > Takashi Sakamoto wrote:
 >> On Aug 11 2014 00:54, Clemens Ladisch wrote:
->>> The old driver configured nothing but the rate.  Is there any mechanism
->>> to set the stream format?
+>>> Takashi Sakamoto wrote:
+>>>> +	/* IDs are unknown but able to be supported */
+>>>> +	/*  Mackie(Loud), d.2 pro */
+>>>> +	/*  Mackie(Loud), d.4 pro */
+>>>> +	/*  Mackie(Loud), U.420 */
+>>>> +	/*  Mackie(Loud), U.420d */
+>>>
+>>> To support all Mackie devices, use one ID entry with only the vendor ID,
+>>> and abort with -ENODEV from the _probe function if the hardware is not
+>>> actually an OXFW97x device (try to read the HARDWARE_ID and/or
+>>> FIRMWARE_ID registers).
 >>
->> Yes. It's AV/C stream format information command.
->> [...]
->> But in this series of patches, I don't use this command. I expected the
->> models to change stream format according to parameters in AMDTP packets
->> such like the value of dbs field.
+>> In this idea, OXFW driver transfers the transaction(s) for all of
+>> Mackie(Loud) devices on IEEE 1394 bus when they're probed. I want to
+>> avoid such changes possible to affects the other models on the same bus
+>> because I'm afraid of side effects.
 > 
-> Apparently, the firmware doesn't support automatic format detection
-> completely, and requires this command for the 2ch 32/44.1 kHz modes.
+> The only other known Mackie devices are the 400F/1200F.  The Fireworks
+> firmware doesn't blow up if you try to read unsupported registers, but
+> if you want to be sure, you can blacklist these two IDs.
 
-Apparently and completely, why? Please tell show reasons to judge about
-a lack of automatic format detection. When you developed and committed
-firewire-speakers driver, you confirmed all of combination for PCM
-rate/channels, didn't you?
+As long as I know, Mackie (Loud) produced FireWire sound devices with
+Fireworks, OXFW and Dice. But I don't know all models at all. There may
+be models with the other chipset.
 
-> (That 2ch at 96 kHz actually works is even more curious.  There already
-> is that bug regarding listing the seventh format; it's possible that
-> they completely forgot to report an eighth format.)
+Furthermore, hardware vendors sometimes add customization to firmware
+for their models.
 
-According to Griffin's manual for FireWave, 2ch/96kHz is not supported.
-http://griffintechnology.com/support/firewave
+I think we should not stand on such assumption.
 
-> 32kHz, 44.1kHz, 48kHz and 96kHz playback in MBLA mode (non-Dolby)
-> 32kHz, 44.1kHz, 48kHz in Dolby Pro Logic II
-> 48kHz Encoded Digital in Dolby Digital
+> Or just do the detection like the Windows driver, through the vendor/
+> model name strings (this is what my old Fireworks driver did because
+> I didn't know all model IDs; see match_echofire_device_name).  The
+> Mackie driver's .inf file has this list of device identifiers:
+> 
+> "AVC\Loud_Technologies_Inc.&Onyxi&typ_1"
+> "AVC\Loud_Technologies_Inc.&Onyx_1640i&typ_1"
+> "AVC\Loud_Technologies_Inc.&Onyx-i&typ_1"
+> "AVC\Loud_Technologies_Inc.&d.Pro&typ_1"
+> "AVC\Loud_Technologies_Inc.&Mackie_Onyx_Satellite&typ_1"
+> "AVC\Loud_Technologies_Inc.&Tapco_LINK.firewire_4x6&typ_1"
+> "AVC\Loud_Technologies_Inc.&U.420&typ_1"
+> "AVC\Mackie&Onyx_Firewire&typ_1"
+> 
+> (This format is documented at <http://msdn.microsoft.com/en-us/library/windows/hardware/ff556371.aspx>;
+> apparently, spaces are replaced with "_".)
 
-So it's natural that there is not the eight format. I think we're not
-need to consider 2ch/96kHz mode.
+This is a good idea.
 
-Instead, we should consider the 2ch modes. This mode seems to be used
-for Dolby Pro Logic II and Dolby Digital but I don't know about the
-specification of Dolby something. If we drop these modes, the work to
-develop OXFW driver becomes simpler.
+I note that Mackie Onyx-i series has two revisions. OXFW was used for
+the former revision. Dice is used for the latter revision. See:
+http://www.mackie.com/products/onyxiseries/drivers/
+
+When using this idea, we have a need to distinguish these two revisions
+for prevention from applying OXFW driver to the latter revision. Do you
+have any good idea?
 
 
 Regards
 
 Takashi Sakamoto
+(In summer vacation)
 o-takashi@sakamocchi.jp
