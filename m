@@ -1,76 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v3] ASOC: dapm: add code to configure dai
- link parameters
-Date: Tue, 12 Aug 2014 23:03:37 +0100
-Message-ID: <20140812220337.GF17528@sirena.org.uk>
-References: <1407341786-14990-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
- <20140807141604.GJ8181@intel.com>
- <20140807171324.GM17528@sirena.org.uk>
- <20140811062429.GC13288@intel.com>
- <20140811121912.GY17528@sirena.org.uk>
- <20140812151014.GF13288@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC][PATCH 00/15 v4] OXFW driver,
+	a succesor to	firewire-speakers
+Date: Wed, 13 Aug 2014 07:45:21 +0900
+Message-ID: <53EA9901.40306@sakamocchi.jp>
+References: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
+ <53E795BD.1070100@ladisch.de> <53E957EA.3030601@sakamocchi.jp>
+ <53E9BDC2.3000801@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="igpv2mJkFzVQTi9J"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140812151014.GF13288@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5807265357
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 00:45:29 +0200 (CEST)
+In-Reply-To: <53E9BDC2.3000801@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, fenlason@redhat.com
 List-Id: alsa-devel@alsa-project.org
 
 
---igpv2mJkFzVQTi9J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Aug 12 2014 16:09, Clemens Ladisch wrote:
+> Takashi Sakamoto wrote:
+>> On Aug 11 2014 00:54, Clemens Ladisch wrote:
+>>> The old driver configured nothing but the rate.  Is there any mechanism
+>>> to set the stream format?
+>>
+>> Yes. It's AV/C stream format information command.
+>> [...]
+>> But in this series of patches, I don't use this command. I expected the
+>> models to change stream format according to parameters in AMDTP packets
+>> such like the value of dbs field.
+> 
+> Apparently, the firmware doesn't support automatic format detection
+> completely, and requires this command for the 2ch 32/44.1 kHz modes.
 
-On Tue, Aug 12, 2014 at 08:40:14PM +0530, Vinod Koul wrote:
-> On Mon, Aug 11, 2014 at 01:19:12PM +0100, Mark Brown wrote:
+Apparently and completely, why? Please tell show reasons to judge about
+a lack of automatic format detection. When you developed and committed
+firewire-speakers driver, you confirmed all of combination for PCM
+rate/channels, didn't you?
 
-> > That doesn't mean it's the best way to go in the end though - long term
-> > I expect to see us move away from that to something more data driven and
-> > DAPM integrated.  Requiring drivers to open code things rather than
-> > factoring out the code doesn't seem like the right way forwards.
+> (That 2ch at 96 kHz actually works is even more curious.  There already
+> is that bug regarding listing the seventh format; it's possible that
+> they completely forgot to report an eighth format.)
 
-> Okay if that is the direction then this sound good to me.
+According to Griffin's manual for FireWave, 2ch/96kHz is not supported.
+http://griffintechnology.com/support/firewave
 
-> Only one last nitpick on how do we set different format value apart from
-> sample rate, bits etc here. We have devices talking on same port and each one is
-> different format(one use i2s, one uses tdm ...), so how do we handle that part?
+> 32kHz, 44.1kHz, 48kHz and 96kHz playback in MBLA mode (non-Dolby)
+> 32kHz, 44.1kHz, 48kHz in Dolby Pro Logic II
+> 48kHz Encoded Digital in Dolby Digital
 
-Doing that sort of thing automatically is probably best handled by
-having some actual concrete idea of what's on the link and how it's
-sharing the resources which we don't really have in detail right now -
-we loose track of TDM when things hit the link and can't do things like
-notice that only two timeslots are active even though the link could
-have eight and so end up powering more than we need to.  What I'd like
-to be able to do is to trace the individual per-channel and per-stream
-audio paths over the link, I think multiple configurations would fall
-out of being able to do that though I don't have a terribly concrete
-idea for a design right now (I sort of have one but it's got a lot of
-handwaving in it and isn't really concrete enough to write down).
+So it's natural that there is not the eight format. I think we're not
+need to consider 2ch/96kHz mode.
 
---igpv2mJkFzVQTi9J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Instead, we should consider the 2ch modes. This mode seems to be used
+for Dolby Pro Logic II and Dolby Digital but I don't know about the
+specification of Dolby something. If we drop these modes, the work to
+develop OXFW driver becomes simpler.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT6o81AAoJELSic+t+oim9vEkP/jOclFfspFPbO0GY8wN7S2Oz
-mKrKbi4TPqQpxpMO6X7X0JOXA8IH8WkkVeWf6c1uGgGt5M/jjnuug6ztQwlc91lX
-92+VvJ1aj2msMSBu786UYKCF/aNingZ5sMkjl+uFM/mwn7HgRZQ0F3hTKBOlQCyd
-XRiTGbaX7+5Z+ibwHF96S1lb7ldTXbq8DhxiPjlvxMkWxVofX3S/b8K8XG1n32iL
-T85mBaV7PdtszIH+FkmAK5ToT8s1Ww00LV2LuDJfgD6CQ4eDLSvURXDXFl7jNbva
-P8RrOO4/vhInv3veAPwPk8/Y5iTeRqf9pcxZUWeGmkcZq4VFUjz0s5CurCRwdUA8
-uSz5BRG8BIphdwo3vKVrsXupilfiCjgYK4VapO4SqbI7xA4g/pc7TyeyJRnXjao7
-3AWSr6UdiExe8+UspDnJ2AvEXekTvoAYR/Hc1p5rFa1+uEowi2ALjxnKzqwZ8+AI
-g4u1Futlu6qKRt/DlVpZyuzpOmtt99OlSZ4Sw2VDaa4TFcp6ZP1DU3GgKF4t/pcS
-nLgJdaWUaKzEeXisaLVmYLM+KbUAwatY3QX54VVNsrRgkrNNjJfWcDGDEmqJIeJx
-ZheAXhFz/nuFu0ugCe8/JzoqMcpUcXKHE/goiu7hGb2pJJcEnMjc13yLJ2r/gHg8
-2l2b+hQVyKuhwmrdNWsx
-=lAJY
------END PGP SIGNATURE-----
+Regards
 
---igpv2mJkFzVQTi9J--
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
