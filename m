@@ -1,82 +1,67 @@
-From: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
-Subject: Re: Ordering in soc_pcm_hw_params()
-Date: Tue, 12 Aug 2014 07:46:58 -0400
-Message-ID: <CAKON4OzrJSAD0RUL5TO6n8mxG0q9rRau0MWaAXvXVo+bSB8Ygg@mail.gmail.com>
-References: <CAKON4OzQF8sDigvcDFsJaJRVX9o4X1FiC2FEU8D6n=oaQkX+Uw@mail.gmail.com>
- <53E9D383.5060103@metafoo.de>
- <CAKON4Ow3HFL0Sv2AV7+-XS0PBHnP9WW_8FBgrV=cKp14LER9XA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: wm8994: register irq handler for mic1 detect
+Date: Tue, 12 Aug 2014 12:48:49 +0100
+Message-ID: <20140812114849.GN17528@sirena.org.uk>
+References: <1407843829-4908-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f48.google.com (mail-la0-f48.google.com
- [209.85.215.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 80A0E264F10
- for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 13:46:59 +0200 (CEST)
-Received: by mail-la0-f48.google.com with SMTP id gl10so7869357lab.35
- for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 04:46:58 -0700 (PDT)
-In-Reply-To: <CAKON4Ow3HFL0Sv2AV7+-XS0PBHnP9WW_8FBgrV=cKp14LER9XA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <Guangyu.Chen@freescale.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GI3Lgxc05n+zHXcf"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1407843829-4908-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 12, 2014 at 7:45 AM, jonsmirl@gmail.com <jonsmirl@gmail.com> wrote:
-> On Tue, Aug 12, 2014 at 4:42 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
->> On 08/11/2014 03:35 PM, jonsmirl@gmail.com wrote:
->>>
->>> soc_pcm_hw_params() sets the parameters in this order:
->>> link, codec, cpu, platform
->>>
->>> This is tripping me up when switching between the 44100 and 48000
->>> families.  If previous song was 44100 then the codec has sysclk set to
->>> the 44100 family.
->>>
->>> Now I play a 48000 family song. codec gets new hardware params and
->>> errors out because sysclk is still in the 44100 family.
->>>
->>> I have code in the cpu set_hw_params which will switch the sysclk, but
->>> it never gets to run because the codec set_hw_params() has already
->>> errored out.
->>>
->>> Shouldn't this order be:
->>> platform, link, cpu, codec
->>
->>
->> What I don't understand is why does the CPU DAI driver change the sysclk for
->> the CODEC DAI driver? What I'd expect is that the machine driver sets the
->> sysclk for both the CODEC and the CPU DAI. In this case everything should
->> work fine.
->
-> The machine driver is simple-card. It is not smart enough to change
-> the sysclk between 22.5Mhz and 24.5Mhz depending on what music is
-> being played.
 
-Having said that, should we make simple-card smart enough to do that?
+--GI3Lgxc05n+zHXcf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Tue, Aug 12, 2014 at 12:43:49PM +0100, Nikesh Oswal wrote:
 
->
->
->>
->> - Lars
->>
->
->
->
-> --
-> Jon Smirl
-> jonsmirl@gmail.com
+> --- a/sound/soc/codecs/wm8994.c
+> +++ b/sound/soc/codecs/wm8994.c
+> @@ -4099,6 +4099,15 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+>  				dev_warn(codec->dev,
+>  					 "Failed to request Mic1 detect IRQ: %d\n",
+>  					 ret);
+> +		} else {
+> +			ret = wm8994_request_irq(wm8994->wm8994,
+> +					WM8994_IRQ_MIC1_DET,
+> +					wm8994_mic_irq, "Mic 1 detect",
+> +					wm8994);
+> +			if (ret != 0)
+> +				dev_warn(codec->dev,
+> +				"Failed to request Mic1 detect IRQ: %d\n",
+> +				ret);
 
+This need a better changelog and possibly some editing of the code to
+make it clearer.  According to the above diff we're in the else case for
+an if statement where the true path also requests the same interrupt (or
+at least something with the same text reported in the error message).
 
+--GI3Lgxc05n+zHXcf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT6f8eAAoJELSic+t+oim9HL8QAI+tLB4Eli/RmtQsAPyVkxD6
+fF8mAuykUnJIE3ALY79dbEPpghx1CR+y+sSc5DLMmdnpLh1GEYRABySZ0bFjeJxR
+/ZuDvh3NtNE/C3/3NZBNrqIGmDH19f0i3OzElsVZUL10NWS7OdgJ+l6r+adxd6fk
+d9Ka50Pv6ajK9EKukH7/qiAN0sm4pMq1gV2IbLRx5TCVaprQZNH6f2NjQm8I1r+M
+YD/HmyDbn3A12Cj1GZ8vpUddMKZxa489Vwrsdp5zVHwrSy6lNYOVaKPAlhx8wT7l
+j0J4S+sbeI5kOI8ir38xcV50qDfCMKAH1/c2A/yA93RG7WHjfozoraSt9t57Hgrt
+2QSAZN9Gu1G5TmxmCs5w1NMiJs434RIsUnI5QXtsSBQZNQbkA7ld25Ia5+0OsMrY
+5GdMAEe1bSm20aooiFIxFL4MpikyargWEzPSzUxXi61hS4O3cBE6YsSjzbfTqR7U
+Nzv+oS7g/boyWI9isTlSJKOErJAcJrRMug2tLzNZazYOii92oMwodWse71aACljN
+ehpwLfwNWfShNu1lI2SFY+ymUOEvCp9Ge2lMBvk9j1JqqvbYKoczlS0v7pBj3TTS
+K9LukEYRUCF/P5HPJTa0Oe6PTiMTTaAeUjzVlqyPZGXdPgRsxyu/ewF1FaLbul7K
+uoTr1CdSRhu3W+mrOm3n
+=AiIY
+-----END PGP SIGNATURE-----
+
+--GI3Lgxc05n+zHXcf--
