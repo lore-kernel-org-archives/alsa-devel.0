@@ -1,18 +1,18 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Add merrifield machine driver
-Date: Tue, 12 Aug 2014 11:36:09 +0530
-Message-ID: <42696.3426675231$1407824907@news.gmane.org>
-References: <1405599225-31538-1-git-send-email-subhransu.s.prusty@intel.com>
- <20140729195043.GM17528@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC][PATCH 00/15 v4] OXFW driver,
+	a succesor to	firewire-speakers
+Date: Tue, 12 Aug 2014 09:09:54 +0200
+Message-ID: <53E9BDC2.3000801@ladisch.de>
+References: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
+ <53E795BD.1070100@ladisch.de> <53E957EA.3030601@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 73519261A90
- for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 08:27:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140729195043.GM17528@sirena.org.uk>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 62CE4261AAF
+ for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 09:09:56 +0200 (CEST)
+In-Reply-To: <53E957EA.3030601@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,109 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, fenlason@redhat.com, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 29, 2014 at 08:50:43PM +0100, Mark Brown wrote:
-> On Thu, Jul 17, 2014 at 05:43:45PM +0530, Subhransu S. Prusty wrote:
-> 
-> > +	default n
-> 
-> This is the standard Kconfig behaviour - no need to specify it (other
-> drivers don't...).
-Removed.
-> 
-> > +static int mrfld_8958_hw_params(struct snd_pcm_substream *substream,
-> > +			   struct snd_pcm_hw_params *params)
-> > +{
-> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> > +
-> > +	if (!strcmp(codec_dai->name, "wm8994-aif1"))
-> > +		return mrfld_wm8958_set_clk(codec_dai);
-> > +	return 0;
-> > +}
-> 
-> It's much clearer to define separate operations for each DAI, there's no
-> need for the string matching (especially given that there's nothing to
-> do for other DAIs).
-> 
-Don't need the comparison. Removed
-> > +	/*
-> > +	 * Machine uses 2 DMICs, other configs may use more so change below
-> > +	 * accordingly
-> > +	 */
-> > +	{ "DMIC1DAT", NULL, "DMIC" },
-> > +	{ "DMIC2DAT", NULL, "DMIC" },
-> > +	/*{ "DMIC3DAT", NULL, "DMIC" },*/
-> > +	/*{ "DMIC4DAT", NULL, "DMIC" },*/
-> 
-> Remove commented out code.
-> 
-Done
-> > +	/* Force enable VMID to avoid cold latency constraints */
-> > +	snd_soc_dapm_force_enable_pin(&card->dapm, "VMID");
-> > +	snd_soc_dapm_sync(&card->dapm);
-> 
-> This looks like you're open coding a version of wm8994_vmid_mode().
-> Though that might need some tuning for systems that really have no
-> single ended outputs.
-> 
-VMID has a larget settling time. Keep it ON here to avoid the delay. Any
-better way of doing this?
-> > +	/*
-> > +	 * Micbias1 is always off, so for pm optimizations make sure the micbias1
-> > +	 * discharge bit is set to floating to avoid discharge in disable state
-> > +	 */
-> > +	snd_soc_update_bits(codec, WM8958_MICBIAS1, WM8958_MICB1_DISCH, 0);
-> 
-> Don't write directly to CODEC registers, provide a way of configuring
-> this in the CODEC either via platform data or some API.  That way
-> nothing else is writing to the CODEC register map without the driver for
-> the CODEC knowing about it.
-> 
-Yes it can be given through the pdata. Removed.
-> > +static void snd_mrfld_8958_complete(struct device *dev)
-> > +{
-> > +	struct snd_soc_card *card = dev_get_drvdata(dev);
-> > +	struct snd_soc_codec *codec = card->rtd[CODEC_BE].codec;
-> > +	struct snd_soc_dapm_context *dapm;
-> > +
-> > +	pr_debug("In %s\n", __func__);
-> > +
-> > +	pr_debug("found codec %s\n", codec->component.name);
-> > +	dapm = &codec->dapm;
-> > +
-> > +	snd_soc_dapm_force_enable_pin(dapm, "VMID");
-> > +	snd_soc_dapm_sync(dapm);
-> > +
-> > +	snd_soc_resume(dev);
-> > +}
-> 
-> Doing the manual fiddling before rather than after resuming the core
-> seems...  concerning, I'd expect this to be done either in one of the
-> ASoC suspend/resume callbacks or at least after calling snd_soc_resume()
-> - doing it before seems likely to trigger or cause bugs.
-Complete callback is called only after resume. 
-> 
-> > +static int snd_mrfld_8958_poweroff(struct device *dev)
-> > +{
-> > +	pr_debug("In %s\n", __func__);
-> > +	snd_soc_poweroff(dev);
-> > +	return 0;
-> > +}
-> 
-> Remove this, just use the core function directly.
-Removed.
-> 
-> > +	platform_set_drvdata(pdev, &snd_soc_card_mrfld);
-> > +	pr_info("%s successful\n", __func__);
-> 
-> This print has no content, remove it or at the very least downgrade it
-> to debug level.
-Done
+Takashi Sakamoto wrote:
+> On Aug 11 2014 00:54, Clemens Ladisch wrote:
+>> The old driver configured nothing but the rate.  Is there any mechanism
+>> to set the stream format?
+>
+> Yes. It's AV/C stream format information command.
+> [...]
+> But in this series of patches, I don't use this command. I expected the
+> models to change stream format according to parameters in AMDTP packets
+> such like the value of dbs field.
+
+Apparently, the firmware doesn't support automatic format detection
+completely, and requires this command for the 2ch 32/44.1 kHz modes.
+
+(That 2ch at 96 kHz actually works is even more curious.  There already
+is that bug regarding listing the seventh format; it's possible that
+they completely forgot to report an eighth format.)
 
 
-
--- 
+Regards,
+Clemens
