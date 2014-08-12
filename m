@@ -1,75 +1,63 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: Audio mini conference 2014?
-Date: Tue, 12 Aug 2014 21:54:06 +0600
-Message-ID: <53EA389E.1030006@gmail.com>
-References: <20140722222038.GW17528@sirena.org.uk>
- <53CF8306.3090009@zonque.org>
- <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
- <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
- <20140807140957.GI8181@intel.com>
- <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
- <20140812151258.GH13288@intel.com> <53EA34EF.8020205@metafoo.de>
- <20140812153537.GI13288@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/3 v4 RESEND] ASoC: arizona: Add DVFS handling for
+ sample rate control
+Date: Tue, 12 Aug 2014 16:57:27 +0100
+Message-ID: <20140812155727.GQ17528@sirena.org.uk>
+References: <20140808133233.GA2665@opensource.wolfsonmicro.com>
+ <20140808133510.GC2665@opensource.wolfsonmicro.com>
+ <20140812133458.GD15833@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f47.google.com (mail-la0-f47.google.com
- [209.85.215.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E8F92650FE
- for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 17:54:10 +0200 (CEST)
-Received: by mail-la0-f47.google.com with SMTP id mc6so7952401lab.6
- for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 08:54:09 -0700 (PDT)
-In-Reply-To: <20140812153537.GI13288@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Lars-Peter Clausen <lars@metafoo.de>, broonie@kernel.org, Takashi Iwai <tiwai@suse.de>
-Cc: Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Daniel Mack <daniel@zonque.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="eECtmhemjMGdcB6v"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140812133458.GD15833@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: rf@opensource.wolfsonmicro.com, lee.jones@linaro.org, sameo@linux.intel.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-12.08.2014 21:35, Vinod Koul wrote:
-> On Tue, Aug 12, 2014 at 05:38:23PM +0200, Lars-Peter Clausen wrote:
->> On 08/12/2014 05:12 PM, Vinod Koul wrote:
->>> On Tue, Aug 12, 2014 at 10:14:39AM -0500, Paul Handrigan wrote:
->>>>>>> What date would we prefer? There's an event on Tuesday night (~6pm), but
->>>>>>> I guess we wouldn't need the room longer than that anyway, right?
->>>>>> It would be best that it is not during LPC as mentioned before.  Will Saturday after LPC work as well?
->>>>> Plumbers starts Wed.. So tue can work too :)
->>>>>
->>>>> Btw should we request a LPC track for backup.
->>>>>
->>>> I believe it is too late to request a LPC track.
->>> Checking the site again, looks like we can still make a request
-> My bad, wrong interpretation. Looks like new uconf are not accepted.
->
-> Mark, Takashi, can we get some leeway with organizers
->
->>>>
->>>> Tuesday would be good as well. Should we go with that since we may
->>>> have a place for it?
->>> I am okay either days.
->>>
->>> Btw I didnt hear about the topics...
->>>
->>
->> If there is interest I'll prepare something about ASoC
->> componentization, what's the status and where it is going.
-> That would be good.
->
-> I was planning to discuss Dynamic FW, effect API (yet again), more DSP
-> support esp on PCM side
 
-I can discuss rewinding in ALSA PCM plugins (actually planned that for 
-LPC, but it got rejected), and/or a short talk about resampler quality 
-evaluation for PulseAudio.
+--eECtmhemjMGdcB6v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Alexander E. Patrakov
+On Tue, Aug 12, 2014 at 02:34:58PM +0100, Charles Keepax wrote:
+> On Fri, Aug 08, 2014 at 02:35:10PM +0100, Richard Fitzgerald wrote:
+> > From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+
+> > Some codecs need to boost DVFS for higher sample rates.
+
+> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> > Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+
+> Would it be possible to get an Ack for the ASoC patches here, Lee
+> said it would be ok to put the series through the MFD tree once
+> we have an ack? Unless you have any issues with the series?
+
+Don't send contentless pings; if you want patches reviewing please send
+them to the relevant maintainers.
+
+--eECtmhemjMGdcB6v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT6jljAAoJELSic+t+oim9fL4P/0wyYuLObz+rhZl64WaxZo3x
+NVks79VPOICtUESJ99jU/bX9uo3PI3u4eU7NhlSUWxBivOwoAA6B5xZlNBXi1t1o
+Ki7lSs8x4tOdqqfKmGJ+Yi5ope8r+FaFOcaHG4hzAtcwROyheGekC2NsAMFxgZ8A
+v4jG9hCZNN+0c8T34RLV+Ga5lLN+6ejRgpGwArglf5ZwyCF2iwXWInT7j0kcD3Vh
+yp9qUMIDvkKq2g4k0RQry0l6hU+KovmCLVunTDZy6gueZ7g+Eak61EFf5hz3UpsO
+YPNORdhoOmjdwL9fPvq4ogleY1qjvBESAuWSzoPWfnuGlFRH1XsoCYuvIe8OXrdI
+/K0NRXJRAdUr921ePusScci+4l9si01kTUT+4Q2X0vHZ9N8GdhlZq4au68pAZm1G
+8PW7O2D1Tyj3VX3tL2DlJyp5V9Q+iwCCh8MAIz6EhPIf1lWGpBEIJXKCGNaPgwGi
+gPNFAW+5sC6R/KsPAIBTaffgvf+kkyZzrJYgz3xwqctv9ePWWA0U+H+CK3q6RT7R
+rCWL4GEzfxml98uH2zgWUDO+BBhFCXQuLKEe4dZOhDSqVebZUgRYvCCwunfvy5Zs
+CSk6R1lAY+iYVFe5i5l0ZqGkRJx4aUUdY+aJUgDemEIHzbQe8xP3bUifqyzBsHT7
+0cmCJnGaeGjBZMTlwBhL
+=xmUG
+-----END PGP SIGNATURE-----
+
+--eECtmhemjMGdcB6v--
