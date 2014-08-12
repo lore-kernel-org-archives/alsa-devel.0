@@ -1,24 +1,16 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id A4A98260824
- for <alsa-devel@alsa-project.org>; Wed,  6 Aug 2014 15:53:02 +0200 (CEST)
-Received: from dflxv15.itg.ti.com ([128.247.5.124])
- by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id s76Dr1bB006428
- for <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:53:01 -0500
-Received: from DLEE71.ent.ti.com (dlee71.ent.ti.com [157.170.170.114])
- by dflxv15.itg.ti.com (8.14.3/8.13.8) with ESMTP id s76Dr1Rf023379
- for <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:53:01 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])	by
- dflp32.itg.ti.com (8.14.3/8.13.8) with ESMTP id s76Dr0K0006219	for
- <alsa-devel@alsa-project.org>; Wed, 6 Aug 2014 08:53:00 -0500
-From: Jyri Sarha <jsarha@ti.com>
-Date: Wed, 6 Aug 2014 16:52:46 +0300
-Message-ID: <4258f2c0f4bf3decf18ae01349fbcdc2261db995.1407332062.git.jsarha@ti.com>
-In-Reply-To: <cover.1407332062.git.jsarha@ti.com>
-References: <cover.1407332062.git.jsarha@ti.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73519261A90
+ for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 08:27:53 +0200 (CEST)
+Date: Tue, 12 Aug 2014 11:36:09 +0530
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Message-ID: <20140812060601.GA1115@vinod.koul@linux.intel.com>
+References: <1405599225-31538-1-git-send-email-subhransu.s.prusty@intel.com>
+ <20140729195043.GM17528@sirena.org.uk>
 MIME-Version: 1.0
-Subject: [alsa-devel] [PATCH 9/9] ARM: OMAP2+: omap2plus_defconfig: Enable
-	BeagleBone Black HDMI audio support
+Content-Disposition: inline
+In-Reply-To: <20140729195043.GM17528@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: Add merrifield machine driver
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,34 +22,112 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
 List-ID: <alsa-devel@alsa-project.org>
 
-Select CONFIG_SND_EDMA_SOC=m and CONFIG_SND_AM335X_SOC_NXPTDA_EVM=m
-for BBB HDMI audio.
+On Tue, Jul 29, 2014 at 08:50:43PM +0100, Mark Brown wrote:
+> On Thu, Jul 17, 2014 at 05:43:45PM +0530, Subhransu S. Prusty wrote:
+> 
+> > +	default n
+> 
+> This is the standard Kconfig behaviour - no need to specify it (other
+> drivers don't...).
+Removed.
+> 
+> > +static int mrfld_8958_hw_params(struct snd_pcm_substream *substream,
+> > +			   struct snd_pcm_hw_params *params)
+> > +{
+> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> > +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> > +
+> > +	if (!strcmp(codec_dai->name, "wm8994-aif1"))
+> > +		return mrfld_wm8958_set_clk(codec_dai);
+> > +	return 0;
+> > +}
+> 
+> It's much clearer to define separate operations for each DAI, there's no
+> need for the string matching (especially given that there's nothing to
+> do for other DAIs).
+> 
+Don't need the comparison. Removed
+> > +	/*
+> > +	 * Machine uses 2 DMICs, other configs may use more so change below
+> > +	 * accordingly
+> > +	 */
+> > +	{ "DMIC1DAT", NULL, "DMIC" },
+> > +	{ "DMIC2DAT", NULL, "DMIC" },
+> > +	/*{ "DMIC3DAT", NULL, "DMIC" },*/
+> > +	/*{ "DMIC4DAT", NULL, "DMIC" },*/
+> 
+> Remove commented out code.
+> 
+Done
+> > +	/* Force enable VMID to avoid cold latency constraints */
+> > +	snd_soc_dapm_force_enable_pin(&card->dapm, "VMID");
+> > +	snd_soc_dapm_sync(&card->dapm);
+> 
+> This looks like you're open coding a version of wm8994_vmid_mode().
+> Though that might need some tuning for systems that really have no
+> single ended outputs.
+> 
+VMID has a larget settling time. Keep it ON here to avoid the delay. Any
+better way of doing this?
+> > +	/*
+> > +	 * Micbias1 is always off, so for pm optimizations make sure the micbias1
+> > +	 * discharge bit is set to floating to avoid discharge in disable state
+> > +	 */
+> > +	snd_soc_update_bits(codec, WM8958_MICBIAS1, WM8958_MICB1_DISCH, 0);
+> 
+> Don't write directly to CODEC registers, provide a way of configuring
+> this in the CODEC either via platform data or some API.  That way
+> nothing else is writing to the CODEC register map without the driver for
+> the CODEC knowing about it.
+> 
+Yes it can be given through the pdata. Removed.
+> > +static void snd_mrfld_8958_complete(struct device *dev)
+> > +{
+> > +	struct snd_soc_card *card = dev_get_drvdata(dev);
+> > +	struct snd_soc_codec *codec = card->rtd[CODEC_BE].codec;
+> > +	struct snd_soc_dapm_context *dapm;
+> > +
+> > +	pr_debug("In %s\n", __func__);
+> > +
+> > +	pr_debug("found codec %s\n", codec->component.name);
+> > +	dapm = &codec->dapm;
+> > +
+> > +	snd_soc_dapm_force_enable_pin(dapm, "VMID");
+> > +	snd_soc_dapm_sync(dapm);
+> > +
+> > +	snd_soc_resume(dev);
+> > +}
+> 
+> Doing the manual fiddling before rather than after resuming the core
+> seems...  concerning, I'd expect this to be done either in one of the
+> ASoC suspend/resume callbacks or at least after calling snd_soc_resume()
+> - doing it before seems likely to trigger or cause bugs.
+Complete callback is called only after resume. 
+> 
+> > +static int snd_mrfld_8958_poweroff(struct device *dev)
+> > +{
+> > +	pr_debug("In %s\n", __func__);
+> > +	snd_soc_poweroff(dev);
+> > +	return 0;
+> > +}
+> 
+> Remove this, just use the core function directly.
+Removed.
+> 
+> > +	platform_set_drvdata(pdev, &snd_soc_card_mrfld);
+> > +	pr_info("%s successful\n", __func__);
+> 
+> This print has no content, remove it or at the very least downgrade it
+> to debug level.
+Done
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- arch/arm/configs/omap2plus_defconfig |    2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
-index 8b07fda..73dbfad 100644
---- a/arch/arm/configs/omap2plus_defconfig
-+++ b/arch/arm/configs/omap2plus_defconfig
-@@ -222,7 +222,9 @@ CONFIG_SND_DEBUG=y
- CONFIG_SND_USB_AUDIO=m
- CONFIG_SND_SOC=m
- CONFIG_SND_OMAP_SOC=m
-+CONFIG_SND_EDMA_SOC=m
- CONFIG_SND_AM33XX_SOC_EVM=m
-+CONFIG_SND_AM335X_SOC_NXPTDA_EVM=m
- CONFIG_SND_DAVINCI_SOC=m
- CONFIG_SND_OMAP_SOC_OMAP_TWL4030=m
- CONFIG_SND_OMAP_SOC_OMAP_ABE_TWL6040=m
+
 -- 
-1.7.9.5
-
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
