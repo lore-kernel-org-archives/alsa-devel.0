@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pxa-ssp: drop SNDRV_PCM_FMTBIT_S24_LE
-Date: Wed, 13 Aug 2014 21:12:16 +0100
-Message-ID: <20140813201216.GR17528@sirena.org.uk>
-References: <1407959466-3690-1-git-send-email-zonque@gmail.com>
+Subject: Re: [v4 10/12] ASoC: Intel: mrfld: add the DSP DAPM
+	widgets
+Date: Wed, 13 Aug 2014 21:14:54 +0100
+Message-ID: <20140813201454.GS17528@sirena.org.uk>
+References: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1407145563-1303-11-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1327069352857965757=="
+Content-Type: multipart/mixed; boundary="===============2167860585679552118=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 30E1B2655BA
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 22:12:21 +0200 (CEST)
-In-Reply-To: <1407959466-3690-1-git-send-email-zonque@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A803B2655BA
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 22:15:01 +0200 (CEST)
+In-Reply-To: <1407145563-1303-11-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, haojian.zhuang@gmail.com
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1327069352857965757==
+--===============2167860585679552118==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="G20u0iTTYyGqPKvM"
+	protocol="application/pgp-signature"; boundary="WLhOVZARQ311lNMq"
 Content-Disposition: inline
 
 
---G20u0iTTYyGqPKvM
+--WLhOVZARQ311lNMq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 13, 2014 at 09:51:06PM +0200, Daniel Mack wrote:
-> This mode is unsupported, as the DMA controller can't do zero-padding
-> of samples.
+On Mon, Aug 04, 2014 at 03:16:01PM +0530, Subhransu S. Prusty wrote:
 
-Applied, thanks.
+> +	pr_debug("%s: widget = %s\n", __func__, w->name);
+> +	for (i = 0; i < w->num_kcontrols; i++) {
+> +		if (dapm_kcontrol_get_value(w->kcontrols[i])) {
+> +			mc = (struct soc_mixer_control *)(w->kcontrols[i])->private_value;
+> +			val |= 1 << mc->shift;
+> +		}
+> +	}
 
---G20u0iTTYyGqPKvM
+All my concerns about this still stand - using something called
+_get_value() to do something other than read the control value (which
+this does - it uses it as a boolean then does something else to read the
+value) which doesn't seem good.
+
+--WLhOVZARQ311lNMq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT68acAAoJELSic+t+oim9dGAP/2mTkIPfoMCpq/v2MCAALNzl
-GDsg8QjqZbNFHTHSDec1XnYnqO9dNrTvya1mQk4spE8xa7tfxcxaJaPss2iwpygd
-V3dpiOk7n0noMhhHhMQBOr7voCGXQIOknaniF3i34nqiuEZ/oXULocJqyp8IA18D
-IrrX+q4poL5m5Qlp/qmSx9206jxAAsgo8vQVKCWQwyDOdiHRFprv1oVJRPkTRRlK
-3JsqyJqBKvG8O2rS9n24aDDaSXeIoClV6UkvSh+zlFXY0pe2gFALTevuiDjcbzLE
-cCcplMxiy4OA8LzuK5Eusv5fIHBuQV5gX5hqFGjjcchKSTI1xzFIOkXTbR8O7BT4
-WcUtssmnyfbjh6sSeW/JhcETdJLYvkeVp4jJKMwdFC/3a4QewFb+FG2i3sQYwNco
-eN4R3L95j6VnwEGAYF3rQ2nwUIaQcXjZo+P5saYGdbfzjFgD2hxczZJTYmtpEx4t
-UPZWGLCuJaYsRpjuAVyNYbbXo1BNQbiuvaACNtbt3ScbEzEnIAtohPsL+KB537iH
-b7ejmqTpomWstiRKEfNFjLnbthjAVv1GX5ZN6UApHDS2lDyAnUslKYF8YzApBq+N
-M3wp2sWkQS9TJmbkVOBSK//NJx4aZeYo9oqJ1dwPpk0aKLxtijeyxfDCw9Teo8Su
-dE/4cfcJfjYv0J7do76a
-=QhN6
+iQIcBAEBAgAGBQJT68c7AAoJELSic+t+oim9ts4P/3kF9lFAnuDppYG73bx6C/SH
+5UVq9oZWplEpuB96jQ2xq0f3qPTr/hmtBuMAWw9B9cr2vhta9lcBPYUa2ducBfLT
+CP3Oh0ruL6D4aJRBebicbFRMBy33APAsRBc1yjB+qeOb6FRRx7ISDTku83yay4R+
+vJ6Obbv767WB71fFY5h/ejZWfzfbhuYUlJlarAEkCGW3AfHQqzZPZWJqeSM+M5kF
+vJBDwPMymjRHBJtDDXdGxOKaESk2bRRoxK8BscYtW2zwNxPC0vJ2RFBIN3mGoc35
+5Xevl1yujLKdLSy1rJHLZTGfOQ2UW5wYsAExbZm7peIDFdcq7OsV94FG3EYcRFx9
+56nqDbGTvU1Op7ZPgTErU5y67u49KLApz1KxkUjE0Ig1u6TSaE4croXlXGaDnX0G
+Q650p/eyWF7h36hzdVIO6mVkNyeKbWpEZU+7Ov/pTCg1wgEigdlgXaZPXZC76Ix2
+Fbg9pHV01RCEURE2uw3GXTBgqYwOuplnP0jDzwJ9eazwvuMfAZxK/rFbmyOX3n6C
+96VGFXQlHTLN9aZbdFYHGASqmiTFKugdWTE8SQJhskAWE1nK+QLHbS7u+be0y3br
+OmdHg488uYhVX1nU5OWcyDY5kxmV5u2rDniiG5S7/Z5E6NAk4+EV5NrR7G+wBJVB
+2H63w0F079SEoF40MP0v
+=hCOh
 -----END PGP SIGNATURE-----
 
---G20u0iTTYyGqPKvM--
+--WLhOVZARQ311lNMq--
 
---===============1327069352857965757==
+--===============2167860585679552118==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1327069352857965757==--
+--===============2167860585679552118==--
