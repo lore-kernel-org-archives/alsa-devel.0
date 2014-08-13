@@ -1,52 +1,53 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 00/14] Rework OMAP4+ HDMI audio support
-Date: Wed, 13 Aug 2014 12:04:25 +0100
-Message-ID: <20140813110425.GL17528@sirena.org.uk>
-References: <cover.1407503813.git.jsarha@ti.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Make Synchronous and Asynchronous modes
+ exclusive
+Date: Wed, 13 Aug 2014 12:05:04 +0100
+Message-ID: <20140813110504.GM17528@sirena.org.uk>
+References: <1407494479-9877-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gTWbk+XkjVo/nqZ0"
-Return-path: <linux-omap-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="eQwIhY+Mh5cQwJH0"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <cover.1407503813.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com
+In-Reply-To: <1407494479-9877-1-git-send-email-nicoleotsuka@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, devicetree@vger.kernel.org, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---gTWbk+XkjVo/nqZ0
+--eQwIhY+Mh5cQwJH0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Aug 08, 2014 at 04:23:41PM +0300, Jyri Sarha wrote:
-> Question to ASoC maintainers:
->   Do feel it is Ok to put ASoC code outside sound/soc the way I do
->   in these patches (in patch 0006 particularly)?
+On Fri, Aug 08, 2014 at 06:41:19PM +0800, Nicolin Chen wrote:
 
-I'm not thrilled about the idea, it's going to result in breakage during
-API updates and more cross tree coordination needs.
+> The previous patch (ASoC: fsl_sai: Add asynchronous mode support) added
+> new Device Tree bindings for Asynchronous and Synchronous modes support.
+> However, these two shall not be present at the same time.
 
---gTWbk+XkjVo/nqZ0
+Applied, thanks.
+
+--eQwIhY+Mh5cQwJH0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT60Y1AAoJELSic+t+oim9ZWkP/AoVhZIk/vqI9FXmsyAnnZ6i
-PrExq/+VdcFOe36gIXgSZwOxJ9565EqBCo3Z6kUP0mHKBMOaDJOGmClfr0AqXDRV
-3YcL+jsK8JEgak/Ho8B+Rm4s9KXQ/pTy1BWmWxpi1Fg0qy5XD+I7QxizAC6PyXnF
-t6x37a95zXUtLkeLNsARRa1pi5x1NY14okLduFK9Wi5Ls5aL2NsjGy30D+/vPP8y
-xwsG79GnBdE71HcTgV59UHWBRDBrWAZubLwr6BOuhtOEgJLC+KbXDuENQsOILewU
-j0i2bETdCotIXPTjZO2pEUwVvGXldG/FUg42T7ChzVM3qtEyt6DDM+A3MxFLbhkO
-ouN9A0fHkdp3wfOSQ0/jyNC93v2NssYE1C8CH42omkAAwUzTkTxz3rRMM3UFQxCd
-XKQbLTogK81BB2Jvjs24unUHv0LvU1TBD+h7ibJqLj6aK8sx8hAqkEvvkKoPS1j5
-JgYTrHZW1cC1acIkkuaLZJrL/Uh8X2RriqTwOj5ncFlAZ/xYfarZ88SpcmOlAI9C
-QlFwEE/jL0Cg/tget4aWqBHtpLbGaQ8ktMNVNF3L7lkXexVdNW+lkyNK4rXinhBf
-XXJycvxb0F5itNWHzesG4VUr+xF3nj7CcYbPqdV6gvxTugW8wMa7mteG5V7aOwpa
-16U7+XIR3AXBQCMDnlRe
-=jtWO
+iQIcBAEBAgAGBQJT60ZdAAoJELSic+t+oim9ybMP/0/F7Tr/d6KL/XbxzCsUVli8
+X516T8JLDNJ0nHUoUJIR3j5zN0mOAlzXt+9OzDX3Nlf5JviVddIc14UH3xUUq/Xq
+g5YFsdnyf8WFXQmhnqsdWCiifJ6WCPIwTEa5zPpNAj0Z/grVXTCRtKIkmFprNgNM
+73BBkhL8mmTSj31HnVK6S6DUXUPAAlpuVcK/ynVrsP9TE//lr8Pmgb44fvqnnm1Y
+k3aSr4LtkPrEojc5USyy75TnNHLy/WQY5urCbGP08ggUICyQPpQGM9p/OZ0Ob2rW
+4bcOP40FfQ5M5VIqGP4OyDfWsqyC+kYI6YaJWZtz5qstuOKy9pPMRg2Pakbv0xYg
+KPLU3HJQTAFuNkiPQhhXiRinJE+XoBxUqBF/fpkLrjPIPi8oKzp5c6RiTl6oI47Y
+NzpF2IvkVkDYs9QsIFpJhM7o4S1YTRfQpY543UuWwIcqAE2yWahe4Ad7JcxZ+7xz
+6XTnHf2l5lwj2QK3s5N/Avha/KZCLFkHuGu8swskO4Rr+92KSewVGNuBc3CSsZ3y
+s8VYRePWOdISdiDYwyyUNR8Vknckq2Pi6vEjMNFts9KOIHUQixLzK3Cpo2B9i644
+Vy3+yBvDpjGb+2DuIubziBoc9io8s8KVk7B+AyEcjPDcKBnyOFFhO8MNEQLiIn5J
+Jcq8SjNxGE16s7X4sb+x
+=afrS
 -----END PGP SIGNATURE-----
 
---gTWbk+XkjVo/nqZ0--
+--eQwIhY+Mh5cQwJH0--
