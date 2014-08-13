@@ -1,66 +1,51 @@
-From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 1/2] mfd: arizona: Add support for	INn_MODE
- register control
-Date: Wed, 13 Aug 2014 09:26:09 +0900
-Message-ID: <20140813092609.35a98034@songinha-Samsung-DeskTop-System>
-References: <20140809173138.767b97fd@songinha-Samsung-DeskTop-System>
- <20140812082811.GB15833@opensource.wolfsonmicro.com>
+From: Arun Raghavan <arun@accosted.net>
+Subject: Re: Audio mini conference 2014?
+Date: Wed, 13 Aug 2014 08:17:36 +0530
+Message-ID: <CACuU-+hpPH_Q7tEn1ZbCO3+WyevZyUgw7A4hHiiH4k4SQYpA-w@mail.gmail.com>
+References: <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <s5h4myhpcby.wl%tiwai@suse.de> <20140721232054.GN17528@sirena.org.uk>
+ <s5h1ttehr91.wl%tiwai@suse.de> <20140722222038.GW17528@sirena.org.uk>
+ <53CF8306.3090009@zonque.org>
+ <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
+ <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
+ <20140807140957.GI8181@intel.com>
+ <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
+ <53EA6165.3070902@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-reply-to: <20140812082811.GB15833-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qg0-f42.google.com (mail-qg0-f42.google.com
+ [209.85.192.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id F393F26548E
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 04:47:57 +0200 (CEST)
+Received: by mail-qg0-f42.google.com with SMTP id j5so10296484qga.15
+ for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 19:47:56 -0700 (PDT)
+In-Reply-To: <53EA6165.3070902@zonque.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@zonque.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Charles.
+On 13 August 2014 00:18, Daniel Mack <daniel@zonque.org> wrote:
+> On 08/12/2014 05:14 PM, Paul Handrigan wrote:
+>> Tuesday would be good as well. Should we go with that since we may have a
+>> place for it?
+>
+> I just got a final confirmation from the guys at Chaosdorf, and they say
+> we can have the room on Tuesday 14th from 10am.
+>
+> Should I confirm that from our side as well?
 
-Thanks for your review.
+++ from me!
 
-On Tue, 12 Aug 2014 09:28:11 +0100
-Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
-
-> On Sat, Aug 09, 2014 at 05:31:38PM +0900, Inha Song wrote:
-> > Some boards need to set the INn_MODE[1:0] register to change
-> > the input signal patch. This wlf,inmode property is optional.
-> > If present values must be specified by the number of
-> > ARIZONA_MAX_INPUT.
-> > 
-> > Example:
-> >    - wlf,inmode = <2 0 2 0>;	/* IN1, IN3 use DMIC */
-> > 
-> > Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-> > ---
-> >  drivers/mfd/arizona-core.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-> > index 10a0cb9..4b2eb73 100644
-> > --- a/drivers/mfd/arizona-core.c
-> > +++ b/drivers/mfd/arizona-core.c
-> > @@ -560,6 +560,10 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
-> >  			ret);
-> >  	}
-> >  
-> > +	of_property_read_u32_array(arizona->dev->of_node,
-> > +					 "wlf,inmode",
-> > +					 arizona->pdata.inmode,
-> > +					 ARRAY_SIZE(arizona->pdata.inmode));
-> 
-> Might be better to allow the device tree to be shorter than the
-> array in pdata, should this get expanded on future devices.
-> 
-
-OK, I will fix in v2 to use "of_property_count_u32_elems" and "of_property_read_u32_index".
-
-Best regards,
-Inha Song.
-
-> Thanks,
-> Charles
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- Arun
