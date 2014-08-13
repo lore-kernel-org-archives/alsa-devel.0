@@ -1,46 +1,38 @@
 From: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Subject: [PATCH] mfd: wm8994: declare dc servo register for wm8958 as volatile
-Date: Wed, 13 Aug 2014 11:46:25 +0100
-Message-ID: <1407926786-8528-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm_hubs: Fix DC Servo readback
+Date: Wed, 13 Aug 2014 11:47:20 +0100
+Message-ID: <1407926840-8576-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-DC Servo register 57h holds the DC offset value after the hardware has
-completed the DC Servo Correction, so declare this register as volatile
-because it is changed by the hardware.
+wm_hubs is a common driver code shared by WM8958, WM1811, WM8944
+and WM8993 all these codecs have the DC Servo Values either in register
+57h or 59h. Current code was reading register 58h for WM8958 and WM8994
+revisions 2 and 3 but looking at the data sheet the DC Servo Values are
+stored in register 57h for these codecs. This patch fixes it by reading
+the correct register for DC Servo
 
 Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
 ---
- drivers/mfd/wm8994-regmap.c          |    1 +
- include/linux/mfd/wm8994/registers.h |    1 +
- 2 files changed, 2 insertions(+)
+ sound/soc/codecs/wm_hubs.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/mfd/wm8994-regmap.c b/drivers/mfd/wm8994-regmap.c
-index 2fbce9c..e775565 100644
---- a/drivers/mfd/wm8994-regmap.c
-+++ b/drivers/mfd/wm8994-regmap.c
-@@ -1169,6 +1169,7 @@ static bool wm8958_volatile_register(struct device *dev, unsigned int reg)
- 	case WM8958_FW_MINOR_0:
- 	case WM8958_FW_PATCH_1:
- 	case WM8958_FW_PATCH_0:
-+	case WM8958_DC_SERVO:
- 		return true;
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 916817f..95c5d71 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -210,9 +210,6 @@ static int wm_hubs_read_dc_servo(struct snd_soc_codec *codec,
+ 	case 2:
+ 		dcs_reg = WM8994_DC_SERVO_4E;
+ 		break;
+-	case 1:
+-		dcs_reg = WM8994_DC_SERVO_READBACK;
+-		break;
  	default:
- 		return wm8994_volatile_register(dev, reg);
-diff --git a/include/linux/mfd/wm8994/registers.h b/include/linux/mfd/wm8994/registers.h
-index db8cef3..85b4fec 100644
---- a/include/linux/mfd/wm8994/registers.h
-+++ b/include/linux/mfd/wm8994/registers.h
-@@ -71,6 +71,7 @@
- #define WM8994_DC_SERVO_1                       0x54
- #define WM8994_DC_SERVO_2                       0x55
- #define WM8994_DC_SERVO_4                       0x57
-+#define WM8958_DC_SERVO			0x57
- #define WM8994_DC_SERVO_READBACK                0x58
- #define WM8994_DC_SERVO_4E			0x59
- #define WM8994_ANALOGUE_HP_1                    0x60
+ 		dcs_reg = WM8993_DC_SERVO_3;
+ 		break;
 -- 
 1.7.9.5
