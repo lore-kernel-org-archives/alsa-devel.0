@@ -1,56 +1,64 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: wm_hubs: Fix DC Servo readback
-Date: Wed, 13 Aug 2014 12:08:44 +0100
-Message-ID: <20140813110844.GF15833@opensource.wolfsonmicro.com>
-References: <1407926840-8576-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] mfd: wm8994: declare dc servo register for wm8958 as
+	volatile
+Date: Wed, 13 Aug 2014 12:13:38 +0100
+Message-ID: <20140813111338.GG15833@opensource.wolfsonmicro.com>
+References: <1407926786-8528-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1407926840-8576-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+In-Reply-To: <1407926786-8528-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
 Cc: broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 13, 2014 at 11:47:20AM +0100, Nikesh Oswal wrote:
-> wm_hubs is a common driver code shared by WM8958, WM1811, WM8944
-> and WM8993 all these codecs have the DC Servo Values either in register
-> 57h or 59h. Current code was reading register 58h for WM8958 and WM8994
-> revisions 2 and 3 but looking at the data sheet the DC Servo Values are
-> stored in register 57h for these codecs. This patch fixes it by reading
-> the correct register for DC Servo
+On Wed, Aug 13, 2014 at 11:46:25AM +0100, Nikesh Oswal wrote:
+> DC Servo register 57h holds the DC offset value after the hardware has
+> completed the DC Servo Correction, so declare this register as volatile
+> because it is changed by the hardware.
 > 
 > Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
 > ---
->  sound/soc/codecs/wm_hubs.c |    3 ---
->  1 file changed, 3 deletions(-)
+>  drivers/mfd/wm8994-regmap.c          |    1 +
+>  include/linux/mfd/wm8994/registers.h |    1 +
+>  2 files changed, 2 insertions(+)
 > 
-> diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-> index 916817f..95c5d71 100644
-> --- a/sound/soc/codecs/wm_hubs.c
-> +++ b/sound/soc/codecs/wm_hubs.c
-> @@ -210,9 +210,6 @@ static int wm_hubs_read_dc_servo(struct snd_soc_codec *codec,
->  	case 2:
->  		dcs_reg = WM8994_DC_SERVO_4E;
->  		break;
-> -	case 1:
-> -		dcs_reg = WM8994_DC_SERVO_READBACK;
-> -		break;
+> diff --git a/drivers/mfd/wm8994-regmap.c b/drivers/mfd/wm8994-regmap.c
+> index 2fbce9c..e775565 100644
+> --- a/drivers/mfd/wm8994-regmap.c
+> +++ b/drivers/mfd/wm8994-regmap.c
+> @@ -1169,6 +1169,7 @@ static bool wm8958_volatile_register(struct device *dev, unsigned int reg)
+>  	case WM8958_FW_MINOR_0:
+>  	case WM8958_FW_PATCH_1:
+>  	case WM8958_FW_PATCH_0:
+> +	case WM8958_DC_SERVO:
+
+I think you can just use the WM8994_DC_SERVO_4 define the
+register is called DC Servo (4) in the datasheet.
+
+Also would it be worth adding DC_SERVO_1 and DC_SERVO_READBACK as
+they are being treated as volatile on 8994 and look identical in
+the datasheet.
+
+>  		return true;
 >  	default:
->  		dcs_reg = WM8993_DC_SERVO_3;
->  		break;
+>  		return wm8994_volatile_register(dev, reg);
+> diff --git a/include/linux/mfd/wm8994/registers.h b/include/linux/mfd/wm8994/registers.h
+> index db8cef3..85b4fec 100644
+> --- a/include/linux/mfd/wm8994/registers.h
+> +++ b/include/linux/mfd/wm8994/registers.h
+> @@ -71,6 +71,7 @@
+>  #define WM8994_DC_SERVO_1                       0x54
+>  #define WM8994_DC_SERVO_2                       0x55
+>  #define WM8994_DC_SERVO_4                       0x57
+> +#define WM8958_DC_SERVO			0x57
+>  #define WM8994_DC_SERVO_READBACK                0x58
+>  #define WM8994_DC_SERVO_4E			0x59
+>  #define WM8994_ANALOGUE_HP_1                    0x60
 > -- 
-
-This doesn't look right, firstly if it is the same register for
-all versions then surely we should change the code that sets
-dcs_readback_mode rather than setting that to different values
-but treating them the same. Although obviously if nothing still
-uses this case we could remove it as well.
-
-Also I think the situation is more complex for example on version
-4.4 of the datasheet for wm8994 the WR_VAL fields appear to be in
-register 59h. Which is not consistent with this.
+> 1.7.9.5
 
 Thanks,
 Charles
