@@ -1,45 +1,41 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v3 00/14] Rework OMAP4+ HDMI audio support
-Date: Wed, 13 Aug 2014 15:51:54 +0300
-Message-ID: <53EB5F6A.9060308@ti.com>
-References: <cover.1407503813.git.jsarha@ti.com> <20140813110425.GL17528@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: trouble using S/PDIF input on CMI8738-MC6:
+	C-Media	CMI8738 (model 55)
+Date: Wed, 13 Aug 2014 17:14:11 +0200
+Message-ID: <53EB80C3.7020909@ladisch.de>
+References: <53EA40EB.2060201@seniorblanco.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20140813110425.GL17528@sirena.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5F288260864
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 17:14:12 +0200 (CEST)
+In-Reply-To: <53EA40EB.2060201@seniorblanco.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: jon <jon@seniorblanco.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/13/2014 02:04 PM, Mark Brown wrote:
-> On Fri, Aug 08, 2014 at 04:23:41PM +0300, Jyri Sarha wrote:
->> Question to ASoC maintainers:
->>    Do feel it is Ok to put ASoC code outside sound/soc the way I do
->>    in these patches (in patch 0006 particularly)?
->
-> I'm not thrilled about the idea, it's going to result in breakage during
-> API updates and more cross tree coordination needs.
->
+jon wrote:
+> Simple mixer control 'IEC958 In Record',0
+>   Mono: Playback [off]
 
-I guess then the least bad alternative would be cutting the cpu-dai 
-driver away from drivers/video/fbdev/omap2/dss/hdmi_audio.c and placing 
-it under sound/soc/omap and registering it from hdmi_audio.c the same 
-way as hdmi-audio-codec and asoc-simple-card is now registered.
+Shouldn't this be on?
 
-There would be two devices for a single ip, but at least the ASoC side 
-driver would receive its resources directly from the HDMI video driver 
-with necessary tools to synchronize the access.
+> Simple mixer control 'IEC958 In Select',0
+>   Mono: Playback [on]
 
-This approach would work for other HDMI audio situation too, where there 
-would usually (for tda998x and SiI9022 at least) be a need to register 
-an i2s codec driver associated with the HDMI encoder. It would probably 
-be possible to make a single codec driver to work with multiple HDMI 
-encoders if the API between the codec and endcoder drivers is designed 
-that in mind.
+IIRC this selects between two different inputs.
+Try both settings.
 
-How does this sound?
 
-Best regards,
-Jyri
+Regards,
+Clemens
