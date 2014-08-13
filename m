@@ -1,28 +1,20 @@
-From: Arun Raghavan <arun@accosted.net>
-Subject: Re: Audio mini conference 2014?
-Date: Wed, 13 Aug 2014 08:17:36 +0530
-Message-ID: <CACuU-+hpPH_Q7tEn1ZbCO3+WyevZyUgw7A4hHiiH4k4SQYpA-w@mail.gmail.com>
-References: <1405449320.3010.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <s5h4myhpcby.wl%tiwai@suse.de> <20140721232054.GN17528@sirena.org.uk>
- <s5h1ttehr91.wl%tiwai@suse.de> <20140722222038.GW17528@sirena.org.uk>
- <53CF8306.3090009@zonque.org>
- <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
- <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
- <20140807140957.GI8181@intel.com>
- <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
- <53EA6165.3070902@zonque.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 12/15] oxfw: Add support for
+	Behringer/Mackie	devices
+Date: Wed, 13 Aug 2014 08:41:58 +0200
+Message-ID: <53EB08B6.6080908@ladisch.de>
+References: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1399991272-5807-13-git-send-email-o-takashi@sakamocchi.jp>
+ <53E795C5.1010506@ladisch.de> <53E95664.7020707@sakamocchi.jp>
+ <53E9C33A.2090508@ladisch.de> <53EAA15D.1030306@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f42.google.com (mail-qg0-f42.google.com
- [209.85.192.42])
- by alsa0.perex.cz (Postfix) with ESMTP id F393F26548E
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 04:47:57 +0200 (CEST)
-Received: by mail-qg0-f42.google.com with SMTP id j5so10296484qga.15
- for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 19:47:56 -0700 (PDT)
-In-Reply-To: <53EA6165.3070902@zonque.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5E44B2654E9
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 08:41:59 +0200 (CEST)
+In-Reply-To: <53EAA15D.1030306@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,20 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, "fen >> Jay Fenlason" <fenlason@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 13 August 2014 00:18, Daniel Mack <daniel@zonque.org> wrote:
-> On 08/12/2014 05:14 PM, Paul Handrigan wrote:
->> Tuesday would be good as well. Should we go with that since we may have a
->> place for it?
+Takashi Sakamoto wrote:
+> On Aug 12 2014 16:33, Clemens Ladisch wrote:
+>> Or just do the detection like the Windows driver, through the vendor/
+>> model name strings (this is what my old Fireworks driver did because
+>> I didn't know all model IDs; see match_echofire_device_name).  The
+>> Mackie driver's .inf file has this list of device identifiers:
+>>
+>> "AVC\Loud_Technologies_Inc.&Onyxi&typ_1"
+>> "AVC\Loud_Technologies_Inc.&Onyx_1640i&typ_1"
+>> "AVC\Loud_Technologies_Inc.&Onyx-i&typ_1"
+>> "AVC\Loud_Technologies_Inc.&d.Pro&typ_1"
+>> "AVC\Loud_Technologies_Inc.&Mackie_Onyx_Satellite&typ_1"
+>> "AVC\Loud_Technologies_Inc.&Tapco_LINK.firewire_4x6&typ_1"
+>> "AVC\Loud_Technologies_Inc.&U.420&typ_1"
+>> "AVC\Mackie&Onyx_Firewire&typ_1"
 >
-> I just got a final confirmation from the guys at Chaosdorf, and they say
-> we can have the room on Tuesday 14th from 10am.
+> This is a good idea.
 >
-> Should I confirm that from our side as well?
+> I note that Mackie Onyx-i series has two revisions. OXFW was used for
+> the former revision. Dice is used for the latter revision. See:
+> http://www.mackie.com/products/onyxiseries/drivers/
+>
+> When using this idea, we have a need to distinguish these two revisions
+> for prevention from applying OXFW driver to the latter revision. Do you
+> have any good idea?
 
-++ from me!
+The OXFW devices work with Core Audio, so they are marked as AV/C
+devices; the DICE devices are not.  So it would be possible to use
+different specifier_id/version entries.
 
--- Arun
+Anyway, the Windows DICE driver uses detection by name, too; the .inf
+entries show a different vendor name:
+
+ 1394\LOUD&Onyxi
+ 1394\LOUD&OnyxBlackbird
+
+
+Regards,
+Clemens
