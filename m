@@ -1,96 +1,66 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 12/15] oxfw: Add support for
-	Behringer/Mackie	devices
-Date: Wed, 13 Aug 2014 08:21:01 +0900
-Message-ID: <53EAA15D.1030306@sakamocchi.jp>
-References: <1399991272-5807-1-git-send-email-o-takashi@sakamocchi.jp>
- <1399991272-5807-13-git-send-email-o-takashi@sakamocchi.jp>
- <53E795C5.1010506@ladisch.de> <53E95664.7020707@sakamocchi.jp>
- <53E9C33A.2090508@ladisch.de>
+From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 1/2] mfd: arizona: Add support for	INn_MODE
+ register control
+Date: Wed, 13 Aug 2014 09:26:09 +0900
+Message-ID: <20140813092609.35a98034@songinha-Samsung-DeskTop-System>
+References: <20140809173138.767b97fd@songinha-Samsung-DeskTop-System>
+ <20140812082811.GB15833@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 132AC265357
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 01:21:06 +0200 (CEST)
-In-Reply-To: <53E9C33A.2090508@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, stefanr@s5r6.in-berlin.de, "fen >> Jay Fenlason" <fenlason@redhat.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-reply-to: <20140812082811.GB15833-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 12 2014 16:33, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> On Aug 11 2014 00:54, Clemens Ladisch wrote:
->>> Takashi Sakamoto wrote:
->>>> +	/* IDs are unknown but able to be supported */
->>>> +	/*  Mackie(Loud), d.2 pro */
->>>> +	/*  Mackie(Loud), d.4 pro */
->>>> +	/*  Mackie(Loud), U.420 */
->>>> +	/*  Mackie(Loud), U.420d */
->>>
->>> To support all Mackie devices, use one ID entry with only the vendor ID,
->>> and abort with -ENODEV from the _probe function if the hardware is not
->>> actually an OXFW97x device (try to read the HARDWARE_ID and/or
->>> FIRMWARE_ID registers).
->>
->> In this idea, OXFW driver transfers the transaction(s) for all of
->> Mackie(Loud) devices on IEEE 1394 bus when they're probed. I want to
->> avoid such changes possible to affects the other models on the same bus
->> because I'm afraid of side effects.
+Hi, Charles.
+
+Thanks for your review.
+
+On Tue, 12 Aug 2014 09:28:11 +0100
+Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
+
+> On Sat, Aug 09, 2014 at 05:31:38PM +0900, Inha Song wrote:
+> > Some boards need to set the INn_MODE[1:0] register to change
+> > the input signal patch. This wlf,inmode property is optional.
+> > If present values must be specified by the number of
+> > ARIZONA_MAX_INPUT.
+> > 
+> > Example:
+> >    - wlf,inmode = <2 0 2 0>;	/* IN1, IN3 use DMIC */
+> > 
+> > Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+> > ---
+> >  drivers/mfd/arizona-core.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+> > index 10a0cb9..4b2eb73 100644
+> > --- a/drivers/mfd/arizona-core.c
+> > +++ b/drivers/mfd/arizona-core.c
+> > @@ -560,6 +560,10 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
+> >  			ret);
+> >  	}
+> >  
+> > +	of_property_read_u32_array(arizona->dev->of_node,
+> > +					 "wlf,inmode",
+> > +					 arizona->pdata.inmode,
+> > +					 ARRAY_SIZE(arizona->pdata.inmode));
 > 
-> The only other known Mackie devices are the 400F/1200F.  The Fireworks
-> firmware doesn't blow up if you try to read unsupported registers, but
-> if you want to be sure, you can blacklist these two IDs.
-
-As long as I know, Mackie (Loud) produced FireWire sound devices with
-Fireworks, OXFW and Dice. But I don't know all models at all. There may
-be models with the other chipset.
-
-Furthermore, hardware vendors sometimes add customization to firmware
-for their models.
-
-I think we should not stand on such assumption.
-
-> Or just do the detection like the Windows driver, through the vendor/
-> model name strings (this is what my old Fireworks driver did because
-> I didn't know all model IDs; see match_echofire_device_name).  The
-> Mackie driver's .inf file has this list of device identifiers:
+> Might be better to allow the device tree to be shorter than the
+> array in pdata, should this get expanded on future devices.
 > 
-> "AVC\Loud_Technologies_Inc.&Onyxi&typ_1"
-> "AVC\Loud_Technologies_Inc.&Onyx_1640i&typ_1"
-> "AVC\Loud_Technologies_Inc.&Onyx-i&typ_1"
-> "AVC\Loud_Technologies_Inc.&d.Pro&typ_1"
-> "AVC\Loud_Technologies_Inc.&Mackie_Onyx_Satellite&typ_1"
-> "AVC\Loud_Technologies_Inc.&Tapco_LINK.firewire_4x6&typ_1"
-> "AVC\Loud_Technologies_Inc.&U.420&typ_1"
-> "AVC\Mackie&Onyx_Firewire&typ_1"
-> 
-> (This format is documented at <http://msdn.microsoft.com/en-us/library/windows/hardware/ff556371.aspx>;
-> apparently, spaces are replaced with "_".)
 
-This is a good idea.
+OK, I will fix in v2 to use "of_property_count_u32_elems" and "of_property_read_u32_index".
 
-I note that Mackie Onyx-i series has two revisions. OXFW was used for
-the former revision. Dice is used for the latter revision. See:
-http://www.mackie.com/products/onyxiseries/drivers/
+Best regards,
+Inha Song.
 
-When using this idea, we have a need to distinguish these two revisions
-for prevention from applying OXFW driver to the latter revision. Do you
-have any good idea?
-
-
-Regards
-
-Takashi Sakamoto
-(In summer vacation)
-o-takashi@sakamocchi.jp
+> Thanks,
+> Charles
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
