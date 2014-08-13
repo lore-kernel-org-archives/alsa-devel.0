@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v4 06/12] ASoC: Intel: mrfld: add the gain
-	controls
-Date: Wed, 13 Aug 2014 21:03:39 +0100
-Message-ID: <20140813200339.GP17528@sirena.org.uk>
+Subject: Re: [v4 07/12] ASoC: Intel: mfld-pcm: add control for
+ powering up/down dsp
+Date: Wed, 13 Aug 2014 21:04:46 +0100
+Message-ID: <20140813200446.GQ17528@sirena.org.uk>
 References: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
- <1407145563-1303-7-git-send-email-subhransu.s.prusty@intel.com>
+ <1407145563-1303-8-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1469763320514286230=="
+Content-Type: multipart/mixed; boundary="===============4586954049454491824=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E5E20265593
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 22:03:52 +0200 (CEST)
-In-Reply-To: <1407145563-1303-7-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A5CBA265593
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 22:04:51 +0200 (CEST)
+In-Reply-To: <1407145563-1303-8-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,53 +27,60 @@ Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1469763320514286230==
+--===============4586954049454491824==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HbkTnvMcXUUyEDoc"
+	protocol="application/pgp-signature"; boundary="unZN0Zy24D52umEt"
 Content-Disposition: inline
 
 
---HbkTnvMcXUUyEDoc
+--unZN0Zy24D52umEt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 04, 2014 at 03:15:57PM +0530, Subhransu S. Prusty wrote:
+On Mon, Aug 04, 2014 at 03:15:58PM +0530, Subhransu S. Prusty wrote:
 
-> +static const struct snd_kcontrol_new sst_gain_controls[] = {
-> +	SST_GAIN("media0_in", SST_PATH_INDEX_MEDIA0_IN, SST_TASK_MMX, 0, &sst_gains[0]),
+> +static inline int power_up_sst(struct sst_runtime_stream *stream)
+> +{
+> +	return stream->ops->power(sst->dev, true);
+> +}
+> +
+> +static inline int power_down_sst(struct sst_runtime_stream *stream)
+> +{
+> +	return stream->ops->power(sst->dev, false);
+> +}
 
-Media0 Capture Volume - all the controls here look like they should have
-standard ALSA style names.
+These return values are ignored.  Shouldn't we be syncing out control
+values on power changes?
 
---HbkTnvMcXUUyEDoc
+--unZN0Zy24D52umEt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT68SXAAoJELSic+t+oim9Q9kP/2LhsO3/t/dHk3O8xjtjHkLi
-yY/uCQA2rXBdfewAc73ioNLZkVMJN65sR0kSxe3bxVEGhcOVW/EUqqO6V6JJMVyB
-xFQPzN9zRtIr9idS0p9OPj+jHNF00gp7uHjRm5Z89Nb6qFT6qqpSCiI5inwYwv79
-NaSUbbdT1EiNXOZypBHzPueZuFxrDMY0NVTmb4gmhvblTIlgifXGrsjSHPw0ZCYn
-SBtE9WV5eXKXbv+8yqdaheMM3rLQMI6aldYwe6uRylZMQ6P7JrRc4GDxNy9A6rij
-DlBOxTyh52RLWu1eDQ1OTMcDZB6A9UexrnXyyNjfbrQUIL+tq5zb5pn4oZlvSQ+C
-pfCLRr5ZL8iroxq+QmF2csiW1y96C/gtxdAT/F0nye1zAYhaDjucpdSRnXHoH4xV
-KnMetgoLHkWNUSDZZt2ARoRJaHnKiRYI0O2S+pcgcbOefcdLQE0IjY8LZNE9kWS6
-FRkC1+ja2P3vLya9cAWGjoeAVnvnclZit90gZl7LXBbT+7hJqKRJH2eYU9HaqtPa
-6wsCt4DQ45mOgZabj2XJu378CMhJ39j1DPbFfXVwpwzQBrjBMGKJMrTjI2koHz2y
-iLicP44XlLmImuhDXWrMgpkFGLU/3cqfTTcksw0BxKtPFCQ/rqRTDP6ZzO9Jh2mz
-H56PRTbiYRfUD1DpjtL1
-=H01B
+iQIcBAEBAgAGBQJT68TbAAoJELSic+t+oim92NcP+QErXr7iIzAuhwskJc2fB2sx
+yUyNjbdxXM/F8A5/dx2kEosynbrbS+5s9cTUBtj7/T2igXJ5P61Ts2FKs3iFYbWa
++N9hrkIkoTsg+9fhbOZU4PAUP+DA0Z1XWXjRNLt5T9i+au49MmFqSvFmm80YgcxX
+N9bu7AEMjmwBRivrRYXiGxOPNeZ4wpqmr/JFtz0ibUKvrrG7P54gMN73KPQ+Iy70
+N0rVTqYnT1vVbc09cjgzT2HSLGg+ViMuTa2Qge0m9qsJ3oOwIk0hX5fL0nk/E6li
+tfPckEwe4Pv04Z4tRaF0xiq7pJbafDUUPP/f/j8yu7b9mj2FqN2KRAFl4Wsu7vxl
+nQ6xgAo3jrB0LAnBeBvDKYkqO73B0g1FcOHJeSwb0zrWSOhfj0bmj91x1xKtg18P
+8mhOImohzgljtYsuAAQC9A1oXvd1AG05DOZO3zBrddIeIpuy+fZj4UpRryqwCjpp
+/jqyGoy6FTAX4xnLZijJ3Hll9UsU5Vvcdo8JHQfnL1r7xwWj4IFqH1FdTbSuNEgn
+6zYHwd6Vqo48c9cStBDinjsvP/sWd5Ybf+7rinmkxfl5+ek1pUl7K7rFpSuejKqa
+K5rGig4wvEIylMgaZxh7rmJILikB0YUUqlklO/4kRBbJbmIhxtS35fAxc0gLzHQ9
+FMXqSwkM0IPxv5sNKDwl
+=FwZ+
 -----END PGP SIGNATURE-----
 
---HbkTnvMcXUUyEDoc--
+--unZN0Zy24D52umEt--
 
---===============1469763320514286230==
+--===============4586954049454491824==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1469763320514286230==--
+--===============4586954049454491824==--
