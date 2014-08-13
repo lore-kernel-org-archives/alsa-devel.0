@@ -1,49 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: sirf: usp: Add bitclock inversion support
-Date: Wed, 13 Aug 2014 11:35:30 +0100
-Message-ID: <20140813103530.GH17528@sirena.org.uk>
-References: <1407918700-23972-1-git-send-email-rongjun.ying@csr.com>
+Subject: Re: [PATCH v2] ASoC: wm8994: Demux the microphone detection IRQ
+Date: Wed, 13 Aug 2014 11:37:26 +0100
+Message-ID: <20140813103726.GI17528@sirena.org.uk>
+References: <1407920746-7534-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Qz0n0XGWsIoTmF/D"
+	protocol="application/pgp-signature"; boundary="YxHrAKo4WTx4SUzr"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1407918700-23972-1-git-send-email-rongjun.ying@csr.com>
+In-Reply-To: <1407920746-7534-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Rongjun Ying <rongjun.ying@csr.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Barry Song <baohua@kernel.org>, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Workgroup.linux@csr.com
+To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---Qz0n0XGWsIoTmF/D
+--YxHrAKo4WTx4SUzr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 13, 2014 at 04:31:40PM +0800, Rongjun Ying wrote:
-> Signed-off-by: Rongjun Ying <rongjun.ying@csr.com>
+On Wed, Aug 13, 2014 at 10:05:45AM +0100, Nikesh Oswal wrote:
+> Current code only allows direct routing of the WM8994 microphone
+> detection signal to a GPIO this change adds support to demux the
+> interrupt from the main interrupt line of the codec.
 
 Applied, thanks.
 
---Qz0n0XGWsIoTmF/D
+--YxHrAKo4WTx4SUzr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT6z9vAAoJELSic+t+oim9SqEQAJa44gI7/wt+4CMnJMDn36BN
-r2vILC1MXcupteoo7a/nQohwN8+UXksR7c9WgP+GSH2Hh8y5GraR3sLIFpFBWgVX
-HsFsIgsAvVU7/78ogKnAnMMxdpvb/w2BMMjt+jk3fPLCwnEbTY5i3Pd5Q7y6S2Fp
-GzmdDHKVDAKmXaN1fRvtAf5nlozPtJJQipvXNCmTQoAOinj2hC9tq5XT61TSDm9U
-1yIJMzRMyKkg9pUX3ETW6fU9iLoOC29mmYm2hgYZq/3YvmdtdWu65Ul5exswdh/s
-WwzcEQLm52ZUKgL7Y8M99QsuvRyBVoo20VlDAOlJkGIntYJO62TAyLhygUKTT5Tq
-GX2MsDGlmF4uGg4WpftkRhpXnh8GRR7HXbWkrPOEY33q7M3CHeXabzen/7M4g2yW
-LhwIvTDpPmygOXT7hBuiBETP9Rs8XRNL8aKBcuLpe1qJ144fMQVvaV6WetzB/9Rw
-bKRu/k07EpgaU21f7TOZxhB+uMlyFBy4C1jv+5x0NX2Lrrk9PriIQceMxuNMDZ5G
-WL/U9uu+c54S0nqGFr8GsMtxpao/b5aAPD9JLCI5lmQyMBEBhudq/jAIDZ5gjY25
-RFITWyNqP3NIVe72Mx93qcTvh9njkIK3LneWDndIxw4dhlt5MhM3JLYQPzg8gqrU
-QxP/z+LjY0j+z/FbOXId
-=1DRE
+iQIcBAEBAgAGBQJT6z/jAAoJELSic+t+oim9ID0P/iycn1S4WadkDs/QFB/Cr+Mu
+QIOz9ztn1Lq8Hjdx925HeVcYhpW1GN9g/lqSEqBS4p06jn96qb9CSGvTNEHlgfdq
+o7p3aIIJX47+nC5Nl/1P4ZSsVk+2AquGSDpuotEGe+irTbUdwl66zcPKKHOUKro7
+ZsNB6aRxcnV8fx8CpEGUAa1BHgO2xkIJcJ84W93KpSDoLko32GmP0puFrRBzHgXj
+IacK0ocwiwJxYa4jj4i215sXJpYfZ1iZwgNbexFAdeHqmhi7DuTJ4c6UqL2nymCA
+8d+bM6uff9rnmCTDoFroDf5vncxOiNb5v3/CtDZl+nbkiPty/2vY/XuKhWZpXKvh
+2A/zjlW1Hii1pUY6QXuPfhmc9YqtYZtKXl93nl+302maGsDeu5sfDwRCIB8LFLqR
+vTAw7UG9d5AQWCG2obBGlDjRAfbQX76+vDwpweWiRZizMrQUuzxYoPz3EFiccRV8
+b3mNIK94P3+xDQZiUN6cQC3xWhX2ln6zz5eJqpRJpxW6sPsQoYLuABmnK6sa5exz
+XN4kzO4J8YfFNre7ZB2wcNHVl/BWmRz0Ff5Kki8q/Z9HRIqy90iYuzsEM6Q0T6Gg
+DE4gefyn88HDgt2eHfgG/U2lsMt79Tu7Q4VSx5PI9ISF6PH8qO3M7bKsfblNXhZ/
+aXSUCYVxaZXpRgNMPhyr
+=Zsc2
 -----END PGP SIGNATURE-----
 
---Qz0n0XGWsIoTmF/D--
+--YxHrAKo4WTx4SUzr--
