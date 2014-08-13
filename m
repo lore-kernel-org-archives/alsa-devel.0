@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v4 01/12] ASoC: Intel: mfld-pcm: add FE and BE ops
-Date: Wed, 13 Aug 2014 20:35:30 +0100
-Message-ID: <20140813193530.GL17528@sirena.org.uk>
+Subject: Re: [v4 02/12] ASoC: Intel: mrfld: set private data
+	for cpu-dai
+Date: Wed, 13 Aug 2014 20:45:31 +0100
+Message-ID: <20140813194531.GM17528@sirena.org.uk>
 References: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
- <1407145563-1303-2-git-send-email-subhransu.s.prusty@intel.com>
+ <1407145563-1303-3-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4796380653085041833=="
+Content-Type: multipart/mixed; boundary="===============4144070310116304059=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FC09265579
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 21:35:43 +0200 (CEST)
-In-Reply-To: <1407145563-1303-2-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 559A5265593
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 21:45:49 +0200 (CEST)
+In-Reply-To: <1407145563-1303-3-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,64 +27,71 @@ Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4796380653085041833==
+--===============4144070310116304059==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xCjm2wpdygft75H8"
+	protocol="application/pgp-signature"; boundary="W0m5FWf00btK8v85"
 Content-Disposition: inline
 
 
---xCjm2wpdygft75H8
+--W0m5FWf00btK8v85
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 04, 2014 at 03:15:52PM +0530, Subhransu S. Prusty wrote:
-> From: Vinod Koul <vinod.koul@intel.com>
->=20
-> Now that we have added code for managing DSP pipelines we need to add the=
- code
-> for DSPs FrontEnd and Backend dai.
+On Mon, Aug 04, 2014 at 03:15:53PM +0530, Subhransu S. Prusty wrote:
 
-This would be a lot easier to apply if the changelog were clearer, I
-can't tell how we get from having code to manage the pipelines to
-needing or wanting this code.  Is the current code broken and this a bug
-fix or is this preparing for future changes?  The changelog says that
-this is adding ops but the diff is adding DAIs none of which have any
-ops defined.
+> We set the driver private data for media dai so that we can use in media
+> operations
 
-I'm also a bit surprised to see this without anything to add routes
-between the front and back ends or updates to the machine drivers for
-new DAI names - won't this cause problems for the machine drivers?
+This is another one where making the changelog clearer - as far as I can
+tell what this is actually doing is moving the existing private data
+=66rom being per platform to being per DAI.  That actually seems OK and I
+would've applied this but it looks like it depends on patch 1.
 
---xCjm2wpdygft75H8
+This lack of clarity is a frequent issue with both of these DSP
+serieses, it's really slowing down review since they're quite big and
+hard to read.
+
+> +static int sst_media_dai_probe(struct snd_soc_dai *cpu_dai)
+> +{
+> +	struct sst_data *sst =3D dev_get_drvdata(cpu_dai->dev);
+> +
+> +	snd_soc_dai_set_drvdata(cpu_dai, sst);
+> +	return 0;
+> +}
+>  static struct snd_soc_dai_driver sst_platform_dai[] =3D {
+
+Missing blank line here - this is a frequent issue with this code.
+
+--W0m5FWf00btK8v85
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT673+AAoJELSic+t+oim9pLwP/2kyvJ0hRmPtqYxlxDtHmUej
-2g1TZzqiMiLiVIZjAhwAbzt6xBRKhTtYhc9rOQbYhzrfukX6A0MEVzGTfnmd+21f
-VwmW2IEByHAP51h6jO7UNpSUqr/sdbFEwTw7xDwfqiHMNh7Vz8p0cCORoq5/atHZ
-5KkBcXlGcDg4cPi53Gc7QEXFhBNFNuWsKrt6PkfWoSfMhEoqMiKqmA7sgKKx22kG
-T8tqcDPVGTTIt1GFTybzdphjGXTpKd3sIadZS5bc8SR/rXuH+oFhW/hm+QwMVTKp
-m2GGabONZgCeX62LXrZnjt/6SOwnOwlvBD6QA66mwboYJ4Y3kroJRn/qH9zVd4v/
-+1T2hzEXjNj57Ugc22of7tC5btSrCzGRTofzibNtGwVUzNw5QhKM/Ck5j21Vj+gS
-XIDMtyvpfHg9ndT4qKUuaoTH0qrS66qsfW6iND5PY3XtkPvS7eTrXI5N2ZGorK7y
-MX6r41Uot7g320rJlj46s7kykBF+QitxSq/OzMGmpMyIx7KUuiPF4kcmRl/+k0vF
-+ntEjPzSBnMXMmsKoBdIMYaqDFOEbBz2F52hO3SiZsVBk022pCjhHK7FFOPxVery
-CBQdMazbLuvkiuijmMMxTQ0ROQSCB8+LzFy6v/z/Dv7pV/ZnneHutC5qYMjWnoJZ
-0qPQAnE7Zd9tEUCQw1cC
-=/Bj6
+iQIcBAEBAgAGBQJT68BYAAoJELSic+t+oim9CwIP/1098wrIQNTzwwYtWcuCZGPl
+1HA9buLjEUnFN6GCerGWIYaN2flfw6RjM9vSfics/eBduYcW08Cft7+WYxKa1+0y
+XA+UtrNp52+1UyKL51XNNgJnJENL+hYLAH6kj7bvbxJ09cOrpZh8G9GU9xHT1fj6
+laguzRQkSocYKMqXVxd00ZNccInqIkIAz+bIPggMeeMed3C2Azv/5AAMJMFG22u0
+pJ6XGrRtfwaLRlixkpgFHZQXjydnLp4D+VdrVCCBiPxfWZ0ekMTVVM229yuuc6j2
+HEG0Vg0Dw0c2/NCFVfZ3u/zJNOSoHxo84FL9zRifzd1WVV3LAhrSiBhmDrMGbvmk
+AVY0ec0C0z2bPTeQ6AtOCcDKJt8IRel6p4sg1+YsCiS0YimnkCPZ2/Bnv7GsfBAw
+2GrmizfGr00fGD2CUlKBi2Nlr5J8Z3zQ7wtRioifWKdVeYgsxh4Hcd1WuA5/5bCO
+a0ze/bXQHId5nGs9FF9sRtkrXD3BioFxz+oJqMmpBgLhTy/x+3Tw+/niyqUAh/Zc
+ntySfovxUMUaChV2ir3BHIrdlsyinnTlfP2yLgG9ThkpFiPBo5W9QD6jKurYv1Ci
+4L4Y5yVIJqM+Y7XyI+HgQZO7YkB+Xlwu33ozHXFIZman+udAebdXzBHQ1wPNSJDs
+94wtqKd9F5veg77/h4bO
+=1wiY
 -----END PGP SIGNATURE-----
 
---xCjm2wpdygft75H8--
+--W0m5FWf00btK8v85--
 
---===============4796380653085041833==
+--===============4144070310116304059==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4796380653085041833==--
+--===============4144070310116304059==--
