@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v4 07/12] ASoC: Intel: mfld-pcm: add control for
- powering up/down dsp
-Date: Wed, 13 Aug 2014 21:04:46 +0100
-Message-ID: <20140813200446.GQ17528@sirena.org.uk>
-References: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
- <1407145563-1303-8-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH] ASoC: pxa-ssp: drop SNDRV_PCM_FMTBIT_S24_LE
+Date: Wed, 13 Aug 2014 21:12:16 +0100
+Message-ID: <20140813201216.GR17528@sirena.org.uk>
+References: <1407959466-3690-1-git-send-email-zonque@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4586954049454491824=="
+Content-Type: multipart/mixed; boundary="===============1327069352857965757=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A5CBA265593
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 22:04:51 +0200 (CEST)
-In-Reply-To: <1407145563-1303-8-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 30E1B2655BA
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 22:12:21 +0200 (CEST)
+In-Reply-To: <1407959466-3690-1-git-send-email-zonque@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
+To: Daniel Mack <zonque@gmail.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, haojian.zhuang@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4586954049454491824==
+--===============1327069352857965757==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="unZN0Zy24D52umEt"
+	protocol="application/pgp-signature"; boundary="G20u0iTTYyGqPKvM"
 Content-Disposition: inline
 
 
---unZN0Zy24D52umEt
+--G20u0iTTYyGqPKvM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 04, 2014 at 03:15:58PM +0530, Subhransu S. Prusty wrote:
+On Wed, Aug 13, 2014 at 09:51:06PM +0200, Daniel Mack wrote:
+> This mode is unsupported, as the DMA controller can't do zero-padding
+> of samples.
 
-> +static inline int power_up_sst(struct sst_runtime_stream *stream)
-> +{
-> +	return stream->ops->power(sst->dev, true);
-> +}
-> +
-> +static inline int power_down_sst(struct sst_runtime_stream *stream)
-> +{
-> +	return stream->ops->power(sst->dev, false);
-> +}
+Applied, thanks.
 
-These return values are ignored.  Shouldn't we be syncing out control
-values on power changes?
-
---unZN0Zy24D52umEt
+--G20u0iTTYyGqPKvM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT68TbAAoJELSic+t+oim92NcP+QErXr7iIzAuhwskJc2fB2sx
-yUyNjbdxXM/F8A5/dx2kEosynbrbS+5s9cTUBtj7/T2igXJ5P61Ts2FKs3iFYbWa
-+N9hrkIkoTsg+9fhbOZU4PAUP+DA0Z1XWXjRNLt5T9i+au49MmFqSvFmm80YgcxX
-N9bu7AEMjmwBRivrRYXiGxOPNeZ4wpqmr/JFtz0ibUKvrrG7P54gMN73KPQ+Iy70
-N0rVTqYnT1vVbc09cjgzT2HSLGg+ViMuTa2Qge0m9qsJ3oOwIk0hX5fL0nk/E6li
-tfPckEwe4Pv04Z4tRaF0xiq7pJbafDUUPP/f/j8yu7b9mj2FqN2KRAFl4Wsu7vxl
-nQ6xgAo3jrB0LAnBeBvDKYkqO73B0g1FcOHJeSwb0zrWSOhfj0bmj91x1xKtg18P
-8mhOImohzgljtYsuAAQC9A1oXvd1AG05DOZO3zBrddIeIpuy+fZj4UpRryqwCjpp
-/jqyGoy6FTAX4xnLZijJ3Hll9UsU5Vvcdo8JHQfnL1r7xwWj4IFqH1FdTbSuNEgn
-6zYHwd6Vqo48c9cStBDinjsvP/sWd5Ybf+7rinmkxfl5+ek1pUl7K7rFpSuejKqa
-K5rGig4wvEIylMgaZxh7rmJILikB0YUUqlklO/4kRBbJbmIhxtS35fAxc0gLzHQ9
-FMXqSwkM0IPxv5sNKDwl
-=FwZ+
+iQIcBAEBAgAGBQJT68acAAoJELSic+t+oim9dGAP/2mTkIPfoMCpq/v2MCAALNzl
+GDsg8QjqZbNFHTHSDec1XnYnqO9dNrTvya1mQk4spE8xa7tfxcxaJaPss2iwpygd
+V3dpiOk7n0noMhhHhMQBOr7voCGXQIOknaniF3i34nqiuEZ/oXULocJqyp8IA18D
+IrrX+q4poL5m5Qlp/qmSx9206jxAAsgo8vQVKCWQwyDOdiHRFprv1oVJRPkTRRlK
+3JsqyJqBKvG8O2rS9n24aDDaSXeIoClV6UkvSh+zlFXY0pe2gFALTevuiDjcbzLE
+cCcplMxiy4OA8LzuK5Eusv5fIHBuQV5gX5hqFGjjcchKSTI1xzFIOkXTbR8O7BT4
+WcUtssmnyfbjh6sSeW/JhcETdJLYvkeVp4jJKMwdFC/3a4QewFb+FG2i3sQYwNco
+eN4R3L95j6VnwEGAYF3rQ2nwUIaQcXjZo+P5saYGdbfzjFgD2hxczZJTYmtpEx4t
+UPZWGLCuJaYsRpjuAVyNYbbXo1BNQbiuvaACNtbt3ScbEzEnIAtohPsL+KB537iH
+b7ejmqTpomWstiRKEfNFjLnbthjAVv1GX5ZN6UApHDS2lDyAnUslKYF8YzApBq+N
+M3wp2sWkQS9TJmbkVOBSK//NJx4aZeYo9oqJ1dwPpk0aKLxtijeyxfDCw9Teo8Su
+dE/4cfcJfjYv0J7do76a
+=QhN6
 -----END PGP SIGNATURE-----
 
---unZN0Zy24D52umEt--
+--G20u0iTTYyGqPKvM--
 
---===============4586954049454491824==
+--===============1327069352857965757==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4586954049454491824==--
+--===============1327069352857965757==--
