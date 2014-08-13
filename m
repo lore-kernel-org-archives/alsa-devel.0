@@ -1,76 +1,45 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm_hubs: Fix DC Servo readback
-Date: Wed, 13 Aug 2014 13:40:46 +0100
-Message-ID: <20140813124046.GS17528@sirena.org.uk>
-References: <1407926840-8576-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
- <20140813110844.GF15833@opensource.wolfsonmicro.com>
- <20140813113841.GP17528@sirena.org.uk>
- <20140813121637.GH15833@opensource.wolfsonmicro.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v3 00/14] Rework OMAP4+ HDMI audio support
+Date: Wed, 13 Aug 2014 15:51:54 +0300
+Message-ID: <53EB5F6A.9060308@ti.com>
+References: <cover.1407503813.git.jsarha@ti.com> <20140813110425.GL17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3yzaxKxdLwpve41j"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140813121637.GH15833@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, perex@perex.cz
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20140813110425.GL17528@sirena.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+On 08/13/2014 02:04 PM, Mark Brown wrote:
+> On Fri, Aug 08, 2014 at 04:23:41PM +0300, Jyri Sarha wrote:
+>> Question to ASoC maintainers:
+>>    Do feel it is Ok to put ASoC code outside sound/soc the way I do
+>>    in these patches (in patch 0006 particularly)?
+>
+> I'm not thrilled about the idea, it's going to result in breakage during
+> API updates and more cross tree coordination needs.
+>
 
---3yzaxKxdLwpve41j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I guess then the least bad alternative would be cutting the cpu-dai 
+driver away from drivers/video/fbdev/omap2/dss/hdmi_audio.c and placing 
+it under sound/soc/omap and registering it from hdmi_audio.c the same 
+way as hdmi-audio-codec and asoc-simple-card is now registered.
 
-On Wed, Aug 13, 2014 at 01:16:37PM +0100, Charles Keepax wrote:
-> On Wed, Aug 13, 2014 at 12:38:41PM +0100, Mark Brown wrote:
-> > On Wed, Aug 13, 2014 at 12:08:44PM +0100, Charles Keepax wrote:
+There would be two devices for a single ip, but at least the ASoC side 
+driver would receive its resources directly from the HDMI video driver 
+with necessary tools to synchronize the access.
 
-> > > Also I think the situation is more complex for example on version
-> > > 4.4 of the datasheet for wm8994 the WR_VAL fields appear to be in
-> > > register 59h. Which is not consistent with this.
+This approach would work for other HDMI audio situation too, where there 
+would usually (for tda998x and SiI9022 at least) be a need to register 
+an i2s codec driver associated with the HDMI encoder. It would probably 
+be possible to make a single codec driver to work with multiple HDMI 
+encoders if the API between the codec and endcoder drivers is designed 
+that in mind.
 
-> > There was a change in the DC servo between revisions of the WM8994 (at
-> > revision E from the look of the code).  This isn't documented in the
-> > datasheets as they only document current silicon.
+How does this sound?
 
-> Indeed, but this patch sets all revs of wm8994 to use register 57h.
-> The lastest version of the datasheet has this register at 59h
-> although some of the older versions of the datasheet (which likely
-> match some older revs of the chip although no way to tell which one
-> just from the datasheet) have it at 57h.
-
-Yes, I'm agreeing with you - I'm pointing out what Nikesh has missed
-(you can see this from the changelogs as well).  The patch will break
-anything using older devices.
-
-> I think basically we need to get some clarity from hardware here
-> on which revs use which address and update this patch to match,
-> but either way it looks likely that this patch doesn't address
-> the whole picture.
-
-This code got rather a lot of attention...
-
---3yzaxKxdLwpve41j
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT61zLAAoJELSic+t+oim9dooP/iyksCT1x63bCtvyU3mhbMSr
-/B4Y4rCB/HmIc1Fkb/B4phoXOuG8EJ1LkUXQUMFznv/Iar2Lev+QB2RrpjLfw5Id
-GItzLPna6pQ+OUwr0zv6lXWlg7I+SBhiXnqraggQi18J5XKC+Epf9zEOeQ+THQAD
-b+/XB48n6RQ3TTEhBJZSROoi3qXHqvxihQZrGDLhuMc8WlvmbHjRclIHwPahoaQ9
-QlxDwGvSfx6iv8RTgRVynmHkfG5zsheKXgumu+hQnpKC0aL39/KH15Wjaf/UogDY
-sFQUwM8mOkHm9FsgyOrBkz37x8kzkLg/VFSvjYZv6evF07EDQbAMxG4+A5iC3jIb
-DNEM0zRnXu1yWDARV+Dd9lZCNjTQIeW4GSQIbDl31Xk/ORNB+QG9KqEJcee9LYnh
-MTtG7jAro/exG22a8q6O09kLNQsfhjVz77qlcx+aeDwOYjjoxJfZeLiiyGJ9wo9v
-uFJNK0J4LPoE2KBu0mFLAylH3I7VAI531iwARXEr+uZZnN0cEM9wIoMgz9F5PNn/
-fN1LWHYFdB0rqQBkufXAnUsdCTXQ0S6igGhIbe1JKh9EeaWM4Z3MXIcGpvK4xb3L
-mwipEb2jYFQwB2Gd7epzzOS61njZoEuoxYXi/49y3zxVJ3x+haAd/6gtS+lWnVow
-EYUBNw+Q+I1aY8B6ZsFc
-=ZVWI
------END PGP SIGNATURE-----
-
---3yzaxKxdLwpve41j--
+Best regards,
+Jyri
