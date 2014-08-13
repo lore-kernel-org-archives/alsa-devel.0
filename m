@@ -1,64 +1,49 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Ordering in soc_pcm_hw_params()
-Date: Wed, 13 Aug 2014 19:47:48 +0200
-Message-ID: <53EBA4C4.5000608@metafoo.de>
-References: <CAKON4OzQF8sDigvcDFsJaJRVX9o4X1FiC2FEU8D6n=oaQkX+Uw@mail.gmail.com>	<53E9D383.5060103@metafoo.de>	<CAKON4Ow3HFL0Sv2AV7+-XS0PBHnP9WW_8FBgrV=cKp14LER9XA@mail.gmail.com>	<CAKON4OzrJSAD0RUL5TO6n8mxG0q9rRau0MWaAXvXVo+bSB8Ygg@mail.gmail.com>	<20140812115755.GO17528@sirena.org.uk>	<CAKON4OyOL2asou5NvL0crcAy=wYdguBYpc7w+x0xcUUf93FxUw@mail.gmail.com>	<20140812182029.GX17528@sirena.org.uk>	<CAKON4Oyi8x_P5kLQrW3EVsr0aw8-9VnfJXWEhKgJCDsQi9L6UA@mail.gmail.com>	<20140813163525.GY17528@sirena.org.uk>
- <CAKON4OzBKJbAzT6MVMT_jkuVFf6jYF5Pe=fFA2ZbhGSNkHbtgg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V4 0/2]  refine esai for tdm support
+Date: Wed, 13 Aug 2014 19:50:48 +0100
+Message-ID: <20140813185048.GG17528@sirena.org.uk>
+References: <cover.1407480333.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-155.synserver.de (smtp-out-157.synserver.de
- [212.40.185.157])
- by alsa0.perex.cz (Postfix) with ESMTP id CEED9265572
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 19:47:50 +0200 (CEST)
-In-Reply-To: <CAKON4OzBKJbAzT6MVMT_jkuVFf6jYF5Pe=fFA2ZbhGSNkHbtgg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <Guangyu.Chen@freescale.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="q8Zyoxu2SgAW6+bf"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <cover.1407480333.git.shengjiu.wang@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: lgirdwood@gmail.com, timur@tabi.org, perex@perex.cz, tiwai@suse.de, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, shc_work@mail.ru, fabio.estevam@freescale.com, arnd@arndb.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/13/2014 07:00 PM, jonsmirl@gmail.com wrote:
-> On Wed, Aug 13, 2014 at 12:35 PM, Mark Brown <broonie@kernel.org> wrote:
->> On Wed, Aug 13, 2014 at 08:25:22AM -0400, jonsmirl@gmail.com wrote:
->>> On Tue, Aug 12, 2014 at 2:20 PM, Mark Brown <broonie@kernel.org> wrote:
->>
->>>>> 2) Should sysclk for the cpu-dai and codec-dai be set independently?
->>>>> In simple-card they can be set to conflicting values on the two nodes
->>>>> in the DTS. Should sysclk be a single property for the machine?
->>
->>>> No, clocks might be at different rates for different devices.  One
->>>> device might divide down the clock to the other.
->>
->>> What do you think about adding fields for min/max allowed sysclk to
->>> snd_soc_dai_driver? In my case the SOC can run the sysclk at 100Mhz,
->>> but the attached codec can only handle 27Mhz.
->>
->> If we're going to do constraints they should be done properly so need to
->> be able to represent specific numbers too.  It's probably a clock API
->> problem, independently implementing it seems redundant.  Doing simple
->> things in simple-card for the common cases makes sense while the clock
->> API isn't something we can rely on but equally we don't want to be doing
->> huge amounts, and of course simple-card is just a subset of what people
->> are doing.
->
-> Right now I could make the set_sysclk implementations return -EINVAL
-> if the clock is out of range. Then add some logic to simple-card to
-> try again with a different FS multipler. Or at least I can print some
-> error message to give a clue as to why the song won't play.
 
-The driver should definitely reject sysclk rates it can not support. I think 
-this idea is what will give you the best results, at least short term. It 
-quite simple to implement yet effective at solving the problem and does not 
-add new DT ABI that we need to support forever. It could later be replaced 
-with a more sophisticated fs rate enumeration scheme.
+--q8Zyoxu2SgAW6+bf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- Lars
+On Fri, Aug 08, 2014 at 02:47:20PM +0800, Shengjiu Wang wrote:
+> These patchs is to refine esai for tdm support.
+
+Applied both, thanks.
+
+--q8Zyoxu2SgAW6+bf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT67OEAAoJELSic+t+oim9yFMP/j1TfybwiW6iJNoBJMaM96x9
+wNoF7mkVjB0jjFioVyx/fHBfCvlsOet/XdfK7ZgD4tkIMPhCRkWpYf6441mnnMGV
+ACreI4OwzkT9U9EXS6JkCD9jeU7/iUyTfnulcKw/zC8SE8Mla5BTlHa1akGvRBom
+H4zGYjhYqDVbbsQCOJGXnfkthPzJBSM1L01fc8uLa2apjEqe6yDIoi3f2iKoFzJK
+gU3I0+HOVx64Etrdu+I62y25f6iMUaz4bVUvZEwdei0AvooSfrZNh8U5/4LV7PIu
+nH4zjHPJeHFYk2HMyWzizqrR9oRapbhD/rtVG2/hlc2WMeXhAVSdYjzHo5BolQFU
++eq7Zb6EK2hf3AlS1JFEyfzdcsfsJt6MTJMO+JhLGMU0G0jAFOdmPiRKIpKWcOWy
+PGnd94iYxVHuwtciKhS0ld0E25p7aInuN+R6Wo1CRXPRHvWlTlxuze9u1Rx7M7TA
+qnqaIOerbgsvtTGsQ8XRulWtEvbqUXH5HsoRgTI9qAOgIVRBHT7n2Cbo8RqWZpYB
+AsMcBBNHGAAcPqIjiQCqdtQBMu1FOfxYw3RU7+5ALhrWVKM8Yvz+3bLQ2V4nWcW9
+/WEeewgqAAXOC+OM4AjIb2PO5rxNPmm3kR8XeAreoeai5642ISJEjsnJpVDNzx4Q
+hxwAC7u8CgvawwgESjH+
+=5PKl
+-----END PGP SIGNATURE-----
+
+--q8Zyoxu2SgAW6+bf--
