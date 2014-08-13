@@ -1,53 +1,56 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_sai: Make Synchronous and Asynchronous modes
- exclusive
-Date: Wed, 13 Aug 2014 12:05:04 +0100
-Message-ID: <20140813110504.GM17528@sirena.org.uk>
-References: <1407494479-9877-1-git-send-email-nicoleotsuka@gmail.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm_hubs: Fix DC Servo readback
+Date: Wed, 13 Aug 2014 12:08:44 +0100
+Message-ID: <20140813110844.GF15833@opensource.wolfsonmicro.com>
+References: <1407926840-8576-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eQwIhY+Mh5cQwJH0"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1407494479-9877-1-git-send-email-nicoleotsuka@gmail.com>
+In-Reply-To: <1407926840-8576-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, devicetree@vger.kernel.org, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org
+To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Aug 13, 2014 at 11:47:20AM +0100, Nikesh Oswal wrote:
+> wm_hubs is a common driver code shared by WM8958, WM1811, WM8944
+> and WM8993 all these codecs have the DC Servo Values either in register
+> 57h or 59h. Current code was reading register 58h for WM8958 and WM8994
+> revisions 2 and 3 but looking at the data sheet the DC Servo Values are
+> stored in register 57h for these codecs. This patch fixes it by reading
+> the correct register for DC Servo
+> 
+> Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm_hubs.c |    3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+> index 916817f..95c5d71 100644
+> --- a/sound/soc/codecs/wm_hubs.c
+> +++ b/sound/soc/codecs/wm_hubs.c
+> @@ -210,9 +210,6 @@ static int wm_hubs_read_dc_servo(struct snd_soc_codec *codec,
+>  	case 2:
+>  		dcs_reg = WM8994_DC_SERVO_4E;
+>  		break;
+> -	case 1:
+> -		dcs_reg = WM8994_DC_SERVO_READBACK;
+> -		break;
+>  	default:
+>  		dcs_reg = WM8993_DC_SERVO_3;
+>  		break;
+> -- 
 
---eQwIhY+Mh5cQwJH0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This doesn't look right, firstly if it is the same register for
+all versions then surely we should change the code that sets
+dcs_readback_mode rather than setting that to different values
+but treating them the same. Although obviously if nothing still
+uses this case we could remove it as well.
 
-On Fri, Aug 08, 2014 at 06:41:19PM +0800, Nicolin Chen wrote:
+Also I think the situation is more complex for example on version
+4.4 of the datasheet for wm8994 the WR_VAL fields appear to be in
+register 59h. Which is not consistent with this.
 
-> The previous patch (ASoC: fsl_sai: Add asynchronous mode support) added
-> new Device Tree bindings for Asynchronous and Synchronous modes support.
-> However, these two shall not be present at the same time.
-
-Applied, thanks.
-
---eQwIhY+Mh5cQwJH0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT60ZdAAoJELSic+t+oim9ybMP/0/F7Tr/d6KL/XbxzCsUVli8
-X516T8JLDNJ0nHUoUJIR3j5zN0mOAlzXt+9OzDX3Nlf5JviVddIc14UH3xUUq/Xq
-g5YFsdnyf8WFXQmhnqsdWCiifJ6WCPIwTEa5zPpNAj0Z/grVXTCRtKIkmFprNgNM
-73BBkhL8mmTSj31HnVK6S6DUXUPAAlpuVcK/ynVrsP9TE//lr8Pmgb44fvqnnm1Y
-k3aSr4LtkPrEojc5USyy75TnNHLy/WQY5urCbGP08ggUICyQPpQGM9p/OZ0Ob2rW
-4bcOP40FfQ5M5VIqGP4OyDfWsqyC+kYI6YaJWZtz5qstuOKy9pPMRg2Pakbv0xYg
-KPLU3HJQTAFuNkiPQhhXiRinJE+XoBxUqBF/fpkLrjPIPi8oKzp5c6RiTl6oI47Y
-NzpF2IvkVkDYs9QsIFpJhM7o4S1YTRfQpY543UuWwIcqAE2yWahe4Ad7JcxZ+7xz
-6XTnHf2l5lwj2QK3s5N/Avha/KZCLFkHuGu8swskO4Rr+92KSewVGNuBc3CSsZ3y
-s8VYRePWOdISdiDYwyyUNR8Vknckq2Pi6vEjMNFts9KOIHUQixLzK3Cpo2B9i644
-Vy3+yBvDpjGb+2DuIubziBoc9io8s8KVk7B+AyEcjPDcKBnyOFFhO8MNEQLiIn5J
-Jcq8SjNxGE16s7X4sb+x
-=afrS
------END PGP SIGNATURE-----
-
---eQwIhY+Mh5cQwJH0--
+Thanks,
+Charles
