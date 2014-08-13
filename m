@@ -1,41 +1,33 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: trouble using S/PDIF input on CMI8738-MC6:
-	C-Media	CMI8738 (model 55)
-Date: Wed, 13 Aug 2014 17:14:11 +0200
-Message-ID: <53EB80C3.7020909@ladisch.de>
-References: <53EA40EB.2060201@seniorblanco.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5F288260864
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 17:14:12 +0200 (CEST)
-In-Reply-To: <53EA40EB.2060201@seniorblanco.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: jon <jon@seniorblanco.com>, alsa-devel@alsa-project.org
+From: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Subject: [PATCH v2] mfd: wm8994: declare dc servo register for wm8958 as volatile
+Date: Wed, 13 Aug 2014 16:27:29 +0100
+Message-ID: <1407943649-9535-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-jon wrote:
-> Simple mixer control 'IEC958 In Record',0
->   Mono: Playback [off]
+DC Servo register 57h holds the DC offset value after the hardware has
+completed the DC Servo Correction, so declare this register as volatile
+because it is changed by the hardware.
 
-Shouldn't this be on?
+Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+---
+ drivers/mfd/wm8994-regmap.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-> Simple mixer control 'IEC958 In Select',0
->   Mono: Playback [on]
-
-IIRC this selects between two different inputs.
-Try both settings.
-
-
-Regards,
-Clemens
+diff --git a/drivers/mfd/wm8994-regmap.c b/drivers/mfd/wm8994-regmap.c
+index 2fbce9c..fa1630d 100644
+--- a/drivers/mfd/wm8994-regmap.c
++++ b/drivers/mfd/wm8994-regmap.c
+@@ -1169,6 +1169,7 @@ static bool wm8958_volatile_register(struct device *dev, unsigned int reg)
+ 	case WM8958_FW_MINOR_0:
+ 	case WM8958_FW_PATCH_1:
+ 	case WM8958_FW_PATCH_0:
++	case WM8994_DC_SERVO_4:
+ 		return true;
+ 	default:
+ 		return wm8994_volatile_register(dev, reg);
+-- 
+1.7.9.5
