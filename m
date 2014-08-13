@@ -1,33 +1,44 @@
-From: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Subject: [PATCH v2] mfd: wm8994: declare dc servo register for wm8958 as volatile
-Date: Wed, 13 Aug 2014 16:27:29 +0100
-Message-ID: <1407943649-9535-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+From: "Patrick Shirkey" <pshirkey@boosthardware.com>
+Subject: headset vs speaker
+Date: Thu, 14 Aug 2014 01:39:00 +1000 (EST)
+Message-ID: <62311.86.107.254.57.1407944340.squirrel@boosthardware.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from boosthardware.localdomain (boosthardware.com [88.198.122.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF648261A2F
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 17:39:01 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-DC Servo register 57h holds the DC offset value after the hardware has
-completed the DC Servo Correction, so declare this register as volatile
-because it is changed by the hardware.
+Hi,
 
-Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
----
- drivers/mfd/wm8994-regmap.c |    1 +
- 1 file changed, 1 insertion(+)
+How does headset detection work in general with alsa?
 
-diff --git a/drivers/mfd/wm8994-regmap.c b/drivers/mfd/wm8994-regmap.c
-index 2fbce9c..fa1630d 100644
---- a/drivers/mfd/wm8994-regmap.c
-+++ b/drivers/mfd/wm8994-regmap.c
-@@ -1169,6 +1169,7 @@ static bool wm8958_volatile_register(struct device *dev, unsigned int reg)
- 	case WM8958_FW_MINOR_0:
- 	case WM8958_FW_PATCH_1:
- 	case WM8958_FW_PATCH_0:
-+	case WM8994_DC_SERVO_4:
- 		return true;
- 	default:
- 		return wm8994_volatile_register(dev, reg);
--- 
-1.7.9.5
+I need to understand the Allwinner A20 SoC audio driver logic for the
+headset and speaker outputs.
+
+My goal is to enable standard audio playback through the headset but to
+allow another audio stream to playback through the speaker while the
+headset is connected.
+
+I have seen that it is possible with other chips like the hda_intel.
+
+Is it a hardware limitation or driver/software regulated?
+
+
+
+
+--
+Patrick Shirkey
+Boost Hardware Ltd
