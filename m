@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v4 02/12] ASoC: Intel: mrfld: set private data
-	for cpu-dai
-Date: Wed, 13 Aug 2014 20:45:31 +0100
-Message-ID: <20140813194531.GM17528@sirena.org.uk>
+Subject: Re: [v4 04/12] ASoC: Intel: add mrfld DSP defines
+Date: Wed, 13 Aug 2014 20:47:32 +0100
+Message-ID: <20140813194732.GN17528@sirena.org.uk>
 References: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
- <1407145563-1303-3-git-send-email-subhransu.s.prusty@intel.com>
+ <1407145563-1303-5-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4144070310116304059=="
+Content-Type: multipart/mixed; boundary="===============5798989415606126671=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 559A5265593
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 21:45:49 +0200 (CEST)
-In-Reply-To: <1407145563-1303-3-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9291B265593
+ for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 21:47:37 +0200 (CEST)
+In-Reply-To: <1407145563-1303-5-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,71 +26,54 @@ Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4144070310116304059==
+--===============5798989415606126671==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="W0m5FWf00btK8v85"
+	protocol="application/pgp-signature"; boundary="RVlSPqFMcE40513C"
 Content-Disposition: inline
 
 
---W0m5FWf00btK8v85
+--RVlSPqFMcE40513C
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 04, 2014 at 03:15:53PM +0530, Subhransu S. Prusty wrote:
+On Mon, Aug 04, 2014 at 03:15:55PM +0530, Subhransu S. Prusty wrote:
+> From: Vinod Koul <vinod.koul@intel.com>
+>=20
+> We define the DSP commands,structures here which will be used to send the=
+ IPCs
 
-> We set the driver private data for media dai so that we can use in media
-> operations
+Applied, thanks.
 
-This is another one where making the changelog clearer - as far as I can
-tell what this is actually doing is moving the existing private data
-=66rom being per platform to being per DAI.  That actually seems OK and I
-would've applied this but it looks like it depends on patch 1.
-
-This lack of clarity is a frequent issue with both of these DSP
-serieses, it's really slowing down review since they're quite big and
-hard to read.
-
-> +static int sst_media_dai_probe(struct snd_soc_dai *cpu_dai)
-> +{
-> +	struct sst_data *sst =3D dev_get_drvdata(cpu_dai->dev);
-> +
-> +	snd_soc_dai_set_drvdata(cpu_dai, sst);
-> +	return 0;
-> +}
->  static struct snd_soc_dai_driver sst_platform_dai[] =3D {
-
-Missing blank line here - this is a frequent issue with this code.
-
---W0m5FWf00btK8v85
+--RVlSPqFMcE40513C
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT68BYAAoJELSic+t+oim9CwIP/1098wrIQNTzwwYtWcuCZGPl
-1HA9buLjEUnFN6GCerGWIYaN2flfw6RjM9vSfics/eBduYcW08Cft7+WYxKa1+0y
-XA+UtrNp52+1UyKL51XNNgJnJENL+hYLAH6kj7bvbxJ09cOrpZh8G9GU9xHT1fj6
-laguzRQkSocYKMqXVxd00ZNccInqIkIAz+bIPggMeeMed3C2Azv/5AAMJMFG22u0
-pJ6XGrRtfwaLRlixkpgFHZQXjydnLp4D+VdrVCCBiPxfWZ0ekMTVVM229yuuc6j2
-HEG0Vg0Dw0c2/NCFVfZ3u/zJNOSoHxo84FL9zRifzd1WVV3LAhrSiBhmDrMGbvmk
-AVY0ec0C0z2bPTeQ6AtOCcDKJt8IRel6p4sg1+YsCiS0YimnkCPZ2/Bnv7GsfBAw
-2GrmizfGr00fGD2CUlKBi2Nlr5J8Z3zQ7wtRioifWKdVeYgsxh4Hcd1WuA5/5bCO
-a0ze/bXQHId5nGs9FF9sRtkrXD3BioFxz+oJqMmpBgLhTy/x+3Tw+/niyqUAh/Zc
-ntySfovxUMUaChV2ir3BHIrdlsyinnTlfP2yLgG9ThkpFiPBo5W9QD6jKurYv1Ci
-4L4Y5yVIJqM+Y7XyI+HgQZO7YkB+Xlwu33ozHXFIZman+udAebdXzBHQ1wPNSJDs
-94wtqKd9F5veg77/h4bO
-=1wiY
+iQIcBAEBAgAGBQJT68DRAAoJELSic+t+oim9pbcQAISsBomefwZqPfLbRVigsarx
+CAIzUJrdXQeT5dgy5Y4ateM+7k5SUSwVrEihy+oTKXcrwAAXguuOoRcHotulccaL
+nqrUKzcKLCGpTzdfq0vuHsdrGb7HelyEoTdR6W4YCQ6nPg4it3Htx5fSrYzBqVUt
+xCFbPDzW1/eCNl5oQdgmq+y+PfVe1tV1BcyswRxmd82S9KW0zqJKydoJrz/oWrFf
+oI5sQ1f/BhH6RI3/O8nwGN3fmJLobVTURL70iFrOuJ8PY78q+1fphV9bDCfR2/wh
+Fm71QvDfsYH1ipyhdXIs61hM8i9b2SAlWUTkvf9p+QWuHsOiqqgiXyWud6kowL0e
+7RnoKwfD/9NnbMjTemLQEw1vf3PcE8QQVKRA5AmBAxl0tH8Udu2BY1ED1nI6gWkk
+JA1mfkzCavanXKxWmzQ0BLcTQkomwdfq3mRfikJq4p1Zgo4mwhnV8igw8kvMkZig
+6iEgaQxffrywa4Xv9/fxY3Ux2+tiWXoPEDKTAqxW7n9gDNp4AjB+HlmCNSJW0BpV
+sK8AG3N0X+U6E8rC8MjZ0PavM/9jx2GzV78wNaJ5SmoNmO57YFz42dvsv3U5Cipo
+Ui/l893OStmGf5R6ngcKp0wrXQIGYdn1yZMI7OY2863c8oPs31Kvq6r75FAphEB2
+Rn/CnxK2o7n+fwmcqAjq
+=lwbh
 -----END PGP SIGNATURE-----
 
---W0m5FWf00btK8v85--
+--RVlSPqFMcE40513C--
 
---===============4144070310116304059==
+--===============5798989415606126671==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4144070310116304059==--
+--===============5798989415606126671==--
