@@ -1,72 +1,64 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm_hubs: Fix DC Servo readback
-Date: Wed, 13 Aug 2014 12:38:41 +0100
-Message-ID: <20140813113841.GP17528@sirena.org.uk>
-References: <1407926840-8576-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
- <20140813110844.GF15833@opensource.wolfsonmicro.com>
+From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: [alsa-devel] [PATCH v2 1/2] mfd: arizona: Add support for INn_Mode
+ register control
+Date: Wed, 13 Aug 2014 20:49:29 +0900
+Message-ID: <20140813204929.2d528448@songinha-Samsung-DeskTop-System>
+References: <20140809173138.767b97fd@songinha-Samsung-DeskTop-System>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lbODzv4ZEuSk78XQ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140813110844.GF15833@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>, lgirdwood@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, perex@perex.cz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-reply-to: <20140809173138.767b97fd@songinha-Samsung-DeskTop-System>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Some boards need to set the INn_MODE[1:0] register to change
+the input signal patch. This wlf,inmode property is optional.
+If present values must be specified by the number of
+ARIZONA_MAX_INPUT.
 
---lbODzv4ZEuSk78XQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Example:
+   - wlf,inmode = <2 0 2 0>;	/* IN1, IN3 use DMIC */
 
-On Wed, Aug 13, 2014 at 12:08:44PM +0100, Charles Keepax wrote:
-> On Wed, Aug 13, 2014 at 11:47:20AM +0100, Nikesh Oswal wrote:
+Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+---
+ drivers/mfd/arizona-core.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-> >  	case 2:
-> >  		dcs_reg = WM8994_DC_SERVO_4E;
-> >  		break;
-> > -	case 1:
-> > -		dcs_reg = WM8994_DC_SERVO_READBACK;
-> > -		break;
-> >  	default:
-> >  		dcs_reg = WM8993_DC_SERVO_3;
-> >  		break;
-
-> This doesn't look right, firstly if it is the same register for
-> all versions then surely we should change the code that sets
-> dcs_readback_mode rather than setting that to different values
-> but treating them the same. Although obviously if nothing still
-> uses this case we could remove it as well.
-
-> Also I think the situation is more complex for example on version
-> 4.4 of the datasheet for wm8994 the WR_VAL fields appear to be in
-> register 59h. Which is not consistent with this.
-
-There was a change in the DC servo between revisions of the WM8994 (at
-revision E from the look of the code).  This isn't documented in the
-datasheets as they only document current silicon.
-
---lbODzv4ZEuSk78XQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT604+AAoJELSic+t+oim9DNwP/0iLzIzR1kXyTxmWGrAvWFgf
-PcXk8fpk2UGmTqFKKLXbowvP9LJsOeMPTNx08Bsbr7+EZRf8Iuk/xK9bry7svhyN
-2s82ZYwRzSmhQHGhu8IhcldY8xbAXnIkPm0RBc5XsYGyqU97UqR8/RdiFJxSpmMO
-hB5XXZkRFiqA7FHDkdkQp/I7EVkeftT8LNzMthXZYi8NstinQPlFCPImp30rKV0t
-ica+yl4MwMdDxz9K7hAdaXGsV5wktJatd3nI2iLtD+CVaeEPHKRU8JEW/9HTEJLq
-SIz9WMsT4usuO4O9ITSO2x4HLXQ9dL7LPyVvD4pVfuR3oNLffVup7IiQeMp5OVQK
-EQU/25Rr2rUG6C5ljLZzw/pbQAkt2odPq6lf3A1k+1T3yMPe4r5qOFWPgWvGda0s
-fqC0EF8DIPvIoppzdPnr3rkr9LO+bjdP2/RO5/d16UjA/XEuMbYx12K6cUbwdkpA
-7osS1tNrpAkCFXy+jSjFq3L4sKdWrpsiNh6cAjjaHkytnRF99hXH8EanVXveaOZ0
-60EqFE2WId6SZoCy9IcMkBR91Lor6v1ovHny3zPKH9WNhcbHA01PdUbw5+RIPOB5
-8Khkr/Efvklfy0UcS9IWOXP6k0dwcDbNYN0HqkxP80kl2pf1PxDRoOZrptZ5H6j8
-j36yoYjVXXJF5hiQLIA8
-=mTBG
------END PGP SIGNATURE-----
-
---lbODzv4ZEuSk78XQ--
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 10a0cb9..2b68ccd 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(arizona_of_get_named_gpio);
+ static int arizona_of_get_core_pdata(struct arizona *arizona)
+ {
+ 	struct arizona_pdata *pdata = &arizona->pdata;
+-	int ret, i;
++	int ret, i, proplen;
+ 
+ 	pdata->reset = arizona_of_get_named_gpio(arizona, "wlf,reset", true);
+ 
+@@ -560,6 +560,15 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
+ 			ret);
+ 	}
+ 
++	proplen = of_property_count_u32_elems(arizona->dev->of_node,
++					      "wlf,inmode");
++	if (proplen > 0 && proplen <= ARRAY_SIZE(arizona->pdata.inmode)) {
++		for (i = 0; i < proplen; i++)
++			of_property_read_u32_index(arizona->dev->of_node,
++						   "wlf,inmode", i,
++						    &arizona->pdata.inmode[i]);
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.0.0.390.gcb682f8
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
