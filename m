@@ -1,20 +1,21 @@
 From: Julian Wollrath <jwollrath@web.de>
 Subject: Re: Grey noise with HDA Intel PCH
-Date: Thu, 14 Aug 2014 17:26:58 +0200
-Message-ID: <20140814172658.75bd122f@saldaea>
+Date: Thu, 14 Aug 2014 17:31:44 +0200
+Message-ID: <20140814173144.0f8db870@saldaea>
 References: <20140814114003.7b0019f3@saldaea> <53EC8D5B.5020709@ladisch.de>
  <20140814124616.65991d7e@saldaea> <s5hoavnnu38.wl-tiwai@suse.de>
  <20140814160737.0e8fc283@saldaea> <s5h7g2bnowg.wl-tiwai@suse.de>
  <20140814163914.08e9a851@saldaea> <s5h38cznn59.wl-tiwai@suse.de>
  <20140814170459.31428e0b@saldaea> <s5hwqabm7h7.wl-tiwai@suse.de>
+ <20140814172658.75bd122f@saldaea>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.3])
- by alsa0.perex.cz (Postfix) with ESMTP id 20057265347
- for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 17:27:21 +0200 (CEST)
-In-Reply-To: <s5hwqabm7h7.wl-tiwai@suse.de>
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34B26265347
+ for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 17:32:49 +0200 (CEST)
+In-Reply-To: <20140814172658.75bd122f@saldaea>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,86 +29,91 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Am Thu, 14 Aug 2014 17:11:32 +0200
-schrieb Takashi Iwai <tiwai@suse.de>:
+Am Thu, 14 Aug 2014 17:26:58 +0200
+schrieb Julian Wollrath <jwollrath@web.de>:
 
-> At Thu, 14 Aug 2014 17:04:59 +0200,
-> Julian Wollrath wrote:
-> > 
-> > Am Thu, 14 Aug 2014 16:47:46 +0200
-> > schrieb Takashi Iwai <tiwai@suse.de>:
-> > 
-> > > At Thu, 14 Aug 2014 16:39:14 +0200,
-> > > Julian Wollrath wrote:
-> > > > 
-> > > > Am Thu, 14 Aug 2014 16:09:51 +0200
-> > > > schrieb Takashi Iwai <tiwai@suse.de>:
-> > > > 
-> > > > > At Thu, 14 Aug 2014 16:07:37 +0200,
-> > > > > Julian Wollrath wrote:
-> > > > > > 
-> > > > > > > > > > Simple mixer control 'Mic',0
-> > > > > > > > > >   Front Left: Playback 0 [0%] [-34.50dB] [on]
-> > > > > > > > > >   Front Right: Playback 0 [0%] [-34.50dB] [on]
-> > > > > > > > > 
-> > > > > > > > > This plays any noise from the mic input.
-> > > > > > > > Turning it off makes no difference since capture is
-> > > > > > > > turned off anyway:
-> > > > > > > 
-> > > > > > > This is a loopback mixer element, it has nothing to do
-> > > > > > > with capture stream.
-> > > > > > > 
-> > > > > > > The likely culprit of the static noises is the signal
-> > > > > > > from the analog loopback.  In some cases, you can disable
-> > > > > > > the whole loopback via "Loopback Mixing" mixer element on
-> > > > > > > the fly.  In some cases, you'd need to disable each mixer
-> > > > > > > input (e.g. "Mic Playback Switch"). In some cases (e.g.
-> > > > > > > on some Sony and Dell laptops), you'd need to disable the
-> > > > > > > complete analog loopback at the initialization.
-> > > > > > > 
-> > > > > > > The last one can be done via the early patching or sysfs
-> > > > > > > reconfiguration, pass "mixer_nid = 0" hint.  See
-> > > > > > > HD-Audio.txt for a brief instruction.
-> > > > > > Sadly, that did not help.
+> Am Thu, 14 Aug 2014 17:11:32 +0200
+> schrieb Takashi Iwai <tiwai@suse.de>:
+> 
+> > At Thu, 14 Aug 2014 17:04:59 +0200,
+> > Julian Wollrath wrote:
+> > > 
+> > > Am Thu, 14 Aug 2014 16:47:46 +0200
+> > > schrieb Takashi Iwai <tiwai@suse.de>:
+> > > 
+> > > > At Thu, 14 Aug 2014 16:39:14 +0200,
+> > > > Julian Wollrath wrote:
 > > > > > 
-> > > > > Give alsa-info.sh output after your change to verify whether
-> > > > > you did correctly.
-> > > > Here it is, cheers:
-> > > 
-> > > Thanks.  The setup looks OK, the path is:
-> > >   DAC (0x02) -> mixer (0x0c) -> mixer (0x14)
-> > > and the mixer mutes the loopback path (index 1).
-> > > 
-> > > Is it the state where you still hear the static noise?
-> > Yes, the alsa-info.sh script was executed, while hearing the static
-> > noise.
+> > > > > Am Thu, 14 Aug 2014 16:09:51 +0200
+> > > > > schrieb Takashi Iwai <tiwai@suse.de>:
+> > > > > 
+> > > > > > At Thu, 14 Aug 2014 16:07:37 +0200,
+> > > > > > Julian Wollrath wrote:
+> > > > > > > 
+> > > > > > > > > > > Simple mixer control 'Mic',0
+> > > > > > > > > > >   Front Left: Playback 0 [0%] [-34.50dB] [on]
+> > > > > > > > > > >   Front Right: Playback 0 [0%] [-34.50dB] [on]
+> > > > > > > > > > 
+> > > > > > > > > > This plays any noise from the mic input.
+> > > > > > > > > Turning it off makes no difference since capture is
+> > > > > > > > > turned off anyway:
+> > > > > > > > 
+> > > > > > > > This is a loopback mixer element, it has nothing to do
+> > > > > > > > with capture stream.
+> > > > > > > > 
+> > > > > > > > The likely culprit of the static noises is the signal
+> > > > > > > > from the analog loopback.  In some cases, you can
+> > > > > > > > disable the whole loopback via "Loopback Mixing" mixer
+> > > > > > > > element on the fly.  In some cases, you'd need to
+> > > > > > > > disable each mixer input (e.g. "Mic Playback Switch").
+> > > > > > > > In some cases (e.g. on some Sony and Dell laptops),
+> > > > > > > > you'd need to disable the complete analog loopback at
+> > > > > > > > the initialization.
+> > > > > > > > 
+> > > > > > > > The last one can be done via the early patching or sysfs
+> > > > > > > > reconfiguration, pass "mixer_nid = 0" hint.  See
+> > > > > > > > HD-Audio.txt for a brief instruction.
+> > > > > > > Sadly, that did not help.
+> > > > > > 
+> > > > > > Give alsa-info.sh output after your change to verify whether
+> > > > > > you did correctly.
+> > > > > Here it is, cheers:
+> > > > 
+> > > > Thanks.  The setup looks OK, the path is:
+> > > >   DAC (0x02) -> mixer (0x0c) -> mixer (0x14)
+> > > > and the mixer mutes the loopback path (index 1).
+> > > > 
+> > > > Is it the state where you still hear the static noise?
+> > > Yes, the alsa-info.sh script was executed, while hearing the
+> > > static noise.
+> > 
+> > OK.  And if you mute "Speaker" or "Headphone", the noise is gone,
+> > too, right?
+> No, if I mute "Speaker" (the internal laptop speaker) it is not gone.
+> It is only gone, if I mute "Master" or have a headphone plugged in and
+> mute "Headphone" or "Master".
 > 
-> OK.  And if you mute "Speaker" or "Headphone", the noise is gone, too,
-> right?
-No, if I mute "Speaker" (the internal laptop speaker) it is not gone. It
-is only gone, if I mute "Master" or have a headphone plugged in and
-mute "Headphone" or "Master".
+> More fascinating, it is not present, if the speaker is not muted and I
+> disable powersaving via "echo '0' >
+> '/sys/module/snd_hda_intel/parameters/power_save'" but even then, it
+> is still present on the headphone.
+And it is also present, if I mute only the speaker.
 
-More fascinating, it is not present, if the speaker is not muted and I
-disable powersaving via "echo '0' >
-'/sys/module/snd_hda_intel/parameters/power_save'" but even then, it is
-still present on the headphone.
-
-> > > Also, what if you use the module option for snd-hda-intel
-> > > model=nofixup or model=generic?
-> > That did not change anything either. Passing the "mixer_nid = 0"
-> > hint also did not get rid of the static noise, when loading
-> > snd-hda-intel with model=nofixup resp. model=generic.
+> > > > Also, what if you use the module option for snd-hda-intel
+> > > > model=nofixup or model=generic?
+> > > That did not change anything either. Passing the "mixer_nid = 0"
+> > > hint also did not get rid of the static noise, when loading
+> > > snd-hda-intel with model=nofixup resp. model=generic.
+> > 
+> > Did you reboot with setting the option in /etc/modprobe.d/*?
+> > Reloading the module might not work for such a problem.
+> No, I just unloaded every sound-related module and than loaded the
+> module via "modprobe snd-hda-intel model=..." again.
 > 
-> Did you reboot with setting the option in /etc/modprobe.d/*?
-> Reloading the module might not work for such a problem.
-No, I just unloaded every sound-related module and than loaded the
-module via "modprobe snd-hda-intel model=..." again.
-
-> In either way, there should be some difference in alsa-info.sh output,
-> e.g. more (or less) mixer items with the model option.
-The difference is their, all the "Dock ..." entries were missing, when
-loading with the model="..." option.
-
-Cheers,
-Julian
+> > In either way, there should be some difference in alsa-info.sh
+> > output, e.g. more (or less) mixer items with the model option.
+> The difference is their, all the "Dock ..." entries were missing, when
+> loading with the model="..." option.
+> 
+> Cheers,
+> Julian
