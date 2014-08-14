@@ -1,73 +1,113 @@
-From: Rob Jones <rob.jones@codethink.co.uk>
-Subject: Re: [PATCH 1/5] gpiolib: devres: Introduce the function devm_request_gpio_array
-Date: Thu, 14 Aug 2014 16:17:02 +0100
-Message-ID: <53ECD2EE.6020101@codethink.co.uk>
-References: <cover.1404665589.git.himangi774@gmail.com>	<1a1752ce7455bac8f2505a9790da891a830699f5.1404665589.git.himangi774@gmail.com>	<53BD2509.6070803@codethink.co.uk>	<CACRpkdZWfYN14aki-UqvWp1K0exVj-mMK92q431QueSVvjZFuA@mail.gmail.com>	<53BE7288.6060503@codethink.co.uk>	<CABxcv=mhMMQxqVRM28NucnSW62v_3ghnT58JqFxvK=2bjxizdw@mail.gmail.com>	<53BFB659.8050306@codethink.co.uk> <CABxcv==adT6YPEekjD1y3ncrj9ghWE8UMuc64AeVWCPVb0ywFw@mail.gmail.com>
+From: Julian Wollrath <jwollrath@web.de>
+Subject: Re: Grey noise with HDA Intel PCH
+Date: Thu, 14 Aug 2014 17:26:58 +0200
+Message-ID: <20140814172658.75bd122f@saldaea>
+References: <20140814114003.7b0019f3@saldaea> <53EC8D5B.5020709@ladisch.de>
+ <20140814124616.65991d7e@saldaea> <s5hoavnnu38.wl-tiwai@suse.de>
+ <20140814160737.0e8fc283@saldaea> <s5h7g2bnowg.wl-tiwai@suse.de>
+ <20140814163914.08e9a851@saldaea> <s5h38cznn59.wl-tiwai@suse.de>
+ <20140814170459.31428e0b@saldaea> <s5hwqabm7h7.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <CABxcv==adT6YPEekjD1y3ncrj9ghWE8UMuc64AeVWCPVb0ywFw@mail.gmail.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Javier Martinez Canillas <javier@dowhile0.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Himangi Saraogi <himangi774@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, patches@opensource.wolfsonmicro.com, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Russell King <linux@arm.linux.org.uk>, Haojian Zhuang <haojian.zhuang@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Philipp Zabel <philipp.zabel@gmail.com>, Paul Parsons <lost.distance@yahoo.com>, Julia Lawall <julia.lawall@lip>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20057265347
+ for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 17:27:21 +0200 (CEST)
+In-Reply-To: <s5hwqabm7h7.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-I'm afraid too many other things have been landing on my plate and I
-don't think I will be able to get on this for the foreseeable future,
-sorry about this.
+Am Thu, 14 Aug 2014 17:11:32 +0200
+schrieb Takashi Iwai <tiwai@suse.de>:
 
-On 11/07/14 11:07, Javier Martinez Canillas wrote:
-> Hello Rob,
->
-> On Fri, Jul 11, 2014 at 12:03 PM, Rob Jones <rob.jones@codethink.co.uk> wrote:
->>
->>
->> On 11/07/14 01:35, Javier Martinez Canillas wrote:
->>>
->>> Hello Rob,
->>>
->>> On Thu, Jul 10, 2014 at 1:01 PM, Rob Jones <rob.jones@codethink.co.uk>
->>> wrote:
->>
->>
->> <snip>
->>
->>
->>>>
->>>> I will certainly consider it. I'm in the middle of something else right
->>>> now but I should be available in a day or two and I'll have a look.
->>>>
->>>>
->>>
->>> I'm working on a driver for a PMIC which uses a set of GPIO to select
->>> a particular register. Right now I'm getting each GPIO independently
->>> but Linus mentioned [0] the devm_gpio_request_array() patch you
->>> posted.
->>>
->>> Now, I'm not using the integer-based GPIO API but the new
->>> descriptor-based one so I was wondering if you are already
->>> implementing a devm_gpiod_get_array() or if you want me to implement
->>> it myself.
->>>
->>
->> As I said, I'm deep in something else for the next day or two so if you
->> need it urgently you should probably do it yourself but if you don't
->> mind waiting until next week, I can have a go.
->>
->> Your call, let me know.
->>
->
-> I'm not in a hurry, just wanted to know if it was on your plate. I'll
-> wait for your patch then, thanks!
->
-> Best regards,
-> Javier
->
->
+> At Thu, 14 Aug 2014 17:04:59 +0200,
+> Julian Wollrath wrote:
+> > 
+> > Am Thu, 14 Aug 2014 16:47:46 +0200
+> > schrieb Takashi Iwai <tiwai@suse.de>:
+> > 
+> > > At Thu, 14 Aug 2014 16:39:14 +0200,
+> > > Julian Wollrath wrote:
+> > > > 
+> > > > Am Thu, 14 Aug 2014 16:09:51 +0200
+> > > > schrieb Takashi Iwai <tiwai@suse.de>:
+> > > > 
+> > > > > At Thu, 14 Aug 2014 16:07:37 +0200,
+> > > > > Julian Wollrath wrote:
+> > > > > > 
+> > > > > > > > > > Simple mixer control 'Mic',0
+> > > > > > > > > >   Front Left: Playback 0 [0%] [-34.50dB] [on]
+> > > > > > > > > >   Front Right: Playback 0 [0%] [-34.50dB] [on]
+> > > > > > > > > 
+> > > > > > > > > This plays any noise from the mic input.
+> > > > > > > > Turning it off makes no difference since capture is
+> > > > > > > > turned off anyway:
+> > > > > > > 
+> > > > > > > This is a loopback mixer element, it has nothing to do
+> > > > > > > with capture stream.
+> > > > > > > 
+> > > > > > > The likely culprit of the static noises is the signal
+> > > > > > > from the analog loopback.  In some cases, you can disable
+> > > > > > > the whole loopback via "Loopback Mixing" mixer element on
+> > > > > > > the fly.  In some cases, you'd need to disable each mixer
+> > > > > > > input (e.g. "Mic Playback Switch"). In some cases (e.g.
+> > > > > > > on some Sony and Dell laptops), you'd need to disable the
+> > > > > > > complete analog loopback at the initialization.
+> > > > > > > 
+> > > > > > > The last one can be done via the early patching or sysfs
+> > > > > > > reconfiguration, pass "mixer_nid = 0" hint.  See
+> > > > > > > HD-Audio.txt for a brief instruction.
+> > > > > > Sadly, that did not help.
+> > > > > 
+> > > > > Give alsa-info.sh output after your change to verify whether
+> > > > > you did correctly.
+> > > > Here it is, cheers:
+> > > 
+> > > Thanks.  The setup looks OK, the path is:
+> > >   DAC (0x02) -> mixer (0x0c) -> mixer (0x14)
+> > > and the mixer mutes the loopback path (index 1).
+> > > 
+> > > Is it the state where you still hear the static noise?
+> > Yes, the alsa-info.sh script was executed, while hearing the static
+> > noise.
+> 
+> OK.  And if you mute "Speaker" or "Headphone", the noise is gone, too,
+> right?
+No, if I mute "Speaker" (the internal laptop speaker) it is not gone. It
+is only gone, if I mute "Master" or have a headphone plugged in and
+mute "Headphone" or "Master".
 
--- 
-Rob Jones
-Codethink Ltd
-mailto:rob.jones@codethink.co.uk
-tel:+44 161 236 5575
+More fascinating, it is not present, if the speaker is not muted and I
+disable powersaving via "echo '0' >
+'/sys/module/snd_hda_intel/parameters/power_save'" but even then, it is
+still present on the headphone.
+
+> > > Also, what if you use the module option for snd-hda-intel
+> > > model=nofixup or model=generic?
+> > That did not change anything either. Passing the "mixer_nid = 0"
+> > hint also did not get rid of the static noise, when loading
+> > snd-hda-intel with model=nofixup resp. model=generic.
+> 
+> Did you reboot with setting the option in /etc/modprobe.d/*?
+> Reloading the module might not work for such a problem.
+No, I just unloaded every sound-related module and than loaded the
+module via "modprobe snd-hda-intel model=..." again.
+
+> In either way, there should be some difference in alsa-info.sh output,
+> e.g. more (or less) mixer items with the model option.
+The difference is their, all the "Dock ..." entries were missing, when
+loading with the model="..." option.
+
+Cheers,
+Julian
