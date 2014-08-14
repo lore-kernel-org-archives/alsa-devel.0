@@ -1,67 +1,59 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: Re: [alsa-devel] [PATCH v2 2/2] mfd: arizona: Update DT binding to
- support INn_MODE init_data
-Date: Thu, 14 Aug 2014 09:40:47 +0900
-Message-ID: <20140814094047.444a3459@songinha-Samsung-DeskTop-System>
-References: <20140813205456.636abc68@songinha-Samsung-DeskTop-System>
- <20140813121814.GI15833@opensource.wolfsonmicro.com>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: ASoC: CPU DAI samsung-i2s.0 not registered
+Date: Thu, 14 Aug 2014 12:19:26 +1000
+Message-ID: <53EC1CAE.7040906@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <20140813121814.GI15833@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lee.jones@linaro.org, lgirdwood@gmail.com, sameo@linux.intel.com, devicetree@vger.kernel.org, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, cw00.choi@samsung.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ipmail04.adl6.internode.on.net (ipmail04.adl6.internode.on.net
+ [150.101.137.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9001F26560F
+ for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 04:22:25 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Charles.
-Thanks for your review.
+Hi there,
 
-On Wed, 13 Aug 2014 13:18:14 +0100
-Charles Keepax <ckeepax@opensource.wolfsonmicro.com> wrote:
+Any ideas why this problem is coming up when I try to load a driver ?
 
-> On Wed, Aug 13, 2014 at 08:54:56PM +0900, Inha Song wrote:
-> > This patch update DT binding to support INn_MODE init_data. Each
-> > input signal path can be configurated either as a Analogue or
-> > Digital using the INn_MODE registers.
-> > 
-> > Signed-off-by: Inha Song <ideal.song@samsung.com>
-> > ---
-> >  Documentation/devicetree/bindings/mfd/arizona.txt | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
-> > index 5c7e723..b8c131e 100644
-> > --- a/Documentation/devicetree/bindings/mfd/arizona.txt
-> > +++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-> > @@ -42,6 +42,14 @@ Optional properties:
-> >      the chip default will be used.  If present exactly five values must
-> >      be specified.
-> >  
-> > +  - wlf,inmode : A list of INn_MODE register values, where n is the number
-> > +    of input signal. Each input signal path can be configurated either as a
-> > +    Analogue or Digital using the INn_MODE registers. If absent, INn_MODE
-> > +    registers set to 0 by default. If present, values must be specified less
-> > +    than or equal to the number of input singal. If values less than the
-> 
-> Typo here should be "input signals".
+Here is the device tree :
 
-Oops, Thanks! I will fix this.
+     i2s0: i2s@03830000 {
+         compatible = "samsung,i2s-v5";
+         reg = <0x03830000 0x100>;
+         dmas = <&pdma0 10
+             &pdma0 9
+             &pdma0 8>;
+         dma-names = "tx", "rx", "tx-sec";
+         clocks = <&clock_audss EXYNOS_I2S_BUS>,
+             <&clock_audss EXYNOS_I2S_BUS>,
+             <&clock_audss EXYNOS_SCLK_I2S>;
+         clock-names = "iis", "i2s_opclk0", "i2s_opclk1";
+         samsung,supports-6ch;
+         samsung,supports-rstclr;
+         samsung,supports-secdai;
+         samsung,idma-addr = <0x03000000>;
+         pinctrl-names = "default";
+         pinctrl-0 = <&i2s0_bus>;
+     };
 
-Best regards,
-Inha Song.
+     implant: implant@0 {
+             compatible = "bva,implant";
+     };
 
-> 
-> > +    number of input signal, elements that has not been specifed are set to 0
-> > +    by default.
-> > +
-> >    - DCVDD-supply, MICVDD-supply : Power supplies, only need to be specified if
-> >      they are being externally supplied. As covered in
-> >      Documentation/devicetree/bindings/regulator/regulator.txt
-> > -- 
-> > 2.0.0.390.gcb682f8
-> > 
-> 
-> Thanks,
-> Charles
+     sound {
+         compatible = "bva,implant-bva";
+
+         samsung,i2s-controller = <&i2s0>;
+         samsung,audio-codec = <&implant>;
+     };
