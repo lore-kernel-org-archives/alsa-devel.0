@@ -1,32 +1,63 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: A Minimal Playback Program does't work on my system
-Date: Thu, 14 Aug 2014 19:34:24 +0200
-Message-ID: <53ECF320.60307@ladisch.de>
-References: <1408034523.99775.YahooMailNeo@web171303.mail.ir2.yahoo.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 00/14] Rework OMAP4+ HDMI audio support
+Date: Thu, 14 Aug 2014 20:10:08 +0100
+Message-ID: <20140814191008.GE17528@sirena.org.uk>
+References: <cover.1407503813.git.jsarha@ti.com>
+ <20140813110425.GL17528@sirena.org.uk>
+ <53EB5F6A.9060308@ti.com>
+ <20140813172632.GE17528@sirena.org.uk>
+ <53EC8127.7090405@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id C39D926167D
- for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 19:35:28 +0200 (CEST)
-In-Reply-To: <1408034523.99775.YahooMailNeo@web171303.mail.ir2.yahoo.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?Q2FycG9uIGZyw6lkw6lyaWM=?= <frederic.carpon@yahoo.fr>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hKlCbHbSDGogBfqt"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <53EC8127.7090405@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Q2FycG9uIGZyw6lkw6lyaWMgd3JvdGU6Cj4gLi9hLm91dCBteV9maWxlLndhdgo+ICJBbFNBIGxp
-YiBwY20uMjIzOTooYW5kX3BjbV9vcGVuX25vdXBkYXRlKSBVbmtub3duIFBDTSBteV9maWxlLndh
-diAiCgpUaGUgcGFyYW1ldGVyIG11c3QgYmUgYSBzb3VuZCBkZXZpY2UgbmFtZSAobGlrZSAiZGVm
-YXVsdCIpLgoKClJlZ2FyZHMsCkNsZW1lbnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+
+--hKlCbHbSDGogBfqt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Aug 14, 2014 at 12:28:07PM +0300, Jyri Sarha wrote:
+
+> After discussing with Peter and Tomi I decided to change the approach a bit.
+> There should not be any new device registered, just ASoC components that are
+> implemented under sound/soc as a library rather than a device driver.
+
+> The library would export a register and unregister functions to be called
+> from video driver directory. The functions will then register the necessary
+> ASoC components under the video device.
+
+> If there are no objections I'll go ahead implementing this approach, first
+> for OMAP HDMI audio, and later for SiI9022 driver we are cooking.
+
+That also sounds perfectly sensible.
+
+--hKlCbHbSDGogBfqt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT7QmMAAoJELSic+t+oim9VikP/3b0/Vli9SYeaan6A7lPeUnW
+366oz6KwXmJPOLEcjFsmhXpMj+RJlVw2aMvu6wH/dUzJsN1QeKD+nvhTi8wrgBmU
+8Z+uYkOLs2Q6fapTV6LlU7Ek+tNHLoIz6bn2AsAd4m+HEqKyRgEsydU5Lteh3ih6
+YLPI6NhDqbH7Y/MbwY7Uo7GD8pnkuKDUEwKdAHymXn47kvNpVEsvtNpQ2oiZRwKM
+OIAr3RkOrg0udYf+lTOTQnk1cXFM7UUq4q/JSOVfRUx+cMYz8woLkUl0VyZXt0Eq
+RQoRHrwaC4mPBBxtlQVYTmD9nHyCPs3SuTEvp6yVzZYKppyqeWPUOYYdN8AtD/Pn
+8l9jJmkldW1lrICIhYvtfDVH7zDLYoJpI8QrATrH5Ck4dxaspmRDxeFbGmOieAYa
+kNOISmqZ3WcE0KvbSL83HK0Fq/QJG1vTgGmRt9jwI44kJ8YoGcYFc/WvXllTsxsP
+XgafrPmLiqu4XfLec63pTTt+atSQorFYH2YxT4DqrGlbtI9BuO7DIakOpOXqqTg+
+DaN12zI12DgjCkvqTOXS3TMHEZQnV4Bv5U6HGOOiY+DWo1jzCMYhuAQHN9NSuJOz
+i12YLLY34hSj6EZdQmgU0hbkHCCYsxxxtQNQ08T+8ES4IQLj+CqXnodilhm9NGah
+qSXp8h+UgYXYeUG3l4TL
+=Mrqw
+-----END PGP SIGNATURE-----
+
+--hKlCbHbSDGogBfqt--
