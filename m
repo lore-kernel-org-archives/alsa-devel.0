@@ -1,16 +1,18 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 73519261A90
- for <alsa-devel@alsa-project.org>; Tue, 12 Aug 2014 08:27:53 +0200 (CEST)
-Date: Tue, 12 Aug 2014 11:36:09 +0530
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC26726563B
+ for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 07:58:19 +0200 (CEST)
+Date: Thu, 14 Aug 2014 11:06:41 +0530
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Message-ID: <20140812060601.GA1115@vinod.koul@linux.intel.com>
-References: <1405599225-31538-1-git-send-email-subhransu.s.prusty@intel.com>
- <20140729195043.GM17528@sirena.org.uk>
+Message-ID: <20140814053637.GA6106@vinod.koul@linux.intel.com>
+References: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1407145563-1303-3-git-send-email-subhransu.s.prusty@intel.com>
+ <53EBC193.9070105@metafoo.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20140729195043.GM17528@sirena.org.uk>
-Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: Add merrifield machine driver
+In-Reply-To: <53EBC193.9070105@metafoo.de>
+Subject: Re: [alsa-devel] [v4 02/12] ASoC: Intel: mrfld: set private data
+ for cpu-dai
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,111 +24,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-ID: <alsa-devel@alsa-project.org>
 
-On Tue, Jul 29, 2014 at 08:50:43PM +0100, Mark Brown wrote:
-> On Thu, Jul 17, 2014 at 05:43:45PM +0530, Subhransu S. Prusty wrote:
+On Wed, Aug 13, 2014 at 09:50:43PM +0200, Lars-Peter Clausen wrote:
+> [...]
+> >+static int sst_media_dai_probe(struct snd_soc_dai *cpu_dai)
+> >+{
+> >+	struct sst_data *sst = dev_get_drvdata(cpu_dai->dev);
+> >+
+> >+	snd_soc_dai_set_drvdata(cpu_dai, sst);
 > 
-> > +	default n
+> snd_soc_dai_set_drvdata does dev_set_drvdata(dai->dev, data)
+> internally, so this function does:
 > 
-> This is the standard Kconfig behaviour - no need to specify it (other
-> drivers don't...).
-Removed.
+> 	dev_set_drvdata(cpu_dai->dev, dev_get_drvdata(cpu_dai->dev));
 > 
-> > +static int mrfld_8958_hw_params(struct snd_pcm_substream *substream,
-> > +			   struct snd_pcm_hw_params *params)
-> > +{
-> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> > +
-> > +	if (!strcmp(codec_dai->name, "wm8994-aif1"))
-> > +		return mrfld_wm8958_set_clk(codec_dai);
-> > +	return 0;
-> > +}
+> That's pretty much a noop.
 > 
-> It's much clearer to define separate operations for each DAI, there's no
-> need for the string matching (especially given that there's nothing to
-> do for other DAIs).
-> 
-Don't need the comparison. Removed
-> > +	/*
-> > +	 * Machine uses 2 DMICs, other configs may use more so change below
-> > +	 * accordingly
-> > +	 */
-> > +	{ "DMIC1DAT", NULL, "DMIC" },
-> > +	{ "DMIC2DAT", NULL, "DMIC" },
-> > +	/*{ "DMIC3DAT", NULL, "DMIC" },*/
-> > +	/*{ "DMIC4DAT", NULL, "DMIC" },*/
-> 
-> Remove commented out code.
-> 
-Done
-> > +	/* Force enable VMID to avoid cold latency constraints */
-> > +	snd_soc_dapm_force_enable_pin(&card->dapm, "VMID");
-> > +	snd_soc_dapm_sync(&card->dapm);
-> 
-> This looks like you're open coding a version of wm8994_vmid_mode().
-> Though that might need some tuning for systems that really have no
-> single ended outputs.
-> 
-VMID has a larget settling time. Keep it ON here to avoid the delay. Any
-better way of doing this?
-> > +	/*
-> > +	 * Micbias1 is always off, so for pm optimizations make sure the micbias1
-> > +	 * discharge bit is set to floating to avoid discharge in disable state
-> > +	 */
-> > +	snd_soc_update_bits(codec, WM8958_MICBIAS1, WM8958_MICB1_DISCH, 0);
-> 
-> Don't write directly to CODEC registers, provide a way of configuring
-> this in the CODEC either via platform data or some API.  That way
-> nothing else is writing to the CODEC register map without the driver for
-> the CODEC knowing about it.
-> 
-Yes it can be given through the pdata. Removed.
-> > +static void snd_mrfld_8958_complete(struct device *dev)
-> > +{
-> > +	struct snd_soc_card *card = dev_get_drvdata(dev);
-> > +	struct snd_soc_codec *codec = card->rtd[CODEC_BE].codec;
-> > +	struct snd_soc_dapm_context *dapm;
-> > +
-> > +	pr_debug("In %s\n", __func__);
-> > +
-> > +	pr_debug("found codec %s\n", codec->component.name);
-> > +	dapm = &codec->dapm;
-> > +
-> > +	snd_soc_dapm_force_enable_pin(dapm, "VMID");
-> > +	snd_soc_dapm_sync(dapm);
-> > +
-> > +	snd_soc_resume(dev);
-> > +}
-> 
-> Doing the manual fiddling before rather than after resuming the core
-> seems...  concerning, I'd expect this to be done either in one of the
-> ASoC suspend/resume callbacks or at least after calling snd_soc_resume()
-> - doing it before seems likely to trigger or cause bugs.
-Complete callback is called only after resume. 
-> 
-> > +static int snd_mrfld_8958_poweroff(struct device *dev)
-> > +{
-> > +	pr_debug("In %s\n", __func__);
-> > +	snd_soc_poweroff(dev);
-> > +	return 0;
-> > +}
-> 
-> Remove this, just use the core function directly.
-Removed.
-> 
-> > +	platform_set_drvdata(pdev, &snd_soc_card_mrfld);
-> > +	pr_info("%s successful\n", __func__);
-> 
-> This print has no content, remove it or at the very least downgrade it
-> to debug level.
-Done
 
-
-
+Agree. Intention was to use snd_soc_dai_* API. Anyway will remove and use
+dev_get_drvdata(dai->dev) directly.
 -- 
 _______________________________________________
 Alsa-devel mailing list
