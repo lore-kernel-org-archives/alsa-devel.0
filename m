@@ -1,20 +1,18 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
+From: Matt Flax <flatmax@flatmax.org>
 Subject: Re: ASoC: CPU DAI samsung-i2s.0 not registered
-Date: Thu, 14 Aug 2014 07:10:38 +0200
-Message-ID: <CAOf5uwkG_uQmFTtFpn7o7+FcX1pM9E2oQ7YMVZa_-V-k7yY7Gw@mail.gmail.com>
+Date: Thu, 14 Aug 2014 15:54:54 +1000
+Message-ID: <53EC4F2E.6000602@flatmax.org>
 References: <53EC1CAE.7040906@flatmax.org>
  <20140814112819.07545223@songinha-Samsung-DeskTop-System>
  <53EC3726.1020700@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f178.google.com (mail-wi0-f178.google.com
- [209.85.212.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 31714265639
- for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 07:10:39 +0200 (CEST)
-Received: by mail-wi0-f178.google.com with SMTP id hi2so1724812wib.11
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 22:10:38 -0700 (PDT)
+Received: from ipmail04.adl6.internode.on.net (ipmail04.adl6.internode.on.net
+ [150.101.137.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9BB9826563B
+ for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 07:55:15 +0200 (CEST)
 In-Reply-To: <53EC3726.1020700@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,14 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+I think I have gotten around this problem using the code in the 
+samsung/smdk_wm8994.c probe function :
+         implant_dai.cpu_dai_name = NULL;
+         implant_dai.cpu_of_node = of_parse_phandle(np, 
+"samsung,i2s-controller", 0);
+         implant_dai.platform_name = NULL;
+         implant_dai.platform_of_node = implant_dai.cpu_of_node;
 
-Il 14/ago/2014 06:12 "Matt Flax" <flatmax@flatmax.org> ha scritto:
->
+Now having problems with the codec registration :
+     .codec_name    = "implant-codec",
+
+ASoC: CODEC implant-codec not registered
+
+
+I am looking for the magic here ...
+
+Any ideas ?
+
+Matt
+
+On 14/08/14 14:12, Matt Flax wrote:
 > Thanks for the idea ... I have set this :
 >     i2s0: i2s@03830000 {
 >         status = "okay";
@@ -40,10 +54,10 @@ Il 14/ago/2014 06:12 "Matt Flax" <flatmax@flatmax.org> ha scritto:
 >
 > and I get the same problem.
 >
-> Is there anything else which is required to register the samsun-i2s.0
-driver ?
-> Can you tell me whether my codec/driver requires any code to register the
-i2s0 ?
+> Is there anything else which is required to register the samsun-i2s.0 
+> driver ?
+> Can you tell me whether my codec/driver requires any code to register 
+> the i2s0 ?
 >
 > I have the following in my driver :
 > static struct snd_soc_dai_link implant_dai = {
@@ -58,14 +72,7 @@ i2s0 ?
 > thanks
 > Matt
 >
-
-What version of the kernel are you using?
-
-Michael
-
->
 > On 14/08/14 12:28, Inha Song wrote:
->>
 >> Hi,
 >>
 >> Did you set to i2s0 status?
@@ -118,12 +125,10 @@ Michael
 >>> Alsa-devel mailing list
 >>> Alsa-devel@alsa-project.org
 >>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
 >> _______________________________________________
 >> Alsa-devel mailing list
 >> Alsa-devel@alsa-project.org
 >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
 >
 > _______________________________________________
 > Alsa-devel mailing list
