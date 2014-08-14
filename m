@@ -1,16 +1,19 @@
-From: =?iso-8859-1?Q?Carpon_fr=E9d=E9ric?= <frederic.carpon@yahoo.fr>
-Subject: A Minimal Playback Program does't work on my system
-Date: Thu, 14 Aug 2014 17:42:03 +0100
-Message-ID: <1408034523.99775.YahooMailNeo@web171303.mail.ir2.yahoo.com>
-Reply-To: =?iso-8859-1?Q?Carpon_fr=E9d=E9ric?= <frederic.carpon@yahoo.fr>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: A Minimal Playback Program does't work on my system
+Date: Thu, 14 Aug 2014 18:44:30 +0200
+Message-ID: <CAOf5uw=kKSE+6LfXtzMr_awe_iUBpjBRwHVUUCu-Uc-gOQ4xLA@mail.gmail.com>
+References: <1408034523.99775.YahooMailNeo@web171303.mail.ir2.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm27-vm7.bullet.mail.ir2.yahoo.com
- (nm27-vm7.bullet.mail.ir2.yahoo.com [212.82.97.58])
- by alsa0.perex.cz (Postfix) with ESMTP id 42E6E261737
- for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 18:42:04 +0200 (CEST)
+Received: from mail-wi0-f170.google.com (mail-wi0-f170.google.com
+ [209.85.212.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1232B261737
+ for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 18:44:31 +0200 (CEST)
+Received: by mail-wi0-f170.google.com with SMTP id f8so10062722wiw.5
+ for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 09:44:30 -0700 (PDT)
+In-Reply-To: <1408034523.99775.YahooMailNeo@web171303.mail.ir2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,28 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: =?UTF-8?B?Q2FycG9uIGZyw6lkw6lyaWM=?= <frederic.carpon@yahoo.fr>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-I am new=A0
-
-System : Raspberry
-Linux: ArchLinuxArm
-
-I would like to run this exemple of=A0A Minimal Playback Program from here =
-:=A0Howto use the ALSA API
-from the page=A0Tutorials for application developers=A0but there is a bug :
-i have done
-> pacman -sy
-> pacman -s alsa-utils
-=A0to install the last alas-utils
-done gcc exemple.c -lasound (warning comes)
-and ./a.out my_file.wav=A0
-and the result is :
-"AlSA lib pcm.2239:(and_pcm_open_noupdate) Unknown PCM=A0my_file.wav=A0"
-cannot open audio device=A0my_file.wav (No such file or directory)
-
-
-Can you help me please ?
+SGkKCk9uIFRodSwgQXVnIDE0LCAyMDE0IGF0IDY6NDIgUE0sIENhcnBvbiBmcsOpZMOpcmljCjxm
+cmVkZXJpYy5jYXJwb25AeWFob28uZnI+IHdyb3RlOgo+IEhlbGxvLAo+Cj4gSSBhbSBuZXcKPgo+
+IFN5c3RlbSA6IFJhc3BiZXJyeQo+IExpbnV4OiBBcmNoTGludXhBcm0KPgo+IEkgd291bGQgbGlr
+ZSB0byBydW4gdGhpcyBleGVtcGxlIG9mIEEgTWluaW1hbCBQbGF5YmFjayBQcm9ncmFtIGZyb20g
+aGVyZSA6IEhvd3RvIHVzZSB0aGUgQUxTQSBBUEkKPiBmcm9tIHRoZSBwYWdlIFR1dG9yaWFscyBm
+b3IgYXBwbGljYXRpb24gZGV2ZWxvcGVycyBidXQgdGhlcmUgaXMgYSBidWcgOgo+IGkgaGF2ZSBk
+b25lCj4+IHBhY21hbiAtc3kKPj4gcGFjbWFuIC1zIGFsc2EtdXRpbHMKPiAgdG8gaW5zdGFsbCB0
+aGUgbGFzdCBhbGFzLXV0aWxzCj4gZG9uZSBnY2MgZXhlbXBsZS5jIC1sYXNvdW5kICh3YXJuaW5n
+IGNvbWVzKQo+IGFuZCAuL2Eub3V0IG15X2ZpbGUud2F2Cj4gYW5kIHRoZSByZXN1bHQgaXMgOgo+
+ICJBbFNBIGxpYiBwY20uMjIzOTooYW5kX3BjbV9vcGVuX25vdXBkYXRlKSBVbmtub3duIFBDTSBt
+eV9maWxlLndhdiAiCj4gY2Fubm90IG9wZW4gYXVkaW8gZGV2aWNlIG15X2ZpbGUud2F2IChObyBz
+dWNoIGZpbGUgb3IgZGlyZWN0b3J5KQo+CgpJIGRvbid0IHNlZSB0aGUgY29kZSwgYnR3LiBIYXZl
+IHlvdSB0ZXN0ZWQgb24gYSBkZXNrdG9wPwoKTWljaGFlbAoKPgo+IENhbiB5b3UgaGVscCBtZSBw
+bGVhc2UgPwo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Cj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
