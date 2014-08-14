@@ -1,69 +1,55 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] mfd: wm8994: declare dc servo register
-	for wm8958	as volatile
-Date: Thu, 14 Aug 2014 09:37:53 +0100
-Message-ID: <20140814083753.GM15833@opensource.wolfsonmicro.com>
-References: <1407943649-9535-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v3 00/14] Rework OMAP4+ HDMI audio support
+Date: Thu, 14 Aug 2014 12:28:07 +0300
+Message-ID: <53EC8127.7090405@ti.com>
+References: <cover.1407503813.git.jsarha@ti.com> <20140813110425.GL17528@sirena.org.uk> <53EB5F6A.9060308@ti.com> <20140813172632.GE17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C8542265658
- for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 10:37:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1407943649-9535-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20140813172632.GE17528@sirena.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 13, 2014 at 04:27:29PM +0100, Nikesh Oswal wrote:
-> DC Servo register 57h holds the DC offset value after the hardware has
-> completed the DC Servo Correction, so declare this register as volatile
-> because it is changed by the hardware.
-> 
-> Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-> ---
->  drivers/mfd/wm8994-regmap.c |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mfd/wm8994-regmap.c b/drivers/mfd/wm8994-regmap.c
-> index 2fbce9c..fa1630d 100644
-> --- a/drivers/mfd/wm8994-regmap.c
-> +++ b/drivers/mfd/wm8994-regmap.c
-> @@ -1169,6 +1169,7 @@ static bool wm8958_volatile_register(struct device *dev, unsigned int reg)
->  	case WM8958_FW_MINOR_0:
->  	case WM8958_FW_PATCH_1:
->  	case WM8958_FW_PATCH_0:
-> +	case WM8994_DC_SERVO_4:
+On 08/13/2014 08:26 PM, Mark Brown wrote:
+> On Wed, Aug 13, 2014 at 03:51:54PM +0300, Jyri Sarha wrote:
+>
+>> I guess then the least bad alternative would be cutting the cpu-dai driver
+>> away from drivers/video/fbdev/omap2/dss/hdmi_audio.c and placing it under
+>> sound/soc/omap and registering it from hdmi_audio.c the same way as
+>> hdmi-audio-codec and asoc-simple-card is now registered.
+>
+>> There would be two devices for a single ip, but at least the ASoC side
+>> driver would receive its resources directly from the HDMI video driver with
+>> necessary tools to synchronize the access.
+>
+> Just a MFD really.
+>
+>> This approach would work for other HDMI audio situation too, where there
+>> would usually (for tda998x and SiI9022 at least) be a need to register an
+>> i2s codec driver associated with the HDMI encoder. It would probably be
+>> possible to make a single codec driver to work with multiple HDMI encoders
+>> if the API between the codec and endcoder drivers is designed that in mind.
+>
+>> How does this sound?
+>
+> This sounds like a way forward, I definitely think it's a good idea to
+> standardise the interfaces as much as we can.
+>
 
-Looking at this again it looks like this should actually be in
-wm8994_volatile_register as some revs of the wm8994 use this
-register as well as the 8958 for the servo readback.
+After discussing with Peter and Tomi I decided to change the approach a 
+bit. There should not be any new device registered, just ASoC components 
+that are implemented under sound/soc as a library rather than a device 
+driver.
 
-Then if you update the other patch to use this register for
-dsc_readback_mode = 1, then once we have a confirmation
-from hardware I think both of these patches are good to go.
+The library would export a register and unregister functions to be 
+called from video driver directory. The functions will then register the 
+necessary ASoC components under the video device.
 
-Thanks,
-Charles
+If there are no objections I'll go ahead implementing this approach, 
+first for OMAP HDMI audio, and later for SiI9022 driver we are cooking.
 
->  		return true;
->  	default:
->  		return wm8994_volatile_register(dev, reg);
-> -- 
-> 1.7.9.5
-> 
-> _______________________________________________
-> patches mailing list
-> patches@opensource.wolfsonmicro.com
-> http://opensource.wolfsonmicro.com/cgi-bin/mailman/listinfo/patches
+Best regards,
+Jyri
