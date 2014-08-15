@@ -1,16 +1,18 @@
-From: =?iso-8859-1?Q?Carpon_fr=E9d=E9ric?= <frederic.carpon@yahoo.fr>
-Subject: A minimal playback program does't work on my system
-Date: Fri, 15 Aug 2014 18:19:43 +0100
-Message-ID: <1408123183.97230.YahooMailNeo@web171303.mail.ir2.yahoo.com>
-Reply-To: =?iso-8859-1?Q?Carpon_fr=E9d=E9ric?= <frederic.carpon@yahoo.fr>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: A minimal playback program does't work on my system
+Date: Fri, 15 Aug 2014 19:31:45 +0200
+Message-ID: <CAOf5uwnfxU6wgUgxx1vGftvjMC8QF7VWnSZ5c7+N=dXJ7KorDA@mail.gmail.com>
+References: <1408123183.97230.YahooMailNeo@web171303.mail.ir2.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm4-vm4.bullet.mail.ir2.yahoo.com
- (nm4-vm4.bullet.mail.ir2.yahoo.com [212.82.96.102])
- by alsa0.perex.cz (Postfix) with ESMTP id F063F264F0D
- for <alsa-devel@alsa-project.org>; Fri, 15 Aug 2014 19:19:44 +0200 (CEST)
+Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id B57DD264F0F
+ for <alsa-devel@alsa-project.org>; Fri, 15 Aug 2014 19:31:45 +0200 (CEST)
+Received: by mail-wg0-f45.google.com with SMTP id x12so2632281wgg.16
+ for <alsa-devel@alsa-project.org>; Fri, 15 Aug 2014 10:31:45 -0700 (PDT)
+In-Reply-To: <1408123183.97230.YahooMailNeo@web171303.mail.ir2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,36 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: =?UTF-8?B?Q2FycG9uIGZyw6lkw6lyaWM=?= <frederic.carpon@yahoo.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-Yesterday i have written.
-I answer to everybody. I am new and I don't know if there is special rule.=
-=A0
-Note : It would be good to have a forum to see the messages and answers in =
-a pretty form.=A0
-
-the programme in c comes from=A0
-
-http://equalarea.com/paul/alsa-audio.html
-you can download it at
-https://mon-partage.fr/f/uvyw39wo/
-
-To answer to Michael i have sound in my HDMI with that :=A0
->speaker-test -c2 -D hw:0,0
-
-so i did that=A0
->gcc=A0-o =A0 =A0minimal_playback =A0 =A0=A0minimal_playback.c =A0 =A0 -las=
-ound (warning comes)
-and
->./minimal_playback "plughw:0,0"
-and i have this result :
->Error of segmentation
-
-Where i can an exemple with the possibility to do something like that =A0:
->./minimal_playback =A0"plughw:0,0" =A0"mywave.wav"
-
-
-Thank you for your help
+SGkKCklsIDE1L2Fnby8yMDE0IDE5OjIwICJDYXJwb24gZnLDqWTDqXJpYyIgPGZyZWRlcmljLmNh
+cnBvbkB5YWhvby5mcj4gaGEKc2NyaXR0bzoKPgo+IEhlbGxvLAo+Cj4gWWVzdGVyZGF5IGkgaGF2
+ZSB3cml0dGVuLgo+IEkgYW5zd2VyIHRvIGV2ZXJ5Ym9keS4gSSBhbSBuZXcgYW5kIEkgZG9uJ3Qg
+a25vdyBpZiB0aGVyZSBpcyBzcGVjaWFsCnJ1bGUuCj4gTm90ZSA6IEl0IHdvdWxkIGJlIGdvb2Qg
+dG8gaGF2ZSBhIGZvcnVtIHRvIHNlZSB0aGUgbWVzc2FnZXMgYW5kIGFuc3dlcnMKaW4gYSBwcmV0
+dHkgZm9ybS4KPgo+IHRoZSBwcm9ncmFtbWUgaW4gYyBjb21lcyBmcm9tCj4KPiBodHRwOi8vZXF1
+YWxhcmVhLmNvbS9wYXVsL2Fsc2EtYXVkaW8uaHRtbAo+IHlvdSBjYW4gZG93bmxvYWQgaXQgYXQK
+PiBodHRwczovL21vbi1wYXJ0YWdlLmZyL2YvdXZ5dzM5d28vCj4KPiBUbyBhbnN3ZXIgdG8gTWlj
+aGFlbCBpIGhhdmUgc291bmQgaW4gbXkgSERNSSB3aXRoIHRoYXQgOgo+ID5zcGVha2VyLXRlc3Qg
+LWMyIC1EIGh3OjAsMAo+Cj4gc28gaSBkaWQgdGhhdAo+ID5nY2MgLW8gICAgbWluaW1hbF9wbGF5
+YmFjayAgICAgbWluaW1hbF9wbGF5YmFjay5jICAgICAtbGFzb3VuZCAod2FybmluZwpjb21lcykK
+PiBhbmQKPiA+Li9taW5pbWFsX3BsYXliYWNrICJwbHVnaHc6MCwwIgo+IGFuZCBpIGhhdmUgdGhp
+cyByZXN1bHQgOgo+ID5FcnJvciBvZiBzZWdtZW50YXRpb24KPgo+IFdoZXJlIGkgY2FuIGFuIGV4
+ZW1wbGUgd2l0aCB0aGUgcG9zc2liaWxpdHkgdG8gZG8gc29tZXRoaW5nIGxpa2UgdGhhdCAgOgo+
+ID4uL21pbmltYWxfcGxheWJhY2sgICJwbHVnaHc6MCwwIiAgIm15d2F2ZS53YXYiCj4KCmFwbGF5
+IHNvdXJjZSBjb2RlCgpJIGFzayB0byB0ZXN0IHlvdXIgc21hbGwgcHJvZ3JhbSBvbiBQQy4gTm93
+IEkgZG9uJ3Qga25vdyBhYm91dCBzZWdtZW50YXRpb24KZmF1bHQgYW5kIEknbSBhbnN3ZXJpbmcg
+dXNpbmcgbW9iaWxlIG5vdy4gSSB3aWxsIGNoZWNrIHRvbW9ycm93CgpNaWNoYWVsCgo+Cj4gVGhh
+bmsgeW91IGZvciB5b3VyIGhlbHAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
