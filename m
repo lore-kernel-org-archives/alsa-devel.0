@@ -1,18 +1,19 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: A minimal playback program does't work on my system
-Date: Fri, 15 Aug 2014 19:31:45 +0200
-Message-ID: <CAOf5uwnfxU6wgUgxx1vGftvjMC8QF7VWnSZ5c7+N=dXJ7KorDA@mail.gmail.com>
-References: <1408123183.97230.YahooMailNeo@web171303.mail.ir2.yahoo.com>
+From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
+Subject: Re: Warning Big Yield
+Date: Fri, 15 Aug 2014 20:48:45 +0200
+Message-ID: <1408128525.4677.2.camel@debian>
+References: <1408019626.6670.5.camel@debian> <53ECD987.5020608@ladisch.de>
+ <53ED3F0C.70809@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id B57DD264F0F
- for <alsa-devel@alsa-project.org>; Fri, 15 Aug 2014 19:31:45 +0200 (CEST)
-Received: by mail-wg0-f45.google.com with SMTP id x12so2632281wgg.16
- for <alsa-devel@alsa-project.org>; Fri, 15 Aug 2014 10:31:45 -0700 (PDT)
-In-Reply-To: <1408123183.97230.YahooMailNeo@web171303.mail.ir2.yahoo.com>
+Received: from mail-wg0-f50.google.com (mail-wg0-f50.google.com [74.125.82.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33F58265044
+ for <alsa-devel@alsa-project.org>; Fri, 15 Aug 2014 20:48:53 +0200 (CEST)
+Received: by mail-wg0-f50.google.com with SMTP id n12so2588363wgh.21
+ for <alsa-devel@alsa-project.org>; Fri, 15 Aug 2014 11:48:52 -0700 (PDT)
+In-Reply-To: <53ED3F0C.70809@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,32 +23,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?Q2FycG9uIGZyw6lkw6lyaWM=?= <frederic.carpon@yahoo.fr>
+To: Matt Flax <flatmax@flatmax.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkKCklsIDE1L2Fnby8yMDE0IDE5OjIwICJDYXJwb24gZnLDqWTDqXJpYyIgPGZyZWRlcmljLmNh
-cnBvbkB5YWhvby5mcj4gaGEKc2NyaXR0bzoKPgo+IEhlbGxvLAo+Cj4gWWVzdGVyZGF5IGkgaGF2
-ZSB3cml0dGVuLgo+IEkgYW5zd2VyIHRvIGV2ZXJ5Ym9keS4gSSBhbSBuZXcgYW5kIEkgZG9uJ3Qg
-a25vdyBpZiB0aGVyZSBpcyBzcGVjaWFsCnJ1bGUuCj4gTm90ZSA6IEl0IHdvdWxkIGJlIGdvb2Qg
-dG8gaGF2ZSBhIGZvcnVtIHRvIHNlZSB0aGUgbWVzc2FnZXMgYW5kIGFuc3dlcnMKaW4gYSBwcmV0
-dHkgZm9ybS4KPgo+IHRoZSBwcm9ncmFtbWUgaW4gYyBjb21lcyBmcm9tCj4KPiBodHRwOi8vZXF1
-YWxhcmVhLmNvbS9wYXVsL2Fsc2EtYXVkaW8uaHRtbAo+IHlvdSBjYW4gZG93bmxvYWQgaXQgYXQK
-PiBodHRwczovL21vbi1wYXJ0YWdlLmZyL2YvdXZ5dzM5d28vCj4KPiBUbyBhbnN3ZXIgdG8gTWlj
-aGFlbCBpIGhhdmUgc291bmQgaW4gbXkgSERNSSB3aXRoIHRoYXQgOgo+ID5zcGVha2VyLXRlc3Qg
-LWMyIC1EIGh3OjAsMAo+Cj4gc28gaSBkaWQgdGhhdAo+ID5nY2MgLW8gICAgbWluaW1hbF9wbGF5
-YmFjayAgICAgbWluaW1hbF9wbGF5YmFjay5jICAgICAtbGFzb3VuZCAod2FybmluZwpjb21lcykK
-PiBhbmQKPiA+Li9taW5pbWFsX3BsYXliYWNrICJwbHVnaHc6MCwwIgo+IGFuZCBpIGhhdmUgdGhp
-cyByZXN1bHQgOgo+ID5FcnJvciBvZiBzZWdtZW50YXRpb24KPgo+IFdoZXJlIGkgY2FuIGFuIGV4
-ZW1wbGUgd2l0aCB0aGUgcG9zc2liaWxpdHkgdG8gZG8gc29tZXRoaW5nIGxpa2UgdGhhdCAgOgo+
-ID4uL21pbmltYWxfcGxheWJhY2sgICJwbHVnaHc6MCwwIiAgIm15d2F2ZS53YXYiCj4KCmFwbGF5
-IHNvdXJjZSBjb2RlCgpJIGFzayB0byB0ZXN0IHlvdXIgc21hbGwgcHJvZ3JhbSBvbiBQQy4gTm93
-IEkgZG9uJ3Qga25vdyBhYm91dCBzZWdtZW50YXRpb24KZmF1bHQgYW5kIEknbSBhbnN3ZXJpbmcg
-dXNpbmcgbW9iaWxlIG5vdy4gSSB3aWxsIGNoZWNrIHRvbW9ycm93CgpNaWNoYWVsCgo+Cj4gVGhh
-bmsgeW91IGZvciB5b3VyIGhlbHAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+On Fri, 2014-08-15 at 08:58 +1000, Matt Flax wrote:
+> On 15/08/14 01:45, Clemens Ladisch wrote:
+> > Jo=EBl Kr=E4hemann wrote:
+> >> I'd really like to know if there's a common way to do syncing
+> >> applications. What frequencies are required to run a GUI?
+> > GUIs should be event based; the term "frequency" is not applicable.
+> >
+> >> How does Xorg work
+> > It's event based.
+> =
+
+> Yes, event based.
+> For example, when using gtk ... if you want to update your GUI, you =
+
+> probably want to use the gtk timer to regularly update at a rate which =
+
+> suits your visual aesthetic.
+> =
+
+> You may already know this, but you can trigger a user function at =
+
+> regular intervals :
+> g_timeout_add
+> https://developer.gnome.org/glib/2.37/glib-The-Main-Event-Loop.html
+> =
+
+> >> how can I prevent interfering with ALSA output?
+> > By doing sound stuff in a separate thread with higher priority.
+> You can do something similar to what Jack does to ensure higher =
+
+> priority, check the file libjack/thread.c and look at the way they =
+
+> increment the priority.
+> =
+
+> You may already know this, however in case not, you can get low =
+
+> millisecond latency without dropping samples when using Linux ... i.e. =
+
+> no interferance.
+> That was last time I checked ... it is possible that this has improved =
+
+> to a lower threshold since then !
+> =
+
+> Matt
+> =
+
+> >> Warning you may experience big yield.
+> > ???
+> >
+> > Regards,
+> > Clemens
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> =
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+I use 250 iterations of g_main_context_iteration() per second and
+application uses 1000 iterations per second.
+
+And Herz is definitely a frequency.
+
+regards
+Jo=EBl
