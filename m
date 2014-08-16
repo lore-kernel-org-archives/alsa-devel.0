@@ -1,82 +1,55 @@
-From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: A minimal playback program does't work on my system
-Date: Sat, 16 Aug 2014 13:52:24 +0200
-Message-ID: <CAOf5uwmCRu=mr+UFNF0KUxagXGEb8ARs=iZcF9D5WmMyT65hjg@mail.gmail.com>
-References: <1408123183.97230.YahooMailNeo@web171303.mail.ir2.yahoo.com>
- <CAOf5uwnfxU6wgUgxx1vGftvjMC8QF7VWnSZ5c7+N=dXJ7KorDA@mail.gmail.com>
- <CAOf5uw=oWjx5KuJM8T0oX3Pxkhsy0xsDT7D_YWf3a_VdKCh+xA@mail.gmail.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH RFC] ASoC: fsl: Add Freescale Generic ASoC Sound Card
+ with ASRC support
+Date: Sat, 16 Aug 2014 14:40:37 +0100
+Message-ID: <20140816134037.GI28623@sirena.org.uk>
+References: <1406719658-20937-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f44.google.com (mail-wg0-f44.google.com [74.125.82.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 34268264ED5
- for <alsa-devel@alsa-project.org>; Sat, 16 Aug 2014 13:52:25 +0200 (CEST)
-Received: by mail-wg0-f44.google.com with SMTP id m15so3181869wgh.27
- for <alsa-devel@alsa-project.org>; Sat, 16 Aug 2014 04:52:24 -0700 (PDT)
-In-Reply-To: <CAOf5uw=oWjx5KuJM8T0oX3Pxkhsy0xsDT7D_YWf3a_VdKCh+xA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?Q2FycG9uIGZyw6lkw6lyaWM=?= <frederic.carpon@yahoo.fr>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="h22Fi9ANawrtbNPX"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1406719658-20937-1-git-send-email-nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b02247-KZfg59tc24xl57MIdRCFDg@public.gmane.org, b42378-KZfg59tc24xl57MIdRCFDg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkKCmhhdGUgZ21haWwKCk9uIFNhdCwgQXVnIDE2LCAyMDE0IGF0IDE6NTAgUE0sIE1pY2hhZWwg
-VHJpbWFyY2hpCjxtaWNoYWVsQGFtYXJ1bGFzb2x1dGlvbnMuY29tPiB3cm90ZToKPiBIaQo+Cj4g
-T24gRnJpLCBBdWcgMTUsIDIwMTQgYXQgNzozMSBQTSwgTWljaGFlbCBUcmltYXJjaGkKPiA8bWlj
-aGFlbEBhbWFydWxhc29sdXRpb25zLmNvbT4gd3JvdGU6Cj4+IEhpCj4+Cj4+IElsIDE1L2Fnby8y
-MDE0IDE5OjIwICJDYXJwb24gZnLDqWTDqXJpYyIgPGZyZWRlcmljLmNhcnBvbkB5YWhvby5mcj4g
-aGEKPj4gc2NyaXR0bzoKPj4KPj4KPj4+Cj4+PiBIZWxsbywKPj4+Cj4+PiBZZXN0ZXJkYXkgaSBo
-YXZlIHdyaXR0ZW4uCj4+PiBJIGFuc3dlciB0byBldmVyeWJvZHkuIEkgYW0gbmV3IGFuZCBJIGRv
-bid0IGtub3cgaWYgdGhlcmUgaXMgc3BlY2lhbCBydWxlLgo+Pj4gTm90ZSA6IEl0IHdvdWxkIGJl
-IGdvb2QgdG8gaGF2ZSBhIGZvcnVtIHRvIHNlZSB0aGUgbWVzc2FnZXMgYW5kIGFuc3dlcnMgaW4K
-Pj4+IGEgcHJldHR5IGZvcm0uCj4+Pgo+Pj4gdGhlIHByb2dyYW1tZSBpbiBjIGNvbWVzIGZyb20K
-Pj4+Cj4+PiBodHRwOi8vZXF1YWxhcmVhLmNvbS9wYXVsL2Fsc2EtYXVkaW8uaHRtbAo+Pj4geW91
-IGNhbiBkb3dubG9hZCBpdCBhdAo+Pj4gaHR0cHM6Ly9tb24tcGFydGFnZS5mci9mL3V2eXczOXdv
-Lwo+Pj4KPj4+IFRvIGFuc3dlciB0byBNaWNoYWVsIGkgaGF2ZSBzb3VuZCBpbiBteSBIRE1JIHdp
-dGggdGhhdCA6Cj4+PiA+c3BlYWtlci10ZXN0IC1jMiAtRCBodzowLDAKPj4+Cj4+PiBzbyBpIGRp
-ZCB0aGF0Cj4+PiA+Z2NjIC1vICAgIG1pbmltYWxfcGxheWJhY2sgICAgIG1pbmltYWxfcGxheWJh
-Y2suYyAgICAgLWxhc291bmQgKHdhcm5pbmcKPj4+ID4gY29tZXMpCj4+PiBhbmQKPj4+ID4uL21p
-bmltYWxfcGxheWJhY2sgInBsdWdodzowLDAiCj4+PiBhbmQgaSBoYXZlIHRoaXMgcmVzdWx0IDoK
-Pj4+ID5FcnJvciBvZiBzZWdtZW50YXRpb24KPj4+Cj4KPiBpZiAoKGVyciA9IHNuZF9wY21faHdf
-cGFyYW1zX3NldF9yYXRlX25lYXIgKHBsYXliYWNrX2hhbmRsZSwKPiBod19wYXJhbXMsIDQ0MTAw
-LCAwKSkgPCAwKSB7Cj4gZnByaW50ZiAoc3RkZXJyLCAiY2Fubm90IHNldCBzYW1wbGUgcmF0ZSAo
-JXMpXG4iLAo+IHNuZF9zdHJlcnJvciAoZXJyKSk7Cj4gZXhpdCAoMSk7Cj4gfQoKVGhlIGVycm9y
-IGlzIGhvdyB0aGlzIGZ1bmN0aW9uIGlzIGNhbGxlZC4gSnVzdCBjaGFuZ2UgZnJvbQpzbmRfcGNt
-X2h3X3BhcmFtc19zZXRfcmF0ZV9uZWFyCgp0bwoKc25kX3BjbV9od19wYXJhbXNfc2V0X3JhdGUK
-CmxldCB0aGUgZXhhbXBsZSBjb21waWxlIHdpdGhvdXQgd2FybmluZwoKZ2NjIHBsYXliYWNrLmMg
-YHBrZy1jb25maWcgLS1jZmxhZ3MgLS1saWJzIGFsc2FgIC1vIHBsYXliYWNrCi4vcGxheWJhY2sg
-cGx1Z2h3OjAsMAoKVGhpcyBleGFtcGxlIHRha2Ugc29tZSBieXRlIG5vdCBpbml0aWFsaXplZCBv
-biB0aGUgc3RhY2sgc28gaXQncyBub3QKd2hhdCB5b3Ugd2FudC4gSWYgeW91IGluY3JlYXNlCnRo
-ZSBsb29wIGZyb20gMTAgdG8gMTAyNCB5b3UgaGF2ZSBhIG5pY2Ugbm9pc2UKCk1pY2hhZWwKCgoK
-Cgo+Cj4KPgo+Cj4KPj4+IFdoZXJlIGkgY2FuIGFuIGV4ZW1wbGUgd2l0aCB0aGUgcG9zc2liaWxp
-dHkgdG8gZG8gc29tZXRoaW5nIGxpa2UgdGhhdCAgOgo+Pj4gPi4vbWluaW1hbF9wbGF5YmFjayAg
-InBsdWdodzowLDAiICAibXl3YXZlLndhdiIKPj4+Cj4+Cj4+IGFwbGF5IHNvdXJjZSBjb2RlCj4+
-Cj4+IEkgYXNrIHRvIHRlc3QgeW91ciBzbWFsbCBwcm9ncmFtIG9uIFBDLiBOb3cgSSBkb24ndCBr
-bm93IGFib3V0IHNlZ21lbnRhdGlvbgo+PiBmYXVsdCBhbmQgSSdtIGFuc3dlcmluZyB1c2luZyBt
-b2JpbGUgbm93LiBJIHdpbGwgY2hlY2sgdG9tb3Jyb3cKPj4KPj4gTWljaGFlbAo+Pgo+Pj4KPj4+
-IFRoYW5rIHlvdSBmb3IgeW91ciBoZWxwCj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwo+Pj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4+IEFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgo+Cj4KPiAtLQo+IHwgTWljaGFlbCBOYXp6
-YXJlbm8gVHJpbWFyY2hpICAgICAgICAgICAgICAgICAgICAgQW1hcnVsYSBTb2x1dGlvbnMgQlYg
-fAo+IHwgQ09PICAtICBGb3VuZGVyICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBDcnVxdWl1c2thZGUgNDcgfAo+IHwgKzMxKDApODUxMTE5MTcyICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgQW1zdGVyZGFtIDEwMTggQU0gTkwgfAo+IHwgICAgICAgICAgICAgICAg
-ICBbYGFzXSBodHRwOi8vd3d3LmFtYXJ1bGFzb2x1dGlvbnMuY29tICAgICAgICAgICAgICAgfAoK
-CgotLSAKfCBNaWNoYWVsIE5henphcmVubyBUcmltYXJjaGkgICAgICAgICAgICAgICAgICAgICBB
-bWFydWxhIFNvbHV0aW9ucyBCViB8CnwgQ09PICAtICBGb3VuZGVyICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBDcnVxdWl1c2thZGUgNDcgfAp8ICszMSgwKTg1MTExOTE3MiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEFtc3RlcmRhbSAxMDE4IEFNIE5MIHwKfCAg
-ICAgICAgICAgICAgICAgIFtgYXNdIGh0dHA6Ly93d3cuYW1hcnVsYXNvbHV0aW9ucy5jb20gICAg
-ICAgICAgICAgICB8Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+
+--h22Fi9ANawrtbNPX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jul 30, 2014 at 07:27:38PM +0800, Nicolin Chen wrote:
+> The Freescale Generic ASoC Sound Card is a general ASoC DAI Link driver that
+> can be used, ideally, for all Freescale CPU DAI drivers and external CODECs.
+
+Applied, thanks.
+
+--h22Fi9ANawrtbNPX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT719SAAoJELSic+t+oim99cEQAJFas+ffvanUkBZGtzot3rRa
+k3xbLiGrtdYVzOY5yIcvseJAKWC44wOlscyyyNbNH6+3NktiuVQ9ck42cXXUhS3D
+Xic4/FYeJexPqNf5YXdhmdxzOVrUKX8ffNU/9AqGjSdPDn+bAolnS8pGdIN/s3n/
+ed5ssVtYSjuO9eulL8wbm6/nqTTLfzat10sFBjBLEobd1VupCn82E16N9Z6Q0GY3
+VR61YStlPSFp2zPCJnoWth8YTKPT9AbddqUTyLe6rC5Kz+NzxEpewi0v5QTP4uI7
+7RQI+BqG1lta+DwydXfXPdPtal8pgx9Jfuui8z3oKpE2U+TRYD6UipmAy4FebY1F
+8i07Wj9xWiQYJitj5wCP7J5SFAOEf87cQ0UtLtxpIDixq8AwV3d40juRlTD9Py0k
+Wze8wajIDFbHE28egxxhKyIUwVo5qIV2AOL6C77R1xVuhyWXHnePs0kULZqDouwx
+iGICuJVvU39Z2KMdD6ks3TrCaVX3zIN5SPfd+26fUDK2waqDIWQVI7+1BVLZszlc
+pH2QjTu5q9lr4cPGxhoHHYe3Czvn8HIVO/aUBvrY8FYMUJCrU1RdwGPsClTP/cP9
+t5hTEPC2sxRVmm3kxcBVEkGhj0KcoHl7L7Fk6L51Lne9RWe+uTiQanXWaqH1PoBj
+G4WVo84eHsC64XhYFFvR
+=hkzF
+-----END PGP SIGNATURE-----
+
+--h22Fi9ANawrtbNPX--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
