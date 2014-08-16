@@ -1,56 +1,94 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH/RFC] ASoC: Drop const from struct snd_soc_dai_link
- *of_node members
-Date: Sat, 16 Aug 2014 15:57:07 +0100
-Message-ID: <20140816145707.GR28623@sirena.org.uk>
-References: <1402929226-5547-1-git-send-email-s.nawrocki@samsung.com>
+Subject: Re: [PATCH 1/2 v2] ASoC: Add HA (HEAD acoustics) DSP codec driver
+ template
+Date: Sat, 16 Aug 2014 15:49:58 +0100
+Message-ID: <20140816144958.GQ28623@sirena.org.uk>
+References: <1399372596-10744-1-git-send-email-sr@denx.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="foM9DbudB2CcldhH"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="A7FgPGrDEcSmmdo/"
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1402929226-5547-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1399372596-10744-1-git-send-email-sr@denx.de>
+Sender: linux-omap-owner@vger.kernel.org
+To: Stefan Roese <sr@denx.de>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Thorsten Eisbein <thorsten.eisbein@head-acoustics.de>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---foM9DbudB2CcldhH
-Content-Type: text/plain; charset=utf-8
+--A7FgPGrDEcSmmdo/
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 16, 2014 at 04:33:46PM +0200, Sylwester Nawrocki wrote:
-> Dropping the const qualifiers prevents "passing argument 1 of =E2=80=98of=
-_node_put=E2=80=99
-> discards =E2=80=98const=E2=80=99 qualifier from pointer target type" type=
- warnings when
-> compiling the code dropping reference to cpu_of_node, codec_of_node or
-> platform_of_node with with an of_node_put() function call.
+On Tue, May 06, 2014 at 12:36:35PM +0200, Stefan Roese wrote:
 
-Applied, thanks.
+> This codec driver template represents an I2C controlled multichannel audio
 
---foM9DbudB2CcldhH
+It's not really a template, it's a driver for a specific device.
+
+Again, naming is the biggest issue here - it's going to get confusing
+with a second product.  While the code is pretty clean the template
+comment and the really generic name make this seem like it's more of a
+placeholder for something that people will hack on to deploy than an
+actual driver that someone can pick up and use.
+
+I'm also missing any real management of the actual DSP, this appears to
+only control some analogue around the DSP and a single mode switch which
+is a bit odd.
+
+> codec that has many typical ASoC codec driver features like volume controls,
+> mixer stages, mux selection, output power control, in-codec audio routings,
+> codec bias management and DAI link configuration.
+
+> +static int ha_dsp_probe(struct snd_soc_codec *codec)
+> +{
+> +	int ret;
+> +
+> +	codec->control_data = dev_get_regmap(codec->dev, NULL);
+> +	ret = snd_soc_codec_set_cache_io(codec, codec->control_data);
+> +	if (ret != 0) {
+> +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+> +		return ret;
+> +	}
+
+This will be done automatically by the core.
+
+> +	snd_soc_write(codec, HA_DSP_CTRL, HA_DSP_SW_RESET);
+
+I'd expect this to be done in the I2C level probe.
+
+> +/*
+> + * This name/ID is neded to match the DT node for the codec
+> + */
+> +static const struct i2c_device_id ha_dsp_i2c_id[] = {
+> +	{ "ha-dsp-audio", 0 },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, ha_dsp_i2c_id);
+
+For use with DT you should have an explicit compatible string.  There's
+also no binding document here that I can see.
+
+--A7FgPGrDEcSmmdo/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT73FAAAoJELSic+t+oim92bYP/0Jns5uTQ0QWpKiaF18M5fQh
-ZvOiuTTNbAL/oRQGupUdfPeFgn+HE3d9/xDVyyrC9z8PmipbHi6usi+HPEmZhPHK
-CZDmluJB7kgIp6R1g6F5XLNUF7MtV/89FJenBcz8x1NZFNOOGl9WmtLf+iqG3UJ9
-x2gWThfS+cybhtuQfYYOxouLativGetHcovPN3gBi+nHVst3/s39J1z5oSjm29Rx
-MWiw0R7zFx3h+UCOqvKHyDBDJE06o/jd+R7z2gITAN+LBUuUxOnEnlDqzbMUY7fk
-PBp56fL6LZIcNQtq76+k91nvd7TkMz3wpRw5n8ORsfhXb8HOKH/VLd0njV+nd3y1
-A9hZB4tVUZe7VmOgSnV8DJJZgETAXDnW4NeG0OYShQ92s/m6K6T3v7krOEcjLcS/
-nZUbeHGfoD1iZrYVw8I41sFVG492XEWqgbg91hxhJVHTtF1VhWXAykH9tL5UU5Gz
-jQMZdqTiICzRu1Uim6SINSUzQWT3T1dpsbdpDH7DWq4aOhdiSfkE2Hh4Qb6NhCcJ
-MLzZ2OmdWKw19Mdo8VKnQeQ2vhaAtJLZI8QYIruyzUPUi77gLW/BhUD1Z2xHyToh
-rkIfqX+XuLY4N19NJpAIV7A4FnKtdpxGxZSfDjK1k/uhEAqh8uEOxBtL5DjQjEEJ
-PXOvfoGbKW8mugp98wCn
-=K6qL
+iQIcBAEBAgAGBQJT72+TAAoJELSic+t+oim9DK0P/0sCCIiuJedj4ybqqX25cFiZ
+9FQlJO7BsmkqfhnM1BzDUX6mHPpR6raqYOG9JzLIYLpaS2X4A5nROSxB4KO8ime/
+XkjygtPFyfSCY7rXN34WlZVJNGaw+KaaXV4MAITIOCV02KqUQULaIYlBUNxynKk8
+phC00s9NhL7zSn6V8Zw3YIJlABhObakMWc+oqLgDcXPWXfTa4oErh6yst1CDUr2F
+i6fEqaMUtTXYfyiQEGCczpxdJVd4Vstf+tKNMSVztNKeVUVTwSehtjkOPSZKOYEV
+9V41r6WZ4R1n2ebD3YfarxdXHo/VCdlFMG+Sfn8S0uA4ptx1Eo5taXalxUB1WnRq
+PyrZ653lsX3T44MlcaBnjPEo1aXkk4cxHXkD+t5adSxK3lpOGCnF+IjIbYrh9KD+
+x8KQmaHJSW3riUHxn5/haPCRgIbSjbWiENPUZPrFIpEM6t6LglW4WRNhp0yv9LQv
+xwllMU5JKp7G+cHfH42bkq/QWAh6wO6KQ3VYHGJI00cIpSJIgo/8HosNDG2Ysg9c
+rMP3HOOTQn8gq3BHWbxIh5ClSDhaqICkfQEZOb4ekg8hVvOwYWDI7xRexzbfGjXp
+E/mzuDqkMjp6m0upAp8rcTYTNqciSpBZDsQVgJPoi8ptBvTQtb4kDKHiNj3CvF89
+XhERCKMewVR9yHOKEHOt
+=yp7g
 -----END PGP SIGNATURE-----
 
---foM9DbudB2CcldhH--
+--A7FgPGrDEcSmmdo/--
