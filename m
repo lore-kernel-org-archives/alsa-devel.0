@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: edma-pcm: Include edma-pcm.h
-Date: Sun, 17 Aug 2014 09:31:28 -0500
-Message-ID: <20140817143128.GJ14537@sirena.org.uk>
+Subject: Re: [PATCH 2/6] ASoC: odrodix2_max98090: Make non
+ exported symbols static
+Date: Sun, 17 Aug 2014 09:32:11 -0500
+Message-ID: <20140817143211.GK14537@sirena.org.uk>
 References: <1408285102-24538-1-git-send-email-lars@metafoo.de>
- <1408285102-24538-2-git-send-email-lars@metafoo.de>
+ <1408285102-24538-3-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5165252984836973005=="
+Content-Type: multipart/mixed; boundary="===============3569307818420321011=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C40C42650DA
- for <alsa-devel@alsa-project.org>; Sun, 17 Aug 2014 16:31:52 +0200 (CEST)
-In-Reply-To: <1408285102-24538-2-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 052DF2651E4
+ for <alsa-devel@alsa-project.org>; Sun, 17 Aug 2014 16:32:30 +0200 (CEST)
+In-Reply-To: <1408285102-24538-3-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +27,51 @@ Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5165252984836973005==
+--===============3569307818420321011==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lYetfuAxy9ic4HK3"
+	protocol="application/pgp-signature"; boundary="VSVNCtZB1QZ8vhj+"
 Content-Disposition: inline
 
 
---lYetfuAxy9ic4HK3
+--VSVNCtZB1QZ8vhj+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Aug 17, 2014 at 04:18:17PM +0200, Lars-Peter Clausen wrote:
-> edma_pcm_platform_register() is declared in edma-pcm.h and defined in
-> edma-pcm.c. To make sure that the function signature matches for both
-> edma-pcm.c should include edma-pcm.h
+On Sun, Aug 17, 2014 at 04:18:18PM +0200, Lars-Peter Clausen wrote:
+> odroidx2_drvdata and odroidu3_drvdata are not used outside this module so make
+> them static (and also const while we are at it).
 
 Applied, thanks.
 
---lYetfuAxy9ic4HK3
+--VSVNCtZB1QZ8vhj+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT8Ly8AAoJELSic+t+oim9Gg8P/j8AVEHFriN0jT4c4+yzZZ37
-BTxCL2CMxZgWhnBZWG8UPQKH0moU9CyAAn73u/H5bLs1toLX6R7he7koLQv3ht5c
-8CTG2Gv/V9Xw0Kjj9jEgAfBB3/f8GHIJbKHKh73+yeyogQJPmq04ScSNJN5qvDDE
-yCvfPtbHFpfsWXYNVeLZwVB27DW4mfkVUAvTzK4dQ/WsuSkpwZbbTh42xukJfHhl
-4N4vJwx5OlxUNroVjMF/Q969Gye5HN8Rpv5nDRWxeHBtKk7jVqcGGXBvvcrwU1RL
-z3XXDc/ci+Wb41UUefseC/g9MVpZYcBK/JUFUD2SMvXVNgOv17x8po6vlqrT9Bvp
-hiSKYq8C6uigV/MsaTXYEAikBWG1oiJVVspt1/kUG56LzbQaeg5BCtmI/9OuM942
-5NP0EXOGqQRS5O1EA6/QMWgg+isZVJsqzvGS6zATkWU2cNsfLSCFvH14iDsCmv9R
-di+osuLuYWqz4f1NizkLcpuuBK1ErL3t7DnRiaiMQRUITD0AchusgPNHtc4xoQ8r
-6usFaXfmR7uh4I2RL6mjXtqQ3uWfL/580VpPF38K4MBQPmfj9K5ZZiNYHsP25UtV
-IcOaUXAGknVjLfiIq5GiVAqIvTwWngBvjYcwNCrbDgyHojV42x+s/qGx+2bxNx+W
-dva6IHgePrVViYkgr7v8
-=AXO+
+iQIcBAEBAgAGBQJT8LznAAoJELSic+t+oim9VBMP/iUYKiKc/Gva+Zo2n88NLyP7
+DjQxLse+3Vt/7yu+S2GFUH5qXM9PO33cfUHWNfMBPPAG1JwikzpLkh1XGDHw6nhX
+YCEsffQv6mwohCYxx/Ck7i7cOW28jOvRMdRBcubfYMJVeqUg0uzA08g9Hb1xpyez
+xktjot9L04CY4btIFIKWFWV3LxXXSrxuaxBA8/16MmxpbZbtH5xLFvshgnRjwXDx
+XS1Zqml+QNRlHcWp6Mxx8NP9MWi0zJoxW3gV9mseE55tG5jkXJv6fHqyS/jr7QeE
+6E0nfDTViLOD69L/CpjNz0Mgz+sCru/HGrHBr51/VUAKOHz+Dcl/cIZTKLWErQtg
+Bp5QVwUAcnn0R9MPq0B+yFG6LFFV0ynUe+mKse7cmi8/HsccX8oyTC4iWR0kQWgV
+XHP3HJH5j6GbOYxm2dWbnBaugKgrtTXCL47+8f1cB3zauU7/pYz1qnML6y/FRd0/
+ajUw3hWgwJDaxvrIF3FQcV4upAuulvytgh13y6WqD7tI7DJbr3YlHoqfSw0dgbqA
+qwgWxy22u1kCy+49BRvPlY/hn4pI0ghggLAKW6LZeWRucm6RMD2/zdca8Pmgh8Qr
+BeJftF4U3Q0sqNGuUow5TjZYEQKsnXe4mAXMPpKOH0fjNz0myPiiIoQQ416f+uvy
+Dio8zI2lSwtiZQArfZgH
+=dSv0
 -----END PGP SIGNATURE-----
 
---lYetfuAxy9ic4HK3--
+--VSVNCtZB1QZ8vhj+--
 
---===============5165252984836973005==
+--===============3569307818420321011==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5165252984836973005==--
+--===============3569307818420321011==--
