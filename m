@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: rcar: Use && instead of & for
- boolean expressions
-Date: Sun, 17 Aug 2014 09:33:44 -0500
-Message-ID: <20140817143344.GL14537@sirena.org.uk>
+Subject: Re: [PATCH 4/6] ASoC: sh: Fix dma direction type
+Date: Sun, 17 Aug 2014 09:34:33 -0500
+Message-ID: <20140817143433.GM14537@sirena.org.uk>
 References: <1408285102-24538-1-git-send-email-lars@metafoo.de>
- <1408285102-24538-4-git-send-email-lars@metafoo.de>
+ <1408285102-24538-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8829102240434594510=="
+Content-Type: multipart/mixed; boundary="===============0587230226048329143=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 97DBF2650DA
- for <alsa-devel@alsa-project.org>; Sun, 17 Aug 2014 16:34:02 +0200 (CEST)
-In-Reply-To: <1408285102-24538-4-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F1F52650E7
+ for <alsa-devel@alsa-project.org>; Sun, 17 Aug 2014 16:35:13 +0200 (CEST)
+In-Reply-To: <1408285102-24538-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,51 +26,53 @@ Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8829102240434594510==
+--===============0587230226048329143==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hTKW8p8tUZ/8vLMe"
+	protocol="application/pgp-signature"; boundary="wAI/bQb0EMvlZCHl"
 Content-Disposition: inline
 
 
---hTKW8p8tUZ/8vLMe
+--wAI/bQb0EMvlZCHl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Aug 17, 2014 at 04:18:19PM +0200, Lars-Peter Clausen wrote:
-> Sparse spits out the following warning:
-> 	sound/soc/sh/rcar/gen.c:250:21: warning: dubious: x & !y
+On Sun, Aug 17, 2014 at 04:18:20PM +0200, Lars-Peter Clausen wrote:
+> dmaengine_prep_slave_single() expects a enum dma_transfer_direction and not a
+> enum dma_data_direction. Since the integer representations of both DMA_TO_DEVICE
+> and DMA_MEM_TO_DEV aswell as DMA_FROM_DEVICE and DMA_DEV_TO_MEM have the same
+> value the code worked fine even though it was using the wrong type.
 
 Applied, thanks.
 
---hTKW8p8tUZ/8vLMe
+--wAI/bQb0EMvlZCHl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT8L1FAAoJELSic+t+oim99gIQAJulLnBoeUCvw3XCs3NY6hIF
-mTgRGjw/yc3WC5aMX1FsuWxrYHItXZ6vein1PnuCsw0jmqugCb2uJDPgekTEEUP9
-yJQiz2SWNSle5x9Img3T7r6H1kAIvT8RiNBDwhcsvGGYZC+nQlFp4mNEclbP4kW+
-VFwAHkfI9kYdGwevlpbYWw/+3e5BsZQp+2iGx+wZ98MbBNzf3EKtCoqKHPK/tYMi
-EAvcYKL3rBBIO/IxP8+3NGXQspiI0qMHkCqM39LtXl0sRas7HrSIye1CjI9uDP8Z
-7SQqpg9/EMrHbRk+D1qehnP57diWW6wmuRXekZZ5YT6OiiTNjDz7tii9f9gzMUYH
-tARR/687wn2IWuPanOakQxsn6FFXNE7llf8hC+RRSOditcBfLtV3jUvEcnaJN/2q
-j4byhCMnW3dwn8GVgVVe8lxkhWv1uCZHGtgiJv8jWBFJ1ANO6waRcQl8InZTpV6J
-tEGyvwrevqVL3rqnZiS8DzxVOOhrdMeRVClWmuY2kfUVYutSAiEJ9y53AkdnTCea
-eHKbB8pSSUz5onuIEl21CO0jPvBbvvnePLvarx3QPwv0++hXZeLUj2jrEq9EkFWc
-muRoe8xZk+H+Wer+YqipAVny1Q5Yk0+UYpjN8vOayK3f2ZLjaU6Y6IHIvOoDFQN9
-+F3EXJ3E+AwfNX0QLo8f
-=xY0o
+iQIcBAEBAgAGBQJT8L12AAoJELSic+t+oim9qYUP/Aodm6h6ZTO6+0WdpgZQT0rf
+QOkYlGf6ZkaX+VOefrmWmAT/uJmPxq3xQFmgtloI1nq1UFdfAi80XwhNlK8toyNA
+nQGnMy2Yp1HpaDkPmap3UkgexPnv+4vgxe1q8K//7IbuFh+2fdy1u5LI9oAoNEKW
+oMt8lS6W/V+CLg69yQPSnD1GvcLu/aOO7maQdqnS2MSmgf9fjP0xSq+4HhpIcJo8
+njHDJ2grLT5OOa6Kp3SfGGxqnPTYAGGKeCuEEifumibSleTiwCheT9xgvuZWPoMi
+XWycuME9L+UZUnXzmp4enfwpRJ+Qv21sTXWPblkmSLCGbhyvCQxVQlPGLmzIFYsY
+p1CiuCs3mwZG5AKV21eZQERrsZr1uSEQJmS4o7szqk/tXJOP0ewPlAI0coJeS6xr
+JE4aOqmSK1sQtbobdj3H07kApSqDDbCu/waCNmGeQXm2gvzyI3xGShTXlkG8rBHT
+QT24BbYUCnCRyE9gqD9EtyfQ5ZkZmWJjvdoKoMmuBJCHlLl+UTxpGk0YAyZ/pJPu
+OXxFvKpLkCc249Pc1tvEL4ptSLXnsE70gUaGCfJtUZgAQe8RHirvB1hnDKcyZPLp
+qDCG0XdM09LzJP7tgt1aaqAUBHuutBqeE36gX6czVQvkOvywbwXEDoWyoa9SaEwP
++ygqNLLqd/FGVr5DxXMY
+=RTmu
 -----END PGP SIGNATURE-----
 
---hTKW8p8tUZ/8vLMe--
+--wAI/bQb0EMvlZCHl--
 
---===============8829102240434594510==
+--===============0587230226048329143==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8829102240434594510==--
+--===============0587230226048329143==--
