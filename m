@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/6] ASoC: samsung idma: Add proper
- annotation for casting iomem pointers
-Date: Sun, 17 Aug 2014 09:35:40 -0500
-Message-ID: <20140817143540.GN14537@sirena.org.uk>
+Subject: Re: [PATCH 6/6] ASoC: ab8500-codec: Drop bank prefix
+ from AB8500_GPIO_DIR4_REG register define
+Date: Sun, 17 Aug 2014 09:36:14 -0500
+Message-ID: <20140817143614.GO14537@sirena.org.uk>
 References: <1408285102-24538-1-git-send-email-lars@metafoo.de>
- <1408285102-24538-6-git-send-email-lars@metafoo.de>
+ <1408285102-24538-7-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8202866308855475646=="
+Content-Type: multipart/mixed; boundary="===============8037816245222430047=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EBAF5265259
- for <alsa-devel@alsa-project.org>; Sun, 17 Aug 2014 16:35:58 +0200 (CEST)
-In-Reply-To: <1408285102-24538-6-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 89A61265130
+ for <alsa-devel@alsa-project.org>; Sun, 17 Aug 2014 16:36:31 +0200 (CEST)
+In-Reply-To: <1408285102-24538-7-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,54 +27,52 @@ Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8202866308855475646==
+--===============8037816245222430047==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ie5iOtK4e9kgqh2F"
+	protocol="application/pgp-signature"; boundary="QRo3kt64Wi40AlcO"
 Content-Disposition: inline
 
 
---Ie5iOtK4e9kgqh2F
+--QRo3kt64Wi40AlcO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Aug 17, 2014 at 04:18:21PM +0200, Lars-Peter Clausen wrote:
-> It is not always possible to interchange iomem pointers with normal pointers,
-> which why we have annotations for iomem pointers and warn when casting them to a
-> normal pointer or vice versa. In this case the casting is fine and unfortunately
+On Sun, Aug 17, 2014 at 04:18:22PM +0200, Lars-Peter Clausen wrote:
+> The AB8500_GPIO_DIR4_REG register define has the bank for the register in the
+> upper 8 bits and the register itself in the lower 8 bits. When passing it to
+> abx500_{set,get}_register_interruptible() the upper bits get truncated which
 
-Applied, thanks.  As I've said on a number of occasions you should word
-wrap your changelogs below 80 columns not at exactly 80 columns so that
-replies to the mails are readable.
+Applied, thanks.
 
---Ie5iOtK4e9kgqh2F
+--QRo3kt64Wi40AlcO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT8L24AAoJELSic+t+oim9GtQQAJubgO+S9naIDj3YSNbHiPOX
-lz+bwbHIzWBLqZePI1kQFIKuRFDj+s1gyA91UGRdxpFI4je1dv6j4WMOZwM41ouF
-uGNnKj3bbUMqVwlnbGAVG6hwUfHvBFTSU6rd6x6F4WikG/RljqgcMhYnRg3aCK4l
-PeUbrCcbcIr/lH1GWvlb4iuPCh8qRB2no2ndNwsXIRvmPoniUvIECJFioFzQrvmH
-Rcn48T6EUlb/+PoxLn42RPRssslhLmQjKGgq9uMwZjDeDyw5aE9qwZjZDhV5Q8AI
-01APJnTGS8PC4WAGxUsCvPln44rtY976wVWGyAV07dC3uWag6vHOJsqZ3OeZ8+SN
-96D2SEjrN4Gb4Hte4J7ErSOeXQuVHojsjx4bPh6YJ3Z4lQVfyCNtNa2SPpg6SW/M
-SsTCbYVppG3SFbk23MpgCc0dYJ9taJwahkNqWsh109VPZY6+x5UPoGdVcZOo/9KX
-WTcOlTb6PN2lr/sqoFnK6W+E6VTRsDmB6S09I0UNJve7Ex2+5pb3zSDdRYVKfM0Z
-nd2qy5PWG1l0VGRWxvFB2c+/pGhaNXKK3KL9hfG0yI7BI50Ewi2WGdF3NX8zXuo4
-UKTqZerYrruaE6U53B44vicK2dK/zI7BSL2KM3yeQ9JhDoSkkB/cZTdOqr568Lwh
-dqTMfQQ7iDVu8Diey+GN
-=U2qz
+iQIcBAEBAgAGBQJT8L3bAAoJELSic+t+oim9SIsP/3CA61H11n32lW9+N0FsCbD0
+dMcqf7WodBHJ4ZL4RO8nOMUoRKiNVcwWfPJaNuGddYXr6OZNZ2umWC9DJr198GKT
+U/SCNJ1seP/l/WpBrlem4ULnlRcxcpse5dqEW0S1TzE6Xb2VLpb6b3AT6Nk0vzs+
+CGk/3rztcYvYH7hN4KeIuVb9nE17Rd+7q1YAwD9WjFAPXECgKS3wM8CXfSxR64Qr
+e3ha8ITYB2kH2Uw4kMJjWh5MSMs/sqwv/L2tgI9FJlF8/T3ltiEDSBZbhtcm9Pdx
+cvsbP8EIcpE9DD1j1UrF1+AXIkMnDP1StuuiortEaKMH52DJ705DdFCbzuw67zj2
+MScGlnZxguFYsBie5gHqJbPa+NRULZP/IHFzjrCZHpgTeecSU8z5/9e6aVD0XYce
+BPEj+CIgsbo8+tYef/y7LhLHgdYwHhmbaHPQwV5DEf0Bz9kvvgGx2kWrRP7AmElP
+DIXQZSWaJlDqsDwkxhCODemnh7CynAu8ht8rukZMu+T5uAW6YnOV6KnR0lpzktFu
+Q0YnShwx6QK8rRCwGsvkcXLj2O+sUbm98mbpc9ukuk46IUj8TZF3fu0hCzzauH/+
+Q+ySzVKOjElupgIOcOnshhxxgXgR1VC6+BRCesubZS5nVzq7Ed8am/2Ta0mfcfmk
+C7YxsCevVDRDYA28qRUe
+=1S2M
 -----END PGP SIGNATURE-----
 
---Ie5iOtK4e9kgqh2F--
+--QRo3kt64Wi40AlcO--
 
---===============8202866308855475646==
+--===============8037816245222430047==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8202866308855475646==--
+--===============8037816245222430047==--
