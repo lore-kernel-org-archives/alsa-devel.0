@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/6] ASoC: odrodix2_max98090: Make non
- exported symbols static
-Date: Sun, 17 Aug 2014 09:32:11 -0500
-Message-ID: <20140817143211.GK14537@sirena.org.uk>
+Subject: Re: [PATCH 3/6] ASoC: rcar: Use && instead of & for
+ boolean expressions
+Date: Sun, 17 Aug 2014 09:33:44 -0500
+Message-ID: <20140817143344.GL14537@sirena.org.uk>
 References: <1408285102-24538-1-git-send-email-lars@metafoo.de>
- <1408285102-24538-3-git-send-email-lars@metafoo.de>
+ <1408285102-24538-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3569307818420321011=="
+Content-Type: multipart/mixed; boundary="===============8829102240434594510=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 052DF2651E4
- for <alsa-devel@alsa-project.org>; Sun, 17 Aug 2014 16:32:30 +0200 (CEST)
-In-Reply-To: <1408285102-24538-3-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 97DBF2650DA
+ for <alsa-devel@alsa-project.org>; Sun, 17 Aug 2014 16:34:02 +0200 (CEST)
+In-Reply-To: <1408285102-24538-4-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,51 +27,51 @@ Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3569307818420321011==
+--===============8829102240434594510==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VSVNCtZB1QZ8vhj+"
+	protocol="application/pgp-signature"; boundary="hTKW8p8tUZ/8vLMe"
 Content-Disposition: inline
 
 
---VSVNCtZB1QZ8vhj+
+--hTKW8p8tUZ/8vLMe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sun, Aug 17, 2014 at 04:18:18PM +0200, Lars-Peter Clausen wrote:
-> odroidx2_drvdata and odroidu3_drvdata are not used outside this module so make
-> them static (and also const while we are at it).
+On Sun, Aug 17, 2014 at 04:18:19PM +0200, Lars-Peter Clausen wrote:
+> Sparse spits out the following warning:
+> 	sound/soc/sh/rcar/gen.c:250:21: warning: dubious: x & !y
 
 Applied, thanks.
 
---VSVNCtZB1QZ8vhj+
+--hTKW8p8tUZ/8vLMe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT8LznAAoJELSic+t+oim9VBMP/iUYKiKc/Gva+Zo2n88NLyP7
-DjQxLse+3Vt/7yu+S2GFUH5qXM9PO33cfUHWNfMBPPAG1JwikzpLkh1XGDHw6nhX
-YCEsffQv6mwohCYxx/Ck7i7cOW28jOvRMdRBcubfYMJVeqUg0uzA08g9Hb1xpyez
-xktjot9L04CY4btIFIKWFWV3LxXXSrxuaxBA8/16MmxpbZbtH5xLFvshgnRjwXDx
-XS1Zqml+QNRlHcWp6Mxx8NP9MWi0zJoxW3gV9mseE55tG5jkXJv6fHqyS/jr7QeE
-6E0nfDTViLOD69L/CpjNz0Mgz+sCru/HGrHBr51/VUAKOHz+Dcl/cIZTKLWErQtg
-Bp5QVwUAcnn0R9MPq0B+yFG6LFFV0ynUe+mKse7cmi8/HsccX8oyTC4iWR0kQWgV
-XHP3HJH5j6GbOYxm2dWbnBaugKgrtTXCL47+8f1cB3zauU7/pYz1qnML6y/FRd0/
-ajUw3hWgwJDaxvrIF3FQcV4upAuulvytgh13y6WqD7tI7DJbr3YlHoqfSw0dgbqA
-qwgWxy22u1kCy+49BRvPlY/hn4pI0ghggLAKW6LZeWRucm6RMD2/zdca8Pmgh8Qr
-BeJftF4U3Q0sqNGuUow5TjZYEQKsnXe4mAXMPpKOH0fjNz0myPiiIoQQ416f+uvy
-Dio8zI2lSwtiZQArfZgH
-=dSv0
+iQIcBAEBAgAGBQJT8L1FAAoJELSic+t+oim99gIQAJulLnBoeUCvw3XCs3NY6hIF
+mTgRGjw/yc3WC5aMX1FsuWxrYHItXZ6vein1PnuCsw0jmqugCb2uJDPgekTEEUP9
+yJQiz2SWNSle5x9Img3T7r6H1kAIvT8RiNBDwhcsvGGYZC+nQlFp4mNEclbP4kW+
+VFwAHkfI9kYdGwevlpbYWw/+3e5BsZQp+2iGx+wZ98MbBNzf3EKtCoqKHPK/tYMi
+EAvcYKL3rBBIO/IxP8+3NGXQspiI0qMHkCqM39LtXl0sRas7HrSIye1CjI9uDP8Z
+7SQqpg9/EMrHbRk+D1qehnP57diWW6wmuRXekZZ5YT6OiiTNjDz7tii9f9gzMUYH
+tARR/687wn2IWuPanOakQxsn6FFXNE7llf8hC+RRSOditcBfLtV3jUvEcnaJN/2q
+j4byhCMnW3dwn8GVgVVe8lxkhWv1uCZHGtgiJv8jWBFJ1ANO6waRcQl8InZTpV6J
+tEGyvwrevqVL3rqnZiS8DzxVOOhrdMeRVClWmuY2kfUVYutSAiEJ9y53AkdnTCea
+eHKbB8pSSUz5onuIEl21CO0jPvBbvvnePLvarx3QPwv0++hXZeLUj2jrEq9EkFWc
+muRoe8xZk+H+Wer+YqipAVny1Q5Yk0+UYpjN8vOayK3f2ZLjaU6Y6IHIvOoDFQN9
++F3EXJ3E+AwfNX0QLo8f
+=xY0o
 -----END PGP SIGNATURE-----
 
---VSVNCtZB1QZ8vhj+--
+--hTKW8p8tUZ/8vLMe--
 
---===============3569307818420321011==
+--===============8829102240434594510==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3569307818420321011==--
+--===============8829102240434594510==--
