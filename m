@@ -1,16 +1,17 @@
-From: =?utf-8?B?Q2FycG9uIGZyw6lkw6lyaWM=?= <frederic.carpon@yahoo.fr>
-Subject: the wav jumps on Raspberry, do you think ...
-Date: Sun, 17 Aug 2014 11:56:42 +0100
-Message-ID: <1408273002.76432.YahooMailNeo@web171302.mail.ir2.yahoo.com>
-Reply-To: =?utf-8?B?Q2FycG9uIGZyw6lkw6lyaWM=?= <frederic.carpon@yahoo.fr>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Use dev_set_name() instead of
+	init_name
+Date: Sun, 17 Aug 2014 08:53:26 -0500
+Message-ID: <20140817135326.GC14537@sirena.org.uk>
+References: <1408267715-19237-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1851450131124397049=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm12-vm1.bullet.mail.ir2.yahoo.com
- (nm12-vm1.bullet.mail.ir2.yahoo.com [212.82.96.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 1782A2650D8
- for <alsa-devel@alsa-project.org>; Sun, 17 Aug 2014 12:56:43 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C07B265083
+ for <alsa-devel@alsa-project.org>; Sun, 17 Aug 2014 15:53:47 +0200 (CEST)
+In-Reply-To: <1408267715-19237-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,20 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgp0aGFuayBmb3IgeW91ciByZXNwb25zZSBhbmQgY29ycmVjdGlvbnMgb2YgdGhlIHRv
-cGljICJtaW5pbWFsX3BsYXliYWNrLmMgIiBmcm9twqBodHRwOi8vZXF1YWxhcmVhLmNvbS9wYXVs
-L2Fsc2EtYXVkaW8uaHRtbApUaGVyZSBhcmUgZ29vZCB0dXRvcmlhbHMgdG9vIDoKaHR0cDovL2hv
-bWUucm9hZHJ1bm5lci5jb20vfmpnZ2xhdHQvdGVjaC9saW51eGFwaS5odG0KaHR0cDovL2phbi5u
-ZXdtYXJjaC5uYW1lL0xpbnV4U291bmQvU2FtcGxlZC9BbHNhLwoKT24gdGhlIHJhc3BiZXJyeSwg
-d2l0aCBBcmNoTGludXgsIHRoZSBqYW4ubmV3bWFyY2ggdmVyc2lvbiBhbmQgYXBsYXkgY29tbWFu
-ZCBtYWtlIHRoZSB3YXYganVtcHMgZm9yIHRoZSBiZWdpbm5pbmcgYW5kIHNvbWV0aW1lcyBpbiB0
-aGUgbWlkZGxlIG9mIHRoZSB3YXYgbXVzaWMuCgpEbyB5b3UgdGhpbmsgaXQgY29tZXMgZnJvbSB0
-aGUgcmFzcGJlcnJ54oCZcyDCq8KgYmNtMjgzNSBBTFNBwqDCuyBhdWRpbyBjaGlwc2V0IG9yIHRo
-ZSBhcm0gcHJvY2Vzc29yIGVmZmljaWVuY3kgb3Igb3RoZXIgdGhpbmdzID8KClRoYW5rIFlvdSBm
-b3IgeW91ciBoZWxwCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+
+--===============1851450131124397049==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Md/poaVZ8hnGTzuv"
+Content-Disposition: inline
+
+
+--Md/poaVZ8hnGTzuv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Aug 17, 2014 at 11:28:35AM +0200, Lars-Peter Clausen wrote:
+> init_name is basically a hack and should only be used for statically allocated
+> device structs. For dynamically allocated devices dev_set_name() should be used.
+
+Applied, thanks.
+
+--Md/poaVZ8hnGTzuv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT8LPOAAoJELSic+t+oim9nmAP/1mpEVHqYCNK4I7Rc2ogmt3h
+8YPm6D/LSbig//MMiQ/1nzrZRMh6AOe6MRZVUIRPtev9zvAQYuqVSLIr2no+UAZp
+XcN0ugdH6JEuU3UjjPIxg5uusdz3TmS59lutwqy7E50O/XSEYD+Z0qYLOegzC1Dv
+ZPlDKm0s+03F+rFwKH34AFVwZ52MJAoeXLsw3K5n5I23aX7SdXzgSQw1xnpX5mJF
+Uk2Db7AlbzJ86BzlMq5MlkjDTGl6W8hlEMNeVoD8+q1UqklQ3HwgV9urpI8ootFx
+b8hskdijToNyA5Y7VrB4j9K6XaNifS8FS+HE/nTp2ER9mxOJ/rZfE71xvwf2u8t2
+DZcih4eF+fhCVwJdg4GT/s5e3PmHQy6NW8AVICTfLqyQ4wNDLsmoPsFUHX3CwmhC
+anHCH7EcpPCnnN6W39TXRyPlnlxFEobnzUHgehlSVmESLl5dF5D+D64Pf3U7AKvn
+VSGqhfdJwscm4ZMUKcWyME/KbsMWfXzLBgmCNI+ev7CqltjHOmBCdxK9pqiLB5S5
+kz0svLeR7Mp/O6mYEw9EhgaOumpVLgoEnGbozqfX+aei8r48AMWUBKT7av4A1sg5
+d1FjwQX62XxRllYcmYgod+XlL+NZtxDxywQ6P1POPQVqwDRGj71aZ2cb9n5k6NTP
+6CqDlC5mNgpdDr7kQ0UA
+=6JCJ
+-----END PGP SIGNATURE-----
+
+--Md/poaVZ8hnGTzuv--
+
+--===============1851450131124397049==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1851450131124397049==--
