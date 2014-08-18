@@ -1,19 +1,21 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] ASoC: fsl-asrc: Convert to use regmap
- framework's endianness method.
-Date: Mon, 18 Aug 2014 10:51:55 +0100
-Message-ID: <20140818095155.GD14559@leverpostej>
-References: <1408352215-12014-1-git-send-email-Li.Xiubo@freescale.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [v4 05/12] ASoC: Intel: mrfld: add bytes control
+	for modules
+Date: Mon, 18 Aug 2014 15:45:15 +0530
+Message-ID: <49101.2881313965$1408358267@news.gmane.org>
+References: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1407145563-1303-6-git-send-email-subhransu.s.prusty@intel.com>
+ <20140813200012.GO17528@sirena.org.uk>
+ <20140818053609.GD14041@vinod.koul@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
- [217.140.96.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 42BC52654BB
- for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 11:52:03 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BD742654BB
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 12:37:11 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1408352215-12014-1-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <20140818053609.GD14041@vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,91 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "varkabhadram@gmail.com" <varkabhadram@gmail.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 18, 2014 at 09:56:55AM +0100, Xiubo Li wrote:
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> ---
+On Mon, Aug 18, 2014 at 11:06:09AM +0530, Subhransu S. Prusty wrote:
+> On Wed, Aug 13, 2014 at 09:00:12PM +0100, Mark Brown wrote:
+> > On Mon, Aug 04, 2014 at 03:15:56PM +0530, Subhransu S. Prusty wrote:
+> > 
+> > > From: Vinod Koul <vinod.koul@intel.com>
+> > 
+> > > +static int sst_algo_bytes_ctl_info(struct snd_kcontrol *kcontrol,
+> > > +			    struct snd_ctl_elem_info *uinfo)
+> > > +{
+> > > +	struct sst_algo_control *bc = (void *)kcontrol->private_value;
+> > > +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+> > > +
+> > > +	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
+> > > +	uinfo->count = bc->max;
+> > > +
+> > > +	/* allocate space to cache the algo parameters in the driver */
+> > > +	if (bc->params == NULL) {
+> > > +		bc->params = devm_kzalloc(component->dev, bc->max, GFP_KERNEL);
+> > > +		if (bc->params == NULL)
+> > > +			return -ENOMEM;
+> > > +	}
+> > > +	return 0;
+> > > +}
+> > 
+> > I wouldn't expect an info call to be allocating anything - why is it
+> > doing that?  It's not looking at the alocated data except to see if the
+> > allocation succeeded.  What happens if someone manages to do a get or
+> > set without having first done an info and why aren't we doing any
+> > allocation on initialisation?
 > 
-> This is depended on the following regmap framework patches, which have
-> just been merged into linux-next tree:
-> 
-> https://lkml.org/lkml/2014/7/15/6
-> https://lkml.org/lkml/2014/7/15/5
-> https://lkml.org/lkml/2014/7/15/7
-> 
-> 
-> 
-> 
-> 
-> 
->  Documentation/devicetree/bindings/sound/fsl,asrc.txt | 10 +++++++---
->  sound/soc/fsl/fsl_asrc.c                             |  6 +-----
->  2 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-> index b93362a..791f372 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-> +++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-> @@ -26,9 +26,12 @@ Required properties:
->  	"ipg"		  Peripheral clock to driver module.
->  	"asrck_<0-f>"	  Clock sources for input and output clock.
->  
-> -   - big-endian		: If this property is absent, the little endian mode
-> -			  will be in use as default. Otherwise, the big endian
-> -			  mode will be in use for all the device registers.
-> +   - big-endian		: If this property is absent, the native endian mode
-> +			  (same with CPU) will be in use as default. Otherwise,
-> +			  the big endian mode will be in use for all the device
-> +			  registers.
-> +			  See Documentation/devicetree/bindings/regmap/regmap.txt
-> +			  for more detail.
+> Will move after control initialization.
+As I have to initialize the params, and if it's done in probe after
+control creation, it's required to iterate over the controls list and
+match certain pattern to find the control and then initialize. This doesn't
+look elegant. Instead I would prefer adding an init callback in the control
+to do this operation. What do you recommend?
 
-Why does this have to change the semantics of the DT binding?
-
-Mark.
-
->  
->     - fsl,asrc-rate	: Defines a mutual sample rate used by DPCM Back Ends.
->  
-> @@ -56,5 +59,6 @@ asrc: asrc@02034000 {
->  		"txa", "txb", "txc";
->  	fsl,asrc-rate  = <48000>;
->  	fsl,asrc-width = <16>;
-> +	big-endian;
->  	status = "okay";
->  };
-> diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-> index 8221104..3b14531 100644
-> --- a/sound/soc/fsl/fsl_asrc.c
-> +++ b/sound/soc/fsl/fsl_asrc.c
-> @@ -684,7 +684,7 @@ static bool fsl_asrc_writeable_reg(struct device *dev, unsigned int reg)
->  	}
->  }
->  
-> -static struct regmap_config fsl_asrc_regmap_config = {
-> +static const struct regmap_config fsl_asrc_regmap_config = {
->  	.reg_bits = 32,
->  	.reg_stride = 4,
->  	.val_bits = 32,
-> @@ -802,10 +802,6 @@ static int fsl_asrc_probe(struct platform_device *pdev)
->  
->  	asrc_priv->paddr = res->start;
->  
-> -	/* Register regmap and let it prepare core clock */
-> -	if (of_property_read_bool(np, "big-endian"))
-> -		fsl_asrc_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
-> -
->  	asrc_priv->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "mem", regs,
->  						      &fsl_asrc_regmap_config);
->  	if (IS_ERR(asrc_priv->regmap)) {
-> -- 
-> 1.8.5
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+-- 
