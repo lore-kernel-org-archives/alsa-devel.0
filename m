@@ -1,18 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH alsa-lib] Sync enum snd_hwdep_iface_t with
-	include/asound/asound.h
-Date: Mon, 18 Aug 2014 18:30:00 +0900
-Message-ID: <53F1C798.6000801@sakamocchi.jp>
-References: <1408264747-26357-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hegwew53h.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH] ASoC: core: fix .info for SND_SOC_BYTES_TLV
+Date: Mon, 18 Aug 2014 14:53:03 +0530
+Message-ID: <1408353783-8740-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id EB3922654E0
- for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 11:30:06 +0200 (CEST)
-In-Reply-To: <s5hegwew53h.wl-tiwai@suse.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1322B2654E0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 11:37:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,35 +18,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 18 2014 17:54, Takashi Iwai wrote:
->> diff --git a/include/hwdep.h b/include/hwdep.h
->> index ab12822..6ec421c 100644
->> --- a/include/hwdep.h
->> +++ b/include/hwdep.h
->> @@ -68,8 +68,13 @@ typedef enum _snd_hwdep_iface {
->>  	SND_HWDEP_IFACE_USX2Y_PCM,	/**< Tascam US122, US224 & US428 raw USB PCM */
->>  	SND_HWDEP_IFACE_PCXHR,		/**< Digigram PCXHR */
->>  	SND_HWDEP_IFACE_SB_RC,		/**< SB Extigy/Audigy2NX remote control */
->> -                
->> -	SND_HWDEP_IFACE_LAST = SND_HWDEP_IFACE_SB_RC  /**< last known hwdep interface */
->> +	SNDRV_HWDEP_IFACE_HDA,		/* HD-audio */
->> +	SNDRV_HWDEP_IFACE_USB_STREAM,	/* direct access to usb stream */
->> +	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
->> +	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
->> +	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
-> 
-> These must be SND_ prefix.  And don't forget to have doxygen comments
-> like others.  Please submit the fixed patch again.
+From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 
-Oh, indeed. I might lose enough notices when posted... Thanks for your
-comment.
+Commit 7523a271 - "ASoC: core: add a helper for extended byte controls using
+TLV" introduced support for TLV byte controls but had a typo for the info
+function, so fix the same
 
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ include/sound/soc.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index be6ecae..c83a334 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -277,7 +277,7 @@
+ 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE | \
+ 		  SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK, \
+ 	.tlv.c = (snd_soc_bytes_tlv_callback), \
+-	.info = snd_soc_info_bytes_ext, \
++	.info = snd_soc_bytes_info_ext, \
+ 	.private_value = (unsigned long)&(struct soc_bytes_ext) \
+ 		{.max = xcount, .get = xhandler_get, .put = xhandler_put, } }
+ #define SOC_SINGLE_XR_SX(xname, xregbase, xregcount, xnbits, \
+-- 
+1.7.0.4
