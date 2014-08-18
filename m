@@ -1,44 +1,61 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V1 3/3] ASoC: fsl: fsl-asoc-card: Select SND_SOC_IMX_AUDMUX
-Date: Mon, 18 Aug 2014 16:38:40 +0800
-Message-ID: <ee71a6cacc1d0bc1459bf9c21efc755c16e955b1.1408350626.git.shengjiu.wang@freescale.com>
-References: <cover.1408350626.git.shengjiu.wang@freescale.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [TINYCOMPRESS][PATCH] crec: Fix error with opening
+	file using	O_CREAT
+Date: Mon, 18 Aug 2014 09:41:58 +0100
+Message-ID: <20140818084158.GA14810@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1408350626.git.shengjiu.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, shc_work@mail.ru, fabio.estevam@freescale.com, shengjiu.wang@freescale.com, xobs@kosagi.com, arnd@arndb.de, sfr@canb.auug.org.au, timur@tabi.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 66B2F26574C
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 10:42:02 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: vinod.koul@intel.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, ammar.zhd@googlemail.com
 List-Id: alsa-devel@alsa-project.org
 
-Building kernel with SND_SOC_IMX_AUDMUX=n leads to the following error:
+From: Ammar Zahid Ali Syed <ammar.zhd@googlemail.com>
 
-   sound/built-in.o: In function `fsl_asoc_card_probe':
->> fsl-asoc-card.c:(.text+0x1467b5): undefined reference to `imx_audmux_v2_configure_port'
->> fsl-asoc-card.c:(.text+0x1467d0): undefined reference to `imx_audmux_v2_configure_port'
->> fsl-asoc-card.c:(.text+0x1467ed): undefined reference to `imx_audmux_v2_configure_port'
->> fsl-asoc-card.c:(.text+0x146807): undefined reference to `imx_audmux_v2_configure_port'
+The code was not compiling when mode was not passed to open()
+while using O_CREAT offset. Passed mode to the open() alongwith
+O_CREAT to specify the attributes of file and fix compile issue.
 
-Update Kconfig to select SND_SOC_IMX_AUDMUX when SND_SOC_FSL_ASOC_CARD=y.
-
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+Signed-off-by: Ammar Zahid Ali Syed <ammar.zhd@googlemail.com>
 ---
- sound/soc/fsl/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ crec.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 3a3732c..dc0d08b 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -61,6 +61,7 @@ config SND_SOC_FSL_UTILS
- config SND_SOC_FSL_ASOC_CARD
- 	tristate "Generic ASoC Sound Card with ASRC support"
- 	depends on OF && I2C
-+	select SND_SOC_IMX_AUDMUX
- 	select SND_SOC_IMX_PCM_DMA
- 	select SND_SOC_FSL_ESAI
- 	select SND_SOC_FSL_SAI
+diff --git a/crec.c b/crec.c
+index 31703c5..e3f189f 100644
+--- a/crec.c
++++ b/crec.c
+@@ -66,6 +66,8 @@
+ #include <stdbool.h>
+ #include <getopt.h>
+ #include <sys/time.h>
++#include <sys/types.h>
++#include <sys/stat.h>
+ #define __force
+ #define __bitwise
+ #define __user
+@@ -256,7 +258,7 @@ void capture_samples(char *name, unsigned int card, unsigned int device,
+ 	if (verbose)
+ 		printf("%s: entry, reading %u bytes\n", __func__, length);
+ 
+-	file = open(name, O_RDWR | O_CREAT);
++	file = open(name, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+ 	if (file == -1) {
+ 		fprintf(stderr, "Unable to open file '%s'\n", name);
+ 		exit(EXIT_FAILURE);
 -- 
-1.7.9.5
+1.7.2.5
