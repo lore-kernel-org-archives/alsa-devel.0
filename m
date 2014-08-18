@@ -1,14 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] ASoC: core: fix .info for SND_SOC_BYTES_TLV
-Date: Mon, 18 Aug 2014 14:53:03 +0530
-Message-ID: <1408353783-8740-1-git-send-email-vinod.koul@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH alsa-lib v2] Sync enum snd_hwdep_iface_t with
+	include/asound/asound.h
+Date: Mon, 18 Aug 2014 18:45:17 +0900
+Message-ID: <1408355117-9654-1-git-send-email-o-takashi@sakamocchi.jp>
+References: <1408264747-26357-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 1322B2654E0
- for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 11:37:54 +0200 (CEST)
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32D8F26550F
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 11:45:55 +0200 (CEST)
+In-Reply-To: <1408264747-26357-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,34 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+To: tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Some members in this enumerated type has not updated for 9 years, although
+kernel-drivers added them during this period. This commit adds them following
+to a commit 87df9f3 'sync include/asound/asound.h with 3.17-rc1 kernel'.
 
-Commit 7523a271 - "ASoC: core: add a helper for extended byte controls using
-TLV" introduced support for TLV byte controls but had a typo for the info
-function, so fix the same
-
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/sound/soc.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ include/hwdep.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index be6ecae..c83a334 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -277,7 +277,7 @@
- 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE | \
- 		  SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK, \
- 	.tlv.c = (snd_soc_bytes_tlv_callback), \
--	.info = snd_soc_info_bytes_ext, \
-+	.info = snd_soc_bytes_info_ext, \
- 	.private_value = (unsigned long)&(struct soc_bytes_ext) \
- 		{.max = xcount, .get = xhandler_get, .put = xhandler_put, } }
- #define SOC_SINGLE_XR_SX(xname, xregbase, xregcount, xnbits, \
+diff --git a/include/hwdep.h b/include/hwdep.h
+index ab12822..6496fa2 100644
+--- a/include/hwdep.h
++++ b/include/hwdep.h
+@@ -68,8 +68,13 @@ typedef enum _snd_hwdep_iface {
+ 	SND_HWDEP_IFACE_USX2Y_PCM,	/**< Tascam US122, US224 & US428 raw USB PCM */
+ 	SND_HWDEP_IFACE_PCXHR,		/**< Digigram PCXHR */
+ 	SND_HWDEP_IFACE_SB_RC,		/**< SB Extigy/Audigy2NX remote control */
+-                
+-	SND_HWDEP_IFACE_LAST = SND_HWDEP_IFACE_SB_RC  /**< last known hwdep interface */
++	SND_HWDEP_IFACE_HDA,		/**< HD-audio */
++	SND_HWDEP_IFACE_USB_STREAM,	/**< direct access to usb stream */
++	SND_HWDEP_IFACE_FW_DICE,	/**< TC DICE FireWire device */
++	SND_HWDEP_IFACE_FW_FIREWORKS,	/**< Echo Audio Fireworks based device */
++	SND_HWDEP_IFACE_FW_BEBOB,	/**< BridgeCo BeBoB based device */
++
++	SND_HWDEP_IFACE_LAST = SND_HWDEP_IFACE_FW_BEBOB  /**< last known hwdep interface */
+ } snd_hwdep_iface_t;
+ 
+ /** open for reading */
 -- 
-1.7.0.4
+1.9.1
