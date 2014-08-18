@@ -1,74 +1,44 @@
 From: Inha Song <ideal.song@samsung.com>
-Subject: [PATCH v3 1/2] mfd: arizona: Add support for INn_Modec
- register control
-Date: Mon, 18 Aug 2014 20:00:03 +0900
-Message-ID: <20140818200003.2ab8aca0@songinha-Samsung-DeskTop-System>
+Subject: [alsa-devel] [PATCH v3 2/2] mfd: arizona: Update DT binding to support
+ INn_MODE init_data
+Date: Mon, 18 Aug 2014 20:00:09 +0900
+Message-ID: <20140818200009.12a52dfa@songinha-Samsung-DeskTop-System>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
- by alsa0.perex.cz (Postfix) with ESMTP id A1B872654E0
- for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 13:00:10 +0200 (CEST)
-Received: from epcpsbgr2.samsung.com
- (u142.gpu120.samsung.co.kr [203.254.230.142])
- by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0NAI007YJ183JXA0@mailout2.samsung.com> for
- alsa-devel@alsa-project.org; Mon, 18 Aug 2014 20:00:03 +0900 (KST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, sameo@linux.intel.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, cw00.choi@samsung.com, robh+dt@kernel.org, galak@codeaurora.org, ckeepax@opensource.wolfsonmicro.com, lee.jones@linaro.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lee.jones@linaro.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sameo@linux.intel.com, devicetree@vger.kernel.org, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, cw00.choi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Some boards need to set the INn_MODE[1:0] register to change
-the input signal patch. This wlf,inmode property is optional.
-If present, values must be specified less than or equal to
-the number of input singals. If values less than the number
-of input signals, elements that has not been specifed are set
-to 0 by default.
-
-Example:
-   - wlf,inmode = <2 0 2>;	/* IN1, IN3 use DMIC */
+This patch update DT binding to support INn_MODE init_data. Each
+input signal path can be configurated either as a Analogue or
+Digital using the INn_MODE registers.
 
 Signed-off-by: Inha Song <ideal.song@samsung.com>
 ---
- drivers/mfd/arizona-core.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/mfd/arizona.txt | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index 10a0cb9..81e6db8 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(arizona_of_get_named_gpio);
- static int arizona_of_get_core_pdata(struct arizona *arizona)
- {
- 	struct arizona_pdata *pdata = &arizona->pdata;
--	int ret, i;
-+	int ret, i, proplen;
+diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
+index 5c7e723..0064b21 100644
+--- a/Documentation/devicetree/bindings/mfd/arizona.txt
++++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+@@ -42,6 +42,14 @@ Optional properties:
+     the chip default will be used.  If present exactly five values must
+     be specified.
  
- 	pdata->reset = arizona_of_get_named_gpio(arizona, "wlf,reset", true);
- 
-@@ -560,6 +560,12 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
- 			ret);
- 	}
- 
-+	proplen = of_property_count_u32_elems(arizona->dev->of_node,
-+					      "wlf,inmode");
-+	if (proplen > 0 && proplen <= ARRAY_SIZE(arizona->pdata.inmode))
-+		of_property_read_u32_array(arizona->dev->of_node, "wlf,inmode",
-+					   arizona->pdata.inmode, proplen);
++  - wlf,inmode : A list of INn_MODE register values, where n is the number
++    of input signals. Each input signal path can be configurated either as a
++    Analogue or Digital using the INn_MODE registers. If absent, INn_MODE
++    registers set to 0 by default. If present, values must be specified less
++    than or equal to the number of input singals. If values less than the
++    number of input signals, elements that has not been specifed are set to 0
++    by default.
 +
- 	return 0;
- }
- 
+   - DCVDD-supply, MICVDD-supply : Power supplies, only need to be specified if
+     they are being externally supplied. As covered in
+     Documentation/devicetree/bindings/regulator/regulator.txt
 -- 
 2.0.0.390.gcb682f8
