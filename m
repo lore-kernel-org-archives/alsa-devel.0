@@ -1,70 +1,115 @@
 From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V1 1/3] ASoC: fsl: Kconfig: remove dependence of SND_IMX_SOC
- for SND_SOC_IMX_PCM_DMA
-Date: Mon, 18 Aug 2014 16:38:38 +0800
-Message-ID: <f30ba4e2c4eb6702fa40bd255036e6e9ad6eb47d.1408350626.git.shengjiu.wang@freescale.com>
+Subject: [PATCH V1 2/3] ASoC: fsl-asoc-card: Fix build warning
+	for maybe-uninitialized
+Date: Mon, 18 Aug 2014 16:38:39 +0800
+Message-ID: <b1711ff2c73f3b6acd6af000bc8294d930bbf16b.1408350626.git.shengjiu.wang@freescale.com>
 References: <cover.1408350626.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0144.outbound.protection.outlook.com [207.46.163.144])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBE442654BB
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 10:39:21 +0200 (CEST)
 In-Reply-To: <cover.1408350626.git.shengjiu.wang@freescale.com>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, shc_work@mail.ru, fabio.estevam@freescale.com, shengjiu.wang@freescale.com, xobs@kosagi.com, arnd@arndb.de, sfr@canb.auug.org.au, timur@tabi.org
 Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-QnVpbGQga2VybmVsIHdpdGggU05EX1NPQ19JTUNfUENNX0RNQT1tICYmIFNORF9JTVhfU09DPW4g
-bGVhZHMgdGhlIGZvbGxvd2luZwplcnJvcjoKCiAgIHNvdW5kL2J1aWx0LWluLm86IEluIGZ1bmN0
-aW9uIGBmc2xfc2FpX3Byb2JlJzoKPj4gZnNsX3NhaS5jOigudGV4dCsweDVmNjYyKTogdW5kZWZp
-bmVkIHJlZmVyZW5jZSB0byBgaW14X3BjbV9kbWFfaW5pdCcKICAgc291bmQvYnVpbHQtaW4ubzog
-SW4gZnVuY3Rpb24gYGZzbF9lc2FpX3Byb2JlJzoKPj4gZnNsX2VzYWkuYzooLnRleHQrMHg2MDQ0
-Yik6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYGlteF9wY21fZG1hX2luaXQnCgpNb3N0IGNwdSBk
-cml2ZXIgaW4gc29jL2ZzbCBoYXMgdXNlIHRoZSBmdW5jdGlvbiAnaW14X3BjbV9kbWFfaW5pdCcg
-d2hpY2ggaXMKZGVmaW5lZCBpbiBpbXgtcGNtLWRtYS5jLCBzbyBuZWVkIHRvIHNlbGVjdCBTTkRf
-U09DX0lNWF9QQ01fRE1BLCBidXQgaXQgZGVwZW5kcwpvbiBTTkRfSU1YX1NPQywgaWYgU05EX0lN
-WF9TT0M9biwgdGhlbiBTTkRfU09DX0lNWF9QQ01fRE1BIHdpbGwgbm90IGJlCnNlbGVjdGVkLgpT
-byByZW1vdmUgdGhlIGRlcGVuZGVuY2Ugb2YgU05EX0lNWF9TT0MgZm9yIFNORF9TT0NfSU1YX1BD
-TV9ETUEuCgpSZXBvcnRlZC1ieToga2J1aWxkIHRlc3Qgcm9ib3QgPGZlbmdndWFuZy53dUBpbnRl
-bC5jb20+ClNpZ25lZC1vZmYtYnk6IFNoZW5naml1IFdhbmcgPHNoZW5naml1LndhbmdAZnJlZXNj
-YWxlLmNvbT4KLS0tCiBzb3VuZC9zb2MvZnNsL0tjb25maWcgfCAgICA4ICsrKystLS0tCiAxIGZp
-bGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L3NvdW5kL3NvYy9mc2wvS2NvbmZpZyBiL3NvdW5kL3NvYy9mc2wvS2NvbmZpZwppbmRleCA1YWU3
-NzdhLi4zYTM3MzJjIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvZnNsL0tjb25maWcKKysrIGIvc291
-bmQvc29jL2ZzbC9LY29uZmlnCkBAIC0xNSw3ICsxNSw3IEBAIGNvbmZpZyBTTkRfU09DX0ZTTF9B
-U1JDCiBjb25maWcgU05EX1NPQ19GU0xfU0FJCiAJdHJpc3RhdGUgIlN5bmNocm9ub3VzIEF1ZGlv
-IEludGVyZmFjZSAoU0FJKSBtb2R1bGUgc3VwcG9ydCIKIAlzZWxlY3QgUkVHTUFQX01NSU8KLQlz
-ZWxlY3QgU05EX1NPQ19JTVhfUENNX0RNQSBpZiBTTkRfSU1YX1NPQyAhPSBuCisJc2VsZWN0IFNO
-RF9TT0NfSU1YX1BDTV9ETUEKIAlzZWxlY3QgU05EX1NPQ19HRU5FUklDX0RNQUVOR0lORV9QQ00K
-IAloZWxwCiAJICBTYXkgWSBpZiB5b3Ugd2FudCB0byBhZGQgU3luY2hyb25vdXMgQXVkaW8gSW50
-ZXJmYWNlIChTQUkpCkBAIC0yNSw3ICsyNSw3IEBAIGNvbmZpZyBTTkRfU09DX0ZTTF9TQUkKIAog
-Y29uZmlnIFNORF9TT0NfRlNMX1NTSQogCXRyaXN0YXRlICJTeW5jaHJvbm91cyBTZXJpYWwgSW50
-ZXJmYWNlIG1vZHVsZSBzdXBwb3J0IgotCXNlbGVjdCBTTkRfU09DX0lNWF9QQ01fRE1BIGlmIFNO
-RF9JTVhfU09DICE9IG4KKwlzZWxlY3QgU05EX1NPQ19JTVhfUENNX0RNQQogCXNlbGVjdCBTTkRf
-U09DX0lNWF9QQ01fRklRIGlmIFNORF9JTVhfU09DICE9IG4gJiYgKE1YQ19UWklDIHx8IE1YQ19B
-VklDKQogCXNlbGVjdCBSRUdNQVBfTU1JTwogCWhlbHAKQEAgLTM3LDcgKzM3LDcgQEAgY29uZmln
-IFNORF9TT0NfRlNMX1NTSQogY29uZmlnIFNORF9TT0NfRlNMX1NQRElGCiAJdHJpc3RhdGUgIlNv
-bnkvUGhpbGlwcyBEaWdpdGFsIEludGVyZmFjZSBtb2R1bGUgc3VwcG9ydCIKIAlzZWxlY3QgUkVH
-TUFQX01NSU8KLQlzZWxlY3QgU05EX1NPQ19JTVhfUENNX0RNQSBpZiBTTkRfSU1YX1NPQyAhPSBu
-CisJc2VsZWN0IFNORF9TT0NfSU1YX1BDTV9ETUEKIAlzZWxlY3QgU05EX1NPQ19JTVhfUENNX0ZJ
-USBpZiBTTkRfSU1YX1NPQyAhPSBuICYmIChNWENfVFpJQyB8fCBNWENfQVZJQykKIAloZWxwCiAJ
-ICBTYXkgWSBpZiB5b3Ugd2FudCB0byBhZGQgU29ueS9QaGlsaXBzIERpZ2l0YWwgSW50ZXJmYWNl
-IChTUERJRikKQEAgLTQ4LDcgKzQ4LDcgQEAgY29uZmlnIFNORF9TT0NfRlNMX1NQRElGCiBjb25m
-aWcgU05EX1NPQ19GU0xfRVNBSQogCXRyaXN0YXRlICJFbmhhbmNlZCBTZXJpYWwgQXVkaW8gSW50
-ZXJmYWNlIChFU0FJKSBtb2R1bGUgc3VwcG9ydCIKIAlzZWxlY3QgUkVHTUFQX01NSU8KLQlzZWxl
-Y3QgU05EX1NPQ19JTVhfUENNX0RNQSBpZiBTTkRfSU1YX1NPQyAhPSBuCisJc2VsZWN0IFNORF9T
-T0NfSU1YX1BDTV9ETUEKIAloZWxwCiAJICBTYXkgWSBpZiB5b3Ugd2FudCB0byBhZGQgRW5oYW5j
-ZWQgU3luY2hyb25vdXMgQXVkaW8gSW50ZXJmYWNlCiAJICAoRVNBSSkgc3VwcG9ydCBmb3IgdGhl
-IEZyZWVzY2FsZSBDUFVzLgotLSAKMS43LjkuNQoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KTGludXhwcGMtZGV2IG1haWxpbmcgbGlzdApMaW51eHBwYy1k
-ZXZAbGlzdHMub3psYWJzLm9yZwpodHRwczovL2xpc3RzLm96bGFicy5vcmcvbGlzdGluZm8vbGlu
-dXhwcGMtZGV2
+When build fsl-asoc-card as module, there is following error:
+
+sound/soc/fsl/fsl-asoc-card.c: In function 'fsl_asoc_card_probe':
+>> sound/soc/fsl/fsl-asoc-card.c:547:13: warning: 'asrc_np' may be used uninitialized in this function [-Wmaybe-uninitialized]
+     of_node_put(asrc_np);
+                ^
+
+vim +/asrc_np +547 sound/soc/fsl/fsl-asoc-card.c
+
+   531                  if (width == 24)
+   532                          priv->asrc_format = SNDRV_PCM_FORMAT_S24_LE;
+   533                  else
+   534                          priv->asrc_format = SNDRV_PCM_FORMAT_S16_LE;
+   535          }
+   536
+   537          /* Finish card registering */
+   538          platform_set_drvdata(pdev, priv);
+   539          snd_soc_card_set_drvdata(&priv->card, priv);
+   540
+   541          ret = devm_snd_soc_register_card(&pdev->dev, &priv->card);
+   542          if (ret)
+   543                  dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
+   544
+   545  fail:
+   546          of_node_put(codec_np);
+ > 547          of_node_put(asrc_np);
+   548          of_node_put(cpu_np);
+   549
+   550          return ret;
+   551  }
+   552
+   553  static const struct of_device_id fsl_asoc_card_dt_ids[] = {
+   554          { .compatible = "fsl,imx-audio-cs42888", },
+   555          { .compatible = "fsl,imx-audio-sgtl5000", },
+
+Add 'asrc_fail' branch for error jump after asrc_np initialized.
+
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+---
+ sound/soc/fsl/fsl-asoc-card.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index cf3f1f4..007c772 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -469,7 +469,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		ret = fsl_asoc_card_audmux_init(np, priv);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "failed to init audmux\n");
+-			goto fail;
++			goto asrc_fail;
+ 		}
+ 	} else if (strstr(cpu_np->name, "esai")) {
+ 		priv->cpu_priv.sysclk_id[1] = ESAI_HCKT_EXTAL;
+@@ -518,14 +518,14 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "failed to get output rate\n");
+ 			ret = -EINVAL;
+-			goto fail;
++			goto asrc_fail;
+ 		}
+ 
+ 		ret = of_property_read_u32(asrc_np, "fsl,asrc-width", &width);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "failed to get output rate\n");
+ 			ret = -EINVAL;
+-			goto fail;
++			goto asrc_fail;
+ 		}
+ 
+ 		if (width == 24)
+@@ -542,9 +542,10 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
+ 
++asrc_fail:
++	of_node_put(asrc_np);
+ fail:
+ 	of_node_put(codec_np);
+-	of_node_put(asrc_np);
+ 	of_node_put(cpu_np);
+ 
+ 	return ret;
+-- 
+1.7.9.5
