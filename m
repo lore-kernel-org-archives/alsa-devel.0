@@ -1,21 +1,21 @@
 From: Inha Song <ideal.song@samsung.com>
-Subject: [PATCH v3 0/2] mfd: arizona: add support for INn_MODE
- register control using platform data
-Date: Mon, 18 Aug 2014 20:00:00 +0900
-Message-ID: <20140818200000.60302a15@songinha-Samsung-DeskTop-System>
+Subject: [PATCH v3 1/2] mfd: arizona: Add support for INn_Modec
+ register control
+Date: Mon, 18 Aug 2014 20:00:03 +0900
+Message-ID: <20140818200003.2ab8aca0@songinha-Samsung-DeskTop-System>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
- by alsa0.perex.cz (Postfix) with ESMTP id F3F362654BD
- for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 13:00:09 +0200 (CEST)
-Received: from epcpsbgr3.samsung.com
- (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1B872654E0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 13:00:10 +0200 (CEST)
+Received: from epcpsbgr2.samsung.com
+ (u142.gpu120.samsung.co.kr [203.254.230.142])
  by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0NAI007B8181AZB0@mailout2.samsung.com> for
- alsa-devel@alsa-project.org; Mon, 18 Aug 2014 20:00:01 +0900 (KST)
+ with ESMTP id <0NAI007YJ183JXA0@mailout2.samsung.com> for
+ alsa-devel@alsa-project.org; Mon, 18 Aug 2014 20:00:03 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,27 +29,46 @@ To: broonie@kernel.org
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, sameo@linux.intel.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, cw00.choi@samsung.com, robh+dt@kernel.org, galak@codeaurora.org, ckeepax@opensource.wolfsonmicro.com, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch series add support for INn_MODE register control using platform data.
-Each input signal path can be configurated either as a Analogue or Digital using
-the INn_MODE registers.
+Some boards need to set the INn_MODE[1:0] register to change
+the input signal patch. This wlf,inmode property is optional.
+If present, values must be specified less than or equal to
+the number of input singals. If values less than the number
+of input signals, elements that has not been specifed are set
+to 0 by default.
 
-Changes for v3
-- Change to use of_property_read_u32_array
-- Fix a few typos
-- Update commit message
+Example:
+   - wlf,inmode = <2 0 2>;	/* IN1, IN3 use DMIC */
 
-Changes for v2
-- Change to support
-- Update commit message
-- Update document content for more clarity
+Signed-off-by: Inha Song <ideal.song@samsung.com>
+---
+ drivers/mfd/arizona-core.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Inha Song (2):
-  mfd: arizona: Add support for INn_Mode register control
-  mfd: arizona: Update DT binding to support INn_MODE init_data
-
- Documentation/devicetree/bindings/mfd/arizona.txt | 8 ++++++++
- drivers/mfd/arizona-core.c                        | 8 +++++++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
-
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index 10a0cb9..81e6db8 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(arizona_of_get_named_gpio);
+ static int arizona_of_get_core_pdata(struct arizona *arizona)
+ {
+ 	struct arizona_pdata *pdata = &arizona->pdata;
+-	int ret, i;
++	int ret, i, proplen;
+ 
+ 	pdata->reset = arizona_of_get_named_gpio(arizona, "wlf,reset", true);
+ 
+@@ -560,6 +560,12 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
+ 			ret);
+ 	}
+ 
++	proplen = of_property_count_u32_elems(arizona->dev->of_node,
++					      "wlf,inmode");
++	if (proplen > 0 && proplen <= ARRAY_SIZE(arizona->pdata.inmode))
++		of_property_read_u32_array(arizona->dev->of_node, "wlf,inmode",
++					   arizona->pdata.inmode, proplen);
++
+ 	return 0;
+ }
+ 
 -- 
 2.0.0.390.gcb682f8
