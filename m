@@ -1,89 +1,89 @@
-From: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: [PATCH] ASoC: fsl-asrc: Convert to use regmap framework's endianness method.
-Date: Mon, 18 Aug 2014 16:56:55 +0800
-Message-ID: <1408352215-12014-1-git-send-email-Li.Xiubo@freescale.com>
+From: hwang4 <hui.wang@canonical.com>
+Subject: Re: [alsa-devel] [PATCH] ALSA: hda - restore the gpio led after resume
+Date: Mon, 18 Aug 2014 17:02:37 +0800
+Message-ID: <53F1C12D.2030200@canonical.com>
+References: <1408346720-3124-1-git-send-email-hui.wang@canonical.com> <s5hd2byw4tu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Content-Type: text/plain; charset=UTF-8;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <s5hd2byw4tu.wl-tiwai@suse.de>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, franz.hsieh@canonical.com, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
----
 
-This is depended on the following regmap framework patches, which have
-just been merged into linux-next tree:
+On 2014=E5=B9=B408=E6=9C=8818=E6=97=A5 16:59, Takashi Iwai wrote:
+> At Mon, 18 Aug 2014 15:25:19 +0800,
+> Hui Wang wrote:
+>> On some HP laptops, the mute led is controlled by codec gpio.
+>>
+>> When some machine resume from s3/s4, the codec gpio data will be
+>> cleared to 0 by BIOS:
+>> Before suspend:
+>>    IO[3]: enable=3D1, dir=3D1, wake=3D0, sticky=3D0, data=3D1, unsol=
+=3D0
+>> After resume:
+>>    IO[3]: enable=3D1, dir=3D1, wake=3D0, sticky=3D0, data=3D0, unsol=
+=3D0
+>>
+>> To skip the AFG node to enter S3 can't fix this problem.
+>>
+>> A workaround is to restore the gpio data when the system resume
+>> back from s3/s4. It is safe even on the machines without this
+>> problem.
+>>
+>> BugLink: https://bugs.launchpad.net/bugs/1358116
+>> Tested-by: Franz Hsieh <franz.hsieh@canonical.com>
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>> ---
+>>   sound/pci/hda/patch_realtek.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_rea=
+ltek.c
+>> index b32ce08..9c49bf5 100644
+>> --- a/sound/pci/hda/patch_realtek.c
+>> +++ b/sound/pci/hda/patch_realtek.c
+>> @@ -3432,6 +3432,12 @@ static unsigned int led_power_filter(struct h=
+da_codec *codec,
+>>   	    (nid !=3D spec->mute_led_nid && nid !=3D spec->cap_mute_led_n=
+id))
+>>   		return power_state;
+>>  =20
+>> +	if (nid =3D=3D codec->afg && power_state =3D=3D AC_PWRST_D0 && spe=
+c->gpio_led) {
+>> +		snd_hda_codec_write(codec, codec->afg, 0, AC_VERB_SET_GPIO_DATA,
+>> +			    spec->gpio_led);
+>> +		return power_state;
+> In general, the power filter is a wrong place to put such a verb
+> write.  This is called *before* powering up the codec NID.
+Understand now.
+>
+> Yes, I see the pinctl is handled in the code below, and I don't like
+> this either.  The codec write verb should be at best in the resume
+> callback after power up.
+OK, got it.
 
-https://lkml.org/lkml/2014/7/15/6
-https://lkml.org/lkml/2014/7/15/5
-https://lkml.org/lkml/2014/7/15/7
-
-
-
-
-
-
- Documentation/devicetree/bindings/sound/fsl,asrc.txt | 10 +++++++---
- sound/soc/fsl/fsl_asrc.c                             |  6 +-----
- 2 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-index b93362a..791f372 100644
---- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
-@@ -26,9 +26,12 @@ Required properties:
- 	"ipg"		  Peripheral clock to driver module.
- 	"asrck_<0-f>"	  Clock sources for input and output clock.
- 
--   - big-endian		: If this property is absent, the little endian mode
--			  will be in use as default. Otherwise, the big endian
--			  mode will be in use for all the device registers.
-+   - big-endian		: If this property is absent, the native endian mode
-+			  (same with CPU) will be in use as default. Otherwise,
-+			  the big endian mode will be in use for all the device
-+			  registers.
-+			  See Documentation/devicetree/bindings/regmap/regmap.txt
-+			  for more detail.
- 
-    - fsl,asrc-rate	: Defines a mutual sample rate used by DPCM Back Ends.
- 
-@@ -56,5 +59,6 @@ asrc: asrc@02034000 {
- 		"txa", "txb", "txc";
- 	fsl,asrc-rate  = <48000>;
- 	fsl,asrc-width = <16>;
-+	big-endian;
- 	status = "okay";
- };
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 8221104..3b14531 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -684,7 +684,7 @@ static bool fsl_asrc_writeable_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
--static struct regmap_config fsl_asrc_regmap_config = {
-+static const struct regmap_config fsl_asrc_regmap_config = {
- 	.reg_bits = 32,
- 	.reg_stride = 4,
- 	.val_bits = 32,
-@@ -802,10 +802,6 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 
- 	asrc_priv->paddr = res->start;
- 
--	/* Register regmap and let it prepare core clock */
--	if (of_property_read_bool(np, "big-endian"))
--		fsl_asrc_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
--
- 	asrc_priv->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "mem", regs,
- 						      &fsl_asrc_regmap_config);
- 	if (IS_ERR(asrc_priv->regmap)) {
--- 
-1.8.5
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Hui.
+>
+> Takashi
+>
+>> +	}
+>> +
+>>   	/* Set pin ctl again, it might have just been set to 0 */
+>>   	snd_hda_set_pin_ctl(codec, nid,
+>>   			    snd_hda_codec_get_pin_target(codec, nid));
+>> --=20
+>> 1.9.1
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>
