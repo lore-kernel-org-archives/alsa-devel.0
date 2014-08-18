@@ -1,44 +1,56 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: [alsa-devel] [PATCH v3 2/2] mfd: arizona: Update DT binding to support
- INn_MODE init_data
-Date: Mon, 18 Aug 2014 20:00:09 +0900
-Message-ID: <20140818200009.12a52dfa@songinha-Samsung-DeskTop-System>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH alsa-lib v2] Sync enum snd_hwdep_iface_t
+	with include/asound/asound.h
+Date: Mon, 18 Aug 2014 20:52:40 +0900
+Message-ID: <53F1E908.7060504@sakamocchi.jp>
+References: <1408264747-26357-1-git-send-email-o-takashi@sakamocchi.jp>
+ <1408355117-9654-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5hha1a5ani.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lee.jones@linaro.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sameo@linux.intel.com, devicetree@vger.kernel.org, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, cw00.choi@samsung.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B9B02654E0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 13:52:46 +0200 (CEST)
+In-Reply-To: <s5hha1a5ani.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch update DT binding to support INn_MODE init_data. Each
-input signal path can be configurated either as a Analogue or
-Digital using the INn_MODE registers.
+On Aug 18 2014 19:56, Takashi Iwai wrote:
+> At Mon, 18 Aug 2014 18:45:17 +0900,
+> Takashi Sakamoto wrote:
+>>
+>> Some members in this enumerated type has not updated for 9 years, although
+>> kernel-drivers added them during this period. This commit adds them following
+>> to a commit 87df9f3 'sync include/asound/asound.h with 3.17-rc1 kernel'.
+>>
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> 
+> Applied, thanks.
 
-Signed-off-by: Inha Song <ideal.song@samsung.com>
----
- Documentation/devicetree/bindings/mfd/arizona.txt | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Thank you.
 
-diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
-index 5c7e723..0064b21 100644
---- a/Documentation/devicetree/bindings/mfd/arizona.txt
-+++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-@@ -42,6 +42,14 @@ Optional properties:
-     the chip default will be used.  If present exactly five values must
-     be specified.
- 
-+  - wlf,inmode : A list of INn_MODE register values, where n is the number
-+    of input signals. Each input signal path can be configurated either as a
-+    Analogue or Digital using the INn_MODE registers. If absent, INn_MODE
-+    registers set to 0 by default. If present, values must be specified less
-+    than or equal to the number of input singals. If values less than the
-+    number of input signals, elements that has not been specifed are set to 0
-+    by default.
-+
-   - DCVDD-supply, MICVDD-supply : Power supplies, only need to be specified if
-     they are being externally supplied. As covered in
-     Documentation/devicetree/bindings/regulator/regulator.txt
--- 
-2.0.0.390.gcb682f8
+I have a plan to work for OXFW driver in the rest of this year. My
+patches includes SNDRV_HWDEP_IFACE_FW_OXFW for the same purpose the
+other firewire drivers have.
+
+I should add it to alsa-lib but I have no confidence for the timing.
+Which is better, the same time to post the driver or the time Linux
+kernel is released with the driver?
+
+
+Thanks
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
