@@ -1,51 +1,48 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V1 3/3] ASoC: fsl: fsl-asoc-card: Select
- SND_SOC_IMX_AUDMUX
-Date: Mon, 18 Aug 2014 09:54:52 -0500
-Message-ID: <20140818145452.GD14537@sirena.org.uk>
-References: <cover.1408350626.git.shengjiu.wang@freescale.com>
- <ee71a6cacc1d0bc1459bf9c21efc755c16e955b1.1408350626.git.shengjiu.wang@freescale.com>
+From: Varka Bhadram <varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH] ASoC: fsl-asrc: Convert to use regmap framework's endianness
+ method.
+Date: Mon, 18 Aug 2014 20:54:13 +0530
+Message-ID: <53F21A9D.4010507@gmail.com>
+References: <1408352215-12014-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TMTfqzsZeEKgETVO"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <ee71a6cacc1d0bc1459bf9c21efc755c16e955b1.1408350626.git.shengjiu.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, shc_work@mail.ru, fabio.estevam@freescale.com, xobs@kosagi.com, arnd@arndb.de, sfr@canb.auug.org.au, timur@tabi.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1408352215-12014-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---TMTfqzsZeEKgETVO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Monday 18 August 2014 02:26 PM, Xiubo Li wrote:
+> Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+> ---
+>
+> This is depended on the following regmap framework patches, which have
+> just been merged into linux-next tree:
+>
+> https://lkml.org/lkml/2014/7/15/6
+> https://lkml.org/lkml/2014/7/15/5
+> https://lkml.org/lkml/2014/7/15/7
+>
+>
+>
+>
+>
+>
+>   Documentation/devicetree/bindings/sound/fsl,asrc.txt | 10 +++++++---
+>   sound/soc/fsl/fsl_asrc.c                             |  6 +-----
+>   2 files changed, 8 insertions(+), 8 deletions(-)
+>
+Reviewed-by: Varka Bhadram <varkabhadram-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-On Mon, Aug 18, 2014 at 04:38:40PM +0800, Shengjiu Wang wrote:
-> Building kernel with SND_SOC_IMX_AUDMUX=n leads to the following error:
 
-Applied, thanks.
+--
+Regards,
+Varka Bhadram.
 
---TMTfqzsZeEKgETVO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT8hO4AAoJELSic+t+oim9FdAP+gKsNJnyM2axEABYJ1G4HGnG
-dQ/Po4rAdZ/C9NVtTgZq66v/YyGetydNLU9mjYAFIzaxgI1Mp1ca+IfNobO+K46W
-9Mrx76t6Oc86hsRL4XQoMhCT5rQDHKYLz8aSaGCUm9ScQyyfTvNH7f3gjD6w/o5o
-YzPP3hdoZvhvHR6Tcu9RpG0XLc8iKmcEwBJgWY2yHrnRnrWw7SHdkUYNTt3xfvzG
-RiAUBpBcPOX9tKQCFiXAX54iNbBRQtq9cgLa9RSZll/Mjd2vMIJGNxGRqSyTYHVH
-+LxpxMY422C3/mBh78RbTo+Zypu9teXdstF2YhEKCyZ5wsQeYIFJYhhqDxGWHhGo
-7QiiSAvJXP3icmHH2yri+fpsEhZ/tAFm6CEA4Uk/Rg4z2QFBtxs2XypH21fJS7FH
-ywddDt8K/fW5MfEa/X8IoHxhkAj0asq6kknFqJJ66F/wsc2xytWQHcRO8nlFQj2e
-gWGh2yDvy17IWTtBgbtOgl3Tes8iYz9s7P2eBTR8ttg7Pcydf+AdPCskYW5Py4US
-sgzl67Ak9UQvpJuF20TVl19g4Q2w5sD5wci6PDVm5JeCAYN4zcC7fmfG7wOLojbc
-sewHkUAIXrfYpaV3ZCARg9RX39UWKFGlLgewliY+cFEe0/f7n7iF8bT9lPi9Igt3
-ph+r3vtJi68HvW8cmTKP
-=tLCH
------END PGP SIGNATURE-----
-
---TMTfqzsZeEKgETVO--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
