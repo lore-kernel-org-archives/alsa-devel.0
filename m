@@ -1,20 +1,27 @@
 From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
-Subject: Re: Warning Big Yield
-Date: Tue, 19 Aug 2014 01:41:31 +0200
-Message-ID: <1408405291.10231.2.camel@debian>
-References: <1408019626.6670.5.camel@debian> <53ECD987.5020608@ladisch.de>
- <53ED3F0C.70809@flatmax.org>
+Subject: Re: Audio mini conference 2014?
+Date: Tue, 19 Aug 2014 01:51:51 +0200
+Message-ID: <1408405911.10231.6.camel@debian>
+References: <20140722222038.GW17528@sirena.org.uk>
+ <53CF8306.3090009@zonque.org>
+ <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
+ <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
+ <20140807140957.GI8181@intel.com>
+ <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
+ <20140812151258.GH13288@intel.com> <53EA34EF.8020205@metafoo.de>
+ <20140812153537.GI13288@intel.com> <53EA389E.1030006@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
- [209.85.212.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E1E92654C2
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 01:41:44 +0200 (CEST)
-Received: by mail-wi0-f174.google.com with SMTP id d1so4563289wiv.1
- for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 16:41:43 -0700 (PDT)
-In-Reply-To: <53ED3F0C.70809@flatmax.org>
+Received: from mail-wi0-f175.google.com (mail-wi0-f175.google.com
+ [209.85.212.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id C39F72654C2
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 01:52:04 +0200 (CEST)
+Received: by mail-wi0-f175.google.com with SMTP id ho1so4567303wib.2
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 16:52:04 -0700 (PDT)
+In-Reply-To: <53EA389E.1030006@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +31,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.de>, broonie@kernel.org, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-QW0gRnJlaXRhZywgZGVuIDE1LjA4LjIwMTQsIDA4OjU4ICsxMDAwIHNjaHJpZWIgTWF0dCBGbGF4
-Ogo+IE9uIDE1LzA4LzE0IDAxOjQ1LCBDbGVtZW5zIExhZGlzY2ggd3JvdGU6Cj4gPiBKb8OrbCBL
-csOkaGVtYW5uIHdyb3RlOgo+ID4+IEknZCByZWFsbHkgbGlrZSB0byBrbm93IGlmIHRoZXJlJ3Mg
-YSBjb21tb24gd2F5IHRvIGRvIHN5bmNpbmcKPiA+PiBhcHBsaWNhdGlvbnMuIFdoYXQgZnJlcXVl
-bmNpZXMgYXJlIHJlcXVpcmVkIHRvIHJ1biBhIEdVST8KPiA+IEdVSXMgc2hvdWxkIGJlIGV2ZW50
-IGJhc2VkOyB0aGUgdGVybSAiZnJlcXVlbmN5IiBpcyBub3QgYXBwbGljYWJsZS4KPiA+Cj4gPj4g
-SG93IGRvZXMgWG9yZyB3b3JrCj4gPiBJdCdzIGV2ZW50IGJhc2VkLgo+IAo+IFllcywgZXZlbnQg
-YmFzZWQuCj4gRm9yIGV4YW1wbGUsIHdoZW4gdXNpbmcgZ3RrIC4uLiBpZiB5b3Ugd2FudCB0byB1
-cGRhdGUgeW91ciBHVUksIHlvdSAKPiBwcm9iYWJseSB3YW50IHRvIHVzZSB0aGUgZ3RrIHRpbWVy
-IHRvIHJlZ3VsYXJseSB1cGRhdGUgYXQgYSByYXRlIHdoaWNoIAo+IHN1aXRzIHlvdXIgdmlzdWFs
-IGFlc3RoZXRpYy4KPiAKPiBZb3UgbWF5IGFscmVhZHkga25vdyB0aGlzLCBidXQgeW91IGNhbiB0
-cmlnZ2VyIGEgdXNlciBmdW5jdGlvbiBhdCAKPiByZWd1bGFyIGludGVydmFscyA6Cj4gZ190aW1l
-b3V0X2FkZAo+IGh0dHBzOi8vZGV2ZWxvcGVyLmdub21lLm9yZy9nbGliLzIuMzcvZ2xpYi1UaGUt
-TWFpbi1FdmVudC1Mb29wLmh0bWwKPiAKPiA+PiBob3cgY2FuIEkgcHJldmVudCBpbnRlcmZlcmlu
-ZyB3aXRoIEFMU0Egb3V0cHV0Pwo+ID4gQnkgZG9pbmcgc291bmQgc3R1ZmYgaW4gYSBzZXBhcmF0
-ZSB0aHJlYWQgd2l0aCBoaWdoZXIgcHJpb3JpdHkuCj4gWW91IGNhbiBkbyBzb21ldGhpbmcgc2lt
-aWxhciB0byB3aGF0IEphY2sgZG9lcyB0byBlbnN1cmUgaGlnaGVyIAo+IHByaW9yaXR5LCBjaGVj
-ayB0aGUgZmlsZSBsaWJqYWNrL3RocmVhZC5jIGFuZCBsb29rIGF0IHRoZSB3YXkgdGhleSAKPiBp
-bmNyZW1lbnQgdGhlIHByaW9yaXR5Lgo+IAo+IFlvdSBtYXkgYWxyZWFkeSBrbm93IHRoaXMsIGhv
-d2V2ZXIgaW4gY2FzZSBub3QsIHlvdSBjYW4gZ2V0IGxvdyAKPiBtaWxsaXNlY29uZCBsYXRlbmN5
-IHdpdGhvdXQgZHJvcHBpbmcgc2FtcGxlcyB3aGVuIHVzaW5nIExpbnV4IC4uLiBpLmUuIAo+IG5v
-IGludGVyZmVyYW5jZS4KPiBUaGF0IHdhcyBsYXN0IHRpbWUgSSBjaGVja2VkIC4uLiBpdCBpcyBw
-b3NzaWJsZSB0aGF0IHRoaXMgaGFzIGltcHJvdmVkIAo+IHRvIGEgbG93ZXIgdGhyZXNob2xkIHNp
-bmNlIHRoZW4gIQo+IAo+IE1hdHQKPiAKPiA+PiBXYXJuaW5nIHlvdSBtYXkgZXhwZXJpZW5jZSBi
-aWcgeWllbGQuCj4gPiA/Pz8KPiA+Cj4gPiBSZWdhcmRzLAo+ID4gQ2xlbWVucwo+ID4gX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiA+IEFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0Cj4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiA+IGh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4gCj4g
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgpXaXRo
-IGJpZyB5aWVsZCBJIG1lYW4geW91IGhlYXIgYSBub2lzZSBhc3N1bWVkIHlvdSB3b3VsZCBjYWxs
-CnB0aHJlYWRfeWllbGQgdG8gb2Z0ZW4uCgpJdCBpcyBzdHJhbmdlIGhvdyBjYW4gSSByZWNvZ25p
-emUgbW9yZSB0aGFuIDggYmVhdHMgcGVyIHNlY29uZCBvciBldmVuCm1vcmUgLi4uCgpJIGhhdmUg
-bW9kaWZpZWQgbXkgYXBwbGljYXRpb24gbm90IHRvIGRvIHNvLCBhbnltb3JlLgoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Am Dienstag, den 12.08.2014, 21:54 +0600 schrieb Alexander E. Patrakov:
+> 12.08.2014 21:35, Vinod Koul wrote:
+> > On Tue, Aug 12, 2014 at 05:38:23PM +0200, Lars-Peter Clausen wrote:
+> >> On 08/12/2014 05:12 PM, Vinod Koul wrote:
+> >>> On Tue, Aug 12, 2014 at 10:14:39AM -0500, Paul Handrigan wrote:
+> >>>>>>> What date would we prefer? There's an event on Tuesday night (~6pm), but
+> >>>>>>> I guess we wouldn't need the room longer than that anyway, right?
+> >>>>>> It would be best that it is not during LPC as mentioned before.  Will Saturday after LPC work as well?
+> >>>>> Plumbers starts Wed.. So tue can work too :)
+> >>>>>
+> >>>>> Btw should we request a LPC track for backup.
+> >>>>>
+> >>>> I believe it is too late to request a LPC track.
+> >>> Checking the site again, looks like we can still make a request
+> > My bad, wrong interpretation. Looks like new uconf are not accepted.
+> >
+> > Mark, Takashi, can we get some leeway with organizers
+> >
+> >>>>
+> >>>> Tuesday would be good as well. Should we go with that since we may
+> >>>> have a place for it?
+> >>> I am okay either days.
+> >>>
+> >>> Btw I didnt hear about the topics...
+> >>>
+> >>
+> >> If there is interest I'll prepare something about ASoC
+> >> componentization, what's the status and where it is going.
+> > That would be good.
+> >
+> > I was planning to discuss Dynamic FW, effect API (yet again), more DSP
+> > support esp on PCM side
+> 
+> I can discuss rewinding in ALSA PCM plugins (actually planned that for 
+> LPC, but it got rejected), and/or a short talk about resampler quality 
+> evaluation for PulseAudio.
+> 
+
+What about pulseaudio preventing insane rates?
