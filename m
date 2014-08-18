@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: Fix the compile warning.
-Date: Mon, 18 Aug 2014 11:42:46 -0500
-Message-ID: <20140818164246.GJ14537@sirena.org.uk>
-References: <1408345215-30783-1-git-send-email-Li.Xiubo@freescale.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH V1 1/3] ASoC: fsl: Kconfig: remove
+ dependence of SND_IMX_SOC for SND_SOC_IMX_PCM_DMA
+Date: Mon, 18 Aug 2014 18:52:46 +0200
+Message-ID: <53F22F5E.2090601@metafoo.de>
+References: <cover.1408350626.git.shengjiu.wang@freescale.com>
+ <f30ba4e2c4eb6702fa40bd255036e6e9ad6eb47d.1408350626.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3021079655104001200=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F3917261A8E
- for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 18:43:37 +0200 (CEST)
-In-Reply-To: <1408345215-30783-1-git-send-email-Li.Xiubo@freescale.com>
+Received: from smtp-out-045.synserver.de (smtp-out-050.synserver.de
+ [212.40.185.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9A5B261A8E
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 18:52:48 +0200 (CEST)
+In-Reply-To: <f30ba4e2c4eb6702fa40bd255036e6e9ad6eb47d.1408350626.git.shengjiu.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,56 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: moinejf@free.fr, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, tiwai@suse.de, jsarha@ti.com
+To: Shengjiu Wang <shengjiu.wang@freescale.com>, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, shc_work@mail.ru, fabio.estevam@freescale.com, xobs@kosagi.com, sfr@canb.auug.org.au, timur@tabi.org
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
+On 08/18/2014 10:38 AM, Shengjiu Wang wrote:
+> Build kernel with SND_SOC_IMC_PCM_DMA=m && SND_IMX_SOC=n leads the following
+> error:
+>
+>     sound/built-in.o: In function `fsl_sai_probe':
+>>> fsl_sai.c:(.text+0x5f662): undefined reference to `imx_pcm_dma_init'
+>     sound/built-in.o: In function `fsl_esai_probe':
+>>> fsl_esai.c:(.text+0x6044b): undefined reference to `imx_pcm_dma_init'
+>
+> Most cpu driver in soc/fsl has use the function 'imx_pcm_dma_init' which is
+> defined in imx-pcm-dma.c, so need to select SND_SOC_IMX_PCM_DMA, but it depends
+> on SND_IMX_SOC, if SND_IMX_SOC=n, then SND_SOC_IMX_PCM_DMA will not be
+> selected.
+> So remove the dependence of SND_IMX_SOC for SND_SOC_IMX_PCM_DMA.
+>
+> Reported-by: kbuild test robot <fengguang.wu@intel.com>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
 
---===============3021079655104001200==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fze0sZZmuBV4A+b2"
-Content-Disposition: inline
+Those if conditions where just added[1] by Arnd to avoid other build 
+failures. So just removing them again makes little sense.
 
+As far as I can see imx_pcm_dma_init() should be stubbed out when 
+SND_SOC_IMX_PCM_DMA is not selected. So what's going on here?
 
---fze0sZZmuBV4A+b2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Aug 18, 2014 at 03:00:15PM +0800, Xiubo Li wrote:
-> sound/soc/generic/simple-card.c: In function simple_card_dai_link_of:
-> sound/soc/generic/simple-card.c:198:10: warning: passing argument 3 of
-
-Applied, thanks.
-
---fze0sZZmuBV4A+b2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT8i0DAAoJELSic+t+oim9bwcP/0vAEi0N4JrCACScewFLYdyc
-VeRM8R/RhfAZiCLo/YfDxxR/OFG3j1eiSHFqtRGX0bWE3WDvsvxXCBlEiYH2i6w/
-fLJUwNKF0Tc7zlXwG6CGbvp58oceTuMdcRFNyEhVVuuaAKi3TOaQv4B8Bkf0n8zT
-PD6lKKTmLLAuHIjLsICdyh1+HUdSiP+I4gIFjwawIhVIKTIepIXGAwFHDWCtVDLJ
-vFWgkV5LKw8RjTCXwmNrvgVbmZwLeIv7q6q/AYHEzXHIjccMWW9FsyX70r6uml+Y
-7nzkG4qzT7alFcONaFW7yv7SyUdBe/OUyimfRCt1uUu37MDpqxcqzggpnPVzj7Ov
-FAwvQEUobcuu9Tmx8FlP/e7AMMcfYZDz0dHuCG2kxqZ0hx7dJNe6KPig92O8/8cB
-mJbbrgvLNuQqWI/Z2w9CG+lnrwbK0419prK97SK2WScZEsKJSZjmZuNJUqrM35cH
-Pju4p9LOuhBM4r8wsL2UfrrAIh+4OfzVEObZZsPhP2QjS+2FGS5anvejAq3vvZAW
-lfRQy01mzVsR0U/NjYMJMRbop3tEeh4wyeGPyOgEQE06bcbLTh1UJ1hqFLKjWAs/
-X1GgpdFKc+tVV7UX1rjLRLNI62g/LKFo3vI+CoG4+F0iCPY1TzQZ2AllXKXmVFXZ
-aZhpOWAWh1hRoVEcwQza
-=a9gF
------END PGP SIGNATURE-----
-
---fze0sZZmuBV4A+b2--
-
---===============3021079655104001200==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3021079655104001200==--
+[1] 
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=ff40260f79dc0436604452bccd449bffd25ebafb
