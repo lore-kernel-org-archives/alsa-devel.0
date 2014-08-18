@@ -1,16 +1,15 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [TINYCOMPRESS][PATCH] crec: Fix error with opening
-	file using	O_CREAT
-Date: Mon, 18 Aug 2014 09:41:58 +0100
-Message-ID: <20140818084158.GA14810@opensource.wolfsonmicro.com>
+From: libin.yang@intel.com
+Subject: [PATCH] ALSA: hda/hdmi - apply Valleyview fix-ups to
+	Cherryview display codec
+Date: Mon, 18 Aug 2014 16:44:07 +0800
+Message-ID: <1408351447-132394-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 66B2F26574C
- for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 10:42:02 +0200 (CEST)
-Content-Disposition: inline
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 203CB2654B0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 10:47:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,42 +19,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: vinod.koul@intel.com
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, ammar.zhd@googlemail.com
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Libin Yang <libin.yang@intel.com>, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Ammar Zahid Ali Syed <ammar.zhd@googlemail.com>
+From: Libin Yang <libin.yang@intel.com>
 
-The code was not compiling when mode was not passed to open()
-while using O_CREAT offset. Passed mode to the open() alongwith
-O_CREAT to specify the attributes of file and fix compile issue.
+Valleyview and Cherryview have the same behavior on display audio. So this patch
+defines is_valleyview_plus() to include codecs for both Valleyview and its successor
+Cherryview, and apply Valleyview fix-ups to Cherryview.
 
-Signed-off-by: Ammar Zahid Ali Syed <ammar.zhd@googlemail.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
 ---
- crec.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+ sound/pci/hda/patch_hdmi.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/crec.c b/crec.c
-index 31703c5..e3f189f 100644
---- a/crec.c
-+++ b/crec.c
-@@ -66,6 +66,8 @@
- #include <stdbool.h>
- #include <getopt.h>
- #include <sys/time.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
- #define __force
- #define __bitwise
- #define __user
-@@ -256,7 +258,7 @@ void capture_samples(char *name, unsigned int card, unsigned int device,
- 	if (verbose)
- 		printf("%s: entry, reading %u bytes\n", __func__, length);
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 36badba..99d7d7f 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -50,6 +50,8 @@ MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
+ #define is_haswell_plus(codec) (is_haswell(codec) || is_broadwell(codec))
  
--	file = open(name, O_RDWR | O_CREAT);
-+	file = open(name, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
- 	if (file == -1) {
- 		fprintf(stderr, "Unable to open file '%s'\n", name);
- 		exit(EXIT_FAILURE);
+ #define is_valleyview(codec) ((codec)->vendor_id == 0x80862882)
++#define is_cherryview(codec) ((codec)->vendor_id == 0x80862883)
++#define is_valleyview_plus(codec) (is_valleyview(codec) || is_cherryview(codec))
+ 
+ struct hdmi_spec_per_cvt {
+ 	hda_nid_t cvt_nid;
+@@ -1459,7 +1461,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 			    mux_idx);
+ 
+ 	/* configure unused pins to choose other converters */
+-	if (is_haswell_plus(codec) || is_valleyview(codec))
++	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
+ 		intel_not_share_assigned_cvt(codec, per_pin->pin_nid, mux_idx);
+ 
+ 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
+@@ -1598,7 +1600,8 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 		 *   and this can make HW reset converter selection on a pin.
+ 		 */
+ 		if (eld->eld_valid && !old_eld_valid && per_pin->setup) {
+-			if (is_haswell_plus(codec) || is_valleyview(codec)) {
++			if (is_haswell_plus(codec) ||
++				is_valleyview_plus(codec)) {
+ 				intel_verify_pin_cvt_connect(codec, per_pin);
+ 				intel_not_share_assigned_cvt(codec, pin_nid,
+ 							per_pin->mux_idx);
+@@ -1779,7 +1782,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 	bool non_pcm;
+ 	int pinctl;
+ 
+-	if (is_haswell_plus(codec) || is_valleyview(codec)) {
++	if (is_haswell_plus(codec) || is_valleyview_plus(codec)) {
+ 		/* Verify pin:cvt selections to avoid silent audio after S3.
+ 		 * After S3, the audio driver restores pin:cvt selections
+ 		 * but this can happen before gfx is ready and such selection
+@@ -2330,9 +2333,8 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		intel_haswell_fixup_enable_dp12(codec);
+ 	}
+ 
+-	if (is_haswell(codec) || is_valleyview(codec)) {
++	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
+ 		codec->depop_delay = 0;
+-	}
+ 
+ 	if (hdmi_parse_codec(codec) < 0) {
+ 		codec->spec = NULL;
 -- 
-1.7.2.5
+1.9.1
