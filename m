@@ -1,64 +1,76 @@
-From: Xuebing Wang <xbing6@gmail.com>
-Subject: What is the command line commands to use UAC2 at USB
-	client side?
-Date: Thu, 14 Aug 2014 14:16:30 +0800
-Message-ID: <53EC543E.9050601@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V1 2/3] ASoC: fsl-asoc-card: Fix build warning for
+ maybe-uninitialized
+Date: Mon, 18 Aug 2014 09:53:25 -0500
+Message-ID: <20140818145325.GC14537@sirena.org.uk>
+References: <cover.1408350626.git.shengjiu.wang@freescale.com>
+ <b1711ff2c73f3b6acd6af000bc8294d930bbf16b.1408350626.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f51.google.com (mail-pa0-f51.google.com
- [209.85.220.51])
- by alsa0.perex.cz (Postfix) with ESMTP id A1ED626565A
- for <alsa-devel@alsa-project.org>; Thu, 14 Aug 2014 08:16:36 +0200 (CEST)
-Received: by mail-pa0-f51.google.com with SMTP id ey11so1039361pad.38
- for <alsa-devel@alsa-project.org>; Wed, 13 Aug 2014 23:16:35 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-usb-devel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: thomas.besemer@gmail.com, Richard.Jiang@infocus.com
+Content-Type: multipart/mixed; boundary="===============5778138552977589427=="
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <b1711ff2c73f3b6acd6af000bc8294d930bbf16b.1408350626.git.shengjiu.wang@freescale.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: fabio.estevam@freescale.com, sfr@canb.auug.org.au, alsa-devel@alsa-project.org, timur@tabi.org, arnd@arndb.de, shc_work@mail.ru, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, perex@perex.cz, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, xobs@kosagi.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Community,
 
-Based on Freescale platform , I am trying to use USB Audio Class version 
-2.0.  Host can detect this UAC2 device.
+--===============5778138552977589427==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="j6zkAHxOZJkiczrA"
+Content-Disposition: inline
 
-At device side (after modprobe g_audio):
 
-root@imx6slevk:~# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: wm8962audio [wm8962-audio], device 0: HiFi wm8962-0 []
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 1: imxspdif [imx-spdif], device 0: S/PDIF PCM Playback dit-hifi-0 []
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 2: UAC2Gadget [UAC2_Gadget], device 0: UAC2 PCM [UAC2 PCM]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
+--j6zkAHxOZJkiczrA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-At device side, in driver/usb/gadget/Kconfig, it says before for 
-CONFIG_USB_AUDIO
--------------------------
-           This driver doesn't expect any real Audio codec to be present
-           on the device - the audio streams are simply sinked to and
-           sourced from a virtual ALSA sound card created. The user-space
-           application may choose to do whatever it wants with the data
-           received from the USB Host and choose to provide whatever it
-           wants as audio data to the USB Host.
--------------------------
+On Mon, Aug 18, 2014 at 04:38:39PM +0800, Shengjiu Wang wrote:
+> When build fsl-asoc-card as module, there is following error:
 
-My question is: at device side, how to configure sink/source for UAC2 
-virtual ALSA sound card (hw:2,0, UAC2_Gadget)?
+Applied, thanks.
 
-Thank you very much.
+--j6zkAHxOZJkiczrA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Xuebing Wang
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT8hNiAAoJELSic+t+oim9vtEP/066v1JvRkbibj+F5sRs0ldE
+p/hv3zajZVFM24ZRpA3ougXhZ+BC+L9a8X/dt0joWHuEwwEL187RxuHGdEDaUddC
+mMpu8SmfaIJ77GimPIKs0Xl2NQsMgm4ZblzN/jgNSTJt9Z1ZWy/b3YysujpDHPHR
+jgemxvDRwE55C5WkKLDgZMqjGWB24xgy5v8n4wOqK9eJ1uxjjEjBwMlun5I/5bqS
+RoM2XQXxY2N+SjAh83hVyd+EUg+T6TwvNAzKtp4YigRD0wgZmuuIyw8xN2cc7NDO
+/M2QIye95ewb2OaNrItkf8FCP+CNVbXLxoXeNBVuxSREmRt6SNPCWySBOm8cjwRZ
+1lpHYWUp3EnbA15xjRXBB4jVi7wzdrJO5WLzFa/s0INbUsKVeuF9slC5AjFG0rjs
+Kz+c2i0iPxxDWJ1Cc2mEfuFKsAY2R9RoQe/FRqkvZqvvWJ9vGh2wEE/fo78+pO+p
+lyK3T9DixQB1Tv2R8wYf74oF/sG/s1fcrbhaRFqap3UdMVLHtsyUeA/2mP6XgSYv
+dIgXpIRXBYfXZbkzHewhT8avRadehuZpDQxHoOE7GYI/LOCzORjNeLmw4DY/pHIR
+AQTfNxKbNAHq+kbe7HBs5KggpCIxtwneuD3ndIVEq4TxXwdUFktLG2ij/JFDGQ7b
+vU4LUyGW+7dpC8ZUTGmE
+=VtEb
+-----END PGP SIGNATURE-----
+
+--j6zkAHxOZJkiczrA--
+
+--===============5778138552977589427==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXhwcGMt
+ZGV2IG1haWxpbmcgbGlzdApMaW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9yZwpodHRwczovL2xp
+c3RzLm96bGFicy5vcmcvbGlzdGluZm8vbGludXhwcGMtZGV2
+
+--===============5778138552977589427==--
