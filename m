@@ -1,17 +1,17 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH 1/4] ASoC: fsl-spdif: Convert to use regmap
+Subject: [PATCH 2/4] ASoC: fsl-esai: Convert to use regmap
 	framework's endianness method.
-Date: Mon, 18 Aug 2014 14:52:19 +0800
-Message-ID: <1408344742-28701-2-git-send-email-Li.Xiubo@freescale.com>
+Date: Mon, 18 Aug 2014 14:52:20 +0800
+Message-ID: <1408344742-28701-3-git-send-email-Li.Xiubo@freescale.com>
 References: <1408344742-28701-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-by2-obe.outbound.protection.outlook.com
- (mail-by2lp0239.outbound.protection.outlook.com [207.46.163.239])
- by alsa0.perex.cz (Postfix) with ESMTP id 2ED592654C9
- for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 08:56:48 +0200 (CEST)
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1blp0188.outbound.protection.outlook.com [207.46.163.188])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1809C2654B0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 08:56:51 +0200 (CEST)
 In-Reply-To: <1408344742-28701-1-git-send-email-Li.Xiubo@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,19 +28,19 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/fsl/fsl_spdif.c | 3 ---
+ sound/soc/fsl/fsl_esai.c | 3 ---
  1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 70acfe4..90d6352 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1184,9 +1184,6 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	memcpy(&spdif_priv->cpu_dai_drv, &fsl_spdif_dai, sizeof(fsl_spdif_dai));
- 	spdif_priv->cpu_dai_drv.name = spdif_priv->name;
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index b2f6b3e..d05c18e 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -736,9 +736,6 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 	esai_priv->pdev = pdev;
+ 	strcpy(esai_priv->name, np->name);
  
 -	if (of_property_read_bool(np, "big-endian"))
--		fsl_spdif_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
+-		fsl_esai_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
 -
  	/* Get the addresses and IRQ */
  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
