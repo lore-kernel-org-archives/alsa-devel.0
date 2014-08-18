@@ -1,20 +1,20 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH alsa-lib v2] Sync enum snd_hwdep_iface_t
-	with include/asound/asound.h
-Date: Tue, 19 Aug 2014 07:53:34 +0900
-Message-ID: <53F283EE.9060800@sakamocchi.jp>
-References: <1408264747-26357-1-git-send-email-o-takashi@sakamocchi.jp>
- <1408355117-9654-1-git-send-email-o-takashi@sakamocchi.jp>
- <s5hha1a5ani.wl-tiwai@suse.de> <53F1E908.7060504@sakamocchi.jp>
- <s5h8umm53uq.wl-tiwai@suse.de>
+From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
+Subject: Re: Warning Big Yield
+Date: Tue, 19 Aug 2014 01:41:31 +0200
+Message-ID: <1408405291.10231.2.camel@debian>
+References: <1408019626.6670.5.camel@debian> <53ECD987.5020608@ladisch.de>
+ <53ED3F0C.70809@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id F115C265353
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 00:53:39 +0200 (CEST)
-In-Reply-To: <s5h8umm53uq.wl-tiwai@suse.de>
+Received: from mail-wi0-f174.google.com (mail-wi0-f174.google.com
+ [209.85.212.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E1E92654C2
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 01:41:44 +0200 (CEST)
+Received: by mail-wi0-f174.google.com with SMTP id d1so4563289wiv.1
+ for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 16:41:43 -0700 (PDT)
+In-Reply-To: <53ED3F0C.70809@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,28 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Matt Flax <flatmax@flatmax.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 18 2014 22:23, Takashi Iwai wrote:
->> I have a plan to work for OXFW driver in the rest of this year. My
->> patches includes SNDRV_HWDEP_IFACE_FW_OXFW for the same purpose the
->> other firewire drivers have.
->>
->> I should add it to alsa-lib but I have no confidence for the timing.
->> Which is better, the same time to post the driver or the time Linux
->> kernel is released with the driver?
-> 
-> At best, merge both kernel and user-space stuff at the same time.
-> So, please send both kernel and alsa-lib patches.  The merge to Linus
-> shall be postponed until the following merge window, of course, but it
-> shouldn't matter much.
-
-OK, I see.
-
-
-Thanks
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+QW0gRnJlaXRhZywgZGVuIDE1LjA4LjIwMTQsIDA4OjU4ICsxMDAwIHNjaHJpZWIgTWF0dCBGbGF4
+Ogo+IE9uIDE1LzA4LzE0IDAxOjQ1LCBDbGVtZW5zIExhZGlzY2ggd3JvdGU6Cj4gPiBKb8OrbCBL
+csOkaGVtYW5uIHdyb3RlOgo+ID4+IEknZCByZWFsbHkgbGlrZSB0byBrbm93IGlmIHRoZXJlJ3Mg
+YSBjb21tb24gd2F5IHRvIGRvIHN5bmNpbmcKPiA+PiBhcHBsaWNhdGlvbnMuIFdoYXQgZnJlcXVl
+bmNpZXMgYXJlIHJlcXVpcmVkIHRvIHJ1biBhIEdVST8KPiA+IEdVSXMgc2hvdWxkIGJlIGV2ZW50
+IGJhc2VkOyB0aGUgdGVybSAiZnJlcXVlbmN5IiBpcyBub3QgYXBwbGljYWJsZS4KPiA+Cj4gPj4g
+SG93IGRvZXMgWG9yZyB3b3JrCj4gPiBJdCdzIGV2ZW50IGJhc2VkLgo+IAo+IFllcywgZXZlbnQg
+YmFzZWQuCj4gRm9yIGV4YW1wbGUsIHdoZW4gdXNpbmcgZ3RrIC4uLiBpZiB5b3Ugd2FudCB0byB1
+cGRhdGUgeW91ciBHVUksIHlvdSAKPiBwcm9iYWJseSB3YW50IHRvIHVzZSB0aGUgZ3RrIHRpbWVy
+IHRvIHJlZ3VsYXJseSB1cGRhdGUgYXQgYSByYXRlIHdoaWNoIAo+IHN1aXRzIHlvdXIgdmlzdWFs
+IGFlc3RoZXRpYy4KPiAKPiBZb3UgbWF5IGFscmVhZHkga25vdyB0aGlzLCBidXQgeW91IGNhbiB0
+cmlnZ2VyIGEgdXNlciBmdW5jdGlvbiBhdCAKPiByZWd1bGFyIGludGVydmFscyA6Cj4gZ190aW1l
+b3V0X2FkZAo+IGh0dHBzOi8vZGV2ZWxvcGVyLmdub21lLm9yZy9nbGliLzIuMzcvZ2xpYi1UaGUt
+TWFpbi1FdmVudC1Mb29wLmh0bWwKPiAKPiA+PiBob3cgY2FuIEkgcHJldmVudCBpbnRlcmZlcmlu
+ZyB3aXRoIEFMU0Egb3V0cHV0Pwo+ID4gQnkgZG9pbmcgc291bmQgc3R1ZmYgaW4gYSBzZXBhcmF0
+ZSB0aHJlYWQgd2l0aCBoaWdoZXIgcHJpb3JpdHkuCj4gWW91IGNhbiBkbyBzb21ldGhpbmcgc2lt
+aWxhciB0byB3aGF0IEphY2sgZG9lcyB0byBlbnN1cmUgaGlnaGVyIAo+IHByaW9yaXR5LCBjaGVj
+ayB0aGUgZmlsZSBsaWJqYWNrL3RocmVhZC5jIGFuZCBsb29rIGF0IHRoZSB3YXkgdGhleSAKPiBp
+bmNyZW1lbnQgdGhlIHByaW9yaXR5Lgo+IAo+IFlvdSBtYXkgYWxyZWFkeSBrbm93IHRoaXMsIGhv
+d2V2ZXIgaW4gY2FzZSBub3QsIHlvdSBjYW4gZ2V0IGxvdyAKPiBtaWxsaXNlY29uZCBsYXRlbmN5
+IHdpdGhvdXQgZHJvcHBpbmcgc2FtcGxlcyB3aGVuIHVzaW5nIExpbnV4IC4uLiBpLmUuIAo+IG5v
+IGludGVyZmVyYW5jZS4KPiBUaGF0IHdhcyBsYXN0IHRpbWUgSSBjaGVja2VkIC4uLiBpdCBpcyBw
+b3NzaWJsZSB0aGF0IHRoaXMgaGFzIGltcHJvdmVkIAo+IHRvIGEgbG93ZXIgdGhyZXNob2xkIHNp
+bmNlIHRoZW4gIQo+IAo+IE1hdHQKPiAKPiA+PiBXYXJuaW5nIHlvdSBtYXkgZXhwZXJpZW5jZSBi
+aWcgeWllbGQuCj4gPiA/Pz8KPiA+Cj4gPiBSZWdhcmRzLAo+ID4gQ2xlbWVucwo+ID4gX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiA+IEFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0Cj4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiA+IGh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4gCj4g
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgpXaXRo
+IGJpZyB5aWVsZCBJIG1lYW4geW91IGhlYXIgYSBub2lzZSBhc3N1bWVkIHlvdSB3b3VsZCBjYWxs
+CnB0aHJlYWRfeWllbGQgdG8gb2Z0ZW4uCgpJdCBpcyBzdHJhbmdlIGhvdyBjYW4gSSByZWNvZ25p
+emUgbW9yZSB0aGFuIDggYmVhdHMgcGVyIHNlY29uZCBvciBldmVuCm1vcmUgLi4uCgpJIGhhdmUg
+bW9kaWZpZWQgbXkgYXBwbGljYXRpb24gbm90IHRvIGRvIHNvLCBhbnltb3JlLgoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
