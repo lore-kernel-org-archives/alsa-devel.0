@@ -1,21 +1,17 @@
-From: Tomas Matejka <tomas.matejka@tcz.cz>
-Subject: ALSA - Channel swap
-Date: Tue, 19 Aug 2014 15:37:20 +0200
-Message-ID: <53F35310.2040300@tcz.cz>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl: Fix building of imx-es8328 on
+	PPC
+Date: Tue, 19 Aug 2014 10:44:12 -0500
+Message-ID: <20140819154412.GF24407@sirena.org.uk>
+References: <1408423775-3236-1-git-send-email-xobs@kosagi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7880845927579198465=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ms.tcz.cz (ms.tcz.cz [90.182.135.222])
- by alsa0.perex.cz (Postfix) with ESMTP id 8878F261600
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 15:37:20 +0200 (CEST)
-Received: from ms.tcz.cz (localhost [127.0.0.1])
- by ms.tcz.cz (Postfix) with ESMTP id 4B81910032D52
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 15:37:20 +0200 (CEST)
-Received: from [192.168.1.247] (unknown [192.168.1.247])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested) by ms.tcz.cz (Postfix) with ESMTPSA
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 15:37:20 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBE71265808
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 17:46:02 +0200 (CEST)
+In-Reply-To: <1408423775-3236-1-git-send-email-xobs@kosagi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,19 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Sean Cross <xobs@kosagi.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, lars@metafoo.de, Takashi Iwai <tiwai@suse.de>, Nicolin Chen <b42378@freescale.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, bunnie@kosagi.com, Philipp Zabel <p.zabel@pengutronix.de>, Grant Likely <grant.likely@linaro.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Shawn Guo <shawn.guo@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Good afternoon,
-i have a problem:
-I use sound codec CS4202, which I control with AT91SAM9263.
-I'm using ALSA sound library.  When i use CAPTURE mode, sometimes it
-swaps left and right channel.
-I have found this discussions on Internet, where is described similar
-problem:
 
-http://pl.it-usenet.org/thread/17996/3593/
-http://sinustrom.info/2013/03/21/atmel-soc-ssc-channel-swapping/
+--===============7880845927579198465==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dgjlcl3Tl+kb3YDk"
+Content-Disposition: inline
 
-I have figured out, that the problem could be in driver or in ALSA
-library. Have you any solution ? Did you encountered similar problem ?
+
+--dgjlcl3Tl+kb3YDk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Aug 19, 2014 at 12:49:34PM +0800, Sean Cross wrote:
+> The imx-es8328 driver fails to build on PPC because it explicitly depends on
+> SND_SOC_IMX_PCM_FIQ, which itself doesn't build on PPC.  Instead, rely on
+> the SND_SOC_FSL_SSI config option to pull in the necessary libraries.
+
+Applied, thanks.
+
+--dgjlcl3Tl+kb3YDk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT83DEAAoJELSic+t+oim9qhoP/1HzOBEX0Dju0J0iiPO6PO6J
+LG0wHt7u0Pc6xjbmqUt/aMR0wTWLnq4ygMCCvyQrdEl1n27qjcVof9E8beSkuzLy
+ZTSQApRJRBj0h9nLBr5xIE+k/A/0G+IdaeNVm9YmgKqoZMIcmdcsHOkKqkeZoA2k
+mE7+KevFHXy234quN8XzqonZJa1hS41ITEh/BJmAs0iQzlBZ2xmSab/aKdafvupE
+23/P0RgP4dVtxT4pSLpu15s7ZTYCEWpSZEt2QWDaVBoK7RS7Pl/sD/463gD6awXF
+lXMWpBkMEcPpafVHIPZnK1yr+nbM+Z0U6Q+J6ZSm5SD4/LrL5T3uo97JlZJJvxBT
+1g0DiHpJM84O/ERyOFIiXniURL8Mbuatxp4aoVygc4FbV8BXKmplPPB6qlOx5z9k
+jEh4GTULpf70MsDx25at6AQMTWyWWnsi4XOWIx5USwy7TFLYuwDJnsr4oj9of4om
+zutWsJXbYPhcXOgNh6n6MLyuBxfn7mNq6W1AJcYnOnjw9Jopa9kmLk6MFBbdmSwi
+vpOAj37E4kG7wYUPhIfjk60WqUc/U25JPDQbRZdDZDsoKV84Wy1lU1smRX40OORt
+J7C8LchS1eYUBRozuKRYVoT1OL60Uo53ubtTz6FDTGYA79T8SjsQpmWdLu4CD79T
+Xf1NWp7YnrQR9knzecgk
+=UkjP
+-----END PGP SIGNATURE-----
+
+--dgjlcl3Tl+kb3YDk--
+
+--===============7880845927579198465==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7880845927579198465==--
