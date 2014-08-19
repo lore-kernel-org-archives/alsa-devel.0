@@ -1,22 +1,15 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V1 1/3] ASoC: fsl: Kconfig: remove
- dependence of SND_IMX_SOC for SND_SOC_IMX_PCM_DMA
-Date: Tue, 19 Aug 2014 16:21:09 +0800
-Message-ID: <20140819082108.GB5806@audiosh1>
-References: <cover.1408350626.git.shengjiu.wang@freescale.com>
- <f30ba4e2c4eb6702fa40bd255036e6e9ad6eb47d.1408350626.git.shengjiu.wang@freescale.com>
- <53F22F5E.2090601@metafoo.de> <20140819074103.GA5806@audiosh1>
- <d7b06608abcc4f098789f63cb9f36eef@BN1PR0301MB0609.namprd03.prod.outlook.com>
+From: libin.yang@intel.com
+Subject: [PATCH 1/2] ALSA: hda/hdmi - set depop_delay for
+	haswell plus
+Date: Tue, 19 Aug 2014 16:20:11 +0800
+Message-ID: <1408436412-139667-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1lp0145.outbound.protection.outlook.com [207.46.163.145])
- by alsa0.perex.cz (Postfix) with ESMTP id 06F252655EE
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 10:21:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <d7b06608abcc4f098789f63cb9f36eef@BN1PR0301MB0609.namprd03.prod.outlook.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DEDB2655F0
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 10:23:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,76 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li-B47053 <Li.Xiubo@freescale.com>
-Cc: Estevam Fabio-R49496 <Fabio.Estevam@freescale.com>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "timur@tabi.org" <timur@tabi.org>, "arnd@arndb.de" <arnd@arndb.de>, "shc_work@mail.ru" <shc_work@mail.ru>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "xobs@kosagi.com" <xobs@kosagi.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Libin Yang <libin.yang@intel.com>, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 19, 2014 at 04:13:15PM +0800, Xiubo Li-B47053 wrote:
-> > Subject: Re: [alsa-devel] [PATCH V1 1/3] ASoC: fsl: Kconfig: remove dependence
-> > of SND_IMX_SOC for SND_SOC_IMX_PCM_DMA
-> > 
-> > On Mon, Aug 18, 2014 at 06:52:46PM +0200, Lars-Peter Clausen wrote:
-> > > On 08/18/2014 10:38 AM, Shengjiu Wang wrote:
-> > > >Build kernel with SND_SOC_IMC_PCM_DMA=m && SND_IMX_SOC=n leads the
-> > following
-> > > >error:
-> > > >
-> > > >    sound/built-in.o: In function `fsl_sai_probe':
-> > > >>>fsl_sai.c:(.text+0x5f662): undefined reference to `imx_pcm_dma_init'
-> > > >    sound/built-in.o: In function `fsl_esai_probe':
-> > > >>>fsl_esai.c:(.text+0x6044b): undefined reference to `imx_pcm_dma_init'
-> > > >
-> > > >Most cpu driver in soc/fsl has use the function 'imx_pcm_dma_init' which is
-> > > >defined in imx-pcm-dma.c, so need to select SND_SOC_IMX_PCM_DMA, but it
-> > depends
-> > > >on SND_IMX_SOC, if SND_IMX_SOC=n, then SND_SOC_IMX_PCM_DMA will not be
-> > > >selected.
-> > > >So remove the dependence of SND_IMX_SOC for SND_SOC_IMX_PCM_DMA.
-> > > >
-> > > >Reported-by: kbuild test robot <fengguang.wu@intel.com>
-> > > >Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
-> > >
-> > > Those if conditions where just added[1] by Arnd to avoid other build
-> > > failures. So just removing them again makes little sense.
-> > >
-> > > As far as I can see imx_pcm_dma_init() should be stubbed out when
-> > > SND_SOC_IMX_PCM_DMA is not selected. So what's going on here?
-> > >
-> > > [1]
-> > http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=ff40
-> > 260f79dc0436604452bccd449bffd25ebafb
-> > >
-> > Lars-Peter Clausen & Arnd
-> > 
-> > The purpose of Arnd's patch is same with me, which is to resolve the build
-> > error when SND_SOC_IMX_PCM_DMA=m & SND_SOC_FSL_SSI/SAI/ESAI/SPDIF=y, the
-> > error is "undefined reference to `imx_pcm_dma_init'".
-> > But Arnd's patch didn't involve this situation that SND_IMX_SOC=n &
-> > SND_SOC_IMX_PCM_DMA=m.
-> > 
-> > Currently I think out a solution for this issue is to change
-> > 
-> > select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
-> > 
-> > to
-> > 
-> > depends on SND_SOC_IMX_PCM_DMA != m
-> > 
-> > How do you think about this?
-> > 
-> 
-> What will happen if to build both SAI/ESAI and IMX_PCM_DMA as modules at the same
-> time ?
-> 
-> Thanks,
-> 
-> BRs
-> Xiubo
+From: Libin Yang <libin.yang@intel.com>
 
-I didn't find error/warning when SAI/ESAI and IMX_PCM_DMA are as modules. The 
-build is successful.
+Both Haswell and Broadwell need set depop_delay to 0. So apply this
+setting to haswell plus.
 
-> 
-> 
-> > best regards
-> > Wang shengjiu
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 36badba..5e229f7 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2330,9 +2330,8 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+ 		intel_haswell_fixup_enable_dp12(codec);
+ 	}
+ 
+-	if (is_haswell(codec) || is_valleyview(codec)) {
++	if (is_haswell_plus(codec) || is_valleyview(codec))
+ 		codec->depop_delay = 0;
+-	}
+ 
+ 	if (hdmi_parse_codec(codec) < 0) {
+ 		codec->spec = NULL;
+-- 
+1.9.1
