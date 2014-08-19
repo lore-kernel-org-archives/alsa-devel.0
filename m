@@ -1,17 +1,23 @@
-From: libin.yang@intel.com
-Subject: [PATCH 2/2] ALSA: hda/hdmi - apply Valleyview fix-ups
-	to Cherryview display codec
-Date: Tue, 19 Aug 2014 16:20:12 +0800
-Message-ID: <1408436412-139667-2-git-send-email-libin.yang@intel.com>
-References: <1408436412-139667-1-git-send-email-libin.yang@intel.com>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: Re: [PATCH V1 1/3] ASoC: fsl: Kconfig: remove
+ dependence of SND_IMX_SOC for SND_SOC_IMX_PCM_DMA
+Date: Tue, 19 Aug 2014 08:31:47 +0000
+Message-ID: <fb8086a68ed74e0794d34f66c2396b30@BN1PR0301MB0609.namprd03.prod.outlook.com>
+References: <cover.1408350626.git.shengjiu.wang@freescale.com>
+ <f30ba4e2c4eb6702fa40bd255036e6e9ad6eb47d.1408350626.git.shengjiu.wang@freescale.com>
+ <53F22F5E.2090601@metafoo.de> <20140819074103.GA5806@audiosh1>
+ <d7b06608abcc4f098789f63cb9f36eef@BN1PR0301MB0609.namprd03.prod.outlook.com>
+ <20140819082108.GB5806@audiosh1>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 161402655F6
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 10:23:08 +0200 (CEST)
-In-Reply-To: <1408436412-139667-1-git-send-email-libin.yang@intel.com>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0141.outbound.protection.outlook.com [207.46.163.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B3A12655F6
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 10:31:56 +0200 (CEST)
+In-Reply-To: <20140819082108.GB5806@audiosh1>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +27,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: Libin Yang <libin.yang@intel.com>, mengdong.lin@intel.com
+To: "shengjiu.wang@freescale.com" <shengjiu.wang@freescale.com>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "timur@tabi.org" <timur@tabi.org>, "arnd@arndb.de" <arnd@arndb.de>, "shc_work@mail.ru" <shc_work@mail.ru>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "xobs@kosagi.com" <xobs@kosagi.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@intel.com>
+> > > Lars-Peter Clausen & Arnd
+> > >
+> > > The purpose of Arnd's patch is same with me, which is to resolve the build
+> > > error when SND_SOC_IMX_PCM_DMA=m & SND_SOC_FSL_SSI/SAI/ESAI/SPDIF=y, the
+> > > error is "undefined reference to `imx_pcm_dma_init'".
+> > > But Arnd's patch didn't involve this situation that SND_IMX_SOC=n &
+> > > SND_SOC_IMX_PCM_DMA=m.
+> > >
+> > > Currently I think out a solution for this issue is to change
+> > >
+> > > select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
+> > >
+> > > to
+> > >
+> > > depends on SND_SOC_IMX_PCM_DMA != m
+> > >
+> > > How do you think about this?
+> > >
+> >
+> > What will happen if to build both SAI/ESAI and IMX_PCM_DMA as modules at the
+> same
+> > time ?
+> >
+> > Thanks,
+> >
+> > BRs
+> > Xiubo
+> 
+> I didn't find error/warning when SAI/ESAI and IMX_PCM_DMA are as modules. The
+> build is successful.
+> 
 
-Valleyview and Cherryview have the same behavior on display audio. So this patch
-defines is_valleyview_plus() to include codecs for both Valleyview and its successor
-Cherryview, and apply Valleyview fix-ups to Cherryview.
+Yes, but if IMX_PCM_DMA == m, the SAI/ESAI will be invisible in menuconfig....
+Does it matter here ?
 
-Signed-off-by: Libin Yang <libin.yang@intel.com>
----
- sound/pci/hda/patch_hdmi.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+BRs
+Xiubo
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 5e229f7..99d7d7f 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -50,6 +50,8 @@ MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
- #define is_haswell_plus(codec) (is_haswell(codec) || is_broadwell(codec))
- 
- #define is_valleyview(codec) ((codec)->vendor_id == 0x80862882)
-+#define is_cherryview(codec) ((codec)->vendor_id == 0x80862883)
-+#define is_valleyview_plus(codec) (is_valleyview(codec) || is_cherryview(codec))
- 
- struct hdmi_spec_per_cvt {
- 	hda_nid_t cvt_nid;
-@@ -1459,7 +1461,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
- 			    mux_idx);
- 
- 	/* configure unused pins to choose other converters */
--	if (is_haswell_plus(codec) || is_valleyview(codec))
-+	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
- 		intel_not_share_assigned_cvt(codec, per_pin->pin_nid, mux_idx);
- 
- 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
-@@ -1598,7 +1600,8 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
- 		 *   and this can make HW reset converter selection on a pin.
- 		 */
- 		if (eld->eld_valid && !old_eld_valid && per_pin->setup) {
--			if (is_haswell_plus(codec) || is_valleyview(codec)) {
-+			if (is_haswell_plus(codec) ||
-+				is_valleyview_plus(codec)) {
- 				intel_verify_pin_cvt_connect(codec, per_pin);
- 				intel_not_share_assigned_cvt(codec, pin_nid,
- 							per_pin->mux_idx);
-@@ -1779,7 +1782,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
- 	bool non_pcm;
- 	int pinctl;
- 
--	if (is_haswell_plus(codec) || is_valleyview(codec)) {
-+	if (is_haswell_plus(codec) || is_valleyview_plus(codec)) {
- 		/* Verify pin:cvt selections to avoid silent audio after S3.
- 		 * After S3, the audio driver restores pin:cvt selections
- 		 * but this can happen before gfx is ready and such selection
-@@ -2330,7 +2333,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
- 		intel_haswell_fixup_enable_dp12(codec);
- 	}
- 
--	if (is_haswell_plus(codec) || is_valleyview(codec))
-+	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
- 		codec->depop_delay = 0;
- 
- 	if (hdmi_parse_codec(codec) < 0) {
--- 
-1.9.1
+
+> >
+> >
+> > > best regards
+> > > Wang shengjiu
