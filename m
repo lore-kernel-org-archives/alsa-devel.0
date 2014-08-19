@@ -1,40 +1,42 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4 2/2] mfd: arizona: Update DT binding
-	to	support INn_MODE init_data
-Date: Tue, 19 Aug 2014 12:41:16 +0100
-Message-ID: <20140819114116.GF7556@opensource.wolfsonmicro.com>
-References: <20140819201407.3447715e@songinha-Samsung-DeskTop-System>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v2 1/8] clk: ti: add gpio controlled clock
+Date: Tue, 19 Aug 2014 15:23:12 +0300
+Message-ID: <53F341B0.3090904@ti.com>
+References: <cover.1408397864.git.jsarha@ti.com> <f080a02691e0f1b45607d7a1afe89698b7f911da.1408397864.git.jsarha@ti.com> <20140819113200.GJ3302@leverpostej>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6F52B2655F6
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 13:41:17 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140819201407.3447715e@songinha-Samsung-DeskTop-System>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Inha Song <ideal.song@samsung.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, sameo@linux.intel.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, cw00.choi@samsung.com, broonie@kernel.org, galak@codeaurora.org, lee.jones@linaro.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20140819113200.GJ3302@leverpostej>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "airlied@linux.ie" <airlied@linux.ie>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tony@atomide.com" <tony@atomide.com>, "broonie@kernel.org" <broonie@kernel.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "detheridge@ti.com" <detheridge@ti.com>, "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>, "t-kristo@ti.com" <t-kristo@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 19, 2014 at 08:14:07PM +0900, Inha Song wrote:
-> This patch update DT binding to support INn_MODE init_data. Each
-> input signal path can be configurated either as a Analogue or
-> Digital using the INn_MODE registers.
-> 
-> Signed-off-by: Inha Song <ideal.song@samsung.com>
-> ---
+On 08/19/2014 02:32 PM, Mark Rutland wrote:
+> On Mon, Aug 18, 2014 at 10:46:39PM +0100, Jyri Sarha wrote:
+>> The added ti,gpio-clock is a basic clock that can be enabled and
+>> disabled trough a gpio output. The DT binding document for the clock
+>> is also added. For EPROBE_DEFER handling the registering of the clock
+>> has to be delayed until of_clk_get() call time.
+>
+> I guess this is basically an AND gate with the GPIO and parent clock as
+> inputs? Or is this something more complex that we might want to do more
+> things with later?
+>
+> If it's the former it sounds like this could be a completely generic
+> "gpio-gate-clock".
+>
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Yes, its completely generic. However, since there has been no response 
+to my several earlier attempts to get this patch in I finally gave up 
+and moved it under clk/ti.
 
-Thanks,
-Charles
+"gpio-gate-clock" sound like more accurate name for ti. I'll change that.
+
+Do you think I should give this one more try to get it in as generic 
+basic clock?
+
+Cheers,
+Jyri
+
