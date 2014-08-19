@@ -1,24 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v4 10/12] ASoC: Intel: mrfld: add the DSP DAPM
-	widgets
-Date: Tue, 19 Aug 2014 11:03:18 -0500
-Message-ID: <20140819160318.GI24407@sirena.org.uk>
-References: <1407145563-1303-1-git-send-email-subhransu.s.prusty@intel.com>
- <1407145563-1303-11-git-send-email-subhransu.s.prusty@intel.com>
- <20140813201454.GS17528@sirena.org.uk>
- <20140814102152.GA8028@vinod.koul@linux.intel.com>
- <20140814130708.GX17528@sirena.org.uk>
- <20140818042805.GA14041@vinod.koul@linux.intel.com>
- <20140818135633.GU14537@sirena.org.uk>
- <20140819042706.GA20885@vinod.koul@linux.intel.com>
+Subject: Re: [v2 1/5] ASoC: Intel: mrfld - add the dsp sst
+	driver
+Date: Tue, 19 Aug 2014 11:11:17 -0500
+Message-ID: <20140819161117.GJ24407@sirena.org.uk>
+References: <1408444627-28906-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1408444627-28906-2-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7937846658536469330=="
+Content-Type: multipart/mixed; boundary="===============1508064909981007742=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DAE3261600
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 18:03:33 +0200 (CEST)
-In-Reply-To: <20140819042706.GA20885@vinod.koul@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 80AE6261600
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 18:12:34 +0200 (CEST)
+In-Reply-To: <1408444627-28906-2-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,58 +27,60 @@ Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7937846658536469330==
+--===============1508064909981007742==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pe+tqlI1iYzVj1X/"
+	protocol="application/pgp-signature"; boundary="k1BdFSKqAqVdu8k/"
 Content-Disposition: inline
 
 
---pe+tqlI1iYzVj1X/
+--k1BdFSKqAqVdu8k/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 19, 2014 at 09:57:11AM +0530, Subhransu S. Prusty wrote:
-> On Mon, Aug 18, 2014 at 08:56:33AM -0500, Mark Brown wrote:
+On Tue, Aug 19, 2014 at 04:07:03PM +0530, Subhransu S. Prusty wrote:
 
-> > The problem is that it looks like you are reading the value from the
-> > control, treating it as a boolean and discarding it.
+>  sound/soc/intel/sst/sst.c                 | 443 ++++++++++++++
+>  sound/soc/intel/sst/sst.h                 | 654 ++++++++++++++++++++
+>  sound/soc/intel/sst/sst_drv_interface.c   | 475 +++++++++++++++
+>  sound/soc/intel/sst/sst_ipc.c             | 373 ++++++++++++
+>  sound/soc/intel/sst/sst_loader.c          | 975 ++++++++++++++++++++++++++++++
+>  sound/soc/intel/sst/sst_pvt.c             | 207 +++++++
+>  sound/soc/intel/sst/sst_stream.c          | 526 ++++++++++++++++
+>  11 files changed, 3696 insertions(+)
 
-> Well the mixer input is on/off, so it should be treated as boolean. How will
-> it have any other value.
+As I indicated last time please split this up into smaller patches, for
+example one per file.  This is an enormous amount of code to look at in
+a single commit which is really going to slow down review.
 
-OK, so you're trying to read a boolean value.  Perhaps what you need
-here is some comments then - the way you fiddle about with the bitmasks
-afterwards doesn't make it sufficient obvious.
-
---pe+tqlI1iYzVj1X/
+--k1BdFSKqAqVdu8k/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT83VCAAoJELSic+t+oim9unUP/in/me9UaIHcd6f3imoBYnNG
-v0OckkFNG7/5qwyvadhI7h9+xq9GzmDcWMi1jnAFAiR1QbF2YqQYhveJVwA/QZ2W
-VExHgXTDVwD6BG85K0n8iH3bg/4muhbfK04Ufy4l1PZfmi+znWgBS0hFU8dt8n8f
-zC4+j7PVZGO8rMYKRgovnzzdXWo0nw3EdTI5YiHnfGl3m/c705UnWD4B6wBej+kG
-5+Jy1tyIVH+2ah7UfTOsu5D9kJC7W9gKD/WUiUvNXf6WHNoTpig4nM2WRXetKayz
-PI5MvbbT8GSEJ7K1thq4yDqdkdsRcMtwtBgmmEBP8ggIy+G2qLBY9rxvBcI9DTfD
-MrmGCHHEdPW3Y8cOhBLeucwx0dz5twpgN8jCQbmWGzCOrif4GG8EY5SDmI4Ag2AH
-LSRYheq8JahUDJwyYDGiRCzT3+N1ftdi7Ow60KJizRoB3qN0NXYIKlSasaXF8tUX
-raLcDQJm+RPk5rf+nKX51ARNwzyU+TwhSW5FnI2GPsQWED40WgSUgT0WhmSfz9/K
-WechMD2+D7kSJLTySNbfiWwIsb4WRAP/X6Mw62VZSfbC359VvfkeM/XlUrsOuXgz
-P4dDLE8O/wXMDcLFuk66w0JRZlQPE+SGQ/qwgAQJsExUiV4M6fv9xa2Lbw9lsb2D
-g9QXU7KARSjJFkhamY72
-=6rJv
+iQIcBAEBAgAGBQJT83ciAAoJELSic+t+oim9j2wP/2S9ZFXeigvqRbsRr7eSRKYA
+FNhV6vT/IYgTTClgs3b3ALDajBw5L/738D2EM4dMZL0KNQC2w7K3xI0ggyrhl6bu
+ZHjeu6x1Rkkiu/bwvSB7/9payq9erGquKJLjpuPLTTORMmyAYeirl4v53fpzVTMK
+O9cGuDJT/QhXafZKiS+Vp5aoubg43T32K6aaPMLZijRNn/6sUBQ5qfPCZzQ75+nK
+6HDgkR6bKXHLOO85NAhgneHwYJNktswPyBWiUOcwDDSNel4Nd392SwiUteFtqULz
+5kQ4y6se057FXTWXXF+Yni63ksiGz6Drh/ihIX4dY9Xws6YkHDqH0p1tt9I0yZlr
++i1B7/in9VzibJZyOiKOGjUQl5+xfJTuH8KSMP/doDqymxp8dcm7uPYShxA00giX
+laQaNpwH4jEYvMK50kTRJ9oj4CjAbMxxDhZ4PnOVO4LeluYagiZ6a3j4xox8LVil
+7RJIRzad9OInjxKvuuyx6hpmUdsd/rPCZzS0duhZLE07OVbXsq4blQOBkvEnKPqo
+xIxHIXPecDlU9eBDxXPuB7+tCnHD3ZcMQcgAmR08FKVIEvmHABpfwpzCaHPQYlEW
+L+KgIynyh7a/B81a3Tm9KB4bmAph5q7SHKoBFTn5BV11fObZ2upb9HYC3HA5azba
+PLX2aPZSsqHtS9rhCJUS
+=MZKH
 -----END PGP SIGNATURE-----
 
---pe+tqlI1iYzVj1X/--
+--k1BdFSKqAqVdu8k/--
 
---===============7937846658536469330==
+--===============1508064909981007742==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7937846658536469330==--
+--===============1508064909981007742==--
