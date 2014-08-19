@@ -1,27 +1,19 @@
-From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
-Subject: Re: Audio mini conference 2014?
-Date: Tue, 19 Aug 2014 01:51:51 +0200
-Message-ID: <1408405911.10231.6.camel@debian>
-References: <20140722222038.GW17528@sirena.org.uk>
- <53CF8306.3090009@zonque.org>
- <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
- <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
- <20140807140957.GI8181@intel.com>
- <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
- <20140812151258.GH13288@intel.com> <53EA34EF.8020205@metafoo.de>
- <20140812153537.GI13288@intel.com> <53EA389E.1030006@gmail.com>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ALSA: hda/hdmi - apply Valleyview fix-ups
+ to Cherryview display codec
+Date: Tue, 19 Aug 2014 00:17:27 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1955D731@SHSMSX103.ccr.corp.intel.com>
+References: <1408351447-132394-1-git-send-email-libin.yang@intel.com>
+ <s5hbnriw4mk.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f175.google.com (mail-wi0-f175.google.com
- [209.85.212.175])
- by alsa0.perex.cz (Postfix) with ESMTP id C39F72654C2
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 01:52:04 +0200 (CEST)
-Received: by mail-wi0-f175.google.com with SMTP id ho1so4567303wib.2
- for <alsa-devel@alsa-project.org>; Mon, 18 Aug 2014 16:52:04 -0700 (PDT)
-In-Reply-To: <53EA389E.1030006@gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC1612654C2
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 02:17:35 +0200 (CEST)
+In-Reply-To: <s5hbnriw4mk.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,46 +23,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.de>, broonie@kernel.org, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Am Dienstag, den 12.08.2014, 21:54 +0600 schrieb Alexander E. Patrakov:
-> 12.08.2014 21:35, Vinod Koul wrote:
-> > On Tue, Aug 12, 2014 at 05:38:23PM +0200, Lars-Peter Clausen wrote:
-> >> On 08/12/2014 05:12 PM, Vinod Koul wrote:
-> >>> On Tue, Aug 12, 2014 at 10:14:39AM -0500, Paul Handrigan wrote:
-> >>>>>>> What date would we prefer? There's an event on Tuesday night (~6pm), but
-> >>>>>>> I guess we wouldn't need the room longer than that anyway, right?
-> >>>>>> It would be best that it is not during LPC as mentioned before.  Will Saturday after LPC work as well?
-> >>>>> Plumbers starts Wed.. So tue can work too :)
-> >>>>>
-> >>>>> Btw should we request a LPC track for backup.
-> >>>>>
-> >>>> I believe it is too late to request a LPC track.
-> >>> Checking the site again, looks like we can still make a request
-> > My bad, wrong interpretation. Looks like new uconf are not accepted.
-> >
-> > Mark, Takashi, can we get some leeway with organizers
-> >
-> >>>>
-> >>>> Tuesday would be good as well. Should we go with that since we may
-> >>>> have a place for it?
-> >>> I am okay either days.
-> >>>
-> >>> Btw I didnt hear about the topics...
-> >>>
-> >>
-> >> If there is interest I'll prepare something about ASoC
-> >> componentization, what's the status and where it is going.
-> > That would be good.
-> >
-> > I was planning to discuss Dynamic FW, effect API (yet again), more DSP
-> > support esp on PCM side
-> 
-> I can discuss rewinding in ALSA PCM plugins (actually planned that for 
-> LPC, but it got rejected), and/or a short talk about resampler quality 
-> evaluation for PulseAudio.
-> 
+Hi Takashi,
 
-What about pulseaudio preventing insane rates?
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Monday, August 18, 2014 5:04 PM
+> To: Yang, Libin
+> Cc: alsa-devel@alsa-project.org; Lin, Mengdong
+> Subject: Re: [PATCH] ALSA: hda/hdmi - apply Valleyview fix-ups to
+> Cherryview display codec
+> 
+> At Mon, 18 Aug 2014 16:44:07 +0800,
+> libin.yang@intel.com wrote:
+> >
+> > From: Libin Yang <libin.yang@intel.com>
+> >
+> > Valleyview and Cherryview have the same behavior on display audio. So
+> > this patch defines is_valleyview_plus() to include codecs for both
+> > Valleyview and its successor Cherryview, and apply Valleyview fix-ups to
+> Cherryview.
+> >
+> > Signed-off-by: Libin Yang <libin.yang@intel.com>
+> > ---
+> >  sound/pci/hda/patch_hdmi.c | 12 +++++++-----
+> >  1 file changed, 7 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> > index 36badba..99d7d7f 100644
+> > --- a/sound/pci/hda/patch_hdmi.c
+> > +++ b/sound/pci/hda/patch_hdmi.c
+> > @@ -50,6 +50,8 @@ MODULE_PARM_DESC(static_hdmi_pcm, "Don't
+> restrict
+> > PCM parameters per ELD info");  #define is_haswell_plus(codec)
+> > (is_haswell(codec) || is_broadwell(codec))
+> >
+> >  #define is_valleyview(codec) ((codec)->vendor_id == 0x80862882)
+> > +#define is_cherryview(codec) ((codec)->vendor_id == 0x80862883)
+> > +#define is_valleyview_plus(codec) (is_valleyview(codec) ||
+> > +is_cherryview(codec))
+> >
+> >  struct hdmi_spec_per_cvt {
+> >  	hda_nid_t cvt_nid;
+> > @@ -1459,7 +1461,7 @@ static int hdmi_pcm_open(struct
+> hda_pcm_stream *hinfo,
+> >  			    mux_idx);
+> >
+> >  	/* configure unused pins to choose other converters */
+> > -	if (is_haswell_plus(codec) || is_valleyview(codec))
+> > +	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
+> >  		intel_not_share_assigned_cvt(codec, per_pin->pin_nid,
+> mux_idx);
+> >
+> >  	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid); @@
+> > -1598,7 +1600,8 @@ static bool hdmi_present_sense(struct
+> hdmi_spec_per_pin *per_pin, int repoll)
+> >  		 *   and this can make HW reset converter selection on a pin.
+> >  		 */
+> >  		if (eld->eld_valid && !old_eld_valid && per_pin->setup) {
+> > -			if (is_haswell_plus(codec) || is_valleyview(codec)) {
+> > +			if (is_haswell_plus(codec) ||
+> > +				is_valleyview_plus(codec)) {
+> >  				intel_verify_pin_cvt_connect(codec,
+> per_pin);
+> >  				intel_not_share_assigned_cvt(codec,
+> pin_nid,
+> >  							per_pin->mux_idx);
+> > @@ -1779,7 +1782,7 @@ static int
+> generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+> >  	bool non_pcm;
+> >  	int pinctl;
+> >
+> > -	if (is_haswell_plus(codec) || is_valleyview(codec)) {
+> > +	if (is_haswell_plus(codec) || is_valleyview_plus(codec)) {
+> >  		/* Verify pin:cvt selections to avoid silent audio after S3.
+> >  		 * After S3, the audio driver restores pin:cvt selections
+> >  		 * but this can happen before gfx is ready and such selection
+> @@
+> > -2330,9 +2333,8 @@ static int patch_generic_hdmi(struct hda_codec
+> *codec)
+> >  		intel_haswell_fixup_enable_dp12(codec);
+> >  	}
+> >
+> > -	if (is_haswell(codec) || is_valleyview(codec)) {
+> > +	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
+> 
+> This hunk changes is_haswell() to is_haswell_plus() without explanation.  If
+> it's really needed, split the patch, one to fix
+> is_haswell() call here, and another to replace is_valleyview() with
+> is_valleyview_plus().
+> 
+> Fixing some bug is good, but silently fixing something else isn't :)
+
+OK, I will split it into 2 patches. :)
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> 
+> >  		codec->depop_delay = 0;
+> > -	}
+> >
+> >  	if (hdmi_parse_codec(codec) < 0) {
+> >  		codec->spec = NULL;
+> > --
+> > 1.9.1
+> >
