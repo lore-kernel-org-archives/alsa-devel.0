@@ -1,159 +1,77 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-devel] [PATCH] usbtv: add audio support
-Date: Tue, 19 Aug 2014 15:53:40 +0200
-Message-ID: <53F356E4.30602@ladisch.de>
-References: <1407303961.26078.1.camel@v3.sk>
-	<1407793342-18540-1-git-send-email-federico.simoncelli@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 03/13] ASoC: Make rtd->codec optional
+Date: Tue, 19 Aug 2014 15:51:20 +0200
+Message-ID: <1408456290-13945-4-git-send-email-lars@metafoo.de>
+References: <1408456290-13945-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <1407793342-18540-1-git-send-email-federico.simoncelli@gmail.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Federico Simoncelli <federico.simoncelli@gmail.com>
-Cc: Lubomir Rintel <lkundrak@v3.sk>, alsa-devel@alsa-project.org, linux-media@vger.kernel.org, hans.verkuil@cisco.com, Federico Simoncelli <fsimonce@redhat.com>, Mauro Carvalho Chehab <m.chehab@samsung.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-165.synserver.de (smtp-out-165.synserver.de
+ [212.40.185.165])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD07D265676
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 15:51:41 +0200 (CEST)
+In-Reply-To: <1408456290-13945-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Federico Simoncelli wrote:
-> +++ b/drivers/media/usb/usbtv/usbtv-audio.c
-> ...
-> +#include <sound/ac97_codec.h>
+There are some place in the ASoC core that expect rtd->codec to be non NULL
+(mainly CODEC specific sysfs files). With componentization going forward
+rtd->codec might be NULL in some cases. This patch prepares the core for this by
+not registering CODEC specific sysfs files if rtd->codec is NULL. sysfs file
+removal does not need to be conditionalized as it handles the removal of
+non-existing files just fine.
 
-What do you need this header for?
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/soc-core.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-> +static struct snd_pcm_hardware snd_usbtv_digital_hw = {
-> +	...
-> +	.period_bytes_min = 11059,
-> +	.period_bytes_max = 13516,
-> +	.periods_max = 98,
-> +	.buffer_bytes_max = 62720 * 8, /* value in usbaudio.c */
-
-Where do these values come from?  (There is no "usbaudio.c" file.)
-
-> +static int snd_usbtv_pcm_close(struct snd_pcm_substream *substream)
-> +{
-> +	if (atomic_read(&chip->snd_stream)) {
-> +		atomic_set(&chip->snd_stream, 0);
-
-Doing _two_ atomic operations is racy.
-
-You probably want a function like test_and_clear_bit().
-
-> +		schedule_work(&chip->snd_trigger);
-
-The device must be closed when the .close callback returns.
-
-> +static void usbtv_audio_urb_received(struct urb *urb)
-> +{
-> +	struct usbtv *chip = urb->context;
-> +	struct snd_pcm_substream *substream = chip->snd_substream;
-> +	struct snd_pcm_runtime *runtime = substream->runtime;
-> +	size_t i, frame_bytes, chunk_length, buffer_pos, period_pos;
-> +	int period_elapsed;
-> +	void *urb_current;
-> +
-> +	if (!atomic_read(&chip->snd_stream))
-> +		return;
-
-And what if the device is closed in the middle of this function?
-
-> +	snd_pcm_stream_lock(substream);
-> +
-> +	chip->snd_buffer_pos = buffer_pos;
-> +	chip->snd_period_pos = period_pos;
-> +
-> +	snd_pcm_stream_unlock(substream);
-
-What is the purpose of this lock (besides introducing the
-chance of a deadlock)?
-
-> +static int usbtv_audio_start(struct usbtv *chip)
-> +{
-> ...
-> +	chip->snd_bulk_urb = usb_alloc_urb(0, GFP_KERNEL);
-> +	if (chip->snd_bulk_urb == NULL)
-> +		goto err_alloc_urb;
-> +
-> +	pipe = usb_rcvbulkpipe(chip->udev, USBTV_AUDIO_ENDP);
-> +
-> +	chip->snd_bulk_urb->transfer_buffer = kzalloc(
-
-Mapping this buffer repeatedly is inefficient.
-Better use usb_alloc_coherent().
-
-> +		USBTV_AUDIO_URBSIZE, GFP_KERNEL);
-> +	if (chip->snd_bulk_urb->transfer_buffer == NULL)
-> +		goto err_transfer_buffer;
-> +
-> +	usb_fill_bulk_urb(chip->snd_bulk_urb, chip->udev, pipe,
-> +		chip->snd_bulk_urb->transfer_buffer, USBTV_AUDIO_URBSIZE,
-> +		usbtv_audio_urb_received, chip);
-> +
-> +	/* starting the stream */
-> +	usbtv_set_regs(chip, setup, ARRAY_SIZE(setup));
-> +
-> +	usb_clear_halt(chip->udev, pipe);
-
-Allocating resources should be done in the .hw_params and/or .prepare
-callbacks.  The .trigger callback should do as little as possible.
-
-> +	usb_submit_urb(chip->snd_bulk_urb, GFP_ATOMIC);
-
-For this single call, you don't need a workqueue.
-
-> +static int usbtv_audio_stop(struct usbtv *chip)
-> +{
-> ...
-> +	if (chip->snd_bulk_urb) {
-> +		usb_kill_urb(chip->snd_bulk_urb);
-> +		kfree(chip->snd_bulk_urb->transfer_buffer);
-> +		usb_free_urb(chip->snd_bulk_urb);
-> +		chip->snd_bulk_urb = NULL;
-> +	}
-> +
-> +	usbtv_set_regs(chip, setup, ARRAY_SIZE(setup));
-
-Freeing resources should be done in the .hw_free and .close callbacks.
-
-> +void usbtv_audio_suspend(struct usbtv *usbtv)
-> +{
-> +	if (atomic_read(&usbtv->snd_stream) && usbtv->snd_bulk_urb)
-
-Both tests are racy.
-
-> +static int snd_usbtv_card_trigger(struct snd_pcm_substream *substream, int cmd)
-> +...
-> +	case SNDRV_PCM_TRIGGER_RESUME:
-
-This driver does not actually support resuming a PCM device from the
-position where it stopped playing.
-
-> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-
-This driver does not actually support pausing a PCM device.
-You must at least set the correct SNDRC_PCM_INFO_ flags.
-
-> +int usbtv_audio_init(struct usbtv *usbtv)
-> +	...
-> +	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
-> +		snd_dma_continuous_data(GFP_KERNEL), USBTV_AUDIO_BUFFER,
-> +		USBTV_AUDIO_BUFFER);
-
-You are not doing DMA to the ALSA buffer, so there is no need for it to
-be physically contiguous.  Better use a vmalloc()-ed buffer.
-
-> +++ b/drivers/media/usb/usbtv/usbtv.h
-> +#define USBTV_AUDIO_URBSIZE	20480
-> +#define USBTV_AUDIO_BUFFER	65536
-
-Where do these values come from?
-
-> @@ -91,9 +96,23 @@ struct usbtv {
-> +	size_t snd_buffer_pos;
-> +	size_t snd_period_pos;
-
-Why size_t?
-
-
-Regards,
-Clemens
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index abc1a05..1e0d212 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1261,17 +1261,21 @@ static int soc_post_component_init(struct snd_soc_pcm_runtime *rtd,
+ 	}
+ 	rtd->dev_registered = 1;
+ 
+-	/* add DAPM sysfs entries for this codec */
+-	ret = snd_soc_dapm_sys_add(rtd->dev);
+-	if (ret < 0)
+-		dev_err(rtd->dev,
+-			"ASoC: failed to add codec dapm sysfs entries: %d\n", ret);
++	if (rtd->codec) {
++		/* add DAPM sysfs entries for this codec */
++		ret = snd_soc_dapm_sys_add(rtd->dev);
++		if (ret < 0)
++			dev_err(rtd->dev,
++				"ASoC: failed to add codec dapm sysfs entries: %d\n",
++				ret);
+ 
+-	/* add codec sysfs entries */
+-	ret = device_create_file(rtd->dev, &dev_attr_codec_reg);
+-	if (ret < 0)
+-		dev_err(rtd->dev,
+-			"ASoC: failed to add codec sysfs files: %d\n", ret);
++		/* add codec sysfs entries */
++		ret = device_create_file(rtd->dev, &dev_attr_codec_reg);
++		if (ret < 0)
++			dev_err(rtd->dev,
++				"ASoC: failed to add codec sysfs files: %d\n",
++				ret);
++	}
+ 
+ 	return 0;
+ }
+-- 
+1.8.0
