@@ -1,15 +1,17 @@
 From: libin.yang@intel.com
-Subject: [PATCH 1/2] ALSA: hda/hdmi - set depop_delay for
-	haswell plus
-Date: Tue, 19 Aug 2014 16:20:11 +0800
-Message-ID: <1408436412-139667-1-git-send-email-libin.yang@intel.com>
+Subject: [PATCH 2/2] ALSA: hda/hdmi - apply Valleyview fix-ups
+	to Cherryview display codec
+Date: Tue, 19 Aug 2014 16:20:12 +0800
+Message-ID: <1408436412-139667-2-git-send-email-libin.yang@intel.com>
+References: <1408436412-139667-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DEDB2655F0
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 10:23:06 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 161402655F6
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 10:23:08 +0200 (CEST)
+In-Reply-To: <1408436412-139667-1-git-send-email-libin.yang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +27,64 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Libin Yang <libin.yang@intel.com>
 
-Both Haswell and Broadwell need set depop_delay to 0. So apply this
-setting to haswell plus.
+Valleyview and Cherryview have the same behavior on display audio. So this patch
+defines is_valleyview_plus() to include codecs for both Valleyview and its successor
+Cherryview, and apply Valleyview fix-ups to Cherryview.
 
 Signed-off-by: Libin Yang <libin.yang@intel.com>
 ---
- sound/pci/hda/patch_hdmi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/pci/hda/patch_hdmi.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 36badba..5e229f7 100644
+index 5e229f7..99d7d7f 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -2330,9 +2330,8 @@ static int patch_generic_hdmi(struct hda_codec *codec)
+@@ -50,6 +50,8 @@ MODULE_PARM_DESC(static_hdmi_pcm, "Don't restrict PCM parameters per ELD info");
+ #define is_haswell_plus(codec) (is_haswell(codec) || is_broadwell(codec))
+ 
+ #define is_valleyview(codec) ((codec)->vendor_id == 0x80862882)
++#define is_cherryview(codec) ((codec)->vendor_id == 0x80862883)
++#define is_valleyview_plus(codec) (is_valleyview(codec) || is_cherryview(codec))
+ 
+ struct hdmi_spec_per_cvt {
+ 	hda_nid_t cvt_nid;
+@@ -1459,7 +1461,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 			    mux_idx);
+ 
+ 	/* configure unused pins to choose other converters */
+-	if (is_haswell_plus(codec) || is_valleyview(codec))
++	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
+ 		intel_not_share_assigned_cvt(codec, per_pin->pin_nid, mux_idx);
+ 
+ 	snd_hda_spdif_ctls_assign(codec, pin_idx, per_cvt->cvt_nid);
+@@ -1598,7 +1600,8 @@ static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+ 		 *   and this can make HW reset converter selection on a pin.
+ 		 */
+ 		if (eld->eld_valid && !old_eld_valid && per_pin->setup) {
+-			if (is_haswell_plus(codec) || is_valleyview(codec)) {
++			if (is_haswell_plus(codec) ||
++				is_valleyview_plus(codec)) {
+ 				intel_verify_pin_cvt_connect(codec, per_pin);
+ 				intel_not_share_assigned_cvt(codec, pin_nid,
+ 							per_pin->mux_idx);
+@@ -1779,7 +1782,7 @@ static int generic_hdmi_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+ 	bool non_pcm;
+ 	int pinctl;
+ 
+-	if (is_haswell_plus(codec) || is_valleyview(codec)) {
++	if (is_haswell_plus(codec) || is_valleyview_plus(codec)) {
+ 		/* Verify pin:cvt selections to avoid silent audio after S3.
+ 		 * After S3, the audio driver restores pin:cvt selections
+ 		 * but this can happen before gfx is ready and such selection
+@@ -2330,7 +2333,7 @@ static int patch_generic_hdmi(struct hda_codec *codec)
  		intel_haswell_fixup_enable_dp12(codec);
  	}
  
--	if (is_haswell(codec) || is_valleyview(codec)) {
-+	if (is_haswell_plus(codec) || is_valleyview(codec))
+-	if (is_haswell_plus(codec) || is_valleyview(codec))
++	if (is_haswell_plus(codec) || is_valleyview_plus(codec))
  		codec->depop_delay = 0;
--	}
  
  	if (hdmi_parse_codec(codec) < 0) {
- 		codec->spec = NULL;
 -- 
 1.9.1
