@@ -1,19 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH V1 1/3] ASoC: fsl: Kconfig: remove
- dependence of SND_IMX_SOC for SND_SOC_IMX_PCM_DMA
-Date: Tue, 19 Aug 2014 12:39:33 +0200
-Message-ID: <53F32965.8000302@metafoo.de>
-References: <cover.1408350626.git.shengjiu.wang@freescale.com>	<f30ba4e2c4eb6702fa40bd255036e6e9ad6eb47d.1408350626.git.shengjiu.wang@freescale.com>	<53F22F5E.2090601@metafoo.de>	<20140819074103.GA5806@audiosh1>	<d7b06608abcc4f098789f63cb9f36eef@BN1PR0301MB0609.namprd03.prod.outlook.com>	<20140819082108.GB5806@audiosh1>	<3a0c98ca698e4d38b3e92f339049b883@BN1PR0301MB0609.namprd03.prod.outlook.com>
- <s5hha184viu.wl-tiwai@suse.de>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [v2 0/5] ASoC: Intel: sst - add the merrifield DSP
+	driver
+Date: Tue, 19 Aug 2014 16:07:02 +0530
+Message-ID: <1408444627-28906-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-134.synserver.de (smtp-out-151.synserver.de
- [212.40.185.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F6962655F6
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 12:39:35 +0200 (CEST)
-In-Reply-To: <s5hha184viu.wl-tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id E13062655F6
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 12:58:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,73 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>, "shengjiu.wang@freescale.com" <shengjiu.wang@freescale.com>, "timur@tabi.org" <timur@tabi.org>, "arnd@arndb.de" <arnd@arndb.de>, "shc_work@mail.ru" <shc_work@mail.ru>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "xobs@kosagi.com" <xobs@kosagi.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/19/2014 12:35 PM, Takashi Iwai wrote:
-> At Tue, 19 Aug 2014 09:00:06 +0000,
-> Li.Xiubo@freescale.com wrote:
->>
->> How about the following :
->>
->>
->> diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
->> index 5ae777a..d42f18c 100644
->> --- a/sound/soc/fsl/Kconfig
->> +++ b/sound/soc/fsl/Kconfig
->> @@ -15,7 +15,7 @@ config SND_SOC_FSL_ASRC
->>   config SND_SOC_FSL_SAI
->>          tristate "Synchronous Audio Interface (SAI) module support"
->>          select REGMAP_MMIO
->> -       select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
->> +       select SND_SOC_IMX_PCM_DMA
->>          select SND_SOC_GENERIC_DMAENGINE_PCM
->>          help
->>            Say Y if you want to add Synchronous Audio Interface (SAI)
->> @@ -25,7 +25,7 @@ config SND_SOC_FSL_SAI
->>
->>   config SND_SOC_FSL_SSI
->>          tristate "Synchronous Serial Interface module support"
->> -       select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
->> +       select SND_SOC_IMX_PCM_DMA
->>          select SND_SOC_IMX_PCM_FIQ if SND_IMX_SOC != n && (MXC_TZIC || MXC_AVIC)
->>          select REGMAP_MMIO
->>          help
->> @@ -37,7 +37,7 @@ config SND_SOC_FSL_SSI
->>   config SND_SOC_FSL_SPDIF
->>          tristate "Sony/Philips Digital Interface module support"
->>          select REGMAP_MMIO
->> -       select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
->> +       select SND_SOC_IMX_PCM_DMA
->>          select SND_SOC_IMX_PCM_FIQ if SND_IMX_SOC != n && (MXC_TZIC || MXC_AVIC)
->>          help
->>            Say Y if you want to add Sony/Philips Digital Interface (SPDIF)
->> @@ -48,7 +48,7 @@ config SND_SOC_FSL_SPDIF
->>   config SND_SOC_FSL_ESAI
->>          tristate "Enhanced Serial Audio Interface (ESAI) module support"
->>          select REGMAP_MMIO
->> -       select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
->> +       select SND_SOC_IMX_PCM_DMA
->>          help
->>            Say Y if you want to add Enhanced Synchronous Audio Interface
->>            (ESAI) support for the Freescale CPUs.
->> @@ -76,6 +76,7 @@ config SND_SOC_FSL_ASOC_CARD
->>
->>   config SND_SOC_IMX_PCM_DMA
->>          tristate
->> +       depends on SND_IMX_SOC
->>          select SND_SOC_GENERIC_DMAENGINE_PCM
->>
->>   config SND_SOC_IMX_AUDMUX
->
-> I see the problem has been addressed, so JFYI: a reverse selection
-> doesn't resolve "depends on".  It's a known shortcoming.  That is, a
-> selected item can select further others, but cannot depend on others.
+This path series add the Merrifield DSP driver which is used to load and
+managed the DSP along with sending and receiving IPCs for PCM and compressed
+audio.
 
-The item will still be selected regardless of its dependencies, but Kconfig 
-will print a warning if one or more of the dependencies are not met along 
-with the dependency chain that causes the warning. So you'll have a clue why 
-things go wrong.
+Changes in v2:
+	* Now download fw during device resume
+	* Removed runtime reference counting from driver context
+	* Using dedicated functions instead ioctl
+	* Addressed review comments
 
-- Lars
+Subhransu S. Prusty (1):
+  ASoC: mfld-compress: Use dedicated function instead of ioctl
+
+Vinod Koul (4):
+  ASoC: Intel: mrfld - add the dsp sst driver
+  ASoC: Intel: sst: add power management handling
+  ASoC: Intel: sst: load firmware using async callback
+  ASoC: Intel: sst - add compressed ops handling
+
+ arch/x86/include/asm/platform_sst_audio.h    |  33 +
+ sound/soc/intel/Kconfig                      |   4 +
+ sound/soc/intel/Makefile                     |   3 +
+ sound/soc/intel/sst-mfld-platform-compress.c |  38 +-
+ sound/soc/intel/sst-mfld-platform.h          |  27 +-
+ sound/soc/intel/sst/Makefile                 |   3 +
+ sound/soc/intel/sst/sst.c                    | 576 ++++++++++++++++
+ sound/soc/intel/sst/sst.h                    | 654 ++++++++++++++++++
+ sound/soc/intel/sst/sst_drv_interface.c      | 773 +++++++++++++++++++++
+ sound/soc/intel/sst/sst_ipc.c                | 373 ++++++++++
+ sound/soc/intel/sst/sst_loader.c             | 975 +++++++++++++++++++++++++++
+ sound/soc/intel/sst/sst_pvt.c                | 207 ++++++
+ sound/soc/intel/sst/sst_stream.c             | 526 +++++++++++++++
+ 13 files changed, 4173 insertions(+), 19 deletions(-)
+ create mode 100644 sound/soc/intel/sst/Makefile
+ create mode 100644 sound/soc/intel/sst/sst.c
+ create mode 100644 sound/soc/intel/sst/sst.h
+ create mode 100644 sound/soc/intel/sst/sst_drv_interface.c
+ create mode 100644 sound/soc/intel/sst/sst_ipc.c
+ create mode 100644 sound/soc/intel/sst/sst_loader.c
+ create mode 100644 sound/soc/intel/sst/sst_pvt.c
+ create mode 100644 sound/soc/intel/sst/sst_stream.c
+
+-- 
+1.9.0
