@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: txx9: Don't opencode DMAengine
-	API calls
-Date: Tue, 19 Aug 2014 11:44:33 -0500
-Message-ID: <20140819164433.GO24407@sirena.org.uk>
-References: <1408463287-5546-1-git-send-email-lars@metafoo.de>
- <1408463287-5546-2-git-send-email-lars@metafoo.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: Audio mini conference 2014?
+Date: Tue, 19 Aug 2014 22:59:48 +0530
+Message-ID: <20140819172948.GX13288@intel.com>
+References: <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
+ <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
+ <20140807140957.GI8181@intel.com>
+ <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
+ <53EA6165.3070902@zonque.org> <s5hbnropcvd.wl-tiwai@suse.de>
+ <20140813165517.GB17528@sirena.org.uk>
+ <20140817231021.GQ14537@sirena.org.uk>
+ <s5hha1aw6we.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6580254503072386080=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D2C126531B
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 18:46:00 +0200 (CEST)
-In-Reply-To: <1408463287-5546-2-git-send-email-lars@metafoo.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A99C265347
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 19:45:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hha1aw6we.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +28,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Aug 18, 2014 at 10:15:13AM +0200, Takashi Iwai wrote:
+> At Sun, 17 Aug 2014 18:10:21 -0500,
+> Mark Brown wrote:
+> > 
+> > On Wed, Aug 13, 2014 at 05:55:17PM +0100, Mark Brown wrote:
+> > > On Wed, Aug 13, 2014 at 06:34:30PM +0200, Takashi Iwai wrote:
+> > 
+> > > > Yeah, Tuesday sounds good to me, too.  Can we book a room for the
+> > > > whole day?
+> > 
+> > > > Mark, do you get no reply from Angela?  If so, we can go heading this
+> > > > way.
+> > 
+> > > I've not heard a thing from Angela, I was going to speak to the Linux
+> > > Foundation people in person next week in Chicago (I'll probably do that
+> > > no matter what since it's a bit concerning getting complete radio silence).
+> > 
+> > > It'd be nicer to be in the same place as the rest of the conference but
+> > > OTOH we don't want to muck the Chaosdorf folks around so it might make
+> > > sense to just go ahead, I don't have a particularly strong preference
+> > > either way I guess.
+> > 
+> > I just spoke to Angela - she was incredibly apologetic and said she
+> > didn't get my e-mails, I guess I've been hit by the same filtering
+> > problems that has been hitting Linus with some pull requests.  She said
+> > we should be able to get something on Monday or Tuesday.
+>  
+> That's a good news!
+> 
+> > I don't mind which option we go with, should I carry on or should I tell
+> > her we'll go with ChaosDorf?
+> 
+> Well, speaking of my preference, staying in the same location (the
+> conference center) would be more practical.  But I don't mind much
+> either.
++1 
 
---===============6580254503072386080==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vNrHrykRFvLVX6W3"
-Content-Disposition: inline
+So please do confirm either :)
 
+Now back to topics
 
---vNrHrykRFvLVX6W3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I heard Lar's topic on componentization. Any other topics?
 
-On Tue, Aug 19, 2014 at 05:48:07PM +0200, Lars-Peter Clausen wrote:
-> Use the proper wrapper functions instead of directly calling the DMAengine
-> callback functions.
-
-Applied, thanks.
-
---vNrHrykRFvLVX6W3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT837tAAoJELSic+t+oim9aNMP/AhixAnwt6ZhPuv7o+PyXmqx
-tzXNwXVYLk0pIb61/of0Ys3ksQOKVDAhizkQNiCZ97NJkPMcr49LLuDI472gz6mj
-JJ2zOSlQrx6ztWLDvP/eRXfkSmsZMQIhUD/eWMZQSPSgPGAJqdCil/DdThpCYa95
-WwScXoRUPCOpUSeAloxa7Ub7ZKacQhdfXv3mNjbK4S+2Lh9mw30u18uPcLV3101y
-Vp2B5sRhtp7u/G49hWO9o5MivYPTixPlET/gymAn4LjhEa4bUCHfDdVakez0ZVNP
-9mqE5Ahv3BPkp5/CZF9y3lramMQ6a4dLvhGdR5YU3ldLkEbscc9e1Ht97h865g2N
-S8YmaR/0rul0ugKUIr1GHHTk3IEHTd7LwahQg9Rfx4Ukd7KeCwDr01Qclvt0rezu
-xo5bzVz+pKG4jzGY7q1juabY+lAOyN8U3ZhAw0n6q36G55nxwY5gJ28xSRzGcv8d
-RISxwmN9FVU3c+2QKEQkHneCjXWROzLeoNjULev78LWouvyfkNDTH69f2XWjzKAv
-6GgjjcWtpo4nWAAmSIK36oXWpvE/ytEmfbdWwefeJN12uu5SV0r7azjzODGBaqpG
-r/MDWC5naQA18jmfHCQSt06rtjckxY+JDoAyFYBgJ3//zAQDJlHq3b+k3XRYqlkM
-Dx5Ni087rug5RdHnZwO2
-=CGq6
------END PGP SIGNATURE-----
-
---vNrHrykRFvLVX6W3--
-
---===============6580254503072386080==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6580254503072386080==--
+-- 
+~Vinod
