@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2] ASoC: fsl-asoc-card: move 'config
- SND_SOC_FSL_ASOC_CARD' to 'if SND_IMX_SOC'
-Date: Tue, 19 Aug 2014 11:12:17 -0500
-Message-ID: <20140819161217.GK24407@sirena.org.uk>
-References: <bfed4dfd3cf1ef134dac1f114f3d2b8cedf55c68.1408440952.git.shengjiu.wang@freescale.com>
+Subject: Re: [PATCH 1/2] ASoC: sh: Don't opencode DMAengine API
+	calls
+Date: Tue, 19 Aug 2014 11:40:52 -0500
+Message-ID: <20140819164052.GN24407@sirena.org.uk>
+References: <1408463287-5546-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8143237863939285033=="
+Content-Type: multipart/mixed; boundary="===============6635538637177316279=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B84A261600
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 18:19:59 +0200 (CEST)
-In-Reply-To: <bfed4dfd3cf1ef134dac1f114f3d2b8cedf55c68.1408440952.git.shengjiu.wang@freescale.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 25EB0261600
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 18:44:15 +0200 (CEST)
+In-Reply-To: <1408463287-5546-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: fabio.estevam@freescale.com, sfr@canb.auug.org.au, alsa-devel@alsa-project.org, timur@tabi.org, arnd@arndb.de, shc_work@mail.ru, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, xobs@kosagi.com, linuxppc-dev@lists.ozlabs.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8143237863939285033==
+--===============6635538637177316279==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zPXeIxDajdrcF2en"
+	protocol="application/pgp-signature"; boundary="H7cT1SUwsqXggVRO"
 Content-Disposition: inline
 
 
---zPXeIxDajdrcF2en
+--H7cT1SUwsqXggVRO
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 19, 2014 at 05:36:41PM +0800, Shengjiu Wang wrote:
-> Build kernel with SND_SOC_FSL_ASOC_CARD=m && SND_SOC_FSL_{SSI,SAI,ESAI}=y
-> leads the following error:
+On Tue, Aug 19, 2014 at 05:48:06PM +0200, Lars-Peter Clausen wrote:
+> Use the proper wrapper functions instead of directly calling the DMAengine
+> callback functions.
 
 Applied, thanks.
 
---zPXeIxDajdrcF2en
+--H7cT1SUwsqXggVRO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT83deAAoJELSic+t+oim9uToP/i3y1fRfHj1rQn0Iv+LEJd91
-MjSO6dPrx5Bvb7AOzfSNTYpu2i3vnHiDfb/tu9/316WllJFZPf96rECTqJJAYnT0
-63BM1UfkYtSR3nXB1EEa9vpKc2GJbEZthz3ONRiB8UGVmH0RHNhql6ErGig09TgZ
-v6EylmP6t18LhL9rFzzZK0CpjaLAKADk59rTCqIYU+tyh3YEtQwAnqBOzsVtCfwU
-SemBNPD3SkOoq8zoi1Pc9Ohc2pOgws2BSMOZDURZiU2vqNASJUIrb3Tgq7yiFqFA
-Pf6xVBBZ0b3wS4I8FcWzyOnSs8PWGPTHQfUbeCqDmD1IBH6BYpTnzwS114PXZaNk
-aThJnaYVEzhR5LZGCbfpfNMeDyKEXCOk99R7H7UCowBEAWBdzziZ6vz00sDLrACR
-Z8pe4s0EqklPtYYBNqMu/OMR5Q5R5wJIGIrr0LiEZFs4O7vZ0rfDaqOw5N+f7VQ4
-16vL4aTPIR3g2F4ehzUFldgL/Q5LdQlaTO9cGJ+x4B1Suim72Wboe0OywIeUlJXy
-Sq7c+MHPHiEw/PnXrnhHvjjBV+vFx8UfR0wLyVge9QILofkccz4SiEzu9CClNDBN
-O6TbXLcMnB3OsakT+qHe16dk5PuMKfIC+XUgA9DrXlKLgHt8yc+eJUQLJcMBGrmO
-ZtHiCPbS2Qz3htw0LZrY
-=V7E/
+iQIcBAEBAgAGBQJT834KAAoJELSic+t+oim9OVEP/jtziiYPcDM3tZkIoaoRFhfn
+pxJn60g/1P65z0ev8ZlN3D/cpDEdJ2P6n8U0naYypmPNre7AoUhalDQqyTCeY4MB
+fgjqzRZgZn2IMIV7vtAqTT8JZCVHZEMOJS1LPDjelrC5oAOEIJMyahWFWBo2G6qv
+MQynYGeztsHMmpAwm63clhyfo79oZxmbfRCU028WGqI2vi5wKFt0RSzQsE/e60hu
+BI9MnUuCmOvjSl2NtCCjXLZdBGnQ98Ruyb/O178scxfqqY6+VeEN6SumemQLx8mA
+knQ2p1XP5a31Jgu+TYWygdeBt7DbMZHRmT7dkwPTCi7Auxd4QOOFY3zJua1QCyv7
+SCieuT8kUU91+OPmRzi4+BJ6aPjRTV7s79g5/jdnci5dHIHCi9+uVP9tvI/4Y3ju
+vWa6aL+iG6Sg3OG8BI2B4f5IGmEXRV/iTqMf5xxcw48ApUTQDeKxcTdd4fTqZBXQ
+DcgccjkAtIt3b4pePpVVmZfDlfjEZrxt7MXZRqgDskMqRGBFakAbgel1ilUa1NjZ
+niK7ctLA7u4YomN1PSM0WUt+T6SCSC7qsU4cJD+cNZAE+7MYSIQ2eT/yqsNYMXv/
+KubRxE01CA3WyU2LEn87SWqgGWcYZM06oFCp4Q8tZKq5syMPV3LneBHBhDeKESoF
+3xTjs1V+emPCrmZGX/c3
+=/BwJ
 -----END PGP SIGNATURE-----
 
---zPXeIxDajdrcF2en--
+--H7cT1SUwsqXggVRO--
 
---===============8143237863939285033==
+--===============6635538637177316279==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8143237863939285033==--
+--===============6635538637177316279==--
