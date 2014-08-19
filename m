@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 07/13] ASoC: Move component->probed check into
-	soc_{remove, probe}_component()
-Date: Tue, 19 Aug 2014 15:51:24 +0200
-Message-ID: <1408456290-13945-8-git-send-email-lars@metafoo.de>
+Subject: [PATCH 09/13] ASoC: Consolidate CPU and CODEC DAI
+	removal
+Date: Tue, 19 Aug 2014 15:51:26 +0200
+Message-ID: <1408456290-13945-10-git-send-email-lars@metafoo.de>
 References: <1408456290-13945-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-165.synserver.de (smtp-out-165.synserver.de
  [212.40.185.165])
- by alsa0.perex.cz (Postfix) with ESMTP id 10E52265695
- for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 15:51:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 17B1426569E
+ for <alsa-devel@alsa-project.org>; Tue, 19 Aug 2014 15:51:49 +0200 (CEST)
 In-Reply-To: <1408456290-13945-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,109 +26,78 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Having the check in a centralized place makes the code a bit cleaner and
-shorter.
-
-Note: There is a slight semantic change in this patch. soc_probe_aux_dev() will
-no longer return -EBUSY if the AUX dev has already been probed before. This is
-fine though since it will simply do nothing in that case and return success.
+CPU and CODEC DAI works exactly the same way. There is already a helper function
+for CODEC DAI removal, use that one as well for CPU DAI removal.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/soc-core.c | 29 ++++++++++++-----------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
+ sound/soc/soc-core.c | 34 +++++++++++-----------------------
+ 1 file changed, 11 insertions(+), 23 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b84bf05..19b3d2c 100644
+index 59020735..04cc3d7 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1004,6 +1004,9 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
+@@ -1021,28 +1021,27 @@ static void soc_remove_component(struct snd_soc_component *component)
+ 	module_put(component->dev->driver->owner);
+ }
  
- static void soc_remove_component(struct snd_soc_component *component)
+-static void soc_remove_codec_dai(struct snd_soc_dai *codec_dai, int order)
++static void soc_remove_dai(struct snd_soc_dai *dai, int order)
  {
-+	if (!component->probed)
-+		return;
-+
- 	/* This is a HACK and will be removed soon */
- 	if (component->codec)
- 		list_del(&component->codec->card_list);
-@@ -1079,22 +1082,19 @@ static void soc_remove_link_components(struct snd_soc_card *card, int num,
- 	int i;
+ 	int err;
  
- 	/* remove the platform */
--	if (platform && platform->component.probed &&
--	    platform->component.driver->remove_order == order)
-+	if (platform && platform->component.driver->remove_order == order)
- 		soc_remove_component(&platform->component);
- 
- 	/* remove the CODEC-side CODEC */
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		component = rtd->codec_dais[i]->component;
--		if (component->probed &&
--		    component->driver->remove_order == order)
-+		if (component->driver->remove_order == order)
- 			soc_remove_component(component);
- 	}
- 
- 	/* remove any CPU-side CODEC */
- 	if (cpu_dai) {
--		if (cpu_dai->component->probed &&
--		    cpu_dai->component->driver->remove_order == order)
-+		if (cpu_dai->component->driver->remove_order == order)
- 			soc_remove_component(cpu_dai->component);
+-	if (codec_dai && codec_dai->probed &&
+-			codec_dai->driver->remove_order == order) {
+-		if (codec_dai->driver->remove) {
+-			err = codec_dai->driver->remove(codec_dai);
++	if (dai && dai->probed &&
++			dai->driver->remove_order == order) {
++		if (dai->driver->remove) {
++			err = dai->driver->remove(dai);
+ 			if (err < 0)
+-				dev_err(codec_dai->dev,
++				dev_err(dai->dev,
+ 					"ASoC: failed to remove %s: %d\n",
+-					codec_dai->name, err);
++					dai->name, err);
+ 		}
+-		codec_dai->probed = 0;
++		dai->probed = 0;
  	}
  }
-@@ -1145,6 +1145,9 @@ static int soc_probe_component(struct snd_soc_card *card,
- 	struct snd_soc_dai *dai;
- 	int ret;
  
-+	if (component->probed)
-+		return 0;
-+
- 	component->card = card;
- 	dapm->card = card;
- 	soc_set_name_prefix(card, component);
-@@ -1306,8 +1309,7 @@ static int soc_probe_link_components(struct snd_soc_card *card, int num,
+ static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = &card->rtd[num];
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int i, err;
++	int i;
  
- 	/* probe the CPU-side component, if it is a CODEC */
- 	component = rtd->cpu_dai->component;
--	if (!component->probed &&
--	    component->driver->probe_order == order) {
-+	if (component->driver->probe_order == order) {
- 		ret = soc_probe_component(card, component);
- 		if (ret < 0)
- 			return ret;
-@@ -1316,8 +1318,7 @@ static int soc_probe_link_components(struct snd_soc_card *card, int num,
- 	/* probe the CODEC-side components */
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		component = rtd->codec_dais[i]->component;
--		if (!component->probed &&
--		    component->driver->probe_order == order) {
-+		if (component->driver->probe_order == order) {
- 			ret = soc_probe_component(card, component);
- 			if (ret < 0)
- 				return ret;
-@@ -1325,8 +1326,7 @@ static int soc_probe_link_components(struct snd_soc_card *card, int num,
- 	}
+ 	/* unregister the rtd device */
+ 	if (rtd->dev_registered) {
+@@ -1054,20 +1053,9 @@ static void soc_remove_link_dais(struct snd_soc_card *card, int num, int order)
  
- 	/* probe the platform */
--	if (!platform->component.probed &&
--	    platform->component.driver->probe_order == order) {
-+	if (platform->component.driver->probe_order == order) {
- 		ret = soc_probe_component(card, &platform->component);
- 		if (ret < 0)
- 			return ret;
-@@ -1621,11 +1621,6 @@ static int soc_probe_aux_dev(struct snd_soc_card *card, int num)
- 	struct snd_soc_aux_dev *aux_dev = &card->aux_dev[num];
- 	int ret;
+ 	/* remove the CODEC DAI */
+ 	for (i = 0; i < rtd->num_codecs; i++)
+-		soc_remove_codec_dai(rtd->codec_dais[i], order);
++		soc_remove_dai(rtd->codec_dais[i], order);
  
--	if (rtd->component->probed) {
--		dev_err(rtd->dev, "ASoC: codec already probed\n");
--		return -EBUSY;
+-	/* remove the cpu_dai */
+-	if (cpu_dai && cpu_dai->probed &&
+-			cpu_dai->driver->remove_order == order) {
+-		if (cpu_dai->driver->remove) {
+-			err = cpu_dai->driver->remove(cpu_dai);
+-			if (err < 0)
+-				dev_err(cpu_dai->dev,
+-					"ASoC: failed to remove %s: %d\n",
+-					cpu_dai->name, err);
+-		}
+-		cpu_dai->probed = 0;
 -	}
--
- 	ret = soc_probe_component(card, rtd->component);
- 	if (ret < 0)
- 		return ret;
++	soc_remove_dai(rtd->cpu_dai, order);
+ }
+ 
+ static void soc_remove_link_components(struct snd_soc_card *card, int num,
 -- 
 1.8.0
