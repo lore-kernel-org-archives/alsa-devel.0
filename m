@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: Audio mini conference 2014?
-Date: Wed, 20 Aug 2014 12:03:14 -0500
-Message-ID: <20140820170314.GE24407@sirena.org.uk>
-References: <s5hbnropcvd.wl-tiwai@suse.de>
+Date: Wed, 20 Aug 2014 11:58:50 -0500
+Message-ID: <20140820165850.GC24407@sirena.org.uk>
+References: <53EA6165.3070902@zonque.org> <s5hbnropcvd.wl-tiwai@suse.de>
  <20140813165517.GB17528@sirena.org.uk>
  <20140817231021.GQ14537@sirena.org.uk>
  <s5hha1aw6we.wl-tiwai@suse.de> <20140819172948.GX13288@intel.com>
  <alpine.DEB.2.00.1408191451550.10517@phandrigan-desktop>
  <20140820042109.GY13288@intel.com> <s5hy4ujhfta.wl-tiwai@suse.de>
- <20140820070236.GC13288@intel.com> <s5hr40bhaz2.wl-tiwai@suse.de>
+ <20140820070236.GC13288@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7684985065642987250=="
+Content-Type: multipart/mixed; boundary="===============8474850512926890833=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4550426535E
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 20:58:27 +0200 (CEST)
-In-Reply-To: <s5hr40bhaz2.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 06F5526508C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 20:58:26 +0200 (CEST)
+In-Reply-To: <20140820070236.GC13288@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,67 +26,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7684985065642987250==
+--===============8474850512926890833==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="L5xhH6lUAPIS347H"
+	protocol="application/pgp-signature"; boundary="xIVvx4XxNQcAboQ3"
 Content-Disposition: inline
 
 
---L5xhH6lUAPIS347H
+--xIVvx4XxNQcAboQ3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 20, 2014 at 09:33:05AM +0200, Takashi Iwai wrote:
-> Vinod Koul wrote:
+On Wed, Aug 20, 2014 at 12:32:37PM +0530, Vinod Koul wrote:
+> On Wed, Aug 20, 2014 at 07:48:33AM +0200, Takashi Iwai wrote:
 
-> > Configuration convergence:
-> > >From the OS side, we have Desktop OSes relying on PA, Chrome using CRAS,
-> > Android using flinger. With DSPs and tons of configuration it doesn't bode
-> > well to have multiple configuration for same stuff for the sound cards. Can
-> > we talk about unifying the configuration at least. Sure OSes will have their
-> > own ways to use, but from ALSA can we standardize configurations which
-> > can be reused across.
+> > - Testing / QA (Takashi)
+> >   How people do test?  Can we have some automation?
+> >   (IIRC, openSUSE has some automatic audio test running on VM, but I
+> >    forgot the details...)
 
-> I thought UCM was targeted to this, but not widely used as expected?
+> I would be interested in this as well, some test framework for auto regression
+> checks would be great.
 
-Right, the problems with alsa-lib licensing and the changes in the
-configuration format have been a bit of a blocker - there are actually
-some substantial deployments of the pre-merge configuration file format.
+> I think Mark would be at KS and can update if we can leverage something for
+> kselftest stuff being discussed there
 
---L5xhH6lUAPIS347H
+Not really, it's more about standardising the way tests are triggered
+and reported.
+
+--xIVvx4XxNQcAboQ3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT9NTPAAoJELSic+t+oim9qNMP/RF5PTAH/4yGksi6tvMW9loP
-2zgQJcZ89QHgr1co+SfoRBBhuGhrhM6nw7+expY68r54DGcrHsysb7nntwEWDjry
-e0dNtKhrebNktZp1vKaLZ/jmfUNhLtKPravdcjoMg6KWydvep9B8BcdPox90YSeS
-zMeXTRVcHpcfoJOCSBfNiTlz9mc60oYoYZJclSRGuaawBO1Roxf0WFu/ardpVe8v
-RJ9GFiVV5BlFAU2S/2jn6bNykhm25JGoFiWLCVyzdB7s2tiqLCAOSpg/CMFCmJKx
-M8gZwKWxIm7kGYOI58aDYpZ6DPzYAQxPfSvmsvCRAesWMJkR6sMp/KUsJDRMp39h
-FAMXanvSSJFI+kYvpbffPQFOHJwoJ2dnPYctQUNnV2ncW/yR+a2Sb8nhEYPj7HNj
-qi8DZdHF/HtUMZawmr7ASsbjcf/cAdUSxdoExUaEAwQj/fdia0wG4MiDGEmFACKi
-GwB2iq07XdG1nzEi/ASRX39q823uxOT/OGRogrg6I8ZtF8Ui9Vlgr0wbzy/OQlzf
-lfNYmIXs4CGPHrPwunftgciCbPFbccTmaZe92p9OsL8UR9mDp3kQoZqYiIH5Uy6P
-Jsfl4qEVR98mGg3ykQ2jpeDCCuDzLwydJjuobtntfdNLzYqNaAjFok+5JztCehcF
-w6j7bR0unN7ez6IlI2e2
-=sepo
+iQIcBAEBAgAGBQJT9NPCAAoJELSic+t+oim9hz0P/R28KppfKQeuOjIR0saHQOst
+YwlXSvshFLk3t17ZjNMgAhi49QAHm1Op2xQdvpe3a8XzwbMdDZakxcbx17Zia9fx
+79mUj8xSzKJlUSuRgtgFlP1pIdLvlSbb/z7Q8AZNcY9eOBhef2nlVE6WnpF5192h
+gdzyhWSeaP9IqUrUGx8OfZByY4sLtK1E0eYqCPqm7ShkP8YGRveuu2K61cXTPj3p
+IrA71Yj9YQY1nfKKMnZdRi+rrUJMgYKQea3LYbhLyptcUekahoxxIEFt7EHW9YX1
++Q+7k8lsAH4QnHcce71+FNWbnEPV9s2nFTVvIBCx0nN+WS4Y5Z6i4gv/LFi9vpaH
+o1rLQGsCj5j3oMO8c5/5/dJTVYhtb7TWEUEM6wv+78tICTQytpdn8wiQ5149Bgvf
+xSeX2oFh/I8Xq6fre172PT1j6VEMWnPZncMknJcMrWJkBcGZSMFVvt2ivaCILIFo
+Y9g1yMWwr9oU56nGQYKai7GS7D8EflwkIHlfaEaL/v2lX2dEFfN9YQOCP4QXimMi
+3Iqp6Joc2DQfSTsU/etjsO0gF8e7lTqSmcjcBJgSWflDLDBPsTKKw2CCcqbfNZIy
+ynfrWmgamfpub2DLunDeYpC69G67t7hex2vbBnfrwtuCgWkq3MWB1pSWiFTXr3kZ
+i1rI7jjadC45tq4/Q3Sy
+=lKRT
 -----END PGP SIGNATURE-----
 
---L5xhH6lUAPIS347H--
+--xIVvx4XxNQcAboQ3--
 
---===============7684985065642987250==
+--===============8474850512926890833==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7684985065642987250==--
+--===============8474850512926890833==--
