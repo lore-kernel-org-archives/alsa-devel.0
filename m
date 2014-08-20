@@ -1,7 +1,7 @@
 From: Daniel Mack <daniel@zonque.org>
 Subject: Re: ALSA - Channel swap
-Date: Wed, 20 Aug 2014 14:41:10 +0200
-Message-ID: <53F49766.6060907@zonque.org>
+Date: Wed, 20 Aug 2014 15:00:44 +0200
+Message-ID: <53F49BFC.6010306@zonque.org>
 References: <53F35310.2040300@tcz.cz> <53F377BB.90309@zonque.org>
  <53F49680.2050003@tcz.cz>
 Mime-Version: 1.0
@@ -9,8 +9,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id F368B2656E9
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 14:41:11 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 951932656ED
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 15:00:45 +0200 (CEST)
 In-Reply-To: <53F49680.2050003@tcz.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,10 +21,9 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tomas Matejka <tomas.matejka@tcz.cz>, alsa-devel@alsa-project.org
+To: Tomas Matejka <tomas.matejka@tcz.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
-
-Hi,
 
 On 08/20/2014 02:37 PM, Tomas Matejka wrote:
 > My kernel version is 3.2.18.
@@ -32,15 +31,17 @@ On 08/20/2014 02:37 PM, Tomas Matejka wrote:
 > codec always result to channel swapping?
 > It would be very strange. How could codec manufacturer sell codec, which 
 > swaps channels ?
-> I need this for application that requires that audio channels can't be 
-> randomly swapped.
 
-It's probably only a race condition that can be fixed in software. I've
-seen such issues before.
+Also, as I've told you before, the Codec is most probably not the
+cultprit here. Try and play a wave file that only has signal on the left
+side, and provide some input to the Codec's left channel only. Then see
+what your scope shows on the SDIN/SDOUT lines, while putting the trigger
+on the LRCLK. If your Codec is causing the problem, you'll already see
+the channel swap on the bus, but I bet you won't. Instead, the problem
+is in how the Atmel I2S hardware block transports the data into and out
+of your memory, and that's likely related to its DMA implementation.
 
-But in order to work on this and get more feedback, you have to try a
-more recent kernel (3.16 or 3.17-rc1). Maybe the issue is even already
-fixed.
+Anyway - the first step is to boot an up-to-date kernel.
 
 
 Daniel
