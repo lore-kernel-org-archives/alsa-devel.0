@@ -1,23 +1,25 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: Audio mini conference 2014?
-Date: Wed, 20 Aug 2014 12:32:37 +0530
-Message-ID: <20140820070236.GC13288@intel.com>
-References: <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
- <53EA6165.3070902@zonque.org> <s5hbnropcvd.wl-tiwai@suse.de>
- <20140813165517.GB17528@sirena.org.uk>
- <20140817231021.GQ14537@sirena.org.uk>
- <s5hha1aw6we.wl-tiwai@suse.de> <20140819172948.GX13288@intel.com>
- <alpine.DEB.2.00.1408191451550.10517@phandrigan-desktop>
- <20140820042109.GY13288@intel.com> <s5hy4ujhfta.wl-tiwai@suse.de>
+From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
+Subject: Re: buffer time
+Date: Wed, 20 Aug 2014 06:25:23 +0200
+Message-ID: <1408508723.5721.0.camel@debian>
+References: <1408394081.4025.7.camel@debian>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 89EF626582A
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 11:26:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hy4ujhfta.wl-tiwai@suse.de>
+Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
+ [209.85.212.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 53258265845
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 11:40:00 +0200 (CEST)
+Received: by mail-wi0-f181.google.com with SMTP id bs8so6607059wib.8
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 02:40:00 -0700 (PDT)
+Received: from [192.168.42.170] (123-224.197-178.cust.bluewin.ch.
+ [178.197.224.123])
+ by mx.google.com with ESMTPSA id mx10sm5136444wib.1.2014.08.19.21.25.35
+ for <alsa-devel@alsa-project.org>
+ (version=SSLv3 cipher=RC4-SHA bits=128/128);
+ Tue, 19 Aug 2014 21:25:36 -0700 (PDT)
+In-Reply-To: <1408394081.4025.7.camel@debian>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,72 +29,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 20, 2014 at 07:48:33AM +0200, Takashi Iwai wrote:
-> ===
-> 
-> Audio Miniconf 2014 Topics
-> 
-> - ASoC componentization (Lars)
-> 
-> - Dynamic FW (Vinod)
->   Me and Liam will try to send RFCs before the conference. At least on
->   my side thats next todo after current mrfld driver is done.
-> 
->   We have working code atm. For the folks who want to look at early
->   state of affairs, here are the trees:
->   Kernel: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/sound.git dfw-3.15
->   Usermode: git://git.infradead.org/users/vkoul/dynamic_fw.git
-> 
-> - Effect API (yet again) (Vinod)
-> 
-> - More DSP support esp on PCM side (Vinod)
-> 
-> - Rewinding in ALSA PCM plugins (Alexander)
-> 
-> - Resampler quality evaluation for PulseAudio (Alexander)
-> 
-> - Testing / QA (Takashi)
->   How people do test?  Can we have some automation?
->   (IIRC, openSUSE has some automatic audio test running on VM, but I
->    forgot the details...)
-I would be interested in this as well, some test framework for auto regression
-checks would be great.
-
-I think Mark would be at KS and can update if we can leverage something for
-kselftest stuff being discussed there
-
-> - ABI/API documentation (Takashi)
->   We're not good at this at all, obviously.  Let's define the priority
->   to start working on.
-I think ASoC has grown a lot with DPCM etc making it very dynamic atm. So
-yes it will help to add more
-
-> - Control names (Takashi)
->   It's wild west for now, everyone picks up a random funky name.
-yes, I think the current control names were too HDA specific. With DSP and
-audio hub proliferation on SoCs/Codecs revisiting this would certainly be
-great. Like how do I specify volume control for gain before a mixer, or gain
-in capture BE which is different from the one on capture FE.
-
-> 
-> - Code removals (Takashi)
->   There have been actions to remove the codes for old hardware
->   recently.  Which is acceptable?  Feature removals, too?
-
-Configuration convergence:
->From the OS side, we have Desktop OSes relying on PA, Chrome using CRAS,
-Android using flinger. With DSPs and tons of configuration it doesn't bode
-well to have multiple configuration for same stuff for the sound cards. Can
-we talk about unifying the configuration at least. Sure OSes will have their
-own ways to use, but from ALSA can we standardize configurations which
-can be reused across.
-
-And lastly, our users :)
-Ask from PA, Android, ChomesOS folks??
-
--- 
-~Vinod
+QW0gTW9udGFnLCBkZW4gMTguMDguMjAxNCwgMjI6MzQgKzAyMDAgc2NocmllYiBKb8OrbCBLcsOk
+aGVtYW5uOgo+IFdoYXQncyB0aGUgY29ycmVjdCBidWZmZXIgdGltZSB0byB1c2Ugd2l0aCBhbHNh
+Pwo+IAo+IHNpbmNlIEkgaGF2ZSBmb2xsb3dpbmcgaW4gYWdzLnNmLm5ldAo+IAo+IGJ1ZmZlciBz
+aXplOiA5NDAKPiBhbHNhIGl0ZXJhdGlvbnM6IDQ3IHBlciBzZWNvbmQKPiAKPiBTaW5jZSBJIGRv
+bid0IGhhdmUgc2VnbWVudGF0aW9uIG9mIHRhY3QgaW4gbXkgYXBwbGljYXRpb24gQlBNIGlzIHRo
+ZQo+IG9ubHkgc2NhbGUgSSBnb3QgcmVhbGx5IHNsb3cgb3V0cHV0Lgo+IEZ1cnRoZXIgY2FuJ3Qg
+cnVuIGFueW1vcmUgd2l0aCByZWFsdGltZSBwcmlvcml0aWVzLiBJIHdvdWxkIHByZWZlciB1c2lu
+Zwo+IDk0MCBiZWNhdXNlIGl0cyBuZWFyIGEgZ29vZCB0aHJvdWdocHV0IHJhdGUuIFllYXJzIGFn
+byBJIGNhbGN1bGF0ZWQgaXQKPiB0aGUgZXhhY3QgdmFsdWUgd291bGQgYmUgc29tZXRoaW5nIDkz
+LndoYXRldmVyCj4gCj4gUGxlYXNlIGhlbHAKPiAKPiBiZXN0IHJlZ2FyZHMKPiBKb8OrbAo+IAo+
+IAo+IAoKSSd2ZSBqdXN0IGZvdW5kCgpodHRwczovL3BlcmYud2lraS5rZXJuZWwub3JnL2luZGV4
+LnBocC9UdXRvcmlhbCNtdWx0aXBsZXhpbmdfYW5kX3NjYWxpbmdfZXZlbnRzCgp0aGFuayB5b3UK
+Sm/Dq2wgS3LDpGhlbWFubgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
