@@ -1,19 +1,22 @@
-From: Dr Nicholas J Bailey <nicholas.bailey@glasgow.ac.uk>
-Subject: Re: usb-usx2y: playback fails with Tascam US122 on
-	kernel 3.14
-Date: Wed, 20 Aug 2014 18:50:21 +0100
-Message-ID: <1915519.7eNd95CgvB@arial>
-References: <4546801.Z4WD7yaEHq@arial> <1799623.GgHbzoqWFu@arial>
- <53E2639A.4070506@zonque.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Audio mini conference 2014?
+Date: Wed, 20 Aug 2014 12:01:00 -0500
+Message-ID: <20140820170100.GD24407@sirena.org.uk>
+References: <20140813165517.GB17528@sirena.org.uk>
+ <20140817231021.GQ14537@sirena.org.uk>
+ <s5hha1aw6we.wl-tiwai@suse.de> <20140819172948.GX13288@intel.com>
+ <alpine.DEB.2.00.1408191451550.10517@phandrigan-desktop>
+ <20140820042109.GY13288@intel.com> <s5hy4ujhfta.wl-tiwai@suse.de>
+ <20140820070236.GC13288@intel.com> <s5hr40bhaz2.wl-tiwai@suse.de>
+ <20140820084106.GD13288@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6465421585702527558=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from plockton.cent.gla.ac.uk (plockton.cent.gla.ac.uk
- [130.209.16.75])
- by alsa0.perex.cz (Postfix) with ESMTP id 711F626587E
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 19:50:22 +0200 (CEST)
-In-Reply-To: <53E2639A.4070506@zonque.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3B42265012
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 20:58:25 +0200 (CEST)
+In-Reply-To: <20140820084106.GD13288@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,224 +26,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 06 August 2014 19:19:22 Daniel Mack wrote:
-> The best thing you can do is probably bisect the issue:
-> 
->   https://wiki.ubuntu.com/Kernel/KernelBisection
-> 
-> > I understand that the US-122 is a usb-1.1 device and I have the ehci
-> > module  loaded, but it was there too with the older kernel and that
-> > worked fine.
-> Yes, that shouldn't be an issue. Let us know what the bisection tells you.
-> 
-> 
-> Daniel
 
-OK, I put aside some time to try and do this and didn't get too far :(
-
-I'm using debian testing (jessie) so I cloned from
-
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
-
-rather than the ubuntu one, as recommended here:
-
-	https://wiki.debian.org/DebianKernel/GitBisect
-
-The test I wanted to work was to make the command
-
-	jackd -u -dalsa -dhw:1,0 -r48000 -p512 -n3
-
-behave as expected, hw:1,0 being my Tascam US-122 sound box.
-
-To be sure, I booted up kernel 3.10.11 to which I'd applied patches to make 
-the MIDI interface of the box work. This is documented on the ALSA-devel list 
-a while back. It did. I played audio through it while it was configured duplex 
-at the same time watching a video and building a new kernel.
-
-I checked out v3.11 from the kernel tree, and built it. When it ran, I got a 
-failure from the same jack command:
-
-"""
-ALSA: poll time out, polled for 15999083 usecs
-JackAudioDriver::ProcessAsync: read error, stopping...
-"""
-
-So far, so good. That can be the bad end of the bisection. The trouble is, 
-building 3.10 resulted in exactly the same error. My version 3.10.11 (which 
-works) is build from the debian source package rather than the kernel source, 
-so presumably the applied patches do something good which makes the sound 
-system happier. Heavens knows what.
-
-For a laugh I pulled the latest 3.16 source package from the debian repo and 
-built that. This produced the same failure as above.
-
-So the thing is, I can't make any stock kernel work on my Debian laptop, which 
-means there aren't two points between which to bisect.
-
-That's all I've got time for at the moment. I'll append the notes I made 
-yesterday and today while the builds and tests were going on, just in case 
-they are any help. At least I have a kernel (3.10.11) that works for now, but 
-unless somebody who really knows what they are doing is going on the case, it 
-looks like its just a matter of time before I'll be buying a whole bunch of 
-new audio interfaces. We have at least 4 or 5 of these Tascam US-122 boxes, 
-and use them quite a lot, so I am nervously fingering my wallet... :(
-
-Nick/.
-
-8><---
-Linux arial 3.10.11 #1 SMP Wed Oct 2 19:26:59 BST 2013 i686 GNU/Linux
----------------------------------------------------------------------
-** This is the kernel patched with the MIDI device fixes sent to the
-   alsa-dev mail list **
-   
-Works (as nick).
-
-nick@arial:~/Bisect/linux-stable$ jackd -u -dalsa -dhw:1,0 -r48000 -p512 -n3
-jackdmp 1.9.10
-Copyright 2001-2005 Paul Davis and others.
-Copyright 2004-2014 Grame.
-jackdmp comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-no message buffer overruns
-no message buffer overruns
-no message buffer overruns
-JACK server starting in realtime mode with priority 10
-self-connect-mode is "Don't restrict self connect requests"
-audio_reservation_init
-Acquire audio card Audio1
-creating alsa driver ... hw:1,0|hw:1,0|512|3|48000|0|0|nomon|swmeter|-|32bit
-configuring for 48000Hz, period = 512 frames (10.7 ms), buffer = 3 periods
-ALSA: final selected sample format for capture: 24bit little-endian
-ALSA: use 3 periods for capture
-ALSA: final selected sample format for playback: 24bit little-endian
-ALSA: use 3 periods for playback
-^CJack main caught signal 2
-Released audio card Audio1
-audio_reservation_finish
-
-----------------------------------------------------------------------
-Linux arial 3.11.0+ #1 SMP Tue Aug 19 16:28:36 BST 2014 i686 GNU/Linux
-----------------------------------------------------------------------
-As nick:
-nick@arial:~/Bisect/linux-stable$ jackd -u -dalsa -dhw:1,0 -r48000 -p512 -n3
-jackdmp 1.9.10
-Copyright 2001-2005 Paul Davis and others.
-Copyright 2004-2014 Grame.
-jackdmp comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-no message buffer overruns
-no message buffer overruns
-no message buffer overruns
-JACK server starting in realtime mode with priority 10
-self-connect-mode is "Don't restrict self connect requests"
-audio_reservation_init
-Failed to acquire device name : Audio1 error : Device reservation request with 
-priority 2147483647 denied for "Audio1" via RequestRelease()
-Audio device hw:1,0 cannot be acquired...
-Cannot initialize driver
-JackServer::Open failed with -1
-Failed to open server
-
-(EDIT: That Device reservation request error doesn't seem to be 
-reproducable...?)
-
-As root:
-nick@arial:~/Bisect/linux-stable$ sudo jackd -u -dalsa -dhw:1,0 -r48000 -p512 
--n3
-jackdmp 1.9.10
-Copyright 2001-2005 Paul Davis and others.
-Copyright 2004-2014 Grame.
-jackdmp comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-no message buffer overruns
-no message buffer overruns
-no message buffer overruns
-JACK server starting in realtime mode with priority 10
-self-connect-mode is "Don't restrict self connect requests"
-audio_reservation_init
-Acquire audio card Audio1
-creating alsa driver ... hw:1,0|hw:1,0|512|3|48000|0|0|nomon|swmeter|-|32bit
-configuring for 48000Hz, period = 512 frames (10.7 ms), buffer = 3 periods
-ALSA: final selected sample format for capture: 24bit little-endian
-ALSA: use 3 periods for capture
-ALSA: final selected sample format for playback: 24bit little-endian
-ALSA: use 3 periods for playback
-ALSA: poll time out, polled for 15999083 usecs
-JackAudioDriver::ProcessAsync: read error, stopping...
-
--------------------
-Building 3.10:
-
-scripts/kconfig/conf --silentoldconfig Kconfig
-include/config/auto.conf:2221:warning: symbol value 'm' invalid for 
-USB_OHCI_HCD_PCI
-
-... Changed to "y", try again ...
-
-Same result (whether root or not):
-
-nick@arial:~/Bisect$ uname -a
-Linux arial 3.10.0 #3 SMP Wed Aug 20 13:53:56 BST 2014 i686 GNU/Linux
-nick@arial:~/Bisect$ jackd -u -dalsa -dhw:1,0 -r48000 -p512 -n3
-jackdmp 1.9.10
-Copyright 2001-2005 Paul Davis and others.
-Copyright 2004-2014 Grame.
-jackdmp comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-no message buffer overruns
-no message buffer overruns
-no message buffer overruns
-JACK server starting in realtime mode with priority 10
-self-connect-mode is "Don't restrict self connect requests"
-audio_reservation_init
-Acquire audio card Audio1
-creating alsa driver ... hw:1,0|hw:1,0|512|3|48000|0|0|nomon|swmeter|-|32bit
-configuring for 48000Hz, period = 512 frames (10.7 ms), buffer = 3 periods
-ALSA: final selected sample format for capture: 24bit little-endian
-ALSA: use 3 periods for capture
-ALSA: final selected sample format for playback: 24bit little-endian
-ALSA: use 3 periods for playback
-ALSA: poll time out, polled for 15999090 usecs
-JackAudioDriver::ProcessAsync: read error, stopping...
+--===============6465421585702527558==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yywL3DpgDyP4yZ2G"
+Content-Disposition: inline
 
 
-------------------------------------------------------------------------------
-Linux arial 3.14-2-686-pae #1 SMP Debian 3.14.15-2 (2014-08-09) i686 GNU/Linux
-------------------------------------------------------------------------------
-nick@arial:/usr/src/linux-3.16$ jackd -u -dalsa -dhw:1,0 -r48000 -p512 -n3  
-jackdmp 1.9.10
-Copyright 2001-2005 Paul Davis and others.
-Copyright 2004-2014 Grame.
-jackdmp comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-no message buffer overruns
-no message buffer overruns
-no message buffer overruns
-JACK server starting in realtime mode with priority 10
-self-connect-mode is "Don't restrict self connect requests"
-audio_reservation_init
-Acquire audio card Audio1
-creating alsa driver ... hw:1,0|hw:1,0|512|3|48000|0|0|nomon|swmeter|-|32bit
-configuring for 48000Hz, period = 512 frames (10.7 ms), buffer = 3 periods
-ALSA: final selected sample format for capture: 24bit little-endian
-ALSA: use 3 periods for capture
-ALSA: final selected sample format for playback: 24bit little-endian
-ALSA: use 3 periods for playback
-ALSA: cannot set hardware parameters for playback
-ALSA: cannot configure playback channel
-Cannot initialize driver
-JackServer::Open failed with -1
-Failed to open server
+--yywL3DpgDyP4yZ2G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Build latest 3.16 from source package in debian experimental...
+On Wed, Aug 20, 2014 at 02:11:07PM +0530, Vinod Koul wrote:
+> On Wed, Aug 20, 2014 at 09:33:05AM +0200, Takashi Iwai wrote:
 
-Same result.
+> > I thought UCM was targeted to this, but not widely used as expected?
+
+> Chrome uses t but not Android due to licensing issues. What happend to
+> tinyucm?
+
+The latest Google reference designs use something which is essentially
+tinyucm - the configuration is mostly stored in an XML configuration
+file which is read at runtime.  It's not consistent with what anyone
+else uses.
+
+--yywL3DpgDyP4yZ2G
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT9NRIAAoJELSic+t+oim9S+kP/3kQC1KbmVxL46iUvxcnHWCG
+eb/xgZXIifTdkDmS+npQSxgTNSu3M+vBF4ey2PQLsvKXWmsq7UvNb9rJoRXv8o4S
+GTynNpW5eSKfAxrYBunjzJZDhmh5Hd9SWM8GMcnx3CL8NdyOv/Ws3iqtf1CLdh5y
+a3D+70wbds2PuJk3Har9h6656+jZgHYpKKugJGpmEbp3H7LuC92cUvCsmDs/X8ld
+uOUQLinO2rfj1Na5tYlTLh8WmM01bDPdGKRC4rPRbfrTatPNgUPRH/N4SgC7VxbK
+HAm0H5f5YUQ5n6payr6AG1BhMEf61Fbg54Gru0dx1V5a/yqkcwbaKk6Gr/jg5zh1
+e4PKNiTIvPwz++lG7DOwNohxKpr1c7LKR2D2wImcQ7Co+eqaIwNeVeKmizNpPn8s
+syQEQ8cAWXaLu94ECioev+9I3WBIYw1ScRC9OeMdadbixaAozVI9S4O1H/Eu7Z0x
+ea1CACnFkcfjx3pApFU0MSAvwdUTJN4iAKcet/DJ/DE7Kc6+lG6S5NgagsDGn1JE
+vNs9Cp21SigJnfS+PnwWwJoMHgAcYVIuW7qYJinHdf9e/r3hvOnePBTu/mYU+MY1
+QH8PJ52dhCc4ozNhAY5TZJvZ13zzWjMbYG2VXXs8rOSmj1i1hCrYCuvkKQKedXV4
+6Hyw9Twuq2C1SsOWkzdc
+=1O61
+-----END PGP SIGNATURE-----
+
+--yywL3DpgDyP4yZ2G--
+
+--===============6465421585702527558==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6465421585702527558==--
