@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: Audio mini conference 2014?
-Date: Wed, 20 Aug 2014 12:01:00 -0500
-Message-ID: <20140820170100.GD24407@sirena.org.uk>
-References: <20140813165517.GB17528@sirena.org.uk>
+Date: Wed, 20 Aug 2014 12:03:14 -0500
+Message-ID: <20140820170314.GE24407@sirena.org.uk>
+References: <s5hbnropcvd.wl-tiwai@suse.de>
+ <20140813165517.GB17528@sirena.org.uk>
  <20140817231021.GQ14537@sirena.org.uk>
  <s5hha1aw6we.wl-tiwai@suse.de> <20140819172948.GX13288@intel.com>
  <alpine.DEB.2.00.1408191451550.10517@phandrigan-desktop>
  <20140820042109.GY13288@intel.com> <s5hy4ujhfta.wl-tiwai@suse.de>
  <20140820070236.GC13288@intel.com> <s5hr40bhaz2.wl-tiwai@suse.de>
- <20140820084106.GD13288@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6465421585702527558=="
+Content-Type: multipart/mixed; boundary="===============7684985065642987250=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F3B42265012
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 20:58:25 +0200 (CEST)
-In-Reply-To: <20140820084106.GD13288@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4550426535E
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 20:58:27 +0200 (CEST)
+In-Reply-To: <s5hr40bhaz2.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,63 +26,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6465421585702527558==
+--===============7684985065642987250==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yywL3DpgDyP4yZ2G"
+	protocol="application/pgp-signature"; boundary="L5xhH6lUAPIS347H"
 Content-Disposition: inline
 
 
---yywL3DpgDyP4yZ2G
+--L5xhH6lUAPIS347H
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 20, 2014 at 02:11:07PM +0530, Vinod Koul wrote:
-> On Wed, Aug 20, 2014 at 09:33:05AM +0200, Takashi Iwai wrote:
+On Wed, Aug 20, 2014 at 09:33:05AM +0200, Takashi Iwai wrote:
+> Vinod Koul wrote:
 
-> > I thought UCM was targeted to this, but not widely used as expected?
+> > Configuration convergence:
+> > >From the OS side, we have Desktop OSes relying on PA, Chrome using CRAS,
+> > Android using flinger. With DSPs and tons of configuration it doesn't bode
+> > well to have multiple configuration for same stuff for the sound cards. Can
+> > we talk about unifying the configuration at least. Sure OSes will have their
+> > own ways to use, but from ALSA can we standardize configurations which
+> > can be reused across.
 
-> Chrome uses t but not Android due to licensing issues. What happend to
-> tinyucm?
+> I thought UCM was targeted to this, but not widely used as expected?
 
-The latest Google reference designs use something which is essentially
-tinyucm - the configuration is mostly stored in an XML configuration
-file which is read at runtime.  It's not consistent with what anyone
-else uses.
+Right, the problems with alsa-lib licensing and the changes in the
+configuration format have been a bit of a blocker - there are actually
+some substantial deployments of the pre-merge configuration file format.
 
---yywL3DpgDyP4yZ2G
+--L5xhH6lUAPIS347H
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT9NRIAAoJELSic+t+oim9S+kP/3kQC1KbmVxL46iUvxcnHWCG
-eb/xgZXIifTdkDmS+npQSxgTNSu3M+vBF4ey2PQLsvKXWmsq7UvNb9rJoRXv8o4S
-GTynNpW5eSKfAxrYBunjzJZDhmh5Hd9SWM8GMcnx3CL8NdyOv/Ws3iqtf1CLdh5y
-a3D+70wbds2PuJk3Har9h6656+jZgHYpKKugJGpmEbp3H7LuC92cUvCsmDs/X8ld
-uOUQLinO2rfj1Na5tYlTLh8WmM01bDPdGKRC4rPRbfrTatPNgUPRH/N4SgC7VxbK
-HAm0H5f5YUQ5n6payr6AG1BhMEf61Fbg54Gru0dx1V5a/yqkcwbaKk6Gr/jg5zh1
-e4PKNiTIvPwz++lG7DOwNohxKpr1c7LKR2D2wImcQ7Co+eqaIwNeVeKmizNpPn8s
-syQEQ8cAWXaLu94ECioev+9I3WBIYw1ScRC9OeMdadbixaAozVI9S4O1H/Eu7Z0x
-ea1CACnFkcfjx3pApFU0MSAvwdUTJN4iAKcet/DJ/DE7Kc6+lG6S5NgagsDGn1JE
-vNs9Cp21SigJnfS+PnwWwJoMHgAcYVIuW7qYJinHdf9e/r3hvOnePBTu/mYU+MY1
-QH8PJ52dhCc4ozNhAY5TZJvZ13zzWjMbYG2VXXs8rOSmj1i1hCrYCuvkKQKedXV4
-6Hyw9Twuq2C1SsOWkzdc
-=1O61
+iQIcBAEBAgAGBQJT9NTPAAoJELSic+t+oim9qNMP/RF5PTAH/4yGksi6tvMW9loP
+2zgQJcZ89QHgr1co+SfoRBBhuGhrhM6nw7+expY68r54DGcrHsysb7nntwEWDjry
+e0dNtKhrebNktZp1vKaLZ/jmfUNhLtKPravdcjoMg6KWydvep9B8BcdPox90YSeS
+zMeXTRVcHpcfoJOCSBfNiTlz9mc60oYoYZJclSRGuaawBO1Roxf0WFu/ardpVe8v
+RJ9GFiVV5BlFAU2S/2jn6bNykhm25JGoFiWLCVyzdB7s2tiqLCAOSpg/CMFCmJKx
+M8gZwKWxIm7kGYOI58aDYpZ6DPzYAQxPfSvmsvCRAesWMJkR6sMp/KUsJDRMp39h
+FAMXanvSSJFI+kYvpbffPQFOHJwoJ2dnPYctQUNnV2ncW/yR+a2Sb8nhEYPj7HNj
+qi8DZdHF/HtUMZawmr7ASsbjcf/cAdUSxdoExUaEAwQj/fdia0wG4MiDGEmFACKi
+GwB2iq07XdG1nzEi/ASRX39q823uxOT/OGRogrg6I8ZtF8Ui9Vlgr0wbzy/OQlzf
+lfNYmIXs4CGPHrPwunftgciCbPFbccTmaZe92p9OsL8UR9mDp3kQoZqYiIH5Uy6P
+Jsfl4qEVR98mGg3ykQ2jpeDCCuDzLwydJjuobtntfdNLzYqNaAjFok+5JztCehcF
+w6j7bR0unN7ez6IlI2e2
+=sepo
 -----END PGP SIGNATURE-----
 
---yywL3DpgDyP4yZ2G--
+--L5xhH6lUAPIS347H--
 
---===============6465421585702527558==
+--===============7684985065642987250==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6465421585702527558==--
+--===============7684985065642987250==--
