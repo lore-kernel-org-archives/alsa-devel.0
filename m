@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 4/4] ASoC: Remove table based DAPM/control
-	setup support from snd_soc_platform_driver
-Date: Wed, 20 Aug 2014 13:08:49 +0200
-Message-ID: <1408532929-26978-5-git-send-email-lars@metafoo.de>
+Subject: [PATCH 2/4] ASoC: sst-haswell-pcm: Alloc state struct
+	in driver probe()
+Date: Wed, 20 Aug 2014 13:08:47 +0200
+Message-ID: <1408532929-26978-3-git-send-email-lars@metafoo.de>
 References: <1408532929-26978-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-032.synserver.de (smtp-out-036.synserver.de
  [212.40.185.36])
- by alsa0.perex.cz (Postfix) with ESMTP id C8F7A2656E9
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 13:08:58 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E3E32656E2
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 13:08:56 +0200 (CEST)
 In-Reply-To: <1408532929-26978-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,143 +26,66 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-There are no users left and new users should rather use the component_driver
-struct embedded in the snd_soc_platform_driver struct to do this. E.g.:
-
-static const struct snd_soc_platform_driver foobar_driver = {
-	.component_driver = {
-		.dapm_widgets = ...,
-		.num_dapm_widgets = ...,
-		...,
-	},
-	...
-};
-
-instead of
-
-static const struct snd_soc_platform_driver foobar_driver = {
-	.dapm_widgets = ...,
-	.num_dapm_widgets = ...,
-	...
-};
-
-This also allows us to remove the steal_sibling_dai_widgets hack.
+Resource allocations should happen in driver probe callback rather than in
+snd_soc_platform probe functions. Especially if the resource is device
+managed. The snd_soc_* probe/remove functions are mainly intended to be used
+for things that require the component to be already bound to a card.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc.h  |  9 --------
- sound/soc/soc-core.c | 58 ++++++----------------------------------------------
- 2 files changed, 6 insertions(+), 61 deletions(-)
+ sound/soc/intel/sst-haswell-pcm.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index e6440d8..3f07a1e 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -764,7 +764,6 @@ struct snd_soc_component {
- 	unsigned int num_dapm_widgets;
- 	const struct snd_soc_dapm_route *dapm_routes;
- 	unsigned int num_dapm_routes;
--	bool steal_sibling_dai_widgets;
- 	struct snd_soc_codec *codec;
+diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
+index 61bf6da..1de0958 100644
+--- a/sound/soc/intel/sst-haswell-pcm.c
++++ b/sound/soc/intel/sst-haswell-pcm.c
+@@ -778,20 +778,11 @@ static const struct snd_soc_dapm_route graph[] = {
  
- 	int (*probe)(struct snd_soc_component *);
-@@ -869,14 +868,6 @@ struct snd_soc_platform_driver {
- 	int (*pcm_new)(struct snd_soc_pcm_runtime *);
- 	void (*pcm_free)(struct snd_pcm *);
- 
--	/* Default control and setup, added after probe() is run */
--	const struct snd_kcontrol_new *controls;
--	int num_controls;
--	const struct snd_soc_dapm_widget *dapm_widgets;
--	int num_dapm_widgets;
--	const struct snd_soc_dapm_route *dapm_routes;
--	int num_dapm_routes;
--
- 	/*
- 	 * For platform caused delay reporting.
- 	 * Optional.
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e982cb0..c3a63a1 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1089,7 +1089,6 @@ static int soc_probe_component(struct snd_soc_card *card,
- 	struct snd_soc_component *component)
+ static int hsw_pcm_probe(struct snd_soc_platform *platform)
  {
- 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
--	struct snd_soc_component *dai_component, *component2;
- 	struct snd_soc_dai *dai;
++	struct hsw_priv_data *priv_data = snd_soc_platform_get_drvdata(platform);
+ 	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
+-	struct hsw_priv_data *priv_data;
+-	struct device *dma_dev;
++	struct device *dma_dev = pdata->dma_dev;
+ 	int i, ret = 0;
+ 
+-	if (!pdata)
+-		return -ENODEV;
+-
+-	dma_dev = pdata->dma_dev;
+-
+-	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data), GFP_KERNEL);
+-	priv_data->hsw = pdata->dsp;
+-	snd_soc_platform_set_drvdata(platform, priv_data);
+-
+ 	/* allocate DSP buffer page tables */
+ 	for (i = 0; i < ARRAY_SIZE(hsw_dais); i++) {
+ 
+@@ -863,12 +854,23 @@ static const struct snd_soc_component_driver hsw_dai_component = {
+ static int hsw_pcm_dev_probe(struct platform_device *pdev)
+ {
+ 	struct sst_pdata *sst_pdata = dev_get_platdata(&pdev->dev);
++	struct hsw_priv_data *priv_data;
  	int ret;
  
-@@ -1116,44 +1115,12 @@ static int soc_probe_component(struct snd_soc_card *card,
- 		}
- 	}
++	if (!sst_pdata)
++		return -EINVAL;
++
++	priv_data = devm_kzalloc(&pdev->dev, sizeof(*priv_data), GFP_KERNEL);
++	if (!priv_data)
++		return -ENOMEM;
++
+ 	ret = sst_hsw_dsp_init(&pdev->dev, sst_pdata);
+ 	if (ret < 0)
+ 		return -ENODEV;
  
--	/*
--	 * This is rather ugly, but certain platforms expect that the DAPM
--	 * widgets for the DAIs for components with the same parent device are
--	 * created in the platforms DAPM context. Until that is fixed we need to
--	 * keep this.
--	 */
--	if (component->steal_sibling_dai_widgets) {
--		dai_component = NULL;
--		list_for_each_entry(component2, &component_list, list) {
--			if (component == component2)
--				continue;
--
--			if (component2->dev == component->dev &&
--			    !list_empty(&component2->dai_list)) {
--				dai_component = component2;
--				break;
--			}
--		}
--	} else {
--		dai_component = component;
--		list_for_each_entry(component2, &component_list, list) {
--			if (component2->dev == component->dev &&
--			    component2->steal_sibling_dai_widgets) {
--				dai_component = NULL;
--				break;
--			}
--		}
--	}
--
--	if (dai_component) {
--		list_for_each_entry(dai, &dai_component->dai_list, list) {
--			snd_soc_dapm_new_dai_widgets(dapm, dai);
--			if (ret != 0) {
--				dev_err(component->dev,
--					"Failed to create DAI widgets %d\n",
--					ret);
--				goto err_probe;
--			}
-+	list_for_each_entry(dai, &component->dai_list, list) {
-+		ret = snd_soc_dapm_new_dai_widgets(dapm, dai);
-+		if (ret != 0) {
-+			dev_err(component->dev,
-+				"Failed to create DAI widgets %d\n", ret);
-+			goto err_probe;
- 		}
- 	}
- 
-@@ -4165,19 +4132,6 @@ int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
- 
- 	platform->dev = dev;
- 	platform->driver = platform_drv;
--	if (platform_drv->controls) {
--		platform->component.controls = platform_drv->controls;
--		platform->component.num_controls = platform_drv->num_controls;
--	}
--	if (platform_drv->dapm_widgets) {
--		platform->component.dapm_widgets = platform_drv->dapm_widgets;
--		platform->component.num_dapm_widgets = platform_drv->num_dapm_widgets;
--		platform->component.steal_sibling_dai_widgets = true;
--	}
--	if (platform_drv->dapm_routes) {
--		platform->component.dapm_routes = platform_drv->dapm_routes;
--		platform->component.num_dapm_routes = platform_drv->num_dapm_routes;
--	}
- 
- 	if (platform_drv->probe)
- 		platform->component.probe = snd_soc_platform_drv_probe;
++	priv_data->hsw = sst_pdata->dsp;
++	platform_set_drvdata(pdev, priv_data);
++
+ 	ret = snd_soc_register_platform(&pdev->dev, &hsw_soc_platform);
+ 	if (ret < 0)
+ 		goto err_plat;
 -- 
 1.8.0
