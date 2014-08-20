@@ -1,17 +1,20 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: ALSA - Channel swap
-Date: Wed, 20 Aug 2014 15:00:44 +0200
-Message-ID: <53F49BFC.6010306@zonque.org>
-References: <53F35310.2040300@tcz.cz> <53F377BB.90309@zonque.org>
- <53F49680.2050003@tcz.cz>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v2 3/8] ASoC: davinci-evm: HDMI audio
+ support for TDA998x trough McASP I2S bus
+Date: Wed, 20 Aug 2014 16:03:46 +0300
+Message-ID: <53F49CB2.5020801@ti.com>
+References: <cover.1408397864.git.jsarha@ti.com>
+ <a92cd9257efb58711b2d5d3de2abff9c8a1052d2.1408397864.git.jsarha@ti.com>
+ <20140819131621.GL3302@leverpostej> <53F3A843.4010409@ti.com>
+ <20140820123434.GC21734@leverpostej>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 951932656ED
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 15:00:45 +0200 (CEST)
-In-Reply-To: <53F49680.2050003@tcz.cz>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAAAE2656EA
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 15:03:53 +0200 (CEST)
+In-Reply-To: <20140820123434.GC21734@leverpostej>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,27 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tomas Matejka <tomas.matejka@tcz.cz>
-Cc: alsa-devel@alsa-project.org
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "airlied@linux.ie" <airlied@linux.ie>, "t-kristo@ti.com" <t-kristo@ti.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "tony@atomide.com" <tony@atomide.com>, "broonie@kernel.org" <broonie@kernel.org>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "detheridge@ti.com" <detheridge@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 08/20/2014 02:37 PM, Tomas Matejka wrote:
-> My kernel version is 3.2.18.
-> I can't uderstand this, does this mean that using Atmel, Linux and audio 
-> codec always result to channel swapping?
-> It would be very strange. How could codec manufacturer sell codec, which 
-> swaps channels ?
+On 08/20/2014 03:34 PM, Mark Rutland wrote:
+...
+> Sorry, I meant in the same node. I take it we never expect:
+>
+> compatible = "ti,am335x-beaglebone-black-audio", "ti,da830-evm-audio";
+>
 
-Also, as I've told you before, the Codec is most probably not the
-cultprit here. Try and play a wave file that only has signal on the left
-side, and provide some input to the Codec's left channel only. Then see
-what your scope shows on the SDIN/SDOUT lines, while putting the trigger
-on the LRCLK. If your Codec is causing the problem, you'll already see
-the channel swap on the bus, but I bet you won't. Instead, the problem
-is in how the Atmel I2S hardware block transports the data into and out
-of your memory, and that's likely related to its DMA implementation.
+No never like that.
 
-Anyway - the first step is to boot an up-to-date kernel.
+>>> > >Is the 'x' in the BBB string a wildcard? If we know the particular
+>>> > >number for BBB we should use that.
+>>> > >
+>> >
+>> >Yes, its a wild card. BBBs have been made at least with AM3358 and
+>> >AM3359 SoCs.
+> In general we've pushed back against wildcard strings, and used the
+> first implementation for the naming. We should be able to use
+> "ti,am3358-beaglebone-black-audio" for AM335{8,9} assuming the block is
+> the same? Otherwise we might need separate strings anyway.
 
+At least the relevant block (McASP) is the same. AM335x is commonly used 
+in all TI documentation, but I am not picky am3358 is fine with me.
 
-Daniel
+Could we drop the SoC id completely and make it just 
+"beaglebone-black-audio"?
+
+The board design is the unique factor here, not the SoC. McASP block can 
+be found from several TI SoCs.
+
+Cheers,
+Jyri
