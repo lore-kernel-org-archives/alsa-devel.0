@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/4] ASoC: sst-haswell-pcm: Alloc state struct
-	in driver probe()
-Date: Wed, 20 Aug 2014 13:08:47 +0200
-Message-ID: <1408532929-26978-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 3/4] ASoC: sst-haswell-pcm: Move controls and
+	DAPM elements to component
+Date: Wed, 20 Aug 2014 13:08:48 +0200
+Message-ID: <1408532929-26978-4-git-send-email-lars@metafoo.de>
 References: <1408532929-26978-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-032.synserver.de (smtp-out-036.synserver.de
  [212.40.185.36])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E3E32656E2
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 13:08:56 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 064BC2656E5
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 13:08:57 +0200 (CEST)
 In-Reply-To: <1408532929-26978-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,66 +26,100 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Resource allocations should happen in driver probe callback rather than in
-snd_soc_platform probe functions. Especially if the resource is device
-managed. The snd_soc_* probe/remove functions are mainly intended to be used
-for things that require the component to be already bound to a card.
+The sst-haswell-pcm driver registers both a snd_soc_component and a
+snd_soc_platform and expects that the DAPM widgets for the DAIs registered by
+component are added to the DAPM context of the platform. This requires us to
+have a hack in the ASoC core which does so. Moving the DAPM elements over to
+the component allows us to remove this hack.
+
+While we are at it also move the controls over to the component. The controls
+don't need the platform for anything other than snd_soc_platform_get_drvdata(),
+this can easily be replaced by snd_soc_component_get_drvdata(). As the long
+term goal is to register only a single component this is a step in the right
+direction.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/intel/sst-haswell-pcm.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ sound/soc/intel/sst-haswell-pcm.c | 32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
 
 diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index 61bf6da..1de0958 100644
+index 1de0958..33fc5c3 100644
 --- a/sound/soc/intel/sst-haswell-pcm.c
 +++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -778,20 +778,11 @@ static const struct snd_soc_dapm_route graph[] = {
- 
- static int hsw_pcm_probe(struct snd_soc_platform *platform)
+@@ -138,11 +138,10 @@ static inline unsigned int hsw_ipc_to_mixer(u32 value)
+ static int hsw_stream_volume_put(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
  {
-+	struct hsw_priv_data *priv_data = snd_soc_platform_get_drvdata(platform);
- 	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
--	struct hsw_priv_data *priv_data;
--	struct device *dma_dev;
-+	struct device *dma_dev = pdata->dma_dev;
- 	int i, ret = 0;
+-	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
++	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
++	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(cmpnt);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct hsw_priv_data *pdata =
+-		snd_soc_platform_get_drvdata(platform);
+ 	struct hsw_pcm_data *pcm_data = &pdata->pcm[mc->reg];
+ 	struct sst_hsw *hsw = pdata->hsw;
+ 	u32 volume;
+@@ -176,11 +175,10 @@ static int hsw_stream_volume_put(struct snd_kcontrol *kcontrol,
+ static int hsw_stream_volume_get(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
++	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
++	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(cmpnt);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
+-	struct hsw_priv_data *pdata =
+-		snd_soc_platform_get_drvdata(platform);
+ 	struct hsw_pcm_data *pcm_data = &pdata->pcm[mc->reg];
+ 	struct sst_hsw *hsw = pdata->hsw;
+ 	u32 volume;
+@@ -208,8 +206,8 @@ static int hsw_stream_volume_get(struct snd_kcontrol *kcontrol,
+ static int hsw_volume_put(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
+-	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
++	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
++	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(cmpnt);
+ 	struct sst_hsw *hsw = pdata->hsw;
+ 	u32 volume;
  
--	if (!pdata)
--		return -ENODEV;
--
--	dma_dev = pdata->dma_dev;
--
--	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data), GFP_KERNEL);
--	priv_data->hsw = pdata->dsp;
--	snd_soc_platform_set_drvdata(platform, priv_data);
--
- 	/* allocate DSP buffer page tables */
- 	for (i = 0; i < ARRAY_SIZE(hsw_dais); i++) {
+@@ -233,8 +231,8 @@ static int hsw_volume_put(struct snd_kcontrol *kcontrol,
+ static int hsw_volume_get(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
+-	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
++	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
++	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(cmpnt);
+ 	struct sst_hsw *hsw = pdata->hsw;
+ 	unsigned int volume = 0;
  
-@@ -863,12 +854,23 @@ static const struct snd_soc_component_driver hsw_dai_component = {
+@@ -839,16 +837,16 @@ static struct snd_soc_platform_driver hsw_soc_platform = {
+ 	.ops		= &hsw_pcm_ops,
+ 	.pcm_new	= hsw_pcm_new,
+ 	.pcm_free	= hsw_pcm_free,
+-	.controls	= hsw_volume_controls,
+-	.num_controls	= ARRAY_SIZE(hsw_volume_controls),
+-	.dapm_widgets	= widgets,
+-	.num_dapm_widgets	= ARRAY_SIZE(widgets),
+-	.dapm_routes	= graph,
+-	.num_dapm_routes	= ARRAY_SIZE(graph),
+ };
+ 
+ static const struct snd_soc_component_driver hsw_dai_component = {
+-	.name		= "haswell-dai",
++	.name = "haswell-dai",
++	.controls = hsw_volume_controls,
++	.num_controls = ARRAY_SIZE(hsw_volume_controls),
++	.dapm_widgets = widgets,
++	.num_dapm_widgets = ARRAY_SIZE(widgets),
++	.dapm_routes = graph,
++	.num_dapm_routes = ARRAY_SIZE(graph),
+ };
+ 
  static int hsw_pcm_dev_probe(struct platform_device *pdev)
- {
- 	struct sst_pdata *sst_pdata = dev_get_platdata(&pdev->dev);
-+	struct hsw_priv_data *priv_data;
- 	int ret;
- 
-+	if (!sst_pdata)
-+		return -EINVAL;
-+
-+	priv_data = devm_kzalloc(&pdev->dev, sizeof(*priv_data), GFP_KERNEL);
-+	if (!priv_data)
-+		return -ENOMEM;
-+
- 	ret = sst_hsw_dsp_init(&pdev->dev, sst_pdata);
- 	if (ret < 0)
- 		return -ENODEV;
- 
-+	priv_data->hsw = sst_pdata->dsp;
-+	platform_set_drvdata(pdev, priv_data);
-+
- 	ret = snd_soc_register_platform(&pdev->dev, &hsw_soc_platform);
- 	if (ret < 0)
- 		goto err_plat;
 -- 
 1.8.0
