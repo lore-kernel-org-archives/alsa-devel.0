@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/4] ASoC: Add snd_soc_component_{get,
-	set}_drvdata()
-Date: Wed, 20 Aug 2014 13:08:46 +0200
-Message-ID: <1408532929-26978-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 4/4] ASoC: Remove table based DAPM/control
+	setup support from snd_soc_platform_driver
+Date: Wed, 20 Aug 2014 13:08:49 +0200
+Message-ID: <1408532929-26978-5-git-send-email-lars@metafoo.de>
 References: <1408532929-26978-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-032.synserver.de (smtp-out-036.synserver.de
  [212.40.185.36])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A6E42656DE
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 13:08:55 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C8F7A2656E9
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 13:08:58 +0200 (CEST)
 In-Reply-To: <1408532929-26978-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,60 +26,143 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add Add snd_soc_component_{get,set}_drvdata() similar to
-snd_soc_codec_{get,set}_drvdata() and snd_soc_platform_{get,set}_drvdata().
-Also update them to use the new functions internally.
+There are no users left and new users should rather use the component_driver
+struct embedded in the snd_soc_platform_driver struct to do this. E.g.:
+
+static const struct snd_soc_platform_driver foobar_driver = {
+	.component_driver = {
+		.dapm_widgets = ...,
+		.num_dapm_widgets = ...,
+		...,
+	},
+	...
+};
+
+instead of
+
+static const struct snd_soc_platform_driver foobar_driver = {
+	.dapm_widgets = ...,
+	.num_dapm_widgets = ...,
+	...
+};
+
+This also allows us to remove the steal_sibling_dai_widgets hack.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc.h | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ include/sound/soc.h  |  9 --------
+ sound/soc/soc-core.c | 58 ++++++----------------------------------------------
+ 2 files changed, 6 insertions(+), 61 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index e43fbb6..e6440d8 100644
+index e6440d8..3f07a1e 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -1299,26 +1299,37 @@ static inline void *snd_soc_card_get_drvdata(struct snd_soc_card *card)
- 	return card->drvdata;
- }
+@@ -764,7 +764,6 @@ struct snd_soc_component {
+ 	unsigned int num_dapm_widgets;
+ 	const struct snd_soc_dapm_route *dapm_routes;
+ 	unsigned int num_dapm_routes;
+-	bool steal_sibling_dai_widgets;
+ 	struct snd_soc_codec *codec;
  
-+static inline void snd_soc_component_set_drvdata(struct snd_soc_component *c,
-+		void *data)
-+{
-+	dev_set_drvdata(c->dev, data);
-+}
-+
-+static inline void *snd_soc_component_get_drvdata(struct snd_soc_component *c)
-+{
-+	return dev_get_drvdata(c->dev);
-+}
-+
- static inline void snd_soc_codec_set_drvdata(struct snd_soc_codec *codec,
- 		void *data)
+ 	int (*probe)(struct snd_soc_component *);
+@@ -869,14 +868,6 @@ struct snd_soc_platform_driver {
+ 	int (*pcm_new)(struct snd_soc_pcm_runtime *);
+ 	void (*pcm_free)(struct snd_pcm *);
+ 
+-	/* Default control and setup, added after probe() is run */
+-	const struct snd_kcontrol_new *controls;
+-	int num_controls;
+-	const struct snd_soc_dapm_widget *dapm_widgets;
+-	int num_dapm_widgets;
+-	const struct snd_soc_dapm_route *dapm_routes;
+-	int num_dapm_routes;
+-
+ 	/*
+ 	 * For platform caused delay reporting.
+ 	 * Optional.
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e982cb0..c3a63a1 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1089,7 +1089,6 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 	struct snd_soc_component *component)
  {
--	dev_set_drvdata(codec->dev, data);
-+	snd_soc_component_set_drvdata(&codec->component, data);
- }
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+-	struct snd_soc_component *dai_component, *component2;
+ 	struct snd_soc_dai *dai;
+ 	int ret;
  
- static inline void *snd_soc_codec_get_drvdata(struct snd_soc_codec *codec)
- {
--	return dev_get_drvdata(codec->dev);
-+	return snd_soc_component_get_drvdata(&codec->component);
- }
+@@ -1116,44 +1115,12 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 		}
+ 	}
  
- static inline void snd_soc_platform_set_drvdata(struct snd_soc_platform *platform,
- 		void *data)
- {
--	dev_set_drvdata(platform->dev, data);
-+	snd_soc_component_set_drvdata(&platform->component, data);
- }
+-	/*
+-	 * This is rather ugly, but certain platforms expect that the DAPM
+-	 * widgets for the DAIs for components with the same parent device are
+-	 * created in the platforms DAPM context. Until that is fixed we need to
+-	 * keep this.
+-	 */
+-	if (component->steal_sibling_dai_widgets) {
+-		dai_component = NULL;
+-		list_for_each_entry(component2, &component_list, list) {
+-			if (component == component2)
+-				continue;
+-
+-			if (component2->dev == component->dev &&
+-			    !list_empty(&component2->dai_list)) {
+-				dai_component = component2;
+-				break;
+-			}
+-		}
+-	} else {
+-		dai_component = component;
+-		list_for_each_entry(component2, &component_list, list) {
+-			if (component2->dev == component->dev &&
+-			    component2->steal_sibling_dai_widgets) {
+-				dai_component = NULL;
+-				break;
+-			}
+-		}
+-	}
+-
+-	if (dai_component) {
+-		list_for_each_entry(dai, &dai_component->dai_list, list) {
+-			snd_soc_dapm_new_dai_widgets(dapm, dai);
+-			if (ret != 0) {
+-				dev_err(component->dev,
+-					"Failed to create DAI widgets %d\n",
+-					ret);
+-				goto err_probe;
+-			}
++	list_for_each_entry(dai, &component->dai_list, list) {
++		ret = snd_soc_dapm_new_dai_widgets(dapm, dai);
++		if (ret != 0) {
++			dev_err(component->dev,
++				"Failed to create DAI widgets %d\n", ret);
++			goto err_probe;
+ 		}
+ 	}
  
- static inline void *snd_soc_platform_get_drvdata(struct snd_soc_platform *platform)
- {
--	return dev_get_drvdata(platform->dev);
-+	return snd_soc_component_get_drvdata(&platform->component);
- }
+@@ -4165,19 +4132,6 @@ int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
  
- static inline void snd_soc_pcm_set_drvdata(struct snd_soc_pcm_runtime *rtd,
+ 	platform->dev = dev;
+ 	platform->driver = platform_drv;
+-	if (platform_drv->controls) {
+-		platform->component.controls = platform_drv->controls;
+-		platform->component.num_controls = platform_drv->num_controls;
+-	}
+-	if (platform_drv->dapm_widgets) {
+-		platform->component.dapm_widgets = platform_drv->dapm_widgets;
+-		platform->component.num_dapm_widgets = platform_drv->num_dapm_widgets;
+-		platform->component.steal_sibling_dai_widgets = true;
+-	}
+-	if (platform_drv->dapm_routes) {
+-		platform->component.dapm_routes = platform_drv->dapm_routes;
+-		platform->component.num_dapm_routes = platform_drv->num_dapm_routes;
+-	}
+ 
+ 	if (platform_drv->probe)
+ 		platform->component.probe = snd_soc_platform_drv_probe;
 -- 
 1.8.0
