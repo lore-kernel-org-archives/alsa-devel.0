@@ -1,26 +1,19 @@
-From: Dylan Reid <dgreid@chromium.org>
-Subject: Re: Audio mini conference 2014?
-Date: Wed, 20 Aug 2014 10:16:23 -0700
-Message-ID: <CAEUnVG6=YpJ6E-jBi-1RP0zWk3c-DR7yuHF-fiVoL8qw5tDgyw@mail.gmail.com>
-References: <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
- <53EA6165.3070902@zonque.org> <s5hbnropcvd.wl-tiwai@suse.de>
- <20140813165517.GB17528@sirena.org.uk> <20140817231021.GQ14537@sirena.org.uk>
- <s5hha1aw6we.wl-tiwai@suse.de> <20140819172948.GX13288@intel.com>
- <alpine.DEB.2.00.1408191451550.10517@phandrigan-desktop>
- <20140820042109.GY13288@intel.com>
- <s5hy4ujhfta.wl-tiwai@suse.de> <20140820070236.GC13288@intel.com>
- <s5hr40bhaz2.wl-tiwai@suse.de>
+From: Dr Nicholas J Bailey <nicholas.bailey@glasgow.ac.uk>
+Subject: Re: usb-usx2y: playback fails with Tascam US122 on
+	kernel 3.14
+Date: Wed, 20 Aug 2014 18:50:21 +0100
+Message-ID: <1915519.7eNd95CgvB@arial>
+References: <4546801.Z4WD7yaEHq@arial> <1799623.GgHbzoqWFu@arial>
+ <53E2639A.4070506@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f51.google.com (mail-oa0-f51.google.com
- [209.85.219.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 00E062656FE
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 19:16:44 +0200 (CEST)
-Received: by mail-oa0-f51.google.com with SMTP id o6so6623852oag.24
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 10:16:43 -0700 (PDT)
-In-Reply-To: <s5hr40bhaz2.wl-tiwai@suse.de>
+Received: from plockton.cent.gla.ac.uk (plockton.cent.gla.ac.uk
+ [130.209.16.75])
+ by alsa0.perex.cz (Postfix) with ESMTP id 711F626587E
+ for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 19:50:22 +0200 (CEST)
+In-Reply-To: <53E2639A.4070506@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,97 +23,224 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Mark Brown <broonie@kernel.org>, David Henningsson <david.henningsson@canonical.com>, Daniel Mack <daniel@zonque.org>
+To: Daniel Mack <daniel@zonque.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 20, 2014 at 12:33 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 20 Aug 2014 12:32:37 +0530,
-> Vinod Koul wrote:
->>
->> On Wed, Aug 20, 2014 at 07:48:33AM +0200, Takashi Iwai wrote:
->> > ===
->> >
->> > Audio Miniconf 2014 Topics
->> >
->> > - ASoC componentization (Lars)
->> >
->> > - Dynamic FW (Vinod)
->> >   Me and Liam will try to send RFCs before the conference. At least on
->> >   my side thats next todo after current mrfld driver is done.
->> >
->> >   We have working code atm. For the folks who want to look at early
->> >   state of affairs, here are the trees:
->> >   Kernel: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/sound.git dfw-3.15
->> >   Usermode: git://git.infradead.org/users/vkoul/dynamic_fw.git
->> >
->> > - Effect API (yet again) (Vinod)
->> >
->> > - More DSP support esp on PCM side (Vinod)
->> >
->> > - Rewinding in ALSA PCM plugins (Alexander)
->> >
->> > - Resampler quality evaluation for PulseAudio (Alexander)
->> >
->> > - Testing / QA (Takashi)
->> >   How people do test?  Can we have some automation?
->> >   (IIRC, openSUSE has some automatic audio test running on VM, but I
->> >    forgot the details...)
->> I would be interested in this as well, some test framework for auto regression
->> checks would be great.
->>
->> I think Mark would be at KS and can update if we can leverage something for
->> kselftest stuff being discussed there
->
-> Yep, let's see :)
->
->> > - ABI/API documentation (Takashi)
->> >   We're not good at this at all, obviously.  Let's define the priority
->> >   to start working on.
->> I think ASoC has grown a lot with DPCM etc making it very dynamic atm. So
->> yes it will help to add more
->>
->> > - Control names (Takashi)
->> >   It's wild west for now, everyone picks up a random funky name.
->> yes, I think the current control names were too HDA specific.
->
-> Actually, the current names are based on hardware in era before
-> HD-audio.  Even HD-audio doesn't fit fully with the current rule.
->
->> With DSP and
->> audio hub proliferation on SoCs/Codecs revisiting this would certainly be
->> great. Like how do I specify volume control for gain before a mixer, or gain
->> in capture BE which is different from the one on capture FE.
->>
->> >
->> > - Code removals (Takashi)
->> >   There have been actions to remove the codes for old hardware
->> >   recently.  Which is acceptable?  Feature removals, too?
->>
->> Configuration convergence:
->> >From the OS side, we have Desktop OSes relying on PA, Chrome using CRAS,
->> Android using flinger. With DSPs and tons of configuration it doesn't bode
->> well to have multiple configuration for same stuff for the sound cards. Can
->> we talk about unifying the configuration at least. Sure OSes will have their
->> own ways to use, but from ALSA can we standardize configurations which
->> can be reused across.
->
-> I thought UCM was targeted to this, but not widely used as expected?
->
->> And lastly, our users :)
->> Ask from PA, Android, ChomesOS folks??
->
-> Yeah.  Let's throw a call for topic to relevant MLs when the schedule
-> and location is finalized.
+On Wednesday 06 August 2014 19:19:22 Daniel Mack wrote:
+> The best thing you can do is probably bisect the issue:
+> 
+>   https://wiki.ubuntu.com/Kernel/KernelBisection
+> 
+> > I understand that the US-122 is a usb-1.1 device and I have the ehci
+> > module  loaded, but it was there too with the older kernel and that
+> > worked fine.
+> Yes, that shouldn't be an issue. Let us know what the bisection tells you.
+> 
+> 
+> Daniel
 
-I'll be there and can talk about ChromeOS UCM usage.  I'm giving a
-talk with an overview of ChromeOS's audio system at ELC on Tuesday at
-12:15, but aside from that I'll attend the whole day.
+OK, I put aside some time to try and do this and didn't get too far :(
 
->
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+I'm using debian testing (jessie) so I cloned from
+
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+
+rather than the ubuntu one, as recommended here:
+
+	https://wiki.debian.org/DebianKernel/GitBisect
+
+The test I wanted to work was to make the command
+
+	jackd -u -dalsa -dhw:1,0 -r48000 -p512 -n3
+
+behave as expected, hw:1,0 being my Tascam US-122 sound box.
+
+To be sure, I booted up kernel 3.10.11 to which I'd applied patches to make 
+the MIDI interface of the box work. This is documented on the ALSA-devel list 
+a while back. It did. I played audio through it while it was configured duplex 
+at the same time watching a video and building a new kernel.
+
+I checked out v3.11 from the kernel tree, and built it. When it ran, I got a 
+failure from the same jack command:
+
+"""
+ALSA: poll time out, polled for 15999083 usecs
+JackAudioDriver::ProcessAsync: read error, stopping...
+"""
+
+So far, so good. That can be the bad end of the bisection. The trouble is, 
+building 3.10 resulted in exactly the same error. My version 3.10.11 (which 
+works) is build from the debian source package rather than the kernel source, 
+so presumably the applied patches do something good which makes the sound 
+system happier. Heavens knows what.
+
+For a laugh I pulled the latest 3.16 source package from the debian repo and 
+built that. This produced the same failure as above.
+
+So the thing is, I can't make any stock kernel work on my Debian laptop, which 
+means there aren't two points between which to bisect.
+
+That's all I've got time for at the moment. I'll append the notes I made 
+yesterday and today while the builds and tests were going on, just in case 
+they are any help. At least I have a kernel (3.10.11) that works for now, but 
+unless somebody who really knows what they are doing is going on the case, it 
+looks like its just a matter of time before I'll be buying a whole bunch of 
+new audio interfaces. We have at least 4 or 5 of these Tascam US-122 boxes, 
+and use them quite a lot, so I am nervously fingering my wallet... :(
+
+Nick/.
+
+8><---
+Linux arial 3.10.11 #1 SMP Wed Oct 2 19:26:59 BST 2013 i686 GNU/Linux
+---------------------------------------------------------------------
+** This is the kernel patched with the MIDI device fixes sent to the
+   alsa-dev mail list **
+   
+Works (as nick).
+
+nick@arial:~/Bisect/linux-stable$ jackd -u -dalsa -dhw:1,0 -r48000 -p512 -n3
+jackdmp 1.9.10
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2014 Grame.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+no message buffer overruns
+no message buffer overruns
+no message buffer overruns
+JACK server starting in realtime mode with priority 10
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Acquire audio card Audio1
+creating alsa driver ... hw:1,0|hw:1,0|512|3|48000|0|0|nomon|swmeter|-|32bit
+configuring for 48000Hz, period = 512 frames (10.7 ms), buffer = 3 periods
+ALSA: final selected sample format for capture: 24bit little-endian
+ALSA: use 3 periods for capture
+ALSA: final selected sample format for playback: 24bit little-endian
+ALSA: use 3 periods for playback
+^CJack main caught signal 2
+Released audio card Audio1
+audio_reservation_finish
+
+----------------------------------------------------------------------
+Linux arial 3.11.0+ #1 SMP Tue Aug 19 16:28:36 BST 2014 i686 GNU/Linux
+----------------------------------------------------------------------
+As nick:
+nick@arial:~/Bisect/linux-stable$ jackd -u -dalsa -dhw:1,0 -r48000 -p512 -n3
+jackdmp 1.9.10
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2014 Grame.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+no message buffer overruns
+no message buffer overruns
+no message buffer overruns
+JACK server starting in realtime mode with priority 10
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Failed to acquire device name : Audio1 error : Device reservation request with 
+priority 2147483647 denied for "Audio1" via RequestRelease()
+Audio device hw:1,0 cannot be acquired...
+Cannot initialize driver
+JackServer::Open failed with -1
+Failed to open server
+
+(EDIT: That Device reservation request error doesn't seem to be 
+reproducable...?)
+
+As root:
+nick@arial:~/Bisect/linux-stable$ sudo jackd -u -dalsa -dhw:1,0 -r48000 -p512 
+-n3
+jackdmp 1.9.10
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2014 Grame.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+no message buffer overruns
+no message buffer overruns
+no message buffer overruns
+JACK server starting in realtime mode with priority 10
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Acquire audio card Audio1
+creating alsa driver ... hw:1,0|hw:1,0|512|3|48000|0|0|nomon|swmeter|-|32bit
+configuring for 48000Hz, period = 512 frames (10.7 ms), buffer = 3 periods
+ALSA: final selected sample format for capture: 24bit little-endian
+ALSA: use 3 periods for capture
+ALSA: final selected sample format for playback: 24bit little-endian
+ALSA: use 3 periods for playback
+ALSA: poll time out, polled for 15999083 usecs
+JackAudioDriver::ProcessAsync: read error, stopping...
+
+-------------------
+Building 3.10:
+
+scripts/kconfig/conf --silentoldconfig Kconfig
+include/config/auto.conf:2221:warning: symbol value 'm' invalid for 
+USB_OHCI_HCD_PCI
+
+... Changed to "y", try again ...
+
+Same result (whether root or not):
+
+nick@arial:~/Bisect$ uname -a
+Linux arial 3.10.0 #3 SMP Wed Aug 20 13:53:56 BST 2014 i686 GNU/Linux
+nick@arial:~/Bisect$ jackd -u -dalsa -dhw:1,0 -r48000 -p512 -n3
+jackdmp 1.9.10
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2014 Grame.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+no message buffer overruns
+no message buffer overruns
+no message buffer overruns
+JACK server starting in realtime mode with priority 10
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Acquire audio card Audio1
+creating alsa driver ... hw:1,0|hw:1,0|512|3|48000|0|0|nomon|swmeter|-|32bit
+configuring for 48000Hz, period = 512 frames (10.7 ms), buffer = 3 periods
+ALSA: final selected sample format for capture: 24bit little-endian
+ALSA: use 3 periods for capture
+ALSA: final selected sample format for playback: 24bit little-endian
+ALSA: use 3 periods for playback
+ALSA: poll time out, polled for 15999090 usecs
+JackAudioDriver::ProcessAsync: read error, stopping...
+
+
+------------------------------------------------------------------------------
+Linux arial 3.14-2-686-pae #1 SMP Debian 3.14.15-2 (2014-08-09) i686 GNU/Linux
+------------------------------------------------------------------------------
+nick@arial:/usr/src/linux-3.16$ jackd -u -dalsa -dhw:1,0 -r48000 -p512 -n3  
+jackdmp 1.9.10
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2014 Grame.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+no message buffer overruns
+no message buffer overruns
+no message buffer overruns
+JACK server starting in realtime mode with priority 10
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Acquire audio card Audio1
+creating alsa driver ... hw:1,0|hw:1,0|512|3|48000|0|0|nomon|swmeter|-|32bit
+configuring for 48000Hz, period = 512 frames (10.7 ms), buffer = 3 periods
+ALSA: final selected sample format for capture: 24bit little-endian
+ALSA: use 3 periods for capture
+ALSA: final selected sample format for playback: 24bit little-endian
+ALSA: use 3 periods for playback
+ALSA: cannot set hardware parameters for playback
+ALSA: cannot configure playback channel
+Cannot initialize driver
+JackServer::Open failed with -1
+Failed to open server
+
+Build latest 3.16 from source package in debian experimental...
+
+Same result.
