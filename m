@@ -1,22 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Audio mini conference 2014?
-Date: Wed, 20 Aug 2014 11:58:50 -0500
-Message-ID: <20140820165850.GC24407@sirena.org.uk>
-References: <53EA6165.3070902@zonque.org> <s5hbnropcvd.wl-tiwai@suse.de>
- <20140813165517.GB17528@sirena.org.uk>
- <20140817231021.GQ14537@sirena.org.uk>
- <s5hha1aw6we.wl-tiwai@suse.de> <20140819172948.GX13288@intel.com>
- <alpine.DEB.2.00.1408191451550.10517@phandrigan-desktop>
- <20140820042109.GY13288@intel.com> <s5hy4ujhfta.wl-tiwai@suse.de>
- <20140820070236.GC13288@intel.com>
+From: Jon <jon@seniorblanco.com>
+Subject: Re: trouble using S/PDIF input on CMI8738-MC6: C-Media
+ CMI8738 (model 55)
+Date: Wed, 20 Aug 2014 17:20:28 -0700
+Message-ID: <53F53B4C.20905@seniorblanco.com>
+References: <53EA40EB.2060201@seniorblanco.com> <53EB80C3.7020909@ladisch.de>
+ <53EB9C3B.2070602@seniorblanco.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8474850512926890833=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 06F5526508C
- for <alsa-devel@alsa-project.org>; Wed, 20 Aug 2014 20:58:26 +0200 (CEST)
-In-Reply-To: <20140820070236.GC13288@intel.com>
+Received: from thetis.seniorblanco.com
+ (108-227-52-43.lightspeed.irvnca.sbcglobal.net [108.227.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28CD126570A
+ for <alsa-devel@alsa-project.org>; Thu, 21 Aug 2014 02:21:03 +0200 (CEST)
+In-Reply-To: <53EB9C3B.2070602@seniorblanco.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,67 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Daniel Mack <daniel@zonque.org>, David Henningsson <david.henningsson@canonical.com>
+To: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 08/13/2014 10:11 AM, Jon wrote:
+> On 08/13/2014 08:14 AM, Clemens Ladisch wrote:
+>> jon wrote:
+>>> Simple mixer control 'IEC958 In Record',0
+>>>    Mono: Playback [off]
+>>
+>> Shouldn't this be on?
+>
+> Yes, it should, and actually it automatically turns itself on
+> automatically when the arecord command is started, and then back off
+> after the i/o error.  Note that this is one of the toggles that only
+> appeared in alsamixer after the source code change of the two "#if 0"
+> lines to "#if 1".
+>
+>>
+>>> Simple mixer control 'IEC958 In Select',0
+>>>    Mono: Playback [on]
+>>
+>> IIRC this selects between two different inputs.
+>> Try both settings.
+>
+> Yes, the documentation I have read suggests it should toggle between the
+> internal CDROM when off and the external digital input when on, however
+> I have tried both settings and there is no apparent change in behavior.
+>   I still get an i/o error and a 44 byte file either way.
+>
+>>
+>>
+>> Regards,
+>> Clemens
+>>
 
---===============8474850512926890833==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xIVvx4XxNQcAboQ3"
-Content-Disposition: inline
+Thanks by the way for the reply.  I appreciate it.  I wish I had more 
+informed data to provide.  Its probably also worth noting that before 
+and after enabling the "IEC958 In Record" switch to be visible in 
+alsamixer, I also tried literally dozens of other combinations of on/off 
+states for the SPDIF switches, and other things in alsamixer, to no 
+avail.  The outcome is always the same i/o error and resulting 44-byte 
+file of silence.
 
+Is there perhaps any way to output some better diagnostic issue from the 
+driver that might hint at a solution?  As I'm perusing the source code 
+right now I see that there are a bunch of "#define"s right near the 
+beginning, some commented as "model 037" and "model 039" after which 
+there are two adjacent to comments "model 055?" (the model I have, but 
+note the question mark) and I'm wondering if this problem could be 
+really just as simple as someone having guessed wrong about the correct 
+value there having not had this particular model on hand to test with?
 
---xIVvx4XxNQcAboQ3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Aug 20, 2014 at 12:32:37PM +0530, Vinod Koul wrote:
-> On Wed, Aug 20, 2014 at 07:48:33AM +0200, Takashi Iwai wrote:
-
-> > - Testing / QA (Takashi)
-> >   How people do test?  Can we have some automation?
-> >   (IIRC, openSUSE has some automatic audio test running on VM, but I
-> >    forgot the details...)
-
-> I would be interested in this as well, some test framework for auto regression
-> checks would be great.
-
-> I think Mark would be at KS and can update if we can leverage something for
-> kselftest stuff being discussed there
-
-Not really, it's more about standardising the way tests are triggered
-and reported.
-
---xIVvx4XxNQcAboQ3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT9NPCAAoJELSic+t+oim9hz0P/R28KppfKQeuOjIR0saHQOst
-YwlXSvshFLk3t17ZjNMgAhi49QAHm1Op2xQdvpe3a8XzwbMdDZakxcbx17Zia9fx
-79mUj8xSzKJlUSuRgtgFlP1pIdLvlSbb/z7Q8AZNcY9eOBhef2nlVE6WnpF5192h
-gdzyhWSeaP9IqUrUGx8OfZByY4sLtK1E0eYqCPqm7ShkP8YGRveuu2K61cXTPj3p
-IrA71Yj9YQY1nfKKMnZdRi+rrUJMgYKQea3LYbhLyptcUekahoxxIEFt7EHW9YX1
-+Q+7k8lsAH4QnHcce71+FNWbnEPV9s2nFTVvIBCx0nN+WS4Y5Z6i4gv/LFi9vpaH
-o1rLQGsCj5j3oMO8c5/5/dJTVYhtb7TWEUEM6wv+78tICTQytpdn8wiQ5149Bgvf
-xSeX2oFh/I8Xq6fre172PT1j6VEMWnPZncMknJcMrWJkBcGZSMFVvt2ivaCILIFo
-Y9g1yMWwr9oU56nGQYKai7GS7D8EflwkIHlfaEaL/v2lX2dEFfN9YQOCP4QXimMi
-3Iqp6Joc2DQfSTsU/etjsO0gF8e7lTqSmcjcBJgSWflDLDBPsTKKw2CCcqbfNZIy
-ynfrWmgamfpub2DLunDeYpC69G67t7hex2vbBnfrwtuCgWkq3MWB1pSWiFTXr3kZ
-i1rI7jjadC45tq4/Q3Sy
-=lKRT
------END PGP SIGNATURE-----
-
---xIVvx4XxNQcAboQ3--
-
---===============8474850512926890833==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8474850512926890833==--
+Thanks,
+Jon
