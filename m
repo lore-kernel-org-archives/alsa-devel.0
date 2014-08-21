@@ -1,21 +1,28 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/3 v4 RESEND] mfd: arizona: Export
- function to control subsystem DVFS
-Date: Thu, 21 Aug 2014 11:40:51 +0100
-Message-ID: <20140821104051.GW4266@lee--X1>
-References: <20140808133233.GA2665@opensource.wolfsonmicro.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: Audio mini conference 2014?
+Date: Thu, 21 Aug 2014 17:51:50 +0600
+Message-ID: <53F5DD56.40405@gmail.com>
+References: <53CF8306.3090009@zonque.org>
+ <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
+ <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
+ <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
+ <20140807140957.GI8181@intel.com>
+ <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
+ <53EA6165.3070902@zonque.org> <s5hbnropcvd.wl-tiwai@suse.de>
+ <20140813165517.GB17528@sirena.org.uk> <20140817231021.GQ14537@sirena.org.uk>
+ <s5hha1aw6we.wl-tiwai@suse.de> <53F1B892.5080109@metafoo.de>
+ <53F1BA5B.6070400@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f180.google.com (mail-ie0-f180.google.com
- [209.85.223.180])
- by alsa0.perex.cz (Postfix) with ESMTP id AC0E226585C
- for <alsa-devel@alsa-project.org>; Thu, 21 Aug 2014 12:40:58 +0200 (CEST)
-Received: by mail-ie0-f180.google.com with SMTP id at20so4442914iec.39
- for <alsa-devel@alsa-project.org>; Thu, 21 Aug 2014 03:40:57 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20140808133233.GA2665@opensource.wolfsonmicro.com>
+Received: from mail-la0-f67.google.com (mail-la0-f67.google.com
+ [209.85.215.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id C712D26585C
+ for <alsa-devel@alsa-project.org>; Thu, 21 Aug 2014 13:50:35 +0200 (CEST)
+Received: by mail-la0-f67.google.com with SMTP id gl10so2892900lab.2
+ for <alsa-devel@alsa-project.org>; Thu, 21 Aug 2014 04:50:35 -0700 (PDT)
+In-Reply-To: <53F1BA5B.6070400@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,96 +32,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, broonie@linaro.org, tiwai@suse.de, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Daniel Mack <daniel@zonque.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Paul Handrigan <paul.handrigan@cirrus.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAwOCBBdWcgMjAxNCwgUmljaGFyZCBGaXR6Z2VyYWxkIHdyb3RlOgoKPiBGcm9tOiBS
-aWNoYXJkIEZpdHpnZXJhbGQgPHJmQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4KPiAKPiBN
-b3ZpbmcgdGhpcyBjb250cm9sIGZyb20gYmVpbmcgYSBzaWRlLWVmZmVjdCBvZiB0aGUgTERPMQo+
-IHJlZ3VsYXRvciBkcml2ZXIgdG8gYSBzcGVjaWZpYyBleHBvcnRlZCBmdW5jdGlvbi4KPiAKPiBT
-aWduZWQtb2ZmLWJ5OiBSaWNoYXJkIEZpdHpnZXJhbGQgPHJmQG9wZW5zb3VyY2Uud29sZnNvbm1p
-Y3JvLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBDaGFybGVzIEtlZXBheCA8Y2tlZXBheEBvcGVuc291
-cmNlLndvbGZzb25taWNyby5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbWZkL2FyaXpvbmEtY29yZS5j
-ICAgICAgIHwgICA4OSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICBp
-bmNsdWRlL2xpbnV4L21mZC9hcml6b25hL2NvcmUuaCB8ICAgMTIgKysrKysKPiAgMiBmaWxlcyBj
-aGFuZ2VkLCAxMDEgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCklmIHRoaXMgaXMgdGhl
-IHNhbWUgcGF0Y2ggSSByZXZpZXdlZCBiZWZvcmU6CgogIEFja2VkLWJ5OiBMZWUgSm9uZXMgPGxl
-ZS5qb25lc0BsaW5hcm8ub3JnPgoKSSBndWVzcyB3ZSdyZSBqdXN0IHdhaXRpbmcgZm9yIG1haW50
-YWluZXIgQWNrcyBiZWZvcmUgSSBjYW4gYXBwbHkgdGhlCnNldC4KCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvbWZkL2FyaXpvbmEtY29yZS5jIGIvZHJpdmVycy9tZmQvYXJpem9uYS1jb3JlLmMKPiBp
-bmRleCBjZmMxOTFhLi4wNGNkZTRiIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbWZkL2FyaXpvbmEt
-Y29yZS5jCj4gKysrIGIvZHJpdmVycy9tZmQvYXJpem9uYS1jb3JlLmMKPiBAQCAtOTQsNiArOTQs
-OTQgQEAgaW50IGFyaXpvbmFfY2xrMzJrX2Rpc2FibGUoc3RydWN0IGFyaXpvbmEgKmFyaXpvbmEp
-Cj4gIH0KPiAgRVhQT1JUX1NZTUJPTF9HUEwoYXJpem9uYV9jbGszMmtfZGlzYWJsZSk7Cj4gIAo+
-ICtpbnQgYXJpem9uYV9kdmZzX3VwKHN0cnVjdCBhcml6b25hICphcml6b25hLCB1bnNpZ25lZCBp
-bnQgZmxhZ3MpCj4gK3sKPiArCXVuc2lnbmVkIGludCBuZXdfZmxhZ3M7Cj4gKwlpbnQgcmV0ID0g
-MDsKPiArCj4gKwltdXRleF9sb2NrKCZhcml6b25hLT5zdWJzeXNfbWF4X2xvY2spOwo+ICsKPiAr
-CW5ld19mbGFncyA9IGFyaXpvbmEtPnN1YnN5c19tYXhfcnEgfCBmbGFnczsKPiArCj4gKwlpZiAo
-YXJpem9uYS0+c3Vic3lzX21heF9ycSAhPSBuZXdfZmxhZ3MpIHsKPiArCQlzd2l0Y2ggKGFyaXpv
-bmEtPnR5cGUpIHsKPiArCQljYXNlIFdNNTEwMjoKPiArCQljYXNlIFdNODk5NzoKPiArCQkJcmV0
-ID0gcmVndWxhdG9yX3NldF92b2x0YWdlKGFyaXpvbmEtPmRjdmRkLAo+ICsJCQkJCQkgICAgMTgw
-MDAwMCwgMTgwMDAwMCk7Cj4gKwkJCWlmIChyZXQgIT0gMCkgewo+ICsJCQkJZGV2X2Vycihhcml6
-b25hLT5kZXYsCj4gKwkJCQkJIkZhaWxlZCB0byBzZXQgRENWREQgKERWRlMgdXApOiAlZFxuIiwK
-PiArCQkJCQlyZXQpOwo+ICsJCQkJZ290byBlcnI7Cj4gKwkJCX0KPiArCj4gKwkJCXJldCA9IHJl
-Z21hcF91cGRhdGVfYml0cyhhcml6b25hLT5yZWdtYXAsCj4gKwkJCQkJQVJJWk9OQV9EWU5BTUlD
-X0ZSRVFVRU5DWV9TQ0FMSU5HXzEsCj4gKwkJCQkJQVJJWk9OQV9TVUJTWVNfTUFYX0ZSRVEsIDEp
-Owo+ICsJCQlpZiAocmV0ICE9IDApIHsKPiArCQkJCWRldl9lcnIoYXJpem9uYS0+ZGV2LAo+ICsJ
-CQkJCSJGYWlsZWQgdG8gZW5hYmxlIHN1YnN5cyBtYXg6ICVkXG4iLAo+ICsJCQkJCXJldCk7Cj4g
-KwkJCQlyZWd1bGF0b3Jfc2V0X3ZvbHRhZ2UoYXJpem9uYS0+ZGN2ZGQsCj4gKwkJCQkJCSAgICAg
-IDEyMDAwMDAsIDE4MDAwMDApOwo+ICsJCQkJZ290byBlcnI7Cj4gKwkJCX0KPiArCQkJYnJlYWs7
-Cj4gKwo+ICsJCWRlZmF1bHQ6Cj4gKwkJCWJyZWFrOwo+ICsJCX0KPiArCj4gKwkJYXJpem9uYS0+
-c3Vic3lzX21heF9ycSA9IG5ld19mbGFnczsKPiArCX0KPiArZXJyOgo+ICsJbXV0ZXhfdW5sb2Nr
-KCZhcml6b25hLT5zdWJzeXNfbWF4X2xvY2spOwo+ICsJcmV0dXJuIHJldDsKPiArfQo+ICtFWFBP
-UlRfU1lNQk9MX0dQTChhcml6b25hX2R2ZnNfdXApOwo+ICsKPiAraW50IGFyaXpvbmFfZHZmc19k
-b3duKHN0cnVjdCBhcml6b25hICphcml6b25hLCB1bnNpZ25lZCBpbnQgZmxhZ3MpCj4gK3sKPiAr
-CWludCByZXQgPSAwOwo+ICsKPiArCW11dGV4X2xvY2soJmFyaXpvbmEtPnN1YnN5c19tYXhfbG9j
-ayk7Cj4gKwo+ICsJaWYgKChhcml6b25hLT5zdWJzeXNfbWF4X3JxICYgZmxhZ3MpICE9IGZsYWdz
-KQo+ICsJCWRldl93YXJuKGFyaXpvbmEtPmRldiwgIlVuYmFsYW5jZWQgRFZGUyBkb3duOiAleFxu
-IiwgZmxhZ3MpOwo+ICsKPiArCWFyaXpvbmEtPnN1YnN5c19tYXhfcnEgJj0gfmZsYWdzOwo+ICsK
-PiArCWlmIChhcml6b25hLT5zdWJzeXNfbWF4X3JxID09IDApIHsKPiArCQlzd2l0Y2ggKGFyaXpv
-bmEtPnR5cGUpIHsKPiArCQljYXNlIFdNNTEwMjoKPiArCQljYXNlIFdNODk5NzoKPiArCQkJcmV0
-ID0gcmVnbWFwX3VwZGF0ZV9iaXRzKGFyaXpvbmEtPnJlZ21hcCwKPiArCQkJCQlBUklaT05BX0RZ
-TkFNSUNfRlJFUVVFTkNZX1NDQUxJTkdfMSwKPiArCQkJCQlBUklaT05BX1NVQlNZU19NQVhfRlJF
-USwgMCk7Cj4gKwkJCWlmIChyZXQgIT0gMCkKPiArCQkJCWRldl9lcnIoYXJpem9uYS0+ZGV2LAo+
-ICsJCQkJCSJGYWlsZWQgdG8gZGlzYWJsZSBzdWJzeXMgbWF4OiAlZFxuIiwKPiArCQkJCQlyZXQp
-Owo+ICsKPiArCQkJcmV0ID0gcmVndWxhdG9yX3NldF92b2x0YWdlKGFyaXpvbmEtPmRjdmRkLAo+
-ICsJCQkJCQkgICAgMTIwMDAwMCwgMTgwMDAwMCk7Cj4gKwkJCWlmIChyZXQgIT0gMCkKPiArCQkJ
-CWRldl9lcnIoYXJpem9uYS0+ZGV2LAo+ICsJCQkJCSJGYWlsZWQgdG8gc2V0IERDVkREIChEVkZT
-IGRvd24pOiAlZFxuIiwKPiArCQkJCQlyZXQpOwo+ICsJCQlicmVhazsKPiArCj4gKwkJZGVmYXVs
-dDoKPiArCQkJYnJlYWs7Cj4gKwkJfQo+ICsJfQo+ICsKPiArCW11dGV4X3VubG9jaygmYXJpem9u
-YS0+c3Vic3lzX21heF9sb2NrKTsKPiArCXJldHVybiByZXQ7Cj4gK30KPiArRVhQT1JUX1NZTUJP
-TF9HUEwoYXJpem9uYV9kdmZzX2Rvd24pOwo+ICsKPiAgc3RhdGljIGlycXJldHVybl90IGFyaXpv
-bmFfY2xrZ2VuX2VycihpbnQgaXJxLCB2b2lkICpkYXRhKQo+ICB7Cj4gIAlzdHJ1Y3QgYXJpem9u
-YSAqYXJpem9uYSA9IGRhdGE7Cj4gQEAgLTY0MSw2ICs3MjksNyBAQCBpbnQgYXJpem9uYV9kZXZf
-aW5pdChzdHJ1Y3QgYXJpem9uYSAqYXJpem9uYSkKPiAgCj4gIAlkZXZfc2V0X2RydmRhdGEoYXJp
-em9uYS0+ZGV2LCBhcml6b25hKTsKPiAgCW11dGV4X2luaXQoJmFyaXpvbmEtPmNsa19sb2NrKTsK
-PiArCW11dGV4X2luaXQoJmFyaXpvbmEtPnN1YnN5c19tYXhfbG9jayk7Cj4gIAo+ICAJaWYgKGRl
-dl9nZXRfcGxhdGRhdGEoYXJpem9uYS0+ZGV2KSkKPiAgCQltZW1jcHkoJmFyaXpvbmEtPnBkYXRh
-LCBkZXZfZ2V0X3BsYXRkYXRhKGFyaXpvbmEtPmRldiksCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUv
-bGludXgvbWZkL2FyaXpvbmEvY29yZS5oIGIvaW5jbHVkZS9saW51eC9tZmQvYXJpem9uYS9jb3Jl
-LmgKPiBpbmRleCBhNjE0YjMzLi40YWVjNmEzIDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGludXgv
-bWZkL2FyaXpvbmEvY29yZS5oCj4gKysrIGIvaW5jbHVkZS9saW51eC9tZmQvYXJpem9uYS9jb3Jl
-LmgKPiBAQCAtMTA5LDYgKzEwOSw5IEBAIHN0cnVjdCBhcml6b25hIHsKPiAgCXN0cnVjdCBtdXRl
-eCBjbGtfbG9jazsKPiAgCWludCBjbGszMmtfcmVmOwo+ICAKPiArCXN0cnVjdCBtdXRleCBzdWJz
-eXNfbWF4X2xvY2s7Cj4gKwl1bnNpZ25lZCBpbnQgc3Vic3lzX21heF9ycTsKPiArCj4gIAlzdHJ1
-Y3Qgc25kX3NvY19kYXBtX2NvbnRleHQgKmRhcG07Cj4gIAo+ICAJaW50IHRkbV93aWR0aFtBUkla
-T05BX01BWF9BSUZdOwo+IEBAIC0xMTgsOCArMTIxLDE3IEBAIHN0cnVjdCBhcml6b25hIHsKPiAg
-CXVpbnQ4X3QgZGFjX2NvbXBfZW5hYmxlZDsKPiAgfTsKPiAgCj4gKyNkZWZpbmUgQVJJWk9OQV9E
-VkZTX1NSMV9SUSAgICAgICAgICAweDAwMDAwMDAxCj4gKyNkZWZpbmUgQVJJWk9OQV9EVkZTX1NS
-Ml9SUSAgICAgICAgICAweDAwMDAwMDAyCj4gKyNkZWZpbmUgQVJJWk9OQV9EVkZTX1NSM19SUSAg
-ICAgICAgICAweDAwMDAwMDA0Cj4gKyNkZWZpbmUgQVJJWk9OQV9EVkZTX0FTUjFfUlEgICAgICAg
-ICAweDAwMDAwMDEwCj4gKyNkZWZpbmUgQVJJWk9OQV9EVkZTX0FTUjJfUlEgICAgICAgICAweDAw
-MDAwMDIwCj4gKyNkZWZpbmUgQVJJWk9OQV9EVkZTX0FEU1AxX1JRICAgICAgICAweDAwMDEwMDAw
-Cj4gKwo+ICBpbnQgYXJpem9uYV9jbGszMmtfZW5hYmxlKHN0cnVjdCBhcml6b25hICphcml6b25h
-KTsKPiAgaW50IGFyaXpvbmFfY2xrMzJrX2Rpc2FibGUoc3RydWN0IGFyaXpvbmEgKmFyaXpvbmEp
-Owo+ICtpbnQgYXJpem9uYV9kdmZzX3VwKHN0cnVjdCBhcml6b25hICphcml6b25hLCB1bnNpZ25l
-ZCBpbnQgbWFzayk7Cj4gK2ludCBhcml6b25hX2R2ZnNfZG93bihzdHJ1Y3QgYXJpem9uYSAqYXJp
-em9uYSwgdW5zaWduZWQgaW50IG1hc2spOwo+ICAKPiAgaW50IGFyaXpvbmFfcmVxdWVzdF9pcnEo
-c3RydWN0IGFyaXpvbmEgKmFyaXpvbmEsIGludCBpcnEsIGNoYXIgKm5hbWUsCj4gIAkJCWlycV9o
-YW5kbGVyX3QgaGFuZGxlciwgdm9pZCAqZGF0YSk7CgotLSAKTGVlIEpvbmVzCkxpbmFybyBTVE1p
-Y3JvZWxlY3Ryb25pY3MgTGFuZGluZyBUZWFtIExlYWQKTGluYXJvLm9yZyDilIIgT3BlbiBzb3Vy
-Y2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86IEZhY2Vib29rIHwgVHdpdHRl
-ciB8IEJsb2cKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+18.08.2014 14:33, Daniel Mack wrote:
+> On 08/18/2014 10:25 AM, Lars-Peter Clausen wrote:
+>> On 08/18/2014 10:15 AM, Takashi Iwai wrote:
+>>> At Sun, 17 Aug 2014 18:10:21 -0500,
+>>> Mark Brown wrote:
+>
+>>>> I don't mind which option we go with, should I carry on or should I tell
+>>>> her we'll go with ChaosDorf?
+>>>
+>>> Well, speaking of my preference, staying in the same location (the
+>>> conference center) would be more practical.  But I don't mind much
+>>> either.
+>>
+>> Yea, from a logistics point of view it would be nice to keep it in the same
+>> location. On the other hand it doesn't seem to be that far away:
+>> https://goo.gl/maps/ax9Oi
+>
+> Sure, logistically, it might indeed be better of course, and it wouldn't
+> be a problem to cancel the ChaosDorf thing I guess - it's still two
+> month in advance.
+>
+> Let me know when we have a confirmed room at the conference venue, then
+> I can let the ChaosDorf people know.
+
+I would also like to know what kind of presentation equipment (a 
+projector or a big TV) will be available. For me, this is important, 
+because TVs usually have no problems with color reproduction, and thus I 
+can show directly what matplotlib.pyplot.pcolormesh() produces. On a 
+projector, I would probably have to resort to other ways of presenting 
+functions of two real variables.
+
+-- 
+Alexander E. Patrakov
