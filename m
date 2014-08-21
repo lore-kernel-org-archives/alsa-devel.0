@@ -1,71 +1,76 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: Audio mini conference 2014?
-Date: Thu, 21 Aug 2014 17:51:50 +0600
-Message-ID: <53F5DD56.40405@gmail.com>
-References: <53CF8306.3090009@zonque.org>
- <1407312794.2630.1.camel@tkkaskin-mobl3.ger.corp.intel.com>
- <53E1E432.9000707@zonque.org> <53E1F58A.605@zonque.org>
- <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
- <20140807140957.GI8181@intel.com>
- <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
- <53EA6165.3070902@zonque.org> <s5hbnropcvd.wl-tiwai@suse.de>
- <20140813165517.GB17528@sirena.org.uk> <20140817231021.GQ14537@sirena.org.uk>
- <s5hha1aw6we.wl-tiwai@suse.de> <53F1B892.5080109@metafoo.de>
- <53F1BA5B.6070400@zonque.org>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [alsa-devel] [PATCH v2 1/2] mfd: arizona: Add support for
+ INn_Mode register control
+Date: Thu, 21 Aug 2014 13:12:19 +0100
+Message-ID: <20140821121219.GF4266@lee--X1>
+References: <20140813205313.65bbe343@songinha-Samsung-DeskTop-System>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f67.google.com (mail-la0-f67.google.com
- [209.85.215.67])
- by alsa0.perex.cz (Postfix) with ESMTP id C712D26585C
- for <alsa-devel@alsa-project.org>; Thu, 21 Aug 2014 13:50:35 +0200 (CEST)
-Received: by mail-la0-f67.google.com with SMTP id gl10so2892900lab.2
- for <alsa-devel@alsa-project.org>; Thu, 21 Aug 2014 04:50:35 -0700 (PDT)
-In-Reply-To: <53F1BA5B.6070400@zonque.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Paul Handrigan <paul.handrigan@cirrus.com>, David Henningsson <david.henningsson@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140813205313.65bbe343@songinha-Samsung-DeskTop-System>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Inha Song <ideal.song@samsung.com>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sameo@linux.intel.com, devicetree@vger.kernel.org, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, cw00.choi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-18.08.2014 14:33, Daniel Mack wrote:
-> On 08/18/2014 10:25 AM, Lars-Peter Clausen wrote:
->> On 08/18/2014 10:15 AM, Takashi Iwai wrote:
->>> At Sun, 17 Aug 2014 18:10:21 -0500,
->>> Mark Brown wrote:
->
->>>> I don't mind which option we go with, should I carry on or should I tell
->>>> her we'll go with ChaosDorf?
->>>
->>> Well, speaking of my preference, staying in the same location (the
->>> conference center) would be more practical.  But I don't mind much
->>> either.
->>
->> Yea, from a logistics point of view it would be nice to keep it in the same
->> location. On the other hand it doesn't seem to be that far away:
->> https://goo.gl/maps/ax9Oi
->
-> Sure, logistically, it might indeed be better of course, and it wouldn't
-> be a problem to cancel the ChaosDorf thing I guess - it's still two
-> month in advance.
->
-> Let me know when we have a confirmed room at the conference venue, then
-> I can let the ChaosDorf people know.
+On Wed, 13 Aug 2014, Inha Song wrote:
 
-I would also like to know what kind of presentation equipment (a 
-projector or a big TV) will be available. For me, this is important, 
-because TVs usually have no problems with color reproduction, and thus I 
-can show directly what matplotlib.pyplot.pcolormesh() produces. On a 
-projector, I would probably have to resort to other ways of presenting 
-functions of two real variables.
+> Some boards need to set the INn_MODE[1:0] register to change
+> the input signal patch. This wlf,inmode property is optional.
+> If present values must be specified by the number of
+> ARIZONA_MAX_INPUT.
+>=20
+> Example:
+>    - wlf,inmode =3D <2 0 2 0>;	/* IN1, IN3 use DMIC */
+>=20
+> Signed-off-by: Inha Song <ideal.song@samsung.com>
+> ---
+>  drivers/mfd/arizona-core.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 
--- 
-Alexander E. Patrakov
+This is going to require a DT Ack.
+
+Is [2/2] adding the documentation?  I can't easily go and look because
+you send the patch-set unthreaded.  Please thread patch-sets.  See
+the man page for `git send-email` for more information.
+
+> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+> index 10a0cb9..2b68ccd 100644
+> --- a/drivers/mfd/arizona-core.c
+> +++ b/drivers/mfd/arizona-core.c
+> @@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(arizona_of_get_named_gpio);
+>  static int arizona_of_get_core_pdata(struct arizona *arizona)
+>  {
+>  	struct arizona_pdata *pdata =3D &arizona->pdata;
+> -	int ret, i;
+> +	int ret, i, proplen;
+> =20
+>  	pdata->reset =3D arizona_of_get_named_gpio(arizona, "wlf,reset", tr=
+ue);
+> =20
+> @@ -560,6 +560,15 @@ static int arizona_of_get_core_pdata(struct ariz=
+ona *arizona)
+>  			ret);
+>  	}
+> =20
+> +	proplen =3D of_property_count_u32_elems(arizona->dev->of_node,
+> +					      "wlf,inmode");
+> +	if (proplen > 0 && proplen <=3D ARRAY_SIZE(arizona->pdata.inmode)) =
+{
+> +		for (i =3D 0; i < proplen; i++)
+> +			of_property_read_u32_index(arizona->dev->of_node,
+> +						   "wlf,inmode", i,
+> +						    &arizona->pdata.inmode[i]);
+> +	}
+> +
+>  	return 0;
+>  }
+> =20
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+=46ollow Linaro: Facebook | Twitter | Blog
