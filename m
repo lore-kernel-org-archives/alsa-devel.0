@@ -1,76 +1,76 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [alsa-devel] [PATCH v2 1/2] mfd: arizona: Add support for
- INn_Mode register control
-Date: Thu, 21 Aug 2014 13:12:19 +0100
-Message-ID: <20140821121219.GF4266@lee--X1>
-References: <20140813205313.65bbe343@songinha-Samsung-DeskTop-System>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [v3 00/11] ASoC: Intel: sst - add the merrifield IPC
+	driver
+Date: Thu, 21 Aug 2014 18:20:39 +0530
+Message-ID: <1408625450-32315-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140813205313.65bbe343@songinha-Samsung-DeskTop-System>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Inha Song <ideal.song@samsung.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sameo@linux.intel.com, devicetree@vger.kernel.org, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, cw00.choi@samsung.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id D54862651E3
+ for <alsa-devel@alsa-project.org>; Thu, 21 Aug 2014 15:12:46 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 13 Aug 2014, Inha Song wrote:
+This path series adds the Merrifield IPC driver which is used to load and
+manage the DSP along with sending and receiving IPCs for PCM and compressed
+audio.
 
-> Some boards need to set the INn_MODE[1:0] register to change
-> the input signal patch. This wlf,inmode property is optional.
-> If present values must be specified by the number of
-> ARIZONA_MAX_INPUT.
->=20
-> Example:
->    - wlf,inmode =3D <2 0 2 0>;	/* IN1, IN3 use DMIC */
->=20
-> Signed-off-by: Inha Song <ideal.song@samsung.com>
-> ---
->  drivers/mfd/arizona-core.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
+Changes in v3:
+	* First patch is splitted into multiple patches
+	* Now download fw during device resume
+	* Removed runtime reference counting from driver context
+	* Using dedicated functions instead ioctl
+	* Addressed review comments
 
-This is going to require a DT Ack.
+Subhransu S. Prusty (8):
+  ASoC: Intel: mrfld - add the dsp sst driver
+  ASoC: Intel: mrfld - Add DSP load and management
+  ASoC: Intel: sst - add pcm ops handling
+  ASoC: Intel: sst: Add IPC handling
+  ASoC: Intel: sst: add stream operations
+  ASoC: Intel: sst: Add some helper functions
+  ASoC: Intel: sst: Add makefile and kconfig changes
+  ASoC: mfld-compress: Use dedicated function instead of ioctl
 
-Is [2/2] adding the documentation?  I can't easily go and look because
-you send the patch-set unthreaded.  Please thread patch-sets.  See
-the man page for `git send-email` for more information.
+Vinod Koul (3):
+  ASoC: Intel: sst: add power management handling
+  ASoC: Intel: sst: load firmware using async callback
+  ASoC: Intel: sst - add compressed ops handling
 
-> diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-> index 10a0cb9..2b68ccd 100644
-> --- a/drivers/mfd/arizona-core.c
-> +++ b/drivers/mfd/arizona-core.c
-> @@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(arizona_of_get_named_gpio);
->  static int arizona_of_get_core_pdata(struct arizona *arizona)
->  {
->  	struct arizona_pdata *pdata =3D &arizona->pdata;
-> -	int ret, i;
-> +	int ret, i, proplen;
-> =20
->  	pdata->reset =3D arizona_of_get_named_gpio(arizona, "wlf,reset", tr=
-ue);
-> =20
-> @@ -560,6 +560,15 @@ static int arizona_of_get_core_pdata(struct ariz=
-ona *arizona)
->  			ret);
->  	}
-> =20
-> +	proplen =3D of_property_count_u32_elems(arizona->dev->of_node,
-> +					      "wlf,inmode");
-> +	if (proplen > 0 && proplen <=3D ARRAY_SIZE(arizona->pdata.inmode)) =
-{
-> +		for (i =3D 0; i < proplen; i++)
-> +			of_property_read_u32_index(arizona->dev->of_node,
-> +						   "wlf,inmode", i,
-> +						    &arizona->pdata.inmode[i]);
-> +	}
-> +
->  	return 0;
->  }
-> =20
+ arch/x86/include/asm/platform_sst_audio.h    |  33 +
+ sound/soc/intel/Kconfig                      |   4 +
+ sound/soc/intel/Makefile                     |   3 +
+ sound/soc/intel/sst-mfld-platform-compress.c |  38 +-
+ sound/soc/intel/sst-mfld-platform.h          |  27 +-
+ sound/soc/intel/sst/Makefile                 |   3 +
+ sound/soc/intel/sst/sst.c                    | 576 ++++++++++++++++
+ sound/soc/intel/sst/sst.h                    | 654 ++++++++++++++++++
+ sound/soc/intel/sst/sst_drv_interface.c      | 784 +++++++++++++++++++++
+ sound/soc/intel/sst/sst_ipc.c                | 368 ++++++++++
+ sound/soc/intel/sst/sst_loader.c             | 975 +++++++++++++++++++++++++++
+ sound/soc/intel/sst/sst_pvt.c                | 207 ++++++
+ sound/soc/intel/sst/sst_stream.c             | 526 +++++++++++++++
+ 13 files changed, 4179 insertions(+), 19 deletions(-)
+ create mode 100644 sound/soc/intel/sst/Makefile
+ create mode 100644 sound/soc/intel/sst/sst.c
+ create mode 100644 sound/soc/intel/sst/sst.h
+ create mode 100644 sound/soc/intel/sst/sst_drv_interface.c
+ create mode 100644 sound/soc/intel/sst/sst_ipc.c
+ create mode 100644 sound/soc/intel/sst/sst_loader.c
+ create mode 100644 sound/soc/intel/sst/sst_pvt.c
+ create mode 100644 sound/soc/intel/sst/sst_stream.c
 
---=20
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org =E2=94=82 Open source software for ARM SoCs
-=46ollow Linaro: Facebook | Twitter | Blog
+-- 
+1.9.0
