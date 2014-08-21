@@ -1,60 +1,86 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 3/8] ASoC: davinci-evm: HDMI audio support for TDA998x
- trough McASP I2S bus
-Date: Thu, 21 Aug 2014 13:24:11 -0500
-Message-ID: <20140821182411.GN24407@sirena.org.uk>
-References: <cover.1408397864.git.jsarha@ti.com>
- <a92cd9257efb58711b2d5d3de2abff9c8a1052d2.1408397864.git.jsarha@ti.com>
- <20140819131621.GL3302@leverpostej>
- <53F3A843.4010409@ti.com>
- <20140820123434.GC21734@leverpostej>
- <53F49CB2.5020801@ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] /proc/asound/card0/oss_mixer stack corruption
+Date: Thu, 21 Aug 2014 20:55:21 +0200
+Message-ID: <53F64099.8000601@ladisch.de>
+References: <CA+ydwtr+e0Sr4y+VRu-3JkF0Lbf+KJqjO9LZq6JPOgbHuyfAwA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="I2DZnI03i1DS0lOz"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <53F49CB2.5020801@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "airlied@linux.ie" <airlied@linux.ie>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "bcousson@baylibre.com" <bcousson@baylibre.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tony@atomide.com" <tony@atomide.com>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "peter.ujfalusi@ti.com" <peter.ujfalusi@ti.com>, "detheridge@ti.com" <detheridge@ti.com>, "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>, "t-kristo@ti.com" <t-kristo@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Return-path: <trinity-owner@vger.kernel.org>
+In-Reply-To: <CA+ydwtr+e0Sr4y+VRu-3JkF0Lbf+KJqjO9LZq6JPOgbHuyfAwA@mail.gmail.com>
+Sender: trinity-owner@vger.kernel.org
+To: Tommi Rantala <tt.rantala@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Dave Jones <davej@redhat.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, trinity@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Tommi Rantala wrote:
+> Trinity discovered that writing 128 bytes to
+> /proc/asound/card0/oss_mixer triggers a stack corruption.
+>
+> Call Trace:
+>  [<ffffffff8113c716>] __stack_chk_fail+0x16/0x20
+>  [<ffffffff81e193ba>] snd_mixer_oss_proc_write+0x24a/0x270
 
---I2DZnI03i1DS0lOz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+snd_info_get_line() wants the len parameter to be one less than the
+buffer size, but it isn't:
 
-On Wed, Aug 20, 2014 at 04:03:46PM +0300, Jyri Sarha wrote:
+	while (!snd_info_get_line(buffer, line, sizeof(line))) {
 
-> Could we drop the SoC id completely and make it just
-> "beaglebone-black-audio"?
+Not that *any* other caller got it correct either:
 
-> The board design is the unique factor here, not the SoC. McASP block can be
-> found from several TI SoCs.
+sound/core/oss/pcm_oss.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/core/pcm.c:	if (!snd_info_get_line(buffer, line, sizeof(line)))
+sound/core/pcm_memory.c:	if (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/drivers/dummy.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/ac97/ac97_proc.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/ca0106/ca0106_proc.c:        while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/ca0106/ca0106_proc.c:        while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/ca0106/ca0106_proc.c:        while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/emu10k1/emu10k1x.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/emu10k1/emuproc.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/emu10k1/emuproc.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/hda/hda_eld.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/ice1712/pontis.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/ice1712/prodigy_hifi.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/lola/lola_proc.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+sound/pci/pcxhr/pcxhr.c:	while (!snd_info_get_line(buffer, line, sizeof(line))) {
 
-That's a lot more sensible, yes.
+Oh well.  At least these proc files are writable only by root, and the
+fix is easy:
 
---I2DZnI03i1DS0lOz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+--8<---------------------------------------------------------------->8--
+ALSA: core: fix buffer overflow in snd_info_get_line()
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+snd_info_get_line() documents that its last parameter must be one
+less than the buffer size, but this API design guarantees that
+(literally) every caller gets it wrong.
 
-iQIcBAEBAgAGBQJT9jlIAAoJELSic+t+oim9ktkP/2vCpG97GqH4UKrT1FxmfSPx
-iPLsTr6tWD9vsN0Jq50uNfNXMPKu6NsOmWhgaBLPuDEGefbUHjGi0F0jl6q3248n
-5qymail4p9B/chB1aDaMS4R61DHs+41xyQ1kF4p3k9SQv7XmROYjs3n1bLbIy0VM
-gb6YDF5rUVoCrx9xUi27BN1UXRM303WjVcbySZ9cS+vfrXXOL/FxTntqdMdPxaE2
-5TqAOMS3ea086BpkIuWKSXkqpIDPQztIndVXU89VLQ+YMCZsIq8NmCEd8+lG1Goi
-yXV7o0X5XLXkzplCTt/AhKRU1V8ugNQ4pLGK4Q2AhR5ABzhN5L2m1vFIRTHDx9AG
-UTBGV7KaIbtUUlBYrH6Dbe/S/8P4u7JzpegAJmoX1FNCo04PIxYDJDEQg6TjHzGA
-Xwq+LwKZQsnKf20RKIsCd64B6zwMw98aABZhkzIWIfmIMX4mfJcwfNLnmDWzxma+
-c16pG1ONwMjUQ+y0lrvH8KDNeTpHjc83xbT49x4yOVbwgk/BJudb4HsFot6uj1J8
-mYhGeAHOU/OQRQKZ9aQKXTetRlfevkt6+Ky5L1xTlvwOv3gIsfyqvkJjxZFJwnQA
-gnlQM+pla83ALYKUshgYzCNo6FIqtq629eAflZV1wa3T/F7hR378L1JCa7jzvQPv
-WZ+9JoTIKrWt8XTzrkHh
-=PPWp
------END PGP SIGNATURE-----
+Just change this parameter to have its obvious meaning.
 
---I2DZnI03i1DS0lOz--
+Reported-by: Tommi Rantala <tt.rantala@gmail.com>
+Cc: <stable@vger.kernel.org> # v2.2.26+
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/core/info.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/sound/core/info.c
++++ b/sound/core/info.c
+@@ -684,7 +684,7 @@ int snd_info_card_free(struct snd_card *card)
+  * snd_info_get_line - read one line from the procfs buffer
+  * @buffer: the procfs buffer
+  * @line: the buffer to store
+- * @len: the max. buffer size - 1
++ * @len: the max. buffer size
+  *
+  * Reads one line from the buffer and stores the string.
+  *
+@@ -704,7 +704,7 @@ int snd_info_get_line(struct snd_info_buffer *buffer, char *line, int len)
+ 			buffer->stop = 1;
+ 		if (c == '\n')
+ 			break;
+-		if (len) {
++		if (len > 1) {
+ 			len--;
+ 			*line++ = c;
+ 		}
