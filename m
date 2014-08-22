@@ -1,70 +1,50 @@
-From: Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH] sound: tegra: tegra_asoc_utils.h: Fix typo in include
- guard
-Date: Fri, 22 Aug 2014 11:31:39 +0200
-Message-ID: <20140822093137.GA10253@ulmo>
-References: <1408699627-7364-1-git-send-email-linux@rasmusvillemoes.dk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: ASoC: bug report for ssm2602
+Date: Fri, 22 Aug 2014 11:47:01 +0200
+Message-ID: <53F71195.5030502@metafoo.de>
+References: <CAHG8p1BqrSHagAWor6ZqnnPReBPvYfwpXpbNOSWBjxa5n-raEA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZGiS0Q5IWpPtfppv"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1408699627-7364-1-git-send-email-linux@rasmusvillemoes.dk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-209.synserver.de (smtp-out-209.synserver.de
+ [212.40.185.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55D4C265904
+ for <alsa-devel@alsa-project.org>; Fri, 22 Aug 2014 11:47:12 +0200 (CEST)
+In-Reply-To: <CAHG8p1BqrSHagAWor6ZqnnPReBPvYfwpXpbNOSWBjxa5n-raEA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Scott Jiang <scott.jiang.linux@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 08/22/2014 11:21 AM, Scott Jiang wrote:
+> Hi Mark and Lars,
+>
+> commit 9d863b88ec371491e926e0828dbe3d36ead0f6f9
+> Author: Lars-Peter Clausen <lars@metafoo.de>
+> Date:   Sat Aug 31 18:15:23 2013 +0200
+>
+>      ASoC: ssm2602: Fix cache sync
+>
+>      The ssm2602 uses regmap for caching not soc-cache, so we need to use
+>      regcache_sync() instead of snd_soc_cache_sync().
+>
+> According my test, regcache_sync() can't recover register values when
+> resume. While snd_soc_cache_sync() works fine. I used regmap_read() to
+> read registers in regmap layer and found it's the same as suspend. But
+> regcache_sync() didn't sync these registers correctly to hardware.
+>
 
---ZGiS0Q5IWpPtfppv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That does not make too much sense. snd_soc_cache_sync() is definitely a 
+no-op when using regmap. Which kernel version are you on? Are there any 
+additional changes to this driver in your tree?
 
-On Fri, Aug 22, 2014 at 11:27:07AM +0200, Rasmus Villemoes wrote:
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
->  sound/soc/tegra/tegra_asoc_utils.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/sound/soc/tegra/tegra_asoc_utils.h b/sound/soc/tegra/tegra_a=
-soc_utils.h
-> index 9577121..ca80376 100644
-> --- a/sound/soc/tegra/tegra_asoc_utils.h
-> +++ b/sound/soc/tegra/tegra_asoc_utils.h
-> @@ -21,7 +21,7 @@
->   */
-> =20
->  #ifndef __TEGRA_ASOC_UTILS_H__
-> -#define __TEGRA_ASOC_UTILS_H_
-> +#define __TEGRA_ASOC_UTILS_H__
-> =20
->  struct clk;
->  struct device;
-
-Hehe, good catch.
-
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---ZGiS0Q5IWpPtfppv
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT9w35AAoJEN0jrNd/PrOhykAP/0I7U/Re3ToHKhxX3UuO+b3Z
-iTN4TRR8bYGkd0HTSxdBXVfgXj479UhFRKAzsNWvx/DivXNI7ll6xtzIcT5BALYk
-tEz2axYuz7hZw4yYeMughAJxPqoHF8iU+lDcMvmYFh1zLcpUwbwldKwOJ1TKZaYY
-2xpeZ1W+zdDcBJoOGAsZwt1wL5d6Dhjq0v/148XrohpeRadNBJGuQMcUWd4lRqD4
-JJFPrMrmQjgb7wSRL/z5UosJd0MEA+k3Fxak95OFSWeYPlggFyiVv969LmlvyoU5
-kfw5CZPQXPaNNalQMObEXhBfN9MkrEEKY1RL3b1DNh1hs0ow5bEdFzRUrUFk68h1
-VYcSpLMj7E/jULTto+gBYQkTDSC4+VO08RWuxaeBBZDrDfdH0p/o3hnTdRETHcuP
-iF1+xfjiUjl8BJWPsv1dtaepU+hB8O1seKAO2pHBlRo5DsmaFDHoLkTq5nWfSmLH
-1ggV9GulgINJN4gepBKp/OGiBH5aJMHDTt657IXJFptHWf5GZBwIJrr+Q26S8sux
-5Z1eSGj8AnA5dZ2L0IWGhrl8cO2llEPR7/XjxBSYa+me1UNvMd6D1zysZtbveGC+
-pux/UIhGWHgDGinqAy29H1gkJKBJ0S/s8Z1T4viGVYUVV4SDGV5VDB8qZOKrgegv
-0PxhGSOSXB8jvYQ7wOvP
-=rQL8
------END PGP SIGNATURE-----
-
---ZGiS0Q5IWpPtfppv--
+- Lars
