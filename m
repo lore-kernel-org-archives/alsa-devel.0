@@ -1,50 +1,42 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] sound: tegra: tegra_asoc_utils.h: Fix typo in include
- guard
-Date: Fri, 22 Aug 2014 13:36:14 -0500
-Message-ID: <20140822183614.GA24407@sirena.org.uk>
-References: <1408699627-7364-1-git-send-email-linux@rasmusvillemoes.dk>
+From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
+Subject: 120 BPM equals 16 beats per 2 seconds
+Date: Sat, 23 Aug 2014 04:53:30 +0200
+Message-ID: <1408762410.20015.7.camel@Device-03036C>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="QNuYedFeXxEqrKRj"
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1408699627-7364-1-git-send-email-linux-qQsb+v5E8BnlAoU/VqSP6n9LOBIZ5rWg@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rasmus Villemoes <linux-qQsb+v5E8BnlAoU/VqSP6n9LOBIZ5rWg@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f48.google.com (mail-wg0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id D90DD2615DC
+ for <alsa-devel@alsa-project.org>; Sat, 23 Aug 2014 04:57:09 +0200 (CEST)
+Received: by mail-wg0-f48.google.com with SMTP id x13so11191661wgg.7
+ for <alsa-devel@alsa-project.org>; Fri, 22 Aug 2014 19:57:09 -0700 (PDT)
+Received: from [192.168.42.170] (129-236.197-178.cust.bluewin.ch.
+ [178.197.236.129])
+ by mx.google.com with ESMTPSA id cy9sm4418873wib.15.2014.08.22.19.57.08
+ for <alsa-devel@alsa-project.org>
+ (version=SSLv3 cipher=RC4-SHA bits=128/128);
+ Fri, 22 Aug 2014 19:57:08 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Is this statement correct?
 
---QNuYedFeXxEqrKRj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+120 BPM equals 16 beats per 2 seconds
 
-On Fri, Aug 22, 2014 at 11:27:07AM +0200, Rasmus Villemoes wrote:
-> Signed-off-by: Rasmus Villemoes <linux-qQsb+v5E8BnlAoU/VqSP6n9LOBIZ5rWg@public.gmane.org>
+because this is what my sequencer does and everything should be fine.
+GNU/Linux rules ...
 
-Applied, thanks - again please try to follow the subject line style.
+please take a look at http://sf.net/p/ags
 
---QNuYedFeXxEqrKRj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT942bAAoJELSic+t+oim9QVEP/A5lcOY4hD5lH0c9WIdFRVU2
-WyxgGjse3VGcqS4pC463UbwOCPtWbi05oiTPK9/txg3HQihs3SVX1hftq7s+dfpd
-aEXcFTg3bpDWFwp2DjucO7NXg603OG0gPMkh46HbpuMtyqL7UohyJTpmLZTnWL9a
-RtB4uMV4ML51TAVwLofE+RDb1tF9PeEQGKXFR6mGAB5MEMtBf7aX2C6JpVY0ZtTL
-gKK5uAVGS4alcdSw1Bi4WlzsBtAU2/Wm36TqZo2IfZE3pdrzJu5JDZ8C0+wqfGSt
-E627gKgOSTtdnaiAi0am5lIPv64U4lOvYNinPEZ+uQMnk2Kwr6F7/V9gPX3flUe5
-iFP3Wfpnc2oDJTjixCK4Oc3OK89qsjQaZAOmRDdEoa1OdaGN+WEvnMgu3wyAaedh
-hD5Wf4dBBdEKO9DUqKaIVvr+h/U7V4B4r2MhGB8z5Lj+aMdSYVK23qZ+Zq0yqOJ+
-r9QN9rASCu0tjDE8HGlydLOzpFzkKcRdzH0b2xi8vzz/y9xJISkUxu7vaBayTzcx
-nOB0AVi5mqDb66NEvLrehRFRhCvbRVkVZOcfNFol+LDQPemLKiT0eNgGte+BjC78
-m6NRRZOTpUon1ql3YGrcJJ9yoWzLkdyi0UisqNt9lGm+NcMvk88u8PE02Wiwit7v
-DbmqCObdJM38aJEQchos
-=Ly7C
------END PGP SIGNATURE-----
-
---QNuYedFeXxEqrKRj--
+best regards
+Jo=EBl
