@@ -1,55 +1,46 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: Restore idle_bias_off initialization
-Date: Sun, 24 Aug 2014 15:36:55 +0200
-Message-ID: <1408887415-7942-1-git-send-email-lars@metafoo.de>
+From: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCHv2 1/5] ASoC: fsl-asrc: Convert to use regmap framework's
+ endianness method.
+Date: Sun, 24 Aug 2014 18:23:07 -0700
+Message-ID: <20140825012306.GA26651@Alpha>
+References: <1408421693-9929-1-git-send-email-Li.Xiubo@freescale.com>
+ <1408421693-9929-2-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-152.synserver.de (smtp-out-152.synserver.de
- [212.40.185.152])
- by alsa0.perex.cz (Postfix) with ESMTP id A3649261A29
- for <alsa-devel@alsa-project.org>; Sun, 24 Aug 2014 15:36:58 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1408421693-9929-2-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This was accidentally lost in commit f1d45cc3ae96 ("ASoC: Consolidate
-platform and CODEC probe/remove").
+On Tue, Aug 19, 2014 at 12:14:49PM +0800, Xiubo Li wrote:
+> Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+> ---
+>  sound/soc/fsl/fsl_asrc.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+> index 8221104..3b14531 100644
+> --- a/sound/soc/fsl/fsl_asrc.c
+> +++ b/sound/soc/fsl/fsl_asrc.c
+> @@ -802,10 +802,6 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+>  
+>  	asrc_priv->paddr = res->start;
+>  
+> -	/* Register regmap and let it prepare core clock */
+> -	if (of_property_read_bool(np, "big-endian"))
+> -		fsl_asrc_regmap_config.val_format_endian = REGMAP_ENDIAN_BIG;
+> -
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+What about the binding document? Could we also update that one
+since this 'big-endian' is useless?
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e982cb0..4974b4f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -4010,6 +4010,7 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
- 	dapm->dev = dev;
- 	dapm->component = component;
- 	dapm->bias_level = SND_SOC_BIAS_OFF;
-+	dapm->idle_bias_off = true;
- 	if (driver->seq_notifier)
- 		dapm->seq_notifier = snd_soc_component_seq_notifier;
- 	if (driver->stream_event)
-@@ -4399,6 +4400,7 @@ int snd_soc_register_codec(struct device *dev,
- 		codec->component.read = snd_soc_codec_drv_read;
- 	codec->component.ignore_pmdown_time = codec_drv->ignore_pmdown_time;
- 	codec->dapm.codec = codec;
-+	codec->dapm.idle_bias_off = codec_drv->idle_bias_off;
- 	if (codec_drv->seq_notifier)
- 		codec->dapm.seq_notifier = codec_drv->seq_notifier;
- 	if (codec_drv->set_bias_level)
--- 
-1.8.0
+Thanks
+Nicolin
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
