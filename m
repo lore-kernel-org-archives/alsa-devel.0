@@ -1,48 +1,53 @@
-From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: [alsa-devel] [RESEND PATCH v4 2/2] mfd: arizona: Update DT binding to
- support INn_MODE init_data
-Date: Mon, 25 Aug 2014 18:25:40 +0900
-Message-ID: <1408958740-1037-3-git-send-email-ideal.song@samsung.com>
-References: <1408958740-1037-1-git-send-email-ideal.song@samsung.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-reply-to: <1408958740-1037-1-git-send-email-ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3 v4 RESEND] mfd: arizona: Export
+	function to control	subsystem DVFS
+Date: Mon, 25 Aug 2014 11:15:23 +0100
+Message-ID: <20140825101523.GA1245@opensource.wolfsonmicro.com>
+References: <20140808133233.GA2665@opensource.wolfsonmicro.com>
+ <20140821104051.GW4266@lee--X1>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 11F82264F09
+ for <alsa-devel@alsa-project.org>; Mon, 25 Aug 2014 12:15:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20140821104051.GW4266@lee--X1>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, lgirdwood@gmail.com, tiwai@suse.de, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch update DT binding to support INn_MODE init_data. Each
-input signal path can be configurated either as a Analogue or
-Digital using the INn_MODE registers.
+On Thu, Aug 21, 2014 at 11:40:51AM +0100, Lee Jones wrote:
+> On Fri, 08 Aug 2014, Richard Fitzgerald wrote:
+> 
+> > From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> > 
+> > Moving this control from being a side-effect of the LDO1
+> > regulator driver to a specific exported function.
+> > 
+> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> > Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> > ---
+> >  drivers/mfd/arizona-core.c       |   89 ++++++++++++++++++++++++++++++++++++++
+> >  include/linux/mfd/arizona/core.h |   12 +++++
+> >  2 files changed, 101 insertions(+), 0 deletions(-)
+> 
+> If this is the same patch I reviewed before:
+> 
+>   Acked-by: Lee Jones <lee.jones@linaro.org>
+> 
+> I guess we're just waiting for maintainer Acks before I can apply the
+> set.
+> 
 
-Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Reviewed-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
----
- Documentation/devicetree/bindings/mfd/arizona.txt | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
-index 5c7e723..7bd1273 100644
---- a/Documentation/devicetree/bindings/mfd/arizona.txt
-+++ b/Documentation/devicetree/bindings/mfd/arizona.txt
-@@ -42,6 +42,13 @@ Optional properties:
-     the chip default will be used.  If present exactly five values must
-     be specified.
- 
-+  - wlf,inmode : A list of INn_MODE register values, where n is the number
-+    of input signals. Valid values are 0 (Differential), 1 (Single-ended) and
-+    2 (Digital Microphone). If absent, INn_MODE registers set to 0 by default.
-+    If present, values must be specified less than or equal to the number of
-+    input singals. If values less than the number of input signals, elements
-+    that has not been specifed are set to 0 by default.
-+
-   - DCVDD-supply, MICVDD-supply : Power supplies, only need to be specified if
-     they are being externally supplied. As covered in
-     Documentation/devicetree/bindings/regulator/regulator.txt
--- 
-2.0.0.390.gcb682f8
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Yes it is, and yes we are.
