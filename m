@@ -1,77 +1,48 @@
-From: Inha Song <ideal.song@samsung.com>
-Subject: [RESEND PATCH v4 1/2] mfd: arizona: Add support for
- INn_Mode register control
-Date: Mon, 25 Aug 2014 18:25:39 +0900
-Message-ID: <1408958740-1037-2-git-send-email-ideal.song@samsung.com>
+From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: [alsa-devel] [RESEND PATCH v4 2/2] mfd: arizona: Update DT binding to
+ support INn_MODE init_data
+Date: Mon, 25 Aug 2014 18:25:40 +0900
+Message-ID: <1408958740-1037-3-git-send-email-ideal.song@samsung.com>
 References: <1408958740-1037-1-git-send-email-ideal.song@samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
- by alsa0.perex.cz (Postfix) with ESMTP id AEF1E264F1A
- for <alsa-devel@alsa-project.org>; Mon, 25 Aug 2014 11:29:11 +0200 (CEST)
-Received: from epcpsbgr1.samsung.com
- (u141.gpu120.samsung.co.kr [203.254.230.141])
- by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0NAU006HDVOLWGB0@mailout3.samsung.com> for
- alsa-devel@alsa-project.org; Mon, 25 Aug 2014 18:29:09 +0900 (KST)
-In-reply-to: <1408958740-1037-1-git-send-email-ideal.song@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, sameo@linux.intel.com, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, cw00.choi@samsung.com, robh+dt@kernel.org, galak@codeaurora.org, ckeepax@opensource.wolfsonmicro.com, lee.jones@linaro.org, Inha Song <ideal.song@samsung.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-reply-to: <1408958740-1037-1-git-send-email-ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Some boards need to set the INn_MODE[1:0] register to change
-the input signal patch. This wlf,inmode property is optional.
-If present, values must be specified less than or equal to
-the number of input singals. If values less than the number
-of input signals, elements that has not been specifed are set
-to 0 by default.
+This patch update DT binding to support INn_MODE init_data. Each
+input signal path can be configurated either as a Analogue or
+Digital using the INn_MODE registers.
 
-Example:
-   - wlf,inmode = <2 0 2>;	/* IN1, IN3 use DMIC */
-
-Signed-off-by: Inha Song <ideal.song@samsung.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Reviewed-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 ---
- drivers/mfd/arizona-core.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/mfd/arizona.txt | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index 10a0cb9..81e6db8 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(arizona_of_get_named_gpio);
- static int arizona_of_get_core_pdata(struct arizona *arizona)
- {
- 	struct arizona_pdata *pdata = &arizona->pdata;
--	int ret, i;
-+	int ret, i, proplen;
+diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
+index 5c7e723..7bd1273 100644
+--- a/Documentation/devicetree/bindings/mfd/arizona.txt
++++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+@@ -42,6 +42,13 @@ Optional properties:
+     the chip default will be used.  If present exactly five values must
+     be specified.
  
- 	pdata->reset = arizona_of_get_named_gpio(arizona, "wlf,reset", true);
- 
-@@ -560,6 +560,12 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
- 			ret);
- 	}
- 
-+	proplen = of_property_count_u32_elems(arizona->dev->of_node,
-+					      "wlf,inmode");
-+	if (proplen > 0 && proplen <= ARRAY_SIZE(arizona->pdata.inmode))
-+		of_property_read_u32_array(arizona->dev->of_node, "wlf,inmode",
-+					   arizona->pdata.inmode, proplen);
++  - wlf,inmode : A list of INn_MODE register values, where n is the number
++    of input signals. Valid values are 0 (Differential), 1 (Single-ended) and
++    2 (Digital Microphone). If absent, INn_MODE registers set to 0 by default.
++    If present, values must be specified less than or equal to the number of
++    input singals. If values less than the number of input signals, elements
++    that has not been specifed are set to 0 by default.
 +
- 	return 0;
- }
- 
+   - DCVDD-supply, MICVDD-supply : Power supplies, only need to be specified if
+     they are being externally supplied. As covered in
+     Documentation/devicetree/bindings/regulator/regulator.txt
 -- 
 2.0.0.390.gcb682f8
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
