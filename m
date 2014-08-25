@@ -1,151 +1,98 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: ab8500-codec: Revert back to regmap
-Date: Mon, 25 Aug 2014 10:20:44 +0200
-Message-ID: <1408954845-19022-1-git-send-email-lars@metafoo.de>
+From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 1/2] mfd: arizona: Add support for INn_Mode
+ register control
+Date: Mon, 25 Aug 2014 18:20:01 +0900
+Message-ID: <20140825182001.666bd966@songinha-Samsung-DeskTop-System>
+References: <20140813205313.65bbe343@songinha-Samsung-DeskTop-System>
+ <20140821121219.GF4266@lee--X1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-248.synserver.de (smtp-out-248.synserver.de
- [212.40.185.248])
- by alsa0.perex.cz (Postfix) with ESMTP id 13AA0264F22
- for <alsa-devel@alsa-project.org>; Mon, 25 Aug 2014 10:20:47 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-reply-to: <20140821121219.GF4266@lee--X1>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit ff795d614bfa ("ASoC: ab8500: Convert register I/O to regmap")
-initially converted the ab8500 CODEC driver to use regmap rather than
-legacy ASoC IO. This was reverted though in commit 63e6d43bf80d ("ASoC:
-ab8500: Revert to using custom I/O functions") since the inital conversion
-was not working properly. This was presumebly because the SOC_SINGLE_XR_SX
-controls, which are used by this driver, did not properly support regmap at
-that point. This has since been fixed in commit 6137a5ca326d ("ASoC: Prepare
-SOC_SINGLE_XR_SX controls for regmap"). So revert back to regmap again.
+Hi Lee,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
-I don't have the hardware, so I haven't been able to verify that it actually
-works now, but I think there is a very good chance. Lee, do you have access
-to a Snowball board and can give this a test?
----
- sound/soc/codecs/ab8500-codec.c | 62 +++++++++++++++++++----------------------
- 1 file changed, 28 insertions(+), 34 deletions(-)
+On Thu, 21 Aug 2014 13:12:19 +0100
+Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org> wrote:
 
-diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
-index 62cf231..fd43827 100644
---- a/sound/soc/codecs/ab8500-codec.c
-+++ b/sound/soc/codecs/ab8500-codec.c
-@@ -125,6 +125,8 @@ struct ab8500_codec_drvdata_dbg {
- 
- /* Private data for AB8500 device-driver */
- struct ab8500_codec_drvdata {
-+	struct regmap *regmap;
-+
- 	/* Sidetone */
- 	long *sid_fir_values;
- 	enum sid_state sid_status;
-@@ -165,49 +167,35 @@ static inline const char *amic_type_str(enum amic_type type)
-  */
- 
- /* Read a register from the audio-bank of AB8500 */
--static unsigned int ab8500_codec_read_reg(struct snd_soc_codec *codec,
--					unsigned int reg)
-+static int ab8500_codec_read_reg(void *context, unsigned int reg,
-+				 unsigned int *value)
- {
-+	struct device *dev = context;
- 	int status;
--	unsigned int value = 0;
- 
- 	u8 value8;
--	status = abx500_get_register_interruptible(codec->dev, AB8500_AUDIO,
--						reg, &value8);
--	if (status < 0) {
--		dev_err(codec->dev,
--			"%s: ERROR: Register (0x%02x:0x%02x) read failed (%d).\n",
--			__func__, (u8)AB8500_AUDIO, (u8)reg, status);
--	} else {
--		dev_dbg(codec->dev,
--			"%s: Read 0x%02x from register 0x%02x:0x%02x\n",
--			__func__, value8, (u8)AB8500_AUDIO, (u8)reg);
--		value = (unsigned int)value8;
--	}
-+	status = abx500_get_register_interruptible(dev, AB8500_AUDIO,
-+						   reg, &value8);
-+	*value = (unsigned int)value8;
- 
--	return value;
-+	return status;
- }
- 
- /* Write to a register in the audio-bank of AB8500 */
--static int ab8500_codec_write_reg(struct snd_soc_codec *codec,
--				unsigned int reg, unsigned int value)
-+static int ab8500_codec_write_reg(void *context, unsigned int reg,
-+				  unsigned int value)
- {
--	int status;
--
--	status = abx500_set_register_interruptible(codec->dev, AB8500_AUDIO,
--						reg, value);
--	if (status < 0)
--		dev_err(codec->dev,
--			"%s: ERROR: Register (%02x:%02x) write failed (%d).\n",
--			__func__, (u8)AB8500_AUDIO, (u8)reg, status);
--	else
--		dev_dbg(codec->dev,
--			"%s: Wrote 0x%02x into register %02x:%02x\n",
--			__func__, (u8)value, (u8)AB8500_AUDIO, (u8)reg);
-+	struct device *dev = context;
- 
--	return status;
-+	return abx500_set_register_interruptible(dev, AB8500_AUDIO,
-+						 reg, value);
- }
- 
-+static const struct regmap_config ab8500_codec_regmap = {
-+	.reg_read = ab8500_codec_read_reg,
-+	.reg_write = ab8500_codec_write_reg,
-+};
-+
- /*
-  * Controls - DAPM
-  */
-@@ -2564,9 +2552,6 @@ static int ab8500_codec_probe(struct snd_soc_codec *codec)
- 
- static struct snd_soc_codec_driver ab8500_codec_driver = {
- 	.probe =		ab8500_codec_probe,
--	.read =			ab8500_codec_read_reg,
--	.write =		ab8500_codec_write_reg,
--	.reg_word_size =	sizeof(u8),
- 	.controls =		ab8500_ctrls,
- 	.num_controls =		ARRAY_SIZE(ab8500_ctrls),
- 	.dapm_widgets =		ab8500_dapm_widgets,
-@@ -2591,6 +2576,15 @@ static int ab8500_codec_driver_probe(struct platform_device *pdev)
- 	drvdata->anc_status = ANC_UNCONFIGURED;
- 	dev_set_drvdata(&pdev->dev, drvdata);
- 
-+	drvdata->regmap = devm_regmap_init(&pdev->dev, NULL, &pdev->dev,
-+					   &ab8500_codec_regmap);
-+	if (IS_ERR(drvdata->regmap)) {
-+		status = PTR_ERR(drvdata->regmap);
-+		dev_err(&pdev->dev, "%s: Failed to allocate regmap: %d\n",
-+			__func__, status);
-+		return status;
-+	}
-+
- 	dev_dbg(&pdev->dev, "%s: Register codec.\n", __func__);
- 	status = snd_soc_register_codec(&pdev->dev, &ab8500_codec_driver,
- 				ab8500_codec_dai,
--- 
-1.8.0
+> On Wed, 13 Aug 2014, Inha Song wrote:
+>=20
+> > Some boards need to set the INn_MODE[1:0] register to change
+> > the input signal patch. This wlf,inmode property is optional.
+> > If present values must be specified by the number of
+> > ARIZONA_MAX_INPUT.
+> >=20
+> > Example:
+> >    - wlf,inmode =3D <2 0 2 0>;	/* IN1, IN3 use DMIC */
+> >=20
+> > Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+> > ---
+> >  drivers/mfd/arizona-core.c | 11 ++++++++++-
+> >  1 file changed, 10 insertions(+), 1 deletion(-)
+>=20
+> This is going to require a DT Ack.
+>=20
+> Is [2/2] adding the documentation?  I can't easily go and look becaus=
+e
+> you send the patch-set unthreaded.  Please thread patch-sets.  See
+> the man page for `git send-email` for more information.
+>=20
+
+Sorry, I will resend this patch set to use "git send email".
+
+Best regards,
+Inha Song.
+
+> > diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.=
+c
+> > index 10a0cb9..2b68ccd 100644
+> > --- a/drivers/mfd/arizona-core.c
+> > +++ b/drivers/mfd/arizona-core.c
+> > @@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(arizona_of_get_named_gpio);
+> >  static int arizona_of_get_core_pdata(struct arizona *arizona)
+> >  {
+> >  	struct arizona_pdata *pdata =3D &arizona->pdata;
+> > -	int ret, i;
+> > +	int ret, i, proplen;
+> > =20
+> >  	pdata->reset =3D arizona_of_get_named_gpio(arizona, "wlf,reset", =
+true);
+> > =20
+> > @@ -560,6 +560,15 @@ static int arizona_of_get_core_pdata(struct ar=
+izona *arizona)
+> >  			ret);
+> >  	}
+> > =20
+> > +	proplen =3D of_property_count_u32_elems(arizona->dev->of_node,
+> > +					      "wlf,inmode");
+> > +	if (proplen > 0 && proplen <=3D ARRAY_SIZE(arizona->pdata.inmode)=
+) {
+> > +		for (i =3D 0; i < proplen; i++)
+> > +			of_property_read_u32_index(arizona->dev->of_node,
+> > +						   "wlf,inmode", i,
+> > +						    &arizona->pdata.inmode[i]);
+> > +	}
+> > +
+> >  	return 0;
+> >  }
+> > =20
+>=20
+> --=20
+> Lee Jones
+> Linaro STMicroelectronics Landing Team Lead
+> Linaro.org =E2=94=82 Open source software for ARM SoCs
+> Follow Linaro: Facebook | Twitter | Blog
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
