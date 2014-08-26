@@ -1,94 +1,82 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Audio mini conference 2014?
-Date: Tue, 26 Aug 2014 11:47:22 +0100
-Message-ID: <20140826104722.GJ17528@sirena.org.uk>
-References: <20140813165517.GB17528@sirena.org.uk>
- <20140817231021.GQ14537@sirena.org.uk>
- <s5hha1aw6we.wl-tiwai@suse.de> <53F1B892.5080109@metafoo.de>
- <53F1BA5B.6070400@zonque.org> <s5hbnr7u5xp.wl-tiwai@suse.de>
- <20140826084220.GA17528@sirena.org.uk>
- <s5hvbpf5zn1.wl-tiwai@suse.de>
- <20140826101953.GI17528@sirena.org.uk>
- <s5htx4z5yuv.wl-tiwai@suse.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 8/8] ASoC: add snd-soc-dummy DT support
+Date: Tue, 26 Aug 2014 11:50:28 +0100
+Message-ID: <20140826105028.GK17528@sirena.org.uk>
+References: <87fvgriqrb.wl%kuninori.morimoto.gx@gmail.com>
+ <874mx7iqgt.wl%kuninori.morimoto.gx@renesas.com>
+ <53F9A6EE.5070005@metafoo.de>
+ <871ts4nmki.wl%kuninori.morimoto.gx@gmail.com>
+ <20140826062558.GR17528@sirena.org.uk>
+ <87wq9vmyyc.wl%kuninori.morimoto.gx@gmail.com>
+ <20140826091120.GC17528@sirena.org.uk>
+ <53FC5105.6070901@metafoo.de>
+ <20140826094211.GF17528@sirena.org.uk>
+ <87r403mtip.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4032345555138255257=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D98BE26514C
- for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 12:47:35 +0200 (CEST)
-In-Reply-To: <s5htx4z5yuv.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: =?iso-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>, "Austin,
- Brian" <Brian.Austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Paul Handrigan <paul.handrigan@cirrus.com>, Daniel Mack <daniel@zonque.org>, Arun Raghavan <arun@accosted.net>, Dylan Reid <dgreid@chromium.org>, David Henningsson <david.henningsson@canonical.com>, "Alexander E. Patrakov" <patrakov@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="e4yZxm10vOVuQa+Y"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <87r403mtip.wl%kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4032345555138255257==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="BqONIA9TJNoFXW05"
-Content-Disposition: inline
-
-
---BqONIA9TJNoFXW05
+--e4yZxm10vOVuQa+Y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 26, 2014 at 12:28:24PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Tue, Aug 26, 2014 at 03:31:44AM -0700, Kuninori Morimoto wrote:
 
-> > It was because they aren't automatically probeable without loading the
-> > driver and taking a look at the hardware - if a distro wants to use them
-> > it ends up having to load and unload the module.
+> > > >If we're already specifying the DAI links for the (D)PCM code it seems
+> > > >like we shouldn't also have to put DAPM routes for them in DT as well.
 
-> So he was grumbling about ISA sound card hardware design?  Then I
-> understand and agree well.  Though, the fact that it isn't
-> discoverable is same on many old embedded device drivers.  The
-> difference is whether it's used only in a custom kernel or in a
-> generic kernel by distros.
+> > > Yes, and I think we shouldn't use anything except for datahsheet pin names
+> > > in the devicetree routing, because otherwise we are leaking driver
+> > > implementation details.
 
-Any embedded devices doing that are just broken - for embedded things
-you do always have an enumeration of the devices even if it happens to
-come from a data table in software.  For ISA there's no option.
+> It came from snd_soc_of_parse_audio_routing()
+> Do you mean this function itself is not good ?
 
---BqONIA9TJNoFXW05
+That's intended to be routing analogue pins to each other, not for DAI
+links in DPCM - for DAI links we should be getting this information from
+elsewhere.
+
+> > While I agree with the sentiment for this when it comes to DAIs we
+> > probably want to use the name the interfaces get in the documentation
+> > rather than pin names since they involve multiple pins working together.
+
+> Sorry, but what does your "interfaces get in the documentation" mean ?
+
+If the documentation refers to the interface as for example "I2S0" then
+the DT should refer to it as I2S0 too.
+
+--e4yZxm10vOVuQa+Y
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT/GW2AAoJELSic+t+oim9VasP/0cR29dUlE2gANHuYpMzLtnB
-ebJFO8LNtKgPV+GicperJX+H7WHlXBVenAXh+vvB0JoehKZnAHmGEimOBp67JLP0
-ZmDmuL48Zqip+XJPpX9yANQExDQXE0+tbb0ICVr0wo2emqSJEY8cXDa1ihBs8XY/
-hH1HH40PjqKCbANnwxuUGBNfqcCc2WnVfhghKe3PriQn5+2VCfxAxkQ7A2aZ1T4A
-usL7U75nGcpoXGkc1c+rfDzaaIo9cAvNyuQGBVC6fUI1qAOjRNhGvED4bU+GdpSu
-9/dsG1db2N7dIeMfRKp+XfohXfJgd8QNiI4yLEiJMEBGEv+iWhLw/pRQILwm/ifI
-S/wXU5Cz/RO5azwNfOOrAqHBbG6APq2cekDsY5yrkpfFVzwKlZfwsnRM53Hf0BTq
-fqoStK1IrhmnBTYJqJevQPk1/rSXdyrsMrgJ/BRcng6OeiC1qV9x6MU6DuVOSezf
-8f8AwViAZ6KZrzDxKxg0MKk4E6hdFwrSAyqqSkCxInPAAfU+MbsY2VaNLp4Wz3AB
-e/U0O3FOEB2J2ZizoEz6OdNS46bvpRg7Ymt2pIOhpkePiHvzK2bmQmR/dyDCkYx2
-zcnl3DEF1srGftC2X9rBePE+Pa3S45zYSMaXnDkMAMccOl/l+lOOIrKFl8F+xhmv
-R4o24sHsi/Cdu0uwHp5N
-=VGdZ
+iQIcBAEBAgAGBQJT/GZxAAoJELSic+t+oim9wtwP/040y/IQvV5KcOYlrzT3rhTq
+1WY+OM5nCWAm3Tliq3l3C4bHS9LUSS7NWkor2ftK9IYeI7v0k+kSKzL88uUtogcL
+qMUabr6UD30WY9j/7s5MQOR+sgw+48lMyObUADZ3mi5niflATWzEE4PuztAPR/oI
+spijyWvRnIfdZqfAzE9N1A81B5+Y794PwFKeMHgo97lLGeGK99bDDHaTyNz8Q5ip
+3paJVDwUF7Bqe8zBtLlv+9Qoz8GGDppUDjADLiKu8j5fkYGGcx6oNSOpfuikLyJg
+y3Ktd3Xmz+OX5B6gM8aizU+joef5kFGK32N9jol5C720wFoJicGdWjcs8acJhbxp
+8MTrEOdFOTzxhG0yD96DZwAw3Ae5+d4X5FMLNJOGdYdpBtuOQRc3xDtaDXbvq841
+XwCSxS91juFaQ6IIsG7sk+6C7qH9jDHYxxtG9eZRHk3T0Sco8Zi1yzzsiMDNzHlD
+J13g+AaRiJlHkjhk/0atQ4NR/QVco2p7P9hsv1w9raMvVCt6JKrwD7xQQ3lhISfS
+90Rmx/y5paiqqa/qn8tUZ1KcPGGhJ6lSnvP2Mtp2bmCFMqBcTfYcMTUXn5rfkOGh
+bms5Qbg0ZODk1BLHKcSsP+YpLIYeztd4m3Vqn524MCFkBzyI9PlKLOyGjOQ5huHs
+BJ/WSv0INTk+lqgCXf1H
+=t1PJ
 -----END PGP SIGNATURE-----
 
---BqONIA9TJNoFXW05--
-
---===============4032345555138255257==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4032345555138255257==--
+--e4yZxm10vOVuQa+Y--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
