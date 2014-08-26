@@ -1,22 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Audio mini conference 2014?
-Date: Tue, 26 Aug 2014 06:29:31 +0100
-Message-ID: <20140826052931.GP17528@sirena.org.uk>
-References: <s5hha1aw6we.wl-tiwai@suse.de> <20140819172948.GX13288@intel.com>
- <alpine.DEB.2.00.1408191451550.10517@phandrigan-desktop>
- <20140820042109.GY13288@intel.com> <s5hy4ujhfta.wl-tiwai@suse.de>
- <20140820070236.GC13288@intel.com> <s5hr40bhaz2.wl-tiwai@suse.de>
- <20140820084106.GD13288@intel.com>
- <20140820170100.GD24407@sirena.org.uk>
- <DF3ACB5C-77A9-4C5A-AD33-AABD4F403088@cirrus.com>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: ASoC: bug report for ssm2602
+Date: Tue, 26 Aug 2014 14:11:20 +0800
+Message-ID: <CAHG8p1Cj9s1-WAyKNtFkCFK0Z74-YX0A7O1o0oN0+hPqNCrorg@mail.gmail.com>
+References: <CAHG8p1BqrSHagAWor6ZqnnPReBPvYfwpXpbNOSWBjxa5n-raEA@mail.gmail.com>
+ <53F71195.5030502@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2044702480174543995=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 211C02608D4
- for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 07:29:52 +0200 (CEST)
-In-Reply-To: <DF3ACB5C-77A9-4C5A-AD33-AABD4F403088@cirrus.com>
+Received: from mail-vc0-f181.google.com (mail-vc0-f181.google.com
+ [209.85.220.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D1492615F3
+ for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 08:11:21 +0200 (CEST)
+Received: by mail-vc0-f181.google.com with SMTP id lf12so16064059vcb.26
+ for <alsa-devel@alsa-project.org>; Mon, 25 Aug 2014 23:11:20 -0700 (PDT)
+In-Reply-To: <53F71195.5030502@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,71 +24,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Austin, Brian" <Brian.Austin@cirrus.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, "Handrigan,
- Paul" <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>, Daniel Mack <daniel@zonque.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+2014-08-22 17:47 GMT+08:00 Lars-Peter Clausen <lars@metafoo.de>:
+> On 08/22/2014 11:21 AM, Scott Jiang wrote:
+>>
+>> Hi Mark and Lars,
+>>
+>> commit 9d863b88ec371491e926e0828dbe3d36ead0f6f9
+>> Author: Lars-Peter Clausen <lars@metafoo.de>
+>> Date:   Sat Aug 31 18:15:23 2013 +0200
+>>
+>>      ASoC: ssm2602: Fix cache sync
+>>
+>>      The ssm2602 uses regmap for caching not soc-cache, so we need to use
+>>      regcache_sync() instead of snd_soc_cache_sync().
+>>
+>> According my test, regcache_sync() can't recover register values when
+>> resume. While snd_soc_cache_sync() works fine. I used regmap_read() to
+>> read registers in regmap layer and found it's the same as suspend. But
+>> regcache_sync() didn't sync these registers correctly to hardware.
+>>
+>
+> That does not make too much sense. snd_soc_cache_sync() is definitely a
+> no-op when using regmap. Which kernel version are you on? Are there any
+> additional changes to this driver in your tree?
 
---===============2044702480174543995==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="shpal0Fw7qDm8w0o"
-Content-Disposition: inline
+My version is 3.16. I compared with the latest 3.17 rc2 kernel, there
+is only one patch.
 
+commit 00a37032a099572302ae89c893bd5c90b924c537
+Author: Mark Brown <broonie@linaro.org>
+Date:   Thu Jul 31 12:47:13 2014 +0100
 
---shpal0Fw7qDm8w0o
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+    ASoC: ssm2602: Convert to params_width()
 
-On Tue, Aug 26, 2014 at 01:47:22AM +0000, Austin, Brian wrote:
-> On Aug 20, 2014, at 12:01 PM, Mark Brown <broonie@kernel.org> wrote:
+    The CODEC doesn't care how data is laid out in memory.
 
-> > The latest Google reference designs use something which is essentially
-> > tinyucm - the configuration is mostly stored in an XML configuration
-> > file which is read at runtime.  It's not consistent with what anyone
-> > else uses.
+    Signed-off-by: Mark Brown <broonie@linaro.org>
+    Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
-> Those must be the qcom designs. They use a =E2=80=9Ctinyucm" that is xml =
-based.
+I believe this patch isn't related to the pm bug here.
+By the way, have you ever tested your patches on any blackfin board?
+Your patches for adau1761, ssm2602 and bf5xx-i2s all failed to run.
 
-Yup.
-
-> I would like to see if we could get a consistent UCM for Android/Chrome/e=
-tc.
-> Has this made it into the topics list?=20
-
-Seems like there's a lot of interest in discussing it so it should.
-
---shpal0Fw7qDm8w0o
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT/BsyAAoJELSic+t+oim9mvsP/20CDOGWiwAY9vYvUb52p2EG
-SrzZSPU51nJjUvFKqJvZBAylPJolfRH3xqL8mcAippOjMixthltCdrxF8/DPGJcL
-0CmOreIO46awB1iC3r+PXFdikW28twswA6FFXKiuj3pfWQU09qZSH4lVtzswgmgz
-0J6cmSn+9zt99UviUOg1T5c+diKF+pXu1rzarWDsFd1pDlq3cLhXwCEHNp/V+/tL
-1JkfvaIXqODNNwRFh0pRfQEj6mHD2QhPIxbvoWY6KpTupPXAUFtxMmgwW74m9/0r
-YBbsb6lCvig/y7iQo60oNnDIqZlBu7dl+mPI5JsuMeQrdapYg7oxWjCo6fZOhdQ8
-+HhB0gl5XZBB54exR1KL4P9ylaojaBEBZm1cbDyZ25IwOMg4iqm9gLj+RV2nfRLt
-71phGKK2//WuWVwZJuLeRQwiGEy8e4smf3O0IEgJHPA9pUF6nv7JxRuWTAwy6bD9
-6mlEGxbyYvkkamT4OzsJm3xHTqM2o9a9lQW1C6USZKgn5ogwWMnNmSdtJ0+FyzNq
-xJwvxU4FnGMRWNut9MT5Dj+JMHbq6M7qiwPbgGBLHwvRLaXTvfD5i4hijMZoMFqn
-hWIpSvqJ9IK40SEvv79BcRZswgJ2mLSf2xur0yQ67eN5HPACWVszI0KCJs/gEGt7
-XX/JnG3iuuaqL/+3IgD/
-=titl
------END PGP SIGNATURE-----
-
---shpal0Fw7qDm8w0o--
-
---===============2044702480174543995==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2044702480174543995==--
+Scott
