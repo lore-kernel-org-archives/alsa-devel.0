@@ -1,18 +1,23 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: ALSA snd-fireworks Echo AudioFire 2
-Date: Tue, 26 Aug 2014 08:10:57 +0900
-Message-ID: <53FBC281.9090608@sakamocchi.jp>
-References: <CAKudYbO=FZwPHzgxwYADxdUKHOtSUzd5V7WayENkmcz__unFQA@mail.gmail.com>
- <53FAB9DA.1060202@sakamocchi.jp>
- <CAKudYbMC-jioVYJ3ViJWYuWZmPy_vbVXqgHorC7ZQFbBUXCDqQ@mail.gmail.com>
+From: "Austin, Brian" <Brian.Austin@cirrus.com>
+Subject: Re: Audio mini conference 2014?
+Date: Tue, 26 Aug 2014 01:47:22 +0000
+Message-ID: <DF3ACB5C-77A9-4C5A-AD33-AABD4F403088@cirrus.com>
+References: <20140813165517.GB17528@sirena.org.uk>
+ <20140817231021.GQ14537@sirena.org.uk> <s5hha1aw6we.wl-tiwai@suse.de>
+ <20140819172948.GX13288@intel.com>
+ <alpine.DEB.2.00.1408191451550.10517@phandrigan-desktop>
+ <20140820042109.GY13288@intel.com> <s5hy4ujhfta.wl-tiwai@suse.de>
+ <20140820070236.GC13288@intel.com> <s5hr40bhaz2.wl-tiwai@suse.de>
+ <20140820084106.GD13288@intel.com> <20140820170100.GD24407@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6972484523817119576=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id B2D8C26574E
- for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 01:11:06 +0200 (CEST)
-In-Reply-To: <CAKudYbMC-jioVYJ3ViJWYuWZmPy_vbVXqgHorC7ZQFbBUXCDqQ@mail.gmail.com>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0141.outbound.protection.outlook.com [207.46.163.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id BAA132608EC
+ for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 03:47:28 +0200 (CEST)
+In-Reply-To: <20140820170100.GD24407@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,91 +27,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Harry van Haaren <harryhaaren@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, "Handrigan,
+ Paul" <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgSGFycnkgYW5kIENsZW1lbnMsCgpPbiAyMDE05bm0MDjmnIgyNeaXpSAyMTowOSwgSGFycnkg
-dmFuIEhhYXJlbiB3cm90ZToKPiBPbiBNb24sIEF1ZyAyNSwgMjAxNCBhdCA1OjIxIEFNLCBUYWth
-c2hpIFNha2Ftb3RvCj4gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPiB3cm90ZToKPj4gKEMuQy5l
-ZCB0byBhbHNhLWRldmVsIGFuZCBDbGVtZW5zKQo+IFRoYW5rcyEKPiAKPj4gSSBrbm93IHRoYXQg
-c29tZSBGaXJld29ya3MgZGV2aWNlcyB3aXRoIGEgY2VydGFpbiBmaXJtd2FyZSAobm90IGV4YWN0
-bHkKPj4gaWRlbnRpZmllZCkgc29tZXRpbWVzIHBlcmZvcm0gdGhlIHNhbWUgYmVoYXZpb3VyLiBD
-b3VsZCBJIGFzayB5b3UgdG8KPj4gY29uZmlybSB0byBzZWUgdGhlc2UgbG9ncyBhbHdheXMgd2hl
-biB5b3UgcGxheWJhY2ssIG9yIHNvbWV0aW1lcz8KPiAKPiBJdHMgY29uc2lzdGVudDogZXZlcnkg
-dGltZSBpdCBpcyBvcGVuZWQgZm9yIHBsYXliYWNrLgoKVGhhbmtzIGZvciB5b3VyIGNvbmZpcm1h
-dGlvbi4KCkluIHRoaXMgY2FzZSwgSSB0aGluayB0aGVyZSdyZSB0d28gY2F1c2VzIG9mIGRpc2Nv
-bnRpbnVpdHk7IG9uZSBpcyBhbgphY3R1YWwgZGlzY29udGludWl0eSwgYW5vdGhlciBpcyBkdWUg
-dG8gd3JvbmcgcGFyYW1ldGVycyBpbiBwYWNrZXQKaGVhZGVyLCBpLmUuOgoKQUxTQTogZmlyZXdv
-cmtzL2ZpcmV3aXJlLWxpYjogQWRkIGEgcXVpcmsgZm9yIHdyb25nIGRicyBpbiB0eCBwYWNrZXRz
-Cmh0dHA6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQu
-Z2l0L2NvbW1pdC9zb3VuZC9maXJld2lyZS9maXJld29ya3M/aWQ9Njk3MDIyMzkxZTQ2NjE0MTg0
-MTAxYzU5ZTQ2Yzk2NzE1OTgwMjZkYgoKSSBzdXNwZWN0IHRoZSBsYXR0ZXIgcmVhc29uIFsxXSwg
-c28gSSB3YW50IHRvIHNlZSBhIHNlcmllcyBvZiBwYWNrZXQKaGVhZGVyLiBXb3VsZCB5b3UgcGxl
-YXNlIGFwcGx5IHRoaXMgcGF0Y2ggdG8geW91ciB0cmVlIGFuZCB0cnkgYWdhaW4gdG8KZ2V0IGxv
-Z3M/CgpodHRwczovL2dpdGh1Yi5jb20vdGFrYXN3aWUvc25kLWZpcmV3aXJlLWltcHJvdmUvY29t
-bWl0LzBkOTc2M2MyZDA0OTdhMmIyNDQwNWI3M2RkNzQ1ODk2YzZjODE2ZWQKCklmIHlvdSBoYXZl
-IGEga25vd2xlZGdlbWVudCBhYm91dCBES01TLCB0aGlzIGJyYW5jaCB3aWxsIGhlbHAgeW91ciB0
-ZXN0LgpodHRwczovL2dpdGh1Yi5jb20vdGFrYXN3aWUvc25kLWZpcmV3aXJlLWltcHJvdmUvdHJl
-ZS9hZjItZGVidWcKCldoZW4geW91IHBsYXliYWNrIHdpdGggcmUtYnVpbGRlZCBzbmQtZmlyZXdp
-cmUtbGliIChub3Qgc25kLWZpcmV3b3JrcywKdGhpcyBpcyBhbiBlbmdpbmUgZm9yIElFQyA2MTg4
-My0xLzYpLCB5b3UgY2FuIHNlZSBtdWNoIGxpbmVzIGluIHlvdXIKZG1lc2cgb3V0cHV0LCBsaWtl
-OgoKWyAyMzA4LjA0ODk0MV0gMDQyOiAwMDA1MDA4OCA5MDAxM2IzMQpbIDIzMDguMDQ4OTQzXSAw
-MDI6IDAwMDQwMDkwIDkwMDFmZmZmClsgMjMwOC4wNDg5NDVdIDA0MjogMDAwNTAwOTAgOTAwMTU0
-OWIKWyAyMzA4LjA0ODk0Nl0gMDQyOiAwMDA1MDA5OCA5MDAxNmEwNQpbIDIzMDguMDQ4OTQ4XSAw
-MDI6IDAwMDQwMGEwIDkwMDFmZmZmClsgMjMwOC4wNDg5NTBdIDA0MjogMDAwNTAwYTAgOTAwMTgz
-NzAKWyAyMzA4LjA0ODk1Ml0gMDQyOiAwMDA1MDBhOCA5MDAxOThkYQpbIDIzMDguMDQ4OTU0XSAw
-MDI6IDAwMDQwMGIwIDkwMDFmZmZmClsgMjMwOC4wNDg5NTZdIDA0MjogMDAwNTAwYjAgOTAwMWIy
-NDUKWyAyMzA4LjA0ODk1OF0gMDQyOiAwMDA1MDBiOCA5MDAxYzdhZgpbIDIzMDguMDQ4OTYwXSAw
-NDI6IDAwMDUwMGMwIDkwMDFlMTE5ClsgMjMwOC4wNTA5MjRdIDAwMjogMDAwNDAwYzggOTAwMWZm
-ZmYKKHBhY2tldHMgdHJhbnNtaXR0ZWQgYnkgTS1BdWRpbyBGaXJld2lyZSA0MTAgYXQgNDQuMWtI
-eikKCklmIHlvdSBzdWNjZXNzZnVsbHkgZ2V0IHRoZXNlIGxvZ3MsIHBsZWFzZSBzaG93IGl0IHRv
-IHVzLiBJIHRoaW5rIGxvZ3MKY29ycmVzcG9uZGluZyB0byBiZWdpbm5pbmcgb2Ygc3RyZWFtaW5n
-IGlzIGhlbHBmdWwuCgo+IFRvIHRlc3QgLyBkZWJ1ZyBzb21lIG1vcmUsIEkndmUgdHJpZWQgc3Rh
-cnRpbmcgSkFDSyBvbiB0aGUgZGV2aWNlCj4gdXNpbmcgQUxTQSwgaHc6QXVkaW9GaXJlMiwgZHVw
-bGV4LCAtcDI1NiAtbjIuIFFKYWNrQ3RsIHJlcG9ydHMgYQo+IHN0cmVhbSBvZiB4cnVuczogYXJl
-IHRoZXNlIHRoZSBkaXNjb250aW51aXRpZXMgc2ltaWxhciB0byB0aGUgZG1lc2cKPiBwcmludHM/
-CgpXaGVuIGRldGVjdGluZyBwYWNrZXQgZGlzY29udGludWl0eSwgY3VycmVudCBBTFNBIGZpcmV3
-aXJlIHN0YWNrIGNoYW5nZXMKUENNIHN1YnN0cmVhbSBzdGF0dXMgdG8gWFJVTiwgc28gamFja2Qg
-c2hvdyB4cnVucy4KCj4gSSdsbCB0cnkgdXBncmFkaW5nIHRoZSBmaXJtd2FyZSBvbiB0aGUgZGV2
-aWNlIChJIGRvbid0IGtub3cgd2hhdAo+IHZlcnNpb24gaXMgY3VycmVudGx5IG9uIGl0KS4KPiBP
-SzogYWZ0ZXIgYSBmbGFzaCAodXNpbmcgYSB3aW5kb3dzIG1hY2hpbmUpLCB0aGUgQVNJTyBkcml2
-ZXIgdGhlcmUgbm93Cj4gcmVwb3J0cyB0aGUgZm9sbG93aW5nIChsYXRlc3QgZnJvbSBFY2hvKSBm
-aXJtd2FyZSB2ZXJzaW9uczoKPiAKPiBXRE0gZHJpdmVyIDUuOAo+IEFTSU8gZHJpdmVyIDUuOAo+
-IENvbnNvbGUgNS44LjEKPiBBUk0gZmlybXdhcmUgNS44Cj4gRlBHQSAzLjAuMgoKWW91IGNhbiBz
-ZWUgdGhlIGZpcm13YXJlIHZlcnNpb24gaW4gJ2FybV92ZXJzaW9uJyBmaWVsZCBvZiBwcm9jIG91
-dHB1dDoKCk9uIEF1ZyAyNSAyMDE0IDA5OjA2LCBIYXJyeSB2YW4gSGFhcmVuIHdyb3RlOgo+IGFy
-bV92ZXJzaW9uOiAweDUwNzAzMDAKCihUaGlzIGlzIGEgZmlybXdhcmUgZm9yIFRJIEljZUx5bngt
-TWljcm8uIFRoaXMgY2hpcHNldCBpbmNsdWRlcyBBUk0KY29yZS4gSW4gZGV0YWlsLCBzZWU6IGh0
-dHA6Ly9zdWJ2ZXJzaW9uLmZmYWRvLm9yZy93aWtpL0ZpcmV3b3JrcykKCk9uIEF1ZyAyNiAyMDE0
-IDA1OjQyLCBDbGVtZW5zIExhZGlzY2ggd3JvdGU6Cj4+ID4gSSBzdXNwZWN0IHRoZXNlIGNvdW50
-ZXIgdmFsdWVzIGFyZSBnZW5lcmF0ZWQgYnkgdGhlIGhhcmR3YXJlOyBJIGRvbid0Cj4+ID4gdGhp
-bmsgdGhhdCB0aGUgZmlybXdhcmUgY2FuIGRvIGFueXRoaW5nIHRvIGFmZmVjdCB0aGlzLgo+Cj4g
-SSBkbyBub3QgZ2V0IGFueSBkaXNjb250aW51aXRpZXMgd2l0aCBBUk0gZmlybXdhcmUgMy4wLjIu
-Cj4gU28gbXVjaCBmb3IgdGhhdCB0aGVvcnkuCgpJIHRoaW5rIHRoaXMgcGF0Y2ggZGVueSB0aGlz
-IGlkZWEuCgpBTFNBOiBmaXJld29ya3MvZmlyZXdpcmUtbGliOiBBZGQgYSBxdWlyayBmb3IgZml4
-ZWQgaW50ZXJ2YWwgb2YgcmVwb3J0ZWQgZGJjCmh0dHA6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xp
-bnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQuZ2l0L2NvbW1pdC9zb3VuZC9maXJld2lyZS9maXJl
-d29ya3M/aWQ9ZDljZDAwNjVjOGE0OGRkMGVmNjFhY2FhOTU4NGUzZTcyMzI0OWM1NwoKRmlyZXdv
-cmtzIGZpcm13YXJlIGZvciBJY2VMeW54LU1pY3JvIGFmZmVjdHMgIHBhcmFtZXRlcnMgaW4gcGFj
-a2V0IGhlYWRlci4KCiMjIyMjIyMjIyMKClsxXSBBY2NvcmRpbmcgdG8gSUVDIDYxODgzLTEvNiwg
-dGhlIGludGVydmFsIG9mICdkYXRhIGJsb2NrIGNvdW50ZXInCmVxdWFscyB0byBTWVRfSU5URVJW
-QUwuIEF0IDQ0LjEvNDguMCBrSHosIGl0J3MgOCBhbmQgdGhlIG51bWJlciBzaG91bGQKYmUgbXVs
-dGlwbGVzIG9mIDguIFRoZSBvdXRwdXQgZnJvbSBteSBGaXJld2lyZSA0MTAgZm9sbG93cyB0aGlz
-CnNwZWNpZmljYXRpb24uCgpCdXQgeW91ciBsb2cgc2hvd3Mgd3JvbmcgbnVtYmVyLgoKT24gQXVn
-IDI1IDIwMTQgMjE6MDksIEhhcnJ5IHZhbiBIYWFyZW4gd3JvdGU6Cj4gWyAgMTkwLjQzMzIwM10g
-c25kLWZpcmV3b3JrcyBmdzEuMDogRGV0ZWN0IGRpc2NvbnRpbnVpdHkgb2YgQ0lQOiAwMCAwQQo+
-IFsgIDE5MC41OTE5NTldIHNuZC1maXJld29ya3MgZncxLjA6IERldGVjdCBkaXNjb250aW51aXR5
-IG9mIENJUDogMDAgMDIKPiBbICAxOTAuNzQ5MjAyXSBzbmQtZmlyZXdvcmtzIGZ3MS4wOiBEZXRl
-Y3QgZGlzY29udGludWl0eSBvZiBDSVA6IDAwIDEyCj4gWyAgMTkwLjkwODI3MF0gc25kLWZpcmV3
-b3JrcyBmdzEuMDogRGV0ZWN0IGRpc2NvbnRpbnVpdHkgb2YgQ0lQOiAwMCAxMgo+IFsgIDE5MS4w
-NjYyNjddIHNuZC1maXJld29ya3MgZncxLjA6IERldGVjdCBkaXNjb250aW51aXR5IG9mIENJUDog
-MDAgMEEKPiBbICAxOTEuMjI1MTM5XSBzbmQtZmlyZXdvcmtzIGZ3MS4wOiBEZXRlY3QgZGlzY29u
-dGludWl0eSBvZiBDSVA6IDAwIDAyCj4gWyAgMTkxLjM4Mzk0Ml0gc25kLWZpcmV3b3JrcyBmdzEu
-MDogRGV0ZWN0IGRpc2NvbnRpbnVpdHkgb2YgQ0lQOiAwMCAwMgoKMHgwMiwgMHgwQSwgMHgxMiBh
-cmUgbm90IG11bHRpcGxlcyBvZiA4LgoKSW4gdGhpcyByZWFzb24sIEkgc3VzcGVjdCB0aGF0IHdy
-b25nIHBhcmFtZXRlcnMgaW4gaGVhZGVycy4KCiMjIyMjIyMjIyMKCgpSZWdhcmRzCgpUYWthc2hp
-IFNha2Ftb3RvCm8tdGFrYXNoaUBzYWthbW9jY2hpLmpwCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+--===============6972484523817119576==
+Content-Language: en-US
+Content-Type: multipart/signed;
+	boundary="Apple-Mail=_88454661-E860-48A4-A1EB-250E1C4FA7AC";
+	protocol="application/pgp-signature"; micalg=pgp-sha512
+
+--Apple-Mail=_88454661-E860-48A4-A1EB-250E1C4FA7AC
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=windows-1252
+
+
+On Aug 20, 2014, at 12:01 PM, Mark Brown <broonie@kernel.org> wrote:
+
+> On Wed, Aug 20, 2014 at 02:11:07PM +0530, Vinod Koul wrote:
+>> On Wed, Aug 20, 2014 at 09:33:05AM +0200, Takashi Iwai wrote:
+>=20
+>>> I thought UCM was targeted to this, but not widely used as expected?
+>=20
+>> Chrome uses t but not Android due to licensing issues. What happend =
+to
+>> tinyucm?
+>=20
+> The latest Google reference designs use something which is essentially
+> tinyucm - the configuration is mostly stored in an XML configuration
+> file which is read at runtime.  It's not consistent with what anyone
+> else uses.
+
+Those must be the qcom designs. They use a =93tinyucm" that is xml =
+based.
+
+I would like to see if we could get a consistent UCM for =
+Android/Chrome/etc.
+Has this made it into the topics list?=20
+
+
+
+
+--Apple-Mail=_88454661-E860-48A4-A1EB-250E1C4FA7AC
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Message signed with OpenPGP using GPGMail
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - https://gpgtools.org
+
+iQEcBAEBCgAGBQJT++cpAAoJEHdXZdGWfiO7P9YH/167TYnBFjVY3ka8xicNPXa6
+yQHGnqTn235z9beW4r7eSoZ2UTDONAenVkVzI+Bz2N1rJ3/UkN+p4u83pnnUq7wA
+0i2lfWnU575JfKsWXUqSJ2tSjuoOKcbpwu8QnJQYUejIEqlONxd5A0mYOHUXMMh2
+yTdEfM7oB0RN7rjSO1S/BILuI87fD/C+jffe4+rNWNmrxtZqdB3lAvCa+8JmFbLO
+h6gb6YxRMZPo1NaL7QEQIO4M9tDoT/gtPU9yQb8B77Rr0wt0eosyOokt+/1CPI1S
+l+s2qCDl3g22w8XBCJYKDd2n8bYFEPAvENG8xRDeGBULbHt50dp4096MMlKQEks=
+=n5WR
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_88454661-E860-48A4-A1EB-250E1C4FA7AC--
+
+--===============6972484523817119576==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6972484523817119576==--
