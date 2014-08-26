@@ -1,72 +1,152 @@
-From: Scott Jiang <scott.jiang.linux@gmail.com>
-Subject: Re: ASoC: bug report for ssm2602
-Date: Tue, 26 Aug 2014 15:14:01 +0800
-Message-ID: <CAHG8p1CNN8y010uOxJdUz9FHdBMd-OEiTO=wToWQ4hCYgM-Aww@mail.gmail.com>
-References: <CAHG8p1BqrSHagAWor6ZqnnPReBPvYfwpXpbNOSWBjxa5n-raEA@mail.gmail.com>
- <53F71195.5030502@metafoo.de>
- <CAHG8p1Cj9s1-WAyKNtFkCFK0Z74-YX0A7O1o0oN0+hPqNCrorg@mail.gmail.com>
- <20140826062846.GS17528@sirena.org.uk>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH] sound: pci: ctxfi: ctatc.c: printk replacement
+Date: Tue, 26 Aug 2014 13:21:00 +0530
+Message-ID: <20140826075100.GA1751@sudip-PC>
+References: <1408989412-30805-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <s5h8umbu5oi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f171.google.com (mail-vc0-f171.google.com
- [209.85.220.171])
- by alsa0.perex.cz (Postfix) with ESMTP id C11B52617A4
- for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 09:14:02 +0200 (CEST)
-Received: by mail-vc0-f171.google.com with SMTP id hq11so16409032vcb.16
- for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 00:14:01 -0700 (PDT)
-In-Reply-To: <20140826062846.GS17528@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5h8umbu5oi.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark and Lars,
+On Tue, Aug 26, 2014 at 08:27:09AM +0200, Takashi Iwai wrote:
+> At Mon, 25 Aug 2014 23:26:52 +0530,
+> Sudip Mukherjee wrote:
+> > 
+> > printk replaced ith corresponding pr_err
+> > fixed three broken user-visible strings
+> > fixed a checkpatch warning of space before new line
+> 
+> Fixes are good, but is this the final patch for ctxfi?
+> If you're going to post another one, please fold them into a single
+> patch.  All patches do basically the same job, so splitting patches
+> doesn't help much in such a case.  Patches should be split logically.
+> 
+> Also, if you fix broken strings, better to do it consistently to all
+> targeted strings, instead of picking up random ones.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
->
-> If it is the above patch is the problem perhaps that the register map
-> isn't getting marked as dirty so the cache sync is being suppressed?
->
+Hi,
+I was posting them separately as i was thinking it will become a big patch. 
+For the broken string , it was actually not random . I did it only for those string that were affected by my patch.
+Anyways, I will send you a complete one for ctxfi.
 
-I print some info in regcache_sync_block_single() and found some registers
-are skipped because the regmap thinks it's the same as default. I guess it's
-a bug here. When I use regmap_read(), these values are not equal to default.
+thanks
+sudip
 
->> I believe this patch isn't related to the pm bug here.
->> By the way, have you ever tested your patches on any blackfin board?
->> Your patches for adau1761, ssm2602 and bf5xx-i2s all failed to run.
->
-> I guess this is addressed to Lars-Peter but could you be more specific
-> about the problems you are seeing?
-
-bf5xx-i2s-pcm, I have sent a patch to Mark for this.
-
-commit 30443408fd7201fd1911b09daccf92fae3cc700d
-Author: Scott Jiang <scott.jiang.linux@gmail.com>
-Date:   Fri Jul 18 16:14:57 2014 +0800
-
-    ASoC: blackfin: use samples to set silence
-
-    The third parameter for snd_pcm_format_set_silence needs the number
-    of samples instead of sample bytes.
-
-In fact, test cases still report bugs for this driver after I fix this
-bug. There are
-many Xrun for TDM codecs. I guess you change the parameters in
-bf5xx_pcm_hardware
-for TDM to I2S.
-
-ssm2602, can't recover registers after resume.
-adau1761, I'm not sure what the problem is. I'll take a look later.
-
-Thanks,
-Scott
+> 
+> > 
+> > 
+> > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+> > ---
+> >  sound/pci/ctxfi/ctatc.c | 23 ++++++++++-------------
+> >  1 file changed, 10 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
+> > index af632bd..41597a8 100644
+> > --- a/sound/pci/ctxfi/ctatc.c
+> > +++ b/sound/pci/ctxfi/ctatc.c
+> > @@ -185,7 +185,7 @@ static unsigned int convert_format(snd_pcm_format_t snd_format)
+> >  	case SNDRV_PCM_FORMAT_FLOAT_LE:
+> >  		return SRC_SF_F32;
+> >  	default:
+> > -		printk(KERN_ERR "ctxfi: not recognized snd format is %d \n",
+> > +		pr_err("ctxfi: not recognized snd format is %d\n",
+> >  			snd_format);
+> >  		return SRC_SF_S16;
+> >  	}
+> > @@ -1282,7 +1282,7 @@ static int atc_identify_card(struct ct_atc *atc, unsigned int ssid)
+> >  	p = snd_pci_quirk_lookup_id(vendor_id, device_id, list);
+> >  	if (p) {
+> >  		if (p->value < 0) {
+> > -			printk(KERN_ERR "ctxfi: "
+> > +			pr_err("ctxfi: "
+> >  			       "Device %04x:%04x is black-listed\n",
+> >  			       vendor_id, device_id);
+> >  			return -ENOENT;
+> > @@ -1315,8 +1315,7 @@ int ct_atc_create_alsa_devs(struct ct_atc *atc)
+> >  		err = alsa_dev_funcs[i].create(atc, i,
+> >  				alsa_dev_funcs[i].public_name);
+> >  		if (err) {
+> > -			printk(KERN_ERR "ctxfi: "
+> > -			       "Creating alsa device %d failed!\n", i);
+> > +			pr_err("ctxfi: Creating alsa device %d failed!\n", i);
+> >  			return err;
+> >  		}
+> >  	}
+> > @@ -1332,7 +1331,7 @@ static int atc_create_hw_devs(struct ct_atc *atc)
+> >  
+> >  	err = create_hw_obj(atc->pci, atc->chip_type, atc->model, &hw);
+> >  	if (err) {
+> > -		printk(KERN_ERR "Failed to create hw obj!!!\n");
+> > +		pr_err("Failed to create hw obj!!!\n");
+> >  		return err;
+> >  	}
+> >  	atc->hw = hw;
+> > @@ -1351,8 +1350,7 @@ static int atc_create_hw_devs(struct ct_atc *atc)
+> >  
+> >  		err = rsc_mgr_funcs[i].create(atc->hw, &atc->rsc_mgrs[i]);
+> >  		if (err) {
+> > -			printk(KERN_ERR "ctxfi: "
+> > -			       "Failed to create rsc_mgr %d!!!\n", i);
+> > +			pr_err("ctxfi: Failed to create rsc_mgr %d!!!\n", i);
+> >  			return err;
+> >  		}
+> >  	}
+> > @@ -1399,7 +1397,7 @@ static int atc_get_resources(struct ct_atc *atc)
+> >  		err = daio_mgr->get_daio(daio_mgr, &da_desc,
+> >  					(struct daio **)&atc->daios[i]);
+> >  		if (err) {
+> > -			printk(KERN_ERR "ctxfi: Failed to get DAIO "
+> > +			pr_err("ctxfi: Failed to get DAIO "
+> >  					"resource %d!!!\n", i);
+> >  			return err;
+> >  		}
+> > @@ -1603,8 +1601,7 @@ static int atc_resume(struct ct_atc *atc)
+> >  	/* Do hardware resume. */
+> >  	err = atc_hw_resume(atc);
+> >  	if (err < 0) {
+> > -		printk(KERN_ERR "ctxfi: pci_enable_device failed, "
+> > -		       "disabling device\n");
+> > +		pr_err("ctxfi: pci_enable_device failed, disabling device\n");
+> >  		snd_card_disconnect(atc->card);
+> >  		return err;
+> >  	}
+> > @@ -1701,7 +1698,7 @@ int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+> >  	/* Find card model */
+> >  	err = atc_identify_card(atc, ssid);
+> >  	if (err < 0) {
+> > -		printk(KERN_ERR "ctatc: Card not recognised\n");
+> > +		pr_err("ctatc: Card not recognised\n");
+> >  		goto error1;
+> >  	}
+> >  
+> > @@ -1717,7 +1714,7 @@ int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+> >  
+> >  	err = ct_mixer_create(atc, (struct ct_mixer **)&atc->mixer);
+> >  	if (err) {
+> > -		printk(KERN_ERR "ctxfi: Failed to create mixer obj!!!\n");
+> > +		pr_err("ctxfi: Failed to create mixer obj!!!\n");
+> >  		goto error1;
+> >  	}
+> >  
+> > @@ -1744,6 +1741,6 @@ int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+> >  
+> >  error1:
+> >  	ct_atc_destroy(atc);
+> > -	printk(KERN_ERR "ctxfi: Something wrong!!!\n");
+> > +	pr_err("ctxfi: Something wrong!!!\n");
+> >  	return err;
+> >  }
+> > -- 
+> > 1.8.1.2
+> > 
