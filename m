@@ -1,446 +1,93 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] sound: pci: ctxfi: prink replacement
-Date: Tue, 26 Aug 2014 15:43:24 +0530
-Message-ID: <1409048004-19838-1-git-send-email-sudipm.mukherjee@gmail.com>
-References: <Re: [PATCH] sound: pci: ctxfi: ctatc.c: printk replacement>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <Re: [PATCH] sound: pci: ctxfi: ctatc.c: printk replacement>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Audio mini conference 2014?
+Date: Tue, 26 Aug 2014 11:19:53 +0100
+Message-ID: <20140826101953.GI17528@sirena.org.uk>
+References: <53EA6165.3070902@zonque.org> <s5hbnropcvd.wl-tiwai@suse.de>
+ <20140813165517.GB17528@sirena.org.uk>
+ <20140817231021.GQ14537@sirena.org.uk>
+ <s5hha1aw6we.wl-tiwai@suse.de> <53F1B892.5080109@metafoo.de>
+ <53F1BA5B.6070400@zonque.org> <s5hbnr7u5xp.wl-tiwai@suse.de>
+ <20140826084220.GA17528@sirena.org.uk>
+ <s5hvbpf5zn1.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7779437927764675972=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94EFC26507D
+ for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 12:20:08 +0200 (CEST)
+In-Reply-To: <s5hvbpf5zn1.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: =?iso-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>, "Austin,
+ Brian" <Brian.Austin@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>, Vinod Koul <vinod.koul@intel.com>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Paul Handrigan <paul.handrigan@cirrus.com>, Daniel Mack <daniel@zonque.org>, Arun Raghavan <arun@accosted.net>, Dylan Reid <dgreid@chromium.org>, David Henningsson <david.henningsson@canonical.com>, "Alexander E. Patrakov" <patrakov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-printk replaced with corresponding pr_err and pr_alert
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
+--===============7779437927764675972==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ykeeQfsKCRyAS6o+"
+Content-Disposition: inline
 
-Initially started by copy-paste but as Takashi suggested it was done by a script.
-bash script is as follows :
 
-OLD="printk(KERN_ERR \?"
-OLD1="printk(KERN_ALERT \?"
-NEW="pr_err("
-NEW1="pr_alert("
-TFILE="/tmp/out.tmp.$$"
-for f in *.c
-do
-sed "s/$OLD/$NEW/g" "$f" > $TFILE && mv $TFILE "$f"
-sed "s/$OLD1/$NEW1/g" "$f" > $TFILE && mv $TFILE "$f"
-done
+--ykeeQfsKCRyAS6o+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-this patch will generate a warning from checkpatch for an unnecessary space before new line and has not been fixed as this patch is only for printk replacement.
+On Tue, Aug 26, 2014 at 12:11:30PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
+> > On Tue, Aug 26, 2014 at 08:21:38AM +0200, Takashi Iwai wrote:
 
- sound/pci/ctxfi/ctamixer.c   |  4 ++--
- sound/pci/ctxfi/ctatc.c      | 20 ++++++++++----------
- sound/pci/ctxfi/ctdaio.c     |  2 +-
- sound/pci/ctxfi/cthw20k1.c   | 10 +++++-----
- sound/pci/ctxfi/cthw20k2.c   | 16 ++++++++--------
- sound/pci/ctxfi/ctmixer.c    |  4 ++--
- sound/pci/ctxfi/ctresource.c | 12 ++++++------
- sound/pci/ctxfi/ctsrc.c      |  4 ++--
- sound/pci/ctxfi/ctvmem.c     |  4 ++--
- sound/pci/ctxfi/xfi.c        |  8 ++++----
- 10 files changed, 42 insertions(+), 42 deletions(-)
+> > > - Code removals (Takashi)
+> > >   There have been actions to remove the codes for old hardware
+> > >   recently.  Which is acceptable?  Feature removals, too?
 
-diff --git a/sound/pci/ctxfi/ctamixer.c b/sound/pci/ctxfi/ctamixer.c
-index fee35cf..fed6e6a 100644
---- a/sound/pci/ctxfi/ctamixer.c
-+++ b/sound/pci/ctxfi/ctamixer.c
-@@ -258,7 +258,7 @@ static int get_amixer_rsc(struct amixer_mgr *mgr,
- 	}
- 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
- 	if (err) {
--		printk(KERN_ERR "ctxfi: Can't meet AMIXER resource request!\n");
-+		pr_err("ctxfi: Can't meet AMIXER resource request!\n");
- 		goto error;
- 	}
- 
-@@ -411,7 +411,7 @@ static int get_sum_rsc(struct sum_mgr *mgr,
- 	}
- 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
- 	if (err) {
--		printk(KERN_ERR "ctxfi: Can't meet SUM resource request!\n");
-+		pr_err("ctxfi: Can't meet SUM resource request!\n");
- 		goto error;
- 	}
- 
-diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
-index af632bd..ce9061a 100644
---- a/sound/pci/ctxfi/ctatc.c
-+++ b/sound/pci/ctxfi/ctatc.c
-@@ -185,7 +185,7 @@ static unsigned int convert_format(snd_pcm_format_t snd_format)
- 	case SNDRV_PCM_FORMAT_FLOAT_LE:
- 		return SRC_SF_F32;
- 	default:
--		printk(KERN_ERR "ctxfi: not recognized snd format is %d \n",
-+		pr_err("ctxfi: not recognized snd format is %d \n",
- 			snd_format);
- 		return SRC_SF_S16;
- 	}
-@@ -1282,7 +1282,7 @@ static int atc_identify_card(struct ct_atc *atc, unsigned int ssid)
- 	p = snd_pci_quirk_lookup_id(vendor_id, device_id, list);
- 	if (p) {
- 		if (p->value < 0) {
--			printk(KERN_ERR "ctxfi: "
-+			pr_err("ctxfi: "
- 			       "Device %04x:%04x is black-listed\n",
- 			       vendor_id, device_id);
- 			return -ENOENT;
-@@ -1315,7 +1315,7 @@ int ct_atc_create_alsa_devs(struct ct_atc *atc)
- 		err = alsa_dev_funcs[i].create(atc, i,
- 				alsa_dev_funcs[i].public_name);
- 		if (err) {
--			printk(KERN_ERR "ctxfi: "
-+			pr_err("ctxfi: "
- 			       "Creating alsa device %d failed!\n", i);
- 			return err;
- 		}
-@@ -1332,7 +1332,7 @@ static int atc_create_hw_devs(struct ct_atc *atc)
- 
- 	err = create_hw_obj(atc->pci, atc->chip_type, atc->model, &hw);
- 	if (err) {
--		printk(KERN_ERR "Failed to create hw obj!!!\n");
-+		pr_err("Failed to create hw obj!!!\n");
- 		return err;
- 	}
- 	atc->hw = hw;
-@@ -1351,7 +1351,7 @@ static int atc_create_hw_devs(struct ct_atc *atc)
- 
- 		err = rsc_mgr_funcs[i].create(atc->hw, &atc->rsc_mgrs[i]);
- 		if (err) {
--			printk(KERN_ERR "ctxfi: "
-+			pr_err("ctxfi: "
- 			       "Failed to create rsc_mgr %d!!!\n", i);
- 			return err;
- 		}
-@@ -1399,7 +1399,7 @@ static int atc_get_resources(struct ct_atc *atc)
- 		err = daio_mgr->get_daio(daio_mgr, &da_desc,
- 					(struct daio **)&atc->daios[i]);
- 		if (err) {
--			printk(KERN_ERR "ctxfi: Failed to get DAIO "
-+			pr_err("ctxfi: Failed to get DAIO "
- 					"resource %d!!!\n", i);
- 			return err;
- 		}
-@@ -1603,7 +1603,7 @@ static int atc_resume(struct ct_atc *atc)
- 	/* Do hardware resume. */
- 	err = atc_hw_resume(atc);
- 	if (err < 0) {
--		printk(KERN_ERR "ctxfi: pci_enable_device failed, "
-+		pr_err("ctxfi: pci_enable_device failed, "
- 		       "disabling device\n");
- 		snd_card_disconnect(atc->card);
- 		return err;
-@@ -1701,7 +1701,7 @@ int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
- 	/* Find card model */
- 	err = atc_identify_card(atc, ssid);
- 	if (err < 0) {
--		printk(KERN_ERR "ctatc: Card not recognised\n");
-+		pr_err("ctatc: Card not recognised\n");
- 		goto error1;
- 	}
- 
-@@ -1717,7 +1717,7 @@ int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
- 
- 	err = ct_mixer_create(atc, (struct ct_mixer **)&atc->mixer);
- 	if (err) {
--		printk(KERN_ERR "ctxfi: Failed to create mixer obj!!!\n");
-+		pr_err("ctxfi: Failed to create mixer obj!!!\n");
- 		goto error1;
- 	}
- 
-@@ -1744,6 +1744,6 @@ int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
- 
- error1:
- 	ct_atc_destroy(atc);
--	printk(KERN_ERR "ctxfi: Something wrong!!!\n");
-+	pr_err("ctxfi: Something wrong!!!\n");
- 	return err;
- }
-diff --git a/sound/pci/ctxfi/ctdaio.c b/sound/pci/ctxfi/ctdaio.c
-index 84f86bf..6f0654e 100644
---- a/sound/pci/ctxfi/ctdaio.c
-+++ b/sound/pci/ctxfi/ctdaio.c
-@@ -541,7 +541,7 @@ static int get_daio_rsc(struct daio_mgr *mgr,
- 	err = daio_mgr_get_rsc(&mgr->mgr, desc->type);
- 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
- 	if (err) {
--		printk(KERN_ERR "Can't meet DAIO resource request!\n");
-+		pr_err("Can't meet DAIO resource request!\n");
- 		return err;
- 	}
- 
-diff --git a/sound/pci/ctxfi/cthw20k1.c b/sound/pci/ctxfi/cthw20k1.c
-index 6ac40be..782641e 100644
---- a/sound/pci/ctxfi/cthw20k1.c
-+++ b/sound/pci/ctxfi/cthw20k1.c
-@@ -1268,7 +1268,7 @@ static int hw_trn_init(struct hw *hw, const struct trn_conf *info)
- 
- 	/* Set up device page table */
- 	if ((~0UL) == info->vm_pgt_phys) {
--		printk(KERN_ERR "Wrong device page table page address!\n");
-+		pr_err("Wrong device page table page address!\n");
- 		return -1;
- 	}
- 
-@@ -1327,7 +1327,7 @@ static int hw_pll_init(struct hw *hw, unsigned int rsr)
- 		mdelay(40);
- 	}
- 	if (i >= 3) {
--		printk(KERN_ALERT "PLL initialization failed!!!\n");
-+		pr_alert("PLL initialization failed!!!\n");
- 		return -EBUSY;
- 	}
- 
-@@ -1351,7 +1351,7 @@ static int hw_auto_init(struct hw *hw)
- 			break;
- 	}
- 	if (!get_field(gctl, GCTL_AID)) {
--		printk(KERN_ALERT "Card Auto-init failed!!!\n");
-+		pr_alert("Card Auto-init failed!!!\n");
- 		return -EBUSY;
- 	}
- 
-@@ -1911,7 +1911,7 @@ static int hw_card_start(struct hw *hw)
- 	/* Set DMA transfer mask */
- 	if (pci_set_dma_mask(pci, CT_XFI_DMA_MASK) < 0 ||
- 	    pci_set_consistent_dma_mask(pci, CT_XFI_DMA_MASK) < 0) {
--		printk(KERN_ERR "architecture does not support PCI "
-+		pr_err("architecture does not support PCI "
- 				"busmaster DMA with mask 0x%llx\n",
- 		       CT_XFI_DMA_MASK);
- 		err = -ENXIO;
-@@ -1942,7 +1942,7 @@ static int hw_card_start(struct hw *hw)
- 		err = request_irq(pci->irq, ct_20k1_interrupt, IRQF_SHARED,
- 				  KBUILD_MODNAME, hw);
- 		if (err < 0) {
--			printk(KERN_ERR "XFi: Cannot get irq %d\n", pci->irq);
-+			pr_err("XFi: Cannot get irq %d\n", pci->irq);
- 			goto error2;
- 		}
- 		hw->irq = pci->irq;
-diff --git a/sound/pci/ctxfi/cthw20k2.c b/sound/pci/ctxfi/cthw20k2.c
-index b143886..8a72fac 100644
---- a/sound/pci/ctxfi/cthw20k2.c
-+++ b/sound/pci/ctxfi/cthw20k2.c
-@@ -1187,7 +1187,7 @@ static int hw_daio_init(struct hw *hw, const struct daio_conf *info)
- 		hw_write_20kx(hw, AUDIO_IO_TX_BLRCLK, 0x21212121);
- 		hw_write_20kx(hw, AUDIO_IO_RX_BLRCLK, 0);
- 	} else {
--		printk(KERN_ALERT "ctxfi: ERROR!!! Invalid sampling rate!!!\n");
-+		pr_alert("ctxfi: ERROR!!! Invalid sampling rate!!!\n");
- 		return -EINVAL;
- 	}
- 
-@@ -1246,7 +1246,7 @@ static int hw_trn_init(struct hw *hw, const struct trn_conf *info)
- 
- 	/* Set up device page table */
- 	if ((~0UL) == info->vm_pgt_phys) {
--		printk(KERN_ALERT "ctxfi: "
-+		pr_alert("ctxfi: "
- 		       "Wrong device page table page address!!!\n");
- 		return -1;
- 	}
-@@ -1352,7 +1352,7 @@ static int hw_pll_init(struct hw *hw, unsigned int rsr)
- 		break;
- 	}
- 	if (i >= 1000) {
--		printk(KERN_ALERT "ctxfi: PLL initialization failed!!!\n");
-+		pr_alert("ctxfi: PLL initialization failed!!!\n");
- 		return -EBUSY;
- 	}
- 
-@@ -1376,7 +1376,7 @@ static int hw_auto_init(struct hw *hw)
- 			break;
- 	}
- 	if (!get_field(gctl, GCTL_AID)) {
--		printk(KERN_ALERT "ctxfi: Card Auto-init failed!!!\n");
-+		pr_alert("ctxfi: Card Auto-init failed!!!\n");
- 		return -EBUSY;
- 	}
- 
-@@ -1847,7 +1847,7 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
- 	/* Initialize I2C */
- 	err = hw20k2_i2c_init(hw, 0x1A, 1, 1);
- 	if (err < 0) {
--		printk(KERN_ALERT "ctxfi: Failure to acquire I2C!!!\n");
-+		pr_alert("ctxfi: Failure to acquire I2C!!!\n");
- 		goto error;
- 	}
- 
-@@ -1890,7 +1890,7 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
- 		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_MMC, 0x0A),
- 						MAKE_WM8775_DATA(0x0A));
- 	} else {
--		printk(KERN_ALERT "ctxfi: Invalid master sampling "
-+		pr_alert("ctxfi: Invalid master sampling "
- 				  "rate (msr %d)!!!\n", info->msr);
- 		err = -EINVAL;
- 		goto error;
-@@ -2034,7 +2034,7 @@ static int hw_card_start(struct hw *hw)
- 	/* Set DMA transfer mask */
- 	if (pci_set_dma_mask(pci, CT_XFI_DMA_MASK) < 0 ||
- 	    pci_set_consistent_dma_mask(pci, CT_XFI_DMA_MASK) < 0) {
--		printk(KERN_ERR "ctxfi: architecture does not support PCI "
-+		pr_err("ctxfi: architecture does not support PCI "
- 		"busmaster DMA with mask 0x%llx\n", CT_XFI_DMA_MASK);
- 		err = -ENXIO;
- 		goto error1;
-@@ -2063,7 +2063,7 @@ static int hw_card_start(struct hw *hw)
- 		err = request_irq(pci->irq, ct_20k2_interrupt, IRQF_SHARED,
- 				  KBUILD_MODNAME, hw);
- 		if (err < 0) {
--			printk(KERN_ERR "XFi: Cannot get irq %d\n", pci->irq);
-+			pr_err("XFi: Cannot get irq %d\n", pci->irq);
- 			goto error2;
- 		}
- 		hw->irq = pci->irq;
-diff --git a/sound/pci/ctxfi/ctmixer.c b/sound/pci/ctxfi/ctmixer.c
-index 48fe0e3..8d986e4 100644
---- a/sound/pci/ctxfi/ctmixer.c
-+++ b/sound/pci/ctxfi/ctmixer.c
-@@ -854,7 +854,7 @@ static int ct_mixer_get_resources(struct ct_mixer *mixer)
- 	for (i = 0; i < (NUM_CT_SUMS * CHN_NUM); i++) {
- 		err = sum_mgr->get_sum(sum_mgr, &sum_desc, &sum);
- 		if (err) {
--			printk(KERN_ERR "ctxfi:Failed to get sum resources for "
-+			pr_err("ctxfi:Failed to get sum resources for "
- 					  "front output!\n");
- 			break;
- 		}
-@@ -869,7 +869,7 @@ static int ct_mixer_get_resources(struct ct_mixer *mixer)
- 	for (i = 0; i < (NUM_CT_AMIXERS * CHN_NUM); i++) {
- 		err = amixer_mgr->get_amixer(amixer_mgr, &am_desc, &amixer);
- 		if (err) {
--			printk(KERN_ERR "ctxfi:Failed to get amixer resources "
-+			pr_err("ctxfi:Failed to get amixer resources "
- 			       "for mixer obj!\n");
- 			break;
- 		}
-diff --git a/sound/pci/ctxfi/ctresource.c b/sound/pci/ctxfi/ctresource.c
-index 7dfaf67..11ac934 100644
---- a/sound/pci/ctxfi/ctresource.c
-+++ b/sound/pci/ctxfi/ctresource.c
-@@ -162,13 +162,13 @@ int rsc_init(struct rsc *rsc, u32 idx, enum RSCTYP type, u32 msr, void *hw)
- 	case DAIO:
- 		break;
- 	default:
--		printk(KERN_ERR
-+		pr_err(
- 		       "ctxfi: Invalid resource type value %d!\n", type);
- 		return -EINVAL;
- 	}
- 
- 	if (err) {
--		printk(KERN_ERR
-+		pr_err(
- 		       "ctxfi: Failed to get resource control block!\n");
- 		return err;
- 	}
-@@ -192,7 +192,7 @@ int rsc_uninit(struct rsc *rsc)
- 		case DAIO:
- 			break;
- 		default:
--			printk(KERN_ERR "ctxfi: "
-+			pr_err("ctxfi: "
- 			       "Invalid resource type value %d!\n", rsc->type);
- 			break;
- 		}
-@@ -235,14 +235,14 @@ int rsc_mgr_init(struct rsc_mgr *mgr, enum RSCTYP type,
- 	case SUM:
- 		break;
- 	default:
--		printk(KERN_ERR
-+		pr_err(
- 		       "ctxfi: Invalid resource type value %d!\n", type);
- 		err = -EINVAL;
- 		goto error;
- 	}
- 
- 	if (err) {
--		printk(KERN_ERR
-+		pr_err(
- 		       "ctxfi: Failed to get manager control block!\n");
- 		goto error;
- 	}
-@@ -286,7 +286,7 @@ int rsc_mgr_uninit(struct rsc_mgr *mgr)
- 		case SUM:
- 			break;
- 		default:
--			printk(KERN_ERR "ctxfi: "
-+			pr_err("ctxfi: "
- 			       "Invalid resource type value %d!\n", mgr->type);
- 			break;
- 		}
-diff --git a/sound/pci/ctxfi/ctsrc.c b/sound/pci/ctxfi/ctsrc.c
-index 6e77e86..19df9b4 100644
---- a/sound/pci/ctxfi/ctsrc.c
-+++ b/sound/pci/ctxfi/ctsrc.c
-@@ -431,7 +431,7 @@ get_src_rsc(struct src_mgr *mgr, const struct src_desc *desc, struct src **rsrc)
- 
- 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
- 	if (err) {
--		printk(KERN_ERR "ctxfi: Can't meet SRC resource request!\n");
-+		pr_err("ctxfi: Can't meet SRC resource request!\n");
- 		return err;
- 	}
- 
-@@ -739,7 +739,7 @@ static int get_srcimp_rsc(struct srcimp_mgr *mgr,
- 	}
- 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
- 	if (err) {
--		printk(KERN_ERR "ctxfi: Can't meet SRCIMP resource request!\n");
-+		pr_err("ctxfi: Can't meet SRCIMP resource request!\n");
- 		goto error1;
- 	}
- 
-diff --git a/sound/pci/ctxfi/ctvmem.c b/sound/pci/ctxfi/ctvmem.c
-index 6109490..5ea015b 100644
---- a/sound/pci/ctxfi/ctvmem.c
-+++ b/sound/pci/ctxfi/ctvmem.c
-@@ -36,7 +36,7 @@ get_vm_block(struct ct_vm *vm, unsigned int size)
- 
- 	size = CT_PAGE_ALIGN(size);
- 	if (size > vm->size) {
--		printk(KERN_ERR "ctxfi: Fail! No sufficient device virtual "
-+		pr_err("ctxfi: Fail! No sufficient device virtual "
- 				  "memory space available!\n");
- 		return NULL;
- 	}
-@@ -132,7 +132,7 @@ ct_vm_map(struct ct_vm *vm, struct snd_pcm_substream *substream, int size)
- 
- 	block = get_vm_block(vm, size);
- 	if (block == NULL) {
--		printk(KERN_ERR "ctxfi: No virtual memory block that is big "
-+		pr_err("ctxfi: No virtual memory block that is big "
- 				  "enough to allocate!\n");
- 		return NULL;
- 	}
-diff --git a/sound/pci/ctxfi/xfi.c b/sound/pci/ctxfi/xfi.c
-index 8f8b566..af8c498 100644
---- a/sound/pci/ctxfi/xfi.c
-+++ b/sound/pci/ctxfi/xfi.c
-@@ -76,16 +76,16 @@ ct_card_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 	if (err)
- 		return err;
- 	if ((reference_rate != 48000) && (reference_rate != 44100)) {
--		printk(KERN_ERR "ctxfi: Invalid reference_rate value %u!!!\n",
-+		pr_err("ctxfi: Invalid reference_rate value %u!!!\n",
- 		       reference_rate);
--		printk(KERN_ERR "ctxfi: The valid values for reference_rate "
-+		pr_err("ctxfi: The valid values for reference_rate "
- 		       "are 48000 and 44100, Value 48000 is assumed.\n");
- 		reference_rate = 48000;
- 	}
- 	if ((multiple != 1) && (multiple != 2) && (multiple != 4)) {
--		printk(KERN_ERR "ctxfi: Invalid multiple value %u!!!\n",
-+		pr_err("ctxfi: Invalid multiple value %u!!!\n",
- 		       multiple);
--		printk(KERN_ERR "ctxfi: The valid values for multiple are "
-+		pr_err("ctxfi: The valid values for multiple are "
- 		       "1, 2 and 4, Value 2 is assumed.\n");
- 		multiple = 2;
- 	}
--- 
-1.8.1.2
+> > Linus was muttering about ISA sound card drivers.
+
+> Interesting, I thought Linus doesn't mind much about such "dead"
+> drivers.
+
+It was because they aren't automatically probeable without loading the
+driver and taking a look at the hardware - if a distro wants to use them
+it ends up having to load and unload the module.
+
+--ykeeQfsKCRyAS6o+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJT/F9GAAoJELSic+t+oim9zL8P/1SqFROmuHX8T3+rWh3FII0S
+rdFzWA0rg8ovkKsUG0wJ61+t1PMjpdfuE81rOchlagWmwogidcG6AowJ0VLvNmEF
+wujWbyMdtYUb9CDuiEXEHR4andgFbSFiUfe78FpXqSrsryqqLlvsWPzsVtgaMPJF
+zufOVPrsAFB6bEhum30nr7qGa7Ufk9JSm/YpXenudGRPJajVShn3uWQilCRi1BDl
+IU4elfZOrfR80a3s97uJWg1g6X7phtfAf7skGis3OTQ3ZW13UjDoaGxIr4dyKeD+
+O07xsTX+djtAVxMChv3EZOLi2SFP0QL3y+yjCAgfkQbqKOYxKdw4HepoLiBnMkMA
+QMAZrsCSuvgtzgQehyN42rkTQEO/JR9bJwhv4GyO8UFVOaCSeUdUbuKpdh6jGpQ2
+AbwD7x5nAbuZnGovmahQl0Zj9ubXNSTq01tBm5HBQWfcp14yExRRVULTg1MtxuO6
+Mpx/xSyunTzRiN7oz1ir48mqTCdkAhMrL+6krFSsh5Km+tF6ErSFVKF6c6smdUkB
+iztIzB+f7qDlzrCwp4KvBK2PCOSAl3qWrY08rCy8UxxAnWUcgZLYfW9VnBX+omDn
+FsHT6eRS26kz6SQbqxeKNeDkUN3Iw+EhRbTcjPfoqD/BFMwyaLIjoWW4w9kQ2y+h
+9uJ70Z4Fm54GODiQe7mS
+=hNv6
+-----END PGP SIGNATURE-----
+
+--ykeeQfsKCRyAS6o+--
+
+--===============7779437927764675972==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7779437927764675972==--
