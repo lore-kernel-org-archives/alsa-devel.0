@@ -1,20 +1,20 @@
-From: Andreas Allacher <andreas.allacher@gmx.at>
-Subject: Re: [PATCH] ALSA: virtuoso: add Xonar Essence STX II
- support
-Date: Tue, 26 Aug 2014 10:47:36 +0200
-Message-ID: <53FC49A8.1010108@gmx.at>
-References: <53FC4901.6070908@allacher.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] ALSA: virtuoso: add Xonar Essence STX
+	II	support
+Date: Tue, 26 Aug 2014 11:03:18 +0200
+Message-ID: <53FC4D56.5020808@ladisch.de>
+References: <53FC4901.6070908@allacher.com> <53FC49A8.1010108@gmx.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CF8BE261A57
- for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 10:47:57 +0200 (CEST)
-Received: from [192.168.0.110] ([82.149.97.137]) by mail.gmx.com (mrgmx003)
- with ESMTPSA (Nemesis) id 0MCtut-1XEGBq1jAB-009flV for
- <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 10:47:57 +0200
-In-Reply-To: <53FC4901.6070908@allacher.com>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 5E002261A7E
+ for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 11:03:18 +0200 (CEST)
+Received: from [10.1.2.65] (unknown [94.101.37.4])
+ by dehamd003.servertools24.de (Postfix) with ESMTPSA id 7FCA6F8009
+ for <alsa-devel@alsa-project.org>; Tue, 26 Aug 2014 11:03:00 +0200 (CEST)
+In-Reply-To: <53FC49A8.1010108@gmx.at>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,21 +27,19 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Andreas Allacher wrote:
+>> Andreas Allacher wrote:
+>> > Is there any reason why the daughterboard does not work yet?
+>>
+>> No code written yet.
+>>
+>> Does your question imply that you would be able to test it?
+>
+> Not yet, but I would be willing to buy and test it, if someone were to write the code.
+> In that case I would order the device today or tomorrow.
 
-On 26.08.2014 10:44, Andreas Allacher wrote:
-> Andreas Allacher wrote:
-> >/  Is there any reason why the daughterboard does not work yet?
-> /
-> No code written yet.
->
-> Does your question imply that you would be able to test it?
->
->
-> Regards,
-> Clemens
-Not yet, but I would be willing to buy and test it, if someone were to 
-write the code.
-In that case I would order the device today or tomorrow.
+In that case, go ahead, and prepare for recompiling the kernel.
+
 
 Regards,
-    Andreas
+Clemens
