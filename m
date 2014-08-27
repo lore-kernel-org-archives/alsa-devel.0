@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v3 01/11] ASoC: Intel: mrfld - add the dsp sst
-	driver
-Date: Wed, 27 Aug 2014 20:40:21 +0100
-Message-ID: <20140827194021.GT17528@sirena.org.uk>
+Subject: Re: [v3 02/11] ASoC: Intel: mrfld - Add DSP load and
+	management
+Date: Wed, 27 Aug 2014 21:17:19 +0100
+Message-ID: <20140827201719.GV17528@sirena.org.uk>
 References: <1408625450-32315-1-git-send-email-subhransu.s.prusty@intel.com>
- <1408625450-32315-2-git-send-email-subhransu.s.prusty@intel.com>
+ <1408625450-32315-3-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6484161001090919413=="
+Content-Type: multipart/mixed; boundary="===============8583370053003554410=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E3EF268007
- for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2014 21:40:29 +0200 (CEST)
-In-Reply-To: <1408625450-32315-2-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 354F3268178
+ for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2014 22:17:27 +0200 (CEST)
+In-Reply-To: <1408625450-32315-3-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,179 +27,187 @@ Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6484161001090919413==
+--===============8583370053003554410==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YVOdKHrFk41NcKgk"
+	protocol="application/pgp-signature"; boundary="Vyn75Q+zsA3wSO6z"
 Content-Disposition: inline
 
 
---YVOdKHrFk41NcKgk
+--Vyn75Q+zsA3wSO6z
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Aug 21, 2014 at 06:20:40PM +0530, Subhransu S. Prusty wrote:
+On Thu, Aug 21, 2014 at 06:20:41PM +0530, Subhransu S. Prusty wrote:
 
-> +static irqreturn_t intel_sst_irq_thread_mrfld(int irq, void *context)
+> +#ifndef CONFIG_X86_64
+> +#define MEMCPY_TOIO memcpy_toio
+> +#else
+> +#define MEMCPY_TOIO memcpy32_toio
+> +#endif
+
+This is a counterintuitve way to write this (with a reversed test) and
+surely if this is needed it would be better done by the architecture
+headers defining memcpy32_toio on 32 bit platforms too?  I'm also not
+immediately seeing memcpy32_toio() defined when I grep except as a local
+definition in the Atmel NAND driver.  Oh, except...
+
+> +/**
+> + * memcpy32_toio: Copy using writel commands
+> + *
+> + * This is needed because the hardware does not support
+> + * 64-bit moveq insructions while writing to PCI MMIO
+> + */
+> +void memcpy32_toio(void *dst, const void *src, int count)
 > +{
-> +	struct intel_sst_drv *drv = (struct intel_sst_drv *) context;
-> +	struct ipc_post *__msg, *msg = NULL;
-> +	unsigned long irq_flags;
+> +	int i;
+> +	const u32 *src_32 = src;
+> +	u32 *dst_32 = dst;
 > +
-> +	if (list_empty(&drv->rx_list))
-> +		return IRQ_HANDLED;
-> +
-> +	spin_lock_irqsave(&drv->rx_msg_lock, irq_flags);
-> +	list_for_each_entry_safe(msg, __msg, &drv->rx_list, node) {
-
-This still has the same weird empty check then lock thing that I queried
-last time - even if it's somehow safe (I'm not convinced it is) it looks
-buggy to check if the list is empty outside the lock.
-
-One of the reason review has been slow here is that there seem to be
-rather a lot of review comments which have not been addressed, though
-kernel summit was part of it too as was not having PATCH in the subject.
-
-> +	default:
-> +		pr_err("SST Driver capablities missing for pci_id: %x",
-> +				sst->pci_id);
-
-Still using pr_ prints instead of dev_ as well it seems.
-
-> +static int intel_sst_probe(struct pci_dev *pci,
-> +			const struct pci_device_id *pci_id)
-> +{
-
-> +	pr_debug("Probe for DID %x\n", pci->device);
-
-If you used dev_ printks this (unneeded) log would get a sensibly
-formatted device name automatically!
-
-> +	sst_drv_ctx = devm_kzalloc(&pci->dev, sizeof(*sst_drv_ctx), GFP_KERNEL);
-> +	if (!sst_drv_ctx)
-> +		return -ENOMEM;
-
-> +	if (0 != sst_driver_ops(sst_drv_ctx))
-> +		return -EINVAL;
-
-To quote my previous review:
-
-| if (!sst_driver_ops())
-
-> +	pr_info("Got drv data max stream %d\n",
-> +				sst_drv_ctx->info.max_streams);
-
-I can't see anything betwen the alocation above and here which might
-initialize anything in info.
-
-> +	/* Init the device */
-> +	ret = pci_enable_device(pci);
-> +	if (ret) {
-> +		pr_err("device can't be enabled\n");
-
-Print the return code.
-
-> +	pr_info("%s successfully done!\n", __func__);
-
-Don't include noisy prints like this.
-
-> +do_unmap_dram:
-> +	iounmap(sst_drv_ctx->dram);
-> +do_unmap_iram:
-> +	iounmap(sst_drv_ctx->iram);
-> +do_unmap_sram:
-> +	iounmap(sst_drv_ctx->mailbox);
-> +do_unmap_shim:
-> +	iounmap(sst_drv_ctx->shim);
-
-Use the pcim_ functions and avoid the need for this cleanup.
-
-> +	iounmap(sst_drv_ctx->dram);
-> +	iounmap(sst_drv_ctx->iram);
-> +	iounmap(sst_drv_ctx->mailbox);
-> +	iounmap(sst_drv_ctx->shim);
-> +	flush_scheduled_work();
-> +	destroy_workqueue(sst_drv_ctx->post_msg_wq);
-
-You're destroying the workqueue after unmapping all the regions - that
-doesn't seem right, what if something was running?
-
-> +static inline int sst_pm_runtime_put(struct intel_sst_drv *sst_drv)
-> +{
-> +	int ret;
-> +
-> +	pm_runtime_mark_last_busy(sst_drv->dev);
-> +	ret = pm_runtime_put_autosuspend(sst_drv->dev);
-> +	if (ret < 0)
-> +		return ret;
-> +	return 0;
+> +	for (i = 0; i < count/sizeof(u32); i++)
+> +		writel(*src_32++, dst_32++);
 > +}
 
-There's really nothing device specific about this - if this helper is
-useful please add it to pm_runtime.h (it seems like a common enough
-pattern).
+...which is very similar but missing static, __iomem and const
+annotations.  I'd suggest lifting the existing version into generic
+code.
 
-> +#define MAX_BLOCKS 15
+> +#define SST_CALC_DMA_DSTN(lpe_viewpt_rqd, ia_viewpt_addr, elf_paddr, \
+> +			lpe_viewpt_addr) ((lpe_viewpt_rqd) ? \
+> +		elf_paddr : (ia_viewpt_addr + elf_paddr - lpe_viewpt_addr))
 
-That's a generic name especially in a header...
+Can we make this a function please?
 
-> +static inline unsigned int sst_assign_pvt_id(struct intel_sst_drv *sst_drv_ctx)
+> +static int sst_fill_dstn(struct intel_sst_drv *sst, struct sst_info info,
+> +		Elf32_Phdr *pr, void **dstn, unsigned int *dstn_phys,
+> +		int *mem_type)
 > +{
-> +	unsigned int local;
+> +	/* work arnd-since only 4 byte align copying is only allowed for ICCM */
+
+around.
+
+> +static inline int sst_validate_elf(const struct firmware *sst_bin, bool dynamic)
+
+Why is this inlined?  My previous comments about this looking very
+generic also still remain unaddressed - it looks a lot like the
+remoteproc ELF code for example though a bit less thorough.  I'm really
+not thrilled about the idea of duplicating something like ELF parsing,
+it seems like an excellent candidate for a library.
+
+> + * Adds the node to the list after required fields
+> + * are populated in the node
+> + */
 > +
-> +	spin_lock(&sst_drv_ctx->block_lock);
-> +	sst_drv_ctx->pvt_id++;
-> +	if (sst_drv_ctx->pvt_id > MAX_BLOCKS)
-> +		sst_drv_ctx->pvt_id = 1;
-> +	local = sst_drv_ctx->pvt_id;
-> +	spin_unlock(&sst_drv_ctx->block_lock);
-> +	return local;
-> +}
+> +static int sst_fill_memcpy_list(struct list_head *memcpy_list,
+> +			void *destn, const void *src, u32 size, bool is_io)
 
-The comments about overflow continue to apply here.
+Extra blank line.
 
-In general there's also a *lot* of code in this header most of which
-isn't obviously fast paths or anything and so should probably in
-regular C files, the header is currently bigger than the source file.
+> +	for (count = 0; count < module->blocks; count++) {
 
-> +static inline int sst_shim_write(void __iomem *addr, int offset, int value)
+> +		block = (void *)block + sizeof(*block) + block->size;
+
+We're not doing any validation that the data we're reading from the
+firmware file isn't corrupt here - we're just trusting both the number
+of blocks and the sizes of the blocks.  We should be a bit less trusting
+about userspace data.
+
+> +static void sst_memcpy_free_lib_resources(struct intel_sst_drv *sst_drv_ctx)
 > +{
-> +	writel(value, addr + offset);
-> +	return 0;
+> +	struct sst_memcpy_list *listnode, *tmplistnode;
+> +
+> +	pr_debug("entry:%s\n", __func__);
+> +
+> +	/*Free the list*/
+> +	if (!list_empty(&sst_drv_ctx->libmemcpy_list)) {
+
+Why the list_empty() check here?
+
+> +		list_for_each_entry_safe(listnode, tmplistnode,
+> +				&sst_drv_ctx->libmemcpy_list, memcpylist) {
+> +			list_del(&listnode->memcpylist);
+> +			kfree(listnode);
+> +		}
+> +	}
+> +}
+> +
+> +void sst_memcpy_free_resources(struct intel_sst_drv *sst_drv_ctx)
+> +{
+> +	struct sst_memcpy_list *listnode, *tmplistnode;
+> +
+> +	pr_debug("entry:%s\n", __func__);
+> +
+> +	/*Free the list*/
+> +	if (!list_empty(&sst_drv_ctx->memcpy_list)) {
+
+So we have a memcpy() list and a libmemcpy() list?  That seems confusing
+and redundant...
+
+> +	if (ctx->sst_state != SST_RESET ||
+> +			ctx->fw_in_mem != NULL)
+> +		goto out;
+
+Is this perhaps an error conditon we should complain about?
+
+> +	if (ctx->info.use_elf == true)
+> +		ret = sst_validate_elf(fw, false);
+
+I can't find anything that ever sets use_elf...
+
+> +static int sst_request_fw(struct intel_sst_drv *sst)
+> +{
+> +	int retval = 0;
+> +	char name[20];
+> +	const struct firmware *fw;
+> +
+> +	snprintf(name, sizeof(name), "%s%04x%s", "fw_sst_",
+> +				sst->pci_id, ".bin");
+> +	pr_debug("Requesting FW %s now...\n", name);
+> +
+> +	retval = request_firmware(&fw, name, sst->dev);
+
+There was a name in the driver struct for async requests and this does
+appear to duplicate a lot of code from the async callback...
+
+> +static inline void print_lib_info(struct snd_sst_lib_download_info *resp)
+> +{
+> +	pr_debug("codec Type %d Ver %d Built %s: %s\n",
+> +		resp->dload_lib.lib_info.lib_type,
+> +		resp->dload_lib.lib_info.lib_version,
+> +		resp->dload_lib.lib_info.b_date,
+> +		resp->dload_lib.lib_info.b_time);
 > +}
 
-I'd have expected a helper like this to take a driver object rather than
-a raw address (this is something which could reasonably be in a header
-BTW).
+sysfs or debugfs?  There don't seem to be any users of this anyway...
 
---YVOdKHrFk41NcKgk
+--Vyn75Q+zsA3wSO6z
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT/jQiAAoJELSic+t+oim9mwQP/1qhGbm/u7JGGckxvTZDO9hY
-r56my2HdK/5RZe00IQxQZUc+rEfV23WFpuRgNQtQZoQ9pemLO9Jf2ol0AcNj/L4s
-w4KiC6lOByZnBHRjk3KSVF+Wu1sPAvNfDdA4Ow4/h//Wisjs3E13tkCy1R1vqLrW
-/JjG8vQTWO8bqmCvuATjB74jbIRjilm5yJA4aC191q50KSwXE2tdf5Ue0uQPv9aW
-5VjpP26KTnEPUKI5+Y0RgbIcoeeaI9h9C0j0SInGz4WfFZNkXB0ydE/FQwo4Fam6
-RIJYAnWmf47u6TN0Oi00k5BOm61VRGiLWvr/9iHvYURo+PWZAg+hDoZ4I1RZp53/
-mBNVYJ/GflWPiuJzXltjAb55/HlKMDIiAkkJ4MYCN4tKqOc60o4nQ7yXQ1K0c1ra
-cGIoaN8qoRMFypKUXYbEHwhzFRn3eRBAvrInKR3FIDr4h/4j0ArU/uyVdK1KebpY
-kx+UZMGG1Hzrz+6QRZj/y8IBfjd7kg9wgVBoowMqIJnNSLD6fhnf5hAW+CIAVfFt
-aBGaNJWVJ6aEacAmuvk77l0kXjiVL0EG4OA93KTSTOY2SzA7GUXHMJRPwEocceEj
-wPWHvih9DPFQ4Lky7RJEQ1d2joG7W9GCS7eF7ByV40l7znOELD64CtmfDZpkzoe3
-EtK0IQt4AQ2lqTaEDV+b
-=3c3x
+iQIcBAEBAgAGBQJT/jzMAAoJELSic+t+oim9bW4P/RLOxX1Sh/DD4yq0xzPT/4tx
+PWolwvccGzKpdj5GNVoiQfkrXchCScJHVFpDzzaTkr+urnIvw8GU1kNZboo6Mvjd
++zfy66g9Cdo8fYkfKOA7JaCCYKGQGhZOe38Vr7HcTotW2OeZqPnHIa1bj2cO/NV5
+dMhOzCdA5kdsmwSRdccLasvR32DIePKhWoU+vBu+TsOuhNUfNS3J/DPOTQpgoeRt
+ECBJdonsKSZXruNMZvCH/PVPXq7lImThaJgZ0rEHigBll9JAQ2bt4Jl+CCJDhtIQ
+d6nxsoIO5yoDymYHXrZe0kRHn5lLY8ZfDBnNGeoqoMG8OzObOVesFtgz1wf3q6aT
+R0jrDDxP1n9JbP7/2ILq1wB9GtrqDavt72cUdfual3lLSICrkf4uTA7TBq4YN2W7
+zL2rHlopjpsMYIsTvENjBSO89kbj6lG/rFt5+Q5OFGVp6L4bYjJYo1Jj8/9kvLJQ
+WwWEzdbFCCetOtTHwHveqExZGNDjfVxHbd6+ttV0nyhvSMiCla6kKXxOkduANN9N
+3dGOf7xCBI0ysKB7wjyPdTNHea+kkQpd9P9C6sHyGa57ZBsW9EV9nR0dcfCLtZSR
+HEFBnUliXCu1hhsEfwfAnUi4A+Mg0pC0MYFEQ6ektUvE7hsxMqBBsisL3UogGDF3
+9vnh+JF9zNtws+KVI4BE
+=nvdD
 -----END PGP SIGNATURE-----
 
---YVOdKHrFk41NcKgk--
+--Vyn75Q+zsA3wSO6z--
 
---===============6484161001090919413==
+--===============8583370053003554410==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6484161001090919413==--
+--===============8583370053003554410==--
