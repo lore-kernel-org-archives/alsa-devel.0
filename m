@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: correct mismatch widget
-	name
-Date: Wed, 27 Aug 2014 16:54:51 +0100
-Message-ID: <20140827155451.GH17528@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: rt5677: Add DMIC2 clock selection
+Date: Wed, 27 Aug 2014 16:55:48 +0100
+Message-ID: <20140827155548.GI17528@sirena.org.uk>
 References: <1409140234-10199-1-git-send-email-bardliao@realtek.com>
+ <1409140234-10199-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6179698003702490045=="
+Content-Type: multipart/mixed; boundary="===============5329234052404723782=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 123F826571E
- for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2014 17:55:04 +0200 (CEST)
-In-Reply-To: <1409140234-10199-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 60864267575
+ for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2014 17:55:53 +0200 (CEST)
+In-Reply-To: <1409140234-10199-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +26,54 @@ Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdw
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6179698003702490045==
+--===============5329234052404723782==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ssMPzaah74jXs2d4"
+	protocol="application/pgp-signature"; boundary="gMBcvHnzVk9/CVki"
 Content-Disposition: inline
 
 
---ssMPzaah74jXs2d4
+--gMBcvHnzVk9/CVki
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 27, 2014 at 07:50:33PM +0800, bardliao@realtek.com wrote:
+On Wed, Aug 27, 2014 at 07:50:34PM +0800, bardliao@realtek.com wrote:
 > From: Bard Liao <bardliao@realtek.com>
 >=20
-> We name MICBIAS1 in dapm widget, but micbias1 in route table.
+> There are two pins can be used for rt5677's DMIC2 clock. This patch
+> add the select options for it.
 
 Applied, thanks.
 
---ssMPzaah74jXs2d4
+--gMBcvHnzVk9/CVki
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT/f9IAAoJELSic+t+oim9Y54P/An+qFdBUZdIYo+JUjhEoJM+
-svZr1liAxRsUtvbzwkZDW3aW14qpZjWMsY5l05JsJ4PRqV40/dOObuqtlVE/9d6U
-pbcvNtNpJ2KM5Is8Etm0kkyBVCbFVm98SzYQtzyUU5mZE7Q8gSXh3hNUS4Sq3HY3
-rPygEGKkDf9mYysqu0Fn3sGOxrUnfioRtD1cW+z79W6OprvqCBvsfSiON2IIlgSj
-GjgiNUbFZ6SRXAVClGOsotBxYX5iSZ6DeDH+ZBjjcVhvhaLuB5SHt9IMG6CGQKUr
-XU2fagMl24HPKFgI4oBGrtUlhtYnV2ybwiwYPv0Ayc5DRCgItwyIg5rzzIYwlFmk
-6aeqiIakLH/+x0A21YG1zs4/WuQvKjBQ7aEGoKantvwyt1RtQ0MDjjsbVTPmYA8X
-8sDW7JikobPbGP+QlZGV1j2445mWFxYzzRI/RYW60Ik/E6N5Y6FbFT4FDg5b6Gpo
-/ekHlacm+AdIaGSn36UY9BkN7dIY7yg2GDzdsd1CPpyMGKWZ7nC44zo4EBsdiaP3
-k7XoV9Mld9pYigDsb+jG46wi5ijzK1gpyMkUjSwKzJZoy5Z6A03cSBe0u0bUwyh5
-W4k30J2bRchWGMV5RjXwjn72HtSCVYXuq4r1xQM+77zgSR6KII9xpdVvUsroxbxG
-jfxmB11ZUlV9AZ7DOjM2
-=xflz
+iQIcBAEBAgAGBQJT/f+BAAoJELSic+t+oim9yGYP/2Mzo7ITuPXNKtDyebHTJizh
+DVUEedOGlD5zUlGpHCmQPW4quuiEWGzwYeEwq1f5aH6XQez1o1bM4MtC24e3TsIm
+eNhk0deo6CNs2lsxtpVqU0W2JUGVd4nrH354Xs/6uI/X0wHA/VBbaIU7sj7CRoKZ
+dz43qoQUhHxEADJaTLKmfWGpTcEGXqchLZ6+dcuij2jkXemrKwAE+2XNwcuR89sy
+N4TcRvjeXIJEVMF1dpja82JOF7hFX3Wg+9tx3dPSNbZpgDcLPcYKeCas3DnevcpD
+eFwB4Bj9/3eZjIz+/6NqE3CnJJa+X091zopue0xn/yMUXphXRtQPDgKxdu9mjDdb
+4E2DjDoRBYVrqM2MO6EQMCgyLftg1/T+4y5UmbMjf8VeAJACgppvoL/Ev3eWWarY
+MCxFAFHNYxTQ2zoVT9H2TRWXOhZ1DYMyRwO8StUAZqgV3PVDLEBIxtATQzk8dHxi
+x6rH89dSwp9fk9je+Mo/BEULHgZmdNKFZoBHd/kAD6cNBsGc0rv6U5lFMFam8nC9
+cIEegaN8oEiCsBwO8ft3WbloISfAnEZ6BH1nQQVHlW4OW4Vhh9Cud8/M9uDzrwnT
+cmMWYxQeVVJxvYjzuVXiZjJ3nnOdPsQ8EQtrdYTFNnxV+yQLm3Jw2XrgkTHWoIe9
+O48eYrBGxynEq2ZEhygt
+=yQ/X
 -----END PGP SIGNATURE-----
 
---ssMPzaah74jXs2d4--
+--gMBcvHnzVk9/CVki--
 
---===============6179698003702490045==
+--===============5329234052404723782==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6179698003702490045==--
+--===============5329234052404723782==--
