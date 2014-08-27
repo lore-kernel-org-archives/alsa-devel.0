@@ -1,82 +1,47 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Set up initial pins for Acer
-	Aspire V5
-Date: Wed, 27 Aug 2014 08:23:38 +0200
-Message-ID: <1409120618-28485-1-git-send-email-tiwai@suse.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-sai: using 'lsb-first' property instead of 'big-endian-data'.
+Date: Tue, 26 Aug 2014 23:53:56 -0700
+Message-ID: <CAGoOwPSTJaT0UA4yaYR0x49C8UHbmKAR8PzUfV9ZWVW5XBfV5w@mail.gmail.com>
+References: <1408950961-19177-1-git-send-email-Li.Xiubo@freescale.com>
+	<20140826090426.GA31558@leverpostej>
+	<cf0e029ae99d4b48a432e5c1669ddc15@BY2PR0301MB0613.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5749D2652E8
- for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2014 08:23:43 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 3E742AD07
- for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2014 06:23:43 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cf0e029ae99d4b48a432e5c1669ddc15@BY2PR0301MB0613.namprd03.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, "broonie@kernel.org" <broonie@kernel.org>, "timur@tabi.org" <timur@tabi.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "galak@codeaurora.org" <galak@codeaurora.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, Pawel Moll <Pawel.Moll@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Acer Aspire V5 doesn't set up the pins correctly at the cold boot
-while the pins are corrected after the warm reboot.  This patch gives
-the proper pin configs statically in the driver as a workaround.
+On Tue, Aug 26, 2014 at 7:12 PM, Li.Xiubo@freescale.com
+<Li.Xiubo@freescale.com> wrote:
+> > > This property used for configuring whether the LSB or the MSB is transmitted
+> > > first for the fifo data.
+> >
+> > I don't follow the rationale for this change.
+> >
+> > This looks like a pointless renaming.
+> >
+> > Why is this any better?
+> >
+>
+> This is originally to indicate whether the LSB firstly or MSB firstly will be
+> transmitted to the CODEC or received from the CODEC, and there has nothing
+> Relation to the memory data.
+>
+> Generally, if the audio data in big endian format, which will be using the bytes
+> Reversion ? Here this can only be used to bits reversion.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=81561
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+That's why I suggested previously: mention it in the commit comment.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d71270a3f73f..d446ac3137b3 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4408,6 +4408,7 @@ enum {
- 	ALC292_FIXUP_TPT440_DOCK,
- 	ALC283_FIXUP_BXBT2807_MIC,
- 	ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED,
-+	ALC282_FIXUP_ASPIRE_V5_PINS,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -4855,6 +4856,22 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained_before = true,
- 		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
- 	},
-+	[ALC282_FIXUP_ASPIRE_V5_PINS] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x12, 0x90a60130 },
-+			{ 0x14, 0x90170110 },
-+			{ 0x17, 0x40000008 },
-+			{ 0x18, 0x411111f0 },
-+			{ 0x19, 0x411111f0 },
-+			{ 0x1a, 0x411111f0 },
-+			{ 0x1b, 0x411111f0 },
-+			{ 0x1d, 0x40f89b2d },
-+			{ 0x1e, 0x411111f0 },
-+			{ 0x21, 0x0321101f },
-+			{ },
-+		},
-+	},
- 
- };
- 
-@@ -4866,6 +4883,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x0740, "Acer AO725", ALC271_FIXUP_HP_GATE_MIC_JACK),
- 	SND_PCI_QUIRK(0x1025, 0x0742, "Acer AO756", ALC271_FIXUP_HP_GATE_MIC_JACK),
- 	SND_PCI_QUIRK(0x1025, 0x0775, "Acer Aspire E1-572", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
-+	SND_PCI_QUIRK(0x1025, 0x079b, "Acer Aspire V5-573G", ALC282_FIXUP_ASPIRE_V5_PINS),
- 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
- 	SND_PCI_QUIRK(0x1028, 0x05bd, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x05be, "Dell", ALC269_FIXUP_DELL2_MIC_NO_PRESENCE),
--- 
-2.1.0
+People will have no idea about what's the exact reason for this change.
+Any functional enhancement? Or a bug fix(more likely for this one).
+I'm not sure what I described in the previous mail is correct or not.
+But you probably should have added it into the commit comments.
+
+And Xiubo, this patch still hasn't fixed the issue of breaking the old DT,
+although system can pass during the probe() section.
+
+Thank you,
+Nicolin
