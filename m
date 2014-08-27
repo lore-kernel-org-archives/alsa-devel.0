@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: rt5677: Add DMIC2 clock selection
-Date: Wed, 27 Aug 2014 16:55:48 +0100
-Message-ID: <20140827155548.GI17528@sirena.org.uk>
-References: <1409140234-10199-1-git-send-email-bardliao@realtek.com>
- <1409140234-10199-2-git-send-email-bardliao@realtek.com>
+Subject: Re: [question about DPCM] dpcm_be_disconnect race
+	condition
+Date: Wed, 27 Aug 2014 19:52:25 +0100
+Message-ID: <20140827185225.GQ17528@sirena.org.uk>
+References: <53FD9384.3020501@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5329234052404723782=="
+Content-Type: multipart/mixed; boundary="===============5016204995930651277=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 60864267575
- for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2014 17:55:53 +0200 (CEST)
-In-Reply-To: <1409140234-10199-2-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 61DE126790C
+ for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2014 20:52:35 +0200 (CEST)
+In-Reply-To: <53FD9384.3020501@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +21,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
+To: Qiao Zhou <zhouqiao@marvell.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, Xin Qian <xqian@marvell.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5329234052404723782==
+--===============5016204995930651277==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gMBcvHnzVk9/CVki"
+	protocol="application/pgp-signature"; boundary="lY/KxbI20NSwRFRe"
 Content-Disposition: inline
 
 
---gMBcvHnzVk9/CVki
+--lY/KxbI20NSwRFRe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 27, 2014 at 07:50:34PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
+On Wed, Aug 27, 2014 at 04:15:00PM +0800, Qiao Zhou wrote:
+> Hi Liam, Mark
 >=20
-> There are two pins can be used for rt5677's DMIC2 clock. This patch
-> add the select options for it.
+> I'm developing audio with DPCM on one phone platform, and met one kernel
+> panic issue related with dpcm_be_connect. Could you please help to sugges=
+t?
 
-Applied, thanks.
+Adding Liam.
 
---gMBcvHnzVk9/CVki
+> Taking audio playback for example:
+> 1. User space writes all the data into audio buffer. When the blocking wr=
+ite
+> returns, it closes audio path(which updates dapm and triggers
+> soc_dpcm_runtime_update).
+> 2. When user space closes audio path, kernel audio driver(DMA) is still
+> transferring data from audio buffer to audio peripheral. So DMA interrupt
+> will come, and the interrupt handler runs on different cpu comparing to
+> which the task to close audio path runs on.
+> 3. Due to system schedule, below case may happen.
+>=20
+>            cpu0                                      cpu1
+>=20
+> soc_dapm_mixer_update_power ->        |       DMA interrupt ->
+> soc_dpcm_runtime_update ->            |       snd_pcm_period_elapsed ->
+> dpcm_be_disconnect(old) ->            |       snd_pcm_update_hw_ptr0 ->
+>  __________________________           |       xrun ->
+> |                         |           |       snd_pcm_stop ->
+> |list_del(&dpcm->list_be) |           |       dpcm_fe_dai_trigger ->
+> |list_del(&dpcm->list_fe) |           |       dpcm_be_dai_trigger ->
+> |kfree(dpcm);             |           |       list_for_each_entry(dpcm..
+> |_________________________|           |
+>=20
+> On CPU1, list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be)
+> will get dpcm and corresponding be, but there is no protection against the
+> dpcm_be_disconnect on cpu0. Related dpcm for the BE may be invalid/freed
+> when cpu1 tries to access it.
+
+> Should we require user space to make sure audio transfer ends before clos=
+ing
+> audio path to avoid such issue? I'm not sure if I missed anything or used=
+ it
+> wrongly.
+
+Well, it should do that in general if it wants to make sure that the
+audio actually gets played but the kernel should protect against this.
+We should be holding a lock whenever we update the lists.
+
+> Thanks in advance!
+> --=20
+>=20
+> Best Regards
+> Qiao
+>=20
+
+--lY/KxbI20NSwRFRe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT/f+BAAoJELSic+t+oim9yGYP/2Mzo7ITuPXNKtDyebHTJizh
-DVUEedOGlD5zUlGpHCmQPW4quuiEWGzwYeEwq1f5aH6XQez1o1bM4MtC24e3TsIm
-eNhk0deo6CNs2lsxtpVqU0W2JUGVd4nrH354Xs/6uI/X0wHA/VBbaIU7sj7CRoKZ
-dz43qoQUhHxEADJaTLKmfWGpTcEGXqchLZ6+dcuij2jkXemrKwAE+2XNwcuR89sy
-N4TcRvjeXIJEVMF1dpja82JOF7hFX3Wg+9tx3dPSNbZpgDcLPcYKeCas3DnevcpD
-eFwB4Bj9/3eZjIz+/6NqE3CnJJa+X091zopue0xn/yMUXphXRtQPDgKxdu9mjDdb
-4E2DjDoRBYVrqM2MO6EQMCgyLftg1/T+4y5UmbMjf8VeAJACgppvoL/Ev3eWWarY
-MCxFAFHNYxTQ2zoVT9H2TRWXOhZ1DYMyRwO8StUAZqgV3PVDLEBIxtATQzk8dHxi
-x6rH89dSwp9fk9je+Mo/BEULHgZmdNKFZoBHd/kAD6cNBsGc0rv6U5lFMFam8nC9
-cIEegaN8oEiCsBwO8ft3WbloISfAnEZ6BH1nQQVHlW4OW4Vhh9Cud8/M9uDzrwnT
-cmMWYxQeVVJxvYjzuVXiZjJ3nnOdPsQ8EQtrdYTFNnxV+yQLm3Jw2XrgkTHWoIe9
-O48eYrBGxynEq2ZEhygt
-=yQ/X
+iQIcBAEBAgAGBQJT/ijmAAoJELSic+t+oim97PgP/RqruzwTe7yiTZEQJtsAFMwx
+4iGP85AmIvcaSUHTeXqbWkhCbfOCEpBnZmF/l4mM4N5/duehJi+LHv1mypkQEPOg
+TbQCzwfuRt+TKlFcWgfF6Wbm8J4hto1x4UylZpgvtSm6zGicZYtPuiyfRytqN+ZZ
+ChdFja6qhPEz9YQWOavif8pl3mtp0LUqrUwHIkM+M5rNZAlb+ZZgXTa6PS7rrJyM
+0TWiM3UHagDQ7EFJ+tcFtxGU3fTniZJahzBFRJQVupUvK98exmC/MrCIciNW/3uQ
+s+Q4DGdasbfGzPqocN98S2a0mp9UUOl3Shbsw+Eb9d+PyfcxYdhpzkbBC4nPv/rc
+RIcI3JWG6BsLoirY/IfgI3BVxHM3YVriVJEq8s2rgv+soxc5/gpRiNxkpB01Gkxa
++ypR+kEyD6vC4akwMgepZ9rVCVz+pcALKzpEPNZinRziLHZM6ypGjcx6eVTz6UKi
+g9MTosUaDm8TdknIR1xStcDpBWUFljCcF+EqWS/1bRN7PnFC5uDh+kNMQmUH4len
+qRQNYZPAjjuPfpKpSMsb2XLmcqtokK4eXm+uuGoYQJwvLxM8bNMKKWoLjGW+I+Ps
+CLeCQHY6sHu+SNxEncTICLN0tTBOexsi+0wIkJg7pIKWcg1hX8HnWiMCcRzq1qhf
+m8t24eeJTpO59VwGUdlZ
+=C6nQ
 -----END PGP SIGNATURE-----
 
---gMBcvHnzVk9/CVki--
+--lY/KxbI20NSwRFRe--
 
---===============5329234052404723782==
+--===============5016204995930651277==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5329234052404723782==--
+--===============5016204995930651277==--
