@@ -1,19 +1,16 @@
 From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 2/2] ASoC: cs42l56: Remove unneeded
- regulator_bulk_free call in cs42l56_remove
-Date: Thu, 28 Aug 2014 09:08:56 -0500
-Message-ID: <alpine.DEB.2.02.1408280908150.27378@heelrod>
-References: <1409219678.21395.4.camel@phoenix>
- <1409219720.21395.5.camel@phoenix>
+Subject: [PATCH 1/3] ASoC: cs35l32: use true/false returns for
+	bool functions
+Date: Thu, 28 Aug 2014 10:02:40 -0500
+Message-ID: <1409238162-13400-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na01-by2-obe.outbound.protection.outlook.com
  (mail-by2lp0242.outbound.protection.outlook.com [207.46.163.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 68540266440
- for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 16:08:23 +0200 (CEST)
-In-Reply-To: <1409219720.21395.5.camel@phoenix>
+ by alsa0.perex.cz (Postfix) with ESMTP id C52A42664A2
+ for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 17:02:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Brian Austin <brian.austin@cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: alsa-devel@alsa-project.org
+Cc: Brian Austin <brian.austin@cirrus.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Return true or false instead of 1 and 0
 
-On Thu, 28 Aug 2014, Axel Lin wrote:
+Reported-by: Fengguang Wu <fengguang.wu@intel.com>
+Signed-off-by: Brian Austin <brian.austin@cirrus.com>
+---
+ sound/soc/codecs/cs35l32.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> The regulator_bulk_free() call is not required because current code is using
-> devm_regulator_bulk_get().
-> 
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> ---
->  sound/soc/codecs/cs42l56.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-> index c766a5a..5a2d732 100644
-> --- a/sound/soc/codecs/cs42l56.c
-> +++ b/sound/soc/codecs/cs42l56.c
-> @@ -1175,11 +1175,8 @@ static int cs42l56_probe(struct snd_soc_codec *codec)
->  
->  static int cs42l56_remove(struct snd_soc_codec *codec)
->  {
-> -	struct cs42l56_private *cs42l56 = snd_soc_codec_get_drvdata(codec);
-> -
->  	cs42l56_free_beep(codec);
->  	cs42l56_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> -	regulator_bulk_free(ARRAY_SIZE(cs42l56->supplies), cs42l56->supplies);
->  
->  	return 0;
->  }
-Thanks Axel,
-
-For the series..
-
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
+index 9c6b272..ca897c4 100644
+--- a/sound/soc/codecs/cs35l32.c
++++ b/sound/soc/codecs/cs35l32.c
+@@ -121,9 +121,9 @@ static bool cs35l32_volatile_register(struct device *dev, unsigned int reg)
+ 	case CS35L32_INT_STATUS_2:
+ 	case CS35L32_INT_STATUS_3:
+ 	case CS35L32_LED_STATUS:
+-		return 1;
++		return true;
+ 	default:
+-		return 0;
++		return false;
+ 	}
+ }
+ 
+@@ -134,9 +134,9 @@ static bool cs35l32_precious_register(struct device *dev, unsigned int reg)
+ 	case CS35L32_INT_STATUS_2:
+ 	case CS35L32_INT_STATUS_3:
+ 	case CS35L32_LED_STATUS:
+-		return 1;
++		return true;
+ 	default:
+-		return 0;
++		return false;
+ 	}
+ }
+ 
+-- 
+1.7.9.5
