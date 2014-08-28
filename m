@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v3 10/11] ASoC: mfld-compress: Use dedicated
- function instead of ioctl
-Date: Wed, 27 Aug 2014 21:51:31 +0100
-Message-ID: <20140827205131.GB17528@sirena.org.uk>
-References: <1408625450-32315-1-git-send-email-subhransu.s.prusty@intel.com>
- <1408625450-32315-11-git-send-email-subhransu.s.prusty@intel.com>
+From: Qiao Zhou <zhouqiao@marvell.com>
+Subject: Re: [question about DPCM] dpcm_be_disconnect race
+	condition
+Date: Thu, 28 Aug 2014 10:07:14 +0800
+Message-ID: <53FE8ED2.80701@marvell.com>
+References: <53FD9384.3020501@marvell.com>
+ <20140827185225.GQ17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2640523844271867686=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F00D2681D2
- for <alsa-devel@alsa-project.org>; Wed, 27 Aug 2014 22:53:28 +0200 (CEST)
-In-Reply-To: <1408625450-32315-11-git-send-email-subhransu.s.prusty@intel.com>
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
+ [67.231.148.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18BB52659FA
+ for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 04:07:24 +0200 (CEST)
+In-Reply-To: <20140827185225.GQ17528@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +23,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, Xin Qian <xqian@marvell.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 08/28/2014 02:52 AM, Mark Brown wrote:
+> On Wed, Aug 27, 2014 at 04:15:00PM +0800, Qiao Zhou wrote:
+>> Hi Liam, Mark
+>>
+>> I'm developing audio with DPCM on one phone platform, and met one kernel
+>> panic issue related with dpcm_be_connect. Could you please help to suggest?
+>
+> Adding Liam.
+>
+>> Taking audio playback for example:
+>> 1. User space writes all the data into audio buffer. When the blocking write
+>> returns, it closes audio path(which updates dapm and triggers
+>> soc_dpcm_runtime_update).
+>> 2. When user space closes audio path, kernel audio driver(DMA) is still
+>> transferring data from audio buffer to audio peripheral. So DMA interrupt
+>> will come, and the interrupt handler runs on different cpu comparing to
+>> which the task to close audio path runs on.
+>> 3. Due to system schedule, below case may happen.
+>>
+>>             cpu0                                      cpu1
+>>
+>> soc_dapm_mixer_update_power ->        |       DMA interrupt ->
+>> soc_dpcm_runtime_update ->            |       snd_pcm_period_elapsed ->
+>> dpcm_be_disconnect(old) ->            |       snd_pcm_update_hw_ptr0 ->
+>>   __________________________           |       xrun ->
+>> |                         |           |       snd_pcm_stop ->
+>> |list_del(&dpcm->list_be) |           |       dpcm_fe_dai_trigger ->
+>> |list_del(&dpcm->list_fe) |           |       dpcm_be_dai_trigger ->
+>> |kfree(dpcm);             |           |       list_for_each_entry(dpcm..
+>> |_________________________|           |
+>>
+>> On CPU1, list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be)
+>> will get dpcm and corresponding be, but there is no protection against the
+>> dpcm_be_disconnect on cpu0. Related dpcm for the BE may be invalid/freed
+>> when cpu1 tries to access it.
+>
+>> Should we require user space to make sure audio transfer ends before closing
+>> audio path to avoid such issue? I'm not sure if I missed anything or used it
+>> wrongly.
+>
+> Well, it should do that in general if it wants to make sure that the
+> audio actually gets played but the kernel should protect against this.
+> We should be holding a lock whenever we update the lists.
+Thanks a lot for your suggestion! Firstly we'll ask user space app to 
+apply this rule currently to avoid such issue.
+Currently it holds card->mutex in mutex_lock_nested whenever the list is 
+updated. Here list_for_each_entry in snd_pcm_stop may run in interrupt 
+context(the bottom half of tasklet), so it can not use this mutex 
+simply. Is there any other way to protect it?
+>
+>> Thanks in advance!
+>> --
+>>
+>> Best Regards
+>> Qiao
+>>
+-- 
 
---===============2640523844271867686==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="M0hVCpAGwZMf/OPT"
-Content-Disposition: inline
-
-
---M0hVCpAGwZMf/OPT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 21, 2014 at 06:20:49PM +0530, Subhransu S. Prusty wrote:
-> Also pass sst device as an argument to function pointer prototypes of
-> compr_ops. This will be used to derive sst driver context.
-
-Applied, thanks.
-
---M0hVCpAGwZMf/OPT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT/kTPAAoJELSic+t+oim9HswP/14zIx10OkN6CURnkxdFL2Y4
-vUpz8hpgcsQ4BZR5WpIdlRbgFZTYUni7u+5/l9bMgtuTL3YR2JmNlywC8PsdSXs2
-RMj+LvQa95K+gBte9HyccZXwqWWjAHDh+GSwIwAWzexK3VK0YrcKXzfCRL4yZ5nI
-7PA/th9JR/3VljmBBDy3lMSj8MrQMHZ2omjWDbDxROFBzpG+XwnX+9gaAFW8etII
-jSwQPMSSKSc5gO7I4Wmdo9PjbV24cW9RKnnEkbuE3vX+eJlsR007CMq011HYKpS+
-6b9CjFQ+riNbiC3OmX5oGnk6JDj8665gMO6DZnYibNQbFavldonXgerELM3W4NyF
-Q7MfDpLOOPlLim9DoJTno/SB2dtElWT4rDwZE7oK5gvjAupI3k+6fXyVSI+Ries0
-x3MMGjgzrBv39h5SbIRwyjLw93yi48cFAbdXKymcss9OpUNlZr5iwTxMNKpX71fD
-rWX96o8U4X1saPyZdF9nE480poSgLlbJdzKLaE81dz5T+x99Gacce6J+Ku/IjFtq
-R7zPFeJ0wN66DQnedVrxzleTzcokjA4eAMqHmvvD7iYgeat5kxDuKNbS2PYC8Vqy
-V5n7l1K4/JClPSBV2DD6o0f2STPhXLbEEMW5SxePB5m33BYH/rMgZ2hoxJPur8Z+
-+rfG55UTYHCkil0jxa22
-=634S
------END PGP SIGNATURE-----
-
---M0hVCpAGwZMf/OPT--
-
---===============2640523844271867686==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2640523844271867686==--
+Best Regards
+Qiao
