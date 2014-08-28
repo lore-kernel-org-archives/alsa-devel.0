@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] Add CHIP_ID as a readable register.
-Date: Thu, 28 Aug 2014 19:03:44 +0100
-Message-ID: <20140828180344.GD29327@sirena.org.uk>
-References: <1409241250-22097-1-git-send-email-Paul.Handrigan@cirrus.com>
+Subject: Re: [PATCH 1/3] ASoC: cs35l32: use true/false returns
+ for bool functions
+Date: Thu, 28 Aug 2014 19:05:23 +0100
+Message-ID: <20140828180523.GE29327@sirena.org.uk>
+References: <1409238162-13400-1-git-send-email-brian.austin@cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5237057228286485355=="
+Content-Type: multipart/mixed; boundary="===============8771676849984261288=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BB46265341
- for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 20:03:56 +0200 (CEST)
-In-Reply-To: <1409241250-22097-1-git-send-email-Paul.Handrigan@cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B2C726A797
+ for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 20:05:38 +0200 (CEST)
+In-Reply-To: <1409238162-13400-1-git-send-email-brian.austin@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,59 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Handrigan <Paul.Handrigan@cirrus.com>
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, zoltan@raspberrypi.org
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5237057228286485355==
+--===============8771676849984261288==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zbGR4y+acU1DwHSi"
+	protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
 Content-Disposition: inline
 
 
---zbGR4y+acU1DwHSi
-Content-Type: text/plain; charset=iso-8859-1
+--imjhCm/Pyz7Rq5F2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 28, 2014 at 10:54:08AM -0500, Paul Handrigan wrote:
-> Reported-by: Zolt=E1n Szenczi <zoltan@raspberrypi.org>
-> Signed-off-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
+On Thu, Aug 28, 2014 at 10:02:40AM -0500, Brian Austin wrote:
+> Return true or false instead of 1 and 0
 
-Applied all, thanks.  Please use subject lines matching the style of the
-subsystem and try to keep the subject lines reasonably short so they can
-easily be displayed in logs and so on.
+Applied all, thanks.
 
---zbGR4y+acU1DwHSi
+--imjhCm/Pyz7Rq5F2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT/279AAoJELSic+t+oim9nCcP/3DegFtnmp5MDIPjXFfe2caX
-3tvcyyHJKWujirmloVCCUNwtndpkM/6BHaURfVv7oE3HXG42ASpiM0k5VsDLed7V
-uuhVQog/O1xMdeucOIREkPUYa69R+GXGCPNhH5X7144GnFNRd/xkToyVgKIcD781
-0pjgBCi8KtH808KOH57FE3NSwayj3r3+H9MAH+QSlqmfKus3lBzj6OJKvEfdTeSY
-UuL3XWW1xzVBYr8vVcl1RAGIcYQnOLrV0P3TCk4aLbZla3G85awmoNxfgtBykmCD
-AC2fSLRUTDuHKrsv7t8ScGodj5KScCRD3kNZGbq1C5Zr4Hkz8VSo2zbSt8S5Hw7f
-zykdEMvrMtq3wp/vLDDlYy8EfG6qzvLdYz3ZUKlPdK3VW1BqW1X+DivRDjY9ORA5
-x8xA9T9M3rdSWU76EAzKjWz0gYu2pQixuaOY0RFVPeTc+GP7M/LuEehUhgUK/hD3
-geQN3yn8rRAkFM2aDoubweE45hc1f1rgkNqumXJg7Ki8m6DiRL9lMnX3Ko1haOOP
-naASNmKPu1UK0sTFJ8sciUFWsT9wRi5jurIjQ/sHPKHAP40OsVtslQP8Z/JCL5Ll
-QdOCMnerQOOPNS39YZdsD6jpkzC6FmpdKKTgXiPLrrY2lQkXs7zZm71Ozdacy5hm
-8WmjflqYKc9EuV1lV7QZ
-=dkOv
+iQIcBAEBAgAGBQJT/29gAAoJELSic+t+oim9yWQP/2Nr/5QMeskblE1fnoU7LDcP
+0U9kPyME5BEtKIzZmVJYte1TYDWO7Q4oxuSqYH0BubvhMk2H2LbsmlOe0/O8lF1F
+xJQU1zyrd9BWrylj5bNE6MoMBRudvkcbjDU43GeA9aFDVGG7YbpQuCPbSEr+4bEK
+iWmccRgj6StEYbTAD08rpM+c/XLlmj16vceLSmXMkLUpfVGJ4a7YXY20IMWegMWT
+MozLo5+3f0NbdpJ4YQajm9ly2NyyqZ3ja0D8Rb4B6mlSGdmBJE454eyCUTIrFrmV
+ia3KABfEoj9qOEdTWeda04iZZbEZ1PSV7kVf8SIU/Y8FAOlMvOv5N4oMkFzQNQ4R
+Y90Lu/RuNHII76gk5/Tk2Y8A/629vad8FtEV9AlenQcLca6nA9MAMqkuLXOtv0nW
+OsZDdaQCRZAr9DqYPAK/AWE8hIpvYoqTq2y+w8aYMQJpOBu8V1kePqc1iVC8t/fF
+R9xei9dWdYrj//m8kl1F9IvFeVqkmF+iCXdJ1Cuy/KeLqX95IKzuZoXugehfXHI5
+Oon/popOEywmdmTZ3qU7LL01Hpg/qS4glIkmwiZwaFKrHAmpLMfuMI4Rr063xQwG
+xplEOiDgFtwvPHe24ecbxVT452OzgeBgCMrLongLayfQZ13GGwdxttfYacru8SJ/
+G3OvLGfC4A+Jbzi2aAQv
+=3tZ3
 -----END PGP SIGNATURE-----
 
---zbGR4y+acU1DwHSi--
+--imjhCm/Pyz7Rq5F2--
 
---===============5237057228286485355==
+--===============8771676849984261288==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5237057228286485355==--
+--===============8771676849984261288==--
