@@ -1,20 +1,15 @@
-From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 2/2] ASoC: cs42l56: Remove unneeded
- regulator_bulk_free call in cs42l56_remove
-Date: Thu, 28 Aug 2014 17:55:20 +0800
-Message-ID: <1409219720.21395.5.camel@phoenix>
-References: <1409219678.21395.4.camel@phoenix>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH] ASoC: Remove unused cache_only from struct
+	snd_soc_codec
+Date: Thu, 28 Aug 2014 14:07:11 +0300
+Message-ID: <1409224031-9334-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f173.google.com (mail-ie0-f173.google.com
- [209.85.223.173])
- by alsa0.perex.cz (Postfix) with ESMTP id AF245268E39
- for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 11:55:26 +0200 (CEST)
-Received: by mail-ie0-f173.google.com with SMTP id lx4so647688iec.4
- for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 02:55:25 -0700 (PDT)
-In-Reply-To: <1409219678.21395.4.camel@phoenix>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id D552E269417
+ for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 13:07:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,33 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Brian Austin <brian.austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The regulator_bulk_free() call is not required because current code is using
-devm_regulator_bulk_get().
+There are no real users for cache_only in "struct snd_soc_codec" so remove
+it and needless debugfs node.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 ---
- sound/soc/codecs/cs42l56.c | 3 ---
- 1 file changed, 3 deletions(-)
+ include/sound/soc.h  | 1 -
+ sound/soc/soc-core.c | 2 --
+ 2 files changed, 3 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index c766a5a..5a2d732 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -1175,11 +1175,8 @@ static int cs42l56_probe(struct snd_soc_codec *codec)
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index e43fbb6f8f8c..29650de0df7b 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -792,7 +792,6 @@ struct snd_soc_codec {
+ 	unsigned int ac97_registered:1; /* Codec has been AC97 registered */
+ 	unsigned int ac97_created:1; /* Codec has been created by SoC */
+ 	unsigned int cache_init:1; /* codec cache has been initialized */
+-	u32 cache_only;  /* Suppress writes to hardware */
+ 	u32 cache_sync; /* Cache needs to be synced to hardware */
  
- static int cs42l56_remove(struct snd_soc_codec *codec)
- {
--	struct cs42l56_private *cs42l56 = snd_soc_codec_get_drvdata(codec);
--
- 	cs42l56_free_beep(codec);
- 	cs42l56_set_bias_level(codec, SND_SOC_BIAS_OFF);
--	regulator_bulk_free(ARRAY_SIZE(cs42l56->supplies), cs42l56->supplies);
+ 	/* codec IO */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 4974b4f9c952..b1327ef05860 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -311,8 +311,6 @@ static void soc_init_codec_debugfs(struct snd_soc_component *component)
  
- 	return 0;
- }
+ 	debugfs_create_bool("cache_sync", 0444, codec->component.debugfs_root,
+ 			    &codec->cache_sync);
+-	debugfs_create_bool("cache_only", 0444, codec->component.debugfs_root,
+-			    &codec->cache_only);
+ 
+ 	codec->debugfs_reg = debugfs_create_file("codec_reg", 0644,
+ 						 codec->component.debugfs_root,
 -- 
-1.9.1
+2.1.0
