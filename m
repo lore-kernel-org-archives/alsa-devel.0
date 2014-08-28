@@ -1,18 +1,20 @@
 From: Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 1/2] ASoC: cs35l32: Remove unneeded
- regulator_bulk_free call in cs35l32_i2c_remove
-Date: Thu, 28 Aug 2014 17:54:38 +0800
-Message-ID: <1409219678.21395.4.camel@phoenix>
+Subject: [PATCH 2/2] ASoC: cs42l56: Remove unneeded
+ regulator_bulk_free call in cs42l56_remove
+Date: Thu, 28 Aug 2014 17:55:20 +0800
+Message-ID: <1409219720.21395.5.camel@phoenix>
+References: <1409219678.21395.4.camel@phoenix>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f179.google.com (mail-ig0-f179.google.com
- [209.85.213.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 50392268E33
- for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 11:54:45 +0200 (CEST)
-Received: by mail-ig0-f179.google.com with SMTP id r2so616307igi.0
- for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 02:54:44 -0700 (PDT)
+Received: from mail-ie0-f173.google.com (mail-ie0-f173.google.com
+ [209.85.223.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF245268E39
+ for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 11:55:26 +0200 (CEST)
+Received: by mail-ie0-f173.google.com with SMTP id lx4so647688iec.4
+ for <alsa-devel@alsa-project.org>; Thu, 28 Aug 2014 02:55:25 -0700 (PDT)
+In-Reply-To: <1409219678.21395.4.camel@phoenix>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,21 +33,24 @@ devm_regulator_bulk_get().
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- sound/soc/codecs/cs35l32.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/cs42l56.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
-index 380c212..718569f 100644
---- a/sound/soc/codecs/cs35l32.c
-+++ b/sound/soc/codecs/cs35l32.c
-@@ -548,8 +548,6 @@ static int cs35l32_i2c_remove(struct i2c_client *i2c_client)
- 	if (cs35l32->reset_gpio)
- 		gpiod_set_value_cansleep(cs35l32->reset_gpio, 0);
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index c766a5a..5a2d732 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -1175,11 +1175,8 @@ static int cs42l56_probe(struct snd_soc_codec *codec)
  
--	regulator_bulk_free(ARRAY_SIZE(cs35l32->supplies), cs35l32->supplies);
+ static int cs42l56_remove(struct snd_soc_codec *codec)
+ {
+-	struct cs42l56_private *cs42l56 = snd_soc_codec_get_drvdata(codec);
 -
+ 	cs42l56_free_beep(codec);
+ 	cs42l56_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	regulator_bulk_free(ARRAY_SIZE(cs42l56->supplies), cs42l56->supplies);
+ 
  	return 0;
  }
- 
 -- 
 1.9.1
