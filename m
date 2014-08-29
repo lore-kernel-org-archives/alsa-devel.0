@@ -1,18 +1,26 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] Documentation: fsl,
-	ssi.txt: Avoid cryptic acronyms
-Date: Fri, 29 Aug 2014 17:14:32 -0300
-Message-ID: <1409343272-4268-1-git-send-email-festevam@gmail.com>
+From: Toberius <nofarias@gmail.com>
+Subject: Re: icon utrack pro usb audio interface
+Date: Fri, 29 Aug 2014 23:42:46 +0000 (UTC)
+Message-ID: <loom.20140830T013915-993@post.gmane.org>
+References: <4DF356F0.6010701@stochastique.net>
+ <4DF61CE8.9000202@stochastique.net> <loom.20131118T220420-577@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f43.google.com (mail-yh0-f43.google.com
- [209.85.213.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 37E992651A8
- for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 22:14:56 +0200 (CEST)
-Received: by mail-yh0-f43.google.com with SMTP id f73so1843265yha.2
- for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 13:14:54 -0700 (PDT)
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83660265CFB
+ for <alsa-devel@alsa-project.org>; Sat, 30 Aug 2014 01:45:05 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1XNVqq-0002um-9j
+ for alsa-devel@alsa-project.org; Sat, 30 Aug 2014 01:45:04 +0200
+Received: from host216.190-225-50.telecom.net.ar ([190.225.50.216])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 30 Aug 2014 01:45:04 +0200
+Received: from nofarias by host216.190-225-50.telecom.net.ar with local
+ (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 30 Aug 2014 01:45:04 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +30,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@linaro.org
-Cc: mpa@pengutronix.de, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
 
-It is much clearer to use the full terms here: left-justified/right-justified.
+> I just bought one of these as well. Would love linux support if possible. I
+> would be willing to help with this effort except that my linux skills are
+> not dev level. Let me know if I can help and if this is going anywhere.
+> 
+> REgards
+> 
+> 
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- Documentation/devicetree/bindings/sound/fsl,ssi.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-index 3aa4a8f..ceca880 100644
---- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-@@ -62,9 +62,9 @@ Optional properties:
-                     "i2s-slave" - I2S mode, SSI is clock slave
-                     "i2s-master" - I2S mode, SSI is clock master
-                     "lj-slave" - left-justified mode, SSI is clock slave
--                    "lj-master" - l.j. mode, SSI is clock master
-+                    "lj-master" - left-justified mode, SSI is clock master
-                     "rj-slave" - right-justified mode, SSI is clock slave
--                    "rj-master" - r.j., SSI is clock master
-+                    "rj-master" - right-justified mode, SSI is clock master
-                     "ac97-slave" - AC97 mode, SSI is clock slave
-                     "ac97-master" - AC97 mode, SSI is clock master
- 
--- 
-1.9.1
+Hi guys, I'm too bougth one UtrackPro and looking for a generic driver to
+run into linux. Please if anyone can help me?
+
+Regards/
