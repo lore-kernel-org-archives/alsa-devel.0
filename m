@@ -1,22 +1,18 @@
-From: Andreas Allacher <andreas.allacher@gmx.at>
-Subject: Re: [PATCH] ALSA: virtuoso: add Xonar Essence STX II
- support
-Date: Fri, 29 Aug 2014 20:29:13 +0200
-Message-ID: <5400C679.4020606@gmx.at>
-References: <53FC4901.6070908@allacher.com>
- <53FC49A8.1010108@gmx.at>	<53FC4D56.5020808@ladisch.de>
- <53FC6532.2080903@gmx.at> <54003095.200@ladisch.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] Documentation: fsl,
+	ssi.txt: Avoid cryptic acronyms
+Date: Fri, 29 Aug 2014 17:14:32 -0300
+Message-ID: <1409343272-4268-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 80C30267D11
- for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 20:29:41 +0200 (CEST)
-Received: from [192.168.0.110] ([82.149.97.137]) by mail.gmx.com (mrgmx003)
- with ESMTPSA (Nemesis) id 0M5LJv-1YMZII0hwd-00zVI7 for
- <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 20:29:41 +0200
-In-Reply-To: <54003095.200@ladisch.de>
+Received: from mail-yh0-f43.google.com (mail-yh0-f43.google.com
+ [209.85.213.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37E992651A8
+ for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 22:14:56 +0200 (CEST)
+Received: by mail-yh0-f43.google.com with SMTP id f73so1843265yha.2
+ for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 13:14:54 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@linaro.org
+Cc: mpa@pengutronix.de, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-OK. The card arrived today. I will most likely test it tomorrow or the 
-day afterwards.
-Is the path already in the kernel source git or do I have to apply it 
-manually?
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Regards,
-     Andreas Allacher
+It is much clearer to use the full terms here: left-justified/right-justified.
 
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ Documentation/devicetree/bindings/sound/fsl,ssi.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-Am 29.08.2014 09:49, schrieb Clemens Ladisch:
-> In theory, this patch should work:
->
-> --- a/sound/pci/oxygen/xonar_pcm179x.c
-> +++ b/sound/pci/oxygen/xonar_pcm179x.c
-> @@ -419,6 +419,7 @@
->
->   	data->generic.output_enable_bit = GPIO_ST_OUTPUT_ENABLE;
->   	data->dacs = chip->model.dac_channels_mixer / 2;
-> +	data->h6 = chip->model.dac_channels_mixer > 2;
->   	data->hp_gain_offset = 2*-18;
->
->   	pcm1796_init(chip);
-> @@ -1140,8 +1141,18 @@
->   		break;
->   	case 0x85f4:
->   		chip->model = model_xonar_st;
-> -		/* TODO: daughterboard support */
-> -		chip->model.shortname = "Xonar STX II";
-> +		oxygen_clear_bits16(chip, OXYGEN_GPIO_CONTROL, GPIO_DB_MASK);
-> +		switch (oxygen_read16(chip, OXYGEN_GPIO_DATA) & GPIO_DB_MASK) {
-> +		default:
-> +			chip->model.shortname = "Xonar STX II";
-> +			break;
-> +		case GPIO_DB_H6:
-> +			chip->model.shortname = "Xonar STX II+H6";
-> +			chip->model.dac_channels_pcm = 8;
-> +			chip->model.dac_channels_mixer = 8;
-> +			chip->model.dac_mclks = OXYGEN_MCLKS(256, 128, 128);
-> +			break;
-> +		}
->   		chip->model.init = xonar_stx_init;
->   		chip->model.resume = xonar_stx_resume;
->   		chip->model.set_dac_params = set_pcm1796_params;
->
+diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+index 3aa4a8f..ceca880 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+@@ -62,9 +62,9 @@ Optional properties:
+                     "i2s-slave" - I2S mode, SSI is clock slave
+                     "i2s-master" - I2S mode, SSI is clock master
+                     "lj-slave" - left-justified mode, SSI is clock slave
+-                    "lj-master" - l.j. mode, SSI is clock master
++                    "lj-master" - left-justified mode, SSI is clock master
+                     "rj-slave" - right-justified mode, SSI is clock slave
+-                    "rj-master" - r.j., SSI is clock master
++                    "rj-master" - right-justified mode, SSI is clock master
+                     "ac97-slave" - AC97 mode, SSI is clock slave
+                     "ac97-master" - AC97 mode, SSI is clock master
+ 
+-- 
+1.9.1
