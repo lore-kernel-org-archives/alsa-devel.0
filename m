@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: omap-twl4030: Fix typo in 2nd dai
- link's platform_name
-Date: Fri, 29 Aug 2014 11:55:41 +0100
-Message-ID: <20140829105541.GL29327@sirena.org.uk>
-References: <1409308223-14281-1-git-send-email-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 1/4 v2] ASoC: simple-card: use
+	asoc_simple_xxx prefix
+Date: Fri, 29 Aug 2014 12:49:46 +0100
+Message-ID: <20140829114946.GR29327@sirena.org.uk>
+References: <87fvgriqrb.wl%kuninori.morimoto.gx@gmail.com>
+ <8761hdia86.wl%kuninori.morimoto.gx@gmail.com>
+ <874mwxia67.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5830039128083813475=="
+Content-Type: multipart/mixed; boundary="===============6417070256405285584=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D7A0826565E
- for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 12:55:58 +0200 (CEST)
-In-Reply-To: <1409308223-14281-1-git-send-email-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EEEC62610AE
+ for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 13:49:56 +0200 (CEST)
+In-Reply-To: <874mwxia67.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5830039128083813475==
+--===============6417070256405285584==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oOpJzULQ70+PGW7h"
+	protocol="application/pgp-signature"; boundary="vvRocJ6whMXXNc9q"
 Content-Disposition: inline
 
 
---oOpJzULQ70+PGW7h
+--vvRocJ6whMXXNc9q
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 29, 2014 at 01:30:23PM +0300, Peter Ujfalusi wrote:
-> The platform_name should be omap-mcasp3 for the 2nd link which is used for
-> voice connection.
+On Wed, Aug 27, 2014 at 08:07:46PM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> simple-card driver is using asoc_simple_xxx() prefix.
+> simple_card_dai_link_of() should be
+> asoc_simple_card_dai_link_of().
 
 Applied, thanks.
 
---oOpJzULQ70+PGW7h
+--vvRocJ6whMXXNc9q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJUAFwpAAoJELSic+t+oim9pGYQAIY7iMSkNgL/uQuQ3Lh/IJw/
-FDDZWDwuNxpJNZZeFKLoVg3aFkyASP0/LZ/eCnUuWB0ha+kxHLNKy/DICgl8kuDh
-vDdRa0fdyQ9G+Iyi+7wwcB4sS0/6vrEeQaMpzEM7CwCWdpVlIIW4oYpiNnYRjoFE
-agaxmWC8q+tgRnNDgt5kYcK/x348DeFEbQUY+oMvrVvFnk8uWFlE/J3x6q9eC++u
-eNjQQg+hF66Q0fOud551cUu9EuSH7AiNWnoIjFSOiIWajWQsS4NZgJjTn6SPDjFb
-f0IvLcggKMNWwd3wLa0CfAX4AQEYDG2mqZ9YRqr40dytEjcF7w9DfdhQPeZBzTrs
-FIm+fQRk0Lrx5m9DXpiiRTWzw0sdDwbWZ6PBGibKQSgJv6YubscpsFGixnTr+VjE
-zGgwC5kOpyboevnSRmxvjRGpXeSIxQNBNNUg4Fz9gDkm7otJnaqGxy4/jNvDqkAf
-NfYg0kfcbea0VvYx7fDBE1zK/QYwnSkjNTLx0/PbDFtQKFnvJZKldZ/LJh1gSEVQ
-pcwePGH+lT4jSlMo3a4M42NGtxg78DsjvHw6vNu2by5sSjWwBcs4ni2ORpctyHJc
-3C2Srujy23oSXZSBn79lnTW8lVWX42A0Q5pRdVWA90CNDnA8is+AyFwHLJwC8hdN
-MtIw/dT5wIP91hpOvx2T
-=hMfW
+iQIcBAEBAgAGBQJUAGjXAAoJELSic+t+oim9flYP/206DORaIjnncUsF+5EIfF/a
+thEhUg0yvZUj+mOg39LZfl1VkHXL3jrzunUQXoqOz8mox+LqAHXGXTPAdmAVPwiP
+QEW9VWX6TeWTN92vWRZhEzeSeXfudO9epu70l+UO6E1Lpj/jr+rUIzjDnkKgGtp0
+/CnoSzjsQfVvO1lu48CEPHTHpJAVfkSG4nOkz5GqTDQEu2//Lp5L5cVrKfzC4zmz
+DaGlq9ZFvOvWM5EsFn17jy8fQX4qthUHM2rLLsR/B8nE6LzvcqlR+9U8uIXykA0a
+Z1xdSAtS5EssnL+jLAgErSJXn2Oh6CHKoPGL6/rLgClKXOl520zvbsvhryj3Sjtx
+SnV/egcjJ/56iA1hDmhxQ/6S25FLO3iRlkgRg/+SJQ65iL7I5XDfYfahV45DZ0np
+cjdFDe/5RJpfOI2OaL7yHQxRtFYT+iingRMcuspE7AK87Bcr0NY8DjfGIRrp9e7k
+7EDoqP1ADFDn4tAWwbYylrHPn323pdKaF9cZ/Ot9a4RQINSOh0FTzLSUP6iivxYz
+YDDczaHcBGVTjTpCbgQ46Gwvbf8SxGxOk/qAlF+shTqdFfJXuGOGfVJJk19/482K
+sduAO6Y9LuZA3O1pRhwDBv8CGdOpjMs9wPCmrOltvfl1lXeQIjcIHff7xCciK0Nt
+p9g+2N6RU7qEHHXaK49R
+=BF26
 -----END PGP SIGNATURE-----
 
---oOpJzULQ70+PGW7h--
+--vvRocJ6whMXXNc9q--
 
---===============5830039128083813475==
+--===============6417070256405285584==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5830039128083813475==--
+--===============6417070256405285584==--
