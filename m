@@ -1,104 +1,61 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v4 00/15] Rework OMAP4+ HDMI audio support
-Date: Fri, 29 Aug 2014 14:43:28 +0300
-Message-ID: <54006760.2010404@ti.com>
-References: <cover.1408993242.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCHv2] ASoC: fsl-sai: using 'lsb-first' property instead of
+ 'big-endian-data'.
+Date: Fri, 29 Aug 2014 12:59:43 +0100
+Message-ID: <20140829115943.GV29327@sirena.org.uk>
+References: <20140829110601.GB21473@leverpostej>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <cover.1408993242.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
-Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s0H35NU0PUc8VBh+"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140829110601.GB21473@leverpostej>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Xiubo Li <Li.Xiubo@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-After discussing with Tomi we decided to turn the omap-hdmi-audio ASoC 
-library into a platform device. So do not waste too much time in 
-reviewing these patches. I'll mail a new series soon.
 
-Best regards,
-Jyri
+--s0H35NU0PUc8VBh+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 08/25/2014 10:04 PM, Jyri Sarha wrote:
-> The patches are based on:
-> git://git.kernel.org/pub/scm/linux/kernel/git/tomba/linux.git for-next
->
-> The base, the patches, and couple of additional not-to-be-merged
-> omap2plus_defconfig patches can be found here:
->
-> git://git.ti.com/~jyrisarha/ti-linux-kernel/jyrisarhas-audio-video-linux-feature-tree.git omap-hdmi-audio
->
-> Changes since v3:
-> - Move ASoC parts into library module under sound/soc/omap
-> - Come up with API for the library
-> - Some cleaning up
->
-> The patch set fixes OMAP4+ HDMI audio. The structure of the
-> implementation looks a bit different than before. Instead of creating
-> a driver specific API for a separate ASoC component driver to connect
-> to, these patches implement a single audio library module under
-> sound/soc/omap for ASoC side implementation. The library exports
-> omap_hdmi_audio_register() and omap_hdmi_audio_unregister()
-> functions. With the functions OMAPDSS HDMI implementation registers
-> and unregisters all ASoC components needed for OMAP HDMI audio.
->
-> The library implements cpu-dai component using the callbacks provided
-> by OMAPDSS. Omap-pcm is registered for platform component, dummy
-> hdmi-audio-codec is registered for codec component, and
-> asoc-simple-card is registered for machine driver.
->
-> Big part of the HDMI audio code is still unchanged and there is a need
-> for a cleanup there. Also there is still probably something wrong with
-> speaker mapping of multi-channel streams. I will get back to cleaning
-> up these issues later.
->
-> Best regards,
-> Jyri
->
-> Jyri Sarha (15):
->    OMAPDSS: hdmi.h: Add HDMI_AUDIO_LAYOUT_6CH enum value
->    OMAPDSS: hdmi: Remove most of OMAP[45]_DSS_HDMI_AUDIO ifdefs
->    OMAPDSS: hdmi4_core: Remove unused hdmi4_audio_get_dma_port()
->    OMAPDSS: hdmi_wp: Add function for getting audio dma address
->    OMAPDSS: hdmi: Make hdmi structure public
->    OMAPDSS: hdmi: Add exported functions for storing HDMI audio data
->    OMAPDSS: hdmi: Make hdmi_mode_has_audio() more user friedly
->    ASoC: omap-hdmi-audio: Add OMAP HDMI audio support library
->    OMAPDSS: Kconfig: Implement options for OMAP4 and OMAP5 HDMI audio
->      support
->    OMAPDSS: hdmi4: Register HDMI audio with omap_hdmi_audio_register()
->    OMAPDSS: hdmi5: Register HDMI audio with omap_hdmi_audio_register()
->    ASoC: omap: Remove obsolete HDMI audio code and Kconfig options
->    OMAPDSS: hdmi4: Remove callbacks for an external ASoC DAI driver
->    OMAPDSS: hdmi5: Remove callbacks for an external ASoC DAI driver
->    OMAPDSS: Remove all references to obsolete HDMI audio callbacks
->
->   .../fbdev/omap2/displays-new/connector-hdmi.c      |   99 ------
->   .../fbdev/omap2/displays-new/encoder-tpd12s015.c   |   56 ---
->   drivers/video/fbdev/omap2/dss/Kconfig              |   28 +-
->   drivers/video/fbdev/omap2/dss/hdmi.h               |   35 +-
->   drivers/video/fbdev/omap2/dss/hdmi4.c              |  233 ++++++-------
->   drivers/video/fbdev/omap2/dss/hdmi4_core.c         |   14 -
->   drivers/video/fbdev/omap2/dss/hdmi4_core.h         |    4 -
->   drivers/video/fbdev/omap2/dss/hdmi5.c              |  216 +++++-------
->   drivers/video/fbdev/omap2/dss/hdmi5_core.c         |    6 -
->   drivers/video/fbdev/omap2/dss/hdmi5_core.h         |    2 -
->   drivers/video/fbdev/omap2/dss/hdmi_common.c        |   18 +-
->   drivers/video/fbdev/omap2/dss/hdmi_wp.c            |    8 +-
->   include/sound/omap-hdmi-audio.h                    |   50 +++
->   include/video/omapdss.h                            |   34 +-
->   sound/soc/omap/Kconfig                             |   15 +-
->   sound/soc/omap/Makefile                            |    6 +-
->   sound/soc/omap/omap-hdmi-audio.c                   |  357 +++++++++++++++++++
->   sound/soc/omap/omap-hdmi-card.c                    |   87 -----
->   sound/soc/omap/omap-hdmi.c                         |  364 --------------------
->   sound/soc/omap/omap-hdmi.h                         |   38 --
->   20 files changed, 676 insertions(+), 994 deletions(-)
->   create mode 100644 include/sound/omap-hdmi-audio.h
->   create mode 100644 sound/soc/omap/omap-hdmi-audio.c
->   delete mode 100644 sound/soc/omap/omap-hdmi-card.c
->   delete mode 100644 sound/soc/omap/omap-hdmi.c
->   delete mode 100644 sound/soc/omap/omap-hdmi.h
->
+On Fri, Aug 29, 2014 at 12:06:01PM +0100, Mark Rutland wrote:
+> On Fri, Aug 29, 2014 at 08:12:12AM +0100, Xiubo Li wrote:
 
+> > The 'big-endian-data' property is originally used to indicate whether the
+> > LSB firstly or MSB firstly will be transmitted to the CODEC or received
+> > from the CODEC, and there has nothing relation to the memory data.
+
+> Both Nicolin [1] and Mark [2] asked for the old property to be kept
+> around for compatibility reasons. Those requests seem to have been
+> ignored entirely; the commit message doesn't even describe why you
+> believe removing support for the old property is safe.
+
+The response was that the relevant chips aren't out in the wild so it's
+vanishingly unlikely that anyone would have a real DT with this option
+enabled.  I'll defer to Nicolin on if that's the case or not.
+
+--s0H35NU0PUc8VBh+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJUAGssAAoJELSic+t+oim9TNYQAJwN380ACjc82CC/8I5V25OZ
+i1VqXY0W+SHBnFx1ENACiHFAZS/IsiCd+n2h0yFlPrGfDGqxU+zZ/W+m364CJYSF
+psd+Udnyx8TI1MPq9cbWyvWCCIS4CGjRmySNfk1l8u7YYUcR/+Z7QU2NHNzyyvcg
+0vpvs7Ycqhp0WUIfMh4u7n3/2bCEBzgWPrbkGgpx3hgQ+9X/isFGKQQfFX/9jtn3
+eigxkQ9B5eqNJjk5wa+tOaOYy66Us/8u8yXCe9T4i9UzgkRjjPY62rpoSe0HyREa
+1ui7fydT/Olg6KLaaJqsOsKzUSkLKt8XSDCyQYigHf/s3ja3nwB+ku+A5LwStFSc
+pJiPmh5S48ODao1fn3KXxdAYObYNPpFFYb5LEn6yDzT/VZMrmvfkVR/sMZewMsDb
+MtuY/32fdVm/5Hk9UJsWVYx0lL/YyrOAKw718oHKcq8ZX8shaeTWp7rzyQz3DY13
+RFtfeuu2HKtrfuFgNbGYbmWMb4iujpydGaCjNjrPIaAd45XdDmZOLG8gWUVJc4n4
+uz2AmMd3C2IzBm6As6uns68VqeF0W7jczQX5Pd69HosVmgopCQwOlJl/o8QYst7R
+XuQBGkhiWSxW3XUiu74Q98QUanthoaDEyk4CYD9WFNtBq+jNzACkbz/vtEzjDRJ1
+PIgIV6U2vyS+ZTanKfXT
+=CMuk
+-----END PGP SIGNATURE-----
+
+--s0H35NU0PUc8VBh+--
