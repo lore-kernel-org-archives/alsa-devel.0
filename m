@@ -1,85 +1,104 @@
-From: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
-Subject: Re: [PATCHv2] ASoC: fsl-sai: using 'lsb-first' property instead of
- 'big-endian-data'.
-Date: Fri, 29 Aug 2014 12:06:01 +0100
-Message-ID: <20140829110601.GB21473@leverpostej>
-References: <1409296332-39318-1-git-send-email-Li.Xiubo@freescale.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v4 00/15] Rework OMAP4+ HDMI audio support
+Date: Fri, 29 Aug 2014 14:43:28 +0300
+Message-ID: <54006760.2010404@ti.com>
+References: <cover.1408993242.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1409296332-39318-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <cover.1408993242.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 29, 2014 at 08:12:12AM +0100, Xiubo Li wrote:
-> The 'big-endian-data' property is originally used to indicate whether the
-> LSB firstly or MSB firstly will be transmitted to the CODEC or received
-> from the CODEC, and there has nothing relation to the memory data.
-> 
-> Generally, if the audio data in big endian format, which will be using the
-> bytes reversion, Here this can only be used to bits reversion.
-> 
-> So using the 'lsb-first' instead of 'big-endian-data' can make the code
-> to be readable easier and more easy to understand what this property is
-> used to do.
-> 
-> This property used for configuring whether the LSB or the MSB is transmitted
-> first for the fifo data.
-> 
-> Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-> Cc: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> ---
->  Documentation/devicetree/bindings/sound/fsl-sai.txt | 8 ++++----
->  sound/soc/fsl/fsl_sai.c                             | 6 +++---
->  sound/soc/fsl/fsl_sai.h                             | 2 +-
->  3 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> index 06a405e..4956b14 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> +++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-> @@ -20,9 +20,9 @@ Required properties:
->    See ../pinctrl/pinctrl-bindings.txt for details of the property values.
->  - big-endian: Boolean property, required if all the FTM_PWM registers
->    are big-endian rather than little-endian.
-> -- big-endian-data: If this property is absent, the little endian mode will
-> -  be in use as default, or the big endian mode will be in use for all the
-> -  fifo data.
-> +- lsb-first: Configures whether the LSB or the MSB is transmitted first for
-> +  the fifo data. If this property is absent, the MSB is transmitted first as
-> +  default, or the LSB is transmitted first.
+After discussing with Tomi we decided to turn the omap-hdmi-audio ASoC 
+library into a platform device. So do not waste too much time in 
+reviewing these patches. I'll mail a new series soon.
 
-Both Nicolin [1] and Mark [2] asked for the old property to be kept
-around for compatibility reasons. Those requests seem to have been
-ignored entirely; the commit message doesn't even describe why you
-believe removing support for the old property is safe.
+Best regards,
+Jyri
 
-So NAK unless this patch is updated to either:
+On 08/25/2014 10:04 PM, Jyri Sarha wrote:
+> The patches are based on:
+> git://git.kernel.org/pub/scm/linux/kernel/git/tomba/linux.git for-next
+>
+> The base, the patches, and couple of additional not-to-be-merged
+> omap2plus_defconfig patches can be found here:
+>
+> git://git.ti.com/~jyrisarha/ti-linux-kernel/jyrisarhas-audio-video-linux-feature-tree.git omap-hdmi-audio
+>
+> Changes since v3:
+> - Move ASoC parts into library module under sound/soc/omap
+> - Come up with API for the library
+> - Some cleaning up
+>
+> The patch set fixes OMAP4+ HDMI audio. The structure of the
+> implementation looks a bit different than before. Instead of creating
+> a driver specific API for a separate ASoC component driver to connect
+> to, these patches implement a single audio library module under
+> sound/soc/omap for ASoC side implementation. The library exports
+> omap_hdmi_audio_register() and omap_hdmi_audio_unregister()
+> functions. With the functions OMAPDSS HDMI implementation registers
+> and unregisters all ASoC components needed for OMAP HDMI audio.
+>
+> The library implements cpu-dai component using the callbacks provided
+> by OMAPDSS. Omap-pcm is registered for platform component, dummy
+> hdmi-audio-codec is registered for codec component, and
+> asoc-simple-card is registered for machine driver.
+>
+> Big part of the HDMI audio code is still unchanged and there is a need
+> for a cleanup there. Also there is still probably something wrong with
+> speaker mapping of multi-channel streams. I will get back to cleaning
+> up these issues later.
+>
+> Best regards,
+> Jyri
+>
+> Jyri Sarha (15):
+>    OMAPDSS: hdmi.h: Add HDMI_AUDIO_LAYOUT_6CH enum value
+>    OMAPDSS: hdmi: Remove most of OMAP[45]_DSS_HDMI_AUDIO ifdefs
+>    OMAPDSS: hdmi4_core: Remove unused hdmi4_audio_get_dma_port()
+>    OMAPDSS: hdmi_wp: Add function for getting audio dma address
+>    OMAPDSS: hdmi: Make hdmi structure public
+>    OMAPDSS: hdmi: Add exported functions for storing HDMI audio data
+>    OMAPDSS: hdmi: Make hdmi_mode_has_audio() more user friedly
+>    ASoC: omap-hdmi-audio: Add OMAP HDMI audio support library
+>    OMAPDSS: Kconfig: Implement options for OMAP4 and OMAP5 HDMI audio
+>      support
+>    OMAPDSS: hdmi4: Register HDMI audio with omap_hdmi_audio_register()
+>    OMAPDSS: hdmi5: Register HDMI audio with omap_hdmi_audio_register()
+>    ASoC: omap: Remove obsolete HDMI audio code and Kconfig options
+>    OMAPDSS: hdmi4: Remove callbacks for an external ASoC DAI driver
+>    OMAPDSS: hdmi5: Remove callbacks for an external ASoC DAI driver
+>    OMAPDSS: Remove all references to obsolete HDMI audio callbacks
+>
+>   .../fbdev/omap2/displays-new/connector-hdmi.c      |   99 ------
+>   .../fbdev/omap2/displays-new/encoder-tpd12s015.c   |   56 ---
+>   drivers/video/fbdev/omap2/dss/Kconfig              |   28 +-
+>   drivers/video/fbdev/omap2/dss/hdmi.h               |   35 +-
+>   drivers/video/fbdev/omap2/dss/hdmi4.c              |  233 ++++++-------
+>   drivers/video/fbdev/omap2/dss/hdmi4_core.c         |   14 -
+>   drivers/video/fbdev/omap2/dss/hdmi4_core.h         |    4 -
+>   drivers/video/fbdev/omap2/dss/hdmi5.c              |  216 +++++-------
+>   drivers/video/fbdev/omap2/dss/hdmi5_core.c         |    6 -
+>   drivers/video/fbdev/omap2/dss/hdmi5_core.h         |    2 -
+>   drivers/video/fbdev/omap2/dss/hdmi_common.c        |   18 +-
+>   drivers/video/fbdev/omap2/dss/hdmi_wp.c            |    8 +-
+>   include/sound/omap-hdmi-audio.h                    |   50 +++
+>   include/video/omapdss.h                            |   34 +-
+>   sound/soc/omap/Kconfig                             |   15 +-
+>   sound/soc/omap/Makefile                            |    6 +-
+>   sound/soc/omap/omap-hdmi-audio.c                   |  357 +++++++++++++++++++
+>   sound/soc/omap/omap-hdmi-card.c                    |   87 -----
+>   sound/soc/omap/omap-hdmi.c                         |  364 --------------------
+>   sound/soc/omap/omap-hdmi.h                         |   38 --
+>   20 files changed, 676 insertions(+), 994 deletions(-)
+>   create mode 100644 include/sound/omap-hdmi-audio.h
+>   create mode 100644 sound/soc/omap/omap-hdmi-audio.c
+>   delete mode 100644 sound/soc/omap/omap-hdmi-card.c
+>   delete mode 100644 sound/soc/omap/omap-hdmi.c
+>   delete mode 100644 sound/soc/omap/omap-hdmi.h
+>
 
-- Keep support for the old property, but mark it as deprecated in the
-  documentation (having a warning if said property is used is also
-  fine).
-
-- Describe why it is safe to remove the property outright, and both Mark
-  and Nicolin agree that this is fine.
-
-The former is the preferred way of doing things, and the latter should
-be the exceptional case. We don't even save much here my dropping
-support for the old property.
-
-I have no proeprty with addition of the the new property; the rationale
-for the new naming makes sense to me.
-
-Thanks,
-Mark.
-
-[1] http://lkml.kernel.org/r/20140827070544.GO17528-GFdadSzt00ze9xe1eoZjHA@public.gmane.org
-[2] http://lkml.kernel.org/r/CAGoOwPSTJaT0UA4yaYR0x49C8UHbmKAR8PzUfV9ZWVW5XBfV5w-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
