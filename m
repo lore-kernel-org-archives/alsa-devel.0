@@ -1,86 +1,81 @@
-From: Kailang <kailang@realtek.com>
-Subject: RE: [PATCH] ALSA: hda - Add a de-pop quirk for some HP machines
-Date: Fri, 29 Aug 2014 08:35:30 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A170603A4@RTITMBSA.realtek.com.tw>
-References: <1409298425-9697-1-git-send-email-hui.wang@canonical.com>
- <s5hfvgfsoye.wl-tiwai@suse.de>
+From: Inha Song <ideal.song@samsung.com>
+Subject: Re: [alsa-devel] [PATCH v3 1/2] mfd: arizona: Add support for
+ INn_Modec register control
+Date: Fri, 29 Aug 2014 17:42:27 +0900
+Message-ID: <20140829174227.4734992c@songinha-Samsung-DeskTop-System>
+References: <20140818200003.2ab8aca0@songinha-Samsung-DeskTop-System>
+ <20140828113651.GN24579@lee--X1>
+ <20140829170230.673ca9ff@songinha-Samsung-DeskTop-System>
+ <20140829081741.GD24579@lee--X1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
-Return-path: <stable-owner@vger.kernel.org>
-Content-Language: zh-TW
-Sender: stable-owner@vger.kernel.org
-To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>, =?big5?B?THVrZSBDaGFuZyBbsWmuabphXQ==?= <lukechang@realtek.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <20140829081741.GD24579@lee--X1>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com, sameo@linux.intel.com, devicetree@vger.kernel.org, galak@codeaurora.org, ijc+devicetree@hellion.org.uk, mark.rutland@arm.com, pawel.moll@arm.com, robh+dt@kernel.org, cw00.choi@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-IA0KSGkgTHVrZSwNCg0KQ291bGQgeW91IGRlc2NyaWJlIHRoaXMgaXNzdWUgZm9yIGhvdyB0byBz
-b2x2ZT8NCg0KQlIsDQpLYWlsYW5nDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4g
-RnJvbTogS2FpbGFuZyANCj4gU2VudDogRnJpZGF5LCBBdWd1c3QgMjksIDIwMTQgNDozMCBQTQ0K
-PiBUbzogJ1Rha2FzaGkgSXdhaSc7IEh1aSBXYW5nDQo+IENjOiBhbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmc7IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUkU6IFtQQVRDSF0g
-QUxTQTogaGRhIC0gQWRkIGEgZGUtcG9wIHF1aXJrIGZvciBzb21lIA0KPiBIUCBtYWNoaW5lcw0K
-PiANCj4gIA0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IEZyb206IFRh
-a2FzaGkgSXdhaSBbbWFpbHRvOnRpd2FpQHN1c2UuZGVdDQo+ID4gU2VudDogRnJpZGF5LCBBdWd1
-c3QgMjksIDIwMTQgNDowMyBQTQ0KPiA+IFRvOiBIdWkgV2FuZw0KPiA+IENjOiBhbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmc7IEthaWxhbmc7IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gPiBT
-dWJqZWN0OiBSZTogW1BBVENIXSBBTFNBOiBoZGEgLSBBZGQgYSBkZS1wb3AgcXVpcmsgZm9yIHNv
-bWUgSFAgDQo+ID4gbWFjaGluZXMNCj4gPiANCj4gPiBBdCBGcmksIDI5IEF1ZyAyMDE0IDE1OjQ3
-OjA1ICswODAwLA0KPiA+IEh1aSBXYW5nIHdyb3RlOg0KPiA+ID4gDQo+ID4gPiBPbiBzb21lIEhQ
-IG1hY2hpbmVzLCB0aGVyZSB3aWxsIGJlIHBvcCBub2lzZSB3aGVuIHRoZSBtYWNoaW5lIGlzIA0K
-PiA+ID4gc2h1dHRpbmcgZG93biwgcmVib290aW5nIG9yIGJvb3RpbmcgdXAgZnJvbSBwb3dlcm9m
-ZiBzdGF0ZS4NCj4gPiA+IA0KPiA+ID4gU2V0IEVBUEQgZW5hYmxlIG9ubHkgd2hlbiBzdHJlYW0g
-c3RhcnRzIGNhbiBoZWxwIHRvIGZpeA0KPiA+IHRoaXMgcHJvYmxlbS4NCj4gPiA+IA0KPiA+ID4g
-W1RoZSBwYXRjaCB3YXMgb3JpZ2luYWxseSB3cml0dGVuIGJ5IEthaWxhbmcsIHdlIHRlc3RlZCBp
-dA0KPiA+IGFuZCByZWJhc2VkDQo+ID4gPiBpdCBvbiBsYXRlc3Qga2VybmVsLl0NCj4gPiA+IA0K
-PiA+ID4gU2lnbmVkLW9mZi1ieTogS2FpbGFuZyBZYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPg0K
-PiA+ID4gU2lnbmVkLW9mZi1ieTogSHVpIFdhbmcgPGh1aS53YW5nQGNhbm9uaWNhbC5jb20+DQo+
-ID4gPiAtLS0NCj4gPiA+ICBzb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyB8IDU1DQo+ID4g
-PiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tDQo+ID4gPiAgMSBm
-aWxlIGNoYW5nZWQsIDUyIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+ID4gPiANCj4g
-PiA+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyANCj4gPiA+IGIv
-c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgaW5kZXggNDhkNmQxMC4uNTE4MTFhNiAxMDA2
-NDQNCj4gPiA+IC0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jDQo+ID4gPiArKysg
-Yi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYw0KPiA+ID4gQEAgLTQyODIsNiArNDI4Miw0
-NyBAQCBzdGF0aWMgdm9pZA0KPiA+IGFsYzI5MF9maXh1cF9tb25vX3NwZWFrZXJzKHN0cnVjdCBo
-ZGFfY29kZWMgKmNvZGVjLA0KPiA+ID4gIAl9DQo+ID4gPiAgfQ0KPiA+ID4gIA0KPiA+ID4gKy8q
-DQo+ID4gPiArICogQUxDMjkwIFBDTSBob29rcw0KPiA+ID4gKyAqLw0KPiA+ID4gK3N0YXRpYyB2
-b2lkIGFsYzI5MF9wbGF5YmFja19wY21faG9vayhzdHJ1Y3QgDQo+IGhkYV9wY21fc3RyZWFtICpo
-aW5mbywNCj4gPiA+ICsJCQkJICAgICBzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywNCj4gPiA+ICsJ
-CQkJICAgICBzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0NCj4gPiAqc3Vic3RyZWFtLA0KPiA+ID4g
-KwkJCQkgICAgIGludCBhY3Rpb24pDQo+ID4gPiArew0KPiA+ID4gKwlpbnQgdmFsOw0KPiA+ID4g
-Kw0KPiA+ID4gKwlzd2l0Y2ggKGFjdGlvbikgew0KPiA+ID4gKwljYXNlIEhEQV9HRU5fUENNX0FD
-VF9PUEVOOg0KPiA+ID4gKwkJdmFsID0gYWxjX3JlYWRfY29lZl9pZHgoY29kZWMsIDB4NCk7IC8q
-IEVBUEQNCj4gPiBtYW51YWwgaGlnaCAqLw0KPiA+ID4gKwkJaWYgKCh2YWwgJiAweGMwMDApICE9
-IDB4YzAwMCkNCj4gPiA+ICsJCQlhbGNfd3JpdGVfY29lZl9pZHgoY29kZWMsIDB4NCwgdmFsIHwg
-KDE8PDE0KSk7DQo+ID4gPiArCQlicmVhazsNCj4gPiA+ICsJfQ0KPiA+ID4gK30NCj4gPiA+ICsN
-Cj4gPiA+ICtzdGF0aWMgdm9pZCBhbGMyOTBfZml4dXBfcG9wX25vaXNlKHN0cnVjdCBoZGFfY29k
-ZWMgKmNvZGVjLA0KPiA+ID4gKwkJCQkgICBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwICpmaXgsDQo+
-ID4gaW50IGFjdGlvbikgew0KPiA+ID4gKwlzdHJ1Y3QgYWxjX3NwZWMgKnNwZWMgPSBjb2RlYy0+
-c3BlYzsNCj4gPiA+ICsJaW50IHZhbDsNCj4gPiA+ICsNCj4gPiA+ICsJc3dpdGNoIChhY3Rpb24p
-IHsNCj4gPiA+ICsJY2FzZSBIREFfRklYVVBfQUNUX1BSRV9QUk9CRToNCj4gPiA+ICsJCXNuZF9o
-ZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MTcsIDAsDQo+ID4gPiArCQkJCSAgICANCj4gPiBBQ19W
-RVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9PVVQpOw0KPiA+IA0KPiA+IFdoeSBkbyB5
-b3UgbmVlZCB0aGlzLi4uDQo+IA0KPiBUaGlzIGlzIHJlYXVlc3QgYnkgSFAuIFRoZXkgc2F5IEtl
-ZXAgdGhpcyB0byBvdXRwdXQgd2lsbCANCj4gbG93ZXIgcG9wIG5vaXNlIGZyb20gd29vZmVyIHNw
-ZWFrZXIuDQo+IA0KPiA+IA0KPiA+ID4gKwkJdmFsID0gYWxjX3JlYWRfY29lZl9pZHgoY29kZWMs
-IDB4NCk7DQo+ID4gPiArCQlpZiAoKHZhbCAmIDB4YzAwMCkgIT0gMHhjMDAwKQ0KPiA+ID4gKwkJ
-CWFsY193cml0ZV9jb2VmX2lkeChjb2RlYywgMHg0LCB2YWwgfA0KPiA+ICgzPDwxNCkpOyAvKiBF
-QVBEIGxvdyAqLw0KPiA+ID4gKwkJc3BlYy0+Z2VuLnBjbV9wbGF5YmFja19ob29rID0gYWxjMjkw
-X3BsYXliYWNrX3BjbV9ob29rOw0KPiA+ID4gKwkJYnJlYWs7DQo+ID4gPiArCWNhc2UgSERBX0ZJ
-WFVQX0FDVF9JTklUOg0KPiA+ID4gKwkJc25kX2hkYV9jb2RlY193cml0ZShjb2RlYywgMHgxNywg
-MCwNCj4gPiA+ICsJCQkJICAgIA0KPiA+IEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwg
-UElOX09VVCk7DQo+ID4gDQo+ID4gLi4uIGFuZCB0aGlzPyAgVGhlcmUgaXMgbm8gZXhwbGFuYXRp
-b24gYWJvdXQgdGhpcyBjaGFuZ2UuDQo+ID4gDQo+ID4gQWxzbywgY2FuJ3QgeW91IGp1c3Qgc2V0
-IEVBUEQgbG93IGluIHRoZSBzaHV0ZG93biBjYWxsYmFjayBpbnN0ZWFkPw0KPiA+IA0KPiA+IElu
-IHlvdXIgcGF0Y2gsIGlmIHRoZSBtYWNoaW5lIGdvZXMgc2h1dGRvd24vcmVib290IHdoaWxlIHBs
-YXlpbmcgYSANCj4gPiBzdHJlYW0gKG9yIGJlZm9yZSBydW50aW1lIFBNKSwgaXQncyBzdGlsbCBF
-QVBEIGhpZ2gsIHNvIHRoZSBub2lzZSANCj4gPiBzaG91bGQgYmUgaGVhcmQsIGlmIEkgdW5kZXJz
-dGFuZCBjb3JyZWN0bHkuDQo+ID4gDQo+IA0KPiBFQVBEIGtlZXAgaGlnaCwgbm8gY2hhbmdlIHN0
-YXRlIHdpbGwgbm8gcG9wIG5vaXNlLiBFQyB3aWxsIA0KPiBjb250cm9sIHRoZSBkZWxheSBmb3Ig
-MzBzIHRvIGRvIEFNUCBwaW4gdG8gaGlnaC4NCj4gV2hlbiBpdCBlbnRlciB0byBTMywgRUFQRCB3
-aWxsIGdvIGxvdy4gUmVzdW1lIGJhY2ssIHRoZSBlYXBkIA0KPiB3aWxsIGdvIGhpZ2guIEl0IHdp
-bGwgc2hvdyBwb3Agbm9pc2UuDQo+IFRoaXMgaXMgbm90IGhhdmUgbWV0aG9kIHRvIGltcHJvdmUg
-Zm9yIHRoaXMgaGFyZHdhcmUgaXNzdWUgaW4gDQo+IHRoaXMgc3RhdGUuDQo+IA0KPiA+IA0KPiA+
-IFRha2FzaGkNCj4gPiANCj4gPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50
-IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCj4gPiA=
+On Fri, 29 Aug 2014 09:17:41 +0100
+Lee Jones <lee.jones@linaro.org> wrote:
+
+> On Fri, 29 Aug 2014, Inha Song wrote:
+> 
+> > Hi, Lee
+> > Thanks for your review.
+> > 
+> > On Thu, 28 Aug 2014 12:36:51 +0100
+> > Lee Jones <lee.jones@linaro.org> wrote:
+> > 
+> > > On Mon, 18 Aug 2014, Inha Song wrote:
+> > > 
+> > > > Some boards need to set the INn_MODE[1:0] register to change
+> > > > the input signal patch. This wlf,inmode property is optional.
+> > > > If present, values must be specified less than or equal to
+> > > > the number of input singals. If values less than the number
+> > > > of input signals, elements that has not been specifed are set
+> > > > to 0 by default.
+> > > > 
+> > > > Example:
+> > > >    - wlf,inmode = <2 0 2>;	/* IN1, IN3 use DMIC */
+> > > > 
+> > > > Signed-off-by: Inha Song <ideal.song@samsung.com>
+> > > > ---
+> > > >  drivers/mfd/arizona-core.c | 8 +++++++-
+> > > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+> > > > index 10a0cb9..81e6db8 100644
+> > > > --- a/drivers/mfd/arizona-core.c
+> > > > +++ b/drivers/mfd/arizona-core.c
+> > > > @@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(arizona_of_get_named_gpio);
+> > > >  static int arizona_of_get_core_pdata(struct arizona *arizona)
+> > > >  {
+> > > >  	struct arizona_pdata *pdata = &arizona->pdata;
+> > > > -	int ret, i;
+> > > > +	int ret, i, proplen;
+> > > >  
+> > > >  	pdata->reset = arizona_of_get_named_gpio(arizona, "wlf,reset", true);
+> > > >  
+> > > > @@ -560,6 +560,12 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
+> > > >  			ret);
+> > > >  	}
+> > > >  
+> > > > +	proplen = of_property_count_u32_elems(arizona->dev->of_node,
+> > > > +					      "wlf,inmode");
+> > > > +	if (proplen > 0 && proplen <= ARRAY_SIZE(arizona->pdata.inmode))
+> > > > +		of_property_read_u32_array(arizona->dev->of_node, "wlf,inmode",
+> > > > +					   arizona->pdata.inmode, proplen);
+> > > 
+> > > of_property_for_each_u32()?
+> > 
+> > Is it more clear to use of_property_for_each_u32() instead of
+> > of_property_read_u32_array()?
+> 
+> It prevents you from having to use of_property_count_u32_elems() first.
+
+OK, I will fix this. Thanks.
+
+Best regards,
+Inha Song.
