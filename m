@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4 v2] ASoC: simple-card: use common
- for_each_child_of_node() for loop
-Date: Fri, 29 Aug 2014 12:51:42 +0100
-Message-ID: <20140829115142.GU29327@sirena.org.uk>
-References: <87fvgriqrb.wl%kuninori.morimoto.gx@gmail.com>
- <8761hdia86.wl%kuninori.morimoto.gx@gmail.com>
- <87zjepgvk3.wl%kuninori.morimoto.gx@gmail.com>
+From: Andreas Allacher <andreas.allacher@gmx.at>
+Subject: Re: [PATCH] ALSA: virtuoso: add Xonar Essence STX II
+ support
+Date: Fri, 29 Aug 2014 20:29:13 +0200
+Message-ID: <5400C679.4020606@gmx.at>
+References: <53FC4901.6070908@allacher.com>
+ <53FC49A8.1010108@gmx.at>	<53FC4D56.5020808@ladisch.de>
+ <53FC6532.2080903@gmx.at> <54003095.200@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2207149633770478311=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F4132615F7
- for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 13:51:51 +0200 (CEST)
-In-Reply-To: <87zjepgvk3.wl%kuninori.morimoto.gx@gmail.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80C30267D11
+ for <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 20:29:41 +0200 (CEST)
+Received: from [192.168.0.110] ([82.149.97.137]) by mail.gmx.com (mrgmx003)
+ with ESMTPSA (Nemesis) id 0M5LJv-1YMZII0hwd-00zVI7 for
+ <alsa-devel@alsa-project.org>; Fri, 29 Aug 2014 20:29:41 +0200
+In-Reply-To: <54003095.200@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +26,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+OK. The card arrived today. I will most likely test it tomorrow or the 
+day afterwards.
+Is the path already in the kernel source git or do I have to apply it 
+manually?
 
---===============2207149633770478311==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="fxBYc4U7HLIDBZ2G"
-Content-Disposition: inline
-
-
---fxBYc4U7HLIDBZ2G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Aug 27, 2014 at 08:08:47PM -0700, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-
-applied, thanks.
-
---fxBYc4U7HLIDBZ2G
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJUAGlLAAoJELSic+t+oim9bEwP/itNjgQnr7XTVms7DX//araw
-VPe10om1HUDqo21KFysUs1MjqO8hiVj/oy+LKMnnhpvGgb/+VtsoOFNsBdTkJNNY
-OMjjgjexWOY+Ov3oYPQ/sxwk9ADPJldbrxKSqVWCvXmOLs1Ndu5pXvWbqwP8b7lf
-3eHFAA/60cUd3r/ICezmhDCVAgEXF0rgezZpxf6kXvfkgaCw+2LH5PxFAf4hY6tz
-SBobMsFtU8pmPNGhDX1dfK/6eLrbMENeBL04AWd1OCXxfrUnz20TCGzsyb94CY4v
-naT4qlVe6yP3QSYl0qJhbYB7ko3lOhfL0fFttrrc1fPQU4jZk2Uo0oSEqyZdcBSb
-pUGi0355YT6RgnZYOi8GdGkhj4xixhUuj5h+Kks5p3Znrx2wA+aJo5LnmSWvgDOG
-Onla8jCQgClTYEehG8ykyA6k4rjzbmpxWAf6EYDswwTOX3kezco8XyLw3BuMqINW
-FuhDlwWF2gCh7DpHZ12HOFKiwHSxizq7rP1NcRopGb6FhmqVLLC0zI+VaFwdMCPA
-aw/6B7F/ExUBqmu4TJO3ULK5NkpAkmoNmoER3cuSkDtDJNeIj2bam9tiGqGhZuLf
-hxyhQAd/E0YNHbgGkFZf9rjhvI319xaIbaaXlO8Wqz9fIoyTcgMmSFHltmtHcfQf
-QWf/zozeFmRer2J32swm
-=JX1A
------END PGP SIGNATURE-----
-
---fxBYc4U7HLIDBZ2G--
-
---===============2207149633770478311==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Regards,
+     Andreas Allacher
 
 
---===============2207149633770478311==--
+
+Am 29.08.2014 09:49, schrieb Clemens Ladisch:
+> In theory, this patch should work:
+>
+> --- a/sound/pci/oxygen/xonar_pcm179x.c
+> +++ b/sound/pci/oxygen/xonar_pcm179x.c
+> @@ -419,6 +419,7 @@
+>
+>   	data->generic.output_enable_bit = GPIO_ST_OUTPUT_ENABLE;
+>   	data->dacs = chip->model.dac_channels_mixer / 2;
+> +	data->h6 = chip->model.dac_channels_mixer > 2;
+>   	data->hp_gain_offset = 2*-18;
+>
+>   	pcm1796_init(chip);
+> @@ -1140,8 +1141,18 @@
+>   		break;
+>   	case 0x85f4:
+>   		chip->model = model_xonar_st;
+> -		/* TODO: daughterboard support */
+> -		chip->model.shortname = "Xonar STX II";
+> +		oxygen_clear_bits16(chip, OXYGEN_GPIO_CONTROL, GPIO_DB_MASK);
+> +		switch (oxygen_read16(chip, OXYGEN_GPIO_DATA) & GPIO_DB_MASK) {
+> +		default:
+> +			chip->model.shortname = "Xonar STX II";
+> +			break;
+> +		case GPIO_DB_H6:
+> +			chip->model.shortname = "Xonar STX II+H6";
+> +			chip->model.dac_channels_pcm = 8;
+> +			chip->model.dac_channels_mixer = 8;
+> +			chip->model.dac_mclks = OXYGEN_MCLKS(256, 128, 128);
+> +			break;
+> +		}
+>   		chip->model.init = xonar_stx_init;
+>   		chip->model.resume = xonar_stx_resume;
+>   		chip->model.set_dac_params = set_pcm1796_params;
+>
