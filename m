@@ -1,123 +1,86 @@
 From: Kailang <kailang@realtek.com>
 Subject: RE: [PATCH] ALSA: hda - Add a de-pop quirk for some HP machines
-Date: Fri, 29 Aug 2014 08:29:52 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17060396@RTITMBSA.realtek.com.tw>
+Date: Fri, 29 Aug 2014 08:35:30 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A170603A4@RTITMBSA.realtek.com.tw>
 References: <1409298425-9697-1-git-send-email-hui.wang@canonical.com>
  <s5hfvgfsoye.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <s5hfvgfsoye.wl-tiwai@suse.de>
 Content-Language: zh-TW
 Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>
+To: Kailang <kailang@realtek.com>, Takashi Iwai <tiwai@suse.de>, Hui Wang <hui.wang@canonical.com>, =?big5?B?THVrZSBDaGFuZyBbsWmuabphXQ==?= <lukechang@realtek.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
- 
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de] 
-> Sent: Friday, August 29, 2014 4:03 PM
-> To: Hui Wang
-> Cc: alsa-devel@alsa-project.org; Kailang; stable@vger.kernel.org
-> Subject: Re: [PATCH] ALSA: hda - Add a de-pop quirk for some 
-> HP machines
-> 
-> At Fri, 29 Aug 2014 15:47:05 +0800,
-> Hui Wang wrote:
-> > 
-> > On some HP machines, there will be pop noise when the machine is 
-> > shutting down, rebooting or booting up from poweroff state.
-> > 
-> > Set EAPD enable only when stream starts can help to fix 
-> this problem.
-> > 
-> > [The patch was originally written by Kailang, we tested it 
-> and rebased 
-> > it on latest kernel.]
-> > 
-> > Signed-off-by: Kailang Yang <kailang@realtek.com>
-> > Signed-off-by: Hui Wang <hui.wang@canonical.com>
-> > ---
-> >  sound/pci/hda/patch_realtek.c | 55 
-> > ++++++++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 52 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/sound/pci/hda/patch_realtek.c 
-> > b/sound/pci/hda/patch_realtek.c index 48d6d10..51811a6 100644
-> > --- a/sound/pci/hda/patch_realtek.c
-> > +++ b/sound/pci/hda/patch_realtek.c
-> > @@ -4282,6 +4282,47 @@ static void 
-> alc290_fixup_mono_speakers(struct hda_codec *codec,
-> >  	}
-> >  }
-> >  
-> > +/*
-> > + * ALC290 PCM hooks
-> > + */
-> > +static void alc290_playback_pcm_hook(struct hda_pcm_stream *hinfo,
-> > +				     struct hda_codec *codec,
-> > +				     struct snd_pcm_substream 
-> *substream,
-> > +				     int action)
-> > +{
-> > +	int val;
-> > +
-> > +	switch (action) {
-> > +	case HDA_GEN_PCM_ACT_OPEN:
-> > +		val = alc_read_coef_idx(codec, 0x4); /* EAPD 
-> manual high */
-> > +		if ((val & 0xc000) != 0xc000)
-> > +			alc_write_coef_idx(codec, 0x4, val | (1<<14));
-> > +		break;
-> > +	}
-> > +}
-> > +
-> > +static void alc290_fixup_pop_noise(struct hda_codec *codec,
-> > +				   const struct hda_fixup *fix, 
-> int action) {
-> > +	struct alc_spec *spec = codec->spec;
-> > +	int val;
-> > +
-> > +	switch (action) {
-> > +	case HDA_FIXUP_ACT_PRE_PROBE:
-> > +		snd_hda_codec_write(codec, 0x17, 0,
-> > +				    
-> AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-> 
-> Why do you need this...
-
-This is reauest by HP. They say Keep this to output will lower pop noise from woofer speaker.
-
-> 
-> > +		val = alc_read_coef_idx(codec, 0x4);
-> > +		if ((val & 0xc000) != 0xc000)
-> > +			alc_write_coef_idx(codec, 0x4, val | 
-> (3<<14)); /* EAPD low */
-> > +		spec->gen.pcm_playback_hook = alc290_playback_pcm_hook;
-> > +		break;
-> > +	case HDA_FIXUP_ACT_INIT:
-> > +		snd_hda_codec_write(codec, 0x17, 0,
-> > +				    
-> AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-> 
-> ... and this?  There is no explanation about this change.
-> 
-> Also, can't you just set EAPD low in the shutdown callback instead?
-> 
-> In your patch, if the machine goes shutdown/reboot while 
-> playing a stream (or before runtime PM), it's still EAPD 
-> high, so the noise should be heard, if I understand correctly.
-> 
-
-EAPD keep high, no change state will no pop noise. EC will control the delay for 30s to do AMP pin to high.
-When it enter to S3, EAPD will go low. Resume back, the eapd will go high. It will show pop noise.
-This is not have method to improve for this hardware issue in this state.
-
-> 
-> Takashi
-> 
-> ------Please consider the environment before printing this e-mail.
-> 
+IA0KSGkgTHVrZSwNCg0KQ291bGQgeW91IGRlc2NyaWJlIHRoaXMgaXNzdWUgZm9yIGhvdyB0byBz
+b2x2ZT8NCg0KQlIsDQpLYWlsYW5nDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4g
+RnJvbTogS2FpbGFuZyANCj4gU2VudDogRnJpZGF5LCBBdWd1c3QgMjksIDIwMTQgNDozMCBQTQ0K
+PiBUbzogJ1Rha2FzaGkgSXdhaSc7IEh1aSBXYW5nDQo+IENjOiBhbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmc7IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUkU6IFtQQVRDSF0g
+QUxTQTogaGRhIC0gQWRkIGEgZGUtcG9wIHF1aXJrIGZvciBzb21lIA0KPiBIUCBtYWNoaW5lcw0K
+PiANCj4gIA0KPiANCj4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+IEZyb206IFRh
+a2FzaGkgSXdhaSBbbWFpbHRvOnRpd2FpQHN1c2UuZGVdDQo+ID4gU2VudDogRnJpZGF5LCBBdWd1
+c3QgMjksIDIwMTQgNDowMyBQTQ0KPiA+IFRvOiBIdWkgV2FuZw0KPiA+IENjOiBhbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmc7IEthaWxhbmc7IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gPiBT
+dWJqZWN0OiBSZTogW1BBVENIXSBBTFNBOiBoZGEgLSBBZGQgYSBkZS1wb3AgcXVpcmsgZm9yIHNv
+bWUgSFAgDQo+ID4gbWFjaGluZXMNCj4gPiANCj4gPiBBdCBGcmksIDI5IEF1ZyAyMDE0IDE1OjQ3
+OjA1ICswODAwLA0KPiA+IEh1aSBXYW5nIHdyb3RlOg0KPiA+ID4gDQo+ID4gPiBPbiBzb21lIEhQ
+IG1hY2hpbmVzLCB0aGVyZSB3aWxsIGJlIHBvcCBub2lzZSB3aGVuIHRoZSBtYWNoaW5lIGlzIA0K
+PiA+ID4gc2h1dHRpbmcgZG93biwgcmVib290aW5nIG9yIGJvb3RpbmcgdXAgZnJvbSBwb3dlcm9m
+ZiBzdGF0ZS4NCj4gPiA+IA0KPiA+ID4gU2V0IEVBUEQgZW5hYmxlIG9ubHkgd2hlbiBzdHJlYW0g
+c3RhcnRzIGNhbiBoZWxwIHRvIGZpeA0KPiA+IHRoaXMgcHJvYmxlbS4NCj4gPiA+IA0KPiA+ID4g
+W1RoZSBwYXRjaCB3YXMgb3JpZ2luYWxseSB3cml0dGVuIGJ5IEthaWxhbmcsIHdlIHRlc3RlZCBp
+dA0KPiA+IGFuZCByZWJhc2VkDQo+ID4gPiBpdCBvbiBsYXRlc3Qga2VybmVsLl0NCj4gPiA+IA0K
+PiA+ID4gU2lnbmVkLW9mZi1ieTogS2FpbGFuZyBZYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPg0K
+PiA+ID4gU2lnbmVkLW9mZi1ieTogSHVpIFdhbmcgPGh1aS53YW5nQGNhbm9uaWNhbC5jb20+DQo+
+ID4gPiAtLS0NCj4gPiA+ICBzb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyB8IDU1DQo+ID4g
+PiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tDQo+ID4gPiAgMSBm
+aWxlIGNoYW5nZWQsIDUyIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+ID4gPiANCj4g
+PiA+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyANCj4gPiA+IGIv
+c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgaW5kZXggNDhkNmQxMC4uNTE4MTFhNiAxMDA2
+NDQNCj4gPiA+IC0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jDQo+ID4gPiArKysg
+Yi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYw0KPiA+ID4gQEAgLTQyODIsNiArNDI4Miw0
+NyBAQCBzdGF0aWMgdm9pZA0KPiA+IGFsYzI5MF9maXh1cF9tb25vX3NwZWFrZXJzKHN0cnVjdCBo
+ZGFfY29kZWMgKmNvZGVjLA0KPiA+ID4gIAl9DQo+ID4gPiAgfQ0KPiA+ID4gIA0KPiA+ID4gKy8q
+DQo+ID4gPiArICogQUxDMjkwIFBDTSBob29rcw0KPiA+ID4gKyAqLw0KPiA+ID4gK3N0YXRpYyB2
+b2lkIGFsYzI5MF9wbGF5YmFja19wY21faG9vayhzdHJ1Y3QgDQo+IGhkYV9wY21fc3RyZWFtICpo
+aW5mbywNCj4gPiA+ICsJCQkJICAgICBzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywNCj4gPiA+ICsJ
+CQkJICAgICBzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0NCj4gPiAqc3Vic3RyZWFtLA0KPiA+ID4g
+KwkJCQkgICAgIGludCBhY3Rpb24pDQo+ID4gPiArew0KPiA+ID4gKwlpbnQgdmFsOw0KPiA+ID4g
+Kw0KPiA+ID4gKwlzd2l0Y2ggKGFjdGlvbikgew0KPiA+ID4gKwljYXNlIEhEQV9HRU5fUENNX0FD
+VF9PUEVOOg0KPiA+ID4gKwkJdmFsID0gYWxjX3JlYWRfY29lZl9pZHgoY29kZWMsIDB4NCk7IC8q
+IEVBUEQNCj4gPiBtYW51YWwgaGlnaCAqLw0KPiA+ID4gKwkJaWYgKCh2YWwgJiAweGMwMDApICE9
+IDB4YzAwMCkNCj4gPiA+ICsJCQlhbGNfd3JpdGVfY29lZl9pZHgoY29kZWMsIDB4NCwgdmFsIHwg
+KDE8PDE0KSk7DQo+ID4gPiArCQlicmVhazsNCj4gPiA+ICsJfQ0KPiA+ID4gK30NCj4gPiA+ICsN
+Cj4gPiA+ICtzdGF0aWMgdm9pZCBhbGMyOTBfZml4dXBfcG9wX25vaXNlKHN0cnVjdCBoZGFfY29k
+ZWMgKmNvZGVjLA0KPiA+ID4gKwkJCQkgICBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwICpmaXgsDQo+
+ID4gaW50IGFjdGlvbikgew0KPiA+ID4gKwlzdHJ1Y3QgYWxjX3NwZWMgKnNwZWMgPSBjb2RlYy0+
+c3BlYzsNCj4gPiA+ICsJaW50IHZhbDsNCj4gPiA+ICsNCj4gPiA+ICsJc3dpdGNoIChhY3Rpb24p
+IHsNCj4gPiA+ICsJY2FzZSBIREFfRklYVVBfQUNUX1BSRV9QUk9CRToNCj4gPiA+ICsJCXNuZF9o
+ZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MTcsIDAsDQo+ID4gPiArCQkJCSAgICANCj4gPiBBQ19W
+RVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9PVVQpOw0KPiA+IA0KPiA+IFdoeSBkbyB5
+b3UgbmVlZCB0aGlzLi4uDQo+IA0KPiBUaGlzIGlzIHJlYXVlc3QgYnkgSFAuIFRoZXkgc2F5IEtl
+ZXAgdGhpcyB0byBvdXRwdXQgd2lsbCANCj4gbG93ZXIgcG9wIG5vaXNlIGZyb20gd29vZmVyIHNw
+ZWFrZXIuDQo+IA0KPiA+IA0KPiA+ID4gKwkJdmFsID0gYWxjX3JlYWRfY29lZl9pZHgoY29kZWMs
+IDB4NCk7DQo+ID4gPiArCQlpZiAoKHZhbCAmIDB4YzAwMCkgIT0gMHhjMDAwKQ0KPiA+ID4gKwkJ
+CWFsY193cml0ZV9jb2VmX2lkeChjb2RlYywgMHg0LCB2YWwgfA0KPiA+ICgzPDwxNCkpOyAvKiBF
+QVBEIGxvdyAqLw0KPiA+ID4gKwkJc3BlYy0+Z2VuLnBjbV9wbGF5YmFja19ob29rID0gYWxjMjkw
+X3BsYXliYWNrX3BjbV9ob29rOw0KPiA+ID4gKwkJYnJlYWs7DQo+ID4gPiArCWNhc2UgSERBX0ZJ
+WFVQX0FDVF9JTklUOg0KPiA+ID4gKwkJc25kX2hkYV9jb2RlY193cml0ZShjb2RlYywgMHgxNywg
+MCwNCj4gPiA+ICsJCQkJICAgIA0KPiA+IEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwg
+UElOX09VVCk7DQo+ID4gDQo+ID4gLi4uIGFuZCB0aGlzPyAgVGhlcmUgaXMgbm8gZXhwbGFuYXRp
+b24gYWJvdXQgdGhpcyBjaGFuZ2UuDQo+ID4gDQo+ID4gQWxzbywgY2FuJ3QgeW91IGp1c3Qgc2V0
+IEVBUEQgbG93IGluIHRoZSBzaHV0ZG93biBjYWxsYmFjayBpbnN0ZWFkPw0KPiA+IA0KPiA+IElu
+IHlvdXIgcGF0Y2gsIGlmIHRoZSBtYWNoaW5lIGdvZXMgc2h1dGRvd24vcmVib290IHdoaWxlIHBs
+YXlpbmcgYSANCj4gPiBzdHJlYW0gKG9yIGJlZm9yZSBydW50aW1lIFBNKSwgaXQncyBzdGlsbCBF
+QVBEIGhpZ2gsIHNvIHRoZSBub2lzZSANCj4gPiBzaG91bGQgYmUgaGVhcmQsIGlmIEkgdW5kZXJz
+dGFuZCBjb3JyZWN0bHkuDQo+ID4gDQo+IA0KPiBFQVBEIGtlZXAgaGlnaCwgbm8gY2hhbmdlIHN0
+YXRlIHdpbGwgbm8gcG9wIG5vaXNlLiBFQyB3aWxsIA0KPiBjb250cm9sIHRoZSBkZWxheSBmb3Ig
+MzBzIHRvIGRvIEFNUCBwaW4gdG8gaGlnaC4NCj4gV2hlbiBpdCBlbnRlciB0byBTMywgRUFQRCB3
+aWxsIGdvIGxvdy4gUmVzdW1lIGJhY2ssIHRoZSBlYXBkIA0KPiB3aWxsIGdvIGhpZ2guIEl0IHdp
+bGwgc2hvdyBwb3Agbm9pc2UuDQo+IFRoaXMgaXMgbm90IGhhdmUgbWV0aG9kIHRvIGltcHJvdmUg
+Zm9yIHRoaXMgaGFyZHdhcmUgaXNzdWUgaW4gDQo+IHRoaXMgc3RhdGUuDQo+IA0KPiA+IA0KPiA+
+IFRha2FzaGkNCj4gPiANCj4gPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIgdGhlIGVudmlyb25tZW50
+IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCj4gPiA=
