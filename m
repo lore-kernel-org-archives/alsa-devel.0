@@ -1,436 +1,105 @@
 From: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: [RFC][PATCH] ASoC: simple-card: Merge single and muti DAI link code.
-Date: Fri, 29 Aug 2014 14:46:37 +0800
-Message-ID: <1409294797-21948-1-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCHv2] ASoC: fsl-sai: using 'lsb-first' property instead of 'big-endian-data'.
+Date: Fri, 29 Aug 2014 15:12:12 +0800
+Message-ID: <1409296332-39318-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch merge single DAI link and muti-DAI links code together,
-and simply the simple-card driver code.
+The 'big-endian-data' property is originally used to indicate whether the
+LSB firstly or MSB firstly will be transmitted to the CODEC or received
+from the CODEC, and there has nothing relation to the memory data.
 
-And also do some other improvement:
+Generally, if the audio data in big endian format, which will be using the
+bytes reversion, Here this can only be used to bits reversion.
 
-Since from the DAI format micro SND_SOC_DAIFMT_CBx_CFx, the 'CBx'
-mean Codec's bit clock is as master/slave and the 'CFx' mean Codec's
-frame clock is as master/slave.
+So using the 'lsb-first' instead of 'big-endian-data' can make the code
+to be readable easier and more easy to understand what this property is
+used to do.
 
-So these same DAI formats should be informed to CPU and CODE DAIs at
-the same time. For the Codec driver will set the bit clock and frame
-clock as the DAI formats said, but for the CPU driver, if the the
-bit clock or frame clock is as Codec master, so it should be set CPU
-DAI device as bit clock or frame clock as slave, and vice versa.
-
-The old code will cause confusion, and we should be clear that the
-letter 'C' here mean to Codec.
+This property used for configuring whether the LSB or the MSB is transmitted
+first for the fifo data.
 
 Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
 Cc: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
+ Documentation/devicetree/bindings/sound/fsl-sai.txt | 8 ++++----
+ sound/soc/fsl/fsl_sai.c                             | 6 +++---
+ sound/soc/fsl/fsl_sai.h                             | 2 +-
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-Hi,
-
-This patch will break the old DT, so i just send one RFC version, and
-will add the old DT patches in next version if this patch can work
-well.
-
-Any comments and advices are welcome.
-
-
-
- .../devicetree/bindings/sound/simple-card.txt      |  98 ++++++++-------
- sound/soc/generic/simple-card.c                    | 135 ++++++---------------
- 2 files changed, 88 insertions(+), 145 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index c2e9841..457fd0b 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -1,13 +1,12 @@
- Simple-Card:
- 
-+====
- Simple-Card specifies audio DAI connections of SoC <-> codec.
- 
- Required properties:
--
- - compatible				: "simple-audio-card"
- 
- Optional properties:
--
- - simple-audio-card,name		: User specified audio sound card name, one string
- 					  property.
- - simple-audio-card,widgets		: Please refer to widgets.txt.
-@@ -18,68 +17,57 @@ Optional properties:
- - simple-audio-card,mclk-fs             : Multiplication factor between stream rate and codec
-   					  mclk.
- 
--Optional subnodes:
--
--- simple-audio-card,dai-link		: Container for dai-link level
--					  properties and the CPU and CODEC
--					  sub-nodes. This container may be
--					  omitted when the card has only one
--					  DAI link. See the examples and the
--					  section bellow.
--
--Dai-link subnode properties and subnodes:
--
--If dai-link subnode is omitted and the subnode properties are directly
--under "sound"-node the subnode property and subnode names have to be
--prefixed with "simple-audio-card,"-prefix.
-+====
-+DAI link node(s) and its or their subnodes:
- 
--Required dai-link subnodes:
-+There must be one DAI link node exsit at least, and each DAI link must
-+contain one CPU subnode and one CODEC subnode.
- 
--- cpu					: CPU   sub-node
--- codec					: CODEC sub-node
--
--Optional dai-link subnode properties:
-+Required DAI link node(s):
-+- simple-audio-card,dai-link		: Container for DAI link level
-+					  properties and the CPU and CODEC
-+					  sub-nodes.
- 
-+Optional DAI link node properties:
- - format				: CPU/CODEC common audio format.
- 					  "i2s", "right_j", "left_j" , "dsp_a"
- 					  "dsp_b", "ac97", "pdm", "msb", "lsb"
--- frame-master				: Indicates dai-link frame master.
--					  phandle to a cpu or codec subnode.
--- bitclock-master			: Indicates dai-link bit clock master.
--					  phandle to a cpu or codec subnode.
--- bitclock-inversion			: bool property. Add this if the
--					  dai-link uses bit clock inversion.
--- frame-inversion			: bool property. Add this if the
--					  dai-link uses frame clock inversion.
--
--For backward compatibility the frame-master and bitclock-master
--properties can be used as booleans in codec subnode to indicate if the
--codec is the dai-link frame or bit clock master. In this case there
--should be no dai-link node, the same properties should not be present
--at sound-node level, and the bitclock-inversion and frame-inversion
--properties should also be placed in the codec node if needed.
--
--Required CPU/CODEC subnodes properties:
--
--- sound-dai				: phandle and port of CPU/CODEC
-+- frame-master				: Boolean property. If present, for this
-+					  DAI link the Codec DAI's frame will be
-+					  as master and the CPU DAI's frame will
-+					  be as slave, or vice versa.
-+- bitclock-master			: Boolean property. If present, for this
-+					  DAI link the Codec DAI's bit clock will
-+					  be as master and the CPU DAI's bit clock
-+					  will be as slave, or vice versa.
-+====
-+DAI link's subnodes and their properties:
-+
-+Required DAI link subnodes:
-+- cpu					: CPU   sub-node
-+- codec					: CODEC sub-node
- 
--Optional CPU/CODEC subnodes properties:
-+Required DAI link subnodes' properties:
-+- sound-dai				: Phandle and port of CPU/CODEC
- 
-+Optional DAI link subnodes' properties:
-+- bitclock-inversion			: Boolean property. Add this if the DAI
-+					  device needs bit clock to be inversed.
-+- frame-inversion			: Boolean property. Add this if the DAI
-+					  device needs frame clock to be inversed.
- - dai-tdm-slot-num			: Please refer to tdm-slot.txt.
- - dai-tdm-slot-width			: Please refer to tdm-slot.txt.
- - clocks / system-clock-frequency	: specify subnode's clock if needed.
- 					  it can be specified via "clocks" if system has
- 					  clock node (= common clock), or "system-clock-frequency"
- 					  (if system doens't support common clock)
-+====
- 
- Example 1 - single DAI link:
- 
- sound {
- 	compatible = "simple-audio-card";
- 	simple-audio-card,name = "VF610-Tower-Sound-Card";
--	simple-audio-card,format = "left_j";
--	simple-audio-card,bitclock-master = <&dailink0_master>;
--	simple-audio-card,frame-master = <&dailink0_master>;
- 	simple-audio-card,widgets =
- 		"Microphone", "Microphone Jack",
- 		"Headphone", "Headphone Jack",
-@@ -89,13 +77,23 @@ sound {
- 		"Headphone Jack", "HP_OUT",
- 		"External Speaker", "LINE_OUT";
- 
--	simple-audio-card,cpu {
--		sound-dai = <&sh_fsi2 0>;
--	};
-+	simple-audio-card,dai-link {
-+		format = "left_j";
-+		cpu {
-+			sound-dai = <&sh_fsi2 0>;
-+
-+			bitclock-inversion;
-+			frame-inversion;
-+		};
-+		codec {
-+			sound-dai = <&ak4648>;
-+			clocks = <&osc>;
-+
-+			bitclock-inversion;
-+		};
- 
--	dailink0_master: simple-audio-card,codec {
--		sound-dai = <&ak4648>;
--		clocks = <&osc>;
-+		bitclock-master;
-+		frame-master;
- 	};
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+index 06a405e..4956b14 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -20,9 +20,9 @@ Required properties:
+   See ../pinctrl/pinctrl-bindings.txt for details of the property values.
+ - big-endian: Boolean property, required if all the FTM_PWM registers
+   are big-endian rather than little-endian.
+-- big-endian-data: If this property is absent, the little endian mode will
+-  be in use as default, or the big endian mode will be in use for all the
+-  fifo data.
++- lsb-first: Configures whether the LSB or the MSB is transmitted first for
++  the fifo data. If this property is absent, the MSB is transmitted first as
++  default, or the LSB is transmitted first.
+ - fsl,sai-synchronous-rx: This is a boolean property. If present, indicating
+   that SAI will work in the synchronous mode (sync Tx with Rx) which means
+   both the transimitter and receiver will send and receive data by following
+@@ -53,5 +53,5 @@ sai2: sai@40031000 {
+ 	      dmas = <&edma0 0 VF610_EDMA_MUXID0_SAI2_TX>,
+ 		   <&edma0 0 VF610_EDMA_MUXID0_SAI2_RX>;
+ 	      big-endian;
+-	      big-endian-data;
++	      lsb-first;
  };
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index a6eb784..7eeb1dd 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -175,7 +175,7 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
+ 	bool tx = fsl_dir == FSL_FMT_TRANSMITTER;
+ 	u32 val_cr2 = 0, val_cr4 = 0;
  
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 21b0ea2..a0d3622 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -112,13 +112,20 @@ static int
- asoc_simple_card_sub_parse_of(struct device_node *np,
- 			      struct asoc_simple_dai *dai,
- 			      struct device_node **p_node,
--			      const char **name)
-+			      const char **name,
-+			      unsigned int *daifmt)
- {
- 	struct device_node *node;
- 	struct clk *clk;
- 	u32 val;
- 	int ret;
+-	if (!sai->big_endian_data)
++	if (!sai->is_lsb_first)
+ 		val_cr4 |= FSL_SAI_CR4_MF;
  
-+	if (!daifmt)
-+		return -EINVAL;
-+
-+	*daifmt = snd_soc_of_parse_daifmt(np, NULL, NULL, NULL);
-+	*daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
-+
- 	/*
- 	 * get node via "sound-dai = <&phandle port>"
- 	 * it will be used as xxx_of_node on soc_bind_dai_link()
-@@ -166,102 +173,55 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- static int simple_card_dai_link_of(struct device_node *node,
- 				   struct device *dev,
- 				   struct snd_soc_dai_link *dai_link,
--				   struct simple_dai_props *dai_props,
--				   bool is_top_level_node)
-+				   struct simple_dai_props *dai_props)
- {
- 	struct device_node *np = NULL;
--	struct device_node *bitclkmaster = NULL;
--	struct device_node *framemaster = NULL;
- 	unsigned int daifmt;
- 	char *name;
--	char prop[128];
--	char *prefix = "";
- 	int ret;
+ 	/* DAI mode */
+@@ -304,7 +304,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	val_cr5 |= FSL_SAI_CR5_WNW(word_width);
+ 	val_cr5 |= FSL_SAI_CR5_W0W(word_width);
  
--	if (is_top_level_node)
--		prefix = "simple-audio-card,";
--
--	daifmt = snd_soc_of_parse_daifmt(node, prefix,
--					 &bitclkmaster, &framemaster);
--	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
-+	daifmt = snd_soc_of_parse_daifmt(node, NULL, NULL, NULL);
-+	daifmt &= SND_SOC_DAIFMT_MASTER_MASK;
-+	dai_props->cpu_dai.fmt = dai_props->codec_dai.fmt = daifmt;
+-	if (sai->big_endian_data)
++	if (sai->is_lsb_first)
+ 		val_cr5 |= FSL_SAI_CR5_FBT(0);
+ 	else
+ 		val_cr5 |= FSL_SAI_CR5_FBT(word_width - 1);
+@@ -573,7 +573,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	if (of_device_is_compatible(pdev->dev.of_node, "fsl,imx6sx-sai"))
+ 		sai->sai_on_imx = true;
  
--	snprintf(prop, sizeof(prop), "%scpu", prefix);
--	np = of_get_child_by_name(node, prop);
-+	np = of_get_child_by_name(node, "cpu");
- 	if (!np) {
- 		ret = -EINVAL;
--		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
-+		dev_err(dev, "%s: Can't find cpu DT node\n", __func__);
- 		goto dai_link_of_err;
- 	}
+-	sai->big_endian_data = of_property_read_bool(np, "big-endian-data");
++	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
  
- 	ret = asoc_simple_card_sub_parse_of(np, &dai_props->cpu_dai,
- 					    &dai_link->cpu_of_node,
--					    &dai_link->cpu_dai_name);
-+					    &dai_link->cpu_dai_name,
-+					    &daifmt);
- 	if (ret < 0)
- 		goto dai_link_of_err;
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	base = devm_ioremap_resource(&pdev->dev, res);
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 2cded44..3466720 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -132,7 +132,7 @@ struct fsl_sai {
+ 	struct clk *bus_clk;
+ 	struct clk *mclk_clk[FSL_SAI_MCLK_MAX];
  
--	dai_props->cpu_dai.fmt = daifmt;
--	switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
--	case 0x11:
--		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBS_CFS;
--		break;
--	case 0x10:
--		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBS_CFM;
--		break;
--	case 0x01:
--		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBM_CFS;
--		break;
--	default:
--		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBM_CFM;
--		break;
--	}
--
-+	dai_props->cpu_dai.fmt |= daifmt;
- 	of_node_put(np);
--	snprintf(prop, sizeof(prop), "%scodec", prefix);
--	np = of_get_child_by_name(node, prop);
-+
-+	np = of_get_child_by_name(node, "codec");
- 	if (!np) {
- 		ret = -EINVAL;
--		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
-+		dev_err(dev, "%s: Can't find codec DT node\n", __func__);
- 		goto dai_link_of_err;
- 	}
- 
- 	ret = asoc_simple_card_sub_parse_of(np, &dai_props->codec_dai,
- 					    &dai_link->codec_of_node,
--					    &dai_link->codec_dai_name);
-+					    &dai_link->codec_dai_name,
-+					    &daifmt);
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
--	if (strlen(prefix) && !bitclkmaster && !framemaster) {
--		/* No dai-link level and master setting was not found from
--		   sound node level, revert back to legacy DT parsing and
--		   take the settings from codec node. */
--		dev_dbg(dev, "%s: Revert to legacy daifmt parsing\n",
--			__func__);
--		dai_props->cpu_dai.fmt = dai_props->codec_dai.fmt =
--			snd_soc_of_parse_daifmt(np, NULL, NULL, NULL) |
--			(daifmt & ~SND_SOC_DAIFMT_CLOCK_MASK);
--	} else {
--		dai_props->codec_dai.fmt = daifmt;
--		switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
--		case 0x11:
--			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBM_CFM;
--			break;
--		case 0x10:
--			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBM_CFS;
--			break;
--		case 0x01:
--			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBS_CFM;
--			break;
--		default:
--			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBS_CFS;
--			break;
--		}
--	}
--
- 	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name) {
- 		ret = -EINVAL;
- 		goto dai_link_of_err;
- 	}
- 
-+	dai_props->codec_dai.fmt |= daifmt;
-+
- 	/* simple-card assumes platform == cpu */
- 	dai_link->platform_of_node = dai_link->cpu_of_node;
- 
-@@ -288,22 +248,18 @@ static int simple_card_dai_link_of(struct device_node *node,
- dai_link_of_err:
- 	if (np)
- 		of_node_put(np);
--	if (bitclkmaster)
--		of_node_put(bitclkmaster);
--	if (framemaster)
--		of_node_put(framemaster);
- 	return ret;
- }
- 
- static int asoc_simple_card_parse_of(struct device_node *node,
- 				     struct simple_card_data *priv,
--				     struct device *dev,
--				     int multi)
-+				     struct device *dev)
- {
- 	struct snd_soc_dai_link *dai_link = priv->snd_card.dai_link;
- 	struct simple_dai_props *dai_props = priv->dai_props;
-+	struct device_node *np = NULL;
- 	u32 val;
--	int ret;
-+	int ret, i;
- 
- 	/* parsing the card name from DT */
- 	snd_soc_of_parse_card_name(&priv->snd_card, "simple-audio-card,name");
-@@ -332,23 +288,15 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	dev_dbg(dev, "New simple-card: %s\n", priv->snd_card.name ?
- 		priv->snd_card.name : "");
- 
--	if (multi) {
--		struct device_node *np = NULL;
--		int i;
--		for (i = 0; (np = of_get_next_child(node, np)); i++) {
--			dev_dbg(dev, "\tlink %d:\n", i);
--			ret = simple_card_dai_link_of(np, dev, dai_link + i,
--						      dai_props + i, false);
--			if (ret < 0) {
--				of_node_put(np);
--				return ret;
--			}
--		}
--	} else {
--		ret = simple_card_dai_link_of(node, dev, dai_link, dai_props,
--					      true);
--		if (ret < 0)
-+	/* Parse DAI link(s) */
-+	for (i = 0; (np = of_get_next_child(node, np)); i++) {
-+		dev_dbg(dev, "\tlink %d:\n", i);
-+		ret = simple_card_dai_link_of(np, dev, dai_link + i,
-+					      dai_props + i);
-+		if (ret < 0) {
-+			of_node_put(np);
- 			return ret;
-+		}
- 	}
- 
- 	if (!priv->snd_card.name)
-@@ -384,16 +332,13 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	struct snd_soc_dai_link *dai_link;
- 	struct device_node *np = pdev->dev.of_node;
- 	struct device *dev = &pdev->dev;
--	int num_links, multi, ret;
-+	int num_links, ret;
- 
- 	/* get the number of DAI links */
--	if (np && of_get_child_by_name(np, "simple-audio-card,dai-link")) {
-+	if (np && of_get_child_by_name(np, "simple-audio-card,dai-link"))
- 		num_links = of_get_child_count(np);
--		multi = 1;
--	} else {
--		num_links = 1;
--		multi = 0;
--	}
-+	else
-+		return -EINVAL;
- 
- 	/* allocate the private data and the DAI link array */
- 	priv = devm_kzalloc(dev,
-@@ -420,7 +365,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 
- 	if (np && of_device_is_available(np)) {
- 
--		ret = asoc_simple_card_parse_of(np, priv, dev, multi);
-+		ret = asoc_simple_card_parse_of(np, priv, dev);
- 		if (ret < 0) {
- 			if (ret != -EPROBE_DEFER)
- 				dev_err(dev, "parse error %d\n", ret);
+-	bool big_endian_data;
++	bool is_lsb_first;
+ 	bool is_dsp_mode;
+ 	bool sai_on_imx;
+ 	bool synchronous[2];
 -- 
 1.8.5
 
