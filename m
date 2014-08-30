@@ -1,68 +1,43 @@
-From: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Subject: [alsa-devel] [PATCH v5 1/2] mfd: arizona: Add support for INn_Mode
- register control
-Date: Sat, 30 Aug 2014 11:27:18 +0900
-Message-ID: <1409365639-5320-2-git-send-email-ideal.song@samsung.com>
+From: Inha Song <ideal.song@samsung.com>
+Subject: [alsa-devel] [PATCH v5 2/2] mfd: arizona: Update DT binding to support
+ INn_MODE init_data
+Date: Sat, 30 Aug 2014 11:27:19 +0900
+Message-ID: <1409365639-5320-3-git-send-email-ideal.song@samsung.com>
 References: <1409365639-5320-1-git-send-email-ideal.song@samsung.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-reply-to: <1409365639-5320-1-git-send-email-ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, cw00.choi-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <1409365639-5320-1-git-send-email-ideal.song@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, sameo@linux.intel.com, lee.jones@linaro.org, ckeepax@opensource.wolfsonmicro.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, cw00.choi@samsung.com, Inha Song <ideal.song@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some boards need to set the INn_MODE[1:0] register to change
-the input signal patch. This wlf,inmode property is optional.
-If present, values must be specified less than or equal to
-the number of input singals. If values less than the number
-of input signals, elements that has not been specifed are set
-to 0 by default.
+This patch update DT binding to support INn_MODE init_data. Each
+input signal path can be configurated either as a Analogue or
+Digital using the INn_MODE registers.
 
-Example:
-   - wlf,inmode = <2 0 2>;	/* IN1, IN3 use DMIC */
-
-Signed-off-by: Inha Song <ideal.song-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
-Reviewed-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Signed-off-by: Inha Song <ideal.song@samsung.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- drivers/mfd/arizona-core.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ Documentation/devicetree/bindings/mfd/arizona.txt | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
-index 10a0cb9..31757f7 100644
---- a/drivers/mfd/arizona-core.c
-+++ b/drivers/mfd/arizona-core.c
-@@ -534,7 +534,11 @@ EXPORT_SYMBOL_GPL(arizona_of_get_named_gpio);
- static int arizona_of_get_core_pdata(struct arizona *arizona)
- {
- 	struct arizona_pdata *pdata = &arizona->pdata;
-+	struct property *prop;
-+	const __be32 *cur;
-+	u32 val;
- 	int ret, i;
-+	int count = 0;
+diff --git a/Documentation/devicetree/bindings/mfd/arizona.txt b/Documentation/devicetree/bindings/mfd/arizona.txt
+index 5c7e723..7bd1273 100644
+--- a/Documentation/devicetree/bindings/mfd/arizona.txt
++++ b/Documentation/devicetree/bindings/mfd/arizona.txt
+@@ -42,6 +42,13 @@ Optional properties:
+     the chip default will be used.  If present exactly five values must
+     be specified.
  
- 	pdata->reset = arizona_of_get_named_gpio(arizona, "wlf,reset", true);
- 
-@@ -560,6 +564,15 @@ static int arizona_of_get_core_pdata(struct arizona *arizona)
- 			ret);
- 	}
- 
-+	of_property_for_each_u32(arizona->dev->of_node, "wlf,inmode", prop,
-+				 cur, val) {
-+		if (count == ARRAY_SIZE(arizona->pdata.inmode))
-+			break;
++  - wlf,inmode : A list of INn_MODE register values, where n is the number
++    of input signals. Valid values are 0 (Differential), 1 (Single-ended) and
++    2 (Digital Microphone). If absent, INn_MODE registers set to 0 by default.
++    If present, values must be specified less than or equal to the number of
++    input singals. If values less than the number of input signals, elements
++    that has not been specifed are set to 0 by default.
 +
-+		arizona->pdata.inmode[count] = val;
-+		count++;
-+	}
-+
- 	return 0;
- }
- 
+   - DCVDD-supply, MICVDD-supply : Power supplies, only need to be specified if
+     they are being externally supplied. As covered in
+     Documentation/devicetree/bindings/regulator/regulator.txt
 -- 
 2.0.0.390.gcb682f8
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
