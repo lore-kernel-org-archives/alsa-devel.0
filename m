@@ -1,49 +1,66 @@
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Subject: Re: [PATCH 0/2] rockchip-i2s: add power setting for I2S controller and fix some critical bugs
-Date: Sat, 30 Aug 2014 20:55:12 +0200
-Message-ID: <2985541.F8SvxX1thq@diego>
-References: <1409350027-17604-1-git-send-email-jay.xu@rock-chips.com> <CAD=FV=XPYkDJ2J3rTHZgKzbH_EMBUmCMwHWjpf1Aagnv_mUqGQ@mail.gmail.com>
+From: Dana Goyette <DanaGoyette@gmail.com>
+Subject: ALC1150 broken on SuperMicro X10SAT
+Date: Sat, 30 Aug 2014 13:20:59 -0700
+Message-ID: <lttbnc$7ck$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAD=FV=XPYkDJ2J3rTHZgKzbH_EMBUmCMwHWjpf1Aagnv_mUqGQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Doug Anderson <dianders-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Cc: Jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, yongjun_wei-zrsr2BFq86L20UzCJQGyNP8+0UxHXcjY@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50733261696
+ for <alsa-devel@alsa-project.org>; Sat, 30 Aug 2014 22:21:19 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1XNp9C-0003ho-P2
+ for alsa-devel@alsa-project.org; Sat, 30 Aug 2014 22:21:18 +0200
+Received: from 173-228-55-68.static.sonic.net ([173.228.55.68])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 30 Aug 2014 22:21:18 +0200
+Received: from DanaGoyette by 173-228-55-68.static.sonic.net with local
+ (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Sat, 30 Aug 2014 22:21:18 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Freitag, 29. August 2014, 21:30:43 schrieb Doug Anderson:
-> Jianqun,
-> 
-> On Fri, Aug 29, 2014 at 3:07 PM, Jianqun <jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org> wrote:
-> > Add optional power setting for i2s controller found on rk3066, rk3168 and
-> > rk3288 processors from rockchip, should according to hardware design.
-> > 
-> > Default setting for I2S controller is powered by 3.3V, there needs this
-> > patch if it's powered by 1.8V by hardware design.
-> > 
-> > Jianqun (2):
-> >   rockchip-i2s: dt: add grf requested properties to set power of I2S
-> >   controller rockchip-i2s: add power setting for I2S controller, also fix
-> >   some bugs>  
-> >  .../devicetree/bindings/sound/rockchip-i2s.txt     |  6 +-
-> >  sound/soc/rockchip/rockchip_i2s.c                  | 93
-> >  +++++++++++++--------- sound/soc/rockchip/rockchip_i2s.h                
-> >   | 13 +--
-> >  3 files changed, 68 insertions(+), 44 deletions(-)
-> 
-> Did the general solution I posted at
-> <https://patchwork.kernel.org/patch/4807821/> not work for you?  ...or
-> did you not see that?
+On my SuperMicro X10SAT, the ALC1150 audio codec has horrific audio 
+quality by default.  The only output that seems to work is the front 
+channel, and it's quiet, distorted, and unbalanced (the right is louder 
+than the left).
 
-Also, I don't think it's a good idea to set the io voltage bit simply from a 
-dt setting without looking at the actual regulator voltage ... as a 1.8V 
-setting when the regulator supplies 3.3V supposedly is able to damage the 
-chip.
+alsa-info.sh output: 
+http://www.alsa-project.org/db/?f=8fbcab1d61590060ceddc1e63eb00d508e94d731
 
+I've gotten the audio to work by guessing a model:
+options snd-hda-intel model=auto,acer-aspire,auto
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+In tracing through the source:
+{.id = ALC883_FIXUP_ACER_EAPD, .name = "acer-aspire"}
+This name leads to:
+[ALC883_FIXUP_ACER_EAPD] = {
+         .type = HDA_FIXUP_VERBS,
+         .v.verbs = (const struct hda_verb[]) {
+                 /* eanable EAPD on Acer laptops */
+                 { 0x20, AC_VERB_SET_COEF_INDEX, 0x07 },
+                 { 0x20, AC_VERB_SET_PROC_COEF, 0x3050 },
+                 { }
+         }
+},
+There's another override I did not try, since it has no model= name:
+[ALC883_FIXUP_EAPD] = {
+         .type = HDA_FIXUP_VERBS,
+         .v.verbs = (const struct hda_verb[]) {
+                 /* change to EAPD mode */
+                 { 0x20, AC_VERB_SET_COEF_INDEX, 0x07 },
+                 { 0x20, AC_VERB_SET_PROC_COEF, 0x3070 },
+                 { }
+         }
+},
