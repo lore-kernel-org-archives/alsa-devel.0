@@ -1,46 +1,55 @@
-From: Andreas Allacher <andreas.allacher@gmx.at>
-Subject: Re: [PATCH] ALSA: virtuoso: add Xonar Essence STX II
- support
-Date: Sun, 31 Aug 2014 12:41:01 +0200
-Message-ID: <5402FBBD.6010102@gmx.at>
-References: <53FC4901.6070908@allacher.com>	<53FC49A8.1010108@gmx.at>	<53FC4D56.5020808@ladisch.de>	<53FC6532.2080903@gmx.at>	<54003095.200@ladisch.de>
- <5400C662.8030606@gmx.at> <5400CF94.8030503@ladisch.de>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH v4 0/2] ASoC: tda998x: add a codec to the HDMI transmitter
+Date: Sun, 31 Aug 2014 15:02:02 +0200
+Message-ID: <cover.1409490122.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- by alsa0.perex.cz (Postfix) with ESMTP id 736A5261987
- for <alsa-devel@alsa-project.org>; Sun, 31 Aug 2014 12:41:33 +0200 (CEST)
-In-Reply-To: <5400CF94.8030503@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@ladisch.de>
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Just to let you know. I might not be able to do the test today (but I 
-hope I will be able to).
-If not, it will be sometime in the coming week but cannot say when.
+The NXP TDA998x HDMI transmitter may transmit audio to the HDMI link
+from 2 different sources, I2S and S/PDIF.
 
-Regards,
-    Andreas
+This patch set adds a generic HDMI CODEC module which is used by
+the TDA998x driver to update the audio constraints from the display
+characteristics (EDID) and by the audio subsystem to connect the chosen
+audio source to the HDMI link.
 
+v4:
+	- remove all the TDA998x specific stuff from the CODEC
+	- move the EDID scan from the CODEC to the TDA998x
+	- move the CODEC to sound/soc (Mark Brown)
+	- update the audio_sample_rate from the EDID (Andrew Jackson)
+v3: fix bad rate (Andrew Jackson)
+v2: check double stream start (Mark Brown)
 
+Jean-Francois Moine (2):
+  ASoC:codecs: Add a generic HDMI audio CODEC
+  drm/i2c:tda998x: Use the HDMI2  audio CODEC
 
-Am 29.08.2014 21:08, schrieb Clemens Ladisch:
-> Andreas Allacher wrote:
->> Is the path already in the kernel source git or do I have to apply it manually?
-> This patch is completely untested and not yet in any git.
->
->
-> Regards,
-> Clemens
->
+ Documentation/devicetree/bindings/sound/hdmi2.txt |  32 ++++
+ drivers/gpu/drm/i2c/Kconfig                       |   1 +
+ drivers/gpu/drm/i2c/tda998x_drv.c                 | 142 ++++++++++++++-
+ include/sound/hdmi2.h                             |  24 +++
+ sound/soc/codecs/Kconfig                          |   3 +
+ sound/soc/codecs/Makefile                         |   2 +
+ sound/soc/codecs/hdmi2.c                          | 204 ++++++++++++++++++++++
+ 7 files changed, 400 insertions(+), 8 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/hdmi2.txt
+ create mode 100644 include/sound/hdmi2.h
+ create mode 100644 sound/soc/codecs/hdmi2.c
+
+-- 
+2.1.0
