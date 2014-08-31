@@ -1,78 +1,61 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [RFC][PATCH] ASoC: simple-card: Merge single and muti DAI link
- code.
-Date: Sun, 31 Aug 2014 18:27:25 +0200
-Message-ID: <20140831182725.3135db4f@armhf>
-References: <1409294797-21948-1-git-send-email-Li.Xiubo@freescale.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: [PATCH alsa-lib] pcm: fix snd_pcm_mmap_hw_avail() near
+	the boundary
+Date: Sun, 31 Aug 2014 22:23:47 +0600
+Message-ID: <1409502227-4505-1-git-send-email-patrakov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1409294797-21948-1-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Jyri Sarha <jsarha@ti.com>, Nicolin Chen <nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f169.google.com (mail-lb0-f169.google.com
+ [209.85.217.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB0AC261B0A
+ for <alsa-devel@alsa-project.org>; Sun, 31 Aug 2014 18:23:58 +0200 (CEST)
+Received: by mail-lb0-f169.google.com with SMTP id l4so4811408lbv.0
+ for <alsa-devel@alsa-project.org>; Sun, 31 Aug 2014 09:23:58 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: "Alexander E. Patrakov" <patrakov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 29 Aug 2014 14:46:37 +0800
-Xiubo Li <Li.Xiubo@freescale.com> wrote:
+This function returned incorrect results when hw.ptr was near the
+boundary and hw.appl_ptr was near zero. Here "incorrect" means "greater
+than the boundary".
 
-> This patch merge single DAI link and muti-DAI links code together,
-> and simply the simple-card driver code.
->=20
-> And also do some other improvement:
->=20
-> Since from the DAI format micro SND_SOC_DAIFMT_CBx_CFx, the 'CBx'
-> mean Codec's bit clock is as master/slave and the 'CFx' mean Codec's
-> frame clock is as master/slave.
->=20
-> So these same DAI formats should be informed to CPU and CODE DAIs at
-> the same time. For the Codec driver will set the bit clock and frame
-> clock as the DAI formats said, but for the CPU driver, if the the
-> bit clock or frame clock is as Codec master, so it should be set CPU
-> DAI device as bit clock or frame clock as slave, and vice versa.
->=20
-> The old code will cause confusion, and we should be clear that the
-> letter 'C' here mean to Codec.
->=20
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Cc: Jean-Francois Moine <moinejf@free.fr>
-> Cc: Jyri Sarha <jsarha@ti.com>
-> Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->=20
-> Hi,
->=20
-> This patch will break the old DT, so i just send one RFC version, and
-> will add the old DT patches in next version if this patch can work
-> well.
->=20
-> Any comments and advices are welcome.
+The result was incorrect, because it was used as a return value of
+various *_rewindable() functions and also as the delay for ioplug.
 
-Hi Xiubo,
+Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
+---
+ src/pcm/pcm_local.h | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-My DT is
-
-	sound {
-		compatible =3D "simple-audio-card";
-		simple-audio-card,name =3D "Cubox Audio";
-
-		simple-audio-card,dai-link@0 {		/* I2S - HDMI */
-			format =3D "i2s";
-			cpu {
-				sound-dai =3D <&audio1 0>;
-			};
-			codec {
-				sound-dai =3D <&hdmi 0>;
-			};
-		};
-	...
-
-I was getting 0x1001 as the format (codec clk & FRM master and i2s').
-
-With your patch, I get 0x4000 (clk master & frame slave and no format).
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
+index 80bbe59..74ebd60 100644
+--- a/src/pcm/pcm_local.h
++++ b/src/pcm/pcm_local.h
+@@ -461,13 +461,7 @@ static inline snd_pcm_sframes_t snd_pcm_mmap_capture_hw_avail(snd_pcm_t *pcm)
+ 
+ static inline snd_pcm_sframes_t snd_pcm_mmap_hw_avail(snd_pcm_t *pcm)
+ {
+-	snd_pcm_sframes_t avail;
+-	avail = *pcm->hw.ptr - *pcm->appl.ptr;
+-	if (pcm->stream == SND_PCM_STREAM_PLAYBACK)
+-		avail += pcm->buffer_size;
+-	if (avail < 0)
+-		avail += pcm->boundary;
+-	return pcm->buffer_size - avail;
++	return pcm->buffer_size - snd_pcm_mmap_avail(pcm);
+ }
+ 
+ static inline const snd_pcm_channel_area_t *snd_pcm_mmap_areas(snd_pcm_t *pcm)
+-- 
+2.1.0
