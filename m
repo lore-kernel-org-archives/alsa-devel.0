@@ -1,100 +1,79 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCHv2 2/2] ASoC: simple-card: Fix bug of wrong decrement DT
- node's refcount
-Date: Mon, 1 Sep 2014 07:11:36 +0000
-Message-ID: <1dfb7c81e6dd4fc3a273136482799af9@BY2PR0301MB0613.namprd03.prod.outlook.com>
-References: <1409535327-11449-1-git-send-email-Li.Xiubo@freescale.com>
-	<1409535327-11449-3-git-send-email-Li.Xiubo@freescale.com>
- <20140901085425.6553dac5@armhf>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCHv3] ASoC: simple-card: Fix bug of wrong
+	decrement DT node's refcount
+Date: Mon, 1 Sep 2014 14:46:52 +0800
+Message-ID: <1409554012-1427-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140901085425.6553dac5@armhf>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "jsarha@ti.com" <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bn1-obe.outbound.protection.outlook.com
+ (mail-bn1lp0144.outbound.protection.outlook.com [207.46.163.144])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB7C9261B2D
+ for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 09:38:09 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, moinejf@free.fr, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, alsa-devel@alsa-project.org
+Cc: Xiubo Li <Li.Xiubo@freescale.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-PiA+IERBSSBsaW5rcydzIGNwdV9vZl9ub2RlJ3MgYW5kIGNvZGVjX29mX25vZGUncyByZWZjb3Vu
-dHMgc2hvdWxkbid0DQo+ID4gYmUgZGVjcmVtZW50ZWQgaW1tZWRpYXRlbHkgYXQgdGhlIGVuZCBv
-ZiB0aGUgcHJvYmUoKSBmdWNudGlvbi4NCj4gPiBCZWNhdXNlIHdlIHdpbGwgc3RpbGwgdXNlIHRo
-ZW0gYmVmb3JlIHRoZSBhdWRpbyBjYXJkIGlzIHJlbW92ZWQuDQo+IA0KPiBSaWdodCwgYnV0IHlv
-dXIgcGF0Y2ggc2VlbXMgYSBiaXQgY29tcGxpY2F0ZWQuIFNlZSBiZWxvdy4NCj4gDQo+ID4NCj4g
-PiBTaWduZWQtb2ZmLWJ5OiBYaXVibyBMaSA8TGkuWGl1Ym9AZnJlZXNjYWxlLmNvbT4NCj4gPiAt
-LS0NCj4gPiAgc291bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYyB8IDUyICsrKysrKysrKysr
-KysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tDQo+IC0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
-MjggaW5zZXJ0aW9ucygrKSwgMjQgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
-c291bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYyBiL3NvdW5kL3NvYy9nZW5lcmljL3NpbXBs
-ZS0NCj4gY2FyZC5jDQo+ID4gaW5kZXggOWUxNzBmZS4uMDhjNWQ3ZCAxMDA2NDQNCj4gPiAtLS0g
-YS9zb3VuZC9zb2MvZ2VuZXJpYy9zaW1wbGUtY2FyZC5jDQo+ID4gKysrIGIvc291bmQvc29jL2dl
-bmVyaWMvc2ltcGxlLWNhcmQuYw0KPiA+IEBAIC0zMDcsNiArMzA3LDIyIEBAIGRhaV9saW5rX29m
-X2VycjoNCj4gPiAgCXJldHVybiByZXQ7DQo+ID4gIH0NCj4gPg0KPiA+ICtzdGF0aWMgaW5saW5l
-IHZvaWQNCj4gPiArYXNvY19zaW1wbGVfY2FyZF91bnJlZihjb25zdCBzdHJ1Y3Qgc25kX3NvY19k
-YWlfbGluayAqZGFpX2xpbmssDQo+ID4gKwkJICAgICAgIGludCBudW1fbGlua3MpDQo+ID4gK3sN
-Cj4gPiArCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbnA7DQo+ID4gKw0KPiA+ICsJd2hpbGUgKG51bV9s
-aW5rcy0tKSB7DQo+ID4gKwkJbnAgPSBkYWlfbGlua1tudW1fbGlua3NdLmNwdV9vZl9ub2RlOw0K
-PiA+ICsJCWlmIChucCkNCj4gPiArCQkJb2Zfbm9kZV9wdXQobnApOw0KPiA+ICsJCW5wID0gZGFp
-X2xpbmtbbnVtX2xpbmtzXS5jb2RlY19vZl9ub2RlOw0KPiA+ICsJCWlmIChucCkNCj4gPiArCQkJ
-b2Zfbm9kZV9wdXQobnApOw0KPiA+ICsJfQ0KPiA+ICt9DQo+ID4gKw0KPiA+ICBzdGF0aWMgaW50
-IGFzb2Nfc2ltcGxlX2NhcmRfcGFyc2Vfb2Yoc3RydWN0IGRldmljZV9ub2RlICpub2RlLA0KPiA+
-ICAJCQkJICAgICBzdHJ1Y3Qgc2ltcGxlX2NhcmRfZGF0YSAqcHJpdiwNCj4gPiAgCQkJCSAgICAg
-c3RydWN0IGRldmljZSAqZGV2LA0KPiA+IEBAIC0zNTUsNiArMzcxLDcgQEAgc3RhdGljIGludCBh
-c29jX3NpbXBsZV9jYXJkX3BhcnNlX29mKHN0cnVjdCBkZXZpY2Vfbm9kZQ0KPiAqbm9kZSwNCj4g
-PiAgCQkJCQkJCSAgIGRhaV9wcm9wcyArIGksDQo+ID4gIAkJCQkJCQkgICBmYWxzZSk7DQo+ID4g
-IAkJCWlmIChyZXQgPCAwKSB7DQo+ID4gKwkJCQlhc29jX3NpbXBsZV9jYXJkX3VucmVmKGRhaV9s
-aW5rLCBpICsgMSk7DQo+ID4gIAkJCQlvZl9ub2RlX3B1dChucCk7DQo+ID4gIAkJCQlyZXR1cm4g
-cmV0Ow0KPiA+ICAJCQl9DQo+ID4gQEAgLTM3NCwyNyArMzkxLDYgQEAgc3RhdGljIGludCBhc29j
-X3NpbXBsZV9jYXJkX3BhcnNlX29mKHN0cnVjdCBkZXZpY2Vfbm9kZQ0KPiAqbm9kZSwNCj4gPiAg
-CXJldHVybiAwOw0KPiA+ICB9DQo+ID4NCj4gPiAtLyogdXBkYXRlIHRoZSByZWZlcmVuY2UgY291
-bnQgb2YgdGhlIGRldmljZXMgbm9kZXMgYXQgZW5kIG9mIHByb2JlICovDQo+ID4gLXN0YXRpYyBp
-bnQgYXNvY19zaW1wbGVfY2FyZF91bnJlZihzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0K
-PiA+IC17DQo+ID4gLQlzdHJ1Y3Qgc25kX3NvY19jYXJkICpjYXJkID0gcGxhdGZvcm1fZ2V0X2Ry
-dmRhdGEocGRldik7DQo+ID4gLQlzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayAqZGFpX2xpbms7DQo+
-ID4gLQlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5wOw0KPiA+IC0JaW50IG51bV9saW5rczsNCj4gPiAt
-DQo+ID4gLQlmb3IgKG51bV9saW5rcyA9IDAsIGRhaV9saW5rID0gY2FyZC0+ZGFpX2xpbms7DQo+
-ID4gLQkgICAgIG51bV9saW5rcyA8IGNhcmQtPm51bV9saW5rczsNCj4gPiAtCSAgICAgbnVtX2xp
-bmtzKyssIGRhaV9saW5rKyspIHsNCj4gPiAtCQlucCA9IChzdHJ1Y3QgZGV2aWNlX25vZGUgKikg
-ZGFpX2xpbmstPmNwdV9vZl9ub2RlOw0KPiA+IC0JCWlmIChucCkNCj4gPiAtCQkJb2Zfbm9kZV9w
-dXQobnApOw0KPiA+IC0JCW5wID0gKHN0cnVjdCBkZXZpY2Vfbm9kZSAqKSBkYWlfbGluay0+Y29k
-ZWNfb2Zfbm9kZTsNCj4gPiAtCQlpZiAobnApDQo+ID4gLQkJCW9mX25vZGVfcHV0KG5wKTsNCj4g
-PiAtCX0NCj4gPiAtCXJldHVybiAwOw0KPiA+IC19DQo+ID4gLQ0KPiA+ICBzdGF0aWMgaW50IGFz
-b2Nfc2ltcGxlX2NhcmRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAg
-ew0KPiA+ICAJc3RydWN0IHNpbXBsZV9jYXJkX2RhdGEgKnByaXY7DQo+ID4gQEAgLTQ0MSw3ICs0
-MzcsNyBAQCBzdGF0aWMgaW50IGFzb2Nfc2ltcGxlX2NhcmRfcHJvYmUoc3RydWN0IHBsYXRmb3Jt
-X2RldmljZQ0KPiAqcGRldikNCj4gPiAgCQlpZiAocmV0IDwgMCkgew0KPiA+ICAJCQlpZiAocmV0
-ICE9IC1FUFJPQkVfREVGRVIpDQo+ID4gIAkJCQlkZXZfZXJyKGRldiwgInBhcnNlIGVycm9yICVk
-XG4iLCByZXQpOw0KPiA+IC0JCQlnb3RvIGVycjsNCj4gPiArCQkJcmV0dXJuIHJldDsNCj4gPiAg
-CQl9DQo+ID4NCj4gPiAgCX0gZWxzZSB7DQo+ID4gQEAgLTQ4MywxMSArNDc5LDE4IEBAIHN0YXRp
-YyBpbnQgYXNvY19zaW1wbGVfY2FyZF9wcm9iZShzdHJ1Y3QNCj4gcGxhdGZvcm1fZGV2aWNlICpw
-ZGV2KQ0KPiA+DQo+ID4gIAlyZXQgPSBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJfY2FyZCgmcGRldi0+
-ZGV2LCAmcHJpdi0+c25kX2NhcmQpOw0KPiA+DQo+ID4gLWVycjoNCj4gPiAtCWFzb2Nfc2ltcGxl
-X2NhcmRfdW5yZWYocGRldik7DQo+ID4gIAlyZXR1cm4gcmV0Ow0KPiA+ICB9DQo+IA0KPiBUaGUg
-bWFpbiBwcm9ibGVtIGlzIHRoZXJlOiBkb24ndCB1bnJlZiB0aGUgbm9kZXMgaXMgbm8gZXJyb3Iu
-DQo+IFdoeSBub3Qgc2ltcGx5Og0KPiANCj4gIAlyZXQgPSBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJf
-Y2FyZCgmcGRldi0+ZGV2LCAmcHJpdi0+c25kX2NhcmQpOw0KPiArCWlmIChyZXQgPj0gMCkNCj4g
-KwkJcmV0dXJuIHJldDsJCS8qIHN1Y2Nlc3MgKi8NCj4gDQo+ICBlcnI6DQo+IAlhc29jX3NpbXBs
-ZV9jYXJkX3VucmVmKHBkZXYpOw0KPiAgCXJldHVybiByZXQ7DQo+ICB9DQo+IA0KPiA/IFRoZW4s
-IHRoZSBhYm92ZSBzdHVmZiBpcyBub3QgbmVlZGVkLg0KPiANCg0KV2h5IEkgbW92ZWQgdGhlIF91
-bnJlZigpIGZyb20gdGhlIHByb2JlKCkgdG8gYXNvY19zaW1wbGVfY2FyZF9wYXJzZV9vZigpDQpJ
-cyB0aGF0IEkgdGhpbmsgd2Ugc2hvdWxkIF91bnJlZigpIHRob3NlIG5vZGVzIGltbWVkaWF0ZWx5
-IGFmdGVyIGZhaWxlZCwNCkJ1dCB0aGlzIHdpbGwgYmUgYSBiaXQgbW9yZSBjb21wbGljYXRlZCBh
-cyB5b3Ugc2FpZCwgYW5kIGFsc28gd2lsbCBpbmNsdWRlDQpvbmUgbmV3IGJ1ZzoNCldoZW4gZGV2
-bV9zbmRfc29jX3JlZ2lzdGVyX2NhcmQoKSBmYWlsZWQsIHRoZSBfdW5yZWYoKSB3b24ndCBiZSBy
-YW4uDQogDQpUaGFua3MgdmVyeSBtdWNoIGZvciB5b3UgY29tbWVudC4NCg0KSSB3aWxsIGZpeCBp
-dCBpbiB0aGUgbmV4dCB2ZXJzaW9uLA0KDQpCUnMNClhpdWJvDQoNCg0KDQo+ID4gK3N0YXRpYyBp
-bnQgYXNvY19zaW1wbGVfY2FyZF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikN
-Cj4gPiArew0KPiA+ICsJc3RydWN0IHNuZF9zb2NfY2FyZCAqY2FyZCA9IHBsYXRmb3JtX2dldF9k
-cnZkYXRhKHBkZXYpOw0KPiA+ICsNCj4gPiArCWFzb2Nfc2ltcGxlX2NhcmRfdW5yZWYoY2FyZC0+
-ZGFpX2xpbmssIGNhcmQtPm51bV9saW5rcyk7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4g
-K30NCj4gPiArDQo+ID4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIGFzb2Nfc2lt
-cGxlX29mX21hdGNoW10gPSB7DQo+ID4gIAl7IC5jb21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1j
-YXJkIiwgfSwNCj4gPiAgCXt9LA0KPiA+IEBAIC01MDEsNiArNTA0LDcgQEAgc3RhdGljIHN0cnVj
-dCBwbGF0Zm9ybV9kcml2ZXIgYXNvY19zaW1wbGVfY2FyZCA9IHsNCj4gPiAgCQkub2ZfbWF0Y2hf
-dGFibGUgPSBhc29jX3NpbXBsZV9vZl9tYXRjaCwNCj4gPiAgCX0sDQo+ID4gIAkucHJvYmUgPSBh
-c29jX3NpbXBsZV9jYXJkX3Byb2JlLA0KPiA+ICsJLnJlbW92ZSA9IGFzb2Nfc2ltcGxlX2NhcmRf
-cmVtb3ZlLA0KPiA+ICB9Ow0KPiA+DQo+ID4gIG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoYXNvY19z
-aW1wbGVfY2FyZCk7DQo+IA0KPiBPSy4NCj4gDQo+IC0tDQo+IEtlbiBhciBjJ2hlbnRhw7EJfAkg
-ICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioNCj4gSmVmCQl8CQlodHRwOi8vbW9pbmVq
-Zi5mcmVlLmZyLw0K
+DAI links's cpu_of_node's and codec_of_node's refcounts shouldn't
+be decremented immediately at the end of the probe() fucntion.
+Because we will still use them before the audio card is removed.
+
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>
+---
+
+Change in v3:
+- Follow Jean-Francois Moine's advice.
+- Remove the following patch:
+  "ASoC: simple-card: Fix bug of forgetting decrement DT node's refcount"
+
+
+
+
+ sound/soc/generic/simple-card.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index fd8b045..986d2c7 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -481,12 +481,19 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	snd_soc_card_set_drvdata(&priv->snd_card, priv);
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, &priv->snd_card);
++	if (ret >= 0)
++		return ret;
+ 
+ err:
+ 	asoc_simple_card_unref(pdev);
+ 	return ret;
+ }
+ 
++static int asoc_simple_card_remove(struct platform_device *pdev)
++{
++	return asoc_simple_card_unref(pdev);
++}
++
+ static const struct of_device_id asoc_simple_of_match[] = {
+ 	{ .compatible = "simple-audio-card", },
+ 	{},
+@@ -500,6 +507,7 @@ static struct platform_driver asoc_simple_card = {
+ 		.of_match_table = asoc_simple_of_match,
+ 	},
+ 	.probe = asoc_simple_card_probe,
++	.remove = asoc_simple_card_remove,
+ };
+ 
+ module_platform_driver(asoc_simple_card);
+-- 
+1.8.4
