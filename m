@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: simle-card DT style for DPCM
-Date: Mon, 1 Sep 2014 15:30:47 +0100
-Message-ID: <20140901143047.GX29327@sirena.org.uk>
-References: <877g1o18ka.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [v3 04/11] ASoC: Intel: sst: Add IPC handling
+Date: Mon, 1 Sep 2014 15:41:34 +0100
+Message-ID: <20140901144134.GY29327@sirena.org.uk>
+References: <1408625450-32315-5-git-send-email-subhransu.s.prusty@intel.com>
+ <20140827203737.GY17528@sirena.org.uk>
+ <20140901121753.GC12898@vinod.koul@linux.intel.com>
+ <20140901125114.GV29327@sirena.org.uk>
+ <20140901135702.GA14646@vinod.koul@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1052125796498110209=="
+Content-Type: multipart/mixed; boundary="===============1784339840116421981=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B4D6326663A
- for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 16:30:56 +0200 (CEST)
-In-Reply-To: <877g1o18ka.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5950726566E
+ for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 16:42:08 +0200 (CEST)
+In-Reply-To: <20140901135702.GA14646@vinod.koul@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,98 +24,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1052125796498110209==
+--===============1784339840116421981==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="1hAU+gb7eAuiw2fm"
+	protocol="application/pgp-signature"; boundary="e8znkWhb8vS+si4n"
 Content-Disposition: inline
 
 
---1hAU+gb7eAuiw2fm
+--e8znkWhb8vS+si4n
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Aug 31, 2014 at 05:35:51PM -0700, Kuninori Morimoto wrote:
+On Mon, Sep 01, 2014 at 07:27:07PM +0530, Subhransu S. Prusty wrote:
+> On Mon, Sep 01, 2014 at 01:51:14PM +0100, Mark Brown wrote:
+> > On Mon, Sep 01, 2014 at 05:47:53PM +0530, Subhransu S. Prusty wrote:
 
-> -- use DPCM for sampling-rate-convert --
-> sound {
-> 	compatible =3D "simple-audio-card";
-> 	...
->=20
-> 	simple-audio-card,dai-link {
-> 		...
-> 		cpu {
-> 			...
-> 		};
-> 		codec {
-> 			...
-> 			fixed-sampling-rate =3D <xxx>;
-> 		};
-> 	}
-> }
+> > > > I'd expect much louder complaints if we try to free something that'=
+s not
+> > > > allocated - what happens if we end up reallocating something quickl=
+y and
+> > > > then double freeing?  Better to complain if we hit such a code path.
+> >=20
+> > > "freed" is a block which is passed by the caller to be freed up. Will=
+ add a
+> > > comment.
 
-This looks good to me though I think specifying the rate at the link
-level might make more sense.
+> > How would that address the problem?  Obviously the caller is trying to
+> > free what they're passing in.
 
-> -- use DPCM for multi DAI --
-> sound {
-> 	compatible =3D "simple-audio-card";
-> 	...
->=20
-> 	simple-audio-card,dai-link {
-> 		...
-> 		cpu@0 {
-> 			...
-> 		};
-> 		cpu@1 {
-> 			...
-> 		};
-> 		codec@1 {
-> 			...
-> 		};
-> 	}
-> }
+> sst_create_block() which allocates the memory and sst_free_block() which
+> frees the memory are called in a synchronous way. A single thread who is
+> allocating waits till a response arrives, if that response is valid then
+> after processing the response the sst_free_block() is called to free up t=
+he
+> memory. So the double freeing will not happen. Does this address your con=
+cern?
 
-I think here what I'd expect to see is only one CPU DAI specified for
-the back end link in the CPU that is actually linked to the CODEC and
-the front ends being worked out by the drivers, unless there are systems
-where the set of front ends can be configured at system build time (as
-opposed to from software at runtime) somehow.
+No.  You've described what happens when things are working and
+everything is operating correctly and there are no bugs in the kernel,
+the goal with error checking is to provide robustness against the
+possibility that one of those things isn't true so we can tell what went
+wrong more easily than if we get memory corruption.
 
---1hAU+gb7eAuiw2fm
+--e8znkWhb8vS+si4n
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJUBIMUAAoJELSic+t+oim931IP/2A8UG+oZMb4ULQTtaLh/AeL
-hg1ELOxb0nSAZ8fMjpsd5O+pI2EVLmti2CAqeSuOghJd0z7p2ODXXl6WXjH0pNT6
-8C5B/cqQQYFQ4TGul8Ukn2VJC8MGMpHTp5OXK/Nm4O99S15IJjke8OZD7+pNhAKx
-0Ywarip9rxQqtXN887nNgqbL6SFqObS2UKmiQBwYFkOqIUAIRtpURRiduRbzMq9X
-KttyvUTsnBjjna8Hr7TkZT1J67QDF7vj1AMXUboAWJ9oLnVETWQ2RVBy9GunqinA
-/diUG2JZ6cPJMjos77N4wIop/Z1Gbr49UsM1XUxvdT148odgl8apIs8mmXY7PmBM
-Z+p1xqBKXmY5ebTUu1fM+85DhDdkxnhITrUe4C4X13Bpwpc2skIYNRIBg6RCxdwF
-GWSJzanRY03SrH47UyQdOh2z+BOhe9HoAn8A1MQTcFjCTHje2k0iTnWqWQB945rU
-q5r2PWCKz7Jsuqu+pfOP3qZG71dVPs49O6T4eBo+gbEunJhQIFccKr5hKNv+JdUO
-uUlIzm8I5897XAYf1UXIVgkV7xkKd4lF6ZBVDibeYcIkezTapmYjSUkWWZ0rrjfv
-evsvjR+bXv9WcD6Pwg5kCcSYz4T7ugO7OxGHmk4lLvF3taF8QfqCcY/sLLpoHOmT
-0Z8CmSgiIapO3UjdwWE+
-=uNkf
+iQIcBAEBAgAGBQJUBIWbAAoJELSic+t+oim9tKoP/2+AlY6njJ1WUERHkB8HUi3s
+dS+yjxwSLyNBwCW//ImL4IfbzGQAsY06VB+M5f/I+U7sEm89YUpnqj+kdW9aFTfv
+Qw/JCWjNIsrSyAhDp2I0OcwOgpRLTTd/MhWUjZY8rFbkvZOp9hnmK+vjUH4kanzt
+SF5UvvDNiuZbpdXnhztgvBHpYfok5yA5+u7k+wesy6Ek/u0s/Wo/3FeMoVIXa9So
+mPCKNhg9dA/Knu1l4YLR9yN5qIOVUerRPk66wyT/cXNJdSRf+D4C0rVZB72tQAGP
+ZRQtbR8NxO00w/Rq3hCjLY6HvPqWB9gzv5fStTsFDKZZsbUO/fKkxNtoTJrMxvsJ
+qxWWtm96q+1ZjioMpdM4OaZQiSE88MhLuwntvyjzvTH4Gm224oRt1j12DXsBL/bs
+yNNFPoQxdOnlMIlwyLbcz4sgrbhGJJCHPWm76qZ8dhTOchz1tjKe960Y7gjTCtJN
+JVlwtplM6LjAIFqS3VQlmZjh5DSifSSD1p6coFV8PbK3EXvOlZVNhQQeTnTihBW9
+bSkxb5kAk4fmB48QSQA8VD4zEPyfVl40+6UOT1tYDF02IdMyx8rBjw3WIw79XSab
+3GxteSmHT8dYMrak/XO1FGDA12bA8YU3UTQnuDapWEr37MG8Bdaw7kwVVyU9V0Cr
+FWecLntAsUZjy1CnWJR0
+=tI4U
 -----END PGP SIGNATURE-----
 
---1hAU+gb7eAuiw2fm--
+--e8znkWhb8vS+si4n--
 
---===============1052125796498110209==
+--===============1784339840116421981==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1052125796498110209==--
+--===============1784339840116421981==--
