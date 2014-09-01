@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v3 01/11] ASoC: Intel: mrfld - add the dsp sst
-	driver
-Date: Mon, 1 Sep 2014 12:15:58 +0100
-Message-ID: <20140901111557.GR29327@sirena.org.uk>
-References: <1408625450-32315-1-git-send-email-subhransu.s.prusty@intel.com>
- <1408625450-32315-2-git-send-email-subhransu.s.prusty@intel.com>
- <20140827194021.GT17528@sirena.org.uk>
- <20140901103751.GA12898@vinod.koul@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: pcm: Allow nonatomic trigger
+	operations
+Date: Mon,  1 Sep 2014 14:00:31 +0200
+Message-ID: <1409572832-32553-2-git-send-email-tiwai@suse.de>
+References: <1409572832-32553-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4615769251215932144=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 94653261B23
- for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 13:16:17 +0200 (CEST)
-In-Reply-To: <20140901103751.GA12898@vinod.koul@linux.intel.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id DE2A8264F1D
+ for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 14:00:44 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 1FE4EAD23
+ for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 12:00:42 +0000 (UTC)
+In-Reply-To: <1409572832-32553-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,77 +24,302 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Currently, many PCM operations are performed in a critical section
+protected by spinlock, typically the trigger and pointer callbacks are
+assumed to be atomic.  This is basically because some trigger action
+(e.g. PCM stop after drain or xrun) is done in the interrupt handler.
+If a driver runs in a threaded irq, however, this doesn't have to be
+atomic.  And many devices want to handle trigger in a non-atomic
+context due to lengthy communications.
 
---===============4615769251215932144==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2fV3mxwFPWhsKHyX"
-Content-Disposition: inline
+This patch tries all PCM calls operational in non-atomic context.
+What it does is very simple: replaces the substream spinlock with the
+corresponding substream mutex when pcm->nonatomic flag is set.  The
+driver that wants to use the non-atomic PCM ops just needs to set the
+flag and keep the reset as is.  (Of course, it must not handle any PCM
+ops in irq context.)
 
+Note that the code doesn't check whether it's atomic-safe or not, but
+trust in 100% that the driver sets pcm->nonatomic correctly.
 
---2fV3mxwFPWhsKHyX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+One possible problem is the case where linked PCM substreams have
+inconsistent nonatomic states.  For avoiding this, snd_pcm_link()
+returns an error if one tries to link an inconsistent PCM substream.
 
-On Mon, Sep 01, 2014 at 04:07:55PM +0530, Subhransu S. Prusty wrote:
-> On Wed, Aug 27, 2014 at 08:40:21PM +0100, Mark Brown wrote:
-> > On Thu, Aug 21, 2014 at 06:20:40PM +0530, Subhransu S. Prusty wrote:
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/pcm.h     | 58 +++++++++++++++++++++++++++++--------
+ sound/core/pcm.c        |  1 +
+ sound/core/pcm_native.c | 76 ++++++++++++++++++++++++++++++++++++++++++++-----
+ 3 files changed, 116 insertions(+), 19 deletions(-)
 
-> > > +static inline unsigned int sst_assign_pvt_id(struct intel_sst_drv *sst_drv_ctx)
-> > > +{
-> > > +	unsigned int local;
-> > > +
-> > > +	spin_lock(&sst_drv_ctx->block_lock);
-> > > +	sst_drv_ctx->pvt_id++;
-> > > +	if (sst_drv_ctx->pvt_id > MAX_BLOCKS)
-> > > +		sst_drv_ctx->pvt_id = 1;
-> > > +	local = sst_drv_ctx->pvt_id;
-> > > +	spin_unlock(&sst_drv_ctx->block_lock);
-> > > +	return local;
-> > > +}
-
-> > The comments about overflow continue to apply here.
-
-> Vinod has already replied to you regarding this, below is a snippet from
-> the conversation earlier. Is there anything else we need to address?
-
-Yes, and as I said I just don't buy that argument.  It's code that has
-fairly clear problems on inspection, saying "we've not hit the problem
-yet" isn't particularly persuasive.  Something like a new firmware could
-easily trigger problems.
-
---2fV3mxwFPWhsKHyX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJUBFVqAAoJELSic+t+oim9xmgQAJwLw0UDbvix1JiSCEoMbHEQ
-6yaLZsjc/bjjU+pmDCA7Da9ttHwVqUR4c/0Hw64+zTEVnZcFQuySm25lzQGqOEFh
-/SMPO8YIbvdwE6PNXm5WNC6ts85Fe8y5Ushg5tKXQ9N1mdlBsCBgdZ2tAlG9SU4A
-+hd/Qv0ETIJ8mIa/nZ1edC/7B5LH+6Jm43PxyDbKnfqZj2ZoclbnPBwWTEQ3VK5m
-02uUiePtj+W50cw+baKzXXu7mxwnpfM2h43KtDXjpiMXa5jJtZIN9jxKbt97zZ/+
-YdPitnWhr8UcgQsCdsKrrqQe3tGCSoDbnsMwve1eWtaxsFimTBC/ca0icUYhTjNW
-4UqJv72TnZzEr6ZjQHR8/iC1mA38qeOjBbc4dAmxs8WtFwSblhxjfVBkAX06Arv+
-SgXZmNuWRliax5pmIPeUOhJ/XHmPNGuYwsdDVbHLEF/2OCInV3ozcwRPn0HHkySc
-N6PffALYiqf/tayBM+mkLUtvmIhtVGzGTJEw8idgp83gruJks7GmZLpLEJilijtv
-rrYiHBUacb5Cdvm6OXc2CcUlNj6AK/D4qEvK+IF48WHhED/9QcvCG1ifZ7sIB1KB
-U6Zmo4qTXmFQzd/y2S4/ELhh3rDeUuKH74rKXJZLVknXQr+9zeHTintdc3mjW14K
-LLWKVv4VS5II9nEXczg8
-=9ygt
------END PGP SIGNATURE-----
-
---2fV3mxwFPWhsKHyX--
-
---===============4615769251215932144==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4615769251215932144==--
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 6f3e10ca0e32..bc79962f4aa6 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -365,6 +365,7 @@ struct snd_pcm_runtime {
+ 
+ struct snd_pcm_group {		/* keep linked substreams */
+ 	spinlock_t lock;
++	struct mutex mutex;
+ 	struct list_head substreams;
+ 	int count;
+ };
+@@ -460,6 +461,7 @@ struct snd_pcm {
+ 	void (*private_free) (struct snd_pcm *pcm);
+ 	struct device *dev; /* actual hw device this belongs to */
+ 	bool internal; /* pcm is for internal use only */
++	bool nonatomic; /* whole PCM operations are in non-atomic context */
+ #if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
+ 	struct snd_pcm_oss oss;
+ #endif
+@@ -493,6 +495,7 @@ int snd_pcm_notify(struct snd_pcm_notify *notify, int nfree);
+  */
+ 
+ extern rwlock_t snd_pcm_link_rwlock;
++extern struct rw_semaphore snd_pcm_link_rwsem;
+ 
+ int snd_pcm_info(struct snd_pcm_substream *substream, struct snd_pcm_info *info);
+ int snd_pcm_info_user(struct snd_pcm_substream *substream,
+@@ -539,38 +542,69 @@ static inline int snd_pcm_stream_linked(struct snd_pcm_substream *substream)
+ 
+ static inline void snd_pcm_stream_lock(struct snd_pcm_substream *substream)
+ {
+-	read_lock(&snd_pcm_link_rwlock);
+-	spin_lock(&substream->self_group.lock);
++	if (substream->pcm->nonatomic) {
++		down_read(&snd_pcm_link_rwsem);
++		mutex_lock(&substream->self_group.mutex);
++	} else {
++		read_lock(&snd_pcm_link_rwlock);
++		spin_lock(&substream->self_group.lock);
++	}
+ }
+ 
+ static inline void snd_pcm_stream_unlock(struct snd_pcm_substream *substream)
+ {
+-	spin_unlock(&substream->self_group.lock);
+-	read_unlock(&snd_pcm_link_rwlock);
++	if (substream->pcm->nonatomic) {
++		mutex_unlock(&substream->self_group.mutex);
++		up_read(&snd_pcm_link_rwsem);
++	} else {
++		spin_unlock(&substream->self_group.lock);
++		read_unlock(&snd_pcm_link_rwlock);
++	}
+ }
+ 
+ static inline void snd_pcm_stream_lock_irq(struct snd_pcm_substream *substream)
+ {
+-	read_lock_irq(&snd_pcm_link_rwlock);
+-	spin_lock(&substream->self_group.lock);
++	if (substream->pcm->nonatomic) {
++		down_read(&snd_pcm_link_rwsem);
++		mutex_lock(&substream->self_group.mutex);
++	} else {
++		read_lock_irq(&snd_pcm_link_rwlock);
++		spin_lock(&substream->self_group.lock);
++	}
+ }
+ 
+ static inline void snd_pcm_stream_unlock_irq(struct snd_pcm_substream *substream)
+ {
+-	spin_unlock(&substream->self_group.lock);
+-	read_unlock_irq(&snd_pcm_link_rwlock);
++	if (substream->pcm->nonatomic) {
++		mutex_unlock(&substream->self_group.mutex);
++		up_read(&snd_pcm_link_rwsem);
++	} else {
++		spin_unlock(&substream->self_group.lock);
++		read_unlock_irq(&snd_pcm_link_rwlock);
++	}
+ }
+ 
+ #define snd_pcm_stream_lock_irqsave(substream, flags) \
+ do { \
+-	read_lock_irqsave(&snd_pcm_link_rwlock, (flags)); \
+-	spin_lock(&substream->self_group.lock); \
++	if ((substream)->pcm->nonatomic) {			  \
++		(flags) = 0; /* XXX for avoid warning */	  \
++		down_read(&snd_pcm_link_rwsem);			  \
++		mutex_lock(&(substream)->self_group.mutex);	  \
++	} else {						  \
++		read_lock_irqsave(&snd_pcm_link_rwlock, (flags)); \
++		spin_lock(&(substream)->self_group.lock);	  \
++	}							  \
+ } while (0)
+ 
+ #define snd_pcm_stream_unlock_irqrestore(substream, flags) \
+ do { \
+-	spin_unlock(&substream->self_group.lock); \
+-	read_unlock_irqrestore(&snd_pcm_link_rwlock, (flags)); \
++	if ((substream)->pcm->nonatomic) {			       \
++		mutex_unlock(&(substream)->self_group.mutex);	       \
++		up_read(&snd_pcm_link_rwsem);			       \
++	} else {						       \
++		spin_unlock(&(substream)->self_group.lock);	       \
++		read_unlock_irqrestore(&snd_pcm_link_rwlock, (flags)); \
++	}							       \
+ } while (0)
+ 
+ #define snd_pcm_group_for_each_entry(s, substream) \
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 43932e8dce66..afccdc553ef9 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -698,6 +698,7 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
+ 		}
+ 		substream->group = &substream->self_group;
+ 		spin_lock_init(&substream->self_group.lock);
++		mutex_init(&substream->self_group.mutex);
+ 		INIT_LIST_HEAD(&substream->self_group.substreams);
+ 		list_add_tail(&substream->link_list, &substream->self_group.substreams);
+ 		atomic_set(&substream->mmap_count, 0);
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 8cd2f930ad0b..b2621aa6494c 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -77,7 +77,8 @@ static int snd_pcm_open(struct file *file, struct snd_pcm *pcm, int stream);
+ DEFINE_RWLOCK(snd_pcm_link_rwlock);
+ EXPORT_SYMBOL(snd_pcm_link_rwlock);
+ 
+-static DECLARE_RWSEM(snd_pcm_link_rwsem);
++DECLARE_RWSEM(snd_pcm_link_rwsem);
++EXPORT_SYMBOL(snd_pcm_link_rwsem);
+ 
+ static inline mm_segment_t snd_enter_user(void)
+ {
+@@ -727,9 +728,14 @@ static int snd_pcm_action_group(struct action_ops *ops,
+ 	int res = 0;
+ 
+ 	snd_pcm_group_for_each_entry(s, substream) {
+-		if (do_lock && s != substream)
+-			spin_lock_nested(&s->self_group.lock,
+-					 SINGLE_DEPTH_NESTING);
++		if (do_lock && s != substream) {
++			if (s->pcm->nonatomic)
++				mutex_lock_nested(&s->self_group.mutex,
++						  SINGLE_DEPTH_NESTING);
++			else
++				spin_lock_nested(&s->self_group.lock,
++						 SINGLE_DEPTH_NESTING);
++		}
+ 		res = ops->pre_action(s, state);
+ 		if (res < 0)
+ 			goto _unlock;
+@@ -755,8 +761,12 @@ static int snd_pcm_action_group(struct action_ops *ops,
+ 	if (do_lock) {
+ 		/* unlock streams */
+ 		snd_pcm_group_for_each_entry(s1, substream) {
+-			if (s1 != substream)
+-				spin_unlock(&s1->self_group.lock);
++			if (s1 != substream) {
++				if (s->pcm->nonatomic)
++					mutex_unlock(&s1->self_group.mutex);
++				else
++					spin_unlock(&s1->self_group.lock);
++			}
+ 			if (s1 == s)	/* end */
+ 				break;
+ 		}
+@@ -784,6 +794,27 @@ static int snd_pcm_action_single(struct action_ops *ops,
+ 	return res;
+ }
+ 
++/* call in mutex-protected context */
++static int snd_pcm_action_mutex(struct action_ops *ops,
++				struct snd_pcm_substream *substream,
++				int state)
++{
++	int res;
++
++	if (snd_pcm_stream_linked(substream)) {
++		if (!mutex_trylock(&substream->self_group.mutex)) {
++			mutex_unlock(&substream->self_group.mutex);
++			mutex_lock(&substream->group->mutex);
++			mutex_lock(&substream->self_group.mutex);
++		}
++		res = snd_pcm_action_group(ops, substream, state, 1);
++		mutex_unlock(&substream->group->mutex);
++	} else {
++		res = snd_pcm_action_single(ops, substream, state);
++	}
++	return res;
++}
++
+ /*
+  *  Note: call with stream lock
+  */
+@@ -793,6 +824,9 @@ static int snd_pcm_action(struct action_ops *ops,
+ {
+ 	int res;
+ 
++	if (substream->pcm->nonatomic)
++		return snd_pcm_action_mutex(ops, substream, state);
++
+ 	if (snd_pcm_stream_linked(substream)) {
+ 		if (!spin_trylock(&substream->group->lock)) {
+ 			spin_unlock(&substream->self_group.lock);
+@@ -807,6 +841,29 @@ static int snd_pcm_action(struct action_ops *ops,
+ 	return res;
+ }
+ 
++static int snd_pcm_action_lock_mutex(struct action_ops *ops,
++				     struct snd_pcm_substream *substream,
++				     int state)
++{
++	int res;
++
++	down_read(&snd_pcm_link_rwsem);
++	if (snd_pcm_stream_linked(substream)) {
++		mutex_lock(&substream->group->mutex);
++		mutex_lock_nested(&substream->self_group.mutex,
++				  SINGLE_DEPTH_NESTING);
++		res = snd_pcm_action_group(ops, substream, state, 1);
++		mutex_unlock(&substream->self_group.mutex);
++		mutex_unlock(&substream->group->mutex);
++	} else {
++		mutex_lock(&substream->self_group.mutex);
++		res = snd_pcm_action_single(ops, substream, state);
++		mutex_unlock(&substream->self_group.mutex);
++	}
++	up_read(&snd_pcm_link_rwsem);
++	return res;
++}
++
+ /*
+  *  Note: don't use any locks before
+  */
+@@ -816,6 +873,9 @@ static int snd_pcm_action_lock_irq(struct action_ops *ops,
+ {
+ 	int res;
+ 
++	if (substream->pcm->nonatomic)
++		return snd_pcm_action_lock_mutex(ops, substream, state);
++
+ 	read_lock_irq(&snd_pcm_link_rwlock);
+ 	if (snd_pcm_stream_linked(substream)) {
+ 		spin_lock(&substream->group->lock);
+@@ -1634,7 +1694,8 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
+ 	down_write(&snd_pcm_link_rwsem);
+ 	write_lock_irq(&snd_pcm_link_rwlock);
+ 	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN ||
+-	    substream->runtime->status->state != substream1->runtime->status->state) {
++	    substream->runtime->status->state != substream1->runtime->status->state ||
++	    substream->pcm->nonatomic != substream1->pcm->nonatomic) {
+ 		res = -EBADFD;
+ 		goto _end;
+ 	}
+@@ -1646,6 +1707,7 @@ static int snd_pcm_link(struct snd_pcm_substream *substream, int fd)
+ 		substream->group = group;
+ 		group = NULL;
+ 		spin_lock_init(&substream->group->lock);
++		mutex_init(&substream->group->mutex);
+ 		INIT_LIST_HEAD(&substream->group->substreams);
+ 		list_add_tail(&substream->link_list, &substream->group->substreams);
+ 		substream->group->count = 1;
+-- 
+2.1.0
