@@ -1,92 +1,47 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: Re: [RFC][PATCH] ASoC: simple-card: Merge single and
- muti DAI link code.
-Date: Mon, 1 Sep 2014 02:57:05 +0000
-Message-ID: <1330150cda9f47eb88497fc10fb2b045@BY2PR0301MB0613.namprd03.prod.outlook.com>
-References: <1409294797-21948-1-git-send-email-Li.Xiubo@freescale.com>
- <20140831182725.3135db4f@armhf>
+From: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: [PATCHv1 0/7] simple-card: simplify the code.
+Date: Mon, 1 Sep 2014 12:29:34 +0800
+Message-ID: <1409545781-20530-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1lp0144.outbound.protection.outlook.com [207.46.163.144])
- by alsa0.perex.cz (Postfix) with ESMTP id 59D6D261B2D
- for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 04:57:08 +0200 (CEST)
-In-Reply-To: <20140831182725.3135db4f@armhf>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jyri Sarha <jsarha@ti.com>, Nicolin Chen <nicoleotsuka@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, andrew-g2DYL2Zd6BY@public.gmane.org, jsarha-l0cyMroinI0@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > ---
-> >
-> > Hi,
-> >
-> > This patch will break the old DT, so i just send one RFC version, and
-> > will add the old DT patches in next version if this patch can work
-> > well.
-> >
-> > Any comments and advices are welcome.
-> 
-> Hi Xiubo,
-> 
-> My DT is
-> 
-> 	sound {
-> 		compatible = "simple-audio-card";
-> 		simple-audio-card,name = "Cubox Audio";
-> 
-> 		simple-audio-card,dai-link@0 {		/* I2S - HDMI */
-> 			format = "i2s";
-> 			cpu {
-> 				sound-dai = <&audio1 0>;
-> 			};
-> 			codec {
-> 				sound-dai = <&hdmi 0>;
-> 			};
-> 		};
-> 	...
-> 
-> I was getting 0x1001 as the format (codec clk & FRM master and i2s').
-> 
-> With your patch, I get 0x4000 (clk master & frame slave and no format).
-> 
 
-Well, yes, If your DAI link's bit clock & frame using the CODEC as master,
-You should specify it in your DAI link node like:
+Change in v1:
+- Add simple-card dts node patches.
+- Fix format parsing bug from Jean-Francois's comment.
+- Rebase to Kuninori-san's newest changes in next branch.
 
-> 	sound {
-> 		compatible = "simple-audio-card";
-> 		simple-audio-card,name = "Cubox Audio";
-> 
-> 		simple-audio-card,dai-link@0 {		/* I2S - HDMI */
-> 			format = "i2s";
-> 			cpu {
-> 				sound-dai = <&audio1 0>;
-> 			};
-> 			codec {
-> 				sound-dai = <&hdmi 0>;
-> 			};
 
-			bitclock-master;
-			frame-master;
-> 		};
-> 	...
+Xiubo Li (7):
+  ASoC: simple-card: Merge single and muti DAI link code.
+  ASoC: simple-card: Adjust the comments of simple card.
+  ASoC: dts: vf610-twr: To support simple card newest style.
+  ASoC: dts: kirkwood-t5325: To support simple card newest style.
+  ASoC: dts: r8a7740-armadillo800eva-reference: To support simple card
+    newest style.
+  ASoC: dts: sh73a0-kzm9g-reference: To support simple card newest
+    style.
+  ASoC: dts: kirkwood-openrd-client: To support simple card newest
+    style.
 
-And the reason for cannot parsing the "i2s" format is that there is one bug
-in this patch and I will fix it in next version.
+ .../devicetree/bindings/sound/simple-card.txt      | 101 ++++++------
+ arch/arm/boot/dts/kirkwood-openrd-client.dts       |  15 +-
+ arch/arm/boot/dts/kirkwood-t5325.dts               |  15 +-
+ .../boot/dts/r8a7740-armadillo800eva-reference.dts |  21 +--
+ arch/arm/boot/dts/sh73a0-kzm9g-reference.dts       |  18 ++-
+ arch/arm/boot/dts/vf610-twr.dts                    |  17 +-
+ sound/soc/generic/simple-card.c                    | 176 ++++++++-------------
+ 7 files changed, 160 insertions(+), 203 deletions(-)
 
-Thanks very much for your comment.
+-- 
+1.8.4
 
-BRs
-Xiubo
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
