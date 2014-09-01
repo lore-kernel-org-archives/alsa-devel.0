@@ -1,7 +1,7 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv1 4/7] ASoC: dts: kirkwood-t5325: To support simple card newest style.
-Date: Mon, 1 Sep 2014 12:29:38 +0800
-Message-ID: <1409545781-20530-5-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCHv1 6/7] ASoC: dts: sh73a0-kzm9g-reference: To support simple card newest style.
+Date: Mon, 1 Sep 2014 12:29:40 +0800
+Message-ID: <1409545781-20530-7-git-send-email-Li.Xiubo@freescale.com>
 References: <1409545781-20530-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -37,38 +37,36 @@ letter 'C' here mean to Codec.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- arch/arm/boot/dts/kirkwood-t5325.dts | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ arch/arm/boot/dts/sh73a0-kzm9g-reference.dts | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/boot/dts/kirkwood-t5325.dts b/arch/arm/boot/dts/kirkwood-t5325.dts
-index 610ec0f..25d1223 100644
---- a/arch/arm/boot/dts/kirkwood-t5325.dts
-+++ b/arch/arm/boot/dts/kirkwood-t5325.dts
-@@ -189,7 +189,6 @@
+diff --git a/arch/arm/boot/dts/sh73a0-kzm9g-reference.dts b/arch/arm/boot/dts/sh73a0-kzm9g-reference.dts
+index 18662ae..e689ae3 100644
+--- a/arch/arm/boot/dts/sh73a0-kzm9g-reference.dts
++++ b/arch/arm/boot/dts/sh73a0-kzm9g-reference.dts
+@@ -160,15 +160,19 @@
  
  	sound {
  		compatible = "simple-audio-card";
--		simple-audio-card,format = "i2s";
- 		simple-audio-card,routing =
- 			"Headphone Jack", "HPL",
- 			"Headphone Jack", "HPR",
-@@ -204,12 +203,14 @@
- 
- 		simple-audio-card,mclk-fs = <256>;
- 
+-		simple-audio-card,format = "left_j";
 -		simple-audio-card,cpu {
--			sound-dai = <&audio>;
+-			sound-dai = <&sh_fsi2 0>;
 -		};
--
 -		simple-audio-card,codec {
--			sound-dai = <&alc5621>;
+-			sound-dai = <&ak4648>;
++
 +		simple-audio-card,dai-link {
-+			format = "i2s";
++			format = "left_j";
+ 			bitclock-master;
+ 			frame-master;
+-			system-clock-frequency = <11289600>;
++
 +			cpu {
-+				sound-dai = <&audio>;
++				sound-dai = <&sh_fsi2 0>;
 +			};
 +			codec {
-+				sound-dai = <&alc5621>;
++				sound-dai = <&ak4648>;
++				system-clock-frequency = <11289600>;
 +			};
  		};
  	};
