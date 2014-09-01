@@ -1,161 +1,66 @@
-From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: Re: [RFC][PATCH] ASoC: simple-card: Merge single and muti DAI link
- code.
-Date: Mon, 1 Sep 2014 12:39:10 +0300
-Message-ID: <54043EBE.9020808@ti.com>
-References: <1409294797-21948-1-git-send-email-Li.Xiubo@freescale.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH] ASoC: tlv320aic31xx: Correct interface
+	register 2 variable name
+Date: Mon, 1 Sep 2014 12:46:37 +0300
+Message-ID: <1409564797-15782-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1409294797-21948-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 533952616CB
+ for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 11:46:44 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, jsarha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch would break the current syntax without introducing any
-improvements over it (actually the opposite, see bellow). So in its
-current form I don't like this patch at all.
+Rename iface_reg3 to iface_reg2 since this variable is actually used for
+interface register 2.
 
-On 08/29/2014 09:46 AM, Xiubo Li wrote:
- > This patch merge single DAI link and muti-DAI links code together,
- > and simply the simple-card driver code.
- >
- > And also do some other improvement:
- >
- > Since from the DAI format micro SND_SOC_DAIFMT_CBx_CFx, the 'CBx'
- > mean Codec's bit clock is as master/slave and the 'CFx' mean Codec's
- > frame clock is as master/slave.
- >
- > So these same DAI formats should be informed to CPU and CODE DAIs at
- > the same time. For the Codec driver will set the bit clock and frame
- > clock as the DAI formats said, but for the CPU driver, if the the
- > bit clock or frame clock is as Codec master, so it should be set CPU
- > DAI device as bit clock or frame clock as slave, and vice versa.
- >
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ sound/soc/codecs/tlv320aic31xx.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-But there is no such problem with the current code any more. The new
-preferred way is to indicate bitclock and frame master with phandles
-that refer to the master DAI on the link (see the examples bellow).
-
- > The old code will cause confusion, and we should be clear that the
- > letter 'C' here mean to Codec.
- >
- > Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
- > Cc: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
- > Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
- > Cc: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
- > Cc: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
- > ---
- >
- > Hi,
- >
- > This patch will break the old DT, so i just send one RFC version, and
- > will add the old DT patches in next version if this patch can work
- > well.
-
-I do not object in getting rid of this simplified description for a
-single dailink card:
-
-(example 1)
-sound {
-	compatible = "simple-audio-card";
-...
-	simple-audio-card,format = "left_j";
-	simple-audio-card,bitclock-master = <&dailink0_master>;
-	simple-audio-card,frame-master = <&dailink0_master>;
-	simple-audio-card,cpu {
-		sound-dai = <&sh_fsi2 0>;
-	};
-
-	dailink0_master: simple-audio-card,codec {
-		sound-dai = <&ak4648>;
-		clocks = <&osc>;
-	};
-};
-
-and describing the DAI-links always like this:
-
-(example 2)
-sound {
-	compatible = "simple-audio-card";
-...
-	simple-audio-card,dai-link@0 {
-		format = "i2s";
-		bitclock-master = <&dailink0_master>;
-		frame-master = <&dailink0_master>;
-		dailink0_master: cpu {
-			sound-dai = <&audio1 0>;
-		};
-		codec {
-			sound-dai = <&tda998x 0>;
-		};
-	};
-};
-
-But I do object going back to the old syntax exclusively and
-describing the bitclock and frame master always with simple boolean
-properties, like this:
-
-(example 3)
-sound {
-	compatible = "simple-audio-card";
-...
-	simple-audio-card,dai-link@0 {
-		format = "i2s";
-		dailink0_master: cpu {
-			sound-dai = <&audio1 0>;
-		};
-		codec {
-			sound-dai = <&tda998x 0>;
-			bitclock-master;
-			frame-master;
-		};
-	};
-};
-
-In my opinion we should rather get rid of this syntax than move
-exclusively to it.
-
-The syntax of example 2 is simply superior to the syntax of example
-3. With the syntax on example 2 it is possible to describe TDM setups
-where there is multiple codecs on a single i2s bus. The syntax of
-example 3 simply can not describe that kind of setup.
-
-If you need to have the backwards compatibility syntax describing the
-clock masters to work also in the multilink mode (example 3), then do
-just that (it is simple enough [1]). But please do not break the new
-phandle based syntax!!!
-
-Best regards,
-Jyri
-
-[1] To enable legacy syntax in multilink mode just apply this patch:
-
-diff --git a/sound/soc/generic/simple-card.c 
-b/sound/soc/generic/simple-card.c
-index 8dd7957..aed3423 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -242,10 +242,10 @@ static int simple_card_dai_link_of(struct 
-device_node *node,
-         if (ret < 0)
-                 goto dai_link_of_err;
-
--       if (strlen(prefix) && !bitclkmaster && !framemaster) {
--               /* No dai-link level and master setting was not found from
--                  sound node level, revert back to legacy DT parsing and
--                  take the settings from codec node. */
-+       if (!bitclkmaster && !framemaster) {
-+               /* No dai-link level master setting was found, revert
-+                  back to legacy DT parsing and take the settings
-+                  from the codec node boolean properties. */
-                 dev_dbg(dev, "%s: Revert to legacy daifmt parsing\n",
-                         __func__);
-                 dai_props->cpu_dai.fmt = dai_props->codec_dai.fmt =
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 0f64c7890eed..9f9d23b94c22 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -813,7 +813,7 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+ 	u8 iface_reg1 = 0;
+-	u8 iface_reg3 = 0;
++	u8 iface_reg2 = 0;
+ 	u8 dsp_a_val = 0;
+ 
+ 	dev_dbg(codec->dev, "## %s: fmt = 0x%x\n", __func__, fmt);
+@@ -838,7 +838,7 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 		/* NOTE: BCLKINV bit value 1 equas NB and 0 equals IB */
+ 		switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 		case SND_SOC_DAIFMT_NB_NF:
+-			iface_reg3 |= AIC31XX_BCLKINV_MASK;
++			iface_reg2 |= AIC31XX_BCLKINV_MASK;
+ 			break;
+ 		case SND_SOC_DAIFMT_IB_NF:
+ 			break;
+@@ -870,7 +870,7 @@ static int aic31xx_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			    dsp_a_val);
+ 	snd_soc_update_bits(codec, AIC31XX_IFACE2,
+ 			    AIC31XX_BCLKINV_MASK,
+-			    iface_reg3);
++			    iface_reg2);
+ 
+ 	return 0;
+ }
+-- 
+2.0.4
