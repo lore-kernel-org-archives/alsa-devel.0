@@ -1,92 +1,52 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 1/2] ASoC:codecs: Add a generic HDMI audio CODEC
-Date: Mon, 1 Sep 2014 17:36:42 +0100
-Message-ID: <20140901163642.GG29327@sirena.org.uk>
-References: <cover.1409490122.git.moinejf@free.fr>
- <080616c48997c53a14910f05a0fcf3f995412315.1409490122.git.moinejf@free.fr>
+Subject: Re: [PATCHv3] ASoC: simple-card: Fix bug of wrong decrement DT
+ node's refcount
+Date: Mon, 1 Sep 2014 17:48:23 +0100
+Message-ID: <20140901164823.GH29327@sirena.org.uk>
+References: <1409554012-1427-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="W0QGcccuECrPGiFB"
+	protocol="application/pgp-signature"; boundary="MKyq+TZLpK62LzFe"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <080616c48997c53a14910f05a0fcf3f995412315.1409490122.git.moinejf@free.fr>
+In-Reply-To: <1409554012-1427-1-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Andrew Jackson <Andrew.Jackson@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: moinejf@free.fr, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---W0QGcccuECrPGiFB
+--MKyq+TZLpK62LzFe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Aug 31, 2014 at 12:45:39PM +0200, Jean-Francois Moine wrote:
+On Mon, Sep 01, 2014 at 02:46:52PM +0800, Xiubo Li wrote:
+> DAI links's cpu_of_node's and codec_of_node's refcounts shouldn't
+> be decremented immediately at the end of the probe() fucntion.
+> Because we will still use them before the audio card is removed.
 
->  Documentation/devicetree/bindings/sound/hdmi2.txt |  32 ++++
->  include/sound/hdmi2.h                             |  24 +++
->  sound/soc/codecs/Kconfig                          |   3 +
->  sound/soc/codecs/Makefile                         |   2 +
->  sound/soc/codecs/hdmi2.c                          | 204 ++++++++++++++++=
-++++++
->  5 files changed, 265 insertions(+)
+Applied, thanks.
 
-This is clearly not a good name and it's not clear what the difference
-between this and the existing HDMI stub CODEC is intended to be. =20
-
-> +Required properties:
-> +
-> +  - audio-ports: must contain one or two HDMI transmitter dependant
-> +	values identifying the audio sources.
-> +	The source type is given by the corresponding entry in
-> +	the audio-port-names property.
-> +
-> +  - audio-port-names: must contain entries matching the entries in
-> +	the audio-ports property.
-> +	Each value may be "i2s" or "spdif", giving the type of
-> +	the associated audio port.
-
-It seems hard to see this binding as really generic - I'd expect to see
-other devices which are just able to have fixed audio ports for example.
-
-> +static int hdmi2_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct i2c_client *i2c_client =3D to_i2c_client(codec->dev);
-> +	struct hdmi2_codec *audio =3D i2c_get_clientdata(i2c_client);
-> +	struct device_node *np =3D codec->dev->of_node;
-> +	int i, j, ret;
-> +	const char *p;
-> +
-> +	if (!audio)
-> +		return -ENODEV;
-> +	snd_soc_codec_set_drvdata(codec, audio);
-
-The code also seems pretty device specific.  I think it's probably
-better to leave the binding device specific for now and concentrate on
-sharing inside the kernel, making any generic binding additions be about
-how the devices interface rather than what's going on inside a specific
-device.
-
---W0QGcccuECrPGiFB
+--MKyq+TZLpK62LzFe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJUBKCWAAoJELSic+t+oim9z/8QAJByMjItnkLZo3fJgOJH47/2
-T5l5IRlzNs+k9arhmv+T3M1tBFHVi1MNUFG6YeNj2RoHNkYtYCjnAcDBLJ7gdRUq
-sqB7u0IhBhaFQ2lHF3l6h3ccATsb8uOP2E+mAjB+lBwiyhrZM2AIAWihNIWAAPzP
-j3858M8lvSGrUSJdXrSRjmOszO2HhexDzyUAw0X53y9Rl0XAQDwLh5TIVkDFmzOC
-ZYFXdnMTJwJJF+AB4acMhYdICXGFiO5ZawBBcYtwfKAn94OXsRXV7ZUY8Ih5kdkw
-16bSZkXeCkb3DnhGKFUQgjgmiCeQ0L+eLkmeTi9VsT+y8oWk+Wgut+HNGAHEGwHm
-5JNww5H+qGQ5eAPH9Pe5DnvV/c+DkVImvOydLG2xv53UHSD9CIqr1icgJRU/1sUg
-nYw9mfYTeM8PeMdy2bIKe8/FK++/lyiLfcTf3hjoTCL8n1Qg2I+G82xyHa2L8sNY
-39wAQeEgqyzijDfa+pcO3Bv0kp5LscpmNCS13k9k734e0at4eKpEgD/JyB4htSho
-4kHfnj/pxlXl7nc197Z5ovi7959UQjuaK3ZRfAiMfxKuz1l6XghPADgEDLGvNqJL
-KV+EZ+3AEHFFOBQnt83bvsehGvl6wrmR+wE5g4Do/faO61N4+BVfAzsBo6NXiMwx
-lJJuWfvN2Eh5mTt0Fytj
-=E7dD
+iQIcBAEBAgAGBQJUBKNUAAoJELSic+t+oim9ywwP/jNIaGr+FK0cApcEdYIVvCEC
+Hr4QpH4Z188cc9cbXrD8D3ymR/Firr1KkUv2QqTbXfvZqDvMHuxnbLSBXZY4AQRd
++9iTHdT1zFVWhNNce7pXGV3OQ6ofuKut2tzaLK0+M6/HEq1bbrUnIMkUZsPHYTo5
+cRn3tXXKVS9ZFX2aDDjyze340XI3TH+DO4heXJO92BOg64jHNWavMlq3eT8hb4wf
+4W1CDQqye00fLc2YxPb8e3m2c7Klu3yblARDZu80JZOxfGj4B2hwFBnN7xpnfzCc
+EhVTH/ZvlIhcdxnDUASCiAXWRCwf9Y/q15t08SD3FokKtkBAsubdaDYaC9wENJn7
+jv5AwVjZJbgEMBxftGhphFWljN2l+zUkKlsmy4jQiqCgYJ85tmhE5b1wIQKvbSWN
+OD51kDvmKm45iHmh+FpSE9tzDrByG15pQmFgaZPV5RLKsY31iGMAYev+C9hniLu5
+FUcx4dkyNuYy3bTsrowh9ojUGIbkEj5M4Q7vULdlmULqcTPVcml/2JuLFAmB4G4/
+79Nz5xUaRppE1wlLovOvoouEtUFFjnt2ts4r9zlic9UG4JgzcUPoIkxahEer1xWj
+GCbBd+bJvIHERHe1J443TkWgcTnsHMs2QTBNWp8XjNN776PEKR4jWMyYgzKQ6Fpl
+1P6B2lVvFilsL7OK3XsD
+=/Lsp
 -----END PGP SIGNATURE-----
 
---W0QGcccuECrPGiFB--
+--MKyq+TZLpK62LzFe--
