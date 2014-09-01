@@ -1,7 +1,7 @@
 From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCHv1 6/7] ASoC: dts: sh73a0-kzm9g-reference: To support simple card newest style.
-Date: Mon, 1 Sep 2014 12:29:40 +0800
-Message-ID: <1409545781-20530-7-git-send-email-Li.Xiubo@freescale.com>
+Subject: [PATCHv1 5/7] ASoC: dts: r8a7740-armadillo800eva-reference: To support simple card newest style.
+Date: Mon, 1 Sep 2014 12:29:39 +0800
+Message-ID: <1409545781-20530-6-git-send-email-Li.Xiubo@freescale.com>
 References: <1409545781-20530-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -37,36 +37,39 @@ letter 'C' here mean to Codec.
 
 Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- arch/arm/boot/dts/sh73a0-kzm9g-reference.dts | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ .../boot/dts/r8a7740-armadillo800eva-reference.dts  | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sh73a0-kzm9g-reference.dts b/arch/arm/boot/dts/sh73a0-kzm9g-reference.dts
-index 18662ae..e689ae3 100644
---- a/arch/arm/boot/dts/sh73a0-kzm9g-reference.dts
-+++ b/arch/arm/boot/dts/sh73a0-kzm9g-reference.dts
-@@ -160,15 +160,19 @@
- 
+diff --git a/arch/arm/boot/dts/r8a7740-armadillo800eva-reference.dts b/arch/arm/boot/dts/r8a7740-armadillo800eva-reference.dts
+index ee9e7d5..b83d95a 100644
+--- a/arch/arm/boot/dts/r8a7740-armadillo800eva-reference.dts
++++ b/arch/arm/boot/dts/r8a7740-armadillo800eva-reference.dts
+@@ -150,18 +150,19 @@
  	sound {
  		compatible = "simple-audio-card";
--		simple-audio-card,format = "left_j";
+ 
+-		simple-audio-card,format = "i2s";
+-
 -		simple-audio-card,cpu {
 -			sound-dai = <&sh_fsi2 0>;
+-			bitclock-inversion;
 -		};
+-
 -		simple-audio-card,codec {
--			sound-dai = <&ak4648>;
-+
+-			sound-dai = <&wm8978>;
 +		simple-audio-card,dai-link {
-+			format = "left_j";
++			format = "i2s";
  			bitclock-master;
  			frame-master;
--			system-clock-frequency = <11289600>;
+-			system-clock-frequency = <12288000>;
 +
 +			cpu {
 +				sound-dai = <&sh_fsi2 0>;
++				bitclock-inversion;
 +			};
 +			codec {
-+				sound-dai = <&ak4648>;
-+				system-clock-frequency = <11289600>;
++				sound-dai = <&wm8978>;
++				system-clock-frequency = <12288000>;
 +			};
  		};
  	};
