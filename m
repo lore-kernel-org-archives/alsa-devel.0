@@ -1,51 +1,36 @@
-From: "Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: RE: [RFC][PATCH] ASoC: simple-card: Merge single and muti DAI link
- code.
-Date: Mon, 1 Sep 2014 02:02:33 +0000
-Message-ID: <0a58aefde8594877be9fa7199f6c3d3e@BY2PR0301MB0613.namprd03.prod.outlook.com>
-References: <1409294797-21948-1-git-send-email-Li.Xiubo@freescale.com>
- <20140829120035.GW29327@sirena.org.uk>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCHv2 1/2] ASoC: simple-card: Fix bug of forgetting decrement DT node's refcount
+Date: Mon, 1 Sep 2014 09:35:26 +0800
+Message-ID: <1409535327-11449-2-git-send-email-Li.Xiubo@freescale.com>
+References: <1409535327-11449-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140829120035.GW29327-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1409535327-11449-1-git-send-email-Li.Xiubo@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, moinejf@free.fr, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark, Kuninori-san,
+We shouldn't forget decrement the last DT node when the
+for_each_child_of_node() has finished searching.
 
-Very sorry, I just missed that patch series.
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+---
+ sound/soc/generic/simple-card.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-See the next version.
-
-Thanks,
-
-BRs
-Xiubo
-
-
-
-
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org]
-> Sent: Friday, August 29, 2014 8:01 PM
-> To: Xiubo Li-B47053
-> Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org; linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org;
-> devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; Kuninori Morimoto; Jean-Francois Moine; Jyri Sarha;
-> Nicolin Chen
-> Subject: Re: [RFC][PATCH] ASoC: simple-card: Merge single and muti DAI link
-> code.
-> 
-> On Fri, Aug 29, 2014 at 02:46:37PM +0800, Xiubo Li wrote:
-> > This patch merge single DAI link and muti-DAI links code together,
-> > and simply the simple-card driver code.
-> 
-> This will need to be rebased on Morimoto-san's changes I believe.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index fd8b045..9e170fe 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -360,6 +360,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 			}
+ 			i++;
+ 		}
++		of_node_put(np);
+ 	} else {
+ 		ret = asoc_simple_card_dai_link_of(node, dev,
+ 						   dai_link, dai_props, true);
+-- 
+1.8.4
