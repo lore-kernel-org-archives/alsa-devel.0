@@ -1,48 +1,32 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCHv2 1/2] ASoC: simple-card: Fix bug of forgetting
- decrement DT node's refcount
-Date: Mon, 1 Sep 2014 08:37:28 +0200
-Message-ID: <20140901083728.01454558@armhf>
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [PATCHv2 1/2] ASoC: simple-card: Fix bug of forgetting decrement
+ DT node's refcount
+Date: Mon, 1 Sep 2014 06:52:26 +0000
+Message-ID: <11d26ed010ad4cc9b90f44bff56340c3@BY2PR0301MB0613.namprd03.prod.outlook.com>
 References: <1409535327-11449-1-git-send-email-Li.Xiubo@freescale.com>
 	<1409535327-11449-2-git-send-email-Li.Xiubo@freescale.com>
+ <20140901083728.01454558@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1409535327-11449-2-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <20140901083728.01454558@armhf>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "jsarha@ti.com" <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 1 Sep 2014 09:35:26 +0800
-Xiubo Li <Li.Xiubo@freescale.com> wrote:
-
-> We shouldn't forget decrement the last DT node when the
-> for_each_child_of_node() has finished searching.
->=20
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> ---
->  sound/soc/generic/simple-card.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simp=
-le-card.c
-> index fd8b045..9e170fe 100644
-> --- a/sound/soc/generic/simple-card.c
-> +++ b/sound/soc/generic/simple-card.c
-> @@ -360,6 +360,7 @@ static int asoc_simple_card_parse_of(struct devic=
-e_node *node,
->  			}
->  			i++;
->  		}
-> +		of_node_put(np);
->  	} else {
->  		ret =3D asoc_simple_card_dai_link_of(node, dev,
->  						   dai_link, dai_props, true);
-
-No. np is NULL at end of loop.
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+DQo+ID4gU2lnbmVkLW9mZi1ieTogWGl1Ym8gTGkgPExpLlhpdWJvQGZyZWVzY2FsZS5jb20+DQo+
+ID4gLS0tDQo+ID4gIHNvdW5kL3NvYy9nZW5lcmljL3NpbXBsZS1jYXJkLmMgfCAxICsNCj4gPiAg
+MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvc291
+bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYyBiL3NvdW5kL3NvYy9nZW5lcmljL3NpbXBsZS0N
+Cj4gY2FyZC5jDQo+ID4gaW5kZXggZmQ4YjA0NS4uOWUxNzBmZSAxMDA2NDQNCj4gPiAtLS0gYS9z
+b3VuZC9zb2MvZ2VuZXJpYy9zaW1wbGUtY2FyZC5jDQo+ID4gKysrIGIvc291bmQvc29jL2dlbmVy
+aWMvc2ltcGxlLWNhcmQuYw0KPiA+IEBAIC0zNjAsNiArMzYwLDcgQEAgc3RhdGljIGludCBhc29j
+X3NpbXBsZV9jYXJkX3BhcnNlX29mKHN0cnVjdCBkZXZpY2Vfbm9kZQ0KPiAqbm9kZSwNCj4gPiAg
+CQkJfQ0KPiA+ICAJCQlpKys7DQo+ID4gIAkJfQ0KPiA+ICsJCW9mX25vZGVfcHV0KG5wKTsNCj4g
+PiAgCX0gZWxzZSB7DQo+ID4gIAkJcmV0ID0gYXNvY19zaW1wbGVfY2FyZF9kYWlfbGlua19vZihu
+b2RlLCBkZXYsDQo+ID4gIAkJCQkJCSAgIGRhaV9saW5rLCBkYWlfcHJvcHMsIHRydWUpOw0KPiAN
+Cj4gTm8uIG5wIGlzIE5VTEwgYXQgZW5kIG9mIGxvb3AuDQo+IA0KDQpXZWxsLCB5ZXMsIHlvdSBh
+cmUgcmlnaHQuDQoNClRoYW5rcywNCg0KQlJzDQpYaXVibw0KDQo=
