@@ -1,161 +1,100 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCHv2 2/2] ASoC: simple-card: Fix bug of wrong decrement DT
+From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
+Subject: RE: [PATCHv2 2/2] ASoC: simple-card: Fix bug of wrong decrement DT
  node's refcount
-Date: Mon, 1 Sep 2014 08:54:25 +0200
-Message-ID: <20140901085425.6553dac5@armhf>
+Date: Mon, 1 Sep 2014 07:11:36 +0000
+Message-ID: <1dfb7c81e6dd4fc3a273136482799af9@BY2PR0301MB0613.namprd03.prod.outlook.com>
 References: <1409535327-11449-1-git-send-email-Li.Xiubo@freescale.com>
 	<1409535327-11449-3-git-send-email-Li.Xiubo@freescale.com>
+ <20140901085425.6553dac5@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1409535327-11449-3-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <20140901085425.6553dac5@armhf>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "jsarha@ti.com" <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 1 Sep 2014 09:35:27 +0800
-Xiubo Li <Li.Xiubo@freescale.com> wrote:
-
-> DAI links's cpu_of_node's and codec_of_node's refcounts shouldn't
-> be decremented immediately at the end of the probe() fucntion.
-> Because we will still use them before the audio card is removed.
-
-Right, but your patch seems a bit complicated. See below.
-
->=20
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> ---
->  sound/soc/generic/simple-card.c | 52 ++++++++++++++++++++++---------=
-----------
->  1 file changed, 28 insertions(+), 24 deletions(-)
->=20
-> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simp=
-le-card.c
-> index 9e170fe..08c5d7d 100644
-> --- a/sound/soc/generic/simple-card.c
-> +++ b/sound/soc/generic/simple-card.c
-> @@ -307,6 +307,22 @@ dai_link_of_err:
->  	return ret;
->  }
-> =20
-> +static inline void
-> +asoc_simple_card_unref(const struct snd_soc_dai_link *dai_link,
-> +		       int num_links)
-> +{
-> +	struct device_node *np;
-> +
-> +	while (num_links--) {
-> +		np =3D dai_link[num_links].cpu_of_node;
-> +		if (np)
-> +			of_node_put(np);
-> +		np =3D dai_link[num_links].codec_of_node;
-> +		if (np)
-> +			of_node_put(np);
-> +	}
-> +}
-> +
->  static int asoc_simple_card_parse_of(struct device_node *node,
->  				     struct simple_card_data *priv,
->  				     struct device *dev,
-> @@ -355,6 +371,7 @@ static int asoc_simple_card_parse_of(struct devic=
-e_node *node,
->  							   dai_props + i,
->  							   false);
->  			if (ret < 0) {
-> +				asoc_simple_card_unref(dai_link, i + 1);
->  				of_node_put(np);
->  				return ret;
->  			}
-> @@ -374,27 +391,6 @@ static int asoc_simple_card_parse_of(struct devi=
-ce_node *node,
->  	return 0;
->  }
-> =20
-> -/* update the reference count of the devices nodes at end of probe *=
-/
-> -static int asoc_simple_card_unref(struct platform_device *pdev)
-> -{
-> -	struct snd_soc_card *card =3D platform_get_drvdata(pdev);
-> -	struct snd_soc_dai_link *dai_link;
-> -	struct device_node *np;
-> -	int num_links;
-> -
-> -	for (num_links =3D 0, dai_link =3D card->dai_link;
-> -	     num_links < card->num_links;
-> -	     num_links++, dai_link++) {
-> -		np =3D (struct device_node *) dai_link->cpu_of_node;
-> -		if (np)
-> -			of_node_put(np);
-> -		np =3D (struct device_node *) dai_link->codec_of_node;
-> -		if (np)
-> -			of_node_put(np);
-> -	}
-> -	return 0;
-> -}
-> -
->  static int asoc_simple_card_probe(struct platform_device *pdev)
->  {
->  	struct simple_card_data *priv;
-> @@ -441,7 +437,7 @@ static int asoc_simple_card_probe(struct platform=
-_device *pdev)
->  		if (ret < 0) {
->  			if (ret !=3D -EPROBE_DEFER)
->  				dev_err(dev, "parse error %d\n", ret);
-> -			goto err;
-> +			return ret;
->  		}
-> =20
->  	} else {
-> @@ -483,11 +479,18 @@ static int asoc_simple_card_probe(struct platfo=
-rm_device *pdev)
-> =20
->  	ret =3D devm_snd_soc_register_card(&pdev->dev, &priv->snd_card);
-> =20
-> -err:
-> -	asoc_simple_card_unref(pdev);
->  	return ret;
->  }
-
-The main problem is there: don't unref the nodes is no error.
-Why not simply:
-=20
- 	ret =3D devm_snd_soc_register_card(&pdev->dev, &priv->snd_card);
-+	if (ret >=3D 0)
-+		return ret;		/* success */
-=20
- err:
-	asoc_simple_card_unref(pdev);
- 	return ret;
- }
-
-? Then, the above stuff is not needed.
-
-> +static int asoc_simple_card_remove(struct platform_device *pdev)
-> +{
-> +	struct snd_soc_card *card =3D platform_get_drvdata(pdev);
-> +
-> +	asoc_simple_card_unref(card->dai_link, card->num_links);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct of_device_id asoc_simple_of_match[] =3D {
->  	{ .compatible =3D "simple-audio-card", },
->  	{},
-> @@ -501,6 +504,7 @@ static struct platform_driver asoc_simple_card =3D=
- {
->  		.of_match_table =3D asoc_simple_of_match,
->  	},
->  	.probe =3D asoc_simple_card_probe,
-> +	.remove =3D asoc_simple_card_remove,
->  };
-> =20
->  module_platform_driver(asoc_simple_card);
-
-OK.
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+PiA+IERBSSBsaW5rcydzIGNwdV9vZl9ub2RlJ3MgYW5kIGNvZGVjX29mX25vZGUncyByZWZjb3Vu
+dHMgc2hvdWxkbid0DQo+ID4gYmUgZGVjcmVtZW50ZWQgaW1tZWRpYXRlbHkgYXQgdGhlIGVuZCBv
+ZiB0aGUgcHJvYmUoKSBmdWNudGlvbi4NCj4gPiBCZWNhdXNlIHdlIHdpbGwgc3RpbGwgdXNlIHRo
+ZW0gYmVmb3JlIHRoZSBhdWRpbyBjYXJkIGlzIHJlbW92ZWQuDQo+IA0KPiBSaWdodCwgYnV0IHlv
+dXIgcGF0Y2ggc2VlbXMgYSBiaXQgY29tcGxpY2F0ZWQuIFNlZSBiZWxvdy4NCj4gDQo+ID4NCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBYaXVibyBMaSA8TGkuWGl1Ym9AZnJlZXNjYWxlLmNvbT4NCj4gPiAt
+LS0NCj4gPiAgc291bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYyB8IDUyICsrKysrKysrKysr
+KysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tDQo+IC0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
+MjggaW5zZXJ0aW9ucygrKSwgMjQgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
+c291bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYyBiL3NvdW5kL3NvYy9nZW5lcmljL3NpbXBs
+ZS0NCj4gY2FyZC5jDQo+ID4gaW5kZXggOWUxNzBmZS4uMDhjNWQ3ZCAxMDA2NDQNCj4gPiAtLS0g
+YS9zb3VuZC9zb2MvZ2VuZXJpYy9zaW1wbGUtY2FyZC5jDQo+ID4gKysrIGIvc291bmQvc29jL2dl
+bmVyaWMvc2ltcGxlLWNhcmQuYw0KPiA+IEBAIC0zMDcsNiArMzA3LDIyIEBAIGRhaV9saW5rX29m
+X2VycjoNCj4gPiAgCXJldHVybiByZXQ7DQo+ID4gIH0NCj4gPg0KPiA+ICtzdGF0aWMgaW5saW5l
+IHZvaWQNCj4gPiArYXNvY19zaW1wbGVfY2FyZF91bnJlZihjb25zdCBzdHJ1Y3Qgc25kX3NvY19k
+YWlfbGluayAqZGFpX2xpbmssDQo+ID4gKwkJICAgICAgIGludCBudW1fbGlua3MpDQo+ID4gK3sN
+Cj4gPiArCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbnA7DQo+ID4gKw0KPiA+ICsJd2hpbGUgKG51bV9s
+aW5rcy0tKSB7DQo+ID4gKwkJbnAgPSBkYWlfbGlua1tudW1fbGlua3NdLmNwdV9vZl9ub2RlOw0K
+PiA+ICsJCWlmIChucCkNCj4gPiArCQkJb2Zfbm9kZV9wdXQobnApOw0KPiA+ICsJCW5wID0gZGFp
+X2xpbmtbbnVtX2xpbmtzXS5jb2RlY19vZl9ub2RlOw0KPiA+ICsJCWlmIChucCkNCj4gPiArCQkJ
+b2Zfbm9kZV9wdXQobnApOw0KPiA+ICsJfQ0KPiA+ICt9DQo+ID4gKw0KPiA+ICBzdGF0aWMgaW50
+IGFzb2Nfc2ltcGxlX2NhcmRfcGFyc2Vfb2Yoc3RydWN0IGRldmljZV9ub2RlICpub2RlLA0KPiA+
+ICAJCQkJICAgICBzdHJ1Y3Qgc2ltcGxlX2NhcmRfZGF0YSAqcHJpdiwNCj4gPiAgCQkJCSAgICAg
+c3RydWN0IGRldmljZSAqZGV2LA0KPiA+IEBAIC0zNTUsNiArMzcxLDcgQEAgc3RhdGljIGludCBh
+c29jX3NpbXBsZV9jYXJkX3BhcnNlX29mKHN0cnVjdCBkZXZpY2Vfbm9kZQ0KPiAqbm9kZSwNCj4g
+PiAgCQkJCQkJCSAgIGRhaV9wcm9wcyArIGksDQo+ID4gIAkJCQkJCQkgICBmYWxzZSk7DQo+ID4g
+IAkJCWlmIChyZXQgPCAwKSB7DQo+ID4gKwkJCQlhc29jX3NpbXBsZV9jYXJkX3VucmVmKGRhaV9s
+aW5rLCBpICsgMSk7DQo+ID4gIAkJCQlvZl9ub2RlX3B1dChucCk7DQo+ID4gIAkJCQlyZXR1cm4g
+cmV0Ow0KPiA+ICAJCQl9DQo+ID4gQEAgLTM3NCwyNyArMzkxLDYgQEAgc3RhdGljIGludCBhc29j
+X3NpbXBsZV9jYXJkX3BhcnNlX29mKHN0cnVjdCBkZXZpY2Vfbm9kZQ0KPiAqbm9kZSwNCj4gPiAg
+CXJldHVybiAwOw0KPiA+ICB9DQo+ID4NCj4gPiAtLyogdXBkYXRlIHRoZSByZWZlcmVuY2UgY291
+bnQgb2YgdGhlIGRldmljZXMgbm9kZXMgYXQgZW5kIG9mIHByb2JlICovDQo+ID4gLXN0YXRpYyBp
+bnQgYXNvY19zaW1wbGVfY2FyZF91bnJlZihzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0K
+PiA+IC17DQo+ID4gLQlzdHJ1Y3Qgc25kX3NvY19jYXJkICpjYXJkID0gcGxhdGZvcm1fZ2V0X2Ry
+dmRhdGEocGRldik7DQo+ID4gLQlzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayAqZGFpX2xpbms7DQo+
+ID4gLQlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5wOw0KPiA+IC0JaW50IG51bV9saW5rczsNCj4gPiAt
+DQo+ID4gLQlmb3IgKG51bV9saW5rcyA9IDAsIGRhaV9saW5rID0gY2FyZC0+ZGFpX2xpbms7DQo+
+ID4gLQkgICAgIG51bV9saW5rcyA8IGNhcmQtPm51bV9saW5rczsNCj4gPiAtCSAgICAgbnVtX2xp
+bmtzKyssIGRhaV9saW5rKyspIHsNCj4gPiAtCQlucCA9IChzdHJ1Y3QgZGV2aWNlX25vZGUgKikg
+ZGFpX2xpbmstPmNwdV9vZl9ub2RlOw0KPiA+IC0JCWlmIChucCkNCj4gPiAtCQkJb2Zfbm9kZV9w
+dXQobnApOw0KPiA+IC0JCW5wID0gKHN0cnVjdCBkZXZpY2Vfbm9kZSAqKSBkYWlfbGluay0+Y29k
+ZWNfb2Zfbm9kZTsNCj4gPiAtCQlpZiAobnApDQo+ID4gLQkJCW9mX25vZGVfcHV0KG5wKTsNCj4g
+PiAtCX0NCj4gPiAtCXJldHVybiAwOw0KPiA+IC19DQo+ID4gLQ0KPiA+ICBzdGF0aWMgaW50IGFz
+b2Nfc2ltcGxlX2NhcmRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAg
+ew0KPiA+ICAJc3RydWN0IHNpbXBsZV9jYXJkX2RhdGEgKnByaXY7DQo+ID4gQEAgLTQ0MSw3ICs0
+MzcsNyBAQCBzdGF0aWMgaW50IGFzb2Nfc2ltcGxlX2NhcmRfcHJvYmUoc3RydWN0IHBsYXRmb3Jt
+X2RldmljZQ0KPiAqcGRldikNCj4gPiAgCQlpZiAocmV0IDwgMCkgew0KPiA+ICAJCQlpZiAocmV0
+ICE9IC1FUFJPQkVfREVGRVIpDQo+ID4gIAkJCQlkZXZfZXJyKGRldiwgInBhcnNlIGVycm9yICVk
+XG4iLCByZXQpOw0KPiA+IC0JCQlnb3RvIGVycjsNCj4gPiArCQkJcmV0dXJuIHJldDsNCj4gPiAg
+CQl9DQo+ID4NCj4gPiAgCX0gZWxzZSB7DQo+ID4gQEAgLTQ4MywxMSArNDc5LDE4IEBAIHN0YXRp
+YyBpbnQgYXNvY19zaW1wbGVfY2FyZF9wcm9iZShzdHJ1Y3QNCj4gcGxhdGZvcm1fZGV2aWNlICpw
+ZGV2KQ0KPiA+DQo+ID4gIAlyZXQgPSBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJfY2FyZCgmcGRldi0+
+ZGV2LCAmcHJpdi0+c25kX2NhcmQpOw0KPiA+DQo+ID4gLWVycjoNCj4gPiAtCWFzb2Nfc2ltcGxl
+X2NhcmRfdW5yZWYocGRldik7DQo+ID4gIAlyZXR1cm4gcmV0Ow0KPiA+ICB9DQo+IA0KPiBUaGUg
+bWFpbiBwcm9ibGVtIGlzIHRoZXJlOiBkb24ndCB1bnJlZiB0aGUgbm9kZXMgaXMgbm8gZXJyb3Iu
+DQo+IFdoeSBub3Qgc2ltcGx5Og0KPiANCj4gIAlyZXQgPSBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJf
+Y2FyZCgmcGRldi0+ZGV2LCAmcHJpdi0+c25kX2NhcmQpOw0KPiArCWlmIChyZXQgPj0gMCkNCj4g
+KwkJcmV0dXJuIHJldDsJCS8qIHN1Y2Nlc3MgKi8NCj4gDQo+ICBlcnI6DQo+IAlhc29jX3NpbXBs
+ZV9jYXJkX3VucmVmKHBkZXYpOw0KPiAgCXJldHVybiByZXQ7DQo+ICB9DQo+IA0KPiA/IFRoZW4s
+IHRoZSBhYm92ZSBzdHVmZiBpcyBub3QgbmVlZGVkLg0KPiANCg0KV2h5IEkgbW92ZWQgdGhlIF91
+bnJlZigpIGZyb20gdGhlIHByb2JlKCkgdG8gYXNvY19zaW1wbGVfY2FyZF9wYXJzZV9vZigpDQpJ
+cyB0aGF0IEkgdGhpbmsgd2Ugc2hvdWxkIF91bnJlZigpIHRob3NlIG5vZGVzIGltbWVkaWF0ZWx5
+IGFmdGVyIGZhaWxlZCwNCkJ1dCB0aGlzIHdpbGwgYmUgYSBiaXQgbW9yZSBjb21wbGljYXRlZCBh
+cyB5b3Ugc2FpZCwgYW5kIGFsc28gd2lsbCBpbmNsdWRlDQpvbmUgbmV3IGJ1ZzoNCldoZW4gZGV2
+bV9zbmRfc29jX3JlZ2lzdGVyX2NhcmQoKSBmYWlsZWQsIHRoZSBfdW5yZWYoKSB3b24ndCBiZSBy
+YW4uDQogDQpUaGFua3MgdmVyeSBtdWNoIGZvciB5b3UgY29tbWVudC4NCg0KSSB3aWxsIGZpeCBp
+dCBpbiB0aGUgbmV4dCB2ZXJzaW9uLA0KDQpCUnMNClhpdWJvDQoNCg0KDQo+ID4gK3N0YXRpYyBp
+bnQgYXNvY19zaW1wbGVfY2FyZF9yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikN
+Cj4gPiArew0KPiA+ICsJc3RydWN0IHNuZF9zb2NfY2FyZCAqY2FyZCA9IHBsYXRmb3JtX2dldF9k
+cnZkYXRhKHBkZXYpOw0KPiA+ICsNCj4gPiArCWFzb2Nfc2ltcGxlX2NhcmRfdW5yZWYoY2FyZC0+
+ZGFpX2xpbmssIGNhcmQtPm51bV9saW5rcyk7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4g
+K30NCj4gPiArDQo+ID4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIGFzb2Nfc2lt
+cGxlX29mX21hdGNoW10gPSB7DQo+ID4gIAl7IC5jb21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1j
+YXJkIiwgfSwNCj4gPiAgCXt9LA0KPiA+IEBAIC01MDEsNiArNTA0LDcgQEAgc3RhdGljIHN0cnVj
+dCBwbGF0Zm9ybV9kcml2ZXIgYXNvY19zaW1wbGVfY2FyZCA9IHsNCj4gPiAgCQkub2ZfbWF0Y2hf
+dGFibGUgPSBhc29jX3NpbXBsZV9vZl9tYXRjaCwNCj4gPiAgCX0sDQo+ID4gIAkucHJvYmUgPSBh
+c29jX3NpbXBsZV9jYXJkX3Byb2JlLA0KPiA+ICsJLnJlbW92ZSA9IGFzb2Nfc2ltcGxlX2NhcmRf
+cmVtb3ZlLA0KPiA+ICB9Ow0KPiA+DQo+ID4gIG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXIoYXNvY19z
+aW1wbGVfY2FyZCk7DQo+IA0KPiBPSy4NCj4gDQo+IC0tDQo+IEtlbiBhciBjJ2hlbnRhw7EJfAkg
+ICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEgKioNCj4gSmVmCQl8CQlodHRwOi8vbW9pbmVq
+Zi5mcmVlLmZyLw0K
