@@ -1,90 +1,92 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt5670: add clock source
-	selection controls
-Date: Mon, 1 Sep 2014 16:34:33 +0100
-Message-ID: <20140901153433.GD29327@sirena.org.uk>
-References: <1409549878-27304-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH v4 1/2] ASoC:codecs: Add a generic HDMI audio CODEC
+Date: Mon, 1 Sep 2014 17:36:42 +0100
+Message-ID: <20140901163642.GG29327@sirena.org.uk>
+References: <cover.1409490122.git.moinejf@free.fr>
+ <080616c48997c53a14910f05a0fcf3f995412315.1409490122.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7150470795380153768=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EB229265451
- for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 17:34:57 +0200 (CEST)
-In-Reply-To: <1409549878-27304-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="W0QGcccuECrPGiFB"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <080616c48997c53a14910f05a0fcf3f995412315.1409490122.git.moinejf@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Andrew Jackson <Andrew.Jackson@arm.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7150470795380153768==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0/mZ2nErRHiqrPHn"
-Content-Disposition: inline
-
-
---0/mZ2nErRHiqrPHn
+--W0QGcccuECrPGiFB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 01, 2014 at 01:37:58PM +0800, bardliao@realtek.com wrote:
+On Sun, Aug 31, 2014 at 12:45:39PM +0200, Jean-Francois Moine wrote:
 
-> I write the changelog at the beginning of rt5670.c. But I am not
-> sure if it is a regular way to make a changelog.
+>  Documentation/devicetree/bindings/sound/hdmi2.txt |  32 ++++
+>  include/sound/hdmi2.h                             |  24 +++
+>  sound/soc/codecs/Kconfig                          |   3 +
+>  sound/soc/codecs/Makefile                         |   2 +
+>  sound/soc/codecs/hdmi2.c                          | 204 ++++++++++++++++=
+++++++
+>  5 files changed, 265 insertions(+)
 
-No, please don't do this - in the kernel we just use git for the
-changelog, there's no need for additional changelogs in files.
+This is clearly not a good name and it's not clear what the difference
+between this and the existing HDMI stub CODEC is intended to be. =20
 
-> +static const char * const rt5670_asrc_clk_source[] = {
-> +	"clk_sysy_div_out", "clk_i2s1_track", "clk_i2s2_track",
-> +	"clk_i2s3_track", "clk_i2s4_track", "clk_sys2", "clk_sys3",
-> +	"clk_sys4", "clk_sys5"
-> +};
+> +Required properties:
+> +
+> +  - audio-ports: must contain one or two HDMI transmitter dependant
+> +	values identifying the audio sources.
+> +	The source type is given by the corresponding entry in
+> +	the audio-port-names property.
+> +
+> +  - audio-port-names: must contain entries matching the entries in
+> +	the audio-ports property.
+> +	Each value may be "i2s" or "spdif", giving the type of
+> +	the associated audio port.
 
-Every time I see this patch I raise the same concern about the clocking
-usually being controlled in the kernel since other clocks are controlled
-within the kernel.  I've not seen a response to this yet - it's possible
-there is a good reason for putting this under userspace control but you
-need to make the case for doing that.
+It seems hard to see this binding as really generic - I'd expect to see
+other devices which are just able to have fixed audio ports for example.
 
---0/mZ2nErRHiqrPHn
+> +static int hdmi2_probe(struct snd_soc_codec *codec)
+> +{
+> +	struct i2c_client *i2c_client =3D to_i2c_client(codec->dev);
+> +	struct hdmi2_codec *audio =3D i2c_get_clientdata(i2c_client);
+> +	struct device_node *np =3D codec->dev->of_node;
+> +	int i, j, ret;
+> +	const char *p;
+> +
+> +	if (!audio)
+> +		return -ENODEV;
+> +	snd_soc_codec_set_drvdata(codec, audio);
+
+The code also seems pretty device specific.  I think it's probably
+better to leave the binding device specific for now and concentrate on
+sharing inside the kernel, making any generic binding additions be about
+how the devices interface rather than what's going on inside a specific
+device.
+
+--W0QGcccuECrPGiFB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJUBJIGAAoJELSic+t+oim9lNIP/REueEFIuAGFwmyTTyoBJMew
-esEt3S5a84bUqOqMjRFSOzkdGucwjrQ0/SDjAeprXuqWL0fG9teBBNrxzvYMDzyg
-90HbBjKxM9Lwsjz2vfLqT8SGvGjfEJ2hJBAdiQPGJYJXI0+tp3RykUFFZcN+Yoal
-qbaTQ9QTOR/jSaMzqw10moAavV0MLeMn0DqTiypvndgxXjPgIuulwyh90Y/enNS8
-4JkEzyfH0IZiGOwoUcvssgahOr09FZG8bNNA2TJLI3Tjc0W20dguiX93tqQBxdTU
-jBltxI3rgsObOtcNzGrMjISd1ptHJEJnx1vgt9KShalzkbDKtmi2V/v9hMl7Tb08
-HeH1f5OaEkYlPvY3wFTp1UbTEiLDU4p/Rn67w+j2mdL27PM83w8a2tOdA4nbndAT
-o1B8lkGXtMYJ9249SdHoAO/j00kNmGtb6D1MkB1n4BkVB+6GhMC8TzGAQxIRQjCj
-DcvhmA4tSMipjsPs1WZykQCwK4HMlmLURqv34JVJ7RYJgPur0h/5PtMZ9/85ggfp
-3itPhYB8ssEMkk1eL8X9D33Bd8FKB4B5WzxSKVEpeJtKb34AuexcjHiUnkADR1+o
-z3+HAZB7z/eiEZDe4L4AuXWOFo+WE4nQpUN7uS+SuLnyZU2T8lIBnzc78zgwO2zb
-IoWWdF7P2wuMhIG9SN+M
-=KskQ
+iQIcBAEBAgAGBQJUBKCWAAoJELSic+t+oim9z/8QAJByMjItnkLZo3fJgOJH47/2
+T5l5IRlzNs+k9arhmv+T3M1tBFHVi1MNUFG6YeNj2RoHNkYtYCjnAcDBLJ7gdRUq
+sqB7u0IhBhaFQ2lHF3l6h3ccATsb8uOP2E+mAjB+lBwiyhrZM2AIAWihNIWAAPzP
+j3858M8lvSGrUSJdXrSRjmOszO2HhexDzyUAw0X53y9Rl0XAQDwLh5TIVkDFmzOC
+ZYFXdnMTJwJJF+AB4acMhYdICXGFiO5ZawBBcYtwfKAn94OXsRXV7ZUY8Ih5kdkw
+16bSZkXeCkb3DnhGKFUQgjgmiCeQ0L+eLkmeTi9VsT+y8oWk+Wgut+HNGAHEGwHm
+5JNww5H+qGQ5eAPH9Pe5DnvV/c+DkVImvOydLG2xv53UHSD9CIqr1icgJRU/1sUg
+nYw9mfYTeM8PeMdy2bIKe8/FK++/lyiLfcTf3hjoTCL8n1Qg2I+G82xyHa2L8sNY
+39wAQeEgqyzijDfa+pcO3Bv0kp5LscpmNCS13k9k734e0at4eKpEgD/JyB4htSho
+4kHfnj/pxlXl7nc197Z5ovi7959UQjuaK3ZRfAiMfxKuz1l6XghPADgEDLGvNqJL
+KV+EZ+3AEHFFOBQnt83bvsehGvl6wrmR+wE5g4Do/faO61N4+BVfAzsBo6NXiMwx
+lJJuWfvN2Eh5mTt0Fytj
+=E7dD
 -----END PGP SIGNATURE-----
 
---0/mZ2nErRHiqrPHn--
-
---===============7150470795380153768==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7150470795380153768==--
+--W0QGcccuECrPGiFB--
