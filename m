@@ -1,32 +1,161 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [PATCHv2 1/2] ASoC: simple-card: Fix bug of forgetting decrement
- DT node's refcount
-Date: Mon, 1 Sep 2014 06:52:26 +0000
-Message-ID: <11d26ed010ad4cc9b90f44bff56340c3@BY2PR0301MB0613.namprd03.prod.outlook.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCHv2 2/2] ASoC: simple-card: Fix bug of wrong decrement DT
+ node's refcount
+Date: Mon, 1 Sep 2014 08:54:25 +0200
+Message-ID: <20140901085425.6553dac5@armhf>
 References: <1409535327-11449-1-git-send-email-Li.Xiubo@freescale.com>
-	<1409535327-11449-2-git-send-email-Li.Xiubo@freescale.com>
- <20140901083728.01454558@armhf>
+	<1409535327-11449-3-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140901083728.01454558@armhf>
-Content-Language: en-US
+In-Reply-To: <1409535327-11449-3-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "jsarha@ti.com" <jsarha@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Xiubo Li <Li.Xiubo@freescale.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-DQo+ID4gU2lnbmVkLW9mZi1ieTogWGl1Ym8gTGkgPExpLlhpdWJvQGZyZWVzY2FsZS5jb20+DQo+
-ID4gLS0tDQo+ID4gIHNvdW5kL3NvYy9nZW5lcmljL3NpbXBsZS1jYXJkLmMgfCAxICsNCj4gPiAg
-MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvc291
-bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYyBiL3NvdW5kL3NvYy9nZW5lcmljL3NpbXBsZS0N
-Cj4gY2FyZC5jDQo+ID4gaW5kZXggZmQ4YjA0NS4uOWUxNzBmZSAxMDA2NDQNCj4gPiAtLS0gYS9z
-b3VuZC9zb2MvZ2VuZXJpYy9zaW1wbGUtY2FyZC5jDQo+ID4gKysrIGIvc291bmQvc29jL2dlbmVy
-aWMvc2ltcGxlLWNhcmQuYw0KPiA+IEBAIC0zNjAsNiArMzYwLDcgQEAgc3RhdGljIGludCBhc29j
-X3NpbXBsZV9jYXJkX3BhcnNlX29mKHN0cnVjdCBkZXZpY2Vfbm9kZQ0KPiAqbm9kZSwNCj4gPiAg
-CQkJfQ0KPiA+ICAJCQlpKys7DQo+ID4gIAkJfQ0KPiA+ICsJCW9mX25vZGVfcHV0KG5wKTsNCj4g
-PiAgCX0gZWxzZSB7DQo+ID4gIAkJcmV0ID0gYXNvY19zaW1wbGVfY2FyZF9kYWlfbGlua19vZihu
-b2RlLCBkZXYsDQo+ID4gIAkJCQkJCSAgIGRhaV9saW5rLCBkYWlfcHJvcHMsIHRydWUpOw0KPiAN
-Cj4gTm8uIG5wIGlzIE5VTEwgYXQgZW5kIG9mIGxvb3AuDQo+IA0KDQpXZWxsLCB5ZXMsIHlvdSBh
-cmUgcmlnaHQuDQoNClRoYW5rcywNCg0KQlJzDQpYaXVibw0KDQo=
+On Mon, 1 Sep 2014 09:35:27 +0800
+Xiubo Li <Li.Xiubo@freescale.com> wrote:
+
+> DAI links's cpu_of_node's and codec_of_node's refcounts shouldn't
+> be decremented immediately at the end of the probe() fucntion.
+> Because we will still use them before the audio card is removed.
+
+Right, but your patch seems a bit complicated. See below.
+
+>=20
+> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> ---
+>  sound/soc/generic/simple-card.c | 52 ++++++++++++++++++++++---------=
+----------
+>  1 file changed, 28 insertions(+), 24 deletions(-)
+>=20
+> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simp=
+le-card.c
+> index 9e170fe..08c5d7d 100644
+> --- a/sound/soc/generic/simple-card.c
+> +++ b/sound/soc/generic/simple-card.c
+> @@ -307,6 +307,22 @@ dai_link_of_err:
+>  	return ret;
+>  }
+> =20
+> +static inline void
+> +asoc_simple_card_unref(const struct snd_soc_dai_link *dai_link,
+> +		       int num_links)
+> +{
+> +	struct device_node *np;
+> +
+> +	while (num_links--) {
+> +		np =3D dai_link[num_links].cpu_of_node;
+> +		if (np)
+> +			of_node_put(np);
+> +		np =3D dai_link[num_links].codec_of_node;
+> +		if (np)
+> +			of_node_put(np);
+> +	}
+> +}
+> +
+>  static int asoc_simple_card_parse_of(struct device_node *node,
+>  				     struct simple_card_data *priv,
+>  				     struct device *dev,
+> @@ -355,6 +371,7 @@ static int asoc_simple_card_parse_of(struct devic=
+e_node *node,
+>  							   dai_props + i,
+>  							   false);
+>  			if (ret < 0) {
+> +				asoc_simple_card_unref(dai_link, i + 1);
+>  				of_node_put(np);
+>  				return ret;
+>  			}
+> @@ -374,27 +391,6 @@ static int asoc_simple_card_parse_of(struct devi=
+ce_node *node,
+>  	return 0;
+>  }
+> =20
+> -/* update the reference count of the devices nodes at end of probe *=
+/
+> -static int asoc_simple_card_unref(struct platform_device *pdev)
+> -{
+> -	struct snd_soc_card *card =3D platform_get_drvdata(pdev);
+> -	struct snd_soc_dai_link *dai_link;
+> -	struct device_node *np;
+> -	int num_links;
+> -
+> -	for (num_links =3D 0, dai_link =3D card->dai_link;
+> -	     num_links < card->num_links;
+> -	     num_links++, dai_link++) {
+> -		np =3D (struct device_node *) dai_link->cpu_of_node;
+> -		if (np)
+> -			of_node_put(np);
+> -		np =3D (struct device_node *) dai_link->codec_of_node;
+> -		if (np)
+> -			of_node_put(np);
+> -	}
+> -	return 0;
+> -}
+> -
+>  static int asoc_simple_card_probe(struct platform_device *pdev)
+>  {
+>  	struct simple_card_data *priv;
+> @@ -441,7 +437,7 @@ static int asoc_simple_card_probe(struct platform=
+_device *pdev)
+>  		if (ret < 0) {
+>  			if (ret !=3D -EPROBE_DEFER)
+>  				dev_err(dev, "parse error %d\n", ret);
+> -			goto err;
+> +			return ret;
+>  		}
+> =20
+>  	} else {
+> @@ -483,11 +479,18 @@ static int asoc_simple_card_probe(struct platfo=
+rm_device *pdev)
+> =20
+>  	ret =3D devm_snd_soc_register_card(&pdev->dev, &priv->snd_card);
+> =20
+> -err:
+> -	asoc_simple_card_unref(pdev);
+>  	return ret;
+>  }
+
+The main problem is there: don't unref the nodes is no error.
+Why not simply:
+=20
+ 	ret =3D devm_snd_soc_register_card(&pdev->dev, &priv->snd_card);
++	if (ret >=3D 0)
++		return ret;		/* success */
+=20
+ err:
+	asoc_simple_card_unref(pdev);
+ 	return ret;
+ }
+
+? Then, the above stuff is not needed.
+
+> +static int asoc_simple_card_remove(struct platform_device *pdev)
+> +{
+> +	struct snd_soc_card *card =3D platform_get_drvdata(pdev);
+> +
+> +	asoc_simple_card_unref(card->dai_link, card->num_links);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct of_device_id asoc_simple_of_match[] =3D {
+>  	{ .compatible =3D "simple-audio-card", },
+>  	{},
+> @@ -501,6 +504,7 @@ static struct platform_driver asoc_simple_card =3D=
+ {
+>  		.of_match_table =3D asoc_simple_of_match,
+>  	},
+>  	.probe =3D asoc_simple_card_probe,
+> +	.remove =3D asoc_simple_card_remove,
+>  };
+> =20
+>  module_platform_driver(asoc_simple_card);
+
+OK.
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
