@@ -1,18 +1,18 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 09526262629
- for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 14:42:14 +0200 (CEST)
-Date: Mon, 1 Sep 2014 17:49:59 +0530
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id C055926561E
+ for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 16:21:03 +0200 (CEST)
+Date: Mon, 1 Sep 2014 19:27:07 +0530
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Message-ID: <20140901121959.GE12898@vinod.koul@linux.intel.com>
-References: <1408625450-32315-1-git-send-email-subhransu.s.prusty@intel.com>
- <1408625450-32315-9-git-send-email-subhransu.s.prusty@intel.com>
- <20140827204654.GA17528@sirena.org.uk>
+Message-ID: <20140901135702.GA14646@vinod.koul@linux.intel.com>
+References: <1408625450-32315-5-git-send-email-subhransu.s.prusty@intel.com>
+ <20140827203737.GY17528@sirena.org.uk>
+ <20140901121753.GC12898@vinod.koul@linux.intel.com>
+ <20140901125114.GV29327@sirena.org.uk>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20140827204654.GA17528@sirena.org.uk>
-Subject: Re: [alsa-devel] [v3 08/11] ASoC: Intel: sst: add power management
-	handling
+In-Reply-To: <20140901125114.GV29327@sirena.org.uk>
+Subject: Re: [alsa-devel] [v3 04/11] ASoC: Intel: sst: Add IPC handling
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,30 +28,33 @@ To: Mark Brown <broonie@kernel.org>
 Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
 List-ID: <alsa-devel@alsa-project.org>
 
-On Wed, Aug 27, 2014 at 09:46:54PM +0100, Mark Brown wrote:
-> On Thu, Aug 21, 2014 at 06:20:47PM +0530, Subhransu S. Prusty wrote:
+On Mon, Sep 01, 2014 at 01:51:14PM +0100, Mark Brown wrote:
+> On Mon, Sep 01, 2014 at 05:47:53PM +0530, Subhransu S. Prusty wrote:
+> > On Wed, Aug 27, 2014 at 09:37:37PM +0100, Mark Brown wrote:
 > 
-> > +	/* When fw_clear_cache is set, clear the cached firmware copy */
-> > +	/* fw_clear_cache is set through debugfs support */
+> > > > +			spin_unlock_bh(&ctx->block_lock);
+> > > > +			return 0;
+> > > > +		}
+> > > > +	}
+> > > > +	spin_unlock_bh(&ctx->block_lock);
+> > > > +	return -EINVAL;
 > 
-> Not in this patch series!
-Yes. Will remove.
+> > > I'd expect much louder complaints if we try to free something that's not
+> > > allocated - what happens if we end up reallocating something quickly and
+> > > then double freeing?  Better to complain if we hit such a code path.
 > 
-> > +	if (atomic_read(&ctx->fw_clear_cache) && ctx->fw_in_mem) {
+> > "freed" is a block which is passed by the caller to be freed up. Will add a
+> > comment.
 > 
-> Why is this an atomic operation?  They're a bit of an alarm bell for
-> correctness and it'd seem useful if the clear just happened immediately
-> anyway.
-> 
-> > +	if (ret) {
-> > +		pr_err("FW download fail %x\n", ret);
-> > +		ctx->sst_state = SST_RESET;
-> > +		mutex_unlock(&ctx->sst_lock);
-> > +		sst_pm_runtime_put(ctx);
-> 
-> This is a runtime_pm_put() in the runtime PM callback?  That doesn't
-> look right.
-Mistakenly added. Not required.
+> How would that address the problem?  Obviously the caller is trying to
+> free what they're passing in.
+
+sst_create_block() which allocates the memory and sst_free_block() which
+frees the memory are called in a synchronous way. A single thread who is
+allocating waits till a response arrives, if that response is valid then
+after processing the response the sst_free_block() is called to free up the
+memory. So the double freeing will not happen. Does this address your concern?
+
 
 
 -- 
