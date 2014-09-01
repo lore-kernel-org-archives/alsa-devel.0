@@ -1,94 +1,70 @@
-From: Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCHv1 4/7] ASoC: dts: kirkwood-t5325: To support simple card
- newest style.
-Date: Mon, 1 Sep 2014 15:41:48 +0200
-Message-ID: <20140901134148.GB11312@lunn.ch>
-References: <1409545781-20530-1-git-send-email-Li.Xiubo@freescale.com>
- <1409545781-20530-5-git-send-email-Li.Xiubo@freescale.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3 v4 RESEND] mfd: arizona: Export function to control
+	subsystem DVFS
+Date: Mon, 1 Sep 2014 15:47:00 +0100
+Message-ID: <20140901144700.GA18134@opensource.wolfsonmicro.com>
+References: <20140808133233.GA2665@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1409545781-20530-5-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, kuninori.morimoto.gx@renesas.com, moinejf@free.fr, andrew@lunn.ch, jsarha@ti.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org, alsa-devel@alsa-project.org, shawn.guo@freescale.com, linux-kernel@vger.kernel.org, Jason Cooper <jason@lakedaemon.net>
+In-Reply-To: <20140808133233.GA2665@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lee.jones@linaro.org, sameo@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 01, 2014 at 12:29:38PM +0800, Xiubo Li wrote:
-> This patch depends on the following simple card patch:
-> ===
-> ASoC: simple-card: Merge single and muti DAI link code.
-
-Saying what a patch depends on, is not the best of ChangeLog.
-
-Say something like:
-
-The simple-card binding has been changed, so that a dai-link subnode
-is now required, and the properties directly under the sound node are
-no longer allowed. Modify the DT to fit this new binding.
-
-   Andrew
-
-
-> 
-> This patch merge single DAI link and muti-DAI links code together,
-> and simply the simple-card driver code.
-> 
-> And also do some other improvement:
-> 
-> Since from the DAI format micro SND_SOC_DAIFMT_CBx_CFx, the 'CBx'
-> mean Codec's bit clock is as master/slave and the 'CFx' mean Codec's
-> frame clock is as master/slave.
-> 
-> So these same DAI formats should be informed to CPU and CODE DAIs at
-> the same time. For the Codec driver will set the bit clock and frame
-> clock as the DAI formats said, but for the CPU driver, if the the
-> bit clock or frame clock is as Codec master, so it should be set CPU
-> DAI device as bit clock or frame clock as slave, and vice versa.
-> 
-> The old code will cause confusion, and we should be clear that the
-> letter 'C' here mean to Codec.
-> ===
-> 
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
-> ---
->  arch/arm/boot/dts/kirkwood-t5325.dts | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/kirkwood-t5325.dts b/arch/arm/boot/dts/kirkwood-t5325.dts
-> index 610ec0f..25d1223 100644
-> --- a/arch/arm/boot/dts/kirkwood-t5325.dts
-> +++ b/arch/arm/boot/dts/kirkwood-t5325.dts
-> @@ -189,7 +189,6 @@
 >  
->  	sound {
->  		compatible = "simple-audio-card";
-> -		simple-audio-card,format = "i2s";
->  		simple-audio-card,routing =
->  			"Headphone Jack", "HPL",
->  			"Headphone Jack", "HPR",
-> @@ -204,12 +203,14 @@
->  
->  		simple-audio-card,mclk-fs = <256>;
->  
-> -		simple-audio-card,cpu {
-> -			sound-dai = <&audio>;
-> -		};
-> -
-> -		simple-audio-card,codec {
-> -			sound-dai = <&alc5621>;
-> +		simple-audio-card,dai-link {
-> +			format = "i2s";
-> +			cpu {
-> +				sound-dai = <&audio>;
-> +			};
-> +			codec {
-> +				sound-dai = <&alc5621>;
-> +			};
->  		};
->  	};
->  };
-> -- 
-> 1.8.4
-> 
+> +
+> +int arizona_dvfs_down(struct arizona *arizona, unsigned int flags)
+> +{
+> +	int ret = 0;
+> +
+> +	mutex_lock(&arizona->subsys_max_lock);
+> +
+> +	if ((arizona->subsys_max_rq & flags) != flags)
+> +		dev_warn(arizona->dev, "Unbalanced DVFS down: %x\n", flags);
+
+This warning is bogus and should be removed. These are just simple on/off bit
+flags, not a reference count. If a requestor is already at the lower DVFS
+state we just do nothing.
+
+It was done this way to keep the code simple and lower risk. None of the
+blocks that need to move the DVFS frequency up and down have multiple users
+so they are simple either/or cases that don't currently reference count
+themselves. So having a boolean flag to match the state of each block
+keeps the change set smaller.
+
+> +
+> +	arizona->subsys_max_rq &= ~flags;
+> +
+> +	if (arizona->subsys_max_rq == 0) {
+> +		switch (arizona->type) {
+> +		case WM5102:
+> +		case WM8997:
+> +			ret = regmap_update_bits(arizona->regmap,
+> +					ARIZONA_DYNAMIC_FREQUENCY_SCALING_1,
+> +					ARIZONA_SUBSYS_MAX_FREQ, 0);
+> +			if (ret != 0)
+> +				dev_err(arizona->dev,
+> +					"Failed to disable subsys max: %d\n",
+> +					ret);
+> +
+> +			ret = regulator_set_voltage(arizona->dcvdd,
+> +						    1200000, 1800000);
+> +			if (ret != 0)
+> +				dev_err(arizona->dev,
+> +					"Failed to set DCVDD (DVFS down): %d\n",
+> +					ret);
+> +			break;
+> +
+> +		default:
+> +			break;
+> +		}
+> +	}
+> +
+> +	mutex_unlock(&arizona->subsys_max_lock);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(arizona_dvfs_down);
+> +
