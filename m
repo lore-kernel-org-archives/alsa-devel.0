@@ -1,22 +1,18 @@
-From: "Peter S. Housel" <housel@acm.org>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: tlv320aic31xx: place codec into
  reset state initially
-Date: Tue, 02 Sep 2014 13:25:53 -0700
-Message-ID: <540627D1.2070108@acm.org>
+Date: Tue, 2 Sep 2014 23:31:32 +0100
+Message-ID: <20140902223132.GE29327@sirena.org.uk>
 References: <1407190401-3712-1-git-send-email-housel@acm.org>
- <avb91o01X1j0zgo01vbBxr>
+ <avb91o01X1j0zgo01vbBxr> <540627D1.2070108@acm.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4237099477983969711=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fed1rmfepo101.cox.net (fed1rmfepo101.cox.net [68.230.241.143])
- by alsa0.perex.cz (Postfix) with ESMTP id A98C9265510
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 22:25:58 +0200 (CEST)
-Received: from fed1rmimpo109 ([68.230.241.158]) by fed1rmfepo101.cox.net
- (InterMail vM.8.01.05.15 201-2260-151-145-20131218) with ESMTP
- id <20140902202557.ZFQB29651.fed1rmfepo101.cox.net@fed1rmimpo109>
- for <alsa-devel@alsa-project.org>; Tue, 2 Sep 2014 16:25:57 -0400
-In-Reply-To: <avb91o01X1j0zgo01vbBxr>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DA482654D8
+ for <alsa-devel@alsa-project.org>; Wed,  3 Sep 2014 00:31:39 +0200 (CEST)
+In-Reply-To: <540627D1.2070108@acm.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,49 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
+To: "Peter S. Housel" <housel@acm.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ping...
 
-Thanks,
--Peter-
+--===============4237099477983969711==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tfudkhBUqbdcU4Ca"
+Content-Disposition: inline
 
-On 08/05/2014 12:34 AM, Jyri Sarha wrote:
-> On 08/05/2014 01:13 AM, Peter S. Housel wrote:
->> Previously the driver would only place the TLV320AIC31XX into reset
->> using the gpio reset line when at least one of the power supply
->> regulators was disabled, so that if these supplies were always enabled
->> no reset would ever occur. This change resets the codec state at probe
->> time so that the initial register cache values are correct.
->>
->> Signed-off-by: Peter S. Housel <housel@acm.org>
->> ---
->>   sound/soc/codecs/tlv320aic31xx.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/codecs/tlv320aic31xx.c 
->> b/sound/soc/codecs/tlv320aic31xx.c
->> index 0f64c78..89a4daf 100644
->> --- a/sound/soc/codecs/tlv320aic31xx.c
->> +++ b/sound/soc/codecs/tlv320aic31xx.c
->> @@ -1194,7 +1194,7 @@ static int aic31xx_device_init(struct 
->> aic31xx_priv *aic31xx)
->>       if (aic31xx->pdata.gpio_reset) {
->>           ret = devm_gpio_request_one(aic31xx->dev,
->>                           aic31xx->pdata.gpio_reset,
->> -                        GPIOF_OUT_INIT_HIGH,
->> +                        GPIOF_OUT_INIT_LOW,
->>                           "aic31xx-reset-pin");
->>           if (ret < 0) {
->>               dev_err(aic31xx->dev, "not able to acquire gpio\n");
->>
->
-> Oops, aic3111 and friends indeed have an active low reset line. The 
-> line was not behind a gpio on my board.
->
-> Acked-by: Jyri Sarha <jsarha@ti.com>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--tfudkhBUqbdcU4Ca
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Sep 02, 2014 at 01:25:53PM -0700, Peter S. Housel wrote:
+> Ping...
+
+Don't top post and don't send content free pings.  If you think a patch
+should be applied please send it to the maintainers as covered in
+SubmittingPatches.
+
+--tfudkhBUqbdcU4Ca
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJUBkVBAAoJELSic+t+oim9C3AQAIMg/XgaWgxtoc29N/81y6Fd
+it5X28HkkdTSyPuWCedXW6UPsVm3DlZB9BV0iuj6dTBgKR5hCcrLKjIzQJCDPHXo
+sCJwAF3w5uHUVhAfJ4VCGXgefsQNn+9cCv6zlxOePrEocjCSObwXWtRWCvLDtizz
+wSZjf9fA/s/BDS0gylpDj627PJJzEMkNqDYGdp9HbOwHKudrzM+BmgYRZAFCnFpL
+kK7p+vdH7HpBcY8CURJGEucQmEJeof6hxqIbQgXbNkuBoHW+2wKB6g475fxSb6PT
+5vlRxHh2T+ZV1OgNg7X30c7BPXppArHNN0eDdqA7KzraLn4dk5RQqxrDiz/ZfGEH
+GTQx3kORu8pHHABzo4inZrtv1HBd70hZ23gXF2eSjvYVNCoyJn5Bq4BLx5dlG1H4
+Js5T+2XtdhAi6Qsd1EHOqsmNirRpSQl89UokyTUmbNYooaAQ0toW8FOMioRfg4GX
+dG4mDsBxnBRoY9LfWSyiG7Fdb1H6DKNgudxMH2vD36XS95Ycw0HxWBYs5YfGmKG8
+XbQjnWd50JbHt/XZc6/xR2bMIjU61dZr6w1VtfcZgd4rSm5bilEqbYa2LWR44Yrg
+rM2RksVjvvCsaTMOwOusM40Mnmb1+nuMUP4PRtZqedj0Lrx51aESFT5rh6ZIy+9n
+Vafs49jOA6RFEdlVDCI0
+=NnzY
+-----END PGP SIGNATURE-----
+
+--tfudkhBUqbdcU4Ca--
+
+--===============4237099477983969711==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4237099477983969711==--
