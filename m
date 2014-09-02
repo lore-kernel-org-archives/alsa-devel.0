@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 5/5] ASoC: wm8995: Remove unnecessary
+Subject: [PATCH 3/5] ASoC: tlv320aic3x: Remove unnecessary
 	suspend/resume bias level changes
-Date: Tue,  2 Sep 2014 22:20:34 +0200
-Message-ID: <1409689234-14774-6-git-send-email-lars@metafoo.de>
+Date: Tue,  2 Sep 2014 22:20:32 +0200
+Message-ID: <1409689234-14774-4-git-send-email-lars@metafoo.de>
 References: <1409689234-14774-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-200.synserver.de (smtp-out-200.synserver.de
  [212.40.185.200])
- by alsa0.perex.cz (Postfix) with ESMTP id A71802654E4
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 22:20:45 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BB6C82654D3
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 22:20:43 +0200 (CEST)
 In-Reply-To: <1409689234-14774-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,45 +35,42 @@ since the core will go right back to SND_SOC_BIAS_OFF.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8995.c | 19 -------------------
- 1 file changed, 19 deletions(-)
+ sound/soc/codecs/tlv320aic3x.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
-index cae4ac5..1288ede 100644
---- a/sound/soc/codecs/wm8995.c
-+++ b/sound/soc/codecs/wm8995.c
-@@ -1998,23 +1998,6 @@ static int wm8995_set_bias_level(struct snd_soc_codec *codec,
- 	return 0;
- }
- 
--#ifdef CONFIG_PM
--static int wm8995_suspend(struct snd_soc_codec *codec)
--{
--	wm8995_set_bias_level(codec, SND_SOC_BIAS_OFF);
--	return 0;
--}
--
--static int wm8995_resume(struct snd_soc_codec *codec)
--{
--	wm8995_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--	return 0;
--}
--#else
--#define wm8995_suspend NULL
--#define wm8995_resume NULL
--#endif
--
- static int wm8995_remove(struct snd_soc_codec *codec)
- {
- 	struct wm8995_priv *wm8995;
-@@ -2220,8 +2203,6 @@ static struct snd_soc_dai_driver wm8995_dai[] = {
- static struct snd_soc_codec_driver soc_codec_dev_wm8995 = {
- 	.probe = wm8995_probe,
- 	.remove = wm8995_remove,
--	.suspend = wm8995_suspend,
--	.resume = wm8995_resume,
- 	.set_bias_level = wm8995_set_bias_level,
- 	.idle_bias_off = true,
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 64f179e..f2c416d 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1222,20 +1222,6 @@ static struct snd_soc_dai_driver aic3x_dai = {
+ 	.symmetric_rates = 1,
  };
+ 
+-static int aic3x_suspend(struct snd_soc_codec *codec)
+-{
+-	aic3x_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-
+-	return 0;
+-}
+-
+-static int aic3x_resume(struct snd_soc_codec *codec)
+-{
+-	aic3x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+-	return 0;
+-}
+-
+ static void aic3x_mono_init(struct snd_soc_codec *codec)
+ {
+ 	/* DAC to Mono Line Out default volume and route to Output mixer */
+@@ -1429,8 +1415,6 @@ static struct snd_soc_codec_driver soc_codec_dev_aic3x = {
+ 	.idle_bias_off = true,
+ 	.probe = aic3x_probe,
+ 	.remove = aic3x_remove,
+-	.suspend = aic3x_suspend,
+-	.resume = aic3x_resume,
+ 	.controls = aic3x_snd_controls,
+ 	.num_controls = ARRAY_SIZE(aic3x_snd_controls),
+ 	.dapm_widgets = aic3x_dapm_widgets,
 -- 
 1.8.0
