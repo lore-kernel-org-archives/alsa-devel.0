@@ -1,124 +1,127 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv3 6/9] WM8971 uses msleep to replace work
-	queue
-Date: Tue, 2 Sep 2014 11:00:50 +0100
-Message-ID: <20140902100050.GG12043@opensource.wolfsonmicro.com>
-References: <1409628470-13059-1-git-send-email-xavier.hsu@linaro.org>
- <1409628470-13059-6-git-send-email-xavier.hsu@linaro.org>
+From: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: [PATCHv2 1/4] ASoC: simple-card: add asoc_simple_card_fmt_master() to simplify the code.
+Date: Tue, 2 Sep 2014 17:26:06 +0800
+Message-ID: <1409649969-15759-2-git-send-email-Li.Xiubo@freescale.com>
+References: <1409649969-15759-1-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0249F26528B
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 12:00:51 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1409628470-13059-6-git-send-email-xavier.hsu@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Xavier Hsu <xavier.hsu@linaro.org>
-Cc: Andy Green <andy.green@linaro.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, patches@linaro.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1409649969-15759-1-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, andrew-g2DYL2Zd6BY@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, jsarha-l0cyMroinI0@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 02, 2014 at 11:27:47AM +0800, Xavier Hsu wrote:
-> This patch improves WM8971.
-> We use msleep to replace work queue.
-> "As suggested by Mark Brown"
-> 
-> Any comments about improving the patch are welcome.
-> Thanks.
-> 
-> Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
-> Signed-off-by: Andy Green <andy.green@linaro.org>
-> ---
->  sound/soc/codecs/wm8971.c |   25 ++-----------------------
->  1 file changed, 2 insertions(+), 23 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
-> index 20cfdd3..68b4f52 100755
-> --- a/sound/soc/codecs/wm8971.c
-> +++ b/sound/soc/codecs/wm8971.c
-> @@ -36,8 +36,6 @@
->  
->  #define	WM8971_REG_COUNT	43
->  
-> -static struct workqueue_struct *wm8971_workq;
-> -
->  /* codec private data */
->  struct wm8971_priv {
->  	unsigned int sysclk;
-> @@ -774,16 +772,6 @@ static struct snd_soc_dai_driver wm8971_dai = {
->  	.ops = &wm8971_dai_ops,
->  };
->  
-> -static void wm8971_work(struct work_struct *work)
-> -{
-> -	struct snd_soc_dapm_context *dapm =
-> -		container_of(work, struct snd_soc_dapm_context,
-> -			     delayed_work.work);
-> -	struct snd_soc_codec *codec = dapm->codec;
-> -
-> -	wm8971_set_bias_level(codec, codec->dapm.bias_level);
-> -}
-> -
->  static int wm8971_suspend(struct snd_soc_codec *codec)
->  {
->  	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> @@ -801,8 +789,7 @@ static int wm8971_resume(struct snd_soc_codec *codec)
->  		reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
->  		snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
->  		codec->dapm.bias_level = SND_SOC_BIAS_ON;
-> -		queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
-> -				   msecs_to_jiffies(1000));
-> +		msleep(100);
->  	}
->  
->  	return 0;
-> @@ -813,19 +800,13 @@ static int wm8971_probe(struct snd_soc_codec *codec)
->  	int ret = 0;
->  	u16 reg;
->  
-> -	INIT_DELAYED_WORK(&codec->dapm.delayed_work, wm8971_work);
-> -	wm8971_workq = create_workqueue("wm8971");
-> -	if (wm8971_workq == NULL)
-> -		return -ENOMEM;
-> -
->  	wm8971_reset(codec);
->  
->  	/* charge output caps - set vmid to 5k for quick power up */
->  	reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
->  	snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
->  	codec->dapm.bias_level = SND_SOC_BIAS_STANDBY;
-> -	queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
-> -			   msecs_to_jiffies(1000));
-> +	msleep(100);
+Signed-off-by: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+---
+ sound/soc/generic/simple-card.c | 61 ++++++++++++++++++++---------------------
+ 1 file changed, 29 insertions(+), 32 deletions(-)
 
-Does this patch actually work? You have taken out the
-queue_delayed_work and replaced it with a delay (which is 10x
-shorter than the delayed work version), but you  haven't replaced
-the call to wm8971_set_bias_level that used to be in the delayed
-work?
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 986d2c7..cad2b30 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -163,6 +163,26 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+ 	return 0;
+ }
+ 
++static inline unsigned int
++asoc_simple_card_fmt_master(struct device_node *np,
++			    struct device_node *bitclkmaster,
++			    struct device_node *framemaster)
++{
++	switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
++	case 0x11:
++		return SND_SOC_DAIFMT_CBS_CFS;
++	case 0x10:
++		return SND_SOC_DAIFMT_CBS_CFM;
++	case 0x01:
++		return SND_SOC_DAIFMT_CBM_CFS;
++	default:
++		return SND_SOC_DAIFMT_CBM_CFM;
++	}
++
++	/* Shouldn't be here */
++	return -EINVAL;
++}
++
+ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 					struct device *dev,
+ 					struct snd_soc_dai_link *dai_link,
+@@ -172,7 +192,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 	struct device_node *np = NULL;
+ 	struct device_node *bitclkmaster = NULL;
+ 	struct device_node *framemaster = NULL;
+-	unsigned int daifmt;
++	unsigned int daifmt, fmt;
+ 	char *name;
+ 	char prop[128];
+ 	char *prefix = "";
+@@ -185,6 +205,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 					 &bitclkmaster, &framemaster);
+ 	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
+ 
++	/* Parse CPU DAI sub-node */
+ 	snprintf(prop, sizeof(prop), "%scpu", prefix);
+ 	np = of_get_child_by_name(node, prop);
+ 	if (!np) {
+@@ -199,23 +220,11 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	dai_props->cpu_dai.fmt = daifmt;
+-	switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
+-	case 0x11:
+-		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBS_CFS;
+-		break;
+-	case 0x10:
+-		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBS_CFM;
+-		break;
+-	case 0x01:
+-		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBM_CFS;
+-		break;
+-	default:
+-		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBM_CFM;
+-		break;
+-	}
+-
++	fmt = asoc_simple_card_fmt_master(np, bitclkmaster, framemaster);
++	dai_props->cpu_dai.fmt = daifmt | fmt;
+ 	of_node_put(np);
++
++	/* Parse CODEC DAI sub-node */
+ 	snprintf(prop, sizeof(prop), "%scodec", prefix);
+ 	np = of_get_child_by_name(node, prop);
+ 	if (!np) {
+@@ -240,21 +249,9 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 			snd_soc_of_parse_daifmt(np, NULL, NULL, NULL) |
+ 			(daifmt & ~SND_SOC_DAIFMT_CLOCK_MASK);
+ 	} else {
+-		dai_props->codec_dai.fmt = daifmt;
+-		switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
+-		case 0x11:
+-			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBM_CFM;
+-			break;
+-		case 0x10:
+-			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBM_CFS;
+-			break;
+-		case 0x01:
+-			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBS_CFM;
+-			break;
+-		default:
+-			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBS_CFS;
+-			break;
+-		}
++		fmt = asoc_simple_card_fmt_master(np, bitclkmaster,
++						  framemaster);
++		dai_props->codec_dai.fmt = daifmt | fmt;
+ 	}
+ 
+ 	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name) {
+-- 
+1.8.4
 
->  
->  	/* set the update bits */
->  	snd_soc_update_bits(codec, WM8971_LDAC, 0x0100, 0x0100);
-> @@ -846,8 +827,6 @@ static int wm8971_remove(struct snd_soc_codec *codec)
->  {
->  	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
->  
-> -	if (wm8971_workq)
-> -		destroy_workqueue(wm8971_workq);
->  	return 0;
->  }
->  
-> -- 
-
-Thanks,
-Charles
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
