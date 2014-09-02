@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/5] ASoC: lm49453: Remove unnecessary
+Subject: [PATCH 4/5] ASoC: wm8804: Remove unnecessary
 	suspend/resume bias level changes
-Date: Tue,  2 Sep 2014 22:20:31 +0200
-Message-ID: <1409689234-14774-3-git-send-email-lars@metafoo.de>
+Date: Tue,  2 Sep 2014 22:20:33 +0200
+Message-ID: <1409689234-14774-5-git-send-email-lars@metafoo.de>
 References: <1409689234-14774-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-200.synserver.de (smtp-out-200.synserver.de
  [212.40.185.200])
- by alsa0.perex.cz (Postfix) with ESMTP id DB8732654CC
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 22:20:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AC0CF2654D8
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 22:20:44 +0200 (CEST)
 In-Reply-To: <1409689234-14774-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,40 +35,45 @@ since the core will go right back to SND_SOC_BIAS_OFF.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/lm49453.c | 14 --------------
- 1 file changed, 14 deletions(-)
+ sound/soc/codecs/wm8804.c | 19 -------------------
+ 1 file changed, 19 deletions(-)
 
-diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
-index 275b3f7..c1ae576 100644
---- a/sound/soc/codecs/lm49453.c
-+++ b/sound/soc/codecs/lm49453.c
-@@ -1395,18 +1395,6 @@ static struct snd_soc_dai_driver lm49453_dai[] = {
- 	},
- };
+diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+index 0ea01df..3addc5f 100644
+--- a/sound/soc/codecs/wm8804.c
++++ b/sound/soc/codecs/wm8804.c
+@@ -518,23 +518,6 @@ static int wm8804_set_bias_level(struct snd_soc_codec *codec,
+ 	return 0;
+ }
  
--static int lm49453_suspend(struct snd_soc_codec *codec)
+-#ifdef CONFIG_PM
+-static int wm8804_suspend(struct snd_soc_codec *codec)
 -{
--	lm49453_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	wm8804_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -	return 0;
 -}
 -
--static int lm49453_resume(struct snd_soc_codec *codec)
+-static int wm8804_resume(struct snd_soc_codec *codec)
 -{
--	lm49453_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	wm8804_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -	return 0;
 -}
+-#else
+-#define wm8804_suspend NULL
+-#define wm8804_resume NULL
+-#endif
 -
- /* power down chip */
- static int lm49453_remove(struct snd_soc_codec *codec)
+ static int wm8804_remove(struct snd_soc_codec *codec)
  {
-@@ -1416,8 +1404,6 @@ static int lm49453_remove(struct snd_soc_codec *codec)
+ 	struct wm8804_priv *wm8804;
+@@ -671,8 +654,6 @@ static struct snd_soc_dai_driver wm8804_dai = {
+ static struct snd_soc_codec_driver soc_codec_dev_wm8804 = {
+ 	.probe = wm8804_probe,
+ 	.remove = wm8804_remove,
+-	.suspend = wm8804_suspend,
+-	.resume = wm8804_resume,
+ 	.set_bias_level = wm8804_set_bias_level,
+ 	.idle_bias_off = true,
  
- static struct snd_soc_codec_driver soc_codec_dev_lm49453 = {
- 	.remove = lm49453_remove,
--	.suspend = lm49453_suspend,
--	.resume = lm49453_resume,
- 	.set_bias_level = lm49453_set_bias_level,
- 	.controls = lm49453_snd_controls,
- 	.num_controls = ARRAY_SIZE(lm49453_snd_controls),
 -- 
 1.8.0
