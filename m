@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v5 11/12] ASoC: Intel: mrfld: Use
-	snd_soc_dai_get_drvdata to derive drv data
-Date: Tue,  2 Sep 2014 18:06:06 +0530
-Message-ID: <1409661367-19047-12-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v5 03/12] ALSA: control: Add init callback for
+	kcontrol
+Date: Tue,  2 Sep 2014 18:05:58 +0530
+Message-ID: <1409661367-19047-4-git-send-email-subhransu.s.prusty@intel.com>
 References: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FF91265546
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 14:58:54 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BF7A265529
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 14:58:32 +0200 (CEST)
 In-Reply-To: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,55 +25,68 @@ To: alsa-devel@alsa-project.org
 Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+Some controls need to initialize stuffs like pvt data, so they need a
+callback if the control creation is successful.
+
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/sst-mfld-platform-pcm.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ include/sound/control.h | 3 +++
+ sound/core/control.c    | 7 +++++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
-index 5a9e84c..4e44e36 100644
---- a/sound/soc/intel/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/sst-mfld-platform-pcm.c
-@@ -228,7 +228,7 @@ int sst_fill_stream_params(void *substream,
- }
- 
- static int sst_platform_alloc_stream(struct snd_pcm_substream *substream,
--		struct snd_soc_platform *platform)
-+		struct snd_soc_dai *dai)
- {
- 	struct sst_runtime_stream *stream =
- 			substream->runtime->private_data;
-@@ -236,7 +236,7 @@ static int sst_platform_alloc_stream(struct snd_pcm_substream *substream,
- 	struct snd_sst_params str_params = {0};
- 	struct snd_sst_alloc_params_ext alloc_params = {0};
- 	int ret_val = 0;
--	struct sst_data *ctx = snd_soc_platform_get_drvdata(platform);
-+	struct sst_data *ctx = snd_soc_dai_get_drvdata(dai);
- 
- 	/* set codec params and inform SST driver the same */
- 	sst_fill_pcm_params(substream, &param);
-@@ -369,10 +369,10 @@ static void sst_media_close(struct snd_pcm_substream *substream,
- 	kfree(stream);
- }
- 
--static inline unsigned int get_current_pipe_id(struct snd_soc_platform *platform,
-+static inline unsigned int get_current_pipe_id(struct snd_soc_dai *dai,
- 					       struct snd_pcm_substream *substream)
- {
--	struct sst_data *sst = snd_soc_platform_get_drvdata(platform);
-+	struct sst_data *sst = snd_soc_dai_get_drvdata(dai);
- 	struct sst_dev_stream_map *map = sst->pdata->pdev_strm_map;
- 	struct sst_runtime_stream *stream =
- 			substream->runtime->private_data;
-@@ -399,7 +399,7 @@ static int sst_media_prepare(struct snd_pcm_substream *substream,
- 		return ret_val;
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 0426139..1389f69 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -30,6 +30,7 @@ struct snd_kcontrol;
+ typedef int (snd_kcontrol_info_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_info * uinfo);
+ typedef int (snd_kcontrol_get_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_value * ucontrol);
+ typedef int (snd_kcontrol_put_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_value * ucontrol);
++typedef int (snd_kcontrol_init_t) (struct snd_kcontrol * kcontrol);
+ typedef int (snd_kcontrol_tlv_rw_t)(struct snd_kcontrol *kcontrol,
+ 				    int op_flag, /* SNDRV_CTL_TLV_OP_XXX */
+ 				    unsigned int size,
+@@ -52,6 +53,7 @@ struct snd_kcontrol_new {
+ 	snd_kcontrol_info_t *info;
+ 	snd_kcontrol_get_t *get;
+ 	snd_kcontrol_put_t *put;
++	snd_kcontrol_init_t *init;
+ 	union {
+ 		snd_kcontrol_tlv_rw_t *c;
+ 		const unsigned int *p;
+@@ -71,6 +73,7 @@ struct snd_kcontrol {
+ 	snd_kcontrol_info_t *info;
+ 	snd_kcontrol_get_t *get;
+ 	snd_kcontrol_put_t *put;
++	snd_kcontrol_init_t *init;
+ 	union {
+ 		snd_kcontrol_tlv_rw_t *c;
+ 		const unsigned int *p;
+diff --git a/sound/core/control.c b/sound/core/control.c
+index b961134..9d30663 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -256,6 +256,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
+ 	kctl.info = ncontrol->info;
+ 	kctl.get = ncontrol->get;
+ 	kctl.put = ncontrol->put;
++	kctl.init = ncontrol->init;
+ 	kctl.tlv.p = ncontrol->tlv.p;
+ 	kctl.private_value = ncontrol->private_value;
+ 	kctl.private_data = private_data;
+@@ -362,6 +363,12 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
+ 		err = -ENOMEM;
+ 		goto error;
  	}
- 
--	ret_val = sst_platform_alloc_stream(substream, dai->platform);
-+	ret_val = sst_platform_alloc_stream(substream, dai);
- 	if (ret_val <= 0)
- 		return ret_val;
- 	snprintf(substream->pcm->id, sizeof(substream->pcm->id),
++	if (kcontrol->init) {
++		err = kcontrol->init(kcontrol);
++		if (err < 0)
++			goto error;
++	}
++
+ 	list_add_tail(&kcontrol->list, &card->controls);
+ 	card->controls_count += kcontrol->count;
+ 	kcontrol->id.numid = card->last_numid + 1;
 -- 
 1.9.0
