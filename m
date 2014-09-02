@@ -1,16 +1,15 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v5 03/12] ALSA: control: Add init callback for
-	kcontrol
-Date: Tue,  2 Sep 2014 18:05:58 +0530
-Message-ID: <1409661367-19047-4-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v5 12/12] ASoC: Intel: mrfld: add the DSP mixers
+Date: Tue,  2 Sep 2014 18:06:07 +0530
+Message-ID: <1409661367-19047-13-git-send-email-subhransu.s.prusty@intel.com>
 References: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 2BF7A265529
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 14:58:32 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C239265560
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 14:59:05 +0200 (CEST)
 In-Reply-To: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,68 +24,50 @@ To: alsa-devel@alsa-project.org
 Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Some controls need to initialize stuffs like pvt data, so they need a
-callback if the control creation is successful.
+From: Vinod Koul <vinod.koul@intel.com>
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- include/sound/control.h | 3 +++
- sound/core/control.c    | 7 +++++++
- 2 files changed, 10 insertions(+)
+ sound/soc/intel/sst-atom-controls.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index 0426139..1389f69 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -30,6 +30,7 @@ struct snd_kcontrol;
- typedef int (snd_kcontrol_info_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_info * uinfo);
- typedef int (snd_kcontrol_get_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_value * ucontrol);
- typedef int (snd_kcontrol_put_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_value * ucontrol);
-+typedef int (snd_kcontrol_init_t) (struct snd_kcontrol * kcontrol);
- typedef int (snd_kcontrol_tlv_rw_t)(struct snd_kcontrol *kcontrol,
- 				    int op_flag, /* SNDRV_CTL_TLV_OP_XXX */
- 				    unsigned int size,
-@@ -52,6 +53,7 @@ struct snd_kcontrol_new {
- 	snd_kcontrol_info_t *info;
- 	snd_kcontrol_get_t *get;
- 	snd_kcontrol_put_t *put;
-+	snd_kcontrol_init_t *init;
- 	union {
- 		snd_kcontrol_tlv_rw_t *c;
- 		const unsigned int *p;
-@@ -71,6 +73,7 @@ struct snd_kcontrol {
- 	snd_kcontrol_info_t *info;
- 	snd_kcontrol_get_t *get;
- 	snd_kcontrol_put_t *put;
-+	snd_kcontrol_init_t *init;
- 	union {
- 		snd_kcontrol_tlv_rw_t *c;
- 		const unsigned int *p;
-diff --git a/sound/core/control.c b/sound/core/control.c
-index b961134..9d30663 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -256,6 +256,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
- 	kctl.info = ncontrol->info;
- 	kctl.get = ncontrol->get;
- 	kctl.put = ncontrol->put;
-+	kctl.init = ncontrol->init;
- 	kctl.tlv.p = ncontrol->tlv.p;
- 	kctl.private_value = ncontrol->private_value;
- 	kctl.private_data = private_data;
-@@ -362,6 +363,12 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
- 		err = -ENOMEM;
- 		goto error;
- 	}
-+	if (kcontrol->init) {
-+		err = kcontrol->init(kcontrol);
-+		if (err < 0)
-+			goto error;
-+	}
+diff --git a/sound/soc/intel/sst-atom-controls.c b/sound/soc/intel/sst-atom-controls.c
+index b0a56f6..9f25ab5 100644
+--- a/sound/soc/intel/sst-atom-controls.c
++++ b/sound/soc/intel/sst-atom-controls.c
+@@ -873,6 +873,32 @@ static const struct snd_soc_dapm_widget sst_dapm_widgets[] = {
+ 	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop2_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2, SST_FMT_STEREO, sst_set_media_loop),
+ 
+ 	/*Media Mixers*/
++	SST_SWM_MIXER("media0_out mix 0", SND_SOC_NOPM, SST_TASK_MMX, SST_SWM_OUT_MEDIA0,
++		      sst_mix_media0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("media1_out mix 0", SND_SOC_NOPM, SST_TASK_MMX, SST_SWM_OUT_MEDIA1,
++		      sst_mix_media1_controls, sst_swm_mixer_event),
 +
- 	list_add_tail(&kcontrol->list, &card->controls);
- 	card->controls_count += kcontrol->count;
- 	kcontrol->id.numid = card->last_numid + 1;
++	/*SBA PCM mixers*/
++	SST_SWM_MIXER("pcm0_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM0,
++		      sst_mix_pcm0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("pcm1_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM1,
++		      sst_mix_pcm1_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("pcm2_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM2,
++		      sst_mix_pcm2_controls, sst_swm_mixer_event),
++
++	/*SBA Loop mixers*/
++	SST_SWM_MIXER("sprot_loop_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP,
++		      sst_mix_sprot_l0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("media_loop1_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1,
++		      sst_mix_media_l1_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("media_loop2_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2,
++		      sst_mix_media_l2_controls, sst_swm_mixer_event),
++
++	/*SBA Backend mixers*/
++	SST_SWM_MIXER("codec_out0 mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_CODEC0,
++		      sst_mix_codec0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("codec_out1 mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_CODEC1,
++		      sst_mix_codec1_controls, sst_swm_mixer_event),
+ };
+ 
+ static const struct snd_soc_dapm_route intercon[] = {
 -- 
 1.9.0
