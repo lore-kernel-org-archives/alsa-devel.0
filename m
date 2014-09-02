@@ -1,22 +1,16 @@
-From: Andreas Allacher <andreas.allacher@gmx.at>
-Subject: Re: [PATCH] ALSA: virtuoso: add Xonar Essence STX II
- support
-Date: Tue, 02 Sep 2014 22:06:20 +0200
-Message-ID: <5406233C.5010009@gmx.at>
-References: <53FC4901.6070908@allacher.com>	<53FC49A8.1010108@gmx.at>	<53FC4D56.5020808@ladisch.de>	<53FC6532.2080903@gmx.at>	<54003095.200@ladisch.de>
- <5400C662.8030606@gmx.at> <5400CF94.8030503@ladisch.de>
- <5405CAB2.70708@gmx.at>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 0/5] ASoC: Remove unnecessary suspend/resume
+	bias level changes
+Date: Tue,  2 Sep 2014 22:20:29 +0200
+Message-ID: <1409689234-14774-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
- by alsa0.perex.cz (Postfix) with ESMTP id C0E022654CC
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 22:06:21 +0200 (CEST)
-Received: from [192.168.0.110] ([82.149.97.137]) by mail.gmx.com (mrgmx103)
- with ESMTPSA (Nemesis) id 0LtZfc-1YNa491ubM-010rnc for
- <alsa-devel@alsa-project.org>; Tue, 02 Sep 2014 22:06:21 +0200
-In-Reply-To: <5405CAB2.70708@gmx.at>
+Received: from smtp-out-200.synserver.de (smtp-out-200.synserver.de
+ [212.40.185.200])
+ by alsa0.perex.cz (Postfix) with ESMTP id 253442654BC
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 22:20:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,41 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-I also tested the card with disconnected H6 board. There the 5.1 option 
-was - as is correct - gone and the front (stereo) speakers worked 
-correctly too.
+Hi,
 
-Am 02.09.2014 15:48, schrieb Andreas Allacher:
-> Hi,
->
-> I just tested the card with the H6 board and the patch and it seems to 
-> work fine - only tested 5.1 because I do not have 7.1 but I guess 7.1 
-> should work as well.
-> One question: Could it be that under Linux the same sound volume is a 
-> bit lower than under Windows (not really a problem but...)?
->
-> Will this patch make it into 3.17 final or will it be moved to 3.18?
->
-> Regards,
->    Andreas
->
->
-> Clemens Ladisch wrote:
->> Andreas Allacher wrote:
->>> Is the path already in the kernel source git or do I have to apply 
->>> it manually?
->> This patch is completely untested and not yet in any git.
->>
->>
->> Regards,
->> Clemens
->>
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+There are a handful of drivers which do set idle_bias_level = true, but at the
+same time implement suspend and resume handlers which do bias level transitions 
+to OFF in suspend and to STANDBY in resume. Since the ASoC core will only
+suspend a CODEC if it is idle this means that drivers that set idle_bias_level =
+true will already be at bias level OFF when suspend is called, which makes the
+manual transition unnecessary. On the other hand manual transition to STANDBY in
+resume will be reverted by the core going back to OFF after the resume handler
+has run. So the manual bias level change in resume is also unnecessary and can
+cause additional IO operations.
+
+This series removes all those unnecessary manual bias level transitions.
+
+- Lars
+
+Lars-Peter Clausen (5):
+  ASoC: adau1373: Remove unnecessary suspend/resume bias level changes
+  ASoC: lm49453: Remove unnecessary suspend/resume bias level changes
+  ASoC: tlv320aic3x: Remove unnecessary suspend/resume bias level
+    changes
+  ASoC: wm8804: Remove unnecessary suspend/resume bias level changes
+  ASoC: wm8995: Remove unnecessary suspend/resume bias level changes
+
+ sound/soc/codecs/adau1373.c    | 14 --------------
+ sound/soc/codecs/lm49453.c     | 14 --------------
+ sound/soc/codecs/tlv320aic3x.c | 16 ----------------
+ sound/soc/codecs/wm8804.c      | 19 -------------------
+ sound/soc/codecs/wm8995.c      | 19 -------------------
+ 5 files changed, 82 deletions(-)
+
+-- 
+1.8.0
