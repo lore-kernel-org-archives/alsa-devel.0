@@ -1,19 +1,22 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH][RFC] ASoC: simple-card: fixup cpu_dai_name
-	clear case
-Date: Tue, 2 Sep 2014 20:00:45 +0200
-Message-ID: <20140902200045.7d8f5252@armhf>
-References: <20140902090005.4a2c80b2@armhf>
- <878um2jncd.wl%kuninori.morimoto.gx@gmail.com>
- <877g1mjn9i.wl%kuninori.morimoto.gx@gmail.com>
+From: Andreas Allacher <andreas.allacher@gmx.at>
+Subject: Re: [PATCH] ALSA: virtuoso: add Xonar Essence STX II
+ support
+Date: Tue, 02 Sep 2014 22:06:20 +0200
+Message-ID: <5406233C.5010009@gmx.at>
+References: <53FC4901.6070908@allacher.com>	<53FC49A8.1010108@gmx.at>	<53FC4D56.5020808@ladisch.de>	<53FC6532.2080903@gmx.at>	<54003095.200@ladisch.de>
+ <5400C662.8030606@gmx.at> <5400CF94.8030503@ladisch.de>
+ <5405CAB2.70708@gmx.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
- by alsa0.perex.cz (Postfix) with ESMTP id 27CBC265499
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 19:59:16 +0200 (CEST)
-In-Reply-To: <877g1mjn9i.wl%kuninori.morimoto.gx@gmail.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0E022654CC
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 22:06:21 +0200 (CEST)
+Received: from [192.168.0.110] ([82.149.97.137]) by mail.gmx.com (mrgmx103)
+ with ESMTPSA (Nemesis) id 0LtZfc-1YNa491ubM-010rnc for
+ <alsa-devel@alsa-project.org>; Tue, 02 Sep 2014 22:06:21 +0200
+In-Reply-To: <5405CAB2.70708@gmx.at>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,28 +26,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAwMiBTZXAgMjAxNCAwNDowNTozMCAtMDcwMCAoUERUKQpLdW5pbm9yaSBNb3JpbW90
-byA8a3VuaW5vcmkubW9yaW1vdG8uZ3hAZ21haWwuY29tPiB3cm90ZToKCj4gRnJvbTogS3VuaW5v
-cmkgTW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVzYXMuY29tPgo+IAo+IGY2ODdk
-OTAwZDMwYTYxZGRhMzhkYjJhOTkyMzlmNTI4NGE4NmEzMDkKPiAoQVNvQzogc2ltcGxlLWNhcmQ6
-IGNwdV9kYWlfbmFtZSBjcmVhdGVzIGNvbmZ1c2lvbiB3aGVuIERUIGNhc2UpCj4gY2xlYXJlZCBj
-cHVfZGFpX25hbWUgZm9yIGNhcmluZyBmbXRfc2luZ2xlX25hbWUgY2FzZSwKPiBhbmQKPiAxNzk5
-NDliYzA0YzcxNTdhNGIyMjc5ZjYyYTg0MjYzOGI2MWY3OGY5Cj4gKEFTb0M6IHNpbXBsZS1jYXJk
-OiByZW1vdmUgZGFpX2xpbmstPmNwdV9kYWlfbmFtZSB3aGVuIERUKQo+IGNhcmVkIG11bHRpIGRh
-aS1saW5rIGNhc2UuCj4gYnV0LCBjcHVfZGFpX25hbWUgbWF0Y2hpbmcgaXMgcmVxdWlyZWQgd2hl
-biBmbXRfbXVsdGlwbGVfbmFtZSB3YXMgdXNlZAo+IAo+IFNpZ25lZC1vZmYtYnk6IEt1bmlub3Jp
-IE1vcmltb3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4KPiAtLS0KPiA+PiBK
-ZWFuICAKPiAKPiBDYW4geW91IHBsZWFzZSB0ZXN0IHRoaXMgcGF0Y2ggPwo+IElzIHlvdXIgaXNz
-dWUgc29sdmVkID8KPiAKPiAgc291bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYyB8ICAgMjkg
-KysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDE5IGluc2Vy
-dGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQoKRXZlcnl0aGluZyB3b3JrcyBmaW5lLiBUaGFua3Mu
-CgpUZXN0ZWQtYnk6IEplYW4tRnJhbmNvaXMgTW9pbmUgPG1vaW5lamZAZnJlZS5mcj4KCi0tIApL
-ZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJ
-fAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+I also tested the card with disconnected H6 board. There the 5.1 option 
+was - as is correct - gone and the front (stereo) speakers worked 
+correctly too.
+
+Am 02.09.2014 15:48, schrieb Andreas Allacher:
+> Hi,
+>
+> I just tested the card with the H6 board and the patch and it seems to 
+> work fine - only tested 5.1 because I do not have 7.1 but I guess 7.1 
+> should work as well.
+> One question: Could it be that under Linux the same sound volume is a 
+> bit lower than under Windows (not really a problem but...)?
+>
+> Will this patch make it into 3.17 final or will it be moved to 3.18?
+>
+> Regards,
+>    Andreas
+>
+>
+> Clemens Ladisch wrote:
+>> Andreas Allacher wrote:
+>>> Is the path already in the kernel source git or do I have to apply 
+>>> it manually?
+>> This patch is completely untested and not yet in any git.
+>>
+>>
+>> Regards,
+>> Clemens
+>>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
