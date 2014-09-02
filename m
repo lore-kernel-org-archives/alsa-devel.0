@@ -1,23 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Audio mini conference 2014?
-Date: Tue, 2 Sep 2014 18:53:28 +0100
-Message-ID: <20140902175328.GB29327@sirena.org.uk>
-References: <02884A65-7ADE-4FF3-8552-AD8E73862624@cirrus.com>
- <20140807140957.GI8181@intel.com>
- <alpine.DEB.2.00.1408121011200.10517@phandrigan-desktop>
- <53EA6165.3070902@zonque.org> <s5hbnropcvd.wl-tiwai@suse.de>
- <20140813165517.GB17528@sirena.org.uk>
- <20140817231021.GQ14537@sirena.org.uk>
- <s5hha1aw6we.wl-tiwai@suse.de> <53F1B892.5080109@metafoo.de>
- <53F1BA5B.6070400@zonque.org>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH][RFC] ASoC: simple-card: fixup cpu_dai_name
+	clear case
+Date: Tue, 2 Sep 2014 20:00:45 +0200
+Message-ID: <20140902200045.7d8f5252@armhf>
+References: <20140902090005.4a2c80b2@armhf>
+ <878um2jncd.wl%kuninori.morimoto.gx@gmail.com>
+ <877g1mjn9i.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4114798055656120552=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D1DC265499
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 19:53:57 +0200 (CEST)
-In-Reply-To: <53F1BA5B.6070400@zonque.org>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27CBC265499
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 19:59:16 +0200 (CEST)
+In-Reply-To: <877g1mjn9i.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,63 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Tanu Kaskinen <tanu.kaskinen@linux.jf.intel.com>, Paul Handrigan <paul.handrigan@cirrus.com>, Vinod Koul <vinod.koul@intel.com>, David Henningsson <david.henningsson@canonical.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============4114798055656120552==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kD5A6s5fH5u0LDZc"
-Content-Disposition: inline
-
-
---kD5A6s5fH5u0LDZc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Aug 18, 2014 at 10:33:31AM +0200, Daniel Mack wrote:
-
-> Sure, logistically, it might indeed be better of course, and it wouldn't
-> be a problem to cancel the ChaosDorf thing I guess - it's still two
-> month in advance.
-
-> Let me know when we have a confirmed room at the conference venue, then
-> I can let the ChaosDorf people know.
-
-We've got a confirmed room from Linux Foundation for the Tuesday now!
-Please be sure to thank the Chaosdorf folks but I think we do prefer the
-on-site option?
-
---kD5A6s5fH5u0LDZc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJUBgQVAAoJELSic+t+oim9lLMP/iHzNYv11RP4fUNwmy8SP7jS
-ViDTQbJc+/9QnhJ3MvOxHTT/XQOAwLg3mJ6rY9a6K1EDlQOTqVRD4Aw6IKW219+v
-CST/DiHzQzmEHU9xFddIKoocDd3PZFzyo6i0jbhrrdKg0jilxKipe8K421Za6kup
-L0K2jzBBQbSzQHW+jwJ4Na3tCeMo9PnoWxL6b7Ph6j3VIEedU5XvkKUPf10i6onZ
-zLxgDHWpj55PKiYa7DnXpsrpc1jpeXVHbJni1s1wDG/EaVoiVm3nCUjQwX3Rh0xA
-atL66EHc9a2slENImQbSUbo4c2F9XzRPj/5CvwM2wwT3ZCZhSHk4K2HO9kxBLNqO
-y5LmgV54L5V/h8UUcXIVJKTtegmHcLc+yXtXh75r41J1tadeiZWeMrKSscSkTQgA
-FqOw1Oa3LyHk7dKZzFirrkaOvyIfxA09w274WdtYSPoP9k+sxA+yRZPIRXc/JQ6T
-R8K6s9Qu6n3an1WmQSf1WVwtvxKhneF1ND5QY71iz0/n/oxn+VJxc8vQ07wOa/bW
-mhgE24cMJGA/5tAlSq3yG23e657Hp6X91nICXSyBQbvn8XFn2nZYac4wNTeFEaNj
-UO5ycqBk66GDfdo3oSRGWIO2IDYh+BNCF4t6syHFpD9+voOluhQHbQQDwdqtK/+M
-Z7pMPMx399H1osYRFxUa
-=D0W7
------END PGP SIGNATURE-----
-
---kD5A6s5fH5u0LDZc--
-
---===============4114798055656120552==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4114798055656120552==--
+T24gVHVlLCAwMiBTZXAgMjAxNCAwNDowNTozMCAtMDcwMCAoUERUKQpLdW5pbm9yaSBNb3JpbW90
+byA8a3VuaW5vcmkubW9yaW1vdG8uZ3hAZ21haWwuY29tPiB3cm90ZToKCj4gRnJvbTogS3VuaW5v
+cmkgTW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVzYXMuY29tPgo+IAo+IGY2ODdk
+OTAwZDMwYTYxZGRhMzhkYjJhOTkyMzlmNTI4NGE4NmEzMDkKPiAoQVNvQzogc2ltcGxlLWNhcmQ6
+IGNwdV9kYWlfbmFtZSBjcmVhdGVzIGNvbmZ1c2lvbiB3aGVuIERUIGNhc2UpCj4gY2xlYXJlZCBj
+cHVfZGFpX25hbWUgZm9yIGNhcmluZyBmbXRfc2luZ2xlX25hbWUgY2FzZSwKPiBhbmQKPiAxNzk5
+NDliYzA0YzcxNTdhNGIyMjc5ZjYyYTg0MjYzOGI2MWY3OGY5Cj4gKEFTb0M6IHNpbXBsZS1jYXJk
+OiByZW1vdmUgZGFpX2xpbmstPmNwdV9kYWlfbmFtZSB3aGVuIERUKQo+IGNhcmVkIG11bHRpIGRh
+aS1saW5rIGNhc2UuCj4gYnV0LCBjcHVfZGFpX25hbWUgbWF0Y2hpbmcgaXMgcmVxdWlyZWQgd2hl
+biBmbXRfbXVsdGlwbGVfbmFtZSB3YXMgdXNlZAo+IAo+IFNpZ25lZC1vZmYtYnk6IEt1bmlub3Jp
+IE1vcmltb3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4KPiAtLS0KPiA+PiBK
+ZWFuICAKPiAKPiBDYW4geW91IHBsZWFzZSB0ZXN0IHRoaXMgcGF0Y2ggPwo+IElzIHlvdXIgaXNz
+dWUgc29sdmVkID8KPiAKPiAgc291bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYyB8ICAgMjkg
+KysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDE5IGluc2Vy
+dGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQoKRXZlcnl0aGluZyB3b3JrcyBmaW5lLiBUaGFua3Mu
+CgpUZXN0ZWQtYnk6IEplYW4tRnJhbmNvaXMgTW9pbmUgPG1vaW5lamZAZnJlZS5mcj4KCi0tIApL
+ZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJ
+fAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
