@@ -1,42 +1,72 @@
-From: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: [PATCHv2 0/4]  simple-card: simplify the code.
-Date: Tue, 2 Sep 2014 17:26:05 +0800
-Message-ID: <1409649969-15759-1-git-send-email-Li.Xiubo@freescale.com>
+From: Varka Bhadram <varkabhadram@gmail.com>
+Subject: Re: [PATCHv2 1/4] ASoC: simple-card: add
+ asoc_simple_card_fmt_master() to simplify the code.
+Date: Tue, 02 Sep 2014 15:51:41 +0530
+Message-ID: <54059A35.3020303@gmail.com>
+References: <1409649969-15759-1-git-send-email-Li.Xiubo@freescale.com>
+ <1409649969-15759-2-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, moinejf-GANU6spQydw@public.gmane.org, andrew-g2DYL2Zd6BY@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, jsarha-l0cyMroinI0@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
+ [209.85.192.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3FC226523B
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 12:24:25 +0200 (CEST)
+Received: by mail-pd0-f169.google.com with SMTP id g10so8359619pdj.0
+ for <alsa-devel@alsa-project.org>; Tue, 02 Sep 2014 03:24:24 -0700 (PDT)
+In-Reply-To: <1409649969-15759-2-git-send-email-Li.Xiubo@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Xiubo Li <Li.Xiubo@freescale.com>, broonie@kernel.org, perex@perex.cz, lgirdwood@gmail.com, tiwai@suse.de, moinejf@free.fr, andrew@lunn.ch, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 09/02/2014 02:56 PM, Xiubo Li wrote:
+> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+> ---
+>   sound/soc/generic/simple-card.c | 61 ++++++++++++++++++++---------------------
+>   1 file changed, 29 insertions(+), 32 deletions(-)
+>
+> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+> index 986d2c7..cad2b30 100644
+> --- a/sound/soc/generic/simple-card.c
+> +++ b/sound/soc/generic/simple-card.c
+> @@ -163,6 +163,26 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
+>   	return 0;
+>   }
+>   
+> +static inline unsigned int
+> +asoc_simple_card_fmt_master(struct device_node *np,
+> +			    struct device_node *bitclkmaster,
+> +			    struct device_node *framemaster)
+> +{
+> +	switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
+> +	case 0x11:
+> +		return SND_SOC_DAIFMT_CBS_CFS;
+> +	case 0x10:
+> +		return SND_SOC_DAIFMT_CBS_CFM;
+> +	case 0x01:
+> +		return SND_SOC_DAIFMT_CBM_CFS;
+> +	default:
+> +		return SND_SOC_DAIFMT_CBM_CFM;
+> +	}
+> +
+> +	/* Shouldn't be here */
+> +	return -EINVAL;
+> +}
 
-And comment and advice are welcome.
+It will be nice if we declare the switch case numbers as macros (specific name)...
 
 
-Change in v2:
-- Maintian compatibility with the old DTs.
-
-Change in v1:
-- Add simple-card dts node patches.
-- Fix format parsing bug from Jean-Francois's comment.
-- Rebase to Kuninori-san's newest changes in next branch.
-
-Xiubo Li (4):
-  ASoC: simple-card: add asoc_simple_card_fmt_master() to simplify the
-    code.
-  ASoC: simple-card: Merge single and muti DAI link(s) code.
-  ASoC: simple-card: Adjust the comments of simple card.
-  ASoC: simple-card: binding: update binding to support the new style.
-
- .../devicetree/bindings/sound/simple-card.txt      | 184 ++++++++++++++-------
- sound/soc/generic/simple-card.c                    | 131 ++++++++-------
- 2 files changed, 191 insertions(+), 124 deletions(-)
 
 -- 
-1.8.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Regards,
+Varka Bhadram.
