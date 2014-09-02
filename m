@@ -1,17 +1,14 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v5 02/12] ASoC: Intel: mfld-pcm: don't call
-	trigger ops to DSP for internal streams
-Date: Tue,  2 Sep 2014 18:05:57 +0530
-Message-ID: <1409661367-19047-3-git-send-email-subhransu.s.prusty@intel.com>
-References: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v5 00/12] Add mrfld DSP topology and widgets
+Date: Tue,  2 Sep 2014 18:05:55 +0530
+Message-ID: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 16E0126549F
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 14:58:30 +0200 (CEST)
-In-Reply-To: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BA037265525
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 14:58:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,29 +22,42 @@ To: alsa-devel@alsa-project.org
 Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
+This patch series adds DPCM and DAPM widgets to handle DSP topology
+in the SST platform driver for merrifield.
 
-For internal stream i.e. BE we have don't need trigger ops as that
-would be handled by DAPM for us in subsequent patches
+Changes in v5:
+	* Added init callback for controls to initialize some private data
+	* Replaced pr_ with dev_ for logging
+	* Handle return values
+	* Addressed review comments
+	
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
----
- sound/soc/intel/sst-mfld-platform-pcm.c | 2 ++
- 1 file changed, 2 insertions(+)
+Subhransu S. Prusty (4):
+  ASoC: mfld: pcm: Replace pr_ with dev_
+  ALSA: control: Add init callback for kcontrol
+  ASoC: Export dapm_kcontrol_get_value
+  ASoC: Intel: mrfld: Use snd_soc_dai_get_drvdata to derive drv data
 
-diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
-index 85deecd..9906b7c 100644
---- a/sound/soc/intel/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/sst-mfld-platform-pcm.c
-@@ -464,6 +464,8 @@ static int sst_platform_pcm_trigger(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 
- 	dev_dbg(rtd->dev, "sst_platform_pcm_trigger called\n");
-+	if (substream->pcm->internal)
-+		return 0;
- 	stream = substream->runtime->private_data;
- 	str_id = stream->stream_info.str_id;
- 	switch (cmd) {
+Vinod Koul (8):
+  ASoC: Intel: mfld-pcm: don't call trigger ops to DSP for internal
+    streams
+  ASoC: Intel: mrfld: add bytes control for modules
+  ASoC: Intel: mrfld: add the gain controls
+  ASoC: Intel: mfld-pcm: add control for powering up/down dsp
+  ASoC: Intel: mrfld: add DSP core controls
+  ASoC: Intel: mrfld: add the DSP DAPM widgets
+  ASoC: Intel: mfld-pcm: add FE and BE ops
+  ASoC: Intel: mrfld: add the DSP mixers
+
+ include/sound/control.h                 |    3 +
+ include/sound/soc-dapm.h                |    1 +
+ sound/core/control.c                    |    7 +
+ sound/soc/intel/sst-atom-controls.c     | 1242 ++++++++++++++++++++++++++++++-
+ sound/soc/intel/sst-atom-controls.h     |  558 ++++++++++++++
+ sound/soc/intel/sst-mfld-platform-pcm.c |  221 ++++--
+ sound/soc/intel/sst-mfld-platform.h     |    7 +-
+ sound/soc/soc-dapm.c                    |    3 +-
+ 8 files changed, 1985 insertions(+), 57 deletions(-)
+
 -- 
 1.9.0
