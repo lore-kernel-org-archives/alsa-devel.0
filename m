@@ -1,18 +1,19 @@
-From: Andreas Allacher <andreas.allacher@gmx.at>
-Subject: Re: [PATCH] ALSA: virtuoso: add Xonar Essence STX II
- support
-Date: Tue, 02 Sep 2014 15:48:34 +0200
-Message-ID: <5405CAB2.70708@gmx.at>
-References: <53FC4901.6070908@allacher.com>	<53FC49A8.1010108@gmx.at>	<53FC4D56.5020808@ladisch.de>	<53FC6532.2080903@gmx.at>	<54003095.200@ladisch.de>
- <5400C662.8030606@gmx.at> <5400CF94.8030503@ladisch.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCHv3 2/9] WM8971 uses SOC_ENUM_SINGLE_DECL to
+ replace SOC_ENUM_SINGLE
+Date: Tue, 02 Sep 2014 16:56:12 +0200
+Message-ID: <5405DA8C.7020403@metafoo.de>
+References: <1409628470-13059-1-git-send-email-xavier.hsu@linaro.org>
+ <1409628470-13059-2-git-send-email-xavier.hsu@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C1342656ED
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 15:48:35 +0200 (CEST)
-In-Reply-To: <5400CF94.8030503@ladisch.de>
+Received: from smtp-out-161.synserver.de (smtp-out-164.synserver.de
+ [212.40.185.164])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1888B2655EA
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 16:56:18 +0200 (CEST)
+In-Reply-To: <1409628470-13059-2-git-send-email-xavier.hsu@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@ladisch.de>
+To: Xavier Hsu <xavier.hsu@linaro.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, patches@linaro.org
+Cc: Andy Green <andy.green@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 09/02/2014 05:27 AM, Xavier Hsu wrote:
+[...]
+> +static int wm8971_put_deemph(struct snd_kcontrol *kcontrol,
+> +			     struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
+> +	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
+> +	int deemph = ucontrol->value.enumerated.item[0];
+> +	int ret = 0;
+> +
+> +	if (deemph > 1)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&codec->mutex);
 
-I just tested the card with the H6 board and the patch and it seems to 
-work fine - only tested 5.1 because I do not have 7.1 but I guess 7.1 
-should work as well.
-One question: Could it be that under Linux the same sound volume is a 
-bit lower than under Windows (not really a problem but...)?
+Please use a driver local mutex. The snd_soc_codec mutex is going to be 
+removed sooner or later and we shouldn't add new users.
 
-Will this patch make it into 3.17 final or will it be moved to 3.18?
-
-Regards,
-    Andreas
-
-
-Clemens Ladisch wrote:
-> Andreas Allacher wrote:
->> Is the path already in the kernel source git or do I have to apply it manually?
-> This patch is completely untested and not yet in any git.
->
->
-> Regards,
-> Clemens
->
+> +	if (wm8971->deemph != deemph) {
+> +		wm8971->deemph = deemph;
+> +		wm8971_set_deemph(codec);
+> +
+> +		ret = 1;
+> +	}
+> +	mutex_unlock(&codec->mutex);
+> +
+> +	return ret;
+> +}
