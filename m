@@ -1,49 +1,104 @@
-From: "Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: RE: [PATCHv1 1/7] ASoC: simple-card: Merge single and muti DAI link
- code.
-Date: Tue, 2 Sep 2014 03:22:24 +0000
-Message-ID: <1b29c16ac3944bb19940da886bf7da3a@BY2PR0301MB0613.namprd03.prod.outlook.com>
-References: <1409545781-20530-1-git-send-email-Li.Xiubo@freescale.com>
- <1409545781-20530-2-git-send-email-Li.Xiubo@freescale.com>
- <20140901133412.GA11312@lunn.ch> <20140901151356.GB29327@sirena.org.uk>
+From: Xavier Hsu <xavier.hsu@linaro.org>
+Subject: [PATCHv3 4/9] Improve wm8971_set_dai_fmt
+Date: Tue,  2 Sep 2014 11:27:45 +0800
+Message-ID: <1409628470-13059-4-git-send-email-xavier.hsu@linaro.org>
+References: <1409628470-13059-1-git-send-email-xavier.hsu@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140901151356.GB29327-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Andrew Lunn <andrew-g2DYL2Zd6BY@public.gmane.org>
-Cc: "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org" <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, "moinejf-GANU6spQydw@public.gmane.org" <moinejf-GANU6spQydw@public.gmane.org>, "jsarha-l0cyMroinI0@public.gmane.org" <jsarha-l0cyMroinI0@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Shawn Guo <Shawn.Guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from Kraken (unknown [124.219.7.128])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB94C2651EC
+ for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 05:27:59 +0200 (CEST)
+In-Reply-To: <1409628470-13059-1-git-send-email-xavier.hsu@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, patches@linaro.org
+Cc: Xavier Hsu <xavier.hsu@linaro.org>, Andy Green <andy.green@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-> 
-> On Mon, Sep 01, 2014 at 03:34:12PM +0200, Andrew Lunn wrote:
-> > On Mon, Sep 01, 2014 at 12:29:35PM +0800, Xiubo Li wrote:
-> > > This patch merge single DAI link and muti-DAI links code together,
-> > > and simply the simple-card driver code.
-> 
-> > It would be good to note that this breaks the Binary API with DT
-> > blobs. Old blobs will not work with this new C code.
-> 
-> That's not on, we need to maintian compatibility with the old DTs unless
-> there's a very strong reason not to.  Revising the binding is one option
-> for doing this, keeping the old binding in place and making a v2 binding
-> with the new functionality.
+This patch improves WM8971.
+We modify the function of wm8971_set_dai_fmt().
 
-Yes, agree.
+Any comments about improving the patch are welcome.
+Thanks.
 
-Actually, the current code is a bit more complicated that we should keep in mind
-of two styles of single DAI link and muti-DAI links. And the binding document and
-code are a little unreadable.
+Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
+Signed-off-by: Andy Green <andy.green@linaro.org>
+---
+ sound/soc/codecs/wm8971.c |   18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-For others must read the simple card code carefully to add one DT node.
-
-Thanks,
-
-BRs
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
+index 7c2b175..64ed226 100755
+--- a/sound/soc/codecs/wm8971.c
++++ b/sound/soc/codecs/wm8971.c
+@@ -550,12 +550,11 @@ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			      unsigned int fmt)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	u16 iface = 0;
+ 
+ 	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+-		iface = 0x0040;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0040, 0x0040);
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		break;
+@@ -566,18 +565,18 @@ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		iface |= 0x0002;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0002, 0x0002);
+ 		break;
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-		iface |= 0x0001;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0001, 0x0001);
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
+-		iface |= 0x0003;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0003, 0x0003);
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+-		iface |= 0x0013;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0013, 0x0013);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -588,19 +587,18 @@ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_IF:
+-		iface |= 0x0090;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0090, 0x0090);
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_NF:
+-		iface |= 0x0080;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0080, 0x0080);
+ 		break;
+ 	case SND_SOC_DAIFMT_NB_IF:
+-		iface |= 0x0010;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0010, 0x0010);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_write(codec, WM8971_IFACE, iface);
+ 	return 0;
+ }
+ 
+-- 
+1.7.9.5
