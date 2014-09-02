@@ -1,40 +1,52 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCHv2 4/4] ASoC: simple-card: binding: update
- binding to support the new style.
-Date: Tue, 2 Sep 2014 12:41:14 +0200
-Message-ID: <20140902124114.6d95e0c5@armhf>
+From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Subject: Re: [PATCHv2 3/4] ASoC: simple-card: Adjust the comments of simple
+ card.
+Date: Tue, 2 Sep 2014 12:44:38 +0200
+Message-ID: <20140902124438.36da4b85@armhf>
 References: <1409649969-15759-1-git-send-email-Li.Xiubo@freescale.com>
- <1409649969-15759-5-git-send-email-Li.Xiubo@freescale.com>
+	<1409649969-15759-4-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 86B23264EAA
- for <alsa-devel@alsa-project.org>; Tue,  2 Sep 2014 12:39:57 +0200 (CEST)
-In-Reply-To: <1409649969-15759-5-git-send-email-Li.Xiubo@freescale.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: mark.rutland@arm.com, andrew@lunn.ch, alsa-devel@alsa-project.org, pawel.moll@arm.com, kuninori.morimoto.gx@renesas.com, devicetree@vger.kernel.org, tiwai@suse.de, linux-kernel@vger.kernel.org, ijc+devicetree@hellion.org.uk, lgirdwood@gmail.com, jsarha@ti.com, robh+dt@kernel.org, broonie@kernel.org, galak@codeaurora.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1409649969-15759-4-git-send-email-Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, andrew-g2DYL2Zd6BY@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, jsarha-l0cyMroinI0@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyIFNlcCAyMDE0IDE3OjI2OjA5ICswODAwClhpdWJvIExpIDxMaS5YaXVib0BmcmVl
-c2NhbGUuY29tPiB3cm90ZToKCj4gK0V4YW1wbGUgNCAtIG1hbnkgREFJIGxpbmtzOgo+ICBzb3Vu
-ZCB7Cj4gIAljb21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1jYXJkIjsKPiAgCXNpbXBsZS1hdWRp
-by1jYXJkLG5hbWUgPSAiQ3Vib3ggQXVkaW8iOwo+IEBAIC0xMjgsNiArMTk1LDcgQEAgc291bmQg
-ewo+ICAJCX07Cj4gIAkJY29kZWMgewo+ICAJCQlzb3VuZC1kYWkgPSA8JnRkYTk5OHggMD47Cj4g
-KwkJCWZyYW1lLWludmVyc2lvbjsKPiAgCQl9Owo+ICAJfTsKClRoaXMgaXMgbm90IHVzZWZ1bDog
-dGhlcmUgaXMgbm8gY2xvY2svZnJhbWUgaGFuZGxpbmcgaW4gdGhlIGtpcmt3b29kCmF1ZGlvIGNv
-bnRyb2xsZXIuCgotLSAKS2VuIGFyIGMnaGVudGHDsQl8CSAgICAgICoqIEJyZWl6aCBoYSBMaW51
-eCBhdGF2ISAqKgpKZWYJCXwJCWh0dHA6Ly9tb2luZWpmLmZyZWUuZnIvCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, 2 Sep 2014 17:26:08 +0800
+Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org> wrote:
+
+> @@ -285,11 +287,11 @@ static int asoc_simple_card_dai_link_of(struct =
+device_node *node,
+>  		dai_props->codec_dai.sysclk);
+> =20
+>  	/*
+> -	 * soc_bind_dai_link() will check cpu name
+> -	 * after of_node matching if dai_link has cpu_dai_name.
+> -	 * but, it will never match if name was created by fmt_single_name(=
+)
+> -	 * remove cpu_dai_name to escape name matching.
+> -	 * see
+> +	 * In soc_bind_dai_link() will check cpu name after
+> +	 * of_node matching if dai_link has cpu_dai_name.
+> +	 * but, it will never match if name was created by
+> +	 * fmt_single_name() remove cpu_dai_name to escape
+> +	 * name matching. Please see:
+>  	 *	fmt_single_name()
+>  	 *	fmt_multiple_name()
+>  	 */
+
+The patch done by Kuninori, setting the cpu_dai_name to NULL in all
+cases, does not work. This sequence should be replaced where is was
+previously.
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" i=
+n
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
