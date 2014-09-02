@@ -1,18 +1,26 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: [PATCH alsa-lib] pcm: fix return value of
-	snd_pcm_share_slave_avail
-Date: Tue,  2 Sep 2014 01:29:36 +0600
-Message-ID: <1409599776-5150-1-git-send-email-patrakov@gmail.com>
+From: Dana Goyette <DanaGoyette@gmail.com>
+Subject: Re: ALC1150 broken on SuperMicro X10SAT
+Date: Mon, 01 Sep 2014 20:07:26 -0700
+Message-ID: <5405346E.1010502@gmail.com>
+References: <lttbnc$7ck$1@ger.gmane.org> <s5hmwaj8op1.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f171.google.com (mail-lb0-f171.google.com
- [209.85.217.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 715B726516D
- for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 21:30:13 +0200 (CEST)
-Received: by mail-lb0-f171.google.com with SMTP id n15so6436777lbi.16
- for <alsa-devel@alsa-project.org>; Mon, 01 Sep 2014 12:30:12 -0700 (PDT)
+Received: from plane.gmane.org (plane.gmane.org [80.91.229.3])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E9D926518B
+ for <alsa-devel@alsa-project.org>; Mon,  1 Sep 2014 22:07:41 +0200 (CEST)
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1XOXt3-00070Q-Pq
+ for alsa-devel@alsa-project.org; Mon, 01 Sep 2014 22:07:37 +0200
+Received: from 173-228-55-68.static.sonic.net ([173.228.55.68])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 01 Sep 2014 22:07:37 +0200
+Received: from DanaGoyette by 173-228-55-68.static.sonic.net with local
+ (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <alsa-devel@alsa-project.org>; Mon, 01 Sep 2014 22:07:37 +0200
+In-Reply-To: <s5hmwaj8op1.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,33 +30,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The return value was wrong for playback if slave->hw_ptr was near the
-boundary and *pcm->appl.ptr was near zero. The wrong result was greater
-than the boundary.
+On 09/01/2014 06:17 AM, Takashi Iwai wrote:
+> What about the patch below?  It might be that only one of two changes
+> is needed.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index d446ac3137b3..1ba22fb527c2 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -328,6 +328,7 @@ static void alc_auto_init_amp(struct hda_codec *codec, int type)
+>   		case 0x10ec0885:
+>   		case 0x10ec0887:
+>   		/*case 0x10ec0889:*/ /* this causes an SPDIF problem */
+> +		case 0x10ec0900:
+>   			alc889_coef_init(codec);
+>   			break;
+>   		case 0x10ec0888:
+> @@ -2350,6 +2351,7 @@ static int patch_alc882(struct hda_codec *codec)
+>   	switch (codec->vendor_id) {
+>   	case 0x10ec0882:
+>   	case 0x10ec0885:
+> +	case 0x10ec0900:
+>   		break;
+>   	default:
+>   		/* ALC883 and variants */
+>
+I've applied the patch, and that fixes it without having to specify a 
+model.  Thanks!
 
-Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
----
- src/pcm/pcm_share.c | 2 ++
- 1 file changed, 2 insertions(+)
+For reference, here's alsa-info after the patch:
 
-Only compile-tested, as I don't know how to setup the "share" pcm.
-
-diff --git a/src/pcm/pcm_share.c b/src/pcm/pcm_share.c
-index 9770544..c301c7a 100644
---- a/src/pcm/pcm_share.c
-+++ b/src/pcm/pcm_share.c
-@@ -128,6 +128,8 @@ static snd_pcm_uframes_t snd_pcm_share_slave_avail(snd_pcm_share_slave_t *slave)
- 		avail += pcm->buffer_size;
- 	if (avail < 0)
- 		avail += pcm->boundary;
-+	else if ((snd_pcm_uframes_t) avail >= pcm->boundary)
-+		avail -= pcm->boundary;
- 	return avail;
- }
- 
--- 
-2.1.0
+http://www.alsa-project.org/db/?f=d3a135bd31671e545067821bbd2cacc9d8f6fff8
