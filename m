@@ -1,83 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH][RFC] ASoC: simple-card: fixup cpu_dai_name
-	clear case
-Date: Wed, 3 Sep 2014 13:54:08 +0100
-Message-ID: <20140903125408.GL29327@sirena.org.uk>
-References: <20140902090005.4a2c80b2@armhf>
- <878um2jncd.wl%kuninori.morimoto.gx@gmail.com>
- <877g1mjn9i.wl%kuninori.morimoto.gx@gmail.com>
+From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Subject: Re: [PATCH v8 3/7] clk: Move all drivers to use internal API
+Date: Wed, 03 Sep 2014 14:59:38 +0200
+Message-ID: <540710BA.60108@collabora.com>
+References: <1409585377-26091-1-git-send-email-tomeu.vizoso@collabora.com>	<1409585574-26673-1-git-send-email-tomeu.vizoso@collabora.com>
+ <CAPDyKFq2vzUT+NSkC8ZTau=sbFW_frpQ+paLM_EsYLyp_5ivag@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8032254839440419598=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 941582656C8
- for <alsa-devel@alsa-project.org>; Wed,  3 Sep 2014 14:54:17 +0200 (CEST)
-In-Reply-To: <877g1mjn9i.wl%kuninori.morimoto.gx@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Jean-Francois Moine <moinejf@free.fr>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <CAPDyKFq2vzUT+NSkC8ZTau=sbFW_frpQ+paLM_EsYLyp_5ivag@mail.gmail.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Prashant Gaikwad <pgaikwad@nvidia.com>, Tony Lindgren <tony@atomide.com>, Tomasz Figa <t.figa@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Thierry Reding <thierry.reding@gmail.com>, Paul Mackerras <paulus@samba.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Daniel Walker <dwalker@fifo99.com>, linux-arch@vger.kernel.org, Boris Brezillon <boris.brezillon@free-electrons.com>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Kukjin Kim <kgene.kim@samsung.com>, Mike Turquette <mturquette@linaro.org>, =?UTF-8?B?RW1pbGlvIEzDs3Bleg==?= <emilio@elopez.com.ar>, Takashi Iwai <tiwai@suse.de>, Michal Simek <michal.simek@xilinx.com>, Kyungmin Park <kyungmin.park@samsung.com>, Kevin Hilman <khilman@deeprootsystems.com>, linux-omap <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-k>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8032254839440419598==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="s6Wo+7iKhEdF4/RK"
-Content-Disposition: inline
-
-
---s6Wo+7iKhEdF4/RK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Sep 02, 2014 at 04:05:30AM -0700, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> f687d900d30a61dda38db2a99239f5284a86a309
-> (ASoC: simple-card: cpu_dai_name creates confusion when DT case)
-> cleared cpu_dai_name for caring fmt_single_name case,
-> and
-
-Applied, thanks.
-
---s6Wo+7iKhEdF4/RK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJUBw9tAAoJELSic+t+oim9+sQP/1hJrRkhB2HY9VQaSqzQzRzc
-cuHapINeu/zxlZQQPKE+gXg0grU+hN5LTx2EWvD+ETg6aXk2BlQVTIQCms/DAoZ1
-SGWBmfcV5jXSSUvR76sI2sQTmZIYcJj2eFUq0Gcg18RLI/LZzbjMLr4sZAz0YQpf
-M6hLeJMwgnmDPx/X2+eLNu89If3DdiO0CAYp74cJ8uACqa4d/zpNMsiEa5Da4Be0
-KE9fEfhgzMFkFcFHBc5sK3wH838B/I92i3bcc3Opg+Ok9mJzU+2mlK3MJG+ss5fY
-uMlsuwOsvf4FREuPnvU6OKPsRkVws3fL2wlQjb6Fp2PJ4gLRJ/LD1RNyC2kn75dn
-Q6PiI75DOPGwh6pTT/GkV9B2DL9zHhFVHxVzXi36vUiat92kb1kgV1Y0kClX/bpg
-DTJTblPXvoT6ndyYCE2aDw5cGKRVDebIeIuTkYDcIMlf2WhqQgOGiyB7rG/0ZEqL
-jshbqynd9tQorG8OSJIS4i4DePoOlKh+/nlCZWxq1FEqbzEAKMi2b9fA4DU0IYCS
-zSbIAMAqgBCe+vX8VZDmZEOG2merGemjrSjMKlaoFiFNlRZv2wB5SHN4LOFHip1J
-GGjouZRUFzpRat/pRMO14mkE8ugpHC8Gc1Bt132ZTWOx7PN2lVQmBkNBoicOy+LG
-or8vi3cW74xroFSsqu/s
-=JeQd
------END PGP SIGNATURE-----
-
---s6Wo+7iKhEdF4/RK--
-
---===============8032254839440419598==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8032254839440419598==--
+T24gMDkvMDIvMjAxNCAwOToxMyBBTSwgVWxmIEhhbnNzb24gd3JvdGU6Cj4gT24gMSBTZXB0ZW1i
+ZXIgMjAxNCAxNzozMiwgVG9tZXUgVml6b3NvIDx0b21ldS52aXpvc29AY29sbGFib3JhLmNvbT4g
+d3JvdGU6Cj4+IEluIHByZXBhcmF0aW9uIHRvIGNoYW5nZSB0aGUgcHVibGljIEFQSSB0byByZXR1
+cm4gYSBwZXItdXNlciBjbGsgc3RydWN0dXJlLAo+PiByZW1vdmUgYW55IHVzYWdlIG9mIHRoaXMg
+cHVibGljIEFQSSBmcm9tIHRoZSBjbG9jayBpbXBsZW1lbnRhdGlvbnMuCj4+Cj4+IFRoZSByZWFz
+b24gZm9yIGhhdmluZyB0aGlzIGluIGEgc2VwYXJhdGUgY29tbWl0IGZyb20gdGhlIG9uZSB0aGF0
+IGludHJvZHVjZXMKPj4gdGhlIGltcGxlbWVudGF0aW9uIG9mIHRoZSBuZXcgZnVuY3Rpb25zIGlz
+IHRvIHNlcGFyYXRlIHRoZSBjaGFuZ2VzIGdlbmVyYXRlZAo+PiB3aXRoIENvY2NpbmVsbGUgZnJv
+bSB0aGUgcmVzdCwgYW5kIGtlZXAgdGhlIHBhdGNoZXMnIHNpemUgcmVhc29uYWJsZS4KPj4KPj4g
+U2lnbmVkLW9mZi1ieTogVG9tZXUgVml6b3NvIDx0b21ldS52aXpvc29AY29sbGFib3JhLmNvbT4K
+Pj4gVGVzdGVkLWJ5OiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXppbGxvbkBmcmVlLWVsZWN0
+cm9ucy5jb20+Cj4+IFRlc3RlZC1ieTogSGVpa28gU3R1ZWJuZXIgPGhlaWtvQHNudGVjaC5kZT4K
+Pj4gQWNrZWQtYnk6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ry
+b25zLmNvbT4KPgo+IEhpIFRvbWV1LAo+Cj4gSHVoLCB3aGF0IGEgcGF0Y2guIDotKSBHcmVhdCB3
+b3JrIHlvdSBhcmUgZG9pbmcgaGVyZSEKClRoYW5rcyEKCj4gQnkganVzdCBsb29raW5nIGF0IHRo
+ZSB1eDUwMCBjaGFuZ2VzLCBJIHJlYWxpemUgdGhhdCB5b3Ugbm93IGhhdmUKPiByZW1vdmVkIHRo
+ZSBkZXBlbmRlbmN5IHRvICJzdHJ1Y3QgY2xrIiwgdGh1cyB3ZSBzaG91bGRuJ3QgaW5jbHVkZSB0
+aGUKPiBoZWFkZXIgZmlsZSBsaW51eC9jbGsuaCBpbiBhbnkgZmlsZSBsb2NhdGVkIGluIGRyaXZl
+ci9jbGsvdXg1MDAvKiwKPiByaWdodCE/Cj4KPiBJIHN1cHBvc2UgdGhpcyBjb21tZW50IG1heSBh
+bHNvIGFwcGxpY2FibGUgZm9yIG90aGVycyB0aGFuIHRoZSB1eDUwMAo+IGNsayBkcml2ZXIsIGJ1
+dCBoYXZlbid0IGNoZWNrZWQuCgpZb3UgYXJlIHJpZ2h0LiBJIGhhdmUgZ29uZSBhaGVhZCBhbmQg
+cmVtb3ZlZCB0aGUgaW5jbHVkZSBmcm9tIGFsbCBmaWxlcyAKdGhhdCBhcmUgZmVkIHRvIHRoZSBj
+b2NjaW5lbGxlIHNjcmlwdC4gRXZlcnl0aGluZyBidWlsZHMgZmluZSBpbiBhbGwgCmNvbmZpZ3Vy
+YXRpb25zIEkgaGF2ZSB0ZXN0ZWQsIHNvIEkgd2lsbCBiZSBhZGRpbmcgaXQgdG8gdjkuCgpUaGFu
+a3MgZm9yIHRoZSBpZGVhLAoKVG9tZXUKCgo+IEtpbmQgcmVnYXJkcwo+IFVmZmUKPgoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXhwcGMtZGV2IG1h
+aWxpbmcgbGlzdApMaW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9yZwpodHRwczovL2xpc3RzLm96
+bGFicy5vcmcvbGlzdGluZm8vbGludXhwcGMtZGV2
