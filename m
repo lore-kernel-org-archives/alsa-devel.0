@@ -1,320 +1,81 @@
-From: "Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: RE: [alsa-devel] [PATCHv2 1/4] ASoC: simple-card: add
-	asoc_simple_card_fmt_master() to simplify the code.
-Date: Wed, 3 Sep 2014 03:37:04 +0000
-Message-ID: <df7936d5863948b0a0a33aa8283d6a67@BY2PR0301MB0613.namprd03.prod.outlook.com>
-References: <1409649969-15759-1-git-send-email-Li.Xiubo@freescale.com>
-	<1409649969-15759-2-git-send-email-Li.Xiubo@freescale.com>
- <87egvt7dmd.wl%kuninori.morimoto.gx@gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH 7/8] ALSA: hda/realtek - move HP_LINE1_MIC1_LED
+	quirk for alc282
+Date: Wed,  3 Sep 2014 11:31:10 +0800
+Message-ID: <1409715071-12262-8-git-send-email-hui.wang@canonical.com>
+References: <1409715071-12262-1-git-send-email-hui.wang@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: "Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "moinejf-GANU6spQydw@public.gmane.org" <moinejf-GANU6spQydw@public.gmane.org>, "andrew-g2DYL2Zd6BY@public.gmane.org" <andrew-g2DYL2Zd6BY@public.gmane.org>, "kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org" <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, "jsarha-l0cyMroinI0@public.gmane.org" <jsarha-l0cyMroinI0@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org" <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f45.google.com (mail-pa0-f45.google.com
+ [209.85.220.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id B67F02655AB
+ for <alsa-devel@alsa-project.org>; Wed,  3 Sep 2014 05:32:02 +0200 (CEST)
+Received: by mail-pa0-f45.google.com with SMTP id bj1so16223969pad.32
+ for <alsa-devel@alsa-project.org>; Tue, 02 Sep 2014 20:32:01 -0700 (PDT)
+In-Reply-To: <1409715071-12262-1-git-send-email-hui.wang@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: hui.wang@canonical.com, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Kuninori-san,
+Cc: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-Yes your patch has fixed the bug Jyri has pointed out.
-
-So I has discard my [PATCHv2 1/4] patch.
-
-Please send your patch out to replace this one.
-
-Thanks,
-
-BRs
-Xiubo
-
-
-
-> -----Original Message-----
-> From: Xiubo Li-B47053
-> Sent: Wednesday, September 03, 2014 10:22 AM
-> To: 'Kuninori Morimoto'
-> Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org; perex-/Fr2/VpizcU@public.gmane.org; lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org; tiwai-l3A5Bk7waGM@public.gmane.org;
-> moinejf-GANU6spQydw@public.gmane.org; andrew-g2DYL2Zd6BY@public.gmane.org; kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org;
-> jsarha-l0cyMroinI0@public.gmane.org; devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org; alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org;
-> robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org; pawel.moll-5wv7dgnIgG8@public.gmane.org; mark.rutland-5wv7dgnIgG8@public.gmane.org;
-> ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org; galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org; linux-
-> kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> Subject: RE: [alsa-devel] [PATCHv2 1/4] ASoC: simple-card: add
-> asoc_simple_card_fmt_master() to simplify the code.
-> 
-> Hi Kuninori-san,
-> 
-> Yes, I think it make sense to set all fmt in one function, and will
-> Be more readable.
-> 
-> I agree with you, could you please just wait, because there has many
-> Replications and good Ideas about this patch, and I will revise it.
-> Then you can improve it as your patch blow.
-> 
-> 
-> Thanks,
-> 
-> BRs
-> Xiubo
-> 
-> 
-> > Subject: Re: [alsa-devel] [PATCHv2 1/4] ASoC: simple-card: add
-> > asoc_simple_card_fmt_master() to simplify the code.
-> >
-> >
-> > Hi Xiubo
-> >
-> > I was very surprised about this patch
-> > because the idea is same as my local patch
-> > (I was planned to send it to ML :)
-> >
-> > I attached my local patch to sharing idea.
-> >
-> > > +static inline unsigned int
-> > > +asoc_simple_card_fmt_master(struct device_node *np,
-> > > +			    struct device_node *bitclkmaster,
-> > > +			    struct device_node *framemaster)
-> > > +{
-> > > +	switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
-> > > +	case 0x11:
-> > > +		return SND_SOC_DAIFMT_CBS_CFS;
-> > > +	case 0x10:
-> > > +		return SND_SOC_DAIFMT_CBS_CFM;
-> > > +	case 0x01:
-> > > +		return SND_SOC_DAIFMT_CBM_CFS;
-> > > +	default:
-> > > +		return SND_SOC_DAIFMT_CBM_CFM;
-> > > +	}
-> > > +
-> > > +	/* Shouldn't be here */
-> > > +	return -EINVAL;
-> > > +}
-> >
-> > I think this concept is nice,
-> > but setting all fmt in this function is good for me
-> > see my local patch
-> >
-> > ----------
-> > From 85562eb1587e5c184e4f4e0b183bd7063aaa81b7 Mon Sep 17 00:00:00 2001
-> > From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-> > Date: Thu, 28 Aug 2014 19:20:14 +0900
-> > Subject: [PATCH] ASoC: simple-card: add asoc_simple_card_parse_daifmt()
-> >
-> > Current daifmt setting method in simple-card driver is
-> > placed to many places, and using un-readable/confusable method.
-> > This patch adds new asoc_simple_card_parse_daifmt()
-> > and tidyup code.
-> >
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-> >
-> > diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-
-> card.c
-> > index bea5901..c932103 100644
-> > --- a/sound/soc/generic/simple-card.c
-> > +++ b/sound/soc/generic/simple-card.c
-> > @@ -167,6 +167,64 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
-> >  	return 0;
-> >  }
-> >
-> > +static int asoc_simple_card_parse_daifmt(struct device_node *node,
-> > +					 struct simple_card_data *priv,
-> > +					 struct device_node *cpu,
-> > +					 struct device_node *codec,
-> > +					 char *prefix, int idx)
-> > +{
-> > +	struct device *dev = simple_priv_to_dev(priv);
-> > +	struct device_node *bitclkmaster = NULL;
-> > +	struct device_node *framemaster = NULL;
-> > +	struct simple_dai_props *dai_props = simple_priv_to_props(priv, idx);
-> > +	struct asoc_simple_dai *cpu_dai = &dai_props->cpu_dai;
-> > +	struct asoc_simple_dai *codec_dai = &dai_props->codec_dai;
-> > +	unsigned int daifmt;
-> > +
-> > +	daifmt = snd_soc_of_parse_daifmt(node, prefix,
-> > +					 &bitclkmaster, &framemaster);
-> > +	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
-> > +
-> > +	if (strlen(prefix) && !bitclkmaster && !framemaster) {
-> > +		/*
-> > +		 * No dai-link level and master setting was not found from
-> > +		 * sound node level, revert back to legacy DT parsing and
-> > +		 * take the settings from codec node.
-> > +		 */
-> > +		dev_dbg(dev, "Revert to legacy daifmt parsing\n");
-> > +
-> > +		cpu_dai->fmt = codec_dai->fmt =
-> > +			snd_soc_of_parse_daifmt(codec, NULL, NULL, NULL) |
-> > +			(daifmt & ~SND_SOC_DAIFMT_CLOCK_MASK);
-> > +	} else {
-> > +
-> > +		switch (((codec == bitclkmaster) << 4) | (codec == framemaster))
-> > {
-> > +		case 0x11:
-> > +			daifmt |= SND_SOC_DAIFMT_CBM_CFM;
-> > +			break;
-> > +		case 0x10:
-> > +			daifmt |= SND_SOC_DAIFMT_CBM_CFS;
-> > +			break;
-> > +		case 0x01:
-> > +			daifmt |= SND_SOC_DAIFMT_CBS_CFM;
-> > +			break;
-> > +		default:
-> > +			daifmt |= SND_SOC_DAIFMT_CBS_CFS;
-> > +			break;
-> > +		}
-> > +
-> > +		cpu_dai->fmt = daifmt;
-> > +		codec_dai->fmt = daifmt;
-> > +	}
-> > +
-> > +	if (bitclkmaster)
-> > +		of_node_put(bitclkmaster);
-> > +	if (framemaster)
-> > +		of_node_put(framemaster);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int asoc_simple_card_dai_link_of(struct device_node *node,
-> >  					struct simple_card_data *priv,
-> >  					int idx,
-> > @@ -175,10 +233,8 @@ static int asoc_simple_card_dai_link_of(struct
-> > device_node *node,
-> >  	struct device *dev = simple_priv_to_dev(priv);
-> >  	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, idx);
-> >  	struct simple_dai_props *dai_props = simple_priv_to_props(priv, idx);
-> > -	struct device_node *np = NULL;
-> > -	struct device_node *bitclkmaster = NULL;
-> > -	struct device_node *framemaster = NULL;
-> > -	unsigned int daifmt;
-> > +	struct device_node *cpu = NULL;
-> > +	struct device_node *codec = NULL;
-> >  	char *name;
-> >  	char prop[128];
-> >  	char *prefix = "";
-> > @@ -187,82 +243,35 @@ static int asoc_simple_card_dai_link_of(struct
-> > device_node *node,
-> >  	if (is_top_level_node)
-> >  		prefix = "simple-audio-card,";
-> >
-> > -	daifmt = snd_soc_of_parse_daifmt(node, prefix,
-> > -					 &bitclkmaster, &framemaster);
-> > -	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
-> > -
-> >  	snprintf(prop, sizeof(prop), "%scpu", prefix);
-> > -	np = of_get_child_by_name(node, prop);
-> > -	if (!np) {
-> > +	cpu = of_get_child_by_name(node, prop);
-> > +
-> > +	snprintf(prop, sizeof(prop), "%scodec", prefix);
-> > +	codec = of_get_child_by_name(node, prop);
-> > +
-> > +	if (!cpu || !codec) {
-> >  		ret = -EINVAL;
-> >  		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
-> >  		goto dai_link_of_err;
-> >  	}
-> >
-> > -	ret = asoc_simple_card_sub_parse_of(np, &dai_props->cpu_dai,
-> > -					    &dai_link->cpu_of_node,
-> > -					    &dai_link->cpu_dai_name);
-> > +	ret = asoc_simple_card_parse_daifmt(node, priv,
-> > +					    cpu, codec, prefix, idx);
-> >  	if (ret < 0)
-> >  		goto dai_link_of_err;
-> >
-> > -	dai_props->cpu_dai.fmt = daifmt;
-> > -	switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
-> > -	case 0x11:
-> > -		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBS_CFS;
-> > -		break;
-> > -	case 0x10:
-> > -		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBS_CFM;
-> > -		break;
-> > -	case 0x01:
-> > -		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBM_CFS;
-> > -		break;
-> > -	default:
-> > -		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBM_CFM;
-> > -		break;
-> > -	}
-> > -
-> > -	of_node_put(np);
-> > -	snprintf(prop, sizeof(prop), "%scodec", prefix);
-> > -	np = of_get_child_by_name(node, prop);
-> > -	if (!np) {
-> > -		ret = -EINVAL;
-> > -		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
-> > +	ret = asoc_simple_card_sub_parse_of(cpu, &dai_props->cpu_dai,
-> > +					    &dai_link->cpu_of_node,
-> > +					    &dai_link->cpu_dai_name);
-> > +	if (ret < 0)
-> >  		goto dai_link_of_err;
-> > -	}
-> >
-> > -	ret = asoc_simple_card_sub_parse_of(np, &dai_props->codec_dai,
-> > +	ret = asoc_simple_card_sub_parse_of(codec, &dai_props->codec_dai,
-> >  					    &dai_link->codec_of_node,
-> >  					    &dai_link->codec_dai_name);
-> >  	if (ret < 0)
-> >  		goto dai_link_of_err;
-> >
-> > -	if (strlen(prefix) && !bitclkmaster && !framemaster) {
-> > -		/* No dai-link level and master setting was not found from
-> > -		   sound node level, revert back to legacy DT parsing and
-> > -		   take the settings from codec node. */
-> > -		dev_dbg(dev, "%s: Revert to legacy daifmt parsing\n",
-> > -			__func__);
-> > -		dai_props->cpu_dai.fmt = dai_props->codec_dai.fmt =
-> > -			snd_soc_of_parse_daifmt(np, NULL, NULL, NULL) |
-> > -			(daifmt & ~SND_SOC_DAIFMT_CLOCK_MASK);
-> > -	} else {
-> > -		dai_props->codec_dai.fmt = daifmt;
-> > -		switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
-> > -		case 0x11:
-> > -			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBM_CFM;
-> > -			break;
-> > -		case 0x10:
-> > -			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBM_CFS;
-> > -			break;
-> > -		case 0x01:
-> > -			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBS_CFM;
-> > -			break;
-> > -		default:
-> > -			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBS_CFS;
-> > -			break;
-> > -		}
-> > -	}
-> > -
-> >  	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name) {
-> >  		ret = -EINVAL;
-> >  		goto dai_link_of_err;
-> > @@ -304,12 +313,10 @@ static int asoc_simple_card_dai_link_of(struct
-> > device_node *node,
-> >  	dai_link->cpu_dai_name = NULL;
-> >
-> >  dai_link_of_err:
-> > -	if (np)
-> > -		of_node_put(np);
-> > -	if (bitclkmaster)
-> > -		of_node_put(bitclkmaster);
-> > -	if (framemaster)
-> > -		of_node_put(framemaster);
-> > +	if (cpu)
-> > +		of_node_put(cpu);
-> > +	if (codec)
-> > +		of_node_put(codec);
-> >  	return ret;
-> >  }
-> >
-> > ---------
-> >
-> > Best regards
-> > ---
-> > Kuninori Morimoto
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 06d6f0d..7b41dd3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4849,20 +4849,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	/* ALC282 */
+ 	SND_PCI_QUIRK(0x103c, 0x2210, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x2214, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+-	SND_PCI_QUIRK(0x103c, 0x2234, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x2235, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2236, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2237, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2238, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2239, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x2246, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x2247, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x2248, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x2249, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x224a, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x224b, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x224c, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x224d, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2268, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x226a, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x226b, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+@@ -5199,6 +5190,17 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x1d, 0x40f00001},
+ 		{0x1e, 0x411111f0},
+ 		{0x21, 0x04211020}),
++	SND_HDA_PIN_QUIRK(0x10ec0282, 0x103c, "HP", ALC269_FIXUP_HP_LINE1_MIC1_LED,
++		{0x12, 0x90a60140},
++		{0x14, 0x90170110},
++		{0x17, 0x40000000},
++		{0x18, 0x411111f0},
++		{0x19, 0x04a11030},
++		{0x1a, 0x411111f0},
++		{0x1b, 0x411111f0},
++		{0x1d, 0x40f00001},
++		{0x1e, 0x411111f0},
++		{0x21, 0x04211020}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0283, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x12, 0x90a60130},
+ 		{0x14, 0x90170110},
+-- 
+1.9.1
