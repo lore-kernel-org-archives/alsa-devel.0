@@ -1,94 +1,44 @@
-From: "Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
-Subject: RE: [PATCHv2 1/4] ASoC: simple-card: add
- asoc_simple_card_fmt_master() to simplify the code.
-Date: Wed, 3 Sep 2014 08:39:53 +0000
-Message-ID: <b1d8cfcf6cfa48fa83dc06016ae2ff70@BY2PR0301MB0613.namprd03.prod.outlook.com>
-References: <1409649969-15759-1-git-send-email-Li.Xiubo@freescale.com>
- <1409649969-15759-2-git-send-email-Li.Xiubo@freescale.com>
- <5405A598.4050208@ti.com>
- <707d1400a4514be9b599d4b7a6449ba7@BY2PR0301MB0613.namprd03.prod.outlook.com>
- <5406D317.5000403@ti.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/5] ASoC: wm8804: Remove unnecessary
+	suspend/resume	bias level changes
+Date: Wed, 3 Sep 2014 09:21:54 +0100
+Message-ID: <20140903082154.GL12043@opensource.wolfsonmicro.com>
+References: <1409689234-14774-1-git-send-email-lars@metafoo.de>
+ <1409689234-14774-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <5406D317.5000403-l0cyMroinI0@public.gmane.org>
-Content-Language: en-US
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "moinejf-GANU6spQydw@public.gmane.org" <moinejf-GANU6spQydw@public.gmane.org>, "andrew-g2DYL2Zd6BY@public.gmane.org" <andrew-g2DYL2Zd6BY@public.gmane.org>, "kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org" <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org" <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
-Cc: "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA26F26563A
+ for <alsa-devel@alsa-project.org>; Wed,  3 Sep 2014 10:21:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1409689234-14774-5-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, Mark Brown <broonie@kernel.org>, M R Swami Reddy <mr.swami.reddy@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Sep 02, 2014 at 10:20:33PM +0200, Lars-Peter Clausen wrote:
+> The ASoC core will only call the suspend/resume callbacks when the device's
+> DAPM context is idle. Since this driver sets idle_bias_off to true this
+> means that the device is already in SND_SOC_BIAS_OFF when the suspend
+> callback is called, so there is no need to manually set this state again.
+> There is also no need to go to SND_SOC_BIAS_STANDBY in the resume callback
+> since the core will go right back to SND_SOC_BIAS_OFF.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
 
-> Subject: Re: [PATCHv2 1/4] ASoC: simple-card: add asoc_simple_card_fmt_master()
-> to simplify the code.
-> 
-> On 09/03/2014 05:37 AM, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org wrote:
-> >> Subject: Re: [PATCHv2 1/4] ASoC: simple-card: add
-> asoc_simple_card_fmt_master()
-> ...
-> >>
-> >> This won't work. The logic for cpu node needs to be negated for codec node.
-> >>
-> >
-> > Yes, actually it should be.
-> >
-> > As my previous patches about this:
-> > ----
-> > Since from the DAI format micro SND_SOC_DAIFMT_CBx_CFx, the 'CBx'
-> > mean Codec's bit clock is as master/slave and the 'CFx' mean Codec's
-> > frame clock is as master/slave.
-> >
-> > So these same DAI formats should be informed to CPU and CODE DAIs at
-> > the same time. For the Codec driver will set the bit clock and frame
-> > clock as the DAI formats said, but for the CPU driver, if the the
-> > bit clock or frame clock is as Codec master, so it should be set CPU
-> > DAI device as bit clock or frame clock as slave, and vice versa.
-> >
-> > The old code will cause confusion, and we should be clear that the
-> > letter 'C' here mean to Codec.
-> > ----
-> >
-> > For the master format, no matter for CPU or CODEC, it always means Codec
-> > is master or slave for bit/frame clock, not means the local DAI device's
-> > bit/frame clock as master or slave.
-> >
-> > So your CPU DAI device driver should negate this locally as the existed
-> > Ones do.
-> >
-> 
-> 
-> Yes, but there is double negation in this patch. The switch-case
-> assignments depend on whether the bitclkmaster and framemaster
-> DT-node pointers are compared to a cpu-dai-node or
-> codec-dai-node. When your patch compares the codec-node, it does
-> the decisions like it was a cpu-node, which produces inverted CBM
-> and CFM setting.
-> 
-> However, Kurinori-san's patch fixes this problem because it just
-> uses the daifmt generated by comparing to codec node for both cpu
-> and codec nodes.
-> 
-> The reason why I did the comparison per node basis, was to make
-> the code more ready for tdm setups with multiple codecs on a same
-> wire. But writing code for something that is not really needed
-> yet is usually a bad idea, like it was this time too.
-> 
-> Kurinori-san's version of the fix should be fine and it cleans up
-> the code quite nicely.
-> 
-
-Yes, agree.
-
-So I just removed this patch from my patch series list.
-
-Kuninori-san will post his local patch about this later.
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
 Thanks,
-
-BRs
-Xiubo
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Charles
