@@ -1,31 +1,63 @@
-From: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Subject: RE: [alsa-devel] [PATCHv2 1/4] ASoC: simple-card: add
-	asoc_simple_card_fmt_master() to simplify the code.
-Date: Wed, 3 Sep 2014 02:21:54 +0000
-Message-ID: <b0ce0040e47a4ea8ab00ae7e113ecb41@BY2PR0301MB0613.namprd03.prod.outlook.com>
+From: "Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: RE: [alsa-devel] [PATCHv2 3/4] ASoC: simple-card: Adjust the comments
+ of simple card.
+Date: Wed, 3 Sep 2014 02:24:07 +0000
+Message-ID: <92afbaa4e7fd40f0a9a26dd89d350f53@BY2PR0301MB0613.namprd03.prod.outlook.com>
 References: <1409649969-15759-1-git-send-email-Li.Xiubo@freescale.com>
-	<1409649969-15759-2-git-send-email-Li.Xiubo@freescale.com>
- <87egvt7dmd.wl%kuninori.morimoto.gx@gmail.com>
+	<1409649969-15759-4-git-send-email-Li.Xiubo@freescale.com>
+	<20140902124438.36da4b85@armhf>
+	<37e5ba204cb340bc9fe01b7473721a9d@BY2PR0301MB0613.namprd03.prod.outlook.com>
+ <87zjeh5u2o.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87egvt7dmd.wl%kuninori.morimoto.gx@gmail.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <87zjeh5u2o.wl%kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, "moinejf@free.fr" <moinejf@free.fr>, "andrew@lunn.ch" <andrew@lunn.ch>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "jsarha@ti.com" <jsarha@ti.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "andrew-g2DYL2Zd6BY@public.gmane.org" <andrew-g2DYL2Zd6BY@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org" <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org" <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "jsarha-l0cyMroinI0@public.gmane.org" <jsarha-l0cyMroinI0@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Kuninori-san,
+> Subject: Re: [alsa-devel] [PATCHv2 3/4] ASoC: simple-card: Adjust the comments
+> of simple card.
+> 
+> 
+> Hi Xiubo
+> 
+> > > >  	/*
+> > > > -	 * soc_bind_dai_link() will check cpu name
+> > > > -	 * after of_node matching if dai_link has cpu_dai_name.
+> > > > -	 * but, it will never match if name was created by
+> fmt_single_name()
+> > > > -	 * remove cpu_dai_name to escape name matching.
+> > > > -	 * see
+> > > > +	 * In soc_bind_dai_link() will check cpu name after
+> > > > +	 * of_node matching if dai_link has cpu_dai_name.
+> > > > +	 * but, it will never match if name was created by
+> > > > +	 * fmt_single_name() remove cpu_dai_name to escape
+> > > > +	 * name matching. Please see:
+> > > >  	 *	fmt_single_name()
+> > > >  	 *	fmt_multiple_name()
+> > > >  	 */
+> > >
+> > > The patch done by Kuninori, setting the cpu_dai_name to NULL in all
+> > > cases, does not work. This sequence should be replaced where is was
+> > > previously.
+> > >
+> >
+> > If so, it should be another issue here, should we send another patch for
+> > It ?
+> 
+> I posted patch yesterday, and Jean tested it
+> 
+> Subject: [PATCH][RFC] ASoC: simple-card: fixup cpu_dai_name clear case
+> Date: Tue, 02 Sep 2014 20:05:32 +0900
+> 
 
-Yes, I think it make sense to set all fmt in one function, and will
-Be more readable.
+Nice.
 
-I agree with you, could you please just wait, because there has many
-Replications and good Ideas about this patch, and I will revise it.
-Then you can improve it as your patch blow.
-
+I think I just missed it.
 
 Thanks,
 
@@ -33,256 +65,7 @@ BRs
 Xiubo
 
 
-> Subject: Re: [alsa-devel] [PATCHv2 1/4] ASoC: simple-card: add
-> asoc_simple_card_fmt_master() to simplify the code.
-> 
-> 
-> Hi Xiubo
-> 
-> I was very surprised about this patch
-> because the idea is same as my local patch
-> (I was planned to send it to ML :)
-> 
-> I attached my local patch to sharing idea.
-> 
-> > +static inline unsigned int
-> > +asoc_simple_card_fmt_master(struct device_node *np,
-> > +			    struct device_node *bitclkmaster,
-> > +			    struct device_node *framemaster)
-> > +{
-> > +	switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
-> > +	case 0x11:
-> > +		return SND_SOC_DAIFMT_CBS_CFS;
-> > +	case 0x10:
-> > +		return SND_SOC_DAIFMT_CBS_CFM;
-> > +	case 0x01:
-> > +		return SND_SOC_DAIFMT_CBM_CFS;
-> > +	default:
-> > +		return SND_SOC_DAIFMT_CBM_CFM;
-> > +	}
-> > +
-> > +	/* Shouldn't be here */
-> > +	return -EINVAL;
-> > +}
-> 
-> I think this concept is nice,
-> but setting all fmt in this function is good for me
-> see my local patch
-> 
-> ----------
-> From 85562eb1587e5c184e4f4e0b183bd7063aaa81b7 Mon Sep 17 00:00:00 2001
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Date: Thu, 28 Aug 2014 19:20:14 +0900
-> Subject: [PATCH] ASoC: simple-card: add asoc_simple_card_parse_daifmt()
-> 
-> Current daifmt setting method in simple-card driver is
-> placed to many places, and using un-readable/confusable method.
-> This patch adds new asoc_simple_card_parse_daifmt()
-> and tidyup code.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-> index bea5901..c932103 100644
-> --- a/sound/soc/generic/simple-card.c
-> +++ b/sound/soc/generic/simple-card.c
-> @@ -167,6 +167,64 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
->  	return 0;
->  }
-> 
-> +static int asoc_simple_card_parse_daifmt(struct device_node *node,
-> +					 struct simple_card_data *priv,
-> +					 struct device_node *cpu,
-> +					 struct device_node *codec,
-> +					 char *prefix, int idx)
-> +{
-> +	struct device *dev = simple_priv_to_dev(priv);
-> +	struct device_node *bitclkmaster = NULL;
-> +	struct device_node *framemaster = NULL;
-> +	struct simple_dai_props *dai_props = simple_priv_to_props(priv, idx);
-> +	struct asoc_simple_dai *cpu_dai = &dai_props->cpu_dai;
-> +	struct asoc_simple_dai *codec_dai = &dai_props->codec_dai;
-> +	unsigned int daifmt;
-> +
-> +	daifmt = snd_soc_of_parse_daifmt(node, prefix,
-> +					 &bitclkmaster, &framemaster);
-> +	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
-> +
-> +	if (strlen(prefix) && !bitclkmaster && !framemaster) {
-> +		/*
-> +		 * No dai-link level and master setting was not found from
-> +		 * sound node level, revert back to legacy DT parsing and
-> +		 * take the settings from codec node.
-> +		 */
-> +		dev_dbg(dev, "Revert to legacy daifmt parsing\n");
-> +
-> +		cpu_dai->fmt = codec_dai->fmt =
-> +			snd_soc_of_parse_daifmt(codec, NULL, NULL, NULL) |
-> +			(daifmt & ~SND_SOC_DAIFMT_CLOCK_MASK);
-> +	} else {
-> +
-> +		switch (((codec == bitclkmaster) << 4) | (codec == framemaster))
-> {
-> +		case 0x11:
-> +			daifmt |= SND_SOC_DAIFMT_CBM_CFM;
-> +			break;
-> +		case 0x10:
-> +			daifmt |= SND_SOC_DAIFMT_CBM_CFS;
-> +			break;
-> +		case 0x01:
-> +			daifmt |= SND_SOC_DAIFMT_CBS_CFM;
-> +			break;
-> +		default:
-> +			daifmt |= SND_SOC_DAIFMT_CBS_CFS;
-> +			break;
-> +		}
-> +
-> +		cpu_dai->fmt = daifmt;
-> +		codec_dai->fmt = daifmt;
-> +	}
-> +
-> +	if (bitclkmaster)
-> +		of_node_put(bitclkmaster);
-> +	if (framemaster)
-> +		of_node_put(framemaster);
-> +
-> +	return 0;
-> +}
-> +
->  static int asoc_simple_card_dai_link_of(struct device_node *node,
->  					struct simple_card_data *priv,
->  					int idx,
-> @@ -175,10 +233,8 @@ static int asoc_simple_card_dai_link_of(struct
-> device_node *node,
->  	struct device *dev = simple_priv_to_dev(priv);
->  	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, idx);
->  	struct simple_dai_props *dai_props = simple_priv_to_props(priv, idx);
-> -	struct device_node *np = NULL;
-> -	struct device_node *bitclkmaster = NULL;
-> -	struct device_node *framemaster = NULL;
-> -	unsigned int daifmt;
-> +	struct device_node *cpu = NULL;
-> +	struct device_node *codec = NULL;
->  	char *name;
->  	char prop[128];
->  	char *prefix = "";
-> @@ -187,82 +243,35 @@ static int asoc_simple_card_dai_link_of(struct
-> device_node *node,
->  	if (is_top_level_node)
->  		prefix = "simple-audio-card,";
-> 
-> -	daifmt = snd_soc_of_parse_daifmt(node, prefix,
-> -					 &bitclkmaster, &framemaster);
-> -	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
-> -
->  	snprintf(prop, sizeof(prop), "%scpu", prefix);
-> -	np = of_get_child_by_name(node, prop);
-> -	if (!np) {
-> +	cpu = of_get_child_by_name(node, prop);
-> +
-> +	snprintf(prop, sizeof(prop), "%scodec", prefix);
-> +	codec = of_get_child_by_name(node, prop);
-> +
-> +	if (!cpu || !codec) {
->  		ret = -EINVAL;
->  		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
->  		goto dai_link_of_err;
->  	}
-> 
-> -	ret = asoc_simple_card_sub_parse_of(np, &dai_props->cpu_dai,
-> -					    &dai_link->cpu_of_node,
-> -					    &dai_link->cpu_dai_name);
-> +	ret = asoc_simple_card_parse_daifmt(node, priv,
-> +					    cpu, codec, prefix, idx);
->  	if (ret < 0)
->  		goto dai_link_of_err;
-> 
-> -	dai_props->cpu_dai.fmt = daifmt;
-> -	switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
-> -	case 0x11:
-> -		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBS_CFS;
-> -		break;
-> -	case 0x10:
-> -		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBS_CFM;
-> -		break;
-> -	case 0x01:
-> -		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBM_CFS;
-> -		break;
-> -	default:
-> -		dai_props->cpu_dai.fmt |= SND_SOC_DAIFMT_CBM_CFM;
-> -		break;
-> -	}
-> -
-> -	of_node_put(np);
-> -	snprintf(prop, sizeof(prop), "%scodec", prefix);
-> -	np = of_get_child_by_name(node, prop);
-> -	if (!np) {
-> -		ret = -EINVAL;
-> -		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
-> +	ret = asoc_simple_card_sub_parse_of(cpu, &dai_props->cpu_dai,
-> +					    &dai_link->cpu_of_node,
-> +					    &dai_link->cpu_dai_name);
-> +	if (ret < 0)
->  		goto dai_link_of_err;
-> -	}
-> 
-> -	ret = asoc_simple_card_sub_parse_of(np, &dai_props->codec_dai,
-> +	ret = asoc_simple_card_sub_parse_of(codec, &dai_props->codec_dai,
->  					    &dai_link->codec_of_node,
->  					    &dai_link->codec_dai_name);
->  	if (ret < 0)
->  		goto dai_link_of_err;
-> 
-> -	if (strlen(prefix) && !bitclkmaster && !framemaster) {
-> -		/* No dai-link level and master setting was not found from
-> -		   sound node level, revert back to legacy DT parsing and
-> -		   take the settings from codec node. */
-> -		dev_dbg(dev, "%s: Revert to legacy daifmt parsing\n",
-> -			__func__);
-> -		dai_props->cpu_dai.fmt = dai_props->codec_dai.fmt =
-> -			snd_soc_of_parse_daifmt(np, NULL, NULL, NULL) |
-> -			(daifmt & ~SND_SOC_DAIFMT_CLOCK_MASK);
-> -	} else {
-> -		dai_props->codec_dai.fmt = daifmt;
-> -		switch (((np == bitclkmaster) << 4) | (np == framemaster)) {
-> -		case 0x11:
-> -			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBM_CFM;
-> -			break;
-> -		case 0x10:
-> -			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBM_CFS;
-> -			break;
-> -		case 0x01:
-> -			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBS_CFM;
-> -			break;
-> -		default:
-> -			dai_props->codec_dai.fmt |= SND_SOC_DAIFMT_CBS_CFS;
-> -			break;
-> -		}
-> -	}
-> -
->  	if (!dai_link->cpu_dai_name || !dai_link->codec_dai_name) {
->  		ret = -EINVAL;
->  		goto dai_link_of_err;
-> @@ -304,12 +313,10 @@ static int asoc_simple_card_dai_link_of(struct
-> device_node *node,
->  	dai_link->cpu_dai_name = NULL;
-> 
->  dai_link_of_err:
-> -	if (np)
-> -		of_node_put(np);
-> -	if (bitclkmaster)
-> -		of_node_put(bitclkmaster);
-> -	if (framemaster)
-> -		of_node_put(framemaster);
-> +	if (cpu)
-> +		of_node_put(cpu);
-> +	if (codec)
-> +		of_node_put(codec);
->  	return ret;
->  }
-> 
-> ---------
-> 
-> Best regards
-> ---
-> Kuninori Morimoto
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
