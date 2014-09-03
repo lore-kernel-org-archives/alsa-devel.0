@@ -1,195 +1,83 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH 2/2] ASoC: tlv320aic31xx: Choose PLL p divider automatically
-Date: Wed, 3 Sep 2014 15:52:34 +0300
-Message-ID: <7615158ab393c4dff1b7d2447e72b5b0ee3ab1cc.1409747234.git.jsarha@ti.com>
-References: <cover.1409747234.git.jsarha@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH][RFC] ASoC: simple-card: fixup cpu_dai_name
+	clear case
+Date: Wed, 3 Sep 2014 13:54:08 +0100
+Message-ID: <20140903125408.GL29327@sirena.org.uk>
+References: <20140902090005.4a2c80b2@armhf>
+ <878um2jncd.wl%kuninori.morimoto.gx@gmail.com>
+ <877g1mjn9i.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <cover.1409747234.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-omap@vger.kernel.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: multipart/mixed; boundary="===============8032254839440419598=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 941582656C8
+ for <alsa-devel@alsa-project.org>; Wed,  3 Sep 2014 14:54:17 +0200 (CEST)
+In-Reply-To: <877g1mjn9i.wl%kuninori.morimoto.gx@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Jean-Francois Moine <moinejf@free.fr>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-This simplifies aic31xx_divs table. There is no more need for p_val or
-separate lines for 12 and 24 MHz mclks.
 
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
----
- sound/soc/codecs/tlv320aic31xx.c |  101 +++++++++++++++++++-------------------
- 1 file changed, 50 insertions(+), 51 deletions(-)
+--===============8032254839440419598==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="s6Wo+7iKhEdF4/RK"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index aea9e1f..733da78 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -167,13 +167,13 @@ struct aic31xx_priv {
- 	struct regulator_bulk_data supplies[AIC31XX_NUM_SUPPLIES];
- 	struct aic31xx_disable_nb disable_nb[AIC31XX_NUM_SUPPLIES];
- 	unsigned int sysclk;
-+	u8 p_div;
- 	int rate_div_line;
- };
- 
- struct aic31xx_rate_divs {
--	u32 mclk;
-+	u32 mclk_p;
- 	u32 rate;
--	u8 p_val;
- 	u8 pll_j;
- 	u16 pll_d;
- 	u16 dosr;
-@@ -186,62 +186,51 @@ struct aic31xx_rate_divs {
- 
- /* ADC dividers can be disabled by cofiguring them to 0 */
- static const struct aic31xx_rate_divs aic31xx_divs[] = {
--	/* mclk      rate  pll: p  j	 d     dosr ndac mdac  aors nadc madc */
-+	/* mclk/p    rate  pll: j     d        dosr ndac mdac  aors nadc madc */
- 	/* 8k rate */
--	{12000000,   8000,	1, 8, 1920,	128,  48,  2,	128,  48,  2},
--	{12000000,   8000,	1, 8, 1920,	128,  32,  3,	128,  32,  3},
--	{24000000,   8000,	2, 8, 1920,	128,  48,  2,	128,  48,  2},
--	{25000000,   8000,	2, 7, 8643,	128,  48,  2,	128,  48,  2},
-+	{12000000,   8000,	8, 1920,	128,  48,  2,	128,  48,  2},
-+	{12000000,   8000,	8, 1920,	128,  32,  3,	128,  32,  3},
-+	{12500000,   8000,	7, 8643,	128,  48,  2,	128,  48,  2},
- 	/* 11.025k rate */
--	{12000000,  11025,	1, 7, 5264,	128,  32,  2,	128,  32,  2},
--	{12000000,  11025,	1, 8, 4672,	128,  24,  3,	128,  24,  3},
--	{24000000,  11025,	2, 7, 5264,	128,  32,  2,	128,  32,  2},
--	{25000000,  11025,	2, 7, 2253,	128,  32,  2,	128,  32,  2},
-+	{12000000,  11025,	7, 5264,	128,  32,  2,	128,  32,  2},
-+	{12000000,  11025,	8, 4672,	128,  24,  3,	128,  24,  3},
-+	{12500000,  11025,	7, 2253,	128,  32,  2,	128,  32,  2},
- 	/* 16k rate */
--	{12000000,  16000,	1, 8, 1920,	128,  24,  2,	128,  24,  2},
--	{12000000,  16000,	1, 8, 1920,	128,  16,  3,	128,  16,  3},
--	{24000000,  16000,	2, 8, 1920,	128,  24,  2,	128,  24,  2},
--	{25000000,  16000,	2, 7, 8643,	128,  24,  2,	128,  24,  2},
-+	{12000000,  16000,	8, 1920,	128,  24,  2,	128,  24,  2},
-+	{12000000,  16000,	8, 1920,	128,  16,  3,	128,  16,  3},
-+	{12500000,  16000,	7, 8643,	128,  24,  2,	128,  24,  2},
- 	/* 22.05k rate */
--	{12000000,  22050,	1, 7, 5264,	128,  16,  2,	128,  16,  2},
--	{12000000,  22050,	1, 8, 4672,	128,  12,  3,	128,  12,  3},
--	{24000000,  22050,	2, 7, 5264,	128,  16,  2,	128,  16,  2},
--	{25000000,  22050,	2, 7, 2253,	128,  16,  2,	128,  16,  2},
-+	{12000000,  22050,	7, 5264,	128,  16,  2,	128,  16,  2},
-+	{12000000,  22050,	8, 4672,	128,  12,  3,	128,  12,  3},
-+	{12500000,  22050,	7, 2253,	128,  16,  2,	128,  16,  2},
- 	/* 32k rate */
--	{12000000,  32000,	1, 8, 1920,	128,  12,  2,	128,  12,  2},
--	{12000000,  32000,	1, 8, 1920,	128,   8,  3,	128,   8,  3},
--	{24000000,  32000,	2, 8, 1920,	128,  12,  2,	128,  12,  2},
--	{25000000,  32000,	2, 7, 8643,	128,  12,  2,	128,  12,  2},
-+	{12000000,  32000,	8, 1920,	128,  12,  2,	128,  12,  2},
-+	{12000000,  32000,	8, 1920,	128,   8,  3,	128,   8,  3},
-+	{12500000,  32000,	7, 8643,	128,  12,  2,	128,  12,  2},
- 	/* 44.1k rate */
--	{12000000,  44100,	1, 7, 5264,	128,   8,  2,	128,   8,  2},
--	{12000000,  44100,	1, 8, 4672,	128,   6,  3,	128,   6,  3},
--	{24000000,  44100,	2, 7, 5264,	128,   8,  2,	128,   8,  2},
--	{25000000,  44100,	2, 7, 2253,	128,   8,  2,	128,   8,  2},
-+	{12000000,  44100,	7, 5264,	128,   8,  2,	128,   8,  2},
-+	{12000000,  44100,	8, 4672,	128,   6,  3,	128,   6,  3},
-+	{12500000,  44100,	7, 2253,	128,   8,  2,	128,   8,  2},
- 	/* 48k rate */
--	{12000000,  48000,	1, 8, 1920,	128,   8,  2,	128,   8,  2},
--	{12000000,  48000,	1, 7, 6800,	 96,   5,  4,	 96,   5,  4},
--	{24000000,  48000,	2, 8, 1920,	128,   8,  2,	128,   8,  2},
--	{25000000,  48000,	2, 7, 8643,	128,   8,  2,	128,   8,  2},
-+	{12000000,  48000,	8, 1920,	128,   8,  2,	128,   8,  2},
-+	{12000000,  48000,	7, 6800,	 96,   5,  4,	 96,   5,  4},
-+	{12500000,  48000,	7, 8643,	128,   8,  2,	128,   8,  2},
- 	/* 88.2k rate */
--	{12000000,  88200,	1, 7, 5264,	 64,   8,  2,	 64,   8,  2},
--	{12000000,  88200,	1, 8, 4672,	 64,   6,  3,	 64,   6,  3},
--	{24000000,  88200,	2, 7, 5264,	 64,   8,  2,	 64,   8,  2},
--	{25000000,  88200,	2, 7, 2253,	 64,   8,  2,	 64,   8,  2},
-+	{12000000,  88200,	7, 5264,	 64,   8,  2,	 64,   8,  2},
-+	{12000000,  88200,	8, 4672,	 64,   6,  3,	 64,   6,  3},
-+	{12500000,  88200,	7, 2253,	 64,   8,  2,	 64,   8,  2},
- 	/* 96k rate */
--	{12000000,  96000,	1, 8, 1920,	 64,   8,  2,	 64,   8,  2},
--	{12000000,  96000,	1, 7, 6800,	 48,   5,  4,	 48,   5,  4},
--	{24000000,  96000,	2, 8, 1920,	 64,   8,  2,	 64,   8,  2},
--	{25000000,  96000,	2, 7, 8643,	 64,   8,  2,	 64,   8,  2},
-+	{12000000,  96000,	8, 1920,	 64,   8,  2,	 64,   8,  2},
-+	{12000000,  96000,	7, 6800,	 48,   5,  4,	 48,   5,  4},
-+	{12500000,  96000,	7, 8643,	 64,   8,  2,	 64,   8,  2},
- 	/* 176.4k rate */
--	{12000000, 176400,	1, 7, 5264,	 32,   8,  2,	 32,   8,  2},
--	{12000000, 176400,	1, 8, 4672,	 32,   6,  3,	 32,   6,  3},
--	{24000000, 176400,	2, 7, 5264,	 32,   8,  2,	 32,   8,  2},
--	{25000000, 176400,	2, 7, 2253,	 32,   8,  2,	 32,   8,  2},
-+	{12000000, 176400,	7, 5264,	 32,   8,  2,	 32,   8,  2},
-+	{12000000, 176400,	8, 4672,	 32,   6,  3,	 32,   6,  3},
-+	{12500000, 176400,	7, 2253,	 32,   8,  2,	 32,   8,  2},
- 	/* 192k rate */
--	{12000000, 192000,	1, 8, 1920,	 32,   8,  2,	 32,   8,  2},
--	{12000000, 192000,	1, 7, 6800,	 24,   5,  4,	 24,   5,  4},
--	{24000000, 192000,	2, 8, 1920,	 32,   8,  2,	 32,   8,  2},
--	{25000000, 192000,	2, 7, 8643,	 32,   8,  2,	 32,   8,  2},
-+	{12000000, 192000,	8, 1920,	 32,   8,  2,	 32,   8,  2},
-+	{12000000, 192000,	7, 6800,	 24,   5,  4,	 24,   5,  4},
-+	{12500000, 192000,	7, 8643,	 32,   8,  2,	 32,   8,  2},
- };
- 
- static const char * const ldac_in_text[] = {
-@@ -692,6 +681,7 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
- {
- 	struct aic31xx_priv *aic31xx = snd_soc_codec_get_drvdata(codec);
- 	int bclk_score = snd_soc_params_to_frame_size(params);
-+	int mclk_p = aic31xx->sysclk / aic31xx->p_div;
- 	int bclk_n = 0;
- 	int match = -1;
- 	int i;
-@@ -704,7 +694,7 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
- 
- 	for (i = 0; i < ARRAY_SIZE(aic31xx_divs); i++) {
- 		if (aic31xx_divs[i].rate == params_rate(params) &&
--		    aic31xx_divs[i].mclk == aic31xx->sysclk) {
-+		    aic31xx_divs[i].mclk_p == mclk_p) {
- 			int s =	(aic31xx_divs[i].dosr * aic31xx_divs[i].mdac) %
- 				snd_soc_params_to_frame_size(params);
- 			int bn = (aic31xx_divs[i].dosr * aic31xx_divs[i].mdac) /
-@@ -738,7 +728,7 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
- 
- 	/* PLL configuration */
- 	snd_soc_update_bits(codec, AIC31XX_PLLPR, AIC31XX_PLL_MASK,
--			    (aic31xx_divs[i].p_val << 4) | 0x01);
-+			    (aic31xx->p_div << 4) | 0x01);
- 	snd_soc_write(codec, AIC31XX_PLLJ, aic31xx_divs[i].pll_j);
- 
- 	snd_soc_write(codec, AIC31XX_PLLDMSB,
-@@ -772,7 +762,7 @@ static int aic31xx_setup_pll(struct snd_soc_codec *codec,
- 	dev_dbg(codec->dev,
- 		"pll %d.%04d/%d dosr %d n %d m %d aosr %d n %d m %d bclk_n %d\n",
- 		aic31xx_divs[i].pll_j, aic31xx_divs[i].pll_d,
--		aic31xx_divs[i].p_val, aic31xx_divs[i].dosr,
-+		aic31xx->p_div, aic31xx_divs[i].dosr,
- 		aic31xx_divs[i].ndac, aic31xx_divs[i].mdac,
- 		aic31xx_divs[i].aosr, aic31xx_divs[i].nadc,
- 		aic31xx_divs[i].madc, bclk_n);
-@@ -912,7 +902,16 @@ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	dev_dbg(codec->dev, "## %s: clk_id = %d, freq = %d, dir = %d\n",
- 		__func__, clk_id, freq, dir);
- 
--	for (i = 0; aic31xx_divs[i].mclk != freq; i++) {
-+	for (i = 1; freq/i > 20000000 && i < 8; i++)
-+		;
-+	if (freq/i > 20000000) {
-+		dev_err(aic31xx->dev, "%s: Too high mclk frequency %u\n",
-+			__func__, freq);
-+			return -EINVAL;
-+	}
-+	aic31xx->p_div = i;
-+
-+	for (i = 0; aic31xx_divs[i].mclk_p != freq/aic31xx->p_div; i++) {
- 		if (i == ARRAY_SIZE(aic31xx_divs)) {
- 			dev_err(aic31xx->dev, "%s: Unsupported frequency %d\n",
- 				__func__, freq);
--- 
-1.7.9.5
 
+--s6Wo+7iKhEdF4/RK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Sep 02, 2014 at 04:05:30AM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> f687d900d30a61dda38db2a99239f5284a86a309
+> (ASoC: simple-card: cpu_dai_name creates confusion when DT case)
+> cleared cpu_dai_name for caring fmt_single_name case,
+> and
+
+Applied, thanks.
+
+--s6Wo+7iKhEdF4/RK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJUBw9tAAoJELSic+t+oim9+sQP/1hJrRkhB2HY9VQaSqzQzRzc
+cuHapINeu/zxlZQQPKE+gXg0grU+hN5LTx2EWvD+ETg6aXk2BlQVTIQCms/DAoZ1
+SGWBmfcV5jXSSUvR76sI2sQTmZIYcJj2eFUq0Gcg18RLI/LZzbjMLr4sZAz0YQpf
+M6hLeJMwgnmDPx/X2+eLNu89If3DdiO0CAYp74cJ8uACqa4d/zpNMsiEa5Da4Be0
+KE9fEfhgzMFkFcFHBc5sK3wH838B/I92i3bcc3Opg+Ok9mJzU+2mlK3MJG+ss5fY
+uMlsuwOsvf4FREuPnvU6OKPsRkVws3fL2wlQjb6Fp2PJ4gLRJ/LD1RNyC2kn75dn
+Q6PiI75DOPGwh6pTT/GkV9B2DL9zHhFVHxVzXi36vUiat92kb1kgV1Y0kClX/bpg
+DTJTblPXvoT6ndyYCE2aDw5cGKRVDebIeIuTkYDcIMlf2WhqQgOGiyB7rG/0ZEqL
+jshbqynd9tQorG8OSJIS4i4DePoOlKh+/nlCZWxq1FEqbzEAKMi2b9fA4DU0IYCS
+zSbIAMAqgBCe+vX8VZDmZEOG2merGemjrSjMKlaoFiFNlRZv2wB5SHN4LOFHip1J
+GGjouZRUFzpRat/pRMO14mkE8ugpHC8Gc1Bt132ZTWOx7PN2lVQmBkNBoicOy+LG
+or8vi3cW74xroFSsqu/s
+=JeQd
+-----END PGP SIGNATURE-----
+
+--s6Wo+7iKhEdF4/RK--
+
+--===============8032254839440419598==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8032254839440419598==--
