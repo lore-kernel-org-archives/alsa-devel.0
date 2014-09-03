@@ -1,32 +1,71 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [alsa-devel] [PATCHv2 1/4] ASoC: simple-card: add
- asoc_simple_card_fmt_master() to simplify the code.
-Date: Wed, 3 Sep 2014 08:48:14 +0200
-Message-ID: <20140903084814.0949534c@armhf>
-References: <1409649969-15759-1-git-send-email-Li.Xiubo@freescale.com>
-	<1409649969-15759-2-git-send-email-Li.Xiubo@freescale.com>
-	<87egvt7dmd.wl%kuninori.morimoto.gx@gmail.com>
-	<df7936d5863948b0a0a33aa8283d6a67@BY2PR0301MB0613.namprd03.prod.outlook.com>
-	<87wq9l5ojn.wl%kuninori.morimoto.gx@gmail.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCHv2 1/4] ASoC: simple-card: add asoc_simple_card_fmt_master()
+ to simplify the code.
+Date: Wed, 3 Sep 2014 11:36:39 +0300
+Message-ID: <5406D317.5000403@ti.com>
+References: <1409649969-15759-1-git-send-email-Li.Xiubo@freescale.com> <1409649969-15759-2-git-send-email-Li.Xiubo@freescale.com> <5405A598.4050208@ti.com> <707d1400a4514be9b599d4b7a6449ba7@BY2PR0301MB0613.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87wq9l5ojn.wl%kuninori.morimoto.gx@gmail.com>
+In-Reply-To: <707d1400a4514be9b599d4b7a6449ba7@BY2PR0301MB0613.namprd03.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, "andrew@lunn.ch" <andrew@lunn.ch>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "jsarha@ti.com" <jsarha@ti.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.de" <tiwai@suse.de>, "moinejf@free.fr" <moinejf@free.fr>, "andrew@lunn.ch" <andrew@lunn.ch>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "pawel.moll@arm.com" <pawel.moll@arm.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>, "galak@codeaurora.org" <galak@codeaurora.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 02 Sep 2014 21:13:52 -0700 (PDT)
-Kuninori Morimoto <kuninori.morimoto.gx@gmail.com> wrote:
+On 09/03/2014 05:37 AM, Li.Xiubo@freescale.com wrote:
+>> Subject: Re: [PATCHv2 1/4] ASoC: simple-card: add asoc_simple_card_fmt_master()
+...
+>>
+>> This won't work. The logic for cpu node needs to be negated for codec node.
+>>
+>
+> Yes, actually it should be.
+>
+> As my previous patches about this:
+> ----
+> Since from the DAI format micro SND_SOC_DAIFMT_CBx_CFx, the 'CBx'
+> mean Codec's bit clock is as master/slave and the 'CFx' mean Codec's
+> frame clock is as master/slave.
+>
+> So these same DAI formats should be informed to CPU and CODE DAIs at
+> the same time. For the Codec driver will set the bit clock and frame
+> clock as the DAI formats said, but for the CPU driver, if the the
+> bit clock or frame clock is as Codec master, so it should be set CPU
+> DAI device as bit clock or frame clock as slave, and vice versa.
+>
+> The old code will cause confusion, and we should be clear that the
+> letter 'C' here mean to Codec.
+> ----
+>
+> For the master format, no matter for CPU or CODEC, it always means Codec
+> is master or slave for bit/frame clock, not means the local DAI device's
+> bit/frame clock as master or slave.
+>
+> So your CPU DAI device driver should negate this locally as the existed
+> Ones do.
+>
 
-> OK, will do.
-> To avoid confusion/conflict, I will post it after Mark applied it.
-> Because many simple-card patches are posted in these days...
 
-Yes, I have one more awaiting, about multi-CODECs...
+Yes, but there is double negation in this patch. The switch-case
+assignments depend on whether the bitclkmaster and framemaster
+DT-node pointers are compared to a cpu-dai-node or
+codec-dai-node. When your patch compares the codec-node, it does
+the decisions like it was a cpu-node, which produces inverted CBM
+and CFM setting.
 
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+However, Kurinori-san's patch fixes this problem because it just
+uses the daifmt generated by comparing to codec node for both cpu
+and codec nodes.
+
+The reason why I did the comparison per node basis, was to make
+the code more ready for tdm setups with multiple codecs on a same
+wire. But writing code for something that is not really needed
+yet is usually a bad idea, like it was this time too.
+
+Kurinori-san's version of the fix should be fine and it cleans up
+the code quite nicely.
+
+Best regards,
+Jyri
