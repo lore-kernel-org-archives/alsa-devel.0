@@ -1,138 +1,49 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: davinci-mcasp: Fix rx rotation
-	settings
-Date: Wed, 3 Sep 2014 17:21:39 +0300
-Message-ID: <540723F3.4060405@ti.com>
-References: <1409753841-31084-1-git-send-email-peter.ujfalusi@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/2] tlv320aic31xx PLL programming fix and cleanup
+Date: Wed, 3 Sep 2014 15:26:05 +0100
+Message-ID: <20140903142605.GO29327@sirena.org.uk>
+References: <cover.1409747234.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 174B82655F2
- for <alsa-devel@alsa-project.org>; Wed,  3 Sep 2014 16:21:44 +0200 (CEST)
-In-Reply-To: <1409753841-31084-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, jsarha@ti.com, zonque@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JIgDBBEDRU2Tt5Ar"
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <cover.1409747234.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
 
-On 09/03/2014 05:17 PM, Peter Ujfalusi wrote:
-> We need to take into account the slot size as well when calculating the
-> RROT for received data.
-> This patch will fix S24_3LE audio capture.
+--JIgDBBEDRU2Tt5Ar
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Can you wait a bit, I need to test something with this patch...
+On Wed, Sep 03, 2014 at 03:52:32PM +0300, Jyri Sarha wrote:
+> The first patch is the fix and the second is only a cleanup.
 
-> =
+Applied, thanks.
 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
->  sound/soc/davinci/davinci-mcasp.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
-> =
+--JIgDBBEDRU2Tt5Ar
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinc=
-i-mcasp.c
-> index 6a6b2ff7d7d7..267cd4937c7c 100644
-> --- a/sound/soc/davinci/davinci-mcasp.c
-> +++ b/sound/soc/davinci/davinci-mcasp.c
-> @@ -463,11 +463,11 @@ static int davinci_mcasp_set_sysclk(struct snd_soc_=
-dai *dai, int clk_id,
->  }
->  =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
->  static int davinci_config_channel_size(struct davinci_mcasp *mcasp,
-> -				       int word_length)
-> +				       int slot_size, int word_length)
->  {
->  	u32 fmt;
->  	u32 tx_rotate =3D (word_length / 4) & 0x7;
-> -	u32 rx_rotate =3D (32 - word_length) / 4;
-> +	u32 rx_rotate =3D (slot_size - word_length) / 4;
->  	u32 mask =3D (1ULL << word_length) - 1;
->  =
+iQIcBAEBAgAGBQJUByT6AAoJELSic+t+oim9jQ4P/A4hOQbDELtkeRPigDQcqV45
+LCSt6YKeoOs8puXPZmVyBvV68l/J/tZA6lAWmKe9bo8UOYTap2hnrfdgl49G9euf
+HhzQ9WGC3CV6rXYm89TNMFGdf/VsIa9bkGpO4biEmnZWx1zWf99K6yimtNOAFCt2
+ZsHA5I8Xr1pz73n8K3O8UrCr7OJsvwr1Q8IYzgZrv2a+pj59Poqdxf4pJh25/G7G
+3AE6avRgB5pYPjeU/orTZiPgJGz/XbLNUdl8iR+D4cr5HdwNN9eb9aAiJjzLvfn6
+qD38oHrvcSYZknVPyG3x/AmSWZ5Fv+sme0yNED5GkNS24SoWbzPfeok934pCEG/v
+tYw+vgMboRNtdmCmeFoiS/y+Aol+8+Gm4JKVhQNqh+tKoNu5YKjsn3IEychb/IeB
+/3Edn1owablJG6zivneyzLDBAuQqvkPwwcpCUzu9OR6KlxG0FsZucq1zN43uV1Gr
+RnXPoZXTgld9BXMhsm8IFFfYnQlqTvhGQ+esemJhiRFRUWIIMHxr3RYiMHjdXoQ2
++3qITE/bGKlmnUtDQ65gQwjkaBYVTdXsE8+CU+ADCDZ/KDob9MQ1aVEHWUT6kpIl
+3SEFjWlFnW/2INZPe4xhuvD63ql7gGXUMkJ01C5rwetafo7LOVi9uPkMqo8K21t6
+WeE2bwPFXvW93dOLRyNm
+=1Zju
+-----END PGP SIGNATURE-----
 
->  	/*
-> @@ -726,7 +726,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_sub=
-stream *substream,
->  	struct davinci_mcasp *mcasp =3D snd_soc_dai_get_drvdata(cpu_dai);
->  	struct davinci_pcm_dma_params *dma_params =3D
->  					&mcasp->dma_params[substream->stream];
-> -	int word_length;
-> +	int word_length, slot_size;
->  	int channels =3D params_channels(params);
->  	int period_size =3D params_period_size(params);
->  	int ret;
-> @@ -766,31 +766,32 @@ static int davinci_mcasp_hw_params(struct snd_pcm_s=
-ubstream *substream,
->  	case SNDRV_PCM_FORMAT_U8:
->  	case SNDRV_PCM_FORMAT_S8:
->  		dma_params->data_type =3D 1;
-> -		word_length =3D 8;
-> +		slot_size =3D word_length =3D 8;
->  		break;
->  =
-
->  	case SNDRV_PCM_FORMAT_U16_LE:
->  	case SNDRV_PCM_FORMAT_S16_LE:
->  		dma_params->data_type =3D 2;
-> -		word_length =3D 16;
-> +		slot_size =3D word_length =3D 16;
->  		break;
->  =
-
->  	case SNDRV_PCM_FORMAT_U24_3LE:
->  	case SNDRV_PCM_FORMAT_S24_3LE:
->  		dma_params->data_type =3D 3;
-> -		word_length =3D 24;
-> +		slot_size =3D word_length =3D 24;
->  		break;
->  =
-
->  	case SNDRV_PCM_FORMAT_U24_LE:
->  	case SNDRV_PCM_FORMAT_S24_LE:
->  		dma_params->data_type =3D 4;
->  		word_length =3D 24;
-> +		slot_size =3D 32;
->  		break;
->  =
-
->  	case SNDRV_PCM_FORMAT_U32_LE:
->  	case SNDRV_PCM_FORMAT_S32_LE:
->  		dma_params->data_type =3D 4;
-> -		word_length =3D 32;
-> +		slot_size =3D word_length =3D 32;
->  		break;
->  =
-
->  	default:
-> @@ -803,7 +804,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_sub=
-stream *substream,
->  	else
->  		dma_params->acnt =3D dma_params->data_type;
->  =
-
-> -	davinci_config_channel_size(mcasp, word_length);
-> +	davinci_config_channel_size(mcasp, slot_size, word_length);
->  =
-
->  	return 0;
->  }
-> =
-
-
-
--- =
-
-P=E9ter
+--JIgDBBEDRU2Tt5Ar--
