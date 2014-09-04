@@ -1,7 +1,8 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 4/4] hda-emu/tester: Fix calculation of machines
-Date: Thu,  4 Sep 2014 16:21:26 +0200
-Message-ID: <1409840486-14961-5-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 3/4] hda-emu: Allow some more codec IDs to use
+	ATI HDMI special verbs
+Date: Thu,  4 Sep 2014 16:21:25 +0200
+Message-ID: <1409840486-14961-4-git-send-email-david.henningsson@canonical.com>
 References: <1409840486-14961-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id ABFB0265645
+ by alsa0.perex.cz (Postfix) with ESMTP id 197F9265644
  for <alsa-devel@alsa-project.org>; Thu,  4 Sep 2014 16:21:25 +0200 (CEST)
 In-Reply-To: <1409840486-14961-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,28 +26,24 @@ To: tiwai@suse.de, alsa-devel@alsa-project.org
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Previously, if a machine had a modem codec, it was not included
-in the total count of machines.
-
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- tester/summary.py | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ hda-spec.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tester/summary.py b/tester/summary.py
-index 640d1c1..4bf53b6 100755
---- a/tester/summary.py
-+++ b/tester/summary.py
-@@ -90,7 +90,9 @@ def main():
-                         if line.find("is a modem codec, aborting"):
-                             skip_this = True
+diff --git a/hda-spec.c b/hda-spec.c
+index b03d06a..58dd87a 100644
+--- a/hda-spec.c
++++ b/hda-spec.c
+@@ -434,6 +434,9 @@ static struct verb_ext_list extensions[] = {
+ 	{ .id = 0x11060446, .verbs = vt2002p_verbs },
+ 	{ .id = 0x11068446, .verbs = vt2002p_verbs },
  
--                if (not skip_this) and (r.errors > 0 or r.warnings > 0):
-+                if skip_this:
-+                    skip_this = False
-+                elif (r.errors > 0 or r.warnings > 0):
-                     fail_this = True
-                     errors += r.errors
-                     warnings += r.warnings
++	{ .id = 0x1002793c, .verbs = amdhdmi_verbs },
++	{ .id = 0x10027919, .verbs = amdhdmi_verbs },
++	{ .id = 0x1002791a, .verbs = amdhdmi_verbs },
+ 	{ .id = 0x1002aa01, .verbs = amdhdmi_verbs },
+ 
+ 	{ .id = 0x10de0002, .verbs = nvhdmi_8ch_7x_verbs },
 -- 
 1.9.1
