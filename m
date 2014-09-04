@@ -1,19 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt5670: add clock source
-	selection controls
-Date: Thu, 4 Sep 2014 20:06:05 +0100
-Message-ID: <20140904190605.GM29327@sirena.org.uk>
-References: <1409549878-27304-1-git-send-email-bardliao@realtek.com>
- <20140901153433.GD29327@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D76153B1@RTITMBSV03.realtek.com.tw>
+Subject: Re: [PATCH 0/9] ASoC: probe/remove and suspend/resume
+ manual bias level transitions cleanup
+Date: Thu, 4 Sep 2014 20:11:41 +0100
+Message-ID: <20140904191141.GN29327@sirena.org.uk>
+References: <1409852652-27939-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7715859661940697561=="
+Content-Type: multipart/mixed; boundary="===============6693477079346236511=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B24E261A01
- for <alsa-devel@alsa-project.org>; Thu,  4 Sep 2014 21:06:23 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D76153B1@RTITMBSV03.realtek.com.tw>
+ by alsa0.perex.cz (Postfix) with ESMTP id 43058261A01
+ for <alsa-devel@alsa-project.org>; Thu,  4 Sep 2014 21:11:57 +0200 (CEST)
+In-Reply-To: <1409852652-27939-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,70 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7715859661940697561==
+--===============6693477079346236511==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jZUYryPdXB7p5neD"
+	protocol="application/pgp-signature"; boundary="klUO3blZLrAR18XW"
 Content-Disposition: inline
 
 
---jZUYryPdXB7p5neD
+--klUO3blZLrAR18XW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Sep 02, 2014 at 05:22:49AM +0000, Bard Liao wrote:
+On Thu, Sep 04, 2014 at 07:44:03PM +0200, Lars-Peter Clausen wrote:
+> The goal of this series is to allow to cut back the number of manual bias level
+> transitions that drivers have to do.
 
-> Which clock source should be selected mainly decided by the sampling
-> rate and the audio routing path. However, there are some exceptions.
-> For example, if the MCLK and I2S clock are asynchronous, we should
-> always select "clk_i2s_track" as the clock source. And In some cases,
-> we can choice "clk_i2s_track" or "clk_sysy_div_out" as the clock source.
-> Users can choose what they want to use.
+Applied all, thanks.  Please word wrap *below* 80 columns.
 
-> Even if we ignore all the exceptions and make choice for users, it is still
-> hard to implement it in the driver since we need to read a lot of registers
-> to decide the clock source. It will be easier if we open it to user space
-> so user can configure it with the audio routing path.
-
-The choice is usually deferred to the machine driver rather than made
-entirely automatically within the CODEC driver - where manual control is
-required typically the machine driver is then able to offer a bigger,
-system-wide choice to the user that controls several settings and makes
-sure that any required coordination occurs.
-
---jZUYryPdXB7p5neD
+--klUO3blZLrAR18XW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBAgAGBQJUCLgaAAoJELSic+t+oim9aLYP/3Ve7i6ds3hg9EeE88TuPqsY
-Vgk2MCewDWeHlIKSRISxySqMGhxp/u6GyLd0eHJjrOye2LjG0C7WwLqcMgv7C44s
-UYF+W/b+BYu7G19X0s8KuZu2leJftqKNk6Q9TOReEkLKS7+FuLZVXqfjrNz59yRC
-fd70wNbEiwzHGZG/K5KmnpgB6LPwSDWmztxFs/oVAenRjm9H3Cgr/E/FOpIRf3bD
-/Eip0KK23HvSVMKNyvOmvmF2UseXpHLNhuQvvTRTlPqpY/qM49t+I83hW21oI4ji
-/gtqrlg3HiU6wP9tdshegeBCbImQ4JW/9NuOLPOBqZLrn7WZXgUUMK7iXG6ls5ON
-NA12bJdLaX9I/qntVKUdaDxMi3jf2RJc2TrCZ6msTwD7kDPLTdP1uuda8d/euJ5V
-8kb8iuOhyEOb0ps99Im4WW60W+vr8K+jB7rVxoe5wnzhOjEx282TGWvqdU7n9Wz1
-WHBynVJx7SupKCPgu8Frbwuu/rk1Gvw3X4I6fPbX32lsgIOIRhDUEGu8OsdPjE79
-ROiGdm+Kk6FOuercM3kWtgQmFnQ3Dnp0lSpaISbhTTGBoaYa32ODvtPhijQEmkve
-Fqgi/As22EMXN6HzxAuX8x1sampZN2C8fuJ6Gj+tOT6K9xseSR/qKe+QXLk0bYtA
-AtQw1Jh7ukMNteKE4xzr
-=VyVu
+iQIcBAEBAgAGBQJUCLlpAAoJELSic+t+oim9USoP/0o4JsCEVOHImw6OPUe6g5Uv
+2tPv/afR6OsjqahEzfOxEQ1Pb44rb2IDzYBbATLXZFPJ6ggen8UhIBdkUzU4C5ft
+vjbbEIPGq4ccSI5colVf8fFc6mkJ2+JFeWYG/Zm0/N+Xb1mkpGYi2LQKDzKi8+1k
+MJvEbNQcg43TkcE6x+j/enh3xwwv7mvwwmhTmElnKRUZSZ38cpu0KQ+G1OEKKlhy
+tXLJUksxKh12g25CXY6xvGopOhMQV6ynaaVxsLQlKIgbshc/a2e0SPc29vtQyyWA
+avKC/w0CQi+vmdy2DDjDG5RAWNtpZgWusOnB+wJDnruAYLa4+kUhgZFmikBaspWM
+MVKnkLFJqkcSFUW1TWW7EZXbIYd9M9eahw8tN/RzlVXuR4DzuZ8TVyhf/tPlRj5R
+KS2KJqINdrSFZJdXZMk4fs8JHJcnely9p2a/TeZxSEHx8WPxVVDT2b12hyjV5mMd
+72xAy4KZ1znUBZD+feN93nrZvoRuyXAkLHf9o25k7RVZlmLRal5jVGbrLe4XhQZY
+p304qGQCOxiSOBxs28pZyD4L3XYT7TPVbkAqiH+3udxfHnRR+sJjBjMFbadVWNw5
+CXvVXWcOS1CWvwz7Lom/4p2JT2QcZZNMdUWmpUeIYAA5biw0e+JTlfUNbvGmdmPh
+YVEufk/Ycuq677HbMP4o
+=5Wak
 -----END PGP SIGNATURE-----
 
---jZUYryPdXB7p5neD--
+--klUO3blZLrAR18XW--
 
---===============7715859661940697561==
+--===============6693477079346236511==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7715859661940697561==--
+--===============6693477079346236511==--
