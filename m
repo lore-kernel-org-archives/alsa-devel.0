@@ -1,18 +1,19 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 8/9] ASoC: ssm2518: Cleanup manual bias level
-	transitions
-Date: Thu,  4 Sep 2014 19:44:11 +0200
-Message-ID: <1409852652-27939-9-git-send-email-lars@metafoo.de>
-References: <1409852652-27939-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: rt5670: add clock source
+	selection controls
+Date: Thu, 4 Sep 2014 20:06:05 +0100
+Message-ID: <20140904190605.GM29327@sirena.org.uk>
+References: <1409549878-27304-1-git-send-email-bardliao@realtek.com>
+ <20140901153433.GD29327@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D76153B1@RTITMBSV03.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7715859661940697561=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-125.synserver.de (smtp-out-125.synserver.de
- [212.40.185.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CBB62656E9
- for <alsa-devel@alsa-project.org>; Thu,  4 Sep 2014 19:44:43 +0200 (CEST)
-In-Reply-To: <1409852652-27939-1-git-send-email-lars@metafoo.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B24E261A01
+ for <alsa-devel@alsa-project.org>; Thu,  4 Sep 2014 21:06:23 +0200 (CEST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D76153B1@RTITMBSV03.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since the ASoC core now takes care of setting the bias level to
-SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
-anymore either.
 
-The manual transition to SND_SOC_BIAS_OFF at the end of CODEC probe()
-can also be removed as the CODEC is already in OFF state at this point.
+--===============7715859661940697561==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jZUYryPdXB7p5neD"
+Content-Disposition: inline
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/codecs/ssm2518.c | 13 -------------
- 1 file changed, 13 deletions(-)
 
-diff --git a/sound/soc/codecs/ssm2518.c b/sound/soc/codecs/ssm2518.c
-index e8680be..67ea55a 100644
---- a/sound/soc/codecs/ssm2518.c
-+++ b/sound/soc/codecs/ssm2518.c
-@@ -646,17 +646,6 @@ static struct snd_soc_dai_driver ssm2518_dai = {
- 	.ops = &ssm2518_dai_ops,
- };
- 
--static int ssm2518_probe(struct snd_soc_codec *codec)
--{
--	return ssm2518_set_bias_level(codec, SND_SOC_BIAS_OFF);
--}
--
--static int ssm2518_remove(struct snd_soc_codec *codec)
--{
--	ssm2518_set_bias_level(codec, SND_SOC_BIAS_OFF);
--	return 0;
--}
--
- static int ssm2518_set_sysclk(struct snd_soc_codec *codec, int clk_id,
- 	int source, unsigned int freq, int dir)
- {
-@@ -727,8 +716,6 @@ static int ssm2518_set_sysclk(struct snd_soc_codec *codec, int clk_id,
- }
- 
- static struct snd_soc_codec_driver ssm2518_codec_driver = {
--	.probe = ssm2518_probe,
--	.remove = ssm2518_remove,
- 	.set_bias_level = ssm2518_set_bias_level,
- 	.set_sysclk = ssm2518_set_sysclk,
- 	.idle_bias_off = true,
--- 
-1.8.0
+--jZUYryPdXB7p5neD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Sep 02, 2014 at 05:22:49AM +0000, Bard Liao wrote:
+
+> Which clock source should be selected mainly decided by the sampling
+> rate and the audio routing path. However, there are some exceptions.
+> For example, if the MCLK and I2S clock are asynchronous, we should
+> always select "clk_i2s_track" as the clock source. And In some cases,
+> we can choice "clk_i2s_track" or "clk_sysy_div_out" as the clock source.
+> Users can choose what they want to use.
+
+> Even if we ignore all the exceptions and make choice for users, it is still
+> hard to implement it in the driver since we need to read a lot of registers
+> to decide the clock source. It will be easier if we open it to user space
+> so user can configure it with the audio routing path.
+
+The choice is usually deferred to the machine driver rather than made
+entirely automatically within the CODEC driver - where manual control is
+required typically the machine driver is then able to offer a bigger,
+system-wide choice to the user that controls several settings and makes
+sure that any required coordination occurs.
+
+--jZUYryPdXB7p5neD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJUCLgaAAoJELSic+t+oim9aLYP/3Ve7i6ds3hg9EeE88TuPqsY
+Vgk2MCewDWeHlIKSRISxySqMGhxp/u6GyLd0eHJjrOye2LjG0C7WwLqcMgv7C44s
+UYF+W/b+BYu7G19X0s8KuZu2leJftqKNk6Q9TOReEkLKS7+FuLZVXqfjrNz59yRC
+fd70wNbEiwzHGZG/K5KmnpgB6LPwSDWmztxFs/oVAenRjm9H3Cgr/E/FOpIRf3bD
+/Eip0KK23HvSVMKNyvOmvmF2UseXpHLNhuQvvTRTlPqpY/qM49t+I83hW21oI4ji
+/gtqrlg3HiU6wP9tdshegeBCbImQ4JW/9NuOLPOBqZLrn7WZXgUUMK7iXG6ls5ON
+NA12bJdLaX9I/qntVKUdaDxMi3jf2RJc2TrCZ6msTwD7kDPLTdP1uuda8d/euJ5V
+8kb8iuOhyEOb0ps99Im4WW60W+vr8K+jB7rVxoe5wnzhOjEx282TGWvqdU7n9Wz1
+WHBynVJx7SupKCPgu8Frbwuu/rk1Gvw3X4I6fPbX32lsgIOIRhDUEGu8OsdPjE79
+ROiGdm+Kk6FOuercM3kWtgQmFnQ3Dnp0lSpaISbhTTGBoaYa32ODvtPhijQEmkve
+Fqgi/As22EMXN6HzxAuX8x1sampZN2C8fuJ6Gj+tOT6K9xseSR/qKe+QXLk0bYtA
+AtQw1Jh7ukMNteKE4xzr
+=VyVu
+-----END PGP SIGNATURE-----
+
+--jZUYryPdXB7p5neD--
+
+--===============7715859661940697561==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7715859661940697561==--
