@@ -1,8 +1,8 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 4/5] hda-emu/tester: Add codec index parameter
-	to hda-emu-tester
-Date: Thu,  4 Sep 2014 14:21:06 +0200
-Message-ID: <1409833267-9778-5-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 5/5] hda-emu/tester: Test all codecs,
+	not just one
+Date: Thu,  4 Sep 2014 14:21:07 +0200
+Message-ID: <1409833267-9778-6-git-send-email-david.henningsson@canonical.com>
 References: <1409833267-9778-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CA102658A6
+ by alsa0.perex.cz (Postfix) with ESMTP id CD91A2658A8
  for <alsa-devel@alsa-project.org>; Thu,  4 Sep 2014 14:21:07 +0200 (CEST)
 In-Reply-To: <1409833267-9778-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,94 +26,101 @@ To: alsa-devel@alsa-project.org, tiwai@suse.de
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Also improve runner's error handling a little.
+This way we get a more complete test over the codecs.
 
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- tester/hda-emu-tester.py |  2 ++
- tester/runner.py         | 14 ++++++++++++--
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ tester/summary.py | 62 +++++++++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 49 insertions(+), 13 deletions(-)
 
-diff --git a/tester/hda-emu-tester.py b/tester/hda-emu-tester.py
-index 4782a97..3b994ab 100755
---- a/tester/hda-emu-tester.py
-+++ b/tester/hda-emu-tester.py
-@@ -22,6 +22,7 @@ def handle_argv():
+diff --git a/tester/summary.py b/tester/summary.py
+index 0f9fbf3..640d1c1 100755
+--- a/tester/summary.py
++++ b/tester/summary.py
+@@ -18,15 +18,33 @@
+ #    You should have received a copy of the GNU General Public License along 
+ #    with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
++import runner
++
++
+ def defaultpath(s):
+     import os.path
+     q = os.path.dirname(os.path.realpath(__file__))
+     return os.path.join(q, s)
+ 
++def count_codecs(filename):
++    r = runner.HdaEmuRunner()
++    r.set_alsa_info_file(filename)
++    r.set_codec_index(99999)
++    r.start_process()
++    try:
++        r.run_command()
++    except runner.HdaEmuFatalError:
++        import re
++        m = re.compile("Codec index (\d+) requested, but found only (\d+) codecs")
++        for line in r.error_list:
++            match = m.search(line)
++            if match:
++                return int(match.group(2))
++    return -1
++
+ def main():
+     import os
+     import os.path
+-    import runner
+ 
      import argparse
      parser = argparse.ArgumentParser(description='Hda-emu automated test wrapper.')
-     parser.add_argument('--file', dest='file', required=True, help='alsa-info filename')
-+    parser.add_argument('--codec-index', dest='codecindex', default=0, help='what codec to test')
-     parser.add_argument('--print-errors', dest='print_errors', action="store_true", 
-         default=False, help='print errors, and the command that caused it')
-     parser.add_argument('--comm-log', dest='comm_log', action="store_true", 
-@@ -34,6 +35,7 @@ def run_test(argv):
-     result.set_print_errors(argv.print_errors)
-     result.set_comm_log_enabled(argv.comm_log)
-     result.set_alsa_info_file(argv.file)
-+    result.set_codec_index(argv.codecindex)
-     result.run_standard()
-     return result
- 
-diff --git a/tester/runner.py b/tester/runner.py
-index 1e7ecf9..964da1a 100644
---- a/tester/runner.py
-+++ b/tester/runner.py
-@@ -20,6 +20,9 @@ import subprocess
- import os
- import re
- 
-+class HdaEmuFatalError(Exception):
-+    pass
+@@ -53,19 +71,37 @@ def main():
+         index += 1
+         if verbose > 2:
+             print '[{0}/{1}]: Testing {2}'.format(index, len(files), f)
 +
- class ControlInfo():
-     def __init__(self, runner, list_info):
-         self.runner = runner
-@@ -48,15 +51,20 @@ class HdaEmuRunner():
-     def __init__(self):
-         import os.path
-         hda_emu_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"../hda-emu")
--        self.child_args = '"' + hda_emu_path + '" -M -F'
-+        self.child_args = '"' + hda_emu_path + '" -M -F -i'
-         self.alsa_info = "/proc/asound/card0/codec#0"
-         self.errors = 0
-         self.warnings = 0
-         self.fatals = 0
-+        self.codec_index = 0
-         self.print_errors = False
-+        self.error_list = []
-         self.comm_log_enabled = False
-         self.last_command = None
- 
-+    def set_codec_index(self, codec_index):
-+        self.codec_index = codec_index
+         try:
+-            r = runner.HdaEmuRunner()
+-            r.set_alsa_info_file(os.path.join(directory, f))
+-            r.set_print_errors(verbose > 1)
+-            r.run_standard()
+-            if r.errors > 0 or r.warnings > 0:
+-                fails += 1
+-                errors += r.errors
+-                warnings += r.warnings
+-                if verbose > 0:
+-                    print '{0} errors, {1} warnings. ({2})'.format(r.errors, r.warnings, f)
+-            else:
+-                successes += 1
++            codecs = count_codecs(os.path.join(directory, f))
 +
-     def set_alsa_info_file(self, filename):
-         self.alsa_info = filename
- 
-@@ -71,6 +79,7 @@ class HdaEmuRunner():
-         from subprocess import PIPE, STDOUT
- 
-         args = shlex.split(self.child_args)
-+        args.append(str(self.codec_index))
-         args.append(self.alsa_info)
-         self.child = subprocess.Popen(args, bufsize=0, stdin=PIPE, stdout=PIPE, stderr=PIPE)
- 
-@@ -82,6 +91,7 @@ class HdaEmuRunner():
-         self.child = None
- 
-     def add_error(self, message, severity):
-+        self.error_list.append(message)
-         if severity == "Warning":
-             self.warnings += 1
-         else:
-@@ -97,7 +107,7 @@ class HdaEmuRunner():
-                 self.last_command_printed = True
-             print "  ", message
-         if self.fatals > 0:
--            raise Exception(message)
-+            raise HdaEmuFatalError(message)
- 
-     def check_stdout(self):
-         s = os.read(self.child.stdout.fileno(), 65536)
++            fail_this = False
++            skip_this = codecs < 0
++            for codec_index in range(codecs):
++                r = runner.HdaEmuRunner()
++                r.set_alsa_info_file(os.path.join(directory, f))
++                r.set_codec_index(codec_index)
++                r.set_print_errors(verbose > 1)
++
++                try:
++                    r.run_standard()
++                except runner.HdaEmuFatalError:
++                    for line in r.error_list:
++                        if line.find("is a modem codec, aborting"):
++                            skip_this = True
++
++                if (not skip_this) and (r.errors > 0 or r.warnings > 0):
++                    fail_this = True
++                    errors += r.errors
++                    warnings += r.warnings
++                    if verbose > 0:
++                        print '{0} errors, {1} warnings for {2}, codec {3}/{4}.'.format(r.errors, r.warnings, f, codec_index+1, codecs)
++
++            if not skip_this:
++                if fail_this:
++                    fails += 1
++                else:
++                    successes += 1
+         except KeyboardInterrupt:
+             import sys
+             sys.exit(1)
 -- 
 1.9.1
