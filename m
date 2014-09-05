@@ -1,16 +1,15 @@
 From: Jurgen Kramer <gtmkramer@xs4all.nl>
-Subject: [PATCH] pcm: add new DSD sampleformat for native DSD
-	playback on XMOS based devices
-Date: Fri,  5 Sep 2014 10:47:56 +0200
-Message-ID: <1409906876-3266-1-git-send-email-gtmkramer@xs4all.nl>
+Subject: [PATCH] add native DSD support for XMOS based DACs.
+Date: Fri,  5 Sep 2014 10:49:31 +0200
+Message-ID: <1409906971-3365-1-git-send-email-gtmkramer@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lb2-smtp-cloud3.xs4all.net (lb2-smtp-cloud3.xs4all.net
- [194.109.24.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 47C3326576A
- for <alsa-devel@alsa-project.org>; Fri,  5 Sep 2014 10:48:04 +0200 (CEST)
+Received: from lb3-smtp-cloud6.xs4all.net (lb3-smtp-cloud6.xs4all.net
+ [194.109.24.58])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88C33265794
+ for <alsa-devel@alsa-project.org>; Fri,  5 Sep 2014 10:49:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,73 +23,34 @@ To: alsa-devel@alsa-project.org
 Cc: Jurgen Kramer <gtmkramer@xs4all.nl>
 List-Id: alsa-devel@alsa-project.org
 
-XMOS based USB DACs with native DSD support expose this feature via a USB
-alternate setting. The audio format is either 32-bit raw or a 32-bit PCM format.
-To utilize this feature on linux this patch introduces a new 32-bit DSD
-sampleformat DSD_U32_LE.
-A follow up patch will add a quirk for XMOS based devices to utilize the new format.
-Further patches will add support to alsa-lib.
+Add quirk for XMOS based DACs for native DSD playback support using the new DSD_U32_LE sample
+format. Works for all DAC vendors which use XMOS as idVendor. E.g. iFi Audio
+with their micro iDSD and nano iDSD.
 
 Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
 ---
- include/sound/pcm.h         | 1 +
- include/uapi/sound/asound.h | 3 ++-
- sound/core/pcm.c            | 1 +
- sound/core/pcm_misc.c       | 4 ++++
- 4 files changed, 8 insertions(+), 1 deletion(-)
+ sound/usb/quirks.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 6f3e10c..faefd83 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -183,6 +183,7 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_FMTBIT_G723_40_1B	_SNDRV_PCM_FMTBIT(G723_40_1B)
- #define SNDRV_PCM_FMTBIT_DSD_U8		_SNDRV_PCM_FMTBIT(DSD_U8)
- #define SNDRV_PCM_FMTBIT_DSD_U16_LE	_SNDRV_PCM_FMTBIT(DSD_U16_LE)
-+#define SNDRV_PCM_FMTBIT_DSD_U32_LE	_SNDRV_PCM_FMTBIT(DSD_U32_LE)
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 19a921e..e0efffb 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1174,5 +1174,15 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 		}
+ 	}
  
- #ifdef SNDRV_LITTLE_ENDIAN
- #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_LE
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 32168f7..6ee5867 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -219,7 +219,8 @@ typedef int __bitwise snd_pcm_format_t;
- #define	SNDRV_PCM_FORMAT_G723_40_1B	((__force snd_pcm_format_t) 47) /* 1 sample in 1 byte */
- #define	SNDRV_PCM_FORMAT_DSD_U8		((__force snd_pcm_format_t) 48) /* DSD, 1-byte samples DSD (x8) */
- #define	SNDRV_PCM_FORMAT_DSD_U16_LE	((__force snd_pcm_format_t) 49) /* DSD, 2-byte samples DSD (x16), little endian */
--#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U16_LE
-+#define	SNDRV_PCM_FORMAT_DSD_U32_LE	((__force snd_pcm_format_t) 50) /* DSD, 4-byte samples DSD (x32), little endian */
-+#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U32_LE
- 
- #ifdef SNDRV_LITTLE_ENDIAN
- #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 43932e8..72eb20a 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -215,6 +215,7 @@ static char *snd_pcm_format_names[] = {
- 	FORMAT(G723_40_1B),
- 	FORMAT(DSD_U8),
- 	FORMAT(DSD_U16_LE),
-+	FORMAT(DSD_U32_LE),
- };
- 
- const char *snd_pcm_format_name(snd_pcm_format_t format)
-diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
-index 2c6fd80..ae7a0fe 100644
---- a/sound/core/pcm_misc.c
-+++ b/sound/core/pcm_misc.c
-@@ -148,6 +148,10 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
- 		.width = 16, .phys = 16, .le = 1, .signd = 0,
- 		.silence = { 0x69, 0x69 },
- 	},
-+	[SNDRV_PCM_FORMAT_DSD_U32_LE] = {
-+		.width = 32, .phys = 32, .le = 1, .signd = 0,
-+		.silence = { 0x69, 0x69, 0x69, 0x69 },
-+	},
- 	/* FIXME: the following three formats are not defined properly yet */
- 	[SNDRV_PCM_FORMAT_MPEG] = {
- 		.le = -1, .signd = -1,
++	/* XMOS based DACs, e.g. iFi Audio micro/nano iDSD */
++	if (le16_to_cpu(chip->dev->descriptor.idVendor) == 0x20b1) {
++		switch (fp->altsetting) {
++		case 2:
++			return SNDRV_PCM_FMTBIT_DSD_U32_LE;
++		default:
++			return 0;
++		}
++	}
++
+ 	return 0;
+ }
 -- 
 1.9.3
