@@ -1,22 +1,16 @@
-From: Xavier Hsu <xavier.hsu@linaro.org>
-Subject: Re: [PATCHv3 6/9] WM8971 uses msleep to replace work
-	queue
-Date: Fri, 5 Sep 2014 11:09:42 +0800
-Message-ID: <CAHa2TOba05tN7P-876hNrxB43Cv36wS379As8rGOQJ58Kues+Q@mail.gmail.com>
-References: <1409628470-13059-1-git-send-email-xavier.hsu@linaro.org>
- <1409628470-13059-6-git-send-email-xavier.hsu@linaro.org>
- <20140902100050.GG12043@opensource.wolfsonmicro.com>
+From: Jurgen Kramer <gtmkramer@xs4all.nl>
+Subject: [PATCH] pcm: add new DSD sampleformat for native DSD
+	playback on XMOS based devices
+Date: Fri,  5 Sep 2014 10:47:56 +0200
+Message-ID: <1409906876-3266-1-git-send-email-gtmkramer@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f173.google.com (mail-we0-f173.google.com
- [74.125.82.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D4E52656AD
- for <alsa-devel@alsa-project.org>; Fri,  5 Sep 2014 05:09:42 +0200 (CEST)
-Received: by mail-we0-f173.google.com with SMTP id t60so11092954wes.4
- for <alsa-devel@alsa-project.org>; Thu, 04 Sep 2014 20:09:42 -0700 (PDT)
-In-Reply-To: <20140902100050.GG12043@opensource.wolfsonmicro.com>
+Received: from lb2-smtp-cloud3.xs4all.net (lb2-smtp-cloud3.xs4all.net
+ [194.109.24.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47C3326576A
+ for <alsa-devel@alsa-project.org>; Fri,  5 Sep 2014 10:48:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,118 +20,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Andy Green <andy.green@linaro.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Patch Tracking <patches@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: Jurgen Kramer <gtmkramer@xs4all.nl>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Charles :
-This device driver (we use wm8973) can normally run on our platform.
-Anyway, I modify some part of our device driver.
- (msleep(100) => msleep(1000))
- (Before msleep, it will call wm8971_set_bias_level(codec,
-codec->dapm.bias_level) first)
+XMOS based USB DACs with native DSD support expose this feature via a USB
+alternate setting. The audio format is either 32-bit raw or a 32-bit PCM format.
+To utilize this feature on linux this patch introduces a new 32-bit DSD
+sampleformat DSD_U32_LE.
+A follow up patch will add a quirk for XMOS based devices to utilize the new format.
+Further patches will add support to alsa-lib.
 
-BR,
-Xavier
+Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
+---
+ include/sound/pcm.h         | 1 +
+ include/uapi/sound/asound.h | 3 ++-
+ sound/core/pcm.c            | 1 +
+ sound/core/pcm_misc.c       | 4 ++++
+ 4 files changed, 8 insertions(+), 1 deletion(-)
 
-
-2014-09-02 18:00 GMT+08:00 Charles Keepax <
-ckeepax@opensource.wolfsonmicro.com>:
-
-> On Tue, Sep 02, 2014 at 11:27:47AM +0800, Xavier Hsu wrote:
-> > This patch improves WM8971.
-> > We use msleep to replace work queue.
-> > "As suggested by Mark Brown"
-> >
-> > Any comments about improving the patch are welcome.
-> > Thanks.
-> >
-> > Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
-> > Signed-off-by: Andy Green <andy.green@linaro.org>
-> > ---
-> >  sound/soc/codecs/wm8971.c |   25 ++-----------------------
-> >  1 file changed, 2 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
-> > index 20cfdd3..68b4f52 100755
-> > --- a/sound/soc/codecs/wm8971.c
-> > +++ b/sound/soc/codecs/wm8971.c
-> > @@ -36,8 +36,6 @@
-> >
-> >  #define      WM8971_REG_COUNT        43
-> >
-> > -static struct workqueue_struct *wm8971_workq;
-> > -
-> >  /* codec private data */
-> >  struct wm8971_priv {
-> >       unsigned int sysclk;
-> > @@ -774,16 +772,6 @@ static struct snd_soc_dai_driver wm8971_dai = {
-> >       .ops = &wm8971_dai_ops,
-> >  };
-> >
-> > -static void wm8971_work(struct work_struct *work)
-> > -{
-> > -     struct snd_soc_dapm_context *dapm =
-> > -             container_of(work, struct snd_soc_dapm_context,
-> > -                          delayed_work.work);
-> > -     struct snd_soc_codec *codec = dapm->codec;
-> > -
-> > -     wm8971_set_bias_level(codec, codec->dapm.bias_level);
-> > -}
-> > -
-> >  static int wm8971_suspend(struct snd_soc_codec *codec)
-> >  {
-> >       wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> > @@ -801,8 +789,7 @@ static int wm8971_resume(struct snd_soc_codec *codec)
-> >               reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
-> >               snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
-> >               codec->dapm.bias_level = SND_SOC_BIAS_ON;
-> > -             queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
-> > -                                msecs_to_jiffies(1000));
-> > +             msleep(100);
-> >       }
-> >
-> >       return 0;
-> > @@ -813,19 +800,13 @@ static int wm8971_probe(struct snd_soc_codec
-> *codec)
-> >       int ret = 0;
-> >       u16 reg;
-> >
-> > -     INIT_DELAYED_WORK(&codec->dapm.delayed_work, wm8971_work);
-> > -     wm8971_workq = create_workqueue("wm8971");
-> > -     if (wm8971_workq == NULL)
-> > -             return -ENOMEM;
-> > -
-> >       wm8971_reset(codec);
-> >
-> >       /* charge output caps - set vmid to 5k for quick power up */
-> >       reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
-> >       snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
-> >       codec->dapm.bias_level = SND_SOC_BIAS_STANDBY;
-> > -     queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
-> > -                        msecs_to_jiffies(1000));
-> > +     msleep(100);
->
-> Does this patch actually work? You have taken out the
-> queue_delayed_work and replaced it with a delay (which is 10x
-> shorter than the delayed work version), but you  haven't replaced
-> the call to wm8971_set_bias_level that used to be in the delayed
-> work?
->
-> >
-> >       /* set the update bits */
-> >       snd_soc_update_bits(codec, WM8971_LDAC, 0x0100, 0x0100);
-> > @@ -846,8 +827,6 @@ static int wm8971_remove(struct snd_soc_codec *codec)
-> >  {
-> >       wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> >
-> > -     if (wm8971_workq)
-> > -             destroy_workqueue(wm8971_workq);
-> >       return 0;
-> >  }
-> >
-> > --
->
-> Thanks,
-> Charles
->
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 6f3e10c..faefd83 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -183,6 +183,7 @@ struct snd_pcm_ops {
+ #define SNDRV_PCM_FMTBIT_G723_40_1B	_SNDRV_PCM_FMTBIT(G723_40_1B)
+ #define SNDRV_PCM_FMTBIT_DSD_U8		_SNDRV_PCM_FMTBIT(DSD_U8)
+ #define SNDRV_PCM_FMTBIT_DSD_U16_LE	_SNDRV_PCM_FMTBIT(DSD_U16_LE)
++#define SNDRV_PCM_FMTBIT_DSD_U32_LE	_SNDRV_PCM_FMTBIT(DSD_U32_LE)
+ 
+ #ifdef SNDRV_LITTLE_ENDIAN
+ #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_LE
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 32168f7..6ee5867 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -219,7 +219,8 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_G723_40_1B	((__force snd_pcm_format_t) 47) /* 1 sample in 1 byte */
+ #define	SNDRV_PCM_FORMAT_DSD_U8		((__force snd_pcm_format_t) 48) /* DSD, 1-byte samples DSD (x8) */
+ #define	SNDRV_PCM_FORMAT_DSD_U16_LE	((__force snd_pcm_format_t) 49) /* DSD, 2-byte samples DSD (x16), little endian */
+-#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U16_LE
++#define	SNDRV_PCM_FORMAT_DSD_U32_LE	((__force snd_pcm_format_t) 50) /* DSD, 4-byte samples DSD (x32), little endian */
++#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U32_LE
+ 
+ #ifdef SNDRV_LITTLE_ENDIAN
+ #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 43932e8..72eb20a 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -215,6 +215,7 @@ static char *snd_pcm_format_names[] = {
+ 	FORMAT(G723_40_1B),
+ 	FORMAT(DSD_U8),
+ 	FORMAT(DSD_U16_LE),
++	FORMAT(DSD_U32_LE),
+ };
+ 
+ const char *snd_pcm_format_name(snd_pcm_format_t format)
+diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
+index 2c6fd80..ae7a0fe 100644
+--- a/sound/core/pcm_misc.c
++++ b/sound/core/pcm_misc.c
+@@ -148,6 +148,10 @@ static struct pcm_format_data pcm_formats[(INT)SNDRV_PCM_FORMAT_LAST+1] = {
+ 		.width = 16, .phys = 16, .le = 1, .signd = 0,
+ 		.silence = { 0x69, 0x69 },
+ 	},
++	[SNDRV_PCM_FORMAT_DSD_U32_LE] = {
++		.width = 32, .phys = 32, .le = 1, .signd = 0,
++		.silence = { 0x69, 0x69, 0x69, 0x69 },
++	},
+ 	/* FIXME: the following three formats are not defined properly yet */
+ 	[SNDRV_PCM_FORMAT_MPEG] = {
+ 		.le = -1, .signd = -1,
+-- 
+1.9.3
