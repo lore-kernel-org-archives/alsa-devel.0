@@ -1,15 +1,17 @@
-From: Jurgen Kramer <gtmkramer@xs4all.nl>
-Subject: [PATCH v2] add native DSD support for XMOS based DACs
-Date: Fri,  5 Sep 2014 14:24:57 +0200
-Message-ID: <1409919897-7040-1-git-send-email-gtmkramer@xs4all.nl>
+From: Rajeev Kumar <rajeevkumar.linux@gmail.com>
+Subject: [PATCH] ASoC: Dwc: Update email id of the author
+Date: Fri,  5 Sep 2014 16:47:04 +0530
+Message-ID: <1409915824-12897-1-git-send-email-rajeevkumar.linux@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lb1-smtp-cloud3.xs4all.net (lb1-smtp-cloud3.xs4all.net
- [194.109.24.52])
- by alsa0.perex.cz (Postfix) with ESMTP id B990A265710
- for <alsa-devel@alsa-project.org>; Fri,  5 Sep 2014 14:25:00 +0200 (CEST)
+Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
+ [209.85.192.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AFB0261A2C
+ for <alsa-devel@alsa-project.org>; Fri,  5 Sep 2014 13:17:32 +0200 (CEST)
+Received: by mail-pd0-f169.google.com with SMTP id y10so6240475pdj.14
+ for <alsa-devel@alsa-project.org>; Fri, 05 Sep 2014 04:17:31 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,49 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jurgen Kramer <gtmkramer@xs4all.nl>
+To: broonie@kernel.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add quirks for XMOS based DACs for native DSD playback support using the new
-DSD_U32_LE sample format.
+I moved from ST Microelectronics and the email-id no longer
+exists. Update email-id to personal one,
 
-This version adds native DSD support for:
-- iFi Audio micro iDSD/nano iDSD (they use the same prod. id)
-- DIYINHK USB to I2S/DSD converter
-
-Changes from v1:
-- use specific product id and alt setting per XMOS based device
-
-Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
+Signed-off-by: Rajeev Kumar <rajeevkumar.linux@gmail.com>
 ---
- sound/usb/quirks.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/dwc/designware_i2s.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 19a921e..5ae0536 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1174,5 +1174,20 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
- 		}
- 	}
- 
-+	/* XMOS based USB DACs */
-+	if (le16_to_cpu(chip->dev->descriptor.idVendor) == 0x20b1) {
-+		switch (le16_to_cpu(chip->dev->descriptor.idProduct)) {
-+		/* iFi Audio micro/nano iDSD */
-+		case 0x3008:
-+			if (fp->altsetting == 2)
-+				return SNDRV_PCM_FMTBIT_DSD_U32_LE;
-+		/* DIYINHK DSD DXD 384kHz USB to I2S/DSD */
-+		case 0x2009:
-+			if (fp->altsetting == 3)
-+				return SNDRV_PCM_FMTBIT_DSD_U32_LE;
-+		default:
-+			return 0;
-+		}
-+	}
- 	return 0;
- }
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index 25c31f1..a97d27f 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -4,7 +4,7 @@
+  * sound/soc/dwc/designware_i2s.c
+  *
+  * Copyright (C) 2010 ST Microelectronics
+- * Rajeev Kumar <rajeev-dlh.kumar@st.com>
++ * Rajeev Kumar <rajeevkumar.linux@gmail.com>
+  *
+  * This file is licensed under the terms of the GNU General Public
+  * License version 2. This program is licensed "as is" without any
 -- 
-1.9.3
+1.7.9.5
