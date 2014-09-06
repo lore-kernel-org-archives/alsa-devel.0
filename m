@@ -1,73 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/4] ASoC: sst-haswell-pcm: Move controls
- and DAPM elements to component
-Date: Sat, 6 Sep 2014 14:48:01 +0100
-Message-ID: <20140906134801.GA2601@sirena.org.uk>
-References: <1408532929-26978-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH v4] ASOC: dapm: add code to configure dai link parameters
+Date: Sat, 6 Sep 2014 15:16:34 +0100
+Message-ID: <20140906141634.GF2601@sirena.org.uk>
+References: <1409561813-24753-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3951863550812516563=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C6DCE262634
- for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 15:48:32 +0200 (CEST)
-In-Reply-To: <1408532929-26978-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="bGR76rFJjkSxVeRa"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1409561813-24753-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3951863550812516563==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
-Content-Disposition: inline
-
-
---bg08WKrSYDhXBjb5
+--bGR76rFJjkSxVeRa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 20, 2014 at 01:08:45PM +0200, Lars-Peter Clausen wrote:
-> The sst-haswell-pcm driver is the only one that registers controls and DAPM
-> elements for a snd_soc_platform_driver. Moving them over to the component that
-> is registered by the same driver make it possible to remove the
-> steal_silbling_dai_hack in the core as well as the extra indirection that is
-> used to register the controls and DAPM elements.
+On Mon, Sep 01, 2014 at 09:56:53AM +0100, Nikesh Oswal wrote:
+> dai-link params for codec-codec links were fixed. The fixed
+> link between codec and another chip which may be another codec,
+> baseband, bluetooth codec etc may require run time configuaration
+> changes. This change provides an optional alsa control to select
+> one of the params from a list of params.
 
-Applied all, thanks.
+As I'm fairly sure I've told you several times now please use subject
+lines matching the style for the subsystem - if your commit logs look
+different to all the other commit logs that's probably not a good sign.
+In this specific case "ASOC" and "ASoC" are not the same thing.
 
---bg08WKrSYDhXBjb5
+> +	for (count = 0 ; count < num_params; count++) {
+> +		w_param_text[count] = kmemdup((void *)(config->stream_name),
+> +			strlen(config->stream_name) + 1, GFP_KERNEL);
+> +		if (!w_param_text[count]) {
+> +			ret = -ENOMEM;
+> +			goto  outfree_w_param;
+> +		}
+> +		config++;
+> +	}
+
+This will happily create values with a completely empty name if the user
+didn't specify one.  This doesn't seem great - it's going to be an easy
+mistake to make and fail to notice.  I'd at least expect a warning here.
+
+> +	w_param_enum[0].items = num_params;
+> +	w_param_enum[0].texts = (const char * const *) w_param_text;
+
+Why the casts?  This tends to be a sign that something is wrong.
+
+--bGR76rFJjkSxVeRa
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUCxCMAAoJECTWi3JdVIfQEZ4H/3l8cHJSU6aOvrAGlF9+AgjE
-e3eNiMkBjQBNcdNu8fU4lXZeiOowkbYRrxUyogKjEP41QvgR9D8tupDcwoUFAeIl
-oVaLkdsQ759v3NqGTsANgFkCqoDfVz2tUd8rdI+K98bqr0jRTv10w2WVlYgzAA9I
-mGUGqDmm51zj10fsxcIWKLRj2Bubzi+qilpx5QYsZhUyvStK4HQMVuSzShzkP1Yu
-Dz1mxlxYu1kOB0qRVLP7gP9Xrph5/rHJBoS1fxijbUj4v39427u/dZJ5VjUwBLm+
-Qbcu7vrNOt8VaCNM+Fse9Frxymf3AlHDaWx0J3PVjcVb66rsGy93I2U/aTuqWGQ=
-=4KGi
+iQEcBAEBAgAGBQJUCxdBAAoJECTWi3JdVIfQXfUH/3RACVvoMg5Va5HKVHsbUUC5
+xRXfPf/guW3Ie2ML5D92oTgk3FyFR6ozWP58nQfn+bl2ZBoowg8RJGzzFpYqjaWP
+1NfEVdHpwhlbVS9ipNEOYRaejweLt9yJBiXdjc1JK8byeShRtnT1BXgYc1p4Nw0x
+GGu184Cx47/Wm9Lc6iwLlCRkWK5B3zeYK8dSAl9ea432xfNn4cbqu3JppYbvzuxq
+RQ37GkuafiOMURoWWBcyGZAH6KHuuqcUiJAlJbmF/jaTvx4awcTEZeiz+1vY9/um
+5Hi58V2jE6g0nQoNA+oNlyUglepywG++FSC3zNvwWWATUe5uPkJhHax0AEcf8eQ=
+=B1th
 -----END PGP SIGNATURE-----
 
---bg08WKrSYDhXBjb5--
-
---===============3951863550812516563==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3951863550812516563==--
+--bGR76rFJjkSxVeRa--
