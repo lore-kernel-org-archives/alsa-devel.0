@@ -1,21 +1,19 @@
-From: Andreas Allacher <andreas.allacher@gmx.at>
-Subject: Re: [PATCH] ALSA: virtuoso: add Xonar Essence STX II
- support
-Date: Sat, 06 Sep 2014 10:12:38 +0200
-Message-ID: <540AC1F6.8000603@gmx.at>
-References: <53FC4901.6070908@allacher.com>	<53FC49A8.1010108@gmx.at>	<53FC4D56.5020808@ladisch.de>	<53FC6532.2080903@gmx.at>	<54003095.200@ladisch.de>
- <5400C662.8030606@gmx.at> <5400CF94.8030503@ladisch.de>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: How to properly handle variable samplerate?
+Date: Sat, 06 Sep 2014 16:33:06 +0600
+Message-ID: <540AE2E2.3050000@gmail.com>
+References: <5409E2DA.2090403@barix.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
- by alsa0.perex.cz (Postfix) with ESMTP id 6041C2625CF
- for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 10:12:43 +0200 (CEST)
-Received: from [192.168.0.110] ([82.149.97.137]) by mail.gmx.com (mrgmx003)
- with ESMTPSA (Nemesis) id 0LgZRV-1YDrn53vev-00nysD for
- <alsa-devel@alsa-project.org>; Sat, 06 Sep 2014 10:12:42 +0200
-In-Reply-To: <5400CF94.8030503@ladisch.de>
+Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
+ [209.85.215.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC547264F09
+ for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 12:33:08 +0200 (CEST)
+Received: by mail-la0-f41.google.com with SMTP id s18so4053926lam.14
+ for <alsa-devel@alsa-project.org>; Sat, 06 Sep 2014 03:33:08 -0700 (PDT)
+In-Reply-To: <5409E2DA.2090403@barix.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,22 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Petr Kulhavy <petr@barix.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-as I have tested the patch and it works, shouldn't someone merge it with 
-kernel git?
-
-
-
-Am 29.08.2014 21:08, schrieb Clemens Ladisch:
-> Andreas Allacher wrote:
->> Is the path already in the kernel source git or do I have to apply it manually?
-> This patch is completely untested and not yet in any git.
+05.09.2014 22:20, Petr Kulhavy wrote:
+> Hi,
 >
+> I'm developing an audio stream player application with ALSA output, the
+> player has a large software buffer. The trouble is that the stream can
+> potentially change the sampling rate (e.g. streaming RTP from a VLC
+> playlist created from different MP3 songs). How to properly handle this?
 >
-> Regards,
-> Clemens
+> I'm thinking of the following concept:
+> The codec feeds data into the software buffer together with markers for
+> sample rate changes. The ALSA playback is asynchronous, using a callback
+> function feeding the data from the software buffer into ALSA. If a
+> samplerate marker is hit the new rate is set.
 >
+> Can the sample rate be set from a callback? What other constraints are
+> there? And how does the HW FIFO handle samplerate changes?
+> Or is there a better way of implementing?
+
+ALSA does not support variable sample rate at all. So you either have to 
+do the variable-rate resampling yourself in your player, or depend on 
+PulseAudio which does support this feature.
+
+-- 
+Alexander E. Patrakov
