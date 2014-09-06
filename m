@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/5] ASoC: es8328: Cleanup manual bias level
+Subject: [PATCH 3/5] ASoC: jz4740: Cleanup manual bias level
 	transitions
-Date: Sat,  6 Sep 2014 14:29:32 +0200
-Message-ID: <1410006575-499-2-git-send-email-lars@metafoo.de>
+Date: Sat,  6 Sep 2014 14:29:33 +0200
+Message-ID: <1410006575-499-3-git-send-email-lars@metafoo.de>
 References: <1410006575-499-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-247.synserver.de (smtp-out-247.synserver.de
  [212.40.185.247])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A674264F10
- for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 14:29:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AF24264F1A
+ for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 14:29:43 +0200 (CEST)
 In-Reply-To: <1410006575-499-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,40 +30,65 @@ Set the CODEC driver's suspend_bias_off flag rather than manually going to
 SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
 the code a bit shorter and cleaner.
 
+Since the ASoC core now takes care of setting the bias level to
+SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
+anymore either.
+
+The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
+can also be removed as the core will automatically do this after the CODEC
+has been probed.
+
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/es8328.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/jz4740.c | 30 +-----------------------------
+ 1 file changed, 1 insertion(+), 29 deletions(-)
 
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index 3ff7870..f273251 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -602,8 +602,6 @@ static int es8328_suspend(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+index bcebd1a..df7c01c 100644
+--- a/sound/soc/codecs/jz4740.c
++++ b/sound/soc/codecs/jz4740.c
+@@ -293,41 +293,13 @@ static int jz4740_codec_dev_probe(struct snd_soc_codec *codec)
+ 	regmap_update_bits(jz4740_codec->regmap, JZ4740_REG_CODEC_1,
+ 			JZ4740_CODEC_1_SW2_ENABLE, JZ4740_CODEC_1_SW2_ENABLE);
  
- 	es8328 = snd_soc_codec_get_drvdata(codec);
- 
--	es8328_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	jz4740_codec_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -
- 	clk_disable_unprepare(es8328->clk);
- 
- 	ret = regulator_bulk_disable(ARRAY_SIZE(es8328->supplies),
-@@ -643,7 +641,6 @@ static int es8328_resume(struct snd_soc_codec *codec)
- 		return ret;
- 	}
- 
--	es8328_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
  	return 0;
  }
  
-@@ -712,6 +709,8 @@ static struct snd_soc_codec_driver es8328_codec_driver = {
- 	.resume		  = es8328_resume,
- 	.remove		  = es8328_remove,
- 	.set_bias_level	  = es8328_set_bias_level,
+-static int jz4740_codec_dev_remove(struct snd_soc_codec *codec)
+-{
+-	jz4740_codec_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-
+-	return 0;
+-}
+-
+-#ifdef CONFIG_PM_SLEEP
+-
+-static int jz4740_codec_suspend(struct snd_soc_codec *codec)
+-{
+-	return jz4740_codec_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-}
+-
+-static int jz4740_codec_resume(struct snd_soc_codec *codec)
+-{
+-	return jz4740_codec_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-}
+-
+-#else
+-#define jz4740_codec_suspend NULL
+-#define jz4740_codec_resume NULL
+-#endif
+-
+ static struct snd_soc_codec_driver soc_codec_dev_jz4740_codec = {
+ 	.probe = jz4740_codec_dev_probe,
+-	.remove = jz4740_codec_dev_remove,
+-	.suspend = jz4740_codec_suspend,
+-	.resume = jz4740_codec_resume,
+ 	.set_bias_level = jz4740_codec_set_bias_level,
 +	.suspend_bias_off = true,
-+
- 	.controls	  = es8328_snd_controls,
- 	.num_controls	  = ARRAY_SIZE(es8328_snd_controls),
- 	.dapm_widgets	  = es8328_dapm_widgets,
+ 
+ 	.controls = jz4740_codec_controls,
+ 	.num_controls = ARRAY_SIZE(jz4740_codec_controls),
 -- 
 1.8.0
