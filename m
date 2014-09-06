@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: 88pm860x-codec: Cleanup manual
- bias level transitions
-Date: Sat, 6 Sep 2014 13:39:09 +0100
-Message-ID: <20140906123909.GC4015@sirena.org.uk>
-References: <1410006575-499-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH 0/4] ASoC: sst-haswell-pcm: Move controls
+ and DAPM elements to component
+Date: Sat, 6 Sep 2014 14:48:01 +0100
+Message-ID: <20140906134801.GA2601@sirena.org.uk>
+References: <1408532929-26978-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2447129436050038564=="
+Content-Type: multipart/mixed; boundary="===============3951863550812516563=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 89A47264F10
- for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 14:39:33 +0200 (CEST)
-In-Reply-To: <1410006575-499-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id C6DCE262634
+ for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 15:48:32 +0200 (CEST)
+In-Reply-To: <1408532929-26978-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Tomoya MORINAGA <tomoya.rohm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Sean Cross <xobs@kosagi.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2447129436050038564==
+--===============3951863550812516563==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aVD9QWMuhilNxW9f"
+	protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
 Content-Disposition: inline
 
 
---aVD9QWMuhilNxW9f
+--bg08WKrSYDhXBjb5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Sep 06, 2014 at 02:29:31PM +0200, Lars-Peter Clausen wrote:
-> Since the ASoC core now takes care of setting the bias level to
-> SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
-> anymore either.
+On Wed, Aug 20, 2014 at 01:08:45PM +0200, Lars-Peter Clausen wrote:
+> The sst-haswell-pcm driver is the only one that registers controls and DAPM
+> elements for a snd_soc_platform_driver. Moving them over to the component that
+> is registered by the same driver make it possible to remove the
+> steal_silbling_dai_hack in the core as well as the extra indirection that is
+> used to register the controls and DAPM elements.
 
 Applied all, thanks.
 
---aVD9QWMuhilNxW9f
+--bg08WKrSYDhXBjb5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUCwBoAAoJECTWi3JdVIfQhkIH+wVmrW+cso76uWApcU0xmKUE
-nPMBfOozninrnMEqbrp9hRlpeZzSRK/meusGQcx8kjbEJ1WzZDyNPxTDQlHVB+fs
-mmzQljD/mm1JJLxjYwS6s9NZKQkICZz1WUzgSXPqexM2fAVf4q66Ifj5CrSbVBrF
-akSesSIHi3z48DllDumY1o0uzCZuC3hXis82UI8vhOQNCgYAmMPeyiW2vemsOgAv
-kATLxxuMMGVAOCrlc2gRmD4y3WYzCy06UtNMmOIvgh73uToEyrFg4De3v8iycKYL
-u/0IXlZI9KvaSSZTX6aVKo6aeiI1NRhGhdBPi+MLLRy8ZRdUgNoo/rUl5ATuvfU=
-=Eg1j
+iQEcBAEBAgAGBQJUCxCMAAoJECTWi3JdVIfQEZ4H/3l8cHJSU6aOvrAGlF9+AgjE
+e3eNiMkBjQBNcdNu8fU4lXZeiOowkbYRrxUyogKjEP41QvgR9D8tupDcwoUFAeIl
+oVaLkdsQ759v3NqGTsANgFkCqoDfVz2tUd8rdI+K98bqr0jRTv10w2WVlYgzAA9I
+mGUGqDmm51zj10fsxcIWKLRj2Bubzi+qilpx5QYsZhUyvStK4HQMVuSzShzkP1Yu
+Dz1mxlxYu1kOB0qRVLP7gP9Xrph5/rHJBoS1fxijbUj4v39427u/dZJ5VjUwBLm+
+Qbcu7vrNOt8VaCNM+Fse9Frxymf3AlHDaWx0J3PVjcVb66rsGy93I2U/aTuqWGQ=
+=4KGi
 -----END PGP SIGNATURE-----
 
---aVD9QWMuhilNxW9f--
+--bg08WKrSYDhXBjb5--
 
---===============2447129436050038564==
+--===============3951863550812516563==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2447129436050038564==--
+--===============3951863550812516563==--
