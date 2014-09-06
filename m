@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/5] ASoC: jz4740: Cleanup manual bias level
+Subject: [PATCH 4/5] ASoC: ml26124: Cleanup manual bias level
 	transitions
-Date: Sat,  6 Sep 2014 14:29:33 +0200
-Message-ID: <1410006575-499-3-git-send-email-lars@metafoo.de>
+Date: Sat,  6 Sep 2014 14:29:34 +0200
+Message-ID: <1410006575-499-4-git-send-email-lars@metafoo.de>
 References: <1410006575-499-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-247.synserver.de (smtp-out-247.synserver.de
  [212.40.185.247])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AF24264F1A
- for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 14:29:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 07BB2264F1D
+ for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 14:29:44 +0200 (CEST)
 In-Reply-To: <1410006575-499-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,65 +30,61 @@ Set the CODEC driver's suspend_bias_off flag rather than manually going to
 SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
 the code a bit shorter and cleaner.
 
-Since the ASoC core now takes care of setting the bias level to
-SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
-anymore either.
-
 The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
 can also be removed as the core will automatically do this after the CODEC
 has been probed.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/jz4740.c | 30 +-----------------------------
- 1 file changed, 1 insertion(+), 29 deletions(-)
+ sound/soc/codecs/ml26124.c | 24 +-----------------------
+ 1 file changed, 1 insertion(+), 23 deletions(-)
 
-diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
-index bcebd1a..df7c01c 100644
---- a/sound/soc/codecs/jz4740.c
-+++ b/sound/soc/codecs/jz4740.c
-@@ -293,41 +293,13 @@ static int jz4740_codec_dev_probe(struct snd_soc_codec *codec)
- 	regmap_update_bits(jz4740_codec->regmap, JZ4740_REG_CODEC_1,
- 			JZ4740_CODEC_1_SW2_ENABLE, JZ4740_CODEC_1_SW2_ENABLE);
+diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
+index e661e84..711f550 100644
+--- a/sound/soc/codecs/ml26124.c
++++ b/sound/soc/codecs/ml26124.c
+@@ -565,41 +565,19 @@ static struct snd_soc_dai_driver ml26124_dai = {
+ 	.symmetric_rates = 1,
+ };
  
--	jz4740_codec_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--
- 	return 0;
- }
- 
--static int jz4740_codec_dev_remove(struct snd_soc_codec *codec)
+-#ifdef CONFIG_PM
+-static int ml26124_suspend(struct snd_soc_codec *codec)
 -{
--	jz4740_codec_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	ml26124_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -
 -	return 0;
 -}
 -
--#ifdef CONFIG_PM_SLEEP
--
--static int jz4740_codec_suspend(struct snd_soc_codec *codec)
+-static int ml26124_resume(struct snd_soc_codec *codec)
 -{
--	return jz4740_codec_set_bias_level(codec, SND_SOC_BIAS_OFF);
--}
+-	ml26124_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -
--static int jz4740_codec_resume(struct snd_soc_codec *codec)
--{
--	return jz4740_codec_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	return 0;
 -}
--
 -#else
--#define jz4740_codec_suspend NULL
--#define jz4740_codec_resume NULL
+-#define ml26124_suspend NULL
+-#define ml26124_resume NULL
 -#endif
 -
- static struct snd_soc_codec_driver soc_codec_dev_jz4740_codec = {
- 	.probe = jz4740_codec_dev_probe,
--	.remove = jz4740_codec_dev_remove,
--	.suspend = jz4740_codec_suspend,
--	.resume = jz4740_codec_resume,
- 	.set_bias_level = jz4740_codec_set_bias_level,
-+	.suspend_bias_off = true,
+ static int ml26124_probe(struct snd_soc_codec *codec)
+ {
+ 	/* Software Reset */
+ 	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 1);
+ 	snd_soc_update_bits(codec, ML26124_SW_RST, 0x01, 0);
  
- 	.controls = jz4740_codec_controls,
- 	.num_controls = ARRAY_SIZE(jz4740_codec_controls),
+-	ml26124_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+ 	return 0;
+ }
+ 
+ static struct snd_soc_codec_driver soc_codec_dev_ml26124 = {
+ 	.probe =	ml26124_probe,
+-	.suspend =	ml26124_suspend,
+-	.resume =	ml26124_resume,
+ 	.set_bias_level = ml26124_set_bias_level,
++	.suspend_bias_off = true,
+ 	.dapm_widgets = ml26124_dapm_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(ml26124_dapm_widgets),
+ 	.dapm_routes = ml26124_intercon,
 -- 
 1.8.0
