@@ -1,19 +1,16 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: How to properly handle variable samplerate?
-Date: Sat, 06 Sep 2014 16:33:06 +0600
-Message-ID: <540AE2E2.3050000@gmail.com>
-References: <5409E2DA.2090403@barix.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: Dwc: Update email id of the author
+Date: Sat, 6 Sep 2014 12:47:55 +0100
+Message-ID: <20140906114755.GK29327@sirena.org.uk>
+References: <1409915824-12897-1-git-send-email-rajeevkumar.linux@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3881142927720396277=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
- [209.85.215.41])
- by alsa0.perex.cz (Postfix) with ESMTP id EC547264F09
- for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 12:33:08 +0200 (CEST)
-Received: by mail-la0-f41.google.com with SMTP id s18so4053926lam.14
- for <alsa-devel@alsa-project.org>; Sat, 06 Sep 2014 03:33:08 -0700 (PDT)
-In-Reply-To: <5409E2DA.2090403@barix.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20921261A66
+ for <alsa-devel@alsa-project.org>; Sat,  6 Sep 2014 13:48:05 +0200 (CEST)
+In-Reply-To: <1409915824-12897-1-git-send-email-rajeevkumar.linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,30 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Kulhavy <petr@barix.com>, alsa-devel@alsa-project.org
+To: Rajeev Kumar <rajeevkumar.linux@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-05.09.2014 22:20, Petr Kulhavy wrote:
-> Hi,
->
-> I'm developing an audio stream player application with ALSA output, the
-> player has a large software buffer. The trouble is that the stream can
-> potentially change the sampling rate (e.g. streaming RTP from a VLC
-> playlist created from different MP3 songs). How to properly handle this?
->
-> I'm thinking of the following concept:
-> The codec feeds data into the software buffer together with markers for
-> sample rate changes. The ALSA playback is asynchronous, using a callback
-> function feeding the data from the software buffer into ALSA. If a
-> samplerate marker is hit the new rate is set.
->
-> Can the sample rate be set from a callback? What other constraints are
-> there? And how does the HW FIFO handle samplerate changes?
-> Or is there a better way of implementing?
 
-ALSA does not support variable sample rate at all. So you either have to 
-do the variable-rate resampling yourself in your player, or depend on 
-PulseAudio which does support this feature.
+--===============3881142927720396277==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="lOUljPM2ThZHjS+s"
+Content-Disposition: inline
 
--- 
-Alexander E. Patrakov
+
+--lOUljPM2ThZHjS+s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Sep 05, 2014 at 04:47:04PM +0530, Rajeev Kumar wrote:
+> I moved from ST Microelectronics and the email-id no longer
+> exists. Update email-id to personal one,
+
+Applied, thanks.
+
+--lOUljPM2ThZHjS+s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJUCvRhAAoJELSic+t+oim9vmcP/2hOHvgQ1wvwSWkZMjgyOZpU
+zBgFpmUQsgM9kwctP2sRAaidk6egxXVZmNSf1/ckv6sc2AvaXA7oBSl8vNPH7Hiw
+2/BDU+sG2mld+aKTrljyd6ZQVBFfTqVuFXdtV8FSLSyZvxhsqoPqa8RR1p8arD5Q
+5k2RcGUjTEPDyXCzjjJF8cnuG8B07rEJTyshLj7FNzD71jmkZn40yU2FXAhXgVBn
+R/YJ3TnHNWzLZJWoYnqhxHTPRDBDNrThzCrsWIaP8erCO3zFKAN08iGnAcUqLkWJ
+lkrYdQ9Fac+idE+u9Yaz7wfBpCKK6OJ+cYze+p39jrcxtGU1zKhvpLPInnpJuGTt
+b9Za+bErvvGritBtS7qSEXWejiI7EU87f2Ck7n+38ge50nYFMTcin+f3bOZZnI7t
+gocUUY+dpEGDeplMo4KkN5OtD9wHeRkKu4/aJQ6qStUAFPxGrq/uIx5UtnPtGJCQ
+lccvAw/+vuF1vnjh9lMyMUkVGfue89wNDEWWeGqRtHEtp2OS9SxZTV/aXb8lOqen
+svLctOVJMQ0/nRAwazr8sYZb/GmXdIf0hUjLxhLt9kn9CaX82E9nRbYHTIKBWyJ2
+BEQ8kRNiR4epmLaFy9sl64Ra6wdfWLpnayqaqxx96llnwNzMKi7jCx/SfJtM4pXq
+0xJWuC5Kdvc0KOFT0xsd
+=IEdi
+-----END PGP SIGNATURE-----
+
+--lOUljPM2ThZHjS+s--
+
+--===============3881142927720396277==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3881142927720396277==--
