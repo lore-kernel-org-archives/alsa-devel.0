@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH 3/5] ALSA: usb-audio: add MIDI port names for
-	the Yamaha MOTIF	XF
-Date: Sun, 07 Sep 2014 21:44:29 +0200
-Message-ID: <540CB59D.2040505@ladisch.de>
+Subject: [PATCH 4/5] ALSA: virtuoso: add one more headphone
+	impedance setting
+Date: Sun, 07 Sep 2014 21:45:59 +0200
+Message-ID: <540CB5F7.1010708@ladisch.de>
 References: <540CB520.50909@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 9B1102610A6
- for <alsa-devel@alsa-project.org>; Sun,  7 Sep 2014 21:43:40 +0200 (CEST)
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id EED782608C7
+ for <alsa-devel@alsa-project.org>; Sun,  7 Sep 2014 21:45:12 +0200 (CEST)
 In-Reply-To: <540CB520.50909@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,37 +25,45 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
----
- sound/usb/midi.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index 7b166c2..69e93a9 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1506,6 +1506,12 @@ static struct port_info {
- 	PORT_INFO(vendor, product, num, name, 0, \
- 		  SNDRV_SEQ_PORT_TYPE_MIDI_GENERIC | \
- 		  SNDRV_SEQ_PORT_TYPE_HARDWARE)
-+#define GM_SYNTH_PORT(vendor, product, num, name, voices) \
-+	PORT_INFO(vendor, product, num, name, voices, \
-+		  SNDRV_SEQ_PORT_TYPE_MIDI_GENERIC | \
-+		  SNDRV_SEQ_PORT_TYPE_MIDI_GM | \
-+		  SNDRV_SEQ_PORT_TYPE_HARDWARE | \
-+		  SNDRV_SEQ_PORT_TYPE_SYNTHESIZER)
- #define ROLAND_SYNTH_PORT(vendor, product, num, name, voices) \
- 	PORT_INFO(vendor, product, num, name, voices, \
- 		  SNDRV_SEQ_PORT_TYPE_MIDI_GENERIC | \
-@@ -1525,6 +1531,11 @@ static struct port_info {
- 		  SNDRV_SEQ_PORT_TYPE_MIDI_MT32 | \
- 		  SNDRV_SEQ_PORT_TYPE_HARDWARE | \
- 		  SNDRV_SEQ_PORT_TYPE_SYNTHESIZER)
-+	/* Yamaha MOTIF XF */
-+	GM_SYNTH_PORT(0x0499, 0x105c, 0, "%s Tone Generator", 128),
-+	CONTROL_PORT(0x0499, 0x105c, 1, "%s Remote Control"),
-+	EXTERNAL_PORT(0x0499, 0x105c, 2, "%s Thru"),
-+	CONTROL_PORT(0x0499, 0x105c, 3, "%s Editor"),
- 	/* Roland UA-100 */
- 	CONTROL_PORT(0x0582, 0x0000, 2, "%s Control"),
- 	/* Roland SC-8850 */
+QWRkIG9uZSBtb3JlIG9wdGlvbiB0byB0aGUgIkhlYWRwaG9uZXMgSW1wZWRhbmNlIiBjb250cm9s
+IHRvIHN5bmNocm9uaXplCndpdGggcmVjZW50IHZlcnNpb25zIG9mIHRoZSBXaW5kb3dzIGRyaXZl
+ci4KClRlc3RlZC1ieTogZnVnYXp6acKuIDxmdWdhenppOTlAZ21haWwuY29tPgpTaWduZWQtb2Zm
+LWJ5OiBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5kZT4KLS0tCiBzb3VuZC9wY2kv
+b3h5Z2VuL3hvbmFyX3BjbTE3OXguYyB8ICAgMTggKysrKysrKysrKy0tLS0tLS0tCiAxIGZpbGUg
+Y2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9z
+b3VuZC9wY2kvb3h5Z2VuL3hvbmFyX3BjbTE3OXguYyBiL3NvdW5kL3BjaS9veHlnZW4veG9uYXJf
+cGNtMTc5eC5jCmluZGV4IGUwMjYwNTkuLjNjMGE2NzkgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9v
+eHlnZW4veG9uYXJfcGNtMTc5eC5jCisrKyBiL3NvdW5kL3BjaS9veHlnZW4veG9uYXJfcGNtMTc5
+eC5jCkBAIC03OTUsMTEgKzc5NSwxMSBAQCBzdGF0aWMgaW50IHN0X291dHB1dF9zd2l0Y2hfcHV0
+KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmN0bCwKIHN0YXRpYyBpbnQgc3RfaHBfdm9sdW1lX29mZnNl
+dF9pbmZvKHN0cnVjdCBzbmRfa2NvbnRyb2wgKmN0bCwKIAkJCQkgICAgc3RydWN0IHNuZF9jdGxf
+ZWxlbV9pbmZvICppbmZvKQogewotCXN0YXRpYyBjb25zdCBjaGFyICpjb25zdCBuYW1lc1szXSA9
+IHsKLQkJIjwgNjQgb2htcyIsICI2NC0zMDAgb2htcyIsICIzMDAtNjAwIG9obXMiCisJc3RhdGlj
+IGNvbnN0IGNoYXIgKmNvbnN0IG5hbWVzWzRdID0geworCQkiPCAzMiBvaG1zIiwgIjMyLTY0IG9o
+bXMiLCAiNjQtMzAwIG9obXMiLCAiMzAwLTYwMCBvaG1zIgogCX07CgotCXJldHVybiBzbmRfY3Rs
+X2VudW1faW5mbyhpbmZvLCAxLCAzLCBuYW1lcyk7CisJcmV0dXJuIHNuZF9jdGxfZW51bV9pbmZv
+KGluZm8sIDEsIDQsIG5hbWVzKTsKIH0KCiBzdGF0aWMgaW50IHN0X2hwX3ZvbHVtZV9vZmZzZXRf
+Z2V0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmN0bCwKQEAgLTgwOSwxMiArODA5LDE0IEBAIHN0YXRp
+YyBpbnQgc3RfaHBfdm9sdW1lX29mZnNldF9nZXQoc3RydWN0IHNuZF9rY29udHJvbCAqY3RsLAog
+CXN0cnVjdCB4b25hcl9wY20xNzl4ICpkYXRhID0gY2hpcC0+bW9kZWxfZGF0YTsKCiAJbXV0ZXhf
+bG9jaygmY2hpcC0+bXV0ZXgpOwotCWlmIChkYXRhLT5ocF9nYWluX29mZnNldCA8IDIqLTYpCisJ
+aWYgKGRhdGEtPmhwX2dhaW5fb2Zmc2V0IDwgMiotMTIpCiAJCXZhbHVlLT52YWx1ZS5lbnVtZXJh
+dGVkLml0ZW1bMF0gPSAwOwotCWVsc2UgaWYgKGRhdGEtPmhwX2dhaW5fb2Zmc2V0IDwgMCkKKwll
+bHNlIGlmIChkYXRhLT5ocF9nYWluX29mZnNldCA8IDIqLTYpCiAJCXZhbHVlLT52YWx1ZS5lbnVt
+ZXJhdGVkLml0ZW1bMF0gPSAxOwotCWVsc2UKKwllbHNlIGlmIChkYXRhLT5ocF9nYWluX29mZnNl
+dCA8IDApCiAJCXZhbHVlLT52YWx1ZS5lbnVtZXJhdGVkLml0ZW1bMF0gPSAyOworCWVsc2UKKwkJ
+dmFsdWUtPnZhbHVlLmVudW1lcmF0ZWQuaXRlbVswXSA9IDM7CiAJbXV0ZXhfdW5sb2NrKCZjaGlw
+LT5tdXRleCk7CiAJcmV0dXJuIDA7CiB9CkBAIC04MjMsMTMgKzgyNSwxMyBAQCBzdGF0aWMgaW50
+IHN0X2hwX3ZvbHVtZV9vZmZzZXRfZ2V0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmN0bCwKIHN0YXRp
+YyBpbnQgc3RfaHBfdm9sdW1lX29mZnNldF9wdXQoc3RydWN0IHNuZF9rY29udHJvbCAqY3RsLAog
+CQkJCSAgIHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnZhbHVlKQogewotCXN0YXRpYyBjb25z
+dCBzOCBvZmZzZXRzW10gPSB7IDIqLTE4LCAyKi02LCAwIH07CisJc3RhdGljIGNvbnN0IHM4IG9m
+ZnNldHNbXSA9IHsgMiotMTgsIDIqLTEyLCAyKi02LCAwIH07CiAJc3RydWN0IG94eWdlbiAqY2hp
+cCA9IGN0bC0+cHJpdmF0ZV9kYXRhOwogCXN0cnVjdCB4b25hcl9wY20xNzl4ICpkYXRhID0gY2hp
+cC0+bW9kZWxfZGF0YTsKIAlzOCBvZmZzZXQ7CiAJaW50IGNoYW5nZWQ7CgotCWlmICh2YWx1ZS0+
+dmFsdWUuZW51bWVyYXRlZC5pdGVtWzBdID4gMikKKwlpZiAodmFsdWUtPnZhbHVlLmVudW1lcmF0
+ZWQuaXRlbVswXSA+IDMpCiAJCXJldHVybiAtRUlOVkFMOwogCW9mZnNldCA9IG9mZnNldHNbdmFs
+dWUtPnZhbHVlLmVudW1lcmF0ZWQuaXRlbVswXV07CiAJbXV0ZXhfbG9jaygmY2hpcC0+bXV0ZXgp
+OwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
