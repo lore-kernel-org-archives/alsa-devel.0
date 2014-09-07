@@ -1,15 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: David Henningsson <david.henningsson@canonical.com>
 Subject: Re: Master Plan on rewinding
-Date: Sun, 07 Sep 2014 22:51:07 +0200
-Message-ID: <540CC53B.7080204@ladisch.de>
+Date: Mon, 08 Sep 2014 01:12:52 +0200
+Message-ID: <540CE674.9010004@canonical.com>
 References: <540C76E0.9050808@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 9623F26109F
- for <alsa-devel@alsa-project.org>; Sun,  7 Sep 2014 22:50:18 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72C8A2610AA
+ for <alsa-devel@alsa-project.org>; Mon,  8 Sep 2014 01:12:45 +0200 (CEST)
 In-Reply-To: <540C76E0.9050808@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,61 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: "Alexander E. Patrakov" <patrakov@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Alexander E. Patrakov wrote:
-> The consensus is that rewind_safeguard is a workaround for an ALSA bug.
 
-I do not agree with this consensus.
 
-> This information should come from snd_pcm_rewindable() from the hw
-> plugin. I.e., on a hw device, it should not be equal to
-> snd_pcm_mmap_hw_avail().  [...]
-> the safeguard should be ideally equal to the granularity of hardware
-> pointer updates.
-
-When snd_pcm_rewindable() is called, it uses the last reported hardware
-pointer position, which is the boundary between safe-to-rewrite and
-already-used data.  Subtracting the amount of one pointer update step
-makes it safe for the next pointer update, but it is not known how much
-time will elapse until the hardware does this update.  This time might
-be too small for the software to have any chance, or even zero, but it
-is also possible that there is still enough time to do the rewriting up
-until the reported boundary.  And if the software is too slow, it is
-even possible that two or more pointer updates happen, which would have
-required a larger safeguard.
-
-In other words: the snd_pcm_mmap_hw_avail() value is possibly ouf of
-date, but due to the real-time nature of hardware pointer updates, it is
-not possible to define a safeguard that would be more correct.  Writing
-the buffer near the DMA pointer is always racy.
-
-The only somewhat reliable way to determine if a rewrite is successful
-is to check _afterwards_ whether the hardware pointer has advanced by
-too much.
-
-> [...] On cards where pointer updates happen only on interrupts, the
-> driver should not configure the card in such a way that one period
-> visible to the userspace corresponds to one interrupt. Instead, it
-> should always configure the card for the minimum possible period
-> size, and report only part of the period interrupts to period_elapsed().
-
-Such stupid DMA controllers are typically found on mobile devices, which
-cannot afford extraneous interrupts.
-
-> === On the programmer expectations ===
+On 2014-09-07 17:16, Alexander E. Patrakov wrote:
+> Hello.
 >
-> Some people, including at least Andrew Eikum and Clemens Ladisch, at
-> least once in the past expressed the opinion that amounts to "any
-> plugin that does not allow random access is, as far as the ALSA API is
-> concerned, buggy" (quoting http://permalink.gmane.org/gmane.linux.alsa.devel/122159 ),
-> i.e. they are maybe asking for the impossible.
+> (TL;DR: nothing really new except the strawman proposal about threads
+> and the note about interaction of variable sample rate with rewindability)
+>
+> As Takashi Iwai told me that the audio miniconference is for discussion
+> only, and not for presentation of anything, I guess that I need to
+> present the plans and options now. That's why this e-mail. The goal
+> here, besides merely presenting the plan, is to identify points that
+> everyone agrees upon, so that they are not discussed pointlessly at the
+> miniconference. Also, this e-mail serves as a justification for the
+> pending seemingly-destructive work.
+>
+> First, the status quo. If anyone disagrees with the facts below, please
+> complain loudly, before I make any conclusions!
+>
+> 1. PulseAudio does not call snd_pcm_rewindable(), because for some ALSA
+> plugins it crashed. This crash is completely fixed in alsa-lib 1.0.28,
+> but in some cases snd_pcm_rewindable() still returns wrong results.
 
-This was merely a description of the current API and its implementation,
-which assume that all devices/plugins have a rewritable ring buffer.
-I am fully aware that this assumption is wrong.
+I don't know if we ever tried snd_pcm_rewindable() in PulseAudio.
 
+> 2. PulseAudio blindly assumes that it can rewind up to hwbuf_frames -
+> (snd_pcm_avail() + rewind_safeguard) frames. The rewind safeguard is
+> needed due to reasons that I don't completely understand, but one of
+> them is imprecise reporting of the hardware pointer, and another one is
+> that the hardware transfers several bytes at a time, and the bytes we
+> need to overwrite may be already cached by the hardware.
 
-Regards,
-Clemens
+Pierre added the rewind safeguard due to DMA controller problems. IIRC, 
+some DMA controllers go nuts (such as breaking the stream, causing 
+interrupt storms, or something else seriously buggy) when trying to 
+write to data that the DMA controller is just about to transfer. Pierre 
+(now cc:ed) would know more about this than I do, though.
+
+In my world, since this is a very hardware near problem, ALSA rather 
+than PulseAudio should take these kinds of problems into account when 
+reporting back snd_pcm_rewindable() so PulseAudio does not have to.
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
