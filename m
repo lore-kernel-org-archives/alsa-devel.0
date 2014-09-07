@@ -1,19 +1,16 @@
-From: "Pierre C" <lists@peufeu.com>
-Subject: Re: USB Implicit Feedback
-Date: Sun, 07 Sep 2014 09:06:14 +0200
-Message-ID: <op.xls10oxteorkce@apollo13>
-References: <op.xlq6q9vfeorkce@apollo13> <540AF652.8080501@zonque.org>
+From: humbert.olivier.1@free.fr
+Subject: Re: AKAI EIE PRO
+Date: Sun, 7 Sep 2014 13:30:29 +0200 (CEST)
+Message-ID: <952265838.110247052.1410089429353.JavaMail.root@zimbra61-e11.priv.proxad.net>
+References: <540AF493.6030206@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="yes"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo68.mail-out.ovh.net (5.mo68.mail-out.ovh.net [46.105.62.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 553AB265114
- for <alsa-devel@alsa-project.org>; Sun,  7 Sep 2014 12:11:27 +0200 (CEST)
-Received: from mail138.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo68.mail-out.ovh.net (Postfix) with SMTP id D85D5FFA1D6
- for <alsa-devel@alsa-project.org>; Sun,  7 Sep 2014 09:06:17 +0200 (CEST)
-In-Reply-To: <540AF652.8080501@zonque.org>
+Received: from smtp5-g21.free.fr (smtp5-g21.free.fr [212.27.42.5])
+ by alsa0.perex.cz (Postfix) with ESMTP id 01FE6262629
+ for <Alsa-devel@alsa-project.org>; Sun,  7 Sep 2014 13:30:29 +0200 (CEST)
+In-Reply-To: <540AF493.6030206@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,41 +20,145 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>
+To: Alsa-devel@alsa-project.org
+Cc: Martin Svensson <martin.svensson@ztealmax.se>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
->> I'd like to use implicit feedback instead,
+>On 09/06/2014 09:44 AM, Martin Svensson wrote:
+>> Dont know if its ok to ask a question here so please let me know if its 
+>> not ok then i wont ask again ;)
+>>
+>> i just bought an external usb AKAI EIE PRO sound card, is there any 
+>> future plans to implement it in Alsa?
 >
-> Why?
+>Daniel Mack wrote:
+>Please send the output of 'lsusb -v' with this device connected. In best
+>case, we only have to add a quirk table entry.
 
-Two reasons :
+Hi Daniel,
+if that can help, we had an user on http://www.linuxmao.org with an EIE PRO.
+Here you have his lsusb -v :
 
-- The Apple app notes seem to say it's the best way to do things, and I'd  
-like it to also work on Macs. But I'm not married to Apple, and it seems  
-Macs also support explicit feedback, so this isn't a very important point.
+Bus 001 Device 006: ID 09e8:0010 AKAI  Professional M.I. Corp. 
+Couldn't open device, some information will be missing
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass          255 Vendor Specific Class
+  bDeviceSubClass       255 Vendor Specific Subclass
+  bDeviceProtocol       255 Vendor Specific Protocol
+  bMaxPacketSize0        64
+  idVendor           0x09e8 AKAI  Professional M.I. Corp.
+  idProduct          0x0010 
+  bcdDevice            2.00
+  iManufacturer           1 
+  iProduct                2 
+  iSerial                 3 
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           80
+    bNumInterfaces          2
+    bConfigurationValue     1
+    iConfiguration          0 
+    bmAttributes         0x40
+      (Missing must-be-set bit!)
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0 
+      bInterfaceProtocol      0 
+      iInterface              0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       1
+      bNumEndpoints           3
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0 
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Data
+        wMaxPacketSize     0x009c  1x 156 bytes
+        bInterval               1
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x83  EP 3 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               4
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x04  EP 4 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               4
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0 
+      bInterfaceProtocol      0 
+      iInterface              0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           2
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass      0 
+      bInterfaceProtocol      0 
+      iInterface              0 
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x81  EP 1 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+          Usage Type               Data
+        wMaxPacketSize     0x0040  1x 64 bytes
+        bInterval               4
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x86  EP 6 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               1
 
-- Implicit feedback would use one less IN endpoint, and that would be  
-useful.
+Source: http://www.linuxmao.org/forumthread51851?comments_offset=20 (in french).
 
->> - Is it actually supported ?
->
-> Yes.
-
-OK !
-
-> The usage mask of bmAttributes of the endpoint should be
-> USB_ENDPOINT_USAGE_IMPLICIT_FB, along with some other constraints. See
-> set_sync_endpoint() in sound/usb/pcm.c
-
-I have read this source code before but I'm not sure what the second  
-parameter of "get_endpoint(alts, 1)" really means, does it imply that an  
-altsetting has to have 2 endpoints and it takes the second one, but in  
-which order ? order of definition in descriptors, endpoint number ?...
-
-But is it bmAttributes in the playback endpoint descriptor, or its buddy  
-capture endpoint ? The USB docs are quite vague and I see several possible  
-interpretations ... Does the playback AudioStreaming descriptor need to  
-have 1 endpoint, or 2 ?... I've tried various combinations with the latest  
-stable linux kernel, none worked. Do I need to set bAssocTerminal ?
-
-Thanks ;)
+Hope that helps,
+Olivier
