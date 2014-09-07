@@ -1,16 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH 4/5] ALSA: virtuoso: add one more headphone
-	impedance setting
-Date: Sun, 07 Sep 2014 21:45:59 +0200
-Message-ID: <540CB5F7.1010708@ladisch.de>
+Subject: [PATCH 5/5] ALSA: virtuoso: add Xonar Essence STX II
+	daughterboard	support
+Date: Sun, 07 Sep 2014 21:47:33 +0200
+Message-ID: <540CB655.7020103@ladisch.de>
 References: <540CB520.50909@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id EED782608C7
- for <alsa-devel@alsa-project.org>; Sun,  7 Sep 2014 21:45:12 +0200 (CEST)
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 415B2260859
+ for <alsa-devel@alsa-project.org>; Sun,  7 Sep 2014 21:46:43 +0200 (CEST)
 In-Reply-To: <540CB520.50909@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,45 +25,45 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIG9uZSBtb3JlIG9wdGlvbiB0byB0aGUgIkhlYWRwaG9uZXMgSW1wZWRhbmNlIiBjb250cm9s
-IHRvIHN5bmNocm9uaXplCndpdGggcmVjZW50IHZlcnNpb25zIG9mIHRoZSBXaW5kb3dzIGRyaXZl
-ci4KClRlc3RlZC1ieTogZnVnYXp6acKuIDxmdWdhenppOTlAZ21haWwuY29tPgpTaWduZWQtb2Zm
-LWJ5OiBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5kZT4KLS0tCiBzb3VuZC9wY2kv
-b3h5Z2VuL3hvbmFyX3BjbTE3OXguYyB8ICAgMTggKysrKysrKysrKy0tLS0tLS0tCiAxIGZpbGUg
-Y2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9z
-b3VuZC9wY2kvb3h5Z2VuL3hvbmFyX3BjbTE3OXguYyBiL3NvdW5kL3BjaS9veHlnZW4veG9uYXJf
-cGNtMTc5eC5jCmluZGV4IGUwMjYwNTkuLjNjMGE2NzkgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9v
-eHlnZW4veG9uYXJfcGNtMTc5eC5jCisrKyBiL3NvdW5kL3BjaS9veHlnZW4veG9uYXJfcGNtMTc5
-eC5jCkBAIC03OTUsMTEgKzc5NSwxMSBAQCBzdGF0aWMgaW50IHN0X291dHB1dF9zd2l0Y2hfcHV0
-KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmN0bCwKIHN0YXRpYyBpbnQgc3RfaHBfdm9sdW1lX29mZnNl
-dF9pbmZvKHN0cnVjdCBzbmRfa2NvbnRyb2wgKmN0bCwKIAkJCQkgICAgc3RydWN0IHNuZF9jdGxf
-ZWxlbV9pbmZvICppbmZvKQogewotCXN0YXRpYyBjb25zdCBjaGFyICpjb25zdCBuYW1lc1szXSA9
-IHsKLQkJIjwgNjQgb2htcyIsICI2NC0zMDAgb2htcyIsICIzMDAtNjAwIG9obXMiCisJc3RhdGlj
-IGNvbnN0IGNoYXIgKmNvbnN0IG5hbWVzWzRdID0geworCQkiPCAzMiBvaG1zIiwgIjMyLTY0IG9o
-bXMiLCAiNjQtMzAwIG9obXMiLCAiMzAwLTYwMCBvaG1zIgogCX07CgotCXJldHVybiBzbmRfY3Rs
-X2VudW1faW5mbyhpbmZvLCAxLCAzLCBuYW1lcyk7CisJcmV0dXJuIHNuZF9jdGxfZW51bV9pbmZv
-KGluZm8sIDEsIDQsIG5hbWVzKTsKIH0KCiBzdGF0aWMgaW50IHN0X2hwX3ZvbHVtZV9vZmZzZXRf
-Z2V0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmN0bCwKQEAgLTgwOSwxMiArODA5LDE0IEBAIHN0YXRp
-YyBpbnQgc3RfaHBfdm9sdW1lX29mZnNldF9nZXQoc3RydWN0IHNuZF9rY29udHJvbCAqY3RsLAog
-CXN0cnVjdCB4b25hcl9wY20xNzl4ICpkYXRhID0gY2hpcC0+bW9kZWxfZGF0YTsKCiAJbXV0ZXhf
-bG9jaygmY2hpcC0+bXV0ZXgpOwotCWlmIChkYXRhLT5ocF9nYWluX29mZnNldCA8IDIqLTYpCisJ
-aWYgKGRhdGEtPmhwX2dhaW5fb2Zmc2V0IDwgMiotMTIpCiAJCXZhbHVlLT52YWx1ZS5lbnVtZXJh
-dGVkLml0ZW1bMF0gPSAwOwotCWVsc2UgaWYgKGRhdGEtPmhwX2dhaW5fb2Zmc2V0IDwgMCkKKwll
-bHNlIGlmIChkYXRhLT5ocF9nYWluX29mZnNldCA8IDIqLTYpCiAJCXZhbHVlLT52YWx1ZS5lbnVt
-ZXJhdGVkLml0ZW1bMF0gPSAxOwotCWVsc2UKKwllbHNlIGlmIChkYXRhLT5ocF9nYWluX29mZnNl
-dCA8IDApCiAJCXZhbHVlLT52YWx1ZS5lbnVtZXJhdGVkLml0ZW1bMF0gPSAyOworCWVsc2UKKwkJ
-dmFsdWUtPnZhbHVlLmVudW1lcmF0ZWQuaXRlbVswXSA9IDM7CiAJbXV0ZXhfdW5sb2NrKCZjaGlw
-LT5tdXRleCk7CiAJcmV0dXJuIDA7CiB9CkBAIC04MjMsMTMgKzgyNSwxMyBAQCBzdGF0aWMgaW50
-IHN0X2hwX3ZvbHVtZV9vZmZzZXRfZ2V0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmN0bCwKIHN0YXRp
-YyBpbnQgc3RfaHBfdm9sdW1lX29mZnNldF9wdXQoc3RydWN0IHNuZF9rY29udHJvbCAqY3RsLAog
-CQkJCSAgIHN0cnVjdCBzbmRfY3RsX2VsZW1fdmFsdWUgKnZhbHVlKQogewotCXN0YXRpYyBjb25z
-dCBzOCBvZmZzZXRzW10gPSB7IDIqLTE4LCAyKi02LCAwIH07CisJc3RhdGljIGNvbnN0IHM4IG9m
-ZnNldHNbXSA9IHsgMiotMTgsIDIqLTEyLCAyKi02LCAwIH07CiAJc3RydWN0IG94eWdlbiAqY2hp
-cCA9IGN0bC0+cHJpdmF0ZV9kYXRhOwogCXN0cnVjdCB4b25hcl9wY20xNzl4ICpkYXRhID0gY2hp
-cC0+bW9kZWxfZGF0YTsKIAlzOCBvZmZzZXQ7CiAJaW50IGNoYW5nZWQ7CgotCWlmICh2YWx1ZS0+
-dmFsdWUuZW51bWVyYXRlZC5pdGVtWzBdID4gMikKKwlpZiAodmFsdWUtPnZhbHVlLmVudW1lcmF0
-ZWQuaXRlbVswXSA+IDMpCiAJCXJldHVybiAtRUlOVkFMOwogCW9mZnNldCA9IG9mZnNldHNbdmFs
-dWUtPnZhbHVlLmVudW1lcmF0ZWQuaXRlbVswXV07CiAJbXV0ZXhfbG9jaygmY2hpcC0+bXV0ZXgp
-OwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Detect and handle the H6 daughterboard; it works the same as with the
+ST, except that there is no conflict with the CS2000 chip.
+
+Tested-by: Andreas Allacher <andreas.allacher@gmx.at>
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/pci/oxygen/xonar_pcm179x.c |   15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/oxygen/xonar_pcm179x.c b/sound/pci/oxygen/xonar_pcm179x.c
+index 3c0a679..0d6a805 100644
+--- a/sound/pci/oxygen/xonar_pcm179x.c
++++ b/sound/pci/oxygen/xonar_pcm179x.c
+@@ -419,6 +419,7 @@ static void xonar_st_init_common(struct oxygen *chip)
+
+ 	data->generic.output_enable_bit = GPIO_ST_OUTPUT_ENABLE;
+ 	data->dacs = chip->model.dac_channels_mixer / 2;
++	data->h6 = chip->model.dac_channels_mixer > 2;
+ 	data->hp_gain_offset = 2*-18;
+
+ 	pcm1796_init(chip);
+@@ -1142,8 +1143,18 @@ int get_xonar_pcm179x_model(struct oxygen *chip,
+ 		break;
+ 	case 0x85f4:
+ 		chip->model = model_xonar_st;
+-		/* TODO: daughterboard support */
+-		chip->model.shortname = "Xonar STX II";
++		oxygen_clear_bits16(chip, OXYGEN_GPIO_CONTROL, GPIO_DB_MASK);
++		switch (oxygen_read16(chip, OXYGEN_GPIO_DATA) & GPIO_DB_MASK) {
++		default:
++			chip->model.shortname = "Xonar STX II";
++			break;
++		case GPIO_DB_H6:
++			chip->model.shortname = "Xonar STX II+H6";
++			chip->model.dac_channels_pcm = 8;
++			chip->model.dac_channels_mixer = 8;
++			chip->model.dac_mclks = OXYGEN_MCLKS(256, 128, 128);
++			break;
++		}
+ 		chip->model.init = xonar_stx_init;
+ 		chip->model.resume = xonar_stx_resume;
+ 		chip->model.set_dac_params = set_pcm1796_params;
