@@ -1,54 +1,56 @@
-From: Jurgen Kramer <gtmkramer@xs4all.nl>
-Subject: Re: [PATCH v3] add native DSD support for XMOS based
- DACs
-Date: Mon, 08 Sep 2014 19:20:27 +0200
-Message-ID: <1410196827.2766.1.camel@xs4all.nl>
-References: <1409933686-3032-1-git-send-email-gtmkramer@xs4all.nl>
- <s5hsik2f8wp.wl-tiwai@suse.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v2 5/8] ARM: dts: am33xx: Add external clock provider
+Date: Mon, 8 Sep 2014 16:30:38 -0700
+Message-ID: <20140908233037.GT3238@atomide.com>
+References: <cover.1408397864.git.jsarha@ti.com>
+ <9d4974b949b9b3bc1b08d73b1ec2d9cdd7a8e5da.1408397864.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr4.xs4all.nl (smtp-vbr4.xs4all.nl [194.109.24.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 1135E261A8B
- for <alsa-devel@alsa-project.org>; Mon,  8 Sep 2014 19:20:29 +0200 (CEST)
-In-Reply-To: <s5hsik2f8wp.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <9d4974b949b9b3bc1b08d73b1ec2d9cdd7a8e5da.1408397864.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com, ezequiel.garcia@free-electrons.com, t-kristo@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2014-09-08 at 17:07 +0200, Takashi Iwai wrote:
-> At Fri,  5 Sep 2014 18:14:46 +0200,
-> Jurgen Kramer wrote:
-> > 
-> > Add quirks for XMOS based DACs for native DSD playback support using the new
-> > DSD_U32_LE sample format.
-> > 
-> > This version adds native DSD support for:
-> > - iFi Audio micro iDSD/nano iDSD (they use the same prod. id)
-> > - DIYINHK USB to I2S/DSD converter
-> > 
-> > Changes from v2:
-> > - fix and simplify switch statement
-> > Changes from v1:
-> > - use specific product id and alt setting per XMOS based device
-> > 
-> > Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
-> 
-> Applied with a minor coding style fix.  At the next time, please run
-> scripts/checkpatch.pl before the submission.
-> 
-> Also, don't forget to put maintainers to Cc, and align the subject
-> line with the other commits for the target code. 
-Thanks, will do for new patches.
+* Jyri Sarha <jsarha@ti.com> [140818 14:49]:
+> Add external clock provider for am33xx devices.
 
-Jurgen
+Please send all the .dts and defconfig changes separately
+so I can pick them up and we don't get pointless merge
+conflicts.
+
+Regards,
+
+TOny
+ 
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+>  arch/arm/boot/dts/am33xx.dtsi |   10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
+> index 3a0a161..d2cc397 100644
+> --- a/arch/arm/boot/dts/am33xx.dtsi
+> +++ b/arch/arm/boot/dts/am33xx.dtsi
+> @@ -92,6 +92,16 @@
+>  		pinctrl-single,function-mask = <0x7f>;
+>  	};
+>  
+> +	ext_clocks {
+> +		compatible = "ti,external-clocks";
+> +
+> +		ext_clocks: clocks {
+> +		};
+> +
+> +		ext_clockdomains: clockdomains {
+> +		};
+> +	};
+> +
+>  	/*
+>  	 * XXX: Use a flat representation of the AM33XX interconnect.
+>  	 * The real AM33XX interconnect network is quite complex. Since
+> -- 
+> 1.7.9.5
+> 
