@@ -1,17 +1,20 @@
-From: Ilya Dmitrichenko <errordeveloper@gmail.com>
-Subject: am335x+tlv320aic3x
-Date: Tue, 9 Sep 2014 01:33:57 +0100
-Message-ID: <CAPhDKbHgUcCWsdc7peSe7UdWdu68sqfObcP_fQw7bWPxJhZEPg@mail.gmail.com>
+From: Michal Rydlo <michal.rydlo@gmail.com>
+Subject: Re: AKAI EIE PRO
+Date: Mon, 8 Sep 2014 23:43:32 +0200
+Message-ID: <CAEK4Y+J8MbC8+ptqm_v7=-F+cvT1kAmq17ZNAR5tDuomfPWkNA@mail.gmail.com>
+References: <952265838.110247052.1410089429353.JavaMail.root@zimbra61-e11.priv.proxad.net>
+ <540C43E0.5020704@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
- [209.85.223.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 4358326262D
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 02:33:59 +0200 (CEST)
-Received: by mail-ie0-f169.google.com with SMTP id rl12so3165269iec.28
- for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2014 17:33:57 -0700 (PDT)
+Received: from mail-we0-f181.google.com (mail-we0-f181.google.com
+ [74.125.82.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A8642625EF
+ for <Alsa-devel@alsa-project.org>; Mon,  8 Sep 2014 23:43:54 +0200 (CEST)
+Received: by mail-we0-f181.google.com with SMTP id x48so15843620wes.12
+ for <Alsa-devel@alsa-project.org>; Mon, 08 Sep 2014 14:43:54 -0700 (PDT)
+In-Reply-To: <540C43E0.5020704@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +24,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@zonque.org>
+Cc: Alsa-devel@alsa-project.org, humbert.olivier.1@free.fr, Martin Svensson <martin.svensson@ztealmax.se>
 List-Id: alsa-devel@alsa-project.org
 
-Hi List,
+Hello there!
 
-I am trying to get Beaglebone workign with the audio extension board
-(aka cape) that is using tlv320aic3x codec. I want it to run 3.14 and
-use vanilla kernel without dynamic DT overlay patches.
+On Sun, Sep 7, 2014 at 1:39 PM, Daniel Mack <daniel@zonque.org> wrote:
+>
+> On 09/07/2014 01:30 PM, humbert.olivier.1@free.fr wrote:
+> > if that can help, we had an user on http://www.linuxmao.org with an EIE PRO.
+> > Here you have his lsusb -v :
+> >
+> > Bus 001 Device 006: ID 09e8:0010 AKAI  Professional M.I. Corp.
+> > Couldn't open device, some information will be missing
+> > Device Descriptor:
+> >   bLength                18
+> >   bDescriptorType         1
+> >   bcdUSB               2.00
+> >   bDeviceClass          255 Vendor Specific Class
+> >   bDeviceSubClass       255 Vendor Specific Subclass
+> >   bDeviceProtocol       255 Vendor Specific Protocol
+>
+> According to the tech specs, this should be a USB hub, but it isn't. Or
+> is this just one of the sub-devices? What does 'lsusb -t' say, and does
+> Linux see something like a mouse or mass storage device when connected
+> to one of the hub ports?
+>
+> Assuming that's just the audio part ...
+>
+> >       Endpoint Descriptor:
+> >         bLength                 7
+> >         bDescriptorType         5
+> >         bEndpointAddress     0x02  EP 2 OUT
+> >         bmAttributes            5
+> >           Transfer Type            Isochronous
+> >           Synch Type               Asynchronous
+> >           Usage Type               Data
+> >         wMaxPacketSize     0x009c  1x 156 bytes
+> >         bInterval               1
+> >       Endpoint Descriptor:
+> >         bLength                 7
+> >         bDescriptorType         5
+> >         bEndpointAddress     0x83  EP 3 IN
+> >         bmAttributes            2
+> >           Transfer Type            Bulk
+> >           Synch Type               None
+> >           Usage Type               Data
+> >         wMaxPacketSize     0x0200  1x 512 bytes
+> >         bInterval               4
+> >       Endpoint Descriptor:
+> >         bLength                 7
+> >         bDescriptorType         5
+> >         bEndpointAddress     0x04  EP 4 OUT
+> >         bmAttributes            2
+> >           Transfer Type            Bulk
+> >           Synch Type               None
+> >           Usage Type               Data
+> >         wMaxPacketSize     0x0200  1x 512 bytes
+> >         bInterval               4
+>
+> So at least, they're not trying to hide class-specific endpoint
+> descriptors here, which what I've been hoping for.
+>
+> I guess someone has to trace the traffic spoken to this device by the
+> Windows driver. I take it this thing doesn't work on OS X with a 3rd
+> party driver?
 
-So I have take the current overlay DT [1] and made converted it [2].
-The result is that it boots and detects the Davinci module, but
-doesn't get the codec.
+I have analyzed the protocol more than a half year ago. I even tried to
+create a linux driver around it but had to stop due to lack of time.
+I hope I can continue working on it in November again.
 
-[1]: https://github.com/beagleboard/devicetree-source/blob/d46bcc20ef98d69eea34cd6ae3897a329559ebb2/arch/arm/boot/dts/BB-BONE-AUDI-01-00A0.dts
-[2]: https://gist.github.com/errordeveloper/cba5145960bdeb0126d5
+I have published what I have done so far to github few seconds ago if
+anyone wants to have a look or perhaps contribute.
 
-My kernel config includes this:
+https://github.com/mmm444/eie-pro-linux
 
-CONFIG_SND_OMAP_SOC=m
-CONFIG_SND_OMAP_SOC_MCBSP=m
-CONFIG_SND_OMAP_SOC_OMAP_TWL4030=m
-CONFIG_SND_SOC_TWL4030=m
-CONFIG_SND_DAVINCI_SOC=m
-CONFIG_SND_AM33XX_SOC_EVM=m
-CONFIG_SND_DAVINCI_SOC_MCASP=m
-CONFIG_SND_HRTIMER=m
+I can write more text about the protocol if someone is interested.
+
+Regards,
+
+Michal
