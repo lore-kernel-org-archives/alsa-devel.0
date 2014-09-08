@@ -1,14 +1,22 @@
-From: =?UTF-8?Q?kukububu?= <kukububu@o2.pl>
-Subject: =?utf-8?q?vt1613_driver?=
-Date: Sun, 07 Sep 2014 21:10:09 +0200
-Message-ID: <63bed6a2.d4bfc94.540cad91.b8037@o2.pl>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v5 03/12] ALSA: control: Add init callback
+	for kcontrol
+Date: Mon, 8 Sep 2014 13:38:07 +0530
+Message-ID: <20140908080807.GJ1610@intel.com>
+References: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1409661367-19047-4-git-send-email-subhransu.s.prusty@intel.com>
+ <20140906142124.GG2601@sirena.org.uk>
+ <s5hppf8g2ul.wl-tiwai@suse.de> <20140908041421.GI1610@intel.com>
+ <s5hppf6a679.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="==o2.pl-WebMail-76f9f246.4fc1dde7.b803f=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moh2-ve1.go2.pl (moh2-ve1.go2.pl [193.17.41.186])
- by alsa0.perex.cz (Postfix) with ESMTP id 27FB0260845
- for <alsa-devel@alsa-project.org>; Sun,  7 Sep 2014 21:10:13 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id D47E4261A5E
+ for <alsa-devel@alsa-project.org>; Mon,  8 Sep 2014 10:30:23 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hppf6a679.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,154 +26,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Mon, Sep 08, 2014 at 10:04:42AM +0200, Takashi Iwai wrote:
+> At Mon, 8 Sep 2014 09:44:21 +0530,
+> Vinod Koul wrote:
+> > 
+> > On Sat, Sep 06, 2014 at 05:56:02PM +0200, Takashi Iwai wrote:
+> > > At Sat, 6 Sep 2014 15:21:24 +0100,
+> > > Mark Brown wrote:
+> > > > 
+> > > > On Tue, Sep 02, 2014 at 06:05:58PM +0530, Subhransu S. Prusty wrote:
+> > > > > Some controls need to initialize stuffs like pvt data, so they need a
+> > > > > callback if the control creation is successful.
+> > > > 
+> > > > Adding Takashi - this is ALSA core code so he needs to review it.
+> > > 
+> > > This would bloat effectively the data size of all sound drivers, so I
+> > > can't ack it without more proper reasoning.  That is, please convince
+> > > me why this change must be taken for the cost of size bloat of all
+> > > sound drivers.  Can't you do it in the caller side of snd_ctl_add()
+> > > like many other drivers already do?
+> > Okay lets step back and see why we need this :)
+> > 
+> > In our case after the control creation we need to allocate memory which will
+> > hold the data for the byte controls. This can be done only after the
+> > controls are created (by asoc).
+> 
+> Why?  Because you don't need how many bytes to allocate?
+> 
+> > For that we need a callback into driver so that we can allocate the memory.
+> > Thats why we added .init() method. If you have any other way to do this, we
+> > are all ears :)
+> 
+> For example, you can embed an init flag into your record and call the
+> initializer in get/put callback if not called yet.
+Yes but that would involve open coding in all control hanlers for the driver :
 
---==o2.pl-WebMail-76f9f246.4fc1dde7.b803f==
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+if (!initialized)
+	allocate_control_mem();
 
-Hello,
+This approach was done earlier (checking in info) and flaged off by Mark. It make better to
+have these handled in the framework.
 
-I=20found=20driver=20for=20vt1613=20(which=20is=20part=20of=20udoo=20arm=20=
-computer)=20at=20https://github.com/UDOOboard/Kernel=5FUnico/blob/master/=
-sound/soc/codecs/vt1613.c,=20but=20it's=20not=20compatibile=20with=20curr=
-ent=20kernel.=20Below=20you=20can=20find=20my=20patch=20that=20makes=20it=
-=20possible=20to=20compile=20and=20load=20this=20driver.=20It=20probably=20=
-has=20memory=20leak=20on=20unload=20(commented=20kfree),=20but=20the=20wo=
-rst=20thing=20is=20that=20Linux=20still=20doesn't=20see=20sound=20card.=20=
-I=20suppose=20that=20volatile=20register=20should=20be=20changed=20to=20r=
-eg=5Fdefault,=20but=20I'm=20not=20programmer=20(I=20only=20had=20C=20cour=
-se=20a=20few=20years=20ago=20and=20oboiously=20I've=20never=20touched=20a=
-ny=20driver=20code)=20therefore=20this=20is=20far=20beyond=20my=20abiliti=
-es.=20Can=20you=20help=20me=20with=20getting=20this=20driver=20to=20work=20=
-on=20recent=20kernel=20please?
+Either ways we are okay with whatever you two decide :)
 
-Regards,
-Adrian
---==o2.pl-WebMail-76f9f246.4fc1dde7.b803f==
-Content-Type: text/x-patch;
-	name="=?UTF-8?Q?vt1613.c.patch?="
-Content-Disposition: attachment;
-	filename="=?UTF-8?Q?vt1613.c.patch?="
-Content-Transfer-Encoding: base64
-
-LS0tIC91c3Ivc3JjL2xpbnV4LWFybXY3L3NyYy9saW51eC0zLjE2L3Z0MTYxMy5jICAgICAg
-ICAyMDE0LTA5LTA2IDE3OjUxOjIwLjAzNzAzNTM0NiArMDAwMAorKysgL3Jvb3QvdnQxNjEz
-L3Z0MTYxMy5jICAgICAgIDIwMTQtMDktMDcgMTg6Mjc6MjUuMjU4MzYxNTk2ICswMDAwCkBA
-IC0zMyw3ICszMyw2IEBACiAjaW5jbHVkZSA8c291bmQvc29jLmg+CiAjaW5jbHVkZSA8c291
-bmQvc29jLWRhcG0uaD4KICNpbmNsdWRlIDxzb3VuZC9pbml0dmFsLmg+Ci0jaW5jbHVkZSA8
-bWFjaC9oYXJkd2FyZS5oPgogCiAjaW5jbHVkZSA8c291bmQvdGx2Lmg+CiAKQEAgLTEyNiw3
-ICsxMjUsNyBAQAogICAgICAgICBpZiAocmVnID09IEFDOTdfUkVTRVQgfHwgcmVnID09IEFD
-OTdfR1BJT19TVEFUVVMgfHwKICAgICAgICAgICAgICAgICByZWcgPT0gQUM5N19WRU5ET1Jf
-SUQxIHx8IHJlZyA9PSBBQzk3X1ZFTkRPUl9JRDIgfHwKICAgICAgICAgICAgICAgICByZWcg
-PT0gQUM5N19SRUNfR0FJTikgewotICAgICAgICAgICAgICAgIHJldHVybiBzb2NfYWM5N19v
-cHMucmVhZChjb2RlYy0+YWM5NywgcmVnKTsKKyAgICAgICAgICAgICAgICByZXR1cm4gc29j
-X2FjOTdfb3BzLT5yZWFkKGNvZGVjLT5hYzk3LCByZWcpOwogICAgICAgICB9IGVsc2Ugewog
-ICAgICAgICAgICAgICAgIHJlZyA9IHJlZyA+PiAxOwogCkBAIC0xNDIsNyArMTQxLDcgQEAK
-ICAgICAgICAgdTE2ICpjYWNoZSA9IGNvZGVjLT5yZWdfY2FjaGU7CiAKICAgICAgICAgaWYg
-KHJlZyA8IDB4N2MpCi0gICAgICAgICAgICAgICAgc29jX2FjOTdfb3BzLndyaXRlKGNvZGVj
-LT5hYzk3LCByZWcsIHZhbCk7CisgICAgICAgICAgICAgICAgc29jX2FjOTdfb3BzLT53cml0
-ZShjb2RlYy0+YWM5NywgcmVnLCB2YWwpOwogICAgICAgICByZWcgPSByZWcgPj4gMTsKICAg
-ICAgICAgaWYgKHJlZyA8IChBUlJBWV9TSVpFKHZ0MTYxM19hYzk3X3JlZykpKQogICAgICAg
-ICAgICAgICAgIGNhY2hlW3JlZ10gPSB2YWw7CkBAIC00NDksMTMgKzQ0OCw2IEBACiAgICAg
-ICAgcmV0dXJuIHJldDsKIH0KIAotc3RhdGljIGludCB2dDE2MTNfZGlnaXRhbF9tdXRlKHN0
-cnVjdCBzbmRfc29jX2RhaSAqY29kZWNfZGFpLCBpbnQgbXV0ZSkKLXsKLSAgICAgICBzdHJ1
-Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBjb2RlY19kYWktPmNvZGVjOwotCi0gICAgICAg
-cmV0dXJuIF9fdnQxNjEzX2RpZ2l0YWxfbXV0ZShjb2RlYywgbXV0ZSk7Ci19Ci0KIHN0YXRp
-YyBpbnQgdnQxNjEzX3NldF9kYWlfZm10KHN0cnVjdCBzbmRfc29jX2RhaSAqY29kZWNfZGFp
-LCB1bnNpZ25lZCBpbnQgZm10KQogewogICAgICAgICBzdHJ1Y3Qgc25kX3NvY19jb2RlYyAq
-Y29kZWMgPSBjb2RlY19kYWktPmNvZGVjOwpAQCAtNTYxLDM2ICs1NTMsNiBAQAogICAgICAg
-ICByZXR1cm4gc25kX3NvY193cml0ZShjb2RlYywgcmVnLCBydW50aW1lLT5yYXRlKTsKIH0K
-IAotc3RhdGljIHZvaWQgdnQxNjEzX2NvbnN0cmFpbnRzKHN0cnVjdCB2dDE2MTNfcHJpdiAq
-dnQxNjEzLAotICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qgc25kX3Bj
-bV9zdWJzdHJlYW0gKm1zdF9zdWJzdHJlYW0pCi17Ci0gICAgICAgIHN0cnVjdCBzbmRfcGNt
-X3N1YnN0cmVhbSAqc2x2X3N1YnN0cmVhbTsKLQotICAgICAgICAvKiBQaWNrIHRoZSBzdHJl
-YW0sIHdoaWNoIG5lZWQgdG8gYmUgY29uc3RyYWluZWQgKi8KLSAgICAgICAgaWYgKG1zdF9z
-dWJzdHJlYW0gPT0gdnQxNjEzLT5tYXN0ZXJfc3Vic3RyZWFtKQotICAgICAgICAgICAgICAg
-IHNsdl9zdWJzdHJlYW0gPSB2dDE2MTMtPnNsYXZlX3N1YnN0cmVhbTsKLSAgICAgICAgZWxz
-ZSBpZiAobXN0X3N1YnN0cmVhbSA9PSB2dDE2MTMtPnNsYXZlX3N1YnN0cmVhbSkKLSAgICAg
-ICAgICAgICAgICBzbHZfc3Vic3RyZWFtID0gdnQxNjEzLT5tYXN0ZXJfc3Vic3RyZWFtOwot
-ICAgICAgICBlbHNlIC8qIFRoaXMgc2hvdWxkIG5vdCBoYXBwZW4uLiAqLwotICAgICAgICAg
-ICAgICAgIHJldHVybjsKLQotICAgICAgICAvKiBTZXQgdGhlIGNvbnN0cmFpbnRzIGFjY29y
-ZGluZyB0byB0aGUgYWxyZWFkeSBjb25maWd1cmVkIHN0cmVhbSAqLwotICAgICAgICBzbmRf
-cGNtX2h3X2NvbnN0cmFpbnRfbWlubWF4KHNsdl9zdWJzdHJlYW0tPnJ1bnRpbWUsCi0gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNORFJWX1BDTV9IV19QQVJBTV9SQVRFLAot
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2dDE2MTMtPnJhdGUsCi0gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHZ0MTYxMy0+cmF0ZSk7Ci0KLSAgICAgICAgc25k
-X3BjbV9od19jb25zdHJhaW50X21pbm1heChzbHZfc3Vic3RyZWFtLT5ydW50aW1lLAotICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTTkRSVl9QQ01fSFdfUEFSQU1fU0FNUExF
-X0JJVFMsCi0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZ0MTYxMy0+c2FtcGxl
-X2JpdHMsCi0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZ0MTYxMy0+c2FtcGxl
-X2JpdHMpOwotCi0gICAgICAgIHNuZF9wY21faHdfY29uc3RyYWludF9taW5tYXgoc2x2X3N1
-YnN0cmVhbS0+cnVudGltZSwKLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU05E
-UlZfUENNX0hXX1BBUkFNX0NIQU5ORUxTLAotICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB2dDE2MTMtPmNoYW5uZWxzLAotICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB2dDE2MTMtPmNoYW5uZWxzKTsKLX0KLQogc3RhdGljIGludCB2dDE2MTNfc3RhcnR1cChz
-dHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpKQogewpAQCAtODI5LDYgKzc5MSw3
-IEBACiB9LAogfTsKIAorLyoKIHN0YXRpYyBpbnQgdnQxNjEzX3ZvbGF0aWxlX3JlZ2lzdGVy
-KHVuc2lnbmVkIGludCByZWcpCiB7CiAgICAgICAgaWYgKHJlZyA9PSBWVDE2MTNfQ0hJUF9J
-RCB8fApAQCAtODM3LDggKzgwMCw5IEBACiAgICAgICAgICAgICAgICByZXR1cm4gMTsKICAg
-ICAgICByZXR1cm4gMDsKIH0KKyovCiAKLXN0YXRpYyBpbnQgdnQxNjEzX3N1c3BlbmQoc3Ry
-dWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjLCBwbV9tZXNzYWdlX3Qgc3RhdGUpCitzdGF0aWMg
-aW50IHZ0MTYxM19zdXNwZW5kKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKIHsKICAg
-ICAgICB2dDE2MTNfc2V0X2JpYXNfbGV2ZWwoY29kZWMsIFNORF9TT0NfQklBU19PRkYpOwog
-CkBAIC04ODEsMTYgKzg0NSwxNCBAQAogc3RhdGljIGludCB2dDE2MTNfZHJpdmVyX3Byb2Jl
-KHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKIHsKICAgICAgICBzdHJ1Y3QgdnQxNjEz
-X3ByaXYgKnZ0MTYxMyA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMpOwotICAg
-ICAgIHUxNiByZWcsIGFuYV9wd3IsIGxyZWdfY3RybDsKLSAgICAgICBpbnQgdmFnOwogICAg
-ICAgIGludCByZXQ7CiAgICAgICAgaW50IGk7CiAKLSAgICAgICByZXQgPSBzbmRfc29jX25l
-d19hYzk3X2NvZGVjKGNvZGVjLCAmc29jX2FjOTdfb3BzLCAwKTsKKyAgICAgICByZXQgPSBz
-bmRfc29jX25ld19hYzk3X2NvZGVjKGNvZGVjLCBzb2NfYWM5N19vcHMsIDApOwogCi0gICAg
-ICAgc29jX2FjOTdfb3BzLnJlc2V0KGNvZGVjLT5hYzk3KTsKKyAgICAgICBzb2NfYWM5N19v
-cHMtPnJlc2V0KGNvZGVjLT5hYzk3KTsKICAgICAgICAgbXNsZWVwKDIwKTsKLSAgICAgICBz
-b2NfYWM5N19vcHMud2FybV9yZXNldChjb2RlYy0+YWM5Nyk7CisgICAgICAgc29jX2FjOTdf
-b3BzLT53YXJtX3Jlc2V0KGNvZGVjLT5hYzk3KTsKICAgICAgICAgbXNsZWVwKDIwKTsKIAog
-ICAgICAgIHZ0MTYxM19pbml0X2NoaXAoY29kZWMpOwpAQCAtOTA0LDggKzg2Niw5IEBACiAg
-ICAgICAgc25kX3NvY193cml0ZShjb2RlYywgMHg1QSwgMHgwNDAwKTsgLy8gPC0tIFtncDAw
-MHE3XSBOb2lzZSByZWR1Y2luZyBkdXJpbmcgbWljIHJlY29yZGluZyBvbiB2dDE2MTMKICAg
-ICAgICB2dDE2MTMtPnN5c2NsayA9IFZUMTYxM19BUExMX1JBVEVfNDgwMDA7CiAKLSAgICAg
-ICBzbmRfc29jX2FkZF9jb250cm9scyhjb2RlYywgdnQxNjEzX3NuZF9jb250cm9scywgQVJS
-QVlfU0laRSh2dDE2MTNfc25kX2NvbnRyb2xzKSk7Ci0gICAgICAgIG1zbGVlcCgxMCk7Cisg
-ICAgICAgLyogc25kX3NvY19hZGRfY29udHJvbHMoY29kZWMsIHZ0MTYxM19zbmRfY29udHJv
-bHMsIEFSUkFZX1NJWkUodnQxNjEzX3NuZF9jb250cm9scykpOyAqLworICAgICAgICBzbmRf
-c29jX2FkZF9jb2RlY19jb250cm9scyhjb2RlYywgdnQxNjEzX3NuZF9jb250cm9scywgQVJS
-QVlfU0laRSh2dDE2MTNfc25kX2NvbnRyb2xzKSk7CisgICAgICAgbXNsZWVwKDEwKTsKIC8q
-CiBmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRSh2dDE2MTNfYWM5N19yZWcpOyBpKyspCiAg
-ICAgICAgcHJpbnRrKCJSRUdJU1RSTyBJRFggMHglMDJ4ID0gMHglMDR4IFxuIiwgaTw8MSwg
-c25kX3NvY19yZWFkKGNvZGVjLCBpPDwxKSk7CkBAIC05MzYsMTAgKzg5OSwxMCBAQAogICAg
-ICAgIC5yZWdfY2FjaGVfc2l6ZSA9IEFSUkFZX1NJWkUodnQxNjEzX2FjOTdfcmVnKSwKICAg
-ICAgICAucmVnX3dvcmRfc2l6ZSA9IHNpemVvZih1MTYpLAogICAgICAgIC5yZWdfY2FjaGVf
-ZGVmYXVsdCA9IHZ0MTYxM19hYzk3X3JlZywKLSAgICAgICAudm9sYXRpbGVfcmVnaXN0ZXIg
-PSB2dDE2MTNfdm9sYXRpbGVfcmVnaXN0ZXIsCisvKiAgICAgLnZvbGF0aWxlX3JlZ2lzdGVy
-ID0gdnQxNjEzX3ZvbGF0aWxlX3JlZ2lzdGVyLCovCiB9OwogCi1zdGF0aWMgX19kZXZpbml0
-IGludCB2dDE2MTNfY29kZWNfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqY2xpZW50
-KQorc3RhdGljIGludCB2dDE2MTNfY29kZWNfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2Rldmlj
-ZSAqY2xpZW50KQogewogICAgICAgIHN0cnVjdCB2dDE2MTNfcHJpdiAqdnQxNjEzOwogICAg
-ICAgIGludCByZXQ7CkBAIC05NjMsMTMgKzkyNiwxMyBAQAogICAgICAgIHJldHVybiAwOwog
-fQogCi1zdGF0aWMgX19kZXZleGl0IGludCB2dDE2MTNfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9y
-bV9kZXZpY2UgKnBkZXYpCitzdGF0aWMgaW50IHZ0MTYxM19yZW1vdmUoc3RydWN0IHBsYXRm
-b3JtX2RldmljZSAqcGRldikKIHsKICAgICAgICBzdHJ1Y3QgdnQxNjEzX3ByaXYgKnZ0MTYx
-MyA9IHBsYXRmb3JtX2dldF9kcnZkYXRhKHBkZXYpOwotCi0gICAgICAgIHNuZF9zb2NfdW5y
-ZWdpc3Rlcl9kYWlzKCZ2dDE2MTNfZGFpWzBdLCBBUlJBWV9TSVpFKHZ0MTYxM19kYWkpKTsK
-KyAgICAgICAvKgorICAgICAgICBzbmRfc29jX3VucmVnaXN0ZXJfZGFpcygmdnQxNjEzX2Rh
-aVswXSk7CiAgICAgICAgIHNuZF9zb2NfdW5yZWdpc3Rlcl9jb2RlYygmdnQxNjEzLT5jb2Rl
-Yyk7Ci0gICAgICAgIGtmcmVlKHZ0MTYxMy0+Y29kZWMucmVnX2NhY2hlKTsKKyAgICAgICAg
-a2ZyZWUodnQxNjEzLT5jb2RlYy5yZWdfY2FjaGUpOyovCiAgICAgICAgIGtmcmVlKHZ0MTYx
-Myk7CiAKICAgICAgICByZXR1cm4gMDsKQEAgLTk4MSw3ICs5NDQsNyBAQAogICAgICAgICAg
-ICAgICAgICAgLm93bmVyID0gVEhJU19NT0RVTEUsCiAgICAgICAgfSwKICAgICAgICAucHJv
-YmUgPSB2dDE2MTNfY29kZWNfcHJvYmUsCi0gICAgICAgLnJlbW92ZSA9IF9fZGV2ZXhpdF9w
-KHZ0MTYxM19yZW1vdmUpLAorICAgICAgIC5yZW1vdmUgPSB2dDE2MTNfcmVtb3ZlLAogfTsK
-IAogc3RhdGljIGludCBfX2luaXQgdnQxNjEzX21vZGluaXQodm9pZCkK
-
---==o2.pl-WebMail-76f9f246.4fc1dde7.b803f==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---==o2.pl-WebMail-76f9f246.4fc1dde7.b803f==--
+-- 
+~Vinod
