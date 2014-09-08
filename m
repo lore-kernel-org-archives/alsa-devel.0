@@ -1,20 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Master Plan on rewinding
-Date: Mon, 8 Sep 2014 11:06:01 +0800
-Message-ID: <CAN8cciZnyRW37KUYW81Kg0xS0YtnaM67p6O-dpc2ejMdg+3Tqg@mail.gmail.com>
-References: <540C76E0.9050808@gmail.com>
-	<540CC53B.7080204@ladisch.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v5 03/12] ALSA: control: Add init callback
+	for kcontrol
+Date: Mon, 8 Sep 2014 09:44:21 +0530
+Message-ID: <20140908041421.GI1610@intel.com>
+References: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1409661367-19047-4-git-send-email-subhransu.s.prusty@intel.com>
+ <20140906142124.GG2601@sirena.org.uk>
+ <s5hppf8g2ul.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f179.google.com (mail-qc0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 37F91261643
- for <alsa-devel@alsa-project.org>; Mon,  8 Sep 2014 05:06:02 +0200 (CEST)
-Received: by mail-qc0-f179.google.com with SMTP id l6so14663207qcy.38
- for <alsa-devel@alsa-project.org>; Sun, 07 Sep 2014 20:06:01 -0700 (PDT)
-In-Reply-To: <540CC53B.7080204@ladisch.de>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id B52E726170F
+ for <alsa-devel@alsa-project.org>; Mon,  8 Sep 2014 06:36:33 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hppf8g2ul.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,46 +25,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "Alexander E. Patrakov" <patrakov@gmail.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-PiA+IFRoZSBjb25zZW5zdXMgaXMgdGhhdCByZXdpbmRfc2FmZWd1YXJkIGlzIGEgd29ya2Fyb3Vu
-ZCBmb3IgYW4gQUxTQSBidWcuCj4KPiBJIGRvIG5vdCBhZ3JlZSB3aXRoIHRoaXMgY29uc2Vuc3Vz
-Lgo+Cj4gPiBUaGlzIGluZm9ybWF0aW9uIHNob3VsZCBjb21lIGZyb20gc25kX3BjbV9yZXdpbmRh
-YmxlKCkgZnJvbSB0aGUgaHcKPiA+IHBsdWdpbi4gSS5lLiwgb24gYSBodyBkZXZpY2UsIGl0IHNo
-b3VsZCBub3QgYmUgZXF1YWwgdG8KPiA+IHNuZF9wY21fbW1hcF9od19hdmFpbCgpLiAgWy4uLl0K
-PiA+IHRoZSBzYWZlZ3VhcmQgc2hvdWxkIGJlIGlkZWFsbHkgZXF1YWwgdG8gdGhlIGdyYW51bGFy
-aXR5IG9mIGhhcmR3YXJlCj4gPiBwb2ludGVyIHVwZGF0ZXMuCj4KPiBXaGVuIHNuZF9wY21fcmV3
-aW5kYWJsZSgpIGlzIGNhbGxlZCwgaXQgdXNlcyB0aGUgbGFzdCByZXBvcnRlZCBoYXJkd2FyZQo+
-IHBvaW50ZXIgcG9zaXRpb24sIHdoaWNoIGlzIHRoZSBib3VuZGFyeSBiZXR3ZWVuIHNhZmUtdG8t
-cmV3cml0ZSBhbmQKPiBhbHJlYWR5LXVzZWQgZGF0YS4gIFN1YnRyYWN0aW5nIHRoZSBhbW91bnQg
-b2Ygb25lIHBvaW50ZXIgdXBkYXRlIHN0ZXAKPiBtYWtlcyBpdCBzYWZlIGZvciB0aGUgbmV4dCBw
-b2ludGVyIHVwZGF0ZSwgYnV0IGl0IGlzIG5vdCBrbm93biBob3cgbXVjaAo+IHRpbWUgd2lsbCBl
-bGFwc2UgdW50aWwgdGhlIGhhcmR3YXJlIGRvZXMgdGhpcyB1cGRhdGUuICBUaGlzIHRpbWUgbWln
-aHQKPiBiZSB0b28gc21hbGwgZm9yIHRoZSBzb2Z0d2FyZSB0byBoYXZlIGFueSBjaGFuY2UsIG9y
-IGV2ZW4gemVybywgYnV0IGl0Cj4gaXMgYWxzbyBwb3NzaWJsZSB0aGF0IHRoZXJlIGlzIHN0aWxs
-IGVub3VnaCB0aW1lIHRvIGRvIHRoZSByZXdyaXRpbmcgdXAKPiB1bnRpbCB0aGUgcmVwb3J0ZWQg
-Ym91bmRhcnkuICBBbmQgaWYgdGhlIHNvZnR3YXJlIGlzIHRvbyBzbG93LCBpdCBpcwo+IGV2ZW4g
-cG9zc2libGUgdGhhdCB0d28gb3IgbW9yZSBwb2ludGVyIHVwZGF0ZXMgaGFwcGVuLCB3aGljaCB3
-b3VsZCBoYXZlCj4gcmVxdWlyZWQgYSBsYXJnZXIgc2FmZWd1YXJkLgo+Cj4gSW4gb3RoZXIgd29y
-ZHM6IHRoZSBzbmRfcGNtX21tYXBfaHdfYXZhaWwoKSB2YWx1ZSBpcyBwb3NzaWJseSBvdWYgb2YK
-PiBkYXRlLCBidXQgZHVlIHRvIHRoZSByZWFsLXRpbWUgbmF0dXJlIG9mIGhhcmR3YXJlIHBvaW50
-ZXIgdXBkYXRlcywgaXQgaXMKPiBub3QgcG9zc2libGUgdG8gZGVmaW5lIGEgc2FmZWd1YXJkIHRo
-YXQgd291bGQgYmUgbW9yZSBjb3JyZWN0LiAgV3JpdGluZwo+IHRoZSBidWZmZXIgbmVhciB0aGUg
-RE1BIHBvaW50ZXIgaXMgYWx3YXlzIHJhY3kuCj4KPiBUaGUgb25seSBzb21ld2hhdCByZWxpYWJs
-ZSB3YXkgdG8gZGV0ZXJtaW5lIGlmIGEgcmV3cml0ZSBpcyBzdWNjZXNzZnVsCj4gaXMgdG8gY2hl
-Y2sgX2FmdGVyd2FyZHNfIHdoZXRoZXIgdGhlIGhhcmR3YXJlIHBvaW50ZXIgaGFzIGFkdmFuY2Vk
-IGJ5Cj4gdG9vIG11Y2guCgpzbmRfcGNtX3Jld2luZGFibGUgaXMgcHJvcGVybHkgbm90IGFueSBT
-QUZFIHZhbHVlIGZvciByZXdpbmQsIGl0IHNob3VsZApyZXR1cm4gemVybyBmb3IgdGhvc2UgaGFy
-ZHdhcmUgd2hpY2ggZG9uJ3Qgc3VwcG9ydCByZXdpbmQoZS5nLCBub24KaW50ZXJsZWF2ZWQgb3Ig
-Y3M0Nnh4KQoKSXQgaXMganVzdCBhIHRoZW9yZXRpY2FsIHZhbHVlIGZvciByZXdpbmQgc2luY2Ug
-dGhlIGFwcGxpY2F0aW9uIGRvbid0CnJld3JpdGUgaW1tZWRpYXRlbHkKClNvIHRoZSBhcHBsaWNh
-dGlvbiBuZWVkIHRvIGVzdGltYXRlIHRoZSBzYWZlIGd1YXJkIHZhbHVlIGZyb20gdGhlCnByb2Nl
-c3NpbmcgdGltZSBvZiAgdGhlIGFtb3VudCBvZiBkYXRhIG5lZWQgdG8gYmUgcmVwcm9jZXNzIC9y
-ZXdyaXRlIGFuZApDUFUgc3BlZWQKClNob3VsZCBwdWxzZWF1ZGlvIGVuYWJsZSB0aW1lciBzY2hl
-ZHVsaW5nIG9ubHkgb24gdGhvc2UgY2FyZHMgd2hpY2ggc3VwcG9ydApkaXNhYmxlIG9mIHBlcmlv
-ZCBpbnRlcnJ1cHQg77yIZS5nLiBoZGEtSW50ZWwgYW5kIG94eWdlbiApPwpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Sat, Sep 06, 2014 at 05:56:02PM +0200, Takashi Iwai wrote:
+> At Sat, 6 Sep 2014 15:21:24 +0100,
+> Mark Brown wrote:
+> > 
+> > On Tue, Sep 02, 2014 at 06:05:58PM +0530, Subhransu S. Prusty wrote:
+> > > Some controls need to initialize stuffs like pvt data, so they need a
+> > > callback if the control creation is successful.
+> > 
+> > Adding Takashi - this is ALSA core code so he needs to review it.
+> 
+> This would bloat effectively the data size of all sound drivers, so I
+> can't ack it without more proper reasoning.  That is, please convince
+> me why this change must be taken for the cost of size bloat of all
+> sound drivers.  Can't you do it in the caller side of snd_ctl_add()
+> like many other drivers already do?
+Okay lets step back and see why we need this :)
+
+In our case after the control creation we need to allocate memory which will
+hold the data for the byte controls. This can be done only after the
+controls are created (by asoc).
+
+For that we need a callback into driver so that we can allocate the memory.
+Thats why we added .init() method. If you have any other way to do this, we
+are all ears :)
+
+-- 
+~Vinod
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+> > > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > > ---
+> > >  include/sound/control.h | 3 +++
+> > >  sound/core/control.c    | 7 +++++++
+> > >  2 files changed, 10 insertions(+)
+> > > 
+> > > diff --git a/include/sound/control.h b/include/sound/control.h
+> > > index 0426139..1389f69 100644
+> > > --- a/include/sound/control.h
+> > > +++ b/include/sound/control.h
+> > > @@ -30,6 +30,7 @@ struct snd_kcontrol;
+> > >  typedef int (snd_kcontrol_info_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_info * uinfo);
+> > >  typedef int (snd_kcontrol_get_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_value * ucontrol);
+> > >  typedef int (snd_kcontrol_put_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_value * ucontrol);
+> > > +typedef int (snd_kcontrol_init_t) (struct snd_kcontrol * kcontrol);
+> > >  typedef int (snd_kcontrol_tlv_rw_t)(struct snd_kcontrol *kcontrol,
+> > >  				    int op_flag, /* SNDRV_CTL_TLV_OP_XXX */
+> > >  				    unsigned int size,
+> > > @@ -52,6 +53,7 @@ struct snd_kcontrol_new {
+> > >  	snd_kcontrol_info_t *info;
+> > >  	snd_kcontrol_get_t *get;
+> > >  	snd_kcontrol_put_t *put;
+> > > +	snd_kcontrol_init_t *init;
+> > >  	union {
+> > >  		snd_kcontrol_tlv_rw_t *c;
+> > >  		const unsigned int *p;
+> > > @@ -71,6 +73,7 @@ struct snd_kcontrol {
+> > >  	snd_kcontrol_info_t *info;
+> > >  	snd_kcontrol_get_t *get;
+> > >  	snd_kcontrol_put_t *put;
+> > > +	snd_kcontrol_init_t *init;
+> > >  	union {
+> > >  		snd_kcontrol_tlv_rw_t *c;
+> > >  		const unsigned int *p;
+> > > diff --git a/sound/core/control.c b/sound/core/control.c
+> > > index b961134..9d30663 100644
+> > > --- a/sound/core/control.c
+> > > +++ b/sound/core/control.c
+> > > @@ -256,6 +256,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
+> > >  	kctl.info = ncontrol->info;
+> > >  	kctl.get = ncontrol->get;
+> > >  	kctl.put = ncontrol->put;
+> > > +	kctl.init = ncontrol->init;
+> > >  	kctl.tlv.p = ncontrol->tlv.p;
+> > >  	kctl.private_value = ncontrol->private_value;
+> > >  	kctl.private_data = private_data;
+> > > @@ -362,6 +363,12 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
+> > >  		err = -ENOMEM;
+> > >  		goto error;
+> > >  	}
+> > > +	if (kcontrol->init) {
+> > > +		err = kcontrol->init(kcontrol);
+> > > +		if (err < 0)
+> > > +			goto error;
+> > > +	}
+> > > +
+> > >  	list_add_tail(&kcontrol->list, &card->controls);
+> > >  	card->controls_count += kcontrol->count;
+> > >  	kcontrol->id.numid = card->last_numid + 1;
+> > > -- 
+> > > 1.9.0
+> > > 
+> > > 
+> > [2 Digital signature <application/pgp-signature (7bit)>]
+> > 
+
+-- 
