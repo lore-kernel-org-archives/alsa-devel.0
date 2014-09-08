@@ -1,133 +1,69 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v5 03/12] ALSA: control: Add init callback
-	for kcontrol
-Date: Mon, 8 Sep 2014 09:44:21 +0530
-Message-ID: <20140908041421.GI1610@intel.com>
-References: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
- <1409661367-19047-4-git-send-email-subhransu.s.prusty@intel.com>
- <20140906142124.GG2601@sirena.org.uk>
- <s5hppf8g2ul.wl-tiwai@suse.de>
+From: Mike Turquette <mturquette@linaro.org>
+Subject: Re: [PATCH v9 2/6] clk: Move all drivers to use internal API
+Date: Sun, 07 Sep 2014 23:13:55 -0700
+Message-ID: <20140908061355.19023.47997@quantum>
+References: <1409758148-20104-2-git-send-email-tomeu.vizoso@collabora.com>
+ <1409758317-20564-1-git-send-email-tomeu.vizoso@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B52E726170F
- for <alsa-devel@alsa-project.org>; Mon,  8 Sep 2014 06:36:33 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hppf8g2ul.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <1409758317-20564-1-git-send-email-tomeu.vizoso@collabora.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Prashant Gaikwad <pgaikwad@nvidia.com>, "Stephen Warren  <swarren@wwwdotorg.org>,
+ Thierry Reding  <thierry.reding@gmail.com>, tomasz.figa@gmail.com,
+ Peter De Schrijver  <pdeschrijver@nvidia.com>, rabin@rab.in,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Jason Cooper  <jason@lakedaemon.net>,  Andrew Lunn  <andrew@lunn.ch>,
+ Sebastian Hesselbarth  <sebastian.hesselbarth@gmail.com>,
+ Russell King  <linux@arm.linux.org.uk>,
+ Shawn Guo  <shawn.guo@freescale.com>,
+ Sascha Hauer  <kernel@pengutronix.de>,
+ David Brown  <davidb@codeaurora.org>,  Daniel Walker  <dwalker@fifo99.com>,
+ Bryan Huntsman  <bryanh@codeaurora.org>,  Paul Walmsley  <paul@pwsan.com>,
+ Tony Lindgren  <tony@atomide.com>,
+ =?utf-8?q?=22_Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+ Kevin Hilman" <khilman@deeprootsystems.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 06, 2014 at 05:56:02PM +0200, Takashi Iwai wrote:
-> At Sat, 6 Sep 2014 15:21:24 +0100,
-> Mark Brown wrote:
-> > 
-> > On Tue, Sep 02, 2014 at 06:05:58PM +0530, Subhransu S. Prusty wrote:
-> > > Some controls need to initialize stuffs like pvt data, so they need a
-> > > callback if the control creation is successful.
-> > 
-> > Adding Takashi - this is ALSA core code so he needs to review it.
-> 
-> This would bloat effectively the data size of all sound drivers, so I
-> can't ack it without more proper reasoning.  That is, please convince
-> me why this change must be taken for the cost of size bloat of all
-> sound drivers.  Can't you do it in the caller side of snd_ctl_add()
-> like many other drivers already do?
-Okay lets step back and see why we need this :)
-
-In our case after the control creation we need to allocate memory which will
-hold the data for the byte controls. This can be done only after the
-controls are created (by asoc).
-
-For that we need a callback into driver so that we can allocate the memory.
-Thats why we added .init() method. If you have any other way to do this, we
-are all ears :)
-
--- 
-~Vinod
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > > Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> > > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > > ---
-> > >  include/sound/control.h | 3 +++
-> > >  sound/core/control.c    | 7 +++++++
-> > >  2 files changed, 10 insertions(+)
-> > > 
-> > > diff --git a/include/sound/control.h b/include/sound/control.h
-> > > index 0426139..1389f69 100644
-> > > --- a/include/sound/control.h
-> > > +++ b/include/sound/control.h
-> > > @@ -30,6 +30,7 @@ struct snd_kcontrol;
-> > >  typedef int (snd_kcontrol_info_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_info * uinfo);
-> > >  typedef int (snd_kcontrol_get_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_value * ucontrol);
-> > >  typedef int (snd_kcontrol_put_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_value * ucontrol);
-> > > +typedef int (snd_kcontrol_init_t) (struct snd_kcontrol * kcontrol);
-> > >  typedef int (snd_kcontrol_tlv_rw_t)(struct snd_kcontrol *kcontrol,
-> > >  				    int op_flag, /* SNDRV_CTL_TLV_OP_XXX */
-> > >  				    unsigned int size,
-> > > @@ -52,6 +53,7 @@ struct snd_kcontrol_new {
-> > >  	snd_kcontrol_info_t *info;
-> > >  	snd_kcontrol_get_t *get;
-> > >  	snd_kcontrol_put_t *put;
-> > > +	snd_kcontrol_init_t *init;
-> > >  	union {
-> > >  		snd_kcontrol_tlv_rw_t *c;
-> > >  		const unsigned int *p;
-> > > @@ -71,6 +73,7 @@ struct snd_kcontrol {
-> > >  	snd_kcontrol_info_t *info;
-> > >  	snd_kcontrol_get_t *get;
-> > >  	snd_kcontrol_put_t *put;
-> > > +	snd_kcontrol_init_t *init;
-> > >  	union {
-> > >  		snd_kcontrol_tlv_rw_t *c;
-> > >  		const unsigned int *p;
-> > > diff --git a/sound/core/control.c b/sound/core/control.c
-> > > index b961134..9d30663 100644
-> > > --- a/sound/core/control.c
-> > > +++ b/sound/core/control.c
-> > > @@ -256,6 +256,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
-> > >  	kctl.info = ncontrol->info;
-> > >  	kctl.get = ncontrol->get;
-> > >  	kctl.put = ncontrol->put;
-> > > +	kctl.init = ncontrol->init;
-> > >  	kctl.tlv.p = ncontrol->tlv.p;
-> > >  	kctl.private_value = ncontrol->private_value;
-> > >  	kctl.private_data = private_data;
-> > > @@ -362,6 +363,12 @@ int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
-> > >  		err = -ENOMEM;
-> > >  		goto error;
-> > >  	}
-> > > +	if (kcontrol->init) {
-> > > +		err = kcontrol->init(kcontrol);
-> > > +		if (err < 0)
-> > > +			goto error;
-> > > +	}
-> > > +
-> > >  	list_add_tail(&kcontrol->list, &card->controls);
-> > >  	card->controls_count += kcontrol->count;
-> > >  	kcontrol->id.numid = card->last_numid + 1;
-> > > -- 
-> > > 1.9.0
-> > > 
-> > > 
-> > [2 Digital signature <application/pgp-signature (7bit)>]
-> > 
-
--- 
+UXVvdGluZyBUb21ldSBWaXpvc28gKDIwMTQtMDktMDMgMDg6MzE6NTcpCj4gSW4gcHJlcGFyYXRp
+b24gdG8gY2hhbmdlIHRoZSBwdWJsaWMgQVBJIHRvIHJldHVybiBhIHBlci11c2VyIGNsayBzdHJ1
+Y3R1cmUsCj4gcmVtb3ZlIGFueSB1c2FnZSBvZiB0aGlzIHB1YmxpYyBBUEkgZnJvbSB0aGUgY2xv
+Y2sgaW1wbGVtZW50YXRpb25zLgo+IAo+IFRoZSByZWFzb24gZm9yIGhhdmluZyB0aGlzIGluIGEg
+c2VwYXJhdGUgY29tbWl0IGZyb20gdGhlIG9uZSB0aGF0IGludHJvZHVjZXMKPiB0aGUgaW1wbGVt
+ZW50YXRpb24gb2YgdGhlIG5ldyBmdW5jdGlvbnMgaXMgdG8gc2VwYXJhdGUgdGhlIGNoYW5nZXMg
+Z2VuZXJhdGVkCj4gd2l0aCBDb2NjaW5lbGxlIGZyb20gdGhlIHJlc3QsIGFuZCBrZWVwIHRoZSBw
+YXRjaGVzJyBzaXplIHJlYXNvbmFibGUuCj4gCj4gU2lnbmVkLW9mZi1ieTogVG9tZXUgVml6b3Nv
+IDx0b21ldS52aXpvc29AY29sbGFib3JhLmNvbT4KPiBUZXN0ZWQtYnk6IEJvcmlzIEJyZXppbGxv
+biA8Ym9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25zLmNvbT4KPiBUZXN0ZWQtYnk6IEhlaWtv
+IFN0dWVibmVyIDxoZWlrb0BzbnRlY2guZGU+Cj4gQWNrZWQtYnk6IEJvcmlzIEJyZXppbGxvbiA8
+Ym9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25zLmNvbT4KCkhpIFRvbWV1LAoKTG9va3MgbGlr
+ZSB0aGUgQ29jY2luZWxsZSBzY3JpcHQgaGFkIGEgZmFsc2UtcG9zaXRpdmUuCmFzbS1nZW5lcmlj
+L2Nsa2Rldi5oIHdhcyBjb252ZXJ0ZWQgZnJvbSBjbGstPmNsa19jb3JlIGFuZCB0aGlzIGJsb3dl
+ZCB1cApjbG9jayBkcml2ZXJzIGZvciBhcmNoaXRlY3R1cmVzIHRoYXQgZG9uJ3QgcHJvdmlkZSBh
+biBhc20tc3BlY2lmaWMKY2xrZGV2LmggaW1wbGVtZW50YXRpb24uIFRoaXMgZml4ZXMgeDg2J3Mg
+TFBTUyBhbmQgYSBNaWNyb2JsYXplIGRyaXZlci4KCkkndmUgcm9sbGVkIHRoZSBmb2xsb3dpbmcg
+Zml4IGludG8geW91ciAyLzkgcGF0Y2guIE5vIGFjdGlvbiBpcwpuZWNlc3NhcnkuCgpSZWdhcmRz
+LApNaWtlCgoKCmRpZmYgLS1naXQgYS9pbmNsdWRlL2FzbS1nZW5lcmljL2Nsa2Rldi5oIGIvaW5j
+bHVkZS9hc20tZ2VuZXJpYy9jbGtkZXYuaAppbmRleCA0MzIwMjI1Li45MGEzMmE2IDEwMDY0NAot
+LS0gYS9pbmNsdWRlL2FzbS1nZW5lcmljL2Nsa2Rldi5oCisrKyBiL2luY2x1ZGUvYXNtLWdlbmVy
+aWMvY2xrZGV2LmgKQEAgLTE1LDEwICsxNSwxMCBAQAoKICNpbmNsdWRlIDxsaW51eC9zbGFiLmg+
+Cgotc3RydWN0IGNsa19jb3JlOworc3RydWN0IGNsazsKCi1zdGF0aWMgaW5saW5lIGludCBfX2Ns
+a19nZXQoc3RydWN0IGNsa19jb3JlICpjbGspIHsgcmV0dXJuIDE7IH0KLXN0YXRpYyBpbmxpbmUg
+dm9pZCBfX2Nsa19wdXQoc3RydWN0IGNsa19jb3JlICpjbGspIHsgfQorc3RhdGljIGlubGluZSBp
+bnQgX19jbGtfZ2V0KHN0cnVjdCBjbGsgKmNsaykgeyByZXR1cm4gMTsgfQorc3RhdGljIGlubGlu
+ZSB2b2lkIF9fY2xrX3B1dChzdHJ1Y3QgY2xrICpjbGspIHsgfQoKIHN0YXRpYyBpbmxpbmUgc3Ry
+dWN0IGNsa19sb29rdXBfYWxsb2MgKl9fY2xrZGV2X2FsbG9jKHNpemVfdCBzaXplKQogewpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eHBwYy1kZXYg
+bWFpbGluZyBsaXN0CkxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnCmh0dHBzOi8vbGlzdHMu
+b3psYWJzLm9yZy9saXN0aW5mby9saW51eHBwYy1kZXY=
