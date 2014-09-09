@@ -1,49 +1,35 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv3 3/3] ASoC: simple-card: binding: update binding to
- support the new style.
-Date: Tue, 9 Sep 2014 13:09:48 +0100
-Message-ID: <20140909120948.GZ2601@sirena.org.uk>
-References: <1409711021-19277-1-git-send-email-Li.Xiubo@freescale.com>
- <1409711021-19277-4-git-send-email-Li.Xiubo@freescale.com>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage
+	in this module
+Date: Tue, 09 Sep 2014 08:17:51 -0500
+Message-ID: <540EFDFF.7050804@tabi.org>
+References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aSM3KCOUSI0G0tph"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1409711021-19277-4-git-send-email-Li.Xiubo@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Xiubo Li <Li.Xiubo@freescale.com>
-Cc: perex@perex.cz, lgirdwood@gmail.com, tiwai@suse.de, moinejf@free.fr, andrew@lunn.ch, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id 518CB265176
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 15:17:53 +0200 (CEST)
+In-Reply-To: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Shengjiu Wang <shengjiu.wang@freescale.com>, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Shengjiu Wang wrote:
+> +	if (ssi_private->soc->imx)
+> +		clk_prepare_enable(ssi_private->clk);
 
---aSM3KCOUSI0G0tph
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+How about this instead?
 
-On Wed, Sep 03, 2014 at 10:23:41AM +0800, Xiubo Li wrote:
-> This update patch will split the DT node into old style and new style:
-> The new style will will be easier to add muti DAI links from old single
-> DAI link DTs.
-
-> This patch will maintian compatibility with the old DTs.
-
-Is everyone happy with this new style binding?
-
---aSM3KCOUSI0G0tph
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUDu4LAAoJECTWi3JdVIfQ0u8H/iDNEPtFnuRUGXXCxZjgT0lY
-V92sNeDnbDc61qLYRQGTVPaOjMZoVFvr9NvUKQjeE+iRzHvZwtPipFgkBsp+EmC9
-YTVumOxWtDMn6sqQkuoJIdI9ZHZbBnQj1dI9Y4pDfgdPk8UqFZdS1ejGPRHr7dwC
-jbtS5PG6iBxAQHyw6xlRFLTP0RWBGOSb1gbVzs6/n7JIvr86NRCbM2kq8Wp9Dy2v
-2Eb6xxnCRIH8251FZJcLnZX252nFjoK9tTpcmeuorJw0zvnDRHmvLW7rXpTtPLyk
-1QqK6otYCfLn2LcBTYs40M9kxA3YsquACdRy5VX3jwIObHgAy8N3LkLhBC31tlg=
-=Ey16
------END PGP SIGNATURE-----
-
---aSM3KCOUSI0G0tph--
+if (ssi_private->clk)
+	clk_prepare_enable(ssi_private->clk);
