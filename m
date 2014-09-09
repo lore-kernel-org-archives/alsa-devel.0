@@ -1,15 +1,23 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: ASoC : question about custom rate
-Date: Tue, 09 Sep 2014 18:43:36 +1000
-Message-ID: <540EBDB8.20507@flatmax.org>
+From: Bram Bos <bos3@upcmail.nl>
+Subject: Re: Asynchronous ALSA - callback and latency questions
+Date: Tue, 9 Sep 2014 10:44:01 +0200 (CEST)
+Message-ID: <975727754.436995.1410252241332.open-xchange@upcmail.upc.nl>
+References: <1135001813.415555.1410192193064.open-xchange@upcmail.upc.nl>
+ <540EB957.7030705@ladisch.de>
+Reply-To: Bram Bos <bos3@upcmail.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ipmail06.adl2.internode.on.net (ipmail06.adl2.internode.on.net
- [150.101.137.129])
- by alsa0.perex.cz (Postfix) with ESMTP id D95C7265087
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 10:43:46 +0200 (CEST)
+Received: from fep49.mx.upcmail.net (fep49.mx.upcmail.net [62.179.121.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7FA926511F
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 10:44:01 +0200 (CEST)
+Received: from edge02.upcmail.net ([192.168.13.237])
+ by viepfeppe49-int.chello.at
+ (InterMail vM.8.01.05.11 201-2260-151-128-20120928) with ESMTP
+ id <20140909084401.JQHM25929.viepfeppe49-int.chello.at@edge02.upcmail.net>
+ for <alsa-devel@alsa-project.org>; Tue, 9 Sep 2014 10:44:01 +0200
+In-Reply-To: <540EB957.7030705@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +27,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
-
-I have an ASIC running on an ASoC with a custom rate @ 18750 Hz.
-I would like ALSA to report the correct rate.
-
-If I do nothing, then the following reports 16000 Hz :
-cat /proc/asound/card0/pcm0c/sub0/hw_params
-
-I have verified that the hardware is running at the expected 18750 Hz.
-I am wondering what/where is the correct place to setup the actual rate ?
-
-I am trying to set the rates at startup like so but ALSA will not work 
-with the driver when I do this :
-
-static int implant_startup(struct snd_pcm_substream *substream, struct 
-snd_soc_dai *dai)
-{
-     snd_pcm_hw_constraint_minmax(substream->runtime, 
-SNDRV_PCM_HW_PARAM_RATE, 18750, 18750);
-     snd_pcm_hw_constraint_minmax(substream->runtime, 
-SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
-     snd_pcm_hw_constraint_minmax(substream->runtime, 
-SNDRV_PCM_HW_PARAM_SAMPLE_BITS, 16, 16);
-
-     return 0;
-}
-
-static const struct snd_soc_dai_ops implant_dai_ops = {
-     .set_fmt    = implant_set_dai_fmt,
-     .startup = implant_startup,
-};
-
-thanks
-Matt
+Cj4gPiBJ4oCZbSB1c2luZyBBTFNBIGZvciBidWlsZGluZyBhIHBlcmZvcm1hbmNlIG11c2ljYWwg
+aW5zdHJ1bWVudCwgc28gSeKAmW0gYWZ0ZXIKPiA+IGxvdy1sYXRlbmN5IGF1ZGlvIG91dHB1dC4K
+PiA+Cj4gPiAxLiBJ4oCZbSB1c2luZyBhc3luY2hyb25vdXMgYXVkaW8gb3V0cHV0IChpLmUuIHVz
+aW5nIGEgY2FsbGJhY2spLgo+Cj4gRG9uJ3QuCgpUaGF0J3MgYW4gaW50ZXJlc3RpbmcgaW5zaWdo
+dC4gSSByZWNrb25lZCB1c2luZyBhIGNhbGxiYWNrIHdhcyB0aGUgbW9zdCBlbGVnYW50CnNvbHV0
+aW9uIHNpbmNlIHRoYXQncyB3aGF0IEknbSB1c2VkIHRvIGZvciBEaXJlY3RTb3VuZCwgaU9TLCBP
+U1gsIFdNTUUsIEFTSU8KZXRjLgoKU28gd2hhdCB3b3VsZCBiZSB0aGUgbW9zdCBidWxsZXRwcm9v
+ZiB3YXkgb2YgZGVhbGluZyB3aXRoIHN0cmVhbWluZyBhdWRpbwppbnN0ZWFkPyBDYW4gSSBkbyBw
+b2xsaW5nIGluIGEgbm9uLWJsb2NraW5nIHN0YXRlPyBJIHRoaW5rIGJsb2NraW5nLXN0YXRlIGF1
+ZGlvCmlzIG91dCBvZiB0aGUgcXVlc3Rpb24gc2luY2UgSSBkbyBuZWVkIHRvIGhhbmRsZSBNSURJ
+IEkvTyBhbmQgVUkgZXZlbnRzIGF0IHRoZQpzYW1lIHRpbWUuCgpUaGFua3MKQnJhbQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
