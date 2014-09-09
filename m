@@ -1,48 +1,26 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 1/6] ASoC: cs42l52: Cleanup manual bias
- level transitions
-Date: Tue, 9 Sep 2014 13:47:45 -0500
-Message-ID: <alpine.DEB.2.02.1409091347030.27378@heelrod>
-References: <1410288165-32127-1-git-send-email-lars@metafoo.de>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
+Date: Tue, 09 Sep 2014 14:37:42 -0500
+Message-ID: <540F5706.1050303@tabi.org>
+References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com> <20140909183804.GA6944@Asurada>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1lp0145.outbound.protection.outlook.com [207.46.163.145])
- by alsa0.perex.cz (Postfix) with ESMTP id 1406F265335
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 20:47:08 +0200 (CEST)
-In-Reply-To: <1410288165-32127-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140909183804.GA6944@Asurada>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, mpa@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+On 09/09/2014 01:38 PM, Nicolin Chen wrote:
+> make sure to have the call for imx only because it seems that
+> the other platforms do not depend on the clock.
 
-On Tue, 9 Sep 2014, Lars-Peter Clausen wrote:
+Although I doubt anyone will every add support for clocks to PowerPC 
+"side" of this driver, I would prefer to avoid IMX-specific changes. 
+Instead, the code should check if a clock is available.  That's why I 
+suggested this change:
 
-> Set the CODEC driver's suspend_bias_off flag rather than manually going to
-> SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
-> the code a bit shorter and cleaner.
-> 
-> Since the ASoC core now takes care of setting the bias level to
-> SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
-> anymore either.
-> 
-> The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
-> can also be removed as the core will automatically do this after the CODEC
-> has been probed.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-for the Cirrus ones.
-Thanks
-
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+-	if (ssi_private->soc->imx)
++	if (!IS_ERR(ssi_private->clk))
