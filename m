@@ -1,20 +1,24 @@
-From: Timur Tabi <timur@tabi.org>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
 Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage
 	in this module
-Date: Tue, 09 Sep 2014 15:37:26 -0500
-Message-ID: <540F6506.4060302@tabi.org>
+Date: Tue, 9 Sep 2014 14:09:50 -0700
+Message-ID: <20140909210949.GA1816@Asurada>
 References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
  <20140909183804.GA6944@Asurada> <540F5706.1050303@tabi.org>
  <20140909195928.GA5224@Asurada> <540F5D29.7040309@tabi.org>
- <20140909202710.GB5224@Asurada>
+ <20140909202710.GB5224@Asurada> <540F6506.4060302@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muin.pair.com (muin.pair.com [209.68.1.55])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C5BE2652F1
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 22:37:28 +0200 (CEST)
-In-Reply-To: <20140909202710.GB5224@Asurada>
+Received: from mail-pd0-f177.google.com (mail-pd0-f177.google.com
+ [209.85.192.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEE932652F4
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 23:18:47 +0200 (CEST)
+Received: by mail-pd0-f177.google.com with SMTP id y10so1987243pdj.8
+ for <alsa-devel@alsa-project.org>; Tue, 09 Sep 2014 14:18:46 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <540F6506.4060302@tabi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,19 +28,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org, broonie@kernel.org, lgirdwood@gmail.com, Li.Xiubo@freescale.com, mpa@pengutronix.de, linuxppc-dev@lists.ozlabs.org
+To: Timur Tabi <timur@tabi.org>, Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, mpa@pengutronix.de, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/09/2014 03:27 PM, Nicolin Chen wrote:
-> I guess Mark's comment is merely against the check for clk validation
-> because if talking about clk validation, we should check IS_ERR(clk)
-> rather than check !=NULL directly.
+On Tue, Sep 09, 2014 at 03:37:26PM -0500, Timur Tabi wrote:
+> >However, my approach doesn't need any check. The open() or pm_resume()
+> >can just call clk_prepare_enable() directly. The __clk_enable() will
+> >then handle the 'clk == NULL' case:
+> 
+> Yes, I was thinking the same thing.
 
-Ah, that makes sense now.
+Because that's following your suggestion :)
 
-> However, my approach doesn't need any check. The open() or pm_resume()
-> can just call clk_prepare_enable() directly. The __clk_enable() will
-> then handle the 'clk == NULL' case:
+@Shengjiu
+Another thing I forgot to mention is we still need a return check for
+clk_prepare_enable() which isn't in the current version. And I said
+"doesn't need any check" is indicating the pre-check of the call.
 
-Yes, I was thinking the same thing.
+Thank you
+Nicolin
