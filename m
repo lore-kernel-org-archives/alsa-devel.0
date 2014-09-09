@@ -1,17 +1,16 @@
-From: Rajeev Kumar <rajeevkumar.linux@gmail.com>
-Subject: [PATCH] ASoC: Update email id of the author
-Date: Tue,  9 Sep 2014 12:27:19 +0530
-Message-ID: <1410245839-32680-1-git-send-email-rajeevkumar.linux@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: am335x+tlv320aic3x
+Date: Tue, 9 Sep 2014 09:57:36 +0300
+Message-ID: <540EA4E0.90209@ti.com>
+References: <CAPhDKbHgUcCWsdc7peSe7UdWdu68sqfObcP_fQw7bWPxJhZEPg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f180.google.com (mail-wi0-f180.google.com
- [209.85.212.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 00716261AF9
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 08:57:33 +0200 (CEST)
-Received: by mail-wi0-f180.google.com with SMTP id ex7so3859629wid.7
- for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2014 23:57:33 -0700 (PDT)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+ by alsa0.perex.cz (Postfix) with ESMTP id C45212625FE
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 08:57:40 +0200 (CEST)
+In-Reply-To: <CAPhDKbHgUcCWsdc7peSe7UdWdu68sqfObcP_fQw7bWPxJhZEPg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,72 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Ilya Dmitrichenko <errordeveloper@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I moved from ST Microelectronics and so updating email-id to personal one.
+On 09/09/2014 03:33 AM, Ilya Dmitrichenko wrote:
+> Hi List,
+> =
 
-Signed-off-by: Rajeev Kumar <rajeevkumar.linux@gmail.com>
----
- sound/soc/codecs/sta529.c      |    4 ++--
- sound/soc/dwc/designware_i2s.c |    2 +-
- sound/soc/spear/spear_pcm.c    |    4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+> I am trying to get Beaglebone workign with the audio extension board
+> (aka cape) that is using tlv320aic3x codec. I want it to run 3.14 and
+> use vanilla kernel without dynamic DT overlay patches.
+> =
 
-diff --git a/sound/soc/codecs/sta529.c b/sound/soc/codecs/sta529.c
-index 9aa1323..89c748d 100644
---- a/sound/soc/codecs/sta529.c
-+++ b/sound/soc/codecs/sta529.c
-@@ -4,7 +4,7 @@
-  * sound/soc/codecs/sta529.c -- spear ALSA Soc codec driver
-  *
-  * Copyright (C) 2012 ST Microelectronics
-- * Rajeev Kumar <rajeev-dlh.kumar@st.com>
-+ * Rajeev Kumar <rajeevkumar.linux@gmail.com>
-  *
-  * This file is licensed under the terms of the GNU General Public
-  * License version 2. This program is licensed "as is" without any
-@@ -426,5 +426,5 @@ static struct i2c_driver sta529_i2c_driver = {
- module_i2c_driver(sta529_i2c_driver);
- 
- MODULE_DESCRIPTION("ASoC STA529 codec driver");
--MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");
-+MODULE_AUTHOR("Rajeev Kumar <rajeevkumar.linux@gmail.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index 25c31f1..17b5cee 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -455,7 +455,7 @@ static struct platform_driver dw_i2s_driver = {
- 
- module_platform_driver(dw_i2s_driver);
- 
--MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");
-+MODULE_AUTHOR("Rajeev Kumar <rajeevkumar.linux@gmail.com>");
- MODULE_DESCRIPTION("DESIGNWARE I2S SoC Interface");
- MODULE_LICENSE("GPL");
- MODULE_ALIAS("platform:designware_i2s");
-diff --git a/sound/soc/spear/spear_pcm.c b/sound/soc/spear/spear_pcm.c
-index 0e5a8f3..a7dc3c5 100644
---- a/sound/soc/spear/spear_pcm.c
-+++ b/sound/soc/spear/spear_pcm.c
-@@ -4,7 +4,7 @@
-  * sound/soc/spear/spear_pcm.c
-  *
-  * Copyright (C) 2012 ST Microelectronics
-- * Rajeev Kumar<rajeev-dlh.kumar@st.com>
-+ * Rajeev Kumar<rajeevkumar.linux@gmail.com>
-  *
-  * This file is licensed under the terms of the GNU General Public
-  * License version 2. This program is licensed "as is" without any
-@@ -50,6 +50,6 @@ int devm_spear_pcm_platform_register(struct device *dev,
- }
- EXPORT_SYMBOL_GPL(devm_spear_pcm_platform_register);
- 
--MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");
-+MODULE_AUTHOR("Rajeev Kumar <rajeevkumar.linux@gmail.com>");
- MODULE_DESCRIPTION("SPEAr PCM DMA module");
- MODULE_LICENSE("GPL");
--- 
-1.7.9.5
+> So I have take the current overlay DT [1] and made converted it [2].
+> The result is that it boots and detects the Davinci module, but
+> doesn't get the codec.
+> =
+
+> [1]: https://github.com/beagleboard/devicetree-source/blob/d46bcc20ef98d6=
+9eea34cd6ae3897a329559ebb2/arch/arm/boot/dts/BB-BONE-AUDI-01-00A0.dts
+> [2]: https://gist.github.com/errordeveloper/cba5145960bdeb0126d5
+
+What is the revision of audio cape you have? The fragment is for RevA, RevB=
+ of
+the cape is significantly different.
+
+> My kernel config includes this:
+> =
+
+> CONFIG_SND_OMAP_SOC=3Dm
+> CONFIG_SND_OMAP_SOC_MCBSP=3Dm
+> CONFIG_SND_OMAP_SOC_OMAP_TWL4030=3Dm
+> CONFIG_SND_SOC_TWL4030=3Dm
+> CONFIG_SND_DAVINCI_SOC=3Dm
+> CONFIG_SND_AM33XX_SOC_EVM=3Dm
+> CONFIG_SND_DAVINCI_SOC_MCASP=3Dm
+> CONFIG_SND_HRTIMER=3Dm
+
+You are missing the CONFIG_SND_SOC_TLV320AIC3X
+
+-- =
+
+P=E9ter
