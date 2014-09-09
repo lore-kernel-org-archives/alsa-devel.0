@@ -1,50 +1,37 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: tegra: add tegra sgtl5000
-	machine driver
-Date: Tue, 9 Sep 2014 15:00:11 -0300
-Message-ID: <CAOMZO5BYGwHGSeHeaQxEO=BUBGbno9P29et582SDzmwmfVioZA@mail.gmail.com>
-References: <cover.1410276224.git.marcel@ziswiler.com>
- <f90791ebb1799a4aa62dd6b527885ddadae3c058.1410276224.git.marcel@ziswiler.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
+Date: Tue, 9 Sep 2014 11:03:10 -0700
+Message-ID: <20140909180309.GA6784@Asurada>
+References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
+ <20140909112750.GS2601@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f169.google.com (mail-lb0-f169.google.com
- [209.85.217.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F7F426525B
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 20:00:12 +0200 (CEST)
-Received: by mail-lb0-f169.google.com with SMTP id p9so8432516lbv.0
- for <alsa-devel@alsa-project.org>; Tue, 09 Sep 2014 11:00:11 -0700 (PDT)
-In-Reply-To: <f90791ebb1799a4aa62dd6b527885ddadae3c058.1410276224.git.marcel@ziswiler.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Marcel Ziswiler <marcel@ziswiler.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, linux-kernel <linux-kernel@vger.kernel.org>, stefan@agner.ch, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140909112750.GS2601@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 9, 2014 at 12:28 PM, Marcel Ziswiler <marcel@ziswiler.com> wrote:
-> This binding and driver describe/support playback to headphones, and
-> capture from line-in and microphone.
->
-> This driver is useful for the Toradex Apalis T30 and Colibri T30 modules.
->
-> Signed-off-by: Marcel Ziswiler <marcel@ziswiler.com>
-> ---
->  .../bindings/sound/nvidia,tegra-audio-sgtl5000.txt |  45 +++++
->  sound/soc/tegra/Kconfig                            |  10 +
->  sound/soc/tegra/Makefile                           |   2 +
->  sound/soc/tegra/tegra_sgtl5000.c                   | 216 +++++++++++++++++++++
+On Tue, Sep 09, 2014 at 12:27:50PM +0100, Mark Brown wrote:
+> On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
+> > -	ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
+> > +	ssi_private->clk = devm_clk_get(&pdev->dev, "ipg");
+> >  	if (IS_ERR(ssi_private->clk)) {
+> >  		ret = PTR_ERR(ssi_private->clk);
+> > -		dev_err(&pdev->dev, "could not get clock: %d\n", ret);
+> > -		return ret;
+> 
+> Why is this change being made?  It wasn't mentioned in the commit log
+> and doesn't seem relevant to moving where the enable and disable are
+> done which is what the patch is supposed to be doing...
 
-What about using the simple-audio-card binding instead of adding the
-tegra_sgtl5000 machine driver?
+I think Shengjiu is trying to keep the clock disabled while SSI's idle.
+The current driver enables ipg clock anyway even if there's no stream
+running.
 
-An example of simple-audio-card used with sgtl5000 can be found here:
+Apparently, these should be put into the comment log.
 
-http://www.spinics.net/lists/devicetree/msg44466.html
+Thank you
+Nicolin
