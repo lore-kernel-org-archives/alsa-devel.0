@@ -1,45 +1,49 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv3 2/3] ASoC: simple-card: Adjust the comments of simple
- card.
-Date: Tue, 9 Sep 2014 13:02:35 +0100
-Message-ID: <20140909120235.GY2601@sirena.org.uk>
+Subject: Re: [PATCHv3 3/3] ASoC: simple-card: binding: update binding to
+ support the new style.
+Date: Tue, 9 Sep 2014 13:09:48 +0100
+Message-ID: <20140909120948.GZ2601@sirena.org.uk>
 References: <1409711021-19277-1-git-send-email-Li.Xiubo@freescale.com>
- <1409711021-19277-3-git-send-email-Li.Xiubo@freescale.com>
+ <1409711021-19277-4-git-send-email-Li.Xiubo@freescale.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4vgOdmpzXGVCiUly"
+	protocol="application/pgp-signature"; boundary="aSM3KCOUSI0G0tph"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1409711021-19277-3-git-send-email-Li.Xiubo@freescale.com>
+In-Reply-To: <1409711021-19277-4-git-send-email-Li.Xiubo@freescale.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Xiubo Li <Li.Xiubo@freescale.com>
 Cc: perex@perex.cz, lgirdwood@gmail.com, tiwai@suse.de, moinejf@free.fr, andrew@lunn.ch, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---4vgOdmpzXGVCiUly
+--aSM3KCOUSI0G0tph
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Sep 03, 2014 at 10:23:40AM +0800, Xiubo Li wrote:
-> Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
+On Wed, Sep 03, 2014 at 10:23:41AM +0800, Xiubo Li wrote:
+> This update patch will split the DT node into old style and new style:
+> The new style will will be easier to add muti DAI links from old single
+> DAI link DTs.
 
-This doesn't apply against current code.
+> This patch will maintian compatibility with the old DTs.
 
---4vgOdmpzXGVCiUly
+Is everyone happy with this new style binding?
+
+--aSM3KCOUSI0G0tph
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUDuxaAAoJECTWi3JdVIfQPVsH/22T7RN8ghrh8CRDvqr9YYM/
-YV3SZog/Iwvq/9d1FGbCFbYwtxBYjDrqO/5BR1UySd0hGGJGZpjNpS98d7icdcpz
-7Y2JPQdqfU7XhPRrEbeO7vhqyqAfZdi3AvIBrcR0NBmU6fewzLgn9aq+EVbRq3VA
-wXjTlqYSEjKx9cyv6kZY/IdHcMvSwn3hdgafvdRWY2oNtDKkZnUGFAnBScpDXgLM
-GgMM9ex9S15Ym3OFkQrNFHZmialmCt22+PjalKMszCG5/qnNCo9s2aBBXGLutf3E
-tDgf8xTxBiQQH/3Y5viplZ2kRzR8bo24PXYiQTwqpCkkkjpEL3rCJTg9UueoRKs=
-=VWG8
+iQEcBAEBAgAGBQJUDu4LAAoJECTWi3JdVIfQ0u8H/iDNEPtFnuRUGXXCxZjgT0lY
+V92sNeDnbDc61qLYRQGTVPaOjMZoVFvr9NvUKQjeE+iRzHvZwtPipFgkBsp+EmC9
+YTVumOxWtDMn6sqQkuoJIdI9ZHZbBnQj1dI9Y4pDfgdPk8UqFZdS1ejGPRHr7dwC
+jbtS5PG6iBxAQHyw6xlRFLTP0RWBGOSb1gbVzs6/n7JIvr86NRCbM2kq8Wp9Dy2v
+2Eb6xxnCRIH8251FZJcLnZX252nFjoK9tTpcmeuorJw0zvnDRHmvLW7rXpTtPLyk
+1QqK6otYCfLn2LcBTYs40M9kxA3YsquACdRy5VX3jwIObHgAy8N3LkLhBC31tlg=
+=Ey16
 -----END PGP SIGNATURE-----
 
---4vgOdmpzXGVCiUly--
+--aSM3KCOUSI0G0tph--
