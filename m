@@ -1,88 +1,57 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v6 09/10] ASoC: Intel: mrfld: Use
-	snd_soc_dai_get_drvdata to derive drv data
-Date: Tue,  9 Sep 2014 15:11:32 +0530
-Message-ID: <1410255693-6958-10-git-send-email-subhransu.s.prusty@intel.com>
-References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: question about two ASoC commits
+Date: Tue, 9 Sep 2014 11:19:54 +0100
+Message-ID: <20140909101954.GO2601@sirena.org.uk>
+References: <540EBC14.6090002@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id A2AAC2651B2
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 12:04:45 +0200 (CEST)
-In-Reply-To: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tzZdJ4yHDV5r1Akt"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <540EBC14.6090002@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: jiwang <jiada_wang@mentor.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "Frkuska, Joshua" <Joshua_Frkuska@mentor.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/sst-mfld-platform-pcm.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
-index 5a9e84c..75eb962 100644
---- a/sound/soc/intel/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/sst-mfld-platform-pcm.c
-@@ -228,7 +228,7 @@ int sst_fill_stream_params(void *substream,
- }
- 
- static int sst_platform_alloc_stream(struct snd_pcm_substream *substream,
--		struct snd_soc_platform *platform)
-+		struct snd_soc_dai *dai)
- {
- 	struct sst_runtime_stream *stream =
- 			substream->runtime->private_data;
-@@ -236,7 +236,7 @@ static int sst_platform_alloc_stream(struct snd_pcm_substream *substream,
- 	struct snd_sst_params str_params = {0};
- 	struct snd_sst_alloc_params_ext alloc_params = {0};
- 	int ret_val = 0;
--	struct sst_data *ctx = snd_soc_platform_get_drvdata(platform);
-+	struct sst_data *ctx = snd_soc_dai_get_drvdata(dai);
- 
- 	/* set codec params and inform SST driver the same */
- 	sst_fill_pcm_params(substream, &param);
-@@ -369,10 +369,10 @@ static void sst_media_close(struct snd_pcm_substream *substream,
- 	kfree(stream);
- }
- 
--static inline unsigned int get_current_pipe_id(struct snd_soc_platform *platform,
-+static inline unsigned int get_current_pipe_id(struct snd_soc_dai *dai,
- 					       struct snd_pcm_substream *substream)
- {
--	struct sst_data *sst = snd_soc_platform_get_drvdata(platform);
-+	struct sst_data *sst = snd_soc_dai_get_drvdata(dai);
- 	struct sst_dev_stream_map *map = sst->pdata->pdev_strm_map;
- 	struct sst_runtime_stream *stream =
- 			substream->runtime->private_data;
-@@ -381,7 +381,7 @@ static inline unsigned int get_current_pipe_id(struct snd_soc_platform *platform
- 
- 	pipe_id = map[str_id].device_id;
- 
--	dev_dbg(platform->dev, "got pipe_id = %#x for str_id = %d\n",
-+	dev_dbg(dai->dev, "got pipe_id = %#x for str_id = %d\n",
- 			pipe_id, str_id);
- 	return pipe_id;
- }
-@@ -399,7 +399,7 @@ static int sst_media_prepare(struct snd_pcm_substream *substream,
- 		return ret_val;
- 	}
- 
--	ret_val = sst_platform_alloc_stream(substream, dai->platform);
-+	ret_val = sst_platform_alloc_stream(substream, dai);
- 	if (ret_val <= 0)
- 		return ret_val;
- 	snprintf(substream->pcm->id, sizeof(substream->pcm->id),
--- 
-1.9.0
+--tzZdJ4yHDV5r1Akt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Sep 09, 2014 at 05:36:36PM +0900, jiwang wrote:
+
+> Can anyone tell me what is the reasoning of the following two commits
+> commit: 5d16333 ASoC: SND_SOC_DAIFMT_NB_NF become 0 as default settings
+> commit: eef28e1 ASoC: SND_SOC_DAIFMT_GATED become 0 as default settings
+
+> with these two commits, now we have
+> #define SND_SOC_DAIFMT_GATED            (0 << 4)
+> #define SND_SOC_DAIFMT_NB_NF            (0 << 8)
+> in soc-dai.h
+> what's the good to shift 0 with different numbers?
+> no matter the number, they both equal to 0.
+
+> IMO all bit flags which share same variable (in this case SND_SOC_DAIFMT)
+> should have different value, isn't it?
+
+As the commit message says this is so that we have a default value which
+does something sensible.
+
+--tzZdJ4yHDV5r1Akt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUDtRGAAoJECTWi3JdVIfQA2IH/A8dAfkH0NtNNmcsbp0hPtTN
+x5jX9TqWHRxm51/MYdFFmcS6PY6bRLv+cNcTBvqNaxpuBzfa/wiwdhIQ/m52cAmw
+09Ws/1kX2eQmyhGiykj4bJVUWsXMAEfxcjt7s+TgBMAgQCHWfXuBqqOibY2ZBbuV
+S2Gx12iggdvj5smdtMww99P6j5owTvbP7qDAaDBXV8YtnmXN4xWWHqGoIVPZJnBI
+ZGIHwPbR2tiwHbVcQ1R0auSZuTWuebeG2AytHJ9y8tyickUL1TDxdLG1A7WxAfpt
+b1kFFaUaJAUv9QO8QA5mtyOAYQTlTuRN26TIm0c0JPyDCDocH3h7tkAmueKSXMc=
+=1OYb
+-----END PGP SIGNATURE-----
+
+--tzZdJ4yHDV5r1Akt--
