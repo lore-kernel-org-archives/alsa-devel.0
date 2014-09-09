@@ -1,25 +1,23 @@
-From: Bram Bos <bos3@upcmail.nl>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Asynchronous ALSA - callback and latency questions
-Date: Tue, 9 Sep 2014 12:50:14 +0200 (CEST)
-Message-ID: <901056793.444760.1410259814514.open-xchange@upcmail.upc.nl>
+Date: Tue, 09 Sep 2014 13:23:50 +0200
+Message-ID: <540EE346.3050908@ladisch.de>
 References: <1135001813.415555.1410192193064.open-xchange@upcmail.upc.nl>
  <540EB957.7030705@ladisch.de>
  <975727754.436995.1410252241332.open-xchange@upcmail.upc.nl>
  <s5ha969fa4c.wl-tiwai@suse.de>
-Reply-To: Bram Bos <bos3@upcmail.nl>
+ <901056793.444760.1410259814514.open-xchange@upcmail.upc.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fep42.mx.upcmail.net (fep42.mx.upcmail.net [62.179.121.64])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B09926512A
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 12:50:15 +0200 (CEST)
-Received: from edge01.upcmail.net ([192.168.13.236])
- by viepfeppe42-int.chello.at
- (InterMail vM.8.01.05.11 201-2260-151-128-20120928) with ESMTP
- id <20140909105015.ZXZV11119.viepfeppe42-int.chello.at@edge01.upcmail.net>
- for <alsa-devel@alsa-project.org>; Tue, 9 Sep 2014 12:50:15 +0200
-In-Reply-To: <s5ha969fa4c.wl-tiwai@suse.de>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 01B2C265055
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 13:23:52 +0200 (CEST)
+Received: from [10.1.2.65] (unknown [94.101.37.4])
+ by dehamd003.servertools24.de (Postfix) with ESMTPSA id 1018AF808F
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 13:23:23 +0200 (CEST)
+In-Reply-To: <901056793.444760.1410259814514.open-xchange@upcmail.upc.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,22 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiA+ID4gPiBJ4oCZbSB1c2luZyBBTFNBIGZvciBidWlsZGluZyBhIHBlcmZvcm1hbmNlIG11c2lj
-YWwgaW5zdHJ1bWVudCwgc28gSeKAmW0KPiA+ID4gPiBhZnRlcgo+ID4gPiA+IGxvdy1sYXRlbmN5
-IGF1ZGlvIG91dHB1dC4KPiA+ID4gPgo+ID4gPiA+IDEuIEnigJltIHVzaW5nIGFzeW5jaHJvbm91
-cyBhdWRpbyBvdXRwdXQgKGkuZS4gdXNpbmcgYSBjYWxsYmFjaykuCj4gPiA+Cj4gPiA+IERvbid0
-Lgo+ID4KPiA+IFRoYXQncyBhbiBpbnRlcmVzdGluZyBpbnNpZ2h0LiBJIHJlY2tvbmVkIHVzaW5n
-IGEgY2FsbGJhY2sgd2FzIHRoZSBtb3N0Cj4gPiBlbGVnYW50Cj4gPiBzb2x1dGlvbiBzaW5jZSB0
+QnJhbSBCb3Mgd3JvdGU6Cj4+Pj4+IEnigJltIHVzaW5nIEFMU0EgZm9yIGJ1aWxkaW5nIGEgcGVy
+Zm9ybWFuY2UgbXVzaWNhbCBpbnN0cnVtZW50LCBzbyBJ4oCZbQo+Pj4+PiBhZnRlcgo+Pj4+PiBs
+b3ctbGF0ZW5jeSBhdWRpbyBvdXRwdXQuCj4+Pj4+Cj4+Pj4+IDEuIEnigJltIHVzaW5nIGFzeW5j
+aHJvbm91cyBhdWRpbyBvdXRwdXQgKGkuZS4gdXNpbmcgYSBjYWxsYmFjaykuCj4+Pj4KPj4+PiBE
+b24ndC4KPj4+Cj4+PiBUaGF0J3MgYW4gaW50ZXJlc3RpbmcgaW5zaWdodC4gSSByZWNrb25lZCB1
+c2luZyBhIGNhbGxiYWNrIHdhcyB0aGUgbW9zdCBlbGVnYW50Cj4+PiBzb2x1dGlvbiBzaW5jZSB0
 aGF0J3Mgd2hhdCBJJ20gdXNlZCB0byBmb3IgRGlyZWN0U291bmQsIGlPUywgT1NYLCBXTU1FLCBB
-U0lPCj4gPiBldGMuCj4KPiBJZiB5b3Ugd2FudCB0byBnbyBpbiB0aGF0IGRpcmVjdGlvbiwganVz
-dCB1c2UgSkFDSy4KCkFuZCB0aGUgbmV4dCBiZXN0IGFsdGVybmF0aXZlIHdvdWxkIGJlIGJsb2Nr
-ZWQtbW9kZS9wb2xsaW5nIHRocm91Z2ggQUxTQSwgdGhlbj8KCkknZCBwcmVmZXIgdG8gaGF2ZSBh
-cyBmZXcgc29mdHdhcmUgaW50ZXJmYWNlIGxheWVyIGRlcGVuZGVuY2llcyBhcyBjb21mb3J0YWJs
-eQpwb3NzaWJsZSwgc28gaWYgSSBjYW4gZ2V0IGF3YXkgd2l0aCB1c2luZyBvbmx5IEFMU0Egd2l0
-aG91dCByZXF1aXJpbmcgSkFDSyB0aGF0CndvdWxkIGJlIGEgcGx1cyBmb3IgbWUuCgpUaGFua3MK
-QnJhbQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+U0lPIGV0Yy4KPj4KPj4gSWYgeW91IHdhbnQgdG8gZ28gaW4gdGhhdCBkaXJlY3Rpb24sIGp1c3Qg
+dXNlIEpBQ0suCj4KPiBBbmQgdGhlIG5leHQgYmVzdCBhbHRlcm5hdGl2ZSB3b3VsZCBiZSBibG9j
+a2VkLW1vZGUvcG9sbGluZyB0aHJvdWdoIEFMU0EsIHRoZW4/CgpZZXMuICAoVGhhdCdzIHdoYXQg
+SmFjayB1c2VzOyB3aXRoIGZ1bGwgZHVwbGV4LCB5b3UgYWxyZWFkeSBuZWVkIHRvIGhhbmRsZQpt
+dWx0aXBsZSBkZXZpY2VzLikKCgpSZWdhcmRzLApDbGVtZW5zCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
