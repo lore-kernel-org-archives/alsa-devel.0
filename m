@@ -1,180 +1,52 @@
-From: Marcel Ziswiler <marcel@ziswiler.com>
-Subject: [PATCH 2/3] ARM: tegra: apalis/colibri t30: integrate audio support
-Date: Tue,  9 Sep 2014 17:28:46 +0200
-Message-ID: <6194523f927bd7b4b50e1b4a8f3a2d0282cea502.1410276224.git.marcel@ziswiler.com>
-References: <cover.1410276224.git.marcel@ziswiler.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1410276224.git.marcel@ziswiler.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Stephen Warren <swarren@wwwdotorg.org>, linux@arm.linux.org.uk, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, stefan@agner.ch, Marcel Ziswiler <marcel@ziswiler.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: Master Plan on rewinding
+Date: Tue, 09 Sep 2014 21:55:05 +0600
+Message-ID: <540F22D9.8010203@gmail.com>
+References: <540C76E0.9050808@gmail.com>	<540CC53B.7080204@ladisch.de>	<540D5B46.3020904@gmail.com>	<540EBD9A.9000009@ladisch.de>	<540EC08E.4000906@gmail.com>
+ <540F047F.7090607@ladisch.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-la0-f46.google.com (mail-la0-f46.google.com
+ [209.85.215.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F6C926524C
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 17:55:08 +0200 (CEST)
+Received: by mail-la0-f46.google.com with SMTP id pv20so19609414lab.5
+ for <alsa-devel@alsa-project.org>; Tue, 09 Sep 2014 08:55:08 -0700 (PDT)
+In-Reply-To: <540F047F.7090607@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Integrate Freescale SGTL5000 analogue audio codec support.
+09.09.2014 19:45, Clemens Ladisch wrote:
+> Alexander E. Patrakov wrote:
+>> can the proposed heuristic (minimum period size for a given sample
+>> rate, number of channels and sample format) be useful as an upper-
+>> bound approximation of the pointer update granularity for cards that
+>> are "rewindable even further than the nearest period"?
+>
+> No; USB precsion depends on the URB size, which is roughly proportional
+> to (but smaller than) the period size.
 
-Signed-off-by: Marcel Ziswiler <marcel@ziswiler.com>
----
- arch/arm/boot/dts/tegra30-apalis.dtsi  | 49 ++++++++++++++++++++++++++++++++++
- arch/arm/boot/dts/tegra30-colibri.dtsi | 49 ++++++++++++++++++++++++++++++++++
- 2 files changed, 98 insertions(+)
+Thanks for the explanation. It was very useful.
 
-diff --git a/arch/arm/boot/dts/tegra30-apalis.dtsi b/arch/arm/boot/dts/tegra30-apalis.dtsi
-index a5446cb..9fe3e4d 100644
---- a/arch/arm/boot/dts/tegra30-apalis.dtsi
-+++ b/arch/arm/boot/dts/tegra30-apalis.dtsi
-@@ -47,6 +47,24 @@
- 		pinctrl-0 = <&state_default>;
- 
- 		state_default: pinmux {
-+			/* Apalis Analogue Audio */
-+			clk1_out_pw4 {
-+				nvidia,pins = "clk1_out_pw4";
-+				nvidia,function = "extperiph1";
-+				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
-+				nvidia,tristate = <TEGRA_PIN_DISABLE>;
-+				nvidia,enable-input = <TEGRA_PIN_DISABLE>;
-+			};
-+			dap3_fs_pp0 {
-+				nvidia,pins =	"dap3_fs_pp0",
-+						"dap3_sclk_pp3",
-+						"dap3_din_pp1",
-+						"dap3_dout_pp2";
-+				nvidia,function = "i2s2";
-+				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
-+				nvidia,tristate = <TEGRA_PIN_DISABLE>;
-+			};
-+
- 			/* Apalis BKL1_ON */
- 			pv2 {
- 				nvidia,pins = "pv2";
-@@ -404,6 +422,15 @@
- 		status = "okay";
- 		clock-frequency = <100000>;
- 
-+		/* SGTL5000 audio codec */
-+		sgtl5000: codec@0a {
-+			compatible = "fsl,sgtl5000";
-+			reg = <0x0a>;
-+			VDDA-supply = <&sys_3v3_reg>;
-+			VDDIO-supply = <&sys_3v3_reg>;
-+			clocks = <&tegra_car TEGRA30_CLK_EXTERN1>;
-+		};
-+
- 		pmic: tps65911@2d {
- 			compatible = "ti,tps65911";
- 			reg = <0x2d>;
-@@ -635,6 +662,12 @@
- 		nvidia,sys-clock-req-active-high;
- 	};
- 
-+	ahub@70080000 {
-+		i2s@70080500 {
-+			status = "okay";
-+		};
-+	};
-+
- 	sdhci@78000600 {
- 		status = "okay";
- 		bus-width = <8>;
-@@ -684,4 +717,20 @@
- 			regulator-always-on;
- 		};
- 	};
-+
-+	sound {
-+		compatible = "toradex,tegra-audio-sgtl5000-apalis_t30",
-+			     "nvidia,tegra-audio-sgtl5000";
-+		nvidia,model = "Toradex Apalis T30";
-+		nvidia,audio-routing =
-+			"Headphone Jack", "HP_OUT",
-+			"LINE_IN", "Line In Jack",
-+			"MIC_IN", "Mic Jack";
-+		nvidia,i2s-controller = <&tegra_i2s2>;
-+		nvidia,audio-codec = <&sgtl5000>;
-+		clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
-+			 <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
-+			 <&tegra_car TEGRA30_CLK_EXTERN1>;
-+		clock-names = "pll_a", "pll_a_out0", "mclk";
-+	};
- };
-diff --git a/arch/arm/boot/dts/tegra30-colibri.dtsi b/arch/arm/boot/dts/tegra30-colibri.dtsi
-index c4ed1be..e8ac72e 100644
---- a/arch/arm/boot/dts/tegra30-colibri.dtsi
-+++ b/arch/arm/boot/dts/tegra30-colibri.dtsi
-@@ -29,6 +29,24 @@
- 		pinctrl-0 = <&state_default>;
- 
- 		state_default: pinmux {
-+			/* Colibri Analogue Audio */
-+			clk1_out_pw4 {
-+				nvidia,pins = "clk1_out_pw4";
-+				nvidia,function = "extperiph1";
-+				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
-+				nvidia,tristate = <TEGRA_PIN_DISABLE>;
-+				nvidia,enable-input = <TEGRA_PIN_DISABLE>;
-+			};
-+			dap3_fs_pp0 {
-+				nvidia,pins =	"dap3_fs_pp0",
-+						"dap3_sclk_pp3",
-+						"dap3_din_pp1",
-+						"dap3_dout_pp2";
-+				nvidia,function = "i2s2";
-+				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
-+				nvidia,tristate = <TEGRA_PIN_DISABLE>;
-+			};
-+
- 			/* Colibri BL_ON */
- 			pv2 {
- 				nvidia,pins = "pv2";
-@@ -182,6 +200,15 @@
- 		status = "okay";
- 		clock-frequency = <100000>;
- 
-+		/* SGTL5000 audio codec */
-+		sgtl5000: codec@0a {
-+			compatible = "fsl,sgtl5000";
-+			reg = <0x0a>;
-+			VDDA-supply = <&sys_3v3_reg>;
-+			VDDIO-supply = <&sys_3v3_reg>;
-+			clocks = <&tegra_car TEGRA30_CLK_EXTERN1>;
-+		};
-+
- 		pmic: tps65911@2d {
- 			compatible = "ti,tps65911";
- 			reg = <0x2d>;
-@@ -331,6 +358,12 @@
- 		nvidia,sys-clock-req-active-high;
- 	};
- 
-+	ahub@70080000 {
-+		i2s@70080500 {
-+			status = "okay";
-+		};
-+	};
-+
- 	emmc: sdhci@78000600 {
- 		status = "okay";
- 		bus-width = <8>;
-@@ -383,4 +416,20 @@
- 			regulator-always-on;
- 		};
- 	};
-+
-+	sound {
-+		compatible = "toradex,tegra-audio-sgtl5000-colibri_t30",
-+			     "nvidia,tegra-audio-sgtl5000";
-+		nvidia,model = "Toradex Colibri T30";
-+		nvidia,audio-routing =
-+			"Headphone Jack", "HP_OUT",
-+			"LINE_IN", "Line In Jack",
-+			"MIC_IN", "Mic Jack";
-+		nvidia,i2s-controller = <&tegra_i2s2>;
-+		nvidia,audio-codec = <&sgtl5000>;
-+		clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
-+			 <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
-+			 <&tegra_car TEGRA30_CLK_EXTERN1>;
-+		clock-names = "pll_a", "pll_a_out0", "mclk";
-+	};
- };
+At this point, I am tempted to not express this "less than the period 
+size but depends on it" rule, and classify USB audio devices as 
+"Rewindable down to the period size", even though it is a pessimization.
+
+Also (sorry for the off-topic) this explanation completely crystallizes 
+my opinion about possible misuse of the SNDRV_PCM_INFO_BATCH flag in the 
+snd-usb-audio driver or PulseAudio. My opinion now is: there is no 
+misuse on either side.
+
 -- 
-1.9.3
+Alexander E. Patrakov
