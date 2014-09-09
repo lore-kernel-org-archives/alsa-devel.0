@@ -1,47 +1,47 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 5/5] ASoC: sgtl5000: Cleanup bias level
-	transitions
-Date: Tue, 9 Sep 2014 17:11:56 -0300
-Message-ID: <CAOMZO5AD=8ERj0-JvV4DdjDug0yVBXATeK8icbEh9XVXsA9+2Q@mail.gmail.com>
-References: <1410006575-499-1-git-send-email-lars@metafoo.de>
- <1410006575-499-5-git-send-email-lars@metafoo.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
+Date: Tue, 9 Sep 2014 13:27:10 -0700
+Message-ID: <20140909202710.GB5224@Asurada>
+References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
+ <20140909183804.GA6944@Asurada>
+ <540F5706.1050303@tabi.org>
+ <20140909195928.GA5224@Asurada>
+ <540F5D29.7040309@tabi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f49.google.com (mail-la0-f49.google.com
- [209.85.215.49])
- by alsa0.perex.cz (Postfix) with ESMTP id E22D02652F4
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 22:11:56 +0200 (CEST)
-Received: by mail-la0-f49.google.com with SMTP id b17so19901597lan.8
- for <alsa-devel@alsa-project.org>; Tue, 09 Sep 2014 13:11:56 -0700 (PDT)
-In-Reply-To: <1410006575-499-5-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tomoya MORINAGA <tomoya.rohm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>, Sean Cross <xobs@kosagi.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <540F5D29.7040309@tabi.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, mpa@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 6, 2014 at 9:29 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> Set the CODEC driver's suspend_bias_off flag rather than manually going to
-> SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
-> the code a bit shorter and cleaner.
->
-> Since the ASoC core now takes care of setting the bias level to
-> SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
-> anymore either.
->
-> The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
-> can also be removed as the core will automatically do this after the CODEC
-> has been probed.
->
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+On Tue, Sep 09, 2014 at 03:03:53PM -0500, Timur Tabi wrote:
+> On 09/09/2014 02:59 PM, Nicolin Chen wrote:
+> >+	/*
+> >+	 * Initially mark the clock to NULL for all platforms so that later
+> >+	 * clk_prepare_enable() will ignore and return 0 for non-clock cases.
+> >+	 */
+> >+	ssi_private->clk = NULL;
+> 
+> According to Mark, NULL is a valid clock, so this should be instead:
+> 
+> 	ssi_private->clk = PTR_ERR(-EINVAL);
+> 
+> although that doesn't sit well with me.
 
-Tested-by: Fabio Estevam <fabio.estevam@freescale.com>
+I guess Mark's comment is merely against the check for clk validation
+because if talking about clk validation, we should check IS_ERR(clk)
+rather than check !=NULL directly.
+
+However, my approach doesn't need any check. The open() or pm_resume()
+can just call clk_prepare_enable() directly. The __clk_enable() will
+then handle the 'clk == NULL' case:
+
+static int __clk_enable(struct clk *clk)
+{
+	int ret = 0;
+
+	if (!clk)
+		return 0;
