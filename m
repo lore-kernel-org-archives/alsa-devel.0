@@ -1,95 +1,130 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: Master Plan on rewinding
-Date: Tue, 09 Sep 2014 15:31:46 +0600
-Message-ID: <540EC902.2030108@gmail.com>
-References: <540C76E0.9050808@gmail.com>
- <540CC53B.7080204@ladisch.de>	<540D5B46.3020904@gmail.com>
- <540EBD9A.9000009@ladisch.de> <540EC08E.4000906@gmail.com>
- <540EC380.6030903@canonical.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [alsa-devel] [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in
+ this module
+Date: Tue, 9 Sep 2014 11:49:13 +0200
+Message-ID: <20140909094913.GE24081@pengutronix.de>
+References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
- [209.85.217.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 9ED35264F0F
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 11:30:20 +0200 (CEST)
-Received: by mail-lb0-f176.google.com with SMTP id z11so4932760lbi.7
- for <alsa-devel@alsa-project.org>; Tue, 09 Sep 2014 02:30:19 -0700 (PDT)
-In-Reply-To: <540EC380.6030903@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, Clemens Ladisch <clemens@ladisch.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="k3qmt+ucFURmlhDS"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: timur@tabi.org, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-09.09.2014 15:08, David Henningsson wrote:
->
->
-> On 2014-09-09 10:55, Alexander E. Patrakov wrote:
->> 09.09.2014 14:43, Clemens Ladisch wrote:
->>> Alexander E. Patrakov wrote:
->>>> |---------|---------P----h----p---------|-a-------|---------|
->>>>
->>>> So, what should alsa-lib return for snd_pcm_avail() and
->>>> snd_pcm_rewind()?
->>>> The driver only knows that "P" is already used, can infer that "p"
->>>> isn't
->>>> used yet, and knows nothing about samples in the middle.
->>> Indeed.  However, the DMA pointer moves asynchronously, so it is
->>> possible
->>> that it has already moved beyond p when snd_pcm_rewindable() returns.
->>> For the samples between P and p, the risk is larger than for those after
->>> p, but p is not a boundary where the risk abruptly decreases.
->>>
->>> It would make sense to report the pointer update granularity, but not
->>> to adjust the return value of snd_pcm_avail/rewindable().
->>
->> OK, I understand your viewpoint, and the phrase "some indicator of the
->> actual rewind granularity and/or safeguard ... should be enough for PA
->> to be able to pick a suitable default latency" from David indicates that
->> he has a similar opinion.
->>
->> Now the remaining question is: can the proposed heuristic (minimum
->> period size for a given sample rate, number of channels and sample
->> format) be useful as an upper-bound approximation of the pointer update
->> granularity for cards that are "rewindable even further than the nearest
->> period"?
->
-> Aha, thanks for the explanation. Now I understand that approximation idea.
-> I don't know if that's a reasonable approximation, but even if it is,
-> how would you determine if a card actually has that pointer granularity,
-> or if the pointer granularity varies with period size? (I e without
-> actually running a stream and measure it)
 
-Currently, as you have already said, we have no such information. This 
-information is, however, static for a given card model and should, in 
-the future, come from the kernel. Therefore:
+--k3qmt+ucFURmlhDS
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-1. We need a new flag alongside SNDRV_PCM_INFO_BATCH that kernel drivers 
-would set, and alsa-lib to act upon. As indicated in the following 
-posts, SNDRV_PCM_INFO_BATCH means a different and not-useful-here thing:
+Hi,
 
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/073816.html
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/073817.html
+On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
+> Move the ipg clock enable and disable operation to startup and shutdown,
+> that is only enable ipg clock when ssi is working. we don't need to enable
+> ipg clock in probe.
+> Another register accessing need the ipg clock, so use devm_regmap_init_mm=
+io_clk
+> instead of devm_regmap_init_mmio.
+>=20
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+> ---
+>  sound/soc/fsl/fsl_ssi.c |   38 +++++++++++++++++++++++++++-----------
+>  1 file changed, 27 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 2fc3e66..d32d0f5 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -531,6 +531,9 @@ static int fsl_ssi_startup(struct snd_pcm_substream *=
+substream,
+>  	struct fsl_ssi_private *ssi_private =3D
+>  		snd_soc_dai_get_drvdata(rtd->cpu_dai);
+> =20
+> +	if (ssi_private->soc->imx)
+> +		clk_prepare_enable(ssi_private->clk);
+> +
+>  	/* When using dual fifo mode, it is safer to ensure an even period
+>  	 * size. If appearing to an odd number while DMA always starts its
+>  	 * task from fifo0, fifo1 would be neglected at the end of each
+> @@ -544,6 +547,22 @@ static int fsl_ssi_startup(struct snd_pcm_substream =
+*substream,
+>  }
+> =20
+>  /**
+> + * fsl_ssi_shutdown: shutdown the SSI
+> + *
+> + */
+> +static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
+> +                             struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
+> +	struct fsl_ssi_private *ssi_private =3D
+> +		snd_soc_dai_get_drvdata(rtd->cpu_dai);
+> +
+> +	if (ssi_private->soc->imx)
+> +		clk_disable_unprepare(ssi_private->clk);
+> +
+> +}
+> +
+> +/**
+>   * fsl_ssi_set_bclk - configure Digital Audio Interface bit clock
+>   *
+>   * Note: This function can be only called when using SSI as DAI master
+> @@ -1043,6 +1062,7 @@ static int fsl_ssi_dai_probe(struct snd_soc_dai *da=
+i)
+> =20
+>  static const struct snd_soc_dai_ops fsl_ssi_dai_ops =3D {
+>  	.startup	=3D fsl_ssi_startup,
+> +	.shutdown       =3D fsl_ssi_shutdown,
+>  	.hw_params	=3D fsl_ssi_hw_params,
+>  	.hw_free	=3D fsl_ssi_hw_free,
+>  	.set_fmt	=3D fsl_ssi_set_dai_fmt,
+> @@ -1168,16 +1188,10 @@ static int fsl_ssi_imx_probe(struct platform_devi=
+ce *pdev,
+>  	u32 dmas[4];
+>  	int ret;
+> =20
+> -	ssi_private->clk =3D devm_clk_get(&pdev->dev, NULL);
+> +	ssi_private->clk =3D devm_clk_get(&pdev->dev, "ipg");
 
-2. We need a volunteer to crawl through kernel sources and mark drivers 
-that cannot report the pointer position with a better-than-one-period 
-granularity.
+This does not work for most imx SoCs at the moment. imx27, imx35, imx51
+etc. do not have clock-names defined in the devicetree.
 
-3. Until this is done, we have to either assume that all cards are good, 
-or that all cards are bad, or maybe misuse the SNDRV_PCM_INFO_BATCH flag 
-as a pessimistic approximation of what we want (and document this 
-approximation) if anyone thinks that such misuse will be beneficial in 
-the short term.
+Best regards,
 
-This leaves the question of "old kernel + new alsa-lib" open.
+Markus
 
--- 
-Alexander E. Patrakov
+--=20
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--k3qmt+ucFURmlhDS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJUDs0YAAoJEEpcgKtcEGQQ3fIQAIZ20+HrGbKP+S4zaouVr91n
+Egs0PLCqbOAgJtkZabPfr+q8rJD0wCq8Ghz9rzNWes6OFz2IZoQ8gmqUoMvMqNxd
+TeNeNmcL4qICdYGFmdUUWkV5p62bfwqD6UfUOQvAzm1pkQjn7q+3FgWRxsUvyUqQ
+/3mlP6044QaR8gtYmcQMIJfozrMH8SADsKjb2LtlFU2i9ehf6gS3c/49RYF5l6PM
+Qn2oe2rLTBoZiQc/E8+ScLVbDqnRKZgXxyrlBWJ1UZhjglGqsfHEHr3mOPrpkuY4
+6G4iyHvbNdtcCy7dVKlp8LS+8PhybEcQznk5USPB5OtzmE4ka7FocrZnSdtcJ87A
+8HsEVzXH+f2aG2JpuTAV1S1zE+TSJBwDKVSoMCkOFPCNq7Sux2wIQaOs3ahl4M9V
+2TQZAPCkzXaPMu2DcHj9+Fi6hI5mT+wlNtU83fXYQDy5lLdBYTGiOIuo2qrCbetk
+ccvz+D79YIckR1uxdVZ+CFRfxKAo0YICzWU0oLx1pqdgM72Px+FVRe74UlA22XkA
+MORvzNC6BQRRu9J00ejDBEMMTWzBkJVgoYEFOPj617Y3XIWVyzVufDIcdfzlqYPA
+TY+1CqQHqKV04oVITZ0Hms28Dlhu9KNf4Ivtm478SlR9kcezRbAE6HAdOkDRjusf
+Tavmw7FBPqhKiyjJQfG+
+=KDh+
+-----END PGP SIGNATURE-----
+
+--k3qmt+ucFURmlhDS--
