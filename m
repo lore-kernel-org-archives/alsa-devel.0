@@ -1,41 +1,99 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
-Date: Tue, 9 Sep 2014 11:41:31 -0700
-Message-ID: <20140909184130.GB6944@Asurada>
-References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
- <20140909112750.GS2601@sirena.org.uk>
- <20140909180309.GA6784@Asurada>
- <20140909181516.GI2601@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 2/6] ASoC: cs42l56: Cleanup manual bias level
+	transitions
+Date: Tue,  9 Sep 2014 20:42:41 +0200
+Message-ID: <1410288165-32127-2-git-send-email-lars@metafoo.de>
+References: <1410288165-32127-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140909181516.GI2601@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
+ [212.40.185.205])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8400D265329
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 20:42:45 +0200 (CEST)
+In-Reply-To: <1410288165-32127-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 09, 2014 at 07:15:16PM +0100, Mark Brown wrote:
-> On Tue, Sep 09, 2014 at 11:03:10AM -0700, Nicolin Chen wrote:
-> > On Tue, Sep 09, 2014 at 12:27:50PM +0100, Mark Brown wrote:
-> > > On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
-> > > > -	ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
-> > > > +	ssi_private->clk = devm_clk_get(&pdev->dev, "ipg");
-> 
-> > > Why is this change being made?  It wasn't mentioned in the commit log
-> > > and doesn't seem relevant to moving where the enable and disable are
-> > > done which is what the patch is supposed to be doing...
-> 
-> > I think Shengjiu is trying to keep the clock disabled while SSI's idle.
-> > The current driver enables ipg clock anyway even if there's no stream
-> > running.
-> 
-> > Apparently, these should be put into the comment log.
-> 
-> I got that bit.  However as well as changing where the enable and
-> disable take place this is also changing from requesting a clock with a
-> NULL to requesting one called "ipg".
+Set the CODEC driver's suspend_bias_off flag rather than manually going to
+SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
+the code a bit shorter and cleaner.
 
-Understood. Making one patch do one single change is the rule we should
-always follow.
+Since the ASoC core now takes care of setting the bias level to
+SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
+anymore either.
+
+The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
+can also be removed as the core will automatically do this after the CODEC
+has been probed.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/codecs/cs42l56.c | 20 +-------------------
+ 1 file changed, 1 insertion(+), 19 deletions(-)
+
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index bb74dd1..2ddc7ac 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -1016,20 +1016,6 @@ static struct snd_soc_dai_driver cs42l56_dai = {
+ 		.ops = &cs42l56_ops,
+ };
+ 
+-static int cs42l56_suspend(struct snd_soc_codec *codec)
+-{
+-	cs42l56_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-
+-	return 0;
+-}
+-
+-static int cs42l56_resume(struct snd_soc_codec *codec)
+-{
+-	cs42l56_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+-	return 0;
+-}
+-
+ static int beep_freq[] = {
+ 	261, 522, 585, 667, 706, 774, 889, 1000,
+ 	1043, 1200, 1333, 1412, 1600, 1714, 2000, 2182
+@@ -1168,15 +1154,12 @@ static int cs42l56_probe(struct snd_soc_codec *codec)
+ {
+ 	cs42l56_init_beep(codec);
+ 
+-	cs42l56_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+ 	return 0;
+ }
+ 
+ static int cs42l56_remove(struct snd_soc_codec *codec)
+ {
+ 	cs42l56_free_beep(codec);
+-	cs42l56_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 
+ 	return 0;
+ }
+@@ -1184,9 +1167,8 @@ static int cs42l56_remove(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_dev_cs42l56 = {
+ 	.probe = cs42l56_probe,
+ 	.remove = cs42l56_remove,
+-	.suspend = cs42l56_suspend,
+-	.resume = cs42l56_resume,
+ 	.set_bias_level = cs42l56_set_bias_level,
++	.suspend_bias_off = true,
+ 
+ 	.dapm_widgets = cs42l56_dapm_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(cs42l56_dapm_widgets),
+-- 
+1.8.0
