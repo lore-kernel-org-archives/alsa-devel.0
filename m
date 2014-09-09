@@ -1,46 +1,50 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung-i2s: Check secondary DAI exists before
- referencing
-Date: Tue, 9 Sep 2014 18:09:03 +0100
-Message-ID: <20140909170903.GG2601@sirena.org.uk>
-References: <1410277909-27922-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: tegra: add tegra sgtl5000
+	machine driver
+Date: Tue, 9 Sep 2014 15:00:11 -0300
+Message-ID: <CAOMZO5BYGwHGSeHeaQxEO=BUBGbno9P29et582SDzmwmfVioZA@mail.gmail.com>
+References: <cover.1410276224.git.marcel@ziswiler.com>
+ <f90791ebb1799a4aa62dd6b527885ddadae3c058.1410276224.git.marcel@ziswiler.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7WOaRjS1a0Wu0ZkU"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1410277909-27922-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: sbkim73@samsung.com, lgirdwood@gmail.com, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f169.google.com (mail-lb0-f169.google.com
+ [209.85.217.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F7F426525B
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 20:00:12 +0200 (CEST)
+Received: by mail-lb0-f169.google.com with SMTP id p9so8432516lbv.0
+ for <alsa-devel@alsa-project.org>; Tue, 09 Sep 2014 11:00:11 -0700 (PDT)
+In-Reply-To: <f90791ebb1799a4aa62dd6b527885ddadae3c058.1410276224.git.marcel@ziswiler.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Marcel Ziswiler <marcel@ziswiler.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>, linux-kernel <linux-kernel@vger.kernel.org>, stefan@agner.ch, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Sep 9, 2014 at 12:28 PM, Marcel Ziswiler <marcel@ziswiler.com> wrote:
+> This binding and driver describe/support playback to headphones, and
+> capture from line-in and microphone.
+>
+> This driver is useful for the Toradex Apalis T30 and Colibri T30 modules.
+>
+> Signed-off-by: Marcel Ziswiler <marcel@ziswiler.com>
+> ---
+>  .../bindings/sound/nvidia,tegra-audio-sgtl5000.txt |  45 +++++
+>  sound/soc/tegra/Kconfig                            |  10 +
+>  sound/soc/tegra/Makefile                           |   2 +
+>  sound/soc/tegra/tegra_sgtl5000.c                   | 216 +++++++++++++++++++++
 
---7WOaRjS1a0Wu0ZkU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+What about using the simple-audio-card binding instead of adding the
+tegra_sgtl5000 machine driver?
 
-On Tue, Sep 09, 2014 at 04:51:49PM +0100, Charles Keepax wrote:
-> In a couple of places the driver is missing a check to ensure there is a
-> secondary DAI before it de-references the pointer to it, causing a null
-> pointer de-reference. This patch adds a check to avoid this.
+An example of simple-audio-card used with sgtl5000 can be found here:
 
-Applied, thanks.
-
---7WOaRjS1a0Wu0ZkU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUDzQuAAoJECTWi3JdVIfQ+xoH+wRhzNpYYOd90UR5cm3lGWhz
-O4KV4cKvBDX51SDwkTv0+31nDqtre0TpFKqGriAbGn3aNzBOhBJN4BAhxPDUJn2H
-y7ZRRmwIep2EY7wS5KmKgvxJhl98IGRJZgEeGo9yVk8x1eJT5SrfCCzK5CX86N1E
-wkJ3eQlkmsfvLqIvEInQokUaaTuanXsMcBQ9HjN2d5tUouXnsAjDcLZWq4F8giwE
-oltwbTLgG/aEM7wqqyAZTY5jQaSjwvnpkh0yFKqUNi2m5FKBwPLKE9G7yYz+rXk5
-3ZL1hbvknLC4nU1Ffy0+tRZx2ILzQE7YvimYoBTYK8i5gpX6QY2G8tyTEgdYhBQ=
-=TxYW
------END PGP SIGNATURE-----
-
---7WOaRjS1a0Wu0ZkU--
+http://www.spinics.net/lists/devicetree/msg44466.html
