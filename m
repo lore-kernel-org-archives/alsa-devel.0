@@ -1,71 +1,41 @@
-From: Tero Kristo <t-kristo-l0cyMroinI0@public.gmane.org>
-Subject: Re: [PATCH v2 5/8] ARM: dts: am33xx: Add external clock provider
-Date: Tue, 9 Sep 2014 10:57:51 +0300
-Message-ID: <540EB2FF.7000105@ti.com>
-References: <cover.1408397864.git.jsarha@ti.com> <9d4974b949b9b3bc1b08d73b1ec2d9cdd7a8e5da.1408397864.git.jsarha@ti.com> <20140908233037.GT3238@atomide.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Asynchronous ALSA - callback and latency questions
+Date: Tue, 09 Sep 2014 10:24:55 +0200
+Message-ID: <540EB957.7030705@ladisch.de>
+References: <1135001813.415555.1410192193064.open-xchange@upcmail.upc.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20140908233037.GT3238-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Cc: dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, airlied-cv59FeDIM0c@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, peter.ujfalusi-l0cyMroinI0@public.gmane.org, detheridge-l0cyMroinI0@public.gmane.org, ezequiel.garcia-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id B16D4264EFA
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 10:25:05 +0200 (CEST)
+In-Reply-To: <1135001813.415555.1410192193064.open-xchange@upcmail.upc.nl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bram Bos <bos3@upcmail.nl>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/09/2014 02:30 AM, Tony Lindgren wrote:
-> * Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org> [140818 14:49]:
->> Add external clock provider for am33xx devices.
->
-> Please send all the .dts and defconfig changes separately
-> so I can pick them up and we don't get pointless merge
-> conflicts.
-
-Moreover, this patch is obsolete now, given I have posted this:
-
-http://www.spinics.net/lists/arm-kernel/msg355992.html
-
-There will be v2 of my patch coming in though this week, but the 
-functionality will be the same.
-
--Tero
-
->
-> Regards,
->
-> TOny
->
->> Signed-off-by: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
->> ---
->>   arch/arm/boot/dts/am33xx.dtsi |   10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
->> index 3a0a161..d2cc397 100644
->> --- a/arch/arm/boot/dts/am33xx.dtsi
->> +++ b/arch/arm/boot/dts/am33xx.dtsi
->> @@ -92,6 +92,16 @@
->>   		pinctrl-single,function-mask = <0x7f>;
->>   	};
->>
->> +	ext_clocks {
->> +		compatible = "ti,external-clocks";
->> +
->> +		ext_clocks: clocks {
->> +		};
->> +
->> +		ext_clockdomains: clockdomains {
->> +		};
->> +	};
->> +
->>   	/*
->>   	 * XXX: Use a flat representation of the AM33XX interconnect.
->>   	 * The real AM33XX interconnect network is quite complex. Since
->> --
->> 1.7.9.5
->>
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+QnJhbSBCb3Mgd3JvdGU6Cj4gSeKAmW0gdXNpbmcgQUxTQSBmb3IgYnVpbGRpbmcgYSBwZXJmb3Jt
+YW5jZSBtdXNpY2FsIGluc3RydW1lbnQsIHNvIEnigJltIGFmdGVyCj4gIGxvdy1sYXRlbmN5IGF1
+ZGlvIG91dHB1dC4KPgo+IDEuIEnigJltIHVzaW5nIGFzeW5jaHJvbm91cyBhdWRpbyBvdXRwdXQg
+KGkuZS4gdXNpbmcgYSBjYWxsYmFjaykuCgpEb24ndC4gIE1hbnkgZGV2aWNlcyBkbyBub3Qgc3Vw
+cG9ydCB0aGlzLCBhbmQgYXN5bmNocm9ub3VzIGNhbGxiYWNrcyBydW4KaW4gYSBzaWduYWwgaGFu
+ZGxlciwgd2hlcmUgeW91IG11c3QgdXNlIG9ubHkgc2lnbmFsLXNhZmUgZnVuY3Rpb25zLgoKPiAy
+LiBXaGF0IGRvZXMg4oCcRmlsZSBkZXNjcmlwdG9yIGlzIGluIGEgYmFkIHN0YXRl4oCdIG1lYW4s
+IHdoZW4gaXQgaXMgcmV0dXJuZWQgYnkKPiBzbmRfcGNtX3dyaXRlaT8KClRoYXQgdGhlIGRldmlj
+ZSBpcyBuZWl0aGVyIHJ1bm5pbmcsIG5vciBpbiBhbiB1bmRlcnJ1biBzdGF0ZS4KCj4gNC4gd2hh
+dCBkZXRlcm1pbmVzIHRoZSBwbGF5YmFjayBsYXRlbmN5IG9mIG15IGF1ZGlvIHN0cmVhbT8KClRo
+ZSBidWZmZXIgc2l6ZS4gIFdoZW4geW91IGZpbGwgdGhlIGJ1ZmZlciBjb21wbGV0ZWx5LCB0aGUg
+bGFzdCBzYW1wbGUKbXVzdCB3YWl0IGZvciBhbGwgcHJldmlvdXMgc2FtcGxlcyB0byBiZSBwbGF5
+ZWQuCgoKUmVnYXJkcywKQ2xlbWVucwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2Fsc2EtZGV2ZWwK
