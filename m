@@ -1,86 +1,75 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage
-	in this module
-Date: Tue, 9 Sep 2014 19:15:16 +0100
-Message-ID: <20140909181516.GI2601@sirena.org.uk>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
+Date: Tue, 9 Sep 2014 11:38:05 -0700
+Message-ID: <20140909183804.GA6944@Asurada>
 References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
- <20140909112750.GS2601@sirena.org.uk>
- <20140909180309.GA6784@Asurada>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8129751924405496405=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8651B26525B
- for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 20:15:50 +0200 (CEST)
-In-Reply-To: <20140909180309.GA6784@Asurada>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, mpa@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
+> @@ -1321,7 +1333,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  	}
+>  
+> -	ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
+> +	if (ssi_private->soc->imx)
+> +		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
+> +			"ipg", iomem, &fsl_ssi_regconfig);
+> +	else
+> +		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
 
---===============8129751924405496405==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8lKUOMLFs7xrer6k"
-Content-Disposition: inline
+As Markus mentioned, the key point here is to be compatible with those
+non-clock-name platforms.
 
+I think it would be safer to keep the current code while adding an extra
+clk_disable_unprepare() at the end of probe() as a common routine. And
+meantime, make sure to have the call for imx only because it seems that
+the other platforms do not depend on the clock. //a bit guessing here :)
 
---8lKUOMLFs7xrer6k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Then we can get a patch like:
+open() {
++	clk_prepare_enable();
+	....
+}
 
-On Tue, Sep 09, 2014 at 11:03:10AM -0700, Nicolin Chen wrote:
-> On Tue, Sep 09, 2014 at 12:27:50PM +0100, Mark Brown wrote:
-> > On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
-> > > -	ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
-> > > +	ssi_private->clk = devm_clk_get(&pdev->dev, "ipg");
+close() {
+	....
++	clk_disable_unprepare()
+}
 
-> > Why is this change being made?  It wasn't mentioned in the commit log
-> > and doesn't seem relevant to moving where the enable and disable are
-> > done which is what the patch is supposed to be doing...
+probe() {
+	clk_get();
+	clk_prepare_enable();
+	....
+	if (xxx)
+-		goto err_xx;
++		return ret;
+	....
++	clk_disable_unprepare();
+	return 0;
+-err_xx:
+-	clk_disable_unprepare()
+}
 
-> I think Shengjiu is trying to keep the clock disabled while SSI's idle.
-> The current driver enables ipg clock anyway even if there's no stream
-> running.
+remove() {
+	....
+-	clk_disable_unprepare()
+}
 
-> Apparently, these should be put into the comment log.
+As long as you make the subject clear as 'Don't enable core/ipg clock
+when SSI's idle', I'm sure you can make them within a single patch.
 
-I got that bit.  However as well as changing where the enable and
-disable take place this is also changing from requesting a clock with a
-NULL to requesting one called "ipg".
+And an alternative way for open() and close() is to put those code into
+pm_runtime_resume/suspend() instead (since we might have some internal
+code need to be added by using pm_runtime as well), which would make
+the further code neater IMO.
 
---8lKUOMLFs7xrer6k
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUD0OsAAoJECTWi3JdVIfQbgwH/20teJPh6rqrGN8svTU/E6r4
-mZir/1YdrwwoMgjT0h7TmC5D+v5CoV4fo12fpPuXPzLjVSoGpmCxnoQH/89X92g/
-86BxCIZSh1haKI9YxNlysOgO9wO6OHvz6N1C+4hnWhWMSZ03SP97XEtzLcuYXwEu
-PZMq376RA1UAJUi72UFhdUGwSXK+dUlskBOo1OG3Lqh3XXjYdJT889Kt22o6dXJD
-/uFnSf4TDnVKmWRfFkmcTtapjNuhp4KFbxXB4ttQgymvHvUusscltgxdn2pDb/gz
-n75lx26dlHsRAnkp7uJd5FmPQDSZxRaE/bBx+bODPEIX9pKvwUsyEKWN5mtMpss=
-=4PvN
------END PGP SIGNATURE-----
-
---8lKUOMLFs7xrer6k--
-
---===============8129751924405496405==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8129751924405496405==--
+Thank you
+Nicolin
