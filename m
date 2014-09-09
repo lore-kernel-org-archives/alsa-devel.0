@@ -1,56 +1,49 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v2 5/8] ARM: dts: am33xx: Add external clock provider
-Date: Mon, 8 Sep 2014 16:30:38 -0700
-Message-ID: <20140908233037.GT3238@atomide.com>
-References: <cover.1408397864.git.jsarha@ti.com>
- <9d4974b949b9b3bc1b08d73b1ec2d9cdd7a8e5da.1408397864.git.jsarha@ti.com>
+From: Ilya Dmitrichenko <errordeveloper@gmail.com>
+Subject: am335x+tlv320aic3x
+Date: Tue, 9 Sep 2014 01:33:57 +0100
+Message-ID: <CAPhDKbHgUcCWsdc7peSe7UdWdu68sqfObcP_fQw7bWPxJhZEPg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <9d4974b949b9b3bc1b08d73b1ec2d9cdd7a8e5da.1408397864.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com, ezequiel.garcia@free-electrons.com, t-kristo@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ie0-f169.google.com (mail-ie0-f169.google.com
+ [209.85.223.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4358326262D
+ for <alsa-devel@alsa-project.org>; Tue,  9 Sep 2014 02:33:59 +0200 (CEST)
+Received: by mail-ie0-f169.google.com with SMTP id rl12so3165269iec.28
+ for <alsa-devel@alsa-project.org>; Mon, 08 Sep 2014 17:33:57 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Jyri Sarha <jsarha@ti.com> [140818 14:49]:
-> Add external clock provider for am33xx devices.
+Hi List,
 
-Please send all the .dts and defconfig changes separately
-so I can pick them up and we don't get pointless merge
-conflicts.
+I am trying to get Beaglebone workign with the audio extension board
+(aka cape) that is using tlv320aic3x codec. I want it to run 3.14 and
+use vanilla kernel without dynamic DT overlay patches.
 
-Regards,
+So I have take the current overlay DT [1] and made converted it [2].
+The result is that it boots and detects the Davinci module, but
+doesn't get the codec.
 
-TOny
- 
-> Signed-off-by: Jyri Sarha <jsarha@ti.com>
-> ---
->  arch/arm/boot/dts/am33xx.dtsi |   10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-> index 3a0a161..d2cc397 100644
-> --- a/arch/arm/boot/dts/am33xx.dtsi
-> +++ b/arch/arm/boot/dts/am33xx.dtsi
-> @@ -92,6 +92,16 @@
->  		pinctrl-single,function-mask = <0x7f>;
->  	};
->  
-> +	ext_clocks {
-> +		compatible = "ti,external-clocks";
-> +
-> +		ext_clocks: clocks {
-> +		};
-> +
-> +		ext_clockdomains: clockdomains {
-> +		};
-> +	};
-> +
->  	/*
->  	 * XXX: Use a flat representation of the AM33XX interconnect.
->  	 * The real AM33XX interconnect network is quite complex. Since
-> -- 
-> 1.7.9.5
-> 
+[1]: https://github.com/beagleboard/devicetree-source/blob/d46bcc20ef98d69eea34cd6ae3897a329559ebb2/arch/arm/boot/dts/BB-BONE-AUDI-01-00A0.dts
+[2]: https://gist.github.com/errordeveloper/cba5145960bdeb0126d5
+
+My kernel config includes this:
+
+CONFIG_SND_OMAP_SOC=m
+CONFIG_SND_OMAP_SOC_MCBSP=m
+CONFIG_SND_OMAP_SOC_OMAP_TWL4030=m
+CONFIG_SND_SOC_TWL4030=m
+CONFIG_SND_DAVINCI_SOC=m
+CONFIG_SND_AM33XX_SOC_EVM=m
+CONFIG_SND_DAVINCI_SOC_MCASP=m
+CONFIG_SND_HRTIMER=m
