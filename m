@@ -1,149 +1,73 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
-Date: Wed, 10 Sep 2014 12:53:59 +0200
-Message-ID: <20140910105359.GA16489@pengutronix.de>
-References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
- <20140909183804.GA6944@Asurada>
- <20140910062118.GA26348@pengutronix.de>
- <20140910103005.GB17326@audiosh1>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: simple-card: fix regression in clock
+	rate lookup
+Date: Wed, 10 Sep 2014 11:56:53 +0100
+Message-ID: <20140910105653.GB7960@sirena.org.uk>
+References: <42811667.3TM1iBfezH@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140910103005.GB17326@audiosh1>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============9189994361304948827=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 120792619E3
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 12:57:15 +0200 (CEST)
+In-Reply-To: <42811667.3TM1iBfezH@wuerfel>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Jean-Francois Moine <moinejf@free.fr>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---9jxsPFA5p3P2qPhR
-Content-Type: text/plain; charset=utf-8
+--===============9189994361304948827==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
 
-On Wed, Sep 10, 2014 at 06:30:06PM +0800, Shengjiu Wang wrote:
-> On Wed, Sep 10, 2014 at 08:21:18AM +0200, Markus Pargmann wrote:
-> > On Tue, Sep 09, 2014 at 11:38:05AM -0700, Nicolin Chen wrote:
-> > > On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
-> > > > @@ -1321,7 +1333,11 @@ static int fsl_ssi_probe(struct platform_dev=
-ice *pdev)
-> > > >  		return -ENOMEM;
-> > > >  	}
-> > > > =20
-> > > > -	ssi_private->regs =3D devm_regmap_init_mmio(&pdev->dev, iomem,
-> > > > +	if (ssi_private->soc->imx)
-> > > > +		ssi_private->regs =3D devm_regmap_init_mmio_clk(&pdev->dev,
-> > > > +			"ipg", iomem, &fsl_ssi_regconfig);
-> > > > +	else
-> > > > +		ssi_private->regs =3D devm_regmap_init_mmio(&pdev->dev, iomem,
-> > >=20
-> > > As Markus mentioned, the key point here is to be compatible with those
-> > > non-clock-name platforms.
-> > >=20
-> > > I think it would be safer to keep the current code while adding an ex=
-tra
-> > > clk_disable_unprepare() at the end of probe() as a common routine. And
-> > > meantime, make sure to have the call for imx only because it seems th=
-at
-> > > the other platforms do not depend on the clock. //a bit guessing here=
- :)
-> > >=20
-> > > Then we can get a patch like:
-> > > open() {
-> > > +	clk_prepare_enable();
-> > > 	....
-> > > }
-> > >=20
-> > > close() {
-> > > 	....
-> > > +	clk_disable_unprepare()
-> > > }
-> > >=20
-> > > probe() {
-> > > 	clk_get();
-> > > 	clk_prepare_enable();
-> > > 	....
-> > > 	if (xxx)
-> > > -		goto err_xx;
-> > > +		return ret;
-> > > 	....
-> > > +	clk_disable_unprepare();
-> > > 	return 0;
-> > > -err_xx:
-> > > -	clk_disable_unprepare()
-> > > }
-> > >=20
-> > > remove() {
-> > > 	....
-> > > -	clk_disable_unprepare()
-> > > }
-> >=20
-> > If I remember correctly, there may be AC97 communication with the codec
-> > before any substream is created. That's why we enable the SSI unit right
-> > at the beginning for AC97 in fsl_ssi_setup_reg_vals(). So we need to
-> > check for AC97 before disabling clocks.
-> >=20
-> > Best regards,
-> >=20
-> > Markus
->=20
-> hi Markus
->=20
-> I think if clk_prepare_enable() in startup(), and clk_disable_unprepare()
-> in shutdown can meet this requirement, right?
+--mojUlQ0s9EVzWg2t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yes that could work.
+On Mon, Sep 08, 2014 at 01:14:05PM +0200, Arnd Bergmann wrote:
+> Commit 7c7b9cf53d284f ("ASoC: simple-card: fixup cpu_dai_name
+> clear case") changed the way that "sound-dai" properties are handled,
+> which leads to the clock frequency not being picked up from the
+> node that the phandle points to, as correctly identified by gcc
+> with this warning:
 
->=20
-> done:
->         if (ssi_private->dai_fmt)
->                 _fsl_ssi_set_dai_fmt(ssi_private, ssi_private->dai_fmt);
->=20
-> I find that in end of probe, there is setting of dai_fmt. Can we remove t=
-his?
-> because this setting need to enable ipg clock, and if ac97, ipg clock can=
-'t be
-> disabled.
+Applied, thanks.
 
-No you can't remove it. It is necessary for the DT property "fsl,mode".
-Most dts do not have this property anymore because the sound cards are
-setting the dai-fmt. But there are still some powerpc dts files that
-contain that property.
-
-Best regards,
-
-Markus
-
---=20
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---9jxsPFA5p3P2qPhR
+--mojUlQ0s9EVzWg2t
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Version: GnuPG v2
 
-iQIcBAEBAgAGBQJUEC3HAAoJEEpcgKtcEGQQZzwQAIVVINoEJjvi/FANlG/mhPoW
-HMsfwFYgkJUfbLo2+tzsOdQ3rIYNxw6rlaRruwNP7D/cfTa2vY0RUszKRoPS6+lR
-MYYC52JKEjZHcEK/4yU8j3xCrC9/lOfsKPv7IXdjwE3iXHBOCeaUIp7Fy5cVlhSu
-SQHfPs1FFF5kRIbcXdls+Pd5Wy1j2hT+lymX8NFGx8icOuLvHk2PVvqlL/EQPf8J
-2UUrydscZvRkjzJI0KL2F0VT3I10/6GHdxIvzzQDBOIW8QlRqReaZsYm5udhkMTl
-OVkDWWkafmukhv5+8jjMDLqj0Mqx2FCGNsL/Bse5ClN5u8qGAG1+9OooL3ekbAGc
-ZnsrVMz97iKhhwCNlECmoGDQX+E+Pt7bVuXGfSBJLG4TuojFtotGqjH+vQhruROw
-kHHDSt9SAHSuJNlDU8i1Z6vYVgWfUbJl5GekB+tkmkprnOo4LaZL6D0+sHZCQolW
-m0KzFwpXHgyUDuW85VSjWhYpUcy3/CKEFcaXIjV4TvCQb6LCELQTiXDJskbl2MHv
-D6gdyp9Jdqi9buHgeuOOwUnJH7omAjKFKFgWciVNu3SBp8w/dmzS2kZvBBUeUcTZ
-heKDdLTXigpD8/2cSe2BhRiWo1s1H67GeOT3MLKaUvJVliE+kVZozdZsWYPSnTiL
-wcBVOpLSxoXyRy6sHg5n
-=C5g+
+iQEcBAEBAgAGBQJUEC51AAoJECTWi3JdVIfQ3IAH/RQiHYbu53xmOtyMaWaRyy8J
+V4s9T5P72gHz82IW8/8dx0EatrwpuMvR/nkxed5P9boUyGNA5PRSFxAAdpdl/Ksz
+IjPm8kdXtzOrdH672KO9a64rsvzshUezpEDILOLK4azgNp3rrsjnyeFi9OJdubxz
+YHZowOvnDhENhlSOuNvpik7lY6bBWmZjVZl6KEOcd9cAUEaYd3j0NwPeWrz2RnWZ
+0cXiJuZKfiE4wZlyhJUe5idxEt+7GayNLAGEhpxQ5qZIg2ynBsR2Fx3FkQbC2bsr
+qAA7RABdaxHET1nY4z/4dhqp+Af0YFBfM4pLXJojjwRMu2t5qPeCHKETaR9F3Sc=
+=p88X
 -----END PGP SIGNATURE-----
 
---9jxsPFA5p3P2qPhR--
+--mojUlQ0s9EVzWg2t--
+
+--===============9189994361304948827==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9189994361304948827==--
