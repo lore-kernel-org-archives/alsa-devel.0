@@ -1,18 +1,17 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC : question about custom rate
-Date: Wed, 10 Sep 2014 08:22:46 +0200
-Message-ID: <540FEE36.2090208@metafoo.de>
-References: <540EBDB8.20507@flatmax.org> <540EDA18.5070309@metafoo.de>
- <540F9133.7070405@flatmax.org>
+Subject: Re: [PATCH] ASoC: rt286: Set cbj_en for ACPI devices
+Date: Wed, 10 Sep 2014 08:32:59 +0200
+Message-ID: <540FF09B.4080608@metafoo.de>
+References: <1410313233-585-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-053.synserver.de (smtp-out-053.synserver.de
- [212.40.185.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 009392625EF
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 08:22:41 +0200 (CEST)
-In-Reply-To: <540F9133.7070405@flatmax.org>
+Received: from smtp-out-053.synserver.de (smtp-out-057.synserver.de
+ [212.40.185.57])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B006261A60
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 08:32:54 +0200 (CEST)
+In-Reply-To: <1410313233-585-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>, alsa-devel@alsa-project.org
+To: bardliao@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 09/10/2014 01:45 AM, Matt Flax wrote:
-> On 09/09/14 20:44, Lars-Peter Clausen wrote:
->> On 09/09/2014 10:43 AM, Matt Flax wrote:
->>> Hi there,
->>>
->>> I have an ASIC running on an ASoC with a custom rate @ 18750 Hz.
->>> I would like ALSA to report the correct rate.
->>>
->>> If I do nothing, then the following reports 16000 Hz :
->>> cat /proc/asound/card0/pcm0c/sub0/hw_params
->>>
->>> I have verified that the hardware is running at the expected 18750 Hz.
->>> I am wondering what/where is the correct place to setup the actual rate ?
->>>
->>> I am trying to set the rates at startup like so but ALSA will not work with
->>> the driver when I do this :
->>>
->>> static int implant_startup(struct snd_pcm_substream *substream, struct
->>> snd_soc_dai *dai)
->>> {
->>>      snd_pcm_hw_constraint_minmax(substream->runtime,
->>> SNDRV_PCM_HW_PARAM_RATE, 18750, 18750);
->>
->>
->> This is the correct approach. But it is quite likely that your I2S driver
->> will set additional constraints (e.g. just 16k, 32k, etc.) that results in
->> an empty list for the rate constraints. If the I2S driver works fine maybe
->> change the constraints to only set a minimum and maximum rate instead of
->> specific rates.
->
-> Yes, you are right, the i2s driver uses the macro SNDRV_PCM_RATE_8000_96000.
->
-> I have used your advice to test by manually setting the i2s rates to
-> SNDRV_PCM_RATE_CONTINUOUS in the i2s driver's src code.
-> Now the rate is reported correctly in software. Thank you.
->
-> Is there a way to access the underlying i2s driver from within my codec's
-> startup file so that I don't need to alter the core driver source code ?
+On 09/10/2014 03:40 AM, bardliao@realtek.com wrote:
+[...]
+> +	/* enable jack combo mode on supported devices */
+> +	acpiid = acpi_match_device(dev->driver->acpi_match_table, dev);
+> +	if (acpiid) {
+> +		for (mach = rt286_jack_combo; mach->acpi_id; mach++) {
+> +			if (!strcmp(mach->acpi_id, acpiid->id))
+> +				rt286->pdata.cbj_en =
+> +					rt286_jack_combo->jack_combo;
+> +
+> +		}
+> +	}
 
-No, that would be a layering violation. If the I2S driver supports more than 
-just the currently advertised rates it should be updated.
+Don't invent your own mechanism for this. Use the driver_data field from the 
+acpi_device_id table.
 
-- Lars
+> +
+>   	regmap_write(rt286->regmap, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
+>
+>   	for (i = 0; i < RT286_POWER_REG_LEN; i++)
+>
