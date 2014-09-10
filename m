@@ -1,51 +1,79 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
-Date: Wed, 10 Sep 2014 18:01:42 +0800
-Message-ID: <20140910100141.GA17326@audiosh1>
-References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
- <20140909183804.GA6944@Asurada> <540F5706.1050303@tabi.org>
- <20140909195928.GA5224@Asurada>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: question about two ASoC commits
+Date: Wed, 10 Sep 2014 11:11:28 +0100
+Message-ID: <20140910101128.GQ2601@sirena.org.uk>
+References: <540EBC14.6090002@mentor.com> <20140909101954.GO2601@sirena.org.uk>
+ <857E9EDCA6C0904DB3357321AA9123EBE61DF1E9@NA-MBX-01.mgc.mentorg.com>
+ <540FDEFE.5000600@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140909195928.GA5224@Asurada>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Timur Tabi <timur@tabi.org>, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, mpa@pengutronix.de
+Content-Type: multipart/mixed; boundary="===============2286498878025432842=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 98AA02615BF
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 12:12:13 +0200 (CEST)
+In-Reply-To: <540FDEFE.5000600@mentor.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: jiwang <jiada_wang@mentor.com>
+Cc: tiwai@suse.de, ALSA development <alsa-devel@alsa-project.org>, Joshua_Frkuska@mentor.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 09, 2014 at 12:59:29PM -0700, Nicolin Chen wrote:
-> On Tue, Sep 09, 2014 at 02:37:42PM -0500, Timur Tabi wrote:
-> > On 09/09/2014 01:38 PM, Nicolin Chen wrote:
-> > >make sure to have the call for imx only because it seems that
-> > >the other platforms do not depend on the clock.
-> > 
-> > Although I doubt anyone will every add support for clocks to PowerPC "side"
-> > of this driver, I would prefer to avoid IMX-specific changes. Instead, the
-> > code should check if a clock is available.  That's why I suggested this
-> > change:
-> > 
-> > -	if (ssi_private->soc->imx)
-> > +	if (!IS_ERR(ssi_private->clk))
-> 
-> Hmm.... I think the following change may be better?
-> 
-> probe() {
-> 	....
-> +	/*
-> +	 * Initially mark the clock to NULL for all platforms so that later
-> +	 * clk_prepare_enable() will ignore and return 0 for non-clock cases.
-> +	 */
-> +	ssi_private->clk = NULL;
-> 	.....
-> 	fsl_ssi_imx_probe();
-> }
-ssi_private is initialized to zero in beginning of probe. I think no need to
-add this change here.
 
-wang shengjiu
-> 
-> In this way, all platforms, not confined to imx any more, will be able
-> to call clk_prepare_enable(). Then we don't need an extra platform check
-> before calling it.
+--===============2286498878025432842==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="c7o3IEw+vx/jOhmI"
+Content-Disposition: inline
+
+
+--c7o3IEw+vx/jOhmI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Sep 10, 2014 at 02:17:50PM +0900, jiwang wrote:
+
+> Yes I can read this from commit message,
+> But I am not very sure why not initialize dai format variable in driver
+> itself.
+
+If the user doesn't specify anything we have to pick a default, this is
+the quickest and simplest way of doing that.
+
+> Now we are having undefined hole between NB_NF and NB_IF,
+> don't you think it's better to shift all the others down by 1, to keep them coherent?
+
+Sure, feel free to submit a patch.
+
+--c7o3IEw+vx/jOhmI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUECPQAAoJECTWi3JdVIfQRs0H/1Dr1S/hvMAMrj/ni9fPN0VI
+oZZvumBAvFQvkyzDCB75iivRMBf5juTK7Mu36daRdx1IhiqQAd0L8s6QJhQ9V2V4
+13URs2EDQX2yH/eUShjcAAdUKjULUqhh5lcKV0KVHDRL4tSzH0+wubSpmqSL61DJ
+yyPZ6sQd4hD4OJrvSCkLgzgIo1jchkSx5/HDWAMFnko8Z0AbpdyxkjxrcDhSPp7V
+/aYCCuMD0D9YZmF79vBbZ5crTOrX3k8xYFdjx/9stYblet9Le0dwzMWDreUJE5s2
+r5JaaKQN9yRz+lTacNerS+aElKWizoMxBRFlw+b0N8xwKTEnkGscIg7snIkBiWE=
+=zUjr
+-----END PGP SIGNATURE-----
+
+--c7o3IEw+vx/jOhmI--
+
+--===============2286498878025432842==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2286498878025432842==--
