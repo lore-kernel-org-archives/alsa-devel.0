@@ -1,62 +1,51 @@
-From: Benoit Cousson <bcousson@baylibre.com>
-Subject: Re: [PATCH] ASoC:simple-card: Add multi-CODEC support
-Date: Wed, 10 Sep 2014 18:27:26 +0200
-Message-ID: <54107BEE.5010602@baylibre.com>
-References: <54103671.c36bb40a.2743.ffff969aSMTPIN_ADDED_MISSING@mx.google.com>	<5410394A.1030508@baylibre.com>
- <20140910180639.6a92a33c@armhf>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH 1/3] ASoC: tegra: add tegra sgtl5000 machine driver
+Date: Wed, 10 Sep 2014 11:01:32 -0600
+Message-ID: <541083EC.7080803@wwwdotorg.org>
+References: <cover.1410276224.git.marcel@ziswiler.com>	<f90791ebb1799a4aa62dd6b527885ddadae3c058.1410276224.git.marcel@ziswiler.com> <CAOMZO5BYGwHGSeHeaQxEO=BUBGbno9P29et582SDzmwmfVioZA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f182.google.com (mail-we0-f182.google.com
- [74.125.82.182])
- by alsa0.perex.cz (Postfix) with ESMTP id A60DF261A83
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 18:27:27 +0200 (CEST)
-Received: by mail-we0-f182.google.com with SMTP id k48so3291322wev.27
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 09:27:27 -0700 (PDT)
-In-Reply-To: <20140910180639.6a92a33c@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Xiubo Li <Li.Xiubo@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAOMZO5BYGwHGSeHeaQxEO=BUBGbno9P29et582SDzmwmfVioZA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Marcel Ziswiler <marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, stefan-XLVq0VzYD2Y@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTAvMDkvMjAxNCAxODowNiwgSmVhbi1GcmFuY29pcyBNb2luZSB3cm90ZToKPiBPbiBXZWQs
-IDEwIFNlcCAyMDE0IDEzOjQzOjA2ICswMjAwCj4gQmVub2l0IENvdXNzb24gPGJjb3Vzc29uQGJh
-eWxpYnJlLmNvbT4gd3JvdGU6Cj4KPj4+ICsJCWNvZGVjQDAgewo+Pj4gKwkJCXNvdW5kLWRhaSA9
-IDwmaGRtaSAwPjsKPj4+ICsJCX07Cj4+PiArCQljb2RlY0AxIHsKPj4+ICsJCQlzb3VuZC1kYWkg
-PSA8JnNwZGlmX2NvZGVjPjsKPj4+ICAgIAkJfTsKPj4KPj4gSSBkb24ndCBoYXZlIHN0cm9uZyBv
-cGluaW9uIG9uIHRoYXQsIGJ1dCBpbiBteSBjYXNlLCBJIHdhcyBjb25zaWRlcmluZwo+PiB1c2lu
-ZyBhIHNpbXBsZSBsaXN0IGluc3RlYWQgb2Ygc2V2ZXJhbCBub2Rlcy4KPj4gSSBkb24ndCBsaWtl
-IGhhdmluZyB0byBhZGQgZmFrZSBhZGRyZXNzIGp1c3QgdG8gZW5zdXJlIHVuaXF1ZW5lc3MuCj4+
-Cj4+IFNvbWV0aGluZyBsaWtlIHRoYXQ6Cj4+Cj4+ICAgIHNvdW5kLWRhaXMgPSA8JnNwZGlmX2Nv
-ZGVjIDE+LCA8JmhkbWkgMD47Cj4KPiBZb3UgYXJlIHJpZ2h0LCB0aGlzIHdvdWxkIGJlIHNpbXBs
-ZXIgKEkgZGlkIG5vdCBzZWUgdGhhdCB0aGVyZSBjb3VsZCBiZQo+IHBoYW5kbGUncyB3aXRoIGRp
-ZmZlcmVudCBjZWxsIHNpemVzIGluIGEgbGlzdCkuCgpJbiBmYWN0IHlvdSBjYW5ub3QsIHRoYXQg
-d2h5IEkgYWRkZWQgdGhlIHNhbWUgbnVtYmVyIG9mIHBhcmFtZXRlcnMgZm9yIApib3RoLgoKRm9y
-IERULCBpdCBpcyBqdXN0IGEgbGlzdCBvZiBlbGVtZW50cywgaXQgY291bGQgYmUgZW5jb2RlZCBs
-aWtlIHRoYXQ6Cjwmc3BkaWZfY29kZWMgMSAmaGRtaSAwPjsKCkF0IHRoZSBlbmQgaXQgd2lsbCBi
-ZSBhIGxpc3Qgb2YgdTMyIGluc2lkZSB0aGUgZHRiLgoKQlRXLCB3aGF0IGlzIHRoYXQgZXh0cmEg
-cGFyYW1ldGVyIGFmdGVyIHRoZSBwaGFuZGxlPyBJIGNhbm5vdCBmaW5kIGFueSAKcmVmZXJlbmNl
-IG9mIHRoYXQgaW5zaWRlIHRoZSBEb2N1bWVudGF0aW9uLgoKSWYgd2UgbmVlZCB0byBoYXZlIGEg
-cmFuZG9tIG51bWJlciBvZiBwYXJhbWV0ZXJzIGFmdGVyIHRoZSBjb2RlLWRhaSAKcGhhbmRsZSwg
-d2UgY291bGRuJ3QgdXNlIHRoYXQgbGlzdC4KCj4+IFRoYXQgYmVpbmcgc2FpZCwgaXQgd2lsbCBy
-ZXF1aXJlIGNoYW5naW5nIHRoZSBuYW1lIHdpdGggYSBwbHVyYWwgZm9ybSwKPj4gYW5kIGVuc3Vy
-aW5nIHdlIGhhdmUgdGhlIHNhbWUgbnVtYmVyIG9mIHBhcmFtZXRlcnMgZm9yIGVhY2ggY29kZWMu
-Cj4KPiBCdXQgSSBkb24ndCB0aGluayB0aGF0IGNoYW5naW5nIHRoZSBuYW1lIGNvdWxkIGJlIHVz
-ZWZ1bDogdGhlIHRyZWF0bWVudAo+IGlzIGV4YWN0bHkgdGhlIHNhbWUgYW5kLCBhcyBhIHJlc3Vs
-dCwgYWxsIENPREVDIERBSXMgZ28gdG8gdGhlIERBSQo+IGxpc3Qgb2YgdGhlIERBSSBsaW5rLgoK
-WWVhaCwgbWF5YmUgbm90IHRoYXQgdXNlZnVsLCBidXQgdGhhdCB3YXMganVzdCB0byBiZSBhbGln
-bmVkIHdpdGggCnNpbWlsYXIgY2FzZXMgaW4gRFQgYmluZGluZ3MuIExpa2UgZ3Bpb3MsIGludGVy
-cnVwdHMuLi4KCgpSZWdhcmRzLApCZW5vaXQKCgotLSAKQmVub8OudCBDb3Vzc29uCkJheUxpYnJl
-CkVtYmVkZGVkIExpbnV4IFRlY2hub2xvZ3kgTGFiCnd3dy5iYXlsaWJyZS5jb20KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 09/09/2014 12:00 PM, Fabio Estevam wrote:
+> On Tue, Sep 9, 2014 at 12:28 PM, Marcel Ziswiler <marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org> wrote:
+>> This binding and driver describe/support playback to headphones, and
+>> capture from line-in and microphone.
+>>
+>> This driver is useful for the Toradex Apalis T30 and Colibri T30 modules.
+>>
+>> Signed-off-by: Marcel Ziswiler <marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>
+>> ---
+>>   .../bindings/sound/nvidia,tegra-audio-sgtl5000.txt |  45 +++++
+>>   sound/soc/tegra/Kconfig                            |  10 +
+>>   sound/soc/tegra/Makefile                           |   2 +
+>>   sound/soc/tegra/tegra_sgtl5000.c                   | 216 +++++++++++++++++++++
+>
+> What about using the simple-audio-card binding instead of adding the
+> tegra_sgtl5000 machine driver?
+>
+> An example of simple-audio-card used with sgtl5000 can be found here:
+>
+> http://www.spinics.net/lists/devicetree/msg44466.html
+
+I don't think that will work; the Tegra audio complex requires some 
+clock management that doesn't immediately seem to fit into the 
+simple-audio-card concept.
+
+I had intended to refactor and collapse all the Tegra DT audio bindings 
+(and driver code) into a single instance so we didn't need to keep 
+adding more and more. However, I unfortunately never got around to that 
+and probably won't in the future either. Basically, the binding and code 
+would end up essentially identical to any of the current Tegra drivers 
+(or the union of them), with a few tweaks such as only creating e.g. a 
+headphone jack if a property in DT said to, and moving the sampling 
+frequency -> CODEC MCLK table out of the driver into a table in DT. I 
+think with those things parameterized in DT, we could get away with a 
+single "nvidia,tegra-audio-simple" binding and driver. Such a new 
+binding could be based on simple-audio-card with extensions though.
