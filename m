@@ -1,98 +1,74 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
-Date: Wed, 10 Sep 2014 18:30:06 +0800
-Message-ID: <20140910103005.GB17326@audiosh1>
-References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
- <20140909183804.GA6944@Asurada> <20140910062118.GA26348@pengutronix.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: soc-pcm: fix dpcm_path_get error
+	handling
+Date: Wed, 10 Sep 2014 11:33:33 +0100
+Message-ID: <20140910103333.GS2601@sirena.org.uk>
+References: <1410342847-19295-1-git-send-email-zhouqiao@marvell.com>
+ <1410342847-19295-2-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140910062118.GA26348@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0229734744106715064=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A9312619E3
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 12:34:03 +0200 (CEST)
+In-Reply-To: <1410342847-19295-2-git-send-email-zhouqiao@marvell.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Qiao Zhou <zhouqiao@marvell.com>
+Cc: vinod.koul@intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 10, 2014 at 08:21:18AM +0200, Markus Pargmann wrote:
-> On Tue, Sep 09, 2014 at 11:38:05AM -0700, Nicolin Chen wrote:
-> > On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
-> > > @@ -1321,7 +1333,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
-> > >  		return -ENOMEM;
-> > >  	}
-> > >  
-> > > -	ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
-> > > +	if (ssi_private->soc->imx)
-> > > +		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
-> > > +			"ipg", iomem, &fsl_ssi_regconfig);
-> > > +	else
-> > > +		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
-> > 
-> > As Markus mentioned, the key point here is to be compatible with those
-> > non-clock-name platforms.
-> > 
-> > I think it would be safer to keep the current code while adding an extra
-> > clk_disable_unprepare() at the end of probe() as a common routine. And
-> > meantime, make sure to have the call for imx only because it seems that
-> > the other platforms do not depend on the clock. //a bit guessing here :)
-> > 
-> > Then we can get a patch like:
-> > open() {
-> > +	clk_prepare_enable();
-> > 	....
-> > }
-> > 
-> > close() {
-> > 	....
-> > +	clk_disable_unprepare()
-> > }
-> > 
-> > probe() {
-> > 	clk_get();
-> > 	clk_prepare_enable();
-> > 	....
-> > 	if (xxx)
-> > -		goto err_xx;
-> > +		return ret;
-> > 	....
-> > +	clk_disable_unprepare();
-> > 	return 0;
-> > -err_xx:
-> > -	clk_disable_unprepare()
-> > }
-> > 
-> > remove() {
-> > 	....
-> > -	clk_disable_unprepare()
-> > }
-> 
-> If I remember correctly, there may be AC97 communication with the codec
-> before any substream is created. That's why we enable the SSI unit right
-> at the beginning for AC97 in fsl_ssi_setup_reg_vals(). So we need to
-> check for AC97 before disabling clocks.
-> 
-> Best regards,
-> 
-> Markus
 
-hi Markus
-
-I think if clk_prepare_enable() in startup(), and clk_disable_unprepare()
-in shutdown can meet this requirement, right?
+--===============0229734744106715064==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vM+jrqt/DYO3gep+"
+Content-Disposition: inline
 
 
-done:
-        if (ssi_private->dai_fmt)
-                _fsl_ssi_set_dai_fmt(ssi_private, ssi_private->dai_fmt);
+--vM+jrqt/DYO3gep+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I find that in end of probe, there is setting of dai_fmt. Can we remove this?
-because this setting need to enable ipg clock, and if ac97, ipg clock can't be
-disabled.
+On Wed, Sep 10, 2014 at 05:54:07PM +0800, Qiao Zhou wrote:
+> dpcm_path_get may return -ENOMEM when allocating memory for list
+> fails. We should not keep processing path or start up dpcm dai in
+> this case.
 
-wang shengjiu
-> 
-> -- 
-> Pengutronix e.K.                           |                             |
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Applied, thanks.  Please don't send cover letters for single patches -
+it's just more mail.  If anything needs saying it should either go in
+the changelog or after the ---.
+
+--vM+jrqt/DYO3gep+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUECj8AAoJECTWi3JdVIfQ7bwH/ieGz8q2HrkYxQkwr1MLHhW6
+EwR7bCybSbU549En3pdcaYMUu9sSN24p/ODHNfQl4oo6pZezvyN+ceJ7lI3uQXWq
+VdcB+5iqqxIdFHWRxtVHRGEU4PlmEYknX0xgVoQ5JBHgEmbE5L3NH8V8hSeY/O3W
+uDjpClC1uNUC1YoNbUmUWrRuUu3lUvkufWBzzAXDLcu8MECyZv26UiqA+m8KCtqg
+1MDXv1qf9qDh31LFxDlS1zNdQyzI6HMfN7te85NxTR2lJFTz8UE21U9IFQghVrj2
+4CibYUeCs2eLAHr8n1Fl56+DvUOxDnoi73jrPLdmBG2u9q9IJLi8oO8yk0t7c04=
+=Pg8F
+-----END PGP SIGNATURE-----
+
+--vM+jrqt/DYO3gep+--
+
+--===============0229734744106715064==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0229734744106715064==--
