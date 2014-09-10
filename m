@@ -1,81 +1,141 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [alsa-devel] [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in
- this module
-Date: Tue, 9 Sep 2014 23:42:12 -0700
-Message-ID: <20140910064211.GA7652@Asurada>
-References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
- <20140909183804.GA6944@Asurada>
- <20140910062118.GA26348@pengutronix.de>
+From: Jurgen Kramer <gtmkramer@xs4all.nl>
+Subject: [PATCH] pcm: add new 32-bit DSD sample format
+Date: Wed, 10 Sep 2014 09:00:28 +0200
+Message-ID: <1410332428-16571-1-git-send-email-gtmkramer@xs4all.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140910062118.GA26348@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, broonie@kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lb1-smtp-cloud6.xs4all.net (lb1-smtp-cloud6.xs4all.net
+ [194.109.24.56])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB4C7261B31
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 09:00:31 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jurgen Kramer <gtmkramer@xs4all.nl>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 10, 2014 at 08:21:18AM +0200, Markus Pargmann wrote:
-> On Tue, Sep 09, 2014 at 11:38:05AM -0700, Nicolin Chen wrote:
-> > On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
-> > > @@ -1321,7 +1333,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
-> > >  		return -ENOMEM;
-> > >  	}
-> > >  
-> > > -	ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
-> > > +	if (ssi_private->soc->imx)
-> > > +		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
-> > > +			"ipg", iomem, &fsl_ssi_regconfig);
-> > > +	else
-> > > +		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
-> > 
-> > As Markus mentioned, the key point here is to be compatible with those
-> > non-clock-name platforms.
-> > 
-> > I think it would be safer to keep the current code while adding an extra
-> > clk_disable_unprepare() at the end of probe() as a common routine. And
-> > meantime, make sure to have the call for imx only because it seems that
-> > the other platforms do not depend on the clock. //a bit guessing here :)
-> > 
-> > Then we can get a patch like:
-> > open() {
-> > +	clk_prepare_enable();
-> > 	....
-> > }
-> > 
-> > close() {
-> > 	....
-> > +	clk_disable_unprepare()
-> > }
-> > 
-> > probe() {
-> > 	clk_get();
-> > 	clk_prepare_enable();
-> > 	....
-> > 	if (xxx)
-> > -		goto err_xx;
-> > +		return ret;
-> > 	....
-> > +	clk_disable_unprepare();
-> > 	return 0;
-> > -err_xx:
-> > -	clk_disable_unprepare()
-> > }
-> > 
-> > remove() {
-> > 	....
-> > -	clk_disable_unprepare()
-> > }
-> 
-> If I remember correctly, there may be AC97 communication with the codec
-> before any substream is created. That's why we enable the SSI unit right
-> at the beginning for AC97 in fsl_ssi_setup_reg_vals(). So we need to
-> check for AC97 before disabling clocks.
+Add the new DSD_U32_LE sample format to alsa-lib.
 
-Thank you for the input. That's the exact part I couldn't be sure.
-And I agree that adding a check for AC97 will be safer while this
-may keeps itself removable if being unnecessary.
+NB include/pcm.h and include/sound/asound.h are updated so a new sync with the
+kernel headers is not needed
 
-Thanks
-Nicolin
+Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
+---
+ include/pcm.h          | 4 +++-
+ include/sound/asound.h | 3 ++-
+ src/pcm/pcm.c          | 2 ++
+ src/pcm/pcm_misc.c     | 6 ++++++
+ 4 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/include/pcm.h b/include/pcm.h
+index 11e9f0d..db88ad5 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -211,7 +211,9 @@ typedef enum _snd_pcm_format {
+ 	SND_PCM_FORMAT_DSD_U8,
+ 	/* Direct Stream Digital (DSD) in 2-byte samples (x16) */
+ 	SND_PCM_FORMAT_DSD_U16_LE,
+-	SND_PCM_FORMAT_LAST = SND_PCM_FORMAT_DSD_U16_LE,
++	/* Direct Stream Digital (DSD) in 4-byte samples (x32) */
++	SND_PCM_FORMAT_DSD_U32_LE,
++	SND_PCM_FORMAT_LAST = SND_PCM_FORMAT_DSD_U32_LE,
+ 
+ #if __BYTE_ORDER == __LITTLE_ENDIAN
+ 	/** Signed 16 bit CPU endian */
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index 32168f7..6ee5867 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -219,7 +219,8 @@ typedef int __bitwise snd_pcm_format_t;
+ #define	SNDRV_PCM_FORMAT_G723_40_1B	((__force snd_pcm_format_t) 47) /* 1 sample in 1 byte */
+ #define	SNDRV_PCM_FORMAT_DSD_U8		((__force snd_pcm_format_t) 48) /* DSD, 1-byte samples DSD (x8) */
+ #define	SNDRV_PCM_FORMAT_DSD_U16_LE	((__force snd_pcm_format_t) 49) /* DSD, 2-byte samples DSD (x16), little endian */
+-#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U16_LE
++#define	SNDRV_PCM_FORMAT_DSD_U32_LE	((__force snd_pcm_format_t) 50) /* DSD, 4-byte samples DSD (x32), little endian */
++#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U32_LE
+ 
+ #ifdef SNDRV_LITTLE_ENDIAN
+ #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 1399a5b..2e24338 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -1565,6 +1565,7 @@ static const char *const snd_pcm_format_names[] = {
+ 	FORMAT(G723_40_1B),
+ 	FORMAT(DSD_U8),
+ 	FORMAT(DSD_U16_LE),
++	FORMAT(DSD_U32_LE),
+ };
+ 
+ static const char *const snd_pcm_format_aliases[SND_PCM_FORMAT_LAST+1] = {
+@@ -1624,6 +1625,7 @@ static const char *const snd_pcm_format_descriptions[] = {
+ 	FORMATD(G723_40_1B, "G.723 (ADPCM) 40 kbit/s, 1 sample in 1 byte"),
+ 	FORMATD(DSD_U8,  "Direct Stream Digital, 1-byte (x8), oldest bit in MSB"),
+ 	FORMATD(DSD_U16_LE, "Direct Stream Digital, 2-byte (x16), little endian, oldest bits in MSB"),
++	FORMATD(DSD_U32_LE, "Direct Stream Digital, 4-byte (x32), little endian, oldest bits in MSB"),
+ };
+ 
+ static const char *const snd_pcm_type_names[] = {
+diff --git a/src/pcm/pcm_misc.c b/src/pcm/pcm_misc.c
+index 46fc771..9272179 100644
+--- a/src/pcm/pcm_misc.c
++++ b/src/pcm/pcm_misc.c
+@@ -64,6 +64,7 @@ int snd_pcm_format_signed(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_U18_3BE:
+ 	case SNDRV_PCM_FORMAT_DSD_U8:
+ 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
++	case SNDRV_PCM_FORMAT_DSD_U32_LE:
+ 		return 0;
+ 	default:
+ 		return -EINVAL;
+@@ -154,6 +155,7 @@ int snd_pcm_format_little_endian(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_U18_3BE:
+ 	case SNDRV_PCM_FORMAT_DSD_U8:
+ 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
++	case SNDRV_PCM_FORMAT_DSD_U32_LE:
+ 		return 0;
+ 	default:
+ 		return -EINVAL;
+@@ -232,6 +234,7 @@ int snd_pcm_format_width(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_U32_BE:
+ 	case SNDRV_PCM_FORMAT_FLOAT_LE:
+ 	case SNDRV_PCM_FORMAT_FLOAT_BE:
++	case SNDRV_PCM_FORMAT_DSD_U32_LE:
+ 		return 32;
+ 	case SNDRV_PCM_FORMAT_FLOAT64_LE:
+ 	case SNDRV_PCM_FORMAT_FLOAT64_BE:
+@@ -292,6 +295,7 @@ int snd_pcm_format_physical_width(snd_pcm_format_t format)
+ 	case SNDRV_PCM_FORMAT_FLOAT_BE:
+ 	case SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE:
+ 	case SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE:
++	case SNDRV_PCM_FORMAT_DSD_U32_LE:
+ 		return 32;
+ 	case SNDRV_PCM_FORMAT_FLOAT64_LE:
+ 	case SNDRV_PCM_FORMAT_FLOAT64_BE:
+@@ -348,6 +352,7 @@ ssize_t snd_pcm_format_size(snd_pcm_format_t format, size_t samples)
+ 	case SNDRV_PCM_FORMAT_U32_BE:
+ 	case SNDRV_PCM_FORMAT_FLOAT_LE:
+ 	case SNDRV_PCM_FORMAT_FLOAT_BE:
++	case SNDRV_PCM_FORMAT_DSD_U32_LE:
+ 		return samples * 4;
+ 	case SNDRV_PCM_FORMAT_FLOAT64_LE:
+ 	case SNDRV_PCM_FORMAT_FLOAT64_BE:
+@@ -394,6 +399,7 @@ u_int64_t snd_pcm_format_silence_64(snd_pcm_format_t format)
+ 		return 0x8080808080808080ULL;
+ 	case SNDRV_PCM_FORMAT_DSD_U8:
+ 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
++	case SNDRV_PCM_FORMAT_DSD_U32_LE:
+ 		return 0x6969696969696969ULL;
+ #ifdef SNDRV_LITTLE_ENDIAN
+ 	case SNDRV_PCM_FORMAT_U16_LE:
+-- 
+1.9.3
