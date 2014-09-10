@@ -1,83 +1,74 @@
-From: <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt286: Set cbj_en for ACPI devices
-Date: Wed, 10 Sep 2014 09:40:33 +0800
-Message-ID: <1410313233-585-1-git-send-email-bardliao@realtek.com>
+From: "Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>
+Subject: RE: [PATCHv3 3/3] ASoC: simple-card: binding: update binding to
+ support the new style.
+Date: Wed, 10 Sep 2014 02:51:16 +0000
+Message-ID: <755d5dc6d85243c0bd209aea49eef6c0@BY2PR0301MB0613.namprd03.prod.outlook.com>
+References: <1409711021-19277-1-git-send-email-Li.Xiubo@freescale.com>
+ <1409711021-19277-4-git-send-email-Li.Xiubo@freescale.com>
+ <20140909120948.GZ2601@sirena.org.uk> <540EFFC9.4050207@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D10D260309
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 04:43:32 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
+Content-Transfer-Encoding: 8BIT
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <540EFFC9.4050207-l0cyMroinI0@public.gmane.org>
+Content-Language: en-US
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "tiwai-l3A5Bk7waGM@public.gmane.org" <tiwai-l3A5Bk7waGM@public.gmane.org>, "moinejf-GANU6spQydw@public.gmane.org" <moinejf-GANU6spQydw@public.gmane.org>, "andrew-g2DYL2Zd6BY@public.gmane.org" <andrew-g2DYL2Zd6BY@public.gmane.org>, "kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org" <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "pawel.moll-5wv7dgnIgG8@public.gmane.org" <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org" <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, "galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org" <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard Liao <bardliao@realtek.com>
+Hi,
 
-This patch set cbj_en value for ACPI devices.
+> Subject: Re: [PATCHv3 3/3] ASoC: simple-card: binding: update binding to
+> support the new style.
+> 
+> On 09/09/2014 03:09 PM, Mark Brown wrote:
+> > On Wed, Sep 03, 2014 at 10:23:41AM +0800, Xiubo Li wrote:
+> >> This update patch will split the DT node into old style and new style:
+> >> The new style will will be easier to add muti DAI links from old single
+> >> DAI link DTs.
+> >
+> >> This patch will maintian compatibility with the old DTs.
+> >
+> > Is everyone happy with this new style binding?
+> >
+> 
+> If I read the diff correctly the only change in the syntax is moving the
+> bitclock-inversion and frame-inversion properties to DAI nodes also for
+> the new style bindings.
+> 
+> I am Ok with that.
+> 
+> The document does not indicate that the same properties could be also
+> placed to DAI link level like they used to, from where they would apply
+> to both DAI nodes.
+> 
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt286.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+I will post one new version of this patch with some very small fix, and
+I will also add this.
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index e4f6102..d04616b 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1106,11 +1106,25 @@ static const struct acpi_device_id rt286_acpi_match[] = {
- };
- MODULE_DEVICE_TABLE(acpi, rt286_acpi_match);
- 
-+struct rt286_acpi_jack {
-+	const char *acpi_id;
-+	bool jack_combo;
-+};
-+
-+/* list of devices using jack combo mode */
-+static struct rt286_acpi_jack rt286_jack_combo[] = {
-+	{ "INT343A", true },
-+	{},
-+};
-+
- static int rt286_i2c_probe(struct i2c_client *i2c,
- 			   const struct i2c_device_id *id)
- {
- 	struct rt286_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt286_priv *rt286;
-+	struct device *dev = &i2c->dev;
-+	const struct acpi_device_id *acpiid;
-+	struct rt286_acpi_jack *mach;
- 	int i, ret;
- 
- 	rt286 = devm_kzalloc(&i2c->dev,	sizeof(*rt286),
-@@ -1141,6 +1155,17 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	if (pdata)
- 		rt286->pdata = *pdata;
- 
-+	/* enable jack combo mode on supported devices */
-+	acpiid = acpi_match_device(dev->driver->acpi_match_table, dev);
-+	if (acpiid) {
-+		for (mach = rt286_jack_combo; mach->acpi_id; mach++) {
-+			if (!strcmp(mach->acpi_id, acpiid->id))
-+				rt286->pdata.cbj_en =
-+					rt286_jack_combo->jack_combo;
-+
-+		}
-+	}
-+
- 	regmap_write(rt286->regmap, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
- 
- 	for (i = 0; i < RT286_POWER_REG_LEN; i++)
--- 
-1.8.1.1.439.g50a6b54
+> I am Ok with this too, but this breaks the backwards compatibility,
+> which I guess is generally considered a problem. However, I doubt anyone
+> but me has yet used this part of the new syntax and I am happy to fix my
+> dts files.
+> 
+> Best regards,
+> Jyri
+> 
+> ps. I could not find the corresponding code changes in the previous
+> patch, so I assume they are coming later.
+
+Yes, I have one patch about the new style in my local machine, for some
+reason I will post it later.
+
+Thanks,
+
+BRs
+Xiubo
+
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
