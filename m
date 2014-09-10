@@ -1,55 +1,31 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH RESEND] Documentation: fsl,
-	ssi.txt: Avoid cryptic acronyms
-Date: Wed, 10 Sep 2014 16:46:03 -0300
-Message-ID: <1410378363-7137-1-git-send-email-festevam@gmail.com>
+From: Marcel Ziswiler <marcel@ziswiler.com>
+Subject: Re: [PATCH 1/3] ASoC: tegra: add tegra sgtl5000 machine driver
+Date: Wed, 10 Sep 2014 22:46:07 +0200
+Message-ID: <1410381967.16012.8.camel@localhost.localdomain>
+References: <cover.1410276224.git.marcel@ziswiler.com>
+	 <f90791ebb1799a4aa62dd6b527885ddadae3c058.1410276224.git.marcel@ziswiler.com>
+	 <CAOMZO5BYGwHGSeHeaQxEO=BUBGbno9P29et582SDzmwmfVioZA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f176.google.com (mail-vc0-f176.google.com
- [209.85.220.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 92D3B2655B1
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 21:46:37 +0200 (CEST)
-Received: by mail-vc0-f176.google.com with SMTP id la4so3022804vcb.7
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 12:46:36 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@linaro.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Fabio Estevam <fabio.estevam@freescale.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAOMZO5BYGwHGSeHeaQxEO=BUBGbno9P29et582SDzmwmfVioZA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Stephen Warren <swarren@wwwdotorg.org>, Russell King <linux@arm.linux.org.uk>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, stefan@agner.ch
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On Tue, 2014-09-09 at 15:00 -0300, Fabio Estevam wrote:
+> What about using the simple-audio-card binding instead of adding the
+> tegra_sgtl5000 machine driver?
 
-It is much clearer to use the full terms here: left-justified/right-justified.
+Good question. I have to admit last I checked on the current state of
+affairs on vybrid towards end of last year none of this existed yet.
+Sweet. Will try and resubmit v2 with that in mind.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- Documentation/devicetree/bindings/sound/fsl,ssi.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> An example of simple-audio-card used with sgtl5000 can be found here:
+> 
+> http://www.spinics.net/lists/devicetree/msg44466.html
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-index 3aa4a8f..ceca880 100644
---- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-@@ -62,9 +62,9 @@ Optional properties:
-                     "i2s-slave" - I2S mode, SSI is clock slave
-                     "i2s-master" - I2S mode, SSI is clock master
-                     "lj-slave" - left-justified mode, SSI is clock slave
--                    "lj-master" - l.j. mode, SSI is clock master
-+                    "lj-master" - left-justified mode, SSI is clock master
-                     "rj-slave" - right-justified mode, SSI is clock slave
--                    "rj-master" - r.j., SSI is clock master
-+                    "rj-master" - right-justified mode, SSI is clock master
-                     "ac97-slave" - AC97 mode, SSI is clock slave
-                     "ac97-master" - AC97 mode, SSI is clock master
- 
--- 
-1.9.1
+While above linked example does not quite look like a proper example
+thereof I do get the point. Please excuse my ignorance.
