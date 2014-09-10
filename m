@@ -1,55 +1,46 @@
-From: Jeremy Moles <cubicool@gmail.com>
-Subject: EP93XX / EDB9315A Audio Issues
-Date: Wed, 10 Sep 2014 13:57:33 -0400
-Message-ID: <5410910D.6060201@gmail.com>
+From: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 2/5] ASoC: fsl: add imx-tlv320aic3x machine driver
+Date: Wed, 10 Sep 2014 11:07:36 -0700
+Message-ID: <20140910180735.GB4628@Asurada>
+References: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
+ <1410356809-26179-3-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f53.google.com (mail-qg0-f53.google.com
- [209.85.192.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D794265571
- for <Alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 19:57:36 +0200 (CEST)
-Received: by mail-qg0-f53.google.com with SMTP id q108so2319993qgd.40
- for <Alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 10:57:35 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Hartley Sweeten <HartleyS@visionengravers.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1410356809-26179-3-git-send-email-d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-(I'm cross-posting this to the linux-arm-kernel and alsa-devel lists, as 
-recommended):
+Hi Dmitry,
+   
+On Wed, Sep 10, 2014 at 04:46:46PM +0300, Dmitry Lavnikevich wrote:
+> This is driver for i.MX6 boards with tlv320aic3x audio codecs.
+> 
+> Signed-off-by: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+> ---
+>  .../bindings/sound/fsl,imx-audio-tlv320aic3x.txt   |  27 ++++
+>  sound/soc/fsl/Kconfig                              |  13 ++
+>  sound/soc/fsl/Makefile                             |   2 +
+>  sound/soc/fsl/imx-tlv320aic3x.c                    | 177 +++++++++++++++++++++
+>  4 files changed, 219 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,imx-audio-tlv320aic3x.txt
+>  create mode 100644 sound/soc/fsl/imx-tlv320aic3x.c
 
-I'm looking for anyone who has successfully used the EP93XX/EDB9315A 
-demo board's sound infrastructure. I have been working with Hartley 
-Sweeten on patching some DMA coherency mask issues (successfully), and 
-while this makes the kernel stop complaining (and allows the userspace 
-to "appear" to work) I never actually get any sound out of the machine 
-on newer kernels.
+This whole single patch looks pretty clean. So I suggest it may be merged
+into fsl-asoc-card.c driver whose DT binding is almost identical to yours
+so that we don't need to add a machine driver with duplicated code. And
+you can feel free to enable fsl-asoc-card in the defconfig as well -- I
+was about to do it and to replace imx-wm8962 and imx-sgtl5000 with it.
 
-I do, however, have an existing (binary-only) 2.6.21 kernel from the 
-client where sound _IS_ functional; thus, I know the system can 
-POTENTIALLY work, and that the problem is software-based.
+The only extra trivia you need to tackle is to add a clock binding into
+your dts for CODEC side.
 
-At this point, I have a mountain of information I can provide about the 
-state of my EDB9315A board, but what I'm really looking for is someone 
-to connect with and/or have consult with us to get sound working on 
-newer kernels with this board exactly (although other EP93XX boards 
-might be similar, I'm so mistrustful of everything at this point I'm 
-looking for someone else with this hardware EXACTLY).
-
-I've tried 3.15-3.17, all with the same results. aplay/alsamixer see the 
-device, appear to interact with it in a normal fashion (it even 
-mutes/unmutes the device every time you touch it), but no sound is ever 
-produced. It is possible, of course, the problem is in userspace (I'm 
-using a custom Yocto-based image), but I'm doubtful of that.
-
-At any rate, any help would be greatly appreciate, although i realize 
-this is fringe hardware. :)
+Thanks
+Nicolin
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
