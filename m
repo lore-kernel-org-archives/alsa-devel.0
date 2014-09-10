@@ -1,7 +1,8 @@
 From: Harley Griggs <hgriggs@posteo.co.uk>
-Subject: Re: [PATCH] ALSA: virtuoso: add Xonar Xense support
-Date: Wed, 10 Sep 2014 19:44:18 +0100
-Message-ID: <20140910184430.DE48825C00A7@mx02.posteo.de>
+Subject: Re: [PATCH] ALSA: virtuoso: add partial Xonar Xense
+ support
+Date: Wed, 10 Sep 2014 19:58:25 +0100
+Message-ID: <20140910185841.75F9525AF532@mx02.posteo.de>
 References: <20140910141813.B328C258D256@mx02.posteo.de>
  <54107077.7030203@ladisch.de>
  <20140910160422.1B47E25A2113@mx02.posteo.de>
@@ -11,8 +12,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx02.posteo.de (mx02.posteo.de [89.146.194.165])
- by alsa0.perex.cz (Postfix) with ESMTP id 10E71265589
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 20:44:31 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 61B52265594
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 20:58:42 +0200 (CEST)
 In-Reply-To: <5410954B.4060901@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
