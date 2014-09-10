@@ -1,64 +1,78 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH] ASoC:simple-card: Add multi-CODEC support
-Date: Wed, 10 Sep 2014 19:25:03 +0200
-Message-ID: <20140910192503.70902463@armhf>
-References: <54103671.c36bb40a.2743.ffff969aSMTPIN_ADDED_MISSING@mx.google.com>
- <5410394A.1030508@baylibre.com> <20140910180639.6a92a33c@armhf>
- <54107BEE.5010602@baylibre.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
+Date: Wed, 10 Sep 2014 10:42:04 -0700
+Message-ID: <20140910174204.GA4628@Asurada>
+References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
+ <20140909183804.GA6944@Asurada>
+ <20140910081251.GA14662@audiosh1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
- by alsa0.perex.cz (Postfix) with ESMTP id 583B626555A
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 19:23:07 +0200 (CEST)
-In-Reply-To: <54107BEE.5010602@baylibre.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Benoit Cousson <bcousson@baylibre.com>
-Cc: Xiubo Li <Li.Xiubo@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140910081251.GA14662@audiosh1>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, mpa@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAxMCBTZXAgMjAxNCAxODoyNzoyNiArMDIwMApCZW5vaXQgQ291c3NvbiA8YmNvdXNz
-b25AYmF5bGlicmUuY29tPiB3cm90ZToKCj4gPj4gSSBkb24ndCBoYXZlIHN0cm9uZyBvcGluaW9u
-IG9uIHRoYXQsIGJ1dCBpbiBteSBjYXNlLCBJIHdhcyBjb25zaWRlcmluZwo+ID4+IHVzaW5nIGEg
-c2ltcGxlIGxpc3QgaW5zdGVhZCBvZiBzZXZlcmFsIG5vZGVzLgo+ID4+IEkgZG9uJ3QgbGlrZSBo
-YXZpbmcgdG8gYWRkIGZha2UgYWRkcmVzcyBqdXN0IHRvIGVuc3VyZSB1bmlxdWVuZXNzLgo+ID4+
-Cj4gPj4gU29tZXRoaW5nIGxpa2UgdGhhdDoKPiA+Pgo+ID4+ICAgIHNvdW5kLWRhaXMgPSA8JnNw
-ZGlmX2NvZGVjIDE+LCA8JmhkbWkgMD47ICAKPiA+Cj4gPiBZb3UgYXJlIHJpZ2h0LCB0aGlzIHdv
-dWxkIGJlIHNpbXBsZXIgKEkgZGlkIG5vdCBzZWUgdGhhdCB0aGVyZSBjb3VsZCBiZQo+ID4gcGhh
-bmRsZSdzIHdpdGggZGlmZmVyZW50IGNlbGwgc2l6ZXMgaW4gYSBsaXN0KS4gIAo+IAo+IEluIGZh
-Y3QgeW91IGNhbm5vdCwgdGhhdCB3aHkgSSBhZGRlZCB0aGUgc2FtZSBudW1iZXIgb2YgcGFyYW1l
-dGVycyBmb3IgCj4gYm90aC4KPiAKPiBGb3IgRFQsIGl0IGlzIGp1c3QgYSBsaXN0IG9mIGVsZW1l
-bnRzLCBpdCBjb3VsZCBiZSBlbmNvZGVkIGxpa2UgdGhhdDoKPiA8JnNwZGlmX2NvZGVjIDEgJmhk
-bWkgMD47Cj4gCj4gQXQgdGhlIGVuZCBpdCB3aWxsIGJlIGEgbGlzdCBvZiB1MzIgaW5zaWRlIHRo
-ZSBkdGIuCgpZZXMsIGJ1dCBfX29mX3BhcnNlX3BoYW5kbGVfd2l0aF9hcmdzKCkgaGFuZGxlcyB0
-aGUgbnVtYmVyIG9mIGNlbGxzIG9mIHRoZSBwaGFuZGxlLgoKPiBCVFcsIHdoYXQgaXMgdGhhdCBl
-eHRyYSBwYXJhbWV0ZXIgYWZ0ZXIgdGhlIHBoYW5kbGU/IEkgY2Fubm90IGZpbmQgYW55IAo+IHJl
-ZmVyZW5jZSBvZiB0aGF0IGluc2lkZSB0aGUgRG9jdW1lbnRhdGlvbi4KCkl0IGlzIHRoZSBEQUkg
-bnVtYmVyIGluc2lkZSB0aGUgQ09ERUMuIFRoZSBUREE5OTh4IENPREVDIGhhcyB0d28gREFJcywK
-Uy9QRElGIGFuZCBJMlMuCgo+IElmIHdlIG5lZWQgdG8gaGF2ZSBhIHJhbmRvbSBudW1iZXIgb2Yg
-cGFyYW1ldGVycyBhZnRlciB0aGUgY29kZS1kYWkgCj4gcGhhbmRsZSwgd2UgY291bGRuJ3QgdXNl
-IHRoYXQgbGlzdC4KPiAKPiA+PiBUaGF0IGJlaW5nIHNhaWQsIGl0IHdpbGwgcmVxdWlyZSBjaGFu
-Z2luZyB0aGUgbmFtZSB3aXRoIGEgcGx1cmFsIGZvcm0sCj4gPj4gYW5kIGVuc3VyaW5nIHdlIGhh
-dmUgdGhlIHNhbWUgbnVtYmVyIG9mIHBhcmFtZXRlcnMgZm9yIGVhY2ggY29kZWMuICAKPiA+Cj4g
-PiBCdXQgSSBkb24ndCB0aGluayB0aGF0IGNoYW5naW5nIHRoZSBuYW1lIGNvdWxkIGJlIHVzZWZ1
-bDogdGhlIHRyZWF0bWVudAo+ID4gaXMgZXhhY3RseSB0aGUgc2FtZSBhbmQsIGFzIGEgcmVzdWx0
-LCBhbGwgQ09ERUMgREFJcyBnbyB0byB0aGUgREFJCj4gPiBsaXN0IG9mIHRoZSBEQUkgbGluay4g
-IAo+IAo+IFllYWgsIG1heWJlIG5vdCB0aGF0IHVzZWZ1bCwgYnV0IHRoYXQgd2FzIGp1c3QgdG8g
-YmUgYWxpZ25lZCB3aXRoIAo+IHNpbWlsYXIgY2FzZXMgaW4gRFQgYmluZGluZ3MuIExpa2UgZ3Bp
-b3MsIGludGVycnVwdHMuLi4KCk5vdCBlYXN5ISAic291bmQtZGFpIiBpcyB1c2VkIGZvciBib3Ro
-IHRoZSBDUFUgYW5kIENPREVDIERBSXMuCkFkZGluZyAic291bmQtZGFpcyIgZm9yIGp1c3QgdGhl
-IENPREVDIERBSXMgd291bGQgY29tcGxleGlmeSB0aGUKc2ltcGxlLWNhcmQgbG9naWMuLi4KCi0t
-IApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkpl
-ZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, Sep 10, 2014 at 04:12:53PM +0800, Shengjiu Wang wrote:
+> > Then we can get a patch like:
+> > open() {
+> > +	clk_prepare_enable();
+> > 	....
+> > }
+> > 
+> > close() {
+> > 	....
+> > +	clk_disable_unprepare()
+> > }
+
+> what is the open() and close()? do you mean the fsl_ssi_startup()
+> and fsl_ssi_shutdown()?
+
+Yea.
+
+> > probe() {
+> > 	clk_get();
+> > 	clk_prepare_enable();
+> > 	....
+> > 	if (xxx)
+> > -		goto err_xx;
+> > +		return ret;
+> > 	....
+> > +	clk_disable_unprepare();
+> > 	return 0;
+> > -err_xx:
+> > -	clk_disable_unprepare()
+> > }
+
+> If this probe() is fsl_ssi_imx_probe(), I think no need to add
+> clk_prepare_enable() or clk_disable_unprepare(), seems there is no 
+> registers accessing in this probe.
+
+This is trying to be safe, especially for such a driver being used
+by multiple platforms. You can omit this as long as the patch can
+pass the test on old imx, PowerPC, and AC97 platforms.
+
+>
+
+And another risk just came to my mind is that there would be a
+possibility that a machine driver would call set_dai_fmt() early,
+after SSI's probe() and before SSI's startup(), if the machine
+driver contains dai_fmt assignment in its probe(). Then, without
+regmap_mmio_clk(), it'll be tough for us over here because we may
+also need to add clock enable/disable for set_dai_fmt/set_sysclk(),
+even if there might be still tiny risk that we missed something.
+
+Then there could be a selfish approach to circumvent it is to use
+regmap_mmio_clk() with "ipg" at the beginning and call regmap_mmio()
+without "ipg" if getting a failed return value from regmap_mmio_clk,
+and meanwhile to keep the clock always enabled for the regmap_mmio()
+case just like what the current driver is doing. This may result
+those non-ipg-clk platforms can't benefit from this refinement
+unless they update their DT bindings -- use "ipg" for core clock
+This might be the safest and simplest way for us, I'm not sure
+everyone would be comfortable with this idea though.
+
+Best regards,
+Nicolin
