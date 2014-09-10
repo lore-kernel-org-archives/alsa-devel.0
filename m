@@ -1,22 +1,64 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH 1/3] ASoC: tegra: add tegra sgtl5000 machine driver
-Date: Wed, 10 Sep 2014 11:05:23 -0600
-Message-ID: <541084D3.8030505@wwwdotorg.org>
-References: <cover.1410276224.git.marcel@ziswiler.com> <f90791ebb1799a4aa62dd6b527885ddadae3c058.1410276224.git.marcel@ziswiler.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH] ASoC:simple-card: Add multi-CODEC support
+Date: Wed, 10 Sep 2014 19:25:03 +0200
+Message-ID: <20140910192503.70902463@armhf>
+References: <54103671.c36bb40a.2743.ffff969aSMTPIN_ADDED_MISSING@mx.google.com>
+ <5410394A.1030508@baylibre.com> <20140910180639.6a92a33c@armhf>
+ <54107BEE.5010602@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <f90791ebb1799a4aa62dd6b527885ddadae3c058.1410276224.git.marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Marcel Ziswiler <marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, stefan-XLVq0VzYD2Y@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+ by alsa0.perex.cz (Postfix) with ESMTP id 583B626555A
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 19:23:07 +0200 (CEST)
+In-Reply-To: <54107BEE.5010602@baylibre.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Benoit Cousson <bcousson@baylibre.com>
+Cc: Xiubo Li <Li.Xiubo@freescale.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/09/2014 09:28 AM, Marcel Ziswiler wrote:
-> This binding and driver describe/support playback to headphones, and
-> capture from line-in and microphone.
->
-> This driver is useful for the Toradex Apalis T30 and Colibri T30 modules.
-
-Reviewed-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+T24gV2VkLCAxMCBTZXAgMjAxNCAxODoyNzoyNiArMDIwMApCZW5vaXQgQ291c3NvbiA8YmNvdXNz
+b25AYmF5bGlicmUuY29tPiB3cm90ZToKCj4gPj4gSSBkb24ndCBoYXZlIHN0cm9uZyBvcGluaW9u
+IG9uIHRoYXQsIGJ1dCBpbiBteSBjYXNlLCBJIHdhcyBjb25zaWRlcmluZwo+ID4+IHVzaW5nIGEg
+c2ltcGxlIGxpc3QgaW5zdGVhZCBvZiBzZXZlcmFsIG5vZGVzLgo+ID4+IEkgZG9uJ3QgbGlrZSBo
+YXZpbmcgdG8gYWRkIGZha2UgYWRkcmVzcyBqdXN0IHRvIGVuc3VyZSB1bmlxdWVuZXNzLgo+ID4+
+Cj4gPj4gU29tZXRoaW5nIGxpa2UgdGhhdDoKPiA+Pgo+ID4+ICAgIHNvdW5kLWRhaXMgPSA8JnNw
+ZGlmX2NvZGVjIDE+LCA8JmhkbWkgMD47ICAKPiA+Cj4gPiBZb3UgYXJlIHJpZ2h0LCB0aGlzIHdv
+dWxkIGJlIHNpbXBsZXIgKEkgZGlkIG5vdCBzZWUgdGhhdCB0aGVyZSBjb3VsZCBiZQo+ID4gcGhh
+bmRsZSdzIHdpdGggZGlmZmVyZW50IGNlbGwgc2l6ZXMgaW4gYSBsaXN0KS4gIAo+IAo+IEluIGZh
+Y3QgeW91IGNhbm5vdCwgdGhhdCB3aHkgSSBhZGRlZCB0aGUgc2FtZSBudW1iZXIgb2YgcGFyYW1l
+dGVycyBmb3IgCj4gYm90aC4KPiAKPiBGb3IgRFQsIGl0IGlzIGp1c3QgYSBsaXN0IG9mIGVsZW1l
+bnRzLCBpdCBjb3VsZCBiZSBlbmNvZGVkIGxpa2UgdGhhdDoKPiA8JnNwZGlmX2NvZGVjIDEgJmhk
+bWkgMD47Cj4gCj4gQXQgdGhlIGVuZCBpdCB3aWxsIGJlIGEgbGlzdCBvZiB1MzIgaW5zaWRlIHRo
+ZSBkdGIuCgpZZXMsIGJ1dCBfX29mX3BhcnNlX3BoYW5kbGVfd2l0aF9hcmdzKCkgaGFuZGxlcyB0
+aGUgbnVtYmVyIG9mIGNlbGxzIG9mIHRoZSBwaGFuZGxlLgoKPiBCVFcsIHdoYXQgaXMgdGhhdCBl
+eHRyYSBwYXJhbWV0ZXIgYWZ0ZXIgdGhlIHBoYW5kbGU/IEkgY2Fubm90IGZpbmQgYW55IAo+IHJl
+ZmVyZW5jZSBvZiB0aGF0IGluc2lkZSB0aGUgRG9jdW1lbnRhdGlvbi4KCkl0IGlzIHRoZSBEQUkg
+bnVtYmVyIGluc2lkZSB0aGUgQ09ERUMuIFRoZSBUREE5OTh4IENPREVDIGhhcyB0d28gREFJcywK
+Uy9QRElGIGFuZCBJMlMuCgo+IElmIHdlIG5lZWQgdG8gaGF2ZSBhIHJhbmRvbSBudW1iZXIgb2Yg
+cGFyYW1ldGVycyBhZnRlciB0aGUgY29kZS1kYWkgCj4gcGhhbmRsZSwgd2UgY291bGRuJ3QgdXNl
+IHRoYXQgbGlzdC4KPiAKPiA+PiBUaGF0IGJlaW5nIHNhaWQsIGl0IHdpbGwgcmVxdWlyZSBjaGFu
+Z2luZyB0aGUgbmFtZSB3aXRoIGEgcGx1cmFsIGZvcm0sCj4gPj4gYW5kIGVuc3VyaW5nIHdlIGhh
+dmUgdGhlIHNhbWUgbnVtYmVyIG9mIHBhcmFtZXRlcnMgZm9yIGVhY2ggY29kZWMuICAKPiA+Cj4g
+PiBCdXQgSSBkb24ndCB0aGluayB0aGF0IGNoYW5naW5nIHRoZSBuYW1lIGNvdWxkIGJlIHVzZWZ1
+bDogdGhlIHRyZWF0bWVudAo+ID4gaXMgZXhhY3RseSB0aGUgc2FtZSBhbmQsIGFzIGEgcmVzdWx0
+LCBhbGwgQ09ERUMgREFJcyBnbyB0byB0aGUgREFJCj4gPiBsaXN0IG9mIHRoZSBEQUkgbGluay4g
+IAo+IAo+IFllYWgsIG1heWJlIG5vdCB0aGF0IHVzZWZ1bCwgYnV0IHRoYXQgd2FzIGp1c3QgdG8g
+YmUgYWxpZ25lZCB3aXRoIAo+IHNpbWlsYXIgY2FzZXMgaW4gRFQgYmluZGluZ3MuIExpa2UgZ3Bp
+b3MsIGludGVycnVwdHMuLi4KCk5vdCBlYXN5ISAic291bmQtZGFpIiBpcyB1c2VkIGZvciBib3Ro
+IHRoZSBDUFUgYW5kIENPREVDIERBSXMuCkFkZGluZyAic291bmQtZGFpcyIgZm9yIGp1c3QgdGhl
+IENPREVDIERBSXMgd291bGQgY29tcGxleGlmeSB0aGUKc2ltcGxlLWNhcmQgbG9naWMuLi4KCi0t
+IApLZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkpl
+ZgkJfAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
