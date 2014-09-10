@@ -1,21 +1,16 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v5 03/12] ALSA: control: Add init callback
-	for kcontrol
-Date: Wed, 10 Sep 2014 13:35:31 +0530
-Message-ID: <20140910080531.GC1770@intel.com>
-References: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
- <1409661367-19047-4-git-send-email-subhransu.s.prusty@intel.com>
- <20140906142124.GG2601@sirena.org.uk>
- <s5hppf8g2ul.wl-tiwai@suse.de> <20140908041421.GI1610@intel.com>
- <s5hppf6a679.wl-tiwai@suse.de> <20140908080807.GJ1610@intel.com>
- <20140909114425.GU2601@sirena.org.uk>
+From: Qiao Zhou <zhouqiao@marvell.com>
+Subject: [PATCH 1/2] dma: mmp_tdma: add DMA_PREP_INTERRUPT flag
+	support
+Date: Wed, 10 Sep 2014 16:40:48 +0800
+Message-ID: <1410338449-13961-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5916917826970616146=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 700ED261B31
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 10:28:41 +0200 (CEST)
-In-Reply-To: <20140909114425.GU2601@sirena.org.uk>
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
+ [67.231.148.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 183792607B6
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 10:40:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,87 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+To: dan.j.williams@intel.com, vinod.koul@intel.com, dmaengine@vger.kernel.org, zhangfei.gao@gmail.com, eric.y.miao@gmail.com, haojian.zhuang@gmail.com, linux@arm.linux.org.uk, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Cc: Qiao Zhou <zhouqiao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
+add DMA_PREP_INTERRUPT flag to support no_period_wakeup, in which
+user space app doesn't want audio interrupt to wake up audio threads.
 
---===============5916917826970616146==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="d6Gm4EdcadzBjdND"
-Content-Disposition: inline
+Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
+---
+ drivers/dma/mmp_tdma.c |   19 ++++++++++++++-----
+ 1 files changed, 14 insertions(+), 5 deletions(-)
 
-
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Sep 09, 2014 at 12:44:25PM +0100, Mark Brown wrote:
-> On Mon, Sep 08, 2014 at 01:38:07PM +0530, Vinod Koul wrote:
->=20
-> Please (as I'm sure has been pointed out before) fix your mailer to word
-> wrap within paragraphs.
-Oops, i though I had set mutt to fix it after you pointed out last time,
-will check again.
-
->=20
-> > On Mon, Sep 08, 2014 at 10:04:42AM +0200, Takashi Iwai wrote:
->=20
-> > > For example, you can embed an init flag into your record and call the
-> > > initializer in get/put callback if not called yet.
->=20
-> > Yes but that would involve open coding in all control hanlers for the
-> > driver :
->=20
-> > if (!initialized) allocate_control_mem();
->=20
-> > This approach was done earlier (checking in info) and flaged off by
-> > Mark. It make better to have these handled in the framework.
->=20
-> No, that's not the problem I identified.  The bug you had was that the
-> driver was initialising the data in only the info callback and would just
-> fail if someone decided to call another callback first.
-Yes and during the discussed we wanted to handle it in framework leading to
-init callback.
-
-Nevertheless we are moving it back to driver while fixing the bug you
-pointed.
-
-Thanks
---=20
-~Vinod
-
---d6Gm4EdcadzBjdND
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJUEAZLAAoJEHwUBw8lI4NHYpUQALMlA5Sx2s+R9lUpqdBhFaZP
-LnRGDOswRXiOHEZi/tcqzRXkj/a+8h/3f8CKO2OiYCm8WhezC5GPK4It1p3YcxJ/
-nJ1G1mTcw3xI86ZfFvxM8hbb4xb6JG9oK3GwRZ1/dhWJb+WFDLqXI9ilGoyJB6Pv
-dnB2SHIliAK51MNflFou5ZSLpUNNQvJFfAkHLFn9xQmUt4wHMpBvx59ByhO5+8/t
-PT8J6D7QyPENCJQAJXq4QzP0+DAwLVPl5Z2zTfYtvD9EphchxG7Ymd913TI0tbxu
-6eM/IsME8byiR+9nBalF74E+fohaH/4mbnv0dKIfNLMOkV0o3tAgRSOAx7STWiHJ
-zoJP652eLisHOAtlj7iYLAJsrQbuDpJOdBkhh8PxOA19zlE4oKFiV2Fulwx4xg4Z
-53Y+NRBw2zwUVG3PZR15AlsdzOOiTVftyRhcvOKS0zeIwemYyT0v1iy8UqChwHKe
-Ii+UqZHK1BCV9zHJKYxF+iRNEv/Cg7dyNfGKyPU03Xk3zilyZPxNfZp0B7yz4v/d
-Kw3mHZ+oCeysZbouWfElLYQghHSbM7LB7atFghGlQdGn6a1iQj5yMiXK18Wb8V1J
-4FWlUFDZ5oR0lxxEePb44aom7RTCNulM4bMlhYr2TCCiMLV0RnYBP0ZePvbwD2cS
-mSpk23PxH9oMEHhgHGzu
-=QtdZ
------END PGP SIGNATURE-----
-
---d6Gm4EdcadzBjdND--
-
---===============5916917826970616146==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5916917826970616146==--
+diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
+index 6ad30e2..c6bd015 100644
+--- a/drivers/dma/mmp_tdma.c
++++ b/drivers/dma/mmp_tdma.c
+@@ -148,10 +148,16 @@ static void mmp_tdma_chan_set_desc(struct mmp_tdma_chan *tdmac, dma_addr_t phys)
+ 					tdmac->reg_base + TDCR);
+ }
+ 
++static void mmp_tdma_enable_irq(struct mmp_tdma_chan *tdmac, bool enable)
++{
++	if (enable)
++		writel(TDIMR_COMP, tdmac->reg_base + TDIMR);
++	else
++		writel(0, tdmac->reg_base + TDIMR);
++}
++
+ static void mmp_tdma_enable_chan(struct mmp_tdma_chan *tdmac)
+ {
+-	/* enable irq */
+-	writel(TDIMR_COMP, tdmac->reg_base + TDIMR);
+ 	/* enable dma chan */
+ 	writel(readl(tdmac->reg_base + TDCR) | TDCR_CHANEN,
+ 					tdmac->reg_base + TDCR);
+@@ -163,9 +169,6 @@ static void mmp_tdma_disable_chan(struct mmp_tdma_chan *tdmac)
+ 	writel(readl(tdmac->reg_base + TDCR) & ~TDCR_CHANEN,
+ 					tdmac->reg_base + TDCR);
+ 
+-	/* disable irq */
+-	writel(0, tdmac->reg_base + TDIMR);
+-
+ 	tdmac->status = DMA_COMPLETE;
+ }
+ 
+@@ -434,6 +437,10 @@ static struct dma_async_tx_descriptor *mmp_tdma_prep_dma_cyclic(
+ 		i++;
+ 	}
+ 
++	/* enable interrupt */
++	if (flags & DMA_PREP_INTERRUPT)
++		mmp_tdma_enable_irq(tdmac, true);
++
+ 	tdmac->buf_len = buf_len;
+ 	tdmac->period_len = period_len;
+ 	tdmac->pos = 0;
+@@ -455,6 +462,8 @@ static int mmp_tdma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
+ 	switch (cmd) {
+ 	case DMA_TERMINATE_ALL:
+ 		mmp_tdma_disable_chan(tdmac);
++		/* disable interrupt */
++		mmp_tdma_enable_irq(tdmac, false);
+ 		break;
+ 	case DMA_PAUSE:
+ 		mmp_tdma_pause_chan(tdmac);
+-- 
+1.7.0.4
