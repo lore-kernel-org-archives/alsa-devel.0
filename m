@@ -1,18 +1,16 @@
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+From: Markus Pargmann <mpa@pengutronix.de>
 Subject: Re: [PATCH 2/5] ASoC: fsl: add imx-tlv320aic3x machine
-	driver
-Date: Wed, 10 Sep 2014 16:19:22 +0200
-Message-ID: <20140910161922.73951f38@ipc1.ka-ro>
+ driver
+Date: Wed, 10 Sep 2014 16:27:40 +0200
+Message-ID: <20140910142740.GC16489@pengutronix.de>
 References: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
  <1410356809-26179-3-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2330164236089872305=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.karo-electronics.de (mail.karo-electronics.de
- [81.173.242.67])
- by alsa0.perex.cz (Postfix) with ESMTP id C4CA8262606
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 16:21:52 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id C1BC3262606
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 16:28:09 +0200 (CEST)
 In-Reply-To: <1410356809-26179-3-git-send-email-d.lavnikevich@sam-solutions.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,77 +25,79 @@ To: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, tiwai@suse.de, Li.Xiubo@freescale.com, linux-kernel@vger.kernel.org, timur@tabi.org, nicoleotsuka@gmail.com, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, galak@codeaurora.org, grant.likely@linaro.org, shawn.guo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpEbWl0cnkgTGF2bmlrZXZpY2ggd3JvdGU6Cj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9mc2wsaW14LWF1ZGlvLXRsdjMyMGFpYzN4LnR4
-dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9mc2wsaW14LWF1ZGlv
-LXRsdjMyMGFpYzN4LnR4dAo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMDAw
-MDAwLi45ZTZjNDQ0M2Y0MGYKPiAtLS0gL2Rldi9udWxsCj4gKysrIGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2ZzbCxpbXgtYXVkaW8tdGx2MzIwYWljM3gudHh0Cj4g
-QEAgLTAsMCArMSwyNyBAQAo+ICtBdWRpbyBjb21wbGV4IGZvciBpLk1YNiBib2FyZHMgd2l0aCB0
-bHYzMjBhaWMzeCBhdWRpbyBjb2RlY3MuCj4gKwo+ICtSZXF1aXJlZCBwcm9wZXJ0aWVzOgo+ICst
-IGNvbXBhdGlibGUgOiAiZnNsLGlteC1hdWRpby10bHYzMjBhaWMzeCIKPiArLSBtb2RlbCA6IFRo
-ZSB1c2VyLXZpc2libGUgbmFtZSBvZiB0aGlzIHNvdW5kIGNvbXBsZXguCj4gKy0gc3NpLWNvbnRy
-b2xsZXIgOiBUaGUgcGhhbmRsZSBvZiB0aGUgU1NJIGNvbnRyb2xsZXIuCj4gKy0gbXV4LWludC1w
-b3J0IDogVGhlIGludGVybmFsIHBvcnQgb2YgdGhlIGkuTVggYXVkaW8gbXV4ZXIgKEFVRE1VWCku
-Cj4gKy0gbXV4LWV4dC1wb3J0IDogVGhlIGV4dGVybmFsIHBvcnQgb2YgdGhlIGkuTVggYXVkaW8g
-bXV4ZXIuCj4KZnNsLG11eC17aW50LGV4dH0tcG9ydD8KCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
-Yy9mc2wvaW14LXRsdjMyMGFpYzN4LmMgYi9zb3VuZC9zb2MvZnNsL2lteC10bHYzMjBhaWMzeC5j
-Cj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwMDAwMDAuLmYzOGM2ODkxMTk1
-Mwo+IC0tLSAvZGV2L251bGwKPiArKysgYi9zb3VuZC9zb2MvZnNsL2lteC10bHYzMjBhaWMzeC5j
-Cj4gQEAgLTAsMCArMSwxNzcgQEAKPiArLyoKPiArICogQ29weXJpZ2h0IDIwMTQgRG1pdHJ5IExh
-dm5pa2V2aWNoLAo+ICsgKiBTYU0gU29sdXRpb25zIDxkLmxhdm5pa2V2aWNoQHNhbS1zb2x1dGlv
-bnMuY29tPgo+ICsgKgo+ICsgKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNh
-biByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQo+ICsgKiBpdCB1bmRlciB0aGUgdGVybXMg
-b2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcwo+ICsgKiBwdWJs
-aXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbi4KPiArICovCj4gKwo+ICsjaW5j
-bHVkZSA8bGludXgvbW9kdWxlLmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9pMmMuaD4KPiArI2luY2x1
-ZGUgPGxpbnV4L29mLmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9vZl9wbGF0Zm9ybS5oPgo+ICsKPiAr
-I2luY2x1ZGUgIi4uL2NvZGVjcy90bHYzMjBhaWMzeC5oIgo+ICsjaW5jbHVkZSAiaW14LWF1ZG11
-eC5oIgo+ICsjaW5jbHVkZSAiaW14LXNzaS5oIgo+ICsKPiArI2RlZmluZSBDT0RFQ19DTE9DSyAx
-OTIwMDAwMAo+ICsKSSBndWVzcyB0aGlzIG1pZ2h0IGJlIGJvYXJkIHNwZWNpZmljIGFuZCB0aHVz
-IGJlc3QgcGFzc2VkIHZpYSBhIGNsb2NrCnByb3BlcnR5IGluIERULgoKPiArLyogbWFjaGluZSBk
-YXBtIHdpZGdldHMgKi8KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0
-IGFpYzN4X2RhcG1fd2lkZ2V0c1tdID0gewo+ICsJU05EX1NPQ19EQVBNX0xJTkUoIkxpbmUgT3V0
-IiwgTlVMTCksCj4gKwlTTkRfU09DX0RBUE1fTElORSgiU3BlYWtlciIsIE5VTEwpLAo+ICsJU05E
-X1NPQ19EQVBNX0hQKCJIZWFkcGhvbmUgSmFjayIsIE5VTEwpLAo+ICsJU05EX1NPQ19EQVBNX01J
-QygiTWljIEphY2siLCBOVUxMKSwKPiArCVNORF9TT0NfREFQTV9MSU5FKCJMaW5lIEluIiwgTlVM
-TCksCj4gK307Cj4gKwo+ICtzdGF0aWMgaW50IGlteF9hdWRtdXhfY29uZmlnKGludCBpbnRfcG9y
-dCwgaW50IGV4dF9wb3J0KQo+ICt7Cj4gKwl1bnNpZ25lZCBpbnQgcHRjciwgcGRjcjsKPiArCj4g
-KwlpbnRfcG9ydC0tOwo+ICsJZXh0X3BvcnQtLTsKPiArCXB0Y3IgPSBJTVhfQVVETVVYX1YyX1BU
-Q1JfVEZTRElSIHwKPiArCQlJTVhfQVVETVVYX1YyX1BUQ1JfVEZTRUwoZXh0X3BvcnQpIHwKPiAr
-CQlJTVhfQVVETVVYX1YyX1BUQ1JfVENMS0RJUiB8Cj4gKwkJSU1YX0FVRE1VWF9WMl9QVENSX1RD
-U0VMKGV4dF9wb3J0KTsKPiArCXBkY3IgPSBJTVhfQVVETVVYX1YyX1BEQ1JfUlhEU0VMKGV4dF9w
-b3J0KTsKPiArCWlteF9hdWRtdXhfdjJfY29uZmlndXJlX3BvcnQoaW50X3BvcnQsIHB0Y3IsIHBk
-Y3IpOwo+ICsKPiArCXB0Y3IgPSAwOwo+ICsJcGRjciA9IElNWF9BVURNVVhfVjJfUERDUl9SWERT
-RUwoaW50X3BvcnQpOwo+ICsJaW14X2F1ZG11eF92Ml9jb25maWd1cmVfcG9ydChleHRfcG9ydCwg
-cHRjciwgcGRjcik7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPgpUaGlzIGZ1bmN0aW9uIGNvdWxk
-IGJlIHN0YXRpYyB2b2lkIC4uLgoKPiArCj4gKy8qIExvZ2ljIGZvciBhIGFpYzN4IGFzIGNvbm5l
-Y3RlZCBvbiBhIGlteCAqLwpzLyBhIC8gYW4gL2cKCj4gK3N0YXRpYyBpbnQgaW14X2FpYzN4X2lu
-aXQoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCkKPiArewo+ICsJaW50IHJldDsKPiAr
-Cj4gKwlyZXQgPSBzbmRfc29jX2RhaV9zZXRfc3lzY2xrKHJ0ZC0+Y29kZWNfZGFpLCAwLCBDT0RF
-Q19DTE9DSywKPiArCQlTTkRfU09DX0NMT0NLX0lOKTsKPiArCWlmIChyZXQgPCAwKQo+ICsJCXJl
-dHVybiByZXQ7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4KPiArfQo+ICsKPiArc3RhdGljIHN0cnVjdCBz
-bmRfc29jX2RhaV9saW5rIGlteF90bHYzMjBfZGFpID0gewo+ICsJLm5hbWUgPSAiSGlGaSIsCj4g
-Kwkuc3RyZWFtX25hbWUgPSAiSGlGaSIsCj4gKwkuY29kZWNfZGFpX25hbWUgPSAidGx2MzIwYWlj
-M3gtaGlmaSIsCj4gKwkuaW5pdCA9ICZpbXhfYWljM3hfaW5pdCwKPiArCS5kYWlfZm10ID0gU05E
-X1NPQ19EQUlGTVRfSTJTIHwKPiArCQlTTkRfU09DX0RBSUZNVF9OQl9ORiB8Cj4gKwkJU05EX1NP
-Q19EQUlGTVRfQ0JNX0NGTSwKPiArfTsKPiArCj4gK3N0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJk
-IGlteF90bHYzMjBfY2FyZCA9IHsKPiArCS5udW1fbGlua3MgPSAxLAo+ICsJLm93bmVyID0gVEhJ
-U19NT0RVTEUsCj4gKwkuZGFpX2xpbmsgPSAmaW14X3RsdjMyMF9kYWksCj4gKwkuZGFwbV93aWRn
-ZXRzID0gYWljM3hfZGFwbV93aWRnZXRzLAo+ICsJLm51bV9kYXBtX3dpZGdldHMgPSBBUlJBWV9T
-SVpFKGFpYzN4X2RhcG1fd2lkZ2V0cyksCj4gK307Cj4gKwo+ICtzdGF0aWMgaW50IGlteF90bHYz
-MjBfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiArewo+ICsJc3RydWN0IGRl
-dmljZV9ub2RlICpucCA9IHBkZXYtPmRldi5vZl9ub2RlOwo+ICsJc3RydWN0IGRldmljZV9ub2Rl
-ICpzc2lfbnAsICpjb2RlY19ucDsKPiArCXN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnNzaV9wZGV2
-Owo+ICsJc3RydWN0IGkyY19jbGllbnQgKmNvZGVjX2RldjsKPiArCWludCBpbnRfcG9ydCwgZXh0
-X3BvcnQ7Cj4gKwlpbnQgcmV0ID0gMDsKPiArClVzZWxlc3MgdmFyaWFibGUgaW5pdGlhbGl6YXRp
-b24uCgoKTG90aGFyIFdhw59tYW5uCi0tIApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwoKS2EtUm8gZWxlY3Ryb25pY3MgR21iSCB8IFBh
-c2NhbHN0cmHDn2UgMjIgfCBEIC0gNTIwNzYgQWFjaGVuClBob25lOiArNDkgMjQwOCAxNDAyLTAg
-fCBGYXg6ICs0OSAyNDA4IDE0MDItMTAKR2VzY2jDpGZ0c2bDvGhyZXI6IE1hdHRoaWFzIEthdXNz
-ZW4KSGFuZGVsc3JlZ2lzdGVyZWludHJhZzogQW10c2dlcmljaHQgQWFjaGVuLCBIUkIgNDk5NgoK
-d3d3Lmthcm8tZWxlY3Ryb25pY3MuZGUgfCBpbmZvQGthcm8tZWxlY3Ryb25pY3MuZGUKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============2330164236089872305==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SkvwRMAIpAhPCcCJ"
+Content-Disposition: inline
+
+
+--SkvwRMAIpAhPCcCJ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Wed, Sep 10, 2014 at 04:46:46PM +0300, Dmitry Lavnikevich wrote:
+> This is driver for i.MX6 boards with tlv320aic3x audio codecs.
+>=20
+> Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+> ---
+>  .../bindings/sound/fsl,imx-audio-tlv320aic3x.txt   |  27 ++++
+>  sound/soc/fsl/Kconfig                              |  13 ++
+>  sound/soc/fsl/Makefile                             |   2 +
+>  sound/soc/fsl/imx-tlv320aic3x.c                    | 177 +++++++++++++++=
+++++++
+>  4 files changed, 219 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,imx-audio=
+-tlv320aic3x.txt
+>  create mode 100644 sound/soc/fsl/imx-tlv320aic3x.c
+
+Is it possible to use the simple-card
+(Documentation/devicetree/bindings/sound/simple-card.txt) instead of
+adding a new audio card driver? There are also DT bindings for the imx
+audiomultiplexer (imx-audmux.txt).
+
+Best regards,
+
+Markus
+
+--=20
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--SkvwRMAIpAhPCcCJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJUEF/bAAoJEEpcgKtcEGQQ8FUP/1T8kBw9DpI+zwwwpLSehGQm
+6Ji7FrbHkdebaT67xrOD4mtqepsmRdIdJ/Nj3epWLwwNjJMJOYtzPGOQzYvZxMiT
+3PwhyRMmWrU86fFoZlK1rO8/mY/ZF0VmAjzMnvO6fQpO9f/sl+z+bTYJbzTzfp3Y
+i2MQ/FF4CGCEOUZtFpu8Tth1YyKhAkI6HQd/px4JJ+PmuEy54xRZuu9k7COYvogH
+faVBV0qaYGhBhMLN5UPVEuRjlaphc+WyD0dq9/F4HCODhhQK/Apsz0fDoFr3p5A4
+isfxF05I9iQGOFbdx45vqUW87NXjXiqtfHgdt2W3cZjC80IVd469pbSTBkfW8ncb
+nzoMV1wswMGTPcr5pVorVoOesj2DQ5H+lebem2aO4c82g9JF2nAZjVCcph5RSjoU
+ZxzcWzjEkWBMZxXyP7n20pL8VjOVwOe6Qi64LYIQXxlFRn4ivlzLj69HC3wOMtG5
+aP6J3pcoH9+2yOMEWxkSrhjcY72GY9Q3Nqe9U7unFtond/AM7/MAvOEe/kwrsYfr
+1SK2o5InF4C07Twla6gV6xnJcx03OCEQsGfqHoSxyaXmS+XWtQ/pbUOoSV7Mm7DM
+gDjPsz+8MQmCmhlWp7Q7OS52Ky55EPS7r9Hq9Hcvx9D7+ybb9HnxP5XFHY+n/Fm1
+VDG9BEJrmQ5mKC4SHwip
+=/Noa
+-----END PGP SIGNATURE-----
+
+--SkvwRMAIpAhPCcCJ--
+
+--===============2330164236089872305==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2330164236089872305==--
