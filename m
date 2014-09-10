@@ -1,18 +1,21 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: fix dpcm_path_get error
-	handling
-Date: Wed, 10 Sep 2014 13:32:53 +0530
-Message-ID: <20140910080253.GB1770@intel.com>
-References: <1410335852-29957-1-git-send-email-zhouqiao@marvell.com>
+Subject: Re: [PATCH v5 03/12] ALSA: control: Add init callback
+	for kcontrol
+Date: Wed, 10 Sep 2014 13:35:31 +0530
+Message-ID: <20140910080531.GC1770@intel.com>
+References: <1409661367-19047-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1409661367-19047-4-git-send-email-subhransu.s.prusty@intel.com>
+ <20140906142124.GG2601@sirena.org.uk>
+ <s5hppf8g2ul.wl-tiwai@suse.de> <20140908041421.GI1610@intel.com>
+ <s5hppf6a679.wl-tiwai@suse.de> <20140908080807.GJ1610@intel.com>
+ <20140909114425.GU2601@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5916917826970616146=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A9B8261B31
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 10:25:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1410335852-29957-1-git-send-email-zhouqiao@marvell.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 700ED261B31
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 10:28:41 +0200 (CEST)
+In-Reply-To: <20140909114425.GU2601@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +25,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qiao Zhou <zhouqiao@marvell.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 10, 2014 at 03:57:32PM +0800, Qiao Zhou wrote:
-> dpcm_path_get may return -ENOMEM when allocating memory for list
-> fails. We should not keep processing path or start up dpcm dai in
-> this case.
-> 
-> Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
-> ---
->  sound/soc/soc-compress.c |    7 +++++--
-For this:
-Acked-by: Vinod Koul <vinod.koul@intel.com>
 
--- 
+--===============5916917826970616146==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="d6Gm4EdcadzBjdND"
+Content-Disposition: inline
+
+
+--d6Gm4EdcadzBjdND
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Sep 09, 2014 at 12:44:25PM +0100, Mark Brown wrote:
+> On Mon, Sep 08, 2014 at 01:38:07PM +0530, Vinod Koul wrote:
+>=20
+> Please (as I'm sure has been pointed out before) fix your mailer to word
+> wrap within paragraphs.
+Oops, i though I had set mutt to fix it after you pointed out last time,
+will check again.
+
+>=20
+> > On Mon, Sep 08, 2014 at 10:04:42AM +0200, Takashi Iwai wrote:
+>=20
+> > > For example, you can embed an init flag into your record and call the
+> > > initializer in get/put callback if not called yet.
+>=20
+> > Yes but that would involve open coding in all control hanlers for the
+> > driver :
+>=20
+> > if (!initialized) allocate_control_mem();
+>=20
+> > This approach was done earlier (checking in info) and flaged off by
+> > Mark. It make better to have these handled in the framework.
+>=20
+> No, that's not the problem I identified.  The bug you had was that the
+> driver was initialising the data in only the info callback and would just
+> fail if someone decided to call another callback first.
+Yes and during the discussed we wanted to handle it in framework leading to
+init callback.
+
+Nevertheless we are moving it back to driver while fixing the bug you
+pointed.
+
+Thanks
+--=20
 ~Vinod
 
->  sound/soc/soc-pcm.c      |    7 +++++--
->  2 files changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-> index 27c06ac..b969a13 100644
-> --- a/sound/soc/soc-compress.c
-> +++ b/sound/soc/soc-compress.c
-> @@ -101,10 +101,13 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
->  
->  	fe->dpcm[stream].runtime = fe_substream->runtime;
->  
-> -	if (dpcm_path_get(fe, stream, &list) <= 0) {
-> +	ret = dpcm_path_get(fe, stream, &list);
-> +	if (ret < 0) {
-> +		mutex_unlock(&fe->card->mutex);
-> +		goto fe_err;
-> +	} else if (ret == 0)
->  		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
->  			fe->dai_link->name, stream ? "capture" : "playback");
-> -	}
->  
->  	/* calculate valid and active FE <-> BE dpcms */
->  	dpcm_process_paths(fe, stream, &list, 1);
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 731fdb5..d341777 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -2352,10 +2352,13 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
->  	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
->  	fe->dpcm[stream].runtime = fe_substream->runtime;
->  
-> -	if (dpcm_path_get(fe, stream, &list) <= 0) {
-> +	ret = dpcm_path_get(fe, stream, &list);
-> +	if (ret < 0) {
-> +		mutex_unlock(&fe->card->mutex);
-> +		return ret;
-> +	} else if (ret == 0)
->  		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
->  			fe->dai_link->name, stream ? "capture" : "playback");
-> -	}
->  
->  	/* calculate valid and active FE <-> BE dpcms */
->  	dpcm_process_paths(fe, stream, &list, 1);
-> -- 
-> 1.7.0.4
-> 
+--d6Gm4EdcadzBjdND
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
--- 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQIcBAEBAgAGBQJUEAZLAAoJEHwUBw8lI4NHYpUQALMlA5Sx2s+R9lUpqdBhFaZP
+LnRGDOswRXiOHEZi/tcqzRXkj/a+8h/3f8CKO2OiYCm8WhezC5GPK4It1p3YcxJ/
+nJ1G1mTcw3xI86ZfFvxM8hbb4xb6JG9oK3GwRZ1/dhWJb+WFDLqXI9ilGoyJB6Pv
+dnB2SHIliAK51MNflFou5ZSLpUNNQvJFfAkHLFn9xQmUt4wHMpBvx59ByhO5+8/t
+PT8J6D7QyPENCJQAJXq4QzP0+DAwLVPl5Z2zTfYtvD9EphchxG7Ymd913TI0tbxu
+6eM/IsME8byiR+9nBalF74E+fohaH/4mbnv0dKIfNLMOkV0o3tAgRSOAx7STWiHJ
+zoJP652eLisHOAtlj7iYLAJsrQbuDpJOdBkhh8PxOA19zlE4oKFiV2Fulwx4xg4Z
+53Y+NRBw2zwUVG3PZR15AlsdzOOiTVftyRhcvOKS0zeIwemYyT0v1iy8UqChwHKe
+Ii+UqZHK1BCV9zHJKYxF+iRNEv/Cg7dyNfGKyPU03Xk3zilyZPxNfZp0B7yz4v/d
+Kw3mHZ+oCeysZbouWfElLYQghHSbM7LB7atFghGlQdGn6a1iQj5yMiXK18Wb8V1J
+4FWlUFDZ5oR0lxxEePb44aom7RTCNulM4bMlhYr2TCCiMLV0RnYBP0ZePvbwD2cS
+mSpk23PxH9oMEHhgHGzu
+=QtdZ
+-----END PGP SIGNATURE-----
+
+--d6Gm4EdcadzBjdND--
+
+--===============5916917826970616146==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5916917826970616146==--
