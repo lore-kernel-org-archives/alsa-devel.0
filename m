@@ -1,15 +1,15 @@
-From: Jurgen Kramer <gtmkramer@xs4all.nl>
-Subject: [PATCH] pcm: add new 32-bit DSD sample format
-Date: Wed, 10 Sep 2014 09:00:28 +0200
-Message-ID: <1410332428-16571-1-git-send-email-gtmkramer@xs4all.nl>
+From: Qiao Zhou <zhouqiao@marvell.com>
+Subject: [PATCH] ASoC: soc-pcm: fix dpcm_path_get error handling
+Date: Wed, 10 Sep 2014 15:57:32 +0800
+Message-ID: <1410335852-29957-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lb1-smtp-cloud6.xs4all.net (lb1-smtp-cloud6.xs4all.net
- [194.109.24.56])
- by alsa0.perex.cz (Postfix) with ESMTP id CB4C7261B31
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 09:00:31 +0200 (CEST)
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
+ [67.231.148.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id C72B9261685
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 09:57:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,123 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jurgen Kramer <gtmkramer@xs4all.nl>
+To: vinod.koul@intel.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, zhouqiao@marvell.com
 List-Id: alsa-devel@alsa-project.org
 
-Add the new DSD_U32_LE sample format to alsa-lib.
+dpcm_path_get may return -ENOMEM when allocating memory for list
+fails. We should not keep processing path or start up dpcm dai in
+this case.
 
-NB include/pcm.h and include/sound/asound.h are updated so a new sync with the
-kernel headers is not needed
-
-Signed-off-by: Jurgen Kramer <gtmkramer@xs4all.nl>
+Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
 ---
- include/pcm.h          | 4 +++-
- include/sound/asound.h | 3 ++-
- src/pcm/pcm.c          | 2 ++
- src/pcm/pcm_misc.c     | 6 ++++++
- 4 files changed, 13 insertions(+), 2 deletions(-)
+ sound/soc/soc-compress.c |    7 +++++--
+ sound/soc/soc-pcm.c      |    7 +++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/include/pcm.h b/include/pcm.h
-index 11e9f0d..db88ad5 100644
---- a/include/pcm.h
-+++ b/include/pcm.h
-@@ -211,7 +211,9 @@ typedef enum _snd_pcm_format {
- 	SND_PCM_FORMAT_DSD_U8,
- 	/* Direct Stream Digital (DSD) in 2-byte samples (x16) */
- 	SND_PCM_FORMAT_DSD_U16_LE,
--	SND_PCM_FORMAT_LAST = SND_PCM_FORMAT_DSD_U16_LE,
-+	/* Direct Stream Digital (DSD) in 4-byte samples (x32) */
-+	SND_PCM_FORMAT_DSD_U32_LE,
-+	SND_PCM_FORMAT_LAST = SND_PCM_FORMAT_DSD_U32_LE,
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 27c06ac..b969a13 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -101,10 +101,13 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
  
- #if __BYTE_ORDER == __LITTLE_ENDIAN
- 	/** Signed 16 bit CPU endian */
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 32168f7..6ee5867 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -219,7 +219,8 @@ typedef int __bitwise snd_pcm_format_t;
- #define	SNDRV_PCM_FORMAT_G723_40_1B	((__force snd_pcm_format_t) 47) /* 1 sample in 1 byte */
- #define	SNDRV_PCM_FORMAT_DSD_U8		((__force snd_pcm_format_t) 48) /* DSD, 1-byte samples DSD (x8) */
- #define	SNDRV_PCM_FORMAT_DSD_U16_LE	((__force snd_pcm_format_t) 49) /* DSD, 2-byte samples DSD (x16), little endian */
--#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U16_LE
-+#define	SNDRV_PCM_FORMAT_DSD_U32_LE	((__force snd_pcm_format_t) 50) /* DSD, 4-byte samples DSD (x32), little endian */
-+#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_DSD_U32_LE
+ 	fe->dpcm[stream].runtime = fe_substream->runtime;
  
- #ifdef SNDRV_LITTLE_ENDIAN
- #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 1399a5b..2e24338 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -1565,6 +1565,7 @@ static const char *const snd_pcm_format_names[] = {
- 	FORMAT(G723_40_1B),
- 	FORMAT(DSD_U8),
- 	FORMAT(DSD_U16_LE),
-+	FORMAT(DSD_U32_LE),
- };
+-	if (dpcm_path_get(fe, stream, &list) <= 0) {
++	ret = dpcm_path_get(fe, stream, &list);
++	if (ret < 0) {
++		mutex_unlock(&fe->card->mutex);
++		goto fe_err;
++	} else if (ret == 0)
+ 		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
+ 			fe->dai_link->name, stream ? "capture" : "playback");
+-	}
  
- static const char *const snd_pcm_format_aliases[SND_PCM_FORMAT_LAST+1] = {
-@@ -1624,6 +1625,7 @@ static const char *const snd_pcm_format_descriptions[] = {
- 	FORMATD(G723_40_1B, "G.723 (ADPCM) 40 kbit/s, 1 sample in 1 byte"),
- 	FORMATD(DSD_U8,  "Direct Stream Digital, 1-byte (x8), oldest bit in MSB"),
- 	FORMATD(DSD_U16_LE, "Direct Stream Digital, 2-byte (x16), little endian, oldest bits in MSB"),
-+	FORMATD(DSD_U32_LE, "Direct Stream Digital, 4-byte (x32), little endian, oldest bits in MSB"),
- };
+ 	/* calculate valid and active FE <-> BE dpcms */
+ 	dpcm_process_paths(fe, stream, &list, 1);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 731fdb5..d341777 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2352,10 +2352,13 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+ 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
+ 	fe->dpcm[stream].runtime = fe_substream->runtime;
  
- static const char *const snd_pcm_type_names[] = {
-diff --git a/src/pcm/pcm_misc.c b/src/pcm/pcm_misc.c
-index 46fc771..9272179 100644
---- a/src/pcm/pcm_misc.c
-+++ b/src/pcm/pcm_misc.c
-@@ -64,6 +64,7 @@ int snd_pcm_format_signed(snd_pcm_format_t format)
- 	case SNDRV_PCM_FORMAT_U18_3BE:
- 	case SNDRV_PCM_FORMAT_DSD_U8:
- 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_LE:
- 		return 0;
- 	default:
- 		return -EINVAL;
-@@ -154,6 +155,7 @@ int snd_pcm_format_little_endian(snd_pcm_format_t format)
- 	case SNDRV_PCM_FORMAT_U18_3BE:
- 	case SNDRV_PCM_FORMAT_DSD_U8:
- 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_LE:
- 		return 0;
- 	default:
- 		return -EINVAL;
-@@ -232,6 +234,7 @@ int snd_pcm_format_width(snd_pcm_format_t format)
- 	case SNDRV_PCM_FORMAT_U32_BE:
- 	case SNDRV_PCM_FORMAT_FLOAT_LE:
- 	case SNDRV_PCM_FORMAT_FLOAT_BE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_LE:
- 		return 32;
- 	case SNDRV_PCM_FORMAT_FLOAT64_LE:
- 	case SNDRV_PCM_FORMAT_FLOAT64_BE:
-@@ -292,6 +295,7 @@ int snd_pcm_format_physical_width(snd_pcm_format_t format)
- 	case SNDRV_PCM_FORMAT_FLOAT_BE:
- 	case SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE:
- 	case SNDRV_PCM_FORMAT_IEC958_SUBFRAME_BE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_LE:
- 		return 32;
- 	case SNDRV_PCM_FORMAT_FLOAT64_LE:
- 	case SNDRV_PCM_FORMAT_FLOAT64_BE:
-@@ -348,6 +352,7 @@ ssize_t snd_pcm_format_size(snd_pcm_format_t format, size_t samples)
- 	case SNDRV_PCM_FORMAT_U32_BE:
- 	case SNDRV_PCM_FORMAT_FLOAT_LE:
- 	case SNDRV_PCM_FORMAT_FLOAT_BE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_LE:
- 		return samples * 4;
- 	case SNDRV_PCM_FORMAT_FLOAT64_LE:
- 	case SNDRV_PCM_FORMAT_FLOAT64_BE:
-@@ -394,6 +399,7 @@ u_int64_t snd_pcm_format_silence_64(snd_pcm_format_t format)
- 		return 0x8080808080808080ULL;
- 	case SNDRV_PCM_FORMAT_DSD_U8:
- 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_LE:
- 		return 0x6969696969696969ULL;
- #ifdef SNDRV_LITTLE_ENDIAN
- 	case SNDRV_PCM_FORMAT_U16_LE:
+-	if (dpcm_path_get(fe, stream, &list) <= 0) {
++	ret = dpcm_path_get(fe, stream, &list);
++	if (ret < 0) {
++		mutex_unlock(&fe->card->mutex);
++		return ret;
++	} else if (ret == 0)
+ 		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
+ 			fe->dai_link->name, stream ? "capture" : "playback");
+-	}
+ 
+ 	/* calculate valid and active FE <-> BE dpcms */
+ 	dpcm_process_paths(fe, stream, &list, 1);
 -- 
-1.9.3
+1.7.0.4
