@@ -1,48 +1,81 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: rt286: Set cbj_en for ACPI devices
-Date: Wed, 10 Sep 2014 08:32:59 +0200
-Message-ID: <540FF09B.4080608@metafoo.de>
-References: <1410313233-585-1-git-send-email-bardliao@realtek.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [alsa-devel] [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in
+ this module
+Date: Tue, 9 Sep 2014 23:42:12 -0700
+Message-ID: <20140910064211.GA7652@Asurada>
+References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
+ <20140909183804.GA6944@Asurada>
+ <20140910062118.GA26348@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-053.synserver.de (smtp-out-057.synserver.de
- [212.40.185.57])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B006261A60
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 08:32:54 +0200 (CEST)
-In-Reply-To: <1410313233-585-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140910062118.GA26348@pengutronix.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Markus Pargmann <mpa@pengutronix.de>
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, broonie@kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/10/2014 03:40 AM, bardliao@realtek.com wrote:
-[...]
-> +	/* enable jack combo mode on supported devices */
-> +	acpiid = acpi_match_device(dev->driver->acpi_match_table, dev);
-> +	if (acpiid) {
-> +		for (mach = rt286_jack_combo; mach->acpi_id; mach++) {
-> +			if (!strcmp(mach->acpi_id, acpiid->id))
-> +				rt286->pdata.cbj_en =
-> +					rt286_jack_combo->jack_combo;
-> +
-> +		}
-> +	}
+On Wed, Sep 10, 2014 at 08:21:18AM +0200, Markus Pargmann wrote:
+> On Tue, Sep 09, 2014 at 11:38:05AM -0700, Nicolin Chen wrote:
+> > On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
+> > > @@ -1321,7 +1333,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+> > >  		return -ENOMEM;
+> > >  	}
+> > >  
+> > > -	ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
+> > > +	if (ssi_private->soc->imx)
+> > > +		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
+> > > +			"ipg", iomem, &fsl_ssi_regconfig);
+> > > +	else
+> > > +		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
+> > 
+> > As Markus mentioned, the key point here is to be compatible with those
+> > non-clock-name platforms.
+> > 
+> > I think it would be safer to keep the current code while adding an extra
+> > clk_disable_unprepare() at the end of probe() as a common routine. And
+> > meantime, make sure to have the call for imx only because it seems that
+> > the other platforms do not depend on the clock. //a bit guessing here :)
+> > 
+> > Then we can get a patch like:
+> > open() {
+> > +	clk_prepare_enable();
+> > 	....
+> > }
+> > 
+> > close() {
+> > 	....
+> > +	clk_disable_unprepare()
+> > }
+> > 
+> > probe() {
+> > 	clk_get();
+> > 	clk_prepare_enable();
+> > 	....
+> > 	if (xxx)
+> > -		goto err_xx;
+> > +		return ret;
+> > 	....
+> > +	clk_disable_unprepare();
+> > 	return 0;
+> > -err_xx:
+> > -	clk_disable_unprepare()
+> > }
+> > 
+> > remove() {
+> > 	....
+> > -	clk_disable_unprepare()
+> > }
+> 
+> If I remember correctly, there may be AC97 communication with the codec
+> before any substream is created. That's why we enable the SSI unit right
+> at the beginning for AC97 in fsl_ssi_setup_reg_vals(). So we need to
+> check for AC97 before disabling clocks.
 
-Don't invent your own mechanism for this. Use the driver_data field from the 
-acpi_device_id table.
+Thank you for the input. That's the exact part I couldn't be sure.
+And I agree that adding a check for AC97 will be safer while this
+may keeps itself removable if being unnecessary.
 
-> +
->   	regmap_write(rt286->regmap, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
->
->   	for (i = 0; i < RT286_POWER_REG_LEN; i++)
->
+Thanks
+Nicolin
