@@ -1,24 +1,19 @@
-From: Harley Griggs <hgriggs@posteo.co.uk>
-Subject: [PATCH] ALSA: virtuoso: add Xonar Xense support
-Date: Wed, 10 Sep 2014 15:18:06 +0100
-Message-ID: <20140910141813.B328C258D256@mx02.posteo.de>
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH 2/5] ASoC: fsl: add imx-tlv320aic3x machine
+	driver
+Date: Wed, 10 Sep 2014 16:19:22 +0200
+Message-ID: <20140910161922.73951f38@ipc1.ka-ro>
+References: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
+ <1410356809-26179-3-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx02.posteo.de (mx02.posteo.de [89.146.194.165])
- by alsa0.perex.cz (Postfix) with ESMTP id E6BC5262606
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 16:18:13 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by mx02.posteo.de (Postfix) with ESMTP id B328C258D256
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 16:18:13 +0200 (CEST)
-Received: from posteo.de ([10.125.125.178]) (using TLS)
- by localhost (amavis1.posteo.de [10.125.125.165]) (amavisd-new, port 10026)
- with ESMTPS id G3eJIf5gUA_H for <alsa-devel@alsa-project.org>;
- Wed, 10 Sep 2014 16:18:12 +0200 (CEST)
-Received: from mail.posteo.de (localhost [127.0.0.1])
- by mail.posteo.de (Postfix) with ESMTPSA id 94C062C0110
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 16:18:07 +0200 (CEST)
+Received: from mail.karo-electronics.de (mail.karo-electronics.de
+ [81.173.242.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4CA8262606
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 16:21:52 +0200 (CEST)
+In-Reply-To: <1410356809-26179-3-git-send-email-d.lavnikevich@sam-solutions.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,207 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk, tiwai@suse.de, Li.Xiubo@freescale.com, linux-kernel@vger.kernel.org, timur@tabi.org, nicoleotsuka@gmail.com, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de, galak@codeaurora.org, grant.likely@linaro.org, shawn.guo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support for the Xonar Xense card. Has been working fine
-for over a year and with the latest Xonar patches.
-
-I have not touched the CS4362A (surround), nor am I sure how to go about
-it without more code duplication or refactoring.
-
-
-Signed-off-by: Harley Griggs <hgriggs@posteo.co.uk>
----
- sound/pci/oxygen/virtuoso.c      |   1 +
- sound/pci/oxygen/xonar_pcm179x.c | 135 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 136 insertions(+)
-
-diff --git a/sound/pci/oxygen/virtuoso.c b/sound/pci/oxygen/virtuoso.c
-index 7b317a2..83de6fb 100644
---- a/sound/pci/oxygen/virtuoso.c
-+++ b/sound/pci/oxygen/virtuoso.c
-@@ -52,6 +52,7 @@ static const struct pci_device_id xonar_ids[] = {
- 	{ OXYGEN_PCI_SUBID(0x1043, 0x835d) },
- 	{ OXYGEN_PCI_SUBID(0x1043, 0x835e) },
- 	{ OXYGEN_PCI_SUBID(0x1043, 0x838e) },
-+	{ OXYGEN_PCI_SUBID(0x1043, 0x8428) },
- 	{ OXYGEN_PCI_SUBID(0x1043, 0x8522) },
- 	{ OXYGEN_PCI_SUBID(0x1043, 0x85f4) },
- 	{ OXYGEN_PCI_SUBID_BROKEN_EEPROM },
-diff --git a/sound/pci/oxygen/xonar_pcm179x.c b/sound/pci/oxygen/xonar_pcm179x.c
-index e026059..e06acfc 100644
---- a/sound/pci/oxygen/xonar_pcm179x.c
-+++ b/sound/pci/oxygen/xonar_pcm179x.c
-@@ -212,6 +212,9 @@
- #define GPIO_ST_MAGIC		0x0040
- #define GPIO_ST_HP		0x0080
- 
-+#define GPIO_XENSE_OUTPUT_ENABLE	(0x0001 | 0x0010 | 0x0020)
-+#define GPIO_XENSE_SPEAKERS		0x0080
-+
- #define I2C_DEVICE_PCM1796(i)	(0x98 + ((i) << 1))	/* 10011, ii, /W=0 */
- #define I2C_DEVICE_CS2000	0x9c			/* 100111, 0, /W=0 */
- 
-@@ -499,6 +502,52 @@ static void xonar_stx_init(struct oxygen *chip)
- 	xonar_st_init_common(chip);
- }
- 
-+static void xonar_xense_init(struct oxygen *chip)
-+{
-+	struct xonar_pcm179x *data = chip->model_data;
-+
-+	data->generic.ext_power_reg = OXYGEN_GPI_DATA;
-+	data->generic.ext_power_int_reg = OXYGEN_GPI_INTERRUPT_MASK;
-+	data->generic.ext_power_bit = GPI_EXT_POWER;
-+	xonar_init_ext_power(chip);
-+
-+	data->generic.anti_pop_delay = 100;
-+	data->has_cs2000 = 1;
-+	data->cs2000_regs[CS2000_FUN_CFG_1] = CS2000_REF_CLK_DIV_1;
-+	data->broken_i2c = true;
-+
-+	oxygen_write16(chip, OXYGEN_I2S_A_FORMAT,
-+		OXYGEN_RATE_48000 |
-+		OXYGEN_I2S_FORMAT_I2S |
-+		OXYGEN_I2S_MCLK(MCLK_512) |
-+		OXYGEN_I2S_BITS_16 |
-+		OXYGEN_I2S_MASTER |
-+		OXYGEN_I2S_BCLK_64);
-+
-+	xonar_st_init_i2c(chip);
-+	cs2000_registers_init(chip);
-+
-+	data->generic.output_enable_bit = GPIO_XENSE_OUTPUT_ENABLE;
-+	data->dacs = chip->model.dac_channels_mixer / 2;
-+	data->hp_gain_offset = 2*-18;
-+
-+	pcm1796_init(chip);
-+
-+	oxygen_set_bits16(chip, OXYGEN_GPIO_CONTROL,
-+		GPIO_INPUT_ROUTE | GPIO_ST_HP_REAR |
-+		GPIO_ST_MAGIC | GPIO_XENSE_SPEAKERS);
-+	oxygen_clear_bits16(chip, OXYGEN_GPIO_DATA,
-+		GPIO_INPUT_ROUTE | GPIO_ST_HP_REAR |
-+		GPIO_XENSE_SPEAKERS);
-+
-+	xonar_init_cs53x1(chip);
-+	xonar_enable_output(chip);
-+
-+	snd_component_add(chip->card, "PCM1796");
-+	snd_component_add(chip->card, "CS5381");
-+	snd_component_add(chip->card, "CS2000");
-+}
-+
- static void xonar_d2_cleanup(struct oxygen *chip)
- {
- 	xonar_disable_output(chip);
-@@ -859,6 +908,67 @@ static const struct snd_kcontrol_new st_controls[] = {
- 	},
- };
- 
-+static int xense_output_switch_get(struct snd_kcontrol *ctl,
-+               struct snd_ctl_elem_value *value)
-+{
-+	struct oxygen *chip = ctl->private_data;
-+	u16 gpio;
-+
-+	gpio = oxygen_read16(chip, OXYGEN_GPIO_DATA);
-+	if (gpio & GPIO_XENSE_SPEAKERS)
-+		value->value.enumerated.item[0] = 0;
-+	else if (!(gpio & GPIO_XENSE_SPEAKERS) && (gpio & GPIO_ST_HP_REAR))
-+		value->value.enumerated.item[0] = 1;
-+	else
-+		value->value.enumerated.item[0] = 2;
-+	return 0;
-+}
-+
-+static int xense_output_switch_put(struct snd_kcontrol *ctl,
-+               struct snd_ctl_elem_value *value)
-+{
-+	struct oxygen *chip = ctl->private_data;
-+	struct xonar_pcm179x *data = chip->model_data;
-+	u16 gpio_old, gpio;
-+
-+	mutex_lock(&chip->mutex);
-+	gpio_old = oxygen_read16(chip, OXYGEN_GPIO_DATA);
-+	gpio = gpio_old;
-+	switch (value->value.enumerated.item[0]) {
-+	case 0:
-+		gpio |= GPIO_XENSE_SPEAKERS | GPIO_ST_HP_REAR;
-+		break;
-+	case 1:
-+		gpio = (gpio | GPIO_ST_HP_REAR) & ~GPIO_XENSE_SPEAKERS;
-+		break;
-+	case 2:
-+		gpio &= ~(GPIO_XENSE_SPEAKERS | GPIO_ST_HP_REAR);
-+	break;
-+	}
-+	oxygen_write16(chip, OXYGEN_GPIO_DATA, gpio);
-+	data->hp_active = !(gpio & GPIO_XENSE_SPEAKERS);
-+	update_pcm1796_volume(chip);
-+	mutex_unlock(&chip->mutex);
-+	return gpio != gpio_old;
-+}
-+
-+static const struct snd_kcontrol_new xense_controls[] = {
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Analog Output",
-+		.info = st_output_switch_info,
-+		.get = xense_output_switch_get,
-+		.put = xense_output_switch_put,
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Headphones Impedance Playback Enum",
-+		.info = st_hp_volume_offset_info,
-+		.get = st_hp_volume_offset_get,
-+		.put = st_hp_volume_offset_put,
-+	},
-+};
-+
- static void xonar_line_mic_ac97_switch(struct oxygen *chip,
- 				       unsigned int reg, unsigned int mute)
- {
-@@ -946,6 +1056,23 @@ static int xonar_st_mixer_init(struct oxygen *chip)
- 	return 0;
- }
- 
-+static int xonar_xense_mixer_init(struct oxygen *chip)
-+{
-+	unsigned int i;
-+	int err;
-+
-+	for (i = 0; i < ARRAY_SIZE(xense_controls); ++i) {
-+		err = snd_ctl_add(chip->card,
-+		snd_ctl_new1(&xense_controls[i], chip));
-+		if (err < 0)
-+		return err;
-+	}
-+	err = add_pcm1796_controls(chip);
-+	if (err < 0)
-+		return err;
-+	return 0;
-+}
-+
- static void dump_pcm1796_registers(struct oxygen *chip,
- 				   struct snd_info_buffer *buffer)
- {
-@@ -1146,6 +1273,14 @@ int get_xonar_pcm179x_model(struct oxygen *chip,
- 		chip->model.resume = xonar_stx_resume;
- 		chip->model.set_dac_params = set_pcm1796_params;
- 		break;
-+	case 0x8428:
-+		chip->model = model_xonar_st;
-+		chip->model.shortname = "Xonar Xense";
-+		chip->model.chip = "AV100";
-+		chip->model.init = xonar_xense_init;
-+		chip->model.mixer_init = xonar_xense_mixer_init;
-+		break;
-+
- 	default:
- 		return -EINVAL;
- 	}
--- 
-1.8.5.5
+SGksCgpEbWl0cnkgTGF2bmlrZXZpY2ggd3JvdGU6Cj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9mc2wsaW14LWF1ZGlvLXRsdjMyMGFpYzN4LnR4
+dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9mc2wsaW14LWF1ZGlv
+LXRsdjMyMGFpYzN4LnR4dAo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4gaW5kZXggMDAwMDAwMDAw
+MDAwLi45ZTZjNDQ0M2Y0MGYKPiAtLS0gL2Rldi9udWxsCj4gKysrIGIvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2ZzbCxpbXgtYXVkaW8tdGx2MzIwYWljM3gudHh0Cj4g
+QEAgLTAsMCArMSwyNyBAQAo+ICtBdWRpbyBjb21wbGV4IGZvciBpLk1YNiBib2FyZHMgd2l0aCB0
+bHYzMjBhaWMzeCBhdWRpbyBjb2RlY3MuCj4gKwo+ICtSZXF1aXJlZCBwcm9wZXJ0aWVzOgo+ICst
+IGNvbXBhdGlibGUgOiAiZnNsLGlteC1hdWRpby10bHYzMjBhaWMzeCIKPiArLSBtb2RlbCA6IFRo
+ZSB1c2VyLXZpc2libGUgbmFtZSBvZiB0aGlzIHNvdW5kIGNvbXBsZXguCj4gKy0gc3NpLWNvbnRy
+b2xsZXIgOiBUaGUgcGhhbmRsZSBvZiB0aGUgU1NJIGNvbnRyb2xsZXIuCj4gKy0gbXV4LWludC1w
+b3J0IDogVGhlIGludGVybmFsIHBvcnQgb2YgdGhlIGkuTVggYXVkaW8gbXV4ZXIgKEFVRE1VWCku
+Cj4gKy0gbXV4LWV4dC1wb3J0IDogVGhlIGV4dGVybmFsIHBvcnQgb2YgdGhlIGkuTVggYXVkaW8g
+bXV4ZXIuCj4KZnNsLG11eC17aW50LGV4dH0tcG9ydD8KCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
+Yy9mc2wvaW14LXRsdjMyMGFpYzN4LmMgYi9zb3VuZC9zb2MvZnNsL2lteC10bHYzMjBhaWMzeC5j
+Cj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwMDAwMDAuLmYzOGM2ODkxMTk1
+Mwo+IC0tLSAvZGV2L251bGwKPiArKysgYi9zb3VuZC9zb2MvZnNsL2lteC10bHYzMjBhaWMzeC5j
+Cj4gQEAgLTAsMCArMSwxNzcgQEAKPiArLyoKPiArICogQ29weXJpZ2h0IDIwMTQgRG1pdHJ5IExh
+dm5pa2V2aWNoLAo+ICsgKiBTYU0gU29sdXRpb25zIDxkLmxhdm5pa2V2aWNoQHNhbS1zb2x1dGlv
+bnMuY29tPgo+ICsgKgo+ICsgKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNh
+biByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQo+ICsgKiBpdCB1bmRlciB0aGUgdGVybXMg
+b2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24gMiBhcwo+ICsgKiBwdWJs
+aXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbi4KPiArICovCj4gKwo+ICsjaW5j
+bHVkZSA8bGludXgvbW9kdWxlLmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9pMmMuaD4KPiArI2luY2x1
+ZGUgPGxpbnV4L29mLmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9vZl9wbGF0Zm9ybS5oPgo+ICsKPiAr
+I2luY2x1ZGUgIi4uL2NvZGVjcy90bHYzMjBhaWMzeC5oIgo+ICsjaW5jbHVkZSAiaW14LWF1ZG11
+eC5oIgo+ICsjaW5jbHVkZSAiaW14LXNzaS5oIgo+ICsKPiArI2RlZmluZSBDT0RFQ19DTE9DSyAx
+OTIwMDAwMAo+ICsKSSBndWVzcyB0aGlzIG1pZ2h0IGJlIGJvYXJkIHNwZWNpZmljIGFuZCB0aHVz
+IGJlc3QgcGFzc2VkIHZpYSBhIGNsb2NrCnByb3BlcnR5IGluIERULgoKPiArLyogbWFjaGluZSBk
+YXBtIHdpZGdldHMgKi8KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0
+IGFpYzN4X2RhcG1fd2lkZ2V0c1tdID0gewo+ICsJU05EX1NPQ19EQVBNX0xJTkUoIkxpbmUgT3V0
+IiwgTlVMTCksCj4gKwlTTkRfU09DX0RBUE1fTElORSgiU3BlYWtlciIsIE5VTEwpLAo+ICsJU05E
+X1NPQ19EQVBNX0hQKCJIZWFkcGhvbmUgSmFjayIsIE5VTEwpLAo+ICsJU05EX1NPQ19EQVBNX01J
+QygiTWljIEphY2siLCBOVUxMKSwKPiArCVNORF9TT0NfREFQTV9MSU5FKCJMaW5lIEluIiwgTlVM
+TCksCj4gK307Cj4gKwo+ICtzdGF0aWMgaW50IGlteF9hdWRtdXhfY29uZmlnKGludCBpbnRfcG9y
+dCwgaW50IGV4dF9wb3J0KQo+ICt7Cj4gKwl1bnNpZ25lZCBpbnQgcHRjciwgcGRjcjsKPiArCj4g
+KwlpbnRfcG9ydC0tOwo+ICsJZXh0X3BvcnQtLTsKPiArCXB0Y3IgPSBJTVhfQVVETVVYX1YyX1BU
+Q1JfVEZTRElSIHwKPiArCQlJTVhfQVVETVVYX1YyX1BUQ1JfVEZTRUwoZXh0X3BvcnQpIHwKPiAr
+CQlJTVhfQVVETVVYX1YyX1BUQ1JfVENMS0RJUiB8Cj4gKwkJSU1YX0FVRE1VWF9WMl9QVENSX1RD
+U0VMKGV4dF9wb3J0KTsKPiArCXBkY3IgPSBJTVhfQVVETVVYX1YyX1BEQ1JfUlhEU0VMKGV4dF9w
+b3J0KTsKPiArCWlteF9hdWRtdXhfdjJfY29uZmlndXJlX3BvcnQoaW50X3BvcnQsIHB0Y3IsIHBk
+Y3IpOwo+ICsKPiArCXB0Y3IgPSAwOwo+ICsJcGRjciA9IElNWF9BVURNVVhfVjJfUERDUl9SWERT
+RUwoaW50X3BvcnQpOwo+ICsJaW14X2F1ZG11eF92Ml9jb25maWd1cmVfcG9ydChleHRfcG9ydCwg
+cHRjciwgcGRjcik7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPgpUaGlzIGZ1bmN0aW9uIGNvdWxk
+IGJlIHN0YXRpYyB2b2lkIC4uLgoKPiArCj4gKy8qIExvZ2ljIGZvciBhIGFpYzN4IGFzIGNvbm5l
+Y3RlZCBvbiBhIGlteCAqLwpzLyBhIC8gYW4gL2cKCj4gK3N0YXRpYyBpbnQgaW14X2FpYzN4X2lu
+aXQoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCkKPiArewo+ICsJaW50IHJldDsKPiAr
+Cj4gKwlyZXQgPSBzbmRfc29jX2RhaV9zZXRfc3lzY2xrKHJ0ZC0+Y29kZWNfZGFpLCAwLCBDT0RF
+Q19DTE9DSywKPiArCQlTTkRfU09DX0NMT0NLX0lOKTsKPiArCWlmIChyZXQgPCAwKQo+ICsJCXJl
+dHVybiByZXQ7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4KPiArfQo+ICsKPiArc3RhdGljIHN0cnVjdCBz
+bmRfc29jX2RhaV9saW5rIGlteF90bHYzMjBfZGFpID0gewo+ICsJLm5hbWUgPSAiSGlGaSIsCj4g
+Kwkuc3RyZWFtX25hbWUgPSAiSGlGaSIsCj4gKwkuY29kZWNfZGFpX25hbWUgPSAidGx2MzIwYWlj
+M3gtaGlmaSIsCj4gKwkuaW5pdCA9ICZpbXhfYWljM3hfaW5pdCwKPiArCS5kYWlfZm10ID0gU05E
+X1NPQ19EQUlGTVRfSTJTIHwKPiArCQlTTkRfU09DX0RBSUZNVF9OQl9ORiB8Cj4gKwkJU05EX1NP
+Q19EQUlGTVRfQ0JNX0NGTSwKPiArfTsKPiArCj4gK3N0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJk
+IGlteF90bHYzMjBfY2FyZCA9IHsKPiArCS5udW1fbGlua3MgPSAxLAo+ICsJLm93bmVyID0gVEhJ
+U19NT0RVTEUsCj4gKwkuZGFpX2xpbmsgPSAmaW14X3RsdjMyMF9kYWksCj4gKwkuZGFwbV93aWRn
+ZXRzID0gYWljM3hfZGFwbV93aWRnZXRzLAo+ICsJLm51bV9kYXBtX3dpZGdldHMgPSBBUlJBWV9T
+SVpFKGFpYzN4X2RhcG1fd2lkZ2V0cyksCj4gK307Cj4gKwo+ICtzdGF0aWMgaW50IGlteF90bHYz
+MjBfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiArewo+ICsJc3RydWN0IGRl
+dmljZV9ub2RlICpucCA9IHBkZXYtPmRldi5vZl9ub2RlOwo+ICsJc3RydWN0IGRldmljZV9ub2Rl
+ICpzc2lfbnAsICpjb2RlY19ucDsKPiArCXN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnNzaV9wZGV2
+Owo+ICsJc3RydWN0IGkyY19jbGllbnQgKmNvZGVjX2RldjsKPiArCWludCBpbnRfcG9ydCwgZXh0
+X3BvcnQ7Cj4gKwlpbnQgcmV0ID0gMDsKPiArClVzZWxlc3MgdmFyaWFibGUgaW5pdGlhbGl6YXRp
+b24uCgoKTG90aGFyIFdhw59tYW5uCi0tIApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwoKS2EtUm8gZWxlY3Ryb25pY3MgR21iSCB8IFBh
+c2NhbHN0cmHDn2UgMjIgfCBEIC0gNTIwNzYgQWFjaGVuClBob25lOiArNDkgMjQwOCAxNDAyLTAg
+fCBGYXg6ICs0OSAyNDA4IDE0MDItMTAKR2VzY2jDpGZ0c2bDvGhyZXI6IE1hdHRoaWFzIEthdXNz
+ZW4KSGFuZGVsc3JlZ2lzdGVyZWludHJhZzogQW10c2dlcmljaHQgQWFjaGVuLCBIUkIgNDk5NgoK
+d3d3Lmthcm8tZWxlY3Ryb25pY3MuZGUgfCBpbmZvQGthcm8tZWxlY3Ryb25pY3MuZGUKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
