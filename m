@@ -1,208 +1,294 @@
-From: Benoit Cousson <bcousson@baylibre.com>
-Subject: Re: [PATCH] ASoC:simple-card: Add multi-CODEC support
-Date: Wed, 10 Sep 2014 13:43:06 +0200
-Message-ID: <5410394A.1030508@baylibre.com>
-References: <54103671.c36bb40a.2743.ffff969aSMTPIN_ADDED_MISSING@mx.google.com>
+From: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Subject: [PATCH 2/5] ASoC: fsl: add imx-tlv320aic3x machine driver
+Date: Wed, 10 Sep 2014 16:46:46 +0300
+Message-ID: <1410356809-26179-3-git-send-email-d.lavnikevich@sam-solutions.com>
+References: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f172.google.com (mail-wi0-f172.google.com
- [209.85.212.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 4342E261A50
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 13:43:08 +0200 (CEST)
-Received: by mail-wi0-f172.google.com with SMTP id q5so2837900wiv.5
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 04:43:08 -0700 (PDT)
-In-Reply-To: <54103671.c36bb40a.2743.ffff969aSMTPIN_ADDED_MISSING@mx.google.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, shawn.guo@freescale.com, kernel@pengutronix.de, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de, timur@tabi.org, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, grant.likely@linaro.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jean-Francois,
+This is driver for i.MX6 boards with tlv320aic3x audio codecs.
 
-On 10/09/2014 13:28, Jean-Francois Moine wrote:
-> This patch adds multi-CODEC support to the simple-card.
->
-> Signed-off-by: Jean-Francois Moine <moinejf@free.fr>
-> ---
->   .../devicetree/bindings/sound/simple-card.txt      | 28 +++++++--------
->   sound/soc/generic/simple-card.c                    | 41 +++++++++++++++=
-++++++-
->   2 files changed, 52 insertions(+), 17 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Do=
-cumentation/devicetree/bindings/sound/simple-card.txt
-> index c2e9841..c217687 100644
-> --- a/Documentation/devicetree/bindings/sound/simple-card.txt
-> +++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-> @@ -37,6 +37,8 @@ Required dai-link subnodes:
->
->   - cpu					: CPU   sub-node
->   - codec					: CODEC sub-node
-> +					  In case of multi-CODECs, there may
-> +					  be many of such sub-nodes.
->
->   Optional dai-link subnode properties:
->
-> @@ -115,37 +117,31 @@ sh_fsi2: sh_fsi2@ec230000 {
->   	interrupts =3D <0 146 0x4>;
->   };
->
-> -Example 2 - many DAI links:
-> +Example 2 - many DAI links and multi-CODECs:
->
->   sound {
->   	compatible =3D "simple-audio-card";
->   	simple-audio-card,name =3D "Cubox Audio";
->
-> -	simple-audio-card,dai-link@0 {		/* I2S - HDMI */
-> +	simple-audio-card,dai-link@0 {		/* S/PDIF - HDMI & S/PDIF */
->   		format =3D "i2s";
->   		cpu {
-> -			sound-dai =3D <&audio1 0>;
-> -		};
-> -		codec {
-> -			sound-dai =3D <&tda998x 0>;
-> -		};
-> -	};
-> -
-> -	simple-audio-card,dai-link@1 {		/* S/PDIF - HDMI */
-> -		cpu {
->   			sound-dai =3D <&audio1 1>;
->   		};
-> -		codec {
-> -			sound-dai =3D <&tda998x 1>;
-> +		codec@0 {
-> +			sound-dai =3D <&hdmi 0>;
-> +		};
-> +		codec@1 {
-> +			sound-dai =3D <&spdif_codec>;
->   		};
+Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+---
+ .../bindings/sound/fsl,imx-audio-tlv320aic3x.txt   |  27 ++++
+ sound/soc/fsl/Kconfig                              |  13 ++
+ sound/soc/fsl/Makefile                             |   2 +
+ sound/soc/fsl/imx-tlv320aic3x.c                    | 177 +++++++++++++++++++++
+ 4 files changed, 219 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,imx-audio-tlv320aic3x.txt
+ create mode 100644 sound/soc/fsl/imx-tlv320aic3x.c
 
-I don't have strong opinion on that, but in my case, I was considering =
-
-using a simple list instead of several nodes.
-I don't like having to add fake address just to ensure uniqueness.
-
-Something like that:
-
-  sound-dais =3D <&spdif_codec 1>, <&hdmi 0>;
-
-That being said, it will require changing the name with a plural form, =
-
-and ensuring we have the same number of parameters for each codec.
-
-That was just my .2 cents.
-
-Regards,
-Benoit
-
-
-
->   	};
->
-> -	simple-audio-card,dai-link@2 {		/* S/PDIF - S/PDIF */
-> +	simple-audio-card,dai-link@1 {		/* I2S - HDMI */
->   		cpu {
-> -			sound-dai =3D <&audio1 1>;
-> +			sound-dai =3D <&audio1 0>;
->   		};
->   		codec {
-> -			sound-dai =3D <&spdif_codec>;
-> +			sound-dai =3D <&hdmi 1>;
->   		};
->   	};
->   };
-> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-c=
-ard.c
-> index 4053152..bf0ce08 100644
-> --- a/sound/soc/generic/simple-card.c
-> +++ b/sound/soc/generic/simple-card.c
-> @@ -179,11 +179,12 @@ static int asoc_simple_card_dai_link_of(struct devi=
-ce_node *node,
->   	struct device_node *np =3D NULL;
->   	struct device_node *bitclkmaster =3D NULL;
->   	struct device_node *framemaster =3D NULL;
-> +	struct snd_soc_dai_link_component *component;
->   	unsigned int daifmt;
->   	char *name;
->   	char prop[128];
->   	char *prefix =3D "";
-> -	int ret, cpu_args;
-> +	int ret, cpu_args, num_codec_dais;
->
->   	/* For single DAI link & old style of DT node */
->   	if (is_top_level_node)
-> @@ -225,7 +226,16 @@ static int asoc_simple_card_dai_link_of(struct devic=
-e_node *node,
->   	}
->
->   	of_node_put(np);
-> +
-> +	/* count the number of codec DAIs */
->   	snprintf(prop, sizeof(prop), "%scodec", prefix);
-> +	num_codec_dais =3D 0;
-> +	for_each_child_of_node(node, np) {
-> +		if (strcmp(np->name, prop) =3D=3D 0)
-> +			num_codec_dais++;
-> +	}
-> +
-> +	/* treat the first DAI */
->   	np =3D of_get_child_by_name(node, prop);
->   	if (!np) {
->   		ret =3D -EINVAL;
-> @@ -307,6 +317,35 @@ static int asoc_simple_card_dai_link_of(struct devic=
-e_node *node,
->   	if (!cpu_args)
->   		dai_link->cpu_dai_name =3D NULL;
->
-> +	/* handle multi-codec DAIs */
-> +	if (num_codec_dais =3D=3D 1)
-> +		goto out;
-> +	dai_link->codecs =3D component =3D
-> +			   devm_kzalloc(dev,
-> +					sizeof *component * num_codec_dais,
-> +					GFP_KERNEL);
-> +	dai_link->num_codecs =3D num_codec_dais;
-> +	component->of_node =3D dai_link->codec_of_node;
-> +	dai_link->codec_of_node =3D NULL;
-> +	component->dai_name =3D dai_link->codec_dai_name;
-> +	dai_link->codec_dai_name =3D NULL;
-> +	for (;;) {
-> +		np =3D of_get_next_child(node, np);
-> +		if (!np)
-> +			break;
-> +		component++;
-> +		component->of_node =3D of_parse_phandle(np, "sound-dai", 0);
-> +		if (!component->of_node) {
-> +			ret =3D -ENODEV;
-> +			dev_err(dev, "Bad sound-dai\n");
-> +			goto dai_link_of_err;
-> +		}
-> +		ret =3D snd_soc_of_get_dai_name(np, &component->dai_name);
-> +		if (ret < 0)
-> +			goto dai_link_of_err;
-> +	}
-> +
-> +out:
->   dai_link_of_err:
->   	if (np)
->   		of_node_put(np);
->
-
-
--- =
-
-Beno=EEt Cousson
-BayLibre
-Embedded Linux Technology Lab
-www.baylibre.com
+diff --git a/Documentation/devicetree/bindings/sound/fsl,imx-audio-tlv320aic3x.txt b/Documentation/devicetree/bindings/sound/fsl,imx-audio-tlv320aic3x.txt
+new file mode 100644
+index 000000000000..9e6c4443f40f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/fsl,imx-audio-tlv320aic3x.txt
+@@ -0,0 +1,27 @@
++Audio complex for i.MX6 boards with tlv320aic3x audio codecs.
++
++Required properties:
++- compatible : "fsl,imx-audio-tlv320aic3x"
++- model : The user-visible name of this sound complex.
++- ssi-controller : The phandle of the SSI controller.
++- mux-int-port : The internal port of the i.MX audio muxer (AUDMUX).
++- mux-ext-port : The external port of the i.MX audio muxer.
++
++Note: The AUDMUX port numbering should start at 1, which is consistent with
++hardware manual.
++
++Example:
++
++sound {
++	compatible = "fsl,imx-audio-tlv320aic3x";
++	model = "imx6q-phyflex-tlv320aic3007";
++	ssi-controller = <&ssi2>;
++	audio-codec = <&codec>;
++	audio-routing =
++		"Line Out", "LLOUT",
++		"Line Out", "RLOUT",
++		"Headphone Jack", "HPLOUT",
++		"Headphone Jack", "HPROUT";
++	mux-int-port = <2>;
++	mux-ext-port = <5>;
++};
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index f3012b645b51..b40884c244bd 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -268,6 +268,19 @@ config SND_SOC_IMX_MC13783
+ 	select SND_SOC_MC13783
+ 	select SND_SOC_IMX_PCM_DMA
+ 
++config SND_SOC_IMX_TLV320AIC3X
++	tristate "SoC Audio support for i.MX6 boards with tlv320aic3x audio codec"
++	depends on OF && I2C
++	select SND_SOC_TLV320AIC3X
++	select SND_SOC_IMX_PCM_DMA
++	select SND_SOC_IMX_AUDMUX
++	select SND_SOC_FSL_SSI
++	help
++	  SoC audio for i.MX6 boards with codec TLV320AIC3x attached over
++	  SSI interface.
++	  Say Y if you want to add support for SoC audio on phyFLEX-i.MX6
++	  boards.
++
+ endif # SND_IMX_SOC
+ 
+ endmenu
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index 9ff59267eac9..83882bcefb0b 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -54,6 +54,7 @@ snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
+ snd-soc-imx-wm8962-objs := imx-wm8962.o
+ snd-soc-imx-spdif-objs := imx-spdif.o
+ snd-soc-imx-mc13783-objs := imx-mc13783.o
++snd-soc-imx-tlv320aic3x-objs := imx-tlv320aic3x.o
+ 
+ obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
+ obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
+@@ -63,3 +64,4 @@ obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
+ obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
+ obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
++obj-$(CONFIG_SND_SOC_IMX_TLV320AIC3X) += snd-soc-imx-tlv320aic3x.o
+diff --git a/sound/soc/fsl/imx-tlv320aic3x.c b/sound/soc/fsl/imx-tlv320aic3x.c
+new file mode 100644
+index 000000000000..f38c68911953
+--- /dev/null
++++ b/sound/soc/fsl/imx-tlv320aic3x.c
+@@ -0,0 +1,177 @@
++/*
++ * Copyright 2014 Dmitry Lavnikevich,
++ * SaM Solutions <d.lavnikevich@sam-solutions.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++
++#include "../codecs/tlv320aic3x.h"
++#include "imx-audmux.h"
++#include "imx-ssi.h"
++
++#define CODEC_CLOCK 19200000
++
++
++/* machine dapm widgets */
++static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
++	SND_SOC_DAPM_LINE("Line Out", NULL),
++	SND_SOC_DAPM_LINE("Speaker", NULL),
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
++	SND_SOC_DAPM_LINE("Line In", NULL),
++};
++
++static int imx_audmux_config(int int_port, int ext_port)
++{
++	unsigned int ptcr, pdcr;
++
++	int_port--;
++	ext_port--;
++	ptcr = IMX_AUDMUX_V2_PTCR_TFSDIR |
++		IMX_AUDMUX_V2_PTCR_TFSEL(ext_port) |
++		IMX_AUDMUX_V2_PTCR_TCLKDIR |
++		IMX_AUDMUX_V2_PTCR_TCSEL(ext_port);
++	pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(ext_port);
++	imx_audmux_v2_configure_port(int_port, ptcr, pdcr);
++
++	ptcr = 0;
++	pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(int_port);
++	imx_audmux_v2_configure_port(ext_port, ptcr, pdcr);
++
++	return 0;
++}
++
++/* Logic for a aic3x as connected on a imx */
++static int imx_aic3x_init(struct snd_soc_pcm_runtime *rtd)
++{
++	int ret;
++
++	ret = snd_soc_dai_set_sysclk(rtd->codec_dai, 0, CODEC_CLOCK,
++		SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static struct snd_soc_dai_link imx_tlv320_dai = {
++	.name = "HiFi",
++	.stream_name = "HiFi",
++	.codec_dai_name = "tlv320aic3x-hifi",
++	.init = &imx_aic3x_init,
++	.dai_fmt = SND_SOC_DAIFMT_I2S |
++		SND_SOC_DAIFMT_NB_NF |
++		SND_SOC_DAIFMT_CBM_CFM,
++};
++
++static struct snd_soc_card imx_tlv320_card = {
++	.num_links = 1,
++	.owner = THIS_MODULE,
++	.dai_link = &imx_tlv320_dai,
++	.dapm_widgets = aic3x_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(aic3x_dapm_widgets),
++};
++
++static int imx_tlv320_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct device_node *ssi_np, *codec_np;
++	struct platform_device *ssi_pdev;
++	struct i2c_client *codec_dev;
++	int int_port, ext_port;
++	int ret = 0;
++
++	ret = of_property_read_u32(np, "mux-int-port", &int_port);
++	if (ret) {
++		dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
++		return ret;
++	}
++	ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
++	if (ret) {
++		dev_err(&pdev->dev, "mux-ext-port missing or invalid\n");
++		return ret;
++	}
++
++	imx_audmux_config(int_port, ext_port);
++
++	ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
++	codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
++	if (!ssi_np || !codec_np) {
++		dev_err(&pdev->dev, "phandle missing or invalid\n");
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	ssi_pdev = of_find_device_by_node(ssi_np);
++	if (!ssi_pdev) {
++		dev_err(&pdev->dev, "failed to find SSI platform device\n");
++		ret = -EPROBE_DEFER;
++		goto fail;
++	}
++	codec_dev = of_find_i2c_device_by_node(codec_np);
++	if (!codec_dev) {
++		dev_err(&pdev->dev, "failed to find codec platform device\n");
++		return -EPROBE_DEFER;
++	}
++
++	imx_tlv320_dai.codec_of_node = codec_np;
++	imx_tlv320_dai.cpu_of_node = ssi_np;
++	imx_tlv320_dai.platform_of_node = ssi_np;
++
++	imx_tlv320_card.dev = &pdev->dev;
++	ret = snd_soc_of_parse_card_name(&imx_tlv320_card, "model");
++	if (ret)
++		goto fail;
++	ret = snd_soc_of_parse_audio_routing(&imx_tlv320_card, "audio-routing");
++	if (ret)
++		goto fail;
++
++	platform_set_drvdata(pdev, &imx_tlv320_card);
++
++	ret = devm_snd_soc_register_card(&pdev->dev, &imx_tlv320_card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++		goto fail;
++	}
++
++	of_node_put(ssi_np);
++	of_node_put(codec_np);
++
++	return 0;
++
++fail:
++	if (ssi_np)
++		of_node_put(ssi_np);
++	if (codec_np)
++		of_node_put(codec_np);
++
++	return ret;
++}
++
++static const struct of_device_id imx_tlv320_dt_ids[] = {
++	{ .compatible = "fsl,imx-audio-tlv320aic3x", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, imx_tlv320_dt_ids);
++
++static struct platform_driver imx_tlv320_driver = {
++	.driver = {
++		.name = "tlv320aic3x",
++		.owner = THIS_MODULE,
++		.pm = &snd_soc_pm_ops,
++		.of_match_table = imx_tlv320_dt_ids,
++	},
++	.probe = imx_tlv320_probe,
++};
++module_platform_driver(imx_tlv320_driver);
++
++MODULE_AUTHOR("Lavnikevich Dmitry");
++MODULE_DESCRIPTION("TLV320AIC3X i.MX6 ASoC driver");
++MODULE_LICENSE("GPL");
+-- 
+2.1.0
