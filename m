@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: mmp-pcm: add NO_PERIOD_WAKEUP
-	for PCM INFO
-Date: Wed, 10 Sep 2014 10:41:35 +0100
-Message-ID: <20140910094135.GN2601@sirena.org.uk>
-References: <1410338449-13961-1-git-send-email-zhouqiao@marvell.com>
- <1410338449-13961-2-git-send-email-zhouqiao@marvell.com>
+From: Qiao Zhou <zhouqiao@marvell.com>
+Subject: [PATCH v2] ASoC: soc-pcm: fix dpcm_path_get error
+	handling
+Date: Wed, 10 Sep 2014 17:54:07 +0800
+Message-ID: <1410342847-19295-2-git-send-email-zhouqiao@marvell.com>
+References: <1410342847-19295-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1983910493536036268=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 43C31265119
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 11:42:08 +0200 (CEST)
-In-Reply-To: <1410338449-13961-2-git-send-email-zhouqiao@marvell.com>
+Received: from mx0a-0016f401.pphosted.com (mx0a-0016f401.pphosted.com
+ [67.231.148.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD07526072A
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 11:54:15 +0200 (CEST)
+In-Reply-To: <1410342847-19295-1-git-send-email-zhouqiao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,49 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Qiao Zhou <zhouqiao@marvell.com>
-Cc: alsa-devel@alsa-project.org, eric.y.miao@gmail.com, vinod.koul@intel.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, tiwai@suse.de, zhangfei.gao@gmail.com, dmaengine@vger.kernel.org, linux@arm.linux.org.uk, dan.j.williams@intel.com, linux-arm-kernel@lists.infradead.org
+To: vinod.koul@intel.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: Qiao Zhou <zhouqiao@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
+dpcm_path_get may return -ENOMEM when allocating memory for list
+fails. We should not keep processing path or start up dpcm dai in
+this case.
 
---===============1983910493536036268==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dLENbN/5wCAsF6b/"
-Content-Disposition: inline
+Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
+---
+ sound/soc/soc-compress.c |    6 +++++-
+ sound/soc/soc-pcm.c      |    6 +++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-
---dLENbN/5wCAsF6b/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Sep 10, 2014 at 04:40:49PM +0800, Qiao Zhou wrote:
-> add NO_PERIOD_WAKEUP to PCM INFO, which supports audio no IRQ mode
-
-Acked-by: Mark Brown <broonie@linaro.org>
-
---dLENbN/5wCAsF6b/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUEBzOAAoJECTWi3JdVIfQzwEH/3RoI0oVMkM5xX+ro0b8j0uh
-gLSKQ/ZMDQg54BT7Wk/6R8aM9TNodvLJvOXvWIDdDagqqnf/TH6rJA9fDQM/z8jV
-8vwwW07JROe9BFdNknndEdHMKT2CVNX57cjAT//hhXZJ+hS8SG+mmFCSsKvh/MFq
-fQWsUeK5/nVVq0NBKro+ozQI0rfIKcWeQhGvCqp/NLYrqRJdQUFp0sBdNhu2IdBa
-eDr+slqP6V9F3QzKjoI9gTf/A3ibSX6foRrwliQ3yoaJW1v/0zyLZcfwoFd6822U
-6k03+oRzwsYDINKCJZgDKjinX//bbrRa1fto13IUpdivKFzwGujlxRKj83bQeQk=
-=Is81
------END PGP SIGNATURE-----
-
---dLENbN/5wCAsF6b/--
-
---===============1983910493536036268==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1983910493536036268==--
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 27c06ac..3092b58 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -101,7 +101,11 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 
+ 	fe->dpcm[stream].runtime = fe_substream->runtime;
+ 
+-	if (dpcm_path_get(fe, stream, &list) <= 0) {
++	ret = dpcm_path_get(fe, stream, &list);
++	if (ret < 0) {
++		mutex_unlock(&fe->card->mutex);
++		goto fe_err;
++	} else if (ret == 0) {
+ 		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
+ 			fe->dai_link->name, stream ? "capture" : "playback");
+ 	}
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 731fdb5..642c862 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2352,7 +2352,11 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+ 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
+ 	fe->dpcm[stream].runtime = fe_substream->runtime;
+ 
+-	if (dpcm_path_get(fe, stream, &list) <= 0) {
++	ret = dpcm_path_get(fe, stream, &list);
++	if (ret < 0) {
++		mutex_unlock(&fe->card->mutex);
++		return ret;
++	} else if (ret == 0) {
+ 		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
+ 			fe->dai_link->name, stream ? "capture" : "playback");
+ 	}
+-- 
+1.7.0.4
