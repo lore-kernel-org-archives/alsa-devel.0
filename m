@@ -1,82 +1,90 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
-Date: Wed, 10 Sep 2014 16:12:53 +0800
-Message-ID: <20140910081251.GA14662@audiosh1>
-References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
- <20140909183804.GA6944@Asurada>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: fix dpcm_path_get error
+	handling
+Date: Wed, 10 Sep 2014 13:32:53 +0530
+Message-ID: <20140910080253.GB1770@intel.com>
+References: <1410335852-29957-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A9B8261B31
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 10:25:55 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20140909183804.GA6944@Asurada>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, mpa@pengutronix.de
+In-Reply-To: <1410335852-29957-1-git-send-email-zhouqiao@marvell.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Qiao Zhou <zhouqiao@marvell.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 09, 2014 at 11:38:05AM -0700, Nicolin Chen wrote:
-> On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
-> > @@ -1321,7 +1333,11 @@ static int fsl_ssi_probe(struct platform_device *pdev)
-> >  		return -ENOMEM;
-> >  	}
-> >  
-> > -	ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
-> > +	if (ssi_private->soc->imx)
-> > +		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
-> > +			"ipg", iomem, &fsl_ssi_regconfig);
-> > +	else
-> > +		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
+On Wed, Sep 10, 2014 at 03:57:32PM +0800, Qiao Zhou wrote:
+> dpcm_path_get may return -ENOMEM when allocating memory for list
+> fails. We should not keep processing path or start up dpcm dai in
+> this case.
 > 
-> As Markus mentioned, the key point here is to be compatible with those
-> non-clock-name platforms.
+> Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
+> ---
+>  sound/soc/soc-compress.c |    7 +++++--
+For this:
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+
+-- 
+~Vinod
+
+>  sound/soc/soc-pcm.c      |    7 +++++--
+>  2 files changed, 10 insertions(+), 4 deletions(-)
 > 
-> I think it would be safer to keep the current code while adding an extra
-> clk_disable_unprepare() at the end of probe() as a common routine. And
-> meantime, make sure to have the call for imx only because it seems that
-> the other platforms do not depend on the clock. //a bit guessing here :)
-> 
-> Then we can get a patch like:
-> open() {
-> +	clk_prepare_enable();
-> 	....
-> }
-> 
-> close() {
-> 	....
-> +	clk_disable_unprepare()
-> }
-what is the open() and close()? do you mean the fsl_ssi_startup()
-and fsl_ssi_shutdown()?
-> 
-> probe() {
-> 	clk_get();
-> 	clk_prepare_enable();
-> 	....
-> 	if (xxx)
-> -		goto err_xx;
+> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> index 27c06ac..b969a13 100644
+> --- a/sound/soc/soc-compress.c
+> +++ b/sound/soc/soc-compress.c
+> @@ -101,10 +101,13 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+>  
+>  	fe->dpcm[stream].runtime = fe_substream->runtime;
+>  
+> -	if (dpcm_path_get(fe, stream, &list) <= 0) {
+> +	ret = dpcm_path_get(fe, stream, &list);
+> +	if (ret < 0) {
+> +		mutex_unlock(&fe->card->mutex);
+> +		goto fe_err;
+> +	} else if (ret == 0)
+>  		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
+>  			fe->dai_link->name, stream ? "capture" : "playback");
+> -	}
+>  
+>  	/* calculate valid and active FE <-> BE dpcms */
+>  	dpcm_process_paths(fe, stream, &list, 1);
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 731fdb5..d341777 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -2352,10 +2352,13 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+>  	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
+>  	fe->dpcm[stream].runtime = fe_substream->runtime;
+>  
+> -	if (dpcm_path_get(fe, stream, &list) <= 0) {
+> +	ret = dpcm_path_get(fe, stream, &list);
+> +	if (ret < 0) {
+> +		mutex_unlock(&fe->card->mutex);
 > +		return ret;
-> 	....
-> +	clk_disable_unprepare();
-> 	return 0;
-> -err_xx:
-> -	clk_disable_unprepare()
-> }
-If this probe() is fsl_ssi_imx_probe(), I think no need to add
-clk_prepare_enable() or clk_disable_unprepare(), seems there is no 
-registers accessing in this probe.
+> +	} else if (ret == 0)
+>  		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
+>  			fe->dai_link->name, stream ? "capture" : "playback");
+> -	}
+>  
+>  	/* calculate valid and active FE <-> BE dpcms */
+>  	dpcm_process_paths(fe, stream, &list, 1);
+> -- 
+> 1.7.0.4
 > 
-> remove() {
-> 	....
-> -	clk_disable_unprepare()
-> }
-> 
-> As long as you make the subject clear as 'Don't enable core/ipg clock
-> when SSI's idle', I'm sure you can make them within a single patch.
-> 
-> And an alternative way for open() and close() is to put those code into
-> pm_runtime_resume/suspend() instead (since we might have some internal
-> code need to be added by using pm_runtime as well), which would make
-> the further code neater IMO.
-> 
-> Thank you
-> Nicolin
+
+-- 
