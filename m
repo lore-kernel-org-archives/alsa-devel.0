@@ -1,91 +1,113 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: Master Plan on rewinding
-Date: Wed, 10 Sep 2014 11:38:06 +0600
-Message-ID: <540FE3BE.1000504@gmail.com>
-References: <540C76E0.9050808@gmail.com> <540CE674.9010004@canonical.com>
- <540F5B59.2080203@linux.intel.com>
+From: Markus Pargmann <mpa@pengutronix.de>
+Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage in this module
+Date: Wed, 10 Sep 2014 08:21:18 +0200
+Message-ID: <20140910062118.GA26348@pengutronix.de>
+References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
+ <20140909183804.GA6944@Asurada>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f48.google.com (mail-la0-f48.google.com
- [209.85.215.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 607FA26172C
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 07:38:09 +0200 (CEST)
-Received: by mail-la0-f48.google.com with SMTP id ty20so8262869lab.21
- for <alsa-devel@alsa-project.org>; Tue, 09 Sep 2014 22:38:09 -0700 (PDT)
-In-Reply-To: <540F5B59.2080203@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, David Henningsson <david.henningsson@canonical.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140909183804.GA6944@Asurada>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-10.09.2014 01:56, Pierre-Louis Bossart wrote:
->
->>> 2. PulseAudio blindly assumes that it can rewind up to hwbuf_frames -
->>> (snd_pcm_avail() + rewind_safeguard) frames. The rewind safeguard is
->>> needed due to reasons that I don't completely understand, but one of
->>> them is imprecise reporting of the hardware pointer, and another one is
->>> that the hardware transfers several bytes at a time, and the bytes we
->>> need to overwrite may be already cached by the hardware.
->>
->> Pierre added the rewind safeguard due to DMA controller problems. IIRC,
->> some DMA controllers go nuts (such as breaking the stream, causing
->> interrupt storms, or something else seriously buggy) when trying to
->> write to data that the DMA controller is just about to transfer. Pierre
->> (now cc:ed) would know more about this than I do, though.
->>
->> In my world, since this is a very hardware near problem, ALSA rather
->> than PulseAudio should take these kinds of problems into account when
->> reporting back snd_pcm_rewindable() so PulseAudio does not have to.
->
->
-> Sorry to chime-in late on this, my real job keeps me busy.
 
-Better late than never.
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I would like to highlight that there is a fundamental conflict between
-> requirements here.
-> - for power consumption optimization, you want to let the hardware
-> prefetch audio samples opportunistically and buffer as much as possible
-> as close as possible to the serial link. Given the pressure on power
-> optimizations these days, no one should expect the hardware buffering to
-> reduce - and this buffering could vary depending on the platform power
-> modes with the position of the DMA read pointer becoming less predictable.
-> - for low-latency and user interaction, you want to rewind the write
-> pointer as much as possible.
+On Tue, Sep 09, 2014 at 11:38:05AM -0700, Nicolin Chen wrote:
+> On Tue, Sep 09, 2014 at 05:18:07PM +0800, Shengjiu Wang wrote:
+> > @@ -1321,7 +1333,11 @@ static int fsl_ssi_probe(struct platform_device =
+*pdev)
+> >  		return -ENOMEM;
+> >  	}
+> > =20
+> > -	ssi_private->regs =3D devm_regmap_init_mmio(&pdev->dev, iomem,
+> > +	if (ssi_private->soc->imx)
+> > +		ssi_private->regs =3D devm_regmap_init_mmio_clk(&pdev->dev,
+> > +			"ipg", iomem, &fsl_ssi_regconfig);
+> > +	else
+> > +		ssi_private->regs =3D devm_regmap_init_mmio(&pdev->dev, iomem,
+>=20
+> As Markus mentioned, the key point here is to be compatible with those
+> non-clock-name platforms.
+>=20
+> I think it would be safer to keep the current code while adding an extra
+> clk_disable_unprepare() at the end of probe() as a common routine. And
+> meantime, make sure to have the call for imx only because it seems that
+> the other platforms do not depend on the clock. //a bit guessing here :)
+>=20
+> Then we can get a patch like:
+> open() {
+> +	clk_prepare_enable();
+> 	....
+> }
+>=20
+> close() {
+> 	....
+> +	clk_disable_unprepare()
+> }
+>=20
+> probe() {
+> 	clk_get();
+> 	clk_prepare_enable();
+> 	....
+> 	if (xxx)
+> -		goto err_xx;
+> +		return ret;
+> 	....
+> +	clk_disable_unprepare();
+> 	return 0;
+> -err_xx:
+> -	clk_disable_unprepare()
+> }
+>=20
+> remove() {
+> 	....
+> -	clk_disable_unprepare()
+> }
 
-Spot-on.
+If I remember correctly, there may be AC97 communication with the codec
+before any substream is created. That's why we enable the SSI unit right
+at the beginning for AC97 in fsl_ssi_setup_reg_vals(). So we need to
+check for AC97 before disabling clocks.
 
-> The question is 'how much'. The reason why i introduced this
-> 'rewind_safeguard' was to factor in a good-enough latency that no one
-> would ever complain about and yet large enough to avoid using stale data.
-> We could ask drivers to provide a conservative estimate of this
-> safeguard, but asking for a dynamic query of a safe position or an
-> empirical determination based on the min period size is really asking
-> for trouble. At a given point, if you really need very low-latency, i.e.
-> sub ms, you will need a dedicated configuration that probably doesn't
-> rely on rewinds and you probably don't use PulseAudio in the first place.
+Best regards,
 
-Well, now there are two people criticizing the heuristic. I would like 
-to retract it, but I currently can't, because there are no other 
-constructive proposals.
+Markus
 
-The best solution would indeed be if a driver provides a conservative 
-estimate of the rewind safeguard, but the problem is that nobody will 
-add this to old drivers for no-longer-manufactured hardware. So we 
-either need some other heuristic here, or we have to allow rewinding 
-further than the nearest period only on cards where drivers explicitly 
-say OK by providing a safeguard value. But the later proposal kills 
-power-efficient PulseAudio on old kernels that simply don't know how to 
-provide this information. Surely you won't like it.
+--=20
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
--- 
-Alexander E. Patrakov
+--OXfL5xGRrasGEqWY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJUD+3eAAoJEEpcgKtcEGQQpIwP/13uS6ra+9yDsKky0JK7ndGC
+Rh2J1DaRbJLJ3xw0iDbY9FzccLVUCfhyxc1fRtkr4o2fjPztA5fBKv9lj1j0cWpk
+LhsW4ceHxZECUNOFIq+ZzW8C7dEk9fVYTVGsMeC5phbrGrg0C860B5Sa0S0ZbF8u
+wRxpKr1GElW0+Z5fXlzhWbORxO5oqKQhMYJoyM9hPdmM51olzI4AtqylgddmbURO
+jjebQv6XG25rbYdlHgWxjwJ7QjePEdmKC1lATApANItTEZtMtEG9Swm37PS+D+Yf
+efLXDhWYyw9cj/vSxBoze0cBG90SUaHn10rbjOSlYyYm7of78uisyeG7IFL0h20e
++dOaT5YbxC/JDLpjCWOo77aMdrfYmkU9hKlaZXs2XM1N0Eour1zVjPB4TUZVAa0a
+foE6+66vOkM8XfmHQBEH4z/L7yq/8PIJBtTVBYdN+41/0Ql3cu70OHFKzoXdW+QG
+GEffwkIOJYts0SAtVRUSb2ZIvIdU8U8SEM335zqOwOy1iPKDtBQa40WAWYJFz/Sy
+hZyqsb68uW7TZENSh5m24JCwzpxUOg3C7YDoQCmpKTxWjeSIwdhnsMO+0k4C9aXT
+d1xXFaHh9+mPjmJ+AngG+U2b6Vbd7lxkxcbteGE35XuFHA6+wj5KL43XQmKympFT
+P4R0PBncjKGHy82hV++M
+=KAho
+-----END PGP SIGNATURE-----
+
+--OXfL5xGRrasGEqWY--
