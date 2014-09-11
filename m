@@ -1,269 +1,293 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Possible fix for snd-hda-intel model=no-jd failing
- since ~linux-3.9-rc1
-Date: Thu, 11 Sep 2014 12:29:09 +0200
-Message-ID: <54117975.9000505@canonical.com>
-References: <1410421639.47518.YahooMailNeo@web160601.mail.bf1.yahoo.com>
- <5411663E.8070106@canonical.com> <s5hsijyy0i1.wl-tiwai@suse.de>
- <54116E91.6010705@canonical.com> <s5hmwa6xyfk.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EED6265675
- for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 12:29:02 +0200 (CEST)
-In-Reply-To: <s5hmwa6xyfk.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adam Richter <adam_richter2004@yahoo.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Subject: [PATCH v5] ASoC: dapm: add code to configure dai link parameters
+Date: Thu, 11 Sep 2014 11:42:18 +0100
+Message-ID: <1410432139-15089-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+dai-link params for codec-codec links were fixed. The fixed
+link between codec and another chip which may be another codec,
+baseband, bluetooth codec etc may require run time configuaration
+changes. This change provides an optional alsa control to select
+one of the params from a list of params.
 
+Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+---
+ include/sound/soc-dapm.h |    3 +
+ include/sound/soc.h      |    1 +
+ sound/soc/soc-core.c     |    6 +-
+ sound/soc/soc-dapm.c     |  143 ++++++++++++++++++++++++++++++++++++++++++++--
+ 4 files changed, 146 insertions(+), 7 deletions(-)
 
-On 2014-09-11 12:07, Takashi Iwai wrote:
-> At Thu, 11 Sep 2014 11:42:41 +0200,
-> David Henningsson wrote:
->>
->>
->>
->> On 2014-09-11 11:23, Takashi Iwai wrote:
->>> At Thu, 11 Sep 2014 11:07:10 +0200,
->>> David Henningsson wrote:
->>>>
->>>>
->>>>
->>>> On 2014-09-11 09:47, Adam Richter wrote:
->>>>> Hi.
->>>>
->>>> Hi Adam,
->>>>
->>>> Interesting problem. Could you submit alsa-info (
->>>> http://www.alsa-project.org/alsa-info.sh ) and point us to it? It makes
->>>> it possible to run the code in an emulator.
->>>>
->>>>> This is a bug and suggested temporary fix that I originally posted to the linux-sound mailing list about a month and a half ago.  I am grateful to Takashi Awai for informing me after my follow-up inquiry about it today that I should submit it to the alsa-devel mailing list instead.  Please feel free to redirect me further if appropriate.  I did not notice any contact information for sound/pci/hda in
->>>>> linux-3.16-rc4/MAINATINERS.
->>>>>
->>>>> Anyhow, here is the bug report and a one line proposed temporary fix.
->>>>>
->>>>>
->>>>> The "model=no-jd" argument has not initialized the analog audio output jack correctly for me since linux-3.9-rc1 (if I recall correctly) through linux-3.17-rc4, although I have not tried every release candidate in between.
->>>>
->>>> A lot of things changed with 3.9, so that makes sense. Btw,
->>>> "model=no-jd" works only for specific machines. You can use the hint
->>>> "jack-detect=0" instead.
->>>>
->>>>> The symptom is that, on a computer with an analog audio output jack
->>>>> that has incorrect jack sense (a hardware bug), audio output is completely muted until I physically replug the cable, even though I specified "model=no-jd" as an argument to the snd-hda-intel kernel module, which is supposed to cause the kernel to ignore the jack sense reported by hardware and just drive the audio output even if the hardware jack sense indicates nothing is plugged in.  This problem did not occur until approximate Linux 3.9-rc1.
->>>>>
->>>>> I have found a few single line workarounds that work, of which my
->>>>> favorite is the following (also attached to this email, in case any
->>>>> mailer subjects this message to reformatting), because it does not add
->>>>> code to anything that gets called frequently.
->>>>>
->>>>> --- linux-3.17.0-rc4-64bit/sound/pci/hda/hda_jack.c.orig    2014-09-07 16:09:43.000000000 -0700
->>>>> +++ linux-3.17.0-rc4-64bit/sound/pci/hda/hda_jack.c    2014-09-10 18:41:53.422900040 -0700
->>>>> @@ -106,6 +106,7 @@ snd_hda_jack_tbl_new(struct hda_codec *c
->>>>>         jack->nid = nid;
->>>>>         jack->jack_dirty = 1;
->>>>>         jack->tag = codec->jacktbl.used;
->>>>> +    jack->phantom_jack = codec->no_jack_detect;
->>>>>         return jack;
->>>>>     }
->>>>>     EXPORT_SYMBOL_GPL(snd_hda_jack_tbl_new);
->>>>>
->>>>>
->>>>> Signed-off-by: Adam J. Richter <adam_richter2004@yahoo.com>
->>>>>
->>>>>
->>>>> I consider this a workaround rather than than a perfect fix, because I
->>>>> think the underlying problem seems to be some kind of initialization
->>>>> order issue that I don't fully understand.  Basically, by the time
->>>>> jack->phantom_jack was being set, some caller had already called
->>>>> jack_detect_update(), which loaded the incorrect jack sense result
->>>>> from hardware and cleared jack->jack_dirty, so the jack sense would
->>>>> not be set again.  At least that is what I think the underlying
->>>>> problem probably is.
->>>>>
->>>>> Also, if a change like this is to be integrated, I'd like to know if
->>>>> it might be better for the line that I added to be:
->>>>>
->>>>>              jack->phantom_jack = !is_jack_detectable(codec, nid);
->>>>
->>>> Yes, this would probably be better.
->>>>
->>>> I guess that somehow snd_hda_jack_enable_callback gets called for the
->>>> phantom jack, but I'm not sure exactly how (alsa-info would help).
->>>>
->>>> Nevertheless I'm attaching a patch. I assume it also resolves your problem?
->>>>
->>>> Takashi, what do you think of the attached patch?
->>>
->>> Ah, "attached" was meant *your* attached patch.  Let me see...
->>>
->>>>   From e5ce94c6156d1c588f29745ade06d1d76c87a0a1 Mon Sep 17 00:00:00 2001
->>>> From: David Henningsson <david.henningsson@canonical.com>
->>>> Date: Thu, 11 Sep 2014 11:04:42 +0200
->>>> Subject: [PATCH] ALSA: hda - Do not enable unsol events on phantom jacks
->>>>
->>>> To make sure we don't enable unsol events on phantom jacks,
->>>> we move the logic for determining what a phantom jack is to
->>>> snd_hda_jack_tbl_new.
->>>>
->>>> Reported-by: Adam Richter <adam_richter2004@yahoo.com>
->>>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
->>>> ---
->>>>    sound/pci/hda/hda_jack.c | 35 +++++++++++++++++++----------------
->>>>    1 file changed, 19 insertions(+), 16 deletions(-)
->>>>
->>>> diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
->>>> index 9746d73..376ce8f 100644
->>>> --- a/sound/pci/hda/hda_jack.c
->>>> +++ b/sound/pci/hda/hda_jack.c
->>>> @@ -105,6 +105,12 @@ snd_hda_jack_tbl_new(struct hda_codec *codec, hda_nid_t nid)
->>>>    		return NULL;
->>>>    	jack->nid = nid;
->>>>    	jack->jack_dirty = 1;
->>>> +	if (get_wcaps_type(get_wcaps(codec, nid)) == AC_WID_PIN) {
->>>> +		unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid);
->>>> +		unsigned int conn = get_defcfg_connect(def_conf);
->>>> +		if ((conn != AC_JACK_PORT_COMPLEX) || !is_jack_detectable(codec, nid))
->>>> +			jack->phantom_jack = 1;
->>>> +	}
->>>
->>> This doesn't look good.  The pincfg isn't always reliable at this
->>> point.  The pin connection check is used in add_jack_kctl() in the
->>> current code just because its only caller is snd_hda_jack_add_kctls(),
->>> which takes the pincfg explicitly.  But snd_hda_jakc_tbl_new() itself
->>> is neutral about the pincfg.
->>
->> Are you saying that codec->user_pins/driver_pins/init_pins might not be
->> properly initialized at this point? If so, maybe we should instead warn
->> on somebody calling snd_hda_jack_tbl_new too early?
->
-> No, the hda_jack stuff itself isn't necessarily depending on the
-> pincfg deeply.  For example, is_jack_detectable() doesn't check the
-> pin location (although it checks MISC_NO_PRESENCE bit as an
-> exception).
-
-Is there a good reason why the hda_jack stuff should not depend on pincfg?
-
-Also, if we keep the detection in snd_hda_jack_tbl_new, we could change 
-all other calls to is_jack_detectable to !jack->phantom_jack instead.
-
->>> And, another problem is that it'll result in a phantom jack secretly
->>> without adding a proper name suffix.
->>
->> Are you sure?
->>
->> snd_hda_jack_add_kctl is called from add_jack_kctl and the hdmi driver.
->> Add_jack_kctl now uses the phantom_jack flag (as initialized by
->> jack_new) to create a proper name, i e, no difference.
->> generic_hdmi_build_jack should probably replace its "is_jack_detectable"
->> call to check the phantom_jack flag for consistency, but for all common
->> cases it's no change there either.
->
-> Hm, OK, that won't happen.  But my point is that it's wrong to check
-> the phantom flag there.
->
->>> In anyway, for catching such a bug, maybe we should put a WARN_ON() at
->>> snd_hda_jack_detect_enable_callback() like the patch below.
->>>
->>>
->>> Takashi
->>>
->>> --
->>> diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
->>> index 9746d73cec52..0645735e196d 100644
->>> --- a/sound/pci/hda/hda_jack.c
->>> +++ b/sound/pci/hda/hda_jack.c
->>> @@ -225,6 +225,8 @@ int snd_hda_jack_detect_enable_callback(struct hda_codec *codec, hda_nid_t nid,
->>>    		return -ENOMEM;
->>>    	if (jack->jack_detect)
->>>    		return 0; /* already registered */
->>> +	if (WARN_ON(!is_jack_detectable(codec, nid)))
->>> +		return 0;
->>
->> Remember that enable_callback is sometimes called for non-pin nodes,
->> such as the afg node in the sigmatel driver. Calling is_jack_detectable
->> on non-pin nodes seems wrong to me.
->
-> OK, then it's an overkill.
->
-> Looking at the alsa-info.sh output, the problem is that IDT codec
-> parser creates jack detection for the power-control before the generic
-> parser.  There is also a wrong logic in stac_init_power_map()...
->
-> An untested fix is below.
-
-Did you get any alsa-info output from Adam? Maybe he sent it privately 
-to you.
-
->
->
-> Takashi
->
-> --
-> diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-> index f26ec04a29b5..526b5d39a2cb 100644
-> --- a/sound/pci/hda/patch_sigmatel.c
-> +++ b/sound/pci/hda/patch_sigmatel.c
-> @@ -565,8 +565,8 @@ static void stac_init_power_map(struct hda_codec *codec)
->   		if (snd_hda_jack_tbl_get(codec, nid))
->   			continue;
->   		if (def_conf == AC_JACK_PORT_COMPLEX &&
-> -		    !(spec->vref_mute_led_nid == nid ||
-> -		      is_jack_detectable(codec, nid))) {
-> +		    spec->vref_mute_led_nid != nid &&
-> +		    is_jack_detectable(codec, nid)) {
->   			snd_hda_jack_detect_enable_callback(codec, nid,
->   							    STAC_PWR_EVENT,
->   							    jack_update_power);
-> @@ -4272,11 +4272,17 @@ static int stac_parse_auto_config(struct hda_codec *codec)
->   			return err;
->   	}
->
-> -	stac_init_power_map(codec);
-> -
->   	return 0;
->   }
->
-> +static int stac_build_controls(struct hda_codec *codec)
-> +{
-> +	int err = snd_hda_gen_build_controls(codec);
-> +	if (err < 0)
-> +		return err;
-> +	stac_init_power_map(codec);
-> +	return 0;
-> +}
->
->   static int stac_init(struct hda_codec *codec)
->   {
-> @@ -4388,7 +4394,7 @@ static int stac_suspend(struct hda_codec *codec)
->   #endif /* CONFIG_PM */
->
->   static const struct hda_codec_ops stac_patch_ops = {
-> -	.build_controls = snd_hda_gen_build_controls,
-> +	.build_controls = stac_build_controls,
->   	.build_pcms = snd_hda_gen_build_pcms,
->   	.init = stac_init,
->   	.free = stac_free,
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 6b59471..3ee031e 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -378,6 +378,7 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
+ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
+ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 			 const struct snd_soc_pcm_stream *params,
++			 unsigned int num_params,
+ 			 struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink);
+ 
+@@ -531,6 +532,8 @@ struct snd_soc_dapm_widget {
+ 	void *priv;				/* widget specific data */
+ 	struct regulator *regulator;		/* attached regulator */
+ 	const struct snd_soc_pcm_stream *params; /* params for dai links */
++	unsigned int num_params; /* number of params for dai links */
++	unsigned int params_select; /* currently selected param for dai link */
+ 
+ 	/* dapm control */
+ 	int reg;				/* negative reg = no direct dapm */
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index ed9e2d7..51c6c4f 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -906,6 +906,7 @@ struct snd_soc_dai_link {
+ 	int be_id;	/* optional ID for machine driver BE identification */
+ 
+ 	const struct snd_soc_pcm_stream *params;
++	unsigned int num_params;
+ 
+ 	unsigned int dai_fmt;           /* format to set on init */
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b87d7d8..1db2168 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1461,7 +1461,8 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 	capture_w = cpu_dai->capture_widget;
+ 	if (play_w && capture_w) {
+ 		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
+-					   capture_w, play_w);
++					   dai_link->num_params, capture_w,
++					   play_w);
+ 		if (ret != 0) {
+ 			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
+ 				play_w->name, capture_w->name, ret);
+@@ -1473,7 +1474,8 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 	capture_w = codec_dai->capture_widget;
+ 	if (play_w && capture_w) {
+ 		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
+-					   capture_w, play_w);
++					   dai_link->num_params, capture_w,
++					   play_w);
+ 		if (ret != 0) {
+ 			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
+ 				play_w->name, capture_w->name, ret);
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index cdc837e..d0323f1 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -729,6 +729,36 @@ static int dapm_new_pga(struct snd_soc_dapm_widget *w)
+ 	return 0;
+ }
+ 
++/* create new dapm dai link control */
++static int dapm_new_dai_link(struct snd_soc_dapm_widget *w)
++{
++	int i, ret;
++	struct snd_kcontrol *kcontrol;
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_card *card = dapm->card->snd_card;
++
++	/* skip control creation for links with 1 config */
++	if (w->num_params == 1)
++		return 0;
++
++	/* add kcontrol */
++	for (i = 0; i < w->num_kcontrols; i++) {
++		kcontrol = snd_soc_cnew(&w->kcontrol_news[i], w,
++		w->name, NULL);
++		ret = snd_ctl_add(card, kcontrol);
++		if (ret < 0) {
++			dev_err(dapm->dev,
++				"ASoC: failed to add widget %s dapm kcontrol %s: %d\n",
++				w->name, w->kcontrol_news[i].name, ret);
++			return ret;
++		}
++		kcontrol->private_data = w;
++		w->kcontrols[i] = kcontrol;
++	}
++
++	return 0;
++}
++
+ /* reset 'walked' bit for each dapm path */
+ static void dapm_clear_walk_output(struct snd_soc_dapm_context *dapm,
+ 				   struct list_head *sink)
+@@ -2664,6 +2694,9 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
+ 		case snd_soc_dapm_out_drv:
+ 			dapm_new_pga(w);
+ 			break;
++		case snd_soc_dapm_dai_link:
++			dapm_new_dai_link(w);
++			break;
+ 		default:
+ 			break;
+ 		}
+@@ -3142,6 +3175,9 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 	source = source_p->source->priv;
+ 	sink = sink_p->sink->priv;
+ 
++	/* Select the configuration set by alsa control */
++	config += w->params_select;
++
+ 	/* Be a little careful as we don't want to overflow the mask array */
+ 	if (config->formats) {
+ 		fmt = ffs(config->formats) - 1;
+@@ -3222,8 +3258,35 @@ out:
+ 	return ret;
+ }
+ 
++static int snd_soc_dapm_dai_link_get(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
++
++	ucontrol->value.integer.value[0] = w->params_select;
++
++	return 0;
++}
++
++static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
++
++	if (ucontrol->value.integer.value[0] == w->params_select)
++		return 0;
++
++	if (ucontrol->value.integer.value[0] >= w->num_params)
++		return -EINVAL;
++
++	w->params_select = ucontrol->value.integer.value[0];
++
++	return 0;
++}
++
+ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 			 const struct snd_soc_pcm_stream *params,
++			 unsigned int num_params,
+ 			 struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
+@@ -3231,14 +3294,48 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	struct snd_soc_dapm_widget *w;
+ 	size_t len;
+ 	char *link_name;
+-	int ret;
++	int ret, count;
++	unsigned long private_value;
++	const char **w_param_text;
++	struct soc_enum w_param_enum[] = {
++		SOC_ENUM_SINGLE(0, 0, 0, NULL),
++	};
++	struct snd_kcontrol_new kcontrol_dai_link[] = {
++		SOC_ENUM_EXT(NULL, w_param_enum[0],
++			     snd_soc_dapm_dai_link_get,
++			     snd_soc_dapm_dai_link_put),
++	};
++	const struct snd_soc_pcm_stream *config = params;
++
++	w_param_text = kcalloc(num_params, sizeof(char *), GFP_KERNEL);
++	if (!w_param_text)
++		return -ENOMEM;
+ 
+ 	len = strlen(source->name) + strlen(sink->name) + 2;
+ 	link_name = devm_kzalloc(card->dev, len, GFP_KERNEL);
+-	if (!link_name)
+-		return -ENOMEM;
++	if (!link_name) {
++		ret = -ENOMEM;
++		goto  outfree_w_param;
++	}
++
+ 	snprintf(link_name, len, "%s-%s", source->name, sink->name);
+ 
++	for (count = 0 ; count < num_params; count++) {
++		if (!config->stream_name)
++			dev_warn(card->dapm.dev,
++				"ASoC: anonymous config %d for dai link %s\n",
++				count, link_name);
++		w_param_text[count] = kmemdup((void *)(config->stream_name),
++			strlen(config->stream_name) + 1, GFP_KERNEL);
++		if (!w_param_text[count]) {
++			ret = -ENOMEM;
++			goto  outfree_link_name;
++		}
++		config++;
++	}
++	w_param_enum[0].items = num_params;
++	w_param_enum[0].texts = w_param_text;
++
+ 	memset(&template, 0, sizeof(template));
+ 	template.reg = SND_SOC_NOPM;
+ 	template.id = snd_soc_dapm_dai_link;
+@@ -3246,6 +3343,25 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	template.event = snd_soc_dai_link_event;
+ 	template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+ 		SND_SOC_DAPM_PRE_PMD;
++	template.num_kcontrols = 1;
++	private_value =
++	(unsigned long) kmemdup((void *)(kcontrol_dai_link[0].private_value),
++		sizeof(struct soc_enum), GFP_KERNEL);
++	if (!private_value) {
++		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
++			link_name);
++		ret = -ENOMEM;
++		goto outfree_link_name;
++	}
++	kcontrol_dai_link[0].private_value = private_value;
++	template.kcontrol_news = kmemdup(&kcontrol_dai_link[0],
++			sizeof(struct snd_kcontrol_new), GFP_KERNEL);
++	if (!template.kcontrol_news) {
++		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
++			link_name);
++		ret = -ENOMEM;
++		goto outfree_private_value;
++	}
+ 
+ 	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
+ 
+@@ -3253,15 +3369,32 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	if (!w) {
+ 		dev_err(card->dev, "ASoC: Failed to create %s widget\n",
+ 			link_name);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto outfree_kcontrol_news;
+ 	}
+ 
+ 	w->params = params;
++	w->num_params = num_params;
+ 
+ 	ret = snd_soc_dapm_add_path(&card->dapm, source, w, NULL, NULL);
+ 	if (ret)
+-		return ret;
++		goto outfree_w;
+ 	return snd_soc_dapm_add_path(&card->dapm, w, sink, NULL, NULL);
++
++outfree_w:
++	kfree(w);
++outfree_kcontrol_news:
++	kfree(template.kcontrol_news);
++outfree_private_value:
++	kfree((void *)private_value);
++outfree_link_name:
++	kfree(link_name);
++outfree_w_param:
++	for (count = 0 ; count < num_params; count++)
++		kfree(w_param_text[count]);
++	kfree(w_param_text);
++
++	return ret;
+ }
+ 
+ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+1.7.9.5
