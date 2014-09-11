@@ -1,75 +1,57 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] Fix register address to set SPDIF data
-	type.
-Date: Thu, 11 Sep 2014 17:17:40 +0100
-Message-ID: <20140911161740.GO4015@sirena.org.uk>
-References: <1410447166-2336-1-git-send-email-Paul.Handrigan@cirrus.com>
+Subject: Re: [PATCH v5] ASoC: dapm: add code to configure dai link parameters
+Date: Thu, 11 Sep 2014 19:37:22 +0100
+Message-ID: <20140911183722.GR4015@sirena.org.uk>
+References: <1410432139-15089-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0405835123275607302=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B81E0264FEE
- for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 18:17:57 +0200 (CEST)
-In-Reply-To: <1410447166-2336-1-git-send-email-Paul.Handrigan@cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Paul Handrigan <Paul.Handrigan@cirrus.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="U0B5otXy6WXfork9"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1410432139-15089-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0405835123275607302==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="W4pDZ/VvazBYHhxQ"
-Content-Disposition: inline
-
-
---W4pDZ/VvazBYHhxQ
+--U0B5otXy6WXfork9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 11, 2014 at 09:52:46AM -0500, Paul Handrigan wrote:
-> ASoC: cs4265: Fix register address to set the proper data type.
->=20
-> The SPDIF control register must be written to set the data type in hw_par=
-ams
-> not the ADC control register.
+On Thu, Sep 11, 2014 at 11:42:18AM +0100, Nikesh Oswal wrote:
 
-Applied, thanks.  Please use subject lines matching the style for the
-subsystem.
+> +	/* add kcontrol */
+> +	for (i = 0; i < w->num_kcontrols; i++) {
+> +		kcontrol = snd_soc_cnew(&w->kcontrol_news[i], w,
+> +		w->name, NULL);
+> +		ret = snd_ctl_add(card, kcontrol);
 
---W4pDZ/VvazBYHhxQ
+*sigh*  As I wrote before in response to exactly the same code:
+
+| Throughout this you've got coding style problems, you're not indenting
+| the continuations of multi-line statements.  Please try to follow the
+| kernel coding style, if your code is visibly different to the rest of
+| the codebase that's not good.
+
+Please pay attention to review comments, just completely ignoring them
+isn't good.  If you don't feel some change should be made then reply and
+discuss.
+
+--U0B5otXy6WXfork9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUEcskAAoJECTWi3JdVIfQK9UH/1E6GUdD+YWXgFs/5rlzBVzv
-R06maXjDje0xIZ+fsfdRXD4ndmBa9X5IgIp2sFFNajwG5FReuP8jk2a67tu6AHIH
-Eo3MgnPiKbYFi+X5UGWo3WySlYg3pVKsR43/PARoPpBEJ4T6zVpJCe8eA7rjl643
-tKXCJLLeFc1BXfsY7iaz6r2A01b9BewnG2JJAr682dkoE8EQogWqEAMOrgfTyg3i
-/mzmhhWf62jUthcigOUoawKpO2MBMPi6CaEG1IW96/IXENSDCNS2rotNTzI+w4Vz
-zfDPvuU6Sx1p7nvOhzSTPqF5QZV7xUZfxfJ2j6Ju10I/EkESV0/bgUX7UpQcMFQ=
-=npbz
+iQEcBAEBAgAGBQJUEevhAAoJECTWi3JdVIfQPL0H+wcGMuYK1NxagI2N6mzs0/MJ
+hm9RbtJhiXByUYFPoAbKHHaiedeuZQyzQhQX4rWmSiUXhrRApBNdFXbXBeO5Fuqv
+cmJQpvWxv2aGhOMZ9xCMqeeLDNNxCay4omkchGnUQFzgWSGbtMK7+G1TDS7qlrJ/
+/cLgwxsbaFvKh7D2rqLDCSZMICBtANBXPW/VfqDi544exZex+R37tp6KHCbywvx7
+EaMQL/O7TUb1jK0ptg9EFtpfAuBiG6bQs0pWz7n3CdOYYzTTr911aj7e4zhzxrz0
++w+LKN9j8lH5UDcgmLFgxltaYvC9tSe8kz01Yzaeq9ZVoetT1buqvAh4izd3dgw=
+=RfRz
 -----END PGP SIGNATURE-----
 
---W4pDZ/VvazBYHhxQ--
-
---===============0405835123275607302==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0405835123275607302==--
+--U0B5otXy6WXfork9--
