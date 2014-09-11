@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/6] ALSA: vx: Use nonatomic PCM ops
-Date: Thu, 11 Sep 2014 16:00:21 +0200
-Message-ID: <1410444025-22772-3-git-send-email-tiwai@suse.de>
+Subject: [PATCH 3/6] ALSA: mixart: Use nonatomic PCM ops
+Date: Thu, 11 Sep 2014 16:00:22 +0200
+Message-ID: <1410444025-22772-4-git-send-email-tiwai@suse.de>
 References: <1410444025-22772-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B04DE265767
+ by alsa0.perex.cz (Postfix) with ESMTP id DFDD4265769
  for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 16:00:32 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2A415ACAB
+ by mx2.suse.de (Postfix) with ESMTP id 2ED65AD3F
  for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 14:00:30 +0000 (UTC)
 In-Reply-To: <1410444025-22772-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,616 +26,387 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Rewrite VXpocket and VX222 drivers to use the new PCM nonatomic ops.
-The former irq tasklet is replaced with a threaded irq handler, and
-the tasklet for the PCM delayed start is simply merged into the normal
-PCM trigger, as well as the replacement of spinlock with mutex.
+Like the previous patch for VX boards, miXart device driver can be
+also rewritten to use nonatomic PCM ops.  Simply spinlocks are
+replaced with mutex, the tasklet code is merged into the threaded irq
+handler.  Also, now mgr->msg_mutex is superfluous, so merged to
+msg_lock.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/vx_core.h     |  7 ++---
- sound/drivers/vx/vx_core.c  | 49 +++++++++++++++-----------------
- sound/drivers/vx/vx_mixer.c | 12 +++-----
- sound/drivers/vx/vx_pcm.c   | 68 +++++++++++++++------------------------------
- sound/drivers/vx/vx_uer.c   | 23 +++++++--------
- sound/pci/vx222/vx222.c     |  5 ++--
- sound/pcmcia/vx/vxp_ops.c   | 10 +++----
- sound/pcmcia/vx/vxpocket.c  |  3 +-
- 8 files changed, 71 insertions(+), 106 deletions(-)
+ sound/pci/mixart/mixart.c      | 17 ++++-----
+ sound/pci/mixart/mixart.h      | 10 ++----
+ sound/pci/mixart/mixart_core.c | 79 ++++++++++++++++++------------------------
+ sound/pci/mixart/mixart_core.h |  2 +-
+ 4 files changed, 44 insertions(+), 64 deletions(-)
 
-diff --git a/include/sound/vx_core.h b/include/sound/vx_core.h
-index f634f8f85db5..cae9c9d4ef22 100644
---- a/include/sound/vx_core.h
-+++ b/include/sound/vx_core.h
-@@ -80,8 +80,6 @@ struct vx_pipe {
+diff --git a/sound/pci/mixart/mixart.c b/sound/pci/mixart/mixart.c
+index 75fc342cff2a..1faf47e81570 100644
+--- a/sound/pci/mixart/mixart.c
++++ b/sound/pci/mixart/mixart.c
+@@ -986,6 +986,7 @@ static int snd_mixart_pcm_analog(struct snd_mixart *chip)
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_mixart_capture_ops);
  
- 	unsigned int references;     /* an output pipe may be used for monitoring and/or playback */
- 	struct vx_pipe *monitoring_pipe;  /* pointer to the monitoring pipe (capture pipe only)*/
--
--	struct tasklet_struct start_tq;
- };
+ 	pcm->info_flags = 0;
++	pcm->nonatomic = true;
+ 	strcpy(pcm->name, name);
  
- struct vx_core;
-@@ -165,9 +163,7 @@ struct vx_core {
- 	struct snd_vx_hardware *hw;
- 	struct snd_vx_ops *ops;
+ 	preallocate_buffers(chip, pcm);
+@@ -1018,6 +1019,7 @@ static int snd_mixart_pcm_digital(struct snd_mixart *chip)
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_mixart_capture_ops);
  
--	spinlock_t lock;
--	spinlock_t irq_lock;
--	struct tasklet_struct tq;
-+	struct mutex lock;
+ 	pcm->info_flags = 0;
++	pcm->nonatomic = true;
+ 	strcpy(pcm->name, name);
  
- 	unsigned int chip_status;
- 	unsigned int pcm_running;
-@@ -223,6 +219,7 @@ void snd_vx_free_firmware(struct vx_core *chip);
-  * interrupt handler; exported for pcmcia
-  */
- irqreturn_t snd_vx_irq_handler(int irq, void *dev);
-+irqreturn_t snd_vx_threaded_irq_handler(int irq, void *dev);
- 
- /*
-  * lowlevel functions
-diff --git a/sound/drivers/vx/vx_core.c b/sound/drivers/vx/vx_core.c
-index 83596891cde4..e8cc16993903 100644
---- a/sound/drivers/vx/vx_core.c
-+++ b/sound/drivers/vx/vx_core.c
-@@ -117,7 +117,7 @@ static int vx_reset_chk(struct vx_core *chip)
-  *
-  * returns 0 if successful, or a negative error code.
-  * the error code can be VX-specific, retrieved via vx_get_error().
-- * NB: call with spinlock held!
-+ * NB: call with mutex held!
-  */
- static int vx_transfer_end(struct vx_core *chip, int cmd)
- {
-@@ -155,7 +155,7 @@ static int vx_transfer_end(struct vx_core *chip, int cmd)
-  *
-  * returns 0 if successful, or a negative error code.
-  * the error code can be VX-specific, retrieved via vx_get_error().
-- * NB: call with spinlock held!
-+ * NB: call with mutex held!
-  */
- static int vx_read_status(struct vx_core *chip, struct vx_rmh *rmh)
- {
-@@ -236,7 +236,7 @@ static int vx_read_status(struct vx_core *chip, struct vx_rmh *rmh)
-  * returns 0 if successful, or a negative error code.
-  * the error code can be VX-specific, retrieved via vx_get_error().
-  * 
-- * this function doesn't call spinlock at all.
-+ * this function doesn't call mutex lock at all.
-  */
- int vx_send_msg_nolock(struct vx_core *chip, struct vx_rmh *rmh)
- {
-@@ -337,7 +337,7 @@ int vx_send_msg_nolock(struct vx_core *chip, struct vx_rmh *rmh)
- 
- 
- /*
-- * vx_send_msg - send a DSP message with spinlock
-+ * vx_send_msg - send a DSP message with mutex
-  * @rmh: the rmh record to send and receive
-  *
-  * returns 0 if successful, or a negative error code.
-@@ -345,12 +345,11 @@ int vx_send_msg_nolock(struct vx_core *chip, struct vx_rmh *rmh)
-  */
- int vx_send_msg(struct vx_core *chip, struct vx_rmh *rmh)
- {
--	unsigned long flags;
- 	int err;
- 
--	spin_lock_irqsave(&chip->lock, flags);
-+	mutex_lock(&chip->lock);
- 	err = vx_send_msg_nolock(chip, rmh);
--	spin_unlock_irqrestore(&chip->lock, flags);
-+	mutex_unlock(&chip->lock);
- 	return err;
- }
- 
-@@ -362,7 +361,7 @@ int vx_send_msg(struct vx_core *chip, struct vx_rmh *rmh)
-  * returns 0 if successful, or a negative error code.
-  * the error code can be VX-specific, retrieved via vx_get_error().
-  *
-- * this function doesn't call spinlock at all.
-+ * this function doesn't call mutex at all.
-  *
-  * unlike RMH, no command is sent to DSP.
-  */
-@@ -398,19 +397,18 @@ int vx_send_rih_nolock(struct vx_core *chip, int cmd)
- 
- 
- /*
-- * vx_send_rih - send an RIH with spinlock
-+ * vx_send_rih - send an RIH with mutex
-  * @cmd: the command to send
-  *
-  * see vx_send_rih_nolock().
-  */
- int vx_send_rih(struct vx_core *chip, int cmd)
- {
--	unsigned long flags;
- 	int err;
- 
--	spin_lock_irqsave(&chip->lock, flags);
-+	mutex_lock(&chip->lock);
- 	err = vx_send_rih_nolock(chip, cmd);
--	spin_unlock_irqrestore(&chip->lock, flags);
-+	mutex_unlock(&chip->lock);
- 	return err;
- }
- 
-@@ -482,30 +480,30 @@ static int vx_test_irq_src(struct vx_core *chip, unsigned int *ret)
- 	int err;
- 
- 	vx_init_rmh(&chip->irq_rmh, CMD_TEST_IT);
--	spin_lock(&chip->lock);
-+	mutex_lock(&chip->lock);
- 	err = vx_send_msg_nolock(chip, &chip->irq_rmh);
- 	if (err < 0)
- 		*ret = 0;
- 	else
- 		*ret = chip->irq_rmh.Stat[0];
--	spin_unlock(&chip->lock);
-+	mutex_unlock(&chip->lock);
- 	return err;
- }
- 
- 
- /*
-- * vx_interrupt - soft irq handler
-+ * snd_vx_threaded_irq_handler - threaded irq handler
-  */
--static void vx_interrupt(unsigned long private_data)
-+irqreturn_t snd_vx_threaded_irq_handler(int irq, void *dev)
- {
--	struct vx_core *chip = (struct vx_core *) private_data;
-+	struct vx_core *chip = dev;
- 	unsigned int events;
- 		
- 	if (chip->chip_status & VX_STAT_IS_STALE)
--		return;
-+		return IRQ_HANDLED;
- 
- 	if (vx_test_irq_src(chip, &events) < 0)
--		return;
-+		return IRQ_HANDLED;
-     
- #if 0
- 	if (events & 0x000800)
-@@ -519,7 +517,7 @@ static void vx_interrupt(unsigned long private_data)
- 	 */
- 	if (events & FATAL_DSP_ERROR) {
- 		snd_printk(KERN_ERR "vx_core: fatal DSP error!!\n");
--		return;
-+		return IRQ_HANDLED;
+ 	preallocate_buffers(chip, pcm);
+@@ -1303,8 +1305,9 @@ static int snd_mixart_probe(struct pci_dev *pci,
+ 		}
  	}
  
- 	/* The start on time code conditions are filled (ie the time code
-@@ -534,8 +532,9 @@ static void vx_interrupt(unsigned long private_data)
- 
- 	/* update the pcm streams */
- 	vx_pcm_update_intr(chip, events);
-+	return IRQ_HANDLED;
- }
--
-+EXPORT_SYMBOL(snd_vx_threaded_irq_handler);
- 
- /**
-  * snd_vx_irq_handler - interrupt handler
-@@ -548,8 +547,8 @@ irqreturn_t snd_vx_irq_handler(int irq, void *dev)
- 	    (chip->chip_status & VX_STAT_IS_STALE))
- 		return IRQ_NONE;
- 	if (! vx_test_and_ack(chip))
--		tasklet_schedule(&chip->tq);
--	return IRQ_HANDLED;
-+		return IRQ_WAKE_THREAD;
-+	return IRQ_NONE;
- }
- 
- EXPORT_SYMBOL(snd_vx_irq_handler);
-@@ -790,13 +789,11 @@ struct vx_core *snd_vx_create(struct snd_card *card, struct snd_vx_hardware *hw,
- 		snd_printk(KERN_ERR "vx_core: no memory\n");
- 		return NULL;
- 	}
--	spin_lock_init(&chip->lock);
--	spin_lock_init(&chip->irq_lock);
-+	mutex_init(&chip->lock);
- 	chip->irq = -1;
- 	chip->hw = hw;
- 	chip->type = hw->type;
- 	chip->ops = ops;
--	tasklet_init(&chip->tq, vx_interrupt, (unsigned long)chip);
- 	mutex_init(&chip->mixer_mutex);
- 
- 	chip->card = card;
-diff --git a/sound/drivers/vx/vx_mixer.c b/sound/drivers/vx/vx_mixer.c
-index c71b8d148d7f..3b6823fc0606 100644
---- a/sound/drivers/vx/vx_mixer.c
-+++ b/sound/drivers/vx/vx_mixer.c
-@@ -32,17 +32,15 @@
-  */
- static void vx_write_codec_reg(struct vx_core *chip, int codec, unsigned int data)
- {
--	unsigned long flags;
--
- 	if (snd_BUG_ON(!chip->ops->write_codec))
- 		return;
- 
- 	if (chip->chip_status & VX_STAT_IS_STALE)
- 		return;
- 
--	spin_lock_irqsave(&chip->lock, flags);
-+	mutex_lock(&chip->lock);
- 	chip->ops->write_codec(chip, codec, data);
--	spin_unlock_irqrestore(&chip->lock, flags);
-+	mutex_unlock(&chip->lock);
- }
- 
- /*
-@@ -178,14 +176,12 @@ void vx_reset_codec(struct vx_core *chip, int cold_reset)
-  */
- static void vx_change_audio_source(struct vx_core *chip, int src)
- {
--	unsigned long flags;
--
- 	if (chip->chip_status & VX_STAT_IS_STALE)
- 		return;
- 
--	spin_lock_irqsave(&chip->lock, flags);
-+	mutex_lock(&chip->lock);
- 	chip->ops->change_audio_source(chip, src);
--	spin_unlock_irqrestore(&chip->lock, flags);
-+	mutex_unlock(&chip->lock);
- }
- 
- 
-diff --git a/sound/drivers/vx/vx_pcm.c b/sound/drivers/vx/vx_pcm.c
-index deed5efff33c..11467272089e 100644
---- a/sound/drivers/vx/vx_pcm.c
-+++ b/sound/drivers/vx/vx_pcm.c
-@@ -229,7 +229,7 @@ static int vx_get_pipe_state(struct vx_core *chip, struct vx_pipe *pipe, int *st
- 
- 	vx_init_rmh(&rmh, CMD_PIPE_STATE);
- 	vx_set_pipe_cmd_params(&rmh, pipe->is_capture, pipe->number, 0);
--	err = vx_send_msg_nolock(chip, &rmh); /* no lock needed for trigger */ 
-+	err = vx_send_msg(chip, &rmh);
- 	if (! err)
- 		*state = (rmh.Stat[0] & (1 << pipe->number)) ? 1 : 0;
- 	return err;
-@@ -280,7 +280,7 @@ static int vx_pipe_can_start(struct vx_core *chip, struct vx_pipe *pipe)
- 	vx_set_pipe_cmd_params(&rmh, pipe->is_capture, pipe->number, 0);
- 	rmh.Cmd[0] |= 1;
- 
--	err = vx_send_msg_nolock(chip, &rmh); /* no lock needed for trigger */ 
-+	err = vx_send_msg(chip, &rmh);
- 	if (! err) {
- 		if (rmh.Stat[0])
- 			err = 1;
-@@ -300,7 +300,7 @@ static int vx_conf_pipe(struct vx_core *chip, struct vx_pipe *pipe)
- 	if (pipe->is_capture)
- 		rmh.Cmd[0] |= COMMAND_RECORD_MASK;
- 	rmh.Cmd[1] = 1 << pipe->number;
--	return vx_send_msg_nolock(chip, &rmh); /* no lock needed for trigger */
-+	return vx_send_msg(chip, &rmh);
- }
- 
- /*
-@@ -311,7 +311,7 @@ static int vx_send_irqa(struct vx_core *chip)
- 	struct vx_rmh rmh;
- 
- 	vx_init_rmh(&rmh, CMD_SEND_IRQA);
--	return vx_send_msg_nolock(chip, &rmh); /* no lock needed for trigger */ 
-+	return vx_send_msg(chip, &rmh);
- }
- 
- 
-@@ -389,7 +389,7 @@ static int vx_stop_pipe(struct vx_core *chip, struct vx_pipe *pipe)
- 	struct vx_rmh rmh;
- 	vx_init_rmh(&rmh, CMD_STOP_PIPE);
- 	vx_set_pipe_cmd_params(&rmh, pipe->is_capture, pipe->number, 0);
--	return vx_send_msg_nolock(chip, &rmh); /* no lock needed for trigger */ 
-+	return vx_send_msg(chip, &rmh);
- }
- 
- 
-@@ -477,7 +477,7 @@ static int vx_start_stream(struct vx_core *chip, struct vx_pipe *pipe)
- 	vx_init_rmh(&rmh, CMD_START_ONE_STREAM);
- 	vx_set_stream_cmd_params(&rmh, pipe->is_capture, pipe->number);
- 	vx_set_differed_time(chip, &rmh, pipe);
--	return vx_send_msg_nolock(chip, &rmh); /* no lock needed for trigger */ 
-+	return vx_send_msg(chip, &rmh);
- }
- 
- 
-@@ -492,7 +492,7 @@ static int vx_stop_stream(struct vx_core *chip, struct vx_pipe *pipe)
- 
- 	vx_init_rmh(&rmh, CMD_STOP_STREAM);
- 	vx_set_stream_cmd_params(&rmh, pipe->is_capture, pipe->number);
--	return vx_send_msg_nolock(chip, &rmh); /* no lock needed for trigger */ 
-+	return vx_send_msg(chip, &rmh);
- }
- 
- 
-@@ -520,8 +520,6 @@ static struct snd_pcm_hardware vx_pcm_playback_hw = {
- };
- 
- 
--static void vx_pcm_delayed_start(unsigned long arg);
--
- /*
-  * vx_pcm_playback_open - open callback for playback
-  */
-@@ -553,7 +551,6 @@ static int vx_pcm_playback_open(struct snd_pcm_substream *subs)
- 	pipe->references++;
- 
- 	pipe->substream = subs;
--	tasklet_init(&pipe->start_tq, vx_pcm_delayed_start, (unsigned long)subs);
- 	chip->playback_pipes[audio] = pipe;
- 
- 	runtime->hw = vx_pcm_playback_hw;
-@@ -646,12 +643,12 @@ static int vx_pcm_playback_transfer_chunk(struct vx_core *chip,
- 	/* we don't need irqsave here, because this function
- 	 * is called from either trigger callback or irq handler
- 	 */
--	spin_lock(&chip->lock); 
-+	mutex_lock(&chip->lock);
- 	vx_pseudo_dma_write(chip, runtime, pipe, size);
- 	err = vx_notify_end_of_buffer(chip, pipe);
- 	/* disconnect the host, SIZE_HBUF command always switches to the stream mode */
- 	vx_send_rih_nolock(chip, IRQ_CONNECT_STREAM_NEXT);
--	spin_unlock(&chip->lock);
-+	mutex_unlock(&chip->lock);
- 	return err;
- }
- 
-@@ -728,31 +725,6 @@ static void vx_pcm_playback_update(struct vx_core *chip,
- }
- 
- /*
-- * start the stream and pipe.
-- * this function is called from tasklet, which is invoked by the trigger
-- * START callback.
-- */
--static void vx_pcm_delayed_start(unsigned long arg)
--{
--	struct snd_pcm_substream *subs = (struct snd_pcm_substream *)arg;
--	struct vx_core *chip = subs->pcm->private_data;
--	struct vx_pipe *pipe = subs->runtime->private_data;
--	int err;
--
--	/*  printk( KERN_DEBUG "DDDD tasklet delayed start jiffies = %ld\n", jiffies);*/
--
--	if ((err = vx_start_stream(chip, pipe)) < 0) {
--		snd_printk(KERN_ERR "vx: cannot start stream\n");
--		return;
--	}
--	if ((err = vx_toggle_pipe(chip, pipe, 1)) < 0) {
--		snd_printk(KERN_ERR "vx: cannot start pipe\n");
--		return;
--	}
--	/*   printk( KERN_DEBUG "dddd tasklet delayed start jiffies = %ld \n", jiffies);*/
--}
--
--/*
-  * vx_pcm_playback_trigger - trigger callback for playback
-  */
- static int vx_pcm_trigger(struct snd_pcm_substream *subs, int cmd)
-@@ -769,11 +741,17 @@ static int vx_pcm_trigger(struct snd_pcm_substream *subs, int cmd)
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 		if (! pipe->is_capture)
- 			vx_pcm_playback_transfer(chip, subs, pipe, 2);
--		/* FIXME:
--		 * we trigger the pipe using tasklet, so that the interrupts are
--		 * issued surely after the trigger is completed.
--		 */ 
--		tasklet_schedule(&pipe->start_tq);
-+		err = vx_start_stream(chip, pipe);
-+		if (err < 0) {
-+			pr_debug("vx: cannot start stream\n");
-+			return err;
-+		}
-+		err = vx_toggle_pipe(chip, pipe, 1);
-+		if (err < 0) {
-+			pr_debug("vx: cannot start pipe\n");
-+			vx_stop_stream(chip, pipe);
-+			return err;
-+		}
- 		chip->pcm_running++;
- 		pipe->running = 1;
- 		break;
-@@ -955,7 +933,6 @@ static int vx_pcm_capture_open(struct snd_pcm_substream *subs)
- 	if (err < 0)
- 		return err;
- 	pipe->substream = subs;
--	tasklet_init(&pipe->start_tq, vx_pcm_delayed_start, (unsigned long)subs);
- 	chip->capture_pipes[audio] = pipe;
- 
- 	/* check if monitoring is needed */
-@@ -1082,7 +1059,7 @@ static void vx_pcm_capture_update(struct vx_core *chip, struct snd_pcm_substream
- 		count -= 3;
- 	}
- 	/* disconnect the host, SIZE_HBUF command always switches to the stream mode */
--	vx_send_rih_nolock(chip, IRQ_CONNECT_STREAM_NEXT);
-+	vx_send_rih(chip, IRQ_CONNECT_STREAM_NEXT);
- 	/* read the last pending 6 bytes */
- 	count = DMA_READ_ALIGN;
- 	while (count > 0) {
-@@ -1099,7 +1076,7 @@ static void vx_pcm_capture_update(struct vx_core *chip, struct snd_pcm_substream
- 
-  _error:
- 	/* disconnect the host, SIZE_HBUF command always switches to the stream mode */
--	vx_send_rih_nolock(chip, IRQ_CONNECT_STREAM_NEXT);
-+	vx_send_rih(chip, IRQ_CONNECT_STREAM_NEXT);
- 	return;
- }
- 
-@@ -1275,6 +1252,7 @@ int snd_vx_pcm_new(struct vx_core *chip)
- 		pcm->private_data = chip;
- 		pcm->private_free = snd_vx_pcm_free;
- 		pcm->info_flags = 0;
-+		pcm->nonatomic = true;
- 		strcpy(pcm->name, chip->card->shortname);
- 		chip->pcm[i] = pcm;
- 	}
-diff --git a/sound/drivers/vx/vx_uer.c b/sound/drivers/vx/vx_uer.c
-index b0560fec6bba..ef0b40c0a594 100644
---- a/sound/drivers/vx/vx_uer.c
-+++ b/sound/drivers/vx/vx_uer.c
-@@ -60,9 +60,9 @@ static int vx_modify_board_inputs(struct vx_core *chip)
-  */
- static int vx_read_one_cbit(struct vx_core *chip, int index)
- {
--	unsigned long flags;
- 	int val;
--	spin_lock_irqsave(&chip->lock, flags);
-+
-+	mutex_lock(&chip->lock);
- 	if (chip->type >= VX_TYPE_VXPOCKET) {
- 		vx_outb(chip, CSUER, 1); /* read */
- 		vx_outb(chip, RUER, index & XX_UER_CBITS_OFFSET_MASK);
-@@ -72,7 +72,7 @@ static int vx_read_one_cbit(struct vx_core *chip, int index)
- 		vx_outl(chip, RUER, index & XX_UER_CBITS_OFFSET_MASK);
- 		val = (vx_inl(chip, RUER) >> 7) & 0x01;
- 	}
--	spin_unlock_irqrestore(&chip->lock, flags);
-+	mutex_unlock(&chip->lock);
- 	return val;
- }
- 
-@@ -83,9 +83,8 @@ static int vx_read_one_cbit(struct vx_core *chip, int index)
-  */
- static void vx_write_one_cbit(struct vx_core *chip, int index, int val)
- {
--	unsigned long flags;
- 	val = !!val;	/* 0 or 1 */
--	spin_lock_irqsave(&chip->lock, flags);
-+	mutex_lock(&chip->lock);
- 	if (vx_is_pcmcia(chip)) {
- 		vx_outb(chip, CSUER, 0); /* write */
- 		vx_outb(chip, RUER, (val << 7) | (index & XX_UER_CBITS_OFFSET_MASK));
-@@ -93,7 +92,7 @@ static void vx_write_one_cbit(struct vx_core *chip, int index, int val)
- 		vx_outl(chip, CSUER, 0); /* write */
- 		vx_outl(chip, RUER, (val << 7) | (index & XX_UER_CBITS_OFFSET_MASK));
- 	}
--	spin_unlock_irqrestore(&chip->lock, flags);
-+	mutex_unlock(&chip->lock);
- }
- 
- /*
-@@ -190,14 +189,12 @@ static int vx_calc_clock_from_freq(struct vx_core *chip, int freq)
-  */
- static void vx_change_clock_source(struct vx_core *chip, int source)
- {
--	unsigned long flags;
--
- 	/* we mute DAC to prevent clicks */
- 	vx_toggle_dac_mute(chip, 1);
--	spin_lock_irqsave(&chip->lock, flags);
-+	mutex_lock(&chip->lock);
- 	chip->ops->set_clock_source(chip, source);
- 	chip->clock_source = source;
--	spin_unlock_irqrestore(&chip->lock, flags);
-+	mutex_unlock(&chip->lock);
- 	/* unmute */
- 	vx_toggle_dac_mute(chip, 0);
- }
-@@ -209,11 +206,11 @@ static void vx_change_clock_source(struct vx_core *chip, int source)
- void vx_set_internal_clock(struct vx_core *chip, unsigned int freq)
- {
- 	int clock;
--	unsigned long flags;
-+
- 	/* Get real clock value */
- 	clock = vx_calc_clock_from_freq(chip, freq);
- 	snd_printdd(KERN_DEBUG "set internal clock to 0x%x from freq %d\n", clock, freq);
--	spin_lock_irqsave(&chip->lock, flags);
-+	mutex_lock(&chip->lock);
- 	if (vx_is_pcmcia(chip)) {
- 		vx_outb(chip, HIFREQ, (clock >> 8) & 0x0f);
- 		vx_outb(chip, LOFREQ, clock & 0xff);
-@@ -221,7 +218,7 @@ void vx_set_internal_clock(struct vx_core *chip, unsigned int freq)
- 		vx_outl(chip, HIFREQ, (clock >> 8) & 0x0f);
- 		vx_outl(chip, LOFREQ, clock & 0xff);
- 	}
--	spin_unlock_irqrestore(&chip->lock, flags);
-+	mutex_unlock(&chip->lock);
- }
- 
- 
-diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
-index 3dc4732142ee..c5a25e39e3a8 100644
---- a/sound/pci/vx222/vx222.c
-+++ b/sound/pci/vx222/vx222.c
-@@ -168,8 +168,9 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	for (i = 0; i < 2; i++)
- 		vx->port[i] = pci_resource_start(pci, i + 1);
- 
--	if (request_irq(pci->irq, snd_vx_irq_handler, IRQF_SHARED,
--			KBUILD_MODNAME, chip)) {
-+	if (request_threaded_irq(pci->irq, snd_vx_irq_handler,
-+				 snd_vx_threaded_irq_handler, IRQF_SHARED,
-+				 KBUILD_MODNAME, chip)) {
- 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
- 		snd_vx222_free(chip);
+-	if (request_irq(pci->irq, snd_mixart_interrupt, IRQF_SHARED,
+-			KBUILD_MODNAME, mgr)) {
++	if (request_threaded_irq(pci->irq, snd_mixart_interrupt,
++				 snd_mixart_threaded_irq, IRQF_SHARED,
++				 KBUILD_MODNAME, mgr)) {
+ 		dev_err(&pci->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		snd_mixart_free(mgr);
  		return -EBUSY;
-diff --git a/sound/pcmcia/vx/vxp_ops.c b/sound/pcmcia/vx/vxp_ops.c
-index fe33e122e372..281972913c32 100644
---- a/sound/pcmcia/vx/vxp_ops.c
-+++ b/sound/pcmcia/vx/vxp_ops.c
-@@ -468,12 +468,11 @@ static void vxp_write_codec_reg(struct vx_core *chip, int codec, unsigned int da
- void vx_set_mic_boost(struct vx_core *chip, int boost)
+@@ -1314,24 +1317,18 @@ static int snd_mixart_probe(struct pci_dev *pci,
+ 	sprintf(mgr->shortname, "Digigram miXart");
+ 	sprintf(mgr->longname, "%s at 0x%lx & 0x%lx, irq %i", mgr->shortname, mgr->mem[0].phys, mgr->mem[1].phys, mgr->irq);
+ 
+-	/* ISR spinlock  */
+-	spin_lock_init(&mgr->lock);
+-
+ 	/* init mailbox  */
+ 	mgr->msg_fifo_readptr = 0;
+ 	mgr->msg_fifo_writeptr = 0;
+ 
+-	spin_lock_init(&mgr->msg_lock);
+-	mutex_init(&mgr->msg_mutex);
++	mutex_init(&mgr->lock);
++	mutex_init(&mgr->msg_lock);
+ 	init_waitqueue_head(&mgr->msg_sleep);
+ 	atomic_set(&mgr->msg_processed, 0);
+ 
+ 	/* init setup mutex*/
+ 	mutex_init(&mgr->setup_mutex);
+ 
+-	/* init message taslket */
+-	tasklet_init(&mgr->msg_taskq, snd_mixart_msg_tasklet, (unsigned long) mgr);
+-
+ 	/* card assignment */
+ 	mgr->num_cards = MIXART_MAX_CARDS; /* 4  FIXME: configurable? */
+ 	for (i = 0; i < mgr->num_cards; i++) {
+diff --git a/sound/pci/mixart/mixart.h b/sound/pci/mixart/mixart.h
+index 561634d5c007..0cc17e0ea34a 100644
+--- a/sound/pci/mixart/mixart.h
++++ b/sound/pci/mixart/mixart.h
+@@ -78,22 +78,18 @@ struct mixart_mgr {
+ 	char shortname[32];         /* short name of this soundcard */
+ 	char longname[80];          /* name of this soundcard */
+ 
+-	/* message tasklet */
+-	struct tasklet_struct msg_taskq;
+-
+ 	/* one and only blocking message or notification may be pending  */
+ 	u32 pending_event;
+ 	wait_queue_head_t msg_sleep;
+ 
+-	/* messages stored for tasklet */
++	/* messages fifo */
+ 	u32 msg_fifo[MSG_FIFO_SIZE];
+ 	int msg_fifo_readptr;
+ 	int msg_fifo_writeptr;
+ 	atomic_t msg_processed;       /* number of messages to be processed in takslet */
+ 
+-	spinlock_t lock;              /* interrupt spinlock */
+-	spinlock_t msg_lock;          /* mailbox spinlock */
+-	struct mutex msg_mutex;   /* mutex for blocking_requests */
++	struct mutex lock;              /* interrupt lock */
++	struct mutex msg_lock;		/* mailbox lock */
+ 
+ 	struct mutex setup_mutex; /* mutex used in hw_params, open and close */
+ 
+diff --git a/sound/pci/mixart/mixart_core.c b/sound/pci/mixart/mixart_core.c
+index 84f67450924e..fe80313674d9 100644
+--- a/sound/pci/mixart/mixart_core.c
++++ b/sound/pci/mixart/mixart_core.c
+@@ -76,7 +76,6 @@ static int retrieve_msg_frame(struct mixart_mgr *mgr, u32 *msg_frame)
+ static int get_msg(struct mixart_mgr *mgr, struct mixart_msg *resp,
+ 		   u32 msg_frame_address )
  {
- 	struct snd_vxpocket *pchip = (struct snd_vxpocket *)chip;
 -	unsigned long flags;
+ 	u32  headptr;
+ 	u32  size;
+ 	int  err;
+@@ -84,7 +83,7 @@ static int get_msg(struct mixart_mgr *mgr, struct mixart_msg *resp,
+ 	unsigned int i;
+ #endif
  
- 	if (chip->chip_status & VX_STAT_IS_STALE)
- 		return;
+-	spin_lock_irqsave(&mgr->msg_lock, flags);
++	mutex_lock(&mgr->msg_lock);
+ 	err = 0;
  
--	spin_lock_irqsave(&chip->lock, flags);
-+	mutex_lock(&chip->lock);
- 	if (pchip->regCDSP & P24_CDSP_MICS_SEL_MASK) {
- 		if (boost) {
- 			/* boost: 38 dB */
-@@ -486,7 +485,7 @@ void vx_set_mic_boost(struct vx_core *chip, int boost)
-                 }
- 		vx_outb(chip, CDSP, pchip->regCDSP);
+ 	/* copy message descriptor from miXart to driver */
+@@ -133,7 +132,7 @@ static int get_msg(struct mixart_mgr *mgr, struct mixart_msg *resp,
+ 	writel_be(headptr, MIXART_MEM(mgr, MSG_OUTBOUND_FREE_HEAD));
+ 
+  _clean_exit:
+-	spin_unlock_irqrestore(&mgr->msg_lock, flags);
++	mutex_unlock(&mgr->msg_lock);
+ 
+ 	return err;
+ }
+@@ -243,28 +242,24 @@ int snd_mixart_send_msg(struct mixart_mgr *mgr, struct mixart_msg *request, int
+ 	wait_queue_t wait;
+ 	long timeout;
+ 
+-	mutex_lock(&mgr->msg_mutex);
+-
+ 	init_waitqueue_entry(&wait, current);
+ 
+-	spin_lock_irq(&mgr->msg_lock);
++	mutex_lock(&mgr->msg_lock);
+ 	/* send the message */
+ 	err = send_msg(mgr, request, max_resp_size, 1, &msg_frame);  /* send and mark the answer pending */
+ 	if (err) {
+-		spin_unlock_irq(&mgr->msg_lock);
+-		mutex_unlock(&mgr->msg_mutex);
++		mutex_unlock(&mgr->msg_lock);
+ 		return err;
  	}
--	spin_unlock_irqrestore(&chip->lock, flags);
-+	mutex_unlock(&chip->lock);
+ 
+ 	set_current_state(TASK_UNINTERRUPTIBLE);
+ 	add_wait_queue(&mgr->msg_sleep, &wait);
+-	spin_unlock_irq(&mgr->msg_lock);
++	mutex_unlock(&mgr->msg_lock);
+ 	timeout = schedule_timeout(MSG_TIMEOUT_JIFFIES);
+ 	remove_wait_queue(&mgr->msg_sleep, &wait);
+ 
+ 	if (! timeout) {
+ 		/* error - no ack */
+-		mutex_unlock(&mgr->msg_mutex);
+ 		dev_err(&mgr->pci->dev,
+ 			"error: no response on msg %x\n", msg_frame);
+ 		return -EIO;
+@@ -281,7 +276,6 @@ int snd_mixart_send_msg(struct mixart_mgr *mgr, struct mixart_msg *request, int
+ 	if( request->message_id != resp.message_id )
+ 		dev_err(&mgr->pci->dev, "RESPONSE ERROR!\n");
+ 
+-	mutex_unlock(&mgr->msg_mutex);
+ 	return err;
  }
  
- /*
-@@ -511,17 +510,16 @@ static int vx_compute_mic_level(int level)
- void vx_set_mic_level(struct vx_core *chip, int level)
- {
- 	struct snd_vxpocket *pchip = (struct snd_vxpocket *)chip;
--	unsigned long flags;
+@@ -300,34 +294,29 @@ int snd_mixart_send_msg_wait_notif(struct mixart_mgr *mgr,
+ 	if (snd_BUG_ON(notif_event & MSG_CANCEL_NOTIFY_MASK))
+ 		return -EINVAL;
  
- 	if (chip->chip_status & VX_STAT_IS_STALE)
- 		return;
+-	mutex_lock(&mgr->msg_mutex);
+-
+ 	init_waitqueue_entry(&wait, current);
  
--	spin_lock_irqsave(&chip->lock, flags);
-+	mutex_lock(&chip->lock);
- 	if (pchip->regCDSP & VXP_CDSP_MIC_SEL_MASK) {
- 		level = vx_compute_mic_level(level);
- 		vx_outb(chip, MICRO, level);
+-	spin_lock_irq(&mgr->msg_lock);
++	mutex_lock(&mgr->msg_lock);
+ 	/* send the message */
+ 	err = send_msg(mgr, request, MSG_DEFAULT_SIZE, 1, &notif_event);  /* send and mark the notification event pending */
+ 	if(err) {
+-		spin_unlock_irq(&mgr->msg_lock);
+-		mutex_unlock(&mgr->msg_mutex);
++		mutex_unlock(&mgr->msg_lock);
+ 		return err;
  	}
--	spin_unlock_irqrestore(&chip->lock, flags);
-+	mutex_unlock(&chip->lock);
+ 
+ 	set_current_state(TASK_UNINTERRUPTIBLE);
+ 	add_wait_queue(&mgr->msg_sleep, &wait);
+-	spin_unlock_irq(&mgr->msg_lock);
++	mutex_unlock(&mgr->msg_lock);
+ 	timeout = schedule_timeout(MSG_TIMEOUT_JIFFIES);
+ 	remove_wait_queue(&mgr->msg_sleep, &wait);
+ 
+ 	if (! timeout) {
+ 		/* error - no ack */
+-		mutex_unlock(&mgr->msg_mutex);
+ 		dev_err(&mgr->pci->dev,
+ 			"error: notification %x not received\n", notif_event);
+ 		return -EIO;
+ 	}
+ 
+-	mutex_unlock(&mgr->msg_mutex);
+ 	return 0;
+ }
+ 
+@@ -335,13 +324,12 @@ int snd_mixart_send_msg_wait_notif(struct mixart_mgr *mgr,
+ int snd_mixart_send_msg_nonblock(struct mixart_mgr *mgr, struct mixart_msg *request)
+ {
+ 	u32 message_frame;
+-	unsigned long flags;
+ 	int err;
+ 
+ 	/* just send the message (do not mark it as a pending one) */
+-	spin_lock_irqsave(&mgr->msg_lock, flags);
++	mutex_lock(&mgr->msg_lock);
+ 	err = send_msg(mgr, request, MSG_DEFAULT_SIZE, 0, &message_frame);
+-	spin_unlock_irqrestore(&mgr->msg_lock, flags);
++	mutex_unlock(&mgr->msg_lock);
+ 
+ 	/* the answer will be handled by snd_struct mixart_msgasklet()  */
+ 	atomic_inc(&mgr->msg_processed);
+@@ -350,19 +338,16 @@ int snd_mixart_send_msg_nonblock(struct mixart_mgr *mgr, struct mixart_msg *requ
  }
  
  
-diff --git a/sound/pcmcia/vx/vxpocket.c b/sound/pcmcia/vx/vxpocket.c
-index 786e7e139c9e..14e4aeb9242c 100644
---- a/sound/pcmcia/vx/vxpocket.c
-+++ b/sound/pcmcia/vx/vxpocket.c
-@@ -229,7 +229,8 @@ static int vxpocket_config(struct pcmcia_device *link)
- 	if (ret)
- 		goto failed;
+-/* common buffer of tasklet and interrupt to send/receive messages */
++/* common buffer of interrupt to send/receive messages */
+ static u32 mixart_msg_data[MSG_DEFAULT_SIZE / 4];
  
--	ret = pcmcia_request_irq(link, snd_vx_irq_handler);
-+	ret = pcmcia_request_threaded_irq(link, snd_vx_irq_handler,
-+					  snd_vx_threaded_irq_handler);
- 	if (ret)
- 		goto failed;
+ 
+-void snd_mixart_msg_tasklet(unsigned long arg)
++static void snd_mixart_process_msg(struct mixart_mgr *mgr)
+ {
+-	struct mixart_mgr *mgr = ( struct mixart_mgr*)(arg);
+ 	struct mixart_msg resp;
+ 	u32 msg, addr, type;
+ 	int err;
+ 
+-	spin_lock(&mgr->lock);
+-
+ 	while (mgr->msg_fifo_readptr != mgr->msg_fifo_writeptr) {
+ 		msg = mgr->msg_fifo[mgr->msg_fifo_readptr];
+ 		mgr->msg_fifo_readptr++;
+@@ -381,7 +366,7 @@ void snd_mixart_msg_tasklet(unsigned long arg)
+ 			err = get_msg(mgr, &resp, addr);
+ 			if( err < 0 ) {
+ 				dev_err(&mgr->pci->dev,
+-					"tasklet: error(%d) reading mf %x\n",
++					"error(%d) reading mf %x\n",
+ 					err, msg);
+ 				break;
+ 			}
+@@ -393,12 +378,12 @@ void snd_mixart_msg_tasklet(unsigned long arg)
+ 			case MSG_STREAM_STOP_OUTPUT_STAGE_PACKET:
+ 				if(mixart_msg_data[0])
+ 					dev_err(&mgr->pci->dev,
+-						"tasklet : error MSG_STREAM_ST***_***PUT_STAGE_PACKET status=%x\n",
++						"error MSG_STREAM_ST***_***PUT_STAGE_PACKET status=%x\n",
+ 						mixart_msg_data[0]);
+ 				break;
+ 			default:
+ 				dev_dbg(&mgr->pci->dev,
+-					"tasklet received mf(%x) : msg_id(%x) uid(%x, %x) size(%zd)\n",
++					"received mf(%x) : msg_id(%x) uid(%x, %x) size(%zd)\n",
+ 					   msg, resp.message_id, resp.uid.object_id, resp.uid.desc, resp.size);
+ 				break;
+ 			}
+@@ -409,7 +394,7 @@ void snd_mixart_msg_tasklet(unsigned long arg)
+ 			/* get_msg() necessary */
+ 		default:
+ 			dev_err(&mgr->pci->dev,
+-				"tasklet doesn't know what to do with message %x\n",
++				"doesn't know what to do with message %x\n",
+ 				msg);
+ 		} /* switch type */
+ 
+@@ -417,26 +402,17 @@ void snd_mixart_msg_tasklet(unsigned long arg)
+ 		atomic_dec(&mgr->msg_processed);
+ 
+ 	} /* while there is a msg in fifo */
+-
+-	spin_unlock(&mgr->lock);
+ }
+ 
+ 
+ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
+ {
+ 	struct mixart_mgr *mgr = dev_id;
+-	int err;
+-	struct mixart_msg resp;
+-
+-	u32 msg;
+ 	u32 it_reg;
+ 
+-	spin_lock(&mgr->lock);
+-
+ 	it_reg = readl_le(MIXART_REG(mgr, MIXART_PCI_OMISR_OFFSET));
+ 	if( !(it_reg & MIXART_OIDI) ) {
+ 		/* this device did not cause the interrupt */
+-		spin_unlock(&mgr->lock);
+ 		return IRQ_NONE;
+ 	}
+ 
+@@ -450,6 +426,17 @@ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
+ 	/* clear interrupt */
+ 	writel_le( MIXART_OIDI, MIXART_REG(mgr, MIXART_PCI_OMISR_OFFSET) );
+ 
++	return IRQ_WAKE_THREAD;
++}
++
++irqreturn_t snd_mixart_threaded_irq(int irq, void *dev_id)
++{
++	struct mixart_mgr *mgr = dev_id;
++	int err;
++	struct mixart_msg resp;
++	u32 msg;
++
++	mutex_lock(&mgr->lock);
+ 	/* process interrupt */
+ 	while (retrieve_msg_frame(mgr, &msg)) {
+ 
+@@ -518,9 +505,9 @@ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
+ 						stream->buf_period_frag = (u32)( sample_count - stream->abs_period_elapsed );
+ 
+ 						if(elapsed) {
+-							spin_unlock(&mgr->lock);
++							mutex_unlock(&mgr->lock);
+ 							snd_pcm_period_elapsed(stream->substream);
+-							spin_lock(&mgr->lock);
++							mutex_lock(&mgr->lock);
+ 						}
+ 					}
+ 				}
+@@ -556,7 +543,7 @@ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
+ 			/* no break, continue ! */
+ 		case MSG_TYPE_ANSWER:
+ 			/* answer or notification to a message we are waiting for*/
+-			spin_lock(&mgr->msg_lock);
++			mutex_lock(&mgr->msg_lock);
+ 			if( (msg & ~MSG_TYPE_MASK) == mgr->pending_event ) {
+ 				wake_up(&mgr->msg_sleep);
+ 				mgr->pending_event = 0;
+@@ -566,9 +553,9 @@ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
+ 				mgr->msg_fifo[mgr->msg_fifo_writeptr] = msg;
+ 				mgr->msg_fifo_writeptr++;
+ 				mgr->msg_fifo_writeptr %= MSG_FIFO_SIZE;
+-				tasklet_schedule(&mgr->msg_taskq);
++				snd_mixart_process_msg(mgr);
+ 			}
+-			spin_unlock(&mgr->msg_lock);
++			mutex_unlock(&mgr->msg_lock);
+ 			break;
+ 		case MSG_TYPE_REQUEST:
+ 		default:
+@@ -582,7 +569,7 @@ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
+ 	/* allow interrupt again */
+ 	writel_le( MIXART_ALLOW_OUTBOUND_DOORBELL, MIXART_REG( mgr, MIXART_PCI_OMIMR_OFFSET));
+ 
+-	spin_unlock(&mgr->lock);
++	mutex_unlock(&mgr->lock);
+ 
+ 	return IRQ_HANDLED;
+ }
+diff --git a/sound/pci/mixart/mixart_core.h b/sound/pci/mixart/mixart_core.h
+index c919b734756f..d1722e575409 100644
+--- a/sound/pci/mixart/mixart_core.h
++++ b/sound/pci/mixart/mixart_core.h
+@@ -564,7 +564,7 @@ int  snd_mixart_send_msg_wait_notif(struct mixart_mgr *mgr, struct mixart_msg *r
+ int  snd_mixart_send_msg_nonblock(struct mixart_mgr *mgr, struct mixart_msg *request);
+ 
+ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id);
+-void snd_mixart_msg_tasklet(unsigned long arg);
++irqreturn_t snd_mixart_threaded_irq(int irq, void *dev_id);
+ 
+ void snd_mixart_reset_board(struct mixart_mgr *mgr);
  
 -- 
 2.1.0
