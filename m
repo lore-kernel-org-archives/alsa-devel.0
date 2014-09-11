@@ -1,21 +1,17 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage
-	in this module
-Date: Thu, 11 Sep 2014 15:07:12 +0800
-Message-ID: <20140911070710.GA25251@audiosh1>
-References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
- <20140909183804.GA6944@Asurada> <20140910081251.GA14662@audiosh1>
- <20140910174204.GA4628@Asurada> <20140911063651.GD16489@pengutronix.de>
+From: Adam Richter <adam_richter2004@yahoo.com>
+Subject: Possible fix for snd-hda-intel model=no-jd failing
+	since ~linux-3.9-rc1
+Date: Thu, 11 Sep 2014 00:47:19 -0700
+Message-ID: <1410421639.47518.YahooMailNeo@web160601.mail.bf1.yahoo.com>
+Reply-To: Adam Richter <adam_richter2004@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="1737431079-1326721894-1410421639=:47518"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0140.outbound.protection.outlook.com [65.55.169.140])
- by alsa0.perex.cz (Postfix) with ESMTP id 7936C262631
- for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 09:07:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140911063651.GD16489@pengutronix.de>
+Received: from nm8-vm0.bullet.mail.bf1.yahoo.com
+ (nm8-vm0.bullet.mail.bf1.yahoo.com [98.139.213.95])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A46B265125
+ for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 09:54:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,93 +21,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, Li.Xiubo@freescale.com, timur@tabi.org, Nicolin Chen <nicoleotsuka@gmail.com>, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 11, 2014 at 08:36:51AM +0200, Markus Pargmann wrote:
-> On Wed, Sep 10, 2014 at 10:42:04AM -0700, Nicolin Chen wrote:
-> > On Wed, Sep 10, 2014 at 04:12:53PM +0800, Shengjiu Wang wrote:
-> > > > Then we can get a patch like:
-> > > > open() {
-> > > > +	clk_prepare_enable();
-> > > > 	....
-> > > > }
-> > > > 
-> > > > close() {
-> > > > 	....
-> > > > +	clk_disable_unprepare()
-> > > > }
-> > 
-> > > what is the open() and close()? do you mean the fsl_ssi_startup()
-> > > and fsl_ssi_shutdown()?
-> > 
-> > Yea.
-> > 
-> > > > probe() {
-> > > > 	clk_get();
-> > > > 	clk_prepare_enable();
-> > > > 	....
-> > > > 	if (xxx)
-> > > > -		goto err_xx;
-> > > > +		return ret;
-> > > > 	....
-> > > > +	clk_disable_unprepare();
-> > > > 	return 0;
-> > > > -err_xx:
-> > > > -	clk_disable_unprepare()
-> > > > }
-> > 
-> > > If this probe() is fsl_ssi_imx_probe(), I think no need to add
-> > > clk_prepare_enable() or clk_disable_unprepare(), seems there is no 
-> > > registers accessing in this probe.
-> > 
-> > This is trying to be safe, especially for such a driver being used
-> > by multiple platforms. You can omit this as long as the patch can
-> > pass the test on old imx, PowerPC, and AC97 platforms.
-> > 
-> > >
-> > 
-> > And another risk just came to my mind is that there would be a
-> > possibility that a machine driver would call set_dai_fmt() early,
-> > after SSI's probe() and before SSI's startup(), if the machine
-> > driver contains dai_fmt assignment in its probe(). Then, without
-> > regmap_mmio_clk(), it'll be tough for us over here because we may
-> > also need to add clock enable/disable for set_dai_fmt/set_sysclk(),
-> > even if there might be still tiny risk that we missed something.
-> 
-> Thanks, didn't thought about that. As there are no restrictions on when
-> these functions may be called, it has to be handled.
-> 
-> > 
-> > Then there could be a selfish approach to circumvent it is to use
-> > regmap_mmio_clk() with "ipg" at the beginning and call regmap_mmio()
-> > without "ipg" if getting a failed return value from regmap_mmio_clk,
-> > and meanwhile to keep the clock always enabled for the regmap_mmio()
-> > case just like what the current driver is doing. This may result
-> > those non-ipg-clk platforms can't benefit from this refinement
-> > unless they update their DT bindings -- use "ipg" for core clock
-> > This might be the safest and simplest way for us, I'm not sure
-> > everyone would be comfortable with this idea though.
-> 
-> I like the "selfish" approach. It would save a lot of clock
-> enabling/disabling and error handling and at the same time it doesn't break
-> the DT compatibility. The platforms with an old DT would have the old
-> behaviour, but that could be changed by updating the devicetrees which
-> should be easy to do for all the imx SoCs.
-> 
-> Best regards,
-> 
-> Markus
->
-Thanks Markus and Nicolin
+--1737431079-1326721894-1410421639=:47518
+Content-Type: text/plain; charset=us-ascii
 
-I have sent version 2 for this patch. Please review it.
+Hi.
 
-best regards
-wang shengjiu 
-> -- 
-> Pengutronix e.K.                           |                             |
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+This is a bug and suggested temporary fix that I originally posted to the linux-sound mailing list about a month and a half ago.  I am grateful to Takashi Awai for informing me after my follow-up inquiry about it today that I should submit it to the alsa-devel mailing list instead.  Please feel free to redirect me further if appropriate.  I did not notice any contact information for sound/pci/hda in
+linux-3.16-rc4/MAINATINERS.
+
+Anyhow, here is the bug report and a one line proposed temporary fix.
+
+
+The "model=no-jd" argument has not initialized the analog audio output jack correctly for me since linux-3.9-rc1 (if I recall correctly) through linux-3.17-rc4, although I have not tried every release candidate in between.
+
+The symptom is that, on a computer with an analog audio output jack
+that has incorrect jack sense (a hardware bug), audio output is completely muted until I physically replug the cable, even though I specified "model=no-jd" as an argument to the snd-hda-intel kernel module, which is supposed to cause the kernel to ignore the jack sense reported by hardware and just drive the audio output even if the hardware jack sense indicates nothing is plugged in.  This problem did not occur until approximate Linux 3.9-rc1.
+
+I have found a few single line workarounds that work, of which my
+favorite is the following (also attached to this email, in case any
+mailer subjects this message to reformatting), because it does not add
+code to anything that gets called frequently.
+
+--- linux-3.17.0-rc4-64bit/sound/pci/hda/hda_jack.c.orig    2014-09-07 16:09:43.000000000 -0700
++++ linux-3.17.0-rc4-64bit/sound/pci/hda/hda_jack.c    2014-09-10 18:41:53.422900040 -0700
+@@ -106,6 +106,7 @@ snd_hda_jack_tbl_new(struct hda_codec *c
+     jack->nid = nid;
+     jack->jack_dirty = 1;
+     jack->tag = codec->jacktbl.used;
++    jack->phantom_jack = codec->no_jack_detect;
+     return jack;
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_jack_tbl_new);
+
+
+Signed-off-by: Adam J. Richter <adam_richter2004@yahoo.com>
+
+
+I consider this a workaround rather than than a perfect fix, because I
+think the underlying problem seems to be some kind of initialization
+order issue that I don't fully understand.  Basically, by the time
+jack->phantom_jack was being set, some caller had already called
+jack_detect_update(), which loaded the incorrect jack sense result
+from hardware and cleared jack->jack_dirty, so the jack sense would
+not be set again.  At least that is what I think the underlying
+problem probably is.
+
+Also, if a change like this is to be integrated, I'd like to know if
+it might be better for the line that I added to be:
+
+          jack->phantom_jack = !is_jack_detectable(codec, nid);
+
+...which is what add_jack_kctl does (not sure why add_jack_kctls does
+not, by the way, at the risk of making a spectacle of my ignorance).
+My doubt about this approach is that perhaps is_jack_detectable()
+relies on some initialization that has not occurred at that point.
+
+Anyhow, I'd like to get the process started of either pushing this
+change upstream or quickly developing a more correct fix.  If a more
+correct fix does not become apparent in the next few days, I would
+recommend pushing the workaround upstream now until some future code
+cleanup, so people will no longer be effected by the bug.
+
+Any technical input or advice on how to proceed is welcome.  Thanks
+for taking the time to consider this.
+
+
+Adam Richter
+
+--1737431079-1326721894-1410421639=:47518
+Content-Type: text/x-patch; name="jack.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="jack.diff"
+
+LS0tIGxpbnV4LTMuMTcuMC1yYzQtNjRiaXQvc291bmQvcGNpL2hkYS9oZGFf
+amFjay5jLm9yaWcJMjAxNC0wOS0wNyAxNjowOTo0My4wMDAwMDAwMDAgLTA3
+MDAKKysrIGxpbnV4LTMuMTcuMC1yYzQtNjRiaXQvc291bmQvcGNpL2hkYS9o
+ZGFfamFjay5jCTIwMTQtMDktMTAgMTg6NDE6NTMuNDIyOTAwMDQwIC0wNzAw
+CkBAIC0xMDYsNiArMTA2LDcgQEAgc25kX2hkYV9qYWNrX3RibF9uZXcoc3Ry
+dWN0IGhkYV9jb2RlYyAqYwogCWphY2stPm5pZCA9IG5pZDsKIAlqYWNrLT5q
+YWNrX2RpcnR5ID0gMTsKIAlqYWNrLT50YWcgPSBjb2RlYy0+amFja3RibC51
+c2VkOworCWphY2stPnBoYW50b21famFjayA9IGNvZGVjLT5ub19qYWNrX2Rl
+dGVjdDsKIAlyZXR1cm4gamFjazsKIH0KIEVYUE9SVF9TWU1CT0xfR1BMKHNu
+ZF9oZGFfamFja190YmxfbmV3KTsK
+
+--1737431079-1326721894-1410421639=:47518
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--1737431079-1326721894-1410421639=:47518--
