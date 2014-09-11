@@ -1,57 +1,38 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5] ASoC: dapm: add code to configure dai link parameters
-Date: Thu, 11 Sep 2014 19:37:22 +0100
-Message-ID: <20140911183722.GR4015@sirena.org.uk>
-References: <1410432139-15089-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+From: Adam Richter <adam_richter2004@yahoo.com>
+Subject: Re: Possible fix for snd-hda-intel model=no-jd failing
+	since ~linux-3.9-rc1
+Date: Thu, 11 Sep 2014 12:14:31 -0700
+Message-ID: <1410462871.69976.YahooMailBasic@web160605.mail.bf1.yahoo.com>
+References: <CAN8ccibXu3owbz+K7cHdw=8PXCCMDn10_1rkva71Zg9rkZDv-A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="U0B5otXy6WXfork9"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1410432139-15089-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nm16.bullet.mail.bf1.yahoo.com (nm16.bullet.mail.bf1.yahoo.com
+ [98.139.212.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DC48265724
+ for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 21:14:33 +0200 (CEST)
+In-Reply-To: <CAN8ccibXu3owbz+K7cHdw=8PXCCMDn10_1rkva71Zg9rkZDv-A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 9/11/14, Raymond Yau <superquad.vortex2@gmail.com> wrote:
+ 
+>Is this enumerated codec inside vm since node 0x18 and node 0x19 does not
+>like the real idt coded ?
+ 
+It's real hardware.
 
---U0B5otXy6WXfork9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for your attention to this problem.
 
-On Thu, Sep 11, 2014 at 11:42:18AM +0100, Nikesh Oswal wrote:
-
-> +	/* add kcontrol */
-> +	for (i = 0; i < w->num_kcontrols; i++) {
-> +		kcontrol = snd_soc_cnew(&w->kcontrol_news[i], w,
-> +		w->name, NULL);
-> +		ret = snd_ctl_add(card, kcontrol);
-
-*sigh*  As I wrote before in response to exactly the same code:
-
-| Throughout this you've got coding style problems, you're not indenting
-| the continuations of multi-line statements.  Please try to follow the
-| kernel coding style, if your code is visibly different to the rest of
-| the codebase that's not good.
-
-Please pay attention to review comments, just completely ignoring them
-isn't good.  If you don't feel some change should be made then reply and
-discuss.
-
---U0B5otXy6WXfork9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUEevhAAoJECTWi3JdVIfQPL0H+wcGMuYK1NxagI2N6mzs0/MJ
-hm9RbtJhiXByUYFPoAbKHHaiedeuZQyzQhQX4rWmSiUXhrRApBNdFXbXBeO5Fuqv
-cmJQpvWxv2aGhOMZ9xCMqeeLDNNxCay4omkchGnUQFzgWSGbtMK7+G1TDS7qlrJ/
-/cLgwxsbaFvKh7D2rqLDCSZMICBtANBXPW/VfqDi544exZex+R37tp6KHCbywvx7
-EaMQL/O7TUb1jK0ptg9EFtpfAuBiG6bQs0pWz7n3CdOYYzTTr911aj7e4zhzxrz0
-+w+LKN9j8lH5UDcgmLFgxltaYvC9tSe8kz01Yzaeq9ZVoetT1buqvAh4izd3dgw=
-=RfRz
------END PGP SIGNATURE-----
-
---U0B5otXy6WXfork9--
+Adam
