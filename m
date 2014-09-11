@@ -1,69 +1,78 @@
-From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
-Subject: Re: [PATCH v2 1/2] ARM: tegra: apalis/colibri t30: integrate audio
- support
-Date: Wed, 10 Sep 2014 15:26:58 -0600
-Message-ID: <5410C222.2020602@wwwdotorg.org>
-References: <cover.1410362950.git.marcel@ziswiler.com> <00f249b3d648d3a8d550c5db0737f3aa6d93f07e.1410362950.git.marcel@ziswiler.com>
+From: <bardliao@realtek.com>
+Subject: [PATCH v2] ASoC: rt286: Set cbj_en for ACPI devices
+Date: Thu, 11 Sep 2014 09:40:54 +0800
+Message-ID: <1410399654-10371-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <00f249b3d648d3a8d550c5db0737f3aa6d93f07e.1410362950.git.marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Marcel Ziswiler <marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, stefan-XLVq0VzYD2Y@public.gmane.org, Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A2AD2655FD
+ for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 03:41:23 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 09/10/2014 02:54 PM, Marcel Ziswiler wrote:
-> Integrate Freescale SGTL5000 analogue audio codec support.
->
-> Signed-off-by: Marcel Ziswiler <marcel-mitwqZ+T+m9Wk0Htik3J/w@public.gmane.org>
-> Reviewed-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Bard Liao <bardliao@realtek.com>
 
-No, definitely not; this patch has significant semantic changes since I 
-reviewed it.
+This patch set cbj_en value for ACPI devices.
 
-> diff --git a/arch/arm/boot/dts/tegra30-apalis.dtsi b/arch/arm/boot/dts/tegra30-apalis.dtsi
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt286.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-
-> +	sound {
-> +		compatible = "simple-audio-card";
-...
-> +		simple-audio-card,codec {
-> +			bitclock-master;
-> +			clocks = <&tegra_car TEGRA30_CLK_EXTERN1>;
-> +			frame-master;
-> +			sound-dai = <&sgtl5000>;
-> +		};
-> +
-> +		simple-audio-card,cpu {
-> +			bitclock-master;
-> +			clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
-> +				 <&tegra_car TEGRA30_CLK_PLL_A_OUT0>;
-> +			frame-master;
-> +			master-clkdir-out;
-> +			sound-dai = <&tegra_i2s2>;
-> +		};
-> +	};
-
-I'm not sure how this can work. Certainly all 3 clocks that are required 
-for audio are mentioned here. However, the PLL_A clock (which then 
-trickles down to the other 2) needs to have its rate changed based on 
-whether the sample rate is 44.1KHz- or 48KHz-based. Semantically, this 
-can't be something that "simple-audio-card" can imply, since 
-"simple-audio-card" is something agnostic to any HW, whereas this 
-clocking requirement is something specific to Tegra HW.
-
-To see the problem, try encoding some audio stream as both 44.1KHz and 
-48KHz, then play a few seconds of each and keep switching back and 
-forth. You'll likely find either the playback pitch is wrong, or you get 
-drop-outs or stuttering.
-
-I also wonder how "simple-audio-card" can know what rate the EXTERN1 
-clock to the CODEC should be set to; each CODEC has a different 
-requirement for the minimum clock input and the Fs multiple usually 
-varies for different sample rates. See for example 
-sound/soc/tegra/tegra_wm8903.c:tegra_wm8903_hw_params(). This could be a 
-solved problem though: Perhaps some API has been added to CODECs to 
-report this information (or perhaps CODEC drivers now clk_set_rate() on 
-their input clocks themselves) since I last looked.
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index e4f6102..7dfca82 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1100,8 +1100,14 @@ static const struct i2c_device_id rt286_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt286_i2c_id);
+ 
++/* the default platform data for acpi devices */
++static struct rt286_platform_data rt286_acpi_data = {
++	.cbj_en = true,
++	.gpio2_en = false,
++};
++
+ static const struct acpi_device_id rt286_acpi_match[] = {
+-	{ "INT343A", 0 },
++	{ "INT343A", (unsigned long)&rt286_acpi_data },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(acpi, rt286_acpi_match);
+@@ -1111,6 +1117,8 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ {
+ 	struct rt286_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct rt286_priv *rt286;
++	struct device *dev = &i2c->dev;
++	const struct acpi_device_id *acpiid;
+ 	int i, ret;
+ 
+ 	rt286 = devm_kzalloc(&i2c->dev,	sizeof(*rt286),
+@@ -1141,6 +1149,13 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	if (pdata)
+ 		rt286->pdata = *pdata;
+ 
++	/* enable jack combo mode on supported devices */
++	acpiid = acpi_match_device(dev->driver->acpi_match_table, dev);
++	if (acpiid) {
++		rt286->pdata = *(struct rt286_platform_data *)
++				acpiid->driver_data;
++	}
++
+ 	regmap_write(rt286->regmap, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
+ 
+ 	for (i = 0; i < RT286_POWER_REG_LEN; i++)
+-- 
+1.8.1.1.439.g50a6b54
