@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/6] ALSA: mixart: Use nonatomic PCM ops
-Date: Thu, 11 Sep 2014 16:00:22 +0200
-Message-ID: <1410444025-22772-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 5/6] ALSA: lx6464es: Use nonatomic PCM ops
+Date: Thu, 11 Sep 2014 16:00:24 +0200
+Message-ID: <1410444025-22772-6-git-send-email-tiwai@suse.de>
 References: <1410444025-22772-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DFDD4265769
+ by alsa0.perex.cz (Postfix) with ESMTP id DEB45265768
  for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 16:00:32 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2ED65AD3F
+ by mx2.suse.de (Postfix) with ESMTP id 2D985AD31
  for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 14:00:30 +0000 (UTC)
 In-Reply-To: <1410444025-22772-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,387 +26,808 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Like the previous patch for VX boards, miXart device driver can be
-also rewritten to use nonatomic PCM ops.  Simply spinlocks are
-replaced with mutex, the tasklet code is merged into the threaded irq
-handler.  Also, now mgr->msg_mutex is superfluous, so merged to
-msg_lock.
+Like the other previous changes, this patch for lx6464es takes the
+same strategy for converting to nonatomic PCM ops: replacing spinlock
+with mutex, converting the irq tasklet to the threaded irq, and
+merging the trigger tasklets back to the trigger callback.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/mixart/mixart.c      | 17 ++++-----
- sound/pci/mixart/mixart.h      | 10 ++----
- sound/pci/mixart/mixart_core.c | 79 ++++++++++++++++++------------------------
- sound/pci/mixart/mixart_core.h |  2 +-
- 4 files changed, 44 insertions(+), 64 deletions(-)
+Compile tested only.
 
-diff --git a/sound/pci/mixart/mixart.c b/sound/pci/mixart/mixart.c
-index 75fc342cff2a..1faf47e81570 100644
---- a/sound/pci/mixart/mixart.c
-+++ b/sound/pci/mixart/mixart.c
-@@ -986,6 +986,7 @@ static int snd_mixart_pcm_analog(struct snd_mixart *chip)
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_mixart_capture_ops);
+ sound/pci/lx6464es/lx6464es.c |  43 +++----
+ sound/pci/lx6464es/lx6464es.h |   9 +-
+ sound/pci/lx6464es/lx_core.c  | 252 +++++++++++++++---------------------------
+ sound/pci/lx6464es/lx_core.h  |   4 +-
+ 4 files changed, 108 insertions(+), 200 deletions(-)
+
+diff --git a/sound/pci/lx6464es/lx6464es.c b/sound/pci/lx6464es/lx6464es.c
+index a671f0865f71..601315a1f58f 100644
+--- a/sound/pci/lx6464es/lx6464es.c
++++ b/sound/pci/lx6464es/lx6464es.c
+@@ -279,7 +279,6 @@ static snd_pcm_uframes_t lx_pcm_stream_pointer(struct snd_pcm_substream
+ {
+ 	struct lx6464es *chip = snd_pcm_substream_chip(substream);
+ 	snd_pcm_uframes_t pos;
+-	unsigned long flags;
+ 	int is_capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
+ 
+ 	struct lx_stream *lx_stream = is_capture ? &chip->capture_stream :
+@@ -287,9 +286,9 @@ static snd_pcm_uframes_t lx_pcm_stream_pointer(struct snd_pcm_substream
+ 
+ 	dev_dbg(chip->card->dev, "->lx_pcm_stream_pointer\n");
+ 
+-	spin_lock_irqsave(&chip->lock, flags);
++	mutex_lock(&chip->lock);
+ 	pos = lx_stream->frame_pos * substream->runtime->period_size;
+-	spin_unlock_irqrestore(&chip->lock, flags);
++	mutex_unlock(&chip->lock);
+ 
+ 	dev_dbg(chip->card->dev, "stream_pointer at %ld\n", pos);
+ 	return pos;
+@@ -485,8 +484,8 @@ static void lx_trigger_stop(struct lx6464es *chip, struct lx_stream *lx_stream)
+ 
+ }
+ 
+-static void lx_trigger_tasklet_dispatch_stream(struct lx6464es *chip,
+-					       struct lx_stream *lx_stream)
++static void lx_trigger_dispatch_stream(struct lx6464es *chip,
++				       struct lx_stream *lx_stream)
+ {
+ 	switch (lx_stream->status) {
+ 	case LX_STREAM_STATUS_SCHEDULE_RUN:
+@@ -502,24 +501,12 @@ static void lx_trigger_tasklet_dispatch_stream(struct lx6464es *chip,
+ 	}
+ }
+ 
+-static void lx_trigger_tasklet(unsigned long data)
+-{
+-	struct lx6464es *chip = (struct lx6464es *)data;
+-	unsigned long flags;
+-
+-	dev_dbg(chip->card->dev, "->lx_trigger_tasklet\n");
+-
+-	spin_lock_irqsave(&chip->lock, flags);
+-	lx_trigger_tasklet_dispatch_stream(chip, &chip->capture_stream);
+-	lx_trigger_tasklet_dispatch_stream(chip, &chip->playback_stream);
+-	spin_unlock_irqrestore(&chip->lock, flags);
+-}
+-
+ static int lx_pcm_trigger_dispatch(struct lx6464es *chip,
+ 				   struct lx_stream *lx_stream, int cmd)
+ {
+ 	int err = 0;
+ 
++	mutex_lock(&chip->lock);
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 		lx_stream->status = LX_STREAM_STATUS_SCHEDULE_RUN;
+@@ -533,9 +520,12 @@ static int lx_pcm_trigger_dispatch(struct lx6464es *chip,
+ 		err = -EINVAL;
+ 		goto exit;
+ 	}
+-	tasklet_schedule(&chip->trigger_tasklet);
++
++	lx_trigger_dispatch_stream(chip, &chip->capture_stream);
++	lx_trigger_dispatch_stream(chip, &chip->playback_stream);
+ 
+ exit:
++	mutex_unlock(&chip->lock);
+ 	return err;
+ }
+ 
+@@ -861,6 +851,7 @@ static int lx_pcm_create(struct lx6464es *chip)
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &lx_ops_capture);
  
  	pcm->info_flags = 0;
 +	pcm->nonatomic = true;
- 	strcpy(pcm->name, name);
+ 	strcpy(pcm->name, card_name);
  
- 	preallocate_buffers(chip, pcm);
-@@ -1018,6 +1019,7 @@ static int snd_mixart_pcm_digital(struct snd_mixart *chip)
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_mixart_capture_ops);
+ 	err = snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+@@ -1009,15 +1000,9 @@ static int snd_lx6464es_create(struct snd_card *card,
+ 	chip->irq = -1;
  
- 	pcm->info_flags = 0;
-+	pcm->nonatomic = true;
- 	strcpy(pcm->name, name);
+ 	/* initialize synchronization structs */
+-	spin_lock_init(&chip->lock);
+-	spin_lock_init(&chip->msg_lock);
++	mutex_init(&chip->lock);
++	mutex_init(&chip->msg_lock);
+ 	mutex_init(&chip->setup_mutex);
+-	tasklet_init(&chip->trigger_tasklet, lx_trigger_tasklet,
+-		     (unsigned long)chip);
+-	tasklet_init(&chip->tasklet_capture, lx_tasklet_capture,
+-		     (unsigned long)chip);
+-	tasklet_init(&chip->tasklet_playback, lx_tasklet_playback,
+-		     (unsigned long)chip);
  
- 	preallocate_buffers(chip, pcm);
-@@ -1303,8 +1305,9 @@ static int snd_mixart_probe(struct pci_dev *pci,
+ 	/* request resources */
+ 	err = pci_request_regions(pci, card_name);
+@@ -1032,8 +1017,8 @@ static int snd_lx6464es_create(struct snd_card *card,
+ 	/* dsp port */
+ 	chip->port_dsp_bar = pci_ioremap_bar(pci, 2);
+ 
+-	err = request_irq(pci->irq, lx_interrupt, IRQF_SHARED,
+-			  KBUILD_MODNAME, chip);
++	err = request_threaded_irq(pci->irq, lx_interrupt, lx_threaded_irq,
++				   IRQF_SHARED, KBUILD_MODNAME, chip);
+ 	if (err) {
+ 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+ 		goto request_irq_failed;
+diff --git a/sound/pci/lx6464es/lx6464es.h b/sound/pci/lx6464es/lx6464es.h
+index 6792eda9c9a5..1bec187d772f 100644
+--- a/sound/pci/lx6464es/lx6464es.h
++++ b/sound/pci/lx6464es/lx6464es.h
+@@ -71,14 +71,10 @@ struct lx6464es {
+ 
+ 	u8			mac_address[6];
+ 
+-	spinlock_t		lock;        /* interrupt spinlock */
++	struct mutex		lock;        /* interrupt lock */
+ 	struct mutex            setup_mutex; /* mutex used in hw_params, open
+ 					      * and close */
+ 
+-	struct tasklet_struct   trigger_tasklet; /* trigger tasklet */
+-	struct tasklet_struct   tasklet_capture;
+-	struct tasklet_struct   tasklet_playback;
+-
+ 	/* ports */
+ 	unsigned long		port_plx;	   /* io port (size=256) */
+ 	void __iomem           *port_plx_remapped; /* remapped plx port */
+@@ -87,8 +83,9 @@ struct lx6464es {
+ 						    * size=8K) */
+ 
+ 	/* messaging */
+-	spinlock_t		msg_lock;          /* message spinlock */
++	struct mutex		msg_lock;          /* message lock */
+ 	struct lx_rmh           rmh;
++	u32			irqsrc;
+ 
+ 	/* configuration */
+ 	uint			freq_ratio : 2;
+diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
+index e8f38e5df10a..f3d62020ef66 100644
+--- a/sound/pci/lx6464es/lx_core.c
++++ b/sound/pci/lx6464es/lx_core.c
+@@ -332,27 +332,25 @@ polling_successful:
+ int lx_dsp_get_version(struct lx6464es *chip, u32 *rdsp_version)
+ {
+ 	u16 ret;
+-	unsigned long flags;
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 
+ 	lx_message_init(&chip->rmh, CMD_01_GET_SYS_CFG);
+ 	ret = lx_message_send_atomic(chip, &chip->rmh);
+ 
+ 	*rdsp_version = chip->rmh.stat[1];
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return ret;
+ }
+ 
+ int lx_dsp_get_clock_frequency(struct lx6464es *chip, u32 *rfreq)
+ {
+ 	u16 ret = 0;
+-	unsigned long flags;
+ 	u32 freq_raw = 0;
+ 	u32 freq = 0;
+ 	u32 frequency = 0;
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 
+ 	lx_message_init(&chip->rmh, CMD_01_GET_SYS_CFG);
+ 	ret = lx_message_send_atomic(chip, &chip->rmh);
+@@ -370,7 +368,7 @@ int lx_dsp_get_clock_frequency(struct lx6464es *chip, u32 *rfreq)
+ 			frequency = 48000;
+ 	}
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 
+ 	*rfreq = frequency * chip->freq_ratio;
+ 
+@@ -398,25 +396,23 @@ int lx_dsp_get_mac(struct lx6464es *chip)
+ 
+ int lx_dsp_set_granularity(struct lx6464es *chip, u32 gran)
+ {
+-	unsigned long flags;
+ 	int ret;
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 
+ 	lx_message_init(&chip->rmh, CMD_02_SET_GRANULARITY);
+ 	chip->rmh.cmd[0] |= gran;
+ 
+ 	ret = lx_message_send_atomic(chip, &chip->rmh);
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return ret;
+ }
+ 
+ int lx_dsp_read_async_events(struct lx6464es *chip, u32 *data)
+ {
+-	unsigned long flags;
+ 	int ret;
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 
+ 	lx_message_init(&chip->rmh, CMD_04_GET_EVENT);
+ 	chip->rmh.stat_len = 9;	/* we don't necessarily need the full length */
+@@ -426,7 +422,7 @@ int lx_dsp_read_async_events(struct lx6464es *chip, u32 *data)
+ 	if (!ret)
+ 		memcpy(data, chip->rmh.stat, chip->rmh.stat_len * sizeof(u32));
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return ret;
+ }
+ 
+@@ -440,18 +436,16 @@ int lx_pipe_allocate(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		     int channels)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_06_ALLOCATE_PIPE);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+ 	chip->rmh.cmd[0] |= channels;
+ 
+ 	err = lx_message_send_atomic(chip, &chip->rmh);
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 
+ 	if (err != 0)
+ 		dev_err(chip->card->dev, "could not allocate pipe\n");
+@@ -462,17 +456,15 @@ int lx_pipe_allocate(struct lx6464es *chip, u32 pipe, int is_capture,
+ int lx_pipe_release(struct lx6464es *chip, u32 pipe, int is_capture)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_07_RELEASE_PIPE);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+ 
+ 	err = lx_message_send_atomic(chip, &chip->rmh);
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 
+ 	return err;
+ }
+@@ -481,8 +473,6 @@ int lx_buffer_ask(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		  u32 *r_needed, u32 *r_freed, u32 *size_array)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+ #ifdef CONFIG_SND_DEBUG
+@@ -493,7 +483,7 @@ int lx_buffer_ask(struct lx6464es *chip, u32 pipe, int is_capture,
+ 	*r_needed = 0;
+ 	*r_freed = 0;
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_08_ASK_BUFFERS);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+@@ -527,7 +517,7 @@ int lx_buffer_ask(struct lx6464es *chip, u32 pipe, int is_capture,
  		}
  	}
  
--	if (request_irq(pci->irq, snd_mixart_interrupt, IRQF_SHARED,
--			KBUILD_MODNAME, mgr)) {
-+	if (request_threaded_irq(pci->irq, snd_mixart_interrupt,
-+				 snd_mixart_threaded_irq, IRQF_SHARED,
-+				 KBUILD_MODNAME, mgr)) {
- 		dev_err(&pci->dev, "unable to grab IRQ %d\n", pci->irq);
- 		snd_mixart_free(mgr);
- 		return -EBUSY;
-@@ -1314,24 +1317,18 @@ static int snd_mixart_probe(struct pci_dev *pci,
- 	sprintf(mgr->shortname, "Digigram miXart");
- 	sprintf(mgr->longname, "%s at 0x%lx & 0x%lx, irq %i", mgr->shortname, mgr->mem[0].phys, mgr->mem[1].phys, mgr->irq);
- 
--	/* ISR spinlock  */
--	spin_lock_init(&mgr->lock);
--
- 	/* init mailbox  */
- 	mgr->msg_fifo_readptr = 0;
- 	mgr->msg_fifo_writeptr = 0;
- 
--	spin_lock_init(&mgr->msg_lock);
--	mutex_init(&mgr->msg_mutex);
-+	mutex_init(&mgr->lock);
-+	mutex_init(&mgr->msg_lock);
- 	init_waitqueue_head(&mgr->msg_sleep);
- 	atomic_set(&mgr->msg_processed, 0);
- 
- 	/* init setup mutex*/
- 	mutex_init(&mgr->setup_mutex);
- 
--	/* init message taslket */
--	tasklet_init(&mgr->msg_taskq, snd_mixart_msg_tasklet, (unsigned long) mgr);
--
- 	/* card assignment */
- 	mgr->num_cards = MIXART_MAX_CARDS; /* 4  FIXME: configurable? */
- 	for (i = 0; i < mgr->num_cards; i++) {
-diff --git a/sound/pci/mixart/mixart.h b/sound/pci/mixart/mixart.h
-index 561634d5c007..0cc17e0ea34a 100644
---- a/sound/pci/mixart/mixart.h
-+++ b/sound/pci/mixart/mixart.h
-@@ -78,22 +78,18 @@ struct mixart_mgr {
- 	char shortname[32];         /* short name of this soundcard */
- 	char longname[80];          /* name of this soundcard */
- 
--	/* message tasklet */
--	struct tasklet_struct msg_taskq;
--
- 	/* one and only blocking message or notification may be pending  */
- 	u32 pending_event;
- 	wait_queue_head_t msg_sleep;
- 
--	/* messages stored for tasklet */
-+	/* messages fifo */
- 	u32 msg_fifo[MSG_FIFO_SIZE];
- 	int msg_fifo_readptr;
- 	int msg_fifo_writeptr;
- 	atomic_t msg_processed;       /* number of messages to be processed in takslet */
- 
--	spinlock_t lock;              /* interrupt spinlock */
--	spinlock_t msg_lock;          /* mailbox spinlock */
--	struct mutex msg_mutex;   /* mutex for blocking_requests */
-+	struct mutex lock;              /* interrupt lock */
-+	struct mutex msg_lock;		/* mailbox lock */
- 
- 	struct mutex setup_mutex; /* mutex used in hw_params, open and close */
- 
-diff --git a/sound/pci/mixart/mixart_core.c b/sound/pci/mixart/mixart_core.c
-index 84f67450924e..fe80313674d9 100644
---- a/sound/pci/mixart/mixart_core.c
-+++ b/sound/pci/mixart/mixart_core.c
-@@ -76,7 +76,6 @@ static int retrieve_msg_frame(struct mixart_mgr *mgr, u32 *msg_frame)
- static int get_msg(struct mixart_mgr *mgr, struct mixart_msg *resp,
- 		   u32 msg_frame_address )
- {
--	unsigned long flags;
- 	u32  headptr;
- 	u32  size;
- 	int  err;
-@@ -84,7 +83,7 @@ static int get_msg(struct mixart_mgr *mgr, struct mixart_msg *resp,
- 	unsigned int i;
- #endif
- 
--	spin_lock_irqsave(&mgr->msg_lock, flags);
-+	mutex_lock(&mgr->msg_lock);
- 	err = 0;
- 
- 	/* copy message descriptor from miXart to driver */
-@@ -133,7 +132,7 @@ static int get_msg(struct mixart_mgr *mgr, struct mixart_msg *resp,
- 	writel_be(headptr, MIXART_MEM(mgr, MSG_OUTBOUND_FREE_HEAD));
- 
-  _clean_exit:
--	spin_unlock_irqrestore(&mgr->msg_lock, flags);
-+	mutex_unlock(&mgr->msg_lock);
- 
- 	return err;
- }
-@@ -243,28 +242,24 @@ int snd_mixart_send_msg(struct mixart_mgr *mgr, struct mixart_msg *request, int
- 	wait_queue_t wait;
- 	long timeout;
- 
--	mutex_lock(&mgr->msg_mutex);
--
- 	init_waitqueue_entry(&wait, current);
- 
--	spin_lock_irq(&mgr->msg_lock);
-+	mutex_lock(&mgr->msg_lock);
- 	/* send the message */
- 	err = send_msg(mgr, request, max_resp_size, 1, &msg_frame);  /* send and mark the answer pending */
- 	if (err) {
--		spin_unlock_irq(&mgr->msg_lock);
--		mutex_unlock(&mgr->msg_mutex);
-+		mutex_unlock(&mgr->msg_lock);
- 		return err;
- 	}
- 
- 	set_current_state(TASK_UNINTERRUPTIBLE);
- 	add_wait_queue(&mgr->msg_sleep, &wait);
--	spin_unlock_irq(&mgr->msg_lock);
-+	mutex_unlock(&mgr->msg_lock);
- 	timeout = schedule_timeout(MSG_TIMEOUT_JIFFIES);
- 	remove_wait_queue(&mgr->msg_sleep, &wait);
- 
- 	if (! timeout) {
- 		/* error - no ack */
--		mutex_unlock(&mgr->msg_mutex);
- 		dev_err(&mgr->pci->dev,
- 			"error: no response on msg %x\n", msg_frame);
- 		return -EIO;
-@@ -281,7 +276,6 @@ int snd_mixart_send_msg(struct mixart_mgr *mgr, struct mixart_msg *request, int
- 	if( request->message_id != resp.message_id )
- 		dev_err(&mgr->pci->dev, "RESPONSE ERROR!\n");
- 
--	mutex_unlock(&mgr->msg_mutex);
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
  	return err;
  }
  
-@@ -300,34 +294,29 @@ int snd_mixart_send_msg_wait_notif(struct mixart_mgr *mgr,
- 	if (snd_BUG_ON(notif_event & MSG_CANCEL_NOTIFY_MASK))
- 		return -EINVAL;
- 
--	mutex_lock(&mgr->msg_mutex);
--
- 	init_waitqueue_entry(&wait, current);
- 
--	spin_lock_irq(&mgr->msg_lock);
-+	mutex_lock(&mgr->msg_lock);
- 	/* send the message */
- 	err = send_msg(mgr, request, MSG_DEFAULT_SIZE, 1, &notif_event);  /* send and mark the notification event pending */
- 	if(err) {
--		spin_unlock_irq(&mgr->msg_lock);
--		mutex_unlock(&mgr->msg_mutex);
-+		mutex_unlock(&mgr->msg_lock);
- 		return err;
- 	}
- 
- 	set_current_state(TASK_UNINTERRUPTIBLE);
- 	add_wait_queue(&mgr->msg_sleep, &wait);
--	spin_unlock_irq(&mgr->msg_lock);
-+	mutex_unlock(&mgr->msg_lock);
- 	timeout = schedule_timeout(MSG_TIMEOUT_JIFFIES);
- 	remove_wait_queue(&mgr->msg_sleep, &wait);
- 
- 	if (! timeout) {
- 		/* error - no ack */
--		mutex_unlock(&mgr->msg_mutex);
- 		dev_err(&mgr->pci->dev,
- 			"error: notification %x not received\n", notif_event);
- 		return -EIO;
- 	}
- 
--	mutex_unlock(&mgr->msg_mutex);
- 	return 0;
- }
- 
-@@ -335,13 +324,12 @@ int snd_mixart_send_msg_wait_notif(struct mixart_mgr *mgr,
- int snd_mixart_send_msg_nonblock(struct mixart_mgr *mgr, struct mixart_msg *request)
+@@ -535,36 +525,32 @@ int lx_buffer_ask(struct lx6464es *chip, u32 pipe, int is_capture,
+ int lx_pipe_stop(struct lx6464es *chip, u32 pipe, int is_capture)
  {
- 	u32 message_frame;
+ 	int err;
 -	unsigned long flags;
- 	int err;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
  
- 	/* just send the message (do not mark it as a pending one) */
--	spin_lock_irqsave(&mgr->msg_lock, flags);
-+	mutex_lock(&mgr->msg_lock);
- 	err = send_msg(mgr, request, MSG_DEFAULT_SIZE, 0, &message_frame);
--	spin_unlock_irqrestore(&mgr->msg_lock, flags);
-+	mutex_unlock(&mgr->msg_lock);
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_09_STOP_PIPE);
  
- 	/* the answer will be handled by snd_struct mixart_msgasklet()  */
- 	atomic_inc(&mgr->msg_processed);
-@@ -350,19 +338,16 @@ int snd_mixart_send_msg_nonblock(struct mixart_mgr *mgr, struct mixart_msg *requ
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+ 
+ 	err = lx_message_send_atomic(chip, &chip->rmh);
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
  }
  
- 
--/* common buffer of tasklet and interrupt to send/receive messages */
-+/* common buffer of interrupt to send/receive messages */
- static u32 mixart_msg_data[MSG_DEFAULT_SIZE / 4];
- 
- 
--void snd_mixart_msg_tasklet(unsigned long arg)
-+static void snd_mixart_process_msg(struct mixart_mgr *mgr)
+ static int lx_pipe_toggle_state(struct lx6464es *chip, u32 pipe, int is_capture)
  {
--	struct mixart_mgr *mgr = ( struct mixart_mgr*)(arg);
- 	struct mixart_msg resp;
- 	u32 msg, addr, type;
  	int err;
- 
--	spin_lock(&mgr->lock);
+-	unsigned long flags;
 -
- 	while (mgr->msg_fifo_readptr != mgr->msg_fifo_writeptr) {
- 		msg = mgr->msg_fifo[mgr->msg_fifo_readptr];
- 		mgr->msg_fifo_readptr++;
-@@ -381,7 +366,7 @@ void snd_mixart_msg_tasklet(unsigned long arg)
- 			err = get_msg(mgr, &resp, addr);
- 			if( err < 0 ) {
- 				dev_err(&mgr->pci->dev,
--					"tasklet: error(%d) reading mf %x\n",
-+					"error(%d) reading mf %x\n",
- 					err, msg);
- 				break;
- 			}
-@@ -393,12 +378,12 @@ void snd_mixart_msg_tasklet(unsigned long arg)
- 			case MSG_STREAM_STOP_OUTPUT_STAGE_PACKET:
- 				if(mixart_msg_data[0])
- 					dev_err(&mgr->pci->dev,
--						"tasklet : error MSG_STREAM_ST***_***PUT_STAGE_PACKET status=%x\n",
-+						"error MSG_STREAM_ST***_***PUT_STAGE_PACKET status=%x\n",
- 						mixart_msg_data[0]);
- 				break;
- 			default:
- 				dev_dbg(&mgr->pci->dev,
--					"tasklet received mf(%x) : msg_id(%x) uid(%x, %x) size(%zd)\n",
-+					"received mf(%x) : msg_id(%x) uid(%x, %x) size(%zd)\n",
- 					   msg, resp.message_id, resp.uid.object_id, resp.uid.desc, resp.size);
- 				break;
- 			}
-@@ -409,7 +394,7 @@ void snd_mixart_msg_tasklet(unsigned long arg)
- 			/* get_msg() necessary */
- 		default:
- 			dev_err(&mgr->pci->dev,
--				"tasklet doesn't know what to do with message %x\n",
-+				"doesn't know what to do with message %x\n",
- 				msg);
- 		} /* switch type */
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
  
-@@ -417,26 +402,17 @@ void snd_mixart_msg_tasklet(unsigned long arg)
- 		atomic_dec(&mgr->msg_processed);
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_0B_TOGGLE_PIPE_STATE);
  
- 	} /* while there is a msg in fifo */
--
--	spin_unlock(&mgr->lock);
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+ 
+ 	err = lx_message_send_atomic(chip, &chip->rmh);
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
  }
  
- 
- irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
+@@ -600,11 +586,9 @@ int lx_pipe_sample_count(struct lx6464es *chip, u32 pipe, int is_capture,
+ 			 u64 *rsample_count)
  {
- 	struct mixart_mgr *mgr = dev_id;
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_0A_GET_PIPE_SPL_COUNT);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+@@ -621,18 +605,16 @@ int lx_pipe_sample_count(struct lx6464es *chip, u32 pipe, int is_capture,
+ 			+ chip->rmh.stat[1]; /* lo part */
+ 	}
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
+ }
+ 
+ int lx_pipe_state(struct lx6464es *chip, u32 pipe, int is_capture, u16 *rstate)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_0A_GET_PIPE_SPL_COUNT);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+@@ -644,7 +626,7 @@ int lx_pipe_state(struct lx6464es *chip, u32 pipe, int is_capture, u16 *rstate)
+ 	else
+ 		*rstate = (chip->rmh.stat[0] >> PSTATE_OFFSET) & 0x0F;
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
+ }
+ 
+@@ -686,18 +668,16 @@ int lx_stream_set_state(struct lx6464es *chip, u32 pipe,
+ 			       int is_capture, enum stream_state_t state)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_13_SET_STREAM_STATE);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+ 	chip->rmh.cmd[0] |= state;
+ 
+ 	err = lx_message_send_atomic(chip, &chip->rmh);
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 
+ 	return err;
+ }
+@@ -706,17 +686,14 @@ int lx_stream_set_format(struct lx6464es *chip, struct snd_pcm_runtime *runtime,
+ 			 u32 pipe, int is_capture)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+-
+ 	u32 channels = runtime->channels;
+ 
+ 	if (runtime->channels != channels)
+ 		dev_err(chip->card->dev, "channel count mismatch: %d vs %d",
+ 			   runtime->channels, channels);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_0C_DEF_STREAM);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+@@ -732,7 +709,7 @@ int lx_stream_set_format(struct lx6464es *chip, struct snd_pcm_runtime *runtime,
+ 	chip->rmh.cmd[0] |= channels-1;
+ 
+ 	err = lx_message_send_atomic(chip, &chip->rmh);
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 
+ 	return err;
+ }
+@@ -741,11 +718,9 @@ int lx_stream_state(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		    int *rstate)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_0E_GET_STREAM_SPL_COUNT);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+@@ -754,7 +729,7 @@ int lx_stream_state(struct lx6464es *chip, u32 pipe, int is_capture,
+ 
+ 	*rstate = (chip->rmh.stat[0] & SF_START) ? START_STATE : PAUSE_STATE;
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
+ }
+ 
+@@ -762,11 +737,9 @@ int lx_stream_sample_position(struct lx6464es *chip, u32 pipe, int is_capture,
+ 			      u64 *r_bytepos)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_0E_GET_STREAM_SPL_COUNT);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+@@ -777,7 +750,7 @@ int lx_stream_sample_position(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		      << 32)	     /* hi part */
+ 		+ chip->rmh.stat[1]; /* lo part */
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
+ }
+ 
+@@ -787,11 +760,9 @@ int lx_buffer_give(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		   u32 *r_buffer_index)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_0F_UPDATE_BUFFER);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+@@ -828,7 +799,7 @@ int lx_buffer_give(struct lx6464es *chip, u32 pipe, int is_capture,
+ 			"lx_buffer_give EB_CMD_REFUSED\n");
+ 
+  done:
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
+ }
+ 
+@@ -836,11 +807,9 @@ int lx_buffer_free(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		   u32 *r_buffer_size)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_11_CANCEL_BUFFER);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+@@ -852,7 +821,7 @@ int lx_buffer_free(struct lx6464es *chip, u32 pipe, int is_capture,
+ 	if (err == 0)
+ 		*r_buffer_size = chip->rmh.stat[0]  & MASK_DATA_SIZE;
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
+ }
+ 
+@@ -860,11 +829,9 @@ int lx_buffer_cancel(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		     u32 buffer_index)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	u32 pipe_cmd = PIPE_INFO_TO_CMD(is_capture, pipe);
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_11_CANCEL_BUFFER);
+ 
+ 	chip->rmh.cmd[0] |= pipe_cmd;
+@@ -872,7 +839,7 @@ int lx_buffer_cancel(struct lx6464es *chip, u32 pipe, int is_capture,
+ 
+ 	err = lx_message_send_atomic(chip, &chip->rmh);
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
+ }
+ 
+@@ -885,12 +852,10 @@ int lx_buffer_cancel(struct lx6464es *chip, u32 pipe, int is_capture,
+ int lx_level_unmute(struct lx6464es *chip, int is_capture, int unmute)
+ {
+ 	int err;
+-	unsigned long flags;
+-
+ 	/* bit set to 1: channel muted */
+ 	u64 mute_mask = unmute ? 0 : 0xFFFFFFFFFFFFFFFFLLU;
+ 
+-	spin_lock_irqsave(&chip->msg_lock, flags);
++	mutex_lock(&chip->msg_lock);
+ 	lx_message_init(&chip->rmh, CMD_0D_SET_MUTE);
+ 
+ 	chip->rmh.cmd[0] |= PIPE_INFO_TO_CMD(is_capture, 0);
+@@ -904,7 +869,7 @@ int lx_level_unmute(struct lx6464es *chip, int is_capture, int unmute)
+ 
+ 	err = lx_message_send_atomic(chip, &chip->rmh);
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
+ }
+ 
+@@ -931,10 +896,9 @@ int lx_level_peaks(struct lx6464es *chip, int is_capture, int channels,
+ 		   u32 *r_levels)
+ {
+ 	int err = 0;
+-	unsigned long flags;
+ 	int i;
+-	spin_lock_irqsave(&chip->msg_lock, flags);
+ 
++	mutex_lock(&chip->msg_lock);
+ 	for (i = 0; i < channels; i += 4) {
+ 		u32 s0, s1, s2, s3;
+ 
+@@ -959,7 +923,7 @@ int lx_level_peaks(struct lx6464es *chip, int is_capture, int channels,
+ 		r_levels += 4;
+ 	}
+ 
+-	spin_unlock_irqrestore(&chip->msg_lock, flags);
++	mutex_unlock(&chip->msg_lock);
+ 	return err;
+ }
+ 
+@@ -1075,7 +1039,6 @@ static int lx_interrupt_request_new_buffer(struct lx6464es *chip,
+ 	struct snd_pcm_substream *substream = lx_stream->stream;
+ 	const unsigned int is_capture = lx_stream->is_capture;
+ 	int err;
+-	unsigned long flags;
+ 
+ 	const u32 channels = substream->runtime->channels;
+ 	const u32 bytes_per_frame = channels * 3;
+@@ -1095,7 +1058,7 @@ static int lx_interrupt_request_new_buffer(struct lx6464es *chip,
+ 
+ 	dev_dbg(chip->card->dev, "->lx_interrupt_request_new_buffer\n");
+ 
+-	spin_lock_irqsave(&chip->lock, flags);
++	mutex_lock(&chip->lock);
+ 
+ 	err = lx_buffer_ask(chip, 0, is_capture, &needed, &freed, size_array);
+ 	dev_dbg(chip->card->dev,
+@@ -1109,85 +1072,28 @@ static int lx_interrupt_request_new_buffer(struct lx6464es *chip,
+ 		    buffer_index, (unsigned long)buf, period_bytes);
+ 
+ 	lx_stream->frame_pos = next_pos;
+-	spin_unlock_irqrestore(&chip->lock, flags);
++	mutex_unlock(&chip->lock);
+ 
+ 	return err;
+ }
+ 
+-void lx_tasklet_playback(unsigned long data)
+-{
+-	struct lx6464es *chip = (struct lx6464es *)data;
+-	struct lx_stream *lx_stream = &chip->playback_stream;
 -	int err;
--	struct mixart_msg resp;
 -
--	u32 msg;
- 	u32 it_reg;
+-	dev_dbg(chip->card->dev, "->lx_tasklet_playback\n");
+-
+-	err = lx_interrupt_request_new_buffer(chip, lx_stream);
+-	if (err < 0)
+-		dev_err(chip->card->dev,
+-			   "cannot request new buffer for playback\n");
+-
+-	snd_pcm_period_elapsed(lx_stream->stream);
+-}
+-
+-void lx_tasklet_capture(unsigned long data)
+-{
+-	struct lx6464es *chip = (struct lx6464es *)data;
+-	struct lx_stream *lx_stream = &chip->capture_stream;
+-	int err;
+-
+-	dev_dbg(chip->card->dev, "->lx_tasklet_capture\n");
+-	err = lx_interrupt_request_new_buffer(chip, lx_stream);
+-	if (err < 0)
+-		dev_err(chip->card->dev,
+-			   "cannot request new buffer for capture\n");
+-
+-	snd_pcm_period_elapsed(lx_stream->stream);
+-}
+-
+-
+-
+-static int lx_interrupt_handle_audio_transfer(struct lx6464es *chip,
+-					      u64 notified_in_pipe_mask,
+-					      u64 notified_out_pipe_mask)
+-{
+-	int err = 0;
+-
+-	if (notified_in_pipe_mask) {
+-		dev_dbg(chip->card->dev,
+-			"requesting audio transfer for capture\n");
+-		tasklet_hi_schedule(&chip->tasklet_capture);
+-	}
+-
+-	if (notified_out_pipe_mask) {
+-		dev_dbg(chip->card->dev,
+-			"requesting audio transfer for playback\n");
+-		tasklet_hi_schedule(&chip->tasklet_playback);
+-	}
+-
+-	return err;
+-}
+-
+-
+ irqreturn_t lx_interrupt(int irq, void *dev_id)
+ {
+ 	struct lx6464es *chip = dev_id;
+ 	int async_pending, async_escmd;
+ 	u32 irqsrc;
+-
+-	spin_lock(&chip->lock);
++	bool wake_thread = false;
  
--	spin_lock(&mgr->lock);
--
- 	it_reg = readl_le(MIXART_REG(mgr, MIXART_PCI_OMISR_OFFSET));
- 	if( !(it_reg & MIXART_OIDI) ) {
- 		/* this device did not cause the interrupt */
--		spin_unlock(&mgr->lock);
- 		return IRQ_NONE;
+ 	dev_dbg(chip->card->dev,
+ 		"**************************************************\n");
+ 
+ 	if (!lx_interrupt_ack(chip, &irqsrc, &async_pending, &async_escmd)) {
+-		spin_unlock(&chip->lock);
+ 		dev_dbg(chip->card->dev, "IRQ_NONE\n");
+ 		return IRQ_NONE; /* this device did not cause the interrupt */
  	}
  
-@@ -450,6 +426,17 @@ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
- 	/* clear interrupt */
- 	writel_le( MIXART_OIDI, MIXART_REG(mgr, MIXART_PCI_OMISR_OFFSET) );
+ 	if (irqsrc & MASK_SYS_STATUS_CMD_DONE)
+-		goto exit;
++		return IRQ_HANDLED;
  
-+	return IRQ_WAKE_THREAD;
+ 	if (irqsrc & MASK_SYS_STATUS_EOBI)
+ 		dev_dbg(chip->card->dev, "interrupt: EOBI\n");
+@@ -1202,27 +1108,8 @@ irqreturn_t lx_interrupt(int irq, void *dev_id)
+ 		dev_dbg(chip->card->dev, "interrupt: ORUN\n");
+ 
+ 	if (async_pending) {
+-		u64 notified_in_pipe_mask = 0;
+-		u64 notified_out_pipe_mask = 0;
+-		int freq_changed;
+-		int err;
+-
+-		/* handle async events */
+-		err = lx_interrupt_handle_async_events(chip, irqsrc,
+-						       &freq_changed,
+-						       &notified_in_pipe_mask,
+-						       &notified_out_pipe_mask);
+-		if (err)
+-			dev_err(chip->card->dev,
+-				   "error handling async events\n");
+-
+-		err = lx_interrupt_handle_audio_transfer(chip,
+-							 notified_in_pipe_mask,
+-							 notified_out_pipe_mask
+-			);
+-		if (err)
+-			dev_err(chip->card->dev,
+-				   "error during audio transfer\n");
++		wake_thread = true;
++		chip->irqsrc = irqsrc;
+ 	}
+ 
+ 	if (async_escmd) {
+@@ -1235,9 +1122,50 @@ irqreturn_t lx_interrupt(int irq, void *dev_id)
+ 		dev_dbg(chip->card->dev, "interrupt requests escmd handling\n");
+ 	}
+ 
+-exit:
+-	spin_unlock(&chip->lock);
+-	return IRQ_HANDLED;	/* this device caused the interrupt */
++	return wake_thread ? IRQ_WAKE_THREAD : IRQ_HANDLED;
 +}
 +
-+irqreturn_t snd_mixart_threaded_irq(int irq, void *dev_id)
++irqreturn_t lx_threaded_irq(int irq, void *dev_id)
 +{
-+	struct mixart_mgr *mgr = dev_id;
++	struct lx6464es *chip = dev_id;
++	u64 notified_in_pipe_mask = 0;
++	u64 notified_out_pipe_mask = 0;
++	int freq_changed;
 +	int err;
-+	struct mixart_msg resp;
-+	u32 msg;
 +
-+	mutex_lock(&mgr->lock);
- 	/* process interrupt */
- 	while (retrieve_msg_frame(mgr, &msg)) {
- 
-@@ -518,9 +505,9 @@ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
- 						stream->buf_period_frag = (u32)( sample_count - stream->abs_period_elapsed );
- 
- 						if(elapsed) {
--							spin_unlock(&mgr->lock);
-+							mutex_unlock(&mgr->lock);
- 							snd_pcm_period_elapsed(stream->substream);
--							spin_lock(&mgr->lock);
-+							mutex_lock(&mgr->lock);
- 						}
- 					}
- 				}
-@@ -556,7 +543,7 @@ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
- 			/* no break, continue ! */
- 		case MSG_TYPE_ANSWER:
- 			/* answer or notification to a message we are waiting for*/
--			spin_lock(&mgr->msg_lock);
-+			mutex_lock(&mgr->msg_lock);
- 			if( (msg & ~MSG_TYPE_MASK) == mgr->pending_event ) {
- 				wake_up(&mgr->msg_sleep);
- 				mgr->pending_event = 0;
-@@ -566,9 +553,9 @@ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
- 				mgr->msg_fifo[mgr->msg_fifo_writeptr] = msg;
- 				mgr->msg_fifo_writeptr++;
- 				mgr->msg_fifo_writeptr %= MSG_FIFO_SIZE;
--				tasklet_schedule(&mgr->msg_taskq);
-+				snd_mixart_process_msg(mgr);
- 			}
--			spin_unlock(&mgr->msg_lock);
-+			mutex_unlock(&mgr->msg_lock);
- 			break;
- 		case MSG_TYPE_REQUEST:
- 		default:
-@@ -582,7 +569,7 @@ irqreturn_t snd_mixart_interrupt(int irq, void *dev_id)
- 	/* allow interrupt again */
- 	writel_le( MIXART_ALLOW_OUTBOUND_DOORBELL, MIXART_REG( mgr, MIXART_PCI_OMIMR_OFFSET));
- 
--	spin_unlock(&mgr->lock);
-+	mutex_unlock(&mgr->lock);
- 
- 	return IRQ_HANDLED;
++	/* handle async events */
++	err = lx_interrupt_handle_async_events(chip, chip->irqsrc,
++					       &freq_changed,
++					       &notified_in_pipe_mask,
++					       &notified_out_pipe_mask);
++	if (err)
++		dev_err(chip->card->dev, "error handling async events\n");
++
++	if (notified_in_pipe_mask) {
++		struct lx_stream *lx_stream = &chip->capture_stream;
++
++		dev_dbg(chip->card->dev,
++			"requesting audio transfer for capture\n");
++		err = lx_interrupt_request_new_buffer(chip, lx_stream);
++		if (err < 0)
++			dev_err(chip->card->dev,
++				"cannot request new buffer for capture\n");
++		snd_pcm_period_elapsed(lx_stream->stream);
++	}
++
++	if (notified_out_pipe_mask) {
++		struct lx_stream *lx_stream = &chip->playback_stream;
++
++		dev_dbg(chip->card->dev,
++			"requesting audio transfer for playback\n");
++		err = lx_interrupt_request_new_buffer(chip, lx_stream);
++		if (err < 0)
++			dev_err(chip->card->dev,
++				"cannot request new buffer for playback\n");
++		snd_pcm_period_elapsed(lx_stream->stream);
++	}
++
++	return IRQ_HANDLED;
  }
-diff --git a/sound/pci/mixart/mixart_core.h b/sound/pci/mixart/mixart_core.h
-index c919b734756f..d1722e575409 100644
---- a/sound/pci/mixart/mixart_core.h
-+++ b/sound/pci/mixart/mixart_core.h
-@@ -564,7 +564,7 @@ int  snd_mixart_send_msg_wait_notif(struct mixart_mgr *mgr, struct mixart_msg *r
- int  snd_mixart_send_msg_nonblock(struct mixart_mgr *mgr, struct mixart_msg *request);
  
- irqreturn_t snd_mixart_interrupt(int irq, void *dev_id);
--void snd_mixart_msg_tasklet(unsigned long arg);
-+irqreturn_t snd_mixart_threaded_irq(int irq, void *dev_id);
  
- void snd_mixart_reset_board(struct mixart_mgr *mgr);
+diff --git a/sound/pci/lx6464es/lx_core.h b/sound/pci/lx6464es/lx_core.h
+index 5ec5e04da1a5..0cc140ca98e3 100644
+--- a/sound/pci/lx6464es/lx_core.h
++++ b/sound/pci/lx6464es/lx_core.h
+@@ -181,12 +181,10 @@ int lx_level_peaks(struct lx6464es *chip, int is_capture, int channels,
  
+ /* interrupt handling */
+ irqreturn_t lx_interrupt(int irq, void *dev_id);
++irqreturn_t lx_threaded_irq(int irq, void *dev_id);
+ void lx_irq_enable(struct lx6464es *chip);
+ void lx_irq_disable(struct lx6464es *chip);
+ 
+-void lx_tasklet_capture(unsigned long data);
+-void lx_tasklet_playback(unsigned long data);
+-
+ 
+ /* Stream Format Header Defines (for LIN and IEEE754) */
+ #define HEADER_FMT_BASE		HEADER_FMT_BASE_LIN
 -- 
 2.1.0
