@@ -1,22 +1,21 @@
 From: Xavier Hsu <xavier.hsu@linaro.org>
-Subject: Re: [PATCHv3 7/9] WM8971 improves the function of
-	regmap
-Date: Thu, 11 Sep 2014 11:21:34 +0800
-Message-ID: <CAHa2TOYKfTqZZ-ejpNT=5ga5uOASCOZnKbnWUCXB33QPCA+MSA@mail.gmail.com>
+Subject: Re: [PATCHv3 8/9] WM8971 adds kcontrol functions
+Date: Thu, 11 Sep 2014 11:35:35 +0800
+Message-ID: <CAHa2TOZXEZDDaGjYaStbOZ1y8Q=di3WhF2R6shq00D2RjzHqTw@mail.gmail.com>
 References: <1409628470-13059-1-git-send-email-xavier.hsu@linaro.org>
- <1409628470-13059-7-git-send-email-xavier.hsu@linaro.org>
- <540769BA.8010606@metafoo.de>
+ <1409628470-13059-8-git-send-email-xavier.hsu@linaro.org>
+ <20140902124155.GJ12043@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f173.google.com (mail-we0-f173.google.com
- [74.125.82.173])
- by alsa0.perex.cz (Postfix) with ESMTP id A7455265615
- for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 05:21:34 +0200 (CEST)
-Received: by mail-we0-f173.google.com with SMTP id u56so5359030wes.4
- for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 20:21:34 -0700 (PDT)
-In-Reply-To: <540769BA.8010606@metafoo.de>
+Received: from mail-we0-f180.google.com (mail-we0-f180.google.com
+ [74.125.82.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9869B265613
+ for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 05:35:36 +0200 (CEST)
+Received: by mail-we0-f180.google.com with SMTP id t60so5030601wes.11
+ for <alsa-devel@alsa-project.org>; Wed, 10 Sep 2014 20:35:36 -0700 (PDT)
+In-Reply-To: <20140902124155.GJ12043@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,119 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Cc: Andy Green <andy.green@linaro.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Patch Tracking <patches@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Charles and Lars-Peter:
+Hi Charles :
 Thanks for your feedback.
-I will modify our patch as below.
-1. Using (codec->control_data = wm8971->regmap;) or (wm8971_get_regmap) to
-register regmap.
-2. Modifying our patch the content of commit.
-
-Thanks again.
+I will set these registers through DT.
 
 BR,
 Xavier
 
-2014-09-04 3:19 GMT+08:00 Lars-Peter Clausen <lars@metafoo.de>:
+2014-09-02 20:41 GMT+08:00 Charles Keepax <
+ckeepax@opensource.wolfsonmicro.com>:
 
-> On 09/02/2014 05:27 AM, Xavier Hsu wrote:
+> On Tue, Sep 02, 2014 at 11:27:49AM +0800, Xavier Hsu wrote:
+> > This patch improves WM8971.
+> > We add kcontrol functions on WM8971.
+> >
+> > Any comments about improving the patch are welcome.
+> > Thanks.
+> >
+> > Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
+> > Signed-off-by: Andy Green <andy.green@linaro.org>
+> > ---
+> >  sound/soc/codecs/wm8971.c |    6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
+> > index 95e7c39..6d34565 100755
+> > --- a/sound/soc/codecs/wm8971.c
+> > +++ b/sound/soc/codecs/wm8971.c
+> > @@ -284,6 +284,12 @@ static const struct snd_kcontrol_new
+> wm8971_snd_controls[] = {
+> >
+> >       SOC_DOUBLE_R_TLV("ADC Volume", WM8971_LADC, WM8971_RADC,
+> >                        0, 255, 0, adc_vol),
+> > +
+> > +     SOC_SINGLE("Analogue Bias", WM8971_ADCTL1, 6, 3, 0),
 >
->> This patch improves WM8971.
->> We modify the function of regmap.
->>
->> Any comments about improving the patch are welcome.
->> Thanks.
->>
->> Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
->> Signed-off-by: Andy Green <andy.green@linaro.org>
->> ---
->>   sound/soc/codecs/wm8971.c |   26 +++++++++++++++++++++-----
->>   1 file changed, 21 insertions(+), 5 deletions(-)
->>
->> diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
->> index 68b4f52..95e7c39 100755
->> --- a/sound/soc/codecs/wm8971.c
->> +++ b/sound/soc/codecs/wm8971.c
->> @@ -38,6 +38,7 @@
->>
->>   /* codec private data */
->>   struct wm8971_priv {
->> +       struct regmap *regmap;
->>         unsigned int sysclk;
->>         struct snd_pcm_hw_constraint_list *sysclk_constraints;
->>         int playback_fs;
->> @@ -716,6 +717,7 @@ static int wm8971_mute(struct snd_soc_dai *dai, int
->> mute)
->>   static int wm8971_set_bias_level(struct snd_soc_codec *codec,
->>                                  enum snd_soc_bias_level level)
->>   {
->> +       struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
->>         u16 pwr_reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
->>
->>         switch (level) {
->> @@ -727,7 +729,7 @@ static int wm8971_set_bias_level(struct snd_soc_codec
->> *codec,
->>                 break;
->>         case SND_SOC_BIAS_STANDBY:
->>                 if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
->> -                       snd_soc_cache_sync(codec);
->> +                       regcache_sync(wm8971->regmap);
->>
+> Given this relates to the AVDD voltage feels it is very unlikely
+> to change at runtime. Do we expect it to? Otherwise it might be
+> better added as a DT entry.
 >
-> This is a bugfix and it should be noted in the commit message, what is
-> broken, why it is broken and since when it has been broken.
+> > +     SOC_SINGLE("Right Speaker Playback Invert Switch", WM8971_ADCTL2,
+> > +                4, 1, 0),
+> > +     SOC_SINGLE("Headphone Switch POL", WM8971_ADCTL2, 5, 1, 0),
 >
+> Again the polarity of the headphone detect is not going to change
+> at runtime so this should probably be a DT entry.
 >
->>                 /* mute dac and set vmid to 500k, enable VREF */
->>                 snd_soc_write(codec, WM8971_PWR1, pwr_reg | 0x0140);
->> @@ -774,7 +776,11 @@ static struct snd_soc_dai_driver wm8971_dai = {
->>
->>   static int wm8971_suspend(struct snd_soc_codec *codec)
->>   {
->> +       struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
->> +
->>         wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
->> +       regcache_mark_dirty(wm8971->regmap);
->>
+> > +     SOC_SINGLE("Headphone Switch EN", WM8971_ADCTL2, 6, 1, 0),
 >
-> The core already marks the regcache dirty after calling the suspend
-> callback, no need to do this from hand.
+> I am less clear on whether or not this should be a control or a
+> DT entry, so as long as you are happy this is consistent with the
+> usage.
 >
->  +
->>         return 0;
->>   }
->>
->> @@ -797,9 +803,12 @@ static int wm8971_resume(struct snd_soc_codec *codec)
->>
->>   static int wm8971_probe(struct snd_soc_codec *codec)
->>   {
->> +       struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
->>         int ret = 0;
->>         u16 reg;
->>
->> +       codec->control_data = wm8971->regmap;
->> +
->>         wm8971_reset(codec);
->>
->>         /* charge output caps - set vmid to 5k for quick power up */
->> @@ -830,12 +839,20 @@ static int wm8971_remove(struct snd_soc_codec
->> *codec)
->>         return 0;
->>   }
->>
->> +struct regmap *wm8971_get_regmap(struct device *dev)
->> +{
->> +       struct wm8971_priv *priv = dev_get_drvdata(dev);
->> +
->> +       return priv->regmap;
->> +}
->>
+> >  };
+> >
+> >  /*
+> > --
 >
-> This is unnecessary, since the regmap has been registered with the device
-> of the CODEC the core is able to figure out the correct regmap itself.
->
-> [...]
+> Thanks,
+> Charles
 >
