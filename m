@@ -1,112 +1,61 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH V1] ASoC: fsl_ssi: refine ipg clock usage
-	in this module
-Date: Thu, 11 Sep 2014 08:36:51 +0200
-Message-ID: <20140911063651.GD16489@pengutronix.de>
-References: <e5a50d8bfde3aea5fcd092118da5aea4072c7e2f.1410254125.git.shengjiu.wang@freescale.com>
- <20140909183804.GA6944@Asurada> <20140910081251.GA14662@audiosh1>
- <20140910174204.GA4628@Asurada>
+From: Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/5] ASoC: fsl: add imx-tlv320aic3x machine
+ driver
+Date: Thu, 11 Sep 2014 08:40:16 +0200
+Message-ID: <20140911064016.GE16489@pengutronix.de>
+References: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
+ <1410356809-26179-3-git-send-email-d.lavnikevich@sam-solutions.com>
+ <20140910142740.GC16489@pengutronix.de>
+ <CAGoOwPSpkNy6uNVAjG2HgiHHscKZjL5wgVrkyGwWCmyU7x+gWg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5561818265139704335=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id C302E262631
- for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 08:37:04 +0200 (CEST)
-In-Reply-To: <20140910174204.GA4628@Asurada>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, broonie@kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, linuxppc-dev@lists.ozlabs.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qGV0fN9tzfkG3CxV"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <CAGoOwPSpkNy6uNVAjG2HgiHHscKZjL5wgVrkyGwWCmyU7x+gWg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Nicolin Chen <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Timur Tabi <timur-N01EOCouUvQ@public.gmane.org>, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5561818265139704335==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="KDt/GgjP6HVcx58l"
-Content-Disposition: inline
-
-
---KDt/GgjP6HVcx58l
+--qGV0fN9tzfkG3CxV
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 10, 2014 at 10:42:04AM -0700, Nicolin Chen wrote:
-> On Wed, Sep 10, 2014 at 04:12:53PM +0800, Shengjiu Wang wrote:
-> > > Then we can get a patch like:
-> > > open() {
-> > > +	clk_prepare_enable();
-> > > 	....
-> > > }
-> > >=20
-> > > close() {
-> > > 	....
-> > > +	clk_disable_unprepare()
-> > > }
->=20
-> > what is the open() and close()? do you mean the fsl_ssi_startup()
-> > and fsl_ssi_shutdown()?
->=20
-> Yea.
->=20
-> > > probe() {
-> > > 	clk_get();
-> > > 	clk_prepare_enable();
-> > > 	....
-> > > 	if (xxx)
-> > > -		goto err_xx;
-> > > +		return ret;
-> > > 	....
-> > > +	clk_disable_unprepare();
-> > > 	return 0;
-> > > -err_xx:
-> > > -	clk_disable_unprepare()
-> > > }
->=20
-> > If this probe() is fsl_ssi_imx_probe(), I think no need to add
-> > clk_prepare_enable() or clk_disable_unprepare(), seems there is no=20
-> > registers accessing in this probe.
->=20
-> This is trying to be safe, especially for such a driver being used
-> by multiple platforms. You can omit this as long as the patch can
-> pass the test on old imx, PowerPC, and AC97 platforms.
->=20
+On Wed, Sep 10, 2014 at 11:14:15AM -0700, Nicolin Chen wrote:
+> On Wed, Sep 10, 2014 at 7:27 AM, Markus Pargmann <mpa-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org> wro=
+te:
+> > Hi,
 > >
+> > On Wed, Sep 10, 2014 at 04:46:46PM +0300, Dmitry Lavnikevich wrote:
+> >> This is driver for i.MX6 boards with tlv320aic3x audio codecs.
+> >>
+> >> Signed-off-by: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+> >> ---
+> >>  .../bindings/sound/fsl,imx-audio-tlv320aic3x.txt   |  27 ++++
+> >>  sound/soc/fsl/Kconfig                              |  13 ++
+> >>  sound/soc/fsl/Makefile                             |   2 +
+> >>  sound/soc/fsl/imx-tlv320aic3x.c                    | 177 ++++++++++++=
++++++++++
+> >>  4 files changed, 219 insertions(+)
+> >>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,imx-au=
+dio-tlv320aic3x.txt
+> >>  create mode 100644 sound/soc/fsl/imx-tlv320aic3x.c
+> >
+> > Is it possible to use the simple-card
+> > (Documentation/devicetree/bindings/sound/simple-card.txt) instead of
+> > adding a new audio card driver? There are also DT bindings for the imx
+> > audiomultiplexer (imx-audmux.txt).
 >=20
-> And another risk just came to my mind is that there would be a
-> possibility that a machine driver would call set_dai_fmt() early,
-> after SSI's probe() and before SSI's startup(), if the machine
-> driver contains dai_fmt assignment in its probe(). Then, without
-> regmap_mmio_clk(), it'll be tough for us over here because we may
-> also need to add clock enable/disable for set_dai_fmt/set_sysclk(),
-> even if there might be still tiny risk that we missed something.
-
-Thanks, didn't thought about that. As there are no restrictions on when
-these functions may be called, it has to be handled.
-
+> I don't know why my mutt doesn't display this mail.
 >=20
-> Then there could be a selfish approach to circumvent it is to use
-> regmap_mmio_clk() with "ipg" at the beginning and call regmap_mmio()
-> without "ipg" if getting a failed return value from regmap_mmio_clk,
-> and meanwhile to keep the clock always enabled for the regmap_mmio()
-> case just like what the current driver is doing. This may result
-> those non-ipg-clk platforms can't benefit from this refinement
-> unless they update their DT bindings -- use "ipg" for core clock
-> This might be the safest and simplest way for us, I'm not sure
-> everyone would be comfortable with this idea though.
+> Anyway, if Simple Card supports audmux, yes, it's also a good idea.
 
-I like the "selfish" approach. It would save a lot of clock
-enabling/disabling and error handling and at the same time it doesn't break
-the DT compatibility. The platforms with an old DT would have the old
-behaviour, but that could be changed by updating the devicetrees which
-should be easy to do for all the imx SoCs.
+Simple Card doesn't support it. But there are DT bindings for the audmux
+device node which allow the definition of a default multiplexer setup.
+That configuration is applied in the probe() function of the audmux driver.
 
 Best regards,
 
@@ -118,35 +67,30 @@ Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
 Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
---KDt/GgjP6HVcx58l
+--qGV0fN9tzfkG3CxV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAEBAgAGBQJUEUMDAAoJEEpcgKtcEGQQ1RIP+wd4IRjhvx2YWqVobh+NQuor
-VwnuuI0u6whpi+X7WaSzvbsKJTOkZop1qO+zxTLkkTwSi96oTuQyvcEXCth+tTfp
-JRVAGJGeZ2/QlbKregLCb5Yh9XRQcE0w0F1TkxwXnEez3MxHOIrGqh+UJwnInO3k
-pyZhjwKqNehUbPfRp93T6QzdI1H479cvctRBk4NC7lSqMb1XxO0yyl6VQvAryHLH
-6QhWTP+lTRUnS4RyoUwfoKycGpi19/l4JqcDUVKKbpZSKygdjOJsyzMmvjd/u6EK
-cwGC/n3D0e0HdbjRPsumiJQ1GG5vMzE7JU6vpueGPYGE8NqX+E/BF3D2ewHtxZUr
-jaY6LH0K5kmtrRjMpKl8KR1BQba/aW2qN+b2vsdfqR15zqlw1UkvnJbNNgeNTxRh
-onVh+DBs4A/mY1r7kugtCDnOmGjuCoJp+ChyvKC0MEgvpsk2t7Oeq1ujRrrwGwXo
-py4ABKjXY8Td/3UyHVDG6Bll1YmFQZpEGwG7oVtiE5M6G5LNzsB2U+Fb2oSFOfYT
-NxXrr1FWcVRHiNxM6DsqIl8Oreo+TBV7YmBFR6uxY1g2R1GTozTaRBbFPdJy8UYu
-z/8a8e4BZ/6NauP5x2W+a9eg8XEbLfSSgakB3/98jOkWA3pyNc5HRz5MY5p/6cCI
-5cXbFRIiq9/S2avbfXzg
-=I04H
+iQIcBAEBAgAGBQJUEUPPAAoJEEpcgKtcEGQQb2YQALHB2zU9+ynWsb5H3+LO/c0t
+Th397KH56+T0/i1Qgbm6OwIQ8e1xYQ09EvQdPxxZg1RDt+cLnrSwiTjlBXV95Xfs
+Ez7UHGn5P+r7QRj+HBnaYfeOk7Hw2dcL4HIPUTqyZJDRIwEJQ96ka7nOBMNRpc94
+xOc56AEkt0ftffKdsLzTosPl2MPcfuG5fAp8jSbAChwXny5xx28YusUbQr3zNzXQ
+XRvfWt8eYB8XVF+E8OYQhMhHN2KD7dkUs0pE94ZzXp4i0oUo8jGVgPZBPZVoIVJk
+EXoTjsy7pCSEYYwlulDN1ujL41sHXvhnFB1Vli2UnmNygXELdd0q3jaa5sbUBiv8
+/A26yauckAqhGVDew3ayRp1UH7q4HD5KfXdBWUIt6dDecNuO3k6t1yTIeRG1hBLW
+DtvY3xGOTnwlvvJeuhQ1sK2IVQfyyi2U3CnlAJWybonmurtF4s9bnrY25xqakRa8
+53igpZXpS2bnUdnHVTw4LjR2t8HTBtQICcjXy+aUREMvxq7p5hwPmvSA2mvCdftb
+zFujI2hluuN8r5cfIVWQ/wfKyvNXmqv2Cl+3lUeoLToWUr2lS3h9gMXu0su/Ty2Q
+as34YH+roCnARk2Ddl4C2EcLAkoyeZLSSDt8X45f20tcMqXg6pKui/lsPwOcYsOu
+v7P+2VCwfHsgzcK21PE7
+=/KzK
 -----END PGP SIGNATURE-----
 
---KDt/GgjP6HVcx58l--
-
---===============5561818265139704335==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5561818265139704335==--
+--qGV0fN9tzfkG3CxV--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
