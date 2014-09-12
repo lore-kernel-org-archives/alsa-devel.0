@@ -1,40 +1,37 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Possible fix for snd-hda-intel model=no-jd failing
- since ~linux-3.9-rc1
-Date: Fri, 12 Sep 2014 15:17:15 +0800
-Message-ID: <CAN8ccibhEdsAcz9x3mz19W2zP5YHYfP_gXjEJNCgvkc2bVSKLw@mail.gmail.com>
-References: <CAN8ccibXu3owbz+K7cHdw=8PXCCMDn10_1rkva71Zg9rkZDv-A@mail.gmail.com>
- <1410462871.69976.YahooMailBasic@web160605.mail.bf1.yahoo.com>
+From: vichy <vichy.kuo-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: usb sound cannot get frequency from enpoind
+Date: Fri, 12 Sep 2014 15:25:45 +0800
+Message-ID: <CAOVJa8ExKBcFNpebScGjfZ9L=wVH4TaN=zN5rcMOTCNp__7CXg@mail.gmail.com>
+References: <CAOVJa8ECMNHi5a-iFsk39E9JfKrA+CykrTa7Fh6AdyfTFqo_SQ@mail.gmail.com>
+	<CAOVJa8Gyd_hbAmrmeYY9RorhMQUK8QnM0r3ySqdNfC_xWK73ng@mail.gmail.com>
+	<541295A9.9080603@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f42.google.com (mail-qa0-f42.google.com
- [209.85.216.42])
- by alsa0.perex.cz (Postfix) with ESMTP id ADB99265731
- for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 09:17:17 +0200 (CEST)
-Received: by mail-qa0-f42.google.com with SMTP id j7so309359qaq.15
- for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 00:17:16 -0700 (PDT)
-In-Reply-To: <1410462871.69976.YahooMailBasic@web160605.mail.bf1.yahoo.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Richter <adam_richter2004@yahoo.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <541295A9.9080603-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
->
-> >Is this enumerated codec inside vm since node 0x18 and node 0x19 does not
-> >like the real idt coded ?
->
-> It's real hardware.
->
+hi Clements:
 
-It is strange that your hardware have the desktop pin layout plus two
-internal mic and CD
+2014-09-12 14:41 GMT+08:00 Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>:
+> vichy wrote:
+>>> ALSA sound/usb/clock.c:237 2:3:1: cannot get freq at ep 0x82
+>>> ALSA sound/usb/mixer.c:929 5:2: cannot get min/max values for control 2 (id 5)
+>>> ALSA sound/usb/mixer.c:929 5:2: cannot get min/max values for control 2 (id 5)
+>>
+>> (from the description, the ep 0x82 did have different sample rate
+>> configuration, but why uac cannot get it?)
+>
+> This is likely to be a bug in the device's firmware.
+How could we determine it?
+is the any tool, log or experiments we can do to to show the bug
+belongs to device not uac?
+
+appreciate your kind help,
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
