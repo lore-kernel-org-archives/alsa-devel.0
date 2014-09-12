@@ -1,20 +1,17 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V2] ASoC: fsl_ssi: refine ipg clock usage
-	in this module
-Date: Fri, 12 Sep 2014 13:11:42 +0800
-Message-ID: <20140912051140.GA3644@audiosh1>
-References: <27584da8e3ab291ab8dbcbb411579613f8384a59.1410413734.git.shengjiu.wang@freescale.com>
- <54125DEF.4090101@tabi.org>
+From: vichy <vichy.kuo@gmail.com>
+Subject: usb sound cannot get frequency from enpoind
+Date: Fri, 12 Sep 2014 13:46:04 +0800
+Message-ID: <CAOVJa8ECMNHi5a-iFsk39E9JfKrA+CykrTa7Fh6AdyfTFqo_SQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0145.outbound.protection.outlook.com [157.56.111.145])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BD5D265171
- for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 07:12:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <54125DEF.4090101@tabi.org>
+Received: from mail-ob0-f178.google.com (mail-ob0-f178.google.com
+ [209.85.214.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AF2B2656EC
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 07:46:07 +0200 (CEST)
+Received: by mail-ob0-f178.google.com with SMTP id va2so161041obc.37
+ for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 22:46:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,20 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Li.Xiubo@freescale.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 11, 2014 at 09:43:59PM -0500, Timur Tabi wrote:
-> Shengjiu Wang wrote:
-> >+	ret = clk_prepare_enable(ssi_private->clk);
-> >+	if (ret)
-> >+		return ret;
-> 
-> Will this work on PowerPC, where ssi_private->clk is always NULL?
-
-When ssi_private->clk is NULL, then ret = 0, so here will not return,
-the code in below will be continuously executed.
-I think it work on PowerPC.
-
-wang shengjiu
+aGkgYWxsOgpNeSBrZXJuZWwgaXMgMy44LjAuCmFuZCB3aGVuIEkgcGx1ZyBpbiAibWljcm9zb2Z0
+IExpZmVDYW0iLCBJIGdldCBtZXNzYWdlIGF0IHRoZSBlbmQgb2YKbWFpbCBhYm91dCBjYW5ub3Qg
+Z2V0IG1pbi9tYXggdmFsdWVzIGZyb20gY2FtZXJhLgppcyB0aGVyZSBhbnkgdXNiIGF1ZGlvIGNs
+YXNzIGluaXRpYWwgc2VxdWVuY2Ugd2UgbmVlZCB0byBjaGVjayB3aGVuCnRoaXMgbWVzc2FnZSBw
+b3Agb3V0PwpBcHByZWNpYXRlIHlvdXIgaGVscCBpbiBhZHZhbmNlLAoKCgp1c2IgMy0xOiBuZXcg
+aGlnaC1zcGVlZCBVU0IgZGV2aWNlIG51bWJlciAyIHVzaW5nIFBsYXRmb3JtLWVoY2kKUGxhdGZv
+cm0tZWhjaSBQbGF0Zm9ybS1laGNpLjA6IHBvcnQgMSByZXNldCBjb21wbGV0ZSwgcG9ydCBlbmFi
+bGVkClBsYXRmb3JtLWVoY2kgUGxhdGZvcm0tZWhjaS4wOiBHZXRTdGF0dXMgcG9ydDoxIHN0YXR1
+cyAwMDAwMGQgMCAgQUNLCnNpZz1zZTAgUEVDIFBFIENPTk5FQ1QKdXNiIDMtMTogc2tpcHBlZCAx
+IGRlc2NyaXB0b3IgYWZ0ZXIgY29uZmlndXJhdGlvbgp1c2IgMy0xOiBza2lwcGVkIDYgZGVzY3Jp
+cHRvcnMgYWZ0ZXIgaW50ZXJmYWNlCnVzYiAzLTE6IHNraXBwZWQgMSBkZXNjcmlwdG9yIGFmdGVy
+IGVuZHBvaW50CnVzYiAzLTE6IHNraXBwZWQgMjggZGVzY3JpcHRvcnMgYWZ0ZXIgaW50ZXJmYWNl
+CnVzYiAzLTE6IHNraXBwZWQgMSBkZXNjcmlwdG9yIGFmdGVyIGVuZHBvaW50CnVzYiAzLTE6IHNr
+aXBwZWQgNCBkZXNjcmlwdG9ycyBhZnRlciBpbnRlcmZhY2UKdXNiIDMtMTogc2tpcHBlZCAyIGRl
+c2NyaXB0b3JzIGFmdGVyIGludGVyZmFjZQp1c2IgMy0xOiBza2lwcGVkIDEgZGVzY3JpcHRvciBh
+ZnRlciBlbmRwb2ludAp1c2IgMy0xOiBkZWZhdWx0IGxhbmd1YWdlIDB4MDQwOQp1c2IgMy0xOiB1
+ZGV2IDIsIGJ1c251bSAzLCBtaW5vciA9IDI1Nwp1c2IgMy0xOiBOZXcgVVNCIGRldmljZSBmb3Vu
+ZCwgaWRWZW5kb3I9MDQ1ZSwgaWRQcm9kdWN0PTA3NWQKdXNiIDMtMTogTmV3IFVTQiBkZXZpY2Ug
+c3RyaW5nczogTWZyPTEsIFByb2R1Y3Q9MiwgU2VyaWFsTnVtYmVyPTAKdXNiIDMtMTogUHJvZHVj
+dDogTWljcm9zb2Z0w4LCriBMaWZlQ2FtIENpbmVtYShUTSkKdXNiIDMtMTogTWFudWZhY3R1cmVy
+OiBNaWNyb3NvZnQKdXNiIDMtMTogdXNiX3Byb2JlX2RldmljZQp1c2IgMy0xOiBjb25maWd1cmF0
+aW9uICMxIGNob3NlbiBmcm9tIDEgY2hvaWNlCnVzYiAzLTE6IGFkZGluZyAzLTE6MS4wIChjb25m
+aWcgIzEsIGludGVyZmFjZSAwKQp1dmN2aWRlbyAzLTE6MS4wOiB1c2JfcHJvYmVfaW50ZXJmYWNl
+CnV2Y3ZpZGVvIDMtMToxLjA6IHVzYl9wcm9iZV9pbnRlcmZhY2UgLSBnb3QgaWQKdXZjdmlkZW86
+IEZvdW5kIFVWQyAxLjAwIGRldmljZSBNaWNyb3NvZnTDgsKuIExpZmVDYW0gQ2luZW1hKFRNKSAo
+MDQ1ZTowNzVkKQppbnB1dDogTWljcm9zb2Z0w4LCriBMaWZlQ2FtIENpbmVtYShUTSkgYXMKL2Rl
+dmljZXMvcGxhdGZvcm0vUGxhdGZvcm0tZWhjaS4wL3VzYjMvMy0xLzMtMToxLjAvaW5wdXQvaW5w
+dXQ0CnVzYiAzLTE6IGFkZGluZyAzLTE6MS4xIChjb25maWcgIzEsIGludGVyZmFjZSAxKQp1c2Ig
+My0xOiBhZGRpbmcgMy0xOjEuMiAoY29uZmlnICMxLCBpbnRlcmZhY2UgMikKc25kLXVzYi1hdWRp
+byAzLTE6MS4yOiB1c2JfcHJvYmVfaW50ZXJmYWNlCnNuZC11c2ItYXVkaW8gMy0xOjEuMjogdXNi
+X3Byb2JlX2ludGVyZmFjZSAtIGdvdCBpZApBTFNBIHNvdW5kL3VzYi9zdHJlYW0uYzo2ODIgMjoz
+OjE6IGFkZCBhdWRpbyBlbmRwb2ludCAweDgyCnVzYiAzLTE6IGtodWJkIHRpbWVkIG91dCBvbiBl
+cDBpbiBsZW49MC8zCkFMU0Egc291bmQvdXNiL2Nsb2NrLmM6MjM3IDI6MzoxOiBjYW5ub3QgZ2V0
+IGZyZXEgYXQgZXAgMHg4MgpBTFNBIHNvdW5kL3VzYi9taXhlci5jOjEzMDUgWzVdIEZVIFtNaWMg
+Q2FwdHVyZSBTd2l0Y2hdIGNoID0gMSwgdmFsID0gMC8xLzEKQUxTQSBzb3VuZC91c2IvbWl4ZXIu
+Yzo5MjkgNToyOiBjYW5ub3QgZ2V0IG1pbi9tYXggdmFsdWVzIGZvciBjb250cm9sIDIgKGlkIDUp
+CkFMU0Egc291bmQvdXNiL21peGVyLmM6MTMwNSBbNV0gRlUgW01pYyBDYXB0dXJlIFZvbHVtZV0g
+Y2ggPSAxLCB2YWwgPSAwLzEvMQpBTFNBIHNvdW5kL3VzYi9taXhlci5jOjkyOSA1OjI6IGNhbm5v
+dCBnZXQgbWluL21heCB2YWx1ZXMgZm9yIGNvbnRyb2wgMiAoaWQgNSkKdXNiIDMtMTogYWRkaW5n
+IDMtMToxLjMgKGNvbmZpZyAjMSwgaW50ZXJmYWNlIDMpCmh1YiAzLTA6MS4wOiBzdGF0ZSA3IHBv
+cnRzIDEgY2hnIDAwMDAgZXZ0IDAwMDIKUGxhdGZvcm0tZWhjaSBQbGF0Zm9ybS1laGNpLjA6IEdl
+dFN0YXR1cyBwb3J0OjEgc3RhdHVzIDAwMDAwZCAwICBBQ0sKc2lnPXNlMCBQRUMgUEUgQ09OTkVD
+VApodWIgMy0wOjEuMDogcG9ydCAxIGVuYWJsZSBjaGFuZ2UsIHN0YXR1cyAwMDAwMDQwMwpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
