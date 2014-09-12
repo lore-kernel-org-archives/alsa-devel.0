@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: simple-card: tidyup use priv in
-	parameter
-Date: Fri, 12 Sep 2014 14:59:57 +0100
-Message-ID: <20140912135957.GY7960@sirena.org.uk>
+Subject: Re: [PATCH 2/3] ASoC: simple-card: tidyup get
+ dai_link/dai_props from priv
+Date: Fri, 12 Sep 2014 15:01:06 +0100
+Message-ID: <20140912140106.GZ7960@sirena.org.uk>
 References: <871trkytuv.wl%kuninori.morimoto.gx@gmail.com>
- <87zje8xf8d.wl%kuninori.morimoto.gx@gmail.com>
+ <87y4tsxf7m.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8621282257272825986=="
+Content-Type: multipart/mixed; boundary="===============3471154095530710115=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DC7F261A5E
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F9ED261A64
  for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 17:39:13 +0200 (CEST)
-In-Reply-To: <87zje8xf8d.wl%kuninori.morimoto.gx@gmail.com>
+In-Reply-To: <87y4tsxf7m.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,49 +27,47 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam G
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8621282257272825986==
+--===============3471154095530710115==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="t3Rhqlz/9+3FgEet"
+	protocol="application/pgp-signature"; boundary="w5er4h4/Yf2qR8D9"
 Content-Disposition: inline
 
 
---t3Rhqlz/9+3FgEet
+--w5er4h4/Yf2qR8D9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 09, 2014 at 09:37:57PM -0700, Kuninori Morimoto wrote:
+On Tue, Sep 09, 2014 at 09:38:24PM -0700, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >=20
-> priv has many information about simple-card driver.
-> Using it becomes easy to extend feature.
-> This patch gets dev from priv as 1st step
+> It can get dai_link/dai_props pointer from priv + index
 
 Applied, thanks.
 
---t3Rhqlz/9+3FgEet
+--w5er4h4/Yf2qR8D9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUEvxcAAoJECTWi3JdVIfQXp0H/3FEjbUgf6XVKq8vxzbOHjEd
-2YPFnJ/tTFlQDEqpTkaXat1Mh5+VtPyyA6iRVzNtkXAge2OTMDIt59+1CNYeT0VI
-7VxQPUzgGa6MbqaAt8NpAlk6jp+MupEP/rS21Hblg+H81dHFz8E1hrVd8bLMq06o
-CO5yn33/ABNHpWaqA7z8eDDvNS0VCVbBlPqO+BZiyzGiiW1S3jeNZIjbL6hqkmW3
-q5ZvaMghNBLaQujzXIqzHoVcChwSUlRaYNJLO1O7k2XDyIwMDjX9rStBK2Dy+KdA
-dPteTuHS5/cX80GA3CRQC+83nsq7R7ztgoxK/Ko0yp5UQV8akOR09vUQh4EwUDs=
-=VjrJ
+iQEcBAEBAgAGBQJUEvyhAAoJECTWi3JdVIfQGawH/2OiI1Yi4EI70QGZI/x2rl4V
+IfB81X4VmbUFtMg9zixp+VaTUaMVSilJZbMltBh0K/asIZq51YaTMuUahsGk4llw
+loFrqZTGbjCHwkN10DLHZIcbHj9BBTnhfHLdVQPSSqQLRJ4stdxtYbCQsfSEcpSa
+91Vy5TvCFIGEgP2kCbwInZkO9te5VumuFvaGki63jfABSWCkveYvE/5MFf7jijra
+uzpZNXNKcZdMH59Gw+gdruJk8zxAheTutU/Y2P9LWHPrWrafR3NhTovuSO26cdcF
+hV3W38PkMvq5LklAw/qHWFt0Mi4iyD8s81AnjPtlGCWb+HO0WskJeWloENj+l80=
+=xlx7
 -----END PGP SIGNATURE-----
 
---t3Rhqlz/9+3FgEet--
+--w5er4h4/Yf2qR8D9--
 
---===============8621282257272825986==
+--===============3471154095530710115==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8621282257272825986==--
+--===============3471154095530710115==--
