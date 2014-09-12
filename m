@@ -1,15 +1,23 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] speaker-test: Fix dropped samples at the end
-	of test
-Date: Fri, 12 Sep 2014 15:14:28 +0300
-Message-ID: <1410524068-15982-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Re: The best practice to tie platform DAPM widget and
+ codec pin
+Date: Fri, 12 Sep 2014 16:57:42 +0200
+Message-ID: <541309E6.9020809@topic.nl>
+References: <CAOMFOmX5FCsxXpoboDLKpnZrBQ52v3jRZQHbJAk2st0gXYrVKg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id CB44C2657C0
- for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 14:14:52 +0200 (CEST)
+Received: from smtp04.online.nl (smtp04.online.nl [194.134.41.34])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED217261A8E
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 16:57:42 +0200 (CEST)
+Received: from smtp04.online.nl (localhost [127.0.0.1])
+ by smtp04.online.nl (Postfix) with ESMTP id 61072E0F5
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 16:57:42 +0200 (CEST)
+Received: from [192.168.1.6] (s55969068.adsl.online.nl [85.150.144.104])
+ by smtp04.online.nl (Postfix) with ESMTP
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 16:57:42 +0200 (CEST)
+In-Reply-To: <CAOMFOmX5FCsxXpoboDLKpnZrBQ52v3jRZQHbJAk2st0gXYrVKg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +28,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, guillaume-florianx.vidal@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Commit 6d1673526b0f ("Avoid unnecessary drain/restart in speaker-test")
-drains only when buffer is bigger than audio sample. This has a drawback
-that up to buffer size amount of data may not be heard at the end of audio
-sample.
+On 09/12/2014 06:04 AM, Anatol Pomozov wrote:
+> Hi
+>
+> I bringing up a board that has Realtek 5677 codec. The codec has 6
+> gpios and two of them are used by the board. pin3 is used to enable
+> headphones amplifier. pin2 is used to gate DMIC clock for 3 of 4 DMICs
+> - it allows to leave only one DMIC working in low-power mode.
+>
+> Now I need to configure the codec that when "Headphones" audio path is
+> enabled then pin3 should go high. The same true for DMIC/pin2. I was
+> looking for existing similar solutions but cannot find one.
+>
+> I need something similar to SND_SOC_DAPM_REGULATOR_SUPPLY that allows
+> to turn on/off part of the system. But instead of manipulating a
+> voltage regulator I just need to set/unset codec's gpio. What would be
+> the best way to achieve it?
 
-This was noted with "speaker-test -c 2 -t wav -s 2" test on a
-hardware that has a buffer size of 24000 samples and 48 kHz sample rate.
-Instead of playing "front right" it played something like "front ra".
+You can "convert" gpios to supply regulators using a "fixed" regulator 
+driver (instantiated in the devicetree, or platform code on older kernels).
 
-Reverse buffer size vs sample size test wouldn't work either since then
-samples smaller than buffer are dropped.
+>
+> The problem here is that codec does not know which of the outputs
+> (LOUT1, LOUT2, LOUT3) corresponds to headphones. It is configured as
+> audio path in *.dts file.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
-Fix this by removing buffer_size tests from write_loop() and do
-drain/restart always when not aborting.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Reported-by: Vidal, Guillaume-florianX <guillaume-florianx.vidal@intel.com>
----
-This was originally noted on Baytrail ADSP hw (default buffer size 24000)
-but can be heard also on Intel HDA (default buffer size 8192) when audio
-sample is small enough but bigger than buffer. For instance 100 ms sample
-finishes too shortly (buffer size 8192, sample size 9600) but 50 ms plays
-ok (buffer size 8192, sample size 4800).
-
-I guess some optimization can be done for snd_pcm_prepare() when not looping
-but that's not necessary for this fix.
----
- speaker-test/speaker-test.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
-index 61396f296c65..836fd26d35b1 100644
---- a/speaker-test/speaker-test.c
-+++ b/speaker-test/speaker-test.c
-@@ -942,7 +942,7 @@ static int write_loop(snd_pcm_t *handle, int channel, int periods, uint8_t *fram
- 			      snd_pcm_bytes_to_frames(handle, err * channels))) < 0)
- 	break;
-     }
--    if (buffer_size > n && !in_aborting) {
-+    if (!in_aborting) {
-       snd_pcm_drain(handle);
-       snd_pcm_prepare(handle);
-     }
-@@ -964,7 +964,7 @@ static int write_loop(snd_pcm_t *handle, int channel, int periods, uint8_t *fram
-     if ((err = write_buffer(handle, frames, period_size)) < 0)
-       return err;
-   }
--  if (buffer_size > n * period_size && !in_aborting) {
-+  if (!in_aborting) {
-     snd_pcm_drain(handle);
-     snd_pcm_prepare(handle);
-   }
 -- 
-2.1.0
+Mike Looijmans
