@@ -1,92 +1,441 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: Re: [PATCH V2] ASoC: fsl_ssi: refine ipg clock usage in this module
-Date: Fri, 12 Sep 2014 18:40:55 +0800
-Message-ID: <20140912104054.GA6420@audiosh1>
-References: <27584da8e3ab291ab8dbcbb411579613f8384a59.1410413734.git.shengjiu.wang@freescale.com>
- <20140911225737.GA13926@Alpha> <20140912020110.GA414@audiosh1>
- <20140912061706.GA10680@pengutronix.de> <20140912071426.GA30261@audiosh1>
- <20140912085446.GA8844@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] sound: pci: ctxfi: pr_* replaced with dev_*
+Date: Fri, 12 Sep 2014 16:15:45 +0530
+Message-ID: <1410518745-29983-1-git-send-email-sudipm.mukherjee@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140912085446.GA8844@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Markus Pargmann <mpa@pengutronix.de>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 12, 2014 at 10:54:46AM +0200, Markus Pargmann wrote:
-> On Fri, Sep 12, 2014 at 03:14:28PM +0800, Shengjiu Wang wrote:
-> > On Fri, Sep 12, 2014 at 08:17:06AM +0200, Markus Pargmann wrote:
-> > > Hi,
-> > > 
-> > > On Fri, Sep 12, 2014 at 10:01:12AM +0800, Shengjiu Wang wrote:
-> > > > On Thu, Sep 11, 2014 at 03:57:37PM -0700, Nicolin Chen wrote:
-> > > > > On Thu, Sep 11, 2014 at 01:38:29PM +0800, Shengjiu Wang wrote:
-> > > > > > Move the ipg clock enable and disable operation to startup and shutdown,
-> > > > > > that is only enable ipg clock when ssi is working. Keep clock is disabled
-> > > > > > when ssi is in idle.
-> > > > > > otherwise, _fsl_ssi_set_dai_fmt function need to be called in probe,
-> > > > > > so add ipg clock control for it.
-> > > > > 
-> > > > > It seems to be no objection so far against my last suggestion to
-> > > > > use regmap's mmio_clk() for named ipg clk only. So you may still
-> > > > > consider about that.
-> > > > >
-> > > > I think mmio_clk() can be put to another patch. and this patch only for clk_enable()
-> > > > and clk_disable() operation.
-> > > 
-> > > I would also prefer Nicolin's suggestion using regmap's mmio clk. I
-> > > think it may be better to not add this particular patch at all and just
-> > > go with the mmio_clk patch. It should be easy enough to just add the
-> > > clock names to the devicetrees. That way we can avoid all those clock
-> > > enable/disable function calls.
-> > >
-> > I considered if use Nicolin's suggestion, I still need ot add those
-> > enable/disable function calls, because I want to remove the enable/disable
-> > function call in fsl_ssi_imx_probe, then I need to add enable/disable 
-> > function call in _fsl_ssi_set_dai_fmt(), which is called in fsl_ssi_probe().
-> > _fsl_ssi_set_dai_fmt() need to access the registers.
-> 
-> I think Nicolin's suggestion was to check for a clock named "ipg". If it
-> exists, you can simply use devm_regmap_init_mmio_clk(). Otherwise you
-> could fallback to the old behaviour and get the first clock and enable
-> it without disabling it after the probe function.
-> 
-> After that, you could add the clock-names property to the devicetrees
-> and have the same result.
->
-Ok, I have sent V3 for review. please check.
+pr_* macros replaced with dev_* as they are more preffered over pr_*.
 
-wang shengjiu 
-> > 
-> > > >  
-> > > > > Anyway, I'd like to do thing in parallel. So I just simply tested
-> > > > > it on my side and its works fine, it may still need to be tested
-> > > > > by others though.
-> > > > > 
-> > > > > Nicolina
-> > > > 
-> > > > Hi Markus
-> > > > 
-> > > > could you please review it, and share your comments?
-> > > 
-> > > I think the clock enabling for AC97 is missing in your patch.
-> > > 
-> > I add clock enable in fsl_ssi_startup(), I think it is enough for AC97, does it?
-> 
-> No. We export ac97 read/write ops for the whole AC97 stuff. These may be
-> used outside of the usual startup/shutdown which is done for substreams.
-> It may work to have the ipg clock enabled in
-> fsl_ssi_ac97_read/fsl_ssi_ac97_write.
-> 
-> Best regards,
-> 
-> Markus
-> 
-> -- 
-> Pengutronix e.K.                           |                             |
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
+ sound/pci/ctxfi/ctamixer.c   |  6 ++++--
+ sound/pci/ctxfi/ctatc.c      | 23 ++++++++++++++---------
+ sound/pci/ctxfi/ctdaio.c     |  3 ++-
+ sound/pci/ctxfi/cthw20k1.c   | 13 ++++++++-----
+ sound/pci/ctxfi/cthw20k2.c   | 22 ++++++++++++++--------
+ sound/pci/ctxfi/ctmixer.c    |  6 ++++--
+ sound/pci/ctxfi/ctpcm.c      |  3 ++-
+ sound/pci/ctxfi/ctresource.c | 20 +++++++++++++-------
+ sound/pci/ctxfi/ctsrc.c      |  6 ++++--
+ sound/pci/ctxfi/xfi.c        | 15 +++++++++------
+ 10 files changed, 74 insertions(+), 43 deletions(-)
+
+diff --git a/sound/pci/ctxfi/ctamixer.c b/sound/pci/ctxfi/ctamixer.c
+index fed6e6a..d08b8b6 100644
+--- a/sound/pci/ctxfi/ctamixer.c
++++ b/sound/pci/ctxfi/ctamixer.c
+@@ -258,7 +258,8 @@ static int get_amixer_rsc(struct amixer_mgr *mgr,
+ 	}
+ 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
+ 	if (err) {
+-		pr_err("ctxfi: Can't meet AMIXER resource request!\n");
++		dev_err(&(((struct hw *)(mgr->mgr.hw))->pci->dev),
++			"ctxfi: Can't meet AMIXER resource request!\n");
+ 		goto error;
+ 	}
+ 
+@@ -411,7 +412,8 @@ static int get_sum_rsc(struct sum_mgr *mgr,
+ 	}
+ 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
+ 	if (err) {
+-		pr_err("ctxfi: Can't meet SUM resource request!\n");
++		dev_err(&(((struct hw *)(mgr->mgr.hw))->pci->dev),
++			"ctxfi: Can't meet SUM resource request!\n");
+ 		goto error;
+ 	}
+ 
+diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
+index d92a08c..131b8d4 100644
+--- a/sound/pci/ctxfi/ctatc.c
++++ b/sound/pci/ctxfi/ctatc.c
+@@ -1282,7 +1282,8 @@ static int atc_identify_card(struct ct_atc *atc, unsigned int ssid)
+ 	p = snd_pci_quirk_lookup_id(vendor_id, device_id, list);
+ 	if (p) {
+ 		if (p->value < 0) {
+-			pr_err("ctxfi: Device %04x:%04x is black-listed\n",
++			dev_err(&atc->pci->dev,
++				"ctxfi: Device %04x:%04x is black-listed\n",
+ 			       vendor_id, device_id);
+ 			return -ENOENT;
+ 		}
+@@ -1314,7 +1315,8 @@ int ct_atc_create_alsa_devs(struct ct_atc *atc)
+ 		err = alsa_dev_funcs[i].create(atc, i,
+ 				alsa_dev_funcs[i].public_name);
+ 		if (err) {
+-			pr_err("ctxfi: Creating alsa device %d failed!\n", i);
++			dev_err(&atc->pci->dev,
++				"ctxfi: Creating alsa device %d failed!\n", i);
+ 			return err;
+ 		}
+ 	}
+@@ -1330,7 +1332,7 @@ static int atc_create_hw_devs(struct ct_atc *atc)
+ 
+ 	err = create_hw_obj(atc->pci, atc->chip_type, atc->model, &hw);
+ 	if (err) {
+-		pr_err("Failed to create hw obj!!!\n");
++		dev_err(&atc->pci->dev, "Failed to create hw obj!!!\n");
+ 		return err;
+ 	}
+ 	atc->hw = hw;
+@@ -1349,7 +1351,8 @@ static int atc_create_hw_devs(struct ct_atc *atc)
+ 
+ 		err = rsc_mgr_funcs[i].create(atc->hw, &atc->rsc_mgrs[i]);
+ 		if (err) {
+-			pr_err("ctxfi: Failed to create rsc_mgr %d!!!\n", i);
++			dev_err(&atc->pci->dev,
++				"ctxfi: Failed to create rsc_mgr %d!!!\n", i);
+ 			return err;
+ 		}
+ 	}
+@@ -1396,7 +1399,8 @@ static int atc_get_resources(struct ct_atc *atc)
+ 		err = daio_mgr->get_daio(daio_mgr, &da_desc,
+ 					(struct daio **)&atc->daios[i]);
+ 		if (err) {
+-			pr_err("ctxfi: Failed to get DAIO resource %d!!!\n",
++			dev_err(&atc->pci->dev,
++				"ctxfi: Failed to get DAIO resource %d!!!\n",
+ 				i);
+ 			return err;
+ 		}
+@@ -1600,7 +1604,8 @@ static int atc_resume(struct ct_atc *atc)
+ 	/* Do hardware resume. */
+ 	err = atc_hw_resume(atc);
+ 	if (err < 0) {
+-		pr_err("ctxfi: pci_enable_device failed, disabling device\n");
++		dev_err(&atc->pci->dev,
++			"ctxfi: pci_enable_device failed, disabling device\n");
+ 		snd_card_disconnect(atc->card);
+ 		return err;
+ 	}
+@@ -1697,7 +1702,7 @@ int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+ 	/* Find card model */
+ 	err = atc_identify_card(atc, ssid);
+ 	if (err < 0) {
+-		pr_err("ctatc: Card not recognised\n");
++		dev_err(&pci->dev, "ctatc: Card not recognised\n");
+ 		goto error1;
+ 	}
+ 
+@@ -1713,7 +1718,7 @@ int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ 	err = ct_mixer_create(atc, (struct ct_mixer **)&atc->mixer);
+ 	if (err) {
+-		pr_err("ctxfi: Failed to create mixer obj!!!\n");
++		dev_err(&pci->dev, "ctxfi: Failed to create mixer obj!!!\n");
+ 		goto error1;
+ 	}
+ 
+@@ -1740,6 +1745,6 @@ int ct_atc_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ error1:
+ 	ct_atc_destroy(atc);
+-	pr_err("ctxfi: Something wrong!!!\n");
++	dev_err(&pci->dev, "ctxfi: Something wrong!!!\n");
+ 	return err;
+ }
+diff --git a/sound/pci/ctxfi/ctdaio.c b/sound/pci/ctxfi/ctdaio.c
+index 6f0654e..fd64c95 100644
+--- a/sound/pci/ctxfi/ctdaio.c
++++ b/sound/pci/ctxfi/ctdaio.c
+@@ -541,7 +541,8 @@ static int get_daio_rsc(struct daio_mgr *mgr,
+ 	err = daio_mgr_get_rsc(&mgr->mgr, desc->type);
+ 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
+ 	if (err) {
+-		pr_err("Can't meet DAIO resource request!\n");
++		dev_err(&(((struct hw *)(mgr->mgr.hw))->pci->dev),
++			"Can't meet DAIO resource request!\n");
+ 		return err;
+ 	}
+ 
+diff --git a/sound/pci/ctxfi/cthw20k1.c b/sound/pci/ctxfi/cthw20k1.c
+index 71d496f..a3d1dda 100644
+--- a/sound/pci/ctxfi/cthw20k1.c
++++ b/sound/pci/ctxfi/cthw20k1.c
+@@ -1268,7 +1268,8 @@ static int hw_trn_init(struct hw *hw, const struct trn_conf *info)
+ 
+ 	/* Set up device page table */
+ 	if ((~0UL) == info->vm_pgt_phys) {
+-		pr_err("Wrong device page table page address!\n");
++		dev_err(&hw->pci->dev,
++			"Wrong device page table page address!\n");
+ 		return -1;
+ 	}
+ 
+@@ -1327,7 +1328,7 @@ static int hw_pll_init(struct hw *hw, unsigned int rsr)
+ 		mdelay(40);
+ 	}
+ 	if (i >= 3) {
+-		pr_alert("PLL initialization failed!!!\n");
++		dev_alert(&hw->pci->dev, "PLL initialization failed!!!\n");
+ 		return -EBUSY;
+ 	}
+ 
+@@ -1351,7 +1352,7 @@ static int hw_auto_init(struct hw *hw)
+ 			break;
+ 	}
+ 	if (!get_field(gctl, GCTL_AID)) {
+-		pr_alert("Card Auto-init failed!!!\n");
++		dev_alert(&hw->pci->dev, "Card Auto-init failed!!!\n");
+ 		return -EBUSY;
+ 	}
+ 
+@@ -1911,7 +1912,8 @@ static int hw_card_start(struct hw *hw)
+ 	/* Set DMA transfer mask */
+ 	if (pci_set_dma_mask(pci, CT_XFI_DMA_MASK) < 0 ||
+ 	    pci_set_consistent_dma_mask(pci, CT_XFI_DMA_MASK) < 0) {
+-		pr_err("architecture does not support PCI busmaster DMA with mask 0x%llx\n",
++		dev_err(&pci->dev,
++			"architecture does not support PCI busmaster DMA with mask 0x%llx\n",
+ 		       CT_XFI_DMA_MASK);
+ 		err = -ENXIO;
+ 		goto error1;
+@@ -1941,7 +1943,8 @@ static int hw_card_start(struct hw *hw)
+ 		err = request_irq(pci->irq, ct_20k1_interrupt, IRQF_SHARED,
+ 				  KBUILD_MODNAME, hw);
+ 		if (err < 0) {
+-			pr_err("XFi: Cannot get irq %d\n", pci->irq);
++			dev_err(&pci->dev, "XFi: Cannot get irq %d\n",
++				pci->irq);
+ 			goto error2;
+ 		}
+ 		hw->irq = pci->irq;
+diff --git a/sound/pci/ctxfi/cthw20k2.c b/sound/pci/ctxfi/cthw20k2.c
+index df2d8c5..a65f3bb 100644
+--- a/sound/pci/ctxfi/cthw20k2.c
++++ b/sound/pci/ctxfi/cthw20k2.c
+@@ -1187,7 +1187,8 @@ static int hw_daio_init(struct hw *hw, const struct daio_conf *info)
+ 		hw_write_20kx(hw, AUDIO_IO_TX_BLRCLK, 0x21212121);
+ 		hw_write_20kx(hw, AUDIO_IO_RX_BLRCLK, 0);
+ 	} else {
+-		pr_alert("ctxfi: ERROR!!! Invalid sampling rate!!!\n");
++		dev_alert(&hw->pci->dev,
++			  "ctxfi: ERROR!!! Invalid sampling rate!!!\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1246,7 +1247,8 @@ static int hw_trn_init(struct hw *hw, const struct trn_conf *info)
+ 
+ 	/* Set up device page table */
+ 	if ((~0UL) == info->vm_pgt_phys) {
+-		pr_alert("ctxfi: Wrong device page table page address!!!\n");
++		dev_alert(&hw->pci->dev,
++			  "ctxfi: Wrong device page table page address!!!\n");
+ 		return -1;
+ 	}
+ 
+@@ -1351,7 +1353,8 @@ static int hw_pll_init(struct hw *hw, unsigned int rsr)
+ 		break;
+ 	}
+ 	if (i >= 1000) {
+-		pr_alert("ctxfi: PLL initialization failed!!!\n");
++		dev_alert(&hw->pci->dev,
++			  "ctxfi: PLL initialization failed!!!\n");
+ 		return -EBUSY;
+ 	}
+ 
+@@ -1375,7 +1378,7 @@ static int hw_auto_init(struct hw *hw)
+ 			break;
+ 	}
+ 	if (!get_field(gctl, GCTL_AID)) {
+-		pr_alert("ctxfi: Card Auto-init failed!!!\n");
++		dev_alert(&hw->pci->dev, "ctxfi: Card Auto-init failed!!!\n");
+ 		return -EBUSY;
+ 	}
+ 
+@@ -1846,7 +1849,7 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
+ 	/* Initialize I2C */
+ 	err = hw20k2_i2c_init(hw, 0x1A, 1, 1);
+ 	if (err < 0) {
+-		pr_alert("ctxfi: Failure to acquire I2C!!!\n");
++		dev_alert(&hw->pci->dev, "ctxfi: Failure to acquire I2C!!!\n");
+ 		goto error;
+ 	}
+ 
+@@ -1889,7 +1892,8 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
+ 		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_MMC, 0x0A),
+ 						MAKE_WM8775_DATA(0x0A));
+ 	} else {
+-		pr_alert("ctxfi: Invalid master sampling rate (msr %d)!!!\n",
++		dev_alert(&hw->pci->dev,
++			  "ctxfi: Invalid master sampling rate (msr %d)!!!\n",
+ 			info->msr);
+ 		err = -EINVAL;
+ 		goto error;
+@@ -2033,7 +2037,8 @@ static int hw_card_start(struct hw *hw)
+ 	/* Set DMA transfer mask */
+ 	if (pci_set_dma_mask(pci, CT_XFI_DMA_MASK) < 0 ||
+ 	    pci_set_consistent_dma_mask(pci, CT_XFI_DMA_MASK) < 0) {
+-		pr_err("ctxfi: architecture does not support PCI busmaster DMA with mask 0x%llx\n",
++		dev_err(&pci->dev,
++			"ctxfi: architecture does not support PCI busmaster DMA with mask 0x%llx\n",
+ 			CT_XFI_DMA_MASK);
+ 		err = -ENXIO;
+ 		goto error1;
+@@ -2062,7 +2067,8 @@ static int hw_card_start(struct hw *hw)
+ 		err = request_irq(pci->irq, ct_20k2_interrupt, IRQF_SHARED,
+ 				  KBUILD_MODNAME, hw);
+ 		if (err < 0) {
+-			pr_err("XFi: Cannot get irq %d\n", pci->irq);
++			dev_err(&pci->dev, "XFi: Cannot get irq %d\n",
++				pci->irq);
+ 			goto error2;
+ 		}
+ 		hw->irq = pci->irq;
+diff --git a/sound/pci/ctxfi/ctmixer.c b/sound/pci/ctxfi/ctmixer.c
+index 017fa91..6807ff1fc 100644
+--- a/sound/pci/ctxfi/ctmixer.c
++++ b/sound/pci/ctxfi/ctmixer.c
+@@ -854,7 +854,8 @@ static int ct_mixer_get_resources(struct ct_mixer *mixer)
+ 	for (i = 0; i < (NUM_CT_SUMS * CHN_NUM); i++) {
+ 		err = sum_mgr->get_sum(sum_mgr, &sum_desc, &sum);
+ 		if (err) {
+-			pr_err("ctxfi:Failed to get sum resources for front output!\n");
++			dev_err(&mixer->atc->pci->dev,
++				"ctxfi:Failed to get sum resources for front output!\n");
+ 			break;
+ 		}
+ 		mixer->sums[i] = sum;
+@@ -868,7 +869,8 @@ static int ct_mixer_get_resources(struct ct_mixer *mixer)
+ 	for (i = 0; i < (NUM_CT_AMIXERS * CHN_NUM); i++) {
+ 		err = amixer_mgr->get_amixer(amixer_mgr, &am_desc, &amixer);
+ 		if (err) {
+-			pr_err("ctxfi:Failed to get amixer resources for mixer obj!\n");
++			dev_err(&mixer->atc->pci->dev,
++				"ctxfi:Failed to get amixer resources for mixer obj!\n");
+ 			break;
+ 		}
+ 		mixer->amixers[i] = amixer;
+diff --git a/sound/pci/ctxfi/ctpcm.c b/sound/pci/ctxfi/ctpcm.c
+index 6826c2c..48f58a5 100644
+--- a/sound/pci/ctxfi/ctpcm.c
++++ b/sound/pci/ctxfi/ctpcm.c
+@@ -435,7 +435,8 @@ int ct_alsa_pcm_create(struct ct_atc *atc,
+ 	err = snd_pcm_new(atc->card, "ctxfi", device,
+ 			  playback_count, capture_count, &pcm);
+ 	if (err < 0) {
+-		pr_err("ctxfi: snd_pcm_new failed!! Err=%d\n", err);
++		dev_err(&atc->pci->dev, "ctxfi: snd_pcm_new failed!! Err=%d\n",
++			err);
+ 		return err;
+ 	}
+ 
+diff --git a/sound/pci/ctxfi/ctresource.c b/sound/pci/ctxfi/ctresource.c
+index e49d2be..80beecb 100644
+--- a/sound/pci/ctxfi/ctresource.c
++++ b/sound/pci/ctxfi/ctresource.c
+@@ -162,12 +162,14 @@ int rsc_init(struct rsc *rsc, u32 idx, enum RSCTYP type, u32 msr, void *hw)
+ 	case DAIO:
+ 		break;
+ 	default:
+-		pr_err("ctxfi: Invalid resource type value %d!\n", type);
++		dev_err(&(((struct hw *)hw)->pci->dev),
++			"ctxfi: Invalid resource type value %d!\n", type);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (err) {
+-		pr_err("ctxfi: Failed to get resource control block!\n");
++		dev_err(&(((struct hw *)hw)->pci->dev),
++			"ctxfi: Failed to get resource control block!\n");
+ 		return err;
+ 	}
+ 
+@@ -190,7 +192,8 @@ int rsc_uninit(struct rsc *rsc)
+ 		case DAIO:
+ 			break;
+ 		default:
+-			pr_err("ctxfi: Invalid resource type value %d!\n",
++			dev_err(&(((struct hw *)rsc->hw)->pci->dev),
++				"ctxfi: Invalid resource type value %d!\n",
+ 				rsc->type);
+ 			break;
+ 		}
+@@ -233,13 +236,15 @@ int rsc_mgr_init(struct rsc_mgr *mgr, enum RSCTYP type,
+ 	case SUM:
+ 		break;
+ 	default:
+-		pr_err("ctxfi: Invalid resource type value %d!\n", type);
++		dev_err(&hw->pci->dev,
++			"ctxfi: Invalid resource type value %d!\n", type);
+ 		err = -EINVAL;
+ 		goto error;
+ 	}
+ 
+ 	if (err) {
+-		pr_err("ctxfi: Failed to get manager control block!\n");
++		dev_err(&hw->pci->dev,
++			"ctxfi: Failed to get manager control block!\n");
+ 		goto error;
+ 	}
+ 
+@@ -282,8 +287,9 @@ int rsc_mgr_uninit(struct rsc_mgr *mgr)
+ 		case SUM:
+ 			break;
+ 		default:
+-			pr_err("ctxfi: Invalid resource type value %d!\n",
+-				mgr->type);
++			dev_err(&(((struct hw *)mgr->hw)->pci->dev),
++				"ctxfi: Invalid resource type value %d!\n",
++				 mgr->type);
+ 			break;
+ 		}
+ 
+diff --git a/sound/pci/ctxfi/ctsrc.c b/sound/pci/ctxfi/ctsrc.c
+index 19df9b4..3a6e398 100644
+--- a/sound/pci/ctxfi/ctsrc.c
++++ b/sound/pci/ctxfi/ctsrc.c
+@@ -431,7 +431,8 @@ get_src_rsc(struct src_mgr *mgr, const struct src_desc *desc, struct src **rsrc)
+ 
+ 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
+ 	if (err) {
+-		pr_err("ctxfi: Can't meet SRC resource request!\n");
++		dev_err(&(((struct hw *)(mgr->mgr.hw))->pci->dev),
++			"ctxfi: Can't meet SRC resource request!\n");
+ 		return err;
+ 	}
+ 
+@@ -739,7 +740,8 @@ static int get_srcimp_rsc(struct srcimp_mgr *mgr,
+ 	}
+ 	spin_unlock_irqrestore(&mgr->mgr_lock, flags);
+ 	if (err) {
+-		pr_err("ctxfi: Can't meet SRCIMP resource request!\n");
++		dev_err(&(((struct hw *)(mgr->mgr.hw))->pci->dev),
++			"ctxfi: Can't meet SRCIMP resource request!\n");
+ 		goto error1;
+ 	}
+ 
+diff --git a/sound/pci/ctxfi/xfi.c b/sound/pci/ctxfi/xfi.c
+index 35e85ba..10c7896 100644
+--- a/sound/pci/ctxfi/xfi.c
++++ b/sound/pci/ctxfi/xfi.c
+@@ -76,15 +76,18 @@ ct_card_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 	if (err)
+ 		return err;
+ 	if ((reference_rate != 48000) && (reference_rate != 44100)) {
+-		pr_err("ctxfi: Invalid reference_rate value %u!!!\n",
+-		       reference_rate);
+-		pr_err("ctxfi: The valid values for reference_rate are 48000 and 44100, Value 48000 is assumed.\n");
++		dev_err(&pci->dev,
++			"ctxfi: Invalid reference_rate value %u!!\n",
++			reference_rate);
++		dev_err(&pci->dev,
++			"ctxfi: The valid values for reference_rate are 48000 and 44100, Value 48000 is assumed.\n");
+ 		reference_rate = 48000;
+ 	}
+ 	if ((multiple != 1) && (multiple != 2) && (multiple != 4)) {
+-		pr_err("ctxfi: Invalid multiple value %u!!!\n",
+-		       multiple);
+-		pr_err("ctxfi: The valid values for multiple are 1, 2 and 4, Value 2 is assumed.\n");
++		dev_err(&pci->dev, "ctxfi: Invalid multiple value %u!!!\n",
++			multiple);
++		dev_err(&pci->dev,
++			"ctxfi: The valid values for multiple are 1, 2 and 4, Value 2 is assumed.\n");
+ 		multiple = 2;
+ 	}
+ 	err = ct_atc_create(card, pci, reference_rate, multiple,
+-- 
+1.8.1.2
