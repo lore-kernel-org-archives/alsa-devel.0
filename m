@@ -1,31 +1,40 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH V3] ASoC: fsl_ssi: refine ipg clock usage in this module
-Date: Fri, 12 Sep 2014 11:33:24 -0700
-Message-ID: <20140912183324.GA2738@Alpha>
-References: <894383e00876763f22988fc5f3f9f232f939f923.1410517971.git.shengjiu.wang@freescale.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-ssi: Support for
+	SND_SOC_DAIFMT_CBM_CFS
+Date: Fri, 12 Sep 2014 15:07:49 -0300
+Message-ID: <CAOMZO5D1RYM+3S1VZ0B2WOtO_WZCZx-OdxJ0n+q5REK3PgEkOg@mail.gmail.com>
+References: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
+ <20140807174547.GQ17528@sirena.org.uk>
+ <CAOf5uwnv8exb33Lz4qHV2PjQSGOWXjncmVAs9rs5ZeX4AGweAg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <894383e00876763f22988fc5f3f9f232f939f923.1410517971.git.shengjiu.wang@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>, timur@tabi.org
-Cc: Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, mpa@pengutronix.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lb0-f178.google.com (mail-lb0-f178.google.com
+ [209.85.217.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA8EC265CF2
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 20:07:49 +0200 (CEST)
+Received: by mail-lb0-f178.google.com with SMTP id c11so1374197lbj.23
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 11:07:49 -0700 (PDT)
+In-Reply-To: <CAOf5uwnv8exb33Lz4qHV2PjQSGOWXjncmVAs9rs5ZeX4AGweAg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Angelo Adamo <adamo.a60@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Fabio Falzoi <fabio.falzoi84@gmail.com>, Markus Pargmann <mpa@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 12, 2014 at 06:35:15PM +0800, Shengjiu Wang wrote:
-> Check if ipg clock is in clock-names property, then we can move the
-> ipg clock enable and disable operation to startup and shutdown, that
-> is only enable ipg clock when ssi is working and keep clock is disabled
-> when ssi is in idle.
-> But when the checking is failed, remain the clock control as before.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+On Fri, Sep 12, 2014 at 2:37 PM, Michael Trimarchi
+<michael@amarulasolutions.com> wrote:
 
-The patch looks fine to me. I tested the has_ipg_clk_name == true
-case, and it works fine. As long as there's no further objection,
-I can give an Acked-by. (I think Timur and Markus may like to have
-a test as well.)
+> where do you apply it (I mean branch)?
 
-Thank you
-Nicolin
+https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/sound/soc/fsl/fsl_ssi.c?h=for-next&id=cf4f7fc3e7336e2e946880890e60ed36178889ea
+
+It also shows in linux-next.
