@@ -1,65 +1,51 @@
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: The best practice to tie platform DAPM widget and
- codec pin
-Date: Fri, 12 Sep 2014 16:57:42 +0200
-Message-ID: <541309E6.9020809@topic.nl>
-References: <CAOMFOmX5FCsxXpoboDLKpnZrBQ52v3jRZQHbJAk2st0gXYrVKg@mail.gmail.com>
+From: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY2ikuSvNLsyVV6hYfS7NtTn@public.gmane.org>
+Subject: Re: [PATCH 1/5] ARM: dts: pbab01: move i2c pins and frequency configuration
+ into pfla02
+Date: Fri, 12 Sep 2014 18:55:46 +0300
+Message-ID: <54131782.2000204@sam-solutions.net>
+References: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>	 <1410356809-26179-2-git-send-email-d.lavnikevich@sam-solutions.com> <1410425238.4011.18.camel@paszta.hi.pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp04.online.nl (smtp04.online.nl [194.134.41.34])
- by alsa0.perex.cz (Postfix) with ESMTP id ED217261A8E
- for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 16:57:42 +0200 (CEST)
-Received: from smtp04.online.nl (localhost [127.0.0.1])
- by smtp04.online.nl (Postfix) with ESMTP id 61072E0F5
- for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 16:57:42 +0200 (CEST)
-Received: from [192.168.1.6] (s55969068.adsl.online.nl [85.150.144.104])
- by smtp04.online.nl (Postfix) with ESMTP
- for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 16:57:42 +0200 (CEST)
-In-Reply-To: <CAOMFOmX5FCsxXpoboDLKpnZrBQ52v3jRZQHbJAk2st0gXYrVKg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1410425238.4011.18.camel-+qGW7pzALmz7o/J7KWpOmN53zsg1cpMQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Cc: robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, timur-N01EOCouUvQ@public.gmane.org, nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/12/2014 06:04 AM, Anatol Pomozov wrote:
-> Hi
+On 11/09/14 11:47, Philipp Zabel wrote:
+> Am Mittwoch, den 10.09.2014, 16:46 +0300 schrieb Dmitry Lavnikevich:
+>> Since pins and frequency are specific to module (pfla02), not base board
+>> (pbab02), it is better to be initialized in corresponding dts file.
+>>
+>> Signed-off-by: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+> I have seen boards use the GPIO_3/6 pads instead of EIM_D17/D18 for
+> I2C3, but the EIM_D17/D18 are indeed documented as "I2C1" pins at the
+> pfla02 connector level.
 >
-> I bringing up a board that has Realtek 5677 codec. The codec has 6
-> gpios and two of them are used by the board. pin3 is used to enable
-> headphones amplifier. pin2 is used to gate DMIC clock for 3 of 4 DMICs
-> - it allows to leave only one DMIC working in low-power mode.
+> regards
+> Philipp
 >
-> Now I need to configure the codec that when "Headphones" audio path is
-> enabled then pin3 should go high. The same true for DMIC/pin2. I was
-> looking for existing similar solutions but cannot find one.
->
-> I need something similar to SND_SOC_DAPM_REGULATOR_SUPPLY that allows
-> to turn on/off part of the system. But instead of manipulating a
-> voltage regulator I just need to set/unset codec's gpio. What would be
-> the best way to achieve it?
+Yes, that is why I thought about moving it into pfla02. But apart from
+it, i2c2grp i2c3grp nodes was wrongly placed under iomuxc node while
+it should be grouped inside of it, like in imx6q-phytec-pfla02 to
+which it was moved with this patch.
+Because of this specified i2c wasn't working correctly and caused
+messages:
 
-You can "convert" gpios to supply regulators using a "fixed" regulator 
-driver (instantiated in the devicetree, or platform code on older kernels).
+imx6q-pinctrl 20e0000.iomuxc: no groups defined in 
+/soc/aips-bus@02000000/iomuxc@020e0000/i2c2grp
+imx6q-pinctrl 20e0000.iomuxc: no groups defined in 
+/soc/aips-bus@02000000/iomuxc@020e0000/i2c3grp
+imx6q-pinctrl 20e0000.iomuxc: unable to find group for node i2c2grp
+imx6q-pinctrl 20e0000.iomuxc: unable to find group for node i2c3grp
 
->
-> The problem here is that codec does not know which of the outputs
-> (LOUT1, LOUT2, LOUT3) corresponds to headphones. It is configured as
-> audio path in *.dts file.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Added this into commit message with new patchset.
 
-
--- 
-Mike Looijmans
+Best regards,
+Lavnikevich Dmitry
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
