@@ -1,70 +1,30 @@
 From: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
-Subject: [PATCH v2 4/4] ASoC: tlv320aic3x: fix PLL D configuration
-Date: Fri, 12 Sep 2014 19:04:32 +0300
-Message-ID: <1410537872-17274-5-git-send-email-d.lavnikevich@sam-solutions.com>
+Subject: [PATCH v2 0/5] Add Phytec pbab01 audio support
+Date: Fri, 12 Sep 2014 19:04:28 +0300
+Message-ID: <1410537872-17274-1-git-send-email-d.lavnikevich@sam-solutions.com>
 References: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
- <1410537872-17274-1-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1410537872-17274-1-git-send-email-d.lavnikevich@sam-solutions.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from s250.sam-solutions.net (s250.sam-solutions.net [217.21.49.219])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09967261AB7
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 18:04:48 +0200 (CEST)
+In-Reply-To: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: shawn.guo@freescale.com, kernel@pengutronix.de, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, =devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Cc: =devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Current caching implementation during regcache_sync() call bypasses
-all register writes of values that are already known as default
-(regmap reg_defaults). Same time in TLV320AIC3x codecs register 5
-(AIC3X_PLL_PROGC_REG) write should be immediately followed by register
-6 write (AIC3X_PLL_PROGD_REG) even if it was not changed. Otherwise
-both registers will not be written.
-
-This brings to issue that appears particulary in case of 44.1kHz
-playback with 19.2MHz master clock. In this case AIC3X_PLL_PROGC_REG
-is 0x6e while AIC3X_PLL_PROGD_REG is 0x0 (same as register
-default). Thus AIC3X_PLL_PROGC_REG also remains not written and we get
-wrong playback speed.
-
-In this patch snd_soc_read() is used to get cached pll values and
-snd_soc_write() (unlike regcache_sync() this function doesn't bypasses
-hardware default values) to write them to registers.
-
-Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
----
- sound/soc/codecs/tlv320aic3x.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 64f179ee9834..5e8626ae612b 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1121,6 +1121,7 @@ static int aic3x_regulator_event(struct notifier_block *nb,
- static int aic3x_set_power(struct snd_soc_codec *codec, int power)
- {
- 	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
-+	unsigned int pll_c, pll_d;
- 	int ret;
- 
- 	if (power) {
-@@ -1138,6 +1139,18 @@ static int aic3x_set_power(struct snd_soc_codec *codec, int power)
- 		/* Sync reg_cache with the hardware */
- 		regcache_cache_only(aic3x->regmap, false);
- 		regcache_sync(aic3x->regmap);
-+
-+		/* Rewrite paired PLL D registers in case cached sync skipped
-+		 * writing one of them and thus caused other one also not
-+		 * being written
-+		 */
-+		pll_c = snd_soc_read(codec, AIC3X_PLL_PROGC_REG);
-+		pll_d = snd_soc_read(codec, AIC3X_PLL_PROGD_REG);
-+		if (pll_c == aic3x_reg[AIC3X_PLL_PROGC_REG].def ||
-+			pll_d == aic3x_reg[AIC3X_PLL_PROGD_REG].def) {
-+			snd_soc_write(codec, AIC3X_PLL_PROGC_REG, pll_c);
-+			snd_soc_write(codec, AIC3X_PLL_PROGD_REG, pll_d);
-+		}
- 	} else {
- 		/*
- 		 * Do soft reset to this codec instance in order to clear
--- 
-2.1.0
+Since previous patchset version asoc machine driver imx-tlv320aic3x
+was replaced with simple-audio-card and audmux.
+Also changed commit message for first patch, which now explicitly
+states that it has more than stylistic purpose.
