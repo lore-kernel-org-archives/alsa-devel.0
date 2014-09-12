@@ -1,39 +1,37 @@
-From: Dave Airlie <airlied@gmail.com>
-Subject: Re: [PATCH v5] ASoC: tda998x: Add a codec to the HDMI transmitter
-Date: Fri, 12 Sep 2014 14:14:12 +1000
-Message-ID: <CAPM=9tx-x1+qXOkqJi1OpvWinTHARWjMgHhgNZs91q2rMCETPw@mail.gmail.com>
-References: <20140910101654.DA9BE897EF@gabe.freedesktop.org>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Configuring I2S2 bus as a path to speaker
+Date: Thu, 11 Sep 2014 21:25:40 -0700
+Message-ID: <CAOMFOmV8OsFdLaKqs8k-ha6JonMRpGM+2FxnndQmoUCZtwz2Uw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20140910101654.DA9BE897EF@gabe.freedesktop.org>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, "Russell King - ARM Linux <linux@arm.linux.org.uk> Andrew Jackson" <Andrew.Jackson@arm.com>, LKML <linux-kernel@vger.kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>, Mark Brown <broonie@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vc0-f177.google.com (mail-vc0-f177.google.com
+ [209.85.220.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 763FA2656E2
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 06:25:41 +0200 (CEST)
+Received: by mail-vc0-f177.google.com with SMTP id la4so166524vcb.8
+ for <alsa-devel@alsa-project.org>; Thu, 11 Sep 2014 21:25:40 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10 September 2014 19:29, Jean-Francois Moine <moinejf@free.fr> wrote:
-> This patch adds a CODEC function to the NXP TDA998x HDMI transmitter.
->
-> The CODEC handles both I2S and S/PDIF inputs.
-> It maintains the audio format and rate constraints according
-> to the HDMI device parameters (EDID) and does dynamic input
-> switch in the TDA998x I2C driver on start/stop audio streaming.
->
+Hi
 
-You should indicate on subsystem spanning patches what tree you think
-should merge it etc.
+I am working on a board that has following configuration:
 
-If other tda998x ppl are okay with it, you can have my ack for merging
-via someone else.
+[SoC] <== I2S1 ==> [RT5677 Codec] <== I2S2 ==> [Speaker Amp]
 
-Dave.
+The right part is the interesting one. Traditionally I2S is used to
+connect to SoC, but in my case it is used to connect Speaker. Is there
+any board that has similar configuration?
+
+How to configure I2S2? *Where* and when such configuration should be done?
