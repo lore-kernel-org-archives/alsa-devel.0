@@ -1,16 +1,20 @@
-From: Qiao Zhou <zhouqiao@marvell.com>
-Subject: [PATCH] ASoC: soc-compress: fix double unlock of fe
-	card mutex
-Date: Fri, 12 Sep 2014 09:41:31 +0800
-Message-ID: <1410486091-15293-1-git-send-email-zhouqiao@marvell.com>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: Re: [PATCH V2] ASoC: fsl_ssi: refine ipg clock usage
+	in this module
+Date: Fri, 12 Sep 2014 10:01:12 +0800
+Message-ID: <20140912020110.GA414@audiosh1>
+References: <27584da8e3ab291ab8dbcbb411579613f8384a59.1410413734.git.shengjiu.wang@freescale.com>
+ <20140911225737.GA13926@Alpha>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com
- [67.231.156.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 09D562656D2
- for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 03:41:39 +0200 (CEST)
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2on0116.outbound.protection.outlook.com [207.46.100.116])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E53F2656D2
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 04:01:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20140911225737.GA13926@Alpha>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,41 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, dan.carpenter@oracle.com, alsa-devel@alsa-project.org
-Cc: Qiao Zhou <zhouqiao@marvell.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>, mpa@pengutronix.de
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, Li.Xiubo@freescale.com, timur@tabi.org, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix double unlock of fe card mutex introduced by patch 8f70e515a8bb
-"ASoC: soc-pcm: fix dpcm_path_get error handling"
-
-The first unlock is at line 106, and the unlock is at line 149. we
-should remove the first unlock.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
----
- sound/soc/soc-compress.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 3092b58..cecfab3 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -102,13 +102,11 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 	fe->dpcm[stream].runtime = fe_substream->runtime;
+On Thu, Sep 11, 2014 at 03:57:37PM -0700, Nicolin Chen wrote:
+> On Thu, Sep 11, 2014 at 01:38:29PM +0800, Shengjiu Wang wrote:
+> > Move the ipg clock enable and disable operation to startup and shutdown,
+> > that is only enable ipg clock when ssi is working. Keep clock is disabled
+> > when ssi is in idle.
+> > otherwise, _fsl_ssi_set_dai_fmt function need to be called in probe,
+> > so add ipg clock control for it.
+> 
+> It seems to be no objection so far against my last suggestion to
+> use regmap's mmio_clk() for named ipg clk only. So you may still
+> consider about that.
+>
+I think mmio_clk() can be put to another patch. and this patch only for clk_enable()
+and clk_disable() operation.
  
- 	ret = dpcm_path_get(fe, stream, &list);
--	if (ret < 0) {
--		mutex_unlock(&fe->card->mutex);
-+	if (ret < 0)
- 		goto fe_err;
--	} else if (ret == 0) {
-+	else if (ret == 0)
- 		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
- 			fe->dai_link->name, stream ? "capture" : "playback");
--	}
- 
- 	/* calculate valid and active FE <-> BE dpcms */
- 	dpcm_process_paths(fe, stream, &list, 1);
--- 
-1.7.0.4
+> Anyway, I'd like to do thing in parallel. So I just simply tested
+> it on my side and its works fine, it may still need to be tested
+> by others though.
+> 
+> Nicolina
+
+Hi Markus
+
+could you please review it, and share your comments?
+
+wang shengjiu
