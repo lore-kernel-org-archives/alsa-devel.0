@@ -1,126 +1,293 @@
-From: Markus Pargmann <mpa@pengutronix.de>
-Subject: Re: [PATCH V2] ASoC: fsl_ssi: refine ipg clock usage in this module
-Date: Fri, 12 Sep 2014 10:54:46 +0200
-Message-ID: <20140912085446.GA8844@pengutronix.de>
-References: <27584da8e3ab291ab8dbcbb411579613f8384a59.1410413734.git.shengjiu.wang@freescale.com>
- <20140911225737.GA13926@Alpha>
- <20140912020110.GA414@audiosh1>
- <20140912061706.GA10680@pengutronix.de>
- <20140912071426.GA30261@audiosh1>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
+From: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+Subject: [PATCH v6] ASoC: dapm: add code to configure dai link parameters
+Date: Fri, 12 Sep 2014 10:11:04 +0100
+Message-ID: <1410513064-2916-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140912071426.GA30261@audiosh1>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Shengjiu Wang <shengjiu.wang@freescale.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+dai-link params for codec-codec links were fixed. The fixed
+link between codec and another chip which may be another codec,
+baseband, bluetooth codec etc may require run time configuaration
+changes. This change provides an optional alsa control to select
+one of the params from a list of params.
 
---gBBFr7Ir9EOA20Yy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
+---
+ include/sound/soc-dapm.h |    3 +
+ include/sound/soc.h      |    1 +
+ sound/soc/soc-core.c     |    6 +-
+ sound/soc/soc-dapm.c     |  143 ++++++++++++++++++++++++++++++++++++++++++++--
+ 4 files changed, 146 insertions(+), 7 deletions(-)
 
-On Fri, Sep 12, 2014 at 03:14:28PM +0800, Shengjiu Wang wrote:
-> On Fri, Sep 12, 2014 at 08:17:06AM +0200, Markus Pargmann wrote:
-> > Hi,
-> >=20
-> > On Fri, Sep 12, 2014 at 10:01:12AM +0800, Shengjiu Wang wrote:
-> > > On Thu, Sep 11, 2014 at 03:57:37PM -0700, Nicolin Chen wrote:
-> > > > On Thu, Sep 11, 2014 at 01:38:29PM +0800, Shengjiu Wang wrote:
-> > > > > Move the ipg clock enable and disable operation to startup and sh=
-utdown,
-> > > > > that is only enable ipg clock when ssi is working. Keep clock is =
-disabled
-> > > > > when ssi is in idle.
-> > > > > otherwise, _fsl_ssi_set_dai_fmt function need to be called in pro=
-be,
-> > > > > so add ipg clock control for it.
-> > > >=20
-> > > > It seems to be no objection so far against my last suggestion to
-> > > > use regmap's mmio_clk() for named ipg clk only. So you may still
-> > > > consider about that.
-> > > >
-> > > I think mmio_clk() can be put to another patch. and this patch only f=
-or clk_enable()
-> > > and clk_disable() operation.
-> >=20
-> > I would also prefer Nicolin's suggestion using regmap's mmio clk. I
-> > think it may be better to not add this particular patch at all and just
-> > go with the mmio_clk patch. It should be easy enough to just add the
-> > clock names to the devicetrees. That way we can avoid all those clock
-> > enable/disable function calls.
-> >
-> I considered if use Nicolin's suggestion, I still need ot add those
-> enable/disable function calls, because I want to remove the enable/disable
-> function call in fsl_ssi_imx_probe, then I need to add enable/disable=20
-> function call in _fsl_ssi_set_dai_fmt(), which is called in fsl_ssi_probe=
-().
-> _fsl_ssi_set_dai_fmt() need to access the registers.
-
-I think Nicolin's suggestion was to check for a clock named "ipg". If it
-exists, you can simply use devm_regmap_init_mmio_clk(). Otherwise you
-could fallback to the old behaviour and get the first clock and enable
-it without disabling it after the probe function.
-
-After that, you could add the clock-names property to the devicetrees
-and have the same result.
-
->=20
-> > > =20
-> > > > Anyway, I'd like to do thing in parallel. So I just simply tested
-> > > > it on my side and its works fine, it may still need to be tested
-> > > > by others though.
-> > > >=20
-> > > > Nicolina
-> > >=20
-> > > Hi Markus
-> > >=20
-> > > could you please review it, and share your comments?
-> >=20
-> > I think the clock enabling for AC97 is missing in your patch.
-> >=20
-> I add clock enable in fsl_ssi_startup(), I think it is enough for AC97, d=
-oes it?
-
-No. We export ac97 read/write ops for the whole AC97 stuff. These may be
-used outside of the usual startup/shutdown which is done for substreams.
-It may work to have the ipg clock enabled in
-fsl_ssi_ac97_read/fsl_ssi_ac97_write.
-
-Best regards,
-
-Markus
-
---=20
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---gBBFr7Ir9EOA20Yy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJUErTVAAoJEEpcgKtcEGQQ6aUP/3GSn5/tAw3ARNYKf/56uDKh
-s/AXf1c1SPUey2pJ9faODh3y1Q2PUmyvzok35sxaPNuLQhtMhMR0fonCBe/MZRjr
-IdjnrTOlmQc6aVT9aSWz7FGQ2ICl2tN5rD7NV7J9XESGlIAisV8lop2DVJSjSY2G
-e+VCWGWyAT8DVDC/F0M9yfho8orRlM+vDX5dRGXUv7sU+3IqKm/B9VlfbARNyGuR
-j8rJqqsu1uPYsvaDN6e5hnVCBW+VHpyQFI0WDzGfoPNOfFVZQP0QGsIN5gL3aZHQ
-w2unf7Dtq755Cw3IucswlX7uob8hInOBjssyL59W97O/fSNOdQrZl5FxiJGdx5Vj
-lOxcXGtb0N53HgTjA5je7N2Sh8Vi7T8KgUzl1Py/Wr6LGZtZO4e0GfKbo6q9S/Wv
-JUtQJfOhxeY93xqmFegREXiO6bKNlPfc55braby7V1mYRXE6d4M8XRyxR1aEKUcu
-wD8eeX67D9BLrFfvv8Y7j1TtB7oW1M2BrpeKiQTet9EXQFzTwRis8v0XkO5x1MMX
-ZmX5wLUhhCt63aCI8r/0ltKiE82lWztKGBRzYl9mqlhrtCsZBD5W+5VrFemG5C/7
-2khOWizpjOoF52RaTLLmbHyp+/uIue8N+RAFKxjqSMD+8lnVI4q4TiEy7sdQwbrz
-bAravHewusqplz1XkukA
-=qmHV
------END PGP SIGNATURE-----
-
---gBBFr7Ir9EOA20Yy--
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 6b59471..3ee031e 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -378,6 +378,7 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
+ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
+ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 			 const struct snd_soc_pcm_stream *params,
++			 unsigned int num_params,
+ 			 struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink);
+ 
+@@ -531,6 +532,8 @@ struct snd_soc_dapm_widget {
+ 	void *priv;				/* widget specific data */
+ 	struct regulator *regulator;		/* attached regulator */
+ 	const struct snd_soc_pcm_stream *params; /* params for dai links */
++	unsigned int num_params; /* number of params for dai links */
++	unsigned int params_select; /* currently selected param for dai link */
+ 
+ 	/* dapm control */
+ 	int reg;				/* negative reg = no direct dapm */
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index ed9e2d7..51c6c4f 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -906,6 +906,7 @@ struct snd_soc_dai_link {
+ 	int be_id;	/* optional ID for machine driver BE identification */
+ 
+ 	const struct snd_soc_pcm_stream *params;
++	unsigned int num_params;
+ 
+ 	unsigned int dai_fmt;           /* format to set on init */
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b87d7d8..1db2168 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1461,7 +1461,8 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 	capture_w = cpu_dai->capture_widget;
+ 	if (play_w && capture_w) {
+ 		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
+-					   capture_w, play_w);
++					   dai_link->num_params, capture_w,
++					   play_w);
+ 		if (ret != 0) {
+ 			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
+ 				play_w->name, capture_w->name, ret);
+@@ -1473,7 +1474,8 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 	capture_w = codec_dai->capture_widget;
+ 	if (play_w && capture_w) {
+ 		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
+-					   capture_w, play_w);
++					   dai_link->num_params, capture_w,
++					   play_w);
+ 		if (ret != 0) {
+ 			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
+ 				play_w->name, capture_w->name, ret);
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index cdc837e..68f6057 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -729,6 +729,36 @@ static int dapm_new_pga(struct snd_soc_dapm_widget *w)
+ 	return 0;
+ }
+ 
++/* create new dapm dai link control */
++static int dapm_new_dai_link(struct snd_soc_dapm_widget *w)
++{
++	int i, ret;
++	struct snd_kcontrol *kcontrol;
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_card *card = dapm->card->snd_card;
++
++	/* skip control creation for links with 1 config */
++	if (w->num_params == 1)
++		return 0;
++
++	/* add kcontrol */
++	for (i = 0; i < w->num_kcontrols; i++) {
++		kcontrol = snd_soc_cnew(&w->kcontrol_news[i], w,
++			w->name, NULL);
++		ret = snd_ctl_add(card, kcontrol);
++		if (ret < 0) {
++			dev_err(dapm->dev,
++				"ASoC: failed to add widget %s dapm kcontrol %s: %d\n",
++				w->name, w->kcontrol_news[i].name, ret);
++			return ret;
++		}
++		kcontrol->private_data = w;
++		w->kcontrols[i] = kcontrol;
++	}
++
++	return 0;
++}
++
+ /* reset 'walked' bit for each dapm path */
+ static void dapm_clear_walk_output(struct snd_soc_dapm_context *dapm,
+ 				   struct list_head *sink)
+@@ -2664,6 +2694,9 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
+ 		case snd_soc_dapm_out_drv:
+ 			dapm_new_pga(w);
+ 			break;
++		case snd_soc_dapm_dai_link:
++			dapm_new_dai_link(w);
++			break;
+ 		default:
+ 			break;
+ 		}
+@@ -3142,6 +3175,9 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 	source = source_p->source->priv;
+ 	sink = sink_p->sink->priv;
+ 
++	/* Select the configuration set by alsa control */
++	config += w->params_select;
++
+ 	/* Be a little careful as we don't want to overflow the mask array */
+ 	if (config->formats) {
+ 		fmt = ffs(config->formats) - 1;
+@@ -3222,8 +3258,35 @@ out:
+ 	return ret;
+ }
+ 
++static int snd_soc_dapm_dai_link_get(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
++
++	ucontrol->value.integer.value[0] = w->params_select;
++
++	return 0;
++}
++
++static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
++
++	if (ucontrol->value.integer.value[0] == w->params_select)
++		return 0;
++
++	if (ucontrol->value.integer.value[0] >= w->num_params)
++		return -EINVAL;
++
++	w->params_select = ucontrol->value.integer.value[0];
++
++	return 0;
++}
++
+ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 			 const struct snd_soc_pcm_stream *params,
++			 unsigned int num_params,
+ 			 struct snd_soc_dapm_widget *source,
+ 			 struct snd_soc_dapm_widget *sink)
+ {
+@@ -3231,14 +3294,48 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	struct snd_soc_dapm_widget *w;
+ 	size_t len;
+ 	char *link_name;
+-	int ret;
++	int ret, count;
++	unsigned long private_value;
++	const char **w_param_text;
++	struct soc_enum w_param_enum[] = {
++		SOC_ENUM_SINGLE(0, 0, 0, NULL),
++	};
++	struct snd_kcontrol_new kcontrol_dai_link[] = {
++		SOC_ENUM_EXT(NULL, w_param_enum[0],
++			     snd_soc_dapm_dai_link_get,
++			     snd_soc_dapm_dai_link_put),
++	};
++	const struct snd_soc_pcm_stream *config = params;
++
++	w_param_text = kcalloc(num_params, sizeof(char *), GFP_KERNEL);
++	if (!w_param_text)
++		return -ENOMEM;
+ 
+ 	len = strlen(source->name) + strlen(sink->name) + 2;
+ 	link_name = devm_kzalloc(card->dev, len, GFP_KERNEL);
+-	if (!link_name)
+-		return -ENOMEM;
++	if (!link_name) {
++		ret = -ENOMEM;
++		goto  outfree_w_param;
++	}
++
+ 	snprintf(link_name, len, "%s-%s", source->name, sink->name);
+ 
++	for (count = 0 ; count < num_params; count++) {
++		if (!config->stream_name)
++			dev_warn(card->dapm.dev,
++				"ASoC: anonymous config %d for dai link %s\n",
++				count, link_name);
++		w_param_text[count] = kmemdup((void *)(config->stream_name),
++			strlen(config->stream_name) + 1, GFP_KERNEL);
++		if (!w_param_text[count]) {
++			ret = -ENOMEM;
++			goto  outfree_link_name;
++		}
++		config++;
++	}
++	w_param_enum[0].items = num_params;
++	w_param_enum[0].texts = w_param_text;
++
+ 	memset(&template, 0, sizeof(template));
+ 	template.reg = SND_SOC_NOPM;
+ 	template.id = snd_soc_dapm_dai_link;
+@@ -3246,6 +3343,25 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	template.event = snd_soc_dai_link_event;
+ 	template.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU |
+ 		SND_SOC_DAPM_PRE_PMD;
++	template.num_kcontrols = 1;
++	private_value =
++	(unsigned long) kmemdup((void *)(kcontrol_dai_link[0].private_value),
++		sizeof(struct soc_enum), GFP_KERNEL);
++	if (!private_value) {
++		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
++			link_name);
++		ret = -ENOMEM;
++		goto outfree_link_name;
++	}
++	kcontrol_dai_link[0].private_value = private_value;
++	template.kcontrol_news = kmemdup(&kcontrol_dai_link[0],
++			sizeof(struct snd_kcontrol_new), GFP_KERNEL);
++	if (!template.kcontrol_news) {
++		dev_err(card->dev, "ASoC: Failed to create control for %s widget\n",
++			link_name);
++		ret = -ENOMEM;
++		goto outfree_private_value;
++	}
+ 
+ 	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
+ 
+@@ -3253,15 +3369,32 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 	if (!w) {
+ 		dev_err(card->dev, "ASoC: Failed to create %s widget\n",
+ 			link_name);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto outfree_kcontrol_news;
+ 	}
+ 
+ 	w->params = params;
++	w->num_params = num_params;
+ 
+ 	ret = snd_soc_dapm_add_path(&card->dapm, source, w, NULL, NULL);
+ 	if (ret)
+-		return ret;
++		goto outfree_w;
+ 	return snd_soc_dapm_add_path(&card->dapm, w, sink, NULL, NULL);
++
++outfree_w:
++	kfree(w);
++outfree_kcontrol_news:
++	kfree(template.kcontrol_news);
++outfree_private_value:
++	kfree((void *)private_value);
++outfree_link_name:
++	kfree(link_name);
++outfree_w_param:
++	for (count = 0 ; count < num_params; count++)
++		kfree(w_param_text[count]);
++	kfree(w_param_text);
++
++	return ret;
+ }
+ 
+ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+-- 
+1.7.9.5
