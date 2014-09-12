@@ -1,51 +1,79 @@
-From: Arun Raghavan <arun@accosted.net>
-Subject: =?UTF-8?Q?Re=3A_=5Bpulseaudio=2Ddiscuss=5D_PulseAudio_miniconference_2?=
- =?UTF-8?Q?014=2C_Oct_15=2C_D=C3=BCsseldorf=2C_Germany?=
-Date: Thu, 11 Sep 2014 10:08:52 +0530
-Message-ID: <CACuU-+h4W9SqYtkm9Qzu7Ng2phDoKX4tBUftsGt=AHBRO8e1SA@mail.gmail.com>
-References: <540EE301.3010709@linux.intel.com>
-Reply-To: Discussion of the development of and with GStreamer
- <gstreamer-devel@lists.freedesktop.org>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH] speaker-test: Fix dropped samples at the end
+	of test
+Date: Fri, 12 Sep 2014 15:14:28 +0300
+Message-ID: <1410524068-15982-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <gstreamer-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <540EE301.3010709@linux.intel.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/gstreamer-devel>,
- <mailto:gstreamer-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/gstreamer-devel>
-List-Post: <mailto:gstreamer-devel@lists.freedesktop.org>
-List-Help: <mailto:gstreamer-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/gstreamer-devel>,
- <mailto:gstreamer-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: gstreamer-devel-bounces@lists.freedesktop.org
-Sender: "gstreamer-devel" <gstreamer-devel-bounces@lists.freedesktop.org>
-To: General PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Discussion of the development of and with GStreamer <gstreamer-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB44C2657C0
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 14:14:52 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, guillaume-florianx.vidal@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-TG9vcGluZyBpbiB0aGUgQUxTQSBhbmQgR1N0cmVhbWVyIGxpc3RzIGluIGNhc2Ugc29tZW9uZSBp
-cyBpbnRlcmVzdGVkLgoKT24gOSBTZXB0ZW1iZXIgMjAxNCAxNjo1MiwgVGFudSBLYXNraW5lbiA8
-dGFudS5rYXNraW5lbkBsaW51eC5pbnRlbC5jb20+IHdyb3RlOgo+IEhpLAo+Cj4gSW4gYWRkaXRp
-b24gdG8gdGhlICJMaW51eCBBdWRpbyBNaW5pIFN1bW1pdCIgdGhhdCBUYWthc2hpIGFubm91bmNl
-ZCByZWNlbnRseQo+ICh3aGljaCBmb2N1c2VzIG1vcmUgb24gQUxTQSB0b3BpY3MpLCB3ZSB3aWxs
-IGFsc28gaGF2ZSBhICJQdWxzZUF1ZGlvCj4gbWluaWNvbmZlcmVuY2UiIGluIHRoZSBzYW1lIGNv
-bmZlcmVuY2UgY2VudGVyLCBkYXkgYWZ0ZXIgdGhlIEFMU0EgZXZlbnQuIFRoZQo+IFB1bHNlQXVk
-aW8gZXZlbnQgd2lsbCBiZSBvbiBXZWRuZXNkYXksIHN0YXJ0aW5nIGF0IDE0OjAwLiBSZWdpc3Rl
-cmluZyBpc24ndAo+IG1hbmRhdG9yeSwgYnV0IGlmIHdlIHJ1biBvdXQgb2Ygc2VhdHMsIHRob3Nl
-IHdobyB3ZXJlIGZhc3Rlc3QgdG8gcmVnaXN0ZXIKPiB3aWxsIGdldCBwcmVmZXJlbmNlLgo+Cj4g
-TW9yZSBkZXRhaWxzIGFyZSBpbiB0aGUgd2lraToKPiBodHRwOi8vd3d3LmZyZWVkZXNrdG9wLm9y
-Zy93aWtpL1NvZnR3YXJlL1B1bHNlQXVkaW8vRXZlbnRzLzIwMTRfRHVzc2VsZG9yZi8KPgo+IFdl
-IGRvbid0IHlldCBoYXZlIGRpc2N1c3Npb24gdG9waWNzIGZvciB0aGUgbWluaWNvbmZlcmVuY2Us
-IHNvIGlmIHlvdSBwbGFuCj4gdG8gYXR0ZW5kLCB0b3BpYyBpZGVhcyB3b3VsZCBiZSB2ZXJ5IHdl
-bGNvbWUhIFNlbmQgdGhlbSB0byB0aGUgbGlzdCwgYW5kCj4gSSdsbCBjb2xsZWN0IHRoZW0gdG8g
-dGhlIHdpa2kuCj4KPiBJZiB5b3UgaGF2ZSBhbnkgcXVlc3Rpb25zIG9yIGNvbW1lbnRzLCBmZWVs
-IGZyZWUgdG8gc2VuZCB0aGVtIHRvIHRoZSBsaXN0IG9yCj4gcHJpdmF0ZWx5IHRvIG1lLgo+Cj4g
-U2VlIHlvdSBpbiBEw7xzc2VsZG9yZiEKPgo+IC0tCj4gVGFudQo+IF9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gcHVsc2VhdWRpby1kaXNjdXNzIG1haWxp
-bmcgbGlzdAo+IHB1bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiBodHRw
-Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vcHVsc2VhdWRpby1kaXNj
-dXNzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmdzdHJl
-YW1lci1kZXZlbCBtYWlsaW5nIGxpc3QKZ3N0cmVhbWVyLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
-Lm9yZwpodHRwOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZ3N0cmVh
-bWVyLWRldmVsCg==
+Commit 6d1673526b0f ("Avoid unnecessary drain/restart in speaker-test")
+drains only when buffer is bigger than audio sample. This has a drawback
+that up to buffer size amount of data may not be heard at the end of audio
+sample.
+
+This was noted with "speaker-test -c 2 -t wav -s 2" test on a
+hardware that has a buffer size of 24000 samples and 48 kHz sample rate.
+Instead of playing "front right" it played something like "front ra".
+
+Reverse buffer size vs sample size test wouldn't work either since then
+samples smaller than buffer are dropped.
+
+Fix this by removing buffer_size tests from write_loop() and do
+drain/restart always when not aborting.
+
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Reported-by: Vidal, Guillaume-florianX <guillaume-florianx.vidal@intel.com>
+---
+This was originally noted on Baytrail ADSP hw (default buffer size 24000)
+but can be heard also on Intel HDA (default buffer size 8192) when audio
+sample is small enough but bigger than buffer. For instance 100 ms sample
+finishes too shortly (buffer size 8192, sample size 9600) but 50 ms plays
+ok (buffer size 8192, sample size 4800).
+
+I guess some optimization can be done for snd_pcm_prepare() when not looping
+but that's not necessary for this fix.
+---
+ speaker-test/speaker-test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
+index 61396f296c65..836fd26d35b1 100644
+--- a/speaker-test/speaker-test.c
++++ b/speaker-test/speaker-test.c
+@@ -942,7 +942,7 @@ static int write_loop(snd_pcm_t *handle, int channel, int periods, uint8_t *fram
+ 			      snd_pcm_bytes_to_frames(handle, err * channels))) < 0)
+ 	break;
+     }
+-    if (buffer_size > n && !in_aborting) {
++    if (!in_aborting) {
+       snd_pcm_drain(handle);
+       snd_pcm_prepare(handle);
+     }
+@@ -964,7 +964,7 @@ static int write_loop(snd_pcm_t *handle, int channel, int periods, uint8_t *fram
+     if ((err = write_buffer(handle, frames, period_size)) < 0)
+       return err;
+   }
+-  if (buffer_size > n * period_size && !in_aborting) {
++  if (!in_aborting) {
+     snd_pcm_drain(handle);
+     snd_pcm_prepare(handle);
+   }
+-- 
+2.1.0
