@@ -1,23 +1,20 @@
 From: Michael Trimarchi <michael@amarulasolutions.com>
-Subject: Re: [PATCH] ASoC: fsl-ssi: Support for
-	SND_SOC_DAIFMT_CBM_CFS
-Date: Fri, 12 Sep 2014 20:11:36 +0200
-Message-ID: <CAOf5uwkciVRuNp8WZxd_wcGr97-ngXN-tKEwZ89Jg30_Uw6MoQ@mail.gmail.com>
-References: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
- <20140807174547.GQ17528@sirena.org.uk>
- <CAOf5uwnv8exb33Lz4qHV2PjQSGOWXjncmVAs9rs5ZeX4AGweAg@mail.gmail.com>
- <CAOMZO5D1RYM+3S1VZ0B2WOtO_WZCZx-OdxJ0n+q5REK3PgEkOg@mail.gmail.com>
+Subject: Re: [PATCH V3] ASoC: fsl_ssi: refine ipg clock usage
+ in this module
+Date: Fri, 12 Sep 2014 22:02:50 +0200
+Message-ID: <CAOf5uwmvoy-8q9RqSXBz_bCZK5gXWgfJ7Ghm+7zUYjPnGzxRYw@mail.gmail.com>
+References: <894383e00876763f22988fc5f3f9f232f939f923.1410517971.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f180.google.com (mail-we0-f180.google.com
- [74.125.82.180])
- by alsa0.perex.cz (Postfix) with ESMTP id F3C6C265471
- for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 20:11:39 +0200 (CEST)
-Received: by mail-we0-f180.google.com with SMTP id t60so1154245wes.11
- for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 11:11:38 -0700 (PDT)
-In-Reply-To: <CAOMZO5D1RYM+3S1VZ0B2WOtO_WZCZx-OdxJ0n+q5REK3PgEkOg@mail.gmail.com>
+Received: from mail-wi0-f171.google.com (mail-wi0-f171.google.com
+ [209.85.212.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id A50AD26087E
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 22:02:51 +0200 (CEST)
+Received: by mail-wi0-f171.google.com with SMTP id bs8so1247486wib.10
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 13:02:51 -0700 (PDT)
+In-Reply-To: <894383e00876763f22988fc5f3f9f232f939f923.1410517971.git.shengjiu.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,22 +24,171 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Angelo Adamo <adamo.a60@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Mark Brown <broonie@kernel.org>, Fabio Falzoi <fabio.falzoi84@gmail.com>, Markus Pargmann <mpa@pengutronix.de>
+To: Shengjiu Wang <shengjiu.wang@freescale.com>
+Cc: alsa-devel@alsa-project.org, timur@tabi.org, tiwai@suse.de, linux-kernel@vger.kernel.org, broonie@kernel.org, lgirdwood@gmail.com, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, mpa@pengutronix.de, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabio
+Hi
 
-On Fri, Sep 12, 2014 at 8:07 PM, Fabio Estevam <festevam@gmail.com> wrote:
-> On Fri, Sep 12, 2014 at 2:37 PM, Michael Trimarchi
-> <michael@amarulasolutions.com> wrote:
+Il 12/set/2014 14:18 "Shengjiu Wang" <shengjiu.wang@freescale.com> ha
+scritto:
 >
->> where do you apply it (I mean branch)?
+> Check if ipg clock is in clock-names property, then we can move the
+> ipg clock enable and disable operation to startup and shutdown, that
+> is only enable ipg clock when ssi is working and keep clock is disabled
+> when ssi is in idle.
+> But when the checking is failed, remain the clock control as before.
 >
-> https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/sound/soc/fsl/fsl_ssi.c?h=for-next&id=cf4f7fc3e7336e2e946880890e60ed36178889ea
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+> ---
+> V3 change log:
+> update patch according Nicolin and markus's comments
 >
-> It also shows in linux-next.
+>
+>  sound/soc/fsl/fsl_ssi.c |   53
+++++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 45 insertions(+), 8 deletions(-)
+>
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 2fc3e66..6d1dfd5 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -169,6 +169,7 @@ struct fsl_ssi_private {
+>         u8 i2s_mode;
+>         bool use_dma;
+>         bool use_dual_fifo;
+> +       bool has_ipg_clk_name;
+>         unsigned int fifo_depth;
+>         struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
+>
+> @@ -530,6 +531,11 @@ static int fsl_ssi_startup(struct snd_pcm_substream
+*substream,
+>         struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>         struct fsl_ssi_private *ssi_private =
+>                 snd_soc_dai_get_drvdata(rtd->cpu_dai);
+> +       int ret;
+> +
+> +       ret = clk_prepare_enable(ssi_private->clk);
+> +       if (ret)
+> +               return ret;
+>
+>         /* When using dual fifo mode, it is safer to ensure an even period
+>          * size. If appearing to an odd number while DMA always starts its
+> @@ -544,6 +550,21 @@ static int fsl_ssi_startup(struct snd_pcm_substream
+*substream,
+>  }
+>
+>  /**
+> + * fsl_ssi_shutdown: shutdown the SSI
+> + *
+> + */
+> +static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
+> +                             struct snd_soc_dai *dai)
+> +{
+> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +       struct fsl_ssi_private *ssi_private =
+> +               snd_soc_dai_get_drvdata(rtd->cpu_dai);
+> +
+> +       clk_disable_unprepare(ssi_private->clk);
+> +
+> +}
+> +
+> +/**
+>   * fsl_ssi_set_bclk - configure Digital Audio Interface bit clock
+>   *
+>   * Note: This function can be only called when using SSI as DAI master
+> @@ -1043,6 +1064,7 @@ static int fsl_ssi_dai_probe(struct snd_soc_dai
+*dai)
+>
+>  static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
+>         .startup        = fsl_ssi_startup,
+> +       .shutdown       = fsl_ssi_shutdown,
+>         .hw_params      = fsl_ssi_hw_params,
+>         .hw_free        = fsl_ssi_hw_free,
+>         .set_fmt        = fsl_ssi_set_dai_fmt,
+> @@ -1168,17 +1190,22 @@ static int fsl_ssi_imx_probe(struct
+platform_device *pdev,
+>         u32 dmas[4];
+>         int ret;
+>
+> -       ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
+> +       if (ssi_private->has_ipg_clk_name)
+> +               ssi_private->clk = devm_clk_get(&pdev->dev, "ipg");
+> +       else
+> +               ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
+>         if (IS_ERR(ssi_private->clk)) {
+>                 ret = PTR_ERR(ssi_private->clk);
+>                 dev_err(&pdev->dev, "could not get clock: %d\n", ret);
+>                 return ret;
+>         }
+>
+> -       ret = clk_prepare_enable(ssi_private->clk);
+> -       if (ret) {
+> -               dev_err(&pdev->dev, "clk_prepare_enable failed: %d\n",
+ret);
+> -               return ret;
+> +       if (!ssi_private->has_ipg_clk_name) {
+> +               ret = clk_prepare_enable(ssi_private->clk);
+> +               if (ret) {
+> +                       dev_err(&pdev->dev, "clk_prepare_enable failed:
+%d\n", ret);
+> +                       return ret;
+> +               }
+>         }
+>
+>         /* For those SLAVE implementations, we ingore non-baudclk cases
+> @@ -1236,8 +1263,9 @@ static int fsl_ssi_imx_probe(struct platform_device
+*pdev,
+>         return 0;
+>
+>  error_pcm:
+> -       clk_disable_unprepare(ssi_private->clk);
+>
+> +       if (!ssi_private->has_ipg_clk_name)
+> +               clk_disable_unprepare(ssi_private->clk);
+>         return ret;
+>  }
+>
+> @@ -1246,7 +1274,8 @@ static void fsl_ssi_imx_clean(struct
+platform_device *pdev,
+>  {
+>         if (!ssi_private->use_dma)
+>                 imx_pcm_fiq_exit(pdev);
+> -       clk_disable_unprepare(ssi_private->clk);
+> +       if (!ssi_private->has_ipg_clk_name)
+> +               clk_disable_unprepare(ssi_private->clk);
+>  }
+>
+>  static int fsl_ssi_probe(struct platform_device *pdev)
+> @@ -1321,8 +1350,16 @@ static int fsl_ssi_probe(struct platform_device
+*pdev)
+>                 return -ENOMEM;
+>         }
+>
+> -       ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
+> +       ret = of_property_match_string(np, "clock-names", "ipg");
+> +       if (ret < 0) {
+> +               ssi_private->has_ipg_clk_name = false;
 
-Thank you
+It's false already.
 
 Michael
+
+> +               ssi_private->regs = devm_regmap_init_mmio(&pdev->dev,
+iomem,
+>                         &fsl_ssi_regconfig);
+> +       } else {
+> +               ssi_private->has_ipg_clk_name = true;
+> +               ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
+> +                       "ipg", iomem, &fsl_ssi_regconfig);
+> +       }
+>         if (IS_ERR(ssi_private->regs)) {
+>                 dev_err(&pdev->dev, "Failed to init register map\n");
+>                 return PTR_ERR(ssi_private->regs);
+> --
+> 1.7.9.5
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
