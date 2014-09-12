@@ -1,42 +1,45 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v2 2/4] ARM: dts: pbab01: enable I2S audio on
- phyFLEX-i.MX6 boards
-Date: Fri, 12 Sep 2014 13:40:02 -0300
-Message-ID: <CAOMZO5C9_XwgcLvVWvxB1A306_Ehm17ZE111j6d+7MhudAhT0g@mail.gmail.com>
-References: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
-	<1410537872-17274-1-git-send-email-d.lavnikevich@sam-solutions.com>
-	<1410537872-17274-3-git-send-email-d.lavnikevich@sam-solutions.com>
-	<1410539161.314611261@f174.i.mail.ru>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Re: [PATCH] ASoC: fsl-ssi: Support for
+	SND_SOC_DAIFMT_CBM_CFS
+Date: Fri, 12 Sep 2014 19:37:25 +0200
+Message-ID: <CAOf5uwnv8exb33Lz4qHV2PjQSGOWXjncmVAs9rs5ZeX4AGweAg@mail.gmail.com>
+References: <1407164887-22703-1-git-send-email-fabio.falzoi84@gmail.com>
+ <20140807174547.GQ17528@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1410539161.314611261@f174.i.mail.ru>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>, Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sascha Hauer <kernel@pengutronix.de>, Kumar Gala <galak@codeaurora.org>, =devicetree@vger.kernel.org, Shawn Guo <shawn.guo@freescale.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f47.google.com (mail-wg0-f47.google.com [74.125.82.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6BDD265538
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 19:37:26 +0200 (CEST)
+Received: by mail-wg0-f47.google.com with SMTP id y10so1069891wgg.18
+ for <alsa-devel@alsa-project.org>; Fri, 12 Sep 2014 10:37:25 -0700 (PDT)
+In-Reply-To: <20140807174547.GQ17528@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Angelo Adamo <adamo.a60@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Fabio Falzoi <fabio.falzoi84@gmail.com>, Markus Pargmann <mpa@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 12, 2014 at 1:26 PM, Alexander Shiyan <shc_work@mail.ru> wr=
-ote:
-> Fri, 12 Sep 2014 19:04:30 +0300 =D0=BE=D1=82 Dmitry Lavnikevich <d.la=
-vnikevich@sam-solutions.com>:
->> Audio on phyFLEX boards is presented by tlv320aic3007 codec connecte=
-d
->> over SSI interface.
->>
->> Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
->> ---
-> ...
->> +&ssi2 {
->> +     fsl,mode =3D "i2s-slave";
->> +     status =3D "okay";
->> +     #sound-dai-cells =3D <0>;
->> +};
->
-> I have already sent patch to add "#sound-dai-cells" into all i.MX DT-=
-files.
-> Shawn, can you point us to this tree/commit?
+Hi Mark
 
-https://git.kernel.org/cgit/linux/kernel/git/shawnguo/linux.git/commit/=
-?h=3Dfor-next&id=3D36c7e8826cf32dd4dd34c71b526653b800414355
+On Thu, Aug 7, 2014 at 7:45 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Aug 04, 2014 at 05:08:07PM +0200, Fabio Falzoi wrote:
+>> Add SND_SOC_DAIFMT_CBM_CFS support for Freescale architecture.
+>> Successfully tested on i.MX 6Quad Wandboard and UDOO boards connected to
+>> the pcm1792a codec.
+>> In CBM_CFS mode, when using a sample size of 16 bits, we cannot use
+>> CCSR_SSI_SCR_I2S_MODE_MASTER since we get a frame sync every 16 bits.
+>
+> Applied, thanks.
+
+where do you apply it (I mean branch)?
+
+Michael
