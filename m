@@ -1,20 +1,19 @@
 From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: [PATCH 7/9] dsnoop: rewindable and forwardable logic
-	was swapped
-Date: Sun, 14 Sep 2014 00:30:19 +0600
-Message-ID: <1410633021-20395-8-git-send-email-patrakov@gmail.com>
-References: <1410633021-20395-1-git-send-email-patrakov@gmail.com>
+Subject: Re: Master Plan on rewinding
+Date: Sun, 14 Sep 2014 00:35:30 +0600
+Message-ID: <54148E72.2050903@gmail.com>
+References: <540C76E0.9050808@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f43.google.com (mail-la0-f43.google.com
- [209.85.215.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 96F0F261ACB
- for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 20:31:02 +0200 (CEST)
-Received: by mail-la0-f43.google.com with SMTP id gi9so2633097lab.16
- for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 11:30:56 -0700 (PDT)
-In-Reply-To: <1410633021-20395-1-git-send-email-patrakov@gmail.com>
+Received: from mail-lb0-f179.google.com (mail-lb0-f179.google.com
+ [209.85.217.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id D35C02657A2
+ for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 20:35:32 +0200 (CEST)
+Received: by mail-lb0-f179.google.com with SMTP id p9so2543477lbv.10
+ for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 11:35:32 -0700 (PDT)
+In-Reply-To: <540C76E0.9050808@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +23,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, clemens@ladisch.de, "Alexander E. Patrakov" <patrakov@gmail.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, David Henningsson <david.henningsson@canonical.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
----
- src/pcm/pcm_dsnoop.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+07.09.2014 21:16, Alexander E. Patrakov wrote:
+> 1. PulseAudio does not call snd_pcm_rewindable(), because for some ALSA
+> plugins it crashed. This crash is completely fixed in alsa-lib 1.0.28,
+> but in some cases snd_pcm_rewindable() still returns wrong results.
 
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index e56e402..8333eef 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -335,7 +335,7 @@ static int snd_pcm_dsnoop_pause(snd_pcm_t *pcm ATTRIBUTE_UNUSED, int enable ATTR
- 
- static snd_pcm_sframes_t snd_pcm_dsnoop_rewindable(snd_pcm_t *pcm)
- {
--	return snd_pcm_mmap_capture_avail(pcm);
-+	return snd_pcm_mmap_capture_hw_avail(pcm);
- }
- 
- static snd_pcm_sframes_t snd_pcm_dsnoop_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
-@@ -351,7 +351,7 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t
- 
- static snd_pcm_sframes_t snd_pcm_dsnoop_forwardable(snd_pcm_t *pcm)
- {
--	return snd_pcm_mmap_capture_hw_avail(pcm);
-+	return snd_pcm_mmap_capture_avail(pcm);
- }
- 
- static snd_pcm_sframes_t snd_pcm_dsnoop_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
-@@ -359,8 +359,6 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_forward(snd_pcm_t *pcm, snd_pcm_uframes_
- 	snd_pcm_sframes_t avail;
- 
- 	avail = snd_pcm_dsnoop_forwardable(pcm);
--	if (avail < 0)
--		return 0;
- 	if (frames > (snd_pcm_uframes_t)avail)
- 		frames = avail;
- 	snd_pcm_mmap_appl_forward(pcm, frames);
+Bad news: even in 1.0.28, snd_pcm_rewindable() crashes for the file 
+plugin due to recursion. So I was wrong when saying "fixed completely" :(
+
+> 3. On the hw plugin, I could demonstrate two other bugs regarding
+> snd_pcm_rewindable(): stale data and bogus negative return values.
+
+For all of the above issues, I have sent patches.
+
+> === On the rewind safeguard ===
+
+Result 1: it has been decided that the return value of 
+snd_pcm_rewindable() is not changed, and the safeguard is returned by a 
+separate function. This would require documentation changes for 
+snd_pcm_rewindable(), though, as it officially no longer returns "safe 
+count of frames which can be rewinded". I have difficulty designing a 
+better wording what the function actually means now.
+
+Result 2: the proposed heuristic has been rightfully and convincingly 
+busted, but no alternatives were proposed. It is the top priority to get 
+some constructive proposal here where to get the data, or a fallback 
+plan for alsa-lib. A fallback plan is also needed for old kernels if the 
+constructive proposal involves kernel changes.
+
+> === On non-rewindability of the rate plugin ===
+
+Nothing more to discuss.
+
+> === On possibly-incomplete rewindability of the file plugin ===
+
+Nothing more to discuss.
+
+> === On bogus rewindability of ladspa and extplug plugins ===
+
+No conclusion. The proposed hack to leave the .rewind implementation in 
+place for use by old PulseAudio has met some opposition, but not such 
+definite and convincing opposition as to the rewind-safeguard and 
+low-latency-thread proposals. The proposed alternative (to make a 
+"disallow imperfect rewinds" flag, off by default) means more work for 
+no gain, and David also doubts whether such flag is worth the 
+complexity. It's also notable that nobody explicitly said "let's regress 
+old pulseaudio on new alsa-lib on the obscure dca plugin in the name of 
+clean code" - which would have also closed the question :)
+
+In fact, I am not really sure that everyone understands the problem.
+
+> === On bogus rewindability of some ioplug-based plugins ===
+
+The "low-latency-thread in ioplug" idea has been rightfully busted, and 
+transformed into the "flexiblerewind" plugin idea. However, that plugin 
+found no users (as PulseAudio won't use it), and thus there is no 
+incentive for me or anyone else to implement it. Nothing left to discuss.
+
+> === On the pulse plugin ===
+
+We have reached an agreement that .rewindable and .rewind should be 
+added to ioplug and used by the pulse plugin. Nothing more to discuss.
+
+> === On communication of non-rewindability to the program ===
+
+We have very good progress here: recognition of three rewindability 
+classes that seemingly nobody objects to. The wanted behavior of 
+PulseAudio for each rewindability class is not something we currently 
+fully agree upon, though, but I think that it will be more appropriate 
+to discuss further when someone sends a PulseAudio patch making use of 
+these classes. I.e. not now. It is very good that there is at least one 
+more person (Pierre Bossart) who understands the inherent conflict of 
+requirements.
+
+Transition plan remains to be discussed, but that's the same discussion 
+as the one called for in the "rewind safeguard" part of the post.
+
+> === On the programmer expectations ===
+>
+> (social issue)
+
+Resolved (was misinterpretation on my side). I have to submit the 
+documentation patch.
+
 -- 
-2.1.0
+Alexander E. Patrakov
