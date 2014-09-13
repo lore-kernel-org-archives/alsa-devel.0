@@ -1,7 +1,7 @@
 From: Jianqun <jay.xu@rock-chips.com>
-Subject: [PATCH 4/5] ASoC: rockchip-i2s: fix registers' property of rockchip i2s controller
-Date: Sat, 13 Sep 2014 08:42:12 +0800
-Message-ID: <1410568932-21823-1-git-send-email-jay.xu@rock-chips.com>
+Subject: [PATCH 5/5] ASoC: rockchip-i2s: enable "hclk" for rockchip I2S controller
+Date: Sat, 13 Sep 2014 08:43:13 +0800
+Message-ID: <1410568993-21874-1-git-send-email-jay.xu@rock-chips.com>
 References: <1410568723-21559-1-git-send-email-jay.xu@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1410568723-21559-1-git-send-email-jay.xu@rock-chips.com>
@@ -10,49 +10,31 @@ To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, ti
 Cc: huangtao@rock-chips.com, cf@rock-chips.com, Jianqun <jay.xu@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-Reference rockchip I2S controller TRM, modify some registers' property
-I2S_FIFOLR: read / write, but not volatile, not precious
-I2S_INTSR: read / write
-I2S_CLR: volatile, register value will be cleared by read
+As "hclk" is used for rockchip I2S controller, driver must to enable
+it in probe.
 
-Test on RK3288 with max98090.
+Tested on RK3288 with max98090.
 
 Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 1b9b404..6595383 100644
+index 6595383..033487c 100644
 --- a/sound/soc/rockchip/rockchip_i2s.c
 +++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -365,6 +365,8 @@ static bool rockchip_i2s_rd_reg(struct device *dev, unsigned int reg)
- 	case I2S_XFER:
- 	case I2S_CLR:
- 	case I2S_RXDR:
-+	case I2S_FIFOLR:
-+	case I2S_INTSR:
- 		return true;
- 	default:
- 		return false;
-@@ -374,8 +376,8 @@ static bool rockchip_i2s_rd_reg(struct device *dev, unsigned int reg)
- static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
--	case I2S_FIFOLR:
- 	case I2S_INTSR:
-+	case I2S_CLR:
- 		return true;
- 	default:
- 		return false;
-@@ -385,8 +387,6 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
- static bool rockchip_i2s_precious_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
--	case I2S_FIFOLR:
--		return true;
- 	default:
- 		return false;
+@@ -423,6 +423,11 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "Can't retrieve i2s bus clock\n");
+ 		return PTR_ERR(i2s->hclk);
  	}
++	ret = clk_prepare_enable(i2s->hclk);
++	if (ret) {
++		dev_err(i2s->dev, "hclock enable failed %d\n", ret);
++		return ret;
++	}
+ 
+ 	i2s->mclk = devm_clk_get(&pdev->dev, "i2s_clk");
+ 	if (IS_ERR(i2s->mclk)) {
 -- 
 1.9.1
