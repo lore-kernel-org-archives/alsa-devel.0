@@ -1,23 +1,16 @@
-From: =?UTF-8?B?RXVnw6huZSBCYW5kaXQ=?= <eugenebandit@gmail.com>
-Subject: Alsa Driver Scarlett
-Date: Sat, 13 Sep 2014 20:38:19 +0200
-Message-ID: <54148F1B.2010608@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 0/9] Misc fixes related to rewinds
+Date: Sat, 13 Sep 2014 21:14:17 +0200
+Message-ID: <54149789.2060102@perex.cz>
+References: <1410633021-20395-1-git-send-email-patrakov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f181.google.com (mail-wi0-f181.google.com
- [209.85.212.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E772261B02
- for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 20:38:22 +0200 (CEST)
-Received: by mail-wi0-f181.google.com with SMTP id bs8so2198024wib.2
- for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 11:38:21 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2e61:ca70:1832:224a:da32:8cc7?
- ([2a01:e35:2e61:ca70:1832:224a:da32:8cc7])
- by mx.google.com with ESMTPSA id ec2sm5649613wib.19.2014.09.13.11.38.20
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sat, 13 Sep 2014 11:38:21 -0700 (PDT)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E153261B02
+ for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 21:14:18 +0200 (CEST)
+In-Reply-To: <1410633021-20395-1-git-send-email-patrakov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,20 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Date 13.9.2014 20:30, Alexander E. Patrakov wrote:
+> The idea of the series is to fix the two issues that I found [1] for the
 
-I've come across this earlier post from the alsa-devel mailing list :
-http://thread.gmane.org/gmane.linux.alsa.devel/126241/focus=126682
+I applied all your patches to alsa-lib's repo, but...
 
-It deals with a kernel patch made to support some Focusrite Scarlett 
-hardware, you can find the github project page is here : 
-https://github.com/smilingthax/alsa-driver_scarlett
+> hw plugin. snd_pcm_rewindable() sometimes returned negative values that
+> are actually negative amounts of samples and not error codes. Also, it
+> bases its calculations on stale hardware position pointer, which is not
+> what PulseAudio wants (alternatively, we can document the need to call
+> snd_pcm_avail() before snd_pcm_rewindable(), but I don't like it).
 
-I would be really interested in it being integrated into alsa. 
-Unfortunately, it appears that the original developer of this patch 
-cannot put any time into such a thing. Since I'm not skilled enough to 
-perform this integration, i wanted to know if anyone was willing to work 
-on this ? I own a Focusrite Scarlett 18i20 and can perform any test to help.
+The hw sync is expensive and the application might do this sync multiple
+times when woken up. I think that it must be clear that:
+
+1) only snd_pcm_avail(), snd_pcm_delay(), snd_pcm_avail_delay()
+   does the real hw sync
+2) snd_pcm_avail(), snd_pcm_delay(), snd_pcm_avail_delay(),
+   snd_pcm_rewindable() and snd_pcm_forwardable() does
+   hw sync (and change all plugins to respect this)
+
+I don't like the situation "be somewhere between because it's good for
+one purpose"...
+
+			Thanks for your work,
+                                           Jaroslav
+
+BTW: I'm starting to think about the 1.0.29 release...
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
