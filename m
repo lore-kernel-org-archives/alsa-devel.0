@@ -1,78 +1,38 @@
 From: Jianqun <jay.xu@rock-chips.com>
-Subject: [PATCH 3/5] ASoC: rockchip-i2s: add dma data to snd_soc_dai
-Date: Sat, 13 Sep 2014 08:41:38 +0800
-Message-ID: <1410568898-21773-1-git-send-email-jay.xu@rock-chips.com>
-References: <1410568723-21559-1-git-send-email-jay.xu@rock-chips.com>
+Subject: [PATCH] ASoC: rockchip-i2s: dt: swap tx and rx channed request number
+Date: Sat, 13 Sep 2014 09:04:41 +0800
+Message-ID: <1410570281-23681-1-git-send-email-jay.xu@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1410568723-21559-1-git-send-email-jay.xu@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 Cc: huangtao@rock-chips.com, cf@rock-chips.com, Jianqun <jay.xu@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add playback/capture dma data to snd_soc_dai.
-Test on RK3288 with max98090.
+Reference to RK3288 TRM, fix an error channel id for i2s tx and rx
+Table 10-1 DMAC_BUS Request Mapping Table
+Req number	Source	Polarity
+0		I2S tx	High level
+1		I2S rx	High level
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Tested on RK3288 board.
+
+Signed-off-by: Jianqun <jay.xu@rock-chips.com>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 870a664..1b9b404 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -244,16 +244,6 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
- 	regmap_update_bits(i2s->regmap, I2S_TXCR, I2S_TXCR_VDW_MASK, val);
- 	regmap_update_bits(i2s->regmap, I2S_RXCR, I2S_RXCR_VDW_MASK, val);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		dai->playback_dma_data = &i2s->playback_dma_data;
--		regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_TDL_MASK,
--				   I2S_DMACR_TDL(1) | I2S_DMACR_TDE_ENABLE);
--	} else {
--		dai->capture_dma_data = &i2s->capture_dma_data;
--		regmap_update_bits(i2s->regmap, I2S_DMACR, I2S_DMACR_RDL_MASK,
--				   I2S_DMACR_RDL(1) | I2S_DMACR_RDE_ENABLE);
--	}
--
- 	return 0;
- }
- 
-@@ -301,6 +291,16 @@ static int rockchip_i2s_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
- 	return ret;
- }
- 
-+static int rockchip_i2s_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct rk_i2s_dev *i2s = snd_soc_dai_get_drvdata(dai);
-+
-+	dai->capture_dma_data = &i2s->capture_dma_data;
-+	dai->playback_dma_data = &i2s->playback_dma_data;
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dai_ops rockchip_i2s_dai_ops = {
- 	.hw_params = rockchip_i2s_hw_params,
- 	.set_sysclk = rockchip_i2s_set_sysclk,
-@@ -309,7 +309,9 @@ static const struct snd_soc_dai_ops rockchip_i2s_dai_ops = {
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+index 6c55fcf..9b82c20 100644
+--- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
+@@ -31,7 +31,7 @@ i2s@ff890000 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+ 	dmas = <&pdma1 0>, <&pdma1 1>;
+-	dma-names = "rx", "tx";
++	dma-names = "tx", "rx";
+ 	clock-names = "i2s_hclk", "i2s_clk";
+ 	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>;
  };
- 
- static struct snd_soc_dai_driver rockchip_i2s_dai = {
-+	.probe = rockchip_i2s_dai_probe,
- 	.playback = {
-+		.stream_name = "Playback",
- 		.channels_min = 2,
- 		.channels_max = 8,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
-@@ -319,6 +321,7 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
- 			    SNDRV_PCM_FMTBIT_S24_LE),
- 	},
- 	.capture = {
-+		.stream_name = "Capture",
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
 -- 
 1.9.1
