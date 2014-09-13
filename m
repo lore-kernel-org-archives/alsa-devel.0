@@ -1,19 +1,19 @@
 From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: [PATCH 9/9] pcm,
-	file: don't recurse in the rewindable and forwardable callbacks
-Date: Sun, 14 Sep 2014 00:30:21 +0600
-Message-ID: <1410633021-20395-10-git-send-email-patrakov@gmail.com>
+Subject: [PATCH 7/9] dsnoop: rewindable and forwardable logic
+	was swapped
+Date: Sun, 14 Sep 2014 00:30:19 +0600
+Message-ID: <1410633021-20395-8-git-send-email-patrakov@gmail.com>
 References: <1410633021-20395-1-git-send-email-patrakov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f174.google.com (mail-lb0-f174.google.com
- [209.85.217.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 5BF9B261AC3
- for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 20:30:58 +0200 (CEST)
-Received: by mail-lb0-f174.google.com with SMTP id 10so2563583lbg.33
- for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 11:30:58 -0700 (PDT)
+Received: from mail-la0-f43.google.com (mail-la0-f43.google.com
+ [209.85.215.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96F0F261ACB
+ for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 20:31:02 +0200 (CEST)
+Received: by mail-la0-f43.google.com with SMTP id gi9so2633097lab.16
+ for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 11:30:56 -0700 (PDT)
 In-Reply-To: <1410633021-20395-1-git-send-email-patrakov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,30 +30,39 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
 ---
- src/pcm/pcm_file.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/pcm/pcm_dsnoop.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
-index a0b8bf4..5541a93 100644
---- a/src/pcm/pcm_file.c
-+++ b/src/pcm/pcm_file.c
-@@ -454,7 +454,7 @@ static int snd_pcm_file_drain(snd_pcm_t *pcm)
- static snd_pcm_sframes_t snd_pcm_file_rewindable(snd_pcm_t *pcm)
+diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
+index e56e402..8333eef 100644
+--- a/src/pcm/pcm_dsnoop.c
++++ b/src/pcm/pcm_dsnoop.c
+@@ -335,7 +335,7 @@ static int snd_pcm_dsnoop_pause(snd_pcm_t *pcm ATTRIBUTE_UNUSED, int enable ATTR
+ 
+ static snd_pcm_sframes_t snd_pcm_dsnoop_rewindable(snd_pcm_t *pcm)
  {
- 	snd_pcm_file_t *file = pcm->private_data;
--	snd_pcm_sframes_t res = snd_pcm_rewindable(pcm);
-+	snd_pcm_sframes_t res = snd_pcm_rewindable(file->gen.slave);
- 	snd_pcm_sframes_t n = snd_pcm_bytes_to_frames(pcm, file->wbuf_used_bytes);
- 	if (res > n)
- 		res = n;
-@@ -482,7 +482,7 @@ static snd_pcm_sframes_t snd_pcm_file_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
- static snd_pcm_sframes_t snd_pcm_file_forwardable(snd_pcm_t *pcm)
+-	return snd_pcm_mmap_capture_avail(pcm);
++	return snd_pcm_mmap_capture_hw_avail(pcm);
+ }
+ 
+ static snd_pcm_sframes_t snd_pcm_dsnoop_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
+@@ -351,7 +351,7 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t
+ 
+ static snd_pcm_sframes_t snd_pcm_dsnoop_forwardable(snd_pcm_t *pcm)
  {
- 	snd_pcm_file_t *file = pcm->private_data;
--	snd_pcm_sframes_t res = snd_pcm_forwardable(pcm);
-+	snd_pcm_sframes_t res = snd_pcm_forwardable(file->gen.slave);
- 	snd_pcm_sframes_t n = snd_pcm_bytes_to_frames(pcm, file->wbuf_size_bytes - file->wbuf_used_bytes);
- 	if (res > n)
- 		res = n;
+-	return snd_pcm_mmap_capture_hw_avail(pcm);
++	return snd_pcm_mmap_capture_avail(pcm);
+ }
+ 
+ static snd_pcm_sframes_t snd_pcm_dsnoop_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
+@@ -359,8 +359,6 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_forward(snd_pcm_t *pcm, snd_pcm_uframes_
+ 	snd_pcm_sframes_t avail;
+ 
+ 	avail = snd_pcm_dsnoop_forwardable(pcm);
+-	if (avail < 0)
+-		return 0;
+ 	if (frames > (snd_pcm_uframes_t)avail)
+ 		frames = avail;
+ 	snd_pcm_mmap_appl_forward(pcm, frames);
 -- 
 2.1.0
