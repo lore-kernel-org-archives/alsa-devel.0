@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: simple-card: add
- asoc_simple_card_parse_daifmt()
-Date: Fri, 12 Sep 2014 15:02:51 +0100
-Message-ID: <20140912140251.GA7960@sirena.org.uk>
-References: <871trkytuv.wl%kuninori.morimoto.gx@gmail.com>
- <87wq9cxf6n.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH 2/5] ASoC: rockchip-i2s: fix master mode
+	set bit error
+Date: Sat, 13 Sep 2014 09:35:01 -0700
+Message-ID: <20140913163501.GH7960@sirena.org.uk>
+References: <1410568723-21559-1-git-send-email-jay.xu@rock-chips.com>
+ <1410568863-21723-1-git-send-email-jay.xu@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8823631989844538050=="
+Content-Type: multipart/mixed; boundary="===============0543667748544550916=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F9E0261B25
- for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 17:39:42 +0200 (CEST)
-In-Reply-To: <87wq9cxf6n.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EE8E261A64
+ for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 18:35:30 +0200 (CEST)
+In-Reply-To: <1410568863-21723-1-git-send-email-jay.xu@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Jianqun <jay.xu@rock-chips.com>
+Cc: huangtao@rock-chips.com, alsa-devel@alsa-project.org, heiko@sntech.de, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, cf@rock-chips.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8823631989844538050==
+--===============0543667748544550916==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wHmMVWdCgqSO3x88"
+	protocol="application/pgp-signature"; boundary="YWfczjhUm04al3kG"
 Content-Disposition: inline
 
 
---wHmMVWdCgqSO3x88
+--YWfczjhUm04al3kG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 09, 2014 at 09:38:59PM -0700, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current daifmt setting method in simple-card driver is
-> placed to many places, and using un-readable/confusable method.
-> This patch adds new asoc_simple_card_parse_daifmt()
-> and tidyup code.
+On Sat, Sep 13, 2014 at 08:41:03AM +0800, Jianqun wrote:
+> Fix error format set to I2S master or slave mode.
+> Test on RK3288 board with max98090.
 
-This doesn't apply against current code, please check and resend.
+Applied.  Since this is a bug fix it should be one of the first patches
+in the series so that it can be sent to Linus as a fix, bug fixes should
+go before any other patches.
 
---wHmMVWdCgqSO3x88
+--YWfczjhUm04al3kG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUEv0KAAoJECTWi3JdVIfQeLsH/j3VyxYLIGyL34mdfQc37BhQ
-y74rpQKQeOYQ4eue487f1kESUSeMqTVEvjKjN7CJy9rDLBrx1dVxmqmOWpL2wytX
-1W1MrU2+YsEyMj+9CYyKtLW1Uz2L9+tCGPYCi6HR27sAfPdBsXaC67N6sw+uavyI
-ZsjP2ZYDYpIyCMsYYv6aGRWoGzXMSl9AuiU1dcU/ao2vpWoo/xleUyT7USCIK0Dm
-jSsQV4mzJPOc1xm+4Khhs5zumnNZdifoz07XlSP3V+QA+Jh5Mhpax56BrWCuCoWD
-M3G74a2k91+Lco7if32QxdpNuC72VGjvG34bCWs6zJy01R5Q4m5O1NpEKS4O8Pc=
-=3p/F
+iQEcBAEBAgAGBQJUFHI0AAoJECTWi3JdVIfQ4/EH/RDS9OC2Y7QhShmNh8uAqSKB
+v6LWC0PYNnyRTxNtp5k1Ck5ZsXqO6lv6O0320nPMF6YpkWSjzb9vDfTUULt8mkMm
+qI/HrghJgGhkfBwDtILp0qUKwI/mUZxr+v2uXEOCJdp9xySTmAgaVkfSfLTpOsIH
+zJX32HHicVHsfkvBeb4OGlGAXqMNUgoPcGAdfGT2BGj9I4qsGOe+MBTnSAkexA2H
+9YMqwMPOicJnTZ+EjKlEptEu0PMbGbl2drkaSIID6E003tzCcr+EY7hR80++EJoP
+oMJIqOCM1rTvQNFlfMagC4YwgjzzlXku0fVbQXH32CQ7c7vNfuLNkJhLTx4Ygbg=
+=yeZ6
 -----END PGP SIGNATURE-----
 
---wHmMVWdCgqSO3x88--
+--YWfczjhUm04al3kG--
 
---===============8823631989844538050==
+--===============0543667748544550916==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8823631989844538050==--
+--===============0543667748544550916==--
