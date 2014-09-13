@@ -1,20 +1,23 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Master Plan on rewinding
-Date: Sat, 13 Sep 2014 16:43:26 +0600
-Message-ID: <54141FCE.7010806@gmail.com>
-References: <540C76E0.9050808@gmail.com>	<CAN8cciZcnJ4sM37-nCiYa4F98O5=jcQpXD+ApKip1d4T+-6m9g@mail.gmail.com>	<541132F2.6040201@gmail.com>
+Date: Sat, 13 Sep 2014 19:33:14 +0800
+Message-ID: <CAN8ccib6tx4wXh8SyKvAT=xFF=tUDRDmQF_04wv3dXov67Zyew@mail.gmail.com>
+References: <540C76E0.9050808@gmail.com>
+ <CAN8cciZcnJ4sM37-nCiYa4F98O5=jcQpXD+ApKip1d4T+-6m9g@mail.gmail.com>
+ <541132F2.6040201@gmail.com>
  <CAN8ccibVYiDO8_rZYS-NR5A_QB3B0HA_7qZX8EMm8w_ANx6kaw@mail.gmail.com>
+ <54141FCE.7010806@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f45.google.com (mail-la0-f45.google.com
- [209.85.215.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A28A261ADC
- for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 12:43:28 +0200 (CEST)
-Received: by mail-la0-f45.google.com with SMTP id b17so2330495lan.18
- for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 03:43:28 -0700 (PDT)
-In-Reply-To: <CAN8ccibVYiDO8_rZYS-NR5A_QB3B0HA_7qZX8EMm8w_ANx6kaw@mail.gmail.com>
+Received: from mail-qa0-f43.google.com (mail-qa0-f43.google.com
+ [209.85.216.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 224A92617B6
+ for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 13:33:16 +0200 (CEST)
+Received: by mail-qa0-f43.google.com with SMTP id x12so1822849qac.2
+ for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 04:33:15 -0700 (PDT)
+In-Reply-To: <54141FCE.7010806@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,39 +27,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
 Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-13.09.2014 14:57, Raymond Yau wrote:
->
->  >>
->  >>  >
->  >>  > On my desktop PC, on snd-hda-intel with analog outputs for S16LE
->  >> stereo, the granularity is 32 bytes (= 8 samples), and I get the pointer
->  >> granularity of 64 bytes (=16 samples) over HDMI. The minimum period size
->  >> is 32 samples in both cases.
->  >>
->  >> Do you mean hda-Intel does not support arbritray period size when you
->  >> say the granularity is 32 bytes ?
->  >>
->  >> However the granularity of the emulated hda sound card inside any VM
->  >> depend on the vm and the backend audio system and sound card
->  >
->  >
->  > The precise meaning is defined here:
->  >
->  > http://mailman.alsa-project.org/pipermail/alsa-devel/2014-May/076475.html
->
-> Do you mean the different hda controllers may have different granularity ?
-
-Yes. My two hda controllers have different granularity.
-
-> Do your two hda controllers have different Fifo size ?
-
-If you mean the result of snd_pcm_hw_params_get_fifo_size(), then both 
-cards return 0. I call this function after snd_pcm_hw_params(), as 
-recommended by the documentation.
-
--- 
-Alexander E. Patrakov
+MjAxNC05LTEzIOS4i+WNiDY6NDMg5pa8ICJBbGV4YW5kZXIgRS4gUGF0cmFrb3YiIDxwYXRyYWtv
+dkBnbWFpbC5jb20+IOWvq+mBk++8mgo+Cj4gMTMuMDkuMjAxNCAxNDo1NywgUmF5bW9uZCBZYXUg
+d3JvdGU6Cj4+Cj4+Cj4+ICA+Pgo+PiAgPj4gID4KPj4gID4+ICA+IE9uIG15IGRlc2t0b3AgUEMs
+IG9uIHNuZC1oZGEtaW50ZWwgd2l0aCBhbmFsb2cgb3V0cHV0cyBmb3IgUzE2TEUKPj4gID4+IHN0
+ZXJlbywgdGhlIGdyYW51bGFyaXR5IGlzIDMyIGJ5dGVzICg9IDggc2FtcGxlcyksIGFuZCBJIGdl
+dCB0aGUKcG9pbnRlcgo+PiAgPj4gZ3JhbnVsYXJpdHkgb2YgNjQgYnl0ZXMgKD0xNiBzYW1wbGVz
+KSBvdmVyIEhETUkuIFRoZSBtaW5pbXVtIHBlcmlvZApzaXplCj4+ICA+PiBpcyAzMiBzYW1wbGVz
+IGluIGJvdGggY2FzZXMuCj4+ICA+Pgo+PiAgPj4gRG8geW91IG1lYW4gaGRhLUludGVsIGRvZXMg
+bm90IHN1cHBvcnQgYXJicml0cmF5IHBlcmlvZCBzaXplIHdoZW4geW91Cj4+ICA+PiBzYXkgdGhl
+IGdyYW51bGFyaXR5IGlzIDMyIGJ5dGVzID8KPj4gID4+Cj4+ICA+PiBIb3dldmVyIHRoZSBncmFu
+dWxhcml0eSBvZiB0aGUgZW11bGF0ZWQgaGRhIHNvdW5kIGNhcmQgaW5zaWRlIGFueSBWTQo+PiAg
+Pj4gZGVwZW5kIG9uIHRoZSB2bSBhbmQgdGhlIGJhY2tlbmQgYXVkaW8gc3lzdGVtIGFuZCBzb3Vu
+ZCBjYXJkCj4+ICA+Cj4+ICA+Cj4+ICA+IFRoZSBwcmVjaXNlIG1lYW5pbmcgaXMgZGVmaW5lZCBo
+ZXJlOgo+PiAgPgo+PiAgPgpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFp
+bC9hbHNhLWRldmVsLzIwMTQtTWF5LzA3NjQ3NS5odG1sCj4+Cj4+IERvIHlvdSBtZWFuIHRoZSBk
+aWZmZXJlbnQgaGRhIGNvbnRyb2xsZXJzIG1heSBoYXZlIGRpZmZlcmVudCBncmFudWxhcml0eQo/
+Cj4KPgo+IFllcy4gTXkgdHdvIGhkYSBjb250cm9sbGVycyBoYXZlIGRpZmZlcmVudCBncmFudWxh
+cml0eS4KPgo+Cj4+IERvIHlvdXIgdHdvIGhkYSBjb250cm9sbGVycyBoYXZlIGRpZmZlcmVudCBG
+aWZvIHNpemUgPwo+Cj4KPiBJZiB5b3UgbWVhbiB0aGUgcmVzdWx0IG9mIHNuZF9wY21faHdfcGFy
+YW1zX2dldF9maWZvX3NpemUoKSwgdGhlbiBib3RoCmNhcmRzIHJldHVybiAwLiBJIGNhbGwgdGhp
+cyBmdW5jdGlvbiBhZnRlciBzbmRfcGNtX2h3X3BhcmFtcygpLCBhcwpyZWNvbW1lbmRlZCBieSB0
+aGUgZG9jdW1lbnRhdGlvbi4KCkRvIHlvdXIgaGRhIGNvbnRyb2xsZXJzIE9TRG5GSUZPUyByZWdp
+c3RlciBtYXRjaCB0aGUgZ3JhbnVsYXJpdHkgPwoKMy4zLjQwIE9mZnNldCA5MDogIHtJT0J9U0Ru
+RklGT1Mg4oCTIElucHV0L091dHB1dC9CaWRpcmVjdGlvbmFsIFN0cmVhbQpEZXNjcmlwdG9yIG4g
+RklGTyBTaXplCgpMZW5ndGg6IDIgYnl0ZXMKClRhYmxlIDM5LiBTdHJlYW0gRGVzY3JpcHRvciBu
+IEZJRk8gU2l6ZSBCaXQgVHlwZSBSZXNldCBEZXNjcmlwdGlvbiAxNTowIFJPCkltcC5EZXAKCkZJ
+Rk8gU2l6ZSAoRklGT1MpOiAgSW5kaWNhdGVzIHRoZSBtYXhpbXVtIG51bWJlciBvZiBieXRlcyB0
+aGF0IGNvdWxkIGJlCmZldGNoZWQgYnkgdGhlIGNvbnRyb2xsZXIgYXQgb25lIHRpbWUuICBUaGlz
+IGlzIHRoZSBtYXhpbXVtIG51bWJlciBvZiBieXRlcwp0aGF0IG1heSBoYXZlIGJlZW4gRE1B4oCf
+ZCBpbnRvIG1lbW9yeSBidXQgbm90IHlldCB0cmFuc21pdHRlZCBvbiB0aGUgbGluaywKYW5kIGlz
+IGFsc28gdGhlIG1heGltdW0gcG9zc2libGUgdmFsdWUgdGhhdCB0aGUgTFBJQiBjb3VudCB3aWxs
+IGluY3JlYXNlIGJ5CmF0IG9uZSB0aW1lLiAgVGhpcyBudW1iZXIgbWF5IGJlIHN0YXRpYyB0byBp
+bmRpY2F0ZSBhIHN0YXRpYyBidWZmZXIgc2l6ZSwKb3IgbWF5IGNoYW5nZSBhZnRlciB0aGUgZGF0
+YSBmb3JtYXQgaGFzIGJlZW4gcHJvZ3JhbW1lZCBpZiB0aGUgY29udHJvbGxlcgppcyBhYmxlIHRv
+IHZhcnkgaXRzIEZJRk8gc2l6ZSBiYXNlZCBvbiB0aGUgc3RyZWFtIGZvcm1hdC4gIElmIGl0IGlz
+IGFibGUgdG8KY2hhbmdlIHZhbHVlIGFmdGVyIHRoZSBkYXRhIGZvcm1hdCBoYXMgYmVlbiBwcm9n
+cmFtbWVkLCB0aGUgdmFsdWUgdXBkYXRlCm11c3QgaGFwcGVuIGltbWVkaWF0ZWx5IGJlZm9yZSB0
+aGUgbmV4dCByZWFkIG9mIHRoZSBGSUZPUyByZWdpc3RlciwgYW5kCnJlbWFpbiBzdGF0aWMgdW50
+aWwgdGhlIG5leHQgcHJvZ3JhbW1pbmcgb2YgZGF0YSBmb3JtYXQuCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
