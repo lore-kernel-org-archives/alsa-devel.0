@@ -1,31 +1,77 @@
-From: Jianqun <xjq@rock-chips.com>
-Subject: Re: [PATCH] ASoC: rockchip-i2s: dt: swap tx and rx channed request
- number
-Date: Sun, 14 Sep 2014 10:29:50 +0800
-Message-ID: <5414FD9E.4000602@rock-chips.com>
-References: <1410570281-23681-1-git-send-email-jay.xu@rock-chips.com> <20140913164032.GN7960@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 8/9] pcm: rewindable,
+ forwardable: don't return stale data
+Date: Sun, 14 Sep 2014 10:57:32 +0800
+Message-ID: <CAN8ccibab6YQ-7SL_SNt+b69fRL+OWHRuxshwEeNb3S2=W2JZA@mail.gmail.com>
+References: <1410633021-20395-1-git-send-email-patrakov@gmail.com>
+ <1410633021-20395-9-git-send-email-patrakov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140913164032.GN7960@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Jianqun <jay.xu@rock-chips.com>
-Cc: heiko@sntech.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, huangtao@rock-chips.com, cf@rock-chips.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f173.google.com (mail-qc0-f173.google.com
+ [209.85.216.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FF2D26164D
+ for <alsa-devel@alsa-project.org>; Sun, 14 Sep 2014 04:57:34 +0200 (CEST)
+Received: by mail-qc0-f173.google.com with SMTP id i8so2247649qcq.32
+ for <alsa-devel@alsa-project.org>; Sat, 13 Sep 2014 19:57:33 -0700 (PDT)
+In-Reply-To: <1410633021-20395-9-git-send-email-patrakov@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
+>
+> The current behavior of snd_pcm_rewindable and snd_pcm_forwardable means
+> that the returned value is only accurate to one period. Or maybe even
+> meaningless if period interrupts are off. Fetch the up-to-date position
+> of the hardware pointer, as that's what is wanted by callers.
 
+Why do dmix need to support rewind/forward since it also set the slave in
+free run mode ?
 
-=E5=9C=A8 09/14/2014 12:40 AM, Mark Brown =E5=86=99=E9=81=93:
-> On Sat, Sep 13, 2014 at 09:04:41AM +0800, Jianqun wrote:
->> Reference to RK3288 TRM, fix an error channel id for i2s tx and rx
->> Table 10-1 DMAC_BUS Request Mapping Table
->> Req number	Source	Polarity
->> 0		I2S tx	High level
->> 1		I2S rx	High level
->=20
-> Applied, thanks.  The changelog should've just noted that this is an
-> error in the example rather than the code or the binding, I was a bit
-> confused about this.
->=20
-ok, I will do it
+>
+> Signed-off-by: Alexander E. Patrakov <patrakov@gmail.com>
+> ---
+>  src/pcm/pcm_dmix.c   | 6 ++++++
+>  src/pcm/pcm_dshare.c | 6 ++++++
+>  src/pcm/pcm_dsnoop.c | 6 ++++++
+>  src/pcm/pcm_hw.c     | 6 ++++++
+>  src/pcm/pcm_ioplug.c | 2 ++
+>  src/pcm/pcm_plugin.c | 6 ++++++
+>  6 files changed, 32 insertions(+)
+>
+> diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+> index babde6a..d9565f9 100644
+> --- a/src/pcm/pcm_dmix.c
+> +++ b/src/pcm/pcm_dmix.c
+> @@ -661,6 +661,9 @@ static int snd_pcm_dmix_pause(snd_pcm_t *pcm
+ATTRIBUTE_UNUSED, int enable ATTRIB
+>
+>  static snd_pcm_sframes_t snd_pcm_dmix_rewindable(snd_pcm_t *pcm)
+>  {
+> +       int err = snd_pcm_dmix_hwsync(pcm);
+> +       if (err < 0)
+> +               return err;
+>         return snd_pcm_mmap_playback_hw_rewindable(pcm);
+>  }
+>
+> @@ -744,6 +747,9 @@ static snd_pcm_sframes_t
+snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
+>
+>  static snd_pcm_sframes_t snd_pcm_dmix_forwardable(snd_pcm_t *pcm)
+>  {
+> +       int err = snd_pcm_dmix_hwsync(pcm);
+> +       if (err < 0)
+> +               return err;
+>         return snd_pcm_mmap_avail(pcm);
+>  }
+>
