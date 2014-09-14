@@ -1,50 +1,40 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH 4/5] ASoC: rockchip-i2s: fix registers' property of rockchip
- i2s controller
-Date: Sat, 13 Sep 2014 23:57:10 +0300
-Message-ID: <5414AFA6.9060904@cogentembedded.com>
-References: <1410568723-21559-1-git-send-email-jay.xu@rock-chips.com> <1410568932-21823-1-git-send-email-jay.xu@rock-chips.com>
+From: Jianqun <xjq@rock-chips.com>
+Subject: Re: [PATCH 2/5] ASoC: rockchip-i2s: fix master mode
+	set bit error
+Date: Sun, 14 Sep 2014 10:06:38 +0800
+Message-ID: <5414F82E.9090004@rock-chips.com>
+References: <1410568723-21559-1-git-send-email-jay.xu@rock-chips.com>
+ <1410568863-21723-1-git-send-email-jay.xu@rock-chips.com>
+ <20140913163501.GH7960@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1410568932-21823-1-git-send-email-jay.xu@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jianqun <jay.xu@rock-chips.com>, heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: huangtao@rock-chips.com, cf@rock-chips.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vasmtpcom.263.net (va-smtp01.263.net [54.88.144.211])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A619261A40
+ for <alsa-devel@alsa-project.org>; Sun, 14 Sep 2014 04:06:58 +0200 (CEST)
+In-Reply-To: <20140913163501.GH7960@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Jianqun <jay.xu@rock-chips.com>
+Cc: huangtao@rock-chips.com, alsa-devel@alsa-project.org, heiko@sntech.de, tiwai@suse.de, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, cf@rock-chips.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
-
-On 9/13/2014 3:42 AM, Jianqun wrote:
-
-> Reference rockchip I2S controller TRM, modify some registers' property
-> I2S_FIFOLR: read / write, but not volatile, not precious
-> I2S_INTSR: read / write
-> I2S_CLR: volatile, register value will be cleared by read
-
-> Test on RK3288 with max98090.
-
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-> ---
->   sound/soc/rockchip/rockchip_i2s.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-
-> diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-> index 1b9b404..6595383 100644
-> --- a/sound/soc/rockchip/rockchip_i2s.c
-> +++ b/sound/soc/rockchip/rockchip_i2s.c
-[...]
-> @@ -385,8 +387,6 @@ static bool rockchip_i2s_volatile_reg(struct device *dev, unsigned int reg)
->   static bool rockchip_i2s_precious_reg(struct device *dev, unsigned int reg)
->   {
->   	switch (reg) {
-> -	case I2S_FIFOLR:
-> -		return true;
->   	default:
->   		return false;
->   	}
-
-    Shouldn't this be folded into simple *return* false now?
-
-WBR, Sergei
+CgrlnKggMDkvMTQvMjAxNCAxMjozNSBBTSwgTWFyayBCcm93biDlhpnpgZM6Cj4gT24gU2F0LCBT
+ZXAgMTMsIDIwMTQgYXQgMDg6NDE6MDNBTSArMDgwMCwgSmlhbnF1biB3cm90ZToKPj4gRml4IGVy
+cm9yIGZvcm1hdCBzZXQgdG8gSTJTIG1hc3RlciBvciBzbGF2ZSBtb2RlLgo+PiBUZXN0IG9uIFJL
+MzI4OCBib2FyZCB3aXRoIG1heDk4MDkwLgo+IAo+IEFwcGxpZWQuICBTaW5jZSB0aGlzIGlzIGEg
+YnVnIGZpeCBpdCBzaG91bGQgYmUgb25lIG9mIHRoZSBmaXJzdCBwYXRjaGVzCj4gaW4gdGhlIHNl
+cmllcyBzbyB0aGF0IGl0IGNhbiBiZSBzZW50IHRvIExpbnVzIGFzIGEgZml4LCBidWcgZml4ZXMg
+c2hvdWxkCj4gZ28gYmVmb3JlIGFueSBvdGhlciBwYXRjaGVzLgo+IAoKZ290IGl0LCBJJ2xsIGRv
+IGl0IGF0IG5ldyB2ZXJzaW9uIHBhdGNoLCB0aGFua3MgCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
