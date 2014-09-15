@@ -1,92 +1,61 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: Re: [PATCH v2] sound: pci: ctxfi: pr_* replaced with dev_*
-Date: Mon, 15 Sep 2014 20:55:54 +0530
-Message-ID: <20140915152554.GA26218@sudip-PC>
-References: <1410790181-16457-1-git-send-email-sudipm.mukherjee@gmail.com>
- <s5hvbop3qjn.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: rockchip-i2s: dt: fix an error in the example
+Date: Mon, 15 Sep 2014 09:45:50 -0700
+Message-ID: <20140915164550.GV7960@sirena.org.uk>
+References: <1410570281-23681-1-git-send-email-jay.xu@rock-chips.com>
+ <1410665999-16718-1-git-send-email-jay.xu@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kUw25p3LpPv7dNi6"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5hvbop3qjn.wl-tiwai@suse.de>
+In-Reply-To: <1410665999-16718-1-git-send-email-jay.xu@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Jianqun <jay.xu@rock-chips.com>
+Cc: heiko@sntech.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, huangtao@rock-chips.com, cf@rock-chips.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 15, 2014 at 04:29:48PM +0200, Takashi Iwai wrote:
-> At Mon, 15 Sep 2014 19:39:41 +0530,
-> Sudip Mukherjee wrote:
-> > 
-> > pr_* macros replaced with dev_* as they are more preffered over pr_*.
-> > 
-> > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
-> > ---
-> > 
-> > in v1 Takashi mentioned that now we have card->dev
-> > so v2 is using card->dev as much as possible.
-> > 
-> >  sound/pci/ctxfi/ctatc.c      | 24 ++++++++++++++----------
-> >  sound/pci/ctxfi/cthw20k1.c   | 15 +++++++++------
-> >  sound/pci/ctxfi/cthw20k2.c   | 22 ++++++++++++++--------
-> >  sound/pci/ctxfi/ctmixer.c    |  6 ++++--
-> >  sound/pci/ctxfi/ctpcm.c      |  9 ++++++---
-> >  sound/pci/ctxfi/ctresource.c | 20 +++++++++++++-------
-> >  sound/pci/ctxfi/xfi.c        | 15 +++++++++------
-> >  7 files changed, 69 insertions(+), 42 deletions(-)
-> > 
-> > diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
-> > index d92a08c..a786bc1 100644
-> > --- a/sound/pci/ctxfi/ctatc.c
-> > +++ b/sound/pci/ctxfi/ctatc.c
-> > @@ -1282,8 +1282,8 @@ static int atc_identify_card(struct ct_atc *atc, unsigned int ssid)
-> >  	p = snd_pci_quirk_lookup_id(vendor_id, device_id, list);
-> >  	if (p) {
-> >  		if (p->value < 0) {
-> > -			pr_err("ctxfi: Device %04x:%04x is black-listed\n",
-> > -			       vendor_id, device_id);
-> > +			dev_err(atc->card->dev, "ctxfi: Device %04x:%04x is black-listed\n",
-> > +				vendor_id, device_id);
-> 
-> You need no prefix for dev_xxx().
-> 
-i was also thinking that . :)
-> > diff --git a/sound/pci/ctxfi/ctresource.c b/sound/pci/ctxfi/ctresource.c
-> > index e49d2be..80beecb 100644
-> > --- a/sound/pci/ctxfi/ctresource.c
-> > +++ b/sound/pci/ctxfi/ctresource.c
-> (snip)
-> > @@ -282,8 +287,9 @@ int rsc_mgr_uninit(struct rsc_mgr *mgr)
-> >  		case SUM:
-> >  			break;
-> >  		default:
-> > -			pr_err("ctxfi: Invalid resource type value %d!\n",
-> > -				mgr->type);
-> > +			dev_err(&(((struct hw *)mgr->hw)->pci->dev),
-> > +				"ctxfi: Invalid resource type value %d!\n",
-> > +				 mgr->type);
-> 
-> Did you really conclude that this is the best way?
-> Also, is it good to mix up the usages of both card->dev and &pci->dev?
-> Think again.
-> 
 
-i have a doubt regarding this :- 
-in the snd_card_new()  card->dev is being assigned with &pci->dev , 
-then are not they the same ?
+--kUw25p3LpPv7dNi6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-i was trying to get some way of finding out the reference of card->dev from the resource manager ,
-but ...  :( 
-i will try again and if i cant find any way i will ask for some hint from you.
+On Sun, Sep 14, 2014 at 11:39:59AM +0800, Jianqun wrote:
+> Reference to RK3288 TRM, fix an error in the example by swap "tx" and "rx=
+".
+>=20
+> Table 10-1 DMAC_BUS Request Mapping Table
+> Req number	Source	Polarity
+> 0		I2S tx	High level
+> 1		I2S rx	High level
+>=20
+> Tested on RK3288 board.
+>=20
+> Signed-off-by: Jianqun <jay.xu@rock-chips.com>
+> ---
+> change since v1:
+> - modify patch's changelog as Mark's suggestion
 
-i am still a newbie , and started this  pr_* to dev_* on your inspiration , and i hope
-you will not be irritated by my patches . :)
+No, the patch has already been applied.  Once a patch has been applied
+don't resend it, it can't be re-applied.  In this case the advice about
+the changelog was something you should bear in mind for future
+changelogs.
 
-thanks
-sudip
+--kUw25p3LpPv7dNi6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-> 
-> thanks,
-> 
-> Takashi
+iQEcBAEBAgAGBQJUFxe+AAoJECTWi3JdVIfQHBsH/0Bd3gC6FkXjlEGXhp28nNCE
+x0nmOypVyGISktCZ2gCe/3f5TFsNh6le9oRQBI+PJjeoNG0E87gD4OBAmHDZcUOn
+tfi2maUwoc4/5YWLqWTnxkoftppHh+Xqpwj05nnJfBAXu+yZ6sGsQbX2YpsAcHRW
+rGWroauzL4W6R5DZdADoIfKeFiv+DaTC6lb/J6KITuxQCiikz+vtaIk3v8GJ9bNl
+5pvgqVUlKBW1O9AL/bWCkKdEkpjzpcIpHxkYdJKKeA5SDj0aAto0lKp311lkwcAK
+tW4Gp2o+G4hDVN0Gv7tZuEuglzz1TWPAZ+99GeSRl8kXRkkUiGKzzG6FwLjQ0aY=
+=1Ikx
+-----END PGP SIGNATURE-----
+
+--kUw25p3LpPv7dNi6--
