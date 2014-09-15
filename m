@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH RFC v2 4/7] ALSA: hda - Allow multiple
-	callbacks for jack
-Date: Mon, 15 Sep 2014 14:48:20 +0200
-Message-ID: <1410785303-19454-5-git-send-email-tiwai@suse.de>
+Subject: [PATCH RFC v2 3/7] ALSA: hda - Make
+	snd_hda_jack_detect_enable_callback() returning the jack object
+Date: Mon, 15 Sep 2014 14:48:19 +0200
+Message-ID: <1410785303-19454-4-git-send-email-tiwai@suse.de>
 References: <1410785303-19454-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 53D642616C9
+ by alsa0.perex.cz (Postfix) with ESMTP id 51BA2261692
  for <alsa-devel@alsa-project.org>; Mon, 15 Sep 2014 14:48:27 +0200 (CEST)
 In-Reply-To: <1410785303-19454-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,512 +25,116 @@ To: alsa-devel@alsa-project.org
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-So far, hda_jack infrastructure allows only one callback per jack, and
-this makes things slightly complicated when a driver wants to assign
-multiple tasks to a jack, e.g. the standard auto-mute with a power
-up/down sequence.  This can be simplified if the hda_jack accepts
-multiple callbacks.
-
-This patch is such an extension: the callback-specific part (the
-function and private_data) is split to another struct from
-hda_jack_tbl, and multiple such objects can be assigned to a single
-hda_jack_tbl entry.
-
-The new struct hda_jack_callback is passed to each callback function
-now, thus the patch became bigger than expected.  But these changes
-are mostly trivial.
+STAC/IDT driver calls snd_hda_jack_tbl_get() again after calling
+snd_hda_jack_detect_enable_callback().  For simplifying this, let's
+make snd_hda_jack_detect_enable_callback() returning the pointer while
+handling the error with the standard IS_ERR() & co.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_generic.c    | 19 ++++++++++++-------
- sound/pci/hda/hda_generic.h    | 12 ++++++------
- sound/pci/hda/hda_jack.c       | 43 ++++++++++++++++++++++++++++++------------
- sound/pci/hda/hda_jack.h       | 17 ++++++++++++-----
- sound/pci/hda/patch_cirrus.c   |  2 +-
- sound/pci/hda/patch_conexant.c |  3 ++-
- sound/pci/hda/patch_hdmi.c     | 14 ++++++++++----
- sound/pci/hda/patch_realtek.c  | 12 +++++++-----
- sound/pci/hda/patch_sigmatel.c | 24 +++++++++++------------
- sound/pci/hda/patch_via.c      | 11 +++++++----
- 10 files changed, 100 insertions(+), 57 deletions(-)
+ sound/pci/hda/hda_jack.c       | 24 +++++++++++++++++-------
+ sound/pci/hda/hda_jack.h       |  5 +++--
+ sound/pci/hda/patch_sigmatel.c | 14 ++++++--------
+ 3 files changed, 26 insertions(+), 17 deletions(-)
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 4d605e4ac41c..32a85f9cac4b 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -2032,7 +2032,8 @@ static int create_speaker_out_ctls(struct hda_codec *codec)
-  * independent HP controls
-  */
- 
--static void call_hp_automute(struct hda_codec *codec, struct hda_jack_tbl *jack);
-+static void call_hp_automute(struct hda_codec *codec,
-+			     struct hda_jack_callback *jack);
- static int indep_hp_info(struct snd_kcontrol *kcontrol,
- 			 struct snd_ctl_elem_info *uinfo)
- {
-@@ -3948,7 +3949,8 @@ static void call_update_outputs(struct hda_codec *codec)
- }
- 
- /* standard HP-automute helper */
--void snd_hda_gen_hp_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+void snd_hda_gen_hp_automute(struct hda_codec *codec,
-+			     struct hda_jack_callback *jack)
- {
- 	struct hda_gen_spec *spec = codec->spec;
- 	hda_nid_t *pins = spec->autocfg.hp_pins;
-@@ -3968,7 +3970,8 @@ void snd_hda_gen_hp_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
- EXPORT_SYMBOL_GPL(snd_hda_gen_hp_automute);
- 
- /* standard line-out-automute helper */
--void snd_hda_gen_line_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+void snd_hda_gen_line_automute(struct hda_codec *codec,
-+			       struct hda_jack_callback *jack)
- {
- 	struct hda_gen_spec *spec = codec->spec;
- 
-@@ -3988,7 +3991,8 @@ void snd_hda_gen_line_automute(struct hda_codec *codec, struct hda_jack_tbl *jac
- EXPORT_SYMBOL_GPL(snd_hda_gen_line_automute);
- 
- /* standard mic auto-switch helper */
--void snd_hda_gen_mic_autoswitch(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+void snd_hda_gen_mic_autoswitch(struct hda_codec *codec,
-+				struct hda_jack_callback *jack)
- {
- 	struct hda_gen_spec *spec = codec->spec;
- 	int i;
-@@ -4011,7 +4015,8 @@ void snd_hda_gen_mic_autoswitch(struct hda_codec *codec, struct hda_jack_tbl *ja
- EXPORT_SYMBOL_GPL(snd_hda_gen_mic_autoswitch);
- 
- /* call appropriate hooks */
--static void call_hp_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+static void call_hp_automute(struct hda_codec *codec,
-+			     struct hda_jack_callback *jack)
- {
- 	struct hda_gen_spec *spec = codec->spec;
- 	if (spec->hp_automute_hook)
-@@ -4021,7 +4026,7 @@ static void call_hp_automute(struct hda_codec *codec, struct hda_jack_tbl *jack)
- }
- 
- static void call_line_automute(struct hda_codec *codec,
--			       struct hda_jack_tbl *jack)
-+			       struct hda_jack_callback *jack)
- {
- 	struct hda_gen_spec *spec = codec->spec;
- 	if (spec->line_automute_hook)
-@@ -4031,7 +4036,7 @@ static void call_line_automute(struct hda_codec *codec,
- }
- 
- static void call_mic_autoswitch(struct hda_codec *codec,
--				struct hda_jack_tbl *jack)
-+				struct hda_jack_callback *jack)
- {
- 	struct hda_gen_spec *spec = codec->spec;
- 	if (spec->mic_autoswitch_hook)
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index 72f5624125fb..61dd5153f512 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -284,11 +284,11 @@ struct hda_gen_spec {
- 
- 	/* automute / autoswitch hooks */
- 	void (*hp_automute_hook)(struct hda_codec *codec,
--				 struct hda_jack_tbl *tbl);
-+				 struct hda_jack_callback *cb);
- 	void (*line_automute_hook)(struct hda_codec *codec,
--				   struct hda_jack_tbl *tbl);
-+				   struct hda_jack_callback *cb);
- 	void (*mic_autoswitch_hook)(struct hda_codec *codec,
--				    struct hda_jack_tbl *tbl);
-+				    struct hda_jack_callback *cb);
- };
- 
- int snd_hda_gen_spec_init(struct hda_gen_spec *spec);
-@@ -320,11 +320,11 @@ int snd_hda_gen_build_pcms(struct hda_codec *codec);
- 
- /* standard jack event callbacks */
- void snd_hda_gen_hp_automute(struct hda_codec *codec,
--			     struct hda_jack_tbl *jack);
-+			     struct hda_jack_callback *jack);
- void snd_hda_gen_line_automute(struct hda_codec *codec,
--			       struct hda_jack_tbl *jack);
-+			       struct hda_jack_callback *jack);
- void snd_hda_gen_mic_autoswitch(struct hda_codec *codec,
--				struct hda_jack_tbl *jack);
-+				struct hda_jack_callback *jack);
- void snd_hda_gen_update_outputs(struct hda_codec *codec);
- 
- #ifdef CONFIG_PM
 diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
-index a5fe1b428015..6a8dc0100434 100644
+index 7f332794993f..a5fe1b428015 100644
 --- a/sound/pci/hda/hda_jack.c
 +++ b/sound/pci/hda/hda_jack.c
-@@ -117,8 +117,13 @@ void snd_hda_jack_tbl_clear(struct hda_codec *codec)
- 		struct hda_jack_tbl *jack = codec->jacktbl.list;
- 		int i;
- 		for (i = 0; i < codec->jacktbl.used; i++, jack++) {
-+			struct hda_jack_callback *cb, *next;
- 			if (jack->jack)
- 				snd_device_free(codec->bus->card, jack->jack);
-+			for (cb = jack->callback; cb; cb = next) {
-+				next = cb->next;
-+				kfree(cb);
-+			}
- 		}
- 	}
- #endif
-@@ -219,28 +224,38 @@ EXPORT_SYMBOL_GPL(snd_hda_jack_detect_state);
-  * errno.  Check and handle the return value appropriately with standard
-  * macros such as @IS_ERR() and @PTR_ERR().
-  */
--struct hda_jack_tbl *
-+struct hda_jack_callback *
- snd_hda_jack_detect_enable_callback(struct hda_codec *codec, hda_nid_t nid,
--				    hda_jack_callback cb)
-+				    hda_jack_callback_fn func)
- {
--	struct hda_jack_tbl *jack = snd_hda_jack_tbl_new(codec, nid);
-+	struct hda_jack_tbl *jack;
-+	struct hda_jack_callback *callback = NULL;
- 	int err;
+@@ -214,29 +214,39 @@ EXPORT_SYMBOL_GPL(snd_hda_jack_detect_state);
  
-+	jack = snd_hda_jack_tbl_new(codec, nid);
- 	if (!jack)
- 		return ERR_PTR(-ENOMEM);
-+	if (func) {
-+		callback = kzalloc(sizeof(*callback), GFP_KERNEL);
-+		if (!callback)
-+			return ERR_PTR(-ENOMEM);
-+		callback->func = func;
-+		callback->tbl = jack;
-+		callback->next = jack->callback;
-+		jack->callback = callback;
-+	}
+ /**
+  * snd_hda_jack_detect_enable - enable the jack-detection
++ *
++ * In the case of error, the return value will be a pointer embedded with
++ * errno.  Check and handle the return value appropriately with standard
++ * macros such as @IS_ERR() and @PTR_ERR().
+  */
+-int snd_hda_jack_detect_enable_callback(struct hda_codec *codec, hda_nid_t nid,
+-					hda_jack_callback cb)
++struct hda_jack_tbl *
++snd_hda_jack_detect_enable_callback(struct hda_codec *codec, hda_nid_t nid,
++				    hda_jack_callback cb)
+ {
+ 	struct hda_jack_tbl *jack = snd_hda_jack_tbl_new(codec, nid);
++	int err;
 +
+ 	if (!jack)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
  	if (jack->jack_detect)
--		return jack; /* already registered */
-+		return callback; /* already registered */
+-		return 0; /* already registered */
++		return jack; /* already registered */
  	jack->jack_detect = 1;
--	if (cb)
--		jack->callback = cb;
+ 	if (cb)
+ 		jack->callback = cb;
  	if (codec->jackpoll_interval > 0)
--		return jack; /* No unsol if we're polling instead */
-+		return callback; /* No unsol if we're polling instead */
- 	err = snd_hda_codec_write_cache(codec, nid, 0,
+-		return 0; /* No unsol if we're polling instead */
+-	return snd_hda_codec_write_cache(codec, nid, 0,
++		return jack; /* No unsol if we're polling instead */
++	err = snd_hda_codec_write_cache(codec, nid, 0,
  					 AC_VERB_SET_UNSOLICITED_ENABLE,
  					 AC_USRSP_EN | jack->tag);
- 	if (err < 0)
- 		return ERR_PTR(err);
--	return jack;
-+	return callback;
++	if (err < 0)
++		return ERR_PTR(err);
++	return jack;
  }
  EXPORT_SYMBOL_GPL(snd_hda_jack_detect_enable_callback);
  
-@@ -503,13 +518,17 @@ EXPORT_SYMBOL_GPL(snd_hda_jack_add_kctls);
- static void call_jack_callback(struct hda_codec *codec,
- 			       struct hda_jack_tbl *jack)
+ int snd_hda_jack_detect_enable(struct hda_codec *codec, hda_nid_t nid)
  {
--	if (jack->callback)
--		jack->callback(codec, jack);
-+	struct hda_jack_callback *cb;
-+
-+	for (cb = jack->callback; cb; cb = cb->next)
-+		cb->func(codec, cb);
- 	if (jack->gated_jack) {
- 		struct hda_jack_tbl *gated =
- 			snd_hda_jack_tbl_get(codec, jack->gated_jack);
--		if (gated && gated->callback)
--			gated->callback(codec, gated);
-+		if (gated) {
-+			for (cb = gated->callback; cb; cb = cb->next)
-+				cb->func(codec, cb);
-+		}
- 	}
+-	return snd_hda_jack_detect_enable_callback(codec, nid, NULL);
++	return PTR_ERR_OR_ZERO(snd_hda_jack_detect_enable_callback(codec, nid, NULL));
  }
+ EXPORT_SYMBOL_GPL(snd_hda_jack_detect_enable);
  
 diff --git a/sound/pci/hda/hda_jack.h b/sound/pci/hda/hda_jack.h
-index 668669ce3e52..b41e0a3ea1fb 100644
+index 67f42db9c89c..668669ce3e52 100644
 --- a/sound/pci/hda/hda_jack.h
 +++ b/sound/pci/hda/hda_jack.h
-@@ -14,14 +14,21 @@
- 
- struct auto_pin_cfg;
- struct hda_jack_tbl;
-+struct hda_jack_callback;
- 
--typedef void (*hda_jack_callback) (struct hda_codec *, struct hda_jack_tbl *);
-+typedef void (*hda_jack_callback_fn) (struct hda_codec *, struct hda_jack_callback *);
-+
-+struct hda_jack_callback {
-+	struct hda_jack_tbl *tbl;
-+	hda_jack_callback_fn func;
-+	unsigned int private_data;	/* arbitrary data */
-+	struct hda_jack_callback *next;
-+};
- 
- struct hda_jack_tbl {
- 	hda_nid_t nid;
- 	unsigned char tag;		/* unsol event tag */
--	unsigned int private_data;	/* arbitrary data */
--	hda_jack_callback callback;
-+	struct hda_jack_callback *callback;
- 	/* jack-detection stuff */
- 	unsigned int pin_sense;		/* cached pin-sense value */
- 	unsigned int jack_detect:1;	/* capable of jack-detection? */
-@@ -47,9 +54,9 @@ void snd_hda_jack_tbl_clear(struct hda_codec *codec);
+@@ -47,8 +47,9 @@ void snd_hda_jack_tbl_clear(struct hda_codec *codec);
  void snd_hda_jack_set_dirty_all(struct hda_codec *codec);
  
  int snd_hda_jack_detect_enable(struct hda_codec *codec, hda_nid_t nid);
--struct hda_jack_tbl *
-+struct hda_jack_callback *
- snd_hda_jack_detect_enable_callback(struct hda_codec *codec, hda_nid_t nid,
--				    hda_jack_callback cb);
-+				    hda_jack_callback_fn cb);
+-int snd_hda_jack_detect_enable_callback(struct hda_codec *codec, hda_nid_t nid,
+-					hda_jack_callback cb);
++struct hda_jack_tbl *
++snd_hda_jack_detect_enable_callback(struct hda_codec *codec, hda_nid_t nid,
++				    hda_jack_callback cb);
  
  int snd_hda_jack_set_gating_jack(struct hda_codec *codec, hda_nid_t gated_nid,
  				 hda_nid_t gating_nid);
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index 69b0ffc55a51..1589c9bcce3e 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -982,7 +982,7 @@ static void cs4210_pinmux_init(struct hda_codec *codec)
- }
- 
- static void cs4210_spdif_automute(struct hda_codec *codec,
--				  struct hda_jack_tbl *tbl)
-+				  struct hda_jack_callback *tbl)
- {
- 	struct cs_spec *spec = codec->spec;
- 	bool spdif_present = false;
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index e0c5bc1d671b..d5b0582daaf0 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -393,7 +393,8 @@ static void olpc_xo_update_mic_pins(struct hda_codec *codec)
- }
- 
- /* mic_autoswitch hook */
--static void olpc_xo_automic(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+static void olpc_xo_automic(struct hda_codec *codec,
-+			    struct hda_jack_callback *jack)
- {
- 	struct conexant_spec *spec = codec->spec;
- 	int saved_cached_write = codec->cached_write;
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 8f94527f1890..39862e98551c 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1163,17 +1163,23 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec,
- 
- static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll);
- 
--static void jack_callback(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+static void check_presence_and_report(struct hda_codec *codec, hda_nid_t nid)
- {
- 	struct hdmi_spec *spec = codec->spec;
--	int pin_idx = pin_nid_to_pin_index(codec, jack->nid);
-+	int pin_idx = pin_nid_to_pin_index(codec, nid);
-+
- 	if (pin_idx < 0)
- 		return;
--
- 	if (hdmi_present_sense(get_pin(spec, pin_idx), 1))
- 		snd_hda_jack_report_sync(codec);
- }
- 
-+static void jack_callback(struct hda_codec *codec,
-+			  struct hda_jack_callback *jack)
-+{
-+	check_presence_and_report(codec, jack->tbl->nid);
-+}
-+
- static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
- {
- 	int tag = res >> AC_UNSOL_RES_TAG_SHIFT;
-@@ -1190,7 +1196,7 @@ static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
- 		codec->addr, jack->nid, dev_entry, !!(res & AC_UNSOL_RES_IA),
- 		!!(res & AC_UNSOL_RES_PD), !!(res & AC_UNSOL_RES_ELDV));
- 
--	jack_callback(codec, jack);
-+	check_presence_and_report(codec, jack->nid);
- }
- 
- static void hdmi_non_intrinsic_event(struct hda_codec *codec, unsigned int res)
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index ac00420e59ff..a109fdb085f9 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -264,7 +264,8 @@ static void alc_fix_pll_init(struct hda_codec *codec, hda_nid_t nid,
- }
- 
- /* update the master volume per volume-knob's unsol event */
--static void alc_update_knob_master(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+static void alc_update_knob_master(struct hda_codec *codec,
-+				   struct hda_jack_callback *jack)
- {
- 	unsigned int val;
- 	struct snd_kcontrol *kctl;
-@@ -276,7 +277,7 @@ static void alc_update_knob_master(struct hda_codec *codec, struct hda_jack_tbl
- 	uctl = kzalloc(sizeof(*uctl), GFP_KERNEL);
- 	if (!uctl)
- 		return;
--	val = snd_hda_codec_read(codec, jack->nid, 0,
-+	val = snd_hda_codec_read(codec, jack->tbl->nid, 0,
- 				 AC_VERB_GET_VOLUME_KNOB_CONTROL, 0);
- 	val &= HDA_AMP_VOLMASK;
- 	uctl->value.integer.value[0] = val;
-@@ -3272,7 +3273,7 @@ static void alc269_fixup_quanta_mute(struct hda_codec *codec,
- }
- 
- static void alc269_x101_hp_automute_hook(struct hda_codec *codec,
--					 struct hda_jack_tbl *jack)
-+					 struct hda_jack_callback *jack)
- {
- 	struct alc_spec *spec = codec->spec;
- 	int vref;
-@@ -3926,7 +3927,8 @@ static void alc_update_headset_mode_hook(struct hda_codec *codec,
- 	alc_update_headset_mode(codec);
- }
- 
--static void alc_update_headset_jack_cb(struct hda_codec *codec, struct hda_jack_tbl *jack)
-+static void alc_update_headset_jack_cb(struct hda_codec *codec,
-+				       struct hda_jack_callback *jack)
- {
- 	struct alc_spec *spec = codec->spec;
- 	spec->current_headset_type = ALC_HEADSET_TYPE_UNKNOWN;
-@@ -4166,7 +4168,7 @@ static void alc269_fixup_limit_int_mic_boost(struct hda_codec *codec,
- }
- 
- static void alc283_hp_automute_hook(struct hda_codec *codec,
--				    struct hda_jack_tbl *jack)
-+				    struct hda_jack_callback *jack)
- {
- 	struct alc_spec *spec = codec->spec;
- 	int vref;
 diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 4b338beb9449..3193529607f2 100644
+index bc371cfb5d84..4b338beb9449 100644
 --- a/sound/pci/hda/patch_sigmatel.c
 +++ b/sound/pci/hda/patch_sigmatel.c
-@@ -481,7 +481,7 @@ static void stac_toggle_power_map(struct hda_codec *codec, hda_nid_t nid,
+@@ -3019,10 +3019,9 @@ static void stac92hd71bxx_fixup_hp_m4(struct hda_codec *codec,
+ 	/* Enable VREF power saving on GPIO1 detect */
+ 	snd_hda_codec_write_cache(codec, codec->afg, 0,
+ 				  AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK, 0x02);
+-	snd_hda_jack_detect_enable_callback(codec, codec->afg,
+-					    stac_vref_event);
+-	jack = snd_hda_jack_tbl_get(codec, codec->afg);
+-	if (jack)
++	jack = snd_hda_jack_detect_enable_callback(codec, codec->afg,
++						   stac_vref_event);
++	if (!IS_ERR(jack))
+ 		jack->private_data = 0x02;
  
- /* update power bit per jack plug/unplug */
- static void jack_update_power(struct hda_codec *codec,
--			      struct hda_jack_tbl *jack)
-+			      struct hda_jack_callback *jack)
- {
- 	struct sigmatel_spec *spec = codec->spec;
- 	int i;
-@@ -489,9 +489,9 @@ static void jack_update_power(struct hda_codec *codec,
- 	if (!spec->num_pwrs)
- 		return;
+ 	spec->gpio_mask |= 0x02;
+@@ -4042,10 +4041,9 @@ static void stac9205_fixup_dell_m43(struct hda_codec *codec,
+ 		/* Enable unsol response for GPIO4/Dock HP connection */
+ 		snd_hda_codec_write_cache(codec, codec->afg, 0,
+ 			AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK, 0x10);
+-		snd_hda_jack_detect_enable_callback(codec, codec->afg,
+-						    stac_vref_event);
+-		jack = snd_hda_jack_tbl_get(codec, codec->afg);
+-		if (jack)
++		jack = snd_hda_jack_detect_enable_callback(codec, codec->afg,
++							   stac_vref_event);
++		if (!IS_ERR(jack))
+ 			jack->private_data = 0x01;
  
--	if (jack && jack->nid) {
--		stac_toggle_power_map(codec, jack->nid,
--				      snd_hda_jack_detect(codec, jack->nid),
-+	if (jack && jack->tbl->nid) {
-+		stac_toggle_power_map(codec, jack->tbl->nid,
-+				      snd_hda_jack_detect(codec, jack->tbl->nid),
- 				      true);
- 		return;
- 	}
-@@ -499,8 +499,7 @@ static void jack_update_power(struct hda_codec *codec,
- 	/* update all jacks */
- 	for (i = 0; i < spec->num_pwrs; i++) {
- 		hda_nid_t nid = spec->pwr_nids[i];
--		jack = snd_hda_jack_tbl_get(codec, nid);
--		if (!jack)
-+		if (!snd_hda_jack_tbl_get(codec, nid))
- 			continue;
- 		stac_toggle_power_map(codec, nid,
- 				      snd_hda_jack_detect(codec, nid),
-@@ -512,27 +511,28 @@ static void jack_update_power(struct hda_codec *codec,
- }
- 
- static void stac_hp_automute(struct hda_codec *codec,
--				 struct hda_jack_tbl *jack)
-+				 struct hda_jack_callback *jack)
- {
- 	snd_hda_gen_hp_automute(codec, jack);
- 	jack_update_power(codec, jack);
- }
- 
- static void stac_line_automute(struct hda_codec *codec,
--				   struct hda_jack_tbl *jack)
-+				   struct hda_jack_callback *jack)
- {
- 	snd_hda_gen_line_automute(codec, jack);
- 	jack_update_power(codec, jack);
- }
- 
- static void stac_mic_autoswitch(struct hda_codec *codec,
--				struct hda_jack_tbl *jack)
-+				struct hda_jack_callback *jack)
- {
- 	snd_hda_gen_mic_autoswitch(codec, jack);
- 	jack_update_power(codec, jack);
- }
- 
--static void stac_vref_event(struct hda_codec *codec, struct hda_jack_tbl *event)
-+static void stac_vref_event(struct hda_codec *codec,
-+			    struct hda_jack_callback *event)
- {
- 	unsigned int data;
- 
-@@ -3011,7 +3011,7 @@ static void stac92hd71bxx_fixup_hp_m4(struct hda_codec *codec,
- 				      const struct hda_fixup *fix, int action)
- {
- 	struct sigmatel_spec *spec = codec->spec;
--	struct hda_jack_tbl *jack;
-+	struct hda_jack_callback *jack;
- 
- 	if (action != HDA_FIXUP_ACT_PRE_PROBE)
- 		return;
-@@ -4033,7 +4033,7 @@ static void stac9205_fixup_dell_m43(struct hda_codec *codec,
- 				    const struct hda_fixup *fix, int action)
- {
- 	struct sigmatel_spec *spec = codec->spec;
--	struct hda_jack_tbl *jack;
-+	struct hda_jack_callback *jack;
- 
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		snd_hda_apply_pincfgs(codec, dell_9205_m43_pin_configs);
-diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
-index 2a8be5a5da15..8d234ab9f06b 100644
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -118,7 +118,7 @@ static void via_playback_pcm_hook(struct hda_pcm_stream *hinfo,
- 				  struct hda_codec *codec,
- 				  struct snd_pcm_substream *substream,
- 				  int action);
--static void via_hp_automute(struct hda_codec *codec, struct hda_jack_tbl *tbl);
-+static void via_hp_automute(struct hda_codec *codec, struct hda_jack_callback *tbl);
- 
- static struct via_spec *via_new_spec(struct hda_codec *codec)
- {
-@@ -575,19 +575,22 @@ static const struct snd_kcontrol_new vt1708_jack_detect_ctl[] = {
- 	{} /* terminator */
- };
- 
--static void via_hp_automute(struct hda_codec *codec, struct hda_jack_tbl *tbl)
-+static void via_hp_automute(struct hda_codec *codec,
-+			    struct hda_jack_callback *tbl)
- {
- 	set_widgets_power_state(codec);
- 	snd_hda_gen_hp_automute(codec, tbl);
- }
- 
--static void via_line_automute(struct hda_codec *codec, struct hda_jack_tbl *tbl)
-+static void via_line_automute(struct hda_codec *codec,
-+			      struct hda_jack_callback *tbl)
- {
- 	set_widgets_power_state(codec);
- 	snd_hda_gen_line_automute(codec, tbl);
- }
- 
--static void via_jack_powerstate_event(struct hda_codec *codec, struct hda_jack_tbl *tbl)
-+static void via_jack_powerstate_event(struct hda_codec *codec,
-+				      struct hda_jack_callback *tbl)
- {
- 	set_widgets_power_state(codec);
- }
+ 		spec->gpio_dir = 0x0b;
 -- 
 2.1.0
