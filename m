@@ -1,17 +1,14 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Revise the wrong name in
- the header file
-Date: Mon, 15 Sep 2014 14:49:10 -0700
-Message-ID: <20140915214910.GZ7960@sirena.org.uk>
-References: <1410782325-10541-1-git-send-email-oder_chiou@realtek.com>
+Subject: [GIT PULL] ASoC fixes for v3.17
+Date: Mon, 15 Sep 2014 15:31:29 -0700
+Message-ID: <20140915223129.GE7960@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1730178233099736802=="
+Content-Type: multipart/mixed; boundary="===============4481528992491118514=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CCA072659A0
- for <alsa-devel@alsa-project.org>; Mon, 15 Sep 2014 23:49:17 +0200 (CEST)
-In-Reply-To: <1410782325-10541-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 12234264FEE
+ for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 00:31:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +18,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, flove@realtek.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1730178233099736802==
+--===============4481528992491118514==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pr2uf1USn+1lHhL+"
+	protocol="application/pgp-signature"; boundary="/upgxG3i8WFRGOa+"
 Content-Disposition: inline
 
 
---pr2uf1USn+1lHhL+
+--/upgxG3i8WFRGOa+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Sep 15, 2014 at 07:58:44PM +0800, Oder Chiou wrote:
-> The patch revises the wrong name in the header file.
+The following changes since commit 9e82bf014195d6f0054982c463575cdce24292be:
 
-Applied, thanks.
+  Linux 3.17-rc5 (2014-09-14 17:50:12 -0700)
 
---pr2uf1USn+1lHhL+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.17-rc4
+
+for you to fetch changes up to f7667af21736eb231e3589d9f91183d325cabfbe:
+
+  Merge remote-tracking branches 'asoc/fix/cs4265', 'asoc/fix/davinci', 'asoc/fix/rockchip', 'asoc/fix/samsung' and 'asoc/fix/tlv320aic31xx' into asoc-linus (2014-09-15 15:05:34 -0700)
+
+----------------------------------------------------------------
+ASoC: Fixes for v3.17
+
+This is mostly driver fixes, the biggest one being the tlv320aic31xx
+which is relatively large but simple and device specific.  There's a
+small fix in the error handling in DPCM too which is relatively minor
+error handling fix.
+
+----------------------------------------------------------------
+Charles Keepax (1):
+      ASoC: samsung-i2s: Check secondary DAI exists before referencing
+
+Jianqun (3):
+      ASoC: rockchip-i2s: fix master mode set bit error
+      ASoC: rockchip-i2s: fix registers' property of rockchip i2s controller
+      ASoC: rockchip-i2s: dt: swap tx and rx channed request number in example
+
+Jyri Sarha (1):
+      ASoC: tlv320aic31xx: Fix 24bit samples with I2S format and 12MHz mclk
+
+Mark Brown (3):
+      Merge remote-tracking branch 'asoc/fix/core' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/pcm' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/cs4265', 'asoc/fix/davinci', 'asoc/fix/rockchip', 'asoc/fix/samsung' and 'asoc/fix/tlv320aic31xx' into asoc-linus
+
+Paul Handrigan (1):
+      ASoC: cs4265: Fix register address to set the proper data type.
+
+Peter Ujfalusi (1):
+      ASoC: davinci-mcasp: Correct rx format unit configuration
+
+Qiao Zhou (1):
+      ASoC: soc-pcm: fix dpcm_path_get error handling
+
+Rajeev Kumar (2):
+      ASoC: dwc: Update email id of the author
+      ASoC: Update email id of the author
+
+ .../devicetree/bindings/sound/rockchip-i2s.txt     |  2 +-
+ sound/soc/codecs/cs4265.c                          |  6 +--
+ sound/soc/codecs/sta529.c                          |  4 +-
+ sound/soc/codecs/tlv320aic31xx.c                   | 51 +++++++++++++++++-----
+ sound/soc/davinci/davinci-mcasp.c                  | 11 ++++-
+ sound/soc/dwc/designware_i2s.c                     |  4 +-
+ sound/soc/rockchip/rockchip_i2s.c                  | 13 +++---
+ sound/soc/samsung/i2s.c                            |  5 ++-
+ sound/soc/soc-compress.c                           |  6 ++-
+ sound/soc/soc-pcm.c                                |  6 ++-
+ sound/soc/spear/spear_pcm.c                        |  4 +-
+ 11 files changed, 79 insertions(+), 33 deletions(-)
+
+--/upgxG3i8WFRGOa+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUF17VAAoJECTWi3JdVIfQpAQH/j0GpdtkPQlPxzT3gvMlLe3e
-IwrCsBnwQwU45wR8EcppIsjqsxK2XkDF6NMFVq0yN5c1nO48eqnE69Eq0vQen7Wh
-3L1dXgIQTrXIGL6WRUgemyW/I4zAZL+K64/xnl2MEyC5MkeeWL1Fx3vfIg79ex41
-bcpNC7h9FvezUT02c6HHwp64aGEIx2ZDO07XP2qh70/Wz2DZl7Q2iGorglZdDtof
-Ews5Xu8WWoBhHBZDo4gRyVJKo6mvMXEiWT5gOgdkDlsTkyNEIsSiClYumWT2ujq9
-DffTCkKjMsTsoJexA+K7F/W5GiieV8QLvSukRlkagAbuhMbRJjpzOfjichoWjJE=
-=cPrS
+iQEcBAEBAgAGBQJUF2jAAAoJECTWi3JdVIfQAkYH/jcSvkmzBk6Oc9pyJPPdXlFI
+SrMULnwqW0ESmQeE2QAKRRIBuj8KLedVdzFrxSaNw17ZG+2iFOeSrEpvocgqdrrJ
+jnYtlrtQCzM3I9VoGIHOEl4JH1s8DWWhNwwQtf4sDiRHMkHZDszPuIm+5DvCFcUA
+onbmZ9xOqWdcWsl+j9l6d8724CJK9wJzFt/xGddZSllVu352uV1Bc1HyByOB6+KD
+zMiZE6UnC0pdQ6nIZk467BJ82yHz2sT82yj1L5FkiXbVbttdkWC1uAoqourTFUmm
+3bd4VqM7S7IaxzhymBjrrE+JYVxSzW6ooV0/QfZoUQkdbaOekQep8ueO7novgcw=
+=x16R
 -----END PGP SIGNATURE-----
 
---pr2uf1USn+1lHhL+--
+--/upgxG3i8WFRGOa+--
 
---===============1730178233099736802==
+--===============4481528992491118514==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1730178233099736802==--
+--===============4481528992491118514==--
