@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH RFC v2 6/7] ALSA: hda - Remove superfluous
-	hooks from VIA driver
-Date: Mon, 15 Sep 2014 14:48:22 +0200
-Message-ID: <1410785303-19454-7-git-send-email-tiwai@suse.de>
-References: <1410785303-19454-1-git-send-email-tiwai@suse.de>
+Subject: [PATCH] ALSA: Update document about PCM nonatomic ops
+Date: Mon, 15 Sep 2014 15:24:56 +0200
+Message-ID: <1410787496-20573-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CDE6261785
- for <alsa-devel@alsa-project.org>; Mon, 15 Sep 2014 14:48:27 +0200 (CEST)
-In-Reply-To: <1410785303-19454-1-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id DB470260320
+ for <alsa-devel@alsa-project.org>; Mon, 15 Sep 2014 15:24:57 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id AA87075013
+ for <alsa-devel@alsa-project.org>; Mon, 15 Sep 2014 13:24:57 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +22,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
-
-Like the previous fix for STAC/IDT codecs, the automute hooks in VIA
-driver can be also removed by enabling the power control callback for
-all pins.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_via.c | 25 ++-----------------------
- 1 file changed, 2 insertions(+), 23 deletions(-)
+ Documentation/DocBook/writing-an-alsa-driver.tmpl | 28 +++++++++++++++++++----
+ 1 file changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
-index 8d234ab9f06b..6c206b6c8d65 100644
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -118,7 +118,6 @@ static void via_playback_pcm_hook(struct hda_pcm_stream *hinfo,
- 				  struct hda_codec *codec,
- 				  struct snd_pcm_substream *substream,
- 				  int action);
--static void via_hp_automute(struct hda_codec *codec, struct hda_jack_callback *tbl);
+diff --git a/Documentation/DocBook/writing-an-alsa-driver.tmpl b/Documentation/DocBook/writing-an-alsa-driver.tmpl
+index 6f639d9530b5..784793df81ed 100644
+--- a/Documentation/DocBook/writing-an-alsa-driver.tmpl
++++ b/Documentation/DocBook/writing-an-alsa-driver.tmpl
+@@ -2742,7 +2742,9 @@ struct _snd_pcm_runtime {
  
- static struct via_spec *via_new_spec(struct hda_codec *codec)
- {
-@@ -575,20 +574,6 @@ static const struct snd_kcontrol_new vt1708_jack_detect_ctl[] = {
- 	{} /* terminator */
- };
+         <para>
+           Another note is that this callback is non-atomic
+-        (schedulable). This is important, because the
++        (schedulable) as default, i.e. when no
++	<structfield>nonatomic</structfield> flag set.
++	This is important, because the
+         <structfield>trigger</structfield> callback 
+         is atomic (non-schedulable). That is, mutexes or any
+         schedule-related functions are not available in
+@@ -2900,8 +2902,9 @@ struct _snd_pcm_runtime {
+         </para>
  
--static void via_hp_automute(struct hda_codec *codec,
--			    struct hda_jack_callback *tbl)
--{
--	set_widgets_power_state(codec);
--	snd_hda_gen_hp_automute(codec, tbl);
--}
--
--static void via_line_automute(struct hda_codec *codec,
--			      struct hda_jack_callback *tbl)
--{
--	set_widgets_power_state(codec);
--	snd_hda_gen_line_automute(codec, tbl);
--}
--
- static void via_jack_powerstate_event(struct hda_codec *codec,
- 				      struct hda_jack_callback *tbl)
- {
-@@ -602,22 +587,16 @@ static void via_set_jack_unsol_events(struct hda_codec *codec)
- 	hda_nid_t pin;
- 	int i;
+         <para>
+-          As mentioned, this callback is atomic.  You cannot call
+-	  functions which may sleep.
++          As mentioned, this callback is atomic as default unless
++	  <structfield>nonatomic</structfield> flag set, and
++	  you cannot call functions which may sleep.
+ 	  The trigger callback should be as minimal as possible,
+ 	  just really triggering the DMA.  The other stuff should be
+ 	  initialized hw_params and prepare callbacks properly
+@@ -2936,7 +2939,7 @@ struct _snd_pcm_runtime {
+         </para>
  
--	spec->gen.hp_automute_hook = via_hp_automute;
--	if (cfg->speaker_pins[0])
--		spec->gen.line_automute_hook = via_line_automute;
--
- 	for (i = 0; i < cfg->line_outs; i++) {
- 		pin = cfg->line_out_pins[i];
--		if (pin && !snd_hda_jack_tbl_get(codec, pin) &&
--		    is_jack_detectable(codec, pin))
-+		if (pin && is_jack_detectable(codec, pin))
- 			snd_hda_jack_detect_enable_callback(codec, pin,
- 							    via_jack_powerstate_event);
- 	}
+         <para>
+-          This callback is also atomic.
++          This callback is also atomic as default.
+         </para>
+       </section>
  
- 	for (i = 0; i < cfg->num_inputs; i++) {
- 		pin = cfg->line_out_pins[i];
--		if (pin && !snd_hda_jack_tbl_get(codec, pin) &&
--		    is_jack_detectable(codec, pin))
-+		if (pin && is_jack_detectable(codec, pin))
- 			snd_hda_jack_detect_enable_callback(codec, pin,
- 							    via_jack_powerstate_event);
- 	}
+@@ -2972,7 +2975,7 @@ struct _snd_pcm_runtime {
+ 	is useful only for such a purpose.
+ 	</para>
+ 	<para>
+-	  This callback is atomic.
++	  This callback is atomic as default.
+ 	</para>
+       </section>
+ 
+@@ -3175,6 +3178,21 @@ struct _snd_pcm_runtime {
+       called with local interrupts disabled.
+       </para>
+ 
++      <para>
++      The recent changes in PCM core code, however, allow all PCM
++      operations to be non-atomic.  This assumes that the all caller
++      sides are in non-atomic contexts.  For example, the function
++      <function>snd_pcm_period_elapsed()</function> is called
++      typically from the interrupt handler.  But, if you set up the
++      driver to use a threaded interrupt handler, this call can be in
++      non-atomic context, too.  In such a case, you can set
++      <structfield>nonatomic</structfield> filed of
++      <structname>snd_pcm</structname> object after creating it.
++      When this flag is set, mutex and rwsem are used internally in
++      the PCM core instead of spin and rwlocks, so that you can call
++      all PCM functions safely in a non-atomic context.
++      </para>
++
+     </section>
+     <section id="pcm-interface-constraints">
+       <title>Constraints</title>
 -- 
 2.1.0
