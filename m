@@ -1,61 +1,70 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rockchip-i2s: dt: fix an error in the example
-Date: Mon, 15 Sep 2014 09:45:50 -0700
-Message-ID: <20140915164550.GV7960@sirena.org.uk>
-References: <1410570281-23681-1-git-send-email-jay.xu@rock-chips.com>
- <1410665999-16718-1-git-send-email-jay.xu@rock-chips.com>
+Subject: Re: [PATCH 5/5] ASoC: rockchip-i2s: enable "hclk" for rockchip I2S
+ controller
+Date: Mon, 15 Sep 2014 09:54:36 -0700
+Message-ID: <20140915165436.GW7960@sirena.org.uk>
+References: <1410568723-21559-1-git-send-email-jay.xu@rock-chips.com>
+ <1410568993-21874-1-git-send-email-jay.xu@rock-chips.com>
+ <20140913163749.GK7960@sirena.org.uk>
+ <5414FD1F.6020603@rock-chips.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kUw25p3LpPv7dNi6"
+	protocol="application/pgp-signature"; boundary="UY7nlVifw84slYwb"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1410665999-16718-1-git-send-email-jay.xu@rock-chips.com>
+In-Reply-To: <5414FD1F.6020603@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jianqun <jay.xu@rock-chips.com>
-Cc: heiko@sntech.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, huangtao@rock-chips.com, cf@rock-chips.com
+To: Jianqun <xjq@rock-chips.com>
+Cc: Jianqun <jay.xu@rock-chips.com>, heiko@sntech.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, huangtao@rock-chips.com, cf@rock-chips.com
 List-Id: alsa-devel@alsa-project.org
 
 
---kUw25p3LpPv7dNi6
-Content-Type: text/plain; charset=us-ascii
+--UY7nlVifw84slYwb
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Sep 14, 2014 at 11:39:59AM +0800, Jianqun wrote:
-> Reference to RK3288 TRM, fix an error in the example by swap "tx" and "rx=
-".
->=20
-> Table 10-1 DMAC_BUS Request Mapping Table
-> Req number	Source	Polarity
-> 0		I2S tx	High level
-> 1		I2S rx	High level
->=20
-> Tested on RK3288 board.
->=20
-> Signed-off-by: Jianqun <jay.xu@rock-chips.com>
-> ---
-> change since v1:
-> - modify patch's changelog as Mark's suggestion
+On Sun, Sep 14, 2014 at 10:27:43AM +0800, Jianqun wrote:
+> =E5=9C=A8 09/14/2014 12:37 AM, Mark Brown =E5=86=99=E9=81=93:
 
-No, the patch has already been applied.  Once a patch has been applied
-don't resend it, it can't be re-applied.  In this case the advice about
-the changelog was something you should bear in mind for future
-changelogs.
+> >> +	ret =3D clk_prepare_enable(i2s->hclk);
+> >> +	if (ret) {
+> >> +		dev_err(i2s->dev, "hclock enable failed %d\n", ret);
+> >> +		return ret;
+> >> +	}
 
---kUw25p3LpPv7dNi6
+> > BTW: you're also missing a clk_disable_unprepare() in the remove path
+> > here, please send a followup fixing that.
+> remove function has done the clk_disable_unprepare for "hclk".
+
+> One more thing, since "i2s_clk" is enabled at runtime_resume, and is disa=
+bled in runtime_suspend,
+> hasn't enable in probe, so do the "i2s_clk" to be disabled in remove ?
+> The current driver has disable in remove.
+
+Again, please try to write clear changelogs which describe what the goal
+of the patch is and cover obvious questions like this which a reviewer
+might ask.
+
+This is all extremely unclear - you're adding an enable here with no
+matching disable.  It seems that what you saying that there was
+previously a bug where the clock was disabled without being enabled?
+I had to look at the code to work that out...
+
+--UY7nlVifw84slYwb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUFxe+AAoJECTWi3JdVIfQHBsH/0Bd3gC6FkXjlEGXhp28nNCE
-x0nmOypVyGISktCZ2gCe/3f5TFsNh6le9oRQBI+PJjeoNG0E87gD4OBAmHDZcUOn
-tfi2maUwoc4/5YWLqWTnxkoftppHh+Xqpwj05nnJfBAXu+yZ6sGsQbX2YpsAcHRW
-rGWroauzL4W6R5DZdADoIfKeFiv+DaTC6lb/J6KITuxQCiikz+vtaIk3v8GJ9bNl
-5pvgqVUlKBW1O9AL/bWCkKdEkpjzpcIpHxkYdJKKeA5SDj0aAto0lKp311lkwcAK
-tW4Gp2o+G4hDVN0Gv7tZuEuglzz1TWPAZ+99GeSRl8kXRkkUiGKzzG6FwLjQ0aY=
-=1Ikx
+iQEcBAEBAgAGBQJUFxnLAAoJECTWi3JdVIfQ2goH/iV5NaXpjtKs+PwEz4xS+1K1
+7HHS0xID6tyQp+jIHakSg633s88uH7YN8slrwvdpSwOcqDXC73eiHP1UzQ3sgZai
+hAu0NulcrC8t2RyJ/l2PXbpFZ19Z+MlREJxVBL/F0QthvcfVtpY0Ah9IqFxq3Up1
+8v63pzxQof3Qfj1USUf+6u62Q/i0SmUFe1HAfkC0N3nSPlf9vZPtMip021/MhfFv
+xQc/ngaL7YgHlUMh8vsQGdU+bWfz7f9eHROjDxPbipl0YRe4cbzsRMHmk8ZlVYFM
+kmcklgCly+juio5dMJtVhon4yrcmjulnRLFHh9Wf1Ogm56EMKnwcylxCAKlX+JE=
+=OH8N
 -----END PGP SIGNATURE-----
 
---kUw25p3LpPv7dNi6--
+--UY7nlVifw84slYwb--
