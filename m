@@ -1,21 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Master Plan on rewinding
-Date: Mon, 15 Sep 2014 10:43:53 +0800
-Message-ID: <CAN8cciabG3+Raaru0FnLHH3SvB+VoQTd8WbwTjdy+2=2y_SUKA@mail.gmail.com>
-References: <540C76E0.9050808@gmail.com> <54148E72.2050903@gmail.com>
- <CAN8cciYj4fo01XZwJ-NhFQDNv6Ua5mqaAEq1zU7PYxHkJyOQ5A@mail.gmail.com>
- <541584FB.2030208@gmail.com>
+From: Ivica Ico Bukvic <ico@vt.edu>
+Subject: question about snd_ctl_card_info_free and valgrind
+Date: Mon, 15 Sep 2014 01:15:24 -0400
+Message-ID: <541675EC.7060104@vt.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f49.google.com (mail-qa0-f49.google.com
- [209.85.216.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 69DEC2608C9
- for <alsa-devel@alsa-project.org>; Mon, 15 Sep 2014 04:43:54 +0200 (CEST)
-Received: by mail-qa0-f49.google.com with SMTP id i13so3132297qae.22
- for <alsa-devel@alsa-project.org>; Sun, 14 Sep 2014 19:43:53 -0700 (PDT)
-In-Reply-To: <541584FB.2030208@gmail.com>
+Received: from omr2.cc.vt.edu (omr2.cc.vt.edu [198.82.141.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F2E42610A6
+ for <alsa-devel@alsa-project.org>; Mon, 15 Sep 2014 07:15:33 +0200 (CEST)
+Received: from mr4.cc.vt.edu (mr4.cc.vt.edu [198.82.164.236] (may be forged))
+ by omr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id s8F5FVuf009124
+ for <alsa-devel@alsa-project.org>; Mon, 15 Sep 2014 01:15:31 -0400
+Received: from mail-qg0-f47.google.com (mail-qg0-f47.google.com
+ [209.85.192.47])
+ by mr4.cc.vt.edu (8.14.4/8.14.4) with ESMTP id s8F5FPoD016579
+ for <alsa-devel@alsa-project.org>; Mon, 15 Sep 2014 01:15:30 -0400
+Received: by mail-qg0-f47.google.com with SMTP id i50so3328579qgf.34
+ for <alsa-devel@alsa-project.org>; Sun, 14 Sep 2014 22:15:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,40 +27,191 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, David Henningsson <david.henningsson@canonical.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->>  >
->>  >> === On the rewind safeguard ===
->>  >
->>  >
->>  > Result 1: it has been decided that the return value of
->> snd_pcm_rewindable() is not changed, and the safeguard is returned by a
->> separate function.
->>
->> It is unlikely to return any value which is safe, it is the
->> responsiability of the application to decide how much can be rewind
->
->
-> You are placing a responsibility on an application without giving it any
-means to make an informed decision. E.g. 4 ms is OK on snd-hda-intel, but
-definitely not OK on ymfpci even on infinitely fast CPU (because of the
-fixed 5 ms interrupt interval). The whole question here is: how is an
-application supposed to know that?
->
+Hi all, I have the following code snippet (excerpt from pd-l2ork's 
+g_audio_alsa.c that was inherited from pure-data--full version available 
+at https://github.com/pd-l2ork/pd/blob/master/pd/src/s_audio_alsa.c):
 
-Take a look at patent US 20100131783
+         if (snd_ctl_open(&ctl, devname, 0) >= 0)
+         {
+             snd_ctl_card_info_malloc(&info);
+             snd_ctl_card_info(ctl, info);
+             desc = snd_ctl_card_info_get_name(info);
+             snd_ctl_card_info_free(info);
+         }
 
-System and Method of Dynamically Switching Queue Threshold
+With the said implementation are no crashes or noticeable problems other 
+than when ran through valgrind, I get the following error report:
 
-HDA may have different fifo threshold in different power states, the
-granularity is not fixed
+==6884== Memcheck, a memory error detector
+==6884== Copyright (C) 2002-2011, and GNU GPL'd, by Julian Seward et al.
+==6884== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+==6884== Command: pd-l2ork
+==6884==
+==6884== Invalid read of size 1
+==6884==    at 0x719F061: vfprintf (vfprintf.c:1630)
+==6884==    by 0x725D263: __vsprintf_chk (vsprintf_chk.c:86)
+==6884==    by 0x725D1AC: __sprintf_chk (sprintf_chk.c:33)
+==6884==    by 0x51412D: alsa_getdevs (stdio2.h:34)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==  Address 0xc1ac488 is 40 bytes inside a block of size 376 free'd
+==6884==    at 0x4C2A82E: free (in 
+/usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6884==    by 0x51410F: alsa_getdevs (s_audio_alsa.c:857)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==
+==6884== Invalid read of size 1
+==6884==    at 0x71CFDB8: _IO_default_xsputn (genops.c:480)
+==6884==    by 0x719EC31: vfprintf (vfprintf.c:1630)
+==6884==    by 0x725D263: __vsprintf_chk (vsprintf_chk.c:86)
+==6884==    by 0x725D1AC: __sprintf_chk (sprintf_chk.c:33)
+==6884==    by 0x51412D: alsa_getdevs (stdio2.h:34)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==  Address 0xc1ac488 is 40 bytes inside a block of size 376 free'd
+==6884==    at 0x4C2A82E: free (in 
+/usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6884==    by 0x51410F: alsa_getdevs (s_audio_alsa.c:857)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==
+==6884== Invalid read of size 1
+==6884==    at 0x71CFDC7: _IO_default_xsputn (genops.c:479)
+==6884==    by 0x719EC31: vfprintf (vfprintf.c:1630)
+==6884==    by 0x725D263: __vsprintf_chk (vsprintf_chk.c:86)
+==6884==    by 0x725D1AC: __sprintf_chk (sprintf_chk.c:33)
+==6884==    by 0x51412D: alsa_getdevs (stdio2.h:34)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==  Address 0xc1ac48a is 42 bytes inside a block of size 376 free'd
+==6884==    at 0x4C2A82E: free (in 
+/usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6884==    by 0x51410F: alsa_getdevs (s_audio_alsa.c:857)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==
+==6884== Invalid read of size 1
+==6884==    at 0x719F061: vfprintf (vfprintf.c:1630)
+==6884==    by 0x725D263: __vsprintf_chk (vsprintf_chk.c:86)
+==6884==    by 0x725D1AC: __sprintf_chk (sprintf_chk.c:33)
+==6884==    by 0x51414B: alsa_getdevs (stdio2.h:34)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==  Address 0xc1ac488 is 40 bytes inside a block of size 376 free'd
+==6884==    at 0x4C2A82E: free (in 
+/usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6884==    by 0x51410F: alsa_getdevs (s_audio_alsa.c:857)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==
+==6884== Invalid read of size 1
+==6884==    at 0x719F061: vfprintf (vfprintf.c:1630)
+==6884==    by 0x725D263: __vsprintf_chk (vsprintf_chk.c:86)
+==6884==    by 0x725D1AC: __sprintf_chk (sprintf_chk.c:33)
+==6884==    by 0x51416A: alsa_getdevs (stdio2.h:34)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==  Address 0xc1ac488 is 40 bytes inside a block of size 376 free'd
+==6884==    at 0x4C2A82E: free (in 
+/usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6884==    by 0x51410F: alsa_getdevs (s_audio_alsa.c:857)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==
+==6884== Invalid read of size 1
+==6884==    at 0x719F061: vfprintf (vfprintf.c:1630)
+==6884==    by 0x725D263: __vsprintf_chk (vsprintf_chk.c:86)
+==6884==    by 0x725D1AC: __sprintf_chk (sprintf_chk.c:33)
+==6884==    by 0x514192: alsa_getdevs (stdio2.h:34)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==  Address 0xc1ac488 is 40 bytes inside a block of size 376 free'd
+==6884==    at 0x4C2A82E: free (in 
+/usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6884==    by 0x51410F: alsa_getdevs (s_audio_alsa.c:857)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==
+==6884== Invalid read of size 8
+==6884==    at 0x71CFD95: _IO_default_xsputn (genops.c:480)
+==6884==    by 0x719EC31: vfprintf (vfprintf.c:1630)
+==6884==    by 0x725D263: __vsprintf_chk (vsprintf_chk.c:86)
+==6884==    by 0x725D1AC: __sprintf_chk (sprintf_chk.c:33)
+==6884==    by 0x51412D: alsa_getdevs (stdio2.h:34)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==  Address 0xc1ada58 is 40 bytes inside a block of size 376 free'd
+==6884==    at 0x4C2A82E: free (in 
+/usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6884==    by 0x51410F: alsa_getdevs (s_audio_alsa.c:857)
+==6884==    by 0x4D84DA: sys_set_audio_settings (s_audio.c:209)
+==6884==    by 0x4D156A: sys_loadpreferences (s_file.c:375)
+==6884==    by 0x4CD804: sys_main (s_main.c:288)
+==6884==    by 0x717576C: (below main) (libc-start.c:226)
+==6884==
 
-Twice the minimum period size/time is not any over estimate
+The repeating error refers to the line 857 which is
 
-Glitching still occurs at switch sink / change in power state when  you
-allow sound card run with lowest latency ?
+snd_ctl_card_info_free(info);
 
-I don't think your proposal of having three different class of granularity
-is good idea
+If I read valgrind error report, it appears there is a double free (???) 
+error taking place even though there is no other place in that code that 
+the snd_ctl_card_info_free is being called. Now, the loop does cycle 
+through all the available alsa devices. Could this be beccause some of 
+them are invalid and if so, how would one go about detecting that before 
+calling snd_ctl_card_info_free?
+
+If I comment that line (as it is currently in the linked source file on 
+git), valgrind does not complain any more but I wonder if this means 
+there is now a memory leak instead?
+
+Any assistance with this is most appreciated. NB: I am not an alsa dev, 
+so my knowledge of alsa lib API is rather limited beyond what I've 
+briefly studied to better understand the aforesaid code snippet.
+
+Best,
+
+-- 
+Ivica Ico Bukvic, D.M.A.
+Associate Professor
+Computer Music
+ICAT Senior Fellow
+DISIS, L2Ork
+Virginia Tech
+School of Performing Arts - 0141
+Blacksburg, VA 24061
+(540) 231-6139
+ico@vt.edu
+www.performingarts.vt.edu
+disis.music.vt.edu
+l2ork.music.vt.edu
