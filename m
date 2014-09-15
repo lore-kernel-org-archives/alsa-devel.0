@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH RFC v2 5/7] ALSA: hda - Remove superfluous
-	callbacks from STAC/IDT codecs
-Date: Mon, 15 Sep 2014 14:48:21 +0200
-Message-ID: <1410785303-19454-6-git-send-email-tiwai@suse.de>
+Subject: [PATCH RFC v2 6/7] ALSA: hda - Remove superfluous
+	hooks from VIA driver
+Date: Mon, 15 Sep 2014 14:48:22 +0200
+Message-ID: <1410785303-19454-7-git-send-email-tiwai@suse.de>
 References: <1410785303-19454-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 76EF42616F6
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CDE6261785
  for <alsa-devel@alsa-project.org>; Mon, 15 Sep 2014 14:48:27 +0200 (CEST)
 In-Reply-To: <1410785303-19454-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,94 +25,72 @@ To: alsa-devel@alsa-project.org
 Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Now we can register multiple callbacks to each jack, most of hooks
-used in STAC/IDT codecs can be removed by enabling the powermap update
-callback for all relevant pins.  Along with this, the call of
-stac_init_power_map() can be moved back to stac_parse_auto_config()
-and the own build_controls callback can be removed, too.
+Like the previous fix for STAC/IDT codecs, the automute hooks in VIA
+driver can be also removed by enabling the power control callback for
+all pins.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_sigmatel.c | 38 ++------------------------------------
- 1 file changed, 2 insertions(+), 36 deletions(-)
+ sound/pci/hda/patch_via.c | 25 ++-----------------------
+ 1 file changed, 2 insertions(+), 23 deletions(-)
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 3193529607f2..4f6413e01c13 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -510,27 +510,6 @@ static void jack_update_power(struct hda_codec *codec,
- 			    spec->power_map_bits);
- }
+diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+index 8d234ab9f06b..6c206b6c8d65 100644
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -118,7 +118,6 @@ static void via_playback_pcm_hook(struct hda_pcm_stream *hinfo,
+ 				  struct hda_codec *codec,
+ 				  struct snd_pcm_substream *substream,
+ 				  int action);
+-static void via_hp_automute(struct hda_codec *codec, struct hda_jack_callback *tbl);
  
--static void stac_hp_automute(struct hda_codec *codec,
--				 struct hda_jack_callback *jack)
--{
--	snd_hda_gen_hp_automute(codec, jack);
--	jack_update_power(codec, jack);
--}
--
--static void stac_line_automute(struct hda_codec *codec,
--				   struct hda_jack_callback *jack)
--{
--	snd_hda_gen_line_automute(codec, jack);
--	jack_update_power(codec, jack);
--}
--
--static void stac_mic_autoswitch(struct hda_codec *codec,
--				struct hda_jack_callback *jack)
--{
--	snd_hda_gen_mic_autoswitch(codec, jack);
--	jack_update_power(codec, jack);
--}
--
- static void stac_vref_event(struct hda_codec *codec,
- 			    struct hda_jack_callback *event)
+ static struct via_spec *via_new_spec(struct hda_codec *codec)
  {
-@@ -555,8 +534,6 @@ static void stac_init_power_map(struct hda_codec *codec)
- 		hda_nid_t nid = spec->pwr_nids[i];
- 		unsigned int def_conf = snd_hda_codec_get_pincfg(codec, nid);
- 		def_conf = get_defcfg_connect(def_conf);
--		if (snd_hda_jack_tbl_get(codec, nid))
--			continue;
- 		if (def_conf == AC_JACK_PORT_COMPLEX &&
- 		    spec->vref_mute_led_nid != nid &&
- 		    is_jack_detectable(codec, nid)) {
-@@ -4206,9 +4183,6 @@ static int stac_parse_auto_config(struct hda_codec *codec)
- 	spec->gen.pcm_capture_hook = stac_capture_pcm_hook;
+@@ -575,20 +574,6 @@ static const struct snd_kcontrol_new vt1708_jack_detect_ctl[] = {
+ 	{} /* terminator */
+ };
  
- 	spec->gen.automute_hook = stac_update_outputs;
--	spec->gen.hp_automute_hook = stac_hp_automute;
--	spec->gen.line_automute_hook = stac_line_automute;
--	spec->gen.mic_autoswitch_hook = stac_mic_autoswitch;
+-static void via_hp_automute(struct hda_codec *codec,
+-			    struct hda_jack_callback *tbl)
+-{
+-	set_widgets_power_state(codec);
+-	snd_hda_gen_hp_automute(codec, tbl);
+-}
+-
+-static void via_line_automute(struct hda_codec *codec,
+-			      struct hda_jack_callback *tbl)
+-{
+-	set_widgets_power_state(codec);
+-	snd_hda_gen_line_automute(codec, tbl);
+-}
+-
+ static void via_jack_powerstate_event(struct hda_codec *codec,
+ 				      struct hda_jack_callback *tbl)
+ {
+@@ -602,22 +587,16 @@ static void via_set_jack_unsol_events(struct hda_codec *codec)
+ 	hda_nid_t pin;
+ 	int i;
  
- 	err = snd_hda_gen_parse_auto_config(codec, &spec->gen.autocfg);
- 	if (err < 0)
-@@ -4260,16 +4234,8 @@ static int stac_parse_auto_config(struct hda_codec *codec)
- 			return err;
+-	spec->gen.hp_automute_hook = via_hp_automute;
+-	if (cfg->speaker_pins[0])
+-		spec->gen.line_automute_hook = via_line_automute;
+-
+ 	for (i = 0; i < cfg->line_outs; i++) {
+ 		pin = cfg->line_out_pins[i];
+-		if (pin && !snd_hda_jack_tbl_get(codec, pin) &&
+-		    is_jack_detectable(codec, pin))
++		if (pin && is_jack_detectable(codec, pin))
+ 			snd_hda_jack_detect_enable_callback(codec, pin,
+ 							    via_jack_powerstate_event);
  	}
  
--	return 0;
--}
--
--static int stac_build_controls(struct hda_codec *codec)
--{
--	int err = snd_hda_gen_build_controls(codec);
--
--	if (err < 0)
--		return err;
- 	stac_init_power_map(codec);
-+
- 	return 0;
- }
- 
-@@ -4383,7 +4349,7 @@ static int stac_suspend(struct hda_codec *codec)
- #endif /* CONFIG_PM */
- 
- static const struct hda_codec_ops stac_patch_ops = {
--	.build_controls = stac_build_controls,
-+	.build_controls = snd_hda_gen_build_controls,
- 	.build_pcms = snd_hda_gen_build_pcms,
- 	.init = stac_init,
- 	.free = stac_free,
+ 	for (i = 0; i < cfg->num_inputs; i++) {
+ 		pin = cfg->line_out_pins[i];
+-		if (pin && !snd_hda_jack_tbl_get(codec, pin) &&
+-		    is_jack_detectable(codec, pin))
++		if (pin && is_jack_detectable(codec, pin))
+ 			snd_hda_jack_detect_enable_callback(codec, pin,
+ 							    via_jack_powerstate_event);
+ 	}
 -- 
 2.1.0
