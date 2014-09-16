@@ -1,80 +1,49 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH] ASoC: fsl_spdif: don't change the root clock rate of spdif in driver
-Date: Tue, 16 Sep 2014 19:46:34 +0800
-Message-ID: <1410867994-32138-1-git-send-email-shengjiu.wang@freescale.com>
+From: Johannes Kroll <j-kroll@gmx.de>
+Subject: Re: Alsa Driver Scarlett
+Date: Tue, 16 Sep 2014 15:22:27 +0200
+Message-ID: <20140916152227.53556d96@sampi>
+References: <54148F1B.2010608@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: timur@tabi.org, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEC4E261A0E
+ for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 15:22:28 +0200 (CEST)
+In-Reply-To: <54148F1B.2010608@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?RXVnw6huZQ==?= Bandit <eugenebandit@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The spdif root clock may be used by other module or defined with
-CLK_SET_RATE_GATE, so we can't change the clock rate in driver.
-In this patch remove the clk_set_rate and clk_round_rate to protect the
-clock.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
----
- sound/soc/fsl/fsl_spdif.c |   24 ++----------------------
- 1 file changed, 2 insertions(+), 22 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 70acfe4..f2e4595 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -377,7 +377,6 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 	unsigned long csfs = 0;
- 	u32 stc, mask, rate;
- 	u8 clk, txclk_df, sysclk_df;
--	int ret;
- 
- 	switch (sample_rate) {
- 	case 32000:
-@@ -419,21 +418,6 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 
- 	sysclk_df = spdif_priv->sysclk_df[rate];
- 
--	/* Don't mess up the clocks from other modules */
--	if (clk != STC_TXCLK_SPDIF_ROOT)
--		goto clk_set_bypass;
--
--	/*
--	 * The S/PDIF block needs a clock of 64 * fs * txclk_df.
--	 * So request 64 * fs * (txclk_df + 1) to get rounded.
--	 */
--	ret = clk_set_rate(spdif_priv->txclk[rate], 64 * sample_rate * (txclk_df + 1));
--	if (ret) {
--		dev_err(&pdev->dev, "failed to set tx clock rate\n");
--		return ret;
--	}
--
--clk_set_bypass:
- 	dev_dbg(&pdev->dev, "expected clock rate = %d\n",
- 			(64 * sample_rate * txclk_df * sysclk_df));
- 	dev_dbg(&pdev->dev, "actual clock rate = %ld\n",
-@@ -1056,7 +1040,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- {
- 	const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
- 	bool is_sysclk = clk == spdif_priv->sysclk;
--	u64 rate_ideal, rate_actual, sub;
-+	u64 rate_actual, sub;
- 	u32 sysclk_dfmin, sysclk_dfmax;
- 	u32 txclk_df, sysclk_df, arate;
- 
-@@ -1066,11 +1050,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- 
- 	for (sysclk_df = sysclk_dfmin; sysclk_df <= sysclk_dfmax; sysclk_df++) {
- 		for (txclk_df = 1; txclk_df <= 128; txclk_df++) {
--			rate_ideal = rate[index] * (txclk_df + 1) * 64;
--			if (round)
--				rate_actual = clk_round_rate(clk, rate_ideal);
--			else
--				rate_actual = clk_get_rate(clk);
-+			rate_actual = clk_get_rate(clk);
- 
- 			arate = rate_actual / 64;
- 			arate /= txclk_df * sysclk_df;
--- 
-1.7.9.5
+SGV5IEV1Z8OobmUsCgpPbiBTYXQsIDEzIFNlcCAyMDE0IDIwOjM4OjE5ICswMjAwCkV1Z8OobmUg
+QmFuZGl0IDxldWdlbmViYW5kaXRAZ21haWwuY29tPiB3cm90ZToKCj4gSGVsbG8sCj4gCj4gSSd2
+ZSBjb21lIGFjcm9zcyB0aGlzIGVhcmxpZXIgcG9zdCBmcm9tIHRoZSBhbHNhLWRldmVsIG1haWxp
+bmcgbGlzdCA6Cj4gaHR0cDovL3RocmVhZC5nbWFuZS5vcmcvZ21hbmUubGludXguYWxzYS5kZXZl
+bC8xMjYyNDEvZm9jdXM9MTI2NjgyCj4gCj4gSXQgZGVhbHMgd2l0aCBhIGtlcm5lbCBwYXRjaCBt
+YWRlIHRvIHN1cHBvcnQgc29tZSBGb2N1c3JpdGUgU2NhcmxldHQgCj4gaGFyZHdhcmUsIHlvdSBj
+YW4gZmluZCB0aGUgZ2l0aHViIHByb2plY3QgcGFnZSBpcyBoZXJlIDogCj4gaHR0cHM6Ly9naXRo
+dWIuY29tL3NtaWxpbmd0aGF4L2Fsc2EtZHJpdmVyX3NjYXJsZXR0Cj4gCj4gSSB3b3VsZCBiZSBy
+ZWFsbHkgaW50ZXJlc3RlZCBpbiBpdCBiZWluZyBpbnRlZ3JhdGVkIGludG8gYWxzYS4gCj4gVW5m
+b3J0dW5hdGVseSwgaXQgYXBwZWFycyB0aGF0IHRoZSBvcmlnaW5hbCBkZXZlbG9wZXIgb2YgdGhp
+cyBwYXRjaCAKPiBjYW5ub3QgcHV0IGFueSB0aW1lIGludG8gc3VjaCBhIHRoaW5nLiBTaW5jZSBJ
+J20gbm90IHNraWxsZWQgZW5vdWdoIHRvIAo+IHBlcmZvcm0gdGhpcyBpbnRlZ3JhdGlvbiwgaSB3
+YW50ZWQgdG8ga25vdyBpZiBhbnlvbmUgd2FzIHdpbGxpbmcgdG8gd29yayAKPiBvbiB0aGlzID8g
+SSBvd24gYSBGb2N1c3JpdGUgU2NhcmxldHQgMThpMjAgYW5kIGNhbiBwZXJmb3JtIGFueSB0ZXN0
+IHRvIGhlbHAuCgpJJ20gdXNpbmcgYSBTY2FybGV0dCAxOGk4LiBJJ20gY3VycmVudGx5IHVzaW5n
+IGFuIG9sZGVyIGtlcm5lciBmb3IKd2hpY2ggdGhlIHBhdGNoIGFwcGxpZXMsIGJ1dCBJJ20gZ29p
+bmcgdG8gaGF2ZSB0byB1cGdyYWRlIGF0IHNvbWUKcG9pbnQsIHNvIEknbSBpbiB0aGUgc2FtZSBi
+b2F0LiAKCkkgZ3Vlc3MgSSdsbCBuZWVkIHRvIGZpbmQgdGhlIHRpbWUgdG8gcG9ydCB0aGUgcGF0
+Y2ggdG8gYSByZWNlbnQga2VybmVsCndoZW4gSSB1cGdyYWRlLCB1bmxlc3Mgc29tZW9uZSBlbHNl
+IGRvZXMgaXQgZmlyc3QuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
