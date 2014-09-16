@@ -1,18 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 6/9] rate: handle negative values from
-	snd_pcm_mmap_playback_hw_avail
-Date: Tue, 16 Sep 2014 19:26:57 +0200
-Message-ID: <541872E1.7020700@perex.cz>
-References: <1410633021-20395-1-git-send-email-patrakov@gmail.com>	<1410633021-20395-7-git-send-email-patrakov@gmail.com>	<s5hoauhw9oc.wl-tiwai@suse.de>	<5416B98D.3010505@gmail.com>
- <s5hbnqhw5pu.wl-tiwai@suse.de> <54185CD3.3030701@gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_spdif: don't change the root
+ clock rate of spdif in driver
+Date: Tue, 16 Sep 2014 11:19:28 -0700
+Message-ID: <20140916180028.GA6784@Asurada>
+References: <1410867994-32138-1-git-send-email-shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A46B261A7E
- for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 19:26:59 +0200 (CEST)
-In-Reply-To: <54185CD3.3030701@gmail.com>
+Received: from mail-pd0-f179.google.com (mail-pd0-f179.google.com
+ [209.85.192.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 142A3261A7F
+ for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 20:20:15 +0200 (CEST)
+Received: by mail-pd0-f179.google.com with SMTP id g10so301208pdj.38
+ for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 11:20:14 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1410867994-32138-1-git-send-email-shengjiu.wang@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: Shengjiu Wang <shengjiu.wang@freescale.com>, shawn.guo@freescale.com
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, Li.Xiubo@freescale.com, timur@tabi.org, broonie@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-RGF0ZSAxNi45LjIwMTQgMTc6NTIsIEFsZXhhbmRlciBFLiBQYXRyYWtvdiB3cm90ZToKPiAxNS4w
-OS4yMDE0IDE2OjE0LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+IEF0IE1vbiwgMTUgU2VwIDIwMTQg
-MTY6MDM6NTcgKzA2MDAsCj4+IEFsZXhhbmRlciBFLiBQYXRyYWtvdiB3cm90ZToKPj4+Cj4+PiAx
-NS4wOS4yMDE0IDE0OjQ5LCBUYWthc2hpIEl3YWkg0L/QuNGI0LXRgjoKPj4+PiBBdCBTdW4sIDE0
-IFNlcCAyMDE0IDAwOjMwOjE4ICswNjAwLAo+Pj4+IEFsZXhhbmRlciBFLiBQYXRyYWtvdiB3cm90
-ZToKPj4+Pj4KPj4+Pj4gU3VjaCBuZWdhdGl2ZSByZXR1cm5zIGFyZSBwb3NzaWJsZSBkdXJpbmcg
-YW4gdW5kZXJydW4gaWYgeHJ1biBkZXRlY3Rpb24KPj4+Pj4gaXMgZGlzYWJsZWQuCj4+Pj4+Cj4+
-Pj4+IFNvLCBkb24ndCBzdG9yZSB0aGUgcmVzdWx0IGluIGFuIHVuc2lnbmVkIHZhcmlhYmxlICh3
-aGVyZSBpdCB3aWxsCj4+Pj4+IG92ZXJmbG93KSwgYW5kIHBvc3Rwb25lIHRoZSB0cmlnZ2VyIGlu
-IHN1Y2ggY2FzZSwgdG9vLgo+Pj4+Pgo+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgRS4g
-UGF0cmFrb3YgPHBhdHJha292QGdtYWlsLmNvbT4KPj4+Pj4gLS0tCj4+Pj4+Cj4+Pj4+IFRoZSBw
-YXRjaCBpcyBvbmx5IGNvbXBpbGUtdGVzdGVkIGFuZCB0aGUgc2Vjb25kIGh1bmsgbWF5IHdlbGwg
-YmUgd3JvbmcuCj4+Pj4+Cj4+Pj4+IFRoZXJlIGFyZSBhbHNvIHNpbWlsYXIgaXNzdWVzIGluIHBj
-bV9zaGFyZS5jLCBidXQsIGFzIEkgZG9uJ3QgY29tcGxldGVseQo+Pj4+PiB1bmRlcnN0YW5kIHRo
-ZSBjb2RlIHRoZXJlIGFuZCBjYW5ub3QgdGVzdCB0aGF0IHBsdWdpbiBhdCBhbGwgZHVlIHRvCj4+
-Pj4+IHVucmVsYXRlZCBjcmFzaGVzLCB0aGVyZSB3aWxsIGJlIG5vIHBhdGNoIGZyb20gbWUuCj4+
-Pj4KPj4+PiBJbiBnZW5lcmFsLCBod19hdmFpbCBtdXN0IG5vdCBiZSBuZWdhdGl2ZSBiZWZvcmUg
-c3RhcnRpbmcgdGhlIHN0cmVhbS4KPj4+PiBJZiBpdCBpcywgdGhlbiBpdCBtZWFucyBtb3N0IGxp
-a2VseSB0aGUgZHJpdmVyIHByb2JsZW0sIHNvIHdlIHNob3VsZAo+Pj4+IHJldHVybiBlcnJvciBp
-bW1lZGlhdGVseSBpbnN0ZWFkLgo+Pj4KPj4+IFRoYW5rcyBmb3IgdGhlIHJldmlldy4gV291bGQg
-LUVCQURGRCBiZSBhIGNvcnJlY3QgZXJyb3IgY29kZSwgb3IgZG8geW91Cj4+PiB3YW50IHNvbWV0
-aGluZyBkaWZmZXJlbnQ/IG9yIG1heWJlIGV2ZW4gYW4gYXNzZXJ0Pwo+Pgo+PiBJJ2QgdGFrZSBl
-aXRoZXIgRVBJUEUgb3IgRUJBREZELgo+PiBBbiBhc3NlcnQgd291bGQgYmUgYW4gb3ZlcmtpbGws
-IElNTy4KPiAKPiBJIGhhdmUgc2VudCB0aGUgZml4IHRvIHRoZSBsaXN0LCBidXQgbm9ib2R5IHJl
-YWN0ZWQuIFJlc2VuZGluZyBhcyBhbiAKPiBhdHRhY2htZW50IHRvIHRoaXMgbWVzc2FnZS4KCkFw
-cGxpZWQgbm93LiBUaGFua3MuCgogICAgICAgICAgICAgICAgICAgICAgICAgSmFyb3NsYXYKCj4g
-Cj4gCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+
-IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCj4gCgoKLS0gCkphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+CkxpbnV4IEtlcm5l
-bCBTb3VuZCBNYWludGFpbmVyCkFMU0EgUHJvamVjdDsgUmVkIEhhdCwgSW5jLgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, Sep 16, 2014 at 07:46:34PM +0800, Shengjiu Wang wrote:
+> The spdif root clock may be used by other module or defined with
+> CLK_SET_RATE_GATE, so we can't change the clock rate in driver.
+> In this patch remove the clk_set_rate and clk_round_rate to protect the
+> clock.
+
+It's a quite convenient and conservative way to remove the clock
+dealing code in the driver, however, it may result less flexible
+functionalities.
+
+The reason why I left the clk_set_rate() in the driver is to hope
+we may find a better way to tackle those tough situations. For IP
+itself, it doesn't matter if the clock the SoC provides to it is
+being shared by other modules or not.
+
+So I think, if it's a shared clock, we should not define it as a
+rate-changeable one in the SoC level, as we might still have some
+SoCs provide a dedicated clock to S/PDIF so as to get the maximum
+range of clock support for users.
+
+@Shawn
+Sorry to involve you in this topic. I'm not so sure if we can do
+this in the clock driver so that the clock rate would be fixed
+even if the driver is trying to change it. If we can, I think we
+may use a better solution here instead.
+
+Thank you
+Nicolin
