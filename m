@@ -1,150 +1,100 @@
-From: Shengjiu Wang <shengjiu.wang@freescale.com>
-Subject: [PATCH V4] ASoC: fsl_ssi: refine ipg clock usage in this module
-Date: Tue, 16 Sep 2014 10:13:16 +0800
-Message-ID: <5dc0f13cdb62904ae0f104f9112faec672adea6f.1410833402.git.shengjiu.wang@freescale.com>
+From: "Jie, Yang" <yang.jie@intel.com>
+Subject: Re: [PATCH] speaker-test: Fix dropped samples at
+	the	end of test
+Date: Tue, 16 Sep 2014 03:30:45 +0000
+Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901B33933@SHSMSX101.ccr.corp.intel.com>
+References: <1410524068-15982-1-git-send-email-jarkko.nikula@linux.intel.com>
+ <s5hioko52lz.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: timur@tabi.org, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, mpa@pengutronix.de
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 120782610A3
+ for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 05:31:44 +0200 (CEST)
+In-Reply-To: <s5hioko52lz.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Vidal,
+ Guillaume-florianX" <guillaume-florianx.vidal@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Check if ipg clock is in clock-names property, then we can move the
-ipg clock enable and disable operation to startup and shutdown, that
-is only enable ipg clock when ssi is working and keep clock is disabled
-when ssi is in idle.
-But when the checking is failed, remain the clock control as before.
 
-Tested-by: Markus Pargmann <mpa@pengutronix.de>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
----
-v4 change log:
-fix the code indent issue.
 
- sound/soc/fsl/fsl_ssi.c |   53 ++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 45 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 2fc3e66..16a1361 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -169,6 +169,7 @@ struct fsl_ssi_private {
- 	u8 i2s_mode;
- 	bool use_dma;
- 	bool use_dual_fifo;
-+	bool has_ipg_clk_name;
- 	unsigned int fifo_depth;
- 	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
- 
-@@ -530,6 +531,11 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct fsl_ssi_private *ssi_private =
- 		snd_soc_dai_get_drvdata(rtd->cpu_dai);
-+	int ret;
-+
-+	ret = clk_prepare_enable(ssi_private->clk);
-+	if (ret)
-+		return ret;
- 
- 	/* When using dual fifo mode, it is safer to ensure an even period
- 	 * size. If appearing to an odd number while DMA always starts its
-@@ -544,6 +550,21 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
- }
- 
- /**
-+ * fsl_ssi_shutdown: shutdown the SSI
-+ *
-+ */
-+static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct fsl_ssi_private *ssi_private =
-+		snd_soc_dai_get_drvdata(rtd->cpu_dai);
-+
-+	clk_disable_unprepare(ssi_private->clk);
-+
-+}
-+
-+/**
-  * fsl_ssi_set_bclk - configure Digital Audio Interface bit clock
-  *
-  * Note: This function can be only called when using SSI as DAI master
-@@ -1043,6 +1064,7 @@ static int fsl_ssi_dai_probe(struct snd_soc_dai *dai)
- 
- static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
- 	.startup	= fsl_ssi_startup,
-+	.shutdown       = fsl_ssi_shutdown,
- 	.hw_params	= fsl_ssi_hw_params,
- 	.hw_free	= fsl_ssi_hw_free,
- 	.set_fmt	= fsl_ssi_set_dai_fmt,
-@@ -1168,17 +1190,22 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 	u32 dmas[4];
- 	int ret;
- 
--	ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
-+	if (ssi_private->has_ipg_clk_name)
-+		ssi_private->clk = devm_clk_get(&pdev->dev, "ipg");
-+	else
-+		ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(ssi_private->clk)) {
- 		ret = PTR_ERR(ssi_private->clk);
- 		dev_err(&pdev->dev, "could not get clock: %d\n", ret);
- 		return ret;
- 	}
- 
--	ret = clk_prepare_enable(ssi_private->clk);
--	if (ret) {
--		dev_err(&pdev->dev, "clk_prepare_enable failed: %d\n", ret);
--		return ret;
-+	if (!ssi_private->has_ipg_clk_name) {
-+		ret = clk_prepare_enable(ssi_private->clk);
-+		if (ret) {
-+			dev_err(&pdev->dev, "clk_prepare_enable failed: %d\n", ret);
-+			return ret;
-+		}
- 	}
- 
- 	/* For those SLAVE implementations, we ingore non-baudclk cases
-@@ -1236,8 +1263,9 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 	return 0;
- 
- error_pcm:
--	clk_disable_unprepare(ssi_private->clk);
- 
-+	if (!ssi_private->has_ipg_clk_name)
-+		clk_disable_unprepare(ssi_private->clk);
- 	return ret;
- }
- 
-@@ -1246,7 +1274,8 @@ static void fsl_ssi_imx_clean(struct platform_device *pdev,
- {
- 	if (!ssi_private->use_dma)
- 		imx_pcm_fiq_exit(pdev);
--	clk_disable_unprepare(ssi_private->clk);
-+	if (!ssi_private->has_ipg_clk_name)
-+		clk_disable_unprepare(ssi_private->clk);
- }
- 
- static int fsl_ssi_probe(struct platform_device *pdev)
-@@ -1321,8 +1350,16 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	}
- 
--	ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
-+	ret = of_property_match_string(np, "clock-names", "ipg");
-+	if (ret < 0) {
-+		ssi_private->has_ipg_clk_name = false;
-+		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
- 			&fsl_ssi_regconfig);
-+	} else {
-+		ssi_private->has_ipg_clk_name = true;
-+		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
-+			"ipg", iomem, &fsl_ssi_regconfig);
-+	}
- 	if (IS_ERR(ssi_private->regs)) {
- 		dev_err(&pdev->dev, "Failed to init register map\n");
- 		return PTR_ERR(ssi_private->regs);
--- 
-1.7.9.5
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org
+> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Takashi Iwai
+> Sent: Monday, September 15, 2014 11:24 PM
+> To: Jarkko Nikula
+> Cc: alsa-devel@alsa-project.org; Vidal, Guillaume-florianX
+> Subject: Re: [alsa-devel] [PATCH] speaker-test: Fix dropped samples at the end
+> of test
+> 
+> At Fri, 12 Sep 2014 15:14:28 +0300,
+> Jarkko Nikula wrote:
+> >
+> > Commit 6d1673526b0f ("Avoid unnecessary drain/restart in
+> > speaker-test") drains only when buffer is bigger than audio sample.
+> > This has a drawback that up to buffer size amount of data may not be
+> > heard at the end of audio sample.
+> >
+> > This was noted with "speaker-test -c 2 -t wav -s 2" test on a hardware
+> > that has a buffer size of 24000 samples and 48 kHz sample rate.
+> > Instead of playing "front right" it played something like "front ra".
+> >
+> > Reverse buffer size vs sample size test wouldn't work either since
+> > then samples smaller than buffer are dropped.
+> >
+> > Fix this by removing buffer_size tests from write_loop() and do
+> > drain/restart always when not aborting.
+> >
+> > Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> > Reported-by: Vidal, Guillaume-florianX
+> > <guillaume-florianx.vidal@intel.com>
+> > ---
+> > This was originally noted on Baytrail ADSP hw (default buffer size
+> > 24000) but can be heard also on Intel HDA (default buffer size 8192)
+> > when audio sample is small enough but bigger than buffer. For instance
+> > 100 ms sample finishes too shortly (buffer size 8192, sample size
+> > 9600) but 50 ms plays ok (buffer size 8192, sample size 4800).
+> >
+> > I guess some optimization can be done for snd_pcm_prepare() when not
+> > looping but that's not necessary for this fix.
+> 
+> Won't it suffice by just putting snd_pcm_drain() at the end of the whole
+> operation like below?  Doing snd_pcm_drain() and
+> snd_pcm_prepare() at each time causes often undesired pop noises or such.
+> 
+> OTOH, doing drain there is good for showing the text at the right time.  So,
+> we'll likely want to have both options managed by a command line option.
+> 
+> 
+> Takashi
+> 
+> ---
+> diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c index
+> 61396f296c65..362efa7ffc0d 100644
+> --- a/speaker-test/speaker-test.c
+> +++ b/speaker-test/speaker-test.c
+> @@ -1307,6 +1307,7 @@ int main(int argc, char *argv[]) {
+>      }
+>    }
+> 
+> +  snd_pcm_drain(handle);
+[Keyon] here I verified Takashi's fix also works.
+> 
+>    free(frames);
+>  #ifdef CONFIG_SUPPORT_CHMAP
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
