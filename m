@@ -1,17 +1,18 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [PATCH v2] ASoC: rt286: Set cbj_en for ACPI devices
-Date: Tue, 16 Sep 2014 08:31:54 +0100
-Message-ID: <1410852714.23184.49.camel@loki>
-References: <1410399654-10371-1-git-send-email-bardliao@realtek.com>
- <20140912135558.GW7960@sirena.org.uk>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH] speaker-test: Fix dropped samples at the
+	end of test
+Date: Tue, 16 Sep 2014 10:51:32 +0300
+Message-ID: <5417EC04.8010303@linux.intel.com>
+References: <1410524068-15982-1-git-send-email-jarkko.nikula@linux.intel.com>
+ <s5hioko52lz.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B6E226567F
- for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 09:36:47 +0200 (CEST)
-In-Reply-To: <20140912135558.GW7960@sirena.org.uk>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C306265DC7
+ for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 09:51:37 +0200 (CEST)
+In-Reply-To: <s5hioko52lz.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,43 +22,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, graeme.gregory@linaro.org, lgirdwood@gmail.com, bardliao@realtek.com, flove@realtek.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, guillaume-florianx.vidal@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2014-09-12 at 14:55 +0100, Mark Brown wrote:
-> On Thu, Sep 11, 2014 at 09:40:54AM +0800, bardliao@realtek.com wrote:
-> 
-> > +/* the default platform data for acpi devices */
-> > +static struct rt286_platform_data rt286_acpi_data = {
-> > +	.cbj_en = true,
-> > +	.gpio2_en = false,
-> > +};
-> > +
-> >  static const struct acpi_device_id rt286_acpi_match[] = {
-> > -	{ "INT343A", 0 },
-> > +	{ "INT343A", (unsigned long)&rt286_acpi_data },
-> >  	{},
-> >  };
-> 
-> Why does this platform data apply to all boards using this ACPI ID?
-> Shouldn't this be _DSD data instead, or should we be doing quirks based
-> on DMI data?
+On 09/15/2014 06:23 PM, Takashi Iwai wrote:
+> At Fri, 12 Sep 2014 15:14:28 +0300,
+> Jarkko Nikula wrote:
+>> Commit 6d1673526b0f ("Avoid unnecessary drain/restart in speaker-test")
+>> drains only when buffer is bigger than audio sample. This has a drawback
+>> that up to buffer size amount of data may not be heard at the end of audio
+>> sample.
+>>
+>> This was noted with "speaker-test -c 2 -t wav -s 2" test on a
+>> hardware that has a buffer size of 24000 samples and 48 kHz sample rate.
+>> Instead of playing "front right" it played something like "front ra".
+>>
+>> Reverse buffer size vs sample size test wouldn't work either since then
+>> samples smaller than buffer are dropped.
+>>
+>> Fix this by removing buffer_size tests from write_loop() and do
+>> drain/restart always when not aborting.
+>>
+>> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+>> Reported-by: Vidal, Guillaume-florianX <guillaume-florianx.vidal@intel.com>
+>> ---
+>> This was originally noted on Baytrail ADSP hw (default buffer size 24000)
+>> but can be heard also on Intel HDA (default buffer size 8192) when audio
+>> sample is small enough but bigger than buffer. For instance 100 ms sample
+>> finishes too shortly (buffer size 8192, sample size 9600) but 50 ms plays
+>> ok (buffer size 8192, sample size 4800).
+>>
+>> I guess some optimization can be done for snd_pcm_prepare() when not looping
+>> but that's not necessary for this fix.
+> Won't it suffice by just putting snd_pcm_drain() at the end of the
+> whole operation like below?  Doing snd_pcm_drain() and
+> snd_pcm_prepare() at each time causes often undesired pop noises or
+> such.
+Yeah, that works too and pop avoidance is a good argument.
+> OTOH, doing drain there is good for showing the text at the right
+> time.  So, we'll likely want to have both options managed by a command
+> line option.
+>
+I see slight difference between text print and sample starts time on 
+Baytrail ADSP when doing loop test with your patch. Perhaps about half 
+second since buffer size is 24000 and SR 48 kHZ but I don't think that 
+matters much since it's hardly noticeable.
 
-Sadly there is no data within most/all current BIOSes that have this
-ACPI id for the RT286. The BIOSes are a little behind in the development
-here compared to the codec driver. So it's probably we will have to
-support this and _DSD with this particular driver.
-
-Liam
-
----------------------------------------------------------------------
-Intel Corporation (UK) Limited
-Registered No. 1134945 (England)
-Registered Office: Pipers Way, Swindon SN3 1RJ
-VAT No: 860 2173 47
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
