@@ -1,58 +1,74 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_spdif: don't change the root clock rate of
- spdif in driver
-Date: Tue, 16 Sep 2014 11:32:31 -0700
-Message-ID: <20140916183231.GW7960@sirena.org.uk>
-References: <1410867994-32138-1-git-send-email-shengjiu.wang@freescale.com>
- <20140916180028.GA6784@Asurada>
+Subject: Re: [PATCH v6 02/10] ASoC: Intel: mrfld: add bytes
+ control for modules
+Date: Tue, 16 Sep 2014 11:50:52 -0700
+Message-ID: <20140916185052.GY7960@sirena.org.uk>
+References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1410255693-6958-3-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WqTjpp3GQTmREKEt"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140916180028.GA6784@Asurada>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, shawn.guo@freescale.com, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============1627254805985343928=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58107261A7F
+ for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 20:51:01 +0200 (CEST)
+In-Reply-To: <1410255693-6958-3-git-send-email-subhransu.s.prusty@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---WqTjpp3GQTmREKEt
+--===============1627254805985343928==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="3ms171w63QQ5R/kt"
+Content-Disposition: inline
+
+
+--3ms171w63QQ5R/kt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Sep 16, 2014 at 11:19:28AM -0700, Nicolin Chen wrote:
+On Tue, Sep 09, 2014 at 03:11:25PM +0530, Subhransu S. Prusty wrote:
 
-> So I think, if it's a shared clock, we should not define it as a
-> rate-changeable one in the SoC level, as we might still have some
-> SoCs provide a dedicated clock to S/PDIF so as to get the maximum
-> range of clock support for users.
+> +	/*bc->max includes sizeof algos + length field*/
+> +	len = sizeof(cmd->dst) + sizeof(cmd->command_id) + bc->max;
 
-> @Shawn
-> Sorry to involve you in this topic. I'm not so sure if we can do
-> this in the clock driver so that the clock rate would be fixed
-> even if the driver is trying to change it. If we can, I think we
-> may use a better solution here instead.
+Throughout this patch you're using this unusual comment style with no
+spaces around the /* and */.  As previously requested please do try to
+follow normal kernel coding styles.
 
-I tend to agree here.  My first thought here is that we should have
-support in the clock API for constraining clocks in the clock API so we
-can still set the clock where there's a possibility to do that.  Not
-trivail to implement though.
-
---WqTjpp3GQTmREKEt
+--3ms171w63QQ5R/kt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUGII+AAoJECTWi3JdVIfQIvQH/j2M+9wF9bsoaA5a9C0ez09n
-XNDSYe0ckk6/FufDwY0Jhan6FjtTSNIq159kQtqjL3GnuXJww0ZOabmHGDRWBedY
-CZ5D4NDvoBnN0KBxzO3UqOvRFBFBlfFz8kKG6H+Usl899qBI3cvXBxol/wWK1vAx
-giDr48DV6V/g6WEuFA7ESndZzXbGYjzLxrUCdHMwliAK2AAMtr23kE1PJofVkBoh
-Iki9hDPuIKpcr6YBHFNWngyMuzo7lO3CCXraABZ1lXvLSZuE71ltjPcfwSf/RHc6
-SRqmYtmYoDrCqyAJACCjeBb6y6oTY1xEPkUIIfeM2hyv0/yET5hWKQzqVTkvBK4=
-=eDxO
+iQEcBAEBAgAGBQJUGIaLAAoJECTWi3JdVIfQgEUH/jf1B6o2lnPOWmpjxugaEHpZ
+we6IdimO0aIjnK9xwUyx65jnJ+tTMrI98uXX9rsYcTrkOUJPuayxZhLbkuggJ4MR
+ssKDCaOONZUaasC5PN3hEQS+pI5tBHbeu8bIBiPexNJRd1XPzi+uYpntEq5JR5RE
+GNhzFvfBjymWMPmdL73JHBaItVsEMUiCOJLlGdCXa7Y0maol7QzPlsPws5Ystjds
+Gw0K0Ds0r0oIOQKpZDnFXowfxrCruEU0a97a3mwAut6emqJquJVlQ9S1E7IObF+s
+PryQCthBiAepNtjxA9E0QbQQeR3wYj0qL0xJQTnIwI84/nBdkJl5IKwu7yLQ9Co=
+=B1RW
 -----END PGP SIGNATURE-----
 
---WqTjpp3GQTmREKEt--
+--3ms171w63QQ5R/kt--
+
+--===============1627254805985343928==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1627254805985343928==--
