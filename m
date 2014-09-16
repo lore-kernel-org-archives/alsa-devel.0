@@ -1,53 +1,150 @@
-From: Shawn Guo <shawn.guo@freescale.com>
-Subject: Re: [alsa-devel] [PATCH v2 2/4] ARM: dts: pbab01: enable I2S audio
- on phyFLEX-i.MX6 boards
-Date: Tue, 16 Sep 2014 09:46:58 +0800
-Message-ID: <20140916014657.GB23450@dragon>
-References: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
- <1410537872-17274-1-git-send-email-d.lavnikevich@sam-solutions.com>
- <1410537872-17274-3-git-send-email-d.lavnikevich@sam-solutions.com>
- <1410539161.314611261@f174.i.mail.ru>
- <CAOMZO5C9_XwgcLvVWvxB1A306_Ehm17ZE111j6d+7MhudAhT0g@mail.gmail.com>
- <5416D666.2050302@sam-solutions.net>
+From: Shengjiu Wang <shengjiu.wang@freescale.com>
+Subject: [PATCH V4] ASoC: fsl_ssi: refine ipg clock usage in this module
+Date: Tue, 16 Sep 2014 10:13:16 +0800
+Message-ID: <5dc0f13cdb62904ae0f104f9112faec672adea6f.1410833402.git.shengjiu.wang@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5416D666.2050302@sam-solutions.net>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.net>
-Cc: Fabio Estevam <festevam@gmail.com>, Alexander Shiyan <shc_work@mail.ru>, Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>, Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sascha Hauer <kernel@pengutronix.de>, Kumar Gala <galak@codeaurora.org>, =devicetree@vger.kernel.org
+To: timur@tabi.org, nicoleotsuka@gmail.com, Li.Xiubo@freescale.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, mpa@pengutronix.de
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 15, 2014 at 03:07:02PM +0300, Dmitry Lavnikevich wrote:
-> On 12/09/14 19:40, Fabio Estevam wrote:
-> >On Fri, Sep 12, 2014 at 1:26 PM, Alexander Shiyan <shc_work@mail.ru>=
- wrote:
-> >>Fri, 12 Sep 2014 19:04:30 +0300 =D0=BE=D1=82 Dmitry Lavnikevich <d.=
-lavnikevich@sam-solutions.com>:
-> >>>Audio on phyFLEX boards is presented by tlv320aic3007 codec connec=
-ted
-> >>>over SSI interface.
-> >>>
-> >>>Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com=
->
-> >>>---
-> >>...
-> >>>+&ssi2 {
-> >>>+     fsl,mode =3D "i2s-slave";
-> >>>+     status =3D "okay";
-> >>>+     #sound-dai-cells =3D <0>;
-> >>>+};
-> >>I have already sent patch to add "#sound-dai-cells" into all i.MX D=
-T-files.
-> >>Shawn, can you point us to this tree/commit?
-> >https://git.kernel.org/cgit/linux/kernel/git/shawnguo/linux.git/comm=
-it/?h=3Dfor-next&id=3D36c7e8826cf32dd4dd34c71b526653b800414355
-> So should I base my next patchset on for-next branch of
-> git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git
-> ?
+Check if ipg clock is in clock-names property, then we can move the
+ipg clock enable and disable operation to startup and shutdown, that
+is only enable ipg clock when ssi is working and keep clock is disabled
+when ssi is in idle.
+But when the checking is failed, remain the clock control as before.
 
-Yes, please.
+Tested-by: Markus Pargmann <mpa@pengutronix.de>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+---
+v4 change log:
+fix the code indent issue.
 
-Shawn
+ sound/soc/fsl/fsl_ssi.c |   53 ++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 45 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 2fc3e66..16a1361 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -169,6 +169,7 @@ struct fsl_ssi_private {
+ 	u8 i2s_mode;
+ 	bool use_dma;
+ 	bool use_dual_fifo;
++	bool has_ipg_clk_name;
+ 	unsigned int fifo_depth;
+ 	struct fsl_ssi_rxtx_reg_val rxtx_reg_val;
+ 
+@@ -530,6 +531,11 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct fsl_ssi_private *ssi_private =
+ 		snd_soc_dai_get_drvdata(rtd->cpu_dai);
++	int ret;
++
++	ret = clk_prepare_enable(ssi_private->clk);
++	if (ret)
++		return ret;
+ 
+ 	/* When using dual fifo mode, it is safer to ensure an even period
+ 	 * size. If appearing to an odd number while DMA always starts its
+@@ -544,6 +550,21 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+ }
+ 
+ /**
++ * fsl_ssi_shutdown: shutdown the SSI
++ *
++ */
++static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct fsl_ssi_private *ssi_private =
++		snd_soc_dai_get_drvdata(rtd->cpu_dai);
++
++	clk_disable_unprepare(ssi_private->clk);
++
++}
++
++/**
+  * fsl_ssi_set_bclk - configure Digital Audio Interface bit clock
+  *
+  * Note: This function can be only called when using SSI as DAI master
+@@ -1043,6 +1064,7 @@ static int fsl_ssi_dai_probe(struct snd_soc_dai *dai)
+ 
+ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
+ 	.startup	= fsl_ssi_startup,
++	.shutdown       = fsl_ssi_shutdown,
+ 	.hw_params	= fsl_ssi_hw_params,
+ 	.hw_free	= fsl_ssi_hw_free,
+ 	.set_fmt	= fsl_ssi_set_dai_fmt,
+@@ -1168,17 +1190,22 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+ 	u32 dmas[4];
+ 	int ret;
+ 
+-	ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
++	if (ssi_private->has_ipg_clk_name)
++		ssi_private->clk = devm_clk_get(&pdev->dev, "ipg");
++	else
++		ssi_private->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(ssi_private->clk)) {
+ 		ret = PTR_ERR(ssi_private->clk);
+ 		dev_err(&pdev->dev, "could not get clock: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-	ret = clk_prepare_enable(ssi_private->clk);
+-	if (ret) {
+-		dev_err(&pdev->dev, "clk_prepare_enable failed: %d\n", ret);
+-		return ret;
++	if (!ssi_private->has_ipg_clk_name) {
++		ret = clk_prepare_enable(ssi_private->clk);
++		if (ret) {
++			dev_err(&pdev->dev, "clk_prepare_enable failed: %d\n", ret);
++			return ret;
++		}
+ 	}
+ 
+ 	/* For those SLAVE implementations, we ingore non-baudclk cases
+@@ -1236,8 +1263,9 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+ 	return 0;
+ 
+ error_pcm:
+-	clk_disable_unprepare(ssi_private->clk);
+ 
++	if (!ssi_private->has_ipg_clk_name)
++		clk_disable_unprepare(ssi_private->clk);
+ 	return ret;
+ }
+ 
+@@ -1246,7 +1274,8 @@ static void fsl_ssi_imx_clean(struct platform_device *pdev,
+ {
+ 	if (!ssi_private->use_dma)
+ 		imx_pcm_fiq_exit(pdev);
+-	clk_disable_unprepare(ssi_private->clk);
++	if (!ssi_private->has_ipg_clk_name)
++		clk_disable_unprepare(ssi_private->clk);
+ }
+ 
+ static int fsl_ssi_probe(struct platform_device *pdev)
+@@ -1321,8 +1350,16 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	}
+ 
+-	ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
++	ret = of_property_match_string(np, "clock-names", "ipg");
++	if (ret < 0) {
++		ssi_private->has_ipg_clk_name = false;
++		ssi_private->regs = devm_regmap_init_mmio(&pdev->dev, iomem,
+ 			&fsl_ssi_regconfig);
++	} else {
++		ssi_private->has_ipg_clk_name = true;
++		ssi_private->regs = devm_regmap_init_mmio_clk(&pdev->dev,
++			"ipg", iomem, &fsl_ssi_regconfig);
++	}
+ 	if (IS_ERR(ssi_private->regs)) {
+ 		dev_err(&pdev->dev, "Failed to init register map\n");
+ 		return PTR_ERR(ssi_private->regs);
+-- 
+1.7.9.5
