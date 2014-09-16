@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 01/10] ASoC: Intel: mfld-pcm: don't call
- trigger ops to DSP for internal streams
-Date: Tue, 16 Sep 2014 11:54:03 -0700
-Message-ID: <20140916185402.GZ7960@sirena.org.uk>
+Subject: Re: [PATCH v6 02/10] ASoC: Intel: mrfld: add bytes
+ control for modules
+Date: Tue, 16 Sep 2014 11:55:02 -0700
+Message-ID: <20140916185502.GA7960@sirena.org.uk>
 References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
- <1410255693-6958-2-git-send-email-subhransu.s.prusty@intel.com>
+ <1410255693-6958-3-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4972501950845432060=="
+Content-Type: multipart/mixed; boundary="===============1735275758837659315=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 416E6261A7F
- for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 20:54:06 +0200 (CEST)
-In-Reply-To: <1410255693-6958-2-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C419261AFF
+ for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 20:55:10 +0200 (CEST)
+In-Reply-To: <1410255693-6958-3-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,48 +27,48 @@ Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4972501950845432060==
+--===============1735275758837659315==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="JkwjF0+O6jX31edR"
+	protocol="application/pgp-signature"; boundary="EyIqDK7+GVCmgGrt"
 Content-Disposition: inline
 
 
---JkwjF0+O6jX31edR
+--EyIqDK7+GVCmgGrt
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 09, 2014 at 03:11:24PM +0530, Subhransu S. Prusty wrote:
+On Tue, Sep 09, 2014 at 03:11:25PM +0530, Subhransu S. Prusty wrote:
 > From: Vinod Koul <vinod.koul@intel.com>
 >=20
-> For internal stream i.e. BE we have don't need trigger ops as that
-> would be handled by DAPM for us in subsequent patches
+> This patch add support for various modules like eq etc for mrfld DSP.
+> All these modules will be exposed to usermode as bytes controls.
 
 Applied, thanks.
 
---JkwjF0+O6jX31edR
+--EyIqDK7+GVCmgGrt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUGIdKAAoJECTWi3JdVIfQLk8H/3f2ioKAzc65FaUYih/MjS3+
-QEX9TLKX9M4xMzs301vr87nq0XxDNLBVsIM0ulT/f3XECi8AZ9XFOHJ1+IbThvYe
-KrOFEJIx5Qof/3pfn11+bC+/ydSLWtwwLlGmCtMm2TJdaUZ/jh8GA6grRkBLYxFf
-Ddz7pH6EjHfWG9JVbHYDcwfoEZS7YhgDvGaxeevMVGGW4H0B4wuGW7E5cTEV7cx0
-w5bH8/8mgjQI6fE92ieQ+M9ymU+KkRZ67DvRVBKM+grg5+wJ6ueAl3g6bUbVhpuV
-bV3g1PMEzezNiq/1/MGKUrJPS3zLdq1R1NTii9knK23KuQ2Sb1kHWemmOp05UvI=
-=zOuC
+iQEcBAEBAgAGBQJUGIeFAAoJECTWi3JdVIfQ6SgH/0OIqDONswPsaAb2gUWPqY3Y
+UJ2sRBMMk0HxobEohqwdR/isAbCDFxltPYn8ZS8Q5RZ0o5UIWo82k6iy/IKCznnm
+Tq6rfEoTWmkIInhQGeRHtE4TlhZXTfGPvzorHwIowvfuh4AIHmggyKCiB9+Vt6mx
+KgF2bj4+jXzL7jijG0YN3WDVS52k5eY057YRt/8QOLcL+3t1bChT2Ap5mdBxkUPQ
+5lSL3mJrDK9Vqu9iiBxXm6cj147DI4dDpnTXq3TGP5bsI/uwLJSgVvwHoDtDBvRQ
+qgPF+s/WlIlO3i0jNUcsptOqXIAPdfCFzsq/tqbHnU8eZ87w/bSM5mWdQs0g49Y=
+=B5p0
 -----END PGP SIGNATURE-----
 
---JkwjF0+O6jX31edR--
+--EyIqDK7+GVCmgGrt--
 
---===============4972501950845432060==
+--===============1735275758837659315==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4972501950845432060==--
+--===============1735275758837659315==--
