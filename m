@@ -1,69 +1,40 @@
-From: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
-Subject: [PATCH v3 4/4] ASoC: tlv320aic3x: fix PLL D configuration
-Date: Tue, 16 Sep 2014 11:09:24 +0300
-Message-ID: <1410854964-26573-1-git-send-email-d.lavnikevich@sam-solutions.com>
-References: <1410854903-26419-1-git-send-email-d.lavnikevich@sam-solutions.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v5 01/15] OMAPDSS: hdmi.h: Add HDMI_AUDIO_LAYOUT_6CH enum value
+Date: Tue, 16 Sep 2014 13:04:15 +0300
+Message-ID: <c8325a85e768204fcffbcf748f1f29fda959873f.1410860765.git.jsarha@ti.com>
+References: <cover.1410860765.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1410854903-26419-1-git-send-email-d.lavnikevich@sam-solutions.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: shawn.guo@freescale.com, kernel@pengutronix.de, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, perex@perex.cz, tiwai@suse.de
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, =devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <cover.1410860765.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Current caching implementation during regcache_sync() call bypasses
-all register writes of values that are already known as default
-(regmap reg_defaults). Same time in TLV320AIC3x codecs register 5
-(AIC3X_PLL_PROGC_REG) write should be immediately followed by register
-6 write (AIC3X_PLL_PROGD_REG) even if it was not changed. Otherwise
-both registers will not be written.
+The OMAP5 HDMI audio implementation needs HDMI_AUDIO_LAYOUT_6CH in
+hdmi_core_audio_layout enum. I found the correct value from ti-linux
+3.8 tree.
 
-This brings to issue that appears particulary in case of 44.1kHz
-playback with 19.2MHz master clock. In this case AIC3X_PLL_PROGC_REG
-is 0x6e while AIC3X_PLL_PROGD_REG is 0x0 (same as register
-default). Thus AIC3X_PLL_PROGC_REG also remains not written and we get
-wrong playback speed.
-
-In this patch snd_soc_read() is used to get cached pll values and
-snd_soc_write() (unlike regcache_sync() this function doesn't bypasses
-hardware default values) to write them to registers.
-
-Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
- sound/soc/codecs/tlv320aic3x.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/video/fbdev/omap2/dss/hdmi.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 64f179ee9834..5e8626ae612b 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1121,6 +1121,7 @@ static int aic3x_regulator_event(struct notifier_block *nb,
- static int aic3x_set_power(struct snd_soc_codec *codec, int power)
- {
- 	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
-+	unsigned int pll_c, pll_d;
- 	int ret;
+diff --git a/drivers/video/fbdev/omap2/dss/hdmi.h b/drivers/video/fbdev/omap2/dss/hdmi.h
+index 262771b..1f01068 100644
+--- a/drivers/video/fbdev/omap2/dss/hdmi.h
++++ b/drivers/video/fbdev/omap2/dss/hdmi.h
+@@ -160,7 +160,8 @@ enum hdmi_audio_blk_strt_end_sig {
  
- 	if (power) {
-@@ -1138,6 +1139,18 @@ static int aic3x_set_power(struct snd_soc_codec *codec, int power)
- 		/* Sync reg_cache with the hardware */
- 		regcache_cache_only(aic3x->regmap, false);
- 		regcache_sync(aic3x->regmap);
-+
-+		/* Rewrite paired PLL D registers in case cached sync skipped
-+		 * writing one of them and thus caused other one also not
-+		 * being written
-+		 */
-+		pll_c = snd_soc_read(codec, AIC3X_PLL_PROGC_REG);
-+		pll_d = snd_soc_read(codec, AIC3X_PLL_PROGD_REG);
-+		if (pll_c == aic3x_reg[AIC3X_PLL_PROGC_REG].def ||
-+			pll_d == aic3x_reg[AIC3X_PLL_PROGD_REG].def) {
-+			snd_soc_write(codec, AIC3X_PLL_PROGC_REG, pll_c);
-+			snd_soc_write(codec, AIC3X_PLL_PROGD_REG, pll_d);
-+		}
- 	} else {
- 		/*
- 		 * Do soft reset to this codec instance in order to clear
+ enum hdmi_core_audio_layout {
+ 	HDMI_AUDIO_LAYOUT_2CH = 0,
+-	HDMI_AUDIO_LAYOUT_8CH = 1
++	HDMI_AUDIO_LAYOUT_8CH = 1,
++	HDMI_AUDIO_LAYOUT_6CH = 2
+ };
+ 
+ enum hdmi_core_cts_mode {
 -- 
-2.1.0
+1.7.9.5
+
