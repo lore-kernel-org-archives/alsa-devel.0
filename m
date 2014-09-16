@@ -1,50 +1,44 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH/alsa-lib trivial] hwdep: add missing
-	declaration for snd_hwdep_poll_descriptors_count()
-Date: Wed, 17 Sep 2014 07:07:03 +0900
-Message-ID: <1410905223-7541-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/1 linux-next] ASoC: cs35l32: remove second linux/slab.h
+ inclusion
+Date: Tue, 16 Sep 2014 16:10:50 -0700
+Message-ID: <20140916231050.GF7960@sirena.org.uk>
+References: <1410894151-6246-1-git-send-email-fabf@skynet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id BB21E264F22
- for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 00:07:09 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="4OxkfA0LVqADv3Vx"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1410894151-6246-1-git-send-email-fabf@skynet.be>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabian Frederick <fabf@skynet.be>
+Cc: linux-kernel@vger.kernel.org, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The alsa-lib has 'snd_hwdep_poll_descriptors_count()' but hwdep.h has no
-declaration for the function. No applications can call the function just
-by including the header.
 
-This commit adds a line to the file for this function.
+--4OxkfA0LVqADv3Vx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- include/hwdep.h | 1 +
- 1 file changed, 1 insertion(+)
+On Tue, Sep 16, 2014 at 09:02:31PM +0200, Fabian Frederick wrote:
+> linux/slab.h was included twice.
 
-diff --git a/include/hwdep.h b/include/hwdep.h
-index 6496fa2..ad8bb49 100644
---- a/include/hwdep.h
-+++ b/include/hwdep.h
-@@ -102,6 +102,7 @@ typedef struct _snd_hwdep snd_hwdep_t;
- int snd_hwdep_open(snd_hwdep_t **hwdep, const char *name, int mode);
- int snd_hwdep_close(snd_hwdep_t *hwdep);
- int snd_hwdep_poll_descriptors(snd_hwdep_t *hwdep, struct pollfd *pfds, unsigned int space);
-+int snd_hwdep_poll_descriptors_count(snd_hwdep_t *hwdep);
- int snd_hwdep_poll_descriptors_revents(snd_hwdep_t *hwdep, struct pollfd *pfds, unsigned int nfds, unsigned short *revents);
- int snd_hwdep_nonblock(snd_hwdep_t *hwdep, int nonblock);
- int snd_hwdep_info(snd_hwdep_t *hwdep, snd_hwdep_info_t * info);
--- 
-1.9.1
+Applied, thanks.
+
+--4OxkfA0LVqADv3Vx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUGMN5AAoJECTWi3JdVIfQYdQH/3EVPnfl5jWQpB9elDtXy0ka
+m6Ztmy/ptQJgvDjIg8EhFtxuL0YwYM4GnM4ePn8mAZZLdx4Lhn2ae/LyocNp/EJX
+oTt2IBQRIK2Ch5tsqdQ/Bd9waf43yq3L8cEuzqNjBjAojnGtju7zbgURtmPQA/rm
+ak6imHqDdfs5Wdq12BZK+9ja3e3sj0T1IBpyKQwBHaVHOlLIinhRCXwpuGaGTaCC
+wQEfBS76ed5YKzDHmuDAVfMVC/DtqoQTCzwIMNgStuT5S8TyLQSQ/7ZQuuaQajJY
+Un0y6coHT/K5tO6tZE6q+aRwiblmWPErrsncR0Mm+MbhOQ7r1DXmL2cCgX1n+wY=
+=dpHc
+-----END PGP SIGNATURE-----
+
+--4OxkfA0LVqADv3Vx--
