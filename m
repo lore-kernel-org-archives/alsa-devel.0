@@ -1,124 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v3.17
-Date: Mon, 15 Sep 2014 15:31:29 -0700
-Message-ID: <20140915223129.GE7960@sirena.org.uk>
+From: Shawn Guo <shawn.guo@freescale.com>
+Subject: Re: [alsa-devel] [PATCH v2 2/4] ARM: dts: pbab01: enable I2S audio
+ on phyFLEX-i.MX6 boards
+Date: Tue, 16 Sep 2014 09:46:58 +0800
+Message-ID: <20140916014657.GB23450@dragon>
+References: <1410356809-26179-1-git-send-email-d.lavnikevich@sam-solutions.com>
+ <1410537872-17274-1-git-send-email-d.lavnikevich@sam-solutions.com>
+ <1410537872-17274-3-git-send-email-d.lavnikevich@sam-solutions.com>
+ <1410539161.314611261@f174.i.mail.ru>
+ <CAOMZO5C9_XwgcLvVWvxB1A306_Ehm17ZE111j6d+7MhudAhT0g@mail.gmail.com>
+ <5416D666.2050302@sam-solutions.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4481528992491118514=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 12234264FEE
- for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 00:31:38 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5416D666.2050302@sam-solutions.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.net>
+Cc: Fabio Estevam <festevam@gmail.com>, Alexander Shiyan <shc_work@mail.ru>, Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>, Mark Rutland <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Sascha Hauer <kernel@pengutronix.de>, Kumar Gala <galak@codeaurora.org>, =devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Sep 15, 2014 at 03:07:02PM +0300, Dmitry Lavnikevich wrote:
+> On 12/09/14 19:40, Fabio Estevam wrote:
+> >On Fri, Sep 12, 2014 at 1:26 PM, Alexander Shiyan <shc_work@mail.ru>=
+ wrote:
+> >>Fri, 12 Sep 2014 19:04:30 +0300 =D0=BE=D1=82 Dmitry Lavnikevich <d.=
+lavnikevich@sam-solutions.com>:
+> >>>Audio on phyFLEX boards is presented by tlv320aic3007 codec connec=
+ted
+> >>>over SSI interface.
+> >>>
+> >>>Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com=
+>
+> >>>---
+> >>...
+> >>>+&ssi2 {
+> >>>+     fsl,mode =3D "i2s-slave";
+> >>>+     status =3D "okay";
+> >>>+     #sound-dai-cells =3D <0>;
+> >>>+};
+> >>I have already sent patch to add "#sound-dai-cells" into all i.MX D=
+T-files.
+> >>Shawn, can you point us to this tree/commit?
+> >https://git.kernel.org/cgit/linux/kernel/git/shawnguo/linux.git/comm=
+it/?h=3Dfor-next&id=3D36c7e8826cf32dd4dd34c71b526653b800414355
+> So should I base my next patchset on for-next branch of
+> git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git
+> ?
 
---===============4481528992491118514==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/upgxG3i8WFRGOa+"
-Content-Disposition: inline
+Yes, please.
 
-
---/upgxG3i8WFRGOa+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-The following changes since commit 9e82bf014195d6f0054982c463575cdce24292be:
-
-  Linux 3.17-rc5 (2014-09-14 17:50:12 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.17-rc4
-
-for you to fetch changes up to f7667af21736eb231e3589d9f91183d325cabfbe:
-
-  Merge remote-tracking branches 'asoc/fix/cs4265', 'asoc/fix/davinci', 'asoc/fix/rockchip', 'asoc/fix/samsung' and 'asoc/fix/tlv320aic31xx' into asoc-linus (2014-09-15 15:05:34 -0700)
-
-----------------------------------------------------------------
-ASoC: Fixes for v3.17
-
-This is mostly driver fixes, the biggest one being the tlv320aic31xx
-which is relatively large but simple and device specific.  There's a
-small fix in the error handling in DPCM too which is relatively minor
-error handling fix.
-
-----------------------------------------------------------------
-Charles Keepax (1):
-      ASoC: samsung-i2s: Check secondary DAI exists before referencing
-
-Jianqun (3):
-      ASoC: rockchip-i2s: fix master mode set bit error
-      ASoC: rockchip-i2s: fix registers' property of rockchip i2s controller
-      ASoC: rockchip-i2s: dt: swap tx and rx channed request number in example
-
-Jyri Sarha (1):
-      ASoC: tlv320aic31xx: Fix 24bit samples with I2S format and 12MHz mclk
-
-Mark Brown (3):
-      Merge remote-tracking branch 'asoc/fix/core' into asoc-linus
-      Merge remote-tracking branch 'asoc/fix/pcm' into asoc-linus
-      Merge remote-tracking branches 'asoc/fix/cs4265', 'asoc/fix/davinci', 'asoc/fix/rockchip', 'asoc/fix/samsung' and 'asoc/fix/tlv320aic31xx' into asoc-linus
-
-Paul Handrigan (1):
-      ASoC: cs4265: Fix register address to set the proper data type.
-
-Peter Ujfalusi (1):
-      ASoC: davinci-mcasp: Correct rx format unit configuration
-
-Qiao Zhou (1):
-      ASoC: soc-pcm: fix dpcm_path_get error handling
-
-Rajeev Kumar (2):
-      ASoC: dwc: Update email id of the author
-      ASoC: Update email id of the author
-
- .../devicetree/bindings/sound/rockchip-i2s.txt     |  2 +-
- sound/soc/codecs/cs4265.c                          |  6 +--
- sound/soc/codecs/sta529.c                          |  4 +-
- sound/soc/codecs/tlv320aic31xx.c                   | 51 +++++++++++++++++-----
- sound/soc/davinci/davinci-mcasp.c                  | 11 ++++-
- sound/soc/dwc/designware_i2s.c                     |  4 +-
- sound/soc/rockchip/rockchip_i2s.c                  | 13 +++---
- sound/soc/samsung/i2s.c                            |  5 ++-
- sound/soc/soc-compress.c                           |  6 ++-
- sound/soc/soc-pcm.c                                |  6 ++-
- sound/soc/spear/spear_pcm.c                        |  4 +-
- 11 files changed, 79 insertions(+), 33 deletions(-)
-
---/upgxG3i8WFRGOa+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUF2jAAAoJECTWi3JdVIfQAkYH/jcSvkmzBk6Oc9pyJPPdXlFI
-SrMULnwqW0ESmQeE2QAKRRIBuj8KLedVdzFrxSaNw17ZG+2iFOeSrEpvocgqdrrJ
-jnYtlrtQCzM3I9VoGIHOEl4JH1s8DWWhNwwQtf4sDiRHMkHZDszPuIm+5DvCFcUA
-onbmZ9xOqWdcWsl+j9l6d8724CJK9wJzFt/xGddZSllVu352uV1Bc1HyByOB6+KD
-zMiZE6UnC0pdQ6nIZk467BJ82yHz2sT82yj1L5FkiXbVbttdkWC1uAoqourTFUmm
-3bd4VqM7S7IaxzhymBjrrE+JYVxSzW6ooV0/QfZoUQkdbaOekQep8ueO7novgcw=
-=x16R
------END PGP SIGNATURE-----
-
---/upgxG3i8WFRGOa+--
-
---===============4481528992491118514==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4481528992491118514==--
+Shawn
