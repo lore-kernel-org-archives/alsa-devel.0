@@ -1,15 +1,15 @@
 From: Xavier Hsu <xavier.hsu@linaro.org>
-Subject: [PATCHv4 2/9] WM8971 modifies the control of deemphasis
-Date: Wed, 17 Sep 2014 16:41:08 +0800
-Message-ID: <1410943275-4160-2-git-send-email-xavier.hsu@linaro.org>
+Subject: [PATCHv4 7/9] WM8971 uses msleep to replace work queue
+Date: Wed, 17 Sep 2014 16:41:13 +0800
+Message-ID: <1410943275-4160-7-git-send-email-xavier.hsu@linaro.org>
 References: <1410943275-4160-1-git-send-email-xavier.hsu@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from Kraken (unknown [124.219.7.128])
- by alsa0.perex.cz (Postfix) with ESMTP id E44C4265238
- for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 10:41:29 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BF8D7265311
+ for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 10:41:31 +0200 (CEST)
 In-Reply-To: <1410943275-4160-1-git-send-email-xavier.hsu@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,7 +25,8 @@ Cc: Xavier Hsu <xavier.hsu@linaro.org>, ckeepax@opensource.wolfsonmicro.com, lar
 List-Id: alsa-devel@alsa-project.org
 
 This patch improves WM8971.
-We modifies the control of deemphasis
+We use msleep to replace work queue.
+"As suggested by Mark Brown"
 
 Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
 Signed-off-by: Andy Green <andy.green@linaro.org>
@@ -33,141 +34,80 @@ Signed-off-by: Andy Green <andy.green@linaro.org>
 Any comments about improving the patch are welcome.
 Thanks.
 
- sound/soc/codecs/wm8971.c |   77 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 75 insertions(+), 2 deletions(-)
- mode change 100644 => 100755 sound/soc/codecs/wm8971.c
+ sound/soc/codecs/wm8971.c |   27 ++++-----------------------
+ 1 file changed, 4 insertions(+), 23 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
-old mode 100644
-new mode 100755
-index c0f7e9b..1b4f457
+index 5b38c7a..d081cae 100755
 --- a/sound/soc/codecs/wm8971.c
 +++ b/sound/soc/codecs/wm8971.c
-@@ -7,6 +7,10 @@
-  *
-  * Based on wm8753.c by Liam Girdwood
-  *
-+ * WM8971 Improve Copyright (C) 2014 Linaro, Ltd
-+ * Author: Xavier Hsu <xavier.hsu@linaro.org>
-+ *         Andy Green <andy.green@linaro.org>
-+ *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-  *  Free Software Foundation;  either version 2 of the  License, or (at your
-@@ -36,6 +40,11 @@ static struct workqueue_struct *wm8971_workq;
+@@ -36,8 +36,6 @@
+ 
+ #define	WM8971_REG_COUNT		43
+ 
+-static struct workqueue_struct *wm8971_workq;
+-
  /* codec private data */
  struct wm8971_priv {
- 	unsigned int sysclk;
-+
-+	/* De-emphasis */
-+	struct mutex deemph_mutex;
-+	int playback_fs;
-+	bool deemph;
+ 	/* MCLK */
+@@ -779,16 +777,6 @@ static struct snd_soc_dai_driver wm8971_dai = {
+ 	.ops = &wm8971_dai_ops,
  };
  
- /*
-@@ -100,7 +109,6 @@ static const char const *wm8971_alc_func[] = {"Off", "Right",
- 					      "Left", "Stereo"};
- static const char const *wm8971_ng_type[] = {"Constant PGA Gain",
- 					     "Mute ADC Output"};
--static const char const *wm8971_deemp[] = {"None", "32kHz", "44.1kHz", "48kHz"};
- static const char const *wm8971_mono_mux[] = {"Stereo", "Mono (Left)",
- 					      "Mono (Right)", "Digital Mono"};
- static const char const *wm8971_dac_phase[] = {"Non Inverted", "Inverted"};
-@@ -114,6 +122,66 @@ static const char const *wm8971_rpga_sel[] = {"Line", "Mic", "NC",
- 					      "Differential"};
- static const char const *wm8971_adcpol[] = {"Normal", "L Invert",
- 					    "R Invert", "L + R Invert"};
-+static const char const *wm8971_deemp[] = {"None", "32kHz",
-+					   "44.1kHz", "48kHz"};
-+
-+static int wm8971_set_deemph(struct snd_soc_codec *codec)
-+{
-+	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
-+	int val = 0, i, best = 0;
-+
-+	/* If we're using deemphasis select the nearest available sample
-+	 * rate.
-+	*/
-+	if (wm8971->deemph) {
-+		best = 1;
-+		for (i = 2; i < ARRAY_SIZE(wm8971_deemp); i++) {
-+			if (abs(wm8971_deemp[i] - wm8971->playback_fs) <
-+			    abs(wm8971_deemp[best] - wm8971->playback_fs))
-+				best = i;
-+		}
-+		val = best << 1;
-+	}
-+
-+	dev_dbg(codec->dev, "Set deemphasis %d (%dHz)\n",
-+		best, wm8971_deemp[best]);
-+
-+	return snd_soc_update_bits(codec, WM8971_ADCDAC, 0x6, val);
-+}
-+
-+static int wm8971_get_deemph(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
-+
-+	ucontrol->value.enumerated.item[0] = wm8971->deemph;
-+
-+	return 0;
-+}
-+
-+static int wm8971_put_deemph(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
-+	int deemph = ucontrol->value.enumerated.item[0];
-+	int ret = 0;
-+
-+	if (deemph > 1)
-+		return -EINVAL;
-+
-+	mutex_lock(&wm8971->deemph_mutex);
-+	if (wm8971->deemph != deemph) {
-+		wm8971->deemph = deemph;
-+		wm8971_set_deemph(codec);
-+
-+		ret = 1;
-+	}
-+	mutex_unlock(&wm8971->deemph_mutex);
-+
-+	return ret;
-+}
- 
- static const struct soc_enum wm8971_enum[] = {
- 	SOC_ENUM_SINGLE(WM8971_BASS, 7, 2, wm8971_bass),	/* 0 */
-@@ -184,7 +252,8 @@ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
- 	SOC_SINGLE("Capture 6dB Attenuate", WM8971_ADCDAC, 8, 1, 0),
- 	SOC_SINGLE("Playback 6dB Attenuate", WM8971_ADCDAC, 7, 1, 0),
- 
--	SOC_ENUM("Playback De-emphasis", wm8971_enum[5]),
-+	SOC_SINGLE_BOOL_EXT("Playback De-emphasis Switch", 0,
-+			    wm8971_get_deemph, wm8971_put_deemph),
- 	SOC_ENUM("Playback Function", wm8971_enum[6]),
- 	SOC_ENUM("Playback Phase", wm8971_enum[7]),
- 
-@@ -534,6 +603,8 @@ static int wm8971_pcm_hw_params(struct snd_pcm_substream *substream,
- 		break;
+-static void wm8971_work(struct work_struct *work)
+-{
+-	struct snd_soc_dapm_context *dapm =
+-		container_of(work, struct snd_soc_dapm_context,
+-			     delayed_work.work);
+-	struct snd_soc_codec *codec = dapm->codec;
+-
+-	wm8971_set_bias_level(codec, codec->dapm.bias_level);
+-}
+-
+ static int wm8971_suspend(struct snd_soc_codec *codec)
+ {
+ 	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
+@@ -806,8 +794,8 @@ static int wm8971_resume(struct snd_soc_codec *codec)
+ 		reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+ 		snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
+ 		codec->dapm.bias_level = SND_SOC_BIAS_ON;
+-		queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
+-				   msecs_to_jiffies(1000));
++		wm8971_set_bias_level(codec, codec->dapm.bias_level);
++		msleep(1000);
  	}
  
-+	wm8971_set_deemph(codec);
-+
- 	/* set iface & srate */
- 	snd_soc_write(codec, WM8971_IFACE, iface);
- 	if (coeff >= 0)
-@@ -727,6 +798,8 @@ static int wm8971_i2c_probe(struct i2c_client *i2c,
- 	if (wm8971 == NULL)
- 		return -ENOMEM;
+ 	return 0;
+@@ -818,19 +806,14 @@ static int wm8971_probe(struct snd_soc_codec *codec)
+ 	int ret = 0;
+ 	u16 reg;
  
-+	mutex_init(&wm8971->deemph_mutex);
-+
- 	regmap = devm_regmap_init_i2c(i2c, &wm8971_regmap);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
+-	INIT_DELAYED_WORK(&codec->dapm.delayed_work, wm8971_work);
+-	wm8971_workq = create_workqueue("wm8971");
+-	if (wm8971_workq == NULL)
+-		return -ENOMEM;
+-
+ 	wm8971_reset(codec);
+ 
+ 	/* charge output caps - set vmid to 5k for quick power up */
+ 	reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+ 	snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
+ 	codec->dapm.bias_level = SND_SOC_BIAS_STANDBY;
+-	queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
+-			   msecs_to_jiffies(1000));
++	wm8971_set_bias_level(codec, codec->dapm.bias_level);
++	msleep(1000);
+ 
+ 	/* set the update bits */
+ 	snd_soc_update_bits(codec, WM8971_LDAC, 0x0100, 0x0100);
+@@ -850,8 +833,6 @@ static int wm8971_remove(struct snd_soc_codec *codec)
+ {
+ 	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 
+-	if (wm8971_workq)
+-		destroy_workqueue(wm8971_workq);
+ 	return 0;
+ }
+ 
 -- 
 1.7.9.5
