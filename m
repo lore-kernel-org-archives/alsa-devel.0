@@ -1,50 +1,79 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v3 4/5] ASoC: davinci: HDMI audio build for AM33XX and
- TDA998x
-Date: Thu, 18 Sep 2014 00:13:09 +0300
-Message-ID: <5419F965.9060209@ti.com>
-References: <cover.1410898073.git.jsarha@ti.com> <270f1e048d9a5a17a7f367ecabc509475b8c1145.1410898073.git.jsarha@ti.com> <20140917194126.GV7960@sirena.org.uk>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: Radeon unconnected HDMI eats samples at 280 kHz
+Date: Thu, 18 Sep 2014 00:26:54 +0300
+Message-ID: <5419FC9E.9010302@iki.fi>
+References: <54198F38.30002@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20140917194126.GV7960@sirena.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org, tony@atomide.com, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com, t-kristo@ti.com, Jean-Francois Moine <moinejf@free.fr>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webmail.tpnet.fi (webmail.tpnet.fi [62.106.63.33])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21931265452
+ for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 23:26:56 +0200 (CEST)
+In-Reply-To: <54198F38.30002@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/17/2014 10:41 PM, Mark Brown wrote:
-> On Tue, Sep 16, 2014 at 11:40:17PM +0300, Jyri Sarha wrote:
->> Adds configuration option for HDMI audio support for AM33XX based
->> boards with NXP TDA998x HDMI transmitter. The audio is connected to
->> NXP TDA998x trough McASP running in i2s mode.
->
-> So, Jean-Francois is also trying to do things with the TDA998x - what's
-> the story with that, is this joined up at all?
->
+17.09.2014, 16:40, David Henningsson kirjoitti:
+> Hi,
 
-Not really. This basic functionality does not touch tda998x at all on 
-the fly, but just sets i2s configuation in the beginning and bangs the 
-bits trough McASP. But as long as the old platform data for tda998x 
-still works after Jean-Francois' patches I should be safe.
+Hi,
 
-The problem with the Jean-Francois' patches is the DT support. The BBB 
-HDMI video is implemented trough tilcdc-slave mechanism without a DT 
-node for the tda encoder, which renders Jean-Francois' approach unusable 
-for BBB.
+> While investigating some interesting debug output from PulseAudio, I 
+> tried to figure out the cause.
+> 
+>  From what I can tell, my Radeon seems to ask for new samples at a very 
+> high rate, which I estimate to be around 280 kHz. My radeon card has 
+> DVI, HDMI and VGA connectors, and the only thing connected is my screen 
+> over DVI.
+> 
+> I'm currently running the 3.13 kernel with updated hda directory from 
+> Takashi's tree, but I think it's been this way for a long time.
+> 
+> Note that if a screen is connected to the HDMI card, the problem 
+> disappears and sample rates are normal.
+> In short, do you think this is a driver bug, or just something we have 
+> to live with as some sort of hw anomaly?
+> Since nothing is connected, it does not really hurt, except PulseAudio 
+> gets confused (in a way that could potentially cause problems for 
+> low-latency output, should something be connected later on).
 
-The whole tilcdc slave approach may not be the most elegant way to use 
-the tda driver, but it does not look like it is going to change any time 
-soon.
+Not sure.
+IIRC, unlike the other gpus, on radeon the video driver needs to
+"manually" set sample rate dividers/etc based on the pixel clock rate,
+so I guess this might mean we can't have a proper audio clock without
+enabled video...
 
-Best regards,
-Jyri
+Alex, any thoughts/info?
 
-ps. I have been thinking on something similar to Jean-Francois' patch 
-for SiI9022 which I have been working on lately. Also I have been 
-wondering if it would be possible to come up with a generic ASoC codec 
-component driver or library that could be used with any HDMI encoder to 
-produce the ASoC codec component. Unfortunately I am in too early stage 
-to produce anything more concrete.
 
+If this is the case, it would probably be best if we prevented opening
+the device when output is not active (unless this causes some other
+issues), but I guess there is currently no easy way for the _audio_
+driver to know that...
+
+
+> For reference, here's lspci of the HDMI card:
+> 
+> 01:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc. 
+> [AMD/ATI] RV710 [Radeon HD 4550] [1002:9540] (prog-if 00 [VGA controller])
+> 	Subsystem: PC Partner Limited / Sapphire Technology Device [174b:e106]
+> 01:00.1 Audio device [0403]: Advanced Micro Devices, Inc. [AMD/ATI] 
+> RV710/730 HDMI Audio [Radeon HD 4000 series] [1002:aa38]
+> 	Subsystem: PC Partner Limited / Sapphire Technology Device [174b:aa38]
+> 
+> 
+
+
+-- 
+Anssi Hannula
