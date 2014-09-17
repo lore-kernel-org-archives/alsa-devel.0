@@ -1,23 +1,18 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_spdif: don't change the root
- clock rate of spdif in driver
-Date: Tue, 16 Sep 2014 19:50:15 -0700
-Message-ID: <20140917025014.GA6048@Asurada>
-References: <1410867994-32138-1-git-send-email-shengjiu.wang@freescale.com>
- <20140916180028.GA6784@Asurada> <20140917013251.GA4796@dragon>
- <20140917022440.GA3216@Asurada> <20140917023127.GA16456@dragon>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: [PATCH 1/2] ASoC: rt5677: Add a configuration option
+	for LDO2_POW pin
+Date: Tue, 16 Sep 2014 22:28:58 -0700
+Message-ID: <1410931739-6088-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
- [209.85.192.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 0627F26516D
- for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 04:50:33 +0200 (CEST)
-Received: by mail-pd0-f172.google.com with SMTP id v10so1137823pde.3
- for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 19:50:32 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20140917023127.GA16456@dragon>
+Received: from mail-ie0-f202.google.com (mail-ie0-f202.google.com
+ [209.85.223.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id B16E52651CB
+ for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 07:29:11 +0200 (CEST)
+Received: by mail-ie0-f202.google.com with SMTP id rd18so178868iec.3
+ for <alsa-devel@alsa-project.org>; Tue, 16 Sep 2014 22:29:10 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,30 +22,148 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@freescale.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, broonie@kernel.org, timur@tabi.org, Li.Xiubo@freescale.com, linuxppc-dev@lists.ozlabs.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 17, 2014 at 10:31:28AM +0800, Shawn Guo wrote:
-> On Tue, Sep 16, 2014 at 07:24:40PM -0700, Nicolin Chen wrote:
-> > It's not supported in the clock API or just not implemented in our
-> > code? Can we just register a clock without CLK_SET_RATE_PARENT to
-> > achieve the purpose? (We are just trying to fix those PRED and PODF
-> > dividers when the driver calls set_rate to their GATE clock.)
-> 
-> It seems I misunderstood your question.  Yes, if we drop flag
-> CLK_SET_RATE_PARENT for the gate clock in question, the rate change
-> request will not be propagated to upstream dividers.
+Some boards have this pin tied to board and do not require any configuration,
+some other boards allow to enable chip using GPIO.
 
-Okay. Since there's a solution that allows us to handle it better,
-problem solved then.
+Add an option that tells which GPIO is used to power up the codec.
 
-@Shengjiu
-Would you please take a look at the clock driver to implement a
-new clock register function? And make sure to register the GATE
-clock only without the flag CLK_SET_RATE_PARENT, as we may still
-need to set a reasonable rate for the clock by setting its PODF
-clock node instead.
+Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+---
+ Documentation/devicetree/bindings/sound/rt5677.txt | 41 +++++++++++++++++++++
+ sound/soc/codecs/rt5677.c                          | 42 ++++++++++++++++++++++
+ sound/soc/codecs/rt5677.h                          |  1 +
+ 3 files changed, 84 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rt5677.txt
 
-Thank you both
-Nicolin
+diff --git a/Documentation/devicetree/bindings/sound/rt5677.txt b/Documentation/devicetree/bindings/sound/rt5677.txt
+new file mode 100644
+index 0000000..98509fb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/rt5677.txt
+@@ -0,0 +1,41 @@
++RT5677 audio CODEC
++
++This device supports I2C only.
++
++Required properties:
++
++- compatible : "realtek,rt5677".
++
++- reg : The I2C address of the device.
++
++- interrupts : The CODEC's interrupt output.
++
++Optional properties:
++
++- realtek,pow-ldo2-gpio : The GPIO that controls the CODEC's POW_LDO2 pin.
++
++Pins on the device (for linking into audio routes):
++
++  * IN1P
++  * IN1N
++  * IN2P
++  * IN2N
++  * MICBIAS1
++  * DMIC1
++  * DMIC2
++  * DMIC3
++  * DMIC4
++  * LOUT1
++  * LOUT2
++  * LOUT3
++
++Example:
++
++rt5677 {
++	compatible = "realtek,rt5677";
++	reg = <0x2c>;
++	interrupt-parent = <&gpio>;
++	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
++	realtek,pow-ldo2-gpio =
++		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
++};
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 9847473..fbaceb6 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -15,6 +15,7 @@
+ #include <linux/init.h>
+ #include <linux/delay.h>
+ #include <linux/pm.h>
++#include <linux/of_gpio.h>
+ #include <linux/regmap.h>
+ #include <linux/i2c.h>
+ #include <linux/platform_device.h>
+@@ -3495,6 +3496,24 @@ static const struct i2c_device_id rt5677_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
+ 
++static int rt5677_parse_dt(struct rt5677_priv *rt5677, struct device_node *np)
++{
++	rt5677->pow_ldo2 = of_get_named_gpio(np,
++					"realtek,pow-ldo2-gpio", 0);
++
++	/*
++	 * POW_LDO2 is optional (it may be statically tied on the board).
++	 * -ENOENT means that the property doesn't exist, i.e. there is no
++	 * GPIO, so is not an error. Any other error code means the property
++	 * exists, but could not be parsed.
++	 */
++	if (!gpio_is_valid(rt5677->pow_ldo2) &&
++			(rt5677->pow_ldo2 != -ENOENT))
++		return rt5677->pow_ldo2;
++
++	return 0;
++}
++
+ static int rt5677_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+@@ -3513,6 +3532,29 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
+ 	if (pdata)
+ 		rt5677->pdata = *pdata;
+ 
++	if (i2c->dev.of_node) {
++		ret = rt5677_parse_dt(rt5677, i2c->dev.of_node);
++		if (ret) {
++			dev_err(&i2c->dev, "Failed to parse device tree: %d\n",
++				ret);
++			return ret;
++		}
++	} else {
++		rt5677->pow_ldo2 = -EINVAL;
++	}
++
++	if (gpio_is_valid(rt5677->pow_ldo2)) {
++		ret = devm_gpio_request_one(&i2c->dev, rt5677->pow_ldo2,
++					    GPIOF_OUT_INIT_HIGH,
++					    "RT5677 POW_LDO2");
++		if (ret < 0) {
++			dev_err(&i2c->dev, "Failed to request POW_LDO2 %d: %d\n",
++				rt5677->pow_ldo2, ret);
++			return ret;
++		}
++		msleep(10);
++	}
++
+ 	rt5677->regmap = devm_regmap_init_i2c(i2c, &rt5677_regmap);
+ 	if (IS_ERR(rt5677->regmap)) {
+ 		ret = PTR_ERR(rt5677->regmap);
+diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
+index b61b72c..222a4137 100644
+--- a/sound/soc/codecs/rt5677.h
++++ b/sound/soc/codecs/rt5677.h
+@@ -1550,6 +1550,7 @@ struct rt5677_priv {
+ 	int pll_src;
+ 	int pll_in;
+ 	int pll_out;
++	int pow_ldo2; /* POW_LDO2 pin */
+ #ifdef CONFIG_GPIOLIB
+ 	struct gpio_chip gpio_chip;
+ #endif
+-- 
+2.1.0.rc2.206.gedb03e5
