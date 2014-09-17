@@ -1,20 +1,18 @@
 Return-Path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-we0-f181.google.com (mail-we0-f181.google.com
- [74.125.82.181])
- by alsa0.perex.cz (Postfix) with ESMTP id EE8ED2655BE
- for <alsa-devel@alsa-project.org>; Thu,  4 Sep 2014 11:13:06 +0200 (CEST)
-Received: by mail-we0-f181.google.com with SMTP id x48so9978437wes.12
- for <alsa-devel@alsa-project.org>; Thu, 04 Sep 2014 02:13:06 -0700 (PDT)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43C04265334
+ for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 13:18:44 +0200 (CEST)
+Date: Wed, 17 Sep 2014 16:25:57 +0530
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Message-ID: <20140917105552.GA13006@vinod.koul@linux.intel.com>
+References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1410255693-6958-6-git-send-email-subhransu.s.prusty@intel.com>
+ <20140916193053.GD7960@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20140902092810.GC12043@opensource.wolfsonmicro.com>
-References: <1409628470-13059-1-git-send-email-xavier.hsu@linaro.org>
- <1409628470-13059-5-git-send-email-xavier.hsu@linaro.org>
- <20140902092810.GC12043@opensource.wolfsonmicro.com>
-Date: Thu, 4 Sep 2014 17:13:06 +0800
-Message-ID: <CAHa2TOYHbA7nEQQeqxB+r3KyA=BxXOmfQ6psuouZgqWomb=pEg@mail.gmail.com>
-From: Xavier Hsu <xavier.hsu@linaro.org>
-Subject: Re: [alsa-devel] [PATCHv3 5/9] Using the constraint based on
-	wm8971_set_dai_sysclk
+Content-Disposition: inline
+In-Reply-To: <20140916193053.GD7960@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH v6 05/10] ASoC: Intel: mrfld: add DSP core
+	controls
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,175 +24,132 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Andy Green <andy.green@linaro.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Patch Tracking <patches@linaro.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
 List-ID: <alsa-devel@alsa-project.org>
 
-Hi Charles :
-Thanks for yours feedback.
+On Tue, Sep 16, 2014 at 12:30:53PM -0700, Mark Brown wrote:
+> On Tue, Sep 09, 2014 at 03:11:28PM +0530, Subhransu S. Prusty wrote:
+> 
+> > +	mutex_lock(&drv->lock);
+> > +	map = is_tx ? sst_ssp_channel_map : sst_ssp_slot_map;
+> > +
+> > +	val = 1 << ctl_no;
+> > +	mux = ucontrol->value.enumerated.item[0];
+> > +	if (mux > e->max - 1) {
+> > +		mutex_unlock(&drv->lock);
+> > +		return -EINVAL;
+> > +	}
+> 
+> This is still in parameter validation so we don't need to have the lock
+> yet at all.
+Yes will move it.
+> 
+> > +	/*first clear all registers of this bit*/
+> > +	for (i = 0; i < e->max; i++)
+> > +		map[i] &= ~val;
+> > +
+> > +	if (mux == 0) /*kctl set to 'none'*/
+> > +		return 0;
+> 
+> This is returning with the lock still held AFAICT.  I'm a bit surprised
+> that we don't need to interact with the hardware if we've disabled
+> everything, shouldn't this have some effect on the hardware?
+> 
+> Also the coding style thing with the comments again.
+Will fix the locking and comment.
 
-According your suggestion, I combine the redundant codes and fix some
-mistakes.
-(rates_12288[] and rates_18432[]      => rates_48000[]
- rates_112896[] and rates_169344[]  => rates_44100[]
- 2400 => 24000
-)
-I also add snd_pcm_hw_constraint_list() to restrict sysclk.
+Regarding interaction with the driver, the slot map is cached and sent in
+sst_set_be_modules event. This is sent only when that particular BE is
+active, otherwise driver will happily cache these values.
+This is the reason why we don't see trigger to DSP when usermode fiddles
+around.
 
-Thanks.
+In our model only when a particular FE/BE/Mixer/Pipe is active we forward
+the settings and parameters, rest we keep the values  in driver and forward
+when DAPM enables them.
 
-BR,
-Xavier
+I think we can add this explanation here at top of this file to help.
+
+> 
+> > +static void sst_find_and_send_pipe_algo(struct sst_data *drv,
+> > +					const char *pipe, struct sst_ids *ids)
+> > +{
+> > +	struct sst_algo_control *bc;
+> > +	struct sst_module *algo = NULL;
+> > +
+> > +	dev_dbg(&drv->pdev->dev, "Enter: widget=%s\n", pipe);
+> > +
+> > +	list_for_each_entry(algo, &ids->algo_list, node) {
+> > +		bc = (void *)algo->kctl->private_value;
+> > +
+> > +		dev_dbg(&drv->pdev->dev, "Found algo control name=%s pipe=%s\n",
+> > +				algo->kctl->id.name, pipe);
+> > +		sst_send_algo_cmd(drv, bc);
+> > +	}
+> > +}
+> 
+> I'm not seeing any handling if we failed to find anything here.
+> 
+> > +	[SST_IP_MEDIA2]		= SST_SWM_IN_MEDIA2,
+> > +	[SST_IP_MEDIA3]		= SST_SWM_IN_MEDIA3,
+> > +};
+> > +static void sst_set_pipe_gain(struct sst_ids *ids,
+> 
+> Coding style - no blank line.  This is quite common in this patch and
+> something that's been an issue in previous versions of this series too.
+Will fix.
+> 
+> > +	if (enable)
+> > +		sst->ops->power(sst->dev, true);
+> > +
+> > +	mutex_lock(&drv->lock);
+> > +	if (enable)
+> > +		timer_usage++;
+> > +	else
+> > +		timer_usage--;
+> 
+> This seems a bit strange.  We're doing the enable outside the lock, then
+> taking the lock, then doing some refcounting outside the lock.
+lock is required only to protect the timer_usage counter update, where as
+the power ops is to power up the DSP. If the DSP is already up, enable
+command is not sent and the counter is updated. DSP disable command is not
+sent until the last disable.
+Yes we need to add the error handling for power ops.
+> 
+> > +	mutex_unlock(&drv->lock);
+> > +
+> > +	if (!enable)
+> > +		sst->ops->power(sst->dev, false);
+> 
+> Same thing here.  How does the power management work here, it doesn't
+> seem joined up?  I'd really like to see some comments explaining what's
+> going on with this stuff.
+
+Power ops in SST takes care of the PM handling.
+Following comment is already added in the code which explains.
+"Send the command only if this call is the first enable or last disable"
+
+Let us know if it is not clear enough.
+> 
+> > +static bool is_sst_dapm_widget(struct snd_soc_dapm_widget *w)
+> > +{
+> > +	if ((w->id == snd_soc_dapm_pga) ||
+> > +	    (w->id == snd_soc_dapm_aif_in) ||
+> > +	    (w->id == snd_soc_dapm_aif_out) ||
+> > +	    (w->id == snd_soc_dapm_input) ||
+> > +	    (w->id == snd_soc_dapm_output) ||
+> > +	    (w->id == snd_soc_dapm_mixer))
+> > +		return true;
+> > +	else
+> > +		return false;
+> > +}
+> 
+> Use a switch statement please.
+Sure.
 
 
-2014-09-02 17:28 GMT+08:00 Charles Keepax <
-ckeepax@opensource.wolfsonmicro.com>:
-
-> On Tue, Sep 02, 2014 at 11:27:46AM +0800, Xavier Hsu wrote:
-> > This patch improves WM8971.
-> > We use the constraint based on the function of
-> > wm8971_set_dai_sysclk().
-> >
-> > Any comments about improving the patch are welcome.
-> > Thanks.
->
-> Comments like this are probably best put after the --- as they
-> don't need to appear in the change log.
->
-> >
-> > Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
-> > Signed-off-by: Andy Green <andy.green@linaro.org>
-> > ---
-> >  sound/soc/codecs/wm8971.c |   77
-> +++++++++++++++++++++++++++++++++++++++++----
-> >  1 file changed, 71 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
-> > index 64ed226..20cfdd3 100755
-> > --- a/sound/soc/codecs/wm8971.c
-> > +++ b/sound/soc/codecs/wm8971.c
-> > @@ -41,6 +41,7 @@ static struct workqueue_struct *wm8971_workq;
-> >  /* codec private data */
-> >  struct wm8971_priv {
-> >       unsigned int sysclk;
-> > +     struct snd_pcm_hw_constraint_list *sysclk_constraints;
-> >       int playback_fs;
-> >       bool deemph;
-> >  };
-> > @@ -528,6 +529,53 @@ static int get_coeff(int mclk, int rate)
-> >       return -EINVAL;
-> >  }
-> >
-> > +/* The set of rates we can generate from the above for each SYSCLK */
-> > +static const unsigned int rates_12288[] = {
-> > +     8000, 12000, 16000, 24000, 32000, 48000, 96000
-> > +};
-> > +
-> > +static struct snd_pcm_hw_constraint_list constraints_12288 = {
-> > +     .count  = ARRAY_SIZE(rates_12288),
-> > +     .list   = rates_12288,
-> > +};
-> > +
-> > +static const unsigned int rates_112896[] = {
-> > +     8000, 11025, 22050, 44100, 88200
-> > +};
-> > +
-> > +static struct snd_pcm_hw_constraint_list constraints_112896 = {
-> > +     .count  = ARRAY_SIZE(rates_112896),
-> > +     .list   = rates_112896,
-> > +};
-> > +
-> > +static const unsigned int rates_18432[] = {
-> > +     8000, 12000, 16000, 24000, 32000, 48000, 96000
-> > +};
-> > +
-> > +static struct snd_pcm_hw_constraint_list constraints_18432 = {
-> > +     .count  = ARRAY_SIZE(rates_18432),
-> > +     .list   = rates_18432,
-> > +};
->
-> This one is identical to the 12288 array, why not combine them
-> and call them the 48k array?
->
-> > +
-> > +static const unsigned int rates_169344[] = {
-> > +     8000, 11025, 22050, 44100, 88200
-> > +};
->
-> This one is identical to the 112896 array, why not combine them
-> and call them the 44k1 array?
->
-> > +
-> > +static struct snd_pcm_hw_constraint_list constraints_169344 = {
-> > +     .count  = ARRAY_SIZE(rates_169344),
-> > +     .list   = rates_169344,
-> > +};
-> > +
-> > +static const unsigned int rates_12[] = {
-> > +     8000, 11025, 12000, 16000, 22050, 2400, 32000, 41100, 48000,
->
-> Typo 0 missing                            ^^^^
->
-> > +     48000, 88235, 96000,
-> > +};
-> > +
-> > +static struct snd_pcm_hw_constraint_list constraints_12 = {
-> > +     .count  = ARRAY_SIZE(rates_12),
-> > +     .list   = rates_12,
-> > +};
-> > +
-> >  static int wm8971_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-> >                                int clk_id, unsigned int freq, int dir)
-> >  {
-> > @@ -535,15 +583,32 @@ static int wm8971_set_dai_sysclk(struct
-> snd_soc_dai *codec_dai,
-> >       struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
-> >
-> >       switch (freq) {
-> > -     case 11289600:
-> > -     case 12000000:
-> >       case 12288000:
-> > -     case 16934400:
-> > +     case 24576000:
-> > +             wm8971->sysclk_constraints = &constraints_12288;
-> > +             break;
-> > +     case 11289600:
-> > +     case 22579200:
-> > +             wm8971->sysclk_constraints = &constraints_112896;
-> > +             break;
-> >       case 18432000:
-> > -             wm8971->sysclk = freq;
-> > -             return 0;
-> > +             wm8971->sysclk_constraints = &constraints_18432;
-> > +             break;
-> > +     case 16934400:
-> > +     case 33868800:
-> > +             wm8971->sysclk_constraints = &constraints_169344;
-> > +             break;
-> > +     case 12000000:
-> > +     case 24000000:
-> > +             wm8971->sysclk_constraints = &constraints_12;
-> > +             break;
-> > +     default:
-> > +             return -EINVAL;
-> >       }
-> > -     return -EINVAL;
->
-> You pick out the constraints here but you never actually set them
-> with snd_pcm_hw_constraint_list?
->
-> > +
-> > +     wm8971->sysclk = freq;
-> > +
-> > +     return 0;
-> >  }
-> >
-> >  static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
-> > --
->
-> Thanks,
-> Charles
->
+-- 
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
