@@ -1,20 +1,18 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH v6 04/10] ASoC: Intel: mfld-pcm: add
- control for powering up/down dsp
-Date: Wed, 17 Sep 2014 16:26:47 +0530
-Message-ID: <32842.5576248721$1410952806@news.gmane.org>
-References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
- <1410255693-6958-5-git-send-email-subhransu.s.prusty@intel.com>
- <20140916190343.GC7960@sirena.org.uk>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Alsa Driver Scarlett
+Date: Wed, 17 Sep 2014 14:29:04 +0200
+Message-ID: <54197E90.8040909@canonical.com>
+References: <54148F1B.2010608@gmail.com> <20140916152227.53556d96@sampi>
+ <20140916134925.GE17677@x1-orm> <20140916161002.714e7667@sampi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id F319926536F
- for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 13:19:30 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20140916190343.GC7960@sirena.org.uk>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CC04265367
+ for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 14:29:04 +0200 (CEST)
+In-Reply-To: <20140916161002.714e7667@sampi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,22 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, lgirdwood@gmail.com
+To: Johannes Kroll <j-kroll@gmx.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 16, 2014 at 12:03:43PM -0700, Mark Brown wrote:
-> On Tue, Sep 09, 2014 at 03:11:27PM +0530, Subhransu S. Prusty wrote:
-> 
-> > @@ -129,6 +129,7 @@ struct sst_ops {
-> >  	int (*stream_read_tstamp) (struct device *dev, struct pcm_stream_info *str_info);
-> >  	int (*send_byte_stream)(struct device *dev, struct snd_sst_bytes_v2 *bytes);
-> >  	int (*close) (struct device *dev, unsigned int str_id);
-> > +	int (*power)(struct device *dev, bool state);
-> 
-> These seem to have a mix of )( and ) ( - it was a preexisting problem
-> but still...
 
-Will fix.
+
+On 2014-09-16 16:10, Johannes Kroll wrote:
+> On Tue, 16 Sep 2014 15:49:25 +0200
+> Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de> wrote:
+>
+>> Am Dienstag, den 16. September 2014 um 15:22:27 Uhr (+0200) schrieb Johannes Kroll:
+>>>
+>>> I guess I'll need to find the time to port the patch to a recent kernel
+>>> when I upgrade, unless someone else does it first.
+>>
+>> The patch still works on our recent kernels (we are on debian testing
+>> with a 3.14-2 kernel), atm there is no porting necessary. I can also
+>> confirm that the driver has no known issues on our systems (we use a
+>> couple of Scarlett 18i20 in different configurations). It would be
+>> great, though if the patch could get integrated into alsa. At the
+>> moment it is quite painful for our students with linux laptops as they
+>> have to reapply the patch on every upgrade.
+
+A tip could be to use the DKMS infrastructure, which recompiles itself 
+on kernel upgrades.
+
+> Oh, I see. I'm all for integrating this patch into mainline. But I have
+> never done such a thing, so I don't know how much effort it would be. I
+> guess it would be a simple thing to do for a routine Alsa developer.
+> Anyone? :]
+
+Well, as a first check: Do we have means to contact Tobias Hoffman, and 
+possibly other contributors? Having their sign-off would be a good start...
 
 -- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
