@@ -1,58 +1,104 @@
-From: Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v3 0/5] Beaglebone-Black HDMI audio
-Date: Wed, 17 Sep 2014 10:51:26 +0300
-Message-ID: <54193D7E.5050900@ti.com>
-References: <cover.1410898073.git.jsarha@ti.com> <CAPM=9txRReSdcB5j+0dKmrDNM94zANu-q7ZfWHtP2iA54Dieig@mail.gmail.com>
+From: Xavier Hsu <xavier.hsu@linaro.org>
+Subject: [PATCHv4 5/9] Improve wm8971_set_dai_fmt
+Date: Wed, 17 Sep 2014 16:41:11 +0800
+Message-ID: <1410943275-4160-5-git-send-email-xavier.hsu@linaro.org>
+References: <1410943275-4160-1-git-send-email-xavier.hsu@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CAPM=9txRReSdcB5j+0dKmrDNM94zANu-q7ZfWHtP2iA54Dieig-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: dri-devel <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Dave Airlie <airlied-cv59FeDIM0c@public.gmane.org>, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Darren Etheridge <detheridge-l0cyMroinI0@public.gmane.org>, peter.ujfalusi-l0cyMroinI0@public.gmane.org, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, t-kristo-l0cyMroinI0@public.gmane.org, liam.r.girdwood-VuQAYsv1563Yd54FQh9/CA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "tomi >> Valkeinen, Tomi" <tomi.valkeinen-l0cyMroinI0@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from Kraken (unknown [124.219.7.128])
+ by alsa0.perex.cz (Postfix) with ESMTP id E77C92652DB
+ for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 10:41:29 +0200 (CEST)
+In-Reply-To: <1410943275-4160-1-git-send-email-xavier.hsu@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, patches@linaro.org
+Cc: Xavier Hsu <xavier.hsu@linaro.org>, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, Andy Green <andy.green@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/17/2014 04:06 AM, Dave Airlie wrote:
-> On 17 September 2014 06:40, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org> wrote:
->> Changes since v2:
->> - Change compatible property from "ti,gpio-clock" to "ti,gpio-gate-clock"
->> - Some minor cleanups
->>
->> The code has a functional dependency to:
->> http://www.mail-archive.com/linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org/msg109264.html
->>
->> Without the above patch the audio card does not probe.
->>
->> The code has been rebased on top of Linux 3.17-rc5. The patches
->> bellow, the above dependency, and couple of commits to add BBB HDMI audio
->> support to omap2plus_defconfig can be pulled from:
->>
->> https://github.com/jsarha/linux.git linux-master-bbb-hdmi-audio
->
-> How do you intend to get this merge, sending patchsets like this without
-> indication to maintainers on a merge strategy is kinda messy.
->
-> I'm not sure how maintained tilcdc is.
->
+This patch improves WM8971.
+We modify the function of wm8971_set_dai_fmt().
 
-Well, it is used but AFAIK the people who have been working with it the 
-most have left TI. I think eventually someone at TI needs to take it 
-over, but I do not know anything about that.
+Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
+Signed-off-by: Andy Green <andy.green@linaro.org>
+---
+Any comments about improving the patch are welcome.
+Thanks.
 
-I was hoping that because the change to tilcdc is quite minimal it could 
-go in via you. I am sure I could get a reviewed-by and tested-by from 
-from Darren how has bit more experience with tilcdc and maybe from Tomi 
-too if that helps. (Adding Tomi to cc).
+ sound/soc/codecs/wm8971.c |   18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-The "drm/tilcdc: Add I2S HDMI audio config for tda998x"-patch itself 
-just adds the audio configuration to pda998x pdata and fills the swap, 
-and mirr parameters with default values (they are usually coming in hard 
-coded at the beginning of tda998x_create()).
-
-Best regards,
-Jyri
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
+index c2ebc77..7021f77 100755
+--- a/sound/soc/codecs/wm8971.c
++++ b/sound/soc/codecs/wm8971.c
+@@ -552,12 +552,11 @@ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 			      unsigned int fmt)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	u16 iface = 0;
+ 
+ 	/* set master/slave audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+-		iface = 0x0040;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0040, 0x0040);
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		break;
+@@ -568,18 +567,18 @@ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		iface |= 0x0002;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0002, 0x0002);
+ 		break;
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-		iface |= 0x0001;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0001, 0x0001);
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
+-		iface |= 0x0003;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0003, 0x0003);
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+-		iface |= 0x0013;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0013, 0x0013);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -590,19 +589,18 @@ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_IF:
+-		iface |= 0x0090;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0090, 0x0090);
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_NF:
+-		iface |= 0x0080;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0080, 0x0080);
+ 		break;
+ 	case SND_SOC_DAIFMT_NB_IF:
+-		iface |= 0x0010;
++		snd_soc_update_bits(codec, WM8971_IFACE, 0x0010, 0x0010);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_write(codec, WM8971_IFACE, iface);
+ 	return 0;
+ }
+ 
+-- 
+1.7.9.5
