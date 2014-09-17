@@ -1,105 +1,127 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH] ASoC: rt5677: Add the TDM function
-Date: Wed, 17 Sep 2014 15:12:33 +0800
-Message-ID: <1410937953-13884-1-git-send-email-oder_chiou@realtek.com>
+From: Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>
+Subject: SGTL5000 on i.MX6 in I2S master mode
+Date: Wed, 17 Sep 2014 09:45:42 +0200
+Message-ID: <CAL8zT=g6ibhGpAJtSaGPNeGmm0kwyjAb=JWgYMHp37P8XAFFCQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 79A752651CB
- for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 09:13:24 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch adds the TDM function.
+Hi,
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5677.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+I have a custom i.MX6 board, and have a sgtl5000 connected on it. I
+would like to have it used in master mode (it is used only for audio
+capture) but I get a "pcm_read:2031: read error: Input/output error"
+when using arecord.
+I am wondering if I forgot something in my DT or if I need to do
+something else :
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 02bc8bd..1d4719f 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -3107,6 +3107,59 @@ static int rt5677_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 	return 0;
- }
- 
-+static int rt5677_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-+			unsigned int rx_mask, int slots, int slot_width)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	unsigned int val = 0;
-+
-+	if (rx_mask || tx_mask)
-+		val |= (1 << 12);
-+
-+	switch (slots) {
-+	case 4:
-+		val |= (1 << 10);
-+		break;
-+	case 6:
-+		val |= (2 << 10);
-+		break;
-+	case 8:
-+		val |= (3 << 10);
-+		break;
-+	case 2:
-+	default:
-+		break;
-+	}
-+
-+	switch (slot_width) {
-+	case 20:
-+		val |= (1 << 8);
-+		break;
-+	case 24:
-+		val |= (2 << 8);
-+		break;
-+	case 32:
-+		val |= (3 << 8);
-+		break;
-+	case 16:
-+	default:
-+		break;
-+	}
-+
-+	switch (dai->id) {
-+	case RT5677_AIF1:
-+		snd_soc_update_bits(codec, RT5677_TDM1_CTRL1, 0x1f00, val);
-+		break;
-+	case RT5677_AIF2:
-+		snd_soc_update_bits(codec, RT5677_TDM2_CTRL1, 0x1f00, val);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- static int rt5677_set_bias_level(struct snd_soc_codec *codec,
- 			enum snd_soc_bias_level level)
- {
-@@ -3357,6 +3410,7 @@ static struct snd_soc_dai_ops rt5677_aif_dai_ops = {
- 	.set_fmt = rt5677_set_dai_fmt,
- 	.set_sysclk = rt5677_set_dai_sysclk,
- 	.set_pll = rt5677_set_dai_pll,
-+	.set_tdm_slot = rt5677_set_tdm_slot,
- };
- 
- static struct snd_soc_dai_driver rt5677_dai[] = {
--- 
-1.8.1.1.439.g50a6b54
+    sound {
+        compatible = "fsl,imx6q-vbx3-sgtl5000",
+                 "fsl,imx-audio-sgtl5000";
+        model = "imx6q-vbx3-sgtl5000";
+        ssi-controller = <&ssi1>;
+        audio-codec = <&codec>;
+        audio-routing =
+            "LINE_IN", "Line In Jack";
+        mux-int-port = <1>;
+        mux-ext-port = <5>;
+    };
+
+&audmux {
+    pinctrl-names = "default";
+    pinctrl-0 = <&pinctrl_audmux>;
+    status = "okay";
+};
+
+&i2c2 {
+    clock-frequency = <100000>;
+    pinctrl-names = "default";
+    pinctrl-0 = <&pinctrl_i2c2>;
+    status = "okay";
+
+    codec: sgtl5000@0a {
+        compatible = "fsl,sgtl5000";
+        reg = <0x0a>;
+        clocks = <&clks 201>;
+        VDDA-supply = <&vgen6_reg>;
+        VDDIO-supply = <&vgen6_reg>;
+        sysclk = <24000000>;
+    };
+};
+
+&iomuxc {
+    pinctrl-names = "default";
+    pinctrl-0 = <&pinctrl_hog>;
+
+    imx6qdl-vbx3 {
+        pinctrl_audmux: audmuxgrp {
+            fsl,pins = <
+                MX6QDL_PAD_DISP0_DAT13__AUD5_RXFS        0x130b0
+                MX6QDL_PAD_DISP0_DAT14__AUD5_RXC        0x130b0
+                MX6QDL_PAD_DISP0_DAT16__AUD5_TXC        0x130b0
+                MX6QDL_PAD_DISP0_DAT18__AUD5_TXFS        0x130b0
+                MX6QDL_PAD_DISP0_DAT19__AUD5_RXD        0x130b0
+            >;
+        };
+};
+
+&ssi1 {
+    status = "okay";
+    codec-handle = <&codec>;
+    fsl,mode = "i2s-master";
+    fsl,ssi-asynchronous;
+};
+
+FYI, AUD5_TXC is wirely connected to AUD5_RXC and AUD5_TXFS is
+connected to AUD5_RXFS.
+
+Here is the dmesg part :
+[    6.026803] sgtl5000 1-000a: sgtl5000 revision 0x11
+[    6.129380] imx-sgtl5000 sound: snd_soc_register_card failed (-517)
+[    6.248849] platform sound: Driver imx-sgtl5000 requests probe deferral
+[    6.311643] sgtl5000 1-000a: Using internal LDO instead of VDDD
+[    6.393196] imx-sgtl5000 sound: sgtl5000 <-> 2028000.ssi mapping ok
+
+And the user space commands :
+$> arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 0: imx6qvbx3sgtl50 [imx6q-vbx3-sgtl5000], device 0: HiFi sgtl5000-0 []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+$> arecord -v -V stereo -fdat -D hw:0,0 somefile.wav
+Recording WAVE 'somefile.wav' : Signed 16 bit Little Endian, Rate
+48000 Hz, Stereo
+Hardware PCM card 0 'imx6q-vbx3-sgtl5000' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 4096
+  period_time  : 85333
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 4096
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+  appl_ptr     : 0
+  hw_ptr       : 0
+arecord: pcm_read:2031: read error: Input/output error
+
+The kernel is 3.17-rc5.
+
+Thanks for reading all this, and for any advice :).
+JM
