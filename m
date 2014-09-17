@@ -1,18 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Alsa Driver Scarlett
-Date: Wed, 17 Sep 2014 14:29:04 +0200
-Message-ID: <54197E90.8040909@canonical.com>
-References: <54148F1B.2010608@gmail.com> <20140916152227.53556d96@sampi>
- <20140916134925.GE17677@x1-orm> <20140916161002.714e7667@sampi>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] ASoC: Remove return value checking for
+	gpiochip_remove()
+Date: Wed, 17 Sep 2014 20:58:02 +0800
+Message-ID: <1410958682.18482.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CC04265367
- for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 14:29:04 +0200 (CEST)
-In-Reply-To: <20140916161002.714e7667@sampi>
+Received: from mail-pd0-f172.google.com (mail-pd0-f172.google.com
+ [209.85.192.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69CCE265367
+ for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 14:58:27 +0200 (CEST)
+Received: by mail-pd0-f172.google.com with SMTP id v10so2164193pde.3
+ for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 05:58:26 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +22,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Johannes Kroll <j-kroll@gmx.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+gpiochip_remove() will return void eventually.
+Thus this patch removes return value checking for gpiochip_remove().
 
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/codecs/rt5677.c | 5 +----
+ sound/soc/codecs/wm5100.c | 5 +----
+ sound/soc/codecs/wm8903.c | 6 +-----
+ sound/soc/codecs/wm8962.c | 5 +----
+ sound/soc/codecs/wm8996.c | 6 +-----
+ 5 files changed, 5 insertions(+), 22 deletions(-)
 
-On 2014-09-16 16:10, Johannes Kroll wrote:
-> On Tue, 16 Sep 2014 15:49:25 +0200
-> Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de> wrote:
->
->> Am Dienstag, den 16. September 2014 um 15:22:27 Uhr (+0200) schrieb Johannes Kroll:
->>>
->>> I guess I'll need to find the time to port the patch to a recent kernel
->>> when I upgrade, unless someone else does it first.
->>
->> The patch still works on our recent kernels (we are on debian testing
->> with a 3.14-2 kernel), atm there is no porting necessary. I can also
->> confirm that the driver has no known issues on our systems (we use a
->> couple of Scarlett 18i20 in different configurations). It would be
->> great, though if the patch could get integrated into alsa. At the
->> moment it is quite painful for our students with linux laptops as they
->> have to reapply the patch on every upgrade.
-
-A tip could be to use the DKMS infrastructure, which recompiles itself 
-on kernel upgrades.
-
-> Oh, I see. I'm all for integrating this patch into mainline. But I have
-> never done such a thing, so I don't know how much effort it would be. I
-> guess it would be a simple thing to do for a routine Alsa developer.
-> Anyone? :]
-
-Well, as a first check: Do we have means to contact Tobias Hoffman, and 
-possibly other contributors? Having their sign-off would be a good start...
-
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 9847473..dc978ad 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -3274,11 +3274,8 @@ static void rt5677_init_gpio(struct i2c_client *i2c)
+ static void rt5677_free_gpio(struct i2c_client *i2c)
+ {
+ 	struct rt5677_priv *rt5677 = i2c_get_clientdata(i2c);
+-	int ret;
+ 
+-	ret = gpiochip_remove(&rt5677->gpio_chip);
+-	if (ret != 0)
+-		dev_err(&i2c->dev, "Failed to remove GPIOs: %d\n", ret);
++	gpiochip_remove(&rt5677->gpio_chip);
+ }
+ #else
+ static void rt5677_init_gpio(struct i2c_client *i2c)
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 7bb0d36..a01ad62 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -2319,11 +2319,8 @@ static void wm5100_init_gpio(struct i2c_client *i2c)
+ static void wm5100_free_gpio(struct i2c_client *i2c)
+ {
+ 	struct wm5100_priv *wm5100 = i2c_get_clientdata(i2c);
+-	int ret;
+ 
+-	ret = gpiochip_remove(&wm5100->gpio_chip);
+-	if (ret != 0)
+-		dev_err(&i2c->dev, "Failed to remove GPIOs: %d\n", ret);
++	gpiochip_remove(&wm5100->gpio_chip);
+ }
+ #else
+ static void wm5100_init_gpio(struct i2c_client *i2c)
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index aa09848..c038b3e 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1877,11 +1877,7 @@ static void wm8903_init_gpio(struct wm8903_priv *wm8903)
+ 
+ static void wm8903_free_gpio(struct wm8903_priv *wm8903)
+ {
+-	int ret;
+-
+-	ret = gpiochip_remove(&wm8903->gpio_chip);
+-	if (ret != 0)
+-		dev_err(wm8903->dev, "Failed to remove GPIOs: %d\n", ret);
++	gpiochip_remove(&wm8903->gpio_chip);
+ }
+ #else
+ static void wm8903_init_gpio(struct wm8903_priv *wm8903)
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 1098ae3..9077411 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3398,11 +3398,8 @@ static void wm8962_init_gpio(struct snd_soc_codec *codec)
+ static void wm8962_free_gpio(struct snd_soc_codec *codec)
+ {
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+-	int ret;
+ 
+-	ret = gpiochip_remove(&wm8962->gpio_chip);
+-	if (ret != 0)
+-		dev_err(codec->dev, "Failed to remove GPIOs: %d\n", ret);
++	gpiochip_remove(&wm8962->gpio_chip);
+ }
+ #else
+ static void wm8962_init_gpio(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index f16ff4f..b1dcc11 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -2216,11 +2216,7 @@ static void wm8996_init_gpio(struct wm8996_priv *wm8996)
+ 
+ static void wm8996_free_gpio(struct wm8996_priv *wm8996)
+ {
+-	int ret;
+-
+-	ret = gpiochip_remove(&wm8996->gpio_chip);
+-	if (ret != 0)
+-		dev_err(wm8996->dev, "Failed to remove GPIOs: %d\n", ret);
++	gpiochip_remove(&wm8996->gpio_chip);
+ }
+ #else
+ static void wm8996_init_gpio(struct wm8996_priv *wm8996)
 -- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+1.9.1
