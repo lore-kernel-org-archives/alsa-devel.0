@@ -1,16 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Radeon unconnected HDMI eats samples at 280 kHz
-Date: Thu, 18 Sep 2014 06:13:01 +0200
-Message-ID: <541A5BCD.2040105@canonical.com>
-References: <54198F38.30002@canonical.com> <5419FC9E.9010302@iki.fi>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v6 05/10] ASoC: Intel: mrfld: add DSP core
+	controls
+Date: Thu, 18 Sep 2014 11:42:37 +0530
+Message-ID: <20140918061237.GA24663@intel.com>
+References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1410255693-6958-6-git-send-email-subhransu.s.prusty@intel.com>
+ <20140916193053.GD7960@sirena.org.uk>
+ <20140917105552.GA13006@vinod.koul@linux.intel.com>
+ <20140917193706.GU7960@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050909080207070200060106"
+Content-Type: multipart/mixed; boundary="===============4502567371364888969=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 51728265141
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 06:13:04 +0200 (CEST)
-In-Reply-To: <5419FC9E.9010302@iki.fi>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEB36265141
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 08:38:39 +0200 (CEST)
+In-Reply-To: <20140917193706.GU7960@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,123 +24,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Alex Deucher <alexander.deucher@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050909080207070200060106
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+
+--===============4502567371364888969==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
+
+
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Sep 17, 2014 at 12:37:06PM -0700, Mark Brown wrote:
+> On Wed, Sep 17, 2014 at 04:25:57PM +0530, Subhransu S. Prusty wrote:
+> > On Tue, Sep 16, 2014 at 12:30:53PM -0700, Mark Brown wrote:
+>=20
+> > > This is returning with the lock still held AFAICT.  I'm a bit surpris=
+ed
+> > > that we don't need to interact with the hardware if we've disabled
+> > > everything, shouldn't this have some effect on the hardware?
+>=20
+> > > Also the coding style thing with the comments again.
+>=20
+> > Will fix the locking and comment.
+>=20
+> > Regarding interaction with the driver, the slot map is cached and sent =
+in
+> > sst_set_be_modules event. This is sent only when that particular BE is
+> > active, otherwise driver will happily cache these values.
+> > This is the reason why we don't see trigger to DSP when usermode fiddles
+> > around.
+>=20
+> > In our model only when a particular FE/BE/Mixer/Pipe is active we forwa=
+rd
+> > the settings and parameters, rest we keep the values  in driver and for=
+ward
+> > when DAPM enables them.
+>=20
+> > I think we can add this explanation here at top of this file to help.
+>=20
+> This doesn't really answer my concern - what happens if we're already
+> active and making a change?
+
+Since this is specfic to BE (SSP) port, the DSP FW doesnt allow us to recon=
+figure
+the slots when it is active. These will take effect next time the BE
+restarts.
+
+Yes not ideal but thats something we have to live with!
+
+Thanks
+
+--=20
+~Vinod
+>=20
+> > Power ops in SST takes care of the PM handling.
+> > Following comment is already added in the code which explains.
+> > "Send the command only if this call is the first enable or last disable"
+>=20
+> > Let us know if it is not clear enough.
+>=20
+> No, that comment is orthogonal to the interaction with the DSP which is
+> what is confusing.
 
 
 
-On 2014-09-17 23:26, Anssi Hannula wrote:
-> 17.09.2014, 16:40, David Henningsson kirjoitti:
->> Hi,
->
-> Hi,
->
->> While investigating some interesting debug output from PulseAudio, I
->> tried to figure out the cause.
->>
->>   From what I can tell, my Radeon seems to ask for new samples at a very
->> high rate, which I estimate to be around 280 kHz. My radeon card has
->> DVI, HDMI and VGA connectors, and the only thing connected is my screen
->> over DVI.
->>
->> I'm currently running the 3.13 kernel with updated hda directory from
->> Takashi's tree, but I think it's been this way for a long time.
->>
->> Note that if a screen is connected to the HDMI card, the problem
->> disappears and sample rates are normal.
->> In short, do you think this is a driver bug, or just something we have
->> to live with as some sort of hw anomaly?
->> Since nothing is connected, it does not really hurt, except PulseAudio
->> gets confused (in a way that could potentially cause problems for
->> low-latency output, should something be connected later on).
->
-> Not sure.
-> IIRC, unlike the other gpus, on radeon the video driver needs to
-> "manually" set sample rate dividers/etc based on the pixel clock rate,
-> so I guess this might mean we can't have a proper audio clock without
-> enabled video...
->
-> Alex, any thoughts/info?
->
->
-> If this is the case, it would probably be best if we prevented opening
-> the device when output is not active (unless this causes some other
-> issues), but I guess there is currently no easy way for the _audio_
-> driver to know that...
+--=20
 
-Well, if jack detection (get pin sense) works, there is. There are two 
-major problems with that though:
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-1) When I look right here and now, it seems like jack detection returns 
-"plugged in" status, and ELD info reports monitor_present=1, 
-eld_valid=0. So pin sense isn't really working (or maybe it reports that 
-my DVI monitor is plugged in, which isn't helpful here). I'm attaching 
-codec proc info in case it's helpful.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-2) It requires major work in PulseAudio to make sure we re-probe the 
-HDMI device when it is plugged in. We should do that anyway, it's just 
-that it is quite some work to do, and noone has done it yet.
+iQIcBAEBAgAGBQJUGnfUAAoJEHwUBw8lI4NHHYcP/RSB9e3wogWFMXqitE3yjsyy
+1xKh9Narxc2Ytw4FzkSkoY49WEBkUv2dD5l/Ed4gS1sPtYxCGyvm633ypNd0fcUH
+g/4G1BbB7E7lqkkV5nnw/aVTTA9HkGpudVtn9OUbqaFYgkZbk2AceQxhtqaJhMnZ
+PIkQEUy9jSxBCayAcQIDjBmFJoXB0r6eHK1ztuA0iIK7NSRV3aKFRpb/V2Tms7IS
+0cnasRkP8dyuLB4JONwBytZ5sCg1ezw3im9NvVJmklW0zKgwtB55Yf30XtsAYFGX
+VoHuRPq+yLB7Aj876IVCZIofiozm8HqsC2d3Qew1xcXIPq9ZzQXnml+3U5ce5h6e
+8ba/zI3sgthqXvk0YBJVKbg35upxLMKGWQy46NEgQlJV45TEKQyK1xmMwsKIKWTl
+H+2wsuHgA3i7l7nmBWWglZyGiox2EslVsRvf+7ExpuxrkL9PCdzffyGeVmsQlgZA
+BMlGhpIbmOZROWjbIfW/zRqnoa4cyEnh7J3bU4NI094QMhycZkpQNKWNVQAcaTUp
+qFvy8ieF6Av6Nzusqw30S9c8/mKuhDAE2uUFbLNo1A1SNkAGzVGO4AP80oc4UdEY
+CxPSpJL6eT8f5/WPs//L8elr8ONsb0/cCupBfyj0ADHfewEB/fmyG8VdDkCuPWxJ
+mrYpMf7HBRN2kZ5AvvTV
+=qIgG
+-----END PGP SIGNATURE-----
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+--envbJBWh7q8WU6mo--
 
---------------050909080207070200060106
-Content-Type: text/plain; charset=UTF-8;
- name="codec.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="codec.txt"
-
-Codec: ATI R6xx HDMI
-Address: 0
-AFG Function Id: 0x1 (unsol 0)
-Vendor Id: 0x1002aa01
-Subsystem Id: 0x00aa0100
-Revision Id: 0x100100
-No Modem Function Group found
-Default PCM:
-    rates [0x70]: 32000 44100 48000
-    bits [0x2]: 16
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-  Power states:  D0 D3
-  Power: setting=D0, actual=D0
-GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
-Node 0x02 [Audio Output] wcaps 0x201: Stereo Digital
-  Converter: stream=1, channel=0
-  Digital: Enabled GenLevel
-  Digital category: 0x2
-  IEC Coding Type: 0x0
-Node 0x03 [Pin Complex] wcaps 0x400381: Stereo Digital
-  Control: name="HDMI/DP,pcm=3 Jack", index=0, device=0
-  Control: name="IEC958 Playback Con Mask", index=0, device=0
-  Control: name="IEC958 Playback Pro Mask", index=0, device=0
-  Control: name="IEC958 Playback Default", index=0, device=0
-  Control: name="IEC958 Playback Switch", index=0, device=0
-  Control: name="ELD", index=0, device=3
-  Pincap 0x00000094: OUT Detect HDMI
-  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=01, enabled=1
-  Connection: 1
-     0x02
-
---------------050909080207070200060106
+--===============4502567371364888969==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---------------050909080207070200060106--
+--===============4502567371364888969==--
