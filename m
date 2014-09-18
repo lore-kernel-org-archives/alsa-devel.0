@@ -1,28 +1,22 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re:
-	=?utf-8?q?No_sound_captured_with_SGTL5000_on_i=2EMX6?=
-	=?utf-8?q?_in_I=C2=B2S_master_mode?=
-Date: Thu, 18 Sep 2014 14:28:29 -0300
-Message-ID: <CAOMZO5AqtNm3kwndUYszAuMfJ4CMOz4pwZRmE+04cEDtz98agg@mail.gmail.com>
-References: <CAL8zT=hSCpBZpqVGQ5uBdXJe25hqoNkmiPh_Ge3RCrGALkaoZg@mail.gmail.com>
- <CAOMZO5CReW7-8L7zx=z1TshwJSzcfGThCjws7fTfbZJKCnCZLg@mail.gmail.com>
- <CAOf5uwmrsuXSCpUXhf3pTCRt0=4pprwfiP5MDDukE=WRzOk2WA@mail.gmail.com>
- <CAL8zT=jw4QQSzoq_8d0j-SXYEWzsNgz279dhDzjTHHr-jutP=Q@mail.gmail.com>
- <CAOf5uw=R0oHGDyFhueepoftfDb_d4vccO_751apBLg7S3gzGjg@mail.gmail.com>
- <CAL8zT=gcYkCRE9TU+2w+qBDtM+gYKqr-0KRDy7UxQXJ0P3LutQ@mail.gmail.com>
- <CAL8zT=igU9F=MZ0dQSgqgkq-T=PV-jbXAZeYAaMDs1ot_1MjCg@mail.gmail.com>
- <20140918170524.GA6080@Asurada>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6 05/10] ASoC: Intel: mrfld: add DSP core
+	controls
+Date: Thu, 18 Sep 2014 10:28:52 -0700
+Message-ID: <20140918172852.GY7960@sirena.org.uk>
+References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1410255693-6958-6-git-send-email-subhransu.s.prusty@intel.com>
+ <20140916193053.GD7960@sirena.org.uk>
+ <20140917105552.GA13006@vinod.koul@linux.intel.com>
+ <20140917193706.GU7960@sirena.org.uk>
+ <20140918061237.GA24663@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4554296943452502462=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f171.google.com (mail-lb0-f171.google.com
- [209.85.217.171])
- by alsa0.perex.cz (Postfix) with ESMTP id C6BEF261ADC
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 19:28:31 +0200 (CEST)
-Received: by mail-lb0-f171.google.com with SMTP id l4so1632129lbv.30
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 10:28:29 -0700 (PDT)
-In-Reply-To: <20140918170524.GA6080@Asurada>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C7A02654C5
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 19:29:42 +0200 (CEST)
+In-Reply-To: <20140918061237.GA24663@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,51 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>, Michael Trimarchi <michael@amarulasolutions.com>, Shawn Guo <shawn.guo@freescale.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Nicolin,
 
-On Thu, Sep 18, 2014 at 2:05 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-
-> The problem here should be the AUDMUX configuration issue. The imx-
-> sgtl5000.c driver only supports CODEC in master mode. So if you try
-> to switch the CODEC slave mode, you shall also change not only the
-> CBM_CFM to CBS_CFS but also swap the ext_port and int_port of AUDMUX
-> (a little confusing approach here as the configuration of AUDMUX is
-> routing the data and clocks from a source port to a destination port
-> while each of side, external or internal, might be a source port --
-> When using CBM_CFM, the source port should be external port; while
-> using CBS_CFS, the source port should be the internal port.)
-
-Thanks for the hint on audmux swap! I can get ssi in master mode to
-work correctly with the change below:
+--===============4554296943452502462==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sSUaqNktoHc9XcFh"
+Content-Disposition: inline
 
 
---- a/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-@@ -111,8 +111,8 @@
-                        "IN3R", "MICBIAS",
-                        "DMIC", "MICBIAS",
-                        "DMICDAT", "DMIC";
--               mux-int-port = <2>;
--               mux-ext-port = <3>;
-+               mux-int-port = <3>;
-+               mux-ext-port = <2>;
-        };
+--sSUaqNktoHc9XcFh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-        backlight {
-diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
-index 3a3d17c..09ea6a5 100644
---- a/sound/soc/fsl/imx-wm8962.c
-+++ b/sound/soc/fsl/imx-wm8962.c
-@@ -247,7 +247,7 @@ static int imx_wm8962_probe(struct platform_device *pdev)
-        data->dai.platform_of_node = ssi_np;
-        data->dai.ops = &imx_hifi_ops;
-        data->dai.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--                           SND_SOC_DAIFMT_CBM_CFM;
-+                           SND_SOC_DAIFMT_CBS_CFS;
+On Thu, Sep 18, 2014 at 11:42:37AM +0530, Vinod Koul wrote:
+> On Wed, Sep 17, 2014 at 12:37:06PM -0700, Mark Brown wrote:
 
-        data->card.dev = &pdev->dev;
-        ret = snd_soc_of_parse_card_name(&data->card, "model");
+> > This doesn't really answer my concern - what happens if we're already
+> > active and making a change?
+
+> Since this is specfic to BE (SSP) port, the DSP FW doesnt allow us to reconfigure
+> the slots when it is active. These will take effect next time the BE
+> restarts.
+
+> Yes not ideal but thats something we have to live with!
+
+That's fine but in that case I would expect to see an error returned to
+userspace rather than just silently ignoring what it's doing until the
+next time we start a stream, or at the very least some sort of warning
+generated.  Silently ignoring things isn't great especially with no
+comments in the code, it ends up looking like a bug.
+
+--sSUaqNktoHc9XcFh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUGxZTAAoJECTWi3JdVIfQEncH/RCLchQ32AGndPllRIatHiYe
+MZn4b6hg0CcuFs8s5k34iaRnHRMuZAGpbBe6rx85Ivk/9HC/tEnvZl6P2W/hrgUn
+TXdeGgdkQts468zWQu6mvpjHAoZiHrRK5ep7sDqC4Qfz3ddNCXg+DdGs/04jmZp9
+cySZMj/5drMPEWV2PYiLolxPKRlVUz+xIAmREhLPMwuLU5qDbYPojydH9hIOGCuI
+pw65MmsF5dFeWqpLmCSov9eZ0WkRYyxpbDicDf6hAo9mp6Gy3nVekhQtgMUmFRDX
+Qdc1zTMdbz6S7uksGnxVWAHodxN7c9sLTk0cdccaJW8QCj+M56+5UPeqIMJll30=
+=aEZ4
+-----END PGP SIGNATURE-----
+
+--sSUaqNktoHc9XcFh--
+
+--===============4554296943452502462==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4554296943452502462==--
