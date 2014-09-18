@@ -1,22 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 05/10] ASoC: Intel: mrfld: add DSP core
-	controls
-Date: Thu, 18 Sep 2014 10:28:52 -0700
-Message-ID: <20140918172852.GY7960@sirena.org.uk>
-References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
- <1410255693-6958-6-git-send-email-subhransu.s.prusty@intel.com>
- <20140916193053.GD7960@sirena.org.uk>
- <20140917105552.GA13006@vinod.koul@linux.intel.com>
- <20140917193706.GU7960@sirena.org.uk>
- <20140918061237.GA24663@intel.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re:
+ =?iso-8859-1?q?No_sound_captured_with_SGTL5000_on_i?=
+ =?iso-8859-1?q?=2EMX6_in_I=B2S_master_mode?=
+Date: Thu, 18 Sep 2014 10:45:27 -0700
+Message-ID: <20140918174526.GA6432@Asurada>
+References: <CAL8zT=hSCpBZpqVGQ5uBdXJe25hqoNkmiPh_Ge3RCrGALkaoZg@mail.gmail.com>
+ <CAOMZO5CReW7-8L7zx=z1TshwJSzcfGThCjws7fTfbZJKCnCZLg@mail.gmail.com>
+ <CAOf5uwmrsuXSCpUXhf3pTCRt0=4pprwfiP5MDDukE=WRzOk2WA@mail.gmail.com>
+ <CAL8zT=jw4QQSzoq_8d0j-SXYEWzsNgz279dhDzjTHHr-jutP=Q@mail.gmail.com>
+ <CAOf5uw=R0oHGDyFhueepoftfDb_d4vccO_751apBLg7S3gzGjg@mail.gmail.com>
+ <CAL8zT=gcYkCRE9TU+2w+qBDtM+gYKqr-0KRDy7UxQXJ0P3LutQ@mail.gmail.com>
+ <CAL8zT=igU9F=MZ0dQSgqgkq-T=PV-jbXAZeYAaMDs1ot_1MjCg@mail.gmail.com>
+ <20140918170524.GA6080@Asurada> <20140918172611.GA17048@panicking>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4554296943452502462=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C7A02654C5
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 19:29:42 +0200 (CEST)
-In-Reply-To: <20140918061237.GA24663@intel.com>
+Received: from mail-pa0-f42.google.com (mail-pa0-f42.google.com
+ [209.85.220.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3A76261ADB
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 19:45:34 +0200 (CEST)
+Received: by mail-pa0-f42.google.com with SMTP id lj1so1997864pab.1
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 10:45:33 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20140918172611.GA17048@panicking>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,62 +33,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+To: Michael Trimarchi <michael@amarulasolutions.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Shengjiu Wang <shengjiu.wang@freescale.com>, Markus Pargmann <mpa@pengutronix.de>, Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>, Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawn.guo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Sep 18, 2014 at 07:26:11PM +0200, Michael Trimarchi wrote:
+> bug was reported by Jean-Michel. I don't know if it works because I can not
+> test but seems ok. Do we need this _set_dai_fmt in probe function?
 
---===============4554296943452502462==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sSUaqNktoHc9XcFh"
-Content-Disposition: inline
+I think yes. The AC97 part might need this _set_dai_fmt call in the
+probe().
 
+> code is a bit broken just because panic on probe path if pdev is null
+> [...]
+> 	/*
+> 	 * If codec-handle property is missing from SSI node, we assume
+> 	 * that the machine driver uses new binding which does not require
+> 	 * SSI driver to trigger machine driver's probe.
+> 	 */
+> 	if (!of_get_property(np, "codec-handle", NULL))
+> 		goto done;
+> [...]
+> 	ssi_private->pdev =
+> 		platform_device_register_data(&pdev->dev, name, 0, NULL, 0);
+> [...]
+> done:
+> 	if (ssi_private->dai_fmt)
+> 		_fsl_ssi_set_dai_fmt(ssi_private, ssi_private->dai_fmt);
+> 
+> 
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 87eb577..f63bc02 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -758,7 +758,8 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi_private *ssi_private,
+>  	ssi_private->dai_fmt = fmt;
+>  
+>  	if (fsl_ssi_is_i2s_master(ssi_private) && IS_ERR(ssi_private->baudclk)) {
+> -		dev_err(&ssi_private->pdev->dev, "baudclk is missing which is necessary for master mode\n");
+> +		pr_err("baudclk is missing which is necessary"
+> +			" for master mode\n");
 
---sSUaqNktoHc9XcFh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ah, this is a problem. We should not use ssi_private->pdev->dev here.
+I think it'll be better if adding a new parameter of *dev pointer to
+this _set_dai_fmt() -- passing pdev->dev in probe() and cpu_dai->dev
+in fsl_ssi_set_dai_fmt().
 
-On Thu, Sep 18, 2014 at 11:42:37AM +0530, Vinod Koul wrote:
-> On Wed, Sep 17, 2014 at 12:37:06PM -0700, Mark Brown wrote:
-
-> > This doesn't really answer my concern - what happens if we're already
-> > active and making a change?
-
-> Since this is specfic to BE (SSP) port, the DSP FW doesnt allow us to reconfigure
-> the slots when it is active. These will take effect next time the BE
-> restarts.
-
-> Yes not ideal but thats something we have to live with!
-
-That's fine but in that case I would expect to see an error returned to
-userspace rather than just silently ignoring what it's doing until the
-next time we start a stream, or at the very least some sort of warning
-generated.  Silently ignoring things isn't great especially with no
-comments in the code, it ends up looking like a bug.
-
---sSUaqNktoHc9XcFh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUGxZTAAoJECTWi3JdVIfQEncH/RCLchQ32AGndPllRIatHiYe
-MZn4b6hg0CcuFs8s5k34iaRnHRMuZAGpbBe6rx85Ivk/9HC/tEnvZl6P2W/hrgUn
-TXdeGgdkQts468zWQu6mvpjHAoZiHrRK5ep7sDqC4Qfz3ddNCXg+DdGs/04jmZp9
-cySZMj/5drMPEWV2PYiLolxPKRlVUz+xIAmREhLPMwuLU5qDbYPojydH9hIOGCuI
-pw65MmsF5dFeWqpLmCSov9eZ0WkRYyxpbDicDf6hAo9mp6Gy3nVekhQtgMUmFRDX
-Qdc1zTMdbz6S7uksGnxVWAHodxN7c9sLTk0cdccaJW8QCj+M56+5UPeqIMJll30=
-=aEZ4
------END PGP SIGNATURE-----
-
---sSUaqNktoHc9XcFh--
-
---===============4554296943452502462==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4554296943452502462==--
+Nicolin
