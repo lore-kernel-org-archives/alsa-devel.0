@@ -1,99 +1,95 @@
-From: Renu Tyagi <renu.tyagi@samsung.com>
-Subject: Re: [PATCH] coverity fix in alsa-libs
-Date: Thu, 18 Sep 2014 08:06:17 +0000 (GMT)
-Message-ID: <E5.53.05230.9729A145@epcpsbgx3.samsung.com>
-Reply-To: renu.tyagi@samsung.com
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v3 4/5] ASoC: davinci: HDMI audio build for AM33XX and
+ TDA998x
+Date: Thu, 18 Sep 2014 10:25:44 +0200
+Message-ID: <20140918102544.26b28b6b@armhf>
+References: <cover.1410898073.git.jsarha@ti.com>
+	<270f1e048d9a5a17a7f367ecabc509475b8c1145.1410898073.git.jsarha@ti.com>
+	<20140917194126.GV7960@sirena.org.uk>
+	<5419F965.9060209@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CF972608CF
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 10:06:22 +0200 (CEST)
-Received: from epcpsbgr3.samsung.com
- (u143.gpu120.samsung.co.kr [203.254.230.143])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0NC30050B7UJW7B0@mailout4.samsung.com> for
- alsa-devel@alsa-project.org; Thu, 18 Sep 2014 17:06:19 +0900 (KST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <5419F965.9060209@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org, tony@atomide.com, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com, t-kristo@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 18 Sep 2014 00:13:09 +0300
+Jyri Sarha <jsarha@ti.com> wrote:
 
-------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Message-ID: <23134993.91951411027577842.JavaMail.weblogic@epv6ml12>
+> > So, Jean-Francois is also trying to do things with the TDA998x - wh=
+at's
+> > the story with that, is this joined up at all?
+>=20
+> Not really. This basic functionality does not touch tda998x at all on=
+=20
+> the fly, but just sets i2s configuation in the beginning and bangs th=
+e=20
+> bits trough McASP. But as long as the old platform data for tda998x=20
+> still works after Jean-Francois' patches I should be safe.
 
-SGksDQpJIGhhdmUgZG9uZSB0aGUgY29zbWV0aWMgY2hhbmdlcy4gDQpJIGRvbnQgdHJ1c3QgbXkg
-bWFpbGVycyBlZGl0b3Igc28gSSBhbSBhdHRhY2hpbmcgaXQgYXMgd2VsbCA6KQ0KDQpUaGFua3Mg
-DQpSZW51IFR5YWdpDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
-RnJvbSA2NmJiY2M1ZTUzMmMyNDg3NmJkMmZhMmJjOWQ4NjYwOTY3OWUxMDYyIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQ0KRnJvbTogcmVudSB0eWFnaSA8cmVudS50eWFnaUBzYW1zdW5nLmNvbT4N
-CkRhdGU6IFRodSwgMTggU2VwIDIwMTQgMTM6MjM6NTEgKzA1MzANClN1YmplY3Q6IFtQQVRDSF0g
-cmF3bWlkaSA6IEhhbmRsZSBoIHRvIGJlIGNsb3NlZCBpbiBjYXNlIG9mIGVycm9yIGJlZm9yZSBy
-ZXR1cm5pbmcNCg0KDQpTaWduZWQtb2ZmLWJ5OiByZW51IHR5YWdpIDxyZW51LnR5YWdpQHNhbXN1
-bmcuY29tPg0KLS0tDQogc3JjL3Jhd21pZGkvcmF3bWlkaS5jIHwgICAgNSArKysrLQ0KIDEgZmls
-ZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0
-IGEvc3JjL3Jhd21pZGkvcmF3bWlkaS5jIGIvc3JjL3Jhd21pZGkvcmF3bWlkaS5jDQppbmRleCBi
-ODM1YjQ3Li5hYzY5OWI0IDEwMDY0NA0KLS0tIGEvc3JjL3Jhd21pZGkvcmF3bWlkaS5jDQorKysg
-Yi9zcmMvcmF3bWlkaS9yYXdtaWRpLmMNCkBAIC0yNTYsOCArMjU2LDExIEBAIHN0YXRpYyBpbnQg
-c25kX3Jhd21pZGlfb3Blbl9jb25mKHNuZF9yYXdtaWRpX3QgKippbnB1dHAsIHNuZF9yYXdtaWRp
-X3QgKipvdXRwdXRwDQogICAgICAgICAgICAgICAgc25kX2NvbmZpZ19kZWxldGUodHlwZV9jb25m
-KTsNCiAgICAgICAgaWYgKGVyciA+PSAwKQ0KICAgICAgICAgICAgICAgIGVyciA9IG9wZW5fZnVu
-YyhpbnB1dHAsIG91dHB1dHAsIG5hbWUsIHJhd21pZGlfcm9vdCwgcmF3bWlkaV9jb25mLCBtb2Rl
-KTsNCi0gICAgICAgaWYgKGVyciA8IDApDQorICAgICAgIGlmIChlcnIgPCAwKSB7DQorICAgICAg
-ICAgICAgICAgaWYgKGgpDQorICAgICAgICAgICAgICAgICAgICAgICBzbmRfZGxjbG9zZShoKTsN
-CiAgICAgICAgICAgICAgICByZXR1cm4gZXJyOw0KKyAgICAgICB9DQogICAgICAgIGlmIChpbnB1
-dHApIHsNCiAgICAgICAgICAgICAgICAoKmlucHV0cCktPmRsX2hhbmRsZSA9IGg7IGggPSBOVUxM
-Ow0KICAgICAgICAgICAgICAgIHNuZF9yYXdtaWRpX3BhcmFtc19kZWZhdWx0KCppbnB1dHAsICZw
-YXJhbXMpOw0KLS0NCjEuNy4x
+It should. And you may test it.
 
+> The problem with the Jean-Francois' patches is the DT support. The BB=
+B=20
+> HDMI video is implemented trough tilcdc-slave mechanism without a DT=20
+> node for the tda encoder, which renders Jean-Francois' approach unusa=
+ble=20
+> for BBB.
 
-------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
-Content-Type: application/octet-stream;
- name="patch22578.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="patch22578.patch"
+I used the TDA998x with DT support for a long time with a hack by using
+parts of drm_i2c_encoder_init(). Now, I think that this function could
+be used as it is just setting no platform_data in info.
 
+> The whole tilcdc slave approach may not be the most elegant way to us=
+e=20
+> the tda driver, but it does not look like it is going to change any t=
+ime=20
+> soon.
 
-RnJvbSA2NmJiY2M1ZTUzMmMyNDg3NmJkMmZhMmJjOWQ4NjYwOTY3OWUxMDYyIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiByZW51IHR5YWdpIDxyZW51LnR5YWdpQHNhbXN1bmcu
-Y29tPgpEYXRlOiBUaHUsIDE4IFNlcCAyMDE0IDEzOjIzOjUxICswNTMwClN1YmplY3Q6IFtQ
-QVRDSF0gcmF3bWlkaSA6IEhhbmRsZSBoIHRvIGJlIGNsb3NlZCBpbiBjYXNlIG9mIGVycm9y
-IGJlZm9yZSByZXR1cm5pbmcKCgpTaWduZWQtb2ZmLWJ5OiByZW51IHR5YWdpIDxyZW51LnR5
-YWdpQHNhbXN1bmcuY29tPgotLS0KIHNyYy9yYXdtaWRpL3Jhd21pZGkuYyB8ICAgIDUgKysr
-Ky0KIDEgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoK
-ZGlmZiAtLWdpdCBhL3NyYy9yYXdtaWRpL3Jhd21pZGkuYyBiL3NyYy9yYXdtaWRpL3Jhd21p
-ZGkuYwppbmRleCBiODM1YjQ3Li5hYzY5OWI0IDEwMDY0NAotLS0gYS9zcmMvcmF3bWlkaS9y
-YXdtaWRpLmMKKysrIGIvc3JjL3Jhd21pZGkvcmF3bWlkaS5jCkBAIC0yNTYsOCArMjU2LDEx
-IEBAIHN0YXRpYyBpbnQgc25kX3Jhd21pZGlfb3Blbl9jb25mKHNuZF9yYXdtaWRpX3QgKipp
-bnB1dHAsIHNuZF9yYXdtaWRpX3QgKipvdXRwdXRwCiAJCXNuZF9jb25maWdfZGVsZXRlKHR5
-cGVfY29uZik7CiAJaWYgKGVyciA+PSAwKQogCQllcnIgPSBvcGVuX2Z1bmMoaW5wdXRwLCBv
-dXRwdXRwLCBuYW1lLCByYXdtaWRpX3Jvb3QsIHJhd21pZGlfY29uZiwgbW9kZSk7Ci0JaWYg
-KGVyciA8IDApCisJaWYgKGVyciA8IDApIHsKKwkJaWYgKGgpCisJCQlzbmRfZGxjbG9zZSho
-KTsKIAkJcmV0dXJuIGVycjsKKwl9CiAJaWYgKGlucHV0cCkgewogCQkoKmlucHV0cCktPmRs
-X2hhbmRsZSA9IGg7IGggPSBOVUxMOwogCQlzbmRfcmF3bWlkaV9wYXJhbXNfZGVmYXVsdCgq
-aW5wdXRwLCAmcGFyYW1zKTsKLS0gCjEuNy4xCgo=
+Right: I proposed a patch for that and it was rejected.
 
+> Best regards,
+> Jyri
+>=20
+> ps. I have been thinking on something similar to Jean-Francois' patch=
+=20
+> for SiI9022 which I have been working on lately. Also I have been=20
+> wondering if it would be possible to come up with a generic ASoC code=
+c=20
+> component driver or library that could be used with any HDMI encoder =
+to=20
+> produce the ASoC codec component. Unfortunately I am in too early sta=
+ge=20
+> to produce anything more concrete.
 
-------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Here are some thoughts about this topic.
 
+The video and audio worlds don't know about each other.
+The only solution I found is to let the encoder create the codec as
+a child device. Then, the codec knows from which encoder it depends.
+This could have been done using Russell's components, but the codec
+should have been declared in the DT. This is not useful.
 
-------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY--
+The codec interacts with the encoder in 2 ways:
+- it uses the HDMI parameters retrieved by the encoder,
+- it gives the audio source type to the encoder.
+I used exported functions for that, but, for a generic codec, theses
+functions could be given through the codec platform_data.
+
+The codec declares the DAI(s) prior to know the encoder. The DAI table
+must be in the codec because of the snd_soc_dai_ops.
+=46or a generic codec, this DAI table could be built dynamically from
+information (name, id) also given through the codec platform_data.
+
+--=20
+Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
+Jef		|		http://moinejf.free.fr/
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
