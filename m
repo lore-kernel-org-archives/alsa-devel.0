@@ -1,18 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Radeon unconnected HDMI eats samples at 280 kHz
-Date: Thu, 18 Sep 2014 09:54:10 +0200
-Message-ID: <541A8FA2.7090406@canonical.com>
-References: <54198F38.30002@canonical.com>	<5419FC9E.9010302@iki.fi>	<541A5BCD.2040105@canonical.com>
- <s5hlhph8jt5.wl-tiwai@suse.de>
+From: Renu Tyagi <renu.tyagi@samsung.com>
+Subject: Re: [PATCH] coverity fix in alsa-libs
+Date: Thu, 18 Sep 2014 08:06:17 +0000 (GMT)
+Message-ID: <E5.53.05230.9729A145@epcpsbgx3.samsung.com>
+Reply-To: renu.tyagi@samsung.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="----=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 73DEF260824
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 09:54:12 +0200 (CEST)
-In-Reply-To: <s5hlhph8jt5.wl-tiwai@suse.de>
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CF972608CF
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 10:06:22 +0200 (CEST)
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0NC30050B7UJW7B0@mailout4.samsung.com> for
+ alsa-devel@alsa-project.org; Thu, 18 Sep 2014 17:06:19 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,94 +25,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alex Deucher <alexander.deucher@amd.com>, Anssi Hannula <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Message-ID: <23134993.91951411027577842.JavaMail.weblogic@epv6ml12>
 
-On 2014-09-18 09:33, Takashi Iwai wrote:
-> At Thu, 18 Sep 2014 06:13:01 +0200,
-> David Henningsson wrote:
->>
->>
->>
->> On 2014-09-17 23:26, Anssi Hannula wrote:
->>> 17.09.2014, 16:40, David Henningsson kirjoitti:
->>>> Hi,
->>>
->>> Hi,
->>>
->>>> While investigating some interesting debug output from PulseAudio, I
->>>> tried to figure out the cause.
->>>>
->>>>    From what I can tell, my Radeon seems to ask for new samples at a very
->>>> high rate, which I estimate to be around 280 kHz. My radeon card has
->>>> DVI, HDMI and VGA connectors, and the only thing connected is my screen
->>>> over DVI.
->>>>
->>>> I'm currently running the 3.13 kernel with updated hda directory from
->>>> Takashi's tree, but I think it's been this way for a long time.
->>>>
->>>> Note that if a screen is connected to the HDMI card, the problem
->>>> disappears and sample rates are normal.
->>>> In short, do you think this is a driver bug, or just something we have
->>>> to live with as some sort of hw anomaly?
->>>> Since nothing is connected, it does not really hurt, except PulseAudio
->>>> gets confused (in a way that could potentially cause problems for
->>>> low-latency output, should something be connected later on).
->>>
->>> Not sure.
->>> IIRC, unlike the other gpus, on radeon the video driver needs to
->>> "manually" set sample rate dividers/etc based on the pixel clock rate,
->>> so I guess this might mean we can't have a proper audio clock without
->>> enabled video...
->>>
->>> Alex, any thoughts/info?
->>>
->>>
->>> If this is the case, it would probably be best if we prevented opening
->>> the device when output is not active (unless this causes some other
->>> issues), but I guess there is currently no easy way for the _audio_
->>> driver to know that...
->>
->> Well, if jack detection (get pin sense) works, there is.
->
-> Does it react if we turn off the HDMI output via xrandr, too?
-> I'm not sure whether we need reprogram things in that case, though...
+SGksDQpJIGhhdmUgZG9uZSB0aGUgY29zbWV0aWMgY2hhbmdlcy4gDQpJIGRvbnQgdHJ1c3QgbXkg
+bWFpbGVycyBlZGl0b3Igc28gSSBhbSBhdHRhY2hpbmcgaXQgYXMgd2VsbCA6KQ0KDQpUaGFua3Mg
+DQpSZW51IFR5YWdpDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
+RnJvbSA2NmJiY2M1ZTUzMmMyNDg3NmJkMmZhMmJjOWQ4NjYwOTY3OWUxMDYyIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQ0KRnJvbTogcmVudSB0eWFnaSA8cmVudS50eWFnaUBzYW1zdW5nLmNvbT4N
+CkRhdGU6IFRodSwgMTggU2VwIDIwMTQgMTM6MjM6NTEgKzA1MzANClN1YmplY3Q6IFtQQVRDSF0g
+cmF3bWlkaSA6IEhhbmRsZSBoIHRvIGJlIGNsb3NlZCBpbiBjYXNlIG9mIGVycm9yIGJlZm9yZSBy
+ZXR1cm5pbmcNCg0KDQpTaWduZWQtb2ZmLWJ5OiByZW51IHR5YWdpIDxyZW51LnR5YWdpQHNhbXN1
+bmcuY29tPg0KLS0tDQogc3JjL3Jhd21pZGkvcmF3bWlkaS5jIHwgICAgNSArKysrLQ0KIDEgZmls
+ZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0
+IGEvc3JjL3Jhd21pZGkvcmF3bWlkaS5jIGIvc3JjL3Jhd21pZGkvcmF3bWlkaS5jDQppbmRleCBi
+ODM1YjQ3Li5hYzY5OWI0IDEwMDY0NA0KLS0tIGEvc3JjL3Jhd21pZGkvcmF3bWlkaS5jDQorKysg
+Yi9zcmMvcmF3bWlkaS9yYXdtaWRpLmMNCkBAIC0yNTYsOCArMjU2LDExIEBAIHN0YXRpYyBpbnQg
+c25kX3Jhd21pZGlfb3Blbl9jb25mKHNuZF9yYXdtaWRpX3QgKippbnB1dHAsIHNuZF9yYXdtaWRp
+X3QgKipvdXRwdXRwDQogICAgICAgICAgICAgICAgc25kX2NvbmZpZ19kZWxldGUodHlwZV9jb25m
+KTsNCiAgICAgICAgaWYgKGVyciA+PSAwKQ0KICAgICAgICAgICAgICAgIGVyciA9IG9wZW5fZnVu
+YyhpbnB1dHAsIG91dHB1dHAsIG5hbWUsIHJhd21pZGlfcm9vdCwgcmF3bWlkaV9jb25mLCBtb2Rl
+KTsNCi0gICAgICAgaWYgKGVyciA8IDApDQorICAgICAgIGlmIChlcnIgPCAwKSB7DQorICAgICAg
+ICAgICAgICAgaWYgKGgpDQorICAgICAgICAgICAgICAgICAgICAgICBzbmRfZGxjbG9zZShoKTsN
+CiAgICAgICAgICAgICAgICByZXR1cm4gZXJyOw0KKyAgICAgICB9DQogICAgICAgIGlmIChpbnB1
+dHApIHsNCiAgICAgICAgICAgICAgICAoKmlucHV0cCktPmRsX2hhbmRsZSA9IGg7IGggPSBOVUxM
+Ow0KICAgICAgICAgICAgICAgIHNuZF9yYXdtaWRpX3BhcmFtc19kZWZhdWx0KCppbnB1dHAsICZw
+YXJhbXMpOw0KLS0NCjEuNy4x
 
-xrandr correctly reports that "HDMI-0" is disconnected.
 
-I'm not sure how to turn the HDMI output via xrandr, but I tried "xrandr 
---output HDMI-0 --off" and it made no difference in either xrandr 
-output, nor in codec/eld output.
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
+Content-Type: application/octet-stream;
+ name="patch22578.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="patch22578.patch"
 
-What I'm thinking is that it could be that the monitor_present is 
-indicating the presence of my DVI monitor, as some cards are capable of 
-outputting HDMI audio on their DVI outputs (through a passive DVI->HDMI 
-adapter). This is just a guess though.
 
->> There are two
->> major problems with that though:
->>
->> 1) When I look right here and now, it seems like jack detection returns
->> "plugged in" status, and ELD info reports monitor_present=1,
->> eld_valid=0. So pin sense isn't really working (or maybe it reports that
->> my DVI monitor is plugged in, which isn't helpful here). I'm attaching
->> codec proc info in case it's helpful.
->>
->> 2) It requires major work in PulseAudio to make sure we re-probe the
->> HDMI device when it is plugged in. We should do that anyway, it's just
->> that it is quite some work to do, and noone has done it yet.
->
-> Would it make easier if we create/delete HDMI PCM on the fly?  Or it's
-> rather confusing?
+RnJvbSA2NmJiY2M1ZTUzMmMyNDg3NmJkMmZhMmJjOWQ4NjYwOTY3OWUxMDYyIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiByZW51IHR5YWdpIDxyZW51LnR5YWdpQHNhbXN1bmcu
+Y29tPgpEYXRlOiBUaHUsIDE4IFNlcCAyMDE0IDEzOjIzOjUxICswNTMwClN1YmplY3Q6IFtQ
+QVRDSF0gcmF3bWlkaSA6IEhhbmRsZSBoIHRvIGJlIGNsb3NlZCBpbiBjYXNlIG9mIGVycm9y
+IGJlZm9yZSByZXR1cm5pbmcKCgpTaWduZWQtb2ZmLWJ5OiByZW51IHR5YWdpIDxyZW51LnR5
+YWdpQHNhbXN1bmcuY29tPgotLS0KIHNyYy9yYXdtaWRpL3Jhd21pZGkuYyB8ICAgIDUgKysr
+Ky0KIDEgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoK
+ZGlmZiAtLWdpdCBhL3NyYy9yYXdtaWRpL3Jhd21pZGkuYyBiL3NyYy9yYXdtaWRpL3Jhd21p
+ZGkuYwppbmRleCBiODM1YjQ3Li5hYzY5OWI0IDEwMDY0NAotLS0gYS9zcmMvcmF3bWlkaS9y
+YXdtaWRpLmMKKysrIGIvc3JjL3Jhd21pZGkvcmF3bWlkaS5jCkBAIC0yNTYsOCArMjU2LDEx
+IEBAIHN0YXRpYyBpbnQgc25kX3Jhd21pZGlfb3Blbl9jb25mKHNuZF9yYXdtaWRpX3QgKipp
+bnB1dHAsIHNuZF9yYXdtaWRpX3QgKipvdXRwdXRwCiAJCXNuZF9jb25maWdfZGVsZXRlKHR5
+cGVfY29uZik7CiAJaWYgKGVyciA+PSAwKQogCQllcnIgPSBvcGVuX2Z1bmMoaW5wdXRwLCBv
+dXRwdXRwLCBuYW1lLCByYXdtaWRpX3Jvb3QsIHJhd21pZGlfY29uZiwgbW9kZSk7Ci0JaWYg
+KGVyciA8IDApCisJaWYgKGVyciA8IDApIHsKKwkJaWYgKGgpCisJCQlzbmRfZGxjbG9zZSho
+KTsKIAkJcmV0dXJuIGVycjsKKwl9CiAJaWYgKGlucHV0cCkgewogCQkoKmlucHV0cCktPmRs
+X2hhbmRsZSA9IGg7IGggPSBOVUxMOwogCQlzbmRfcmF3bWlkaV9wYXJhbXNfZGVmYXVsdCgq
+aW5wdXRwLCAmcGFyYW1zKTsKLS0gCjEuNy4xCgo=
 
-I don't think that would make it any easier for PulseAudio, if anything 
-it would be more complicated - we would then have to listen to PCM 
-devices appearing and disappearing and reprobe, instead of listening to 
-jack detection events and reprobe based on that.
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY--
