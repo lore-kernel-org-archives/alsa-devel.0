@@ -1,95 +1,94 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH v3 4/5] ASoC: davinci: HDMI audio build for AM33XX and
- TDA998x
-Date: Thu, 18 Sep 2014 10:25:44 +0200
-Message-ID: <20140918102544.26b28b6b@armhf>
-References: <cover.1410898073.git.jsarha@ti.com>
-	<270f1e048d9a5a17a7f367ecabc509475b8c1145.1410898073.git.jsarha@ti.com>
-	<20140917194126.GV7960@sirena.org.uk>
-	<5419F965.9060209@ti.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH v2] sound: pci: ctxfi: pr_* replaced with dev_*
+Date: Thu, 18 Sep 2014 14:51:26 +0530
+Message-ID: <20140918092126.GA31651@sudip-PC>
+References: <1410790181-16457-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <s5hvbop3qjn.wl-tiwai@suse.de>
+ <20140915152554.GA26218@sudip-PC>
+ <s5hwq94agtr.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <5419F965.9060209@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org, tony@atomide.com, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com, t-kristo@ti.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5hwq94agtr.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 18 Sep 2014 00:13:09 +0300
-Jyri Sarha <jsarha@ti.com> wrote:
+On Mon, Sep 15, 2014 at 08:17:52PM +0200, Takashi Iwai wrote:
+> At Mon, 15 Sep 2014 20:55:54 +0530,
+> Sudip Mukherjee wrote:
+> > 
+> > On Mon, Sep 15, 2014 at 04:29:48PM +0200, Takashi Iwai wrote:
+> > > At Mon, 15 Sep 2014 19:39:41 +0530,
+> > > Sudip Mukherjee wrote:
+<snip>
+> > > > 
+> > > > diff --git a/sound/pci/ctxfi/ctresource.c b/sound/pci/ctxfi/ctresource.c
+> > > > index e49d2be..80beecb 100644
+> > > > --- a/sound/pci/ctxfi/ctresource.c
+> > > > +++ b/sound/pci/ctxfi/ctresource.c
+> > > (snip)
+> > > > @@ -282,8 +287,9 @@ int rsc_mgr_uninit(struct rsc_mgr *mgr)
+> > > >  		case SUM:
+> > > >  			break;
+> > > >  		default:
+> > > > -			pr_err("ctxfi: Invalid resource type value %d!\n",
+> > > > -				mgr->type);
+> > > > +			dev_err(&(((struct hw *)mgr->hw)->pci->dev),
+> > > > +				"ctxfi: Invalid resource type value %d!\n",
+> > > > +				 mgr->type);
+> > > 
+> > > Did you really conclude that this is the best way?
+> > > Also, is it good to mix up the usages of both card->dev and &pci->dev?
+> > > Think again.
+> > > 
+> > 
+> > i have a doubt regarding this :- 
+> > in the snd_card_new()  card->dev is being assigned with &pci->dev , 
+> > then are not they the same ?
+> 
+> Yes, but how can it be guaranteed in future?  We may avoid the
+> problems in future by keeping the consistency at this moment.  It's
+> one of the good points of keeping code consistent, in addition to:
+> increased readability / understandability and making the bug easier to
+> be spotted.
 
-> > So, Jean-Francois is also trying to do things with the TDA998x - wh=
-at's
-> > the story with that, is this joined up at all?
->=20
-> Not really. This basic functionality does not touch tda998x at all on=
-=20
-> the fly, but just sets i2s configuation in the beginning and bangs th=
-e=20
-> bits trough McASP. But as long as the old platform data for tda998x=20
-> still works after Jean-Francois' patches I should be safe.
+understood the point.
+> 
+> > i was trying to get some way of finding out the reference of card->dev from the resource manager ,
+> > but ...  :( 
+> > i will try again and if i cant find any way i will ask for some hint from you.
+> 
+> Good!  A hint is that there is no 100% perfect way to achieve this.
+> It's always compromise, and you'll have to choose which one is better
+> than others.  For that, you'll have to evaluate multiple
+> implementations, and it's a really good exercise for coding.
+> 
 
-It should. And you may test it.
+i can find the rsc_mgr from the snd_card or ct_atc 
+but if i want to find the reference to the device from the managers , then 
+either i can go with
+1) &(((struct hw *)mgr->hw)->pci->dev) 
+or
+2) use pci_get_drvdata with ((struct hw *)mgr->hw)->pci
+or
+3) using container_of with &(((struct hw *)mgr->hw)->pci->dev) to find the pointer to snd_card via card_dev , but it becomes too complicated  :( 
 
-> The problem with the Jean-Francois' patches is the DT support. The BB=
-B=20
-> HDMI video is implemented trough tilcdc-slave mechanism without a DT=20
-> node for the tda encoder, which renders Jean-Francois' approach unusa=
-ble=20
-> for BBB.
+we can get to all the managers (rsc_mgr, amixer_mgr, src_mgr ...) using atc->rsc_mgrs[] , then there should be some simple way to go
+the opposite way (reaching atc from the managers)  . container_of will not work .. :( 
+or am i missing something?? 
 
-I used the TDA998x with DT support for a long time with a hack by using
-parts of drm_i2c_encoder_init(). Now, I think that this function could
-be used as it is just setting no platform_data in info.
+thanks
+sudip
 
-> The whole tilcdc slave approach may not be the most elegant way to us=
-e=20
-> the tda driver, but it does not look like it is going to change any t=
-ime=20
-> soon.
 
-Right: I proposed a patch for that and it was rejected.
-
-> Best regards,
-> Jyri
->=20
-> ps. I have been thinking on something similar to Jean-Francois' patch=
-=20
-> for SiI9022 which I have been working on lately. Also I have been=20
-> wondering if it would be possible to come up with a generic ASoC code=
-c=20
-> component driver or library that could be used with any HDMI encoder =
-to=20
-> produce the ASoC codec component. Unfortunately I am in too early sta=
-ge=20
-> to produce anything more concrete.
-
-Here are some thoughts about this topic.
-
-The video and audio worlds don't know about each other.
-The only solution I found is to let the encoder create the codec as
-a child device. Then, the codec knows from which encoder it depends.
-This could have been done using Russell's components, but the codec
-should have been declared in the DT. This is not useful.
-
-The codec interacts with the encoder in 2 ways:
-- it uses the HDMI parameters retrieved by the encoder,
-- it gives the audio source type to the encoder.
-I used exported functions for that, but, for a generic codec, theses
-functions could be given through the codec platform_data.
-
-The codec declares the DAI(s) prior to know the encoder. The DAI table
-must be in the codec because of the snd_soc_dai_ops.
-=46or a generic codec, this DAI table could be built dynamically from
-information (name, id) also given through the codec platform_data.
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > i am still a newbie , and started this  pr_* to dev_* on your inspiration , and i hope
+> > you will not be irritated by my patches . :)
+> 
+> No problem.  I left these driver codes just because of laziness, as I
+> knew to work more on the code than the simple scripting :)
+> 
+> 
+> Takashi
