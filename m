@@ -1,105 +1,102 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: [PATCH v3 4/5] ASoC: davinci: HDMI audio build for AM33XX and
- TDA998x
-Date: Thu, 18 Sep 2014 21:36:21 +0300
-Message-ID: <541B2625.2040600@ti.com>
-References: <cover.1410898073.git.jsarha@ti.com>	<270f1e048d9a5a17a7f367ecabc509475b8c1145.1410898073.git.jsarha@ti.com>	<20140917194126.GV7960@sirena.org.uk>	<5419F965.9060209@ti.com> <20140918102544.26b28b6b@armhf>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: [PATCH] ASoC: fsl_ssi: fix kernel panic in probe
+	function
+Date: Thu, 18 Sep 2014 20:38:09 +0200
+Message-ID: <1411065489-21496-1-git-send-email-michael@amarulasolutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20140918102544.26b28b6b@armhf>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org, tony@atomide.com, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com, t-kristo@ti.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94F0E2651D1
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 20:38:17 +0200 (CEST)
+Received: by mail-wg0-f45.google.com with SMTP id z12so1324940wgg.28
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 11:38:17 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: nicoleotsuka@gmail.com
+Cc: broonie@kernel.org, Li.Xiubo@freescale.com, michael@amarulasolutions.com, timur@tabi.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/18/2014 11:25 AM, Jean-Francois Moine wrote:
- > On Thu, 18 Sep 2014 00:13:09 +0300
- > Jyri Sarha <jsarha@ti.com> wrote:
- >
- >>> So, Jean-Francois is also trying to do things with the TDA998x - what's
- >>> the story with that, is this joined up at all?
- >>
- >> Not really. This basic functionality does not touch tda998x at all on
- >> the fly, but just sets i2s configuation in the beginning and bangs the
- >> bits trough McASP. But as long as the old platform data for tda998x
- >> still works after Jean-Francois' patches I should be safe.
- >
- > It should. And you may test it.
- >
+code can raise a panic when the ssi_private->pdev is null
 
-I tested by BBB HDMI audio patches with "[PATCH v5] ASoC: tda998x: Add
-a codec to the HDMI transmitter", and it works otherwise, but the
-default for CTS_N_K has changed from 3 to 2. I just needed to change the
-supported format from S32_LE to S24_LE to compensate the change.
+[...]
+	/*
+	 * If codec-handle property is missing from SSI node, we assume
+	 * that the machine driver uses new binding which does not require
+	 * SSI driver to trigger machine driver's probe.
+	 */
+	if (!of_get_property(np, "codec-handle", NULL))
+		goto done;
+[...]
+	ssi_private->pdev =
+		platform_device_register_data(&pdev->dev, name, 0, NULL, 0);
+[...]
+done:
+	if (ssi_private->dai_fmt)
+		_fsl_ssi_set_dai_fmt(ssi_private, ssi_private->dai_fmt);
 
- >> The problem with the Jean-Francois' patches is the DT support. The BBB
- >> HDMI video is implemented trough tilcdc-slave mechanism without a DT
- >> node for the tda encoder, which renders Jean-Francois' approach unusable
- >> for BBB.
- >
- > I used the TDA998x with DT support for a long time with a hack by using
- > parts of drm_i2c_encoder_init(). Now, I think that this function could
- > be used as it is just setting no platform_data in info.
- >
- >> The whole tilcdc slave approach may not be the most elegant way to use
- >> the tda driver, but it does not look like it is going to change any time
- >> soon.
- >
- > Right: I proposed a patch for that and it was rejected.
- >
+Proposal was to not use ssi_private->pdev->dev here but adding a new parameter
+of *dev pointer to this _set_dai_fmt() -- passing pdev->dev in probe() and
+cpu_dai->dev in fsl_ssi_set_dai_fmt().
 
-The tilcdc is not actively maintained by anybody ATM and that is why
-it is so hard to make any bigger changes to it. I hope we can change
-this at some point, but for now I am just trying to get a simple HDMI
-audio working on BBB with minimal changes.
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+Reported-by: Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
- >> Best regards,
- >> Jyri
- >>
- >> ps. I have been thinking on something similar to Jean-Francois' patch
- >> for SiI9022 which I have been working on lately. Also I have been
- >> wondering if it would be possible to come up with a generic ASoC codec
- >> component driver or library that could be used with any HDMI encoder to
- >> produce the ASoC codec component. Unfortunately I am in too early stage
- >> to produce anything more concrete.
- >
- > Here are some thoughts about this topic.
- >
- > The video and audio worlds don't know about each other.
- > The only solution I found is to let the encoder create the codec as
- > a child device. Then, the codec knows from which encoder it depends.
- > This could have been done using Russell's components, but the codec
- > should have been declared in the DT. This is not useful.
- >
-
-There is anothere option of putting the ASoC codec code into an ASoC
-library module and registering the ASoC codec component under the HDMI
-encoder device. However, this approach does not allow building the
-ASoC as modules if the HDMI encoder driver is built in. So a separate
-platform device for the codec component is probably better.
-
- > The codec interacts with the encoder in 2 ways:
- > - it uses the HDMI parameters retrieved by the encoder,
- > - it gives the audio source type to the encoder.
- > I used exported functions for that, but, for a generic codec, theses
- > functions could be given through the codec platform_data.
- >
- > The codec declares the DAI(s) prior to know the encoder. The DAI table
- > must be in the codec because of the snd_soc_dai_ops.
- > For a generic codec, this DAI table could be built dynamically from
- > information (name, id) also given through the codec platform_data.
- >
-
-This is pretty much what I have been thinking too. The API between the
-generic ASoC HDMI codec could use already existing the linux headers
-derived HDMI standard. The ASoC side code should build the hdmi audio
-infoframe and configure the stream header bits etc, so basically do
-all the generic stuff coming from HDMI standard. Writing the bits
-to the appropriate registers in the encoder chip would be left to the
-HDMI encoder driver.
-
-Best regards,
-Jyri
-
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 87eb577..de6ab06 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -748,8 +748,9 @@ static int fsl_ssi_hw_free(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int _fsl_ssi_set_dai_fmt(struct fsl_ssi_private *ssi_private,
+-		unsigned int fmt)
++static int _fsl_ssi_set_dai_fmt(struct device *dev,
++				struct fsl_ssi_private *ssi_private,
++				unsigned int fmt)
+ {
+ 	struct regmap *regs = ssi_private->regs;
+ 	u32 strcr = 0, stcr, srcr, scr, mask;
+@@ -758,7 +759,7 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi_private *ssi_private,
+ 	ssi_private->dai_fmt = fmt;
+ 
+ 	if (fsl_ssi_is_i2s_master(ssi_private) && IS_ERR(ssi_private->baudclk)) {
+-		dev_err(&ssi_private->pdev->dev, "baudclk is missing which is necessary for master mode\n");
++		dev_err(dev, "baudclk is missing which is necessary for master mode\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -913,7 +914,7 @@ static int fsl_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ {
+ 	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+ 
+-	return _fsl_ssi_set_dai_fmt(ssi_private, fmt);
++	return _fsl_ssi_set_dai_fmt(cpu_dai->dev, ssi_private, fmt);
+ }
+ 
+ /**
+@@ -1387,7 +1388,8 @@ static int fsl_ssi_probe(struct platform_device *pdev)
+ 
+ done:
+ 	if (ssi_private->dai_fmt)
+-		_fsl_ssi_set_dai_fmt(ssi_private, ssi_private->dai_fmt);
++		_fsl_ssi_set_dai_fmt(&pdev->dev, ssi_private,
++				     ssi_private->dai_fmt);
+ 
+ 	return 0;
+ 
+-- 
+1.8.1.2
