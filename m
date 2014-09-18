@@ -1,14 +1,21 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] ASoC: max98090: Fix missing free_irq (part 2)
-Date: Thu, 18 Sep 2014 13:48:44 +0300
-Message-ID: <1411037324-5996-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Renu Tyagi <renu.tyagi@samsung.com>
+Subject: Re: [PATCH] coverity fix in alsa-libs
+Date: Thu, 18 Sep 2014 11:21:19 +0000 (GMT)
+Message-ID: <C0.FE.04938.F20CA145@epcpsbgx1.samsung.com>
+Reply-To: renu.tyagi@samsung.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="----=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 07AC3264EFF
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 12:48:49 +0200 (CEST)
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6B27264EFF
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 13:21:26 +0200 (CEST)
+Received: from epcpsbgr1.samsung.com
+ (u141.gpu120.samsung.co.kr [203.254.230.141])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0NC30002DGVO6280@mailout1.samsung.com> for
+ alsa-devel@alsa-project.org; Thu, 18 Sep 2014 20:21:24 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,38 +25,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I was blind to see interrupt was requested in codec probe instead of i2c
-probe when doing commit 4adeb0ccf86a ("ASoC: max98090: Fix missing free_irq")
-and there is still a case where interrupt is kept requested. Although not as
-fatal as original issue.
 
-Since codec can be reprobed while driver is loaded the subsequent
-max98090_probe() call will fail in interrupt request since it wasn't freed.
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="windows-1252"
+MIME-Version: 1.0
+Message-ID: <1714748.99141411039278481.JavaMail.weblogic@epv6ml12>
 
-Fix this by explicitly freeing irq in max98090_remove().
+SGkNCkJ1ZyB0eXBlIDogcmV0dXJuIG5lZ2F0aXZlIHZhbHVlIGluIGNhc2Ugb2YgZXJyb3INCkkg
+Y2F1Z2h0IHRoaXMgZXJyb3Igd2hpbGUgcnVubmluZyBjb3Zlcml0eSBvbiBhIG9sZGVyIHZlcnNp
+b24uIGNvdmVyaXR5IHdpbGwgbm90IGdpdmUgaXNzdWUgd2l0aCBsYXRlc3QgdmVyc2lvbg0KQnV0
+IEFzIHBlciBteSBhbmFseXNpcyBuZWdhdGl2ZSBlcnJvciBzaG91bGQgYmUgcmV0dXJuZWQgaW4g
+dGhlc2UgY2FzZXMsIGZvciBkZWJ1Z2dpbmcgbGF0ZXIgb24uDQpGaWxlIGNoYW5nZWQgOiBjb25m
+LmMsIGNvbnRyb2wuYyAsIHBjbS5jDQpQRkEgcGF0Y2gNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0NCkZyb20gZDU0NWQxZWJlZGZiYzQyMDQxZTE2MzUzNmZiZTJhNmJkNDMzNjFh
+MCBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDENCkZyb206IHJlbnUgdHlhZ2kgPHJlbnUudHlhZ2lA
+c2Ftc3VuZy5jb20+DQpEYXRlOiBUaHUsIDE4IFNlcCAyMDE0IDE2OjIyOjMxICswNTMwDQpTdWJq
+ZWN0OiBbUEFUQ0ggMy84XSBbY29uZiwgY29udHJvbCwgcGNtXSByZXR1cm4gbmVnYXRpdmUgdmFs
+dWUgaW4gY2FzZSBvZiBlcnJvcg0KDQoNClNpZ25lZC1vZmYtYnk6IHJlbnUgdHlhZ2kgPHJlbnUu
+dHlhZ2lAc2Ftc3VuZy5jb20+DQotLS0NCiBzcmMvY29uZi5jICAgICAgICAgICAgfCAgICAxICsN
+CiBzcmMvY29udHJvbC9jb250cm9sLmMgfCAgICAxICsNCiBzcmMvcGNtL3BjbS5jICAgICAgICAg
+fCAgICAxICsNCiAzIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMo
+LSkNCg0KZGlmZiAtLWdpdCBhL3NyYy9jb25mLmMgYi9zcmMvY29uZi5jDQppbmRleCA1Y2NjOGUx
+Li5iYjI1NmU3IDEwMDY0NA0KLS0tIGEvc3JjL2NvbmYuYw0KKysrIGIvc3JjL2NvbmYuYw0KQEAg
+LTQxOTgsNiArNDE5OCw3IEBAIHN0YXRpYyBpbnQgX3NuZF9jb25maWdfZXZhbHVhdGUoc25kX2Nv
+bmZpZ190ICpzcmMsDQogICAgICAgICAgICAgICAgICAgICAgICBzbmRfY29uZmlnX2l0ZXJhdG9y
+X3QgaSwgbmV4dDsNCiAgICAgICAgICAgICAgICAgICAgICAgIGlmIChzbmRfY29uZmlnX2dldF90
+eXBlKGZ1bmNfY29uZikgIT0gU05EX0NPTkZJR19UWVBFX0NPTVBPVU5EKSB7DQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIFNOREVSUigiSW52YWxpZCB0eXBlIGZvciBmdW5jICVzIGRl
+ZmluaXRpb24iLCBzdHIpOw0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBlcnIgPSAt
+RUlOVkFMOw0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnb3RvIF9lcnI7DQogICAg
+ICAgICAgICAgICAgICAgICAgICB9DQogICAgICAgICAgICAgICAgICAgICAgICBzbmRfY29uZmln
+X2Zvcl9lYWNoKGksIG5leHQsIGZ1bmNfY29uZikgew0KZGlmZiAtLWdpdCBhL3NyYy9jb250cm9s
+L2NvbnRyb2wuYyBiL3NyYy9jb250cm9sL2NvbnRyb2wuYw0KaW5kZXggZDY2ZWQ3NS4uZGQ0Mjhh
+MSAxMDA2NDQNCi0tLSBhL3NyYy9jb250cm9sL2NvbnRyb2wuYw0KKysrIGIvc3JjL2NvbnRyb2wv
+Y29udHJvbC5jDQpAQCAtODY0LDYgKzg2NCw3IEBAIHN0YXRpYyBpbnQgc25kX2N0bF9vcGVuX2Nv
+bmYoc25kX2N0bF90ICoqY3RscCwgY29uc3QgY2hhciAqbmFtZSwNCiAgICAgICAgaWYgKGVyciA+
+PSAwKSB7DQogICAgICAgICAgICAgICAgaWYgKHNuZF9jb25maWdfZ2V0X3R5cGUodHlwZV9jb25m
+KSAhPSBTTkRfQ09ORklHX1RZUEVfQ09NUE9VTkQpIHsNCiAgICAgICAgICAgICAgICAgICAgICAg
+IFNOREVSUigiSW52YWxpZCB0eXBlIGZvciBDVEwgdHlwZSAlcyBkZWZpbml0aW9uIiwgc3RyKTsN
+CisgICAgICAgICAgICAgICAgICAgICAgIGVyciA9IC1FSU5WQUw7DQogICAgICAgICAgICAgICAg
+ICAgICAgICBnb3RvIF9lcnI7DQogICAgICAgICAgICAgICAgfQ0KICAgICAgICAgICAgICAgIHNu
+ZF9jb25maWdfZm9yX2VhY2goaSwgbmV4dCwgdHlwZV9jb25mKSB7DQpkaWZmIC0tZ2l0IGEvc3Jj
+L3BjbS9wY20uYyBiL3NyYy9wY20vcGNtLmMNCmluZGV4IDEzOTlhNWIuLjc5MzU5ZGMgMTAwNjQ0
+DQotLS0gYS9zcmMvcGNtL3BjbS5jDQorKysgYi9zcmMvcGNtL3BjbS5jDQpAQCAtMjE0Myw2ICsy
+MTQzLDcgQEAgc3RhdGljIGludCBzbmRfcGNtX29wZW5fY29uZihzbmRfcGNtX3QgKipwY21wLCBj
+b25zdCBjaGFyICpuYW1lLA0KICAgICAgICBpZiAoZXJyID49IDApIHsNCiAgICAgICAgICAgICAg
+ICBpZiAoc25kX2NvbmZpZ19nZXRfdHlwZSh0eXBlX2NvbmYpICE9IFNORF9DT05GSUdfVFlQRV9D
+T01QT1VORCkgew0KICAgICAgICAgICAgICAgICAgICAgICAgU05ERVJSKCJJbnZhbGlkIHR5cGUg
+Zm9yIFBDTSB0eXBlICVzIGRlZmluaXRpb24iLCBzdHIpOw0KKyAgICAgICAgICAgICAgICAgICAg
+ICAgZXJyID0gLUVJTlZBTDsNCiAgICAgICAgICAgICAgICAgICAgICAgIGdvdG8gX2VycjsNCiAg
+ICAgICAgICAgICAgICB9DQogICAgICAgICAgICAgICAgc25kX2NvbmZpZ19mb3JfZWFjaChpLCBu
+ZXh0LCB0eXBlX2NvbmYpIHsNCi0tDQoxLjcuMQ0KDQoNCiANClRoYW5rcw0KUmVudSBUeWFnaQ==
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
-for-next, I don't think this is critical enough for stable.
----
- sound/soc/codecs/max98090.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index f1543653a699..ccc1466c0440 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2413,6 +2413,7 @@ static int max98090_remove(struct snd_soc_codec *codec)
- {
- 	struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
- 
-+	devm_free_irq(codec->dev, max98090->irq, codec);
- 	cancel_delayed_work_sync(&max98090->jack_work);
- 	cancel_delayed_work_sync(&max98090->pll_det_enable_work);
- 	cancel_work_sync(&max98090->pll_det_disable_work);
--- 
-2.1.0
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
+Content-Type: application/octet-stream;
+ name="patch3.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="patch3.patch"
+
+
+RnJvbSBkNTQ1ZDFlYmVkZmJjNDIwNDFlMTYzNTM2ZmJlMmE2YmQ0MzM2MWEwIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiByZW51IHR5YWdpIDxyZW51LnR5YWdpQHNhbXN1bmcu
+Y29tPgpEYXRlOiBUaHUsIDE4IFNlcCAyMDE0IDE2OjIyOjMxICswNTMwClN1YmplY3Q6IFtQ
+QVRDSCAzLzhdIFtjb25mLCBjb250cm9sLCBwY21dIHJldHVybiBuZWdhdGl2ZSB2YWx1ZSBp
+biBjYXNlIG9mIGVycm9yCgoKU2lnbmVkLW9mZi1ieTogcmVudSB0eWFnaSA8cmVudS50eWFn
+aUBzYW1zdW5nLmNvbT4KLS0tCiBzcmMvY29uZi5jICAgICAgICAgICAgfCAgICAxICsKIHNy
+Yy9jb250cm9sL2NvbnRyb2wuYyB8ICAgIDEgKwogc3JjL3BjbS9wY20uYyAgICAgICAgIHwg
+ICAgMSArCiAzIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMo
+LSkKCmRpZmYgLS1naXQgYS9zcmMvY29uZi5jIGIvc3JjL2NvbmYuYwppbmRleCA1Y2NjOGUx
+Li5iYjI1NmU3IDEwMDY0NAotLS0gYS9zcmMvY29uZi5jCisrKyBiL3NyYy9jb25mLmMKQEAg
+LTQxOTgsNiArNDE5OCw3IEBAIHN0YXRpYyBpbnQgX3NuZF9jb25maWdfZXZhbHVhdGUoc25k
+X2NvbmZpZ190ICpzcmMsCiAJCQlzbmRfY29uZmlnX2l0ZXJhdG9yX3QgaSwgbmV4dDsKIAkJ
+CWlmIChzbmRfY29uZmlnX2dldF90eXBlKGZ1bmNfY29uZikgIT0gU05EX0NPTkZJR19UWVBF
+X0NPTVBPVU5EKSB7CiAJCQkJU05ERVJSKCJJbnZhbGlkIHR5cGUgZm9yIGZ1bmMgJXMgZGVm
+aW5pdGlvbiIsIHN0cik7CisJCQkJZXJyID0gLUVJTlZBTDsKIAkJCQlnb3RvIF9lcnI7CiAJ
+CQl9CiAJCQlzbmRfY29uZmlnX2Zvcl9lYWNoKGksIG5leHQsIGZ1bmNfY29uZikgewpkaWZm
+IC0tZ2l0IGEvc3JjL2NvbnRyb2wvY29udHJvbC5jIGIvc3JjL2NvbnRyb2wvY29udHJvbC5j
+CmluZGV4IGQ2NmVkNzUuLmRkNDI4YTEgMTAwNjQ0Ci0tLSBhL3NyYy9jb250cm9sL2NvbnRy
+b2wuYworKysgYi9zcmMvY29udHJvbC9jb250cm9sLmMKQEAgLTg2NCw2ICs4NjQsNyBAQCBz
+dGF0aWMgaW50IHNuZF9jdGxfb3Blbl9jb25mKHNuZF9jdGxfdCAqKmN0bHAsIGNvbnN0IGNo
+YXIgKm5hbWUsCiAJaWYgKGVyciA+PSAwKSB7CiAJCWlmIChzbmRfY29uZmlnX2dldF90eXBl
+KHR5cGVfY29uZikgIT0gU05EX0NPTkZJR19UWVBFX0NPTVBPVU5EKSB7CiAJCQlTTkRFUlIo
+IkludmFsaWQgdHlwZSBmb3IgQ1RMIHR5cGUgJXMgZGVmaW5pdGlvbiIsIHN0cik7CisJCQll
+cnIgPSAtRUlOVkFMOwogCQkJZ290byBfZXJyOwogCQl9CiAJCXNuZF9jb25maWdfZm9yX2Vh
+Y2goaSwgbmV4dCwgdHlwZV9jb25mKSB7CmRpZmYgLS1naXQgYS9zcmMvcGNtL3BjbS5jIGIv
+c3JjL3BjbS9wY20uYwppbmRleCAxMzk5YTViLi43OTM1OWRjIDEwMDY0NAotLS0gYS9zcmMv
+cGNtL3BjbS5jCisrKyBiL3NyYy9wY20vcGNtLmMKQEAgLTIxNDMsNiArMjE0Myw3IEBAIHN0
+YXRpYyBpbnQgc25kX3BjbV9vcGVuX2NvbmYoc25kX3BjbV90ICoqcGNtcCwgY29uc3QgY2hh
+ciAqbmFtZSwKIAlpZiAoZXJyID49IDApIHsKIAkJaWYgKHNuZF9jb25maWdfZ2V0X3R5cGUo
+dHlwZV9jb25mKSAhPSBTTkRfQ09ORklHX1RZUEVfQ09NUE9VTkQpIHsKIAkJCVNOREVSUigi
+SW52YWxpZCB0eXBlIGZvciBQQ00gdHlwZSAlcyBkZWZpbml0aW9uIiwgc3RyKTsKKwkJCWVy
+ciA9IC1FSU5WQUw7CiAJCQlnb3RvIF9lcnI7CiAJCX0KIAkJc25kX2NvbmZpZ19mb3JfZWFj
+aChpLCBuZXh0LCB0eXBlX2NvbmYpIHsKLS0gCjEuNy4xCgo=
+
+
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY--
