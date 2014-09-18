@@ -1,16 +1,24 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: Radeon unconnected HDMI eats samples at 280 kHz
-Date: Thu, 18 Sep 2014 00:26:54 +0300
-Message-ID: <5419FC9E.9010302@iki.fi>
-References: <54198F38.30002@canonical.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Master Plan on rewinding
+Date: Thu, 18 Sep 2014 09:15:42 +0800
+Message-ID: <CAN8cciaXvOyEN8U6mG-1OYLOBQ9-9i030smaqbQz2zvqBnnKjQ@mail.gmail.com>
+References: <540C76E0.9050808@gmail.com> <54148E72.2050903@gmail.com>
+ <CAN8cciYj4fo01XZwJ-NhFQDNv6Ua5mqaAEq1zU7PYxHkJyOQ5A@mail.gmail.com>
+ <541584FB.2030208@gmail.com> <s5hiokpw89h.wl-tiwai@suse.de>
+ <5416B852.6080406@gmail.com> <s5hd2axw60j.wl-tiwai@suse.de>
+ <54171B66.3010705@linux.intel.com> <54171E81.2090302@gmail.com>
+ <s5hzje0ah94.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail.tpnet.fi (webmail.tpnet.fi [62.106.63.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 21931265452
- for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 23:26:56 +0200 (CEST)
-In-Reply-To: <54198F38.30002@canonical.com>
+Received: from mail-qa0-f43.google.com (mail-qa0-f43.google.com
+ [209.85.216.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id A02CE261600
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 03:15:43 +0200 (CEST)
+Received: by mail-qa0-f43.google.com with SMTP id x12so219065qac.30
+ for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 18:15:42 -0700 (PDT)
+In-Reply-To: <s5hzje0ah94.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +28,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, "Alexander E. Patrakov" <patrakov@gmail.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-17.09.2014, 16:40, David Henningsson kirjoitti:
-> Hi,
+> > >
+> > >>> What remains not fully understood for me is the claim that the
+> > >>> information already exposed by every driver (in the form of the
+minimal
+> > >>> period size) is not useful. I understand that two people are against
+> > >>> this idea, so it must be bad. But I must understand why. Is it
+because
+> > >>> the minimum period size reported by some drivers (which ones are
+> > >>> suspected, if any?) may be a lie?
 
-Hi,
+Does this mean the granularity of most drivers are only one period since
+most of them cannot reporte the dma position in realtime  ?
 
-> While investigating some interesting debug output from PulseAudio, I 
-> tried to figure out the cause.
-> 
->  From what I can tell, my Radeon seems to ask for new samples at a very 
-> high rate, which I estimate to be around 280 kHz. My radeon card has 
-> DVI, HDMI and VGA connectors, and the only thing connected is my screen 
-> over DVI.
-> 
-> I'm currently running the 3.13 kernel with updated hda directory from 
-> Takashi's tree, but I think it's been this way for a long time.
-> 
-> Note that if a screen is connected to the HDMI card, the problem 
-> disappears and sample rates are normal.
-> In short, do you think this is a driver bug, or just something we have 
-> to live with as some sort of hw anomaly?
-> Since nothing is connected, it does not really hurt, except PulseAudio 
-> gets confused (in a way that could potentially cause problems for 
-> low-latency output, should something be connected later on).
+(e.g. pointer callback of Intel8x0 use a timeout loop to read the last
+valid index)
 
-Not sure.
-IIRC, unlike the other gpus, on radeon the video driver needs to
-"manually" set sample rate dividers/etc based on the pixel clock rate,
-so I guess this might mean we can't have a proper audio clock without
-enabled video...
+  The safeguard will be two periods
 
-Alex, any thoughts/info?
+If some HDA have FIFO size of 192 bytes which is more than the minimum
+period bytes
 
+Should we limit the start threshold to FIFO threshold or FIFO size ?
 
-If this is the case, it would probably be best if we prevented opening
-the device when output is not active (unless this causes some other
-issues), but I guess there is currently no easy way for the _audio_
-driver to know that...
+Does it need Brust length = 1 for those hda controller to support arbitrary
+period size ?
 
+Seem only some hda controller can trigger DMA transfer at 1/3 or 2/3 FIFO
+buffer at different power states and report the dma position in pointer
+callback
 
-> For reference, here's lspci of the HDMI card:
-> 
-> 01:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc. 
-> [AMD/ATI] RV710 [Radeon HD 4550] [1002:9540] (prog-if 00 [VGA controller])
-> 	Subsystem: PC Partner Limited / Sapphire Technology Device [174b:e106]
-> 01:00.1 Audio device [0403]: Advanced Micro Devices, Inc. [AMD/ATI] 
-> RV710/730 HDMI Audio [Radeon HD 4000 series] [1002:aa38]
-> 	Subsystem: PC Partner Limited / Sapphire Technology Device [174b:aa38]
-> 
-> 
-
-
--- 
-Anssi Hannula
+Does snd-oxygen provide this position with granularity which is less than
+the minimum period size ?
