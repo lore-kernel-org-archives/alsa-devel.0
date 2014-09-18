@@ -1,24 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Master Plan on rewinding
-Date: Thu, 18 Sep 2014 09:15:42 +0800
-Message-ID: <CAN8cciaXvOyEN8U6mG-1OYLOBQ9-9i030smaqbQz2zvqBnnKjQ@mail.gmail.com>
-References: <540C76E0.9050808@gmail.com> <54148E72.2050903@gmail.com>
- <CAN8cciYj4fo01XZwJ-NhFQDNv6Ua5mqaAEq1zU7PYxHkJyOQ5A@mail.gmail.com>
- <541584FB.2030208@gmail.com> <s5hiokpw89h.wl-tiwai@suse.de>
- <5416B852.6080406@gmail.com> <s5hd2axw60j.wl-tiwai@suse.de>
- <54171B66.3010705@linux.intel.com> <54171E81.2090302@gmail.com>
- <s5hzje0ah94.wl-tiwai@suse.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5677: Add a configuration
+	optionforLDO2_POW pin
+Date: Thu, 18 Sep 2014 02:03:04 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D76335F4@RTITMBSV03.realtek.com.tw>
+References: <201409180125.s8I1Phwp020498@rtits1.realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f43.google.com (mail-qa0-f43.google.com
- [209.85.216.43])
- by alsa0.perex.cz (Postfix) with ESMTP id A02CE261600
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 03:15:43 +0200 (CEST)
-Received: by mail-qa0-f43.google.com with SMTP id x12so219065qac.30
- for <alsa-devel@alsa-project.org>; Wed, 17 Sep 2014 18:15:42 -0700 (PDT)
-In-Reply-To: <s5hzje0ah94.wl-tiwai@suse.de>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7B2E2610B0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 04:03:18 +0200 (CEST)
+In-Reply-To: <201409180125.s8I1Phwp020498@rtits1.realtek.com>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,39 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, "Alexander E. Patrakov" <patrakov@gmail.com>, David Henningsson <david.henningsson@canonical.com>
+To: Anatol Pomozov <anatol.pomozov@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > >
-> > >>> What remains not fully understood for me is the claim that the
-> > >>> information already exposed by every driver (in the form of the
-minimal
-> > >>> period size) is not useful. I understand that two people are against
-> > >>> this idea, so it must be bad. But I must understand why. Is it
-because
-> > >>> the minimum period size reported by some drivers (which ones are
-> > >>> suspected, if any?) may be a lie?
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org
+> [mailto:alsa-devel-bounces@alsa-project.org] On Behalf Of Anatol
+> Pomozov
+> Sent: Thursday, September 18, 2014 4:14 AM
+> To: broonie@kernel.org; lgirdwood@gmail.com
+> Cc: Oder Chiou; alsa-devel@alsa-project.org; Anatol Pomozov
+> Subject: [alsa-devel] [PATCH] ASoC: rt5677: Add a configuration option
+> forLDO2_POW pin
+> 
+> Some boards have this pin statically tied and do not require any
+> configuration, some other boards allow to enable chip using GPIO.
+> 
+> Add an option that tells which GPIO is used to power the audio codec.
+> 
+> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+> ---
 
-Does this mean the granularity of most drivers are only one period since
-most of them cannot reporte the dma position in realtime  ?
+Acked-by: Bard Liao <bardliao@realtek.com>
 
-(e.g. pointer callback of Intel8x0 use a timeout loop to read the last
-valid index)
+Thanks.
 
-  The safeguard will be two periods
-
-If some HDA have FIFO size of 192 bytes which is more than the minimum
-period bytes
-
-Should we limit the start threshold to FIFO threshold or FIFO size ?
-
-Does it need Brust length = 1 for those hda controller to support arbitrary
-period size ?
-
-Seem only some hda controller can trigger DMA transfer at 1/3 or 2/3 FIFO
-buffer at different power states and report the dma position in pointer
-callback
-
-Does snd-oxygen provide this position with granularity which is less than
-the minimum period size ?
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
