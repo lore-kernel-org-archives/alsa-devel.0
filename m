@@ -1,24 +1,21 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: Re: [PATCH v2] sound: pci: ctxfi: pr_* replaced with
-	dev_*
-Date: Thu, 18 Sep 2014 17:01:25 +0530
-Message-ID: <20140918113125.GA4625@sudip-PC>
-References: <1410790181-16457-1-git-send-email-sudipm.mukherjee@gmail.com>
- <s5hvbop3qjn.wl-tiwai@suse.de> <20140915152554.GA26218@sudip-PC>
- <s5hwq94agtr.wl-tiwai@suse.de> <20140918092126.GA31651@sudip-PC>
- <s5hbnqd8c0v.wl-tiwai@suse.de>
+From: Renu Tyagi <renu.tyagi@samsung.com>
+Subject: Re: [PATCH 8/8] coverity fix in alsa-libs
+Date: Thu, 18 Sep 2014 11:36:50 +0000 (GMT)
+Message-ID: <A0.40.04938.2D3CA145@epcpsbgx1.samsung.com>
+Reply-To: renu.tyagi@samsung.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="----=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id B3DBF261B14
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 13:31:36 +0200 (CEST)
-Received: by mail-pa0-f48.google.com with SMTP id fb1so416830pad.21
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 04:31:35 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <s5hbnqd8c0v.wl-tiwai@suse.de>
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7455E261B14
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 13:36:52 +0200 (CEST)
+Received: from epcpsbgr4.samsung.com
+ (u144.gpu120.samsung.co.kr [203.254.230.144])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0NC300N6YHLE2N90@mailout1.samsung.com> for
+ alsa-devel@alsa-project.org; Thu, 18 Sep 2014 20:36:50 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,86 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 18, 2014 at 12:21:20PM +0200, Takashi Iwai wrote:
-> At Thu, 18 Sep 2014 14:51:26 +0530,
-> Sudip Mukherjee wrote:
-> > 
-> > On Mon, Sep 15, 2014 at 08:17:52PM +0200, Takashi Iwai wrote:
-> > > At Mon, 15 Sep 2014 20:55:54 +0530,
-> > > Sudip Mukherjee wrote:
-> > > > 
-> > > > On Mon, Sep 15, 2014 at 04:29:48PM +0200, Takashi Iwai wrote:
-> > > > > At Mon, 15 Sep 2014 19:39:41 +0530,
-> > > > > Sudip Mukherjee wrote:
-> > <snip>
-> > > > > > 
-> > > > > > diff --git a/sound/pci/ctxfi/ctresource.c b/sound/pci/ctxfi/ctresource.c
-> > > > > > index e49d2be..80beecb 100644
-> > > > > > --- a/sound/pci/ctxfi/ctresource.c
-> > > > > > +++ b/sound/pci/ctxfi/ctresource.c
-> > > > > (snip)
-> > > > > > @@ -282,8 +287,9 @@ int rsc_mgr_uninit(struct rsc_mgr *mgr)
-> > > > > >  		case SUM:
-> > > > > >  			break;
-> > > > > >  		default:
-> > > > > > -			pr_err("ctxfi: Invalid resource type value %d!\n",
-> > > > > > -				mgr->type);
-> > > > > > +			dev_err(&(((struct hw *)mgr->hw)->pci->dev),
-> > > > > > +				"ctxfi: Invalid resource type value %d!\n",
-> > > > > > +				 mgr->type);
-> > > > > 
-> > > > > Did you really conclude that this is the best way?
-> > > > > Also, is it good to mix up the usages of both card->dev and &pci->dev?
-> > > > > Think again.
-> > > > > 
-> > > > 
-> > > > i have a doubt regarding this :- 
-> > > > in the snd_card_new()  card->dev is being assigned with &pci->dev , 
-> > > > then are not they the same ?
-> > > 
-> > > Yes, but how can it be guaranteed in future?  We may avoid the
-> > > problems in future by keeping the consistency at this moment.  It's
-> > > one of the good points of keeping code consistent, in addition to:
-> > > increased readability / understandability and making the bug easier to
-> > > be spotted.
-> > 
-> > understood the point.
-> > > 
-> > > > i was trying to get some way of finding out the reference of card->dev from the resource manager ,
-> > > > but ...  :( 
-> > > > i will try again and if i cant find any way i will ask for some hint from you.
-> > > 
-> > > Good!  A hint is that there is no 100% perfect way to achieve this.
-> > > It's always compromise, and you'll have to choose which one is better
-> > > than others.  For that, you'll have to evaluate multiple
-> > > implementations, and it's a really good exercise for coding.
-> > > 
-> > 
-> > i can find the rsc_mgr from the snd_card or ct_atc 
-> > but if i want to find the reference to the device from the managers , then 
-> > either i can go with
-> > 1) &(((struct hw *)mgr->hw)->pci->dev) 
-> > or
-> > 2) use pci_get_drvdata with ((struct hw *)mgr->hw)->pci
-> > or
-> > 3) using container_of with &(((struct hw *)mgr->hw)->pci->dev) to find the pointer to snd_card via card_dev , but it becomes too complicated  :( 
-> > 
-> > we can get to all the managers (rsc_mgr, amixer_mgr, src_mgr ...) using atc->rsc_mgrs[] , then there should be some simple way to go
-> > the opposite way (reaching atc from the managers)  . container_of will not work .. :( 
-> > or am i missing something?? 
-> 
-> Adding a new field pointing to card to each struct.
 
-i seriously did not think of that , i was under the impression that a newbie is not supposed to change or add to the designs.
-anyways, i feel that i understand the code a little better than what i understood at the the time of my first patch.
-and definitely your "writing-an-alsa-driver" has helped a lot .
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="windows-1252"
+MIME-Version: 1.0
+Message-ID: <30264820.99631411040210023.JavaMail.weblogic@epv6ml12>
 
-thanks
-sudip
-> 
-> 
-> Takashi
+SGksDQpCdWcgVHlwZSA6IE51bGwgY2hlY2sgYmVmb3JlIGNsb3NpbmcgaA0KRmlsZXMgY2hhbmdl
+ZCA6IHBjbV9ob29rcy5jDQpQRkEgcGF0Y2g4DQoNClRoYW5rcw0KUmVudSBUeWFnaQ0KLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQ0KRnJvbSA5MDZhOGI2NTkxMWVkZmQ5ZDhiZWY0ODQ1MDcwNzY4NWJmNGI4OTgw
+IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KRnJvbTogcmVudSB0eWFnaSA8cmVudS50eWFnaUBz
+YW1zdW5nLmNvbT4NCkRhdGU6IFRodSwgMTggU2VwIDIwMTQgMTY6NDU6NTkgKzA1MzANClN1Ympl
+Y3Q6IFtQQVRDSCA4LzhdIFtwY21faG9va3NdIDogTnVsbCBjaGVjayBiZWZvcmUgY2xvc2luZyBo
+DQoNCg0KU2lnbmVkLW9mZi1ieTogcmVudSB0eWFnaSA8cmVudS50eWFnaUBzYW1zdW5nLmNvbT4N
+Ci0tLQ0KIHNyYy9wY20vcGNtX2hvb2tzLmMgfCAgICAzICsrLQ0KIDEgZmlsZXMgY2hhbmdlZCwg
+MiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvc3JjL3BjbS9w
+Y21faG9va3MuYyBiL3NyYy9wY20vcGNtX2hvb2tzLmMNCmluZGV4IDBiOTNjNjQuLmNlMWNmMzYg
+MTAwNjQ0DQotLS0gYS9zcmMvcGNtL3BjbV9ob29rcy5jDQorKysgYi9zcmMvcGNtL3BjbV9ob29r
+cy5jDQpAQCAtNDU3LDcgKzQ1Nyw4IEBAIHN0YXRpYyBpbnQgc25kX3BjbV9ob29rX2FkZF9jb25m
+KHNuZF9wY21fdCAqcGNtLCBzbmRfY29uZmlnX3QgKnJvb3QsIHNuZF9jb25maWdfDQogICAgICAg
+ICAgICAgICAgZXJyID0gaG9va19hZGRfZGxvYmoocGNtLCBoKTsNCg0KICAgICAgICBpZiAoZXJy
+IDwgMCkgew0KLSAgICAgICAgICAgICAgIHNuZF9kbGNsb3NlKGgpOw0KKyAgICAgICAgICAgICAg
+IGlmKGgpDQorICAgICAgICAgICAgICAgICAgICAgICBzbmRfZGxjbG9zZShoKTsNCiAgICAgICAg
+ICAgICAgICByZXR1cm4gZXJyOw0KICAgICAgICB9DQogICAgICAgIHJldHVybiAwOw0KLS0NCjEu
+Ny4x
+
+
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
+Content-Type: application/octet-stream;
+ name="patch8.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="patch8.patch"
+
+
+RnJvbSA5MDZhOGI2NTkxMWVkZmQ5ZDhiZWY0ODQ1MDcwNzY4NWJmNGI4OTgwIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiByZW51IHR5YWdpIDxyZW51LnR5YWdpQHNhbXN1bmcu
+Y29tPgpEYXRlOiBUaHUsIDE4IFNlcCAyMDE0IDE2OjQ1OjU5ICswNTMwClN1YmplY3Q6IFtQ
+QVRDSCA4LzhdIFtwY21faG9va3NdIDogTnVsbCBjaGVjayBiZWZvcmUgY2xvc2luZyBoCgoK
+U2lnbmVkLW9mZi1ieTogcmVudSB0eWFnaSA8cmVudS50eWFnaUBzYW1zdW5nLmNvbT4KLS0t
+CiBzcmMvcGNtL3BjbV9ob29rcy5jIHwgICAgMyArKy0KIDEgZmlsZXMgY2hhbmdlZCwgMiBp
+bnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NyYy9wY20vcGNt
+X2hvb2tzLmMgYi9zcmMvcGNtL3BjbV9ob29rcy5jCmluZGV4IDBiOTNjNjQuLmNlMWNmMzYg
+MTAwNjQ0Ci0tLSBhL3NyYy9wY20vcGNtX2hvb2tzLmMKKysrIGIvc3JjL3BjbS9wY21faG9v
+a3MuYwpAQCAtNDU3LDcgKzQ1Nyw4IEBAIHN0YXRpYyBpbnQgc25kX3BjbV9ob29rX2FkZF9j
+b25mKHNuZF9wY21fdCAqcGNtLCBzbmRfY29uZmlnX3QgKnJvb3QsIHNuZF9jb25maWdfCiAJ
+CWVyciA9IGhvb2tfYWRkX2Rsb2JqKHBjbSwgaCk7CiAKIAlpZiAoZXJyIDwgMCkgewotCQlz
+bmRfZGxjbG9zZShoKTsKKwkJaWYoaCkKKwkJCXNuZF9kbGNsb3NlKGgpOwogCQlyZXR1cm4g
+ZXJyOwogCX0KIAlyZXR1cm4gMDsKLS0gCjEuNy4xCgo=
+
+
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY--
