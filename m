@@ -1,30 +1,17 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re:
- =?iso-8859-1?q?No_sound_captured_with_SGTL5000_on_i?=
- =?iso-8859-1?q?=2EMX6_in_I=B2S_master_mode?=
-Date: Thu, 18 Sep 2014 10:49:37 -0700
-Message-ID: <20140918174935.GB6432@Asurada>
-References: <CAL8zT=hSCpBZpqVGQ5uBdXJe25hqoNkmiPh_Ge3RCrGALkaoZg@mail.gmail.com>
- <CAOMZO5CReW7-8L7zx=z1TshwJSzcfGThCjws7fTfbZJKCnCZLg@mail.gmail.com>
- <CAOf5uwmrsuXSCpUXhf3pTCRt0=4pprwfiP5MDDukE=WRzOk2WA@mail.gmail.com>
- <CAL8zT=jw4QQSzoq_8d0j-SXYEWzsNgz279dhDzjTHHr-jutP=Q@mail.gmail.com>
- <CAOf5uw=R0oHGDyFhueepoftfDb_d4vccO_751apBLg7S3gzGjg@mail.gmail.com>
- <CAL8zT=gcYkCRE9TU+2w+qBDtM+gYKqr-0KRDy7UxQXJ0P3LutQ@mail.gmail.com>
- <CAL8zT=igU9F=MZ0dQSgqgkq-T=PV-jbXAZeYAaMDs1ot_1MjCg@mail.gmail.com>
- <20140918170524.GA6080@Asurada>
- <CAOMZO5AqtNm3kwndUYszAuMfJ4CMOz4pwZRmE+04cEDtz98agg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: max98090: Fix missing free_irq (part
+	2)
+Date: Thu, 18 Sep 2014 10:54:34 -0700
+Message-ID: <20140918175434.GA7960@sirena.org.uk>
+References: <1411037324-5996-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2433790605872605345=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f175.google.com (mail-pd0-f175.google.com
- [209.85.192.175])
- by alsa0.perex.cz (Postfix) with ESMTP id E43A7265282
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 19:49:41 +0200 (CEST)
-Received: by mail-pd0-f175.google.com with SMTP id z10so1870078pdj.6
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 10:49:41 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5AqtNm3kwndUYszAuMfJ4CMOz4pwZRmE+04cEDtz98agg@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BC9F26537D
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 19:54:49 +0200 (CEST)
+In-Reply-To: <1411037324-5996-1-git-send-email-jarkko.nikula@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,26 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>, Michael Trimarchi <michael@amarulasolutions.com>, Shawn Guo <shawn.guo@freescale.com>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabio,
 
-On Thu, Sep 18, 2014 at 02:28:29PM -0300, Fabio Estevam wrote:
-> Thanks for the hint on audmux swap! I can get ssi in master mode to
-> work correctly with the change below:
+--===============2433790605872605345==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="m65Gnd0q9NXNFThY"
+Content-Disposition: inline
 
-> -               mux-int-port = <2>;
-> -               mux-ext-port = <3>;
-> +               mux-int-port = <3>;
-> +               mux-ext-port = <2>;
 
-Actually this looks a bit tricky as the internal and external ports
-are not physically swapped :)
+--m65Gnd0q9NXNFThY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So that's why I put the swapping code in the fsl-asoc-card based on
-CBx_CFx configurations.
+On Thu, Sep 18, 2014 at 01:48:44PM +0300, Jarkko Nikula wrote:
 
-Thanks
-Nicolin
+> ---
+> for-next, I don't think this is critical enough for stable.
+> ---
+
+> @@ -2413,6 +2413,7 @@ static int max98090_remove(struct snd_soc_codec *co=
+dec)
+>  {
+>  	struct max98090_priv *max98090 =3D snd_soc_codec_get_drvdata(codec);
+> =20
+> +	devm_free_irq(codec->dev, max98090->irq, codec);
+
+If this is a fix for -next shouldn't we be doing the proper fix and
+moving the resource acquisition to the bus probe?
+
+--m65Gnd0q9NXNFThY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUGxxWAAoJECTWi3JdVIfQrL8H/jI6Hu2ffqM1G6j2PP57fYLw
+jDgtpSeC9+ekWrkJ1m8MlrPyupjCDxN4id8v6cG9qXvm23b7uVTCfksFn2iLltJY
+qB3Pvpj9t+a2aZwcKY7+ENW+6+P4SmRQDMFFzEIUrUwSRR72fUPjVfMbBV3DCkeL
+ww1gwiJL0PE4L6z4JHcEgiEivNj/MS5kdYC3Ez4HnpUUA2ANLexYx9upq60zoV+k
+V13huGVfdwL8/ecDugRPGUL8xG/6N+5JnjXDzuCNZF+AAF1c1swUhfBTgyN8cFzd
+WD3SbNfIl2/2O1Lq41AlAbsl1mBzS5UScwbTf+PPXxvNMA0683qbVCDOebvNuWo=
+=xGgH
+-----END PGP SIGNATURE-----
+
+--m65Gnd0q9NXNFThY--
+
+--===============2433790605872605345==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2433790605872605345==--
