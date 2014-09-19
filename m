@@ -1,20 +1,24 @@
-From: Radoslaw Szkodzinski <astralstorm@gmail.com>
-Subject: Re: alsa-jack issues
-Date: Sat, 20 Sep 2014 00:59:58 +0200
-Message-ID: <CAAmECqSjRgjy2PzOXYz6nGVGh1bJUF8FGutq9fQt+fvgSfbYGw@mail.gmail.com>
-References: <CAAmECqSO1YnykkVZYydjLJb5mrE5q=b6Fu4P4RrkVgsT6rMCOw@mail.gmail.com>
- <1410392000.378953844@f433.i.mail.ru>
- <CAAmECqQmkN5nnRhzNmMxZC=cmNqkaf24LLv0bhxyHGKZirHmAg@mail.gmail.com>
+From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Subject: Re: Radeon unconnected HDMI eats samples at 280 kHz
+Date: Fri, 19 Sep 2014 23:32:46 +0000
+Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D05992AB48@satlexdag05.amd.com>
+References: <54198F38.30002@canonical.com>	<5419FC9E.9010302@iki.fi>
+ <541A5BCD.2040105@canonical.com> <s5hlhph8jt5.wl-tiwai@suse.de>
+ <541A8FA2.7090406@canonical.com>
+ <A3397C8B8B789E45844E7EC5DEAD89D059929D9D@satlexdag05.amd.com>
+ <541C31EE.4020101@canonical.com>
+ <A3397C8B8B789E45844E7EC5DEAD89D05992A81C@satlexdag05.amd.com>
+ <541C6C23.1040403@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=089e013d1d4cd32df80503731168
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f52.google.com (mail-la0-f52.google.com
- [209.85.215.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A94426526D
- for <alsa-devel@alsa-project.org>; Sat, 20 Sep 2014 01:00:39 +0200 (CEST)
-Received: by mail-la0-f52.google.com with SMTP id gq15so4025735lab.11
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 16:00:38 -0700 (PDT)
-In-Reply-To: <CAAmECqQmkN5nnRhzNmMxZC=cmNqkaf24LLv0bhxyHGKZirHmAg@mail.gmail.com>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0147.outbound.protection.outlook.com [65.55.169.147])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC93126535F
+ for <alsa-devel@alsa-project.org>; Sat, 20 Sep 2014 01:32:52 +0200 (CEST)
+In-Reply-To: <541C6C23.1040403@canonical.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,188 +28,216 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sergey <sergemp@mail.ru>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Cc: Anssi Hannula <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---089e013d1d4cd32df80503731168
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+> -----Original Message-----
+> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> Sent: Friday, September 19, 2014 1:47 PM
+> To: Deucher, Alexander; Takashi Iwai
+> Cc: Anssi Hannula; alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] Radeon unconnected HDMI eats samples at 280 kHz
+> 
+> 
+> 
+> On 2014-09-19 16:14, Deucher, Alexander wrote:
+> >> -----Original Message-----
+> >> From: David Henningsson [mailto:david.henningsson@canonical.com]
+> >> Sent: Friday, September 19, 2014 9:39 AM
+> >> To: Deucher, Alexander; Takashi Iwai
+> >> Cc: Anssi Hannula; alsa-devel@alsa-project.org
+> >> Subject: Re: [alsa-devel] Radeon unconnected HDMI eats samples at 280
+> kHz
+> >>
+> >> On 2014-09-19 00:29, Deucher, Alexander wrote:
+> >>>>>> Well, if jack detection (get pin sense) works, there is.
+> >>>>>
+> >>>>> Does it react if we turn off the HDMI output via xrandr, too?
+> >>>>> I'm not sure whether we need reprogram things in that case,
+> though...
+> >>>>
+> >>>> xrandr correctly reports that "HDMI-0" is disconnected.
+> >>>>
+> >>>> I'm not sure how to turn the HDMI output via xrandr, but I tried "xrandr
+> >>>> --output HDMI-0 --off" and it made no difference in either xrandr
+> >>>> output, nor in codec/eld output.
+> >>>>
+> >>>> What I'm thinking is that it could be that the monitor_present is
+> >>>> indicating the presence of my DVI monitor, as some cards are capable
+> of
+> >>>> outputting HDMI audio on their DVI outputs (through a passive DVI-
+> >>> HDMI
+> >>>> adapter). This is just a guess though.
+> >>>
+> >>> I'm not that familiar with the audio side, but on there are registers on
+> the
+> >> gpu side that will change what is reported to the audio side as far as I can
+> tell.
+> >> You might try the new hdmi patches I sent out today:
+> >>> http://lists.freedesktop.org/archives/dri-devel/2014-
+> >> September/068544.html
+> >>> patch 5/5 is probably the most relevant for this discussion.  It explicitly
+> >> clears the audio enable bit when the display is disabled which should
+> cascade
+> >> down to the audio side if I understand correctly.  If not, I think playing
+> with
+> >> the AZ_HOT_PLUG_CONTROL registers in that patch set can probably sort
+> it
+> >> out.
+> >>
+> >> Thanks for the attention and the patches!
+> >>
+> >> I compiled a 3.17-rc4 kernel plus the five patches. (I usually run the
+> >> Ubuntu 3.13 kernel).
+> >
+> > I've pushed an updated set to:
+> > http://cgit.freedesktop.org/~agd5f/linux/log/?h=drm-next-3.18-wip
+> 
+> Thanks, will try this later. In this case, would you expect me to take
+> the entire kernel from the drm-next-3.18-wip branch, or mix it somehow
+> with a 3.17 kernel?
 
-On Thu, Sep 11, 2014 at 11:02 AM, Radoslaw Szkodzinski
-<astralstorm@gmail.com> wrote:
-> On Thu, Sep 11, 2014 at 1:33 AM, Sergey <sergemp@mail.ru> wrote:
->> Sat, 6 Sep 2014 Radoslaw Szkodzinski wrote:
->>
->>>A recent change in alsa-plugins 1.0.28 alsa-jack has changed the poll se=
-mantics.
->>>This breaks audacious and mpv, perhaps more applications.
->>>
->>>The regression is caused by:
->>>Commit: 9217377337cdceb62abeb5969112b738bb5cd551
->>>jack: fix polling and recovering
->>
->> I'm initial author of this commit and I'd love to fix the issue,
->> but it never happens to me. I need your help to fix it.
->>
->> Can you provide some steps to reproduce this bug? How much time it
->> takes to reproduce it? Can you reproduce it with alsa 1.0.27 and
->> alsa-jack plugin 1.0.28? You can download that plugin separately:
->
-> I'll test this during the weekend. 1.0.27.x was fine with alsa 1.0.27.
+It's just a collection of patches I'm working on for 3.18.  The branch is actually based on 3.17 and the top 5 patches (which are the relevant ones) should apply to most other 3.17 trees.
 
-Sorry it took this long, the following version is fine:
-media-plugins/alsa-plugins-1.0.27-r3 was built with the following:
-USE=3D"ffmpeg jack libsamplerate speex -debug -pulseaudio" ABI_X86=3D"32 64=
- -x32"
+> 
+> >> With this I saw that the jack reported "unplugged" when booting without
+> >> an HDMI monitor, and that when the HDMI monitor was connected and
+> got
+> >> video output, the jack was now reported to be plugged in.
+> >> However, when I unplugged the monitor, the jack was still reported to be
+> >> plugged in.
+> >
+> > Did you also run xrandr --output <output> --off?
+> 
+> Not that exact command, but I tried "Detect displays" (in the system
+> settings dialog) to see if that helped. Also xrandr showed the HDMI-0
+> display as disconnected.
+> 
 
-It takes between 1 and 10 minutes to reproduce the bug with alsa-plugins-1.=
-0.28.
+The audio is not "connected" and the sink information is not passed to the audio driver until you turn on the display.  It's not tied to the connected status of the displays since there is not a 1:1 mapping of displays and audio pins.
 
-Alsa-lib info is in both cases:
-media-libs/alsa-lib-1.0.28 was built with the following:
-USE=3D"python -alisp -debug -doc" ABI_X86=3D"32 64 -x32"
-PYTHON_SINGLE_TARGET=3D"python2_7" PYTHON_TARGETS=3D"python2_7"
+> > The audio pins are not tied to a specific output (e.g., there can be multiple
+> HDMI or DP ports on a system), so they are not directly tied to a hotplug pin.
+> I think the gpu driver has to set the appropriate bits in this register to have
+> the changes reflected in the audio driver.
+> 
+> In my case, I have one HDMI, one VGA and one DVI. But there is only one
+> pin on the audio side. So the question here is whether the DVI output is
+> audio capable, and if that could possibly cause confusion here, or if
+> one would expect the pin to always map to the HDMI output?
+> 
 
-I'm somewhat suspicious is it caused by a wrong Jack buffer size, and
-only masked by incorrect handling of buffer fill in the older version.
-Verbose log from aplay is attached (w/ alsa-jack 1.0.27.x).
-Note the discrepancy between JackClient period size (not divisible by
-actual period size) and ALSA min_avail.
+All of the digital encoders on the chips (up to 7 depending on the asic) are hdmi capable, the number and types or ports are up to the oem.  The DVI port supports HDMI audio as well if you use a DVI to HDMI adapter.
 
-Best regards,
---=20
-Rados=C5=82aw Szkodzi=C5=84ski
+> >> I also tried running a get_pin_sense verb manually and it still reported
+> >> to be plugged in.
+> >>
+> >> Also, I think it was the third time I plugged the monitor in, I got some
+> >> type of GPU hang (see attached log). It never recovered by itself so I
+> >> had to use SysRq to reboot the computer.
+> >>
+> >>> I'm just not familiar enough with the azalia hw to know exactly how it's
+> >> supposed to interact with the audio side.
+> >>
+> >> Well, feel free to ask questions if you think we can answer them :-)
+> >>
+> >> The bits that say PIN*_JACK_DETECTION_ENABLE and
+> >> PIN*_UNSOLICITED_RESPONSE_ENABLE sounds like things that should be
+> >> turned on all the time so we can properly get unsol jack detection
+> >> events when the monitor is plugged or unplugged. Unless the
+> >> PIN*_JACK_DETECTION_ENABLE actually represents the current state
+> rather
+> >> than the detection capability. But that's just guesses, as I assume the
+> >> specs are not released?
+> >
+> > I'm not familiar enough with the audio side, but here is some information
+> about the bits in that register.
+> 
+> Thanks!
+> 
+> > Hopefully someone more familiar with the audio side can help out.
+> >
+> > PIN*_JACK_DETECTION_ENABLE
+> > If PIN0_JACK_DETECTION_ENABLE is 1, changing PIN0_AUDIO_ENABLED
+> will produce jack connection and disconnection status changes in pin0
+> accordingly.
+> >
+> >   POSSIBLE VALUES:
+> >        00 - setting PIN0_AUDIO_ENABLED does not set pin0
+> PRESENCE_DETECT
+> >        01 - setting PIN0_AUDIO_ENABLED sets pin0 PRESENCE_DETECT
+> 
+> Ok, we definitely need this enabled.
+> 
+> > PIN*_UNSOLICITED_RESPONSE_ENABLE
+> >
+> > For PIN0, If 1, when AUDIO_ENABLED changes, an unsolicited response
+> with payload UNSOLICITED_RESPONSE_PAYLOAD will be sent.
+> >   POSSIBLE VALUES:
+> >        00 - changing AUDIO_ENABLED does not produce an unsolicited
+> response
+> >        01 - changing AUDIO_ENABLED produces an unsolicited response
+> 
+> Ok, we need this enabled too.
+> 
+> Note: to make sure both plug and unplug events are delivered, these two
+> should probably remain enabled even when the monitor is disconnected.
+> There is a risk that setting these to zero when also setting
+> AUDIO_ENABLED to zero could cause either event not to trigger on the
+> audio side.
 
---089e013d1d4cd32df80503731168
-Content-Type: text/plain; charset=US-ASCII; name="aplay-jack.log"
-Content-Disposition: attachment; filename="aplay-jack.log"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_i0a4osrm0
+The driver would need to be restructured a bit to actually reflect the connected/disconnected state of the monitor on the audio side.  Right now we set up audio when the display is enabled, not when it's probed.
 
-amFja19jbGllbnRfbmV3OiBkZXByZWNhdGVkCkphY2s6IEphY2tDbGllbnQ6OlNldHVwRHJpdmVy
-U3luYyBkcml2ZXIgc2VtIGluIGZsdXNoIG1vZGUKSmFjazogSmFja1Bvc2l4U2VtYXBob3JlOjpD
-b25uZWN0IG5hbWUgPSBqYWNrX3NlbS4xMDAwX2RlZmF1bHRfYWxzYS1qYWNrLmphY2tQLjIxNTEx
-LjAKSmFjazogSmFja1Bvc2l4U2VtYXBob3JlOjpDb25uZWN0IHNlbV9nZXR2YWx1ZSAwCkphY2s6
-IENsb2NrIHNvdXJjZSA6IHVua25vd24KSmFjazogSmFja0xpYkNsaWVudDo6T3BlbiBuYW1lID0g
-YWxzYS1qYWNrLmphY2tQLjIxNTExLjAgcmVmbnVtID0gNgpQbGF5aW5nIFdBVkUgJy91c3Ivc2hh
-cmUvc291bmRzL2xvZ2luLndhdicgOiBTaWduZWQgMTYgYml0IExpdHRsZSBFbmRpYW4sIFJhdGUg
-NDQxMDAgSHosIFN0ZXJlbwpKYWNrOiBKYWNrQ2xpZW50OjpQb3J0UmVnaXN0ZXIgcmVmID0gNiBu
-YW1lID0gYWxzYS1qYWNrLmphY2tQLjIxNTExLjA6b3V0XzAwMCB0eXBlID0gMzIgYml0IGZsb2F0
-IG1vbm8gYXVkaW8gcG9ydF9pbmRleCA9IDM0CkphY2s6IEphY2tDbGllbnQ6OlBvcnRSZWdpc3Rl
-ciByZWYgPSA2IG5hbWUgPSBhbHNhLWphY2suamFja1AuMjE1MTEuMDpvdXRfMDAxIHR5cGUgPSAz
-MiBiaXQgZmxvYXQgbW9ubyBhdWRpbyBwb3J0X2luZGV4ID0gMzUKUGx1ZyBQQ006IExpbmVhciBJ
-bnRlZ2VyIDwtPiBMaW5lYXIgRmxvYXQgY29udmVyc2lvbiBQQ00gKEZMT0FUX0xFKQpJdHMgc2V0
-dXAgaXM6CiAgc3RyZWFtICAgICAgIDogUExBWUJBQ0sKICBhY2Nlc3MgICAgICAgOiBSV19JTlRF
-UkxFQVZFRAogIGZvcm1hdCAgICAgICA6IFMxNl9MRQogIHN1YmZvcm1hdCAgICA6IFNURAogIGNo
-YW5uZWxzICAgICA6IDIKICByYXRlICAgICAgICAgOiA0NDEwMAogIGV4YWN0IHJhdGUgICA6IDQ0
-MTAwICg0NDEwMC8xKQogIG1zYml0cyAgICAgICA6IDE2CiAgYnVmZmVyX3NpemUgIDogMjIwNTAK
-ICBwZXJpb2Rfc2l6ZSAgOiA1NTEyCiAgcGVyaW9kX3RpbWUgIDogMTI1MDAwCiAgdHN0YW1wX21v
-ZGUgIDogTk9ORQogIHBlcmlvZF9zdGVwICA6IDEKICBhdmFpbF9taW4gICAgOiA1NTEyCiAgcGVy
-aW9kX2V2ZW50IDogMAogIHN0YXJ0X3RocmVzaG9sZCAgOiAyMjA1MAogIHN0b3BfdGhyZXNob2xk
-ICAgOiAyMjA1MAogIHNpbGVuY2VfdGhyZXNob2xkOiAwCiAgc2lsZW5jZV9zaXplIDogMAogIGJv
-dW5kYXJ5ICAgICA6IDYyMDY1MjMyMzY0Njk5NjQ4MDAKU2xhdmU6IEFMU0EgPC0+IEpBQ0sgUENN
-IEkvTyBQbHVnaW4KSXRzIHNldHVwIGlzOgogIHN0cmVhbSAgICAgICA6IFBMQVlCQUNLCiAgYWNj
-ZXNzICAgICAgIDogTU1BUF9JTlRFUkxFQVZFRAogIGZvcm1hdCAgICAgICA6IEZMT0FUX0xFCiAg
-c3ViZm9ybWF0ICAgIDogU1RECiAgY2hhbm5lbHMgICAgIDogMgogIHJhdGUgICAgICAgICA6IDQ0
-MTAwCiAgZXhhY3QgcmF0ZSAgIDogNDQxMDAgKDQ0MTAwLzEpCiAgbXNiaXRzICAgICAgIDogMzIK
-ICBidWZmZXJfc2l6ZSAgOiAyMjA1MAogIHBlcmlvZF9zaXplICA6IDU1MTIKICBwZXJpb2RfdGlt
-ZSAgOiAxMjUwMDAKICB0c3RhbXBfbW9kZSAgOiBOT05FCiAgcGVyaW9kX3N0ZXAgIDogMQogIGF2
-YWlsX21pbiAgICA6IDU1MTIKICBwZXJpb2RfZXZlbnQgOiAwCiAgc3RhcnRfdGhyZXNob2xkICA6
-IDIyMDUwCiAgc3RvcF90aHJlc2hvbGQgICA6IDIyMDUwCiAgc2lsZW5jZV90aHJlc2hvbGQ6IDAK
-ICBzaWxlbmNlX3NpemUgOiAwCiAgYm91bmRhcnkgICAgIDogNjIwNjUyMzIzNjQ2OTk2NDgwMApN
-YXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDFmZTEgIyMjIyMgICAgICAgICAgICAgICAg
-MjQlCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwMmZjNSAjIyMjIyMjIyAgICAgICAg
-ICAgICAzNyUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAzMmUyICMjIyMjIyMjICAg
-ICAgICAgICAgIDM5JQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDQyZTIgIyMjIyMj
-IyMjIyMgICAgICAgICAgNTIlCkphY2s6IEphY2tDbGllbnQ6OkFjdGl2YXRlCkphY2s6IEphY2tQ
-b3NpeFRocmVhZDo6U3RhcnRJbXAgOiBjcmVhdGUgbm9uIFJUIHRocmVhZApKYWNrOiBKYWNrUG9z
-aXhUaHJlYWQ6OlRocmVhZEhhbmRsZXIgOiBzdGFydApKYWNrOiBKYWNrQ2xpZW50OjprQnVmZmVy
-U2l6ZUNhbGxiYWNrIGJ1ZmZlcl9zaXplID0gMjU2CkphY2s6IEphY2tDbGllbnQ6OkluaXQgOiBw
-ZXJpb2QgPSA1ODA0IGNvbXB1dGF0aW9uID0gMTAwIGNvbnN0cmFpbnQgPSA1ODA0CkphY2s6IEph
-Y2tQb3NpeFRocmVhZDo6QWNxdWlyZVJlYWxUaW1lSW1wIHByaW9yaXR5ID0gMTAKSmFjazogSmFj
-a0NsaWVudDo6Q2xpZW50Tm90aWZ5IHJlZiA9IDYgbmFtZSA9IGFsc2EtamFjay5qYWNrUC4yMTUx
-MS4wIG5vdGlmeSA9IDIKSmFjazogSmFja0NsaWVudDo6a0FjdGl2YXRlQ2xpZW50IG5hbWUgPSBh
-bHNhLWphY2suamFja1AuMjE1MTEuMCByZWYgPSA2IApKYWNrOiBKYWNrQ2xpZW50OjpDb25uZWN0
-IHNyYyA9IGFsc2EtamFjay5qYWNrUC4yMTUxMS4wOm91dF8wMDAgZHN0ID0gQ2FybGE6QWR2YW5j
-ZWQgQ3Jvc3NmZWVkOmluMApKYWNrOiBKYWNrQ2xpZW50OjpDbGllbnROb3RpZnkgcmVmID0gNiBu
-YW1lID0gYWxzYS1qYWNrLmphY2tQLjIxNTExLjAgbm90aWZ5ID0gMTgKSmFjazogSmFja0NsaWVu
-dDo6Q2xpZW50Tm90aWZ5IHJlZiA9IDYgbmFtZSA9IGFsc2EtamFjay5qYWNrUC4yMTUxMS4wIG5v
-dGlmeSA9IDE4CkphY2s6IEphY2tDbGllbnQ6OkNvbm5lY3Qgc3JjID0gYWxzYS1qYWNrLmphY2tQ
-LjIxNTExLjA6b3V0XzAwMSBkc3QgPSBDYXJsYTpBZHZhbmNlZCBDcm9zc2ZlZWQ6aW4xCkphY2s6
-IEphY2tDbGllbnQ6OkNsaWVudE5vdGlmeSByZWYgPSA2IG5hbWUgPSBhbHNhLWphY2suamFja1Au
-MjE1MTEuMCBub3RpZnkgPSAxOApKYWNrOiBKYWNrQ2xpZW50OjpDbGllbnROb3RpZnkgcmVmID0g
-NiBuYW1lID0gYWxzYS1qYWNrLmphY2tQLjIxNTExLjAgbm90aWZ5ID0gMTgKTWF4IHBlYWsgKDEx
-MDI0IHNhbXBsZXMpOiAweDAwMDA1MDVhICMjIyMjIyMjIyMjIyMgICAgICAgIDYyJQpNYXggcGVh
-ayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDQxNmIgIyMjIyMjIyMjIyMgICAgICAgICAgNTElCk1h
-eCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwNTIzNSAjIyMjIyMjIyMjIyMjICAgICAgICA2
-NCUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDA1N2E0ICMjIyMjIyMjIyMjIyMjICAg
-ICAgIDY4JQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDdmYTggIyMjIyMjIyMjIyMj
-IyMjIyMjIyMgOTklCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwNjY0NCAjIyMjIyMj
-IyMjIyMjIyMjICAgICA3OSUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDA2MmE3ICMj
-IyMjIyMjIyMjIyMjIyMgICAgIDc3JQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDQ2
-MTUgIyMjIyMjIyMjIyMgICAgICAgICAgNTQlCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgw
-MDAwNWYwZiAjIyMjIyMjIyMjIyMjIyMgICAgICA3NCUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMp
-OiAweDAwMDA2YWEwICMjIyMjIyMjIyMjIyMjIyMjICAgIDgzJQpNYXggcGVhayAoMTEwMjQgc2Ft
-cGxlcyk6IDB4MDAwMDVmNjEgIyMjIyMjIyMjIyMjIyMjICAgICAgNzQlCk1heCBwZWFrICgxMTAy
-NCBzYW1wbGVzKTogMHgwMDAwNTFlYiAjIyMjIyMjIyMjIyMjICAgICAgICA2MyUKTWF4IHBlYWsg
-KDExMDI0IHNhbXBsZXMpOiAweDAwMDA2OWE1ICMjIyMjIyMjIyMjIyMjIyMjICAgIDgyJQpNYXgg
-cGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDVhOWIgIyMjIyMjIyMjIyMjIyMjICAgICAgNzAl
-Ck1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwNDU5OSAjIyMjIyMjIyMjIyAgICAgICAg
-ICA1NCUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAzNTI2ICMjIyMjIyMjIyAgICAg
-ICAgICAgIDQxJQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDM0YmMgIyMjIyMjIyMj
-ICAgICAgICAgICAgNDElCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwMmE2ZSAjIyMj
-IyMjICAgICAgICAgICAgICAzMyUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAyZDgy
-ICMjIyMjIyMjICAgICAgICAgICAgIDM1JQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAw
-MDIzYTkgIyMjIyMjICAgICAgICAgICAgICAgMjclCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTog
-MHgwMDAwMTljOSAjIyMjIyAgICAgICAgICAgICAgICAyMCUKTWF4IHBlYWsgKDExMDI0IHNhbXBs
-ZXMpOiAweDAwMDAxMjcxICMjIyAgICAgICAgICAgICAgICAgIDE0JQpNYXggcGVhayAoMTEwMjQg
-c2FtcGxlcyk6IDB4MDAwMDEyNmEgIyMjICAgICAgICAgICAgICAgICAgMTQlCk1heCBwZWFrICgx
-MTAyNCBzYW1wbGVzKTogMHgwMDAwMTAxYiAjIyMgICAgICAgICAgICAgICAgICAxMiUKTWF4IHBl
-YWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAwOTM2ICMjICAgICAgICAgICAgICAgICAgIDclCk1h
-eCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwMDk2ZSAjIyAgICAgICAgICAgICAgICAgICA3
-JQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDA3MTEgIyMgICAgICAgICAgICAgICAg
-ICAgNSUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAwNmJlICMjICAgICAgICAgICAg
-ICAgICAgIDUlCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwMDRmOSAjICAgICAgICAg
-ICAgICAgICAgICAzJQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDAzYjEgIyAgICAg
-ICAgICAgICAgICAgICAgMiUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAwMzFmICMg
-ICAgICAgICAgICAgICAgICAgIDIlCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwMDM3
-OCAjICAgICAgICAgICAgICAgICAgICAyJQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAw
-MDAyMmEgIyAgICAgICAgICAgICAgICAgICAgMSUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAw
-eDAwMDAwMjYxICMgICAgICAgICAgICAgICAgICAgIDElCk1heCBwZWFrICgxMTAyNCBzYW1wbGVz
-KTogMHgwMDAwMDIyYiAjICAgICAgICAgICAgICAgICAgICAxJQpNYXggcGVhayAoMTEwMjQgc2Ft
-cGxlcyk6IDB4MDAwMDAxNzIgIyAgICAgICAgICAgICAgICAgICAgMSUKTWF4IHBlYWsgKDExMDI0
-IHNhbXBsZXMpOiAweDAwMDAwMTE3ICMgICAgICAgICAgICAgICAgICAgIDAlCkphY2s6IEphY2tD
-bGllbnQ6OkRlYWN0aXZhdGUKSmFjazogSmFja0NsaWVudDo6RGVhY3RpdmF0ZSByZXMgPSAwCkph
-Y2s6IEphY2tQb3NpeFRocmVhZDo6S2lsbApKYWNrOiBqYWNrX2NsaWVudF9jbG9zZQpKYWNrOiBK
-YWNrQ2xpZW50OjpDbG9zZSByZWYgPSA2CkphY2s6IEphY2tDbGllbnQ6OkRlYWN0aXZhdGUKSmFj
-azogSmFja1NvY2tldENsaWVudENoYW5uZWw6OlN0b3AKSmFjazogSmFja1Bvc2l4VGhyZWFkOjpL
-aWxsCkphY2s6IEphY2tDbGllbnRTb2NrZXQ6OkNsb3NlCkphY2s6IEphY2tDbGllbnRTb2NrZXQ6
-OkNsb3NlCkphY2s6IEphY2tQb3NpeFNlbWFwaG9yZTo6RGlzY29ubmVjdCBuYW1lID0gamFja19z
-ZW0uMTAwMF9kZWZhdWx0X2Fsc2EtamFjay5qYWNrUC4yMTUxMS4wCkphY2s6IEphY2tMaWJDbGll
-bnQ6On5KYWNrTGliQ2xpZW50CkphY2s6IEphY2tTaG1SZWFkV3JpdGVQdHIxOjp+SmFja1NobVJl
-YWRXcml0ZVB0cjEgNQpKYWNrOiBTdWNjZWVkZWQgaW4gdW5sb2NraW5nIDQyMiBieXRlIG1lbW9y
-eSBhcmVhCkphY2s6IEphY2tMaWJHbG9iYWxzIERlc3Ryb3kgYWU2ZDk4OTAKSmFjazogfkphY2tM
-aWJHbG9iYWxzCkphY2s6IEphY2tQb3NpeFNlbWFwaG9yZTo6RGlzY29ubmVjdCBuYW1lID0gamFj
-a19zZW0uMTAwMF9kZWZhdWx0X3N5c3RlbQpKYWNrOiBKYWNrUG9zaXhTZW1hcGhvcmU6OkRpc2Nv
-bm5lY3QgbmFtZSA9IGphY2tfc2VtLjEwMDBfZGVmYXVsdF9mcmVld2hlZWwKSmFjazogSmFja1Bv
-c2l4U2VtYXBob3JlOjpEaXNjb25uZWN0IG5hbWUgPSBqYWNrX3NlbS4xMDAwX2RlZmF1bHRfZGJ1
-c2FwaQpKYWNrOiBKYWNrUG9zaXhTZW1hcGhvcmU6OkRpc2Nvbm5lY3QgbmFtZSA9IGphY2tfc2Vt
-LjEwMDBfZGVmYXVsdF9DYXJsYQpKYWNrOiBKYWNrUG9zaXhTZW1hcGhvcmU6OkRpc2Nvbm5lY3Qg
-bmFtZSA9IGphY2tfc2VtLjEwMDBfZGVmYXVsdF9hbHNhLWphY2suamFja1AuMTQ4MDcuNDEKSmFj
-azogSmFja1Bvc2l4U2VtYXBob3JlOjpEaXNjb25uZWN0IG5hbWUgPSBqYWNrX3NlbS4xMDAwX2Rl
-ZmF1bHRfYWxzYS1qYWNrLmphY2tQLjIxMjc0LjAKSmFjazogbm8gbWVzc2FnZSBidWZmZXIgb3Zl
-cnJ1bnMKSmFjazogSmFja1Bvc2l4VGhyZWFkOjpTdG9wCkphY2s6IEphY2tQb3NpeFRocmVhZDo6
-VGhyZWFkSGFuZGxlciA6IGV4aXQKSmFjazogSmFja1NobVJlYWRXcml0ZVB0cjo6fkphY2tTaG1S
-ZWFkV3JpdGVQdHIgMQpKYWNrOiBTdWNjZWVkZWQgaW4gdW5sb2NraW5nIDExODYgYnl0ZSBtZW1v
-cnkgYXJlYQpKYWNrOiBKYWNrU2htUmVhZFdyaXRlUHRyOjp+SmFja1NobVJlYWRXcml0ZVB0ciAw
-CkphY2s6IFN1Y2NlZWRlZCBpbiB1bmxvY2tpbmcgMjE3MDEwMTggYnl0ZSBtZW1vcnkgYXJlYQpK
-YWNrOiBqYWNrX2NsaWVudF9jbG9zZSByZXMgPSAwCgo=
---089e013d1d4cd32df80503731168
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> 
+> > CODEC_HOT_PLUG_ENABLE
+> > If 1, changing AUDIO_ENABLED sets STATE_CHANGE_STATUS.
+> >
+> >   POSSIBLE VALUES:
+> >        00 - changing AUDIO_ENABLED does not set STATE_CHANGE_STATUS
+> >        01 - changing AUDIO_ENABLED sets STATE_CHANGE_STATUS
+> 
+> This probably refer to audio controller register STATESTS, because
+> that's the only thing labelled "State change status" in the HDA spec. I
+> think this should be enabled too, but it's possible that it's only
+> relevant if the audio device is in a power down state.
 
+Yes, STATE_CHANGE_STATUS is an audio register.
 
---089e013d1d4cd32df80503731168--
+> 
+> > PIN*_AUDIO_ENABLED
+> > Set to 1 by the driver if an HDMI TV able to take channel pair 0,1 for PIN0
+> (or 2,3 for PIN1, etc.) is connected, set to 0 if not.
+> >
+> >   POSSIBLE VALUES:
+> >        00 - disabled
+> >        01 - enabled
+> >
+> > AUDIO_ENABLED
+> > Set to 1 by the driver when an Audio Enabled HDMI TV is connected, set to
+> 0 when it is disconnected. Zeroed by the driver during mode change to
+> disable audio temporarily in order to avoid noise. The software changes on
+> this bit are used by the CODEC hardware to emulate hot plugging-unplugging
+> of the audio-enabled HDMI TV.
+> >
+> >   POSSIBLE VALUES:
+> >        00 - disabled
+> >        01 - enabled
+> 
+> If audio_enabled quickly changes to off and then on when there is a mode
+> change, it might make sense to *not* wake up the audio driver in this
+> case, as I assume that the audio capabilities on the HDMI TV will not
+> change just because the video mode changes.
+> 
+> To sum up, what the audio driver needs is PRESENCE_DETECT to correctly
+> correspond to whether something is plugged in or not. And we need an
+> unsolicited event when PRESENCE_DETECT changes.
+
+The tricky part is that you may only have 1 audio pin.  What do you do if you have multiple displays that support audio connected?  I guess we could report connected if any displays that support audio are connected, but pass the sink information to the audio driver when the display was actually enabled since the sinks may have different audio capabilities.
+
+Alex
+
+> 
+> --
+> David Henningsson, Canonical Ltd.
+> https://launchpad.net/~diwic
