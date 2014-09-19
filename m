@@ -1,107 +1,69 @@
-From: Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>
-Subject: Re:
-	=?utf-8?q?No_sound_captured_with_SGTL5000_on_i=2EMX6?=
-	=?utf-8?q?_in_I=C2=B2S_master_mode?=
-Date: Fri, 19 Sep 2014 14:53:41 +0200
-Message-ID: <CAL8zT=gELK8+LOgVn6qXnaTm=Vcx=zn8OxfQBh_9m28NQtR2pA@mail.gmail.com>
-References: <20140918170524.GA6080@Asurada>
- <CAOMZO5AqtNm3kwndUYszAuMfJ4CMOz4pwZRmE+04cEDtz98agg@mail.gmail.com>
- <20140918174935.GB6432@Asurada>
- <CAOMZO5AXN4p01=oGCydHUm6sPdt5NRNXO+4EOKQ1T7ZKUwVfMw@mail.gmail.com>
- <20140918180742.GC6432@Asurada>
- <CAOMZO5AvWecqimJkZcwysvsmPiq8Fa2Hm_XppCH3E1+vyjVzFQ@mail.gmail.com>
- <20140918183910.GF6432@Asurada>
- <CAOMZO5BJbzizB4r8vvtJEBzv+DhsyRmYMUoQL2D-dQhBorGkzA@mail.gmail.com>
- <20140918235045.GA4148@Asurada>
- <CAL8zT=hdT0otjqkQeBmfQgNsfdoapCv3NnHMwNxfxydu1+44Ww@mail.gmail.com>
- <20140919075228.GA4376@Asurada>
- <CAL8zT=jWQ4ZTGpohWHGTfbxgj547ukcZEUg7XdQsWzwq1=JiVA@mail.gmail.com>
+From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v3 1/5] clk: ti: add "ti,gpio-gate-clock" controlled clock
+Date: Fri, 19 Sep 2014 16:07:03 +0300
+Message-ID: <541C2A77.9070406@ti.com>
+References: <cover.1410898073.git.jsarha@ti.com> <71e8bdf16f8a3bff5db6ba80dcab9d21de05e939.1410898073.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f171.google.com (mail-ob0-f171.google.com
- [209.85.214.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 698122625E0
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 14:53:57 +0200 (CEST)
-Received: by mail-ob0-f171.google.com with SMTP id vb8so1650470obc.2
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 05:53:56 -0700 (PDT)
-In-Reply-To: <CAL8zT=jWQ4ZTGpohWHGTfbxgj547ukcZEUg7XdQsWzwq1=JiVA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, Michael Trimarchi <michael@amarulasolutions.com>, Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawn.guo@freescale.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="1uXkGQadUj5AAmolLFvO8fMQ1WbffHaIn"
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <71e8bdf16f8a3bff5db6ba80dcab9d21de05e939.1410898073.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>, dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org, Mike Turquette <mturquette@linaro.org>
+Cc: tony@atomide.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com, t-kristo@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--1uXkGQadUj5AAmolLFvO8fMQ1WbffHaIn
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-2014-09-19 11:18 GMT+02:00 Jean-Michel Hautbois
-<jean-michel.hautbois@vodalys.com>:
-> 2014-09-19 9:52 GMT+02:00 Nicolin Chen <nicoleotsuka@gmail.com>:
->> On Fri, Sep 19, 2014 at 09:42:22AM +0200, Jean-Michel Hautbois wrote:
->>> Hi,
->>>
->>> 2014-09-19 1:50 GMT+02:00 Nicolin Chen <nicoleotsuka@gmail.com>:
->>> > On Thu, Sep 18, 2014 at 08:35:31PM -0300, Fabio Estevam wrote:
->>> >> On Thu, Sep 18, 2014 at 3:39 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->>> >>
->>> >> > It actually is merged into broonie/for-next and even linux-next I think.
->>> >> > I'll later send a patch to Shawn's tree for imx_v6_v7_defconfig changes
->>> >> > after next merge window's done.
->>> >>
->>> >> Ok, I see it now, but master/slave configuration is still hardcoded there:
->>> >>
->>> >>     } else if (of_device_is_compatible(np, "fsl,imx-audio-sgtl5000")) {
->>> >>         priv->codec_priv.mclk_id = SGTL5000_SYSCLK;
->>> >>         priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
->>> >
->>> > It's just a combinational driver and also made to be compatible with
->>> > old DTs. Unless we refine the DT binding like simple-card, this hard-
->>> > code is inevitable. As long as this dai_fmt has been defined, at least
->>> > AUDMUX part will be automatically configured.
->>> >
->>> > I made this driver was initially to support ASRC for imx-cs42888. But
->>> > merging the code from imx-sgtl5000 and imx-wm8962 allows us to omit
->>> > a branch of duplicated code. And that's it :)
->>> >
->>>
->>> Well, I may have missed something, I don't have fsl-asoc-card in my
->>> linux tree (vanilla). Where can I find it ? I can test a SGTL5000
->>> master mode on i.MX6Q.
->>
->> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
->>
->> for-next branch.
->>
->> Nicolin
->
-> Thanks, now I need to modify my DT in order to have fsl-asoc-card loaded :).
-> JM
+On 16/09/14 23:40, Jyri Sarha wrote:
+> The added ti,gpio-gate-clock is a basic clock that can be enabled and
+> disabled trough a gpio output. The DT binding document for the clock
+> is also added. For EPROBE_DEFER handling the registering of the clock
+> has to be delayed until of_clk_get() call time.
+>=20
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+>  .../bindings/clock/ti/gpio-gate-clock.txt          |   21 ++
+>  drivers/clk/ti/Makefile                            |    2 +-
+>  drivers/clk/ti/gpio.c                              |  202 ++++++++++++=
+++++++++
+>  3 files changed, 224 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/clock/ti/gpio-gat=
+e-clock.txt
+>  create mode 100644 drivers/clk/ti/gpio.c
 
-FYI, This is working !
-I can capture my sound from line in with this :
-    sound {
-        compatible = "fsl,imx6q-vbx3-sgtl5000",
-                 "fsl,imx-audio-sgtl5000";
-        model = "imx6q-vbx3-sgtl5000";
-        ssi-controller = <&ssi1>;
-        audio-codec = <&codec>;
-        audio-routing =
-            "A1N1L", "Line In Jack",
-            "A1N1R", "Line In Jack";
-        mux-int-port = <1>;
-        mux-ext-port = <5>;
-    };
+Why is this a TI clock? Sounds like a generic one to me.
 
-Now, I will add mic support, and I still need to modprobe manually, I
-need to know why...
+In any case, this should go through Mike.
 
-Thanks,
-JM
+ Tomi
+
+
+
+--1uXkGQadUj5AAmolLFvO8fMQ1WbffHaIn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUHCp3AAoJEPo9qoy8lh71nhEQAJO46f7xMmo3VjBWVDtoNo64
++PIeMqqNAOUeGbxiQ6Ac0EyMTSI6wuKr2L/Nc99SYMpCD6Svm0zXzcpY3+xtJ8Kc
+4dHoC+S9nwRwA0AFR7d9C5drwYCQv+NgKTPyR35gKCKyDnuDTnLh9JD2nxy2Qut5
+YjfDX/kw/V4qFouZJr/l4EUrqp6UN1hE1EVuapQWa+RwyUjbhXTzVC+j+I0MqLD8
+VE7q22+O8Cp4zb+JDeGgtqkZjoUFWNWfJP5etcAh/T4dsl/K5RQX46ZzC8CoVmzM
+TvBPgow1oJmvXulRtHdU3Es5AAqzICzmz3GEm3djBd5u0D1Ksle9TzQsl0E1BM8p
+43jBIeGVJ4raLbSYWAyZF9oY+G9bn50VN2YFQYsFCh5KxeFzdW0XQVJoSgLUlpA1
+mo1eyA1+vFnwdHxh9hijmzwZudDjdnrLmZHPNN8K++kN1pDvZrrFSc89J9wlayDg
+kpz+O+ErTnppulRbLwiYpEUwTD1Hrr75pnB2oORN0kufD2o9oBMrJTn6xDEvIpmq
+bn29qI8mB9CNmxeyo3f1UeodvUPWSFR5gtW8o1xBt2qhX7K+FHXFLxVPzD5HOZWe
+WU6J2qXO72MfV3ZMttKfU+ngdKBFBLFVCSG0C6BBYuhamAZQG3ZJ8uLC4JXBFf8G
+r1D2KMAgLMiHGj4/Yl1b
+=UN+w
+-----END PGP SIGNATURE-----
+
+--1uXkGQadUj5AAmolLFvO8fMQ1WbffHaIn--
