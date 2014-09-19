@@ -1,22 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Radeon unconnected HDMI eats samples at 280 kHz
-Date: Sat, 20 Sep 2014 01:35:12 +0200
-Message-ID: <541CBDB0.4020408@canonical.com>
-References: <54198F38.30002@canonical.com>	<5419FC9E.9010302@iki.fi>	<541A5BCD.2040105@canonical.com>
- <s5hlhph8jt5.wl-tiwai@suse.de> <541A8FA2.7090406@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D059929D9D@satlexdag05.amd.com>
- <541C31EE.4020101@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D05992A81C@satlexdag05.amd.com>
- <541C6C23.1040403@canonical.com> <541C73C8.3040606@gmail.com>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Remove unneeded 'i2s-slave'
+	property
+Date: Fri, 19 Sep 2014 18:49:18 -0500
+Message-ID: <541CC0FE.7050600@tabi.org>
+References: <1411063877-1552-1-git-send-email-fabio.estevam@freescale.com>
+ <20140918183251.GE6432@Asurada> <541B2678.8000401@tabi.org>
+ <1411065995187.3341@freescale.com> <20140918194342.GA3173@Alpha>
+ <541B78EC.5050702@tabi.org> <20140919041749.GA5840@Asurada>
+ <541C26E2.4060605@tabi.org> <20140919172438.GA1736@Asurada>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id BFCB826535F
- for <alsa-devel@alsa-project.org>; Sat, 20 Sep 2014 01:35:12 +0200 (CEST)
-In-Reply-To: <541C73C8.3040606@gmail.com>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BB4D26535F
+ for <alsa-devel@alsa-project.org>; Sat, 20 Sep 2014 01:49:22 +0200 (CEST)
+In-Reply-To: <20140919172438.GA1736@Asurada>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,38 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Alexander E. Patrakov" <patrakov@gmail.com>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Anssi Hannula <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Nicolin Chen wrote:
+> I thought only the backward compatibility for DT is demanded.....
 
+I have higher standards :-)
 
-On 2014-09-19 20:19, Alexander E. Patrakov wrote:
-> 19.09.2014 23:47, David Henningsson wrote:
->> If audio_enabled quickly changes to off and then on when there is a mode
->> change, it might make sense to *not* wake up the audio driver in this
->> case, as I assume that the audio capabilities on the HDMI TV will not
->> change just because the video mode changes.
->
-> Unfortunately, they will. Some low-resolution video modes just don't
-> have enough pixel clock to transfer the 7.1 audio signal at 192 kHz. See
-> the table on page 105 (shown as 121 in some readers) of
-> http://www.microprocessor.org/HDMISpecification13a.pdf , section "7.3.3
-> Video Dependency".
+> But I still don't get why people would use new DT without updating
+> kernel. It's pretty fair to use old DT with newer kernel because
+> they want bug-fix patches.
 
-Ok, I stand corrected. I wonder what the least ugly thing to do would be 
-if the user is currently running audio when this happens, e g, if the 
-user is running a game with background music, and goes to "video 
-settings" and switches mode.
+The device tree is shipped with the kernel, so some people say that 
+backwards compatibility is not needed anywhere.  I think it's important 
+to provide backwards compatibility both ways.
 
-But if such thing would audio glitch anyhow, like it seems maybe we 
-should let the audio_enabled signal pass through to the audio side to 
-indicate a short disconnection. It's just not going to be that fun 
-if/when we implement reprobing the HDMI device on plug in. And also the 
-risk of the audio stream switching to somewhere else, like going from 
-HDMI to analog.
+I generally prefer some kind of transition period, where you can use new 
+or old kernel with a new or old device tree.
 
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+However, let me look at Fabio's patches some more.
