@@ -1,21 +1,14 @@
-From: Renu Tyagi <renu.tyagi@samsung.com>
-Subject: [PATCH 6/11] simple_abst : null check for lib
-Date: Fri, 19 Sep 2014 11:04:55 +0000 (GMT)
-Message-ID: <9B.C4.05030.7DD0C145@epcpsbgx4.samsung.com>
-Reply-To: renu.tyagi@samsung.com
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt5645: Minor coding style modify
+Date: Fri, 19 Sep 2014 19:15:44 +0800
+Message-ID: <1411125345-16935-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
- by alsa0.perex.cz (Postfix) with ESMTP id C9E66261A50
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 13:04:57 +0200 (CEST)
-Received: from epcpsbgr3.samsung.com
- (u143.gpu120.samsung.co.kr [203.254.230.143])
- by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0NC500IIUAS71Q40@mailout2.samsung.com> for
- alsa-devel@alsa-project.org; Fri, 19 Sep 2014 20:04:55 +0900 (KST)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14E29261A50
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 13:16:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,55 +18,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+Minor coding style modify
 
-------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="windows-1252"
-MIME-Version: 1.0
-Message-ID: <8784019.31151411124694973.JavaMail.weblogic@epv6ml10>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-U2lnbmVkLW9mZi1ieTogcmVudSB0eWFnaSA8cmVudS50eWFnaUBzYW1zdW5nLmNvbT4NCi0tLQ0K
-IHNyYy9taXhlci9zaW1wbGVfYWJzdC5jIHwgICAgMiArKw0KIDEgZmlsZXMgY2hhbmdlZCwgMiBp
-bnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvc3JjL21peGVyL3Np
-bXBsZV9hYnN0LmMgYi9zcmMvbWl4ZXIvc2ltcGxlX2Fic3QuYw0KaW5kZXggOWU5YWFmNS4uNTI5
-NzQ3MiAxMDA2NDQNCi0tLSBhL3NyYy9taXhlci9zaW1wbGVfYWJzdC5jDQorKysgYi9zcmMvbWl4
-ZXIvc2ltcGxlX2Fic3QuYw0KQEAgLTcwLDYgKzcwLDggQEAgc3RhdGljIGludCB0cnlfb3Blbihz
-bmRfbWl4ZXJfY2xhc3NfdCAqY2xhc3MsIGNvbnN0IGNoYXIgKmxpYikNCiAgICAgICAgdm9pZCAq
-aDsNCiAgICAgICAgaW50IGVyciA9IDA7DQoNCisgICAgICAgaWYgKCFsaWIpDQorICAgICAgICAg
-ICAgICAgcmV0dXJuIC1FTlhJTzsNCiAgICAgICAgcGF0aCA9IGdldGVudigiQUxTQV9NSVhFUl9T
-SU1QTEVfTU9EVUxFUyIpOw0KICAgICAgICBpZiAoIXBhdGgpDQogICAgICAgICAgICAgICAgcGF0
-aCA9IFNPX1BBVEg7DQotLQ0KMS43LjENCg==
-
-
-------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
-Content-Type: application/octet-stream;
- name="patch_6.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="patch_6.patch"
-
-
-CgpTaWduZWQtb2ZmLWJ5OiByZW51IHR5YWdpIDxyZW51LnR5YWdpQHNhbXN1bmcuY29tPgot
-LS0KIHNyYy9taXhlci9zaW1wbGVfYWJzdC5jIHwgICAgMiArKwogMSBmaWxlcyBjaGFuZ2Vk
-LCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc3JjL21p
-eGVyL3NpbXBsZV9hYnN0LmMgYi9zcmMvbWl4ZXIvc2ltcGxlX2Fic3QuYwppbmRleCA5ZTlh
-YWY1Li41Mjk3NDcyIDEwMDY0NAotLS0gYS9zcmMvbWl4ZXIvc2ltcGxlX2Fic3QuYworKysg
-Yi9zcmMvbWl4ZXIvc2ltcGxlX2Fic3QuYwpAQCAtNzAsNiArNzAsOCBAQCBzdGF0aWMgaW50
-IHRyeV9vcGVuKHNuZF9taXhlcl9jbGFzc190ICpjbGFzcywgY29uc3QgY2hhciAqbGliKQog
-CXZvaWQgKmg7CiAJaW50IGVyciA9IDA7CiAKKwlpZiAoIWxpYikKKwkJcmV0dXJuIC1FTlhJ
-TzsKIAlwYXRoID0gZ2V0ZW52KCJBTFNBX01JWEVSX1NJTVBMRV9NT0RVTEVTIik7CiAJaWYg
-KCFwYXRoKQogCQlwYXRoID0gU09fUEFUSDsKLS0gCjEuNy4xCgo=
-
-
-------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
-------=SAMSUNG_mySingle_MIME_MULTIPART_BOUNDARY--
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index a7762d0..dfbe74a 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -1838,7 +1838,7 @@ static int rt5645_hw_params(struct snd_pcm_substream *substream,
+ 			RT5645_I2S_DL_MASK, val_len);
+ 		snd_soc_update_bits(codec, RT5645_ADDA_CLK1, mask_clk, val_clk);
+ 		break;
+-	case  RT5645_AIF2:
++	case RT5645_AIF2:
+ 		mask_clk = RT5645_I2S_BCLK_MS2_MASK | RT5645_I2S_PD2_MASK;
+ 		val_clk = bclk_ms << RT5645_I2S_BCLK_MS2_SFT |
+ 			pre_div << RT5645_I2S_PD2_SFT;
+@@ -1983,7 +1983,7 @@ static int rt5645_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 			snd_soc_update_bits(codec, RT5645_GLB_CLK,
+ 				RT5645_PLL1_SRC_MASK, RT5645_PLL1_SRC_BCLK1);
+ 			break;
+-		case  RT5645_AIF2:
++		case RT5645_AIF2:
+ 			snd_soc_update_bits(codec, RT5645_GLB_CLK,
+ 				RT5645_PLL1_SRC_MASK, RT5645_PLL1_SRC_BCLK2);
+ 			break;
+-- 
+1.8.1.1.439.g50a6b54
