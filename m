@@ -1,86 +1,41 @@
-From: Howard Mitchell <hm@hmbedded.co.uk>
-Subject: [PATCH] soc-core: Fix volsw_range funcs so SOC_DOUBLE_R_RANGE_TLV works.
-Date: Fri, 19 Sep 2014 12:50:31 +0100
-Message-ID: <1411127431-31144-1-git-send-email-hm@hmbedded.co.uk>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Howard Mitchell <hm@hmbedded.co.uk>
+From: Timur Tabi <timur@tabi.org>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Remove unneeded 'i2s-slave'
+	property
+Date: Fri, 19 Sep 2014 07:51:46 -0500
+Message-ID: <541C26E2.4060605@tabi.org>
+References: <1411063877-1552-1-git-send-email-fabio.estevam@freescale.com>
+ <20140918183251.GE6432@Asurada> <541B2678.8000401@tabi.org>
+ <1411065995187.3341@freescale.com> <20140918194342.GA3173@Alpha>
+ <541B78EC.5050702@tabi.org> <20140919041749.GA5840@Asurada>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muin.pair.com (muin.pair.com [209.68.1.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id A864F2625E0
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 14:51:48 +0200 (CEST)
+In-Reply-To: <20140919041749.GA5840@Asurada>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This fixes a bug when using the SOC_DOUBLE_R_RANGE_TLV macro in
-the invert mode. In the non-invert case, e.g.
+Nicolin Chen wrote:
+>> You can't just redefine a property, because that breaks backwards
+>> >compatibility with older device trees or older kernels.
 
-SOC_DOUBLE_R_RANGE_TLV("<name>", <reg_l>, <reg_r>,
-					0, 40, 255, 0, <tlv>)
+> Sorry, I'm not sure what's the problem here. It just drops i2s stuff
+> and leave AC97 part as we discussed. Why would old DTs be broken?
+> Is that possible for you to give me an example to understand the
+> point?
 
-the range sent to the hardware is 40..255, but in the invert case:
-
-SOC_DOUBLE_R_RANGE_TLV("<name>", <reg_l>, <reg_r>,
-					0, 40, 255, 1, <tlv>)
-
-the range 215..0 was being sent to the hardware. This commit
-corrects this to 255..40 so it is consistent with the non-invert
-case.
-
-Signed-off-by: Howard Mitchell <hm@hmbedded.co.uk>
----
- sound/soc/soc-core.c |   20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d4bfd4a..6a58af3 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3027,9 +3027,10 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
- 	unsigned int val, val_mask;
- 	int ret;
- 
--	val = ((ucontrol->value.integer.value[0] + min) & mask);
- 	if (invert)
--		val = max - val;
-+		val = (max - ucontrol->value.integer.value[0]) & mask;
-+	else
-+		val = ((ucontrol->value.integer.value[0] + min) & mask);
- 	val_mask = mask << shift;
- 	val = val << shift;
- 
-@@ -3038,9 +3039,10 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
- 		return ret;
- 
- 	if (snd_soc_volsw_is_stereo(mc)) {
--		val = ((ucontrol->value.integer.value[1] + min) & mask);
- 		if (invert)
--			val = max - val;
-+			val = (max - ucontrol->value.integer.value[1]) & mask;
-+		else
-+			val = ((ucontrol->value.integer.value[1] + min) & mask);
- 		val_mask = mask << shift;
- 		val = val << shift;
- 
-@@ -3085,8 +3087,9 @@ int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
- 	if (invert)
- 		ucontrol->value.integer.value[0] =
- 			max - ucontrol->value.integer.value[0];
--	ucontrol->value.integer.value[0] =
--		ucontrol->value.integer.value[0] - min;
-+	else
-+		ucontrol->value.integer.value[0] =
-+			ucontrol->value.integer.value[0] - min;
- 
- 	if (snd_soc_volsw_is_stereo(mc)) {
- 		ret = snd_soc_component_read(component, rreg, &val);
-@@ -3097,8 +3100,9 @@ int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
- 		if (invert)
- 			ucontrol->value.integer.value[1] =
- 				max - ucontrol->value.integer.value[1];
--		ucontrol->value.integer.value[1] =
--			ucontrol->value.integer.value[1] - min;
-+		else
-+			ucontrol->value.integer.value[1] =
-+				ucontrol->value.integer.value[1] - min;
- 	}
- 
- 	return 0;
--- 
-1.7.9.5
+If you have an older kernel with a newer device tree (that doesn't have 
+"i2s-mode"), the driver will fail to load because "i2s-mode" is missing.
