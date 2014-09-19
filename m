@@ -1,14 +1,24 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt286: Fix sync function
-Date: Fri, 19 Sep 2014 10:16:19 +0800
-Message-ID: <1411092979-19260-1-git-send-email-bardliao@realtek.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Remove unneeded 'i2s-slave'
+	property
+Date: Thu, 18 Sep 2014 21:17:49 -0700
+Message-ID: <20140919041749.GA5840@Asurada>
+References: <1411063877-1552-1-git-send-email-fabio.estevam@freescale.com>
+ <20140918183251.GE6432@Asurada> <541B2678.8000401@tabi.org>
+ <1411065995187.3341@freescale.com> <20140918194342.GA3173@Alpha>
+ <541B78EC.5050702@tabi.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id C9CE426557A
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 04:16:53 +0200 (CEST)
+Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
+ [209.85.220.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6964265603
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 06:17:58 +0200 (CEST)
+Received: by mail-pa0-f48.google.com with SMTP id fb1so2089996pad.21
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 21:17:56 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <541B78EC.5050702@tabi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,66 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
+To: Timur Tabi <timur@tabi.org>
+Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-We try to write index registers into cache when we write an index
-register, but we change the reg value before updating the cache.
-As a result, the cache is never be updated. This patch will fix
-this issue and also correct some incorrect default value in the
-cache.
+On Thu, Sep 18, 2014 at 07:29:32PM -0500, Timur Tabi wrote:
+> >For the property, do you agree to modify it like this:
+> >
+> >- fsl,mode:         The operating mode for the AC97 interface only.
+> >                     "ac97-slave" - AC97 mode, SSI is clock slave
+> >                     "ac97-master" - AC97 mode, SSI is clock master
+> >                     (There's no need for other DAI format like I2S
+> >		    mode to engage this property.)
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt286.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+> You can't just redefine a property, because that breaks backwards
+> compatibility with older device trees or older kernels.
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 7dfca82..8ad4b24 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -51,7 +51,7 @@ static struct reg_default rt286_index_def[] = {
- 	{ 0x04, 0xaf01 },
- 	{ 0x08, 0x000d },
- 	{ 0x09, 0xd810 },
--	{ 0x0a, 0x0060 },
-+	{ 0x0a, 0x0120 },
- 	{ 0x0b, 0x0000 },
- 	{ 0x0d, 0x2800 },
- 	{ 0x0f, 0x0000 },
-@@ -60,7 +60,7 @@ static struct reg_default rt286_index_def[] = {
- 	{ 0x33, 0x0208 },
- 	{ 0x49, 0x0004 },
- 	{ 0x4f, 0x50e9 },
--	{ 0x50, 0x2c00 },
-+	{ 0x50, 0x2000 },
- 	{ 0x63, 0x2902 },
- 	{ 0x67, 0x1111 },
- 	{ 0x68, 0x1016 },
-@@ -104,7 +104,6 @@ static const struct reg_default rt286_reg[] = {
- 	{ 0x02170700, 0x00000000 },
- 	{ 0x02270100, 0x00000000 },
- 	{ 0x02370100, 0x00000000 },
--	{ 0x02040000, 0x00004002 },
- 	{ 0x01870700, 0x00000020 },
- 	{ 0x00830000, 0x000000c3 },
- 	{ 0x00930000, 0x000000c3 },
-@@ -192,7 +191,6 @@ static int rt286_hw_write(void *context, unsigned int reg, unsigned int value)
- 	/*handle index registers*/
- 	if (reg <= 0xff) {
- 		rt286_hw_write(client, RT286_COEF_INDEX, reg);
--		reg = RT286_PROC_COEF;
- 		for (i = 0; i < INDEX_CACHE_SIZE; i++) {
- 			if (reg == rt286->index_cache[i].reg) {
- 				rt286->index_cache[i].def = value;
-@@ -200,6 +198,7 @@ static int rt286_hw_write(void *context, unsigned int reg, unsigned int value)
- 			}
- 
- 		}
-+		reg = RT286_PROC_COEF;
- 	}
- 
- 	data[0] = (reg >> 24) & 0xff;
--- 
-1.8.1.1.439.g50a6b54
+Sorry, I'm not sure what's the problem here. It just drops i2s stuff
+and leave AC97 part as we discussed. Why would old DTs be broken?
+Is that possible for you to give me an example to understand the
+point?
+
+Thank you
+Nicolin
