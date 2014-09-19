@@ -1,48 +1,86 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 5/5] ASoC: max98090: Remove unused byte access
-	macros
-Date: Fri, 19 Sep 2014 14:48:21 +0300
-Message-ID: <1411127301-366-5-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1411127301-366-1-git-send-email-jarkko.nikula@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 30EC22625EA
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 13:48:44 +0200 (CEST)
-In-Reply-To: <1411127301-366-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+From: Howard Mitchell <hm@hmbedded.co.uk>
+Subject: [PATCH] soc-core: Fix volsw_range funcs so SOC_DOUBLE_R_RANGE_TLV works.
+Date: Fri, 19 Sep 2014 12:50:31 +0100
+Message-ID: <1411127431-31144-1-git-send-email-hm@hmbedded.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Howard Mitchell <hm@hmbedded.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
- sound/soc/codecs/max98090.h | 3 ---
- 1 file changed, 3 deletions(-)
+This fixes a bug when using the SOC_DOUBLE_R_RANGE_TLV macro in
+the invert mode. In the non-invert case, e.g.
 
-diff --git a/sound/soc/codecs/max98090.h b/sound/soc/codecs/max98090.h
-index 2613fdbb66d8..a5f6bada06da 100644
---- a/sound/soc/codecs/max98090.h
-+++ b/sound/soc/codecs/max98090.h
-@@ -1497,9 +1497,6 @@
- #define M98090_REVID_WIDTH		8
- #define M98090_REVID_NUM		(1<<M98090_REVID_WIDTH)
+SOC_DOUBLE_R_RANGE_TLV("<name>", <reg_l>, <reg_r>,
+					0, 40, 255, 0, <tlv>)
+
+the range sent to the hardware is 40..255, but in the invert case:
+
+SOC_DOUBLE_R_RANGE_TLV("<name>", <reg_l>, <reg_r>,
+					0, 40, 255, 1, <tlv>)
+
+the range 215..0 was being sent to the hardware. This commit
+corrects this to 255..40 so it is consistent with the non-invert
+case.
+
+Signed-off-by: Howard Mitchell <hm@hmbedded.co.uk>
+---
+ sound/soc/soc-core.c |   20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d4bfd4a..6a58af3 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3027,9 +3027,10 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
+ 	unsigned int val, val_mask;
+ 	int ret;
  
--#define M98090_BYTE1(w) ((w >> 8) & 0xff)
--#define M98090_BYTE0(w) (w & 0xff)
--
- /* Silicon revision number */
- #define M98090_REVA			0x40
- #define M98091_REVA			0x50
+-	val = ((ucontrol->value.integer.value[0] + min) & mask);
+ 	if (invert)
+-		val = max - val;
++		val = (max - ucontrol->value.integer.value[0]) & mask;
++	else
++		val = ((ucontrol->value.integer.value[0] + min) & mask);
+ 	val_mask = mask << shift;
+ 	val = val << shift;
+ 
+@@ -3038,9 +3039,10 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
+ 		return ret;
+ 
+ 	if (snd_soc_volsw_is_stereo(mc)) {
+-		val = ((ucontrol->value.integer.value[1] + min) & mask);
+ 		if (invert)
+-			val = max - val;
++			val = (max - ucontrol->value.integer.value[1]) & mask;
++		else
++			val = ((ucontrol->value.integer.value[1] + min) & mask);
+ 		val_mask = mask << shift;
+ 		val = val << shift;
+ 
+@@ -3085,8 +3087,9 @@ int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
+ 	if (invert)
+ 		ucontrol->value.integer.value[0] =
+ 			max - ucontrol->value.integer.value[0];
+-	ucontrol->value.integer.value[0] =
+-		ucontrol->value.integer.value[0] - min;
++	else
++		ucontrol->value.integer.value[0] =
++			ucontrol->value.integer.value[0] - min;
+ 
+ 	if (snd_soc_volsw_is_stereo(mc)) {
+ 		ret = snd_soc_component_read(component, rreg, &val);
+@@ -3097,8 +3100,9 @@ int snd_soc_get_volsw_range(struct snd_kcontrol *kcontrol,
+ 		if (invert)
+ 			ucontrol->value.integer.value[1] =
+ 				max - ucontrol->value.integer.value[1];
+-		ucontrol->value.integer.value[1] =
+-			ucontrol->value.integer.value[1] - min;
++		else
++			ucontrol->value.integer.value[1] =
++				ucontrol->value.integer.value[1] - min;
+ 	}
+ 
+ 	return 0;
 -- 
-2.1.0
+1.7.9.5
