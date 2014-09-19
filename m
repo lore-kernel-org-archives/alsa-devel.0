@@ -1,24 +1,20 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: Radeon unconnected HDMI eats samples at 280 kHz
-Date: Sat, 20 Sep 2014 00:19:52 +0600
-Message-ID: <541C73C8.3040606@gmail.com>
-References: <54198F38.30002@canonical.com>	<5419FC9E.9010302@iki.fi>	<541A5BCD.2040105@canonical.com>
- <s5hlhph8jt5.wl-tiwai@suse.de> <541A8FA2.7090406@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D059929D9D@satlexdag05.amd.com>
- <541C31EE.4020101@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D05992A81C@satlexdag05.amd.com>
- <541C6C23.1040403@canonical.com>
+From: Radoslaw Szkodzinski <astralstorm@gmail.com>
+Subject: Re: alsa-jack issues
+Date: Sat, 20 Sep 2014 00:59:58 +0200
+Message-ID: <CAAmECqSjRgjy2PzOXYz6nGVGh1bJUF8FGutq9fQt+fvgSfbYGw@mail.gmail.com>
+References: <CAAmECqSO1YnykkVZYydjLJb5mrE5q=b6Fu4P4RrkVgsT6rMCOw@mail.gmail.com>
+ <1410392000.378953844@f433.i.mail.ru>
+ <CAAmECqQmkN5nnRhzNmMxZC=cmNqkaf24LLv0bhxyHGKZirHmAg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=089e013d1d4cd32df80503731168
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
- [209.85.215.51])
- by alsa0.perex.cz (Postfix) with ESMTP id D19E32650FA
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 20:19:55 +0200 (CEST)
-Received: by mail-la0-f51.google.com with SMTP id gi9so3650949lab.10
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 11:19:55 -0700 (PDT)
-In-Reply-To: <541C6C23.1040403@canonical.com>
+Received: from mail-la0-f52.google.com (mail-la0-f52.google.com
+ [209.85.215.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A94426526D
+ for <alsa-devel@alsa-project.org>; Sat, 20 Sep 2014 01:00:39 +0200 (CEST)
+Received: by mail-la0-f52.google.com with SMTP id gq15so4025735lab.11
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 16:00:38 -0700 (PDT)
+In-Reply-To: <CAAmECqQmkN5nnRhzNmMxZC=cmNqkaf24LLv0bhxyHGKZirHmAg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,21 +24,188 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Anssi Hannula <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Sergey <sergemp@mail.ru>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-19.09.2014 23:47, David Henningsson wrote:
-> If audio_enabled quickly changes to off and then on when there is a mode
-> change, it might make sense to *not* wake up the audio driver in this
-> case, as I assume that the audio capabilities on the HDMI TV will not
-> change just because the video mode changes.
+--089e013d1d4cd32df80503731168
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Unfortunately, they will. Some low-resolution video modes just don't 
-have enough pixel clock to transfer the 7.1 audio signal at 192 kHz. See 
-the table on page 105 (shown as 121 in some readers) of 
-http://www.microprocessor.org/HDMISpecification13a.pdf , section "7.3.3 
-Video Dependency".
+On Thu, Sep 11, 2014 at 11:02 AM, Radoslaw Szkodzinski
+<astralstorm@gmail.com> wrote:
+> On Thu, Sep 11, 2014 at 1:33 AM, Sergey <sergemp@mail.ru> wrote:
+>> Sat, 6 Sep 2014 Radoslaw Szkodzinski wrote:
+>>
+>>>A recent change in alsa-plugins 1.0.28 alsa-jack has changed the poll se=
+mantics.
+>>>This breaks audacious and mpv, perhaps more applications.
+>>>
+>>>The regression is caused by:
+>>>Commit: 9217377337cdceb62abeb5969112b738bb5cd551
+>>>jack: fix polling and recovering
+>>
+>> I'm initial author of this commit and I'd love to fix the issue,
+>> but it never happens to me. I need your help to fix it.
+>>
+>> Can you provide some steps to reproduce this bug? How much time it
+>> takes to reproduce it? Can you reproduce it with alsa 1.0.27 and
+>> alsa-jack plugin 1.0.28? You can download that plugin separately:
+>
+> I'll test this during the weekend. 1.0.27.x was fine with alsa 1.0.27.
 
--- 
-Alexander E. Patrakov
+Sorry it took this long, the following version is fine:
+media-plugins/alsa-plugins-1.0.27-r3 was built with the following:
+USE=3D"ffmpeg jack libsamplerate speex -debug -pulseaudio" ABI_X86=3D"32 64=
+ -x32"
+
+It takes between 1 and 10 minutes to reproduce the bug with alsa-plugins-1.=
+0.28.
+
+Alsa-lib info is in both cases:
+media-libs/alsa-lib-1.0.28 was built with the following:
+USE=3D"python -alisp -debug -doc" ABI_X86=3D"32 64 -x32"
+PYTHON_SINGLE_TARGET=3D"python2_7" PYTHON_TARGETS=3D"python2_7"
+
+I'm somewhat suspicious is it caused by a wrong Jack buffer size, and
+only masked by incorrect handling of buffer fill in the older version.
+Verbose log from aplay is attached (w/ alsa-jack 1.0.27.x).
+Note the discrepancy between JackClient period size (not divisible by
+actual period size) and ALSA min_avail.
+
+Best regards,
+--=20
+Rados=C5=82aw Szkodzi=C5=84ski
+
+--089e013d1d4cd32df80503731168
+Content-Type: text/plain; charset=US-ASCII; name="aplay-jack.log"
+Content-Disposition: attachment; filename="aplay-jack.log"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_i0a4osrm0
+
+amFja19jbGllbnRfbmV3OiBkZXByZWNhdGVkCkphY2s6IEphY2tDbGllbnQ6OlNldHVwRHJpdmVy
+U3luYyBkcml2ZXIgc2VtIGluIGZsdXNoIG1vZGUKSmFjazogSmFja1Bvc2l4U2VtYXBob3JlOjpD
+b25uZWN0IG5hbWUgPSBqYWNrX3NlbS4xMDAwX2RlZmF1bHRfYWxzYS1qYWNrLmphY2tQLjIxNTEx
+LjAKSmFjazogSmFja1Bvc2l4U2VtYXBob3JlOjpDb25uZWN0IHNlbV9nZXR2YWx1ZSAwCkphY2s6
+IENsb2NrIHNvdXJjZSA6IHVua25vd24KSmFjazogSmFja0xpYkNsaWVudDo6T3BlbiBuYW1lID0g
+YWxzYS1qYWNrLmphY2tQLjIxNTExLjAgcmVmbnVtID0gNgpQbGF5aW5nIFdBVkUgJy91c3Ivc2hh
+cmUvc291bmRzL2xvZ2luLndhdicgOiBTaWduZWQgMTYgYml0IExpdHRsZSBFbmRpYW4sIFJhdGUg
+NDQxMDAgSHosIFN0ZXJlbwpKYWNrOiBKYWNrQ2xpZW50OjpQb3J0UmVnaXN0ZXIgcmVmID0gNiBu
+YW1lID0gYWxzYS1qYWNrLmphY2tQLjIxNTExLjA6b3V0XzAwMCB0eXBlID0gMzIgYml0IGZsb2F0
+IG1vbm8gYXVkaW8gcG9ydF9pbmRleCA9IDM0CkphY2s6IEphY2tDbGllbnQ6OlBvcnRSZWdpc3Rl
+ciByZWYgPSA2IG5hbWUgPSBhbHNhLWphY2suamFja1AuMjE1MTEuMDpvdXRfMDAxIHR5cGUgPSAz
+MiBiaXQgZmxvYXQgbW9ubyBhdWRpbyBwb3J0X2luZGV4ID0gMzUKUGx1ZyBQQ006IExpbmVhciBJ
+bnRlZ2VyIDwtPiBMaW5lYXIgRmxvYXQgY29udmVyc2lvbiBQQ00gKEZMT0FUX0xFKQpJdHMgc2V0
+dXAgaXM6CiAgc3RyZWFtICAgICAgIDogUExBWUJBQ0sKICBhY2Nlc3MgICAgICAgOiBSV19JTlRF
+UkxFQVZFRAogIGZvcm1hdCAgICAgICA6IFMxNl9MRQogIHN1YmZvcm1hdCAgICA6IFNURAogIGNo
+YW5uZWxzICAgICA6IDIKICByYXRlICAgICAgICAgOiA0NDEwMAogIGV4YWN0IHJhdGUgICA6IDQ0
+MTAwICg0NDEwMC8xKQogIG1zYml0cyAgICAgICA6IDE2CiAgYnVmZmVyX3NpemUgIDogMjIwNTAK
+ICBwZXJpb2Rfc2l6ZSAgOiA1NTEyCiAgcGVyaW9kX3RpbWUgIDogMTI1MDAwCiAgdHN0YW1wX21v
+ZGUgIDogTk9ORQogIHBlcmlvZF9zdGVwICA6IDEKICBhdmFpbF9taW4gICAgOiA1NTEyCiAgcGVy
+aW9kX2V2ZW50IDogMAogIHN0YXJ0X3RocmVzaG9sZCAgOiAyMjA1MAogIHN0b3BfdGhyZXNob2xk
+ICAgOiAyMjA1MAogIHNpbGVuY2VfdGhyZXNob2xkOiAwCiAgc2lsZW5jZV9zaXplIDogMAogIGJv
+dW5kYXJ5ICAgICA6IDYyMDY1MjMyMzY0Njk5NjQ4MDAKU2xhdmU6IEFMU0EgPC0+IEpBQ0sgUENN
+IEkvTyBQbHVnaW4KSXRzIHNldHVwIGlzOgogIHN0cmVhbSAgICAgICA6IFBMQVlCQUNLCiAgYWNj
+ZXNzICAgICAgIDogTU1BUF9JTlRFUkxFQVZFRAogIGZvcm1hdCAgICAgICA6IEZMT0FUX0xFCiAg
+c3ViZm9ybWF0ICAgIDogU1RECiAgY2hhbm5lbHMgICAgIDogMgogIHJhdGUgICAgICAgICA6IDQ0
+MTAwCiAgZXhhY3QgcmF0ZSAgIDogNDQxMDAgKDQ0MTAwLzEpCiAgbXNiaXRzICAgICAgIDogMzIK
+ICBidWZmZXJfc2l6ZSAgOiAyMjA1MAogIHBlcmlvZF9zaXplICA6IDU1MTIKICBwZXJpb2RfdGlt
+ZSAgOiAxMjUwMDAKICB0c3RhbXBfbW9kZSAgOiBOT05FCiAgcGVyaW9kX3N0ZXAgIDogMQogIGF2
+YWlsX21pbiAgICA6IDU1MTIKICBwZXJpb2RfZXZlbnQgOiAwCiAgc3RhcnRfdGhyZXNob2xkICA6
+IDIyMDUwCiAgc3RvcF90aHJlc2hvbGQgICA6IDIyMDUwCiAgc2lsZW5jZV90aHJlc2hvbGQ6IDAK
+ICBzaWxlbmNlX3NpemUgOiAwCiAgYm91bmRhcnkgICAgIDogNjIwNjUyMzIzNjQ2OTk2NDgwMApN
+YXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDFmZTEgIyMjIyMgICAgICAgICAgICAgICAg
+MjQlCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwMmZjNSAjIyMjIyMjIyAgICAgICAg
+ICAgICAzNyUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAzMmUyICMjIyMjIyMjICAg
+ICAgICAgICAgIDM5JQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDQyZTIgIyMjIyMj
+IyMjIyMgICAgICAgICAgNTIlCkphY2s6IEphY2tDbGllbnQ6OkFjdGl2YXRlCkphY2s6IEphY2tQ
+b3NpeFRocmVhZDo6U3RhcnRJbXAgOiBjcmVhdGUgbm9uIFJUIHRocmVhZApKYWNrOiBKYWNrUG9z
+aXhUaHJlYWQ6OlRocmVhZEhhbmRsZXIgOiBzdGFydApKYWNrOiBKYWNrQ2xpZW50OjprQnVmZmVy
+U2l6ZUNhbGxiYWNrIGJ1ZmZlcl9zaXplID0gMjU2CkphY2s6IEphY2tDbGllbnQ6OkluaXQgOiBw
+ZXJpb2QgPSA1ODA0IGNvbXB1dGF0aW9uID0gMTAwIGNvbnN0cmFpbnQgPSA1ODA0CkphY2s6IEph
+Y2tQb3NpeFRocmVhZDo6QWNxdWlyZVJlYWxUaW1lSW1wIHByaW9yaXR5ID0gMTAKSmFjazogSmFj
+a0NsaWVudDo6Q2xpZW50Tm90aWZ5IHJlZiA9IDYgbmFtZSA9IGFsc2EtamFjay5qYWNrUC4yMTUx
+MS4wIG5vdGlmeSA9IDIKSmFjazogSmFja0NsaWVudDo6a0FjdGl2YXRlQ2xpZW50IG5hbWUgPSBh
+bHNhLWphY2suamFja1AuMjE1MTEuMCByZWYgPSA2IApKYWNrOiBKYWNrQ2xpZW50OjpDb25uZWN0
+IHNyYyA9IGFsc2EtamFjay5qYWNrUC4yMTUxMS4wOm91dF8wMDAgZHN0ID0gQ2FybGE6QWR2YW5j
+ZWQgQ3Jvc3NmZWVkOmluMApKYWNrOiBKYWNrQ2xpZW50OjpDbGllbnROb3RpZnkgcmVmID0gNiBu
+YW1lID0gYWxzYS1qYWNrLmphY2tQLjIxNTExLjAgbm90aWZ5ID0gMTgKSmFjazogSmFja0NsaWVu
+dDo6Q2xpZW50Tm90aWZ5IHJlZiA9IDYgbmFtZSA9IGFsc2EtamFjay5qYWNrUC4yMTUxMS4wIG5v
+dGlmeSA9IDE4CkphY2s6IEphY2tDbGllbnQ6OkNvbm5lY3Qgc3JjID0gYWxzYS1qYWNrLmphY2tQ
+LjIxNTExLjA6b3V0XzAwMSBkc3QgPSBDYXJsYTpBZHZhbmNlZCBDcm9zc2ZlZWQ6aW4xCkphY2s6
+IEphY2tDbGllbnQ6OkNsaWVudE5vdGlmeSByZWYgPSA2IG5hbWUgPSBhbHNhLWphY2suamFja1Au
+MjE1MTEuMCBub3RpZnkgPSAxOApKYWNrOiBKYWNrQ2xpZW50OjpDbGllbnROb3RpZnkgcmVmID0g
+NiBuYW1lID0gYWxzYS1qYWNrLmphY2tQLjIxNTExLjAgbm90aWZ5ID0gMTgKTWF4IHBlYWsgKDEx
+MDI0IHNhbXBsZXMpOiAweDAwMDA1MDVhICMjIyMjIyMjIyMjIyMgICAgICAgIDYyJQpNYXggcGVh
+ayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDQxNmIgIyMjIyMjIyMjIyMgICAgICAgICAgNTElCk1h
+eCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwNTIzNSAjIyMjIyMjIyMjIyMjICAgICAgICA2
+NCUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDA1N2E0ICMjIyMjIyMjIyMjIyMjICAg
+ICAgIDY4JQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDdmYTggIyMjIyMjIyMjIyMj
+IyMjIyMjIyMgOTklCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwNjY0NCAjIyMjIyMj
+IyMjIyMjIyMjICAgICA3OSUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDA2MmE3ICMj
+IyMjIyMjIyMjIyMjIyMgICAgIDc3JQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDQ2
+MTUgIyMjIyMjIyMjIyMgICAgICAgICAgNTQlCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgw
+MDAwNWYwZiAjIyMjIyMjIyMjIyMjIyMgICAgICA3NCUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMp
+OiAweDAwMDA2YWEwICMjIyMjIyMjIyMjIyMjIyMjICAgIDgzJQpNYXggcGVhayAoMTEwMjQgc2Ft
+cGxlcyk6IDB4MDAwMDVmNjEgIyMjIyMjIyMjIyMjIyMjICAgICAgNzQlCk1heCBwZWFrICgxMTAy
+NCBzYW1wbGVzKTogMHgwMDAwNTFlYiAjIyMjIyMjIyMjIyMjICAgICAgICA2MyUKTWF4IHBlYWsg
+KDExMDI0IHNhbXBsZXMpOiAweDAwMDA2OWE1ICMjIyMjIyMjIyMjIyMjIyMjICAgIDgyJQpNYXgg
+cGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDVhOWIgIyMjIyMjIyMjIyMjIyMjICAgICAgNzAl
+Ck1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwNDU5OSAjIyMjIyMjIyMjIyAgICAgICAg
+ICA1NCUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAzNTI2ICMjIyMjIyMjIyAgICAg
+ICAgICAgIDQxJQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDM0YmMgIyMjIyMjIyMj
+ICAgICAgICAgICAgNDElCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwMmE2ZSAjIyMj
+IyMjICAgICAgICAgICAgICAzMyUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAyZDgy
+ICMjIyMjIyMjICAgICAgICAgICAgIDM1JQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAw
+MDIzYTkgIyMjIyMjICAgICAgICAgICAgICAgMjclCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTog
+MHgwMDAwMTljOSAjIyMjIyAgICAgICAgICAgICAgICAyMCUKTWF4IHBlYWsgKDExMDI0IHNhbXBs
+ZXMpOiAweDAwMDAxMjcxICMjIyAgICAgICAgICAgICAgICAgIDE0JQpNYXggcGVhayAoMTEwMjQg
+c2FtcGxlcyk6IDB4MDAwMDEyNmEgIyMjICAgICAgICAgICAgICAgICAgMTQlCk1heCBwZWFrICgx
+MTAyNCBzYW1wbGVzKTogMHgwMDAwMTAxYiAjIyMgICAgICAgICAgICAgICAgICAxMiUKTWF4IHBl
+YWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAwOTM2ICMjICAgICAgICAgICAgICAgICAgIDclCk1h
+eCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwMDk2ZSAjIyAgICAgICAgICAgICAgICAgICA3
+JQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDA3MTEgIyMgICAgICAgICAgICAgICAg
+ICAgNSUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAwNmJlICMjICAgICAgICAgICAg
+ICAgICAgIDUlCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwMDRmOSAjICAgICAgICAg
+ICAgICAgICAgICAzJQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAwMDAzYjEgIyAgICAg
+ICAgICAgICAgICAgICAgMiUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAweDAwMDAwMzFmICMg
+ICAgICAgICAgICAgICAgICAgIDIlCk1heCBwZWFrICgxMTAyNCBzYW1wbGVzKTogMHgwMDAwMDM3
+OCAjICAgICAgICAgICAgICAgICAgICAyJQpNYXggcGVhayAoMTEwMjQgc2FtcGxlcyk6IDB4MDAw
+MDAyMmEgIyAgICAgICAgICAgICAgICAgICAgMSUKTWF4IHBlYWsgKDExMDI0IHNhbXBsZXMpOiAw
+eDAwMDAwMjYxICMgICAgICAgICAgICAgICAgICAgIDElCk1heCBwZWFrICgxMTAyNCBzYW1wbGVz
+KTogMHgwMDAwMDIyYiAjICAgICAgICAgICAgICAgICAgICAxJQpNYXggcGVhayAoMTEwMjQgc2Ft
+cGxlcyk6IDB4MDAwMDAxNzIgIyAgICAgICAgICAgICAgICAgICAgMSUKTWF4IHBlYWsgKDExMDI0
+IHNhbXBsZXMpOiAweDAwMDAwMTE3ICMgICAgICAgICAgICAgICAgICAgIDAlCkphY2s6IEphY2tD
+bGllbnQ6OkRlYWN0aXZhdGUKSmFjazogSmFja0NsaWVudDo6RGVhY3RpdmF0ZSByZXMgPSAwCkph
+Y2s6IEphY2tQb3NpeFRocmVhZDo6S2lsbApKYWNrOiBqYWNrX2NsaWVudF9jbG9zZQpKYWNrOiBK
+YWNrQ2xpZW50OjpDbG9zZSByZWYgPSA2CkphY2s6IEphY2tDbGllbnQ6OkRlYWN0aXZhdGUKSmFj
+azogSmFja1NvY2tldENsaWVudENoYW5uZWw6OlN0b3AKSmFjazogSmFja1Bvc2l4VGhyZWFkOjpL
+aWxsCkphY2s6IEphY2tDbGllbnRTb2NrZXQ6OkNsb3NlCkphY2s6IEphY2tDbGllbnRTb2NrZXQ6
+OkNsb3NlCkphY2s6IEphY2tQb3NpeFNlbWFwaG9yZTo6RGlzY29ubmVjdCBuYW1lID0gamFja19z
+ZW0uMTAwMF9kZWZhdWx0X2Fsc2EtamFjay5qYWNrUC4yMTUxMS4wCkphY2s6IEphY2tMaWJDbGll
+bnQ6On5KYWNrTGliQ2xpZW50CkphY2s6IEphY2tTaG1SZWFkV3JpdGVQdHIxOjp+SmFja1NobVJl
+YWRXcml0ZVB0cjEgNQpKYWNrOiBTdWNjZWVkZWQgaW4gdW5sb2NraW5nIDQyMiBieXRlIG1lbW9y
+eSBhcmVhCkphY2s6IEphY2tMaWJHbG9iYWxzIERlc3Ryb3kgYWU2ZDk4OTAKSmFjazogfkphY2tM
+aWJHbG9iYWxzCkphY2s6IEphY2tQb3NpeFNlbWFwaG9yZTo6RGlzY29ubmVjdCBuYW1lID0gamFj
+a19zZW0uMTAwMF9kZWZhdWx0X3N5c3RlbQpKYWNrOiBKYWNrUG9zaXhTZW1hcGhvcmU6OkRpc2Nv
+bm5lY3QgbmFtZSA9IGphY2tfc2VtLjEwMDBfZGVmYXVsdF9mcmVld2hlZWwKSmFjazogSmFja1Bv
+c2l4U2VtYXBob3JlOjpEaXNjb25uZWN0IG5hbWUgPSBqYWNrX3NlbS4xMDAwX2RlZmF1bHRfZGJ1
+c2FwaQpKYWNrOiBKYWNrUG9zaXhTZW1hcGhvcmU6OkRpc2Nvbm5lY3QgbmFtZSA9IGphY2tfc2Vt
+LjEwMDBfZGVmYXVsdF9DYXJsYQpKYWNrOiBKYWNrUG9zaXhTZW1hcGhvcmU6OkRpc2Nvbm5lY3Qg
+bmFtZSA9IGphY2tfc2VtLjEwMDBfZGVmYXVsdF9hbHNhLWphY2suamFja1AuMTQ4MDcuNDEKSmFj
+azogSmFja1Bvc2l4U2VtYXBob3JlOjpEaXNjb25uZWN0IG5hbWUgPSBqYWNrX3NlbS4xMDAwX2Rl
+ZmF1bHRfYWxzYS1qYWNrLmphY2tQLjIxMjc0LjAKSmFjazogbm8gbWVzc2FnZSBidWZmZXIgb3Zl
+cnJ1bnMKSmFjazogSmFja1Bvc2l4VGhyZWFkOjpTdG9wCkphY2s6IEphY2tQb3NpeFRocmVhZDo6
+VGhyZWFkSGFuZGxlciA6IGV4aXQKSmFjazogSmFja1NobVJlYWRXcml0ZVB0cjo6fkphY2tTaG1S
+ZWFkV3JpdGVQdHIgMQpKYWNrOiBTdWNjZWVkZWQgaW4gdW5sb2NraW5nIDExODYgYnl0ZSBtZW1v
+cnkgYXJlYQpKYWNrOiBKYWNrU2htUmVhZFdyaXRlUHRyOjp+SmFja1NobVJlYWRXcml0ZVB0ciAw
+CkphY2s6IFN1Y2NlZWRlZCBpbiB1bmxvY2tpbmcgMjE3MDEwMTggYnl0ZSBtZW1vcnkgYXJlYQpK
+YWNrOiBqYWNrX2NsaWVudF9jbG9zZSByZXMgPSAwCgo=
+--089e013d1d4cd32df80503731168
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--089e013d1d4cd32df80503731168--
