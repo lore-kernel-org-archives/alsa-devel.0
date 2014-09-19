@@ -1,24 +1,18 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Remove unneeded 'i2s-slave'
-	property
-Date: Thu, 18 Sep 2014 21:17:49 -0700
-Message-ID: <20140919041749.GA5840@Asurada>
-References: <1411063877-1552-1-git-send-email-fabio.estevam@freescale.com>
- <20140918183251.GE6432@Asurada> <541B2678.8000401@tabi.org>
- <1411065995187.3341@freescale.com> <20140918194342.GA3173@Alpha>
- <541B78EC.5050702@tabi.org>
+From: Huacai Chen <chenhc@lemote.com>
+Subject: [PATCH] ALSA: hda - Add fixup model name lookup for
+	Lemote A1205
+Date: Fri, 19 Sep 2014 14:57:02 +0800
+Message-ID: <1411109822-1918-1-git-send-email-chenhc@lemote.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f48.google.com (mail-pa0-f48.google.com
- [209.85.220.48])
- by alsa0.perex.cz (Postfix) with ESMTP id A6964265603
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 06:17:58 +0200 (CEST)
-Received: by mail-pa0-f48.google.com with SMTP id fb1so2089996pad.21
- for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 21:17:56 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <541B78EC.5050702@tabi.org>
+Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
+ [209.85.220.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8647C260815
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 08:57:39 +0200 (CEST)
+Received: by mail-pa0-f52.google.com with SMTP id kq14so3207644pab.25
+ for <alsa-devel@alsa-project.org>; Thu, 18 Sep 2014 23:57:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,26 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, 3.15+@alsa-project.org, #@alsa-project.org, stable@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>, Huacai Chen <chenhc@lemote.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 18, 2014 at 07:29:32PM -0500, Timur Tabi wrote:
-> >For the property, do you agree to modify it like this:
-> >
-> >- fsl,mode:         The operating mode for the AC97 interface only.
-> >                     "ac97-slave" - AC97 mode, SSI is clock slave
-> >                     "ac97-master" - AC97 mode, SSI is clock master
-> >                     (There's no need for other DAI format like I2S
-> >		    mode to engage this property.)
+Lemote A1004 is already added in commit a2dd933d01f (ALSA: hda - Add
+fixup name lookup for CX5051 and 5066 codecs), but Lemote A1205 has
+missing.
 
-> You can't just redefine a property, because that breaks backwards
-> compatibility with older device trees or older kernels.
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Cc: <stable@vger.kernel.org> # 3.15+
+---
+ sound/pci/hda/patch_conexant.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Sorry, I'm not sure what's the problem here. It just drops i2s stuff
-and leave AC97 part as we discussed. Why would old DTs be broken?
-Is that possible for you to give me an example to understand the
-point?
-
-Thank you
-Nicolin
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 5f214f1..726b7c6 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -798,6 +798,7 @@ static const struct hda_model_fixup cxt5066_fixup_models[] = {
+ 	{ .id = CXT_PINCFG_LENOVO_TP410, .name = "tp410" },
+ 	{ .id = CXT_FIXUP_THINKPAD_ACPI, .name = "thinkpad" },
+ 	{ .id = CXT_PINCFG_LEMOTE_A1004, .name = "lemote-a1004" },
++	{ .id = CXT_PINCFG_LEMOTE_A1205, .name = "lemote-a1205" },
+ 	{ .id = CXT_FIXUP_OLPC_XO, .name = "olpc-xo" },
+ 	{}
+ };
+-- 
+1.7.7.3
