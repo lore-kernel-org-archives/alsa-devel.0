@@ -1,21 +1,24 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: How to select input from muxer in front of SSI on
-	i.MX6
-Date: Fri, 19 Sep 2014 10:52:06 -0700
-Message-ID: <20140919175205.GB1736@Asurada>
-References: <CAL8zT=iopOiRmo8vT5RNOowucDif-oY2skdrJu=vijiUqpHz-w@mail.gmail.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: Radeon unconnected HDMI eats samples at 280 kHz
+Date: Sat, 20 Sep 2014 00:19:52 +0600
+Message-ID: <541C73C8.3040606@gmail.com>
+References: <54198F38.30002@canonical.com>	<5419FC9E.9010302@iki.fi>	<541A5BCD.2040105@canonical.com>
+ <s5hlhph8jt5.wl-tiwai@suse.de> <541A8FA2.7090406@canonical.com>
+ <A3397C8B8B789E45844E7EC5DEAD89D059929D9D@satlexdag05.amd.com>
+ <541C31EE.4020101@canonical.com>
+ <A3397C8B8B789E45844E7EC5DEAD89D05992A81C@satlexdag05.amd.com>
+ <541C6C23.1040403@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
- [209.85.220.52])
- by alsa0.perex.cz (Postfix) with ESMTP id BA8A9265172
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 19:52:10 +0200 (CEST)
-Received: by mail-pa0-f52.google.com with SMTP id hz1so539207pad.25
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 10:52:09 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CAL8zT=iopOiRmo8vT5RNOowucDif-oY2skdrJu=vijiUqpHz-w@mail.gmail.com>
+Received: from mail-la0-f51.google.com (mail-la0-f51.google.com
+ [209.85.215.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id D19E32650FA
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 20:19:55 +0200 (CEST)
+Received: by mail-la0-f51.google.com with SMTP id gi9so3650949lab.10
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 11:19:55 -0700 (PDT)
+In-Reply-To: <541C6C23.1040403@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,38 +28,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Michael Trimarchi <michael@amarulasolutions.com>, broonie@kernel.org, lgirdwood@gmail.com
+To: David Henningsson <david.henningsson@canonical.com>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, Takashi Iwai <tiwai@suse.de>
+Cc: Anssi Hannula <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-CCed Mark and Liam.
+19.09.2014 23:47, David Henningsson wrote:
+> If audio_enabled quickly changes to off and then on when there is a mode
+> change, it might make sense to *not* wake up the audio driver in this
+> case, as I assume that the audio capabilities on the HDMI TV will not
+> change just because the video mode changes.
 
-On Fri, Sep 19, 2014 at 05:18:08PM +0200, Jean-Michel Hautbois wrote:
-> Hi,
-> 
-> I am now working on making my audio path working completely.
-> And I get some difficulties to write a DT for my needs.
-> I join a picture which is not the reality but a simplified version of the board.
-> 
-> I have a FPGA between my codecs and my i.MX6. This FPGA is responsible
-> of lots of things, and in particular of muxing signals.
-> I can program it in order to get the audio signal I want on the SSI I
-> want (so sgtl5000 can ben on SSI1 or SSI2 or both). This path is not a
-> single codec, but a multiple codec one.
-> So I can have on SSI1 LineIn from sgtl5000 or audio from hdmi (adv7611).
-> 
-> I don't know how to write it in DT, regarding audmux for instance, and
-> the sound{} node...
-> And I don't know how to drive all these peripherals (from arecord, I
-> wish I have hw:0,0 is LineIn, hw:0;1 is HDMI, etc.).
+Unfortunately, they will. Some low-resolution video modes just don't 
+have enough pixel clock to transfer the 7.1 audio signal at 192 kHz. See 
+the table on page 105 (shown as 121 in some readers) of 
+http://www.microprocessor.org/HDMISpecification13a.pdf , section "7.3.3 
+Video Dependency".
 
-This looks like a DPCM (Documentation/sound/alsa/soc/DPCM.txt) to me.
-
-I'm not sure how to write a DT for DPCM either. But it seems that you
-might need a specific machine driver (guessing).
-
-I saw Morimoto-san plans to add DPCM into Simple Card, but not sure
-when they will finish it. Otherwise, you may use Simple Card while
-following their defined DT formats.
-
-Nicolin
+-- 
+Alexander E. Patrakov
