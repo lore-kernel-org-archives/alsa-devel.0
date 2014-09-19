@@ -1,16 +1,15 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v7 7/7] ASoC: Intel: mrfld: add the DSP mixers
-Date: Fri, 19 Sep 2014 16:46:08 +0530
-Message-ID: <1411125368-5836-8-git-send-email-subhransu.s.prusty@intel.com>
-References: <1411125368-5836-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH 1/5] ASoC: max98090: Move interrupt request
+	from codec probe to i2c probe
+Date: Fri, 19 Sep 2014 14:48:17 +0300
+Message-ID: <1411127301-366-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D780B264EAA
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 13:39:15 +0200 (CEST)
-In-Reply-To: <1411125368-5836-1-git-send-email-subhransu.s.prusty@intel.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE770261A7C
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 13:48:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +20,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com, Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
+Keep MAX98090 interrupt requested after i2c device probing as long as the
+driver is loaded. This fixes the issue where subsequent codec probe
+max98090_probe() call fails in interrupt request since interrupt wasn't
+freed over codec remove-reprobe cycle.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 ---
- sound/soc/intel/sst-atom-controls.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ sound/soc/codecs/max98090.c | 29 ++++++++++++++++-------------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/intel/sst-atom-controls.c b/sound/soc/intel/sst-atom-controls.c
-index 28ec5b1..cb5d295 100644
---- a/sound/soc/intel/sst-atom-controls.c
-+++ b/sound/soc/intel/sst-atom-controls.c
-@@ -908,6 +908,32 @@ static const struct snd_soc_dapm_widget sst_dapm_widgets[] = {
- 	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop2_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2, SST_FMT_STEREO, sst_set_media_loop),
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index f1543653a699..fe77df6a76c2 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2159,12 +2159,16 @@ static void max98090_jack_work(struct work_struct *work)
  
- 	/* Media Mixers */
-+	SST_SWM_MIXER("media0_out mix 0", SND_SOC_NOPM, SST_TASK_MMX, SST_SWM_OUT_MEDIA0,
-+		      sst_mix_media0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media1_out mix 0", SND_SOC_NOPM, SST_TASK_MMX, SST_SWM_OUT_MEDIA1,
-+		      sst_mix_media1_controls, sst_swm_mixer_event),
-+
-+	/* SBA PCM mixers */
-+	SST_SWM_MIXER("pcm0_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM0,
-+		      sst_mix_pcm0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("pcm1_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM1,
-+		      sst_mix_pcm1_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("pcm2_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM2,
-+		      sst_mix_pcm2_controls, sst_swm_mixer_event),
-+
-+	/* SBA Loop mixers */
-+	SST_SWM_MIXER("sprot_loop_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP,
-+		      sst_mix_sprot_l0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media_loop1_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1,
-+		      sst_mix_media_l1_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media_loop2_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2,
-+		      sst_mix_media_l2_controls, sst_swm_mixer_event),
-+
-+	/* SBA Backend mixers */
-+	SST_SWM_MIXER("codec_out0 mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_CODEC0,
-+		      sst_mix_codec0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("codec_out1 mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_CODEC1,
-+		      sst_mix_codec1_controls, sst_swm_mixer_event),
- };
+ static irqreturn_t max98090_interrupt(int irq, void *data)
+ {
+-	struct snd_soc_codec *codec = data;
+-	struct max98090_priv *max98090 = snd_soc_codec_get_drvdata(codec);
++	struct max98090_priv *max98090 = data;
++	struct snd_soc_codec *codec = max98090->codec;
+ 	int ret;
+ 	unsigned int mask;
+ 	unsigned int active;
  
- static const struct snd_soc_dapm_route intercon[] = {
++	/* Treat interrupt before codec is initialized as spurious */
++	if (codec == NULL)
++		return IRQ_NONE;
++
+ 	dev_dbg(codec->dev, "***** max98090_interrupt *****\n");
+ 
+ 	ret = regmap_read(max98090->regmap, M98090_REG_INTERRUPT_S, &mask);
+@@ -2367,17 +2371,6 @@ static int max98090_probe(struct snd_soc_codec *codec)
+ 	snd_soc_write(codec, M98090_REG_JACK_DETECT,
+ 		M98090_JDETEN_MASK | M98090_JDEB_25MS);
+ 
+-	/* Register for interrupts */
+-	dev_dbg(codec->dev, "irq = %d\n", max98090->irq);
+-
+-	ret = devm_request_threaded_irq(codec->dev, max98090->irq, NULL,
+-		max98090_interrupt, IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+-		"max98090_interrupt", codec);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "request_irq failed: %d\n",
+-			ret);
+-	}
+-
+ 	/*
+ 	 * Clear any old interrupts.
+ 	 * An old interrupt ocurring prior to installing the ISR
+@@ -2417,6 +2410,7 @@ static int max98090_remove(struct snd_soc_codec *codec)
+ 	cancel_delayed_work_sync(&max98090->pll_det_enable_work);
+ 	cancel_work_sync(&max98090->pll_det_disable_work);
+ 	cancel_work_sync(&max98090->pll_work);
++	max98090->codec = NULL;
+ 
+ 	return 0;
+ }
+@@ -2478,6 +2472,15 @@ static int max98090_i2c_probe(struct i2c_client *i2c,
+ 		goto err_enable;
+ 	}
+ 
++	ret = devm_request_threaded_irq(&i2c->dev, max98090->irq, NULL,
++		max98090_interrupt, IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++		"max98090_interrupt", max98090);
++	if (ret < 0) {
++		dev_err(&i2c->dev, "request_irq failed: %d\n",
++			ret);
++		return ret;
++	}
++
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_max98090, max98090_dai,
+ 			ARRAY_SIZE(max98090_dai));
 -- 
-1.9.0
+2.1.0
