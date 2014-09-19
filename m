@@ -1,23 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v6 05/10] ASoC: Intel: mrfld: add DSP core
-	controls
-Date: Fri, 19 Sep 2014 13:51:53 +0530
-Message-ID: <20140919082152.GC24663@intel.com>
-References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
- <1410255693-6958-6-git-send-email-subhransu.s.prusty@intel.com>
- <20140916193053.GD7960@sirena.org.uk>
- <20140917105552.GA13006@vinod.koul@linux.intel.com>
- <20140917193706.GU7960@sirena.org.uk>
- <20140918061237.GA24663@intel.com>
- <20140918172852.GY7960@sirena.org.uk>
- <20140919081047.GB24663@intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Alsa Driver Scarlett
+Date: Fri, 19 Sep 2014 11:03:18 +0200
+Message-ID: <541BF156.4050507@canonical.com>
+References: <54148F1B.2010608@gmail.com> <20140916152227.53556d96@sampi>
+ <20140916134925.GE17677@x1-orm> <20140916161002.714e7667@sampi>
+ <541AD01B.30101@canonical.com> <541B0663.9070306@googlemail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2354421067702023243=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 3850126168C
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 10:48:00 +0200 (CEST)
-In-Reply-To: <20140919081047.GB24663@intel.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CD62261692
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 11:03:12 +0200 (CEST)
+In-Reply-To: <541B0663.9070306@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,136 +23,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+To: Tobias Hoffmann <smilingthax@googlemail.com>
+Cc: Johannes Kroll <j-kroll@gmx.de>, alsa-devel@alsa-project.org, robin@gareus.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2354421067702023243==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sHrvAb52M6C8blB9"
-Content-Disposition: inline
+
+On 2014-09-18 18:20, Tobias Hoffmann wrote:
+> On 18/09/14 14:29, David Henningsson wrote:
+>> Hi Tobias,
+>>
+>> I believe you are the author of the repository at
+>> https://github.com/smilingthax/alsa-driver_scarlett.
+>
+> Yes, I am.
+>
+>> Your Scarlett driver is reported to be working fine, and there are
+>> some requests (see below) to get the driver into mainline Linux. Is
+>> this something you would be interested in helping out with?
+>
+> I'm all for including the driver into mainline, but I do not have any time
+> to go through N iterations of a patch to get it there.
+>
+> I *might* be able to do a initial cleaned up version against tiwai's
+> for-next in the next few days, if that helps.
+>
+> Other than that, I will happily (try to) answer questions about the code.
+>
+>    Tobias
+
+Ok, thanks for the update!
+
+As I looked through the patches I noticed Robin Gareus (now cc:ed) were 
+also the author of these patches, I assume you're okay with upstreaming 
+it too, Robin?
+
+There seem to be these "main" patches:
+
+  * Initial code for 18i6 mixer (Robin)
+  * Added log scale meters for 18i6 mixer (Robin)
+  * Added code for 18i8 and "big rewrite" (Tobias)
+  * Added code for 18i20 (Tobias)
+  * Added code for 8i6 (Tobias)
+  * Added code for 6i6 (Tobias)
+
+...the rest of the patches are fixups which can be squashed into the 
+existing patches when mainlining.
+
+I could commit to do this squashing, run the remaining patches through 
+checkpatch and submit the result on alsa-devel. I have no hw to test 
+with though.
+
+The big rewrite probably means that the rewrite patch should be squashed 
+with the initial patch too, and list both of you as authors on the 
+resulting patch. (Btw, what's the Linux kernel standard for that? To add 
+a co-authored-by?)
 
 
---sHrvAb52M6C8blB9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>
+>
+>> Regards,
+>>   David
+>>
+>> On 2014-09-16 16:10, Johannes Kroll wrote:
+>>> On Tue, 16 Sep 2014 15:49:25 +0200
+>>> Orm Finnendahl <orm.finnendahl@selma.hfmdk-frankfurt.de> wrote:
+>>>
+>>>> Am Dienstag, den 16. September 2014 um 15:22:27 Uhr (+0200) schrieb
+>>>> Johannes Kroll:
+>>>>>
+>>>>> I guess I'll need to find the time to port the patch to a recent
+>>>>> kernel
+>>>>> when I upgrade, unless someone else does it first.
+>>>>
+>>>> The patch still works on our recent kernels (we are on debian testing
+>>>> with a 3.14-2 kernel), atm there is no porting necessary. I can also
+>>>> confirm that the driver has no known issues on our systems (we use a
+>>>> couple of Scarlett 18i20 in different configurations). It would be
+>>>> great, though if the patch could get integrated into alsa. At the
+>>>> moment it is quite painful for our students with linux laptops as they
+>>>> have to reapply the patch on every upgrade.
+>>>
+>>> Oh, I see. I'm all for integrating this patch into mainline. But I have
+>>> never done such a thing, so I don't know how much effort it would be. I
+>>> guess it would be a simple thing to do for a routine Alsa developer.
+>>> Anyone? :]
+>>> _______________________________________________
+>>> Alsa-devel mailing list
+>>> Alsa-devel@alsa-project.org
+>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>>
+>>
+>
 
-On Fri, Sep 19, 2014 at 01:40:47PM +0530, Vinod Koul wrote:
-> On Thu, Sep 18, 2014 at 10:28:52AM -0700, Mark Brown wrote:
-> > On Thu, Sep 18, 2014 at 11:42:37AM +0530, Vinod Koul wrote:
-> > > On Wed, Sep 17, 2014 at 12:37:06PM -0700, Mark Brown wrote:
-> >=20
-> > > > This doesn't really answer my concern - what happens if we're alrea=
-dy
-> > > > active and making a change?
-> >=20
-> > > Since this is specfic to BE (SSP) port, the DSP FW doesnt allow us to=
- reconfigure
-> > > the slots when it is active. These will take effect next time the BE
-> > > restarts.
-> >=20
-> > > Yes not ideal but thats something we have to live with!
-> >=20
-> > That's fine but in that case I would expect to see an error returned to
-> > userspace rather than just silently ignoring what it's doing until the
-> > next time we start a stream, or at the very least some sort of warning
-> > generated.  Silently ignoring things isn't great especially with no
-> > comments in the code, it ends up looking like a bug.
-> Error to usermode wont be apt as we accept the value and due to constraint
-> the value is applied at next BE start.
->=20
-> Yes definately makes sense to put a comment about this. Will update that
-And turns out that limitation is gone so I was wrong here, thanks to Shubra=
-nsu for pointing this out.
-
-This function does indeed send the updated slot values to DSP
-
-see this bit:
-
-static int sst_slot_put(struct snd_kcontrol *kcontrol,
-                        struct snd_ctl_elem_value *ucontrol)
-{
-        struct snd_soc_component *cmpnt =3Dsnd_soc_kcontrol_component(kcont=
-rol);
-        struct sst_data *drv =3D snd_soc_component_get_drvdata(cmpnt);
-        struct sst_enum *e =3D (void *)kcontrol->private_value;
-        int i, ret =3D 0;
-        unsigned int ctl_no =3D e->reg;
-        unsigned int is_tx =3D e->tx;
-        unsigned int slot_channel_no;
-        unsigned int val, mux;
-        u8 *map;
-
-        map =3D is_tx ? sst_ssp_channel_map : sst_ssp_slot_map;
-
-        val =3D 1 << ctl_no;
-        mux =3D ucontrol->value.enumerated.item[0];
-        if (mux > e->max - 1) {
-                return -EINVAL;
-        }
-
-        mutex_lock(&drv->lock);
-        /* first clear all registers of this bit */
-        for (i =3D 0; i < e->max; i++)
-                map[i] &=3D ~val;
-
-        if (mux =3D=3D 0) {/* kctl set to 'none' */
-                mutex_unlock(&drv->lock);
-                return 0;
-        }
-
-        /* offset by one to take "None" into account */
-        slot_channel_no =3D mux - 1;
-        map[slot_channel_no] |=3D val;
-
-        dev_dbg(cmpnt->dev, "%s %s map =3D %#x\n",
-                        is_tx ? "tx channel" : "rx slot",
-                        e->texts[mux], map[slot_channel_no]);
-
-        if (e->w && e->w->power)
-                ret =3D sst_send_slot_map(drv);
-		^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Here is the widget is powered up then we send the updated slot map to DSP.
-
-So it will be updated real time now :)
-
---=20
-~Vinod
-
-
---sHrvAb52M6C8blB9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJUG+egAAoJEHwUBw8lI4NHBM4P/0Vdy6AyGm/S1wy1SGd6OC7d
-ZTFFABxtHougeDpj7TNGs8bQI+MQ1BnpzpmrE/cywKNk/RbrUktucHOQmd73ZBEU
-+Al7BhAjvL6+VbaKM/VT+Xuuwau3KMuSFDuO9vh0M/ygCbn3lexIC9Oyx30mrz3c
-0/15QbjB2fhOCzBW9iD1EL0SURWvCICDI1mVqSJQBwSQnzyd0UepALk4mtzzFQlw
-s61n76tph9vmbhE/VZ8/PgbF9eFENHY4k00viu5BBh0xnVbrF3tPv3DZgM1UEPA5
-+nuF8eFquatyfOavJIrzqAReaNZsZCTtQtwVk8CJpW+O3yIr0aISCr/qEu1mfcMV
-mu1Zn6GvZZ+nXNygqVtt8k+82Wbp1yHbooWrHkh3SFmmr3GWHjvGUzqCJUs2bBSx
-uRPPxaE9nZftSGbqN7uiquw4IktQ4y1xanEPe788ZPschThDpUqVuKg7QS/fzgvd
-uBzX4uhiI2iHAhp2zaB1vwq24AT3PxxXQTd4S8csimW/2bGmXLlZInNhUw38F2W8
-HtEuvyZb4c5ZfFnIKiKfZjG8xF5WWqns7QkZF3koCluO2fLwnXX4/EqoRE/7bTV1
-KuUFY8pkDiE+o0yViJ7Tsp/ZAGKNLotyGuyRfX27XQEfcAlsVUQl5onwGVUtLWLc
-IldewXMY/DIC1ipWGKPi
-=xztB
------END PGP SIGNATURE-----
-
---sHrvAb52M6C8blB9--
-
---===============2354421067702023243==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2354421067702023243==--
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
