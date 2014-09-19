@@ -1,31 +1,22 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re:
- =?iso-8859-1?q?No_sound_captured_with_SGTL5000_on_i?=
- =?iso-8859-1?q?=2EMX6_in_I=B2S_master_mode?=
-Date: Fri, 19 Sep 2014 00:52:28 -0700
-Message-ID: <20140919075228.GA4376@Asurada>
-References: <20140918170524.GA6080@Asurada>
- <CAOMZO5AqtNm3kwndUYszAuMfJ4CMOz4pwZRmE+04cEDtz98agg@mail.gmail.com>
- <20140918174935.GB6432@Asurada>
- <CAOMZO5AXN4p01=oGCydHUm6sPdt5NRNXO+4EOKQ1T7ZKUwVfMw@mail.gmail.com>
- <20140918180742.GC6432@Asurada>
- <CAOMZO5AvWecqimJkZcwysvsmPiq8Fa2Hm_XppCH3E1+vyjVzFQ@mail.gmail.com>
- <20140918183910.GF6432@Asurada>
- <CAOMZO5BJbzizB4r8vvtJEBzv+DhsyRmYMUoQL2D-dQhBorGkzA@mail.gmail.com>
- <20140918235045.GA4148@Asurada>
- <CAL8zT=hdT0otjqkQeBmfQgNsfdoapCv3NnHMwNxfxydu1+44Ww@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v6 05/10] ASoC: Intel: mrfld: add DSP core
+	controls
+Date: Fri, 19 Sep 2014 13:40:47 +0530
+Message-ID: <20140919081047.GB24663@intel.com>
+References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1410255693-6958-6-git-send-email-subhransu.s.prusty@intel.com>
+ <20140916193053.GD7960@sirena.org.uk>
+ <20140917105552.GA13006@vinod.koul@linux.intel.com>
+ <20140917193706.GU7960@sirena.org.uk>
+ <20140918061237.GA24663@intel.com>
+ <20140918172852.GY7960@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1300029627286466979=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
- [209.85.220.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 711AA261683
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 09:52:37 +0200 (CEST)
-Received: by mail-pa0-f47.google.com with SMTP id kx10so824652pab.34
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 00:52:36 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <CAL8zT=hdT0otjqkQeBmfQgNsfdoapCv3NnHMwNxfxydu1+44Ww@mail.gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BE73261643
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 10:37:16 +0200 (CEST)
+In-Reply-To: <20140918172852.GY7960@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,43 +26,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, Michael Trimarchi <michael@amarulasolutions.com>, Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawn.guo@freescale.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 19, 2014 at 09:42:22AM +0200, Jean-Michel Hautbois wrote:
-> Hi,
-> 
-> 2014-09-19 1:50 GMT+02:00 Nicolin Chen <nicoleotsuka@gmail.com>:
-> > On Thu, Sep 18, 2014 at 08:35:31PM -0300, Fabio Estevam wrote:
-> >> On Thu, Sep 18, 2014 at 3:39 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
-> >>
-> >> > It actually is merged into broonie/for-next and even linux-next I think.
-> >> > I'll later send a patch to Shawn's tree for imx_v6_v7_defconfig changes
-> >> > after next merge window's done.
-> >>
-> >> Ok, I see it now, but master/slave configuration is still hardcoded there:
-> >>
-> >>     } else if (of_device_is_compatible(np, "fsl,imx-audio-sgtl5000")) {
-> >>         priv->codec_priv.mclk_id = SGTL5000_SYSCLK;
-> >>         priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-> >
-> > It's just a combinational driver and also made to be compatible with
-> > old DTs. Unless we refine the DT binding like simple-card, this hard-
-> > code is inevitable. As long as this dai_fmt has been defined, at least
-> > AUDMUX part will be automatically configured.
-> >
-> > I made this driver was initially to support ASRC for imx-cs42888. But
-> > merging the code from imx-sgtl5000 and imx-wm8962 allows us to omit
-> > a branch of duplicated code. And that's it :)
-> >
-> 
-> Well, I may have missed something, I don't have fsl-asoc-card in my
-> linux tree (vanilla). Where can I find it ? I can test a SGTL5000
-> master mode on i.MX6Q.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+--===============1300029627286466979==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="UHN/qo2QbUvPLonB"
+Content-Disposition: inline
 
-for-next branch.
 
-Nicolin
+--UHN/qo2QbUvPLonB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Sep 18, 2014 at 10:28:52AM -0700, Mark Brown wrote:
+> On Thu, Sep 18, 2014 at 11:42:37AM +0530, Vinod Koul wrote:
+> > On Wed, Sep 17, 2014 at 12:37:06PM -0700, Mark Brown wrote:
+>=20
+> > > This doesn't really answer my concern - what happens if we're already
+> > > active and making a change?
+>=20
+> > Since this is specfic to BE (SSP) port, the DSP FW doesnt allow us to r=
+econfigure
+> > the slots when it is active. These will take effect next time the BE
+> > restarts.
+>=20
+> > Yes not ideal but thats something we have to live with!
+>=20
+> That's fine but in that case I would expect to see an error returned to
+> userspace rather than just silently ignoring what it's doing until the
+> next time we start a stream, or at the very least some sort of warning
+> generated.  Silently ignoring things isn't great especially with no
+> comments in the code, it ends up looking like a bug.
+Error to usermode wont be apt as we accept the value and due to constraint
+the value is applied at next BE start.
+
+Yes definately makes sense to put a comment about this. Will update that
+
+Thanks
+--=20
+~Vinod
+
+--UHN/qo2QbUvPLonB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQIcBAEBAgAGBQJUG+UGAAoJEHwUBw8lI4NHB0gQANQFHTe1dDr0LEG2sXNUkjiu
+wIBsrd14K+IID5m78khkwzH+hHEnghef+hoVfRuNXkHRTcD0WsIw64f5wlTgW/QK
+PZ2YAsA/hBqS7jlvczM7iQrI3SfzfnI8mU/+3z0E3Bc1/rNK0V8X7k+Zx52S0HSC
+1VMU3yYBUoiXIc7g3HSFAqDGPmKRvPKQ1849k5VYYGCSsFYIIV/+OwL35VD/Bb++
+IxbtaHnOypQegOb91634pcPniqMAeIpxzN5fFAv3rOCTzMf9bf7YUcScJ4xgOrtn
+h5GN2+rKKjL+X8l6emADKdbu1A+W8wxlT7ZNrQeE66K/BdIisgm6Ma26toig0PdQ
+qWSQUQwz59o/EIJ+vRKlN2m1QQmJEZ5AIG/lTrGjnYFm9fY7EIPwrPdBfl49OMnG
+AebR7bFBcACiyreZY4h0F+thVztPNxngXJlb/jHnnNDVN+4k2RTrD8MP2LyxJGje
+yCKnjwcoxhQZMDFhcIGDCk/81giOJEDOxM7Po3o/Ox47MR0Wujcsn4l+63NWBxpp
+nSCLdwiR4N28R2fkzdj5DIkStiQoiRY94lXK82yzFzgZFknPIxKYc50nIn9udxzN
+S3gb9cGYU28vc7qCGGx27Drlx99mRDwLXnpaFSE4YFuaOZFwE22JCnNx7/kP1xB+
+Pn3PwtkNuBYyx99HZlgZ
+=I2gG
+-----END PGP SIGNATURE-----
+
+--UHN/qo2QbUvPLonB--
+
+--===============1300029627286466979==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1300029627286466979==--
