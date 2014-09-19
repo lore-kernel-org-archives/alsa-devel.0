@@ -1,15 +1,15 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v7 6/7] ASoC: Intel: mfld-pcm: add FE and BE ops
-Date: Fri, 19 Sep 2014 16:46:07 +0530
-Message-ID: <1411125368-5836-7-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH v7 7/7] ASoC: Intel: mrfld: add the DSP mixers
+Date: Fri, 19 Sep 2014 16:46:08 +0530
+Message-ID: <1411125368-5836-8-git-send-email-subhransu.s.prusty@intel.com>
 References: <1411125368-5836-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 74BE0262632
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 13:39:13 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D780B264EAA
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 13:39:15 +0200 (CEST)
 In-Reply-To: <1411125368-5836-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,192 +26,48 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vinod Koul <vinod.koul@intel.com>
 
-Now that we have added code for managing DSP pipelines we need to
-add the code for DSPs FrontEnd and Backend dai.
-
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/sst-mfld-platform-pcm.c | 153 ++++++++++++++++++++++++++------
- 1 file changed, 125 insertions(+), 28 deletions(-)
+ sound/soc/intel/sst-atom-controls.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/sound/soc/intel/sst-mfld-platform-pcm.c b/sound/soc/intel/sst-mfld-platform-pcm.c
-index 6f5edd6..6962105 100644
---- a/sound/soc/intel/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/sst-mfld-platform-pcm.c
-@@ -101,35 +101,11 @@ static struct sst_dev_stream_map dpcm_strm_map[] = {
- 	{MERR_DPCM_AUDIO, 0, SNDRV_PCM_STREAM_CAPTURE, PIPE_PCM1_OUT, SST_TASK_ID_MEDIA, 0},
+diff --git a/sound/soc/intel/sst-atom-controls.c b/sound/soc/intel/sst-atom-controls.c
+index 28ec5b1..cb5d295 100644
+--- a/sound/soc/intel/sst-atom-controls.c
++++ b/sound/soc/intel/sst-atom-controls.c
+@@ -908,6 +908,32 @@ static const struct snd_soc_dapm_widget sst_dapm_widgets[] = {
+ 	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop2_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2, SST_FMT_STEREO, sst_set_media_loop),
+ 
+ 	/* Media Mixers */
++	SST_SWM_MIXER("media0_out mix 0", SND_SOC_NOPM, SST_TASK_MMX, SST_SWM_OUT_MEDIA0,
++		      sst_mix_media0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("media1_out mix 0", SND_SOC_NOPM, SST_TASK_MMX, SST_SWM_OUT_MEDIA1,
++		      sst_mix_media1_controls, sst_swm_mixer_event),
++
++	/* SBA PCM mixers */
++	SST_SWM_MIXER("pcm0_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM0,
++		      sst_mix_pcm0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("pcm1_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM1,
++		      sst_mix_pcm1_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("pcm2_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM2,
++		      sst_mix_pcm2_controls, sst_swm_mixer_event),
++
++	/* SBA Loop mixers */
++	SST_SWM_MIXER("sprot_loop_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP,
++		      sst_mix_sprot_l0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("media_loop1_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1,
++		      sst_mix_media_l1_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("media_loop2_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2,
++		      sst_mix_media_l2_controls, sst_swm_mixer_event),
++
++	/* SBA Backend mixers */
++	SST_SWM_MIXER("codec_out0 mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_CODEC0,
++		      sst_mix_codec0_controls, sst_swm_mixer_event),
++	SST_SWM_MIXER("codec_out1 mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_CODEC1,
++		      sst_mix_codec1_controls, sst_swm_mixer_event),
  };
  
--/* MFLD - MSIC */
--static struct snd_soc_dai_driver sst_platform_dai[] = {
-+static int sst_media_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
- {
--	.name = "Headset-cpu-dai",
--	.id = 0,
--	.playback = {
--		.channels_min = SST_STEREO,
--		.channels_max = SST_STEREO,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S24_LE,
--	},
--	.capture = {
--		.channels_min = 1,
--		.channels_max = 5,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S24_LE,
--	},
--},
--{
--	.name = "Compress-cpu-dai",
--	.compress_dai = 1,
--	.playback = {
--		.channels_min = SST_STEREO,
--		.channels_max = SST_STEREO,
--		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--},
--};
-+
-+	return sst_send_pipe_gains(dai, stream, mute);
-+}
- 
- /* helper functions */
- void sst_set_stream_status(struct sst_runtime_stream *stream,
-@@ -451,12 +427,133 @@ static int sst_media_hw_free(struct snd_pcm_substream *substream,
- 	return snd_pcm_lib_free_pages(substream);
- }
- 
-+static int sst_enable_ssp(struct snd_pcm_substream *substream,
-+			struct snd_soc_dai *dai)
-+{
-+	int ret = 0;
-+
-+	if (!dai->active) {
-+		ret = sst_handle_vb_timer(dai, true);
-+		if (ret)
-+			return ret;
-+		ret = send_ssp_cmd(dai, dai->name, 1);
-+	}
-+	return ret;
-+}
-+
-+static void sst_disable_ssp(struct snd_pcm_substream *substream,
-+			struct snd_soc_dai *dai)
-+{
-+	if (!dai->active) {
-+		send_ssp_cmd(dai, dai->name, 0);
-+		sst_handle_vb_timer(dai, false);
-+	}
-+}
-+
- static struct snd_soc_dai_ops sst_media_dai_ops = {
- 	.startup = sst_media_open,
- 	.shutdown = sst_media_close,
- 	.prepare = sst_media_prepare,
- 	.hw_params = sst_media_hw_params,
- 	.hw_free = sst_media_hw_free,
-+	.mute_stream = sst_media_digital_mute,
-+};
-+
-+static struct snd_soc_dai_ops sst_compr_dai_ops = {
-+	.mute_stream = sst_media_digital_mute,
-+};
-+
-+static struct snd_soc_dai_ops sst_be_dai_ops = {
-+	.startup = sst_enable_ssp,
-+	.shutdown = sst_disable_ssp,
-+};
-+
-+static struct snd_soc_dai_driver sst_platform_dai[] = {
-+{
-+	.name = "media-cpu-dai",
-+	.ops = &sst_media_dai_ops,
-+	.playback = {
-+		.stream_name = "Headset Playback",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "Headset Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
-+	.name = "compress-cpu-dai",
-+	.compress_dai = 1,
-+	.ops = &sst_compr_dai_ops,
-+	.playback = {
-+		.stream_name = "Compress Playback",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+/* BE CPU  Dais */
-+{
-+	.name = "ssp0-port",
-+	.ops = &sst_be_dai_ops,
-+	.playback = {
-+		.stream_name = "ssp0 Tx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "ssp0 Rx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
-+	.name = "ssp1-port",
-+	.ops = &sst_be_dai_ops,
-+	.playback = {
-+		.stream_name = "ssp1 Tx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "ssp1 Rx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_8000|SNDRV_PCM_RATE_16000|SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+{
-+	.name = "ssp2-port",
-+	.ops = &sst_be_dai_ops,
-+	.playback = {
-+		.stream_name = "ssp2 Tx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.stream_name = "ssp2 Rx",
-+		.channels_min = SST_STEREO,
-+		.channels_max = SST_STEREO,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
- };
- 
- static int sst_platform_open(struct snd_pcm_substream *substream)
+ static const struct snd_soc_dapm_route intercon[] = {
 -- 
 1.9.0
