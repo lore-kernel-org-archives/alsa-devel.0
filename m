@@ -1,31 +1,23 @@
-From: Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>
-Subject: Re:
-	=?utf-8?q?No_sound_captured_with_SGTL5000_on_i=2EMX6?=
-	=?utf-8?q?_in_I=C2=B2S_master_mode?=
-Date: Fri, 19 Sep 2014 11:18:40 +0200
-Message-ID: <CAL8zT=jWQ4ZTGpohWHGTfbxgj547ukcZEUg7XdQsWzwq1=JiVA@mail.gmail.com>
-References: <20140918170524.GA6080@Asurada>
- <CAOMZO5AqtNm3kwndUYszAuMfJ4CMOz4pwZRmE+04cEDtz98agg@mail.gmail.com>
- <20140918174935.GB6432@Asurada>
- <CAOMZO5AXN4p01=oGCydHUm6sPdt5NRNXO+4EOKQ1T7ZKUwVfMw@mail.gmail.com>
- <20140918180742.GC6432@Asurada>
- <CAOMZO5AvWecqimJkZcwysvsmPiq8Fa2Hm_XppCH3E1+vyjVzFQ@mail.gmail.com>
- <20140918183910.GF6432@Asurada>
- <CAOMZO5BJbzizB4r8vvtJEBzv+DhsyRmYMUoQL2D-dQhBorGkzA@mail.gmail.com>
- <20140918235045.GA4148@Asurada>
- <CAL8zT=hdT0otjqkQeBmfQgNsfdoapCv3NnHMwNxfxydu1+44Ww@mail.gmail.com>
- <20140919075228.GA4376@Asurada>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: alsa-info.sh was broken recently
+Date: Fri, 19 Sep 2014 11:40:06 +0200
+Message-ID: <541BF9F6.4080801@perex.cz>
+References: <1411081240.467539855@f39.i.mail.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oa0-f46.google.com (mail-oa0-f46.google.com
- [209.85.219.46])
- by alsa0.perex.cz (Postfix) with ESMTP id C524C2619EA
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 11:18:56 +0200 (CEST)
-Received: by mail-oa0-f46.google.com with SMTP id m1so1027202oag.33
- for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 02:18:55 -0700 (PDT)
-In-Reply-To: <20140919075228.GA4376@Asurada>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id D78862619F7
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 11:40:07 +0200 (CEST)
+Received: from server.perex-int.cz (server.perex-srv.cz [172.16.0.20])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A04D2149E8A
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 11:40:07 +0200 (CEST)
+Received: from t540.localdomain (localhost [127.0.0.1])
+ by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id
+ 3090B84F37
+ for <alsa-devel@alsa-project.org>; Fri, 19 Sep 2014 11:40:07 +0200 (CEST)
+In-Reply-To: <1411081240.467539855@f39.i.mail.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,47 +27,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, Michael Trimarchi <michael@amarulasolutions.com>, Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawn.guo@freescale.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2014-09-19 9:52 GMT+02:00 Nicolin Chen <nicoleotsuka@gmail.com>:
-> On Fri, Sep 19, 2014 at 09:42:22AM +0200, Jean-Michel Hautbois wrote:
->> Hi,
->>
->> 2014-09-19 1:50 GMT+02:00 Nicolin Chen <nicoleotsuka@gmail.com>:
->> > On Thu, Sep 18, 2014 at 08:35:31PM -0300, Fabio Estevam wrote:
->> >> On Thu, Sep 18, 2014 at 3:39 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->> >>
->> >> > It actually is merged into broonie/for-next and even linux-next I think.
->> >> > I'll later send a patch to Shawn's tree for imx_v6_v7_defconfig changes
->> >> > after next merge window's done.
->> >>
->> >> Ok, I see it now, but master/slave configuration is still hardcoded there:
->> >>
->> >>     } else if (of_device_is_compatible(np, "fsl,imx-audio-sgtl5000")) {
->> >>         priv->codec_priv.mclk_id = SGTL5000_SYSCLK;
->> >>         priv->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
->> >
->> > It's just a combinational driver and also made to be compatible with
->> > old DTs. Unless we refine the DT binding like simple-card, this hard-
->> > code is inevitable. As long as this dai_fmt has been defined, at least
->> > AUDMUX part will be automatically configured.
->> >
->> > I made this driver was initially to support ASRC for imx-cs42888. But
->> > merging the code from imx-sgtl5000 and imx-wm8962 allows us to omit
->> > a branch of duplicated code. And that's it :)
->> >
->>
->> Well, I may have missed something, I don't have fsl-asoc-card in my
->> linux tree (vanilla). Where can I find it ? I can test a SGTL5000
->> master mode on i.MX6Q.
->
-> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
->
-> for-next branch.
->
-> Nicolin
+Dne 19.9.2014 v 01:00 Sergey napsal(a):
+> Hello.
+> 
+> Something was broken recently.
+> 
+> http://www.alsa-project.org/alsa-info.sh leads to Error 404.
+> 
+> As well as http://www.alsa-project.org/alsa-info.sh.changelog
+> 
+> It breaks many tutorials and documentation references, e.g.:
+> http://www.kernel.org/doc/Documentation/sound/alsa/HD-Audio.txt
+> 
+> It also breaks the alsa-info.sh script itself attempting to update from that url.
 
-Thanks, now I need to modify my DT in order to have fsl-asoc-card loaded :).
-JM
+Thanks. Fixed now.
+
+				Jaroslav
+
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
