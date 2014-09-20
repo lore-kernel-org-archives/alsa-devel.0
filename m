@@ -1,26 +1,23 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_ssi: Remove unneeded 'i2s-slave'
-	property
-Date: Sat, 20 Sep 2014 11:07:38 -0700
-Message-ID: <20140920180738.GA6976@Asurada>
-References: <1411063877-1552-1-git-send-email-fabio.estevam@freescale.com>
- <20140918183251.GE6432@Asurada> <541B2678.8000401@tabi.org>
- <1411065995187.3341@freescale.com> <20140918194342.GA3173@Alpha>
- <541B78EC.5050702@tabi.org> <20140919041749.GA5840@Asurada>
- <541C26E2.4060605@tabi.org> <20140919172438.GA1736@Asurada>
- <541CC0FE.7050600@tabi.org>
+From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
+Subject: Wanted you to test music composition application
+Date: Sat, 20 Sep 2014 21:44:34 +0200
+Message-ID: <1411242274.9535.1.camel@Device-03036C>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f52.google.com (mail-pa0-f52.google.com
- [209.85.220.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 458262608EA
- for <alsa-devel@alsa-project.org>; Sat, 20 Sep 2014 20:07:47 +0200 (CEST)
-Received: by mail-pa0-f52.google.com with SMTP id hz1so2058131pad.39
- for <alsa-devel@alsa-project.org>; Sat, 20 Sep 2014 11:07:46 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <541CC0FE.7050600@tabi.org>
+Received: from mail-we0-f180.google.com (mail-we0-f180.google.com
+ [74.125.82.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA43A261A8B
+ for <alsa-devel@alsa-project.org>; Sat, 20 Sep 2014 21:45:06 +0200 (CEST)
+Received: by mail-we0-f180.google.com with SMTP id u56so1157170wes.39
+ for <alsa-devel@alsa-project.org>; Sat, 20 Sep 2014 12:45:06 -0700 (PDT)
+Received: from [192.168.42.170] (243-228.197-178.cust.bluewin.ch.
+ [178.197.228.243])
+ by mx.google.com with ESMTPSA id cj7sm6538962wjc.37.2014.09.20.12.45.05
+ for <alsa-devel@alsa-project.org>
+ (version=SSLv3 cipher=RC4-SHA bits=128/128);
+ Sat, 20 Sep 2014 12:45:05 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,29 +27,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: "Fabio.Estevam@freescale.com" <Fabio.Estevam@freescale.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 19, 2014 at 06:49:18PM -0500, Timur Tabi wrote:
-> Nicolin Chen wrote:
-> >I thought only the backward compatibility for DT is demanded.....
-> 
-> I have higher standards :-)
-> 
-> >But I still don't get why people would use new DT without updating
-> >kernel. It's pretty fair to use old DT with newer kernel because
-> >they want bug-fix patches.
-> 
-> The device tree is shipped with the kernel, so some people say that
-> backwards compatibility is not needed anywhere.  I think it's important to
-> provide backwards compatibility both ways.
-> 
-> I generally prefer some kind of transition period, where you can use new or
-> old kernel with a new or old device tree.
-
-I see..
-
-> However, let me look at Fabio's patches some more.
-
-Yes, please.
+SGksIGFzIG1lbnRpb25lZCBpbiBzdWJqZWN0OiBQcm9kdWN0aW9uIHJlbGVhc2UgMC40LjIgcGxh
+bmVkIG9mIEFkdmFuY2VkCkd0aysgU2VxdWVuY2VyLiAKCk5vdywgY29tZXMgeW91ciBwYXJ0IEkg
+d291bGQgbGlrZSB5b3UgdG8gdGVzdCBmdW5jdGlvbmFsaXR5LiBJJ2xsIGRvIGZvcgp5b3UgYSB3
+aWtpIHBhZ2Ugb2YgYXNwZWN0cyB0byB0ZXN0LgoKUGxlYXNlIHZpc2l0IGh0dHA6Ly9hZ3Muc2Yu
+bmV0IGFuZCB3aWtpIHBhZ2UKaHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvcC9hZ3Mvd2lraS90ZXN0
+aW5nLWNoZWF0c2hlZXQvCgpIYXBweSB0byBoZWFyIG9mIHlvdSBwcmV0dHkgc29vbiEKCkpvw6ts
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
