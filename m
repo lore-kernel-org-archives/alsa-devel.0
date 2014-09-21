@@ -1,14 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: ALSA: oxygen: set fifo_size
-Date: Sun, 21 Sep 2014 22:52:46 +0200
-Message-ID: <541F3A9E.7020002@ladisch.de>
+From: Daniel Mack <daniel@zonque.org>
+Subject: [PATCH] ALSA: snd-usb-caiaq: Fix LED commands for Kore
+	controller
+Date: Sun, 21 Sep 2014 23:55:38 +0200
+Message-ID: <1411336538-17923-1-git-send-email-daniel@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 6CACC2625DB
- for <alsa-devel@alsa-project.org>; Sun, 21 Sep 2014 22:52:03 +0200 (CEST)
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id B54BA2625DB
+ for <alsa-devel@alsa-project.org>; Sun, 21 Sep 2014 23:55:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,63 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: brad.wilson.00@gmail.com, alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-Allow the driver to report the hardware FIFO size.
+KoreController and KoreController2 need an EP1_CMD_DIMM_LEDS command to set
+their LEDs, not EP1_CMD_WRITE_IO.
 
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+Reported-and-tested-by: Brad Wilson <brad.wilson.00@gmail.com>
 ---
- sound/pci/oxygen/oxygen_pcm.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+This bug is acutally ancient, but given that nobody actually noticed it
+for so long makes me believe it's not worth flagging the patch for
+stable@. Still, it would be good to have it for 3.17.
 
-diff --git a/sound/pci/oxygen/oxygen_pcm.c b/sound/pci/oxygen/oxygen_pcm.c
-index cc0bcd9..0282824 100644
---- a/sound/pci/oxygen/oxygen_pcm.c
-+++ b/sound/pci/oxygen/oxygen_pcm.c
-@@ -29,6 +29,9 @@
- /* the multichannel DMA channel has a 24-bit counter */
- #define BUFFER_BYTES_MAX_MULTICH	((1 << 24) * 4)
+Thanks,
+Daniel
 
-+#define FIFO_BYTES			256
-+#define FIFO_BYTES_MULTICH		1024
-+
- #define PERIOD_BYTES_MIN		64
+ sound/usb/caiaq/control.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
- #define DEFAULT_BUFFER_BYTES		(BUFFER_BYTES_MAX / 2)
-@@ -60,6 +63,7 @@ static const struct snd_pcm_hardware oxygen_stereo_hardware = {
- 	.period_bytes_max = BUFFER_BYTES_MAX,
- 	.periods_min = 1,
- 	.periods_max = BUFFER_BYTES_MAX / PERIOD_BYTES_MIN,
-+	.fifo_size = FIFO_BYTES,
- };
- static const struct snd_pcm_hardware oxygen_multichannel_hardware = {
- 	.info = SNDRV_PCM_INFO_MMAP |
-@@ -87,6 +91,7 @@ static const struct snd_pcm_hardware oxygen_multichannel_hardware = {
- 	.period_bytes_max = BUFFER_BYTES_MAX_MULTICH,
- 	.periods_min = 1,
- 	.periods_max = BUFFER_BYTES_MAX_MULTICH / PERIOD_BYTES_MIN,
-+	.fifo_size = FIFO_BYTES_MULTICH,
- };
- static const struct snd_pcm_hardware oxygen_ac97_hardware = {
- 	.info = SNDRV_PCM_INFO_MMAP |
-@@ -106,6 +111,7 @@ static const struct snd_pcm_hardware oxygen_ac97_hardware = {
- 	.period_bytes_max = BUFFER_BYTES_MAX,
- 	.periods_min = 1,
- 	.periods_max = BUFFER_BYTES_MAX / PERIOD_BYTES_MIN,
-+	.fifo_size = FIFO_BYTES,
- };
-
- static const struct snd_pcm_hardware *const oxygen_hardware[PCM_COUNT] = {
-@@ -141,6 +147,10 @@ static int oxygen_open(struct snd_pcm_substream *substream,
- 		runtime->hw.rates &= ~(SNDRV_PCM_RATE_32000 |
- 				       SNDRV_PCM_RATE_64000);
- 		runtime->hw.rate_min = 44100;
-+		/* fall through */
-+	case PCM_A:
-+	case PCM_B:
-+		runtime->hw.fifo_size = 0;
- 		break;
- 	case PCM_MULTICH:
- 		runtime->hw.channels_max = chip->model.dac_channels_pcm;
+diff --git a/sound/usb/caiaq/control.c b/sound/usb/caiaq/control.c
+index f65fc09..b7a7c80 100644
+--- a/sound/usb/caiaq/control.c
++++ b/sound/usb/caiaq/control.c
+@@ -100,15 +100,19 @@ static int control_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_usb_caiaqdev *cdev = caiaqdev(chip->card);
+ 	int pos = kcontrol->private_value;
+ 	int v = ucontrol->value.integer.value[0];
+-	unsigned char cmd = EP1_CMD_WRITE_IO;
++	unsigned char cmd;
+ 
+-	if (cdev->chip.usb_id ==
+-		USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_TRAKTORKONTROLX1))
+-		cmd = EP1_CMD_DIMM_LEDS;
+-
+-	if (cdev->chip.usb_id ==
+-		USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_MASCHINECONTROLLER))
++	switch (cdev->chip.usb_id) {
++	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_MASCHINECONTROLLER):
++	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_TRAKTORKONTROLX1):
++	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_KORECONTROLLER2):
++	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_KORECONTROLLER):
+ 		cmd = EP1_CMD_DIMM_LEDS;
++		break;
++	default:
++		cmd = EP1_CMD_WRITE_IO;
++		break;
++	}
+ 
+ 	if (pos & CNT_INTVAL) {
+ 		int i = pos & ~CNT_INTVAL;
+-- 
+2.1.0
