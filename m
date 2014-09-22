@@ -1,31 +1,26 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re:
-	=?utf-8?q?No_sound_captured_with_SGTL5000_on_i=2EMX6?=
-	=?utf-8?q?_in_I=C2=B2S_master_mode?=
-Date: Mon, 22 Sep 2014 00:26:21 -0300
-Message-ID: <CAOMZO5Buh9DSD3YSpnkRsczUMj0BAFuOk_uRj1GpLMBgV9N5PQ@mail.gmail.com>
-References: <CAOMZO5CReW7-8L7zx=z1TshwJSzcfGThCjws7fTfbZJKCnCZLg@mail.gmail.com>
- <CAOf5uwmrsuXSCpUXhf3pTCRt0=4pprwfiP5MDDukE=WRzOk2WA@mail.gmail.com>
- <CAL8zT=jw4QQSzoq_8d0j-SXYEWzsNgz279dhDzjTHHr-jutP=Q@mail.gmail.com>
- <CAOf5uw=R0oHGDyFhueepoftfDb_d4vccO_751apBLg7S3gzGjg@mail.gmail.com>
- <CAL8zT=gcYkCRE9TU+2w+qBDtM+gYKqr-0KRDy7UxQXJ0P3LutQ@mail.gmail.com>
- <CAL8zT=igU9F=MZ0dQSgqgkq-T=PV-jbXAZeYAaMDs1ot_1MjCg@mail.gmail.com>
- <20140918170524.GA6080@Asurada>
- <CAOMZO5AqtNm3kwndUYszAuMfJ4CMOz4pwZRmE+04cEDtz98agg@mail.gmail.com>
- <20140918174935.GB6432@Asurada>
- <CAOMZO5AXN4p01=oGCydHUm6sPdt5NRNXO+4EOKQ1T7ZKUwVfMw@mail.gmail.com>
- <20140918180742.GC6432@Asurada>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Master Plan on rewinding
+Date: Mon, 22 Sep 2014 11:27:17 +0800
+Message-ID: <CAN8cciYHG9t8mNYUa9Zt4rbRqb7MCk2MxyZcwi0tAVJZYzbfQQ@mail.gmail.com>
+References: <540C76E0.9050808@gmail.com> <54148E72.2050903@gmail.com>
+ <CAN8cciYj4fo01XZwJ-NhFQDNv6Ua5mqaAEq1zU7PYxHkJyOQ5A@mail.gmail.com>
+ <541584FB.2030208@gmail.com> <s5hiokpw89h.wl-tiwai@suse.de>
+ <5416B852.6080406@gmail.com> <s5hd2axw60j.wl-tiwai@suse.de>
+ <54171B66.3010705@linux.intel.com> <54171E81.2090302@gmail.com>
+ <s5hzje0ah94.wl-tiwai@suse.de>
+ <CAN8cciaXvOyEN8U6mG-1OYLOBQ9-9i030smaqbQz2zvqBnnKjQ@mail.gmail.com>
+ <541EA036.5010707@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f180.google.com (mail-lb0-f180.google.com
- [209.85.217.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 6180D265005
- for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 05:26:22 +0200 (CEST)
-Received: by mail-lb0-f180.google.com with SMTP id b12so5871722lbj.39
- for <alsa-devel@alsa-project.org>; Sun, 21 Sep 2014 20:26:21 -0700 (PDT)
-In-Reply-To: <20140918180742.GC6432@Asurada>
+Received: from mail-qg0-f49.google.com (mail-qg0-f49.google.com
+ [209.85.192.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BFDC265005
+ for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 05:27:18 +0200 (CEST)
+Received: by mail-qg0-f49.google.com with SMTP id q107so2302178qgd.36
+ for <alsa-devel@alsa-project.org>; Sun, 21 Sep 2014 20:27:17 -0700 (PDT)
+In-Reply-To: <541EA036.5010707@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,25 +30,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Markus Pargmann <mpa@pengutronix.de>, Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>, Michael Trimarchi <michael@amarulasolutions.com>, Shawn Guo <shawn.guo@freescale.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, "Alexander E. Patrakov" <patrakov@gmail.com>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 18, 2014 at 3:07 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> > Does snd-oxygen provide this position with granularity which is less
+than
+> > the minimum period size ?
+>
+> Yes.  Its DMA controller uses a burst size of 32 bytes.  The pointer
+registers
+> are documented as reporting the position with 4-byte accuracy, but there
+were
+> problems when the period/buffer sizes were not aligned to 32 bytes.  I've
+set
+> the minimum period size to 64 bytes, just to be safe.
+>
+>
 
-> I plan to replace imx-sgtl5000 and imx-wm8962 with it as long as
-> people are happy about the new driver. Would you like to help me
-> testing it on sgtl5000 side when you have time? Because I only
-> have a board with WM8962.
+The brust size is usually added to the constriants but the application
+cannot deduce this value
 
-Just tested fsl-asoc-card with sgtl5000 and it worked fine on my imx53-qsb.
+err = snd_pcm_hw_constraint_step(runtime, 0,
+SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
 
-These messages are a bit annoying though:
+For those audio controllers have FIFO buffer, the application must keep the
+FIFO buffer full at any time for glitch free.
 
-[    1.786201] fsl-asoc-card sound: ASoC: no source widget found for
-ASRC-Playback
-[    1.796065] fsl-asoc-card sound: ASoC: Failed to add route
-ASRC-Playback -> direct -> CPU-Playback
-[    1.807571] fsl-asoc-card sound: ASoC: no sink widget found for ASRC-Capture
-[    1.817112] fsl-asoc-card sound: ASoC: Failed to add route
-CPU-Capture -> direct -> ASRC-Capture
+Someone may argue that keeping at least one frame above FIFO threshold is
+just enough
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-September/081509.html
+
+I don't understand why the minimum buffer size can be less than FIFO size
