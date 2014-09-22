@@ -1,28 +1,21 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH][resend] of: Add vendor 2nd prefix for
-	Asahi Kasei Corp
-Date: Mon, 22 Sep 2014 14:00:26 +0100
-Message-ID: <20140922130026.GK3290@leverpostej>
-References: <87ioo7c0g5.wl%kuninori.morimoto.gx@renesas.com>
- <539815E6.2050304@codethink.co.uk>
- <20140611165410.GK5099@sirena.org.uk>
- <CAMuHMdUT0hEBGbN+W-Oz5zJ0N8S2VDMndqtDO=EtWF3jG2MEew@mail.gmail.com>
- <20140611170233.GL5099@sirena.org.uk>
- <5398A53D.3020706@wwwdotorg.org>
- <20140611190444.GN5099@sirena.org.uk>
- <5398AB07.4040304@wwwdotorg.org>
- <87sinbdk44.wl%kuninori.morimoto.gx@renesas.com>
- <878ulzx6hr.wl%kuninori.morimoto.gx@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: Master Plan on rewinding
+Date: Mon, 22 Sep 2014 15:20:25 +0200
+Message-ID: <54202219.9070102@metafoo.de>
+References: <540C76E0.9050808@gmail.com> <540CC53B.7080204@ladisch.de>
+ <540D5B46.3020904@gmail.com> <540EBD9A.9000009@ladisch.de>
+ <540EC08E.4000906@gmail.com> <540EC380.6030903@canonical.com>
+ <540EC902.2030108@gmail.com>
+ <CAN8cciYhJxJz1ZCctYzPsDj7J2OzNFFm11O29u3YP+aMN+xsyQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cam-admin0.cambridge.arm.com (cam-admin0.cambridge.arm.com
- [217.140.96.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DD952652D1
- for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 15:00:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <878ulzx6hr.wl%kuninori.morimoto.gx@gmail.com>
+Received: from smtp-out-046.synserver.de (smtp-out-048.synserver.de
+ [212.40.185.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFB5026525F
+ for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 15:20:21 +0200 (CEST)
+In-Reply-To: <CAN8cciYhJxJz1ZCctYzPsDj7J2OzNFFm11O29u3YP+aMN+xsyQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,81 +25,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, olof@lixom.net, Stephen Warren <swarren@wwwdotorg.org>, robh@kernel.org
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, grant.likely@linaro.org
+To: Raymond Yau <superquad.vortex2@gmail.com>, "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, David Henningsson <david.henningsson@canonical.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 04, 2014 at 07:08:37AM +0100, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Current vendor-prefixes.txt already has
-> "ak" prefix for Asahi Kasei Corp by
-> ae8c4209af2cec065fef15d200a42a04130799f7
-> (of: Add vendor prefix for Asahi Kasei Corp.)
-> 
-> But, almost all Asahi Kasei chip driver is
-> using "asahi-kasei" prefix today.
-> 
-> This patch adds "asahi-kasei" to vendor-prefixes.txt.
-> checkpatch.pl will report WARNING without this patch.
-> (DT compatible string vendor "asahi-kasei" appears un-documented)
+On 09/21/2014 04:02 AM, Raymond Yau wrote:
+[...]
+> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/soc/soc-generic-dmaengine-pcm.c?id=478028e088d6a94666d8a776be2cd2291faf3bbd
+>
+> a) Set the SNDRV_PCM_INFO_BATCH if the granularity is per period or worse.
+> b) Fallback to the (race condition prone) period counting if the driver
+> does not support any residue reporting.
+>
+> Seem soc already have this granularity
+>
+> How can the granularity worse more than one period ?
 
-If we're adding a new string, we should figure out what's happening with
-the old one. We want some consistency here.
+The granularity is the granularity that the DMA driver is able to report. In 
+some cases the DMA driver is only able to tell whether a transfer has 
+finished or not, but is not able tell any intermediate position. In case of 
+a cyclic transfer the transfer never stops, so the DMA driver will only ever 
+tell us that it hasn't finished the transfer yet. But the DMA driver will 
+still generate a interrupt after every finished period. So we use this as a 
+fallback mechanism and simply increase the pointer position after each 
+interrupt by one period size. So userspace will never see a granularity that 
+is worse than one descriptor. This is just something kernel internal.
 
->From a quick grep, it looks like the only use of "ak" is "ak,ak8975" in
-arch/arm/boot/dts/tegra20-seaboard.dts. There are instances of
-"asahi-kasei,ak8975" in other dts files.
+On a side node, this period counting scheme is prone to race conditions and 
+we strongly discourage new drivers from using it. Its mainly for supporting 
+old DMA drivers which do not implement progress reporting (yet).
 
-Olof added "asahi-kasei,ak8975" to the ak8975 driver in February 2012
-(see 54461c3067b2), and the "asahi-kasei" prefix is currently far more
-common. This was only documented in May 2013 (see f4b7f751c6fd).
+>
+> https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/tree/include/linux/dmaengine.h
+>
+> enum dma_residue_granularity {
+> DMA_RESIDUE_GRANULARITY_DESCRIPTOR = 0,
+> DMA_RESIDUE_GRANULARITY_SEGMENT = 1,
+> DMA_RESIDUE_GRANULARITY_BURST = 2,
+> };
+>
+> There are three type of granularity
 
-Stephen added the "ak" vendor-refix was added later in November 2012
-(see ae8c4209af2c), and the only instance seems to work due to the i2c
-subsystem doing something dehind the scenes with the compatible string.
-So I think we made a mistake there.
+Only SEGMENT and BURST granularity are relevant for audio userspace.
 
-Given all that, I think we should get rid of the "ak" prefix entirely,
-fix up the seaboard dts, and leave the legacy matching for "ak,ak8975"
-up to the i2c framework. However, that would imply deleting from
-vendor-prefixes.txt (if we want people to be warned on use of "ak"), and
-that's not a good precedent to set.
+For ALSA we'd probably see different kind of categories of granularity 
+though. E.g. one field which is the unit of the granularity
 
-Thoughts?
+PERIOD: The granularity is a multiple of the period size
+FRAME: The granularity is a multiple of the frame size
+BYTE: The granularity is a fixed number of bytes
+MS: The granularity is a fixed amount of time
 
-Mark.
+and then a second field that has a integer number of the granularity in that 
+unit.
 
-> OTOH, Asahi Kasei is usually referred to as "AKM",
-> but this patch doesn't care about it.
-> Because no DT is using it today.
-> 
-> Cc: Stephen Warren <swarren@wwwdotorg.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-> Acked-by: Simon Horman <horms+renesas@verge.net.au>
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  .../devicetree/bindings/vendor-prefixes.txt        |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Documentation/devicetree/bindings/vendor-prefixes.txt
-> index abc3080..7e4bb83 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.txt
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
-> @@ -17,6 +17,7 @@ amstaos	AMS-Taos Inc.
->  apm	Applied Micro Circuits Corporation (APM)
->  arm	ARM Ltd.
->  armadeus	ARMadeus Systems SARL
-> +asahi-kasei	Asahi Kasei Corp.
->  atmel	Atmel Corporation
->  auo	AU Optronics Corporation
->  avago	Avago Technologies
-> -- 
-> 1.7.9.5
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+
+And then there is of course the issue that for some chips you can trade 
+granularity for e.g. power efficiency or similar (e.g. by changing the 
+transfer burst size). And this needs to be modeled somehow as well.
+
+>
+> Does this mean the those sound card can report
+> DMA_RESIDUE_GRANULARITY_BURST and driver use readl in pcm pointer callback ?
+>
+> A few PCI sound cards use SG buffer including hda
+>
+> It seem that pulseaudio expect the driver support
+> DMA_RESIDUE_GRANULARITY_BURST for rewind/ timer scheduling
+
+Yes. This is why we set the BATCH flag if the granularity is not 
+DMA_RESIDUE_GRANULARITY_BURST so for example pulse audio can disable timer 
+scheduling.
+
+- Lars
