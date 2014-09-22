@@ -1,17 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 4/5] hda-spec: Add secret eq verbs for IDT
-Date: Mon, 22 Sep 2014 13:09:05 +0200
-Message-ID: <1411384146-23286-5-git-send-email-david.henningsson@canonical.com>
-References: <1411384146-23286-1-git-send-email-david.henningsson@canonical.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCHv4 7/9] WM8971 uses msleep to replace work
+	queue
+Date: Mon, 22 Sep 2014 13:16:58 +0100
+Message-ID: <20140922121658.GF29992@opensource.wolfsonmicro.com>
+References: <1410943275-4160-1-git-send-email-xavier.hsu@linaro.org>
+ <1410943275-4160-7-git-send-email-xavier.hsu@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 07A732652C3
- for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 13:09:13 +0200 (CEST)
-In-Reply-To: <1411384146-23286-1-git-send-email-david.henningsson@canonical.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E8397265294
+ for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 14:16:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1410943275-4160-7-git-send-email-xavier.hsu@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +23,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: Xavier Hsu <xavier.hsu@linaro.org>
+Cc: Andy Green <andy.green@linaro.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lars@metafoo.de, patches@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-These verbs exist according to the driver, but we know nothing about
-them, except they are used to calibrate some EQ.
+On Wed, Sep 17, 2014 at 04:41:13PM +0800, Xavier Hsu wrote:
+> This patch improves WM8971.
+> We use msleep to replace work queue.
+> "As suggested by Mark Brown"
+> 
+> Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
+> Signed-off-by: Andy Green <andy.green@linaro.org>
+> ---
+> Any comments about improving the patch are welcome.
+> Thanks.
+> 
+>  sound/soc/codecs/wm8971.c |   27 ++++-----------------------
+>  1 file changed, 4 insertions(+), 23 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
+> index 5b38c7a..d081cae 100755
+> --- a/sound/soc/codecs/wm8971.c
+> +++ b/sound/soc/codecs/wm8971.c
+> @@ -36,8 +36,6 @@
+>  
+>  #define	WM8971_REG_COUNT		43
+>  
+> -static struct workqueue_struct *wm8971_workq;
+> -
+>  /* codec private data */
+>  struct wm8971_priv {
+>  	/* MCLK */
+> @@ -779,16 +777,6 @@ static struct snd_soc_dai_driver wm8971_dai = {
+>  	.ops = &wm8971_dai_ops,
+>  };
+>  
+> -static void wm8971_work(struct work_struct *work)
+> -{
+> -	struct snd_soc_dapm_context *dapm =
+> -		container_of(work, struct snd_soc_dapm_context,
+> -			     delayed_work.work);
+> -	struct snd_soc_codec *codec = dapm->codec;
+> -
+> -	wm8971_set_bias_level(codec, codec->dapm.bias_level);
+> -}
+> -
+>  static int wm8971_suspend(struct snd_soc_codec *codec)
+>  {
+>  	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
+> @@ -806,8 +794,8 @@ static int wm8971_resume(struct snd_soc_codec *codec)
+>  		reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+>  		snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
+>  		codec->dapm.bias_level = SND_SOC_BIAS_ON;
+> -		queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
+> -				   msecs_to_jiffies(1000));
+> +		wm8971_set_bias_level(codec, codec->dapm.bias_level);
+> +		msleep(1000);
+>  	}
+>  
+>  	return 0;
+> @@ -818,19 +806,14 @@ static int wm8971_probe(struct snd_soc_codec *codec)
+>  	int ret = 0;
+>  	u16 reg;
+>  
+> -	INIT_DELAYED_WORK(&codec->dapm.delayed_work, wm8971_work);
+> -	wm8971_workq = create_workqueue("wm8971");
+> -	if (wm8971_workq == NULL)
+> -		return -ENOMEM;
+> -
+>  	wm8971_reset(codec);
+>  
+>  	/* charge output caps - set vmid to 5k for quick power up */
+>  	reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+>  	snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
+>  	codec->dapm.bias_level = SND_SOC_BIAS_STANDBY;
+> -	queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
+> -			   msecs_to_jiffies(1000));
+> +	wm8971_set_bias_level(codec, codec->dapm.bias_level);
+> +	msleep(1000);
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- hda-spec.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+Before this patch the bias_level change is after the delay, after
+this patch the change is before the delay? That doesn't seem
+right?
 
-diff --git a/hda-spec.c b/hda-spec.c
-index 935dcc0..0f42a2d 100644
---- a/hda-spec.c
-+++ b/hda-spec.c
-@@ -113,24 +113,35 @@ static struct xhda_verb_table idt_92hd7xx_verbs[] = {
- };
- 
- /*
-- * IDT 92HD8xx
-+ * IDT 92HD8xx and 92HD9xx
-  */
- static struct xhda_verb_table idt_92hd8xx_verbs[] = {
- 	{ 0xf70, get_cached_verb, "get_gpio_polarity" },
- 	{ 0x770, set_cached_verb, "set_gpio_polarity" },
- 	{ 0xf71, get_cached_verb, "get_gpio_drive" },
- 	{ 0x771, set_cached_verb, "set_gpio_drive" },
-+	{ 0x772, set_cached_verb, "set_eq_10" }, /* undocumented */
- 	{ 0xf74, get_cached_verb, "get_aux_audio" },
- 	{ 0x774, set_cached_verb, "set_aux_audio" },
- 	{ 0xf78, get_cached_verb, "get_dmic" },
- 	{ 0x778, set_cached_verb, "set_dmic" },
- 	{ 0xf80, get_cached_verb, "get_dac_mode" },
- 	{ 0x780, set_cached_verb, "set_dac_mode" },
-+	{ 0x782, set_cached_verb, "set_eq_9" }, /* undocumented */
- 	{ 0xf84, get_cached_verb, "get_adc_mode" },
- 	{ 0x784, set_cached_verb, "set_adc_mode" },
- 	{ 0xf88, get_cached_verb, "get_eapd_mode" },
- 	{ 0x788, set_cached_verb, "set_eapd_mode1" },
- 	{ 0x789, set_cached_verb2, "set_eapd_mode2" },
-+	{ 0x7a6, set_cached_verb, "set_eq_1" }, /* undocumented */
-+	{ 0x7a7, set_cached_verb, "set_eq_2" }, /* undocumented */
-+	{ 0x7a8, set_cached_verb, "set_eq_3" }, /* undocumented */
-+	{ 0x7a9, set_cached_verb, "set_eq_4" }, /* undocumented */
-+	{ 0x7aa, set_cached_verb, "set_eq_5" }, /* undocumented */
-+	{ 0x7ab, set_cached_verb, "set_eq_6" }, /* undocumented */
-+	{ 0x7ac, set_cached_verb, "set_eq_7" }, /* undocumented */
-+	{ 0x7ad, set_cached_verb, "set_eq_8" }, /* undocumented */
-+	{ 0x7b0, set_cached_verb, "set_eq_11" }, /* undocumented */
- 	{ 0xfc0, get_cached_verb, "get_port_use" },
- 	{ 0x7c0, set_cached_verb, "set_port_use" },
- 	{ 0x7d8, set_cached_verb, "set_vs_power" },
--- 
-1.9.1
+>  
+>  	/* set the update bits */
+>  	snd_soc_update_bits(codec, WM8971_LDAC, 0x0100, 0x0100);
+> @@ -850,8 +833,6 @@ static int wm8971_remove(struct snd_soc_codec *codec)
+>  {
+>  	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
+>  
+> -	if (wm8971_workq)
+> -		destroy_workqueue(wm8971_workq);
+>  	return 0;
+>  }
+>  
+> -- 
+> 1.7.9.5
+> 
+
+Thanks,
+Charles
