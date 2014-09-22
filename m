@@ -1,37 +1,38 @@
 From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: Re: [PATCH v3 4/5] sound: pci: ctxfi: cthw20k2.c: sparse warning of
- incorrect type
-Date: Mon, 22 Sep 2014 13:39:56 +0530
-Message-ID: <20140922080956.GB4870@sudip-PC>
+Subject: Re: [PATCH v3 1/5] sound: pci: ctxfi: added reference of snd_card
+Date: Mon, 22 Sep 2014 13:45:41 +0530
+Message-ID: <20140922081541.GC4870@sudip-PC>
 References: <1411315421-24138-1-git-send-email-sudipm.mukherjee@gmail.com>
- <1411315421-24138-4-git-send-email-sudipm.mukherjee@gmail.com>
- <s5h38bk6shg.wl-tiwai@suse.de>
+ <s5h61gg6sq2.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5h38bk6shg.wl-tiwai@suse.de>
+In-Reply-To: <s5h61gg6sq2.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.de>
 Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 22, 2014 at 09:10:03AM +0200, Takashi Iwai wrote:
-> At Sun, 21 Sep 2014 21:33:40 +0530,
+On Mon, Sep 22, 2014 at 09:04:53AM +0200, Takashi Iwai wrote:
+> At Sun, 21 Sep 2014 21:33:37 +0530,
 > Sudip Mukherjee wrote:
 > > 
-> > fixed sparse warning of incorrect type (different address spaces)
+> > added and initialized a pointer of snd_card in the struct hw to get a reference of
+> > the card in other functions
 > 
-> Better to rather fix the type of hw.base_mem field.
-> 
-> Last but not least, try to align the subject line with other commits
-> to this driver.  See git log and compare with yours.
-> 
-ok .. will do likewise.
+> You need to explain why this change is needed.  The above text shows
+> what it'd do, but it doesn't give any explanation to convince why this
+> patch must be merged in.  In this case, it's a preliminary patch for
+> the changes to convert to dev_*() later.  It's the most important bit,
+> so don't forget it.
+>
+then do i mention in the commit that it is the preliminary patch for the later changes to dev_* ?
+i was thinking that we can get a reference of the card from other functions which are using struct hw
+is a reason by itself.
 
 thanks
 sudip
-
 > 
 > thanks,
 > 
@@ -40,37 +41,42 @@ sudip
 > > 
 > > Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
 > > ---
-> >  sound/pci/ctxfi/cthw20k2.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >  sound/pci/ctxfi/ctatc.c      | 1 +
+> >  sound/pci/ctxfi/cthardware.h | 2 ++
+> >  2 files changed, 3 insertions(+)
 > > 
-> > diff --git a/sound/pci/ctxfi/cthw20k2.c b/sound/pci/ctxfi/cthw20k2.c
-> > index 665eeb2..25ef60b 100644
-> > --- a/sound/pci/ctxfi/cthw20k2.c
-> > +++ b/sound/pci/ctxfi/cthw20k2.c
-> > @@ -2112,7 +2112,7 @@ static int hw_card_shutdown(struct hw *hw)
-> >  	hw->irq	= -1;
+> > diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
+> > index d92a08c..b21eda4 100644
+> > --- a/sound/pci/ctxfi/ctatc.c
+> > +++ b/sound/pci/ctxfi/ctatc.c
+> > @@ -1333,6 +1333,7 @@ static int atc_create_hw_devs(struct ct_atc *atc)
+> >  		pr_err("Failed to create hw obj!!!\n");
+> >  		return err;
+> >  	}
+> > +	hw->card = atc->card;
+> >  	atc->hw = hw;
 > >  
-> >  	if (hw->mem_base)
-> > -		iounmap((void *)hw->mem_base);
-> > +		iounmap((void __iomem *)hw->mem_base);
+> >  	/* Initialize card hardware. */
+> > diff --git a/sound/pci/ctxfi/cthardware.h b/sound/pci/ctxfi/cthardware.h
+> > index 5977e9a..940bbd0 100644
+> > --- a/sound/pci/ctxfi/cthardware.h
+> > +++ b/sound/pci/ctxfi/cthardware.h
+> > @@ -20,6 +20,7 @@
 > >  
-> >  	hw->mem_base = (unsigned long)NULL;
+> >  #include <linux/types.h>
+> >  #include <linux/pci.h>
+> > +#include <sound/core.h>
 > >  
-> > @@ -2234,12 +2234,12 @@ static int hw_resume(struct hw *hw, struct card_conf *info)
+> >  enum CHIPTYP {
+> >  	ATC20K1,
+> > @@ -184,6 +185,7 @@ struct hw {
+> >  	void *irq_callback_data;
 > >  
-> >  static u32 hw_read_20kx(struct hw *hw, u32 reg)
-> >  {
-> > -	return readl((void *)(hw->mem_base + reg));
-> > +	return readl((void __iomem *)(hw->mem_base + reg));
-> >  }
-> >  
-> >  static void hw_write_20kx(struct hw *hw, u32 reg, u32 data)
-> >  {
-> > -	writel(data, (void *)(hw->mem_base + reg));
-> > +	writel(data, (void __iomem *)(hw->mem_base + reg));
-> >  }
-> >  
-> >  static struct hw ct20k2_preset = {
+> >  	struct pci_dev *pci;	/* the pci kernel structure of this card */
+> > +	struct snd_card *card; /* pointer to this card */
+> >  	int irq;
+> >  	unsigned long io_base;
+> >  	unsigned long mem_base;
 > > -- 
 > > 1.8.1.2
 > > 
