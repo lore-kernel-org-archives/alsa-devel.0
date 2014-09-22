@@ -1,8 +1,8 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/5] hda-spec: Add access to secret node 0x8
-	for Haswell/Broadwell HDMI
-Date: Mon, 22 Sep 2014 13:09:03 +0200
-Message-ID: <1411384146-23286-3-git-send-email-david.henningsson@canonical.com>
+Subject: [PATCH 5/5] hda-spec: Add IDT 92HD95 to IDT verb codec
+	list
+Date: Mon, 22 Sep 2014 13:09:06 +0200
+Message-ID: <1411384146-23286-6-git-send-email-david.henningsson@canonical.com>
 References: <1411384146-23286-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F51C265268
- for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 13:09:11 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BA1042652D1
+ for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 13:09:13 +0200 (CEST)
 In-Reply-To: <1411384146-23286-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,40 +28,20 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- hda-spec.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ hda-spec.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/hda-spec.c b/hda-spec.c
-index 0ff0388..fa21cf5 100644
+index 0f42a2d..5f1ac42 100644
 --- a/hda-spec.c
 +++ b/hda-spec.c
-@@ -575,6 +575,18 @@ static void fixup_alc268_beep(struct xhda_codec *codec)
- 	node->amp_in_caps.override = 1;
- }
- 
-+static int haswell_ext_cmd(struct xhda_codec *codec, unsigned int cmd)
-+{
-+	unsigned int nid = (cmd >> 20) & 0x7f;
-+
-+	codec->rc = 0;
-+
-+	/* Secret Haswell node on 0x8, used to turn on DP1.2 features */
-+	if (nid == 0x8)
-+		return 0;
-+	return -ENXIO;
-+}
-+
- static void fixup_haswellhdmi(struct xhda_codec *codec)
- {
- 	struct xhda_node *node;
-@@ -602,6 +614,8 @@ static void fixup_haswellhdmi(struct xhda_codec *codec)
- 			node->node[0] = 0x2;
- 		}
- 	}
-+
-+	codec->extended_cmd = haswell_ext_cmd;
- }
- 
- struct fixup_list {
+@@ -308,6 +308,7 @@ static struct verb_ext_list extensions[] = {
+ 	{ .id = 0x111d7674, .verbs = idt_92hd7xx_verbs },
+ 	{ .id = 0x111d7675, .verbs = idt_92hd7xx_verbs },
+ 	{ .id = 0x111d7676, .verbs = idt_92hd7xx_verbs },
++	{ .id = 0x111d7695, .verbs = idt_92hd7xx_verbs },
+ 	{ .id = 0x111d76b0, .verbs = idt_92hd7xx_verbs },
+ 	{ .id = 0x111d76b1, .verbs = idt_92hd7xx_verbs },
+ 	{ .id = 0x111d76b2, .verbs = idt_92hd7xx_verbs },
 -- 
 1.9.1
