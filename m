@@ -1,50 +1,61 @@
-From: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH][resend] of: Add vendor 2nd prefix for Asahi Kasei Corp
-Date: Mon, 22 Sep 2014 14:27:43 +0100
-Message-ID: <20140922132743.GM3290@leverpostej>
-References: <20140611165410.GK5099@sirena.org.uk>
- <CAMuHMdUT0hEBGbN+W-Oz5zJ0N8S2VDMndqtDO=EtWF3jG2MEew@mail.gmail.com>
- <20140611170233.GL5099@sirena.org.uk>
- <5398A53D.3020706@wwwdotorg.org>
- <20140611190444.GN5099@sirena.org.uk>
- <5398AB07.4040304@wwwdotorg.org>
- <87sinbdk44.wl%kuninori.morimoto.gx@renesas.com>
- <878ulzx6hr.wl%kuninori.morimoto.gx@gmail.com>
- <20140922130026.GK3290@leverpostej>
- <CAMuHMdX22z97SbGS1HDiYfJ1PXxyEN2S8D7w4sr+4bUwD+mJZw@mail.gmail.com>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Re: Master Plan on rewinding
+Date: Mon, 22 Sep 2014 19:36:55 +0600
+Message-ID: <542025F7.4000708@gmail.com>
+References: <540C76E0.9050808@gmail.com> <540CC53B.7080204@ladisch.de>
+ <540D5B46.3020904@gmail.com> <540EBD9A.9000009@ladisch.de>
+ <540EC08E.4000906@gmail.com> <540EC380.6030903@canonical.com>
+ <540EC902.2030108@gmail.com>
+ <CAN8cciYhJxJz1ZCctYzPsDj7J2OzNFFm11O29u3YP+aMN+xsyQ@mail.gmail.com>
+ <54202219.9070102@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdX22z97SbGS1HDiYfJ1PXxyEN2S8D7w4sr+4bUwD+mJZw@mail.gmail.com>
-Sender: linux-sh-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Olof Johansson <olof@lixom.net>, Stephen Warren <swarren@wwwdotorg.org>, Rob Herring <robh@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux-sh list <linux-sh@vger.kernel.org>, Magnus <magnus.damm@gmail.com>, Simon <horms@verge.net.au>, "grant.likely@linaro.org" <grant.likely@linaro.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-la0-f43.google.com (mail-la0-f43.google.com
+ [209.85.215.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id D7095265350
+ for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 15:36:58 +0200 (CEST)
+Received: by mail-la0-f43.google.com with SMTP id gi9so6773941lab.30
+ for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 06:36:58 -0700 (PDT)
+In-Reply-To: <54202219.9070102@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>, Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, David Henningsson <david.henningsson@canonical.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 22, 2014 at 02:24:24PM +0100, Geert Uytterhoeven wrote:
-> Hi Mark,
+22.09.2014 19:20, Lars-Peter Clausen wrote:
+>>
+>> Does this mean the those sound card can report
+>> DMA_RESIDUE_GRANULARITY_BURST and driver use readl in pcm pointer
+>> callback ?
+>>
+>> A few PCI sound cards use SG buffer including hda
+>>
+>> It seem that pulseaudio expect the driver support
+>> DMA_RESIDUE_GRANULARITY_BURST for rewind/ timer scheduling
+>
+> Yes. This is why we set the BATCH flag if the granularity is not
+> DMA_RESIDUE_GRANULARITY_BURST so for example pulse audio can disable
+> timer scheduling.
 
-Hi Geert,
+For the record, disabling timer-based scheduling is IMHO a matter of 
+further discussion. As long as there is enough safeguard, I think that 
+timer-based scheduling can still be used, and is useful. A living proof 
+is the whole story with the snd-usb-audio driver where (justified) 
+addition of the BATCH flag was perceived as a performance regression and 
+not as a fix to some real and obvious problem.
 
-> On Mon, Sep 22, 2014 at 3:00 PM, Mark Rutland <mark.rutland@arm.com> wrote:
-> > Given all that, I think we should get rid of the "ak" prefix entirely,
-> > fix up the seaboard dts, and leave the legacy matching for "ak,ak8975"
-> > up to the i2c framework. However, that would imply deleting from
-> > vendor-prefixes.txt (if we want people to be warned on use of "ak"), and
-> > that's not a good precedent to set.
-> 
-> Instead of deleting, we can deprecate, like was done for powervr:
-> 
-> powervr PowerVR (deprecated, use img)
+I do agree that such devices need to be marked up with the BATCH flag, 
+so that PulseAudio chooses reasonable hardware parameters.
 
-Ah. I tried to see if we had any deprecated bindings, but I somehow
-failed to search correctly and missed powervr.
-
-> Still missing is an update for checkpatch to warn when a deprecated
-> vendor prefix is used.
-
-Marking it deprecated and warning with checkpatch is certainly
-preferable.
-
-Mark.
+-- 
+Alexander E. Patrakov
