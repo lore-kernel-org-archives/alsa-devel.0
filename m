@@ -1,16 +1,22 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: Fix snd_soc_{new,
-	free}_ac97_codec() locking removal
-Date: Tue, 23 Sep 2014 04:15:48 +0200
-Message-ID: <1411438548-8463-1-git-send-email-lars@metafoo.de>
+From: Renu Tyagi <renu.tyagi@samsung.com>
+Subject: Re: [PATCH v2 01/11] mixer : fixed double free
+Date: Tue, 23 Sep 2014 04:13:02 +0000 (GMT)
+Message-ID: <18078000.60941411445581943.JavaMail.weblogic@epv6ml10>
+Reply-To: renu.tyagi@samsung.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-051.synserver.de (smtp-out-051.synserver.de
- [212.40.185.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 44E7F261600
- for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 04:15:51 +0200 (CEST)
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51192261AA5
+ for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 06:13:11 +0200 (CEST)
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0NCC00KSM6DSGG50@mailout1.samsung.com> for
+ alsa-devel@alsa-project.org; Tue, 23 Sep 2014 13:13:04 +0900 (KST)
+MIME-version: 1.0
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,31 +26,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Commit e3f205a72c45 ("ASoC: Remove locking in
-snd_soc_{new,free}_ac97_codec()") overlooked a unlock on one of the error
-paths.
+Hi Takashi,
+I will prefer "renu tyagi".
+I cannot use git send-email from my organization. 
+I will resubmit patches where I missed email id in signoff. Or you can see the attachments as they are fine.
+If any other issues I will be happy to respond.
+Thanks
 
-Fixes: e3f205a72c45 ("ASoC: Remove locking in snd_soc_{new,free}_ac97_codec()")
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+--------------------------------------------
+Signed-off-by: renu tyagi <renu.tyagi@samsung.com>
 ---
- sound/soc/soc-core.c | 1 -
- 1 file changed, 1 deletion(-)
+ src/mixer/mixer.c |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f7e4ede..5b88fde 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1967,7 +1967,6 @@ int snd_soc_new_ac97_codec(struct snd_soc_codec *codec,
- 	if (codec->ac97->bus == NULL) {
- 		kfree(codec->ac97);
- 		codec->ac97 = NULL;
--		mutex_unlock(&codec->mutex);
- 		return -ENOMEM;
- 	}
- 
--- 
-1.8.0
+diff --git a/src/mixer/mixer.c b/src/mixer/mixer.c
+index 56e023d..eee9875 100644
+--- a/src/mixer/mixer.c
++++ b/src/mixer/mixer.c
+@@ -204,10 +204,8 @@ int snd_mixer_attach(snd_mixer_t *mixer, const char *name)
+        if (err < 0)
+                return err;
+        err = snd_mixer_attach_hctl(mixer, hctl);
+-       if (err < 0) {
+-               snd_hctl_close(hctl);
++       if (err < 0)
+                return err;
+-       }
+        return 0;
+ }
+
+--
+1.7.1
