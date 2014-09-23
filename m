@@ -1,17 +1,25 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: sgtl5000: Allow the codec to work in
-	slave mode
-Date: Mon, 22 Sep 2014 18:54:48 -0700
-Message-ID: <20140923015448.GF27755@sirena.org.uk>
-References: <1411082245-25679-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH v6 05/10] ASoC: Intel: mrfld: add DSP core
+	controls
+Date: Mon, 22 Sep 2014 18:57:30 -0700
+Message-ID: <20140923015730.GG27755@sirena.org.uk>
+References: <1410255693-6958-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1410255693-6958-6-git-send-email-subhransu.s.prusty@intel.com>
+ <20140916193053.GD7960@sirena.org.uk>
+ <20140917105552.GA13006@vinod.koul@linux.intel.com>
+ <20140917193706.GU7960@sirena.org.uk>
+ <20140918061237.GA24663@intel.com>
+ <20140918172852.GY7960@sirena.org.uk>
+ <20140919081047.GB24663@intel.com>
+ <20140919082152.GC24663@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2178112869143586779=="
+Content-Type: multipart/mixed; boundary="===============5229913595960043043=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9712E261600
- for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 03:55:10 +0200 (CEST)
-In-Reply-To: <1411082245-25679-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1221B261600
+ for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 03:57:53 +0200 (CEST)
+In-Reply-To: <20140919082152.GC24663@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,67 +29,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: nicoleotsuka@gmail.com, jean-michel.hautbois@vodalys.com, alsa-devel@alsa-project.org, Fabio Estevam <fabio.estevam@freescale.com>, shawn.guo@freescale.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2178112869143586779==
+--===============5229913595960043043==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AH+kv8CCoFf6qPuz"
+	protocol="application/pgp-signature"; boundary="gvF4niNJ+uBMJnEh"
 Content-Disposition: inline
 
 
---AH+kv8CCoFf6qPuz
+--gvF4niNJ+uBMJnEh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 18, 2014 at 08:17:25PM -0300, Fabio Estevam wrote:
+On Fri, Sep 19, 2014 at 01:51:53PM +0530, Vinod Koul wrote:
 
->  	default:
-> -		/* if mclk not satisify the divider, use pll */
-> +		/* if mclk not satisfy the divider, use pll */
->  		if (sgtl5000->master) {
->  			clk_ctl |= SGTL5000_MCLK_FREQ_PLL <<
->  				SGTL5000_MCLK_FREQ_SHIFT;
-> -		} else {
-> -			dev_err(codec->dev,
-> -				"PLL not supported in slave mode\n");
-> -			return -EINVAL;
->  		}
->  	}
+>         if (e->w && e->w->power)
+>                 ret = sst_send_slot_map(drv);
+> 		^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Are you sure that the configuration that results is valid?  Typically
-the requirements for MCLK to other clock ratios are very similar for
-master and slave modes, it's just that it tends to be a lot more obvious
-when things go wrong in master mode since directly visible clocks tend
-to go wrong as opposed to performance problems.  Are the dividers that
-we can't get configuration for purely for generating BCLK/LRCLK in
-master mode or are they for other things?
+> Here is the widget is powered up then we send the updated slot map to DSP.
 
---AH+kv8CCoFf6qPuz
+> So it will be updated real time now :)
+
+So in what situation might there not be a widget there?
+
+--gvF4niNJ+uBMJnEh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUINLnAAoJECTWi3JdVIfQl5MH/AoxXkbcDusTvBIb2sJo4I0W
-tJE0qE26X7gP7eSuTd06Z8/RbHKNS4BF+g9b02nKN1b96pzlsJVp//uYICNxuggC
-iNL0qcTlbHfKm5ziYHJ18NohNYr0h9iJwmXLOVJO6YOqCYWnu7A8UhiQ+k42M5fn
-1b0KwSWtD1x7SXmmC7iYa6ufLxug/pVypI+/+RD5qQiP1crQrjqie3ix/dOdct/G
-1wiugpuXrlgR6Q0tR8ZnWmvxvHZJs3XJy0f4aQlTmydCYGTu61zyPHWi2F4Kbrzy
-Hv3vaI+YMjWtJJyLwGjA2YvSWuJ76/4PvDJjv27y5DO3HhZFAuKzdnKvlcA5uVU=
-=SNKO
+iQEcBAEBAgAGBQJUINOJAAoJECTWi3JdVIfQjoMH/imbSYw/Xqnwj81+6JkdHqOv
+pS1lD9WHiNiKFuTsAp31h819zsCquB5laKg5FcztVwTsaS4x5z4QMbvrPa2j7GQi
+ToxH68YMpRKbj751kMwJvBFBgSqectthYntVuB+IGtvgcFxe3ls+zVYxnMQZzAoC
+oYi5wtpoo9xXDcQb/iJUC+i8sgOM5hA6VPBPw/z5yiLrn9PzdKgA0MmtEDeN5WYi
+wQFhSTHBUFXeOUh/igmrbFGN0kxdWQQfxPv1nOfhAZ0qgiDUyVvTDPYPsbdpbbL7
+tIgW7c9O+VZ/LMzjUzuS6I7kPzYf5wDpfeSutyNOUKQOxGJtlm8oyiASZ7lFVlc=
+=GBFz
 -----END PGP SIGNATURE-----
 
---AH+kv8CCoFf6qPuz--
+--gvF4niNJ+uBMJnEh--
 
---===============2178112869143586779==
+--===============5229913595960043043==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2178112869143586779==--
+--===============5229913595960043043==--
