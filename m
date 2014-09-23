@@ -1,16 +1,16 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH] ASoC: Remove locking in snd_soc_{new,
-	free}_ac97_codec()
-Date: Tue, 23 Sep 2014 00:56:28 +0200
-Message-ID: <1411426588-27149-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5677: Add sidetone function
+Date: Mon, 22 Sep 2014 17:54:20 -0700
+Message-ID: <20140923005420.GH7960@sirena.org.uk>
+References: <1411022759-25026-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5663926164259548662=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-051.synserver.de (smtp-out-051.synserver.de
- [212.40.185.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 9388B261696
- for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 00:56:26 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81B712616EF
+ for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 02:54:49 +0200 (CEST)
+In-Reply-To: <1411022759-25026-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,65 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>, lgirdwood@gmail.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_new_ac97_codec() and snd_soc_free_ac97_codec() are called from
-within a CODEC's probe() and remove() callbacks. Those will not run
-concurrently against each other for the same CODEC instance, hence it is not
-necessary to protect the two functions with a mutex.
 
-This removes the last user in the ASoC core of the snd_soc_codec mutex field
-and will allow us to eventually remove it.
+--===============5663926164259548662==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gezZ2klTiuSrshj1"
+Content-Disposition: inline
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-core.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 889f4e3..5289984 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2107,13 +2107,9 @@ static struct platform_driver soc_driver = {
- int snd_soc_new_ac97_codec(struct snd_soc_codec *codec,
- 	struct snd_ac97_bus_ops *ops, int num)
- {
--	mutex_lock(&codec->mutex);
--
- 	codec->ac97 = kzalloc(sizeof(struct snd_ac97), GFP_KERNEL);
--	if (codec->ac97 == NULL) {
--		mutex_unlock(&codec->mutex);
-+	if (codec->ac97 == NULL)
- 		return -ENOMEM;
--	}
- 
- 	codec->ac97->bus = kzalloc(sizeof(struct snd_ac97_bus), GFP_KERNEL);
- 	if (codec->ac97->bus == NULL) {
-@@ -2132,7 +2128,6 @@ int snd_soc_new_ac97_codec(struct snd_soc_codec *codec,
- 	 */
- 	codec->ac97_created = 1;
- 
--	mutex_unlock(&codec->mutex);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(snd_soc_new_ac97_codec);
-@@ -2302,7 +2297,6 @@ EXPORT_SYMBOL_GPL(snd_soc_set_ac97_ops_of_reset);
-  */
- void snd_soc_free_ac97_codec(struct snd_soc_codec *codec)
- {
--	mutex_lock(&codec->mutex);
- #ifdef CONFIG_SND_SOC_AC97_BUS
- 	soc_unregister_ac97_codec(codec);
- #endif
-@@ -2310,7 +2304,6 @@ void snd_soc_free_ac97_codec(struct snd_soc_codec *codec)
- 	kfree(codec->ac97);
- 	codec->ac97 = NULL;
- 	codec->ac97_created = 0;
--	mutex_unlock(&codec->mutex);
- }
- EXPORT_SYMBOL_GPL(snd_soc_free_ac97_codec);
- 
--- 
-1.8.0
+--gezZ2klTiuSrshj1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Sep 18, 2014 at 02:45:59PM +0800, Oder Chiou wrote:
+> Add sidetone function
+
+Applied, thanks.
+
+--gezZ2klTiuSrshj1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUIMS7AAoJECTWi3JdVIfQeO8H/2Gd9jI858acai9mXDPLY+KX
+TYqDPF3+9otQw65Y71hqTowEuDYdFa75un9jimsWCVAphx99+8nMWKQP1swCuLRL
+M+SFQo3XcQZdM96lO5E3+sdYFDAvs27pcX70whgCQszYjxtLaX6sEholH8IKvfS/
+dRCLHdWdh/s9KnRw7YHgtBavTJkl+T0WWUIySU528Lz58xBx+toEGPzS7B/A4C/7
+b0inYvN7uuWw9pJkseF1VI6nPfgI98je/XZ6wSFcQilM1xYkjllSSBkdarNFBD8P
+1wy99lUrvE9v6cSelHY2bGyt3h1NJi8vkVZB3mu2WDljw+BmFD4ANzbNFsrRIyM=
+=aSGp
+-----END PGP SIGNATURE-----
+
+--gezZ2klTiuSrshj1--
+
+--===============5663926164259548662==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5663926164259548662==--
