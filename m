@@ -1,68 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5677: Add sidetone function
-Date: Mon, 22 Sep 2014 17:54:20 -0700
-Message-ID: <20140923005420.GH7960@sirena.org.uk>
-References: <1411022759-25026-1-git-send-email-oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: samsung: Remove goni or aquila with the WM8994
+Date: Mon, 22 Sep 2014 18:04:18 -0700
+Message-ID: <20140923010418.GI7960@sirena.org.uk>
+References: <1404496099-26708-1-git-send-email-t.figa@samsung.com>
+ <53C675E4.4020502@samsung.com>
+ <1409825105.5546.91.camel@x220>
+ <201409041802.36466.arnd@arndb.de>
+ <1411033409.2017.15.camel@x220>
+ <20140918175752.GC7960@sirena.org.uk>
+ <1411077427.2012.6.camel@x41>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5663926164259548662=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 81B712616EF
- for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 02:54:49 +0200 (CEST)
-In-Reply-To: <1411022759-25026-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: bardliao@realtek.com, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>, lgirdwood@gmail.com, flove@realtek.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yTlutJeUbbRRO0QT"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1411077427.2012.6.camel@x41>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Arnd Bergmann <arnd@arndb.de>, Tomasz Figa <tomasz.figa@gmail.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5663926164259548662==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gezZ2klTiuSrshj1"
-Content-Disposition: inline
-
-
---gezZ2klTiuSrshj1
+--yTlutJeUbbRRO0QT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 18, 2014 at 02:45:59PM +0800, Oder Chiou wrote:
-> Add sidetone function
+On Thu, Sep 18, 2014 at 11:57:07PM +0200, Paul Bolle wrote:
+> Mark Brown schreef op do 18-09-2014 om 10:57 [-0700]:
+> > On Thu, Sep 18, 2014 at 11:43:29AM +0200, Paul Bolle wrote:
 
-Applied, thanks.
+> > > Done on top of next-20140918. Untested.
+> > > --------->8---------
+> > > From: Paul Bolle <pebolle@tiscali.nl>
 
---gezZ2klTiuSrshj1
+> > Please follow the patch submission process in SubmittingPatches.
+
+> Could you please be more specific? What part of SubmittingPatches have I
+> skipped?
+
+> Is it the perhaps the use of scissors? Or the superfluous From: line?
+> "git am -c" appears to handle this message (and the very similar message
+> I also sent today) just fine.
+
+It's the fact that you've included the patch in the middle of the reply
+to another mail in the middle of a thread after some other stuff; you
+can tell this isn't the normal process by observing that your mail
+doesn't look visually close to a normal patch submission - if that's the
+case then people aren't likely to sit around and try to figure out some
+magic set of git options needed, manually edit or otherwise special case
+to special case it unless it's *really* important.
+
+--yTlutJeUbbRRO0QT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUIMS7AAoJECTWi3JdVIfQeO8H/2Gd9jI858acai9mXDPLY+KX
-TYqDPF3+9otQw65Y71hqTowEuDYdFa75un9jimsWCVAphx99+8nMWKQP1swCuLRL
-M+SFQo3XcQZdM96lO5E3+sdYFDAvs27pcX70whgCQszYjxtLaX6sEholH8IKvfS/
-dRCLHdWdh/s9KnRw7YHgtBavTJkl+T0WWUIySU528Lz58xBx+toEGPzS7B/A4C/7
-b0inYvN7uuWw9pJkseF1VI6nPfgI98je/XZ6wSFcQilM1xYkjllSSBkdarNFBD8P
-1wy99lUrvE9v6cSelHY2bGyt3h1NJi8vkVZB3mu2WDljw+BmFD4ANzbNFsrRIyM=
-=aSGp
+iQEcBAEBAgAGBQJUIMcSAAoJECTWi3JdVIfQ64cH/2/QUk0EuKSNmD7qjgFbn3FV
+ewc5aJlqwgBcYcd5LnubLp61YHeALIVfM7b++JjtNSwQsBLlOqTWp6F7Y1IHRwhk
+tOpf8xlJ6ADbqfGlHUYwuvozZHepO9bMcemNc4CpTE68xcBMGrlRWEyYi1vwYW9p
+JDS10eF1MhoVOaDEkjoVwIMAXBiUbPBfLh/WfGoFPyqsKzoy0U2lQ3eIPLwQrYxm
+wbdiCFRmAAOQUJhYMvHGXXzJfHNf5AP6Px8B6ZBTzTXHMxZoCh4gVCxQEssHaBH1
+7I7nVsK+XX5dgF2pOM+zlRFIgd9XcfOW+HZWH7av0u1nrnLe0sgfrIevARMI53E=
+=1HDE
 -----END PGP SIGNATURE-----
 
---gezZ2klTiuSrshj1--
-
---===============5663926164259548662==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5663926164259548662==--
+--yTlutJeUbbRRO0QT--
