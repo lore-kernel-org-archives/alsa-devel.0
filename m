@@ -1,16 +1,24 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 1/2] ALSA: hda - Move the function
-	"check_amp_caps" to hda_codec.c
-Date: Tue, 23 Sep 2014 10:38:17 +0200
-Message-ID: <1411461498-11837-1-git-send-email-david.henningsson@canonical.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Master Plan on rewinding
+Date: Tue, 23 Sep 2014 16:29:55 +0800
+Message-ID: <CAN8ccib09wKC-GxASX4Kkh0070e7tRy5KuQER+NqS4R0wWo4XQ@mail.gmail.com>
+References: <540C76E0.9050808@gmail.com> <540CC53B.7080204@ladisch.de>
+ <540D5B46.3020904@gmail.com> <540EBD9A.9000009@ladisch.de>
+ <540EC08E.4000906@gmail.com> <540EC380.6030903@canonical.com>
+ <540EC902.2030108@gmail.com>
+ <CAN8cciYhJxJz1ZCctYzPsDj7J2OzNFFm11O29u3YP+aMN+xsyQ@mail.gmail.com>
+ <54202219.9070102@metafoo.de> <542025F7.4000708@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D3B9265350
- for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 10:38:23 +0200 (CEST)
+Received: from mail-qc0-f182.google.com (mail-qc0-f182.google.com
+ [209.85.216.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B7A8265709
+ for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 10:29:56 +0200 (CEST)
+Received: by mail-qc0-f182.google.com with SMTP id m20so1360149qcx.13
+ for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 01:29:56 -0700 (PDT)
+In-Reply-To: <542025F7.4000708@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,103 +28,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+To: "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-The next patch will use it, so make it visible across modules.
+>>>
+>>>
+>>> Does this mean the those sound card can report
+>>> DMA_RESIDUE_GRANULARITY_BURST and driver use readl in pcm pointer
+>>> callback ?
+>>>
+>>> A few PCI sound cards use SG buffer including hda
+>>>
+>>> It seem that pulseaudio expect the driver support
+>>> DMA_RESIDUE_GRANULARITY_BURST for rewind/ timer scheduling
+>>
+>>
+>> Yes. This is why we set the BATCH flag if the granularity is not
+>> DMA_RESIDUE_GRANULARITY_BURST so for example pulse audio can disable
+>> timer scheduling.
+>
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/hda_codec.c   | 20 ++++++++++++++++++++
- sound/pci/hda/hda_generic.c | 17 -----------------
- sound/pci/hda/hda_local.h   |  8 ++++++++
- 3 files changed, 28 insertions(+), 17 deletions(-)
+The resolution of pulseaudio volume is higher than the number of steps of
+the hardware volume control, this mean any volume change by user force
+pulseaudio to rewind  because of the change in software volume
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 0aa2e1e..15e0089 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2002,6 +2002,26 @@ u32 query_amp_caps(struct hda_codec *codec, hda_nid_t nid, int direction)
- EXPORT_SYMBOL_GPL(query_amp_caps);
- 
- /**
-+ * snd_hda_check_amp_caps - query AMP capabilities
-+ * @codec: the HD-audio codec
-+ * @nid: the NID to query
-+ * @dir: either #HDA_INPUT or #HDA_OUTPUT
-+ *
-+ * Check whether the widget has the given amp capability for the direction.
-+ */
-+bool snd_hda_check_amp_caps(struct hda_codec *codec, hda_nid_t nid,
-+			   int dir, unsigned int bits)
-+{
-+	if (!nid)
-+		return false;
-+	if (get_wcaps(codec, nid) & (1 << (dir + 1)))
-+		if (query_amp_caps(codec, nid, dir) & bits)
-+			return true;
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(snd_hda_check_amp_caps);
-+
-+/**
-  * snd_hda_override_amp_caps - Override the AMP capabilities
-  * @codec: the CODEC to clean up
-  * @nid: the NID to clean up
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 32a85f9..64220c0 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -519,18 +519,6 @@ static unsigned int amp_val_replace_channels(unsigned int val, unsigned int chs)
- 	return val;
- }
- 
--/* check whether the widget has the given amp capability for the direction */
--static bool check_amp_caps(struct hda_codec *codec, hda_nid_t nid,
--			   int dir, unsigned int bits)
--{
--	if (!nid)
--		return false;
--	if (get_wcaps(codec, nid) & (1 << (dir + 1)))
--		if (query_amp_caps(codec, nid, dir) & bits)
--			return true;
--	return false;
--}
--
- static bool same_amp_caps(struct hda_codec *codec, hda_nid_t nid1,
- 			  hda_nid_t nid2, int dir)
- {
-@@ -540,11 +528,6 @@ static bool same_amp_caps(struct hda_codec *codec, hda_nid_t nid1,
- 		query_amp_caps(codec, nid2, dir));
- }
- 
--#define nid_has_mute(codec, nid, dir) \
--	check_amp_caps(codec, nid, dir, (AC_AMPCAP_MUTE | AC_AMPCAP_MIN_MUTE))
--#define nid_has_volume(codec, nid, dir) \
--	check_amp_caps(codec, nid, dir, AC_AMPCAP_NUM_STEPS)
--
- /* look for a widget suitable for assigning a mute switch in the path */
- static hda_nid_t look_for_out_mute_nid(struct hda_codec *codec,
- 				       struct nid_path *path)
-diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index 8a018d4..7eb44e7 100644
---- a/sound/pci/hda/hda_local.h
-+++ b/sound/pci/hda/hda_local.h
-@@ -603,6 +603,14 @@ int snd_hda_override_amp_caps(struct hda_codec *codec, hda_nid_t nid, int dir,
- u32 snd_hda_query_pin_caps(struct hda_codec *codec, hda_nid_t nid);
- int snd_hda_override_pin_caps(struct hda_codec *codec, hda_nid_t nid,
- 			      unsigned int caps);
-+bool snd_hda_check_amp_caps(struct hda_codec *codec, hda_nid_t nid,
-+			   int dir, unsigned int bits);
-+
-+#define nid_has_mute(codec, nid, dir) \
-+	snd_hda_check_amp_caps(codec, nid, dir, (AC_AMPCAP_MUTE | AC_AMPCAP_MIN_MUTE))
-+#define nid_has_volume(codec, nid, dir) \
-+	snd_hda_check_amp_caps(codec, nid, dir, AC_AMPCAP_NUM_STEPS)
-+
- 
- /* flags for hda_nid_item */
- #define HDA_NID_ITEM_AMP	(1<<0)
--- 
-1.9.1
+As user won't expect the volume change is delayed by one second
+
+Those drivers should not use 2 periods as graunulaity is one period which
+is  170ms ~1 second if you are running video conference (e.g. Google
+hangout) when video is 15~30 frames per second
+
+The safeguard can only be decreased by reduce the period size
+
+Is it feasible for pulseaudio to use more periods with  suitable period
+size/time for the requested latency when there is one and only one client
+when the sound card cannot provide precise DMA position instead of maximum
+period size/time ?
+
+>
+> For the record, disabling timer-based scheduling is IMHO a matter of
+further discussion. As long as there is enough safeguard, I think that
+timer-based scheduling can still be used, and is useful. A living proof is
+the whole story with the snd-usb-audio driver where (justified) addition of
+the BATCH flag was perceived as a performance regression and not as a fix
+to some real and obvious problem.
+
+The point is some drivers use .periods_min = 1
+
+Pulseaudio select minimum number of period
+
+interrupt driven mode should not use one period per buffer since
+granularity is one period
+
+one period per buffer work only when sound card can report granularity
+which is less than one period
+
+aplay won't use one period per buffer , default is four but fallback to two
+when driver use .periods_max = 2
+
+http://0pointer.net/blog/projects/pulse-glitch-free.html
+
+NFRAGS must >= 2
