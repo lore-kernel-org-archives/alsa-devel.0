@@ -1,69 +1,72 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: Remove goni or aquila with the WM8994
-Date: Mon, 22 Sep 2014 18:04:18 -0700
-Message-ID: <20140923010418.GI7960@sirena.org.uk>
-References: <1404496099-26708-1-git-send-email-t.figa@samsung.com>
- <53C675E4.4020502@samsung.com>
- <1409825105.5546.91.camel@x220>
- <201409041802.36466.arnd@arndb.de>
- <1411033409.2017.15.camel@x220>
- <20140918175752.GC7960@sirena.org.uk>
- <1411077427.2012.6.camel@x41>
+Subject: Re: [PATCH] ASoC: Remove locking in snd_soc_{new,
+	free}_ac97_codec()
+Date: Mon, 22 Sep 2014 18:20:07 -0700
+Message-ID: <20140923012007.GB27755@sirena.org.uk>
+References: <1411426588-27149-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yTlutJeUbbRRO0QT"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1411077427.2012.6.camel@x41>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Paul Bolle <pebolle@tiscali.nl>
-Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Arnd Bergmann <arnd@arndb.de>, Tomasz Figa <tomasz.figa@gmail.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============1359617873201157610=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9B6C261696
+ for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 03:20:27 +0200 (CEST)
+In-Reply-To: <1411426588-27149-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---yTlutJeUbbRRO0QT
+--===============1359617873201157610==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2B/JsCI69OhZNC5r"
+Content-Disposition: inline
+
+
+--2B/JsCI69OhZNC5r
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Sep 18, 2014 at 11:57:07PM +0200, Paul Bolle wrote:
-> Mark Brown schreef op do 18-09-2014 om 10:57 [-0700]:
-> > On Thu, Sep 18, 2014 at 11:43:29AM +0200, Paul Bolle wrote:
+On Tue, Sep 23, 2014 at 12:56:28AM +0200, Lars-Peter Clausen wrote:
+> snd_soc_new_ac97_codec() and snd_soc_free_ac97_codec() are called from
+> within a CODEC's probe() and remove() callbacks. Those will not run
+> concurrently against each other for the same CODEC instance, hence it is not
+> necessary to protect the two functions with a mutex.
 
-> > > Done on top of next-20140918. Untested.
-> > > --------->8---------
-> > > From: Paul Bolle <pebolle@tiscali.nl>
+Applied, thanks.
 
-> > Please follow the patch submission process in SubmittingPatches.
-
-> Could you please be more specific? What part of SubmittingPatches have I
-> skipped?
-
-> Is it the perhaps the use of scissors? Or the superfluous From: line?
-> "git am -c" appears to handle this message (and the very similar message
-> I also sent today) just fine.
-
-It's the fact that you've included the patch in the middle of the reply
-to another mail in the middle of a thread after some other stuff; you
-can tell this isn't the normal process by observing that your mail
-doesn't look visually close to a normal patch submission - if that's the
-case then people aren't likely to sit around and try to figure out some
-magic set of git options needed, manually edit or otherwise special case
-to special case it unless it's *really* important.
-
---yTlutJeUbbRRO0QT
+--2B/JsCI69OhZNC5r
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUIMcSAAoJECTWi3JdVIfQ64cH/2/QUk0EuKSNmD7qjgFbn3FV
-ewc5aJlqwgBcYcd5LnubLp61YHeALIVfM7b++JjtNSwQsBLlOqTWp6F7Y1IHRwhk
-tOpf8xlJ6ADbqfGlHUYwuvozZHepO9bMcemNc4CpTE68xcBMGrlRWEyYi1vwYW9p
-JDS10eF1MhoVOaDEkjoVwIMAXBiUbPBfLh/WfGoFPyqsKzoy0U2lQ3eIPLwQrYxm
-wbdiCFRmAAOQUJhYMvHGXXzJfHNf5AP6Px8B6ZBTzTXHMxZoCh4gVCxQEssHaBH1
-7I7nVsK+XX5dgF2pOM+zlRFIgd9XcfOW+HZWH7av0u1nrnLe0sgfrIevARMI53E=
-=1HDE
+iQEcBAEBAgAGBQJUIMrGAAoJECTWi3JdVIfQWuUH/1Xoozj24bIAmhGcHif50CYa
+ZdwxzjIHRUGdKPVQxIT9BlLokrbghXwV3U9cxwP+oMaQbOoCwFM6nT9dPGn9kSLs
+j4GBk8LCRwIEcoCnF6OsuykVkyJdFyfjsyWaKjjeJ+mEgZr25+a4sMLkLdbUs2+Z
+V+qU6t7yCSNCWiSB/aNab9mWEUzwp3+B5HL9hnbyZ8xCstGHCME92qp4PLRjevg6
+9w2LfV3HQ7SNckFR0QEfhgxFRGVfs/8Jflz07S2lVCnsT+BAe1KtvbU0e73Y5HSg
+MpFyMbrSBA/BkBAV9tCCSojD5JP/82SCiOxVbmApofySvyctOEM9zck65SjVtWk=
+=F4jn
 -----END PGP SIGNATURE-----
 
---yTlutJeUbbRRO0QT--
+--2B/JsCI69OhZNC5r--
+
+--===============1359617873201157610==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1359617873201157610==--
