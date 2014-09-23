@@ -1,22 +1,22 @@
-From: Renu Tyagi <renu.tyagi@samsung.com>
-Subject: Re: [PATCH v2 04/11] rawmidi : close handle h
-Date: Tue, 23 Sep 2014 04:22:07 +0000 (GMT)
-Message-ID: <18246145.61351411446127682.JavaMail.weblogic@epv6ml10>
-Reply-To: renu.tyagi@samsung.com
+From: Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>
+Subject: Re: How to select input from muxer in front of SSI on
+	i.MX6
+Date: Tue, 23 Sep 2014 08:11:27 +0200
+Message-ID: <CAL8zT=ggs=fsBhEY=vXyH=6Bvy6iftV4JjxJ+YXuftk+xQ3Zdw@mail.gmail.com>
+References: <CAL8zT=iopOiRmo8vT5RNOowucDif-oY2skdrJu=vijiUqpHz-w@mail.gmail.com>
+ <20140919175205.GB1736@Asurada>
+ <20140923015134.GE27755@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
- by alsa0.perex.cz (Postfix) with ESMTP id 884BB262632
- for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 06:22:23 +0200 (CEST)
-Received: from epcpsbgr3.samsung.com
- (u143.gpu120.samsung.co.kr [203.254.230.143])
- by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0NCC00EGR6TAKCE0@mailout3.samsung.com> for
- alsa-devel@alsa-project.org; Tue, 23 Sep 2014 13:22:22 +0900 (KST)
-MIME-version: 1.0
+Received: from mail-oi0-f42.google.com (mail-oi0-f42.google.com
+ [209.85.218.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32C9B261B19
+ for <alsa-devel@alsa-project.org>; Tue, 23 Sep 2014 08:11:29 +0200 (CEST)
+Received: by mail-oi0-f42.google.com with SMTP id u20so4598280oif.1
+ for <alsa-devel@alsa-project.org>; Mon, 22 Sep 2014 23:11:28 -0700 (PDT)
+In-Reply-To: <20140923015134.GE27755@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,32 +26,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Michael Trimarchi <michael@amarulasolutions.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-
-Signed-off-by: renu tyagi <renu.tyagi@samsung.com>
----
- src/rawmidi/rawmidi.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/src/rawmidi/rawmidi.c b/src/rawmidi/rawmidi.c
-index b835b47..ac699b4 100644
---- a/src/rawmidi/rawmidi.c
-+++ b/src/rawmidi/rawmidi.c
-@@ -256,8 +256,11 @@ static int snd_rawmidi_open_conf(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp
-                snd_config_delete(type_conf);
-        if (err >= 0)
-                err = open_func(inputp, outputp, name, rawmidi_root, rawmidi_conf, mode);
--       if (err < 0)
-+       if (err < 0) {
-+               if (h)
-+                       snd_dlclose(h);
-                return err;
-+       }
-        if (inputp) {
-                (*inputp)->dl_handle = h; h = NULL;
-                snd_rawmidi_params_default(*inputp, &params);
---
-1.7.1
+TGUgMjMgc2VwdC4gMjAxNCAwMzo1MSwgIk1hcmsgQnJvd24iIDxicm9vbmllQGtlcm5lbC5vcmc+
+IGEgw6ljcml0IDoKPgo+IE9uIEZyaSwgU2VwIDE5LCAyMDE0IGF0IDEwOjUyOjA2QU0gLTA3MDAs
+IE5pY29saW4gQ2hlbiB3cm90ZToKPgo+ID4gVGhpcyBsb29rcyBsaWtlIGEgRFBDTSAoRG9jdW1l
+bnRhdGlvbi9zb3VuZC9hbHNhL3NvYy9EUENNLnR4dCkgdG8gbWUuCj4KPiA+IEknbSBub3Qgc3Vy
+ZSBob3cgdG8gd3JpdGUgYSBEVCBmb3IgRFBDTSBlaXRoZXIuIEJ1dCBpdCBzZWVtcyB0aGF0IHlv
+dQo+ID4gbWlnaHQgbmVlZCBhIHNwZWNpZmljIG1hY2hpbmUgZHJpdmVyIChndWVzc2luZykuCj4K
+PiA+IEkgc2F3IE1vcmltb3RvLXNhbiBwbGFucyB0byBhZGQgRFBDTSBpbnRvIFNpbXBsZSBDYXJk
+LCBidXQgbm90IHN1cmUKPiA+IHdoZW4gdGhleSB3aWxsIGZpbmlzaCBpdC4gT3RoZXJ3aXNlLCB5
+b3UgbWF5IHVzZSBTaW1wbGUgQ2FyZCB3aGlsZQo+ID4gZm9sbG93aW5nIHRoZWlyIGRlZmluZWQg
+RFQgZm9ybWF0cy4KPgo+IERlcGVuZGluZyBvbiB3aGF0IHRoZSBzeXN0ZW0gbG9va3MgbGlrZSBp
+dCdzIG5vdCBhdCBhbGwgY2xlYXIgdGhhdCB0aGVyZQo+IHNob3VsZCBiZSBhbnkgdmlzaWJpbGl0
+eSBhdCBhbGwgb2YgRFBDTSBpbiB0aGUgRFQgLSBpdCdzIGEgZGV0YWlsIG9mIGhvdwo+IExpbnV4
+IGlzIGltcGxlbWVudGVkIGF0IHRoZSBlbmQgb2YgdGhlIGRheS4KClNvIHRoaXMgc2hvdWxkIGRl
+ZmluaXRlbHkgYmUgaW1wbGVtZW50ZWQgZGlyZWN0bHkgaW4gYSBzcGVjaWZpYyBkcml2ZXIgZm9y
+Cm15IEZQR0Egd2hpY2ggaXMgYSBEUENNIHJpZ2h0ID8KClRoYW5rcywKSk0KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
