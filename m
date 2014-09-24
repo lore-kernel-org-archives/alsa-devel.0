@@ -1,21 +1,20 @@
-From: Xavier Hsu <xavier.hsu@linaro.org>
-Subject: Re: [PATCHv4 7/9] WM8971 uses msleep to replace work
-	queue
-Date: Wed, 24 Sep 2014 15:37:19 +0800
-Message-ID: <CAHa2TObbRWPtWqoL1J7apXJTzCjhtxpy2dCiih-aKbrkpHZL=A@mail.gmail.com>
-References: <1410943275-4160-1-git-send-email-xavier.hsu@linaro.org>
- <1410943275-4160-7-git-send-email-xavier.hsu@linaro.org>
- <20140922121658.GF29992@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: How to select input from muxer in front of SSI on
+	i.MX6
+Date: Wed, 24 Sep 2014 09:21:46 +0100
+Message-ID: <20140924082146.GV4015@sirena.org.uk>
+References: <CAL8zT=iopOiRmo8vT5RNOowucDif-oY2skdrJu=vijiUqpHz-w@mail.gmail.com>
+ <20140919175205.GB1736@Asurada>
+ <20140923015134.GE27755@sirena.org.uk>
+ <CAL8zT=ggs=fsBhEY=vXyH=6Bvy6iftV4JjxJ+YXuftk+xQ3Zdw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3312050482741640596=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 9784F2608CF
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 09:37:19 +0200 (CEST)
-Received: by mail-wg0-f45.google.com with SMTP id x13so5281417wgg.16
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 00:37:19 -0700 (PDT)
-In-Reply-To: <20140922121658.GF29992@opensource.wolfsonmicro.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A72182610A0
+ for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 10:22:08 +0200 (CEST)
+In-Reply-To: <CAL8zT=ggs=fsBhEY=vXyH=6Bvy6iftV4JjxJ+YXuftk+xQ3Zdw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,120 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Andy Green <andy.green@linaro.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Lars-Peter Clausen <lars@metafoo.de>, Patch Tracking <patches@linaro.org>
+To: Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Michael Trimarchi <michael@amarulasolutions.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Charles :
-Thanks for your feedback.
-I will move msleep(1000) before I set bias level.
-====================================================
-msleep(1000);
-wm8971_set_bias_level(codec, codec->dapm.bias_level);
-====================================================
 
-BR,
-Xavier
+--===============3312050482741640596==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="OelmujB7rQAg+yu0"
+Content-Disposition: inline
 
-2014-09-22 20:16 GMT+08:00 Charles Keepax <
-ckeepax@opensource.wolfsonmicro.com>:
 
-> On Wed, Sep 17, 2014 at 04:41:13PM +0800, Xavier Hsu wrote:
-> > This patch improves WM8971.
-> > We use msleep to replace work queue.
-> > "As suggested by Mark Brown"
-> >
-> > Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
-> > Signed-off-by: Andy Green <andy.green@linaro.org>
-> > ---
-> > Any comments about improving the patch are welcome.
-> > Thanks.
-> >
-> >  sound/soc/codecs/wm8971.c |   27 ++++-----------------------
-> >  1 file changed, 4 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
-> > index 5b38c7a..d081cae 100755
-> > --- a/sound/soc/codecs/wm8971.c
-> > +++ b/sound/soc/codecs/wm8971.c
-> > @@ -36,8 +36,6 @@
-> >
-> >  #define      WM8971_REG_COUNT                43
-> >
-> > -static struct workqueue_struct *wm8971_workq;
-> > -
-> >  /* codec private data */
-> >  struct wm8971_priv {
-> >       /* MCLK */
-> > @@ -779,16 +777,6 @@ static struct snd_soc_dai_driver wm8971_dai = {
-> >       .ops = &wm8971_dai_ops,
-> >  };
-> >
-> > -static void wm8971_work(struct work_struct *work)
-> > -{
-> > -     struct snd_soc_dapm_context *dapm =
-> > -             container_of(work, struct snd_soc_dapm_context,
-> > -                          delayed_work.work);
-> > -     struct snd_soc_codec *codec = dapm->codec;
-> > -
-> > -     wm8971_set_bias_level(codec, codec->dapm.bias_level);
-> > -}
-> > -
-> >  static int wm8971_suspend(struct snd_soc_codec *codec)
-> >  {
-> >       wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> > @@ -806,8 +794,8 @@ static int wm8971_resume(struct snd_soc_codec *codec)
-> >               reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
-> >               snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
-> >               codec->dapm.bias_level = SND_SOC_BIAS_ON;
-> > -             queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
-> > -                                msecs_to_jiffies(1000));
-> > +             wm8971_set_bias_level(codec, codec->dapm.bias_level);
-> > +             msleep(1000);
-> >       }
-> >
-> >       return 0;
-> > @@ -818,19 +806,14 @@ static int wm8971_probe(struct snd_soc_codec
-> *codec)
-> >       int ret = 0;
-> >       u16 reg;
-> >
-> > -     INIT_DELAYED_WORK(&codec->dapm.delayed_work, wm8971_work);
-> > -     wm8971_workq = create_workqueue("wm8971");
-> > -     if (wm8971_workq == NULL)
-> > -             return -ENOMEM;
-> > -
-> >       wm8971_reset(codec);
-> >
-> >       /* charge output caps - set vmid to 5k for quick power up */
-> >       reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
-> >       snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
-> >       codec->dapm.bias_level = SND_SOC_BIAS_STANDBY;
-> > -     queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
-> > -                        msecs_to_jiffies(1000));
-> > +     wm8971_set_bias_level(codec, codec->dapm.bias_level);
-> > +     msleep(1000);
->
-> Before this patch the bias_level change is after the delay, after
-> this patch the change is before the delay? That doesn't seem
-> right?
->
-> >
-> >       /* set the update bits */
-> >       snd_soc_update_bits(codec, WM8971_LDAC, 0x0100, 0x0100);
-> > @@ -850,8 +833,6 @@ static int wm8971_remove(struct snd_soc_codec *codec)
-> >  {
-> >       wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> >
-> > -     if (wm8971_workq)
-> > -             destroy_workqueue(wm8971_workq);
-> >       return 0;
-> >  }
-> >
-> > --
-> > 1.7.9.5
-> >
->
-> Thanks,
-> Charles
->
+--OelmujB7rQAg+yu0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Sep 23, 2014 at 08:11:27AM +0200, Jean-Michel Hautbois wrote:
+> Le 23 sept. 2014 03:51, "Mark Brown" <broonie@kernel.org> a =E9crit :
+
+> > Depending on what the system looks like it's not at all clear that there
+> > should be any visibility at all of DPCM in the DT - it's a detail of how
+> > Linux is implemented at the end of the day.
+
+> So this should definitely be implemented directly in a specific driver for
+> my FPGA which is a DPCM right ?
+
+No, that's really not what DPCM is all about...  if this is a physically
+separate device that's not got direct memory access it's probably more
+appropriate to represent as a CODEC.  I was CCed in part way so don't
+entirely know.
+
+--OelmujB7rQAg+yu0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUIn8ZAAoJECTWi3JdVIfQuBwH/2u6iaa83C3h7j+wH1ZNJ+jl
+fifLRkhg0CuP818db9zwJZ01po5rlgLvVrhFXc7tdchjmO9FVsLj+tUjBBoMCM4R
+L7B4enm8I7zM+pXiLktWj44HHmh7kpuCjePFSKquAI7JTkmsWP49ETLPycSZ717o
+IdT2EJMLh0PyUxU9q/f81yX8RkS1hhTWv6vS8F3pllSLcPJI50kaqtnSMiDEResO
+HqGz9cUxjSKdTR1NHj2nIE7hIlwV2APfPk9IUJ7uM4Sl1vkItvAz4OqZq7cXVlsH
+ha1uFpy6jOoxafHdbSPmqZLuAQbhWwfI+k00dUj6G71+RE4xQv2IeKaT9wR8DZk=
+=AZoA
+-----END PGP SIGNATURE-----
+
+--OelmujB7rQAg+yu0--
+
+--===============3312050482741640596==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3312050482741640596==--
