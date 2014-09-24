@@ -1,17 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5677: Add a configuration option
-	for LDO2_POW pin
-Date: Wed, 24 Sep 2014 09:59:11 +0100
-Message-ID: <20140924085911.GB16977@sirena.org.uk>
-References: <1410984860-40626-1-git-send-email-anatol.pomozov@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 2/2] ALSA: hda - Sort input pins depending
+ on amp caps
+Date: Wed, 24 Sep 2014 16:59:36 +0800
+Message-ID: <CAN8cciYB-esLbP1=17AAtuSuTHtwxzvUak+00VVkSmJ80gJK6Q@mail.gmail.com>
+References: <1411461498-11837-1-git-send-email-david.henningsson@canonical.com>
+ <1411461498-11837-2-git-send-email-david.henningsson@canonical.com>
+ <CAN8cciZHw69AfLJGKB-e7e=PAw7Jqx7bDmAvfVP=NUuw3xwdeQ@mail.gmail.com>
+ <542265AD.1000005@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6804006202092384410=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A8AB5261AB7
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 10:59:15 +0200 (CEST)
-In-Reply-To: <1410984860-40626-1-git-send-email-anatol.pomozov@gmail.com>
+Received: from mail-qg0-f49.google.com (mail-qg0-f49.google.com
+ [209.85.192.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0FCF261622
+ for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 10:59:37 +0200 (CEST)
+Received: by mail-qg0-f49.google.com with SMTP id q107so5559745qgd.8
+ for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 01:59:36 -0700 (PDT)
+In-Reply-To: <542265AD.1000005@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +27,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+>>
+>>  >
+>>  > If one input has a boost and another one has not, and they're equal
+>>  > otherwise, it's more likely you want to use the input with the boost
+>>  > as your primary input.
+>>  >
+>>  > See
+>> hda-emu.git/codecs/canonical/cx20590-lenovo-20b2z00bus-ccert-201305-13496
+>>  > for an example.
+>>
+>> Is this a firmware bug since your firmware 1.02 have two internal Mic
+>> 0x1e and 0x23 but firmware 1.09 only have one internal mic 0x23
+>>
+>>
+http://www.alsa-project.org/db/?f=a265ed3ac422c0ea77b0ada8596338c6421b4de1
+>>
+>> Cannot detect the codec with firmware 1.10
+>>
+>>
+http://www.alsa-project.org/db/?f=a60449e5a19b3dbb7a422defd5a9d51f56216693
+>>
+>> The proper fix is remove the redundant internal Mic since auto Mic is
+>> disabled
+>
+>
+> The E545 has dual-array mics, so probably both pins are actual internal
+mics.
+> It seems reasonable that upgrading the firmware would also resolve this
+problem, but either way I believe this is a good patch for potentially
+future codecs in the same situation.
+>
 
---===============6804006202092384410==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GRPZ8SYKNexpdSJ7"
-Content-Disposition: inline
+If dual array mic use two nodes and you can record from any one of the
+internal mic using the capture source control
 
-
---GRPZ8SYKNexpdSJ7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Sep 17, 2014 at 01:14:20PM -0700, Anatol Pomozov wrote:
-> Some boards have this pin statically tied and do not require any configuration,
-> some other boards allow to enable chip using GPIO.
-
-Applied, thanks.
-
---GRPZ8SYKNexpdSJ7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUIofeAAoJECTWi3JdVIfQ00cH/1y70mbFxw0ECGX2FSm2mYW3
-UHrHlszZcP4CFDxHTOmIQ0vGhkJqgBJAX1Odr1acNh3fbNP+QRe74SGHtbg0egqJ
-SbZsfc3kN1UffGo/WyAK4Rnd86SV816eBDMvMvQzPWwXS3Y7eQg3sCMPHDHNgY9m
-KmOCQNxNHZ/WaoU2zTUsNPRO35v346hX+zufaOJw+T0KTpsc7sprUC7quM3fXsIQ
-azlz7dOIGG6yx5OGLp4XA3OSjnHavBkezr5GtKU3DBa4/tZeAz0baxCuuvAC9Qqd
-6Cs6knu9P3BDZ04xPSzTZfcUZgnMa7GphWLIWhL+zqpJdXWv6b86+j+EDNvu1To=
-=BpzP
------END PGP SIGNATURE-----
-
---GRPZ8SYKNexpdSJ7--
-
---===============6804006202092384410==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6804006202092384410==--
+Need to implement multi channel capture if you need to record with both mic
