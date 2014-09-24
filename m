@@ -1,18 +1,18 @@
 From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: [PATCH] ASoC: trace: Remove trailing new-lines in
-	trace messages
-Date: Wed, 24 Sep 2014 11:17:14 -0700
-Message-ID: <1411582634-40122-1-git-send-email-anatol.pomozov@gmail.com>
+Subject: [PATCH] ASoC: rt5677: Add gpio-controller DTS
+	documentation
+Date: Wed, 24 Sep 2014 11:31:58 -0700
+Message-ID: <1411583518-32260-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f73.google.com (mail-oi0-f73.google.com
- [209.85.218.73])
- by alsa0.perex.cz (Postfix) with ESMTP id C37C6261B25
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 20:17:26 +0200 (CEST)
-Received: by mail-oi0-f73.google.com with SMTP id u20so1930174oif.4
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 11:17:25 -0700 (PDT)
+Received: from mail-pa0-f73.google.com (mail-pa0-f73.google.com
+ [209.85.220.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CAE2261B25
+ for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 20:32:02 +0200 (CEST)
+Received: by mail-pa0-f73.google.com with SMTP id lf10so215978pab.2
+ for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 11:32:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,47 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
-
-These new-lines add empty lines to trace output
 
 Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
 ---
- include/trace/events/asoc.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/rt5677.txt | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
-index 0194a64..b04ee7e 100644
---- a/include/trace/events/asoc.h
-+++ b/include/trace/events/asoc.h
-@@ -175,7 +175,7 @@ TRACE_EVENT(snd_soc_dapm_output_path,
- 		__entry->path_sink = (long)path->sink;
- 	),
+diff --git a/Documentation/devicetree/bindings/sound/rt5677.txt b/Documentation/devicetree/bindings/sound/rt5677.txt
+index 98509fb..bd28df6 100644
+--- a/Documentation/devicetree/bindings/sound/rt5677.txt
++++ b/Documentation/devicetree/bindings/sound/rt5677.txt
+@@ -10,6 +10,11 @@ Required properties:
  
--	TP_printk("%c%s -> %s -> %s\n",
-+	TP_printk("%c%s -> %s -> %s",
- 		(int) __entry->path_sink &&
- 		(int) __entry->path_connect ? '*' : ' ',
- 		__get_str(wname), __get_str(pname), __get_str(psname))
-@@ -204,7 +204,7 @@ TRACE_EVENT(snd_soc_dapm_input_path,
- 		__entry->path_source = (long)path->source;
- 	),
+ - interrupts : The CODEC's interrupt output.
  
--	TP_printk("%c%s <- %s <- %s\n",
-+	TP_printk("%c%s <- %s <- %s",
- 		(int) __entry->path_source &&
- 		(int) __entry->path_connect ? '*' : ' ',
- 		__get_str(wname), __get_str(pname), __get_str(psname))
-@@ -226,7 +226,7 @@ TRACE_EVENT(snd_soc_dapm_connected,
- 		__entry->stream = stream;
- 	),
++- gpio-controller : Indicates this device is a GPIO controller.
++
++- #gpio-cells : Should be two. The first cell is the pin number and the
++  second cell is used to specify optional parameters (currently unused).
++
+ Optional properties:
  
--	TP_printk("%s: found %d paths\n",
-+	TP_printk("%s: found %d paths",
- 		__entry->stream ? "capture" : "playback", __entry->paths)
- );
- 
+ - realtek,pow-ldo2-gpio : The GPIO that controls the CODEC's POW_LDO2 pin.
+@@ -36,6 +41,10 @@ rt5677 {
+ 	reg = <0x2c>;
+ 	interrupt-parent = <&gpio>;
+ 	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
++
++	gpio-controller;
++	#gpio-cells = <2>;
++
+ 	realtek,pow-ldo2-gpio =
+ 		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
+ };
 -- 
 2.1.0.rc2.206.gedb03e5
