@@ -1,72 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: max98090: Move interrupt request
- from codec probe to i2c probe
-Date: Wed, 24 Sep 2014 09:37:29 +0100
-Message-ID: <20140924083729.GD4015@sirena.org.uk>
-References: <1411127301-366-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: [PATCH v6 0/2] ASoC: tda998x: add a codec to the HDMI transmitter
+Date: Wed, 24 Sep 2014 10:23:34 +0200
+Message-ID: <cover.1411547014.git.moinejf@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8295001474246303536=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 078502654D3
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 10:37:44 +0200 (CEST)
-In-Reply-To: <1411127301-366-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+The NXP TDA998x HDMI transmitter may transmit audio to the HDMI link
+from 2 different sources, I2S and S/PDIF.
 
---===============8295001474246303536==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pS0IeWLqOQV1qy0L"
-Content-Disposition: inline
+This patch set adds an interface between the HDMI transmitter and
+the HDMI CODEC.
 
+The interface is used by the TDA998x driver to update the audio
+constraints from the display characteristics (EDID) and by the audio
+subsystem to connect the chosen audio source to the HDMI link.
 
---pS0IeWLqOQV1qy0L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+v6:
+	- extend the HDMI CODEC instead of using a specific CODEC
+v5:
+	- use the TDA998x private data instead of a specific area
+	  for the CODEC interface
+	- the CODEC is TDA998x specific (Mark Brown)
+v4:
+	- remove all the TDA998x specific stuff from the CODEC
+	- move the EDID scan from the CODEC to the TDA998x
+	- move the CODEC to sound/soc (Mark Brown)
+	- update the audio_sample_rate from the EDID (Andrew Jackson)
+v3: fix bad rate (Andrew Jackson)
+v2: check double stream start (Mark Brown)
 
-On Fri, Sep 19, 2014 at 02:48:17PM +0300, Jarkko Nikula wrote:
-> Keep MAX98090 interrupt requested after i2c device probing as long as the
-> driver is loaded. This fixes the issue where subsequent codec probe
-> max98090_probe() call fails in interrupt request since interrupt wasn't
-> freed over codec remove-reprobe cycle.
+Jean-Francois Moine (2):
+  ASoC:codecs: Add a transmitter interface to the HDMI CODEC
+  drm/i2c:tda998x: Use the HDMI audio CODEC
 
-Applied all, thanks.
+ .../devicetree/bindings/drm/i2c/tda998x.txt        |  18 ++
+ drivers/gpu/drm/i2c/Kconfig                        |   1 +
+ drivers/gpu/drm/i2c/tda998x_drv.c                  | 299 +++++++++++++++++++--
+ include/sound/hdmi.h                               |  20 ++
+ sound/soc/codecs/hdmi.c                            | 174 +++++++++++-
+ 5 files changed, 488 insertions(+), 24 deletions(-)
+ create mode 100644 include/sound/hdmi.h
 
---pS0IeWLqOQV1qy0L
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUIoLIAAoJECTWi3JdVIfQW7EH/iKat2stUWDgT0a8RiUjyiUz
-e263QdDrQl91WM1MRgXEOhHi/qdPM3p+j9jbH9H/Ns1M2iMqwm2FZShE7YhSMh1r
-ewq6Dn1is/PC4Hu3RBInKO7JxQjdp7SSTXXcnsGb9CoZfcUSA6IbHnFTG4fGW4CD
-BKC65j3rRxS1bEm4XYppuQZck1mhg5lGJahYMs9y7+7GcUwvlpjePGtm9U14nUva
-cygKnECaYLGQ6n4CV7ArpCB1i9GfMoJxOmUmsTuxgerSJ4tbJjLE5eQWALeb33u7
-IW4WmxFugqBKOETECUA8Em49R5GMF5GBMgQyn9mLsNOWCtRIRTV8Og9oHgpYFwE=
-=tWiI
------END PGP SIGNATURE-----
-
---pS0IeWLqOQV1qy0L--
-
---===============8295001474246303536==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8295001474246303536==--
+-- 
+2.1.1
