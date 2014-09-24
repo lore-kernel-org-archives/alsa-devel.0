@@ -1,19 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 2/2] ALSA: hda - Sort input pins depending
- on amp caps
-Date: Wed, 24 Sep 2014 08:33:17 +0200
-Message-ID: <542265AD.1000005@canonical.com>
-References: <1411461498-11837-1-git-send-email-david.henningsson@canonical.com>	<1411461498-11837-2-git-send-email-david.henningsson@canonical.com>
- <CAN8cciZHw69AfLJGKB-e7e=PAw7Jqx7bDmAvfVP=NUuw3xwdeQ@mail.gmail.com>
+From: Xavier Hsu <xavier.hsu@linaro.org>
+Subject: Re: [PATCHv4 7/9] WM8971 uses msleep to replace work
+	queue
+Date: Wed, 24 Sep 2014 15:37:19 +0800
+Message-ID: <CAHa2TObbRWPtWqoL1J7apXJTzCjhtxpy2dCiih-aKbrkpHZL=A@mail.gmail.com>
+References: <1410943275-4160-1-git-send-email-xavier.hsu@linaro.org>
+ <1410943275-4160-7-git-send-email-xavier.hsu@linaro.org>
+ <20140922121658.GF29992@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 23A69261A0A
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 08:33:19 +0200 (CEST)
-In-Reply-To: <CAN8cciZHw69AfLJGKB-e7e=PAw7Jqx7bDmAvfVP=NUuw3xwdeQ@mail.gmail.com>
+Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9784F2608CF
+ for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 09:37:19 +0200 (CEST)
+Received: by mail-wg0-f45.google.com with SMTP id x13so5281417wgg.16
+ for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 00:37:19 -0700 (PDT)
+In-Reply-To: <20140922121658.GF29992@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +25,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Andy Green <andy.green@linaro.org>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Lars-Peter Clausen <lars@metafoo.de>, Patch Tracking <patches@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Charles :
+Thanks for your feedback.
+I will move msleep(1000) before I set bias level.
+====================================================
+msleep(1000);
+wm8971_set_bias_level(codec, codec->dapm.bias_level);
+====================================================
 
+BR,
+Xavier
 
-On 2014-09-24 05:31, Raymond Yau wrote:
->  >
->  > If one input has a boost and another one has not, and they're equal
->  > otherwise, it's more likely you want to use the input with the boost
->  > as your primary input.
->  >
->  > See
-> hda-emu.git/codecs/canonical/cx20590-lenovo-20b2z00bus-ccert-201305-13496
->  > for an example.
->
-> Is this a firmware bug since your firmware 1.02 have two internal Mic
-> 0x1e and 0x23 but firmware 1.09 only have one internal mic 0x23
->
-> http://www.alsa-project.org/db/?f=a265ed3ac422c0ea77b0ada8596338c6421b4de1
->
-> Cannot detect the codec with firmware 1.10
->
-> http://www.alsa-project.org/db/?f=a60449e5a19b3dbb7a422defd5a9d51f56216693
->
-> The proper fix is remove the redundant internal Mic since auto Mic is
-> disabled
+2014-09-22 20:16 GMT+08:00 Charles Keepax <
+ckeepax@opensource.wolfsonmicro.com>:
 
-The E545 has dual-array mics, so probably both pins are actual internal 
-mics.
-It seems reasonable that upgrading the firmware would also resolve this 
-problem, but either way I believe this is a good patch for potentially 
-future codecs in the same situation.
-
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+> On Wed, Sep 17, 2014 at 04:41:13PM +0800, Xavier Hsu wrote:
+> > This patch improves WM8971.
+> > We use msleep to replace work queue.
+> > "As suggested by Mark Brown"
+> >
+> > Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
+> > Signed-off-by: Andy Green <andy.green@linaro.org>
+> > ---
+> > Any comments about improving the patch are welcome.
+> > Thanks.
+> >
+> >  sound/soc/codecs/wm8971.c |   27 ++++-----------------------
+> >  1 file changed, 4 insertions(+), 23 deletions(-)
+> >
+> > diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
+> > index 5b38c7a..d081cae 100755
+> > --- a/sound/soc/codecs/wm8971.c
+> > +++ b/sound/soc/codecs/wm8971.c
+> > @@ -36,8 +36,6 @@
+> >
+> >  #define      WM8971_REG_COUNT                43
+> >
+> > -static struct workqueue_struct *wm8971_workq;
+> > -
+> >  /* codec private data */
+> >  struct wm8971_priv {
+> >       /* MCLK */
+> > @@ -779,16 +777,6 @@ static struct snd_soc_dai_driver wm8971_dai = {
+> >       .ops = &wm8971_dai_ops,
+> >  };
+> >
+> > -static void wm8971_work(struct work_struct *work)
+> > -{
+> > -     struct snd_soc_dapm_context *dapm =
+> > -             container_of(work, struct snd_soc_dapm_context,
+> > -                          delayed_work.work);
+> > -     struct snd_soc_codec *codec = dapm->codec;
+> > -
+> > -     wm8971_set_bias_level(codec, codec->dapm.bias_level);
+> > -}
+> > -
+> >  static int wm8971_suspend(struct snd_soc_codec *codec)
+> >  {
+> >       wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
+> > @@ -806,8 +794,8 @@ static int wm8971_resume(struct snd_soc_codec *codec)
+> >               reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+> >               snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
+> >               codec->dapm.bias_level = SND_SOC_BIAS_ON;
+> > -             queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
+> > -                                msecs_to_jiffies(1000));
+> > +             wm8971_set_bias_level(codec, codec->dapm.bias_level);
+> > +             msleep(1000);
+> >       }
+> >
+> >       return 0;
+> > @@ -818,19 +806,14 @@ static int wm8971_probe(struct snd_soc_codec
+> *codec)
+> >       int ret = 0;
+> >       u16 reg;
+> >
+> > -     INIT_DELAYED_WORK(&codec->dapm.delayed_work, wm8971_work);
+> > -     wm8971_workq = create_workqueue("wm8971");
+> > -     if (wm8971_workq == NULL)
+> > -             return -ENOMEM;
+> > -
+> >       wm8971_reset(codec);
+> >
+> >       /* charge output caps - set vmid to 5k for quick power up */
+> >       reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+> >       snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
+> >       codec->dapm.bias_level = SND_SOC_BIAS_STANDBY;
+> > -     queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
+> > -                        msecs_to_jiffies(1000));
+> > +     wm8971_set_bias_level(codec, codec->dapm.bias_level);
+> > +     msleep(1000);
+>
+> Before this patch the bias_level change is after the delay, after
+> this patch the change is before the delay? That doesn't seem
+> right?
+>
+> >
+> >       /* set the update bits */
+> >       snd_soc_update_bits(codec, WM8971_LDAC, 0x0100, 0x0100);
+> > @@ -850,8 +833,6 @@ static int wm8971_remove(struct snd_soc_codec *codec)
+> >  {
+> >       wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
+> >
+> > -     if (wm8971_workq)
+> > -             destroy_workqueue(wm8971_workq);
+> >       return 0;
+> >  }
+> >
+> > --
+> > 1.7.9.5
+> >
+>
+> Thanks,
+> Charles
+>
