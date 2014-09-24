@@ -1,20 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: How to select input from muxer in front of SSI on
-	i.MX6
-Date: Wed, 24 Sep 2014 09:21:46 +0100
-Message-ID: <20140924082146.GV4015@sirena.org.uk>
-References: <CAL8zT=iopOiRmo8vT5RNOowucDif-oY2skdrJu=vijiUqpHz-w@mail.gmail.com>
- <20140919175205.GB1736@Asurada>
- <20140923015134.GE27755@sirena.org.uk>
- <CAL8zT=ggs=fsBhEY=vXyH=6Bvy6iftV4JjxJ+YXuftk+xQ3Zdw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: blackfin: add bf6xx audio dma driver
+Date: Wed, 24 Sep 2014 09:26:22 +0100
+Message-ID: <20140924082622.GW4015@sirena.org.uk>
+References: <1411552520-26090-1-git-send-email-scott.jiang.linux@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3312050482741640596=="
+Content-Type: multipart/mixed; boundary="===============2522516197931367453=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A72182610A0
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 10:22:08 +0200 (CEST)
-In-Reply-To: <CAL8zT=ggs=fsBhEY=vXyH=6Bvy6iftV4JjxJ+YXuftk+xQ3Zdw@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B2B542608C9
+ for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 10:26:32 +0200 (CEST)
+In-Reply-To: <1411552520-26090-1-git-send-email-scott.jiang.linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Michael Trimarchi <michael@amarulasolutions.com>, lgirdwood@gmail.com
+To: Scott Jiang <scott.jiang.linux@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3312050482741640596==
+--===============2522516197931367453==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OelmujB7rQAg+yu0"
+	protocol="application/pgp-signature"; boundary="+tDoj9+U2XbkXuwv"
 Content-Disposition: inline
 
 
---OelmujB7rQAg+yu0
-Content-Type: text/plain; charset=iso-8859-1
+--+tDoj9+U2XbkXuwv
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 23, 2014 at 08:11:27AM +0200, Jean-Michel Hautbois wrote:
-> Le 23 sept. 2014 03:51, "Mark Brown" <broonie@kernel.org> a =E9crit :
+On Wed, Sep 24, 2014 at 05:55:20PM +0800, Scott Jiang wrote:
+> Bf5xx and bf6xx reused bf5xx-i2s-pcm.c before. Recently tdm driver
+> has been merged into bf5xx-i2s-pcm.c and it's not compatible with
+> bf6xx audio. So create this dma driver and add tdm support later.
 
-> > Depending on what the system looks like it's not at all clear that there
-> > should be any visibility at all of DPCM in the DT - it's a detail of how
-> > Linux is implemented at the end of the day.
+Can you go into a bit more detail on the differences - clearly there's
+some similarlities since the drivers got merged, can we really not share
+any code?
 
-> So this should definitely be implemented directly in a specific driver for
-> my FPGA which is a DPCM right ?
-
-No, that's really not what DPCM is all about...  if this is a physically
-separate device that's not got direct memory access it's probably more
-appropriate to represent as a CODEC.  I was CCed in part way so don't
-entirely know.
-
---OelmujB7rQAg+yu0
+--+tDoj9+U2XbkXuwv
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUIn8ZAAoJECTWi3JdVIfQuBwH/2u6iaa83C3h7j+wH1ZNJ+jl
-fifLRkhg0CuP818db9zwJZ01po5rlgLvVrhFXc7tdchjmO9FVsLj+tUjBBoMCM4R
-L7B4enm8I7zM+pXiLktWj44HHmh7kpuCjePFSKquAI7JTkmsWP49ETLPycSZ717o
-IdT2EJMLh0PyUxU9q/f81yX8RkS1hhTWv6vS8F3pllSLcPJI50kaqtnSMiDEResO
-HqGz9cUxjSKdTR1NHj2nIE7hIlwV2APfPk9IUJ7uM4Sl1vkItvAz4OqZq7cXVlsH
-ha1uFpy6jOoxafHdbSPmqZLuAQbhWwfI+k00dUj6G71+RE4xQv2IeKaT9wR8DZk=
-=AZoA
+iQEcBAEBAgAGBQJUIoAtAAoJECTWi3JdVIfQWb4H/2D3wP4+V6qeeqxnaMpfOn+t
+R+C3zAyo8yS5lsydu+xXm3cqmDyG54feOw76jLBvR5OkmYeB6WYYYbJmyGu2sFLn
+Njo2+FuI9PoVlinUTrOqIdJ6jcjDMYelWBylUDTo6O/63wKbuXgLOb9gghe7NGKv
+CxJSZePbnAH/REMe2UcvrsRwlntKeUPJK4P04SUq4xn/l6GzZYGT1qlJCVR26prl
+7LMy/Y9aq2DumTgvKRgUJ4IU/vJJq/5CFJxDBhcu6ugok9wFYs5jKxsM71xrRFLY
+v02nDPSWuHH+HUVfUf8PU4gXW5nyEhF3eeRImJj9jSd/SAGu4n14HXW0P8cIBzo=
+=he1h
 -----END PGP SIGNATURE-----
 
---OelmujB7rQAg+yu0--
+--+tDoj9+U2XbkXuwv--
 
---===============3312050482741640596==
+--===============2522516197931367453==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3312050482741640596==--
+--===============2522516197931367453==--
