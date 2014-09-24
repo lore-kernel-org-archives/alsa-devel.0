@@ -1,23 +1,29 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH 2/2] ALSA: hda - Sort input pins depending
- on amp caps
-Date: Wed, 24 Sep 2014 16:59:36 +0800
-Message-ID: <CAN8cciYB-esLbP1=17AAtuSuTHtwxzvUak+00VVkSmJ80gJK6Q@mail.gmail.com>
-References: <1411461498-11837-1-git-send-email-david.henningsson@canonical.com>
- <1411461498-11837-2-git-send-email-david.henningsson@canonical.com>
- <CAN8cciZHw69AfLJGKB-e7e=PAw7Jqx7bDmAvfVP=NUuw3xwdeQ@mail.gmail.com>
- <542265AD.1000005@canonical.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Radeon unconnected HDMI eats samples at 280 kHz
+Date: Wed, 24 Sep 2014 11:27:38 +0200
+Message-ID: <54228E8A.5060209@canonical.com>
+References: <54198F38.30002@canonical.com>	<5419FC9E.9010302@iki.fi>	<541A5BCD.2040105@canonical.com>
+ <s5hlhph8jt5.wl-tiwai@suse.de> <541A8FA2.7090406@canonical.com>
+ <A3397C8B8B789E45844E7EC5DEAD89D059929D9D@satlexdag05.amd.com>
+ <541C31EE.4020101@canonical.com>
+ <A3397C8B8B789E45844E7EC5DEAD89D05992A81C@satlexdag05.amd.com>
+ <541C6C23.1040403@canonical.com>
+ <A3397C8B8B789E45844E7EC5DEAD89D05992AB48@satlexdag05.amd.com>
+ <541CC506.601@canonical.com>
+ <A3397C8B8B789E45844E7EC5DEAD89D05992B6A6@satlexdag05.amd.com>
+ <54203495.60903@canonical.com>
+ <A3397C8B8B789E45844E7EC5DEAD89D05992B76D@satlexdag05.amd.com>
+ <542141C0.3010503@canonical.com>
+ <A3397C8B8B789E45844E7EC5DEAD89D05992BD02@satlexdag05.amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f49.google.com (mail-qg0-f49.google.com
- [209.85.192.49])
- by alsa0.perex.cz (Postfix) with ESMTP id B0FCF261622
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 10:59:37 +0200 (CEST)
-Received: by mail-qg0-f49.google.com with SMTP id q107so5559745qgd.8
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 01:59:36 -0700 (PDT)
-In-Reply-To: <542265AD.1000005@canonical.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A0AB2615F3
+ for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 11:27:40 +0200 (CEST)
+In-Reply-To: <A3397C8B8B789E45844E7EC5DEAD89D05992BD02@satlexdag05.amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,43 +33,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: "Deucher, Alexander" <Alexander.Deucher@amd.com>, Takashi Iwai <tiwai@suse.de>
+Cc: Anssi Hannula <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->>
->>  >
->>  > If one input has a boost and another one has not, and they're equal
->>  > otherwise, it's more likely you want to use the input with the boost
->>  > as your primary input.
->>  >
->>  > See
->> hda-emu.git/codecs/canonical/cx20590-lenovo-20b2z00bus-ccert-201305-13496
->>  > for an example.
->>
->> Is this a firmware bug since your firmware 1.02 have two internal Mic
->> 0x1e and 0x23 but firmware 1.09 only have one internal mic 0x23
->>
->>
-http://www.alsa-project.org/db/?f=a265ed3ac422c0ea77b0ada8596338c6421b4de1
->>
->> Cannot detect the codec with firmware 1.10
->>
->>
-http://www.alsa-project.org/db/?f=a60449e5a19b3dbb7a422defd5a9d51f56216693
->>
->> The proper fix is remove the redundant internal Mic since auto Mic is
->> disabled
->
->
-> The E545 has dual-array mics, so probably both pins are actual internal
-mics.
-> It seems reasonable that upgrading the firmware would also resolve this
-problem, but either way I believe this is a good patch for potentially
-future codecs in the same situation.
->
 
-If dual array mic use two nodes and you can record from any one of the
-internal mic using the capture source control
 
-Need to implement multi channel capture if you need to record with both mic
+On 2014-09-23 16:07, Deucher, Alexander wrote:
+>> -----Original Message-----
+>> From: David Henningsson [mailto:david.henningsson@canonical.com]
+>> Sent: Tuesday, September 23, 2014 5:48 AM
+>> To: Deucher, Alexander; Takashi Iwai
+>> Cc: Anssi Hannula; alsa-devel@alsa-project.org
+>> Subject: Re: [alsa-devel] Radeon unconnected HDMI eats samples at 280 kHz
+>>
+>>
+>>
+>> On 2014-09-22 16:52, Deucher, Alexander wrote:
+>>>> -----Original Message-----
+>>>> From: David Henningsson [mailto:david.henningsson@canonical.com]
+>>>> Sent: Monday, September 22, 2014 10:39 AM
+>>>> To: Deucher, Alexander; Takashi Iwai
+>>>> Cc: Anssi Hannula; alsa-devel@alsa-project.org
+>>>> Subject: Re: [alsa-devel] Radeon unconnected HDMI eats samples at 280
+>> kHz
+>>>>
+>>>> On 2014-09-22 14:46, Deucher, Alexander wrote:
+>>>>>> -----Original Message-----
+>>>>>> From: David Henningsson [mailto:david.henningsson@canonical.com]
+>>>>>> Sent: Friday, September 19, 2014 8:07 PM
+>>>>>> To: Deucher, Alexander; Takashi Iwai
+>>>>>> Cc: Anssi Hannula; alsa-devel@alsa-project.org
+>>>>>> Subject: Re: [alsa-devel] Radeon unconnected HDMI eats samples at
+>> 280
+>>>> kHz
+>>>>>>
+>>>>>> Btw, is there a register dump utility I could use to get the current
+>>>>>> register value, e g by reading sysfs or procfs? It could be interesting
+>>>>>> to see if anything we do on the audio side would affect this register.
+>>>>>
+>>>>> You can use the radeonreg tool to dump registers:
+>>>>> http://cgit.freedesktop.org/~airlied/radeontool
+>>>>
+>>>> Thanks, I have now tried this, together with the kernel from
+>>>> drm-next-3.18-wip.
+>>>>
+>>>>    From your patches it looks like I should look at the dumped register
+>>>> 0x7300, is that correct?
+>>>
+>>> What GPU do you have?  The offset of that register varies between
+>> generations.
+>>
+>> Not sure exactly what GPU info you need, but here's the lspci info:
+>>
+>> 01:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc.
+>> [AMD/ATI] RV710 [Radeon HD 4550] [1002:9540] (prog-if 00 [VGA controller])
+>>           Subsystem: PC Partner Limited / Sapphire Technology Device
+>> [174b:e106]
+>>
+>
+> That's an R7xx, so 0x7300 is correct.
+>
+>>>> At boot up, this register is 001000f0. (Out of curiousity, I tried
+>>>> disabling unsol events from the audio side, but this did not change the
+>>>> register.)
+>>>> After HDMI plug in, the register changed to 0x8f1000f0, the jack
+>>>> reported being plugged in, and audio worked.
+>>>>
+>>>> After HDMI unplugged again, the register remained at 0x8f1000f0, and
+>>>> "xrandr --output HDMI-0 --off" did not help.
+>>>>
+>>>> However, when looking at your code, I also spotted something in the
+>>>> patch called "disable audio when we disable hdmi":
+>>>>
+>>>> if (!enable && dig->afmt->pin) {
+>>>>        r600_audio_enable(rdev, dig->afmt->pin, 0xf);
+>>>>                                                ^^^
+>>>> If enable is false, should we not set the last parameter to 0 instead of
+>>>> 0xf?
+>>>
+>>> Yup.  Good catch.  I've fixed that up and pushed a new drm-next-3.18-wip
+>> branch.
+>>
+>> Ok, I have tested this now, with mixed results. One time when I
+>> unplugged I believe it correctly switched back to unplugged on the audio
+>> side (after running "xrandr", with no parameters). But the next time it
+>> did not.
+>>
+>
+> Like I said, it's not tied to the physical unplug event.  You have to actually turn off the display with xrandr either explicitly or by your desktop environment as a response to a hotplug event.
+
+But it makes sense that the audio is turned off when the video is, right?
+
+Because if first unplug HDMI (nothing happens) and then run "xrandr" 
+(without parameters), running that command causes a "re-detection" or 
+whatever the correct term is - i e, my DVI screen goes black for a 
+second, and afterwards the mouse pointer can no longer move to the other 
+non-existent display.
+At that point, audio still remains in the "plugged in" state. Also, 
+executing "xrandr --output HDMI-0 --off" has no effect in that state.
+
+>> So far, it looks like whenever the audio side reports presence, the
+>> 0x7300 register is set to 0x8f1000f0. So as long as we can get the video
+>> side to correctly turn off the right bits of that register when the
+>> monitor is disabled/disconnected, things should be working on the audio
+>> side.
+>
+> Can you confirm the value of 0x7300 matches what you expect in the audio driver?  E.g., does setting/clearing the appropriate bits reflect properly on the audio side?  I think the only bit that may matter is bit 31 (AUDIO_ENABLED).
+
+I've now tried these commands:
+
+radeonreg regset 0x7300 0x001000f0 and
+radeonreg regset 0x7300 0x8f1000f0
+
+Both commands update the audio side to report either unplugged or 
+plugged in, so things seem to work as expected w r t the connection 
+between this register and the audio side.
+
+
+-- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
