@@ -1,62 +1,45 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: [PATCH] ASoC: rt5677: Add gpio-controller DTS
-	documentation
-Date: Wed, 24 Sep 2014 11:31:58 -0700
-Message-ID: <1411583518-32260-1-git-send-email-anatol.pomozov@gmail.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [PATCH] ASoC: samsung: Remove goni or aquila with the WM8994
+Date: Wed, 24 Sep 2014 22:27:28 +0200
+Message-ID: <1411590448.19525.42.camel@x220>
+References: <1404496099-26708-1-git-send-email-t.figa@samsung.com>
+	 <53C675E4.4020502@samsung.com> <1409825105.5546.91.camel@x220>
+	 <201409041802.36466.arnd@arndb.de> <1411033409.2017.15.camel@x220>
+	 <20140918175752.GC7960@sirena.org.uk> <1411077427.2012.6.camel@x41>
+	 <20140923010418.GI7960@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f73.google.com (mail-pa0-f73.google.com
- [209.85.220.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CAE2261B25
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 20:32:02 +0200 (CEST)
-Received: by mail-pa0-f73.google.com with SMTP id lf10so215978pab.2
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 11:32:01 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140923010418.GI7960@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Arnd Bergmann <arnd@arndb.de>, Tomasz Figa <tomasz.figa@gmail.com>, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
----
- Documentation/devicetree/bindings/sound/rt5677.txt | 9 +++++++++
- 1 file changed, 9 insertions(+)
+On Mon, 2014-09-22 at 18:04 -0700, Mark Brown wrote:
+> On Thu, Sep 18, 2014 at 11:57:07PM +0200, Paul Bolle wrote:
+> > Mark Brown schreef op do 18-09-2014 om 10:57 [-0700]:
+> > > Please follow the patch submission process in SubmittingPatches.
+> 
+> > Could you please be more specific? What part of SubmittingPatches have I
+> > skipped?
+> 
+> > Is it the perhaps the use of scissors? Or the superfluous From: line?
+> > "git am -c" appears to handle this message (and the very similar message
+> > I also sent today) just fine.
+> 
+> It's the fact that you've included the patch in the middle of the reply
+> to another mail in the middle of a thread after some other stuff; you
+> can tell this isn't the normal process by observing that your mail
+> doesn't look visually close to a normal patch submission - if that's the
+> case then people aren't likely to sit around and try to figure out some
+> magic set of git options needed, manually edit or otherwise special case
+> to special case it unless it's *really* important.
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5677.txt b/Documentation/devicetree/bindings/sound/rt5677.txt
-index 98509fb..bd28df6 100644
---- a/Documentation/devicetree/bindings/sound/rt5677.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5677.txt
-@@ -10,6 +10,11 @@ Required properties:
- 
- - interrupts : The CODEC's interrupt output.
- 
-+- gpio-controller : Indicates this device is a GPIO controller.
-+
-+- #gpio-cells : Should be two. The first cell is the pin number and the
-+  second cell is used to specify optional parameters (currently unused).
-+
- Optional properties:
- 
- - realtek,pow-ldo2-gpio : The GPIO that controls the CODEC's POW_LDO2 pin.
-@@ -36,6 +41,10 @@ rt5677 {
- 	reg = <0x2c>;
- 	interrupt-parent = <&gpio>;
- 	interrupts = <TEGRA_GPIO(W, 3) GPIO_ACTIVE_HIGH>;
-+
-+	gpio-controller;
-+	#gpio-cells = <2>;
-+
- 	realtek,pow-ldo2-gpio =
- 		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
- };
--- 
-2.1.0.rc2.206.gedb03e5
+I see. I hope to resend shortly.
+
+Thanks!
+
+
+Paul Bolle
