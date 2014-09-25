@@ -1,17 +1,22 @@
-From: Dan Hordern <dh.mailing.lists@gmail.com>
-Subject: Get sound card available channels
-Date: Thu, 25 Sep 2014 10:39:59 +1000
-Message-ID: <CA+BmFj2fTUFYKoWnae=pV7oraRPg1YkVTKyh=jqAM+A0fbz54Q@mail.gmail.com>
+From: Scott Jiang <scott.jiang.linux@gmail.com>
+Subject: Re: [PATCH] ASoC: blackfin: add bf6xx audio dma driver
+Date: Thu, 25 Sep 2014 15:24:45 +0800
+Message-ID: <CAHG8p1Ad0RbLjdXpjAor8pZXs_9OfUbp142vQ_pc2KReTy9u8w@mail.gmail.com>
+References: <1411552520-26090-1-git-send-email-scott.jiang.linux@gmail.com>
+ <20140924082622.GW4015@sirena.org.uk>
+ <CAHG8p1BxYz1ZunaGRo0ruJPSU17uF5XRttqn--QeWEExMWWNtw@mail.gmail.com>
+ <20140924114232.GI16977@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f67.google.com (mail-qg0-f67.google.com
- [209.85.192.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 00EED265112
- for <alsa-devel@alsa-project.org>; Thu, 25 Sep 2014 02:40:00 +0200 (CEST)
-Received: by mail-qg0-f67.google.com with SMTP id q108so2093033qgd.6
- for <alsa-devel@alsa-project.org>; Wed, 24 Sep 2014 17:40:00 -0700 (PDT)
+Received: from mail-vc0-f181.google.com (mail-vc0-f181.google.com
+ [209.85.220.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id D35ED2608C7
+ for <alsa-devel@alsa-project.org>; Thu, 25 Sep 2014 09:24:49 +0200 (CEST)
+Received: by mail-vc0-f181.google.com with SMTP id hq12so1205350vcb.12
+ for <alsa-devel@alsa-project.org>; Thu, 25 Sep 2014 00:24:47 -0700 (PDT)
+In-Reply-To: <20140924114232.GI16977@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +26,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, adi-buildroot-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+2014-09-24 19:42 GMT+08:00 Mark Brown <broonie@kernel.org>:
+> On Wed, Sep 24, 2014 at 06:02:40PM +0800, Scott Jiang wrote:
+>> 2014-09-24 16:26 GMT+08:00 Mark Brown <broonie@kernel.org>:
+>
+>> > Can you go into a bit more detail on the differences - clearly there's
+>> > some similarlities since the drivers got merged, can we really not share
+>> > any code?
+>
+>> First, sport2 only supports i2s and left justified mode, while sport3
+>> adds i2s packed
+>> and right justified mode. Second, in tdm mode for sport2, tx and rx
+>> are dependent and have
+>> a window granularity of 8 channel. While sport3 doesn't have these
+>> limits. What's more,
+>> sport3 is not only used on blackfin. That means many patches can only
+>> apply to this driver.
+>
+> These sound more like extended functionality and tweaks rather than
+> massive updates which need a completely separate driver - new modes and
+> so on.
 
-We have a need for our process to poll/monitor the sound cards. This
-process needs to provide a unique id for the sound card (e.g. some concat
-of name+hardware address) which we can get using snd_ctl_t handle.
+Yes, it looks similar in i2s mode. But in tdm mode, because we don't need to
+copy 2 channels user buffer to 8 channels dma buffer, it might looks
+very different.
+If you think this patch is not good, I'd send a new one after I merged
+tdm driver.
+By the way, if the channel order of hardware is different from what is
+expected by alsa,
+the copy work is left to plugin or driver?
 
-However, we also need to provide the number or rx/tx channels each sound
-card provides. Doing this using the pcm hw_params after snd_pcm_open won't
-work as the device may be in use.
-
-Is there a way for this process to get the number of rx/tx channels without
-needing to 'open' the device, e.g. using the snd_ctl_t handle?
-
-One observation I have made is that there is a proc file ( cat
-/proc/asound/card1/stream0) that seems to only be populated by the USB
-soundcards I have and not the Intel builtin. This has all the information I
-require but if it isn't a standard file we can't rely on it.
-
-Thanks
+Scott
