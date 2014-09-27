@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ssm4567: Add driver for Analog
- Devices SSM4567 amplifier
-Date: Sat, 27 Sep 2014 11:18:15 +0100
-Message-ID: <20140927101815.GF27755@sirena.org.uk>
-References: <1411747721-38619-1-git-send-email-anatol.pomozov@gmail.com>
- <1411763466-29018-1-git-send-email-anatol.pomozov@gmail.com>
+Subject: Re: [PATCH v7 3/7] ASoC: Intel: mrfld: add DSP core
+	controls
+Date: Sat, 27 Sep 2014 12:13:33 +0100
+Message-ID: <20140927111333.GH27755@sirena.org.uk>
+References: <1411125368-5836-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1411125368-5836-4-git-send-email-subhransu.s.prusty@intel.com>
+ <20140925150813.GU27755@sirena.org.uk>
+ <20140925160853.GB1638@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2318874209473955896=="
+Content-Type: multipart/mixed; boundary="===============4570807472827091894=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E5B98260445
- for <alsa-devel@alsa-project.org>; Sat, 27 Sep 2014 12:18:39 +0200 (CEST)
-In-Reply-To: <1411763466-29018-1-git-send-email-anatol.pomozov@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E607826044D
+ for <alsa-devel@alsa-project.org>; Sat, 27 Sep 2014 13:13:57 +0200 (CEST)
+In-Reply-To: <20140925160853.GB1638@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,61 +24,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2318874209473955896==
+--===============4570807472827091894==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="lIdIj/ncdD+VcXt4"
+	protocol="application/pgp-signature"; boundary="ov6R7U0hl+EAcYoD"
 Content-Disposition: inline
 
 
---lIdIj/ncdD+VcXt4
+--ov6R7U0hl+EAcYoD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 26, 2014 at 01:31:06PM -0700, Anatol Pomozov wrote:
-> Analog Devices SSM4567 is a boost class-D audio amplifier.
+On Thu, Sep 25, 2014 at 09:38:53PM +0530, Vinod Koul wrote:
+> On Thu, Sep 25, 2014 at 04:08:13PM +0100, Mark Brown wrote:
+> > On Fri, Sep 19, 2014 at 04:46:04PM +0530, Subhransu S. Prusty wrote:
 
-Applied, but don't send patches in reply to existing threads especially
-if you don't include a version tag in the header.  This was very nearly
-deleted unread.  One thing to look at incrementally:
+> > > +       u8 *map =3D is_tx ? sst_ssp_channel_map : sst_ssp_slot_map;
 
-> +               ret = regmap_update_bits(ssm4567->regmap,
-> +                       SSM4567_REG_POWER_CTRL,
-> +                       SSM4567_POWER_SPWDN, 0x00);
-> +               regcache_sync(ssm4567->regmap);
+> > So the "channel" map is for transmit and the "slot" map is for receive?
+> > That naming doesn't seem at all obvious, I'd expect some confusion and
+> > resulting bugs there. =20
 
-This checks the return value of _update_bits() but not _sync() - make
-your mind up please!  I'd also split the _set_power() function into two,
-there is much more conditional code for the two cases than common code
-in there.
+> yes as multiple channels get interleaved to slot while transmitting and on
+> recive side various lots get de-interleaved to channels :)
+> These controls allow you to route stuff.
 
---lIdIj/ncdD+VcXt4
+I can tell what they're supposed to do given the above code, what I'm
+saying is that when I see the above code I'm expecting to find bugs
+elsewhere since it's not going to be clear if you see either variable in
+isolation.  Better naming please, for example use the direction.
+
+> The DSP has the bitmap for interlever as explained in sst_send_slot_map()
+
+> /*
+>  * channel map value is a bitfield where each bit represents a slot
+>  *
+>  *                        76543210      # 0 =3D slot 0, 1 =3D slot 1
+>  *
+>  * e.g. codec1_0 tx map =3D 00000101b -> data from codec_out1_0 goes into=
+ slot
+>  * 0, 2
+>  */
+
+> so based on the channel selected here we will set the map and send to DSP.
+> For none case we don't need to do anything. Yes this bit need this
+> explanation so will add up
+
+But why not - why is the effect of clearing all the bits to do nothing?
+
+> > > +			 !strncmp(kctl->id.name, w->name, index)) {
+> > > +			struct sst_enum *e =3D (void *)kctl->private_value;
+> > > +
+> > > +			e->w =3D w;
+> > > +
+> > > +		} else if (strstr(kctl->id.name, "deinterleaver") &&
+> > > +			 !strncmp(kctl->id.name, w->name, index)) {
+> > > +
+> > > +			struct sst_enum *e =3D (void *)kctl->private_value;
+> > > +
+> > > +			e->w =3D w;
+> > > +		}
+
+> > Again no fallthrough case.
+
+> would that be valid. We have only volume, params, mute, interlevaer and
+> deinterleaver controls only :)
+> Can add fall thru for therotical if you feel that is right thing to do.
+
+Yes, it's better.  This is part of the whole thing about the code
+setting off alarm bells - things look fragile and the missing error
+checking does nothing to dispel that.
+
+--ov6R7U0hl+EAcYoD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUJo7iAAoJECTWi3JdVIfQD3cH/30bqGf+gDvFOEkOzsoEWDl8
-0O8aCQhPMTRTawcB1jJLAgD+WWDF/96pzbcGzMIujUqEO/+LHex5VB//D9JuRnx3
-0Upqk5C8/7Y7W0mHcpeJ/ctP9PrhWtFhyxrAwOEqHS1pCIVbwlTvJmiDTaFe3N7A
-RfknEq0ym+Lmp7Y+ehntISJ6Loswo4RomNaFkTB44Kx+WTcms9gRDd8/UMG0QyOy
-xZkpshlXYIBi3boWlZd1pXZbl9ppOZ5XWqDN3vtUT1EHjHYsy8HMgavOTsacetT9
-ftPfMkOd3r6eWlmphpYGYJEAV9VOcystuGwl+omtk/06Ugk639I3PpP3bHDhdlM=
-=cHQW
+iQEcBAEBAgAGBQJUJpvcAAoJECTWi3JdVIfQRiQH/RRHtJoEzFQjhPPPx/0oh5A0
+didMf+lXmjRvWBOq4P7ngnOjPTAyb58ztojrfH5H4qNDaqgFHxsgFzXdWo9HHA7I
+EAp8XpaCouMxRCBp6ZH1wk9LCy4ya4k9/qtQwB7+MUCZPpt/UJbVwUmyFm5q8wmR
+K9YU3k2kW1efCjE/OSifmReBzvTvTmyEoPTFZe6ligqDsBSUKNacCv25Vc1DfuZx
+SH9p00UqoniaBtvS06p222PIL1UXoMhm+ivoXRJX2mwTUVdBIJ33GjTDjKAhYZTp
+jKeELi6AlkNCuHBXgLpVKyJTZW2Z3IbNpcb9WpuXO28v21zoZfBzB+np1JUR+8A=
+=KatU
 -----END PGP SIGNATURE-----
 
---lIdIj/ncdD+VcXt4--
+--ov6R7U0hl+EAcYoD--
 
---===============2318874209473955896==
+--===============4570807472827091894==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2318874209473955896==--
+--===============4570807472827091894==--
