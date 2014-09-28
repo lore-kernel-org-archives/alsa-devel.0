@@ -1,61 +1,53 @@
-From: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Subject: [PATCH 2/2] ASoC: ssm2602: add support for 11.025kHz and 22.5kHz sample rates
-Date: Sun, 28 Sep 2014 10:58:25 +0300
-Message-ID: <1411891105-22683-1-git-send-email-stefan.kristiansson@saunalahti.fi>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+From: Xiubo Li <Li.Xiubo@freescale.com>
+Subject: [PATCH] ASoC: core: fix possible ZERO_SIZE_PTR pointer
+	dereferencing error.
+Date: Sun, 28 Sep 2014 17:29:37 +0800
+Message-ID: <1411896577-30965-1-git-send-email-Li.Xiubo@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na01-bl2-obe.outbound.protection.outlook.com
+ (mail-bl2on0122.outbound.protection.outlook.com [65.55.169.122])
+ by alsa0.perex.cz (Postfix) with ESMTP id 91174260567
+ for <alsa-devel@alsa-project.org>; Sun, 28 Sep 2014 11:30:01 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-This adds the necessary values to the constraint list and
-register values to the coefficient table in order to
-configure the device for 11.025kHz and 22.5kHz sample rates.
+Since we cannot make sure the 'params->num_regs' will always be none
+zero here, and then if it equals to zero, the kmemdup() will return
+ZERO_SIZE_PTR, which equals to ((void *)16).
 
-Signed-off-by: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+So this patch fix this with just doing the zero check before calling
+kmemdup().
+
+Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
 ---
- sound/soc/codecs/ssm2602.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
-index 484b3bb..da95976 100644
---- a/sound/soc/codecs/ssm2602.c
-+++ b/sound/soc/codecs/ssm2602.c
-@@ -192,7 +192,7 @@ static const struct snd_pcm_hw_constraint_list ssm2602_constraints_12288000 = {
- };
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 7b5a7ce..263514a 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3051,7 +3051,7 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
+ 	unsigned int val, mask;
+ 	void *data;
  
- static const unsigned int ssm2602_rates_11289600[] = {
--	8000, 44100, 88200,
-+	8000, 11025, 22050, 44100, 88200,
- };
+-	if (!component->regmap)
++	if (!component->regmap || !params->num_regs)
+ 		return -EINVAL;
  
- static const struct snd_pcm_hw_constraint_list ssm2602_constraints_11289600 = {
-@@ -237,6 +237,16 @@ static const struct ssm2602_coeff ssm2602_coeff_table[] = {
- 	{18432000, 96000, SSM2602_COEFF_SRATE(0x7, 0x1, 0x0)},
- 	{12000000, 96000, SSM2602_COEFF_SRATE(0x7, 0x0, 0x1)},
- 
-+	/* 11.025k */
-+	{11289600, 11025, SSM2602_COEFF_SRATE(0xc, 0x0, 0x0)},
-+	{16934400, 11025, SSM2602_COEFF_SRATE(0xc, 0x1, 0x0)},
-+	{12000000, 11025, SSM2602_COEFF_SRATE(0xc, 0x1, 0x1)},
-+
-+	/* 22.05k */
-+	{11289600, 22050, SSM2602_COEFF_SRATE(0xd, 0x0, 0x0)},
-+	{16934400, 22050, SSM2602_COEFF_SRATE(0xd, 0x1, 0x0)},
-+	{12000000, 22050, SSM2602_COEFF_SRATE(0xd, 0x1, 0x1)},
-+
- 	/* 44.1k */
- 	{11289600, 44100, SSM2602_COEFF_SRATE(0x8, 0x0, 0x0)},
- 	{16934400, 44100, SSM2602_COEFF_SRATE(0x8, 0x1, 0x0)},
-@@ -467,7 +477,8 @@ static int ssm2602_set_bias_level(struct snd_soc_codec *codec,
- 	return 0;
- }
- 
--#define SSM2602_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
-+#define SSM2602_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
-+		SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_16000 |\
- 		SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
- 		SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
- 		SNDRV_PCM_RATE_96000)
+ 	len = params->num_regs * component->val_bytes;
 -- 
-1.9.1
+2.1.0.27.g96db324
