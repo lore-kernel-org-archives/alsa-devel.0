@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 01/13] ALSA: dice: Rename structure and its
-	members
-Date: Mon, 29 Sep 2014 00:58:11 +0900
-Message-ID: <1411919903-10981-2-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 04/13] ALSA: dice: Split stream functionality
+	into a file
+Date: Mon, 29 Sep 2014 00:58:14 +0900
+Message-ID: <1411919903-10981-5-git-send-email-o-takashi@sakamocchi.jp>
 References: <1411919903-10981-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
- by alsa0.perex.cz (Postfix) with ESMTP id AE478260587
- for <alsa-devel@alsa-project.org>; Sun, 28 Sep 2014 17:58:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 93274260594
+ for <alsa-devel@alsa-project.org>; Sun, 28 Sep 2014 17:58:49 +0200 (CEST)
 In-Reply-To: <1411919903-10981-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,608 +25,733 @@ To: clemens@ladisch.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Currently, dice driver supports AMDTP out-stream. In followed commits, AMDTP
-in-stream will be supported but current name of members in dice structure
-are not propper. This commit renames these members to proper name.
+This commit adds a file with some helper functions for streaming, and move some
+codes into the file with some arrangements.
 
-Additionally, for easily distinguishing local symbols from structure tag,
-rename dice tag into snd_dice.
+Well-known CMP is not used to start/stop streams for Dice chipset. It's
+achieved by writing to specific address. We call this way as 'enable'.
+When devices are 'enabled', streaming starts in registered isochronous channel.
+Some helper functions are already implemented in previous commit.
+
+Basically, the stream is compliant to IEC 61883-6, so-called as AMDTP. But Dice
+has a specific quirk, so called-as 'Dual Wire'. This quirk is applied at
+176.4/192.0kHz. In this mode, each packet includes double number of events than
+number in the specification, and stream runs at a half of sampling rate.
+
+There is another quirk at bus reset. Dice chipset handles drivers' request but
+don't re-enable streaming. So stream should be stopped.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice.c | 162 +++++++++++++++++++++++++-------------------------
- 1 file changed, 81 insertions(+), 81 deletions(-)
+ sound/firewire/dice/Makefile      |   2 +-
+ sound/firewire/dice/dice-stream.c | 206 ++++++++++++++++++++++++++
+ sound/firewire/dice/dice.c        | 295 +++++++++-----------------------------
+ sound/firewire/dice/dice.h        |  14 ++
+ 4 files changed, 288 insertions(+), 229 deletions(-)
+ create mode 100644 sound/firewire/dice/dice-stream.c
 
-diff --git a/sound/firewire/dice.c b/sound/firewire/dice.c
-index e3a04d6..c7c8495 100644
---- a/sound/firewire/dice.c
-+++ b/sound/firewire/dice.c
-@@ -32,7 +32,7 @@
- #include "dice-interface.h"
- 
- 
--struct dice {
-+struct snd_dice {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
- 	spinlock_t lock;
-@@ -50,8 +50,8 @@ struct dice {
- 	struct completion clock_accepted;
- 	wait_queue_head_t hwdep_wait;
- 	u32 notification_bits;
--	struct fw_iso_resources resources;
--	struct amdtp_stream stream;
-+	struct fw_iso_resources rx_resources;
-+	struct amdtp_stream rx_stream;
- };
- 
- MODULE_DESCRIPTION("DICE driver");
-@@ -87,13 +87,13 @@ static unsigned int rate_index_to_mode(unsigned int rate_index)
- 	return ((int)rate_index - 1) / 2;
- }
- 
--static void dice_lock_changed(struct dice *dice)
-+static void dice_lock_changed(struct snd_dice *dice)
- {
- 	dice->dev_lock_changed = true;
- 	wake_up(&dice->hwdep_wait);
- }
- 
--static int dice_try_lock(struct dice *dice)
-+static int dice_try_lock(struct snd_dice *dice)
- {
- 	int err;
- 
-@@ -114,7 +114,7 @@ out:
- 	return err;
- }
- 
--static void dice_unlock(struct dice *dice)
-+static void dice_unlock(struct snd_dice *dice)
- {
- 	spin_lock_irq(&dice->lock);
- 
-@@ -128,18 +128,18 @@ out:
- 	spin_unlock_irq(&dice->lock);
- }
- 
--static inline u64 global_address(struct dice *dice, unsigned int offset)
-+static inline u64 global_address(struct snd_dice *dice, unsigned int offset)
- {
- 	return DICE_PRIVATE_SPACE + dice->global_offset + offset;
- }
- 
- // TODO: rx index
--static inline u64 rx_address(struct dice *dice, unsigned int offset)
-+static inline u64 rx_address(struct snd_dice *dice, unsigned int offset)
- {
- 	return DICE_PRIVATE_SPACE + dice->rx_offset + offset;
- }
- 
--static int dice_owner_set(struct dice *dice)
-+static int dice_owner_set(struct snd_dice *dice)
- {
- 	struct fw_device *device = fw_parent_device(dice->unit);
- 	__be64 *buffer;
-@@ -183,7 +183,7 @@ static int dice_owner_set(struct dice *dice)
- 	return err;
- }
- 
--static int dice_owner_update(struct dice *dice)
-+static int dice_owner_update(struct snd_dice *dice)
- {
- 	struct fw_device *device = fw_parent_device(dice->unit);
- 	__be64 *buffer;
-@@ -226,7 +226,7 @@ static int dice_owner_update(struct dice *dice)
- 	return err;
- }
- 
--static void dice_owner_clear(struct dice *dice)
-+static void dice_owner_clear(struct snd_dice *dice)
- {
- 	struct fw_device *device = fw_parent_device(dice->unit);
- 	__be64 *buffer;
-@@ -249,7 +249,7 @@ static void dice_owner_clear(struct dice *dice)
- 	dice->owner_generation = -1;
- }
- 
--static int dice_enable_set(struct dice *dice)
-+static int dice_enable_set(struct snd_dice *dice)
- {
- 	__be32 value;
- 	int err;
-@@ -267,7 +267,7 @@ static int dice_enable_set(struct dice *dice)
- 	return 0;
- }
- 
--static void dice_enable_clear(struct dice *dice)
-+static void dice_enable_clear(struct snd_dice *dice)
- {
- 	__be32 value;
- 
-@@ -288,7 +288,7 @@ static void dice_notification(struct fw_card *card, struct fw_request *request,
- 			      int generation, unsigned long long offset,
- 			      void *data, size_t length, void *callback_data)
- {
--	struct dice *dice = callback_data;
-+	struct snd_dice *dice = callback_data;
- 	u32 bits;
- 	unsigned long flags;
- 
-@@ -317,7 +317,7 @@ static void dice_notification(struct fw_card *card, struct fw_request *request,
- static int dice_rate_constraint(struct snd_pcm_hw_params *params,
- 				struct snd_pcm_hw_rule *rule)
- {
--	struct dice *dice = rule->private;
-+	struct snd_dice *dice = rule->private;
- 	const struct snd_interval *channels =
- 		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_interval *rate =
-@@ -344,7 +344,7 @@ static int dice_rate_constraint(struct snd_pcm_hw_params *params,
- static int dice_channels_constraint(struct snd_pcm_hw_params *params,
- 				    struct snd_pcm_hw_rule *rule)
- {
--	struct dice *dice = rule->private;
-+	struct snd_dice *dice = rule->private;
- 	const struct snd_interval *rate =
- 		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
- 	struct snd_interval *channels =
-@@ -384,7 +384,7 @@ static int dice_open(struct snd_pcm_substream *substream)
- 		.periods_min = 1,
- 		.periods_max = UINT_MAX,
- 	};
--	struct dice *dice = substream->private_data;
-+	struct snd_dice *dice = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	unsigned int i;
- 	int err;
-@@ -420,7 +420,7 @@ static int dice_open(struct snd_pcm_substream *substream)
- 	if (err < 0)
- 		goto err_lock;
- 
--	err = amdtp_stream_add_pcm_hw_constraints(&dice->stream, runtime);
-+	err = amdtp_stream_add_pcm_hw_constraints(&dice->rx_stream, runtime);
- 	if (err < 0)
- 		goto err_lock;
- 
-@@ -434,47 +434,47 @@ error:
- 
- static int dice_close(struct snd_pcm_substream *substream)
- {
--	struct dice *dice = substream->private_data;
-+	struct snd_dice *dice = substream->private_data;
- 
- 	dice_unlock(dice);
- 
- 	return 0;
- }
- 
--static int dice_stream_start_packets(struct dice *dice)
-+static int dice_stream_start_packets(struct snd_dice *dice)
- {
- 	int err;
- 
--	if (amdtp_stream_running(&dice->stream))
+diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
+index 9f473cb..867864c 100644
+--- a/sound/firewire/dice/Makefile
++++ b/sound/firewire/dice/Makefile
+@@ -1,2 +1,2 @@
+-snd-dice-objs := dice-transaction.o dice.o
++snd-dice-objs := dice-transaction.o dice-stream.o dice.o
+ obj-m += snd-dice.o
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+new file mode 100644
+index 0000000..ba8fe8d
+--- /dev/null
++++ b/sound/firewire/dice/dice-stream.c
+@@ -0,0 +1,206 @@
++/*
++ * dice_stream.c - a part of driver for DICE based devices
++ *
++ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
++ * Copyright (c) 2014 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "dice.h"
++
++const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT] = {
++	/* mode 0 */
++	[0] =  32000,
++	[1] =  44100,
++	[2] =  48000,
++	/* mode 1 */
++	[3] =  88200,
++	[4] =  96000,
++	/* mode 2 */
++	[5] = 176400,
++	[6] = 192000,
++};
++
++int snd_dice_stream_get_rate_mode(struct snd_dice *dice, unsigned int rate,
++				  unsigned int *mode)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); i++) {
++		if (!(dice->clock_caps & BIT(i)))
++			continue;
++		if (snd_dice_rates[i] == rate) {
++			*mode = (i - 1) / 2;
++			return 0;
++		}
++	}
++	return -EINVAL;
++}
++
++int snd_dice_stream_start_packets(struct snd_dice *dice)
++{
++	int err;
++
 +	if (amdtp_stream_running(&dice->rx_stream))
- 		return 0;
- 
--	err = amdtp_stream_start(&dice->stream, dice->resources.channel,
++		return 0;
++
 +	err = amdtp_stream_start(&dice->rx_stream, dice->rx_resources.channel,
- 				 fw_parent_device(dice->unit)->max_speed);
- 	if (err < 0)
- 		return err;
- 
- 	err = dice_enable_set(dice);
- 	if (err < 0) {
--		amdtp_stream_stop(&dice->stream);
++				 fw_parent_device(dice->unit)->max_speed);
++	if (err < 0)
++		return err;
++
++	err = snd_dice_transaction_set_enable(dice);
++	if (err < 0) {
 +		amdtp_stream_stop(&dice->rx_stream);
- 		return err;
- 	}
- 
- 	return 0;
- }
- 
--static int dice_stream_start(struct dice *dice)
-+static int dice_stream_start(struct snd_dice *dice)
- {
- 	__be32 channel;
- 	int err;
- 
--	if (!dice->resources.allocated) {
--		err = fw_iso_resources_allocate(&dice->resources,
--				amdtp_stream_get_max_payload(&dice->stream),
++		return err;
++	}
++
++	return 0;
++}
++
++int snd_dice_stream_start(struct snd_dice *dice)
++{
++	__be32 channel;
++	int err;
++
 +	if (!dice->rx_resources.allocated) {
 +		err = fw_iso_resources_allocate(&dice->rx_resources,
 +				amdtp_stream_get_max_payload(&dice->rx_stream),
- 				fw_parent_device(dice->unit)->max_speed);
- 		if (err < 0)
- 			goto error;
- 
--		channel = cpu_to_be32(dice->resources.channel);
++				fw_parent_device(dice->unit)->max_speed);
++		if (err < 0)
++			goto error;
++
 +		channel = cpu_to_be32(dice->rx_resources.channel);
- 		err = snd_fw_transaction(dice->unit,
- 					 TCODE_WRITE_QUADLET_REQUEST,
- 					 rx_address(dice, RX_ISOCHRONOUS),
-@@ -494,36 +494,36 @@ err_rx_channel:
- 	snd_fw_transaction(dice->unit, TCODE_WRITE_QUADLET_REQUEST,
- 			   rx_address(dice, RX_ISOCHRONOUS), &channel, 4, 0);
- err_resources:
--	fw_iso_resources_free(&dice->resources);
++		err = snd_dice_transaction_write_tx(dice, TX_ISOCHRONOUS,
++						    &channel, 4);
++		if (err < 0)
++			goto err_resources;
++	}
++
++	err = snd_dice_stream_start_packets(dice);
++	if (err < 0)
++		goto err_rx_channel;
++
++	return 0;
++
++err_rx_channel:
++	channel = cpu_to_be32((u32)-1);
++	snd_dice_transaction_write_rx(dice, RX_ISOCHRONOUS, &channel, 4);
++err_resources:
 +	fw_iso_resources_free(&dice->rx_resources);
++error:
++	return err;
++}
++
++void snd_dice_stream_stop_packets(struct snd_dice *dice)
++{
++	if (amdtp_stream_running(&dice->rx_stream)) {
++		snd_dice_transaction_clear_enable(dice);
++		amdtp_stream_stop(&dice->rx_stream);
++	}
++}
++
++void snd_dice_stream_stop(struct snd_dice *dice)
++{
++	__be32 channel;
++
++	snd_dice_stream_stop_packets(dice);
++
++	if (!dice->rx_resources.allocated)
++		return;
++
++	channel = cpu_to_be32((u32)-1);
++	snd_dice_transaction_write_rx(dice, RX_ISOCHRONOUS, &channel, 4);
++
++	fw_iso_resources_free(&dice->rx_resources);
++}
++
++int snd_dice_stream_init(struct snd_dice *dice)
++{
++	int err;
++
++	err = fw_iso_resources_init(&dice->rx_resources, dice->unit);
++	if (err < 0)
++		goto end;
++	dice->rx_resources.channels_mask = 0x00000000ffffffffuLL;
++
++	err = amdtp_stream_init(&dice->rx_stream, dice->unit, AMDTP_OUT_STREAM,
++				CIP_BLOCKING);
++	if (err < 0)
++		goto error;
++
++	err = snd_dice_transaction_set_clock_source(dice, CLOCK_SOURCE_ARX1);
++	if (err < 0)
++		goto error;
++end:
++	return err;
++error:
++	amdtp_stream_destroy(&dice->rx_stream);
++	fw_iso_resources_destroy(&dice->rx_resources);
++	return err;
++}
++
++void snd_dice_stream_destroy(struct snd_dice *dice)
++{
++	amdtp_stream_pcm_abort(&dice->rx_stream);
++	snd_dice_stream_stop(dice);
++	amdtp_stream_destroy(&dice->rx_stream);
++	fw_iso_resources_destroy(&dice->rx_resources);
++}
++
++void snd_dice_stream_update(struct snd_dice *dice)
++{
++	/*
++	 * On a bus reset, the DICE firmware disables streaming and then goes
++	 * off contemplating its own navel for hundreds of milliseconds before
++	 * it can react to any of our attempts to reenable streaming. This
++	 * means that we lose synchronization anyway, so we force our streams
++	 * to stop so that the application can restart them in an orderly
++	 * manner.
++	 */
++	amdtp_stream_pcm_abort(&dice->rx_stream);
++	snd_dice_stream_stop_packets(dice);
++	fw_iso_resources_update(&dice->rx_resources);
++}
++
++static void dice_lock_changed(struct snd_dice *dice)
++{
++	dice->dev_lock_changed = true;
++	wake_up(&dice->hwdep_wait);
++}
++
++int snd_dice_stream_lock_try(struct snd_dice *dice)
++{
++	int err;
++
++	spin_lock_irq(&dice->lock);
++
++	if (dice->dev_lock_count < 0) {
++		err = -EBUSY;
++		goto out;
++	}
++
++	if (dice->dev_lock_count++ == 0)
++		dice_lock_changed(dice);
++	err = 0;
++
++out:
++	spin_unlock_irq(&dice->lock);
++
++	return err;
++}
++
++void snd_dice_stream_lock_release(struct snd_dice *dice)
++{
++	spin_lock_irq(&dice->lock);
++
++	if (WARN_ON(dice->dev_lock_count <= 0))
++		goto out;
++
++	if (--dice->dev_lock_count == 0)
++		dice_lock_changed(dice);
++
++out:
++	spin_unlock_irq(&dice->lock);
++}
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 890dcb4..cc88a12 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -11,127 +11,62 @@ MODULE_DESCRIPTION("DICE driver");
+ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_LICENSE("GPL v2");
+ 
+-const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT] = {
+-	/* mode 0 */
+-	[0] =  32000,
+-	[1] =  44100,
+-	[2] =  48000,
+-	/* mode 1 */
+-	[3] =  88200,
+-	[4] =  96000,
+-	/* mode 2 */
+-	[5] = 176400,
+-	[6] = 192000,
+-};
+-
+-static unsigned int rate_to_index(unsigned int rate)
+-{
+-	unsigned int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i)
+-		if (snd_dice_rates[i] == rate)
+-			return i;
+-
+-	return 0;
+-}
+-
+-static unsigned int rate_index_to_mode(unsigned int rate_index)
+-{
+-	return ((int)rate_index - 1) / 2;
+-}
+-
+-static void dice_lock_changed(struct snd_dice *dice)
+-{
+-	dice->dev_lock_changed = true;
+-	wake_up(&dice->hwdep_wait);
+-}
+-
+-static int dice_try_lock(struct snd_dice *dice)
+-{
+-	int err;
+-
+-	spin_lock_irq(&dice->lock);
+-
+-	if (dice->dev_lock_count < 0) {
+-		err = -EBUSY;
+-		goto out;
+-	}
+-
+-	if (dice->dev_lock_count++ == 0)
+-		dice_lock_changed(dice);
+-	err = 0;
+-
+-out:
+-	spin_unlock_irq(&dice->lock);
+-
+-	return err;
+-}
+-
+-static void dice_unlock(struct snd_dice *dice)
+-{
+-	spin_lock_irq(&dice->lock);
+-
+-	if (WARN_ON(dice->dev_lock_count <= 0))
+-		goto out;
+-
+-	if (--dice->dev_lock_count == 0)
+-		dice_lock_changed(dice);
+-
+-out:
+-	spin_unlock_irq(&dice->lock);
+-}
+-
+ static int dice_rate_constraint(struct snd_pcm_hw_params *params,
+ 				struct snd_pcm_hw_rule *rule)
+ {
+ 	struct snd_dice *dice = rule->private;
+-	const struct snd_interval *channels =
++
++	const struct snd_interval *c =
+ 		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-	struct snd_interval *rate =
++	struct snd_interval *r =
+ 		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval allowed_rates = {
++	struct snd_interval rates = {
+ 		.min = UINT_MAX, .max = 0, .integer = 1
+ 	};
+-	unsigned int i, mode;
++	unsigned int i, rate, mode, *pcm_channels = dice->rx_channels;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
+-		mode = rate_index_to_mode(i);
+-		if ((dice->clock_caps & (1 << i)) &&
+-		    snd_interval_test(channels, dice->rx_channels[mode])) {
+-			allowed_rates.min = min(allowed_rates.min,
+-						snd_dice_rates[i]);
+-			allowed_rates.max = max(allowed_rates.max,
+-						snd_dice_rates[i]);
+-		}
++		rate = snd_dice_rates[i];
++		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
++			continue;
++
++		if (!snd_interval_test(c, pcm_channels[mode]))
++			continue;
++
++		rates.min = min(rates.min, rate);
++		rates.max = max(rates.max, rate);
+ 	}
+ 
+-	return snd_interval_refine(rate, &allowed_rates);
++	return snd_interval_refine(r, &rates);
+ }
+ 
+ static int dice_channels_constraint(struct snd_pcm_hw_params *params,
+ 				    struct snd_pcm_hw_rule *rule)
+ {
+ 	struct snd_dice *dice = rule->private;
+-	const struct snd_interval *rate =
++
++	const struct snd_interval *r =
+ 		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels =
++	struct snd_interval *c =
+ 		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-	struct snd_interval allowed_channels = {
++	struct snd_interval channels = {
+ 		.min = UINT_MAX, .max = 0, .integer = 1
+ 	};
+-	unsigned int i, mode;
++	unsigned int i, rate, mode, *pcm_channels = dice->rx_channels;
+ 
+-	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i)
+-		if ((dice->clock_caps & (1 << i)) &&
+-		    snd_interval_test(rate, snd_dice_rates[i])) {
+-			mode = rate_index_to_mode(i);
+-			allowed_channels.min = min(allowed_channels.min,
+-						   dice->rx_channels[mode]);
+-			allowed_channels.max = max(allowed_channels.max,
+-						   dice->rx_channels[mode]);
+-		}
++	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
++		rate = snd_dice_rates[i];
++		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
++			continue;
++
++		if (!snd_interval_test(r, rate))
++			continue;
++
++		channels.min = min(channels.min, pcm_channels[mode]);
++		channels.max = max(channels.max, pcm_channels[mode]);
++	}
+ 
+-	return snd_interval_refine(channels, &allowed_channels);
++	return snd_interval_refine(c, &channels);
+ }
+ 
+ static int dice_open(struct snd_pcm_substream *substream)
+@@ -156,7 +91,7 @@ static int dice_open(struct snd_pcm_substream *substream)
+ 	unsigned int i;
+ 	int err;
+ 
+-	err = dice_try_lock(dice);
++	err = snd_dice_stream_lock_try(dice);
+ 	if (err < 0)
+ 		goto error;
+ 
+@@ -194,7 +129,7 @@ static int dice_open(struct snd_pcm_substream *substream)
+ 	return 0;
+ 
+ err_lock:
+-	dice_unlock(dice);
++	snd_dice_stream_lock_release(dice);
  error:
  	return err;
  }
- 
--static void dice_stream_stop_packets(struct dice *dice)
-+static void dice_stream_stop_packets(struct snd_dice *dice)
+@@ -203,98 +138,20 @@ static int dice_close(struct snd_pcm_substream *substream)
  {
--	if (amdtp_stream_running(&dice->stream)) {
-+	if (amdtp_stream_running(&dice->rx_stream)) {
- 		dice_enable_clear(dice);
--		amdtp_stream_stop(&dice->stream);
-+		amdtp_stream_stop(&dice->rx_stream);
- 	}
+ 	struct snd_dice *dice = substream->private_data;
+ 
+-	dice_unlock(dice);
+-
+-	return 0;
+-}
+-
+-static int dice_stream_start_packets(struct snd_dice *dice)
+-{
+-	int err;
+-
+-	if (amdtp_stream_running(&dice->rx_stream))
+-		return 0;
+-
+-	err = amdtp_stream_start(&dice->rx_stream, dice->rx_resources.channel,
+-				 fw_parent_device(dice->unit)->max_speed);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_dice_transaction_set_enable(dice);
+-	if (err < 0) {
+-		amdtp_stream_stop(&dice->rx_stream);
+-		return err;
+-	}
+-
+-	return 0;
+-}
+-
+-static int dice_stream_start(struct snd_dice *dice)
+-{
+-	__be32 channel;
+-	int err;
+-
+-	if (!dice->rx_resources.allocated) {
+-		err = fw_iso_resources_allocate(&dice->rx_resources,
+-				amdtp_stream_get_max_payload(&dice->rx_stream),
+-				fw_parent_device(dice->unit)->max_speed);
+-		if (err < 0)
+-			goto error;
+-
+-		channel = cpu_to_be32(dice->rx_resources.channel);
+-		err = snd_dice_transaction_write_tx(dice, TX_ISOCHRONOUS,
+-						    &channel, 4);
+-		if (err < 0)
+-			goto err_resources;
+-	}
+-
+-	err = dice_stream_start_packets(dice);
+-	if (err < 0)
+-		goto err_rx_channel;
++	snd_dice_stream_lock_release(dice);
+ 
+ 	return 0;
+-
+-err_rx_channel:
+-	channel = cpu_to_be32((u32)-1);
+-	snd_dice_transaction_write_rx(dice, RX_ISOCHRONOUS, &channel, 4);
+-err_resources:
+-	fw_iso_resources_free(&dice->rx_resources);
+-error:
+-	return err;
+-}
+-
+-static void dice_stream_stop_packets(struct snd_dice *dice)
+-{
+-	if (amdtp_stream_running(&dice->rx_stream)) {
+-		snd_dice_transaction_clear_enable(dice);
+-		amdtp_stream_stop(&dice->rx_stream);
+-	}
+-}
+-
+-static void dice_stream_stop(struct snd_dice *dice)
+-{
+-	__be32 channel;
+-
+-	dice_stream_stop_packets(dice);
+-
+-	if (!dice->rx_resources.allocated)
+-		return;
+-
+-	channel = cpu_to_be32((u32)-1);
+-	snd_dice_transaction_write_rx(dice, RX_ISOCHRONOUS, &channel, 4);
+-
+-	fw_iso_resources_free(&dice->rx_resources);
  }
  
--static void dice_stream_stop(struct dice *dice)
-+static void dice_stream_stop(struct snd_dice *dice)
- {
- 	__be32 channel;
- 
- 	dice_stream_stop_packets(dice);
- 
--	if (!dice->resources.allocated)
-+	if (!dice->rx_resources.allocated)
- 		return;
- 
- 	channel = cpu_to_be32((u32)-1);
- 	snd_fw_transaction(dice->unit, TCODE_WRITE_QUADLET_REQUEST,
- 			   rx_address(dice, RX_ISOCHRONOUS), &channel, 4, 0);
- 
--	fw_iso_resources_free(&dice->resources);
-+	fw_iso_resources_free(&dice->rx_resources);
- }
- 
--static int dice_change_rate(struct dice *dice, unsigned int clock_rate)
-+static int dice_change_rate(struct snd_dice *dice, unsigned int clock_rate)
- {
- 	__be32 value;
- 	int err;
-@@ -547,7 +547,7 @@ static int dice_change_rate(struct dice *dice, unsigned int clock_rate)
  static int dice_hw_params(struct snd_pcm_substream *substream,
  			  struct snd_pcm_hw_params *hw_params)
  {
--	struct dice *dice = substream->private_data;
-+	struct snd_dice *dice = substream->private_data;
- 	unsigned int rate_index, mode, rate, channels, i;
+ 	struct snd_dice *dice = substream->private_data;
+-	unsigned int rate_index, mode, rate, channels, i;
++	unsigned int mode, rate, channels, i;
  	int err;
  
-@@ -585,24 +585,24 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 	mutex_lock(&dice->mutex);
+-	dice_stream_stop(dice);
++	snd_dice_stream_stop(dice);
+ 	mutex_unlock(&dice->mutex);
  
- 		rate /= 2;
- 		channels *= 2;
--		dice->stream.double_pcm_frames = true;
-+		dice->rx_stream.double_pcm_frames = true;
- 	} else {
--		dice->stream.double_pcm_frames = false;
-+		dice->rx_stream.double_pcm_frames = false;
+ 	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+@@ -307,6 +164,10 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 	if (err < 0)
+ 		return err;
+ 
++	err = snd_dice_stream_get_rate_mode(dice, rate, &mode);
++	if (err < 0)
++		return err;
++
+ 	/*
+ 	 * At 176.4/192.0 kHz, Dice has a quirk to transfer two PCM frames in
+ 	 * one data block of AMDTP packet. Thus sampling transfer frequency is
+@@ -318,8 +179,7 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 	 * be aligned to SYT_INTERVAL.
+ 	 */
+ 	channels = params_channels(hw_params);
+-	rate_index = rate_to_index(rate);
+-	if (rate_index > 4) {
++	if (mode > 1) {
+ 		if (channels > AMDTP_MAX_CHANNELS_FOR_PCM / 2) {
+ 			err = -ENOSYS;
+ 			return err;
+@@ -332,10 +192,9 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
+ 		dice->rx_stream.double_pcm_frames = false;
  	}
  
- 	mode = rate_index_to_mode(rate_index);
--	amdtp_stream_set_parameters(&dice->stream, rate, channels,
-+	amdtp_stream_set_parameters(&dice->rx_stream, rate, channels,
+-	mode = rate_index_to_mode(rate_index);
+ 	amdtp_stream_set_parameters(&dice->rx_stream, rate, channels,
  				    dice->rx_midi_ports[mode]);
- 	if (rate_index > 4) {
+-	if (rate_index > 4) {
++	if (mode > 4) {
  		channels /= 2;
  
  		for (i = 0; i < channels; i++) {
--			dice->stream.pcm_positions[i] = i * 2;
--			dice->stream.pcm_positions[i + channels] = i * 2 + 1;
-+			dice->rx_stream.pcm_positions[i] = i * 2;
-+			dice->rx_stream.pcm_positions[i + channels] = i * 2 + 1;
- 		}
- 	}
- 
--	amdtp_stream_set_pcm_format(&dice->stream,
-+	amdtp_stream_set_pcm_format(&dice->rx_stream,
- 				    params_format(hw_params));
- 
- 	return 0;
-@@ -610,7 +610,7 @@ static int dice_hw_params(struct snd_pcm_substream *substream,
- 
- static int dice_hw_free(struct snd_pcm_substream *substream)
- {
--	struct dice *dice = substream->private_data;
-+	struct snd_dice *dice = substream->private_data;
+@@ -355,7 +214,7 @@ static int dice_hw_free(struct snd_pcm_substream *substream)
+ 	struct snd_dice *dice = substream->private_data;
  
  	mutex_lock(&dice->mutex);
- 	dice_stream_stop(dice);
-@@ -621,12 +621,12 @@ static int dice_hw_free(struct snd_pcm_substream *substream)
- 
- static int dice_prepare(struct snd_pcm_substream *substream)
- {
--	struct dice *dice = substream->private_data;
-+	struct snd_dice *dice = substream->private_data;
- 	int err;
- 
- 	mutex_lock(&dice->mutex);
- 
--	if (amdtp_streaming_error(&dice->stream))
-+	if (amdtp_streaming_error(&dice->rx_stream))
- 		dice_stream_stop_packets(dice);
- 
- 	err = dice_stream_start(dice);
-@@ -637,14 +637,14 @@ static int dice_prepare(struct snd_pcm_substream *substream)
- 
+-	dice_stream_stop(dice);
++	snd_dice_stream_stop(dice);
  	mutex_unlock(&dice->mutex);
  
--	amdtp_stream_pcm_prepare(&dice->stream);
-+	amdtp_stream_pcm_prepare(&dice->rx_stream);
+ 	return snd_pcm_lib_free_vmalloc_buffer(substream);
+@@ -369,9 +228,9 @@ static int dice_prepare(struct snd_pcm_substream *substream)
+ 	mutex_lock(&dice->mutex);
  
- 	return 0;
- }
+ 	if (amdtp_streaming_error(&dice->rx_stream))
+-		dice_stream_stop_packets(dice);
++		snd_dice_stream_stop_packets(dice);
  
- static int dice_trigger(struct snd_pcm_substream *substream, int cmd)
- {
--	struct dice *dice = substream->private_data;
-+	struct snd_dice *dice = substream->private_data;
- 	struct snd_pcm_substream *pcm;
- 
- 	switch (cmd) {
-@@ -657,19 +657,19 @@ static int dice_trigger(struct snd_pcm_substream *substream, int cmd)
- 	default:
- 		return -EINVAL;
- 	}
--	amdtp_stream_pcm_trigger(&dice->stream, pcm);
-+	amdtp_stream_pcm_trigger(&dice->rx_stream, pcm);
- 
- 	return 0;
- }
- 
- static snd_pcm_uframes_t dice_pointer(struct snd_pcm_substream *substream)
- {
--	struct dice *dice = substream->private_data;
-+	struct snd_dice *dice = substream->private_data;
- 
--	return amdtp_stream_pcm_pointer(&dice->stream);
-+	return amdtp_stream_pcm_pointer(&dice->rx_stream);
- }
- 
--static int dice_create_pcm(struct dice *dice)
-+static int dice_create_pcm(struct snd_dice *dice)
- {
- 	static struct snd_pcm_ops ops = {
- 		.open      = dice_open,
-@@ -699,7 +699,7 @@ static int dice_create_pcm(struct dice *dice)
- static long dice_hwdep_read(struct snd_hwdep *hwdep, char __user *buf,
- 			    long count, loff_t *offset)
- {
--	struct dice *dice = hwdep->private_data;
-+	struct snd_dice *dice = hwdep->private_data;
- 	DEFINE_WAIT(wait);
- 	union snd_firewire_event event;
- 
-@@ -741,7 +741,7 @@ static long dice_hwdep_read(struct snd_hwdep *hwdep, char __user *buf,
- static unsigned int dice_hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
- 				    poll_table *wait)
- {
--	struct dice *dice = hwdep->private_data;
-+	struct snd_dice *dice = hwdep->private_data;
- 	unsigned int events;
- 
- 	poll_wait(file, &dice->hwdep_wait, wait);
-@@ -756,7 +756,7 @@ static unsigned int dice_hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
- 	return events;
- }
- 
--static int dice_hwdep_get_info(struct dice *dice, void __user *arg)
-+static int dice_hwdep_get_info(struct snd_dice *dice, void __user *arg)
- {
- 	struct fw_device *dev = fw_parent_device(dice->unit);
- 	struct snd_firewire_get_info info;
-@@ -775,7 +775,7 @@ static int dice_hwdep_get_info(struct dice *dice, void __user *arg)
- 	return 0;
- }
- 
--static int dice_hwdep_lock(struct dice *dice)
-+static int dice_hwdep_lock(struct snd_dice *dice)
- {
- 	int err;
- 
-@@ -793,7 +793,7 @@ static int dice_hwdep_lock(struct dice *dice)
+-	err = dice_stream_start(dice);
++	err = snd_dice_stream_start(dice);
+ 	if (err < 0) {
+ 		mutex_unlock(&dice->mutex);
+ 		return err;
+@@ -966,31 +825,37 @@ end:
  	return err;
  }
  
--static int dice_hwdep_unlock(struct dice *dice)
-+static int dice_hwdep_unlock(struct snd_dice *dice)
+-static int highest_supported_mode_rate(struct snd_dice *dice, unsigned int mode)
++static int highest_supported_mode_rate(struct snd_dice *dice,
++				       unsigned int mode, unsigned int *rate)
  {
- 	int err;
+-	int i;
++	unsigned int i, m;
  
-@@ -813,7 +813,7 @@ static int dice_hwdep_unlock(struct dice *dice)
+-	for (i = ARRAY_SIZE(snd_dice_rates) - 1; i >= 0; --i)
+-		if ((dice->clock_caps & (1 << i)) &&
+-		    rate_index_to_mode(i) == mode)
+-			return i;
++	for (i = ARRAY_SIZE(snd_dice_rates); i > 0; i--) {
++		*rate = snd_dice_rates[i - 1];
++		if (snd_dice_stream_get_rate_mode(dice, *rate, &m) < 0)
++			continue;
++		if (mode == m)
++			break;
++	}
++	if (i == 0)
++		return -EINVAL;
  
- static int dice_hwdep_release(struct snd_hwdep *hwdep, struct file *file)
- {
--	struct dice *dice = hwdep->private_data;
-+	struct snd_dice *dice = hwdep->private_data;
- 
- 	spin_lock_irq(&dice->lock);
- 	if (dice->dev_lock_count == -1)
-@@ -826,7 +826,7 @@ static int dice_hwdep_release(struct snd_hwdep *hwdep, struct file *file)
- static int dice_hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
- 			    unsigned int cmd, unsigned long arg)
- {
--	struct dice *dice = hwdep->private_data;
-+	struct snd_dice *dice = hwdep->private_data;
- 
- 	switch (cmd) {
- 	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-@@ -851,7 +851,7 @@ static int dice_hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
- #define dice_hwdep_compat_ioctl NULL
- #endif
- 
--static int dice_create_hwdep(struct dice *dice)
-+static int dice_create_hwdep(struct snd_dice *dice)
- {
- 	static const struct snd_hwdep_ops ops = {
- 		.read         = dice_hwdep_read,
-@@ -875,7 +875,7 @@ static int dice_create_hwdep(struct dice *dice)
- 	return 0;
+-	return -1;
++	return 0;
  }
  
--static int dice_proc_read_mem(struct dice *dice, void *buffer,
-+static int dice_proc_read_mem(struct snd_dice *dice, void *buffer,
- 			      unsigned int offset_q, unsigned int quadlets)
- {
- 	unsigned int i;
-@@ -898,8 +898,8 @@ static const char *str_from_array(const char *const strs[], unsigned int count,
- {
- 	if (i < count)
- 		return strs[i];
--	else
--		return "(unknown)";
-+
-+	return "(unknown)";
- }
- 
- static void dice_proc_fixup_string(char *s, unsigned int size)
-@@ -934,7 +934,7 @@ static void dice_proc_read(struct snd_info_entry *entry,
- 		"32000", "44100", "48000", "88200", "96000", "176400", "192000",
- 		"any low", "any mid", "any high", "none"
- 	};
--	struct dice *dice = entry->private_data;
-+	struct snd_dice *dice = entry->private_data;
- 	u32 sections[ARRAY_SIZE(section_names) * 2];
- 	struct {
- 		u32 number;
-@@ -1109,7 +1109,7 @@ static void dice_proc_read(struct snd_info_entry *entry,
- 	}
- }
- 
--static void dice_create_proc(struct dice *dice)
-+static void dice_create_proc(struct snd_dice *dice)
- {
- 	struct snd_info_entry *entry;
- 
-@@ -1119,9 +1119,9 @@ static void dice_create_proc(struct dice *dice)
- 
- static void dice_card_free(struct snd_card *card)
- {
--	struct dice *dice = card->private_data;
-+	struct snd_dice *dice = card->private_data;
- 
--	amdtp_stream_destroy(&dice->stream);
-+	amdtp_stream_destroy(&dice->rx_stream);
- 	fw_core_remove_address_handler(&dice->notification_handler);
- 	mutex_destroy(&dice->mutex);
- }
-@@ -1216,7 +1216,7 @@ static int dice_interface_check(struct fw_unit *unit)
- 	return 0;
- }
- 
--static int highest_supported_mode_rate(struct dice *dice, unsigned int mode)
-+static int highest_supported_mode_rate(struct snd_dice *dice, unsigned int mode)
- {
- 	int i;
- 
-@@ -1228,7 +1228,7 @@ static int highest_supported_mode_rate(struct dice *dice, unsigned int mode)
- 	return -1;
- }
- 
--static int dice_read_mode_params(struct dice *dice, unsigned int mode)
-+static int dice_read_mode_params(struct snd_dice *dice, unsigned int mode)
+ static int dice_read_mode_params(struct snd_dice *dice, unsigned int mode)
  {
  	__be32 values[2];
- 	int rate_index, err;
-@@ -1256,7 +1256,7 @@ static int dice_read_mode_params(struct dice *dice, unsigned int mode)
- 	return 0;
- }
+-	int rate_index, err;
++	unsigned int rate;
++	int err;
  
--static int dice_read_params(struct dice *dice)
-+static int dice_read_params(struct snd_dice *dice)
- {
- 	__be32 pointers[6];
- 	__be32 value;
-@@ -1297,7 +1297,7 @@ static int dice_read_params(struct dice *dice)
- 	return 0;
- }
+-	rate_index = highest_supported_mode_rate(dice, mode);
+-	if (rate_index < 0) {
++	if (highest_supported_mode_rate(dice, mode, &rate) < 0) {
+ 		dice->rx_channels[mode] = 0;
+ 		dice->rx_midi_ports[mode] = 0;
+ 		return 0;
+ 	}
  
--static void dice_card_strings(struct dice *dice)
-+static void dice_card_strings(struct snd_dice *dice)
- {
- 	struct snd_card *card = dice->card;
- 	struct fw_device *dev = fw_parent_device(dice->unit);
-@@ -1335,7 +1335,7 @@ static void dice_card_strings(struct dice *dice)
- static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- {
- 	struct snd_card *card;
--	struct dice *dice;
-+	struct snd_dice *dice;
- 	__be32 clock_sel;
- 	int err;
- 
-@@ -1372,12 +1372,12 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+-	err = snd_dice_transaction_set_rate(dice, snd_dice_rates[rate_index]);
++	err = snd_dice_transaction_set_rate(dice, rate);
  	if (err < 0)
- 		goto err_owner;
+ 		return err;
  
--	err = fw_iso_resources_init(&dice->resources, unit);
-+	err = fw_iso_resources_init(&dice->rx_resources, unit);
+@@ -1113,10 +978,6 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ 
+ 	dice_card_strings(dice);
+ 
+-	err = snd_dice_transaction_set_clock_source(dice, CLOCK_SOURCE_ARX1);
+-	if (err < 0)
+-		goto error;
+-
+ 	err = dice_create_pcm(dice);
  	if (err < 0)
- 		goto err_owner;
--	dice->resources.channels_mask = 0x00000000ffffffffuLL;
-+	dice->rx_resources.channels_mask = 0x00000000ffffffffuLL;
+ 		goto error;
+@@ -1127,22 +988,13 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
  
--	err = amdtp_stream_init(&dice->stream, unit, AMDTP_OUT_STREAM,
-+	err = amdtp_stream_init(&dice->rx_stream, unit, AMDTP_OUT_STREAM,
- 				CIP_BLOCKING);
+ 	dice_create_proc(dice);
+ 
+-	err = fw_iso_resources_init(&dice->rx_resources, unit);
++	err = snd_dice_stream_init(dice);
  	if (err < 0)
- 		goto err_resources;
-@@ -1418,7 +1418,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
- 	return 0;
+ 		goto error;
+-	dice->rx_resources.channels_mask = 0x00000000ffffffffuLL;
+-
+-	err = amdtp_stream_init(&dice->rx_stream, unit, AMDTP_OUT_STREAM,
+-				CIP_BLOCKING);
+-	if (err < 0) {
+-		fw_iso_resources_destroy(&dice->rx_resources);
+-		goto error;
+-	}
  
- err_resources:
--	fw_iso_resources_destroy(&dice->resources);
-+	fw_iso_resources_destroy(&dice->rx_resources);
- err_owner:
- 	dice_owner_clear(dice);
- err_notification_handler:
-@@ -1432,9 +1432,9 @@ error:
+ 	err = snd_card_register(card);
+ 	if (err < 0) {
+-		amdtp_stream_destroy(&dice->rx_stream);
+-		fw_iso_resources_destroy(&dice->rx_resources);
++		snd_dice_stream_destroy(dice);
+ 		goto error;
+ 	}
  
- static void dice_remove(struct fw_unit *unit)
+@@ -1158,13 +1010,11 @@ static void dice_remove(struct fw_unit *unit)
  {
--	struct dice *dice = dev_get_drvdata(&unit->device);
-+	struct snd_dice *dice = dev_get_drvdata(&unit->device);
+ 	struct snd_dice *dice = dev_get_drvdata(&unit->device);
  
--	amdtp_stream_pcm_abort(&dice->stream);
-+	amdtp_stream_pcm_abort(&dice->rx_stream);
- 
+-	amdtp_stream_pcm_abort(&dice->rx_stream);
+-
  	snd_card_disconnect(dice->card);
- 
-@@ -1450,7 +1450,7 @@ static void dice_remove(struct fw_unit *unit)
- 
- static void dice_bus_reset(struct fw_unit *unit)
- {
--	struct dice *dice = dev_get_drvdata(&unit->device);
-+	struct snd_dice *dice = dev_get_drvdata(&unit->device);
- 
- 	/*
- 	 * On a bus reset, the DICE firmware disables streaming and then goes
-@@ -1460,7 +1460,7 @@ static void dice_bus_reset(struct fw_unit *unit)
- 	 * to stop so that the application can restart them in an orderly
- 	 * manner.
- 	 */
--	amdtp_stream_pcm_abort(&dice->stream);
-+	amdtp_stream_pcm_abort(&dice->rx_stream);
  
  	mutex_lock(&dice->mutex);
  
-@@ -1469,7 +1469,7 @@ static void dice_bus_reset(struct fw_unit *unit)
+-	dice_stream_stop(dice);
++	snd_dice_stream_destroy(dice);
  
- 	dice_owner_update(dice);
+ 	mutex_unlock(&dice->mutex);
  
--	fw_iso_resources_update(&dice->resources);
-+	fw_iso_resources_update(&dice->rx_resources);
+@@ -1183,20 +1033,9 @@ static void dice_bus_reset(struct fw_unit *unit)
+ 	}
+ 	dice->global_enabled = false;
+ 
+-	/*
+-	 * On a bus reset, the DICE firmware disables streaming and then goes
+-	 * off contemplating its own navel for hundreds of milliseconds before
+-	 * it can react to any of our attempts to reenable streaming.  This
+-	 * means that we lose synchronization anyway, so we force our streams
+-	 * to stop so that the application can restart them in an orderly
+-	 * manner.
+-	 */
+-	amdtp_stream_pcm_abort(&dice->rx_stream);
+-
+ 	mutex_lock(&dice->mutex);
+ 
+-	dice_stream_stop_packets(dice);
+-	fw_iso_resources_update(&dice->rx_resources);
++	snd_dice_stream_stop_packets(dice);
  
  	mutex_unlock(&dice->mutex);
  }
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index c756e62..ca4090d 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -157,4 +157,18 @@ void snd_dice_transaction_destroy(struct snd_dice *dice);
+ #define SND_DICE_RATES_COUNT	7
+ extern const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT];
+ 
++int snd_dice_stream_get_rate_mode(struct snd_dice *dice,
++				  unsigned int rate, unsigned int *mode);
++
++int snd_dice_stream_start_packets(struct snd_dice *dice);
++int snd_dice_stream_start(struct snd_dice *dice);
++void snd_dice_stream_stop_packets(struct snd_dice *dice);
++void snd_dice_stream_stop(struct snd_dice *dice);
++int snd_dice_stream_init(struct snd_dice *dice);
++void snd_dice_stream_destroy(struct snd_dice *dice);
++void snd_dice_stream_update(struct snd_dice *dice);
++
++int snd_dice_stream_lock_try(struct snd_dice *dice);
++void snd_dice_stream_lock_release(struct snd_dice *dice);
++
+ #endif
 -- 
 1.9.1
