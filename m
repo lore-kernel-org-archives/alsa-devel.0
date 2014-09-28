@@ -1,53 +1,45 @@
-From: Xiubo Li <Li.Xiubo@freescale.com>
-Subject: [PATCH] ASoC: core: fix possible ZERO_SIZE_PTR pointer
-	dereferencing error.
-Date: Sun, 28 Sep 2014 17:29:37 +0800
-Message-ID: <1411896577-30965-1-git-send-email-Li.Xiubo@freescale.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] MAINTAINERS: add atmel audio alsa driver maintainer
+ entry
+Date: Sun, 28 Sep 2014 11:41:49 +0100
+Message-ID: <20140928104149.GP27755@sirena.org.uk>
+References: <1411869439-2719-1-git-send-email-voice.shen@atmel.com>
+ <1411869439-2719-2-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bl2-obe.outbound.protection.outlook.com
- (mail-bl2on0122.outbound.protection.outlook.com [65.55.169.122])
- by alsa0.perex.cz (Postfix) with ESMTP id 91174260567
- for <alsa-devel@alsa-project.org>; Sun, 28 Sep 2014 11:30:01 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Li.Xiubo@freescale.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="CMx2Qe8y1jN1ar4Y"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1411869439-2719-2-git-send-email-voice.shen@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since we cannot make sure the 'params->num_regs' will always be none
-zero here, and then if it equals to zero, the kmemdup() will return
-ZERO_SIZE_PTR, which equals to ((void *)16).
 
-So this patch fix this with just doing the zero check before calling
-kmemdup().
+--CMx2Qe8y1jN1ar4Y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Xiubo Li <Li.Xiubo@freescale.com>
----
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun, Sep 28, 2014 at 09:57:19AM +0800, Bo Shen wrote:
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 7b5a7ce..263514a 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3051,7 +3051,7 @@ int snd_soc_bytes_put(struct snd_kcontrol *kcontrol,
- 	unsigned int val, mask;
- 	void *data;
- 
--	if (!component->regmap)
-+	if (!component->regmap || !params->num_regs)
- 		return -EINVAL;
- 
- 	len = params->num_regs * component->val_bytes;
--- 
-2.1.0.27.g96db324
+Applied, thanks.
+
+--CMx2Qe8y1jN1ar4Y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUJ+XsAAoJECTWi3JdVIfQHWAIAIXYgmVzPQaVxAIV6GSLcctq
+5qQ7aVfT/xc1LickaW7TKaqkbbK7AfnrzHXiw9ii3U6+LfbAFeZ+2VegXlNpOX2A
+aAhdpwtm7Q44bplkL/mxaHDluNF0UVcN6oNV2xpFAQY1UsQCD73128UeQNcUc0Um
+btQ73f88/YXkPFh4E2/acTY6pQnQG8ohxPd+C9b2c8TR7k6D9ssz7qqdHoL37VT/
+Y8AFzkwAbnOkybdF1WmCskTTfsfW/ZLGP42JYYiIPEDahUuHzyuXW6RPhUb7A8xV
+Fwu6oKXdaBBAwlGoV0mYnk1ZbcJ1ix0SaNF7WWxNEbZH0T3TYFP2V+GoMZFFf7A=
+=jOLh
+-----END PGP SIGNATURE-----
+
+--CMx2Qe8y1jN1ar4Y--
