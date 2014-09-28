@@ -1,107 +1,128 @@
-From: Jean-Francois Moine <moinejf@free.fr>
-Subject: Re: [PATCH] ASoC:kirkwood: Don't raise an error when no DAI format
-Date: Sun, 28 Sep 2014 18:05:50 +0200
-Message-ID: <20140928180550.5f0b8f03@armhf>
-References: <20140928150342.CC21B786A1D@smtpfb1-g21.free.fr>
-	<20140928151207.GI5182@n2100.arm.linux.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 11/13] ALSA: dice: Support for non SYT-Match
+	sampling clock source mode
+Date: Mon, 29 Sep 2014 00:58:21 +0900
+Message-ID: <1411919903-10981-12-git-send-email-o-takashi@sakamocchi.jp>
+References: <1411919903-10981-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140928151207.GI5182@n2100.arm.linux.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp301.phy.lolipop.jp (smtp301.phy.lolipop.jp [210.157.22.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9400926057C
+ for <alsa-devel@alsa-project.org>; Sun, 28 Sep 2014 17:59:02 +0200 (CEST)
+In-Reply-To: <1411919903-10981-1-git-send-email-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 28 Sep 2014 16:12:07 +0100
-Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
+This commit allows another mode.
 
-> On Sun, Sep 28, 2014 at 04:19:27PM +0200, Jean-Francois Moine wrote:
-> > The two DAIs of the kirkwood controller have a unique PCM format.
-> >=20
-> > The simple-card sets the audio hardware definitions of all CPU DAIs=
-=2E
-> > The PCM format is defined only when it is present in the DT.
-> >=20
-> > This patch prevents the controller to raise an error when
-> > the DT audio card definition by the simple card contains the PCM
-> > format of one CPU DAI only.
->=20
-> I think this is a silly idea - why should every driver have additiona=
-l code
-> to detect when it's called to do thing.  Why doesn't the simple card =
-code
-> always pass the required format?
->=20
-> Looking at other drivers, no one else does this; they all appear to r=
-equire
-> the proper format to be specified.
->=20
-> What some drivers do (eg, omap-mcbsp.c) is to block set_fmt when the
-> DAI is already in use - setting a flag "configured" in hw_params, and
-> clearing it in shutdown.  Maybe following this will solve your proble=
-m.
->=20
-> In any case, random drivers doing stuff differently without reason is
-> really not a good idea.
+When sampling clock source is SYT-Match mode, devices handle
+'presentation timestamp' in received packets and generates sampling clock
+according to the information. In this case, driver is synchronization master
+and must transfer correct value in SYT field of each packets in outgoing
+stream, then the outgoing stream is a master stream.
 
-As the simple card is done, the audio hardware definitions of the
-platform and all the CPU DAIS are always set in the audio controller.
+On the other hand, non SYT-Match mode, devices do this. So drivers must pick
+up the value in SYT field of incoming packets and use the value for outgoing
+stream.
 
-When the PCM format is globally defined (platform), the function
-set_fmt() is called for all CPU DAIs (then, twice for the kirkwood
-controller) with the same value. The DT is:
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-stream.c      | 33 +++++++++++++++++++++------------
+ sound/firewire/dice/dice-transaction.c |  5 -----
+ sound/firewire/dice/dice.h             |  2 --
+ 3 files changed, 21 insertions(+), 19 deletions(-)
 
-	sound {
-		compatible =3D "simple-audio-card";
-		simple-audio-card,name =3D "Cubox Audio";
-		simple-audio-card,format =3D "i2s";
-
-		simple-audio-card,dai-link@0 {	/* S/PDIF - HDMI & S/PDIF */
-			...
-		};
-		simple-audio-card,dai-link@1 {	/* I2S - HDMI */
-			...
-		};
-	};
-
-The PCM format may also be defined per DAI link. The following DT works
-the same as setting globally the format, i.e. there are two calls to
-set_fmt() with 'i2s':
-
-	sound {
-		compatible =3D "simple-audio-card";
-		simple-audio-card,name =3D "Cubox Audio";
-
-		simple-audio-card,dai-link@0 {	/* S/PDIF - HDMI & S/PDIF */
-			format =3D "i2s";
-			...
-		};
-		simple-audio-card,dai-link@1 {	/* I2S - HDMI */
-			format =3D "i2s";
-			...
-		};
-	};
-
-The problem appears when the format is defined in only one DAI link:
-
-	sound {
-		compatible =3D "simple-audio-card";
-		simple-audio-card,name =3D "Cubox Audio";
-
-		simple-audio-card,dai-link@0 {	/* S/PDIF - HDMI & S/PDIF */
-			format =3D "i2s";
-			...
-		};
-		simple-audio-card,dai-link@1 {	/* I2S - HDMI */
-			/* no format */
-			...
-		};
-	};
-
-Then, audio does not work.
-
---=20
-Ken ar c'henta=C3=B1	|	      ** Breizh ha Linux atav! **
-Jef		|		http://moinejf.free.fr/
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+index d05178b..85ff927 100644
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -163,9 +163,27 @@ end:
+ 
+ static int get_sync_mode(struct snd_dice *dice, enum cip_flags *sync_mode)
+ {
+-	/* Currently, clock source is fixed at SYT-Match mode. */
+-	*sync_mode = 0;
+-	return 0;
++	u32 source;
++	int err;
++
++	err = snd_dice_transaction_get_clock_source(dice, &source);
++	if (err < 0)
++		goto end;
++
++	switch (source) {
++	/* So-called 'SYT Match' modes, sync_to_syt value of packets received */
++	case CLOCK_SOURCE_ARX4:	/* in 4th stream */
++	case CLOCK_SOURCE_ARX3:	/* in 3rd stream */
++	case CLOCK_SOURCE_ARX2:	/* in 2nd stream */
++		err = -ENOSYS;
++	case CLOCK_SOURCE_ARX1:	/* in 1st stream */
++		*sync_mode = 0;
++		break;
++	default:
++		*sync_mode = CIP_SYNC_TO_DEVICE;
++	}
++end:
++	return err;
+ }
+ 
+ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
+@@ -322,15 +340,6 @@ int snd_dice_stream_init_duplex(struct snd_dice *dice)
+ 		goto end;
+ 
+ 	err = init_stream(dice, &dice->rx_stream);
+-	if (err < 0)
+-		goto end;
+-
+-	/* Currently, clock source is fixed at SYT-Match mode. */
+-	err = snd_dice_transaction_set_clock_source(dice, CLOCK_SOURCE_ARX1);
+-	if (err < 0) {
+-		destroy_stream(dice, &dice->rx_stream);
+-		destroy_stream(dice, &dice->tx_stream);
+-	}
+ end:
+ 	return err;
+ }
+diff --git a/sound/firewire/dice/dice-transaction.c b/sound/firewire/dice/dice-transaction.c
+index 3e76219..25bb66b 100644
+--- a/sound/firewire/dice/dice-transaction.c
++++ b/sound/firewire/dice/dice-transaction.c
+@@ -131,11 +131,6 @@ int snd_dice_transaction_get_clock_source(struct snd_dice *dice,
+ 
+ 	return err;
+ }
+-int snd_dice_transaction_set_clock_source(struct snd_dice *dice,
+-					  unsigned int source)
+-{
+-	return set_clock_info(dice, UINT_MAX, source);
+-}
+ 
+ int snd_dice_transaction_get_rate(struct snd_dice *dice, unsigned int *rate)
+ {
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index a868485..8ea5cb4 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -152,8 +152,6 @@ static inline int snd_dice_transaction_read_sync(struct snd_dice *dice,
+ 					 buf, len);
+ }
+ 
+-int snd_dice_transaction_set_clock_source(struct snd_dice *dice,
+-					  unsigned int source);
+ int snd_dice_transaction_get_clock_source(struct snd_dice *dice,
+ 					  unsigned int *source);
+ int snd_dice_transaction_set_rate(struct snd_dice *dice, unsigned int rate);
+-- 
+1.9.1
