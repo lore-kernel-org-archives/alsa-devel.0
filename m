@@ -1,37 +1,50 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [BUG] Bad decibel data on C-Media USB sound card
-Date: Mon, 29 Sep 2014 09:51:52 +0200
-Message-ID: <54290F98.3070102@ladisch.de>
-References: <CAPMSj_FxRYc8zhf_SBa7phHmRHatj7Y_CQQYpVriCyJsFh0Mag@mail.gmail.com>
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH 2/2] MAINTAINERS: add atmel audio alsa driver maintainer
+ entry
+Date: Mon, 29 Sep 2014 10:36:00 +0200
+Message-ID: <542919F0.9050509@atmel.com>
+References: <1411869439-2719-1-git-send-email-voice.shen@atmel.com> <1411869439-2719-2-git-send-email-voice.shen@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 35C852605B7
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 09:51:58 +0200 (CEST)
-Received: from [10.1.2.65] (unknown [94.101.37.4])
- by dehamd003.servertools24.de (Postfix) with ESMTPSA id 4B896F8005
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 09:51:12 +0200 (CEST)
-In-Reply-To: <CAPMSj_FxRYc8zhf_SBa7phHmRHatj7Y_CQQYpVriCyJsFh0Mag@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1411869439-2719-2-git-send-email-voice.shen@atmel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Allen M. wrote:
-> When the Master channel is lowered below 35% in alsamixer,
+On 28/09/2014 03:57, Bo Shen :
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
 
-What is the value of the "Headphone Playback Volume" mixer control
-(as shown by "amixer contents") above and below this threshold?
+For the record:
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
 
-Regards,
-Clemens
+> ---
+> 
+>  MAINTAINERS | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c004e6f..30f92cf 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1665,6 +1665,12 @@ M:	Nicolas Ferre <nicolas.ferre@atmel.com>
+>  S:	Supported
+>  F:	drivers/tty/serial/atmel_serial.c
+>  
+> +ATMEL Audio ALSA driver
+> +M:	Bo Shen <voice.shen@atmel.com>
+> +L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+> +S:	Supported
+> +F:	sound/soc/atmel
+> +
+>  ATMEL DMA DRIVER
+>  M:	Nicolas Ferre <nicolas.ferre@atmel.com>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> 
+
+
+-- 
+Nicolas Ferre
