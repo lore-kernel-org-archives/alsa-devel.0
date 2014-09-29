@@ -1,14 +1,20 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH RESEND] ASoC: rt5670: Add dsp support
-Date: Mon, 29 Sep 2014 10:31:41 +0800
-Message-ID: <1411957901-12156-1-git-send-email-bardliao@realtek.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v7 3/7] ASoC: Intel: mrfld: add DSP core
+	controls
+Date: Mon, 29 Sep 2014 11:30:09 +0530
+Message-ID: <20140929060008.GM1638@intel.com>
+References: <1411125368-5836-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1411125368-5836-4-git-send-email-subhransu.s.prusty@intel.com>
+ <20140925150813.GU27755@sirena.org.uk>
+ <20140925160853.GB1638@intel.com>
+ <20140927111333.GH27755@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5311277383062848929=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id C0C25260506
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 04:32:10 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 45D4E26058B
+ for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 08:30:04 +0200 (CEST)
+In-Reply-To: <20140927111333.GH27755@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,532 +24,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Add dsp part of rt5670 codec driver
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/Makefile     |   2 +-
- sound/soc/codecs/rt5670-dsp.c | 383 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/rt5670-dsp.h |  11 +-
- sound/soc/codecs/rt5670.c     |  43 +++++
- sound/soc/codecs/rt5670.h     |   3 +
- 5 files changed, 435 insertions(+), 7 deletions(-)
- create mode 100644 sound/soc/codecs/rt5670-dsp.c
+--===============5311277383062848929==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="X3gaHHMYHkYqP6yf"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 5dce451..19a4631 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -78,7 +78,7 @@ snd-soc-rt5631-objs := rt5631.o
- snd-soc-rt5640-objs := rt5640.o
- snd-soc-rt5645-objs := rt5645.o
- snd-soc-rt5651-objs := rt5651.o
--snd-soc-rt5670-objs := rt5670.o
-+snd-soc-rt5670-objs := rt5670.o rt5670-dsp.o
- snd-soc-rt5677-objs := rt5677.o
- snd-soc-sgtl5000-objs := sgtl5000.o
- snd-soc-alc5623-objs := alc5623.o
-diff --git a/sound/soc/codecs/rt5670-dsp.c b/sound/soc/codecs/rt5670-dsp.c
-new file mode 100644
-index 0000000..bbe039d
---- /dev/null
-+++ b/sound/soc/codecs/rt5670-dsp.c
-@@ -0,0 +1,383 @@
-+/*
-+ * rt5670-dsp.c  --  RT5670 ALSA SoC DSP driver
-+ *
-+ * Copyright 2014 Realtek Semiconductor Corp.
-+ * Author: Bard Liao <bardliao@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/i2c.h>
-+#include <linux/platform_device.h>
-+#include <linux/firmware.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include "rt5670.h"
-+#include "rt5670-dsp.h"
-+
-+#define DSP_CLK_RATE RT5670_DSP_CLK_96K
-+
-+static const struct firmware *rt5670_dsp_fw;
-+
-+/**
-+ * rt5670_dsp_done - Wait until DSP is ready.
-+ * @codec: SoC Audio Codec device.
-+ *
-+ * To check voice DSP status and confirm it's ready for next work.
-+ *
-+ * Returns 0 for success or negative error code.
-+ */
-+static int rt5670_dsp_done(struct snd_soc_codec *codec)
-+{
-+	unsigned int count = 0, dsp_val;
-+
-+	dsp_val = snd_soc_read(codec, RT5670_DSP_CTRL1);
-+	while (dsp_val & RT5670_DSP_BUSY_MASK) {
-+		if (count > 10)
-+			return -EBUSY;
-+		dsp_val = snd_soc_read(codec, RT5670_DSP_CTRL1);
-+		count++;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * rt5670_dsp_write - Write DSP register.
-+ * @codec: SoC audio codec device.
-+ * @param: DSP parameters.
-+  *
-+ * Modify voice DSP register for sound effect. The DSP can be controlled
-+ * through DSP addr (0xe1), data (0xe2) and cmd (0xe0)
-+ * registers. It has to wait until the DSP is ready.
-+ *
-+ * Returns 0 for success or negative error code.
-+ */
-+int rt5670_dsp_write(struct snd_soc_codec *codec,
-+		unsigned int addr, unsigned int data)
-+{
-+	unsigned int dsp_val;
-+	int ret;
-+
-+	ret = snd_soc_write(codec, RT5670_DSP_CTRL2, addr);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to write DSP addr reg: %d\n", ret);
-+		goto err;
-+	}
-+	ret = snd_soc_write(codec, RT5670_DSP_CTRL3, data);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to write DSP data reg: %d\n", ret);
-+		goto err;
-+	}
-+	dsp_val = RT5670_DSP_I2C_AL_16 | RT5670_DSP_DL_2 |
-+		RT5670_DSP_CMD_MW | DSP_CLK_RATE | RT5670_DSP_CMD_EN;
-+
-+	ret = snd_soc_write(codec, RT5670_DSP_CTRL1, dsp_val);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to write DSP cmd reg: %d\n", ret);
-+		goto err;
-+	}
-+	ret = rt5670_dsp_done(codec);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "DSP is busy: %d\n", ret);
-+		goto err;
-+	}
-+
-+	return 0;
-+
-+err:
-+	return ret;
-+}
-+
-+/**
-+ * rt5670_dsp_read - Read DSP register.
-+ * @codec: SoC audio codec device.
-+ * @reg: DSP register index.
-+ *
-+ * Read DSP setting value from voice DSP. The DSP can be controlled
-+ * through DSP addr (0xe1), data (0xe2) and cmd (0xe0) registers. Each
-+ * command has to wait until the DSP is ready.
-+ *
-+ * Returns DSP register value or negative error code.
-+ */
-+unsigned int rt5670_dsp_read(
-+	struct snd_soc_codec *codec, unsigned int reg)
-+{
-+	unsigned int value;
-+	unsigned int dsp_val;
-+	int ret = 0;
-+
-+	ret = rt5670_dsp_done(codec);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "DSP is busy: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = snd_soc_write(codec, RT5670_DSP_CTRL2, reg);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to write DSP addr reg: %d\n", ret);
-+		goto err;
-+	}
-+	dsp_val = RT5670_DSP_I2C_AL_16 | RT5670_DSP_DL_0 | RT5670_DSP_RW_MASK |
-+		RT5670_DSP_CMD_MR | DSP_CLK_RATE | RT5670_DSP_CMD_EN;
-+
-+	ret = snd_soc_write(codec, RT5670_DSP_CTRL1, dsp_val);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to write DSP cmd reg: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = rt5670_dsp_done(codec);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "DSP is busy: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = snd_soc_write(codec, RT5670_DSP_CTRL2, 0x26);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to write DSP addr reg: %d\n", ret);
-+		goto err;
-+	}
-+	dsp_val = RT5670_DSP_DL_1 | RT5670_DSP_CMD_RR | RT5670_DSP_RW_MASK |
-+		DSP_CLK_RATE | RT5670_DSP_CMD_EN;
-+
-+	ret = snd_soc_write(codec, RT5670_DSP_CTRL1, dsp_val);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to write DSP cmd reg: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = rt5670_dsp_done(codec);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "DSP is busy: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = snd_soc_write(codec, RT5670_DSP_CTRL2, 0x25);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to write DSP addr reg: %d\n", ret);
-+		goto err;
-+	}
-+
-+	dsp_val = RT5670_DSP_DL_1 | RT5670_DSP_CMD_RR | RT5670_DSP_RW_MASK |
-+		DSP_CLK_RATE | RT5670_DSP_CMD_EN;
-+
-+	ret = snd_soc_write(codec, RT5670_DSP_CTRL1, dsp_val);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to write DSP cmd reg: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = rt5670_dsp_done(codec);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "DSP is busy: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = snd_soc_read(codec, RT5670_DSP_CTRL5);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to read DSP data reg: %d\n", ret);
-+		goto err;
-+	}
-+
-+	value = ret;
-+	return value;
-+
-+err:
-+	return ret;
-+}
-+
-+static int rt5670_dsp_mode_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
-+
-+	ucontrol->value.integer.value[0] = rt5670->dsp_sw;
-+
-+	return 0;
-+}
-+
-+static int rt5670_dsp_mode_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (rt5670->dsp_sw != ucontrol->value.integer.value[0])
-+		rt5670->dsp_sw = ucontrol->value.integer.value[0];
-+
-+	return 0;
-+}
-+
-+/* DSP SRC Control */
-+static const char * const rt5670_src_rxdp_mode[] = {
-+	"Normal", "Divided by 2", "Divided by 3"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5670_src_rxdp_enum, RT5670_DSP_PATH1,
-+	RT5670_RXDP_SRC_SFT, rt5670_src_rxdp_mode);
-+
-+static const char * const rt5670_src_txdp_mode[] = {
-+	"Normal", "Multiplied by 2", "Multiplied by 3"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(
-+	rt5670_src_txdp_enum, RT5670_DSP_PATH1,
-+	RT5670_TXDP_SRC_SFT, rt5670_src_txdp_mode);
-+
-+/* DSP Mode */
-+static const char * const rt5670_dsp_mode[] = {
-+	"Mode 1", "Mode 2", "Mode 3", "Mode 4", "Mode 5"
-+};
-+
-+static const SOC_ENUM_SINGLE_DECL(rt5670_dsp_enum, 0, 0,
-+	rt5670_dsp_mode);
-+
-+static const struct snd_kcontrol_new rt5670_dsp_snd_controls[] = {
-+	SOC_ENUM("RxDP SRC Switch", rt5670_src_rxdp_enum),
-+	SOC_ENUM("TxDP SRC Switch", rt5670_src_txdp_enum),
-+	SOC_ENUM_EXT("DSP Function Switch", rt5670_dsp_enum,
-+		rt5670_dsp_mode_get, rt5670_dsp_mode_put),
-+};
-+
-+/**
-+ * rt5670_dsp_set_mode - Set DSP mode parameters.
-+ *
-+ * @codec: SoC audio codec device.
-+ * @mode: DSP mode.
-+ *
-+ * Set parameters of mode to DSP.
-+ *
-+ * Returns 0 for success or negative error code.
-+ */
-+static int rt5670_dsp_set_mode(struct snd_soc_codec *codec, int mode)
-+{
-+	int tab_num, n, ret = -EINVAL;
-+	unsigned int pos = 0;
-+
-+	if (rt5670_dsp_fw) {
-+		n = rt5670_dsp_fw->data[0];
-+
-+		if (mode <= n) {
-+			pos = rt5670_dsp_fw->data[mode * 3 + 2] |
-+				rt5670_dsp_fw->data[mode * 3 + 1] << 8;
-+
-+			tab_num = rt5670_dsp_fw->data[mode * 3 + 3];
-+			if (pos + tab_num * 5 > rt5670_dsp_fw->size)
-+				return -EINVAL;
-+			ret = rt5670_write_fw(codec,
-+				rt5670_dsp_fw, pos, tab_num);
-+			if (ret < 0)
-+				dev_err(codec->dev,
-+					"Fail to set mode %d parameters: %d\n",
-+					mode, ret);
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static int rt5670_dsp_event(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMD:
-+		rt5670_dsp_write(codec, 0x22f9, 1);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMU:
-+		snd_soc_update_bits(codec, RT5670_DIG_MISC,
-+			RT5670_RST_DSP, RT5670_RST_DSP);
-+		snd_soc_update_bits(codec, RT5670_DIG_MISC,
-+			RT5670_RST_DSP, 0);
-+		mdelay(10);
-+		rt5670_dsp_set_mode(codec, rt5670->dsp_sw);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget rt5670_dsp_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY_S("Voice DSP", 1, SND_SOC_NOPM,
-+		0, 0, rt5670_dsp_event,
-+		SND_SOC_DAPM_POST_PMD | SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_PGA("DSP Downstream", SND_SOC_NOPM,
-+		0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("DSP Upstream", SND_SOC_NOPM,
-+		0, 0, NULL, 0),
-+};
-+
-+static const struct snd_soc_dapm_route rt5670_dsp_dapm_routes[] = {
-+	{"DSP Downstream", NULL, "Voice DSP"},
-+	{"DSP Downstream", NULL, "RxDP Mux"},
-+	{"DSP Upstream", NULL, "Voice DSP"},
-+	{"DSP Upstream", NULL, "TDM Data Mux"},
-+	{"DSP DL Mux", "DSP", "DSP Downstream"},
-+	{"DSP UL Mux", "DSP", "DSP Upstream"},
-+};
-+
-+static void rt5670_dsp_fw_loaded(const struct firmware *fw, void *context)
-+{
-+	if (fw) {
-+		rt5670_dsp_fw = fw;
-+		pr_debug("fw->size=%d\n", fw->size);
-+	}
-+
-+}
-+
-+/**
-+ * rt5670_dsp_probe - register DSP for rt5670
-+ * @codec: audio codec
-+ *
-+ * To register DSP function for rt5670.
-+ *
-+ * Returns 0 for success or negative error code.
-+ */
-+int rt5670_dsp_probe(struct snd_soc_codec *codec)
-+{
-+	if (codec == NULL)
-+		return -EINVAL;
-+
-+	snd_soc_update_bits(codec, RT5670_PWR_DIG2,
-+		RT5670_PWR_I2S_DSP, RT5670_PWR_I2S_DSP);
-+
-+	snd_soc_update_bits(codec, RT5670_DIG_MISC, RT5670_RST_DSP,
-+		RT5670_RST_DSP);
-+	snd_soc_update_bits(codec, RT5670_DIG_MISC, RT5670_RST_DSP, 0);
-+
-+	mdelay(10);
-+
-+	rt5670_dsp_set_mode(codec, 0);
-+	/* power down DSP */
-+	mdelay(15);
-+	rt5670_dsp_write(codec, 0x22f9, 1);
-+
-+	snd_soc_update_bits(codec, RT5670_PWR_DIG2,
-+		RT5670_PWR_I2S_DSP, 0);
-+
-+	snd_soc_add_codec_controls(codec, rt5670_dsp_snd_controls,
-+			ARRAY_SIZE(rt5670_dsp_snd_controls));
-+	snd_soc_dapm_new_controls(&codec->dapm, rt5670_dsp_dapm_widgets,
-+			ARRAY_SIZE(rt5670_dsp_dapm_widgets));
-+	snd_soc_dapm_add_routes(&codec->dapm, rt5670_dsp_dapm_routes,
-+			ARRAY_SIZE(rt5670_dsp_dapm_routes));
-+
-+	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
-+				"rt567x_dsp.bin", codec->dev, GFP_KERNEL,
-+				codec, rt5670_dsp_fw_loaded);
-+
-+	return 0;
-+}
-diff --git a/sound/soc/codecs/rt5670-dsp.h b/sound/soc/codecs/rt5670-dsp.h
-index a34d0cd..7b789f3 100644
---- a/sound/soc/codecs/rt5670-dsp.h
-+++ b/sound/soc/codecs/rt5670-dsp.h
-@@ -43,12 +43,11 @@
- #define RT5670_DSP_I2C_AL_16		(0x1 << 1)
- #define RT5670_DSP_CMD_EN		(0x1)
- 
--struct rt5670_dsp_param {
--	u16 cmd_fmt;
--	u16 addr;
--	u16 data;
--	u8 cmd;
--};
-+int rt5670_dsp_probe(struct snd_soc_codec *codec);
-+int rt5670_dsp_write(struct snd_soc_codec *codec,
-+		unsigned int addr, unsigned int data);
-+unsigned int rt5670_dsp_read(
-+	struct snd_soc_codec *codec, unsigned int reg);
- 
- #endif /* __RT5670_DSP_H__ */
- 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index ba9d9b4..da4b689 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -16,6 +16,7 @@
- #include <linux/pm.h>
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
-+#include <linux/firmware.h>
- #include <linux/spi/spi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -401,6 +402,44 @@ static bool rt5670_readable_register(struct device *dev, unsigned int reg)
- 	}
- }
- 
-+int rt5670_write_fw(struct snd_soc_codec *codec, const struct firmware *fw,
-+		unsigned int pos, unsigned int num)
-+{
-+	int i, ret;
-+
-+	for (i = 0; i < num; i++) {
-+		switch (fw->data[pos]) {
-+		case 1: /*PR*/
-+			ret = snd_soc_write(codec, RT5670_PR_BASE +
-+				((fw->data[pos + 1] << 8) | fw->data[pos + 2]),
-+				(fw->data[pos + 3] << 8) | fw->data[pos + 4]);
-+			if (ret < 0)
-+				return -1;
-+			break;
-+		case 2: /*dsp*/
-+			ret = rt5670_dsp_write(codec,
-+				(fw->data[pos + 1] << 8) | fw->data[pos + 2],
-+				(fw->data[pos + 3] << 8) | fw->data[pos + 4]);
-+			if (ret < 0)
-+				return -1;
-+			break;
-+		default: /*register*/
-+			ret = snd_soc_write(codec,
-+				(fw->data[pos + 1] << 8) | fw->data[pos + 2],
-+				(fw->data[pos + 3] << 8) | fw->data[pos + 4]);
-+			if (ret < 0)
-+				return -1;
-+			break;
-+		}
-+		pos += 5;
-+		if (fw->size < pos)
-+			return 0;
-+	}
-+
-+	return 0;
-+
-+}
-+
- static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
- static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
- static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
-@@ -2332,6 +2371,7 @@ static int rt5670_probe(struct snd_soc_codec *codec)
- 	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
- 
- 	rt5670->codec = codec;
-+	rt5670_dsp_probe(codec);
- 
- 	return 0;
- }
-@@ -2623,6 +2663,9 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 
- 	}
- 
-+	/*Give sysclk a default value*/
-+	rt5670->sysclk = 24576000;
-+
- 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5670,
- 			rt5670_dai, ARRAY_SIZE(rt5670_dai));
- 	if (ret < 0)
-diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
-index a0b5c85..70285c9 100644
---- a/sound/soc/codecs/rt5670.h
-+++ b/sound/soc/codecs/rt5670.h
-@@ -1997,4 +1997,7 @@ struct rt5670_priv {
- 	int jack_type;
- };
- 
-+int rt5670_write_fw(struct snd_soc_codec *codec, const struct firmware *fw,
-+		    unsigned int pos, unsigned int num);
-+
- #endif /* __RT5670_H__ */
--- 
-1.8.1.1.439.g50a6b54
+
+--X3gaHHMYHkYqP6yf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Sep 27, 2014 at 12:13:33PM +0100, Mark Brown wrote:
+> On Thu, Sep 25, 2014 at 09:38:53PM +0530, Vinod Koul wrote:
+> > On Thu, Sep 25, 2014 at 04:08:13PM +0100, Mark Brown wrote:
+> > > On Fri, Sep 19, 2014 at 04:46:04PM +0530, Subhransu S. Prusty wrote:
+>=20
+> > > > +       u8 *map =3D is_tx ? sst_ssp_channel_map : sst_ssp_slot_map;
+>=20
+> > > So the "channel" map is for transmit and the "slot" map is for receiv=
+e?
+> > > That naming doesn't seem at all obvious, I'd expect some confusion and
+> > > resulting bugs there. =20
+>=20
+> > yes as multiple channels get interleaved to slot while transmitting and=
+ on
+> > recive side various lots get de-interleaved to channels :)
+> > These controls allow you to route stuff.
+>=20
+> I can tell what they're supposed to do given the above code, what I'm
+> saying is that when I see the above code I'm expecting to find bugs
+> elsewhere since it's not going to be clear if you see either variable in
+> isolation.  Better naming please, for example use the direction.
+Sure will add tx and rx to the control names to make it explict. Thanks for
+the suggestion
+
+> > The DSP has the bitmap for interlever as explained in sst_send_slot_map=
+()
+>=20
+> > /*
+> >  * channel map value is a bitfield where each bit represents a slot
+> >  *
+> >  *                        76543210      # 0 =3D slot 0, 1 =3D slot 1
+> >  *
+> >  * e.g. codec1_0 tx map =3D 00000101b -> data from codec_out1_0 goes in=
+to slot
+> >  * 0, 2
+> >  */
+>=20
+> > so based on the channel selected here we will set the map and send to D=
+SP.
+> > For none case we don't need to do anything. Yes this bit need this
+> > explanation so will add up
+>=20
+> But why not - why is the effect of clearing all the bits to do nothing?
+Okay thanks for pointing out, We did check on this bit. So initially DSP
+wasn't supporting the dynamic updates of the  slots so thsi was fine but
+later we added support. On re-examining again as you pointed yes 'none'
+value needs to reset the bitmap and send to DSP so we just need to forward
+the IPC here as well. I will fix it up.
+
+> > > > +			 !strncmp(kctl->id.name, w->name, index)) {
+> > > > +			struct sst_enum *e =3D (void *)kctl->private_value;
+> > > > +
+> > > > +			e->w =3D w;
+> > > > +
+> > > > +		} else if (strstr(kctl->id.name, "deinterleaver") &&
+> > > > +			 !strncmp(kctl->id.name, w->name, index)) {
+> > > > +
+> > > > +			struct sst_enum *e =3D (void *)kctl->private_value;
+> > > > +
+> > > > +			e->w =3D w;
+> > > > +		}
+>=20
+> > > Again no fallthrough case.
+>=20
+> > would that be valid. We have only volume, params, mute, interlevaer and
+> > deinterleaver controls only :)
+> > Can add fall thru for therotical if you feel that is right thing to do.
+>=20
+> Yes, it's better.  This is part of the whole thing about the code
+> setting off alarm bells - things look fragile and the missing error
+> checking does nothing to dispel that.
+Yup, will add these
+
+--=20
+~Vinod
+
+--X3gaHHMYHkYqP6yf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQIcBAEBAgAGBQJUKPVoAAoJEHwUBw8lI4NHQbIQAJqg1lEM0bOLeNxKnPlafw3i
+J8DwQ8iyVG9sHMSIYQ+dceORYsEgY0uYjvDd5to0Z5mIFUeYqQ3nB358uKJfKdQD
+EDOUzzBT4Jn1Pc4gKFn23W22Dq1FpjDE3U3N13WGSxeCxfXJczxgT06sRk4rEBH/
+ysHhW+2wDge/gFbjvc8LHakpKGx7gasgrF0Mug74e9t0Ir8FovVqFCh+0kwZBwRA
+UXxS84L8/Nx0a7ekWJ0POoopHkcJRGgN2V7hg7eD47cXyzT4y5501jRZur2k/FmG
+xl6Dwjx1MIKN6WQh0WXAy8SVBvRrFbbmwmALXnN/gSToxlGM1hg+GnW4Ey8+UtKV
+l5CE8o4VoKZ6BHRC9CG5Ij4+rIk8sSog65VzAmalGpCuem4OICYzSKA+bFILRx74
+wK6EHjDDrUou6WsuMFI5GF5dPd9aIn9H18CWvRdag0LmMQEmZrLx31lJp+GOITBR
+QJASTCOl6cx6/O8rObQ4DgrUlK24JWeG9DWb+A0u7ZShFtHU15SfrjiJ3J4Xejeb
+IF8wFK2vYaQb5/Av6KaL2hHOUBEgyL5AuSvkSIrOpWRlYRnUXcXS0w+6OvN1xliZ
+G38QE2S/Aym4A6Kc4mDcqGR0TTOVItJQnX+q+t4HZ2nsK2lXAtisHfVGqir3SaaY
+3eaHaEMfjO5JL7JStOTN
+=n209
+-----END PGP SIGNATURE-----
+
+--X3gaHHMYHkYqP6yf--
+
+--===============5311277383062848929==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5311277383062848929==--
