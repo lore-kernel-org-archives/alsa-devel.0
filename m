@@ -1,62 +1,45 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [BUG] Bad decibel data on C-Media USB sound card
-Date: Mon, 29 Sep 2014 23:41:46 +0800
-Message-ID: <CAN8cciaSwf80EVw0s3QC0KENCwgBTmTSKrMw_b4ba0iTWD03tg@mail.gmail.com>
-References: <CAPMSj_GXkHE6L8+X6niN2q2OSJ0_N4Rv=CYS4cGOv2cVz9WZNw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: davinci: vcif must be a module if SND_DAVINCI_SOC
+ is
+Date: Mon, 29 Sep 2014 17:12:17 +0100
+Message-ID: <20140929161217.GT16977@sirena.org.uk>
+References: <2771900.ce8bYznKIN@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qg0-f53.google.com (mail-qg0-f53.google.com
- [209.85.192.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B78B260607
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 17:41:48 +0200 (CEST)
-Received: by mail-qg0-f53.google.com with SMTP id a108so930465qge.40
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 08:41:46 -0700 (PDT)
-In-Reply-To: <CAPMSj_GXkHE6L8+X6niN2q2OSJ0_N4Rv=CYS4cGOv2cVz9WZNw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Allen M." <ase1592@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="6axCafNXXMM8qu6Q"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <2771900.ce8bYznKIN@wuerfel>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-> >What is the value of the "Headphone Playback Volume" mixer control
-> >(as shown by "amixer contents") above and below this threshold?
->
-> using "amixer --device hw:Set contents"
-> 36% yields "values=8,8"
-> 34% yields "values=0,0"
->
-> interestingly, using "alsamixer" shows that while (default) reports 36%,
-> the C-media device reports 3%
 
-Card: C-Media USB Headphone Set at usb-0000:00:12.0-1, full speed Unit: 9
-Control: name="Headphone Playback Volume", index=0 Info: id=9, control=2,
-cmask=0x3, channels=2, type="S16" Volume: min=-7264, max=-16, dBmin=-2837,
-dBmax=-6
+--6axCafNXXMM8qu6Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Unit: 10 Control: name="Auto Gain Control", index=0 Info: id=10, control=7,
-cmask=0x0, channels=1, type="BOOLEAN" Volume: min=0, max=1, dBmin=0, dBmax=0
+On Mon, Sep 29, 2014 at 05:32:17PM +0200, Arnd Bergmann wrote:
+> It is possible to configure a kernel with SND_DAVINCI_SOC=m and
+> SND_DM365_VOICE_CODEC=y, which results in a link error:
 
-Do the automatic gain has any side effect when it normalise the volume?
+Applied, thanks.
 
-Do you mean the sound card does not has 7248 steps ?
+--6axCafNXXMM8qu6Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-http://www.freedesktop.org/wiki/Software/PulseAudio/Backends/ALSA/Decibel/
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-You need to find out the value of c->res
+iQEcBAEBAgAGBQJUKYTgAAoJECTWi3JdVIfQhSoH/jeEOwQkwtrvFGYV/24eEZF1
+ujE9yhVRtVnvQmhcYqFdTce8/cberOPg3w41nuqzTadyssOMJEXw3vuYVCoCwdE5
+ITaztKCarG+Q4TnRuzWe/uTuqUBYCVbPaBHK/zfTHR1yj9yEfVUqDl1Oe0ZyyRHj
+cFYSpV/LvwvXStJt0GKlGofcrlCNGXJVm3/Toaa6jiMcBgaKiBtHTs2gzxKAuK7g
+71AXh6/A6EBRdyONLa5djNV5DZd5PmEj5h7V+BquWA0jaf+65REwMnLObPllY4Yk
+HhynbNXCEFo/mDLBSvg8hndidPxZR1iGJqXFEgHh87PBsnaAqK5OrxkyNVNk8H8=
+=2imw
+-----END PGP SIGNATURE-----
 
-https://bugzilla.redhat.com/show_bug.cgi?id=1065097
-
-As you complain dB range -28.37 to -0.06 are not correct
-
-You need to calibrate the dB range
-
-https://bugs.freedesktop.org/show_bug.cgi?id=46236
+--6axCafNXXMM8qu6Q--
