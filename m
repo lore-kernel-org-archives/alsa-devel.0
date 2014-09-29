@@ -1,151 +1,252 @@
 From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH v5 2/6] ALSA: ctxfi: removed typecast to
-	(struct hw *)
-Date: Mon, 29 Sep 2014 14:33:22 +0530
-Message-ID: <1411981406-10611-2-git-send-email-sudipm.mukherjee@gmail.com>
+Subject: [PATCH v5 3/6] ALSA: ctxfi: added reference of snd_card
+Date: Mon, 29 Sep 2014 14:33:23 +0530
+Message-ID: <1411981406-10611-3-git-send-email-sudipm.mukherjee@gmail.com>
 References: <1411981406-10611-1-git-send-email-sudipm.mukherjee@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f169.google.com (mail-pd0-f169.google.com
- [209.85.192.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 14F1D2605C1
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 11:03:49 +0200 (CEST)
-Received: by mail-pd0-f169.google.com with SMTP id p10so4907549pdj.28
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 02:03:48 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1411981406-10611-1-git-send-email-sudipm.mukherjee@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, linux-kernel@vger.kernel.org
+Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-the previous patch of the series has converted the void * to
-struct hw * . Now this patch removes the typecasting to (struct hw *)
-which is not needed any more.
+added a pointer of snd_card in some of the structures to get a
+reference of the card from other functions.
+these references of snd_card will be initialised in the next patch
+of this series and as of now these snd_card will be used to print the
+the device information when we convert the pr_* macros to dev_* in a
+later patch of this series.
 
 Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
 ---
- sound/pci/ctxfi/ctatc.c      |  2 +-
- sound/pci/ctxfi/ctresource.c | 26 +++++++++-----------------
- sound/pci/ctxfi/ctsrc.c      |  6 +++---
- 3 files changed, 13 insertions(+), 21 deletions(-)
+ sound/pci/ctxfi/ctamixer.h   |  3 +++
+ sound/pci/ctxfi/ctdaio.c     | 34 ++++++++++++++++------------------
+ sound/pci/ctxfi/ctdaio.h     |  2 ++
+ sound/pci/ctxfi/cthardware.h |  2 ++
+ sound/pci/ctxfi/ctsrc.h      |  3 +++
+ 5 files changed, 26 insertions(+), 18 deletions(-)
 
-diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
-index 04e54cc..e536ab9 100644
---- a/sound/pci/ctxfi/ctatc.c
-+++ b/sound/pci/ctxfi/ctatc.c
-@@ -1235,7 +1235,7 @@ static int ct_atc_destroy(struct ct_atc *atc)
- 	}
+diff --git a/sound/pci/ctxfi/ctamixer.h b/sound/pci/ctxfi/ctamixer.h
+index 6fa5eff..72f42f2 100644
+--- a/sound/pci/ctxfi/ctamixer.h
++++ b/sound/pci/ctxfi/ctamixer.h
+@@ -21,6 +21,7 @@
  
- 	if (atc->hw)
--		destroy_hw_obj((struct hw *)atc->hw);
-+		destroy_hw_obj(atc->hw);
+ #include "ctresource.h"
+ #include <linux/spinlock.h>
++#include <sound/core.h>
  
- 	/* Destroy device virtual memory manager object */
- 	if (atc->vm) {
-diff --git a/sound/pci/ctxfi/ctresource.c b/sound/pci/ctxfi/ctresource.c
-index f14cbea..5aac63f 100644
---- a/sound/pci/ctxfi/ctresource.c
-+++ b/sound/pci/ctxfi/ctresource.c
-@@ -152,11 +152,10 @@ rsc_init(struct rsc *rsc, u32 idx, enum RSCTYP type, u32 msr, struct hw *hw)
+ /* Define the descriptor of a summation node resource */
+ struct sum {
+@@ -35,6 +36,7 @@ struct sum_desc {
  
- 	switch (type) {
- 	case SRC:
--		err = ((struct hw *)hw)->src_rsc_get_ctrl_blk(&rsc->ctrl_blk);
-+		err = hw->src_rsc_get_ctrl_blk(&rsc->ctrl_blk);
- 		break;
- 	case AMIXER:
--		err = ((struct hw *)hw)->
--				amixer_rsc_get_ctrl_blk(&rsc->ctrl_blk);
-+		err = hw->amixer_rsc_get_ctrl_blk(&rsc->ctrl_blk);
- 		break;
- 	case SRCIMP:
- 	case SUM:
-@@ -180,12 +179,10 @@ int rsc_uninit(struct rsc *rsc)
- 	if ((NULL != rsc->hw) && (NULL != rsc->ctrl_blk)) {
- 		switch (rsc->type) {
- 		case SRC:
--			((struct hw *)rsc->hw)->
--				src_rsc_put_ctrl_blk(rsc->ctrl_blk);
-+			rsc->hw->src_rsc_put_ctrl_blk(rsc->ctrl_blk);
- 			break;
- 		case AMIXER:
--			((struct hw *)rsc->hw)->
--				amixer_rsc_put_ctrl_blk(rsc->ctrl_blk);
-+			rsc->hw->amixer_rsc_put_ctrl_blk(rsc->ctrl_blk);
- 			break;
- 		case SUM:
- 		case DAIO:
-@@ -207,10 +204,9 @@ int rsc_uninit(struct rsc *rsc)
+ struct sum_mgr {
+ 	struct rsc_mgr mgr;	/* Basic resource manager info */
++	struct snd_card *card;	/* pointer to this card */
+ 	spinlock_t mgr_lock;
+ 
+ 	 /* request one sum resource */
+@@ -79,6 +81,7 @@ struct amixer_desc {
+ 
+ struct amixer_mgr {
+ 	struct rsc_mgr mgr;	/* Basic resource manager info */
++	struct snd_card *card;	/* pointer to this card */
+ 	spinlock_t mgr_lock;
+ 
+ 	 /* request one amixer resource */
+diff --git a/sound/pci/ctxfi/ctdaio.c b/sound/pci/ctxfi/ctdaio.c
+index 7541641..3d47fd8 100644
+--- a/sound/pci/ctxfi/ctdaio.c
++++ b/sound/pci/ctxfi/ctdaio.c
+@@ -140,19 +140,19 @@ static int dao_rsc_reinit(struct dao *dao, const struct dao_desc *desc);
+ 
+ static int dao_spdif_get_spos(struct dao *dao, unsigned int *spos)
+ {
+-	((struct hw *)dao->hw)->dao_get_spos(dao->ctrl_blk, spos);
++	dao->hw->dao_get_spos(dao->ctrl_blk, spos);
+ 	return 0;
  }
  
- int rsc_mgr_init(struct rsc_mgr *mgr, enum RSCTYP type,
--		 unsigned int amount, struct hw *hw_obj)
-+		 unsigned int amount, struct hw *hw)
+ static int dao_spdif_set_spos(struct dao *dao, unsigned int spos)
  {
- 	int err = 0;
--	struct hw *hw = hw_obj;
+-	((struct hw *)dao->hw)->dao_set_spos(dao->ctrl_blk, spos);
++	dao->hw->dao_set_spos(dao->ctrl_blk, spos);
+ 	return 0;
+ }
  
- 	mgr->type = NUM_RSCTYP;
+ static int dao_commit_write(struct dao *dao)
+ {
+-	((struct hw *)dao->hw)->dao_commit_write(dao->hw,
++	dao->hw->dao_commit_write(dao->hw,
+ 		daio_device_index(dao->daio.type, dao->hw), dao->ctrl_blk);
+ 	return 0;
+ }
+@@ -277,16 +277,14 @@ static struct dao_rsc_ops dao_ops = {
+ static int dai_set_srt_srcl(struct dai *dai, struct rsc *src)
+ {
+ 	src->ops->master(src);
+-	((struct hw *)dai->hw)->dai_srt_set_srcm(dai->ctrl_blk,
+-						src->ops->index(src));
++	dai->hw->dai_srt_set_srcm(dai->ctrl_blk, src->ops->index(src));
+ 	return 0;
+ }
  
-@@ -265,20 +261,16 @@ int rsc_mgr_uninit(struct rsc_mgr *mgr)
- 	if ((NULL != mgr->hw) && (NULL != mgr->ctrl_blk)) {
- 		switch (mgr->type) {
- 		case SRC:
--			((struct hw *)mgr->hw)->
--				src_mgr_put_ctrl_blk(mgr->ctrl_blk);
-+			mgr->hw->src_mgr_put_ctrl_blk(mgr->ctrl_blk);
+ static int dai_set_srt_srcr(struct dai *dai, struct rsc *src)
+ {
+ 	src->ops->master(src);
+-	((struct hw *)dai->hw)->dai_srt_set_srco(dai->ctrl_blk,
+-						src->ops->index(src));
++	dai->hw->dai_srt_set_srco(dai->ctrl_blk, src->ops->index(src));
+ 	return 0;
+ }
+ 
+@@ -297,25 +295,25 @@ static int dai_set_srt_msr(struct dai *dai, unsigned int msr)
+ 	for (rsr = 0; msr > 1; msr >>= 1)
+ 		rsr++;
+ 
+-	((struct hw *)dai->hw)->dai_srt_set_rsr(dai->ctrl_blk, rsr);
++	dai->hw->dai_srt_set_rsr(dai->ctrl_blk, rsr);
+ 	return 0;
+ }
+ 
+ static int dai_set_enb_src(struct dai *dai, unsigned int enb)
+ {
+-	((struct hw *)dai->hw)->dai_srt_set_ec(dai->ctrl_blk, enb);
++	dai->hw->dai_srt_set_ec(dai->ctrl_blk, enb);
+ 	return 0;
+ }
+ 
+ static int dai_set_enb_srt(struct dai *dai, unsigned int enb)
+ {
+-	((struct hw *)dai->hw)->dai_srt_set_et(dai->ctrl_blk, enb);
++	dai->hw->dai_srt_set_et(dai->ctrl_blk, enb);
+ 	return 0;
+ }
+ 
+ static int dai_commit_write(struct dai *dai)
+ {
+-	((struct hw *)dai->hw)->dai_commit_write(dai->hw,
++	dai->hw->dai_commit_write(dai->hw,
+ 		daio_device_index(dai->daio.type, dai->hw), dai->ctrl_blk);
+ 	return 0;
+ }
+@@ -336,7 +334,7 @@ static int daio_rsc_init(struct daio *daio,
+ 	int err;
+ 	unsigned int idx_l, idx_r;
+ 
+-	switch (((struct hw *)hw)->chip_type) {
++	switch (hw->chip_type) {
+ 	case ATC20K1:
+ 		idx_l = idx_20k1[desc->type].left;
+ 		idx_r = idx_20k1[desc->type].right;
+@@ -360,7 +358,7 @@ static int daio_rsc_init(struct daio *daio,
+ 	if (desc->type <= DAIO_OUT_MAX) {
+ 		daio->rscl.ops = daio->rscr.ops = &daio_out_rsc_ops;
+ 	} else {
+-		switch (((struct hw *)hw)->chip_type) {
++		switch (hw->chip_type) {
+ 		case ATC20K1:
+ 			daio->rscl.ops = daio->rscr.ops = &daio_in_rsc_ops_20k1;
  			break;
- 		case SRCIMP:
--			((struct hw *)mgr->hw)->
--				srcimp_mgr_put_ctrl_blk(mgr->ctrl_blk);
-+			mgr->hw->srcimp_mgr_put_ctrl_blk(mgr->ctrl_blk);
- 			break;
- 		case AMIXER:
--			((struct hw *)mgr->hw)->
--				amixer_mgr_put_ctrl_blk(mgr->ctrl_blk);
-+			mgr->hw->amixer_mgr_put_ctrl_blk(mgr->ctrl_blk);
- 			break;
- 		case DAIO:
--			((struct hw *)mgr->hw)->
--				daio_mgr_put_ctrl_blk(mgr->ctrl_blk);
-+			mgr->hw->daio_mgr_put_ctrl_blk(mgr->ctrl_blk);
- 			break;
- 		case SUM:
- 			break;
-diff --git a/sound/pci/ctxfi/ctsrc.c b/sound/pci/ctxfi/ctsrc.c
-index 342008f..d3ef213 100644
---- a/sound/pci/ctxfi/ctsrc.c
-+++ b/sound/pci/ctxfi/ctsrc.c
-@@ -558,7 +558,7 @@ int src_mgr_create(struct hw *hw, struct src_mgr **rsrc_mgr)
- 		goto error1;
+@@ -445,7 +443,7 @@ static int dao_rsc_uninit(struct dao *dao)
+ 		kfree(dao->imappers);
+ 		dao->imappers = NULL;
+ 	}
+-	((struct hw *)dao->hw)->dao_put_ctrl_blk(dao->ctrl_blk);
++	dao->hw->dao_put_ctrl_blk(dao->ctrl_blk);
+ 	dao->hw = dao->ctrl_blk = NULL;
+ 	daio_rsc_uninit(&dao->daio);
  
- 	spin_lock_init(&src_mgr->mgr_lock);
--	conj_mask = ((struct hw *)hw)->src_dirty_conj_mask();
-+	conj_mask = hw->src_dirty_conj_mask();
+@@ -502,7 +500,7 @@ error1:
  
- 	src_mgr->get_src = get_src_rsc;
- 	src_mgr->put_src = put_src_rsc;
-@@ -569,9 +569,9 @@ int src_mgr_create(struct hw *hw, struct src_mgr **rsrc_mgr)
+ static int dai_rsc_uninit(struct dai *dai)
+ {
+-	((struct hw *)dai->hw)->dai_put_ctrl_blk(dai->ctrl_blk);
++	dai->hw->dai_put_ctrl_blk(dai->ctrl_blk);
+ 	dai->hw = dai->ctrl_blk = NULL;
+ 	daio_rsc_uninit(&dai->daio);
+ 	return 0;
+@@ -729,10 +727,10 @@ int daio_mgr_create(struct hw *hw, struct daio_mgr **rdaio_mgr)
+ 	daio_mgr->commit_write = daio_mgr_commit_write;
  
- 	/* Disable all SRC resources. */
- 	for (i = 0; i < 256; i++)
--		((struct hw *)hw)->src_mgr_dsb_src(src_mgr->mgr.ctrl_blk, i);
-+		hw->src_mgr_dsb_src(src_mgr->mgr.ctrl_blk, i);
+ 	for (i = 0; i < 8; i++) {
+-		((struct hw *)hw)->daio_mgr_dsb_dao(daio_mgr->mgr.ctrl_blk, i);
+-		((struct hw *)hw)->daio_mgr_dsb_dai(daio_mgr->mgr.ctrl_blk, i);
++		hw->daio_mgr_dsb_dao(daio_mgr->mgr.ctrl_blk, i);
++		hw->daio_mgr_dsb_dai(daio_mgr->mgr.ctrl_blk, i);
+ 	}
+-	((struct hw *)hw)->daio_mgr_commit_write(hw, daio_mgr->mgr.ctrl_blk);
++	hw->daio_mgr_commit_write(hw, daio_mgr->mgr.ctrl_blk);
  
--	((struct hw *)hw)->src_mgr_commit_write(hw, src_mgr->mgr.ctrl_blk);
-+	hw->src_mgr_commit_write(hw, src_mgr->mgr.ctrl_blk);
+ 	*rdaio_mgr = daio_mgr;
  
- 	*rsrc_mgr = src_mgr;
+diff --git a/sound/pci/ctxfi/ctdaio.h b/sound/pci/ctxfi/ctdaio.h
+index e4817de..0ebbf35 100644
+--- a/sound/pci/ctxfi/ctdaio.h
++++ b/sound/pci/ctxfi/ctdaio.h
+@@ -23,6 +23,7 @@
+ #include "ctimap.h"
+ #include <linux/spinlock.h>
+ #include <linux/list.h>
++#include <sound/core.h>
  
+ /* Define the descriptor of a daio resource */
+ enum DAIOTYP {
+@@ -98,6 +99,7 @@ struct daio_desc {
+ 
+ struct daio_mgr {
+ 	struct rsc_mgr mgr;	/* Basic resource manager info */
++	struct snd_card *card;	/* pointer to this card */
+ 	spinlock_t mgr_lock;
+ 	spinlock_t imap_lock;
+ 	struct list_head imappers;
+diff --git a/sound/pci/ctxfi/cthardware.h b/sound/pci/ctxfi/cthardware.h
+index c5ded6a..54cc9cb 100644
+--- a/sound/pci/ctxfi/cthardware.h
++++ b/sound/pci/ctxfi/cthardware.h
+@@ -20,6 +20,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/pci.h>
++#include <sound/core.h>
+ 
+ enum CHIPTYP {
+ 	ATC20K1,
+@@ -184,6 +185,7 @@ struct hw {
+ 	void *irq_callback_data;
+ 
+ 	struct pci_dev *pci;	/* the pci kernel structure of this card */
++	struct snd_card *card;	/* pointer to this card */
+ 	int irq;
+ 	unsigned long io_base;
+ 	void __iomem *mem_base;
+diff --git a/sound/pci/ctxfi/ctsrc.h b/sound/pci/ctxfi/ctsrc.h
+index 6d95afb..da7573c 100644
+--- a/sound/pci/ctxfi/ctsrc.h
++++ b/sound/pci/ctxfi/ctsrc.h
+@@ -23,6 +23,7 @@
+ #include "ctimap.h"
+ #include <linux/spinlock.h>
+ #include <linux/list.h>
++#include <sound/core.h>
+ 
+ #define SRC_STATE_OFF	0x0
+ #define SRC_STATE_INIT	0x4
+@@ -85,6 +86,7 @@ struct src_desc {
+ /* Define src manager object */
+ struct src_mgr {
+ 	struct rsc_mgr mgr;	/* Basic resource manager info */
++	struct snd_card *card;	/* pointer to this card */
+ 	spinlock_t mgr_lock;
+ 
+ 	 /* request src resource */
+@@ -123,6 +125,7 @@ struct srcimp_desc {
+ 
+ struct srcimp_mgr {
+ 	struct rsc_mgr mgr;	/* Basic resource manager info */
++	struct snd_card *card;	/* pointer to this card */
+ 	spinlock_t mgr_lock;
+ 	spinlock_t imap_lock;
+ 	struct list_head imappers;
 -- 
 1.8.1.2
