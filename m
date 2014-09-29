@@ -1,14 +1,17 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: [GIT PULL] ASoC fixes for v3.17
-Date: Mon, 29 Sep 2014 18:15:51 +0100
-Message-ID: <20140929171551.GY16977@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: wm8{350, 753,
+ 971}: Use snd_soc_dapm_to_codec() instead of dapm->codec
+Date: Mon, 29 Sep 2014 18:31:52 +0100
+Message-ID: <20140929173152.GZ16977@sirena.org.uk>
+References: <1411983642-12793-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6270225454698024700=="
+Content-Type: multipart/mixed; boundary="===============5446290747438447981=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E84B6260645
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 19:16:07 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 85C66260645
+ for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 19:32:08 +0200 (CEST)
+In-Reply-To: <1411983642-12793-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,89 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6270225454698024700==
+--===============5446290747438447981==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tAdHiH28s3ybHVSb"
+	protocol="application/pgp-signature"; boundary="PjJwPjbdn5RfZuWK"
 Content-Disposition: inline
 
 
---tAdHiH28s3ybHVSb
+--PjJwPjbdn5RfZuWK
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The following changes since commit 0f33be009b89d2268e94194dc4fd01a7851b6d51:
+On Mon, Sep 29, 2014 at 11:40:40AM +0200, Lars-Peter Clausen wrote:
+> The CODEC struct in the snd_soc_dapm_context struct is deprecated and
+> scheduled for removal. Use the snd_soc_dapm_to_codec() function instead.
 
-  Linux 3.17-rc6 (2014-09-21 15:43:02 -0700)
+Applied all, thanks.
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.17-rc6
-
-for you to fetch changes up to 82b925c405444b760e743b55a9ad498cb3551afe:
-
-  Merge remote-tracking branches 'asoc/fix/atmel', 'asoc/fix/compress', 'asoc/fix/core', 'asoc/fix/fsl-ssi' and 'asoc/fix/rt286' into asoc-linus (2014-09-28 12:25:12 +0100)
-
-----------------------------------------------------------------
-ASoC: Fixes for v3.17
-
-A few small driver specific fixes and a couple of error handling fixes
-in the core.
-
-----------------------------------------------------------------
-Bard Liao (2):
-      ASoC: rt286: Correct default value
-      ASoC: rt286: Fix sync function
-
-Bo Shen (1):
-      MAINTAINERS: add atmel audio alsa driver maintainer entry
-
-Mark Brown (1):
-      Merge remote-tracking branches 'asoc/fix/atmel', 'asoc/fix/compress', 'asoc/fix/core', 'asoc/fix/fsl-ssi' and 'asoc/fix/rt286' into asoc-linus
-
-Michael Trimarchi (1):
-      ASoC: fsl_ssi: fix kernel panic in probe function
-
-Qiao Zhou (1):
-      ASoC: soc-compress: fix double unlock of fe card mutex
-
-Xiubo Li (1):
-      ASoC: core: fix possible ZERO_SIZE_PTR pointer dereferencing error.
-
- MAINTAINERS              |  6 ++++++
- sound/soc/codecs/rt286.c |  7 +++----
- sound/soc/fsl/fsl_ssi.c  | 12 +++++++-----
- sound/soc/soc-compress.c |  6 ++----
- sound/soc/soc-core.c     |  2 +-
- 5 files changed, 19 insertions(+), 14 deletions(-)
-
---tAdHiH28s3ybHVSb
+--PjJwPjbdn5RfZuWK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUKZPHAAoJECTWi3JdVIfQsycH/1QvhaO1oORFN2xisUtGNs0f
-st2njZ5wS8g081hZl35u1dPAc0Eiyd6QtBWjM8ev6hWopB+qxio8SWqM8GYKmpw5
-lKZUDjuWCRPsaRuTAptoNUk5W4olWNLxbw7PN5C2l8q2QnVl5pFsFEHhOSfCddck
-OezSzqOhLpASayzH1P/n108FEEslKZcn4yRkgkwFeDO6N8B8L8h4UThO1viBHzds
-779w5yQPynlN5i8MnusQiFbn7UJXoowjAABTQwMtd8LvqHbub+0jbC7AykXSmVTP
-1EU4Tzc/kzeKgWePMv4OcA8qG8CJrTv2qqQ1RG1EIt+leQW6XsqQHQjv9qXUxJA=
-=X/Vl
+iQEcBAEBAgAGBQJUKZeHAAoJECTWi3JdVIfQEFUH/2RG78eGy/PHNBYjDE/fFXcT
+iWlsuitPFnedqaKzySnsvBXiCs5H4izZWecaho8zj8rYclLEcu/A72alv4ZKLkTo
+6fCeXFPBkfeBaRl/n5rCr4xxEw07hpWYimC7LhWKEo/uc1MfSIle6krYtJSCEru7
+MAVn+oW9iLtoi+w0gNog7y91p+EeqOFvMcrq48W5YzHSNa4XJClebiMIZrw3NrzA
+ItfBEgKRh1G10aXSXd1C84+SVGI6aWztpEWhxdVrJohkQq2ahENoA86zKry6LlXO
+ghwJQjg+CM2aCXQ3IiUmbwi5/RDtByunLC9sz9X9pGp9naWZ6Z7gYB78CV0tcx0=
+=oYFG
 -----END PGP SIGNATURE-----
 
---tAdHiH28s3ybHVSb--
+--PjJwPjbdn5RfZuWK--
 
---===============6270225454698024700==
+--===============5446290747438447981==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6270225454698024700==--
+--===============5446290747438447981==--
