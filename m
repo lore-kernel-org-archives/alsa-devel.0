@@ -1,48 +1,39 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: davinci: vcif must be a module if SND_DAVINCI_SOC is
-Date: Mon, 29 Sep 2014 17:32:17 +0200
-Message-ID: <2771900.ce8bYznKIN@wuerfel>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH 2/3] ASoC: rx51: Use
+ snd_soc_dapm_to_codec() instead of dapm->codec
+Date: Mon, 29 Sep 2014 18:33:21 +0300
+Message-ID: <20140929153321.GA21259@bitmer.com>
+References: <1411983642-12793-1-git-send-email-lars@metafoo.de>
+ <1411983642-12793-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bitmer.com (bitmer.com [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE8D2260658
+ for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 17:33:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1411983642-12793-2-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-It is possible to configure a kernel with SND_DAVINCI_SOC=m and
-SND_DM365_VOICE_CODEC=y, which results in a link error:
-
-sound/built-in.o: In function `davinci_vcif_probe':
-sound/soc/davinci/davinci-vcif.c:223: undefined reference to `davinci_soc_platform_register'
-
-The best way to avoid this is to make SND_DM365_VOICE_CODEC
-a tristate option that depends on SND_DAVINCI_SOC, so it
-can only be a module or disabled when the base driver is
-a loadable module
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
-index d69510c53239..8e948c63f3d9 100644
---- a/sound/soc/davinci/Kconfig
-+++ b/sound/soc/davinci/Kconfig
-@@ -63,7 +63,8 @@ config SND_DM365_AIC3X_CODEC
- 	  Say Y if you want to add support for AIC3101 audio codec
- 
- config SND_DM365_VOICE_CODEC
--	bool "Voice Codec - CQ93VC"
-+	tristate "Voice Codec - CQ93VC"
-+	depends on SND_DAVINCI_SOC
- 	select MFD_DAVINCI_VOICECODEC
- 	select SND_DAVINCI_SOC_VCIF
- 	select SND_SOC_CQ0093VC
+On Mon, Sep 29, 2014 at 11:40:41AM +0200, Lars-Peter Clausen wrote:
+> The CODEC struct in the snd_soc_dapm_context struct is deprecated and
+> scheduled for removal. Use the snd_soc_dapm_to_codec() function instead.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>  sound/soc/omap/rx51.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
