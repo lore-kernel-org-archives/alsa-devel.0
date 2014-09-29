@@ -1,75 +1,46 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/2] ASoC: ssm2602: add device tree bindings
-Date: Mon, 29 Sep 2014 10:50:24 +0200
-Message-ID: <54291D50.30002@metafoo.de>
-References: <1411891072-22637-1-git-send-email-stefan.kristiansson@saunalahti.fi>
+Subject: Re: [PATCH 2/2] ASoC: ssm2602: add support for 11.025kHz and 22.5kHz
+ sample rates
+Date: Mon, 29 Sep 2014 10:57:08 +0200
+Message-ID: <54291EE4.7030505@metafoo.de>
+References: <1411891105-22683-1-git-send-email-stefan.kristiansson@saunalahti.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1411891072-22637-1-git-send-email-stefan.kristiansson@saunalahti.fi>
+In-Reply-To: <1411891105-22683-1-git-send-email-stefan.kristiansson@saunalahti.fi>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/28/2014 09:57 AM, Stefan Kristiansson wrote:
-> Allow the ssm2602/ssm2603/ssm2604 codec driver to be
-> instantiated from the device tree.
->
-> Also, add Kconfig prompts to allow manual selection of both the
-> I2C and SPI configuration versions of the driver.
+On 09/28/2014 09:58 AM, Stefan Kristiansson wrote:
+> This adds the necessary values to the constraint list and
+> register values to the coefficient table in order to
+> configure the device for 11.025kHz and 22.5kHz sample rates.
 >
 > Signed-off-by: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
 
-Looks mostly good, but you should Cc both the devicetree and the ASoC 
-maintainers.
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+
+Thanks.
+
+But again, don't forget to Cc the ASoC maintainers, otherwise the patch will 
+be lost.
 
 [...]
-> diff --git a/sound/soc/codecs/ssm2602-i2c.c b/sound/soc/codecs/ssm2602-i2c.c
-> index abd63d5..0d9779d 100644
-> --- a/sound/soc/codecs/ssm2602-i2c.c
-> +++ b/sound/soc/codecs/ssm2602-i2c.c
-> @@ -41,10 +41,19 @@ static const struct i2c_device_id ssm2602_i2c_id[] = {
->   };
->   MODULE_DEVICE_TABLE(i2c, ssm2602_i2c_id);
->
-> +static const struct of_device_id ssm2602_of_match[] = {
-> +	{ .compatible = "adi,ssm2602", },
-> +	{ .compatible = "adi,ssm2603", },
-> +	{ .compatible = "adi,ssm2604", },
-
-Since the driver is supposed to behave different depending on the device you 
-should set the driver data similar to like it is done in the ssm2602_i2c_id 
-table and add code in the probe function to extract the driver data.
-
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ssm2602_of_match);
-> +
->   static struct i2c_driver ssm2602_i2c_driver = {
->   	.driver = {
->   		.name = "ssm2602",
->   		.owner = THIS_MODULE,
-> +		.of_match_table = ssm2602_of_match,
->   	},
->   	.probe = ssm2602_i2c_probe,
->   	.remove = ssm2602_i2c_remove,
-> diff --git a/sound/soc/codecs/ssm2602-spi.c b/sound/soc/codecs/ssm2602-spi.c
-> index 2bf55e2..fb4cc46 100644
-> --- a/sound/soc/codecs/ssm2602-spi.c
-> +++ b/sound/soc/codecs/ssm2602-spi.c
-> @@ -26,10 +26,19 @@ static int ssm2602_spi_remove(struct spi_device *spi)
+> @@ -467,7 +477,8 @@ static int ssm2602_set_bias_level(struct snd_soc_codec *codec,
 >   	return 0;
 >   }
 >
-> +static const struct of_device_id ssm2602_of_match[] = {
-> +	{ .compatible = "adi,ssm2602", },
-> +	{ .compatible = "adi,ssm2603", },
-> +	{ .compatible = "adi,ssm2604", },
+> -#define SSM2602_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
+> +#define SSM2602_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
+> +		SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_16000 |\
 
-The ssm2603 and ssm2604 do not have a SPI interface.
+Tiny nitpick, order should be SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 to 
+keep things sorted.
 
-> +	{ }
-> +};
-[...]
+>   		SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
+>   		SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
+>   		SNDRV_PCM_RATE_96000)
+>
