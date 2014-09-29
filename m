@@ -1,33 +1,60 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: Re: [PATCH v3] ES938 support for ES18xx driver
-Date: Mon, 29 Sep 2014 23:58:04 +0200
-Message-ID: <20140929215804.GA20023@rhlx01.hs-esslingen.de>
-References: <1412027079-15876-1-git-send-email-linux@rainbow-software.org>
+From: "Allen M." <ase1592@gmail.com>
+Subject: [BUG] Bad decibel data on C-Media USB sound card
+Date: Mon, 29 Sep 2014 17:29:33 -0500
+Message-ID: <CAPMSj_H2Y4r-iFc5i0hBtfuhZKmRzsT9X37XernRLbc4faQbXA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1412027079-15876-1-git-send-email-linux@rainbow-software.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ondrej Zary <linux@rainbow-software.org>
-Cc: alsa-devel@alsa-project.org, Andreas Mohr <andi@lisas.de>, Kernel development list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yh0-f51.google.com (mail-yh0-f51.google.com
+ [209.85.213.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CD1E260682
+ for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2014 00:29:35 +0200 (CEST)
+Received: by mail-yh0-f51.google.com with SMTP id c41so6017922yho.24
+ for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 15:29:34 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: superquad.vortex2@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 29, 2014 at 11:44:39PM +0200, Ondrej Zary wrote:
-> Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-> ---
-> Changes in v3:
->  - constify buf argument to snd_rawmidi_kernel_write
->  - remove double if from probe
->  - spelling fix
-> Changes in v2:
->  - debug message when ES938 detected
->  - reworked sysex messages to use structs
->  - ktime instead of jiffies for timeout
-> ---
+Raymond Yau wrote:
 
-Nice!
+>Do the automatic gain has any side effect when it normalise the volume?
 
-Reviewed-by: Andreas Mohr <andim2@users.sf.net>
+I am unsure of how to go about testing that, 'alsamixer' does not appear
+to allow me to modify automatic gain.
 
-Andreas Mohr
+
+>Do you mean the sound card does not has 7248 steps?
+
+I am not familiar with how to properly check, however dbverify indicates
+'Element volume range is 0..151 (-28.37..-0.06 dB).'
+
+Instructions for dbmeasure on the wiki indicates the need for a Line In,
+the sound card only provides Line Out and Mic In. Will it automatically
+make use of 'Mic In' if 'Line In' is absent? Or do I even need to use it?
+
+
+>You need to find out the value of c->res
+>As you complain dB range -28.37 to -0.06 are not correct
+
+Quick testing done with dbverify: http://ix.io/eyi
+
+
+>You need to calibrate the dB range
+
+Volume Steps <=3 are mute while volume step 4 is audible,
+based on dbverify testing. This 'seems' to indicate that the
+minimum volume is somewhere between -27.81 dB to -27.63 dB?
+
+Additional info logs:
+Output of 'amixer -c2 contents': http://ix.io/eyq
+Alsa info script output: http://ix.io/eyn
