@@ -1,151 +1,108 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v7 3/7] ASoC: Intel: mrfld: add DSP core
-	controls
-Date: Mon, 29 Sep 2014 11:30:09 +0530
-Message-ID: <20140929060008.GM1638@intel.com>
-References: <1411125368-5836-1-git-send-email-subhransu.s.prusty@intel.com>
- <1411125368-5836-4-git-send-email-subhransu.s.prusty@intel.com>
- <20140925150813.GU27755@sirena.org.uk>
- <20140925160853.GB1638@intel.com>
- <20140927111333.GH27755@sirena.org.uk>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v3 5/5] ARM: dts: am335x-boneblack: Add HDMI audio support
+Date: Mon, 29 Sep 2014 09:41:59 +0300
+Message-ID: <5428FF37.1020104@ti.com>
+References: <cover.1410898073.git.jsarha@ti.com> <1af922a485e8084aff33eaeafa30d4698d1cc886.1410898073.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5311277383062848929=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 45D4E26058B
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 08:30:04 +0200 (CEST)
-In-Reply-To: <20140927111333.GH27755@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1af922a485e8084aff33eaeafa30d4698d1cc886.1410898073.git.jsarha@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: dri-devel@lists.freedesktop.org, airlied@linux.ie, linux-omap@vger.kernel.org, devicetree@vger.kernel.org, bcousson@baylibre.com, alsa-devel@alsa-project.org
+Cc: tony@atomide.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, peter.ujfalusi@ti.com, detheridge@ti.com, t-kristo@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+This patch is invalid now that Mike Turquette took the generic 
+clk-gpio-gate in. The other patches in the series are still Ok.
 
---===============5311277383062848929==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="X3gaHHMYHkYqP6yf"
-Content-Disposition: inline
+I'll mail a new dts patch shortly.
 
+Best regards,
+Jyri
 
---X3gaHHMYHkYqP6yf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 09/16/2014 11:40 PM, Jyri Sarha wrote:
+> Adds mcasp0_pins, clk_mcasp0_fixed, clk_mcasp0, mcasp0, hdmi_audio,
+> and sound nodes.
+>
+> Signed-off-by: Jyri Sarha <jsarha@ti.com>
+> ---
+>   arch/arm/boot/dts/am335x-boneblack.dts |   52 ++++++++++++++++++++++++++++++++
+>   1 file changed, 52 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
+> index 305975d..1487f7c 100644
+> --- a/arch/arm/boot/dts/am335x-boneblack.dts
+> +++ b/arch/arm/boot/dts/am335x-boneblack.dts
+> @@ -59,12 +59,35 @@
+>   			0x1b0 0x03      /* xdma_event_intr0, OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT */
+>   		>;
+>   	};
+> +
+> +	mcasp0_pins: mcasp0_pins {
+> +		pinctrl-single,pins = <
+> +			0x1ac (PIN_INPUT_PULLUP | MUX_MODE0)	/* mcasp0_ahclkx.mcasp0_ahclkx */
+> +			0x19c (PIN_OUTPUT_PULLDOWN | MUX_MODE2) /* mcasp0_ahclkr.mcasp0_axr2 */
+> +			0x194 (PIN_OUTPUT_PULLUP | MUX_MODE0)	/* mcasp0_fsx.mcasp0_fsx */
+> +			0x190 (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* mcasp0_aclkx.mcasp0_aclkx */
+> +			0x06c (PIN_OUTPUT_PULLDOWN | MUX_MODE7)	/* gpmc_a11.GPIO1_27 */
+> +		>;
+> +	};
+>   };
+>
+>   &lcdc {
+>   	status = "okay";
+>   };
+>
+> +&mcasp0	{
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mcasp0_pins>;
+> +	status = "okay";
+> +	op-mode = <0>;	/* MCASP_IIS_MODE */
+> +	tdm-slots = <2>;
+> +	serial-dir = <	/* 0: INACTIVE, 1: TX, 2: RX */
+> +			0 0 1 0
+> +		>;
+> +	tx-num-evt = <1>;
+> +	rx-num-evt = <1>;
+> +};
+> +
+>   / {
+>   	hdmi {
+>   		compatible = "ti,tilcdc,slave";
+> @@ -74,4 +97,33 @@
+>   		pinctrl-1 = <&nxp_hdmi_bonelt_off_pins>;
+>   		status = "okay";
+>   	};
+> +
+> +	clk_mcasp0_fixed: clk_mcasp0_fixed {
+> +	      #clock-cells = <0>;
+> +	      compatible = "fixed-clock";
+> +	      clock-frequency = <24576000>;
+> +	};
+> +
+> +	clk_mcasp0: clk_mcasp0 {
+> +	      #clock-cells = <0>;
+> +	      compatible = "ti,gpio-gate-clock";
+> +	      clocks = <&clk_mcasp0_fixed>;
+> +	      enable-gpios = <&gpio1 27 0>; /* BeagleBone Black Clk enable on GPIO1_27 */
+> +	};
+> +
+> +	hdmi_audio: hdmi_audio@0 {
+> +	       compatible = "linux,hdmi-audio";
+> +	       status = "okay";
+> +	};
+> +
+> +	sound {
+> +		compatible = "ti,beaglebone-black-audio";
+> +		ti,model = "TI BeagleBone Black";
+> +		ti,audio-codec = <&hdmi_audio>;
+> +		ti,mcasp-controller = <&mcasp0>;
+> +		ti,audio-routing =
+> +			"HDMI Out",	"TX";
+> +		clocks = <&clk_mcasp0>;
+> +		clock-names = "mclk";
+> +	};
+>   };
+>
 
-On Sat, Sep 27, 2014 at 12:13:33PM +0100, Mark Brown wrote:
-> On Thu, Sep 25, 2014 at 09:38:53PM +0530, Vinod Koul wrote:
-> > On Thu, Sep 25, 2014 at 04:08:13PM +0100, Mark Brown wrote:
-> > > On Fri, Sep 19, 2014 at 04:46:04PM +0530, Subhransu S. Prusty wrote:
->=20
-> > > > +       u8 *map =3D is_tx ? sst_ssp_channel_map : sst_ssp_slot_map;
->=20
-> > > So the "channel" map is for transmit and the "slot" map is for receiv=
-e?
-> > > That naming doesn't seem at all obvious, I'd expect some confusion and
-> > > resulting bugs there. =20
->=20
-> > yes as multiple channels get interleaved to slot while transmitting and=
- on
-> > recive side various lots get de-interleaved to channels :)
-> > These controls allow you to route stuff.
->=20
-> I can tell what they're supposed to do given the above code, what I'm
-> saying is that when I see the above code I'm expecting to find bugs
-> elsewhere since it's not going to be clear if you see either variable in
-> isolation.  Better naming please, for example use the direction.
-Sure will add tx and rx to the control names to make it explict. Thanks for
-the suggestion
-
-> > The DSP has the bitmap for interlever as explained in sst_send_slot_map=
-()
->=20
-> > /*
-> >  * channel map value is a bitfield where each bit represents a slot
-> >  *
-> >  *                        76543210      # 0 =3D slot 0, 1 =3D slot 1
-> >  *
-> >  * e.g. codec1_0 tx map =3D 00000101b -> data from codec_out1_0 goes in=
-to slot
-> >  * 0, 2
-> >  */
->=20
-> > so based on the channel selected here we will set the map and send to D=
-SP.
-> > For none case we don't need to do anything. Yes this bit need this
-> > explanation so will add up
->=20
-> But why not - why is the effect of clearing all the bits to do nothing?
-Okay thanks for pointing out, We did check on this bit. So initially DSP
-wasn't supporting the dynamic updates of the  slots so thsi was fine but
-later we added support. On re-examining again as you pointed yes 'none'
-value needs to reset the bitmap and send to DSP so we just need to forward
-the IPC here as well. I will fix it up.
-
-> > > > +			 !strncmp(kctl->id.name, w->name, index)) {
-> > > > +			struct sst_enum *e =3D (void *)kctl->private_value;
-> > > > +
-> > > > +			e->w =3D w;
-> > > > +
-> > > > +		} else if (strstr(kctl->id.name, "deinterleaver") &&
-> > > > +			 !strncmp(kctl->id.name, w->name, index)) {
-> > > > +
-> > > > +			struct sst_enum *e =3D (void *)kctl->private_value;
-> > > > +
-> > > > +			e->w =3D w;
-> > > > +		}
->=20
-> > > Again no fallthrough case.
->=20
-> > would that be valid. We have only volume, params, mute, interlevaer and
-> > deinterleaver controls only :)
-> > Can add fall thru for therotical if you feel that is right thing to do.
->=20
-> Yes, it's better.  This is part of the whole thing about the code
-> setting off alarm bells - things look fragile and the missing error
-> checking does nothing to dispel that.
-Yup, will add these
-
---=20
-~Vinod
-
---X3gaHHMYHkYqP6yf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJUKPVoAAoJEHwUBw8lI4NHQbIQAJqg1lEM0bOLeNxKnPlafw3i
-J8DwQ8iyVG9sHMSIYQ+dceORYsEgY0uYjvDd5to0Z5mIFUeYqQ3nB358uKJfKdQD
-EDOUzzBT4Jn1Pc4gKFn23W22Dq1FpjDE3U3N13WGSxeCxfXJczxgT06sRk4rEBH/
-ysHhW+2wDge/gFbjvc8LHakpKGx7gasgrF0Mug74e9t0Ir8FovVqFCh+0kwZBwRA
-UXxS84L8/Nx0a7ekWJ0POoopHkcJRGgN2V7hg7eD47cXyzT4y5501jRZur2k/FmG
-xl6Dwjx1MIKN6WQh0WXAy8SVBvRrFbbmwmALXnN/gSToxlGM1hg+GnW4Ey8+UtKV
-l5CE8o4VoKZ6BHRC9CG5Ij4+rIk8sSog65VzAmalGpCuem4OICYzSKA+bFILRx74
-wK6EHjDDrUou6WsuMFI5GF5dPd9aIn9H18CWvRdag0LmMQEmZrLx31lJp+GOITBR
-QJASTCOl6cx6/O8rObQ4DgrUlK24JWeG9DWb+A0u7ZShFtHU15SfrjiJ3J4Xejeb
-IF8wFK2vYaQb5/Av6KaL2hHOUBEgyL5AuSvkSIrOpWRlYRnUXcXS0w+6OvN1xliZ
-G38QE2S/Aym4A6Kc4mDcqGR0TTOVItJQnX+q+t4HZ2nsK2lXAtisHfVGqir3SaaY
-3eaHaEMfjO5JL7JStOTN
-=n209
------END PGP SIGNATURE-----
-
---X3gaHHMYHkYqP6yf--
-
---===============5311277383062848929==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5311277383062848929==--
