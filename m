@@ -1,18 +1,21 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: wm8{350, 753,
-	971}: Use	snd_soc_dapm_to_codec() instead of dapm->codec
-Date: Mon, 29 Sep 2014 13:53:26 +0100
-Message-ID: <20140929125326.GK29992@opensource.wolfsonmicro.com>
-References: <1411983642-12793-1-git-send-email-lars@metafoo.de>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Allow the codec to work in
+	slave mode
+Date: Mon, 29 Sep 2014 10:17:57 -0300
+Message-ID: <CAOMZO5BUvZDgY+-VUVENWEoXZS4qFDBKA7ZZLAOzDt-Oawm9tA@mail.gmail.com>
+References: <1411082245-25679-1-git-send-email-festevam@gmail.com>
+ <20140923015448.GF27755@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9843B260605
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 14:53:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1411983642-12793-1-git-send-email-lars@metafoo.de>
+Received: from mail-la0-f46.google.com (mail-la0-f46.google.com
+ [209.85.215.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id B796C2606B6
+ for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 15:17:57 +0200 (CEST)
+Received: by mail-la0-f46.google.com with SMTP id gi9so7701580lab.33
+ for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 06:17:57 -0700 (PDT)
+In-Reply-To: <20140923015448.GF27755@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,18 +25,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Fabio Estevam <fabio.estevam@freescale.com>, Shawn Guo <shawn.guo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 29, 2014 at 11:40:40AM +0200, Lars-Peter Clausen wrote:
-> The CODEC struct in the snd_soc_dapm_context struct is deprecated and
-> scheduled for removal. Use the snd_soc_dapm_to_codec() function instead.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
+Hi Mark,
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+On Mon, Sep 22, 2014 at 10:54 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Sep 18, 2014 at 08:17:25PM -0300, Fabio Estevam wrote:
+>
+>>       default:
+>> -             /* if mclk not satisify the divider, use pll */
+>> +             /* if mclk not satisfy the divider, use pll */
+>>               if (sgtl5000->master) {
+>>                       clk_ctl |= SGTL5000_MCLK_FREQ_PLL <<
+>>                               SGTL5000_MCLK_FREQ_SHIFT;
+>> -             } else {
+>> -                     dev_err(codec->dev,
+>> -                             "PLL not supported in slave mode\n");
+>> -                     return -EINVAL;
+>>               }
+>>       }
+>
+> Are you sure that the configuration that results is valid?  Typically
+> the requirements for MCLK to other clock ratios are very similar for
+> master and slave modes, it's just that it tends to be a lot more obvious
+> when things go wrong in master mode since directly visible clocks tend
+> to go wrong as opposed to performance problems.  Are the dividers that
+> we can't get configuration for purely for generating BCLK/LRCLK in
+> master mode or are they for other things?
 
-Thanks,
-Charles
+Tested sgtl5000 slave mode with different sampling rates and it plays well.
+
+Any particular register I should monitor?
+
+Sorry, but I guess I did not understand your last question.
