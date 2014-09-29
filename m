@@ -1,51 +1,75 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH 1/2] MAINTAINERS: add atmel ssc driver maintainer entry
-Date: Mon, 29 Sep 2014 10:36:28 +0200
-Message-ID: <54291A0C.3090206@atmel.com>
-References: <1411869439-2719-1-git-send-email-voice.shen@atmel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/2] ASoC: ssm2602: add device tree bindings
+Date: Mon, 29 Sep 2014 10:50:24 +0200
+Message-ID: <54291D50.30002@metafoo.de>
+References: <1411891072-22637-1-git-send-email-stefan.kristiansson@saunalahti.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1411869439-2719-1-git-send-email-voice.shen@atmel.com>
+In-Reply-To: <1411891072-22637-1-git-send-email-stefan.kristiansson@saunalahti.fi>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 28/09/2014 03:57, Bo Shen :
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+On 09/28/2014 09:57 AM, Stefan Kristiansson wrote:
+> Allow the ssm2602/ssm2603/ssm2604 codec driver to be
+> instantiated from the device tree.
+>
+> Also, add Kconfig prompts to allow manual selection of both the
+> I2C and SPI configuration versions of the driver.
+>
+> Signed-off-by: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
 
-Sure:
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Looks mostly good, but you should Cc both the devicetree and the ASoC 
+maintainers.
 
-Thanks.
+[...]
+> diff --git a/sound/soc/codecs/ssm2602-i2c.c b/sound/soc/codecs/ssm2602-i2c.c
+> index abd63d5..0d9779d 100644
+> --- a/sound/soc/codecs/ssm2602-i2c.c
+> +++ b/sound/soc/codecs/ssm2602-i2c.c
+> @@ -41,10 +41,19 @@ static const struct i2c_device_id ssm2602_i2c_id[] = {
+>   };
+>   MODULE_DEVICE_TABLE(i2c, ssm2602_i2c_id);
+>
+> +static const struct of_device_id ssm2602_of_match[] = {
+> +	{ .compatible = "adi,ssm2602", },
+> +	{ .compatible = "adi,ssm2603", },
+> +	{ .compatible = "adi,ssm2604", },
 
-> ---
-> 
->  MAINTAINERS | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3705430..c004e6f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1703,6 +1703,13 @@ M:	Nicolas Ferre <nicolas.ferre@atmel.com>
->  S:	Supported
->  F:	drivers/spi/spi-atmel.*
->  
-> +ATMEL SSC DRIVER
-> +M:	Bo Shen <voice.shen@atmel.com>
-> +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> +S:	Supported
-> +F:	drivers/misc/atmel-ssc.c
-> +F:	include/linux/atmel-ssc.h
+Since the driver is supposed to behave different depending on the device you 
+should set the driver data similar to like it is done in the ssm2602_i2c_id 
+table and add code in the probe function to extract the driver data.
+
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, ssm2602_of_match);
 > +
->  ATMEL Timer Counter (TC) AND CLOCKSOURCE DRIVERS
->  M:	Nicolas Ferre <nicolas.ferre@atmel.com>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> 
+>   static struct i2c_driver ssm2602_i2c_driver = {
+>   	.driver = {
+>   		.name = "ssm2602",
+>   		.owner = THIS_MODULE,
+> +		.of_match_table = ssm2602_of_match,
+>   	},
+>   	.probe = ssm2602_i2c_probe,
+>   	.remove = ssm2602_i2c_remove,
+> diff --git a/sound/soc/codecs/ssm2602-spi.c b/sound/soc/codecs/ssm2602-spi.c
+> index 2bf55e2..fb4cc46 100644
+> --- a/sound/soc/codecs/ssm2602-spi.c
+> +++ b/sound/soc/codecs/ssm2602-spi.c
+> @@ -26,10 +26,19 @@ static int ssm2602_spi_remove(struct spi_device *spi)
+>   	return 0;
+>   }
+>
+> +static const struct of_device_id ssm2602_of_match[] = {
+> +	{ .compatible = "adi,ssm2602", },
+> +	{ .compatible = "adi,ssm2603", },
+> +	{ .compatible = "adi,ssm2604", },
 
+The ssm2603 and ssm2604 do not have a SPI interface.
 
--- 
-Nicolas Ferre
+> +	{ }
+> +};
+[...]
