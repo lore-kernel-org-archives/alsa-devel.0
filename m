@@ -1,21 +1,15 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: Allow the codec to work in
-	slave mode
-Date: Mon, 29 Sep 2014 10:17:57 -0300
-Message-ID: <CAOMZO5BUvZDgY+-VUVENWEoXZS4qFDBKA7ZZLAOzDt-Oawm9tA@mail.gmail.com>
-References: <1411082245-25679-1-git-send-email-festevam@gmail.com>
- <20140923015448.GF27755@sirena.org.uk>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: byt-rt5640: Remove IN2N pin
+	from DAPM route table
+Date: Mon, 29 Sep 2014 16:58:15 +0300
+Message-ID: <1411999096-1867-1-git-send-email-jarkko.nikula@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f46.google.com (mail-la0-f46.google.com
- [209.85.215.46])
- by alsa0.perex.cz (Postfix) with ESMTP id B796C2606B6
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 15:17:57 +0200 (CEST)
-Received: by mail-la0-f46.google.com with SMTP id gi9so7701580lab.33
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 06:17:57 -0700 (PDT)
-In-Reply-To: <20140923015448.GF27755@sirena.org.uk>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83771260609
+ for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 15:58:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,38 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Fabio Estevam <fabio.estevam@freescale.com>, Shawn Guo <shawn.guo@freescale.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+I tested couple byt-rt5640 based platforms and they have single-ended
+headset microphone connection to IN2P only. I guess IN2N was either defined
+by accident or some early platform had floating ground for headset. It's
+better to remove IN2N and add a custom route for such a platform if needed.
 
-On Mon, Sep 22, 2014 at 10:54 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Thu, Sep 18, 2014 at 08:17:25PM -0300, Fabio Estevam wrote:
->
->>       default:
->> -             /* if mclk not satisify the divider, use pll */
->> +             /* if mclk not satisfy the divider, use pll */
->>               if (sgtl5000->master) {
->>                       clk_ctl |= SGTL5000_MCLK_FREQ_PLL <<
->>                               SGTL5000_MCLK_FREQ_SHIFT;
->> -             } else {
->> -                     dev_err(codec->dev,
->> -                             "PLL not supported in slave mode\n");
->> -                     return -EINVAL;
->>               }
->>       }
->
-> Are you sure that the configuration that results is valid?  Typically
-> the requirements for MCLK to other clock ratios are very similar for
-> master and slave modes, it's just that it tends to be a lot more obvious
-> when things go wrong in master mode since directly visible clocks tend
-> to go wrong as opposed to performance problems.  Are the dividers that
-> we can't get configuration for purely for generating BCLK/LRCLK in
-> master mode or are they for other things?
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+---
+ sound/soc/intel/byt-rt5640.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Tested sgtl5000 slave mode with different sampling rates and it plays well.
-
-Any particular register I should monitor?
-
-Sorry, but I guess I did not understand your last question.
+diff --git a/sound/soc/intel/byt-rt5640.c b/sound/soc/intel/byt-rt5640.c
+index 234a58de3c53..d6d8b19c22dc 100644
+--- a/sound/soc/intel/byt-rt5640.c
++++ b/sound/soc/intel/byt-rt5640.c
+@@ -36,7 +36,6 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
+ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
+ 	{"Headset Mic", NULL, "MICBIAS1"},
+ 	{"IN2P", NULL, "Headset Mic"},
+-	{"IN2N", NULL, "Headset Mic"},
+ 	{"DMIC1", NULL, "Internal Mic"},
+ 	{"Headphone", NULL, "HPOL"},
+ 	{"Headphone", NULL, "HPOR"},
+-- 
+2.1.0
