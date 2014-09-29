@@ -1,28 +1,48 @@
-From: Stefan Kristiansson <stefan.kristiansson-MbMCFXIvDHJFcC0YU169RA@public.gmane.org>
-Subject: Re: [PATCH 1/2] ASoC: ssm2602: add device tree bindings
-Date: Mon, 29 Sep 2014 17:49:52 +0300
-Message-ID: <20140929144952.GA12060@chokladfabriken.org>
-References: <1411891072-22637-1-git-send-email-stefan.kristiansson@saunalahti.fi>
- <54291D50.30002@metafoo.de>
- <20140929143452.GA11763@chokladfabriken.org>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: davinci: vcif must be a module if SND_DAVINCI_SOC is
+Date: Mon, 29 Sep 2014 17:32:17 +0200
+Message-ID: <2771900.ce8bYznKIN@wuerfel>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140929143452.GA11763-YASU2+sLF5DjzPUptC8vukB+6BGkLq7r@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, davinci-linux-open-source@linux.davincidsp.com, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 29, 2014 at 05:34:52PM +0300, Stefan Kristiansson wrote:
-> ... if I set it to
-> "adi,ssm2604" I get id->name = "ssm2603" and id->driver_data = 1.
-> 
+It is possible to configure a kernel with SND_DAVINCI_SOC=m and
+SND_DM365_VOICE_CODEC=y, which results in a link error:
 
-Err, copy-paste mistake,that should have of course have read
-'if I set it to "adi,ssm2604" I get id->name = "ssm2604"'
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+sound/built-in.o: In function `davinci_vcif_probe':
+sound/soc/davinci/davinci-vcif.c:223: undefined reference to `davinci_soc_platform_register'
+
+The best way to avoid this is to make SND_DM365_VOICE_CODEC
+a tristate option that depends on SND_DAVINCI_SOC, so it
+can only be a module or disabled when the base driver is
+a loadable module
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index d69510c53239..8e948c63f3d9 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -63,7 +63,8 @@ config SND_DM365_AIC3X_CODEC
+ 	  Say Y if you want to add support for AIC3101 audio codec
+ 
+ config SND_DM365_VOICE_CODEC
+-	bool "Voice Codec - CQ93VC"
++	tristate "Voice Codec - CQ93VC"
++	depends on SND_DAVINCI_SOC
+ 	select MFD_DAVINCI_VOICECODEC
+ 	select SND_DAVINCI_SOC_VCIF
+ 	select SND_SOC_CQ0093VC
