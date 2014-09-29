@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 2/3] ASoC: rx51: Use snd_soc_dapm_to_codec()
-	instead of dapm->codec
-Date: Mon, 29 Sep 2014 11:40:41 +0200
-Message-ID: <1411983642-12793-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 3/3] ASoC: Remove CODEC pointer from
+	snd_soc_dapm_context
+Date: Mon, 29 Sep 2014 11:40:42 +0200
+Message-ID: <1411983642-12793-3-git-send-email-lars@metafoo.de>
 References: <1411983642-12793-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-039.synserver.de (smtp-out-039.synserver.de
  [212.40.185.39])
- by alsa0.perex.cz (Postfix) with ESMTP id EA1202605CB
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 11:40:32 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A48D02605D1
+ for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 11:40:33 +0200 (CEST)
 In-Reply-To: <1411983642-12793-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,26 +26,54 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, patches@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@ti.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-The CODEC struct in the snd_soc_dapm_context struct is deprecated and
-scheduled for removal. Use the snd_soc_dapm_to_codec() function instead.
+The only remaining user of the CODEC pointer in the DAPM struct is to
+initialize the CODEC pointer in the widget struct. The later is scheduled
+for removal, but has still a few users left. For now use
+dapm->component->codec to initialize it.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/omap/rx51.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/soc-dapm.h | 1 -
+ sound/soc/soc-core.c     | 1 -
+ sound/soc/soc-dapm.c     | 2 +-
+ 3 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-index 943922c..b10ae80 100644
---- a/sound/soc/omap/rx51.c
-+++ b/sound/soc/omap/rx51.c
-@@ -168,7 +168,7 @@ static int rx51_spk_event(struct snd_soc_dapm_widget *w,
- static int rx51_hp_event(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *k, int event)
- {
--	struct snd_soc_codec *codec = w->dapm->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index f955d65..fa03217 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -594,7 +594,6 @@ struct snd_soc_dapm_context {
  
- 	if (SND_SOC_DAPM_EVENT_ON(event))
- 		tpa6130a2_stereo_enable(codec, 1);
+ 	struct device *dev; /* from parent - for debug */
+ 	struct snd_soc_component *component; /* parent component */
+-	struct snd_soc_codec *codec; /* parent codec */
+ 	struct snd_soc_card *card; /* parent card */
+ 
+ 	/* used during DAPM updates */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 263514a..3d8cff6 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -4353,7 +4353,6 @@ int snd_soc_register_codec(struct device *dev,
+ 	if (codec_drv->read)
+ 		codec->component.read = snd_soc_codec_drv_read;
+ 	codec->component.ignore_pmdown_time = codec_drv->ignore_pmdown_time;
+-	codec->dapm.codec = codec;
+ 	codec->dapm.idle_bias_off = codec_drv->idle_bias_off;
+ 	codec->dapm.suspend_bias_off = codec_drv->suspend_bias_off;
+ 	if (codec_drv->seq_notifier)
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 7efe4fa..2d06892 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3125,7 +3125,7 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 	}
+ 
+ 	w->dapm = dapm;
+-	w->codec = dapm->codec;
++	w->codec = dapm->component->codec;
+ 	INIT_LIST_HEAD(&w->sources);
+ 	INIT_LIST_HEAD(&w->sinks);
+ 	INIT_LIST_HEAD(&w->list);
 -- 
 1.8.0
