@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/3] ASoC: wm8{350, 753,
-	971}: Use snd_soc_dapm_to_codec() instead of dapm->codec
-Date: Mon, 29 Sep 2014 11:40:40 +0200
-Message-ID: <1411983642-12793-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 2/3] ASoC: rx51: Use snd_soc_dapm_to_codec()
+	instead of dapm->codec
+Date: Mon, 29 Sep 2014 11:40:41 +0200
+Message-ID: <1411983642-12793-2-git-send-email-lars@metafoo.de>
+References: <1411983642-12793-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-039.synserver.de (smtp-out-039.synserver.de
  [212.40.185.39])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F48B2605C1
+ by alsa0.perex.cz (Postfix) with ESMTP id EA1202605CB
  for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 11:40:32 +0200 (CEST)
+In-Reply-To: <1411983642-12793-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,49 +31,21 @@ scheduled for removal. Use the snd_soc_dapm_to_codec() function instead.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/wm8350.c | 2 +-
- sound/soc/codecs/wm8753.c | 2 +-
- sound/soc/codecs/wm8971.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/omap/rx51.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
-index 3dfdcc4..628ec77 100644
---- a/sound/soc/codecs/wm8350.c
-+++ b/sound/soc/codecs/wm8350.c
-@@ -212,7 +212,7 @@ static void wm8350_pga_work(struct work_struct *work)
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index 943922c..b10ae80 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -168,7 +168,7 @@ static int rx51_spk_event(struct snd_soc_dapm_widget *w,
+ static int rx51_hp_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *k, int event)
  {
- 	struct snd_soc_dapm_context *dapm =
- 	    container_of(work, struct snd_soc_dapm_context, delayed_work.work);
--	struct snd_soc_codec *codec = dapm->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
- 	struct wm8350_data *wm8350_data = snd_soc_codec_get_drvdata(codec);
- 	struct wm8350_output *out1 = &wm8350_data->out1,
- 	    *out2 = &wm8350_data->out2;
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index e54e097..21ca3a9 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -1433,7 +1433,7 @@ static void wm8753_work(struct work_struct *work)
- 	struct snd_soc_dapm_context *dapm =
- 		container_of(work, struct snd_soc_dapm_context,
- 			     delayed_work.work);
--	struct snd_soc_codec *codec = dapm->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
- 	wm8753_set_bias_level(codec, dapm->bias_level);
- }
+-	struct snd_soc_codec *codec = w->dapm->codec;
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
  
-diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
-index 0499cd4..39ddb9b 100644
---- a/sound/soc/codecs/wm8971.c
-+++ b/sound/soc/codecs/wm8971.c
-@@ -615,7 +615,7 @@ static void wm8971_work(struct work_struct *work)
- 	struct snd_soc_dapm_context *dapm =
- 		container_of(work, struct snd_soc_dapm_context,
- 			     delayed_work.work);
--	struct snd_soc_codec *codec = dapm->codec;
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
- 	wm8971_set_bias_level(codec, codec->dapm.bias_level);
- }
- 
+ 	if (SND_SOC_DAPM_EVENT_ON(event))
+ 		tpa6130a2_stereo_enable(codec, 1);
 -- 
 1.8.0
