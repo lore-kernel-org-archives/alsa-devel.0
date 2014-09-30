@@ -1,91 +1,41 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC:kirkwood: Don't raise an error when no DAI format
-Date: Tue, 30 Sep 2014 19:19:10 +0100
-Message-ID: <20140930181910.GJ4273@sirena.org.uk>
-References: <20140928150342.CC21B786A1D@smtpfb1-g21.free.fr>
- <20140928151207.GI5182@n2100.arm.linux.org.uk>
- <20140928180550.5f0b8f03@armhf>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: Differences between tlv320aic3x and tlv320aic31xx
+Date: Tue, 30 Sep 2014 20:37:31 +0200
+Message-ID: <20140930183731.GC3907@piout.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kr14OxHsRwZHHqxS"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20140928180550.5f0b8f03@armhf>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jyri Sarha <jsarha@ti.com>
+Cc: =?iso-8859-1?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau.dev@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---kr14OxHsRwZHHqxS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm trying to add support for the tlv320aic3104a present on a
+custom board using an am335x.
 
-On Sun, Sep 28, 2014 at 06:05:50PM +0200, Jean-Francois Moine wrote:
-> Russell King - ARM Linux <linux@arm.linux.org.uk> wrote:
-> > On Sun, Sep 28, 2014 at 04:19:27PM +0200, Jean-Francois Moine wrote:
+I see that Benoit seemed to have been successful when using the
+tlv320aic3x driver with minor modifications.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2013-January/058966.html
 
-> > > This patch prevents the controller to raise an error when
-> > > the DT audio card definition by the simple card contains the PCM
-> > > format of one CPU DAI only.
+On the other hand, in the past, I've used a tlv320aic3100 with the
+tlv320aic31xx driver.
 
-> > I think this is a silly idea - why should every driver have additional code
-> > to detect when it's called to do thing.  Why doesn't the simple card code
-> > always pass the required format?
+My plan for now is to use the tlv320aic3x driver with snd-soc-evm as
+this is the one it is using (it is using .codec_dai_name =
+"tlv320aic3x-hifi").
 
-> > Looking at other drivers, no one else does this; they all appear to require
-> > the proper format to be specified.
+I had no luck until now but I still have to review my pinmuxing. But
+before I investigate to much, can you confirm what codecs are supported
+by which driver? I'm pretty sure that would be a nice addition to the
+documentation too.
 
-> > What some drivers do (eg, omap-mcbsp.c) is to block set_fmt when the
-> > DAI is already in use - setting a flag "configured" in hw_params, and
-> > clearing it in shutdown.  Maybe following this will solve your problem.
+Thanks,
 
-> > In any case, random drivers doing stuff differently without reason is
-> > really not a good idea.
-
-> As the simple card is done, the audio hardware definitions of the
-> platform and all the CPU DAIS are always set in the audio controller.
-
-> When the PCM format is globally defined (platform), the function
-> set_fmt() is called for all CPU DAIs (then, twice for the kirkwood
-> controller) with the same value. The DT is:
-
-...
-
-> The PCM format may also be defined per DAI link. The following DT works
-> the same as setting globally the format, i.e. there are two calls to
-> set_fmt() with 'i2s':
-
-> The problem appears when the format is defined in only one DAI link:
-
-> Then, audio does not work.
-
-So this is still a generic rather than driver issue and should be solved
-outside of the driver - exactly the same issue is going to apply to any
-other device with a similar shared configuration.  We could either say
-that the DT is buggy here or we could say that the generic card ought to
-assume that if only one link specifies a format then it should use that
-format for other links if possible (since clearly the user doesn't care
-what it chooses).
-
-Please also try to use subject lines matching the style for the
-subsystem.  You've been working with upstream for a while, you really
-ought to be familiar with this sort of basic process stuff.
-
---kr14OxHsRwZHHqxS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUKvQdAAoJECTWi3JdVIfQkYIH/1q4A6HJAl/PRxCIle+ANwnA
-KQFFtEc2/7UK4rscr458j/019Za7yo9iZhnapSpcYwc4AgUd65ivOy/reyZ3W7KG
-dmlhRfDzFi4GTZrnng83uUjdyg37QNMDLLF+xS9msJHhrml4Bh7EzPraLKHEWELH
-Tg552HSKjyCCQJRif1yb/xDP5PGIw+Bchpm0BQF4q4LpaSyNepE70+hbUWZ6H8aD
-gfPWv7Fp180rRayTs8hKV+WY4NupoOX6bJK9M8WFF5Gm1bvzY8EDnWL20pN8ngib
-BgwxUGflLwsJfAHpSDkJ5xQitpE3I+2Q8TEjLQLlMlmlWBZgcsXZ9GG657I0/Zw=
-=l4XE
------END PGP SIGNATURE-----
-
---kr14OxHsRwZHHqxS--
+-- 
+Alexandre Belloni, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
