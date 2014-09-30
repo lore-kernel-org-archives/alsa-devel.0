@@ -1,59 +1,89 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v6 2/2] drm/i2c:tda998x: Use the HDMI audio CODEC
-Date: Tue, 30 Sep 2014 20:25:40 +0100
-Message-ID: <20140930192540.GL4273@sirena.org.uk>
-References: <cover.1411547014.git.moinejf@free.fr>
- <4b3d35a14461ed164956b7f5aa77b29170bc393d.1411547014.git.moinejf@free.fr>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sgtl5000: Allow the codec to work in
+	slave mode
+Date: Tue, 30 Sep 2014 20:29:12 +0100
+Message-ID: <20140930192912.GM4273@sirena.org.uk>
+References: <1411082245-25679-1-git-send-email-festevam@gmail.com>
+ <20140923015448.GF27755@sirena.org.uk>
+ <CAOMZO5BUvZDgY+-VUVENWEoXZS4qFDBKA7ZZLAOzDt-Oawm9tA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gmhhrsDozM2n+uz5"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <4b3d35a14461ed164956b7f5aa77b29170bc393d.1411547014.git.moinejf-GANU6spQydw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============3776403247937619397=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73DB2260442
+ for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2014 21:29:29 +0200 (CEST)
+In-Reply-To: <CAOMZO5BUvZDgY+-VUVENWEoXZS4qFDBKA7ZZLAOzDt-Oawm9tA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Fabio Estevam <fabio.estevam@freescale.com>, Shawn Guo <shawn.guo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---gmhhrsDozM2n+uz5
+--===============3776403247937619397==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vTfKKTivj/mQoluA"
+Content-Disposition: inline
+
+
+--vTfKKTivj/mQoluA
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Sep 24, 2014 at 10:11:21AM +0200, Jean-Francois Moine wrote:
-> This patch interfaces the HDMI transmitter with the audio system.
+On Mon, Sep 29, 2014 at 10:17:57AM -0300, Fabio Estevam wrote:
+> On Mon, Sep 22, 2014 at 10:54 PM, Mark Brown <broonie@kernel.org> wrote:
 
-Please use subject lines corresponding to the style for the subsystem.
+> > Are you sure that the configuration that results is valid?  Typically
+> > the requirements for MCLK to other clock ratios are very similar for
+> > master and slave modes, it's just that it tends to be a lot more obvious
+> > when things go wrong in master mode since directly visible clocks tend
+> > to go wrong as opposed to performance problems.  Are the dividers that
+> > we can't get configuration for purely for generating BCLK/LRCLK in
+> > master mode or are they for other things?
 
-> +	request_module("snd-soc-hdmi-codec");
-> +	pdev = platform_device_register_resndata(&priv->hdmi->dev,
-> +						 "hdmi-audio-codec",
-> +						  PLATFORM_DEVID_NONE,
-> +						  NULL, 0,
-> +						  &tda998x_hdmi_data,
-> +						  sizeof tda998x_hdmi_data);
+> Tested sgtl5000 slave mode with different sampling rates and it plays well.
 
-Why is this request_module() needed?  If there is a good reason for it
-we should have some documentation.
+> Any particular register I should monitor?
 
---gmhhrsDozM2n+uz5
+Did you just listen or did you measure the performance?
+
+> Sorry, but I guess I did not understand your last question.
+
+I'm really not sure how to simplify it...  clearly we're skipping some
+configuration here, what does it do - is it purely for generating BCLK
+and LRCLK?
+
+--vTfKKTivj/mQoluA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUKwO0AAoJECTWi3JdVIfQmr0H/i7ij3vyrmU4dk7pN5qms6Th
-eTxnRhHPcUD5DhZxXD82yXG+iKdWpOEPeC1ndQv5lOwOEMzPB0CVUiJ1WoxmCSez
-1qqvRawae184iIy0U4wzkOax95C5LtjxkHlFuM9xw0dAcLA9g4HZZWqXEPGaCJts
-ivRx8ygkPRNi9rU0EHurYS6GXr/pTU7PCTtDTbtUp8Yd9RHxqE9B0DlKzuHwt4+e
-VTvkcMKRNdUgRCY9h3CxfPSEPR/FO9eeHRsGgaBTkPZMzwKRb8Wjv4Hkt4Xp59u7
-4l2wSXjh4mJrPAj2FQz3svQLE3vII8+Z1JbGySjY75YSje67j2YCCoupe97WQpU=
-=FSmn
+iQEcBAEBAgAGBQJUKwSHAAoJECTWi3JdVIfQd2gH/RK2jEgNoJvMm12xi7w6y7wX
+fb+Uft4TBUTf8BwZ62PF2Lkk+qpNS/E93G6i+LQy7LbbOD5/IMLSBAA304KQw94T
+eSukJvfuFRk8tPgO61HtvGu8Xuz2DeUNIaqrE19Gt8n7n07MLDUHrsHzi2kUUgIL
+2kHVuij0A0zij+idTTN2x9JruYkigaOIO2w5/Aq8mloYZYq9K5od39F0TuWB3i8k
+K1qWcORgSqOtNTqATFHdHuwwXIP19g/zMfq/lkpL0v/3+4Wc5Df3ExdBmpgjTt8V
+4wfgO69LXL7mUvTJZIAuyjQ8gZrwPZ/45JDf5mWI3c76r1y4TbyvkHtZZlYPmQo=
+=O2g7
 -----END PGP SIGNATURE-----
 
---gmhhrsDozM2n+uz5--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--vTfKKTivj/mQoluA--
+
+--===============3776403247937619397==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3776403247937619397==--
