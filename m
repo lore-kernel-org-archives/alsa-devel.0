@@ -1,51 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 0/2] ASoC: tda998x: add a codec to the HDMI transmitter
-Date: Tue, 30 Sep 2014 20:10:30 +0100
-Message-ID: <20140930191030.GK4273@sirena.org.uk>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v6 2/2] drm/i2c:tda998x: Use the HDMI audio CODEC
+Date: Tue, 30 Sep 2014 20:25:40 +0100
+Message-ID: <20140930192540.GL4273@sirena.org.uk>
 References: <cover.1411547014.git.moinejf@free.fr>
+ <4b3d35a14461ed164956b7f5aa77b29170bc393d.1411547014.git.moinejf@free.fr>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UlsYxwg8UDQn+EKZ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+	protocol="application/pgp-signature"; boundary="gmhhrsDozM2n+uz5"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <cover.1411547014.git.moinejf@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, Dave Airlie <airlied@gmail.com>, Andrew Jackson <Andrew.Jackson@arm.com>, Jyri Sarha <jsarha@ti.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+In-Reply-To: <4b3d35a14461ed164956b7f5aa77b29170bc393d.1411547014.git.moinejf-GANU6spQydw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
+Cc: Russell King - ARM Linux <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Dave Airlie <airlied-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Jackson <Andrew.Jackson-5wv7dgnIgG8@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---UlsYxwg8UDQn+EKZ
+--gmhhrsDozM2n+uz5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 24, 2014 at 10:23:34AM +0200, Jean-Francois Moine wrote:
-> The NXP TDA998x HDMI transmitter may transmit audio to the HDMI link
-> from 2 different sources, I2S and S/PDIF.
->=20
-> This patch set adds an interface between the HDMI transmitter and
-> the HDMI CODEC.
+On Wed, Sep 24, 2014 at 10:11:21AM +0200, Jean-Francois Moine wrote:
+> This patch interfaces the HDMI transmitter with the audio system.
 
-I'd really like to see some of the other people who are working with
-HDMI reviewing this - this is a generic part which seems to be very
-widely used so we need to make sure that what's being done works for
-other systems.  Jyri, I see you're on CC?
+Please use subject lines corresponding to the style for the subsystem.
 
---UlsYxwg8UDQn+EKZ
+> +	request_module("snd-soc-hdmi-codec");
+> +	pdev = platform_device_register_resndata(&priv->hdmi->dev,
+> +						 "hdmi-audio-codec",
+> +						  PLATFORM_DEVID_NONE,
+> +						  NULL, 0,
+> +						  &tda998x_hdmi_data,
+> +						  sizeof tda998x_hdmi_data);
+
+Why is this request_module() needed?  If there is a good reason for it
+we should have some documentation.
+
+--gmhhrsDozM2n+uz5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUKwAlAAoJECTWi3JdVIfQH1MH/3CB9KcMtVo91cYIGvwoDf7G
-9bnZgjZihsfen3s+tExspWb38pBZKUmDP+W82O9Qdzr58ir0KpE4RdbtyL9jpSGZ
-5pc2apejQwKkuvgZsVrRiuk0vM1c2+Sf+E7D8gL4CiSAT7SJhqgG0x0dveSRG4Hp
-t+s3Q5cymJphI1YE0EeNE1QwjCvXWQW2nrr6Km7X/JtbCrhbs6pOBWxoGNPgIW7o
-yDjvUQWDfLU3AcKD/P7TAXstScJU8hYR4XUGoxJRbP25c3dcsJJhJvDFhz/YXfMF
-nhlKYKzwVzgJtnM8k70ZxZyWasqAiSkKoDLXr6mHLjZKMO9i6eZDf3hglhkuXCY=
-=hbwq
+iQEcBAEBAgAGBQJUKwO0AAoJECTWi3JdVIfQmr0H/i7ij3vyrmU4dk7pN5qms6Th
+eTxnRhHPcUD5DhZxXD82yXG+iKdWpOEPeC1ndQv5lOwOEMzPB0CVUiJ1WoxmCSez
+1qqvRawae184iIy0U4wzkOax95C5LtjxkHlFuM9xw0dAcLA9g4HZZWqXEPGaCJts
+ivRx8ygkPRNi9rU0EHurYS6GXr/pTU7PCTtDTbtUp8Yd9RHxqE9B0DlKzuHwt4+e
+VTvkcMKRNdUgRCY9h3CxfPSEPR/FO9eeHRsGgaBTkPZMzwKRb8Wjv4Hkt4Xp59u7
+4l2wSXjh4mJrPAj2FQz3svQLE3vII8+Z1JbGySjY75YSje67j2YCCoupe97WQpU=
+=FSmn
 -----END PGP SIGNATURE-----
 
---UlsYxwg8UDQn+EKZ--
+--gmhhrsDozM2n+uz5--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
