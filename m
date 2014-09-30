@@ -1,98 +1,177 @@
-From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-Subject: Re: Radeon unconnected HDMI eats samples at 280 kHz
-Date: Tue, 30 Sep 2014 12:45:35 +0000
-Message-ID: <A3397C8B8B789E45844E7EC5DEAD89D05992E6BB@satlexdag05.amd.com>
-References: <54198F38.30002@canonical.com>	<5419FC9E.9010302@iki.fi>
- <541A5BCD.2040105@canonical.com> <s5hlhph8jt5.wl-tiwai@suse.de>
- <541A8FA2.7090406@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D059929D9D@satlexdag05.amd.com>
- <541C31EE.4020101@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D05992A81C@satlexdag05.amd.com>
- <541C6C23.1040403@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D05992AB48@satlexdag05.amd.com>
- <541CC506.601@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D05992B6A6@satlexdag05.amd.com>
- <54203495.60903@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D05992B76D@satlexdag05.amd.com>
- <542141C0.3010503@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D05992BD02@satlexdag05.amd.com>
- <54228E8A.5060209@canonical.com>
- <A3397C8B8B789E45844E7EC5DEAD89D05992C6FA@satlexdag05.amd.com>
- <542AA10E.8090209@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0132.outbound.protection.outlook.com [157.56.111.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 854FF260693
- for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2014 14:45:40 +0200 (CEST)
-In-Reply-To: <542AA10E.8090209@canonical.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>
-Cc: Anssi Hannula <anssi.hannula@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Daniel Drake <drake@endlessm.com>
+Subject: [PATCH] ASoC: samsung: fix CDCLK handling
+Date: Tue, 30 Sep 2014 10:40:11 -0600
+Message-ID: <1412095211-4012-1-git-send-email-drake@endlessm.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: ben-linux@fluff.org, kgene.kim@samsung.com, sbkim73@samsung.com, lgirdwood@gmail.com, broonie@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, s.nawrocki@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: David Henningsson [mailto:david.henningsson@canonical.com]
-> Sent: Tuesday, September 30, 2014 8:25 AM
-> To: Deucher, Alexander; Takashi Iwai
-> Cc: Anssi Hannula; alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] Radeon unconnected HDMI eats samples at 280 kHz
-> 
-> 
-> 
-> On 2014-09-24 23:37, Deucher, Alexander wrote:
-> >> But it makes sense that the audio is turned off when the video is, right?
-> >
-> > It's a bit complicated.  X effectively just blanks (dpms off) the display when
-> you disconnect it or xrandr --off.  The resources are not actually reclaimed
-> and "disabled" until the next modeset.  I don't think we really want to turn
-> audio off when the display goes into dpms as that will be reported as a
-> disconnect on the audio side even if the display has just gone to sleep.
-> >
-> >>
-> >> Because if first unplug HDMI (nothing happens) and then run "xrandr"
-> >> (without parameters), running that command causes a "re-detection" or
-> >> whatever the correct term is - i e, my DVI screen goes black for a
-> >> second, and afterwards the mouse pointer can no longer move to the
-> other
-> >> non-existent display.
-> >> At that point, audio still remains in the "plugged in" state. Also,
-> >> executing "xrandr --output HDMI-0 --off" has no effect in that state.
-> >>
-> >
-> > The problem is, X just puts the display to sleep when you unplug or xrandr -
-> -off.  The current KMS API doesn't really have a notion of "disable".  The
-> actual disabling happens at the next modeset when displays that are no
-> longer in use are disabled and their resources are freed for possible use in
-> the upcoming modeset.  Forcing another modeset with the hdmi
-> disconnected should get the status updated properly.
-> 
-> I'm not sure how to force a modeset, but just for comparison and for the
-> desire of consistency, I did the same test with a laptop with an Intel
-> built-in card.
-> 
-> In this case, both plug-in and unplug are responded to immediately on
-> both sides, so when the cable is unplugged, the video does a
-> "re-detection" which disables the HDMI display, and the audio side
-> reports unplugged as well.
-> 
-> Also, executing "xrandr --output HDMI1 --off" while the cable is plugged
-> causes the audio side to report unplugged.
-> 
-> I think this behaviour makes sense, but I'm not sure my rank is high
-> enough to dictate behaviour. :-)
+ODROID is the only platform that uses CDCLK, and right now,
+CDCLK handling is buggy. If you start pulseaudio on ODROID,
+audio is broken until reboot (even after killing pulse).
 
-I agree.  It should be possible (barring figuring out what to do in the multiple-connected-HDMI case), but I don't have the cycles right now to do the necessary rework of the driver to move the audio enable/disable and speaker info fetch into the probe and hotplug code paths.
+This happens because CDCLK gets disabled by i2s.c and never enabled again.
 
-Alex
+pulseaudio does:
+1. i2s_startup for playback channel
+2. i2s_startup for capture channel
+3. i2s_shutdown for capture channel
+4. i2s_shutdown for playback channel
+
+In step 3 we disable CDCLK even though playback should still be active.
+
+In step 4 we do this:
+	u32 mod = readl(i2s->addr + I2SMOD);
+	i2s->cdclk_out = !(mod & MOD_CDCLKCON);
+
+and now cdclk_out is always going to be 0, so we'll never turn it back
+on again.
+
+Both this bug and the one that b97c60abf9a tries to fix happened
+because of the way that CDCLK handling is painfully split between
+platform and i2s drivers.
+
+Simplify the situation and solve the bug with the following approach:
+ - as before, samsung_i2s_dai_probe() gates CDCLK by default
+   (no need for smartq_wm8987 to do this as well)
+ - platform drivers can gate/ungate CDCLK as necessary
+   (currently only odroidx2 needs to do this)
+ - i2s code has no other interaction with CDCLK
+
+Signed-off-by: Daniel Drake <drake@endlessm.com>
+---
+ sound/soc/samsung/i2s.c               | 19 ++----------------
+ sound/soc/samsung/odroidx2_max98090.c | 36 ++++++++++++++++++++++++++---------
+ sound/soc/samsung/smartq_wm8987.c     |  6 ------
+ 3 files changed, 29 insertions(+), 32 deletions(-)
+
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 9d51347..6654ce6 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -68,8 +68,6 @@ struct i2s_dai {
+ #define DAI_OPENED	(1 << 0) /* Dai is opened */
+ #define DAI_MANAGER	(1 << 1) /* Dai is the manager */
+ 	unsigned mode;
+-	/* CDCLK pin direction: 0  - input, 1 - output */
+-	unsigned int cdclk_out:1;
+ 	/* Driver for this DAI */
+ 	struct snd_soc_dai_driver i2s_dai_drv;
+ 	/* DMA parameters */
+@@ -739,9 +737,6 @@ static int i2s_startup(struct snd_pcm_substream *substream,
+ 
+ 	spin_unlock_irqrestore(&lock, flags);
+ 
+-	if (!is_opened(other) && i2s->cdclk_out)
+-		i2s_set_sysclk(dai, SAMSUNG_I2S_CDCLK,
+-				0, SND_SOC_CLOCK_OUT);
+ 	return 0;
+ }
+ 
+@@ -757,24 +752,14 @@ static void i2s_shutdown(struct snd_pcm_substream *substream,
+ 	i2s->mode &= ~DAI_OPENED;
+ 	i2s->mode &= ~DAI_MANAGER;
+ 
+-	if (is_opened(other)) {
++	if (is_opened(other))
+ 		other->mode |= DAI_MANAGER;
+-	} else {
+-		u32 mod = readl(i2s->addr + I2SMOD);
+-		i2s->cdclk_out = !(mod & MOD_CDCLKCON);
+-		if (other)
+-			other->cdclk_out = i2s->cdclk_out;
+-	}
++
+ 	/* Reset any constraint on RFS and BFS */
+ 	i2s->rfs = 0;
+ 	i2s->bfs = 0;
+ 
+ 	spin_unlock_irqrestore(&lock, flags);
+-
+-	/* Gate CDCLK by default */
+-	if (!is_opened(other))
+-		i2s_set_sysclk(dai, SAMSUNG_I2S_CDCLK,
+-				0, SND_SOC_CLOCK_IN);
+ }
+ 
+ static int config_setup(struct i2s_dai *i2s)
+diff --git a/sound/soc/samsung/odroidx2_max98090.c b/sound/soc/samsung/odroidx2_max98090.c
+index 278edf9..b700284 100644
+--- a/sound/soc/samsung/odroidx2_max98090.c
++++ b/sound/soc/samsung/odroidx2_max98090.c
+@@ -21,20 +21,37 @@ struct odroidx2_drv_data {
+ /* The I2S CDCLK output clock frequency for the MAX98090 codec */
+ #define MAX98090_MCLK 19200000
+ 
++static int odroidx2_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++
++	if (rtd->cpu_dai->active)
++		return 0;
++
++	return snd_soc_dai_set_sysclk(rtd->cpu_dai, SAMSUNG_I2S_CDCLK,
++				      0, SND_SOC_CLOCK_OUT);
++}
++
++static void odroidx2_shutdown(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++
++	if (!rtd->cpu_dai->active)
++		snd_soc_dai_set_sysclk(rtd->cpu_dai, SAMSUNG_I2S_CDCLK,
++				       0, SND_SOC_CLOCK_IN);
++}
++
++static const struct snd_soc_ops odroidx2_ops = {
++	.startup = odroidx2_startup,
++	.shutdown = odroidx2_shutdown,
++};
++
+ static int odroidx2_late_probe(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
+-	struct snd_soc_dai *cpu_dai = card->rtd[0].cpu_dai;
+-	int ret;
+ 
+-	ret = snd_soc_dai_set_sysclk(codec_dai, 0, MAX98090_MCLK,
++	return snd_soc_dai_set_sysclk(codec_dai, 0, MAX98090_MCLK,
+ 						SND_SOC_CLOCK_IN);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* Set the cpu DAI configuration in order to use CDCLK */
+-	return snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
+-					0, SND_SOC_CLOCK_OUT);
+ }
+ 
+ static const struct snd_soc_dapm_widget odroidx2_dapm_widgets[] = {
+@@ -55,6 +72,7 @@ static struct snd_soc_dai_link odroidx2_dai[] = {
+ 		.codec_dai_name	= "HiFi",
+ 		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 				  SND_SOC_DAIFMT_CBM_CFM,
++		.ops		= &odroidx2_ops,
+ 	}
+ };
+ 
+diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
+index 9b0ffac..2b5e7c5 100644
+--- a/sound/soc/samsung/smartq_wm8987.c
++++ b/sound/soc/samsung/smartq_wm8987.c
+@@ -76,12 +76,6 @@ static int smartq_hifi_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* Gate the RCLK output on PAD */
+-	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
+-					0, SND_SOC_CLOCK_IN);
+-	if (ret < 0)
+-		return ret;
+-
+ 	/* set the codec system clock for DAC and ADC */
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
+ 				     SND_SOC_CLOCK_IN);
+-- 
+1.9.1
