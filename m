@@ -1,17 +1,23 @@
-From: "Allen M." <ase1592@gmail.com>
-Subject: [BUG] Bad decibel data on C-Media USB sound card
-Date: Tue, 30 Sep 2014 15:22:40 -0500
-Message-ID: <CAPMSj_FznSHmnamRBPEHJ4xCq38+=TaZ2Bh8kbUEMa6b+=2zdg@mail.gmail.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl: fix dependencies for wm8962
+Date: Tue, 30 Sep 2014 13:37:57 -0700
+Message-ID: <20140930203756.GA13613@Alpha>
+References: <1950588.ErdGoiHh8p@wuerfel> <20140930164510.GF4273@sirena.org.uk>
+ <CAOMZO5B3LztUdafDCo8bzLwbmeBB3N-rpQLxXMvb0pXgtGVugA@mail.gmail.com>
+ <20140930194340.GA13318@Alpha>
+ <CAOMZO5AZri8dofH6-Bqqj64_itu-W6nUEi5W5koGnQCqqVpbfw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f172.google.com (mail-yk0-f172.google.com
- [209.85.160.172])
- by alsa0.perex.cz (Postfix) with ESMTP id CD9BA26047A
- for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2014 22:22:41 +0200 (CEST)
-Received: by mail-yk0-f172.google.com with SMTP id 19so914694ykq.17
- for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2014 13:22:41 -0700 (PDT)
+Received: from mail-pa0-f53.google.com (mail-pa0-f53.google.com
+ [209.85.220.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id C6718260442
+ for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2014 22:38:37 +0200 (CEST)
+Received: by mail-pa0-f53.google.com with SMTP id kq14so8179748pab.26
+ for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2014 13:38:36 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5AZri8dofH6-Bqqj64_itu-W6nUEi5W5koGnQCqqVpbfw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +27,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau wrote:
+On Tue, Sep 30, 2014 at 04:48:01PM -0300, Fabio Estevam wrote:
+> >> -       select SND_SOC_CS42XX8_I2C
+> >> -       select SND_SOC_SGTL5000
+> >> -       select SND_SOC_WM8962
+> >
+> > Okay..if Mark means this...I think it makes sense to me now.
+> >
+> > But in this case, we shall add them into imx_v6_v7_defconfig instead.
+> 
+> We already have
+> CONFIG_SND_SOC_IMX_WM8962=y
+> CONFIG_SND_SOC_IMX_SGTL5000=y
+> 
+> in imx_v6_v7_defconfig.
 
->It affect your measurent if you are using the mic on your usb audio if the
->automatic gain control is switch on
+Yea, and these are two things I plan to drop...
 
-Automatic gain control is now switched off.
-
-
->Background noise affect the result if you are not using line in and line
->out with a loopback cable
-
-I am using loopback, noise should not be an issue.
-
-
->How many steps need to reduce amplitude of the recorded sine wave by
->half when you play a sine wav through your usb audio and record it back
->using audacity?
-
-Using recorded sine wav provided by 'speaker-test -t sin'
-amplitude of recorded sine wave reduced by half at step 77
-
-output of 'amixer -c 2 set Headphone 77':
- Simple mixer control 'Headphone',0
-   Capabilities: pvolume pswitch pswitch-joined
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 151
-   Mono:
-   Front Left: Playback 77 [51%] [-13.94dB] [on]
-   Front Right: Playback 77 [51%] [-13.94dB] [on]
-
-
->You many need to change the name of the volume control to headphone
->playback volume in alsamixertest
-
-Done. alsamixertest output: http://ix.io/ezd
+So when enabling the FSL_ASOC_CARD, I also needs to put those three
+into it as well.
