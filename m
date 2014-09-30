@@ -1,18 +1,20 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v3 1/2] ASoC: fsl_ssi: Remove unneeded
-	'i2s-slave' property
-Date: Mon, 29 Sep 2014 23:25:29 -0300
-Message-ID: <1412043930-15243-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH v3 2/2] ASoC: fsl ssi doc: Remove unused
+	properties
+Date: Mon, 29 Sep 2014 23:25:30 -0300
+Message-ID: <1412043930-15243-2-git-send-email-festevam@gmail.com>
+References: <1412043930-15243-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f180.google.com (mail-yk0-f180.google.com
- [209.85.160.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 428B12606B2
- for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2014 04:26:49 +0200 (CEST)
-Received: by mail-yk0-f180.google.com with SMTP id q9so1358930ykb.39
- for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 19:26:48 -0700 (PDT)
+Received: from mail-yh0-f46.google.com (mail-yh0-f46.google.com
+ [209.85.213.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A8CE2606B4
+ for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2014 04:26:52 +0200 (CEST)
+Received: by mail-yh0-f46.google.com with SMTP id f73so2183811yha.5
+ for <alsa-devel@alsa-project.org>; Mon, 29 Sep 2014 19:26:51 -0700 (PDT)
+In-Reply-To: <1412043930-15243-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,36 +30,39 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Fabio Estevam <fabio.estevam@freescale.com>
 
-There is no need to use 'i2s-slave' property, since master/slave configuration
-are passed via machine layer.
+The fsl_ssi driver only checks for the ac97 mode property, so remove the unused
+ones.
 
-This change does not break existing users because they do check for slave
-mode inside sound/soc/fsl/mpc8610_hpcd.c/p1022_ds.c/p1022_rdk.c
-
+Suggested-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 Acked-by: Timur Tabi <timur@tabi.org>
 ---
 Changes since v2:
 - Added Timur's Ack and CC the alsa-list
 Changes since v1:
-- None
+- Newly introduced in this series
 
- sound/soc/fsl/fsl_ssi.c | 3 ---
- 1 file changed, 3 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl,ssi.txt | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 2fc3e66..0e7ce50 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1285,9 +1285,6 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 	if (sprop) {
- 		if (!strcmp(sprop, "ac97-slave"))
- 			ssi_private->dai_fmt = SND_SOC_DAIFMT_AC97;
--		else if (!strcmp(sprop, "i2s-slave"))
--			ssi_private->dai_fmt = SND_SOC_DAIFMT_I2S |
--				SND_SOC_DAIFMT_CBM_CFM;
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+index 3aa4a8f..5b76be4 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+@@ -58,13 +58,7 @@ Optional properties:
+ 		    Documentation/devicetree/bindings/dma/dma.txt.
+ - dma-names:	    Two dmas have to be defined, "tx" and "rx", if fsl,imx-fiq
+ 		    is not defined.
+-- fsl,mode:         The operating mode for the SSI interface.
+-                    "i2s-slave" - I2S mode, SSI is clock slave
+-                    "i2s-master" - I2S mode, SSI is clock master
+-                    "lj-slave" - left-justified mode, SSI is clock slave
+-                    "lj-master" - l.j. mode, SSI is clock master
+-                    "rj-slave" - right-justified mode, SSI is clock slave
+-                    "rj-master" - r.j., SSI is clock master
++- fsl,mode:         The operating mode for the AC97 interface only.
+                     "ac97-slave" - AC97 mode, SSI is clock slave
+                     "ac97-master" - AC97 mode, SSI is clock master
  
- 	ssi_private->use_dma = !of_property_read_bool(np,
 -- 
 1.9.1
