@@ -1,49 +1,68 @@
-From: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v3 2/4] ARM: dts: pbab01: enable I2S audio on
- phyFLEX-i.MX6 boards
-Date: Wed, 1 Oct 2014 10:45:48 -0300
-Message-ID: <CAOMZO5BS6X2NTY4q7RKoKdhJNbEANSa2wXur3_Hyxp8nQn5Avw@mail.gmail.com>
-References: <1410537872-17274-1-git-send-email-d.lavnikevich@sam-solutions.com>
-	<1410854903-26419-1-git-send-email-d.lavnikevich@sam-solutions.com>
-	<1410854903-26419-3-git-send-email-d.lavnikevich@sam-solutions.com>
-	<CAOMZO5CgrQ6Wf6kStga40TUKx9dARygCNB4OYSUoG3c8eUYbrA@mail.gmail.com>
-	<542C0441.5080508@sam-solutions.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH v6 2/2] drm/i2c:tda998x: Use the HDMI audio
+	CODEC
+Date: Wed, 1 Oct 2014 14:47:30 +0100
+Message-ID: <20141001134729.GP5182@n2100.arm.linux.org.uk>
+References: <cover.1411547014.git.moinejf@free.fr>
+ <4b3d35a14461ed164956b7f5aa77b29170bc393d.1411547014.git.moinejf@free.fr>
+ <20140930192540.GL4273@sirena.org.uk> <20141001112846.0dbc80ae@armhf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <542C0441.5080508-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Cc: Shawn Guo <shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from pandora.arm.linux.org.uk (gw-1.arm.linux.org.uk [78.32.30.217])
+ by alsa0.perex.cz (Postfix) with ESMTP id 05555260485
+ for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 15:47:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20141001112846.0dbc80ae@armhf>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jean-Francois Moine <moinejf@free.fr>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 1, 2014 at 10:40 AM, Dmitry Lavnikevich
-<d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org> wrote:
+On Wed, Oct 01, 2014 at 11:28:46AM +0200, Jean-Francois Moine wrote:
+> On Tue, 30 Sep 2014 20:25:40 +0100
+> Mark Brown <broonie@kernel.org> wrote:
+> 
+> > > +	request_module("snd-soc-hdmi-codec");
+> > > +	pdev = platform_device_register_resndata(&priv->hdmi->dev,
+> > > +						 "hdmi-audio-codec",
+> > > +						  PLATFORM_DEVID_NONE,
+> > > +						  NULL, 0,
+> > > +						  &tda998x_hdmi_data,
+> > > +						  sizeof tda998x_hdmi_data);  
+> > 
+> > Why is this request_module() needed?  If there is a good reason for it
+> > we should have some documentation.
+> 
+> The reason is simple: as the HDMI CODEC is not declared in the DT, the
+> associated module must be loaded in memory.
 
->> No need to have this 'regulator-always-on'
->>
->
-> why is there no need for 'regulator-alweys-on'? I see it in
+Module auto-loading works in non-DT environments too.  Unlike the
+direction that the arm port is going, the core kernel features, such
+as driver autoloading, are coded *not* to require DT (or indeed any
+particular firmware.)
 
-For a regulator that is not GPIO controlled you don't need to pass
-'regulator-always-on'.
+There are circumstances where this has been lost sight of (such as
+the gpiod stuff), but as a general rule, features do not rely on DT.
 
->
->>> +&ssi2 {
->>> +       fsl,mode = "i2s-slave";
->>
->>
->> Please remove this 'fsl,mode' property. It is ignored by the fsl_ssi
->> driver.
->
->
-> yes, thanks. It is present in Documentation but now I see that it
-> was actually removed not that long ago. I will remove this
-> property with next patchset.
+Platform drivers will be auto-loaded if they have:
 
-Correct, I recently sent a patch removing it and it is in Mark's tree now:
-https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/commit/?h=topic/fsl-ssi&id=b93427b1c057841602e0fe2005153a6e82f2e658
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+MODULE_ALIAS(PLATFORM_MODULE_PREFIX DRIVER_NAME);
+
+and DRIVER_NAME matches the non-id part of the platform device name.
+In the case of platform driver ID tables:
+
+MODULE_DEVICE_TABLE(platform, id-table);
+
+-- 
+FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
+according to speedtest.net.
