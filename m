@@ -1,68 +1,31 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v6 2/2] drm/i2c:tda998x: Use the HDMI audio
-	CODEC
-Date: Wed, 1 Oct 2014 14:47:30 +0100
-Message-ID: <20141001134729.GP5182@n2100.arm.linux.org.uk>
-References: <cover.1411547014.git.moinejf@free.fr>
- <4b3d35a14461ed164956b7f5aa77b29170bc393d.1411547014.git.moinejf@free.fr>
- <20140930192540.GL4273@sirena.org.uk> <20141001112846.0dbc80ae@armhf>
+From: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Subject: Re: [PATCH v3 2/4] ARM: dts: pbab01: enable I2S audio on phyFLEX-i.MX6
+ boards
+Date: Wed, 1 Oct 2014 16:52:29 +0300
+Message-ID: <542C071D.1030507@sam-solutions.com>
+References: <1410537872-17274-1-git-send-email-d.lavnikevich@sam-solutions.com>	<1410854903-26419-1-git-send-email-d.lavnikevich@sam-solutions.com>	<1410854903-26419-3-git-send-email-d.lavnikevich@sam-solutions.com>	<CAOMZO5CgrQ6Wf6kStga40TUKx9dARygCNB4OYSUoG3c8eUYbrA@mail.gmail.com>	<542C0441.5080508@sam-solutions.com> <CAOMZO5BS6X2NTY4q7RKoKdhJNbEANSa2wXur3_Hyxp8nQn5Avw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pandora.arm.linux.org.uk (gw-1.arm.linux.org.uk [78.32.30.217])
- by alsa0.perex.cz (Postfix) with ESMTP id 05555260485
- for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 15:47:45 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20141001112846.0dbc80ae@armhf>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org, Dave Airlie <airlied@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAOMZO5BS6X2NTY4q7RKoKdhJNbEANSa2wXur3_Hyxp8nQn5Avw@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Shawn Guo <shawn.guo@freescale.com>, Sascha Hauer <kernel@pengutronix.de>, "robh+dt@kernel.org" <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Russell King <linux@arm.linux.org.uk>, perex@perex.cz, Takashi Iwai <tiwai@suse.de>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 01, 2014 at 11:28:46AM +0200, Jean-Francois Moine wrote:
-> On Tue, 30 Sep 2014 20:25:40 +0100
-> Mark Brown <broonie@kernel.org> wrote:
-> 
-> > > +	request_module("snd-soc-hdmi-codec");
-> > > +	pdev = platform_device_register_resndata(&priv->hdmi->dev,
-> > > +						 "hdmi-audio-codec",
-> > > +						  PLATFORM_DEVID_NONE,
-> > > +						  NULL, 0,
-> > > +						  &tda998x_hdmi_data,
-> > > +						  sizeof tda998x_hdmi_data);  
-> > 
-> > Why is this request_module() needed?  If there is a good reason for it
-> > we should have some documentation.
-> 
-> The reason is simple: as the HDMI CODEC is not declared in the DT, the
-> associated module must be loaded in memory.
+On 01/10/14 16:45, Fabio Estevam wrote:
+> On Wed, Oct 1, 2014 at 10:40 AM, Dmitry Lavnikevich
+> <d.lavnikevich@sam-solutions.com> wrote:
+>
+>>> No need to have this 'regulator-always-on'
+>>>
+>>
+>> why is there no need for 'regulator-alweys-on'? I see it in
+>
+> For a regulator that is not GPIO controlled you don't need to pass
+> 'regulator-always-on'.
 
-Module auto-loading works in non-DT environments too.  Unlike the
-direction that the arm port is going, the core kernel features, such
-as driver autoloading, are coded *not* to require DT (or indeed any
-particular firmware.)
+Ok, I will remove it also.
 
-There are circumstances where this has been lost sight of (such as
-the gpiod stuff), but as a general rule, features do not rely on DT.
-
-Platform drivers will be auto-loaded if they have:
-
-MODULE_ALIAS(PLATFORM_MODULE_PREFIX DRIVER_NAME);
-
-and DRIVER_NAME matches the non-id part of the platform device name.
-In the case of platform driver ID tables:
-
-MODULE_DEVICE_TABLE(platform, id-table);
-
--- 
-FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
-according to speedtest.net.
+I will wait some time for other notes on patches and resend patchset.
