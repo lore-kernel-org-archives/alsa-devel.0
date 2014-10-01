@@ -1,16 +1,20 @@
-From: Jyri Sarha <jsarha@ti.com>
-Subject: Re: Differences between tlv320aic3x and tlv320aic31xx
-Date: Wed, 1 Oct 2014 10:47:59 +0300
-Message-ID: <542BB1AF.3060501@ti.com>
-References: <20140930183731.GC3907@piout.net>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH] ASoC:kirkwood: Don't raise an error when
+	no DAI format
+Date: Wed, 1 Oct 2014 10:59:39 +0200
+Message-ID: <20141001105939.1f2b6524@armhf>
+References: <20140928150342.CC21B786A1D@smtpfb1-g21.free.fr>
+ <20140928151207.GI5182@n2100.arm.linux.org.uk>
+ <20140928180550.5f0b8f03@armhf>
+ <20140930181910.GJ4273@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B0C32612CD
- for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 09:48:04 +0200 (CEST)
-In-Reply-To: <20140930183731.GC3907@piout.net>
+Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87E9E260472
+ for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 10:59:25 +0200 (CEST)
+In-Reply-To: <20140930181910.GJ4273@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,42 +24,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, =?windows-1252?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau.dev@gmail.com>, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 09/30/2014 09:37 PM, Alexandre Belloni wrote:
-> Hi,
->
-> I'm trying to add support for the tlv320aic3104a present on a
-> custom board using an am335x.
->
-> I see that Benoit seemed to have been successful when using the
-> tlv320aic3x driver with minor modifications.
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-January/058966.html
->
-> On the other hand, in the past, I've used a tlv320aic3100 with the
-> tlv320aic31xx driver.
->
-> My plan for now is to use the tlv320aic3x driver with snd-soc-evm as
-> this is the one it is using (it is using .codec_dai_name =
-> "tlv320aic3x-hifi").
->
-> I had no luck until now but I still have to review my pinmuxing. But
-> before I investigate to much, can you confirm what codecs are supported
-> by which driver? I'm pretty sure that would be a nice addition to the
-> documentation too.
-> 0
-
-Hi Alexandre,
-Based on a brief look at the data sheet I am afraid you will not have 
-any luck using tlv320aic3x driver with tlv320aic3104. tlv320aic31xx is a 
-better match, but sill not close enough.
-
-Based on the register map you may have a change to get the codec working 
-using tlv320aic32x4 driver. At least the register map appears to be a 
-pretty good match. However, I have no experience either with the driver 
-or the codec.
-
-Best regards,
-Jyri
+T24gVHVlLCAzMCBTZXAgMjAxNCAxOToxOToxMCArMDEwMApNYXJrIEJyb3duIDxicm9vbmllQGtl
+cm5lbC5vcmc+IHdyb3RlOgoKPiBPbiBTdW4sIFNlcCAyOCwgMjAxNCBhdCAwNjowNTo1MFBNICsw
+MjAwLCBKZWFuLUZyYW5jb2lzIE1vaW5lIHdyb3RlOgo+ID4gUnVzc2VsbCBLaW5nIC0gQVJNIExp
+bnV4IDxsaW51eEBhcm0ubGludXgub3JnLnVrPiB3cm90ZToKPiA+ID4gT24gU3VuLCBTZXAgMjgs
+IDIwMTQgYXQgMDQ6MTk6MjdQTSArMDIwMCwgSmVhbi1GcmFuY29pcyBNb2luZSB3cm90ZToKPiAK
+PiA+ID4gPiBUaGlzIHBhdGNoIHByZXZlbnRzIHRoZSBjb250cm9sbGVyIHRvIHJhaXNlIGFuIGVy
+cm9yIHdoZW4KPiA+ID4gPiB0aGUgRFQgYXVkaW8gY2FyZCBkZWZpbml0aW9uIGJ5IHRoZSBzaW1w
+bGUgY2FyZCBjb250YWlucyB0aGUgUENNCj4gPiA+ID4gZm9ybWF0IG9mIG9uZSBDUFUgREFJIG9u
+bHkuCj4gCj4gPiA+IEkgdGhpbmsgdGhpcyBpcyBhIHNpbGx5IGlkZWEgLSB3aHkgc2hvdWxkIGV2
+ZXJ5IGRyaXZlciBoYXZlIGFkZGl0aW9uYWwgY29kZQo+ID4gPiB0byBkZXRlY3Qgd2hlbiBpdCdz
+IGNhbGxlZCB0byBkbyB0aGluZy4gIFdoeSBkb2Vzbid0IHRoZSBzaW1wbGUgY2FyZCBjb2RlCj4g
+PiA+IGFsd2F5cyBwYXNzIHRoZSByZXF1aXJlZCBmb3JtYXQ/Cj4gCj4gPiA+IExvb2tpbmcgYXQg
+b3RoZXIgZHJpdmVycywgbm8gb25lIGVsc2UgZG9lcyB0aGlzOyB0aGV5IGFsbCBhcHBlYXIgdG8g
+cmVxdWlyZQo+ID4gPiB0aGUgcHJvcGVyIGZvcm1hdCB0byBiZSBzcGVjaWZpZWQuCj4gCj4gPiA+
+IFdoYXQgc29tZSBkcml2ZXJzIGRvIChlZywgb21hcC1tY2JzcC5jKSBpcyB0byBibG9jayBzZXRf
+Zm10IHdoZW4gdGhlCj4gPiA+IERBSSBpcyBhbHJlYWR5IGluIHVzZSAtIHNldHRpbmcgYSBmbGFn
+ICJjb25maWd1cmVkIiBpbiBod19wYXJhbXMsIGFuZAo+ID4gPiBjbGVhcmluZyBpdCBpbiBzaHV0
+ZG93bi4gIE1heWJlIGZvbGxvd2luZyB0aGlzIHdpbGwgc29sdmUgeW91ciBwcm9ibGVtLgo+IAo+
+ID4gPiBJbiBhbnkgY2FzZSwgcmFuZG9tIGRyaXZlcnMgZG9pbmcgc3R1ZmYgZGlmZmVyZW50bHkg
+d2l0aG91dCByZWFzb24gaXMKPiA+ID4gcmVhbGx5IG5vdCBhIGdvb2QgaWRlYS4KPiAKPiA+IEFz
+IHRoZSBzaW1wbGUgY2FyZCBpcyBkb25lLCB0aGUgYXVkaW8gaGFyZHdhcmUgZGVmaW5pdGlvbnMg
+b2YgdGhlCj4gPiBwbGF0Zm9ybSBhbmQgYWxsIHRoZSBDUFUgREFJUyBhcmUgYWx3YXlzIHNldCBp
+biB0aGUgYXVkaW8gY29udHJvbGxlci4KPiAKPiA+IFdoZW4gdGhlIFBDTSBmb3JtYXQgaXMgZ2xv
+YmFsbHkgZGVmaW5lZCAocGxhdGZvcm0pLCB0aGUgZnVuY3Rpb24KPiA+IHNldF9mbXQoKSBpcyBj
+YWxsZWQgZm9yIGFsbCBDUFUgREFJcyAodGhlbiwgdHdpY2UgZm9yIHRoZSBraXJrd29vZAo+ID4g
+Y29udHJvbGxlcikgd2l0aCB0aGUgc2FtZSB2YWx1ZS4gVGhlIERUIGlzOgo+IAo+IC4uLgo+IAo+
+ID4gVGhlIFBDTSBmb3JtYXQgbWF5IGFsc28gYmUgZGVmaW5lZCBwZXIgREFJIGxpbmsuIFRoZSBm
+b2xsb3dpbmcgRFQgd29ya3MKPiA+IHRoZSBzYW1lIGFzIHNldHRpbmcgZ2xvYmFsbHkgdGhlIGZv
+cm1hdCwgaS5lLiB0aGVyZSBhcmUgdHdvIGNhbGxzIHRvCj4gPiBzZXRfZm10KCkgd2l0aCAnaTJz
+JzoKPiAKPiA+IFRoZSBwcm9ibGVtIGFwcGVhcnMgd2hlbiB0aGUgZm9ybWF0IGlzIGRlZmluZWQg
+aW4gb25seSBvbmUgREFJIGxpbms6Cj4gCj4gPiBUaGVuLCBhdWRpbyBkb2VzIG5vdCB3b3JrLgo+
+IAo+IFNvIHRoaXMgaXMgc3RpbGwgYSBnZW5lcmljIHJhdGhlciB0aGFuIGRyaXZlciBpc3N1ZSBh
+bmQgc2hvdWxkIGJlIHNvbHZlZAo+IG91dHNpZGUgb2YgdGhlIGRyaXZlciAtIGV4YWN0bHkgdGhl
+IHNhbWUgaXNzdWUgaXMgZ29pbmcgdG8gYXBwbHkgdG8gYW55Cj4gb3RoZXIgZGV2aWNlIHdpdGgg
+YSBzaW1pbGFyIHNoYXJlZCBjb25maWd1cmF0aW9uLiAgV2UgY291bGQgZWl0aGVyIHNheQo+IHRo
+YXQgdGhlIERUIGlzIGJ1Z2d5IGhlcmUgb3Igd2UgY291bGQgc2F5IHRoYXQgdGhlIGdlbmVyaWMg
+Y2FyZCBvdWdodCB0bwo+IGFzc3VtZSB0aGF0IGlmIG9ubHkgb25lIGxpbmsgc3BlY2lmaWVzIGEg
+Zm9ybWF0IHRoZW4gaXQgc2hvdWxkIHVzZSB0aGF0Cj4gZm9ybWF0IGZvciBvdGhlciBsaW5rcyBp
+ZiBwb3NzaWJsZSAoc2luY2UgY2xlYXJseSB0aGUgdXNlciBkb2Vzbid0IGNhcmUKPiB3aGF0IGl0
+IGNob29zZXMpLgoKVGhlICdkYWlmbXQnIG9mIHRoZSBjYWxsYmFjayBmdW5jdGlvbiBzZXRfZm10
+IChzbmRfc29jX2RhaV9zZXRfZm10KQpjb250YWlucyA0IHBhcnRzOgotIHRoZSBwaHlzaWNhbCBm
+b3JtYXQsCi0gdGhlIGNsb2NrIGdhdGluZywKLSB0aGUgc2lnbmFsIGludmVyc2lvbnMsCi0gdGhl
+IG1hc3RlciBjbG9jayBkZWZpbml0aW9ucy4KCkFzIHRoZSB2YWx1ZSAnMCcgaXMgbm90IHVzZWQg
+aW4gdGhlIHBoeXNpY2FsIGZvcm1hdCBub3IgaW4gdGhlIG1hc3RlcgpjbG9jaywgdGhpcyB2YWx1
+ZSB3b3VsZCBoYXZlIHNheSAnZG9uJ3QgY2hhbmdlJywgcGVybWl0dGluZyB0aGUKcGFyYW1ldGVy
+cyB0byBiZSBzZXQgaW5kZXBlbmRlbnRseS4KCkJ1dCwgYXMgeW91IGFuZCBSdXNzZWxsIHNheSAn
+bm8nLCBJIHdpbGwgbGV0IHRoZSBmb3JtYXQgZGVmaW5pdGlvbiBhdAp0aGUgcGxhdGZvcm0gbGV2
+ZWwgaW4gdGhlIERULiBTZXR0aW5nIHR3aWNlIHRoZSBoYXJkd2FyZSByZWdpc3RlcnMgaXMKbm90
+IGEgcHJvYmxlbS4KClRoYW5rcy4KCj4gUGxlYXNlIGFsc28gdHJ5IHRvIHVzZSBzdWJqZWN0IGxp
+bmVzIG1hdGNoaW5nIHRoZSBzdHlsZSBmb3IgdGhlCj4gc3Vic3lzdGVtLiAgWW91J3ZlIGJlZW4g
+d29ya2luZyB3aXRoIHVwc3RyZWFtIGZvciBhIHdoaWxlLCB5b3UgcmVhbGx5Cj4gb3VnaHQgdG8g
+YmUgZmFtaWxpYXIgd2l0aCB0aGlzIHNvcnQgb2YgYmFzaWMgcHJvY2VzcyBzdHVmZi4KClNvcnJ5
+LgoKLS0gCktlbiBhciBjJ2hlbnRhw7EJfAkgICAgICAqKiBCcmVpemggaGEgTGludXggYXRhdiEg
+KioKSmVmCQl8CQlodHRwOi8vbW9pbmVqZi5mcmVlLmZyLwpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
