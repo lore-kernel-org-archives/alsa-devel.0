@@ -1,65 +1,82 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: Allow the codec to work in
- slave mode
-Date: Wed, 1 Oct 2014 15:44:59 -0300
-Message-ID: <CAOMZO5A-wd-XcjNdQbz5RGiC6zx+RLGzCBmbUurMvsHqNUTvgw@mail.gmail.com>
-References: <1411082245-25679-1-git-send-email-festevam@gmail.com>
- <20140923015448.GF27755@sirena.org.uk>
- <CAOMZO5BUvZDgY+-VUVENWEoXZS4qFDBKA7ZZLAOzDt-Oawm9tA@mail.gmail.com>
- <20140930192912.GM4273@sirena.org.uk>
- <CAOf5uwmFZcKvmSHWLjhu5OMuM=ZUOT2KXhwKdcZQSWOuhqdDsw@mail.gmail.com>
- <20141001182754.GL4273@sirena.org.uk>
+From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?=
+	<benoit.thebaudeau.dev@gmail.com>
+Subject: Re: Differences between tlv320aic3x and tlv320aic31xx
+Date: Wed, 1 Oct 2014 22:03:31 +0200
+Message-ID: <CA+sos7-0dBndvU_5J5d=GNtLz1MbCwGCRVDZ5K6sxD=9Qi0YuQ@mail.gmail.com>
+References: <20140930183731.GC3907@piout.net> <542BB1AF.3060501@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f169.google.com (mail-lb0-f169.google.com
- [209.85.217.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 1454E2604CE
- for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 20:45:00 +0200 (CEST)
-Received: by mail-lb0-f169.google.com with SMTP id 10so914452lbg.14
- for <alsa-devel@alsa-project.org>; Wed, 01 Oct 2014 11:44:59 -0700 (PDT)
-In-Reply-To: <20141001182754.GL4273@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Jean-Michel Hautbois <jean-michel.hautbois@vodalys.com>, Michael Trimarchi <michael@amarulasolutions.com>, Shawn Guo <shawn.guo@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <542BB1AF.3060501@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jyri Sarha <jsarha@ti.com>
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hi Alexandre, Jyri,
 
-On Wed, Oct 1, 2014 at 3:27 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Sep 30, 2014 at 09:38:21PM +0200, Michael Trimarchi wrote:
->> On Tue, Sep 30, 2014 at 9:29 PM, Mark Brown <broonie@kernel.org> wrote:
+On Wed, Oct 1, 2014 at 9:47 AM, Jyri Sarha <jsarha@ti.com> wrote:
+> On 09/30/2014 09:37 PM, Alexandre Belloni wrote:
+>>
+>> Hi,
+>>
+>> I'm trying to add support for the tlv320aic3104a present on a
+>> custom board using an am335x.
+>>
+>> I see that Benoit seemed to have been successful when using the
+>> tlv320aic3x driver with minor modifications.
+>>
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-January/05=
+8966.html
+>>
+>> On the other hand, in the past, I've used a tlv320aic3100 with the
+>> tlv320aic31xx driver.
+>>
+>> My plan for now is to use the tlv320aic3x driver with snd-soc-evm as
+>> this is the one it is using (it is using .codec_dai_name =3D
+>> "tlv320aic3x-hifi").
+>>
+>> I had no luck until now but I still have to review my pinmuxing. But
+>> before I investigate to much, can you confirm what codecs are suppor=
+ted
+>> by which driver? I'm pretty sure that would be a nice addition to th=
+e
+>> documentation too.
+>> 0
 >
->> >> Any particular register I should monitor?
 >
->> > Did you just listen or did you measure the performance?
+> Hi Alexandre,
+> Based on a brief look at the data sheet I am afraid you will not have=
+ any
+> luck using tlv320aic3x driver with tlv320aic3104. tlv320aic31xx is a =
+better
+> match, but sill not close enough.
 >
->> >> Sorry, but I guess I did not understand your last question.
->
->> > I'm really not sure how to simplify it...  clearly we're skipping some
->> > configuration here, what does it do - is it purely for generating BCLK
->> > and LRCLK?
->
->> Are you talking about clock_in and sigma-delta? So no  the bclk and lrclk but
->> the clkin of the codec.
->
-> I'm sorry but I can't parse what you're saying terribly clearly - please
-> bear in mind that I don't know anything about this device, that's one of
-> the reasons I'm having to ask questions here.  If the configuration that
-> is being skipped is not about generating BCLK and LRCLK then it seems
-> like it's going to be wanted in slave mode as well as master.
+> Based on the register map you may have a change to get the codec work=
+ing
+> using tlv320aic32x4 driver. At least the register map appears to be a=
+ pretty
+> good match. However, I have no experience either with the driver or t=
+he
+> codec.
 
-This patch does not skip any configuration. It just remove the error
-case for sgtl5000 in slave mode.
+I've seen that the tlv320aic31xx driver has been available for some
+time now, but I've not yet looked into it. However, the tlv320aic3x
+driver works pretty well with the tlv320aic3104 (at least, it did at
+the time of my post that you referred to). I've used it connected to a
+=46reescale i.MX25 through I=C2=B2S. IIRC, the register map of the
+tlv320aic3104 is just a subset of what this driver provides (apart
+from the unimplemented register page, which I had added support for
+locally, but I have not sent my patches yet), and there is some
+renaming, especially for the I/Os (see the comment in the header of
+this driver). I had also improved some audio controls, but I'm not
+sure if this was required for the tlv320aic3104, or if it was just an
+improvement also applicable to other CODECs supported by this driver.
 
-Not sure why the error case was there in the first place, as I think
-sgtl5000 slave mode has never been tested before.
+I agree that some clarification would be required ergarding the
+aic31xx CODECs those two drivers support. It may also be possible to
+merge the 31xx driver into the 3x one.
+
+Best regards,
+Beno=C3=AEt
