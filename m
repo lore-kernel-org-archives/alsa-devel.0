@@ -1,133 +1,73 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 2/2] ASoC: davinvi-mcasp: Proper suspend/resume
-	support while audio is active
-Date: Wed, 1 Oct 2014 16:02:12 +0300
-Message-ID: <1412168532-31091-3-git-send-email-peter.ujfalusi@ti.com>
-References: <1412168532-31091-1-git-send-email-peter.ujfalusi@ti.com>
+From: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Subject: Re: [PATCH v3 2/4] ARM: dts: pbab01: enable I2S audio on phyFLEX-i.MX6
+ boards
+Date: Wed, 1 Oct 2014 16:40:17 +0300
+Message-ID: <542C0441.5080508@sam-solutions.com>
+References: <1410537872-17274-1-git-send-email-d.lavnikevich@sam-solutions.com>	<1410854903-26419-1-git-send-email-d.lavnikevich@sam-solutions.com>	<1410854903-26419-3-git-send-email-d.lavnikevich@sam-solutions.com> <CAOMZO5CgrQ6Wf6kStga40TUKx9dARygCNB4OYSUoG3c8eUYbrA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
- by alsa0.perex.cz (Postfix) with ESMTP id C61EA260487
- for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 15:02:22 +0200 (CEST)
-In-Reply-To: <1412168532-31091-1-git-send-email-peter.ujfalusi@ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, jsarha@ti.com, zonque@gmail.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAOMZO5CgrQ6Wf6kStga40TUKx9dARygCNB4OYSUoG3c8eUYbrA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Fabio Estevam <festevam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Shawn Guo <shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, Sascha Hauer <kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-If the board is sent to suspend (deep sleep) the McASP context will be lost.
-In case when suspend happens during active audio we need to save and restore
-more registers, which was configured during hw_param times as well.
-We need to add more config registers, AFIFO control registers and we also
-need to save and restore the serializer configuration as well.
-Since the number of serializers depends on the SoC we need to allocate the
-memory for it based on the num_serializer for the given McASP instance.
+On 01/10/14 15:11, Fabio Estevam wrote:
+> On Tue, Sep 16, 2014 at 5:08 AM, Dmitry Lavnikevich
+> <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org> wrote:
+>
+>> +       regulators {
+>> +               sound_1v8: regulator@2 {
+>
+> We usually start counting from @0.
+>
+...
+ >> +               };
+ >> +
+ >> +               sound_3v3: regulator@3 {
+ >
+ > ,so this one should be @1.
 
-With this patch the ongoing stream will resume after resuming from deep
-sleep.
+@0 and @1 are used for "usb_otg_vbus" and "usb_h1_vbus" regulators in 
+dts for phyFLEX module (imx6qdl-phytec-pfla02.dtsi) which gets included 
+before base board dts (imx6qdl-phytec-pbab01.dtsi)
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/davinci/davinci-mcasp.c | 41 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+>> +                       compatible = "regulator-fixed";
+>> +                       reg = <2>;
+>> +                       regulator-name = "i2s-audio-1v8";
+>> +                       regulator-min-microvolt = <1800000>;
+>> +                       regulator-max-microvolt = <1800000>;
+>> +                       regulator-always-on;
+>
+> No need to have this 'regulator-always-on'
+>
+...
+>> +                       compatible = "regulator-fixed";
+>> +                       reg = <3>;
+>> +                       regulator-name = "i2s-audio-3v3";
+>> +                       regulator-min-microvolt = <3300000>;
+>> +                       regulator-max-microvolt = <3300000>;
+>> +                       regulator-always-on;
+>
+> No need to have this 'regulator-always-on'
+>
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index ccf2f3920a20..0eed9b1b24e1 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -49,11 +49,19 @@ static u32 context_regs[] = {
- 	DAVINCI_MCASP_RXFMT_REG,
- 	DAVINCI_MCASP_ACLKXCTL_REG,
- 	DAVINCI_MCASP_ACLKRCTL_REG,
-+	DAVINCI_MCASP_AHCLKXCTL_REG,
-+	DAVINCI_MCASP_AHCLKRCTL_REG,
- 	DAVINCI_MCASP_PDIR_REG,
-+	DAVINCI_MCASP_RXMASK_REG,
-+	DAVINCI_MCASP_TXMASK_REG,
-+	DAVINCI_MCASP_RXTDM_REG,
-+	DAVINCI_MCASP_TXTDM_REG,
- };
- 
- struct davinci_mcasp_context {
- 	u32	config_regs[ARRAY_SIZE(context_regs)];
-+	u32	afifo_regs[2]; /* for read/write fifo control registers */
-+	u32	*xrsr_regs; /* for serializer configuration */
- };
- 
- struct davinci_mcasp {
-@@ -878,11 +886,25 @@ static int davinci_mcasp_suspend(struct snd_soc_dai *dai)
- {
- 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
- 	struct davinci_mcasp_context *context = &mcasp->context;
-+	u32 reg;
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(context_regs); i++)
- 		context->config_regs[i] = mcasp_get_reg(mcasp, context_regs[i]);
- 
-+	if (mcasp->txnumevt) {
-+		reg = mcasp->fifo_base + MCASP_WFIFOCTL_OFFSET;
-+		context->afifo_regs[0] = mcasp_get_reg(mcasp, reg);
-+	}
-+	if (mcasp->rxnumevt) {
-+		reg = mcasp->fifo_base + MCASP_RFIFOCTL_OFFSET;
-+		context->afifo_regs[1] = mcasp_get_reg(mcasp, reg);
-+	}
-+
-+	for (i = 0; i < mcasp->num_serializer; i++)
-+		context->xrsr_regs[i] = mcasp_get_reg(mcasp,
-+						DAVINCI_MCASP_XRSRCTL_REG(i));
-+
- 	return 0;
- }
- 
-@@ -890,11 +912,25 @@ static int davinci_mcasp_resume(struct snd_soc_dai *dai)
- {
- 	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(dai);
- 	struct davinci_mcasp_context *context = &mcasp->context;
-+	u32 reg;
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(context_regs); i++)
- 		mcasp_set_reg(mcasp, context_regs[i], context->config_regs[i]);
- 
-+	if (mcasp->txnumevt) {
-+		reg = mcasp->fifo_base + MCASP_WFIFOCTL_OFFSET;
-+		mcasp_set_reg(mcasp, reg, context->afifo_regs[0]);
-+	}
-+	if (mcasp->rxnumevt) {
-+		reg = mcasp->fifo_base + MCASP_RFIFOCTL_OFFSET;
-+		mcasp_set_reg(mcasp, reg, context->afifo_regs[1]);
-+	}
-+
-+	for (i = 0; i < mcasp->num_serializer; i++)
-+		mcasp_set_reg(mcasp, DAVINCI_MCASP_XRSRCTL_REG(i),
-+			      context->xrsr_regs[i]);
-+
- 	return 0;
- }
- #else
-@@ -1212,6 +1248,11 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	mcasp->op_mode = pdata->op_mode;
- 	mcasp->tdm_slots = pdata->tdm_slots;
- 	mcasp->num_serializer = pdata->num_serializer;
-+#ifdef CONFIG_PM_SLEEP
-+	mcasp->context.xrsr_regs = devm_kzalloc(&pdev->dev,
-+					sizeof(u32) * mcasp->num_serializer,
-+					GFP_KERNEL);
-+#endif
- 	mcasp->serial_dir = pdata->serial_dir;
- 	mcasp->version = pdata->version;
- 	mcasp->txnumevt = pdata->txnumevt;
--- 
-2.1.0
+why is there no need for 'regulator-alweys-on'? I see it in
+similar fixed regulator descriptions in imx6qdl-sabrelite.dtsi,
+imx6qdl-wandboard.dtsi, imx6qdl-nitrogen6x.dtsi and many other
+boards.
+
+>> +&ssi2 {
+>> +       fsl,mode = "i2s-slave";
+>
+> Please remove this 'fsl,mode' property. It is ignored by the fsl_ssi driver.
+
+yes, thanks. It is present in Documentation but now I see that it
+was actually removed not that long ago. I will remove this
+property with next patchset.
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
