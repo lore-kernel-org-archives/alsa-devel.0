@@ -1,82 +1,165 @@
-From: =?UTF-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?=
-	<benoit.thebaudeau.dev@gmail.com>
-Subject: Re: Differences between tlv320aic3x and tlv320aic31xx
-Date: Wed, 1 Oct 2014 22:03:31 +0200
-Message-ID: <CA+sos7-0dBndvU_5J5d=GNtLz1MbCwGCRVDZ5K6sxD=9Qi0YuQ@mail.gmail.com>
-References: <20140930183731.GC3907@piout.net> <542BB1AF.3060501@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <542BB1AF.3060501@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Alsa-devel <alsa-devel@alsa-project.org>
+From: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Subject: [PATCH] ASoC: simple-card: Add mic and hp detect gpios.
+Date: Wed,  1 Oct 2014 14:25:20 -0700
+Message-ID: <1412198720-2326-1-git-send-email-dgreid@chromium.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Alexandre, Jyri,
+Allow Headphone and Microphone jack detect gpios to be specified in
+device tree.  This will allow a few systems including rk3288_max98090
+to use simple-card instead of having their own board file.
 
-On Wed, Oct 1, 2014 at 9:47 AM, Jyri Sarha <jsarha@ti.com> wrote:
-> On 09/30/2014 09:37 PM, Alexandre Belloni wrote:
->>
->> Hi,
->>
->> I'm trying to add support for the tlv320aic3104a present on a
->> custom board using an am335x.
->>
->> I see that Benoit seemed to have been successful when using the
->> tlv320aic3x driver with minor modifications.
->>
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2013-January/05=
-8966.html
->>
->> On the other hand, in the past, I've used a tlv320aic3100 with the
->> tlv320aic31xx driver.
->>
->> My plan for now is to use the tlv320aic3x driver with snd-soc-evm as
->> this is the one it is using (it is using .codec_dai_name =3D
->> "tlv320aic3x-hifi").
->>
->> I had no luck until now but I still have to review my pinmuxing. But
->> before I investigate to much, can you confirm what codecs are suppor=
-ted
->> by which driver? I'm pretty sure that would be a nice addition to th=
-e
->> documentation too.
->> 0
->
->
-> Hi Alexandre,
-> Based on a brief look at the data sheet I am afraid you will not have=
- any
-> luck using tlv320aic3x driver with tlv320aic3104. tlv320aic31xx is a =
-better
-> match, but sill not close enough.
->
-> Based on the register map you may have a change to get the codec work=
-ing
-> using tlv320aic32x4 driver. At least the register map appears to be a=
- pretty
-> good match. However, I have no experience either with the driver or t=
-he
-> codec.
+Signed-off-by: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+---
+ .../devicetree/bindings/sound/simple-card.txt      |  4 ++
+ sound/soc/generic/simple-card.c                    | 73 ++++++++++++++++++++++
+ 2 files changed, 77 insertions(+)
 
-I've seen that the tlv320aic31xx driver has been available for some
-time now, but I've not yet looked into it. However, the tlv320aic3x
-driver works pretty well with the tlv320aic3104 (at least, it did at
-the time of my post that you referred to). I've used it connected to a
-=46reescale i.MX25 through I=C2=B2S. IIRC, the register map of the
-tlv320aic3104 is just a subset of what this driver provides (apart
-from the unimplemented register page, which I had added support for
-locally, but I have not sent my patches yet), and there is some
-renaming, especially for the I/Os (see the comment in the header of
-this driver). I had also improved some audio controls, but I'm not
-sure if this was required for the tlv320aic3104, or if it was just an
-improvement also applicable to other CODECs supported by this driver.
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index c2e9841..72d94b7 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -17,6 +17,10 @@ Optional properties:
+ 					  source.
+ - simple-audio-card,mclk-fs             : Multiplication factor between stream rate and codec
+   					  mclk.
++- simple-audio-card,hp_det_gpio		: Reference to GPIO that signals when
++					  headphones are attached.
++- simple-audio-card,mic_det_gpio	: Reference to GPIO that signals when
++					  a microphone is attached.
+ 
+ Optional subnodes:
+ 
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 709ce67..fcb431f 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -10,10 +10,13 @@
+  */
+ #include <linux/clk.h>
+ #include <linux/device.h>
++#include <linux/gpio.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
++#include <linux/of_gpio.h>
+ #include <linux/platform_device.h>
+ #include <linux/string.h>
++#include <sound/jack.h>
+ #include <sound/simple_card.h>
+ #include <sound/soc-dai.h>
+ #include <sound/soc.h>
+@@ -25,6 +28,8 @@ struct simple_card_data {
+ 		struct asoc_simple_dai codec_dai;
+ 	} *dai_props;
+ 	unsigned int mclk_fs;
++	int gpio_hp_det;
++	int gpio_mic_det;
+ 	struct snd_soc_dai_link dai_link[];	/* dynamically allocated */
+ };
+ 
+@@ -54,6 +59,32 @@ static struct snd_soc_ops asoc_simple_card_ops = {
+ 	.hw_params = asoc_simple_card_hw_params,
+ };
+ 
++static struct snd_soc_jack simple_card_hp_jack;
++static struct snd_soc_jack_pin simple_card_hp_jack_pins[] = {
++	{
++		.pin = "Headphones",
++		.mask = SND_JACK_HEADPHONE,
++	},
++};
++static struct snd_soc_jack_gpio simple_card_hp_jack_gpio = {
++	.name = "Headphone detection",
++	.report = SND_JACK_HEADPHONE,
++	.debounce_time = 150,
++};
++
++static struct snd_soc_jack simple_card_mic_jack;
++static struct snd_soc_jack_pin simple_card_mic_jack_pins[] = {
++	{
++		.pin = "Mic Jack",
++		.mask = SND_JACK_MICROPHONE,
++	},
++};
++static struct snd_soc_jack_gpio simple_card_mic_jack_gpio = {
++	.name = "Mic detection",
++	.report = SND_JACK_MICROPHONE,
++	.debounce_time = 150,
++};
++
+ static int __asoc_simple_card_dai_init(struct snd_soc_dai *dai,
+ 				       struct asoc_simple_dai *set)
+ {
+@@ -109,6 +140,28 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	if (gpio_is_valid(priv->gpio_hp_det)) {
++		snd_soc_jack_new(codec->codec, "Headphones", SND_JACK_HEADPHONE,
++				 &simple_card_hp_jack);
++		snd_soc_jack_add_pins(&simple_card_hp_jack,
++				      ARRAY_SIZE(simple_card_hp_jack_pins),
++				      simple_card_hp_jack_pins);
++
++		simple_card_hp_jack_gpio.gpio = priv->gpio_hp_det;
++		snd_soc_jack_add_gpios(&simple_card_hp_jack, 1,
++				       &simple_card_hp_jack_gpio);
++	}
++
++	if (gpio_is_valid(priv->gpio_mic_det)) {
++		snd_soc_jack_new(codec->codec, "Mic Jack", SND_JACK_MICROPHONE,
++				 &simple_card_mic_jack);
++		snd_soc_jack_add_pins(&simple_card_mic_jack,
++				      ARRAY_SIZE(simple_card_mic_jack_pins),
++				      simple_card_mic_jack_pins);
++		simple_card_mic_jack_gpio.gpio = priv->gpio_mic_det;
++		snd_soc_jack_add_gpios(&simple_card_mic_jack, 1,
++				       &simple_card_mic_jack_gpio);
++	}
+ 	return 0;
+ }
+ 
+@@ -383,6 +436,16 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 			return ret;
+ 	}
+ 
++	priv->gpio_hp_det = of_get_named_gpio(node,
++				"simple-audio-card,hp-det-gpio", 0);
++	if (priv->gpio_hp_det == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
++
++	priv->gpio_mic_det = of_get_named_gpio(node,
++				"simple-audio-card,mic-det-gpio", 0);
++	if (priv->gpio_mic_det == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
++
+ 	if (!priv->snd_card.name)
+ 		priv->snd_card.name = priv->snd_card.dai_link->name;
+ 
+@@ -502,6 +565,16 @@ err:
+ 
+ static int asoc_simple_card_remove(struct platform_device *pdev)
+ {
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++	struct simple_card_data *priv = snd_soc_card_get_drvdata(card);
++
++	if (gpio_is_valid(priv->gpio_hp_det))
++		snd_soc_jack_free_gpios(&simple_card_hp_jack, 1,
++					&simple_card_hp_jack_gpio);
++	if (gpio_is_valid(priv->gpio_mic_det))
++		snd_soc_jack_free_gpios(&simple_card_mic_jack, 1,
++					&simple_card_mic_jack_gpio);
++
+ 	return asoc_simple_card_unref(pdev);
+ }
+ 
+-- 
+2.1.0.rc2.206.gedb03e5
 
-I agree that some clarification would be required ergarding the
-aic31xx CODECs those two drivers support. It may also be possible to
-merge the 31xx driver into the 3x one.
-
-Best regards,
-Beno=C3=AEt
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
