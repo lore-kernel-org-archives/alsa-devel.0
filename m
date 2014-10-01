@@ -1,93 +1,53 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH 2/2] ASoC: Intel: byt-rt5640: Enable DMIC
-	interface for default DAPM route
-Date: Wed,  1 Oct 2014 15:08:15 +0300
-Message-ID: <1412165295-24229-2-git-send-email-jarkko.nikula@linux.intel.com>
-References: <1412165295-24229-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v3 2/4] ARM: dts: pbab01: enable I2S audio on
+ phyFLEX-i.MX6 boards
+Date: Wed, 1 Oct 2014 09:11:13 -0300
+Message-ID: <CAOMZO5CgrQ6Wf6kStga40TUKx9dARygCNB4OYSUoG3c8eUYbrA@mail.gmail.com>
+References: <1410537872-17274-1-git-send-email-d.lavnikevich@sam-solutions.com>
+	<1410854903-26419-1-git-send-email-d.lavnikevich@sam-solutions.com>
+	<1410854903-26419-3-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AC68260486
- for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 14:08:33 +0200 (CEST)
-In-Reply-To: <1412165295-24229-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1410854903-26419-3-git-send-email-d.lavnikevich@sam-solutions.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Cc: Shawn Guo <shawn.guo@freescale.com>, Sascha Hauer <kernel@pengutronix.de>, "robh+dt@kernel.org" <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Russell King <linux@arm.linux.org.uk>, perex@perex.cz, Takashi Iwai <tiwai@suse.de>, =devicetree@vger.kernel.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-It turned out DMIC interface wasn't enabled/disabled runtime for active
-DMIC route in the rt5640 codec driver anymore after commit
-71d97a794301 ("ASoC: rt5640: Use the platform data for DMIC settings").
+On Tue, Sep 16, 2014 at 5:08 AM, Dmitry Lavnikevich
+<d.lavnikevich@sam-solutions.com> wrote:
 
-Since DMIC interface must be enabled explicitly either by passing platform
-data to rt5640 codec driver or by calling new rt5640_dmic_enable() this
-patch adds a DMI quirk flag that is used to conditionally enable DMIC
-interface during sound card init time.
+> +       regulators {
+> +               sound_1v8: regulator@2 {
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
-Goes on top of ("ASoC: Intel: byt-rt5640: Add quirk for Asus T100")
----
- sound/soc/intel/byt-rt5640.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+We usually start counting from @0.
 
-diff --git a/sound/soc/intel/byt-rt5640.c b/sound/soc/intel/byt-rt5640.c
-index c323a101214e..8392c160d9e2 100644
---- a/sound/soc/intel/byt-rt5640.c
-+++ b/sound/soc/intel/byt-rt5640.c
-@@ -59,7 +59,11 @@ enum {
- 	BYT_RT5640_IN1_MAP,
- };
- 
--static unsigned long byt_rt5640_custom_map = BYT_RT5640_DMIC1_MAP;
-+#define BYT_RT5640_MAP(quirk)	((quirk) & 0xff)
-+#define BYT_RT5640_DMIC_EN	BIT(16)
-+
-+static unsigned long byt_rt5640_quirk = BYT_RT5640_DMIC1_MAP |
-+					BYT_RT5640_DMIC_EN;
- 
- static const struct snd_kcontrol_new byt_rt5640_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone"),
-@@ -94,7 +98,7 @@ static int byt_rt5640_hw_params(struct snd_pcm_substream *substream,
- 
- static int byt_rt5640_quirk_cb(const struct dmi_system_id *id)
- {
--	byt_rt5640_custom_map = (unsigned long)id->driver_data;
-+	byt_rt5640_quirk = (unsigned long)id->driver_data;
- 	return 1;
- }
- 
-@@ -129,7 +133,7 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- 	}
- 
- 	dmi_check_system(byt_rt5640_quirk_table);
--	switch (byt_rt5640_custom_map) {
-+	switch (BYT_RT5640_MAP(byt_rt5640_quirk)) {
- 	case BYT_RT5640_IN1_MAP:
- 		custom_map = byt_rt5640_intmic_in1_map;
- 		num_routes = ARRAY_SIZE(byt_rt5640_intmic_in1_map);
-@@ -143,6 +147,12 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- 	if (ret)
- 		return ret;
- 
-+	if (byt_rt5640_quirk & BYT_RT5640_DMIC_EN) {
-+		ret = rt5640_dmic_enable(codec, 0, 0);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	snd_soc_dapm_ignore_suspend(dapm, "HPOL");
- 	snd_soc_dapm_ignore_suspend(dapm, "HPOR");
- 
--- 
-2.1.0
+> +                       compatible = "regulator-fixed";
+> +                       reg = <2>;
+> +                       regulator-name = "i2s-audio-1v8";
+> +                       regulator-min-microvolt = <1800000>;
+> +                       regulator-max-microvolt = <1800000>;
+> +                       regulator-always-on;
+
+No need to have this 'regulator-always-on'
+
+> +               };
+> +
+> +               sound_3v3: regulator@3 {
+
+,so this one should be @1.
+
+> +                       compatible = "regulator-fixed";
+> +                       reg = <3>;
+> +                       regulator-name = "i2s-audio-3v3";
+> +                       regulator-min-microvolt = <3300000>;
+> +                       regulator-max-microvolt = <3300000>;
+> +                       regulator-always-on;
+
+No need to have this 'regulator-always-on'
+
+> +&ssi2 {
+> +       fsl,mode = "i2s-slave";
+
+Please remove this 'fsl,mode' property. It is ignored by the fsl_ssi driver.
