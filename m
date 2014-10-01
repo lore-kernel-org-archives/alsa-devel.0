@@ -1,17 +1,19 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: [PATCH] ASoC: ssm4567: Remove duplicated else-if branch
-Date: Wed,  1 Oct 2014 10:15:57 -0700
-Message-ID: <1412183757-26843-1-git-send-email-anatol.pomozov@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: ASoC: ssm4567: Add driver for Analog Devices
+	SSM4567 amplifier
+Date: Wed, 1 Oct 2014 20:44:02 +0300
+Message-ID: <20141001174402.GD5865@mwanda>
+References: <20141001170257.GB11786@mwanda>
+ <CAOMFOmXOhDc=nwqcCUPqF6yFqMSvZwdE1gbATxZVhFpM40nvHQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f201.google.com (mail-ie0-f201.google.com
- [209.85.223.201])
- by alsa0.perex.cz (Postfix) with ESMTP id DDDCC2604C9
- for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 19:16:27 +0200 (CEST)
-Received: by mail-ie0-f201.google.com with SMTP id rl12so49241iec.4
- for <alsa-devel@alsa-project.org>; Wed, 01 Oct 2014 10:16:26 -0700 (PDT)
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1046F2604D8
+ for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 19:44:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAOMFOmXOhDc=nwqcCUPqF6yFqMSvZwdE1gbATxZVhFpM40nvHQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,27 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lars@metafoo.de, dan.carpenter@oracle.com
-Cc: alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
----
- sound/soc/codecs/ssm4567.c | 2 --
- 1 file changed, 2 deletions(-)
+On Wed, Oct 01, 2014 at 10:12:53AM -0700, Anatol Pomozov wrote:
+> Hi
+> 
+> On Wed, Oct 1, 2014 at 10:02 AM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > Hello Anatol Pomozov,
+> >
+> > The patch 1ee44ce03011: "ASoC: ssm4567: Add driver for Analog Devices
+> > SSM4567 amplifier" from Sep 26, 2014, leads to the following static
+> > checker warning:
+> 
+> Thanks!
+> 
+> What static checker do you use and how can I run locally?
 
-diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
-index 1dadacb..4b5c17f 100644
---- a/sound/soc/codecs/ssm4567.c
-+++ b/sound/soc/codecs/ssm4567.c
-@@ -173,8 +173,6 @@ static int ssm4567_hw_params(struct snd_pcm_substream *substream,
- 		dacfs = SSM4567_DAC_FS_32000_48000;
- 	else if (rate >= 64000 && rate <= 96000)
- 		dacfs = SSM4567_DAC_FS_64000_96000;
--	else if (rate >= 64000 && rate <= 96000)
--		dacfs = SSM4567_DAC_FS_64000_96000;
- 	else if (rate >= 128000 && rate <= 192000)
- 		dacfs = SSM4567_DAC_FS_128000_192000;
- 	else
--- 
-2.1.0.rc2.206.gedb03e5
+This is a smatch warning, but you have to run with the --spammy option
+to see it because these warnings are often false postives.
+
+~/progs/smatch/devel/smatch_scripts/kchecker --spammy sound/soc/codecs/ssm4567.c
+
+regards,
+dan carpenter
