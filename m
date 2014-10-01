@@ -1,129 +1,78 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v6 2/2] drm/i2c:tda998x: Use the HDMI audio CODEC
-Date: Wed, 1 Oct 2014 15:23:41 +0100
-Message-ID: <20141001142340.GR5182@n2100.arm.linux.org.uk>
-References: <cover.1411547014.git.moinejf@free.fr>
- <4b3d35a14461ed164956b7f5aa77b29170bc393d.1411547014.git.moinejf@free.fr>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/2] ASoC: davinci-mcasp: Improved
+	suspend/resume support
+Date: Wed, 1 Oct 2014 17:02:40 +0100
+Message-ID: <20141001160240.GC4273@sirena.org.uk>
+References: <1412168532-31091-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <4b3d35a14461ed164956b7f5aa77b29170bc393d.1411547014.git.moinejf@free.fr>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jean-Francois Moine <moinejf@free.fr>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, Jyri Sarha <jsarha@ti.com>, Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org
+Content-Type: multipart/mixed; boundary="===============9073028681934511731=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36C0D261489
+ for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 18:02:48 +0200 (CEST)
+In-Reply-To: <1412168532-31091-1-git-send-email-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 24, 2014 at 10:11:21AM +0200, Jean-Francois Moine wrote:
-> This patch interfaces the HDMI transmitter with the audio system.
-...
 
-> +struct tda998x_priv2 {
-> +	struct tda998x_priv base;
-> +	struct drm_encoder encoder;
-> +	struct drm_connector connector;
->  };
+--===============9073028681934511731==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SfqqZ2zU93BLT28p"
+Content-Disposition: inline
 
-NAK on moving this up here.  It was specifically placed below the core
-and below the older drm_slave_encoder code because nothing but the new
-component based interfaces to TDA998x have any business knowing that
-these are packaged up in this way.
 
-> +static void tda998x_create_audio_codec(struct tda998x_priv *priv)
-> +{
-> +	struct platform_device *pdev;
-> +	struct module *module;
-> +
-> +	request_module("snd-soc-hdmi-codec");
-> +	pdev = platform_device_register_resndata(&priv->hdmi->dev,
-> +						 "hdmi-audio-codec",
-> +						  PLATFORM_DEVID_NONE,
-> +						  NULL, 0,
-> +						  &tda998x_hdmi_data,
-> +						  sizeof tda998x_hdmi_data);
-> +	if (IS_ERR(pdev)) {
-> +		dev_err(&priv->hdmi->dev, "cannot create codec: %ld\n",
-> +			PTR_ERR(pdev));
-> +		return;
-> +	}
-> +
-> +	priv->pdev_codec = pdev;
-> +	module = pdev->dev.driver->owner;
-> +	if (module)
-> +		try_module_get(module);
+--SfqqZ2zU93BLT28p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is really not on.  Firstly, registering a platform device has no
-guarantee that it will bind to a driver.  So, pdev->dev.driver may be
-NULL here -> kernel oops.
+On Wed, Oct 01, 2014 at 04:02:10PM +0300, Peter Ujfalusi wrote:
+> Hi,
+>=20
+> With this series the McASP will continue to work after deep sleep during =
+audio
+> activity.
+> Without these changes the ongoing audio will not resume and it will time =
+out,
+> but streams started after resume were worked correctly.
 
-Secondly, what's the purpose of the unchecked try_module_get() there?
-You can't stop the device being unbound from its driver, so all you're
-doing is possibly locking the module into module space for no other
-benefit.
+Applied both, thanks.  Might be worth converting to regmap and using the
+cache code?
 
-> @@ -1167,12 +1390,19 @@ tda998x_encoder_set_property(struct drm_encoder *encoder,
->  
->  static void tda998x_destroy(struct tda998x_priv *priv)
->  {
-> +	struct module *module;
-> +
->  	/* disable all IRQs and free the IRQ handler */
->  	cec_write(priv, REG_CEC_RXSHPDINTENA, 0);
->  	reg_clear(priv, REG_INT_FLAGS_2, INT_FLAGS_2_EDID_BLK_RD);
->  	if (priv->hdmi->irq)
->  		free_irq(priv->hdmi->irq, priv);
->  
-> +	if (priv->pdev_codec) {
-> +		module = priv->pdev_codec->dev.driver->owner;
-> +		module_put(module);
+--SfqqZ2zU93BLT28p
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-This is wrong for all the reasons the other part above is wrong.
-Userspace can decide to unbind the platform device from the associated
-platform driver whenever it wishes.  At that point,
-priv->pdev_codec->dev.driver becomes NULL.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-So, please get rid of this.
+iQEcBAEBAgAGBQJULCWfAAoJECTWi3JdVIfQQVYH/0d8rvPIHqdd1Wwe4TKO1M+A
++TqikH3Mkk8lHGTqW8ATeGsUm0uSAHUC2G+MathFMLxVNRoP7k9PClNTpzvuUukF
+2ZHyIt+Ni8D0StllDtz6EUsHn00+t6U6i0oV93zTTf4+nBuHmttPd/yftQTIyepv
+bjmPLO4g4utgDvXwZ8Q2nCCwY+DwTh13rFbkic++Gbx9zEWO42dCTuR+KTa47QTZ
+DGjR+Ls6QilPHcSBcx48Fhcf3wr+QP1Zz2pGGD9zVZfyXs16a3982iPr0x0b/D09
+vDq1pE7LT3jeWoxeKy4wM3uZubiX7NanY9bJzfJHgpEqS7SSBLIQ2weGdj9qw7M=
+=c8QX
+-----END PGP SIGNATURE-----
 
-> +		platform_device_del(priv->pdev_codec);
+--SfqqZ2zU93BLT28p--
 
-This leaks the memory associated with the platform device.
+--===============9073028681934511731==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> @@ -1395,15 +1660,13 @@ static int tda998x_encoder_init(struct i2c_client *client,
->  	encoder_slave->slave_priv = priv;
->  	encoder_slave->slave_funcs = &tda998x_encoder_slave_funcs;
->  
-> +	/* set the drvdata pointer to priv2 for CODEC calls */
-> +	dev_set_drvdata(&client->dev,
-> +			container_of(priv, struct tda998x_priv2, base));
-> +
->  	return 0;
->  }
->  
-> -struct tda998x_priv2 {
-> -	struct tda998x_priv base;
-> -	struct drm_encoder encoder;
-> -	struct drm_connector connector;
-> -};
-> -
 
-I would prefer this structure to stay here, as code above this point should
-have no business knowing how these are packaged together.  I would suggest
-either:
-
-- moving the audio codec code below this point, or
-- storing struct tda998x_priv in the device private pointer, and
-  converting it to struct tda998x_priv2 via container_of() where
-  necessary below this point.
-
--- 
-FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
-according to speedtest.net.
+--===============9073028681934511731==--
