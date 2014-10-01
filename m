@@ -1,62 +1,100 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl: fix dependencies for wm8962
-Date: Tue, 30 Sep 2014 16:26:18 -0700
-Message-ID: <20140930232617.GA1732@Asurada>
-References: <1950588.ErdGoiHh8p@wuerfel> <20140930164510.GF4273@sirena.org.uk>
- <20140930174241.GA1296@Asurada>
- <20140930230906.GQ4273@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f180.google.com (mail-pd0-f180.google.com
- [209.85.192.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 9DA4A2610A3
- for <alsa-devel@alsa-project.org>; Wed,  1 Oct 2014 01:26:26 +0200 (CEST)
-Received: by mail-pd0-f180.google.com with SMTP id fp1so6008673pdb.11
- for <alsa-devel@alsa-project.org>; Tue, 30 Sep 2014 16:26:25 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20140930230906.GQ4273@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Arnd Bergmann <arnd@arndb.de>
+From: Pramod Gurav <pramod.gurav@smartplayin.com>
+Subject: [PATCH] ASoC: remove use of gpiochip_remove() retval
+Date: Wed,  1 Oct 2014 11:17:46 +0530
+Message-ID: <1412142466-14932-1-git-send-email-pramod.gurav@smartplayin.com>
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Sender: linux-gpio-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Pramod Gurav <pramod.gurav@smartplayin.com>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-gpio@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 01, 2014 at 12:09:06AM +0100, Mark Brown wrote:
-> On Tue, Sep 30, 2014 at 10:42:42AM -0700, Nicolin Chen wrote:
-> > On Tue, Sep 30, 2014 at 05:45:10PM +0100, Mark Brown wrote:
-> 
-> > > That select shouldn't be there in the first place, I asked Nicolin to
-> > > fix this when I applied the driver but he's not got round to it yet.
-> 
-> > I think I might have missed something around those days, even though
-> > the 'Applied' mail seemly doesn't have any comment against this part:
-> > http://mailman.alsa-project.org/pipermail/alsa-devel/2014-August/080083.html
-> 
-> > Is that possible for you to copy and paste the comments again?
-> 
-> I suspect it was on an earlier version of the patch or a cover letter;
-> IIRC you were resending while I was reviewing.
+Get rid of using return value from gpiochip_remove() as it returns
+void with a new change in kernel.
 
-I checked the Archive, the patch only got one version without cover
-letter. And this version only got one reply which is the Applied mail.
-I guess your earlier reply might have been swallowed somehow so I
-couldn't read it.
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Alexandre Courbot <gnurou@gmail.com>
+CC: Liam Girdwood <lgirdwood@gmail.com>
+CC: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz> 
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-gpio@vger.kernel.org
+Signed-off-by: Pramod Gurav <pramod.gurav@smartplayin.com>
+---
+ sound/soc/codecs/wm5100.c |    5 +----
+ sound/soc/codecs/wm8903.c |    6 +-----
+ sound/soc/codecs/wm8962.c |    5 +----
+ sound/soc/codecs/wm8996.c |    6 +-----
+ 4 files changed, 4 insertions(+), 18 deletions(-)
 
-Anyway, it's my fault that I didn't pay attention to the Kconfig part.
-The driver is initially designed for imx-cs42888, but I changed my mind
-to merge it with others before I sent it. And I didn't rewrite the part
-inside the Kconfig. Will be careful next time.
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 7bb0d36..a01ad62 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -2319,11 +2319,8 @@ static void wm5100_init_gpio(struct i2c_client *i2c)
+ static void wm5100_free_gpio(struct i2c_client *i2c)
+ {
+ 	struct wm5100_priv *wm5100 = i2c_get_clientdata(i2c);
+-	int ret;
+ 
+-	ret = gpiochip_remove(&wm5100->gpio_chip);
+-	if (ret != 0)
+-		dev_err(&i2c->dev, "Failed to remove GPIOs: %d\n", ret);
++	gpiochip_remove(&wm5100->gpio_chip);
+ }
+ #else
+ static void wm5100_init_gpio(struct i2c_client *i2c)
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index aa09848..c038b3e 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1877,11 +1877,7 @@ static void wm8903_init_gpio(struct wm8903_priv *wm8903)
+ 
+ static void wm8903_free_gpio(struct wm8903_priv *wm8903)
+ {
+-	int ret;
+-
+-	ret = gpiochip_remove(&wm8903->gpio_chip);
+-	if (ret != 0)
+-		dev_err(wm8903->dev, "Failed to remove GPIOs: %d\n", ret);
++	gpiochip_remove(&wm8903->gpio_chip);
+ }
+ #else
+ static void wm8903_init_gpio(struct wm8903_priv *wm8903)
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 1098ae3..9077411 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3398,11 +3398,8 @@ static void wm8962_init_gpio(struct snd_soc_codec *codec)
+ static void wm8962_free_gpio(struct snd_soc_codec *codec)
+ {
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+-	int ret;
+ 
+-	ret = gpiochip_remove(&wm8962->gpio_chip);
+-	if (ret != 0)
+-		dev_err(codec->dev, "Failed to remove GPIOs: %d\n", ret);
++	gpiochip_remove(&wm8962->gpio_chip);
+ }
+ #else
+ static void wm8962_init_gpio(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index f16ff4f..b1dcc11 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -2216,11 +2216,7 @@ static void wm8996_init_gpio(struct wm8996_priv *wm8996)
+ 
+ static void wm8996_free_gpio(struct wm8996_priv *wm8996)
+ {
+-	int ret;
+-
+-	ret = gpiochip_remove(&wm8996->gpio_chip);
+-	if (ret != 0)
+-		dev_err(wm8996->dev, "Failed to remove GPIOs: %d\n", ret);
++	gpiochip_remove(&wm8996->gpio_chip);
+ }
+ #else
+ static void wm8996_init_gpio(struct wm8996_priv *wm8996)
+-- 
+1.7.9.5
 
-And I think Fabio's suggestion/patch has no problem right?
-
-Thank you
-Nicolin
