@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ssm4567: Remove duplicated else-if
-	branch
-Date: Thu, 2 Oct 2014 12:21:12 +0100
-Message-ID: <20141002112112.GT4273@sirena.org.uk>
-References: <1412183757-26843-1-git-send-email-anatol.pomozov@gmail.com>
+From: Tim Cussins <timcussins@eml.cc>
+Subject: proposal: snd_pcm_start_at()
+Date: Thu, 02 Oct 2014 15:34:20 +0100
+Message-ID: <1412260460.3891605.174362449.667FB9BE@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4360377884749012926=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A92F326155E
- for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 13:21:23 +0200 (CEST)
-In-Reply-To: <1412183757-26843-1-git-send-email-anatol.pomozov@gmail.com>
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
+ [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 427DC260475
+ for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 16:34:21 +0200 (CEST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by gateway2.nyi.internal (Postfix) with ESMTP id 677AD206DD
+ for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 10:34:20 -0400 (EDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, dan.carpenter@oracle.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
---===============4360377884749012926==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oiTwr10F0DlNHtiD"
-Content-Disposition: inline
+I'm Tim: I work at Linn Products Ltd - we make Network Music Players,
+amongst other things.
 
+As you might imagine, synchronised-start is important when multiple
+devices on the network are rendering the same audio. We'd be interested
+in contributing a small expansion of the alsa-lib API to support
+synchronised start.
 
---oiTwr10F0DlNHtiD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Assuming we can synchronise the audio clocks (I'm aware this is not
+trivial - It's not the topic of this post), we'd propose something like:
 
-On Wed, Oct 01, 2014 at 10:15:57AM -0700, Anatol Pomozov wrote:
-> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+    int snd_pcm_start_at(snd_pcm_t* pcm, snd_htimestamp_t* tstamp);
 
-Applied, thanks.
+and playback would begin as close to tstamp as possible. If tstamp is in
+the past, it would should return an error.
 
---oiTwr10F0DlNHtiD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Recent work by Takashi Iwai enables client code to set the clock type of
+timestamps using snd_pcm_sw_params_set_tstamp_type(). This context could
+quite naturally extend to tstamp argument of snd_pcm_start_at().
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Before I get stuck into working up the details under the hood, it'd be
+good to get some feedback/objections regarding this approach.
 
-iQEcBAEBAgAGBQJULTUnAAoJECTWi3JdVIfQuC4H/1CH6Dc5VR9gpmKXjo9P8UJ4
-7My72LA5m8qf4vDCjynyueoBCe1eKXF19sqx2fzsfm0JFtOwzRKD/+3GyMfd8f2q
-zNlnBMN0Cu1D2XWxUdzK//ykJbIlKy2XNsqPZHY0KbDn0GHqTlf5lZV+lZNCrXbD
-jZr1zxMPoWAR50iy0ktaznzbU4NRkLz2jhZnvRHeTA+6aMbkq0dVfc5ihIQBQ0ZQ
-3qlp6Inr2y/j8nL9W0Sxkfhs9Uqfp3jz/MaStJTNKh61Tn5RoV29H8ETFdsqXUfY
-86OgMODa1ShZddMXVeeX1JH85l5tDBm0RduSH5Mvk0/59Gj9gEllrTin/MKN0nk=
-=Zfqu
------END PGP SIGNATURE-----
-
---oiTwr10F0DlNHtiD--
-
---===============4360377884749012926==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4360377884749012926==--
+Thanks in advance!
+Tim
