@@ -1,59 +1,68 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: proposal: snd_pcm_start_at()
-Date: Thu, 02 Oct 2014 12:41:19 -0500
-Message-ID: <542D8E3F.4080400@linux.intel.com>
-References: <1412260460.3891605.174362449.667FB9BE@webmail.messagingengine.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: samsung: fix CDCLK handling
+Date: Thu, 2 Oct 2014 18:54:09 +0100
+Message-ID: <20141002175409.GX4273@sirena.org.uk>
+References: <1412095211-4012-1-git-send-email-drake@endlessm.com>
+ <542D7A6B.7010000@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 004EE2604BC
- for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 19:41:26 +0200 (CEST)
-In-Reply-To: <1412260460.3891605.174362449.667FB9BE@webmail.messagingengine.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Cussins <timcussins@eml.cc>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="t54s24TTWYm6oOX+"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <542D7A6B.7010000@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Daniel Drake <drake@endlessm.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/2/14, 9:34 AM, Tim Cussins wrote:
-> Hi all,
->
-> I'm Tim: I work at Linn Products Ltd - we make Network Music Players,
-> amongst other things.
->
-> As you might imagine, synchronised-start is important when multiple
-> devices on the network are rendering the same audio. We'd be interested
-> in contributing a small expansion of the alsa-lib API to support
-> synchronised start.
->
-> Assuming we can synchronise the audio clocks (I'm aware this is not
-> trivial - It's not the topic of this post), we'd propose something like:
->
->      int snd_pcm_start_at(snd_pcm_t* pcm, snd_htimestamp_t* tstamp);
->
-> and playback would begin as close to tstamp as possible. If tstamp is in
-> the past, it would should return an error.
->
-> Recent work by Takashi Iwai enables client code to set the clock type of
-> timestamps using snd_pcm_sw_params_set_tstamp_type(). This context could
-> quite naturally extend to tstamp argument of snd_pcm_start_at().
->
-> Before I get stuck into working up the details under the hood, it'd be
-> good to get some feedback/objections regarding this approach.
 
-It's probably better idea to start PCM playback with a bunch of zeroes 
-and then rely on existing timestamping to insert samples at the right 
-location in the ring buffer - which you have to do anyway to compensate 
-for drifts between your network clock and audio clock. This is a more 
-predictable solution that abstracts away all the time needed to arm DMA, 
-FIFOs, etc. The only hardware-dependent variable that would remain is 
-the precision/granularity of the timestamping.
--Pierre
+--t54s24TTWYm6oOX+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Oct 02, 2014 at 06:16:43PM +0200, Sylwester Nawrocki wrote:
+> [dropping unrelated addresses from Cc]
+
+You've dropped Liam who's the other ASoC maintainer.
+
+> Sorry for getting back late to this. Indeed we have a mess here.
+> I mostly tested interaction between two CPU DAIs - the main and the
+> overlay one (which is not supported in mainline yet).
+
+The dual DAIs were supported in mainline when the code was merged...
+
+> > Simplify the situation and solve the bug with the following approach:
+> >  - as before, samsung_i2s_dai_probe() gates CDCLK by default
+> >    (no need for smartq_wm8987 to do this as well)
+> >  - platform drivers can gate/ungate CDCLK as necessary
+> >    (currently only odroidx2 needs to do this)
+> >  - i2s code has no other interaction with CDCLK
+
+> I'm not an ASoC expert, but I'd say it would be better to modify
+> the I2S module so there is no additional callbacks needed in
+> the machine driver. This way all machine drivers using the CDCLK
+> output could be simplified, not mentioning using simple-card.
+> I'm not sure how to do it yet, I'm going to take a look at this
+> over the weekend.
+
+Yes, keeping this in the SoC side drivers seems all round better.
+Perhaps the I2S driver should be exposing CDCLK as a clock via the clock
+API?  Dunno if that'd help or not.  Or refcount.
+
+--t54s24TTWYm6oOX+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJULZFAAAoJECTWi3JdVIfQ/oQH/1d8rZ2JpwIRQz0Mdf8DCoDP
+mlrDo4diy4zxtjqkHieJV0xuZqP/ns2gIfr5ksir/CWuAzq3rR6cjFeZx/sr1XB8
+uUHD6Yo6SZYLA53mVmg2SW/pBFoYBschVpv+qJvg6NyQVSftBrA93e8qOjhkoWnA
+lov/1NE4XjY0dkHCmCtxsxQxHCjAEkfXVuPimUCa8YV85ROZ5CLytnt2X0SYmkX2
+w4gz5aqxrwhQHOsIKuqy4FaK1lWNMF04cXTYEW/vy2WJP94FHaglhC8iB9PBv2/1
+Zaj/eNMMOG4+wVJQ0WQgsm9Wug6hEdvFhVNjggM3OomxFg9sdsWYttXQvBdPkwo=
+=IOn6
+-----END PGP SIGNATURE-----
+
+--t54s24TTWYm6oOX+--
