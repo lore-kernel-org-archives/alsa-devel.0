@@ -1,105 +1,51 @@
-From: Gilles Hemberg <gilles.hemberg@gmail.com>
-Subject: [bug] SPDIF (digital-out) not working on NForce4/CK804
-Date: Thu, 02 Oct 2014 20:13:28 +0200
-Message-ID: <542D95C8.8060701@gmail.com>
+From: Jean-Francois Moine <moinejf@free.fr>
+Subject: Re: [PATCH v6 2/2] drm/i2c:tda998x: Use the HDMI audio CODEC
+Date: Thu, 2 Oct 2014 20:37:10 +0200
+Message-ID: <20141002203710.03e035f1@armhf>
+References: <cover.1411547014.git.moinejf@free.fr>
+ <4b3d35a14461ed164956b7f5aa77b29170bc393d.1411547014.git.moinejf@free.fr>
+ <542C0A2C.6010802@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
- [209.85.212.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C9B7261A60
- for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 20:13:32 +0200 (CEST)
-Received: by mail-wi0-f169.google.com with SMTP id cc10so2332036wib.2
- for <alsa-devel@alsa-project.org>; Thu, 02 Oct 2014 11:13:31 -0700 (PDT)
-Received: from [192.168.0.192] (178-116-65-104.access.telenet.be.
- [178.116.65.104])
- by mx.google.com with ESMTPSA id pk9sm5381610wjb.16.2014.10.02.11.13.31
- for <alsa-devel@alsa-project.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 02 Oct 2014 11:13:31 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <542C0A2C.6010802@ti.com>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Jyri Sarha <jsarha@ti.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>, Andrew Jackson <Andrew.Jackson@arm.com>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-
-Sorry to bump in like this, but I was advised to submit a bug-report for 
-the ALSA-drivers on my HTPC: no sound comes through out of my AVR when I 
-select the digital output through SPDIF (TOSLINK).
-
-
-The relevant parts of my HTPC are as follows:
-     * CPU: Athlon64 X2 3800+
-     * Motherboard: ASUS A8N-SLI Deluxe motherboard (BIOS 1805) NForce4 
-with CK804 sound (relying on a Realtek ALC850 chip)
-     * RAM: 2x 512 MB DDR-400
-     * GPU: nVidia Geforce GT240 (which carries a HDMI port and uses the 
-snd-
-     * Receiver: Marantz SR7500 (supporting both Dolby Digital 5.1 and 
-DTS decoding), connected to motherboard's SPDIF TOSLINK port (optical) + 
-JBL 5.1 speaker-set
-     * OpenElec 4.2.0: Kernel 3.16.3, Alsa 1.0.28
-
-
-Symptoms:
-Speaker-test does not produce any sound. Command used is as follows:
-
-     speaker-test -c2 -r 48000 -D hw:0,2
-
-No sound either from other applications (such as XBMC 13.2).
-
-SPDIF worked flawlessly on the exact same hardware & connections using 
-Win7/XBMC.
-Sound does come through the SPDIF when I use hw:0,0 (= analog device).
-
-
-Things tried (none working):
-     * Blacklisting snd-hda-intel (= HDMI from my GPU) to make sure 
-CK804 is the only sound chip visible.
-
-     * amixer set 'IEC958 Playback AC97-SPSA' Playback 100% unmute
-
-     * Contacted XBMC developer via IRC for investigation: concluded 
-that problem would be with kernel driver, advised to create this bug-report.
-
-     * Tried another distro (Ubuntu from XBMCBuntu 13.0).
-
-
-Further details which might be useful:
-     * alsa-info.sh output: http://pastebin.com/Bp2ZGfZb
-
-     * /proc/asound/card0/ac97#0-0: http://pastebin.com/Q5y1J0Ra
-
-     * /proc/asound/card0/ac97#0-0+regs: http://pastebin.com/tBbTCxZg
-
-
-Similar reports found (no working solution):
-http://mailman.alsa-project.org/pipermail/alsa-devel/2009-September/021336.html
-http://askubuntu.com/questions/264272/no-sound-output-msi-k8n-neo4-ck804-ac97
-http://askubuntu.com/questions/462605/new-install-of-ubuntu-14-04-trusty-3-audio-devices-no-sound
-     https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=615225
-     http://ehc.ac/p/alsa/mailman/message/25973743/
-     http://wiki.linuxmce.org/index.php/ASUS_A8N-SLI_Deluxe
-     http://forum.xbmc.org/showthread.php?tid=156043&pid=1348176
-     http://forum.xbmc.org/showthread.php?tid=168608
-     http://ubuntuforums.org/showthread.php?t=2210288
-     http://cholla.mmto.org/computers/linux/sound/asus_a8ne.html
-     http://www.nvnews.net/vbulletin/showthread.php?t=80521
-     ...
-
-
-I am willing to test or provide further details where needed. I am new 
-to Linux, but am a developer myself (C#) so I know how to look up some 
-info... Hoping I haven't offended any of you with this post.
-
-THNX,
-Bye!
+T24gV2VkLCAxIE9jdCAyMDE0IDE3OjA1OjMyICswMzAwCkp5cmkgU2FyaGEgPGpzYXJoYUB0aS5j
+b20+IHdyb3RlOgoKPiA+ICAgCWNhc2UgQUZNVF9JMlM6Cj4gID4gICAJCXJlZ193cml0ZShwcml2
+LCBSRUdfTVVYX0FQLCBNVVhfQVBfU0VMRUNUX0kyUyk7Cj4gID4gICAJCWNsa3NlbF9haXAgPSBB
+SVBfQ0xLU0VMX0FJUF9JMlM7Cj4gID4gICAJCWNsa3NlbF9mcyA9IEFJUF9DTEtTRUxfRlNfQUNM
+SzsKPiAgPiAtCQljdHNfbiA9IENUU19OX00oMykgfCBDVFNfTl9LKDMpOwo+ICA+ICsKPiAgPiAr
+CQkvKiB3aXRoIEkyUyBpbnB1dCwgdGhlIENUU19OIHByZWRpdmlkZXIgZGVwZW5kcyBvbgo+ICA+
+ICsJCSAqIHRoZSBzYW1wbGUgd2lkdGggKi8KPiAgPiArCQlzd2l0Y2ggKHByaXYtPmF1ZGlvX3Nh
+bXBsZV9mb3JtYXQpIHsKPiAgPiArCQljYXNlIFNORFJWX1BDTV9GT1JNQVRfUzE2X0xFOgo+ICA+
+ICsJCQljdHNfbiA9IENUU19OX00oMykgfCBDVFNfTl9LKDEpOwo+ICA+ICsJCQlicmVhazsKPiAg
+PiArCQljYXNlIFNORFJWX1BDTV9GT1JNQVRfUzI0X0xFOgo+ICA+ICsJCQljdHNfbiA9IENUU19O
+X00oMykgfCBDVFNfTl9LKDIpOwo+ICA+ICsJCQlicmVhazsKPiAgPiArCQlkZWZhdWx0OiAgCj4g
+Cj4gU2V0dGluZyB0aGUgZGVmYXVsdCBoZXJlIGRvZXMgbm90IHJlYWxseSBoZWxwLCBiZWNhdXNl
+Cj4gcHJpdi0+YXVkaW9fc2FtcGxlX2Zvcm1hdCBpcyBpbml0aWFsaXplZCB0byBTTkRSVl9QQ01f
+Rk9STUFUX1MyNF9MRSBpbgo+IHRkYTk5OHhfZW5jb2Rlcl9zZXRfY29uZmlnKCkuIEJ1dCBJIGFt
+IE9rIHdpdGggdGhlIGRlZmF1bHQgYmVpbmcKPiBjaGFuZ2VkIGZvciAyNCBiaXQgc2FtcGxlcyBv
+biBpMnMgaW50ZXJmYWNlLgo+IAo+ICA+ICsJCWNhc2UgU05EUlZfUENNX0ZPUk1BVF9TMzJfTEU6
+Cj4gID4gKwkJCWN0c19uID0gQ1RTX05fTSgzKSB8IENUU19OX0soMyk7Cj4gID4gKwkJCWJyZWFr
+Owo+ICA+ICsJCX0KCkkgbG9va2VkIGFnYWluIGF0IHRoZSBvcmlnaW5hbCBkcml2ZXIgYW5kIHRo
+ZXkgc2V0IEsgPSAxIGZvciAxNiBiaXRzCmFuZCBLID0gMyBmb3IgMjQgb3IgMzIgYml0cy4KCkFu
+eXdheSwgbGV0dGluZyBLID0gMyBmb3IgMTYgYml0cyB3b3JrcyBmb3IgbWUsIHNvLCBJIHdpbGwg
+bm90IGNoYW5nZQp0aGlzIGNvZGUgaW4gdGhlIG5leHQgdmVyc2lvbi4KClRoYW5rcy4KCi0tIApL
+ZW4gYXIgYydoZW50YcOxCXwJICAgICAgKiogQnJlaXpoIGhhIExpbnV4IGF0YXYhICoqCkplZgkJ
+fAkJaHR0cDovL21vaW5lamYuZnJlZS5mci8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnCmh0dHA6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9kcmktZGV2ZWwK
