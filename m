@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v7 5/7] ASoC: Intel: mrfld: add the DSP
-	DAPM widgets
-Date: Thu, 2 Oct 2014 19:12:28 +0100
-Message-ID: <20141002181228.GA4273@sirena.org.uk>
+Subject: Re: [PATCH v7 4/7] ASoC: Export dapm_kcontrol_get_value
+Date: Thu, 2 Oct 2014 19:13:22 +0100
+Message-ID: <20141002181322.GB4273@sirena.org.uk>
 References: <1411125368-5836-1-git-send-email-subhransu.s.prusty@intel.com>
- <1411125368-5836-6-git-send-email-subhransu.s.prusty@intel.com>
+ <1411125368-5836-5-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1298409224734860496=="
+Content-Type: multipart/mixed; boundary="===============0726414600287311906=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 112352604EE
- for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 20:12:37 +0200 (CEST)
-In-Reply-To: <1411125368-5836-6-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6483B2604EE
+ for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 20:13:26 +0200 (CEST)
+In-Reply-To: <1411125368-5836-5-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,59 +26,45 @@ Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1298409224734860496==
+--===============0726414600287311906==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xjCTGciBHXp1jY+V"
+	protocol="application/pgp-signature"; boundary="O/bkIMqRIB4oFlYr"
 Content-Disposition: inline
 
 
---xjCTGciBHXp1jY+V
+--O/bkIMqRIB4oFlYr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Sep 19, 2014 at 04:46:06PM +0530, Subhransu S. Prusty wrote:
+On Fri, Sep 19, 2014 at 04:46:05PM +0530, Subhransu S. Prusty wrote:
+> The DSP driver needs to know widget control value in its event handler for
+> widgets like mixers. This is required in the subsequent patches
 
-> +#define SST_MMX_DECLARE_MIX_CONTROLS(kctl_name)			\
-> +	static const struct snd_kcontrol_new kctl_name[] = {			\
-> +		SOC_DAPM_SINGLE("media0_in", SND_SOC_NOPM, SST_IP_MEDIA0, 1, 0),	\
-> +		SOC_DAPM_SINGLE("media1_in", SND_SOC_NOPM, SST_IP_MEDIA1, 1, 0),	\
-> +		SOC_DAPM_SINGLE("media2_in", SND_SOC_NOPM, SST_IP_MEDIA2, 1, 0),	\
-> +		SOC_DAPM_SINGLE("media3_in", SND_SOC_NOPM, SST_IP_MEDIA3, 1, 0),	\
-> +	}
+Applied, thanks.
 
-These should be Switch controls?
-
-> +	snd_soc_dapm_new_controls(dapm, sst_dapm_widgets,
-> +			ARRAY_SIZE(sst_dapm_widgets));
-> +	snd_soc_dapm_add_routes(dapm, intercon,
-> +			ARRAY_SIZE(intercon));
-> +	snd_soc_dapm_new_widgets(dapm->card);
-
-We should be able to do this from the component but we can't yet...
-
---xjCTGciBHXp1jY+V
+--O/bkIMqRIB4oFlYr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJULZWLAAoJECTWi3JdVIfQvWIH/3D30epgedcE5l3i0iEYPRL4
-r8LBIkAlDJTTJDQCTG9jcgEM9djw+zCmMdJKnJY6KXWeDZ3ZXacLgJM/55zv42ss
-wRy1r0c5bLtpCWCjQ1m7fCVUTZ9U1FwqHSC4FAYIdGUo2H1n04c6tyHALXS/SCNa
-weyo6xXlBpO3dW4w8OtFzQRpI5Im74kaFQp7k716mXBMTwbcZq1FWMbNYyxKCgFj
-BZvkFuevBodJk167S3FiVGiJ52bknEau2xCF3wmKOID4Wjj+iHm0GBbFnJ3GxbMP
-+SjKLZFBanmKfa8qrAGh4tjY1FxvKoSO2YciTG+5D1j5sO3l3omGv3bvC2PeK/8=
-=jBPu
+iQEcBAEBAgAGBQJULZXBAAoJECTWi3JdVIfQmV4H/iu3YYu0nbyoWjtTQvLSi5Y7
+vMK8sZa5GWP1ptMj7KO1sYvs6lvW3grZ4Vp0PBZSQ+tsdWYLBqD7C5qAyoOzFQfQ
+a7Re3oLsHVo0LtIRq1Aucq1jtNeNnuHd/n3zElTXVz4MIIYEXTfAzGeFC6yj54k/
+FPjIQWcbr8DxkpMaIlfpT8a2qHldYdI0oKpXwf8UrO6K11k8BBFMXQ0LAyw4gaeG
+a1Yqru7ydqE7V18Em6emnd60gqgLnJSMwqfF6dvdrana2ie55198UDouyqNnNWSR
+H5vQWD44vJXi5kRl03//xwUA7atRz2HP1tcvLi38UX3YCcRb2twmyzw/Pnh6lFo=
+=Go79
 -----END PGP SIGNATURE-----
 
---xjCTGciBHXp1jY+V--
+--O/bkIMqRIB4oFlYr--
 
---===============1298409224734860496==
+--===============0726414600287311906==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1298409224734860496==--
+--===============0726414600287311906==--
