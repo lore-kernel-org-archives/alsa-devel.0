@@ -1,18 +1,17 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: sgtl5000: Improve the error message on
-	slave mode setting
-Date: Thu,  2 Oct 2014 16:16:50 -0300
-Message-ID: <1412277410-25888-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH] ASoC: sgtl5000: Do a sanity check on SYS_MCLK
+Date: Thu,  2 Oct 2014 17:36:05 -0300
+Message-ID: <1412282165-1500-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yk0-f178.google.com (mail-yk0-f178.google.com
- [209.85.160.178])
- by alsa0.perex.cz (Postfix) with ESMTP id EECBE261735
- for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 21:17:26 +0200 (CEST)
-Received: by mail-yk0-f178.google.com with SMTP id 9so1486847ykp.37
- for <alsa-devel@alsa-project.org>; Thu, 02 Oct 2014 12:17:25 -0700 (PDT)
+Received: from mail-yh0-f43.google.com (mail-yh0-f43.google.com
+ [209.85.213.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57F3226167D
+ for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 22:36:38 +0200 (CEST)
+Received: by mail-yh0-f43.google.com with SMTP id f10so993752yha.30
+ for <alsa-devel@alsa-project.org>; Thu, 02 Oct 2014 13:36:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,41 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, shawn.guo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Fabio Estevam <fabio.estevam@freescale.com>
 
-For sgtl5000 to operate in slave mode it can only work in "Synchronous
-SYS_MCLK input" mode.
+According to the sgtl5000 datasheet the valid range for SYS_MCLK is from 8 to
+27 MHz.
 
-In this mode only the following rates can be supported: 256*Fs, 384*Fs, 512*Fs.
-
-Improve the error message to give a better indication as to why the clocking 
-failed for slave mode:
-
-[   12.515399] sgtl5000 1-000a: PLL not supported in slave mode
-[   12.524124] sgtl5000 1-000a: 233 ratio is not supported. SYS_MCLK needs to be 256, 384 or 512 * fs
-[   12.535938] sgtl5000 1-000a: ASoC: can't set sgtl5000 hw params: -22
+Add a sanity check prior to enabling SYS_MCLK.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/codecs/sgtl5000.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/sgtl5000.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index a604a22..c1936bc 100644
+index a604a22..1470437 100644
 --- a/sound/soc/codecs/sgtl5000.c
 +++ b/sound/soc/codecs/sgtl5000.c
-@@ -626,6 +626,9 @@ static int sgtl5000_set_clock(struct snd_soc_codec *codec, int frame_rate)
- 		} else {
- 			dev_err(codec->dev,
- 				"PLL not supported in slave mode\n");
-+			dev_err(codec->dev, "%d ratio is not supported. "
-+				"SYS_MCLK needs to be 256, 384 or 512 * fs\n",
-+				sgtl5000->sysclk / sys_fs);
- 			return -EINVAL;
- 		}
+@@ -1414,6 +1414,7 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ {
+ 	struct sgtl5000_priv *sgtl5000;
+ 	int ret, reg, rev;
++	unsigned int mclk;
+ 
+ 	sgtl5000 = devm_kzalloc(&client->dev, sizeof(struct sgtl5000_priv),
+ 								GFP_KERNEL);
+@@ -1437,6 +1438,14 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ 		return ret;
  	}
+ 
++	/* SGTL5000 SYS_MCLK should be between 8 and 27 MHz */
++	mclk = clk_get_rate(sgtl5000->mclk);
++	if (mclk < 8000000 || mclk > 27000000) {
++		dev_err(&client->dev, "Invalid SYS_CLK frequency: %u.%03uMHz\n",
++			mclk / 1000000, mclk / 1000 % 1000);
++		return -EINVAL;
++	}
++
+ 	ret = clk_prepare_enable(sgtl5000->mclk);
+ 	if (ret)
+ 		return ret;
 -- 
 1.9.1
