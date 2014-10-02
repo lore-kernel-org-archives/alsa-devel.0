@@ -1,42 +1,34 @@
-From: Thierry Reding <thierry.reding@gmail.com>
-Subject: [PATCH] ASoC: tas2552: Fix compilation warning for !PM_RUNTIME
-Date: Thu,  2 Oct 2014 09:28:00 +0200
-Message-ID: <1412234880-8308-1-git-send-email-thierry.reding@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: ssm4567: Remove duplicated else-if
+ branch
+Date: Thu, 02 Oct 2014 09:35:28 +0200
+Message-ID: <542D0040.2000507@metafoo.de>
+References: <1412183757-26843-1-git-send-email-anatol.pomozov@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-238.synserver.de (smtp-out-238.synserver.de
+ [212.40.185.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2601B26054A
+ for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 09:35:18 +0200 (CEST)
+In-Reply-To: <1412183757-26843-1-git-send-email-anatol.pomozov@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>, broonie@kernel.org, dan.carpenter@oracle.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Thierry Reding <treding@nvidia.com>
+On 10/01/2014 07:15 PM, Anatol Pomozov wrote:
+> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
 
-The tas2552_sw_shutdown() function is only used by runtime suspend
-support, so only build it when necessary.
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 
-Signed-off-by: Thierry Reding <treding@nvidia.com>
----
- sound/soc/codecs/tas2552.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index 1ed57a7e57b6..f039dc825971 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -115,6 +115,7 @@ static const struct snd_soc_dapm_route tas2552_audio_map[] = {
- 	{"ClassD", NULL, "PLL"},
- };
- 
-+#ifdef CONFIG_PM_RUNTIME
- static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
- {
- 	u8 cfg1_reg;
-@@ -127,6 +128,7 @@ static void tas2552_sw_shutdown(struct tas2552_data *tas_data, int sw_shutdown)
- 	snd_soc_update_bits(tas_data->codec, TAS2552_CFG_1,
- 						 TAS2552_SWS_MASK, cfg1_reg);
- }
-+#endif
- 
- static int tas2552_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params,
--- 
-2.1.0
+Thanks.
