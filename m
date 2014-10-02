@@ -1,53 +1,49 @@
-From: Tim Cussins <timcussins@eml.cc>
-Subject: proposal: snd_pcm_start_at()
-Date: Thu, 02 Oct 2014 15:34:20 +0100
-Message-ID: <1412260460.3891605.174362449.667FB9BE@webmail.messagingengine.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: simple-card: Add mic and hp detect gpios.
+Date: Thu, 2 Oct 2014 16:53:50 +0100
+Message-ID: <20141002155350.GU4273@sirena.org.uk>
+References: <1412198720-2326-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 427DC260475
- for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 16:34:21 +0200 (CEST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by gateway2.nyi.internal (Postfix) with ESMTP id 677AD206DD
- for <alsa-devel@alsa-project.org>; Thu,  2 Oct 2014 10:34:20 -0400 (EDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="R9lH2i8s2YEs6mH7"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1412198720-2326-1-git-send-email-dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-I'm Tim: I work at Linn Products Ltd - we make Network Music Players,
-amongst other things.
+--R9lH2i8s2YEs6mH7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-As you might imagine, synchronised-start is important when multiple
-devices on the network are rendering the same audio. We'd be interested
-in contributing a small expansion of the alsa-lib API to support
-synchronised start.
+On Wed, Oct 01, 2014 at 02:25:20PM -0700, Dylan Reid wrote:
+> Allow Headphone and Microphone jack detect gpios to be specified in
+> device tree.  This will allow a few systems including rk3288_max98090
+> to use simple-card instead of having their own board file.
 
-Assuming we can synchronise the audio clocks (I'm aware this is not
-trivial - It's not the topic of this post), we'd propose something like:
+Applied, thanks.
 
-    int snd_pcm_start_at(snd_pcm_t* pcm, snd_htimestamp_t* tstamp);
+--R9lH2i8s2YEs6mH7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-and playback would begin as close to tstamp as possible. If tstamp is in
-the past, it would should return an error.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Recent work by Takashi Iwai enables client code to set the clock type of
-timestamps using snd_pcm_sw_params_set_tstamp_type(). This context could
-quite naturally extend to tstamp argument of snd_pcm_start_at().
+iQEcBAEBAgAGBQJULXUNAAoJECTWi3JdVIfQKY8H/3bwSnGiY0yhRfJ7CxbA1qzw
+kHX9C3U4qI4WaSRH5lc8tFVxbTALuPz9MVXG3AwBqhK92iDtQokx30aOLjIkeFC6
+EjQeHhJfxm4gqQcvWQQ5kXB6768NOoDoCupxJS4x+WwneXkmeMupJCtrL2xtBzuc
+cIkZMGV1OFJRBpxyabiz0h/xp2S8bF9zG4TM03MRCvgm8ixOVE5xUgOSI4slIewC
+fn1fn68dzNgK2BGUJOY/YvOvwcc6x98nqoYqDnAR7RGKXQdEsg+2ovWuF0C17aDM
+X/5wdx4vS1UzgAA+5niMwvSQTgtFIGJ5Uy7VhFemjSXbSZ3SuH19QKlyG5ekTvI=
+=HWVJ
+-----END PGP SIGNATURE-----
 
-Before I get stuck into working up the details under the hood, it'd be
-good to get some feedback/objections regarding this approach.
-
-Thanks in advance!
-Tim
+--R9lH2i8s2YEs6mH7--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
