@@ -1,59 +1,190 @@
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] ASoC: dapm: Fix NULL pointer dereference when
-	registering card with widgets
-Date: Fri,  3 Oct 2014 15:32:40 +0300
-Message-ID: <1412339560-18019-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Subject: [PATCH v4 2/4] ARM: dts: pbab01: enable I2S audio on phyFLEX-i.MX6 boards
+Date: Fri, 3 Oct 2014 16:18:54 +0300
+Message-ID: <1412342336-25700-3-git-send-email-d.lavnikevich@sam-solutions.com>
+References: <1410854903-26419-1-git-send-email-d.lavnikevich@sam-solutions.com>
+ <1412342336-25700-1-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 41859260466
- for <alsa-devel@alsa-project.org>; Fri,  3 Oct 2014 14:32:55 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1412342336-25700-1-git-send-email-d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 0bd2ac3dae74 ("ASoC: Remove CODEC pointer from snd_soc_dapm_context")
-introduced regression to snd_soc_dapm_new_controls() when registering a card
-with card->dapm_widgets set. Call chain is:
+Audio on phyFLEX boards is presented by tlv320aic3007 codec connected
+over SSI interface.
 
-    snd_soc_register_card()
-    -> snd_soc_instantiate_card()
-       -> snd_soc_dapm_new_controls()
-          -> snd_soc_dapm_new_control()
-
-Null pointer dereference occurs since card->dapm context doesn't have
-associated component. Fix this by setting widget codec pointer
-conditionally.
-
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Signed-off-by: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
 ---
- sound/soc/soc-dapm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi | 100 ++++++++++++++++++++++++++-
+ arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi |  15 ++++
+ 2 files changed, 113 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 2d06892088d5..3f0b4108f7ca 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3125,7 +3125,8 @@ snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
- 	}
+diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi
+index f1bdcae5b97d..668714052103 100644
+--- a/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi
+@@ -9,10 +9,73 @@
+  * http://www.gnu.org/copyleft/gpl.html
+  */
  
- 	w->dapm = dapm;
--	w->codec = dapm->component->codec;
-+	if (dapm->component)
-+		w->codec = dapm->component->codec;
- 	INIT_LIST_HEAD(&w->sources);
- 	INIT_LIST_HEAD(&w->sinks);
- 	INIT_LIST_HEAD(&w->list);
++#include <dt-bindings/sound/fsl-imx-audmux.h>
++
+ / {
+ 	chosen {
+ 		linux,stdout-path = &uart4;
+ 	};
++
++	regulators {
++		sound_1v8: regulator@2 {
++			compatible = "regulator-fixed";
++			reg = <2>;
++			regulator-name = "i2s-audio-1v8";
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++		};
++
++		sound_3v3: regulator@3 {
++			compatible = "regulator-fixed";
++			reg = <3>;
++			regulator-name = "i2s-audio-3v3";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++		};
++	};
++
++	tlv320_mclk: oscillator {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <19200000>;
++		clock-output-names = "tlv320-mclk";
++	};
++
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "imx6-phyflex-tlv320aic3007";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,bitclock-master = <&dailink_master>;
++		simple-audio-card,frame-master = <&dailink_master>;
++		simple-audio-card,widgets =
++			"Microphone", "Mic Jack",
++			"Line", "Line In",
++			"Line", "Line Out",
++			"Speaker", "Speaker",
++			"Headphone", "Headphone Jack";
++		simple-audio-card,routing =
++			"Line Out", "LLOUT",
++			"Line Out", "RLOUT",
++			"Speaker", "SPOP",
++			"Speaker", "SPOM",
++			"Headphone Jack", "HPLOUT",
++			"Headphone Jack", "HPROUT",
++			"MIC3L", "Mic Jack",
++			"MIC3R", "Mic Jack",
++			"Mic Jack", "Mic Bias",
++			"LINE1L", "Line In",
++			"LINE1R", "Line In";
++
++		simple-audio-card,cpu {
++			sound-dai = <&ssi2>;
++		};
++
++		dailink_master: simple-audio-card,codec {
++			sound-dai = <&codec>;
++			clocks = <&tlv320_mclk>;
++		};
++	};
++
+ };
+ 
+ &fec {
+@@ -27,12 +90,45 @@
+ 	status = "okay";
+ };
+ 
++&ssi2 {
++	status = "okay";
++};
++
++&audmux {
++	status = "okay";
++
++	ssi2 {
++		fsl,audmux-port = <1>;
++		fsl,port-config = <
++			(IMX_AUDMUX_V2_PTCR_TFSDIR |
++			IMX_AUDMUX_V2_PTCR_TFSEL(4) |
++			IMX_AUDMUX_V2_PTCR_TCLKDIR |
++			IMX_AUDMUX_V2_PTCR_TCSEL(4))
++	                IMX_AUDMUX_V2_PDCR_RXDSEL(4)
++		>;
++	};
++	pins5 {
++		fsl,audmux-port = <4>;
++		fsl,port-config = <
++			0x00000000
++			IMX_AUDMUX_V2_PDCR_RXDSEL(1)
++		>;
++	};
++};
++
+ &i2c2 {
+ 	status = "okay";
+ 
+-	tlv320@18 {
+-		compatible = "ti,tlv320aic3x";
++	codec: tlv320@18 {
++		compatible = "ti,tlv320aic3007";
++		#sound-dai-cells = <0>;
+ 		reg = <0x18>;
++		ai3x-micbias-vg = <2>;
++
++		AVDD-supply = <&sound_3v3>;
++		IOVDD-supply = <&sound_3v3>;
++		DRVDD-supply = <&sound_3v3>;
++		DVDD-supply = <&sound_1v8>;
+ 	};
+ 
+ 	stmpe@41 {
+diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
+index aa2275671d2c..d7f34664e008 100644
+--- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
+@@ -58,6 +58,12 @@
+ 	};
+ };
+ 
++&audmux {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_audmux>;
++	status = "disabled";
++};
++
+ &ecspi3 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_ecspi3>;
+@@ -319,6 +325,15 @@
+ 				MX6QDL_PAD_ENET_TXD1__GPIO1_IO29 0x80000000
+ 			>;
+ 		};
++
++		pinctrl_audmux: audmuxgrp {
++			fsl,pins = <
++				MX6QDL_PAD_DISP0_DAT16__AUD5_TXC	0x130b0
++				MX6QDL_PAD_DISP0_DAT18__AUD5_TXFS	0x130b0
++				MX6QDL_PAD_DISP0_DAT17__AUD5_TXD	0x110b0
++				MX6QDL_PAD_DISP0_DAT19__AUD5_RXD	0x130b0
++			>;
++		};
+ 	};
+ };
+ 
 -- 
 2.1.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
