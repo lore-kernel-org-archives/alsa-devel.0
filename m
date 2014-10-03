@@ -1,41 +1,70 @@
-From: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Subject: [PATCH v4 3/4] ARM: imx_v6_v7_defconfig: enable tlv320aic3x audio codec by default
-Date: Fri, 3 Oct 2014 16:18:55 +0300
-Message-ID: <1412342336-25700-4-git-send-email-d.lavnikevich@sam-solutions.com>
+From: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Subject: [PATCH v4 4/4] ASoC: tlv320aic3x: fix PLL D configuration
+Date: Fri, 3 Oct 2014 16:18:56 +0300
+Message-ID: <1412342336-25700-5-git-send-email-d.lavnikevich@sam-solutions.com>
 References: <1410854903-26419-1-git-send-email-d.lavnikevich@sam-solutions.com>
  <1412342336-25700-1-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1412342336-25700-1-git-send-email-d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1412342336-25700-1-git-send-email-d.lavnikevich@sam-solutions.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: shawn.guo@freescale.com, kernel@pengutronix.de, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-Used on Phytec PBAB01 board.
+Current caching implementation during regcache_sync() call bypasses
+all register writes of values that are already known as default
+(regmap reg_defaults). Same time in TLV320AIC3x codecs register 5
+(AIC3X_PLL_PROGC_REG) write should be immediately followed by register
+6 write (AIC3X_PLL_PROGD_REG) even if it was not changed. Otherwise
+both registers will not be written.
 
-Signed-off-by: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+This brings to issue that appears particulary in case of 44.1kHz
+playback with 19.2MHz master clock. In this case AIC3X_PLL_PROGC_REG
+is 0x6e while AIC3X_PLL_PROGD_REG is 0x0 (same as register
+default). Thus AIC3X_PLL_PROGC_REG also remains not written and we get
+wrong playback speed.
+
+In this patch snd_soc_read() is used to get cached pll values and
+snd_soc_write() (unlike regcache_sync() this function doesn't bypasses
+hardware default values) to write them to registers.
+
+Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
 ---
- arch/arm/configs/imx_v6_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/tlv320aic3x.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index 8fca6e276b69..cac07d67b933 100644
---- a/arch/arm/configs/imx_v6_v7_defconfig
-+++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -210,6 +210,7 @@ CONFIG_SND_SOC_IMX_WM8962=y
- CONFIG_SND_SOC_IMX_SGTL5000=y
- CONFIG_SND_SOC_IMX_SPDIF=y
- CONFIG_SND_SOC_IMX_MC13783=y
-+CONFIG_SND_SOC_TLV320AIC3X=y
- CONFIG_SND_SIMPLE_CARD=y
- CONFIG_USB=y
- CONFIG_USB_EHCI_HCD=y
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 64f179ee9834..5e8626ae612b 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1121,6 +1121,7 @@ static int aic3x_regulator_event(struct notifier_block *nb,
+ static int aic3x_set_power(struct snd_soc_codec *codec, int power)
+ {
+ 	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
++	unsigned int pll_c, pll_d;
+ 	int ret;
+ 
+ 	if (power) {
+@@ -1138,6 +1139,18 @@ static int aic3x_set_power(struct snd_soc_codec *codec, int power)
+ 		/* Sync reg_cache with the hardware */
+ 		regcache_cache_only(aic3x->regmap, false);
+ 		regcache_sync(aic3x->regmap);
++
++		/* Rewrite paired PLL D registers in case cached sync skipped
++		 * writing one of them and thus caused other one also not
++		 * being written
++		 */
++		pll_c = snd_soc_read(codec, AIC3X_PLL_PROGC_REG);
++		pll_d = snd_soc_read(codec, AIC3X_PLL_PROGD_REG);
++		if (pll_c == aic3x_reg[AIC3X_PLL_PROGC_REG].def ||
++			pll_d == aic3x_reg[AIC3X_PLL_PROGD_REG].def) {
++			snd_soc_write(codec, AIC3X_PLL_PROGC_REG, pll_c);
++			snd_soc_write(codec, AIC3X_PLL_PROGD_REG, pll_d);
++		}
+ 	} else {
+ 		/*
+ 		 * Do soft reset to this codec instance in order to clear
 -- 
 2.1.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
