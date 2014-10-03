@@ -1,76 +1,40 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND] ASoC: rt5670: Add dsp support
-Date: Fri, 3 Oct 2014 17:32:24 +0100
-Message-ID: <20141003163224.GC3594@sirena.org.uk>
-References: <1411957901-12156-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1175427654290643883=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E5F27260492
- for <alsa-devel@alsa-project.org>; Fri,  3 Oct 2014 18:32:46 +0200 (CEST)
-In-Reply-To: <1411957901-12156-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
+From: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Subject: [PATCH] ASoC: simple-card: Fix detect gpio documentation.
+Date: Fri,  3 Oct 2014 10:06:08 -0700
+Message-ID: <1412355968-30200-1-git-send-email-dgreid@chromium.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+The device tree property uses '-' not '_'.
 
---===============1175427654290643883==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Clx92ZfkiYIKRjnr"
-Content-Disposition: inline
+Signed-off-by: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+---
+ Documentation/devicetree/bindings/sound/simple-card.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index 72d94b7..c3cba60 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -17,9 +17,9 @@ Optional properties:
+ 					  source.
+ - simple-audio-card,mclk-fs             : Multiplication factor between stream rate and codec
+   					  mclk.
+-- simple-audio-card,hp_det_gpio		: Reference to GPIO that signals when
++- simple-audio-card,hp-det-gpio		: Reference to GPIO that signals when
+ 					  headphones are attached.
+-- simple-audio-card,mic_det_gpio	: Reference to GPIO that signals when
++- simple-audio-card,mic-det-gpio	: Reference to GPIO that signals when
+ 					  a microphone is attached.
+ 
+ Optional subnodes:
+-- 
+2.1.2.330.g565301e
 
---Clx92ZfkiYIKRjnr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Sep 29, 2014 at 10:31:41AM +0800, Bard Liao wrote:
-
-> +static const struct firmware *rt5670_dsp_fw;
-
-This should be part of the driver data not a global static.
-
-> +/* DSP Mode */
-> +static const char * const rt5670_dsp_mode[] = {
-> +	"Mode 1", "Mode 2", "Mode 3", "Mode 4", "Mode 5"
-> +};
-
-What exactly are these modes?
-
---Clx92ZfkiYIKRjnr
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJULs+XAAoJECTWi3JdVIfQ2GMH/iJwPF7dD90We3qPH0vSd+Br
-MpL++1/r4esi7ycG3xhjydZawMDCiRCdnw52qLgoTxNFMLcilD++yHepqMz7j2sX
-TQxNvVf/Nbzz7jisF4ZvCPUigGvl/MlOFKpK+TOfmxIqcngaaD4Z1Lf+1dstof69
-YDcMsbu2R32Gc6YJWI7yrhpI8xpR/j+pcH/jNPCl2qDz1/JXUyKQehf9sukfmnIQ
-vNKL2y9/xtbj5SF1GVUhIdxpIYeLsGBLzd0M9e2pR3WG2CCApYoXQ1lPYKegpRA9
-JjaY05mGDd/ra+qXqBmNQwjofp7CcrvcqjZViUsBy9ELfsBpYFa3lz93As+i4Z8=
-=91cY
------END PGP SIGNATURE-----
-
---Clx92ZfkiYIKRjnr--
-
---===============1175427654290643883==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1175427654290643883==--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
