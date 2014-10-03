@@ -1,71 +1,53 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Fix NULL pointer dereference
- when registering card with widgets
-Date: Fri, 3 Oct 2014 15:39:36 +0100
-Message-ID: <20141003143936.GB24441@sirena.org.uk>
-References: <1412339560-18019-1-git-send-email-jarkko.nikula@linux.intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v4 4/4] ASoC: tlv320aic3x: fix PLL D configuration
+Date: Fri, 3 Oct 2014 16:08:07 +0100
+Message-ID: <20141003150807.GD24441@sirena.org.uk>
+References: <1410854903-26419-1-git-send-email-d.lavnikevich@sam-solutions.com>
+ <1412342336-25700-1-git-send-email-d.lavnikevich@sam-solutions.com>
+ <1412342336-25700-5-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0047180246504914624=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B17926047B
- for <alsa-devel@alsa-project.org>; Fri,  3 Oct 2014 16:39:55 +0200 (CEST)
-In-Reply-To: <1412339560-18019-1-git-send-email-jarkko.nikula@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="AkbCVLjbJ9qUtAXD"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1412342336-25700-5-git-send-email-d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Cc: shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0047180246504914624==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oC1+HKm2/end4ao3"
-Content-Disposition: inline
-
-
---oC1+HKm2/end4ao3
+--AkbCVLjbJ9qUtAXD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Oct 03, 2014 at 03:32:40PM +0300, Jarkko Nikula wrote:
-> Commit 0bd2ac3dae74 ("ASoC: Remove CODEC pointer from snd_soc_dapm_context")
-> introduced regression to snd_soc_dapm_new_controls() when registering a card
-> with card->dapm_widgets set. Call chain is:
+On Fri, Oct 03, 2014 at 04:18:56PM +0300, Dmitry Lavnikevich wrote:
+> Current caching implementation during regcache_sync() call bypasses
+> all register writes of values that are already known as default
+> (regmap reg_defaults). Same time in TLV320AIC3x codecs register 5
 
-Applied, thanks.
+Applied, thanks.  This should really have been sent separately to the
+other patches - it's not in any way specific to the board and there's no
+dependency in either direction.
 
---oC1+HKm2/end4ao3
+--AkbCVLjbJ9qUtAXD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJULrUnAAoJECTWi3JdVIfQKlkH/RpWKFMhPgogKvVsvNo33uPr
-QceoM23y1YHY5qT9cKJBFHWNJofV2TQWik9JxvUZC2MLEcZA4Le9Y2XlGi/LAj+b
-KOPypb7oTsbT6v33a0t1IWBxiu+9rweX24PjZgZBvRzaw4YQw1bvhFqrZ55bDn/z
-7S4migZ4wzREVNEP34qwTlZTM5z1Rq79KGl26hpQBrnoQcUqbx4gNHHppFJiQdEw
-CoflgmorEQrK+ahh60nlBpw0mwuQTNHS+EfZQ87jhrWQF5TrirAdA09LDkgg5Cnd
-4dJY6l4vGf/NSvgnAq5obcGwhK9BqjAdC1rI6nEcaBb7ioyeXnqulbEw/ju3Sk4=
-=w7Kz
+iQEcBAEBAgAGBQJULrvWAAoJECTWi3JdVIfQtooH/j0VRfy0vVnHUBnkWD8aN55h
+H1Mn+9YdAXAGhgyq23BlFndWvmxRvDpj+CwN6vQpQTkn1na4QV9Uw3QKCdP22hBm
+ZUi/Y5BXkmi8dn5L26w0WPcV6/gfwSkemCy3WVPVlb1AFg1W8lkdfwuWlW26yxO2
+shuK8KXJ/BzNH8/N0fDi1aZcimpnxWVOBiYmJcpQc+BmNMm6kMPCNNHwTwq+Ij9h
+oePetN3sBFTm+n/X6tLV7t7nai11O/SWdAYt9/WmVXpCHGXIctdpYtLJ5fDWwocw
+dB2bWHbm263tVElpHhlKnEunGmQ0eGWCnmAbD3TS+FIZRMapq5AHuWdM808QYL8=
+=m9N/
 -----END PGP SIGNATURE-----
 
---oC1+HKm2/end4ao3--
-
---===============0047180246504914624==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0047180246504914624==--
+--AkbCVLjbJ9qUtAXD--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
