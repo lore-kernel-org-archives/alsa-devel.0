@@ -1,53 +1,56 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 4/4] ASoC: tlv320aic3x: fix PLL D configuration
-Date: Fri, 3 Oct 2014 16:08:07 +0100
-Message-ID: <20141003150807.GD24441@sirena.org.uk>
-References: <1410854903-26419-1-git-send-email-d.lavnikevich@sam-solutions.com>
- <1412342336-25700-1-git-send-email-d.lavnikevich@sam-solutions.com>
- <1412342336-25700-5-git-send-email-d.lavnikevich@sam-solutions.com>
+From: "Allen M." <ase1592@gmail.com>
+Subject: [BUG] Bad decibel data on C-Media USB sound card
+Date: Fri, 3 Oct 2014 10:48:56 -0500
+Message-ID: <CAPMSj_E+=DMbTq_sC0YEzZ3N+YGg98X4U-7UW6JZ_TYB4XN+Ug@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AkbCVLjbJ9qUtAXD"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1412342336-25700-5-git-send-email-d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Cc: shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yk0-f171.google.com (mail-yk0-f171.google.com
+ [209.85.160.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1613E260490
+ for <alsa-devel@alsa-project.org>; Fri,  3 Oct 2014 17:48:57 +0200 (CEST)
+Received: by mail-yk0-f171.google.com with SMTP id 79so428052ykr.30
+ for <alsa-devel@alsa-project.org>; Fri, 03 Oct 2014 08:48:57 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Raymond Yau wrote:
 
---AkbCVLjbJ9qUtAXD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>Did you use mono or stereo in playback and capture?
 
-On Fri, Oct 03, 2014 at 04:18:56PM +0300, Dmitry Lavnikevich wrote:
-> Current caching implementation during regcache_sync() call bypasses
-> all register writes of values that are already known as default
-> (regmap reg_defaults). Same time in TLV320AIC3x codecs register 5
+mono
 
-Applied, thanks.  This should really have been sent separately to the
-other patches - it's not in any way specific to the board and there's no
-dependency in either direction.
 
---AkbCVLjbJ9qUtAXD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>Did your capture volume /boost set to 0dB?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+yes
 
-iQEcBAEBAgAGBQJULrvWAAoJECTWi3JdVIfQtooH/j0VRfy0vVnHUBnkWD8aN55h
-H1Mn+9YdAXAGhgyq23BlFndWvmxRvDpj+CwN6vQpQTkn1na4QV9Uw3QKCdP22hBm
-ZUi/Y5BXkmi8dn5L26w0WPcV6/gfwSkemCy3WVPVlb1AFg1W8lkdfwuWlW26yxO2
-shuK8KXJ/BzNH8/N0fDi1aZcimpnxWVOBiYmJcpQc+BmNMm6kMPCNNHwTwq+Ij9h
-oePetN3sBFTm+n/X6tLV7t7nai11O/SWdAYt9/WmVXpCHGXIctdpYtLJ5fDWwocw
-dB2bWHbm263tVElpHhlKnEunGmQ0eGWCnmAbD3TS+FIZRMapq5AHuWdM808QYL8=
-=m9N/
------END PGP SIGNATURE-----
 
---AkbCVLjbJ9qUtAXD--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>Do your sound card support the sampling rate ?
+
+Yes
+
+
+>Refer to the datasheet and your alsamixertest result , the card seem not
+>has fixed gain for each step
+
+http://www.steila.com/USB4IO/CMedia/CM119.pdf
+Card is using C-Media CM119.
+Datasheet seems to show 38 volume control steps?
+Should the steps be 38 instead of 151? Or are these values unrelated?
+
+
+>Are you using version 48.11?
+
+Yes
