@@ -1,40 +1,45 @@
-From: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Subject: [PATCH] ASoC: simple-card: Fix detect gpio documentation.
-Date: Fri,  3 Oct 2014 10:06:08 -0700
-Message-ID: <1412355968-30200-1-git-send-email-dgreid@chromium.org>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: Alsa-devel AKAI eie pro found on github
+Date: Fri, 03 Oct 2014 20:26:21 +0200
+Message-ID: <542EEA4D.4080806@zonque.org>
+References: <mailman.1276.1412271694.872.alsa-devel@alsa-project.org>
+ <cced3ce9f1b69ee542f027c829207ba2@ztealmax.se>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E40F2604AF
+ for <alsa-devel@alsa-project.org>; Fri,  3 Oct 2014 20:26:27 +0200 (CEST)
+In-Reply-To: <cced3ce9f1b69ee542f027c829207ba2@ztealmax.se>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Martin Svensson <martin.svensson@ztealmax.se>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The device tree property uses '-' not '_'.
+On 10/02/2014 08:03 PM, Martin Svensson wrote:
+> Hello ive talked to you about the akai eie pro of the posibility to get
+>      it working on
+>      linux, i found this on the web is it some one of you working on this
+>      driver?
+>      github(dot)com/mmm444/eie-pro-linux
+>      Sincerally looking forward to responces :)
 
-Signed-off-by: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/simple-card.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The code in this repository has nothing to do with an ALSA kernel
+driver. It's a userspace program that uses libusb to communicate with an
+USB device. That could be a proof of concept to figure out the protocol
+details, I don't know.
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index 72d94b7..c3cba60 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -17,9 +17,9 @@ Optional properties:
- 					  source.
- - simple-audio-card,mclk-fs             : Multiplication factor between stream rate and codec
-   					  mclk.
--- simple-audio-card,hp_det_gpio		: Reference to GPIO that signals when
-+- simple-audio-card,hp-det-gpio		: Reference to GPIO that signals when
- 					  headphones are attached.
--- simple-audio-card,mic_det_gpio	: Reference to GPIO that signals when
-+- simple-audio-card,mic-det-gpio	: Reference to GPIO that signals when
- 					  a microphone is attached.
- 
- Optional subnodes:
--- 
-2.1.2.330.g565301e
+Best to contact the author of that repository and ask what his/her plans
+are. Patches for ALSA to support more hardware are always welcome, but
+the driver must eventually live in the kernel.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+Daniel
