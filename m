@@ -1,41 +1,87 @@
-From: Marcel Ziswiler <marcel@ziswiler.com>
-Subject: [PATCH v3 3/3] ARM: tegra: enable sgtl5000 audio
-Date: Sat,  4 Oct 2014 02:15:45 +0200
-Message-ID: <6bd1e5a958108f4d834015342be6de094dbbeb68.1412381377.git.marcel@ziswiler.com>
-References: <cover.1412381377.git.marcel@ziswiler.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1412381377.git.marcel@ziswiler.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Stephen Warren <swarren@wwwdotorg.org>, linux@arm.linux.org.uk, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, stefan@agner.ch, Marcel Ziswiler <marcel@ziswiler.com>, Fabio Estevam <festevam@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [bug] SPDIF (digital-out) not working on
+	NForce4/CK804
+Date: Sat, 4 Oct 2014 13:07:13 +0800
+Message-ID: <CAN8ccia720EFBH8mHdYV4V4_pwx6r2GGUhsZZXsbbNHxdZCeJA@mail.gmail.com>
+References: <542D95C8.8060701@gmail.com>
+ <CAN8cciYnAm6ivNk_FG6WbWAicskXQ9E2Pi+LLAb2jLSSwuJC+Q@mail.gmail.com>
+ <542F0EFE.6020303@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f50.google.com (mail-qa0-f50.google.com
+ [209.85.216.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F418260525
+ for <alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 07:07:14 +0200 (CEST)
+Received: by mail-qa0-f50.google.com with SMTP id w8so1697747qac.37
+ for <alsa-devel@alsa-project.org>; Fri, 03 Oct 2014 22:07:13 -0700 (PDT)
+In-Reply-To: <542F0EFE.6020303@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Gilles Hemberg <gilles.hemberg@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The NVIDIA Tegra 3 based Apalis T30 and Colibri T30 modules contain a Freescale SGTL5000 analogue audio codec.
-
-Signed-off-by: Marcel Ziswiler <marcel@ziswiler.com>
-Reviewed-by: Stephen Warren <swarren@nvidia.com>
----
-Changes in v3:
-- Revert to not using simple-audio-card being incompatible with tegra.
-- Rebased to for-next.
-
-Changes in v2:
-- Using simple-audio-card as suggested by Fabio.
-
- arch/arm/configs/tegra_defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
-index 77d6e94..02233d1 100644
---- a/arch/arm/configs/tegra_defconfig
-+++ b/arch/arm/configs/tegra_defconfig
-@@ -210,6 +210,7 @@ CONFIG_SND_SOC_TEGRA_WM8903=y
- CONFIG_SND_SOC_TEGRA_TRIMSLICE=y
- CONFIG_SND_SOC_TEGRA_ALC5632=y
- CONFIG_SND_SOC_TEGRA_MAX98090=y
-+CONFIG_SND_SOC_TEGRA_SGTL5000=y
- CONFIG_USB=y
- CONFIG_USB_XHCI_HCD=y
- CONFIG_USB_EHCI_HCD=y
--- 
-1.9.3
+Pgo+IENvbW1hbmQgdHJpZWQ6Cj4KPiAgICAgc3BlYWtlci10ZXN0IC1jMiAtciA0ODAwMCAtRCBp
+ZWM5NTg6Q0FSRD1DSzgwNCxERVY9MAo+Cj4gU3RpbGwgbm8gc291bmQgY29taW5nIHRocm91Z2gg
+QVZSLi4uCj4KPiBGb3IgdGhlIHNha2Ugb2YgY29tcGxldGVuZXNzLCBJIHByb3ZpZGUgYSBuZXcg
+YWxzYS1pbmZvLnNoIG91dHB1dDoKaHR0cDovL3NwcnVuZ2UudXMvWldMRihJIGJsYWNrbGlzdGVk
+IHRoZSBzbmRfaGRhX2ludGVsIHRoaXMgdGltZSBqdXN0IHRvIGJlCm9uIHRoZSBzYWZlIHNpZGUp
+Lgo+Cj4gVGhlIGdpdC1saW5rIGJlbG93ICgKaHR0cDovL2dpdC5hbHNhLXByb2plY3Qub3JnLz9w
+PWFsc2EtbGliLmdpdDthPWJsb2I7Zj1zcmMvY29uZi9jYXJkcy9ORk9SQ0UuY29uZjtoYj1IRUFE
+KQpzZWVtcyB0byBwb2ludCB0byB0aGUgLmNvbmYgZm9yIG5Gb3JjZTIvMzsgbWluIGlzIGEgbkZv
+cmNlNCAoZG9uJ3Qga25vdyBpZgpuRm9yY2U0IGlzIHN1cHBvc2VkIHRvIHVzZSB0aGlzIHNhbWUg
+LmNvbmYpLgo+CgpodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVsL2dpdC90
+aXdhaS9zb3VuZC5naXQvY29tbWl0L3NvdW5kL3BjaS9pbnRlbDh4MC5jP2lkPWE5ZTk5NjYwNGY3
+N2JlNmYxZjRkZWIwZWIxY2MyNjUyMDAwMDU0ZjEKCkVpdGhlciB1c2Ugc3BkaWYgb3ZlciBhYy1s
+aW5rIG9yIHlvdSBoYXZlIHRvIGZpbmQgb3V0IGhvdyB0byB1c2UgbmZvcmNlNApzZWNvbmRhcnkg
+c3BkaWYgb3V0cHV0CgpodHRwOi8vd3d3Lm52aWRpYS5jb20vcGFnZS9wZ18yMDA0MTAxNDg2MzQ3
+Ni5odG1sCgpBVURJTwoKQUMg4oCZOTcgMi4zIGNvbXBsaWFudCBpbnRlcmZhY2UKClN1cHBvcnRz
+IDIsIDQsIDYsIG9yIDgtY2hhbm5lbCBhdWRpbwpEdWFsIEFDLUxpbms6IHN1cHBvcnRzIHVwIHRv
+IHR3byBjb2RlY3MKRHVhbCBTL1BESUY6IHN1cHBvcnRzIHR3byBzaW11bHRhbmVvdXMgZGlnaXRh
+bCBvdXRwdXRzOyBoYW5kbGVzIHN0ZXJlbyBQQ00Kb3IgQUMtMyBvdXRwdXQKMTYtYml0IG9yIDIw
+LWJpdCBzdGVyZW8sIDQ4a0h6IG91dHB1dCBhbmQgMTYtYml0IGlucHV0IHN0cmVhbXMgYWNyb3Nz
+CkFDLUxpbmsKMjQtYml0LCA5NmtIeiBzdGVyZW8gb3V0cHV0IG9uIHRoZSBzZWNvbmRhcnkgUy9Q
+RElGIG91dHB1dAoKPj4KPj4gPiBTb3JyeSB0byBidW1wIGluIGxpa2UgdGhpcywgYnV0IEkgd2Fz
+IGFkdmlzZWQgdG8gc3VibWl0IGEgYnVnLXJlcG9ydApmb3IgdGhlIEFMU0EtZHJpdmVycyBvbiBt
+eSBIVFBDOiBubyBzb3VuZCBjb21lcyB0aHJvdWdoIG91dCBvZiBteSBBVlIgd2hlbgpJIHNlbGVj
+dCB0aGUgZGlnaXRhbCBvdXRwdXQgdGhyb3VnaCBTUERJRiAoVE9TTElOSykuCj4+ID4KPj4gPiBU
+aGUgcmVsZXZhbnQgcGFydHMgb2YgbXkgSFRQQyBhcmUgYXMgZm9sbG93czoKPj4gPiAgICAgKiBD
+UFU6IEF0aGxvbjY0IFgyIDM4MDArCj4+ID4gICAgICogTW90aGVyYm9hcmQ6IEFTVVMgQThOLVNM
+SSBEZWx1eGUgbW90aGVyYm9hcmQgKEJJT1MgMTgwNSkgTkZvcmNlNAp3aXRoIENLODA0IHNvdW5k
+IChyZWx5aW5nIG9uIGEgUmVhbHRlayBBTEM4NTAgY2hpcCkKPj4KPj4gPiAgICAgKiBSQU06IDJ4
+IDUxMiBNQiBERFItNDAwCj4+ID4gICAgICogR1BVOiBuVmlkaWEgR2Vmb3JjZSBHVDI0MCAod2hp
+Y2ggY2FycmllcyBhIEhETUkgcG9ydCBhbmQgdXNlcwp0aGUgc25kLQo+PiA+ICAgICAqIFJlY2Vp
+dmVyOiBNYXJhbnR6IFNSNzUwMCAoc3VwcG9ydGluZyBib3RoIERvbGJ5IERpZ2l0YWwgNS4xIGFu
+ZApEVFMgZGVjb2RpbmcpLCBjb25uZWN0ZWQgdG8gbW90aGVyYm9hcmQncyBTUERJRiBUT1NMSU5L
+IHBvcnQgKG9wdGljYWwpICsKSkJMIDUuMSBzcGVha2VyLXNldAo+PiA+ICAgICAqIE9wZW5FbGVj
+IDQuMi4wOiBLZXJuZWwgMy4xNi4zLCBBbHNhIDEuMC4yOAo+PiA+Cj4+ID4KPj4gPiBTeW1wdG9t
+czoKPj4gPiBTcGVha2VyLXRlc3QgZG9lcyBub3QgcHJvZHVjZSBhbnkgc291bmQuIENvbW1hbmQg
+dXNlZCBpcyBhcyBmb2xsb3dzOgo+PiA+Cj4+ID4gICAgIHNwZWFrZXItdGVzdCAtYzIgLXIgNDgw
+MDAgLUQgaHc6MCwyCj4+ID4KPj4gPiBObyBzb3VuZCBlaXRoZXIgZnJvbSBvdGhlciBhcHBsaWNh
+dGlvbnMgKHN1Y2ggYXMgWEJNQyAxMy4yKS4KPj4gPgo+PiA+IFNQRElGIHdvcmtlZCBmbGF3bGVz
+c2x5IG9uIHRoZSBleGFjdCBzYW1lIGhhcmR3YXJlICYgY29ubmVjdGlvbnMgdXNpbmcKV2luNy9Y
+Qk1DLgo+PiA+IFNvdW5kIGRvZXMgY29tZSB0aHJvdWdoIHRoZSBTUERJRiB3aGVuIEkgdXNlIGh3
+OjAsMCAoPSBhbmFsb2cgZGV2aWNlKS4KPj4gPgo+PiA+Cj4+ID4gVGhpbmdzIHRyaWVkIChub25l
+IHdvcmtpbmcpOgo+PiA+ICAgICAqIEJsYWNrbGlzdGluZyBzbmQtaGRhLWludGVsICg9IEhETUkg
+ZnJvbSBteSBHUFUpIHRvIG1ha2Ugc3VyZQpDSzgwNCBpcyB0aGUgb25seSBzb3VuZCBjaGlwIHZp
+c2libGUuCj4+ID4KPj4gPiAgICAgKiBhbWl4ZXIgc2V0ICdJRUM5NTggUGxheWJhY2sgQUM5Ny1T
+UFNBJyBQbGF5YmFjayAxMDAlIHVubXV0ZQo+Pgo+Cj4+Cmh0dHA6Ly93d3cucmVhbHRlay5jb20u
+dHcvcHJvZHVjdHMvcHJvZHVjdHNWaWV3LmFzcHg/TGFuZ2lkPTEmUEZpZD0zMSZMZXZlbD01JkNv
+bm49NCZQcm9kSUQ9NTkKPj4KPj4gVGFrZSBhIGxvb2sgYXQgYWxjODUwIGRhdGFzaGVldAo+Pgo+
+PiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4IFBsYXliYWNrIEFDOTctU1BTQScsMAo+PiAg
+IENhcGFiaWxpdGllczogdm9sdW1lIHZvbHVtZS1qb2luZWQKPj4gICBQbGF5YmFjayBjaGFubmVs
+czogTW9ubwo+PiAgIENhcHR1cmUgY2hhbm5lbHM6IE1vbm8KPj4gICBMaW1pdHM6IDAgLSAzCj4+
+ICAgTW9ubzogMCBbMCVdCj4+Cj4+IFRoaXMgaXMgbm90IHZvbHVtZSBjb250cm9sLCBpdCBpcyBT
+UERJRiBvdXQgU2xvdCBBc3NpZ25tZW50IGluIGFjOTcgbGluawo+Pgo+PgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
