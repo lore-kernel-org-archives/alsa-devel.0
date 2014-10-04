@@ -1,20 +1,16 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: fsl_esai doc: Add "fsl,
  vf610-esai" as compatible string
-Date: Sat, 4 Oct 2014 10:31:47 -0700
-Message-ID: <20141004173147.GA2740@Asurada>
+Date: Sat, 4 Oct 2014 19:07:41 +0100
+Message-ID: <20141004180741.GG4609@sirena.org.uk>
 References: <1412433821-10970-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3303193238731868762=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f46.google.com (mail-pa0-f46.google.com
- [209.85.220.46])
- by alsa0.perex.cz (Postfix) with ESMTP id E972B260569
- for <alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 19:31:59 +0200 (CEST)
-Received: by mail-pa0-f46.google.com with SMTP id fa1so3093236pad.33
- for <alsa-devel@alsa-project.org>; Sat, 04 Oct 2014 10:31:58 -0700 (PDT)
-Content-Disposition: inline
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36D0D26056A
+ for <alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 20:07:58 +0200 (CEST)
 In-Reply-To: <1412433821-10970-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,41 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Li.Xiubo@freescale.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Li.Xiubo@freescale.com
 List-Id: alsa-devel@alsa-project.org
+
+
+--===============3303193238731868762==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="vSsTm1kUtxIHoa7M"
+Content-Disposition: inline
+
+
+--vSsTm1kUtxIHoa7M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 On Sat, Oct 04, 2014 at 11:43:41AM -0300, Fabio Estevam wrote:
 > From: Fabio Estevam <fabio.estevam@freescale.com>
-> 
-> Since commit b21cc2f5fdfe224 ("ASoC: esai: Add VF610+ compatibles support.")
+>=20
+> Since commit b21cc2f5fdfe224 ("ASoC: esai: Add VF610+ compatibles support=
+=2E")
 > the fsl_esai driver also accepts  the "fsl,vf610-esai" compatible string.
-> 
-> Update the documentation accordingly.
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Applied, thanks.
 
-Thank you.
+--vSsTm1kUtxIHoa7M
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> ---
->  Documentation/devicetree/bindings/sound/fsl,esai.txt | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-> index aeb8c4a..52f5b6b 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
-> +++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-> @@ -7,7 +7,8 @@ other DSPs. It has up to six transmitters and four receivers.
->  
->  Required properties:
->  
-> -  - compatible : Compatible list, must contain "fsl,imx35-esai".
-> +  - compatible : Compatible list, must contain "fsl,imx35-esai" or
-> +		 "fsl,vf610-esai"
->  
->    - reg : Offset and length of the register set for the device.
->  
-> -- 
-> 1.9.1
-> 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUMDdsAAoJECTWi3JdVIfQdCAH/jF2snkCVVyDdzeRbGFvjwZX
+GM0e2/QfJV3IHyJ0cCTq3mvS+kOrucB+YUtSogAswuUDuerI3cqj0uOOpG5+5I/7
+ixM2Ow3xjWb9J1JTQvWiSd4InVGN9gEA6nnyjoRRpo621mxB8OM33LBRZ4pvYZ6l
+yyqHcoYWTYoWJb9QVvV5LyPDROMWE2vjrEDRqO9Nlqwtk9miAlt5jRkhD3SesW9r
+Q3GMuWqx4EQevjplf136b6BZNTI5aePNAp6BmzQ7rnqmhwqd2cBcag/3EEzzYWql
+8eASQFGo+bFsqBboWTDOR2j1zDDcyNMBusJQQ9kLYsE88s4CxYVf2s9H+oXfUB8=
+=oIMi
+-----END PGP SIGNATURE-----
+
+--vSsTm1kUtxIHoa7M--
+
+--===============3303193238731868762==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3303193238731868762==--
