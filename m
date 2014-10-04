@@ -1,18 +1,19 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: fsl_esai doc: Add "fsl,
-	vf610-esai" as compatible string
-Date: Sat,  4 Oct 2014 11:43:41 -0300
-Message-ID: <1412433821-10970-1-git-send-email-festevam@gmail.com>
+From: shal@free.fr
+Subject: BUG: Edirol UA-1000 failed parsing interface
+Date: Sat, 4 Oct 2014 18:55:06 +0200 (CEST)
+Message-ID: <1215173971.300117484.1412441706066.JavaMail.root@spooler2-g27.priv.proxad.net>
+References: <767941624.300016873.1412440447063.JavaMail.root@spooler2-g27.priv.proxad.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f43.google.com (mail-qa0-f43.google.com
- [209.85.216.43])
- by alsa0.perex.cz (Postfix) with ESMTP id E01FB260561
- for <alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 16:44:27 +0200 (CEST)
-Received: by mail-qa0-f43.google.com with SMTP id s7so1994162qap.30
- for <alsa-devel@alsa-project.org>; Sat, 04 Oct 2014 07:44:26 -0700 (PDT)
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89261260569
+ for <Alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 18:55:06 +0200 (CEST)
+Received: from spooler2-g27.priv.proxad.net (unknown [172.20.243.240])
+ by smtp6-g21.free.fr (Postfix) with ESMTP id B457182324
+ for <Alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 18:54:27 +0200 (CEST)
+In-Reply-To: <767941624.300016873.1412440447063.JavaMail.root@spooler2-g27.priv.proxad.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,35 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Li.Xiubo@freescale.com
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
-
-Since commit b21cc2f5fdfe224 ("ASoC: esai: Add VF610+ compatibles support.")
-the fsl_esai driver also accepts  the "fsl,vf610-esai" compatible string.
-
-Update the documentation accordingly.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- Documentation/devicetree/bindings/sound/fsl,esai.txt | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-index aeb8c4a..52f5b6b 100644
---- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
-@@ -7,7 +7,8 @@ other DSPs. It has up to six transmitters and four receivers.
- 
- Required properties:
- 
--  - compatible : Compatible list, must contain "fsl,imx35-esai".
-+  - compatible : Compatible list, must contain "fsl,imx35-esai" or
-+		 "fsl,vf610-esai"
- 
-   - reg : Offset and length of the register set for the device.
- 
--- 
-1.9.1
+SGVsbG8sCgpJIGhhdmUgYSBFZGlyb2wgVUEtMTAwMCB0aGF0IGlzIHN1cHBvcnRlZCBieSBMaW51
+eCB1c2luZyB0aGUgc25kLXVhMTAxIG1vZHVsZS4KCkkgaGF2ZSBzb21lIHByb2JsZW1zIHVzaW5n
+IHRoaXMgY2FyZCB3aXRoIHJlY2VudCBrZXJuZWwgKG5vIG1peGVyIGZvciBQQ00gbGlrZSBNYXN0
+ZXIgQ29udHJvbCkKCkkgaGF2ZSB0cmFja2VkIHRoZSBwcm9ibGVtLiBJIGZvdW5kIHRoZSBvcmln
+aW4gb2YgdGhlIHByb2JsZW0gYnV0IEkgaGF2ZW4ndCBmb3VuZCB0aGUgc29sdXRpb24gdG8gY29y
+cmVjdCBpdC4KCgpTb21lIGluZm9ybWF0aW9uIDoKVWJ1bnR1IDE0LjA0IGluIDMyIGJpdCB3aXRo
+IGEgMy4xNy1yYzcga2VybmVsIChidXQgMy4xMyBoYXMgYWxzbyB0aGUgcHJvYmxlbSkKClRoZSBs
+c3VzYiAtdiBvZiBteSBzb3VuZCBjYXJkOgpodHRwOi8vcGFzdGViaW4uY29tL0NSRFhhNXcwCgpU
+aGUgImNhdCAvc3lzL2tlcm5lbC9kZWJ1Zy91c2IvZGV2aWNlcyIgZm9yIG15IHNvdW5kIGNhcmQg
+OgpodHRwOi8vcGFzdGViaW4uY29tL2o0YWI5ZWtaCgoKU28gSSBmb3VuZCB0aGF0IHRoZSBwcm9i
+bGVtIGlzIGluIHRoZSBxdWlyay5jCkluIHRoZSBmdW5jdGlvbiBjcmVhdGVfYXV0b19wY21fcXVp
+cmsoKQpUaGVyZSBpcyBhIGNoZWNrIDoKLyoKwqDCoMKgwqDCoMKgwqDCoCAqIE1vc3QgUm9sYW5k
+L1lhbWFoYSBhdWRpbyBzdHJlYW1pbmcgaW50ZXJmYWNlcyBoYXZlIG1vcmUgb3IgbGVzcwrCoMKg
+wqDCoMKgwqDCoMKgICogc3RhbmRhcmQgZGVzY3JpcHRvcnMsIGJ1dCBvbGRlciBkZXZpY2VzIG1p
+Z2h0IGxhY2sgZGVzY3JpcHRvcnMsIGFuZArCoMKgwqDCoMKgwqDCoMKgICogZnV0dXJlIG9uZXMg
+bWlnaHQgY2hhbmdlLCBzbyBlbnN1cmUgdGhhdCB3ZSBmYWlsIHNpbGVudGx5IGlmIHRoZQrCoMKg
+wqDCoMKgwqDCoMKgICogaW50ZXJmYWNlIGRvZXNuJ3QgbG9vayBleGFjdGx5IHJpZ2h0LgrCoMKg
+wqDCoMKgwqDCoMKgICovCgrCoMKgwqDCoMKgwqDCoMKgLyogbXVzdCBoYXZlIGEgbm9uLXplcm8g
+YWx0c2V0dGluZyBmb3Igc3RyZWFtaW5nICovCsKgwqDCoMKgwqDCoMKgwqBpZiAoaWZhY2UtPm51
+bV9hbHRzZXR0aW5nIDwgMikKwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4g
+LUVOT0RFVjsKwqDCoMKgwqDCoMKgwqDCoCAKCkFuZCB0aGUgaWZhY2UtPm51bV9hbHRzZXR0aW5n
+IHZhbHVlIGZvciBteSBjYXJkIGlzIDEuClNvIFRoZSBmdW5jdGlvbiByZXR1cm4gYW4gRU5PREVW
+LgpTbyB0aGUgY2FsbGVyIGZ1bmN0aW9uIHNuZF91c2JfYXVkaW9fcHJvYmUgcmV0dXJuIGFuIC1F
+SU8KCkluIGRtZXNnOgoKWyAyNzQ3LjU3MzkyM10gc25kLXVzYi1hdWRpbzogcHJvYmUgb2YgMi0x
+LjM6MS4wIGZhaWxlZCB3aXRoIGVycm9yIC01ClsgMjc0Ny41NzQyOTZdIHNuZC11c2ItYXVkaW86
+IHByb2JlIG9mIDItMS4zOjEuMSBmYWlsZWQgd2l0aCBlcnJvciAtNQpbIDI3NDcuNTc0NjY4XSBz
+bmQtdXNiLWF1ZGlvOiBwcm9iZSBvZiAyLTEuMzoxLjIgZmFpbGVkIHdpdGggZXJyb3IgLTUKWyAy
+NzQ3LjU3NTA0MF0gc25kLXVzYi1hdWRpbzogcHJvYmUgb2YgMi0xLjM6MS4zIGZhaWxlZCB3aXRo
+IGVycm9yIC01CgpTbyBubyBjb250cm9sIGZvciBQQ00gb25seSBmb3IgTUlESQojIGFtaXhlciBj
+b250cm9scwpudW1pZD0xLGlmYWNlPU1JWEVSLG5hbWU9J01JREkgSW5wdXQgTW9kZScKCgpUaGUg
+ZnVuY3Rpb24gY3JlYXRlX2F1dG9fcGNtX3F1aXJrKCkgY29tZSB0aGUgZmlyc3QgdGltZSBpbiAz
+LjEwIGZvciBZYW1haGEgYW5kIFJvbGFuZCAoRWRpcm9sIGlzIGEgUm9sYW5kKSBjYXJkIHF1aXJr
+LgpUaGlzIGlzIHBlcmhhcHMgdGhlIGRhdGUgb2YgdGhlIGJlZ2luaW5nIG9mIG15IHByb2JsZW0u
+CgoKSSBjYW4gdGVzdCBhbnkgcGF0Y2guLi4uCgpUaGFuayB5b3UsCk9saXZpZXIKCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
