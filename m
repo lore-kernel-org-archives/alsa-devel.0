@@ -1,47 +1,56 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH] ASoC: simple-card: Fix detect gpio documentation.
-Date: Sat, 4 Oct 2014 12:59:03 +0100
-Message-ID: <20141004115903.GC4609@sirena.org.uk>
-References: <1412355968-30200-1-git-send-email-dgreid@chromium.org>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl_esai doc: Add "fsl,
+	vf610-esai" as compatible string
+Date: Sat,  4 Oct 2014 11:43:41 -0300
+Message-ID: <1412433821-10970-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dkEUBIird37B8yKS"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1412355968-30200-1-git-send-email-dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qa0-f43.google.com (mail-qa0-f43.google.com
+ [209.85.216.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id E01FB260561
+ for <alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 16:44:27 +0200 (CEST)
+Received: by mail-qa0-f43.google.com with SMTP id s7so1994162qap.30
+ for <alsa-devel@alsa-project.org>; Sat, 04 Oct 2014 07:44:26 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Li.Xiubo@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
---dkEUBIird37B8yKS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Since commit b21cc2f5fdfe224 ("ASoC: esai: Add VF610+ compatibles support.")
+the fsl_esai driver also accepts  the "fsl,vf610-esai" compatible string.
 
-On Fri, Oct 03, 2014 at 10:06:08AM -0700, Dylan Reid wrote:
-> The device tree property uses '-' not '_'.
+Update the documentation accordingly.
 
-Applied, thanks.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ Documentation/devicetree/bindings/sound/fsl,esai.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---dkEUBIird37B8yKS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUL+EGAAoJECTWi3JdVIfQzAsH/0MOwXb76xUT1rId9i13izMo
-h8Ew+uCbzYovTCiAblWjAK+cgaZBSWLoYUqBj0jEv7yK7jDJn1yIoffD6rcK2uwO
-lcCCmsU/b7hwvRhYV+g7cy+IpoIdSa0U290tC1AV8r431zkK9EMRR3gaGgR9RVy/
-ofXFkZAUN69OVjkMA5xrJhNyaWk0F1RBetY1D/LfZ9411EJB6i5HLUyJijnPvQS1
-j1UglpudOToSIrN40cwGUwNWVhmTLgxIk20nJWqBsqc523bkn+qMfvOAjgQsDXhY
-tnljjd95kh9qf716kjENQ75VRlRQbFWLDv1uckoOht5dxgOrmLvX5EapjzskqV0=
-=9gaG
------END PGP SIGNATURE-----
-
---dkEUBIird37B8yKS--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+index aeb8c4a..52f5b6b 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+@@ -7,7 +7,8 @@ other DSPs. It has up to six transmitters and four receivers.
+ 
+ Required properties:
+ 
+-  - compatible : Compatible list, must contain "fsl,imx35-esai".
++  - compatible : Compatible list, must contain "fsl,imx35-esai" or
++		 "fsl,vf610-esai"
+ 
+   - reg : Offset and length of the register set for the device.
+ 
+-- 
+1.9.1
