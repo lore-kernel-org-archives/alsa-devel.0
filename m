@@ -1,21 +1,17 @@
-From: Gilles Hemberg <gilles.hemberg@gmail.com>
-Subject: Re: [bug] SPDIF (digital-out) not working on
-	NForce4/CK804
-Date: Sat, 04 Oct 2014 11:34:19 +0200
-Message-ID: <542FBF1B.9050500@gmail.com>
-References: <542D95C8.8060701@gmail.com>	<CAN8cciYnAm6ivNk_FG6WbWAicskXQ9E2Pi+LLAb2jLSSwuJC+Q@mail.gmail.com>	<542F0EFE.6020303@gmail.com>
- <CAN8ccia720EFBH8mHdYV4V4_pwx6r2GGUhsZZXsbbNHxdZCeJA@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 02/14] ALSA: dice: Move file to its own
+	directory
+Date: Sat,  4 Oct 2014 20:27:12 +0900
+Message-ID: <1412422044-15133-3-git-send-email-o-takashi@sakamocchi.jp>
+References: <1412422044-15133-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f169.google.com (mail-wi0-f169.google.com
- [209.85.212.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 61B61260525
- for <alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 11:34:24 +0200 (CEST)
-Received: by mail-wi0-f169.google.com with SMTP id cc10so3246989wib.0
- for <alsa-devel@alsa-project.org>; Sat, 04 Oct 2014 02:34:24 -0700 (PDT)
-In-Reply-To: <CAN8ccia720EFBH8mHdYV4V4_pwx6r2GGUhsZZXsbbNHxdZCeJA@mail.gmail.com>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11830260550
+ for <alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 13:27:35 +0200 (CEST)
+In-Reply-To: <1412422044-15133-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,92 +21,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Raymond Yau <superquad.vortex2@gmail.com>
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpJdCB3b3JrcyEKCgoKU29sdXRpb24gKGluIE9wZW5FbGVjIDQuMi4wOyBzZXR0aW5ncyBv
-biBvdGhlciBkaXN0cm9zIHdvdWxkIGJlIHNpbWlsYXIpOgoqIENyZWF0ZSBjdXN0b20gYXNvdW5k
-LnN0YXRlIGluIC9zdG9yYWdlLy5jb25maWcvIHdpdGggdGhlIGZvbGxvd2luZyAKY29udGVudHM6
-IGh0dHA6Ly9zcHJ1bmdlLnVzL1NpSEggKHRoaXMgc3RhdGUtZmlsZSB3aWxsLCBhbW9uZyBvdGhl
-ciAKdGhpbmdzLCB1bm11dGUgdGhlIGFwcHJvcHJpYXRlIG1peGVyIGNvbnRyb2xzLCBzZXQgcHJv
-cGVyIG91dHB1dCAKZm9ybWF0cywgLi4uKS4KCiogTG9hZCB0aGUgYWJvdmUgc3RhdGUgZmlsZSB3
-aXRoIHRoZSBmb2xsb3dpbmcgY29tbWFuZDoKCiAgICAgYWxzYWN0bCBucmVzdG9yZSAwIC1mIC9z
-dG9yYWdlLy5jb25maWcvYXNvdW5kLnN0YXRlCiAgICAgKHJlcGxhY2UgdGhlICIwIiB3aXRoIHRo
-ZSBjYXJkLW51bWJlciBjb3JyZXNwb25kaW5nIHRvIENLODA0IG9uIAp5b3VyIHN5c3RlbSkKCiAg
-IFlvdSBtYXkgd2FudCB0byBhZGQgdGhpcyBjb21tYW5kIHRvIGEgY3VzdG9tIGF1dG9zdGFydC5z
-aCBpbiAKL3N0b3JhZ2UvLmNvbmZpZy8gc28gdGhlIHN0YXRlIGlzIHJlc3RvcmVkIG9uIGV2ZXJ5
-IGJvb3QuCgoqIENyZWF0ZSBpbnRlbDh4MC5jb25mIGluIC9zdG9yYWdlLy5jb25maWcvbW9kcHJv
-YmUuZC8gd2l0aCB0aGUgCmZvbGxvd2luZyBjb250ZW50czoKCiAgICAgb3B0aW9ucyBzbmQtaW50
-ZWw4eDAgc3BkaWZfYWNsaW5rPTEKICAgICAoSSBhbSB0b2xkIHRoYXQgdGhpcyBhYm92ZSBzZXR0
-aW5nIGRlcGVuZHMgb24gdGhlIHNwZWNpZmljIAptb3RoZXJib2FyZCwgc28gdGhpcyBtYXkgbm90
-IHdvcmsgZm9yIGV2ZXJ5b25lOiBpdCBkb2VzIHdvcmsgb24gbXkgQVNVUyAKQThOLVNMSSBEZWx1
-eGUpCgogICBUaGlzIHdhcyB0aGUgZmluYWwgc2V0dGluZyB0aGF0IHNvbHZlZCB0aGUgaXNzdWUg
-Zm9yIG1lLiBJIGRpZCB0cnkgCnRoaXMgc2V0dGluZyBiZWZvcmUsIGJ1dCBpdCBzZWVtcyB0aGF0
-IHNvbWUgc291cmNlcyBvbiB0aGUgSW50ZXJuZXQgaGFkIAp0aGlzIG1pcy13cml0dGVuIGFzICJv
-cHRpb25zIHNuZC1pbnRlbC04eDAgc3BkaWZfYWNsaW5rPTEiIChub3RpY2UgdGhlIApleHRyYSBk
-YXNoKS4KCiogSW4gWEJNQywgc2VsZWN0IHRoZSBTUERJRiBvdXQgYXMgYm90aCB0aGUgYXVkaW8t
-ZGV2aWNlIEFORCB0aGUgCnBhc3N0aHJvdWdoIGRldmljZS4KCgoKSSB3YW50ZWQgdG8gcG9zdCB0
-aGUgc29sdXRpb24gdGhhdCB3b3JrZWQgKGluIG15IGNhc2UpIGhlcmUgc28gb3RoZXJzIAptYXkg
-YmUgYWJsZSB0byBiZW5lZml0IGZyb20gbXkgZXhwZXJpZW5jZS4KClRoYW5rIHlvdSB2ZXJ5IG11
-Y2ggZm9yIHlvdXIgaW5wdXQgUmF5bW9uZDogcmVhbGx5IGFwcHJlY2lhdGVkIQoKQnllIQpfX19f
-XwoqR2lsbGVzIEhlbWJlcmcqCi9naWxsZXMuaGVtYmVyZ0BnbWFpbC5jb20vCk9uIDA0LzEwLzIw
-MTQgMDc6MDcsIFJheW1vbmQgWWF1IHdyb3RlOgo+Cj4gPgo+ID4gQ29tbWFuZCB0cmllZDoKPiA+
-Cj4gPiAgICAgc3BlYWtlci10ZXN0IC1jMiAtciA0ODAwMCAtRCBpZWM5NTg6Q0FSRD1DSzgwNCxE
-RVY9MAo+ID4KPiA+IFN0aWxsIG5vIHNvdW5kIGNvbWluZyB0aHJvdWdoIEFWUi4uLgo+ID4KPiA+
-IEZvciB0aGUgc2FrZSBvZiBjb21wbGV0ZW5lc3MsIEkgcHJvdmlkZSBhIG5ldyBhbHNhLWluZm8u
-c2ggCj4gb3V0cHV0Omh0dHA6Ly9zcHJ1bmdlLnVzL1pXTEYoSSBibGFja2xpc3RlZCB0aGUgc25k
-X2hkYV9pbnRlbCB0aGlzIAo+IHRpbWUganVzdCB0byBiZSBvbiB0aGUgc2FmZSBzaWRlKS4KPiA+
-Cj4gPiBUaGUgZ2l0LWxpbmsgYmVsb3cgCj4gKGh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/
-cD1hbHNhLWxpYi5naXQ7YT1ibG9iO2Y9c3JjL2NvbmYvY2FyZHMvTkZPUkNFLmNvbmY7aGI9SEVB
-RCkgCj4gc2VlbXMgdG8gcG9pbnQgdG8gdGhlIC5jb25mIGZvciBuRm9yY2UyLzM7IG1pbiBpcyBh
-IG5Gb3JjZTQgKGRvbid0IAo+IGtub3cgaWYgbkZvcmNlNCBpcyBzdXBwb3NlZCB0byB1c2UgdGhp
-cyBzYW1lIC5jb25mKS4KPiA+Cj4KPiBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgv
-a2VybmVsL2dpdC90aXdhaS9zb3VuZC5naXQvY29tbWl0L3NvdW5kL3BjaS9pbnRlbDh4MC5jP2lk
-PWE5ZTk5NjYwNGY3N2JlNmYxZjRkZWIwZWIxY2MyNjUyMDAwMDU0ZjEKPgo+IEVpdGhlciB1c2Ug
-c3BkaWYgb3ZlciBhYy1saW5rIG9yIHlvdSBoYXZlIHRvIGZpbmQgb3V0IGhvdyB0byB1c2UgCj4g
-bmZvcmNlNCBzZWNvbmRhcnkgc3BkaWYgb3V0cHV0Cj4KPiBodHRwOi8vd3d3Lm52aWRpYS5jb20v
-cGFnZS9wZ18yMDA0MTAxNDg2MzQ3Ni5odG1sCj4KPiBBVURJTwo+Cj4gQUMg4oCZOTcgMi4zIGNv
-bXBsaWFudCBpbnRlcmZhY2UKPgo+IFN1cHBvcnRzIDIsIDQsIDYsIG9yIDgtY2hhbm5lbCBhdWRp
-bwo+IER1YWwgQUMtTGluazogc3VwcG9ydHMgdXAgdG8gdHdvIGNvZGVjcwo+IER1YWwgUy9QRElG
-OiBzdXBwb3J0cyB0d28gc2ltdWx0YW5lb3VzIGRpZ2l0YWwgb3V0cHV0czsgaGFuZGxlcyBzdGVy
-ZW8gCj4gUENNIG9yIEFDLTMgb3V0cHV0Cj4gMTYtYml0IG9yIDIwLWJpdCBzdGVyZW8sIDQ4a0h6
-IG91dHB1dCBhbmQgMTYtYml0IGlucHV0IHN0cmVhbXMgYWNyb3NzIAo+IEFDLUxpbmsKPiAyNC1i
-aXQsIDk2a0h6IHN0ZXJlbyBvdXRwdXQgb24gdGhlIHNlY29uZGFyeSBTL1BESUYgb3V0cHV0Cj4K
-PiA+Pgo+ID4+ID4gU29ycnkgdG8gYnVtcCBpbiBsaWtlIHRoaXMsIGJ1dCBJIHdhcyBhZHZpc2Vk
-IHRvIHN1Ym1pdCBhIAo+IGJ1Zy1yZXBvcnQgZm9yIHRoZSBBTFNBLWRyaXZlcnMgb24gbXkgSFRQ
-Qzogbm8gc291bmQgY29tZXMgdGhyb3VnaCBvdXQgCj4gb2YgbXkgQVZSIHdoZW4gSSBzZWxlY3Qg
-dGhlIGRpZ2l0YWwgb3V0cHV0IHRocm91Z2ggU1BESUYgKFRPU0xJTkspLgo+ID4+ID4KPiA+PiA+
-IFRoZSByZWxldmFudCBwYXJ0cyBvZiBteSBIVFBDIGFyZSBhcyBmb2xsb3dzOgo+ID4+ID4gICAg
-ICogQ1BVOiBBdGhsb242NCBYMiAzODAwKwo+ID4+ID4gICAgICogTW90aGVyYm9hcmQ6IEFTVVMg
-QThOLVNMSSBEZWx1eGUgbW90aGVyYm9hcmQgKEJJT1MgMTgwNSkgCj4gTkZvcmNlNCB3aXRoIENL
-ODA0IHNvdW5kIChyZWx5aW5nIG9uIGEgUmVhbHRlayBBTEM4NTAgY2hpcCkKPiA+Pgo+ID4+ID4g
-ICAgICogUkFNOiAyeCA1MTIgTUIgRERSLTQwMAo+ID4+ID4gICAgICogR1BVOiBuVmlkaWEgR2Vm
-b3JjZSBHVDI0MCAod2hpY2ggY2FycmllcyBhIEhETUkgcG9ydCBhbmQgCj4gdXNlcyB0aGUgc25k
-LQo+ID4+ID4gICAgICogUmVjZWl2ZXI6IE1hcmFudHogU1I3NTAwIChzdXBwb3J0aW5nIGJvdGgg
-RG9sYnkgRGlnaXRhbCA1LjEgCj4gYW5kIERUUyBkZWNvZGluZyksIGNvbm5lY3RlZCB0byBtb3Ro
-ZXJib2FyZCdzIFNQRElGIFRPU0xJTksgcG9ydCAKPiAob3B0aWNhbCkgKyBKQkwgNS4xIHNwZWFr
-ZXItc2V0Cj4gPj4gPiAgICAgKiBPcGVuRWxlYyA0LjIuMDogS2VybmVsIDMuMTYuMywgQWxzYSAx
-LjAuMjgKPiA+PiA+Cj4gPj4gPgo+ID4+ID4gU3ltcHRvbXM6Cj4gPj4gPiBTcGVha2VyLXRlc3Qg
-ZG9lcyBub3QgcHJvZHVjZSBhbnkgc291bmQuIENvbW1hbmQgdXNlZCBpcyBhcyBmb2xsb3dzOgo+
-ID4+ID4KPiA+PiA+ICAgICBzcGVha2VyLXRlc3QgLWMyIC1yIDQ4MDAwIC1EIGh3OjAsMgo+ID4+
-ID4KPiA+PiA+IE5vIHNvdW5kIGVpdGhlciBmcm9tIG90aGVyIGFwcGxpY2F0aW9ucyAoc3VjaCBh
-cyBYQk1DIDEzLjIpLgo+ID4+ID4KPiA+PiA+IFNQRElGIHdvcmtlZCBmbGF3bGVzc2x5IG9uIHRo
-ZSBleGFjdCBzYW1lIGhhcmR3YXJlICYgY29ubmVjdGlvbnMgCj4gdXNpbmcgV2luNy9YQk1DLgo+
-ID4+ID4gU291bmQgZG9lcyBjb21lIHRocm91Z2ggdGhlIFNQRElGIHdoZW4gSSB1c2UgaHc6MCww
-ICg9IGFuYWxvZyAKPiBkZXZpY2UpLgo+ID4+ID4KPiA+PiA+Cj4gPj4gPiBUaGluZ3MgdHJpZWQg
-KG5vbmUgd29ya2luZyk6Cj4gPj4gPiAgICAgKiBCbGFja2xpc3Rpbmcgc25kLWhkYS1pbnRlbCAo
-PSBIRE1JIGZyb20gbXkgR1BVKSB0byBtYWtlIAo+IHN1cmUgQ0s4MDQgaXMgdGhlIG9ubHkgc291
-bmQgY2hpcCB2aXNpYmxlLgo+ID4+ID4KPiA+PiA+ICAgICAqIGFtaXhlciBzZXQgJ0lFQzk1OCBQ
-bGF5YmFjayBBQzk3LVNQU0EnIFBsYXliYWNrIDEwMCUgdW5tdXRlCj4gPj4KPiA+Cj4gPj5odHRw
-Oi8vd3d3LnJlYWx0ZWsuY29tLnR3L3Byb2R1Y3RzL3Byb2R1Y3RzVmlldy5hc3B4P0xhbmdpZD0x
-JlBGaWQ9MzEmTGV2ZWw9NSZDb25uPTQmUHJvZElEPTU5Cj4gPj4KPiA+PiBUYWtlIGEgbG9vayBh
-dCBhbGM4NTAgZGF0YXNoZWV0Cj4gPj4KPiA+PiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4
-IFBsYXliYWNrIEFDOTctU1BTQScsMAo+ID4+ICAgQ2FwYWJpbGl0aWVzOiB2b2x1bWUgdm9sdW1l
-LWpvaW5lZAo+ID4+ICAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KPiA+PiAgIENhcHR1cmUgY2hh
-bm5lbHM6IE1vbm8KPiA+PiAgIExpbWl0czogMCAtIDMKPiA+PiAgIE1vbm86IDAgWzAlXQo+ID4+
-Cj4gPj4gVGhpcyBpcyBub3Qgdm9sdW1lIGNvbnRyb2wsIGl0IGlzIFNQRElGIG91dCBTbG90IEFz
-c2lnbm1lbnQgaW4gYWM5NyAKPiBsaW5rCj4gPj4KPiA+Pgo+CgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+In followed commits, dice driver is split into several files. For easily
+managing these files, this commit adds subdirectory and move file into
+the directory.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/Makefile                    |  3 +--
+ sound/firewire/dice/Makefile               |  2 ++
+ sound/firewire/{ => dice}/dice-interface.h |  0
+ sound/firewire/{ => dice}/dice.c           | 19 ++++++++++---------
+ 4 files changed, 13 insertions(+), 11 deletions(-)
+ create mode 100644 sound/firewire/dice/Makefile
+ rename sound/firewire/{ => dice}/dice-interface.h (100%)
+ rename sound/firewire/{ => dice}/dice.c (99%)
+
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index fad8d49..c50761c 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -1,12 +1,11 @@
+ snd-firewire-lib-objs := lib.o iso-resources.o packets-buffer.o \
+ 			 fcp.o cmp.o amdtp.o
+-snd-dice-objs := dice.o
+ snd-firewire-speakers-objs := speakers.o
+ snd-isight-objs := isight.o
+ snd-scs1x-objs := scs1x.o
+ 
+ obj-$(CONFIG_SND_FIREWIRE_LIB) += snd-firewire-lib.o
+-obj-$(CONFIG_SND_DICE) += snd-dice.o
++obj-$(CONFIG_SND_DICE) += dice/
+ obj-$(CONFIG_SND_FIREWIRE_SPEAKERS) += snd-firewire-speakers.o
+ obj-$(CONFIG_SND_ISIGHT) += snd-isight.o
+ obj-$(CONFIG_SND_SCS1X) += snd-scs1x.o
+diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
+new file mode 100644
+index 0000000..af05d7e
+--- /dev/null
++++ b/sound/firewire/dice/Makefile
+@@ -0,0 +1,2 @@
++snd-dice-objs := dice.o
++obj-m += snd-dice.o
+diff --git a/sound/firewire/dice-interface.h b/sound/firewire/dice/dice-interface.h
+similarity index 100%
+rename from sound/firewire/dice-interface.h
+rename to sound/firewire/dice/dice-interface.h
+diff --git a/sound/firewire/dice.c b/sound/firewire/dice/dice.c
+similarity index 99%
+rename from sound/firewire/dice.c
+rename to sound/firewire/dice/dice.c
+index c7c8495..2c3158f 100644
+--- a/sound/firewire/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -26,9 +26,9 @@
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+-#include "amdtp.h"
+-#include "iso-resources.h"
+-#include "lib.h"
++#include "../amdtp.h"
++#include "../iso-resources.h"
++#include "../lib.h"
+ #include "dice-interface.h"
+ 
+ 
+@@ -133,7 +133,7 @@ static inline u64 global_address(struct snd_dice *dice, unsigned int offset)
+ 	return DICE_PRIVATE_SPACE + dice->global_offset + offset;
+ }
+ 
+-// TODO: rx index
++/* TODO: rx index */
+ static inline u64 rx_address(struct snd_dice *dice, unsigned int offset)
+ {
+ 	return DICE_PRIVATE_SPACE + dice->rx_offset + offset;
+@@ -721,13 +721,14 @@ static long dice_hwdep_read(struct snd_hwdep *hwdep, char __user *buf,
+ 		event.lock_status.status = dice->dev_lock_count > 0;
+ 		dice->dev_lock_changed = false;
+ 
+-		count = min(count, (long)sizeof(event.lock_status));
++		count = min_t(long, count, sizeof(event.lock_status));
+ 	} else {
+-		event.dice_notification.type = SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION;
++		event.dice_notification.type =
++					SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION;
+ 		event.dice_notification.notification = dice->notification_bits;
+ 		dice->notification_bits = 0;
+ 
+-		count = min(count, (long)sizeof(event.dice_notification));
++		count = min_t(long, count, sizeof(event.dice_notification));
+ 	}
+ 
+ 	spin_unlock_irq(&dice->lock);
+@@ -1448,7 +1449,7 @@ static void dice_remove(struct fw_unit *unit)
+ 	snd_card_free_when_closed(dice->card);
+ }
+ 
+-static void dice_bus_reset(struct fw_unit *unit)
++static void dice_update(struct fw_unit *unit)
+ {
+ 	struct snd_dice *dice = dev_get_drvdata(&unit->device);
+ 
+@@ -1492,7 +1493,7 @@ static struct fw_driver dice_driver = {
+ 		.bus	= &fw_bus_type,
+ 	},
+ 	.probe    = dice_probe,
+-	.update   = dice_bus_reset,
++	.update   = dice_update,
+ 	.remove   = dice_remove,
+ 	.id_table = dice_id_table,
+ };
+-- 
+1.9.1
