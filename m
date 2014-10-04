@@ -1,55 +1,47 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/14] ALSA: dice: remove experimental state
-Date: Sat,  4 Oct 2014 20:27:24 +0900
-Message-ID: <1412422044-15133-15-git-send-email-o-takashi@sakamocchi.jp>
-References: <1412422044-15133-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH] ASoC: simple-card: Fix detect gpio documentation.
+Date: Sat, 4 Oct 2014 12:59:03 +0100
+Message-ID: <20141004115903.GC4609@sirena.org.uk>
+References: <1412355968-30200-1-git-send-email-dgreid@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FB9D26057F
- for <alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 13:27:50 +0200 (CEST)
-In-Reply-To: <1412422044-15133-1-git-send-email-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="dkEUBIird37B8yKS"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1412355968-30200-1-git-send-email-dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Dylan Reid <dgreid-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, jay.xu-TNX95d0MmH7DzftRWevZcw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sonnyrao-F7+t8E8rja9g9hUCZPvPmw@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Some developers test this driver, thus it's better to remove its
-experimental state.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--dkEUBIird37B8yKS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index c8e704c..1ea249d 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -13,12 +13,12 @@ config SND_FIREWIRE_LIB
- 	select SND_RAWMIDI
- 
- config SND_DICE
--	tristate "DICE-based DACs (EXPERIMENTAL)"
-+	tristate "DICE-based DACs support"
- 	select SND_HWDEP
- 	select SND_FIREWIRE_LIB
- 	help
- 	  Say Y here to include support for many DACs based on the DICE
--	  chip family (DICE-II/Jr/Mini) from TC Applied Technologies.
-+	  chip family (DICE-II/Jr/Mini) from TC Applied Technologies:
- 
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-dice.
--- 
-1.9.1
+On Fri, Oct 03, 2014 at 10:06:08AM -0700, Dylan Reid wrote:
+> The device tree property uses '-' not '_'.
+
+Applied, thanks.
+
+--dkEUBIird37B8yKS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUL+EGAAoJECTWi3JdVIfQzAsH/0MOwXb76xUT1rId9i13izMo
+h8Ew+uCbzYovTCiAblWjAK+cgaZBSWLoYUqBj0jEv7yK7jDJn1yIoffD6rcK2uwO
+lcCCmsU/b7hwvRhYV+g7cy+IpoIdSa0U290tC1AV8r431zkK9EMRR3gaGgR9RVy/
+ofXFkZAUN69OVjkMA5xrJhNyaWk0F1RBetY1D/LfZ9411EJB6i5HLUyJijnPvQS1
+j1UglpudOToSIrN40cwGUwNWVhmTLgxIk20nJWqBsqc523bkn+qMfvOAjgQsDXhY
+tnljjd95kh9qf716kjENQ75VRlRQbFWLDv1uckoOht5dxgOrmLvX5EapjzskqV0=
+=9gaG
+-----END PGP SIGNATURE-----
+
+--dkEUBIird37B8yKS--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
