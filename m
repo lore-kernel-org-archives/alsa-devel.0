@@ -1,15 +1,16 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v2] ASoC: rt5677: Support DSP function for VAD
-	application
-Date: Mon, 6 Oct 2014 16:30:51 +0800
-Message-ID: <1412584251-29167-1-git-send-email-oder_chiou@realtek.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] alsa-tools: Add a small "hdajacksensetest"
+	helper
+Date: Mon,  6 Oct 2014 11:30:52 +0200
+Message-ID: <1412587852-14203-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id C0E2F260517
- for <alsa-devel@alsa-project.org>; Mon,  6 Oct 2014 10:31:15 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78D5A260493
+ for <alsa-devel@alsa-project.org>; Mon,  6 Oct 2014 11:30:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,593 +20,246 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-The ALC5677 has a programmable DSP, and there is a SPI that is dadicated for DSP
-firmware loading. Therefore, the patch includes a SPI driver for writing the DSP
-firmware. The VAD(Voice Activaty Detection) has be implemented and use the DSP to
-recognize the key phase.
+I previously had a small python script doing the same thing,
+but it depended on hda-analyzer, which always breaks when something
+new is added to the codec proc file.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+I got tired and rewrote it as a small C program instead, which I
+hope will be a useful addition to alsa-tools.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/soc/codecs/Makefile     |   2 +-
- sound/soc/codecs/rt5677-spi.c | 129 +++++++++++++++++++
- sound/soc/codecs/rt5677-spi.h |  21 +++
- sound/soc/codecs/rt5677.c     | 288 +++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/rt5677.h     |   6 +
- 5 files changed, 441 insertions(+), 5 deletions(-)
- create mode 100644 sound/soc/codecs/rt5677-spi.c
- create mode 100644 sound/soc/codecs/rt5677-spi.h
+ Makefile                            |   2 +-
+ hdajacksensetest/Makefile.am        |  12 +++
+ hdajacksensetest/configure.ac       |  10 +++
+ hdajacksensetest/gitcompile         |  13 ++++
+ hdajacksensetest/hdajacksensetest.c | 145 ++++++++++++++++++++++++++++++++++++
+ 5 files changed, 181 insertions(+), 1 deletion(-)
+ create mode 100644 hdajacksensetest/Makefile.am
+ create mode 100644 hdajacksensetest/configure.ac
+ create mode 100755 hdajacksensetest/gitcompile
+ create mode 100644 hdajacksensetest/hdajacksensetest.c
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 5dce451..4435f9f 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -79,7 +79,7 @@ snd-soc-rt5640-objs := rt5640.o
- snd-soc-rt5645-objs := rt5645.o
- snd-soc-rt5651-objs := rt5651.o
- snd-soc-rt5670-objs := rt5670.o
--snd-soc-rt5677-objs := rt5677.o
-+snd-soc-rt5677-objs := rt5677.o rt5677-spi.o
- snd-soc-sgtl5000-objs := sgtl5000.o
- snd-soc-alc5623-objs := alc5623.o
- snd-soc-alc5632-objs := alc5632.o
-diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
+diff --git a/Makefile b/Makefile
+index b2da046..72f95e2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,7 @@ TOP = .
+ SUBDIRS = as10k1 envy24control hdsploader hdspconf hdspmixer \
+ 	  mixartloader pcxhrloader rmedigicontrol sb16_csp seq sscape_ctl \
+ 	  us428control usx2yloader vxloader echomixer ld10k1 qlo10k1 \
+-	  hwmixvolume hdajackretask hda-verb
++	  hwmixvolume hdajackretask hda-verb hdajacksensetest
+ 
+ all:
+ 	@for i in $(SUBDIRS); do \
+diff --git a/hdajacksensetest/Makefile.am b/hdajacksensetest/Makefile.am
 new file mode 100644
-index 0000000..805db12
+index 0000000..795373c
 --- /dev/null
-+++ b/sound/soc/codecs/rt5677-spi.c
-@@ -0,0 +1,129 @@
++++ b/hdajacksensetest/Makefile.am
+@@ -0,0 +1,12 @@
++MYNAME = hdajacksensetest
++AUTOMAKE_OPTIONS = foreign
++bin_PROGRAMS = hdajacksensetest
++AM_CFLAGS = @GLIB_CFLAGS@ -I "../hdajackretask/" -I "../hda-verb/"
++hdajacksensetest_SOURCES = hdajacksensetest.c ../hdajackretask/sysfs-pin-configs.c
++hdajacksensetest_LDADD = @GLIB_LIBS@
++
++alsa-dist: distdir
++	@rm -rf ../distdir/$(MYNAME)
++	@mkdir -p ../distdir/$(MYNAME)
++	@cp -RLpv $(distdir)/* ../distdir/$(MYNAME)
++	@rm -rf $(distdir)
+diff --git a/hdajacksensetest/configure.ac b/hdajacksensetest/configure.ac
+new file mode 100644
+index 0000000..cc1eb84
+--- /dev/null
++++ b/hdajacksensetest/configure.ac
+@@ -0,0 +1,10 @@
++AC_INIT(hda-verb, 0.4)
++AM_INIT_AUTOMAKE(subdir-objects)
++AM_MAINTAINER_MODE([enable])
++AC_PROG_CC
++AC_PROG_INSTALL
++AC_HEADER_STDC
++
++PKG_CHECK_MODULES([GLIB], [glib-2.0])
++
++AC_OUTPUT(Makefile)
+diff --git a/hdajacksensetest/gitcompile b/hdajacksensetest/gitcompile
+new file mode 100755
+index 0000000..58328bd
+--- /dev/null
++++ b/hdajacksensetest/gitcompile
+@@ -0,0 +1,13 @@
++#!/bin/bash
++
++aclocal $ACLOCAL_FLAGS || exit 1
++automake --foreign --add-missing || exit 1
++autoconf || exit 1
++export CFLAGS='-O2 -Wall -pipe -g'
++echo "CFLAGS=$CFLAGS"
++echo "./configure $@"
++./configure $@ || exit 1
++unset CFLAGS
++if [ -z "$GITCOMPILE_NO_MAKE" ]; then
++  make || exit 1
++fi
+diff --git a/hdajacksensetest/hdajacksensetest.c b/hdajacksensetest/hdajacksensetest.c
+new file mode 100644
+index 0000000..0db1d54
+--- /dev/null
++++ b/hdajacksensetest/hdajacksensetest.c
+@@ -0,0 +1,145 @@
 +/*
-+ * rt5677-spi.c  --  RT5677 ALSA SoC audio codec driver
++ * Checks the current pin/jack status of the codec
 + *
-+ * Copyright 2013 Realtek Semiconductor Corp.
-+ * Author: Oder Chiou <oder_chiou@realtek.com>
++ * Copyright (c) 2014 David Henningsson, Canonical Ltd. <david.henningsson@canonical.com>
++ * (With some minor pieces copy-pasted from hda-verb by Takashi Iwai)
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++ * Licensed under GPL v2 or later.
 + */
 +
-+#include <linux/module.h>
-+#include <linux/input.h>
-+#include <linux/spi/spi.h>
-+#include <linux/device.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/slab.h>
-+#include <linux/gpio.h>
-+#include <linux/sched.h>
-+#include <linux/kthread.h>
-+#include <linux/uaccess.h>
-+#include <linux/miscdevice.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/pm_qos.h>
-+#include <linux/sysfs.h>
-+#include <linux/clk.h>
-+#include <linux/firmware.h>
 +
-+#include "rt5677-spi.h"
++#include <stdlib.h>
++#include <stdio.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <glib.h>
++#include <errno.h>
++#include "sysfs-pin-configs.h"
 +
-+static struct spi_device *g_spi;
++#include <sys/ioctl.h>
++#include <stdint.h>
++typedef uint8_t u8;
++typedef uint16_t u16;
++typedef uint32_t u32;
++typedef uint64_t u64;
++#include "hda_hwdep.h"
 +
-+/**
-+ * rt5677_spi_write - Write data to SPI.
-+ * @txbuf: Data Buffer for writing.
-+ * @len: Data length.
-+ *
-+ *
-+ * Returns true for success.
-+ */
-+int rt5677_spi_write(u8 *txbuf, size_t len)
++gint card_index, codec_index;
++gboolean try_all_pins, set_pin_sense;
++
++static GOptionEntry arg_entries[] =
 +{
-+	int status;
-+
-+	status = spi_write(g_spi, txbuf, len);
-+
-+	if (status)
-+		dev_err(&g_spi->dev, "rt5677_spi_write error %d\n", status);
-+
-+	return status;
-+}
-+
-+/**
-+ * rt5677_spi_burst_write - Write data to SPI by rt5677 dsp memory address.
-+ * @addr: Start address.
-+ * @txbuf: Data Buffer for writng.
-+ * @len: Data length, it must be a multiple of 8.
-+ *
-+ *
-+ * Returns true for success.
-+ */
-+int rt5677_spi_burst_write(u32 addr, const struct firmware *fw)
-+{
-+	u8 spi_cmd = RT5677_SPI_CMD_BURST_WRITE;
-+	u8 *write_buf;
-+	unsigned int i, end, offset = 0;
-+
-+	write_buf = kmalloc(RT5677_SPI_BUF_LEN + 6, GFP_KERNEL);
-+
-+	if (write_buf == NULL)
-+		return -ENOMEM;
-+
-+	while (offset < fw->size) {
-+		if (offset + RT5677_SPI_BUF_LEN <= fw->size)
-+			end = RT5677_SPI_BUF_LEN;
-+		else
-+			end = fw->size % RT5677_SPI_BUF_LEN;
-+
-+		write_buf[0] = spi_cmd;
-+		write_buf[1] = ((addr + offset) & 0xff000000) >> 24;
-+		write_buf[2] = ((addr + offset) & 0x00ff0000) >> 16;
-+		write_buf[3] = ((addr + offset) & 0x0000ff00) >> 8;
-+		write_buf[4] = ((addr + offset) & 0x000000ff) >> 0;
-+
-+		for (i = 0; i < end; i += 8) {
-+			write_buf[i + 12] = fw->data[offset + i + 0];
-+			write_buf[i + 11] = fw->data[offset + i + 1];
-+			write_buf[i + 10] = fw->data[offset + i + 2];
-+			write_buf[i +  9] = fw->data[offset + i + 3];
-+			write_buf[i +  8] = fw->data[offset + i + 4];
-+			write_buf[i +  7] = fw->data[offset + i + 5];
-+			write_buf[i +  6] = fw->data[offset + i + 6];
-+			write_buf[i +  5] = fw->data[offset + i + 7];
-+		}
-+
-+		write_buf[end + 5] = spi_cmd;
-+
-+		rt5677_spi_write(write_buf, end + 6);
-+
-+		offset += RT5677_SPI_BUF_LEN;
-+	}
-+
-+	kfree(write_buf);
-+
-+	return 0;
-+}
-+
-+static int rt5677_spi_probe(struct spi_device *spi)
-+{
-+	g_spi = spi;
-+	return 0;
-+}
-+
-+static struct spi_driver rt5677_spi_driver = {
-+	.driver = {
-+			.name = "rt5677_spidev",
-+			.bus = &spi_bus_type,
-+			.owner = THIS_MODULE,
-+	},
-+	.probe = rt5677_spi_probe,
++  { "card", 'c', 0, G_OPTION_ARG_INT, &card_index, "card index (as can be seen in /proc/asound/cards)", "X" },
++  { "codec", 'd', 0, G_OPTION_ARG_INT, &codec_index, "codec device index (as can be seen in /proc/asound/cardX/codecY)", "Y" },
++  { "allpins", 'a', 0, G_OPTION_ARG_NONE, &try_all_pins, "try all pins, even those who (probably) does not have a physical jack", NULL },
++  { "setpinsense", 's', 0, G_OPTION_ARG_NONE, &set_pin_sense, "execute 'Set pin sense' before the pin sense is measured", NULL },
++  { NULL }
 +};
-+module_spi_driver(rt5677_spi_driver);
 +
-+MODULE_DESCRIPTION("ASoC RT5677 SPI driver");
-+MODULE_AUTHOR("Oder Chiou <oder_chiou@realtek.com>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/rt5677-spi.h b/sound/soc/codecs/rt5677-spi.h
-new file mode 100644
-index 0000000..7528bfd
---- /dev/null
-+++ b/sound/soc/codecs/rt5677-spi.h
-@@ -0,0 +1,21 @@
-+/*
-+ * rt5677-spi.h  --  RT5677 ALSA SoC audio codec driver
-+ *
-+ * Copyright 2013 Realtek Semiconductor Corp.
-+ * Author: Oder Chiou <oder_chiou@realtek.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __RT5671_SPI_H__
-+#define __RT5671_SPI_H__
-+
-+#define RT5677_SPI_BUF_LEN 240
-+#define RT5677_SPI_CMD_BURST_WRITE 0x05
-+
-+int rt5677_spi_write(u8 *txbuf, size_t len);
-+int rt5677_spi_burst_write(u32 addr, const struct firmware *fw);
-+
-+#endif /* __RT5677_SPI_H__ */
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 16aa4d9..b5f6273 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -20,6 +20,7 @@
- #include <linux/i2c.h>
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
-+#include <linux/firmware.h>
- #include <linux/gpio.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -31,6 +32,7 @@
- 
- #include "rl6231.h"
- #include "rt5677.h"
-+#include "rt5677-spi.h"
- 
- #define RT5677_DEVICE_ID 0x6327
- 
-@@ -537,6 +539,243 @@ static bool rt5677_readable_register(struct device *dev, unsigned int reg)
- 	}
- }
- 
-+/**
-+ * rt5677_dsp_mode_i2c_write_addr - Write value to address on DSP mode.
-+ * @codec: SoC audio codec device.
-+ * @addr: Address index.
-+ * @value: Address data.
-+ *
-+ *
-+ * Returns 0 for success or negative error code.
-+ */
-+static int rt5677_dsp_mode_i2c_write_addr(struct snd_soc_codec *codec,
-+		unsigned int addr, unsigned int value, unsigned int opcode)
++static void parse_command_line(int argc, char **argv)
 +{
-+	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+
-+	mutex_lock(&rt5677->dsp_cmd_lock);
-+
-+	ret = regmap_write(rt5677->regmap, RT5677_DSP_I2C_ADDR_MSB, addr >> 16);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set addr msb value: %d\n", ret);
-+		goto err;
++	GError *error = NULL;
++	GOptionContext *context = g_option_context_new("- check current jack/pin sense");
++	g_option_context_add_main_entries(context, arg_entries, NULL);
++	if (!g_option_context_parse (context, &argc, &argv, &error)) {
++		fprintf(stderr, "Option parsing failed: %s\n", error->message);
++		exit(1);
 +	}
-+
-+	ret = regmap_write(rt5677->regmap, RT5677_DSP_I2C_ADDR_LSB,
-+		addr & 0xffff);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set addr lsb value: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = regmap_write(rt5677->regmap, RT5677_DSP_I2C_DATA_MSB,
-+		value >> 16);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set data msb value: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = regmap_write(rt5677->regmap, RT5677_DSP_I2C_DATA_LSB,
-+		value & 0xffff);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set data lsb value: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = regmap_write(rt5677->regmap, RT5677_DSP_I2C_OP_CODE, opcode);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set op code value: %d\n", ret);
-+		goto err;
-+	}
-+
-+err:
-+	mutex_unlock(&rt5677->dsp_cmd_lock);
-+
-+	return ret;
 +}
 +
-+/**
-+ * rt5677_dsp_mode_i2c_read_addr - Read value from address on DSP mode.
-+ * @codec: SoC audio codec device.
-+ * @addr: Address index.
-+ * @value: Address data.
-+ *
-+ * Returns 0 for success or negative error code.
-+ */
-+static int rt5677_dsp_mode_i2c_read_addr(
-+	struct snd_soc_codec *codec, unsigned int addr, unsigned int *value)
++
++static gboolean should_check_pin(pin_configs_t *pin)
 +{
-+	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+	unsigned int msb, lsb;
-+
-+	mutex_lock(&rt5677->dsp_cmd_lock);
-+
-+	ret = regmap_write(rt5677->regmap, RT5677_DSP_I2C_ADDR_MSB, addr >> 16);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set addr msb value: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = regmap_write(rt5677->regmap, RT5677_DSP_I2C_ADDR_LSB,
-+		addr & 0xffff);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set addr lsb value: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = regmap_write(rt5677->regmap, RT5677_DSP_I2C_OP_CODE , 0x0002);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set op code value: %d\n", ret);
-+		goto err;
-+	}
-+
-+	regmap_read(rt5677->regmap, RT5677_DSP_I2C_DATA_MSB, &msb);
-+	regmap_read(rt5677->regmap, RT5677_DSP_I2C_DATA_LSB, &lsb);
-+	*value = (msb << 16) | lsb;
-+
-+err:
-+	mutex_unlock(&rt5677->dsp_cmd_lock);
-+
-+	return ret;
++	unsigned long defcfg = actual_pin_config(pin);
++	if (try_all_pins)
++		return TRUE;
++	if (get_port_conn(defcfg) != 0)
++		return FALSE; // Not a jack
++	if (defcfg & (1 << 8)) // Jack has NO_PRESENCE set
++		return FALSE;
++	return TRUE;
 +}
 +
-+/**
-+ * rt5677_dsp_mode_i2c_write - Write register on DSP mode.
-+ * @codec: SoC audio codec device.
-+ * @reg: Register index.
-+ * @value: Register data.
-+ *
-+ *
-+ * Returns 0 for success or negative error code.
-+ */
-+static int rt5677_dsp_mode_i2c_write(struct snd_soc_codec *codec,
-+		unsigned int reg, unsigned int value)
++int fd;
++
++static void codec_open()
 +{
-+	return rt5677_dsp_mode_i2c_write_addr(codec, 0x18020000 + reg * 2,
-+		value, 0x0001);
-+}
++	char filename[64];
++	int version = 0;
 +
-+/**
-+ * rt5677_dsp_mode_i2c_read - Read register on DSP mode.
-+ * @codec: SoC audio codec device.
-+ * @reg: Register index.
-+ *
-+ *
-+ * Returns Register value.
-+ */
-+static unsigned int rt5677_dsp_mode_i2c_read(
-+	struct snd_soc_codec *codec, unsigned int reg)
-+{
-+	unsigned int value = 0;
-+
-+	rt5677_dsp_mode_i2c_read_addr(codec, 0x18020000 + reg * 2, &value);
-+
-+	return value;
-+}
-+
-+/**
-+ * rt5677_dsp_mode_i2c_update_bits - update register on DSP mode.
-+ * @codec: audio codec
-+ * @reg: register index.
-+ * @mask: register mask
-+ * @value: new value
-+ *
-+ *
-+ * Returns 1 for change, 0 for no change, or negative error code.
-+ */
-+static int rt5677_dsp_mode_i2c_update_bits(struct snd_soc_codec *codec,
-+	unsigned int reg, unsigned int mask, unsigned int value)
-+{
-+	unsigned int old, new;
-+	int change, ret;
-+
-+	ret = rt5677_dsp_mode_i2c_read(codec, reg);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to read reg: %d\n", ret);
-+		goto err;
++	snprintf(filename, 64, "/dev/snd/hwC%dD%d", card_index, codec_index);
++	fd = open(filename, O_RDWR);
++	if (fd < 0) {
++		if (errno == EACCES)
++			fprintf(stderr, "Permission error (hint: this program usually requires root)\n");
++		else
++			fprintf(stderr, "Ioctl call failed with error %d\n", errno);
++		exit(1);
 +	}
 +
-+	old = ret;
-+	new = (old & ~mask) | (value & mask);
-+	change = old != new;
-+	if (change) {
-+		ret = rt5677_dsp_mode_i2c_write(codec, reg, new);
-+		if (ret < 0) {
-+			dev_err(codec->dev,
-+				"Failed to write reg: %d\n", ret);
-+			goto err;
-+		}
++	if (ioctl(fd, HDA_IOCTL_PVERSION, &version) < 0) {
++		fprintf(stderr, "Ioctl call failed with error %d\n", errno);
++		fprintf(stderr, "Looks like an invalid hwdep device...\n");
++		close(fd);
++		exit(1);
 +	}
-+	return change;
-+
-+err:
-+	return ret;
++	if (version < HDA_HWDEP_VERSION) {
++		fprintf(stderr, "Invalid version number 0x%x\n", version);
++		fprintf(stderr, "Looks like an invalid hwdep device...\n");
++		close(fd);
++		exit(1);
++	}
 +}
 +
-+static int rt5677_set_dsp_vad(struct snd_soc_codec *codec, bool on)
++static unsigned long codec_rw(int nid, int verb, int param)
 +{
-+	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+	static bool activity;
-+	int ret;
++	struct hda_verb_ioctl val;
 +
-+	if (on && !activity) {
-+		activity = true;
++	val.verb = HDA_VERB(nid, verb, param);
++	if (ioctl(fd, HDA_IOCTL_VERB_WRITE, &val) < 0) {
++		fprintf(stderr, "Ioctl call failed with error %d\n", errno);
++		close(fd);
++		exit(1);
++	}
++	return val.res;
++}
 +
-+		regcache_cache_only(rt5677->regmap, false);
-+		regcache_cache_bypass(rt5677->regmap, true);
++#define AC_VERB_GET_PIN_SENSE	0x0f09
++#define AC_VERB_SET_PIN_SENSE	0x709
 +
-+		regmap_update_bits(rt5677->regmap, RT5677_DIG_MISC, 0x1, 0x1);
-+		regmap_update_bits(rt5677->regmap,
-+			RT5677_PR_BASE + RT5677_BIAS_CUR4, 0x0f00, 0x0f00);
-+		regmap_update_bits(rt5677->regmap, RT5677_PWR_ANLG1,
-+			RT5677_LDO1_SEL_MASK, 0x0);
-+		regmap_update_bits(rt5677->regmap, RT5677_PWR_ANLG2,
-+			RT5677_PWR_LDO1, RT5677_PWR_LDO1);
-+		regmap_write(rt5677->regmap, RT5677_GLB_CLK2, 0x0080);
-+		regmap_write(rt5677->regmap, RT5677_PWR_DSP2, 0x07ff);
-+		regmap_write(rt5677->regmap, RT5677_PWR_DSP1, 0x07ff);
++#define MAX_PINS 32
 +
-+		ret = request_firmware(&rt5677->fw1, RT5677_FIRMWARE1,
-+			codec->dev);
-+		if (ret == 0) {
-+			rt5677_spi_burst_write(0x50000000, rt5677->fw1);
-+			release_firmware(rt5677->fw1);
++pin_configs_t pin_configs[MAX_PINS];
++
++int main(int argc, char **argv)
++{
++	int pin_count, i;
++
++	parse_command_line(argc, argv);
++	pin_count = get_pin_configs_list(pin_configs, MAX_PINS, card_index, codec_index);
++	if (pin_count == 0) {
++		fprintf(stderr, "No pins found for card %d codec %d, did you pick the right one?\n", card_index, codec_index);
++		exit(1);
++	}
++
++	codec_open();
++
++	if (set_pin_sense) {
++		for (i = 0; i < pin_count; i++)
++			if (should_check_pin(&pin_configs[i])) {
++				codec_rw(pin_configs[i].nid, AC_VERB_SET_PIN_SENSE, 0);
++			}
++		sleep(1);
++	}
++
++	for (i = 0; i < pin_count; i++)
++		if (should_check_pin(&pin_configs[i])) {
++			gchar *desc = get_config_description(actual_pin_config(&pin_configs[i]));
++			unsigned long present = codec_rw(pin_configs[i].nid, AC_VERB_GET_PIN_SENSE, 0);
++			printf("Pin 0x%.2x (%s): present = %s\n", pin_configs[i].nid, desc, present & 0x80000000 ? "Yes" : "No");
++			g_free(desc);
 +		}
 +
-+		ret = request_firmware(&rt5677->fw2, RT5677_FIRMWARE2,
-+			codec->dev);
-+		if (ret == 0) {
-+			rt5677_spi_burst_write(0x60000000, rt5677->fw2);
-+			release_firmware(rt5677->fw2);
-+		}
-+
-+		rt5677_dsp_mode_i2c_update_bits(codec, RT5677_PWR_DSP1, 0x1,
-+			0x0);
-+
-+		regcache_cache_bypass(rt5677->regmap, false);
-+		regcache_cache_only(rt5677->regmap, true);
-+	} else if (!on && activity) {
-+		activity = false;
-+
-+		regcache_cache_only(rt5677->regmap, false);
-+		regcache_cache_bypass(rt5677->regmap, true);
-+
-+		rt5677_dsp_mode_i2c_update_bits(codec, RT5677_PWR_DSP1, 0x1,
-+			0x1);
-+		rt5677_dsp_mode_i2c_write(codec, RT5677_PWR_DSP1, 0x0001);
-+
-+		regmap_write(rt5677->regmap, RT5677_RESET, 0x10ec);
-+
-+		regcache_cache_bypass(rt5677->regmap, false);
-+		regcache_mark_dirty(rt5677->regmap);
-+		regcache_sync(rt5677->regmap);
-+	}
-+
++	close(fd);
 +	return 0;
 +}
-+
- static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
- static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
- static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
-@@ -556,6 +795,31 @@ static unsigned int bst_tlv[] = {
- 	8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0),
- };
- 
-+static int rt5677_dsp_vad_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+
-+	ucontrol->value.integer.value[0] = rt5677->dsp_vad_en;
-+
-+	return 0;
-+}
-+
-+static int rt5677_dsp_vad_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+
-+	rt5677->dsp_vad_en = !!ucontrol->value.integer.value[0];
-+
-+	if (codec->dapm.bias_level == SND_SOC_BIAS_OFF)
-+		rt5677_set_dsp_vad(codec, rt5677->dsp_vad_en);
-+
-+	return 0;
-+}
-+
- static const struct snd_kcontrol_new rt5677_snd_controls[] = {
- 	/* OUTPUT Control */
- 	SOC_SINGLE("OUT1 Playback Switch", RT5677_LOUT1,
-@@ -627,6 +891,9 @@ static const struct snd_kcontrol_new rt5677_snd_controls[] = {
- 	SOC_DOUBLE_TLV("Mono ADC Boost Volume", RT5677_ADC_BST_CTRL2,
- 		RT5677_MONO_ADC_L_BST_SFT, RT5677_MONO_ADC_R_BST_SFT, 3, 0,
- 		adc_bst_tlv),
-+
-+	SOC_SINGLE_EXT("DSP VAD Switch", SND_SOC_NOPM, 0, 1, 0,
-+		rt5677_dsp_vad_get, rt5677_dsp_vad_put),
- };
- 
- /**
-@@ -3181,6 +3448,8 @@ static int rt5677_set_bias_level(struct snd_soc_codec *codec,
- 
- 	case SND_SOC_BIAS_PREPARE:
- 		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY) {
-+			rt5677_set_dsp_vad(codec, false);
-+
- 			regmap_update_bits(rt5677->regmap, RT5677_PWR_ANLG1,
- 				RT5677_LDO1_SEL_MASK | RT5677_LDO2_SEL_MASK,
- 				0x0055);
-@@ -3214,6 +3483,9 @@ static int rt5677_set_bias_level(struct snd_soc_codec *codec,
- 		regmap_write(rt5677->regmap, RT5677_PWR_ANLG2, 0x0000);
- 		regmap_update_bits(rt5677->regmap,
- 			RT5677_PR_BASE + RT5677_BIAS_CUR4, 0x0f00, 0x0000);
-+
-+		if (rt5677->dsp_vad_en)
-+			rt5677_set_dsp_vad(codec, true);
- 		break;
- 
- 	default:
-@@ -3371,6 +3643,8 @@ static int rt5677_probe(struct snd_soc_codec *codec)
- 	regmap_write(rt5677->regmap, RT5677_DIG_MISC, 0x0020);
- 	regmap_write(rt5677->regmap, RT5677_PWR_DSP2, 0x0c00);
- 
-+	mutex_init(&rt5677->dsp_cmd_lock);
-+
- 	return 0;
- }
- 
-@@ -3390,8 +3664,11 @@ static int rt5677_suspend(struct snd_soc_codec *codec)
- {
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
- 
--	regcache_cache_only(rt5677->regmap, true);
--	regcache_mark_dirty(rt5677->regmap);
-+	if (!rt5677->dsp_vad_en) {
-+		regcache_cache_only(rt5677->regmap, true);
-+		regcache_mark_dirty(rt5677->regmap);
-+	}
-+
- 	if (gpio_is_valid(rt5677->pow_ldo2))
- 		gpio_set_value_cansleep(rt5677->pow_ldo2, 0);
- 
-@@ -3406,8 +3683,11 @@ static int rt5677_resume(struct snd_soc_codec *codec)
- 		gpio_set_value_cansleep(rt5677->pow_ldo2, 1);
- 		msleep(10);
- 	}
--	regcache_cache_only(rt5677->regmap, false);
--	regcache_sync(rt5677->regmap);
-+
-+	if (!rt5677->dsp_vad_en) {
-+		regcache_cache_only(rt5677->regmap, false);
-+		regcache_sync(rt5677->regmap);
-+	}
- 
- 	return 0;
- }
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index d4eb6d5..a7ea27a 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -1506,6 +1506,9 @@
- #define RT5677_GPIO5_FUNC_GPIO			(0x0 << 9)
- #define RT5677_GPIO5_FUNC_DMIC			(0x1 << 9)
- 
-+#define RT5677_FIRMWARE1	"rt5677_dsp_fw1.bin"
-+#define RT5677_FIRMWARE2	"rt5677_dsp_fw2.bin"
-+
- /* System Clock Source */
- enum {
- 	RT5677_SCLK_S_MCLK,
-@@ -1545,6 +1548,8 @@ struct rt5677_priv {
- 	struct snd_soc_codec *codec;
- 	struct rt5677_platform_data pdata;
- 	struct regmap *regmap;
-+	const struct firmware *fw1, *fw2;
-+	struct mutex dsp_cmd_lock;
- 
- 	int sysclk;
- 	int sysclk_src;
-@@ -1558,6 +1563,7 @@ struct rt5677_priv {
- #ifdef CONFIG_GPIOLIB
- 	struct gpio_chip gpio_chip;
- #endif
-+	bool dsp_vad_en;
- };
- 
- #endif /* __RT5677_H__ */
 -- 
-1.8.1.1.439.g50a6b54
+1.9.1
