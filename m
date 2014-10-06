@@ -1,17 +1,18 @@
-From: Greg Farrell <greg@gregfarrell.org>
-Subject: Re: Patch to enable audio on alc888 vendor id
- 0x10ec0888 revision id 0x100202
-Date: Mon, 06 Oct 2014 15:52:36 +0100
-Message-ID: <5432ACB4.6060202@gregfarrell.org>
-References: <5432A439.1050909@gregfarrell.org> <s5h4mvhxom4.wl-tiwai@suse.de>
+From: Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] ASoC: cs4271: Split SPI and I2C code into
+ different modules
+Date: Mon, 06 Oct 2014 23:09:47 +0800
+Message-ID: <1412608187.4950.5.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gregfarrell.org (mail.gregfarrell.org [64.62.190.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 7283B260579
- for <alsa-devel@alsa-project.org>; Mon,  6 Oct 2014 16:52:42 +0200 (CEST)
-In-Reply-To: <s5h4mvhxom4.wl-tiwai@suse.de>
+Received: from mail-pd0-f181.google.com (mail-pd0-f181.google.com
+ [209.85.192.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5CD926056D
+ for <alsa-devel@alsa-project.org>; Mon,  6 Oct 2014 17:09:53 +0200 (CEST)
+Received: by mail-pd0-f181.google.com with SMTP id z10so3433130pdj.12
+ for <alsa-devel@alsa-project.org>; Mon, 06 Oct 2014 08:09:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,1355 +22,471 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Brian Austin <brian.austin@cirrus.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexander Sverdlin <subaparts@yandex.ru>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/10/14 15:24, Takashi Iwai wrote:
-> Is the chip really identified as ALC888 by the driver? Please give 
-> alsa-info.sh output (run with --no-upload option), just to be sure. 
-> The same codec ID (10ec:0888) is used by various chips, so we may need 
-> to use a different thing to check the validity of alc888_coef_init() 
-> application. thanks, Takashi
-
-It is. One other thing of note is that there is a 'SKU not ready' error.
-
-I originally intended to just cut & paste enough content from the 
-alsa-info.sh output file to show it is detected as a ALC888 chip but 
-figured that I was better giving you everything rather than filtering 
-based on what I feel is helpful to you. Apologies for the size of the email.
-
-This is from a FC20 machine running 3.17rc7. Output is very similar on 
-Fedora 18 / 3.11 kernel where it is also detected as ALC888 and the 
-behaviour is identical.
-
-Greg
-
-
-
-
-upload=true&script=true&cardinfo=
-!!################################
-!!ALSA Information Script v 0.4.64
-!!################################
-
-!!Script ran on: Thu Oct  2 10:47:45 UTC 2014
-
-
-!!Linux Distribution
-!!------------------
-
-Fedora release 20 (Heisenbug) Fedora release 20 (Heisenbug) NAME=Fedora ID=fedora PRETTY_NAME="Fedora 20 (Heisenbug)" CPE_NAME="cpe:/o:fedoraproject:fedora:20" HOME_URL="https://fedoraproject.org/" BUG_REPORT_URL="https://bugzilla.redhat.com/" REDHAT_BUGZILLA_PRODUCT="Fedora" REDHAT_BUGZILLA_PRODUCT_VERSION=20 REDHAT_SUPPORT_PRODUCT="Fedora" REDHAT_SUPPORT_PRODUCT_VERSION=20 Fedora release 20 (Heisenbug) Fedora release 20 (Heisenbug)
-
-
-!!DMI Information
-!!---------------
-
-Manufacturer:      JAOtech Limited
-Product Name:      JAO-ATOM-L-N270-945GSE-00
-Product Version:   6.0
-Firmware Version:  6.00 PG
-
-
-!!Kernel Information
-!!------------------
-
-Kernel release:    3.17.0-0.rc7.git0.1.vanilla.mainline.knurd.1.fc20.i686
-Operating System:  GNU/Linux
-Architecture:      i686
-Processor:         i686
-SMP Enabled:       Yes
-
-
-!!ALSA Version
-!!------------
-
-Driver version:     k3.17.0-0.rc7.git0.1.vanilla.mainline.knurd.1.fc20.i686
-Library version:
-Utilities version:  1.0.27.2
-
-
-!!Loaded ALSA modules
-!!-------------------
-
-snd_hda_intel
-
-
-!!Sound Servers on this system
-!!----------------------------
-
-Pulseaudio:
-       Installed - Yes (/usr/bin/pulseaudio)
-       Running - Yes
-
-
-!!Soundcards recognised by ALSA
-!!-----------------------------
-
-  0 [Intel          ]: HDA-Intel - HDA Intel
-                       HDA Intel at 0xfdff8000 irq 26
-
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-
-00:1b.0 Audio device: Intel Corporation NM10/ICH7 Family High Definition Audio Controller (rev 02)
-
-
-!!Advanced information - PCI Vendor/Device/Subsystem ID's
-!!-------------------------------------------------------
-
-00:1b.0 0403: 8086:27d8 (rev 02)
-	Subsystem: 8086:27d8
-
-
-!!Loaded sound module options
-!!---------------------------
-
-!!Module: snd_hda_intel
-	align_buffer_size : -1
-	bdl_pos_adj : 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	beep_mode : N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N,N
-	enable : Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y
-	enable_msi : -1
-	id : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	index : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	jackpoll_ms : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	model : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	patch : (null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null),(null)
-	position_fix : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	power_save : 0
-	power_save_controller : Y
-	probe_mask : -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
-	probe_only : 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	single_cmd : N
-	snoop : Y
-
-
-!!HDA-Intel Codec information
-!!---------------------------
---startcollapse--
-
-Codec: Realtek ALC888
-Address: 0
-AFG Function Id: 0x1 (unsol 1)
-Vendor Id: 0x10ec0888
-Subsystem Id: 0xe6fe0000
-Revision Id: 0x100202
-No Modem Function Group found
-Default PCM:
-     rates [0x560]: 44100 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-State of AFG node 0x01:
-   Power states:  D0 D1 D2 D3 CLKSTOP
-   Power: setting=D0, actual=D0
-GPIO: io=2, o=0, i=0, unsolicited=1, wake=1
-   IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-   IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x02 [Audio Output] wcaps 0x411: Stereo
-   Device: name="ALC888 Analog", type="Audio", device=0
-   Converter: stream=5, channel=0
-   PCM:
-     rates [0x560]: 44100 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x03 [Audio Output] wcaps 0x411: Stereo
-   Converter: stream=5, channel=0
-   PCM:
-     rates [0x560]: 44100 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x04 [Audio Output] wcaps 0x411: Stereo
-   Converter: stream=5, channel=0
-   PCM:
-     rates [0x560]: 44100 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x05 [Audio Output] wcaps 0x411: Stereo
-   Converter: stream=0, channel=0
-   PCM:
-     rates [0x560]: 44100 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x06 [Audio Output] wcaps 0x611: Stereo Digital
-   Control: name="IEC958 Playback Con Mask", index=0, device=0
-   Control: name="IEC958 Playback Pro Mask", index=0, device=0
-   Control: name="IEC958 Playback Default", index=0, device=0
-   Control: name="IEC958 Playback Switch", index=0, device=0
-   Control: name="IEC958 Default PCM Playback Switch", index=0, device=0
-   Device: name="ALC888 Digital", type="SPDIF", device=1
-   Converter: stream=5, channel=0
-   Digital:
-   Digital category: 0x0
-   IEC Coding Type: 0x0
-   PCM:
-     rates [0x5e0]: 44100 48000 88200 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x07 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-   Control: name="Capture Volume", index=0, device=0
-     ControlAmp: chs=3, dir=In, idx=0, ofs=0
-   Control: name="Capture Switch", index=0, device=0
-     ControlAmp: chs=3, dir=In, idx=0, ofs=0
-   Device: name="ALC888 Analog", type="Audio", device=0
-   Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-   Amp-In vals:  [0x1e 0x1e]
-   Converter: stream=1, channel=0
-   SDI-Select: 0
-   PCM:
-     rates [0x560]: 44100 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 1
-      0x23
-Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-   Control: name="Capture Volume", index=1, device=0
-     ControlAmp: chs=3, dir=In, idx=0, ofs=0
-   Control: name="Capture Switch", index=1, device=0
-     ControlAmp: chs=3, dir=In, idx=0, ofs=0
-   Device: name="ALC888 Alt Analog", type="Audio", device=2
-   Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-   Amp-In vals:  [0x80 0x80]
-   Converter: stream=0, channel=0
-   SDI-Select: 0
-   PCM:
-     rates [0x560]: 44100 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 1
-      0x22
-Node 0x0a [Audio Input] wcaps 0x100711: Stereo Digital
-   Converter: stream=0, channel=0
-   SDI-Select: 0
-   Digital:
-   Digital category: 0x0
-   IEC Coding Type: 0x0
-   PCM:
-     rates [0x560]: 44100 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 1
-      0x1f
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-   Control: name="Mic Playback Volume", index=0, device=0
-     ControlAmp: chs=3, dir=In, idx=1, ofs=0
-   Control: name="Mic Playback Switch", index=0, device=0
-     ControlAmp: chs=3, dir=In, idx=1, ofs=0
-   Control: name="Mic Playback Volume", index=1, device=0
-     ControlAmp: chs=3, dir=In, idx=0, ofs=0
-   Control: name="Mic Playback Switch", index=1, device=0
-     ControlAmp: chs=3, dir=In, idx=0, ofs=0
-   Control: name="Beep Playback Volume", index=0, device=0
-     ControlAmp: chs=3, dir=In, idx=5, ofs=0
-   Control: name="Beep Playback Switch", index=0, device=0
-     ControlAmp: chs=3, dir=In, idx=5, ofs=0
-   Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-   Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x1f 0x1f] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-   Connection: 10
-      0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17
-Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-   Control: name="Front Playback Volume", index=0, device=0
-     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-In vals:  [0x00 0x00] [0x00 0x00]
-   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-   Amp-Out vals:  [0x1f 0x1f]
-   Connection: 2
-      0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-   Control: name="Surround Playback Volume", index=0, device=0
-     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-In vals:  [0x80 0x80] [0x80 0x80]
-   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-   Amp-Out vals:  [0x1f 0x1f]
-   Connection: 2
-      0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-   Control: name="Center Playback Volume", index=0, device=0
-     ControlAmp: chs=1, dir=Out, idx=0, ofs=0
-   Control: name="LFE Playback Volume", index=0, device=0
-     ControlAmp: chs=2, dir=Out, idx=0, ofs=0
-   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-In vals:  [0x80 0x80] [0x80 0x80]
-   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-   Amp-Out vals:  [0x1f 0x1f]
-   Connection: 2
-      0x04 0x0b
-Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-In vals:  [0x00 0x00] [0x80 0x80]
-   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-   Amp-Out vals:  [0x00 0x00]
-   Connection: 2
-      0x05 0x0b
-Node 0x10 [Audio Output] wcaps 0x611: Stereo Digital
-   Converter: stream=0, channel=0
-   Digital:
-   Digital category: 0x0
-   IEC Coding Type: 0x0
-   PCM:
-     rates [0x5e0]: 44100 48000 88200 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x11 [Pin Complex] wcaps 0x400780: Mono Digital
-   Pincap 0x00000014: OUT Detect
-   Pin Default 0x411110f0: [N/A] Speaker at Ext Rear
-     Conn = 1/8, Color = Black
-     DefAssociation = 0xf, Sequence = 0x0
-   Pin-ctls: 0x40: OUT
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 1
-      0x10
-Node 0x12 [Pin Complex] wcaps 0x400401: Stereo
-   Pincap 0x00000020: IN
-   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-     Conn = 1/8, Color = Black
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x00:
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x14 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-   Control: name="Front Playback Switch", index=0, device=0
-     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-   Control: name="Line Out Phantom Jack", index=0, device=0
-   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-   Amp-In vals:  [0x00 0x00]
-   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-Out vals:  [0x00 0x00]
-   Pincap 0x0001003e: IN OUT HP EAPD Detect Trigger
-   EAPD 0x2: EAPD
-   Pin Default 0x04014110: [Jack] Line Out at Ext Right
-     Conn = 1/8, Color = Green
-     DefAssociation = 0x1, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x40: OUT
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 5
-      0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x15 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-   Amp-In vals:  [0x00 0x00]
-   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-Out vals:  [0x80 0x80]
-   Pincap 0x0001003e: IN OUT HP EAPD Detect Trigger
-   EAPD 0x2: EAPD
-   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-     Conn = 1/8, Color = Black
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x20: IN
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 5
-      0x0c 0x0d* 0x0e 0x0f 0x26
-Node 0x16 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-   Amp-In vals:  [0x00 0x00]
-   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-Out vals:  [0x80 0x80]
-   Pincap 0x00000036: IN OUT Detect Trigger
-   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-     Conn = 1/8, Color = Black
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x20: IN
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 5
-      0x0c 0x0d 0x0e* 0x0f 0x26
-Node 0x17 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-   Amp-In vals:  [0x00 0x00]
-   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-Out vals:  [0x80 0x80]
-   Pincap 0x00000036: IN OUT Detect Trigger
-   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-     Conn = 1/8, Color = Black
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x20: IN
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 5
-      0x0c 0x0d 0x0e 0x0f* 0x26
-Node 0x18 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-   Control: name="Center Playback Switch", index=0, device=0
-     ControlAmp: chs=1, dir=Out, idx=0, ofs=0
-   Control: name="LFE Playback Switch", index=0, device=0
-     ControlAmp: chs=2, dir=Out, idx=0, ofs=0
-   Control: name="Mic Boost Volume", index=1, device=0
-     ControlAmp: chs=3, dir=In, idx=0, ofs=0
-   Control: name="Mic Jack", index=1, device=0
-   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-   Amp-In vals:  [0x03 0x03]
-   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-Out vals:  [0x00 0x00]
-   Pincap 0x0000373e: IN OUT HP Detect Trigger
-     Vref caps: HIZ 50 GRD 80 100
-   Pin Default 0x04a19830: [Jack] Mic at Ext Right
-     Conn = 1/8, Color = Pink
-     DefAssociation = 0x3, Sequence = 0x0
-   Pin-ctls: 0x21: IN VREF_50
-   Unsolicited: tag=02, enabled=1
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 5
-      0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x19 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-   Control: name="Surround Playback Switch", index=0, device=0
-     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-   Control: name="Mic Boost Volume", index=0, device=0
-     ControlAmp: chs=3, dir=In, idx=0, ofs=0
-   Control: name="Mic Jack", index=0, device=0
-   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-   Amp-In vals:  [0x03 0x03]
-   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-Out vals:  [0x00 0x00]
-   Pincap 0x0000373e: IN OUT HP Detect Trigger
-     Vref caps: HIZ 50 GRD 80 100
-   Pin Default 0x04a1383f: [Jack] Mic at Ext Right
-     Conn = 1/8, Color = Blue
-     DefAssociation = 0x3, Sequence = 0xf
-   Pin-ctls: 0x24: IN VREF_80
-   Unsolicited: tag=01, enabled=1
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 5
-      0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1a [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-   Amp-In vals:  [0x00 0x00]
-   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-Out vals:  [0x80 0x80]
-   Pincap 0x0000373e: IN OUT HP Detect Trigger
-     Vref caps: HIZ 50 GRD 80 100
-   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-     Conn = 1/8, Color = Black
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x20: IN VREF_HIZ
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 5
-      0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1b [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
-   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-   Amp-In vals:  [0x00 0x00]
-   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-Out vals:  [0x80 0x80]
-   Pincap 0x0000373e: IN OUT HP Detect Trigger
-     Vref caps: HIZ 50 GRD 80 100
-   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-     Conn = 1/8, Color = Black
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x20: IN VREF_HIZ
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 5
-      0x0c* 0x0d 0x0e 0x0f 0x26
-Node 0x1c [Pin Complex] wcaps 0x400481: Stereo
-   Pincap 0x00000024: IN Detect
-   Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-     Conn = 1/8, Color = Black
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x20: IN
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x1d [Pin Complex] wcaps 0x400400: Mono
-   Pincap 0x00000020: IN
-   Pin Default 0x598301f0: [N/A] Line In at Int ATAPI
-     Conn = ATAPI, Color = Unknown
-     DefAssociation = 0xf, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x20: IN
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x1e [Pin Complex] wcaps 0x400780: Mono Digital
-   Control: name="SPDIF Phantom Jack", index=0, device=0
-   Pincap 0x00000014: OUT Detect
-   Pin Default 0x99430120: [Fixed] SPDIF Out at Int ATAPI
-     Conn = ATAPI, Color = Unknown
-     DefAssociation = 0x2, Sequence = 0x0
-     Misc = NO_PRESENCE
-   Pin-ctls: 0x40: OUT
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-   Connection: 1
-      0x06
-Node 0x1f [Pin Complex] wcaps 0x400680: Mono Digital
-   Pincap 0x00000024: IN Detect
-   Pin Default 0x41c46060: [N/A] SPDIF In at Ext Rear
-     Conn = RCA, Color = Orange
-     DefAssociation = 0x6, Sequence = 0x0
-   Pin-ctls: 0x20: IN
-   Unsolicited: tag=00, enabled=0
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-   Processing caps: benign=0, ncoeff=25
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-In vals:  [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-   Connection: 12
-      0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b 0x12
-Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-In vals:  [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-   Connection: 11
-      0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
-Node 0x24 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x25 [Audio Output] wcaps 0x411: Stereo
-   Converter: stream=0, channel=0
-   PCM:
-     rates [0x560]: 44100 48000 96000 192000
-     bits [0xe]: 16 20 24
-     formats [0x1]: PCM
-   Power states:  D0 D1 D2 D3 EPSS
-   Power: setting=D0, actual=D0
-Node 0x26 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
-   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-   Amp-In vals:  [0x00 0x00] [0x80 0x80]
-   Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
-   Amp-Out vals:  [0x00 0x00]
-   Connection: 2
-      0x25 0x0b
---endcollapse--
-
-
-!!ALSA Device nodes
-!!-----------------
-
-crw-rw----+ 1 root audio 116,  2 Oct  2 11:45 /dev/snd/controlC0
-crw-rw----+ 1 root audio 116,  7 Oct  2 11:45 /dev/snd/hwC0D0
-crw-rw----+ 1 root audio 116,  4 Oct  2 11:46 /dev/snd/pcmC0D0c
-crw-rw----+ 1 root audio 116,  3 Oct  2 11:46 /dev/snd/pcmC0D0p
-crw-rw----+ 1 root audio 116,  5 Oct  2 11:46 /dev/snd/pcmC0D1p
-crw-rw----+ 1 root audio 116,  6 Oct  2 11:45 /dev/snd/pcmC0D2c
-crw-rw----+ 1 root audio 116,  1 Oct  2 11:45 /dev/snd/seq
-crw-rw----+ 1 root audio 116, 33 Oct  2 11:45 /dev/snd/timer
-
-/dev/snd/by-path:
-total 0
-drwxr-xr-x. 2 root root  60 Oct  2 11:45 .
-drwxr-xr-x. 3 root root 220 Oct  2 11:45 ..
-lrwxrwxrwx. 1 root root  12 Oct  2 11:45 pci-0000:00:1b.0 -> ../controlC0
-
-
-!!ALSA configuration files
-!!------------------------
-
-!!System wide config file (/etc/asound.conf)
-
-#
-# Place your global alsa-lib configuration here...
-#
-
-
-!!Aplay/Arecord output
-!!--------------------
-
-APLAY
-
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC888 Analog [ALC888 Analog]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 0: Intel [HDA Intel], device 1: ALC888 Digital [ALC888 Digital]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-
-ARECORD
-
-**** List of CAPTURE Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC888 Analog [ALC888 Analog]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 0: Intel [HDA Intel], device 2: ALC888 Alt Analog [ALC888 Alt Analog]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-
-!!Amixer output
-!!-------------
-
-!!-------Mixer controls for card 0 [Intel]
-
-Card hw:0 'Intel'/'HDA Intel at 0xfdff8000 irq 26'
-   Mixer name	: 'Realtek ALC888'
-   Components	: 'HDA:10ec0888,e6fe0000,00100202'
-   Controls      : 39
-   Simple ctrls  : 18
-Simple mixer control 'Master',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-   Playback channels: Mono
-   Limits: Playback 0 - 31
-   Mono: Playback 31 [100%] [0.00dB] [on]
-Simple mixer control 'PCM',0
-   Capabilities: pvolume
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 255
-   Mono:
-   Front Left: Playback 255 [100%] [0.00dB]
-   Front Right: Playback 255 [100%] [0.00dB]
-Simple mixer control 'Front',0
-   Capabilities: pvolume pswitch
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Mono:
-   Front Left: Playback 31 [100%] [0.00dB] [on]
-   Front Right: Playback 31 [100%] [0.00dB] [on]
-Simple mixer control 'Surround',0
-   Capabilities: pvolume pswitch
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Mono:
-   Front Left: Playback 31 [100%] [0.00dB] [on]
-   Front Right: Playback 31 [100%] [0.00dB] [on]
-Simple mixer control 'Center',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-   Playback channels: Mono
-   Limits: Playback 0 - 31
-   Mono: Playback 31 [100%] [0.00dB] [on]
-Simple mixer control 'LFE',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-   Playback channels: Mono
-   Limits: Playback 0 - 31
-   Mono: Playback 31 [100%] [0.00dB] [on]
-Simple mixer control 'Mic',0
-   Capabilities: pvolume pswitch
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Mono:
-   Front Left: Playback 0 [0%] [-34.50dB] [off]
-   Front Right: Playback 0 [0%] [-34.50dB] [off]
-Simple mixer control 'Mic Boost',0
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Capture channels: Front Left - Front Right
-   Limits: 0 - 3
-   Front Left: 3 [100%] [30.00dB]
-   Front Right: 3 [100%] [30.00dB]
-Simple mixer control 'Mic',1
-   Capabilities: pvolume pswitch
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Mono:
-   Front Left: Playback 0 [0%] [-34.50dB] [off]
-   Front Right: Playback 0 [0%] [-34.50dB] [off]
-Simple mixer control 'Mic Boost',1
-   Capabilities: volume
-   Playback channels: Front Left - Front Right
-   Capture channels: Front Left - Front Right
-   Limits: 0 - 3
-   Front Left: 3 [100%] [30.00dB]
-   Front Right: 3 [100%] [30.00dB]
-Simple mixer control 'IEC958',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'IEC958 Default PCM',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [on]
-Simple mixer control 'Beep',0
-   Capabilities: pvolume pswitch
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Mono:
-   Front Left: Playback 31 [100%] [12.00dB] [on]
-   Front Right: Playback 31 [100%] [12.00dB] [on]
-Simple mixer control 'Capture',0
-   Capabilities: cvolume cswitch
-   Capture channels: Front Left - Front Right
-   Limits: Capture 0 - 31
-   Front Left: Capture 30 [97%] [28.50dB] [on]
-   Front Right: Capture 30 [97%] [28.50dB] [on]
-Simple mixer control 'Capture',1
-   Capabilities: cvolume cswitch
-   Capture channels: Front Left - Front Right
-   Limits: Capture 0 - 31
-   Front Left: Capture 0 [0%] [-16.50dB] [off]
-   Front Right: Capture 0 [0%] [-16.50dB] [off]
-Simple mixer control 'Channel Mode',0
-   Capabilities: enum
-   Items: '2ch' '4ch' '6ch'
-   Item0: '2ch'
-Simple mixer control 'Input Source',0
-   Capabilities: cenum
-   Items: 'Mic' 'Mic 1'
-   Item0: 'Mic'
-Simple mixer control 'Input Source',1
-   Capabilities: cenum
-   Items: 'Mic' 'Mic 1'
-   Item0: 'Mic'
-
-
-!!Alsactl output
-!!--------------
-
---startcollapse--
-state.Intel {
-	control.1 {
-		iface MIXER
-		name 'Channel Mode'
-		value '2ch'
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 '2ch'
-			item.1 '4ch'
-			item.2 '6ch'
-		}
-	}
-	control.2 {
-		iface MIXER
-		name 'Front Playback Volume'
-		value.0 31
-		value.1 31
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -4650
-			dbmax 0
-			dbvalue.0 0
-			dbvalue.1 0
-		}
-	}
-	control.3 {
-		iface MIXER
-		name 'Front Playback Switch'
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.4 {
-		iface MIXER
-		name 'Surround Playback Volume'
-		value.0 31
-		value.1 31
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -4650
-			dbmax 0
-			dbvalue.0 0
-			dbvalue.1 0
-		}
-	}
-	control.5 {
-		iface MIXER
-		name 'Surround Playback Switch'
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.6 {
-		iface MIXER
-		name 'Center Playback Volume'
-		value 31
-		comment {
-			access 'read write'
-			type INTEGER
-			count 1
-			range '0 - 31'
-			dbmin -4650
-			dbmax 0
-			dbvalue.0 0
-		}
-	}
-	control.7 {
-		iface MIXER
-		name 'LFE Playback Volume'
-		value 31
-		comment {
-			access 'read write'
-			type INTEGER
-			count 1
-			range '0 - 31'
-			dbmin -4650
-			dbmax 0
-			dbvalue.0 0
-		}
-	}
-	control.8 {
-		iface MIXER
-		name 'Center Playback Switch'
-		value true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.9 {
-		iface MIXER
-		name 'LFE Playback Switch'
-		value true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.10 {
-		iface MIXER
-		name 'Mic Playback Volume'
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -3450
-			dbmax 1200
-			dbvalue.0 -3450
-			dbvalue.1 -3450
-		}
-	}
-	control.11 {
-		iface MIXER
-		name 'Mic Playback Switch'
-		value.0 false
-		value.1 false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.12 {
-		iface MIXER
-		name 'Mic Playback Volume'
-		index 1
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -3450
-			dbmax 1200
-			dbvalue.0 -3450
-			dbvalue.1 -3450
-		}
-	}
-	control.13 {
-		iface MIXER
-		name 'Mic Playback Switch'
-		index 1
-		value.0 false
-		value.1 false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.14 {
-		iface MIXER
-		name 'Input Source'
-		value Mic
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 Mic
-			item.1 'Mic 1'
-		}
-	}
-	control.15 {
-		iface MIXER
-		name 'Input Source'
-		index 1
-		value Mic
-		comment {
-			access 'read write'
-			type ENUMERATED
-			count 1
-			item.0 Mic
-			item.1 'Mic 1'
-		}
-	}
-	control.16 {
-		iface MIXER
-		name 'Capture Volume'
-		value.0 30
-		value.1 30
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -1650
-			dbmax 3000
-			dbvalue.0 2850
-			dbvalue.1 2850
-		}
-	}
-	control.17 {
-		iface MIXER
-		name 'Capture Switch'
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.18 {
-		iface MIXER
-		name 'Capture Volume'
-		index 1
-		value.0 0
-		value.1 0
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -1650
-			dbmax 3000
-			dbvalue.0 -1650
-			dbvalue.1 -1650
-		}
-	}
-	control.19 {
-		iface MIXER
-		name 'Capture Switch'
-		index 1
-		value.0 false
-		value.1 false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.20 {
-		iface MIXER
-		name 'Mic Boost Volume'
-		value.0 3
-		value.1 3
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 3'
-			dbmin 0
-			dbmax 3000
-			dbvalue.0 3000
-			dbvalue.1 3000
-		}
-	}
-	control.21 {
-		iface MIXER
-		name 'Mic Boost Volume'
-		index 1
-		value.0 3
-		value.1 3
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 3'
-			dbmin 0
-			dbmax 3000
-			dbvalue.0 3000
-			dbvalue.1 3000
-		}
-	}
-	control.22 {
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type IEC958
-			count 1
-		}
-	}
-	control.23 {
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access read
-			type IEC958
-			count 1
-		}
-	}
-	control.24 {
-		iface MIXER
-		name 'IEC958 Playback Default'
-		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-		comment {
-			access 'read write'
-			type IEC958
-			count 1
-		}
-	}
-	control.25 {
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		value false
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.26 {
-		iface MIXER
-		name 'IEC958 Default PCM Playback Switch'
-		value true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.27 {
-		iface MIXER
-		name 'Master Playback Volume'
-		value 31
-		comment {
-			access 'read write'
-			type INTEGER
-			count 1
-			range '0 - 31'
-			dbmin -4650
-			dbmax 0
-			dbvalue.0 0
-		}
-	}
-	control.28 {
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.29 {
-		iface CARD
-		name 'Mic Jack'
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.30 {
-		iface CARD
-		name 'Mic Jack'
-		index 1
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.31 {
-		iface CARD
-		name 'Line Out Phantom Jack'
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.32 {
-		iface CARD
-		name 'SPDIF Phantom Jack'
-		value true
-		comment {
-			access read
-			type BOOLEAN
-			count 1
-		}
-	}
-	control.33 {
-		iface MIXER
-		name 'Beep Playback Volume'
-		value.0 31
-		value.1 31
-		comment {
-			access 'read write'
-			type INTEGER
-			count 2
-			range '0 - 31'
-			dbmin -3450
-			dbmax 1200
-			dbvalue.0 1200
-			dbvalue.1 1200
-		}
-	}
-	control.34 {
-		iface MIXER
-		name 'Beep Playback Switch'
-		value.0 true
-		value.1 true
-		comment {
-			access 'read write'
-			type BOOLEAN
-			count 2
-		}
-	}
-	control.35 {
-		iface PCM
-		name 'Playback Channel Map'
-		value.0 0
-		value.1 0
-		comment {
-			access read
-			type INTEGER
-			count 2
-			range '0 - 36'
-		}
-	}
-	control.36 {
-		iface PCM
-		name 'Capture Channel Map'
-		value.0 0
-		value.1 0
-		comment {
-			access read
-			type INTEGER
-			count 2
-			range '0 - 36'
-		}
-	}
-	control.37 {
-		iface PCM
-		device 1
-		name 'Playback Channel Map'
-		value.0 0
-		value.1 0
-		comment {
-			access read
-			type INTEGER
-			count 2
-			range '0 - 36'
-		}
-	}
-	control.38 {
-		iface PCM
-		device 2
-		name 'Capture Channel Map'
-		value.0 0
-		value.1 0
-		comment {
-			access read
-			type INTEGER
-			count 2
-			range '0 - 36'
-		}
-	}
-	control.39 {
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 255
-		value.1 255
-		comment {
-			access 'read write user'
-			type INTEGER
-			count 2
-			range '0 - 255'
-			tlv '0000000100000008ffffec1400000014'
-			dbmin -5100
-			dbmax 0
-			dbvalue.0 0
-			dbvalue.1 0
-		}
-	}
-}
---endcollapse--
-
-
-!!All Loaded Modules
-!!------------------
-
-Module
-fuse
-ip6t_rpfilter
-ip6t_REJECT
-xt_conntrack
-bnep
-bluetooth
-cfg80211
-rfkill
-ebtable_nat
-ebtable_broute
-bridge
-stp
-llc
-ebtable_filter
-ebtables
-ip6table_nat
-nf_conntrack_ipv6
-nf_defrag_ipv6
-nf_nat_ipv6
-ip6table_mangle
-ip6table_security
-ip6table_raw
-ip6table_filter
-ip6_tables
-iptable_nat
-nf_conntrack_ipv4
-nf_defrag_ipv4
-nf_nat_ipv4
-nf_nat
-nf_conntrack
-iptable_mangle
-iptable_security
-iptable_raw
-iTCO_wdt
-ppdev
-iTCO_vendor_support
-snd_hda_codec_realtek
-snd_hda_codec_generic
-snd_hda_intel
-uvcvideo
-snd_hda_controller
-snd_hda_codec
-videobuf2_vmalloc
-videobuf2_memops
-coretemp
-videobuf2_core
-v4l2_common
-snd_hwdep
-videodev
-snd_seq
-snd_seq_device
-serio_raw
-pcspkr
-snd_pcm
-media
-i2c_i801
-joydev
-snd_timer
-lpc_ich
-snd
-soundcore
-parport_pc
-parport
-acpi_cpufreq
-i915
-i2c_algo_bit
-video
-drm_kms_helper
-e1000e
-drm
-ata_generic
-pata_acpi
-ptp
-pps_core
-
-
-!!Sysfs Files
-!!-----------
-
-/sys/class/sound/hwC0D0/init_pin_configs:
-0x11 0x411110f0
-0x12 0x411111f0
-0x14 0x04014110
-0x15 0x411111f0
-0x16 0x411111f0
-0x17 0x411111f0
-0x18 0x04a19830
-0x19 0x04a1383f
-0x1a 0x411111f0
-0x1b 0x411111f0
-0x1c 0x411111f0
-0x1d 0x598301f0
-0x1e 0x99430120
-0x1f 0x41c46060
-
-/sys/class/sound/hwC0D0/driver_pin_configs:
-
-/sys/class/sound/hwC0D0/user_pin_configs:
-
-/sys/class/sound/hwC0D0/init_verbs:
-
-/sys/class/sound/hwC0D0/hints:
-
-
-!!ALSA/HDA dmesg
-!!--------------
-
-[   18.164118] uvcvideo: Found UVC 1.00 device USB Camera Device (174f:142b)
-[   18.193973] snd_hda_intel 0000:00:1b.0: irq 26 for MSI/MSI-X
-[   18.200809] input: USB Camera Device as /devices/pci0000:00/0000:00:1e.0/0000:02:03.2/usb2/2-2/2-2:1.0/input/input8
---
-[   18.201610] USB Video Class driver (1.1.1)
-[   18.305764] sound hdaudioC0D0: ALC888: SKU not ready 0x598301f0
-[   18.305987] sound hdaudioC0D0: autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0) type:line
-[   18.305999] sound hdaudioC0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-[   18.306072] sound hdaudioC0D0:    hp_outs=0 (0x0/0x0/0x0/0x0/0x0)
-[   18.306080] sound hdaudioC0D0:    mono: mono_out=0x0
-[   18.306088] sound hdaudioC0D0:    dig-out=0x1e/0x0
-[   18.306095] sound hdaudioC0D0:    inputs:
-[   18.306105] sound hdaudioC0D0:      Mic=0x19
-[   18.306114] sound hdaudioC0D0:      Mic=0x18
-[   18.392187] input: HDA Intel Mic as /devices/pci0000:00/0000:00:1b.0/sound/card0/input9
-[   18.392652] input: HDA Intel Mic as /devices/pci0000:00/0000:00:1b.0/sound/card0/input10
-[   18.396462] iTCO_vendor_support: vendor-support=0
+Currently the cs4271 driver depends on SND_SOC_I2C_AND_SPI.
+So the driver cannot be built as built-in if CONFIG_I2C=m.
+Split SPI and I2C code into different modules to avoid this issue.
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+ sound/soc/cirrus/Kconfig      |   3 +-
+ sound/soc/codecs/Kconfig      |  18 ++++-
+ sound/soc/codecs/Makefile     |   4 ++
+ sound/soc/codecs/cs4271-i2c.c |  62 +++++++++++++++++
+ sound/soc/codecs/cs4271-spi.c |  55 +++++++++++++++
+ sound/soc/codecs/cs4271.c     | 155 +++++-------------------------------------
+ sound/soc/codecs/cs4271.h     |  11 +++
+ 7 files changed, 167 insertions(+), 141 deletions(-)
+ create mode 100644 sound/soc/codecs/cs4271-i2c.c
+ create mode 100644 sound/soc/codecs/cs4271-spi.c
+ create mode 100644 sound/soc/codecs/cs4271.h
+
+diff --git a/sound/soc/cirrus/Kconfig b/sound/soc/cirrus/Kconfig
+index 5477c54..7b7fbcd 100644
+--- a/sound/soc/cirrus/Kconfig
++++ b/sound/soc/cirrus/Kconfig
+@@ -36,7 +36,8 @@ config SND_EP93XX_SOC_EDB93XX
+ 	tristate "SoC Audio support for Cirrus Logic EDB93xx boards"
+ 	depends on SND_EP93XX_SOC && (MACH_EDB9301 || MACH_EDB9302 || MACH_EDB9302A || MACH_EDB9307A || MACH_EDB9315A)
+ 	select SND_EP93XX_SOC_I2S
+-	select SND_SOC_CS4271
++	select SND_SOC_CS4271_I2C if I2C
++	select SND_SOC_CS4271_SPI if SPI_MASTER
+ 	help
+ 	  Say Y or M here if you want to add support for I2S audio on the
+ 	  Cirrus Logic EDB93xx boards.
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 351bf48..5ca5f98 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -50,7 +50,8 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_CS42L73 if I2C
+ 	select SND_SOC_CS4265 if I2C
+ 	select SND_SOC_CS4270 if I2C
+-	select SND_SOC_CS4271 if SND_SOC_I2C_AND_SPI
++	select SND_SOC_CS4271_I2C if I2C
++	select SND_SOC_CS4271_SPI if SPI_MASTER
+ 	select SND_SOC_CS42XX8_I2C if I2C
+ 	select SND_SOC_CX20442 if TTY
+ 	select SND_SOC_DA7210 if I2C
+@@ -370,8 +371,19 @@ config SND_SOC_CS4270_VD33_ERRATA
+ 	depends on SND_SOC_CS4270
+ 
+ config SND_SOC_CS4271
+-	tristate "Cirrus Logic CS4271 CODEC"
+-	depends on SND_SOC_I2C_AND_SPI
++	tristate
++
++config SND_SOC_CS4271_I2C
++	tristate "Cirrus Logic CS4271 CODEC (I2C)"
++	depends on I2C
++	select SND_SOC_CS4271
++	select REGMAP_I2C
++
++config SND_SOC_CS4271_SPI
++	tristate "Cirrus Logic CS4271 CODEC (SPI)"
++	depends on SPI_MASTER
++	select SND_SOC_CS4271
++	select REGMAP_SPI
+ 
+ config SND_SOC_CS42XX8
+ 	tristate
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 5dce451..ac7ec31 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -41,6 +41,8 @@ snd-soc-cs42l73-objs := cs42l73.o
+ snd-soc-cs4265-objs := cs4265.o
+ snd-soc-cs4270-objs := cs4270.o
+ snd-soc-cs4271-objs := cs4271.o
++snd-soc-cs4271-i2c-objs := cs4271-i2c.o
++snd-soc-cs4271-spi-objs := cs4271-spi.o
+ snd-soc-cs42xx8-objs := cs42xx8.o
+ snd-soc-cs42xx8-i2c-objs := cs42xx8-i2c.o
+ snd-soc-cx20442-objs := cx20442.o
+@@ -217,6 +219,8 @@ obj-$(CONFIG_SND_SOC_CS42L73)	+= snd-soc-cs42l73.o
+ obj-$(CONFIG_SND_SOC_CS4265)	+= snd-soc-cs4265.o
+ obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
+ obj-$(CONFIG_SND_SOC_CS4271)	+= snd-soc-cs4271.o
++obj-$(CONFIG_SND_SOC_CS4271_I2C)	+= snd-soc-cs4271-i2c.o
++obj-$(CONFIG_SND_SOC_CS4271_SPI)	+= snd-soc-cs4271-spi.o
+ obj-$(CONFIG_SND_SOC_CS42XX8)	+= snd-soc-cs42xx8.o
+ obj-$(CONFIG_SND_SOC_CS42XX8_I2C) += snd-soc-cs42xx8-i2c.o
+ obj-$(CONFIG_SND_SOC_CX20442)	+= snd-soc-cx20442.o
+diff --git a/sound/soc/codecs/cs4271-i2c.c b/sound/soc/codecs/cs4271-i2c.c
+new file mode 100644
+index 0000000..b264da0
+--- /dev/null
++++ b/sound/soc/codecs/cs4271-i2c.c
+@@ -0,0 +1,62 @@
++/*
++ * CS4271 I2C audio driver
++ *
++ * Copyright (c) 2010 Alexander Sverdlin <subaparts@yandex.ru>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version 2
++ * of the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/regmap.h>
++#include <sound/soc.h>
++#include "cs4271.h"
++
++static int cs4271_i2c_probe(struct i2c_client *client,
++			     const struct i2c_device_id *id)
++{
++	struct regmap_config config;
++
++	config = cs4271_regmap_config;
++	config.reg_bits = 8;
++	config.val_bits = 8;
++
++	return cs4271_probe(&client->dev,
++			    devm_regmap_init_i2c(client, &config));
++}
++
++static int cs4271_i2c_remove(struct i2c_client *client)
++{
++	snd_soc_unregister_codec(&client->dev);
++	return 0;
++}
++
++static const struct i2c_device_id cs4271_i2c_id[] = {
++	{ "cs4271", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, cs4271_i2c_id);
++
++static struct i2c_driver cs4271_i2c_driver = {
++	.driver = {
++		.name = "cs4271",
++		.owner = THIS_MODULE,
++		.of_match_table = of_match_ptr(cs4271_dt_ids),
++	},
++	.probe = cs4271_i2c_probe,
++	.remove = cs4271_i2c_remove,
++	.id_table = cs4271_i2c_id,
++};
++module_i2c_driver(cs4271_i2c_driver);
++
++MODULE_DESCRIPTION("ASoC CS4271 I2C Driver");
++MODULE_AUTHOR("Alexander Sverdlin <subaparts@yandex.ru>");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/cs4271-spi.c b/sound/soc/codecs/cs4271-spi.c
+new file mode 100644
+index 0000000..acd49d8
+--- /dev/null
++++ b/sound/soc/codecs/cs4271-spi.c
+@@ -0,0 +1,55 @@
++/*
++ * CS4271 SPI audio driver
++ *
++ * Copyright (c) 2010 Alexander Sverdlin <subaparts@yandex.ru>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version 2
++ * of the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/module.h>
++#include <linux/spi/spi.h>
++#include <linux/regmap.h>
++#include <sound/soc.h>
++#include "cs4271.h"
++
++static int cs4271_spi_probe(struct spi_device *spi)
++{
++	struct regmap_config config;
++
++	config = cs4271_regmap_config;
++	config.reg_bits = 16;
++	config.val_bits = 8;
++	config.read_flag_mask = 0x21;
++	config.write_flag_mask = 0x20;
++
++	return cs4271_probe(&spi->dev, devm_regmap_init_spi(spi, &config));
++}
++
++static int cs4271_spi_remove(struct spi_device *spi)
++{
++	snd_soc_unregister_codec(&spi->dev);
++	return 0;
++}
++
++static struct spi_driver cs4271_spi_driver = {
++	.driver = {
++		.name	= "cs4271",
++		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(cs4271_dt_ids),
++	},
++	.probe		= cs4271_spi_probe,
++	.remove		= cs4271_spi_remove,
++};
++module_spi_driver(cs4271_spi_driver);
++
++MODULE_DESCRIPTION("ASoC CS4271 SPI Driver");
++MODULE_AUTHOR("Alexander Sverdlin <subaparts@yandex.ru>");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 93cec52..79a4efc 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -23,8 +23,6 @@
+ #include <linux/slab.h>
+ #include <linux/delay.h>
+ #include <linux/gpio.h>
+-#include <linux/i2c.h>
+-#include <linux/spi/spi.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+@@ -32,6 +30,7 @@
+ #include <sound/soc.h>
+ #include <sound/tlv.h>
+ #include <sound/cs4271.h>
++#include "cs4271.h"
+ 
+ #define CS4271_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+ 			    SNDRV_PCM_FMTBIT_S24_LE | \
+@@ -527,14 +526,15 @@ static int cs4271_soc_resume(struct snd_soc_codec *codec)
+ #endif /* CONFIG_PM */
+ 
+ #ifdef CONFIG_OF
+-static const struct of_device_id cs4271_dt_ids[] = {
++const struct of_device_id cs4271_dt_ids[] = {
+ 	{ .compatible = "cirrus,cs4271", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, cs4271_dt_ids);
++EXPORT_SYMBOL_GPL(cs4271_dt_ids);
+ #endif
+ 
+-static int cs4271_probe(struct snd_soc_codec *codec)
++static int cs4271_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+ 	struct cs4271_platform_data *cs4271plat = codec->dev->platform_data;
+@@ -587,7 +587,7 @@ static int cs4271_probe(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-static int cs4271_remove(struct snd_soc_codec *codec)
++static int cs4271_codec_remove(struct snd_soc_codec *codec)
+ {
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+ 
+@@ -599,8 +599,8 @@ static int cs4271_remove(struct snd_soc_codec *codec)
+ };
+ 
+ static struct snd_soc_codec_driver soc_codec_dev_cs4271 = {
+-	.probe			= cs4271_probe,
+-	.remove			= cs4271_remove,
++	.probe			= cs4271_codec_probe,
++	.remove			= cs4271_codec_remove,
+ 	.suspend		= cs4271_soc_suspend,
+ 	.resume			= cs4271_soc_resume,
+ 
+@@ -642,14 +642,8 @@ static int cs4271_common_probe(struct device *dev,
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_SPI_MASTER)
+-
+-static const struct regmap_config cs4271_spi_regmap = {
+-	.reg_bits = 16,
+-	.val_bits = 8,
++const struct regmap_config cs4271_regmap_config = {
+ 	.max_register = CS4271_LASTREG,
+-	.read_flag_mask = 0x21,
+-	.write_flag_mask = 0x20,
+ 
+ 	.reg_defaults = cs4271_reg_defaults,
+ 	.num_reg_defaults = ARRAY_SIZE(cs4271_reg_defaults),
+@@ -657,140 +651,27 @@ static const struct regmap_config cs4271_spi_regmap = {
+ 
+ 	.volatile_reg = cs4271_volatile_reg,
+ };
++EXPORT_SYMBOL_GPL(cs4271_regmap_config);
+ 
+-static int cs4271_spi_probe(struct spi_device *spi)
++int cs4271_probe(struct device *dev, struct regmap *regmap)
+ {
+ 	struct cs4271_private *cs4271;
+ 	int ret;
+ 
+-	ret = cs4271_common_probe(&spi->dev, &cs4271);
+-	if (ret < 0)
+-		return ret;
+-
+-	spi_set_drvdata(spi, cs4271);
+-	cs4271->regmap = devm_regmap_init_spi(spi, &cs4271_spi_regmap);
+-	if (IS_ERR(cs4271->regmap))
+-		return PTR_ERR(cs4271->regmap);
+-
+-	return snd_soc_register_codec(&spi->dev, &soc_codec_dev_cs4271,
+-		&cs4271_dai, 1);
+-}
+-
+-static int cs4271_spi_remove(struct spi_device *spi)
+-{
+-	snd_soc_unregister_codec(&spi->dev);
+-	return 0;
+-}
+-
+-static struct spi_driver cs4271_spi_driver = {
+-	.driver = {
+-		.name	= "cs4271",
+-		.owner	= THIS_MODULE,
+-		.of_match_table = of_match_ptr(cs4271_dt_ids),
+-	},
+-	.probe		= cs4271_spi_probe,
+-	.remove		= cs4271_spi_remove,
+-};
+-#endif /* defined(CONFIG_SPI_MASTER) */
+-
+-#if IS_ENABLED(CONFIG_I2C)
+-static const struct i2c_device_id cs4271_i2c_id[] = {
+-	{"cs4271", 0},
+-	{}
+-};
+-MODULE_DEVICE_TABLE(i2c, cs4271_i2c_id);
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
+ 
+-static const struct regmap_config cs4271_i2c_regmap = {
+-	.reg_bits = 8,
+-	.val_bits = 8,
+-	.max_register = CS4271_LASTREG,
+-
+-	.reg_defaults = cs4271_reg_defaults,
+-	.num_reg_defaults = ARRAY_SIZE(cs4271_reg_defaults),
+-	.cache_type = REGCACHE_RBTREE,
+-
+-	.volatile_reg = cs4271_volatile_reg,
+-};
+-
+-static int cs4271_i2c_probe(struct i2c_client *client,
+-			    const struct i2c_device_id *id)
+-{
+-	struct cs4271_private *cs4271;
+-	int ret;
+-
+-	ret = cs4271_common_probe(&client->dev, &cs4271);
++	ret = cs4271_common_probe(dev, &cs4271);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	i2c_set_clientdata(client, cs4271);
+-	cs4271->regmap = devm_regmap_init_i2c(client, &cs4271_i2c_regmap);
+-	if (IS_ERR(cs4271->regmap))
+-		return PTR_ERR(cs4271->regmap);
++	dev_set_drvdata(dev, cs4271);
++	cs4271->regmap = regmap;
+ 
+-	return snd_soc_register_codec(&client->dev, &soc_codec_dev_cs4271,
+-		&cs4271_dai, 1);
+-}
+-
+-static int cs4271_i2c_remove(struct i2c_client *client)
+-{
+-	snd_soc_unregister_codec(&client->dev);
+-	return 0;
+-}
+-
+-static struct i2c_driver cs4271_i2c_driver = {
+-	.driver = {
+-		.name	= "cs4271",
+-		.owner	= THIS_MODULE,
+-		.of_match_table = of_match_ptr(cs4271_dt_ids),
+-	},
+-	.id_table	= cs4271_i2c_id,
+-	.probe		= cs4271_i2c_probe,
+-	.remove		= cs4271_i2c_remove,
+-};
+-#endif /* IS_ENABLED(CONFIG_I2C) */
+-
+-/*
+- * We only register our serial bus driver here without
+- * assignment to particular chip. So if any of the below
+- * fails, there is some problem with I2C or SPI subsystem.
+- * In most cases this module will be compiled with support
+- * of only one serial bus.
+- */
+-static int __init cs4271_modinit(void)
+-{
+-	int ret;
+-
+-#if IS_ENABLED(CONFIG_I2C)
+-	ret = i2c_add_driver(&cs4271_i2c_driver);
+-	if (ret) {
+-		pr_err("Failed to register CS4271 I2C driver: %d\n", ret);
+-		return ret;
+-	}
+-#endif
+-
+-#if defined(CONFIG_SPI_MASTER)
+-	ret = spi_register_driver(&cs4271_spi_driver);
+-	if (ret) {
+-		pr_err("Failed to register CS4271 SPI driver: %d\n", ret);
+-		return ret;
+-	}
+-#endif
+-
+-	return 0;
+-}
+-module_init(cs4271_modinit);
+-
+-static void __exit cs4271_modexit(void)
+-{
+-#if defined(CONFIG_SPI_MASTER)
+-	spi_unregister_driver(&cs4271_spi_driver);
+-#endif
+-
+-#if IS_ENABLED(CONFIG_I2C)
+-	i2c_del_driver(&cs4271_i2c_driver);
+-#endif
++	return snd_soc_register_codec(dev, &soc_codec_dev_cs4271, &cs4271_dai,
++				      1);
+ }
+-module_exit(cs4271_modexit);
++EXPORT_SYMBOL_GPL(cs4271_probe);
+ 
+ MODULE_AUTHOR("Alexander Sverdlin <subaparts@yandex.ru>");
+ MODULE_DESCRIPTION("Cirrus Logic CS4271 ALSA SoC Codec Driver");
+diff --git a/sound/soc/codecs/cs4271.h b/sound/soc/codecs/cs4271.h
+new file mode 100644
+index 0000000..9adad8e
+--- /dev/null
++++ b/sound/soc/codecs/cs4271.h
+@@ -0,0 +1,11 @@
++#ifndef _CS4271_PRIV_H
++#define _CS4271_PRIV_H
++
++#include <linux/regmap.h>
++
++extern const struct of_device_id cs4271_dt_ids[];
++extern const struct regmap_config cs4271_regmap_config;
++
++int cs4271_probe(struct device *dev, struct regmap *regmap);
++
++#endif
+-- 
+1.9.1
