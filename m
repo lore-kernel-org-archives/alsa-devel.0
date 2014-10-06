@@ -1,20 +1,18 @@
-From: Michal Rydlo <michal.rydlo@gmail.com>
-Subject: Re: Alsa-devel AKAI eie pro found on github
-Date: Sat, 4 Oct 2014 23:15:54 +0200
-Message-ID: <CAEK4Y+J28m+Ke+a_AjuZKRrjYaU6iEmCX+ifQSOdba-y=Sd+Lg@mail.gmail.com>
-References: <mailman.1276.1412271694.872.alsa-devel@alsa-project.org>
- <cced3ce9f1b69ee542f027c829207ba2@ztealmax.se>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH RESEND] ASoC: rt5670: Add dsp support
+Date: Mon, 6 Oct 2014 02:18:47 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D7656642@RTITMBSV03.realtek.com.tw>
+References: <1411957901-12156-1-git-send-email-bardliao@realtek.com>
+ <20141003163224.GC3594@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com
- [209.85.212.173])
- by alsa0.perex.cz (Postfix) with ESMTP id DB2A526057F
- for <alsa-devel@alsa-project.org>; Sat,  4 Oct 2014 23:16:14 +0200 (CEST)
-Received: by mail-wi0-f173.google.com with SMTP id fb4so1588363wid.6
- for <alsa-devel@alsa-project.org>; Sat, 04 Oct 2014 14:16:14 -0700 (PDT)
-In-Reply-To: <cced3ce9f1b69ee542f027c829207ba2@ztealmax.se>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F8652605A8
+ for <alsa-devel@alsa-project.org>; Mon,  6 Oct 2014 04:19:03 +0200 (CEST)
+In-Reply-To: <20141003163224.GC3594@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Martin Svensson <martin.svensson@ztealmax.se>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Saturday, October 04, 2014 12:32 AM
+> To: Bard Liao
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; lars@metafoo.de;
+> Flove; Oder Chiou
+> Subject: Re: [PATCH RESEND] ASoC: rt5670: Add dsp support
+> 
+> > +/* DSP Mode */
+> > +static const char * const rt5670_dsp_mode[] = {
+> > +	"Mode 1", "Mode 2", "Mode 3", "Mode 4", "Mode 5"
+> > +};
+> 
+> What exactly are these modes?
 
-On Thu, Oct 2, 2014 at 8:03 PM, Martin Svensson
-<martin.svensson@ztealmax.se> wrote:
-> Hello ive talked to you about the akai eie pro of the posibility to get
->     it working on
->     linux, i found this on the web is it some one of you working on this
->     driver?
-I am the author.
->     github(dot)com/mmm444/eie-pro-linux
-I put it to github as a response to your question about a month ago.
-http://thread.gmane.org/gmane.linux.alsa.devel/127223/focus=127227
+These are DSP working modes, such as noise suppression, echo cancellation...
+The reason we won't have a specific name on alsa control is that the driver
+will be more flexible and we can define customized modes on the firmware.
+For example, the 5 modes may be noise suppression 1, noise suppression 2,
+noise suppression + echo cancellation, voice tracking, echo cancellation.
 
-My work on this is paused at the moment. I will get back to it in about a
-month and hopefully finish it. I would like to see it as a part of the kernel
-someday but that will depend on how things will go.
-
-Regards,
-
-Michal
+> 
+> ------Please consider the environment before printing this e-mail.
