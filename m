@@ -1,15 +1,14 @@
-From: Greg Farrell <greg@gregfarrell.org>
-Subject: Patch to enable audio on alc888 vendor id 0x10ec0888
- revision id 0x100202
-Date: Mon, 06 Oct 2014 15:16:25 +0100
-Message-ID: <5432A439.1050909@gregfarrell.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v8 0/6]  Add mrfld DSP topology and widgets
+Date: Mon,  6 Oct 2014 19:29:08 +0530
+Message-ID: <1412603954-9030-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gregfarrell.org (mail.gregfarrell.org [64.62.190.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F5512604A1
- for <alsa-devel@alsa-project.org>; Mon,  6 Oct 2014 16:16:29 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9B9A260480
+ for <alsa-devel@alsa-project.org>; Mon,  6 Oct 2014 16:31:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,71 +18,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch series adds DPCM and DAPM widgets to handle DSP topology in the
+SST platform driver for merrifield.
 
-I am dealing with some Atom based boards that have a Realtek ALC888 
-providing HDA-Intel codec support. Vendor_id of 0x10ec0888.
+changes in v8:
+ - fix the locking and comments blobs
+ - fix the send_ssp_slot to send IPC on none
+ - fix controls to have "Volume" and "Switch" wherever neccessary
+ - add mute for CPU dai in asoc core patch
 
-These boards worked for us when they came with an earlier revision of 
-the chip but did not work for us with a revision_id of 0x100202 .
+Ramesh Babu (1):
+  ASoC: core: Call mute for cpu dais as well
 
-Symptoms on kernel 3.11 (FC18) and 3.17rc7 were identical - sound was 
-present but was almost completely inaudible even when mixers were raised 
-to the max.
+Vinod Koul (5):
+  ASoC: Intel: mrfld: add the gain controls
+  ASoC: Intel: mrfld: add DSP core controls
+  ASoC: Intel: mrfld: add the DSP DAPM widgets
+  ASoC: Intel: mfld-pcm: add FE and BE ops
+  ASoC: Intel: mrfld: add the DSP mixers
 
-Investigations showed that forcing OFF EAPD resulted in normal amplified 
-sound while turning it on resulted in the almost inaudible sound. This 
-is - to my limited understanding - counter to how other chipsets work 
-and makes me wonder if this particular chip version has an inverted EAPD 
-bit. It was also necessary to skip the normal ALC888 coef fixup code 
-(alc888_coef_init) in order for sound to work correctly.
+ sound/soc/intel/sst-atom-controls.c     | 1212 ++++++++++++++++++++++++++++++-
+ sound/soc/intel/sst-atom-controls.h     |  428 +++++++++++
+ sound/soc/intel/sst-mfld-platform-pcm.c |  153 ++++-
+ sound/soc/intel/sst-mfld-platform.h     |    4 +
+ sound/soc/soc-pcm.c                     |    3 +
+ 5 files changed, 1770 insertions(+), 30 deletions(-)
 
-I'm providing a patch that performs this behaviour only for alc888's 
-with a vendor_id of 0x10ec0888 and a revision_id of 0x100202. It applies 
-cleanly against 3.11 and 3.17rc7 but as I do not have a suitable build 
-host for a 3.17 kernel it has only been tested with the 3.11 kernel.
-
-I hope this is useful to anyone else running into this problem with this 
-particular hardware.
-
-Greg
-
-greg@gregfarrell.org
-greg.farrell@lincor.com
-
-
---- a/sound/pci/hda/patch_realtek.c    2014-10-03 16:41:50.374730157 +0100
-+++ b/sound/pci/hda/patch_realtek.c    2014-10-03 16:52:57.539099277 +0100
-@@ -289,7 +289,11 @@
-  {
-      unsigned int tmp;
-
--    alc_auto_setup_eapd(codec, true);
-+    if ( !(codec->vendor_id == 0x10ec0888 && codec->revision_id == 
-0x100202) )
-+        alc_auto_setup_eapd(codec, true);
-+    else
-+        printk(KERN_INFO "hda_codec: %s: alc_auto_init_amp skipping 
-alc_auto_setup_eapd due to chip revision test", codec->chip_name);
-+
-      switch (type) {
-      case ALC_INIT_GPIO1:
-          snd_hda_sequence_write(codec, alc_gpio1_init_verbs);
-@@ -323,7 +327,10 @@
-              alc889_coef_init(codec);
-              break;
-          case 0x10ec0888:
--            alc888_coef_init(codec);
-+            if ( codec->revision_id != 0x100202 )
-+                alc888_coef_init(codec);
-+            else
-+                printk(KERN_INFO "hda_codec: %s: alc_auto_init_amp 
-0x10ec0888 type skipping alc888_coef_init due to revision_id test", 
-codec->chip_name);
-              break;
-  #if 0 /* XXX: This may cause the silent output on speaker on some 
-machines */
-          case 0x10ec0267:
+Thanks
+-- 
+~Vinod
