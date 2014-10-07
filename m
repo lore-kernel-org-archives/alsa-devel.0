@@ -1,8 +1,8 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 2/4] ASoC: fsl: imx-spdif: Delete unneeded test
-	before of_node_put
-Date: Tue, 7 Oct 2014 15:29:56 -0300
-Message-ID: <1412706598-18796-2-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH 3/4] ASoC: fsl: eukrea-tlv320: Delete unneeded
+	test before of_node_put
+Date: Tue, 7 Oct 2014 15:29:57 -0300
+Message-ID: <1412706598-18796-3-git-send-email-fabio.estevam@freescale.com>
 References: <1412706598-18796-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na01-bn1-obe.outbound.protection.outlook.com
  (mail-bn1on0135.outbound.protection.outlook.com [157.56.110.135])
- by alsa0.perex.cz (Postfix) with ESMTP id D29FA260495
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 20:30:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 62CAE26049A
+ for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 20:30:38 +0200 (CEST)
 In-Reply-To: <1412706598-18796-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,20 +31,20 @@ necessary.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/fsl/imx-spdif.c | 3 +--
+ sound/soc/fsl/eukrea-tlv320.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-spdif.c b/sound/soc/fsl/imx-spdif.c
-index e1dc401..0c9068e 100644
---- a/sound/soc/fsl/imx-spdif.c
-+++ b/sound/soc/fsl/imx-spdif.c
-@@ -74,8 +74,7 @@ static int imx_spdif_audio_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, data);
- 
- end:
--	if (spdif_np)
--		of_node_put(spdif_np);
-+	of_node_put(spdif_np);
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
+index eb093d5..dd931fa 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -217,8 +217,7 @@ static int eukrea_tlv320_probe(struct platform_device *pdev)
+ err:
+ 	if (ret)
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
+-	if (np)
+-		of_node_put(ssi_np);
++	of_node_put(ssi_np);
  
  	return ret;
  }
