@@ -1,51 +1,57 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH] ALSA: usb: caiaq: check for cdev->n_streams > 1
-Date: Tue,  7 Oct 2014 14:25:13 +0200
-Message-ID: <1412684713-6622-1-git-send-email-daniel@zonque.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] ASoC: simple-card: Add mic and hp detect gpios.
+Date: Tue, 7 Oct 2014 14:32:57 +0200
+Message-ID: <CAMuHMdWh=sXAD59T1T=gvROX+fbF6=gFo6C0nkJdfnCrdNrwYg@mail.gmail.com>
+References: <1412198720-2326-1-git-send-email-dgreid@chromium.org>
+	<20141002155350.GU4273@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id AFDD2260452
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 14:25:18 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20141002155350.GU4273@sirena.org.uk>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@chromium.org>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, jay.xu@rock-chips.com, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, sonnyrao@chromium.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-sh list <linux-sh@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Coverity spotted a possible DIV0 condition when cdev->n_streams is 0.
+Hi Mark, Dylan,
 
-Fix this by making sure the value is > 1 in snd_usb_caiaq_audio_init().
+On Thu, Oct 2, 2014 at 5:53 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Oct 01, 2014 at 02:25:20PM -0700, Dylan Reid wrote:
+>> Allow Headphone and Microphone jack detect gpios to be specified in
+>> device tree.  This will allow a few systems including rk3288_max98090
+>> to use simple-card instead of having their own board file.
+>
+> Applied, thanks.
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
----
- sound/usb/caiaq/audio.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Unfortunately there's no equivalent code for platform data, and the
+uninitialized default of 0 for gpio_hp_det and gpio_mic_det doesn't
+play well with asm-generic's gpio_is_valid():
 
-diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-index 7103b09..2728447 100644
---- a/sound/usb/caiaq/audio.c
-+++ b/sound/usb/caiaq/audio.c
-@@ -816,6 +816,11 @@ int snd_usb_caiaq_audio_init(struct snd_usb_caiaqdev *cdev)
- 		return -EINVAL;
- 	}
- 
-+	if (cdev->n_streams < 2) {
-+		dev_err(dev, "bogus number of streams: %d\n", cdev->n_streams);
-+		return -EINVAL;
-+	}
-+
- 	ret = snd_pcm_new(cdev->chip.card, cdev->product_name, 0,
- 			cdev->n_audio_out, cdev->n_audio_in, &cdev->pcm);
- 
--- 
-2.1.0
+static inline bool gpio_is_valid(int number)
+{
+        return number >= 0 && number < ARCH_NR_GPIOS;
+}
+
+Hence on r8a7740/armadillo-legacy, which uses platform devices instead of DT:
+
+    sh-mobile-hdmi sh-mobile-hdmi: SH Mobile HDMI Audio Codec
+    sh-mobile-hdmi sh-mobile-hdmi: ASoC: DAPM unknown pin Headphones
+    sh-mobile-hdmi sh-mobile-hdmi: ASoC: DAPM unknown pin Mic Jack
+
+After that the kernel log is spammed ca. 7 times per second with:
+
+    sh-mobile-hdmi sh-mobile-hdmi: ASoC: DAPM unknown pin Headphones
+
+Reverting commit 3fe240326cc395c66 ("ASoC: simple-card: Add mic and
+hp detect gpios.") fixes this.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
