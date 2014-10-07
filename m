@@ -1,15 +1,24 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v2] ASoC: rt5645: Add the workqueue of the jack
-	detect function for the debouncing
-Date: Tue, 7 Oct 2014 10:25:37 +0800
-Message-ID: <1412648737-11553-1-git-send-email-oder_chiou@realtek.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [bug] SPDIF (digital-out) not working on
+	NForce4/CK804
+Date: Tue, 7 Oct 2014 11:21:58 +0800
+Message-ID: <CAN8cciZ=22ph3yFKjWf0h=hUXgBbO9_m=7f_YBga1nrdHOwrTw@mail.gmail.com>
+References: <542D95C8.8060701@gmail.com>
+ <CAN8cciYnAm6ivNk_FG6WbWAicskXQ9E2Pi+LLAb2jLSSwuJC+Q@mail.gmail.com>
+ <542F0EFE.6020303@gmail.com>
+ <CAN8ccia720EFBH8mHdYV4V4_pwx6r2GGUhsZZXsbbNHxdZCeJA@mail.gmail.com>
+ <542FBF1B.9050500@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D5C3260393
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 04:26:01 +0200 (CEST)
+Received: from mail-qc0-f173.google.com (mail-qc0-f173.google.com
+ [209.85.216.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 99381260393
+ for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 05:21:59 +0200 (CEST)
+Received: by mail-qc0-f173.google.com with SMTP id x13so5044875qcv.18
+ for <alsa-devel@alsa-project.org>; Mon, 06 Oct 2014 20:21:58 -0700 (PDT)
+In-Reply-To: <542FBF1B.9050500@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,73 +28,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, flove@realtek.com
+To: Gilles Hemberg <gilles.hemberg@gmail.com>, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the workqueue of the jack detect function for the debouncing.
+>
+> It works!
+>
+>
+>
+> Solution (in OpenElec 4.2.0; settings on other distros would be similar):
+> * Create custom asound.state in /storage/.config/ with the following
+contents:http://sprunge.us/SiHH(this state-file will, among other things,
+unmute the appropriate mixer controls, set proper output formats, ...).
+>
+> * Load the above state file with the following command:
+>
+>     alsactl nrestore 0 -f /storage/.config/asound.state
+>     (replace the "0" with the card-number corresponding to CK804 on your
+system)
+>
+>   You may want to add this command to a custom autostart.sh in
+/storage/.config/ so the state is restored on every boot.
+>
+> * Create intel8x0.conf in /storage/.config/modprobe.d/ with the following
+contents:
+>
+>     options snd-intel8x0 spdif_aclink=1
+>     (I am told that this above setting depends on the specific
+motherboard, so this may not work for everyone: it does work on my ASUS
+A8N-SLI Deluxe)
+>
+>   This was the final setting that solved the issue for me. I did try this
+setting before, but it seems that some sources on the Internet had this
+mis-written as "options snd-intel-8x0 spdif_aclink=1" (notice the extra
+dash).
+>
+> * In XBMC, select the SPDIF out as both the audio-device AND the
+passthrough device.
+>
+>
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5645.c | 15 ++++++++++++++-
- sound/soc/codecs/rt5645.h |  1 +
- 2 files changed, 15 insertions(+), 1 deletion(-)
+Advanced information - PCI Vendor/Device/Subsystem ID's
+!!-------------------------------------------------------
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index cfe1eff..16ee4f3 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -2166,11 +2166,20 @@ int rt5645_set_jack_detect(struct snd_soc_codec *codec,
- }
- EXPORT_SYMBOL_GPL(rt5645_set_jack_detect);
- 
-+static void rt5645_jack_detect_work(struct work_struct *work)
-+{
-+	struct rt5645_priv *rt5645 =
-+		container_of(work, struct rt5645_priv, jack_detect_work.work);
-+
-+	rt5645_jack_detect(rt5645->codec, rt5645->jack);
-+}
-+
- static irqreturn_t rt5645_irq(int irq, void *data)
- {
- 	struct rt5645_priv *rt5645 = data;
- 
--	rt5645_jack_detect(rt5645->codec, rt5645->jack);
-+	queue_delayed_work(system_power_efficient_wq,
-+			   &rt5645->jack_detect_work, msecs_to_jiffies(250));
- 
- 	return IRQ_HANDLED;
- }
-@@ -2436,6 +2445,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 			dev_err(&i2c->dev, "Fail gpio_direction hp_det_gpio\n");
- 	}
- 
-+	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
-+
- 	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5645,
- 				      rt5645_dai, ARRAY_SIZE(rt5645_dai));
- }
-@@ -2447,6 +2458,8 @@ static int rt5645_i2c_remove(struct i2c_client *i2c)
- 	if (i2c->irq)
- 		free_irq(i2c->irq, rt5645);
- 
-+	cancel_delayed_work_sync(&rt5645->jack_detect_work);
-+
- 	if (gpio_is_valid(rt5645->pdata.hp_det_gpio))
- 		gpio_free(rt5645->pdata.hp_det_gpio);
- 
-diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
-index 50c62c5..5ec2520 100644
---- a/sound/soc/codecs/rt5645.h
-+++ b/sound/soc/codecs/rt5645.h
-@@ -2168,6 +2168,7 @@ struct rt5645_priv {
- 	struct regmap *regmap;
- 	struct i2c_client *i2c;
- 	struct snd_soc_jack *jack;
-+	struct delayed_work jack_detect_work;
- 
- 	int sysclk;
- 	int sysclk_src;
--- 
-1.8.1.1.439.g50a6b54
+00:04.0 0401: 10de:0059 (rev a2)
+Subsystem: 1043:812a
+
+You can add pci subsystem id into spdif_aclink_defaults
+
+static struct snd_pci_quirk spdif_aclink_defaults[] __devinitdata = {
+SND_PCI_QUIRK(0x147b, 0x1c1a, "ASUS KN8", 1),
+{ } /* end */
+};
+
+>> >>
+>> >> Simple mixer control 'IEC958 Playback AC97-SPSA',0
+>> >>   Capabilities: volume volume-joined
+>> >>   Playback channels: Mono
+>> >>   Capture channels: Mono
+>> >>   Limits: 0 - 3
+>> >>   Mono: 0 [0%]
+
+Does it use slot front left and front right slots for pcm playback?
+
+Does it use spdif left/right slot for ac3 passthrough?  default for alc850
+after cold boot
+
+Can it get signal from the other two setting : rear left/right slot or
+center/lfe slot?
