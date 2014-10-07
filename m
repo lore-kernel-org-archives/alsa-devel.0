@@ -1,54 +1,69 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/4] ASoC: eukrea-tlv320: Fix of_node_put()
-	call with uninitialized object
-Date: Tue,  7 Oct 2014 18:19:52 +0200
-Message-ID: <1412698794-25536-3-git-send-email-tiwai@suse.de>
-References: <1412698794-25536-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: simple-card: Add mic and hp detect gpios.
+Date: Tue, 7 Oct 2014 17:36:54 +0100
+Message-ID: <20141007163654.GJ4609@sirena.org.uk>
+References: <1412198720-2326-1-git-send-email-dgreid@chromium.org>
+ <20141002155350.GU4273@sirena.org.uk>
+ <CAMuHMdWh=sXAD59T1T=gvROX+fbF6=gFo6C0nkJdfnCrdNrwYg@mail.gmail.com>
+ <20141007123856.GF4609@sirena.org.uk>
+ <CAMuHMdV39fM_TCa+WSvswij6dxD2vwfJT+FueBtxndpsymP9CQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DA88260594
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 18:20:15 +0200 (CEST)
-In-Reply-To: <1412698794-25536-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gVeFDRGtAQ0W7qcm"
+Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdV39fM_TCa+WSvswij6dxD2vwfJT+FueBtxndpsymP9CQ@mail.gmail.com>
+Sender: linux-gpio-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Dylan Reid <dgreid@chromium.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, jay.xu@rock-chips.com, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, sonnyrao@chromium.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-sh list <linux-sh@vger.kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The of_node_put() call in eukrea_tlv320_probe() may take an
-uninitialized pointer, as compiler spotted out:
-  sound/soc/codecs/mc13783.c:787:13: warning: 'np' may be used uninitialized in this function [-Wuninitialized]
 
-This patch adds the proper NULL initialization as a fix.
+--gVeFDRGtAQ0W7qcm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 66f232908de2 ('ASoC: eukrea-tlv320: Add DT support')
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/fsl/eukrea-tlv320.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Oct 07, 2014 at 03:10:01PM +0200, Geert Uytterhoeven wrote:
+> On Tue, Oct 7, 2014 at 2:38 PM, Mark Brown <broonie@kernel.org> wrote:
 
-diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
-index eb093d5b85c4..d53b002595b6 100644
---- a/sound/soc/fsl/eukrea-tlv320.c
-+++ b/sound/soc/fsl/eukrea-tlv320.c
-@@ -105,7 +105,7 @@ static int eukrea_tlv320_probe(struct platform_device *pdev)
- 	int ret;
- 	int int_port = 0, ext_port;
- 	struct device_node *np = pdev->dev.of_node;
--	struct device_node *ssi_np, *codec_np;
-+	struct device_node *ssi_np = NULL, *codec_np;
- 
- 	eukrea_tlv320.dev = &pdev->dev;
- 	if (np) {
--- 
-2.1.2
+> > The fix here is to not allow 0 as a GPIO in the core code (which
+> > should've been there already).
+
+> Unfortunately it's not there.
+
+> And it's not as simple as changing the definition of gpio_is_valid()
+> (crash in gpio_get_value()):
+
+>     gpiochip_add: GPIOs 0..211 (r8a7740_pfc) failed to register
+>     sh-pfc pfc-r8a7740: failed to init GPIO chip, ignoring...
+>     sh-pfc pfc-r8a7740: r8a7740_pfc support registered
+>     Unable to handle kernel NULL pointer dereference at virtual address 0000004c
+
+Right, obviously it's not going to work if the platform actually uses 0
+as a valid GPIO.
+
+> Quoting Linus (https://lkml.org/lkml/2014/9/4/464):
+> "Fixing the old global GPIO numberspace API is a waste of time IMO".
+
+> Hence I've just sent a patch to initialize the GPIO numbers with -ENOENT.
+
+I do think it's worth renumbering the platforms since it's *relatively*
+little work per platform compared to completing the gpiod transition.
+
+--gVeFDRGtAQ0W7qcm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUNBalAAoJECTWi3JdVIfQ50UH/jlCUwuw+qpYsFxnMr6HgFWm
+o56BLqUOI12FQpV7cZbOVwDFcXXZJ+VWfl1oJbcPcLcmR8M830I2BVrtPg4jNud2
+2kZRaPrpt4m2kLeLsQ2e1pUUlWNrlfgwv8mXDrQL2OKdvY+c95J0x7Z7ZBJNPbAB
+569Qx53AicNeRZH9s2jm9lPh9EtseSL51p5VBlRjvMTESSUgMdz+uzGsi1fwEbgU
+Uxk0EsBbQ2zwvDAVicTtdgR4jawavgz9+YOF7iFmo+GCfSm+Z3N9VNQPG6FjoB89
+wRqGwrn2NoV2tJKXdAjIIY+JmaRm+LIfgWRC3N4Yn59A5EPsW/oczRnbBSs/qXk=
+=FKzE
+-----END PGP SIGNATURE-----
+
+--gVeFDRGtAQ0W7qcm--
