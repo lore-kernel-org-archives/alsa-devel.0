@@ -1,17 +1,17 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 3/4] ASoC: fsl: eukrea-tlv320: Delete unneeded
-	test before of_node_put
-Date: Tue, 7 Oct 2014 15:29:57 -0300
-Message-ID: <1412706598-18796-3-git-send-email-fabio.estevam@freescale.com>
+Subject: [PATCH 4/4] ASoC: simple-card: Delete unneeded test
+	before of_node_put
+Date: Tue, 7 Oct 2014 15:29:58 -0300
+Message-ID: <1412706598-18796-4-git-send-email-fabio.estevam@freescale.com>
 References: <1412706598-18796-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0135.outbound.protection.outlook.com [157.56.110.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 62CAE26049A
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 20:30:38 +0200 (CEST)
+ (mail-bn1on0144.outbound.protection.outlook.com [157.56.110.144])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8905A2604BC
+ for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 20:30:40 +0200 (CEST)
 In-Reply-To: <1412706598-18796-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,22 +31,42 @@ necessary.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/fsl/eukrea-tlv320.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/generic/simple-card.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
-index eb093d5..dd931fa 100644
---- a/sound/soc/fsl/eukrea-tlv320.c
-+++ b/sound/soc/fsl/eukrea-tlv320.c
-@@ -217,8 +217,7 @@ static int eukrea_tlv320_probe(struct platform_device *pdev)
- err:
- 	if (ret)
- 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
--	if (np)
--		of_node_put(ssi_np);
-+	of_node_put(ssi_np);
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index fcb431f..ecba061 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -368,12 +368,9 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 		dai_link->cpu_dai_name = NULL;
  
+ dai_link_of_err:
+-	if (np)
+-		of_node_put(np);
+-	if (bitclkmaster)
+-		of_node_put(bitclkmaster);
+-	if (framemaster)
+-		of_node_put(framemaster);
++	of_node_put(np);
++	of_node_put(bitclkmaster);
++	of_node_put(framemaster);
  	return ret;
+ }
+ 
+@@ -464,11 +461,9 @@ static int asoc_simple_card_unref(struct platform_device *pdev)
+ 	     num_links < card->num_links;
+ 	     num_links++, dai_link++) {
+ 		np = (struct device_node *) dai_link->cpu_of_node;
+-		if (np)
+-			of_node_put(np);
++		of_node_put(np);
+ 		np = (struct device_node *) dai_link->codec_of_node;
+-		if (np)
+-			of_node_put(np);
++		of_node_put(np);
+ 	}
+ 	return 0;
  }
 -- 
 1.9.1
