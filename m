@@ -1,24 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [bug] SPDIF (digital-out) not working on
-	NForce4/CK804
-Date: Tue, 7 Oct 2014 11:21:58 +0800
-Message-ID: <CAN8cciZ=22ph3yFKjWf0h=hUXgBbO9_m=7f_YBga1nrdHOwrTw@mail.gmail.com>
-References: <542D95C8.8060701@gmail.com>
- <CAN8cciYnAm6ivNk_FG6WbWAicskXQ9E2Pi+LLAb2jLSSwuJC+Q@mail.gmail.com>
- <542F0EFE.6020303@gmail.com>
- <CAN8ccia720EFBH8mHdYV4V4_pwx6r2GGUhsZZXsbbNHxdZCeJA@mail.gmail.com>
- <542FBF1B.9050500@gmail.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH] ASoc: tegra: Add platform driver for
+	rt5677 audio codec
+Date: Mon, 06 Oct 2014 20:44:56 -0700
+Message-ID: <543361B8.40204@nvidia.com>
+References: <1412113939-11071-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f173.google.com (mail-qc0-f173.google.com
- [209.85.216.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 99381260393
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 05:21:59 +0200 (CEST)
-Received: by mail-qc0-f173.google.com with SMTP id x13so5044875qcv.18
- for <alsa-devel@alsa-project.org>; Mon, 06 Oct 2014 20:21:58 -0700 (PDT)
-In-Reply-To: <542FBF1B.9050500@gmail.com>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20505260393
+ for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 05:45:00 +0200 (CEST)
+In-Reply-To: <1412113939-11071-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,72 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Gilles Hemberg <gilles.hemberg@gmail.com>, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>, broonie@kernel.org, bardliao@realtek.com, oder_chiou@realtek.com, lars@metafoo.de, ldahan@nvidia.com, dgreid@google.com
+Cc: alsa-devel@alsa-project.org, Anatol Pomozov <anatol@google.com>
 List-Id: alsa-devel@alsa-project.org
 
->
-> It works!
->
->
->
-> Solution (in OpenElec 4.2.0; settings on other distros would be similar):
-> * Create custom asound.state in /storage/.config/ with the following
-contents:http://sprunge.us/SiHH(this state-file will, among other things,
-unmute the appropriate mixer controls, set proper output formats, ...).
->
-> * Load the above state file with the following command:
->
->     alsactl nrestore 0 -f /storage/.config/asound.state
->     (replace the "0" with the card-number corresponding to CK804 on your
-system)
->
->   You may want to add this command to a custom autostart.sh in
-/storage/.config/ so the state is restored on every boot.
->
-> * Create intel8x0.conf in /storage/.config/modprobe.d/ with the following
-contents:
->
->     options snd-intel8x0 spdif_aclink=1
->     (I am told that this above setting depends on the specific
-motherboard, so this may not work for everyone: it does work on my ASUS
-A8N-SLI Deluxe)
->
->   This was the final setting that solved the issue for me. I did try this
-setting before, but it seems that some sources on the Internet had this
-mis-written as "options snd-intel-8x0 spdif_aclink=1" (notice the extra
-dash).
->
-> * In XBMC, select the SPDIF out as both the audio-device AND the
-passthrough device.
->
->
+On 09/30/2014 02:52 PM, Anatol Pomozov wrote:
+> The driver will support Ryu board
 
-Advanced information - PCI Vendor/Device/Subsystem ID's
-!!-------------------------------------------------------
+> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5677.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5677.txt
 
-00:04.0 0401: 10de:0059 (rev a2)
-Subsystem: 1043:812a
+> +- nvidia,i2s-controller : The phandle of the Tegra I2S controller that's
+> +  connected to the CODEC.
+> +- nvidia,audio-codec : The phandle of the RT5677 audio codec. This binding
+> +  assumes that AIF1 on the CODEC is connected to Tegra.
+> +- nvidia,speaker-codec: The phandle of the SSM4567 amplifier. This binding
+> +  assumes that AIF2 on the audio CODEC is connected to this speaker amplifier.
 
-You can add pci subsystem id into spdif_aclink_defaults
+Does the CODEC only output audio on an I2S link, or does it also have
+analog outputs? As Mark mentioned, this binding deviates from the other
+generic audio bindings for Tegra in that the others all have CODEC
+analog outputs connected to speakers/headphones, whereas this binding
+requires an extra I2S based component, which doesn't seem very generic.
 
-static struct snd_pci_quirk spdif_aclink_defaults[] __devinitdata = {
-SND_PCI_QUIRK(0x147b, 0x1c1a, "ASUS KN8", 1),
-{ } /* end */
-};
+> +sound {
+> +	compatible = "nvidia,tegra-audio-rt5677-ryu",
+> +			"nvidia,tegra-audio-rt5677";
+> +	nvidia,model = "NVIDIA Tegra Ryu";
+> +
+> +	nvidia,audio-routing =
+> +		// rt5677 codec
 
->> >>
->> >> Simple mixer control 'IEC958 Playback AC97-SPSA',0
->> >>   Capabilities: volume volume-joined
->> >>   Playback channels: Mono
->> >>   Capture channels: Mono
->> >>   Limits: 0 - 3
->> >>   Mono: 0 [0%]
+Let's use /* */
 
-Does it use slot front left and front right slots for pcm playback?
+> diff --git a/sound/soc/tegra/tegra_rt5677.c b/sound/soc/tegra/tegra_rt5677.c
 
-Does it use spdif left/right slot for ac3 passthrough?  default for alc850
-after cold boot
+> +static struct snd_soc_pcm_stream tegra_rt5677_spk_params = {
+> +	.formats = SNDRV_PCM_FMTBIT_S16_LE,
+> +	.channels_min = 2,
+> +	.channels_max = 2,
+> +};
+...
+> +static int tegra_rt5677_asoc_hw_params(struct snd_pcm_substream *substream,
+> +					struct snd_pcm_hw_params *params)
+...
+> +	/* both dai interfaces use the same bit clock,
+> +	 * set rate for both interfaces the same, otherwise driver might not
+> +	 * be able to configure clock divider.
+> +	 */
+> +	tegra_rt5677_spk_params.rate_min = srate;
+> +	tegra_rt5677_spk_params.rate_max = srate;
 
-Can it get signal from the other two setting : rear left/right slot or
-center/lfe slot?
+This feels a bit odd. Shouldn't hw_params simply call some function on
+the appropriate DAI to configure it directly for the required sample rate?
+
+> +static struct snd_soc_dai_link tegra_rt5677_dai[] = {
+> +{
+
+The array entries should be indented 1 level.
+
+> +static int tegra_rt5677_remove(struct platform_device *pdev)
+> +{
+> +	struct snd_soc_card *card = platform_get_drvdata(pdev);
+> +	struct tegra_rt5677 *machine = snd_soc_card_get_drvdata(card);
+> +
+> +	snd_soc_jack_free_gpios(&tegra_rt5677_hp_jack, 1,
+> +				&tegra_rt5677_hp_jack_gpio);
+
+That needs to be part of the struct snd_soc_card's .remove function, not
+the struct platform_driver's .remove function. See the git history of
+other Tegra reasons for details of the crash this prevents.
