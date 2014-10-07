@@ -1,69 +1,73 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: Add mic and hp detect gpios.
-Date: Tue, 7 Oct 2014 17:36:54 +0100
-Message-ID: <20141007163654.GJ4609@sirena.org.uk>
-References: <1412198720-2326-1-git-send-email-dgreid@chromium.org>
- <20141002155350.GU4273@sirena.org.uk>
- <CAMuHMdWh=sXAD59T1T=gvROX+fbF6=gFo6C0nkJdfnCrdNrwYg@mail.gmail.com>
- <20141007123856.GF4609@sirena.org.uk>
- <CAMuHMdV39fM_TCa+WSvswij6dxD2vwfJT+FueBtxndpsymP9CQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ASoC: mc13783: Fix of_node_put() call
+ with uninitialized object
+Date: Tue, 7 Oct 2014 18:09:38 +0100
+Message-ID: <20141007170938.GM4609@sirena.org.uk>
+References: <1412698794-25536-1-git-send-email-tiwai@suse.de>
+ <1412698794-25536-2-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gVeFDRGtAQ0W7qcm"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdV39fM_TCa+WSvswij6dxD2vwfJT+FueBtxndpsymP9CQ@mail.gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Dylan Reid <dgreid@chromium.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, jay.xu@rock-chips.com, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, sonnyrao@chromium.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-sh list <linux-sh@vger.kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============5592098026086655752=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AFEB26059E
+ for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 19:09:52 +0200 (CEST)
+In-Reply-To: <1412698794-25536-2-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---gVeFDRGtAQ0W7qcm
+--===============5592098026086655752==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="np3HfElajyDBpWGr"
+Content-Disposition: inline
+
+
+--np3HfElajyDBpWGr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 07, 2014 at 03:10:01PM +0200, Geert Uytterhoeven wrote:
-> On Tue, Oct 7, 2014 at 2:38 PM, Mark Brown <broonie@kernel.org> wrote:
+On Tue, Oct 07, 2014 at 06:19:51PM +0200, Takashi Iwai wrote:
 
-> > The fix here is to not allow 0 as a GPIO in the core code (which
-> > should've been there already).
+> -	struct device_node *np;
+> +	struct device_node *np = NULL;
 
-> Unfortunately it's not there.
+No, unconditional initialisations like this are worse than the problem
+they're trying to fix.
 
-> And it's not as simple as changing the definition of gpio_is_valid()
-> (crash in gpio_get_value()):
-
->     gpiochip_add: GPIOs 0..211 (r8a7740_pfc) failed to register
->     sh-pfc pfc-r8a7740: failed to init GPIO chip, ignoring...
->     sh-pfc pfc-r8a7740: r8a7740_pfc support registered
->     Unable to handle kernel NULL pointer dereference at virtual address 0000004c
-
-Right, obviously it's not going to work if the platform actually uses 0
-as a valid GPIO.
-
-> Quoting Linus (https://lkml.org/lkml/2014/9/4/464):
-> "Fixing the old global GPIO numberspace API is a waste of time IMO".
-
-> Hence I've just sent a patch to initialize the GPIO numbers with -ENOENT.
-
-I do think it's worth renumbering the platforms since it's *relatively*
-little work per platform compared to completing the gpiod transition.
-
---gVeFDRGtAQ0W7qcm
+--np3HfElajyDBpWGr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUNBalAAoJECTWi3JdVIfQ50UH/jlCUwuw+qpYsFxnMr6HgFWm
-o56BLqUOI12FQpV7cZbOVwDFcXXZJ+VWfl1oJbcPcLcmR8M830I2BVrtPg4jNud2
-2kZRaPrpt4m2kLeLsQ2e1pUUlWNrlfgwv8mXDrQL2OKdvY+c95J0x7Z7ZBJNPbAB
-569Qx53AicNeRZH9s2jm9lPh9EtseSL51p5VBlRjvMTESSUgMdz+uzGsi1fwEbgU
-Uxk0EsBbQ2zwvDAVicTtdgR4jawavgz9+YOF7iFmo+GCfSm+Z3N9VNQPG6FjoB89
-wRqGwrn2NoV2tJKXdAjIIY+JmaRm+LIfgWRC3N4Yn59A5EPsW/oczRnbBSs/qXk=
-=FKzE
+iQEcBAEBAgAGBQJUNB5RAAoJECTWi3JdVIfQyaQH/2cdxi7wGOEC4TnDB6gVTPMf
+tmY9d7voV6AD90x6yf+B/LyNlUZsX3vU8hIRvTmQTyf4T4lZRf8OOmM8eEXChHUu
+PytjLB1l/04WkU6pQntN7joBjP9wWiov0S8WdiMdBrDK5wkPolpdskGVwKzTAJm4
+pS6vvgyCBl4mVUpPoYWc8V41yFrxeLiRoMvMhUq5gXkf1BuDhiFkp/OrqdpzhUrW
+CkJ2N12augWTI1E+CfM1pUp2lHL3fajd/GgRri15n+UQptMmbBaP8uiCbABZGmId
+RTvCMkeCMN0XBedcC7AlFvFx2xMNQHlEo3z7khelY4JI+J9F3o+exlGebYYCfpE=
+=in7f
 -----END PGP SIGNATURE-----
 
---gVeFDRGtAQ0W7qcm--
+--np3HfElajyDBpWGr--
+
+--===============5592098026086655752==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5592098026086655752==--
