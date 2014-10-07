@@ -1,16 +1,18 @@
 From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH 1/2] ASoC: fsl: imx-wm8962: Delete unneeded
+Subject: [PATCH 2/2] ASoC: fsl: imx-sgtl5000: Delete unneeded
 	test before of_node_put
-Date: Tue, 7 Oct 2014 15:13:24 -0300
-Message-ID: <1412705605-13646-1-git-send-email-fabio.estevam@freescale.com>
+Date: Tue, 7 Oct 2014 15:13:25 -0300
+Message-ID: <1412705605-13646-2-git-send-email-fabio.estevam@freescale.com>
+References: <1412705605-13646-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1on0135.outbound.protection.outlook.com [157.56.110.135])
- by alsa0.perex.cz (Postfix) with ESMTP id 3251A26053A
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 20:13:41 +0200 (CEST)
+Received: from na01-by2-obe.outbound.protection.outlook.com
+ (mail-by2on0131.outbound.protection.outlook.com [207.46.100.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id C00D52604AC
+ for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 20:13:44 +0200 (CEST)
+In-Reply-To: <1412705605-13646-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,17 +31,17 @@ necessary.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
- sound/soc/fsl/imx-wm8962.c | 6 ++----
+ sound/soc/fsl/imx-sgtl5000.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
-index 3a3d17c..48179ff 100644
---- a/sound/soc/fsl/imx-wm8962.c
-+++ b/sound/soc/fsl/imx-wm8962.c
-@@ -281,10 +281,8 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- clk_fail:
- 	clk_disable_unprepare(data->codec_clk);
+diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+index 1cb22dd..1dab963 100644
+--- a/sound/soc/fsl/imx-sgtl5000.c
++++ b/sound/soc/fsl/imx-sgtl5000.c
+@@ -175,10 +175,8 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
  fail:
+ 	if (data && !IS_ERR(data->codec_clk))
+ 		clk_put(data->codec_clk);
 -	if (ssi_np)
 -		of_node_put(ssi_np);
 -	if (codec_np)
