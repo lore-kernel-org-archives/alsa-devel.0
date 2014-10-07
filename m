@@ -1,50 +1,58 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH] ASoC: soc-pcm: fix sig_bits determination in
-	soc_pcm_apply_msb()
-Date: Tue,  7 Oct 2014 14:33:46 +0200
-Message-ID: <1412685226-7935-1-git-send-email-daniel@zonque.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: simple-card: Add mic and hp detect gpios.
+Date: Tue, 7 Oct 2014 13:38:56 +0100
+Message-ID: <20141007123856.GF4609@sirena.org.uk>
+References: <1412198720-2326-1-git-send-email-dgreid@chromium.org>
+ <20141002155350.GU4273@sirena.org.uk>
+ <CAMuHMdWh=sXAD59T1T=gvROX+fbF6=gFo6C0nkJdfnCrdNrwYg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.zonque.de (svenfoo.org [82.94.215.22])
- by alsa0.perex.cz (Postfix) with ESMTP id 032D126048B
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 14:33:52 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, Daniel Mack <daniel@zonque.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="0rEjiS+nMGFQ7Kkj"
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWh=sXAD59T1T=gvROX+fbF6=gFo6C0nkJdfnCrdNrwYg@mail.gmail.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Dylan Reid <dgreid@chromium.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, jay.xu@rock-chips.com, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, sonnyrao@chromium.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-sh list <linux-sh@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-In the SNDRV_PCM_STREAM_CAPTURE branch in soc_pcm_apply_msb(), look at
-sig_bits of the capture stream, not the playback one.
 
-Spotted by coverity.
+--0rEjiS+nMGFQ7Kkj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
----
- sound/soc/soc-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Oct 07, 2014 at 02:32:57PM +0200, Geert Uytterhoeven wrote:
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 642c862..002311a 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -352,7 +352,7 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
- 	} else {
- 		for (i = 0; i < rtd->num_codecs; i++) {
- 			codec_dai = rtd->codec_dais[i];
--			if (codec_dai->driver->playback.sig_bits == 0) {
-+			if (codec_dai->driver->capture.sig_bits == 0) {
- 				bits = 0;
- 				break;
- 			}
--- 
-2.1.0
+> Hence on r8a7740/armadillo-legacy, which uses platform devices instead of DT:
+
+>     sh-mobile-hdmi sh-mobile-hdmi: SH Mobile HDMI Audio Codec
+>     sh-mobile-hdmi sh-mobile-hdmi: ASoC: DAPM unknown pin Headphones
+>     sh-mobile-hdmi sh-mobile-hdmi: ASoC: DAPM unknown pin Mic Jack
+
+> After that the kernel log is spammed ca. 7 times per second with:
+
+>     sh-mobile-hdmi sh-mobile-hdmi: ASoC: DAPM unknown pin Headphones
+
+> Reverting commit 3fe240326cc395c66 ("ASoC: simple-card: Add mic and
+> hp detect gpios.") fixes this.
+
+The fix here is to not allow 0 as a GPIO in the core code (which
+should've been there already).
+
+--0rEjiS+nMGFQ7Kkj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUM97fAAoJECTWi3JdVIfQgtwH/i+yPeaZ+B5GLPdNvOkI9xwh
+RhJDZX600KVNGxpTjx4Qvgl03QnQEm63sNGzHTAZOvGR7L2NlmPimIq9DFMfMpWg
+dB4HAYiq2h0AN8be1sFmSaRlvEz5Wa1KWY+sxKYbJI3lGVRAaQlVtFkNzBZvac2l
+mljjnWa3aZa7uRNwad+ygxfMyB1b3nFg6O5aUuWooYQo86ZONTrNKt2Dbuhg3ckQ
+3xnlLdcOoB3QLisnxoE9duV/F+60bkqakS1BrFkgM8rRWxKVDsDENv9RKfzCU6po
+reBOZIitIgUR7jfTWi5poaXhyfZZtEAV+batFEGQWzQGSPyAtRdQQqVm991uP3k=
+=SH2v
+-----END PGP SIGNATURE-----
+
+--0rEjiS+nMGFQ7Kkj--
