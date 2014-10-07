@@ -1,21 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [GIT PULL] ASoC updates for v3.18
-Date: Tue, 7 Oct 2014 14:53:12 -0300
-Message-ID: <CAOMZO5D5uj8FrKUNxE4+VZSBcR4VCaYnZvR64XwdfxjEzXF6nQ@mail.gmail.com>
-References: <20141006115105.GL4609@sirena.org.uk>
- <s5htx3hxtjy.wl-tiwai@suse.de>
- <20141007171436.GA23707@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/3] ASoC: tegra: add tegra sgtl5000
+	machine driver
+Date: Tue, 7 Oct 2014 18:54:02 +0100
+Message-ID: <20141007175402.GT4609@sirena.org.uk>
+References: <cover.1412381377.git.marcel@ziswiler.com>
+ <74ea4fe20e653d2da555c8d7dd1478746bccd529.1412381377.git.marcel@ziswiler.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6502297671497960065=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f173.google.com (mail-lb0-f173.google.com
- [209.85.217.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A3E1260446
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 19:53:15 +0200 (CEST)
-Received: by mail-lb0-f173.google.com with SMTP id 10so6634221lbg.32
- for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2014 10:53:12 -0700 (PDT)
-In-Reply-To: <20141007171436.GA23707@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0A1C2604C7
+ for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 19:54:34 +0200 (CEST)
+In-Reply-To: <74ea4fe20e653d2da555c8d7dd1478746bccd529.1412381377.git.marcel@ziswiler.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,28 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>, Sachin Kamat <sachin.kamat@samsung.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Li.Xiubo@freescale.com>, Sean Cross <xobs@kosagi.com>
+To: Marcel Ziswiler <marcel@ziswiler.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux@arm.linux.org.uk, Stephen Warren <swarren@wwwdotorg.org>, Liam Girdwood <lgirdwood@gmail.com>, stefan@agner.ch, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark/Takashi,
 
-On Tue, Oct 7, 2014 at 2:14 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Oct 06, 2014 at 02:37:53PM +0200, Takashi Iwai wrote:
->> Mark Brown wrote:
->
->> However, this resulted in a few new build warnings, and some of them
->> look correctly reported.
->
->> *  sound/soc/codecs/mc13783.c:787:13: warning: 'np' may be used uninitialized in this function [-Wuninitialized]
->
->> The call of_node_put(np) is done unconditionally even for non-NULL
->> pdata where np isn't initialized.  This may lead to a real crash.
+--===============6502297671497960065==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Z1gw0Ba8VHj8Ap4r"
+Content-Disposition: inline
 
-Calling of_node_put() with NULL as an argument does not cause crashes.
-Please check:
-http://patchwork.ozlabs.org/patch/377930/
 
-Regards,
+--Z1gw0Ba8VHj8Ap4r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fabio Estevam
+On Sat, Oct 04, 2014 at 02:15:43AM +0200, Marcel Ziswiler wrote:
+> This binding and driver describe/support playback to headphones, and
+> capture from line-in and microphone.
+>=20
+> This driver is useful for the Toradex Apalis T30 and Colibri T30 modules.
+>=20
+> Signed-off-by: Marcel Ziswiler <marcel@ziswiler.com>
+> Reviewed-by: Stephen Warren <swarren@nvidia.com>
+> ---
+> Changes in v3:
+> - Revert to not using simple-audio-card being incompatible with tegra.
+> - Rebased to for-next.
+
+I can't help but think that't there's still room for a Tegra simple card
+here, there doesn't seem to be anything particularly CODEC specific
+about the driver here - it *could* use simple-card were it not for the
+CPU side.  This also seems like a specific example of the same problem
+we see with supporting DPCM in simple-card, we need a way for CPUs to
+be able to say that they need some general setup that covers the CPU
+internal configuration.
+
+--Z1gw0Ba8VHj8Ap4r
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUNCi5AAoJECTWi3JdVIfQEAQH/i4sms+iNsBEGLCrkZmdPBR+
+NdQBJrohsOUj0V4xeOOspSVUlM3PeR2PDEh7QxNInRnFRmi8+r8cqmgX49AOhFr5
+vk3s+aIJY+vjhpctHG3uzwKvJC/4pdem+oV1qdgjSTs1EmZIMpiilRzavx/Etugu
+ZYfVxeC7xNVsaYnBhIVSC+7mF4vDRaf+cPpfAGls7VkkuEw4X8eFs5hwKLMctY+r
+RBxeiqQ6Qh7++Esj6nJE4Z9wFpxePhKnN4hfjcoka21U6oSfBaQkdp8VVEExEY8E
+ms9B4g+ErcvtPJVoBnLaWXTcO9eXc5Dr49PmqDyvaUn5Q5tFcIEsvGqjBre63vg=
+=ZNY2
+-----END PGP SIGNATURE-----
+
+--Z1gw0Ba8VHj8Ap4r--
+
+--===============6502297671497960065==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6502297671497960065==--
