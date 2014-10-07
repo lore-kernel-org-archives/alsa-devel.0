@@ -1,22 +1,22 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [GIT PULL] ASoC updates for v3.18
-Date: Tue, 7 Oct 2014 11:01:36 -0700
-Message-ID: <20141007180135.GA2796@Alpha>
-References: <20141006115105.GL4609@sirena.org.uk>
- <s5htx3hxtjy.wl-tiwai@suse.de>
- <20141007171436.GA23707@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/4] ASoC: mc13783: Fix of_node_put() call
+ with uninitialized object
+Date: Tue, 7 Oct 2014 19:04:34 +0100
+Message-ID: <20141007180434.GU4609@sirena.org.uk>
+References: <1412698794-25536-1-git-send-email-tiwai@suse.de>
+ <1412698794-25536-2-git-send-email-tiwai@suse.de>
+ <20141007170938.GM4609@sirena.org.uk>
+ <s5hppe3lrzf.wl-tiwai@suse.de>
+ <20141007172337.GR4609@sirena.org.uk>
+ <s5hlhorlqyw.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3782160417875215619=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f41.google.com (mail-pa0-f41.google.com
- [209.85.220.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 89FCE260446
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 20:01:43 +0200 (CEST)
-Received: by mail-pa0-f41.google.com with SMTP id eu11so7649121pac.0
- for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2014 11:01:42 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20141007171436.GA23707@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9048E2604A2
+ for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 20:05:04 +0200 (CEST)
+In-Reply-To: <s5hlhorlqyw.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,47 +26,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Sachin Kamat <sachin.kamat@samsung.com>, Xiubo Li <Li.Xiubo@freescale.com>, Sean Cross <xobs@kosagi.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 07, 2014 at 06:14:36PM +0100, Mark Brown wrote:
-> On Mon, Oct 06, 2014 at 02:37:53PM +0200, Takashi Iwai wrote:
-> > Mark Brown wrote:
-> 
-> > However, this resulted in a few new build warnings, and some of them
-> > look correctly reported.
-> 
-> > *  sound/soc/codecs/mc13783.c:787:13: warning: 'np' may be used uninitialized in this function [-Wuninitialized]
-> 
-> > The call of_node_put(np) is done unconditionally even for non-NULL
-> > pdata where np isn't initialized.  This may lead to a real crash.
-> 
-> > * sound/soc/fsl/eukrea-tlv320.c:221:14: warning: 'ssi_np' may be used uninitialized in this function [-Wuninitialized]
-> 
-> > A similar bug: of_node_put(ssi_np) is reached even before ssi_np is
-> > initialized.
-> 
-> > * sound/soc/fsl/imx-es8328.c:196:13: warning: 'codec_np' may be used uninitialized in this function [-Wuninitialized]
-> > * sound/soc/fsl/imx-es8328.c:195:13: warning: 'ssi_np' may be used uninitialized in this function [-Wuninitialized]
-> 
-> > Ditto. 
-> 
-> > Relevant people put in Cc.  I hope I'll get a new pull request soon
-> > later :)
-> 
-> You missed CCing the Freescale guys and Timur so you're missing most of
-> the relevant people here; adding them now.
 
-Generally we fetch ssi_np and codec_np before other operations.
-But somehow these two are doing the fetching a bit later.
+--===============3782160417875215619==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jwSnfOBD38i7UC9C"
+Content-Disposition: inline
 
-However, I think the below change can be a quick reasonable fix:
--       struct device_node *ssi_np, *codec_np;
-+       struct device_node *codec_np = NULL;
-+       struct device_node *ssi_np = NULL;
 
-I'm patching and taking build test. Will send them soon.
+--jwSnfOBD38i7UC9C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks
-Nicolin
+On Tue, Oct 07, 2014 at 07:39:03PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
+
+> > Well, in this case I'd just move the of_node_put() into the existing
+> > check for pdata since we don't ever reference np outside of that anyway.
+
+> Yeah, that's an option, too, but it'd make the code less readable.
+> So I chose the straightforward way.
+
+I don't actually see it as a readability concern - to me having the get
+and release close to each other and especially having them at the same
+level of indentation helps.
+
+--jwSnfOBD38i7UC9C
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUNCsxAAoJECTWi3JdVIfQm/AH/1DZpwxBACWnLYRQ5aJudyw2
+p68iXzeoxARk6NhfYsNFf1o7nBmeBCVLNu37DoxP3mp+DASCo9ZYDkG7OAM915Sn
+bqItaLCR7clvuSh2Ur1Gf4jrczGC9q9dIoffAR8d1gmJspq7SW81GJuuDjiZCpzO
+ZkOpEpsQ7mhYziFWlhznW6V7HY0lK/Jixu4SFNmQtjmINlZn826CzfjAIMoqVkR4
+ZK741CSHjv4KN6LQmug6RKE9QoGJp1tkBy+qkn5p77H+e0BRd79YQD1RwX3MhP0d
+wU1wAGAuLMzlqQVIaj0H9hwwVQCRTekiu/Ih6jndRnkMykph2zkJATxfgMBXpnk=
+=B0ce
+-----END PGP SIGNATURE-----
+
+--jwSnfOBD38i7UC9C--
+
+--===============3782160417875215619==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3782160417875215619==--
