@@ -1,86 +1,44 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: rt5677: Add jack detection support
-Date: Tue, 7 Oct 2014 20:35:42 +0100
-Message-ID: <20141007193542.GG4609@sirena.org.uk>
+Subject: Re: [PATCH 1/3] ASoC: rt5677: Include gpio driver header
+Date: Tue, 7 Oct 2014 20:36:56 +0100
+Message-ID: <20141007193656.GH4609@sirena.org.uk>
 References: <1412372246-10489-1-git-send-email-benzh@chromium.org>
- <1412372246-10489-3-git-send-email-benzh@chromium.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gA19+fZe+9B2YWyg"
+	protocol="application/pgp-signature"; boundary="213B/23bCmw+8GSd"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1412372246-10489-3-git-send-email-benzh@chromium.org>
+In-Reply-To: <1412372246-10489-1-git-send-email-benzh@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Ben Zhang <benzh@chromium.org>
 Cc: alsa-devel@alsa-project.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---gA19+fZe+9B2YWyg
+--213B/23bCmw+8GSd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Oct 03, 2014 at 02:37:26PM -0700, Ben Zhang wrote:
+On Fri, Oct 03, 2014 at 02:37:24PM -0700, Ben Zhang wrote:
+> The header file is needed because struct gpio_chip is
+> placed in struct rt5677_priv.
 
-> This patch adds support for jack detection using GPIOs on the codec.
-> Plug detect signal and mic present signal can be routed from the physical
-> audio jack to GPIOs on the codec. The codec is configured so that upon
-> signal change, an IRQ(GPIO1) is fired. The codec interrupt handler reads
+Applied, thanks.
 
-This then assumes that GPIO1 was configured as the IRQ - what happens if
-it was connected with some other function on the board and some other
-GPIO was assigned as IRQ?
-
-> +	desc = devm_gpiod_get_index(&i2c->dev, "RT5677_GPIO",
-> +			RT5677_GPIO_PLUG_DET);
-> +	if (!IS_ERR(desc) && !gpiod_direction_input(desc))
-> +		rt5677->gpio_plug_det = desc_to_gpio(desc)
-> +				- rt5677->gpio_chip.base + 1;
-
-I'm having trouble reading this, I think other reasonable users would
-too.  It's not entirely clear to me what it's supposed to be doing or
-why we are mixing the descriptor and number based GPIO APIs.
-
-> +       /*
-> +        * Loop to handle interrupts until the last i2c read shows no pending
-> +        * irqs with a safeguard of 20 loops
-> +        */
-> +       for (i = 0; i < 20; i++) {
-
-Eh?  Why are we doing this and why are we so sure that 20 is a good
-value?
-
->  static int rt5677_probe(struct snd_soc_codec *codec)
->  {
-
-> +       rt5677_setup_jack_detect(codec, rt5677);
->         return 0;
-
-This sets up GPIO1 as an interrupt without verifying that we have an
-interrupt assigned for it successfully and only in the ASoC level probe,
-not in the chip level probe.  This means we might not have an interrupt
-at all if the board configuration was buggy and means that we'll start
-paying attention to the interrupt (which is requested in the i2c level
-probe as it should be) without configuring the chip to be in the
-appropriate state which means that it might start falsely flagging
-interrupts.  I'd expect the configuration to be closer together, and
-to have the CODEC set up ready to generate interrupts prior to starting
-to listen to them.
-
---gA19+fZe+9B2YWyg
+--213B/23bCmw+8GSd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUNECNAAoJECTWi3JdVIfQyFwH/RIacYxm0bJJbNcaS1zlc81K
-UuWl+iSMDvMKkY5PLvXu+nDvpwtffjzKMvRG1VMhR5QdmnmKut2lAepeJieCECes
-JbIFVE9O+/vXtT+iVomM4ZBvrpqfah8woQy0Kv0aaR+1qxG62C8Wojjufj3eyJPr
-DNauwNU28VGmXTZY/aXa6/xBoH1N3hi27E6i1npMbBT/AYV8pBBHh9b33wuCMojy
-f7k5zn8QnQeurW2U1Ue2zpjfumcM0YZFpUtEZoZ92Y7Mwf9OqJr+bQsIbqrcEJYW
-v1jXAbrUBzAR+0JpQ4KtHK9VCeWjniWlK/bCvxSWo03/hKcHtm9qndjKU+kgZUY=
-=9JXa
+iQEcBAEBAgAGBQJUNEDXAAoJECTWi3JdVIfQ6dYH/jXvxYPxAx6ZVQIA9aR5/g/Y
+A8LuwelO9gzn74pTii6eFMZ81SgsWe+GPtma5LWXzHEBCpOd4JGZWTqTG4RdPjyf
+SdGEdioS20MqMKGLdSZ+/UMVOGt95KpoxkxaBK8vwrQWk/Veyc1aGKzG+adWbf4V
+VHC6o8EY0AnI+/bqtx++VVZnvtV+9QPWSZf7DjuW/D0ji6N/llY5qbnFm3AUsAcB
+DZIElp0VZ39hn6+0ALhqTPJDJkxExN1m328Lw/eZRYWrEKAWYSh3inwKg4pnNZqw
+c372yG4mxky2r1o3Z1TjMzNlCNpya+FK8vETtbtIIuQUBieY8Jta4DIadmfrsOw=
+=uuD2
 -----END PGP SIGNATURE-----
 
---gA19+fZe+9B2YWyg--
+--213B/23bCmw+8GSd--
