@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/4] ASoC: imx-es8328: Fix missing return
- code in imx_es8328_probe()
-Date: Tue, 7 Oct 2014 18:10:41 +0100
-Message-ID: <20141007171041.GN4609@sirena.org.uk>
+Subject: Re: [PATCH 0/4] ASoC trivial fixes
+Date: Tue, 7 Oct 2014 18:11:34 +0100
+Message-ID: <20141007171134.GO4609@sirena.org.uk>
 References: <1412698794-25536-1-git-send-email-tiwai@suse.de>
- <1412698794-25536-5-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5693877824767674761=="
+Content-Type: multipart/mixed; boundary="===============8284228164533140591=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 457A42605AE
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 19:10:53 +0200 (CEST)
-In-Reply-To: <1412698794-25536-5-git-send-email-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E0CE8260490
+ for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 19:11:55 +0200 (CEST)
+In-Reply-To: <1412698794-25536-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,45 +25,47 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5693877824767674761==
+--===============8284228164533140591==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6AFz5yWxU/FsGPwt"
+	protocol="application/pgp-signature"; boundary="GACvPnKyN03uhzyl"
 Content-Disposition: inline
 
 
---6AFz5yWxU/FsGPwt
+--GACvPnKyN03uhzyl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 07, 2014 at 06:19:54PM +0200, Takashi Iwai wrote:
-> An error code was forgotten to be passed in the error path of
-> imx_es8328_probe().
+On Tue, Oct 07, 2014 at 06:19:50PM +0200, Takashi Iwai wrote:
 
-Applied, thanks.
+> this is a series of fixes for the bugs I pointed yesterday.
+> Since no fix action was seen yet, I quickly put band-aid over them.
 
---6AFz5yWxU/FsGPwt
+So, I now checked who you'd Cced - you didn't CC the Freescale guys so
+I'm not surprised you got no reply...
+
+--GACvPnKyN03uhzyl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUNB6QAAoJECTWi3JdVIfQT54H+wTwEpVMUY5HogdAT0usu68O
-OQ+MbCgTeLsNiTMCgfHhgNZHhxooNI9xt9mOFfzUrDDsXYtMeLo3+f1MjzMKzSrL
-j4oTbgunRt78nVGUOWZ6KvtUDZpgGkbVPRl8vd0W2LhM0kNGeOZjh3mKofyMo1PX
-KG3zVreXv1BLPS1x37P2P7by/9l1ep05IxadA0rajXe6GSSco32t7GyQmvu0gk4I
-xXkaowy32Hqln0LDzSEYD4LvFPd6hfAfynik59WoaxPhVKo0DDNE8FpagxlEqL6e
-82PlvaKFuFNN7tliFavkqaE30L1Y3leJxs2OKsTq84G7vwXtCrXAdiNyub+3MUM=
-=s4s6
+iQEcBAEBAgAGBQJUNB7FAAoJECTWi3JdVIfQb6QH/ixKR+o0TKyq/xOufLzjfq02
+lj+wTOnKs6iRfkJF/CL+fn7eHTvt2RhRpjKm91s/0cN/PJoWN8C4dvHJaFK+pguY
+RqzuFRfLikP1926lEG6tgkcdfqFuJaEJvqDX06obYsADbQXqBWU5V+tC0BjB/ojb
+08dN287n1qxyre3QLmNEG4YKx0P31XvO2HuZL8RFtlVx7cyAj9GYzQ5smQnJJxfi
+Z/mHjhf+63CZvCO/2jAL692CGjEgWZIhUAgI8ZNW1OnngOd2vS85G6pERohosdfv
+b9bb5QG6JOXE4FiAp5/07/+19E6K+DWjZpBD7Ql5rWV2JkF5pUuSYq0shCkpo8Q=
+=bML9
 -----END PGP SIGNATURE-----
 
---6AFz5yWxU/FsGPwt--
+--GACvPnKyN03uhzyl--
 
---===============5693877824767674761==
+--===============8284228164533140591==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5693877824767674761==--
+--===============8284228164533140591==--
