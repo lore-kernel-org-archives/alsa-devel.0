@@ -1,15 +1,24 @@
-From: Fabio Estevam <fabio.estevam@freescale.com>
-Subject: [PATCH] ASoC: sgtl5000: Cleanup the comments
-Date: Tue, 7 Oct 2014 10:50:56 -0300
-Message-ID: <1412689856-7605-1-git-send-email-fabio.estevam@freescale.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Subject: Re: Exposing the ThinkPad HW mute switch to ALSA?
+Date: Tue, 7 Oct 2014 07:44:35 -0700
+Message-ID: <CALCETrUbYu=Grku76Q3Lj7z4o0qunMdEzBc=5qACXd-7uK1RHg@mail.gmail.com>
+References: <CALCETrULBrany=JLyZsfq6oiGDDUZOZyA+=7=GqLW8h+ZoHJVA@mail.gmail.com>
+ <s5hoatpxsav.wl-tiwai@suse.de> <20141006190942.GA8238@khazad-dum.debian.net>
+ <CALCETrUKJTXVQ1qDtix=zxibb9KujuE96Xq9C2=qYYJX2j3U_w@mail.gmail.com>
+ <s5hsij0lacx.wl-tiwai@suse.de>
+ <CACckToV0LiiZywtPT4OmvwuK6qVX41wbwuUiR-JdjG87javH_g@mail.gmail.com>
+ <s5hfvf0w679.wl-tiwai@suse.de> <20141007131951.GB25214@khazad-dum.debian.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na01-bn1-obe.outbound.protection.outlook.com
- (mail-bn1bon0114.outbound.protection.outlook.com [157.56.111.114])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A1F1260490
- for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 15:51:17 +0200 (CEST)
+Received: from mail-lb0-f174.google.com (mail-lb0-f174.google.com
+ [209.85.217.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6648A260490
+ for <alsa-devel@alsa-project.org>; Tue,  7 Oct 2014 16:44:56 +0200 (CEST)
+Received: by mail-lb0-f174.google.com with SMTP id p9so6322262lbv.33
+ for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2014 07:44:55 -0700 (PDT)
+In-Reply-To: <20141007131951.GB25214@khazad-dum.debian.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,95 +28,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc: Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fix grammar and typos. 
+On Oct 7, 2014 6:20 AM, "Henrique de Moraes Holschuh" <hmh@hmh.eng.br> wrote:
+>
+> On Tue, 07 Oct 2014, Takashi Iwai wrote:
+> > At Tue, 7 Oct 2014 17:25:13 +1100,
+> > Grant Diffey wrote:
+> > > so I have a really dumb question.
+> > >
+> > > Why can't the controls be mapped as HCI rather than a soundcard? given
+> > > there's no audio production capability here only a control capability.
+> > >
+> > > Also this seems to be how they end up functioning on a modern system they
+> > > get bound to pulse which remaps them to whatever's 'active'
+> > >
+> > > Why does everyone say that this is a soundcard when it's really a keyboard
+> > > (from my pov)
+> >
+> > thinkpad_acpi actually mutes the sound on some models, at least the
+> > old ones, independently from the sound chip mute state.  That's why it
+> > was implemented as the sound card object initially.
+>
+> That's how the hardware works, really.  One AC97 audio channel is routed to
+> a digital volume chip, and from there to the console headphone jack, and to
+> the built-in speakers.  line-out is not routed through this chip, and AFAIK
+> MIC/line-in is not routed through either this chip _or_ a separate mute
+> gate, either.
+>
+> The EC controls this digital volume chip directly, it is independent from
+> the AC97 mixer.  The default behaviour cannot be changed in earlier
+> thinkpads, and trying to change it in later thinkpads (they're supposed to
+> have a legacy mode that is the same as the older models) doesn't work very
+> well.
+>
+> Line-out and MIC are controlled only by the AC97 mixer in the older models
+> with digital volume control.
+>
+> In newer-but-not-newest thinkpads, there are two mute gates, one for MIC,
+> and another for the speakers/headphones.  The EC controls those.  All volume
+> control is in the HDA mixer.
+>
+> In the newest thinkpads, I think there's only a MIC mute gate controlled by
+> the EC, and everything else is in the HDA mixer.
+>
+> And depeding on the EC operating mode and thinkpad model, the volume hotkeys
+> might interact with the mute state (unmuting on first press when it is
+> mute).
+>
 
-Besides that, also fix the comment about the range of SYS_MCLK, which is from
-8 to 27 MHz.
+On newish thinkpads (at least X60-X220, and I think this works on the
+latest models as well), we can disable all of this and make the mute
+button be a regular button if we want.  Getting the mute LED to DTRT
+might be tricky, but modern userspace can probably do it.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/codecs/sgtl5000.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+This is almost certainly the approach that does something sensible
+with the least code written.  We would just check for HAUM/SAUM on
+startup and, if available, set SAUM to "software control only",
+force-unmute the mute circuit, force the volume to full, and disable
+the fake soundcard.
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 6bb77d7..10160e7 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -530,16 +530,16 @@ static int sgtl5000_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 
- /*
-  * set clock according to i2s frame clock,
-- * sgtl5000 provide 2 clock sources.
-- * 1. sys_mclk. sample freq can only configure to
-+ * sgtl5000 provides 2 clock sources:
-+ * 1. sys_mclk: sample freq can only be configured to
-  *	1/256, 1/384, 1/512 of sys_mclk.
-- * 2. pll. can derive any audio clocks.
-+ * 2. pll: can derive any audio clocks.
-  *
-  * clock setting rules:
-- * 1. in slave mode, only sys_mclk can use.
-- * 2. as constraint by sys_mclk, sample freq should
-- *	set to 32k, 44.1k and above.
-- * 3. using sys_mclk prefer to pll to save power.
-+ * 1. in slave mode, only sys_mclk can be used
-+ * 2. as constraint by sys_mclk, sample freq should be set to 32 kHz, 44.1 kHz
-+ * and above.
-+ * 3. usage of sys_mclk is preferred over pll to save power.
-  */
- static int sgtl5000_set_clock(struct snd_soc_codec *codec, int frame_rate)
- {
-@@ -549,8 +549,8 @@ static int sgtl5000_set_clock(struct snd_soc_codec *codec, int frame_rate)
- 
- 	/*
- 	 * sample freq should be divided by frame clock,
--	 * if frame clock lower than 44.1khz, sample feq should set to
--	 * 32khz or 44.1khz.
-+	 * if frame clock is lower than 44.1 kHz, sample freq should be set to
-+	 * 32 kHz or 44.1 kHz.
- 	 */
- 	switch (frame_rate) {
- 	case 8000:
-@@ -603,7 +603,8 @@ static int sgtl5000_set_clock(struct snd_soc_codec *codec, int frame_rate)
- 
- 	/*
- 	 * calculate the divider of mclk/sample_freq,
--	 * factor of freq =96k can only be 256, since mclk in range (12m,27m)
-+	 * factor of freq = 96 kHz can only be 256, since mclk is in the range
-+	 * of 8 MHz - 27 MHz
- 	 */
- 	switch (sgtl5000->sysclk / sys_fs) {
- 	case 256:
-@@ -619,7 +620,7 @@ static int sgtl5000_set_clock(struct snd_soc_codec *codec, int frame_rate)
- 			SGTL5000_MCLK_FREQ_SHIFT;
- 		break;
- 	default:
--		/* if mclk not satisify the divider, use pll */
-+		/* if mclk does not satisfy the divider, use pll */
- 		if (sgtl5000->master) {
- 			clk_ctl |= SGTL5000_MCLK_FREQ_PLL <<
- 				SGTL5000_MCLK_FREQ_SHIFT;
-@@ -795,7 +796,7 @@ static int ldo_regulator_enable(struct regulator_dev *dev)
- 				SGTL5000_LINEREG_D_POWERUP,
- 				SGTL5000_LINEREG_D_POWERUP);
- 
--	/* when internal ldo enabled, simple digital power can be disabled */
-+	/* when internal ldo is enabled, simple digital power can be disabled */
- 	snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
- 				SGTL5000_LINREG_SIMPLE_POWERUP,
- 				0);
-@@ -1079,7 +1080,7 @@ static bool sgtl5000_readable(struct device *dev, unsigned int reg)
- /*
-  * sgtl5000 has 3 internal power supplies:
-  * 1. VAG, normally set to vdda/2
-- * 2. chargepump, set to different value
-+ * 2. charge pump, set to different value
-  *	according to voltage of vdda and vddio
-  * 3. line out VAG, normally set to vddio/2
-  *
--- 
-1.9.1
+--Andy
+
+> --
+>   "One disk to rule them all, One disk to find them. One disk to bring
+>   them all and in the darkness grind them. In the Land of Redmond
+>   where the shadows lie." -- The Silicon Valley Tarot
+>   Henrique Holschuh
