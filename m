@@ -1,36 +1,69 @@
-From: Sonny Rao <sonnyrao@chromium.org>
-Subject: [PATCH] ASoC: rockchip-i2s: fix infinite loop in rockchip_snd_txctrl
-Date: Wed,  8 Oct 2014 00:58:51 -0700
-Message-ID: <1412755131-27542-1-git-send-email-sonnyrao@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, dianders@chromium.org, Jianqun <jay.xu@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Sonny Rao <sonnyrao@chromium.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] ASoC: simple-card: Add mic and hp detect
+	gpios.
+Date: Wed, 8 Oct 2014 10:50:00 +0200
+Message-ID: <CACRpkdY+KQ1OMh565desoqVP-AUJL-VjFx-D5LiaNpXs5oOsnA@mail.gmail.com>
+References: <1412198720-2326-1-git-send-email-dgreid@chromium.org>
+ <20141002155350.GU4273@sirena.org.uk>
+ <CAMuHMdWh=sXAD59T1T=gvROX+fbF6=gFo6C0nkJdfnCrdNrwYg@mail.gmail.com>
+ <20141007123856.GF4609@sirena.org.uk>
+ <CAMuHMdV39fM_TCa+WSvswij6dxD2vwfJT+FueBtxndpsymP9CQ@mail.gmail.com>
+ <20141007163654.GJ4609@sirena.org.uk>
+ <CAAVeFuJB=bF3g2czT1ed1UX85R_hBXqFAKdeLJcASRcXQujFJw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ig0-f182.google.com (mail-ig0-f182.google.com
+ [209.85.213.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3D0526041E
+ for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 10:50:02 +0200 (CEST)
+Received: by mail-ig0-f182.google.com with SMTP id hn18so7615431igb.9
+ for <alsa-devel@alsa-project.org>; Wed, 08 Oct 2014 01:50:01 -0700 (PDT)
+In-Reply-To: <CAAVeFuJB=bF3g2czT1ed1UX85R_hBXqFAKdeLJcASRcXQujFJw@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alexandre Courbot <gnurou@gmail.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux-sh list <linux-sh@vger.kernel.org>, Sonny Rao <sonnyrao@chromium.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Dylan Reid <dgreid@chromium.org>, jay.xu@rock-chips.com, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-We can get into an infinite loop if the I2S_CLR register fails to
-clear due to a missing break statement, so add that.
+On Wed, Oct 8, 2014 at 9:05 AM, Alexandre Courbot <gnurou@gmail.com> wrote:
+> On Wed, Oct 8, 2014 at 1:36 AM, Mark Brown <broonie@kernel.org> wrote:
+>> On Tue, Oct 07, 2014 at 03:10:01PM +0200, Geert Uytterhoeven wrote:
 
-Signed-off-by: Sonny Rao <sonnyrao@chromium.org>
----
- sound/soc/rockchip/rockchip_i2s.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+>> Right, obviously it's not going to work if the platform actually uses 0
+>> as a valid GPIO.
+>>
+>>> Quoting Linus (https://lkml.org/lkml/2014/9/4/464):
+>>> "Fixing the old global GPIO numberspace API is a waste of time IMO".
+>>
+>>> Hence I've just sent a patch to initialize the GPIO numbers with -ENOENT.
+>>
+>> I do think it's worth renumbering the platforms since it's *relatively*
+>> little work per platform compared to completing the gpiod transition.
+>
+> But transition to gpiod is the way to ultimately fix this issue, as
+> well as many others. Not to mention that renumbering GPIOs will
+> certainly make a few users of the GPIO sysfs (another abomination,
+> agreed) unhappy. I can only recommend switching drivers to gpiod when
+> such issues are spotted.
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 033487c..f373e37 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -108,8 +108,10 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
- 			while (val) {
- 				regmap_read(i2s->regmap, I2S_CLR, &val);
- 				retry--;
--				if (!retry)
-+				if (!retry) {
- 					dev_warn(i2s->dev, "fail to clear\n");
-+					break;
-+				}
- 			}
- 		}
- 	}
--- 
-1.8.3.2
+Yeah that is another issue ... we end up in catch 22 situations like
+that, renumber the GPIOs, OK, then we break the ABI.
+
+Admittedly that "ABI" is something people break all the time,
+/sys/*gpioN just isnt what it should be, not stable at all.
+
+I'm not against renumbering GPIO if it's minor effort, but if it
+start to consume hundreds of hours and regressions and what not,
+that time is better spent focusing on the gpiod transition.
+
+Yours,
+Linus Walleij
