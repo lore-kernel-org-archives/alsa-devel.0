@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: proposal: snd_pcm_start_at()
-Date: Wed, 8 Oct 2014 21:16:44 +0100
-Message-ID: <20141008201644.GM4609@sirena.org.uk>
-References: <1412260460.3891605.174362449.667FB9BE@webmail.messagingengine.com>
- <542D8E3F.4080400@linux.intel.com> <542E8FE4.4080904@eml.cc>
- <542F2216.7050801@linux.intel.com> <s5h61fxzg2y.wl-tiwai@suse.de>
- <20141008141832.GZ4609@sirena.org.uk>
- <s5hwq8atw95.wl-tiwai@suse.de> <543561A0.8020701@eml.cc>
+From: Robin Gareus <robin@gareus.org>
+Subject: Re: [WIP PATCH] Scarlett mixer interface for 6i6, 18i6,
+ 18i8 and 18i20.
+Date: Wed, 08 Oct 2014 23:21:54 +0200
+Message-ID: <5435AAF2.5040909@gareus.org>
+References: <1412694986-2537-1-git-send-email-david.henningsson@canonical.com>
+ <54358AA6.7040205@zonque.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1690051119519987918=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 35FFB2604CA
- for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 22:17:03 +0200 (CEST)
-In-Reply-To: <543561A0.8020701@eml.cc>
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
+ [81.169.146.163])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEB952604CF
+ for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 23:22:00 +0200 (CEST)
+In-Reply-To: <54358AA6.7040205@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,56 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Cussins <timcussins@eml.cc>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Daniel Mack <daniel@zonque.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, smilingthax@googlemail.com, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
+Thanks David for picking this up.
 
---===============1690051119519987918==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5kKFnMzJ1rlmqP2F"
-Content-Disposition: inline
+On 10/08/2014 09:04 PM, Daniel Mack wrote:
+>> +
+>> +/* #define WITH_METER */
+>> +/* #define WITH_LOGSCALEMETER */
+> 
+> These should either be converted to module parameters, or removed
+> alltogether. Why are they configurable, anyway?
 
+Mainly because I lost interest in Focusrite devices before finishing the
+work. They were handy during initial development and the idea was to
+just enable them by default at some point.
 
---5kKFnMzJ1rlmqP2F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Last I checked they both worked fine for the 18i6, but it seems support
+other Scarlett devices is missing and/or untested, so I guess they're
+commented out for that reason.
 
-On Wed, Oct 08, 2014 at 05:09:04PM +0100, Tim Cussins wrote:
-> On 08/10/14 16:29, Takashi Iwai wrote:
+> +#define CTL_SWITCH(cmd, off, no, count, name) \
+> +	do { \
+> +		err = add_new_ctl(mixer, &usb_scarlett_ctl_switch, cmd, off, no, 2,
+count, name, NULL, &elem); \
+> +		if (err < 0) \
+> +			return err; \
+> +	} while (0)
 
-> >OK, I added it to the topic list of audio mini-summit.
-> >Let's see whether we can talk something about this.
+curious, why "do { } while (0)" and not just  "{ }" ?
 
-> 2) Come over on Tuesday and join the mini summit
+> Hmm, I don't really like the style of magically returning from macros
 
-This would be great, but please note that since the Linux Foundation are
-doing the logistics (room and so on) for us you'd need to register for
-one of the conferences that week.
+Yes, same here. I'm initially responsible for one such macro and wanted
+to get rid of it. I'm sorry if that lead Tobias to adding more in that
+style.
 
---5kKFnMzJ1rlmqP2F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUNZurAAoJECTWi3JdVIfQ9yQH/ifir4HkGazleoG8ztoypiRl
-+Q1nkTvEl2FTADFgDPCzWJv/3NMn+dQdUxN4yAh6yfMcb1ZoysdaaMFsYKsbehSh
-MtJBCb2zQDrE5zaBQRby2/rF9j4LGQ1uA8ox/COyMnF/Sbsqn59VttxB87y7QQim
-x116G8IsDGxil/miwfO8HFboc4EbZsRoVUim4PeACh+vVkZdvxsVRsu3ewYUIEph
-V0F9BEdzs9grFV8Nwz61jZs4e7kjW8XSAvBTiSvpDaR19r1LrGgbAdy/j2CIPTRN
-kL7d/rjtzIe++fQuLrSXUmsARVJzCBlwhTWc+R3wBILBVD2Tth7CaTJzfmzBiIk=
-=Yf6M
------END PGP SIGNATURE-----
-
---5kKFnMzJ1rlmqP2F--
-
---===============1690051119519987918==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1690051119519987918==--
+Cheers!
+robin
