@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: mc13783: Ensure we only try to
- dereference valid of_nodes
-Date: Wed, 8 Oct 2014 16:50:15 +0100
-Message-ID: <20141008155015.GF4609@sirena.org.uk>
-References: <1412779204-30876-1-git-send-email-broonie@kernel.org>
- <s5hk34ak3dk.wl-tiwai@suse.de>
+From: Tim Cussins <timcussins@eml.cc>
+Subject: Re: proposal: snd_pcm_start_at()
+Date: Wed, 08 Oct 2014 17:09:04 +0100
+Message-ID: <543561A0.8020701@eml.cc>
+References: <1412260460.3891605.174362449.667FB9BE@webmail.messagingengine.com>	<542D8E3F.4080400@linux.intel.com>	<542E8FE4.4080904@eml.cc>	<542F2216.7050801@linux.intel.com>	<s5h61fxzg2y.wl-tiwai@suse.de>	<20141008141832.GZ4609@sirena.org.uk>
+ <s5hwq8atw95.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8049253250915288370=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 45080260478
- for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 17:50:35 +0200 (CEST)
-In-Reply-To: <s5hk34ak3dk.wl-tiwai@suse.de>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id C3BA2260478
+ for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 18:09:17 +0200 (CEST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by gateway2.nyi.internal (Postfix) with ESMTP id D97F421107
+ for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 12:09:16 -0400 (EDT)
+In-Reply-To: <s5hwq8atw95.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 08/10/14 16:29, Takashi Iwai wrote:
+> At Wed, 8 Oct 2014 15:18:32 +0100,
+> Mark Brown wrote:
+>>
+>> On Mon, Oct 06, 2014 at 11:45:57AM +0200, Takashi Iwai wrote:
+>>
+>>> I think some synchronized triggering mechanism is missing in API, too.
+>>> There has been a similar request from others in the past (Digigram
+>>> wanted to have such a feature), so maybe it's not so uncommon
+>>> scenario.
+>>
+>> Yes, I've had people ask me about this too, mainly around getting
+>> multiple DSP streams synchronized.  It was a while ago and a bit edge
+>> casey though.
+>
+> OK, I added it to the topic list of audio mini-summit.
+> Let's see whether we can talk something about this.
+>
 
---===============8049253250915288370==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Sa8Wro6pbQmO8/rE"
-Content-Disposition: inline
+Awesome. There's a couple of things I can do here:
 
+1) Post my ideas for selecting/controlling VCO associated with PCM _soon_
+2) Come over on Tuesday and join the mini summit
+3) Both!
 
---Sa8Wro6pbQmO8/rE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm pretty new to ALSA, so I can only realistically contribute to the 
+scheduled stream trigger discussion, although the Configuration/ASoC 
+stuff will be relevant to my crowd too.
 
-On Wed, Oct 08, 2014 at 05:06:15PM +0200, Takashi Iwai wrote:
+If no-one has a major objection to a rep from the ALSA-newbie community, 
+I'll see if I can come over :)
 
-> I'd move the declaration of np into if block, too, so that it won't be
-> referred in other places.
+Either way, I'll post my VCO ideas to the list ASAP.
 
-I generally dislike that style outside of very large functions; it's not
-typical for C.
-
---Sa8Wro6pbQmO8/rE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUNV02AAoJECTWi3JdVIfQzAcH/jk9Y/go17d+xs3SCP/m2fI/
-28Y9GvYN0rN/LhApPlJyFP6moz2X/UDtzOQ44dfrNmUMZaTB4LOMrZJaD0g/6V6O
-/n9SA7XGkYqZzeuM4SYgVY3fYShzf25xKG2LSxW5E+eFZ0g9SqvbGSmDZ3HokcqY
-TMx14ppE3OWt51ZJzAKq6EElCTEArcskVu1FCj2Pvr17NW/g5uUx0elqN2Db70Rm
-z5aPsSVWWe38OLZkQO83KVLOmwXVT9NXoHaqepTyG+sWznCosVgTsAFxR9JsNVaz
-Xb5kteP07N7fKtXS/YeBTz4P8mrNnZc8HZjDFxajZbhPjhOH4f0vuxgcPutZSKg=
-=EI74
------END PGP SIGNATURE-----
-
---Sa8Wro6pbQmO8/rE--
-
---===============8049253250915288370==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8049253250915288370==--
+Cheers,
+Tim
