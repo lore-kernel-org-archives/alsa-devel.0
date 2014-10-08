@@ -1,19 +1,17 @@
-From: Robin Gareus <robin@gareus.org>
-Subject: Re: [WIP PATCH] Scarlett mixer interface for 6i6, 18i6,
- 18i8 and 18i20.
-Date: Wed, 08 Oct 2014 23:21:54 +0200
-Message-ID: <5435AAF2.5040909@gareus.org>
-References: <1412694986-2537-1-git-send-email-david.henningsson@canonical.com>
- <54358AA6.7040205@zonque.org>
+From: Adam Goode <agoode@chromium.org>
+Subject: seq module loading issue
+Date: Wed, 8 Oct 2014 18:00:41 -0400
+Message-ID: <CAOf41NnCESt3PEGhp3yKgZhScG1H0+qrhz8h3+vjBUfGzfhsyA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de
- [81.169.146.163])
- by alsa0.perex.cz (Postfix) with ESMTP id BEB952604CF
- for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 23:22:00 +0200 (CEST)
-In-Reply-To: <54358AA6.7040205@zonque.org>
+Received: from mail-ig0-f175.google.com (mail-ig0-f175.google.com
+ [209.85.213.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E9172604CF
+ for <alsa-devel@alsa-project.org>; Thu,  9 Oct 2014 00:01:04 +0200 (CEST)
+Received: by mail-ig0-f175.google.com with SMTP id uq10so9083846igb.8
+ for <alsa-devel@alsa-project.org>; Wed, 08 Oct 2014 15:01:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,43 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, smilingthax@googlemail.com, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks David for picking this up.
+Hi,
 
-On 10/08/2014 09:04 PM, Daniel Mack wrote:
->> +
->> +/* #define WITH_METER */
->> +/* #define WITH_LOGSCALEMETER */
-> 
-> These should either be converted to module parameters, or removed
-> alltogether. Why are they configurable, anyway?
+I've observed a scenario in ALSA that I would like some feedback on
+solving. On Linux, Chrome uses seq for WebMIDI. Eventually, there will be
+hotplug detection code in Chrome that looks like this:
 
-Mainly because I lost interest in Focusrite devices before finishing the
-work. They were handy during initial development and the idea was to
-just enable them by default at some point.
+1. Connect to announce port
+2. Listen for any announcements for client/port start/end
+3. Send MIDIConnectionEvent events to JavaScript clients (
+http://webaudio.github.io/web-midi-api/#midiconnectionevent-interface)
 
-Last I checked they both worked fine for the 18i6, but it seems support
-other Scarlett devices is missing and/or untested, so I guess they're
-commented out for that reason.
+Here is the scenario where this fails:
 
-> +#define CTL_SWITCH(cmd, off, no, count, name) \
-> +	do { \
-> +		err = add_new_ctl(mixer, &usb_scarlett_ctl_switch, cmd, off, no, 2,
-count, name, NULL, &elem); \
-> +		if (err < 0) \
-> +			return err; \
-> +	} while (0)
+1. Cold boot a machine with no MIDI devices plugged in
+2. Start client, subscribe on the seq announce port
+3. Insert USB MIDI device
+4. snd_rawmidi module is loaded, triggered by insertion of MIDI device
+5. snd_seq_midi is NOT loaded, but marked for loading later
 
-curious, why "do { } while (0)" and not just  "{ }" ?
+At this point, there is no client start event sent to the announce port.
+This is because of the deferred module loading, which won't trigger except
+for a handful of operations (snd_seq_client_info_get_client is an example).
 
-> Hmm, I don't really like the style of magically returning from macros
+This is easily replicated with looking at aseqdump -p 0:1.
 
-Yes, same here. I'm initially responsible for one such macro and wanted
-to get rid of it. I'm sorry if that lead Tobias to adding more in that
-style.
 
-Cheers!
-robin
+My question is: how to solve this? There are a few options:
+
+1. Periodically poll for new clients. This is fairly ugly, but will work to
+trigger module loading and won't result in latency once any device has been
+plugged in, since announce will again work.
+
+2. Somehow trigger module loading if there are any clients listening on the
+announce port. This seems pretty tricky and requires keeping track of some
+new state.
+
+3. Do away with deferred module loading in seq. This is pretty invasive and
+would increase the number of modules loaded, but would result in a lot of
+deleted code in the kernel and a clean fix.
+
+Number 3 is my preferred solution, but I wanted to see if these sorts of
+patches would be acceptable, since it is invasive and would result in more
+modules loaded.
+
+
+Thanks for any comments.
+
+
+Adam
