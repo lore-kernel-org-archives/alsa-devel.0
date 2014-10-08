@@ -1,50 +1,36 @@
-From: Alexandre Courbot <gnurou@gmail.com>
-Subject: Re: [PATCH] ASoC: simple-card: Add mic and hp detect gpios.
-Date: Wed, 8 Oct 2014 16:05:59 +0900
-Message-ID: <CAAVeFuJB=bF3g2czT1ed1UX85R_hBXqFAKdeLJcASRcXQujFJw@mail.gmail.com>
-References: <1412198720-2326-1-git-send-email-dgreid@chromium.org>
- <20141002155350.GU4273@sirena.org.uk> <CAMuHMdWh=sXAD59T1T=gvROX+fbF6=gFo6C0nkJdfnCrdNrwYg@mail.gmail.com>
- <20141007123856.GF4609@sirena.org.uk> <CAMuHMdV39fM_TCa+WSvswij6dxD2vwfJT+FueBtxndpsymP9CQ@mail.gmail.com>
- <20141007163654.GJ4609@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20141007163654.GJ4609@sirena.org.uk>
-Sender: linux-sh-owner@vger.kernel.org
+From: Sonny Rao <sonnyrao@chromium.org>
+Subject: [PATCH] ASoC: rockchip-i2s: fix infinite loop in rockchip_snd_txctrl
+Date: Wed,  8 Oct 2014 00:58:51 -0700
+Message-ID: <1412755131-27542-1-git-send-email-sonnyrao@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linus Walleij <linus.walleij@linaro.org>, Dylan Reid <dgreid@chromium.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, jay.xu@rock-chips.com, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, sonnyrao@chromium.org, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>, Linux-sh list <linux-sh@vger.kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Cc: linux-kernel@vger.kernel.org, dianders@chromium.org, Jianqun <jay.xu@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Sonny Rao <sonnyrao@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 8, 2014 at 1:36 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Oct 07, 2014 at 03:10:01PM +0200, Geert Uytterhoeven wrote:
->> On Tue, Oct 7, 2014 at 2:38 PM, Mark Brown <broonie@kernel.org> wrote:
->
->> > The fix here is to not allow 0 as a GPIO in the core code (which
->> > should've been there already).
->
->> Unfortunately it's not there.
->
->> And it's not as simple as changing the definition of gpio_is_valid()
->> (crash in gpio_get_value()):
->
->>     gpiochip_add: GPIOs 0..211 (r8a7740_pfc) failed to register
->>     sh-pfc pfc-r8a7740: failed to init GPIO chip, ignoring...
->>     sh-pfc pfc-r8a7740: r8a7740_pfc support registered
->>     Unable to handle kernel NULL pointer dereference at virtual address 0000004c
->
-> Right, obviously it's not going to work if the platform actually uses 0
-> as a valid GPIO.
->
->> Quoting Linus (https://lkml.org/lkml/2014/9/4/464):
->> "Fixing the old global GPIO numberspace API is a waste of time IMO".
->
->> Hence I've just sent a patch to initialize the GPIO numbers with -ENOENT.
->
-> I do think it's worth renumbering the platforms since it's *relatively*
-> little work per platform compared to completing the gpiod transition.
+We can get into an infinite loop if the I2S_CLR register fails to
+clear due to a missing break statement, so add that.
 
-But transition to gpiod is the way to ultimately fix this issue, as
-well as many others. Not to mention that renumbering GPIOs will
-certainly make a few users of the GPIO sysfs (another abomination,
-agreed) unhappy. I can only recommend switching drivers to gpiod when
-such issues are spotted.
+Signed-off-by: Sonny Rao <sonnyrao@chromium.org>
+---
+ sound/soc/rockchip/rockchip_i2s.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 033487c..f373e37 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -108,8 +108,10 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
+ 			while (val) {
+ 				regmap_read(i2s->regmap, I2S_CLR, &val);
+ 				retry--;
+-				if (!retry)
++				if (!retry) {
+ 					dev_warn(i2s->dev, "fail to clear\n");
++					break;
++				}
+ 			}
+ 		}
+ 	}
+-- 
+1.8.3.2
