@@ -1,26 +1,15 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] ASoC: simple-card: Add mic and hp detect
-	gpios.
-Date: Wed, 8 Oct 2014 10:50:00 +0200
-Message-ID: <CACRpkdY+KQ1OMh565desoqVP-AUJL-VjFx-D5LiaNpXs5oOsnA@mail.gmail.com>
-References: <1412198720-2326-1-git-send-email-dgreid@chromium.org>
- <20141002155350.GU4273@sirena.org.uk>
- <CAMuHMdWh=sXAD59T1T=gvROX+fbF6=gFo6C0nkJdfnCrdNrwYg@mail.gmail.com>
- <20141007123856.GF4609@sirena.org.uk>
- <CAMuHMdV39fM_TCa+WSvswij6dxD2vwfJT+FueBtxndpsymP9CQ@mail.gmail.com>
- <20141007163654.GJ4609@sirena.org.uk>
- <CAAVeFuJB=bF3g2czT1ed1UX85R_hBXqFAKdeLJcASRcXQujFJw@mail.gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: ALSA: hda/realtek - Allow NULL bus->pci
+Date: Wed, 8 Oct 2014 12:32:46 +0300
+Message-ID: <20141008093246.GA4690@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f182.google.com (mail-ig0-f182.google.com
- [209.85.213.182])
- by alsa0.perex.cz (Postfix) with ESMTP id E3D0526041E
- for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 10:50:02 +0200 (CEST)
-Received: by mail-ig0-f182.google.com with SMTP id hn18so7615431igb.9
- for <alsa-devel@alsa-project.org>; Wed, 08 Oct 2014 01:50:01 -0700 (PDT)
-In-Reply-To: <CAAVeFuJB=bF3g2czT1ed1UX85R_hBXqFAKdeLJcASRcXQujFJw@mail.gmail.com>
+Received: from aserp1040.oracle.com (aserp1040.oracle.com [141.146.126.69])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBB32260432
+ for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 11:33:10 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,40 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandre Courbot <gnurou@gmail.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux-sh list <linux-sh@vger.kernel.org>, Sonny Rao <sonnyrao@chromium.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Dylan Reid <dgreid@chromium.org>, jay.xu@rock-chips.com, Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 8, 2014 at 9:05 AM, Alexandre Courbot <gnurou@gmail.com> wrote:
-> On Wed, Oct 8, 2014 at 1:36 AM, Mark Brown <broonie@kernel.org> wrote:
->> On Tue, Oct 07, 2014 at 03:10:01PM +0200, Geert Uytterhoeven wrote:
+Hello Takashi Iwai,
 
->> Right, obviously it's not going to work if the platform actually uses 0
->> as a valid GPIO.
->>
->>> Quoting Linus (https://lkml.org/lkml/2014/9/4/464):
->>> "Fixing the old global GPIO numberspace API is a waste of time IMO".
->>
->>> Hence I've just sent a patch to initialize the GPIO numbers with -ENOENT.
->>
->> I do think it's worth renumbering the platforms since it's *relatively*
->> little work per platform compared to completing the gpiod transition.
->
-> But transition to gpiod is the way to ultimately fix this issue, as
-> well as many others. Not to mention that renumbering GPIOs will
-> certainly make a few users of the GPIO sysfs (another abomination,
-> agreed) unhappy. I can only recommend switching drivers to gpiod when
-> such issues are spotted.
+The patch 5100cd07d43a: "ALSA: hda/realtek - Allow NULL bus->pci"
+from Feb 15, 2014, leads to the following static checker warning:
 
-Yeah that is another issue ... we end up in catch 22 situations like
-that, renumber the GPIOs, OK, then we break the ABI.
+	sound/pci/hda/patch_realtek.c:5371 patch_alc269()
+	warn: variable dereferenced before check 'codec->bus->pci' (see line 5364)
 
-Admittedly that "ABI" is something people break all the time,
-/sys/*gpioN just isnt what it should be, not stable at all.
+sound/pci/hda/patch_realtek.c
+  5363          if (has_cdefine_beep(codec))
+                                     ^^^^^
+We actually dereference "codec->bus->pci" inside the call to
+has_cdefine_beep().
 
-I'm not against renumbering GPIO if it's minor effort, but if it
-start to consume hundreds of hours and regressions and what not,
-that time is better spent focusing on the gpiod transition.
+  5364                  spec->gen.beep_nid = 0x01;
+  5365  
+  5366          switch (codec->vendor_id) {
+  5367          case 0x10ec0269:
+  5368                  spec->codec_variant = ALC269_TYPE_ALC269VA;
+  5369                  switch (alc_get_coef0(codec) & 0x00f0) {
+  5370                  case 0x0010:
+  5371                          if (codec->bus->pci &&
+                                    ^^^^^^^^^^^^^^^
+This new check is too late.
 
-Yours,
-Linus Walleij
+  5372                              codec->bus->pci->subsystem_vendor == 0x1025 &&
+  5373                              spec->cdefine.platform_type == 1)
+  5374                                  err = alc_codec_rename(codec, "ALC271X");
+  5375                          spec->codec_variant = ALC269_TYPE_ALC269VB;
+  5376                          break;
+
+There is another related warning:
+
+sound/pci/hda/patch_realtek.c:6270 patch_alc662() warn: variable dereferenced before check 'codec->bus->pci' (see line 6267)
+
+regards,
+dan carpenter
