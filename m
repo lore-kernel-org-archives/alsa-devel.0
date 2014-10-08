@@ -1,21 +1,14 @@
-From: Tobias Hoffmann <smilingthax@googlemail.com>
-Subject: Re: [WIP PATCH] Scarlett mixer interface for 6i6, 18i6,
- 18i8 and 18i20.
-Date: Thu, 09 Oct 2014 00:49:57 +0200
-Message-ID: <5435BF95.2040909@googlemail.com>
-References: <1412694986-2537-1-git-send-email-david.henningsson@canonical.com>
- <54358AA6.7040205@zonque.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v3.18
+Date: Thu, 9 Oct 2014 00:58:42 +0100
+Message-ID: <20141008235842.GR4609@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4439202190876223340=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f42.google.com (mail-la0-f42.google.com
- [209.85.215.42])
- by alsa0.perex.cz (Postfix) with ESMTP id C3E2E2604CF
- for <alsa-devel@alsa-project.org>; Thu,  9 Oct 2014 00:50:06 +0200 (CEST)
-Received: by mail-la0-f42.google.com with SMTP id mk6so68776lab.29
- for <alsa-devel@alsa-project.org>; Wed, 08 Oct 2014 15:50:06 -0700 (PDT)
-In-Reply-To: <54358AA6.7040205@zonque.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50F472604CF
+ for <alsa-devel@alsa-project.org>; Thu,  9 Oct 2014 01:59:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,186 +18,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, robin@gareus.org, clemens@ladisch.de, David Henningsson <david.henningsson@canonical.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-And some more comments from me:
 
-On 08/10/14 21:04, Daniel Mack wrote:
-> +
-> +/* #define WITH_METER */
-> +/* #define WITH_LOGSCALEMETER */
-> These should either be converted to module parameters, or removed
-> alltogether. Why are they configurable, anyway?
-
-As I've said in my earlier mail, code is current not working: Metering 
-should be removed from this patch (or rewritten to use hwdep-API).
-
->> +#define LEVEL_BIAS 128  /* some gui mixers can't handle negative ctl values (alsamixergui, qasmixer, ...) */
->> +
->> +#ifndef LEVEL_BIAS
->> +	#define LEVEL_BIAS 0
->> +#endif
-> Same here.
-As LEVEL_BIAS = 0 definitely causes problems with some mixer GUIs, the 
-#ifndef ... #endif should be removed completely.
+--===============4439202190876223340==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qeGiC+TUQd3u8fcS"
+Content-Disposition: inline
 
 
->
->> +#if 0 /* rg debug XXX */
->> +	snd_printk(KERN_ERR "req ctl value: req = %#x, rtype = %#x, wValue = %#x, wIndex = %#x, size = %d\n",
->> +		   bRequest, (USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN), wValue, idx, size);
->> +#endif
-> That can be moved to snd_printdd()
+--qeGiC+TUQd3u8fcS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-These are left overs from Robins code, even I didn't need them. It's 
-probably safe to just remove all the
-   #if 0 /* rg debug XXX */  ... #endif
-from the patch.
+The following changes since commit a5448c88b812390a3622e76d774e10c0da1fb970:
 
->> +static int scarlett_ctl_enum_put(struct snd_kcontrol *kctl, struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct scarlett_mixer_elem_info *elem = kctl->private_data;
->> +	int changed = 0;
->> +	int err, oval, val;
->> +
->> +	err = get_ctl_value(elem, 0,&oval);
->> +	if (err<  0)
->> +		return err;
->> +
->> +	val = ucontrol->value.integer.value[0];
->> +#if 0 /* TODO? */
->> +	if (val == -1) {
->> +		val = elem->enum->len + 1; /* only true for master, not for mixer [also master must be used] */
->> +		/* ... or?>  0x20,  18i8: 0x22 */
->> +	} else
->> +#endif
-> Could someone with access to such hardware sort that out, maybe? :)
+  Merge remote-tracking branches 'asoc/topic/txx9', 'asoc/topic/wm8978' and 'asoc/topic/wm8994' into asoc-next (2014-10-06 12:49:09 +0100)
 
-The current code works as-is, so #if 0 ... #endif can be removed.
+are available in the git repository at:
 
->
->> +static int scarlett_ctl_save_put(struct snd_kcontrol *kctl, struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct scarlett_mixer_elem_info *elem = kctl->private_data;
->> +	int err;
->> +
->> +	if (ucontrol->value.enumerated.item[0]>  0) {
->> +		char buf[1] = { 0xa5 };
->> +
->> +		err = set_ctl_urb2(elem->mixer->chip, UAC2_CS_MEM, 0x005a, 0x3c, buf, 1);
->> +		if (err<  0)
->> +			return err;
->> +
->> +		snd_printk(KERN_INFO "Scarlett: Saved settings to hardware.\n");
->> +	}
->> +
->> +	return 0; /* (?) */
-> What's the confusion here? :)
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v3.18-2
 
-The "Save to HW" enum uses a special kcontrol .get/.put combo:
-.get always returns 0, and .put issues a special command to the hardware.
+for you to fetch changes up to bdf20b4291eaa3b327398b8dd330065ad8e6d3ce:
 
-I not 100% sure what the "best" return value of the .put function would 
-be in that case.
-AFAIUI, .put functions have to return whether the value has changed... 
-and here:
-  - something happend (supporting return 1;)
-  - but .get still returns 0 (supporting return 0;)
+  Merge remote-tracking branches 'asoc/fix/88pm860x', 'asoc/fix/fsl', 'asoc/fix/imx', 'asoc/fix/mc13783', 'asoc/fix/rockchip' and 'asoc/fix/simple' into asoc-linus (2014-10-08 16:44:50 +0100)
 
-But I found this...:
-> +static struct snd_kcontrol_new usb_scarlett_ctl_save = {
-> +	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-> +	.name = "",
-> +	.info = scarlett_ctl_enum_info,
-> +	.get =  scarlett_ctl_save_get,
-> +	.get =  scarlett_ctl_save_put,
-> +};
+----------------------------------------------------------------
+ASoC: Fixes for v3.18
 
-BUG! .get is set twice instead of .get and .put...
+A few small fixes, mostly small although a few really nasty ones like
+the interaction between GPIO 0 and simple-card.
 
-Testing is definitely needed for that change.
+----------------------------------------------------------------
+Daniel Mack (4):
+      ASoC: soc-dapm: fix use after free
+      ASoC: core: fix use after free in snd_soc_remove_platform()
+      ASoC: 88pm860x-codec: Fix possibly missing string termination
+      ASoC: soc-pcm: fix sig_bits determination in soc_pcm_apply_msb()
 
->> +/*  untested...  */
->> +static const struct scarlett_device_info s6i6_info = {
-> Would be nice to get some testers here.
+Geert Uytterhoeven (1):
+      ASoC: simple-card: Initialize headphone and mic GPIO numbers
 
-I did heard of one person who used it (successfully) on s6i6.
-That's not to say that we should not test the "final" patch on each device.
+Mark Brown (6):
+      ASoC: mc13783: Ensure we only try to dereference valid of_nodes
+      Merge tag 'asoc-v3.17-rc4' into asoc-linus
+      Merge tag 'asoc-v3.18' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/core' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/dapm' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/88pm860x', 'asoc/fix/fsl', 'asoc/fix/imx', 'asoc/fix/mc13783', 'asoc/fix/rockchip' and 'asoc/fix/simple' into asoc-linus
 
-> +
-> +/*  untested...  */
-> +static const struct scarlett_device_info s8i6_info = {
-I can't remember any users with s8i6 right now...
+Sonny Rao (1):
+      ASoC: rockchip-i2s: fix infinite loop in rockchip_snd_txctrl
 
-I have a s18i8.
+Takashi Iwai (2):
+      ASoC: imx-es8328: Fix missing return code in imx_es8328_probe()
+      ASoC: imx-es8328: Fix of_node_put() call with uninitialized object
 
-s18i6 is what the original code did, but I have not heard of tests with 
-the new code.
+ sound/soc/codecs/88pm860x-codec.c |  2 +-
+ sound/soc/codecs/mc13783.c        | 16 ++++++++++------
+ sound/soc/fsl/imx-es8328.c        |  3 ++-
+ sound/soc/generic/simple-card.c   |  3 +++
+ sound/soc/rockchip/rockchip_i2s.c |  4 +++-
+ sound/soc/soc-core.c              |  4 ++--
+ sound/soc/soc-dapm.c              | 25 ++++++++++++++-----------
+ sound/soc/soc-pcm.c               |  2 +-
+ 8 files changed, 36 insertions(+), 23 deletions(-)
 
-A few s18i20 users reported "no problems".
+--qeGiC+TUQd3u8fcS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> +
-> +static const char * const s18i8_texts[] = {
-> +	txtOff, /* 'off' == 0xff  (original software: 0x22) */
-> +	txtPcm1, txtPcm2, txtPcm3, txtPcm4,
-> +	txtPcm5, txtPcm6, txtPcm7, txtPcm8,
-> +	txtAnlg1, txtAnlg2, txtAnlg3, txtAnlg4,
-> +	txtAnlg5, txtAnlg6, txtAnlg7, txtAnlg8,
-> +	txtSpdif1, txtSpdif2,
-> +	txtAdat1, txtAdat2, txtAdat3, txtAdat4,
-> +	txtAdat5, txtAdat6, txtAdat7, txtAdat8,
-> +	txtMix1, txtMix2, txtMix3, txtMix4,
-> +	txtMix5, txtMix6, txtMix7, txtMix8
-> +};
-> +
-> +static const struct scarlett_device_info s18i8_info = {
-> +	.matrix_in = 18,
-> +	.matrix_out = 8,
-> +	.input_len = 18,
-> +	.output_len = 8,
-> +
-> +	.pcm_start = 0,
-> +	.analog_start = 8,
-> +	.spdif_start = 16,
-> +	.adat_start = 18,
-> +	.mix_start = 26,
-> +
-> +	.opt_master = {
-> +		.start = -1,
-> +		.len = 35,
-> +		.texts = s18i8_texts
-> +	},
-> Here, and in some other occasions, ARRAY_SIZE() should be used.
->
->> +	.opt_matrix = {
->> +		.start = -1,
->> +		.len = 27,
->> +		.texts = s18i8_texts
->> +	},
-> Same here.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-ARRAY_SIZE(s18i8_text) == 35, so  .len = (ARRAY_SIZE()-8) ?
-I not sure that's helpful...
-The better way to think about it is:
-   .opt_matrix.len = .mix_start + 1,
-   .opt_master.len = .opt_matrix.len + .matrix_out    // == ARRAY_SIZE()
+iQEcBAEBAgAGBQJUNc+xAAoJECTWi3JdVIfQjfsH/2Tnh3nUmrpuuzuZIJBWf6Cq
+JqMLmwJZHeIIviaiMbxDmPfIuS7pa6w3yk4TQLg3nBPp/kuHCpoccft+mnk8rEe5
+CPx+OMKv0LGsZk1Jbza8iaXZLGP3o3C099RovzlpMAy6UZ0e3OMsdJqlKGiXoNsw
+kDmt0yI8/XlpLXOUVLLXvbPe4ohwXa8CED0ezCsQVFFSzu8tZlmkgMHJVIMIK1QU
+dEOGtjNanP/9tnY5MzXCXMyfn5k1mfjsjCgrLE6olJ+6YOQhBr8CcyaQ0QKZxAWd
+oEJB59QOsMt4uwa04ad7bs/1I/0rA6zHSlhxd/yIg8FqQYcybNldQRE6mknAFZg=
+=4l7K
+-----END PGP SIGNATURE-----
 
-> +/*
-> +int scarlett_reset(struct usb_mixer_interface *mixer)
-> +{
-> +	 TODO? save first-time init flag into device?
-> +
-> +	 unmute [master +] mixes (switches are currently not initialized)
-> +	 [set(get!) impedance: 0x01, 0x09, 1..2]
-> +	 [set(get!) 0x01, 0x08, 3..4]
-> +	 [set(get!) pad: 0x01, 0x0b, 1..4]
-> +
-> +	 matrix inputs (currently in scarlett_mixer_controls)
-> +}
-> +*/
-> Should be removed, or get a real implementation.
-Remove. Just some random ideas.
+--qeGiC+TUQd3u8fcS--
 
-   Tobias
+--===============4439202190876223340==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4439202190876223340==--
