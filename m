@@ -1,26 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: mc13783: Fix of_node_put() call
- with uninitialized object
-Date: Wed, 8 Oct 2014 00:01:50 +0100
-Message-ID: <20141007230150.GO4609@sirena.org.uk>
-References: <1412698794-25536-1-git-send-email-tiwai@suse.de>
- <1412698794-25536-2-git-send-email-tiwai@suse.de>
- <20141007170938.GM4609@sirena.org.uk>
- <s5hppe3lrzf.wl-tiwai@suse.de>
- <20141007172337.GR4609@sirena.org.uk>
- <s5hlhorlqyw.wl-tiwai@suse.de>
- <20141007180434.GU4609@sirena.org.uk>
- <s5hd2a3lpcn.wl-tiwai@suse.de>
- <20141007185443.GY4609@sirena.org.uk>
- <s5h4mvflna9.wl-tiwai@suse.de>
+From: Andy Lutomirski <luto@amacapital.net>
+Subject: Re: Exposing the ThinkPad HW mute switch to ALSA?
+Date: Tue, 7 Oct 2014 17:43:11 -0700
+Message-ID: <CALCETrXhforbHXNGzC77LxP+thUADpxVEosU6fHf-V5JAWV8vA@mail.gmail.com>
+References: <CALCETrULBrany=JLyZsfq6oiGDDUZOZyA+=7=GqLW8h+ZoHJVA@mail.gmail.com>
+ <s5hoatpxsav.wl-tiwai@suse.de> <20141006190942.GA8238@khazad-dum.debian.net>
+ <CALCETrUKJTXVQ1qDtix=zxibb9KujuE96Xq9C2=qYYJX2j3U_w@mail.gmail.com>
+ <s5hsij0lacx.wl-tiwai@suse.de>
+ <CACckToV0LiiZywtPT4OmvwuK6qVX41wbwuUiR-JdjG87javH_g@mail.gmail.com>
+ <s5hfvf0w679.wl-tiwai@suse.de> <20141007131951.GB25214@khazad-dum.debian.net>
+ <CALCETrUbYu=Grku76Q3Lj7z4o0qunMdEzBc=5qACXd-7uK1RHg@mail.gmail.com>
+ <s5hr3ykue60.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6543552552308572090=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 497AC260605
- for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 01:02:12 +0200 (CEST)
-In-Reply-To: <s5h4mvflna9.wl-tiwai@suse.de>
+Received: from mail-la0-f47.google.com (mail-la0-f47.google.com
+ [209.85.215.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 771B626065D
+ for <alsa-devel@alsa-project.org>; Wed,  8 Oct 2014 02:43:32 +0200 (CEST)
+Received: by mail-la0-f47.google.com with SMTP id pv20so7318860lab.20
+ for <alsa-devel@alsa-project.org>; Tue, 07 Oct 2014 17:43:31 -0700 (PDT)
+In-Reply-To: <s5hr3ykue60.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,56 +31,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, Henrique de Moraes Holschuh <hmh@hmh.eng.br>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Oct 7, 2014 at 7:50 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 7 Oct 2014 07:44:35 -0700,
+> Andy Lutomirski wrote:
+>>
+>> On Oct 7, 2014 6:20 AM, "Henrique de Moraes Holschuh" <hmh@hmh.eng.br> wrote:
+>> >
+>> > On Tue, 07 Oct 2014, Takashi Iwai wrote:
+>> > > At Tue, 7 Oct 2014 17:25:13 +1100,
+>> > > Grant Diffey wrote:
+>> > > > so I have a really dumb question.
+>> > > >
+>> > > > Why can't the controls be mapped as HCI rather than a soundcard? given
+>> > > > there's no audio production capability here only a control capability.
+>> > > >
+>> > > > Also this seems to be how they end up functioning on a modern system they
+>> > > > get bound to pulse which remaps them to whatever's 'active'
+>> > > >
+>> > > > Why does everyone say that this is a soundcard when it's really a keyboard
+>> > > > (from my pov)
+>> > >
+>> > > thinkpad_acpi actually mutes the sound on some models, at least the
+>> > > old ones, independently from the sound chip mute state.  That's why it
+>> > > was implemented as the sound card object initially.
+>> >
+>> > That's how the hardware works, really.  One AC97 audio channel is routed to
+>> > a digital volume chip, and from there to the console headphone jack, and to
+>> > the built-in speakers.  line-out is not routed through this chip, and AFAIK
+>> > MIC/line-in is not routed through either this chip _or_ a separate mute
+>> > gate, either.
+>> >
+>> > The EC controls this digital volume chip directly, it is independent from
+>> > the AC97 mixer.  The default behaviour cannot be changed in earlier
+>> > thinkpads, and trying to change it in later thinkpads (they're supposed to
+>> > have a legacy mode that is the same as the older models) doesn't work very
+>> > well.
+>> >
+>> > Line-out and MIC are controlled only by the AC97 mixer in the older models
+>> > with digital volume control.
+>> >
+>> > In newer-but-not-newest thinkpads, there are two mute gates, one for MIC,
+>> > and another for the speakers/headphones.  The EC controls those.  All volume
+>> > control is in the HDA mixer.
+>> >
+>> > In the newest thinkpads, I think there's only a MIC mute gate controlled by
+>> > the EC, and everything else is in the HDA mixer.
+>> >
+>> > And depeding on the EC operating mode and thinkpad model, the volume hotkeys
+>> > might interact with the mute state (unmuting on first press when it is
+>> > mute).
+>> >
+>>
+>> On newish thinkpads (at least X60-X220, and I think this works on the
+>> latest models as well), we can disable all of this and make the mute
+>> button be a regular button if we want.  Getting the mute LED to DTRT
+>> might be tricky, but modern userspace can probably do it.
+>>
+>> This is almost certainly the approach that does something sensible
+>> with the least code written.  We would just check for HAUM/SAUM on
+>> startup and, if available, set SAUM to "software control only",
+>> force-unmute the mute circuit, force the volume to full, and disable
+>> the fake soundcard.
+>
+> That sounds sensible.  But, we'll still need to handle the mute LED,
+> like we do for the mic-mute LED now?
 
---===============6543552552308572090==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qYpwwOSOoAAr8PNn"
-Content-Disposition: inline
+Already done, I think:
 
+        if (led_set_func(TPACPI_LED_MUTE, false) >= 0) {
+            old_vmaster_hook = spec->vmaster_mute.hook;
+            spec->vmaster_mute.hook = update_tpacpi_mute_led;
+            removefunc = false;
+        }
 
---qYpwwOSOoAAr8PNn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Admittedly, I see some value in having the mute button mute things
+regardless of what userspace is doing, but I don't see *much* value in
+it.  And, arguably, if that behavior is actually desirable, it should
+be available on all laptops, not just ThinkPads.
 
-On Tue, Oct 07, 2014 at 08:58:38PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
-
-> > That looks ugly, yes - I'd be doing a check for ret before the second
-> > property call or something.  Or just put the pdata check in the existing
-> > error path.
-
-> Well, I don't mind much how it'll be fixed, so I rather toss this fix
-> to you.  Feel free to cook :)
-
-Well, I can't even see the warning so as far as I can tell it's all
-fixed!
-
---qYpwwOSOoAAr8PNn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUNHDeAAoJECTWi3JdVIfQoa8H/2sgBI6uFlMtwAovHUVgH3Ss
-kybx/H3HJfWUHVMR1FZFEEmEV8j8CyA+e93qGSeg4eF8eoNTo4QBVhKnA1u7kwhK
-FhDo/FUBj5UkZjNv/PQZvX1ZrAU6XOiHdKOddxlhEb8ZKS36OTVIGfx4CAsyJeiT
-Yzj2rLD8akA8OJCO1oCMiJRudo5lk5pCQ+cjoefXtipmLQnaWiEYlUUZpwJu3217
-WgafNX0CTskEa7dbR2Lp0GNkuqw1MITxEbrbew5RKCySd5WxKncSXEEIu1XMjCwp
-jU4AiJxhcW8wh527hE92bYoUebHK231xI6RqVSXlztQD38O89On1h3iak7D50VE=
-=rFTe
------END PGP SIGNATURE-----
-
---qYpwwOSOoAAr8PNn--
-
---===============6543552552308572090==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6543552552308572090==--
+--Andy
