@@ -1,17 +1,23 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: seq module loading issue
-Date: Thu, 09 Oct 2014 11:14:57 +0200
-Message-ID: <54365211.5040604@ladisch.de>
-References: <CAOf41NnCESt3PEGhp3yKgZhScG1H0+qrhz8h3+vjBUfGzfhsyA@mail.gmail.com>	<s5hd2a1kalk.wl-tiwai@suse.de>
- <54363946.4010000@ladisch.de> <s5ha955k7zr.wl-tiwai@suse.de>
+From: Tim Cussins <timcussins@eml.cc>
+Subject: Re: proposal: snd_pcm_start_at()
+Date: Thu, 09 Oct 2014 10:20:02 +0100
+Message-ID: <54365342.5010906@eml.cc>
+References: <1412260460.3891605.174362449.667FB9BE@webmail.messagingengine.com>
+ <542D8E3F.4080400@linux.intel.com> <542E8FE4.4080904@eml.cc>
+ <542F2216.7050801@linux.intel.com> <s5h61fxzg2y.wl-tiwai@suse.de>
+ <20141008141832.GZ4609@sirena.org.uk> <s5hwq8atw95.wl-tiwai@suse.de>
+ <543561A0.8020701@eml.cc> <20141008201644.GM4609@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id D6C2626053E
- for <alsa-devel@alsa-project.org>; Thu,  9 Oct 2014 11:14:59 +0200 (CEST)
-In-Reply-To: <s5ha955k7zr.wl-tiwai@suse.de>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 78A0A26053E
+ for <alsa-devel@alsa-project.org>; Thu,  9 Oct 2014 11:20:16 +0200 (CEST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by gateway2.nyi.internal (Postfix) with ESMTP id 0029420915
+ for <alsa-devel@alsa-project.org>; Thu,  9 Oct 2014 05:20:15 -0400 (EDT)
+In-Reply-To: <20141008201644.GM4609@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,37 +27,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Adam Goode <agoode@chromium.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Clemens Ladisch wrote:
->> Takashi Iwai wrote:
->>> If it were a simple cleanup, I'm fine with it.  But this leads to
->>> a major behavior change, which has a high risk of incompatibility.
->>
->> But there would be no changed behaviour as far as the API is concerned
->> (except for this particular issue, which is a bug).
+On 08/10/14 21:16, Mark Brown wrote:
+> On Wed, Oct 08, 2014 at 05:09:04PM +0100, Tim Cussins wrote:
+>> On 08/10/14 16:29, Takashi Iwai wrote:
 >
-> Currently, the sequencer stuff can be suppressed by simply not loading
-> snd-seq core module itself.  Do you mean to drop this feature?
+>>> OK, I added it to the topic list of audio mini-summit.
+>>> Let's see whether we can talk something about this.
+>
+>> 2) Come over on Tuesday and join the mini summit
+>
+> This would be great, but please note that since the Linux Foundation are
+> doing the logistics (room and so on) for us you'd need to register for
+> one of the conferences that week.
+>
 
-Yes.
-
-> Some distros don't load sequencer modules nowadays as default.
-
-Do you know why?  Any reason except memory?
-
-> So it would result in a clear behavior change on the whole system.
-
-And alsa-lib tries its best to do autoloading to hide the fact that
-snd-seq might not have been loaded.  Therefore, it has never been
-possible to assume, at any time, that snd-seq is _not_ loaded.
-
-Is the high risk of incompatibility that you mentioned this assumption,
-or anything else?
-
-
-Regards,
-Clemens
+Righto. Registration has closed (all full I guess!) - I'll see if I can 
+find a (legitimate) way in :)
