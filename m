@@ -1,21 +1,24 @@
-From: Andrej Falout <andrej@falout.org>
-Subject: Re: Direct Stream Digital (DSD/DST,
-	One Bit Audio) HDMI pass-trough
-Date: Tue, 14 Oct 2014 13:49:31 +1300
-Message-ID: <CAGzU1+G8rpLokMRbcG4o+SaDB2j79Gx83e6j+3JiMxS3nwVhFQ@mail.gmail.com>
-References: <CAGzU1+H-vof2_1UqDTr2pDrnLMrbk0ZHgaAxeM2CaW9=tcPXwQ@mail.gmail.com>
- <543C58AC.9000701@linux.intel.com>
+From: Nick Stoughton <nstoughton@aether.com>
+Subject: Re: proposal: snd_pcm_start_at()
+Date: Fri, 10 Oct 2014 12:50:17 -0700
+Message-ID: <CADO7NSFbR0i_DHr5rBnNHvs2DzwUpOfpOuN9fokptkCiewEpvA@mail.gmail.com>
+References: <1412260460.3891605.174362449.667FB9BE@webmail.messagingengine.com>
+ <542D8E3F.4080400@linux.intel.com> <542E8FE4.4080904@eml.cc>
+ <542F2216.7050801@linux.intel.com> <s5h61fxzg2y.wl-tiwai@suse.de>
+ <20141008141832.GZ4609@sirena.org.uk>
+ <s5hwq8atw95.wl-tiwai@suse.de> <543561A0.8020701@eml.cc>
+ <20141008201644.GM4609@sirena.org.uk> <54365342.5010906@eml.cc>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f46.google.com (mail-la0-f46.google.com
- [209.85.215.46])
- by alsa0.perex.cz (Postfix) with ESMTP id A614D2604FA
- for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 02:49:32 +0200 (CEST)
-Received: by mail-la0-f46.google.com with SMTP id gi9so7603051lab.19
- for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2014 17:49:32 -0700 (PDT)
-In-Reply-To: <543C58AC.9000701@linux.intel.com>
+Received: from mail-la0-f44.google.com (mail-la0-f44.google.com
+ [209.85.215.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 019D52605FF
+ for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2014 21:50:17 +0200 (CEST)
+Received: by mail-la0-f44.google.com with SMTP id hs14so3876979lab.31
+ for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2014 12:50:17 -0700 (PDT)
+In-Reply-To: <54365342.5010906@eml.cc>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +28,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Tim Cussins <timcussins@eml.cc>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 14, 2014 at 11:56 AM, Pierre-Louis Bossart <
-pierre-louis.bossart@linux.intel.com> wrote:
+Interestingly, I implemented this exact function (snd_pcm_start_at) about a
+week ago before I saw this thread! We are still experimenting with it, but
+I'd be happy to discuss it next week at the summit.
 
-> On 10/11/14, 1:33 AM, Andrej Falout wrote:
+*______________________________*
+*Nick Stoughton*
+ *Aether Things Inc *
+ *San Francisco*
+  +1 (510) 388 1413
+
+
+On Thu, Oct 9, 2014 at 2:20 AM, Tim Cussins <timcussins@eml.cc> wrote:
+
+> On 08/10/14 21:16, Mark Brown wrote:
 >
->> Hello,
->> <...snip...>
->>     5. Note that as far as I know, no proprietary drivers on Windows
->>     (ATI/AMD, Nvidia, Intel) support this; It will be the first time a
->> device
->>     that is not a SACD player outputs DSD over HDMI, on any OS. I am
->> assuming
->>     that this has nothing to do with hardware limitations of the HDMI
->> chips
->>     used for video outputs (I could not find any reference for such
->> assumption
->>     in any HDMI chips I examined specs for). Therefore, I assume that
->>     implementing this has no hardware prerequisites.
+>> On Wed, Oct 08, 2014 at 05:09:04PM +0100, Tim Cussins wrote:
 >>
+>>> On 08/10/14 16:29, Takashi Iwai wrote:
+>>>
+>>
+>>  OK, I added it to the topic list of audio mini-summit.
+>>>> Let's see whether we can talk something about this.
+>>>>
+>>>
+>>  2) Come over on Tuesday and join the mini summit
+>>>
+>>
+>> This would be great, but please note that since the Linux Foundation are
+>> doing the logistics (room and so on) for us you'd need to register for
+>> one of the conferences that week.
+>>
+>>
+> Righto. Registration has closed (all full I guess!) - I'll see if I can
+> find a (legitimate) way in :)
 >
-> HDMI controllers typically don't support DSD in the PC space. It'd be
-> easier to convert to high-res PCM (HBR).
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
->
-Hello Pierre-Louis,
-
-Thank you for your comment.
-
-What are you basing your assessment that "HDMI controllers typically don't
-support DSD in the PC space"? I looked, but could not find any evidence for
-this.
-
-Certainly, DSD is not a part of HDMI hardware implementation (such as for
-example, CEC). From all info I have, DSD is simply multiplexed into HDMI
-data stream, just as DST-HD or AC3 is.
-
-The goal here is to have a native DSD transport, so conversion to PCM is
-not an option.
-
-Thanks,
-Andrej Falout
