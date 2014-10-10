@@ -1,50 +1,42 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6] ASoC: dapm: add code to configure dai link parameters
-Date: Fri, 10 Oct 2014 17:49:59 +0100
-Message-ID: <20141010164959.GG18557@sirena.org.uk>
-References: <1412957836-2186-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
+From: Sergej Sawazki <ssawazki@gmx.de>
+Subject: ASoC machine driver: how to configure supported frame
+ rates?
+Date: Fri, 10 Oct 2014 18:12:09 +0200
+Message-ID: <54380559.7030807@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="a8sldprk+5E/pDEv"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1412957836-2186-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEACF261A5A
+ for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2014 18:12:10 +0200 (CEST)
+Received: from [192.168.178.39] ([92.204.8.217]) by mail.gmx.com (mrgmx002)
+ with ESMTPSA (Nemesis) id 0Lt1S6-1YJDw81dgg-012UVt for
+ <alsa-devel@alsa-project.org>; Fri, 10 Oct 2014 18:12:10 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Dear all,
 
---a8sldprk+5E/pDEv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm writing an ALSA SoC machine driver. The codec on my board, as well
+as the cpu do support the following rates: SNDRV_PCM_RATE_8000_192000
 
-On Fri, Oct 10, 2014 at 05:17:15PM +0100, Nikesh Oswal wrote:
-> dai-link params for codec-codec links were fixed. The fixed
-> link between codec and another chip which may be another codec,
-> baseband, bluetooth codec etc may require run time configuaration
-> changes. This change provides an optional alsa control to select
-> one of the params from a list of params.
+However, the codec, as well as the cpu are clock slaves and the clocks
+are fixed. Hence, my board does only support the 96kHz sample rate.
 
-Has anything changed since the previous version?  I've postponed
-reviewing that until after the merge window given the way you were
-ignoring feedback and the approach of the merge window, is this a new
-version or just a reposting.
+Can someone give me some advice on how to tell ALSA that my board does
+only support the rate SNDRV_PCM_RATE_96000?
+I don't want to modify the codec and the platform driver.
 
---a8sldprk+5E/pDEv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Any help would be highly appreciated.  Thanks!
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUOA42AAoJECTWi3JdVIfQuLIH/R4q5v7R4FJQn2otp//iuU9H
-Og5IPFRjDjULd3zCqO0TSGjU1/dBoVIRdyVmIfQd/4mcRn3jkCLL1ThcYX13jt6v
-41TClQe5dENeNvsJaM05gaXncvXy8tK76rCa7/6xEoKVcJD1K/SAYGCqxb6yednU
-mOtOzQKasTTnABNTlEx87HqzyZCVgl2fYiRkL66tFD7N5HRWIAEcnFuf2gzPA3x2
-cLdvJg/TCbMJp0yc9aw/FdefKVM9MqjEbsuJPH7rKWpyfMo8LDic574QwSg2yE6r
-w4vSZbiK3dhBShGBuAZMdiRBqY6VcZ5UloHLOHbVFuwlLU3KWa2MPQlzUEQ2boo=
-=vUP3
------END PGP SIGNATURE-----
-
---a8sldprk+5E/pDEv--
+ - Sergej
