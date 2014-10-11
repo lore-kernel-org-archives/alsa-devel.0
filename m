@@ -1,18 +1,21 @@
-From: Andrej Falout <andrej@falout.org>
-Subject: Direct Stream Digital (DSD/DST,
-	One Bit Audio) HDMI pass-trough
-Date: Sat, 11 Oct 2014 19:33:07 +1300
-Message-ID: <CAGzU1+H-vof2_1UqDTr2pDrnLMrbk0ZHgaAxeM2CaW9=tcPXwQ@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH v2 2/2] ALSA: au88x0: pr_* replaced with
+	dev_*
+Date: Sat, 11 Oct 2014 15:20:56 +0800
+Message-ID: <CAN8ccibSw_85wdnxbNSKfjXQ-7Lg3C6_5fhKQJJi5xMi8pMabA@mail.gmail.com>
+References: <1412930199-24797-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <1412930199-24797-2-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f173.google.com (mail-lb0-f173.google.com
- [209.85.217.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E8E32605B4
- for <alsa-devel@alsa-project.org>; Sat, 11 Oct 2014 08:33:08 +0200 (CEST)
-Received: by mail-lb0-f173.google.com with SMTP id 10so4275959lbg.18
- for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2014 23:33:07 -0700 (PDT)
+Received: from mail-qg0-f43.google.com (mail-qg0-f43.google.com
+ [209.85.192.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 385722605C7
+ for <alsa-devel@alsa-project.org>; Sat, 11 Oct 2014 09:20:57 +0200 (CEST)
+Received: by mail-qg0-f43.google.com with SMTP id j107so4869373qga.2
+ for <alsa-devel@alsa-project.org>; Sat, 11 Oct 2014 00:20:56 -0700 (PDT)
+In-Reply-To: <1412930199-24797-2-git-send-email-sudipm.mukherjee@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+>
+> pr_* macros replaced with dev_* as they are more preffered over pr_*.
+> each file which had pr_* was reviewed manually and replaced with dev_*.
+> here we have actually used the reference of the vortex which was added
+> to some functions in the previous patch of this series.
+>
+> The prefix of the CARD_NAME and prefix of "vortex:" was also
+> removed as the dev_* will print the device name.
+>
+> Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+> ---
+>
 
-I am collecting requirements for implementation a DSD HDMI pass-trough,
-according to HDMI specs version 1.2 and 1.3a
+>  static int vortex_core_init(vortex_t *vortex)
+>  {
+>
+> -       pr_info( "Vortex: init.... ");
+> +       dev_info(vortex->card->dev, "init.... ");
 
-I am wondering if anyone previously worked on this, or has any interest in
-this functionality.
+Is it possible to add linefeed  since "done/n" won't appear in the same
+line with init nor shutdown?
 
-Any advice or pointers are gratefully received. Here is my list of the core
-facts so far:
-
-
-   1. hda_eld.c in current kernel git ignores raw DSD (One Bit Audio)
-   labelled AUDIO_CODING_TYPE_SACD ("SACD" because originally DSD formats
-   where only used commercially in SACDs) and compressed DSD (DST) is labelled
-   AUDIO_CODING_TYPE_DST (1)
-   2. It is my understanding that apart from "special handling" denoted in
-   "Table 47 CEA Short Audio Descriptor for Audio Format Codes 9 to 13", (eg
-   setting the format code, etc) this should be a reasonably straightforward
-   stream pass-trough (2)
-   3. Typical use scenario for DSD over HDMI: an DVD/BluRay player that
-   supports SACD (Super Audio CD) outputs a DSD stream over HDMI to a DSD
-   capable receiver. For instance, my Oppo and Sony BluRay players both do
-   that, and all my receivers (Onkyo, Pioneer, Marantz, Yamaha, NAD) have DSD
-   DACs and I can play both stereo and surround music this way, without
-   converting DSD to PCM. There is currently about 30 million DSD capable
-   receivers on the planet, conservatively speaking (Just Onkyo makes 1
-   million a year, and makes DSD capable ones since 2003)
-   4. Wanted scenario: play DSD files using DSD enabled players (Linux:
-   MPD, mplayer, VLC, Squeezeboxserver, etc / Windows: FooBar, JRiver, etc) to
-   an HDMI audio card/device on a PC motherboard or add-on video card with
-   HDMI, connected via HDMI cable to a DSD enabled receiver/DAC
-   5. Note that as far as I know, no proprietary drivers on Windows
-   (ATI/AMD, Nvidia, Intel) support this; It will be the first time a device
-   that is not a SACD player outputs DSD over HDMI, on any OS. I am assuming
-   that this has nothing to do with hardware limitations of the HDMI chips
-   used for video outputs (I could not find any reference for such assumption
-   in any HDMI chips I examined specs for). Therefore, I assume that
-   implementing this has no hardware prerequisites.
-   6. DSD format general info:
-   http://en.wikipedia.org/wiki/Direct_Stream_Digital  http://dsd-guide.com/
-    http://dsd-guide.com/what-dsd-audio-simple-explanation
-
-
-
-Thanks,
-Andrej Falout
-
-References:
-(1)
-https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/sound/pci/hda/hda_eld.c?id=refs/tags/v3.17
-  - Same source file in Alsa GIT tree:
-
-http://git.alsa-project.org/?p=alsa-kernel.git;a=blob;f=sound/pci/hda/hda_eld.c
-
-(2) CEA Standard PDF, page 66, table 47. HDMI specs version 1.3a, pages
-72-73 for DSD(One Bit Audio) and DST audio packet header and body formats
-
-
-<%2B385%2891%291520436>
+>         /* Hardware Init. */
+>         hwwrite(vortex->mmio, VORTEX_CTRL, 0xffffffff);
+>         msleep(5);
+> @@ -2729,7 +2735,7 @@ static int vortex_core_init(vortex_t *vortex)
+>         //vortex_enable_timer_int(vortex);
+>         //vortex_disable_timer_int(vortex);
+>
+> -       pr_info( "done.\n");
+> +       dev_info(vortex->card->dev, "done.\n");
+>         spin_lock_init(&vortex->lock);
+>
+>         return 0;
+> @@ -2738,7 +2744,7 @@ static int vortex_core_init(vortex_t *vortex)
+>  static int vortex_core_shutdown(vortex_t * vortex)
+>  {
+>
+> -       pr_info( "Vortex: shutdown...");
+> +       dev_info(vortex->card->dev, "shutdown...");
+>  #ifndef CHIP_AU8820
+>         vortex_eq_free(vortex);
+>         vortex_Vort3D_disable(vortex);
+> @@ -2760,7 +2766,7 @@ static int vortex_core_shutdown(vortex_t * vortex)
+>         msleep(5);
+>         hwwrite(vortex->mmio, VORTEX_IRQ_SOURCE, 0xffff);
+>
+> -       pr_info( "done.\n");
+> +       dev_info(vortex->card->dev, "done.\n");
+>         return 0;
+>  }
+>
