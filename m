@@ -1,18 +1,18 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: [PATCH] ASoC: rt5677: Add option to configure gpio as
-	floating/pullup/pulldown
-Date: Fri, 10 Oct 2014 20:46:36 -0700
-Message-ID: <1412999196-14395-1-git-send-email-anatol.pomozov@gmail.com>
+From: Andrej Falout <andrej@falout.org>
+Subject: Direct Stream Digital (DSD/DST,
+	One Bit Audio) HDMI pass-trough
+Date: Sat, 11 Oct 2014 19:33:07 +1300
+Message-ID: <CAGzU1+H-vof2_1UqDTr2pDrnLMrbk0ZHgaAxeM2CaW9=tcPXwQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f173.google.com (mail-pd0-f173.google.com
- [209.85.192.173])
- by alsa0.perex.cz (Postfix) with ESMTP id CFE4B2605AC
- for <alsa-devel@alsa-project.org>; Sat, 11 Oct 2014 05:46:42 +0200 (CEST)
-Received: by mail-pd0-f173.google.com with SMTP id g10so2666018pdj.4
- for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2014 20:46:41 -0700 (PDT)
+Received: from mail-lb0-f173.google.com (mail-lb0-f173.google.com
+ [209.85.217.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E8E32605B4
+ for <alsa-devel@alsa-project.org>; Sat, 11 Oct 2014 08:33:08 +0200 (CEST)
+Received: by mail-lb0-f173.google.com with SMTP id 10so4275959lbg.18
+ for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2014 23:33:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,128 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, oder_chiou@realtek.com
-Cc: alsa-devel@alsa-project.org, dgreid@chromium.org, Anatol Pomozov <anatol.pomozov@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-gpio_config is array of 6 elements that allows to set GPIO as
-floating, pullup, pulldown.
+Hello,
 
-Sponsored: Google ChromeOS
-Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
----
- Documentation/devicetree/bindings/sound/rt5677.txt |  7 ++++
- include/sound/rt5677.h                             |  3 ++
- sound/soc/codecs/rt5677.c                          | 39 ++++++++++++++++++++++
- 3 files changed, 49 insertions(+)
+I am collecting requirements for implementation a DSD HDMI pass-trough,
+according to HDMI specs version 1.2 and 1.3a
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5677.txt b/Documentation/devicetree/bindings/sound/rt5677.txt
-index 0701b83..f82f0e9 100644
---- a/Documentation/devicetree/bindings/sound/rt5677.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5677.txt
-@@ -27,6 +27,12 @@ Optional properties:
-   Boolean. Indicate MIC1/2 input and LOUT1/2/3 outputs are differential,
-   rather than single-ended.
- 
-+- realtek,gpio-config
-+  Array of six 8bit elements that configures GPIO.
-+    0 - floating (reset value)
-+    1 - pull down
-+    2 - pull up
-+
- Pins on the device (for linking into audio routes):
- 
-   * IN1P
-@@ -56,4 +62,5 @@ rt5677 {
- 	realtek,pow-ldo2-gpio =
- 		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
- 	realtek,in1-differential = "true";
-+	realtek,gpio-config = /bits/ 8  <0 0 0 0 0 2>;   /* pull up GPIO6 */
- };
-diff --git a/include/sound/rt5677.h b/include/sound/rt5677.h
-index 082670e..a56b429 100644
---- a/include/sound/rt5677.h
-+++ b/include/sound/rt5677.h
-@@ -27,6 +27,9 @@ struct rt5677_platform_data {
- 	bool lout3_diff;
- 	/* DMIC2 clock source selection */
- 	enum rt5677_dmic2_clk dmic2_clk_pin;
-+
-+	/* configures GPIO, 0 - floating, 1 - pulldown, 2 - pullup */
-+	u8 gpio_config[6];
- };
- 
- #endif
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 16aa4d9..a454df3 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -3309,6 +3309,38 @@ static int rt5677_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
- 	return 0;
- }
- 
-+/** Configures the gpio as
-+ *   0 - floating
-+ *   1 - pull down
-+ *   2 - pull up
-+ */
-+static void rt5677_gpio_config(struct rt5677_priv *rt5677, unsigned offset,
-+		int value)
-+{
-+	int shift;
-+
-+	switch (offset) {
-+	case RT5677_GPIO1 ... RT5677_GPIO2:
-+		shift = 2 * (1 - offset);
-+		regmap_update_bits(rt5677->regmap,
-+			RT5677_PR_BASE + RT5677_DIG_IN_PIN_ST_CTRL2,
-+			0x3 << shift,
-+			(value & 0x3) << shift);
-+		break;
-+
-+	case RT5677_GPIO3 ... RT5677_GPIO6:
-+		shift = 2 * (9 - offset);
-+		regmap_update_bits(rt5677->regmap,
-+			RT5677_PR_BASE + RT5677_DIG_IN_PIN_ST_CTRL3,
-+			0x3 << shift,
-+			(value & 0x3) << shift);
-+		break;
-+
-+	default:
-+		break;
-+	}
-+}
-+
- static struct gpio_chip rt5677_template_chip = {
- 	.label			= "rt5677",
- 	.owner			= THIS_MODULE,
-@@ -3353,6 +3385,7 @@ static void rt5677_free_gpio(struct i2c_client *i2c)
- static int rt5677_probe(struct snd_soc_codec *codec)
- {
- 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+	int i;
- 
- 	rt5677->codec = codec;
- 
-@@ -3371,6 +3404,9 @@ static int rt5677_probe(struct snd_soc_codec *codec)
- 	regmap_write(rt5677->regmap, RT5677_DIG_MISC, 0x0020);
- 	regmap_write(rt5677->regmap, RT5677_PWR_DSP2, 0x0c00);
- 
-+	for (i = 0; i < RT5677_GPIO_NUM; i++)
-+		rt5677_gpio_config(rt5677, i, rt5677->pdata.gpio_config[i]);
-+
- 	return 0;
- }
- 
-@@ -3590,6 +3626,9 @@ static int rt5677_parse_dt(struct rt5677_priv *rt5677, struct device_node *np)
- 			(rt5677->pow_ldo2 != -ENOENT))
- 		return rt5677->pow_ldo2;
- 
-+	of_property_read_u8_array(np, "realtek,gpio-config",
-+		rt5677->pdata.gpio_config, RT5677_GPIO_NUM);
-+
- 	return 0;
- }
- 
--- 
-2.1.2
+I am wondering if anyone previously worked on this, or has any interest in
+this functionality.
+
+Any advice or pointers are gratefully received. Here is my list of the core
+facts so far:
+
+
+   1. hda_eld.c in current kernel git ignores raw DSD (One Bit Audio)
+   labelled AUDIO_CODING_TYPE_SACD ("SACD" because originally DSD formats
+   where only used commercially in SACDs) and compressed DSD (DST) is labelled
+   AUDIO_CODING_TYPE_DST (1)
+   2. It is my understanding that apart from "special handling" denoted in
+   "Table 47 CEA Short Audio Descriptor for Audio Format Codes 9 to 13", (eg
+   setting the format code, etc) this should be a reasonably straightforward
+   stream pass-trough (2)
+   3. Typical use scenario for DSD over HDMI: an DVD/BluRay player that
+   supports SACD (Super Audio CD) outputs a DSD stream over HDMI to a DSD
+   capable receiver. For instance, my Oppo and Sony BluRay players both do
+   that, and all my receivers (Onkyo, Pioneer, Marantz, Yamaha, NAD) have DSD
+   DACs and I can play both stereo and surround music this way, without
+   converting DSD to PCM. There is currently about 30 million DSD capable
+   receivers on the planet, conservatively speaking (Just Onkyo makes 1
+   million a year, and makes DSD capable ones since 2003)
+   4. Wanted scenario: play DSD files using DSD enabled players (Linux:
+   MPD, mplayer, VLC, Squeezeboxserver, etc / Windows: FooBar, JRiver, etc) to
+   an HDMI audio card/device on a PC motherboard or add-on video card with
+   HDMI, connected via HDMI cable to a DSD enabled receiver/DAC
+   5. Note that as far as I know, no proprietary drivers on Windows
+   (ATI/AMD, Nvidia, Intel) support this; It will be the first time a device
+   that is not a SACD player outputs DSD over HDMI, on any OS. I am assuming
+   that this has nothing to do with hardware limitations of the HDMI chips
+   used for video outputs (I could not find any reference for such assumption
+   in any HDMI chips I examined specs for). Therefore, I assume that
+   implementing this has no hardware prerequisites.
+   6. DSD format general info:
+   http://en.wikipedia.org/wiki/Direct_Stream_Digital  http://dsd-guide.com/
+    http://dsd-guide.com/what-dsd-audio-simple-explanation
+
+
+
+Thanks,
+Andrej Falout
+
+References:
+(1)
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/sound/pci/hda/hda_eld.c?id=refs/tags/v3.17
+  - Same source file in Alsa GIT tree:
+
+http://git.alsa-project.org/?p=alsa-kernel.git;a=blob;f=sound/pci/hda/hda_eld.c
+
+(2) CEA Standard PDF, page 66, table 47. HDMI specs version 1.3a, pages
+72-73 for DSD(One Bit Audio) and DST audio packet header and body formats
+
+
+<%2B385%2891%291520436>
