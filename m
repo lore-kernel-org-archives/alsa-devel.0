@@ -1,23 +1,53 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 11/12] ASoC: txx9: use dmaengine_terminate_all() API
-Date: Sat, 11 Oct 2014 18:21:47 +0200
-Message-ID: <5439591B.4020701@metafoo.de>
-References: <1413041973-28146-1-git-send-email-vinod.koul@intel.com> <1413042040-28222-11-git-send-email-vinod.koul@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] bebob: Fix failure to detect source of
+ clock for Terratec Phase 88
+Date: Sun, 12 Oct 2014 01:22:14 +0900
+Message-ID: <54395936.6000901@sakamocchi.jp>
+References: <1412951569-7720-1-git-send-email-o-takashi@sakamocchi.jp>
+ <s5h1tqgj78g.wl-tiwai@suse.de> <5437F9BE.9020109@sakamocchi.jp>
+ <s5hvbnrj4r4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1413042040-28222-11-git-send-email-vinod.koul@intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: dmaengine@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 923C926060C
+ for <alsa-devel@alsa-project.org>; Sat, 11 Oct 2014 18:22:23 +0200 (CEST)
+In-Reply-To: <s5hvbnrj4r4.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: clemens@ladisch.de, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net, muranyia@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 10/11/2014 05:40 PM, Vinod Koul wrote:
-> The drivers should use dmaengine_terminate_all() API instead of
-> accessing the device_control which will be deprecated soon
+Hi Iwai-san,
 
-I already send a similar patch a while ago. It is on it's way into 3.18.
+On Oct 11 2014 00:58, Takashi Iwai wrote:
+>>> This deserves Cc to stable kernel, right?
+>>
+>> Yes, please.
+>>
+>> I did easy mistake when writing terratec module. I did just copy them
+>> but forgot to change its parameters...
+> 
+> Thanks, pulled now.  It'll be included in the next pull request to
+> 3.18-rc1 (slipped from today's one).
 
->
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+OK. Thanks.
+
+FYI, I have a plan to prepare two patchsets for next merge window (Linux
+3.19). One is for the Dice driver and another is for OXFW driver. I'll
+post the OXFW driver till the beginning of November (if everything goes
+well). Of cource, I welcome any discussions.
+
+
+Regards
+
+Takashi (dreaming of GUT between ALSA/FFADO)
