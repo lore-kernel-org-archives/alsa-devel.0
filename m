@@ -1,23 +1,18 @@
-From: Adam Goode <agoode@chromium.org>
-Subject: Re: seq module loading issue
-Date: Fri, 10 Oct 2014 17:45:43 -0400
-Message-ID: <CAOf41NnB2T1Z6Sgempr5iYNkabhHgcauhG6goeNo7u3Dj6WZSw@mail.gmail.com>
-References: <CAOf41NnCESt3PEGhp3yKgZhScG1H0+qrhz8h3+vjBUfGzfhsyA@mail.gmail.com>
- <s5hd2a1kalk.wl-tiwai@suse.de> <54363946.4010000@ladisch.de>
- <s5ha955k7zr.wl-tiwai@suse.de> <54365211.5040604@ladisch.de>
- <s5hy4spioo7.wl-tiwai@suse.de> <s5htx3dinj9.wl-tiwai@suse.de>
- <s5hzjd5jlft.wl-tiwai@suse.de>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: [PATCH] ASoC: rt5677: Add option to configure gpio as
+	floating/pullup/pulldown
+Date: Fri, 10 Oct 2014 20:46:36 -0700
+Message-ID: <1412999196-14395-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f174.google.com (mail-ig0-f174.google.com
- [209.85.213.174])
- by alsa0.perex.cz (Postfix) with ESMTP id 84B16260629
- for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2014 23:46:05 +0200 (CEST)
-Received: by mail-ig0-f174.google.com with SMTP id a13so4431625igq.7
- for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2014 14:46:04 -0700 (PDT)
-In-Reply-To: <s5hzjd5jlft.wl-tiwai@suse.de>
+Received: from mail-pd0-f173.google.com (mail-pd0-f173.google.com
+ [209.85.192.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFE4B2605AC
+ for <alsa-devel@alsa-project.org>; Sat, 11 Oct 2014 05:46:42 +0200 (CEST)
+Received: by mail-pd0-f173.google.com with SMTP id g10so2666018pdj.4
+ for <alsa-devel@alsa-project.org>; Fri, 10 Oct 2014 20:46:41 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,363 +22,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Adam Goode <agoode@chromium.org>
+To: broonie@kernel.org, oder_chiou@realtek.com
+Cc: alsa-devel@alsa-project.org, dgreid@chromium.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 9, 2014 at 11:45 AM, Takashi Iwai <tiwai@suse.de> wrote:
+gpio_config is array of 6 elements that allows to set GPIO as
+floating, pullup, pulldown.
 
-> At Thu, 09 Oct 2014 11:46:02 +0200,
-> Takashi Iwai wrote:
-> >
-> > At Thu, 09 Oct 2014 11:21:28 +0200,
-> > Takashi Iwai wrote:
-> > >
-> > > At Thu, 09 Oct 2014 11:14:57 +0200,
-> > > Clemens Ladisch wrote:
-> > > >
-> > > > Takashi Iwai wrote:
-> > > > > Clemens Ladisch wrote:
-> > > > >> Takashi Iwai wrote:
-> > > > >>> If it were a simple cleanup, I'm fine with it.  But this leads to
-> > > > >>> a major behavior change, which has a high risk of
-> incompatibility.
-> > > > >>
-> > > > >> But there would be no changed behaviour as far as the API is
-> concerned
-> > > > >> (except for this particular issue, which is a bug).
-> > > > >
-> > > > > Currently, the sequencer stuff can be suppressed by simply not
-> loading
-> > > > > snd-seq core module itself.  Do you mean to drop this feature?
-> > > >
-> > > > Yes.
-> > > >
-> > > > > Some distros don't load sequencer modules nowadays as default.
-> > > >
-> > > > Do you know why?  Any reason except memory?
-> > >
-> > > Mostly yes, and also reduce the installation base.
-> > >
-> > > > > So it would result in a clear behavior change on the whole system.
-> > > >
-> > > > And alsa-lib tries its best to do autoloading to hide the fact that
-> > > > snd-seq might not have been loaded.  Therefore, it has never been
-> > > > possible to assume, at any time, that snd-seq is _not_ loaded.
-> > >
-> > > What if the sound system doesn't exist at all like a server?  The
-> > > module is built and provided even on such a system by a distro, but
-> > > it's just not enabled.
-> > >
-> > > > Is the high risk of incompatibility that you mentioned this
-> assumption,
-> > > > or anything else?
-> > >
-> > > It results in a surprising outcome, and it's what I'd like to avoid.
-> >
-> > Thinking of this again, what's missing right now is the instantaneous
-> > binding *only when* sequencer stuff is ready to use.  That is, if
-> > snd-seq isn't loaded, we should assume that it's not for use, thus not
-> > forcibly load the module there.  If so, a patch like below should work
-> > (again untested).  It's a bit more than the previous one, but it's
-> > still simple enough and doesn't break.
->
-> Scratch this patch.  It still has the old known deadlocking due to the
-> request_module() in module init path.
->
-> Below is a more comprehensive patch.  And this time I actually tested
-> it :)  Adam, could you give it a try?
->
->
-> thanks,
->
-> Takashi
->
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: seq: bind seq driver automatically
->
-> Currently the sequencer module binding is performed independently from
-> the card module itself.  The reason behind it is to keep the sequencer
-> stuff optional and allow the system running without it (e.g. for using
-> PCM or rawmidi only).  This works in most cases, but a remaining
-> problem is that the binding isn't done automatically when a new driver
-> module is probed.  Typically this becomes visible when a hotplug
-> driver like usb audio is used.
->
-> This patch tries to address this and other potential issues.  First,
-> the seq-binder (seq_device.c) tries to load a missing driver module at
-> creating a new device object.  This is done asynchronously in a workq
-> for avoiding the deadlock (modprobe call in module init path).
->
-> This action, however, should be enabled only when the sequencer stuff
-> was already initialized, i.e. snd-seq module was already loaded.  For
-> that, a new function, snd_seq_autoload_init() is introduced here; this
-> clears the blocking of autoloading, and also tries to load all pending
-> driver modules.
->
-> Since we're calling request_module() asynchronously, we can get rid of
-> the autoload lock in snd_seq_device_register_driver().  This enables
-> the automatic loading of dependent sequencer modules, such as
-> snd-seq-virmidi from snd-emu10k1-synth.
->
-> Last but not least, yet another fix is to use atomic_t for the
-> refcount, just to be more robust.
->
-> Reported-by: Adam Goode <agoode@chromium.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  include/sound/seq_kernel.h  |   4 ++
->  sound/core/seq/seq.c        |   5 ++-
->  sound/core/seq/seq_device.c | 103
-> +++++++++++++++++++++++++++++++-------------
->  3 files changed, 79 insertions(+), 33 deletions(-)
->
-> diff --git a/include/sound/seq_kernel.h b/include/sound/seq_kernel.h
-> index 2398521f0998..eea5400fe373 100644
-> --- a/include/sound/seq_kernel.h
-> +++ b/include/sound/seq_kernel.h
-> @@ -108,9 +108,13 @@ int snd_seq_event_port_detach(int client, int port);
->  #ifdef CONFIG_MODULES
->  void snd_seq_autoload_lock(void);
->  void snd_seq_autoload_unlock(void);
-> +void snd_seq_autoload_init(void);
-> +#define snd_seq_autoload_exit()        snd_seq_autoload_lock()
->  #else
->  #define snd_seq_autoload_lock()
->  #define snd_seq_autoload_unlock()
-> +#define snd_seq_autoload_init()
-> +#define snd_seq_autoload_exit()
->  #endif
->
->  #endif /* __SOUND_SEQ_KERNEL_H */
-> diff --git a/sound/core/seq/seq.c b/sound/core/seq/seq.c
-> index 712110561082..7e0aabb808a6 100644
-> --- a/sound/core/seq/seq.c
-> +++ b/sound/core/seq/seq.c
-> @@ -86,7 +86,6 @@ static int __init alsa_seq_init(void)
->  {
->         int err;
->
-> -       snd_seq_autoload_lock();
->         if ((err = client_init_data()) < 0)
->                 goto error;
->
-> @@ -110,8 +109,8 @@ static int __init alsa_seq_init(void)
->         if ((err = snd_seq_system_client_init()) < 0)
->                 goto error;
->
-> +       snd_seq_autoload_init();
->   error:
-> -       snd_seq_autoload_unlock();
->         return err;
->  }
->
-> @@ -131,6 +130,8 @@ static void __exit alsa_seq_exit(void)
->
->         /* release event memory */
->         snd_sequencer_memory_done();
-> +
-> +       snd_seq_autoload_exit();
->  }
->
->  module_init(alsa_seq_init)
-> diff --git a/sound/core/seq/seq_device.c b/sound/core/seq/seq_device.c
-> index 91a786a783e1..6b31ca09caf7 100644
-> --- a/sound/core/seq/seq_device.c
-> +++ b/sound/core/seq/seq_device.c
-> @@ -56,6 +56,7 @@ MODULE_LICENSE("GPL");
->  #define DRIVER_LOADED          (1<<0)
->  #define DRIVER_REQUESTED       (1<<1)
->  #define DRIVER_LOCKED          (1<<2)
-> +#define DRIVER_REQUESTING      (1<<3)
->
->  struct ops_list {
->         char id[ID_LEN];        /* driver id */
-> @@ -127,42 +128,82 @@ static void snd_seq_device_info(struct
-> snd_info_entry *entry,
->
->  #ifdef CONFIG_MODULES
->  /* avoid auto-loading during module_init() */
-> -static int snd_seq_in_init;
-> +static atomic_t snd_seq_in_init = ATOMIC_INIT(1); /* blocked as default */
->  void snd_seq_autoload_lock(void)
->  {
-> -       snd_seq_in_init++;
-> +       atomic_inc(&snd_seq_in_init);
->  }
->
->  void snd_seq_autoload_unlock(void)
->  {
-> -       snd_seq_in_init--;
-> +       atomic_dec(&snd_seq_in_init);
->  }
-> -#endif
->
-> -void snd_seq_device_load_drivers(void)
-> +static void autoload_drivers(void)
->  {
-> -#ifdef CONFIG_MODULES
-> -       struct ops_list *ops;
-> +       /* avoid reentrance */
-> +       if (atomic_inc_return(&snd_seq_in_init) == 1) {
-> +               struct ops_list *ops;
-> +
-> +               mutex_lock(&ops_mutex);
-> +               list_for_each_entry(ops, &opslist, list) {
-> +                       if ((ops->driver & DRIVER_REQUESTING) &&
-> +                           !(ops->driver & DRIVER_REQUESTED)) {
-> +                               ops->used++;
-> +                               mutex_unlock(&ops_mutex);
-> +                               ops->driver |= DRIVER_REQUESTED;
-> +                               request_module("snd-%s", ops->id);
-> +                               mutex_lock(&ops_mutex);
-> +                               ops->used--;
-> +                       }
-> +               }
-> +               mutex_unlock(&ops_mutex);
-> +       }
-> +       atomic_dec(&snd_seq_in_init);
-> +}
->
-> -       /* Calling request_module during module_init()
-> -        * may cause blocking.
-> -        */
-> -       if (snd_seq_in_init)
-> -               return;
-> +static void call_autoload(struct work_struct *work)
-> +{
-> +       autoload_drivers();
-> +}
->
-> -       mutex_lock(&ops_mutex);
-> -       list_for_each_entry(ops, &opslist, list) {
-> -               if (! (ops->driver & DRIVER_LOADED) &&
-> -                   ! (ops->driver & DRIVER_REQUESTED)) {
-> -                       ops->used++;
-> -                       mutex_unlock(&ops_mutex);
-> -                       ops->driver |= DRIVER_REQUESTED;
-> -                       request_module("snd-%s", ops->id);
-> -                       mutex_lock(&ops_mutex);
-> -                       ops->used--;
-> -               }
-> +static DECLARE_WORK(autoload_work, call_autoload);
-> +
-> +static void try_autoload(struct ops_list *ops)
-> +{
-> +       if (!ops->driver) {
-> +               ops->driver |= DRIVER_REQUESTING;
-> +               schedule_work(&autoload_work);
->         }
-> +}
-> +
-> +static void queue_autoload_drivers(void)
-> +{
-> +       struct ops_list *ops;
-> +
-> +       mutex_lock(&ops_mutex);
-> +       list_for_each_entry(ops, &opslist, list)
-> +               try_autoload(ops);
->         mutex_unlock(&ops_mutex);
-> +}
-> +
-> +void snd_seq_autoload_init(void)
-> +{
-> +       atomic_dec(&snd_seq_in_init);
-> +#ifdef CONFIG_SND_SEQUENCER_MODULE
-> +       /* initial autoload only when snd-seq is a module */
-> +       queue_autoload_drivers();
-> +#endif
-> +}
-> +#else
-> +#define try_autoload() /* NOP */
-> +#endif
-> +
-> +void snd_seq_device_load_drivers(void)
-> +{
-> +#ifdef CONFIG_MODULES
-> +       queue_autoload_drivers();
-> +       flush_work(&autoload_work);
->  #endif
->  }
->
-> @@ -214,13 +255,14 @@ int snd_seq_device_new(struct snd_card *card, int
-> device, char *id, int argsize,
->         ops->num_devices++;
->         mutex_unlock(&ops->reg_mutex);
->
-> -       unlock_driver(ops);
-> -
->         if ((err = snd_device_new(card, SNDRV_DEV_SEQUENCER, dev, &dops))
-> < 0) {
->                 snd_seq_device_free(dev);
->                 return err;
->         }
->
-> +       try_autoload(ops);
-> +       unlock_driver(ops);
-> +
->         if (result)
->                 *result = dev;
->
-> @@ -318,16 +360,12 @@ int snd_seq_device_register_driver(char *id, struct
-> snd_seq_dev_ops *entry,
->             entry->init_device == NULL || entry->free_device == NULL)
->                 return -EINVAL;
->
-> -       snd_seq_autoload_lock();
->         ops = find_driver(id, 1);
-> -       if (ops == NULL) {
-> -               snd_seq_autoload_unlock();
-> +       if (ops == NULL)
->                 return -ENOMEM;
-> -       }
->         if (ops->driver & DRIVER_LOADED) {
->                 pr_warn("ALSA: seq: driver_register: driver '%s' already
-> exists\n", id);
->                 unlock_driver(ops);
-> -               snd_seq_autoload_unlock();
->                 return -EBUSY;
->         }
->
-> @@ -344,7 +382,6 @@ int snd_seq_device_register_driver(char *id, struct
-> snd_seq_dev_ops *entry,
->         mutex_unlock(&ops->reg_mutex);
->
->         unlock_driver(ops);
-> -       snd_seq_autoload_unlock();
->
->         return 0;
->  }
-> @@ -554,6 +591,9 @@ static int __init alsa_seq_device_init(void)
->
->  static void __exit alsa_seq_device_exit(void)
->  {
-> +#ifdef CONFIG_MODULES
-> +       cancel_work_sync(&autoload_work);
-> +#endif
->         remove_drivers();
->  #ifdef CONFIG_PROC_FS
->         snd_info_free_entry(info_entry);
-> @@ -570,6 +610,7 @@ EXPORT_SYMBOL(snd_seq_device_new);
->  EXPORT_SYMBOL(snd_seq_device_register_driver);
->  EXPORT_SYMBOL(snd_seq_device_unregister_driver);
->  #ifdef CONFIG_MODULES
-> +EXPORT_SYMBOL(snd_seq_autoload_init);
->  EXPORT_SYMBOL(snd_seq_autoload_lock);
->  EXPORT_SYMBOL(snd_seq_autoload_unlock);
->  #endif
-> --
-> 2.1.2
->
->
+Sponsored: Google ChromeOS
+Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+---
+ Documentation/devicetree/bindings/sound/rt5677.txt |  7 ++++
+ include/sound/rt5677.h                             |  3 ++
+ sound/soc/codecs/rt5677.c                          | 39 ++++++++++++++++++++++
+ 3 files changed, 49 insertions(+)
 
-Hi Takashi,
-
-I did test the code and it appears to work! Thanks!
-
-Note: I did not review the code in any other way than compiling and manual
-test.
-
-
-Adam
+diff --git a/Documentation/devicetree/bindings/sound/rt5677.txt b/Documentation/devicetree/bindings/sound/rt5677.txt
+index 0701b83..f82f0e9 100644
+--- a/Documentation/devicetree/bindings/sound/rt5677.txt
++++ b/Documentation/devicetree/bindings/sound/rt5677.txt
+@@ -27,6 +27,12 @@ Optional properties:
+   Boolean. Indicate MIC1/2 input and LOUT1/2/3 outputs are differential,
+   rather than single-ended.
+ 
++- realtek,gpio-config
++  Array of six 8bit elements that configures GPIO.
++    0 - floating (reset value)
++    1 - pull down
++    2 - pull up
++
+ Pins on the device (for linking into audio routes):
+ 
+   * IN1P
+@@ -56,4 +62,5 @@ rt5677 {
+ 	realtek,pow-ldo2-gpio =
+ 		<&gpio TEGRA_GPIO(V, 3) GPIO_ACTIVE_HIGH>;
+ 	realtek,in1-differential = "true";
++	realtek,gpio-config = /bits/ 8  <0 0 0 0 0 2>;   /* pull up GPIO6 */
+ };
+diff --git a/include/sound/rt5677.h b/include/sound/rt5677.h
+index 082670e..a56b429 100644
+--- a/include/sound/rt5677.h
++++ b/include/sound/rt5677.h
+@@ -27,6 +27,9 @@ struct rt5677_platform_data {
+ 	bool lout3_diff;
+ 	/* DMIC2 clock source selection */
+ 	enum rt5677_dmic2_clk dmic2_clk_pin;
++
++	/* configures GPIO, 0 - floating, 1 - pulldown, 2 - pullup */
++	u8 gpio_config[6];
+ };
+ 
+ #endif
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 16aa4d9..a454df3 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -3309,6 +3309,38 @@ static int rt5677_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
+ 	return 0;
+ }
+ 
++/** Configures the gpio as
++ *   0 - floating
++ *   1 - pull down
++ *   2 - pull up
++ */
++static void rt5677_gpio_config(struct rt5677_priv *rt5677, unsigned offset,
++		int value)
++{
++	int shift;
++
++	switch (offset) {
++	case RT5677_GPIO1 ... RT5677_GPIO2:
++		shift = 2 * (1 - offset);
++		regmap_update_bits(rt5677->regmap,
++			RT5677_PR_BASE + RT5677_DIG_IN_PIN_ST_CTRL2,
++			0x3 << shift,
++			(value & 0x3) << shift);
++		break;
++
++	case RT5677_GPIO3 ... RT5677_GPIO6:
++		shift = 2 * (9 - offset);
++		regmap_update_bits(rt5677->regmap,
++			RT5677_PR_BASE + RT5677_DIG_IN_PIN_ST_CTRL3,
++			0x3 << shift,
++			(value & 0x3) << shift);
++		break;
++
++	default:
++		break;
++	}
++}
++
+ static struct gpio_chip rt5677_template_chip = {
+ 	.label			= "rt5677",
+ 	.owner			= THIS_MODULE,
+@@ -3353,6 +3385,7 @@ static void rt5677_free_gpio(struct i2c_client *i2c)
+ static int rt5677_probe(struct snd_soc_codec *codec)
+ {
+ 	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
++	int i;
+ 
+ 	rt5677->codec = codec;
+ 
+@@ -3371,6 +3404,9 @@ static int rt5677_probe(struct snd_soc_codec *codec)
+ 	regmap_write(rt5677->regmap, RT5677_DIG_MISC, 0x0020);
+ 	regmap_write(rt5677->regmap, RT5677_PWR_DSP2, 0x0c00);
+ 
++	for (i = 0; i < RT5677_GPIO_NUM; i++)
++		rt5677_gpio_config(rt5677, i, rt5677->pdata.gpio_config[i]);
++
+ 	return 0;
+ }
+ 
+@@ -3590,6 +3626,9 @@ static int rt5677_parse_dt(struct rt5677_priv *rt5677, struct device_node *np)
+ 			(rt5677->pow_ldo2 != -ENOENT))
+ 		return rt5677->pow_ldo2;
+ 
++	of_property_read_u8_array(np, "realtek,gpio-config",
++		rt5677->pdata.gpio_config, RT5677_GPIO_NUM);
++
+ 	return 0;
+ }
+ 
+-- 
+2.1.2
