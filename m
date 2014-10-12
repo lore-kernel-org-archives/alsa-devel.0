@@ -1,158 +1,168 @@
-From: Jean-Michel Hautbois <jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH] audio: sgtl5000: Add MicBias resistor support in DT
-Date: Sun, 12 Oct 2014 20:39:09 +0200
-Message-ID: <1413139149-2485-1-git-send-email-jean-michel.hautbois@vodalys.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Jean-Michel Hautbois <jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: [PATCH] snd-es18xx: Add GPO controls
+Date: Sun, 12 Oct 2014 22:54:17 +0200
+Message-ID: <1413147257-24817-1-git-send-email-linux@rainbow-software.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gsystem.sk (ns.gsystem.sk [62.176.172.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2900A260462
+ for <alsa-devel@alsa-project.org>; Sun, 12 Oct 2014 22:54:27 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Kernel development list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Some systems may require a different resistor than the default one (4K).
-This adds a property in sgtl5000 codec.
-It keeps the default of 4K when nothing is specified so it does not break
-existing code.
+Add GPO0 and GPO1 (General Purpose Outputs) controls to mixer.
+These can be used on some cards to control amplifier mute (seen in ES1868
+datasheet) or additional onboard chips such as QX2130 QXpander processor.
 
-Signed-off-by: Jean-Michel Hautbois <jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org>
+These GPOs are present on ES1868, ES1869, ES1887 and ES1888 chips.
+
+Tested on ES1868 with QX2130.
+
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 ---
- .../devicetree/bindings/sound/sgtl5000.txt         | 10 ++++
- sound/soc/codecs/sgtl5000.c                        | 56 ++++++++++++++++++++--
- 2 files changed, 62 insertions(+), 4 deletions(-)
+ sound/isa/es18xx.c |   49 +++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 39 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-index 955df60..dd38f84 100644
---- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
-+++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-@@ -7,10 +7,20 @@ Required properties:
+diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
+index 6faaac6..8966ed2 100644
+--- a/sound/isa/es18xx.c
++++ b/sound/isa/es18xx.c
+@@ -156,6 +156,7 @@ struct snd_es18xx {
+ #define ES18XX_I2S	0x0200	/* I2S mixer control */
+ #define ES18XX_MUTEREC	0x0400	/* Record source can be muted */
+ #define ES18XX_CONTROL	0x0800	/* Has control ports */
++#define ES18XX_GPO_2BIT	0x1000	/* GPO0,1 controlled by PM port */
  
- - clocks : the clock provider of SYS_MCLK
+ /* Power Management */
+ #define ES18XX_PM	0x07
+@@ -1136,11 +1137,14 @@ static int snd_es18xx_reg_read(struct snd_es18xx *chip, unsigned char reg)
+ 		return snd_es18xx_read(chip, reg);
+ }
  
-+- sgtl5000-micbias-resistor : the bias resistor to be used
-+        1 or SGTL5000_MICBIAS_2K - MICBIAS resistor is set to 2K
-+        2 or SGTL5000_MICBIAS_4K - MICBIAS resistor is set to 4K
-+        3 or SGTL5000_MICBIAS_8K - MICBIAS resistor is set to 8K
-+        0 or SGTL5000_MICBIAS_OFF - MICBIAS resistor is not used
-+	If this node is not mentioned or if the value is unknown, then
-+	micbias	resistor is set to 4K.
+-#define ES18XX_SINGLE(xname, xindex, reg, shift, mask, invert) \
++#define ES18XX_SINGLE(xname, xindex, reg, shift, mask, flags) \
+ { .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = xindex, \
+   .info = snd_es18xx_info_single, \
+   .get = snd_es18xx_get_single, .put = snd_es18xx_put_single, \
+-  .private_value = reg | (shift << 8) | (mask << 16) | (invert << 24) }
++  .private_value = reg | (shift << 8) | (mask << 16) | (flags << 24) }
 +
++#define ES18XX_FL_INVERT	(1 << 0)
++#define ES18XX_FL_PMPORT	(1 << 1)
+ 
+ static int snd_es18xx_info_single(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
+ {
+@@ -1159,10 +1163,14 @@ static int snd_es18xx_get_single(struct snd_kcontrol *kcontrol, struct snd_ctl_e
+ 	int reg = kcontrol->private_value & 0xff;
+ 	int shift = (kcontrol->private_value >> 8) & 0xff;
+ 	int mask = (kcontrol->private_value >> 16) & 0xff;
+-	int invert = (kcontrol->private_value >> 24) & 0xff;
++	int invert = (kcontrol->private_value >> 24) & ES18XX_FL_INVERT;
++	int pm_port = (kcontrol->private_value >> 24) & ES18XX_FL_PMPORT;
+ 	int val;
+-	
+-	val = snd_es18xx_reg_read(chip, reg);
 +
- Example:
++	if (pm_port)
++		val = inb(chip->port + ES18XX_PM);
++	else
++		val = snd_es18xx_reg_read(chip, reg);
+ 	ucontrol->value.integer.value[0] = (val >> shift) & mask;
+ 	if (invert)
+ 		ucontrol->value.integer.value[0] = mask - ucontrol->value.integer.value[0];
+@@ -1175,7 +1183,8 @@ static int snd_es18xx_put_single(struct snd_kcontrol *kcontrol, struct snd_ctl_e
+ 	int reg = kcontrol->private_value & 0xff;
+ 	int shift = (kcontrol->private_value >> 8) & 0xff;
+ 	int mask = (kcontrol->private_value >> 16) & 0xff;
+-	int invert = (kcontrol->private_value >> 24) & 0xff;
++	int invert = (kcontrol->private_value >> 24) & ES18XX_FL_INVERT;
++	int pm_port = (kcontrol->private_value >> 24) & ES18XX_FL_PMPORT;
+ 	unsigned char val;
+ 	
+ 	val = (ucontrol->value.integer.value[0] & mask);
+@@ -1183,6 +1192,12 @@ static int snd_es18xx_put_single(struct snd_kcontrol *kcontrol, struct snd_ctl_e
+ 		val = mask - val;
+ 	mask <<= shift;
+ 	val <<= shift;
++	if (pm_port) {
++		val = (inb(chip->port + ES18XX_PM) & ~mask) | val;
++		outb(val, chip->port + ES18XX_PM);
++		return 0;
++	}
++
+ 	return snd_es18xx_reg_bits(chip, reg, mask, val) != val;
+ }
  
- codec: sgtl5000@0a {
- 	compatible = "fsl,sgtl5000";
- 	reg = <0x0a>;
- 	clocks = <&clks 150>;
-+	sgtl5000-micbias-resistor = <1>;
- };
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 6bb77d7..f538957 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -121,6 +121,13 @@ struct ldo_regulator {
- 	bool enabled;
+@@ -1304,7 +1319,7 @@ static struct snd_kcontrol_new snd_es18xx_opt_speaker =
+ 	ES18XX_SINGLE("Beep Playback Volume", 0, 0x3c, 0, 7, 0);
+ 
+ static struct snd_kcontrol_new snd_es18xx_opt_1869[] = {
+-ES18XX_SINGLE("Capture Switch", 0, 0x1c, 4, 1, 1),
++ES18XX_SINGLE("Capture Switch", 0, 0x1c, 4, 1, ES18XX_FL_INVERT),
+ ES18XX_SINGLE("Video Playback Switch", 0, 0x7f, 0, 1, 0),
+ ES18XX_DOUBLE("Mono Playback Volume", 0, 0x6d, 0x6d, 4, 0, 15, 0),
+ ES18XX_DOUBLE("Mono Capture Volume", 0, 0x6f, 0x6f, 4, 0, 15, 0)
+@@ -1363,6 +1378,11 @@ static struct snd_kcontrol_new snd_es18xx_hw_volume_controls[] = {
+ ES18XX_SINGLE("Hardware Master Volume Split", 0, 0x64, 7, 1, 0),
  };
  
-+enum sgtl5000_micbias_resistor {
-+	SGTL5000_MICBIAS_OFF = 0,
-+	SGTL5000_MICBIAS_2K = 1,
-+	SGTL5000_MICBIAS_4K = 2,
-+	SGTL5000_MICBIAS_8K = 3,
++static struct snd_kcontrol_new snd_es18xx_opt_gpo_2bit[] = {
++ES18XX_SINGLE("GPO0 Switch", 0, ES18XX_PM, 0, 1, ES18XX_FL_PMPORT),
++ES18XX_SINGLE("GPO1 Switch", 0, ES18XX_PM, 1, 1, ES18XX_FL_PMPORT),
 +};
 +
- /* sgtl5000 private structure in codec */
- struct sgtl5000_priv {
- 	int sysclk;	/* sysclk rate */
-@@ -131,6 +138,7 @@ struct sgtl5000_priv {
- 	struct regmap *regmap;
- 	struct clk *mclk;
- 	int revision;
-+	enum sgtl5000_micbias_resistor micbias_resistor;
- };
- 
- /*
-@@ -145,12 +153,14 @@ struct sgtl5000_priv {
- static int mic_bias_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
+ static int snd_es18xx_config_read(struct snd_es18xx *chip, unsigned char reg)
  {
-+	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(w->codec);
-+
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
--		/* change mic bias resistor to 4Kohm */
-+		/* change mic bias resistor */
- 		snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
--				SGTL5000_BIAS_R_MASK,
--				SGTL5000_BIAS_R_4k << SGTL5000_BIAS_R_SHIFT);
-+			SGTL5000_BIAS_R_MASK,
-+			sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
+ 	int data;
+@@ -1629,10 +1649,10 @@ static int snd_es18xx_probe(struct snd_es18xx *chip,
+ 
+ 	switch (chip->version) {
+ 	case 0x1868:
+-		chip->caps = ES18XX_DUPLEX_MONO | ES18XX_DUPLEX_SAME | ES18XX_CONTROL;
++		chip->caps = ES18XX_DUPLEX_MONO | ES18XX_DUPLEX_SAME | ES18XX_CONTROL | ES18XX_GPO_2BIT;
  		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
-@@ -1326,7 +1336,16 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 			SGTL5000_HP_ZCD_EN |
- 			SGTL5000_ADC_ZCD_EN);
- 
--	snd_soc_write(codec, SGTL5000_CHIP_MIC_CTRL, 2);
-+	switch (sgtl5000->micbias_resistor) {
-+	case SGTL5000_MICBIAS_2K:
-+	case SGTL5000_MICBIAS_4K:
-+	case SGTL5000_MICBIAS_8K:
-+		snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
-+			SGTL5000_BIAS_R_MASK,
-+			sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
-+	default:
-+		break;
-+	}
- 
- 	/*
- 	 * disable DAP
-@@ -1418,6 +1437,8 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 	struct sgtl5000_priv *sgtl5000;
- 	int ret, reg, rev;
- 	unsigned int mclk;
-+	struct device_node *np = client->dev.of_node;
-+	u32 value;
- 
- 	sgtl5000 = devm_kzalloc(&client->dev, sizeof(struct sgtl5000_priv),
- 								GFP_KERNEL);
-@@ -1470,6 +1491,33 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 	dev_info(&client->dev, "sgtl5000 revision 0x%x\n", rev);
- 	sgtl5000->revision = rev;
- 
-+	if (np) {
-+		if (!of_property_read_u32(np,
-+			"sgtl5000-micbias-resistor", &value)) {
-+			switch (value) {
-+			case 1:
-+				sgtl5000->micbias_resistor =
-+					SGTL5000_MICBIAS_2K;
-+				break;
-+			case 2:
-+				sgtl5000->micbias_resistor =
-+					SGTL5000_MICBIAS_4K;
-+				break;
-+			case 3:
-+				sgtl5000->micbias_resistor =
-+					SGTL5000_MICBIAS_8K;
-+				break;
-+			default:
-+				sgtl5000->micbias_resistor =
-+					SGTL5000_MICBIAS_OFF;
-+				dev_err(&client->dev,
-+					"Unsuitable MicBias resistor\n");
-+			}
-+		} else {
-+			sgtl5000->micbias_resistor = SGTL5000_MICBIAS_4K;
+ 	case 0x1869:
+-		chip->caps = ES18XX_PCM2 | ES18XX_SPATIALIZER | ES18XX_RECMIX | ES18XX_NEW_RATE | ES18XX_AUXB | ES18XX_MONO | ES18XX_MUTEREC | ES18XX_CONTROL | ES18XX_HWV;
++		chip->caps = ES18XX_PCM2 | ES18XX_SPATIALIZER | ES18XX_RECMIX | ES18XX_NEW_RATE | ES18XX_AUXB | ES18XX_MONO | ES18XX_MUTEREC | ES18XX_CONTROL | ES18XX_HWV | ES18XX_GPO_2BIT;
+ 		break;
+ 	case 0x1878:
+ 		chip->caps = ES18XX_DUPLEX_MONO | ES18XX_DUPLEX_SAME | ES18XX_I2S | ES18XX_CONTROL;
+@@ -1642,7 +1662,7 @@ static int snd_es18xx_probe(struct snd_es18xx *chip,
+ 		break;
+ 	case 0x1887:
+ 	case 0x1888:
+-		chip->caps = ES18XX_PCM2 | ES18XX_RECMIX | ES18XX_AUXB | ES18XX_DUPLEX_SAME;
++		chip->caps = ES18XX_PCM2 | ES18XX_RECMIX | ES18XX_AUXB | ES18XX_DUPLEX_SAME | ES18XX_GPO_2BIT;
+ 		break;
+ 	default:
+ 		snd_printk(KERN_ERR "[0x%lx] unsupported chip ES%x\n",
+@@ -1944,6 +1964,15 @@ static int snd_es18xx_mixer(struct snd_card *card)
+ 				return err;
+ 		}
+ 	}
++	if (chip->caps & ES18XX_GPO_2BIT) {
++		for (idx = 0; idx < ARRAY_SIZE(snd_es18xx_opt_gpo_2bit); idx++) {
++			err = snd_ctl_add(card,
++					  snd_ctl_new1(&snd_es18xx_opt_gpo_2bit[idx],
++						       chip));
++			if (err < 0)
++				return err;
 +		}
 +	}
-+
- 	i2c_set_clientdata(client, sgtl5000);
- 
- 	/* Ensure sgtl5000 will start with sane register values */
+ 	return 0;
+ }
+        
 -- 
-2.1.1
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Ondrej Zary
