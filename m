@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 11/12] ASoC: txx9: use
-	dmaengine_terminate_all() API
-Date: Mon, 13 Oct 2014 08:44:41 +0100
-Message-ID: <20141013074441.GC27755@sirena.org.uk>
-References: <1413041973-28146-1-git-send-email-vinod.koul@intel.com>
- <1413042040-28222-11-git-send-email-vinod.koul@intel.com>
- <5439591B.4020701@metafoo.de> <20141011155411.GA1638@intel.com>
+Subject: Re: [PATCH v2] ASoC: rt5677: make volume TLV closer to
+	reality
+Date: Mon, 13 Oct 2014 09:01:10 +0100
+Message-ID: <20141013080110.GE27755@sirena.org.uk>
+References: <1412892687-1264-1-git-send-email-dgreid@chromium.org>
+ <20141009231042.GC18557@sirena.org.uk>
+ <CAEUnVG72KL7iYGVgg8UMM6NyeSEe8vFADjFKzE4cLUUYwqTq5w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4618106430092065269=="
+Content-Type: multipart/mixed; boundary="===============8241137987467005187=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E6B6B2604C2
- for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2014 09:45:18 +0200 (CEST)
-In-Reply-To: <20141011155411.GA1638@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 417BD2604E5
+ for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2014 10:01:23 +0200 (CEST)
+In-Reply-To: <CAEUnVG72KL7iYGVgg8UMM6NyeSEe8vFADjFKzE4cLUUYwqTq5w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,57 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, dmaengine@vger.kernel.org
+To: Dylan Reid <dgreid@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Anatol Pomozov <anatol.pomozov@gmail.com>, benzh@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4618106430092065269==
+--===============8241137987467005187==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="i1dAbsF9+zgeqzLb"
+	protocol="application/pgp-signature"; boundary="bMDD5T6Tp9Yu3dvb"
 Content-Disposition: inline
 
 
---i1dAbsF9+zgeqzLb
+--bMDD5T6Tp9Yu3dvb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Oct 11, 2014 at 09:24:11PM +0530, Vinod Koul wrote:
-> On Sat, Oct 11, 2014 at 06:21:47PM +0200, Lars-Peter Clausen wrote:
+On Thu, Oct 09, 2014 at 07:27:40PM -0700, Dylan Reid wrote:
 
-> > I already send a similar patch a while ago. It is on it's way into 3.18.
+> I can easily add a flag to the UCM config to hint userspace to divide by 10, so
+> I'm not strongly tied to making this change if it isn't bothering anyone else.
 
-> I will drop this one then
+I was thinking about just doing this in the driver rather than working
+around it in userspace.
 
-> I did grep the linux-next when I started on this and found no reductions
-> from what I had in dmaengine-next
-
-It's ff495d3a8ea4d (ASoC: txx9: Don't opencode DMAengine API calls) from
-August which is in Linus' tree now.
-
---i1dAbsF9+zgeqzLb
+--bMDD5T6Tp9Yu3dvb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUO4LoAAoJECTWi3JdVIfQ+d4H/R7VqgNgx9tyXiG0+v+rFTkH
-5zC51jH2U/co/4w/3MavhyNL9W14OpVmTEEHNNqnm0sXHaN1vjKhkij6+xXyYbav
-jU+ni+mh+kqYSWcJkUEwFrmQedIC1hZertXcG0GJRV5G6bJgzMRexJUfGBEpzwJX
-a/u3oMY9PKtxGxGmokXq4Dz+r1om96hHHredbP9muqpGGPQerg4RgZPkRdN1cJ3e
-iIghlTM647LYuzl68tYTzIwpL/r0oxdVZfIm/wTmVldb/5G/zH3pT4JKcrDTfqxo
-HfQB4Lrh4GbJY1/FO9TSbX4EBd+3rf+A0BuRtJuA+A8ecQLI2J5xeIiK7QNCG+4=
-=7Qj5
+iQEcBAEBAgAGBQJUO4bGAAoJECTWi3JdVIfQMX0H/0SC4UwpWax6PcxR02zMRw6W
+Vw6sTg9CemF9B2UzVhNyhr7fLFArlgeor7Hg66bhwwr1dmmzZUwmSvrdAVv0sLHO
+DWnO1XD2X0mMo5p8ZILPyi6sxDm4E32vApxnwPkOkvNh32xC6HjmvQRHMuPNcT3B
+/MbEQMliYc+YPGW9Y2V5O3j0U2YkU3w+5pv36fJZs1vQIhDKafVPw+Lg2iK9Ekd8
+yzHjd56RDNj9Ma+JFgDNBYn5Jhk45mQMAUqkIv12RhDIlCh3su10TldtOLWasPp5
+Ynh9O7OEAwNC3LQMq0+J3j354jqdM7nBn5psatnzld4Cu1uNEhG3TOa4+rAfBWI=
+=GD75
 -----END PGP SIGNATURE-----
 
---i1dAbsF9+zgeqzLb--
+--bMDD5T6Tp9Yu3dvb--
 
---===============4618106430092065269==
+--===============8241137987467005187==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4618106430092065269==--
+--===============8241137987467005187==--
