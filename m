@@ -1,74 +1,186 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: rt5677: make volume TLV closer to
-	reality
-Date: Mon, 13 Oct 2014 09:01:10 +0100
-Message-ID: <20141013080110.GE27755@sirena.org.uk>
-References: <1412892687-1264-1-git-send-email-dgreid@chromium.org>
- <20141009231042.GC18557@sirena.org.uk>
- <CAEUnVG72KL7iYGVgg8UMM6NyeSEe8vFADjFKzE4cLUUYwqTq5w@mail.gmail.com>
+From: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>
+Subject: Re: [PATCH v2] audio: sgtl5000: Add MicBias resistor support in DT
+Date: Mon, 13 Oct 2014 11:05:04 +0100
+Message-ID: <20141013100504.GA14739@leverpostej>
+References: <1413149951-2882-1-git-send-email-jean-michel.hautbois@vodalys.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8241137987467005187=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 417BD2604E5
- for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2014 10:01:23 +0200 (CEST)
-In-Reply-To: <CAEUnVG72KL7iYGVgg8UMM6NyeSEe8vFADjFKzE4cLUUYwqTq5w@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dylan Reid <dgreid@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Anatol Pomozov <anatol.pomozov@gmail.com>, benzh@chromium.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1413149951-2882-1-git-send-email-jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jean-Michel Hautbois <jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org>
+Cc: "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org" <fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Oct 12, 2014 at 10:39:11PM +0100, Jean-Michel Hautbois wrote:
+> Some systems may require a different resistor than the default one (4K).
+> This adds a property in sgtl5000 codec.
+> It keeps the default of 4K when nothing is specified so it does not break
+> existing code.
+> 
+> v2: modify the default case on DT parsing
+> 
+> Signed-off-by: Jean-Michel Hautbois <jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org>
+> ---
+>  .../devicetree/bindings/sound/sgtl5000.txt         | 10 ++++
+>  sound/soc/codecs/sgtl5000.c                        | 60 ++++++++++++++++++++--
+>  2 files changed, 66 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+> index 955df60..dd38f84 100644
+> --- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
+> +++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+> @@ -7,10 +7,20 @@ Required properties:
+>  
+>  - clocks : the clock provider of SYS_MCLK
+>  
+> +- sgtl5000-micbias-resistor : the bias resistor to be used
+> +        1 or SGTL5000_MICBIAS_2K - MICBIAS resistor is set to 2K
+> +        2 or SGTL5000_MICBIAS_4K - MICBIAS resistor is set to 4K
+> +        3 or SGTL5000_MICBIAS_8K - MICBIAS resistor is set to 8K
+> +        0 or SGTL5000_MICBIAS_OFF - MICBIAS resistor is not used
+> +	If this node is not mentioned or if the value is unknown, then
+> +	micbias	resistor is set to 4K.
 
---===============8241137987467005187==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bMDD5T6Tp9Yu3dvb"
-Content-Disposition: inline
+The SGTL5000_MICBIAS_* constants aren't in a DT header, so shouldn't be
+referenced here.
 
+Why not have mcbias-resistor-k-ohms as 2, 4, 8, or 0?
 
---bMDD5T6Tp9Yu3dvb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That would be much easier to read as a human.
 
-On Thu, Oct 09, 2014 at 07:27:40PM -0700, Dylan Reid wrote:
+Thanks,
+Mark.
 
-> I can easily add a flag to the UCM config to hint userspace to divide by 10, so
-> I'm not strongly tied to making this change if it isn't bothering anyone else.
-
-I was thinking about just doing this in the driver rather than working
-around it in userspace.
-
---bMDD5T6Tp9Yu3dvb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUO4bGAAoJECTWi3JdVIfQMX0H/0SC4UwpWax6PcxR02zMRw6W
-Vw6sTg9CemF9B2UzVhNyhr7fLFArlgeor7Hg66bhwwr1dmmzZUwmSvrdAVv0sLHO
-DWnO1XD2X0mMo5p8ZILPyi6sxDm4E32vApxnwPkOkvNh32xC6HjmvQRHMuPNcT3B
-/MbEQMliYc+YPGW9Y2V5O3j0U2YkU3w+5pv36fJZs1vQIhDKafVPw+Lg2iK9Ekd8
-yzHjd56RDNj9Ma+JFgDNBYn5Jhk45mQMAUqkIv12RhDIlCh3su10TldtOLWasPp5
-Ynh9O7OEAwNC3LQMq0+J3j354jqdM7nBn5psatnzld4Cu1uNEhG3TOa4+rAfBWI=
-=GD75
------END PGP SIGNATURE-----
-
---bMDD5T6Tp9Yu3dvb--
-
---===============8241137987467005187==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8241137987467005187==--
+> +
+> +
+>  Example:
+>  
+>  codec: sgtl5000@0a {
+>  	compatible = "fsl,sgtl5000";
+>  	reg = <0x0a>;
+>  	clocks = <&clks 150>;
+> +	sgtl5000-micbias-resistor = <1>;
+>  };
+> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+> index 6bb77d7..a255754 100644
+> --- a/sound/soc/codecs/sgtl5000.c
+> +++ b/sound/soc/codecs/sgtl5000.c
+> @@ -121,6 +121,13 @@ struct ldo_regulator {
+>  	bool enabled;
+>  };
+>  
+> +enum sgtl5000_micbias_resistor {
+> +	SGTL5000_MICBIAS_OFF = 0,
+> +	SGTL5000_MICBIAS_2K = 1,
+> +	SGTL5000_MICBIAS_4K = 2,
+> +	SGTL5000_MICBIAS_8K = 3,
+> +};
+> +
+>  /* sgtl5000 private structure in codec */
+>  struct sgtl5000_priv {
+>  	int sysclk;	/* sysclk rate */
+> @@ -131,6 +138,7 @@ struct sgtl5000_priv {
+>  	struct regmap *regmap;
+>  	struct clk *mclk;
+>  	int revision;
+> +	enum sgtl5000_micbias_resistor micbias_resistor;
+>  };
+>  
+>  /*
+> @@ -145,12 +153,14 @@ struct sgtl5000_priv {
+>  static int mic_bias_event(struct snd_soc_dapm_widget *w,
+>  	struct snd_kcontrol *kcontrol, int event)
+>  {
+> +	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(w->codec);
+> +
+>  	switch (event) {
+>  	case SND_SOC_DAPM_POST_PMU:
+> -		/* change mic bias resistor to 4Kohm */
+> +		/* change mic bias resistor */
+>  		snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
+> -				SGTL5000_BIAS_R_MASK,
+> -				SGTL5000_BIAS_R_4k << SGTL5000_BIAS_R_SHIFT);
+> +			SGTL5000_BIAS_R_MASK,
+> +			sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
+>  		break;
+>  
+>  	case SND_SOC_DAPM_PRE_PMD:
+> @@ -1326,7 +1336,16 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
+>  			SGTL5000_HP_ZCD_EN |
+>  			SGTL5000_ADC_ZCD_EN);
+>  
+> -	snd_soc_write(codec, SGTL5000_CHIP_MIC_CTRL, 2);
+> +	switch (sgtl5000->micbias_resistor) {
+> +	case SGTL5000_MICBIAS_2K:
+> +	case SGTL5000_MICBIAS_4K:
+> +	case SGTL5000_MICBIAS_8K:
+> +		snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
+> +			SGTL5000_BIAS_R_MASK,
+> +			sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
+> +	default:
+> +		break;
+> +	}
+>  
+>  	/*
+>  	 * disable DAP
+> @@ -1418,6 +1437,8 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+>  	struct sgtl5000_priv *sgtl5000;
+>  	int ret, reg, rev;
+>  	unsigned int mclk;
+> +	struct device_node *np = client->dev.of_node;
+> +	u32 value;
+>  
+>  	sgtl5000 = devm_kzalloc(&client->dev, sizeof(struct sgtl5000_priv),
+>  								GFP_KERNEL);
+> @@ -1470,6 +1491,37 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+>  	dev_info(&client->dev, "sgtl5000 revision 0x%x\n", rev);
+>  	sgtl5000->revision = rev;
+>  
+> +	if (np) {
+> +		if (!of_property_read_u32(np,
+> +			"sgtl5000-micbias-resistor", &value)) {
+> +			switch (value) {
+> +			case 0:
+> +				sgtl5000->micbias_resistor =
+> +					SGTL5000_MICBIAS_OFF;
+> +				break;
+> +			case 1:
+> +				sgtl5000->micbias_resistor =
+> +					SGTL5000_MICBIAS_2K;
+> +				break;
+> +			case 2:
+> +				sgtl5000->micbias_resistor =
+> +					SGTL5000_MICBIAS_4K;
+> +				break;
+> +			case 3:
+> +				sgtl5000->micbias_resistor =
+> +					SGTL5000_MICBIAS_8K;
+> +				break;
+> +			default:
+> +				sgtl5000->micbias_resistor =
+> +					SGTL5000_MICBIAS_4K;
+> +				dev_err(&client->dev,
+> +					"Unsuitable MicBias resistor\n");
+> +			}
+> +		} else {
+> +			sgtl5000->micbias_resistor = SGTL5000_MICBIAS_4K;
+> +		}
+> +	}
+> +
+>  	i2c_set_clientdata(client, sgtl5000);
+>  
+>  	/* Ensure sgtl5000 will start with sane register values */
+> -- 
+> 2.1.1
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
