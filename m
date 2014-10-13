@@ -1,18 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Tobias Hoffmann <smilingthax@googlemail.com>
 Subject: Re: [WIP PATCH] Scarlett mixer interface for 6i6, 18i6,
-	18i8 and 18i20.
-Date: Mon, 13 Oct 2014 13:38:55 +0200
-Message-ID: <543BB9CF.7010806@ladisch.de>
+ 18i8 and 18i20.
+Date: Mon, 13 Oct 2014 14:02:12 +0200
+Message-ID: <543BBF44.3020109@googlemail.com>
 References: <1412694986-2537-1-git-send-email-david.henningsson@canonical.com>
- <543BB04D.8000906@googlemail.com>
+ <543BB04D.8000906@googlemail.com> <543BB9CF.7010806@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 4FA042604FD
- for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2014 13:39:05 +0200 (CEST)
-In-Reply-To: <543BB04D.8000906@googlemail.com>
+Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB50E260461
+ for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2014 14:02:22 +0200 (CEST)
+Received: by mail-wg0-f45.google.com with SMTP id m15so8363299wgh.28
+ for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2014 05:02:22 -0700 (PDT)
+In-Reply-To: <543BB9CF.7010806@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,44 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tobias Hoffmann <smilingthax@googlemail.com>, David Henningsson <david.henningsson@canonical.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, robin@gareus.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, robin@gareus.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Tobias Hoffmann wrote:
-> On 07/10/14 17:16, David Henningsson wrote:
->> +    err = set_ctl_urb2(mixer->chip, UAC2_CS_CUR, 0x0100, 0x29, "\x80\xbb\x00\x00", 4);
+On 13/10/14 13:38, Clemens Ladisch wrote:
+> Tobias Hoffmann wrote:
+>> On 07/10/14 17:16, David Henningsson wrote:
+>>> +    err = set_ctl_urb2(mixer->chip, UAC2_CS_CUR, 0x0100, 0x29, "\x80\xbb\x00\x00", 4);
+>> There have been two reports of users that had to replace the set_ctl_urb2 line with:
+>>
+>>     char buffer[4] = { '\x80', '\xbb', '\x00', '\x00' };
+>>     err = set_ctl_urb2(mixer->chip, UAC2_CS_CUR, 0x0100, 0x29, buffer, 4);
+>>
+>> otherwise they would get a kernel oops, e.g.:
+> [...]
 >
-> There have been two reports of users that had to replace the set_ctl_urb2 line with:
+> This crash is inside memcpy(), where this memory type cannot make any
+> difference.
 >
->    char buffer[4] = { '\x80', '\xbb', '\x00', '\x00' };
->    err = set_ctl_urb2(mixer->chip, UAC2_CS_CUR, 0x0100, 0x29, buffer, 4);
->
-> otherwise they would get a kernel oops, e.g.:
->
->   BUG: unable to handle kernel paging request at ffffffffa0b43440
->   IP: [<ffffffff8136f3c2>] memcpy+0x12/0x110
->   ...
->   Call Trace:
->     [<ffffffffa0b311d2>] ? snd_usb_ctl_msg+0xc2/0x160 [snd_usb_audio]
->     [<ffffffffa0b3b7aa>] set_ctl_urb2+0xaa/0x100 [snd_usb_audio]
->     [<ffffffffa0b3c9fa>] scarlett_mixer_controls+0x28a/0x4c0 [snd_usb_audio]
+> Please show the entire oops.
 
-Strange.
+The first reporter (18i8) only sent me a patch with exactly that change, 
+claiming:
+> It also oopses my kernel because of some constness issues.
 
-> Maybe it has to do with a particular compiler, or some kernel config
-> setting that places the bytes "somewhere else" when they are passed as
-> string?
+Here are two reports (6i6) with oops trace:
+   https://github.com/smilingthax/alsa-driver_scarlett/issues/7
+   
+https://github.com/smilingthax/alsa-driver_scarlett/issues/2#issuecomment-54364354
 
-Buffers on the stack or in modules cannot be used for DMA on some
-architectures, but that is why snd_usb_ctl_msg() creates a copy of the
-data.
-
-This crash is inside memcpy(), where this memory type cannot make any
-difference.
-
-Please show the entire oops.
-
-
-Regards,
-Clemens
+   Tobias
