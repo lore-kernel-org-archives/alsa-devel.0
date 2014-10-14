@@ -1,19 +1,15 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH 1/1] ALSA: ALC283 codec - Avoid pop noise
- on headphones during suspend/resume
-Date: Wed, 15 Oct 2014 00:10:54 +0800
-Message-ID: <543D4B0E.3060205@canonical.com>
-References: <1412852696-32423-1-git-send-email-harshapriya.n@intel.com>
- <s5h38ax13xl.wl-tiwai@suse.de> <543BAE8C.3090007@canonical.com>
+From: Thomas Green <TGreen2@Sorenson.com>
+Subject: disconnecting bluetooth device
+Date: Tue, 14 Oct 2014 16:56:25 +0000
+Message-ID: <C2BC44D770753C45AAAC42695FB5BE02AF653B0A@SLC-EXMB01.CORP.SRELAY.COM>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 8362D26040E
- for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 18:10:58 +0200 (CEST)
-In-Reply-To: <543BAE8C.3090007@canonical.com>
+Received: from SLCv-EXEDGE01.Sorenson.com (mail.ccimprove.com [209.169.244.60])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62992260413
+ for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 18:56:28 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +19,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Harsha Priya <harshapriya.n@intel.com>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/13/2014 06:50 PM, David Henningsson wrote:
->
-> On 2014-10-09 20:41, Takashi Iwai wrote:
->> At Thu,  9 Oct 2014 11:04:56 +0000,
->> Harsha Priya wrote:
->>> This patch sets the headphones mode to default before suspending
->>> which helps avoid the pop noise on headphones
->> The change looks simple, but since it's a mysterious COEF, I'd like to
->> hear from people testing with other machines with this codec before
->> applying the patch.
->>
->> David, do you know anyone in your team have such a machine to test?
->
-> Looping Hui here, do you have a machine with ALC283 to test with or 
-> knows who has one?
+I am using gstreamer and bluez-alsa to connect to a Bluetooth headset.  I successfully connect to the device and can play audio from it.  The issue comes when the device disconnects.  Gstreamer lists these alsa errors:
 
-I will find one or two machines with ALC283 to do a test. Since I am not 
-in the office right now, after I find the machines, I will ask someone 
-else to help do the test, it will take more time. So give me couple of days.
+0:00:25.312585875 24605 0x42430800 WARN                    alsa audio/pcm_bluetooth.c:247:playback_hw_thread: alsalib error: poll fd 1 revents 24
+0:00:25.313233896 24605    0xd04f0 WARN                    alsa audio/pcm_bluetooth.c:835:bluetooth_playback_poll_revents: alsalib error: read error: Resource temporarily unavailable (11): Resource temporarily unavailable
+(lots and lots of these until I terminate the application)
 
->
->>
->>
->> thanks,
->>
->> Takashi
->>
->>> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
->>>
->>> diff --git a/sound/pci/hda/patch_realtek.c 
->>> b/sound/pci/hda/patch_realtek.c
->>> index 69d1236..e839e7a 100644
->>> --- a/sound/pci/hda/patch_realtek.c
->>> +++ b/sound/pci/hda/patch_realtek.c
->>> @@ -2884,6 +2884,9 @@ static void alc283_shutup(struct hda_codec 
->>> *codec)
->>>         alc_write_coef_idx(codec, 0x43, 0x9004);
->>>   +    /*depop hp during suspend*/
->>> +    alc_write_coef_idx(codec, 0x06, 0x2100);
->>> +
->>>       snd_hda_codec_write(codec, hp_pin, 0,
->>>                   AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
->>>   --
->>> 1.9.1
->>>
->
->
+I've looked at the code for pcm_bluetooth.c, headset.c and pcm.c, and from what I can tell  it looks like what is happening is that the playback_hw_thread detects that the device has disconnected and gets a message back with POLLERR | POLLHUP.  In turn, when the bluetooth_playback_poll_revents is called, it can't read any further input.  But the io->state should be getting set to SND_PCM_STATE_DISCONNECTED.  From what I can see, I am guessing that what is happening is that above that is the bluetooth_playback_poll_revents keeps getting called without the io->state being checked to make sure whether or not the state is disconnected.  I haven't dug too deeply into the call stack higher than that, so, I'm not sure.  Is this what is happening, or is there something that I can do myself to miti
+ gate this?  The default alsa installation is 1.0.25, but I've also built libasound 1.0.28, and I still get the same behavior.
+
+Thanks...
+
+Tom
