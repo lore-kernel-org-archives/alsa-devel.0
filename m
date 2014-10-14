@@ -1,7 +1,7 @@
 From: Jyri Sarha <jsarha@ti.com>
-Subject: [PATCH v6 07/18] ASoC: codecs/hdmi: Mark the maximum significant bits to HDMI codec
-Date: Tue, 14 Oct 2014 20:29:26 +0300
-Message-ID: <9d3aa456eb4d753c38fc642bf0a8cd5fdc5af54a.1413306131.git.jsarha@ti.com>
+Subject: [PATCH v6 08/18] ASoC: codecs/hdmi: HDMI codec doesn't benefit from pmdown delay
+Date: Tue, 14 Oct 2014 20:29:27 +0300
+Message-ID: <aa7ad47271e780b75b608382a8830cdc22c4193a.1413306131.git.jsarha@ti.com>
 References: <cover.1413306131.git.jsarha@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,9 +12,12 @@ To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.ke
 Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-HDMI audio can not have more than 24 bits even if on i2s bus there
-would be 32 bit samples. Mark this by adding .sig_bits = 24 to
-playback stream definition.
+Adds .ignore_pmdown_time = true to codec driver struct.
+
+HDMI codec is currently a dummy codec and doesn't benefit from pmdown
+delay. Even if in the future the codec would controll HDMI encoder, it
+would still be a digital to digital interface that should have no need
+for pmdown delay.
 
 Signed-off-by: Jyri Sarha <jsarha@ti.com>
 ---
@@ -22,17 +25,17 @@ Signed-off-by: Jyri Sarha <jsarha@ti.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/codecs/hdmi.c b/sound/soc/codecs/hdmi.c
-index 1087fd5..2a52b90 100644
+index 2a52b90..1391ad5 100644
 --- a/sound/soc/codecs/hdmi.c
 +++ b/sound/soc/codecs/hdmi.c
-@@ -47,6 +47,7 @@ static struct snd_soc_dai_driver hdmi_codec_dai = {
- 			SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE |
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
-+		.sig_bits = 24,
- 	},
- 	.capture = {
- 		.stream_name = "Capture",
+@@ -76,6 +76,7 @@ static struct snd_soc_codec_driver hdmi_codec = {
+ 	.num_dapm_widgets = ARRAY_SIZE(hdmi_widgets),
+ 	.dapm_routes = hdmi_routes,
+ 	.num_dapm_routes = ARRAY_SIZE(hdmi_routes),
++	.ignore_pmdown_time = true,
+ };
+ 
+ static int hdmi_codec_probe(struct platform_device *pdev)
 -- 
 1.7.9.5
 
