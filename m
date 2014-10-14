@@ -1,94 +1,85 @@
-From: Jean-Michel Hautbois <jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org>
-Subject: [PATCH v2 2/2] audio: sgtl5000: Add MicBias voltage support
-Date: Tue, 14 Oct 2014 08:43:12 +0200
-Message-ID: <1413268992-15248-3-git-send-email-jean-michel.hautbois@vodalys.com>
-References: <1413268992-15248-1-git-send-email-jean-michel.hautbois@vodalys.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1413268992-15248-1-git-send-email-jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, fabio.estevam-KZfg59tc24xl57MIdRCFDg@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Jean-Michel Hautbois <jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org>
+From: Arthur Marsh <arthur.marsh@internode.on.net>
+Subject: Re: lock-up when loading desktop
+Date: Tue, 14 Oct 2014 17:31:48 +1030
+Message-ID: <543CCA5C.50102@internode.on.net>
+References: <543B2438.1050002@internode.on.net>	<s5ha950zeyi.wl-tiwai@suse.de>	<543BB942.5060602@internode.on.net>	<s5h7g04ywgg.wl-tiwai@suse.de>	<543BCDE9.7010308@internode.on.net>	<s5h38asyrld.wl-tiwai@suse.de>	<543C153A.4060607@internode.on.net>
+ <s5hk343y9ew.wl-tiwai@suse.de> <543C97EC.4040000@internode.on.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ipmail05.adl6.internode.on.net (ipmail05.adl6.internode.on.net
+ [150.101.137.143])
+ by alsa0.perex.cz (Postfix) with ESMTP id A92602604A2
+ for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 09:01:54 +0200 (CEST)
+In-Reply-To: <543C97EC.4040000@internode.on.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Some systems may require to specify a bias different than default (1.25V).
-This adds a property in sgtl5000 codec.
-The property is specified in milli-volts so that it is coherent with datasheet.
 
-Signed-off-by: Jean-Michel Hautbois <jean-michel.hautbois-B+Q8N6RmIDZBDgjK7y7TUQ@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/sgtl5000.txt |  7 ++++++-
- sound/soc/codecs/sgtl5000.c                          | 13 +++++++++++++
- 2 files changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-index d6ec927..1aab403 100644
---- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
-+++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-@@ -13,6 +13,10 @@ Required properties:
- 	If this node is not mentioned or if the value is unknown, then
- 	micbias	resistor is set to 4K.
- 
-+- micbias-voltage-m-volts : the bias voltage to be used in mVolts
-+	The voltage can take values from 1.25V to 3V by 250mV steps
-+	If this node is not mentionned or the value is unknown, then
-+	the value is set to 1.25V.
- 
- Example:
- 
-@@ -20,5 +24,6 @@ codec: sgtl5000@0a {
- 	compatible = "fsl,sgtl5000";
- 	reg = <0x0a>;
- 	clocks = <&clks 150>;
--	sgtl5000-micbias-resistor = <1>;
-+	micbias-resistor-k-ohms = <2>;
-+	micbias-voltage-m-volts = <2250>;
- };
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index b2c2ed7..8611cfb 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -140,6 +140,7 @@ struct sgtl5000_priv {
- 	struct clk *mclk;
- 	int revision;
- 	u8 micbias_resistor;
-+	u8 micbias_voltage;
- };
- 
- /*
-@@ -1341,6 +1342,9 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 			SGTL5000_BIAS_R_MASK,
- 			sgtl5000->micbias_resistor << SGTL5000_BIAS_R_SHIFT);
- 
-+	snd_soc_update_bits(codec, SGTL5000_CHIP_MIC_CTRL,
-+			SGTL5000_BIAS_R_MASK,
-+			sgtl5000->micbias_voltage << SGTL5000_BIAS_R_SHIFT);
- 	/*
- 	 * disable DAP
- 	 * TODO:
-@@ -1510,10 +1514,19 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 			/* default is 4Kohms */
- 			sgtl5000->micbias_resistor = 2;
- 		}
-+		if (!of_property_read_u32(np,
-+			"micbias-voltage-m-volts", &value)) {
-+			/* 1250mV => 0 */
-+			/* steps of 250mV */
-+			if ((value >= 1250) && (value <= 3000))
-+				sgtl5000->micbias_voltage = (value / 250) - 5;
-+			else {
-+				sgtl5000->micbias_voltage = 0;
- 				dev_err(&client->dev,
- 					"Unsuitable MicBias resistor\n");
- 			}
- 		} else {
-+			sgtl5000->micbias_voltage = 0;
- 		}
- 	}
- 
--- 
-2.1.1
+Arthur Marsh wrote, on 14/10/14 13:56:
+>> ---
+>> diff --git a/sound/pci/emu10k1/emu10k1_callback.c
+>> b/sound/pci/emu10k1/emu10k1_callback.c
+>> index 3f3ef38d9b6e..874cd76c7b7f 100644
+>> --- a/sound/pci/emu10k1/emu10k1_callback.c
+>> +++ b/sound/pci/emu10k1/emu10k1_callback.c
+>> @@ -85,6 +85,8 @@ snd_emu10k1_ops_setup(struct snd_emux *emux)
+>>    * get more voice for pcm
+>>    *
+>>    * terminate most inactive voice and give it as a pcm voice.
+>> + *
+>> + * voice_lock is already held.
+>>    */
+>>   int
+>>   snd_emu10k1_synth_get_voice(struct snd_emu10k1 *hw)
+>> @@ -92,12 +94,10 @@ snd_emu10k1_synth_get_voice(struct snd_emu10k1 *hw)
+>>       struct snd_emux *emu;
+>>       struct snd_emux_voice *vp;
+>>       struct best_voice best[V_END];
+>> -    unsigned long flags;
+>>       int i;
+>>
+>>       emu = hw->synth;
+>>
+>> -    spin_lock_irqsave(&emu->voice_lock, flags);
+>>       lookup_voices(emu, hw, best, 1); /* no OFF voices */
+>>       for (i = 0; i < V_END; i++) {
+>>           if (best[i].voice >= 0) {
+>> @@ -113,11 +113,9 @@ snd_emu10k1_synth_get_voice(struct snd_emu10k1 *hw)
+>>               vp->emu->num_voices--;
+>>               vp->ch = -1;
+>>               vp->state = SNDRV_EMUX_ST_OFF;
+>> -            spin_unlock_irqrestore(&emu->voice_lock, flags);
+>>               return ch;
+>>           }
+>>       }
+>> -    spin_unlock_irqrestore(&emu->voice_lock, flags);
+>>
+>>       /* not found */
+>>       return -ENOMEM;
+>>
+>
+> I'll apply the above patch only first and report the results.
+>
+> Thanks again,
+>
+> Arthur.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+With only the above emu10k1_callback.c patch and not the pcm_native.c 
+patch, I experience a lock-up when running alsa-info.sh
+
+Regards,
+
+Arthur.
