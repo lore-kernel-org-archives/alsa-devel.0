@@ -1,20 +1,19 @@
-From: Tim Cussins <timcussins@eml.cc>
-Subject: Re: [RFC] provide a simple mechanism to start playback
- at a given time
-Date: Tue, 14 Oct 2014 17:58:16 +0200
-Message-ID: <1413302296.2415261.178874085.6CE8BB88@webmail.messagingengine.com>
-References: <CADO7NSF=uneov2a9MShswbmpu1P=cwZ1dSkA-jJvoCvxsTFT3A@mail.gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH 1/1] ALSA: ALC283 codec - Avoid pop noise
+ on headphones during suspend/resume
+Date: Wed, 15 Oct 2014 00:10:54 +0800
+Message-ID: <543D4B0E.3060205@canonical.com>
+References: <1412852696-32423-1-git-send-email-harshapriya.n@intel.com>
+ <s5h38ax13xl.wl-tiwai@suse.de> <543BAE8C.3090007@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 235F226040E
- for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 17:58:18 +0200 (CEST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by gateway2.nyi.internal (Postfix) with ESMTP id EF0A3206A5
- for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 11:58:16 -0400 (EDT)
-In-Reply-To: <CADO7NSF=uneov2a9MShswbmpu1P=cwZ1dSkA-jJvoCvxsTFT3A@mail.gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8362D26040E
+ for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 18:10:58 +0200 (CEST)
+In-Reply-To: <543BAE8C.3090007@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,48 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Harsha Priya <harshapriya.n@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Nick,
+On 10/13/2014 06:50 PM, David Henningsson wrote:
+>
+> On 2014-10-09 20:41, Takashi Iwai wrote:
+>> At Thu,  9 Oct 2014 11:04:56 +0000,
+>> Harsha Priya wrote:
+>>> This patch sets the headphones mode to default before suspending
+>>> which helps avoid the pop noise on headphones
+>> The change looks simple, but since it's a mysterious COEF, I'd like to
+>> hear from people testing with other machines with this codec before
+>> applying the patch.
+>>
+>> David, do you know anyone in your team have such a machine to test?
+>
+> Looping Hui here, do you have a machine with ALC283 to test with or 
+> knows who has one?
 
-On Tue, Oct 14, 2014, at 04:31 PM, Nick Stoughton wrote:
-> As discussed at today's meeting, please find 2 patches (one to the 3.17
-> kernel, the other to alsa-lib) following this that implement a simple
-> interface to trigger playback at a given point in the future.
-> 
-> The API provides an absolute time, measured against a given clock, at
-> which
-> to trigger DMA. If the point in the future appears to be less than 100ms
-> away, we fall back to the standard snd_pcm_start() behavior. This is
-> because this interface is designed to support networked devices
-> playing back in sync, and network latencies are likely to be over 100ms.
-> This value should probably be tunable ...
+I will find one or two machines with ALC283 to do a test. Since I am not 
+in the office right now, after I find the machines, I will ask someone 
+else to help do the test, it will take more time. So give me couple of days.
 
-I'm a little wary of baked in thresholds like this, esp one in an API
-that isn't explicitly network oriented: In this case it's a policy
-decision that should be left to the application. Maybe pass the
-threshold as an argument?
-
-My general preference is to keep the API contract simple and
-unsurprising. I would just return an error if the request can't be
-satisfied, for example if the timestamp is in the past, or too soon.
-Failure shouldn't be information we hide from the application... :)
-
-> Also, we simply set up a timer and commence DMA when it expires. If the
-> devices to be synchronized have identical hardware, then there is no
-> problem. A future enhancement is to estimate the latency between the DMA
-> trigger and the codec driver (FIFO sizes etc) so that we can take that
-> into
-> account.
-> 
-> Any comments gratefully accepted!
-> *______________________________*
-> *Nick Stoughton*
->  *Aether Things Inc *
->  *San Francisco*
->   +1 (510) 388 1413
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>>
+>>
+>> thanks,
+>>
+>> Takashi
+>>
+>>> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+>>>
+>>> diff --git a/sound/pci/hda/patch_realtek.c 
+>>> b/sound/pci/hda/patch_realtek.c
+>>> index 69d1236..e839e7a 100644
+>>> --- a/sound/pci/hda/patch_realtek.c
+>>> +++ b/sound/pci/hda/patch_realtek.c
+>>> @@ -2884,6 +2884,9 @@ static void alc283_shutup(struct hda_codec 
+>>> *codec)
+>>>         alc_write_coef_idx(codec, 0x43, 0x9004);
+>>>   +    /*depop hp during suspend*/
+>>> +    alc_write_coef_idx(codec, 0x06, 0x2100);
+>>> +
+>>>       snd_hda_codec_write(codec, hp_pin, 0,
+>>>                   AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
+>>>   --
+>>> 1.9.1
+>>>
+>
+>
