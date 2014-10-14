@@ -1,229 +1,71 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: [PATCH v2 2/6] media: v4l2-core changes to use media token api
-Date: Tue, 14 Oct 2014 08:58:38 -0600
-Message-ID: <18acf9bc97414fc67a60b799cd711c58c068bfaf.1413246372.git.shuahkh@osg.samsung.com>
-References: <cover.1413246370.git.shuahkh@osg.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1413246370.git.shuahkh@osg.samsung.com>
-In-Reply-To: <cover.1413246370.git.shuahkh@osg.samsung.com>
-References: <cover.1413246370.git.shuahkh@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: m.chehab@samsung.com, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, hverkuil@xs4all.nl, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, tiwai@suse.de, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it
-Cc: Shuah Khan <shuahkh@osg.samsung.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Tim Cussins <timcussins@eml.cc>
+Subject: Re: [RFC] provide a simple mechanism to start playback
+ at a given time
+Date: Tue, 14 Oct 2014 17:58:16 +0200
+Message-ID: <1413302296.2415261.178874085.6CE8BB88@webmail.messagingengine.com>
+References: <CADO7NSF=uneov2a9MShswbmpu1P=cwZ1dSkA-jJvoCvxsTFT3A@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 235F226040E
+ for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 17:58:18 +0200 (CEST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by gateway2.nyi.internal (Postfix) with ESMTP id EF0A3206A5
+ for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 11:58:16 -0400 (EDT)
+In-Reply-To: <CADO7NSF=uneov2a9MShswbmpu1P=cwZ1dSkA-jJvoCvxsTFT3A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Changes to v4l2-core to hold tuner and audio tokens in v4l2
-ioctl that change the tuner modes, and release the token from
-fh exit. The changes are limited to vb2 calls that disrupt
-digital stream. vb1 changes are made in the driver. The
-following ioctls are changed:
+Hi Nick,
 
-S_INPUT, S_FMT, S_TUNER, S_FREQUENCY, S_STD, S_HW_FREQ_SEEK,
-VIDIOC_ENUMINPUT, and VIDIOC_QUERYSTD:
+On Tue, Oct 14, 2014, at 04:31 PM, Nick Stoughton wrote:
+> As discussed at today's meeting, please find 2 patches (one to the 3.17
+> kernel, the other to alsa-lib) following this that implement a simple
+> interface to trigger playback at a given point in the future.
+> 
+> The API provides an absolute time, measured against a given clock, at
+> which
+> to trigger DMA. If the point in the future appears to be less than 100ms
+> away, we fall back to the standard snd_pcm_start() behavior. This is
+> because this interface is designed to support networked devices
+> playing back in sync, and network latencies are likely to be over 100ms.
+> This value should probably be tunable ...
 
-- hold tuner and audio tokens before calling appropriate
-  ops->vidioc_s_*
-- return tuner and audio tokens locked.
+I'm a little wary of baked in thresholds like this, esp one in an API
+that isn't explicitly network oriented: In this case it's a policy
+decision that should be left to the application. Maybe pass the
+threshold as an argument?
 
-v4l2_fh_exit:
+My general preference is to keep the API contract simple and
+unsurprising. I would just return an error if the request can't be
+satisfied, for example if the timestamp is in the past, or too soon.
+Failure shouldn't be information we hide from the application... :)
 
-- releases tuner and audio tokens.
-
-Note that media_get_tuner_tkn() will do a get on audio token
-and return with both tuner and audio tokens locked. When tuner
-token released using media_put_tuner_tkn() , audio token is
-released.
-
-Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
----
- drivers/media/v4l2-core/v4l2-fh.c    |    7 ++++
- drivers/media/v4l2-core/v4l2-ioctl.c |   61 ++++++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
-
-diff --git a/drivers/media/v4l2-core/v4l2-fh.c b/drivers/media/v4l2-core/v4l2-fh.c
-index c97067a..717e03d 100644
---- a/drivers/media/v4l2-core/v4l2-fh.c
-+++ b/drivers/media/v4l2-core/v4l2-fh.c
-@@ -25,7 +25,10 @@
- #include <linux/bitops.h>
- #include <linux/slab.h>
- #include <linux/export.h>
-+#include <linux/device.h>
-+#include <linux/media_tknres.h>
- #include <media/v4l2-dev.h>
-+#include <media/v4l2-device.h>
- #include <media/v4l2-fh.h>
- #include <media/v4l2-event.h>
- #include <media/v4l2-ioctl.h>
-@@ -92,6 +95,10 @@ void v4l2_fh_exit(struct v4l2_fh *fh)
- {
- 	if (fh->vdev == NULL)
- 		return;
-+
-+	if (fh->vdev->dev_parent)
-+		media_put_tuner_tkn(fh->vdev->dev_parent);
-+
- 	v4l2_event_unsubscribe_all(fh);
- 	fh->vdev = NULL;
- }
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 9ccb19a..686f428 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -17,6 +17,7 @@
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/version.h>
-+#include <linux/media_tknres.h>
- 
- #include <linux/videodev2.h>
- 
-@@ -1003,6 +1004,15 @@ static void v4l_sanitize_format(struct v4l2_format *fmt)
- 	       sizeof(fmt->fmt.pix) - offset);
- }
- 
-+static int v4l_get_tuner_tkn(struct video_device *vfd)
-+{
-+	int rc = 0;
-+
-+	if (vfd->dev_parent)
-+		rc = media_get_tuner_tkn(vfd->dev_parent);
-+	return rc;
-+}
-+
- static int v4l_querycap(const struct v4l2_ioctl_ops *ops,
- 				struct file *file, void *fh, void *arg)
- {
-@@ -1022,6 +1032,14 @@ static int v4l_querycap(const struct v4l2_ioctl_ops *ops,
- static int v4l_s_input(const struct v4l2_ioctl_ops *ops,
- 				struct file *file, void *fh, void *arg)
- {
-+	struct video_device *vfd = video_devdata(file);
-+	int ret = 0;
-+
-+	ret = v4l_get_tuner_tkn(vfd);
-+	if (ret) {
-+		pr_info("%s: Tuner is busy\n", __func__);
-+		return ret;
-+	}
- 	return ops->vidioc_s_input(file, fh, *(unsigned int *)arg);
- }
- 
-@@ -1063,7 +1081,13 @@ static int v4l_enuminput(const struct v4l2_ioctl_ops *ops,
- {
- 	struct video_device *vfd = video_devdata(file);
- 	struct v4l2_input *p = arg;
-+	int ret;
- 
-+	ret = v4l_get_tuner_tkn(vfd);
-+	if (ret) {
-+		pr_info("%s: Tuner is busy\n", __func__);
-+		return ret;
-+	}
- 	/*
- 	 * We set the flags for CAP_DV_TIMINGS &
- 	 * CAP_STD here based on ioctl handler provided by the
-@@ -1236,6 +1260,12 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
- 	bool is_tx = vfd->vfl_dir != VFL_DIR_RX;
- 	int ret;
- 
-+	ret = v4l_get_tuner_tkn(vfd);
-+	if (ret) {
-+		pr_info("%s: Tuner is busy\n", __func__);
-+		return ret;
-+	}
-+
- 	v4l_sanitize_format(p);
- 
- 	switch (p->type) {
-@@ -1415,9 +1445,15 @@ static int v4l_s_tuner(const struct v4l2_ioctl_ops *ops,
- {
- 	struct video_device *vfd = video_devdata(file);
- 	struct v4l2_tuner *p = arg;
-+	int ret;
- 
- 	p->type = (vfd->vfl_type == VFL_TYPE_RADIO) ?
- 			V4L2_TUNER_RADIO : V4L2_TUNER_ANALOG_TV;
-+	ret = v4l_get_tuner_tkn(vfd);
-+	if (ret) {
-+		pr_info("%s: Tuner is busy\n", __func__);
-+		return ret;
-+	}
- 	return ops->vidioc_s_tuner(file, fh, p);
- }
- 
-@@ -1453,6 +1489,7 @@ static int v4l_s_frequency(const struct v4l2_ioctl_ops *ops,
- 	struct video_device *vfd = video_devdata(file);
- 	const struct v4l2_frequency *p = arg;
- 	enum v4l2_tuner_type type;
-+	int ret;
- 
- 	if (vfd->vfl_type == VFL_TYPE_SDR) {
- 		if (p->type != V4L2_TUNER_ADC && p->type != V4L2_TUNER_RF)
-@@ -1462,6 +1499,11 @@ static int v4l_s_frequency(const struct v4l2_ioctl_ops *ops,
- 				V4L2_TUNER_RADIO : V4L2_TUNER_ANALOG_TV;
- 		if (type != p->type)
- 			return -EINVAL;
-+		ret = v4l_get_tuner_tkn(vfd);
-+		if (ret) {
-+			pr_info("%s: Tuner is busy\n", __func__);
-+			return ret;
-+		}
- 	}
- 	return ops->vidioc_s_frequency(file, fh, p);
- }
-@@ -1508,11 +1550,18 @@ static int v4l_s_std(const struct v4l2_ioctl_ops *ops,
- {
- 	struct video_device *vfd = video_devdata(file);
- 	v4l2_std_id id = *(v4l2_std_id *)arg, norm;
-+	int ret = 0;
- 
- 	norm = id & vfd->tvnorms;
- 	if (vfd->tvnorms && !norm)	/* Check if std is supported */
- 		return -EINVAL;
- 
-+	ret = v4l_get_tuner_tkn(vfd);
-+	if (ret) {
-+		pr_info("%s: Tuner is busy\n", __func__);
-+		return ret;
-+	}
-+
- 	/* Calls the specific handler */
- 	return ops->vidioc_s_std(file, fh, norm);
- }
-@@ -1522,7 +1571,13 @@ static int v4l_querystd(const struct v4l2_ioctl_ops *ops,
- {
- 	struct video_device *vfd = video_devdata(file);
- 	v4l2_std_id *p = arg;
-+	int ret = 0;
- 
-+	ret = v4l_get_tuner_tkn(vfd);
-+	if (ret) {
-+		pr_info("%s: Tuner is busy\n", __func__);
-+		return ret;
-+	}
- 	/*
- 	 * If no signal is detected, then the driver should return
- 	 * V4L2_STD_UNKNOWN. Otherwise it should return tvnorms with
-@@ -1541,6 +1596,7 @@ static int v4l_s_hw_freq_seek(const struct v4l2_ioctl_ops *ops,
- 	struct video_device *vfd = video_devdata(file);
- 	struct v4l2_hw_freq_seek *p = arg;
- 	enum v4l2_tuner_type type;
-+	int ret;
- 
- 	/* s_hw_freq_seek is not supported for SDR for now */
- 	if (vfd->vfl_type == VFL_TYPE_SDR)
-@@ -1550,6 +1606,11 @@ static int v4l_s_hw_freq_seek(const struct v4l2_ioctl_ops *ops,
- 		V4L2_TUNER_RADIO : V4L2_TUNER_ANALOG_TV;
- 	if (p->type != type)
- 		return -EINVAL;
-+	ret = v4l_get_tuner_tkn(vfd);
-+	if (ret) {
-+		pr_info("%s: Tuner is busy\n", __func__);
-+		return ret;
-+	}
- 	return ops->vidioc_s_hw_freq_seek(file, fh, p);
- }
- 
--- 
-1.7.10.4
+> Also, we simply set up a timer and commence DMA when it expires. If the
+> devices to be synchronized have identical hardware, then there is no
+> problem. A future enhancement is to estimate the latency between the DMA
+> trigger and the codec driver (FIFO sizes etc) so that we can take that
+> into
+> account.
+> 
+> Any comments gratefully accepted!
+> *______________________________*
+> *Nick Stoughton*
+>  *Aether Things Inc *
+>  *San Francisco*
+>   +1 (510) 388 1413
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
