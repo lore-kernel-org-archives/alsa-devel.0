@@ -1,36 +1,115 @@
-From: Thomas Green <TGreen2@Sorenson.com>
-Subject: disconnecting bluetooth device
-Date: Tue, 14 Oct 2014 16:56:25 +0000
-Message-ID: <C2BC44D770753C45AAAC42695FB5BE02AF653B0A@SLC-EXMB01.CORP.SRELAY.COM>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: [PATCH v6 00/18] Rework OMAP4+ HDMI audio support
+Date: Tue, 14 Oct 2014 20:29:19 +0300
+Message-ID: <cover.1413306131.git.jsarha@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from SLCv-EXEDGE01.Sorenson.com (mail.ccimprove.com [209.169.244.60])
- by alsa0.perex.cz (Postfix) with ESMTP id 62992260413
- for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 18:56:28 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org
+Cc: peter.ujfalusi@ti.com, broonie@kernel.org, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-I am using gstreamer and bluez-alsa to connect to a Bluetooth headset.  I successfully connect to the device and can play audio from it.  The issue comes when the device disconnects.  Gstreamer lists these alsa errors:
+The patches are based on:
+git://git.kernel.org/pub/scm/linux/kernel/git/tomba/linux.git for-next
 
-0:00:25.312585875 24605 0x42430800 WARN                    alsa audio/pcm_bluetooth.c:247:playback_hw_thread: alsalib error: poll fd 1 revents 24
-0:00:25.313233896 24605    0xd04f0 WARN                    alsa audio/pcm_bluetooth.c:835:bluetooth_playback_poll_revents: alsalib error: read error: Resource temporarily unavailable (11): Resource temporarily unavailable
-(lots and lots of these until I terminate the application)
+The base, the patches, and couple of additional not-to-be-merged
+omap2plus_defconfig patches can be found here:
+https://github.com/jsarha/linux.git
 
-I've looked at the code for pcm_bluetooth.c, headset.c and pcm.c, and from what I can tell  it looks like what is happening is that the playback_hw_thread detects that the device has disconnected and gets a message back with POLLERR | POLLHUP.  In turn, when the bluetooth_playback_poll_revents is called, it can't read any further input.  But the io->state should be getting set to SND_PCM_STATE_DISCONNECTED.  From what I can see, I am guessing that what is happening is that above that is the bluetooth_playback_poll_revents keeps getting called without the io->state being checked to make sure whether or not the state is disconnected.  I haven't dug too deeply into the call stack higher than that, so, I'm not sure.  Is this what is happening, or is there something that I can do myself to miti
- gate this?  The default alsa installation is 1.0.25, but I've also built libasound 1.0.28, and I still get the same behavior.
+It would make the most sense to get these in trough fbdev tree. So it
+would be nice to get acked-bys (if the patches are Ok) for ASoC side
+changes from appropriate maintainers.
 
-Thanks...
+Changes since v5:
+Still lot of changes, most of them were suggested by Tomi
+Valkeinen. The most significant changes:
+- Fix HDMI unplugging crashes when playing audio etc.
+- Don't use simple-card but implement bare minimum ASoC card under pdev
+- Register cpu-dai under OMAPDSS HDMI device and get dai drvdata
+  trough card drvdata via snd_pcm_substream
+- Some more cleaning up
 
-Tom
+Changes since v4:
+- Turn ASoC parts into a platform device driver
+- Some cleaning up
+- reorder the patches to keep bisect working
+
+Changes since v3:
+- Move ASoC parts into library module under sound/soc/omap
+- Come up with API for the library 
+- Some cleaning up
+
+The patch set fixes OMAP4+ HDMI audio. The structure of the
+implementation looks a bit different than before. Instead of creating
+a driver specific API for a separate ASoC component driver to connect
+to, these patches implement a platform device driver under
+sound/soc/omap for ASoC side implementation. This driver should only
+be registered from OMAPDSS HDMI code. 
+
+The ASoC side driver implements cpu-dai component using the callbacks
+provided by OMAPDSS and registers the component under DSS HDMI
+device. Omap-pcm is registered for platform component, dummy
+hdmi-audio-codec is registered for codec component, and ASoC driver
+implements also a bare minimum card driver and registeres it under
+itself.
+
+Big part of the HDMI audio code is still unchanged and there is a need
+for a cleanup there. Also there is still probably something wrong with
+speaker mapping of multi-channel streams. I will get back to cleaning
+up these issues later.
+
+Best regards,
+Jyri
+
+  OMAPDSS: hdmi.h: Add HDMI_AUDIO_LAYOUT_6CH enum value
+  OMAPDSS: hdmi: Remove most of OMAP[45]_DSS_HDMI_AUDIO ifdefs
+  OMAPDSS: hdmi4_core: Remove unused hdmi4_audio_get_dma_port()
+  OMAPDSS: hdmi_wp: Add function for getting audio dma address
+  OMAPDSS: hdmi: Make hdmi structure public
+  OMAPDSS: hdmi: Add pdev pointer for audio_pdev in HDMI DRV data
+  ASoC: codecs/hdmi: Mark the maximum significant bits to HDMI codec
+  ASoC: codecs/hdmi: HDMI codec doesn't benefit from pmdown delay
+  ASoC: omap-hdmi-audio: Add platfrom device for OMAP HDMI audio
+    support
+  OMAPDSS: Kconfig: Remove HDMI audio booleans from Kconfig
+  OMAPDSS: hdmi: Make hdmi_mode_has_audio() more user friedly
+  OMAPDSS: hdmi.h: Add members to hdmi drvdata for audio implementation
+  OMAPDSS: hdmi4: Remove callbacks for the old ASoC DAI driver
+  OMAPDSS: hdmi4: Register ASoC platfrom device for omap hdmi audio
+  OMAPDSS: hdmi5: Remove callbacks for the old ASoC DAI driver
+  OMAPDSS: hdmi5: Register ASoC platfrom device for omap hdmi audio
+  ASoC: omap: Remove obsolete HDMI audio code and Kconfig options
+  OMAPDSS: Remove all references to obsolete HDMI audio callbacks
+
+ .../fbdev/omap2/displays-new/connector-hdmi.c      |   99 -----
+ .../fbdev/omap2/displays-new/encoder-tpd12s015.c   |   56 ---
+ drivers/video/fbdev/omap2/dss/Kconfig              |    7 -
+ drivers/video/fbdev/omap2/dss/hdmi.h               |   37 +-
+ drivers/video/fbdev/omap2/dss/hdmi4.c              |  268 ++++++-------
+ drivers/video/fbdev/omap2/dss/hdmi4_core.c         |   14 -
+ drivers/video/fbdev/omap2/dss/hdmi4_core.h         |    4 -
+ drivers/video/fbdev/omap2/dss/hdmi5.c              |  257 ++++++------
+ drivers/video/fbdev/omap2/dss/hdmi5_core.c         |    6 -
+ drivers/video/fbdev/omap2/dss/hdmi5_core.h         |    2 -
+ drivers/video/fbdev/omap2/dss/hdmi_common.c        |    2 -
+ drivers/video/fbdev/omap2/dss/hdmi_wp.c            |    8 +-
+ include/sound/omap-hdmi-audio.h                    |   43 ++
+ include/video/omapdss.h                            |   31 --
+ sound/soc/codecs/hdmi.c                            |    2 +
+ sound/soc/omap/Kconfig                             |   21 +-
+ sound/soc/omap/Makefile                            |    6 +-
+ sound/soc/omap/omap-hdmi-audio.c                   |  420 ++++++++++++++++++++
+ sound/soc/omap/omap-hdmi-card.c                    |   87 ----
+ sound/soc/omap/omap-hdmi.c                         |  364 -----------------
+ sound/soc/omap/omap-hdmi.h                         |   38 --
+ 21 files changed, 772 insertions(+), 1000 deletions(-)
+ create mode 100644 include/sound/omap-hdmi-audio.h
+ create mode 100644 sound/soc/omap/omap-hdmi-audio.c
+ delete mode 100644 sound/soc/omap/omap-hdmi-card.c
+ delete mode 100644 sound/soc/omap/omap-hdmi.c
+ delete mode 100644 sound/soc/omap/omap-hdmi.h
+
+-- 
+1.7.9.5
+
