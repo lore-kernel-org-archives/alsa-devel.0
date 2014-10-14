@@ -1,17 +1,21 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Andrej Falout <andrej@falout.org>
 Subject: Re: Direct Stream Digital (DSD/DST,
- One Bit Audio) HDMI pass-trough
-Date: Mon, 13 Oct 2014 17:56:44 -0500
-Message-ID: <543C58AC.9000701@linux.intel.com>
+	One Bit Audio) HDMI pass-trough
+Date: Tue, 14 Oct 2014 13:49:31 +1300
+Message-ID: <CAGzU1+G8rpLokMRbcG4o+SaDB2j79Gx83e6j+3JiMxS3nwVhFQ@mail.gmail.com>
 References: <CAGzU1+H-vof2_1UqDTr2pDrnLMrbk0ZHgaAxeM2CaW9=tcPXwQ@mail.gmail.com>
+ <543C58AC.9000701@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 773EA2604DA
- for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 00:56:56 +0200 (CEST)
-In-Reply-To: <CAGzU1+H-vof2_1UqDTr2pDrnLMrbk0ZHgaAxeM2CaW9=tcPXwQ@mail.gmail.com>
+Received: from mail-la0-f46.google.com (mail-la0-f46.google.com
+ [209.85.215.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id A614D2604FA
+ for <alsa-devel@alsa-project.org>; Tue, 14 Oct 2014 02:49:32 +0200 (CEST)
+Received: by mail-la0-f46.google.com with SMTP id gi9so7603051lab.19
+ for <alsa-devel@alsa-project.org>; Mon, 13 Oct 2014 17:49:32 -0700 (PDT)
+In-Reply-To: <543C58AC.9000701@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andrej Falout <andrej@falout.org>, alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/11/14, 1:33 AM, Andrej Falout wrote:
-> Hello,
->
-> I am collecting requirements for implementation a DSD HDMI pass-trough,
-> according to HDMI specs version 1.2 and 1.3a
->
-> I am wondering if anyone previously worked on this, or has any interest in
-> this functionality.
->
-> Any advice or pointers are gratefully received. Here is my list of the core
-> facts so far:
->
->
->     1. hda_eld.c in current kernel git ignores raw DSD (One Bit Audio)
->     labelled AUDIO_CODING_TYPE_SACD ("SACD" because originally DSD formats
->     where only used commercially in SACDs) and compressed DSD (DST) is labelled
->     AUDIO_CODING_TYPE_DST (1)
->     2. It is my understanding that apart from "special handling" denoted in
->     "Table 47 CEA Short Audio Descriptor for Audio Format Codes 9 to 13", (eg
->     setting the format code, etc) this should be a reasonably straightforward
->     stream pass-trough (2)
->     3. Typical use scenario for DSD over HDMI: an DVD/BluRay player that
->     supports SACD (Super Audio CD) outputs a DSD stream over HDMI to a DSD
->     capable receiver. For instance, my Oppo and Sony BluRay players both do
->     that, and all my receivers (Onkyo, Pioneer, Marantz, Yamaha, NAD) have DSD
->     DACs and I can play both stereo and surround music this way, without
->     converting DSD to PCM. There is currently about 30 million DSD capable
->     receivers on the planet, conservatively speaking (Just Onkyo makes 1
->     million a year, and makes DSD capable ones since 2003)
->     4. Wanted scenario: play DSD files using DSD enabled players (Linux:
->     MPD, mplayer, VLC, Squeezeboxserver, etc / Windows: FooBar, JRiver, etc) to
->     an HDMI audio card/device on a PC motherboard or add-on video card with
->     HDMI, connected via HDMI cable to a DSD enabled receiver/DAC
->     5. Note that as far as I know, no proprietary drivers on Windows
->     (ATI/AMD, Nvidia, Intel) support this; It will be the first time a device
->     that is not a SACD player outputs DSD over HDMI, on any OS. I am assuming
->     that this has nothing to do with hardware limitations of the HDMI chips
->     used for video outputs (I could not find any reference for such assumption
->     in any HDMI chips I examined specs for). Therefore, I assume that
->     implementing this has no hardware prerequisites.
+On Tue, Oct 14, 2014 at 11:56 AM, Pierre-Louis Bossart <
+pierre-louis.bossart@linux.intel.com> wrote:
 
-HDMI controllers typically don't support DSD in the PC space. It'd be 
-easier to convert to high-res PCM (HBR).
+> On 10/11/14, 1:33 AM, Andrej Falout wrote:
+>
+>> Hello,
+>> <...snip...>
+>>     5. Note that as far as I know, no proprietary drivers on Windows
+>>     (ATI/AMD, Nvidia, Intel) support this; It will be the first time a
+>> device
+>>     that is not a SACD player outputs DSD over HDMI, on any OS. I am
+>> assuming
+>>     that this has nothing to do with hardware limitations of the HDMI
+>> chips
+>>     used for video outputs (I could not find any reference for such
+>> assumption
+>>     in any HDMI chips I examined specs for). Therefore, I assume that
+>>     implementing this has no hardware prerequisites.
+>>
+>
+> HDMI controllers typically don't support DSD in the PC space. It'd be
+> easier to convert to high-res PCM (HBR).
+>
+>
+Hello Pierre-Louis,
 
->     6. DSD format general info:
->     http://en.wikipedia.org/wiki/Direct_Stream_Digital  http://dsd-guide.com/
->      http://dsd-guide.com/what-dsd-audio-simple-explanation
->
->
->
-> Thanks,
-> Andrej Falout
->
-> References:
-> (1)
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/sound/pci/hda/hda_eld.c?id=refs/tags/v3.17
->    - Same source file in Alsa GIT tree:
->
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=blob;f=sound/pci/hda/hda_eld.c
->
-> (2) CEA Standard PDF, page 66, table 47. HDMI specs version 1.3a, pages
-> 72-73 for DSD(One Bit Audio) and DST audio packet header and body formats
->
->
-> <%2B385%2891%291520436>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Thank you for your comment.
+
+What are you basing your assessment that "HDMI controllers typically don't
+support DSD in the PC space"? I looked, but could not find any evidence for
+this.
+
+Certainly, DSD is not a part of HDMI hardware implementation (such as for
+example, CEC). From all info I have, DSD is simply multiplexed into HDMI
+data stream, just as DST-HD or AC3 is.
+
+The goal here is to have a native DSD transport, so conversion to PCM is
+not an option.
+
+Thanks,
+Andrej Falout
