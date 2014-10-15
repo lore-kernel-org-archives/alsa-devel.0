@@ -1,16 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v10 5/5] ASoC: Intel: mrfld: add the DSP mixers
-Date: Wed, 15 Oct 2014 20:13:00 +0530
-Message-ID: <1413384180-12963-6-git-send-email-vinod.koul@intel.com>
-References: <1413384180-12963-1-git-send-email-vinod.koul@intel.com>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: [PATCH] ASoC: rt5677: fix warnings when kernel
+	compiled without GPIOLIB support
+Date: Wed, 15 Oct 2014 09:30:49 -0700
+Message-ID: <1413390649-854-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id BDC3D261582
- for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 17:20:19 +0200 (CEST)
-In-Reply-To: <1413384180-12963-1-git-send-email-vinod.koul@intel.com>
+Received: from mail-pd0-f201.google.com (mail-pd0-f201.google.com
+ [209.85.192.201])
+ by alsa0.perex.cz (Postfix) with ESMTP id C33542605D9
+ for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 18:30:56 +0200 (CEST)
+Received: by mail-pd0-f201.google.com with SMTP id y10so271224pdj.4
+ for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 09:30:55 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: broonie@kernel.org
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, Anatol Pomozov <anatol.pomozov@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
 ---
- sound/soc/intel/sst-atom-controls.c |   26 ++++++++++++++++++++++++++
- 1 files changed, 26 insertions(+), 0 deletions(-)
+ sound/soc/codecs/rt5677.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/sst-atom-controls.c b/sound/soc/intel/sst-atom-controls.c
-index 9aa09db..dcdeb28 100644
---- a/sound/soc/intel/sst-atom-controls.c
-+++ b/sound/soc/intel/sst-atom-controls.c
-@@ -956,6 +956,32 @@ static const struct snd_soc_dapm_widget sst_dapm_widgets[] = {
- 	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop2_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2, SST_FMT_STEREO, sst_set_media_loop),
- 
- 	/* Media Mixers */
-+	SST_SWM_MIXER("media0_out mix 0", SND_SOC_NOPM, SST_TASK_MMX, SST_SWM_OUT_MEDIA0,
-+		      sst_mix_media0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media1_out mix 0", SND_SOC_NOPM, SST_TASK_MMX, SST_SWM_OUT_MEDIA1,
-+		      sst_mix_media1_controls, sst_swm_mixer_event),
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index d1fc9a1..2f0d19f 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -3686,6 +3686,11 @@ static void rt5677_free_gpio(struct i2c_client *i2c)
+ 	gpiochip_remove(&rt5677->gpio_chip);
+ }
+ #else
++static void rt5677_gpio_config(struct rt5677_priv *rt5677, unsigned offset,
++		int value)
++{
++}
 +
-+	/* SBA PCM mixers */
-+	SST_SWM_MIXER("pcm0_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM0,
-+		      sst_mix_pcm0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("pcm1_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM1,
-+		      sst_mix_pcm1_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("pcm2_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_PCM2,
-+		      sst_mix_pcm2_controls, sst_swm_mixer_event),
-+
-+	/* SBA Loop mixers */
-+	SST_SWM_MIXER("sprot_loop_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP,
-+		      sst_mix_sprot_l0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media_loop1_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1,
-+		      sst_mix_media_l1_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("media_loop2_out mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2,
-+		      sst_mix_media_l2_controls, sst_swm_mixer_event),
-+
-+	/* SBA Backend mixers */
-+	SST_SWM_MIXER("codec_out0 mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_CODEC0,
-+		      sst_mix_codec0_controls, sst_swm_mixer_event),
-+	SST_SWM_MIXER("codec_out1 mix 0", SND_SOC_NOPM, SST_TASK_SBA, SST_SWM_OUT_CODEC1,
-+		      sst_mix_codec1_controls, sst_swm_mixer_event),
- };
- 
- static const struct snd_soc_dapm_route intercon[] = {
+ static void rt5677_init_gpio(struct i2c_client *i2c)
+ {
+ }
 -- 
-1.7.0.4
+2.1.0.rc2.206.gedb03e5
