@@ -1,51 +1,81 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 08/18] ASoC: codecs/hdmi: HDMI codec doesn't benefit
- from pmdown delay
-Date: Wed, 15 Oct 2014 12:27:16 +0200
-Message-ID: <20141015102716.GB27755@sirena.org.uk>
-References: <cover.1413306131.git.jsarha@ti.com>
- <aa7ad47271e780b75b608382a8830cdc22c4193a.1413306131.git.jsarha@ti.com>
+From: Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH v6 09/18] ASoC: omap-hdmi-audio: Add
+ platfrom device for OMAP HDMI audio support (Jyri Sarha)
+Date: Wed, 15 Oct 2014 13:27:21 +0300
+Message-ID: <543E4C09.4070108@ti.com>
+References: <CAGzU1+GE4P1rOaaUt=xpc-Cy2ZU=Oen-Gtpes_ijxVSWyNGDgg@mail.gmail.com>	<543E2E29.2070405@ti.com>
+ <CAGzU1+Hw+XOzfZPJwM_8C+ryrfED5qhO00ESoTr55R4bw+6hdg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xEUC5fB8Sf//E0AF"
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <aa7ad47271e780b75b608382a8830cdc22c4193a.1413306131.git.jsarha@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jyri Sarha <jsarha@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org, peter.ujfalusi@ti.com, liam.r.girdwood@linux.intel.com, tomi.valkeinen@ti.com, detheridge@ti.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C47A260413
+ for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 12:27:27 +0200 (CEST)
+In-Reply-To: <CAGzU1+Hw+XOzfZPJwM_8C+ryrfED5qhO00ESoTr55R4bw+6hdg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andrej Falout <andrej@falout.org>
+Cc: alsa-devel@alsa-project.org, "to >> Valkeinen,
+ Tomi" <tomi.valkeinen@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 10/15/2014 11:26 AM, Andrej Falout wrote:
+> Thank you for you reply, Jyri,
+>
+> Is there any reason, perhaps a hardware limitation, that would make this
+> impossible, or is this just by choice?
+>
+> Eg. if I wanted to, could I implement DSD support on this platform?
+>
+> Thanks,
+> Andrej Falout
+>
 
---xEUC5fB8Sf//E0AF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+After a brief look at the documentation it does not look like the 
+OMAP4/5 HDMI module could support anything else but PCM audio. It could 
+of course be that the documents I have only describe the use for PCM 
+audio, but in any case it would be an uphill battle as even the 
+documents I have are under NDA and I am not aware of any better 
+documents about the subject.
 
-On Tue, Oct 14, 2014 at 08:29:27PM +0300, Jyri Sarha wrote:
-> Adds .ignore_pmdown_time =3D true to codec driver struct.
->=20
-> HDMI codec is currently a dummy codec and doesn't benefit from pmdown
-> delay. Even if in the future the codec would controll HDMI encoder, it
-> would still be a digital to digital interface that should have no need
-> for pmdown delay.
+Best regards,
+Jyri
 
-Applied, thanks.
-
---xEUC5fB8Sf//E0AF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUPkwDAAoJECTWi3JdVIfQArgH/1BXNHUAeg6597g6sd0YW46v
-DG+9aEoZKD4ciU50q2GS9T6wLWnNAFV/5vPHFrDyqgt4o5YnOx7t/M7Kh/gG+SsV
-NxZdqMmr66XQKueS5vwkxIZ4VwQbb2HWxUwAf5E1iVP2LSqSIr1kJnmo1fzrViUx
-G16Yg6N5SBZvkYocn+2mhsUYSpuc6B/3jmRzctuiX0vsISb0vqoY6npU9r48a72a
-aJ8ursduLA4+A9Es75rLhu+3Bst4tUpc7OZkG3P8B+5RIxsr97wQ4T+rsZr/I1Yt
-pOqGz1rQP4Kw3rx2B+XYn1zOvkrJQS9GK8rfWCsmlJxEy5eBZFjYYQzhX6MDC/Q=
-=S90N
------END PGP SIGNATURE-----
-
---xEUC5fB8Sf//E0AF--
+>
+> On Wed, Oct 15, 2014 at 9:19 PM, Jyri Sarha <jsarha@ti.com
+> <mailto:jsarha@ti.com>> wrote:
+>
+>     On 10/15/2014 02:30 AM, Andrej Falout wrote:
+>
+>         Hi Jyri,
+>
+>         Is the audio support for OMAP HDMI supposed to support DSD audio?
+>
+>         Eg, on page 6 of
+>         http://elinux.org/images/8/8e/__HDMI_ELC_mythripk.pdf
+>         <http://elinux.org/images/8/8e/HDMI_ELC_mythripk.pdf>
+>
+>         "Super Audio CD (DSD) support" starting from HDMI version 1.2
+>
+>         Thanks,
+>
+>         Andrej Falout
+>
+>
+>     The software support is only for PCM audio* ATM and AFAIK there is
+>     no plans to add support any other formats in foreseeable future.
+>
+>     * 8 chnnel LPCM, 192 kHhz, 24 bit audio
+>
+>     Best regards,
+>     Jyri
+>
+>
