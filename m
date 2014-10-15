@@ -1,21 +1,20 @@
-From: Nick Stoughton <nstoughton@aether.com>
-Subject: Re: [RFC] provide a simple mechanism to start playback
- at a given time
-Date: Wed, 15 Oct 2014 14:08:23 +0200
-Message-ID: <CADO7NSG3XWmBRKJ2a2HgfsRjZon5k67xQLC08RuD+RVhWPA-GQ@mail.gmail.com>
-References: <CADO7NSF=uneov2a9MShswbmpu1P=cwZ1dSkA-jJvoCvxsTFT3A@mail.gmail.com>
- <1413302296.2415261.178874085.6CE8BB88@webmail.messagingengine.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v9 1/6] ASoC: Intel: mrfld: add the gain
+	controls
+Date: Wed, 15 Oct 2014 15:08:17 +0200
+Message-ID: <20141015130817.GF27755@sirena.org.uk>
+References: <1413356701-8535-1-git-send-email-vinod.koul@intel.com>
+ <1413356701-8535-2-git-send-email-vinod.koul@intel.com>
+ <20141015104947.GC27755@sirena.org.uk>
+ <20141015102303.GM1638@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1453321414346802332=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f47.google.com (mail-la0-f47.google.com
- [209.85.215.47])
- by alsa0.perex.cz (Postfix) with ESMTP id CE33A26040E
- for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 14:08:24 +0200 (CEST)
-Received: by mail-la0-f47.google.com with SMTP id pv20so906961lab.34
- for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 05:08:24 -0700 (PDT)
-In-Reply-To: <1413302296.2415261.178874085.6CE8BB88@webmail.messagingengine.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32BAB260432
+ for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 15:08:42 +0200 (CEST)
+In-Reply-To: <20141015102303.GM1638@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,68 +24,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tim Cussins <timcussins@eml.cc>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-I agree with these points in general. I will change the function to fail
-(EINVAL) if the timestamp is in the past, but permit arbitrarily small
-future times (which seems preferable to passing in an extra parameter to
-something that can easily be checked in user space).
 
-*______________________________*
-*Nick Stoughton*
- *Aether Things Inc *
- *San Francisco*
-  +1 (510) 388 1413
+--===============1453321414346802332==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="EM2zIRCtNCod1hEe"
+Content-Disposition: inline
 
 
-On Tue, Oct 14, 2014 at 5:58 PM, Tim Cussins <timcussins@eml.cc> wrote:
+--EM2zIRCtNCod1hEe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Hi Nick,
->
-> On Tue, Oct 14, 2014, at 04:31 PM, Nick Stoughton wrote:
-> > As discussed at today's meeting, please find 2 patches (one to the 3.17
-> > kernel, the other to alsa-lib) following this that implement a simple
-> > interface to trigger playback at a given point in the future.
-> >
-> > The API provides an absolute time, measured against a given clock, at
-> > which
-> > to trigger DMA. If the point in the future appears to be less than 100ms
-> > away, we fall back to the standard snd_pcm_start() behavior. This is
-> > because this interface is designed to support networked devices
-> > playing back in sync, and network latencies are likely to be over 100ms.
-> > This value should probably be tunable ...
->
-> I'm a little wary of baked in thresholds like this, esp one in an API
-> that isn't explicitly network oriented: In this case it's a policy
-> decision that should be left to the application. Maybe pass the
-> threshold as an argument?
->
-> My general preference is to keep the API contract simple and
-> unsurprising. I would just return an error if the request can't be
-> satisfied, for example if the timestamp is in the past, or too soon.
-> Failure shouldn't be information we hide from the application... :)
->
-> > Also, we simply set up a timer and commence DMA when it expires. If the
-> > devices to be synchronized have identical hardware, then there is no
-> > problem. A future enhancement is to estimate the latency between the DMA
-> > trigger and the codec driver (FIFO sizes etc) so that we can take that
-> > into
-> > account.
-> >
-> > Any comments gratefully accepted!
-> > *______________________________*
-> > *Nick Stoughton*
-> >  *Aether Things Inc *
-> >  *San Francisco*
-> >   +1 (510) 388 1413
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+On Wed, Oct 15, 2014 at 03:53:03PM +0530, Vinod Koul wrote:
+> On Wed, Oct 15, 2014 at 12:49:47PM +0200, Mark Brown wrote:
+> > On Wed, Oct 15, 2014 at 12:34:56PM +0530, Vinod Koul wrote:
+
+> > > +/* the SST_GAIN macro above will create three alsa controls for each
+> > > + * instance invoked, gain, mute and ramp duration, which use the same gain
+> > > + * cell sst_gain to keep track of data
+> > > + *
+> > > + * To calculate number of gain cell instances we need to device by 3 in
+> > > + * below caulcation for gain cell memory.
+> > > + * This gets rid of static number and issues while adding new controls
+> > > + */
+> > > +static struct sst_gain_value sst_gains[ARRAY_SIZE(sst_gain_controls)/3];
+
+> > The use of ARRAY_SIZE() is nice here but I'm a bit confused about the
+> > divide by 3 - there's an entry in sst_gains referenced for each element
+> > in sst_gain_controls.
+
+> Thats is the reason added the comment above.
+
+The comment isn't very clear (splitting it into multiple paragraphs
+doesn't help since it looks like the calculation stands separately to
+the controls), and everything would be a lot simpler if there were a
+define for the number of controls created per SST_GAIN() rather than
+just hard coding the magic number.
+
+--EM2zIRCtNCod1hEe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUPnHBAAoJECTWi3JdVIfQHWQH/AhPcDzeQngd/d8aSkEIAQQ2
+LB96k5LGJw1g+7X7GAJ5ILUDvx9IN+oPsM6NTP0c6WeWyJR4+O+C5YKI0TFerENL
+tVFJAQp+4QHQbWrzj3XYTOxsWTC2gMMp8eoCrXoA5wKNMWUfNragVbxcoUFZIXYD
+8ohn/DRl30kfga1wOMNFDXFJwh7ke8CZYrsHPNEUYSuGPjzfzXLUwgporSkH3dUJ
+Z3tnW9ASWU7Zh2mMk0qfDk4GP71qfm2+6yb/PjBx/pas62Sejrpd2ZcsyJryDrnQ
+texwwvfYL0RUt+qGsWpVDCmL0ODKQl3GOBrRUdt4XSg1A54TffaNp+sVyOkyxZQ=
+=komC
+-----END PGP SIGNATURE-----
+
+--EM2zIRCtNCod1hEe--
+
+--===============1453321414346802332==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1453321414346802332==--
