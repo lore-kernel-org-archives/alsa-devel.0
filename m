@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v10 1/5] ASoC: Intel: mrfld: add the gain
-	controls
-Date: Wed, 15 Oct 2014 20:12:56 +0530
-Message-ID: <1413384180-12963-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v10 3/5] ASoC: Intel: mrfld: add the DSP DAPM
+	widgets
+Date: Wed, 15 Oct 2014 20:12:58 +0530
+Message-ID: <1413384180-12963-4-git-send-email-vinod.koul@intel.com>
 References: <1413384180-12963-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 20E6C260449
- for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 17:19:16 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 48A5C260673
+ for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 17:19:19 +0200 (CEST)
 In-Reply-To: <1413384180-12963-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,408 +25,295 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The DSP has various gain modules in the path,
-add these as ALSA gain controls
+This patch adds all DAPM widgets and the event handlers for
+DSP except the mixers.
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/Kconfig             |    2 +-
- sound/soc/intel/sst-atom-controls.c |  202 ++++++++++++++++++++++++++++++++++-
- sound/soc/intel/sst-atom-controls.h |  121 +++++++++++++++++++++
- 3 files changed, 322 insertions(+), 3 deletions(-)
+ sound/soc/intel/sst-atom-controls.c |  226 +++++++++++++++++++++++++++++++++++
+ sound/soc/intel/sst-mfld-platform.h |    4 +
+ 2 files changed, 230 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index f5b4a9c..726f7d8 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -1,6 +1,6 @@
- config SND_MFLD_MACHINE
- 	tristate "SOC Machine Audio driver for Intel Medfield MID platform"
--	depends on INTEL_SCU_IPC
-+	depends on INTEL_SCU_IPC || COMPILE_TEST
- 	select SND_SOC_SN95031
- 	select SND_SST_MFLD_PLATFORM
- 	help
 diff --git a/sound/soc/intel/sst-atom-controls.c b/sound/soc/intel/sst-atom-controls.c
-index 7104a34..a00d506 100644
+index 9239eff..9aa09db 100644
 --- a/sound/soc/intel/sst-atom-controls.c
 +++ b/sound/soc/intel/sst-atom-controls.c
-@@ -162,6 +162,190 @@ static int sst_algo_control_set(struct snd_kcontrol *kcontrol,
+@@ -548,6 +548,41 @@ static const uint swm_mixer_input_ids[SST_SWM_INPUT_COUNT] = {
+ };
+ 
+ /**
++ * fill_swm_input - fill in the SWM input ids given the register
++ *
++ * The register value is a bit-field inicated which mixer inputs are ON. Use the
++ * lookup table to get the input-id and fill it in the structure.
++ */
++static int fill_swm_input(struct snd_soc_component *cmpnt,
++		struct swm_input_ids *swm_input, unsigned int reg)
++{
++	uint i, is_set, nb_inputs = 0;
++	u16 input_loc_id;
++
++	dev_dbg(cmpnt->dev, "reg: %#x\n", reg);
++	for (i = 0; i < SST_SWM_INPUT_COUNT; i++) {
++		is_set = reg & BIT(i);
++		if (!is_set)
++			continue;
++
++		input_loc_id = swm_mixer_input_ids[i];
++		SST_FILL_DESTINATION(2, swm_input->input_id,
++				     input_loc_id, SST_DEFAULT_MODULE_ID);
++		nb_inputs++;
++		swm_input++;
++		dev_dbg(cmpnt->dev, "input id: %#x, nb_inputs: %d\n",
++				input_loc_id, nb_inputs);
++
++		if (nb_inputs == SST_CMD_SWM_MAX_INPUTS) {
++			dev_warn(cmpnt->dev, "SET_SWM cmd max inputs reached");
++			break;
++		}
++	}
++	return nb_inputs;
++}
++
++
++/**
+  * called with lock held
+  */
+ static int sst_set_pipe_gain(struct sst_ids *ids,
+@@ -573,6 +608,112 @@ static int sst_set_pipe_gain(struct sst_ids *ids,
  	return ret;
  }
  
-+static int sst_gain_ctl_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
++static int sst_swm_mixer_event(struct snd_soc_dapm_widget *w,
++			struct snd_kcontrol *k, int event)
 +{
-+	struct sst_gain_mixer_control *mc = (void *)kcontrol->private_value;
++	struct sst_cmd_set_swm cmd;
++	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
++	struct sst_data *drv = snd_soc_component_get_drvdata(cmpnt);
++	struct sst_ids *ids = w->priv;
++	bool set_mixer = false;
++	struct soc_mixer_control *mc;
++	int val = 0;
++	int i = 0;
 +
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = mc->stereo ? 2 : 1;
-+	uinfo->value.integer.min = mc->min;
-+	uinfo->value.integer.max = mc->max;
++	dev_dbg(cmpnt->dev, "widget = %s\n", w->name);
++	/*
++	 * Identify which mixer input is on and send the bitmap of the
++	 * inputs as an IPC to the DSP.
++	 */
++	for (i = 0; i < w->num_kcontrols; i++) {
++		if (dapm_kcontrol_get_value(w->kcontrols[i])) {
++			mc = (struct soc_mixer_control *)(w->kcontrols[i])->private_value;
++			val |= 1 << mc->shift;
++		}
++	}
++	dev_dbg(cmpnt->dev, "val = %#x\n", val);
 +
-+	return 0;
-+}
-+
-+/**
-+ * sst_send_gain_cmd - send the gain algorithm IPC to the FW
-+ * @gv:		the stored value of gain (also contains rampduration)
-+ * @mute:	flag that indicates whether this was called from the
-+ *		digital_mute callback or directly. If called from the
-+ *		digital_mute callback, module will be muted/unmuted based on this
-+ *		flag. The flag is always 0 if called directly.
-+ *
-+ * Called with sst_data.lock held
-+ *
-+ * The user-set gain value is sent only if the user-controllable 'mute' control
-+ * is OFF (indicated by gv->mute). Otherwise, the mute value (MIN value) is
-+ * sent.
-+ */
-+static int sst_send_gain_cmd(struct sst_data *drv, struct sst_gain_value *gv,
-+			      u16 task_id, u16 loc_id, u16 module_id, int mute)
-+{
-+	struct sst_cmd_set_gain_dual cmd;
-+
-+	dev_dbg(&drv->pdev->dev, "Enter\n");
-+
-+	cmd.header.command_id = MMX_SET_GAIN;
-+	SST_FILL_DEFAULT_DESTINATION(cmd.header.dst);
-+	cmd.gain_cell_num = 1;
-+
-+	if (mute || gv->mute) {
-+		cmd.cell_gains[0].cell_gain_left = SST_GAIN_MIN_VALUE;
-+		cmd.cell_gains[0].cell_gain_right = SST_GAIN_MIN_VALUE;
-+	} else {
-+		cmd.cell_gains[0].cell_gain_left = gv->l_gain;
-+		cmd.cell_gains[0].cell_gain_right = gv->r_gain;
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++	case SND_SOC_DAPM_POST_PMD:
++		set_mixer = true;
++		break;
++	case SND_SOC_DAPM_POST_REG:
++		if (w->power)
++			set_mixer = true;
++		break;
++	default:
++		set_mixer = false;
 +	}
 +
-+	SST_FILL_DESTINATION(2, cmd.cell_gains[0].dest,
-+			     loc_id, module_id);
-+	cmd.cell_gains[0].gain_time_constant = gv->ramp_duration;
++	if (set_mixer == false)
++		return 0;
 +
-+	cmd.header.length = sizeof(struct sst_cmd_set_gain_dual)
-+				- sizeof(struct sst_dsp_header);
++	if (SND_SOC_DAPM_EVENT_ON(event) ||
++	    event == SND_SOC_DAPM_POST_REG)
++		cmd.switch_state = SST_SWM_ON;
++	else
++		cmd.switch_state = SST_SWM_OFF;
 +
-+	/* we are with lock held, so call the unlocked api  to send */
-+	return sst_fill_and_send_cmd_unlocked(drv, SST_IPC_IA_SET_PARAMS,
-+				SST_FLAG_BLOCKED, task_id, 0, &cmd,
++	SST_FILL_DEFAULT_DESTINATION(cmd.header.dst);
++	/* MMX_SET_SWM == SBA_SET_SWM */
++	cmd.header.command_id = SBA_SET_SWM;
++
++	SST_FILL_DESTINATION(2, cmd.output_id,
++			     ids->location_id, SST_DEFAULT_MODULE_ID);
++	cmd.nb_inputs =	fill_swm_input(cmpnt, &cmd.input[0], val);
++	cmd.header.length = offsetof(struct sst_cmd_set_swm, input)
++				- sizeof(struct sst_dsp_header)
++				+ (cmd.nb_inputs * sizeof(cmd.input[0]));
++
++	return sst_fill_and_send_cmd(drv, SST_IPC_IA_CMD, SST_FLAG_BLOCKED,
++			      ids->task_id, 0, &cmd,
 +			      sizeof(cmd.header) + cmd.header.length);
 +}
 +
-+static int sst_gain_get(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct sst_gain_mixer_control *mc = (void *)kcontrol->private_value;
-+	struct sst_gain_value *gv = mc->gain_val;
++/* SBA mixers - 16 inputs */
++#define SST_SBA_DECLARE_MIX_CONTROLS(kctl_name)							\
++	static const struct snd_kcontrol_new kctl_name[] = {					\
++		SOC_DAPM_SINGLE("codec_in0 Switch", SND_SOC_NOPM, SST_IP_CODEC0, 1, 0),		\
++		SOC_DAPM_SINGLE("codec_in1 Switch", SND_SOC_NOPM, SST_IP_CODEC1, 1, 0),		\
++		SOC_DAPM_SINGLE("sprot_loop_in Switch", SND_SOC_NOPM, SST_IP_LOOP0, 1, 0),	\
++		SOC_DAPM_SINGLE("media_loop1_in Switch", SND_SOC_NOPM, SST_IP_LOOP1, 1, 0),	\
++		SOC_DAPM_SINGLE("media_loop2_in Switch", SND_SOC_NOPM, SST_IP_LOOP2, 1, 0),	\
++		SOC_DAPM_SINGLE("pcm0_in Switch", SND_SOC_NOPM, SST_IP_PCM0, 1, 0),		\
++		SOC_DAPM_SINGLE("pcm1_in Switch", SND_SOC_NOPM, SST_IP_PCM1, 1, 0),		\
++	}
 +
-+	switch (mc->type) {
-+	case SST_GAIN_TLV:
-+		ucontrol->value.integer.value[0] = gv->l_gain;
-+		ucontrol->value.integer.value[1] = gv->r_gain;
-+		break;
++#define SST_SBA_MIXER_GRAPH_MAP(mix_name)			\
++	{ mix_name, "codec_in0 Switch",	"codec_in0" },		\
++	{ mix_name, "codec_in1 Switch",	"codec_in1" },		\
++	{ mix_name, "sprot_loop_in Switch",	"sprot_loop_in" },	\
++	{ mix_name, "media_loop1_in Switch",	"media_loop1_in" },	\
++	{ mix_name, "media_loop2_in Switch",	"media_loop2_in" },	\
++	{ mix_name, "pcm0_in Switch",		"pcm0_in" },		\
++	{ mix_name, "pcm1_in Switch",		"pcm1_in" }
 +
-+	case SST_GAIN_MUTE:
-+		ucontrol->value.integer.value[0] = gv->mute ? 1 : 0;
-+		break;
++#define SST_MMX_DECLARE_MIX_CONTROLS(kctl_name)						\
++	static const struct snd_kcontrol_new kctl_name[] = {				\
++		SOC_DAPM_SINGLE("media0_in Switch", SND_SOC_NOPM, SST_IP_MEDIA0, 1, 0),	\
++		SOC_DAPM_SINGLE("media1_in Switch", SND_SOC_NOPM, SST_IP_MEDIA1, 1, 0),	\
++		SOC_DAPM_SINGLE("media2_in Switch", SND_SOC_NOPM, SST_IP_MEDIA2, 1, 0),	\
++		SOC_DAPM_SINGLE("media3_in Switch", SND_SOC_NOPM, SST_IP_MEDIA3, 1, 0),	\
++	}
 +
-+	case SST_GAIN_RAMP_DURATION:
-+		ucontrol->value.integer.value[0] = gv->ramp_duration;
-+		break;
++SST_MMX_DECLARE_MIX_CONTROLS(sst_mix_media0_controls);
++SST_MMX_DECLARE_MIX_CONTROLS(sst_mix_media1_controls);
 +
-+	default:
-+		dev_err(component->dev, "Invalid Input- gain type:%d\n",
-+				mc->type);
-+		return -EINVAL;
-+	};
++/* 18 SBA mixers */
++SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_pcm0_controls);
++SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_pcm1_controls);
++SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_pcm2_controls);
++SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_sprot_l0_controls);
++SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l1_controls);
++SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_media_l2_controls);
++SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_voip_controls);
++SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec0_controls);
++SST_SBA_DECLARE_MIX_CONTROLS(sst_mix_codec1_controls);
 +
-+	return 0;
-+}
+ /*
+  * sst_handle_vb_timer - Start/Stop the DSP scheduler
+  *
+@@ -784,6 +925,83 @@ static int sst_set_media_loop(struct snd_soc_dapm_widget *w,
+ 	return ret;
+ }
+ 
++static const struct snd_soc_dapm_widget sst_dapm_widgets[] = {
++	SST_AIF_IN("codec_in0", sst_set_be_modules),
++	SST_AIF_IN("codec_in1", sst_set_be_modules),
++	SST_AIF_OUT("codec_out0", sst_set_be_modules),
++	SST_AIF_OUT("codec_out1", sst_set_be_modules),
 +
-+static int sst_gain_put(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	int ret = 0;
-+	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
-+	struct sst_data *drv = snd_soc_component_get_drvdata(cmpnt);
-+	struct sst_gain_mixer_control *mc = (void *)kcontrol->private_value;
-+	struct sst_gain_value *gv = mc->gain_val;
++	/* Media Paths */
++	/* MediaX IN paths are set via ALLOC, so no SET_MEDIA_PATH command */
++	SST_PATH_INPUT("media0_in", SST_TASK_MMX, SST_SWM_IN_MEDIA0, sst_generic_modules_event),
++	SST_PATH_INPUT("media1_in", SST_TASK_MMX, SST_SWM_IN_MEDIA1, NULL),
++	SST_PATH_INPUT("media2_in", SST_TASK_MMX, SST_SWM_IN_MEDIA2, sst_set_media_path),
++	SST_PATH_INPUT("media3_in", SST_TASK_MMX, SST_SWM_IN_MEDIA3, NULL),
++	SST_PATH_OUTPUT("media0_out", SST_TASK_MMX, SST_SWM_OUT_MEDIA0, sst_set_media_path),
++	SST_PATH_OUTPUT("media1_out", SST_TASK_MMX, SST_SWM_OUT_MEDIA1, sst_set_media_path),
 +
-+	mutex_lock(&drv->lock);
++	/* SBA PCM Paths */
++	SST_PATH_INPUT("pcm0_in", SST_TASK_SBA, SST_SWM_IN_PCM0, sst_set_media_path),
++	SST_PATH_INPUT("pcm1_in", SST_TASK_SBA, SST_SWM_IN_PCM1, sst_set_media_path),
++	SST_PATH_OUTPUT("pcm0_out", SST_TASK_SBA, SST_SWM_OUT_PCM0, sst_set_media_path),
++	SST_PATH_OUTPUT("pcm1_out", SST_TASK_SBA, SST_SWM_OUT_PCM1, sst_set_media_path),
++	SST_PATH_OUTPUT("pcm2_out", SST_TASK_SBA, SST_SWM_OUT_PCM2, sst_set_media_path),
 +
-+	switch (mc->type) {
-+	case SST_GAIN_TLV:
-+		gv->l_gain = ucontrol->value.integer.value[0];
-+		gv->r_gain = ucontrol->value.integer.value[1];
-+		dev_dbg(cmpnt->dev, "%s: Volume %d, %d\n",
-+				mc->pname, gv->l_gain, gv->r_gain);
-+		break;
++	/* SBA Loops */
++	SST_PATH_INPUT("sprot_loop_in", SST_TASK_SBA, SST_SWM_IN_SPROT_LOOP, NULL),
++	SST_PATH_INPUT("media_loop1_in", SST_TASK_SBA, SST_SWM_IN_MEDIA_LOOP1, NULL),
++	SST_PATH_INPUT("media_loop2_in", SST_TASK_SBA, SST_SWM_IN_MEDIA_LOOP2, NULL),
++	SST_PATH_MEDIA_LOOP_OUTPUT("sprot_loop_out", SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP, SST_FMT_MONO, sst_set_media_loop),
++	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop1_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1, SST_FMT_MONO, sst_set_media_loop),
++	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop2_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2, SST_FMT_STEREO, sst_set_media_loop),
 +
-+	case SST_GAIN_MUTE:
-+		gv->mute = !!ucontrol->value.integer.value[0];
-+		dev_dbg(cmpnt->dev, "%s: Mute %d\n", mc->pname, gv->mute);
-+		break;
-+
-+	case SST_GAIN_RAMP_DURATION:
-+		gv->ramp_duration = ucontrol->value.integer.value[0];
-+		dev_dbg(cmpnt->dev, "%s: Ramp Delay%d\n",
-+					mc->pname, gv->ramp_duration);
-+		break;
-+
-+	default:
-+		mutex_unlock(&drv->lock);
-+		dev_err(cmpnt->dev, "Invalid Input- gain type:%d\n",
-+				mc->type);
-+		return -EINVAL;
-+	};
-+
-+	if (mc->w && mc->w->power)
-+		ret = sst_send_gain_cmd(drv, gv, mc->task_id,
-+			mc->pipe_id | mc->instance_id, mc->module_id, 0);
-+	mutex_unlock(&drv->lock);
-+
-+	return ret;
-+}
-+
-+static const DECLARE_TLV_DB_SCALE(sst_gain_tlv_common, SST_GAIN_MIN_VALUE * 10, 10, 0);
-+
-+/* Gain helper with min/max set */
-+#define SST_GAIN(name, path_id, task_id, instance, gain_var)				\
-+	SST_GAIN_KCONTROLS(name, "Gain", SST_GAIN_MIN_VALUE, SST_GAIN_MAX_VALUE,	\
-+		SST_GAIN_TC_MIN, SST_GAIN_TC_MAX,					\
-+		sst_gain_get, sst_gain_put,						\
-+		SST_MODULE_ID_GAIN_CELL, path_id, instance, task_id,			\
-+		sst_gain_tlv_common, gain_var)
-+
-+#define SST_VOLUME(name, path_id, task_id, instance, gain_var)				\
-+	SST_GAIN_KCONTROLS(name, "Volume", SST_GAIN_MIN_VALUE, SST_GAIN_MAX_VALUE,	\
-+		SST_GAIN_TC_MIN, SST_GAIN_TC_MAX,					\
-+		sst_gain_get, sst_gain_put,						\
-+		SST_MODULE_ID_VOLUME, path_id, instance, task_id,			\
-+		sst_gain_tlv_common, gain_var)
-+
-+static struct sst_gain_value sst_gains[];
-+
-+static const struct snd_kcontrol_new sst_gain_controls[] = {
-+	SST_GAIN("media0_in", SST_PATH_INDEX_MEDIA0_IN, SST_TASK_MMX, 0, &sst_gains[0]),
-+	SST_GAIN("media1_in", SST_PATH_INDEX_MEDIA1_IN, SST_TASK_MMX, 0, &sst_gains[1]),
-+	SST_GAIN("media2_in", SST_PATH_INDEX_MEDIA2_IN, SST_TASK_MMX, 0, &sst_gains[2]),
-+	SST_GAIN("media3_in", SST_PATH_INDEX_MEDIA3_IN, SST_TASK_MMX, 0, &sst_gains[3]),
-+
-+	SST_GAIN("pcm0_in", SST_PATH_INDEX_PCM0_IN, SST_TASK_SBA, 0, &sst_gains[4]),
-+	SST_GAIN("pcm1_in", SST_PATH_INDEX_PCM1_IN, SST_TASK_SBA, 0, &sst_gains[5]),
-+	SST_GAIN("pcm1_out", SST_PATH_INDEX_PCM1_OUT, SST_TASK_SBA, 0, &sst_gains[6]),
-+	SST_GAIN("pcm2_out", SST_PATH_INDEX_PCM2_OUT, SST_TASK_SBA, 0, &sst_gains[7]),
-+
-+	SST_GAIN("codec_in0", SST_PATH_INDEX_CODEC_IN0, SST_TASK_SBA, 0, &sst_gains[8]),
-+	SST_GAIN("codec_in1", SST_PATH_INDEX_CODEC_IN1, SST_TASK_SBA, 0, &sst_gains[9]),
-+	SST_GAIN("codec_out0", SST_PATH_INDEX_CODEC_OUT0, SST_TASK_SBA, 0, &sst_gains[10]),
-+	SST_GAIN("codec_out1", SST_PATH_INDEX_CODEC_OUT1, SST_TASK_SBA, 0, &sst_gains[11]),
-+	SST_GAIN("media_loop1_out", SST_PATH_INDEX_MEDIA_LOOP1_OUT, SST_TASK_SBA, 0, &sst_gains[12]),
-+	SST_GAIN("media_loop2_out", SST_PATH_INDEX_MEDIA_LOOP2_OUT, SST_TASK_SBA, 0, &sst_gains[13]),
-+	SST_GAIN("sprot_loop_out", SST_PATH_INDEX_SPROT_LOOP_OUT, SST_TASK_SBA, 0, &sst_gains[14]),
-+	SST_VOLUME("media0_in", SST_PATH_INDEX_MEDIA0_IN, SST_TASK_MMX, 0, &sst_gains[15]),
++	/* Media Mixers */
 +};
 +
-+#define SST_GAIN_NUM_CONTROLS 3
-+/* the SST_GAIN macro above will create three alsa controls for each
-+ * instance invoked, gain, mute and ramp duration, which use the same gain
-+ * cell sst_gain to keep track of data
-+ * To calculate number of gain cell instances we need to device by 3 in
-+ * below caulcation for gain cell memory.
-+ * This gets rid of static number and issues while adding new controls
-+ */
-+static struct sst_gain_value sst_gains[ARRAY_SIZE(sst_gain_controls)/SST_GAIN_NUM_CONTROLS];
++static const struct snd_soc_dapm_route intercon[] = {
++	{"media0_in", NULL, "Compress Playback"},
++	{"media1_in", NULL, "Headset Playback"},
++	{"media2_in", NULL, "pcm0_out"},
 +
- static const struct snd_kcontrol_new sst_algo_controls[] = {
- 	SST_ALGO_KCONTROL_BYTES("media_loop1_out", "fir", 272, SST_MODULE_ID_FIR_24,
- 		 SST_PATH_INDEX_MEDIA_LOOP1_OUT, 0, SST_TASK_SBA, SBA_VB_SET_FIR),
-@@ -200,19 +384,33 @@ static int sst_algo_control_init(struct device *dev)
- 
++	{"media0_out mix 0", "media0_in Switch", "media0_in"},
++	{"media0_out mix 0", "media1_in Switch", "media1_in"},
++	{"media0_out mix 0", "media2_in Switch", "media2_in"},
++	{"media0_out mix 0", "media3_in Switch", "media3_in"},
++	{"media1_out mix 0", "media0_in Switch", "media0_in"},
++	{"media1_out mix 0", "media1_in Switch", "media1_in"},
++	{"media1_out mix 0", "media2_in Switch", "media2_in"},
++	{"media1_out mix 0", "media3_in Switch", "media3_in"},
++
++	{"media0_out", NULL, "media0_out mix 0"},
++	{"media1_out", NULL, "media1_out mix 0"},
++	{"pcm0_in", NULL, "media0_out"},
++	{"pcm1_in", NULL, "media1_out"},
++
++	{"Headset Capture", NULL, "pcm1_out"},
++	{"Headset Capture", NULL, "pcm2_out"},
++	{"pcm0_out", NULL, "pcm0_out mix 0"},
++	SST_SBA_MIXER_GRAPH_MAP("pcm0_out mix 0"),
++	{"pcm1_out", NULL, "pcm1_out mix 0"},
++	SST_SBA_MIXER_GRAPH_MAP("pcm1_out mix 0"),
++	{"pcm2_out", NULL, "pcm2_out mix 0"},
++	SST_SBA_MIXER_GRAPH_MAP("pcm2_out mix 0"),
++
++	{"media_loop1_in", NULL, "media_loop1_out"},
++	{"media_loop1_out", NULL, "media_loop1_out mix 0"},
++	SST_SBA_MIXER_GRAPH_MAP("media_loop1_out mix 0"),
++	{"media_loop2_in", NULL, "media_loop2_out"},
++	{"media_loop2_out", NULL, "media_loop2_out mix 0"},
++	SST_SBA_MIXER_GRAPH_MAP("media_loop2_out mix 0"),
++	{"sprot_loop_in", NULL, "sprot_loop_out"},
++	{"sprot_loop_out", NULL, "sprot_loop_out mix 0"},
++	SST_SBA_MIXER_GRAPH_MAP("sprot_loop_out mix 0"),
++
++	{"codec_out0", NULL, "codec_out0 mix 0"},
++	SST_SBA_MIXER_GRAPH_MAP("codec_out0 mix 0"),
++	{"codec_out1", NULL, "codec_out1 mix 0"},
++	SST_SBA_MIXER_GRAPH_MAP("codec_out1 mix 0"),
++
++};
+ static const char * const slot_names[] = {
+ 	"none",
+ 	"slot 0", "slot 1", "slot 2", "slot 3",
+@@ -1130,6 +1348,8 @@ static int sst_map_modules_to_pipe(struct snd_soc_platform *platform)
  int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform)
  {
--	int ret = 0;
-+	int i, ret = 0;
+ 	int i, ret = 0;
++	struct snd_soc_dapm_context *dapm =
++			snd_soc_component_get_dapm(&platform->component);
  	struct sst_data *drv = snd_soc_platform_get_drvdata(platform);
-+	unsigned int gains = ARRAY_SIZE(sst_gain_controls)/3;
+ 	unsigned int gains = ARRAY_SIZE(sst_gain_controls)/3;
  
- 	drv->byte_stream = devm_kzalloc(platform->dev,
- 					SST_MAX_BIN_BYTES, GFP_KERNEL);
+@@ -1138,6 +1358,12 @@ int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform)
  	if (!drv->byte_stream)
  		return -ENOMEM;
  
--	/*Initialize algo control params*/
-+	for (i = 0; i < gains; i++) {
-+		sst_gains[i].mute = SST_GAIN_MUTE_DEFAULT;
-+		sst_gains[i].l_gain = SST_GAIN_VOLUME_DEFAULT;
-+		sst_gains[i].r_gain = SST_GAIN_VOLUME_DEFAULT;
-+		sst_gains[i].ramp_duration = SST_GAIN_RAMP_DURATION_DEFAULT;
-+	}
++	snd_soc_dapm_new_controls(dapm, sst_dapm_widgets,
++			ARRAY_SIZE(sst_dapm_widgets));
++	snd_soc_dapm_add_routes(dapm, intercon,
++			ARRAY_SIZE(intercon));
++	snd_soc_dapm_new_widgets(dapm->card);
 +
-+	ret = snd_soc_add_platform_controls(platform, sst_gain_controls,
-+			ARRAY_SIZE(sst_gain_controls));
-+	if (ret)
-+		return ret;
-+
-+	/* Initialize algo control params */
- 	ret = sst_algo_control_init(platform->dev);
- 	if (ret)
- 		return ret;
- 	ret = snd_soc_add_platform_controls(platform, sst_algo_controls,
- 			ARRAY_SIZE(sst_algo_controls));
-+
- 	return ret;
- }
-diff --git a/sound/soc/intel/sst-atom-controls.h b/sound/soc/intel/sst-atom-controls.h
-index a73e894..e530002 100644
---- a/sound/soc/intel/sst-atom-controls.h
-+++ b/sound/soc/intel/sst-atom-controls.h
-@@ -23,6 +23,9 @@
- #ifndef __SST_ATOM_CONTROLS_H__
- #define __SST_ATOM_CONTROLS_H__
+ 	for (i = 0; i < gains; i++) {
+ 		sst_gains[i].mute = SST_GAIN_MUTE_DEFAULT;
+ 		sst_gains[i].l_gain = SST_GAIN_VOLUME_DEFAULT;
+diff --git a/sound/soc/intel/sst-mfld-platform.h b/sound/soc/intel/sst-mfld-platform.h
+index 19f83ec..d41d1c3 100644
+--- a/sound/soc/intel/sst-mfld-platform.h
++++ b/sound/soc/intel/sst-mfld-platform.h
+@@ -153,6 +153,10 @@ struct sst_device {
+ struct sst_data;
  
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
+ int sst_dsp_init_v2_dpcm(struct snd_soc_platform *platform);
++int sst_send_pipe_gains(struct snd_soc_dai *dai, int stream, int mute);
++int send_ssp_cmd(struct snd_soc_dai *dai, const char *id, bool enable);
++int sst_handle_vb_timer(struct snd_soc_dai *dai, bool enable);
 +
- enum {
- 	MERR_DPCM_AUDIO = 0,
- 	MERR_DPCM_COMPR,
-@@ -360,16 +363,134 @@ struct sst_dsp_header {
- struct sst_cmd_generic {
- 	struct sst_dsp_header header;
- } __packed;
-+
-+struct gain_cell {
-+	struct sst_destination_id dest;
-+	s16 cell_gain_left;
-+	s16 cell_gain_right;
-+	u16 gain_time_constant;
-+} __packed;
-+
-+#define NUM_GAIN_CELLS 1
-+struct sst_cmd_set_gain_dual {
-+	struct sst_dsp_header header;
-+	u16    gain_cell_num;
-+	struct gain_cell cell_gains[NUM_GAIN_CELLS];
-+} __packed;
- struct sst_cmd_set_params {
- 	struct sst_destination_id dst;
- 	u16 command_id;
- 	char params[0];
- } __packed;
-+
-+/**** widget defines *****/
-+
-+struct sst_ids {
-+	u16 location_id;
-+	u16 module_id;
-+	u8  task_id;
-+	u8  format;
-+	u8  reg;
-+	const char *parent_wname;
-+	struct snd_soc_dapm_widget *parent_w;
-+	struct list_head algo_list;
-+	struct list_head gain_list;
-+	const struct sst_pcm_format *pcm_fmt;
-+};
-+enum sst_gain_kcontrol_type {
-+	SST_GAIN_TLV,
-+	SST_GAIN_MUTE,
-+	SST_GAIN_RAMP_DURATION,
-+};
-+
-+struct sst_gain_mixer_control {
-+	bool stereo;
-+	enum sst_gain_kcontrol_type type;
-+	struct sst_gain_value *gain_val;
-+	int max;
-+	int min;
-+	u16 instance_id;
-+	u16 module_id;
-+	u16 pipe_id;
-+	u16 task_id;
-+	char pname[44];
-+	struct snd_soc_dapm_widget *w;
-+};
-+
-+struct sst_gain_value {
-+	u16 ramp_duration;
-+	s16 l_gain;
-+	s16 r_gain;
-+	bool mute;
-+};
-+#define SST_GAIN_VOLUME_DEFAULT		(-1440)
-+#define SST_GAIN_RAMP_DURATION_DEFAULT	5 /* timeconstant */
-+#define SST_GAIN_MUTE_DEFAULT		true
-+
-+#define SST_GAIN_KCONTROL_TLV(xname, xhandler_get, xhandler_put, \
-+			      xmod, xpipe, xinstance, xtask, tlv_array, xgain_val, \
-+			      xmin, xmax, xpname) \
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
-+		  SNDRV_CTL_ELEM_ACCESS_READWRITE, \
-+	.tlv.p = (tlv_array), \
-+	.info = sst_gain_ctl_info,\
-+	.get = xhandler_get, .put = xhandler_put, \
-+	.private_value = (unsigned long)&(struct sst_gain_mixer_control) \
-+	{ .stereo = true, .max = xmax, .min = xmin, .type = SST_GAIN_TLV, \
-+	  .module_id = xmod, .pipe_id = xpipe, .task_id = xtask,\
-+	  .instance_id = xinstance, .gain_val = xgain_val, .pname = xpname}
-+
-+#define SST_GAIN_KCONTROL_INT(xname, xhandler_get, xhandler_put, \
-+			      xmod, xpipe, xinstance, xtask, xtype, xgain_val, \
-+			      xmin, xmax, xpname) \
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = sst_gain_ctl_info, \
-+	.get = xhandler_get, .put = xhandler_put, \
-+	.private_value = (unsigned long)&(struct sst_gain_mixer_control) \
-+	{ .stereo = false, .max = xmax, .min = xmin, .type = xtype, \
-+	  .module_id = xmod, .pipe_id = xpipe, .task_id = xtask,\
-+	  .instance_id = xinstance, .gain_val = xgain_val, .pname =  xpname}
-+
-+#define SST_GAIN_KCONTROL_BOOL(xname, xhandler_get, xhandler_put,\
-+			       xmod, xpipe, xinstance, xtask, xgain_val, xpname) \
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
-+	.info = snd_soc_info_bool_ext, \
-+	.get = xhandler_get, .put = xhandler_put, \
-+	.private_value = (unsigned long)&(struct sst_gain_mixer_control) \
-+	{ .stereo = false, .type = SST_GAIN_MUTE, \
-+	  .module_id = xmod, .pipe_id = xpipe, .task_id = xtask,\
-+	  .instance_id = xinstance, .gain_val = xgain_val, .pname = xpname}
- #define SST_CONTROL_NAME(xpname, xmname, xinstance, xtype) \
- 	xpname " " xmname " " #xinstance " " xtype
- 
- #define SST_COMBO_CONTROL_NAME(xpname, xmname, xinstance, xtype, xsubmodule) \
- 	xpname " " xmname " " #xinstance " " xtype " " xsubmodule
-+
-+/*
-+ * 3 Controls for each Gain module
-+ * e.g.	- pcm0_in Gain 0 Volume
-+ *	- pcm0_in Gain 0 Ramp Delay
-+ *	- pcm0_in Gain 0 Switch
-+ */
-+#define SST_GAIN_KCONTROLS(xpname, xmname, xmin_gain, xmax_gain, xmin_tc, xmax_tc, \
-+			   xhandler_get, xhandler_put, \
-+			   xmod, xpipe, xinstance, xtask, tlv_array, xgain_val) \
-+	{ SST_GAIN_KCONTROL_INT(SST_CONTROL_NAME(xpname, xmname, xinstance, "Ramp Delay"), \
-+		xhandler_get, xhandler_put, xmod, xpipe, xinstance, xtask, SST_GAIN_RAMP_DURATION, \
-+		xgain_val, xmin_tc, xmax_tc, xpname) }, \
-+	{ SST_GAIN_KCONTROL_BOOL(SST_CONTROL_NAME(xpname, xmname, xinstance, "Switch"), \
-+		xhandler_get, xhandler_put, xmod, xpipe, xinstance, xtask, \
-+		xgain_val, xpname) } ,\
-+	{ SST_GAIN_KCONTROL_TLV(SST_CONTROL_NAME(xpname, xmname, xinstance, "Volume"), \
-+		xhandler_get, xhandler_put, xmod, xpipe, xinstance, xtask, tlv_array, \
-+		xgain_val, xmin_gain, xmax_gain, xpname) }
-+
-+#define SST_GAIN_TC_MIN		5
-+#define SST_GAIN_TC_MAX		5000
-+#define SST_GAIN_MIN_VALUE	-1440 /* in 0.1 DB units */
-+#define SST_GAIN_MAX_VALUE	360
-+
- enum sst_algo_kcontrol_type {
- 	SST_ALGO_PARAMS,
- 	SST_ALGO_BYPASS,
+ void sst_set_stream_status(struct sst_runtime_stream *stream, int state);
+ int sst_fill_stream_params(void *substream, const struct sst_data *ctx,
+ 			   struct snd_sst_params *str_params, bool is_compress);
 -- 
 1.7.0.4
