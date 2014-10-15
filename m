@@ -1,21 +1,17 @@
-From: Andrej Falout <andrej@falout.org>
-Subject: Re: [PATCH v6 09/18] ASoC: omap-hdmi-audio: Add
- platfrom device for OMAP HDMI audio support (Jyri Sarha)
-Date: Wed, 15 Oct 2014 21:26:31 +1300
-Message-ID: <CAGzU1+Hw+XOzfZPJwM_8C+ryrfED5qhO00ESoTr55R4bw+6hdg@mail.gmail.com>
-References: <CAGzU1+GE4P1rOaaUt=xpc-Cy2ZU=Oen-Gtpes_ijxVSWyNGDgg@mail.gmail.com>
- <543E2E29.2070405@ti.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sgtl500.txt: Document the required
+	supplies
+Date: Wed, 15 Oct 2014 11:25:22 +0200
+Message-ID: <20141015092522.GW27755@sirena.org.uk>
+References: <1413295862-2613-1-git-send-email-fabio.estevam@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4782763332859688663=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f182.google.com (mail-lb0-f182.google.com
- [209.85.217.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 2694E2604C6
- for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 10:26:32 +0200 (CEST)
-Received: by mail-lb0-f182.google.com with SMTP id z11so570263lbi.41
- for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 01:26:31 -0700 (PDT)
-In-Reply-To: <543E2E29.2070405@ti.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C35142604CC
+ for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 11:25:49 +0200 (CEST)
+In-Reply-To: <1413295862-2613-1-git-send-email-fabio.estevam@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,44 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jyri Sarha <jsarha@ti.com>
+To: Fabio Estevam <fabio.estevam@freescale.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thank you for you reply, Jyri,
 
-Is there any reason, perhaps a hardware limitation, that would make this
-impossible, or is this just by choice?
-
-Eg. if I wanted to, could I implement DSD support on this platform?
-
-Thanks,
-Andrej Falout
+--===============4782763332859688663==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="krZS3EFpRWg3Z7I7"
+Content-Disposition: inline
 
 
-On Wed, Oct 15, 2014 at 9:19 PM, Jyri Sarha <jsarha@ti.com> wrote:
+--krZS3EFpRWg3Z7I7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On 10/15/2014 02:30 AM, Andrej Falout wrote:
->
->> Hi Jyri,
->>
->> Is the audio support for OMAP HDMI supposed to support DSD audio?
->>
->> Eg, on page 6 of http://elinux.org/images/8/8e/HDMI_ELC_mythripk.pdf
->>
->> "Super Audio CD (DSD) support" starting from HDMI version 1.2
->>
->> Thanks,
->>
->> Andrej Falout
->>
->
-> The software support is only for PCM audio* ATM and AFAIK there is no
-> plans to add support any other formats in foreseeable future.
->
-> * 8 chnnel LPCM, 192 kHhz, 24 bit audio
->
-> Best regards,
-> Jyri
->
->
+On Tue, Oct 14, 2014 at 11:11:02AM -0300, Fabio Estevam wrote:
+> sgtl5000 has two required supplies: VDDA and VDDIO and one optional suppl=
+y:
+> VDDD, so document this properly.
+>=20
+> Not passing VDDA and VDDIO prevents the driver to probe successfully.
+
+Applied, thanks.  Note that with current kernels the regulator API
+should assume that most regulators are provided even if not explicitly
+listed in DT.
+
+--krZS3EFpRWg3Z7I7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUPj2BAAoJECTWi3JdVIfQwtYH/2d0yCuNXBOiPA1reI+hIyc2
+GpAOY1znHYH87/MlJ/yBA2yUUaULsrQT0N+Ix6ZqJiw7j4bPl+Xm2n07EPBxc33e
+xf6WghXyoJsgK4wnUtMoksWaRdoSIQhVC3F/amf2zMyiiUy/82i86UJiXaSQsh3t
+aBX+YvcaHlPh1V7HNEjID0D5nikVzv3gLWtatk5BTA2XvwEXTpxsY2WJFTNH+7ww
+I5cKhns3gycQv3ffboXuEZOpUXVk7rECcg6Fule4XKjj9Ojiv1x1J8MvTmajhm3X
+DeQ8AZNHUA1Z+maPFlRGYztXA2TlzsdFEJ840UvpClY4XKS+ylJTAtvUWsNR/a8=
+=Rfds
+-----END PGP SIGNATURE-----
+
+--krZS3EFpRWg3Z7I7--
+
+--===============4782763332859688663==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4782763332859688663==--
