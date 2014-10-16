@@ -1,94 +1,183 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tegra: Add platform driver for
-	rt5677 audio codec
-Date: Thu, 16 Oct 2014 11:04:54 +0200
-Message-ID: <20141016090454.GB6678@sirena.org.uk>
-References: <1413407742-19112-1-git-send-email-anatol.pomozov@gmail.com>
- <20141016073846.GA724@sirena.org.uk>
- <CALj_zD4-8TWKvX9vebTM5j__o3NgjjfPO+7ZvjPUzFX3dO10sA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2220348806458970390=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 653BC2614EE
- for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 11:05:21 +0200 (CEST)
-In-Reply-To: <CALj_zD4-8TWKvX9vebTM5j__o3NgjjfPO+7ZvjPUzFX3dO10sA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomazau <anatol@google.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, Stephen Warren <swarren@nvidia.com>, Anatol Pomozov <anatol.pomozov@gmail.com>, Bard Liao <bardliao@realtek.com>, Laurent Dahan <ldahan@nvidia.com>, Dylan Reid <dgreid@google.com>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: [PATCH v2 01/53] dmaengine: Make the destination abbreviation coherent
+Date: Thu, 16 Oct 2014 12:17:00 +0200
+Message-ID: <1413454672-27400-2-git-send-email-maxime.ripard@free-electrons.com>
+References: <1413454672-27400-1-git-send-email-maxime.ripard@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1413454672-27400-1-git-send-email-maxime.ripard@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: dmaengine@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, =?UTF-8?q?Antoine=20T=C3=A9nart?= <antoine@free-electrons.com>, lars@metafoo.de, Russell King <linux@arm.linux.org.uk>, Maxime Ripard <maxime.ripard@free-electrons.com>, Stephen Warren <swarren@wwwdotorg.org>, Dan Williams <dan.j.williams@intel.com>, Barry Song <baohua@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-rpi-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The dmaengine header abbreviates destination as at least two different strings.
+Make a coherent use of a single one.
 
---===============2220348806458970390==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8GpibOaaTibBMecb"
-Content-Disposition: inline
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+---
+ drivers/dma/bcm2835-dma.c             |  2 +-
+ drivers/dma/edma.c                    |  2 +-
+ drivers/dma/fsl-edma.c                |  2 +-
+ drivers/dma/nbpfaxi.c                 |  2 +-
+ drivers/dma/omap-dma.c                |  2 +-
+ drivers/dma/pl330.c                   |  2 +-
+ drivers/dma/sirf-dma.c                |  2 +-
+ include/linux/dmaengine.h             | 12 ++++++------
+ sound/soc/soc-generic-dmaengine-pcm.c |  2 +-
+ 9 files changed, 14 insertions(+), 14 deletions(-)
 
-
---8GpibOaaTibBMecb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Oct 16, 2014 at 01:59:58AM -0700, Anatol Pomazau wrote:
-> On Thu, Oct 16, 2014 at 12:38 AM, Mark Brown <broonie@kernel.org> wrote:
-> > On Wed, Oct 15, 2014 at 02:15:42PM -0700, Anatol Pomozov wrote:
-
-> >> +Required properties:
-> >> +- nvidia,speaker-codec: The phandle of the board specific speaker amplifier.
-> >> +  This binding assumes that AIF2 on the audio CODEC is connected to this
-> >> +  amplifier.
-
-> > To repeat my comment on the previous version:
-
-> > | This isn't as generic as all that, it relies on the specific speaker
-> > | driver.  I'd suggest either just saying it's board specific or making
-> > | the speaker CODEC optional.
-
-> > Please don't ignore review comments.
-
-> In the description of the dts property I said that its board specific
-> amp. If it not what you want then I do not know what "saying it's
-> board specific" means. Could you please provide examples of "board
-> specific" properties?
-
-The *driver* is board specific.  Obviously all DT properties in a given
-DT are specific to the particular board.  This driver claims to be a
-generic driver for Tegra systems with this CODEC but it has a
-non-optional requirement for an external speaker driver driver to be
-specified and hooked up in that particular way.
-
---8GpibOaaTibBMecb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUP4o1AAoJECTWi3JdVIfQlBAH/jJq6K4UfiQPpeSDpgIVnkPy
-ipriVgMswpBxqGMHQ9DiCknoIftcuWgzH9fUjy1UeUwbSYTUBkAksmSXeML/mX8Y
-/VmJWqzvRNNQTCTf2fjSwXdXGMMkmRyWEpnjLckIFv7/GWTIr8HK6R40chKLLwHZ
-kx+IgYnwmovF7wz1hWzWvVYRWJ6uJlRM8KWtGEou9NZopqBgICafbnBm/IA074va
-dPZdHgNOVGYyOSuNgc1KHLFChYriqw9GYNadZmZwu3LvlSXFgbCDywlzJ1o5w3Nd
-nP0JaBhCUMa6OoLoPgq0IlZPaKKSMGKNEACP5g8bhOf2nvTKlF4GNjtMfN6mpeI=
-=rVho
------END PGP SIGNATURE-----
-
---8GpibOaaTibBMecb--
-
---===============2220348806458970390==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2220348806458970390==--
+diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
+index 68007974961a..8a6a9c27fe83 100644
+--- a/drivers/dma/bcm2835-dma.c
++++ b/drivers/dma/bcm2835-dma.c
+@@ -571,7 +571,7 @@ static int bcm2835_dma_device_slave_caps(struct dma_chan *dchan,
+ 	struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
+-	caps->dstn_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
++	caps->dst_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = false;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/edma.c b/drivers/dma/edma.c
+index 7b65633f495e..b3d641881d9d 100644
+--- a/drivers/dma/edma.c
++++ b/drivers/dma/edma.c
+@@ -998,7 +998,7 @@ static int edma_dma_device_slave_caps(struct dma_chan *dchan,
+ 				      struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = EDMA_DMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = EDMA_DMA_BUSWIDTHS;
++	caps->dst_addr_widths = EDMA_DMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = true;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/fsl-edma.c b/drivers/dma/fsl-edma.c
+index 3c5711d5fe97..13df85a16438 100644
+--- a/drivers/dma/fsl-edma.c
++++ b/drivers/dma/fsl-edma.c
+@@ -781,7 +781,7 @@ static int fsl_dma_device_slave_caps(struct dma_chan *dchan,
+ 		struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = FSL_EDMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = FSL_EDMA_BUSWIDTHS;
++	caps->dst_addr_widths = FSL_EDMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = true;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/nbpfaxi.c b/drivers/dma/nbpfaxi.c
+index 5aeada56a442..b4a61ccbb443 100644
+--- a/drivers/dma/nbpfaxi.c
++++ b/drivers/dma/nbpfaxi.c
+@@ -1076,7 +1076,7 @@ static int nbpf_slave_caps(struct dma_chan *dchan,
+ 			   struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = NBPF_DMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = NBPF_DMA_BUSWIDTHS;
++	caps->dst_addr_widths = NBPF_DMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = false;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/omap-dma.c b/drivers/dma/omap-dma.c
+index 4cf7d9a950d7..51dee6636a37 100644
+--- a/drivers/dma/omap-dma.c
++++ b/drivers/dma/omap-dma.c
+@@ -1095,7 +1095,7 @@ static int omap_dma_device_slave_caps(struct dma_chan *dchan,
+ 				      struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = OMAP_DMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = OMAP_DMA_BUSWIDTHS;
++	caps->dst_addr_widths = OMAP_DMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = true;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index d5149aacd2fe..8904891ed5d5 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -2583,7 +2583,7 @@ static int pl330_dma_device_slave_caps(struct dma_chan *dchan,
+ 	struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = PL330_DMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = PL330_DMA_BUSWIDTHS;
++	caps->dst_addr_widths = PL330_DMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = false;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/sirf-dma.c b/drivers/dma/sirf-dma.c
+index aac03ab10c54..149d7fddfa75 100644
+--- a/drivers/dma/sirf-dma.c
++++ b/drivers/dma/sirf-dma.c
+@@ -652,7 +652,7 @@ static int sirfsoc_dma_device_slave_caps(struct dma_chan *dchan,
+ 	struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = SIRFSOC_DMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = SIRFSOC_DMA_BUSWIDTHS;
++	caps->dst_addr_widths = SIRFSOC_DMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = true;
+ 	caps->cmd_terminate = true;
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index 1f9e642c66ad..f4b71ce1a0a6 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -388,7 +388,7 @@ enum dma_residue_granularity {
+ /* struct dma_slave_caps - expose capabilities of a slave channel only
+  *
+  * @src_addr_widths: bit mask of src addr widths the channel supports
+- * @dstn_addr_widths: bit mask of dstn addr widths the channel supports
++ * @dst_addr_widths: bit mask of dstn addr widths the channel supports
+  * @directions: bit mask of slave direction the channel supported
+  * 	since the enum dma_transfer_direction is not defined as bits for each
+  * 	type of direction, the dma controller should fill (1 << <TYPE>) and same
+@@ -399,7 +399,7 @@ enum dma_residue_granularity {
+  */
+ struct dma_slave_caps {
+ 	u32 src_addr_widths;
+-	u32 dstn_addr_widths;
++	u32 dst_addr_widths;
+ 	u32 directions;
+ 	bool cmd_pause;
+ 	bool cmd_terminate;
+@@ -639,10 +639,10 @@ struct dma_device {
+ 	void (*device_free_chan_resources)(struct dma_chan *chan);
+ 
+ 	struct dma_async_tx_descriptor *(*device_prep_dma_memcpy)(
+-		struct dma_chan *chan, dma_addr_t dest, dma_addr_t src,
++		struct dma_chan *chan, dma_addr_t dst, dma_addr_t src,
+ 		size_t len, unsigned long flags);
+ 	struct dma_async_tx_descriptor *(*device_prep_dma_xor)(
+-		struct dma_chan *chan, dma_addr_t dest, dma_addr_t *src,
++		struct dma_chan *chan, dma_addr_t dst, dma_addr_t *src,
+ 		unsigned int src_cnt, size_t len, unsigned long flags);
+ 	struct dma_async_tx_descriptor *(*device_prep_dma_xor_val)(
+ 		struct dma_chan *chan, dma_addr_t *src,	unsigned int src_cnt,
+@@ -935,11 +935,11 @@ async_dma_find_channel(enum dma_transaction_type type)
+ #endif /* CONFIG_ASYNC_TX_DMA */
+ 
+ dma_cookie_t dma_async_memcpy_buf_to_buf(struct dma_chan *chan,
+-	void *dest, void *src, size_t len);
++	void *dst, void *src, size_t len);
+ dma_cookie_t dma_async_memcpy_buf_to_pg(struct dma_chan *chan,
+ 	struct page *page, unsigned int offset, void *kdata, size_t len);
+ dma_cookie_t dma_async_memcpy_pg_to_pg(struct dma_chan *chan,
+-	struct page *dest_pg, unsigned int dest_off, struct page *src_pg,
++	struct page *dst_pg, unsigned int dst_off, struct page *src_pg,
+ 	unsigned int src_off, size_t len);
+ void dma_async_tx_descriptor_init(struct dma_async_tx_descriptor *tx,
+ 	struct dma_chan *chan);
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 6307f85e871b..f4661be7de1d 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -151,7 +151,7 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
+ 			hw.info |= SNDRV_PCM_INFO_BATCH;
+ 
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			addr_widths = dma_caps.dstn_addr_widths;
++			addr_widths = dma_caps.dst_addr_widths;
+ 		else
+ 			addr_widths = dma_caps.src_addr_widths;
+ 	}
+-- 
+2.1.1
