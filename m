@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5677: Print more information if
- setting DAI clock failed
-Date: Thu, 16 Oct 2014 09:47:03 +0200
-Message-ID: <20141016074703.GC724@sirena.org.uk>
-References: <1413406532-7286-1-git-send-email-anatol.pomozov@gmail.com>
+Subject: Re: [PATCH v10 0/5] Add mrfld DSP topology and widgets
+Date: Thu, 16 Oct 2014 10:24:28 +0200
+Message-ID: <20141016082428.GD724@sirena.org.uk>
+References: <1413384180-12963-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5718684907489223481=="
+Content-Type: multipart/mixed; boundary="===============3369904866284106084=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D17A26071F
- for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 09:47:25 +0200 (CEST)
-In-Reply-To: <1413406532-7286-1-git-send-email-anatol.pomozov@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 538CE26147A
+ for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 10:25:08 +0200 (CEST)
+In-Reply-To: <1413384180-12963-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anatol Pomozov <anatol.pomozov@gmail.com>
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5718684907489223481==
+--===============3369904866284106084==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Sr1nOIr3CvdE5hEN"
+	protocol="application/pgp-signature"; boundary="yudcn1FV7Hsu/q59"
 Content-Disposition: inline
 
 
---Sr1nOIr3CvdE5hEN
+--yudcn1FV7Hsu/q59
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Oct 15, 2014 at 01:55:32PM -0700, Anatol Pomozov wrote:
-> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+On Wed, Oct 15, 2014 at 08:12:55PM +0530, Vinod Koul wrote:
+> This patch series adds DPCM and DAPM widgets to handle DSP topology in the
+> SST platform driver for merrifield.
 
-Applied, thanks.
+Applied all, thanks.
 
---Sr1nOIr3CvdE5hEN
+--yudcn1FV7Hsu/q59
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUP3f2AAoJECTWi3JdVIfQ1g8H/1RbIB9iS/C/7IjsVSdO0neb
-Pn+/GAjO9JTLq7tL/Tu5WT1hyu0UewoaDFXf7OGCAcJJKA1znrnSJeAZPdCpjCQM
-OqcQCtNG4VPD6BrHmgYQqn0o2Xmvvcmc1AkwhAILKJpakHfjb6ld9Z9hmY8ZtCPM
-s6rYMxe4/JA45PHh2ytaL0KsCtAPKtWK5WWBjo/IgtxTKGF8RvEzKk3wQQSgCCNw
-rUh5pyzxIkC4PR/dQMPOY9lOKXEDyFchlL7jmIzT6ms6xq/wEUHcSMMXUsPtW08Z
-0+0/cm9Fo5HT7eJ7zXI5dGvm1r63KP1LR9I99eR4U70GSlDoHJpiPjv4P2Jw2tI=
-=Khun
+iQEcBAEBAgAGBQJUP4C7AAoJECTWi3JdVIfQC4kH/jeiqCf6O8e3F3VpC1dpxrtH
+fCbZmfQkKznzIxpYzIHbKC/vm9RzHCIGG0O+HXKYVBWJ7fQwDi1jf7Txq3VLAvI3
+Ph4bq0HZIMd5tOt1JGVtvi+kpzreUKR0g2TVJxaGhOgJBMs3JrTqHf9B0JHdtj1y
+5+5KwLjfX+nYPylXYx9xpBYFdDvHP/JsBRJM/r2tHUDl7bR3SkqFDPhbnF7TPHkl
+vpTIGq6T1upnfIG9/DgGqJLWhqSewUcrFZ8JNaZ++CYnItlt1JcTVaYXviPzRTfQ
+w2OiySD9pb1EhdsVoCPV2n+5jFQ0Erlqa9Kj8miuNah+QQ93+5HpcALCpF/H4ME=
+=OfIN
 -----END PGP SIGNATURE-----
 
---Sr1nOIr3CvdE5hEN--
+--yudcn1FV7Hsu/q59--
 
---===============5718684907489223481==
+--===============3369904866284106084==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5718684907489223481==--
+--===============3369904866284106084==--
