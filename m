@@ -1,15 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v4 3/7] ASoC: Intel: sst - add pcm ops handling
-Date: Thu, 16 Oct 2014 20:00:15 +0530
-Message-ID: <1413469819-18775-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v4 5/7] ASoC: Intel: sst: add stream operations
+Date: Thu, 16 Oct 2014 20:00:17 +0530
+Message-ID: <1413469819-18775-6-git-send-email-vinod.koul@intel.com>
 References: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id AF1D4264F22
- for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 17:06:51 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 36A70261B0E
+ for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 17:06:55 +0200 (CEST)
 In-Reply-To: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,29 +24,30 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds low level IPC handling for pcm stream operations
+This patch adds pcm and compressed stream control operations.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/sst/sst_drv_interface.c |  403 +++++++++++++++++++++++++++++++
- 1 files changed, 403 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/intel/sst/sst_drv_interface.c
+ sound/soc/intel/sst/sst_stream.c |  437 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 437 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/intel/sst/sst_stream.c
 
-diff --git a/sound/soc/intel/sst/sst_drv_interface.c b/sound/soc/intel/sst/sst_drv_interface.c
+diff --git a/sound/soc/intel/sst/sst_stream.c b/sound/soc/intel/sst/sst_stream.c
 new file mode 100644
-index 0000000..aadb0db
+index 0000000..dae2a41
 --- /dev/null
-+++ b/sound/soc/intel/sst/sst_drv_interface.c
-@@ -0,0 +1,403 @@
++++ b/sound/soc/intel/sst/sst_stream.c
+@@ -0,0 +1,437 @@
 +/*
-+ *  sst_drv_interface.c - Intel SST Driver for audio engine
++ *  sst_stream.c - Intel SST Driver for audio engine
 + *
 + *  Copyright (C) 2008-14 Intel Corp
 + *  Authors:	Vinod Koul <vinod.koul@intel.com>
 + *		Harsha Priya <priya.harsha@intel.com>
-+ *		Dharageswari R <dharageswari.r@intel.com)
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *		Dharageswari R <dharageswari.r@intel.com>
++ *		KP Jeeja <jeeja.kp@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
 + *  This program is free software; you can redistribute it and/or modify
 + *  it under the terms of the GNU General Public License as published by
@@ -59,13 +60,11 @@ index 0000000..aadb0db
 + *
 + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + */
-+#include <linux/delay.h>
 +#include <linux/pci.h>
-+#include <linux/fs.h>
 +#include <linux/firmware.h>
++#include <linux/sched.h>
++#include <linux/delay.h>
 +#include <linux/pm_runtime.h>
-+#include <linux/pm_qos.h>
-+#include <linux/math64.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/soc.h>
@@ -75,372 +74,407 @@ index 0000000..aadb0db
 +#include "sst.h"
 +#include "../sst-dsp.h"
 +
-+
-+
-+#define NUM_CODEC 2
-+#define MIN_FRAGMENT 2
-+#define MAX_FRAGMENT 4
-+#define MIN_FRAGMENT_SIZE (50 * 1024)
-+#define MAX_FRAGMENT_SIZE (1024 * 1024)
-+#define SST_GET_BYTES_PER_SAMPLE(pcm_wd_sz)  (((pcm_wd_sz + 15) >> 4) << 1)
-+
-+int free_stream_context(struct intel_sst_drv *ctx, unsigned int str_id)
++int sst_alloc_stream_mrfld(struct intel_sst_drv *sst_drv_ctx, void *params)
 +{
-+	struct stream_info *stream;
-+	int ret = 0;
-+
-+	stream = get_stream_info(ctx, str_id);
-+	if (stream) {
-+		/* str_id is valid, so stream is alloacted */
-+		ret = sst_free_stream(ctx, str_id);
-+		if (ret)
-+			sst_clean_stream(&ctx->streams[str_id]);
-+		return ret;
-+	}
-+	return ret;
-+}
-+
-+int sst_get_stream_allocated(struct intel_sst_drv *ctx,
-+	struct snd_sst_params *str_param,
-+	struct snd_sst_lib_download **lib_dnld)
-+{
-+	int retval;
-+
-+	retval = ctx->ops->alloc_stream(ctx, str_param);
-+	if (retval > 0)
-+		dev_dbg(ctx->dev, "Stream allocated %d\n", retval);
-+	return retval;
-+
-+}
-+
-+/*
-+ * sst_get_sfreq - this function returns the frequency of the stream
-+ *
-+ * @str_param : stream params
-+ */
-+int sst_get_sfreq(struct snd_sst_params *str_param)
-+{
-+	switch (str_param->codec) {
-+	case SST_CODEC_TYPE_PCM:
-+		return str_param->sparams.uc.pcm_params.sfreq;
-+	case SST_CODEC_TYPE_AAC:
-+		return str_param->sparams.uc.aac_params.externalsr;
-+	case SST_CODEC_TYPE_MP3:
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+/*
-+ * sst_get_sfreq - this function returns the frequency of the stream
-+ *
-+ * @str_param : stream params
-+ */
-+int sst_get_num_channel(struct snd_sst_params *str_param)
-+{
-+	switch (str_param->codec) {
-+	case SST_CODEC_TYPE_PCM:
-+		return str_param->sparams.uc.pcm_params.num_chan;
-+	case SST_CODEC_TYPE_MP3:
-+		return str_param->sparams.uc.mp3_params.num_chan;
-+	case SST_CODEC_TYPE_AAC:
-+		return str_param->sparams.uc.aac_params.num_chan;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+/*
-+ * sst_get_stream - this function prepares for stream allocation
-+ *
-+ * @str_param : stream param
-+ */
-+int sst_get_stream(struct intel_sst_drv *ctx,
-+			struct snd_sst_params *str_param)
-+{
-+	int retval;
-+	struct stream_info *str_info;
-+
-+	/* stream is not allocated, we are allocating */
-+	retval = ctx->ops->alloc_stream(ctx, str_param);
-+	if (retval <= 0) {
-+		return -EIO;
-+	}
-+	/* store sampling freq */
-+	str_info = &ctx->streams[retval];
-+	str_info->sfreq = sst_get_sfreq(str_param);
-+
-+	return retval;
-+}
-+
-+static int sst_power_control(struct device *dev, bool state)
-+{
-+	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
-+
-+	dev_dbg(ctx->dev, "state:%d", state);
-+	if (state == true)
-+		return pm_runtime_get_sync(dev);
-+	else
-+		return sst_pm_runtime_put(ctx);
-+}
-+
-+/*
-+ * sst_open_pcm_stream - Open PCM interface
-+ *
-+ * @str_param: parameters of pcm stream
-+ *
-+ * This function is called by MID sound card driver to open
-+ * a new pcm interface
-+ */
-+static int sst_open_pcm_stream(struct device *dev,
-+		struct snd_sst_params *str_param)
-+{
-+	int retval;
-+	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
-+
-+	if (!str_param)
-+		return -EINVAL;
-+
-+	retval = pm_runtime_get_sync(ctx->dev);
-+	if (retval < 0)
-+		return retval;
-+	retval = sst_get_stream(ctx, str_param);
-+	if (retval > 0) {
-+		ctx->stream_cnt++;
-+	} else {
-+		dev_err(ctx->dev, "sst_get_stream returned err %d\n", retval);
-+		sst_pm_runtime_put(ctx);
-+	}
-+
-+	return retval;
-+}
-+
-+/*
-+ * sst_close_pcm_stream - Close PCM interface
-+ *
-+ * @str_id: stream id to be closed
-+ *
-+ * This function is called by MID sound card driver to close
-+ * an existing pcm interface
-+ */
-+static int sst_close_pcm_stream(struct device *dev, unsigned int str_id)
-+{
-+	struct stream_info *stream;
-+	int retval = 0;
-+	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
-+
-+	stream = get_stream_info(ctx, str_id);
-+	if (!stream) {
-+		dev_err(ctx->dev, "stream info is NULL for str %d!!!\n", str_id);
-+		return -EINVAL;
-+	}
-+
-+	if (stream->status == STREAM_RESET) {
-+		/* silently fail here as we have cleaned the stream earlier */
-+		dev_dbg(ctx->dev, "stream in reset state...\n");
-+
-+		retval = 0;
-+		goto put;
-+	}
-+
-+	retval = free_stream_context(ctx, str_id);
-+put:
-+	stream->pcm_substream = NULL;
-+	stream->status = STREAM_UN_INIT;
-+	stream->period_elapsed = NULL;
-+	ctx->stream_cnt--;
-+
-+	sst_pm_runtime_put(ctx);
-+
-+	dev_dbg(ctx->dev, "Exit\n");
-+	return 0;
-+}
-+
-+static inline int sst_calc_tstamp(struct intel_sst_drv *ctx,
-+		struct pcm_stream_info *info,
-+		struct snd_pcm_substream *substream,
-+		struct snd_sst_tstamp *fw_tstamp)
-+{
-+	size_t delay_bytes, delay_frames;
-+	size_t buffer_sz;
-+	u32 pointer_bytes, pointer_samples;
-+
-+	dev_dbg(ctx->dev, "mrfld ring_buffer_counter %llu in bytes\n",
-+			fw_tstamp->ring_buffer_counter);
-+	dev_dbg(ctx->dev, "mrfld hardware_counter %llu in bytes\n",
-+			 fw_tstamp->hardware_counter);
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		delay_bytes = (size_t) (fw_tstamp->ring_buffer_counter -
-+					fw_tstamp->hardware_counter);
-+	else
-+		delay_bytes = (size_t) (fw_tstamp->hardware_counter -
-+					fw_tstamp->ring_buffer_counter);
-+	delay_frames = bytes_to_frames(substream->runtime, delay_bytes);
-+	buffer_sz = snd_pcm_lib_buffer_bytes(substream);
-+	div_u64_rem(fw_tstamp->ring_buffer_counter, buffer_sz, &pointer_bytes);
-+	pointer_samples = bytes_to_samples(substream->runtime, pointer_bytes);
-+
-+	dev_dbg(ctx->dev, "pcm delay %zu in bytes\n", delay_bytes);
-+
-+	info->buffer_ptr = pointer_samples / substream->runtime->channels;
-+
-+	info->pcm_delay = delay_frames / substream->runtime->channels;
-+	dev_dbg(ctx->dev, "buffer ptr %llu pcm_delay rep: %llu\n",
-+			info->buffer_ptr, info->pcm_delay);
-+	return 0;
-+}
-+
-+static int sst_read_timestamp(struct device *dev, struct pcm_stream_info *info)
-+{
-+	struct stream_info *stream;
-+	struct snd_pcm_substream *substream;
++	struct snd_sst_alloc_mrfld alloc_param;
++	struct snd_sst_params *str_params;
 +	struct snd_sst_tstamp fw_tstamp;
-+	unsigned int str_id;
-+	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++	struct stream_info *str_info;
++	struct snd_sst_alloc_response *response;
++	unsigned int str_id, pipe_id, task_id;
++	int i, num_ch, ret = 0;
++	void *data = NULL;
 +
-+	str_id = info->str_id;
-+	stream = get_stream_info(ctx, str_id);
-+	if (!stream)
++	dev_dbg(sst_drv_ctx->dev, "Enter\n");
++	BUG_ON(!params);
++
++	str_params = (struct snd_sst_params *)params;
++	memset(&alloc_param, 0, sizeof(alloc_param));
++	alloc_param.operation = str_params->ops;
++	alloc_param.codec_type = str_params->codec;
++	alloc_param.sg_count = str_params->aparams.sg_count;
++	alloc_param.ring_buf_info[0].addr =
++		str_params->aparams.ring_buf_info[0].addr;
++	alloc_param.ring_buf_info[0].size =
++		str_params->aparams.ring_buf_info[0].size;
++	alloc_param.frag_size = str_params->aparams.frag_size;
++
++	memcpy(&alloc_param.codec_params, &str_params->sparams,
++			sizeof(struct snd_sst_stream_params));
++
++	/*
++	 * fill channel map params for multichannel support.
++	 * Ideally channel map should be received from upper layers
++	 * for multichannel support.
++	 * Currently hardcoding as per FW reqm.
++	 */
++	num_ch = sst_get_num_channel(str_params);
++	for (i = 0; i < 8; i++) {
++		if (i < num_ch)
++			alloc_param.codec_params.uc.pcm_params.channel_map[i] = i;
++		else
++			alloc_param.codec_params.uc.pcm_params.channel_map[i] = 0xFF;
++	}
++
++	str_id = str_params->stream_id;
++	str_info = get_stream_info(sst_drv_ctx, str_id);
++	if (str_info == NULL) {
++		dev_err(sst_drv_ctx->dev, "get stream info returned null\n");
 +		return -EINVAL;
++	}
 +
-+	if (!stream->pcm_substream)
-+		return -EINVAL;
-+	substream = stream->pcm_substream;
++	pipe_id = str_params->device_type;
++	task_id = str_params->task;
++	sst_drv_ctx->streams[str_id].pipe_id = pipe_id;
++	sst_drv_ctx->streams[str_id].task_id = task_id;
++	sst_drv_ctx->streams[str_id].num_ch = num_ch;
 +
-+	memcpy_fromio(&fw_tstamp,
-+		((void *)(ctx->mailbox + ctx->tstamp)
-+			+ (str_id * sizeof(fw_tstamp))),
-+		sizeof(fw_tstamp));
-+	return sst_calc_tstamp(ctx, info, substream, &fw_tstamp);
++	if (sst_drv_ctx->info.lpe_viewpt_rqd)
++		alloc_param.ts = sst_drv_ctx->info.mailbox_start +
++			sst_drv_ctx->tstamp + (str_id * sizeof(fw_tstamp));
++	else
++		alloc_param.ts = sst_drv_ctx->mailbox_add +
++			sst_drv_ctx->tstamp + (str_id * sizeof(fw_tstamp));
++
++	dev_dbg(sst_drv_ctx->dev, "alloc tstamp location = 0x%x\n",
++			alloc_param.ts);
++	dev_dbg(sst_drv_ctx->dev, "assigned pipe id 0x%x to task %d\n",
++			pipe_id, task_id);
++
++	/* allocate device type context */
++	sst_init_stream(&sst_drv_ctx->streams[str_id], alloc_param.codec_type,
++			str_id, alloc_param.operation, 0);
++
++	dev_info(sst_drv_ctx->dev, "Alloc for str %d pipe %#x\n",
++			str_id, pipe_id);
++	ret = sst_prepare_and_post_msg(sst_drv_ctx, task_id, IPC_CMD,
++			IPC_IA_ALLOC_STREAM_MRFLD, pipe_id, sizeof(alloc_param),
++			&alloc_param, data, true, true, false, true);
++
++	if (ret < 0) {
++		dev_err(sst_drv_ctx->dev, "FW alloc failed ret %d\n", ret);
++		/* alloc failed, so reset the state to uninit */
++		str_info->status = STREAM_UN_INIT;
++		str_id = ret;
++	} else if (data) {
++		response = (struct snd_sst_alloc_response *)data;
++		ret = response->str_type.result;
++		if (!ret)
++			goto out;
++		dev_err(sst_drv_ctx->dev, "FW alloc failed ret %d\n", ret);
++		if (ret == SST_ERR_STREAM_IN_USE) {
++			dev_err(sst_drv_ctx->dev,
++				"FW not in clean state, send free for:%d\n", str_id);
++			sst_free_stream(sst_drv_ctx, str_id);
++		}
++		str_id = -ret;
++	}
++out:
++	kfree(data);
++	return str_id;
 +}
 +
-+static int sst_stream_start(struct device *dev, int str_id)
++/**
++* sst_start_stream - Send msg for a starting stream
++* @str_id:	 stream ID
++*
++* This function is called by any function which wants to start
++* a stream.
++*/
++int sst_start_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
 +{
++	int retval = 0;
 +	struct stream_info *str_info;
-+	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++	u16 data = 0;
 +
-+	if (ctx->sst_state != SST_FW_RUNNING)
-+		return 0;
-+	str_info = get_stream_info(ctx, str_id);
++	dev_dbg(sst_drv_ctx->dev, "sst_start_stream for %d\n", str_id);
++	str_info = get_stream_info(sst_drv_ctx, str_id);
 +	if (!str_info)
 +		return -EINVAL;
-+	str_info->prev = str_info->status;
-+	str_info->status = STREAM_RUNNING;
-+	sst_start_stream(ctx, str_id);
++	if (str_info->status != STREAM_RUNNING)
++		return -EBADRQC;
 +
-+	return 0;
++	retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id,
++			IPC_CMD, IPC_IA_START_STREAM_MRFLD, str_info->pipe_id,
++			sizeof(u16), &data, NULL, true, true, true, false);
++
++	return retval;
 +}
 +
-+static int sst_stream_drop(struct device *dev, int str_id)
-+{
-+	struct stream_info *str_info;
-+	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
-+
-+	if (ctx->sst_state != SST_FW_RUNNING)
-+		return 0;
-+
-+	str_info = get_stream_info(ctx, str_id);
-+	if (!str_info)
-+		return -EINVAL;
-+	str_info->prev = STREAM_UN_INIT;
-+	str_info->status = STREAM_INIT;
-+	return sst_drop_stream(ctx, str_id);
-+}
-+
-+static int sst_stream_init(struct device *dev, struct pcm_stream_info *str_info)
-+{
-+	int str_id = 0;
-+	struct stream_info *stream;
-+	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
-+
-+	str_id = str_info->str_id;
-+
-+	if (ctx->sst_state != SST_FW_RUNNING)
-+		return 0;
-+
-+	stream = get_stream_info(ctx, str_id);
-+	if (!stream)
-+		return -EINVAL;
-+
-+	dev_dbg(ctx->dev, "setting the period ptrs\n");
-+	stream->pcm_substream = str_info->arg;
-+	stream->period_elapsed = str_info->period_elapsed;
-+	stream->sfreq = str_info->sfreq;
-+	stream->prev = stream->status;
-+	stream->status = STREAM_INIT;
-+	dev_dbg(ctx->dev,
-+		"pcm_substream %p, period_elapsed %p, sfreq %d, status %d\n",
-+		stream->pcm_substream, stream->period_elapsed,
-+		stream->sfreq, stream->status);
-+
-+	return 0;
-+}
-+
-+/*
-+ * sst_set_byte_stream - Set generic params
-+ *
-+ * @cmd: control cmd to be set
-+ * @arg: command argument
-+ *
-+ * This function is called by MID sound card driver to configure
-+ * SST runtime params.
-+ */
-+static int sst_send_byte_stream(struct device *dev,
++int sst_send_byte_stream_mrfld(struct intel_sst_drv *sst_drv_ctx,
 +		struct snd_sst_bytes_v2 *bytes)
-+{
-+	int ret_val = 0;
-+	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++{	struct ipc_post *msg = NULL;
++	u32 length;
++	int pvt_id, ret = 0;
++	struct sst_block *block = NULL;
 +
-+	if (NULL == bytes)
-+		return -EINVAL;
-+	ret_val = pm_runtime_get_sync(ctx->dev);
-+	if (ret_val < 0)
-+		return ret_val;
++	dev_dbg(sst_drv_ctx->dev,
++		"type:%u ipc_msg:%u block:%u task_id:%u pipe: %#x length:%#x\n",
++		bytes->type, bytes->ipc_msg, bytes->block, bytes->task_id,
++		bytes->pipe_id, bytes->len);
 +
-+	ret_val = sst_send_byte_stream_mrfld(ctx, bytes);
-+	sst_pm_runtime_put(ctx);
++	if (sst_create_ipc_msg(&msg, true))
++		return -ENOMEM;
 +
-+	return ret_val;
++	pvt_id = sst_assign_pvt_id(sst_drv_ctx);
++	sst_fill_header_mrfld(&msg->mrfld_header, bytes->ipc_msg,
++			bytes->task_id, 1, pvt_id);
++	msg->mrfld_header.p.header_high.part.res_rqd = bytes->block;
++	length = bytes->len;
++	msg->mrfld_header.p.header_low_payload = length;
++	dev_dbg(sst_drv_ctx->dev, "length is %d\n", length);
++	memcpy(msg->mailbox_data, &bytes->bytes, bytes->len);
++	if (bytes->block) {
++		block = sst_create_block(sst_drv_ctx, bytes->ipc_msg, pvt_id);
++		if (block == NULL) {
++			kfree(msg);
++			ret = -ENOMEM;
++			goto out;
++		}
++	}
++
++	sst_add_to_dispatch_list_and_post(sst_drv_ctx, msg);
++	dev_dbg(sst_drv_ctx->dev, "msg->mrfld_header.p.header_low_payload:%d",
++			msg->mrfld_header.p.header_low_payload);
++
++	if (bytes->block) {
++		ret = sst_wait_timeout(sst_drv_ctx, block);
++		if (ret) {
++			dev_err(sst_drv_ctx->dev, "fw returned err %d\n", ret);
++			sst_free_block(sst_drv_ctx, block);
++			goto out;
++		}
++	}
++	if (bytes->type == SND_SST_BYTES_GET) {
++		/*
++		 * copy the reply and send back
++		 * we need to update only sz and payload
++		 */
++		if (bytes->block) {
++			unsigned char *r = block->data;
++
++			dev_dbg(sst_drv_ctx->dev, "read back %d bytes",
++					bytes->len);
++			memcpy(bytes->bytes, r, bytes->len);
++		}
++	}
++	if (bytes->block)
++		sst_free_block(sst_drv_ctx, block);
++out:
++	test_and_clear_bit(pvt_id, &sst_drv_ctx->pvt_id);
++	return 0;
 +}
-+
-+static struct sst_ops pcm_ops = {
-+	.open = sst_open_pcm_stream,
-+	.stream_init = sst_stream_init,
-+	.stream_start = sst_stream_start,
-+	.stream_drop = sst_stream_drop,
-+	.stream_read_tstamp = sst_read_timestamp,
-+	.send_byte_stream = sst_send_byte_stream,
-+	.close = sst_close_pcm_stream,
-+	.power = sst_power_control,
-+};
-+
-+static struct sst_device sst_dsp_device = {
-+	.name = "Intel(R) SST LPE",
-+	.dev = NULL,
-+	.ops = &pcm_ops,
-+};
 +
 +/*
-+ * sst_register - function to register DSP
++ * sst_pause_stream - Send msg for a pausing stream
++ * @str_id:	 stream ID
 + *
-+ * This functions registers DSP with the platform driver
++ * This function is called by any function which wants to pause
++ * an already running stream.
 + */
-+int sst_register(struct device *dev)
++int sst_pause_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
 +{
-+	int ret_val;
++	int retval = 0;
++	struct stream_info *str_info;
 +
-+	sst_dsp_device.dev = dev;
-+	ret_val = sst_register_dsp(&sst_dsp_device);
-+	if (ret_val)
-+		dev_err(dev, "Unable to register DSP with platform driver\n");
++	dev_dbg(sst_drv_ctx->dev, "SST DBG:sst_pause_stream for %d\n", str_id);
++	str_info = get_stream_info(sst_drv_ctx, str_id);
++	if (!str_info)
++		return -EINVAL;
++	if (str_info->status == STREAM_PAUSED)
++		return 0;
++	if (str_info->status == STREAM_RUNNING ||
++		str_info->status == STREAM_INIT) {
++		if (str_info->prev == STREAM_UN_INIT)
++			return -EBADRQC;
 +
-+	return ret_val;
++		retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id, IPC_CMD,
++				IPC_IA_PAUSE_STREAM_MRFLD, str_info->pipe_id,
++				0, NULL, NULL, true, true, false, true);
++
++		if (retval == 0) {
++			str_info->prev = str_info->status;
++			str_info->status = STREAM_PAUSED;
++		} else if (retval == SST_ERR_INVALID_STREAM_ID) {
++			retval = -EINVAL;
++			mutex_lock(&sst_drv_ctx->sst_lock);
++			sst_clean_stream(str_info);
++			mutex_unlock(&sst_drv_ctx->sst_lock);
++		}
++	} else {
++		retval = -EBADRQC;
++		dev_dbg(sst_drv_ctx->dev, "SST DBG:BADRQC for stream\n ");
++	}
++
++	return retval;
 +}
 +
-+int sst_unregister(struct device *dev)
++/**
++ * sst_resume_stream - Send msg for resuming stream
++ * @str_id:		stream ID
++ *
++ * This function is called by any function which wants to resume
++ * an already paused stream.
++ */
++int sst_resume_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
 +{
-+	return sst_unregister_dsp(&sst_dsp_device);
++	int retval = 0;
++	struct stream_info *str_info;
++
++	dev_dbg(sst_drv_ctx->dev, "SST DBG:sst_resume_stream for %d\n", str_id);
++	str_info = get_stream_info(sst_drv_ctx, str_id);
++	if (!str_info)
++		return -EINVAL;
++	if (str_info->status == STREAM_RUNNING)
++			return 0;
++	if (str_info->status == STREAM_PAUSED) {
++		retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id,
++				IPC_CMD, IPC_IA_RESUME_STREAM_MRFLD,
++				str_info->pipe_id, 0, NULL, NULL,
++				true, true, false, true);
++
++		if (!retval) {
++			if (str_info->prev == STREAM_RUNNING)
++				str_info->status = STREAM_RUNNING;
++			else
++				str_info->status = STREAM_INIT;
++			str_info->prev = STREAM_PAUSED;
++		} else if (retval == -SST_ERR_INVALID_STREAM_ID) {
++			retval = -EINVAL;
++			mutex_lock(&sst_drv_ctx->sst_lock);
++			sst_clean_stream(str_info);
++			mutex_unlock(&sst_drv_ctx->sst_lock);
++		}
++	} else {
++		retval = -EBADRQC;
++		dev_err(sst_drv_ctx->dev, "SST ERR: BADQRC for stream\n");
++	}
++
++	return retval;
++}
++
++
++/**
++ * sst_drop_stream - Send msg for stopping stream
++ * @str_id:		stream ID
++ *
++ * This function is called by any function which wants to stop
++ * a stream.
++ */
++int sst_drop_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
++{
++	int retval = 0;
++	struct stream_info *str_info;
++
++	dev_dbg(sst_drv_ctx->dev, "SST DBG:sst_drop_stream for %d\n", str_id);
++	str_info = get_stream_info(sst_drv_ctx, str_id);
++	if (!str_info)
++		return -EINVAL;
++
++	if (str_info->status != STREAM_UN_INIT) {
++		str_info->prev = STREAM_UN_INIT;
++		str_info->status = STREAM_INIT;
++		str_info->cumm_bytes = 0;
++		retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id,
++				IPC_CMD, IPC_IA_DROP_STREAM_MRFLD,
++				str_info->pipe_id, 0, NULL, NULL,
++				true, true, true, false);
++	} else {
++		retval = -EBADRQC;
++		dev_dbg(sst_drv_ctx->dev, "BADQRC for stream, state %x\n",
++				str_info->status);
++	}
++	return retval;
++}
++
++/**
++* sst_drain_stream - Send msg for draining stream
++* @str_id:		stream ID
++*
++* This function is called by any function which wants to drain
++* a stream.
++*/
++int sst_drain_stream(struct intel_sst_drv *sst_drv_ctx,
++			int str_id, bool partial_drain)
++{
++	int retval = 0;
++	struct stream_info *str_info;
++
++	dev_dbg(sst_drv_ctx->dev, "SST DBG:sst_drain_stream for %d\n", str_id);
++	str_info = get_stream_info(sst_drv_ctx, str_id);
++	if (!str_info)
++		return -EINVAL;
++	if (str_info->status != STREAM_RUNNING &&
++		str_info->status != STREAM_INIT &&
++		str_info->status != STREAM_PAUSED) {
++			dev_err(sst_drv_ctx->dev, "SST ERR: BADQRC for stream = %d\n",
++				       str_info->status);
++			return -EBADRQC;
++	}
++
++	retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id, IPC_CMD,
++			IPC_IA_DRAIN_STREAM_MRFLD, str_info->pipe_id,
++			sizeof(u8), &partial_drain, NULL, true, true, false, false);
++	/*
++	 * with new non blocked drain implementation in core we dont need to
++	 * wait for respsonse, and need to only invoke callback for drain
++	 * complete
++	 */
++
++	return retval;
++}
++
++/**
++ * sst_free_stream - Frees a stream
++ * @str_id:		stream ID
++ *
++ * This function is called by any function which wants to free
++ * a stream.
++ */
++int sst_free_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
++{
++	int retval = 0;
++	struct stream_info *str_info;
++	struct intel_sst_ops *ops;
++
++	dev_dbg(sst_drv_ctx->dev, "SST DBG:sst_free_stream for %d\n", str_id);
++
++	mutex_lock(&sst_drv_ctx->sst_lock);
++	if (sst_drv_ctx->sst_state == SST_RESET) {
++		mutex_unlock(&sst_drv_ctx->sst_lock);
++		return -ENODEV;
++	}
++	mutex_unlock(&sst_drv_ctx->sst_lock);
++	str_info = get_stream_info(sst_drv_ctx, str_id);
++	if (!str_info)
++		return -EINVAL;
++	ops = sst_drv_ctx->ops;
++
++	mutex_lock(&str_info->lock);
++	if (str_info->status != STREAM_UN_INIT) {
++		str_info->prev =  str_info->status;
++		str_info->status = STREAM_UN_INIT;
++		mutex_unlock(&str_info->lock);
++
++		dev_info(sst_drv_ctx->dev, "Free for str %d pipe %#x\n",
++				str_id, str_info->pipe_id);
++		retval = sst_prepare_and_post_msg(sst_drv_ctx, str_info->task_id, IPC_CMD,
++				IPC_IA_FREE_STREAM_MRFLD, str_info->pipe_id, 0,
++				NULL, NULL, true, true, false, true);
++
++		dev_dbg(sst_drv_ctx->dev, "sst: wait for free returned %d\n",
++				retval);
++		mutex_lock(&sst_drv_ctx->sst_lock);
++		sst_clean_stream(str_info);
++		mutex_unlock(&sst_drv_ctx->sst_lock);
++		dev_dbg(sst_drv_ctx->dev, "SST DBG:Stream freed\n");
++	} else {
++		mutex_unlock(&str_info->lock);
++		retval = -EBADRQC;
++		dev_dbg(sst_drv_ctx->dev, "SST DBG:BADQRC for stream\n");
++	}
++
++	return retval;
 +}
 -- 
 1.7.0.4
