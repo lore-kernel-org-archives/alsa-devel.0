@@ -1,14 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] ASoC: intel: turn off COMPILE_TEST for medfield
-Date: Thu, 16 Oct 2014 13:54:29 +0530
-Message-ID: <1413447869-23494-1-git-send-email-vinod.koul@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: intel: turn off COMPILE_TEST for
+	medfield
+Date: Thu, 16 Oct 2014 11:02:35 +0200
+Message-ID: <20141016090235.GA6678@sirena.org.uk>
+References: <1413447869-23494-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7711415825117014185=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 082BB261524
- for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 11:00:07 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7DBD92614EE
+ for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 11:02:52 +0200 (CEST)
+In-Reply-To: <1413447869-23494-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,30 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Since medfield machine uses SCU_IPC which is not availble for all archs, so
-compile test fails on these
 
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+--===============7711415825117014185==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="nFreZHaLTZJo0R7j"
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 726f7d8..f5b4a9c 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -1,6 +1,6 @@
- config SND_MFLD_MACHINE
- 	tristate "SOC Machine Audio driver for Intel Medfield MID platform"
--	depends on INTEL_SCU_IPC || COMPILE_TEST
-+	depends on INTEL_SCU_IPC
- 	select SND_SOC_SN95031
- 	select SND_SST_MFLD_PLATFORM
- 	help
--- 
-1.7.0.4
+
+--nFreZHaLTZJo0R7j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Oct 16, 2014 at 01:54:29PM +0530, Vinod Koul wrote:
+> Since medfield machine uses SCU_IPC which is not availble for all archs, so
+> compile test fails on these
+
+Applied, thanks.
+
+--nFreZHaLTZJo0R7j
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUP4mrAAoJECTWi3JdVIfQTQsH/2cbVjZiqpfuqAlosw77EkXO
+nC0gvvDaC6H6P3dKr4xjgwnSRZZM/MnFXNXZk3Yi7GjH8erznPxLvY7vBe5ffZbv
+1URrgHeFFiv70VX6w13ztL96BBE2ynByCs0H8ID/ICbCYpb9Kj3RWZDCzP5t7DlO
+NH58MPZ+kOeukZnJAtlqNiCyhBIPjtQAwakW27Jb3jW95cR4oqx+Z+ck38DqBk5D
+MPILIElfWJfDIxbZYE0VjP4NAdsJ3cwR3VrZ6HDvrC1Jnw8W1uVKxafpROHTxpVF
+JQAAAuufrtoZ1lrpqshlhelJuw7fvtNohBg3jMKuFmczPIOgU3/qQRWk1tJS82Q=
+=5dQ4
+-----END PGP SIGNATURE-----
+
+--nFreZHaLTZJo0R7j--
+
+--===============7711415825117014185==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7711415825117014185==--
