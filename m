@@ -1,15 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: Add 4 channel support to DSP.
-Date: Thu, 16 Oct 2014 15:29:16 +0100
-Message-ID: <1413469757-6200-3-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: Make HSW/BDW pointer debug verbose
+Date: Thu, 16 Oct 2014 15:29:17 +0100
+Message-ID: <1413469757-6200-4-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1413469757-6200-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id E93AD2605E7
- for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 16:29:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B6FE72605EE
+ for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 16:29:38 +0200 (CEST)
 In-Reply-To: <1413469757-6200-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,55 +24,34 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-DSP can now support 4 channels in certain use cases.
+Improve the debug SNR by making the positional pointer debug more verbose.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-haswell-ipc.c | 4 ----
- sound/soc/intel/sst-haswell-pcm.c | 8 +-------
- 2 files changed, 1 insertion(+), 11 deletions(-)
+ sound/soc/intel/sst-haswell-pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 92d625a..4799768 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -1256,10 +1256,6 @@ int sst_hsw_stream_set_channels(struct sst_hsw *hsw,
- 		return -EINVAL;
- 	}
- 
--	/* stereo is only supported atm */
--	if (channels != 2)
--		return -EINVAL;
--
- 	stream->request.format.ch_num = channels;
- 	return 0;
- }
 diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index 4df867c..9a51987 100644
+index 9a51987..2dc72a2 100644
 --- a/sound/soc/intel/sst-haswell-pcm.c
 +++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -421,13 +421,7 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
+@@ -552,7 +552,7 @@ static u32 hsw_notify_pointer(struct sst_hsw_stream *stream, void *data)
+ 	pos = frames_to_bytes(runtime,
+ 		(runtime->control->appl_ptr % runtime->buffer_size));
  
--	/* we only support stereo atm */
- 	channels = params_channels(params);
--	if (channels != 2) {
--		dev_err(rtd->dev, "error: invalid channels %d\n", channels);
--		return -EINVAL;
--	}
--
- 	map = create_channel_map(SST_HSW_CHANNEL_CONFIG_STEREO);
- 	sst_hsw_stream_set_map_config(hsw, pcm_data->stream,
- 			map, SST_HSW_CHANNEL_CONFIG_STEREO);
-@@ -741,7 +735,7 @@ static struct snd_soc_dai_driver hsw_dais[] = {
- 		.capture = {
- 			.stream_name = "Analog Capture",
- 			.channels_min = 2,
--			.channels_max = 2,
-+			.channels_max = 4,
- 			.rates = SNDRV_PCM_RATE_48000,
- 			.formats = SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE,
- 		},
+-	dev_dbg(rtd->dev, "PCM: App pointer %d bytes\n", pos);
++	dev_vdbg(rtd->dev, "PCM: App pointer %d bytes\n", pos);
+ 
+ 	/* let alsa know we have play a period */
+ 	snd_pcm_period_elapsed(substream);
+@@ -574,7 +574,7 @@ static snd_pcm_uframes_t hsw_pcm_pointer(struct snd_pcm_substream *substream)
+ 	offset = bytes_to_frames(runtime, position);
+ 	ppos = sst_hsw_get_dsp_presentation_position(hsw, pcm_data->stream);
+ 
+-	dev_dbg(rtd->dev, "PCM: DMA pointer %du bytes, pos %llu\n",
++	dev_vdbg(rtd->dev, "PCM: DMA pointer %du bytes, pos %llu\n",
+ 		position, ppos);
+ 	return offset;
+ }
 -- 
 1.9.1
