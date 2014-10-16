@@ -1,16 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v4 2/7] ASoC: Intel: mrfld - Add DSP load and
-	management
-Date: Thu, 16 Oct 2014 20:00:14 +0530
-Message-ID: <1413469819-18775-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v4 3/7] ASoC: Intel: sst - add pcm ops handling
+Date: Thu, 16 Oct 2014 20:00:15 +0530
+Message-ID: <1413469819-18775-4-git-send-email-vinod.koul@intel.com>
 References: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C828F261B1A
- for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 17:06:48 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AF1D4264F22
+ for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 17:06:51 +0200 (CEST)
 In-Reply-To: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,31 +24,29 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch contains all dsp controlling functions like firmware download,
-setting/resetting dsp cores, etc.
+This patch adds low level IPC handling for pcm stream operations
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/sst/sst_loader.c |  461 ++++++++++++++++++++++++++++++++++++++
- 1 files changed, 461 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/intel/sst/sst_loader.c
+ sound/soc/intel/sst/sst_drv_interface.c |  403 +++++++++++++++++++++++++++++++
+ 1 files changed, 403 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/intel/sst/sst_drv_interface.c
 
-diff --git a/sound/soc/intel/sst/sst_loader.c b/sound/soc/intel/sst/sst_loader.c
+diff --git a/sound/soc/intel/sst/sst_drv_interface.c b/sound/soc/intel/sst/sst_drv_interface.c
 new file mode 100644
-index 0000000..b6d27c1
+index 0000000..aadb0db
 --- /dev/null
-+++ b/sound/soc/intel/sst/sst_loader.c
-@@ -0,0 +1,461 @@
++++ b/sound/soc/intel/sst/sst_drv_interface.c
+@@ -0,0 +1,403 @@
 +/*
-+ *  sst_dsp.c - Intel SST Driver for audio engine
++ *  sst_drv_interface.c - Intel SST Driver for audio engine
 + *
-+ *  Copyright (C) 2008-14	Intel Corp
++ *  Copyright (C) 2008-14 Intel Corp
 + *  Authors:	Vinod Koul <vinod.koul@intel.com>
 + *		Harsha Priya <priya.harsha@intel.com>
-+ *		Dharageswari R <dharageswari.r@intel.com>
-+ *		KP Jeeja <jeeja.kp@intel.com>
-+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *		Dharageswari R <dharageswari.r@intel.com)
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + *
 + *  This program is free software; you can redistribute it and/or modify
 + *  it under the terms of the GNU General Public License as published by
@@ -61,18 +58,14 @@ index 0000000..b6d27c1
 + *  General Public License for more details.
 + *
 + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ *  This file contains all dsp controlling functions like firmware download,
-+ * setting/resetting dsp cores, etc
 + */
-+#include <linux/pci.h>
 +#include <linux/delay.h>
++#include <linux/pci.h>
 +#include <linux/fs.h>
-+#include <linux/sched.h>
 +#include <linux/firmware.h>
-+#include <linux/dmaengine.h>
 +#include <linux/pm_runtime.h>
 +#include <linux/pm_qos.h>
++#include <linux/math64.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/soc.h>
@@ -82,425 +75,372 @@ index 0000000..b6d27c1
 +#include "sst.h"
 +#include "../sst-dsp.h"
 +
-+static void memcpy32_toio(void __iomem *dst, const void *src, int count)
-+{
-+	int i;
-+	const u32 *src_32 = src;
-+	u32 *dst_32 = dst;
 +
-+	for (i = 0; i < count/sizeof(u32); i++)
-+		writel(*src_32++, dst_32++);
++
++#define NUM_CODEC 2
++#define MIN_FRAGMENT 2
++#define MAX_FRAGMENT 4
++#define MIN_FRAGMENT_SIZE (50 * 1024)
++#define MAX_FRAGMENT_SIZE (1024 * 1024)
++#define SST_GET_BYTES_PER_SAMPLE(pcm_wd_sz)  (((pcm_wd_sz + 15) >> 4) << 1)
++
++int free_stream_context(struct intel_sst_drv *ctx, unsigned int str_id)
++{
++	struct stream_info *stream;
++	int ret = 0;
++
++	stream = get_stream_info(ctx, str_id);
++	if (stream) {
++		/* str_id is valid, so stream is alloacted */
++		ret = sst_free_stream(ctx, str_id);
++		if (ret)
++			sst_clean_stream(&ctx->streams[str_id]);
++		return ret;
++	}
++	return ret;
 +}
 +
-+/**
-+ * intel_sst_reset_dsp_mrfld - Resetting SST DSP
++int sst_get_stream_allocated(struct intel_sst_drv *ctx,
++	struct snd_sst_params *str_param,
++	struct snd_sst_lib_download **lib_dnld)
++{
++	int retval;
++
++	retval = ctx->ops->alloc_stream(ctx, str_param);
++	if (retval > 0)
++		dev_dbg(ctx->dev, "Stream allocated %d\n", retval);
++	return retval;
++
++}
++
++/*
++ * sst_get_sfreq - this function returns the frequency of the stream
 + *
-+ * This resets DSP in case of MRFLD platfroms
++ * @str_param : stream params
 + */
-+int intel_sst_reset_dsp_mrfld(struct intel_sst_drv *sst_drv_ctx)
++int sst_get_sfreq(struct snd_sst_params *str_param)
 +{
-+	union config_status_reg_mrfld csr;
-+
-+	dev_dbg(sst_drv_ctx->dev, "sst: Resetting the DSP in mrfld\n");
-+	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
-+
-+	dev_dbg(sst_drv_ctx->dev, "value:0x%llx\n", csr.full);
-+
-+	csr.full |= 0x7;
-+	sst_shim_write64(sst_drv_ctx->shim, SST_CSR, csr.full);
-+	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
-+
-+	dev_dbg(sst_drv_ctx->dev, "value:0x%llx\n", csr.full);
-+
-+	csr.full &= ~(0x1);
-+	sst_shim_write64(sst_drv_ctx->shim, SST_CSR, csr.full);
-+
-+	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
-+	dev_dbg(sst_drv_ctx->dev, "value:0x%llx\n", csr.full);
-+	return 0;
-+}
-+
-+/**
-+ * sst_start_merrifield - Start the SST DSP processor
-+ *
-+ * This starts the DSP in MERRIFIELD platfroms
-+ */
-+int sst_start_mrfld(struct intel_sst_drv *sst_drv_ctx)
-+{
-+	union config_status_reg_mrfld csr;
-+
-+	dev_dbg(sst_drv_ctx->dev, "sst: Starting the DSP in mrfld LALALALA\n");
-+	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
-+	dev_dbg(sst_drv_ctx->dev, "value:0x%llx\n", csr.full);
-+
-+	csr.full |= 0x7;
-+	sst_shim_write64(sst_drv_ctx->shim, SST_CSR, csr.full);
-+
-+	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
-+	dev_dbg(sst_drv_ctx->dev, "value:0x%llx\n", csr.full);
-+
-+	csr.part.xt_snoop = 1;
-+	csr.full &= ~(0x5);
-+	sst_shim_write64(sst_drv_ctx->shim, SST_CSR, csr.full);
-+
-+	csr.full = sst_shim_read64(sst_drv_ctx->shim, SST_CSR);
-+	dev_dbg(sst_drv_ctx->dev, "sst: Starting the DSP_merrifield:%llx\n",
-+			csr.full);
-+	return 0;
-+}
-+
-+static int sst_validate_fw_image(struct intel_sst_drv *ctx, unsigned long size,
-+		struct fw_module_header **module, u32 *num_modules)
-+{
-+	struct sst_fw_header *header;
-+	const void *sst_fw_in_mem = ctx->fw_in_mem;
-+
-+	dev_dbg(ctx->dev, "Enter\n");
-+
-+	/* Read the header information from the data pointer */
-+	header = (struct sst_fw_header *)sst_fw_in_mem;
-+	dev_dbg(ctx->dev,
-+		"header sign=%s size=%x modules=%x fmt=%x size=%zx\n",
-+		header->signature, header->file_size, header->modules,
-+		header->file_format, sizeof(*header));
-+
-+	/* verify FW */
-+	if ((strncmp(header->signature, SST_FW_SIGN, 4) != 0) ||
-+		(size != header->file_size + sizeof(*header))) {
-+		/* Invalid FW signature */
-+		dev_err(ctx->dev, "InvalidFW sign/filesize mismatch\n");
++	switch (str_param->codec) {
++	case SST_CODEC_TYPE_PCM:
++		return str_param->sparams.uc.pcm_params.sfreq;
++	case SST_CODEC_TYPE_AAC:
++		return str_param->sparams.uc.aac_params.externalsr;
++	case SST_CODEC_TYPE_MP3:
++		return 0;
++	default:
 +		return -EINVAL;
 +	}
-+	*num_modules = header->modules;
-+	*module = (void *)sst_fw_in_mem + sizeof(*header);
++}
++
++/*
++ * sst_get_sfreq - this function returns the frequency of the stream
++ *
++ * @str_param : stream params
++ */
++int sst_get_num_channel(struct snd_sst_params *str_param)
++{
++	switch (str_param->codec) {
++	case SST_CODEC_TYPE_PCM:
++		return str_param->sparams.uc.pcm_params.num_chan;
++	case SST_CODEC_TYPE_MP3:
++		return str_param->sparams.uc.mp3_params.num_chan;
++	case SST_CODEC_TYPE_AAC:
++		return str_param->sparams.uc.aac_params.num_chan;
++	default:
++		return -EINVAL;
++	}
++}
++
++/*
++ * sst_get_stream - this function prepares for stream allocation
++ *
++ * @str_param : stream param
++ */
++int sst_get_stream(struct intel_sst_drv *ctx,
++			struct snd_sst_params *str_param)
++{
++	int retval;
++	struct stream_info *str_info;
++
++	/* stream is not allocated, we are allocating */
++	retval = ctx->ops->alloc_stream(ctx, str_param);
++	if (retval <= 0) {
++		return -EIO;
++	}
++	/* store sampling freq */
++	str_info = &ctx->streams[retval];
++	str_info->sfreq = sst_get_sfreq(str_param);
++
++	return retval;
++}
++
++static int sst_power_control(struct device *dev, bool state)
++{
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	dev_dbg(ctx->dev, "state:%d", state);
++	if (state == true)
++		return pm_runtime_get_sync(dev);
++	else
++		return sst_pm_runtime_put(ctx);
++}
++
++/*
++ * sst_open_pcm_stream - Open PCM interface
++ *
++ * @str_param: parameters of pcm stream
++ *
++ * This function is called by MID sound card driver to open
++ * a new pcm interface
++ */
++static int sst_open_pcm_stream(struct device *dev,
++		struct snd_sst_params *str_param)
++{
++	int retval;
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	if (!str_param)
++		return -EINVAL;
++
++	retval = pm_runtime_get_sync(ctx->dev);
++	if (retval < 0)
++		return retval;
++	retval = sst_get_stream(ctx, str_param);
++	if (retval > 0) {
++		ctx->stream_cnt++;
++	} else {
++		dev_err(ctx->dev, "sst_get_stream returned err %d\n", retval);
++		sst_pm_runtime_put(ctx);
++	}
++
++	return retval;
++}
++
++/*
++ * sst_close_pcm_stream - Close PCM interface
++ *
++ * @str_id: stream id to be closed
++ *
++ * This function is called by MID sound card driver to close
++ * an existing pcm interface
++ */
++static int sst_close_pcm_stream(struct device *dev, unsigned int str_id)
++{
++	struct stream_info *stream;
++	int retval = 0;
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	stream = get_stream_info(ctx, str_id);
++	if (!stream) {
++		dev_err(ctx->dev, "stream info is NULL for str %d!!!\n", str_id);
++		return -EINVAL;
++	}
++
++	if (stream->status == STREAM_RESET) {
++		/* silently fail here as we have cleaned the stream earlier */
++		dev_dbg(ctx->dev, "stream in reset state...\n");
++
++		retval = 0;
++		goto put;
++	}
++
++	retval = free_stream_context(ctx, str_id);
++put:
++	stream->pcm_substream = NULL;
++	stream->status = STREAM_UN_INIT;
++	stream->period_elapsed = NULL;
++	ctx->stream_cnt--;
++
++	sst_pm_runtime_put(ctx);
++
++	dev_dbg(ctx->dev, "Exit\n");
++	return 0;
++}
++
++static inline int sst_calc_tstamp(struct intel_sst_drv *ctx,
++		struct pcm_stream_info *info,
++		struct snd_pcm_substream *substream,
++		struct snd_sst_tstamp *fw_tstamp)
++{
++	size_t delay_bytes, delay_frames;
++	size_t buffer_sz;
++	u32 pointer_bytes, pointer_samples;
++
++	dev_dbg(ctx->dev, "mrfld ring_buffer_counter %llu in bytes\n",
++			fw_tstamp->ring_buffer_counter);
++	dev_dbg(ctx->dev, "mrfld hardware_counter %llu in bytes\n",
++			 fw_tstamp->hardware_counter);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		delay_bytes = (size_t) (fw_tstamp->ring_buffer_counter -
++					fw_tstamp->hardware_counter);
++	else
++		delay_bytes = (size_t) (fw_tstamp->hardware_counter -
++					fw_tstamp->ring_buffer_counter);
++	delay_frames = bytes_to_frames(substream->runtime, delay_bytes);
++	buffer_sz = snd_pcm_lib_buffer_bytes(substream);
++	div_u64_rem(fw_tstamp->ring_buffer_counter, buffer_sz, &pointer_bytes);
++	pointer_samples = bytes_to_samples(substream->runtime, pointer_bytes);
++
++	dev_dbg(ctx->dev, "pcm delay %zu in bytes\n", delay_bytes);
++
++	info->buffer_ptr = pointer_samples / substream->runtime->channels;
++
++	info->pcm_delay = delay_frames / substream->runtime->channels;
++	dev_dbg(ctx->dev, "buffer ptr %llu pcm_delay rep: %llu\n",
++			info->buffer_ptr, info->pcm_delay);
++	return 0;
++}
++
++static int sst_read_timestamp(struct device *dev, struct pcm_stream_info *info)
++{
++	struct stream_info *stream;
++	struct snd_pcm_substream *substream;
++	struct snd_sst_tstamp fw_tstamp;
++	unsigned int str_id;
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	str_id = info->str_id;
++	stream = get_stream_info(ctx, str_id);
++	if (!stream)
++		return -EINVAL;
++
++	if (!stream->pcm_substream)
++		return -EINVAL;
++	substream = stream->pcm_substream;
++
++	memcpy_fromio(&fw_tstamp,
++		((void *)(ctx->mailbox + ctx->tstamp)
++			+ (str_id * sizeof(fw_tstamp))),
++		sizeof(fw_tstamp));
++	return sst_calc_tstamp(ctx, info, substream, &fw_tstamp);
++}
++
++static int sst_stream_start(struct device *dev, int str_id)
++{
++	struct stream_info *str_info;
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	if (ctx->sst_state != SST_FW_RUNNING)
++		return 0;
++	str_info = get_stream_info(ctx, str_id);
++	if (!str_info)
++		return -EINVAL;
++	str_info->prev = str_info->status;
++	str_info->status = STREAM_RUNNING;
++	sst_start_stream(ctx, str_id);
++
++	return 0;
++}
++
++static int sst_stream_drop(struct device *dev, int str_id)
++{
++	struct stream_info *str_info;
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	if (ctx->sst_state != SST_FW_RUNNING)
++		return 0;
++
++	str_info = get_stream_info(ctx, str_id);
++	if (!str_info)
++		return -EINVAL;
++	str_info->prev = STREAM_UN_INIT;
++	str_info->status = STREAM_INIT;
++	return sst_drop_stream(ctx, str_id);
++}
++
++static int sst_stream_init(struct device *dev, struct pcm_stream_info *str_info)
++{
++	int str_id = 0;
++	struct stream_info *stream;
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++
++	str_id = str_info->str_id;
++
++	if (ctx->sst_state != SST_FW_RUNNING)
++		return 0;
++
++	stream = get_stream_info(ctx, str_id);
++	if (!stream)
++		return -EINVAL;
++
++	dev_dbg(ctx->dev, "setting the period ptrs\n");
++	stream->pcm_substream = str_info->arg;
++	stream->period_elapsed = str_info->period_elapsed;
++	stream->sfreq = str_info->sfreq;
++	stream->prev = stream->status;
++	stream->status = STREAM_INIT;
++	dev_dbg(ctx->dev,
++		"pcm_substream %p, period_elapsed %p, sfreq %d, status %d\n",
++		stream->pcm_substream, stream->period_elapsed,
++		stream->sfreq, stream->status);
 +
 +	return 0;
 +}
 +
 +/*
-+ * sst_fill_memcpy_list - Fill the memcpy list
++ * sst_set_byte_stream - Set generic params
 + *
-+ * @memcpy_list: List to be filled
-+ * @destn: Destination addr to be filled in the list
-+ * @src: Source addr to be filled in the list
-+ * @size: Size to be filled in the list
++ * @cmd: control cmd to be set
++ * @arg: command argument
 + *
-+ * Adds the node to the list after required fields
-+ * are populated in the node
++ * This function is called by MID sound card driver to configure
++ * SST runtime params.
 + */
-+static int sst_fill_memcpy_list(struct list_head *memcpy_list,
-+			void *destn, const void *src, u32 size, bool is_io)
++static int sst_send_byte_stream(struct device *dev,
++		struct snd_sst_bytes_v2 *bytes)
 +{
-+	struct sst_memcpy_list *listnode;
-+
-+	listnode = kzalloc(sizeof(*listnode), GFP_KERNEL);
-+	if (listnode == NULL)
-+		return -ENOMEM;
-+	listnode->dstn = destn;
-+	listnode->src = src;
-+	listnode->size = size;
-+	listnode->is_io = is_io;
-+	list_add_tail(&listnode->memcpylist, memcpy_list);
-+
-+	return 0;
-+}
-+
-+/**
-+ * sst_parse_module_memcpy - Parse audio FW modules and populate the memcpy list
-+ *
-+ * @sst_drv_ctx		: driver context
-+ * @module		: FW module header
-+ * @memcpy_list	: Pointer to the list to be populated
-+ * Create the memcpy list as the number of block to be copied
-+ * returns error or 0 if module sizes are proper
-+ */
-+static int sst_parse_module_memcpy(struct intel_sst_drv *sst_drv_ctx,
-+		struct fw_module_header *module, struct list_head *memcpy_list)
-+{
-+	struct fw_block_info *block;
-+	u32 count;
 +	int ret_val = 0;
-+	void __iomem *ram_iomem;
++	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
 +
-+	dev_dbg(sst_drv_ctx->dev, "module sign %s size %x blocks %x type %x\n",
-+			module->signature, module->mod_size,
-+			module->blocks, module->type);
-+	dev_dbg(sst_drv_ctx->dev, "module entrypoint 0x%x\n", module->entry_point);
-+
-+	block = (void *)module + sizeof(*module);
-+
-+	for (count = 0; count < module->blocks; count++) {
-+		if (block->size <= 0) {
-+			dev_err(sst_drv_ctx->dev, "block size invalid\n");
-+			return -EINVAL;
-+		}
-+		switch (block->type) {
-+		case SST_IRAM:
-+			ram_iomem = sst_drv_ctx->iram;
-+			break;
-+		case SST_DRAM:
-+			ram_iomem = sst_drv_ctx->dram;
-+			break;
-+		case SST_DDR:
-+			ram_iomem = sst_drv_ctx->ddr;
-+			break;
-+		case SST_CUSTOM_INFO:
-+			block = (void *)block + sizeof(*block) + block->size;
-+			continue;
-+		default:
-+			dev_err(sst_drv_ctx->dev, "wrong ram type0x%x in block0x%x\n",
-+					block->type, count);
-+			return -EINVAL;
-+		}
-+
-+		ret_val = sst_fill_memcpy_list(memcpy_list,
-+				ram_iomem + block->ram_offset,
-+				(void *)block + sizeof(*block), block->size, 1);
-+		if (ret_val)
-+			return ret_val;
-+
-+		block = (void *)block + sizeof(*block) + block->size;
-+	}
-+	return 0;
-+}
-+
-+/**
-+ * sst_parse_fw_memcpy - parse the firmware image & populate the list for memcpy
-+ *
-+ * @ctx			: pointer to drv context
-+ * @size		: size of the firmware
-+ * @fw_list		: pointer to list_head to be populated
-+ * This function parses the FW image and saves the parsed image in the list
-+ * for memcpy
-+ */
-+static int sst_parse_fw_memcpy(struct intel_sst_drv *ctx, unsigned long size,
-+				struct list_head *fw_list)
-+{
-+	struct fw_module_header *module;
-+	u32 count, num_modules;
-+	int ret_val;
-+
-+	ret_val = sst_validate_fw_image(ctx, size, &module, &num_modules);
-+	if (ret_val)
++	if (NULL == bytes)
++		return -EINVAL;
++	ret_val = pm_runtime_get_sync(ctx->dev);
++	if (ret_val < 0)
 +		return ret_val;
 +
-+	for (count = 0; count < num_modules; count++) {
-+		ret_val = sst_parse_module_memcpy(ctx, module, fw_list);
-+		if (ret_val)
-+			return ret_val;
-+		module = (void *)module + sizeof(*module) + module->mod_size;
-+	}
++	ret_val = sst_send_byte_stream_mrfld(ctx, bytes);
++	sst_pm_runtime_put(ctx);
 +
-+	return 0;
-+}
-+
-+/**
-+ * sst_do_memcpy - function initiates the memcpy
-+ *
-+ * @memcpy_list: Pter to memcpy list on which the memcpy needs to be initiated
-+ *
-+ * Triggers the memcpy
-+ */
-+static void sst_do_memcpy(struct list_head *memcpy_list)
-+{
-+	struct sst_memcpy_list *listnode;
-+
-+	list_for_each_entry(listnode, memcpy_list, memcpylist) {
-+		if (listnode->is_io == true)
-+			memcpy32_toio((void __iomem *)listnode->dstn,
-+					listnode->src, listnode->size);
-+		else
-+			memcpy(listnode->dstn, listnode->src, listnode->size);
-+	}
-+}
-+
-+void sst_memcpy_free_resources(struct intel_sst_drv *sst_drv_ctx)
-+{
-+	struct sst_memcpy_list *listnode, *tmplistnode;
-+
-+	/* Free the list */
-+	if (!list_empty(&sst_drv_ctx->memcpy_list)) {
-+		list_for_each_entry_safe(listnode, tmplistnode,
-+				&sst_drv_ctx->memcpy_list, memcpylist) {
-+			list_del(&listnode->memcpylist);
-+			kfree(listnode);
-+		}
-+	}
-+}
-+
-+static int sst_cache_and_parse_fw(struct intel_sst_drv *sst,
-+		const struct firmware *fw)
-+{
-+	int retval = 0;
-+
-+	sst->fw_in_mem = kzalloc(fw->size, GFP_KERNEL);
-+	if (!sst->fw_in_mem) {
-+		retval = -ENOMEM;
-+		goto end_release;
-+	}
-+	dev_dbg(sst->dev, "copied fw to %p", sst->fw_in_mem);
-+	dev_dbg(sst->dev, "phys: %lx", (unsigned long)virt_to_phys(sst->fw_in_mem));
-+	memcpy(sst->fw_in_mem, fw->data, fw->size);
-+	retval = sst_parse_fw_memcpy(sst, fw->size, &sst->memcpy_list);
-+	if (retval) {
-+		dev_err(sst->dev, "Failed to parse fw\n");
-+		kfree(sst->fw_in_mem);
-+		sst->fw_in_mem = NULL;
-+	}
-+
-+end_release:
-+	release_firmware(fw);
-+	return retval;
-+
-+}
-+
-+void sst_firmware_load_cb(const struct firmware *fw, void *context)
-+{
-+	struct intel_sst_drv *ctx = context;
-+
-+	dev_dbg(ctx->dev, "Enter\n");
-+
-+	if (fw == NULL) {
-+		dev_err(ctx->dev, "request fw failed\n");
-+		return;
-+	}
-+
-+	mutex_lock(&ctx->sst_lock);
-+
-+	if (ctx->sst_state != SST_RESET ||
-+			ctx->fw_in_mem != NULL) {
-+		if (fw != NULL)
-+			release_firmware(fw);
-+		mutex_unlock(&ctx->sst_lock);
-+		return;
-+	}
-+
-+	dev_dbg(ctx->dev, "Request Fw completed\n");
-+	sst_cache_and_parse_fw(ctx, fw);
-+	mutex_unlock(&ctx->sst_lock);
-+}
-+
-+/*
-+ * sst_request_fw - requests audio fw from kernel and saves a copy
-+ *
-+ * This function requests the SST FW from the kernel, parses it and
-+ * saves a copy in the driver context
-+ */
-+static int sst_request_fw(struct intel_sst_drv *sst)
-+{
-+	int retval = 0;
-+	char name[20];
-+	const struct firmware *fw;
-+
-+	dev_dbg(sst->dev, "Requesting FW %s now...\n", name);
-+
-+	retval = request_firmware(&fw, name, sst->dev);
-+	if (fw == NULL) {
-+		dev_err(sst->dev, "fw is returning as null\n");
-+		return -EINVAL;
-+	}
-+	if (retval) {
-+		dev_err(sst->dev, "request fw failed %d\n", retval);
-+		return retval;
-+	}
-+	mutex_lock(&sst->sst_lock);
-+	retval = sst_cache_and_parse_fw(sst, fw);
-+	mutex_unlock(&sst->sst_lock);
-+
-+	return retval;
-+}
-+
-+/*
-+ * Writing the DDR physical base to DCCM offset
-+ * so that FW can use it to setup TLB
-+ */
-+static void sst_dccm_config_write(void __iomem *dram_base,
-+		unsigned int ddr_base)
-+{
-+	void __iomem *addr;
-+	u32 bss_reset = 0;
-+
-+	addr = (void __iomem *)(dram_base + MRFLD_FW_DDR_BASE_OFFSET);
-+	memcpy32_toio(addr, (void *)&ddr_base, sizeof(u32));
-+	bss_reset |= (1 << MRFLD_FW_BSS_RESET_BIT);
-+	addr = (void __iomem *)(dram_base + MRFLD_FW_FEATURE_BASE_OFFSET);
-+	memcpy32_toio(addr, &bss_reset, sizeof(u32));
-+
-+}
-+
-+void sst_post_download_mrfld(struct intel_sst_drv *ctx)
-+{
-+	sst_dccm_config_write(ctx->dram, ctx->ddr_base);
-+	dev_dbg(ctx->dev, "config written to DCCM\n");
-+}
-+
-+/**
-+ * sst_load_fw - function to load FW into DSP
-+ * Transfers the FW to DSP using dma/memcpy
-+ */
-+int sst_load_fw(struct intel_sst_drv *sst_drv_ctx)
-+{
-+	int ret_val = 0;
-+	struct sst_block *block;
-+
-+	dev_dbg(sst_drv_ctx->dev, "sst_load_fw\n");
-+
-+	if (sst_drv_ctx->sst_state !=  SST_RESET ||
-+			sst_drv_ctx->sst_state == SST_SHUTDOWN)
-+		return -EAGAIN;
-+
-+	if (!sst_drv_ctx->fw_in_mem) {
-+		dev_dbg(sst_drv_ctx->dev, "sst: FW not in memory retry to download\n");
-+		ret_val = sst_request_fw(sst_drv_ctx);
-+		if (ret_val)
-+			return ret_val;
-+	}
-+
-+	BUG_ON(!sst_drv_ctx->fw_in_mem);
-+	block = sst_create_block(sst_drv_ctx, 0, FW_DWNL_ID);
-+	if (block == NULL)
-+		return -ENOMEM;
-+
-+	/* Prevent C-states beyond C6 */
-+	pm_qos_update_request(sst_drv_ctx->qos, 0);
-+
-+	sst_drv_ctx->sst_state = SST_FW_LOADING;
-+
-+	ret_val = sst_drv_ctx->ops->reset(sst_drv_ctx);
-+	if (ret_val)
-+		goto restore;
-+
-+	sst_do_memcpy(&sst_drv_ctx->memcpy_list);
-+
-+	/* Write the DRAM/DCCM config before enabling FW */
-+	if (sst_drv_ctx->ops->post_download)
-+		sst_drv_ctx->ops->post_download(sst_drv_ctx);
-+
-+	/* bring sst out of reset */
-+	ret_val = sst_drv_ctx->ops->start(sst_drv_ctx);
-+	if (ret_val)
-+		goto restore;
-+
-+	ret_val = sst_wait_timeout(sst_drv_ctx, block);
-+	if (ret_val) {
-+		dev_err(sst_drv_ctx->dev, "fw download failed %d\n" , ret_val);
-+		/* FW download failed due to timeout */
-+		ret_val = -EBUSY;
-+
-+	}
-+
-+
-+restore:
-+	/* Re-enable Deeper C-states beyond C6 */
-+	pm_qos_update_request(sst_drv_ctx->qos, PM_QOS_DEFAULT_VALUE);
-+	sst_free_block(sst_drv_ctx, block);
-+	dev_dbg(sst_drv_ctx->dev, "fw load successful!!!\n");
-+
-+	if (sst_drv_ctx->ops->restore_dsp_context)
-+		sst_drv_ctx->ops->restore_dsp_context();
-+	sst_drv_ctx->sst_state = SST_FW_RUNNING;
 +	return ret_val;
 +}
 +
++static struct sst_ops pcm_ops = {
++	.open = sst_open_pcm_stream,
++	.stream_init = sst_stream_init,
++	.stream_start = sst_stream_start,
++	.stream_drop = sst_stream_drop,
++	.stream_read_tstamp = sst_read_timestamp,
++	.send_byte_stream = sst_send_byte_stream,
++	.close = sst_close_pcm_stream,
++	.power = sst_power_control,
++};
++
++static struct sst_device sst_dsp_device = {
++	.name = "Intel(R) SST LPE",
++	.dev = NULL,
++	.ops = &pcm_ops,
++};
++
++/*
++ * sst_register - function to register DSP
++ *
++ * This functions registers DSP with the platform driver
++ */
++int sst_register(struct device *dev)
++{
++	int ret_val;
++
++	sst_dsp_device.dev = dev;
++	ret_val = sst_register_dsp(&sst_dsp_device);
++	if (ret_val)
++		dev_err(dev, "Unable to register DSP with platform driver\n");
++
++	return ret_val;
++}
++
++int sst_unregister(struct device *dev)
++{
++	return sst_unregister_dsp(&sst_dsp_device);
++}
 -- 
 1.7.0.4
