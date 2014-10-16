@@ -1,74 +1,55 @@
-From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Subject: Re: [PATCH 1/2] thinkpad-acpi: Try to use full software mute control
-Date: Thu, 16 Oct 2014 15:31:30 -0300
-Message-ID: <20141016183130.GA15835@khazad-dum.debian.net>
-References: <cover.1413481880.git.luto@amacapital.net>
- <72f375b46a34702fc9f8be419fa83c219fbc28c5.1413481880.git.luto@amacapital.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Andy Lutomirski <luto@amacapital.net>
+Subject: [PATCH v2 0/2] Disable the ThinkPad HW mute/level control when possible
+Date: Thu, 16 Oct 2014 11:33:03 -0700
+Message-ID: <cover.1413484274.git.luto@amacapital.net>
 Return-path: <platform-driver-x86-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <72f375b46a34702fc9f8be419fa83c219fbc28c5.1413481880.git.luto@amacapital.net>
 Sender: platform-driver-x86-owner@vger.kernel.org
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, Jerone Young <jerone.young@canonical.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org, Andy Lutomirski <luto@MIT.EDU>
+To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net
+Cc: Len Brown <len.brown@intel.com>, Jerone Young <jerone.young@canonical.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 16 Oct 2014, Andy Lutomirski wrote:
-> ThinkPads have hardware volume controls and three buttons to control
-> them.  (These are separate from the standard mixer.)  By default,
-> the buttons are:
-> 
->  - Mute: Mutes the hardware volume control and generates KEY_MUTE.
->  - Up: Unmutes, generates KEY_VOLUMEUP, and increases volume if
->    applicable.  (Newer thinkpads only have hardware mute/unmute.)
->  - Down: Unmutes, generates KEY_VOLUMEDOWN, and decreases volume
->    if applicable.
+This series is being resurrected after several years, and it's quite
+different from before, so I'm restarting the version number at 1 :)
 
-On IBM ThinkPads, the "generates KEY_foo" thing is controlable by the
-driver.  In fact, thinkpad_acpi defaults to NOT send these, all breakage
-is entirely the fault of userspace that enables it instead of doing OSD
-out of the extra mixer, and then fails to deal with the side-effects.
+ThinkPad volume and mute controls are a mess.  For whatever reason,
+ThinkPads have mute buttons that send KEY_MUTE *and* control an
+invisible-to-ALSA mute switch.  Some of them have volume controls that
+interact with this switch as well.
 
-On Lenovo ThinkPads, it depends on BIOS/EC version for the X60/T60.  Later
-versions will behave like the X61/T61. Since family 200 you can tell the
-EC to switch modes (latch, toggle, none), but Lenovo didn't test it well
-enough.
+This is a perennial source of problems.  On most ThinkPads, if you press
+mute and then unmute using GUI controls, you have no sound, because
+userspace and ALSA state gets out of sync with the hardware switch.
+There's a separate "sound card" that exposes the hardware switch, but
+userspace code generally doesn't understand that.
 
-> This behavior is unfortunate, since modern userspace will also
-> handle the hotkeys and change the other mixer.  If the software
+There are already a few _OSI(Linux) overrides to turn all the hardware
+buttons into regular buttons.  Rather than quirking ACPI everywhere,
+just teach thinkpad-acpi to program the buttons for full software
+control and to disable hardware controls.  That allows us to remove the
+ACPI quirks and have normal mute controls.  This approach should be
+much simpler than adding even more kludgey ALSA integration for
+questionable gain.
 
-Like I said, we disable that by default, and userspace enables them back
-because they want to use it as a keyboard.  We could override it entirely
-on the IBM thinkpads, and refuse to issue any key events no matter what, I
-suppose.
+I haven't tested on my X220 (which has a mute light in addition to a
+mute button), since that laptop's SATA controller died last week.  It
+should work, though, and if someone else could test this on a ThinkPad
+with a mute light, that would be great.
 
-> This should also allow us to remove _OSI(Linux) for all ThinkPads.
+The only issue I know of with this version is that unloading and
+reloading the module to change the software_mute setting doesn't
+work quite right.  I can fix that if it matters.
 
-No, it doesn't.  Only after an exaustive search for what _OSI(Linux)
-changes across a brickload of thinkpad ACPI dumps could we say that for
-sure.
+Changes from v1:
+ - Simplified the code a bit.
+ - Improved suspend/hibernate behavior.
 
-> For future reference: It turns out that we can ask ACPI for one of
-> three behaviors directly on very new models.  They are "latch" (the
-> default), "none" (no automatic control), and "toggle" (mute unmutes
-> when muted).  All of the modes besides "none" seem to be a bit buggy,
-> though, and there is no known way to get any notification that the
-> hardware state has changed other than listening for a mute button
-> press on the i8042 port.
+Andy Lutomirski (2):
+  thinkpad-acpi: Try to use full software mute control
+  acpi: Remove _OSI(Linux) for ThinkPads
 
-Yeah.
-
-> + * The EC or perhaps SMM firmware can optionally automatically change
-> + * the volume in response to user input.  Unfortunately, this rarely
-
-It is the EC, which also emulates the i8042 KBC.
-
-I don't see any problems with the code, will have to test it in a IBM
-thinkpad, though (I have one).
+ drivers/acpi/blacklist.c             | 54 --------------------
+ drivers/platform/x86/thinkpad_acpi.c | 98 ++++++++++++++++++++++++++++++++----
+ 2 files changed, 88 insertions(+), 64 deletions(-)
 
 -- 
-  "One disk to rule them all, One disk to find them. One disk to bring
-  them all and in the darkness grind them. In the Land of Redmond
-  where the shadows lie." -- The Silicon Valley Tarot
-  Henrique Holschuh
+1.9.3
