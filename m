@@ -1,155 +1,203 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [PATCH v2 1/6] media: add media token device resource framework
-Date: Wed, 15 Oct 2014 18:53:28 -0600
-Message-ID: <543F1708.1040303@osg.samsung.com>
-References: <cover.1413246370.git.shuahkh@osg.samsung.com> <c8bae1d475b1086302fcb83bc463ec01437c3f95.1413246372.git.shuahkh@osg.samsung.com> <s5h8ukhw9eu.wl-tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH v2 2/2] ALSA: au88x0: pr_* replaced with
+	dev_*
+Date: Thu, 16 Oct 2014 11:04:34 +0800
+Message-ID: <CAN8cciZXLfWC-vsYq0r64Uw6D0t2z8LFVcF_i31OQg5BO7+uZQ@mail.gmail.com>
+References: <1412930199-24797-1-git-send-email-sudipm.mukherjee@gmail.com>
+ <1412930199-24797-2-git-send-email-sudipm.mukherjee@gmail.com>
+ <CAN8ccibSw_85wdnxbNSKfjXQ-7Lg3C6_5fhKQJJi5xMi8pMabA@mail.gmail.com>
+ <20141011090903.GC8231@sudip-PC>
+ <1413024491.16385.10.camel@joe-AO725>
+ <20141011113349.GA9962@sudip-PC>
+ <1413041569.16385.20.camel@joe-AO725> <20141011182510.GA1917@fool>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h8ukhw9eu.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: m.chehab@samsung.com, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, hverkuil@xs4all.nl, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f176.google.com (mail-qc0-f176.google.com
+ [209.85.216.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B48D261292
+ for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 05:04:35 +0200 (CEST)
+Received: by mail-qc0-f176.google.com with SMTP id r5so2094561qcx.7
+ for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 20:04:34 -0700 (PDT)
+In-Reply-To: <20141011182510.GA1917@fool>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Joe Perches <joe@perches.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/15/2014 11:05 AM, Takashi Iwai wrote:
+> > > > > > >
+> > > <snip>
+> > > > > > > ---
+> > > > > > >
+> > > > > >
+> > > > > > >  static int vortex_core_init(vortex_t *vortex)
+> > > > > > >  {
+> > > > > > >
+> > > > > > > -       pr_info( "Vortex: init.... ");
+> > > > > > > +       dev_info(vortex->card->dev, "init.... ");
+> > > > > >
+> > > > > > Is it possible to add linefeed  since "done/n" won't appear in
+the same
+> > > > > > line with init nor shutdown?
+> > > > > >
+> > > > > should we add linefeed ?
+> > > > > as of now it will print init.... then it will print done as the
+init is complete.
+> > > > > so dmesg will show us:
+> > > > >
+> > > > > init....done.
+> > > > >
+> > > > > same for shutdown.
+> > > > > but if we give linefeed , then it will become :
+> > > > >
+> > > > > init....
+> > > > > done.
+> > > > >
+> > > > > the meaning will be lost. and many user might just wonder what is
+done ?
+> > > > []
+> > > > > > > @@ -2738,7 +2744,7 @@ static int vortex_core_init(vortex_t
+*vortex)
+> > > > > > >  static int vortex_core_shutdown(vortex_t * vortex)
+> > > > > > >  {
+> > > > > > >
+> > > > > > > -       pr_info( "Vortex: shutdown...");
+> > > > > > > +       dev_info(vortex->card->dev, "shutdown...");
+> > > > > > >  #ifndef CHIP_AU8820
+> > > > > > >         vortex_eq_free(vortex);
+> > > > > > >         vortex_Vort3D_disable(vortex);
+> > > > > > > @@ -2760,7 +2766,7 @@ static int
+vortex_core_shutdown(vortex_t * vortex)
+> > > > > > >         msleep(5);
+> > > > > > >         hwwrite(vortex->mmio, VORTEX_IRQ_SOURCE, 0xffff);
+> > > > > > >
+> > > > > > > -       pr_info( "done.\n");
+> > > > > > > +       dev_info(vortex->card->dev, "done.\n");
+> > > > > > >         return 0;
+> > > > > > >  }
+> > > >
+> > > > It's actually on 2 lines before your patch.
+> > > >
+> > > >   pr_info("a");
+> > > >   pr_info("b\n");
+> > > >
+> > > > already emits 2 separate lines.
+> > > >
+> > > >   pr_info("a");
+> > > >   pr_cont("b\n");
+> > > >
+> > > > emits a single line "ab"
+> > > > (unless some other thread emits something in-between)
+> > > >
+> > > > pr_cont or a bare printk can be used after a dev_info
+> > > > without a newline to avoid unwanted newlines.
+> > >
+> > > i think i was not thinking while writing the previous mail.
+> >
+> > It seems you were thinking then and now,
+> > but unfortunately, you are assuming a bit
+> > more than you have actual experience or
+> > knowledge of printk inner workings.
+> >
+> > > pr_info("a");
+> > > pr_info("b\n");
+> > > should print as "ab" ,
+> >
+> > This is not true.
+> >
+> > All pr_<level> uses but pr_cont always
+> > start on a new line by emitting a newline
+> > if the last line did not have one.
+> >
+>
+> oops... i have never tried with pr_* without a \n. I was thinking it will
+> work like printf. sorry for the noise i created.
+> and thanks for the information about those 2 commits.
+> so, now in this case what will you suggest - shutdown and done both
+> terminated by \n or some thing like : "shutdown process started" and then
+> "shutdown done"....
+>
+> thanks
+> sudip
+>
+>
+> > The difference between using:
+> >
+> > pr_info("a")
+> > pr_info("b\n")
+> >
+> > and
+> >
+> > pr_info("a\n")
+> > pr_info("b\n")
+> >
+> > is not emitted line count.
+> >
+> > The first may unintentionally be continued
+> > by another thread using a printk that does
+> > not start with a KERN_<LEVEL>.
+> >
+> > printk has had this behavior for ~5 years
+> > since these 2 commits:
+> >
+> > commit e28d713704117bca0820c732210df6075b09f13b
+> > Author: Linus Torvalds <torvalds@linux-foundation.org>
+> > Date:   Tue Jun 16 11:02:28 2009 -0700
+> >
+> >     printk: Add KERN_DEFAULT printk log-level
+> >
+> >     This adds a KERN_DEFAULT loglevel marker, for when you cannot decide
+> >     which loglevel you want, and just want to keep an existing printk
+> >     with the default loglevel.
+> >
+> >     The difference between having KERN_DEFAULT and having no log-level
+> >     marker at all is two-fold:
+> >
+> >      - having the log-level marker will now force a new-line if the
+> >        previous printout had not added one (perhaps because it forgot,
+> >        but perhaps because it expected a continuation)
+> >
+> >      - having a log-level marker is required if you are printing out a
+> >        message that otherwise itself could perhaps otherwise be mistaken
+> >        for a log-level.
+> >
+> > and
+> >
+> > commit 5fd29d6ccbc98884569d6f3105aeca70858b3e0f
+> > Author: Linus Torvalds <torvalds@linux-foundation.org>
+> > Date:   Tue Jun 16 10:57:02 2009 -0700
+> >
+> >     printk: clean up handling of log-levels and newlines
+> >
+> >     It used to be that we would only look at the log-level in a printk()
+> >     after explicit newlines, which can cause annoying problems when the
+> >     previous printk() did not end with a '\n'. In that case, the
+log-level
+> >     marker would be just printed out in the middle of the line, and be
+> >     seen as just noise rather than change the logging level.
+> >
+> >     This changes things to always look at the log-level in the first
+> >     bytes of the printout. If a log level marker is found, it is always
+> >     used as the log-level. Additionally, if no newline existed, one is
+> >     added (unless the log-level is the explicit KERN_CONT marker, to
+> >     explicitly show that it's a continuation of a previous line).
+> >
+> >
+> >
 
->> +#if defined(CONFIG_MEDIA_SUPPORT)
->> +extern int media_tknres_create(struct device *dev);
->> +extern int media_tknres_destroy(struct device *dev);
->> +
->> +extern int media_get_tuner_tkn(struct device *dev);
->> +extern int media_put_tuner_tkn(struct device *dev);
->> +
->> +extern int media_get_audio_tkn(struct device *dev);
->> +extern int media_put_audio_tkn(struct device *dev);
-> 
-> The words "tknres" and "tkn" (especially latter) look ugly and not
-> clear to me.  IMO, it should be "token".
+Do the driver still need two dev_info at startup and shutdown since most
+pci drivers won't print anything to system log when the driver is loaded or
+unloaded ?
 
-No problem. I can change that to media_token_create/destroy()
-and expand token in other functions.
-
->> +struct media_tkn {
->> +	spinlock_t lock;
->> +	unsigned int owner;	/* owner task pid */
->> +	unsigned int tgid;	/* owner task gid */
->> +	struct task_struct *task;
->> +};
->> +
->> +struct media_tknres {
->> +	struct media_tkn tuner;
->> +	struct media_tkn audio;
->> +};
-> 
-> Why do you need to have both tuner and audio tokens?  If I understand
-> correctly, no matter whether it's tuner or audio, if it's being used,
-> the open must fail, right?
-
-As it evolved during development, it turns out at the moment I don't
-have any use-cases that require holding audio and tuner separately.
-It probably could be collapsed into just a media token. I have to
-think about this some.
-
->> +
->> +static int __media_get_tkn(struct media_tkn *tkn, char *tkn_str)
->> +{
->> +	int rc = 0;
->> +	unsigned tpid;
->> +	unsigned tgid;
->> +
->> +	spin_lock(&tkn->lock);
-> 
-> You should use spin_lock_irqsave() here and in all other places.
-> The trigger callback in usb-audio, for example, may be called in irq
-> context.
-
-ok. Good point, will change that.
-
-> 
->> +
->> +	tpid = task_pid_nr(current);
->> +	tgid = task_tgid_nr(current);
->> +
->> +	/* allow task in the same group id to release */
-> 
-> IMO, it's not "release" but "steal"...  But what happens if the stolen
-> owner calls put?  Then it'll be released although the stealing owner
-> still thinks it's being held.
-
-Yeah it could be called a steal. :) Essentially tgid happens to be
-the real owner. I am overwriting the pid with current pid when
-tgid is same.
-
-media dvb and v4l apps start two or more threads that all share the
-tgid and subsequent token gets should be allowed based on the tgid.
-
-Scenario 1:
-
-Please note that there are 3 device files in question and media
-token resource is the lock for all. Hence the changes to v4l-core,
-dvb-core, and snd-usb-audio to hold the token for exclusive access
-when the task or tgid don't match.
-
-program starts:
-- first thread opens device file in R/W mode - open gets the token
-  or thread makes ioctls calls that clearly indicates intent to
-  change tuner settings
-- creates one thread for audio
-- creates another for video or continues video function
-- video thread does a close and re-opens the device file
-
-  In this case when thread tries to close, token put fails unless
-  tasks with same tgid are allowed to release.
-  ( I ran into this one of the media applications and it is a valid
-    case to handle, thread can close the file and should be able to
-    open again without running into token busy case )
-
-- or continue to just use the device file
-- audio thread does snd_pcm_capture ops - trigger start
-
-program exits:
-- video thread closes the device file
-- audio thread does snd_pcm_capture ops - trigger stop
-
-This got me thinking about the scenario when an application
-does a fork() as opposed to create a thread. I have to think
-about this and see how I can address that.
-
-> 
->> +	if (tkn->task && ((tkn->task != current) && (tkn->tgid != tgid))) {
-> 
-> Shouldn't the second "&&" be "||" instead?
-> And too many parentheses there.
-
-Right - this is my bad. The comment right above this conditional
-is a give away that, at some point I did a copy and paste from
-_put to _get and only changed the first task null check.
-I am yelling at myself at the moment.
-
-> 
->> +			rc = -EBUSY;
-> 
-> Wrong indentation.
-
-Yes. Will fix that.
-
-> 
-> I have a feeling that the whole thing can be a bit more simplified in
-> the end...
-> 
-
-Any ideas to simplify are welcome.
-
-thanks,
--- Shuah
-
-
-
-
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+The only case when the driver is not loaded without any error message when
+user specify snd-au8830 index=0 but the other sound card (e.g.
+snd-usb-audio already loaded as card 0)
