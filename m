@@ -1,78 +1,44 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [alsa-devel] [PATCH v2 5/6] sound/usb: pcm changes to use media
- token api
-Date: Thu, 16 Oct 2014 08:39:14 -0600
-Message-ID: <543FD892.6010209@osg.samsung.com>
-References: <cover.1413246370.git.shuahkh@osg.samsung.com> <cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com> <543FB374.8020604@metafoo.de> <543FC3CD.8050805@osg.samsung.com> <s5h38aow1ub.wl-tiwai@suse.de> <543FD1EC.5010206@osg.samsung.com> <s5hy4sgumjo.wl-tiwai@suse.de>
+From: "Alexander E. Patrakov" <patrakov@gmail.com>
+Subject: Cards that support ADPCM in hardware
+Date: Thu, 16 Oct 2014 20:40:35 +0600
+Message-ID: <543FD8E3.3020802@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hy4sgumjo.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, m.chehab@samsung.com, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, hverkuil@xs4all.nl, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2649264EAA
+ for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 16:40:37 +0200 (CEST)
+Received: by mail-wg0-f45.google.com with SMTP id m15so3871167wgh.4
+ for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 07:40:37 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, davem@davemloft.net, adrian@mcmen.demon.co.uk, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-On 10/16/2014 08:16 AM, Takashi Iwai wrote:
-> At Thu, 16 Oct 2014 08:10:52 -0600,
-> Shuah Khan wrote:
->>
->> On 10/16/2014 08:01 AM, Takashi Iwai wrote:
->>> At Thu, 16 Oct 2014 07:10:37 -0600,
->>> Shuah Khan wrote:
->>>>
->>>> On 10/16/2014 06:00 AM, Lars-Peter Clausen wrote:
->>>>> On 10/14/2014 04:58 PM, Shuah Khan wrote:
->>>>> [...]
->>>>>>       switch (cmd) {
->>>>>>       case SNDRV_PCM_TRIGGER_START:
->>>>>> +        err = media_get_audio_tkn(&subs->dev->dev);
->>>>>> +        if (err == -EBUSY) {
->>>>>> +            dev_info(&subs->dev->dev, "%s device is busy\n",
->>>>>> +                    __func__);
->>>>>
->>>>> In my opinion this should not dev_info() as this is out of band error
->>>>> signaling and also as the potential to spam the log. The userspace
->>>>> application is already properly notified by the return code.
->>>>>
->>>>
->>>> Yes it has the potential to flood the dmesg especially with alsa,
->>>> I will remove the dev_info().
->>>
->>> Yes.  And, I think doing this in the trigger isn't the best.
->>> Why not in open & close?
->>
->> My first cut of this change was in open and close. I saw pulseaudio
->> application go into this loop trying to open the device. To avoid
->> such problems, I went with trigger stat and stop. That made all the
->> pulseaudio continues attempts to open problems go away.
-> 
-> But now starting the stream gives the error, and PA would loop it
-> again, no?
-> 
-> 
->>> Also, is this token restriction needed only for PCM?  No mixer or
->>> other controls?
->>
->> snd_pcm_ops are the only ones media drivers implement and use. So
->> I don't think mixer is needed. If it is needed, it is not to hard
->> to add for that case.
-> 
-> Well, then I wonder what resource does actually conflict with
-> usb-audio and media drivers at all...?
-> 
+Hello.
 
-audio for dvb/v4l apps gets disrupted when audio app starts. For
-example, dvb or v4l app tuned to a channel, and when an audio app
-starts. audio path needs protected to avoid conflicts between
-digital and analog applications as well.
+Due to the "remove support for old hardware" topic that is going to be 
+discussed at the Linux Plumbers Conference, let me see if there is 
+actually any supported hardware that supports ADPCM.
 
--- Shuah
+A quick grep for ADPCM in the sound directory yields this:
 
+./isa/wss/wss_lib.c: ISA, Windows sound system
+./isa/sb/sb16_{main,csp}.c: ISA, classic SB16 card
+./oss/ad1848.c: Another ISA card, OSS-only
+./sh/aica.c: for SEGA Dreamcast console
+./sparc/cs4231.c: I don't know about this
+
+Is any of the hardware listed above still used (or usable) with the 
+current kernels?
 
 -- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+Alexander E. Patrakov
