@@ -1,20 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC PATCH 1/2] ALSA: hda - Fix "PCM" name being
- used on one DAC when there are two DACs
-Date: Thu, 16 Oct 2014 23:02:32 +0800
-Message-ID: <CAN8cciZAteQAaG9GAxwLWyF6u5xH_fGtRDOTq5j+4LNoj_d_jA@mail.gmail.com>
-References: <1413466426-2672-1-git-send-email-david.henningsson@canonical.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v4 0/7] ASoC: Intel: sst - add the merrifield
+	IPC driver
+Date: Thu, 16 Oct 2014 20:00:12 +0530
+Message-ID: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qa0-f53.google.com (mail-qa0-f53.google.com
- [209.85.216.53])
- by alsa0.perex.cz (Postfix) with ESMTP id F03F92605C9
- for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 17:02:34 +0200 (CEST)
-Received: by mail-qa0-f53.google.com with SMTP id v10so2456838qac.26
- for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 08:02:34 -0700 (PDT)
-In-Reply-To: <1413466426-2672-1-git-send-email-david.henningsson@canonical.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED5552605C9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 17:06:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,24 +19,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
->
-> In the scenario where there is one "Line Out", one "Speaker" and one
-> "Headphone", and there are only two DACs, two outputs will share a DAC.
-> Currently any mixer on such a DAC will get the "PCM" name, which is
-> misleading. Instead use "Headphone+LO" or "Speaker+LO" to better
-> specify what the volume actually controls.
+This path series adds the Merrifield IPC driver which is used to load and
+manage the DSP along with sending and receiving IPCs for PCM and compressed
+audio.
 
-Are there any examples ?
+v4 updates:
+ - fix the comment style issues
+ - fix for id allocation handling
+ - modularize the code to remove few repated patterns
+ - comments from previos rev (hopefully didnt miss anything) 
 
-seem there are two cases
+Vinod Koul (7):
+  ASoC: Intel: mrfld - add the dsp sst driver
+  ASoC: Intel: mrfld - Add DSP load and management
+  ASoC: Intel: sst - add pcm ops handling
+  ASoC: Intel: sst: Add IPC handling
+  ASoC: Intel: sst: add stream operations
+  ASoC: Intel: sst: Add some helper functions
+  ASoC: Intel: sst: Add makefile and kconfig changes
 
-1) business desktop with internal speaker
-2) notebook with dock line out
-
-https://launchpadlibrarian.net/186782123/AlsaInfo.txt
-
->
+ arch/x86/include/asm/platform_sst_audio.h |   34 ++
+ sound/soc/intel/Kconfig                   |    4 +
+ sound/soc/intel/Makefile                  |    3 +
+ sound/soc/intel/sst/Makefile              |    3 +
+ sound/soc/intel/sst/sst.c                 |  434 +++++++++++++++++++++++
+ sound/soc/intel/sst/sst.h                 |  539 +++++++++++++++++++++++++++++
+ sound/soc/intel/sst/sst_drv_interface.c   |  403 +++++++++++++++++++++
+ sound/soc/intel/sst/sst_ipc.c             |  358 +++++++++++++++++++
+ sound/soc/intel/sst/sst_loader.c          |  461 ++++++++++++++++++++++++
+ sound/soc/intel/sst/sst_pvt.c             |  446 ++++++++++++++++++++++++
+ sound/soc/intel/sst/sst_stream.c          |  437 +++++++++++++++++++++++
+ 11 files changed, 3122 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/intel/sst/Makefile
+ create mode 100644 sound/soc/intel/sst/sst.c
+ create mode 100644 sound/soc/intel/sst/sst.h
+ create mode 100644 sound/soc/intel/sst/sst_drv_interface.c
+ create mode 100644 sound/soc/intel/sst/sst_ipc.c
+ create mode 100644 sound/soc/intel/sst/sst_loader.c
+ create mode 100644 sound/soc/intel/sst/sst_pvt.c
+ create mode 100644 sound/soc/intel/sst/sst_stream.c
