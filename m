@@ -1,42 +1,63 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [alsa-devel] [PATCH v2 5/6] sound/usb: pcm changes to use media
- token api
-Date: Thu, 16 Oct 2014 07:10:37 -0600
-Message-ID: <543FC3CD.8050805@osg.samsung.com>
-References: <cover.1413246370.git.shuahkh@osg.samsung.com> <cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com> <543FB374.8020604@metafoo.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [RFC PATCH 1/2] ALSA: hda - Fix "PCM" name being used
+	on one DAC when there are two DACs
+Date: Thu, 16 Oct 2014 15:33:45 +0200
+Message-ID: <1413466426-2672-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <543FB374.8020604@metafoo.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, m.chehab@samsung.com, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, hverkuil@xs4all.nl, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, tiwai@suse.de, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBF3E2605C9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 15:33:50 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/16/2014 06:00 AM, Lars-Peter Clausen wrote:
-> On 10/14/2014 04:58 PM, Shuah Khan wrote:
-> [...]
->>       switch (cmd) {
->>       case SNDRV_PCM_TRIGGER_START:
->> +        err = media_get_audio_tkn(&subs->dev->dev);
->> +        if (err == -EBUSY) {
->> +            dev_info(&subs->dev->dev, "%s device is busy\n",
->> +                    __func__);
-> 
-> In my opinion this should not dev_info() as this is out of band error
-> signaling and also as the potential to spam the log. The userspace
-> application is already properly notified by the return code.
-> 
+In the scenario where there is one "Line Out", one "Speaker" and one
+"Headphone", and there are only two DACs, two outputs will share a DAC.
+Currently any mixer on such a DAC will get the "PCM" name, which is
+misleading. Instead use "Headphone+LO" or "Speaker+LO" to better
+specify what the volume actually controls.
 
-Yes it has the potential to flood the dmesg especially with alsa,
-I will remove the dev_info().
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_generic.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-thanks,
--- Shuah
-
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 64220c0..1d742ea 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -1038,6 +1038,19 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
+ 			break;
+ 		*index = ch;
+ 		return "Headphone";
++	case AUTO_PIN_LINE_OUT:
++		/* This deals with the case where we have two DACs and 
++		 * one LO, one HP and one Speaker */
++		if (!ch && cfg->speaker_outs && cfg->hp_outs) {
++			bool hp_lo_shared = !path_has_mixer(codec, spec->hp_paths[0], ctl_type);
++			bool spk_lo_shared = !path_has_mixer(codec, spec->speaker_paths[0], ctl_type);
++			if (hp_lo_shared && spk_lo_shared) 
++				return spec->vmaster_mute.hook ? "PCM" : "Master";
++			if (hp_lo_shared)
++				return "Headphone+LO";
++			if (spk_lo_shared)
++				return "Speaker+LO";
++		}
+ 	}
+ 
+ 	/* for a single channel output, we don't have to name the channel */
 -- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+1.9.1
