@@ -1,197 +1,155 @@
-From: Anatol Pomozov <anatol.pomozov@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: rt5677: Add TDM channel select
-	function
-Date: Wed, 15 Oct 2014 16:21:41 -0700
-Message-ID: <CAOMFOmUY5DPSP7Znd9OP0e+QJGPQEV1oS7UgBPJ1OQEPvdckzA@mail.gmail.com>
-References: <1413367334-12615-1-git-send-email-oder_chiou@realtek.com>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [PATCH v2 1/6] media: add media token device resource framework
+Date: Wed, 15 Oct 2014 18:53:28 -0600
+Message-ID: <543F1708.1040303@osg.samsung.com>
+References: <cover.1413246370.git.shuahkh@osg.samsung.com> <c8bae1d475b1086302fcb83bc463ec01437c3f95.1413246372.git.shuahkh@osg.samsung.com> <s5h8ukhw9eu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f175.google.com (mail-vc0-f175.google.com
- [209.85.220.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F16826109C
- for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 01:21:42 +0200 (CEST)
-Received: by mail-vc0-f175.google.com with SMTP id id10so1799206vcb.6
- for <alsa-devel@alsa-project.org>; Wed, 15 Oct 2014 16:21:41 -0700 (PDT)
-In-Reply-To: <1413367334-12615-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>, flove@realtek.com
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h8ukhw9eu.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: m.chehab@samsung.com, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, hverkuil@xs4all.nl, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On 10/15/2014 11:05 AM, Takashi Iwai wrote:
 
-On Wed, Oct 15, 2014 at 3:02 AM, Oder Chiou <oder_chiou@realtek.com> wrote:
-> Add TDM channel select function.
->
-> Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-> ---
->  sound/soc/codecs/rt5677.c | 75 +++++++++++++++++++++++++++++++++++++++++++++++
->  sound/soc/codecs/rt5677.h | 16 ++++++++--
->  2 files changed, 89 insertions(+), 2 deletions(-)
->
-> diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-> index 9f07146..52cbb56 100644
-> --- a/sound/soc/codecs/rt5677.c
-> +++ b/sound/soc/codecs/rt5677.c
-> @@ -795,6 +795,14 @@ static unsigned int bst_tlv[] = {
->         8, 8, TLV_DB_SCALE_ITEM(5200, 0, 0),
->  };
->
-> +static const char * const rt5677_adc_tdm_mode[] = {
-> +       "1/2/3/4", "2/1/3/4", "2/3/1/4", "4/1/2/3", "1/3/2/4", "1/4/2/3",
-> +       "3/1/2/4", "3/4/1/2"
-> +};
-> +
-> +static SOC_ENUM_SINGLE_DECL(rt5677_adc_tdm_mode_enum,
-> +       SND_SOC_NOPM, 0, rt5677_adc_tdm_mode);
-> +
->  static int rt5677_dsp_vad_get(struct snd_kcontrol *kcontrol,
->                 struct snd_ctl_elem_value *ucontrol)
->  {
-> @@ -820,6 +828,68 @@ static int rt5677_dsp_vad_put(struct snd_kcontrol *kcontrol,
->         return 0;
->  }
->
-> +static int rt5677_if1_adc_tdm_get(struct snd_kcontrol *kcontrol,
-> +               struct snd_ctl_elem_value *ucontrol)
-> +{
-> +       struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+>> +#if defined(CONFIG_MEDIA_SUPPORT)
+>> +extern int media_tknres_create(struct device *dev);
+>> +extern int media_tknres_destroy(struct device *dev);
+>> +
+>> +extern int media_get_tuner_tkn(struct device *dev);
+>> +extern int media_put_tuner_tkn(struct device *dev);
+>> +
+>> +extern int media_get_audio_tkn(struct device *dev);
+>> +extern int media_put_audio_tkn(struct device *dev);
+> 
+> The words "tknres" and "tkn" (especially latter) look ugly and not
+> clear to me.  IMO, it should be "token".
 
-When I use this patch I get a kernel crash in the next line. I need to
-use snd_soc_kcontrol_codec() instead of snd_kcontrol_chip() then it
-works fine.
+No problem. I can change that to media_token_create/destroy()
+and expand token in other functions.
 
-I tested the patch by backporting it to 3.14.
+>> +struct media_tkn {
+>> +	spinlock_t lock;
+>> +	unsigned int owner;	/* owner task pid */
+>> +	unsigned int tgid;	/* owner task gid */
+>> +	struct task_struct *task;
+>> +};
+>> +
+>> +struct media_tknres {
+>> +	struct media_tkn tuner;
+>> +	struct media_tkn audio;
+>> +};
+> 
+> Why do you need to have both tuner and audio tokens?  If I understand
+> correctly, no matter whether it's tuner or audio, if it's being used,
+> the open must fail, right?
 
-> +       struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-> +       unsigned int value;
-> +
-> +       regmap_read(rt5677->regmap, RT5677_TDM1_CTRL2, &value);
-> +
-> +       ucontrol->value.integer.value[0] = value & RT5677_IF1_ADC_CTRL_MASK;
-> +
-> +       return 0;
-> +}
-> +
-> +static int rt5677_if1_adc_tdm_put(struct snd_kcontrol *kcontrol,
-> +               struct snd_ctl_elem_value *ucontrol)
-> +{
-> +       struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-> +       struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-> +
-> +       unsigned int value = ucontrol->value.integer.value[0];
-> +
-> +       regmap_update_bits(rt5677->regmap, RT5677_TDM1_CTRL2,
-> +               RT5677_IF1_ADC_CTRL_MASK, value);
-> +
-> +       regmap_update_bits(rt5677->regmap, RT5677_TDM1_CTRL1,
-> +               RT5677_IF1_ADC_MODE_MASK, (!!value) << RT5677_IF1_ADC_MODE_SFT);
-> +
-> +       return 0;
-> +}
-> +
-> +static int rt5677_if2_adc_tdm_get(struct snd_kcontrol *kcontrol,
-> +               struct snd_ctl_elem_value *ucontrol)
-> +{
-> +       struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-> +       struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-> +       unsigned int value;
-> +
-> +       regmap_read(rt5677->regmap, RT5677_TDM2_CTRL2, &value);
-> +
-> +       ucontrol->value.integer.value[0] = value & RT5677_IF2_ADC_CTRL_MASK;
-> +
-> +       return 0;
-> +}
-> +
-> +static int rt5677_if2_adc_tdm_put(struct snd_kcontrol *kcontrol,
-> +               struct snd_ctl_elem_value *ucontrol)
-> +{
-> +       struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-> +       struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-> +
-> +       unsigned int value = ucontrol->value.integer.value[0];
-> +
-> +       regmap_update_bits(rt5677->regmap, RT5677_TDM2_CTRL2,
-> +               RT5677_IF2_ADC_CTRL_MASK, value);
-> +
-> +       regmap_update_bits(rt5677->regmap, RT5677_TDM2_CTRL1,
-> +               RT5677_IF2_ADC_MODE_MASK, (!!value) << RT5677_IF2_ADC_MODE_SFT);
-> +
-> +       return 0;
-> +}
-> +
->  static const struct snd_kcontrol_new rt5677_snd_controls[] = {
->         /* OUTPUT Control */
->         SOC_SINGLE("OUT1 Playback Switch", RT5677_LOUT1,
-> @@ -894,6 +964,11 @@ static const struct snd_kcontrol_new rt5677_snd_controls[] = {
->
->         SOC_SINGLE_EXT("DSP VAD Switch", SND_SOC_NOPM, 0, 1, 0,
->                 rt5677_dsp_vad_get, rt5677_dsp_vad_put),
-> +
-> +       SOC_ENUM_EXT("ADC1 TDM Channel Switch", rt5677_adc_tdm_mode_enum,
-> +               rt5677_if1_adc_tdm_get, rt5677_if1_adc_tdm_put),
-> +       SOC_ENUM_EXT("ADC2 TDM Channel Switch", rt5677_adc_tdm_mode_enum,
-> +               rt5677_if2_adc_tdm_get, rt5677_if2_adc_tdm_put),
->  };
->
->  /**
-> diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-> index 20efa4a..20223eb 100644
-> --- a/sound/soc/codecs/rt5677.h
-> +++ b/sound/soc/codecs/rt5677.h
-> @@ -799,7 +799,11 @@
->  #define RT5677_PDM2_I2C_EXE                    (0x1 << 1)
->  #define RT5677_PDM2_I2C_BUSY                   (0x1 << 0)
->
-> -/* MX3C TDM1 control 1 (0x3c) */
-> +/* MX3B TDM1 control 1 (0x3b) */
-> +#define RT5677_IF1_ADC_MODE_MASK               (0x1 << 12)
-> +#define RT5677_IF1_ADC_MODE_SFT                        12
-> +
-> +/* MX3C TDM1 control 2 (0x3c) */
->  #define RT5677_IF1_ADC4_MASK                   (0x3 << 10)
->  #define RT5677_IF1_ADC4_SFT                    10
->  #define RT5677_IF1_ADC3_MASK                   (0x3 << 8)
-> @@ -808,8 +812,14 @@
->  #define RT5677_IF1_ADC2_SFT                    6
->  #define RT5677_IF1_ADC1_MASK                   (0x3 << 4)
->  #define RT5677_IF1_ADC1_SFT                    4
-> +#define RT5677_IF1_ADC_CTRL_MASK               (0x7 << 0)
-> +#define RT5677_IF1_ADC_CTRL_SFT                        0
-> +
-> +/* MX40 TDM2 control 1 (0x40) */
-> +#define RT5677_IF2_ADC_MODE_MASK               (0x1 << 12)
-> +#define RT5677_IF2_ADC_MODE_SFT                        12
->
-> -/* MX41 TDM2 control 1 (0x41) */
-> +/* MX41 TDM2 control 2 (0x41) */
->  #define RT5677_IF2_ADC4_MASK                   (0x3 << 10)
->  #define RT5677_IF2_ADC4_SFT                    10
->  #define RT5677_IF2_ADC3_MASK                   (0x3 << 8)
-> @@ -818,6 +828,8 @@
->  #define RT5677_IF2_ADC2_SFT                    6
->  #define RT5677_IF2_ADC1_MASK                   (0x3 << 4)
->  #define RT5677_IF2_ADC1_SFT                    4
-> +#define RT5677_IF2_ADC_CTRL_MASK               (0x7 << 0)
-> +#define RT5677_IF2_ADC_CTRL_SFT                        0
->
->  /* Digital Microphone Control 1 (0x50) */
->  #define RT5677_DMIC_1_EN_MASK                  (0x1 << 15)
-> --
-> 1.8.1.1.439.g50a6b54
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+As it evolved during development, it turns out at the moment I don't
+have any use-cases that require holding audio and tuner separately.
+It probably could be collapsed into just a media token. I have to
+think about this some.
+
+>> +
+>> +static int __media_get_tkn(struct media_tkn *tkn, char *tkn_str)
+>> +{
+>> +	int rc = 0;
+>> +	unsigned tpid;
+>> +	unsigned tgid;
+>> +
+>> +	spin_lock(&tkn->lock);
+> 
+> You should use spin_lock_irqsave() here and in all other places.
+> The trigger callback in usb-audio, for example, may be called in irq
+> context.
+
+ok. Good point, will change that.
+
+> 
+>> +
+>> +	tpid = task_pid_nr(current);
+>> +	tgid = task_tgid_nr(current);
+>> +
+>> +	/* allow task in the same group id to release */
+> 
+> IMO, it's not "release" but "steal"...  But what happens if the stolen
+> owner calls put?  Then it'll be released although the stealing owner
+> still thinks it's being held.
+
+Yeah it could be called a steal. :) Essentially tgid happens to be
+the real owner. I am overwriting the pid with current pid when
+tgid is same.
+
+media dvb and v4l apps start two or more threads that all share the
+tgid and subsequent token gets should be allowed based on the tgid.
+
+Scenario 1:
+
+Please note that there are 3 device files in question and media
+token resource is the lock for all. Hence the changes to v4l-core,
+dvb-core, and snd-usb-audio to hold the token for exclusive access
+when the task or tgid don't match.
+
+program starts:
+- first thread opens device file in R/W mode - open gets the token
+  or thread makes ioctls calls that clearly indicates intent to
+  change tuner settings
+- creates one thread for audio
+- creates another for video or continues video function
+- video thread does a close and re-opens the device file
+
+  In this case when thread tries to close, token put fails unless
+  tasks with same tgid are allowed to release.
+  ( I ran into this one of the media applications and it is a valid
+    case to handle, thread can close the file and should be able to
+    open again without running into token busy case )
+
+- or continue to just use the device file
+- audio thread does snd_pcm_capture ops - trigger start
+
+program exits:
+- video thread closes the device file
+- audio thread does snd_pcm_capture ops - trigger stop
+
+This got me thinking about the scenario when an application
+does a fork() as opposed to create a thread. I have to think
+about this and see how I can address that.
+
+> 
+>> +	if (tkn->task && ((tkn->task != current) && (tkn->tgid != tgid))) {
+> 
+> Shouldn't the second "&&" be "||" instead?
+> And too many parentheses there.
+
+Right - this is my bad. The comment right above this conditional
+is a give away that, at some point I did a copy and paste from
+_put to _get and only changed the first task null check.
+I am yelling at myself at the moment.
+
+> 
+>> +			rc = -EBUSY;
+> 
+> Wrong indentation.
+
+Yes. Will fix that.
+
+> 
+> I have a feeling that the whole thing can be a bit more simplified in
+> the end...
+> 
+
+Any ideas to simplify are welcome.
+
+thanks,
+-- Shuah
+
+
+
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
