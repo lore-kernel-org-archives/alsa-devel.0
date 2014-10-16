@@ -1,51 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC PATCH 1/2] ALSA: hda - Fix "PCM" name being
- used on one DAC when there are two DACs
-Date: Thu, 16 Oct 2014 17:10:22 +0200
-Message-ID: <543FDFDE.7040800@canonical.com>
-References: <1413466426-2672-1-git-send-email-david.henningsson@canonical.com>
- <CAN8cciZAteQAaG9GAxwLWyF6u5xH_fGtRDOTq5j+4LNoj_d_jA@mail.gmail.com>
+From: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [PATCH v2 01/53] dmaengine: Make the destination abbreviation
+ coherent
+Date: Thu, 16 Oct 2014 09:26:51 -0600
+Message-ID: <543FE3BB.5090803@wwwdotorg.org>
+References: <1413454672-27400-1-git-send-email-maxime.ripard@free-electrons.com> <1413454672-27400-2-git-send-email-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 73E5B264FFB
- for <alsa-devel@alsa-project.org>; Thu, 16 Oct 2014 17:10:23 +0200 (CEST)
-In-Reply-To: <CAN8cciZAteQAaG9GAxwLWyF6u5xH_fGtRDOTq5j+4LNoj_d_jA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1413454672-27400-2-git-send-email-maxime.ripard@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>, dmaengine@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, =?windows-1252?Q?Antoine_T=E9nart?= <antoine@free-electrons.com>, lars@metafoo.de, Russell King <linux@arm.linux.org.uk>, Dan Williams <dan.j.williams@intel.com>, Barry Song <baohua@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-rpi-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 10/16/2014 04:17 AM, Maxime Ripard wrote:
+> The dmaengine header abbreviates destination as at least two different strings.
+> Make a coherent use of a single one.
 
-On 2014-10-16 17:02, Raymond Yau wrote:
->
->
-> >
-> > In the scenario where there is one "Line Out", one "Speaker" and one
-> > "Headphone", and there are only two DACs, two outputs will share a DAC.
-> > Currently any mixer on such a DAC will get the "PCM" name, which is
-> > misleading. Instead use "Headphone+LO" or "Speaker+LO" to better
-> > specify what the volume actually controls.
->
-> Are there any examples ?
->
-
-I used "hda-emu 
-codecs/canonical/alc3226-dell-precision-m2800-ccert-201404-14986 -i 1" 
-when developing the patches.
-
-I don't have any hardware available myself that exposes this behavior, 
-but I can maybe fake one with hdajackretask, if that counts...
-
-// David
+Acked-by: Stephen Warren <swarren@wwwdotorg.org>
