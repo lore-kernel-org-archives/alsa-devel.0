@@ -1,16 +1,16 @@
 From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Subject: [PATCH 1/2] ASoC: Intel: Add new dependency for
-	Broadwell machine
-Date: Thu, 16 Oct 2014 18:22:01 -0700
-Message-ID: <1413508922-27567-2-git-send-email-ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: Intel: Add new dependency for
+	Haswell machine
+Date: Thu, 16 Oct 2014 18:22:02 -0700
+Message-ID: <1413508922-27567-3-git-send-email-ricardo.neri-calderon@linux.intel.com>
 References: <1413508922-27567-1-git-send-email-ricardo.neri-calderon@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 24221260640
- for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2014 03:24:12 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D189F260643
+ for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2014 03:24:13 +0200 (CEST)
 In-Reply-To: <1413508922-27567-1-git-send-email-ricardo.neri-calderon@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,8 +25,8 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.
 Cc: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, alsa-devel@alsa-project.org, "Glenn P. Williamson" <glenn.p.williamson@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-I2C support for the RT286 codec is provided through the Designware I2C
-platform adapter in this machine. Thus, the adapter driver must be present.
+I2C support for the RT5640 codec is provided through the Designware
+I2C platform adapter in this machine. Thus, the driver must be present.
 
 Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 ---
@@ -34,18 +34,18 @@ Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index f5b4a9c7..83d5ed1 100644
+index 83d5ed1..ac03e69 100644
 --- a/sound/soc/intel/Kconfig
 +++ b/sound/soc/intel/Kconfig
-@@ -61,7 +61,8 @@ config SND_SOC_INTEL_BYT_MAX98090_MACH
+@@ -32,7 +32,8 @@ config SND_SOC_INTEL_BAYTRAIL
  
- config SND_SOC_INTEL_BROADWELL_MACH
- 	tristate "ASoC Audio DSP support for Intel Broadwell Wildcatpoint"
--	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS && DW_DMAC
-+	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS && DW_DMAC && \\
+ config SND_SOC_INTEL_HASWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
+-	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS && I2C
++	depends on SND_SOC_INTEL_SST && X86_INTEL_LPSS && I2C && \\
 +		   I2C_DESIGNWARE_PLATFORM
  	select SND_SOC_INTEL_HASWELL
- 	select SND_COMPRESS_OFFLOAD
- 	select SND_SOC_RT286
+ 	select SND_SOC_RT5640
+ 	help
 -- 
 1.9.1
