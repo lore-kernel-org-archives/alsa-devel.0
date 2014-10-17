@@ -1,17 +1,16 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 0/7] ASoC: Intel: sst - add the
-	merrifield IPC driver
-Date: Fri, 17 Oct 2014 17:26:17 +0530
-Message-ID: <20141017115617.GT1638@intel.com>
-References: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
- <20141017121539.GI1820@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5677: add GPIO IRQ support
+Date: Fri, 17 Oct 2014 14:48:05 +0200
+Message-ID: <20141017124805.GP1820@sirena.org.uk>
+References: <1413483866-38815-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2133962298934407501=="
+Content-Type: multipart/mixed; boundary="===============4355499525059182985=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 864592651EB
- for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2014 14:32:19 +0200 (CEST)
-In-Reply-To: <20141017121539.GI1820@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6880262631
+ for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2014 14:48:23 +0200 (CEST)
+In-Reply-To: <1413483866-38815-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,71 +20,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2133962298934407501==
+--===============4355499525059182985==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kAOhhqH5290wydqT"
+	protocol="application/pgp-signature"; boundary="zxEKvxCKojqA/Afl"
 Content-Disposition: inline
 
 
---kAOhhqH5290wydqT
+--zxEKvxCKojqA/Afl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 17, 2014 at 02:15:39PM +0200, Mark Brown wrote:
-> On Thu, Oct 16, 2014 at 08:00:12PM +0530, Vinod Koul wrote:
+On Thu, Oct 16, 2014 at 11:24:26AM -0700, Anatol Pomozov wrote:
+> This allows to enable Mic Jack detection feature
 >=20
-> > This path series adds the Merrifield IPC driver which is used to load a=
-nd
-> > manage the DSP along with sending and receiving IPCs for PCM and compre=
-ssed
-> > audio.
->=20
-> I had some concerns that I replied to the individual patches with but
-> they're all pretty minor so I've applied everything - please send
-> followup patches dealing with these things.
-Thanks a bunch,
+> Author: Oder Chiou <oder_chiou@realtek.com>
+> Modified-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
 
-Sure I will follow up with you on those. Time to catch the plane now :)
+I can't really apply this without a signoff from Oder I'm afraid - Oder?
 
---=20
-~Vinod
-
---kAOhhqH5290wydqT
+--zxEKvxCKojqA/Afl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
-Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+Version: GnuPG v2
 
-iQIcBAEBAgAGBQJUQQPhAAoJEHwUBw8lI4NHZJwP/0iq2k/b1IMz8KpUESPLPZ+V
-V4H8/4r+zH0HqXhfJpER6QvpGeIs12vMZMOdXGKA09WL8woQkSlPiY5dbMceD62a
-Qq6uwOtaPIjp//xvglbX+ci7FVG/2yobw7bt+m9XqtNnGKjduFYx3gEPOl22OCM8
-2OUAKhfRwniKYN0GNbPgbHBaMvAdiVW9PCNni3kS5rwEqOLnDiRIJQwMT/h4HwvR
-LsCYv1HHwOpYobBM11RomxA3gA7eYV44C1xv6Gta1+31hgT3Jn4owJP1pI2pWvwg
-2oAODG0e+KpegBFCF7cZ8s5DxalB53EkZXkvX3MBVT5zKFm5DhR0Atf2tb0ocbMl
-iKyHJE1qesJx9ioV31JH5w5DJZIOlsted7KyOMTXLjbFVwejIsl09dDlWoleGQqT
-Qy8WjFqOgVJXy2Ax5LIFw3iSxTwE6mYMZ1AVtyPTXq0Tqz+V6VMMxiFVsS9Wsw5n
-UuZS1pqWE7nOFjlYHOfFXkaZbzItbhA0dMNp7kxaYeK2bWey7+a+cLq5xD6CqN3j
-OnDxRVeec2tLanH2QpQMiqKt4H+AqjsAj3QUKFruaez2DRvz+NvJB5wNE2GR3P34
-HL6cY+1taH77ticTC1uIf1AfVEN9TvMlYqhMUEcMg0SYkLftEVTWxg+ZLrHgSDKA
-IX0hOZ68IX3uIEw2/jed
-=lu2S
+iQEcBAEBAgAGBQJUQRAFAAoJECTWi3JdVIfQjNQH/i8ul7yIFiXFu0gD2pBUbINM
+WXjCHy/JcjNZHS5yzCP5vv3gkBX1XxFdqJ1Zdjm99LeiKDIe+BsVWpdMxUqnEBbR
+AljDI6EIjSTNNChT/lYFneu77GO7WPL6ClWHel9lmJryLo7GC0xM0aJzJDQc9yKE
+dfUb9HwBZARWoJU+8FiV5xSZiVk5EC+peadHk4dbwPz+cRlw7jJeZXUim4QMlfpX
+Mj51NzVdT/oypjxr2mb1lct5C9RrAnfCUcF8omOQrzd+9dzh995sT5tKTuGDhGwu
+CKiUafSO8CIs5C3Tf48wpYLfJ2C35g6t3Iir2T84PbhykYNFGIvuBfu/OskNV+k=
+=nuUH
 -----END PGP SIGNATURE-----
 
---kAOhhqH5290wydqT--
+--zxEKvxCKojqA/Afl--
 
---===============2133962298934407501==
+--===============4355499525059182985==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2133962298934407501==--
+--===============4355499525059182985==--
