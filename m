@@ -1,17 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 4/7] ASoC: Intel: sst: Add IPC handling
-Date: Fri, 17 Oct 2014 17:25:24 +0530
-Message-ID: <20141017115524.GS1638@intel.com>
+Subject: Re: [PATCH v4 0/7] ASoC: Intel: sst - add the
+	merrifield IPC driver
+Date: Fri, 17 Oct 2014 17:26:17 +0530
+Message-ID: <20141017115617.GT1638@intel.com>
 References: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
- <1413469819-18775-5-git-send-email-vinod.koul@intel.com>
- <20141017120918.GH1820@sirena.org.uk>
+ <20141017121539.GI1820@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5223806935103490722=="
+Content-Type: multipart/mixed; boundary="===============2133962298934407501=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D6CD926063B
- for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2014 14:31:41 +0200 (CEST)
-In-Reply-To: <20141017120918.GH1820@sirena.org.uk>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 864592651EB
+ for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2014 14:32:19 +0200 (CEST)
+In-Reply-To: <20141017121539.GI1820@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,41 +26,37 @@ Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.c
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5223806935103490722==
+--===============2133962298934407501==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mzmkN2k+aDjaU9Rr"
+	protocol="application/pgp-signature"; boundary="kAOhhqH5290wydqT"
 Content-Disposition: inline
 
 
---mzmkN2k+aDjaU9Rr
+--kAOhhqH5290wydqT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 17, 2014 at 02:09:18PM +0200, Mark Brown wrote:
-> On Thu, Oct 16, 2014 at 08:00:16PM +0530, Vinod Koul wrote:
+On Fri, Oct 17, 2014 at 02:15:39PM +0200, Mark Brown wrote:
+> On Thu, Oct 16, 2014 at 08:00:12PM +0530, Vinod Koul wrote:
 >=20
-> > +	spin_unlock_bh(&ctx->block_lock);
-> > +	dev_dbg(ctx->dev,
-> > +		"Block not found or a response received for a short msg for ipc %d, =
-drv_id %d\n",
-> > +		ipc, drv_id);
-> > +	return -EINVAL;
+> > This path series adds the Merrifield IPC driver which is used to load a=
+nd
+> > manage the DSP along with sending and receiving IPCs for PCM and compre=
+ssed
+> > audio.
 >=20
-> Shouldn't this be a dev_err() or something?
-Not really.
+> I had some concerns that I replied to the individual patches with but
+> they're all pretty minor so I've applied everything - please send
+> followup patches dealing with these things.
+Thanks a bunch,
 
-We get response from FW which cna be short or long. In former there wont be
-anyone waiting as all blocked ones are large.
-We cant distiguish between the two thats why we log debug message here. If
-its real then finally the message will timeout and we would see that as
-error. Yes this is limiation in IPC.
-Putting this as err makes log very noisy :(
+Sure I will follow up with you on those. Time to catch the plane now :)
 
 --=20
 ~Vinod
 
---mzmkN2k+aDjaU9Rr
+--kAOhhqH5290wydqT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -68,28 +64,28 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iQIcBAEBAgAGBQJUQQOsAAoJEHwUBw8lI4NHQiIQAIXDTdm1DM96KDueC/Fwj6s5
-G2iTl+j/cnC2UHkrSlW13CeIEhwoAz5eoSq7TOJbPpjt0JlhC15bgHPanmNqjo/e
-hKYwaBrpVZb+IRQuuSztKDyoQUbPwNnabQ1CMLYPlO8NDiPrX9hrI0CBlGtFZkuH
-nUl1U1xd0kHmDUB772RNB4xQiR1vTXf5neNq7CSdymBlAdJlQEjIp0gI8sBHw9fL
-HQun4MZhw7cph8OU3oz/AMflbqSeOdYf6BJzYu6on6q8zJLEl11q1nMpl6igH+DU
-vfeVFs/lTyQf345JmGcqvJ5UL493US5WEDBdl4vEuZACB2iPtms4HlFRIMqBU82N
-QvOa4/+1i3iGF5wayZ6jYPutwXnipi3vpd4jr7v5+P5wCdb3MSGXYswgkuAojTLe
-vuvi7ogEE9gpK5l0DVQbPQhfwYlWu8CxY/wIFjxHm+Zbd0VM/6dv8vVYc8yDjTIq
-svest3GgPmOkQHWGQLCdfIMoZ+Wi8uBn2IsorR58rmzabHWh7IbCX8lnQrQW3GS2
-mZsSW/YGDsSaGsKyVXqUXogUE6G6ToLQkH3qXnLNTCQaAEXsw5ghzQ4kyrAzKkB7
-qIH/od2kQQMXrGjoga5yrPJW7MaV5oB8jG1B6hN/6n4g/RmEYVzTH8UWLnQGnqnS
-qrxJRigwW7BK7ZlMKuPL
-=rp12
+iQIcBAEBAgAGBQJUQQPhAAoJEHwUBw8lI4NHZJwP/0iq2k/b1IMz8KpUESPLPZ+V
+V4H8/4r+zH0HqXhfJpER6QvpGeIs12vMZMOdXGKA09WL8woQkSlPiY5dbMceD62a
+Qq6uwOtaPIjp//xvglbX+ci7FVG/2yobw7bt+m9XqtNnGKjduFYx3gEPOl22OCM8
+2OUAKhfRwniKYN0GNbPgbHBaMvAdiVW9PCNni3kS5rwEqOLnDiRIJQwMT/h4HwvR
+LsCYv1HHwOpYobBM11RomxA3gA7eYV44C1xv6Gta1+31hgT3Jn4owJP1pI2pWvwg
+2oAODG0e+KpegBFCF7cZ8s5DxalB53EkZXkvX3MBVT5zKFm5DhR0Atf2tb0ocbMl
+iKyHJE1qesJx9ioV31JH5w5DJZIOlsted7KyOMTXLjbFVwejIsl09dDlWoleGQqT
+Qy8WjFqOgVJXy2Ax5LIFw3iSxTwE6mYMZ1AVtyPTXq0Tqz+V6VMMxiFVsS9Wsw5n
+UuZS1pqWE7nOFjlYHOfFXkaZbzItbhA0dMNp7kxaYeK2bWey7+a+cLq5xD6CqN3j
+OnDxRVeec2tLanH2QpQMiqKt4H+AqjsAj3QUKFruaez2DRvz+NvJB5wNE2GR3P34
+HL6cY+1taH77ticTC1uIf1AfVEN9TvMlYqhMUEcMg0SYkLftEVTWxg+ZLrHgSDKA
+IX0hOZ68IX3uIEw2/jed
+=lu2S
 -----END PGP SIGNATURE-----
 
---mzmkN2k+aDjaU9Rr--
+--kAOhhqH5290wydqT--
 
---===============5223806935103490722==
+--===============2133962298934407501==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5223806935103490722==--
+--===============2133962298934407501==--
