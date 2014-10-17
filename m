@@ -1,17 +1,14 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [PATCH] ASoC: atmel_ssc_dai: Fix spelling in
-	pr_debug.
-Date: Fri, 17 Oct 2014 09:18:00 +0800
-Message-ID: <54406E48.3080006@atmel.com>
-References: <6f13dfe392b146a4a8ea07115265d551@EMAIL.axentia.se>
+From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH 0/2] ASoC: Intel: Add missing build dependencies
+Date: Thu, 16 Oct 2014 18:22:00 -0700
+Message-ID: <1413508922-27567-1-git-send-email-ricardo.neri-calderon@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eusmtp01.atmel.com (eusmtp01.atmel.com [212.144.249.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 0254126063A
- for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2014 03:18:08 +0200 (CEST)
-In-Reply-To: <6f13dfe392b146a4a8ea07115265d551@EMAIL.axentia.se>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39A2826063A
+ for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2014 03:24:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,43 +18,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Rosin <peda@axentia.se>, Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, alsa-devel@alsa-project.org, "Glenn P. Williamson" <glenn.p.williamson@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
-   Thanks.
+The Broadwell and Haswell machines utilize the RT286 and RT5640 codecs,
+respectively. To communicate with the codecs, the machine utilizes the
+Designware I2C platform adapter. Hence, such adapter should be present
+in order to probe the codec drivers correctly. This short patch series
+fixes the missing dependency.
 
-   Add Mark Brown into list
+Thanks and BR,
+Ricardo
 
-On 10/16/2014 11:43 PM, Peter Rosin wrote:
->  From 64e0a6c2fe731eb24c81c7c56a3cacdda3d51610 Mon Sep 17 00:00:00 2001
-> From: Peter Rosin <peda@axentia.se>
-> Date: Thu, 16 Oct 2014 17:22:05 +0200
-> Subject: [PATCH] ASoC: atmel_ssc_dai: Fix spelling in pr_debug.
->
-> Signed-off-by: Peter Rosin <peda@axentia.se>
+Ricardo Neri (2):
+  ASoC: Intel: Add new dependency for Broadwell machine
+  ASoC: Intel: Add new dependency for Haswell machine
 
-Acked-by: Bo Shen <voice.shen@atmel.com>
+ sound/soc/intel/Kconfig | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> ---
->   sound/soc/atmel/atmel_ssc_dai.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> index f403f39..775a2ba 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -267,7 +267,7 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
->   	if (!ssc_p->dir_mask) {
->   		if (ssc_p->initialized) {
->   			/* Shutdown the SSC clock. */
-> -			pr_debug("atmel_ssc_dau: Stopping clock\n");
-> +			pr_debug("atmel_ssc_dai: Stopping clock\n");
->   			clk_disable(ssc_p->ssc->clk);
->
->   			free_irq(ssc_p->ssc->irq, ssc_p);
->
-
-Best Regards,
-Bo Shen
+-- 
+1.9.1
