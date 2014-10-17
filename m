@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 0/7] ASoC: Intel: sst - add the
-	merrifield IPC driver
-Date: Fri, 17 Oct 2014 14:15:39 +0200
-Message-ID: <20141017121539.GI1820@sirena.org.uk>
-References: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH 0/2] ASoC: Intel: Add missing build
+	dependencies
+Date: Fri, 17 Oct 2014 14:28:09 +0200
+Message-ID: <20141017122809.GJ1820@sirena.org.uk>
+References: <1413508922-27567-1-git-send-email-ricardo.neri-calderon@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0054950817549438114=="
+Content-Type: multipart/mixed; boundary="===============6943626458035521449=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C86326063B
- for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2014 14:15:59 +0200 (CEST)
-In-Reply-To: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 65D1226063B
+ for <alsa-devel@alsa-project.org>; Fri, 17 Oct 2014 14:28:29 +0200 (CEST)
+In-Reply-To: <1413508922-27567-1-git-send-email-ricardo.neri-calderon@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, "Glenn P. Williamson" <glenn.p.williamson@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0054950817549438114==
+--===============6943626458035521449==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="v2/QI0iRXglpx0hK"
+	protocol="application/pgp-signature"; boundary="JsihDCElWRmQcbOr"
 Content-Disposition: inline
 
 
---v2/QI0iRXglpx0hK
+--JsihDCElWRmQcbOr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Oct 16, 2014 at 08:00:12PM +0530, Vinod Koul wrote:
+On Thu, Oct 16, 2014 at 06:22:00PM -0700, Ricardo Neri wrote:
+> The Broadwell and Haswell machines utilize the RT286 and RT5640 codecs,
+> respectively. To communicate with the codecs, the machine utilizes the
+> Designware I2C platform adapter. Hence, such adapter should be present
+> in order to probe the codec drivers correctly. This short patch series
+> fixes the missing dependency.
 
-> This path series adds the Merrifield IPC driver which is used to load and
-> manage the DSP along with sending and receiving IPCs for PCM and compressed
-> audio.
+Applied both, thanks.
 
-I had some concerns that I replied to the individual patches with but
-they're all pretty minor so I've applied everything - please send
-followup patches dealing with these things.
-
---v2/QI0iRXglpx0hK
+--JsihDCElWRmQcbOr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUQQhqAAoJECTWi3JdVIfQ8oYH/1Iy2iOQ3MCEhEb0ST0lkNca
-FjnxQhwRrCPkNoBzQm9z+p9ODriXc4GWYNEdAmp2zcXkSnHy8mVVvzsCGNj7O/rk
-eV01A01i1m6yikSNyv7I63NZyfz8PPV8zRLgvrvGM5inYF9IapG+L1qmXbqQyTmC
-8vWJzBzds1iI08q3ePFJZOleQeEhk+Dp/eWMIfzskP2rMiYlWJZ+mHZRI5Yx43NN
-yZCnE9z/sBHJ3yoJGsjYxOEQD4tm6TTDEswLhmqOXqhclPWEtK8ZE9sjd/xb4idu
-oSZfBXC1UBTt90GPswuPzSA9D1iIAF9vrAZXPmZyyG5ybySprhVVXzcushBBIJQ=
-=1TtJ
+iQEcBAEBAgAGBQJUQQtYAAoJECTWi3JdVIfQyIMH/3M/Lv0+gs2HObjZbQIhl6b+
+PeGr/+LJXN/Tvkv+z2duFC0dZeMkRIoh8wPx86eF4ts6oSPwMLAlzptH40O3X46Z
+lCeTxjz9J0e3ULz7duabMCFot1Pq/1RFvg+UCBcGUAnjKQH5TbkZNzyIH2uitpyX
+P9gnsMeT3U+IM+xxF//nF0DNECSeF9b2Jqe5mWPo+R3k5Mrb0lbAqwG3dxJT1J/a
+MuqmYrHcNS7I5rlQdJuP7Mcr3b8Gzo+dgii17FIM0jRlw4s9nPnkiQKGO3Oz+Lrb
+TfpLHXorSml+ZJ8Qh5hCC+nmt/Un+BQ4poHp+133qeBkCpxpWX7JTB4HtZpBUqc=
+=qZPA
 -----END PGP SIGNATURE-----
 
---v2/QI0iRXglpx0hK--
+--JsihDCElWRmQcbOr--
 
---===============0054950817549438114==
+--===============6943626458035521449==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0054950817549438114==--
+--===============6943626458035521449==--
