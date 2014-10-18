@@ -1,93 +1,39 @@
 From: Andy Lutomirski <luto@amacapital.net>
-Subject: [PATCH v3 2/2] acpi: Remove _OSI(Linux) for ThinkPads
-Date: Fri, 17 Oct 2014 17:04:30 -0700
-Message-ID: <72ea290629696d2fc750dc5950c2af0776ab133e.1413590510.git.luto@amacapital.net>
-References: <cover.1413590510.git.luto@amacapital.net>
+Subject: Re: [PATCH 1/2] thinkpad-acpi: Try to use full software mute control
+Date: Fri, 17 Oct 2014 17:09:18 -0700
+Message-ID: <CALCETrWQN6coC9GCwDbj=RKB6Wsqa_zFzb-1PnN59En98pax5A@mail.gmail.com>
+References: <cover.1413481880.git.luto@amacapital.net> <72f375b46a34702fc9f8be419fa83c219fbc28c5.1413481880.git.luto@amacapital.net>
+ <20141016183130.GA15835@khazad-dum.debian.net> <CALCETrXz_x7E5aVvr7S1aTtGLbE8PKpVJFrBCZTEXZKjdi0F3w@mail.gmail.com>
+ <20141016185455.GB15835@khazad-dum.debian.net> <CALCETrUsw07EXJQ+mYYQ5h3nmSqh=fbJLWvEGh--m=t_VVwJXQ@mail.gmail.com>
+ <20141016195857.GA18264@khazad-dum.debian.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <cover.1413590510.git.luto@amacapital.net>
-In-Reply-To: <cover.1413590510.git.luto@amacapital.net>
-References: <cover.1413590510.git.luto@amacapital.net>
+In-Reply-To: <20141016195857.GA18264@khazad-dum.debian.net>
 Sender: platform-driver-x86-owner@vger.kernel.org
-To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net
-Cc: Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>, Jerone Young <jerone.young@canonical.com>
+To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc: Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org, Andy Lutomirski <luto@mit.edu>
 List-Id: alsa-devel@alsa-project.org
 
-AFAICT the only reason to set _OSI(Linux) on ThinkPads is to get
-sensible mute button behavior.  Now that the thinkpad_acpi driver
-can do this on is own, there is no reason to keep the ACPI
-quirk.
+On Thu, Oct 16, 2014 at 12:58 PM, Henrique de Moraes Holschuh
+<hmh@hmh.eng.br> wrote:
+> On Thu, 16 Oct 2014, Andy Lutomirski wrote:
+>> On Thu, Oct 16, 2014 at 11:54 AM, Henrique de Moraes Holschuh
+>> <hmh@hmh.eng.br> wrote:
+>> So the question is: are there IBM models (or models that don't send
+>> KEY_MUTE, anyway) that nonetheless expose HAUM and SAUM?  If not, then
+>> my patch should be okay.  If so, we'll need further filtering.
+>
+> No, these were introduced in the X61/T61.  Still, the standard paranoia
+> applies, and you should check for HAUM/SAUM only on VENDOR_LENOVO, and
+> assume they don't exist (because if they do, they are something else) for
+> VENDOR_IBM.
 
-Cc: Len Brown <len.brown@intel.com>
-Cc: Jerone Young <jerone.young@canonical.com>
-Signed-off-by: Andy Lutomirski <luto@amacapital.net>
----
- drivers/acpi/blacklist.c | 54 ------------------------------------------------
- 1 file changed, 54 deletions(-)
+Done in v3.
 
-diff --git a/drivers/acpi/blacklist.c b/drivers/acpi/blacklist.c
-index 36eb42e3b0bb..4a3cbb5d3c55 100644
---- a/drivers/acpi/blacklist.c
-+++ b/drivers/acpi/blacklist.c
-@@ -265,60 +265,6 @@ static struct dmi_system_id acpi_osi_dmi_table[] __initdata = {
- 	 */
- 
- 	/*
--	 * Lenovo has a mix of systems OSI(Linux) situations
--	 * and thus we can not wildcard the vendor.
--	 *
--	 * _OSI(Linux) helps sound
--	 * DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad R61"),
--	 * DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad T61"),
--	 * T400, T500
--	 * _OSI(Linux) has Linux specific hooks
--	 * DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad X61"),
--	 * _OSI(Linux) is a NOP:
--	 * DMI_MATCH(DMI_PRODUCT_VERSION, "3000 N100"),
--	 * DMI_MATCH(DMI_PRODUCT_VERSION, "LENOVO3000 V100"),
--	 */
--	{
--	.callback = dmi_enable_osi_linux,
--	.ident = "Lenovo ThinkPad R61",
--	.matches = {
--		     DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--		     DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad R61"),
--		},
--	},
--	{
--	.callback = dmi_enable_osi_linux,
--	.ident = "Lenovo ThinkPad T61",
--	.matches = {
--		     DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--		     DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad T61"),
--		},
--	},
--	{
--	.callback = dmi_enable_osi_linux,
--	.ident = "Lenovo ThinkPad X61",
--	.matches = {
--		     DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--		     DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad X61"),
--		},
--	},
--	{
--	.callback = dmi_enable_osi_linux,
--	.ident = "Lenovo ThinkPad T400",
--	.matches = {
--		     DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--		     DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad T400"),
--		},
--	},
--	{
--	.callback = dmi_enable_osi_linux,
--	.ident = "Lenovo ThinkPad T500",
--	.matches = {
--		     DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--		     DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad T500"),
--		},
--	},
--	/*
- 	 * Without this this EEEpc exports a non working WMI interface, with
- 	 * this it exports a working "good old" eeepc_laptop interface, fixing
- 	 * both brightness control, and rfkill not working.
--- 
-1.9.3
+My X220 seems to be alive again for the time being -- I suspect that
+there's a marginal connection somewhere.  It seems to be fully
+functional with this match, and the mute light works as expected
+(thanks, Takashi et al!).
+
+--Andy
