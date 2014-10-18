@@ -1,54 +1,247 @@
 From: Andy Lutomirski <luto@amacapital.net>
-Subject: [PATCH v3 0/2] Disable the ThinkPad HW mute/level control when possible
-Date: Fri, 17 Oct 2014 17:04:28 -0700
-Message-ID: <cover.1413590510.git.luto@amacapital.net>
+Subject: [PATCH v3 1/2] thinkpad-acpi: Try to use full software mute control
+Date: Fri, 17 Oct 2014 17:04:29 -0700
+Message-ID: <378856925c5ceecd27a6490585ee60362a714ef6.1413590510.git.luto@amacapital.net>
+References: <cover.1413590510.git.luto@amacapital.net>
 Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <cover.1413590510.git.luto@amacapital.net>
+In-Reply-To: <cover.1413590510.git.luto@amacapital.net>
+References: <cover.1413590510.git.luto@amacapital.net>
 Sender: platform-driver-x86-owner@vger.kernel.org
 To: Henrique de Moraes Holschuh <hmh@hmh.eng.br>, Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net
-Cc: Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>
+Cc: Len Brown <len.brown@intel.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org, Andy Lutomirski <luto@MIT.EDU>, Andy Lutomirski <luto@mit.edu>
 List-Id: alsa-devel@alsa-project.org
 
-This series is being resurrected after several years, and it's quite
-different from before, so I'm restarting the version numbers :)
+From: Andy Lutomirski <luto@MIT.EDU>
 
-ThinkPad volume and mute controls are a mess.  For whatever reason,
-ThinkPads have mute buttons that send KEY_MUTE *and* control an
-invisible-to-ALSA mute switch.  Some of them have volume controls that
-interact with this switch as well.
+ThinkPads have hardware volume controls and three buttons to control
+them.  (These are separate from the standard mixer.)  By default,
+the buttons are:
 
-This is a perennial source of problems.  On most ThinkPads, if you press
-mute and then unmute using GUI controls, you have no sound, because
-userspace and ALSA state gets out of sync with the hardware switch.
-There's a separate "sound card" that exposes the hardware switch, but
-userspace code generally doesn't understand that.
+ - Mute: Mutes the hardware volume control and, on some models,
+   generates KEY_MUTE.
 
-There are already a few _OSI(Linux) overrides to turn all the hardware
-buttons into regular buttons.  Rather than quirking ACPI everywhere,
-just teach thinkpad-acpi to program the buttons for full software
-control and to disable hardware controls.  That allows us to remove the
-ACPI quirks and have normal mute controls.  This approach should be
-much simpler than adding even more kludgey ALSA integration for
-questionable gain.
+ - Up: Unmutes, generates KEY_VOLUMEUP, and increases volume if
+   applicable.  (Newer thinkpads only have hardware mute/unmute.)
 
-Tested on an X200s (with latching mute by default) and an X220 (with
-a mute light and toggle mute by default).  Everything works as expected.
+ - Down: Unmutes, generates KEY_VOLUMEDOWN, and decreases volume
+   if applicable.
 
-Changes from v2:
- - Don't try to change the mute mode on IBM ThinkPads.
- - Further minor cleanups.
- - Try to restore the mode on module unload.
+This behavior is unfortunate, since modern userspace will also
+handle the hotkeys and change the other mixer.  If the software
+mixer is muted and the hardware mixer is unmuted and you push mute,
+hilarity ensues as they both switch state.
 
-Changes from v1:
- - Simplified the code a bit.
- - Improved suspend/hibernate behavior.
+Rather than adding a lot of complex ALSA integration to fix this,
+just disable the special ThinkPad volume controls when possible.
+This turns the mute and volume buttons into regular buttons, and
+standard software controls will work as expected.
 
-Andy Lutomirski (2):
-  thinkpad-acpi: Try to use full software mute control
-  acpi: Remove _OSI(Linux) for ThinkPads
+ALSA already knows about the mute light on models with a mute light,
+so everything should just work.
 
- drivers/acpi/blacklist.c             |  54 ----------------
+This should also allow us to remove _OSI(Linux) for all ThinkPads.
+
+For future reference: It turns out that we can ask ACPI for one of
+three behaviors directly on very new models.  They are "latch" (the
+default), "none" (no automatic control), and "toggle" (mute unmutes
+when muted).  All of the modes besides "none" seem to be a bit
+buggy, though, and there doesn't seem to be a consistent way to get
+any notification when the HW mute state is changed.
+
+Signed-off-by: Andy Lutomirski <luto@mit.edu>
+---
  drivers/platform/x86/thinkpad_acpi.c | 116 ++++++++++++++++++++++++++++++++---
- 2 files changed, 106 insertions(+), 64 deletions(-)
+ 1 file changed, 106 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index 3bbc6eb60de5..cfc317f2de23 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -6559,6 +6559,17 @@ static struct ibm_struct brightness_driver_data = {
+  * bits 3-0 (volume).  Other bits in NVRAM may have other functions,
+  * such as bit 7 which is used to detect repeated presses of MUTE,
+  * and we leave them unchanged.
++ *
++ * On newer Lenovo ThinkPads, the EC can automatically change the volume
++ * in response to user input.  Unfortunately, this rarely works well.
++ * The laptop changes the state of its internal MUTE gate and, on some
++ * models, sends KEY_MUTE, causing any user code that responds to the
++ * mute button to get confused.  The hardware MUTE gate is also
++ * unnecessary, since user code can handle the mute button without
++ * kernel or EC help.
++ *
++ * To avoid confusing userspace, we simply disable all EC-based mute
++ * and volume controls when possible.
+  */
+ 
+ #ifdef CONFIG_THINKPAD_ACPI_ALSA_SUPPORT
+@@ -6613,11 +6624,21 @@ enum tpacpi_volume_capabilities {
+ 	TPACPI_VOL_CAP_MAX
+ };
+ 
++enum tpacpi_mute_btn_mode {
++	TP_EC_MUTE_BTN_LATCH  = 0,	/* Mute mutes; up/down unmutes */
++	/* We don't know what mode 1 is. */
++	TP_EC_MUTE_BTN_NONE   = 2,	/* Mute and up/down are just keys */
++	TP_EC_MUTE_BTN_TOGGLE = 3,	/* Mute toggles; up/down unmutes */
++};
++
+ static enum tpacpi_volume_access_mode volume_mode =
+ 	TPACPI_VOL_MODE_MAX;
+ 
+ static enum tpacpi_volume_capabilities volume_capabilities;
+ static bool volume_control_allowed;
++static bool software_mute_requested = true;
++static bool software_mute_active;
++static int software_mute_orig_mode;
+ 
+ /*
+  * Used to syncronize writers to TP_EC_AUDIO and
+@@ -6635,6 +6656,8 @@ static void tpacpi_volume_checkpoint_nvram(void)
+ 		return;
+ 	if (!volume_control_allowed)
+ 		return;
++	if (software_mute_active)
++		return;
+ 
+ 	vdbg_printk(TPACPI_DBG_MIXER,
+ 		"trying to checkpoint mixer state to NVRAM...\n");
+@@ -6696,6 +6719,12 @@ static int volume_set_status_ec(const u8 status)
+ 
+ 	dbg_printk(TPACPI_DBG_MIXER, "set EC mixer to 0x%02x\n", status);
+ 
++	/*
++	 * On X200s, and possibly on others, it can take a while for
++	 * reads to become correct.
++	 */
++	msleep(1);
++
+ 	return 0;
+ }
+ 
+@@ -6778,6 +6807,57 @@ unlock:
+ 	return rc;
+ }
+ 
++static int volume_set_software_mute(bool startup)
++{
++	int result;
++
++	if (!tpacpi_is_lenovo())
++		return -ENODEV;
++
++	if (startup) {
++		if (!acpi_evalf(ec_handle, &software_mute_orig_mode,
++				"HAUM", "qd"))
++			return -EIO;
++
++		dbg_printk(TPACPI_DBG_INIT | TPACPI_DBG_MIXER,
++			    "Initial HAUM setting was %d\n",
++			    software_mute_orig_mode);
++	}
++
++	if (!acpi_evalf(ec_handle, &result, "SAUM", "qdd",
++			(int)TP_EC_MUTE_BTN_NONE))
++		return -EIO;
++
++	if (result != TP_EC_MUTE_BTN_NONE)
++		pr_warn("Unexpected SAUM result %d\n",
++			result);
++
++	/*
++	 * In software mute mode, the standard codec controls take
++	 * precendence, so we unmute the ThinkPad HW switch at
++	 * startup.  Just on case there are SAUM-capable ThinkPads
++	 * with level controls, set max HW volume as well.
++	 */
++	if (tp_features.mixer_no_level_control)
++		result = volume_set_mute(false);
++	else
++		result = volume_set_status(TP_EC_VOLUME_MAX);
++
++	if (result != 0)
++		pr_warn("Failed to unmute the HW mute switch\n");
++
++	return 0;
++}
++
++static void volume_exit_software_mute(void)
++{
++	int r;
++
++	if (!acpi_evalf(ec_handle, &r, "SAUM", "qdd", software_mute_orig_mode)
++	    || r != software_mute_orig_mode)
++		pr_warn("Failed to restore mute mode\n");
++}
++
+ static int volume_alsa_set_volume(const u8 vol)
+ {
+ 	dbg_printk(TPACPI_DBG_MIXER,
+@@ -6885,7 +6965,12 @@ static void volume_suspend(void)
+ 
+ static void volume_resume(void)
+ {
+-	volume_alsa_notify_change();
++	if (software_mute_active) {
++		if (volume_set_software_mute(false) < 0)
++			pr_warn("Failed to restore software mute\n");
++	} else {
++		volume_alsa_notify_change();
++	}
+ }
+ 
+ static void volume_shutdown(void)
+@@ -6901,6 +6986,9 @@ static void volume_exit(void)
+ 	}
+ 
+ 	tpacpi_volume_checkpoint_nvram();
++
++	if (software_mute_active)
++		volume_exit_software_mute();
+ }
+ 
+ static int __init volume_create_alsa_mixer(void)
+@@ -7085,16 +7173,20 @@ static int __init volume_init(struct ibm_init_struct *iibm)
+ 			"mute is supported, volume control is %s\n",
+ 			str_supported(!tp_features.mixer_no_level_control));
+ 
+-	rc = volume_create_alsa_mixer();
+-	if (rc) {
+-		pr_err("Could not create the ALSA mixer interface\n");
+-		return rc;
+-	}
++	if (software_mute_requested && volume_set_software_mute(true) == 0) {
++		software_mute_active = true;
++	} else {
++		rc = volume_create_alsa_mixer();
++		if (rc) {
++			pr_err("Could not create the ALSA mixer interface\n");
++			return rc;
++		}
+ 
+-	pr_info("Console audio control enabled, mode: %s\n",
+-		(volume_control_allowed) ?
+-			"override (read/write)" :
+-			"monitor (read only)");
++		pr_info("Console audio control enabled, mode: %s\n",
++			(volume_control_allowed) ?
++				"override (read/write)" :
++				"monitor (read only)");
++	}
+ 
+ 	vdbg_printk(TPACPI_DBG_INIT | TPACPI_DBG_MIXER,
+ 		"registering volume hotkeys as change notification\n");
+@@ -9091,6 +9183,10 @@ MODULE_PARM_DESC(volume_control,
+ 		 "Enables software override for the console audio "
+ 		 "control when true");
+ 
++module_param_named(software_mute, software_mute_requested, bool, 0444);
++MODULE_PARM_DESC(software_mute,
++		 "Request full software mute control");
++
+ /* ALSA module API parameters */
+ module_param_named(index, alsa_index, int, 0444);
+ MODULE_PARM_DESC(index, "ALSA index for the ACPI EC Mixer");
 -- 
 1.9.3
