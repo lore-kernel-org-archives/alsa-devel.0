@@ -1,123 +1,97 @@
-From: Mauro Carvalho Chehab <m.chehab@samsung.com>
-Subject: Re: [alsa-devel] [PATCH v2 5/6] sound/usb: pcm changes to use media
- token api
-Date: Sat, 18 Oct 2014 20:49:58 +0200
-Message-ID: <20141018204958.567b252f.m.chehab@samsung.com>
-References: <cover.1413246370.git.shuahkh@osg.samsung.com>
- <cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com>
- <543FB374.8020604@metafoo.de> <543FC3CD.8050805@osg.samsung.com>
- <s5h38aow1ub.wl-tiwai@suse.de> <543FD1EC.5010206@osg.samsung.com>
- <s5hy4sgumjo.wl-tiwai@suse.de> <543FD892.6010209@osg.samsung.com>
- <s5htx34ul3w.wl-tiwai@suse.de> <543FDD51.9040404@osg.samsung.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: Help with wm8731 support for the Utilite (imx6q)
+Date: Sat, 18 Oct 2014 16:13:06 -0300
+Message-ID: <CAOMZO5C-EG+beiK1M10vX0Xhg4avYLExxG7MZOQq8gM6gRnANw@mail.gmail.com>
+References: <CAB-pspc5KZ0sTB-7uxjBq+PEFxFdAPO5NAXof_+uwQBJ_JCejg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <543FDD51.9040404@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, hverkuil@xs4all.nl, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-la0-f41.google.com (mail-la0-f41.google.com
+ [209.85.215.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 328062604F7
+ for <alsa-devel@alsa-project.org>; Sat, 18 Oct 2014 21:13:09 +0200 (CEST)
+Received: by mail-la0-f41.google.com with SMTP id pn19so2164028lab.14
+ for <alsa-devel@alsa-project.org>; Sat, 18 Oct 2014 12:13:06 -0700 (PDT)
+In-Reply-To: <CAB-pspc5KZ0sTB-7uxjBq+PEFxFdAPO5NAXof_+uwQBJ_JCejg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jonathan Bennett <jbscience87@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, valentin@compulab.co.il
 List-Id: alsa-devel@alsa-project.org
 
-Em Thu, 16 Oct 2014 08:59:29 -0600
-Shuah Khan <shuahkh@osg.samsung.com> escreveu:
+Hi Jonathan,
 
-> On 10/16/2014 08:48 AM, Takashi Iwai wrote:
-> > At Thu, 16 Oct 2014 08:39:14 -0600,
-> > Shuah Khan wrote:
-> >>
-> >> On 10/16/2014 08:16 AM, Takashi Iwai wrote:
-> >>> At Thu, 16 Oct 2014 08:10:52 -0600,
-> >>> Shuah Khan wrote:
-> >>>>
-> >>>> On 10/16/2014 08:01 AM, Takashi Iwai wrote:
-> >>>>> At Thu, 16 Oct 2014 07:10:37 -0600,
-> >>>>> Shuah Khan wrote:
-> >>>>>>
-> >>>>>> On 10/16/2014 06:00 AM, Lars-Peter Clausen wrote:
-> >>>>>>> On 10/14/2014 04:58 PM, Shuah Khan wrote:
-> >>>>>>> [...]
-> >>>>>>>>       switch (cmd) {
-> >>>>>>>>       case SNDRV_PCM_TRIGGER_START:
-> >>>>>>>> +        err = media_get_audio_tkn(&subs->dev->dev);
-> >>>>>>>> +        if (err == -EBUSY) {
-> >>>>>>>> +            dev_info(&subs->dev->dev, "%s device is busy\n",
-> >>>>>>>> +                    __func__);
-> >>>>>>>
-> >>>>>>> In my opinion this should not dev_info() as this is out of band error
-> >>>>>>> signaling and also as the potential to spam the log. The userspace
-> >>>>>>> application is already properly notified by the return code.
-> >>>>>>>
-> >>>>>>
-> >>>>>> Yes it has the potential to flood the dmesg especially with alsa,
-> >>>>>> I will remove the dev_info().
-> >>>>>
-> >>>>> Yes.  And, I think doing this in the trigger isn't the best.
-> >>>>> Why not in open & close?
-> >>>>
-> >>>> My first cut of this change was in open and close. I saw pulseaudio
-> >>>> application go into this loop trying to open the device. To avoid
-> >>>> such problems, I went with trigger stat and stop. That made all the
-> >>>> pulseaudio continues attempts to open problems go away.
-> >>>
-> >>> But now starting the stream gives the error, and PA would loop it
-> >>> again, no?
-> >>>
-> >>>
-> >>>>> Also, is this token restriction needed only for PCM?  No mixer or
-> >>>>> other controls?
-> >>>>
-> >>>> snd_pcm_ops are the only ones media drivers implement and use. So
-> >>>> I don't think mixer is needed. If it is needed, it is not to hard
-> >>>> to add for that case.
-> >>>
-> >>> Well, then I wonder what resource does actually conflict with
-> >>> usb-audio and media drivers at all...?
-> >>>
-> >>
-> >> audio for dvb/v4l apps gets disrupted when audio app starts. For
-> >> example, dvb or v4l app tuned to a channel, and when an audio app
-> >> starts. audio path needs protected to avoid conflicts between
-> >> digital and analog applications as well.
-> > 
-> > OK, then concentrating on only PCM is fine.
-> > 
-> > But, I'm still not convinced about doing the token management in the
-> > trigger.  The reason -EBUSY doesn't work is that it's the very same
-> > error code when a PCM device is blocked by other processes.  And
-> > -EAGAIN is interpreted by PCM core to -EBUSY for historical reasons.
-> 
-> ah. ok your recommendation is to go with open and close.
-> Mauro has some reservations with holding at open when I discussed
-> my observations with pulseaudio when I was holding token in open
-> instead of trigger start. Maybe he can chime with his concerns.
-> I think his concern was breaking applications if token is held in
-> open().
+On Fri, Oct 17, 2014 at 1:57 PM, Jonathan Bennett <jbscience87@gmail.com> wrote:
+> Hey, I'm working with a compulab utilite, trying to get everything working
+> with 3.17, with the eventual goal of getting better support for it
+> upstream. Currently fighting the sound. It's a imx6q talking to a wm8731
+> over i2c/i2s.
+> I am booting Fedora 21 arm Alpha, with my own dtb (
+> http://pastebin.com/4a4PBKwx) and driver (http://pastebin.com/1CsesuVV)
 
-Yes. My concern is that PA has weird behaviors, and it tries to open and
-keep opened all audio devices. Is there a way for avoiding it to keep doing
-it for V4L devices?
+I don't have access to a utilite board, but just trying to understand:
+is wm8731 audio functional with the 3.10.17 kernel com compulab?
 
-> 
-> Based on what you are seeing trigger could be worse.
-> 
-> > 
-> > How applications (e.g. PA) should behave if the token get fails?
-> > Shouldn't it retry or totally give up?
-> > 
-> 
-> It would be up to the application I would think. I see that arecord
-> quits right away when it finds the device busy. pluseaudio on the other
-> hand appears to retry. I downloaded pulseaudio sources to understand
-> what it is doing, however I didn't get too far. The way it does audio
-> handling is complex for me to follow without spending a lot of time.
-> 
-> thanks,
-> -- Shuah
-> 
+> It shows up in aplay -l, but trying to play anything to it gives me a div
+> by 0 in a driver:  [<c04f27e4>] (Ldiv0) from [<bf50512c>]
+> (fsl_ssi_hw_params+0x194/0x364 [snd_soc_fsl_ssi]) This div0 happens in
+> sound/soc/fsl/fsl_ssi.c, in the function fsl_ssi_set_bclk.
+>
+> My driver file is an almost direct copy of what compulab shipped with a
+> 3.10 kernel. This is my first attempt at kernel hacking, so any help would
+> be appreciated.
 
+I would suggest as a first step to get the dts for compulab upstreamed.
 
--- 
+There was an attempt from Valentin Raevsky (added on Cc) last year:
+http://lists.infradead.org/pipermail/linux-arm-kernel/2013-October/204896.html
 
-Cheers,
-Mauro
+After the basic dts file is added then you can work on adding audio support.
+
+Some suggestions:
+
+- The dts from 3.10.17 can not be applied 'as-is' into 3.17. Take a
+look for example into the audio node you have:
+
+        sound {
+                compatible = "fsl,imx6q-cm-fx6-wm8731",
+                          "fsl,imx-audio-wm8731";
+                model = "wm8731-audio";
+                ssi-controller = <&ssi2>;
+                src-port = <2>;
+                ext-port = <4>;
+                audio-codec = <&codec>;
+                audio-routing = "LOUT", "ROUT", "LLINEIN", "RLINEIN";
+        };
+
+'src-port' and 'ext-port' are not valid properties.
+
+They should be like this instead:
+
+        mux-int-port = <2>;
+        mux-ext-port = <4>;
+
+Take a look at arch/arm/boot/dts/imx6qdl-sabresd.dtsi for a reference.
+
+Also the codec clocks that are passed into the dts are not correct.
+The wm8731 does not acquire any clocks in the mainline driver.
+
+You should also try to use the 'simple-audio-card' binding instead of
+creating the imx-wm8731 machine file.
+
+Here is a reference of the arch/arm/boot/dts/vf610-twr.dts where you
+can see simple-audio-card in use.
+
+Good luck!
+
+Regards,
+
+Fabio Estevam
