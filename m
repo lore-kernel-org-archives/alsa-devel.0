@@ -1,16 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 3/7] ASoC: Intel: Add call to calculate offsets
-	internally within the DSP.
-Date: Mon, 20 Oct 2014 15:06:48 +0100
-Message-ID: <1413814012-5619-3-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 2/7] ASoC: Intel: update scratch allocator to
+	use generic block allocator
+Date: Mon, 20 Oct 2014 15:06:47 +0100
+Message-ID: <1413814012-5619-2-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 601CD26653D
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:07:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E0F726653B
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:07:41 +0200 (CEST)
 In-Reply-To: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,114 +25,252 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A call to calculate internal DSP memory addresses used to allocate persistent
-and scartch buffers.
+Update the scratch allocator to use the generic block allocator and calculate
+total scratch buffer size.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-dsp-priv.h    |  7 +++++++
- sound/soc/intel/sst-firmware.c    | 22 +++++++++++++++++++---
- sound/soc/intel/sst-haswell-dsp.c |  8 ++++++++
- 3 files changed, 34 insertions(+), 3 deletions(-)
+ sound/soc/intel/sst-dsp-priv.h    | 15 ++++---
+ sound/soc/intel/sst-dsp.c         |  1 +
+ sound/soc/intel/sst-firmware.c    | 87 +++++++++++++++++----------------------
+ sound/soc/intel/sst-haswell-dsp.c | 10 +----
+ sound/soc/intel/sst-haswell-ipc.c |  6 ---
+ sound/soc/intel/sst-haswell-ipc.h |  2 -
+ 6 files changed, 51 insertions(+), 70 deletions(-)
 
 diff --git a/sound/soc/intel/sst-dsp-priv.h b/sound/soc/intel/sst-dsp-priv.h
-index 4c91449..92fd7f0 100644
+index f58a049..4c91449 100644
 --- a/sound/soc/intel/sst-dsp-priv.h
 +++ b/sound/soc/intel/sst-dsp-priv.h
-@@ -26,6 +26,9 @@ struct sst_mem_block;
- struct sst_module;
- struct sst_fw;
+@@ -257,6 +257,11 @@ struct sst_dsp {
+ 	struct list_head module_list;
+ 	struct list_head fw_list;
  
-+/* do we need to remove or keep */
-+#define DSP_DRAM_ADDR_OFFSET		0x400000
++	/* scratch buffer */
++	struct list_head scratch_block_list;
++	u32 scratch_offset;
++	u32 scratch_size;
 +
- /*
-  * DSP Operations exported by platform Audio DSP driver.
-  */
-@@ -67,6 +70,8 @@ struct sst_addr {
- 	u32 shim_offset;
- 	u32 iram_offset;
- 	u32 dram_offset;
-+	u32 dsp_iram_offset;
-+	u32 dsp_dram_offset;
- 	void __iomem *lpe;
- 	void __iomem *shim;
- 	void __iomem *pci_cfg;
-@@ -319,4 +324,6 @@ struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
- 	void *private);
- void sst_mem_block_unregister_all(struct sst_dsp *dsp);
+ 	/* platform data */
+ 	struct sst_pdata *pdata;
  
-+u32 sst_dsp_get_offset(struct sst_dsp *dsp, u32 offset,
-+	enum sst_mem_type type);
- #endif
+@@ -296,11 +301,6 @@ struct sst_module *sst_module_new(struct sst_fw *sst_fw,
+ 	struct sst_module_template *template, void *private);
+ void sst_module_free(struct sst_module *module);
+ struct sst_module *sst_module_get_from_id(struct sst_dsp *dsp, u32 id);
+-
+-/* allocate/free pesistent/scratch memory regions managed by drv */
+-struct sst_module *sst_mem_block_alloc_scratch(struct sst_dsp *dsp);
+-void sst_mem_block_free_scratch(struct sst_dsp *dsp,
+-	struct sst_module *scratch);
+ int sst_module_alloc_blocks(struct sst_module *module);
+ int sst_module_free_blocks(struct sst_module *module);
+ 
+@@ -308,6 +308,11 @@ int sst_module_free_blocks(struct sst_module *module);
+ int sst_alloc_blocks(struct sst_dsp *dsp, struct sst_block_allocator *ba,
+ 	struct list_head *block_list);
+ int sst_free_blocks(struct sst_dsp *dsp, struct list_head *block_list);
++
++/* scratch allocation */
++int sst_block_alloc_scratch(struct sst_dsp *dsp);
++void sst_block_free_scratch(struct sst_dsp *dsp);
++
+ /* Register the DSPs memory blocks - would be nice to read from ACPI */
+ struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
+ 	u32 size, enum sst_mem_type type, struct sst_block_ops *ops, u32 index,
+diff --git a/sound/soc/intel/sst-dsp.c b/sound/soc/intel/sst-dsp.c
+index cd23060..372c4b8 100644
+--- a/sound/soc/intel/sst-dsp.c
++++ b/sound/soc/intel/sst-dsp.c
+@@ -352,6 +352,7 @@ struct sst_dsp *sst_dsp_new(struct device *dev,
+ 	INIT_LIST_HEAD(&sst->free_block_list);
+ 	INIT_LIST_HEAD(&sst->module_list);
+ 	INIT_LIST_HEAD(&sst->fw_list);
++	INIT_LIST_HEAD(&sst->scratch_block_list);
+ 
+ 	/* Initialise SST Audio DSP */
+ 	if (sst->ops->init) {
 diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
-index 2b742a5..1de3f33 100644
+index f2f1d5f..2b742a5 100644
 --- a/sound/soc/intel/sst-firmware.c
 +++ b/sound/soc/intel/sst-firmware.c
-@@ -234,9 +234,8 @@ struct sst_module *sst_module_new(struct sst_fw *sst_fw,
- 	sst_module->id = template->id;
- 	sst_module->dsp = dsp;
- 	sst_module->sst_fw = sst_fw;
+@@ -630,80 +630,69 @@ void sst_mem_block_unregister_all(struct sst_dsp *dsp)
+ EXPORT_SYMBOL_GPL(sst_mem_block_unregister_all);
+ 
+ /* allocate scratch buffer blocks */
+-struct sst_module *sst_mem_block_alloc_scratch(struct sst_dsp *dsp)
++int sst_block_alloc_scratch(struct sst_dsp *dsp)
+ {
+-	struct sst_module *sst_module, *scratch;
+-	struct sst_mem_block *block, *tmp;
+-	u32 block_size;
+-	int ret = 0;
 -
--	memcpy(&sst_module->s, &template->s, sizeof(struct sst_module_data));
--	memcpy(&sst_module->p, &template->p, sizeof(struct sst_module_data));
-+	sst_module->scratch_size = template->scratch_size;
-+	sst_module->persistent_size = template->persistent_size;
+-	scratch = kzalloc(sizeof(struct sst_module), GFP_KERNEL);
+-	if (scratch == NULL)
+-		return NULL;
++	struct sst_module *module;
++	struct sst_block_allocator ba;
++	int ret;
  
- 	INIT_LIST_HEAD(&sst_module->block_list);
+ 	mutex_lock(&dsp->mutex);
  
-@@ -712,3 +711,20 @@ struct sst_module *sst_module_get_from_id(struct sst_dsp *dsp, u32 id)
- 	return NULL;
- }
- EXPORT_SYMBOL_GPL(sst_module_get_from_id);
-+
-+/* returns block address in DSP address space */
-+u32 sst_dsp_get_offset(struct sst_dsp *dsp, u32 offset,
-+	enum sst_mem_type type)
-+{
-+	switch (type) {
-+	case SST_MEM_IRAM:
-+		return offset - dsp->addr.iram_offset +
-+			dsp->addr.dsp_iram_offset;
-+	case SST_MEM_DRAM:
-+		return offset - dsp->addr.dram_offset +
-+			dsp->addr.dsp_dram_offset;
-+	default:
+ 	/* calculate required scratch size */
+-	list_for_each_entry(sst_module, &dsp->module_list, list) {
+-		if (scratch->s.size < sst_module->s.size)
+-			scratch->s.size = sst_module->s.size;
++	dsp->scratch_size = 0;
++	list_for_each_entry(module, &dsp->module_list, list) {
++		dev_dbg(dsp->dev, "module %d scratch req 0x%x bytes\n",
++			module->id, module->scratch_size);
++		if (dsp->scratch_size < module->scratch_size)
++			dsp->scratch_size = module->scratch_size;
+ 	}
+ 
+-	dev_dbg(dsp->dev, "scratch buffer required is %d bytes\n",
+-		scratch->s.size);
++	dev_dbg(dsp->dev, "scratch buffer required is 0x%x bytes\n",
++		dsp->scratch_size);
+ 
+-	/* init scratch module */
+-	scratch->dsp = dsp;
+-	scratch->s.type = SST_MEM_DRAM;
+-	scratch->s.data_type = SST_DATA_S;
+-	INIT_LIST_HEAD(&scratch->block_list);
++	if (dsp->scratch_size == 0) {
++		dev_info(dsp->dev, "no modules need scratch buffer\n");
++		mutex_unlock(&dsp->mutex);
 +		return 0;
 +	}
-+}
-+EXPORT_SYMBOL_GPL(sst_dsp_get_offset);
+ 
+-	/* check free blocks before looking at used blocks for space */
+-	if (!list_empty(&dsp->free_block_list))
+-		block = list_first_entry(&dsp->free_block_list,
+-			struct sst_mem_block, list);
+-	else
+-		block = list_first_entry(&dsp->used_block_list,
+-			struct sst_mem_block, list);
+-	block_size = block->size;
++	ba.size = dsp->scratch_size;
++	ba.type = SST_MEM_DRAM;
++	ba.offset = 0;
++
++	dev_dbg(dsp->dev, "block request 0x%x bytes type %d\n",
++		ba.size, ba.type);
+ 
+ 	/* allocate blocks for module scratch buffers */
+ 	dev_dbg(dsp->dev, "allocating scratch blocks\n");
+-	ret = block_alloc(scratch, &scratch->s);
++	ret = block_alloc(dsp, &ba, &dsp->scratch_block_list);
+ 	if (ret < 0) {
+ 		dev_err(dsp->dev, "error: can't alloc scratch blocks\n");
+-		goto err;
++		mutex_unlock(&dsp->mutex);
++		return ret;
+ 	}
+ 
+-	/* assign the same offset of scratch to each module */
+-	list_for_each_entry(sst_module, &dsp->module_list, list)
+-		sst_module->s.offset = scratch->s.offset;
+-
+-	mutex_unlock(&dsp->mutex);
+-	return scratch;
++	ret = block_list_prepare(dsp, &dsp->scratch_block_list);
++	if (ret < 0) {
++		dev_err(dsp->dev, "error: scratch block prepare failed\n");
++		return ret;
++	}
+ 
+-err:
+-	list_for_each_entry_safe(block, tmp, &scratch->block_list, module_list)
+-		list_del(&block->module_list);
++	/* assign the same offset of scratch to each module */
++	dsp->scratch_offset = ba.offset;
+ 	mutex_unlock(&dsp->mutex);
+-	return NULL;
++	return dsp->scratch_size;
+ }
+-EXPORT_SYMBOL_GPL(sst_mem_block_alloc_scratch);
++EXPORT_SYMBOL_GPL(sst_block_alloc_scratch);
+ 
+ /* free all scratch blocks */
+-void sst_mem_block_free_scratch(struct sst_dsp *dsp,
+-	struct sst_module *scratch)
++void sst_block_free_scratch(struct sst_dsp *dsp)
+ {
+-	struct sst_mem_block *block, *tmp;
+-
+ 	mutex_lock(&dsp->mutex);
+-
+-	list_for_each_entry_safe(block, tmp, &scratch->block_list, module_list)
+-		list_del(&block->module_list);
+-
++	block_list_remove(dsp, &dsp->scratch_block_list);
+ 	mutex_unlock(&dsp->mutex);
+ }
+-EXPORT_SYMBOL_GPL(sst_mem_block_free_scratch);
++EXPORT_SYMBOL_GPL(sst_block_free_scratch);
+ 
+ /* get a module from it's unique ID */
+ struct sst_module *sst_module_get_from_id(struct sst_dsp *dsp, u32 id)
 diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
-index 7f239d0..5058dc8 100644
+index 22cc697..7f239d0 100644
 --- a/sound/soc/intel/sst-haswell-dsp.c
 +++ b/sound/soc/intel/sst-haswell-dsp.c
-@@ -42,6 +42,10 @@
- #define SST_LP_SHIM_OFFSET	0xE7000
- #define SST_WPT_IRAM_OFFSET	0xA0000
- #define SST_LP_IRAM_OFFSET	0x80000
-+#define SST_WPT_DSP_DRAM_OFFSET	0x400000
-+#define SST_WPT_DSP_IRAM_OFFSET	0x00000
-+#define SST_LPT_DSP_DRAM_OFFSET	0x400000
-+#define SST_LPT_DSP_IRAM_OFFSET	0x00000
+@@ -172,10 +172,8 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
+ static int hsw_parse_fw_image(struct sst_fw *sst_fw)
+ {
+ 	struct fw_header *header;
+-	struct sst_module *scratch;
+ 	struct fw_module_header *module;
+ 	struct sst_dsp *dsp = sst_fw->dsp;
+-	struct sst_hsw *hsw = sst_fw->private;
+ 	int ret, count;
  
- #define SST_SHIM_PM_REG		0x84
+ 	/* Read the header information from the data pointer */
+@@ -205,12 +203,8 @@ static int hsw_parse_fw_image(struct sst_fw *sst_fw)
+ 		module = (void *)module + sizeof(*module) + module->mod_size;
+ 	}
  
-@@ -462,12 +466,16 @@ static int hsw_init(struct sst_dsp *sst, struct sst_pdata *pdata)
- 		region = lp_region;
- 		region_count = ARRAY_SIZE(lp_region);
- 		sst->addr.iram_offset = SST_LP_IRAM_OFFSET;
-+		sst->addr.dsp_iram_offset = SST_LPT_DSP_IRAM_OFFSET;
-+		sst->addr.dsp_dram_offset = SST_LPT_DSP_DRAM_OFFSET;
- 		sst->addr.shim_offset = SST_LP_SHIM_OFFSET;
- 		break;
- 	case SST_DEV_ID_WILDCAT_POINT:
- 		region = wpt_region;
- 		region_count = ARRAY_SIZE(wpt_region);
- 		sst->addr.iram_offset = SST_WPT_IRAM_OFFSET;
-+		sst->addr.dsp_iram_offset = SST_WPT_DSP_IRAM_OFFSET;
-+		sst->addr.dsp_dram_offset = SST_WPT_DSP_DRAM_OFFSET;
- 		sst->addr.shim_offset = SST_WPT_SHIM_OFFSET;
- 		break;
- 	default:
+-	/* allocate persistent/scratch mem regions */
+-	scratch = sst_mem_block_alloc_scratch(dsp);
+-	if (scratch == NULL)
+-		return -ENOMEM;
+-
+-	sst_hsw_set_scratch_module(hsw, scratch);
++	/* allocate scratch mem regions */
++	sst_block_alloc_scratch(dsp);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
+index 4799768..0b093d4 100644
+--- a/sound/soc/intel/sst-haswell-ipc.c
++++ b/sound/soc/intel/sst-haswell-ipc.c
+@@ -1718,12 +1718,6 @@ static int msg_empty_list_init(struct sst_hsw *hsw)
+ 	return 0;
+ }
+ 
+-void sst_hsw_set_scratch_module(struct sst_hsw *hsw,
+-	struct sst_module *scratch)
+-{
+-	hsw->scratch = scratch;
+-}
+-
+ struct sst_dsp *sst_hsw_get_dsp(struct sst_hsw *hsw)
+ {
+ 	return hsw->dsp;
+diff --git a/sound/soc/intel/sst-haswell-ipc.h b/sound/soc/intel/sst-haswell-ipc.h
+index 063dd6b..f20c1d9 100644
+--- a/sound/soc/intel/sst-haswell-ipc.h
++++ b/sound/soc/intel/sst-haswell-ipc.h
+@@ -486,7 +486,5 @@ int sst_hsw_dx_get_state(struct sst_hsw *hsw, u32 item,
+ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata);
+ void sst_hsw_dsp_free(struct device *dev, struct sst_pdata *pdata);
+ struct sst_dsp *sst_hsw_get_dsp(struct sst_hsw *hsw);
+-void sst_hsw_set_scratch_module(struct sst_hsw *hsw,
+-	struct sst_module *scratch);
+ 
+ #endif
 -- 
 1.9.1
