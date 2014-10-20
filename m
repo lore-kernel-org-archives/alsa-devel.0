@@ -1,19 +1,26 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH 1/1] ALSA: ALC283 codec - Avoid pop noise
- on headphones during suspend/resume
-Date: Mon, 20 Oct 2014 04:25:00 +0800
-Message-ID: <54441E1C.1070808@canonical.com>
-References: <1412852696-32423-1-git-send-email-harshapriya.n@intel.com>
- <s5h38ax13xl.wl-tiwai@suse.de> <543BAE8C.3090007@canonical.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC PATCH 1/2] ALSA: hda - Fix "PCM" name being
+ used on one DAC when there are two DACs
+Date: Mon, 20 Oct 2014 09:10:05 +0800
+Message-ID: <CAN8cciaY_+_XZh2UkPGvewr6Ccp+UM0Dg-67hyg5L_wFW-NpFQ@mail.gmail.com>
+References: <1413466426-2672-1-git-send-email-david.henningsson@canonical.com>
+ <CAN8cciZAteQAaG9GAxwLWyF6u5xH_fGtRDOTq5j+4LNoj_d_jA@mail.gmail.com>
+ <543FDFDE.7040800@canonical.com>
+ <CAN8cciaUo7BOxSMBtiysYi9MsW=ZAWn0s3tHTc5-YmpWWvEJNg@mail.gmail.com>
+ <s5hlhodteq7.wl-tiwai@suse.de>
+ <CAN8ccib4fhvvtYW7sjDZXA9QETgOTL+wA=u6iSv0yRHtwWPfwQ@mail.gmail.com>
+ <s5hh9z0totl.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 3225D26066B
- for <alsa-devel@alsa-project.org>; Sun, 19 Oct 2014 22:25:06 +0200 (CEST)
-In-Reply-To: <543BAE8C.3090007@canonical.com>
+Received: from mail-qa0-f43.google.com (mail-qa0-f43.google.com
+ [209.85.216.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89B21260494
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 03:17:37 +0200 (CEST)
+Received: by mail-qa0-f43.google.com with SMTP id s7so2756124qap.30
+ for <alsa-devel@alsa-project.org>; Sun, 19 Oct 2014 18:17:36 -0700 (PDT)
+In-Reply-To: <s5hh9z0totl.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,67 +30,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Harsha Priya <harshapriya.n@intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, vdjkelly@gmail.com
+Cc: alsa-devel@alsa-project.org, ruedi@battle-eggs.de, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/13/2014 06:50 PM, David Henningsson wrote:
+> >
+> > > >
+> > > > >> >
+> > > > >> > In the scenario where there is one "Line Out", one "Speaker"
+and
+> > one
+> > > > >> > "Headphone", and there are only two DACs, two outputs will
+share a
+> > DAC.
+> > > > >> > Currently any mixer on such a DAC will get the "PCM" name,
+which is
+> > > > >> > misleading. Instead use "Headphone+LO" or "Speaker+LO" to
+better
+> > > > >> > specify what the volume actually controls.
+> > > > >>
+> > > > >> Are there any examples ?
+> > > > >>
+> > > > >
+> > > > > I used "hda-emu
+> > > > codecs/canonical/alc3226-dell-precision-m2800-ccert-201404-14986 -i
+1"
+> > when
+> > > > developing the patches.
+> > > > >
+> > > > > I don't have any hardware available myself that exposes this
+behavior,
+> > > > but I can maybe fake one with hdajackretask, if that counts...
+> > > > >
+> > > >
+> > > > How about adding these names to slaves of virtual master
+volume/switch ?
+> > > >
+> > > > hdajackretask won't help if the topology of the codecs are
+different
+> > > >
+> > > > Seem the badness still prevent the driver to support surround 5.1
+with
+> > > > three rear panel jacks, internal speaker and front panel headphone
+for
+> > > > Thinkcenter A58 using alc662
+> > > >
+> > > >
+> >
+https://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg29203.html
+> > > >
+> > > > Why 3stack desktops with 6 channels codecs not using
+"Headphone+LO"  or
+> > > > "Speaker+LO" ?
+> > >
+> > > The problem is just the lack of DACs, so it cannot cover all three
+> > > outputs, no matter how the pins are chosen.  That is, it's no 6
+> > > channels at all but 4 channels at most.
+> > >
+> > >
+> >
+> >http://shop.lenovo.com/us/en/desktops/thinkcentre/a-series/a58/
+> >
+> > The technical specification of a58
+> >
+> > 2 pin internal speaker connector
+> > Alc662 5.1
+> >
+> >https://bbs.archlinux.org/viewtopic.php?id=156433
+> >
+> > Seem windows support surround 5.1
 >
-> On 2014-10-09 20:41, Takashi Iwai wrote:
->> At Thu,  9 Oct 2014 11:04:56 +0000,
->> Harsha Priya wrote:
->>> This patch sets the headphones mode to default before suspending
->>> which helps avoid the pop noise on headphones
->> The change looks simple, but since it's a mysterious COEF, I'd like to
->> hear from people testing with other machines with this codec before
->> applying the patch.
->>
->> David, do you know anyone in your team have such a machine to test?
+> ALC662 has three DACs, so it's a different problem, if any.
+> ALC269 and its variants have only two DACs.
 >
-> Looping Hui here, do you have a machine with ALC283 to test with or 
-> knows who has one?
-One of my colleague performed the test, and seems the patch did work.  
-Below is the feedback from my colleague:
+>
 
-"I tested the patch on Dell Inspiron 3531 which has ALC283 Codec on it.
-  Without the patch, I can hear a pop noise from the headphone, not very harshly, but I can
-  hear there is a pop sound clearly when suspend or reboot.
-  With the patch, there is still a pop sound with very low volume when
-  suspend, you can notice the sound when listening it carefully.
-  When reboot, there is no pop sound."
+These two patches not only affect those four channels hda codecs notebook
+with dock station or desktop with internal speaker, it also affect some
+codecs in hda-emu/codecs
 
+1) two channels hda codec such as stac9200 (e.g Dell precision 490
+workstation)
+2) 8 channels codecs such as stac9228, cmi9880 (e.g. lg-lw60 and dell xps)
 
-Regards,
-Hui.
+The proposed patches still not able to handle the case when line out ,
+headphone and speaker share the same volume control
 
->
->>
->>
->> thanks,
->>
->> Takashi
->>
->>> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
->>>
->>> diff --git a/sound/pci/hda/patch_realtek.c 
->>> b/sound/pci/hda/patch_realtek.c
->>> index 69d1236..e839e7a 100644
->>> --- a/sound/pci/hda/patch_realtek.c
->>> +++ b/sound/pci/hda/patch_realtek.c
->>> @@ -2884,6 +2884,9 @@ static void alc283_shutup(struct hda_codec 
->>> *codec)
->>>         alc_write_coef_idx(codec, 0x43, 0x9004);
->>>   +    /*depop hp during suspend*/
->>> +    alc_write_coef_idx(codec, 0x06, 0x2100);
->>> +
->>>       snd_hda_codec_write(codec, hp_pin, 0,
->>>                   AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
->>>   --
->>> 1.9.1
->>>
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Refer to hardware mainteance manual of a58, there is only one internal
+speaker , it is most likely a mono speaker if it use a two pin internal
+speaker connector
+
+http://www.desktopreview.com/default.asp?newsID=760&Review+Lenovo+ThinkCentre+A58
+
+Here you can see the built-in speaker in the lower right
+
+It is unlikely for  stereo speaker to use two pin connector
+
+Other Thinkcenter with 6 channels ad1986a has enough volume controls for
+line out, headphone and speaker
+
+https://answers.launchpad.net/ubuntu/+source/alsa-driver/+question/146830
