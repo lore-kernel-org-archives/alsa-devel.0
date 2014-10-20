@@ -1,18 +1,15 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 01/12] ASoC: dapm: Reduce number of checked
-	paths in dapm_widget_in_card_paths()
-Date: Mon, 20 Oct 2014 19:36:33 +0200
-Message-ID: <1413826604-3212-2-git-send-email-lars@metafoo.de>
-References: <1413826604-3212-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 00/12] ASoC: dapm: Cleanups and speed-ups
+Date: Mon, 20 Oct 2014 19:36:32 +0200
+Message-ID: <1413826604-3212-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
  [212.40.185.205])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A79B2658B3
+ by alsa0.perex.cz (Postfix) with ESMTP id 07C342658B1
  for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 19:36:47 +0200 (CEST)
-In-Reply-To: <1413826604-3212-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,96 +23,84 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Each widget has a list of all the paths that it is connected to. There is no
-need to iterate over all paths when we are only interested in the paths of a
-specific widget.
+Hi,
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/soc/soc-dapm.c | 65 +++++++++++++++++++++++++++++++++-------------------
- 1 file changed, 42 insertions(+), 23 deletions(-)
+This series contains a few cleanups and speed-ups for the DAPM
+implementation.  It starts with removing some dead or outdated code and
+optimizing some lesser used operations.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c61cb9c..b8b44c9 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3788,35 +3788,54 @@ int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_ignore_suspend);
- 
-+/**
-+ * dapm_is_external_path() - Checks if a path is a external path
-+ * @card: The card the path belongs to
-+ * @path: The path to check
-+ *
-+ * Returns true if the path is either between two different DAPM contexts or
-+ * between two external pins of the same DAPM context. Otherwise returns
-+ * false.
-+ */
-+static bool dapm_is_external_path(struct snd_soc_card *card,
-+	struct snd_soc_dapm_path *path)
-+{
-+	dev_dbg(card->dev,
-+		"... Path %s(id:%d dapm:%p) - %s(id:%d dapm:%p)\n",
-+		path->source->name, path->source->id, path->source->dapm,
-+		path->sink->name, path->sink->id, path->sink->dapm);
-+
-+	/* Connection between two different DAPM contexts */
-+	if (path->source->dapm != path->sink->dapm)
-+		return true;
-+
-+	/* Loopback connection from external pin to external pin */
-+	if (path->sink->id == snd_soc_dapm_input) {
-+		switch (path->source->id) {
-+		case snd_soc_dapm_output:
-+		case snd_soc_dapm_micbias:
-+			return true;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	return false;
-+}
-+
- static bool snd_soc_dapm_widget_in_card_paths(struct snd_soc_card *card,
- 					      struct snd_soc_dapm_widget *w)
- {
- 	struct snd_soc_dapm_path *p;
- 
--	list_for_each_entry(p, &card->paths, list) {
--		if ((p->source == w) || (p->sink == w)) {
--			dev_dbg(card->dev,
--			    "... Path %s(id:%d dapm:%p) - %s(id:%d dapm:%p)\n",
--			    p->source->name, p->source->id, p->source->dapm,
--			    p->sink->name, p->sink->id, p->sink->dapm);
-+	list_for_each_entry(p, &w->sources, list_sink) {
-+		if (dapm_is_external_path(card, p))
-+			return true;
-+	}
- 
--			/* Connected to something other than the codec */
--			if (p->source->dapm != p->sink->dapm)
--				return true;
--			/*
--			 * Loopback connection from codec external pin to
--			 * codec external pin
--			 */
--			if (p->sink->id == snd_soc_dapm_input) {
--				switch (p->source->id) {
--				case snd_soc_dapm_output:
--				case snd_soc_dapm_micbias:
--					return true;
--				default:
--					break;
--				}
--			}
--		}
-+	list_for_each_entry(p, &w->sinks, list_source) {
-+		if (dapm_is_external_path(card, p))
-+			return true;
- 	}
- 
- 	return false;
+The first larger change introduced by this series is the categorization of
+widgets into sinks, sources, supplies and normal widgets. This is all the
+information the main DAPM algorithm needs and using these categories makes
+the code simpler and faster and hopefully easier to understand.
+
+The second major change is to use more aggressive caching on the connected
+input and output paths of a widget. It takes advantage of the fact that
+typically only as subsection of the DAPM graph changes per operation. This
+allows to drastically reduce the number of neighbor and path checks for some
+DAPM operations. The change is most effective when the system is idle and
+when changing the graph routing for a widget with multiple inputs. This e.g.
+happens a lot when switching the audio profile. It still has quite good
+improvements for other operations as well and typically leads to at least a
+50% reduction of path and neighbor checks.
+
+Some before and after DAPM stats. All testing was done with the ADAU1761.
+Before is asoc/for-next, After~1 is asoc/for-next + this series except the
+last patch, After is asoc/for-next + this series.
+
+Changing a single control on a 5 input mixer while the system is idle:
+
+          Power  Path  Neighbour
+Before:   2      25    32
+After~1:  2      12    30
+After:    2       1     2
+
+Cumulative numbers for switching the audio profile which changes 7 controls
+while the system is idle:
+
+          Power  Path  Neighbour
+Before:   16     141   188
+After~1:  16      80   170
+After:    16       7    23
+
+Cumulative numbers for switching the audio profile which changes 7 controls
+while playback is active:
+
+          Power  Path  Neighbour
+Before:   52     207   297
+After~1:  51     123   273
+After:    51      29   109
+
+Starting (or stopping) the playback stream:
+
+          Power  Path  Neighbour
+Before:   35     80    125
+After~1:  34     34    117
+After:    34     17     69
+
+- Lars
+
+Lars-Peter Clausen (12):
+  ASoC: dapm: Reduce number of checked paths in
+    dapm_widget_in_card_paths()
+  ASoC: dapm: Remove always true path source/sink checks
+  ASoC: dapm: Only mark paths dirty when the connection status changed
+  ASoC: dapm: Do not add un-muxed paths to MUX control
+  ASoC: dapm: Do not pretend to support controls for non mixer/mux
+    widgets
+  ASoC: dapm: Remove special DAI widget power check functions
+  ASoC: dapm: Remove path 'walked' flag
+  ASoC: dapm: Introduce toplevel widget categories
+  ASoC: dapm: Add a flag to mark paths connected to supply widgets
+  ASoC: dapm: Mark endpoints instead of IO widgets dirty during
+    suspend/resume
+  ASoC: dapm: Add a few supply widget sanity checks
+  ASoC: dapm: Use more aggressive caching
+
+ include/sound/soc-dapm.h |   9 +-
+ sound/soc/soc-core.c     |   8 +-
+ sound/soc/soc-dapm.c     | 755 +++++++++++++++++++++++++----------------------
+ 3 files changed, 409 insertions(+), 363 deletions(-)
+
 -- 
 1.8.0
