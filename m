@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 03/12] ASoC: ak4641: Cleanup manual bias level
-	transitions
-Date: Mon, 20 Oct 2014 10:56:30 +0200
-Message-ID: <1413795399-29952-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 06/12] ASoC: max98088: Cleanup manual bias
+	level transitions
+Date: Mon, 20 Oct 2014 10:56:33 +0200
+Message-ID: <1413795399-29952-6-git-send-email-lars@metafoo.de>
 References: <1413795399-29952-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-190.synserver.de (smtp-out-190.synserver.de
  [212.40.185.190])
- by alsa0.perex.cz (Postfix) with ESMTP id B217A260589
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 10:56:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DAEF62606DE
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 10:56:45 +0200 (CEST)
 In-Reply-To: <1413795399-29952-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -40,60 +40,68 @@ has been probed.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/ak4641.c | 33 +--------------------------------
- 1 file changed, 1 insertion(+), 32 deletions(-)
+ sound/soc/codecs/max98088.c | 27 ++-------------------------
+ 1 file changed, 2 insertions(+), 25 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4641.c b/sound/soc/codecs/ak4641.c
-index 7afe8f4..70861c7 100644
---- a/sound/soc/codecs/ak4641.c
-+++ b/sound/soc/codecs/ak4641.c
-@@ -505,39 +505,7 @@ static struct snd_soc_dai_driver ak4641_dai[] = {
- },
- };
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index 2cd3e54..bb892b3 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -1887,25 +1887,6 @@ static void max98088_handle_pdata(struct snd_soc_codec *codec)
+                max98088_handle_eq_pdata(codec);
+ }
  
--static int ak4641_suspend(struct snd_soc_codec *codec)
+-#ifdef CONFIG_PM
+-static int max98088_suspend(struct snd_soc_codec *codec)
 -{
--	ak4641_set_bias_level(codec, SND_SOC_BIAS_OFF);
--	return 0;
+-       max98088_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-
+-       return 0;
 -}
 -
--static int ak4641_resume(struct snd_soc_codec *codec)
+-static int max98088_resume(struct snd_soc_codec *codec)
 -{
--	ak4641_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--	return 0;
+-       max98088_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+-       return 0;
 -}
+-#else
+-#define max98088_suspend NULL
+-#define max98088_resume NULL
+-#endif
 -
--static int ak4641_probe(struct snd_soc_codec *codec)
--{
--	/* power on device */
--	ak4641_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--
--	return 0;
--}
--
--static int ak4641_remove(struct snd_soc_codec *codec)
--{
--	ak4641_set_bias_level(codec, SND_SOC_BIAS_OFF);
--
--	return 0;
--}
--
--
- static struct snd_soc_codec_driver soc_codec_dev_ak4641 = {
--	.probe			= ak4641_probe,
--	.remove			= ak4641_remove,
--	.suspend		= ak4641_suspend,
--	.resume			= ak4641_resume,
- 	.controls		= ak4641_snd_controls,
- 	.num_controls		= ARRAY_SIZE(ak4641_snd_controls),
- 	.dapm_widgets		= ak4641_dapm_widgets,
-@@ -545,6 +513,7 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4641 = {
- 	.dapm_routes		= ak4641_audio_map,
- 	.num_dapm_routes	= ARRAY_SIZE(ak4641_audio_map),
- 	.set_bias_level		= ak4641_set_bias_level,
-+	.suspend_bias_off	= true,
- };
+ static int max98088_probe(struct snd_soc_codec *codec)
+ {
+        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
+@@ -1946,9 +1927,6 @@ static int max98088_probe(struct snd_soc_codec *codec)
  
- static const struct regmap_config ak4641_regmap = {
+        snd_soc_write(codec, M98088_REG_51_PWR_SYS, M98088_PWRSV);
+ 
+-       /* initialize registers cache to hardware default */
+-       max98088_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+        snd_soc_write(codec, M98088_REG_0F_IRQ_ENABLE, 0x00);
+ 
+        snd_soc_write(codec, M98088_REG_22_MIX_DAC,
+@@ -1974,7 +1952,6 @@ static int max98088_remove(struct snd_soc_codec *codec)
+ {
+        struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
+ 
+-       max98088_set_bias_level(codec, SND_SOC_BIAS_OFF);
+        kfree(max98088->eq_texts);
+ 
+        return 0;
+@@ -1983,9 +1960,9 @@ static int max98088_remove(struct snd_soc_codec *codec)
+ static struct snd_soc_codec_driver soc_codec_dev_max98088 = {
+ 	.probe   = max98088_probe,
+ 	.remove  = max98088_remove,
+-	.suspend = max98088_suspend,
+-	.resume  = max98088_resume,
+ 	.set_bias_level = max98088_set_bias_level,
++	.suspend_bias_off = true,
++
+ 	.controls = max98088_snd_controls,
+ 	.num_controls = ARRAY_SIZE(max98088_snd_controls),
+ 	.dapm_widgets = max98088_dapm_widgets,
 -- 
 1.8.0
