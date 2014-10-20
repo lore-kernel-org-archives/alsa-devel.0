@@ -1,23 +1,17 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Help with wm8731 support for the Utilite (imx6q)
-Date: Mon, 20 Oct 2014 14:29:01 -0200
-Message-ID: <CAOMZO5CU+Y8cGJsn4O1ccFZUSjLM1iH3QN2fAv4UyaLMk5yAEg@mail.gmail.com>
-References: <CAB-pspc5KZ0sTB-7uxjBq+PEFxFdAPO5NAXof_+uwQBJ_JCejg@mail.gmail.com>
- <CAOMZO5C-EG+beiK1M10vX0Xhg4avYLExxG7MZOQq8gM6gRnANw@mail.gmail.com>
- <CAB-pspcNOuW=JN9_avEvyPFUvTfs99PB=ah43YdqMC65mZ8psQ@mail.gmail.com>
- <CAB-pspei1a3TbuFGBT-kupEWU5UY10kQoTtiV895WTi-j+-dzQ@mail.gmail.com>
- <CAOMZO5AVr0xJjf9JjYNuXG-jJC3ft84+fO-5ToSieP9NFP=-+g@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v4 2/7] ASoC: Intel: mrfld - Add DSP load
+ and management
+Date: Mon, 20 Oct 2014 21:37:30 +0530
+Message-ID: <20141020160730.GH28745@intel.com>
+References: <s5hy4seucfk.wl-tiwai@suse.de> <20141020054149.GC28745@intel.com>
+ <20141020152900.GS18557@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5744891978166383745=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f180.google.com (mail-lb0-f180.google.com
- [209.85.217.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 0052C2673A8
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 18:29:01 +0200 (CEST)
-Received: by mail-lb0-f180.google.com with SMTP id n15so4152905lbi.39
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 09:29:01 -0700 (PDT)
-In-Reply-To: <CAOMZO5AVr0xJjf9JjYNuXG-jJC3ft84+fO-5ToSieP9NFP=-+g@mail.gmail.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 75B05266AFD
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 18:45:24 +0200 (CEST)
+In-Reply-To: <20141020152900.GS18557@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,80 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jonathan Bennett <jbscience87@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, valentin@compulab.co.il
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 20, 2014 at 10:06 AM, Fabio Estevam <festevam@gmail.com> wrote:
 
->>       clocks = <&clks IMX6QDL_CLK_SSI2>;
->
-> This 'clocks' entry does not seem correct.
->
-> IMX6QDL_CLK_SSI2 is the clock from SSI2 module, which is turned on by
-> the ssi driver.
->
-> Who provides the MCLK for wm8731 on utilite board? Isn't it mx6 CLKO pin?
->
-> Are you able to monitor this clock with a scope and make sure that it
-> is actually being turned on?
->
-> We use CLKO output to drive MCLK pins on mx6qdl-sabresd board with
-> wm8762 codec. You can use it as a reference.
->
-> Adding the Compulab's folks on Cc.
+--===============5744891978166383745==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="A6N2fC+uXW/VQSAv"
+Content-Disposition: inline
 
-Do the changes below help? (using IMX6QDL_CLK_CKO)
 
-    codec: wm8731@1a {
-       #sound-dai-cells = <0>;
-       compatible = "wlf,wm8731";
-       reg = <0x1a>;
-       AVDD-supply = <&reg_3p3v>;
-       HPVDD-supply = <&reg_3p3v>;
-       DCVDD-supply = <&reg_3p3v>;
-       DBVDD-supply = <&reg_3p3v>;
-       clocks = <&clks IMX6QDL_CLK_CKO>;
+--A6N2fC+uXW/VQSAv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-with this one applied:
+On Mon, Oct 20, 2014 at 04:29:00PM +0100, Mark Brown wrote:
+> On Mon, Oct 20, 2014 at 11:11:49AM +0530, Vinod Koul wrote:
+> > On Fri, Oct 17, 2014 at 02:07:43PM +0200, Takashi Iwai wrote:
+>=20
+> > > > > > I will work on moving memcpy32_toio to core and move users as w=
+ell :)
+>=20
+> > And I did prepare RFC for that and had to trash it :(
+>=20
+> > Turns out we already have an API for this in kernel.
+>=20
+> > While adding the new header, though it should be io.h, stumbled upon not
+> > much used __iowrite32_copy() which seems to be the API I need.
+>=20
+> > I am testing it as we speak, will send conversion patch today.
+>=20
+> Probably best to send patches for the MTD devices too while you're at
+> it.
+Yup, sent out few moments back.
 
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -13,6 +13,7 @@
-  * published by the Free Software Foundation.
-  */
+Thanks
+--=20
+~Vinod
 
-+#include <linux/clk.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/init.h>
-@@ -46,6 +47,7 @@ struct wm8731_priv {
-     struct regmap *regmap;
-     struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
-     const struct snd_pcm_hw_constraint_list *constraints;
-+    struct clk *mclk;
-     unsigned int sysclk;
-     int sysclk_type;
-     int playback_fs;
-@@ -742,6 +744,21 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
-         return ret;
-     }
+--A6N2fC+uXW/VQSAv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-+    wm8731->mclk = devm_clk_get(&i2c->dev, NULL);
-+    if (IS_ERR(wm8731->mclk)) {
-+        ret = PTR_ERR(wm8731->mclk);
-+        dev_err(&i2c->dev, "Failed to get mclock: %d\n", ret);
-+        /* Defer the probe to see if the clk will be provided later */
-+        if (ret == -ENOENT)
-+            return -EPROBE_DEFER;
-+    }
-+
-+    if (!IS_ERR(wm8731->mclk)) {
-+        ret = clk_prepare_enable(wm8731->mclk);
-+        if (ret)
-+            return ret;
-+    }
-+
-     i2c_set_clientdata(i2c, wm8731);
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-     ret = snd_soc_register_codec(&i2c->dev,
+iQIcBAEBAgAGBQJURTNCAAoJEHwUBw8lI4NHKKwP/ihD/D2Zu78J/oBWUGmg+M1Y
+wsyKmWF6+MGa/GHOgyjqzyX1bFbizAgwWAKKg/SbCIDXR+3F/oxABWxf/7Ppu8iB
+JlwcIrcaS/5QGf9M6yftWrr1RkcyIG9Ku8kIZ6GsYOBYP+yCXgYOhTOlct7grsZ4
++IHQGDROQiJWggXvJNomzhkSwkCFwfkdOm/Yim6h2lBM6gix7HAnu+3u4hOTMFrp
+om5UXrVWZlOsW4IQth+Zvf6zHdnRzs8RxMPavfKVS3AvuWlfmNHxT7IUV19uW4WC
+Zz+KimEEck7cZGsRJTH9tPHfOu4W/YKEBbAgwPp+JED1IKawBTnabnkeBO/a5gAx
+18bpTgwphYdG9s8floCbK7bcqx2+FqOjb/znjsQhBR5CnnzS9ks9ZldbSkQeRSi3
+uTt1akb9/TVZnqArrcFoiTOQr0ZZzpl0Kl8lw819cCFMsIOLonODVuERSz+dXOBX
+PhjnJ+Sq8KBt4CcO28RyfycuhavHDvwHmXE8uJNOcXM9PWWzJu3RHj/PIomDNkyw
+2NcXwjFWzPKNCulo5SkZqzQ4RuiSzZgnwdz/r7ndws3h3u11MpP7Q3s5wH6IM+RV
+sS3q+l+lsuPrlmnRcgq3/fhPugL9poRY53+B8T9ZQXH+d/P8OBHaDaRpsi1uLvTG
+BLYUfPxeXjWX+X5/0Hwx
+=D0Q0
+-----END PGP SIGNATURE-----
+
+--A6N2fC+uXW/VQSAv--
+
+--===============5744891978166383745==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5744891978166383745==--
