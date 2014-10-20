@@ -1,19 +1,32 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 4/7] ASoC: Intel: sst: Add IPC handling
-Date: Mon, 20 Oct 2014 10:48:08 +0530
-Message-ID: <20141020051808.GB28745@intel.com>
-References: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
- <1413469819-18775-5-git-send-email-vinod.koul@intel.com>
- <20141017120918.GH1820@sirena.org.uk>
- <20141017115524.GS1638@intel.com>
- <20141017135314.GQ1820@sirena.org.uk>
+From: Mike Looijmans <mike.looijmans@topic.nl>
+Subject: Re: [PATCH 2/2] ASoC: fsl: use strncpy() to prevent
+ copying of over-long names
+Date: Mon, 20 Oct 2014 07:55:22 +0200
+Message-ID: <5444A3CA.3030008@topic.nl>
+References: <1413702456-8624-1-git-send-email-daniel@zonque.org>
+ <1413702456-8624-3-git-send-email-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5443570538421575560=="
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id AF0D52606B1
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 07:55:10 +0200 (CEST)
-In-Reply-To: <20141017135314.GQ1820@sirena.org.uk>
+Received: from smtp103.mer-nm.internl.net (smtp103.mer-nm.internl.net
+ [217.149.192.139])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30C732606A5
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 07:55:25 +0200 (CEST)
+Received: from amavisd-new (mailscanner06.wrt-nm.internl.net [217.149.192.58])
+ by smtp103.mer-nm.internl.net (Postfix) with ESMTP id 771A53F76A
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 07:55:24 +0200 (CEST)
+Received: from smtp103.mer-nm.internl.net ([217.149.192.139])
+ by amavisd-new (mailscanner06.wrt-nm.internl.net [217.149.192.160])
+ (amavisd-new, port 10024)
+ with ESMTP for <alsa-devel@alsa-project.org>;
+ Mon, 20 Oct 2014 07:55:24 +0200 (CEST)
+Received: from TOP-EX01.TOPIC.LOCAL (mail.topic.nl [82.204.13.182])
+ (using TLSv1 with cipher AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by smtp103.mer-nm.internl.net (Postfix) with ESMTPS
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 07:55:23 +0200 (CEST)
+In-Reply-To: <1413702456-8624-3-git-send-email-daniel@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,77 +36,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5443570538421575560==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
-Content-Disposition: inline
-
-
---r5Pyd7+fXNt84Ff3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Oct 17, 2014 at 03:53:14PM +0200, Mark Brown wrote:
-> On Fri, Oct 17, 2014 at 05:25:24PM +0530, Vinod Koul wrote:
-> > On Fri, Oct 17, 2014 at 02:09:18PM +0200, Mark Brown wrote:
->=20
-> > > Shouldn't this be a dev_err() or something?
->=20
-> > Not really.
->=20
-> > We get response from FW which cna be short or long. In former there won=
-t be
-> > anyone waiting as all blocked ones are large.
-> > We cant distiguish between the two thats why we log debug message here.=
- If
-> > its real then finally the message will timeout and we would see that as
-> > error. Yes this is limiation in IPC.
-> > Putting this as err makes log very noisy :(
->=20
-> OK, perhaps a comment explaining that the firmware generates lots of
-> false positives might be in order?
-Sure, that sound okay to me.
-I will send that in fixes for these
-
---=20
-~Vinod
-
---r5Pyd7+fXNt84Ff3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJURJsQAAoJEHwUBw8lI4NH9RwP/2VMj3SXzrOLw/Z4pDuJCTfF
-HsizjcB61Xc2AiVDl0gcxoUIN9pxNZtFQ0MweCLkwFpF7kRbLeqkauQELISGzYzv
-tFTqYestA98DB73QaDgfRnUHskpw7KDOB0kOeC2gxXRihYGID2QVwJU5U8kA/0Yz
-ZeEXHnzruZV+29BQ0t2iLG1/JgdXwsDCvlsbFERey8F712LTNhq5F3OIKLm0k0CV
-0pVnUY3j/5zRfQy+FbZVOks/u8iPQChEDRWw0jQ7dTDAD2Gmc3nV+VBnHdTHd9Zn
-0fu0cWFg7BJ90ikTPwz4rNWuInRnXr0h34IPyk53x+B365lyuJCXcpqeR+HQ1O7a
-BJWEpGxSf2xk53Fi1HLlLWdhcBsNtLzCzbTOlsfNLoCMLocTPAWpo+8RLsnmNQ8u
-QdsJXJw9eydAvmeDaGyrYIxQpid8zHjTtetYt/ZAC/DyJL9keH4m8ZSST6SgCTfH
-4PDmVJAeBeAaXtXaLhlhywXqx0GbQxSNvgl6RuxapO92h7H4crXJOgr8W6Pg3W8f
-lGmqLYLc0J+BBJI2/p2OH8Xs4UTnBQBdmy/gHa81ZPVTzYJx2hlKWzitC7CwjzXf
-gAdV4qzk2xfsp+THmRk5a+BWu85maI0nRnHdXmaQOUNzSKghmSXY4IlbbuGljFFs
-/LoGB2CuAHBCbGz5t0bt
-=pOic
------END PGP SIGNATURE-----
-
---r5Pyd7+fXNt84Ff3--
-
---===============5443570538421575560==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5443570538421575560==--
+77u/VGhpcyBoYXJkbHkgaW1wcm92ZXMgbWF0dGVycy4gV2hlbiB0aGUgc291cmNlIHN0cmluZyBp
+cyBsYXJnZXIgdGhhbiB0aGUgCmJ1ZmZlciwgdGhlIGRlc3RpbmF0aW9uIG1heSBub3QgYmUgbnVs
+LXRlcm1pbmF0ZWQuCkFsc28sIHN0cm5jcHkgQUxXQVlTIHdyaXRlcyB0aGUgZnVsbCBidWZmZXIg
+c28gaXQgbWF5IGJlIHdhc3RpbmcgY3ljbGVzIHdoZW4gCnRoZSBkZXN0aW5hdGlvbiBidWZmZXIg
+aXMgbGFyZ2UuCgpJJ20gc3VyZSB0aGUga2VybmVsIG9mZmVycyBhIGJldHRlciBhbHRlcm5hdGl2
+ZS4gRXZlbiAic25wcmludGYiIGlzIGEgYmV0dGVyIAphbHRlcm5hdGl2ZS4KCk1pa2UuCgoKT24g
+MTAvMTkvMjAxNCAwOTowNyBBTSwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4gVXNlIHN0cm5jcHkoKSBp
+bnN0ZWFkIG9mIHN0cmNweSgpLiBUaGF0J3Mgbm90IGEgc2VjdXJpdHkgaXNzdWUsIGFzIHRoZQo+
+IHNvdXJjZSBidWZmZXIgaXMgdGFrZW4gZnJvbSBEVCBub2RlcywgYnV0IHdlIHNob3VsZCBzdGls
+bCBlbmZvcmNlIGJvdW5kCj4gY2hlY2tzLiBTcG90dGVkIGJ5IENvdmVyaXR5Lgo+Cj4gU2lnbmVk
+LW9mZi1ieTogRGFuaWVsIE1hY2sgPGRhbmllbEB6b25xdWUub3JnPgo+IC0tLQo+ICAgc291bmQv
+c29jL2ZzbC9mc2xfYXNyYy5jIHwgMiArLQo+ICAgc291bmQvc29jL2ZzbC9mc2xfZXNhaS5jIHwg
+MiArLQo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0p
+Cj4KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ZzbC9mc2xfYXNyYy5jIGIvc291bmQvc29jL2Zz
+bC9mc2xfYXNyYy5jCj4gaW5kZXggODIyMTEwNC4uZGQwMGI5ZCAxMDA2NDQKPiAtLS0gYS9zb3Vu
+ZC9zb2MvZnNsL2ZzbF9hc3JjLmMKPiArKysgYi9zb3VuZC9zb2MvZnNsL2ZzbF9hc3JjLmMKPiBA
+QCAtNzkyLDcgKzc5Miw3IEBAIHN0YXRpYyBpbnQgZnNsX2FzcmNfcHJvYmUoc3RydWN0IHBsYXRm
+b3JtX2RldmljZSAqcGRldikKPiAgIAkJcmV0dXJuIC1FTk9NRU07Cj4KPiAgIAlhc3JjX3ByaXYt
+PnBkZXYgPSBwZGV2Owo+IC0Jc3RyY3B5KGFzcmNfcHJpdi0+bmFtZSwgbnAtPm5hbWUpOwo+ICsJ
+c3RybmNweShhc3JjX3ByaXYtPm5hbWUsIG5wLT5uYW1lLCBzaXplb2YoYXNyY19wcml2LT5uYW1l
+KSAtIDEpOwo+Cj4gICAJLyogR2V0IHRoZSBhZGRyZXNzZXMgYW5kIElSUSAqLwo+ICAgCXJlcyA9
+IHBsYXRmb3JtX2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX01FTSwgMCk7Cj4gZGlmZiAt
+LWdpdCBhL3NvdW5kL3NvYy9mc2wvZnNsX2VzYWkuYyBiL3NvdW5kL3NvYy9mc2wvZnNsX2VzYWku
+Ywo+IGluZGV4IGEzYjI5ZWQuLmZkYTFkNDYgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2ZzbC9m
+c2xfZXNhaS5jCj4gKysrIGIvc291bmQvc29jL2ZzbC9mc2xfZXNhaS5jCj4gQEAgLTcyOSw3ICs3
+MjksNyBAQCBzdGF0aWMgaW50IGZzbF9lc2FpX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2Ug
+KnBkZXYpCj4gICAJCXJldHVybiAtRU5PTUVNOwo+Cj4gICAJZXNhaV9wcml2LT5wZGV2ID0gcGRl
+djsKPiAtCXN0cmNweShlc2FpX3ByaXYtPm5hbWUsIG5wLT5uYW1lKTsKPiArCXN0cm5jcHkoZXNh
+aV9wcml2LT5uYW1lLCBucC0+bmFtZSwgc2l6ZW9mKGVzYWlfcHJpdi0+bmFtZSkgLSAxKTsKPgo+
+ICAgCWlmIChvZl9wcm9wZXJ0eV9yZWFkX2Jvb2wobnAsICJiaWctZW5kaWFuIikpCj4gICAJCWZz
+bF9lc2FpX3JlZ21hcF9jb25maWcudmFsX2Zvcm1hdF9lbmRpYW4gPSBSRUdNQVBfRU5ESUFOX0JJ
+RzsKPgoKCgpNZXQgdnJpZW5kZWxpamtlIGdyb2V0IC8ga2luZCByZWdhcmRzLAoKTWlrZSBMb29p
+am1hbnMKClRPUElDIEVtYmVkZGVkIFN5c3RlbXMKRWluZGhvdmVuc2V3ZWcgMzItQywgTkwtNTY4
+MyBLSCBCZXN0ClBvc3RidXMgNDQwLCBOTC01NjgwIEFLIEJlc3QKVGVsZWZvb246ICgrMzEpICgw
+KSA0OTkgMzMgNjkgNzkKVGVsZWZheDogICgrMzEpICgwKSA0OTkgMzMgNjkgNzAKRS1tYWlsOiBt
+aWtlLmxvb2lqbWFuc0B0b3BpYy5ubApXZWJzaXRlOiB3d3cudG9waWMubmwKClBsZWFzZSBjb25z
+aWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZS1tYWlsCgpUb3BpYyB6
+b2VrdCBnZWRyZXZlbiAoZW1iZWRkZWQpIHNvZnR3YXJlIHNwZWNpYWxpc3RlbiEKaHR0cDovL3Rv
+cGljLm5sL3ZhY2F0dXJlcy90b3BpYy16b2VrdC1zb2Z0d2FyZS1lbmdpbmVlcnMvCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
