@@ -1,19 +1,17 @@
-From: Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: 3.18.0-rc1 pulseaudio possible recursive locking
-Date: Tue, 21 Oct 2014 00:30:59 +1030
-Message-ID: <5445159B.6050507@internode.on.net>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 3/7] ASoC: Intel: Add call to calculate offsets
+	internally within the DSP.
+Date: Mon, 20 Oct 2014 15:06:48 +0100
+Message-ID: <1413814012-5619-3-git-send-email-liam.r.girdwood@linux.intel.com>
+References: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ipmail06.adl2.internode.on.net (ipmail06.adl2.internode.on.net
- [150.101.137.129])
- by alsa0.perex.cz (Postfix) with ESMTP id D68E8265D6C
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:01:05 +0200 (CEST)
-Received: from localhost ([127.0.0.1] ident=amarsh04)
- by victoria with esmtp (Exim 4.84)
- (envelope-from <arthur.marsh@internode.on.net>) id 1XgDW7-0004bB-TM
- for alsa-devel@alsa-project.org; Tue, 21 Oct 2014 00:30:59 +1030
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 601CD26653D
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:07:42 +0200 (CEST)
+In-Reply-To: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,84 +21,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I have been seeing this a few times lately, and noticed that it was 
-still present
+A call to calculate internal DSP memory addresses used to allocate persistent
+and scartch buffers.
 
-Is this the right place to report it or should I be reporting a bug 
-against pulseaudio?
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ sound/soc/intel/sst-dsp-priv.h    |  7 +++++++
+ sound/soc/intel/sst-firmware.c    | 22 +++++++++++++++++++---
+ sound/soc/intel/sst-haswell-dsp.c |  8 ++++++++
+ 3 files changed, 34 insertions(+), 3 deletions(-)
 
-
-[  182.273991] =============================================
-[  182.273996] [ INFO: possible recursive locking detected ]
-[  182.274003] 3.18.0-rc1 #1297 Not tainted
-[  182.274008] ---------------------------------------------
-[  182.274013] pulseaudio/5183 is trying to acquire lock:
-[  182.274018]  (&(&substream->self_group.lock)->rlock/1){......}, at: 
-[<f8432284>] snd_pcm_action_group+0x96/0x215 [snd_pcm]
-[  182.274063]
-but task is already holding lock:
-[  182.274069]  (&(&substream->self_group.lock)->rlock/1){......}, at: 
-[<f8432284>] snd_pcm_action_group+0x96/0x215 [snd_pcm]
-[  182.274092]
-other info that might help us debug this:
-[  182.274098]  Possible unsafe locking scenario:
-
-[  182.274104]        CPU0
-[  182.274108]        ----
-[  182.274112]   lock(&(&substream->self_group.lock)->rlock/1);
-[  182.274122]   lock(&(&substream->self_group.lock)->rlock/1);
-[  182.274132]
-  *** DEADLOCK ***
-
-[  182.274138]  May be due to missing lock nesting notation
-
-[  182.274146] 4 locks held by pulseaudio/5183:
-[  182.274151]  #0:  (snd_pcm_link_rwlock){......}, at: [<f8432fe3>] 
-snd_pcm_stream_lock+0x1b/0x43 [snd_pcm]
-[  182.274177]  #1:  (&(&substream->self_group.lock)->rlock){......}, 
-at: [<f8432fee>] snd_pcm_stream_lock+0x26/0x43 [snd_pcm]
-[  182.274202]  #2:  (&(&substream->group->lock)->rlock){......}, at: 
-[<f8432cf4>] snd_pcm_action+0x34/0x10b [snd_pcm]
-[  182.274227]  #3:  (&(&substream->self_group.lock)->rlock/1){......}, 
-at: [<f8432284>] snd_pcm_action_group+0x96/0x215 [snd_pcm]
-[  182.274254]
-stack backtrace:
-[  182.274263] CPU: 1 PID: 5183 Comm: pulseaudio Not tainted 3.18.0-rc1 
-#1297
-[  182.274269] Hardware name: System Manufacturer System Name/P4S800, 
-BIOS ASUS P4S800 ACPI BIOS Revision 1011 Beta 001 08/30/2005
-[  182.274275]  c1bfc4e0 00000000 e55c9d50 c145d969 c1bfc4e0 e55c9dd4 
-c1082b7b c15b7f9a
-[  182.274295]  e55b630c 0000143f 00000000 e55b6010 e55b6070 00000000 
-5402a095 00000004
-[  182.274315]  c17a4034 c1bfc4e0 e55b6508 e55b6520 00000000 00000008 
-00000000 e55b6508
-[  182.274335] Call Trace:
-[  182.274353]  [<c145d969>] dump_stack+0x4b/0x75
-[  182.274366]  [<c1082b7b>] __lock_acquire+0x187c/0x19b3
-[  182.274378]  [<c10834ad>] lock_acquire+0xa1/0x126
-[  182.274394]  [<f8432284>] ? snd_pcm_action_group+0x96/0x215 [snd_pcm]
-[  182.274404]  [<c1463a9d>] _raw_spin_lock_nested+0x41/0x4e
-[  182.274420]  [<f8432284>] ? snd_pcm_action_group+0x96/0x215 [snd_pcm]
-[  182.274436]  [<f8432284>] snd_pcm_action_group+0x96/0x215 [snd_pcm]
-[  182.274445]  [<c146393b>] ? _raw_spin_trylock+0x6b/0x80
-[  182.274462]  [<f8432d0f>] snd_pcm_action+0x4f/0x10b [snd_pcm]
-[  182.274479]  [<f843332a>] snd_pcm_drop+0x4a/0x7d [snd_pcm]
-[  182.274496]  [<f84351d9>] snd_pcm_common_ioctl1+0x7b0/0xcc4 [snd_pcm]
-[  182.274514]  [<f84357ce>] snd_pcm_playback_ioctl1+0xe1/0x3a8 [snd_pcm]
-[  182.274532]  [<f8435ab7>] snd_pcm_playback_ioctl+0x22/0x35 [snd_pcm]
-[  182.274549]  [<f8435a95>] ? snd_pcm_playback_ioctl1+0x3a8/0x3a8 [snd_pcm]
-[  182.274561]  [<c1171e82>] do_vfs_ioctl+0x306/0x576
-[  182.274573]  [<c117d3ca>] ? mntput_no_expire+0x61/0x1e7
-[  182.274583]  [<c117d377>] ? mntput_no_expire+0xe/0x1e7
-[  182.274594]  [<c117d56b>] ? mntput+0x1b/0x29
-[  182.274603]  [<c1161438>] ? __fput+0x144/0x1aa
-[  182.274614]  [<c1172147>] SyS_ioctl+0x55/0x75
-[  182.274624]  [<c14646e0>] sysenter_do_call+0x12/0x12
-
-Regards,
-
-Arthur.
+diff --git a/sound/soc/intel/sst-dsp-priv.h b/sound/soc/intel/sst-dsp-priv.h
+index 4c91449..92fd7f0 100644
+--- a/sound/soc/intel/sst-dsp-priv.h
++++ b/sound/soc/intel/sst-dsp-priv.h
+@@ -26,6 +26,9 @@ struct sst_mem_block;
+ struct sst_module;
+ struct sst_fw;
+ 
++/* do we need to remove or keep */
++#define DSP_DRAM_ADDR_OFFSET		0x400000
++
+ /*
+  * DSP Operations exported by platform Audio DSP driver.
+  */
+@@ -67,6 +70,8 @@ struct sst_addr {
+ 	u32 shim_offset;
+ 	u32 iram_offset;
+ 	u32 dram_offset;
++	u32 dsp_iram_offset;
++	u32 dsp_dram_offset;
+ 	void __iomem *lpe;
+ 	void __iomem *shim;
+ 	void __iomem *pci_cfg;
+@@ -319,4 +324,6 @@ struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
+ 	void *private);
+ void sst_mem_block_unregister_all(struct sst_dsp *dsp);
+ 
++u32 sst_dsp_get_offset(struct sst_dsp *dsp, u32 offset,
++	enum sst_mem_type type);
+ #endif
+diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
+index 2b742a5..1de3f33 100644
+--- a/sound/soc/intel/sst-firmware.c
++++ b/sound/soc/intel/sst-firmware.c
+@@ -234,9 +234,8 @@ struct sst_module *sst_module_new(struct sst_fw *sst_fw,
+ 	sst_module->id = template->id;
+ 	sst_module->dsp = dsp;
+ 	sst_module->sst_fw = sst_fw;
+-
+-	memcpy(&sst_module->s, &template->s, sizeof(struct sst_module_data));
+-	memcpy(&sst_module->p, &template->p, sizeof(struct sst_module_data));
++	sst_module->scratch_size = template->scratch_size;
++	sst_module->persistent_size = template->persistent_size;
+ 
+ 	INIT_LIST_HEAD(&sst_module->block_list);
+ 
+@@ -712,3 +711,20 @@ struct sst_module *sst_module_get_from_id(struct sst_dsp *dsp, u32 id)
+ 	return NULL;
+ }
+ EXPORT_SYMBOL_GPL(sst_module_get_from_id);
++
++/* returns block address in DSP address space */
++u32 sst_dsp_get_offset(struct sst_dsp *dsp, u32 offset,
++	enum sst_mem_type type)
++{
++	switch (type) {
++	case SST_MEM_IRAM:
++		return offset - dsp->addr.iram_offset +
++			dsp->addr.dsp_iram_offset;
++	case SST_MEM_DRAM:
++		return offset - dsp->addr.dram_offset +
++			dsp->addr.dsp_dram_offset;
++	default:
++		return 0;
++	}
++}
++EXPORT_SYMBOL_GPL(sst_dsp_get_offset);
+diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
+index 7f239d0..5058dc8 100644
+--- a/sound/soc/intel/sst-haswell-dsp.c
++++ b/sound/soc/intel/sst-haswell-dsp.c
+@@ -42,6 +42,10 @@
+ #define SST_LP_SHIM_OFFSET	0xE7000
+ #define SST_WPT_IRAM_OFFSET	0xA0000
+ #define SST_LP_IRAM_OFFSET	0x80000
++#define SST_WPT_DSP_DRAM_OFFSET	0x400000
++#define SST_WPT_DSP_IRAM_OFFSET	0x00000
++#define SST_LPT_DSP_DRAM_OFFSET	0x400000
++#define SST_LPT_DSP_IRAM_OFFSET	0x00000
+ 
+ #define SST_SHIM_PM_REG		0x84
+ 
+@@ -462,12 +466,16 @@ static int hsw_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+ 		region = lp_region;
+ 		region_count = ARRAY_SIZE(lp_region);
+ 		sst->addr.iram_offset = SST_LP_IRAM_OFFSET;
++		sst->addr.dsp_iram_offset = SST_LPT_DSP_IRAM_OFFSET;
++		sst->addr.dsp_dram_offset = SST_LPT_DSP_DRAM_OFFSET;
+ 		sst->addr.shim_offset = SST_LP_SHIM_OFFSET;
+ 		break;
+ 	case SST_DEV_ID_WILDCAT_POINT:
+ 		region = wpt_region;
+ 		region_count = ARRAY_SIZE(wpt_region);
+ 		sst->addr.iram_offset = SST_WPT_IRAM_OFFSET;
++		sst->addr.dsp_iram_offset = SST_WPT_DSP_IRAM_OFFSET;
++		sst->addr.dsp_dram_offset = SST_WPT_DSP_DRAM_OFFSET;
+ 		sst->addr.shim_offset = SST_WPT_SHIM_OFFSET;
+ 		break;
+ 	default:
+-- 
+1.9.1
