@@ -1,19 +1,11 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [RFC PATCH 1/2] ALSA: hda - Fix "PCM" name being
- used on one DAC when there are two DACs
-Date: Mon, 20 Oct 2014 08:29:46 +0200
-Message-ID: <5444ABDA.7070207@canonical.com>
-References: <1413466426-2672-1-git-send-email-david.henningsson@canonical.com>	<CAN8cciZAteQAaG9GAxwLWyF6u5xH_fGtRDOTq5j+4LNoj_d_jA@mail.gmail.com>	<543FDFDE.7040800@canonical.com>	<CAN8cciaUo7BOxSMBtiysYi9MsW=ZAWn0s3tHTc5-YmpWWvEJNg@mail.gmail.com>	<s5hlhodteq7.wl-tiwai@suse.de>
- <CAN8ccib4fhvvtYW7sjDZXA9QETgOTL+wA=u6iSv0yRHtwWPfwQ@mail.gmail.com>
+From: Angelo Dureghello <angelo70@gmail.com>
+Subject: Wolfson codec, problem on mixer levels on kernel 3.17.0
+Date: Mon, 20 Oct 2014 09:19:44 +0200
+Message-ID: <5444B790.8000203@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 212F72606B0
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 08:29:53 +0200 (CEST)
-In-Reply-To: <CAN8ccib4fhvvtYW7sjDZXA9QETgOTL+wA=u6iSv0yRHtwWPfwQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,77 +15,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, ruedi@battle-eggs.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
+moving from kernel 3.5.1 to 3.17, amixer cannot read certain mixer 
+controls,
+giving Input/output error:
 
-On 2014-10-19 01:02, Raymond Yau wrote:
->
->  > >
->  > > >> >
->  > > >> > In the scenario where there is one "Line Out", one "Speaker"
-> and one
->  > > >> > "Headphone", and there are only two DACs, two outputs will
-> share a DAC.
->  > > >> > Currently any mixer on such a DAC will get the "PCM" name,
-> which is
->  > > >> > misleading. Instead use "Headphone+LO" or "Speaker+LO" to better
->  > > >> > specify what the volume actually controls.
->  > > >>
->  > > >> Are there any examples ?
->  > > >>
->  > > >
->  > > > I used "hda-emu
->  > > codecs/canonical/alc3226-dell-precision-m2800-ccert-201404-14986 -i
-> 1" when
->  > > developing the patches.
->  > > >
->  > > > I don't have any hardware available myself that exposes this
-> behavior,
->  > > but I can maybe fake one with hdajackretask, if that counts...
->  > > >
->  > >
->  > > How about adding these names to slaves of virtual master
-> volume/switch ?
->  > >
->  > > hdajackretask won't help if the topology of the codecs are  different
->  > >
->  > > Seem the badness still prevent the driver to support surround 5.1 with
->  > > three rear panel jacks, internal speaker and front panel headphone for
->  > > Thinkcenter A58 using alc662
->  > >
->  > >
-> https://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg29203.html
->  > >
->  > > Why 3stack desktops with 6 channels codecs not using
-> "Headphone+LO"  or
->  > > "Speaker+LO" ?
->  >
->  > The problem is just the lack of DACs, so it cannot cover all three
->  > outputs, no matter how the pins are chosen.  That is, it's no 6
->  > channels at all but 4 channels at most.
->  >
->  >
->
-> http://shop.lenovo.com/us/en/desktops/thinkcentre/a-series/a58/
->
-> The technical specification of a58
->
-> 2 pin internal speaker connector
-> Alc662 5.1
->
-> https://bbs.archlinux.org/viewtopic.php?id=156433
->
-> Seem windows support surround 5.1
+[root@test ~]# amixer cget numid=12
+numid=12,iface=MIXER,name='Capture Volume'
+   ; type=INTEGER,access=rw---R--,values=2,min=0,max=255,step=0
+amixer: Control default element read error: Input/output error
 
-Raymond, there can certainly be cases which this patch does not cover - 
-after all, it's mostly a band aid given the lack of topology information 
-- but do you see cases where this patch actually causes a *regression*? 
-If so, could you point me to alsa-info for the machine where this patch 
-causes a regression?
+So i had to disable those controls in the codec code:
 
--- 
-David Henningsson, Canonical Ltd.
-https://launchpad.net/~diwic
+     ...
+
+     //SOC_DOUBLE_R_TLV("Capture Volume", WM8758_LEFT_ADC_DIGITAL_VOL,
+     //    WM8758_RIGHT_ADC_DIGITAL_VOL, 0, 255, 0, adc_tlv),
+     ...
+     //SOC_SINGLE("DAC Playback Limiter Switch", WM8758_DAC_LIMITER_1, 
+8, 1, 0),
+     //SOC_SINGLE("DAC Playback Limiter Decay", WM8758_DAC_LIMITER_1, 4, 
+10, 0),
+     //SOC_SINGLE("DAC Playback Limiter Attack", WM8758_DAC_LIMITER_1, 
+0, 11, 0),
+     ...
+     //SOC_ENUM("EQ4 Bandwith", eq4_bw),
+     //SOC_ENUM("EQ4 Cutoff", eq4_cutoff),
+     //SOC_SINGLE_TLV("EQ4 Volume", WM8758_EQ4_PEAK_3, 0, 24, 1, eq_tlv),
+     ...
+
+Is it possible sonething is changed in these macroes, so that the amixer 
+cannot
+access the controls anymore ?
+
+Every help is appreciated,
+many thanks
+angelo
