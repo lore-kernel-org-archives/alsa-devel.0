@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 02/12] ASoC: dapm: Remove always true path
-	source/sink checks
-Date: Mon, 20 Oct 2014 19:36:34 +0200
-Message-ID: <1413826604-3212-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 03/12] ASoC: dapm: Only mark paths dirty when
+	the connection status changed
+Date: Mon, 20 Oct 2014 19:36:35 +0200
+Message-ID: <1413826604-3212-4-git-send-email-lars@metafoo.de>
 References: <1413826604-3212-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
  [212.40.185.205])
- by alsa0.perex.cz (Postfix) with ESMTP id EC6B72658B4
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 19:36:47 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 83B902658B7
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 19:36:48 +0200 (CEST)
 In-Reply-To: <1413826604-3212-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,78 +26,91 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-A path has always a valid source and a valid sink otherwise we wouldn't add
-it in the first place. Hence all tests that check if sink/source is non NULL
-always evaluate to true and can be removed.
+Rework soc_dapm_{mixer,mux}_update_power() to only mark a path dirty if the
+connect state if the path has actually changed. This avoids unnecessary
+power state checks for the widgets involved.
+
+Also factor out the common code that is involved in this into a helper
+function.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/soc-dapm.c | 25 ++++++++-----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
+ sound/soc/soc-dapm.c | 43 ++++++++++++++++++++++++++++++-------------
+ 1 file changed, 30 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b8b44c9..12f9f5f 100644
+index 12f9f5f..518c532 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -909,7 +909,7 @@ static int is_connected_output_ep(struct snd_soc_dapm_widget *widget,
+@@ -2002,12 +2002,35 @@ static inline void dapm_debugfs_cleanup(struct snd_soc_dapm_context *dapm)
  
- 		trace_snd_soc_dapm_output_path(widget, path);
+ #endif
  
--		if (path->sink && path->connect) {
-+		if (path->connect) {
- 			path->walked = 1;
- 			path->walking = 1;
- 
-@@ -1017,7 +1017,7 @@ static int is_connected_input_ep(struct snd_soc_dapm_widget *widget,
- 
- 		trace_snd_soc_dapm_input_path(widget, path);
- 
--		if (path->source && path->connect) {
-+		if (path->connect) {
- 			path->walked = 1;
- 			path->walking = 1;
- 
-@@ -1219,9 +1219,6 @@ static int dapm_supply_check_power(struct snd_soc_dapm_widget *w)
- 		    !path->connected(path->source, path->sink))
- 			continue;
- 
--		if (!path->sink)
--			continue;
--
- 		if (dapm_widget_power_check(path->sink))
- 			return 1;
- 	}
-@@ -1636,12 +1633,9 @@ static void dapm_widget_set_power(struct snd_soc_dapm_widget *w, bool power,
- 	/* If we changed our power state perhaps our neigbours changed
- 	 * also.
- 	 */
--	list_for_each_entry(path, &w->sources, list_sink) {
--		if (path->source) {
--			dapm_widget_set_peer_power(path->source, power,
--						   path->connect);
--		}
--	}
-+	list_for_each_entry(path, &w->sources, list_sink)
-+		dapm_widget_set_peer_power(path->source, power, path->connect);
++/**
++ * soc_dapm_connect_path() - Connects or disconnects a path
++ * @path: The path to update
++ * @connect: The new connect state of the path. True if the path is connected,
++ *  false if it is disconneted.
++ * @reason: The reason why the path changed (for debugging only)
++ *
++ * Returns true if the path connect state changed, false otherwise.
++ */
++static bool soc_dapm_connect_path(struct snd_soc_dapm_path *path,
++	bool connect, const char *reason)
++{
++	if (path->connect == connect)
++		return false;
 +
- 	switch (w->id) {
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_regulator_supply:
-@@ -1650,12 +1644,9 @@ static void dapm_widget_set_power(struct snd_soc_dapm_widget *w, bool power,
- 		/* Supplies can't affect their outputs, only their inputs */
- 		break;
- 	default:
--		list_for_each_entry(path, &w->sinks, list_source) {
--			if (path->sink) {
--				dapm_widget_set_peer_power(path->sink, power,
--							   path->connect);
--			}
++	path->connect = connect;
++	dapm_mark_dirty(path->source, reason);
++	dapm_mark_dirty(path->sink, reason);
++
++	return true;
++}
++
+ /* test and update the power status of a mux widget */
+ static int soc_dapm_mux_update_power(struct snd_soc_card *card,
+ 				 struct snd_kcontrol *kcontrol, int mux, struct soc_enum *e)
+ {
+ 	struct snd_soc_dapm_path *path;
+ 	int found = 0;
++	bool connect;
+ 
+ 	lockdep_assert_held(&card->dapm_mutex);
+ 
+@@ -2018,16 +2041,12 @@ static int soc_dapm_mux_update_power(struct snd_soc_card *card,
+ 
+ 		found = 1;
+ 		/* we now need to match the string in the enum to the path */
+-		if (!(strcmp(path->name, e->texts[mux]))) {
+-			path->connect = 1; /* new connection */
+-			dapm_mark_dirty(path->source, "mux connection");
+-		} else {
+-			if (path->connect)
+-				dapm_mark_dirty(path->source,
+-						"mux disconnection");
+-			path->connect = 0; /* old connection must be powered down */
 -		}
-+		list_for_each_entry(path, &w->sinks, list_source)
-+			dapm_widget_set_peer_power(path->sink, power,
-+						   path->connect);
- 		break;
+-		dapm_mark_dirty(path->sink, "mux change");
++		if (!(strcmp(path->name, e->texts[mux])))
++			connect = true;
++		else
++			connect = false;
++
++		soc_dapm_connect_path(path, connect, "mux update");
  	}
  
+ 	if (found)
+@@ -2066,9 +2085,7 @@ static int soc_dapm_mixer_update_power(struct snd_soc_card *card,
+ 	/* find dapm widget path assoc with kcontrol */
+ 	dapm_kcontrol_for_each_path(path, kcontrol) {
+ 		found = 1;
+-		path->connect = connect;
+-		dapm_mark_dirty(path->source, "mixer connection");
+-		dapm_mark_dirty(path->sink, "mixer update");
++		soc_dapm_connect_path(path, connect, "mixer update");
+ 	}
+ 
+ 	if (found)
 -- 
 1.8.0
