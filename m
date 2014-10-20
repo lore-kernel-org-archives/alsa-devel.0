@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 02/12] ASoC: ak4535: Use table based setup for
-	controls
-Date: Mon, 20 Oct 2014 10:56:29 +0200
-Message-ID: <1413795399-29952-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 04/12] ASoC: ak4642: Cleanup manual bias level
+	transitions
+Date: Mon, 20 Oct 2014 10:56:31 +0200
+Message-ID: <1413795399-29952-4-git-send-email-lars@metafoo.de>
 References: <1413795399-29952-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-190.synserver.de (smtp-out-190.synserver.de
  [212.40.185.190])
- by alsa0.perex.cz (Postfix) with ESMTP id EEEE126056C
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 10:56:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BCF0260644
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 10:56:44 +0200 (CEST)
 In-Reply-To: <1413795399-29952-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,44 +26,46 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Johannes Stezenbach <js@sig21.net>, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Sven Brandau <brandau@gmx.de>, alsa-devel@alsa-project.org, Peter Hsiang <Peter.Hsiang@maxim-ic.com>, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <morimoto.kuninori@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-Makes the code slightly shorter and cleaner.
+Since the ASoC core now takes care of setting the bias level to
+SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
+anymore either.
+
+The manual transition to SND_SOC_BIAS_STANDBY at the end of CODEC probe()
+can also be removed as the core will automatically do this after the CODEC
+has been probed.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/ak4535.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ sound/soc/codecs/ak4642.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
-index eced46d..9130d91 100644
---- a/sound/soc/codecs/ak4535.c
-+++ b/sound/soc/codecs/ak4535.c
-@@ -379,13 +379,6 @@ static int ak4535_resume(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index 0417125..dde8b49 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -491,23 +491,7 @@ static int ak4642_resume(struct snd_soc_codec *codec)
  	return 0;
  }
  
--static int ak4535_probe(struct snd_soc_codec *codec)
+-
+-static int ak4642_probe(struct snd_soc_codec *codec)
 -{
--	snd_soc_add_codec_controls(codec, ak4535_snd_controls,
--				ARRAY_SIZE(ak4535_snd_controls));
+-	ak4642_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
 -	return 0;
 -}
 -
- static const struct regmap_config ak4535_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
-@@ -399,11 +392,12 @@ static const struct regmap_config ak4535_regmap = {
- };
- 
- static struct snd_soc_codec_driver soc_codec_dev_ak4535 = {
--	.probe =	ak4535_probe,
- 	.resume =	ak4535_resume,
- 	.set_bias_level = ak4535_set_bias_level,
- 	.suspend_bias_off = true,
- 
-+	.controls = ak4535_snd_controls,
-+	.num_controls = ARRAY_SIZE(ak4535_snd_controls),
- 	.dapm_widgets = ak4535_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(ak4535_dapm_widgets),
- 	.dapm_routes = ak4535_audio_map,
+-static int ak4642_remove(struct snd_soc_codec *codec)
+-{
+-	ak4642_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	return 0;
+-}
+-
+ static struct snd_soc_codec_driver soc_codec_dev_ak4642 = {
+-	.probe			= ak4642_probe,
+-	.remove			= ak4642_remove,
+ 	.resume			= ak4642_resume,
+ 	.set_bias_level		= ak4642_set_bias_level,
+ 	.controls		= ak4642_snd_controls,
 -- 
 1.8.0
