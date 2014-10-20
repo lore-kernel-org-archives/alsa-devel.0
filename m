@@ -1,14 +1,17 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 0/5] ASoC: intel: fix to sst driver series
-Date: Mon, 20 Oct 2014 15:29:03 +0530
-Message-ID: <1413799148-6368-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 1/5] ASoC: intel: use __iowrite32_copy for 32
+	bit copy
+Date: Mon, 20 Oct 2014 15:29:04 +0530
+Message-ID: <1413799148-6368-2-git-send-email-vinod.koul@intel.com>
+References: <1413799148-6368-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id A8B1B260597
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 12:36:13 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 861EE2605A2
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 12:36:14 +0200 (CEST)
+In-Reply-To: <1413799148-6368-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,20 +25,34 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The driver was using own method to do 32bit copy, turns out we have a kernel
+API so use that instead
 
-This series fixes comments observed while applying the sst series last week.
+Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/sst/sst_loader.c |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
 
-
-Vinod Koul (5):
-  ASoC: intel: use __iowrite32_copy for 32 bit copy
-  ASoC: intel: log an error on double free
-  ASoC: intel: fix the kernldoc comment
-  ASoC: intel: explain why block not found isn't error always
-  ASoC: intel: use __iowrite32_copy for 32 bit copy
-
- sound/soc/intel/sst-firmware.c          |    7 ++-----
- sound/soc/intel/sst/sst_drv_interface.c |    4 +++-
- sound/soc/intel/sst/sst_ipc.c           |   15 +++++++++++++++
- sound/soc/intel/sst/sst_loader.c        |    9 +++------
- 4 files changed, 23 insertions(+), 12 deletions(-)
+diff --git a/sound/soc/intel/sst/sst_loader.c b/sound/soc/intel/sst/sst_loader.c
+index b6d27c1..40e501b 100644
+--- a/sound/soc/intel/sst/sst_loader.c
++++ b/sound/soc/intel/sst/sst_loader.c
+@@ -41,12 +41,9 @@
+ 
+ static void memcpy32_toio(void __iomem *dst, const void *src, int count)
+ {
+-	int i;
+-	const u32 *src_32 = src;
+-	u32 *dst_32 = dst;
+-
+-	for (i = 0; i < count/sizeof(u32); i++)
+-		writel(*src_32++, dst_32++);
++	/* __iowrite32_copy uses 32-bit count values so dev by 4 for right
++	 * count in words */
++	__iowrite32_copy(dst, src, count/4);
+ }
+ 
+ /**
+-- 
+1.7.0.4
