@@ -1,14 +1,15 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 2/5] ASoC: intel: log an error on double free
-Date: Mon, 20 Oct 2014 19:13:45 +0530
-Message-ID: <1413812628-13325-3-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH v2 1/5] ASoC: intel: use __iowrite32_copy for
+	32 bit copy
+Date: Mon, 20 Oct 2014 19:13:44 +0530
+Message-ID: <1413812628-13325-2-git-send-email-vinod.koul@intel.com>
 References: <1413812628-13325-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id C0F20266ACF
+ by alsa0.perex.cz (Postfix) with ESMTP id 545A1266ACD
  for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:21:12 +0200 (CEST)
 In-Reply-To: <1413812628-13325-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,28 +25,38 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-the stream context should be freed only once on stream cleanup. If we ever
-hit a chance that stream context is getting double freed, though not an
-cause of panic as memory allocator can deal with this, we should still log
-this to help in finding issues and debugging
+The driver was using own method to do 32bit copy, turns out we have a kernel
+API so use that instead
 
+Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/sst/sst_drv_interface.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ sound/soc/intel/sst/sst_loader.c |   12 +++++-------
+ 1 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/intel/sst/sst_drv_interface.c b/sound/soc/intel/sst/sst_drv_interface.c
-index aadb0db..3a5e920 100644
---- a/sound/soc/intel/sst/sst_drv_interface.c
-+++ b/sound/soc/intel/sst/sst_drv_interface.c
-@@ -55,6 +55,8 @@ int free_stream_context(struct intel_sst_drv *ctx, unsigned int str_id)
- 		if (ret)
- 			sst_clean_stream(&ctx->streams[str_id]);
- 		return ret;
-+	} else {
-+		dev_err(ctx->dev, "we tried to free stream context %d which was freed!!!\n", str_id);
- 	}
- 	return ret;
+diff --git a/sound/soc/intel/sst/sst_loader.c b/sound/soc/intel/sst/sst_loader.c
+index b6d27c1..00f60c1 100644
+--- a/sound/soc/intel/sst/sst_loader.c
++++ b/sound/soc/intel/sst/sst_loader.c
+@@ -39,14 +39,12 @@
+ #include "sst.h"
+ #include "../sst-dsp.h"
+ 
+-static void memcpy32_toio(void __iomem *dst, const void *src, int count)
++static inline void memcpy32_toio(void __iomem *dst, const void *src, int count)
+ {
+-	int i;
+-	const u32 *src_32 = src;
+-	u32 *dst_32 = dst;
+-
+-	for (i = 0; i < count/sizeof(u32); i++)
+-		writel(*src_32++, dst_32++);
++	/* __iowrite32_copy uses 32-bit count values so divide by 4 for
++	 * right count in words
++	 */
++	__iowrite32_copy(dst, src, count/4);
  }
+ 
+ /**
 -- 
 1.7.0.4
