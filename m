@@ -1,23 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v4 2/7] ASoC: Intel: mrfld - Add DSP load
- and management
-Date: Mon, 20 Oct 2014 11:11:49 +0530
-Message-ID: <20141020054149.GC28745@intel.com>
-References: <1413469819-18775-1-git-send-email-vinod.koul@intel.com>
- <1413469819-18775-3-git-send-email-vinod.koul@intel.com>
- <20141017094413.GF3771@sirena.org.uk>
- <20141017091816.GP1638@intel.com> <s5h1tq7ui47.wl-tiwai@suse.de>
- <20141017120147.GF1820@sirena.org.uk>
- <s5hy4seucfk.wl-tiwai@suse.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [RFC PATCH 1/2] ALSA: hda - Fix "PCM" name being
+ used on one DAC when there are two DACs
+Date: Mon, 20 Oct 2014 08:29:46 +0200
+Message-ID: <5444ABDA.7070207@canonical.com>
+References: <1413466426-2672-1-git-send-email-david.henningsson@canonical.com>	<CAN8cciZAteQAaG9GAxwLWyF6u5xH_fGtRDOTq5j+4LNoj_d_jA@mail.gmail.com>	<543FDFDE.7040800@canonical.com>	<CAN8cciaUo7BOxSMBtiysYi9MsW=ZAWn0s3tHTc5-YmpWWvEJNg@mail.gmail.com>	<s5hlhodteq7.wl-tiwai@suse.de>
+ <CAN8ccib4fhvvtYW7sjDZXA9QETgOTL+wA=u6iSv0yRHtwWPfwQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 256132606A5
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 08:19:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hy4seucfk.wl-tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 212F72606B0
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 08:29:53 +0200 (CEST)
+In-Reply-To: <CAN8ccib4fhvvtYW7sjDZXA9QETgOTL+wA=u6iSv0yRHtwWPfwQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,47 +23,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Raymond Yau <superquad.vortex2@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, ruedi@battle-eggs.de
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 17, 2014 at 02:07:43PM +0200, Takashi Iwai wrote:
-> At Fri, 17 Oct 2014 14:01:47 +0200,
-> Mark Brown wrote:
-> > 
-> > On Fri, Oct 17, 2014 at 12:04:56PM +0200, Takashi Iwai wrote:
-> > > Vinod Koul wrote:
-> > 
-> > > > I will work on moving memcpy32_toio to core and move users as well :)
 
-And I did prepare RFC for that and had to trash it :(
 
-Turns out we already have an API for this in kernel.
+On 2014-10-19 01:02, Raymond Yau wrote:
+>
+>  > >
+>  > > >> >
+>  > > >> > In the scenario where there is one "Line Out", one "Speaker"
+> and one
+>  > > >> > "Headphone", and there are only two DACs, two outputs will
+> share a DAC.
+>  > > >> > Currently any mixer on such a DAC will get the "PCM" name,
+> which is
+>  > > >> > misleading. Instead use "Headphone+LO" or "Speaker+LO" to better
+>  > > >> > specify what the volume actually controls.
+>  > > >>
+>  > > >> Are there any examples ?
+>  > > >>
+>  > > >
+>  > > > I used "hda-emu
+>  > > codecs/canonical/alc3226-dell-precision-m2800-ccert-201404-14986 -i
+> 1" when
+>  > > developing the patches.
+>  > > >
+>  > > > I don't have any hardware available myself that exposes this
+> behavior,
+>  > > but I can maybe fake one with hdajackretask, if that counts...
+>  > > >
+>  > >
+>  > > How about adding these names to slaves of virtual master
+> volume/switch ?
+>  > >
+>  > > hdajackretask won't help if the topology of the codecs are  different
+>  > >
+>  > > Seem the badness still prevent the driver to support surround 5.1 with
+>  > > three rear panel jacks, internal speaker and front panel headphone for
+>  > > Thinkcenter A58 using alc662
+>  > >
+>  > >
+> https://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg29203.html
+>  > >
+>  > > Why 3stack desktops with 6 channels codecs not using
+> "Headphone+LO"  or
+>  > > "Speaker+LO" ?
+>  >
+>  > The problem is just the lack of DACs, so it cannot cover all three
+>  > outputs, no matter how the pins are chosen.  That is, it's no 6
+>  > channels at all but 4 channels at most.
+>  >
+>  >
+>
+> http://shop.lenovo.com/us/en/desktops/thinkcentre/a-series/a58/
+>
+> The technical specification of a58
+>
+> 2 pin internal speaker connector
+> Alc662 5.1
+>
+> https://bbs.archlinux.org/viewtopic.php?id=156433
+>
+> Seem windows support surround 5.1
 
-While adding the new header, though it should be io.h, stumbled upon not
-much used __iowrite32_copy() which seems to be the API I need.
-
-I am testing it as we speak, will send conversion patch today.
+Raymond, there can certainly be cases which this patch does not cover - 
+after all, it's mostly a band aid given the lack of topology information 
+- but do you see cases where this patch actually causes a *regression*? 
+If so, could you point me to alsa-info for the machine where this patch 
+causes a regression?
 
 -- 
-~Vinod
-
-> > 
-> > > We can move them into sound/core/memory.c.  They are pretty small and
-> > > useful.
-> > 
-> > It's not really anything to do with sound though, the other users are
-> > MTD devices at the minute.
-> 
-> Yeah, we can move up again, then :)
-> 
-> I think it's even not bad to have it as a static inline function.
-> 
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- 
+David Henningsson, Canonical Ltd.
+https://launchpad.net/~diwic
