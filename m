@@ -1,17 +1,30 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 5/5] ASoC: intel: use __iowrite32_copy for
-	32 bit copy
-Date: Mon, 20 Oct 2014 19:13:48 +0530
-Message-ID: <1413812628-13325-6-git-send-email-vinod.koul@intel.com>
-References: <1413812628-13325-1-git-send-email-vinod.koul@intel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC PATCH 1/2] ALSA: hda - Fix "PCM" name being
+ used on one DAC when there are two DACs
+Date: Mon, 20 Oct 2014 22:24:40 +0800
+Message-ID: <CAN8cciZN=7JttVxKo_yNy+63a4XZcLZh3NBodupSQBuWRpWTLA@mail.gmail.com>
+References: <1413466426-2672-1-git-send-email-david.henningsson@canonical.com>
+ <CAN8cciZAteQAaG9GAxwLWyF6u5xH_fGtRDOTq5j+4LNoj_d_jA@mail.gmail.com>
+ <543FDFDE.7040800@canonical.com>
+ <CAN8cciaUo7BOxSMBtiysYi9MsW=ZAWn0s3tHTc5-YmpWWvEJNg@mail.gmail.com>
+ <s5hlhodteq7.wl-tiwai@suse.de>
+ <CAN8ccib4fhvvtYW7sjDZXA9QETgOTL+wA=u6iSv0yRHtwWPfwQ@mail.gmail.com>
+ <5444ABDA.7070207@canonical.com>
+ <CAN8cciYCSd8QqHNZ=7ip_-YnG1ru9jJ3rjW8S_YjyrhRLGBFzA@mail.gmail.com>
+ <s5hlhob3vvj.wl-tiwai@suse.de>
+ <CAN8cciZ05e49cpBbDSLLz+mte5Zx4v4VNAJMH5BA77+0vKQKRw@mail.gmail.com>
+ <s5hwq7vklmm.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 18A82266AD4
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:21:13 +0200 (CEST)
-In-Reply-To: <1413812628-13325-1-git-send-email-vinod.koul@intel.com>
+Received: from mail-qa0-f46.google.com (mail-qa0-f46.google.com
+ [209.85.216.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DCBD266BD5
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:24:43 +0200 (CEST)
+Received: by mail-qa0-f46.google.com with SMTP id w8so3367768qac.5
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 07:24:40 -0700 (PDT)
+In-Reply-To: <s5hwq7vklmm.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +34,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>, hancockrwd@gmail.com
+Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-The sst-firmware was also using own method to do 32bit copy, turns out we have a
-kernel API so use that instead
+> > > >
+> > > > >>
+> > > > >>
+> > > > >>  > >
+> > > > >>  > > >> >
+> > > > >>  > > >> > In the scenario where there is one "Line Out", one
+> > "Speaker"
+> > > > >> and one
+> > > > >>  > > >> > "Headphone", and there are only two DACs, two outputs
+will
+> > > > >> share a DAC.
+> > > > >>  > > >> > Currently any mixer on such a DAC will get the "PCM"
+name,
+> > > > >> which is
+> > > > >>  > > >> > misleading. Instead use "Headphone+LO" or "Speaker+LO"
+to
+> > > > better
+> > > > >>  > > >> > specify what the volume actually controls.
+> > > > >>  > > >>
+> > > > >>  > > >> Are there any examples ?
+> > > > >>  > > >>
+> > > > >>  > > >
+> > > > >>  > > > I used "hda-emu
+> > > > >>  > >
+> > codecs/canonical/alc3226-dell-precision-m2800-ccert-201404-14986 -i
+> > > > >> 1" when
+> > > > >>  > > developing the patches.
+> > > > >>  > > >
+> > > > >>  > > > I don't have any hardware available myself that exposes
+this
+> > > > >> behavior,
+> > > > >>  > > but I can maybe fake one with hdajackretask, if that
+counts...
+> > > > >>  > > >
+> > > > >>  > >
+> > > > >>  > > How about adding these names to slaves of virtual master
+> > > > >> volume/switch ?
+> > > > >>  > >
+> > > > >>  > > hdajackretask won't help if the topology of the codecs are
+> > > > different
+> > > > >>  > >
+> > > > >>  > > Seem the badness still prevent the driver to support
+surround
+> > 5.1
+> > > > with
+> > > > >>  > > three rear panel jacks, internal speaker and front panel
+> > headphone
+> > > > for
+> > > > >>  > > Thinkcenter A58 using alc662
+> > > > >>  > >
+> > > > >>  > >
+> > > > >>
+> > > >
+> >
+https://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg29203.html
+> > > > >>  > >
+> > > > >>  > > Why 3stack desktops with 6 channels codecs not using
+> > > > >> "Headphone+LO"  or
+> > > > >>  > > "Speaker+LO" ?
+> > > > >>  >
+> > > > >>  > The problem is just the lack of DACs, so it cannot cover all
+three
+> > > > >>  > outputs, no matter how the pins are chosen.  That is, it's no
+6
+> > > > >>  > channels at all but 4 channels at most.
+> > > > >>  >
+> > > > >>  >
+> > > > >>
+> > > > >> http://shop.lenovo.com/us/en/desktops/thinkcentre/a-series/a58/
+> > > > >>
+> > > > >> The technical specification of a58
+> > > > >>
+> > > > >> 2 pin internal speaker connector
+> > > > >> Alc662 5.1
+> > > > >>
+> > > > >> https://bbs.archlinux.org/viewtopic.php?id=156433
+> > > > >>
+> > > > >> Seem windows support surround 5.1
+> > > > >
+> > > > >
+> > > > > Raymond, there can certainly be cases which this patch does not
+cover
+> > -
+> > > > after all, it's mostly a band aid given the lack of topology
+> > information -
+> > > > but do you see cases where this patch actually causes a
+*regression*? If
+> > > > so, could you point me to alsa-info for the machine where this patch
+> > causes
+> > > > a regression?
+> > > > >
+> > > >
+> > > >
+> >
+www.realtek.com.tw/products/productsView.aspx?Langid=1&PNid=24&PFid=27&Level=5&Conn=4
+> > > >
+> > > > I expect those desktop with 2+2 HD Audio codec support independent
+> > headphone
+> > > >
+> > > > This mean the driver should not create "Lineout+HP" Playback volume
+> > > >
+> > > > Line out and headphone cannot share same DAC
+> > >
+> > > Do you have a pincfg representing this?  Then we can check it easily
+> > > via hda-emu.
+> > >
+> >
+> >
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/hda-emu.git/tree/codecs/canonical/alc221--hp-prodesk-400-g1-sff-ccert-201408-15383?id=HEAD
+>
+> Both HP (0x21) and LO (0x14) can share the same DAC (0x03) over mixer
+> (0x0d).  So the statement above "Line out and headphone cannot share
+> same DAC" isn't correct.
+>
+> > Refer to user manual
+> >
+> > Multi-streaming can be enabled in the Realtek control panel to allow
+> > independent audio streams to be sent to/from the front and rear jacks
+>
+> This is the implementation detail and it's a matter of taste which
+> should be dependent and which not.  There is no bible here.
+>
+> You can forcibly do that by a fixed DAC assignment (or add some
+> badness) if you want, too...
+>
+>
 
-[For BYT]
-Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/Kconfig        |    2 +-
- sound/soc/intel/sst-firmware.c |    9 +++------
- 2 files changed, 4 insertions(+), 7 deletions(-)
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/072775.html
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index c719438..b8a02cb 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -1,6 +1,6 @@
- config SND_MFLD_MACHINE
- 	tristate "SOC Machine Audio driver for Intel Medfield MID platform"
--	depends on INTEL_SCU_IPC
-+	depends on INTEL_SCU_IPC || COMPILE_TEST
- 	select SND_SOC_SN95031
- 	select SND_SST_MFLD_PLATFORM
- 	select SND_SST_IPC
-diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
-index 3bb43da..cf3d199 100644
---- a/sound/soc/intel/sst-firmware.c
-+++ b/sound/soc/intel/sst-firmware.c
-@@ -32,13 +32,10 @@
- 
- static void block_module_remove(struct sst_module *module);
- 
--static void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
-+static inline void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
- {
--	u32 i;
--
--	/* copy one 32 bit word at a time as 64 bit access is not supported */
--	for (i = 0; i < bytes; i += 4)
--		memcpy_toio(dest + i, src + i, 4);
-+	/* __iowrite32_copy use 32bit size values so divide by 4 */
-+	__iowrite32_copy((void *)dest, src, bytes/4);
- }
- 
- /* create new generic firmware object */
--- 
-1.7.0.4
+
+Seem headphone not working properly on hp prodesk 600 g1
