@@ -1,20 +1,19 @@
-From: Kim Taylor <kmtaylor@gmx.com>
-Subject: Serial MIDI driver for PL011 - as found on BCM2835
-	hardware
-Date: Tue, 21 Oct 2014 10:40:59 +1100
-Message-ID: <1413848459.13334.9.camel@linux-host>
-References: <1413847835.13334.8.camel@linux-host>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] ALSA: Update control names documentation
+Date: Tue, 21 Oct 2014 07:46:23 +0800
+Message-ID: <CAN8ccibgYs3fKKP3_DHu-2ACQ1_ScXkQ0Rc2TQivPTn7s+PKwg@mail.gmail.com>
+References: <1413808689-4175-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.com (mout.gmx.com [74.208.4.201])
- by alsa0.perex.cz (Postfix) with ESMTP id 2951A2606E9
- for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 01:41:59 +0200 (CEST)
-Received: from [140.159.160.7] ([140.159.160.7]) by mail.gmx.com (mrgmxus001)
- with ESMTPSA (Nemesis) id 0LjZRW-1YHc9F1QTY-00bexW for
- <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 01:41:58 +0200
-In-Reply-To: <1413847835.13334.8.camel@linux-host>
+Received: from mail-qg0-f52.google.com (mail-qg0-f52.google.com
+ [209.85.192.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 434692605F5
+ for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 01:46:24 +0200 (CEST)
+Received: by mail-qg0-f52.google.com with SMTP id q108so75640qgd.11
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:46:23 -0700 (PDT)
+In-Reply-To: <1413808689-4175-1-git-send-email-david.henningsson@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+>
+> This document was not really up-to-date. Add recent additions to this
+> standard - based on what the HDA driver currently does, which is some
+> kind of a de facto standard.
+>
 
-I've written a driver for raw MIDI using the PL011. It is obviously
-based on the snd-serial-u16550 module, with a couple of improvements:
+Is it feasible to remove "Hardware Master" if no alsa driver use this name ?
 
- - I've implemented a drain() callback.
+>
+>
+> diff --git a/Documentation/sound/alsa/ControlNames.txt
+b/Documentation/sound/alsa/ControlNames.txt
+> index fea65bb..79a6127 100644
+> --- a/Documentation/sound/alsa/ControlNames.txt
+> +++ b/Documentation/sound/alsa/ControlNames.txt
+> @@ -1,6 +1,6 @@
+>  This document describes standard names of mixer controls.
+>
+> -Syntax: SOURCE [DIRECTION] FUNCTION
+> +Syntax: [LOCATION] SOURCE [CHANNEL] [DIRECTION] FUNCTION
+>
 
- - I've also implemented a half duplex mode based on a timer callback
-which was necessary for reliable communication with my eMagic Unitor 8
-hardware. (Testing with a serial link to other hardware shows that the
-full duplex mode is also working.)
-
-It can be found here:
-https://github.com/kmtaylor/rpi_patches/blob/master/serial-pl011.c
-
-If you think it should be included in the ALSA repository, please let me
-know what to do next.
-
-Regards,
-
-Kim
+>    Hardware Master
