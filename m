@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 10/12] ASoC: dapm: Mark endpoints instead of IO
-	widgets dirty during suspend/resume
-Date: Mon, 20 Oct 2014 19:36:42 +0200
-Message-ID: <1413826604-3212-11-git-send-email-lars@metafoo.de>
+Subject: [PATCH 11/12] ASoC: dapm: Add a few supply widget
+	sanity checks
+Date: Mon, 20 Oct 2014 19:36:43 +0200
+Message-ID: <1413826604-3212-12-git-send-email-lars@metafoo.de>
 References: <1413826604-3212-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-205.synserver.de (smtp-out-205.synserver.de
  [212.40.185.205])
- by alsa0.perex.cz (Postfix) with ESMTP id 953A32658CD
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 19:36:54 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 38ECA2658CE
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 19:36:55 +0200 (CEST)
 In-Reply-To: <1413826604-3212-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,96 +26,60 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The state of endpoint widgets is affected by that card's power state.
-Endpoint widgets that do no have the ignore_suspend flag set will be
-considered inactive during suspend. So they have to be re-checked and marked
-dirty after the card's power state changes. Currently the input and output
-widgets are marked dirty instead, this works most of the time since
-typically a path from one endpoint to another will go via a input or output
-widget. But marking the endpoints dirty is technically more correct and will
-also work for odd corner cases.
+Supply widgets are somewhat special and not all kinds of paths to or from
+supply widgets make sense. This patch adds a few sanity checks that errors
+out during the path instantiation for those invalid paths. This will prevent
+drivers to depend on weird behavior resulting from such paths as well as
+will allow the DAPM algorithms to assume that they never see such paths.
+
+This patch adds checks for the following three invalid types of paths:
+	* A path with a non-supply widget as a source connected to a supply
+	  widget as a sink. Such a path has no effect on either of the two
+	  connected widgets.
+	* Paths with a connected() callback that have a non-supply widget as a
+	  sink. The DAPM algorithm only uses the conneceted() callback for
+	  supply widget power checks. And since it prevents caching of the DAPM
+	  state there is no intention to make it more generic as it has
+	  negative performance implications.
+	* Paths which connect a supply to a mixer or mux via a control. Controls
+	  are only meant to affect the routing of audio data.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc-dapm.h |  2 +-
- sound/soc/soc-core.c     |  8 ++++----
- sound/soc/soc-dapm.c     | 15 ++++-----------
- 3 files changed, 9 insertions(+), 16 deletions(-)
+ sound/soc/soc-dapm.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index e7ebeb7..43ca165 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -435,7 +435,7 @@ void snd_soc_dapm_auto_nc_pins(struct snd_soc_card *card);
- unsigned int dapm_kcontrol_get_value(const struct snd_kcontrol *kcontrol);
- 
- /* Mostly internal - should not normally be used */
--void dapm_mark_io_dirty(struct snd_soc_dapm_context *dapm);
-+void dapm_mark_endpoints_dirty(struct snd_soc_card *card);
- 
- /* dapm path query */
- int snd_soc_dapm_dai_get_connected_widgets(struct snd_soc_dai *dai, int stream,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4c8f8a2..443be00 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -629,8 +629,8 @@ int snd_soc_suspend(struct device *dev)
- 					  SND_SOC_DAPM_STREAM_SUSPEND);
- 	}
- 
--	/* Recheck all analogue paths too */
--	dapm_mark_io_dirty(&card->dapm);
-+	/* Recheck all endpoints too, their state is affected by suspend */
-+	dapm_mark_endpoints_dirty(card);
- 	snd_soc_dapm_sync(&card->dapm);
- 
- 	/* suspend all CODECs */
-@@ -796,8 +796,8 @@ static void soc_resume_deferred(struct work_struct *work)
- 	/* userspace can access us now we are back as we were before */
- 	snd_power_change_state(card->snd_card, SNDRV_CTL_POWER_D0);
- 
--	/* Recheck all analogue paths too */
--	dapm_mark_io_dirty(&card->dapm);
-+	/* Recheck all endpoints too, their state is affected by suspend */
-+	dapm_mark_endpoints_dirty(card);
- 	snd_soc_dapm_sync(&card->dapm);
- }
- 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index a7d5acf..8792e47 100644
+index 8792e47..38ab643 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -159,27 +159,20 @@ static void dapm_mark_dirty(struct snd_soc_dapm_widget *w, const char *reason)
- 	}
- }
+@@ -2198,6 +2198,27 @@ static int snd_soc_dapm_add_path(struct snd_soc_dapm_context *dapm,
+ 	struct snd_soc_dapm_path *path;
+ 	int ret;
  
--void dapm_mark_io_dirty(struct snd_soc_dapm_context *dapm)
-+void dapm_mark_endpoints_dirty(struct snd_soc_card *card)
- {
--	struct snd_soc_card *card = dapm->card;
- 	struct snd_soc_dapm_widget *w;
- 
- 	mutex_lock(&card->dapm_mutex);
- 
- 	list_for_each_entry(w, &card->widgets, list) {
--		switch (w->id) {
--		case snd_soc_dapm_input:
--		case snd_soc_dapm_output:
--			dapm_mark_dirty(w, "Rechecking inputs and outputs");
--			break;
--		default:
--			break;
--		}
-+		if (w->is_sink || w->is_source)
-+			dapm_mark_dirty(w, "Rechecking endpoints");
- 	}
- 
- 	mutex_unlock(&card->dapm_mutex);
- }
--EXPORT_SYMBOL_GPL(dapm_mark_io_dirty);
-+EXPORT_SYMBOL_GPL(dapm_mark_endpoints_dirty);
- 
- /* create a new dapm widget */
- static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
++	if (wsink->is_supply && !wsource->is_supply) {
++		dev_err(dapm->dev,
++			"Connecting non-supply widget to supply widget is not supported (%s -> %s)\n",
++			wsource->name, wsink->name);
++		return -EINVAL;
++	}
++
++	if (connected && !wsource->is_supply) {
++		dev_err(dapm->dev,
++			"connected() callback only supported for supply widgets (%s -> %s)\n",
++			wsource->name, wsink->name);
++		return -EINVAL;
++	}
++
++	if (wsource->is_supply && control) {
++		dev_err(dapm->dev,
++			"Conditional paths are not supported for supply widgets (%s -> [%s] -> %s)\n",
++			wsource->name, control, wsink->name);
++		return -EINVAL;
++	}
++
+ 	path = kzalloc(sizeof(struct snd_soc_dapm_path), GFP_KERNEL);
+ 	if (!path)
+ 		return -ENOMEM;
 -- 
 1.8.0
