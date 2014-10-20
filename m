@@ -1,17 +1,23 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v3 5/5] ASoC: intel: use __iowrite32_copy for
-	32 bit copy
-Date: Mon, 20 Oct 2014 20:54:34 +0530
-Message-ID: <1413818674-14158-6-git-send-email-vinod.koul@intel.com>
-References: <1413818674-14158-1-git-send-email-vinod.koul@intel.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: Help with wm8731 support for the Utilite (imx6q)
+Date: Mon, 20 Oct 2014 14:29:01 -0200
+Message-ID: <CAOMZO5CU+Y8cGJsn4O1ccFZUSjLM1iH3QN2fAv4UyaLMk5yAEg@mail.gmail.com>
+References: <CAB-pspc5KZ0sTB-7uxjBq+PEFxFdAPO5NAXof_+uwQBJ_JCejg@mail.gmail.com>
+ <CAOMZO5C-EG+beiK1M10vX0Xhg4avYLExxG7MZOQq8gM6gRnANw@mail.gmail.com>
+ <CAB-pspcNOuW=JN9_avEvyPFUvTfs99PB=ah43YdqMC65mZ8psQ@mail.gmail.com>
+ <CAB-pspei1a3TbuFGBT-kupEWU5UY10kQoTtiV895WTi-j+-dzQ@mail.gmail.com>
+ <CAOMZO5AVr0xJjf9JjYNuXG-jJC3ft84+fO-5ToSieP9NFP=-+g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FC772667B6
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 18:02:56 +0200 (CEST)
-In-Reply-To: <1413818674-14158-1-git-send-email-vinod.koul@intel.com>
+Received: from mail-lb0-f180.google.com (mail-lb0-f180.google.com
+ [209.85.217.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0052C2673A8
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 18:29:01 +0200 (CEST)
+Received: by mail-lb0-f180.google.com with SMTP id n15so4152905lbi.39
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 09:29:01 -0700 (PDT)
+In-Reply-To: <CAOMZO5AVr0xJjf9JjYNuXG-jJC3ft84+fO-5ToSieP9NFP=-+g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,40 +27,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Jonathan Bennett <jbscience87@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, valentin@compulab.co.il
 List-Id: alsa-devel@alsa-project.org
 
-The sst-firmware was also using own method to do 32bit copy, turns out we have a
-kernel API so use that instead
+On Mon, Oct 20, 2014 at 10:06 AM, Fabio Estevam <festevam@gmail.com> wrote:
 
-[For BYT]
-Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/sst-firmware.c |    9 +++------
- 1 files changed, 3 insertions(+), 6 deletions(-)
+>>       clocks = <&clks IMX6QDL_CLK_SSI2>;
+>
+> This 'clocks' entry does not seem correct.
+>
+> IMX6QDL_CLK_SSI2 is the clock from SSI2 module, which is turned on by
+> the ssi driver.
+>
+> Who provides the MCLK for wm8731 on utilite board? Isn't it mx6 CLKO pin?
+>
+> Are you able to monitor this clock with a scope and make sure that it
+> is actually being turned on?
+>
+> We use CLKO output to drive MCLK pins on mx6qdl-sabresd board with
+> wm8762 codec. You can use it as a reference.
+>
+> Adding the Compulab's folks on Cc.
 
-diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
-index 3bb43da..cf3d199 100644
---- a/sound/soc/intel/sst-firmware.c
-+++ b/sound/soc/intel/sst-firmware.c
-@@ -32,13 +32,10 @@
- 
- static void block_module_remove(struct sst_module *module);
- 
--static void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
-+static inline void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
- {
--	u32 i;
--
--	/* copy one 32 bit word at a time as 64 bit access is not supported */
--	for (i = 0; i < bytes; i += 4)
--		memcpy_toio(dest + i, src + i, 4);
-+	/* __iowrite32_copy use 32bit size values so divide by 4 */
-+	__iowrite32_copy((void *)dest, src, bytes/4);
- }
- 
- /* create new generic firmware object */
--- 
-1.7.0.4
+Do the changes below help? (using IMX6QDL_CLK_CKO)
+
+    codec: wm8731@1a {
+       #sound-dai-cells = <0>;
+       compatible = "wlf,wm8731";
+       reg = <0x1a>;
+       AVDD-supply = <&reg_3p3v>;
+       HPVDD-supply = <&reg_3p3v>;
+       DCVDD-supply = <&reg_3p3v>;
+       DBVDD-supply = <&reg_3p3v>;
+       clocks = <&clks IMX6QDL_CLK_CKO>;
+
+with this one applied:
+
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -13,6 +13,7 @@
+  * published by the Free Software Foundation.
+  */
+
++#include <linux/clk.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/init.h>
+@@ -46,6 +47,7 @@ struct wm8731_priv {
+     struct regmap *regmap;
+     struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
+     const struct snd_pcm_hw_constraint_list *constraints;
++    struct clk *mclk;
+     unsigned int sysclk;
+     int sysclk_type;
+     int playback_fs;
+@@ -742,6 +744,21 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+         return ret;
+     }
+
++    wm8731->mclk = devm_clk_get(&i2c->dev, NULL);
++    if (IS_ERR(wm8731->mclk)) {
++        ret = PTR_ERR(wm8731->mclk);
++        dev_err(&i2c->dev, "Failed to get mclock: %d\n", ret);
++        /* Defer the probe to see if the clk will be provided later */
++        if (ret == -ENOENT)
++            return -EPROBE_DEFER;
++    }
++
++    if (!IS_ERR(wm8731->mclk)) {
++        ret = clk_prepare_enable(wm8731->mclk);
++        if (ret)
++            return ret;
++    }
++
+     i2c_set_clientdata(i2c, wm8731);
+
+     ret = snd_soc_register_codec(&i2c->dev,
