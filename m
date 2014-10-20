@@ -1,20 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/5] ASoC: intel: use __iowrite32_copy for
- 32	bit copy
-Date: Mon, 20 Oct 2014 18:44:52 +0530
-Message-ID: <20141020131452.GG28745@intel.com>
-References: <1413799148-6368-1-git-send-email-vinod.koul@intel.com>
- <1413799148-6368-2-git-send-email-vinod.koul@intel.com>
- <s5h1tq3m12a.wl-tiwai@suse.de>
+From: Arthur Marsh <arthur.marsh@internode.on.net>
+Subject: 3.18.0-rc1 pulseaudio possible recursive locking
+Date: Tue, 21 Oct 2014 00:30:59 +1030
+Message-ID: <5445159B.6050507@internode.on.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 9698E265230
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 15:52:01 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5h1tq3m12a.wl-tiwai@suse.de>
+Received: from ipmail06.adl2.internode.on.net (ipmail06.adl2.internode.on.net
+ [150.101.137.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id D68E8265D6C
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:01:05 +0200 (CEST)
+Received: from localhost ([127.0.0.1] ident=amarsh04)
+ by victoria with esmtp (Exim 4.84)
+ (envelope-from <arthur.marsh@internode.on.net>) id 1XgDW7-0004bB-TM
+ for alsa-devel@alsa-project.org; Tue, 21 Oct 2014 00:30:59 +1030
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,64 +23,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 20, 2014 at 01:29:33PM +0200, Takashi Iwai wrote:
-> At Mon, 20 Oct 2014 15:29:04 +0530,
-> Vinod Koul wrote:
-> > 
-> > The driver was using own method to do 32bit copy, turns out we have a kernel
-> > API so use that instead
-> > 
-> > Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> > ---
-> >  sound/soc/intel/sst/sst_loader.c |    9 +++------
-> >  1 files changed, 3 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/sound/soc/intel/sst/sst_loader.c b/sound/soc/intel/sst/sst_loader.c
-> > index b6d27c1..40e501b 100644
-> > --- a/sound/soc/intel/sst/sst_loader.c
-> > +++ b/sound/soc/intel/sst/sst_loader.c
-> > @@ -41,12 +41,9 @@
-> >  
-> >  static void memcpy32_toio(void __iomem *dst, const void *src, int count)
-> >  {
-> > -	int i;
-> > -	const u32 *src_32 = src;
-> > -	u32 *dst_32 = dst;
-> > -
-> > -	for (i = 0; i < count/sizeof(u32); i++)
-> > -		writel(*src_32++, dst_32++);
-> > +	/* __iowrite32_copy uses 32-bit count values so dev by 4 for right
-> > +	 * count in words */
-> 
-> s/dev/div/
-> 
-> Also, it's worth to make it inline, although the compiler would do it
-> automatically in most cases like this.
-Yes it did, although it would make sense to do so here as well
+Hi, I have been seeing this a few times lately, and noticed that it was 
+still present
 
--- 
-~Vinod
+Is this the right place to report it or should I be reporting a bug 
+against pulseaudio?
 
-> 
-> 
-> Takashi
-> 
-> > +	__iowrite32_copy(dst, src, count/4);
-> >  }
-> >  
-> >  /**
-> > -- 
-> > 1.7.0.4
-> > 
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > 
 
--- 
+[  182.273991] =============================================
+[  182.273996] [ INFO: possible recursive locking detected ]
+[  182.274003] 3.18.0-rc1 #1297 Not tainted
+[  182.274008] ---------------------------------------------
+[  182.274013] pulseaudio/5183 is trying to acquire lock:
+[  182.274018]  (&(&substream->self_group.lock)->rlock/1){......}, at: 
+[<f8432284>] snd_pcm_action_group+0x96/0x215 [snd_pcm]
+[  182.274063]
+but task is already holding lock:
+[  182.274069]  (&(&substream->self_group.lock)->rlock/1){......}, at: 
+[<f8432284>] snd_pcm_action_group+0x96/0x215 [snd_pcm]
+[  182.274092]
+other info that might help us debug this:
+[  182.274098]  Possible unsafe locking scenario:
+
+[  182.274104]        CPU0
+[  182.274108]        ----
+[  182.274112]   lock(&(&substream->self_group.lock)->rlock/1);
+[  182.274122]   lock(&(&substream->self_group.lock)->rlock/1);
+[  182.274132]
+  *** DEADLOCK ***
+
+[  182.274138]  May be due to missing lock nesting notation
+
+[  182.274146] 4 locks held by pulseaudio/5183:
+[  182.274151]  #0:  (snd_pcm_link_rwlock){......}, at: [<f8432fe3>] 
+snd_pcm_stream_lock+0x1b/0x43 [snd_pcm]
+[  182.274177]  #1:  (&(&substream->self_group.lock)->rlock){......}, 
+at: [<f8432fee>] snd_pcm_stream_lock+0x26/0x43 [snd_pcm]
+[  182.274202]  #2:  (&(&substream->group->lock)->rlock){......}, at: 
+[<f8432cf4>] snd_pcm_action+0x34/0x10b [snd_pcm]
+[  182.274227]  #3:  (&(&substream->self_group.lock)->rlock/1){......}, 
+at: [<f8432284>] snd_pcm_action_group+0x96/0x215 [snd_pcm]
+[  182.274254]
+stack backtrace:
+[  182.274263] CPU: 1 PID: 5183 Comm: pulseaudio Not tainted 3.18.0-rc1 
+#1297
+[  182.274269] Hardware name: System Manufacturer System Name/P4S800, 
+BIOS ASUS P4S800 ACPI BIOS Revision 1011 Beta 001 08/30/2005
+[  182.274275]  c1bfc4e0 00000000 e55c9d50 c145d969 c1bfc4e0 e55c9dd4 
+c1082b7b c15b7f9a
+[  182.274295]  e55b630c 0000143f 00000000 e55b6010 e55b6070 00000000 
+5402a095 00000004
+[  182.274315]  c17a4034 c1bfc4e0 e55b6508 e55b6520 00000000 00000008 
+00000000 e55b6508
+[  182.274335] Call Trace:
+[  182.274353]  [<c145d969>] dump_stack+0x4b/0x75
+[  182.274366]  [<c1082b7b>] __lock_acquire+0x187c/0x19b3
+[  182.274378]  [<c10834ad>] lock_acquire+0xa1/0x126
+[  182.274394]  [<f8432284>] ? snd_pcm_action_group+0x96/0x215 [snd_pcm]
+[  182.274404]  [<c1463a9d>] _raw_spin_lock_nested+0x41/0x4e
+[  182.274420]  [<f8432284>] ? snd_pcm_action_group+0x96/0x215 [snd_pcm]
+[  182.274436]  [<f8432284>] snd_pcm_action_group+0x96/0x215 [snd_pcm]
+[  182.274445]  [<c146393b>] ? _raw_spin_trylock+0x6b/0x80
+[  182.274462]  [<f8432d0f>] snd_pcm_action+0x4f/0x10b [snd_pcm]
+[  182.274479]  [<f843332a>] snd_pcm_drop+0x4a/0x7d [snd_pcm]
+[  182.274496]  [<f84351d9>] snd_pcm_common_ioctl1+0x7b0/0xcc4 [snd_pcm]
+[  182.274514]  [<f84357ce>] snd_pcm_playback_ioctl1+0xe1/0x3a8 [snd_pcm]
+[  182.274532]  [<f8435ab7>] snd_pcm_playback_ioctl+0x22/0x35 [snd_pcm]
+[  182.274549]  [<f8435a95>] ? snd_pcm_playback_ioctl1+0x3a8/0x3a8 [snd_pcm]
+[  182.274561]  [<c1171e82>] do_vfs_ioctl+0x306/0x576
+[  182.274573]  [<c117d3ca>] ? mntput_no_expire+0x61/0x1e7
+[  182.274583]  [<c117d377>] ? mntput_no_expire+0xe/0x1e7
+[  182.274594]  [<c117d56b>] ? mntput+0x1b/0x29
+[  182.274603]  [<c1161438>] ? __fput+0x144/0x1aa
+[  182.274614]  [<c1172147>] SyS_ioctl+0x55/0x75
+[  182.274624]  [<c14646e0>] sysenter_do_call+0x12/0x12
+
+Regards,
+
+Arthur.
