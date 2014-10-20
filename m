@@ -1,15 +1,17 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 1/7] ASoC: Intel: Make ADSP memory block
-	allocation more generic
-Date: Mon, 20 Oct 2014 15:06:46 +0100
-Message-ID: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 5/7] ASoC: Intel: Add DMA firmware loading
+	support
+Date: Mon, 20 Oct 2014 15:06:50 +0100
+Message-ID: <1413814012-5619-5-git-send-email-liam.r.girdwood@linux.intel.com>
+References: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 5DDA8266539
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:07:41 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 23A4D2606EF
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 16:07:46 +0200 (CEST)
+In-Reply-To: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,807 +25,410 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Current block allocation is tied to block type and requestor type. Make the
-allocation more generic by removing the struct module parameter and adding
-a generic block allocator structure. Also pass in the list that the blocks
-have to be added too in order to remove dependence on block requestor type.
+Add support for DMA to load firmware modules to the DSP memory blocks.
+Two DMA engines are supported, DesignWare and Intel MID.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-baytrail-dsp.c |  24 ++-
- sound/soc/intel/sst-dsp-priv.h     |  83 +++++-----
- sound/soc/intel/sst-firmware.c     | 317 +++++++++++++++++++++++++------------
- sound/soc/intel/sst-haswell-dsp.c  |  41 ++---
- 4 files changed, 288 insertions(+), 177 deletions(-)
+ sound/soc/intel/sst-dsp-priv.h |   4 +
+ sound/soc/intel/sst-dsp.c      |   7 ++
+ sound/soc/intel/sst-dsp.h      |   7 ++
+ sound/soc/intel/sst-firmware.c | 265 ++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 280 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/sst-baytrail-dsp.c b/sound/soc/intel/sst-baytrail-dsp.c
-index fc58876..5a9e567 100644
---- a/sound/soc/intel/sst-baytrail-dsp.c
-+++ b/sound/soc/intel/sst-baytrail-dsp.c
-@@ -67,17 +67,12 @@ static int sst_byt_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
- {
- 	struct dma_block_info *block;
- 	struct sst_module *mod;
--	struct sst_module_data block_data;
- 	struct sst_module_template template;
- 	int count;
- 
- 	memset(&template, 0, sizeof(template));
- 	template.id = module->type;
- 	template.entry = module->entry_point;
--	template.p.type = SST_MEM_DRAM;
--	template.p.data_type = SST_DATA_P;
--	template.s.type = SST_MEM_DRAM;
--	template.s.data_type = SST_DATA_S;
- 
- 	mod = sst_module_new(fw, &template, NULL);
- 	if (mod == NULL)
-@@ -94,19 +89,19 @@ static int sst_byt_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
- 
- 		switch (block->type) {
- 		case SST_BYT_IRAM:
--			block_data.offset = block->ram_offset +
-+			mod->offset = block->ram_offset +
- 					    dsp->addr.iram_offset;
--			block_data.type = SST_MEM_IRAM;
-+			mod->type = SST_MEM_IRAM;
- 			break;
- 		case SST_BYT_DRAM:
--			block_data.offset = block->ram_offset +
-+			mod->offset = block->ram_offset +
- 					    dsp->addr.dram_offset;
--			block_data.type = SST_MEM_DRAM;
-+			mod->type = SST_MEM_DRAM;
- 			break;
- 		case SST_BYT_CACHE:
--			block_data.offset = block->ram_offset +
-+			mod->offset = block->ram_offset +
- 					    (dsp->addr.fw_ext - dsp->addr.lpe);
--			block_data.type = SST_MEM_CACHE;
-+			mod->type = SST_MEM_CACHE;
- 			break;
- 		default:
- 			dev_err(dsp->dev, "wrong ram type 0x%x in block0x%x\n",
-@@ -114,11 +109,10 @@ static int sst_byt_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
- 			return -EINVAL;
- 		}
- 
--		block_data.size = block->size;
--		block_data.data_type = SST_DATA_M;
--		block_data.data = (void *)block + sizeof(*block);
-+		mod->size = block->size;
-+		mod->data = (void *)block + sizeof(*block);
- 
--		sst_module_insert_fixed_block(mod, &block_data);
-+		sst_module_alloc_blocks(mod);
- 
- 		block = (void *)block + sizeof(*block) + block->size;
- 	}
 diff --git a/sound/soc/intel/sst-dsp-priv.h b/sound/soc/intel/sst-dsp-priv.h
-index ffb308b..f58a049 100644
+index 2a9f0ff..be81b86 100644
 --- a/sound/soc/intel/sst-dsp-priv.h
 +++ b/sound/soc/intel/sst-dsp-priv.h
-@@ -84,15 +84,6 @@ struct sst_mailbox {
- };
+@@ -348,6 +348,10 @@ struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
+ 	void *private);
+ void sst_mem_block_unregister_all(struct sst_dsp *dsp);
  
- /*
-- * Audio DSP Firmware data types.
-- */
--enum sst_data_type {
--	SST_DATA_M	= 0, /* module block data */
--	SST_DATA_P	= 1, /* peristant data (text, data) */
--	SST_DATA_S	= 2, /* scratch data (usually buffers) */
--};
--
--/*
-  * Audio DSP memory block types.
-  */
- enum sst_mem_type {
-@@ -125,23 +116,6 @@ struct sst_fw {
- };
- 
- /*
-- * Audio DSP Generic Module data.
-- *
-- * This is used to dsecribe any sections of persistent (text and data) and
-- * scratch (buffers) of module data in ADSP memory space.
-- */
--struct sst_module_data {
--
--	enum sst_mem_type type;		/* destination memory type */
--	enum sst_data_type data_type;	/* type of module data */
--
--	u32 size;		/* size in bytes */
--	int32_t offset;		/* offset in FW file */
--	u32 data_offset;	/* offset in ADSP memory space */
--	void *data;		/* module data */
--};
--
--/*
-  * Audio DSP Generic Module Template.
-  *
-  * Used to define and register a new FW module. This data is extracted from
-@@ -150,15 +124,42 @@ struct sst_module_data {
- struct sst_module_template {
- 	u32 id;
- 	u32 entry;			/* entry point */
--	struct sst_module_data s;	/* scratch data */
--	struct sst_module_data p;	/* peristant data */
-+	u32 scratch_size;
-+	u32 persistent_size;
-+};
++/* Create/Free DMA resources */
++int sst_dma_new(struct sst_dsp *sst);
++void sst_dma_free(struct sst_dma *dma);
 +
-+/*
-+ * Block Allocator - Used to allocate blocks of DSP memory.
-+ */
-+struct sst_block_allocator {
-+	u32 id;
-+	u32 offset;
-+	int size;
-+	enum sst_mem_type type;
-+};
+ u32 sst_dsp_get_offset(struct sst_dsp *dsp, u32 offset,
+ 	enum sst_mem_type type);
+ #endif
+diff --git a/sound/soc/intel/sst-dsp.c b/sound/soc/intel/sst-dsp.c
+index 372c4b8..d0fc685 100644
+--- a/sound/soc/intel/sst-dsp.c
++++ b/sound/soc/intel/sst-dsp.c
+@@ -367,6 +367,10 @@ struct sst_dsp *sst_dsp_new(struct device *dev,
+ 	if (err)
+ 		goto irq_err;
+ 
++	err = sst_dma_new(sst);
++	if (err)
++		dev_warn(dev, "sst_dma_new failed %d\n", err);
 +
-+/*
-+ * Runtime Module Instance - A module object can be instanciated multiple
-+ * times within the DSP FW.
-+ */
-+struct sst_module_runtime {
-+	struct sst_dsp *dsp;
-+	int id;
-+	struct sst_module *module;	/* parent module we belong too */
+ 	return sst;
+ 
+ irq_err:
+@@ -382,6 +386,9 @@ void sst_dsp_free(struct sst_dsp *sst)
+ 	free_irq(sst->irq, sst);
+ 	if (sst->ops->free)
+ 		sst->ops->free(sst);
 +
-+	u32 persistent_offset;		/* private memory size */
-+	void *private;
-+
-+	struct list_head list;
-+	struct list_head block_list;	/* list of blocks used */
- };
++	if (sst->dma)
++		sst_dma_free(sst->dma);
+ }
+ EXPORT_SYMBOL_GPL(sst_dsp_free);
  
- /*
-  * Audio DSP Generic Module.
-  *
-  * Each Firmware file can consist of 1..N modules. A module can span multiple
-- * ADSP memory blocks. The simplest FW will be a file with 1 module.
-+ * ADSP memory blocks. The simplest FW will be a file with 1 module. A module
-+ * can be instanciated multiple times in the DSP.
-  */
- struct sst_module {
- 	struct sst_dsp *dsp;
-@@ -167,10 +168,13 @@ struct sst_module {
- 	/* module configuration */
- 	u32 id;
- 	u32 entry;			/* module entry point */
--	u32 offset;			/* module offset in firmware file */
-+	s32 offset;			/* module offset in firmware file */
- 	u32 size;			/* module size */
--	struct sst_module_data s;	/* scratch data */
--	struct sst_module_data p;	/* peristant data */
-+	u32 scratch_size;		/* global scratch memory required */
-+	u32 persistent_size;		/* private memory required */
-+	enum sst_mem_type type;		/* destination memory type */
-+	u32 data_offset;		/* offset in ADSP memory space */
-+	void *data;			/* module data */
+diff --git a/sound/soc/intel/sst-dsp.h b/sound/soc/intel/sst-dsp.h
+index 3165dfa..17ee923 100644
+--- a/sound/soc/intel/sst-dsp.h
++++ b/sound/soc/intel/sst-dsp.h
+@@ -245,6 +245,13 @@ void sst_memcpy_fromio_32(struct sst_dsp *sst,
+ /* DSP reset & boot */
+ void sst_dsp_reset(struct sst_dsp *sst);
+ int sst_dsp_boot(struct sst_dsp *sst);
++/* DMA */
++int sst_dsp_dma_get_channel(struct sst_dsp *dsp, int chan_id);
++void sst_dsp_dma_put_channel(struct sst_dsp *dsp);
++int sst_dsp_dma_copyfrom(struct sst_dsp *sst, dma_addr_t dest_addr,
++	dma_addr_t src_addr, size_t size);
++int sst_dsp_dma_copyto(struct sst_dsp *sst, dma_addr_t dest_addr,
++	dma_addr_t src_addr, size_t size);
  
- 	/* runtime */
- 	u32 usage_count;		/* can be unloaded if count == 0 */
-@@ -180,6 +184,7 @@ struct sst_module {
- 	struct list_head block_list;	/* Module list of blocks in use */
- 	struct list_head list;		/* DSP list of modules */
- 	struct list_head list_fw;	/* FW list of modules */
-+	struct list_head runtime_list;	/* list of runtime module objects*/
- };
- 
- /*
-@@ -208,7 +213,6 @@ struct sst_mem_block {
- 	struct sst_block_ops *ops;	/* block operations, if any */
- 
- 	/* block status */
--	enum sst_data_type data_type;	/* data type held in this block */
- 	u32 bytes_used;			/* bytes in use by modules */
- 	void *private;			/* generic core does not touch this */
- 	int users;			/* number of modules using this block */
-@@ -290,19 +294,20 @@ void sst_fw_unload(struct sst_fw *sst_fw);
- /* Create/Free firmware modules */
- struct sst_module *sst_module_new(struct sst_fw *sst_fw,
- 	struct sst_module_template *template, void *private);
--void sst_module_free(struct sst_module *sst_module);
--int sst_module_insert(struct sst_module *sst_module);
--int sst_module_remove(struct sst_module *sst_module);
--int sst_module_insert_fixed_block(struct sst_module *module,
--	struct sst_module_data *data);
-+void sst_module_free(struct sst_module *module);
- struct sst_module *sst_module_get_from_id(struct sst_dsp *dsp, u32 id);
- 
- /* allocate/free pesistent/scratch memory regions managed by drv */
- struct sst_module *sst_mem_block_alloc_scratch(struct sst_dsp *dsp);
- void sst_mem_block_free_scratch(struct sst_dsp *dsp,
- 	struct sst_module *scratch);
--int sst_block_module_remove(struct sst_module *module);
-+int sst_module_alloc_blocks(struct sst_module *module);
-+int sst_module_free_blocks(struct sst_module *module);
- 
-+/* generic block allocation */
-+int sst_alloc_blocks(struct sst_dsp *dsp, struct sst_block_allocator *ba,
-+	struct list_head *block_list);
-+int sst_free_blocks(struct sst_dsp *dsp, struct list_head *block_list);
- /* Register the DSPs memory blocks - would be nice to read from ACPI */
- struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
- 	u32 size, enum sst_mem_type type, struct sst_block_ops *ops, u32 index,
+ /* Msg IO */
+ void sst_dsp_ipc_msg_tx(struct sst_dsp *dsp, u32 msg);
 diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
-index 3bb43da..f2f1d5f 100644
+index b36843e..684f15d 100644
 --- a/sound/soc/intel/sst-firmware.c
 +++ b/sound/soc/intel/sst-firmware.c
-@@ -30,7 +30,7 @@
+@@ -23,6 +23,11 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/dmaengine.h>
+ #include <linux/pci.h>
++#include <linux/acpi.h>
++
++/* supported DMA engine drivers */
++#include <linux/platform_data/dma-dw.h>
++#include <linux/dma/dw.h>
+ 
+ #include <asm/page.h>
+ #include <asm/pgtable.h>
+@@ -30,8 +35,21 @@
  #include "sst-dsp.h"
  #include "sst-dsp-priv.h"
  
--static void block_module_remove(struct sst_module *module);
-+#define SST_HSW_BLOCK_ANY	0xffffffff
++#define SST_DMA_RESOURCES	2
++#define SST_DSP_DMA_MAX_BURST	0x3
+ #define SST_HSW_BLOCK_ANY	0xffffffff
  
++#define SST_HSW_MASK_DMA_ADDR_DSP 0xfff00000
++
++struct sst_dma {
++	struct sst_dsp *sst;
++
++	struct dw_dma_chip *chip;
++
++	struct dma_async_tx_descriptor *desc;
++	struct dma_chan *ch;
++};
++
  static void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
  {
-@@ -41,6 +41,65 @@ static void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
+ 	u32 i;
+@@ -41,6 +59,60 @@ static void sst_memcpy32(volatile void __iomem *dest, void *src, u32 bytes)
  		memcpy_toio(dest + i, src + i, 4);
  }
  
-+
-+/* remove module from memory - callers hold locks */
-+static void block_list_remove(struct sst_dsp *dsp,
-+	struct list_head *block_list)
++static void sst_dma_transfer_complete(void *arg)
 +{
-+	struct sst_mem_block *block, *tmp;
++	struct sst_dsp *sst = (struct sst_dsp *)arg;
++
++	dev_dbg(sst->dev, "DMA: callback\n");
++}
++
++static int sst_dsp_dma_copy(struct sst_dsp *sst, dma_addr_t dest_addr,
++	dma_addr_t src_addr, size_t size)
++{
++	struct dma_async_tx_descriptor *desc;
++	struct sst_dma *dma = sst->dma;
++
++	if (dma->ch == NULL) {
++		dev_err(sst->dev, "error: no DMA channel\n");
++		return -ENODEV;
++	}
++
++	dev_dbg(sst->dev, "DMA: src: 0x%lx dest 0x%lx size %zu\n",
++		(unsigned long)src_addr, (unsigned long)dest_addr, size);
++
++	desc = dma->ch->device->device_prep_dma_memcpy(dma->ch, dest_addr,
++		src_addr, size, DMA_CTRL_ACK);
++	if (!desc){
++		dev_err(sst->dev, "error: dma prep memcpy failed\n");
++		return -EINVAL;
++	}
++
++	desc->callback = sst_dma_transfer_complete;
++	desc->callback_param = sst;
++
++	desc->tx_submit(desc);
++	dma_wait_for_async_tx(desc);
++
++	return 0;
++}
++
++/* copy to DSP */
++int sst_dsp_dma_copyto(struct sst_dsp *sst, dma_addr_t dest_addr,
++	dma_addr_t src_addr, size_t size)
++{
++	return sst_dsp_dma_copy(sst, dest_addr | SST_HSW_MASK_DMA_ADDR_DSP,
++			src_addr, size);
++}
++EXPORT_SYMBOL_GPL(sst_dsp_dma_copyto);
++
++/* copy from DSP */
++int sst_dsp_dma_copyfrom(struct sst_dsp *sst, dma_addr_t dest_addr,
++	dma_addr_t src_addr, size_t size)
++{
++	return sst_dsp_dma_copy(sst, dest_addr,
++		src_addr | SST_HSW_MASK_DMA_ADDR_DSP, size);
++}
++EXPORT_SYMBOL_GPL(sst_dsp_dma_copyfrom);
+ 
+ /* remove module from memory - callers hold locks */
+ static void block_list_remove(struct sst_dsp *dsp,
+@@ -100,6 +172,168 @@ err:
+ 	return ret;
+ }
+ 
++struct dw_dma_platform_data dw_pdata = {
++	.is_private = 1,
++	.chan_allocation_order = CHAN_ALLOCATION_ASCENDING,
++	.chan_priority = CHAN_PRIORITY_ASCENDING,
++};
++
++static struct dw_dma_chip *dw_probe(struct device *dev, struct resource *mem,
++	int irq)
++{
++	struct dw_dma_chip *chip;
 +	int err;
 +
-+	/* disable each block  */
-+	list_for_each_entry(block, block_list, module_list) {
++	chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
++	if (!chip)
++		return ERR_PTR(-ENOMEM);
 +
-+		if (block->ops && block->ops->disable) {
-+			err = block->ops->disable(block);
-+			if (err < 0)
-+				dev_err(dsp->dev,
-+					"error: cant disable block %d:%d\n",
-+					block->type, block->index);
-+		}
-+	}
++	chip->irq = irq;
++	chip->regs = devm_ioremap_resource(dev, mem);
++	if (IS_ERR(chip->regs))
++		return ERR_CAST(chip->regs);
 +
-+	/* mark each block as free */
-+	list_for_each_entry_safe(block, tmp, block_list, module_list) {
-+		list_del(&block->module_list);
-+		list_move(&block->list, &dsp->free_block_list);
-+		dev_dbg(dsp->dev, "block freed %d:%d at offset 0x%x\n",
-+			block->type, block->index, block->offset);
-+	}
++	err = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(31));
++	if (err)
++		return ERR_PTR(err);
++
++	chip->dev = dev;
++	err = dw_dma_probe(chip, &dw_pdata);
++	if (err)
++		return ERR_PTR(err);
++
++	return chip;
 +}
 +
-+/* prepare the memory block to receive data from host - callers hold locks */
-+static int block_list_prepare(struct sst_dsp *dsp,
-+	struct list_head *block_list)
++static void dw_remove(struct dw_dma_chip *chip)
 +{
-+	struct sst_mem_block *block;
++	dw_dma_remove(chip);
++}
++
++static bool dma_chan_filter(struct dma_chan *chan, void *param)
++{
++	struct sst_dsp *dsp = (struct sst_dsp *)param;
++
++	return chan->device->dev == dsp->dma_dev;
++}
++
++int sst_dsp_dma_get_channel(struct sst_dsp *dsp, int chan_id)
++{
++	struct sst_dma *dma = dsp->dma;
++	struct dma_slave_config slave;
++	dma_cap_mask_t mask;
++	int ret;
++
++	/* The Intel MID DMA engine driver needs the slave config set but
++	 * Synopsis DMA engine driver safely ignores the slave config */
++	dma_cap_zero(mask);
++	dma_cap_set(DMA_SLAVE, mask);
++	dma_cap_set(DMA_MEMCPY, mask);
++
++	dma->ch = dma_request_channel(mask, dma_chan_filter, dsp);
++	if (dma->ch == NULL) {
++		dev_err(dsp->dev, "error: DMA request channel failed\n");
++		return -EIO;
++	}
++
++	memset(&slave, 0, sizeof(slave));
++	slave.direction = DMA_MEM_TO_DEV;
++	slave.src_addr_width =
++		slave.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++	slave.src_maxburst = slave.dst_maxburst = SST_DSP_DMA_MAX_BURST;
++
++	ret = dmaengine_slave_config(dma->ch, &slave);
++	if (ret) {
++		dev_err(dsp->dev, "error: unable to set DMA slave config %d\n",
++			ret);
++		dma_release_channel(dma->ch);
++		dma->ch = NULL;
++	}
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(sst_dsp_dma_get_channel);
++
++void sst_dsp_dma_put_channel(struct sst_dsp *dsp)
++{
++	struct sst_dma *dma = dsp->dma;
++
++	if (!dma->ch)
++		return;
++
++	dma_release_channel(dma->ch);
++	dma->ch = NULL;
++}
++EXPORT_SYMBOL_GPL(sst_dsp_dma_put_channel);
++
++int sst_dma_new(struct sst_dsp *sst)
++{
++	struct sst_pdata *sst_pdata = sst->pdata;
++	struct sst_dma *dma;
++	struct resource mem;
++	const char *dma_dev_name;
 +	int ret = 0;
 +
-+	/* enable each block so that's it'e ready for data */
-+	list_for_each_entry(block, block_list, module_list) {
-+
-+		if (block->ops && block->ops->enable) {
-+			ret = block->ops->enable(block);
-+			if (ret < 0) {
-+				dev_err(dsp->dev,
-+					"error: cant disable block %d:%d\n",
-+					block->type, block->index);
-+				goto err;
-+			}
-+		}
++	/* configure the correct platform data for whatever DMA engine
++	* is attached to the ADSP IP. */
++	switch (sst->pdata->dma_engine) {
++	case SST_DMA_TYPE_DW:
++		dma_dev_name = "dw_dmac";
++		break;
++	case SST_DMA_TYPE_MID:
++		dma_dev_name = "Intel MID DMA";
++		break;
++	default:
++		dev_err(sst->dev, "error: invalid DMA engine %d\n",
++			sst->pdata->dma_engine);
++		return -EINVAL;
 +	}
-+	return ret;
 +
-+err:
-+	list_for_each_entry(block, block_list, module_list) {
-+		if (block->ops && block->ops->disable)
-+			block->ops->disable(block);
++	dma = devm_kzalloc(sst->dev, sizeof(struct sst_dma), GFP_KERNEL);
++	if (!dma)
++		return -ENOMEM;
++
++	dma->sst = sst;
++
++	memset(&mem, 0, sizeof(mem));
++
++	mem.start = sst->addr.lpe_base + sst_pdata->dma_base;
++	mem.end   = sst->addr.lpe_base + sst_pdata->dma_base + sst_pdata->dma_size - 1;
++	mem.flags = IORESOURCE_MEM;
++
++	/* now register DMA engine device */
++	dma->chip = dw_probe(sst->dma_dev, &mem, sst_pdata->irq);
++	if (IS_ERR(dma->chip)) {
++		dev_err(sst->dev, "error: DMA device register failed\n");
++		ret = PTR_ERR(dma->chip);
++		goto err_dma_dev;
 +	}
++
++	sst->dma = dma;
++	sst->fw_use_dma = true;
++	return 0;
++
++err_dma_dev:
++	devm_kfree(sst->dev, dma);
 +	return ret;
 +}
++EXPORT_SYMBOL(sst_dma_new);
++
++void sst_dma_free(struct sst_dma *dma)
++{
++
++	if (dma == NULL)
++		return;
++
++	if (dma->ch)
++		dma_release_channel(dma->ch);
++
++	if (dma->chip)
++		dw_remove(dma->chip);
++
++}
++EXPORT_SYMBOL(sst_dma_free);
 +
  /* create new generic firmware object */
  struct sst_fw *sst_fw_new(struct sst_dsp *dsp, 
  	const struct firmware *fw, void *private)
-@@ -202,73 +261,122 @@ void sst_module_free(struct sst_module *sst_module)
- }
- EXPORT_SYMBOL_GPL(sst_module_free);
+@@ -130,6 +364,12 @@ struct sst_fw *sst_fw_new(struct sst_dsp *dsp,
+ 	/* copy FW data to DMA-able memory */
+ 	memcpy((void *)sst_fw->dma_buf, (void *)fw->data, fw->size);
  
--static struct sst_mem_block *find_block(struct sst_dsp *dsp, int type,
--	u32 offset)
-+struct sst_module_runtime *sst_module_runtime_new(struct sst_module *module,
-+	int id, void *private)
-+{
-+	struct sst_dsp *dsp = module->dsp;
-+	struct sst_module_runtime *runtime;
++	if (dsp->fw_use_dma) {
++		err = sst_dsp_dma_get_channel(dsp, 0);
++		if (err < 0)
++			goto chan_err;
++	}
 +
-+	runtime = kzalloc(sizeof(*runtime), GFP_KERNEL);
-+	if (runtime == NULL)
-+		return NULL;
-+
-+	runtime->id = id;
-+	runtime->dsp = dsp;
-+	runtime->module = module;
-+	INIT_LIST_HEAD(&runtime->block_list);
-+
-+	mutex_lock(&dsp->mutex);
-+	list_add(&runtime->list, &module->runtime_list);
-+	mutex_unlock(&dsp->mutex);
-+
-+	return runtime;
-+}
-+EXPORT_SYMBOL_GPL(sst_module_runtime_new);
-+
-+void sst_module_runtime_free(struct sst_module_runtime *runtime)
-+{
-+	struct sst_dsp *dsp = runtime->dsp;
-+
-+	mutex_lock(&dsp->mutex);
-+	list_del(&runtime->list);
-+	mutex_unlock(&dsp->mutex);
-+
-+	kfree(runtime);
-+}
-+EXPORT_SYMBOL_GPL(sst_module_runtime_free);
-+
-+static struct sst_mem_block *find_block(struct sst_dsp *dsp,
-+	struct sst_block_allocator *ba)
- {
- 	struct sst_mem_block *block;
- 
- 	list_for_each_entry(block, &dsp->free_block_list, list) {
--		if (block->type == type && block->offset == offset)
-+		if (block->type == ba->type && block->offset == ba->offset)
- 			return block;
+ 	/* call core specific FW paser to load FW data into DSP */
+ 	err = dsp->ops->parse_fw(sst_fw);
+ 	if (err < 0) {
+@@ -137,6 +377,9 @@ struct sst_fw *sst_fw_new(struct sst_dsp *dsp,
+ 		goto parse_err;
  	}
  
++	if (dsp->fw_use_dma)
++		sst_dsp_dma_put_channel(dsp);
++
+ 	mutex_lock(&dsp->mutex);
+ 	list_add(&sst_fw->list, &dsp->fw_list);
+ 	mutex_unlock(&dsp->mutex);
+@@ -144,9 +387,13 @@ struct sst_fw *sst_fw_new(struct sst_dsp *dsp,
+ 	return sst_fw;
+ 
+ parse_err:
+-	dma_free_coherent(dsp->dev, sst_fw->size,
++	if (dsp->fw_use_dma)
++		sst_dsp_dma_put_channel(dsp);
++chan_err:
++	dma_free_coherent(dsp->dma_dev, sst_fw->size,
+ 				sst_fw->dma_buf,
+ 				sst_fw->dmable_fw_paddr);
++	sst_fw->dma_buf = NULL;
+ 	kfree(sst_fw);
  	return NULL;
  }
- 
--static int block_alloc_contiguous(struct sst_module *module,
--	struct sst_module_data *data, u32 offset, int size)
-+/* Block allocator must be on block boundary */
-+static int block_alloc_contiguous(struct sst_dsp *dsp,
-+	struct sst_block_allocator *ba, struct list_head *block_list)
- {
- 	struct list_head tmp = LIST_HEAD_INIT(tmp);
--	struct sst_dsp *dsp = module->dsp;
- 	struct sst_mem_block *block;
-+	u32 block_start = SST_HSW_BLOCK_ANY;
-+	int size = ba->size, offset = ba->offset;
-+
-+	while (ba->size > 0) {
- 
--	while (size > 0) {
--		block = find_block(dsp, data->type, offset);
-+		block = find_block(dsp, ba);
- 		if (!block) {
- 			list_splice(&tmp, &dsp->free_block_list);
-+
-+			ba->size = size;
-+			ba->offset = offset;
- 			return -ENOMEM;
- 		}
- 
- 		list_move_tail(&block->list, &tmp);
--		offset += block->size;
--		size -= block->size;
-+		ba->offset += block->size;
-+		ba->size -= block->size;
- 	}
-+	ba->size = size;
-+	ba->offset = offset;
-+
-+	list_for_each_entry(block, &tmp, list) {
-+
-+		if (block->offset < block_start)
-+			block_start = block->offset;
- 
--	list_for_each_entry(block, &tmp, list)
--		list_add(&block->module_list, &module->block_list);
-+		list_add(&block->module_list, block_list);
-+
-+		dev_dbg(dsp->dev, "block allocated %d:%d at offset 0x%x\n",
-+			block->type, block->index, block->offset);
-+	}
- 
- 	list_splice(&tmp, &dsp->used_block_list);
- 	return 0;
- }
- 
--/* allocate free DSP blocks for module data - callers hold locks */
--static int block_alloc(struct sst_module *module,
--	struct sst_module_data *data)
-+/* allocate first free DSP blocks for data - callers hold locks */
-+static int block_alloc(struct sst_dsp *dsp, struct sst_block_allocator *ba,
-+	struct list_head *block_list)
- {
--	struct sst_dsp *dsp = module->dsp;
- 	struct sst_mem_block *block, *tmp;
- 	int ret = 0;
- 
--	if (data->size == 0)
-+	if (ba->size == 0)
- 		return 0;
- 
- 	/* find first free whole blocks that can hold module */
- 	list_for_each_entry_safe(block, tmp, &dsp->free_block_list, list) {
- 
- 		/* ignore blocks with wrong type */
--		if (block->type != data->type)
-+		if (block->type != ba->type)
- 			continue;
- 
--		if (data->size > block->size)
-+		if (ba->size > block->size)
- 			continue;
- 
--		data->offset = block->offset;
--		block->data_type = data->data_type;
--		block->bytes_used = data->size % block->size;
--		list_add(&block->module_list, &module->block_list);
-+		ba->offset = block->offset;
-+		block->bytes_used = ba->size % block->size;
-+		list_add(&block->module_list, block_list);
- 		list_move(&block->list, &dsp->used_block_list);
--		dev_dbg(dsp->dev, " *module %d added block %d:%d\n",
--			module->id, block->type, block->index);
-+		dev_dbg(dsp->dev, "block allocated %d:%d at offset 0x%x\n",
-+			block->type, block->index, block->offset);
- 		return 0;
- 	}
- 
-@@ -276,15 +384,19 @@ static int block_alloc(struct sst_module *module,
- 	list_for_each_entry_safe(block, tmp, &dsp->free_block_list, list) {
- 
- 		/* ignore blocks with wrong type */
--		if (block->type != data->type)
-+		if (block->type != ba->type)
- 			continue;
- 
- 		/* do we span > 1 blocks */
--		if (data->size > block->size) {
--			ret = block_alloc_contiguous(module, data,
--				block->offset, data->size);
-+		if (ba->size > block->size) {
-+
-+			/* align ba to block boundary */
-+			ba->offset = block->offset;
-+
-+			ret = block_alloc_contiguous(dsp, ba, block_list);
- 			if (ret == 0)
- 				return ret;
-+
- 		}
- 	}
- 
-@@ -292,93 +404,74 @@ static int block_alloc(struct sst_module *module,
- 	return -ENOMEM;
- }
- 
--/* remove module from memory - callers hold locks */
--static void block_module_remove(struct sst_module *module)
-+int sst_alloc_blocks(struct sst_dsp *dsp, struct sst_block_allocator *ba,
-+	struct list_head *block_list)
- {
--	struct sst_mem_block *block, *tmp;
--	struct sst_dsp *dsp = module->dsp;
--	int err;
-+	int ret;
- 
--	/* disable each block  */
--	list_for_each_entry(block, &module->block_list, module_list) {
-+	dev_dbg(dsp->dev, "block request 0x%x bytes at offset 0x%x type %d\n",
-+		ba->size, ba->offset, ba->type);
- 
--		if (block->ops && block->ops->disable) {
--			err = block->ops->disable(block);
--			if (err < 0)
--				dev_err(dsp->dev,
--					"error: cant disable block %d:%d\n",
--					block->type, block->index);
--		}
--	}
-+	mutex_lock(&dsp->mutex);
- 
--	/* mark each block as free */
--	list_for_each_entry_safe(block, tmp, &module->block_list, module_list) {
--		list_del(&block->module_list);
--		list_move(&block->list, &dsp->free_block_list);
-+	ret = block_alloc(dsp, ba, block_list);
-+	if (ret < 0) {
-+		dev_err(dsp->dev, "error: can't alloc blocks %d\n", ret);
-+		goto out;
- 	}
--}
--
--/* prepare the memory block to receive data from host - callers hold locks */
--static int block_module_prepare(struct sst_module *module)
--{
--	struct sst_mem_block *block;
--	int ret = 0;
- 
--	/* enable each block so that's it'e ready for module P/S data */
--	list_for_each_entry(block, &module->block_list, module_list) {
-+	/* prepare DSP blocks for module usage */
-+	ret = block_list_prepare(dsp, block_list);
-+	if (ret < 0)
-+		dev_err(dsp->dev, "error: prepare failed\n");
- 
--		if (block->ops && block->ops->enable) {
--			ret = block->ops->enable(block);
--			if (ret < 0) {
--				dev_err(module->dsp->dev,
--					"error: cant disable block %d:%d\n",
--					block->type, block->index);
--				goto err;
--			}
--		}
--	}
-+out:
-+	mutex_unlock(&dsp->mutex);
- 	return ret;
-+}
-+EXPORT_SYMBOL_GPL(sst_alloc_blocks);
- 
--err:
--	list_for_each_entry(block, &module->block_list, module_list) {
--		if (block->ops && block->ops->disable)
--			block->ops->disable(block);
--	}
--	return ret;
-+int sst_free_blocks(struct sst_dsp *dsp, struct list_head *block_list)
-+{
-+	mutex_lock(&dsp->mutex);
-+	block_list_remove(dsp, block_list);
-+	mutex_unlock(&dsp->mutex);
-+	return 0;
- }
-+EXPORT_SYMBOL_GPL(sst_free_blocks);
- 
- /* allocate memory blocks for static module addresses - callers hold locks */
--static int block_alloc_fixed(struct sst_module *module,
--	struct sst_module_data *data)
-+static int block_alloc_fixed(struct sst_dsp *dsp, struct sst_block_allocator *ba,
-+	struct list_head *block_list)
- {
--	struct sst_dsp *dsp = module->dsp;
- 	struct sst_mem_block *block, *tmp;
--	u32 end = data->offset + data->size, block_end;
-+	u32 end = ba->offset + ba->size, block_end;
- 	int err;
- 
- 	/* only IRAM/DRAM blocks are managed */
--	if (data->type != SST_MEM_IRAM && data->type != SST_MEM_DRAM)
-+	if (ba->type != SST_MEM_IRAM && ba->type != SST_MEM_DRAM)
- 		return 0;
- 
- 	/* are blocks already attached to this module */
--	list_for_each_entry_safe(block, tmp, &module->block_list, module_list) {
-+	list_for_each_entry_safe(block, tmp, block_list, module_list) {
- 
--		/* force compacting mem blocks of the same data_type */
--		if (block->data_type != data->data_type)
-+		/* ignore blocks with wrong type */
-+		if (block->type != ba->type)
- 			continue;
- 
- 		block_end = block->offset + block->size;
- 
- 		/* find block that holds section */
--		if (data->offset >= block->offset && end < block_end)
-+		if (ba->offset >= block->offset && end <= block_end)
- 			return 0;
- 
- 		/* does block span more than 1 section */
--		if (data->offset >= block->offset && data->offset < block_end) {
-+		if (ba->offset >= block->offset && ba->offset < block_end) {
- 
--			err = block_alloc_contiguous(module, data,
--				block->offset + block->size,
--				data->size - block->size);
-+			/* align ba to block boundary */
-+			ba->size -= block_end - ba->offset;
-+			ba->offset = block_end;
-+			err = block_alloc_contiguous(dsp, ba, block_list);
- 			if (err < 0)
- 				return -ENOMEM;
- 
-@@ -391,53 +484,67 @@ static int block_alloc_fixed(struct sst_module *module,
- 	list_for_each_entry_safe(block, tmp, &dsp->free_block_list, list) {
- 		block_end = block->offset + block->size;
- 
-+		/* ignore blocks with wrong type */
-+		if (block->type != ba->type)
-+			continue;
-+
- 		/* find block that holds section */
--		if (data->offset >= block->offset && end < block_end) {
-+		if (ba->offset >= block->offset && end <= block_end) {
- 
- 			/* add block */
--			block->data_type = data->data_type;
- 			list_move(&block->list, &dsp->used_block_list);
--			list_add(&block->module_list, &module->block_list);
-+			list_add(&block->module_list, block_list);
-+			dev_dbg(dsp->dev, "block allocated %d:%d at offset 0x%x\n",
-+				block->type, block->index, block->offset);
- 			return 0;
- 		}
- 
- 		/* does block span more than 1 section */
--		if (data->offset >= block->offset && data->offset < block_end) {
-+		if (ba->offset >= block->offset && ba->offset < block_end) {
-+
-+			/* align ba to block boundary */
-+			ba->offset = block->offset;
- 
--			err = block_alloc_contiguous(module, data,
--				block->offset, data->size);
-+			err = block_alloc_contiguous(dsp, ba, block_list);
- 			if (err < 0)
- 				return -ENOMEM;
- 
- 			return 0;
- 		}
--
- 	}
- 
- 	return -ENOMEM;
- }
- 
- /* Load fixed module data into DSP memory blocks */
--int sst_module_insert_fixed_block(struct sst_module *module,
--	struct sst_module_data *data)
-+int sst_module_alloc_blocks(struct sst_module *module)
- {
- 	struct sst_dsp *dsp = module->dsp;
-+	struct sst_fw *sst_fw = module->sst_fw;
-+	struct sst_block_allocator ba;
- 	int ret;
- 
-+	ba.size = module->size;
-+	ba.type = module->type;
-+	ba.offset = module->offset;
-+
-+	dev_dbg(dsp->dev, "block request 0x%x bytes at offset 0x%x type %d\n",
-+		ba.size, ba.offset, ba.type);
-+
- 	mutex_lock(&dsp->mutex);
- 
- 	/* alloc blocks that includes this section */
--	ret = block_alloc_fixed(module, data);
-+	ret = block_alloc_fixed(dsp, &ba, &module->block_list);
- 	if (ret < 0) {
- 		dev_err(dsp->dev,
- 			"error: no free blocks for section at offset 0x%x size 0x%x\n",
--			data->offset, data->size);
-+			module->offset, module->size);
- 		mutex_unlock(&dsp->mutex);
- 		return -ENOMEM;
- 	}
- 
- 	/* prepare DSP blocks for module copy */
--	ret = block_module_prepare(module);
-+	ret = block_list_prepare(dsp, &module->block_list);
- 	if (ret < 0) {
- 		dev_err(dsp->dev, "error: fw module prepare failed\n");
- 		goto err;
-@@ -450,19 +557,23 @@ int sst_module_insert_fixed_block(struct sst_module *module,
- 	return ret;
- 
- err:
--	block_module_remove(module);
-+	block_list_remove(dsp, &module->block_list);
+@@ -213,7 +460,8 @@ void sst_fw_free(struct sst_fw *sst_fw)
+ 	list_del(&sst_fw->list);
  	mutex_unlock(&dsp->mutex);
- 	return ret;
+ 
+-	dma_free_coherent(dsp->dma_dev, sst_fw->size, sst_fw->dma_buf,
++	if (sst_fw->dma_buf)
++		dma_free_coherent(dsp->dma_dev, sst_fw->size, sst_fw->dma_buf,
+ 			sst_fw->dmable_fw_paddr);
+ 	kfree(sst_fw);
  }
--EXPORT_SYMBOL_GPL(sst_module_insert_fixed_block);
-+EXPORT_SYMBOL_GPL(sst_module_alloc_blocks);
+@@ -567,7 +815,18 @@ int sst_module_alloc_blocks(struct sst_module *module)
+ 	}
  
- /* Unload entire module from DSP memory */
--int sst_block_module_remove(struct sst_module *module)
-+int sst_module_free_blocks(struct sst_module *module)
- {
- 	struct sst_dsp *dsp = module->dsp;
- 
- 	mutex_lock(&dsp->mutex);
--	block_module_remove(module);
-+	block_list_remove(dsp, &module->block_list);
-+	mutex_unlock(&dsp->mutex);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(sst_module_free_blocks);
- 	mutex_unlock(&dsp->mutex);
- 	return 0;
- }
-diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
-index 4b6c163..22cc697 100644
---- a/sound/soc/intel/sst-haswell-dsp.c
-+++ b/sound/soc/intel/sst-haswell-dsp.c
-@@ -86,9 +86,8 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
- {
- 	struct dma_block_info *block;
- 	struct sst_module *mod;
--	struct sst_module_data block_data;
- 	struct sst_module_template template;
--	int count;
-+	int count, ret;
- 	void __iomem *ram;
- 
- 	/* TODO: allowed module types need to be configurable */
-@@ -109,13 +108,9 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
- 
- 	memset(&template, 0, sizeof(template));
- 	template.id = module->type;
--	template.entry = module->entry_point;
--	template.p.size = module->info.persistent_size;
--	template.p.type = SST_MEM_DRAM;
--	template.p.data_type = SST_DATA_P;
--	template.s.size = module->info.scratch_size;
--	template.s.type = SST_MEM_DRAM;
--	template.s.data_type = SST_DATA_S;
-+	template.entry = module->entry_point - 4;
-+	template.persistent_size = module->info.persistent_size;
-+	template.scratch_size = module->info.scratch_size;
- 
- 	mod = sst_module_new(fw, &template, NULL);
- 	if (mod == NULL)
-@@ -135,14 +130,14 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
- 		switch (block->type) {
- 		case SST_HSW_IRAM:
- 			ram = dsp->addr.lpe;
--			block_data.offset =
-+			mod->offset =
- 				block->ram_offset + dsp->addr.iram_offset;
--			block_data.type = SST_MEM_IRAM;
-+			mod->type = SST_MEM_IRAM;
- 			break;
- 		case SST_HSW_DRAM:
- 			ram = dsp->addr.lpe;
--			block_data.offset = block->ram_offset;
--			block_data.type = SST_MEM_DRAM;
-+			mod->offset = block->ram_offset;
-+			mod->type = SST_MEM_DRAM;
- 			break;
- 		default:
- 			dev_err(dsp->dev, "error: bad type 0x%x for block 0x%x\n",
-@@ -151,20 +146,26 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
- 			return -EINVAL;
- 		}
- 
--		block_data.size = block->size;
--		block_data.data_type = SST_DATA_M;
--		block_data.data = (void *)block + sizeof(*block);
--		block_data.data_offset = block_data.data - fw->dma_buf;
-+		mod->size = block->size;
-+		mod->data = (void *)block + sizeof(*block);
-+		mod->data_offset = mod->data - fw->dma_buf;
- 
--		dev_dbg(dsp->dev, "copy firmware block %d type 0x%x "
-+		dev_dbg(dsp->dev, "module block %d type 0x%x "
- 			"size 0x%x ==> ram %p offset 0x%x\n",
--			count, block->type, block->size, ram,
-+			count, mod->type, block->size, ram,
- 			block->ram_offset);
- 
--		sst_module_insert_fixed_block(mod, &block_data);
-+		ret = sst_module_alloc_blocks(mod);
+ 	/* copy partial module data to blocks */
+-	sst_memcpy32(dsp->addr.lpe + data->offset, data->data, data->size);
++	if (dsp->fw_use_dma) {
++		ret = sst_dsp_dma_copyto(dsp,
++			dsp->addr.lpe_base + module->offset,
++			sst_fw->dmable_fw_paddr + module->data_offset,
++			module->size);
 +		if (ret < 0) {
-+			dev_err(dsp->dev, "error: could not allocate blocks for module %d\n",
-+				count);
-+			sst_module_free(mod);
-+			return ret;
++			dev_err(dsp->dev, "error: module copy failed\n");
++			goto err;
 +		}
++	} else
++		sst_memcpy32(dsp->addr.lpe + module->offset, module->data,
++			module->size);
  
- 		block = (void *)block + sizeof(*block) + block->size;
- 	}
-+
- 	return 0;
- }
- 
+ 	mutex_unlock(&dsp->mutex);
+ 	return ret;
 -- 
 1.9.1
