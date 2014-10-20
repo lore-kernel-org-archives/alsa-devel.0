@@ -1,23 +1,20 @@
-From: =?ISO-8859-1?Q?Jo=EBl_Kr=E4hemann?= <weedlight@gmail.com>
-Subject: Advanced Gtk+ Sequencer 0.4.2
-Date: Mon, 20 Oct 2014 22:16:51 +0200
-Message-ID: <1413836211.28027.6.camel@minos-one>
+From: Anatol Pomozov <anatol.pomozov@gmail.com>
+Subject: Re: [PATCH] ASoC: rt5677: add GPIO IRQ support
+Date: Mon, 20 Oct 2014 15:24:41 -0700
+Message-ID: <CAOMFOmWF3Y86fYb0=XiHGU9cTWG6QyakUSokX628XsZtfywjKA@mail.gmail.com>
+References: <1413483866-38815-1-git-send-email-anatol.pomozov@gmail.com>
+ <20141017124805.GP1820@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wi0-f176.google.com (mail-wi0-f176.google.com
- [209.85.212.176])
- by alsa0.perex.cz (Postfix) with ESMTP id CD83B261534
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 22:17:04 +0200 (CEST)
-Received: by mail-wi0-f176.google.com with SMTP id hi2so8203404wib.3
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 13:17:04 -0700 (PDT)
-Received: from [192.168.42.170] (239-226.197-178.cust.bluewin.ch.
- [178.197.226.239])
- by mx.google.com with ESMTPSA id j8sm10757307wib.10.2014.10.20.13.17.03
- for <alsa-devel@alsa-project.org>
- (version=SSLv3 cipher=RC4-SHA bits=128/128);
- Mon, 20 Oct 2014 13:17:03 -0700 (PDT)
+Received: from mail-yh0-f47.google.com (mail-yh0-f47.google.com
+ [209.85.213.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0F13260673
+ for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 00:24:42 +0200 (CEST)
+Received: by mail-yh0-f47.google.com with SMTP id c41so4245516yho.34
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 15:24:41 -0700 (PDT)
+In-Reply-To: <20141017124805.GP1820@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,17 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Advanced Gtk+ Sequencer 0.4.2 is out
+Hi
 
-Check download at:
-http://sourceforge.net/projects/ags/files/ags-0_4_2.tar.bz2/download
+On Fri, Oct 17, 2014 at 5:48 AM, Mark Brown <broonie@kernel.org> wrote:
 
-or API Reference by issuing:
-http://ags.sourceforge.net/api/ags/index.html
+> On Thu, Oct 16, 2014 at 11:24:26AM -0700, Anatol Pomozov wrote:
+> > This allows to enable Mic Jack detection feature
+> >
+> > Author: Oder Chiou <oder_chiou@realtek.com>
+> > Modified-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+> > Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+>
+> I can't really apply this without a signoff from Oder I'm afraid - Oder?
+>
 
-Advanced GTK+ Sequencer is intended to use for music composition. Use
-its piano roll, synth, matrix editor, drum machine, soundfont2 player,
-mixer or the output panel.
+
+A bit of background about this patch. After our off-list discussion about
+GPIO support Oder sent us this change. I cleaned up, added more features
+(like dts) and tested it. Everything looks good so far. We also agreed that
+I help to upstream this patch.
+
+Oder could you please also send "Sign-off:" message? This message says you
+are the original author and agreed to upstream the patch.
