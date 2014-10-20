@@ -1,16 +1,17 @@
-From: Jordan Kagan <jrkagan2@gmail.com>
-Subject: bug in alsa-utils 1.0.28 - arecord
-Date: Mon, 20 Oct 2014 15:33:45 -0400
-Message-ID: <CAC_TXnmZcBcXSgGH6JgsjwhN9jeruo3YbEzcrbGSxb-M5Mq5oQ@mail.gmail.com>
+From: Kim Taylor <kim.taylor4@live.vu.edu.au>
+Subject: Serial MIDI driver for PL011 - as found on BCM2835
+	hardware
+Date: Tue, 21 Oct 2014 10:30:35 +1100
+Message-ID: <1413847835.13334.8.camel@linux-host>
+Reply-To: kim.taylor4@research.vu.edu.au
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f45.google.com (mail-wg0-f45.google.com [74.125.82.45])
- by alsa0.perex.cz (Postfix) with ESMTP id CADC3265D05
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 21:34:05 +0200 (CEST)
-Received: by mail-wg0-f45.google.com with SMTP id m15so6153591wgh.28
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 12:34:05 -0700 (PDT)
+Received: from APAC01-HK1-obe.outbound.protection.outlook.com
+ (mail-hk1on0134.outbound.protection.outlook.com [134.170.140.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id D48302606B9
+ for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 01:31:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,16 +24,24 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-I encountered an issue with using the arecord binary in this most recent
-version.  When using the '-d' duration flag, the program will continue to
-open files AFTER the duration has expired.  The issue occurs when the
-capture() while loop hits the break due to a value returned by pcm_read().
-When the while loop is exited, the program hits the do-while loop and
-continues to open files indefinitely.  If rcount is returned from
-pcm_read() instead of "result", the problem does not occur.
+I've written a driver for raw MIDI using the PL011. It is obviously
+based on the snd-serial-u16550 module, with a couple of improvements:
 
-Thanks,
+ - I've implemented a drain() callback.
 
-Jordan
+ - I've also implemented a half duplex mode based on a timer callback
+which was necessary for reliable communication with my eMagic Unitor 8
+hardware. (Testing with a serial link to other hardware shows that the
+full duplex mode is also working.)
+
+It can be found here:
+https://github.com/kmtaylor/rpi_patches/blob/master/serial-pl011.c
+
+If you think it should be included in the ALSA repository, please let me
+know what to do next.
+
+Regards,
+
+Kim
