@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 08/12] ASoC: max9850: Cleanup manual bias level
+Subject: [PATCH 10/12] ASoC: sta350: Cleanup manual bias level
 	transitions
-Date: Mon, 20 Oct 2014 10:56:35 +0200
-Message-ID: <1413795399-29952-8-git-send-email-lars@metafoo.de>
+Date: Mon, 20 Oct 2014 10:56:37 +0200
+Message-ID: <1413795399-29952-10-git-send-email-lars@metafoo.de>
 References: <1413795399-29952-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-190.synserver.de (smtp-out-190.synserver.de
  [212.40.185.190])
- by alsa0.perex.cz (Postfix) with ESMTP id AF1062606E2
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 10:56:47 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A89D260567
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 10:56:50 +0200 (CEST)
 In-Reply-To: <1413795399-29952-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,51 +30,61 @@ Set the CODEC driver's suspend_bias_off flag rather than manually going to
 SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
 the code a bit shorter and cleaner.
 
+Since the ASoC core now takes care of setting the bias level to
+SND_SOC_BIAS_OFF when removing the CODEC there is no need to do it manually
+anymore either.
+
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/max9850.c | 22 +---------------------
- 1 file changed, 1 insertion(+), 21 deletions(-)
+ sound/soc/codecs/sta350.c | 21 +--------------------
+ 1 file changed, 1 insertion(+), 20 deletions(-)
 
-diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
-index 4fdf5aa..10f8e47 100644
---- a/sound/soc/codecs/max9850.c
-+++ b/sound/soc/codecs/max9850.c
-@@ -291,25 +291,6 @@ static struct snd_soc_dai_driver max9850_dai = {
- 	.ops = &max9850_dai_ops,
+diff --git a/sound/soc/codecs/sta350.c b/sound/soc/codecs/sta350.c
+index cc97dd5..bda2ee1 100644
+--- a/sound/soc/codecs/sta350.c
++++ b/sound/soc/codecs/sta350.c
+@@ -912,23 +912,6 @@ static struct snd_soc_dai_driver sta350_dai = {
+ 	.ops = &sta350_dai_ops,
  };
  
 -#ifdef CONFIG_PM
--static int max9850_suspend(struct snd_soc_codec *codec)
+-static int sta350_suspend(struct snd_soc_codec *codec)
 -{
--	max9850_set_bias_level(codec, SND_SOC_BIAS_OFF);
--
+-	sta350_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -	return 0;
 -}
 -
--static int max9850_resume(struct snd_soc_codec *codec)
+-static int sta350_resume(struct snd_soc_codec *codec)
 -{
--	max9850_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--
+-	sta350_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 -	return 0;
 -}
 -#else
--#define max9850_suspend NULL
--#define max9850_resume NULL
+-#define sta350_suspend NULL
+-#define sta350_resume NULL
 -#endif
 -
- static int max9850_probe(struct snd_soc_codec *codec)
+ static int sta350_probe(struct snd_soc_codec *codec)
  {
- 	/* enable zero-detect */
-@@ -324,9 +305,8 @@ static int max9850_probe(struct snd_soc_codec *codec)
+ 	struct sta350_priv *sta350 = snd_soc_codec_get_drvdata(codec);
+@@ -1065,7 +1048,6 @@ static int sta350_remove(struct snd_soc_codec *codec)
+ {
+ 	struct sta350_priv *sta350 = snd_soc_codec_get_drvdata(codec);
  
- static struct snd_soc_codec_driver soc_codec_dev_max9850 = {
- 	.probe =	max9850_probe,
--	.suspend =	max9850_suspend,
--	.resume =	max9850_resume,
- 	.set_bias_level = max9850_set_bias_level,
-+	.suspend_bias_off = true,
+-	sta350_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	regulator_bulk_disable(ARRAY_SIZE(sta350->supplies), sta350->supplies);
  
- 	.controls = max9850_controls,
- 	.num_controls = ARRAY_SIZE(max9850_controls),
+ 	return 0;
+@@ -1074,9 +1056,8 @@ static int sta350_remove(struct snd_soc_codec *codec)
+ static const struct snd_soc_codec_driver sta350_codec = {
+ 	.probe =		sta350_probe,
+ 	.remove =		sta350_remove,
+-	.suspend =		sta350_suspend,
+-	.resume =		sta350_resume,
+ 	.set_bias_level =	sta350_set_bias_level,
++	.suspend_bias_off =	true,
+ 	.controls =		sta350_snd_controls,
+ 	.num_controls =		ARRAY_SIZE(sta350_snd_controls),
+ 	.dapm_widgets =		sta350_dapm_widgets,
 -- 
 1.8.0
