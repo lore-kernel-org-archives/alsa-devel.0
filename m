@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 07/12] ASoC: max98095: Cleanup manual bias
-	level transitions
-Date: Mon, 20 Oct 2014 10:56:34 +0200
-Message-ID: <1413795399-29952-7-git-send-email-lars@metafoo.de>
+Subject: [PATCH 05/12] ASoC: ak4671: Cleanup manual bias level
+	transitions
+Date: Mon, 20 Oct 2014 10:56:32 +0200
+Message-ID: <1413795399-29952-5-git-send-email-lars@metafoo.de>
 References: <1413795399-29952-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-190.synserver.de (smtp-out-190.synserver.de
  [212.40.185.190])
- by alsa0.perex.cz (Postfix) with ESMTP id 478302606E0
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 10:56:47 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AF682606DA
+ for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 10:56:45 +0200 (CEST)
 In-Reply-To: <1413795399-29952-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -36,31 +36,33 @@ has been probed.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/max98095.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/codecs/ak4671.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 0ee6797..42103ca 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -2317,9 +2317,6 @@ static int max98095_probe(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
+index 998fa0c..686cacb 100644
+--- a/sound/soc/codecs/ak4671.c
++++ b/sound/soc/codecs/ak4671.c
+@@ -611,20 +611,7 @@ static struct snd_soc_dai_driver ak4671_dai = {
+ 	.ops = &ak4671_dai_ops,
+ };
  
- 	snd_soc_write(codec, M98095_097_PWR_SYS, M98095_PWRSV);
- 
--	/* initialize registers cache to hardware default */
--	max98095_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-static int ak4671_probe(struct snd_soc_codec *codec)
+-{
+-	return ak4671_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-}
 -
- 	snd_soc_write(codec, M98095_048_MIX_DAC_LR,
- 		M98095_DAI1L_TO_DACL|M98095_DAI1R_TO_DACR);
- 
-@@ -2359,8 +2356,6 @@ static int max98095_remove(struct snd_soc_codec *codec)
- 	struct max98095_priv *max98095 = snd_soc_codec_get_drvdata(codec);
- 	struct i2c_client *client = to_i2c_client(codec->dev);
- 
--	max98095_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-static int ak4671_remove(struct snd_soc_codec *codec)
+-{
+-	ak4671_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	return 0;
+-}
 -
- 	if (max98095->headphone_jack || max98095->mic_jack)
- 		max98095_jack_detect_disable(codec);
- 
+ static struct snd_soc_codec_driver soc_codec_dev_ak4671 = {
+-	.probe = ak4671_probe,
+-	.remove = ak4671_remove,
+ 	.set_bias_level = ak4671_set_bias_level,
+ 	.controls = ak4671_snd_controls,
+ 	.num_controls = ARRAY_SIZE(ak4671_snd_controls),
 -- 
 1.8.0
