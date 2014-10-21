@@ -1,18 +1,29 @@
-From: Kim Taylor <kmtaylor@gmx.com>
-Subject: Re: Serial MIDI driver for PL011 - as found on BCM2835
- hardware
-Date: Wed, 22 Oct 2014 09:24:35 +1100
-Message-ID: <1413930275.13334.19.camel@linux-host>
-References: <1413847835.13334.8.camel@linux-host>
- <1413848459.13334.9.camel@linux-host> <54460930.6060603@zonque.org>
+From: Jonathan Bennett <jbscience87@gmail.com>
+Subject: Re: Help with wm8731 support for the Utilite (imx6q)
+Date: Tue, 21 Oct 2014 17:37:39 -0500
+Message-ID: <CAB-pspcZ8bhLMPDS2NbDOEugfzO+TZfOnA_h05pvkU5ZPv6qVQ@mail.gmail.com>
+References: <CAB-pspc5KZ0sTB-7uxjBq+PEFxFdAPO5NAXof_+uwQBJ_JCejg@mail.gmail.com>
+ <CAOMZO5C-EG+beiK1M10vX0Xhg4avYLExxG7MZOQq8gM6gRnANw@mail.gmail.com>
+ <CAB-pspcNOuW=JN9_avEvyPFUvTfs99PB=ah43YdqMC65mZ8psQ@mail.gmail.com>
+ <CAB-pspei1a3TbuFGBT-kupEWU5UY10kQoTtiV895WTi-j+-dzQ@mail.gmail.com>
+ <CAOMZO5AVr0xJjf9JjYNuXG-jJC3ft84+fO-5ToSieP9NFP=-+g@mail.gmail.com>
+ <CAOMZO5CU+Y8cGJsn4O1ccFZUSjLM1iH3QN2fAv4UyaLMk5yAEg@mail.gmail.com>
+ <CAB-pspdvzFX-KjYSC3z3xoDMPvq4g3iFhBG76Y=DGy=YBf5dow@mail.gmail.com>
+ <54464C32.8020100@compulab.co.il>
+ <CAB-pspcaMh9DL8bND1kSmphZfMYNOvPS_CYZ8UYZ2EZuVjjksg@mail.gmail.com>
+ <CAOMZO5A=RSodq=JmjrjHTJSg9QaEx42uu7vAbON=Jk5-Gmiv9Q@mail.gmail.com>
+ <CAB-pspcmxQAzR=jX1_fp06UUgNbC_LXFDN4g6RnOn6vTTvJjTw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.com (mout.gmx.com [74.208.4.201])
- by alsa0.perex.cz (Postfix) with ESMTP id 99E26260681
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 00:25:36 +0200 (CEST)
-In-Reply-To: <54460930.6060603@zonque.org>
+Received: from mail-ig0-f181.google.com (mail-ig0-f181.google.com
+ [209.85.213.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D12A260681
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 00:37:41 +0200 (CEST)
+Received: by mail-ig0-f181.google.com with SMTP id l13so356942iga.2
+ for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 15:37:40 -0700 (PDT)
+In-Reply-To: <CAB-pspcmxQAzR=jX1_fp06UUgNbC_LXFDN4g6RnOn6vTTvJjTw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +33,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, Valentin Raevsky <valentin@compulab.co.il>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2014-10-21 at 09:20 +0200, Daniel Mack wrote:
-> Hi,
-> 
-> Thanks for sharing this!
-> 
-> On 10/21/2014 01:40 AM, Kim Taylor wrote:
-> > I've written a driver for raw MIDI using the PL011. It is obviously
-> > based on the snd-serial-u16550 module, with a couple of improvements:
-> >
-> >  - I've implemented a drain() callback.
-> > 
-> >  - I've also implemented a half duplex mode based on a timer callback
-> > which was necessary for reliable communication with my eMagic Unitor 8
-> > hardware. (Testing with a serial link to other hardware shows that the
-> > full duplex mode is also working.)
-> 
-> So I guess you could patch the existing driver to make it work for your
-> use case, right? I haven't looked at the code in detail, but from what
-> you describe, that should be possible.
+On Tue, Oct 21, 2014 at 1:49 PM, Jonathan Bennett <jbscience87@gmail.com>
+wrote:
 
-I'm not sure about that. As it uses a different UART chip, there is a
-new probe() function, it uses memory mapped I/O, instead of i386
-inb/outb, it gathers information from the ARM AMBA bus...
+>
+>
+> On Tue, Oct 21, 2014 at 1:12 PM, Fabio Estevam <festevam@gmail.com> wrote:
+>
+>> On Tue, Oct 21, 2014 at 4:04 PM, Jonathan Bennett <jbscience87@gmail.com>
+>> wrote:
+>>
+>> > I realized something just last night. I was grabbing changes from the
+>> devel
+>> > branch of github.com/utilite-computer, thinking that those changes were
+>> > based off the vanilla 3.10 kernel. Those changes are actually based on
+>> the
+>> > Freescale 3.10 kernel. I pulled a Freescale patch that is obviously
+>> missing:
+>> > "ENGR00276249-1 ARM: imx6q: Add missing baud clock for ssi" I also
+>> switched
+>>
+>> The baud clock patch is present in 3.18-rc1:
+>>
+>> commit 935632e9938e3e286b9c62a7e54d35c428533cc9
+>> Author: Shengjiu Wang <shengjiu.wang@freescale.com>
+>> Date:   Tue Sep 9 17:13:26 2014 +0800
+>>
+>>     ARM: dts: imx6qdl: add baud clock and clock-names for ssi
+>>
+>>     Baud clock is used for bit clock generation in master mode. Ipg clock
+>>     is peripheral clock and peripheral access clock.
+>>
+>>     Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
+>>     Signed-off-by: Shawn Guo <shawn.guo@freescale.c
+>>
+>  Awesome!
+> It's great to see this stuff go mainline.
+>
 
-The only things that would remain unchanged are the output_trigger() and
-output_write() functions. One possibility might be to abstract out all
-read/write operations using function pointers, however, I believe that
-the new driver is different enough to constitute a new module.
+I have rebased to 3.18 rc-1. It has simplified the patch set a bit, as more
+of  the Freescale things have hit mainline. http://pastebin.com/C652GKe3 is
+my patchset.
+Again, the card registers and thinks it plays, but there is no actual
+output.
 
-Or maybe there should be a third module (for example snd-serial-core,
-containing any common functions, exporting them to both
-snd-serial-u16550 and snd-serial-pl011?
 
-> 
-> > It can be found here:
-> > https://github.com/kmtaylor/rpi_patches/blob/master/serial-pl011.c
-> > 
-> > If you think it should be included in the ALSA repository, please let me
-> > know what to do next.
-> 
-> Clone this repository:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
-> 
-> and integrate your changes there, then send patches to this mailing
-> list. Especially if you're doing it for the first time,
-> Documentation/SubmittingPatches is a good read to omit some typical
-> pitfalls.
-
-Will do. Thanks.
+>> > back to imx-wm8731.c for the driver. With this setup, the driver
+>> registers,
+>> > and speaker-test thinks it plays, however there is no actual sound
+>> output. I
+>> > call it progress.
+>>
+>> Great progress: some things to check :
+>>
+>> 1. audmux settings
+>>
+> Well, the imx-wm8731 driver (It's really just glue for loading wm8731)
+> does have audmux settings in it. These get called during the module probe.
+> Not sure what might need to change there. My thoughts are that they should
+> be correct.
+>
+>
+>>
+>> 2. Can you try to run 'alsamixer' and make sure that the volume is not
+>> at the lowest level?
+>>
+> Yeah, I've made sure to check alsamixer and turn the volume up. Still no
+> joy.
+>
