@@ -1,66 +1,33 @@
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH 1/2] MAINTAINERS: add atmel ssc driver maintainer entry
-Date: Tue, 21 Oct 2014 16:50:14 +0200
-Message-ID: <544672A6.9090101@atmel.com>
-References: <1411869439-2719-1-git-send-email-voice.shen@atmel.com> <54291A0C.3090206@atmel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH] ASoC: dapm: Remove redundant cast
+Date: Tue, 21 Oct 2014 17:01:15 +0200
+Message-ID: <1413903675-3363-1-git-send-email-linux@rasmusvillemoes.dk>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <54291A0C.3090206@atmel.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "arm@kernel.org" <arm@kernel.org>
-Cc: Bo Shen <voice.shen@atmel.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Rasmus Villemoes <linux@rasmusvillemoes.dk>
 List-Id: alsa-devel@alsa-project.org
 
-On 29/09/2014 10:36, Nicolas Ferre :
-> On 28/09/2014 03:57, Bo Shen :
->> Signed-off-by: Bo Shen <voice.shen@atmel.com>
-> 
-> Sure:
-> Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-> 
-> Thanks.
+Both path->name and e->texts[i] have type const char*, so the cast is
+slightly confusing and certainly unnecessary.
 
-Greg or Arnd,
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This MAINTAINER's update didn't make it during merge window (on the
-other hand, I didn't build a pull-request with it neither...).
-
-Do you want that I take it in one of my "fixes" pull-requests to arm-soc
-for 3.18 or do you feel like taking the patch directly? I think it makes
-sense to not wait for the 3.19 for this kind of useful information.
-
-Thanks, bye,
-
-
->> ---
->>
->>  MAINTAINERS | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 3705430..c004e6f 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -1703,6 +1703,13 @@ M:	Nicolas Ferre <nicolas.ferre@atmel.com>
->>  S:	Supported
->>  F:	drivers/spi/spi-atmel.*
->>  
->> +ATMEL SSC DRIVER
->> +M:	Bo Shen <voice.shen@atmel.com>
->> +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->> +S:	Supported
->> +F:	drivers/misc/atmel-ssc.c
->> +F:	include/linux/atmel-ssc.h
->> +
->>  ATMEL Timer Counter (TC) AND CLOCKSOURCE DRIVERS
->>  M:	Nicolas Ferre <nicolas.ferre@atmel.com>
->>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>
-> 
-> 
-
-
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index c61cb9c..39f992b 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -496,7 +496,7 @@ static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
+ 			list_add(&path->list, &dapm->card->paths);
+ 			list_add(&path->list_sink, &dest->sources);
+ 			list_add(&path->list_source, &src->sinks);
+-			path->name = (char*)e->texts[i];
++			path->name = e->texts[i];
+ 			if (i == item)
+ 				path->connect = 1;
+ 			else
 -- 
-Nicolas Ferre
+2.0.4
