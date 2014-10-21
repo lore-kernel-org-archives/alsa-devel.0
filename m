@@ -1,106 +1,236 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: RE: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: Track playback and
- capture CMR dividers separately.
-Date: Tue, 21 Oct 2014 11:02:57 +0000
-Message-ID: <75c3727e997844dd90e68dae4b00282b@EMAIL.axentia.se>
-References: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se>
- <5445BCBF.5090002@atmel.com>
- <dc4461593ddb4d539f2db74b69bab98c@EMAIL.axentia.se>
- <544620C8.4040001@atmel.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC PATCH 1/2] ALSA: hda - Fix "PCM" name being
+ used on one DAC when there are two DACs
+Date: Tue, 21 Oct 2014 15:55:49 +0800
+Message-ID: <CAN8cciatGWvdSuvgDE1mXQ1jf_N9htnLUHwzmnQ0EtJW2L4muw@mail.gmail.com>
+References: <1413466426-2672-1-git-send-email-david.henningsson@canonical.com>
+ <CAN8cciZAteQAaG9GAxwLWyF6u5xH_fGtRDOTq5j+4LNoj_d_jA@mail.gmail.com>
+ <543FDFDE.7040800@canonical.com>
+ <CAN8cciaUo7BOxSMBtiysYi9MsW=ZAWn0s3tHTc5-YmpWWvEJNg@mail.gmail.com>
+ <s5hlhodteq7.wl-tiwai@suse.de>
+ <CAN8ccib4fhvvtYW7sjDZXA9QETgOTL+wA=u6iSv0yRHtwWPfwQ@mail.gmail.com>
+ <5444ABDA.7070207@canonical.com>
+ <CAN8cciYCSd8QqHNZ=7ip_-YnG1ru9jJ3rjW8S_YjyrhRLGBFzA@mail.gmail.com>
+ <s5hlhob3vvj.wl-tiwai@suse.de>
+ <CAN8cciZ05e49cpBbDSLLz+mte5Zx4v4VNAJMH5BA77+0vKQKRw@mail.gmail.com>
+ <s5hwq7vklmm.wl-tiwai@suse.de>
+ <CAN8cciZN=7JttVxKo_yNy+63a4XZcLZh3NBodupSQBuWRpWTLA@mail.gmail.com>
+ <CADLC3L3=gRSH6PLZfvQuEBhO6u=p4wsJ7Dkh32or-mU_UZDSHg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <544620C8.4040001@atmel.com>
-Content-Language: sv-SE
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qc0-f176.google.com (mail-qc0-f176.google.com
+ [209.85.216.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DD21265DE2
+ for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 09:55:50 +0200 (CEST)
+Received: by mail-qc0-f176.google.com with SMTP id r5so471244qcx.7
+ for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 00:55:49 -0700 (PDT)
+In-Reply-To: <CADLC3L3=gRSH6PLZfvQuEBhO6u=p4wsJ7Dkh32or-mU_UZDSHg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Robert Hancock <hancockrwd@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-Devel <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi again!
-
-> Hi Peter,
-> 
-> On 10/21/2014 03:55 PM, Peter Rosin wrote:
-> > Hi!
-> >
-> > (and thank you for the pointer to the example with the ssc-dai in
-> > master mode)
-> >
-> >> Hi Peter,
+> >> > > > >>
+> >> > > > >>
+> >> > > > >>  > >
+> >> > > > >>  > > >> >
+> >> > > > >>  > > >> > In the scenario where there is one "Line Out", one
+> >> > "Speaker"
+> >> > > > >> and one
+> >> > > > >>  > > >> > "Headphone", and there are only two DACs, two
+outputs
+> >> > > > >> will
+> >> > > > >> share a DAC.
+> >> > > > >>  > > >> > Currently any mixer on such a DAC will get the "PCM"
+> >> > > > >> name,
+> >> > > > >> which is
+> >> > > > >>  > > >> > misleading. Instead use "Headphone+LO" or
+"Speaker+LO"
+> >> > > > >> to
+> >> > > > better
+> >> > > > >>  > > >> > specify what the volume actually controls.
+> >> > > > >>  > > >>
+> >> > > > >>  > > >> Are there any examples ?
+> >> > > > >>  > > >>
+> >> > > > >>  > > >
+> >> > > > >>  > > > I used "hda-emu
+> >> > > > >>  > >
+> >> > codecs/canonical/alc3226-dell-precision-m2800-ccert-201404-14986 -i
+> >> > > > >> 1" when
+> >> > > > >>  > > developing the patches.
+> >> > > > >>  > > >
+> >> > > > >>  > > > I don't have any hardware available myself that exposes
+> >> > > > >> this
+> >> > > > >> behavior,
+> >> > > > >>  > > but I can maybe fake one with hdajackretask, if that
+> >> > > > >> counts...
+> >> > > > >>  > > >
+> >> > > > >>  > >
+> >> > > > >>  > > How about adding these names to slaves of virtual master
+> >> > > > >> volume/switch ?
+> >> > > > >>  > >
+> >> > > > >>  > > hdajackretask won't help if the topology of the codecs
+are
+> >> > > > different
+> >> > > > >>  > >
+> >> > > > >>  > > Seem the badness still prevent the driver to support
+> >> > > > >> surround
+> >> > 5.1
+> >> > > > with
+> >> > > > >>  > > three rear panel jacks, internal speaker and front panel
+> >> > headphone
+> >> > > > for
+> >> > > > >>  > > Thinkcenter A58 using alc662
+> >> > > > >>  > >
+> >> > > > >>  > >
+> >> > > > >>
+> >> > > >
+> >> >
+> >> >
+https://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg29203.html
+> >> > > > >>  > >
+> >> > > > >>  > > Why 3stack desktops with 6 channels codecs not using
+> >> > > > >> "Headphone+LO"  or
+> >> > > > >>  > > "Speaker+LO" ?
+> >> > > > >>  >
+> >> > > > >>  > The problem is just the lack of DACs, so it cannot cover
+all
+> >> > > > >> three
+> >> > > > >>  > outputs, no matter how the pins are chosen.  That is, it's
+no
+> >> > > > >> 6
+> >> > > > >>  > channels at all but 4 channels at most.
+> >> > > > >>  >
+> >> > > > >>  >
+> >> > > > >>
+> >> > > > >>
+http://shop.lenovo.com/us/en/desktops/thinkcentre/a-series/a58/
+> >> > > > >>
+> >> > > > >> The technical specification of a58
+> >> > > > >>
+> >> > > > >> 2 pin internal speaker connector
+> >> > > > >> Alc662 5.1
+> >> > > > >>
+> >> > > > >> https://bbs.archlinux.org/viewtopic.php?id=156433
+> >> > > > >>
+> >> > > > >> Seem windows support surround 5.1
+> >> > > > >
+> >> > > > >
+> >> > > > > Raymond, there can certainly be cases which this patch does not
+> >> > > > > cover
+> >> > -
+> >> > > > after all, it's mostly a band aid given the lack of topology
+> >> > information -
+> >> > > > but do you see cases where this patch actually causes a
+> >> > > > *regression*? If
+> >> > > > so, could you point me to alsa-info for the machine where this
+patch
+> >> > causes
+> >> > > > a regression?
+> >> > > > >
+> >> > > >
+> >> > > >
+> >> >
+> >> >
+www.realtek.com.tw/products/productsView.aspx?Langid=1&PNid=24&PFid=27&Level=5&Conn=4
+> >> > > >
+> >> > > > I expect those desktop with 2+2 HD Audio codec support
+independent
+> >> > headphone
+> >> > > >
+> >> > > > This mean the driver should not create "Lineout+HP" Playback
+volume
+> >> > > >
+> >> > > > Line out and headphone cannot share same DAC
+> >> > >
+> >> > > Do you have a pincfg representing this?  Then we can check it
+easily
+> >> > > via hda-emu.
+> >> > >
+> >> >
+> >> >
+> >> >
+http://git.kernel.org/cgit/linux/kernel/git/tiwai/hda-emu.git/tree/codecs/canonical/alc221--hp-prodesk-400-g1-sff-ccert-201408-15383?id=HEAD
 > >>
-> >> On 10/20/2014 09:45 PM, Peter Rosin wrote:
-> >>>   From 1e5621d7b9887c648d1a66238dc82d715c1e2cad Mon Sep 17
-> 00:00:00
-> >>> 2001
-> >>> From: Peter Rosin <peda@axentia.se>
-> >>> Date: Mon, 20 Oct 2014 14:38:04 +0200
-> >>> Subject: [PATCH] ASoC: atmel_ssc_dai: Track playback and capture CMR
-> >> dividers
-> >>>    separately.
-> >>>
-> >>> The CMR divider register is shared by playback and capture. The SSC
-> >>> driver therefore tries to enforce rules so that the needed register
-> >>> content do not conflict during simultaneous playback/capture.
-> >>> However, the implementation also prevents changing the register
-> >>> content in a half-duplex scenario, which is needed when changing
-> sample rates.
+> >> Both HP (0x21) and LO (0x14) can share the same DAC (0x03) over mixer
+> >> (0x0d).  So the statement above "Line out and headphone cannot share
+> >> same DAC" isn't correct.
 > >>
-> >> I am not fully get what you mean here, do you mean:
-> >>     - when playback, first playback 48kHz, and then playback 8Khz,
-> >> the 8Khz still playback in 48kHz mode?
+> >> > Refer to user manual
+> >> >
+> >> > Multi-streaming can be enabled in the Realtek control panel to allow
+> >> > independent audio streams to be sent to/from the front and rear jacks
 > >>
-> >> or other things?
+> >> This is the implementation detail and it's a matter of taste which
+> >> should be dependent and which not.  There is no bible here.
+> >>
+> >> You can forcibly do that by a fixed DAC assignment (or add some
+> >> badness) if you want, too...
+> >>
+> >>
 > >
-> > I do not know exactly why the problem occurs, but it might be
-> > connected to the library (proprietary) we are using. It apparently
-> > uses the OSS interface and somehow it opens a stream and changes the
-> > playback sample-rate a couple of time before it settles on something.
-> > I don't know why this is done, and I have no control over it. The end
-> > result is that without this patch, the ssc-dai driver returns -EBUSY
-> > when the library changes the playback sample-rate (the driver returns
-> > -EBUSY because it thinks that the new sample rate does not match a
-> > previously given capture sample-rate, but that is of course bogus when no
-> capture is going on at all).
-> 
-> If this issue is caused by your proprietary library, please fix in the library.
+> >
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/072775.html
+> >
+> >
+> > Seem headphone not working properly on hp prodesk 600 g1
+>
+> As I mentioned on Bugzilla, that problem ended up being due to some
+> kind of motherboard defect in the particular machine. On the
+> replacement 800 G1 machine, the headphone jack works fine. I can't
+> really say whether or not dual independent audio streams work, though.
 
-Ah, but it's not "our" proprietary library to fix, it's simply a library that we
-are using (speech synthesis, not our area of expertise). So, I'm not in a
-position to simply fix it, as I have no source code.
+If your prodesk 800 g1 are still using alc221, you can disable the speaker
+node 0x17 by hda-jack-retask and add hint indep_hp=1 to hda-jack-retask.fw
 
-> I don't know how this code can fix your issue and also there is no
-> improvement to the code and it absolutely increase work (choose which
-> clock to configure: tcmr or rcmr) for the SSC work in master. And also this
-> patch may confuse the end user, let them thinking the clock for tcmr and
-> rcmr can configure seperately.
+[Hint]
+indep_hp=1
 
-I added some traces to our hw_params and got the following (without the patch):
+or
 
-[  161.170000] atmel ssc startup
-[  161.170000]  TFA9879: axentia_asoc_tfa9879_hw_params - mclk rate 66000000
-[  161.180000]  TFA9879: axentia_asoc_tfa9879_hw_params - bclk rate 128000
-[  161.180000]  TFA9879: axentia_asoc_tfa9879_hw_params - bclk divider 128
-[  161.190000]  TFA9879: axentia_asoc_tfa9879_hw_params - period 7
-[  161.200000]  TFA9879: axentia_asoc_tfa9879_hw_params - mclk rate 66000000
-[  161.200000]  TFA9879: axentia_asoc_tfa9879_hw_params - bclk rate 128000
-[  161.210000]  TFA9879: axentia_asoc_tfa9879_hw_params - bclk divider 128
-[  161.220000]  TFA9879: axentia_asoc_tfa9879_hw_params - period 7
-[  161.230000]  TFA9879: axentia_asoc_tfa9879_hw_params - mclk rate 66000000
-[  161.230000]  TFA9879: axentia_asoc_tfa9879_hw_params - bclk rate 256000
-[  161.240000]  TFA9879: axentia_asoc_tfa9879_hw_params - bclk divider 64
-[  161.250000]  TFA9879: axentia_asoc_tfa9879_hw_params - Failed to set cpu dai clk divider
-[  161.260000] axentia-tfa9879-audio sound.9: ASoC: machine hw_params failed: -16
+in hda/hda_generic.c
 
-> So, I think keep the code as is (without this patch applied), what's your
-> opinion?
+Force the driver to add badness when assign dac to speaker first by
 
-In that case we'll simply carry the patch ourselves. I don't know why the above
-happens, or if it is caused by bad behavior in the library, or what. But I do know
-that the library is unusable for us without some action.
+    if (spec-indep_hp && !indep_hp_possible(codec))
+         badness += BAD_NO_INDEP_HP;
++  if (cfg->hp_outs > 0 && cfg->line_outs > 0)
++      if (get_defcfg_location(snd_hda_codec_get_pincfg(codec,
+cfg->line_out_pins[0])) == AC_JACK_LOC_REAR)
++              if (fill_hardwired)
++                      badness += BAD_NO_INDEP_HP;
 
-I thought it was an improvement, and therefore sent the patch...
+Driver create volume control for line out instead of speaker first
 
-Cheers,
-Peter
+Driver create "Speaker+LO" instead of "Headphone+LO"  when you apply
+david's patch
+
+and add the following to patch_alc269 in patch_realtek.c
+
+spec->gen.indep_hp=1;
+
+The driver will create
+
+device 2 alt analog
+
+and independent hp switch
+
+You can play another audio stream to device 2 while playing stereo stream
+to line out through device 0 at the same time when independent hp switch is
+"ON"
+
+Assume alc221 is at card 1
+
+speaker-test -c2 -D hw:1,0 -t wav
+
+aplay -v -D hw:1,2  stereo.wav
