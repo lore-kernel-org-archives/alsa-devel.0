@@ -1,99 +1,97 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/43] ALSA: vx: Use snd_ctl_elem_info()
-Date: Tue, 21 Oct 2014 12:10:42 +0200
-Message-ID: <1413886279-18704-7-git-send-email-tiwai@suse.de>
-References: <1413886279-18704-1-git-send-email-tiwai@suse.de>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v2 1/6] media: add media token device resource framework
+Date: Tue, 21 Oct 2014 13:58:59 +0200
+Message-ID: <54464A83.7090706@xs4all.nl>
+References: <cover.1413246370.git.shuahkh@osg.samsung.com>	<c8bae1d475b1086302fcb83bc463ec01437c3f95.1413246372.git.shuahkh@osg.samsung.com>	<5446396B.9010709@xs4all.nl> <s5h1tq1ljxj.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CEFFD26663A
- for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 12:11:24 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 0C16BACFC
- for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 10:11:23 +0000 (UTC)
-In-Reply-To: <1413886279-18704-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <s5h1tq1ljxj.wl-tiwai@suse.de>
+Sender: linux-media-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Shuah Khan <shuahkh@osg.samsung.com>, m.chehab@samsung.com, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it, linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-... and reduce the open codes.  Also add missing const to text arrays.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/drivers/vx/vx_mixer.c | 35 ++++++++---------------------------
- 1 file changed, 8 insertions(+), 27 deletions(-)
 
-diff --git a/sound/drivers/vx/vx_mixer.c b/sound/drivers/vx/vx_mixer.c
-index 3b6823fc0606..be9477e30739 100644
---- a/sound/drivers/vx/vx_mixer.c
-+++ b/sound/drivers/vx/vx_mixer.c
-@@ -471,30 +471,18 @@ static struct snd_kcontrol_new vx_control_output_level = {
-  */
- static int vx_audio_src_info(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
- {
--	static char *texts_mic[3] = {
-+	static const char * const texts_mic[3] = {
- 		"Digital", "Line", "Mic"
- 	};
--	static char *texts_vx2[2] = {
-+	static const char * const texts_vx2[2] = {
- 		"Digital", "Analog"
- 	};
- 	struct vx_core *chip = snd_kcontrol_chip(kcontrol);
- 
--	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
--	uinfo->count = 1;
--	if (chip->type >= VX_TYPE_VXPOCKET) {
--		uinfo->value.enumerated.items = 3;
--		if (uinfo->value.enumerated.item > 2)
--			uinfo->value.enumerated.item = 2;
--		strcpy(uinfo->value.enumerated.name,
--		       texts_mic[uinfo->value.enumerated.item]);
--	} else {
--		uinfo->value.enumerated.items = 2;
--		if (uinfo->value.enumerated.item > 1)
--			uinfo->value.enumerated.item = 1;
--		strcpy(uinfo->value.enumerated.name,
--		       texts_vx2[uinfo->value.enumerated.item]);
--	}
--	return 0;
-+	if (chip->type >= VX_TYPE_VXPOCKET)
-+		return snd_ctl_enum_info(uinfo, 1, 3, texts_mic);
-+	else
-+		return snd_ctl_enum_info(uinfo, 1, 2, texts_vx2);
- }
- 
- static int vx_audio_src_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
-@@ -539,18 +527,11 @@ static struct snd_kcontrol_new vx_control_audio_src = {
-  */
- static int vx_clock_mode_info(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
- {
--	static char *texts[3] = {
-+	static const char * const texts[3] = {
- 		"Auto", "Internal", "External"
- 	};
- 
--	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
--	uinfo->count = 1;
--	uinfo->value.enumerated.items = 3;
--	if (uinfo->value.enumerated.item > 2)
--		uinfo->value.enumerated.item = 2;
--	strcpy(uinfo->value.enumerated.name,
--	       texts[uinfo->value.enumerated.item]);
--	return 0;
-+	return snd_ctl_enum_info(uinfo, 1, 3, texts);
- }
- 
- static int vx_clock_mode_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--- 
-2.1.2
+On 10/21/2014 01:51 PM, Takashi Iwai wrote:
+> At Tue, 21 Oct 2014 12:46:03 +0200,
+> Hans Verkuil wrote:
+>>
+>> Hi Shuah,
+>>
+>> As promised, here is my review for this patch series.
+>>
+>> On 10/14/2014 04:58 PM, Shuah Khan wrote:
+>>> Add media token device resource framework to allow sharing
+>>> resources such as tuner, dma, audio etc. across media drivers
+>>> and non-media sound drivers that control media hardware. The
+>>> Media token resource is created at the main struct device that
+>>> is common to all drivers that claim various pieces of the main
+>>> media device, which allows them to find the resource using the
+>>> main struct device. As an example, digital, analog, and
+>>> snd-usb-audio drivers can use the media token resource API
+>>> using the main struct device for the interface the media device
+>>> is attached to.
+>>>
+>>> A shared media tokens resource is created using devres framework
+>>> for drivers to find and lock/unlock. Creating a shared devres
+>>> helps avoid creating data structure dependencies between drivers.
+>>> This media token resource contains media token for tuner, and
+>>> audio. When tuner token is requested, audio token is issued.
+>>
+>> Did you mean: 'tuner token is issued' instead of audio token?
+>>
+>> I also have the same question as Takashi: why do we have an audio
+>> token in the first place? While you are streaming audio over alsa
+>> the underlying tuner must be marked as being in use. It's all about
+>> the tuner, since that's the resource that is being shared, not about
+>> audio as such.
+>>
+>> For the remainder of my review I will ignore the audio-related code
+>> and concentrate only on the tuner part.
+>>
+>>> Subsequent token (for tuner and audio) gets from the same task
+>>> and task in the same tgid succeed. This allows applications that
+>>> make multiple v4l2 ioctls to work with the first call acquiring
+>>> the token and applications that create separate threads to handle
+>>> video and audio functions.
+>>>
+>>> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+>>> ---
+>>>    MAINTAINERS                  |    2 +
+>>>    include/linux/media_tknres.h |   50 +++++++++
+>>>    lib/Makefile                 |    2 +
+>>>    lib/media_tknres.c           |  237 ++++++++++++++++++++++++++++++++++++++++++
+>>
+>> I am still not convinced myself that this should be a generic API.
+>> The only reason we need it today is for sharing tuners. Which is almost
+>> a purely media thing with USB audio as the single non-media driver that
+>> will be affected. Today I see no use case outside of tuners. I would
+>> probably want to keep this inside drivers/media.
+>>
+>> If this is going to be expanded it can always be moved to lib later.
+>
+> Well, my argument is that it should be more generic if it were
+> intended to be put in lib.  It'd be fine to put into drivers/media,
+> but this code snippet must be a separate module.  Otherwise usb-audio
+> would grab the whole media stuff even if not needed at all.
+
+Certainly.
+
+>
+> (snip)
+>> I also discovered that you are missing MODULE_AUTHOR, MODULE_DESCRIPTION
+>> and above all MODULE_LICENSE. Without the MODULE_LICENSE it won't link this
+>> module to the GPL devres_* functions. It took me some time to figure that
+>> out.
+>
+> It was a code in lib, so it cannot be a module at all :)
+
+Well, it depends on CONFIG_MEDIA_SUPPORT which is 'm' in my case, so it
+compiles as a module :-)
+
+Regards,
+
+	Hans
