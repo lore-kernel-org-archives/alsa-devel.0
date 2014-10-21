@@ -1,180 +1,82 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: [RFC PATCH 1/2] ALSA: hda - Fix "PCM" name being
- used on one DAC when there are two DACs
-Date: Mon, 20 Oct 2014 20:29:58 -0600
-Message-ID: <CADLC3L3=gRSH6PLZfvQuEBhO6u=p4wsJ7Dkh32or-mU_UZDSHg@mail.gmail.com>
-References: <1413466426-2672-1-git-send-email-david.henningsson@canonical.com>
- <CAN8cciZAteQAaG9GAxwLWyF6u5xH_fGtRDOTq5j+4LNoj_d_jA@mail.gmail.com>
- <543FDFDE.7040800@canonical.com>
- <CAN8cciaUo7BOxSMBtiysYi9MsW=ZAWn0s3tHTc5-YmpWWvEJNg@mail.gmail.com>
- <s5hlhodteq7.wl-tiwai@suse.de>
- <CAN8ccib4fhvvtYW7sjDZXA9QETgOTL+wA=u6iSv0yRHtwWPfwQ@mail.gmail.com>
- <5444ABDA.7070207@canonical.com>
- <CAN8cciYCSd8QqHNZ=7ip_-YnG1ru9jJ3rjW8S_YjyrhRLGBFzA@mail.gmail.com>
- <s5hlhob3vvj.wl-tiwai@suse.de>
- <CAN8cciZ05e49cpBbDSLLz+mte5Zx4v4VNAJMH5BA77+0vKQKRw@mail.gmail.com>
- <s5hwq7vklmm.wl-tiwai@suse.de>
- <CAN8cciZN=7JttVxKo_yNy+63a4XZcLZh3NBodupSQBuWRpWTLA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qc0-f177.google.com (mail-qc0-f177.google.com
- [209.85.216.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 227542608BC
- for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 04:30:00 +0200 (CEST)
-Received: by mail-qc0-f177.google.com with SMTP id c9so218634qcz.36
- for <alsa-devel@alsa-project.org>; Mon, 20 Oct 2014 19:29:59 -0700 (PDT)
-In-Reply-To: <CAN8cciZN=7JttVxKo_yNy+63a4XZcLZh3NBodupSQBuWRpWTLA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-Devel <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+From: Ben Zhang <benzh@chromium.org>
+Subject: [PATCH] ASoC: rt5677: fix rt5677 spi driver build
+Date: Mon, 20 Oct 2014 20:30:13 -0700
+Message-ID: <1413862213-18449-1-git-send-email-benzh@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, flove@realtek.com, linux-kernel@vger.kernel.org, Ben Zhang <benzh@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 20, 2014 at 8:24 AM, Raymond Yau
-<superquad.vortex2@gmail.com> wrote:
->
->> > > >
->> > > > >>
->> > > > >>
->> > > > >>  > >
->> > > > >>  > > >> >
->> > > > >>  > > >> > In the scenario where there is one "Line Out", one
->> > "Speaker"
->> > > > >> and one
->> > > > >>  > > >> > "Headphone", and there are only two DACs, two outputs
->> > > > >> will
->> > > > >> share a DAC.
->> > > > >>  > > >> > Currently any mixer on such a DAC will get the "PCM"
->> > > > >> name,
->> > > > >> which is
->> > > > >>  > > >> > misleading. Instead use "Headphone+LO" or "Speaker+LO"
->> > > > >> to
->> > > > better
->> > > > >>  > > >> > specify what the volume actually controls.
->> > > > >>  > > >>
->> > > > >>  > > >> Are there any examples ?
->> > > > >>  > > >>
->> > > > >>  > > >
->> > > > >>  > > > I used "hda-emu
->> > > > >>  > >
->> > codecs/canonical/alc3226-dell-precision-m2800-ccert-201404-14986 -i
->> > > > >> 1" when
->> > > > >>  > > developing the patches.
->> > > > >>  > > >
->> > > > >>  > > > I don't have any hardware available myself that exposes
->> > > > >> this
->> > > > >> behavior,
->> > > > >>  > > but I can maybe fake one with hdajackretask, if that
->> > > > >> counts...
->> > > > >>  > > >
->> > > > >>  > >
->> > > > >>  > > How about adding these names to slaves of virtual master
->> > > > >> volume/switch ?
->> > > > >>  > >
->> > > > >>  > > hdajackretask won't help if the topology of the codecs are
->> > > > different
->> > > > >>  > >
->> > > > >>  > > Seem the badness still prevent the driver to support
->> > > > >> surround
->> > 5.1
->> > > > with
->> > > > >>  > > three rear panel jacks, internal speaker and front panel
->> > headphone
->> > > > for
->> > > > >>  > > Thinkcenter A58 using alc662
->> > > > >>  > >
->> > > > >>  > >
->> > > > >>
->> > > >
->> >
->> > https://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg29203.html
->> > > > >>  > >
->> > > > >>  > > Why 3stack desktops with 6 channels codecs not using
->> > > > >> "Headphone+LO"  or
->> > > > >>  > > "Speaker+LO" ?
->> > > > >>  >
->> > > > >>  > The problem is just the lack of DACs, so it cannot cover all
->> > > > >> three
->> > > > >>  > outputs, no matter how the pins are chosen.  That is, it's no
->> > > > >> 6
->> > > > >>  > channels at all but 4 channels at most.
->> > > > >>  >
->> > > > >>  >
->> > > > >>
->> > > > >> http://shop.lenovo.com/us/en/desktops/thinkcentre/a-series/a58/
->> > > > >>
->> > > > >> The technical specification of a58
->> > > > >>
->> > > > >> 2 pin internal speaker connector
->> > > > >> Alc662 5.1
->> > > > >>
->> > > > >> https://bbs.archlinux.org/viewtopic.php?id=156433
->> > > > >>
->> > > > >> Seem windows support surround 5.1
->> > > > >
->> > > > >
->> > > > > Raymond, there can certainly be cases which this patch does not
->> > > > > cover
->> > -
->> > > > after all, it's mostly a band aid given the lack of topology
->> > information -
->> > > > but do you see cases where this patch actually causes a
->> > > > *regression*? If
->> > > > so, could you point me to alsa-info for the machine where this patch
->> > causes
->> > > > a regression?
->> > > > >
->> > > >
->> > > >
->> >
->> > www.realtek.com.tw/products/productsView.aspx?Langid=1&PNid=24&PFid=27&Level=5&Conn=4
->> > > >
->> > > > I expect those desktop with 2+2 HD Audio codec support independent
->> > headphone
->> > > >
->> > > > This mean the driver should not create "Lineout+HP" Playback volume
->> > > >
->> > > > Line out and headphone cannot share same DAC
->> > >
->> > > Do you have a pincfg representing this?  Then we can check it easily
->> > > via hda-emu.
->> > >
->> >
->> >
->> > http://git.kernel.org/cgit/linux/kernel/git/tiwai/hda-emu.git/tree/codecs/canonical/alc221--hp-prodesk-400-g1-sff-ccert-201408-15383?id=HEAD
->>
->> Both HP (0x21) and LO (0x14) can share the same DAC (0x03) over mixer
->> (0x0d).  So the statement above "Line out and headphone cannot share
->> same DAC" isn't correct.
->>
->> > Refer to user manual
->> >
->> > Multi-streaming can be enabled in the Realtek control panel to allow
->> > independent audio streams to be sent to/from the front and rear jacks
->>
->> This is the implementation detail and it's a matter of taste which
->> should be dependent and which not.  There is no bible here.
->>
->> You can forcibly do that by a fixed DAC assignment (or add some
->> badness) if you want, too...
->>
->>
->
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-February/072775.html
->
->
-> Seem headphone not working properly on hp prodesk 600 g1
+Create a separate module for rt5677 spi driver. Without
+this patch, the build fails due to multiple defs of
+'init_module' and 'cleanup_module'. module_spi_driver()
+defines its own module, so it can't be part of the rt5677
+module.
 
-As I mentioned on Bugzilla, that problem ended up being due to some
-kind of motherboard defect in the particular machine. On the
-replacement 800 G1 machine, the headphone jack works fine. I can't
-really say whether or not dual independent audio streams work, though.
+Signed-off-by: Ben Zhang <benzh@chromium.org>
+---
+ sound/soc/codecs/Kconfig      | 4 ++++
+ sound/soc/codecs/Makefile     | 4 +++-
+ sound/soc/codecs/rt5677-spi.c | 2 ++
+ 3 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 2c7482e..6f21a76 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -504,6 +504,10 @@ config SND_SOC_RT5670
+ config SND_SOC_RT5677
+ 	tristate
+ 
++config SND_SOC_RT5677_SPI
++	tristate
++	default SND_SOC_RT5677
++
+ #Freescale sgtl5000 codec
+ config SND_SOC_SGTL5000
+ 	tristate "Freescale SGTL5000 CODEC"
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 4435f9f..3e57edc 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -79,7 +79,8 @@ snd-soc-rt5640-objs := rt5640.o
+ snd-soc-rt5645-objs := rt5645.o
+ snd-soc-rt5651-objs := rt5651.o
+ snd-soc-rt5670-objs := rt5670.o
+-snd-soc-rt5677-objs := rt5677.o rt5677-spi.o
++snd-soc-rt5677-objs := rt5677.o
++snd-soc-rt5677-spi-objs := rt5677-spi.o
+ snd-soc-sgtl5000-objs := sgtl5000.o
+ snd-soc-alc5623-objs := alc5623.o
+ snd-soc-alc5632-objs := alc5632.o
+@@ -256,6 +257,7 @@ obj-$(CONFIG_SND_SOC_RT5645)	+= snd-soc-rt5645.o
+ obj-$(CONFIG_SND_SOC_RT5651)	+= snd-soc-rt5651.o
+ obj-$(CONFIG_SND_SOC_RT5670)	+= snd-soc-rt5670.o
+ obj-$(CONFIG_SND_SOC_RT5677)	+= snd-soc-rt5677.o
++obj-$(CONFIG_SND_SOC_RT5677_SPI)	+= snd-soc-rt5677-spi.o
+ obj-$(CONFIG_SND_SOC_SGTL5000)  += snd-soc-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_SIGMADSP)	+= snd-soc-sigmadsp.o
+ obj-$(CONFIG_SND_SOC_SIGMADSP_I2C)	+= snd-soc-sigmadsp-i2c.o
+diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
+index 11c38f3..ef6348c 100644
+--- a/sound/soc/codecs/rt5677-spi.c
++++ b/sound/soc/codecs/rt5677-spi.c
+@@ -52,6 +52,7 @@ int rt5677_spi_write(u8 *txbuf, size_t len)
+ 
+ 	return status;
+ }
++EXPORT_SYMBOL_GPL(rt5677_spi_write);
+ 
+ /**
+  * rt5677_spi_burst_write - Write data to SPI by rt5677 dsp memory address.
+@@ -107,6 +108,7 @@ int rt5677_spi_burst_write(u32 addr, const struct firmware *fw)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(rt5677_spi_burst_write);
+ 
+ static int rt5677_spi_probe(struct spi_device *spi)
+ {
+-- 
+2.1.0.rc2.206.gedb03e5
