@@ -1,29 +1,17 @@
-From: Jonathan Bennett <jbscience87@gmail.com>
-Subject: Re: Help with wm8731 support for the Utilite (imx6q)
-Date: Tue, 21 Oct 2014 17:37:39 -0500
-Message-ID: <CAB-pspcZ8bhLMPDS2NbDOEugfzO+TZfOnA_h05pvkU5ZPv6qVQ@mail.gmail.com>
-References: <CAB-pspc5KZ0sTB-7uxjBq+PEFxFdAPO5NAXof_+uwQBJ_JCejg@mail.gmail.com>
- <CAOMZO5C-EG+beiK1M10vX0Xhg4avYLExxG7MZOQq8gM6gRnANw@mail.gmail.com>
- <CAB-pspcNOuW=JN9_avEvyPFUvTfs99PB=ah43YdqMC65mZ8psQ@mail.gmail.com>
- <CAB-pspei1a3TbuFGBT-kupEWU5UY10kQoTtiV895WTi-j+-dzQ@mail.gmail.com>
- <CAOMZO5AVr0xJjf9JjYNuXG-jJC3ft84+fO-5ToSieP9NFP=-+g@mail.gmail.com>
- <CAOMZO5CU+Y8cGJsn4O1ccFZUSjLM1iH3QN2fAv4UyaLMk5yAEg@mail.gmail.com>
- <CAB-pspdvzFX-KjYSC3z3xoDMPvq4g3iFhBG76Y=DGy=YBf5dow@mail.gmail.com>
- <54464C32.8020100@compulab.co.il>
- <CAB-pspcaMh9DL8bND1kSmphZfMYNOvPS_CYZ8UYZ2EZuVjjksg@mail.gmail.com>
- <CAOMZO5A=RSodq=JmjrjHTJSg9QaEx42uu7vAbON=Jk5-Gmiv9Q@mail.gmail.com>
- <CAB-pspcmxQAzR=jX1_fp06UUgNbC_LXFDN4g6RnOn6vTTvJjTw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/5] ASoC: intel: fix to sst driver
+	series
+Date: Tue, 21 Oct 2014 23:59:18 +0100
+Message-ID: <20141021225918.GE2344@sirena.org.uk>
+References: <1413818674-14158-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2962169230428286532=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f181.google.com (mail-ig0-f181.google.com
- [209.85.213.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D12A260681
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 00:37:41 +0200 (CEST)
-Received: by mail-ig0-f181.google.com with SMTP id l13so356942iga.2
- for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 15:37:40 -0700 (PDT)
-In-Reply-To: <CAB-pspcmxQAzR=jX1_fp06UUgNbC_LXFDN4g6RnOn6vTTvJjTw@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3618260651
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 00:59:40 +0200 (CEST)
+In-Reply-To: <1413818674-14158-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,75 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, Valentin Raevsky <valentin@compulab.co.il>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 21, 2014 at 1:49 PM, Jonathan Bennett <jbscience87@gmail.com>
-wrote:
 
->
->
-> On Tue, Oct 21, 2014 at 1:12 PM, Fabio Estevam <festevam@gmail.com> wrote:
->
->> On Tue, Oct 21, 2014 at 4:04 PM, Jonathan Bennett <jbscience87@gmail.com>
->> wrote:
->>
->> > I realized something just last night. I was grabbing changes from the
->> devel
->> > branch of github.com/utilite-computer, thinking that those changes were
->> > based off the vanilla 3.10 kernel. Those changes are actually based on
->> the
->> > Freescale 3.10 kernel. I pulled a Freescale patch that is obviously
->> missing:
->> > "ENGR00276249-1 ARM: imx6q: Add missing baud clock for ssi" I also
->> switched
->>
->> The baud clock patch is present in 3.18-rc1:
->>
->> commit 935632e9938e3e286b9c62a7e54d35c428533cc9
->> Author: Shengjiu Wang <shengjiu.wang@freescale.com>
->> Date:   Tue Sep 9 17:13:26 2014 +0800
->>
->>     ARM: dts: imx6qdl: add baud clock and clock-names for ssi
->>
->>     Baud clock is used for bit clock generation in master mode. Ipg clock
->>     is peripheral clock and peripheral access clock.
->>
->>     Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com>
->>     Signed-off-by: Shawn Guo <shawn.guo@freescale.c
->>
->  Awesome!
-> It's great to see this stuff go mainline.
->
-
-I have rebased to 3.18 rc-1. It has simplified the patch set a bit, as more
-of  the Freescale things have hit mainline. http://pastebin.com/C652GKe3 is
-my patchset.
-Again, the card registers and thinks it plays, but there is no actual
-output.
+--===============2962169230428286532==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/2994txjAzEdQwm5"
+Content-Disposition: inline
 
 
->> > back to imx-wm8731.c for the driver. With this setup, the driver
->> registers,
->> > and speaker-test thinks it plays, however there is no actual sound
->> output. I
->> > call it progress.
->>
->> Great progress: some things to check :
->>
->> 1. audmux settings
->>
-> Well, the imx-wm8731 driver (It's really just glue for loading wm8731)
-> does have audmux settings in it. These get called during the module probe.
-> Not sure what might need to change there. My thoughts are that they should
-> be correct.
->
->
->>
->> 2. Can you try to run 'alsamixer' and make sure that the volume is not
->> at the lowest level?
->>
-> Yeah, I've made sure to check alsamixer and turn the volume up. Still no
-> joy.
->
+--/2994txjAzEdQwm5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 20, 2014 at 08:54:29PM +0530, Vinod Koul wrote:
+> This series fixes comments observed while applying the sst series last week.
+
+Applied all, thanks.
+
+--/2994txjAzEdQwm5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJURuVFAAoJECTWi3JdVIfQZvYH/2VrpT+rUCTQnGUQr4kysAUQ
+6on0sn/Kpo0AOMAF7KzrOpXdLEX0GIXThiCaHkPa6Pa1+AYQYNPRBV9zc1bOw2zN
+6ndm4wj7T8PJnE3N/ubeKNObTh78LKPLn/4rpY0Jf59yKfqw3XdPIHc1/R8xlPt8
+4SP68GG0NjNOdcEGn+zbdUi6UXOzjZy+2z0CVGp9gqHSwkQM6eZSMY8lgFgfxxz4
+ZY11iAwSZmSkaCnFgpyiAClvGCsQkXe18LDC7ZuFk7q/7XUF3Xmcn2JNXXF6bi5/
+euGTZ+2vFSpqgwIGDqjtceoM9CeaMAJnh7aBQo/rEPF0TuL8YvNYGZd/uXk1dJI=
+=Lh21
+-----END PGP SIGNATURE-----
+
+--/2994txjAzEdQwm5--
+
+--===============2962169230428286532==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2962169230428286532==--
