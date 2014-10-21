@@ -1,148 +1,43 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: Track playback and
- capture CMR dividers separately.
-Date: Tue, 21 Oct 2014 09:54:07 +0800
-Message-ID: <5445BCBF.5090002@atmel.com>
-References: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5677: add GPIO IRQ support
+Date: Tue, 21 Oct 2014 02:00:54 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D12694F2B752@RTITMBSV03.realtek.com.tw>
+References: <1413483866-38815-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB4D72606E9
+ for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 04:00:59 +0200 (CEST)
+In-Reply-To: <1413483866-38815-1-git-send-email-anatol.pomozov@gmail.com>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+> -----Original Message-----
+> From: Anatol Pomozov [mailto:anatol.pomozov@gmail.com]
+> Sent: Friday, October 17, 2014 2:24 AM
+> To: broonie@kernel.org; Oder Chiou
+> Cc: alsa-devel@alsa-project.org; Anatol Pomozov
+> Subject: [PATCH] ASoC: rt5677: add GPIO IRQ support
+> 
+> This allows to enable Mic Jack detection feature
+> 
+> Author: Oder Chiou <oder_chiou@realtek.com>
+> Modified-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
 
-On 10/20/2014 09:45 PM, Peter Rosin wrote:
->  From 1e5621d7b9887c648d1a66238dc82d715c1e2cad Mon Sep 17 00:00:00 2001
-> From: Peter Rosin <peda@axentia.se>
-> Date: Mon, 20 Oct 2014 14:38:04 +0200
-> Subject: [PATCH] ASoC: atmel_ssc_dai: Track playback and capture CMR dividers
->   separately.
->
-> The CMR divider register is shared by playback and capture. The SSC driver
-> therefore tries to enforce rules so that the needed register content do
-> not conflict during simultaneous playback/capture. However, the
-> implementation also prevents changing the register content in a
-> half-duplex scenario, which is needed when changing sample rates.
+Signed-off-by: oder_chiou@realtek.com
 
-I am not fully get what you mean here, do you mean:
-   - when playback, first playback 48kHz, and then playback 8Khz, the 
-8Khz still playback in 48kHz mode?
-
-or other things?
-
-> Thus, keep track of the desired playback and capture clock dividers
-> separately, and allow changing rates without closing the stream.
->
-> Signed-off-by: Peter Rosin <peda@axentia.se>
-> ---
->   sound/soc/atmel/atmel_ssc_dai.c |   31 ++++++++++++++++++++++---------
->   sound/soc/atmel/atmel_ssc_dai.h |   10 ++++++----
->   2 files changed, 28 insertions(+), 13 deletions(-)
->
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-> index f403f39..fec14fb 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.c
-> +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> @@ -277,7 +277,8 @@ static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
->   		/* Reset the SSC */
->   		ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
->   		/* Clear the SSC dividers */
-> -		ssc_p->cmr_div = ssc_p->tcmr_period = ssc_p->rcmr_period = 0;
-> +		ssc_p->tcmr_div = ssc_p->rcmr_div = 0;
-> +		ssc_p->tcmr_period = ssc_p->rcmr_period = 0;
->   	}
->   	spin_unlock_irq(&ssc_p->lock);
->   }
-> @@ -304,17 +305,27 @@ static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
->   	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
->
->   	switch (div_id) {
-> -	case ATMEL_SSC_CMR_DIV:
-> +	case ATMEL_SSC_TCMR_DIV:
->   		/*
->   		 * The same master clock divider is used for both
->   		 * transmit and receive, so if a value has already
-> -		 * been set, it must match this value.
-> +		 * been set for the other direction, it must match
-> +		 * this value.
->   		 */
-> -		if (ssc_p->cmr_div == 0)
-> -			ssc_p->cmr_div = div;
-> -		else
-> -			if (div != ssc_p->cmr_div)
-> -				return -EBUSY;
-> +		if (ssc_p->rcmr_div == 0)
-> +			ssc_p->tcmr_div = div;
-> +		else if (div != ssc_p->rcmr_div)
-> +			return -EBUSY;
-> +		break;
-> +
-> +	case ATMEL_SSC_RCMR_DIV:
-> +		/*
-> +		 * See ATMEL_SSC_TCMR_DIV.
-> +		 */
-> +		if (ssc_p->tcmr_div == 0)
-> +			ssc_p->rcmr_div = div;
-> +		else if (div != ssc_p->tcmr_div)
-> +			return -EBUSY;
->   		break;
->
->   	case ATMEL_SSC_TCMR_PERIOD:
-> @@ -345,6 +356,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->   	struct atmel_pcm_dma_params *dma_params;
->   	int dir, channels, bits;
->   	u32 tfmr, rfmr, tcmr, rcmr;
-> +	u16 cmr;
-
-should be u32.
-
->   	int start_event;
->   	int ret;
->   	int fslen, fslen_ext;
-> @@ -626,7 +638,8 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
->   	}
->
->   	/* set SSC clock mode register */
-> -	ssc_writel(ssc_p->ssc->regs, CMR, ssc_p->cmr_div);
-> +	cmr = ssc_p->tcmr_div ? ssc_p->tcmr_div : ssc_p->rcmr_div;
-> +	ssc_writel(ssc_p->ssc->regs, CMR, cmr);
->
->   	/* set receive clock mode and format */
->   	ssc_writel(ssc_p->ssc->regs, RCMR, rcmr);
-> diff --git a/sound/soc/atmel/atmel_ssc_dai.h b/sound/soc/atmel/atmel_ssc_dai.h
-> index b1f08d5..a25df7a 100644
-> --- a/sound/soc/atmel/atmel_ssc_dai.h
-> +++ b/sound/soc/atmel/atmel_ssc_dai.h
-> @@ -39,9 +39,10 @@
->   #define ATMEL_SYSCLK_MCK	0 /* SSC uses AT91 MCK as system clock */
->
->   /* SSC divider ids */
-> -#define ATMEL_SSC_CMR_DIV	0 /* MCK divider for BCLK */
-> -#define ATMEL_SSC_TCMR_PERIOD	1 /* BCLK divider for transmit FS */
-> -#define ATMEL_SSC_RCMR_PERIOD	2 /* BCLK divider for receive FS */
-> +#define ATMEL_SSC_TCMR_DIV	0 /* MCK divider for transmit BCLK */
-> +#define ATMEL_SSC_RCMR_DIV	1 /* MCK divider for receive BCLK */
-> +#define ATMEL_SSC_TCMR_PERIOD	2 /* BCLK divider for transmit FS */
-> +#define ATMEL_SSC_RCMR_PERIOD	3 /* BCLK divider for receive FS */
->   /*
->    * SSC direction masks
->    */
-> @@ -110,7 +111,8 @@ struct atmel_ssc_info {
->   	unsigned short dir_mask;	/* 0=unused, 1=playback, 2=capture */
->   	unsigned short initialized;	/* true if SSC has been initialized */
->   	unsigned short daifmt;
-> -	unsigned short cmr_div;
-> +	unsigned short tcmr_div;
-> +	unsigned short rcmr_div;
->   	unsigned short tcmr_period;
->   	unsigned short rcmr_period;
->   	struct atmel_pcm_dma_params *dma_params[2];
->
-
-Best Regards,
-Bo Shen
+Thanks.
