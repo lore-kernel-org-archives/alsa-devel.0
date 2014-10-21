@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 31/43] ALSA: korg1212: Use snd_ctl_enum_info()
-Date: Tue, 21 Oct 2014 12:11:07 +0200
-Message-ID: <1413886279-18704-32-git-send-email-tiwai@suse.de>
+Subject: [PATCH 24/43] ALSA: echoaudio: Use snd_ctl_enum_info()
+Date: Tue, 21 Oct 2014 12:11:00 +0200
+Message-ID: <1413886279-18704-25-git-send-email-tiwai@suse.de>
 References: <1413886279-18704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BB3F266658
+ by alsa0.perex.cz (Postfix) with ESMTP id 18DE9266656
  for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 12:11:25 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 962D5ADAD
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 49349ADA4
  for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 10:11:24 +0000 (UTC)
 In-Reply-To: <1413886279-18704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,67 +30,79 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/korg1212/korg1212.c | 26 +++++++-------------------
- 1 file changed, 7 insertions(+), 19 deletions(-)
+ sound/pci/echoaudio/echoaudio.c | 33 ++++++---------------------------
+ 1 file changed, 6 insertions(+), 27 deletions(-)
 
-diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
-index 9fe549b2efdf..59d21c9401d2 100644
---- a/sound/pci/korg1212/korg1212.c
-+++ b/sound/pci/korg1212/korg1212.c
-@@ -444,9 +444,9 @@ static char *stateName[] = {
- 	"Invalid"
- };
- 
--static char *clockSourceTypeName[] = { "ADAT", "S/PDIF", "local" };
-+static const char * const clockSourceTypeName[] = { "ADAT", "S/PDIF", "local" };
- 
--static char *clockSourceName[] = {
-+static const char * const clockSourceName[] = {
- 	"ADAT at 44.1 kHz",
- 	"ADAT at 48 kHz",
- 	"S/PDIF at 44.1 kHz",
-@@ -455,7 +455,7 @@ static char *clockSourceName[] = {
- 	"local clock at 48 kHz"
- };
- 
--static char *channelName[] = {
-+static const char * const channelName[] = {
- 	"ADAT-1",
- 	"ADAT-2",
- 	"ADAT-3",
-@@ -1844,14 +1844,9 @@ static int snd_korg1212_control_volume_put(struct snd_kcontrol *kcontrol,
- static int snd_korg1212_control_route_info(struct snd_kcontrol *kcontrol,
- 					   struct snd_ctl_elem_info *uinfo)
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index 631aaa4046ad..d82321ff549b 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -1416,21 +1416,14 @@ static struct snd_kcontrol_new snd_echo_vmixer = {
+ static int snd_echo_digital_mode_info(struct snd_kcontrol *kcontrol,
+ 				      struct snd_ctl_elem_info *uinfo)
  {
--	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
--	uinfo->count = (kcontrol->private_value >= 8) ? 2 : 1;
--	uinfo->value.enumerated.items = kAudioChannels;
--	if (uinfo->value.enumerated.item > kAudioChannels-1) {
--		uinfo->value.enumerated.item = kAudioChannels-1;
--	}
--	strcpy(uinfo->value.enumerated.name, channelName[uinfo->value.enumerated.item]);
--	return 0;
-+	return snd_ctl_enum_info(uinfo,
-+				 (kcontrol->private_value >= 8) ? 2 : 1,
-+				 kAudioChannels, channelName);
- }
+-	static char *names[4] = {
++	static const char * const names[4] = {
+ 		"S/PDIF Coaxial", "S/PDIF Optical", "ADAT Optical",
+ 		"S/PDIF Cdrom"
+ 	};
+ 	struct echoaudio *chip;
  
- static int snd_korg1212_control_route_get(struct snd_kcontrol *kcontrol,
-@@ -1961,14 +1956,7 @@ static int snd_korg1212_control_put(struct snd_kcontrol *kcontrol,
- static int snd_korg1212_control_sync_info(struct snd_kcontrol *kcontrol,
- 					  struct snd_ctl_elem_info *uinfo)
- {
+ 	chip = snd_kcontrol_chip(kcontrol);
 -	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+-	uinfo->value.enumerated.items = chip->num_digital_modes;
 -	uinfo->count = 1;
--	uinfo->value.enumerated.items = 3;
--	if (uinfo->value.enumerated.item > 2) {
--		uinfo->value.enumerated.item = 2;
--	}
--	strcpy(uinfo->value.enumerated.name, clockSourceTypeName[uinfo->value.enumerated.item]);
+-	if (uinfo->value.enumerated.item >= chip->num_digital_modes)
+-		uinfo->value.enumerated.item = chip->num_digital_modes - 1;
+-	strcpy(uinfo->value.enumerated.name, names[
+-			chip->digital_mode_list[uinfo->value.enumerated.item]]);
 -	return 0;
-+	return snd_ctl_enum_info(uinfo, 1, 3, clockSourceTypeName);
++	return snd_ctl_enum_info(uinfo, 1, chip->num_digital_modes, names);
  }
  
- static int snd_korg1212_control_sync_get(struct snd_kcontrol *kcontrol,
+ static int snd_echo_digital_mode_get(struct snd_kcontrol *kcontrol,
+@@ -1509,16 +1502,9 @@ static struct snd_kcontrol_new snd_echo_digital_mode_switch = {
+ static int snd_echo_spdif_mode_info(struct snd_kcontrol *kcontrol,
+ 				    struct snd_ctl_elem_info *uinfo)
+ {
+-	static char *names[2] = {"Consumer", "Professional"};
++	static const char * const names[2] = {"Consumer", "Professional"};
+ 
+-	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+-	uinfo->value.enumerated.items = 2;
+-	uinfo->count = 1;
+-	if (uinfo->value.enumerated.item)
+-		uinfo->value.enumerated.item = 1;
+-	strcpy(uinfo->value.enumerated.name,
+-	       names[uinfo->value.enumerated.item]);
+-	return 0;
++	return snd_ctl_enum_info(uinfo, 1, 2, names);
+ }
+ 
+ static int snd_echo_spdif_mode_get(struct snd_kcontrol *kcontrol,
+@@ -1566,21 +1552,14 @@ static struct snd_kcontrol_new snd_echo_spdif_mode_switch = {
+ static int snd_echo_clock_source_info(struct snd_kcontrol *kcontrol,
+ 				      struct snd_ctl_elem_info *uinfo)
+ {
+-	static char *names[8] = {
++	static const char * const names[8] = {
+ 		"Internal", "Word", "Super", "S/PDIF", "ADAT", "ESync",
+ 		"ESync96", "MTC"
+ 	};
+ 	struct echoaudio *chip;
+ 
+ 	chip = snd_kcontrol_chip(kcontrol);
+-	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+-	uinfo->value.enumerated.items = chip->num_clock_sources;
+-	uinfo->count = 1;
+-	if (uinfo->value.enumerated.item >= chip->num_clock_sources)
+-		uinfo->value.enumerated.item = chip->num_clock_sources - 1;
+-	strcpy(uinfo->value.enumerated.name, names[
+-			chip->clock_source_list[uinfo->value.enumerated.item]]);
+-	return 0;
++	return snd_ctl_enum_info(uinfo, 1, chip->num_clock_sources, names);
+ }
+ 
+ static int snd_echo_clock_source_get(struct snd_kcontrol *kcontrol,
 -- 
 2.1.2
