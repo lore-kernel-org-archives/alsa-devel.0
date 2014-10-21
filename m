@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 33/43] ALSA: rme32: Use snd_ctl_enum_info()
-Date: Tue, 21 Oct 2014 12:11:09 +0200
-Message-ID: <1413886279-18704-34-git-send-email-tiwai@suse.de>
+Subject: [PATCH 14/43] ALSA: sb16: Use snd_ctl_enum_info()
+Date: Tue, 21 Oct 2014 12:10:50 +0200
+Message-ID: <1413886279-18704-15-git-send-email-tiwai@suse.de>
 References: <1413886279-18704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F75426665B
+ by alsa0.perex.cz (Postfix) with ESMTP id 16DC5266652
  for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 12:11:25 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A9DB3ADAF
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 100FFAD97
  for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 10:11:24 +0000 (UTC)
 In-Reply-To: <1413886279-18704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,74 +30,98 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme32.c | 34 ++++++++++------------------------
- 1 file changed, 10 insertions(+), 24 deletions(-)
+ sound/isa/sb/sb16_main.c | 10 ++--------
+ sound/isa/sb/sb_mixer.c  | 31 ++++++-------------------------
+ 2 files changed, 8 insertions(+), 33 deletions(-)
 
-diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
-index 4afd3cab775b..6c60dcd2e5a1 100644
---- a/sound/pci/rme32.c
-+++ b/sound/pci/rme32.c
-@@ -1608,30 +1608,24 @@ snd_rme32_info_inputtype_control(struct snd_kcontrol *kcontrol,
- 				 struct snd_ctl_elem_info *uinfo)
+diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
+index 0bbcd4714d28..72b10f4f3e70 100644
+--- a/sound/isa/sb/sb16_main.c
++++ b/sound/isa/sb/sb16_main.c
+@@ -702,17 +702,11 @@ static int snd_sb16_get_dma_mode(struct snd_sb *chip)
+ 
+ static int snd_sb16_dma_control_info(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
  {
- 	struct rme32 *rme32 = snd_kcontrol_chip(kcontrol);
--	static char *texts[4] = { "Optical", "Coaxial", "Internal", "XLR" };
-+	static const char * const texts[4] = {
-+		"Optical", "Coaxial", "Internal", "XLR"
-+	};
-+	int num_items;
+-	static char *texts[3] = {
++	static const char * const texts[3] = {
+ 		"Auto", "Playback", "Capture"
+ 	};
  
 -	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
 -	uinfo->count = 1;
- 	switch (rme32->pci->device) {
- 	case PCI_DEVICE_ID_RME_DIGI32:
- 	case PCI_DEVICE_ID_RME_DIGI32_8:
--		uinfo->value.enumerated.items = 3;
-+		num_items = 3;
- 		break;
- 	case PCI_DEVICE_ID_RME_DIGI32_PRO:
--		uinfo->value.enumerated.items = 4;
-+		num_items = 4;
- 		break;
- 	default:
- 		snd_BUG();
--		break;
--	}
--	if (uinfo->value.enumerated.item >
--	    uinfo->value.enumerated.items - 1) {
--		uinfo->value.enumerated.item =
--		    uinfo->value.enumerated.items - 1;
-+		return -EINVAL;
- 	}
--	strcpy(uinfo->value.enumerated.name,
--	       texts[uinfo->value.enumerated.item]);
+-	uinfo->value.enumerated.items = 3;
+-	if (uinfo->value.enumerated.item > 2)
+-		uinfo->value.enumerated.item = 2;
+-	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
 -	return 0;
-+	return snd_ctl_enum_info(uinfo, 1, num_items, texts);
++	return snd_ctl_enum_info(uinfo, 1, 3, texts);
  }
- static int
- snd_rme32_get_inputtype_control(struct snd_kcontrol *kcontrol,
-@@ -1695,20 +1689,12 @@ static int
- snd_rme32_info_clockmode_control(struct snd_kcontrol *kcontrol,
- 				 struct snd_ctl_elem_info *uinfo)
+ 
+ static int snd_sb16_dma_control_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
+diff --git a/sound/isa/sb/sb_mixer.c b/sound/isa/sb/sb_mixer.c
+index 1ff78ec9f0ac..e403334a19ad 100644
+--- a/sound/isa/sb/sb_mixer.c
++++ b/sound/isa/sb/sb_mixer.c
+@@ -182,17 +182,11 @@ static int snd_sbmixer_put_double(struct snd_kcontrol *kcontrol, struct snd_ctl_
+ 
+ static int snd_dt019x_input_sw_info(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
  {
--	static char *texts[4] = { "AutoSync", 
-+	static const char * const texts[4] = { "AutoSync",
- 				  "Internal 32.0kHz", 
- 				  "Internal 44.1kHz", 
- 				  "Internal 48.0kHz" };
+-	static const char *texts[5] = {
++	static const char * const texts[5] = {
+ 		"CD", "Mic", "Line", "Synth", "Master"
+ 	};
  
 -	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
 -	uinfo->count = 1;
--	uinfo->value.enumerated.items = 4;
--	if (uinfo->value.enumerated.item > 3) {
--		uinfo->value.enumerated.item = 3;
--	}
+-	uinfo->value.enumerated.items = 5;
+-	if (uinfo->value.enumerated.item > 4)
+-		uinfo->value.enumerated.item = 4;
+-	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
+-	return 0;
++	return snd_ctl_enum_info(uinfo, 1, 5, texts);
+ }
+ 
+ static int snd_dt019x_input_sw_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
+@@ -275,18 +269,11 @@ static int snd_dt019x_input_sw_put(struct snd_kcontrol *kcontrol, struct snd_ctl
+ static int snd_als4k_mono_capture_route_info(struct snd_kcontrol *kcontrol,
+ 					     struct snd_ctl_elem_info *uinfo)
+ {
+-	static const char *texts[3] = {
++	static const char * const texts[3] = {
+ 		"L chan only", "R chan only", "L ch/2 + R ch/2"
+ 	};
+ 
+-	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+-	uinfo->count = 1;
+-	uinfo->value.enumerated.items = 3;
+-	if (uinfo->value.enumerated.item > 2)
+-		uinfo->value.enumerated.item = 2;
 -	strcpy(uinfo->value.enumerated.name,
 -	       texts[uinfo->value.enumerated.item]);
 -	return 0;
-+	return snd_ctl_enum_info(uinfo, 1, 4, texts);
++	return snd_ctl_enum_info(uinfo, 1, 3, texts);
  }
- static int
- snd_rme32_get_clockmode_control(struct snd_kcontrol *kcontrol,
+ 
+ static int snd_als4k_mono_capture_route_get(struct snd_kcontrol *kcontrol,
+@@ -335,17 +322,11 @@ static int snd_als4k_mono_capture_route_put(struct snd_kcontrol *kcontrol,
+ 
+ static int snd_sb8mixer_info_mux(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
+ {
+-	static const char *texts[3] = {
++	static const char * const texts[3] = {
+ 		"Mic", "CD", "Line"
+ 	};
+ 
+-	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+-	uinfo->count = 1;
+-	uinfo->value.enumerated.items = 3;
+-	if (uinfo->value.enumerated.item > 2)
+-		uinfo->value.enumerated.item = 2;
+-	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
+-	return 0;
++	return snd_ctl_enum_info(uinfo, 1, 3, texts);
+ }
+ 
+ 
 -- 
 2.1.2
