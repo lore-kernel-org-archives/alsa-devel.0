@@ -1,181 +1,122 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: RE: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: Track playback and
- capture CMR dividers separately.
-Date: Tue, 21 Oct 2014 07:55:28 +0000
-Message-ID: <dc4461593ddb4d539f2db74b69bab98c@EMAIL.axentia.se>
-References: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se>
- <5445BCBF.5090002@atmel.com>
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Subject: [PATCH 2/2] ASoC: pxa: Convert poodle to use snd_soc_register_card()
+Date: Tue, 21 Oct 2014 12:54:24 +0400
+Message-ID: <1413881664-24870-2-git-send-email-dbaryshkov@gmail.com>
+References: <1413881664-24870-1-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5445BCBF.5090002@atmel.com>
-Content-Language: sv-SE
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1413881664-24870-1-git-send-email-dbaryshkov@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
 
-(and thank you for the pointer to the example with the ssc-dai in master mode)
+Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+---
+ sound/soc/pxa/spitz.c | 52 +++++++++++++++++++++++++++------------------------
+ 1 file changed, 28 insertions(+), 24 deletions(-)
 
-> Hi Peter,
-> 
-> On 10/20/2014 09:45 PM, Peter Rosin wrote:
-> >  From 1e5621d7b9887c648d1a66238dc82d715c1e2cad Mon Sep 17 00:00:00
-> > 2001
-> > From: Peter Rosin <peda@axentia.se>
-> > Date: Mon, 20 Oct 2014 14:38:04 +0200
-> > Subject: [PATCH] ASoC: atmel_ssc_dai: Track playback and capture CMR
-> dividers
-> >   separately.
-> >
-> > The CMR divider register is shared by playback and capture. The SSC
-> > driver therefore tries to enforce rules so that the needed register
-> > content do not conflict during simultaneous playback/capture. However,
-> > the implementation also prevents changing the register content in a
-> > half-duplex scenario, which is needed when changing sample rates.
-> 
-> I am not fully get what you mean here, do you mean:
->    - when playback, first playback 48kHz, and then playback 8Khz, the 8Khz still
-> playback in 48kHz mode?
-> 
-> or other things?
-
-I do not know exactly why the problem occurs, but it might be connected to
-the library (proprietary) we are using. It apparently uses the OSS interface
-and somehow it opens a stream and changes the playback sample-rate a
-couple of time before it settles on something. I don't know why this is
-done, and I have no control over it. The end result is that without this patch,
-the ssc-dai driver returns -EBUSY when the library changes the playback
-sample-rate (the driver returns -EBUSY because it thinks that the new
-sample rate does not match a previously given capture sample-rate, but
-that is of course bogus when no capture is going on at all).
-
-> > Thus, keep track of the desired playback and capture clock dividers
-> > separately, and allow changing rates without closing the stream.
-> >
-> > Signed-off-by: Peter Rosin <peda@axentia.se>
-> > ---
-> >   sound/soc/atmel/atmel_ssc_dai.c |   31 ++++++++++++++++++++++------
-> ---
-> >   sound/soc/atmel/atmel_ssc_dai.h |   10 ++++++----
-> >   2 files changed, 28 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/sound/soc/atmel/atmel_ssc_dai.c
-> > b/sound/soc/atmel/atmel_ssc_dai.c index f403f39..fec14fb 100644
-> > --- a/sound/soc/atmel/atmel_ssc_dai.c
-> > +++ b/sound/soc/atmel/atmel_ssc_dai.c
-> > @@ -277,7 +277,8 @@ static void atmel_ssc_shutdown(struct
-> snd_pcm_substream *substream,
-> >   		/* Reset the SSC */
-> >   		ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
-> >   		/* Clear the SSC dividers */
-> > -		ssc_p->cmr_div = ssc_p->tcmr_period = ssc_p->rcmr_period
-> = 0;
-> > +		ssc_p->tcmr_div = ssc_p->rcmr_div = 0;
-> > +		ssc_p->tcmr_period = ssc_p->rcmr_period = 0;
-> >   	}
-> >   	spin_unlock_irq(&ssc_p->lock);
-> >   }
-> > @@ -304,17 +305,27 @@ static int atmel_ssc_set_dai_clkdiv(struct
-> snd_soc_dai *cpu_dai,
-> >   	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
-> >
-> >   	switch (div_id) {
-> > -	case ATMEL_SSC_CMR_DIV:
-> > +	case ATMEL_SSC_TCMR_DIV:
-> >   		/*
-> >   		 * The same master clock divider is used for both
-> >   		 * transmit and receive, so if a value has already
-> > -		 * been set, it must match this value.
-> > +		 * been set for the other direction, it must match
-> > +		 * this value.
-> >   		 */
-> > -		if (ssc_p->cmr_div == 0)
-> > -			ssc_p->cmr_div = div;
-> > -		else
-> > -			if (div != ssc_p->cmr_div)
-> > -				return -EBUSY;
-> > +		if (ssc_p->rcmr_div == 0)
-> > +			ssc_p->tcmr_div = div;
-> > +		else if (div != ssc_p->rcmr_div)
-> > +			return -EBUSY;
-> > +		break;
-> > +
-> > +	case ATMEL_SSC_RCMR_DIV:
-> > +		/*
-> > +		 * See ATMEL_SSC_TCMR_DIV.
-> > +		 */
-> > +		if (ssc_p->tcmr_div == 0)
-> > +			ssc_p->rcmr_div = div;
-> > +		else if (div != ssc_p->tcmr_div)
-> > +			return -EBUSY;
-> >   		break;
-> >
-> >   	case ATMEL_SSC_TCMR_PERIOD:
-> > @@ -345,6 +356,7 @@ static int atmel_ssc_hw_params(struct
-> snd_pcm_substream *substream,
-> >   	struct atmel_pcm_dma_params *dma_params;
-> >   	int dir, channels, bits;
-> >   	u32 tfmr, rfmr, tcmr, rcmr;
-> > +	u16 cmr;
-> 
-> should be u32.
-
-Ok, I'll send an updated patch later.
-
-> >   	int start_event;
-> >   	int ret;
-> >   	int fslen, fslen_ext;
-> > @@ -626,7 +638,8 @@ static int atmel_ssc_hw_params(struct
-> snd_pcm_substream *substream,
-> >   	}
-> >
-> >   	/* set SSC clock mode register */
-> > -	ssc_writel(ssc_p->ssc->regs, CMR, ssc_p->cmr_div);
-> > +	cmr = ssc_p->tcmr_div ? ssc_p->tcmr_div : ssc_p->rcmr_div;
-> > +	ssc_writel(ssc_p->ssc->regs, CMR, cmr);
-> >
-> >   	/* set receive clock mode and format */
-> >   	ssc_writel(ssc_p->ssc->regs, RCMR, rcmr); diff --git
-> > a/sound/soc/atmel/atmel_ssc_dai.h b/sound/soc/atmel/atmel_ssc_dai.h
-> > index b1f08d5..a25df7a 100644
-> > --- a/sound/soc/atmel/atmel_ssc_dai.h
-> > +++ b/sound/soc/atmel/atmel_ssc_dai.h
-> > @@ -39,9 +39,10 @@
-> >   #define ATMEL_SYSCLK_MCK	0 /* SSC uses AT91 MCK as system
-> clock */
-> >
-> >   /* SSC divider ids */
-> > -#define ATMEL_SSC_CMR_DIV	0 /* MCK divider for BCLK */
-> > -#define ATMEL_SSC_TCMR_PERIOD	1 /* BCLK divider for transmit FS */
-> > -#define ATMEL_SSC_RCMR_PERIOD	2 /* BCLK divider for receive FS */
-> > +#define ATMEL_SSC_TCMR_DIV	0 /* MCK divider for transmit BCLK */
-> > +#define ATMEL_SSC_RCMR_DIV	1 /* MCK divider for receive BCLK */
-> > +#define ATMEL_SSC_TCMR_PERIOD	2 /* BCLK divider for transmit
-> FS */
-> > +#define ATMEL_SSC_RCMR_PERIOD	3 /* BCLK divider for receive
-> FS */
-> >   /*
-> >    * SSC direction masks
-> >    */
-> > @@ -110,7 +111,8 @@ struct atmel_ssc_info {
-> >   	unsigned short dir_mask;	/* 0=unused, 1=playback, 2=capture
-> */
-> >   	unsigned short initialized;	/* true if SSC has been initialized */
-> >   	unsigned short daifmt;
-> > -	unsigned short cmr_div;
-> > +	unsigned short tcmr_div;
-> > +	unsigned short rcmr_div;
-> >   	unsigned short tcmr_period;
-> >   	unsigned short rcmr_period;
-> >   	struct atmel_pcm_dma_params *dma_params[2];
-> >
-> 
-> Best Regards,
-> Bo Shen
-
-Cheers,
-Peter
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index 1373b01..d7d5fb2 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -305,19 +305,15 @@ static struct snd_soc_card snd_soc_spitz = {
+ 	.num_dapm_routes = ARRAY_SIZE(spitz_audio_map),
+ };
+ 
+-static struct platform_device *spitz_snd_device;
+-
+-static int __init spitz_init(void)
++static int spitz_probe(struct platform_device *pdev)
+ {
++	struct snd_soc_card *card = &snd_soc_spitz;
+ 	int ret;
+ 
+-	if (!(machine_is_spitz() || machine_is_borzoi() || machine_is_akita()))
+-		return -ENODEV;
+-
+-	if (machine_is_borzoi() || machine_is_spitz())
+-		spitz_mic_gpio = SPITZ_GPIO_MIC_BIAS;
+-	else
++	if (machine_is_akita())
+ 		spitz_mic_gpio = AKITA_GPIO_MIC_BIAS;
++	else
++		spitz_mic_gpio = SPITZ_GPIO_MIC_BIAS;
+ 
+ 	ret = gpio_request(spitz_mic_gpio, "MIC GPIO");
+ 	if (ret)
+@@ -327,37 +323,45 @@ static int __init spitz_init(void)
+ 	if (ret)
+ 		goto err2;
+ 
+-	spitz_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!spitz_snd_device) {
+-		ret = -ENOMEM;
++	card->dev = &pdev->dev;
++
++	ret = snd_soc_register_card(card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
++			ret);
+ 		goto err2;
+ 	}
+ 
+-	platform_set_drvdata(spitz_snd_device, &snd_soc_spitz);
+-
+-	ret = platform_device_add(spitz_snd_device);
+-	if (ret)
+-		goto err3;
+-
+ 	return 0;
+ 
+-err3:
+-	platform_device_put(spitz_snd_device);
+ err2:
+ 	gpio_free(spitz_mic_gpio);
+ err1:
+ 	return ret;
+ }
+ 
+-static void __exit spitz_exit(void)
++static int spitz_remove(struct platform_device *pdev)
+ {
+-	platform_device_unregister(spitz_snd_device);
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
+ 	gpio_free(spitz_mic_gpio);
++	return 0;
+ }
+ 
+-module_init(spitz_init);
+-module_exit(spitz_exit);
++static struct platform_driver spitz_driver = {
++	.driver		= {
++		.name	= "spitz-audio",
++		.owner	= THIS_MODULE,
++		.pm     = &snd_soc_pm_ops,
++	},
++	.probe		= spitz_probe,
++	.remove		= spitz_remove,
++};
++
++module_platform_driver(spitz_driver);
+ 
+ MODULE_AUTHOR("Richard Purdie");
+ MODULE_DESCRIPTION("ALSA SoC Spitz");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:spitz-audio");
+-- 
+2.1.1
