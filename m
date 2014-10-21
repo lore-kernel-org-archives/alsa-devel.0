@@ -1,44 +1,47 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: Remove redundant cast
-Date: Tue, 21 Oct 2014 22:24:38 +0100
-Message-ID: <20141021212438.GB2344@sirena.org.uk>
-References: <1413903675-3363-1-git-send-email-linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH] ASoC: rt5677: fix rt5677 spi driver build
+Date: Tue, 21 Oct 2014 22:28:46 +0100
+Message-ID: <20141021212846.GD2344@sirena.org.uk>
+References: <1413862213-18449-1-git-send-email-benzh@chromium.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZoaI/ZTpAVc4A5k6"
+	protocol="application/pgp-signature"; boundary="wLAMOaPNJ0fu1fTG"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1413903675-3363-1-git-send-email-linux@rasmusvillemoes.dk>
+In-Reply-To: <1413862213-18449-1-git-send-email-benzh@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Ben Zhang <benzh@chromium.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Anatol Pomozov <anatol@google.com>, flove@realtek.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---ZoaI/ZTpAVc4A5k6
+--wLAMOaPNJ0fu1fTG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 21, 2014 at 05:01:15PM +0200, Rasmus Villemoes wrote:
-> Both path->name and e->texts[i] have type const char*, so the cast is
-> slightly confusing and certainly unnecessary.
+On Mon, Oct 20, 2014 at 08:30:13PM -0700, Ben Zhang wrote:
 
-Applied, thanks.
+> +config SND_SOC_RT5677_SPI
+> +	tristate
+> +	default SND_SOC_RT5677
 
---ZoaI/ZTpAVc4A5k6
+Applied, but you also need to add this to SND_SOC_ALL_CODECS for build
+coverage.
+
+--wLAMOaPNJ0fu1fTG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJURs8VAAoJECTWi3JdVIfQ+jgH/13sYOK9yAppjGlyOLkAu7aI
-VwO6zIfmYVP+yg1j+1foRqHLwiKCTJ55TYla68j7ZopieOa61Y6XSrrerovJhKRa
-QvGZ9s9n/l9i4geXibGaa2bFo6c1cv1qAzc0dDhPkRWePFV8FYCgzmUxI9OWr53U
-lOru4mw3BXq7elnyM8hg2n+3BaVmEvpNHIqjZy5KKstrbJSB7QW5Ehtr/wIeHoKi
-H7IL7VUT/seSlIyBFgt6x8AID1ZhYBh+MRBqan2bkwSri7q+oH/XMd2KavYzrXqt
-b3OEcxyeg+9kwORPE9J+i4xtQfac18HgB/sU0RlMs5gHXSb0SorgAX5t+dX1mQs=
-=DWqT
+iQEcBAEBAgAGBQJURtAOAAoJECTWi3JdVIfQTtsH/0cFzxjJ5y8V9FhZgPDPwzpB
+7Z9YesuFC/EE98UPpXwI1CnMTtbrfyPWfoB9mVRKCOvKH1R1+ZO0bTooXW/JSNiX
+RXrTxJ+N14TCzX3ht7vDM3j1OHq4Haci98sp83j2Q5Hc/9PJuCgPXOiYxTgo2P6v
+/1RPjIZEAOqwWqa9XLbsXghskcYViBaT5dtK/gOhE6LfucShmA+StRUmvXJTrucJ
+5GJjdfl9k2kCtIbni25ukUFu0WYpK8OQ61eSaTJPGYRiInHUY0kvdzba3zGqSD8Z
+QtsanZYbQx17o3qoIMtW55wlFsOeVlgQLMNsgQUbpNQLntju/wxf6JZPO5GvZmw=
+=jwUC
 -----END PGP SIGNATURE-----
 
---ZoaI/ZTpAVc4A5k6--
+--wLAMOaPNJ0fu1fTG--
