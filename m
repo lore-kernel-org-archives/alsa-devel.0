@@ -1,34 +1,54 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 0/2] ASoC: spread usage of snd_ctl_elem_info()
-Date: Tue, 21 Oct 2014 12:14:54 +0200
-Message-ID: <1413886496-19158-1-git-send-email-tiwai@suse.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: rockchip-i2s: add rockchip-max98090
+ driver support
+Date: Tue, 21 Oct 2014 14:39:09 +0200
+Message-ID: <544653ED.8000304@metafoo.de>
+References: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 46FC9266668
- for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 12:15:03 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jianqun <jay.xu@rock-chips.com>, heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: huangtao@rock-chips.com, cf@rock-chips.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 10/21/2014 01:31 PM, Jianqun wrote:
+> This patch is to add support for rockchip board with max98090 codec.
+> It also needs sound node in dt file.
+>
+> Tested on rockchip board based on rk3288.
+>
+> Signed-off-by: Jianqun <jay.xu@rock-chips.com>
+> ---
+>   sound/soc/rockchip/Kconfig | 13 +++++++++++++
+>   1 file changed, 13 insertions(+)
+>
+> diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+> index 78fc159..482cbba 100644
+> --- a/sound/soc/rockchip/Kconfig
+> +++ b/sound/soc/rockchip/Kconfig
+> @@ -9,3 +9,16 @@ config SND_SOC_ROCKCHIP
+>
+>   config SND_SOC_ROCKCHIP_I2S
+>   	tristate
+> +	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
+> +	help
+> +	  Say Y or M if you want to add support for I2S driver for Rockchip
+> +	  I2S device.
+> +
+> +config SND_SOC_ROCKCHIP_MAX98090
+> +	tristate "ASoC support Rockchip board with max98090"
+> +	depends on I2C && GPIOLIB
+> +	select SND_SOC_ROCKCHIP_I2S
+> +	select SND_SOC_MAX98090
+> +	help
+> +	  Say Y or M here if you want to add support for Rockchio board using
+> +	  a max98090 codec.
+>
 
-just like my previous patch series, this convers the simple open-code
-for enum info callbacks with the existing snd_ctl_enum_info() helper.
+Just make the max98090 driver directly selectable. That's what we typically 
+do for DT based designs.
 
-They can be applied individually, as far as I know, but I think it'd
-fit better to the same branch for other similar patches.
-
-
-Takashi
+- Lars
