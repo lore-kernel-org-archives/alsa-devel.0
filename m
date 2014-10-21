@@ -1,198 +1,462 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: Track playback and
- capture CMR dividers separately.
-Date: Tue, 21 Oct 2014 17:00:56 +0800
-Message-ID: <544620C8.4040001@atmel.com>
-References: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se> <5445BCBF.5090002@atmel.com> <dc4461593ddb4d539f2db74b69bab98c@EMAIL.axentia.se>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v2 1/6] media: add media token device resource framework
+Date: Tue, 21 Oct 2014 12:46:03 +0200
+Message-ID: <5446396B.9010709@xs4all.nl>
+References: <cover.1413246370.git.shuahkh@osg.samsung.com> <c8bae1d475b1086302fcb83bc463ec01437c3f95.1413246372.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <dc4461593ddb4d539f2db74b69bab98c@EMAIL.axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <c8bae1d475b1086302fcb83bc463ec01437c3f95.1413246372.git.shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>, m.chehab@samsung.com, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, tiwai@suse.de, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it
+Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+Hi Shuah,
 
-On 10/21/2014 03:55 PM, Peter Rosin wrote:
-> Hi!
->
-> (and thank you for the pointer to the example with the ssc-dai in master mode)
->
->> Hi Peter,
->>
->> On 10/20/2014 09:45 PM, Peter Rosin wrote:
->>>   From 1e5621d7b9887c648d1a66238dc82d715c1e2cad Mon Sep 17 00:00:00
->>> 2001
->>> From: Peter Rosin <peda@axentia.se>
->>> Date: Mon, 20 Oct 2014 14:38:04 +0200
->>> Subject: [PATCH] ASoC: atmel_ssc_dai: Track playback and capture CMR
->> dividers
->>>    separately.
->>>
->>> The CMR divider register is shared by playback and capture. The SSC
->>> driver therefore tries to enforce rules so that the needed register
->>> content do not conflict during simultaneous playback/capture. However,
->>> the implementation also prevents changing the register content in a
->>> half-duplex scenario, which is needed when changing sample rates.
->>
->> I am not fully get what you mean here, do you mean:
->>     - when playback, first playback 48kHz, and then playback 8Khz, the 8Khz still
->> playback in 48kHz mode?
->>
->> or other things?
->
-> I do not know exactly why the problem occurs, but it might be connected to
-> the library (proprietary) we are using. It apparently uses the OSS interface
-> and somehow it opens a stream and changes the playback sample-rate a
-> couple of time before it settles on something. I don't know why this is
-> done, and I have no control over it. The end result is that without this patch,
-> the ssc-dai driver returns -EBUSY when the library changes the playback
-> sample-rate (the driver returns -EBUSY because it thinks that the new
-> sample rate does not match a previously given capture sample-rate, but
-> that is of course bogus when no capture is going on at all).
+As promised, here is my review for this patch series.
 
-If this issue is caused by your proprietary library, please fix in the 
-library.
-
-I don't know how this code can fix your issue and also there is no 
-improvement to the code and it absolutely increase work (choose which 
-clock to configure: tcmr or rcmr) for the SSC work in master. And also 
-this patch may confuse the end user, let them thinking the clock for 
-tcmr and rcmr can configure seperately.
-
-So, I think keep the code as is (without this patch applied), what's 
-your opinion?
-
->>> Thus, keep track of the desired playback and capture clock dividers
->>> separately, and allow changing rates without closing the stream.
->>>
->>> Signed-off-by: Peter Rosin <peda@axentia.se>
->>> ---
->>>    sound/soc/atmel/atmel_ssc_dai.c |   31 ++++++++++++++++++++++------
->> ---
->>>    sound/soc/atmel/atmel_ssc_dai.h |   10 ++++++----
->>>    2 files changed, 28 insertions(+), 13 deletions(-)
->>>
->>> diff --git a/sound/soc/atmel/atmel_ssc_dai.c
->>> b/sound/soc/atmel/atmel_ssc_dai.c index f403f39..fec14fb 100644
->>> --- a/sound/soc/atmel/atmel_ssc_dai.c
->>> +++ b/sound/soc/atmel/atmel_ssc_dai.c
->>> @@ -277,7 +277,8 @@ static void atmel_ssc_shutdown(struct
->> snd_pcm_substream *substream,
->>>    		/* Reset the SSC */
->>>    		ssc_writel(ssc_p->ssc->regs, CR, SSC_BIT(CR_SWRST));
->>>    		/* Clear the SSC dividers */
->>> -		ssc_p->cmr_div = ssc_p->tcmr_period = ssc_p->rcmr_period
->> = 0;
->>> +		ssc_p->tcmr_div = ssc_p->rcmr_div = 0;
->>> +		ssc_p->tcmr_period = ssc_p->rcmr_period = 0;
->>>    	}
->>>    	spin_unlock_irq(&ssc_p->lock);
->>>    }
->>> @@ -304,17 +305,27 @@ static int atmel_ssc_set_dai_clkdiv(struct
->> snd_soc_dai *cpu_dai,
->>>    	struct atmel_ssc_info *ssc_p = &ssc_info[cpu_dai->id];
->>>
->>>    	switch (div_id) {
->>> -	case ATMEL_SSC_CMR_DIV:
->>> +	case ATMEL_SSC_TCMR_DIV:
->>>    		/*
->>>    		 * The same master clock divider is used for both
->>>    		 * transmit and receive, so if a value has already
->>> -		 * been set, it must match this value.
->>> +		 * been set for the other direction, it must match
->>> +		 * this value.
->>>    		 */
->>> -		if (ssc_p->cmr_div == 0)
->>> -			ssc_p->cmr_div = div;
->>> -		else
->>> -			if (div != ssc_p->cmr_div)
->>> -				return -EBUSY;
->>> +		if (ssc_p->rcmr_div == 0)
->>> +			ssc_p->tcmr_div = div;
->>> +		else if (div != ssc_p->rcmr_div)
->>> +			return -EBUSY;
->>> +		break;
->>> +
->>> +	case ATMEL_SSC_RCMR_DIV:
->>> +		/*
->>> +		 * See ATMEL_SSC_TCMR_DIV.
->>> +		 */
->>> +		if (ssc_p->tcmr_div == 0)
->>> +			ssc_p->rcmr_div = div;
->>> +		else if (div != ssc_p->tcmr_div)
->>> +			return -EBUSY;
->>>    		break;
->>>
->>>    	case ATMEL_SSC_TCMR_PERIOD:
->>> @@ -345,6 +356,7 @@ static int atmel_ssc_hw_params(struct
->> snd_pcm_substream *substream,
->>>    	struct atmel_pcm_dma_params *dma_params;
->>>    	int dir, channels, bits;
->>>    	u32 tfmr, rfmr, tcmr, rcmr;
->>> +	u16 cmr;
->>
->> should be u32.
+On 10/14/2014 04:58 PM, Shuah Khan wrote:
+> Add media token device resource framework to allow sharing
+> resources such as tuner, dma, audio etc. across media drivers
+> and non-media sound drivers that control media hardware. The
+> Media token resource is created at the main struct device that
+> is common to all drivers that claim various pieces of the main
+> media device, which allows them to find the resource using the
+> main struct device. As an example, digital, analog, and
+> snd-usb-audio drivers can use the media token resource API
+> using the main struct device for the interface the media device
+> is attached to.
 >
-> Ok, I'll send an updated patch later.
+> A shared media tokens resource is created using devres framework
+> for drivers to find and lock/unlock. Creating a shared devres
+> helps avoid creating data structure dependencies between drivers.
+> This media token resource contains media token for tuner, and
+> audio. When tuner token is requested, audio token is issued.
+
+Did you mean: 'tuner token is issued' instead of audio token?
+
+I also have the same question as Takashi: why do we have an audio
+token in the first place? While you are streaming audio over alsa
+the underlying tuner must be marked as being in use. It's all about
+the tuner, since that's the resource that is being shared, not about
+audio as such.
+
+For the remainder of my review I will ignore the audio-related code
+and concentrate only on the tuner part.
+
+> Subsequent token (for tuner and audio) gets from the same task
+> and task in the same tgid succeed. This allows applications that
+> make multiple v4l2 ioctls to work with the first call acquiring
+> the token and applications that create separate threads to handle
+> video and audio functions.
 >
->>>    	int start_event;
->>>    	int ret;
->>>    	int fslen, fslen_ext;
->>> @@ -626,7 +638,8 @@ static int atmel_ssc_hw_params(struct
->> snd_pcm_substream *substream,
->>>    	}
->>>
->>>    	/* set SSC clock mode register */
->>> -	ssc_writel(ssc_p->ssc->regs, CMR, ssc_p->cmr_div);
->>> +	cmr = ssc_p->tcmr_div ? ssc_p->tcmr_div : ssc_p->rcmr_div;
->>> +	ssc_writel(ssc_p->ssc->regs, CMR, cmr);
->>>
->>>    	/* set receive clock mode and format */
->>>    	ssc_writel(ssc_p->ssc->regs, RCMR, rcmr); diff --git
->>> a/sound/soc/atmel/atmel_ssc_dai.h b/sound/soc/atmel/atmel_ssc_dai.h
->>> index b1f08d5..a25df7a 100644
->>> --- a/sound/soc/atmel/atmel_ssc_dai.h
->>> +++ b/sound/soc/atmel/atmel_ssc_dai.h
->>> @@ -39,9 +39,10 @@
->>>    #define ATMEL_SYSCLK_MCK	0 /* SSC uses AT91 MCK as system
->> clock */
->>>
->>>    /* SSC divider ids */
->>> -#define ATMEL_SSC_CMR_DIV	0 /* MCK divider for BCLK */
->>> -#define ATMEL_SSC_TCMR_PERIOD	1 /* BCLK divider for transmit FS */
->>> -#define ATMEL_SSC_RCMR_PERIOD	2 /* BCLK divider for receive FS */
->>> +#define ATMEL_SSC_TCMR_DIV	0 /* MCK divider for transmit BCLK */
->>> +#define ATMEL_SSC_RCMR_DIV	1 /* MCK divider for receive BCLK */
->>> +#define ATMEL_SSC_TCMR_PERIOD	2 /* BCLK divider for transmit
->> FS */
->>> +#define ATMEL_SSC_RCMR_PERIOD	3 /* BCLK divider for receive
->> FS */
->>>    /*
->>>     * SSC direction masks
->>>     */
->>> @@ -110,7 +111,8 @@ struct atmel_ssc_info {
->>>    	unsigned short dir_mask;	/* 0=unused, 1=playback, 2=capture
->> */
->>>    	unsigned short initialized;	/* true if SSC has been initialized */
->>>    	unsigned short daifmt;
->>> -	unsigned short cmr_div;
->>> +	unsigned short tcmr_div;
->>> +	unsigned short rcmr_div;
->>>    	unsigned short tcmr_period;
->>>    	unsigned short rcmr_period;
->>>    	struct atmel_pcm_dma_params *dma_params[2];
->>>
->>
->> Best Regards,
->> Bo Shen
+> Signed-off-by: Shuah Khan <shuahkh@osg.samsung.com>
+> ---
+>   MAINTAINERS                  |    2 +
+>   include/linux/media_tknres.h |   50 +++++++++
+>   lib/Makefile                 |    2 +
+>   lib/media_tknres.c           |  237 ++++++++++++++++++++++++++++++++++++++++++
+
+I am still not convinced myself that this should be a generic API.
+The only reason we need it today is for sharing tuners. Which is almost
+a purely media thing with USB audio as the single non-media driver that
+will be affected. Today I see no use case outside of tuners. I would
+probably want to keep this inside drivers/media.
+
+If this is going to be expanded it can always be moved to lib later.
+
+>   4 files changed, 291 insertions(+)
+>   create mode 100644 include/linux/media_tknres.h
+>   create mode 100644 lib/media_tknres.c
 >
-> Cheers,
-> Peter
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e80a275..9216179 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5864,6 +5864,8 @@ F:	include/uapi/linux/v4l2-*
+>   F:	include/uapi/linux/meye.h
+>   F:	include/uapi/linux/ivtv*
+>   F:	include/uapi/linux/uvcvideo.h
+> +F:	include/linux/media_tknres.h
+> +F:	lib/media_tknres.c
+>
+>   MEDIAVISION PRO MOVIE STUDIO DRIVER
+>   M:	Hans Verkuil <hverkuil@xs4all.nl>
+> diff --git a/include/linux/media_tknres.h b/include/linux/media_tknres.h
+> new file mode 100644
+> index 0000000..6d37327
+> --- /dev/null
+> +++ b/include/linux/media_tknres.h
+> @@ -0,0 +1,50 @@
+> +/*
+> + * media_tknres.h - managed media token resource
+> + *
+> + * Copyright (c) 2014 Shuah Khan <shuahkh@osg.samsung.com>
+> + * Copyright (c) 2014 Samsung Electronics Co., Ltd.
+> + *
+> + * This file is released under the GPLv2.
+> + */
+> +#ifndef __LINUX_MEDIA_TOKEN_H
+> +#define __LINUX_MEDIA_TOKEN_H
+> +
+> +struct device;
+> +
+> +#if defined(CONFIG_MEDIA_SUPPORT)
+> +extern int media_tknres_create(struct device *dev);
+> +extern int media_tknres_destroy(struct device *dev);
+> +
+> +extern int media_get_tuner_tkn(struct device *dev);
+> +extern int media_put_tuner_tkn(struct device *dev);
+> +
+> +extern int media_get_audio_tkn(struct device *dev);
+> +extern int media_put_audio_tkn(struct device *dev);
+> +#else
+> +static inline int media_tknres_create(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static inline int media_tknres_destroy(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static inline int media_get_tuner_tkn(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static inline int media_put_tuner_tkn(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static int media_get_audio_tkn(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +static int media_put_audio_tkn(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+> +#endif	/* __LINUX_MEDIA_TOKEN_H */
+> diff --git a/lib/Makefile b/lib/Makefile
+> index d6b4bc4..6f21695 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -139,6 +139,8 @@ obj-$(CONFIG_DQL) += dynamic_queue_limits.o
+>
+>   obj-$(CONFIG_GLOB) += glob.o
+>
+> +obj-$(CONFIG_MEDIA_SUPPORT) += media_tknres.o
+> +
+>   obj-$(CONFIG_MPILIB) += mpi/
+>   obj-$(CONFIG_SIGNATURE) += digsig.o
+>
+> diff --git a/lib/media_tknres.c b/lib/media_tknres.c
+> new file mode 100644
+> index 0000000..e0a36cb
+> --- /dev/null
+> +++ b/lib/media_tknres.c
+> @@ -0,0 +1,237 @@
+> +/*
+> + * media_tknres.c - managed media token resource
+> + *
+> + * Copyright (c) 2014 Shuah Khan <shuahkh@osg.samsung.com>
+> + * Copyright (c) 2014 Samsung Electronics Co., Ltd.
+> + *
+> + * This file is released under the GPLv2.
+> + */
+> +/*
+> + * Media devices often have hardware resources that are shared
+> + * across several functions. For instance, TV tuner cards often
+> + * have MUXes, converters, radios, tuners, etc. that are shared
+> + * across various functions. However, v4l2, alsa, DVB, usbfs, and
+> + * all other drivers have no knowledge of what resources are
+> + * shared. For example, users can't access DVB and alsa at the same
+> + * time, or the DVB and V4L analog API at the same time, since many
+> + * only have one converter that can be in either analog or digital
+> + * mode. Accessing and/or changing mode of a converter while it is
+> + * in use by another function results in video stream error.
+> + *
+> + * A shared media tokens resource is created using devres framework
+> + * for drivers to find and lock/unlock. Creating a shared devres
+> + * helps avoid creating data structure dependencies between drivers.
+> + * This media token resource contains media token for tuner, and
+> + * audio. When tuner token is requested, audio token is issued.
+> + * Subsequent token (for tuner and audio) gets from the same task
+> + * and task in the same tgid succeed. This allows applications that
+> + * make multiple v4l2 ioctls to work with the first call acquiring
+> + * the token and applications that create separate threads to handle
+> + * video and audio functions.
+> + *
+> + * API
+> + *	int media_tknres_create(struct device *dev);
+> + *	int media_tknres_destroy(struct device *dev);
+> + *
+> + *	int media_get_tuner_tkn(struct device *dev);
+> + *	int media_put_tuner_tkn(struct device *dev);
+> + *
+> + *	int media_get_audio_tkn(struct device *dev);
+> + *	int media_put_audio_tkn(struct device *dev);
+> +*/
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/device.h>
+> +#include <linux/sched.h>
+> +#include <linux/media_tknres.h>
+> +
+> +struct media_tkn {
+> +	spinlock_t lock;
+> +	unsigned int owner;	/* owner task pid */
+> +	unsigned int tgid;	/* owner task gid */
+> +	struct task_struct *task;
+> +};
+> +
+> +struct media_tknres {
+> +	struct media_tkn tuner;
+> +	struct media_tkn audio;
+> +};
+> +
+> +#define TUNER	"Tuner"
+> +#define AUDIO	"Audio"
+> +
+> +static void media_tknres_release(struct device *dev, void *res)
+> +{
+> +	dev_info(dev, "%s: Media Token Resource released\n", __func__);
+
+dev_dbg would be more appropriate.
+
+> +}
+> +
+> +int media_tknres_create(struct device *dev)
+> +{
+> +	struct media_tknres *tkn;
+> +
+> +	tkn = devres_alloc(media_tknres_release, sizeof(struct media_tknres),
+> +				GFP_KERNEL);
+> +	if (!tkn)
+> +		return -ENOMEM;
+> +
+> +	spin_lock_init(&tkn->tuner.lock);
+> +	tkn->tuner.owner = 0;
+> +	tkn->tuner.tgid = 0;
+> +	tkn->tuner.task = NULL;
+> +
+> +	spin_lock_init(&tkn->audio.lock);
+> +	tkn->audio.owner = 0;
+> +	tkn->audio.tgid = 0;
+> +	tkn->audio.task = NULL;
+> +
+> +	devres_add(dev, tkn);
+> +
+> +	dev_info(dev, "%s: Media Token Resource created\n", __func__);
+
+Ditto.
+
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(media_tknres_create);
+> +
+> +static int __media_get_tkn(struct media_tkn *tkn, char *tkn_str)
+> +{
+> +	int rc = 0;
+> +	unsigned tpid;
+> +	unsigned tgid;
+> +
+> +	spin_lock(&tkn->lock);
+> +
+> +	tpid = task_pid_nr(current);
+> +	tgid = task_tgid_nr(current);
+> +
+> +	/* allow task in the same group id to release */
+> +	if (tkn->task && ((tkn->task != current) && (tkn->tgid != tgid))) {
+> +			rc = -EBUSY;
+
+As I understand it this makes no sense: if tkn->task == current,
+then tkn->tgid == tgid.
+
+Why would you allow different task in the same group id to release anyway?
+
+> +	} else {
+> +		tkn->owner = tpid;
+> +		tkn->tgid = tgid;
+> +		tkn->task = current;
+> +	}
+> +	pr_debug("%s: Media %s Token get: owner (%d,%d) req (%d,%d) rc %d\n",
+> +		__func__, tkn_str, tkn->owner, tkn->tgid, tpid, tgid, rc);
+> +
+> +	spin_unlock(&tkn->lock);
+> +	return rc;
+> +}
+> +
+> +static int __media_put_tkn(struct media_tkn *tkn, char *tkn_str)
+> +{
+> +	int rc = 0;
+> +	unsigned tpid;
+> +	unsigned tgid;
+> +
+> +	spin_lock(&tkn->lock);
+> +
+> +	tpid = task_pid_nr(current);
+> +	tgid = task_tgid_nr(current);
+> +
+> +	/* allow task in the same group id to release */
+> +	if (tkn->task == NULL ||
+> +		((tkn->task != current) && (tkn->tgid != tgid))) {
+> +			rc = -EINVAL;
+> +	} else {
+> +		tkn->owner = 0;
+> +		tkn->tgid = 0;
+> +		tkn->task = NULL;
+> +	}
+> +	pr_debug("%s: Media %s Token put: owner (%d,%d) req (%d,%d) rc %d\n",
+> +		__func__, tkn_str, tkn->owner, tkn->tgid, tpid, tgid, rc);
+> +
+> +	spin_unlock(&tkn->lock);
+> +	return rc;
+> +}
+> +
+> +/*
+> + * When media tknres doesn't exist, get and put interfaces
+> + * return 0 to let the callers take legacy code paths. This
+> + * will also cover the drivers that don't create media tknres.
+> + * Returning -ENODEV will require additional checks by callers.
+> + * Instead handle the media tknres not present case as a driver
+> + * not supporting media tknres and return 0.
+> +*/
+> +int media_get_tuner_tkn(struct device *dev)
+> +{
+> +	struct media_tknres *tkn_ptr;
+> +	int ret = 0;
+> +
+> +	tkn_ptr = devres_find(dev, media_tknres_release, NULL, NULL);
+> +	if (tkn_ptr == NULL) {
+> +		dev_dbg(dev, "%s: Media Token Resource not found\n",
+> +				__func__);
+> +		return 0;
+> +	}
+> +
+> +	ret = __media_get_tkn(&tkn_ptr->tuner, TUNER);
+
+OK, this makes no sense. I am completely missing the tuner mode here.
+Speaking for V4L2 (I am less sure about DVB) any application can access
+the tuner even if it is owned by another application as long as you don't
+switch mode.
+
+The way it works now it would block any other application from accessing
+the tuner, or even other threads in the same process group. That's pretty
+much guaranteed to break existing code.
+
+So these tokens should be refcounted (certainly for the analog tuner mode,
+but probably for all modes). In the V4L2 wrapper function you just check
+if the token has been obtained already by setting a flag in struct v4l2_fh.
+If not, then you get the token.
+
+When the file handle is released and if it has the token, then you release
+that token.
+
+It is my understanding (correct me if I am wrong) that DVB and ALSA allow
+only one user of the interface at a time, so you can still use refcounting
+there, but the refcount will never go above 1 anyway.
+
+I just hacked tknres support into vivid to test this and it really disables
+this important feature.
+
+I also discovered that you are missing MODULE_AUTHOR, MODULE_DESCRIPTION
+and above all MODULE_LICENSE. Without the MODULE_LICENSE it won't link this
+module to the GPL devres_* functions. It took me some time to figure that
+out.
+
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* get audio token */
+> +	ret = __media_get_tkn(&tkn_ptr->audio, AUDIO);
+> +	if (ret)
+> +		__media_put_tkn(&tkn_ptr->tuner, TUNER);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(media_get_tuner_tkn);
+> +
+> +int media_put_tuner_tkn(struct device *dev)
+> +{
+> +	struct media_tknres *tkn_ptr;
+> +
+> +	tkn_ptr = devres_find(dev, media_tknres_release, NULL, NULL);
+> +	if (tkn_ptr == NULL) {
+> +		dev_dbg(dev, "%s: Media Token Resource not found\n",
+> +			__func__);
+> +		return 0;
+> +	}
+> +
+> +	/* put audio token and then tuner token */
+> +	__media_put_tkn(&tkn_ptr->audio, AUDIO);
+> +
+> +	return __media_put_tkn(&tkn_ptr->tuner, TUNER);
+> +}
+> +EXPORT_SYMBOL_GPL(media_put_tuner_tkn);
+> +
+> +int media_get_audio_tkn(struct device *dev)
+> +{
+> +	struct media_tknres *tkn_ptr;
+> +
+> +	tkn_ptr = devres_find(dev, media_tknres_release, NULL, NULL);
+> +	if (tkn_ptr == NULL) {
+> +		dev_dbg(dev, "%s: Media Token Resource not found\n",
+> +			__func__);
+> +		return 0;
+> +	}
+> +
+> +	return __media_get_tkn(&tkn_ptr->audio, AUDIO);
+> +}
+> +EXPORT_SYMBOL_GPL(media_get_audio_tkn);
+> +
+> +int media_put_audio_tkn(struct device *dev)
+> +{
+> +	struct media_tknres *tkn_ptr;
+> +
+> +	tkn_ptr = devres_find(dev, media_tknres_release, NULL, NULL);
+> +	if (tkn_ptr == NULL) {
+> +		dev_dbg(dev, "%s: Media Token Resource not found\n",
+> +			__func__);
+> +		return 0;
+> +	}
+> +
+> +	return __media_put_tkn(&tkn_ptr->audio, AUDIO);
+> +}
+> +EXPORT_SYMBOL_GPL(media_put_audio_tkn);
+> +
+> +int media_tknres_destroy(struct device *dev)
+> +{
+> +	int rc;
+> +
+> +	rc = devres_release(dev, media_tknres_release, NULL, NULL);
+> +	WARN_ON(rc);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(media_tknres_destroy);
 >
 
-Best Regards,
-Bo Shen
+I'm really sorry but I have to nack this patch series. It simply breaks
+existing V4L functionality that I know people are using.
+
+I'm not going to review the other patches, they seemed mostly OK to me
+although I would expect to see changes to videobuf2-core.c as well which
+I didn't.
+
+You might want to think about adding media token support to vivid to test
+this. The vivid driver supports both radio and TV tuners. Currently those
+are emulated as independent tuners, but you could try to use media token
+to emulate it as a shared resource. That way you can test this with a vb2
+driver as well.
+
+Anyway:
+
+Nacked-by: Hans Verkuil <hans.verkuil@cisco.com>
+
+Regards,
+
+	Hans
