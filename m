@@ -1,51 +1,104 @@
-From: Alban Bedel <alban.bedel-RM9K5IK7kjKj5M59NBduVrNAH6kLmebB@public.gmane.org>
-Subject: [PATCH] ASoC: tegra: Read and use the GPIO flags of the headphone detect
-Date: Tue, 21 Oct 2014 17:33:29 +0200
-Message-ID: <1413905609-23268-1-git-send-email-alban.bedel@avionic-design.de>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alban Bedel <alban.bedel-RM9K5IK7kjKj5M59NBduVrNAH6kLmebB@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [alsa-devel] [PATCH v2 5/6] sound/usb: pcm changes to use media
+ token api
+Date: Tue, 21 Oct 2014 17:42:51 +0200
+Message-ID: <54467EFB.7050800@xs4all.nl>
+References: <cover.1413246370.git.shuahkh@osg.samsung.com>	<cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com>	<543FB374.8020604@metafoo.de>	<543FC3CD.8050805@osg.samsung.com>	<s5h38aow1ub.wl-tiwai@suse.de>	<543FD1EC.5010206@osg.samsung.com>	<s5hy4sgumjo.wl-tiwai@suse.de>	<543FD892.6010209@osg.samsung.com> <s5htx34ul3w.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <s5htx34ul3w.wl-tiwai@suse.de>
+Sender: linux-media-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Shuah Khan <shuahkh@osg.samsung.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, m.chehab@samsung.com, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The headphone detect was hardcoded to low-active, use the flags from
-DT to allow high-active as well.
 
-Signed-off-by: Alban Bedel <alban.bedel-RM9K5IK7kjKj5M59NBduVrNAH6kLmebB@public.gmane.org>
----
- sound/soc/tegra/tegra_rt5640.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
-index a689883..4ebe387 100644
---- a/sound/soc/tegra/tegra_rt5640.c
-+++ b/sound/soc/tegra/tegra_rt5640.c
-@@ -44,6 +44,7 @@
- struct tegra_rt5640 {
- 	struct tegra_asoc_utils_data util_data;
- 	int gpio_hp_det;
-+	enum of_gpio_flags gpio_hp_det_flags;
- };
- 
- static int tegra_rt5640_asoc_hw_params(struct snd_pcm_substream *substream,
-@@ -119,6 +120,8 @@ static int tegra_rt5640_asoc_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	if (gpio_is_valid(machine->gpio_hp_det)) {
- 		tegra_rt5640_hp_jack_gpio.gpio = machine->gpio_hp_det;
-+		tegra_rt5640_hp_jack_gpio.invert =
-+			!!(machine->gpio_hp_det_flags & OF_GPIO_ACTIVE_LOW);
- 		snd_soc_jack_add_gpios(&tegra_rt5640_hp_jack,
- 						1,
- 						&tegra_rt5640_hp_jack_gpio);
-@@ -180,7 +183,8 @@ static int tegra_rt5640_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, card);
- 	snd_soc_card_set_drvdata(card, machine);
- 
--	machine->gpio_hp_det = of_get_named_gpio(np, "nvidia,hp-det-gpios", 0);
-+	machine->gpio_hp_det = of_get_named_gpio_flags(
-+		np, "nvidia,hp-det-gpios", 0, &machine->gpio_hp_det_flags);
- 	if (machine->gpio_hp_det == -EPROBE_DEFER)
- 		return -EPROBE_DEFER;
- 
--- 
-2.1.1
+On 10/16/2014 04:48 PM, Takashi Iwai wrote:
+> At Thu, 16 Oct 2014 08:39:14 -0600,
+> Shuah Khan wrote:
+>>
+>> On 10/16/2014 08:16 AM, Takashi Iwai wrote:
+>>> At Thu, 16 Oct 2014 08:10:52 -0600,
+>>> Shuah Khan wrote:
+>>>>
+>>>> On 10/16/2014 08:01 AM, Takashi Iwai wrote:
+>>>>> At Thu, 16 Oct 2014 07:10:37 -0600,
+>>>>> Shuah Khan wrote:
+>>>>>>
+>>>>>> On 10/16/2014 06:00 AM, Lars-Peter Clausen wrote:
+>>>>>>> On 10/14/2014 04:58 PM, Shuah Khan wrote:
+>>>>>>> [...]
+>>>>>>>>        switch (cmd) {
+>>>>>>>>        case SNDRV_PCM_TRIGGER_START:
+>>>>>>>> +        err = media_get_audio_tkn(&subs->dev->dev);
+>>>>>>>> +        if (err == -EBUSY) {
+>>>>>>>> +            dev_info(&subs->dev->dev, "%s device is busy\n",
+>>>>>>>> +                    __func__);
+>>>>>>>
+>>>>>>> In my opinion this should not dev_info() as this is out of band error
+>>>>>>> signaling and also as the potential to spam the log. The userspace
+>>>>>>> application is already properly notified by the return code.
+>>>>>>>
+>>>>>>
+>>>>>> Yes it has the potential to flood the dmesg especially with alsa,
+>>>>>> I will remove the dev_info().
+>>>>>
+>>>>> Yes.  And, I think doing this in the trigger isn't the best.
+>>>>> Why not in open & close?
+>>>>
+>>>> My first cut of this change was in open and close. I saw pulseaudio
+>>>> application go into this loop trying to open the device. To avoid
+>>>> such problems, I went with trigger stat and stop. That made all the
+>>>> pulseaudio continues attempts to open problems go away.
+>>>
+>>> But now starting the stream gives the error, and PA would loop it
+>>> again, no?
+>>>
+>>>
+>>>>> Also, is this token restriction needed only for PCM?  No mixer or
+>>>>> other controls?
+>>>>
+>>>> snd_pcm_ops are the only ones media drivers implement and use. So
+>>>> I don't think mixer is needed. If it is needed, it is not to hard
+>>>> to add for that case.
+>>>
+>>> Well, then I wonder what resource does actually conflict with
+>>> usb-audio and media drivers at all...?
+>>>
+>>
+>> audio for dvb/v4l apps gets disrupted when audio app starts. For
+>> example, dvb or v4l app tuned to a channel, and when an audio app
+>> starts. audio path needs protected to avoid conflicts between
+>> digital and analog applications as well.
+>
+> OK, then concentrating on only PCM is fine.
+>
+> But, I'm still not convinced about doing the token management in the
+> trigger.  The reason -EBUSY doesn't work is that it's the very same
+> error code when a PCM device is blocked by other processes.  And
+> -EAGAIN is interpreted by PCM core to -EBUSY for historical reasons.
+>
+> How applications (e.g. PA) should behave if the token get fails?
+> Shouldn't it retry or totally give up?
+
+Quite often media apps open the alsa device at the start and then switch
+between TV, radio or DVB mode. If the alsa device would claim the tuner
+just by being opened (as opposed to actually using the tuner, which happens
+when you start streaming), then that would make it impossible for the
+application to switch tuner mode. In general you want to avoid that open()
+will start configuring hardware since that can quite often be slow. Tuner
+configuration in particular can be slow since several common tuners need
+to load firmware over i2c. You only want to do that when it is really needed,
+and not when some application (udev!) opens the device just to examine what
+sort of device it is.
+
+So claiming the tuner in the trigger seems to be the right place. If
+returning EBUSY is a poor error code for alsa, then we can use something else
+for that. EACCES perhaps?
+
+Regards,
+
+	Hans
