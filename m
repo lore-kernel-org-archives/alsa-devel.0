@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 20/43] ALSA: asihpi: Use snd_ctl_enum_info()
-Date: Tue, 21 Oct 2014 12:10:56 +0200
-Message-ID: <1413886279-18704-21-git-send-email-tiwai@suse.de>
+Subject: [PATCH 12/43] ALSA: es18xx: Use snd_ctl_enum_info()
+Date: Tue, 21 Oct 2014 12:10:48 +0200
+Message-ID: <1413886279-18704-13-git-send-email-tiwai@suse.de>
 References: <1413886279-18704-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id EABFC266645
+ by alsa0.perex.cz (Postfix) with ESMTP id D63C126663F
  for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 12:11:24 +0200 (CEST)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 11A14AD9F
+ by mx2.suse.de (Postfix) with ESMTP id 0F84BAD94
  for <alsa-devel@alsa-project.org>; Tue, 21 Oct 2014 10:11:24 +0000 (UTC)
 In-Reply-To: <1413886279-18704-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,96 +26,66 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-... and reduce the open codes.
+... and reduce the open codes.  Also add missing const to text arrays.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/asihpi/asihpi.c | 46 +++++-----------------------------------------
- 1 file changed, 5 insertions(+), 41 deletions(-)
+ sound/isa/es18xx.c | 26 +++++---------------------
+ 1 file changed, 5 insertions(+), 21 deletions(-)
 
-diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index 5017176bfaa1..ac66b3228a34 100644
---- a/sound/pci/asihpi/asihpi.c
-+++ b/sound/pci/asihpi/asihpi.c
-@@ -1625,18 +1625,7 @@ static const char * const asihpi_aesebu_format_names[] = {
- static int snd_asihpi_aesebu_format_info(struct snd_kcontrol *kcontrol,
- 				  struct snd_ctl_elem_info *uinfo)
+diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
+index 6faaac60161a..63e7323e218f 100644
+--- a/sound/isa/es18xx.c
++++ b/sound/isa/es18xx.c
+@@ -964,44 +964,28 @@ static int snd_es18xx_capture_close(struct snd_pcm_substream *substream)
+ 
+ static int snd_es18xx_info_mux(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
  {
--	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
--	uinfo->count = 1;
--	uinfo->value.enumerated.items = 3;
--
--	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
--		uinfo->value.enumerated.item =
--			uinfo->value.enumerated.items - 1;
--
--	strcpy(uinfo->value.enumerated.name,
--		asihpi_aesebu_format_names[uinfo->value.enumerated.item]);
--
--	return 0;
-+	return snd_ctl_enum_info(uinfo, 1, 3, asihpi_aesebu_format_names);
- }
- 
- static int snd_asihpi_aesebu_format_get(struct snd_kcontrol *kcontrol,
-@@ -1863,22 +1852,7 @@ static int snd_asihpi_tuner_band_info(struct snd_kcontrol *kcontrol,
- 	if (num_bands < 0)
- 		return num_bands;
+-	static char *texts5Source[5] = {
++	static const char * const texts5Source[5] = {
+ 		"Mic", "CD", "Line", "Master", "Mix"
+ 	};
+-	static char *texts8Source[8] = {
++	static const char * const texts8Source[8] = {
+ 		"Mic", "Mic Master", "CD", "AOUT",
+ 		"Mic1", "Mix", "Line", "Master"
+ 	};
+ 	struct snd_es18xx *chip = snd_kcontrol_chip(kcontrol);
  
 -	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
 -	uinfo->count = 1;
--	uinfo->value.enumerated.items = num_bands;
--
--	if (num_bands > 0) {
--		if (uinfo->value.enumerated.item >=
--					uinfo->value.enumerated.items)
--			uinfo->value.enumerated.item =
--				uinfo->value.enumerated.items - 1;
--
+ 	switch (chip->version) {
+ 	case 0x1868:
+ 	case 0x1878:
+-		uinfo->value.enumerated.items = 4;
+-		if (uinfo->value.enumerated.item > 3)
+-			uinfo->value.enumerated.item = 3;
 -		strcpy(uinfo->value.enumerated.name,
--			asihpi_tuner_band_names[
--				tuner_bands[uinfo->value.enumerated.item]]);
--
--	}
--	return 0;
-+	return snd_ctl_enum_info(uinfo, 1, num_bands, asihpi_tuner_band_names);
- }
- 
- static int snd_asihpi_tuner_band_get(struct snd_kcontrol *kcontrol,
-@@ -2253,7 +2227,7 @@ static int snd_asihpi_cmode_info(struct snd_kcontrol *kcontrol,
- 	u32 h_control = kcontrol->private_value;
- 	u16 mode;
- 	int i;
--	u16 mode_map[6];
-+	const char *mapped_names[6];
- 	int valid_modes = 0;
- 
- 	/* HPI channel mode values can be from 1 to 6
-@@ -2262,24 +2236,14 @@ static int snd_asihpi_cmode_info(struct snd_kcontrol *kcontrol,
- 	for (i = 0; i < HPI_CHANNEL_MODE_LAST; i++)
- 		if (!hpi_channel_mode_query_mode(
- 			h_control, i, &mode)) {
--			mode_map[valid_modes] = mode;
-+			mapped_names[valid_modes] = mode_names[mode];
- 			valid_modes++;
- 			}
- 
- 	if (!valid_modes)
+-			texts5Source[uinfo->value.enumerated.item]);
+-		break;
++		return snd_ctl_enum_info(uinfo, 1, 4, texts5Source);
+ 	case 0x1887:
+ 	case 0x1888:
+-		uinfo->value.enumerated.items = 5;
+-		if (uinfo->value.enumerated.item > 4)
+-			uinfo->value.enumerated.item = 4;
+-		strcpy(uinfo->value.enumerated.name, texts5Source[uinfo->value.enumerated.item]);
+-		break;
++		return snd_ctl_enum_info(uinfo, 1, 5, texts5Source);
+ 	case 0x1869: /* DS somewhat contradictory for 1869: could be be 5 or 8 */
+ 	case 0x1879:
+-		uinfo->value.enumerated.items = 8;
+-		if (uinfo->value.enumerated.item > 7)
+-			uinfo->value.enumerated.item = 7;
+-		strcpy(uinfo->value.enumerated.name, texts8Source[uinfo->value.enumerated.item]);
+-		break;
++		return snd_ctl_enum_info(uinfo, 1, 8, texts8Source);
+ 	default:
  		return -EINVAL;
- 
--	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
--	uinfo->count = 1;
--	uinfo->value.enumerated.items = valid_modes;
--
--	if (uinfo->value.enumerated.item >= valid_modes)
--		uinfo->value.enumerated.item = valid_modes - 1;
--
--	strcpy(uinfo->value.enumerated.name,
--	       mode_names[mode_map[uinfo->value.enumerated.item]]);
--
+ 	}
 -	return 0;
-+	return snd_ctl_enum_info(uinfo, 1, valid_modes, mapped_names);
  }
  
- static int snd_asihpi_cmode_get(struct snd_kcontrol *kcontrol,
+ static int snd_es18xx_get_mux(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
 -- 
 2.1.2
