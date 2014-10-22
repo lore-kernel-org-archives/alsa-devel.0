@@ -1,20 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH next 2/2] ALSA: pcm: Disable mmap for known
-	broken archs
-Date: Wed, 22 Oct 2014 12:15:49 +0200
-Message-ID: <1413972949-11290-2-git-send-email-tiwai@suse.de>
-References: <1413972949-11290-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 01/12] ASoC: ak4535: Cleanup manual bias
+	level transitions
+Date: Wed, 22 Oct 2014 11:34:24 +0100
+Message-ID: <20141022103424.GM2344@sirena.org.uk>
+References: <1413795399-29952-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0366781370916719283=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 141DA260667
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 12:15:55 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E63C6AD2B
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 10:15:54 +0000 (UTC)
-In-Reply-To: <1413972949-11290-1-git-send-email-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 406A926060F
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 12:34:53 +0200 (CEST)
+In-Reply-To: <1413795399-29952-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,71 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Johannes Stezenbach <js@sig21.net>, Rajeev Kumar <rajeev-dlh.kumar@st.com>, Sven Brandau <brandau@gmx.de>, Liam Girdwood <lgirdwood@gmail.com>, Peter Hsiang <Peter.Hsiang@maxim-ic.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Some architectures like PARISC is known not to support mmap properly
-with the DMA buffer, where dma_mmap_coherent() returns -EINVAL
-unconditionally.  From the API POV, we should rather drop the mmap
-support there and expose it before the user-space tries to call mmap.
 
-The patch contains again ugly ifdef's, unfortunately, as there is no
-global flag indicating this.  Once when such macro is defined, we can
-get rid of this instead.
+--===============0366781370916719283==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="VLAOICcq5m4DWEYr"
+Content-Disposition: inline
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_native.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index aa6754da7929..dc9a1355a4ab 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -192,6 +192,21 @@ int snd_pcm_info_user(struct snd_pcm_substream *substream,
- 	return err;
- }
- 
-+static bool hw_support_mmap(struct snd_pcm_substream *substream)
-+{
-+	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
-+		return false;
-+	/* check architectures that return -EINVAL from dma_mmap_coherent() */
-+	/* FIXME: this should be some global flag */
-+#if defined(CONFIG_C6X) || defined(CONFIG_FRV) || defined(CONFIG_MN10300) ||\
-+	defined(CONFIG_PARISC) || defined(CONFIG_XTENSA)
-+	if (!substream->ops->mmap &&
-+	    substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
-+		return false;
-+#endif
-+	return true;
-+}
-+
- #undef RULES_DEBUG
- 
- #ifdef RULES_DEBUG
-@@ -369,8 +384,12 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 	}
- 
- 	hw = &substream->runtime->hw;
--	if (!params->info)
-+	if (!params->info) {
- 		params->info = hw->info & ~SNDRV_PCM_INFO_FIFO_IN_FRAMES;
-+		if (!hw_support_mmap(substream))
-+			params->info &= ~(SNDRV_PCM_INFO_MMAP |
-+					  SNDRV_PCM_INFO_MMAP_VALID);
-+	}
- 	if (!params->fifo_size) {
- 		m = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
- 		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-@@ -2069,7 +2088,7 @@ int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
- 		mask |= 1 << SNDRV_PCM_ACCESS_RW_INTERLEAVED;
-         if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
- 		mask |= 1 << SNDRV_PCM_ACCESS_RW_NONINTERLEAVED;
--	if (hw->info & SNDRV_PCM_INFO_MMAP) {
-+	if (hw_support_mmap(substream)) {
- 		if (hw->info & SNDRV_PCM_INFO_INTERLEAVED)
- 			mask |= 1 << SNDRV_PCM_ACCESS_MMAP_INTERLEAVED;
- 		if (hw->info & SNDRV_PCM_INFO_NONINTERLEAVED)
--- 
-2.1.2
+--VLAOICcq5m4DWEYr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Oct 20, 2014 at 10:56:28AM +0200, Lars-Peter Clausen wrote:
+> Set the CODEC driver's suspend_bias_off flag rather than manually going to
+> SND_SOC_BIAS_OFF in suspend and SND_SOC_BIAS_STANDBY in resume. This makes
+> the code a bit shorter and cleaner.
+
+Applied all, thanks.
+
+--VLAOICcq5m4DWEYr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUR4gvAAoJECTWi3JdVIfQsisH/jFdcLiJn68856ZI8SPrU8ht
+/RoAMBbSkRJYKSFO2kF+bRAul0/fJDRRUBVj20HyQV6POozeZlmgF8tZ9tR7kvp8
+yVeBldkHyF5P/JE0YE6bBDejdapF4RyvLLIzLJLBhsOdrzz6Q98ST8GkmFdm6XJn
+9Shn9auNHZES+DPqjzNcxtZmoxvkUpAPjcqIy4e2zss3EEKkA69QwDLOg/dxLvN3
+Uo7Ze8lrWqhiz7f8UFBhGLekXdM67GbOIrSzpfX98XCHKc0TrWkG8jNEMa8as2qn
+06sgV1mQ6WzK9XgHIzMLZriacK0esWJpgqAmP5XUsQ+absnViaBU4RAWo/mnWiI=
+=Ogmy
+-----END PGP SIGNATURE-----
+
+--VLAOICcq5m4DWEYr--
+
+--===============0366781370916719283==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0366781370916719283==--
