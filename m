@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: two trivial fixes
-Date: Wed, 22 Oct 2014 11:42:10 +0100
-Message-ID: <20141022104210.GN2344@sirena.org.uk>
-References: <1413702456-8624-1-git-send-email-daniel@zonque.org>
+Subject: Re: [PATCH] ASoC: rt5677: add GPIO IRQ support
+Date: Wed, 22 Oct 2014 11:44:07 +0100
+Message-ID: <20141022104407.GO2344@sirena.org.uk>
+References: <1413483866-38815-1-git-send-email-anatol.pomozov@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8526819960722180146=="
+Content-Type: multipart/mixed; boundary="===============5848807459163803916=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CC5E265041
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 12:42:22 +0200 (CEST)
-In-Reply-To: <1413702456-8624-1-git-send-email-daniel@zonque.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id D38F4264FBA
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 12:44:17 +0200 (CEST)
+In-Reply-To: <1413483866-38815-1-git-send-email-anatol.pomozov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,51 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org
+To: Anatol Pomozov <anatol.pomozov@gmail.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8526819960722180146==
+--===============5848807459163803916==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NJSRbAqOy4NeGDns"
+	protocol="application/pgp-signature"; boundary="1bhFRg6vL9BT9osV"
 Content-Disposition: inline
 
 
---NJSRbAqOy4NeGDns
+--1bhFRg6vL9BT9osV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 19, 2014 at 09:07:34AM +0200, Daniel Mack wrote:
-> Just two random fixes spotted by Coverity.
+On Thu, Oct 16, 2014 at 11:24:26AM -0700, Anatol Pomozov wrote:
+> This allows to enable Mic Jack detection feature
 
-Applied both.  I'd been holding off on these waiting for the developers
-of the relevant code to review but I now notice that you didn't CC them
-which is probably why they didn't respond!
+Applied, thanks. =20
 
---NJSRbAqOy4NeGDns
+> Author: Oder Chiou <oder_chiou@realtek.com>
+> Modified-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+> Signed-off-by: Anatol Pomozov <anatol.pomozov@gmail.com>
+
+The standard way to do this sort of stuff unless it's a total rewrite is
+to leave the patch author intact in the commit and put a note in the
+commit log about the modifications.
+
+--1bhFRg6vL9BT9osV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUR4oBAAoJECTWi3JdVIfQAxAH/3f2palbQSkMrxrAxi0eDO89
-GkfCwyV5KOxB1cBgRSjswzWg7g74NlLMlXl2JdhXs3XgNILWS8Spb9wcwgCKBJXV
-jugOOeJv/t2Wpz5AskjOwGD42DryzWhqUkSAi9dwj4mDnvn2YT67NrJI6LXFD/cH
-7zUlZcPCbdTdgtR9NOQTgj0N5FasHUiDHT97aXjOEDBK1u6Ks4UgKmZ6WUkhsuZC
-qnI6aMWqQ2SbFl/9rZy78kJCZ+CXFGLrEz8pCkwoS/YwGkncboCW2DqtyGuvXN8x
-nJxa/S3CREM0AHdAkCoW9BMvuCIo3NNi5rCkzKsVXor6n0Zea8BHhAkXCKcl17g=
-=I+uG
+iQEcBAEBAgAGBQJUR4p2AAoJECTWi3JdVIfQgmsH+QF/U7yfwzUfzL/7MNy0uz67
+Bm1u3jLQCaAS/K6scEb4O8s306oKhKC0x5MCE8CJqrokJbALEDj5Vo4xAH9gxYUm
+MezuK+WVWn/UBgeMZmxzZkQHgHCt+f6WZs44Y6AmNBfQ4hFe5auXirxTjjRNgMBg
+bPMCdlOV7l/1kMRomiBCF8jvNGRuySLTLZ4lgKua2bXa7K6hFnZyKJ9x2hv7Nw2L
+PqyILj2DLfVLM7LPFB9rSn/iJ+h+mXcAVlKqEAelinHbv6rpbmtCDmqinB3CxhS7
+h2+HFqZjDH95fJt3j9mzKhrrU1q8pvKaec277LgYxXECDBPZr/QQD92FNAFFDHo=
+=a6JG
 -----END PGP SIGNATURE-----
 
---NJSRbAqOy4NeGDns--
+--1bhFRg6vL9BT9osV--
 
---===============8526819960722180146==
+--===============5848807459163803916==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8526819960722180146==--
+--===============5848807459163803916==--
