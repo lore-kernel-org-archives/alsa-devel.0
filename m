@@ -1,57 +1,75 @@
-From: Devin Heitmueller <dheitmueller@kernellabs.com>
-Subject: Re: [alsa-devel] [PATCH v2 5/6] sound/usb: pcm changes to use media
- token api
-Date: Wed, 22 Oct 2014 15:45:42 -0400
-Message-ID: <CAGoCfiyQVY6Ss2qcp3aQijq3cP3BAM8X4yaCXRtx63dNNm-QKA@mail.gmail.com>
-References: <cover.1413246370.git.shuahkh@osg.samsung.com>
-	<cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com>
-	<543FB374.8020604@metafoo.de>
-	<543FC3CD.8050805@osg.samsung.com>
-	<s5h38aow1ub.wl-tiwai@suse.de>
-	<543FD1EC.5010206@osg.samsung.com>
-	<s5hy4sgumjo.wl-tiwai@suse.de>
-	<543FD892.6010209@osg.samsung.com>
-	<s5htx34ul3w.wl-tiwai@suse.de>
-	<54467EFB.7050800@xs4all.nl>
-	<s5hbnp5z9uy.wl-tiwai@suse.de>
-	<CAGoCfixD-zv1MMHUXLnjGV5KVB-DGdp2ZqZ0hUTR14UvLh-Gvw@mail.gmail.com>
-	<544804F1.7090606@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/8] ASoC: rsnd: tidyup debug information
+	when read/write
+Date: Wed, 22 Oct 2014 23:46:48 +0100
+Message-ID: <20141022224648.GF2344@sirena.org.uk>
+References: <8761fc7vpx.wl%kuninori.morimoto.gx@gmail.com>
+ <874muw7vp4.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <544804F1.7090606@linux.intel.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Linux Media Mailing List <linux-media@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "ramakrmu@cisco.com" <ramakrmu@cisco.com>, Shuah Khan <shuahkh@osg.samsung.com>, Hans Verkuil <hverkuil@xs4all.nl>, Sander Eikelenboom <linux@eikelenboom.it>, Prabhakar Lad <prabhakar.csengg@gmail.com>, Antti Palosaari <crope@iki.fi>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Tim Gardner <tim.gardner@canonical.com>, "olebowle@gmx.com" <olebowle@gmx.com>, Linux Kernel <linux-kernel@vger.kernel.org>, Mauro Carvalho Chehab <m.chehab@samsung.com>
+Content-Type: multipart/mixed; boundary="===============7113538943690192355=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C63B3265308
+ for <alsa-devel@alsa-project.org>; Thu, 23 Oct 2014 00:47:01 +0200 (CEST)
+In-Reply-To: <874muw7vp4.wl%kuninori.morimoto.gx@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-> this seems like a feature, not a bug. PulseAudio starts streaming before
-> clients push any data and likewise keeps sources active even after for some
-> time after clients stop recording. Closing VLC in your example doesn't
-> immediately close the ALSA device. look for module-suspend-on-idle in your
-> default.pa config file.
 
-The ALSA userland emulation in PulseAudio is supposed to faithfully emulate
-the behavior of the ALSA kernel ABI... except when it doesn't, then it's not
-a bug but rather a feature.  :-)
+--===============7113538943690192355==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Iv4H2WyLgK50POYH"
+Content-Disposition: inline
 
-> I also agree that the open/close of the alsa device is the only way to
-> control exclusion.
 
-I was also a proponent that we should have fairly coarse locking done
-at open/close for the various device nodes (ALSA/V4L/DVB).  The challenge here
-is that we have a large installed based of existing applications that
-rely on kernel
-behavior that isn't formally specified in any specification.  Hence
-we're forced to try
-to come up with a solution that minimizes the risk of ABI breakage.
+--Iv4H2WyLgK50POYH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If we were doing this from scratch then we could lay down some hard/fast rules
-about things apps aren't supposed to do and how apps are supposed to respond
-to those exception cases.  Unfortunately we don't have that luxury here.
+On Tue, Oct 21, 2014 at 06:13:46PM -0700, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> b8c637864a6904a9ba8e0df556d5bdf9f26b2c54
+> (ASoC: rsnd: use regmap_mmio instead of original regmap bus)
+> added regmap_mmio support on Renesas R-Car sound driver.
 
-Devin
+Applied, thanks.
 
--- 
-Devin J. Heitmueller - Kernel Labs
-http://www.kernellabs.com
+--Iv4H2WyLgK50POYH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUSDPTAAoJECTWi3JdVIfQXVAH/jW+g8ft6/ibbiA3HGzZSVwU
+Wt9hfsxB6ud6jMsCDOVvIVDrLBBFwkRKR792NA141zQsc1eY18QDZ7wfhPP0RMpr
+voSZAqDWMxpZ5p8sku+ldSHKvLthWWRl+yFDwGuXgzddKVDWwrTlH6i6f9cUZ3Ek
+B0514tjaFhMATRMMk7j5GTRlmXH4i4gZTCpSJz44coHnHxvHpmVzxZJpSPxHLn20
+Id6FmGw4FJUQ52go/tyYlrD7U+RUYS8iLJ2UYm+d+QZLwED+t6R5oS1Ffe/U9iDh
+74/ezWIOkkdqvxRuZxBJk8DOAs/VT4C6LlfMnSmDlgPcOjrA5CVb/veCjidGLXY=
+=QyY8
+-----END PGP SIGNATURE-----
+
+--Iv4H2WyLgK50POYH--
+
+--===============7113538943690192355==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7113538943690192355==--
