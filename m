@@ -1,95 +1,60 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/12] ASoC: dapm: Cleanups and speed-ups
-Date: Wed, 22 Oct 2014 12:36:34 +0100
-Message-ID: <20141022113634.GX2344@sirena.org.uk>
-References: <1413826604-3212-1-git-send-email-lars@metafoo.de>
+From: Peter Rosin <peda@axentia.se>
+Subject: RE: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: Track playback and
+ capture CMR dividers separately.
+Date: Wed, 22 Oct 2014 11:42:18 +0000
+Message-ID: <a983ea457a56451a96e377d64f861a9d@EMAIL.axentia.se>
+References: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se>
+ <5445BCBF.5090002@atmel.com>
+ <dc4461593ddb4d539f2db74b69bab98c@EMAIL.axentia.se>
+ <544620C8.4040001@atmel.com>
+ <8559eca320324092be82f7d942606102@EMAIL.axentia.se>
+ <544707F3.1020505@atmel.com>
+ <c61abc1ef0f341c2be04e3d7b07d97de@EMAIL.axentia.se>
+ <54476640.5050603@atmel.com>
+ <05f8e371e0ac40949bfc01b8d86d3c6e@EMAIL.axentia.se>
+ <54477775.7070401@atmel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5177040713472261206=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BC6E26517E
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 13:36:49 +0200 (CEST)
-In-Reply-To: <1413826604-3212-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <54477775.7070401@atmel.com>
+Content-Language: sv-SE
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bo Shen <voice.shen@atmel.com>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Bo Chen wrote:
+> with this piece of code, I reproduce your issue.
+> 
+> Now, I know the reason of this issue, work in oss mode, it will set the default
+> clock to 8KHz, and then if change to other sample rate, for example 48KHz,
+> the div is different, then it reports -EBUSY.
 
---===============5177040713472261206==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="0btr6/5+bhBdui6J"
-Content-Disposition: inline
+Indeed.
 
+> So, I think we won't change the ATMEL_SSC_CMR_DIV to
+> ATMEL_SSC_TCMR_DIV and ATMEL_SSC_RCMR_DIV, as it will affect other
+> users. We just deal with this situation in ATMEL_SSC_CMR_DIV block, check
+> the direction, if the same direction change the div, then accept the change,
+> otherwise, return -EBUSY.
 
---0btr6/5+bhBdui6J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ok.
 
-On Mon, Oct 20, 2014 at 07:36:32PM +0200, Lars-Peter Clausen wrote:
+But I'm not sure it is possible to dig out the current direction in the
+.set_clkdiv callback? Perhaps the correct fix is to set the bits
+.symmetric_rates, .symmetric_channels and .symmetric_samplebits
+in the atmel_ssc_dai struct when the ssc dai is master? Then I
+expect that other mechanisms will kick in that will render the current
+CMR_DIV check pointless?
 
-> Changing a single control on a 5 input mixer while the system is idle:
+Is a dai driver allowed to change these symmetry bits after registration?
+Can they be set in the .set_sysclk callback? Perhaps in the
+ATMEL_SSC_CMR_DIV block itself? That callback should only be
+called when the dai is master, so that would be perfect...
 
->           Power  Path  Neighbour
-> Before:   2      25    32
-> After~1:  2      12    30
-> After:    2       1     2
+Yes, the limitation would be a little bit more strict than today, but is it
+really common to require different modes on playback and capture?
 
-> Cumulative numbers for switching the audio profile which changes 7 contro=
-ls
-> while the system is idle:
-
->           Power  Path  Neighbour
-> Before:   16     141   188
-> After~1:  16      80   170
-> After:    16       7    23
-
-This series is all basically OK, a couple of small comments one of which
-was very near the start of the series or I'd have applied more. =20
-
-Just as a general comment the numbers you're showing here are all for
-very small use cases and while they do show an order of magnitude
-improvement if they do scale out (it looks like this is mostly linear or
-constant factor gains but some of those are scale with the total number of
-widgets or paths which can be interesting) since that makes things much
-more exciting.  It's also good (though not at all essential) to show the
-benchmarks on individual commits since this both keeps them around and
-helps people trying to solve performance problems in production find
-relevant upstream optimisations to backport.
-
---0btr6/5+bhBdui6J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUR5bBAAoJECTWi3JdVIfQd9IH/2RJ60y3tUalau/HR2sjdOXK
-RXvVtPoBBJin7ziQa0P9AUBDNobZWotxx9QZZLrV3LcE7rYDSAY1spsK3Lhznc3n
-iWN1oz5WiUm6mg1dlQ3MBHFqWHTVEjkSqQNihrAPja/yU0B6A6NdNwGoMtrls1/+
-L1AzjRZUIW/jJZ+HnqXObGn4ClPkwrosK7b/L5COYxGPpyKMJid9W2xMuaWGB5vt
-kEb7q/3XHg0uLXNf6RiDZ9hr8n3FvsNb1D4nUGFca/u8PbeFG9R1qR5zuwtWUOOq
-WHIFIdVqnKqQ7CvpeNwdWAZ/gmTSm38Gq7GizLlFWxBGZ8aidTSFB8mWyzSuFBY=
-=ot7o
------END PGP SIGNATURE-----
-
---0btr6/5+bhBdui6J--
-
---===============5177040713472261206==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5177040713472261206==--
+Cheers,
+Peter
