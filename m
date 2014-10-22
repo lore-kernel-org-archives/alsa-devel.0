@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 03/12] ASoC: dapm: Only mark paths dirty
- when the connection status changed
-Date: Wed, 22 Oct 2014 16:29:35 +0100
-Message-ID: <20141022152935.GY2344@sirena.org.uk>
-References: <1413826604-3212-1-git-send-email-lars@metafoo.de>
- <1413826604-3212-4-git-send-email-lars@metafoo.de>
- <20141022110012.GQ2344@sirena.org.uk> <54479EB5.2060102@metafoo.de>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: [PATCH v3 03/59] dmaengine: Make the destination
+	abbreviation coherent
+Date: Wed, 22 Oct 2014 17:43:17 +0200
+Message-ID: <1413992653-21963-4-git-send-email-maxime.ripard@free-electrons.com>
+References: <1413992653-21963-1-git-send-email-maxime.ripard@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6610836497999267778=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AD922651EE
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 17:29:51 +0200 (CEST)
-In-Reply-To: <54479EB5.2060102@metafoo.de>
+Received: from mail.free-electrons.com (down.free-electrons.com
+ [37.187.137.238])
+ by alsa0.perex.cz (Postfix) with ESMTP id 171722651EE
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 17:45:05 +0200 (CEST)
+In-Reply-To: <1413992653-21963-1-git-send-email-maxime.ripard@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,66 +22,167 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: dmaengine@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>
+Cc: Barry Song <baohua@kernel.org>, lars@metafoo.de, Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Takashi Iwai <tiwai@suse.de>, linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Dan Williams <dan.j.williams@intel.com>, linux-arm-kernel@lists.infradead.org, =?UTF-8?q?Antoine=20T=C3=A9nart?= <antoine@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
+The dmaengine header abbreviates destination as at least two different strings.
+Make a coherent use of a single one.
 
---===============6610836497999267778==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="AXo2lOxbfudqq8ta"
-Content-Disposition: inline
+Signed-off-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Acked-by: Stephen Warren <swarren@wwwdotorg.org>
+---
+ drivers/dma/bcm2835-dma.c             | 2 +-
+ drivers/dma/edma.c                    | 2 +-
+ drivers/dma/fsl-edma.c                | 2 +-
+ drivers/dma/nbpfaxi.c                 | 2 +-
+ drivers/dma/omap-dma.c                | 2 +-
+ drivers/dma/pl330.c                   | 2 +-
+ drivers/dma/sirf-dma.c                | 2 +-
+ include/linux/dmaengine.h             | 8 ++++----
+ sound/soc/soc-generic-dmaengine-pcm.c | 2 +-
+ 9 files changed, 12 insertions(+), 12 deletions(-)
 
-
---AXo2lOxbfudqq8ta
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Oct 22, 2014 at 02:10:29PM +0200, Lars-Peter Clausen wrote:
-> On 10/22/2014 01:00 PM, Mark Brown wrote:
-
-> >Why is this returning a value which is then ignored?
-
-> I was initially using it to not schedule the dapm_power_widgets(), but th=
-ere
-> is potential for problems when the DAPM graph and the hardware state are
-> out-of-sync, in which case we still want to apply the register update. Th=
-ere
-> are some corner cases where this can happen and which need to be fixed
-> first.
-
-> I can drop the return type for now.
-
-Probably best, I was looking for a user and didn't find one.  Seems like
-a bit of a microoptimisation either way.
-
-If it was just returning an error code and we were ignoring that I'd not
-have worried! =20
-
---AXo2lOxbfudqq8ta
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUR81aAAoJECTWi3JdVIfQB48H/36oot/6fCg5AauI/OlVCw29
-uHaHrkqBhiuyOZ11GSHN2hNQbNENR9D+QUzY27M97cp5uUN8Wx1OaXVl1F2tDPkX
-vF/5lCGwq6jJ3ezXKLw8Z33sFvayz3yFAIlW/lNgBrfnOyffy/iuYlSfNi4f9gb8
-4sEnyEK/M1jhWBWUSOUNh7s17NKzaq6cXhFaXpagy2JtViBMKCNTPUPcozSWW7yo
-PIwzmLOZA+LKt+5Nb5AqZCsdYz9ruLbxzX6RX9p4j7kBFoOo01/5EdshIqv+Dpwd
-DH0oCK7Ds1lqJU0Aw41W2vClPQ+mIQMh7lallk8erb6uq7T0OyP0RMb7w+BIJTw=
-=3JFj
------END PGP SIGNATURE-----
-
---AXo2lOxbfudqq8ta--
-
---===============6610836497999267778==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6610836497999267778==--
+diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
+index 68007974961a..8a6a9c27fe83 100644
+--- a/drivers/dma/bcm2835-dma.c
++++ b/drivers/dma/bcm2835-dma.c
+@@ -571,7 +571,7 @@ static int bcm2835_dma_device_slave_caps(struct dma_chan *dchan,
+ 	struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
+-	caps->dstn_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
++	caps->dst_addr_widths = BIT(DMA_SLAVE_BUSWIDTH_4_BYTES);
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = false;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/edma.c b/drivers/dma/edma.c
+index 123f578d6dd3..790054eef76c 100644
+--- a/drivers/dma/edma.c
++++ b/drivers/dma/edma.c
+@@ -998,7 +998,7 @@ static int edma_dma_device_slave_caps(struct dma_chan *dchan,
+ 				      struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = EDMA_DMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = EDMA_DMA_BUSWIDTHS;
++	caps->dst_addr_widths = EDMA_DMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = true;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/fsl-edma.c b/drivers/dma/fsl-edma.c
+index 3c5711d5fe97..13df85a16438 100644
+--- a/drivers/dma/fsl-edma.c
++++ b/drivers/dma/fsl-edma.c
+@@ -781,7 +781,7 @@ static int fsl_dma_device_slave_caps(struct dma_chan *dchan,
+ 		struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = FSL_EDMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = FSL_EDMA_BUSWIDTHS;
++	caps->dst_addr_widths = FSL_EDMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = true;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/nbpfaxi.c b/drivers/dma/nbpfaxi.c
+index 5aeada56a442..b4a61ccbb443 100644
+--- a/drivers/dma/nbpfaxi.c
++++ b/drivers/dma/nbpfaxi.c
+@@ -1076,7 +1076,7 @@ static int nbpf_slave_caps(struct dma_chan *dchan,
+ 			   struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = NBPF_DMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = NBPF_DMA_BUSWIDTHS;
++	caps->dst_addr_widths = NBPF_DMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = false;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/omap-dma.c b/drivers/dma/omap-dma.c
+index bbea8243f9e8..8035b8c33cfd 100644
+--- a/drivers/dma/omap-dma.c
++++ b/drivers/dma/omap-dma.c
+@@ -1100,7 +1100,7 @@ static int omap_dma_device_slave_caps(struct dma_chan *dchan,
+ 				      struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = OMAP_DMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = OMAP_DMA_BUSWIDTHS;
++	caps->dst_addr_widths = OMAP_DMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = true;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index 4839bfa74a10..b563bfa6cc4d 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -2576,7 +2576,7 @@ static int pl330_dma_device_slave_caps(struct dma_chan *dchan,
+ 	struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = PL330_DMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = PL330_DMA_BUSWIDTHS;
++	caps->dst_addr_widths = PL330_DMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = false;
+ 	caps->cmd_terminate = true;
+diff --git a/drivers/dma/sirf-dma.c b/drivers/dma/sirf-dma.c
+index aac03ab10c54..149d7fddfa75 100644
+--- a/drivers/dma/sirf-dma.c
++++ b/drivers/dma/sirf-dma.c
+@@ -652,7 +652,7 @@ static int sirfsoc_dma_device_slave_caps(struct dma_chan *dchan,
+ 	struct dma_slave_caps *caps)
+ {
+ 	caps->src_addr_widths = SIRFSOC_DMA_BUSWIDTHS;
+-	caps->dstn_addr_widths = SIRFSOC_DMA_BUSWIDTHS;
++	caps->dst_addr_widths = SIRFSOC_DMA_BUSWIDTHS;
+ 	caps->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+ 	caps->cmd_pause = true;
+ 	caps->cmd_terminate = true;
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index 653a1fd07ae8..4d912575fec0 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -387,7 +387,7 @@ enum dma_residue_granularity {
+ /* struct dma_slave_caps - expose capabilities of a slave channel only
+  *
+  * @src_addr_widths: bit mask of src addr widths the channel supports
+- * @dstn_addr_widths: bit mask of dstn addr widths the channel supports
++ * @dst_addr_widths: bit mask of dstn addr widths the channel supports
+  * @directions: bit mask of slave direction the channel supported
+  * 	since the enum dma_transfer_direction is not defined as bits for each
+  * 	type of direction, the dma controller should fill (1 << <TYPE>) and same
+@@ -398,7 +398,7 @@ enum dma_residue_granularity {
+  */
+ struct dma_slave_caps {
+ 	u32 src_addr_widths;
+-	u32 dstn_addr_widths;
++	u32 dst_addr_widths;
+ 	u32 directions;
+ 	bool cmd_pause;
+ 	bool cmd_terminate;
+@@ -638,10 +638,10 @@ struct dma_device {
+ 	void (*device_free_chan_resources)(struct dma_chan *chan);
+ 
+ 	struct dma_async_tx_descriptor *(*device_prep_dma_memcpy)(
+-		struct dma_chan *chan, dma_addr_t dest, dma_addr_t src,
++		struct dma_chan *chan, dma_addr_t dst, dma_addr_t src,
+ 		size_t len, unsigned long flags);
+ 	struct dma_async_tx_descriptor *(*device_prep_dma_xor)(
+-		struct dma_chan *chan, dma_addr_t dest, dma_addr_t *src,
++		struct dma_chan *chan, dma_addr_t dst, dma_addr_t *src,
+ 		unsigned int src_cnt, size_t len, unsigned long flags);
+ 	struct dma_async_tx_descriptor *(*device_prep_dma_xor_val)(
+ 		struct dma_chan *chan, dma_addr_t *src,	unsigned int src_cnt,
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index b329b84bc5af..851f7afcd5dc 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -151,7 +151,7 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
+ 			hw.info |= SNDRV_PCM_INFO_BATCH;
+ 
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-			addr_widths = dma_caps.dstn_addr_widths;
++			addr_widths = dma_caps.dst_addr_widths;
+ 		else
+ 			addr_widths = dma_caps.src_addr_widths;
+ 	}
+-- 
+2.1.1
