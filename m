@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix block is enabled multiple
-	times issue
-Date: Wed, 22 Oct 2014 10:26:01 +0100
-Message-ID: <20141022092601.GI2344@sirena.org.uk>
-References: <1413947278-3458-1-git-send-email-yang.jie@intel.com>
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Subject: Re: [PATCH V2 1/2] ARM: pxa: spitz: register
+	spitz-audio device
+Date: Wed, 22 Oct 2014 13:42:27 +0400
+Message-ID: <CALT56yOM--1-M4-we8WLVEC2tiSU+_48b1X=tWB2vQ7fepKCgg@mail.gmail.com>
+References: <1413926133-3566-1-git-send-email-dbaryshkov@gmail.com>
+ <1935279.fumFSz5CfW@wuerfel>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0647928209584363106=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4200C26060F
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 11:26:13 +0200 (CEST)
-In-Reply-To: <1413947278-3458-1-git-send-email-yang.jie@intel.com>
+Received: from mail-ie0-f177.google.com (mail-ie0-f177.google.com
+ [209.85.223.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D8D926060F
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 11:42:29 +0200 (CEST)
+Received: by mail-ie0-f177.google.com with SMTP id tp5so122166ieb.22
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 02:42:28 -0700 (PDT)
+In-Reply-To: <1935279.fumFSz5CfW@wuerfel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +25,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jie Yang <yang.jie@intel.com>
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+2014-10-22 12:46 GMT+04:00 Arnd Bergmann <arnd@arndb.de>:
+> On Wednesday 22 October 2014 01:15:32 Dmitry Eremin-Solenikov wrote:
+>> Register spitz-audio device to be used by ASoC driver.
+>>
+>> [V2: Removed ifdefs around spitz_audio_init].
+>>
+>> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+>> ---
+>>
+>
+> A more general note about your patch description above: when you
+> write about the changes between versions, put that below the ---
+> line under your Signed-off-by. Aside from that, your changelog
+> entry would actually benefit from more verbosity: explain what the
+> purpose of this is, not just what it does.
 
---===============0647928209584363106==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="vs0rQTeTompTJjtd"
-Content-Disposition: inline
+Thanks. I understood your point regarding the changelog.
+The commit message seemed pretty much obvious - due to
+the second patch. I can redo it - I think those two patches should
+go through different trees, so the connection will be lost.
 
+>
+>>  /**************************************************************************
+>>  ****>
+>> + * Audio devices
+>> +
+>> ***************************************************************************
+>> ***/ +static struct platform_device spitz_audio_device = {
+>> +       .name   = "spitz-audio",
+>> +       .id     = -1,
+>> +};
+>> +
+>> +static inline void spitz_audio_init(void)
+>> +{
+>> +       platform_device_register(&spitz_audio_device);
+>> +}+
+>
+> I realize that the file has more of these, but it would be better
+> for a number of reasons to use 'platform_device_register_simple'
+> instead of platform_device_register. statically defining platform
+> devices (or any other device) is not recommended.
 
---vs0rQTeTompTJjtd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ack. I did not want to use approach different from the rest of
+spitz.c, but it looks it is time to change. Will send V3 later today,
+after (hopefully)  receiving feedback from ASoC team.
 
-On Wed, Oct 22, 2014 at 11:07:58AM +0800, Jie Yang wrote:
-> During FW parsing and loading, block_list_prepare() may
-> be called for each raw data block copying and this may
-> made the hsw_block_enable() called mutiple times, which
-> increase block->users many times. The result of this is
-> hsw_block_disable() can't power gated the related block
-> when trying to free the blocks during suspend, and the
-> power gating status also confused.
-
-This doesn't apply against either fix/intel or topic/intel, please
-check and resend.
-
---vs0rQTeTompTJjtd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUR3gpAAoJECTWi3JdVIfQcNkH/Ra8Zu1c59DK446RIdD/EzQv
-BGmFylCA4KW0PCrAfJRlkEiqTmdGjZ3l4mmYiK/tWef55OP+AQ0gK9N2mO9w9v+z
-7MRFA9wi2DHNnz5+Fa2af+TyUROJ/1HaQJn8DSFFtCzHpnHqXIR0LXZpehj+bn2K
-U6lkUdDbq6gHFmz2C/MGCMZDCe/t9okFFBbNB6AQz0w87HA8xjKJJ6dfQtPdjNvl
-9FlY6nBPg5jR3jMg1E2zafFgnBWY/CpiPkPDLH6+3XT5OFdTPAvBxexLC2OSta6M
-0uU9OQNR7q4ZWUe6RrR+dgSskOcQOIpev+x/6WvVG0oPsTsbfBHfnJFFivD42V0=
-=wvu8
------END PGP SIGNATURE-----
-
---vs0rQTeTompTJjtd--
-
---===============0647928209584363106==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0647928209584363106==--
+-- 
+With best wishes
+Dmitry
