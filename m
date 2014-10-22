@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/7] ASoC: Intel: Make ADSP memory block
- allocation more generic
-Date: Wed, 22 Oct 2014 00:02:24 +0100
-Message-ID: <20141021230224.GF2344@sirena.org.uk>
-References: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Jianqun <jay.xu@rock-chips.com>
+Subject: [PATCH] ASoC: rockchip-i2s: add rockchip-max98090
+	driver support
+Date: Wed, 22 Oct 2014 08:40:56 +0800
+Message-ID: <1413938456-30468-1-git-send-email-jay.xu@rock-chips.com>
+References: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6328201911536125909=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F95D2614F1
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 01:02:43 +0200 (CEST)
-In-Reply-To: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from regular1.263xmail.com (regular1.263xmail.com [211.150.99.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87A41261540
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 02:43:07 +0200 (CEST)
+In-Reply-To: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: huangtao@rock-chips.com, cf@rock-chips.com, Jianqun <jay.xu@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
+This patch is to add support for rockchip board with max98090 codec.
+It also needs sound node in dt file.
 
---===============6328201911536125909==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="juZjCTNxrMaZdGZC"
-Content-Disposition: inline
+Tested on rockchip board based on rk3288.
 
+Signed-off-by: Jianqun <jay.xu@rock-chips.com>
+---
+change since v1:
+-Just make the max98090 driver directly selectable, suggested by Lars
 
---juZjCTNxrMaZdGZC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ sound/soc/rockchip/Kconfig | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-On Mon, Oct 20, 2014 at 03:06:46PM +0100, Liam Girdwood wrote:
-> Current block allocation is tied to block type and requestor type. Make the
-> allocation more generic by removing the struct module parameter and adding
-> a generic block allocator structure. Also pass in the list that the blocks
-> have to be added too in order to remove dependence on block requestor type.
-
-I'm having trouble apply this - patch 1 manages to apply with some fuzz
-but patch 5 is failing.  Probably needs refreshing against Vinod's
-recent changes?  I applied everything up to patch 4 (ASoC: Intel: Add
-runtime module support).
-
---juZjCTNxrMaZdGZC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJURuX/AAoJECTWi3JdVIfQOoEH/1OVqXU6Ucsmx/QIi9VWu64W
-vwNJdG+NCCrgR6C5OyvCBF8l0YkV+U62u1/NVdWxspnWhye0LxVLusv5h5kWqq03
-MTlu5cg2Yjn8POztUFZkVcnLmIxJpCgvaT2bcpbjBm3l7bc3kaAzRBK5FRO7CyIt
-qvie+UkOFEoVCHYtraw71c7yRLRZvDzVaNy6fasN1i3/6W+at0MAv06hrHM1T5C0
-5JHvE0lB2WMy7AckFO/lSGX79QbldBktm0Ry5yEZZ2Iphae4dWrkcYo9xyeGq1XX
-ozzMbqG4h1hgiAe0LSjwWOchgfw6lqzFQkVCtULekuWDEHuwpYksOfLSUxIUfZo=
-=B9GP
------END PGP SIGNATURE-----
-
---juZjCTNxrMaZdGZC--
-
---===============6328201911536125909==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6328201911536125909==--
+diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+index 78fc159..230b0e9 100644
+--- a/sound/soc/rockchip/Kconfig
++++ b/sound/soc/rockchip/Kconfig
+@@ -9,3 +9,15 @@ config SND_SOC_ROCKCHIP
+ 
+ config SND_SOC_ROCKCHIP_I2S
+ 	tristate
++	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
++	help
++	  Say Y or M if you want to add support for I2S driver for Rockchip
++	  I2S device.
++
++config SND_SOC_MAX98090
++	tristate "ASoC support max98090 device driver"
++	depends on I2C && GPIOLIB
++	select SND_SOC_ROCKCHIP_I2S
++	help
++	  Say Y or M here if you want to add support for Rockchio board using
++	  a max98090 codec.
+-- 
+1.9.1
