@@ -1,36 +1,19 @@
-From: Jonathan Bennett <jbscience87@gmail.com>
-Subject: Re: Help with wm8731 support for the Utilite (imx6q)
-Date: Wed, 22 Oct 2014 12:43:11 -0500
-Message-ID: <CAB-pspcK5+YnVHmMKXVnUPJBSUp6kV7GO_Cw9RKwNPJqXHOsWw@mail.gmail.com>
-References: <CAB-pspc5KZ0sTB-7uxjBq+PEFxFdAPO5NAXof_+uwQBJ_JCejg@mail.gmail.com>
- <CAOMZO5C-EG+beiK1M10vX0Xhg4avYLExxG7MZOQq8gM6gRnANw@mail.gmail.com>
- <CAB-pspcNOuW=JN9_avEvyPFUvTfs99PB=ah43YdqMC65mZ8psQ@mail.gmail.com>
- <CAB-pspei1a3TbuFGBT-kupEWU5UY10kQoTtiV895WTi-j+-dzQ@mail.gmail.com>
- <CAOMZO5AVr0xJjf9JjYNuXG-jJC3ft84+fO-5ToSieP9NFP=-+g@mail.gmail.com>
- <CAOMZO5CU+Y8cGJsn4O1ccFZUSjLM1iH3QN2fAv4UyaLMk5yAEg@mail.gmail.com>
- <CAB-pspdvzFX-KjYSC3z3xoDMPvq4g3iFhBG76Y=DGy=YBf5dow@mail.gmail.com>
- <54464C32.8020100@compulab.co.il>
- <CAB-pspcaMh9DL8bND1kSmphZfMYNOvPS_CYZ8UYZ2EZuVjjksg@mail.gmail.com>
- <CAOMZO5A=RSodq=JmjrjHTJSg9QaEx42uu7vAbON=Jk5-Gmiv9Q@mail.gmail.com>
- <CAB-pspcmxQAzR=jX1_fp06UUgNbC_LXFDN4g6RnOn6vTTvJjTw@mail.gmail.com>
- <CAB-pspcZ8bhLMPDS2NbDOEugfzO+TZfOnA_h05pvkU5ZPv6qVQ@mail.gmail.com>
- <544764F4.8070904@compulab.co.il>
- <CAB-pspeg-sP4Ebk+SF8WAxOJwobEk_rgeYnPr=thK2j7O638QA@mail.gmail.com>
- <CAOMZO5A_K9MV+Y5cBWcoLDOCnBH9VX7tkOmBTQh43UdqAtLzGA@mail.gmail.com>
- <CAB-pspcoyzQNWhGf_1ex86f2E9spotPGVJzDR0i2=98eMXfxiw@mail.gmail.com>
- <CAOMZO5B95cBvHOyOMzSqYQ+LedPj4OsWc=opjEzuRA7Tgkv97w@mail.gmail.com>
- <CAOMZO5DDZZiu0w6mD0T-SDXdYWOdjimwruAp2LivskeiuTii9w@mail.gmail.com>
+From: Chris J Arges <chris.j.arges@canonical.com>
+Subject: Re: [PATCH v2] Scarlett mixer interface for 6i6, 18i6,
+	18i8 and 18i20
+Date: Wed, 22 Oct 2014 13:44:12 -0500
+Message-ID: <5447FAFC.9040204@canonical.com>
+References: <1413920787-4877-1-git-send-email-chris.j.arges@canonical.com>	<1413920787-4877-2-git-send-email-chris.j.arges@canonical.com>
+ <s5h1tq0egzi.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ig0-f177.google.com (mail-ig0-f177.google.com
- [209.85.213.177])
- by alsa0.perex.cz (Postfix) with ESMTP id AF801265218
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 19:43:13 +0200 (CEST)
-Received: by mail-ig0-f177.google.com with SMTP id a13so1360417igq.16
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 10:43:12 -0700 (PDT)
-In-Reply-To: <CAOMZO5DDZZiu0w6mD0T-SDXdYWOdjimwruAp2LivskeiuTii9w@mail.gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1FB326528B
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 20:44:16 +0200 (CEST)
+In-Reply-To: <s5h1tq0egzi.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -40,46 +23,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, Valentin Raevsky <valentin@compulab.co.il>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, robin@gareus.org, clemens@ladisch.de, th55@gmx.de, david.henningsson@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 22, 2014 at 11:02 AM, Fabio Estevam <festevam@gmail.com> wrote:
 
-> On Wed, Oct 22, 2014 at 12:29 PM, Fabio Estevam <festevam@gmail.com>
-> wrote:
->
-> > What about changing this part to?
->
-> Forgot that you use ssi as master and codec as slave, so something
-> like this maybe:
->
->        sound {
->                 compatible = "simple-audio-card";
->                 simple-audio-card,model = "wm8731-audio";
->                 simple-audio-card,format = "i2s";
->                 simple-audio-card,bitclock-master = <&dailink0_master>;
->                 simple-audio-card,frame-master = <&dailink0_master>;
->                 simple-audio-card,audio-routing =
->                         "Line Out", "LOUT",
->                         "Line Out", "ROUT",
->                         "LLINEIN","Line In",
->                         "RLINEIN","Line In";
->
->                 dailink0_master: simple-audio-card,cpu {
->                         sound-dai = <&ssi2>;
->                         clocks = <&clks IMX6QDL_CLK_CKO>;
->
-Tried several different clocks here, didn't seem to make a difference. Open
-to thoughts here, but I'm beginning to be inclined to stick with the glue
-driver that works. I'd eventually like to get this stuff mainlined, but
-want to make sure to do it correctly.
 
->                 };
->
->                 simple-audio-card,codec {
->                         sound-dai = <&codec>;
->
->                 };
->         };
->
+On 10/22/2014 01:49 AM, Takashi Iwai wrote:
+> At Tue, 21 Oct 2014 14:46:27 -0500,
+> Chris J Arges wrote:
+>>
+>> This code contains the Scarlett mixer interface code that was originally
+>> written by Tobias Hoffman and Robin Gareus. Because the device doesn't
+>> properly implement UAC2 this code adds a mixer quirk for the device.
+>>
+>> Changes from the original code include removing the metering code along with
+>> dead code and comments. Compiler warnings were fixed. The code to initialize
+>> the sampling rate was causing a crash this was fixed as discussed on the
+>> mailing list. Error, and info messages were convered to dev_err and dev_info
+>> interfaces. Finally the code was placed in its own subdirectory.
+>>
+>> Author: Tobias Hoffman <th55@gmx.de>
+>> Author: Robin Gareus <robin@gareus.org>
+>> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+>> Signed-off-by: Chris J Arges <chris.j.arges@canonical.com>
+>> ---
+>>  sound/usb/Makefile                 |    1 +
+>>  sound/usb/mixer.c                  |   27 +-
+>>  sound/usb/quirks-table.h           |   51 --
+>>  sound/usb/scarlett/scarlettmixer.c | 1264 ++++++++++++++++++++++++++++++++++++
+>>  sound/usb/scarlett/scarlettmixer.h |    6 +
+>>  5 files changed, 1293 insertions(+), 56 deletions(-)
+>>  create mode 100644 sound/usb/scarlett/scarlettmixer.c
+>>  create mode 100644 sound/usb/scarlett/scarlettmixer.h
+>>
+>> diff --git a/sound/usb/Makefile b/sound/usb/Makefile
+>> index 2b92f0d..4267e47 100644
+>> --- a/sound/usb/Makefile
+>> +++ b/sound/usb/Makefile
+>> @@ -12,6 +12,7 @@ snd-usb-audio-objs := 	card.o \
+>>  			pcm.o \
+>>  			proc.o \
+>>  			quirks.o \
+>> +			scarlett/scarlettmixer.o \
+> 
+> Any reason to create a subdirectory although it's no individual
+> driver?  Put rather in the plain directory.
+> 
+I thought it would be neater, but I'll put the file back in the main
+sound/usb directory. If the code is small enough I could add it to
+mixer_quirks.c.
+
+> Overall, there seem too many copies from mixer.c.  Can't we rather
+> extend the stuff in mixer.c, make some of them global and let access
+> from scalettmixer.c?
+> 
+
+Yes, I can work on this, I think it would help reduce the code redundancy.
+
+> 
+> Takashi
+> 
+
+Thank you,
+--chris
