@@ -1,60 +1,44 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: Track playback and
- capture CMR dividers separately.
-Date: Wed, 22 Oct 2014 17:23:01 +0800
-Message-ID: <54477775.7070401@atmel.com>
-References: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se> <5445BCBF.5090002@atmel.com> <dc4461593ddb4d539f2db74b69bab98c@EMAIL.axentia.se> <544620C8.4040001@atmel.com> <8559eca320324092be82f7d942606102@EMAIL.axentia.se> <544707F3.1020505@atmel.com> <c61abc1ef0f341c2be04e3d7b07d97de@EMAIL.axentia.se> <54476640.5050603@atmel.com> <05f8e371e0ac40949bfc01b8d86d3c6e@EMAIL.axentia.se>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: adau1761: Fix input PGA volume
+Date: Wed, 22 Oct 2014 10:24:28 +0100
+Message-ID: <20141022092428.GH2344@sirena.org.uk>
+References: <1413967878-15145-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <05f8e371e0ac40949bfc01b8d86d3c6e@EMAIL.axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="l06SQqiZYCi8rTKz"
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1413967878-15145-1-git-send-email-lars@metafoo.de>
+Sender: stable-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
 
-On 10/22/2014 04:33 PM, Peter Rosin wrote:
-> The sama5d3xek/wm9804 combo, as implemented in the kernel, has the
-> ssc dai in slave mode, and therefore don't need to fiddle with any
-> ssc dai dividers (atmel_9804.c :atmel_asoc_wm9804_hw_params() only
-> sets things in the wm9804 codec dai driver and leaves the ssc dai to itself).
->
-> Instead, try the above code on your code with the ssc dai in master mode
-> that you pointed at previously.
+--l06SQqiZYCi8rTKz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yes, I try the ssc working as master mode.
+On Wed, Oct 22, 2014 at 10:51:18AM +0200, Lars-Peter Clausen wrote:
+> For the input PGA to work correctly the ALC clock needs to be active.
+> Otherwise volume changes are not applied.
 
-> https://github.com/Android4SAM/linux-at91/commit/33db8ebd3e75632c482dda271340f4d2adcfd320
->
-> If that happens to not hit -EBUSY (which it might not, since the wm9804 codec
-> will only allow stereo, so the SNDCTL_DSP_CHANNELS ioctl might not need
-> to make any change for any ssc divider) add code to also set a non-default
-> sample rate, e.g.:
->
-> speed = 22050;
-> if (ioctl(fd, SNDCTL_DSP_SPEED, &speed) == -1) {
-> 	perror("SNDCTL_DSP_SPEED");
-> 	return 1;
-> }
+Applied, thanks.
 
-with this piece of code, I reproduce your issue.
+--l06SQqiZYCi8rTKz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Now, I know the reason of this issue, work in oss mode, it will set the 
-default clock to 8KHz, and then if change to other sample rate, for 
-example 48KHz, the div is different, then it reports -EBUSY.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-So, I think we won't change the ATMEL_SSC_CMR_DIV to ATMEL_SSC_TCMR_DIV 
-and ATMEL_SSC_RCMR_DIV, as it will affect other users. We just deal with 
-this situation in ATMEL_SSC_CMR_DIV block, check the direction, if the 
-same direction change the div, then accept the change, otherwise, return 
--EBUSY.
+iQEcBAEBAgAGBQJUR3fLAAoJECTWi3JdVIfQQ78H/2zWN0ikcuA/kFQjmRaFfBVE
+0/weCSS4iF1Iv0FIjQhT4UzkEdfQCDvnH84Imvc5Or9r49vMU+d7sTfaMUs0kTL+
+oYcVdQPcPKSRiSSYdf8FE7JbdUyIJfvLVgR0rw60GfMkGsCQLOVRYYDd56ykAVZI
++qdw6AW0lonKm3EEhc05ukU/J+kp35IcCA2iasgYveSlUJbUtyrmZZ1uwfc7ScIK
+b15mjWAyQJrf3yscN6cXdg63eteAl6iVXFOgeld7ZStgQ3wtjofvivmKEk9enFDh
+DNW8VfYAl1qkzIKyorTWYp6YKSojbyESLFYsk4ySu5Qm18dAL9o/OwOBa7/nI10=
+=qSHD
+-----END PGP SIGNATURE-----
 
->
-> Cheers,
-> Peter
-
-Best Regards,
-Bo Shen
+--l06SQqiZYCi8rTKz--
