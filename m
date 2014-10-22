@@ -1,66 +1,66 @@
-From: "Joshua J. Kugler" <joshua@azariah.com>
-Subject: Re: Problem with timing and USB scanning...
-Date: Wed, 22 Oct 2014 21:31:16 -0800
-Message-ID: <1550200.IEyPMVlB9F@hosanna>
-References: <5078808.P2JmJn6G2E@hosanna> <6193432.QnYu1kqnSE@hosanna>
- <CAN8ccibDFnqzYjh64zgF-9SiBn0m-MvQ+Jhg9q=3NGJ=YO4ZMg@mail.gmail.com>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Hector Palacios <hector.palacios@digi.com>
+Subject: [PATCH] ASoC: soc-pcm: always cancel any pending
+	delayed stream shutdown
+Date: Wed, 22 Oct 2014 16:14:53 +0200
+Message-ID: <1413987293-21544-1-git-send-email-hector.palacios@digi.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <CAN8ccibDFnqzYjh64zgF-9SiBn0m-MvQ+Jhg9q=3NGJ=YO4ZMg@mail.gmail.com>
-List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <http://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, pulseaudio-discuss@lists.freedesktop.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta12.messagelabs.com (mail1.bemta12.messagelabs.com
+ [216.82.251.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id E28112651AF
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 16:15:52 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: hector.palacios@digi.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, October 23, 2014 13:13:19 Raymond Yau wrote:
-> Unfotunately, you need to fix many things in kernel
+After playback a shutdown is scheduled to happen within 5 seconds.
+If another playback takes place before the scheduled work times out,
+the work is cancelled, but if a recording takes place, the work will
+shutdown in the middle of the recording, causing problems.
 
-Well, I'm an end user, not a kernel hacker, so I don't see it getting fixed any 
-time soon. :)
+To reproduce the issue chain the following commands:
+	arecord -M --duration 5 -c 2 /tmp/test.wav;
+	aplay /tmp/test.wav;
+	sleep 2;
+	arecord -M --duration 5 -c 2 /tmp/test.wav;
+	aplay /tmp/test.wav;
 
-> Is this a notebook with internal 5.1 speakers with three jacks at rear
-> panel (headphone , mic and line in) ?
+The fist command records 5 seconds of audio.
+The second command plays the recorded audio. At the end of the playback
+a work will be scheduled to shutdown in 5 seconds, but only 2 seconds after
+the first playback, we run another recording.
+When we have recorded 3 seconds, the shutdown will occur which can cause
+incorrect behavior and bad recorded data. As a consequence, the last
+playback reproduces correct audio for the first 3 seconds and incorrect audio
+after that.
 
-Notebook: yes
-Internal 5.1? I don't believe so.
-Headphone, mic, line in? Yes.
+Signed-off-by: Hector Palacios <hector.palacios@digi.com>
+---
+ sound/soc/soc-pcm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> 1) large volume range of mic capture
-> Volume and speaker playback volume
-> 
-> 
-https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/sound/usb/mixer.c?id=9b4ef97757953c6071563b7cbfc689e3dd771603
-
-Are you saying there is a large range on the internal mic? or on the USB mic?
-
-> 2) your 5.1 internal speaker have same priority
-Which priority are we discussing?  Somewhere in udev?  In pulse audio? Or in 
-the KDE audio setup?  And this original thread wasn't about speakers.  The USB 
-out works fine, every time.  My issue is this: when I try to hotplug the USB 
-headset, it comes up as a *output* device only, instead of also detecting the 
-mic.
-
-Also, this worked flawlessly in Ubuntu 12.04 (pulse-audio 1.1, kernel 3.2-3.8). 
-It is only since upgrading to pulse-audio 4.0 and kernel 3.13.x that i have a 
-problem.
-
-j
-
-
--- 
-Joshua J. Kugler - Fairbanks, Alaska
-Azariah Enterprises - Programming and Website Design
-joshua@azariah.com - Jabber: pedahzur@gmail.com
-PGP Key: http://pgp.mit.edu/  ID 0x73B13B6A
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 642c86240752..d19a926872e8 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -760,8 +760,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ 	}
+ 
+ 	/* cancel any delayed stream shutdown that is pending */
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
+-	    rtd->pop_wait) {
++	if (rtd->pop_wait) {
+ 		rtd->pop_wait = 0;
+ 		cancel_delayed_work(&rtd->delayed_work);
+ 	}
