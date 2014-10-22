@@ -1,15 +1,25 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH v2] ASoC: rt5677: Add TDM channel mapping
-	function
-Date: Wed, 22 Oct 2014 16:11:39 +0800
-Message-ID: <1413965499-42914-1-git-send-email-oder_chiou@realtek.com>
+From: Peter Rosin <peda@axentia.se>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: Track playback and
+ capture CMR dividers separately.
+Date: Wed, 22 Oct 2014 08:33:29 +0000
+Message-ID: <05f8e371e0ac40949bfc01b8d86d3c6e@EMAIL.axentia.se>
+References: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se>
+ <5445BCBF.5090002@atmel.com>
+ <dc4461593ddb4d539f2db74b69bab98c@EMAIL.axentia.se>
+ <544620C8.4040001@atmel.com>
+ <8559eca320324092be82f7d942606102@EMAIL.axentia.se>
+ <544707F3.1020505@atmel.com>
+ <c61abc1ef0f341c2be04e3d7b07d97de@EMAIL.axentia.se>
+ <54476640.5050603@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F1F9264F2D
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 10:12:13 +0200 (CEST)
+Received: from EMAIL.axentia.se (axentia.se [87.96.186.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7A3F264F35
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 10:35:18 +0200 (CEST)
+In-Reply-To: <54476640.5050603@atmel.com>
+Content-Language: sv-SE
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,379 +29,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, benzh@google.com, anatol@google.com, bardliao@realtek.com, flove@realtek.com
+To: Bo Shen <voice.shen@atmel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-It is for channel to slot mapping, and it is not only for 8 channels mapping,
-but also in 2, 4 and 6 channels mapping. If we want to use the 2 channels in
-the stereo2 adc path, we need to set the item "2/1/3/4" or "2/3/1/4".
+Hi!
 
-It also adds for stereo channel swap. It can map the sterero channels "L/R"
-to "R/L", "L/L" or R/R.
+> >> With the patch, it is OK?
+> >
+> > Yes.
+> >
+> >>> #include <sys/ioctl.h>
+> >>> #include <unistd.h>
+> >>> #include <fcntl.h>
+> >>> #include <sys/soundcard.h>
+> >>>
+> >>> int
+> >>> main(void)
+> >>> {
+> >>> 	int fd;
+> >>> 	int format;
+> >>> 	int channels;
+> >>>
+> >>> 	if ((fd = open("/dev/dsp", O_WRONLY, 0)) == -1) {
+> >>> 		perror("open");
+> >>> 		return 1;
+> >>> 	}
+> >>> 	format = AFMT_S16_LE;
+> >>> 	if (ioctl(fd, SNDCTL_DSP_SETFMT, &format) == -1) {
+> >>> 		perror("SNDCTL_DSP_SETFMT");
+> >>> 		return 1;
+> >>> 	}
+> >>> 	channels = 2;
+> >>> 	if (ioctl(fd, SNDCTL_DSP_CHANNELS, &channels) == -1) {
+> >>> 		perror("SNDCTL_DSP_CHANNELS");
+> >>> 		return 1;
+> >>> 	}
+> >>> 	return 0;
+> >>> }
+> >>>
+> >>> Output:
+> >>> SNDCTL_DSP_CHANNELS: Device or resource busy
+> >>
+> >> This return from codec or from atmel_ssc_dai?
+> >
+> > This -EBUSY definitely comes from atmel_ssc_set_dai_sysclk, when my
+> > card-driver tries to set ATMEL_SSC_CMR_DIV. With the patch, it works.
+> > (the codec is spdif-transmitter, since the i2c interface of the actual
+> > tfa9879 codec is not directly reachable from the linux cpu, but that
+> > has nothing to do with this issue).
+> 
+> I try to reproduce it (using the code your pasted directly) on atmel
+> sama5d3xek with wm8904 code, don't meet this error.
+> 
+> I also go through the OSS code, I still don't find this is related with
+> atmel_ssc_set_dai_sysclk.
+> 
+> So, am I missing something or something else?
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5677.c | 239 +++++++++++++++++++++++++++++++++++++++++++---
- sound/soc/codecs/rt5677.h |  38 +++++++-
- 2 files changed, 262 insertions(+), 15 deletions(-)
+The sama5d3xek/wm9804 combo, as implemented in the kernel, has the
+ssc dai in slave mode, and therefore don't need to fiddle with any
+ssc dai dividers (atmel_9804.c :atmel_asoc_wm9804_hw_params() only
+sets things in the wm9804 codec dai driver and leaves the ssc dai to itself). 
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index d17d079..5a75552 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -1834,6 +1834,93 @@ static SOC_ENUM_SINGLE_DECL(
- static const struct snd_kcontrol_new rt5677_if4_adc_mux =
- 	SOC_DAPM_ENUM("IF4 ADC Source", rt5677_if4_adc_enum);
- 
-+/* TDM IF1/2 ADC Data Selection */ /* MX-3B MX-40 [7:6][5:4][3:2][1:0] */
-+static const char * const rt5677_if12_adc_swap_src[] = {
-+	"L/R", "R/L", "L/L", "R/R"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	rt5677_if1_adc1_swap_enum, RT5677_TDM1_CTRL1,
-+	RT5677_IF1_ADC1_SWAP_SFT, rt5677_if12_adc_swap_src);
-+
-+static const struct snd_kcontrol_new rt5677_if1_adc1_swap_mux =
-+	SOC_DAPM_ENUM("IF1 ADC1 Swap Source", rt5677_if1_adc1_swap_enum);
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	rt5677_if1_adc2_swap_enum, RT5677_TDM1_CTRL1,
-+	RT5677_IF1_ADC2_SWAP_SFT, rt5677_if12_adc_swap_src);
-+
-+static const struct snd_kcontrol_new rt5677_if1_adc2_swap_mux =
-+	SOC_DAPM_ENUM("IF1 ADC2 Swap Source", rt5677_if1_adc2_swap_enum);
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	rt5677_if1_adc3_swap_enum, RT5677_TDM1_CTRL1,
-+	RT5677_IF1_ADC3_SWAP_SFT, rt5677_if12_adc_swap_src);
-+
-+static const struct snd_kcontrol_new rt5677_if1_adc3_swap_mux =
-+	SOC_DAPM_ENUM("IF1 ADC3 Swap Source", rt5677_if1_adc3_swap_enum);
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	rt5677_if1_adc4_swap_enum, RT5677_TDM1_CTRL1,
-+	RT5677_IF1_ADC4_SWAP_SFT, rt5677_if12_adc_swap_src);
-+
-+static const struct snd_kcontrol_new rt5677_if1_adc4_swap_mux =
-+	SOC_DAPM_ENUM("IF1 ADC4 Swap Source", rt5677_if1_adc4_swap_enum);
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	rt5677_if2_adc1_swap_enum, RT5677_TDM2_CTRL1,
-+	RT5677_IF1_ADC2_SWAP_SFT, rt5677_if12_adc_swap_src);
-+
-+static const struct snd_kcontrol_new rt5677_if2_adc1_swap_mux =
-+	SOC_DAPM_ENUM("IF1 ADC2 Swap Source", rt5677_if2_adc1_swap_enum);
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	rt5677_if2_adc2_swap_enum, RT5677_TDM2_CTRL1,
-+	RT5677_IF2_ADC2_SWAP_SFT, rt5677_if12_adc_swap_src);
-+
-+static const struct snd_kcontrol_new rt5677_if2_adc2_swap_mux =
-+	SOC_DAPM_ENUM("IF2 ADC2 Swap Source", rt5677_if2_adc2_swap_enum);
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	rt5677_if2_adc3_swap_enum, RT5677_TDM2_CTRL1,
-+	RT5677_IF2_ADC3_SWAP_SFT, rt5677_if12_adc_swap_src);
-+
-+static const struct snd_kcontrol_new rt5677_if2_adc3_swap_mux =
-+	SOC_DAPM_ENUM("IF2 ADC3 Swap Source", rt5677_if2_adc3_swap_enum);
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	rt5677_if2_adc4_swap_enum, RT5677_TDM2_CTRL1,
-+	RT5677_IF2_ADC4_SWAP_SFT, rt5677_if12_adc_swap_src);
-+
-+static const struct snd_kcontrol_new rt5677_if2_adc4_swap_mux =
-+	SOC_DAPM_ENUM("IF2 ADC4 Swap Source", rt5677_if2_adc4_swap_enum);
-+
-+/* TDM IF1 ADC Data Selection */ /* MX-3C  [2:0] */
-+static const char * const rt5677_if1_adc_tdm_swap_src[] = {
-+	"1/2/3/4", "2/1/3/4", "2/3/1/4", "4/1/2/3", "1/3/2/4", "1/4/2/3",
-+	"3/1/2/4", "3/4/1/2"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	rt5677_if1_adc_tdm_swap_enum, RT5677_TDM1_CTRL2,
-+	RT5677_IF1_ADC_CTRL_SFT, rt5677_if1_adc_tdm_swap_src);
-+
-+static const struct snd_kcontrol_new rt5677_if1_adc_tdm_swap_mux =
-+	SOC_DAPM_ENUM("IF1 ADC TDM Swap Source", rt5677_if1_adc_tdm_swap_enum);
-+
-+/* TDM IF2 ADC Data Selection */ /* MX-41[2:0] */
-+static const char * const rt5677_if2_adc_tdm_swap_src[] = {
-+	"1/2/3/4", "2/1/3/4", "3/1/2/4", "4/1/2/3", "1/3/2/4", "1/4/2/3",
-+	"2/3/1/4", "3/4/1/2"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(
-+	rt5677_if2_adc_tdm_swap_enum, RT5677_TDM2_CTRL2,
-+	RT5677_IF2_ADC_CTRL_SFT, rt5677_if2_adc_tdm_swap_src);
-+
-+static const struct snd_kcontrol_new rt5677_if2_adc_tdm_swap_mux =
-+	SOC_DAPM_ENUM("IF2 ADC TDM Swap Source", rt5677_if2_adc_tdm_swap_enum);
-+
- static int rt5677_bst1_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
-@@ -1945,6 +2032,52 @@ static int rt5677_set_micbias1_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int rt5677_if1_adc_tdm_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int value;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		regmap_read(rt5677->regmap, RT5677_TDM1_CTRL2, &value);
-+		if (value & RT5677_IF1_ADC_CTRL_MASK)
-+			regmap_update_bits(rt5677->regmap, RT5677_TDM1_CTRL1,
-+				RT5677_IF1_ADC_MODE_MASK,
-+				RT5677_IF1_ADC_MODE_TDM);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt5677_if2_adc_tdm_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+	struct rt5677_priv *rt5677 = snd_soc_codec_get_drvdata(codec);
-+	unsigned int value;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		regmap_read(rt5677->regmap, RT5677_TDM2_CTRL2, &value);
-+		if (value & RT5677_IF2_ADC_CTRL_MASK)
-+			regmap_update_bits(rt5677->regmap, RT5677_TDM2_CTRL1,
-+				RT5677_IF2_ADC_MODE_MASK,
-+				RT5677_IF2_ADC_MODE_TDM);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("PLL1", RT5677_PWR_ANLG2, RT5677_PWR_PLL1_BIT,
- 		0, rt5677_set_pll1_event, SND_SOC_DAPM_POST_PMU),
-@@ -2104,10 +2237,8 @@ static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("Stereo4 ADC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("Sto2 ADC LR MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("Mono ADC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("IF1_ADC1", SND_SOC_NOPM, 0, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("IF1_ADC2", SND_SOC_NOPM, 0, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("IF1_ADC3", SND_SOC_NOPM, 0, 0, NULL, 0),
--	SND_SOC_DAPM_PGA("IF1_ADC4", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF1 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("IF2 ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
- 
- 	/* DSP */
- 	SND_SOC_DAPM_MUX("IB9 Mux", SND_SOC_NOPM, 0, 0,
-@@ -2230,6 +2361,17 @@ static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
- 			&rt5677_if1_adc3_mux),
- 	SND_SOC_DAPM_MUX("IF1 ADC4 Mux", SND_SOC_NOPM, 0, 0,
- 			&rt5677_if1_adc4_mux),
-+	SND_SOC_DAPM_MUX("IF1 ADC1 Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5677_if1_adc1_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1 ADC2 Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5677_if1_adc2_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1 ADC3 Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5677_if1_adc3_swap_mux),
-+	SND_SOC_DAPM_MUX("IF1 ADC4 Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5677_if1_adc4_swap_mux),
-+	SND_SOC_DAPM_MUX_E("IF1 ADC TDM Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5677_if1_adc_tdm_swap_mux, rt5677_if1_adc_tdm_event,
-+			SND_SOC_DAPM_PRE_PMU),
- 	SND_SOC_DAPM_MUX("IF2 ADC1 Mux", SND_SOC_NOPM, 0, 0,
- 			&rt5677_if2_adc1_mux),
- 	SND_SOC_DAPM_MUX("IF2 ADC2 Mux", SND_SOC_NOPM, 0, 0,
-@@ -2238,6 +2380,17 @@ static const struct snd_soc_dapm_widget rt5677_dapm_widgets[] = {
- 			&rt5677_if2_adc3_mux),
- 	SND_SOC_DAPM_MUX("IF2 ADC4 Mux", SND_SOC_NOPM, 0, 0,
- 			&rt5677_if2_adc4_mux),
-+	SND_SOC_DAPM_MUX("IF2 ADC1 Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5677_if2_adc1_swap_mux),
-+	SND_SOC_DAPM_MUX("IF2 ADC2 Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5677_if2_adc2_swap_mux),
-+	SND_SOC_DAPM_MUX("IF2 ADC3 Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5677_if2_adc3_swap_mux),
-+	SND_SOC_DAPM_MUX("IF2 ADC4 Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5677_if2_adc4_swap_mux),
-+	SND_SOC_DAPM_MUX_E("IF2 ADC TDM Swap Mux", SND_SOC_NOPM, 0, 0,
-+			&rt5677_if2_adc_tdm_swap_mux, rt5677_if2_adc_tdm_event,
-+			SND_SOC_DAPM_PRE_PMU),
- 	SND_SOC_DAPM_MUX("IF3 ADC Mux", SND_SOC_NOPM, 0, 0,
- 			&rt5677_if3_adc_mux),
- 	SND_SOC_DAPM_MUX("IF4 ADC Mux", SND_SOC_NOPM, 0, 0,
-@@ -2621,11 +2774,42 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
- 	{ "IF1 ADC4 Mux", "OB67", "OB67" },
- 	{ "IF1 ADC4 Mux", "OB01", "OB01 Bypass Mux" },
- 
-+	{ "IF1 ADC1 Swap Mux", "L/R", "IF1 ADC1 Mux" },
-+	{ "IF1 ADC1 Swap Mux", "R/L", "IF1 ADC1 Mux" },
-+	{ "IF1 ADC1 Swap Mux", "L/L", "IF1 ADC1 Mux" },
-+	{ "IF1 ADC1 Swap Mux", "R/R", "IF1 ADC1 Mux" },
-+
-+	{ "IF1 ADC2 Swap Mux", "L/R", "IF1 ADC2 Mux" },
-+	{ "IF1 ADC2 Swap Mux", "R/L", "IF1 ADC2 Mux" },
-+	{ "IF1 ADC2 Swap Mux", "L/L", "IF1 ADC2 Mux" },
-+	{ "IF1 ADC2 Swap Mux", "R/R", "IF1 ADC2 Mux" },
-+
-+	{ "IF1 ADC3 Swap Mux", "L/R", "IF1 ADC3 Mux" },
-+	{ "IF1 ADC3 Swap Mux", "R/L", "IF1 ADC3 Mux" },
-+	{ "IF1 ADC3 Swap Mux", "L/L", "IF1 ADC3 Mux" },
-+	{ "IF1 ADC3 Swap Mux", "R/R", "IF1 ADC3 Mux" },
-+
-+	{ "IF1 ADC4 Swap Mux", "L/R", "IF1 ADC4 Mux" },
-+	{ "IF1 ADC4 Swap Mux", "R/L", "IF1 ADC4 Mux" },
-+	{ "IF1 ADC4 Swap Mux", "L/L", "IF1 ADC4 Mux" },
-+	{ "IF1 ADC4 Swap Mux", "R/R", "IF1 ADC4 Mux" },
-+
-+	{ "IF1 ADC", NULL, "IF1 ADC1 Swap Mux" },
-+	{ "IF1 ADC", NULL, "IF1 ADC2 Swap Mux" },
-+	{ "IF1 ADC", NULL, "IF1 ADC3 Swap Mux" },
-+	{ "IF1 ADC", NULL, "IF1 ADC4 Swap Mux" },
-+
-+	{ "IF1 ADC TDM Swap Mux", "1/2/3/4", "IF1 ADC" },
-+	{ "IF1 ADC TDM Swap Mux", "2/1/3/4", "IF1 ADC" },
-+	{ "IF1 ADC TDM Swap Mux", "2/3/1/4", "IF1 ADC" },
-+	{ "IF1 ADC TDM Swap Mux", "4/1/2/3", "IF1 ADC" },
-+	{ "IF1 ADC TDM Swap Mux", "1/3/2/4", "IF1 ADC" },
-+	{ "IF1 ADC TDM Swap Mux", "1/4/2/3", "IF1 ADC" },
-+	{ "IF1 ADC TDM Swap Mux", "3/1/2/4", "IF1 ADC" },
-+	{ "IF1 ADC TDM Swap Mux", "3/4/1/2", "IF1 ADC" },
-+
- 	{ "AIF1TX", NULL, "I2S1" },
--	{ "AIF1TX", NULL, "IF1 ADC1 Mux" },
--	{ "AIF1TX", NULL, "IF1 ADC2 Mux" },
--	{ "AIF1TX", NULL, "IF1 ADC3 Mux" },
--	{ "AIF1TX", NULL, "IF1 ADC4 Mux" },
-+	{ "AIF1TX", NULL, "IF1 ADC TDM Swap Mux" },
- 
- 	{ "IF2 ADC1 Mux", "STO1 ADC MIX", "Stereo1 ADC MIX" },
- 	{ "IF2 ADC1 Mux", "OB01", "OB01 Bypass Mux" },
-@@ -2642,11 +2826,42 @@ static const struct snd_soc_dapm_route rt5677_dapm_routes[] = {
- 	{ "IF2 ADC4 Mux", "OB67", "OB67" },
- 	{ "IF2 ADC4 Mux", "OB01", "OB01 Bypass Mux" },
- 
-+	{ "IF2 ADC1 Swap Mux", "L/R", "IF2 ADC1 Mux" },
-+	{ "IF2 ADC1 Swap Mux", "R/L", "IF2 ADC1 Mux" },
-+	{ "IF2 ADC1 Swap Mux", "L/L", "IF2 ADC1 Mux" },
-+	{ "IF2 ADC1 Swap Mux", "R/R", "IF2 ADC1 Mux" },
-+
-+	{ "IF2 ADC2 Swap Mux", "L/R", "IF2 ADC2 Mux" },
-+	{ "IF2 ADC2 Swap Mux", "R/L", "IF2 ADC2 Mux" },
-+	{ "IF2 ADC2 Swap Mux", "L/L", "IF2 ADC2 Mux" },
-+	{ "IF2 ADC2 Swap Mux", "R/R", "IF2 ADC2 Mux" },
-+
-+	{ "IF2 ADC3 Swap Mux", "L/R", "IF2 ADC3 Mux" },
-+	{ "IF2 ADC3 Swap Mux", "R/L", "IF2 ADC3 Mux" },
-+	{ "IF2 ADC3 Swap Mux", "L/L", "IF2 ADC3 Mux" },
-+	{ "IF2 ADC3 Swap Mux", "R/R", "IF2 ADC3 Mux" },
-+
-+	{ "IF2 ADC4 Swap Mux", "L/R", "IF2 ADC4 Mux" },
-+	{ "IF2 ADC4 Swap Mux", "R/L", "IF2 ADC4 Mux" },
-+	{ "IF2 ADC4 Swap Mux", "L/L", "IF2 ADC4 Mux" },
-+	{ "IF2 ADC4 Swap Mux", "R/R", "IF2 ADC4 Mux" },
-+
-+	{ "IF2 ADC", NULL, "IF2 ADC1 Swap Mux" },
-+	{ "IF2 ADC", NULL, "IF2 ADC2 Swap Mux" },
-+	{ "IF2 ADC", NULL, "IF2 ADC3 Swap Mux" },
-+	{ "IF2 ADC", NULL, "IF2 ADC4 Swap Mux" },
-+
-+	{ "IF2 ADC TDM Swap Mux", "1/2/3/4", "IF2 ADC" },
-+	{ "IF2 ADC TDM Swap Mux", "2/1/3/4", "IF2 ADC" },
-+	{ "IF2 ADC TDM Swap Mux", "3/1/2/4", "IF2 ADC" },
-+	{ "IF2 ADC TDM Swap Mux", "4/1/2/3", "IF2 ADC" },
-+	{ "IF2 ADC TDM Swap Mux", "1/3/2/4", "IF2 ADC" },
-+	{ "IF2 ADC TDM Swap Mux", "1/4/2/3", "IF2 ADC" },
-+	{ "IF2 ADC TDM Swap Mux", "2/3/1/4", "IF2 ADC" },
-+	{ "IF2 ADC TDM Swap Mux", "3/4/1/2", "IF2 ADC" },
-+
- 	{ "AIF2TX", NULL, "I2S2" },
--	{ "AIF2TX", NULL, "IF2 ADC1 Mux" },
--	{ "AIF2TX", NULL, "IF2 ADC2 Mux" },
--	{ "AIF2TX", NULL, "IF2 ADC3 Mux" },
--	{ "AIF2TX", NULL, "IF2 ADC4 Mux" },
-+	{ "AIF2TX", NULL, "IF2 ADC TDM Swap Mux" },
- 
- 	{ "IF3 ADC Mux", "STO1 ADC MIX", "Stereo1 ADC MIX" },
- 	{ "IF3 ADC Mux", "STO2 ADC MIX", "Stereo2 ADC MIX" },
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index 20efa4a..a0ae32f 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -799,7 +799,21 @@
- #define RT5677_PDM2_I2C_EXE			(0x1 << 1)
- #define RT5677_PDM2_I2C_BUSY			(0x1 << 0)
- 
--/* MX3C TDM1 control 1 (0x3c) */
-+/* MX3B TDM1 control 1 (0x3b) */
-+#define RT5677_IF1_ADC_MODE_MASK		(0x1 << 12)
-+#define RT5677_IF1_ADC_MODE_SFT			12
-+#define RT5677_IF1_ADC_MODE_I2S			(0x0 << 12)
-+#define RT5677_IF1_ADC_MODE_TDM			(0x1 << 12)
-+#define RT5677_IF1_ADC1_SWAP_MASK		(0x3 << 6)
-+#define RT5677_IF1_ADC1_SWAP_SFT		6
-+#define RT5677_IF1_ADC2_SWAP_MASK		(0x3 << 4)
-+#define RT5677_IF1_ADC2_SWAP_SFT		4
-+#define RT5677_IF1_ADC3_SWAP_MASK		(0x3 << 2)
-+#define RT5677_IF1_ADC3_SWAP_SFT		2
-+#define RT5677_IF1_ADC4_SWAP_MASK		(0x3 << 0)
-+#define RT5677_IF1_ADC4_SWAP_SFT		0
-+
-+/* MX3C TDM1 control 2 (0x3c) */
- #define RT5677_IF1_ADC4_MASK			(0x3 << 10)
- #define RT5677_IF1_ADC4_SFT			10
- #define RT5677_IF1_ADC3_MASK			(0x3 << 8)
-@@ -808,8 +822,24 @@
- #define RT5677_IF1_ADC2_SFT			6
- #define RT5677_IF1_ADC1_MASK			(0x3 << 4)
- #define RT5677_IF1_ADC1_SFT			4
--
--/* MX41 TDM2 control 1 (0x41) */
-+#define RT5677_IF1_ADC_CTRL_MASK		(0x7 << 0)
-+#define RT5677_IF1_ADC_CTRL_SFT			0
-+
-+/* MX40 TDM2 control 1 (0x40) */
-+#define RT5677_IF2_ADC_MODE_MASK		(0x1 << 12)
-+#define RT5677_IF2_ADC_MODE_SFT			12
-+#define RT5677_IF2_ADC_MODE_I2S			(0x0 << 12)
-+#define RT5677_IF2_ADC_MODE_TDM			(0x1 << 12)
-+#define RT5677_IF2_ADC1_SWAP_MASK		(0x3 << 6)
-+#define RT5677_IF2_ADC1_SWAP_SFT		6
-+#define RT5677_IF2_ADC2_SWAP_MASK		(0x3 << 4)
-+#define RT5677_IF2_ADC2_SWAP_SFT		4
-+#define RT5677_IF2_ADC3_SWAP_MASK		(0x3 << 2)
-+#define RT5677_IF2_ADC3_SWAP_SFT		2
-+#define RT5677_IF2_ADC4_SWAP_MASK		(0x3 << 0)
-+#define RT5677_IF2_ADC4_SWAP_SFT		0
-+
-+/* MX41 TDM2 control 2 (0x41) */
- #define RT5677_IF2_ADC4_MASK			(0x3 << 10)
- #define RT5677_IF2_ADC4_SFT			10
- #define RT5677_IF2_ADC3_MASK			(0x3 << 8)
-@@ -818,6 +848,8 @@
- #define RT5677_IF2_ADC2_SFT			6
- #define RT5677_IF2_ADC1_MASK			(0x3 << 4)
- #define RT5677_IF2_ADC1_SFT			4
-+#define RT5677_IF2_ADC_CTRL_MASK		(0x7 << 0)
-+#define RT5677_IF2_ADC_CTRL_SFT			0
- 
- /* Digital Microphone Control 1 (0x50) */
- #define RT5677_DMIC_1_EN_MASK			(0x1 << 15)
--- 
-1.9.1
+Instead, try the above code on your code with the ssc dai in master mode
+that you pointed at previously.
+
+https://github.com/Android4SAM/linux-at91/commit/33db8ebd3e75632c482dda271340f4d2adcfd320
+
+If that happens to not hit -EBUSY (which it might not, since the wm9804 codec
+will only allow stereo, so the SNDCTL_DSP_CHANNELS ioctl might not need
+to make any change for any ssc divider) add code to also set a non-default
+sample rate, e.g.:
+
+speed = 22050;
+if (ioctl(fd, SNDCTL_DSP_SPEED, &speed) == -1) {
+	perror("SNDCTL_DSP_SPEED");
+	return 1;
+}
+
+Cheers,
+Peter
