@@ -1,67 +1,58 @@
-From: Bo Shen <voice.shen@atmel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: Track playback and
- capture CMR dividers separately.
-Date: Wed, 22 Oct 2014 09:27:15 +0800
-Message-ID: <544707F3.1020505@atmel.com>
-References: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se> <5445BCBF.5090002@atmel.com> <dc4461593ddb4d539f2db74b69bab98c@EMAIL.axentia.se> <544620C8.4040001@atmel.com> <8559eca320324092be82f7d942606102@EMAIL.axentia.se>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Jianqun <jay.xu@rock-chips.com>
+Subject: [PATCH v3] ASoC: rockchip-i2s: add MAX98090 support to Kconfig
+Date: Wed, 22 Oct 2014 10:59:59 +0800
+Message-ID: <1413946799-20834-1-git-send-email-jay.xu@rock-chips.com>
+References: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8559eca320324092be82f7d942606102@EMAIL.axentia.se>
+In-Reply-To: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: huangtao@rock-chips.com, cf@rock-chips.com, Jianqun <jay.xu@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Peter,
+Add SND_SOC_MAX98090 to Kconfig of rockchip ASoC, to support
+rockchip board using a max98090 codec.
 
-On 10/21/2014 09:05 PM, Peter Rosin wrote:
-> I did some further tests, and the following program fails without the patch:
+Tested on rockchip board based on rk3288.
 
-With the patch, it is OK?
+Signed-off-by: Jianqun <jay.xu@rock-chips.com>
+---
+changes since v1:
+--make the max98090 driver directly selectable, suggested by Lars
 
-> #include <sys/ioctl.h>
-> #include <unistd.h>
-> #include <fcntl.h>
-> #include <sys/soundcard.h>
->
-> int
-> main(void)
-> {
-> 	int fd;
-> 	int format;
-> 	int channels;
->
-> 	if ((fd = open("/dev/dsp", O_WRONLY, 0)) == -1) {
-> 		perror("open");
-> 		return 1;
-> 	}
-> 	format = AFMT_S16_LE;
-> 	if (ioctl(fd, SNDCTL_DSP_SETFMT, &format) == -1) {
-> 		perror("SNDCTL_DSP_SETFMT");
-> 		return 1;
-> 	}
-> 	channels = 2;
-> 	if (ioctl(fd, SNDCTL_DSP_CHANNELS, &channels) == -1) {
-> 		perror("SNDCTL_DSP_CHANNELS");
-> 		return 1;
-> 	}
-> 	return 0;
-> }
->
-> Output:
-> SNDCTL_DSP_CHANNELS: Device or resource busy
+changes since v2:
+--modify tristate infomation for SND_SOC_ROCKCHIP
+--make SND_SOC_MAX98090 not depends on SND_SOC_ROCKCHIP
 
-This return from codec or from atmel_ssc_dai?
+ sound/soc/rockchip/Kconfig | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-> (I admin to having edited the above code slightly in this mail, so I might have
-> introduced some silly bug, but you get what I mean, just open the device
-> and request some parameters, and boom: -EBUSY)
->
-> Cheers,
-> Peter
->
-
-Best Regards,
-Bo Shen
+diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+index 78fc159..236500e 100644
+--- a/sound/soc/rockchip/Kconfig
++++ b/sound/soc/rockchip/Kconfig
+@@ -1,5 +1,5 @@
+ config SND_SOC_ROCKCHIP
+-	tristate "ASoC support for Rockchip"
++	tristate "SoC Audio for the Rockchip System-on-Chip"
+ 	depends on COMPILE_TEST || ARCH_ROCKCHIP
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	help
+@@ -8,4 +8,14 @@ config SND_SOC_ROCKCHIP
+ 	  select the audio interfaces to support below.
+ 
+ config SND_SOC_ROCKCHIP_I2S
+-	tristate
++	tristate "ASoC support for Rockchip I2S driver"
++	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
++	help
++	  Say Y or M if you want to add support for I2S driver for Rockchip
++	  I2S device.
++
++config SND_SOC_MAX98090
++	tristate "ASoC support for max98090 driver"
++	depends on I2C && GPIOLIB
++	help
++	  Say Y or M here if you want to add support for max98090 codec.
+-- 
+1.9.1
