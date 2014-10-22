@@ -1,284 +1,60 @@
-From: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
-Subject: [PATCH v2 2/2] ASoC: simple-card: add multi-CODECs in DT
-Date: Wed, 22 Oct 2014 10:39:37 +0200
-Message-ID: <219f85753adca1af4bcc50c2f3bedfd3341193cc.1413969007.git.moinejf@free.fr>
-References: <cover.1413969006.git.moinejf@free.fr>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <cover.1413969006.git.moinejf-GANU6spQydw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Benoit Cousson <bcousson-rdvid1DuHRBWk0Htik3J/w@public.gmane.org>, Jyri Sarha <jsarha-l0cyMroinI0@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Xiubo Li <Li.Xiubo-KZfg59tc24xl57MIdRCFDg@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: Track playback and
+ capture CMR dividers separately.
+Date: Wed, 22 Oct 2014 17:23:01 +0800
+Message-ID: <54477775.7070401@atmel.com>
+References: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se> <5445BCBF.5090002@atmel.com> <dc4461593ddb4d539f2db74b69bab98c@EMAIL.axentia.se> <544620C8.4040001@atmel.com> <8559eca320324092be82f7d942606102@EMAIL.axentia.se> <544707F3.1020505@atmel.com> <c61abc1ef0f341c2be04e3d7b07d97de@EMAIL.axentia.se> <54476640.5050603@atmel.com> <05f8e371e0ac40949bfc01b8d86d3c6e@EMAIL.axentia.se>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <05f8e371e0ac40949bfc01b8d86d3c6e@EMAIL.axentia.se>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Rosin <peda@axentia.se>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch allows many CODECs per link to be defined in the device tree.
+Hi Peter,
 
-Signed-off-by: Jean-Francois Moine <moinejf-GANU6spQydw@public.gmane.org>
----
- .../devicetree/bindings/sound/simple-card.txt      |  28 +++--
- sound/soc/generic/simple-card.c                    | 114 +++++++++++++--------
- 2 files changed, 86 insertions(+), 56 deletions(-)
+On 10/22/2014 04:33 PM, Peter Rosin wrote:
+> The sama5d3xek/wm9804 combo, as implemented in the kernel, has the
+> ssc dai in slave mode, and therefore don't need to fiddle with any
+> ssc dai dividers (atmel_9804.c :atmel_asoc_wm9804_hw_params() only
+> sets things in the wm9804 codec dai driver and leaves the ssc dai to itself).
+>
+> Instead, try the above code on your code with the ssc dai in master mode
+> that you pointed at previously.
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
-index c3cba60..6cb1816 100644
---- a/Documentation/devicetree/bindings/sound/simple-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-card.txt
-@@ -65,7 +65,11 @@ properties should also be placed in the codec node if needed.
- 
- Required CPU/CODEC subnodes properties:
- 
--- sound-dai				: phandle and port of CPU/CODEC
-+either
-+  - sound-dai				: phandle and port of CPU/CODEC
-+or
-+  - sound-dais				: list of phandle and port of CODECs
-+					  
- 
- Optional CPU/CODEC subnodes properties:
- 
-@@ -119,37 +123,29 @@ sh_fsi2: sh_fsi2@ec230000 {
- 	interrupts = <0 146 0x4>;
- };
- 
--Example 2 - many DAI links:
-+Example 2 - many DAI links and multi-CODECs:
- 
- sound {
- 	compatible = "simple-audio-card";
- 	simple-audio-card,name = "Cubox Audio";
- 
--	simple-audio-card,dai-link@0 {		/* I2S - HDMI */
-+	simple-audio-card,dai-link@0 {		/* S/PDIF - HDMI & S/PDIF */
- 		format = "i2s";
- 		cpu {
--			sound-dai = <&audio1 0>;
--		};
--		codec {
--			sound-dai = <&tda998x 0>;
--		};
--	};
--
--	simple-audio-card,dai-link@1 {		/* S/PDIF - HDMI */
--		cpu {
- 			sound-dai = <&audio1 1>;
- 		};
- 		codec {
--			sound-dai = <&tda998x 1>;
-+			sound-dais = <&hdmi 0>, <&spdif_codec>;
- 		};
- 	};
- 
--	simple-audio-card,dai-link@2 {		/* S/PDIF - S/PDIF */
-+	simple-audio-card,dai-link@1 {		/* I2S - HDMI */
-+		format = "i2s";
- 		cpu {
--			sound-dai = <&audio1 1>;
-+			sound-dai = <&audio1 0>;
- 		};
- 		codec {
--			sound-dai = <&spdif_codec>;
-+			sound-dai = <&hdmi 1>;
- 		};
- 	};
- };
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 4f192ee..ff45f4d 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -168,34 +168,12 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- static int
- asoc_simple_card_sub_parse_of(struct device_node *np,
- 			      struct asoc_simple_dai *dai,
--			      struct device_node **p_node,
--			      const char **name,
--			      int *args_count)
-+			      const struct device_node *dai_np)
- {
--	struct of_phandle_args args;
- 	struct clk *clk;
- 	u32 val;
- 	int ret;
- 
--	/*
--	 * Get node via "sound-dai = <&phandle port>"
--	 * it will be used as xxx_of_node on soc_bind_dai_link()
--	 */
--	ret = of_parse_phandle_with_args(np, "sound-dai",
--					 "#sound-dai-cells", 0, &args);
--	if (ret)
--		return ret;
--
--	*p_node = args.np;
--
--	if (args_count)
--		*args_count = args.args_count;
--
--	/* Get dai->name */
--	ret = snd_soc_of_get_dai_name(np, name);
--	if (ret < 0)
--		return ret;
--
- 	/* Parse TDM slot */
- 	ret = snd_soc_of_parse_tdm_slot(np, &dai->slots, &dai->slot_width);
- 	if (ret)
-@@ -218,7 +196,7 @@ asoc_simple_card_sub_parse_of(struct device_node *np,
- 	} else if (!of_property_read_u32(np, "system-clock-frequency", &val)) {
- 		dai->sysclk = val;
- 	} else {
--		clk = of_clk_get(args.np, 0);
-+		clk = of_clk_get((struct device_node *) dai_np, 0);
- 		if (!IS_ERR(clk))
- 			dai->sysclk = clk_get_rate(clk);
- 	}
-@@ -237,11 +215,13 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	struct device_node *np = NULL;
- 	struct device_node *bitclkmaster = NULL;
- 	struct device_node *framemaster = NULL;
-+	struct snd_soc_dai_link_component *component;
-+	struct of_phandle_args args;
- 	unsigned int daifmt;
- 	char *name;
- 	char prop[128];
- 	char *prefix = "";
--	int ret, cpu_args;
-+	int ret, cpu_args, i, num_codecs;
- 
- 	/* For single DAI link & old style of DT node */
- 	if (is_top_level_node)
-@@ -259,10 +239,21 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 		goto dai_link_of_err;
- 	}
- 
-+
-+	/* Get the CPU node and name */
-+	ret = of_parse_phandle_with_args(np, "sound-dai",
-+					 "#sound-dai-cells", 0, &args);
-+	if (ret)
-+		goto dai_link_of_err;
-+	dai_link->cpu_of_node = args.np;
-+	cpu_args = args.args_count;
-+
-+	ret = snd_soc_of_get_dai_name(np, &dai_link->cpu_dai_name);
-+	if (ret < 0)
-+		goto dai_link_of_err;
-+
- 	ret = asoc_simple_card_sub_parse_of(np, &dai_props->cpu_dai,
--					    &dai_link->cpu_of_node,
--					    &dai_link->cpu_dai_name,
--					    &cpu_args);
-+					    dai_link->cpu_of_node);
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
-@@ -291,9 +282,35 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 		goto dai_link_of_err;
- 	}
- 
-+	/* Get the node and name of the CODEC(s) */
-+	name = "sound-dai";
-+	num_codecs = of_count_phandle_with_args(np, name,
-+						"#sound-dai-cells");
-+	if (num_codecs <= 0) {
-+		name = "sound-dais";
-+		num_codecs = of_count_phandle_with_args(np, name,
-+							"#sound-dai-cells");
-+		if (num_codecs <= 0) {
-+			ret = -EINVAL;
-+			dev_err(dev, "No CODEC DAI phandle\n");
-+			goto dai_link_of_err;
-+		}
-+	}
-+	component = devm_kzalloc(dev,
-+				 sizeof *component * num_codecs,
-+				 GFP_KERNEL);
-+	if (!component) {
-+		ret = -ENOMEM;
-+		goto dai_link_of_err;
-+	}
-+	dai_link->codecs = component;
-+	dai_link->num_codecs = num_codecs;
-+	ret = snd_soc_of_get_dai_link_codecs(np, name, dai_link);
-+	if (ret < 0)
-+		goto dai_link_of_err;
-+
- 	ret = asoc_simple_card_sub_parse_of(np, &dai_props->codec_dai,
--					    &dai_link->codec_of_node,
--					    &dai_link->codec_dai_name, NULL);
-+					    dai_link->codecs[0].of_node);
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
-@@ -337,10 +354,10 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	/* DAI link name is created from CPU/CODEC dai name */
- 	name = devm_kzalloc(dev,
- 			    strlen(dai_link->cpu_dai_name)   +
--			    strlen(dai_link->codec_dai_name) + 2,
-+			    strlen(dai_link->codecs[0].dai_name) + 2,
- 			    GFP_KERNEL);
- 	sprintf(name, "%s-%s", dai_link->cpu_dai_name,
--				dai_link->codec_dai_name);
-+				dai_link->codecs[0].dai_name);
- 	dai_link->name = dai_link->stream_name = name;
- 	dai_link->ops = &asoc_simple_card_ops;
- 	dai_link->init = asoc_simple_card_dai_init;
-@@ -351,7 +368,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 		dai_props->cpu_dai.fmt,
- 		dai_props->cpu_dai.sysclk);
- 	dev_dbg(dev, "\tcodec : %s / %04x / %d\n",
--		dai_link->codec_dai_name,
-+		dai_link->codecs[0].dai_name,
- 		dai_props->codec_dai.fmt,
- 		dai_props->codec_dai.sysclk);
- 
-@@ -366,8 +383,19 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	 */
- 	if (!cpu_args)
- 		dai_link->cpu_dai_name = NULL;
-+	goto out;
- 
- dai_link_of_err:
-+	for (i = 0, component = dai_link->codecs;
-+	     i < dai_link->num_codecs;
-+	     i++, component++) {
-+		if (!component->of_node)
-+			break;
-+		of_node_put((struct device_node *) component->of_node);
-+		component->of_node = NULL;
-+	}
-+
-+out:
- 	of_node_put(np);
- 	of_node_put(bitclkmaster);
- 	of_node_put(framemaster);
-@@ -454,16 +482,22 @@ static int asoc_simple_card_unref(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = platform_get_drvdata(pdev);
- 	struct snd_soc_dai_link *dai_link;
-+	struct snd_soc_dai_link_component *component;
- 	struct device_node *np;
--	int num_links;
-+	int num_links, i;
- 
- 	for (num_links = 0, dai_link = card->dai_link;
- 	     num_links < card->num_links;
- 	     num_links++, dai_link++) {
- 		np = (struct device_node *) dai_link->cpu_of_node;
- 		of_node_put(np);
--		np = (struct device_node *) dai_link->codec_of_node;
--		of_node_put(np);
-+		for (i = 0, component = dai_link->codecs;
-+		     i < dai_link->num_codecs;
-+		     i++, component++) {
-+			if (!component->of_node)
-+				break;
-+			of_node_put((struct device_node *) component->of_node);
-+		}
- 	}
- 	return 0;
- }
--- 
-2.1.1
+Yes, I try the ssc working as master mode.
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> https://github.com/Android4SAM/linux-at91/commit/33db8ebd3e75632c482dda271340f4d2adcfd320
+>
+> If that happens to not hit -EBUSY (which it might not, since the wm9804 codec
+> will only allow stereo, so the SNDCTL_DSP_CHANNELS ioctl might not need
+> to make any change for any ssc divider) add code to also set a non-default
+> sample rate, e.g.:
+>
+> speed = 22050;
+> if (ioctl(fd, SNDCTL_DSP_SPEED, &speed) == -1) {
+> 	perror("SNDCTL_DSP_SPEED");
+> 	return 1;
+> }
+
+with this piece of code, I reproduce your issue.
+
+Now, I know the reason of this issue, work in oss mode, it will set the 
+default clock to 8KHz, and then if change to other sample rate, for 
+example 48KHz, the div is different, then it reports -EBUSY.
+
+So, I think we won't change the ATMEL_SSC_CMR_DIV to ATMEL_SSC_TCMR_DIV 
+and ATMEL_SSC_RCMR_DIV, as it will affect other users. We just deal with 
+this situation in ATMEL_SSC_CMR_DIV block, check the direction, if the 
+same direction change the div, then accept the change, otherwise, return 
+-EBUSY.
+
+>
+> Cheers,
+> Peter
+
+Best Regards,
+Bo Shen
