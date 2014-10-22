@@ -1,16 +1,20 @@
-From: Hector Palacios <hector.palacios@digi.com>
-Subject: [PATCH] ASoC: soc-pcm: always cancel any pending
-	delayed stream shutdown
-Date: Wed, 22 Oct 2014 16:14:53 +0200
-Message-ID: <1413987293-21544-1-git-send-email-hector.palacios@digi.com>
+From: "Palacios, Hector" <Hector.Palacios@digi.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: always cancel any pending
+ delayed stream shutdown
+Date: Wed, 22 Oct 2014 17:25:11 +0000
+Message-ID: <52F917CEA1B9C64C94833D53889D478C044B9B@dor-sms-xch01.digi.com>
+References: <1413987293-21544-1-git-send-email-hector.palacios@digi.com>
+ <20141022162802.GB2344@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta12.messagelabs.com (mail1.bemta12.messagelabs.com
- [216.82.251.11])
- by alsa0.perex.cz (Postfix) with ESMTP id E28112651AF
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 16:15:52 +0200 (CEST)
+Received: from mail1.bemta8.messagelabs.com (mail1.bemta8.messagelabs.com
+ [216.82.243.204])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43C7C265205
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 19:25:16 +0200 (CEST)
+In-Reply-To: <20141022162802.GB2344@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,47 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: hector.palacios@digi.com, broonie@kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-After playback a shutdown is scheduled to happen within 5 seconds.
-If another playback takes place before the scheduled work times out,
-the work is cancelled, but if a recording takes place, the work will
-shutdown in the middle of the recording, causing problems.
+On Wed, 22 Oct 2014 18:28, Mark Brown wrote:
+> On Wed, Oct 22, 2014 at 04:14:53PM +0200, Hector Palacios wrote:
+>> After playback a shutdown is scheduled to happen within 5 seconds.
+>> If another playback takes place before the scheduled work times out, 
+>> the work is cancelled, but if a recording takes place, the work will 
+>> shutdown in the middle of the recording, causing problems.
+> 
+> You're not saying what the problems are, just that they might be caused.
 
-To reproduce the issue chain the following commands:
-	arecord -M --duration 5 -c 2 /tmp/test.wav;
-	aplay /tmp/test.wav;
-	sleep 2;
-	arecord -M --duration 5 -c 2 /tmp/test.wav;
-	aplay /tmp/test.wav;
+Sorry, your right. When I do a recording 2 seconds after a previous playback, and later play the recorded sound I hear 3 seconds of correct audio and then I continue to hear good audio but mixed with noise and at a higher volume, as if the codec had reseted certain parameters to some default values.
 
-The fist command records 5 seconds of audio.
-The second command plays the recorded audio. At the end of the playback
-a work will be scheduled to shutdown in 5 seconds, but only 2 seconds after
-the first playback, we run another recording.
-When we have recorded 3 seconds, the shutdown will occur which can cause
-incorrect behavior and bad recorded data. As a consequence, the last
-playback reproduces correct audio for the first 3 seconds and incorrect audio
-after that.
+> Starting or stopping a playback should have no impact on a running 
+> capture stream, users could always start and stop streams manually 
+> anyway.  It sounds like you're working around some problem in drivers.
 
-Signed-off-by: Hector Palacios <hector.palacios@digi.com>
----
- sound/soc/soc-pcm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I see. I tested this with Freescale SGTL5000 on an i.MX6 platform. The shutdown of the playback is eventually calling the set_bias_level() hook of the codec to SND_SOC_BIAS_PREPARE and then again to SND_SOC_BIAS_STANDBY which may eventually turn off the regulators. Anyway the problem doesn't seem to be on this codec hook because I set it to NULL and the problem was reproducible. I thought it was the dapm->bias_level being set to STANDBY on snd_soc_dapm_set_bias_level() in the middle of the capture that did something to the workflow of the capture stream, but I'm no expert on the architecture of the sound layer and didn't see any other call to the codec functions that could be causing the issue. 
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 642c86240752..d19a926872e8 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -760,8 +760,7 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
- 	}
- 
- 	/* cancel any delayed stream shutdown that is pending */
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
--	    rtd->pop_wait) {
-+	if (rtd->pop_wait) {
- 		rtd->pop_wait = 0;
- 		cancel_delayed_work(&rtd->delayed_work);
- 	}
+Thanks
