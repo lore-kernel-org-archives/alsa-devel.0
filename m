@@ -1,58 +1,61 @@
-From: Jianqun <jay.xu@rock-chips.com>
-Subject: [PATCH v3] ASoC: rockchip-i2s: add MAX98090 support to Kconfig
-Date: Wed, 22 Oct 2014 10:59:59 +0800
-Message-ID: <1413946799-20834-1-git-send-email-jay.xu@rock-chips.com>
-References: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: huangtao@rock-chips.com, cf@rock-chips.com, Jianqun <jay.xu@rock-chips.com>
+From: Jie Yang <yang.jie@intel.com>
+Subject: [PATCH] ASoC: Intel: Fix block is enabled multiple
+	times issue
+Date: Wed, 22 Oct 2014 11:07:58 +0800
+Message-ID: <1413947278-3458-1-git-send-email-yang.jie@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E315261543
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 05:07:51 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, liam.r.girdwood@intel.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add SND_SOC_MAX98090 to Kconfig of rockchip ASoC, to support
-rockchip board using a max98090 codec.
+During FW parsing and loading, block_list_prepare() may
+be called for each raw data block copying and this may
+made the hsw_block_enable() called mutiple times, which
+increase block->users many times. The result of this is
+hsw_block_disable() can't power gated the related block
+when trying to free the blocks during suspend, and the
+power gating status also confused.
 
-Tested on rockchip board based on rk3288.
+Here check the block user status, only calling enable()
+for those blocks who has no user yet. Remember that
+this works correctlly on current case, where there are
+enough SRAM memory so different module won't share a
+memory block. For further usage, we may need restructure
+the struct sst_mem_block to save the module list who is
+using it.
 
-Signed-off-by: Jianqun <jay.xu@rock-chips.com>
+Signed-off-by: Jie Yang <yang.jie@intel.com>
 ---
-changes since v1:
---make the max98090 driver directly selectable, suggested by Lars
+ sound/soc/intel/sst-firmware.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-changes since v2:
---modify tristate infomation for SND_SOC_ROCKCHIP
---make SND_SOC_MAX98090 not depends on SND_SOC_ROCKCHIP
-
- sound/soc/rockchip/Kconfig | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
-index 78fc159..236500e 100644
---- a/sound/soc/rockchip/Kconfig
-+++ b/sound/soc/rockchip/Kconfig
-@@ -1,5 +1,5 @@
- config SND_SOC_ROCKCHIP
--	tristate "ASoC support for Rockchip"
-+	tristate "SoC Audio for the Rockchip System-on-Chip"
- 	depends on COMPILE_TEST || ARCH_ROCKCHIP
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
-@@ -8,4 +8,14 @@ config SND_SOC_ROCKCHIP
- 	  select the audio interfaces to support below.
+diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
+index f2f1d5f..db60398 100644
+--- a/sound/soc/intel/sst-firmware.c
++++ b/sound/soc/intel/sst-firmware.c
+@@ -80,7 +80,7 @@ static int block_list_prepare(struct sst_dsp *dsp,
+ 	/* enable each block so that's it'e ready for data */
+ 	list_for_each_entry(block, block_list, module_list) {
  
- config SND_SOC_ROCKCHIP_I2S
--	tristate
-+	tristate "ASoC support for Rockchip I2S driver"
-+	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
-+	help
-+	  Say Y or M if you want to add support for I2S driver for Rockchip
-+	  I2S device.
-+
-+config SND_SOC_MAX98090
-+	tristate "ASoC support for max98090 driver"
-+	depends on I2C && GPIOLIB
-+	help
-+	  Say Y or M here if you want to add support for max98090 codec.
+-		if (block->ops && block->ops->enable) {
++		if (block->ops && block->ops->enable && !block->users) {
+ 			ret = block->ops->enable(block);
+ 			if (ret < 0) {
+ 				dev_err(dsp->dev,
 -- 
 1.9.1
