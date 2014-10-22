@@ -1,21 +1,17 @@
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Subject: Re: [PATCH V2 1/2] ARM: pxa: spitz: register
-	spitz-audio device
-Date: Wed, 22 Oct 2014 13:42:27 +0400
-Message-ID: <CALT56yOM--1-M4-we8WLVEC2tiSU+_48b1X=tWB2vQ7fepKCgg@mail.gmail.com>
-References: <1413926133-3566-1-git-send-email-dbaryshkov@gmail.com>
- <1935279.fumFSz5CfW@wuerfel>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: core: Use snd_ctl_enum_info()
+Date: Wed, 22 Oct 2014 11:05:06 +0100
+Message-ID: <20141022100506.GJ2344@sirena.org.uk>
+References: <1413886496-19158-1-git-send-email-tiwai@suse.de>
+ <1413886496-19158-3-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2612875298819777374=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ie0-f177.google.com (mail-ie0-f177.google.com
- [209.85.223.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D8D926060F
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 11:42:29 +0200 (CEST)
-Received: by mail-ie0-f177.google.com with SMTP id tp5so122166ieb.22
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 02:42:28 -0700 (PDT)
-In-Reply-To: <1935279.fumFSz5CfW@wuerfel>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 949FB26060F
+ for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 12:05:18 +0200 (CEST)
+In-Reply-To: <1413886496-19158-3-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2014-10-22 12:46 GMT+04:00 Arnd Bergmann <arnd@arndb.de>:
-> On Wednesday 22 October 2014 01:15:32 Dmitry Eremin-Solenikov wrote:
->> Register spitz-audio device to be used by ASoC driver.
->>
->> [V2: Removed ifdefs around spitz_audio_init].
->>
->> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
->> ---
->>
->
-> A more general note about your patch description above: when you
-> write about the changes between versions, put that below the ---
-> line under your Signed-off-by. Aside from that, your changelog
-> entry would actually benefit from more verbosity: explain what the
-> purpose of this is, not just what it does.
 
-Thanks. I understood your point regarding the changelog.
-The commit message seemed pretty much obvious - due to
-the second patch. I can redo it - I think those two patches should
-go through different trees, so the connection will be lost.
+--===============2612875298819777374==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qD3brAgIG4LbUq6d"
+Content-Disposition: inline
 
->
->>  /**************************************************************************
->>  ****>
->> + * Audio devices
->> +
->> ***************************************************************************
->> ***/ +static struct platform_device spitz_audio_device = {
->> +       .name   = "spitz-audio",
->> +       .id     = -1,
->> +};
->> +
->> +static inline void spitz_audio_init(void)
->> +{
->> +       platform_device_register(&spitz_audio_device);
->> +}+
->
-> I realize that the file has more of these, but it would be better
-> for a number of reasons to use 'platform_device_register_simple'
-> instead of platform_device_register. statically defining platform
-> devices (or any other device) is not recommended.
 
-Ack. I did not want to use approach different from the rest of
-spitz.c, but it looks it is time to change. Will send V3 later today,
-after (hopefully)  receiving feedback from ASoC team.
+--qD3brAgIG4LbUq6d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-With best wishes
-Dmitry
+On Tue, Oct 21, 2014 at 12:14:56PM +0200, Takashi Iwai wrote:
+> ... and reduce the open codes.
+
+Applied, thanks.
+
+--qD3brAgIG4LbUq6d
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUR4FRAAoJECTWi3JdVIfQcAUH/RpkRz8X0NZJFst/StBGZUKJ
+Xa0LhIrvmzFpOesvpvnkM9xN2WQeCTVB0AOMVM36i54CDejphpwF9C5obx2wVh7m
+DYnvC2w9KiT+b/JbSNvDQuJYnseUZFyrMUh56GUb4DplDmoXSCRnf5t6KbOfDZdp
+3+lBQ0y7AAGRSOHigD6fiJ/k6mMOGezW11E2Ganqsl6u3Mj9prLbz0acpF5/sq5C
+X44IfmYptBfPZG1kT+c1aqGV1fWLGAPb1AjUgO9Vah/tZbUissh8h56YT+OqE8lk
+XxXx/kNiY48IxeDUCsZjCM86jmCJqKtrXrweZCOBUeZ1d1AXN1SEuY2jNr7iHoQ=
+=rLk6
+-----END PGP SIGNATURE-----
+
+--qD3brAgIG4LbUq6d--
+
+--===============2612875298819777374==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2612875298819777374==--
