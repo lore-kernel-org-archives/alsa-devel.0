@@ -1,105 +1,89 @@
-From: Valentin Raevsky <valentin@compulab.co.il>
-Subject: Re: Help with wm8731 support for the Utilite (imx6q)
-Date: Wed, 22 Oct 2014 11:04:04 +0300
-Message-ID: <544764F4.8070904@compulab.co.il>
-References: <CAB-pspc5KZ0sTB-7uxjBq+PEFxFdAPO5NAXof_+uwQBJ_JCejg@mail.gmail.com>	<CAOMZO5C-EG+beiK1M10vX0Xhg4avYLExxG7MZOQq8gM6gRnANw@mail.gmail.com>	<CAB-pspcNOuW=JN9_avEvyPFUvTfs99PB=ah43YdqMC65mZ8psQ@mail.gmail.com>	<CAB-pspei1a3TbuFGBT-kupEWU5UY10kQoTtiV895WTi-j+-dzQ@mail.gmail.com>	<CAOMZO5AVr0xJjf9JjYNuXG-jJC3ft84+fO-5ToSieP9NFP=-+g@mail.gmail.com>	<CAOMZO5CU+Y8cGJsn4O1ccFZUSjLM1iH3QN2fAv4UyaLMk5yAEg@mail.gmail.com>	<CAB-pspdvzFX-KjYSC3z3xoDMPvq4g3iFhBG76Y=DGy=YBf5dow@mail.gmail.com>	<54464C32.8020100@compulab.co.il>	<CAB-pspcaMh9DL8bND1kSmphZfMYNOvPS_CYZ8UYZ2EZuVjjksg@mail.gmail.com>	<CAOMZO5A=RSodq=JmjrjHTJSg9QaEx42uu7vAbON=Jk5-Gmiv9Q@mail.gmail.com>	<CAB-pspcmxQAzR=jX1_fp06UUgNbC_LXFDN4g6RnOn6vTTvJjTw@mail.gmail.com>
- <CAB-pspcZ8bhLMPDS2NbDOEugfzO+TZfOnA_h05pvkU5ZPv6qVQ@mail.gmail.com>
+From: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: atmel_ssc_dai: Track playback and
+ capture CMR dividers separately.
+Date: Wed, 22 Oct 2014 16:09:36 +0800
+Message-ID: <54476640.5050603@atmel.com>
+References: <a541333cf46b4c61b790df927d4b315d@EMAIL.axentia.se> <5445BCBF.5090002@atmel.com> <dc4461593ddb4d539f2db74b69bab98c@EMAIL.axentia.se> <544620C8.4040001@atmel.com> <8559eca320324092be82f7d942606102@EMAIL.axentia.se> <544707F3.1020505@atmel.com> <c61abc1ef0f341c2be04e3d7b07d97de@EMAIL.axentia.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from compulab.co.il (softlayer.compulab.co.il [50.23.254.55])
- by alsa0.perex.cz (Postfix) with ESMTP id 18BC6262618
- for <alsa-devel@alsa-project.org>; Wed, 22 Oct 2014 10:04:38 +0200 (CEST)
-In-Reply-To: <CAB-pspcZ8bhLMPDS2NbDOEugfzO+TZfOnA_h05pvkU5ZPv6qVQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jonathan Bennett <jbscience87@gmail.com>, Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <c61abc1ef0f341c2be04e3d7b07d97de@EMAIL.axentia.se>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Rosin <peda@axentia.se>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/22/2014 01:37 AM, Jonathan Bennett wrote:
->
->
-> On Tue, Oct 21, 2014 at 1:49 PM, Jonathan Bennett <jbscience87@gmail.com
-> <mailto:jbscience87@gmail.com>> wrote:
->
->
->
->     On Tue, Oct 21, 2014 at 1:12 PM, Fabio Estevam <festevam@gmail.com
->     <mailto:festevam@gmail.com>> wrote:
->
->         On Tue, Oct 21, 2014 at 4:04 PM, Jonathan Bennett
->         <jbscience87@gmail.com <mailto:jbscience87@gmail.com>> wrote:
->
->         > I realized something just last night. I was grabbing changes from the devel
->         > branch ofgithub.com/utilite-computer
->         <http://github.com/utilite-computer>, thinking that those
->         changes were
->         > based off the vanilla 3.10 kernel. Those changes are actually based on the
->         > Freescale 3.10 kernel. I pulled a Freescale patch that is obviously missing:
->         > "ENGR00276249-1 ARM: imx6q: Add missing baud clock for ssi" I also switched
->
->         The baud clock patch is present in 3.18-rc1:
->
->         commit 935632e9938e3e286b9c62a7e54d35c428533cc9
->         Author: Shengjiu Wang <shengjiu.wang@freescale.com
->         <mailto:shengjiu.wang@freescale.com>>
->         Date:   Tue Sep 9 17:13:26 2014 +0800
->
->              ARM: dts: imx6qdl: add baud clock and clock-names for ssi
->
->              Baud clock is used for bit clock generation in master mode.
->         Ipg clock
->              is peripheral clock and peripheral access clock.
->
->              Signed-off-by: Shengjiu Wang <shengjiu.wang@freescale.com
->         <mailto:shengjiu.wang@freescale.com>>
->              Signed-off-by: Shawn Guo <shawn.guo@freescale.c
->
->       Awesome!
->     It's great to see this stuff go mainline.
->
->
-> I have rebased to 3.18 rc-1. It has simplified the patch set a bit, as
-> more of  the Freescale things have hit mainline.
-> http://pastebin.com/C652GKe3 is my patchset.
-> Again, the card registers and thinks it plays, but there is no actual
-> output.
-Make sure that "Output Mixer HiFi Playback Switch" is on
-Issue:
-# amixer cset numid=14,iface=MIXER,name='Output Mixer HiFi Playback 
-Switch' on
-# alsactl store wm8731audio
+Hi Peter,
 
+On 10/22/2014 12:47 PM, Peter Rosin wrote:
+> Hi!
 >
+>> Hi Peter,
+>>
+>> On 10/21/2014 09:05 PM, Peter Rosin wrote:
+>>> I did some further tests, and the following program fails without the patch:
+>>
+>> With the patch, it is OK?
 >
->         > back to imx-wm8731.c for the driver. With this setup, the driver registers,
->         > and speaker-test thinks it plays, however there is no actual sound output. I
->         > call it progress.
+> Yes.
 >
->         Great progress: some things to check :
+>>> #include <sys/ioctl.h>
+>>> #include <unistd.h>
+>>> #include <fcntl.h>
+>>> #include <sys/soundcard.h>
+>>>
+>>> int
+>>> main(void)
+>>> {
+>>> 	int fd;
+>>> 	int format;
+>>> 	int channels;
+>>>
+>>> 	if ((fd = open("/dev/dsp", O_WRONLY, 0)) == -1) {
+>>> 		perror("open");
+>>> 		return 1;
+>>> 	}
+>>> 	format = AFMT_S16_LE;
+>>> 	if (ioctl(fd, SNDCTL_DSP_SETFMT, &format) == -1) {
+>>> 		perror("SNDCTL_DSP_SETFMT");
+>>> 		return 1;
+>>> 	}
+>>> 	channels = 2;
+>>> 	if (ioctl(fd, SNDCTL_DSP_CHANNELS, &channels) == -1) {
+>>> 		perror("SNDCTL_DSP_CHANNELS");
+>>> 		return 1;
+>>> 	}
+>>> 	return 0;
+>>> }
+>>>
+>>> Output:
+>>> SNDCTL_DSP_CHANNELS: Device or resource busy
+>>
+>> This return from codec or from atmel_ssc_dai?
 >
->         1. audmux settings
+> This -EBUSY definitely comes from atmel_ssc_set_dai_sysclk, when my
+> card-driver tries to set ATMEL_SSC_CMR_DIV. With the patch, it works.
+> (the codec is spdif-transmitter, since the i2c interface of the actual tfa9879
+> codec is not directly reachable from the linux cpu, but that has nothing to
+> do with this issue).
+
+I try to reproduce it (using the code your pasted directly) on atmel 
+sama5d3xek with wm8904 code, don't meet this error.
+
+I also go through the OSS code, I still don't find this is related with 
+atmel_ssc_set_dai_sysclk.
+
+So, am I missing something or something else?
+
+>>> (I admin to having edited the above code slightly in this mail, so I
+> s/admin/admit/
+>>> might have introduced some silly bug, but you get what I mean, just
+>>> open the device and request some parameters, and boom: -EBUSY)
 >
->     Well, the imx-wm8731 driver (It's really just glue for loading
->     wm8731) does have audmux settings in it. These get called during the
->     module probe. Not sure what might need to change there. My thoughts
->     are that they should be correct.
+> Cheers,
+> Peter
 >
->
->         2. Can you try to run 'alsamixer' and make sure that the volume
->         is not
->         at the lowest level?
->
->     Yeah, I've made sure to check alsamixer and turn the volume up.
->     Still no joy.
->
->
+
+Best Regards,
+Bo Shen
