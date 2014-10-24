@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Request for comments for SND_SOC_IMX_WM8731
-Date: Fri, 24 Oct 2014 17:19:02 +0100
-Message-ID: <20141024161902.GI3729@sirena.org.uk>
-References: <CAB-pspcgsa3-YgBfk-5TUoyfEN0pbBHtqCUrzyaQdCA-QNHt1Q@mail.gmail.com>
- <CAOMZO5AXhj-r4v-sR6Rp_ywD85M07W06r551vMq0r6juE+Tmgg@mail.gmail.com>
- <20141024140440.GG3729@sirena.org.uk>
- <CAOMZO5AJ=KehtXWvh10LTCV25gWGn2DgSLprm8bG3trVcsxHrg@mail.gmail.com>
- <CAB-pspe+NP-bvBF=wm-3EQjMw7mvzSeAEH1O-j_fen=L50mkNw@mail.gmail.com>
+From: Ploumistos Alexandros <ch02499@cc.uoi.gr>
+Subject: Re: Analog sound (ALC262) lost on linux (any distro
+	and kernel) on a dual boot system
+Date: Fri, 24 Oct 2014 19:19:26 +0300
+Message-ID: <1414167566.544a7c0e22450@webmail.uoi.gr>
+References: <1414065684.5448ee14f02dd@webmail.uoi.gr>
+ <1414065856.5448eec062674@webmail.uoi.gr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5981999297969185441=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A45632604AA
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 18:19:13 +0200 (CEST)
-In-Reply-To: <CAB-pspe+NP-bvBF=wm-3EQjMw7mvzSeAEH1O-j_fen=L50mkNw@mail.gmail.com>
+Received: from phoenix.noc.uoi.gr (phoenix.noc.uoi.gr [195.130.120.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0C482604AA
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 18:19:28 +0200 (CEST)
+In-Reply-To: <1414065856.5448eec062674@webmail.uoi.gr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jonathan Bennett <jbscience87@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, Valentin Raevsky <valentin@compulab.co.il>, Fabio Estevam <festevam@gmail.com>
+To: Ploumistos Alexandros <ch02499@cc.uoi.gr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Quoting Ploumistos Alexandros <ch02499@cc.uoi.gr>:
 
---===============5981999297969185441==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ijf6z65S790CMqo8"
-Content-Disposition: inline
+> And here is the attachment...
+>
+> > Hello,
+> >
+> > A while back I had installed Ubuntu on a friend's laptop -a Sony Vaio
+> > VGN-FW21M-
+> > alongside windows Vista. Everything worked fine for a few years, until at
+> > some
+> > point last year linux went mute, while in windows both the analog and the
+> > digital outputs continued working. She couldn't remember doing something
+> "out
+> > of the ordinary", but she was sure it was not after an update. Several
+> months
+> > later, she upgraded to windows 7 but that didn't change anything. When I
+> got
+> > my
+> > hands on the laptop, I checked for muted controls and other usual suspects,
+> > deprecated quirks (there were none) and all inputs and outputs of the
+> system.
+> > HDMI audio works fine and so does the internal mic. Speakers, headphones
+> and
+> > the external mic input do not work, even though pulse audio volume meter
+> acts
+> > as if there were actually sounds being played. I followed all of Ubuntu's
+> > troubleshooting procedures, I removed and reinstalled alsa and pulse, I
+> > purged
+> > all configuration files, I created a new user and I even installed the
+> latest
+> > alsa-packages from the "ALSA daily build snapshots" repository and nothing
+> > worked. I also tried booting into windows, setting all volume levels to the
+> > max
+> > and disabled power saving on all sound and multimedia devices. Next, I
+> tried
+> > retasking the jacks one by one to no avail.
+> >
+> > I remembered that I had performed the installation with an Ubuntu 11.10
+> live
+> > CD,
+> > so I booted the computer off of that, but this time I got no sound. I tried
+> > with
+> > all the live CDs of a multitude of distros I had lying around, with kernels
+> > ranging from 2.6.35 to 3.16.6 and none of them worked, so I figured the
+> issue
+> > must have something to do with windows. Is it possible that windows somehow
+> > started locking the audio chip on shutdown? If that is the case, can it be
+> > deduced from the logs and more importantly, can it be fixed?
+> >
+> > I am attaching the output of alsa-info and lspci as well as kernel logs.
+> >
+> > Thank you for your time.
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 
---ijf6z65S790CMqo8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I just noticed there might be a problem with the attached file after it got
+scrubbed. The file inside the .xz archive should get a .tar.xz extension so it
+may be opened. For anyone having trouble, I have uploaded the logs here:
+http://fwh4qw6313.1fichier.com/
 
-On Fri, Oct 24, 2014 at 09:48:37AM -0500, Jonathan Bennett wrote:
-
-> Oh, also, this patch is a bit big for the mailing list, what is the
-> preferred method for sending in large patches to look at? I can attach,
-> throw it on github, put it on an http server, etc.
-
-You need to follow the procedure in SubmittingPatches, that means you
-need to post your code to the list.
-
---ijf6z65S790CMqo8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUSnv1AAoJECTWi3JdVIfQe7UH/RnzEBlEHBojkZBP4VoElu33
-N6IeJ1vBZiPEcLwJDhURV20uU38FTZxc8Y4oL+TfSZa5MXkrMa7l+pdqZOJEvr5G
-Hsy7E82RPVkbcicSV02+T8lA8G3DcxTI9VPZII0fsadmiHB1zoQLbq8Vnv+kaIoT
-2Ofe/v4gkgpaH0TAN+No06bqW9IbEKCQSkF6UPOshnDeM2jBUrA61fFVMvv4Q6Dv
-60+/VXqo57/3/Hnq+1tl0pEKEgmbzT7WX6mcJufBZaGbl/JJ66KLkNFEU+gnvb09
-jE32SSABC/2xtn1rDDEs58njYRVU2/FrB/Bib+MUAFJtGkeY95ZibKStaJHbi5c=
-=971G
------END PGP SIGNATURE-----
-
---ijf6z65S790CMqo8--
-
---===============5981999297969185441==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5981999297969185441==--
+Sorry for the trouble
