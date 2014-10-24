@@ -1,61 +1,72 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Request for comments for SND_SOC_IMX_WM8731
-Date: Fri, 24 Oct 2014 12:10:52 -0200
-Message-ID: <CAOMZO5AJ=KehtXWvh10LTCV25gWGn2DgSLprm8bG3trVcsxHrg@mail.gmail.com>
-References: <CAB-pspcgsa3-YgBfk-5TUoyfEN0pbBHtqCUrzyaQdCA-QNHt1Q@mail.gmail.com>
- <CAOMZO5AXhj-r4v-sR6Rp_ywD85M07W06r551vMq0r6juE+Tmgg@mail.gmail.com>
- <20141024140440.GG3729@sirena.org.uk>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [alsa-devel] [PATCH v2 5/6] sound/usb: pcm changes to use media
+ token api
+Date: Fri, 24 Oct 2014 08:44:46 -0600
+Message-ID: <544A65DE.40108@osg.samsung.com>
+References: <cover.1413246370.git.shuahkh@osg.samsung.com> <cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com> <543FB374.8020604@metafoo.de> <543FC3CD.8050805@osg.samsung.com> <s5h38aow1ub.wl-tiwai@suse.de> <543FD1EC.5010206@osg.samsung.com> <s5hy4sgumjo.wl-tiwai@suse.de> <543FD892.6010209@osg.samsung.com> <s5htx34ul3w.wl-tiwai@suse.de> <54467EFB.7050800@xs4all.nl> <s5hbnp5z9uy.wl-tiwai@suse.de> <CAGoCfixD-zv1MMHUXLnjGV5KVB-DGdp2ZqZ0hUTR14UvLh-Gvw@mail.gmail.com> <544804F1.7090606@linux.intel.com> <CAGoCfiyQVY6Ss2qcp3aQijq3cP3BAM8X4yaCXRtx63dNNm-QKA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-la0-f50.google.com (mail-la0-f50.google.com
- [209.85.215.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 04E68260573
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 16:10:54 +0200 (CEST)
-Received: by mail-la0-f50.google.com with SMTP id s18so2699950lam.23
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 07:10:53 -0700 (PDT)
-In-Reply-To: <20141024140440.GG3729@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jonathan Bennett <jbscience87@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, Valentin Raevsky <valentin@compulab.co.il>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAGoCfiyQVY6Ss2qcp3aQijq3cP3BAM8X4yaCXRtx63dNNm-QKA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Devin Heitmueller <dheitmueller@kernellabs.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Lars-Peter Clausen <lars@metafoo.de>, Hans Verkuil <hverkuil@xs4all.nl>, Mauro Carvalho Chehab <m.chehab@samsung.com>
+Cc: alsa-devel@alsa-project.org, Linux Media Mailing List <linux-media@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Sander Eikelenboom <linux@eikelenboom.it>, Prabhakar Lad <prabhakar.csengg@gmail.com>, Antti Palosaari <crope@iki.fi>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Tim Gardner <tim.gardner@canonical.com>, "olebowle@gmx.com" <olebowle@gmx.com>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 24, 2014 at 12:04 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Oct 24, 2014 at 10:20:29AM -0200, Fabio Estevam wrote:
->> On Fri, Oct 24, 2014 at 2:42 AM, Jonathan Bennett <jbscience87@gmail.com> wrote:
->
->> > + ssi_clk = devm_clk_get(&codec_dev->dev, "cko");
->> > + if (IS_ERR(ssi_clk)) {
->> > + pr_err("Could not get \"cko\" clock \n");
->> > + return PTR_ERR(ssi_clk);
->>
->> I am not sure that adding the clock handling here is the correct approach.
->>
->> The dts you use looks like:
->>
->>    codec: wm8731@1a {
->>       compatible = "wlf,wm8731";
->>       reg = <0x1a>;
->>       clocks = <&clks 173>, <&clks 158>, <&clks 201>, <&clks 200>;
->>       clock-names = "pll4", "imx-ssi.1", "cko", "cko2";
->
->> ,which does not match the current bindings for the wm8731. The wm8731
->> driver could be extended to handle the clocks if needed, instead of
->> handling them via machine driver.
->
-> The WM8731 doesn't have anything like that number of clock inputs so
-> hanging them off the WM8731 seems very confused.
+On 10/22/2014 01:45 PM, Devin Heitmueller wrote:
+>> this seems like a feature, not a bug. PulseAudio starts streaming before
+>> clients push any data and likewise keeps sources active even after for some
+>> time after clients stop recording. Closing VLC in your example doesn't
+>> immediately close the ALSA device. look for module-suspend-on-idle in your
+>> default.pa config file.
+> 
+> The ALSA userland emulation in PulseAudio is supposed to faithfully emulate
+> the behavior of the ALSA kernel ABI... except when it doesn't, then it's not
+> a bug but rather a feature.  :-)
+> 
+>> I also agree that the open/close of the alsa device is the only way to
+>> control exclusion.
+> 
+> I was also a proponent that we should have fairly coarse locking done
+> at open/close for the various device nodes (ALSA/V4L/DVB).  The challenge here
+> is that we have a large installed based of existing applications that
+> rely on kernel
+> behavior that isn't formally specified in any specification.  Hence
+> we're forced to try
+> to come up with a solution that minimizes the risk of ABI breakage.
+> 
+> If we were doing this from scratch then we could lay down some hard/fast rules
+> about things apps aren't supposed to do and how apps are supposed to respond
+> to those exception cases.  Unfortunately we don't have that luxury here.
+> 
 
-Yes, exactly. If we need to pass a clock to WM8731 it should be MCLK only.
+Sounds like we don't have a clear direction on open/close or capture
+start/stop. What I am hearing is open/close isn't acceptable for
+media maintainers and capture trigger start/stop isn't acceptable
+to sound maintainers. :) Fork in the road, which way do we go?
 
-The pll4, ssi clocks are internal mx6 clocks, so the proposed clock
-handling should be reworked.
+Implementation wise, supporting capture trigger start/stop approach
+will be harder to maintain in longterm. It adds more variables to
+the mix. Applications open sounds device from the main thread and
+then create a new thread to handle streams. I can see that based
+on the token hold requests that come in. So the token hold logic
+will have to take that into account, leading into potential
+unbalanced lock/unlock scenarios. It is not impossible to solve,
+that's what I did in this patch series, but it does get complex.
+
+What I am looking for is some consensus on let's go with an approach
+and try. Doesn't matter which way we go, and how much testing I do,
+I am bound to miss something and this work needs to soak for a bit in
+the media experimental branch.
+
+thanks,
+-- Shuah
+
+
+
+-- 
+Shuah Khan
+Sr. Linux Kernel Developer
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
