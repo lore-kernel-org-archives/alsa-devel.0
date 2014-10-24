@@ -1,8 +1,8 @@
 From: Bo Shen <voice.shen@atmel.com>
 Subject: Re: [PATCH v2] ASoC: atmel_ssc_dai: Match the CMR divider only in
  full duplex.
-Date: Fri, 24 Oct 2014 16:43:13 +0800
-Message-ID: <544A1121.6080900@atmel.com>
+Date: Fri, 24 Oct 2014 16:46:25 +0800
+Message-ID: <544A11E1.20307@atmel.com>
 References: <5733bb4302d148feb0bbd8ffd8c054a2@EMAIL.axentia.se> <5449C437.30309@atmel.com> <6496d69edfbf49ad81b068b259e98479@EMAIL.axentia.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="windows-1252"; format=flowed
@@ -27,8 +27,8 @@ On 10/24/2014 03:13 PM, Peter Rosin wrote:
 > No, I  didn't, "git format-patch" and paste into the mail body. Was there some
 > whitespace issues with the patch?
 
-If you paste the patch in mail body, after apply your patch, git log 
-will show information look like:
+If you paste patch into the mail body, after using "git am" to apply 
+your patch, git log will show like:
 --->8---
 commit bfb9419839caeca07aa3e99c141fc7c1ac4f37af
 Author: Peter Rosin <peda@axentia.se>
@@ -51,13 +51,14 @@ driver
      half-duplex scenarios, which is needed when using the OSS API.
 ---8<---
 
-If you send patch use "git send-email", after apply your patch, git log 
-will show information look like
-
+If you use "git send-email", after using "git am" to apply your patch, 
+git log will show like:
 --->8---
 commit bfb9419839caeca07aa3e99c141fc7c1ac4f37af
 Author: Peter Rosin <peda@axentia.se>
 Date:   Wed Oct 22 15:13:55 2014 +0000
+
+     ASoC: atmel_ssc_dai: Match the CMR divider only in full duplex.
 
      The CMR divider register is shared by playback and capture. The SSC 
 driver
@@ -65,7 +66,6 @@ driver
      not conflict during simultaneous playback/capture. However, the
      implementation also prevents changing the register content in
      half-duplex scenarios, which is needed when using the OSS API.
-
 ---8<---
 
 > Cheers,
