@@ -1,15 +1,19 @@
-From: mengdong.lin@intel.com
-Subject: [PATCH] ASoC: Intel: Add Cherrytrail & Braswell
-	machine driver cht_bsw_rt5672
-Date: Fri, 24 Oct 2014 19:14:07 +0800
-Message-ID: <c59847b1110e5302ec0a82700d4e318bef2a3f66.1414148860.git.mengdong.lin@intel.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: Request for comments for SND_SOC_IMX_WM8731
+Date: Fri, 24 Oct 2014 10:20:29 -0200
+Message-ID: <CAOMZO5AXhj-r4v-sR6Rp_ywD85M07W06r551vMq0r6juE+Tmgg@mail.gmail.com>
+References: <CAB-pspcgsa3-YgBfk-5TUoyfEN0pbBHtqCUrzyaQdCA-QNHt1Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BFB62604C5
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 13:08:14 +0200 (CEST)
+Received: from mail-la0-f48.google.com (mail-la0-f48.google.com
+ [209.85.215.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CC5E260559
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 14:20:30 +0200 (CEST)
+Received: by mail-la0-f48.google.com with SMTP id gi9so2508250lab.21
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 05:20:29 -0700 (PDT)
+In-Reply-To: <CAB-pspcgsa3-YgBfk-5TUoyfEN0pbBHtqCUrzyaQdCA-QNHt1Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,363 +23,227 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, vinod.koul@intel.com, subhransu.s.prusty@intel.com
-Cc: Mengdong Lin <mengdong.lin@intel.com>
+To: Jonathan Bennett <jbscience87@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, Valentin Raevsky <valentin@compulab.co.il>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@intel.com>
+On Fri, Oct 24, 2014 at 2:42 AM, Jonathan Bennett <jbscience87@gmail.com> wrote:
+> This patch is a continuation of my work on supporting the Utilite devices on
+> the vanilla kernel. I've modified the code slightly to conform to
+> established practice. Namely instead of using src-port and ext-port, we use
+> mux-int-port and mux-ext-port.
+>
+> This driver has support for putting the codec in either master mode or slave
+> mode. So far I've only had success with using slave mode. For trying to
+> submit for kernel inclusion, should I strip out the code for codec master
 
-Add machine driver for two Intel Cherryview-based platforms, Cherrytrail and
-Braswell, with RT5672 codec.
+Yes, just add codec slave support then.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@intel.com>
+> mode? As a kernel dev noob, any other comments are welcome.
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 2a3af88..7479ce0 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -16,6 +16,9 @@ config SND_SST_MFLD_PLATFORM
- config SND_SST_IPC
- 	tristate
- 
-+config SND_SST_MACHINE
-+        tristate
-+
- config SND_SOC_INTEL_SST
- 	tristate "ASoC support for Intel(R) Smart Sound Technology"
- 	select SND_SOC_INTEL_SST_ACPI if ACPI
-@@ -76,3 +79,20 @@ config SND_SOC_INTEL_BROADWELL_MACH
- 	  Ultrabook platforms.
- 	  Say Y if you have such a device
- 	  If unsure select "N".
-+
-+config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
-+        tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
-+        depends on X86_INTEL_LPSS
-+        select SND_SOC_RT5670
-+        select SND_SST_MFLD_PLATFORM
-+        select SND_SOC_INTEL_SST
-+        select SND_SST_IPC
-+        select SND_SST_MACHINE
-+        default n
-+
-+        help
-+          This adds support for ASoC machine driver for Intel(R) Cherrytrail & Braswell
-+          platforms with RT5672 audio codec.
-+          Say Y if you have such a device
-+          If unsure select "N".
-+
-diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-index 9ab43be..4069d3f 100644
---- a/sound/soc/intel/Makefile
-+++ b/sound/soc/intel/Makefile
-@@ -31,6 +31,7 @@ obj-$(CONFIG_SND_SOC_INTEL_HASWELL_MACH) += snd-soc-sst-haswell.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
- obj-$(CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH) += snd-soc-sst-byt-max98090-mach.o
- obj-$(CONFIG_SND_SOC_INTEL_BROADWELL_MACH) += snd-soc-sst-broadwell.o
-+obj-$(CONFIG_SND_SST_MACHINE) += board/
- 
- # DSP driver
- obj-$(CONFIG_SND_SST_IPC) += sst/
-diff --git a/sound/soc/intel/board/Makefile b/sound/soc/intel/board/Makefile
-new file mode 100644
-index 0000000..9ecc227
---- /dev/null
-+++ b/sound/soc/intel/board/Makefile
-@@ -0,0 +1,2 @@
-+snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
-+obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5672_MACH) += snd-soc-sst-cht-bsw-rt5672.o
-diff --git a/sound/soc/intel/board/cht_bsw_rt5672.c b/sound/soc/intel/board/cht_bsw_rt5672.c
-new file mode 100644
-index 0000000..dffd8b1
---- /dev/null
-+++ b/sound/soc/intel/board/cht_bsw_rt5672.c
-@@ -0,0 +1,286 @@
-+/*
-+ *  cht_bsw_rt5672.c - ASoc Machine driver for Intel Cherryview-based platforms
-+ *                     Cherrytrail and Braswell, with RT5672 codec.
-+ *
-+ *  Copyright (C) 2014 Intel Corp
-+ *  Author: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-+ *          Mengdong Lin <mengdong.lin@intel.com>
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include "../../codecs/rt5670.h"
-+#include "../sst-atom-controls.h"
-+
-+#define CHT_PLAT_CLK_3_HZ	19200000
-+
-+static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("Int Mic", NULL),
-+	SND_SOC_DAPM_SPK("Ext Spk", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route cht_audio_map[] = {
-+	{"IN1P", NULL, "Headset Mic"},
-+	{"IN1N", NULL, "Headset Mic"},
-+	{"DMIC L1", NULL, "Int Mic"},
-+	{"DMIC R1", NULL, "Int Mic"},
-+	{"Headphone", NULL, "HPOL"},
-+	{"Headphone", NULL, "HPOR"},
-+	{"Ext Spk", NULL, "SPOLP"},
-+	{"Ext Spk", NULL, "SPOLN"},
-+	{"Ext Spk", NULL, "SPORP"},
-+	{"Ext Spk", NULL, "SPORN"},
-+	{"AIF1 Playback", NULL, "ssp2 Tx"},
-+	{"ssp2 Tx", NULL, "codec_out0"},
-+	{"ssp2 Tx", NULL, "codec_out1"},
-+	{"codec_in0", NULL, "ssp2 Rx"},
-+	{"codec_in1", NULL, "ssp2 Rx"},
-+	{"ssp2 Rx", NULL, "AIF1 Capture"},
-+};
-+
-+static const struct snd_kcontrol_new cht_mc_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+	SOC_DAPM_PIN_SWITCH("Int Mic"),
-+	SOC_DAPM_PIN_SWITCH("Ext Spk"),
-+};
-+
-+static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int ret;
-+	unsigned int fmt;
-+
-+	if (strncmp(codec_dai->name, "rt5670-aif1", 11))
-+		return 0;
-+
-+	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-+	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4,
-+				       SNDRV_PCM_FORMAT_GSM);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* TDM slave Mode */
-+	fmt =   SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
-+		| SND_SOC_DAIFMT_CBS_CFS;
-+	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec DAI fmt %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_pll(codec_dai, 0, RT5670_PLL1_S_MCLK,
-+				  CHT_PLAT_CLK_3_HZ, params_rate(params) * 512);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT5670_SCLK_S_PLL1,
-+				     params_rate(params) * 512,
-+				     SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec sysclk: %d\n", ret);
-+		return ret;
-+	}
-+	return 0;
-+}
-+
-+static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate = hw_param_interval(params,
-+			SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+						SNDRV_PCM_HW_PARAM_CHANNELS);
-+
-+	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 2;
-+
-+	/* set SSP2 to 24-bit */
-+	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
-+				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
-+				    SNDRV_PCM_FORMAT_S24_LE);
-+	return 0;
-+}
-+
-+static int cht_set_bias_level(struct snd_soc_card *card,
-+				struct snd_soc_dapm_context *dapm,
-+				enum snd_soc_bias_level level)
-+{
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+	case SND_SOC_BIAS_PREPARE:
-+	case SND_SOC_BIAS_STANDBY:
-+	case SND_SOC_BIAS_OFF:
-+		break;
-+	default:
-+		dev_err(card->dev, "Invalid bias level=%d\n", level);
-+		return -EINVAL;
-+	}
-+	card->dapm.bias_level = level;
-+	return 0;
-+}
-+
-+static int cht_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	int ret;
-+	struct snd_soc_card *card = runtime->card;
-+
-+	/* Set card bias level */
-+	cht_set_bias_level(card, &card->dapm, SND_SOC_BIAS_OFF);
-+	card->dapm.idle_bias_off = true;
-+
-+	ret = snd_soc_dapm_sync(&card->dapm);
-+	if (ret) {
-+		dev_err(card->dev, "unable to sync dapm\n");
-+		return ret;
-+	}
-+	return ret;
-+}
-+
-+static unsigned int rates_48000[] = {
-+	48000,
-+};
-+
-+static struct snd_pcm_hw_constraint_list constraints_48000 = {
-+	.count = ARRAY_SIZE(rates_48000),
-+	.list  = rates_48000,
-+};
-+
-+static int cht_aif1_startup(struct snd_pcm_substream *substream)
-+{
-+	return snd_pcm_hw_constraint_list(substream->runtime, 0,
-+			SNDRV_PCM_HW_PARAM_RATE,
-+			&constraints_48000);
-+}
-+
-+static struct snd_soc_ops cht_aif1_ops = {
-+	.startup = cht_aif1_startup,
-+};
-+
-+static struct snd_soc_ops cht_be_ssp2_ops = {
-+	.hw_params = cht_aif1_hw_params,
-+};
-+
-+static struct snd_soc_dai_link cht_dailink[] = {
-+	/* Front End DAI links */
-+	[MERR_DPCM_AUDIO] = {
-+		.name = "Audio Port",
-+		.stream_name = "Audio",
-+		.cpu_dai_name = "media-cpu-dai",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.platform_name = "sst-mfld-platform",
-+		.init = cht_init,
-+		.ignore_suspend = 1,
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ops = &cht_aif1_ops,
-+	},
-+	[MERR_DPCM_COMPR] = {
-+		.name = "Compressed Port",
-+		.stream_name = "Compress",
-+		.cpu_dai_name = "compress-cpu-dai",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.codec_name = "snd-soc-dummy",
-+		.platform_name = "sst-mfld-platform",
-+	},
-+
-+	/* Back End DAI links */
-+	{
-+		/* SSP2 - Codec */
-+		.name = "SSP2-Codec",
-+		.be_id = 1,
-+		.cpu_dai_name = "ssp2-port",
-+		.platform_name = "sst-mfld-platform",
-+		.no_pcm = 1,
-+		.codec_dai_name = "rt5670-aif1",
-+		.codec_name = "i2c-10EC5670:00",
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
-+						| SND_SOC_DAIFMT_CBS_CFS,
-+		.be_hw_params_fixup = cht_codec_fixup,
-+		.ignore_suspend = 1,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ops = &cht_be_ssp2_ops,
-+	},
-+};
-+
-+/* SoC card */
-+static struct snd_soc_card snd_soc_card_cht = {
-+	.name = "cherrytrailcraudio",
-+	.dai_link = cht_dailink,
-+	.num_links = ARRAY_SIZE(cht_dailink),
-+	.set_bias_level = cht_set_bias_level,
-+	.dapm_widgets = cht_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(cht_dapm_widgets),
-+	.dapm_routes = cht_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(cht_audio_map),
-+	.controls = cht_mc_controls,
-+	.num_controls = ARRAY_SIZE(cht_mc_controls),
-+};
-+
-+static int snd_cht_mc_probe(struct platform_device *pdev)
-+{
-+	int ret_val = 0;
-+
-+	/* register the soc card */
-+	snd_soc_card_cht.dev = &pdev->dev;
-+	ret_val = snd_soc_register_card(&snd_soc_card_cht);
-+	if (ret_val) {
-+		dev_err(&pdev->dev,
-+			"snd_soc_register_card failed %d\n", ret_val);
-+		return ret_val;
-+	}
-+	platform_set_drvdata(pdev, &snd_soc_card_cht);
-+	return ret_val;
-+}
-+
-+static int snd_cht_mc_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *soc_card = platform_get_drvdata(pdev);
-+
-+	snd_soc_card_set_drvdata(soc_card, NULL);
-+	snd_soc_unregister_card(soc_card);
-+	platform_set_drvdata(pdev, NULL);
-+	return 0;
-+}
-+
-+static struct platform_driver snd_cht_mc_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "cht-bsw-rt5672",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+	.probe = snd_cht_mc_probe,
-+	.remove = snd_cht_mc_remove,
-+};
-+
-+module_platform_driver(snd_cht_mc_driver);
-+
-+MODULE_DESCRIPTION("ASoC Intel(R) Baytrail CR Machine driver");
-+MODULE_AUTHOR("Subhransu S. Prusty, Mengdong Lin");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:cht-bsw-rt5672");
--- 
-1.9.1
+Some suggestions:
+- Run ./scripts/checkpatch on your patch and fix all the reported
+errors/warnings
+- Add the maintainers on Cc (Mark Brown, Nicolin Chen)
+- In the subject, use something like: ASoC: fsl: Add support for
+imx-wm8731 and a proper commit message
+- Send the patch via git send-email
+
+More comments below:
+
+> +config SND_SOC_IMX_WM8731
+> + tristate "SoC Audio support for i.MX boards with wm8731
+> + depends on OF && I2C
+> + select SND_SOC_WM8731
+> + select SND_SOC_IMX_PCM_DMA
+> + select SND_SOC_IMX_AUDMUX
+> + select SND_SOC_FSL_SSI
+> + select SND_SOC_FSL_UTILS
+
+You can remove this UTILS option.
+
+> +static int wm8731_mst_mode_init(struct imx_wm8731_data *data)
+> +{
+> + long rate;
+> + struct clk *new_parent;
+> + struct clk *ssi_clk;
+> + struct i2c_client *codec_dev = data->codec_dev;
+> +
+> + new_parent = devm_clk_get(&codec_dev->dev, "cko2");
+> + if (IS_ERR(new_parent)) {
+> + pr_err("Could not get \"cko2\" clock \n");
+> + return PTR_ERR(new_parent);
+> + }
+> +
+> + ssi_clk = devm_clk_get(&codec_dev->dev, "cko");
+> + if (IS_ERR(ssi_clk)) {
+> + pr_err("Could not get \"cko\" clock \n");
+> + return PTR_ERR(ssi_clk);
+
+I am not sure that adding the clock handling here is the correct approach.
+
+The dts you use looks like:
+
+   codec: wm8731@1a {
+      compatible = "wlf,wm8731";
+      reg = <0x1a>;
+      clocks = <&clks 173>, <&clks 158>, <&clks 201>, <&clks 200>;
+      clock-names = "pll4", "imx-ssi.1", "cko", "cko2";
+      AVDD-supply = <&reg_3p3v>;
+      HPVDD-supply = <&reg_3p3v>;
+      DCVDD-supply = <&reg_3p3v>;
+      DBVDD-supply = <&reg_3p3v>;
+
+,which does not match the current bindings for the wm8731. The wm8731
+driver could be extended to handle the clocks if needed, instead of
+handling them via machine driver.
+
+> +static int imx_hifi_hw_params_slv_mode(struct snd_pcm_substream *substream,
+> +       struct snd_pcm_hw_params *params)
+> +{
+> + struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> + struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> + struct snd_soc_dai *codec_dai = rtd->codec_dai;
+> + struct snd_soc_card *card = codec_dai->card;
+> + struct imx_wm8731_data *data = snd_soc_card_get_drvdata(card);
+> +
+> + u32 dai_format;
+> + snd_pcm_format_t sample_format;
+> + unsigned int channels;
+> + unsigned int tx_mask, rx_mask;
+> + unsigned int sampling_rate;
+> + unsigned int div_2, div_psr, div_pm;
+> + int ret;
+> +
+> + sampling_rate = params_rate(params);
+> + sample_format = params_format(params);
+> +
+> + channels = params_channels(params);
+> + printk("%s:%s  sampling rate = %u  channels = %u \n", __FUNCTION__,
+
+pr_debug here?
+
+> + div_2 = 0;
+> + div_psr = 0;
+> + switch (sampling_rate) {
+> + case 8000:
+> + // 1x1x12
+
+No // style comments. Comments should use teh /* bla bla bla */ style.
+
+> +static int imx_wm8731_probe(struct platform_device *pdev)
+> +{
+> + struct device_node *ssi_np, *codec_np;
+> + struct platform_device *ssi_pdev;
+> + struct imx_priv *priv = &card_priv;
+> + struct i2c_client *codec_dev;
+> + struct imx_wm8731_data *data;
+> + unsigned int src_port, ext_port;
+> + unsigned int ssi_mode;
+> + const char *ssi_mode_str;
+> +
+> + int ret;
+> +
+> + priv->pdev = pdev;
+> +
+> + ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
+> + codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
+> + if (!ssi_np || !codec_np) {
+> + dev_err(&pdev->dev, "phandle missing or invalid\n");
+> + ret = -EINVAL;
+> + goto fail;
+
+No need for jumping to 'fail', just return the error directly. Same on
+the other locations.
+
+> + }
+> +
+> + ssi_pdev = of_find_device_by_node(ssi_np);
+> + if (!ssi_pdev) {
+> + dev_err(&pdev->dev, "failed to find SSI platform device\n");
+> + ret = -EINVAL;
+> + goto fail;
+> + }
+> +
+> + codec_dev = of_find_i2c_device_by_node(codec_np);
+> + if (!codec_dev || !codec_dev->dev.driver) {
+> + dev_err(&pdev->dev, "failed to find codec platform device\n");
+> + ret = -EINVAL;
+> + goto fail;
+> + }
+> +
+> + data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+> + if (!data) {
+> + ret = -ENOMEM;
+> + goto fail;
+> + }
+> +
+> + card_priv.data = data;
+> +
+> + data->codec_dev = codec_dev;
+> +
+> + data->dai.name = "HiFi";
+> + data->dai.stream_name = "HiFi";
+> + data->dai.codec_dai_name = "wm8731-hifi";
+> + data->dai.codec_of_node = codec_np;
+> + data->dai.cpu_dai_name = dev_name(&ssi_pdev->dev);
+> + data->dai.platform_of_node = ssi_np;
+> + data->dai.ops = &imx_hifi_ops;
+> + data->dai.init = &imx_wm8731_init;
+> +
+> + ret = of_property_read_u32(pdev->dev.of_node, "mux-int-port", &src_port);
+> + if (ret) {
+> + dev_err(&pdev->dev, "failed to get \"mux-int-port\" value\n");
+> + ret = -EINVAL;
+> + goto fail;
+> + }
+> +
+> + ret = of_property_read_u32(pdev->dev.of_node, "mux-ext-port", &ext_port);
+> + if (ret) {
+> + dev_err(&pdev->dev, "failed to get \"mux-ext-port\" value\n");
+> + ret = -EINVAL;
+> + goto fail;
+> + }
+> +
+> + ret = of_property_read_string(ssi_np, "fsl,mode", &ssi_mode_str);
+> + if (ret) {
+> + dev_err(&pdev->dev, "failed to get \"fsl,mode\" value\n");
+> + ret = -EINVAL;
+> + goto fail;
+> + }
+> +
+> + ssi_mode = strcmp(ssi_mode_str, "i2s-master");
+> +
+> + if (ssi_mode) {
+> + /* Master Mode */
+> + imx_audmux_config_mst_mode(src_port, ext_port);
+> + wm8731_mst_mode_init(data);
+> + data->clock_enable = wm8731_mst_mode_clock_enable;
+> + imx_hifi_ops.hw_params = imx_hifi_hw_params_mst_mode;
+> + imx_hifi_ops.startup = imx_hifi_startup_mst_mode;
+> + } else {
+> + /* Slave Mode */
+> + imx_audmux_config_slv_mode(src_port, ext_port);
+> + wm8731_slv_mode_init(data);
+> + data->clock_enable = wm8731_slv_mode_clock_enable;
+> + imx_hifi_ops.hw_params = imx_hifi_hw_params_slv_mode;
+> + imx_hifi_ops.startup = imx_hifi_startup_slv_mode;
+> + }
+> +
+> + data->card.dev = &pdev->dev;
+> + ret = snd_soc_of_parse_card_name(&data->card, "model");
+> + if (ret)
+> + goto fail;
+> +
+> + ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
+
+> + if (ssi_np)
+> + of_node_put(ssi_np);
+
+of_node_put can handle NULL, so no need for the if test.
+
+> +
+> + if (codec_np)
+> + of_node_put(codec_np);
+
+Same here.
