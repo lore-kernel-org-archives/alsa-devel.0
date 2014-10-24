@@ -1,17 +1,15 @@
-From: Jonathan Bennett <jbscience87@gmail.com>
-Subject: Request for comments for SND_SOC_IMX_WM8731
-Date: Thu, 23 Oct 2014 23:42:01 -0500
-Message-ID: <CAB-pspcgsa3-YgBfk-5TUoyfEN0pbBHtqCUrzyaQdCA-QNHt1Q@mail.gmail.com>
+From: Xavier Hsu <xavier.hsu@linaro.org>
+Subject: [PATCHv5 1/9] ASOC: wm8971: clean for checkpatch
+	--strict
+Date: Fri, 24 Oct 2014 14:00:27 +0800
+Message-ID: <1414130435-14183-1-git-send-email-xavier.hsu@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f42.google.com (mail-yh0-f42.google.com
- [209.85.213.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F77826049E
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 06:42:02 +0200 (CEST)
-Received: by mail-yh0-f42.google.com with SMTP id t59so2647716yho.1
- for <alsa-devel@alsa-project.org>; Thu, 23 Oct 2014 21:42:01 -0700 (PDT)
+Received: from Kraken (unknown [124.219.7.128])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97F4326043E
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 08:00:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,762 +19,304 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, Valentin Raevsky <valentin@compulab.co.il>
+To: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, patches@linaro.org
+Cc: Xavier Hsu <xavier.hsu@linaro.org>, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, Andy Green <andy.green@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch is a continuation of my work on supporting the Utilite devices
-on the vanilla kernel. I've modified the code slightly to conform to
-established practice. Namely instead of using src-port and ext-port, we use
-mux-int-port and mux-ext-port.
+Before adding wm8973 support, clean up existing wm8971 style.
 
-This driver has support for putting the codec in either master mode or
-slave mode. So far I've only had success with using slave mode. For trying
-to submit for kernel inclusion, should I strip out the code for codec
-master mode? As a kernel dev noob, any other comments are welcome.
+Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
+Signed-off-by: Andy Green <andy.green@linaro.org>
+---
+ sound/soc/codecs/wm8971.c |  110 +++++++++++++++++++++++----------------------
+ sound/soc/codecs/wm8971.h |   30 ++++++-------
+ 2 files changed, 72 insertions(+), 68 deletions(-)
 
-Thanks,
-Jonathan Bennett
-
-
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 081e406..09c923f 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -229,6 +229,17 @@ config SND_SOC_EUKREA_TLV320
-   Enable I2S based access to the TLV320AIC23B codec attached
-   to the SSI interface
-
-+config SND_SOC_IMX_WM8731
-+ tristate "SoC Audio support for i.MX boards with wm8731
-+ depends on OF && I2C
-+ select SND_SOC_WM8731
-+ select SND_SOC_IMX_PCM_DMA
-+ select SND_SOC_IMX_AUDMUX
-+ select SND_SOC_FSL_SSI
-+ select SND_SOC_FSL_UTILS
-+ help
-+  Soc Audio support for i.MX with wm8731
-+
- config SND_SOC_IMX_WM8962
-  tristate "SoC Audio support for i.MX boards with wm8962"
-  depends on OF && I2C && INPUT
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index d28dc25..4292fac 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -54,6 +54,7 @@ snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
- snd-soc-wm1133-ev1-objs := wm1133-ev1.o
- snd-soc-imx-es8328-objs := imx-es8328.o
- snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
-+snd-soc-imx-wm8731-objs := imx-wm8731.o
- snd-soc-imx-wm8962-objs := imx-wm8962.o
- snd-soc-imx-spdif-objs := imx-spdif.o
- snd-soc-imx-mc13783-objs := imx-mc13783.o
-@@ -65,5 +66,6 @@ obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) +=
-snd-soc-wm1133-ev1.o
- obj-$(CONFIG_SND_SOC_IMX_ES8328) += snd-soc-imx-es8328.o
- obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
- obj-$(CONFIG_SND_SOC_IMX_WM8962) += snd-soc-imx-wm8962.o
-+obj-$(CONFIG_SND_SOC_IMX_WM8731) += snd-soc-imx-wm8731.o
- obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
- obj-$(CONFIG_SND_SOC_IMX_MC13783) += snd-soc-imx-mc13783.o
-diff --git a/sound/soc/fsl/imx-wm8731.c b/sound/soc/fsl/imx-wm8731.c
-new file mode 100644
-index 0000000..8ce4e9f
---- /dev/null
-+++ b/sound/soc/fsl/imx-wm8731.c
-@@ -0,0 +1,687 @@
-+/*
-+ * Copyright (C) 2014 Freescale Semiconductor, Inc.
-+ *
-+ * Based on imx-sgtl5000.c
-+ * Copyright (C) 2012 Freescale Semiconductor, Inc.
-+ * Copyright (C) 2012 Linaro Ltd.
-+ *
-+ * The code contained herein is licensed under the GNU General Public
-+ * License. You may obtain a copy of the GNU General Public License
-+ * Version 2 or later at the following locations:
-+ *
-+ * http://www.opensource.org/licenses/gpl-license.html
-+ * http://www.gnu.org/copyleft/gpl.html
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <linux/i2c.h>
-+#include <linux/of_gpio.h>
-+#include <linux/slab.h>
-+#include <linux/gpio.h>
-+#include <linux/clk.h>
-+#include <sound/soc.h>
-+#include <sound/jack.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc-dapm.h>
-+#include <linux/pinctrl/consumer.h>
-+
-+#include "../codecs/wm8731.h"
-+#include "imx-audmux.h"
-+#include "imx-ssi.h"
-+
-+#define DAI_NAME_SIZE 32
-+#define WM8731_MCLK_FREQ (24000000 / 2)
-+
-+struct imx_wm8731_data {
-+ struct snd_soc_dai_link dai;
-+ struct snd_soc_card card;
-+ char codec_dai_name[DAI_NAME_SIZE];
-+ char platform_name[DAI_NAME_SIZE];
-+ struct i2c_client *codec_dev;
-+ /* audio_clocking_data */
-+ struct clk *pll;
-+ struct clk *clock_root;
-+ long sysclk;
-+ long current_rate;
-+ /* apis */
-+ int (*clock_enable)(int enable,struct imx_wm8731_data *data);
-+};
-+
-+static int imx_wm8731_init(struct snd_soc_pcm_runtime *rtd);
-+static int imx_hifi_hw_params_slv_mode(struct snd_pcm_substream *substream,
-+                                       struct snd_pcm_hw_params *params);
-+static void imx_hifi_shutdown(struct snd_pcm_substream *substream);
-+
-+struct imx_priv {
-+ struct platform_device *pdev;
-+ struct imx_wm8731_data *data;
-+};
-+
-+static struct imx_priv card_priv;
-+
-+static struct snd_soc_ops imx_hifi_ops = {
-+ .shutdown = imx_hifi_shutdown,
-+};
-+
-+/* imx card dapm widgets */
-+static const struct snd_soc_dapm_widget imx_dapm_widgets[] = {
-+ SND_SOC_DAPM_HP("Headphone Jack",       NULL),
-+ SND_SOC_DAPM_SPK("Ext Spk",             NULL),
-+ SND_SOC_DAPM_LINE("Line Jack",          NULL),
-+ SND_SOC_DAPM_MIC("Mic Jack",            NULL),
-+};
-+
-+/* imx machine connections to the codec pins */
-+static const struct snd_soc_dapm_route audio_map[] = {
-+ { "Headphone Jack",     NULL,   "LHPOUT" },
-+ { "Headphone Jack",     NULL,   "RHPOUT" },
-+
-+ { "Ext Spk",            NULL,   "LOUT" },
-+ { "Ext Spk",            NULL,   "ROUT" },
-+
-+ { "LLINEIN",            NULL,   "Line Jack" },
-+ { "RLINEIN",            NULL,   "Line Jack" },
-+
-+ { "MICIN",              NULL,   "Mic Bias" },
-+ { "Mic Bias",           NULL,   "Mic Jack"},
-+};
-+
-+static int wm8731_slv_mode_init(struct imx_wm8731_data *data)
-+{
-+ struct clk *new_parent;
-+ struct clk *ssi_clk;
-+ struct i2c_client *codec_dev = data->codec_dev;
-+
-+ new_parent = devm_clk_get(&codec_dev->dev, "pll4");
-+ if (IS_ERR(new_parent)) {
-+ pr_err("Could not get \"pll4\" clock \n");
-+ return PTR_ERR(new_parent);
-+ }
-+
-+ ssi_clk = devm_clk_get(&codec_dev->dev, "imx-ssi.1");
-+ if (IS_ERR(ssi_clk)) {
-+ pr_err("Could not get \"imx-ssi.1\" clock \n");
-+ return PTR_ERR(ssi_clk);
-+ }
-+
-+ clk_set_parent(ssi_clk, new_parent);
-+
-+ data->pll = new_parent;
-+ data->clock_root = ssi_clk;
-+ data->current_rate = 0;
-+
-+ data->sysclk = 0;
-+
-+ return 0;
-+}
-+
-+static int wm8731_slv_mode_clock_enable(int enable, struct imx_wm8731_data
-*data)
-+{
-+ long pll_rate;
-+ long rate_req;
-+ long rate_avail;
-+
-+ if (!enable)
-+ return 0;
-+
-+ if (data->sysclk == data->current_rate)
-+ return 0;
-+
-+ switch (data->sysclk) {
-+ case 11289600:
-+ pll_rate = 632217600;
-+ break;
-+
-+ case 12288000:
-+ pll_rate = 688128000;
-+ break;
-+
-+ default:
-+ return -EINVAL;
-+ }
-+
-+ rate_req = pll_rate;
-+ rate_avail = clk_round_rate(data->pll, rate_req);
-+ clk_set_rate(data->pll, rate_avail);
-+
-+ rate_req = data->sysclk;
-+ rate_avail = clk_round_rate(data->clock_root,
-+ rate_req);
-+ clk_set_rate(data->clock_root, rate_avail);
-+
-+ pr_info("%s: \"imx-ssi.1\" rate = %ld (= %ld)\n",
-+ __func__, rate_avail, rate_req);
-+
-+ data->current_rate = data->sysclk;
-+
-+ return 0;
-+}
-+
-+static int imx_hifi_startup_slv_mode(struct snd_pcm_substream *substream)
-+{
-+ /*
-+ * As SSI's sys clock rate depends on sampling rate,
-+ * the clock enabling code is moved to imx_hifi_hw_params().
-+ */
-+ return 0;
-+}
-+
-+static int wm8731_mst_mode_init(struct imx_wm8731_data *data)
-+{
-+ long rate;
-+ struct clk *new_parent;
-+ struct clk *ssi_clk;
-+ struct i2c_client *codec_dev = data->codec_dev;
-+
-+ new_parent = devm_clk_get(&codec_dev->dev, "cko2");
-+ if (IS_ERR(new_parent)) {
-+ pr_err("Could not get \"cko2\" clock \n");
-+ return PTR_ERR(new_parent);
-+ }
-+
-+ ssi_clk = devm_clk_get(&codec_dev->dev, "cko");
-+ if (IS_ERR(ssi_clk)) {
-+ pr_err("Could not get \"cko\" clock \n");
-+ return PTR_ERR(ssi_clk);
-+ }
-+
-+ rate = clk_round_rate(new_parent, WM8731_MCLK_FREQ);
-+ clk_set_rate(new_parent, rate);
-+
-+ clk_set_parent(ssi_clk, new_parent);
-+
-+ rate = clk_round_rate(ssi_clk, WM8731_MCLK_FREQ);
-+ clk_set_rate(ssi_clk, rate);
-+
-+ pr_info("%s: \"CLKO\" rate = %ld (= %d)\n",
-+ __func__, rate, WM8731_MCLK_FREQ);
-+
-+ data->pll = new_parent;
-+ data->clock_root = ssi_clk;
-+ data->sysclk = rate;
-+
-+ return 0;
-+}
-+
-+static int wm8731_mst_mode_clock_enable(int enable, struct imx_wm8731_data
-*data)
-+{
-+ struct clk *clko = data->clock_root;
-+
-+ if (enable)
-+ clk_enable(clko);
-+ else
-+ clk_disable(clko);
-+
-+ return 0;
-+}
-+
-+static int imx_hifi_startup_mst_mode(struct snd_pcm_substream *substream)
-+{
-+ struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+ struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+ struct snd_soc_card *card = codec_dai->card;
-+ struct imx_wm8731_data *data = snd_soc_card_get_drvdata(card);
-+
-+ if (!codec_dai->active)
-+ data->clock_enable(1,data);
-+
-+ return 0;
-+}
-+
-+
-+static int imx_hifi_hw_params_slv_mode(struct snd_pcm_substream *substream,
-+       struct snd_pcm_hw_params *params)
-+{
-+ struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+ struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+ struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+ struct snd_soc_card *card = codec_dai->card;
-+ struct imx_wm8731_data *data = snd_soc_card_get_drvdata(card);
-+
-+ u32 dai_format;
-+ snd_pcm_format_t sample_format;
-+ unsigned int channels;
-+ unsigned int tx_mask, rx_mask;
-+ unsigned int sampling_rate;
-+ unsigned int div_2, div_psr, div_pm;
-+ int ret;
-+
-+ sampling_rate = params_rate(params);
-+ sample_format = params_format(params);
-+
-+ channels = params_channels(params);
-+ printk("%s:%s  sampling rate = %u  channels = %u \n", __FUNCTION__,
-+   (substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? "Playback" :
-"Capture"),
-+   sampling_rate, channels);
-+
-+ /* set CPU DAI configuration */
-+ switch (sampling_rate) {
-+ case 8000:
-+ case 32000:
-+ case 48000:
-+ case 96000:
-+ data->sysclk = 12288000;
-+ break;
-+
-+ case 44100:
-+ case 88200:
-+ data->sysclk = 11289600;
-+ break;
-+
-+ default:
-+ return -EINVAL;
-+ }
-+
-+ wm8731_slv_mode_clock_enable(1,data);
-+
-+ dai_format = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
-+ SND_SOC_DAIFMT_CBS_CFS;
-+
-+ ret = snd_soc_dai_set_fmt(cpu_dai, dai_format);
-+ if (ret < 0)
-+ return ret;
-+
-+ /* set i.MX active slot mask */
-+ /* S[TR]CCR:DC */
-+ tx_mask = ~((1 << channels) - 1);
-+ rx_mask = tx_mask;
-+ snd_soc_dai_set_tdm_slot(cpu_dai, tx_mask, rx_mask, 2, 32);
-+
-+ /*
-+ * SSI sysclk divider:
-+ * div_2: /1 or /2
-+ * div_psr: /1 or /8
-+ * div_pm: /1 .. /256
-+ */
-+ div_2 = 0;
-+ div_psr = 0;
-+ switch (sampling_rate) {
-+ case 8000:
-+ // 1x1x12
-+ div_pm = 11;
-+ break;
-+ case 32000:
-+ // 1x1x3
-+ div_pm = 2;
-+ break;
-+ case 48000:
-+ // 1x1x2
-+ div_pm = 1;
-+ break;
-+ case 96000:
-+ // 1x1x1
-+ div_pm = 0;
-+ break;
-+ case 44100:
-+ // 1x1x2
-+ div_pm = 1;
-+ break;
-+ case 88200:
-+ // 1x1x1
-+ div_pm = 0;
-+ break;
-+ default:
-+ return -EINVAL;
-+ }
-+
-+ /* sync mode: a single clock controls both playback and capture */
-+ snd_soc_dai_set_clkdiv(cpu_dai, IMX_SSI_TX_DIV_2, (div_2 ? SSI_STCCR_DIV2
-: 0));
-+ snd_soc_dai_set_clkdiv(cpu_dai, IMX_SSI_TX_DIV_PSR, (div_psr ?
-SSI_STCCR_PSR : 0));
-+ snd_soc_dai_set_clkdiv(cpu_dai, IMX_SSI_TX_DIV_PM, div_pm);
-+
-+ /* set codec DAI configuration */
-+ dai_format = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+ SND_SOC_DAIFMT_CBS_CFS;
-+
-+ ret = snd_soc_dai_set_fmt(codec_dai, dai_format);
-+ if (ret < 0)
-+ return ret;
-+
-+ ret = snd_soc_dai_set_sysclk(codec_dai,
-+     WM8731_SYSCLK_MCLK,
-+     data->sysclk,
-+     SND_SOC_CLOCK_IN);
-+
-+ if (ret < 0) {
-+ pr_err("Failed to set codec master clock to %u: %d \n",
-+       data->sysclk, ret);
-+ return ret;
-+ }
-+
-+ return 0;
-+}
-+
-+static int imx_hifi_hw_params_mst_mode(struct snd_pcm_substream *substream,
-+       struct snd_pcm_hw_params *params)
-+{
-+ struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+ struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+ struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+ struct snd_soc_card *card = codec_dai->card;
-+ struct imx_wm8731_data *data = snd_soc_card_get_drvdata(card);
-+ u32 dai_format;
-+ unsigned int channels;
-+ unsigned int tx_mask, rx_mask;
-+ unsigned int sampling_rate;
-+ int ret;
-+
-+
-+ sampling_rate = params_rate(params);
-+ channels = params_channels(params);
-+ pr_debug("%s:%s  sampling rate = %u  channels = %u \n", __FUNCTION__,
-+ (substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? "Playback" : "Capture"),
-+ sampling_rate, channels);
-+
-+ /* set cpu DAI configuration */
-+ dai_format = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
-+ SND_SOC_DAIFMT_CBM_CFM;
-+
-+ ret = snd_soc_dai_set_fmt(cpu_dai, dai_format);
-+ if (ret < 0)
-+ return ret;
-+
-+ /* set i.MX active slot mask */
-+ /* S[TR]CCR:DC */
-+ tx_mask = ~((1 << channels) - 1);
-+ rx_mask = tx_mask;
-+ snd_soc_dai_set_tdm_slot(cpu_dai, tx_mask, rx_mask, 2, 32);
-+
-+ /* set codec DAI configuration */
-+ dai_format = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+ SND_SOC_DAIFMT_CBM_CFM;
-+
-+ ret = snd_soc_dai_set_fmt(codec_dai, dai_format);
-+ if (ret < 0)
-+ return ret;
-+
-+ ret = snd_soc_dai_set_sysclk(codec_dai,
-+     WM8731_SYSCLK_MCLK,
-+     data->sysclk,
-+     SND_SOC_CLOCK_IN);
-+
-+ if (ret < 0) {
-+ pr_err("Failed to set codec master clock to %u: %d \n",
-+       data->sysclk, ret);
-+ return ret;
-+ }
-+
-+ return 0;
-+}
-+
-+static void imx_hifi_shutdown(struct snd_pcm_substream *substream)
-+{
-+ struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+ struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+ struct snd_soc_card *card = codec_dai->card;
-+ struct imx_wm8731_data *data = snd_soc_card_get_drvdata(card);
-+
-+ if (!codec_dai->active)
-+ data->clock_enable(0,data);
-+
-+ return;
-+}
-+
-+static int imx_wm8731_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+ int ret = 0;
-+ struct snd_soc_codec *codec = rtd->codec;
-+
-+ /* Add imx specific widgets */
-+ ret = snd_soc_dapm_new_controls(&codec->dapm, imx_dapm_widgets,
-+ ARRAY_SIZE(imx_dapm_widgets));
-+ if (ret)
-+ goto out_retcode;
-+
-+ /* Set up imx specific audio path audio_map */
-+ ret = snd_soc_dapm_add_routes(&codec->dapm, audio_map,
-ARRAY_SIZE(audio_map));
-+ if (ret)
-+ goto out_retcode;
-+
-+ ret = snd_soc_dapm_enable_pin(&codec->dapm, "Headphone Jack");
-+ if (ret)
-+ goto out_retcode;
-+
-+ ret = snd_soc_dapm_nc_pin(&codec->dapm, "Ext Spk");
-+ if (ret)
-+ goto out_retcode;
-+
-+out_retcode:
-+
-+ if (ret)
-+ pr_err("%s: failed with error code: %d \n", __FUNCTION__, ret);
-+ else
-+ pr_info("%s: success \n", __FUNCTION__);
-+
-+ return ret;
-+}
-+
-+/**
-+ * Configure AUDMUX interconnection between
-+ * _slave (CPU side) and _master (codec size)
-+ *
-+ * When SSI operates in master mode, 5-wire interconnect with
-+ * audio codec is required:
-+ * TXC  - BCLK
-+ * TXD  - DAC data
-+ * RXD  - ADC data
-+ * TXFS - {DAC|ADC}LRC, i.e. word clock
-+ * RXC  - MCLK, i.e. oversampling clock
-+ * Audmux is operated in asynchronous mode to enable 6-wire
-+ * interface (as opposed to 4-wire interface in sync mode).
-+ */
-+static int imx_audmux_config_slv_mode(int _slave, int _master)
-+{
-+ unsigned int ptcr, pdcr;
-+ int slave = _slave - 1;
-+ int master = _master - 1;
-+
-+ ptcr = IMX_AUDMUX_V2_PTCR_SYN |
-+ IMX_AUDMUX_V2_PTCR_TFSDIR |
-+ IMX_AUDMUX_V2_PTCR_TFSEL(slave) |
-+ IMX_AUDMUX_V2_PTCR_RCLKDIR |
-+ IMX_AUDMUX_V2_PTCR_RCSEL(slave | 0x8) |
-+ IMX_AUDMUX_V2_PTCR_TCLKDIR |
-+ IMX_AUDMUX_V2_PTCR_TCSEL(slave);
-+
-+ pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(slave);
-+ imx_audmux_v2_configure_port(master, ptcr, pdcr);
-+ ptcr = ptcr & ~IMX_AUDMUX_V2_PTCR_SYN;
-+ imx_audmux_v2_configure_port(master, ptcr, pdcr);
-+
-+ ptcr = IMX_AUDMUX_V2_PTCR_SYN |
-+ IMX_AUDMUX_V2_PTCR_RCLKDIR |
-+ IMX_AUDMUX_V2_PTCR_RCSEL(master | 0x8) |
-+ IMX_AUDMUX_V2_PTCR_TCLKDIR |
-+ IMX_AUDMUX_V2_PTCR_TCSEL(master);
-+
-+ pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(master);
-+ imx_audmux_v2_configure_port(slave, ptcr, pdcr);
-+ ptcr = ptcr & ~IMX_AUDMUX_V2_PTCR_SYN;
-+ imx_audmux_v2_configure_port(slave, ptcr, pdcr);
-+
-+ return 0;
-+}
-+
-+static int imx_audmux_config_mst_mode(int _slave, int _master)
-+{
-+ unsigned int ptcr, pdcr;
-+ int slave = _slave - 1;
-+ int master = _master - 1;
-+
-+ ptcr = IMX_AUDMUX_V2_PTCR_SYN;
-+ ptcr |= IMX_AUDMUX_V2_PTCR_TFSDIR |
-+ IMX_AUDMUX_V2_PTCR_TFSEL(master) |
-+ IMX_AUDMUX_V2_PTCR_TCLKDIR |
-+ IMX_AUDMUX_V2_PTCR_TCSEL(master);
-+ pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(master);
-+ imx_audmux_v2_configure_port(slave, ptcr, pdcr);
-+
-+ ptcr = IMX_AUDMUX_V2_PTCR_SYN;
-+ pdcr = IMX_AUDMUX_V2_PDCR_RXDSEL(slave);
-+ imx_audmux_v2_configure_port(master, ptcr, pdcr);
-+
-+ return 0;
-+}
-+
-+static int imx_wm8731_probe(struct platform_device *pdev)
-+{
-+ struct device_node *ssi_np, *codec_np;
-+ struct platform_device *ssi_pdev;
-+ struct imx_priv *priv = &card_priv;
-+ struct i2c_client *codec_dev;
-+ struct imx_wm8731_data *data;
-+ unsigned int src_port, ext_port;
-+ unsigned int ssi_mode;
-+ const char *ssi_mode_str;
-+
-+ int ret;
-+
-+ priv->pdev = pdev;
-+
-+ ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
-+ codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
-+ if (!ssi_np || !codec_np) {
-+ dev_err(&pdev->dev, "phandle missing or invalid\n");
-+ ret = -EINVAL;
-+ goto fail;
-+ }
-+
-+ ssi_pdev = of_find_device_by_node(ssi_np);
-+ if (!ssi_pdev) {
-+ dev_err(&pdev->dev, "failed to find SSI platform device\n");
-+ ret = -EINVAL;
-+ goto fail;
-+ }
-+
-+ codec_dev = of_find_i2c_device_by_node(codec_np);
-+ if (!codec_dev || !codec_dev->dev.driver) {
-+ dev_err(&pdev->dev, "failed to find codec platform device\n");
-+ ret = -EINVAL;
-+ goto fail;
-+ }
-+
-+ data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
-+ if (!data) {
-+ ret = -ENOMEM;
-+ goto fail;
-+ }
-+
-+ card_priv.data = data;
-+
-+ data->codec_dev = codec_dev;
-+
-+ data->dai.name = "HiFi";
-+ data->dai.stream_name = "HiFi";
-+ data->dai.codec_dai_name = "wm8731-hifi";
-+ data->dai.codec_of_node = codec_np;
-+ data->dai.cpu_dai_name = dev_name(&ssi_pdev->dev);
-+ data->dai.platform_of_node = ssi_np;
-+ data->dai.ops = &imx_hifi_ops;
-+ data->dai.init = &imx_wm8731_init;
-+
-+ ret = of_property_read_u32(pdev->dev.of_node, "mux-int-port", &src_port);
-+ if (ret) {
-+ dev_err(&pdev->dev, "failed to get \"mux-int-port\" value\n");
-+ ret = -EINVAL;
-+ goto fail;
-+ }
-+
-+ ret = of_property_read_u32(pdev->dev.of_node, "mux-ext-port", &ext_port);
-+ if (ret) {
-+ dev_err(&pdev->dev, "failed to get \"mux-ext-port\" value\n");
-+ ret = -EINVAL;
-+ goto fail;
-+ }
-+
-+ ret = of_property_read_string(ssi_np, "fsl,mode", &ssi_mode_str);
-+ if (ret) {
-+ dev_err(&pdev->dev, "failed to get \"fsl,mode\" value\n");
-+ ret = -EINVAL;
-+ goto fail;
-+ }
-+
-+ ssi_mode = strcmp(ssi_mode_str, "i2s-master");
-+
-+ if (ssi_mode) {
-+ /* Master Mode */
-+ imx_audmux_config_mst_mode(src_port, ext_port);
-+ wm8731_mst_mode_init(data);
-+ data->clock_enable = wm8731_mst_mode_clock_enable;
-+ imx_hifi_ops.hw_params = imx_hifi_hw_params_mst_mode;
-+ imx_hifi_ops.startup = imx_hifi_startup_mst_mode;
-+ } else {
-+ /* Slave Mode */
-+ imx_audmux_config_slv_mode(src_port, ext_port);
-+ wm8731_slv_mode_init(data);
-+ data->clock_enable = wm8731_slv_mode_clock_enable;
-+ imx_hifi_ops.hw_params = imx_hifi_hw_params_slv_mode;
-+ imx_hifi_ops.startup = imx_hifi_startup_slv_mode;
-+ }
-+
-+ data->card.dev = &pdev->dev;
-+ ret = snd_soc_of_parse_card_name(&data->card, "model");
-+ if (ret)
-+ goto fail;
-+
-+ ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
-+ if (ret)
-+ goto fail;
-+
-+ data->card.num_links = 1;
-+ data->card.dai_link = &data->dai;
-+
-+ data->card.dapm_widgets = imx_dapm_widgets;
-+ data->card.num_dapm_widgets = ARRAY_SIZE(imx_dapm_widgets);
-+
-+ platform_set_drvdata(pdev, &data->card);
-+ snd_soc_card_set_drvdata(&data->card, data);
-+
-+ ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
-+ if (ret) {
-+ dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+ goto fail;
-+ }
-+/* of_node_put(ssi_np);
-+ of_node_put(codec_np); */
-+ return 0;
-+fail:
-+
-+ if (ssi_np)
-+ of_node_put(ssi_np);
-+
-+ if (codec_np)
-+ of_node_put(codec_np);
-+
-+ return ret;
-+}
-+
-+static int imx_wm8731_remove(struct platform_device *pdev)
-+{
-+ struct snd_soc_card *card = platform_get_drvdata(pdev);
-+ snd_soc_unregister_card(card);
-+
-+ return 0;
-+}
-+
-+static const struct of_device_id imx_wm8731_dt_ids[] = {
-+ { .compatible = "fsl,imx-audio-wm8731", },
-+ { /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, imx_wm8731_dt_ids);
-+
-+static struct platform_driver imx_wm8731_driver = {
-+ .driver = {
-+ .name = "imx-wm8731",
-+ .owner = THIS_MODULE,
-+ .of_match_table = imx_wm8731_dt_ids,
-+ },
-+ .probe = imx_wm8731_probe,
-+ .remove = imx_wm8731_remove,
-+};
-+module_platform_driver(imx_wm8731_driver);
-+
-+MODULE_AUTHOR("Freescale Semiconductor, Inc.");
-+MODULE_DESCRIPTION("Freescale i.MX WM8731 ASoC machine driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:imx-wm8731");
+diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
+index 39ddb9b..01c76a4 100644
+--- a/sound/soc/codecs/wm8971.c
++++ b/sound/soc/codecs/wm8971.c
+@@ -29,9 +29,9 @@
+ 
+ #include "wm8971.h"
+ 
+-#define	WM8971_REG_COUNT		43
++#define WM8971_REG_COUNT	43
+ 
+-static struct workqueue_struct *wm8971_workq = NULL;
++static struct workqueue_struct *wm8971_workq;
+ 
+ /* codec private data */
+ struct wm8971_priv {
+@@ -92,25 +92,28 @@ static const struct reg_default wm8971_reg_defaults[] = {
+ #define wm8971_reset(c)	snd_soc_write(c, WM8971_RESET, 0)
+ 
+ /* WM8971 Controls */
+-static const char *wm8971_bass[] = { "Linear Control", "Adaptive Boost" };
+-static const char *wm8971_bass_filter[] = { "130Hz @ 48kHz",
+-	"200Hz @ 48kHz" };
+-static const char *wm8971_treble[] = { "8kHz", "4kHz" };
+-static const char *wm8971_alc_func[] = { "Off", "Right", "Left", "Stereo" };
+-static const char *wm8971_ng_type[] = { "Constant PGA Gain",
+-	"Mute ADC Output" };
+-static const char *wm8971_deemp[] = { "None", "32kHz", "44.1kHz", "48kHz" };
+-static const char *wm8971_mono_mux[] = {"Stereo", "Mono (Left)",
+-	"Mono (Right)", "Digital Mono"};
+-static const char *wm8971_dac_phase[] = { "Non Inverted", "Inverted" };
+-static const char *wm8971_lline_mux[] = {"Line", "NC", "NC", "PGA",
+-	"Differential"};
+-static const char *wm8971_rline_mux[] = {"Line", "Mic", "NC", "PGA",
+-	"Differential"};
+-static const char *wm8971_lpga_sel[] = {"Line", "NC", "NC", "Differential"};
+-static const char *wm8971_rpga_sel[] = {"Line", "Mic", "NC", "Differential"};
+-static const char *wm8971_adcpol[] = {"Normal", "L Invert", "R Invert",
+-	"L + R Invert"};
++static const char const *wm8971_bass[] = {"Linear Control", "Adaptive Boost"};
++static const char const *wm8971_bass_filter[] = {"130Hz @ 48kHz",
++						 "200Hz @ 48kHz"};
++static const char const *wm8971_treble[] = {"8kHz", "4kHz"};
++static const char const *wm8971_alc_func[] = {"Off", "Right",
++					      "Left", "Stereo"};
++static const char const *wm8971_ng_type[] = {"Constant PGA Gain",
++					     "Mute ADC Output"};
++static const char const *wm8971_deemp[] = {"None", "32kHz", "44.1kHz", "48kHz"};
++static const char const *wm8971_mono_mux[] = {"Stereo", "Mono (Left)",
++					      "Mono (Right)", "Digital Mono"};
++static const char const *wm8971_dac_phase[] = {"Non Inverted", "Inverted"};
++static const char const *wm8971_lline_mux[] = {"Line", "NC", "NC",
++					       "PGA", "Differential"};
++static const char const *wm8971_rline_mux[] = {"Line", "Mic", "NC",
++					       "PGA", "Differential"};
++static const char const *wm8971_lpga_sel[] = {"Line", "NC", "NC",
++					      "Differential"};
++static const char const *wm8971_rpga_sel[] = {"Line", "Mic", "NC",
++					      "Differential"};
++static const char const *wm8971_adcpol[] = {"Normal", "L Invert",
++					    "R Invert", "L + R Invert"};
+ 
+ static const struct soc_enum wm8971_enum[] = {
+ 	SOC_ENUM_SINGLE(WM8971_BASS, 7, 2, wm8971_bass),	/* 0 */
+@@ -136,24 +139,24 @@ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
+ 	SOC_DOUBLE_R("Capture Switch", WM8971_LINVOL, WM8971_RINVOL, 7, 1, 1),
+ 
+ 	SOC_DOUBLE_R("Headphone Playback ZC Switch", WM8971_LOUT1V,
+-		WM8971_ROUT1V, 7, 1, 0),
++		     WM8971_ROUT1V, 7, 1, 0),
+ 	SOC_DOUBLE_R("Speaker Playback ZC Switch", WM8971_LOUT2V,
+-		WM8971_ROUT2V, 7, 1, 0),
++		     WM8971_ROUT2V, 7, 1, 0),
+ 	SOC_SINGLE("Mono Playback ZC Switch", WM8971_MOUTV, 7, 1, 0),
+ 
+ 	SOC_DOUBLE_R("PCM Volume", WM8971_LDAC, WM8971_RDAC, 0, 255, 0),
+ 
+ 	SOC_DOUBLE_R("Bypass Left Playback Volume", WM8971_LOUTM1,
+-		WM8971_LOUTM2, 4, 7, 1),
++		     WM8971_LOUTM2, 4, 7, 1),
+ 	SOC_DOUBLE_R("Bypass Right Playback Volume", WM8971_ROUTM1,
+-		WM8971_ROUTM2, 4, 7, 1),
++		     WM8971_ROUTM2, 4, 7, 1),
+ 	SOC_DOUBLE_R("Bypass Mono Playback Volume", WM8971_MOUTM1,
+-		WM8971_MOUTM2, 4, 7, 1),
++		     WM8971_MOUTM2, 4, 7, 1),
+ 
+ 	SOC_DOUBLE_R("Headphone Playback Volume", WM8971_LOUT1V,
+-		WM8971_ROUT1V, 0, 127, 0),
++		     WM8971_ROUT1V, 0, 127, 0),
+ 	SOC_DOUBLE_R("Speaker Playback Volume", WM8971_LOUT2V,
+-		WM8971_ROUT2V, 0, 127, 0),
++		     WM8971_ROUT2V, 0, 127, 0),
+ 
+ 	SOC_ENUM("Bass Boost", wm8971_enum[0]),
+ 	SOC_ENUM("Bass Filter", wm8971_enum[1]),
+@@ -238,14 +241,14 @@ SOC_DAPM_ENUM("Route", wm8971_enum[13]);
+ 
+ static const struct snd_soc_dapm_widget wm8971_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIXER("Left Mixer", SND_SOC_NOPM, 0, 0,
+-		&wm8971_left_mixer_controls[0],
+-		ARRAY_SIZE(wm8971_left_mixer_controls)),
++			   &wm8971_left_mixer_controls[0],
++			   ARRAY_SIZE(wm8971_left_mixer_controls)),
+ 	SND_SOC_DAPM_MIXER("Right Mixer", SND_SOC_NOPM, 0, 0,
+-		&wm8971_right_mixer_controls[0],
+-		ARRAY_SIZE(wm8971_right_mixer_controls)),
++			   &wm8971_right_mixer_controls[0],
++			   ARRAY_SIZE(wm8971_right_mixer_controls)),
+ 	SND_SOC_DAPM_MIXER("Mono Mixer", WM8971_PWR2, 2, 0,
+-		&wm8971_mono_mixer_controls[0],
+-		ARRAY_SIZE(wm8971_mono_mixer_controls)),
++			   &wm8971_mono_mixer_controls[0],
++			   ARRAY_SIZE(wm8971_mono_mixer_controls)),
+ 
+ 	SND_SOC_DAPM_PGA("Right Out 2", WM8971_PWR2, 3, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("Left Out 2", WM8971_PWR2, 4, 0, NULL, 0),
+@@ -260,18 +263,18 @@ static const struct snd_soc_dapm_widget wm8971_dapm_widgets[] = {
+ 	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", WM8971_PWR1, 3, 0),
+ 
+ 	SND_SOC_DAPM_MUX("Left PGA Mux", WM8971_PWR1, 5, 0,
+-		&wm8971_left_pga_controls),
++			 &wm8971_left_pga_controls),
+ 	SND_SOC_DAPM_MUX("Right PGA Mux", WM8971_PWR1, 4, 0,
+-		&wm8971_right_pga_controls),
++			 &wm8971_right_pga_controls),
+ 	SND_SOC_DAPM_MUX("Left Line Mux", SND_SOC_NOPM, 0, 0,
+-		&wm8971_left_line_controls),
++			 &wm8971_left_line_controls),
+ 	SND_SOC_DAPM_MUX("Right Line Mux", SND_SOC_NOPM, 0, 0,
+-		&wm8971_right_line_controls),
++			 &wm8971_right_line_controls),
+ 
+ 	SND_SOC_DAPM_MUX("Left ADC Mux", SND_SOC_NOPM, 0, 0,
+-		&wm8971_monomux_controls),
++			 &wm8971_monomux_controls),
+ 	SND_SOC_DAPM_MUX("Right ADC Mux", SND_SOC_NOPM, 0, 0,
+-		&wm8971_monomux_controls),
++			 &wm8971_monomux_controls),
+ 
+ 	SND_SOC_DAPM_OUTPUT("LOUT1"),
+ 	SND_SOC_DAPM_OUTPUT("ROUT1"),
+@@ -431,7 +434,7 @@ static int get_coeff(int mclk, int rate)
+ }
+ 
+ static int wm8971_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+-		int clk_id, unsigned int freq, int dir)
++				 int clk_id, unsigned int freq, int dir)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+ 	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
+@@ -449,7 +452,7 @@ static int wm8971_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ }
+ 
+ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
+-		unsigned int fmt)
++			      unsigned int fmt)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+ 	u16 iface = 0;
+@@ -507,8 +510,8 @@ static int wm8971_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ }
+ 
+ static int wm8971_pcm_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params,
+-	struct snd_soc_dai *dai)
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
+@@ -553,7 +556,7 @@ static int wm8971_mute(struct snd_soc_dai *dai, int mute)
+ }
+ 
+ static int wm8971_set_bias_level(struct snd_soc_codec *codec,
+-	enum snd_soc_bias_level level)
++				 enum snd_soc_bias_level level)
+ {
+ 	u16 pwr_reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+ 
+@@ -580,11 +583,12 @@ static int wm8971_set_bias_level(struct snd_soc_codec *codec,
+ }
+ 
+ #define WM8971_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
+-		SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | \
+-		SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
++		      SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
++		      SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
++		      SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
+ 
+ #define WM8971_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+-	SNDRV_PCM_FMTBIT_S24_LE)
++			SNDRV_PCM_FMTBIT_S24_LE)
+ 
+ static const struct snd_soc_dai_ops wm8971_dai_ops = {
+ 	.hw_params	= wm8971_pcm_hw_params,
+@@ -616,6 +620,7 @@ static void wm8971_work(struct work_struct *work)
+ 		container_of(work, struct snd_soc_dapm_context,
+ 			     delayed_work.work);
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(dapm);
++
+ 	wm8971_set_bias_level(codec, codec->dapm.bias_level);
+ }
+ 
+@@ -637,7 +642,7 @@ static int wm8971_resume(struct snd_soc_codec *codec)
+ 		snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
+ 		codec->dapm.bias_level = SND_SOC_BIAS_ON;
+ 		queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
+-			msecs_to_jiffies(1000));
++				   msecs_to_jiffies(1000));
+ 	}
+ 
+ 	return 0;
+@@ -660,7 +665,7 @@ static int wm8971_probe(struct snd_soc_codec *codec)
+ 	snd_soc_write(codec, WM8971_PWR1, reg | 0x01c0);
+ 	codec->dapm.bias_level = SND_SOC_BIAS_STANDBY;
+ 	queue_delayed_work(wm8971_workq, &codec->dapm.delayed_work,
+-		msecs_to_jiffies(1000));
++			   msecs_to_jiffies(1000));
+ 
+ 	/* set the update bits */
+ 	snd_soc_update_bits(codec, WM8971_LDAC, 0x0100, 0x0100);
+@@ -675,7 +680,6 @@ static int wm8971_probe(struct snd_soc_codec *codec)
+ 	return ret;
+ }
+ 
+-
+ /* power down chip */
+ static int wm8971_remove(struct snd_soc_codec *codec)
+ {
+@@ -729,8 +733,8 @@ static int wm8971_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, wm8971);
+ 
+-	ret = snd_soc_register_codec(&i2c->dev,
+-			&soc_codec_dev_wm8971, &wm8971_dai, 1);
++	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_wm8971,
++				     &wm8971_dai, 1);
+ 
+ 	return ret;
+ }
+diff --git a/sound/soc/codecs/wm8971.h b/sound/soc/codecs/wm8971.h
+index f31c38f..dc38e21 100644
+--- a/sound/soc/codecs/wm8971.h
++++ b/sound/soc/codecs/wm8971.h
+@@ -22,25 +22,25 @@
+ #define WM8971_ADCDAC	0x05
+ #define WM8971_IFACE	0x07
+ #define WM8971_SRATE	0x08
+-#define WM8971_LDAC		0x0a
+-#define WM8971_RDAC		0x0b
+-#define WM8971_BASS		0x0c
++#define WM8971_LDAC	0x0a
++#define WM8971_RDAC	0x0b
++#define WM8971_BASS	0x0c
+ #define WM8971_TREBLE	0x0d
+ #define WM8971_RESET	0x0f
+-#define WM8971_ALC1		0x11
+-#define	WM8971_ALC2		0x12
+-#define	WM8971_ALC3		0x13
++#define WM8971_ALC1	0x11
++#define WM8971_ALC2	0x12
++#define WM8971_ALC3	0x13
+ #define WM8971_NGATE	0x14
+-#define WM8971_LADC		0x15
+-#define WM8971_RADC		0x16
+-#define	WM8971_ADCTL1	0x17
+-#define	WM8971_ADCTL2	0x18
+-#define WM8971_PWR1		0x19
+-#define WM8971_PWR2		0x1a
+-#define	WM8971_ADCTL3	0x1b
++#define WM8971_LADC	0x15
++#define WM8971_RADC	0x16
++#define WM8971_ADCTL1	0x17
++#define WM8971_ADCTL2	0x18
++#define WM8971_PWR1	0x19
++#define WM8971_PWR2	0x1a
++#define WM8971_ADCTL3	0x1b
+ #define WM8971_ADCIN	0x1f
+-#define	WM8971_LADCIN	0x20
+-#define	WM8971_RADCIN	0x21
++#define WM8971_LADCIN	0x20
++#define WM8971_RADCIN	0x21
+ #define WM8971_LOUTM1	0x22
+ #define WM8971_LOUTM2	0x23
+ #define WM8971_ROUTM1	0x24
+-- 
+1.7.9.5
