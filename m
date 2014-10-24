@@ -1,17 +1,17 @@
-From: Max Filippov <jcmvbkbc@gmail.com>
-Subject: Customizing simple audio card?
-Date: Fri, 24 Oct 2014 17:31:43 +0400
-Message-ID: <CAMo8BfLfMEwTqLnSt+WnzdrbRh0kh1hCYxj6u-xxwrKotiWx3Q@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Request for comments for SND_SOC_IMX_WM8731
+Date: Fri, 24 Oct 2014 15:04:40 +0100
+Message-ID: <20141024140440.GG3729@sirena.org.uk>
+References: <CAB-pspcgsa3-YgBfk-5TUoyfEN0pbBHtqCUrzyaQdCA-QNHt1Q@mail.gmail.com>
+ <CAOMZO5AXhj-r4v-sR6Rp_ywD85M07W06r551vMq0r6juE+Tmgg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8784145992136484207=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ob0-f178.google.com (mail-ob0-f178.google.com
- [209.85.214.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 5552226055A
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 15:31:45 +0200 (CEST)
-Received: by mail-ob0-f178.google.com with SMTP id wn1so311534obc.37
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 06:31:44 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B76BF260573
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 16:04:58 +0200 (CEST)
+In-Reply-To: <CAOMZO5AXhj-r4v-sR6Rp_ywD85M07W06r551vMq0r6juE+Tmgg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,56 +21,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jonathan Bennett <jbscience87@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, Valentin Raevsky <valentin@compulab.co.il>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-I'm developing ALSA driver for sound hardware on Xtensa FPGA boards.
-The hardware is very simple, we have AIC23 codec connected to I2S bus
-and I2S bus master that pumps data pushed by CPU into its FIFO.
-Both are connected to the same clock synthesizer output. There are no other
-devices that need to be supported now.
+--===============8784145992136484207==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="2NLGdgz3UMHa/lqP"
+Content-Disposition: inline
 
-Due to its simplicity the setup could happily use the simple sound card driver.
-But to support both 44100 and 48000 frequency ranges I need to change master
-clock, setting it either to 11289600 or to 12288000 Hz. I can do it in the I2S
-driver, but I see no way to inform audio codec of that change. I used
-the following
-hack to debug everything with the simple audio card:
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index cef7776..abef5ed 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -43,6 +44,22 @@ static int asoc_simple_card_hw_params(struct
-snd_pcm_substream *substream,
-                                             SND_SOC_CLOCK_IN);
-        }
+--2NLGdgz3UMHa/lqP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-+       switch (params_rate(params)) {
-+       case 48000:
-+       case 32000:
-+       case 16000:
-+       case 8000:
-+               ret = snd_soc_dai_set_sysclk(codec_dai, 0, 12288000,
-+                                            SND_SOC_CLOCK_IN);
-+               break;
-+       case 44100:
-+       case 22050:
-+       case 11025:
-+               ret = snd_soc_dai_set_sysclk(codec_dai, 0, 11289600,
-+                                            SND_SOC_CLOCK_IN);
-+               break;
-+
-+       }
-        return ret;
- }
+On Fri, Oct 24, 2014 at 10:20:29AM -0200, Fabio Estevam wrote:
+> On Fri, Oct 24, 2014 at 2:42 AM, Jonathan Bennett <jbscience87@gmail.com>=
+ wrote:
 
-but that's of course not a solution. So my question is is there any way I can
-subclass or inherit from the simple audio card driver to add such functionality
-to it?
+> > + ssi_clk =3D devm_clk_get(&codec_dev->dev, "cko");
+> > + if (IS_ERR(ssi_clk)) {
+> > + pr_err("Could not get \"cko\" clock \n");
+> > + return PTR_ERR(ssi_clk);
+>=20
+> I am not sure that adding the clock handling here is the correct approach.
+>=20
+> The dts you use looks like:
+>=20
+>    codec: wm8731@1a {
+>       compatible =3D "wlf,wm8731";
+>       reg =3D <0x1a>;
+>       clocks =3D <&clks 173>, <&clks 158>, <&clks 201>, <&clks 200>;
+>       clock-names =3D "pll4", "imx-ssi.1", "cko", "cko2";
 
--- 
-Thanks.
--- Max
+> ,which does not match the current bindings for the wm8731. The wm8731
+> driver could be extended to handle the clocks if needed, instead of
+> handling them via machine driver.
+
+The WM8731 doesn't have anything like that number of clock inputs so
+hanging them off the WM8731 seems very confused.
+
+--2NLGdgz3UMHa/lqP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUSlxzAAoJECTWi3JdVIfQQoIH/39q3paUbREwems9Yfxb/6zT
+RvvFCswuh1v5ll+Jz3B9mj39uSNdIwF7pMs3KQbuvDreAOIjeR75LIq7Ho1vXoyp
+GAkNjTVsHK0nGkjEftjVVysHxWrHbFyr52hYG0PUvwg7Y2jYoc268J3XFe5NCK+a
+rHIYoWnzoPjeur7kmRYeecr3FDJ4GmTwRtie7lK+D2BiY/SjZg05Flm4LESM2Npe
+0IupHl7S6PID26wVGeUgbZYVx8tFtj6J+2eQgiCC7ux/z2WwzMMWtfUuLJJq5MCR
+zqMxNwAXXKpBhYZaPykbPH0WR5J/8xkN1Q5583SE5ITOjbZMR7dxMWp2YoJkYXw=
+=CnwA
+-----END PGP SIGNATURE-----
+
+--2NLGdgz3UMHa/lqP--
+
+--===============8784145992136484207==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8784145992136484207==--
