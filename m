@@ -1,16 +1,15 @@
 From: Xavier Hsu <xavier.hsu@linaro.org>
-Subject: [PATCHv5 2/9] ASOC: wm8971: modify the control of
-	deemphasis
-Date: Fri, 24 Oct 2014 14:00:28 +0800
-Message-ID: <1414130435-14183-2-git-send-email-xavier.hsu@linaro.org>
+Subject: [PATCHv5 4/9] ASOC: wm8971: add TLV information
+Date: Fri, 24 Oct 2014 14:00:30 +0800
+Message-ID: <1414130435-14183-4-git-send-email-xavier.hsu@linaro.org>
 References: <1414130435-14183-1-git-send-email-xavier.hsu@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from Kraken (unknown [124.219.7.128])
- by alsa0.perex.cz (Postfix) with ESMTP id CAE3C260443
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 08:00:55 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 854A92604A2
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 08:01:03 +0200 (CEST)
 In-Reply-To: <1414130435-14183-1-git-send-email-xavier.hsu@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,147 +24,121 @@ To: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, patches@li
 Cc: Xavier Hsu <xavier.hsu@linaro.org>, ckeepax@opensource.wolfsonmicro.com, lars@metafoo.de, Andy Green <andy.green@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-We add a switch for automatic updating
-the frequency of wm8971.
+We add TLV information because all volume
+controls should have TLV information.
 
 Signed-off-by: Xavier Hsu <xavier.hsu@linaro.org>
 Signed-off-by: Andy Green <andy.green@linaro.org>
 ---
- sound/soc/codecs/wm8971.c |   77 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 75 insertions(+), 2 deletions(-)
- mode change 100644 => 100755 sound/soc/codecs/wm8971.c
+ sound/soc/codecs/wm8971.c |   57 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 39 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
-old mode 100644
-new mode 100755
-index 01c76a4..6df0a3b
+index b8b6be9..4572446 100755
 --- a/sound/soc/codecs/wm8971.c
 +++ b/sound/soc/codecs/wm8971.c
-@@ -7,6 +7,10 @@
-  *
-  * Based on wm8753.c by Liam Girdwood
-  *
-+ * WM8971 Improve Copyright (C) 2014 Linaro, Ltd
-+ * Author: Xavier Hsu <xavier.hsu@linaro.org>
-+ *         Andy Green <andy.green@linaro.org>
-+ *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-  *  Free Software Foundation;  either version 2 of the  License, or (at your
-@@ -36,6 +40,11 @@ static struct workqueue_struct *wm8971_workq;
- /* codec private data */
- struct wm8971_priv {
- 	unsigned int sysclk;
+@@ -30,6 +30,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/initval.h>
++#include <sound/tlv.h>
+ 
+ #include "wm8971.h"
+ 
+@@ -207,8 +208,19 @@ static const SOC_ENUM_SINGLE_DECL(capture_polarity, WM8971_ADCDAC,
+ 				  5, wm8971_adcpol);
+ static const SOC_ENUM_SINGLE_DECL(monomux, WM8971_ADCIN, 6, wm8971_mono_mux);
+ 
++static const DECLARE_TLV_DB_SCALE(in_vol, -1725, 75, 0);
++static const DECLARE_TLV_DB_SCALE(out_vol, -6700, 91, 0);
++static const DECLARE_TLV_DB_SCALE(attenuate_6db, -600, 600, 0);
++static const DECLARE_TLV_DB_SCALE(dac_vol, -12700, 50, 0);
++static const DECLARE_TLV_DB_SCALE(tone_vol, -600, 150, 0);
++static const DECLARE_TLV_DB_SCALE(alc_tar_vol, -2850, 150, 0);
++static const DECLARE_TLV_DB_SCALE(alc_max_vol, -1200, 600, 0);
++static const DECLARE_TLV_DB_SCALE(adc_vol, -9700, 50, 0);
++static const DECLARE_TLV_DB_SCALE(bypass_out_vol, -1500, 300, 0);
 +
-+	/* De-emphasis */
-+	struct mutex deemph_mutex;
-+	int playback_fs;
-+	bool deemph;
+ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
+-	SOC_DOUBLE_R("Capture Volume", WM8971_LINVOL, WM8971_RINVOL, 0, 63, 0),
++	SOC_DOUBLE_R_TLV("Capture Volume", WM8971_LINVOL, WM8971_RINVOL,
++			 0, 63, 0, in_vol),
+ 	SOC_DOUBLE_R("Capture ZC Switch", WM8971_LINVOL, WM8971_RINVOL,
+ 		     6, 1, 0),
+ 	SOC_DOUBLE_R("Capture Switch", WM8971_LINVOL, WM8971_RINVOL, 7, 1, 1),
+@@ -219,31 +231,35 @@ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
+ 		     WM8971_ROUT2V, 7, 1, 0),
+ 	SOC_SINGLE("Mono Playback ZC Switch", WM8971_MOUTV, 7, 1, 0),
+ 
+-	SOC_DOUBLE_R("PCM Volume", WM8971_LDAC, WM8971_RDAC, 0, 255, 0),
++	SOC_DOUBLE_R_TLV("PCM Volume", WM8971_LDAC, WM8971_RDAC,
++			 0, 255, 0, dac_vol),
+ 
+-	SOC_DOUBLE_R("Bypass Left Playback Volume", WM8971_LOUTM1,
+-		     WM8971_LOUTM2, 4, 7, 1),
+-	SOC_DOUBLE_R("Bypass Right Playback Volume", WM8971_ROUTM1,
+-		     WM8971_ROUTM2, 4, 7, 1),
+-	SOC_DOUBLE_R("Bypass Mono Playback Volume", WM8971_MOUTM1,
+-		     WM8971_MOUTM2, 4, 7, 1),
++	SOC_DOUBLE_R_TLV("Bypass Left Playback Volume", WM8971_LOUTM1,
++			 WM8971_LOUTM2, 4, 7, 1, bypass_out_vol),
++	SOC_DOUBLE_R_TLV("Bypass Right Playback Volume", WM8971_ROUTM1,
++			 WM8971_ROUTM2, 4, 7, 1, bypass_out_vol),
++	SOC_DOUBLE_R_TLV("Bypass Mono Playback Volume", WM8971_MOUTM1,
++			 WM8971_MOUTM2, 4, 7, 1, bypass_out_vol),
+ 
+-	SOC_DOUBLE_R("Headphone Playback Volume", WM8971_LOUT1V,
+-		     WM8971_ROUT1V, 0, 127, 0),
+-	SOC_DOUBLE_R("Speaker Playback Volume", WM8971_LOUT2V,
+-		     WM8971_ROUT2V, 0, 127, 0),
++	SOC_DOUBLE_R_TLV("Headphone Playback Volume", WM8971_LOUT1V,
++			 WM8971_ROUT1V, 0, 127, 0, out_vol),
++	SOC_DOUBLE_R_TLV("Speaker Playback Volume", WM8971_LOUT2V,
++			 WM8971_ROUT2V, 0, 127, 0, out_vol),
++	SOC_SINGLE_TLV("Mono Playback Volume", WM8971_MOUTV,
++		       0, 127, 0, out_vol),
+ 
+ 	SOC_ENUM("Bass Boost", bass_boost),
+ 	SOC_ENUM("Bass Filter", bass_filter),
+-	SOC_SINGLE("Bass Volume", WM8971_BASS, 0, 7, 1),
++	SOC_SINGLE_TLV("Bass Volume", WM8971_BASS, 0, 15, 1, tone_vol),
+ 
+-	SOC_SINGLE("Treble Volume", WM8971_TREBLE, 0, 7, 0),
++	SOC_SINGLE_TLV("Treble Volume", WM8971_TREBLE, 0, 15, 0, tone_vol),
+ 	SOC_ENUM("Treble Cut-off", treble_cutoff),
+ 
+ 	SOC_SINGLE("Capture Filter Switch", WM8971_ADCDAC, 0, 1, 1),
+ 
+-	SOC_SINGLE("ALC Target Volume", WM8971_ALC1, 0, 7, 0),
+-	SOC_SINGLE("ALC Max Volume", WM8971_ALC1, 4, 7, 0),
++	SOC_SINGLE_TLV("ALC Target Volume", WM8971_ALC1,
++		       0, 15, 0, alc_tar_vol),
++	SOC_SINGLE_TLV("ALC Max Volume", WM8971_ALC1, 4, 7, 0, alc_max_vol),
+ 
+ 	SOC_SINGLE("ALC Capture Target Volume", WM8971_ALC1, 0, 7, 0),
+ 	SOC_SINGLE("ALC Capture Max Volume", WM8971_ALC1, 4, 7, 0),
+@@ -256,8 +272,10 @@ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
+ 	SOC_ENUM("ALC Capture NG Type", alc_capture_ngtype),
+ 	SOC_SINGLE("ALC Capture NG Switch", WM8971_NGATE, 0, 1, 0),
+ 
+-	SOC_SINGLE("Capture 6dB Attenuate", WM8971_ADCDAC, 8, 1, 0),
+-	SOC_SINGLE("Playback 6dB Attenuate", WM8971_ADCDAC, 7, 1, 0),
++	SOC_SINGLE_TLV("Capture 6dB Attenuate", WM8971_ADCDAC,
++		       8, 1, 0, attenuate_6db),
++	SOC_SINGLE_TLV("Playback 6dB Attenuate", WM8971_ADCDAC,
++		       7, 1, 0, attenuate_6db),
+ 
+ 	SOC_SINGLE_BOOL_EXT("Playback De-emphasis Switch", 0,
+ 			    wm8971_get_deemph, wm8971_put_deemph),
+@@ -265,6 +283,9 @@ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
+ 	SOC_ENUM("Playback Phase", dac_phase_inv),
+ 
+ 	SOC_DOUBLE_R("Mic Boost", WM8971_LADCIN, WM8971_RADCIN, 4, 3, 0),
++
++	SOC_DOUBLE_R_TLV("ADC Volume", WM8971_LADC, WM8971_RADC,
++			 0, 255, 0, adc_vol),
  };
  
  /*
-@@ -100,7 +109,6 @@ static const char const *wm8971_alc_func[] = {"Off", "Right",
- 					      "Left", "Stereo"};
- static const char const *wm8971_ng_type[] = {"Constant PGA Gain",
- 					     "Mute ADC Output"};
--static const char const *wm8971_deemp[] = {"None", "32kHz", "44.1kHz", "48kHz"};
- static const char const *wm8971_mono_mux[] = {"Stereo", "Mono (Left)",
- 					      "Mono (Right)", "Digital Mono"};
- static const char const *wm8971_dac_phase[] = {"Non Inverted", "Inverted"};
-@@ -114,6 +122,66 @@ static const char const *wm8971_rpga_sel[] = {"Line", "Mic", "NC",
- 					      "Differential"};
- static const char const *wm8971_adcpol[] = {"Normal", "L Invert",
- 					    "R Invert", "L + R Invert"};
-+static const char const *wm8971_deemp[] = {"None", "32kHz",
-+					   "44.1kHz", "48kHz"};
-+
-+static int wm8971_set_deemph(struct snd_soc_codec *codec)
-+{
-+	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
-+	int val = 0, i, best = 0;
-+
-+	/* If we're using deemphasis select the nearest available sample
-+	 * rate.
-+	*/
-+	if (wm8971->deemph) {
-+		best = 1;
-+		for (i = 2; i < ARRAY_SIZE(wm8971_deemp); i++) {
-+			if (abs(wm8971_deemp[i] - wm8971->playback_fs) <
-+			    abs(wm8971_deemp[best] - wm8971->playback_fs))
-+				best = i;
-+		}
-+		val = best << 1;
-+	}
-+
-+	dev_dbg(codec->dev, "Set deemphasis %d (%dHz)\n",
-+		best, wm8971_deemp[best]);
-+
-+	return snd_soc_update_bits(codec, WM8971_ADCDAC, 0x6, val);
-+}
-+
-+static int wm8971_get_deemph(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
-+
-+	ucontrol->value.enumerated.item[0] = wm8971->deemph;
-+
-+	return 0;
-+}
-+
-+static int wm8971_put_deemph(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
-+	int deemph = ucontrol->value.enumerated.item[0];
-+	int ret = 0;
-+
-+	if (deemph > 1)
-+		return -EINVAL;
-+
-+	mutex_lock(&wm8971->deemph_mutex);
-+	if (wm8971->deemph != deemph) {
-+		wm8971->deemph = deemph;
-+		wm8971_set_deemph(codec);
-+
-+		ret = 1;
-+	}
-+	mutex_unlock(&wm8971->deemph_mutex);
-+
-+	return ret;
-+}
- 
- static const struct soc_enum wm8971_enum[] = {
- 	SOC_ENUM_SINGLE(WM8971_BASS, 7, 2, wm8971_bass),	/* 0 */
-@@ -184,7 +252,8 @@ static const struct snd_kcontrol_new wm8971_snd_controls[] = {
- 	SOC_SINGLE("Capture 6dB Attenuate", WM8971_ADCDAC, 8, 1, 0),
- 	SOC_SINGLE("Playback 6dB Attenuate", WM8971_ADCDAC, 7, 1, 0),
- 
--	SOC_ENUM("Playback De-emphasis", wm8971_enum[5]),
-+	SOC_SINGLE_BOOL_EXT("Playback De-emphasis Switch", 0,
-+			    wm8971_get_deemph, wm8971_put_deemph),
- 	SOC_ENUM("Playback Function", wm8971_enum[6]),
- 	SOC_ENUM("Playback Phase", wm8971_enum[7]),
- 
-@@ -534,6 +603,8 @@ static int wm8971_pcm_hw_params(struct snd_pcm_substream *substream,
- 		break;
- 	}
- 
-+	wm8971_set_deemph(codec);
-+
- 	/* set iface & srate */
- 	snd_soc_write(codec, WM8971_IFACE, iface);
- 	if (coeff >= 0)
-@@ -727,6 +798,8 @@ static int wm8971_i2c_probe(struct i2c_client *i2c,
- 	if (wm8971 == NULL)
- 		return -ENOMEM;
- 
-+	mutex_init(&wm8971->deemph_mutex);
-+
- 	regmap = devm_regmap_init_i2c(i2c, &wm8971_regmap);
- 	if (IS_ERR(regmap))
- 		return PTR_ERR(regmap);
 -- 
 1.7.9.5
