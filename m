@@ -1,20 +1,24 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 2/3] ASoC: wm8962: Use the preferred form for
-	passing a size of a struct
-Date: Fri, 24 Oct 2014 13:01:26 -0200
-Message-ID: <1414162887-14279-2-git-send-email-festevam@gmail.com>
-References: <1414162887-14279-1-git-send-email-festevam@gmail.com>
+Subject: Re: Request for comments for SND_SOC_IMX_WM8731
+Date: Fri, 24 Oct 2014 13:09:00 -0200
+Message-ID: <CAOMZO5AhSN+tgo6PKNUuJ6vj1eQAmxEKjSiOo9KXrhZTCz35Lg@mail.gmail.com>
+References: <CAB-pspcgsa3-YgBfk-5TUoyfEN0pbBHtqCUrzyaQdCA-QNHt1Q@mail.gmail.com>
+ <CAOMZO5AXhj-r4v-sR6Rp_ywD85M07W06r551vMq0r6juE+Tmgg@mail.gmail.com>
+ <20141024140440.GG3729@sirena.org.uk>
+ <CAOMZO5AJ=KehtXWvh10LTCV25gWGn2DgSLprm8bG3trVcsxHrg@mail.gmail.com>
+ <CAB-pspe+NP-bvBF=wm-3EQjMw7mvzSeAEH1O-j_fen=L50mkNw@mail.gmail.com>
+ <CAOMZO5BVBrnd-S8TbPa-j3uSXj_ZRtvED6Tq-CjtnO1U+YZxnA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yh0-f45.google.com (mail-yh0-f45.google.com
- [209.85.213.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 13A022604AF
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 17:03:10 +0200 (CEST)
-Received: by mail-yh0-f45.google.com with SMTP id f73so861757yha.32
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 08:03:09 -0700 (PDT)
-In-Reply-To: <1414162887-14279-1-git-send-email-festevam@gmail.com>
+Received: from mail-la0-f48.google.com (mail-la0-f48.google.com
+ [209.85.215.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8B772604AA
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 17:09:00 +0200 (CEST)
+Received: by mail-la0-f48.google.com with SMTP id gi9so2783766lab.21
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 08:09:00 -0700 (PDT)
+In-Reply-To: <CAOMZO5BVBrnd-S8TbPa-j3uSXj_ZRtvED6Tq-CjtnO1U+YZxnA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,42 +28,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, alsa-devel@alsa-project.org
+To: Jonathan Bennett <jbscience87@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Aaron Kling <webgeek1234@gmail.com>, Igor Grinberg <grinberg@compulab.co.il>, Valentin Raevsky <valentin@compulab.co.il>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On Fri, Oct 24, 2014 at 12:56 PM, Fabio Estevam <festevam@gmail.com> wrote:
+> On Fri, Oct 24, 2014 at 12:48 PM, Jonathan Bennett
+> <jbscience87@gmail.com> wrote:
+>
+>> All 4 clocks were in that dts as a result of tinkering with both slave and
+>> master mode. We are actually only using the first two. That said, I think
+>> you're right. I think the ones we use should be moved to the sound {} block
+>> of the dts. I'll get these changes fixed up and send in the next version.
+>>
+>> Oh, also, this patch is a bit big for the mailing list, what is the
+>> preferred method for sending in large patches to look at? I can attach,
+>> throw it on github, put it on an http server, etc.
+>
+> Like I said previously just post the patch to the list (with
+> maintainers on Cc) using git send-email.
+>
+> Take a look at Documentation/SubmittingPatches.
 
-According to Documentation/CodingStyle - Chapter 14:
-
-"The preferred form for passing a size of a struct is the following:
-
-	p = kmalloc(sizeof(*p), ...); 
-
-The alternative form where struct name is spelled out hurts readability and
-introduces an opportunity for a bug when the pointer variable type is changed
-but the corresponding sizeof that is passed to a memory allocator is not."
-
-So do it as recommeded.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- sound/soc/codecs/wm8962.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 9077411..cfd3891 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3552,8 +3552,7 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
- 	unsigned int reg;
- 	int ret, i, irq_pol, trigger;
- 
--	wm8962 = devm_kzalloc(&i2c->dev, sizeof(struct wm8962_priv),
--			      GFP_KERNEL);
-+	wm8962 = devm_kzalloc(&i2c->dev, sizeof(*wm8962), GFP_KERNEL);
- 	if (wm8962 == NULL)
- 		return -ENOMEM;
- 
--- 
-1.9.1
+Also, you need to add
+Documentation/devicetree/bindings/sound/imx-audio-wm8731.txt file.
