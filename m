@@ -1,19 +1,18 @@
-From: Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH v2] ASoC: atmel_ssc_dai: Match the CMR
- divider only in full duplex.
-Date: Fri, 24 Oct 2014 07:13:47 +0000
-Message-ID: <6496d69edfbf49ad81b068b259e98479@EMAIL.axentia.se>
-References: <5733bb4302d148feb0bbd8ffd8c054a2@EMAIL.axentia.se>
- <5449C437.30309@atmel.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: Re: [PATCH 1/7] ASoC: Intel: Make ADSP memory block
+ allocation more generic
+Date: Fri, 24 Oct 2014 10:22:03 +0300
+Message-ID: <5449FE1B.9000201@linux.intel.com>
+References: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <20141021230224.GF2344@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EMAIL.axentia.se (axentia.se [87.96.186.132])
- by alsa0.perex.cz (Postfix) with ESMTP id E29892604A0
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 09:15:35 +0200 (CEST)
-In-Reply-To: <5449C437.30309@atmel.com>
-Content-Language: sv-SE
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7644926049C
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 09:22:06 +0200 (CEST)
+In-Reply-To: <20141021230224.GF2344@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,19 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bo Shen <voice.shen@atmel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Hi Peter,
->    Thanks for your patch.
+Hi Liam
 
-And thanks for the Ack!
+On 10/22/2014 02:02 AM, Mark Brown wrote:
+> On Mon, Oct 20, 2014 at 03:06:46PM +0100, Liam Girdwood wrote:
+>> Current block allocation is tied to block type and requestor type. Make the
+>> allocation more generic by removing the struct module parameter and adding
+>> a generic block allocator structure. Also pass in the list that the blocks
+>> have to be added too in order to remove dependence on block requestor type.
+> I'm having trouble apply this - patch 1 manages to apply with some fuzz
+> but patch 5 is failing.  Probably needs refreshing against Vinod's
+> recent changes?  I applied everything up to patch 4 (ASoC: Intel: Add
+> runtime module support).
 
->    Btw, do you use "git send-email" command to send the patch?
+For me sound.git for-next head a929d726a507 don't build anymore. I have 
+to revert all your four recent patches cd51c82524ff -4. I guess some 
+patch order or dependency issue since the first patch doesn't build when 
+applied to topic/intel?
 
-No, I  didn't, "git format-patch" and paste into the mail body. Was there some
-whitespace issues with the patch?
-
-Cheers,
-Peter
+-- 
+Jarkko
