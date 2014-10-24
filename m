@@ -1,17 +1,19 @@
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Subject: [PATCH V3 1/2] ARM: pxa: spitz: register spitz-audio
-	device
-Date: Fri, 24 Oct 2014 21:50:04 +0400
-Message-ID: <1414173005-20967-1-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH V3 2/2] ASoC: pxa: Convert spitz to use
+	snd_soc_register_card()
+Date: Fri, 24 Oct 2014 21:50:05 +0400
+Message-ID: <1414173005-20967-2-git-send-email-dbaryshkov@gmail.com>
+References: <1414173005-20967-1-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wg0-f48.google.com (mail-wg0-f48.google.com [74.125.82.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 88AB6260505
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 19:50:16 +0200 (CEST)
-Received: by mail-wg0-f48.google.com with SMTP id k14so1606160wgh.19
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 10:50:16 -0700 (PDT)
+Received: from mail-wg0-f44.google.com (mail-wg0-f44.google.com [74.125.82.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B25426054C
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 19:50:18 +0200 (CEST)
+Received: by mail-wg0-f44.google.com with SMTP id y10so1601420wgg.15
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 10:50:17 -0700 (PDT)
+In-Reply-To: <1414173005-20967-1-git-send-email-dbaryshkov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,41 +27,102 @@ To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Register spitz-audio device to be used by ASoC driver to bind ASoC
-platform driver. Currently old 'soc-audio' approach is used, which needs
-to be replaced with proper device.
+Use snd_soc_register_card() instead of creating a "soc-audio" platform device.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 ---
- arch/arm/mach-pxa/spitz.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/pxa/spitz.c | 52 +++++++++++++++++++++++++++------------------------
+ 1 file changed, 28 insertions(+), 24 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index 840c3a4..962a7f3 100644
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -924,6 +924,14 @@ static inline void spitz_i2c_init(void) {}
- #endif
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index 1373b01..d7d5fb2 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -305,19 +305,15 @@ static struct snd_soc_card snd_soc_spitz = {
+ 	.num_dapm_routes = ARRAY_SIZE(spitz_audio_map),
+ };
  
- /******************************************************************************
-+ * Audio devices
-+ ******************************************************************************/
-+static inline void spitz_audio_init(void)
-+{
-+	platform_device_register_simple("spitz-audio", -1, NULL, 0);
-+}
+-static struct platform_device *spitz_snd_device;
+-
+-static int __init spitz_init(void)
++static int spitz_probe(struct platform_device *pdev)
+ {
++	struct snd_soc_card *card = &snd_soc_spitz;
+ 	int ret;
+ 
+-	if (!(machine_is_spitz() || machine_is_borzoi() || machine_is_akita()))
+-		return -ENODEV;
+-
+-	if (machine_is_borzoi() || machine_is_spitz())
+-		spitz_mic_gpio = SPITZ_GPIO_MIC_BIAS;
+-	else
++	if (machine_is_akita())
+ 		spitz_mic_gpio = AKITA_GPIO_MIC_BIAS;
++	else
++		spitz_mic_gpio = SPITZ_GPIO_MIC_BIAS;
+ 
+ 	ret = gpio_request(spitz_mic_gpio, "MIC GPIO");
+ 	if (ret)
+@@ -327,37 +323,45 @@ static int __init spitz_init(void)
+ 	if (ret)
+ 		goto err2;
+ 
+-	spitz_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!spitz_snd_device) {
+-		ret = -ENOMEM;
++	card->dev = &pdev->dev;
 +
-+/******************************************************************************
-  * Machine init
-  ******************************************************************************/
- static void spitz_poweroff(void)
-@@ -970,6 +978,7 @@ static void __init spitz_init(void)
- 	spitz_nor_init();
- 	spitz_nand_init();
- 	spitz_i2c_init();
-+	spitz_audio_init();
++	ret = snd_soc_register_card(card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
++			ret);
+ 		goto err2;
+ 	}
+ 
+-	platform_set_drvdata(spitz_snd_device, &snd_soc_spitz);
+-
+-	ret = platform_device_add(spitz_snd_device);
+-	if (ret)
+-		goto err3;
+-
+ 	return 0;
+ 
+-err3:
+-	platform_device_put(spitz_snd_device);
+ err2:
+ 	gpio_free(spitz_mic_gpio);
+ err1:
+ 	return ret;
  }
  
- static void __init spitz_fixup(struct tag *tags, char **cmdline)
+-static void __exit spitz_exit(void)
++static int spitz_remove(struct platform_device *pdev)
+ {
+-	platform_device_unregister(spitz_snd_device);
++	struct snd_soc_card *card = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_card(card);
+ 	gpio_free(spitz_mic_gpio);
++	return 0;
+ }
+ 
+-module_init(spitz_init);
+-module_exit(spitz_exit);
++static struct platform_driver spitz_driver = {
++	.driver		= {
++		.name	= "spitz-audio",
++		.owner	= THIS_MODULE,
++		.pm     = &snd_soc_pm_ops,
++	},
++	.probe		= spitz_probe,
++	.remove		= spitz_remove,
++};
++
++module_platform_driver(spitz_driver);
+ 
+ MODULE_AUTHOR("Richard Purdie");
+ MODULE_DESCRIPTION("ALSA SoC Spitz");
+ MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:spitz-audio");
 -- 
 2.1.1
