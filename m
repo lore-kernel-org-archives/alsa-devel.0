@@ -1,8 +1,8 @@
-From: Mauro Carvalho Chehab <m.chehab@samsung.com>
+From: Mauro Carvalho Chehab <mchehab@infradead.org>
 Subject: Re: [PATCH v2 5/6] sound/usb: pcm changes to use media
  token api
-Date: Sat, 25 Oct 2014 10:44:48 -0200
-Message-ID: <20141025104448.41d9b1f0.m.chehab@samsung.com>
+Date: Sat, 25 Oct 2014 11:41:15 -0200
+Message-ID: <20141025114115.292ff5d2@recife.lan>
 References: <cover.1413246370.git.shuahkh@osg.samsung.com>
  <cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com>
  <543FB374.8020604@metafoo.de> <543FC3CD.8050805@osg.samsung.com>
@@ -16,16 +16,10 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from usmailout1.samsung.com (mailout1.w2.samsung.com
- [211.189.100.11])
- by alsa0.perex.cz (Postfix) with ESMTP id C0F8026051C
- for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 14:44:58 +0200 (CEST)
-Received: from uscpsbgm2.samsung.com
- (u115.gpu85.samsung.co.kr [203.254.195.115]) by mailout1.w2.samsung.com
- (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
- 17 2011)) with ESMTP id <0NE000CIX3EW1M50@mailout1.w2.samsung.com> for
- alsa-devel@alsa-project.org; Sat, 25 Oct 2014 08:44:56 -0400 (EDT)
-In-reply-to: <544804F1.7090606@linux.intel.com>
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.9])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA072260589
+ for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 15:41:31 +0200 (CEST)
+In-Reply-To: <544804F1.7090606@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,6 +32,9 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Devin Heitmueller <dheitmueller@kernellabs.com>, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "ramakrmu@cisco.com" <ramakrmu@cisco.com>, Shuah Khan <shuahkh@osg.samsung.com>, Linux Kernel <linux-kernel@vger.kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, Sander Eikelenboom <linux@eikelenboom.it>, prabhakar.csengg@gmail.com, Antti Palosaari <crope@iki.fi>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Tim Gardner <tim.gardner@canonical.com>, "olebowle@gmx.com" <olebowle@gmx.com>, Linux Media Mailing List <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
+
+(re-sending from my third e-mail - somehow, the two emails I have at
+ Samsung didn't seem to be delivering to vger.kernel.org today)
 
 Em Wed, 22 Oct 2014 14:26:41 -0500
 Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> escreveu:
