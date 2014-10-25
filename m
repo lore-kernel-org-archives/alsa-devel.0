@@ -1,17 +1,11 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Uninitialized id returned by
-	saffirepro_both_clk_src_get.
-Date: Sun, 26 Oct 2014 10:10:15 +0900
-Message-ID: <544C49F7.8010300@sakamocchi.jp>
-References: <1414237241-18984-1-git-send-email-vogelchr@vogel.cx>
+From: yang.a.fang@intel.com
+Subject: [PATCH] ASoC: rt5645:Mark RT5645_TDM_CTRL_3 as readable
+Date: Sat, 25 Oct 2014 23:02:33 +0000
+Message-ID: <1414278153-8473-1-git-send-email-yang.a.fang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id EDA04260644
- for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 02:10:22 +0100 (CET)
-In-Reply-To: <1414237241-18984-1-git-send-email-vogelchr@vogel.cx>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +15,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christian Vogel <vogelchr@vogel.cx>
-Cc: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: "Fang, Yang A" <yang.a.fang@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Chris,
+From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-Thanks for your posting to alsa-devel. And sorry to include any bugs in
-snd-bebob.
+amixer query fails due to it is not readable reigster
 
-I reviewed your patch and realized that your patch cannot be applied to
-current tree. The patch seems not to be based on the latest changes:
+Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
+---
+ sound/soc/codecs/rt5645.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-[alsa-devel] [PATCH 07/43] ALSA: bebob: More constify text arrays
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-October/082580.html
-
-[alsa-devel] [PATCH 08/43] ALSA: bebob: Use snd_ctl_enum_info()
-http://mailman.alsa-project.org/pipermail/alsa-devel/2014-October/082574.html
-
-I'll post revised patches later, just for our convenience.
-
-
-Thanks
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
-
-On Oct 25 2014 20:40, Christian Vogel wrote:
-> Hi,
-> 
-> there's a possibility to get a Oops caused by an uninitialized value
-> in snd_bebob_stream_check_internal_clock for a SaffirePro running on the
-> internal clock.
-> 
-> 	[   88.100531] BUG: unable to handle kernel paging request at 8a3c85fc          
-> 	[   88.103808] IP: [<e8553aa0>] snd_bebob_stream_check_internal_clock+0x66/0x11e [snd_bebob]
-> 
-> ...which is dereferencing of clk_spec->labels[id] in...
-> 
-> 	sound/firewire/bebob/bebob_stream.c :
-> 
-> 	/* 1.The device has its own operation to switch source of clock */
-> 	if (clk_spec) {
-> 		err = clk_spec->get(bebob, &id);
-> 		if (err < 0)
-> 			dev_err(&bebob->unit->device,
-> 				"fail to get clock source: %d\n", err);
-> -->		else if (strncmp(clk_spec->labels[id], SND_BEBOB_CLOCK_INTERNAL,
-> 				 strlen(SND_BEBOB_CLOCK_INTERNAL)) == 0)
-> 			*internal = true;
-> 		goto end;
-> 	}
-> 
-> id is uninitialized, and will not be set by clk_spec->get (which is
-> saffirepro_both_clk_src_get(), even if it returns ok(0).
-> 
-> Attached patch tries to clean up the logic in saffirepro_both_clk_src_get()
-> and also adds a safety check to snd_bebob_stream_check_internal_clock().
-> 
-> Thanks for Takashi Sakamoto to whom I sent the patch initially and who
-> suggested some cleanup to my code, reviewed the patch and suggested I send
-> it to alsa-dev.
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 3fb83bf..d16331e 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -139,6 +139,7 @@ static const struct reg_default rt5645_reg[] = {
+ 	{ 0x76, 0x000a },
+ 	{ 0x77, 0x0c00 },
+ 	{ 0x78, 0x0000 },
++	{ 0x79, 0x0123 },
+ 	{ 0x80, 0x0000 },
+ 	{ 0x81, 0x0000 },
+ 	{ 0x82, 0x0000 },
+@@ -334,6 +335,7 @@ static bool rt5645_readable_register(struct device *dev, unsigned int reg)
+ 	case RT5645_DMIC_CTRL2:
+ 	case RT5645_TDM_CTRL_1:
+ 	case RT5645_TDM_CTRL_2:
++	case RT5645_TDM_CTRL_3:
+ 	case RT5645_GLB_CLK:
+ 	case RT5645_PLL_CTRL1:
+ 	case RT5645_PLL_CTRL2:
+-- 
+1.7.9.5
