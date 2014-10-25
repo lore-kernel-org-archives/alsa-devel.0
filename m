@@ -1,18 +1,29 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH] ASoC: fsl_asrc: Add reg_defaults for regmap to
-	fix kernel dump
-Date: Fri, 24 Oct 2014 19:03:57 -0700
-Message-ID: <1414202637-18929-1-git-send-email-nicoleotsuka@gmail.com>
+From: Mauro Carvalho Chehab <m.chehab@samsung.com>
+Subject: Re: [PATCH v2 5/6] sound/usb: pcm changes to use media
+ token api
+Date: Sat, 25 Oct 2014 08:57:42 -0200
+Message-ID: <20141025085742.43e20bb5.m.chehab@samsung.com>
+References: <cover.1413246370.git.shuahkh@osg.samsung.com>
+ <cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com>
+ <543FB374.8020604@metafoo.de> <543FC3CD.8050805@osg.samsung.com>
+ <s5h38aow1ub.wl-tiwai@suse.de> <543FD1EC.5010206@osg.samsung.com>
+ <s5hy4sgumjo.wl-tiwai@suse.de> <543FD892.6010209@osg.samsung.com>
+ <s5htx34ul3w.wl-tiwai@suse.de> <54467EFB.7050800@xs4all.nl>
+ <s5hbnp5z9uy.wl-tiwai@suse.de> <5446989A.3010000@osg.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
- [209.85.220.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 814862605CB
- for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 04:04:05 +0200 (CEST)
-Received: by mail-pa0-f54.google.com with SMTP id rd3so2099423pab.41
- for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 19:04:04 -0700 (PDT)
+Received: from usmailout2.samsung.com (mailout2.w2.samsung.com
+ [211.189.100.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id D94D52605F6
+ for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 12:57:52 +0200 (CEST)
+Received: from uscpsbgm2.samsung.com
+ (u115.gpu85.samsung.co.kr [203.254.195.115]) by mailout2.w2.samsung.com
+ (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
+ 17 2011)) with ESMTP id <0NDZ00CD5YGEKE40@mailout2.w2.samsung.com> for
+ alsa-devel@alsa-project.org; Sat, 25 Oct 2014 06:57:51 -0400 (EDT)
+In-reply-to: <5446989A.3010000@osg.samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,113 +33,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, dheitmueller@kernellabs.com, Takashi Iwai <tiwai@suse.de>, gregkh@linuxfoundation.org, ramakrmu@cisco.com, linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>, linux@eikelenboom.it, prabhakar.csengg@gmail.com, crope@iki.fi, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, akpm@linux-foundation.org, tim.gardner@canonical.com, olebowle@gmx.com, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Kernel dump (WARN_ON) ocurred during system boot-up inside regmap_write():
+Hi,
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 47 at kernel/locking/lockdep.c:2744 lockdep_trace_alloc+0xe8/0x108()
-DEBUG_LOCKS_WARN_ON(irqs_disabled_flags(flags))
-Modules linked in:
-CPU: 0 PID: 47 Comm: kworker/u2:2 Not tainted 3.18.0-rc1-10245-gb75d289-dirty #56
-Workqueue: deferwq deferred_probe_work_func
-Backtrace:
-[<80012294>] (dump_backtrace) from [<80012578>] (show_stack+0x18/0x1c)
- r6:8097c73c r5:8097c73c r4:00000000 r3:be33ba80
-[<80012560>] (show_stack) from [<806aac48>] (dump_stack+0x8c/0xa4)
-[<806aabbc>] (dump_stack) from [<8002a694>] (warn_slowpath_common+0x70/0x94)
- r6:80062838 r5:00000009 r4:bd827b30 r3:be33ba80
-[<8002a624>] (warn_slowpath_common) from [<8002a6f0>] (warn_slowpath_fmt+0x38/0x40)
- r8:00000004 r7:00000001 r6:000080d0 r5:60000193 r4:bd826010
-[<8002a6bc>] (warn_slowpath_fmt) from [<80062838>] (lockdep_trace_alloc+0xe8/0x108)
- r3:80831590 r2:8082e160
-[<80062750>] (lockdep_trace_alloc) from [<800ea5dc>] (kmem_cache_alloc+0x28/0x134)
- r5:000080d0 r4:be001f00
-[<800ea5b4>] (kmem_cache_alloc) from [<8038d72c>] (regcache_rbtree_write+0x15c/0x648)
- r10:00000000 r9:0000001c r8:00000004 r7:00000001 r6:00000000 r5:bd819a00
- r4:00000000 r3:811aea88
-[<8038d5d0>] (regcache_rbtree_write) from [<8038c4d8>] (regcache_write+0x5c/0x64)
- r10:be3f9f88 r9:00000000 r8:00000004 r7:00000001 r6:00000000 r5:00000001
- r4:bd819a00
-[<8038c47c>] (regcache_write) from [<8038b0dc>] (_regmap_raw_write+0x134/0x5f4)
- r6:be3f9f84 r5:00000001 r4:bd819a00 r3:00000001
-[<8038afa8>] (_regmap_raw_write) from [<8038b610>] (_regmap_bus_raw_write+0x74/0x94)
- r10:00000000 r9:00000001 r8:be3fb080 r7:bd819a00 r6:00000001 r5:00000000
- r4:bd819a00
-[<8038b59c>] (_regmap_bus_raw_write) from [<8038a8b4>] (_regmap_write+0x60/0x9c)
- r6:00000001 r5:00000000 r4:bd819a00 r3:8038b59c
-[<8038a854>] (_regmap_write) from [<8038ba24>] (regmap_write+0x48/0x68)
- r7:bd81ad80 r6:00000001 r5:00000000 r4:bd819a00
-[<8038b9dc>] (regmap_write) from [<80528f30>] (fsl_asrc_dai_probe+0x34/0x104)
- r6:bd888628 r5:be3fb080 r4:be3b4410 r3:be3b442c
-------------[ dump end ]------------
+Sorry to enter into this thread so late. Last week was a full week, due to the
+4 conferences I paticiapated, and last week I needed to fill lots of trip
+reports. Also, I have another trip to give two speeches.
 
-=============================================================================
-2741         /*
-2742          * Oi! Can't be having __GFP_FS allocations with IRQs disabled.
-2743          */
-2744         if (DEBUG_LOCKS_WARN_ON(irqs_disabled_flags(flags)))
-2745                 return;
-=============================================================================
+Em Tue, 21 Oct 2014 11:32:10 -0600
+Shuah Khan <shuahkh@osg.samsung.com> escreveu:
 
-By looking at 2744 line, we can get that it's because regcache_rbtree_write()
-would call kmalloc() with GFP flag if it couldn't find an existing block to
-insert nodes while this kmalloc() call is inside a spin_lock_irq_save pair,
-i.e. IRQs disabled.
+> Here is what I propose for patch v3:
+> - make it a module under media
+> - collapse tuner and audio tokens into media token
 
-Even though this may be a bug that should be fixed, I still try to send this
-patch as a quick fix (work around) since it does no harm to assign default
-values of every registers when using regcache.
+I'm a little skeptical about this. Merging tuner and audio tokens seems
+weird on my eyes, as there are actually two different hardware resources
+we need to lock, and we may be locking them on different places.
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- sound/soc/fsl/fsl_asrc.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+> - change names (get rid of abbreviated tkn stuff)
+> - Make other changes Takashi/Lars pointed out in pcm
+> - hold token in pcm open/close
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index f2d8652..817d304 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -684,12 +684,38 @@ static bool fsl_asrc_writeable_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
-+static struct reg_default fsl_asrc_reg[] = {
-+	{ REG_ASRCTR, 0x0000 }, { REG_ASRIER, 0x0000 },
-+	{ REG_ASRCNCR, 0x0000 }, { REG_ASRCFG, 0x0000 },
-+	{ REG_ASRCSR, 0x0000 }, { REG_ASRCDR1, 0x0000 },
-+	{ REG_ASRCDR2, 0x0000 }, { REG_ASRSTR, 0x0000 },
-+	{ REG_ASRRA, 0x0000 }, { REG_ASRRB, 0x0000 },
-+	{ REG_ASRRC, 0x0000 }, { REG_ASRPM1, 0x0000 },
-+	{ REG_ASRPM2, 0x0000 }, { REG_ASRPM3, 0x0000 },
-+	{ REG_ASRPM4, 0x0000 }, { REG_ASRPM5, 0x0000 },
-+	{ REG_ASRTFR1, 0x0000 }, { REG_ASRCCR, 0x0000 },
-+	{ REG_ASRDIA, 0x0000 }, { REG_ASRDOA, 0x0000 },
-+	{ REG_ASRDIB, 0x0000 }, { REG_ASRDOB, 0x0000 },
-+	{ REG_ASRDIC, 0x0000 }, { REG_ASRDOC, 0x0000 },
-+	{ REG_ASRIDRHA, 0x0000 }, { REG_ASRIDRLA, 0x0000 },
-+	{ REG_ASRIDRHB, 0x0000 }, { REG_ASRIDRLB, 0x0000 },
-+	{ REG_ASRIDRHC, 0x0000 }, { REG_ASRIDRLC, 0x0000 },
-+	{ REG_ASR76K, 0x0A47 }, { REG_ASR56K, 0x0DF3 },
-+	{ REG_ASRMCRA, 0x0000 }, { REG_ASRFSTA, 0x0000 },
-+	{ REG_ASRMCRB, 0x0000 }, { REG_ASRFSTB, 0x0000 },
-+	{ REG_ASRMCRC, 0x0000 }, { REG_ASRFSTC, 0x0000 },
-+	{ REG_ASRMCR1A, 0x0000 }, { REG_ASRMCR1B, 0x0000 },
-+	{ REG_ASRMCR1C, 0x0000 },
-+};
-+
- static const struct regmap_config fsl_asrc_regmap_config = {
- 	.reg_bits = 32,
- 	.reg_stride = 4,
- 	.val_bits = 32,
- 
- 	.max_register = REG_ASRMCR1C,
-+	.reg_defaults = fsl_asrc_reg,
-+	.num_reg_defaults = ARRAY_SIZE(fsl_asrc_reg),
- 	.readable_reg = fsl_asrc_readable_reg,
- 	.volatile_reg = fsl_asrc_volatile_reg,
- 	.writeable_reg = fsl_asrc_writeable_reg,
--- 
-1.9.1
+I agree with Hans here: blocking at open/close will likely cause too
+much harm, as PA is unable to give an special treatment to media devices.
+
+Ok, a media-aware logic at PA wouldn't be technically hard to be added,
+but not sure if the PA maintainers would even consider this hypothesis.
+
+> - add a bitfield to struct v4l2_fh to handle
+>   the v4l specific multiple ownership cases.
+> - v4l-core and au0828-videp patches will see changes.
+> - dvb patch should still be good (crossing fingers)
+
+Regards,
+Mauro
