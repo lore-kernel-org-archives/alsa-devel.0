@@ -1,17 +1,15 @@
-From: Vasily Postnicov <shamaz.mazum@gmail.com>
-Subject: Recording with asus xonar essence st card
-Date: Sat, 25 Oct 2014 15:16:43 +0400
-Message-ID: <CADnZ6B=orUbdou9R6Hbi=n60euOetoXzhs=ALcHtEyBTp8T0jg@mail.gmail.com>
+From: Christian Vogel <vogelchr@vogel.cx>
+Subject: Uninitialized id returned by
+	saffirepro_both_clk_src_get.
+Date: Sat, 25 Oct 2014 13:40:40 +0200
+Message-ID: <1414237241-18984-1-git-send-email-vogelchr@vogel.cx>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vc0-f175.google.com (mail-vc0-f175.google.com
- [209.85.220.175])
- by alsa0.perex.cz (Postfix) with ESMTP id 692162605F2
- for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 13:16:44 +0200 (CEST)
-Received: by mail-vc0-f175.google.com with SMTP id id10so1079997vcb.34
- for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 04:16:43 -0700 (PDT)
+Received: from smtprelay06.ispgateway.de (smtprelay06.ispgateway.de
+ [80.67.31.103]) by alsa0.perex.cz (Postfix) with ESMTP id 0531A26060C
+ for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 13:40:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,23 +20,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: o-takashi@sakamocchi.jp
 List-Id: alsa-devel@alsa-project.org
 
-Hello. This is not related to alsa, but I decided to write this message
-here, because as far as I know alsa has the best open source driver for
-asus xonar series. I am using DragonFlyBSD and a bit modified driver
-originally written for FreeBSD by Alexander Polakov
-https://github.com/shamazmazum/xonar-dragonfly
+Hi,
 
-It lacks support for recording. I am trying to add this functionality from
-alsa/OSS drivers, but I have some unanswered questions. There are they here:
+there's a possibility to get a Oops caused by an uninitialized value
+in snd_bebob_stream_check_internal_clock for a SaffirePro running on the
+internal clock.
 
-1) How do I  initialize my soundcard for recording properly? I think I must
-enable CS5381 ADC using GPIO registers,  but what are OXYGEN_REC_ROUTING,
-OXYGEN_ADC_MONITOR and OXYGEN_A_MONITOR_ROUTING for? Does MONITOR mean the
-same thing as in the user manual? If ROUTING registers are just switches
-for source of a signal to be recorded, is it enough to use
-OXYGEN_REC_B_ROUTE_I2S_ADC_2 for ST card to record from line-in/mic jack?
+	[   88.100531] BUG: unable to handle kernel paging request at 8a3c85fc          
+	[   88.103808] IP: [<e8553aa0>] snd_bebob_stream_check_internal_clock+0x66/0x11e [snd_bebob]
 
-2) How do I control volume of sound while recording? Have Xonar Essence
-cards any controls for this? I cannot find it out looking at oxygen_mixer.c
+...which is dereferencing of clk_spec->labels[id] in...
+
+	sound/firewire/bebob/bebob_stream.c :
+
+	/* 1.The device has its own operation to switch source of clock */
+	if (clk_spec) {
+		err = clk_spec->get(bebob, &id);
+		if (err < 0)
+			dev_err(&bebob->unit->device,
+				"fail to get clock source: %d\n", err);
+-->		else if (strncmp(clk_spec->labels[id], SND_BEBOB_CLOCK_INTERNAL,
+				 strlen(SND_BEBOB_CLOCK_INTERNAL)) == 0)
+			*internal = true;
+		goto end;
+	}
+
+id is uninitialized, and will not be set by clk_spec->get (which is
+saffirepro_both_clk_src_get(), even if it returns ok(0).
+
+Attached patch tries to clean up the logic in saffirepro_both_clk_src_get()
+and also adds a safety check to snd_bebob_stream_check_internal_clock().
+
+Thanks for Takashi Sakamoto to whom I sent the patch initially and who
+suggested some cleanup to my code, reviewed the patch and suggested I send
+it to alsa-dev.
+
+	Chris
