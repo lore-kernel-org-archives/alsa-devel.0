@@ -1,29 +1,17 @@
-From: Mauro Carvalho Chehab <m.chehab@samsung.com>
-Subject: Re: [PATCH v2 5/6] sound/usb: pcm changes to use media
- token api
-Date: Sat, 25 Oct 2014 08:57:42 -0200
-Message-ID: <20141025085742.43e20bb5.m.chehab@samsung.com>
-References: <cover.1413246370.git.shuahkh@osg.samsung.com>
- <cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com>
- <543FB374.8020604@metafoo.de> <543FC3CD.8050805@osg.samsung.com>
- <s5h38aow1ub.wl-tiwai@suse.de> <543FD1EC.5010206@osg.samsung.com>
- <s5hy4sgumjo.wl-tiwai@suse.de> <543FD892.6010209@osg.samsung.com>
- <s5htx34ul3w.wl-tiwai@suse.de> <54467EFB.7050800@xs4all.nl>
- <s5hbnp5z9uy.wl-tiwai@suse.de> <5446989A.3010000@osg.samsung.com>
+From: Vasily Postnicov <shamaz.mazum@gmail.com>
+Subject: Recording with asus xonar essence st card
+Date: Sat, 25 Oct 2014 15:16:43 +0400
+Message-ID: <CADnZ6B=orUbdou9R6Hbi=n60euOetoXzhs=ALcHtEyBTp8T0jg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from usmailout2.samsung.com (mailout2.w2.samsung.com
- [211.189.100.12])
- by alsa0.perex.cz (Postfix) with ESMTP id D94D52605F6
- for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 12:57:52 +0200 (CEST)
-Received: from uscpsbgm2.samsung.com
- (u115.gpu85.samsung.co.kr [203.254.195.115]) by mailout2.w2.samsung.com
- (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
- 17 2011)) with ESMTP id <0NDZ00CD5YGEKE40@mailout2.w2.samsung.com> for
- alsa-devel@alsa-project.org; Sat, 25 Oct 2014 06:57:51 -0400 (EDT)
-In-reply-to: <5446989A.3010000@osg.samsung.com>
+Received: from mail-vc0-f175.google.com (mail-vc0-f175.google.com
+ [209.85.220.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id 692162605F2
+ for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 13:16:44 +0200 (CEST)
+Received: by mail-vc0-f175.google.com with SMTP id id10so1079997vcb.34
+ for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 04:16:43 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -33,41 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shuah Khan <shuahkh@osg.samsung.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, dheitmueller@kernellabs.com, Takashi Iwai <tiwai@suse.de>, gregkh@linuxfoundation.org, ramakrmu@cisco.com, linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>, linux@eikelenboom.it, prabhakar.csengg@gmail.com, crope@iki.fi, laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com, akpm@linux-foundation.org, tim.gardner@canonical.com, olebowle@gmx.com, linux-media@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello. This is not related to alsa, but I decided to write this message
+here, because as far as I know alsa has the best open source driver for
+asus xonar series. I am using DragonFlyBSD and a bit modified driver
+originally written for FreeBSD by Alexander Polakov
+https://github.com/shamazmazum/xonar-dragonfly
 
-Sorry to enter into this thread so late. Last week was a full week, due to the
-4 conferences I paticiapated, and last week I needed to fill lots of trip
-reports. Also, I have another trip to give two speeches.
+It lacks support for recording. I am trying to add this functionality from
+alsa/OSS drivers, but I have some unanswered questions. There are they here:
 
-Em Tue, 21 Oct 2014 11:32:10 -0600
-Shuah Khan <shuahkh@osg.samsung.com> escreveu:
+1) How do I  initialize my soundcard for recording properly? I think I must
+enable CS5381 ADC using GPIO registers,  but what are OXYGEN_REC_ROUTING,
+OXYGEN_ADC_MONITOR and OXYGEN_A_MONITOR_ROUTING for? Does MONITOR mean the
+same thing as in the user manual? If ROUTING registers are just switches
+for source of a signal to be recorded, is it enough to use
+OXYGEN_REC_B_ROUTE_I2S_ADC_2 for ST card to record from line-in/mic jack?
 
-> Here is what I propose for patch v3:
-> - make it a module under media
-> - collapse tuner and audio tokens into media token
-
-I'm a little skeptical about this. Merging tuner and audio tokens seems
-weird on my eyes, as there are actually two different hardware resources
-we need to lock, and we may be locking them on different places.
-
-> - change names (get rid of abbreviated tkn stuff)
-> - Make other changes Takashi/Lars pointed out in pcm
-> - hold token in pcm open/close
-
-I agree with Hans here: blocking at open/close will likely cause too
-much harm, as PA is unable to give an special treatment to media devices.
-
-Ok, a media-aware logic at PA wouldn't be technically hard to be added,
-but not sure if the PA maintainers would even consider this hypothesis.
-
-> - add a bitfield to struct v4l2_fh to handle
->   the v4l specific multiple ownership cases.
-> - v4l-core and au0828-videp patches will see changes.
-> - dvb patch should still be good (crossing fingers)
-
-Regards,
-Mauro
+2) How do I control volume of sound while recording? Have Xonar Essence
+cards any controls for this? I cannot find it out looking at oxygen_mixer.c
