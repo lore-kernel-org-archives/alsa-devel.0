@@ -1,69 +1,134 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH 2/2] ASoC: fsl-asoc-card: Add slot_width setting for cpu-dai
-Date: Fri, 24 Oct 2014 16:48:13 -0700
-Message-ID: <3c45318a95056000736874fe7cc0a26922b742e1.1414193668.git.nicoleotsuka@gmail.com>
-References: <cover.1414193668.git.nicoleotsuka@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1414193668.git.nicoleotsuka@gmail.com>
-In-Reply-To: <cover.1414193668.git.nicoleotsuka@gmail.com>
-References: <cover.1414193668.git.nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, b02247@freescale.com
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com
+Subject: [PATCH] ASoC: fsl_asrc: Add reg_defaults for regmap to
+	fix kernel dump
+Date: Fri, 24 Oct 2014 19:03:57 -0700
+Message-ID: <1414202637-18929-1-git-send-email-nicoleotsuka@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pa0-f54.google.com (mail-pa0-f54.google.com
+ [209.85.220.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 814862605CB
+ for <alsa-devel@alsa-project.org>; Sat, 25 Oct 2014 04:04:05 +0200 (CEST)
+Received: by mail-pa0-f54.google.com with SMTP id rd3so2099423pab.41
+ for <alsa-devel@alsa-project.org>; Fri, 24 Oct 2014 19:04:04 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-ESAI may need to use fixed slot width to comply with external
-CODEC. So this set_tdm_slot() call will allow the ESAI driver
-to override its default dynamic slot width policy.
+Kernel dump (WARN_ON) ocurred during system boot-up inside regmap_write():
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 47 at kernel/locking/lockdep.c:2744 lockdep_trace_alloc+0xe8/0x108()
+DEBUG_LOCKS_WARN_ON(irqs_disabled_flags(flags))
+Modules linked in:
+CPU: 0 PID: 47 Comm: kworker/u2:2 Not tainted 3.18.0-rc1-10245-gb75d289-dirty #56
+Workqueue: deferwq deferred_probe_work_func
+Backtrace:
+[<80012294>] (dump_backtrace) from [<80012578>] (show_stack+0x18/0x1c)
+ r6:8097c73c r5:8097c73c r4:00000000 r3:be33ba80
+[<80012560>] (show_stack) from [<806aac48>] (dump_stack+0x8c/0xa4)
+[<806aabbc>] (dump_stack) from [<8002a694>] (warn_slowpath_common+0x70/0x94)
+ r6:80062838 r5:00000009 r4:bd827b30 r3:be33ba80
+[<8002a624>] (warn_slowpath_common) from [<8002a6f0>] (warn_slowpath_fmt+0x38/0x40)
+ r8:00000004 r7:00000001 r6:000080d0 r5:60000193 r4:bd826010
+[<8002a6bc>] (warn_slowpath_fmt) from [<80062838>] (lockdep_trace_alloc+0xe8/0x108)
+ r3:80831590 r2:8082e160
+[<80062750>] (lockdep_trace_alloc) from [<800ea5dc>] (kmem_cache_alloc+0x28/0x134)
+ r5:000080d0 r4:be001f00
+[<800ea5b4>] (kmem_cache_alloc) from [<8038d72c>] (regcache_rbtree_write+0x15c/0x648)
+ r10:00000000 r9:0000001c r8:00000004 r7:00000001 r6:00000000 r5:bd819a00
+ r4:00000000 r3:811aea88
+[<8038d5d0>] (regcache_rbtree_write) from [<8038c4d8>] (regcache_write+0x5c/0x64)
+ r10:be3f9f88 r9:00000000 r8:00000004 r7:00000001 r6:00000000 r5:00000001
+ r4:bd819a00
+[<8038c47c>] (regcache_write) from [<8038b0dc>] (_regmap_raw_write+0x134/0x5f4)
+ r6:be3f9f84 r5:00000001 r4:bd819a00 r3:00000001
+[<8038afa8>] (_regmap_raw_write) from [<8038b610>] (_regmap_bus_raw_write+0x74/0x94)
+ r10:00000000 r9:00000001 r8:be3fb080 r7:bd819a00 r6:00000001 r5:00000000
+ r4:bd819a00
+[<8038b59c>] (_regmap_bus_raw_write) from [<8038a8b4>] (_regmap_write+0x60/0x9c)
+ r6:00000001 r5:00000000 r4:bd819a00 r3:8038b59c
+[<8038a854>] (_regmap_write) from [<8038ba24>] (regmap_write+0x48/0x68)
+ r7:bd81ad80 r6:00000001 r5:00000000 r4:bd819a00
+[<8038b9dc>] (regmap_write) from [<80528f30>] (fsl_asrc_dai_probe+0x34/0x104)
+ r6:bd888628 r5:be3fb080 r4:be3b4410 r3:be3b442c
+------------[ dump end ]------------
+
+=============================================================================
+2741         /*
+2742          * Oi! Can't be having __GFP_FS allocations with IRQs disabled.
+2743          */
+2744         if (DEBUG_LOCKS_WARN_ON(irqs_disabled_flags(flags)))
+2745                 return;
+=============================================================================
+
+By looking at 2744 line, we can get that it's because regcache_rbtree_write()
+would call kmalloc() with GFP flag if it couldn't find an existing block to
+insert nodes while this kmalloc() call is inside a spin_lock_irq_save pair,
+i.e. IRQs disabled.
+
+Even though this may be a bug that should be fixed, I still try to send this
+patch as a quick fix (work around) since it does no harm to assign default
+values of every registers when using regcache.
 
 Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/fsl/fsl_asrc.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 14572e6..3f6959c 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -51,6 +51,7 @@ struct codec_priv {
-  * @sysclk_freq[2]: SYSCLK rates for set_sysclk()
-  * @sysclk_dir[2]: SYSCLK directions for set_sysclk()
-  * @sysclk_id[2]: SYSCLK ids for set_sysclk()
-+ * @slot_width: Slot width of each frame
-  *
-  * Note: [1] for tx and [0] for rx
-  */
-@@ -58,6 +59,7 @@ struct cpu_priv {
- 	unsigned long sysclk_freq[2];
- 	u32 sysclk_dir[2];
- 	u32 sysclk_id[2];
-+	u32 slot_width;
- };
- 
- /**
-@@ -142,6 +144,15 @@ static int fsl_asoc_card_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index f2d8652..817d304 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -684,12 +684,38 @@ static bool fsl_asrc_writeable_reg(struct device *dev, unsigned int reg)
  	}
- 
-+	if (cpu_priv->slot_width) {
-+		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2,
-+					       cpu_priv->slot_width);
-+		if (ret) {
-+			dev_err(dev, "failed to set TDM slot for cpu dai\n");
-+			return ret;
-+		}
-+	}
-+
- 	return 0;
  }
  
-@@ -453,6 +464,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		priv->cpu_priv.sysclk_freq[RX] = priv->codec_priv.mclk_freq;
- 		priv->cpu_priv.sysclk_dir[TX] = SND_SOC_CLOCK_OUT;
- 		priv->cpu_priv.sysclk_dir[RX] = SND_SOC_CLOCK_OUT;
-+		priv->cpu_priv.slot_width = 32;
- 		priv->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-sgtl5000")) {
- 		priv->codec_priv.mclk_id = SGTL5000_SYSCLK;
++static struct reg_default fsl_asrc_reg[] = {
++	{ REG_ASRCTR, 0x0000 }, { REG_ASRIER, 0x0000 },
++	{ REG_ASRCNCR, 0x0000 }, { REG_ASRCFG, 0x0000 },
++	{ REG_ASRCSR, 0x0000 }, { REG_ASRCDR1, 0x0000 },
++	{ REG_ASRCDR2, 0x0000 }, { REG_ASRSTR, 0x0000 },
++	{ REG_ASRRA, 0x0000 }, { REG_ASRRB, 0x0000 },
++	{ REG_ASRRC, 0x0000 }, { REG_ASRPM1, 0x0000 },
++	{ REG_ASRPM2, 0x0000 }, { REG_ASRPM3, 0x0000 },
++	{ REG_ASRPM4, 0x0000 }, { REG_ASRPM5, 0x0000 },
++	{ REG_ASRTFR1, 0x0000 }, { REG_ASRCCR, 0x0000 },
++	{ REG_ASRDIA, 0x0000 }, { REG_ASRDOA, 0x0000 },
++	{ REG_ASRDIB, 0x0000 }, { REG_ASRDOB, 0x0000 },
++	{ REG_ASRDIC, 0x0000 }, { REG_ASRDOC, 0x0000 },
++	{ REG_ASRIDRHA, 0x0000 }, { REG_ASRIDRLA, 0x0000 },
++	{ REG_ASRIDRHB, 0x0000 }, { REG_ASRIDRLB, 0x0000 },
++	{ REG_ASRIDRHC, 0x0000 }, { REG_ASRIDRLC, 0x0000 },
++	{ REG_ASR76K, 0x0A47 }, { REG_ASR56K, 0x0DF3 },
++	{ REG_ASRMCRA, 0x0000 }, { REG_ASRFSTA, 0x0000 },
++	{ REG_ASRMCRB, 0x0000 }, { REG_ASRFSTB, 0x0000 },
++	{ REG_ASRMCRC, 0x0000 }, { REG_ASRFSTC, 0x0000 },
++	{ REG_ASRMCR1A, 0x0000 }, { REG_ASRMCR1B, 0x0000 },
++	{ REG_ASRMCR1C, 0x0000 },
++};
++
+ static const struct regmap_config fsl_asrc_regmap_config = {
+ 	.reg_bits = 32,
+ 	.reg_stride = 4,
+ 	.val_bits = 32,
+ 
+ 	.max_register = REG_ASRMCR1C,
++	.reg_defaults = fsl_asrc_reg,
++	.num_reg_defaults = ARRAY_SIZE(fsl_asrc_reg),
+ 	.readable_reg = fsl_asrc_readable_reg,
+ 	.volatile_reg = fsl_asrc_volatile_reg,
+ 	.writeable_reg = fsl_asrc_writeable_reg,
 -- 
 1.9.1
