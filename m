@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 18/29] ALSA: oxfw: Split PCM functionality to a
-	new file
-Date: Sun, 26 Oct 2014 22:03:19 +0900
-Message-ID: <1414328610-12729-19-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 19/29] ALSA: oxfw: Split control functionality
+	to a new file
+Date: Sun, 26 Oct 2014 22:03:20 +0900
+Message-ID: <1414328610-12729-20-git-send-email-o-takashi@sakamocchi.jp>
 References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id B72532606B0
- for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:04:05 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 03EEE2606CE
+ for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:04:07 +0100 (CET)
 In-Reply-To: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,29 +29,29 @@ This is a help for works in followed patches.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/Makefile   |   2 +-
- sound/firewire/oxfw/oxfw-pcm.c | 239 +++++++++++++++++++++++++++++++++++++++++
- sound/firewire/oxfw/oxfw.c     | 232 +--------------------------------------
- sound/firewire/oxfw/oxfw.h     |   4 +
- 4 files changed, 245 insertions(+), 232 deletions(-)
- create mode 100644 sound/firewire/oxfw/oxfw-pcm.c
+ sound/firewire/oxfw/Makefile       |   2 +-
+ sound/firewire/oxfw/oxfw-control.c | 283 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/oxfw/oxfw.c         | 277 +-----------------------------------
+ sound/firewire/oxfw/oxfw.h         |   2 +
+ 4 files changed, 287 insertions(+), 277 deletions(-)
+ create mode 100644 sound/firewire/oxfw/oxfw-control.c
 
 diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
-index e15c4c0..7fb4d09 100644
+index 7fb4d09..0cf48fd 100644
 --- a/sound/firewire/oxfw/Makefile
 +++ b/sound/firewire/oxfw/Makefile
 @@ -1,2 +1,2 @@
--snd-oxfw-objs := oxfw-stream.o oxfw.o
-+snd-oxfw-objs := oxfw-stream.o oxfw-pcm.o oxfw.o
+-snd-oxfw-objs := oxfw-stream.o oxfw-pcm.o oxfw.o
++snd-oxfw-objs := oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
  obj-m += snd-oxfw.o
-diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
+diff --git a/sound/firewire/oxfw/oxfw-control.c b/sound/firewire/oxfw/oxfw-control.c
 new file mode 100644
-index 0000000..1fd76ce
+index 0000000..02a1cb9
 --- /dev/null
-+++ b/sound/firewire/oxfw/oxfw-pcm.c
-@@ -0,0 +1,239 @@
++++ b/sound/firewire/oxfw/oxfw-control.c
+@@ -0,0 +1,283 @@
 +/*
-+ * oxfw_pcm.c - a part of driver for OXFW970/971 based devices
++ * oxfw_stream.c - a part of driver for OXFW970/971 based devices
 + *
 + * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
 + * Licensed under the terms of the GNU General Public License, version 2.
@@ -59,497 +59,584 @@ index 0000000..1fd76ce
 +
 +#include "oxfw.h"
 +
-+static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
-+				    struct snd_pcm_hw_rule *rule)
++enum control_action { CTL_READ, CTL_WRITE };
++enum control_attribute {
++	CTL_MIN		= 0x02,
++	CTL_MAX		= 0x03,
++	CTL_CURRENT	= 0x10,
++};
++
++static int oxfw_mute_command(struct snd_oxfw *oxfw, bool *value,
++			     enum control_action action)
 +{
-+	static unsigned int stereo_rates[] = { 48000, 96000 };
-+	struct snd_interval *channels =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval *rate =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+
-+	/* two channels work only at 48/96 kHz */
-+	if (snd_interval_max(channels) < 6)
-+		return snd_interval_list(rate, 2, stereo_rates, 0);
-+	return 0;
-+}
-+
-+static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
-+					struct snd_pcm_hw_rule *rule)
-+{
-+	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
-+	struct snd_interval *rate =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels =
-+			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+
-+	/* 32/44.1 kHz work only with all six channels */
-+	if (snd_interval_max(rate) < 48000)
-+		return snd_interval_refine(channels, &all_channels);
-+	return 0;
-+}
-+
-+int firewave_constraints(struct snd_pcm_runtime *runtime)
-+{
-+	static unsigned int channels_list[] = { 2, 6 };
-+	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
-+		.count = 2,
-+		.list = channels_list,
-+	};
++	u8 *buf;
++	u8 response_ok;
 +	int err;
 +
-+	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
-+			    SNDRV_PCM_RATE_44100 |
-+			    SNDRV_PCM_RATE_48000 |
-+			    SNDRV_PCM_RATE_96000;
-+	runtime->hw.channels_max = 6;
++	buf = kmalloc(11, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
 +
-+	err = snd_pcm_hw_constraint_list(runtime, 0,
-+					 SNDRV_PCM_HW_PARAM_CHANNELS,
-+					 &channels_list_constraint);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				  firewave_rate_constraint, NULL,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  firewave_channels_constraint, NULL,
-+				  SNDRV_PCM_HW_PARAM_RATE, -1);
-+	if (err < 0)
-+		return err;
++	if (action == CTL_READ) {
++		buf[0] = 0x01;		/* AV/C, STATUS */
++		response_ok = 0x0c;	/*       STABLE */
++	} else {
++		buf[0] = 0x00;		/* AV/C, CONTROL */
++		response_ok = 0x09;	/*       ACCEPTED */
++	}
++	buf[1] = 0x08;			/* audio unit 0 */
++	buf[2] = 0xb8;			/* FUNCTION BLOCK */
++	buf[3] = 0x81;			/* function block type: feature */
++	buf[4] = oxfw->device_info->mute_fb_id; /* function block ID */
++	buf[5] = 0x10;			/* control attribute: current */
++	buf[6] = 0x02;			/* selector length */
++	buf[7] = 0x00;			/* audio channel number */
++	buf[8] = 0x01;			/* control selector: mute */
++	buf[9] = 0x01;			/* control data length */
++	if (action == CTL_READ)
++		buf[10] = 0xff;
++	else
++		buf[10] = *value ? 0x70 : 0x60;
 +
-+	return 0;
-+}
-+
-+int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
-+{
-+	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
-+			    SNDRV_PCM_RATE_44100 |
-+			    SNDRV_PCM_RATE_48000 |
-+			    SNDRV_PCM_RATE_88200 |
-+			    SNDRV_PCM_RATE_96000;
-+
-+	return 0;
-+}
-+
-+static int pcm_open(struct snd_pcm_substream *substream)
-+{
-+	static const struct snd_pcm_hardware hardware = {
-+		.info = SNDRV_PCM_INFO_MMAP |
-+			SNDRV_PCM_INFO_MMAP_VALID |
-+			SNDRV_PCM_INFO_BATCH |
-+			SNDRV_PCM_INFO_INTERLEAVED |
-+			SNDRV_PCM_INFO_BLOCK_TRANSFER,
-+		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.buffer_bytes_max = 4 * 1024 * 1024,
-+		.period_bytes_min = 1,
-+		.period_bytes_max = UINT_MAX,
-+		.periods_min = 1,
-+		.periods_max = UINT_MAX,
-+	};
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	bool used;
-+	int err;
-+
-+	err = cmp_connection_check_used(&oxfw->in_conn, &used);
-+	if ((err < 0) || used)
-+		goto end;
-+
-+	runtime->hw = hardware;
-+
-+	err = oxfw->device_info->pcm_constraints(runtime);
-+	if (err < 0)
-+		goto end;
-+	err = snd_pcm_limit_hw_rates(runtime);
-+	if (err < 0)
-+		goto end;
-+
-+	err = amdtp_stream_add_pcm_hw_constraints(&oxfw->rx_stream, runtime);
-+end:
-+	return err;
-+}
-+
-+static int pcm_close(struct snd_pcm_substream *substream)
-+{
-+	return 0;
-+}
-+
-+static int pcm_hw_params(struct snd_pcm_substream *substream,
-+			 struct snd_pcm_hw_params *hw_params)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+	int err;
-+
-+	snd_oxfw_stream_stop_simplex(oxfw);
-+
-+	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
-+					       params_buffer_bytes(hw_params));
++	err = fcp_avc_transaction(oxfw->unit, buf, 11, buf, 11, 0x3fe);
 +	if (err < 0)
 +		goto error;
-+
-+	amdtp_stream_set_parameters(&oxfw->rx_stream,
-+				    params_rate(hw_params),
-+				    params_channels(hw_params),
-+				    0);
-+
-+	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
-+				    params_format(hw_params));
-+
-+	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
-+				      AVC_GENERAL_PLUG_DIR_IN, 0);
-+	if (err < 0) {
-+		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
-+		goto err_buffer;
++	if (err < 11) {
++		dev_err(&oxfw->unit->device, "short FCP response\n");
++		err = -EIO;
++		goto error;
 +	}
++	if (buf[0] != response_ok) {
++		dev_err(&oxfw->unit->device, "mute command failed\n");
++		err = -EIO;
++		goto error;
++	}
++	if (action == CTL_READ)
++		*value = buf[10] == 0x70;
 +
-+	return 0;
++	err = 0;
 +
-+err_buffer:
-+	snd_pcm_lib_free_vmalloc_buffer(substream);
 +error:
++	kfree(buf);
++
 +	return err;
 +}
 +
-+static int pcm_hw_free(struct snd_pcm_substream *substream)
++static int oxfw_volume_command(struct snd_oxfw *oxfw, s16 *value,
++			       unsigned int channel,
++			       enum control_attribute attribute,
++			       enum control_action action)
 +{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+
-+	snd_oxfw_stream_stop_simplex(oxfw);
-+
-+	return snd_pcm_lib_free_vmalloc_buffer(substream);
-+}
-+
-+static int pcm_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_oxfw *oxfw = substream->private_data;
++	u8 *buf;
++	u8 response_ok;
 +	int err;
 +
-+	snd_oxfw_stream_stop_simplex(oxfw);
++	buf = kmalloc(12, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
 +
-+	err = snd_oxfw_stream_start_simplex(oxfw);
++	if (action == CTL_READ) {
++		buf[0] = 0x01;		/* AV/C, STATUS */
++		response_ok = 0x0c;	/*       STABLE */
++	} else {
++		buf[0] = 0x00;		/* AV/C, CONTROL */
++		response_ok = 0x09;	/*       ACCEPTED */
++	}
++	buf[1] = 0x08;			/* audio unit 0 */
++	buf[2] = 0xb8;			/* FUNCTION BLOCK */
++	buf[3] = 0x81;			/* function block type: feature */
++	buf[4] = oxfw->device_info->volume_fb_id; /* function block ID */
++	buf[5] = attribute;		/* control attribute */
++	buf[6] = 0x02;			/* selector length */
++	buf[7] = channel;		/* audio channel number */
++	buf[8] = 0x02;			/* control selector: volume */
++	buf[9] = 0x02;			/* control data length */
++	if (action == CTL_READ) {
++		buf[10] = 0xff;
++		buf[11] = 0xff;
++	} else {
++		buf[10] = *value >> 8;
++		buf[11] = *value;
++	}
++
++	err = fcp_avc_transaction(oxfw->unit, buf, 12, buf, 12, 0x3fe);
 +	if (err < 0)
-+		goto end;
++		goto error;
++	if (err < 12) {
++		dev_err(&oxfw->unit->device, "short FCP response\n");
++		err = -EIO;
++		goto error;
++	}
++	if (buf[0] != response_ok) {
++		dev_err(&oxfw->unit->device, "volume command failed\n");
++		err = -EIO;
++		goto error;
++	}
++	if (action == CTL_READ)
++		*value = (buf[10] << 8) | buf[11];
 +
-+	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
-+end:
++	err = 0;
++
++error:
++	kfree(buf);
++
 +	return err;
 +}
 +
-+static int pcm_trigger(struct snd_pcm_substream *substream, int cmd)
++static int oxfw_mute_get(struct snd_kcontrol *control,
++			 struct snd_ctl_elem_value *value)
 +{
-+	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_oxfw *oxfw = control->private_data;
 +
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		amdtp_stream_pcm_trigger(&oxfw->rx_stream, substream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		amdtp_stream_pcm_trigger(&oxfw->rx_stream, NULL);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
++	value->value.integer.value[0] = !oxfw->mute;
++
 +	return 0;
 +}
 +
-+static snd_pcm_uframes_t pcm_pointer(struct snd_pcm_substream *substream)
++static int oxfw_mute_put(struct snd_kcontrol *control,
++			 struct snd_ctl_elem_value *value)
 +{
-+	struct snd_oxfw *oxfw = substream->private_data;
-+
-+	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
-+}
-+
-+int snd_oxfw_create_pcm(struct snd_oxfw *oxfw)
-+{
-+	static struct snd_pcm_ops ops = {
-+		.open      = pcm_open,
-+		.close     = pcm_close,
-+		.ioctl     = snd_pcm_lib_ioctl,
-+		.hw_params = pcm_hw_params,
-+		.hw_free   = pcm_hw_free,
-+		.prepare   = pcm_prepare,
-+		.trigger   = pcm_trigger,
-+		.pointer   = pcm_pointer,
-+		.page      = snd_pcm_lib_get_vmalloc_page,
-+		.mmap      = snd_pcm_lib_mmap_vmalloc,
-+	};
-+	struct snd_pcm *pcm;
++	struct snd_oxfw *oxfw = control->private_data;
++	bool mute;
 +	int err;
 +
-+	err = snd_pcm_new(oxfw->card, oxfw->card->driver, 0, 1, 0, &pcm);
++	mute = !value->value.integer.value[0];
++
++	if (mute == oxfw->mute)
++		return 0;
++
++	err = oxfw_mute_command(oxfw, &mute, CTL_WRITE);
 +	if (err < 0)
 +		return err;
-+	pcm->private_data = oxfw;
-+	strcpy(pcm->name, oxfw->card->shortname);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
++	oxfw->mute = mute;
++
++	return 1;
++}
++
++static int oxfw_volume_info(struct snd_kcontrol *control,
++			    struct snd_ctl_elem_info *info)
++{
++	struct snd_oxfw *oxfw = control->private_data;
++
++	info->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	info->count = oxfw->device_info->mixer_channels;
++	info->value.integer.min = oxfw->volume_min;
++	info->value.integer.max = oxfw->volume_max;
++
++	return 0;
++}
++
++static const u8 channel_map[6] = { 0, 1, 4, 5, 2, 3 };
++
++static int oxfw_volume_get(struct snd_kcontrol *control,
++			   struct snd_ctl_elem_value *value)
++{
++	struct snd_oxfw *oxfw = control->private_data;
++	unsigned int i;
++
++	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
++		value->value.integer.value[channel_map[i]] = oxfw->volume[i];
++
++	return 0;
++}
++
++static int oxfw_volume_put(struct snd_kcontrol *control,
++			   struct snd_ctl_elem_value *value)
++{
++	struct snd_oxfw *oxfw = control->private_data;
++	unsigned int i, changed_channels;
++	bool equal_values = true;
++	s16 volume;
++	int err;
++
++	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
++		if (value->value.integer.value[i] < oxfw->volume_min ||
++		    value->value.integer.value[i] > oxfw->volume_max)
++			return -EINVAL;
++		if (value->value.integer.value[i] !=
++		    value->value.integer.value[0])
++			equal_values = false;
++	}
++
++	changed_channels = 0;
++	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
++		if (value->value.integer.value[channel_map[i]] !=
++							oxfw->volume[i])
++			changed_channels |= 1 << (i + 1);
++
++	if (equal_values && changed_channels != 0)
++		changed_channels = 1 << 0;
++
++	for (i = 0; i <= oxfw->device_info->mixer_channels; ++i) {
++		volume = value->value.integer.value[channel_map[i ? i - 1 : 0]];
++		if (changed_channels & (1 << i)) {
++			err = oxfw_volume_command(oxfw, &volume, i,
++						   CTL_CURRENT, CTL_WRITE);
++			if (err < 0)
++				return err;
++		}
++		if (i > 0)
++			oxfw->volume[i - 1] = volume;
++	}
++
++	return changed_channels != 0;
++}
++
++int snd_oxfw_create_mixer(struct snd_oxfw *oxfw)
++{
++	static const struct snd_kcontrol_new controls[] = {
++		{
++			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++			.name = "PCM Playback Switch",
++			.info = snd_ctl_boolean_mono_info,
++			.get = oxfw_mute_get,
++			.put = oxfw_mute_put,
++		},
++		{
++			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++			.name = "PCM Playback Volume",
++			.info = oxfw_volume_info,
++			.get = oxfw_volume_get,
++			.put = oxfw_volume_put,
++		},
++	};
++	unsigned int i, first_ch;
++	int err;
++
++	err = oxfw_volume_command(oxfw, &oxfw->volume_min,
++				   0, CTL_MIN, CTL_READ);
++	if (err < 0)
++		return err;
++	err = oxfw_volume_command(oxfw, &oxfw->volume_max,
++				   0, CTL_MAX, CTL_READ);
++	if (err < 0)
++		return err;
++
++	err = oxfw_mute_command(oxfw, &oxfw->mute, CTL_READ);
++	if (err < 0)
++		return err;
++
++	first_ch = oxfw->device_info->mixer_channels == 1 ? 0 : 1;
++	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
++		err = oxfw_volume_command(oxfw, &oxfw->volume[i],
++					   first_ch + i, CTL_CURRENT, CTL_READ);
++		if (err < 0)
++			return err;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(controls); ++i) {
++		err = snd_ctl_add(oxfw->card,
++				  snd_ctl_new1(&controls[i], oxfw));
++		if (err < 0)
++			return err;
++	}
++
 +	return 0;
 +}
 diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 9445861..2210669 100644
+index 2210669..236a55e 100644
 --- a/sound/firewire/oxfw/oxfw.c
 +++ b/sound/firewire/oxfw/oxfw.c
-@@ -25,236 +25,6 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+@@ -25,281 +25,6 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
  MODULE_LICENSE("GPL v2");
  MODULE_ALIAS("snd-firewire-speakers");
  
--static int firewave_rate_constraint(struct snd_pcm_hw_params *params,
--				    struct snd_pcm_hw_rule *rule)
+-enum control_action { CTL_READ, CTL_WRITE };
+-enum control_attribute {
+-	CTL_MIN		= 0x02,
+-	CTL_MAX		= 0x03,
+-	CTL_CURRENT	= 0x10,
+-};
+-
+-static int oxfw_mute_command(struct snd_oxfw *oxfw, bool *value,
+-			      enum control_action action)
 -{
--	static unsigned int stereo_rates[] = { 48000, 96000 };
--	struct snd_interval *channels =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--	struct snd_interval *rate =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--
--	/* two channels work only at 48/96 kHz */
--	if (snd_interval_max(channels) < 6)
--		return snd_interval_list(rate, 2, stereo_rates, 0);
--	return 0;
--}
--
--static int firewave_channels_constraint(struct snd_pcm_hw_params *params,
--					struct snd_pcm_hw_rule *rule)
--{
--	static const struct snd_interval all_channels = { .min = 6, .max = 6 };
--	struct snd_interval *rate =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels =
--			hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--
--	/* 32/44.1 kHz work only with all six channels */
--	if (snd_interval_max(rate) < 48000)
--		return snd_interval_refine(channels, &all_channels);
--	return 0;
--}
--
--static int firewave_constraints(struct snd_pcm_runtime *runtime)
--{
--	static unsigned int channels_list[] = { 2, 6 };
--	static struct snd_pcm_hw_constraint_list channels_list_constraint = {
--		.count = 2,
--		.list = channels_list,
--	};
+-	u8 *buf;
+-	u8 response_ok;
 -	int err;
 -
--	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
--			    SNDRV_PCM_RATE_44100 |
--			    SNDRV_PCM_RATE_48000 |
--			    SNDRV_PCM_RATE_96000;
--	runtime->hw.channels_max = 6;
+-	buf = kmalloc(11, GFP_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
 -
--	err = snd_pcm_hw_constraint_list(runtime, 0,
--					 SNDRV_PCM_HW_PARAM_CHANNELS,
--					 &channels_list_constraint);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
--				  firewave_rate_constraint, NULL,
--				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
--	if (err < 0)
--		return err;
--	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--				  firewave_channels_constraint, NULL,
--				  SNDRV_PCM_HW_PARAM_RATE, -1);
--	if (err < 0)
--		return err;
+-	if (action == CTL_READ) {
+-		buf[0] = 0x01;		/* AV/C, STATUS */
+-		response_ok = 0x0c;	/*       STABLE */
+-	} else {
+-		buf[0] = 0x00;		/* AV/C, CONTROL */
+-		response_ok = 0x09;	/*       ACCEPTED */
+-	}
+-	buf[1] = 0x08;			/* audio unit 0 */
+-	buf[2] = 0xb8;			/* FUNCTION BLOCK */
+-	buf[3] = 0x81;			/* function block type: feature */
+-	buf[4] = oxfw->device_info->mute_fb_id; /* function block ID */
+-	buf[5] = 0x10;			/* control attribute: current */
+-	buf[6] = 0x02;			/* selector length */
+-	buf[7] = 0x00;			/* audio channel number */
+-	buf[8] = 0x01;			/* control selector: mute */
+-	buf[9] = 0x01;			/* control data length */
+-	if (action == CTL_READ)
+-		buf[10] = 0xff;
+-	else
+-		buf[10] = *value ? 0x70 : 0x60;
 -
--	return 0;
--}
--
--static int lacie_speakers_constraints(struct snd_pcm_runtime *runtime)
--{
--	runtime->hw.rates = SNDRV_PCM_RATE_32000 |
--			    SNDRV_PCM_RATE_44100 |
--			    SNDRV_PCM_RATE_48000 |
--			    SNDRV_PCM_RATE_88200 |
--			    SNDRV_PCM_RATE_96000;
--
--	return 0;
--}
--
--static int oxfw_open(struct snd_pcm_substream *substream)
--{
--	static const struct snd_pcm_hardware hardware = {
--		.info = SNDRV_PCM_INFO_MMAP |
--			SNDRV_PCM_INFO_MMAP_VALID |
--			SNDRV_PCM_INFO_BATCH |
--			SNDRV_PCM_INFO_INTERLEAVED |
--			SNDRV_PCM_INFO_BLOCK_TRANSFER,
--		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
--		.channels_min = 2,
--		.channels_max = 2,
--		.buffer_bytes_max = 4 * 1024 * 1024,
--		.period_bytes_min = 1,
--		.period_bytes_max = UINT_MAX,
--		.periods_min = 1,
--		.periods_max = UINT_MAX,
--	};
--	struct snd_oxfw *oxfw = substream->private_data;
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int err;
--
--	runtime->hw = hardware;
--
--	err = oxfw->device_info->pcm_constraints(runtime);
--	if (err < 0)
--		return err;
--	err = snd_pcm_limit_hw_rates(runtime);
--	if (err < 0)
--		return err;
--
--	err = amdtp_stream_add_pcm_hw_constraints(&oxfw->rx_stream, runtime);
--	if (err < 0)
--		return err;
--
--	return 0;
--}
--
--static int oxfw_close(struct snd_pcm_substream *substream)
--{
--	return 0;
--}
--
--static int oxfw_hw_params(struct snd_pcm_substream *substream,
--			   struct snd_pcm_hw_params *hw_params)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
--	int err;
--
--	snd_oxfw_stream_stop_simplex(oxfw);
--
--	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
--					       params_buffer_bytes(hw_params));
+-	err = fcp_avc_transaction(oxfw->unit, buf, 11, buf, 11, 0x3fe);
 -	if (err < 0)
 -		goto error;
--
--	amdtp_stream_set_parameters(&oxfw->rx_stream,
--				    params_rate(hw_params),
--				    params_channels(hw_params),
--				    0);
--
--	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
--				    params_format(hw_params));
--
--	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
--				      AVC_GENERAL_PLUG_DIR_IN, 0);
--	if (err < 0) {
--		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
--		goto err_buffer;
+-	if (err < 11) {
+-		dev_err(&oxfw->unit->device, "short FCP response\n");
+-		err = -EIO;
+-		goto error;
 -	}
+-	if (buf[0] != response_ok) {
+-		dev_err(&oxfw->unit->device, "mute command failed\n");
+-		err = -EIO;
+-		goto error;
+-	}
+-	if (action == CTL_READ)
+-		*value = buf[10] == 0x70;
 -
--	return 0;
+-	err = 0;
 -
--err_buffer:
--	snd_pcm_lib_free_vmalloc_buffer(substream);
 -error:
+-	kfree(buf);
+-
 -	return err;
 -}
 -
--static int oxfw_hw_free(struct snd_pcm_substream *substream)
+-static int oxfw_volume_command(struct snd_oxfw *oxfw, s16 *value,
+-				unsigned int channel,
+-				enum control_attribute attribute,
+-				enum control_action action)
 -{
--	struct snd_oxfw *oxfw = substream->private_data;
--
--	snd_oxfw_stream_stop_simplex(oxfw);
--
--	return snd_pcm_lib_free_vmalloc_buffer(substream);
--}
--
--static int oxfw_prepare(struct snd_pcm_substream *substream)
--{
--	struct snd_oxfw *oxfw = substream->private_data;
+-	u8 *buf;
+-	u8 response_ok;
 -	int err;
 -
--	snd_oxfw_stream_stop_simplex(oxfw);
+-	buf = kmalloc(12, GFP_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
 -
--	err = snd_oxfw_stream_start_simplex(oxfw);
+-	if (action == CTL_READ) {
+-		buf[0] = 0x01;		/* AV/C, STATUS */
+-		response_ok = 0x0c;	/*       STABLE */
+-	} else {
+-		buf[0] = 0x00;		/* AV/C, CONTROL */
+-		response_ok = 0x09;	/*       ACCEPTED */
+-	}
+-	buf[1] = 0x08;			/* audio unit 0 */
+-	buf[2] = 0xb8;			/* FUNCTION BLOCK */
+-	buf[3] = 0x81;			/* function block type: feature */
+-	buf[4] = oxfw->device_info->volume_fb_id; /* function block ID */
+-	buf[5] = attribute;		/* control attribute */
+-	buf[6] = 0x02;			/* selector length */
+-	buf[7] = channel;		/* audio channel number */
+-	buf[8] = 0x02;			/* control selector: volume */
+-	buf[9] = 0x02;			/* control data length */
+-	if (action == CTL_READ) {
+-		buf[10] = 0xff;
+-		buf[11] = 0xff;
+-	} else {
+-		buf[10] = *value >> 8;
+-		buf[11] = *value;
+-	}
+-
+-	err = fcp_avc_transaction(oxfw->unit, buf, 12, buf, 12, 0x3fe);
 -	if (err < 0)
--		goto end;
+-		goto error;
+-	if (err < 12) {
+-		dev_err(&oxfw->unit->device, "short FCP response\n");
+-		err = -EIO;
+-		goto error;
+-	}
+-	if (buf[0] != response_ok) {
+-		dev_err(&oxfw->unit->device, "volume command failed\n");
+-		err = -EIO;
+-		goto error;
+-	}
+-	if (action == CTL_READ)
+-		*value = (buf[10] << 8) | buf[11];
 -
--	amdtp_stream_pcm_prepare(&oxfw->rx_stream);
--end:
+-	err = 0;
+-
+-error:
+-	kfree(buf);
+-
 -	return err;
 -}
 -
--static int oxfw_trigger(struct snd_pcm_substream *substream, int cmd)
+-static int oxfw_mute_get(struct snd_kcontrol *control,
+-			  struct snd_ctl_elem_value *value)
 -{
--	struct snd_oxfw *oxfw = substream->private_data;
--	struct snd_pcm_substream *pcm;
+-	struct snd_oxfw *oxfw = control->private_data;
 -
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--		pcm = substream;
--		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--		pcm = NULL;
--		break;
--	default:
--		return -EINVAL;
--	}
--	amdtp_stream_pcm_trigger(&oxfw->rx_stream, pcm);
+-	value->value.integer.value[0] = !oxfw->mute;
+-
 -	return 0;
 -}
 -
--static snd_pcm_uframes_t oxfw_pointer(struct snd_pcm_substream *substream)
+-static int oxfw_mute_put(struct snd_kcontrol *control,
+-			  struct snd_ctl_elem_value *value)
 -{
--	struct snd_oxfw *oxfw = substream->private_data;
--
--	return amdtp_stream_pcm_pointer(&oxfw->rx_stream);
--}
--
--static int oxfw_create_pcm(struct snd_oxfw *oxfw)
--{
--	static struct snd_pcm_ops ops = {
--		.open      = oxfw_open,
--		.close     = oxfw_close,
--		.ioctl     = snd_pcm_lib_ioctl,
--		.hw_params = oxfw_hw_params,
--		.hw_free   = oxfw_hw_free,
--		.prepare   = oxfw_prepare,
--		.trigger   = oxfw_trigger,
--		.pointer   = oxfw_pointer,
--		.page      = snd_pcm_lib_get_vmalloc_page,
--		.mmap      = snd_pcm_lib_mmap_vmalloc,
--	};
--	struct snd_pcm *pcm;
+-	struct snd_oxfw *oxfw = control->private_data;
+-	bool mute;
 -	int err;
 -
--	err = snd_pcm_new(oxfw->card, "OXFW", 0, 1, 0, &pcm);
+-	mute = !value->value.integer.value[0];
+-
+-	if (mute == oxfw->mute)
+-		return 0;
+-
+-	err = oxfw_mute_command(oxfw, &mute, CTL_WRITE);
 -	if (err < 0)
 -		return err;
--	pcm->private_data = oxfw;
--	strcpy(pcm->name, oxfw->device_info->short_name);
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &ops);
+-	oxfw->mute = mute;
+-
+-	return 1;
+-}
+-
+-static int oxfw_volume_info(struct snd_kcontrol *control,
+-			     struct snd_ctl_elem_info *info)
+-{
+-	struct snd_oxfw *oxfw = control->private_data;
+-
+-	info->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+-	info->count = oxfw->device_info->mixer_channels;
+-	info->value.integer.min = oxfw->volume_min;
+-	info->value.integer.max = oxfw->volume_max;
+-
 -	return 0;
 -}
 -
- enum control_action { CTL_READ, CTL_WRITE };
- enum control_attribute {
- 	CTL_MIN		= 0x02,
-@@ -579,7 +349,7 @@ static int oxfw_probe(struct fw_unit *unit,
- 		 dev_name(&unit->device), 100 << fw_dev->max_speed);
- 	strcpy(card->mixername, "OXFW");
+-static const u8 channel_map[6] = { 0, 1, 4, 5, 2, 3 };
+-
+-static int oxfw_volume_get(struct snd_kcontrol *control,
+-			    struct snd_ctl_elem_value *value)
+-{
+-	struct snd_oxfw *oxfw = control->private_data;
+-	unsigned int i;
+-
+-	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
+-		value->value.integer.value[channel_map[i]] = oxfw->volume[i];
+-
+-	return 0;
+-}
+-
+-static int oxfw_volume_put(struct snd_kcontrol *control,
+-			  struct snd_ctl_elem_value *value)
+-{
+-	struct snd_oxfw *oxfw = control->private_data;
+-	unsigned int i, changed_channels;
+-	bool equal_values = true;
+-	s16 volume;
+-	int err;
+-
+-	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
+-		if (value->value.integer.value[i] < oxfw->volume_min ||
+-		    value->value.integer.value[i] > oxfw->volume_max)
+-			return -EINVAL;
+-		if (value->value.integer.value[i] !=
+-		    value->value.integer.value[0])
+-			equal_values = false;
+-	}
+-
+-	changed_channels = 0;
+-	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
+-		if (value->value.integer.value[channel_map[i]] !=
+-							oxfw->volume[i])
+-			changed_channels |= 1 << (i + 1);
+-
+-	if (equal_values && changed_channels != 0)
+-		changed_channels = 1 << 0;
+-
+-	for (i = 0; i <= oxfw->device_info->mixer_channels; ++i) {
+-		volume = value->value.integer.value[channel_map[i ? i - 1 : 0]];
+-		if (changed_channels & (1 << i)) {
+-			err = oxfw_volume_command(oxfw, &volume, i,
+-						   CTL_CURRENT, CTL_WRITE);
+-			if (err < 0)
+-				return err;
+-		}
+-		if (i > 0)
+-			oxfw->volume[i - 1] = volume;
+-	}
+-
+-	return changed_channels != 0;
+-}
+-
+-static int oxfw_create_mixer(struct snd_oxfw *oxfw)
+-{
+-	static const struct snd_kcontrol_new controls[] = {
+-		{
+-			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-			.name = "PCM Playback Switch",
+-			.info = snd_ctl_boolean_mono_info,
+-			.get = oxfw_mute_get,
+-			.put = oxfw_mute_put,
+-		},
+-		{
+-			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+-			.name = "PCM Playback Volume",
+-			.info = oxfw_volume_info,
+-			.get = oxfw_volume_get,
+-			.put = oxfw_volume_put,
+-		},
+-	};
+-	unsigned int i, first_ch;
+-	int err;
+-
+-	err = oxfw_volume_command(oxfw, &oxfw->volume_min,
+-				   0, CTL_MIN, CTL_READ);
+-	if (err < 0)
+-		return err;
+-	err = oxfw_volume_command(oxfw, &oxfw->volume_max,
+-				   0, CTL_MAX, CTL_READ);
+-	if (err < 0)
+-		return err;
+-
+-	err = oxfw_mute_command(oxfw, &oxfw->mute, CTL_READ);
+-	if (err < 0)
+-		return err;
+-
+-	first_ch = oxfw->device_info->mixer_channels == 1 ? 0 : 1;
+-	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
+-		err = oxfw_volume_command(oxfw, &oxfw->volume[i],
+-					   first_ch + i, CTL_CURRENT, CTL_READ);
+-		if (err < 0)
+-			return err;
+-	}
+-
+-	for (i = 0; i < ARRAY_SIZE(controls); ++i) {
+-		err = snd_ctl_add(oxfw->card,
+-				  snd_ctl_new1(&controls[i], oxfw));
+-		if (err < 0)
+-			return err;
+-	}
+-
+-	return 0;
+-}
+-
+ static u32 oxfw_read_firmware_version(struct fw_unit *unit)
+ {
+ 	__be32 data;
+@@ -353,7 +78,7 @@ static int oxfw_probe(struct fw_unit *unit,
+ 	if (err < 0)
+ 		goto error;
  
--	err = oxfw_create_pcm(oxfw);
-+	err = snd_oxfw_create_pcm(oxfw);
+-	err = oxfw_create_mixer(oxfw);
++	err = snd_oxfw_create_mixer(oxfw);
  	if (err < 0)
  		goto error;
  
 diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index e5836e0..1196db8 100644
+index 1196db8..6164bf3 100644
 --- a/sound/firewire/oxfw/oxfw.h
 +++ b/sound/firewire/oxfw/oxfw.h
-@@ -54,3 +54,7 @@ int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw);
- void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw);
+@@ -58,3 +58,5 @@ void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw);
+ int firewave_constraints(struct snd_pcm_runtime *runtime);
+ int lacie_speakers_constraints(struct snd_pcm_runtime *runtime);
+ int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
 +
-+int firewave_constraints(struct snd_pcm_runtime *runtime);
-+int lacie_speakers_constraints(struct snd_pcm_runtime *runtime);
-+int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
++int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
 -- 
 1.9.1
