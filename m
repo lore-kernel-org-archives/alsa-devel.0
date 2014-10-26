@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 19/29] ALSA: oxfw: Split control functionality
-	to a new file
-Date: Sun, 26 Oct 2014 22:03:20 +0900
-Message-ID: <1414328610-12729-20-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 21/29] ALSA: oxfw: Add support for AV/C stream
+	format command to get/set supported stream formation
+Date: Sun, 26 Oct 2014 22:03:22 +0900
+Message-ID: <1414328610-12729-22-git-send-email-o-takashi@sakamocchi.jp>
 References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 03EEE2606CE
- for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:04:07 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EDCB26071A
+ for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:04:09 +0100 (CET)
 In-Reply-To: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,618 +25,244 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a help for works in followed patches.
+OXFW970/971 may supports AV/C Stream Format Information Specification 1.1
+Working Draft (Apr 2005, 1394TA). By using this command, drivers can get to know
+stream formations which device supports.
+
+This commit adds 'EXTENDED STREAM FORMAT INFORMATION' command. This command
+has two subfunctions, 'SINGLE' and 'LIST'. Drivers can use 'SINGLE' subfunction
+to know/set current formation of AMDTP stream, Drivers can use 'LIST'
+subfunction to know an available formation of AMDTP stream in a certain sampling
+rate.
+
+But some devices don't implement the 'LIST' subfunction. So this commit uses
+an assumption that 'if they don't implement it, they don't change stream
+formation depending on current each sampling rate'. With this assumption, this
+driver generates formations for such devices by:
+ 1.getting current formation by SINGLE subfunction
+ 2.getting supported sampling rates
+ 3.applying current formation for all of supported sampling rates
+
+Followed commit implements a parser of this format information.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
  sound/firewire/oxfw/Makefile       |   2 +-
- sound/firewire/oxfw/oxfw-control.c | 283 +++++++++++++++++++++++++++++++++++++
- sound/firewire/oxfw/oxfw.c         | 277 +-----------------------------------
- sound/firewire/oxfw/oxfw.h         |   2 +
- 4 files changed, 287 insertions(+), 277 deletions(-)
- create mode 100644 sound/firewire/oxfw/oxfw-control.c
+ sound/firewire/oxfw/oxfw-command.c | 153 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/oxfw/oxfw.h         |  33 ++++++++
+ 3 files changed, 187 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/oxfw/oxfw-command.c
 
 diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
-index 7fb4d09..0cf48fd 100644
+index 0cf48fd..b107134 100644
 --- a/sound/firewire/oxfw/Makefile
 +++ b/sound/firewire/oxfw/Makefile
 @@ -1,2 +1,2 @@
--snd-oxfw-objs := oxfw-stream.o oxfw-pcm.o oxfw.o
-+snd-oxfw-objs := oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
+-snd-oxfw-objs := oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
++snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
  obj-m += snd-oxfw.o
-diff --git a/sound/firewire/oxfw/oxfw-control.c b/sound/firewire/oxfw/oxfw-control.c
+diff --git a/sound/firewire/oxfw/oxfw-command.c b/sound/firewire/oxfw/oxfw-command.c
 new file mode 100644
-index 0000000..02a1cb9
+index 0000000..8c603c5
 --- /dev/null
-+++ b/sound/firewire/oxfw/oxfw-control.c
-@@ -0,0 +1,283 @@
++++ b/sound/firewire/oxfw/oxfw-command.c
+@@ -0,0 +1,153 @@
 +/*
-+ * oxfw_stream.c - a part of driver for OXFW970/971 based devices
++ * oxfw_command.c - a part of driver for OXFW970/971 based devices
 + *
-+ * Copyright (c) Clemens Ladisch <clemens@ladisch.de>
++ * Copyright (c) 2014 Takashi Sakamoto
++ *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
 +#include "oxfw.h"
 +
-+enum control_action { CTL_READ, CTL_WRITE };
-+enum control_attribute {
-+	CTL_MIN		= 0x02,
-+	CTL_MAX		= 0x03,
-+	CTL_CURRENT	= 0x10,
-+};
-+
-+static int oxfw_mute_command(struct snd_oxfw *oxfw, bool *value,
-+			     enum control_action action)
++int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
++			  unsigned int pid, u8 *format, unsigned int len)
 +{
 +	u8 *buf;
-+	u8 response_ok;
 +	int err;
 +
-+	buf = kmalloc(11, GFP_KERNEL);
-+	if (!buf)
++	buf = kmalloc(len + 10, GFP_KERNEL);
++	if (buf == NULL)
 +		return -ENOMEM;
 +
-+	if (action == CTL_READ) {
-+		buf[0] = 0x01;		/* AV/C, STATUS */
-+		response_ok = 0x0c;	/*       STABLE */
-+	} else {
-+		buf[0] = 0x00;		/* AV/C, CONTROL */
-+		response_ok = 0x09;	/*       ACCEPTED */
-+	}
-+	buf[1] = 0x08;			/* audio unit 0 */
-+	buf[2] = 0xb8;			/* FUNCTION BLOCK */
-+	buf[3] = 0x81;			/* function block type: feature */
-+	buf[4] = oxfw->device_info->mute_fb_id; /* function block ID */
-+	buf[5] = 0x10;			/* control attribute: current */
-+	buf[6] = 0x02;			/* selector length */
-+	buf[7] = 0x00;			/* audio channel number */
-+	buf[8] = 0x01;			/* control selector: mute */
-+	buf[9] = 0x01;			/* control data length */
-+	if (action == CTL_READ)
-+		buf[10] = 0xff;
++	buf[0] = 0x00;		/* CONTROL */
++	buf[1] = 0xff;		/* UNIT */
++	buf[2] = 0xbf;		/* EXTENDED STREAM FORMAT INFORMATION */
++	buf[3] = 0xc0;		/* SINGLE subfunction */
++	buf[4] = dir;		/* Plug Direction */
++	buf[5] = 0x00;		/* UNIT */
++	buf[6] = 0x00;		/* PCR (Isochronous Plug) */
++	buf[7] = 0xff & pid;	/* Plug ID */
++	buf[8] = 0xff;		/* Padding */
++	buf[9] = 0xff;		/* Support status in response */
++	memcpy(buf + 10, format, len);
++
++	/* do transaction and check buf[1-7] are the same against command */
++	err = fcp_avc_transaction(unit, buf, len + 10, buf, len + 10,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
++				  BIT(6) | BIT(7) | BIT(8));
++	if ((err > 0) && (err < len + 10))
++		err = -EIO;
++	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
++		err = -ENOSYS;
++	else if (buf[0] == 0x0a) /* REJECTED */
++		err = -EINVAL;
 +	else
-+		buf[10] = *value ? 0x70 : 0x60;
++		err = 0;
 +
-+	err = fcp_avc_transaction(oxfw->unit, buf, 11, buf, 11, 0x3fe);
-+	if (err < 0)
-+		goto error;
-+	if (err < 11) {
-+		dev_err(&oxfw->unit->device, "short FCP response\n");
-+		err = -EIO;
-+		goto error;
-+	}
-+	if (buf[0] != response_ok) {
-+		dev_err(&oxfw->unit->device, "mute command failed\n");
-+		err = -EIO;
-+		goto error;
-+	}
-+	if (action == CTL_READ)
-+		*value = buf[10] == 0x70;
-+
-+	err = 0;
-+
-+error:
 +	kfree(buf);
 +
 +	return err;
 +}
 +
-+static int oxfw_volume_command(struct snd_oxfw *oxfw, s16 *value,
-+			       unsigned int channel,
-+			       enum control_attribute attribute,
-+			       enum control_action action)
++int avc_stream_get_format(struct fw_unit *unit,
++			  enum avc_general_plug_dir dir, unsigned int pid,
++			  u8 *buf, unsigned int *len, unsigned int eid)
 +{
-+	u8 *buf;
-+	u8 response_ok;
++	unsigned int subfunc;
 +	int err;
 +
-+	buf = kmalloc(12, GFP_KERNEL);
-+	if (!buf)
++	if (eid == 0xff)
++		subfunc = 0xc0;	/* SINGLE */
++	else
++		subfunc = 0xc1;	/* LIST */
++
++	buf[0] = 0x01;		/* STATUS */
++	buf[1] = 0xff;		/* UNIT */
++	buf[2] = 0xbf;		/* EXTENDED STREAM FORMAT INFORMATION */
++	buf[3] = subfunc;	/* SINGLE or LIST */
++	buf[4] = dir;		/* Plug Direction */
++	buf[5] = 0x00;		/* Unit */
++	buf[6] = 0x00;		/* PCR (Isochronous Plug) */
++	buf[7] = 0xff & pid;	/* Plug ID */
++	buf[8] = 0xff;		/* Padding */
++	buf[9] = 0xff;		/* support status in response */
++	buf[10] = 0xff & eid;	/* entry ID for LIST subfunction */
++	buf[11] = 0xff;		/* padding */
++
++	/* do transaction and check buf[1-7] are the same against command */
++	err = fcp_avc_transaction(unit, buf, 12, buf, *len,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
++				  BIT(6) | BIT(7));
++	if ((err > 0) && (err < 10))
++		err = -EIO;
++	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
++		err = -ENOSYS;
++	else if (buf[0] == 0x0a)	/* REJECTED */
++		err = -EINVAL;
++	else if (buf[0] == 0x0b)	/* IN TRANSITION */
++		err = -EAGAIN;
++	/* LIST subfunction has entry ID */
++	else if ((subfunc == 0xc1) && (buf[10] != eid))
++		err = -EIO;
++	if (err < 0)
++		goto end;
++
++	/* keep just stream format information */
++	if (subfunc == 0xc0) {
++		memmove(buf, buf + 10, err - 10);
++		*len = err - 10;
++	} else {
++		memmove(buf, buf + 11, err - 11);
++		*len = err - 11;
++	}
++
++	err = 0;
++end:
++	return err;
++}
++
++int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
++				enum avc_general_plug_dir dir,
++				unsigned short pid)
++{
++	unsigned int sfc;
++	u8 *buf;
++	int err;
++
++	for (sfc = 0; sfc < CIP_SFC_COUNT; sfc++) {
++		if (amdtp_rate_table[sfc] == rate)
++			break;
++	}
++	if (sfc == CIP_SFC_COUNT)
++		return -EINVAL;
++
++	buf = kzalloc(8, GFP_KERNEL);
++	if (buf == NULL)
 +		return -ENOMEM;
 +
-+	if (action == CTL_READ) {
-+		buf[0] = 0x01;		/* AV/C, STATUS */
-+		response_ok = 0x0c;	/*       STABLE */
-+	} else {
-+		buf[0] = 0x00;		/* AV/C, CONTROL */
-+		response_ok = 0x09;	/*       ACCEPTED */
-+	}
-+	buf[1] = 0x08;			/* audio unit 0 */
-+	buf[2] = 0xb8;			/* FUNCTION BLOCK */
-+	buf[3] = 0x81;			/* function block type: feature */
-+	buf[4] = oxfw->device_info->volume_fb_id; /* function block ID */
-+	buf[5] = attribute;		/* control attribute */
-+	buf[6] = 0x02;			/* selector length */
-+	buf[7] = channel;		/* audio channel number */
-+	buf[8] = 0x02;			/* control selector: volume */
-+	buf[9] = 0x02;			/* control data length */
-+	if (action == CTL_READ) {
-+		buf[10] = 0xff;
-+		buf[11] = 0xff;
-+	} else {
-+		buf[10] = *value >> 8;
-+		buf[11] = *value;
-+	}
++	buf[0] = 0x02;		/* SPECIFIC INQUIRY */
++	buf[1] = 0xff;		/* UNIT */
++	if (dir == AVC_GENERAL_PLUG_DIR_IN)
++		buf[2] = 0x19;	/* INPUT PLUG SIGNAL FORMAT */
++	else
++		buf[2] = 0x18;	/* OUTPUT PLUG SIGNAL FORMAT */
++	buf[3] = 0xff & pid;	/* plug id */
++	buf[4] = 0x90;		/* EOH_1, Form_1, FMT. AM824 */
++	buf[5] = 0x07 & sfc;	/* FDF-hi. AM824, frequency */
++	buf[6] = 0xff;		/* FDF-mid. AM824, SYT hi (not used) */
++	buf[7] = 0xff;		/* FDF-low. AM824, SYT lo (not used) */
 +
-+	err = fcp_avc_transaction(oxfw->unit, buf, 12, buf, 12, 0x3fe);
++	/* do transaction and check buf[1-5] are the same against command */
++	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
++				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5));
++	if ((err > 0) && (err < 8))
++		err = -EIO;
++	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
++		err = -ENOSYS;
 +	if (err < 0)
-+		goto error;
-+	if (err < 12) {
-+		dev_err(&oxfw->unit->device, "short FCP response\n");
-+		err = -EIO;
-+		goto error;
-+	}
-+	if (buf[0] != response_ok) {
-+		dev_err(&oxfw->unit->device, "volume command failed\n");
-+		err = -EIO;
-+		goto error;
-+	}
-+	if (action == CTL_READ)
-+		*value = (buf[10] << 8) | buf[11];
++		goto end;
 +
 +	err = 0;
-+
-+error:
++end:
 +	kfree(buf);
-+
 +	return err;
 +}
-+
-+static int oxfw_mute_get(struct snd_kcontrol *control,
-+			 struct snd_ctl_elem_value *value)
-+{
-+	struct snd_oxfw *oxfw = control->private_data;
-+
-+	value->value.integer.value[0] = !oxfw->mute;
-+
-+	return 0;
-+}
-+
-+static int oxfw_mute_put(struct snd_kcontrol *control,
-+			 struct snd_ctl_elem_value *value)
-+{
-+	struct snd_oxfw *oxfw = control->private_data;
-+	bool mute;
-+	int err;
-+
-+	mute = !value->value.integer.value[0];
-+
-+	if (mute == oxfw->mute)
-+		return 0;
-+
-+	err = oxfw_mute_command(oxfw, &mute, CTL_WRITE);
-+	if (err < 0)
-+		return err;
-+	oxfw->mute = mute;
-+
-+	return 1;
-+}
-+
-+static int oxfw_volume_info(struct snd_kcontrol *control,
-+			    struct snd_ctl_elem_info *info)
-+{
-+	struct snd_oxfw *oxfw = control->private_data;
-+
-+	info->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	info->count = oxfw->device_info->mixer_channels;
-+	info->value.integer.min = oxfw->volume_min;
-+	info->value.integer.max = oxfw->volume_max;
-+
-+	return 0;
-+}
-+
-+static const u8 channel_map[6] = { 0, 1, 4, 5, 2, 3 };
-+
-+static int oxfw_volume_get(struct snd_kcontrol *control,
-+			   struct snd_ctl_elem_value *value)
-+{
-+	struct snd_oxfw *oxfw = control->private_data;
-+	unsigned int i;
-+
-+	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
-+		value->value.integer.value[channel_map[i]] = oxfw->volume[i];
-+
-+	return 0;
-+}
-+
-+static int oxfw_volume_put(struct snd_kcontrol *control,
-+			   struct snd_ctl_elem_value *value)
-+{
-+	struct snd_oxfw *oxfw = control->private_data;
-+	unsigned int i, changed_channels;
-+	bool equal_values = true;
-+	s16 volume;
-+	int err;
-+
-+	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
-+		if (value->value.integer.value[i] < oxfw->volume_min ||
-+		    value->value.integer.value[i] > oxfw->volume_max)
-+			return -EINVAL;
-+		if (value->value.integer.value[i] !=
-+		    value->value.integer.value[0])
-+			equal_values = false;
-+	}
-+
-+	changed_channels = 0;
-+	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
-+		if (value->value.integer.value[channel_map[i]] !=
-+							oxfw->volume[i])
-+			changed_channels |= 1 << (i + 1);
-+
-+	if (equal_values && changed_channels != 0)
-+		changed_channels = 1 << 0;
-+
-+	for (i = 0; i <= oxfw->device_info->mixer_channels; ++i) {
-+		volume = value->value.integer.value[channel_map[i ? i - 1 : 0]];
-+		if (changed_channels & (1 << i)) {
-+			err = oxfw_volume_command(oxfw, &volume, i,
-+						   CTL_CURRENT, CTL_WRITE);
-+			if (err < 0)
-+				return err;
-+		}
-+		if (i > 0)
-+			oxfw->volume[i - 1] = volume;
-+	}
-+
-+	return changed_channels != 0;
-+}
-+
-+int snd_oxfw_create_mixer(struct snd_oxfw *oxfw)
-+{
-+	static const struct snd_kcontrol_new controls[] = {
-+		{
-+			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+			.name = "PCM Playback Switch",
-+			.info = snd_ctl_boolean_mono_info,
-+			.get = oxfw_mute_get,
-+			.put = oxfw_mute_put,
-+		},
-+		{
-+			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+			.name = "PCM Playback Volume",
-+			.info = oxfw_volume_info,
-+			.get = oxfw_volume_get,
-+			.put = oxfw_volume_put,
-+		},
-+	};
-+	unsigned int i, first_ch;
-+	int err;
-+
-+	err = oxfw_volume_command(oxfw, &oxfw->volume_min,
-+				   0, CTL_MIN, CTL_READ);
-+	if (err < 0)
-+		return err;
-+	err = oxfw_volume_command(oxfw, &oxfw->volume_max,
-+				   0, CTL_MAX, CTL_READ);
-+	if (err < 0)
-+		return err;
-+
-+	err = oxfw_mute_command(oxfw, &oxfw->mute, CTL_READ);
-+	if (err < 0)
-+		return err;
-+
-+	first_ch = oxfw->device_info->mixer_channels == 1 ? 0 : 1;
-+	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
-+		err = oxfw_volume_command(oxfw, &oxfw->volume[i],
-+					   first_ch + i, CTL_CURRENT, CTL_READ);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(controls); ++i) {
-+		err = snd_ctl_add(oxfw->card,
-+				  snd_ctl_new1(&controls[i], oxfw));
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 2210669..236a55e 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -25,281 +25,6 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("snd-firewire-speakers");
- 
--enum control_action { CTL_READ, CTL_WRITE };
--enum control_attribute {
--	CTL_MIN		= 0x02,
--	CTL_MAX		= 0x03,
--	CTL_CURRENT	= 0x10,
--};
--
--static int oxfw_mute_command(struct snd_oxfw *oxfw, bool *value,
--			      enum control_action action)
--{
--	u8 *buf;
--	u8 response_ok;
--	int err;
--
--	buf = kmalloc(11, GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--
--	if (action == CTL_READ) {
--		buf[0] = 0x01;		/* AV/C, STATUS */
--		response_ok = 0x0c;	/*       STABLE */
--	} else {
--		buf[0] = 0x00;		/* AV/C, CONTROL */
--		response_ok = 0x09;	/*       ACCEPTED */
--	}
--	buf[1] = 0x08;			/* audio unit 0 */
--	buf[2] = 0xb8;			/* FUNCTION BLOCK */
--	buf[3] = 0x81;			/* function block type: feature */
--	buf[4] = oxfw->device_info->mute_fb_id; /* function block ID */
--	buf[5] = 0x10;			/* control attribute: current */
--	buf[6] = 0x02;			/* selector length */
--	buf[7] = 0x00;			/* audio channel number */
--	buf[8] = 0x01;			/* control selector: mute */
--	buf[9] = 0x01;			/* control data length */
--	if (action == CTL_READ)
--		buf[10] = 0xff;
--	else
--		buf[10] = *value ? 0x70 : 0x60;
--
--	err = fcp_avc_transaction(oxfw->unit, buf, 11, buf, 11, 0x3fe);
--	if (err < 0)
--		goto error;
--	if (err < 11) {
--		dev_err(&oxfw->unit->device, "short FCP response\n");
--		err = -EIO;
--		goto error;
--	}
--	if (buf[0] != response_ok) {
--		dev_err(&oxfw->unit->device, "mute command failed\n");
--		err = -EIO;
--		goto error;
--	}
--	if (action == CTL_READ)
--		*value = buf[10] == 0x70;
--
--	err = 0;
--
--error:
--	kfree(buf);
--
--	return err;
--}
--
--static int oxfw_volume_command(struct snd_oxfw *oxfw, s16 *value,
--				unsigned int channel,
--				enum control_attribute attribute,
--				enum control_action action)
--{
--	u8 *buf;
--	u8 response_ok;
--	int err;
--
--	buf = kmalloc(12, GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--
--	if (action == CTL_READ) {
--		buf[0] = 0x01;		/* AV/C, STATUS */
--		response_ok = 0x0c;	/*       STABLE */
--	} else {
--		buf[0] = 0x00;		/* AV/C, CONTROL */
--		response_ok = 0x09;	/*       ACCEPTED */
--	}
--	buf[1] = 0x08;			/* audio unit 0 */
--	buf[2] = 0xb8;			/* FUNCTION BLOCK */
--	buf[3] = 0x81;			/* function block type: feature */
--	buf[4] = oxfw->device_info->volume_fb_id; /* function block ID */
--	buf[5] = attribute;		/* control attribute */
--	buf[6] = 0x02;			/* selector length */
--	buf[7] = channel;		/* audio channel number */
--	buf[8] = 0x02;			/* control selector: volume */
--	buf[9] = 0x02;			/* control data length */
--	if (action == CTL_READ) {
--		buf[10] = 0xff;
--		buf[11] = 0xff;
--	} else {
--		buf[10] = *value >> 8;
--		buf[11] = *value;
--	}
--
--	err = fcp_avc_transaction(oxfw->unit, buf, 12, buf, 12, 0x3fe);
--	if (err < 0)
--		goto error;
--	if (err < 12) {
--		dev_err(&oxfw->unit->device, "short FCP response\n");
--		err = -EIO;
--		goto error;
--	}
--	if (buf[0] != response_ok) {
--		dev_err(&oxfw->unit->device, "volume command failed\n");
--		err = -EIO;
--		goto error;
--	}
--	if (action == CTL_READ)
--		*value = (buf[10] << 8) | buf[11];
--
--	err = 0;
--
--error:
--	kfree(buf);
--
--	return err;
--}
--
--static int oxfw_mute_get(struct snd_kcontrol *control,
--			  struct snd_ctl_elem_value *value)
--{
--	struct snd_oxfw *oxfw = control->private_data;
--
--	value->value.integer.value[0] = !oxfw->mute;
--
--	return 0;
--}
--
--static int oxfw_mute_put(struct snd_kcontrol *control,
--			  struct snd_ctl_elem_value *value)
--{
--	struct snd_oxfw *oxfw = control->private_data;
--	bool mute;
--	int err;
--
--	mute = !value->value.integer.value[0];
--
--	if (mute == oxfw->mute)
--		return 0;
--
--	err = oxfw_mute_command(oxfw, &mute, CTL_WRITE);
--	if (err < 0)
--		return err;
--	oxfw->mute = mute;
--
--	return 1;
--}
--
--static int oxfw_volume_info(struct snd_kcontrol *control,
--			     struct snd_ctl_elem_info *info)
--{
--	struct snd_oxfw *oxfw = control->private_data;
--
--	info->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--	info->count = oxfw->device_info->mixer_channels;
--	info->value.integer.min = oxfw->volume_min;
--	info->value.integer.max = oxfw->volume_max;
--
--	return 0;
--}
--
--static const u8 channel_map[6] = { 0, 1, 4, 5, 2, 3 };
--
--static int oxfw_volume_get(struct snd_kcontrol *control,
--			    struct snd_ctl_elem_value *value)
--{
--	struct snd_oxfw *oxfw = control->private_data;
--	unsigned int i;
--
--	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
--		value->value.integer.value[channel_map[i]] = oxfw->volume[i];
--
--	return 0;
--}
--
--static int oxfw_volume_put(struct snd_kcontrol *control,
--			  struct snd_ctl_elem_value *value)
--{
--	struct snd_oxfw *oxfw = control->private_data;
--	unsigned int i, changed_channels;
--	bool equal_values = true;
--	s16 volume;
--	int err;
--
--	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
--		if (value->value.integer.value[i] < oxfw->volume_min ||
--		    value->value.integer.value[i] > oxfw->volume_max)
--			return -EINVAL;
--		if (value->value.integer.value[i] !=
--		    value->value.integer.value[0])
--			equal_values = false;
--	}
--
--	changed_channels = 0;
--	for (i = 0; i < oxfw->device_info->mixer_channels; ++i)
--		if (value->value.integer.value[channel_map[i]] !=
--							oxfw->volume[i])
--			changed_channels |= 1 << (i + 1);
--
--	if (equal_values && changed_channels != 0)
--		changed_channels = 1 << 0;
--
--	for (i = 0; i <= oxfw->device_info->mixer_channels; ++i) {
--		volume = value->value.integer.value[channel_map[i ? i - 1 : 0]];
--		if (changed_channels & (1 << i)) {
--			err = oxfw_volume_command(oxfw, &volume, i,
--						   CTL_CURRENT, CTL_WRITE);
--			if (err < 0)
--				return err;
--		}
--		if (i > 0)
--			oxfw->volume[i - 1] = volume;
--	}
--
--	return changed_channels != 0;
--}
--
--static int oxfw_create_mixer(struct snd_oxfw *oxfw)
--{
--	static const struct snd_kcontrol_new controls[] = {
--		{
--			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--			.name = "PCM Playback Switch",
--			.info = snd_ctl_boolean_mono_info,
--			.get = oxfw_mute_get,
--			.put = oxfw_mute_put,
--		},
--		{
--			.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--			.name = "PCM Playback Volume",
--			.info = oxfw_volume_info,
--			.get = oxfw_volume_get,
--			.put = oxfw_volume_put,
--		},
--	};
--	unsigned int i, first_ch;
--	int err;
--
--	err = oxfw_volume_command(oxfw, &oxfw->volume_min,
--				   0, CTL_MIN, CTL_READ);
--	if (err < 0)
--		return err;
--	err = oxfw_volume_command(oxfw, &oxfw->volume_max,
--				   0, CTL_MAX, CTL_READ);
--	if (err < 0)
--		return err;
--
--	err = oxfw_mute_command(oxfw, &oxfw->mute, CTL_READ);
--	if (err < 0)
--		return err;
--
--	first_ch = oxfw->device_info->mixer_channels == 1 ? 0 : 1;
--	for (i = 0; i < oxfw->device_info->mixer_channels; ++i) {
--		err = oxfw_volume_command(oxfw, &oxfw->volume[i],
--					   first_ch + i, CTL_CURRENT, CTL_READ);
--		if (err < 0)
--			return err;
--	}
--
--	for (i = 0; i < ARRAY_SIZE(controls); ++i) {
--		err = snd_ctl_add(oxfw->card,
--				  snd_ctl_new1(&controls[i], oxfw));
--		if (err < 0)
--			return err;
--	}
--
--	return 0;
--}
--
- static u32 oxfw_read_firmware_version(struct fw_unit *unit)
- {
- 	__be32 data;
-@@ -353,7 +78,7 @@ static int oxfw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
- 
--	err = oxfw_create_mixer(oxfw);
-+	err = snd_oxfw_create_mixer(oxfw);
- 	if (err < 0)
- 		goto error;
- 
 diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index 1196db8..6164bf3 100644
+index b60e91d..583ee7b 100644
 --- a/sound/firewire/oxfw/oxfw.h
 +++ b/sound/firewire/oxfw/oxfw.h
-@@ -58,3 +58,5 @@ void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw);
- int firewave_constraints(struct snd_pcm_runtime *runtime);
- int lacie_speakers_constraints(struct snd_pcm_runtime *runtime);
- int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
+@@ -48,6 +48,39 @@ struct snd_oxfw {
+ 	s16 volume_max;
+ };
+ 
++/*
++ * AV/C Stream Format Information Specification 1.1 Working Draft
++ * (Apr 2005, 1394TA)
++ */
++int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
++			  unsigned int pid, u8 *format, unsigned int len);
++int avc_stream_get_format(struct fw_unit *unit,
++			  enum avc_general_plug_dir dir, unsigned int pid,
++			  u8 *buf, unsigned int *len, unsigned int eid);
++static inline int
++avc_stream_get_format_single(struct fw_unit *unit,
++			     enum avc_general_plug_dir dir, unsigned int pid,
++			     u8 *buf, unsigned int *len)
++{
++	return avc_stream_get_format(unit, dir, pid, buf, len, 0xff);
++}
++static inline int
++avc_stream_get_format_list(struct fw_unit *unit,
++			   enum avc_general_plug_dir dir, unsigned int pid,
++			   u8 *buf, unsigned int *len,
++			   unsigned int eid)
++{
++	return avc_stream_get_format(unit, dir, pid, buf, len, eid);
++}
 +
-+int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
++/*
++ * AV/C Digital Interface Command Set General Specification 4.2
++ * (Sep 2004, 1394TA)
++ */
++int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
++				enum avc_general_plug_dir dir,
++				unsigned short pid);
++
+ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw);
+ int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw);
+ void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
 -- 
 1.9.1
