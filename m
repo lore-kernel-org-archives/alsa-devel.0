@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 20/29] ALSA: oxfw: Change the way to name card
-Date: Sun, 26 Oct 2014 22:03:21 +0900
-Message-ID: <1414328610-12729-21-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 24/29] ALSA: oxfw: Change the way to start
+	stream
+Date: Sun, 26 Oct 2014 22:03:25 +0900
+Message-ID: <1414328610-12729-25-git-send-email-o-takashi@sakamocchi.jp>
 References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 48E10260786
- for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:04:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 52F172607F7
+ for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:04:12 +0100 (CET)
 In-Reply-To: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,132 +25,272 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The 'struct snd_card' has 4 members for name. They're 'driver', 'shortname',
-'longname' and 'mixername'. This commit names these 4 members according to
-two members in model-specific structure and reduce rest of members in the
-structure.
+In past commit, this driver can keep stream formations for each sampling
+rate. So its stream functionality can decide stream formations with given
+some parameters.
 
-The reason that alias names are still used is that currently supported devices,
-Griffin FireWave and LaCie Firewire Speaker have too long names for model and
-vendor field in their config rom to be over allocated buffer for the names.
+This commit moves related codes from PCM functionality to stream
+functionality. Furthermore, to set stream format correctly, this commit
+uses AV/C Stream Format Information command instead of AV/C Input/Output
+Plug Signal Format command.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/oxfw.c | 51 +++++++++++++++++++++++++++-------------------
- sound/firewire/oxfw/oxfw.h |  3 +--
- 2 files changed, 31 insertions(+), 23 deletions(-)
+ sound/firewire/oxfw/oxfw-pcm.c    |  38 ++---------
+ sound/firewire/oxfw/oxfw-stream.c | 139 +++++++++++++++++++++++++++++++++++---
+ sound/firewire/oxfw/oxfw.h        |   3 +-
+ 3 files changed, 137 insertions(+), 43 deletions(-)
 
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 236a55e..08c55be 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -25,14 +25,34 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_LICENSE("GPL v2");
- MODULE_ALIAS("snd-firewire-speakers");
- 
--static u32 oxfw_read_firmware_version(struct fw_unit *unit)
-+static int name_card(struct snd_oxfw *oxfw)
+diff --git a/sound/firewire/oxfw/oxfw-pcm.c b/sound/firewire/oxfw/oxfw-pcm.c
+index 727d281..ab5991a 100644
+--- a/sound/firewire/oxfw/oxfw-pcm.c
++++ b/sound/firewire/oxfw/oxfw-pcm.c
+@@ -166,36 +166,10 @@ static int pcm_hw_params(struct snd_pcm_substream *substream,
+ 			 struct snd_pcm_hw_params *hw_params)
  {
--	__be32 data;
-+	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
-+	const char *d, *v, *m;
-+	u32 firmware;
- 	int err;
+ 	struct snd_oxfw *oxfw = substream->private_data;
+-	int err;
+-
+-	snd_oxfw_stream_stop_simplex(oxfw);
+-
+-	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+-					       params_buffer_bytes(hw_params));
+-	if (err < 0)
+-		goto error;
+-
+-	amdtp_stream_set_parameters(&oxfw->rx_stream,
+-				    params_rate(hw_params),
+-				    params_channels(hw_params),
+-				    0);
  
--	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
--				 OXFORD_FIRMWARE_ID_ADDRESS, &data, 4, 0);
--	return err >= 0 ? be32_to_cpu(data) : 0;
-+	err = snd_fw_transaction(oxfw->unit, TCODE_READ_QUADLET_REQUEST,
-+				 OXFORD_FIRMWARE_ID_ADDRESS, &firmware, 4, 0);
-+	if (err < 0)
-+		goto end;
-+	be32_to_cpus(&firmware);
-+
-+	d = oxfw->device_info->driver_name;
-+	v = oxfw->device_info->vendor_name;
-+	m = oxfw->device_info->driver_name;
-+
-+	strcpy(oxfw->card->driver, d);
-+	strcpy(oxfw->card->shortname, m);
-+	strcpy(oxfw->card->mixername, m);
-+
-+	snprintf(oxfw->card->longname, sizeof(oxfw->card->longname),
-+		 "%s %s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
-+		 v, m, firmware >> 20, firmware & 0xffff,
-+		 fw_dev->config_rom[3], fw_dev->config_rom[4],
-+		 dev_name(&oxfw->unit->device), 100 << fw_dev->max_speed);
-+end:
-+	return err;
+-	amdtp_stream_set_pcm_format(&oxfw->rx_stream,
+-				    params_format(hw_params));
+-
+-	err = avc_general_set_sig_fmt(oxfw->unit, params_rate(hw_params),
+-				      AVC_GENERAL_PLUG_DIR_IN, 0);
+-	if (err < 0) {
+-		dev_err(&oxfw->unit->device, "failed to set sample rate\n");
+-		goto err_buffer;
+-	}
+-
+-	return 0;
+-
+-err_buffer:
+-	snd_pcm_lib_free_vmalloc_buffer(substream);
+-error:
+-	return err;
++	amdtp_stream_set_pcm_format(&oxfw->rx_stream, params_format(hw_params));
++	return snd_pcm_lib_alloc_vmalloc_buffer(substream,
++						params_buffer_bytes(hw_params));
  }
  
- static void oxfw_card_free(struct snd_card *card)
-@@ -45,10 +65,8 @@ static void oxfw_card_free(struct snd_card *card)
- static int oxfw_probe(struct fw_unit *unit,
- 		       const struct ieee1394_device_id *id)
+ static int pcm_hw_free(struct snd_pcm_substream *substream)
+@@ -210,11 +184,11 @@ static int pcm_hw_free(struct snd_pcm_substream *substream)
+ static int pcm_prepare(struct snd_pcm_substream *substream)
  {
--	struct fw_device *fw_dev = fw_parent_device(unit);
- 	struct snd_card *card;
- 	struct snd_oxfw *oxfw;
--	u32 firmware;
+ 	struct snd_oxfw *oxfw = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
  	int err;
  
- 	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
-@@ -63,16 +81,9 @@ static int oxfw_probe(struct fw_unit *unit,
- 	oxfw->unit = unit;
- 	oxfw->device_info = (const struct device_info *)id->driver_data;
- 
--	strcpy(card->driver, oxfw->device_info->driver_name);
--	strcpy(card->shortname, oxfw->device_info->short_name);
--	firmware = oxfw_read_firmware_version(unit);
--	snprintf(card->longname, sizeof(card->longname),
--		 "%s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
--		 oxfw->device_info->long_name,
--		 firmware >> 20, firmware & 0xffff,
--		 fw_dev->config_rom[3], fw_dev->config_rom[4],
--		 dev_name(&unit->device), 100 << fw_dev->max_speed);
--	strcpy(card->mixername, "OXFW");
-+	err = name_card(oxfw);
-+	if (err < 0)
-+		goto error;
- 
- 	err = snd_oxfw_create_pcm(oxfw);
+-	snd_oxfw_stream_stop_simplex(oxfw);
+-
+-	err = snd_oxfw_stream_start_simplex(oxfw);
++	err = snd_oxfw_stream_start_simplex(oxfw, runtime->rate,
++					    runtime->channels);
  	if (err < 0)
-@@ -118,9 +129,8 @@ static void oxfw_remove(struct fw_unit *unit)
- }
+ 		goto end;
  
- static const struct device_info griffin_firewave = {
-+	.vendor_name = "Griffin",
- 	.driver_name = "FireWave",
--	.short_name  = "FireWave",
--	.long_name   = "Griffin FireWave Surround",
- 	.pcm_constraints = firewave_constraints,
- 	.mixer_channels = 6,
- 	.mute_fb_id   = 0x01,
-@@ -128,9 +138,8 @@ static const struct device_info griffin_firewave = {
+diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
+index dd905fe..e3ba398 100644
+--- a/sound/firewire/oxfw/oxfw-stream.c
++++ b/sound/firewire/oxfw/oxfw-stream.c
+@@ -7,8 +7,10 @@
+  */
+ 
+ #include "oxfw.h"
++#include <linux/delay.h>
+ 
+ #define AVC_GENERIC_FRAME_MAXIMUM_BYTES	512
++#define CALLBACK_TIMEOUT	200
+ 
+ /*
+  * According to datasheet of Oxford Semiconductor:
+@@ -37,6 +39,47 @@ static const unsigned int avc_stream_rate_table[] = {
+ 	[5] = 0x07,
  };
  
- static const struct device_info lacie_speakers = {
-+	.vendor_name = "LaCie",
- 	.driver_name = "FWSpeakers",
--	.short_name  = "FireWire Speakers",
--	.long_name   = "LaCie FireWire Speakers",
- 	.pcm_constraints = lacie_speakers_constraints,
- 	.mixer_channels = 1,
- 	.mute_fb_id   = 0x01,
++static int set_stream_format(struct snd_oxfw *oxfw, struct amdtp_stream *s,
++			     unsigned int rate, unsigned int pcm_channels)
++{
++	u8 **formats;
++	struct snd_oxfw_stream_formation formation;
++	enum avc_general_plug_dir dir;
++	unsigned int i, err, len;
++
++	formats = oxfw->rx_stream_formats;
++	dir = AVC_GENERAL_PLUG_DIR_IN;
++
++	/* Seek stream format for requirements. */
++	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
++		err = snd_oxfw_stream_parse_format(formats[i], &formation);
++		if (err < 0)
++			return err;
++
++		if ((formation.rate == rate) && (formation.pcm == pcm_channels))
++			break;
++	}
++	if (i == SND_OXFW_STREAM_FORMAT_ENTRIES)
++		return -EINVAL;
++
++	/* If assumed, just change rate. */
++	if (oxfw->assumed)
++		return avc_general_set_sig_fmt(oxfw->unit, rate,
++					       AVC_GENERAL_PLUG_DIR_IN, 0);
++
++	/* Calculate format length. */
++	len = 5 + formats[i][4] * 2;
++
++	err = avc_stream_set_format(oxfw->unit, dir, 0, formats[i], len);
++	if (err < 0)
++		return err;
++
++	/* Some immediate requests just after changing format causes freezing. */
++	msleep(100);
++
++	return 0;
++}
++
+ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw)
+ {
+ 	int err;
+@@ -63,28 +106,104 @@ static void stop_stream(struct snd_oxfw *oxfw)
+ 	cmp_connection_break(&oxfw->in_conn);
+ }
+ 
+-int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw)
++static int start_stream(struct snd_oxfw *oxfw, unsigned int rate,
++			unsigned int pcm_channels)
+ {
++	u8 **formats;
++	struct cmp_connection *conn;
++	struct snd_oxfw_stream_formation formation;
++	unsigned int i, midi_ports;
++	struct amdtp_stream *stream;
++	int err;
++
++	stream = &oxfw->rx_stream;
++	formats = oxfw->rx_stream_formats;
++	conn = &oxfw->in_conn;
++
++	/* Get stream formation */
++	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
++		if (formats[i] == NULL)
++			break;
++
++		err = snd_oxfw_stream_parse_format(formats[i], &formation);
++		if (err < 0)
++			goto end;
++		if (rate != formation.rate)
++			continue;
++		if (pcm_channels == 0 ||  pcm_channels == formation.pcm)
++			break;
++	}
++	if (i == SND_OXFW_STREAM_FORMAT_ENTRIES) {
++		err = -EINVAL;
++		goto end;
++	}
++
++	pcm_channels = formation.pcm;
++	midi_ports = DIV_ROUND_UP(formation.midi, 8);
++
++	/* The stream should have one pcm channels at least */
++	if (pcm_channels == 0) {
++		err = -EINVAL;
++		goto end;
++	}
++	amdtp_stream_set_parameters(stream, rate, pcm_channels, midi_ports);
++
++	err = cmp_connection_establish(conn,
++				       amdtp_stream_get_max_payload(stream));
++	if (err < 0)
++		goto end;
++
++	err = amdtp_stream_start(stream,
++				 conn->resources.channel,
++				 conn->speed);
++	if (err < 0) {
++		cmp_connection_break(conn);
++		goto end;
++	}
++
++	/* Wait first packet */
++	err = amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT);
++	if (err < 0)
++		stop_stream(oxfw);
++end:
++	return err;
++}
++
++int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw, unsigned int rate,
++				  unsigned int pcm_channels)
++{
++	struct snd_oxfw_stream_formation formation;
+ 	int err = 0;
+ 
+ 	mutex_lock(&oxfw->mutex);
+ 
++	/* packet queueing error */
+ 	if (amdtp_streaming_error(&oxfw->rx_stream))
+ 		stop_stream(oxfw);
+ 
+-	if (amdtp_stream_running(&oxfw->rx_stream))
+-		goto end;
+-
+-	err = cmp_connection_establish(&oxfw->in_conn,
+-			amdtp_stream_get_max_payload(&oxfw->rx_stream));
++	err = snd_oxfw_stream_get_current_formation(oxfw,
++						    AVC_GENERAL_PLUG_DIR_IN,
++						    &formation);
+ 	if (err < 0)
+ 		goto end;
+ 
+-	err = amdtp_stream_start(&oxfw->rx_stream,
+-				 oxfw->in_conn.resources.channel,
+-				 oxfw->in_conn.speed);
+-	if (err < 0)
++	if ((formation.rate != rate) || (formation.pcm != pcm_channels)) {
+ 		stop_stream(oxfw);
++
++		/* arrange sampling rate */
++		err = set_stream_format(oxfw, &oxfw->rx_stream, rate,
++					pcm_channels);
++		if (err < 0) {
++			dev_err(&oxfw->unit->device,
++				"fail to set stream format: %d\n", err);
++			goto end;
++		}
++	}
++
++	err = start_stream(oxfw, rate, pcm_channels);
++	if (err < 0)
++		dev_err(&oxfw->unit->device,
++			"fail to start stream: %d\n", err);
+ end:
+ 	mutex_unlock(&oxfw->mutex);
+ 	return err;
 diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index 6164bf3..b60e91d 100644
+index 6bc2ac3..433e0c0 100644
 --- a/sound/firewire/oxfw/oxfw.h
 +++ b/sound/firewire/oxfw/oxfw.h
-@@ -27,9 +27,8 @@
- #include "../cmp.h"
+@@ -88,7 +88,8 @@ int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
+ 				unsigned short pid);
  
- struct device_info {
-+	const char *vendor_name;
- 	const char *driver_name;
--	const char *short_name;
--	const char *long_name;
- 	int (*pcm_constraints)(struct snd_pcm_runtime *runtime);
- 	unsigned int mixer_channels;
- 	u8 mute_fb_id;
+ int snd_oxfw_stream_init_simplex(struct snd_oxfw *oxfw);
+-int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw);
++int snd_oxfw_stream_start_simplex(struct snd_oxfw *oxfw, unsigned int rate,
++				  unsigned int pcm_channels);
+ void snd_oxfw_stream_stop_simplex(struct snd_oxfw *oxfw);
+ void snd_oxfw_stream_destroy_simplex(struct snd_oxfw *oxfw);
+ void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw);
 -- 
 1.9.1
