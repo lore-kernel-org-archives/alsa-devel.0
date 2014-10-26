@@ -1,18 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Uninitialized id returned by
-	saffirepro_both_clk_src_get.
-Date: Sun, 26 Oct 2014 18:29:46 +0900
-Message-ID: <544CBF0A.9030201@sakamocchi.jp>
-References: <1414237241-18984-1-git-send-email-vogelchr@vogel.cx>
- <544C49F7.8010300@sakamocchi.jp>
+From: dE <de.techno@gmail.com>
+Subject: Re: What are subdevices?
+Date: Sun, 26 Oct 2014 15:27:32 +0530
+Message-ID: <544CC58C.3080800@gmail.com>
+References: <544CAD55.8070605@gmail.com> <544CBACF.2080702@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id C320326054F
- for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 10:29:52 +0100 (CET)
-In-Reply-To: <544C49F7.8010300@sakamocchi.jp>
+Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
+ [209.85.192.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id E054626068F
+ for <Alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 10:58:01 +0100 (CET)
+Received: by mail-pd0-f174.google.com with SMTP id p10so3879753pdj.19
+ for <Alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 02:57:59 -0700 (PDT)
+Received: from [192.168.1.2] ([117.208.66.195])
+ by mx.google.com with ESMTPSA id j11sm8008025pdk.76.2014.10.26.02.57.55
+ for <Alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Sun, 26 Oct 2014 02:57:56 -0700 (PDT)
+In-Reply-To: <544CBACF.2080702@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,34 +28,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christian Vogel <vogelchr@vogel.cx>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 26 2014 10:10, Takashi Sakamoto wrote:
-> I reviewed your patch and realized that your patch cannot be applied to
-> current tree. The patch seems not to be based on the latest changes:
-> 
-> [alsa-devel] [PATCH 07/43] ALSA: bebob: More constify text arrays
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-October/082580.html
-> 
-> [alsa-devel] [PATCH 08/43] ALSA: bebob: Use snd_ctl_enum_info()
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-October/082574.html
+On 10/26/14 14:41, Clemens Ladisch wrote:
+> dE wrote:
+>> A device seems like the output streams the sound card supports. Like HDMI, DP, analog etc...
+>>
+>> So what's a subdevice?
+> A subdevice is an output streams the sound card supports.
+>
+> Typically, a device has multiple subdevices if the card supports hardware mixing; all
+> the subdevices end up at the same physical output.
+>
+>
+> Regards,
+> Clemens
 
-Oops. I used wrong branch (for-next) to apply this patch... This patch
-is correct and appropriate.
+Ok, so a device list is a list of different streams the card can 
+supports simultaneously and they'll be output via different channels 
+without mixing.
 
-I've just given some advices to you, so it's your work and I hope to add
-Reviewed-by instead of Signed-off-by:
+Thanks for clarifying this.
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+But, typically cards have a single analog device but support 
+multichannel output. So how does this work at the software level? If 
+ALSA can't send multiple streams of audio to one device, then how does 
+ALSA send  separate output to different channels of the device?
 
-Iwai-san,
-Would you please apply this patch to for-linus branch and C.C.ed to
-Linux stable branch, as a bug fix?
-
-
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+Is the PCM sent to the sound card codified? Is this the same way how 
+stereo work?
