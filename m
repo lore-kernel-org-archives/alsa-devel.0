@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH alsa-lib] hwdep: add OXFW driver support
-Date: Sun, 26 Oct 2014 22:43:00 +0900
-Message-ID: <544CFA64.9050807@sakamocchi.jp>
-References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
- <1414330185-14100-1-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH][fix] ALSA: bebob: fix wrong decoding of clock
+	information for Terratec PHASE 88 Rack FW
+Date: Sun, 26 Oct 2014 22:49:45 +0900
+Message-ID: <1414331385-14731-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F9B52606A9
- for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:43:05 +0100 (CET)
-In-Reply-To: <1414330185-14100-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from smtp303.phy.lolipop.jp (smtp303.phy.lolipop.jp [210.157.22.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id C22AE2606A9
+ for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:49:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: muranyia@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 26 2014 22:29, Takashi Sakamoto wrote:
-> Linux 3.19 newly support this driver. By hardware dependent interface,
-> userspace applications can get hardware information, lock/unlock kernel
-> streaming and receive lock status event.
-> 
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> ---
->  include/hwdep.h        | 3 ++-
->  include/sound/asound.h | 3 ++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
-
-This patch is for alsa-lib. I forgot to address it...
-
-> diff --git a/include/hwdep.h b/include/hwdep.h
-> index ad8bb49..3d3c31b 100644
-> --- a/include/hwdep.h
-> +++ b/include/hwdep.h
-> @@ -73,8 +73,9 @@ typedef enum _snd_hwdep_iface {
->  	SND_HWDEP_IFACE_FW_DICE,	/**< TC DICE FireWire device */
->  	SND_HWDEP_IFACE_FW_FIREWORKS,	/**< Echo Audio Fireworks based device */
->  	SND_HWDEP_IFACE_FW_BEBOB,	/**< BridgeCo BeBoB based device */
-> +	SND_HWDEP_IFACE_FW_OXFW,	/**< Oxford OXFW970/971 based device */
->  
-> -	SND_HWDEP_IFACE_LAST = SND_HWDEP_IFACE_FW_BEBOB  /**< last known hwdep interface */
-> +	SND_HWDEP_IFACE_LAST = SND_HWDEP_IFACE_FW_OXFW	/**< last known hwdep interface */
->  } snd_hwdep_iface_t;
->  
->  /** open for reading */
-> diff --git a/include/sound/asound.h b/include/sound/asound.h
-> index 6ee5867..c30a4d4 100644
-> --- a/include/sound/asound.h
-> +++ b/include/sound/asound.h
-> @@ -96,9 +96,10 @@ enum {
->  	SNDRV_HWDEP_IFACE_FW_DICE,	/* TC DICE FireWire device */
->  	SNDRV_HWDEP_IFACE_FW_FIREWORKS,	/* Echo Audio Fireworks based device */
->  	SNDRV_HWDEP_IFACE_FW_BEBOB,	/* BridgeCo BeBoB based device */
-> +	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
->  
->  	/* Don't forget to change the following: */
-> -	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_BEBOB
-> +	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_OXFW
->  };
->  
->  struct snd_hwdep_info {
-> 
+VGVycmF0ZWMgUEhBU0UgODggcmFjayBmdyBoYXMgdHdvIHJlZ2lzdGVycyBmb3Igc291cmNlIG9m
+IGNsb2NrLCBvbmUgaXMKZm9yIGludGVybmFsL2V4dGVybmFsLCBhbmQgYW5vdGhlciBpcyBmb3Ig
+d29yZGNsb2NrL3NwZGlmIGZvciBleHRlcm5hbC4KCldoZW4gY2xvY2sgc291cmNlIGlzIGludGVy
+bmFsLCBpbmZvcm1hdGlvbiBpbiBhbm90aGVyIHJlZ2lzdGVyIGhhcyBubyBtZWFuaW5nLgpUaHVz
+IGl0IG11c3QgYmUgaWdub3JlZCwgYnV0IGN1cnJlbnQgaW1wbGVtZW50YXRpb24gZGVjb2RlcyBp
+dC4gVGhpcyBjYXVzZXMKb3Zlci1pbmRleGluZyByZWZlcmVuY2UgdG8gbGFiZWxzLgoKUmVwb3J0
+ZWQtYnk6IEFuZHLDoXMgTXVyw6FueWkgPG11cmFueWlhQGdtYWlsLmNvbT4KVGVzdGVkLWJ5OiBB
+bmRyw6FzIE11csOhbnlpIDxtdXJhbnlpYUBnbWFpbC5jb20+ClNpZ25lZC1vZmYtYnk6IFRha2Fz
+aGkgU2FrYW1vdG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPgotLS0KIHNvdW5kL2ZpcmV3aXJl
+L2JlYm9iL2JlYm9iX3RlcnJhdGVjLmMgfCA3ICsrKysrKy0KIDEgZmlsZSBjaGFuZ2VkLCA2IGlu
+c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9maXJld2lyZS9i
+ZWJvYi9iZWJvYl90ZXJyYXRlYy5jIGIvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2JfdGVycmF0
+ZWMuYwppbmRleCAwZTRjMGJmLi45OTQwNjExIDEwMDY0NAotLS0gYS9zb3VuZC9maXJld2lyZS9i
+ZWJvYi9iZWJvYl90ZXJyYXRlYy5jCisrKyBiL3NvdW5kL2ZpcmV3aXJlL2JlYm9iL2JlYm9iX3Rl
+cnJhdGVjLmMKQEAgLTI0LDcgKzI0LDEyIEBAIHBoYXNlODhfcmFja19jbGtfc3JjX2dldChzdHJ1
+Y3Qgc25kX2JlYm9iICpiZWJvYiwgdW5zaWduZWQgaW50ICppZCkKIAlpZiAoZXJyIDwgMCkKIAkJ
+Z290byBlbmQ7CiAKLQkqaWQgPSAoZW5hYmxlX2V4dCAmIDB4MDEpIHwgKChlbmFibGVfd29yZCAm
+IDB4MDEpIDw8IDEpOworCWlmIChlbmFibGVfZXh0ID09IDApCisJCSppZCA9IDA7CisJZWxzZSBp
+ZiAoZW5hYmxlX3dvcmQgPT0gMCkKKwkJKmlkID0gMTsKKwllbHNlCisJCSppZCA9IDI7CiBlbmQ6
+CiAJcmV0dXJuIGVycjsKIH0KLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
