@@ -1,17 +1,17 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH 00/29 v2] ALSA: Enhancement for existed
- FireWire drivers
-Date: Sun, 26 Oct 2014 17:51:54 +0100
-Message-ID: <20141026175154.3fb486ed@kant>
-References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH][fix] ALSA: bebob: fix wrong decoding of
+	clock information	for Terratec PHASE 88 Rack FW
+Date: Sun, 26 Oct 2014 18:18:03 +0100
+Message-ID: <544D2CCB.9010201@ladisch.de>
+References: <1414331385-14731-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from einhorn.in-berlin.de (einhorn.in-berlin.de [192.109.42.8])
- by alsa0.perex.cz (Postfix) with ESMTP id 2EAF72606CC
- for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 17:51:59 +0100 (CET)
-In-Reply-To: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
+Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
+ [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id A88BC2605CD
+ for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 18:18:07 +0100 (CET)
+In-Reply-To: <1414331385-14731-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,40 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, ffado-devel@lists.sourceforge.net, alsa-devel@alsa-project.org, clemens@ladisch.de
+To: tiwai@suse.de
+Cc: muranyia@gmail.com, alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-On Oct 26 Takashi Sakamoto wrote:
-> This patchset is to enable ALSA Dice driver to handle more models, to
-> improve ALSA firewire-speakers driver as OXFW driver. This patchset is
-> for linux-next branch and all of my work for Linux 3.19.
-[...]
-> == Updates from my previous post:
-> [alsa-devel] [PATCH 00/14] ALSA: Dice enhancement
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-October/081890.html
->  - Fix typo
->  - Minor code change
-> 
-> [alsa-devel] [RFC][PATCH 00/15 v4] OXFW driver, a succesor to firewire-speakers
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2014-May/076581.html
->  - Support more Mackie (Loud) models by name detection
->  - Fix a bug to handle FireWave
->  - Use AV/C Stream Format Information command to set sampling rate
-[...]
-
-I fetched this patch series from https://github.com/takaswie/sound
-request_v5 branch, applied it on top of 3.17.1, and reran the tests
-snd-oxfw with Lacie FireWire Speakers and Griffin FireWave which I descibed
-in "Re: [RFC][PATCH 00/15 v4] OXFW driver, a succesor to firewire-speakers".
-I got the same positive results.
-
-Tested-by: Stefan Richter <stefanr@s5r6.in-berlin.de> (Speakers, FireWave)
-
-I am planning to test the snd-dice part of this patch series with a
-Focusrite Saffire PRO 24 sometime later this week.  I can test PCM I/O but
-am currently not prepared to test MIDI I/O.
--- 
-Stefan Richter
--=====-====- =-=- ==-=-
-http://arcgraph.de/sr/
+VGFrYXNoaSBTYWthbW90byB3cm90ZToKPiBUZXJyYXRlYyBQSEFTRSA4OCByYWNrIGZ3IGhhcyB0
+d28gcmVnaXN0ZXJzIGZvciBzb3VyY2Ugb2YgY2xvY2ssIG9uZSBpcwo+IGZvciBpbnRlcm5hbC9l
+eHRlcm5hbCwgYW5kIGFub3RoZXIgaXMgZm9yIHdvcmRjbG9jay9zcGRpZiBmb3IgZXh0ZXJuYWwu
+Cj4KPiBXaGVuIGNsb2NrIHNvdXJjZSBpcyBpbnRlcm5hbCwgaW5mb3JtYXRpb24gaW4gYW5vdGhl
+ciByZWdpc3RlciBoYXMgbm8gbWVhbmluZy4KPiBUaHVzIGl0IG11c3QgYmUgaWdub3JlZCwgYnV0
+IGN1cnJlbnQgaW1wbGVtZW50YXRpb24gZGVjb2RlcyBpdC4gVGhpcyBjYXVzZXMKPiBvdmVyLWlu
+ZGV4aW5nIHJlZmVyZW5jZSB0byBsYWJlbHMuCj4KPiBSZXBvcnRlZC1ieTogQW5kcsOhcyBNdXLD
+oW55aSA8bXVyYW55aWFAZ21haWwuY29tPgo+IFRlc3RlZC1ieTogQW5kcsOhcyBNdXLDoW55aSA8
+bXVyYW55aWFAZ21haWwuY29tPgo+IFNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8t
+dGFrYXNoaUBzYWthbW9jY2hpLmpwPgoKQWNrZWQtYnk6IENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVu
+c0BsYWRpc2NoLmRlPgoKPiAtLS0KPiAgc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2JfdGVycmF0
+ZWMuYyB8IDcgKysrKysrLQo+ICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCAxIGRl
+bGV0aW9uKC0pCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvYmVib2IvYmVib2JfdGVy
+cmF0ZWMuYyBiL3NvdW5kL2ZpcmV3aXJlL2JlYm9iL2JlYm9iX3RlcnJhdGVjLmMKPiBpbmRleCAw
+ZTRjMGJmLi45OTQwNjExIDEwMDY0NAo+IC0tLSBhL3NvdW5kL2ZpcmV3aXJlL2JlYm9iL2JlYm9i
+X3RlcnJhdGVjLmMKPiArKysgYi9zb3VuZC9maXJld2lyZS9iZWJvYi9iZWJvYl90ZXJyYXRlYy5j
+Cj4gQEAgLTI0LDcgKzI0LDEyIEBAIHBoYXNlODhfcmFja19jbGtfc3JjX2dldChzdHJ1Y3Qgc25k
+X2JlYm9iICpiZWJvYiwgdW5zaWduZWQgaW50ICppZCkKPiAgCWlmIChlcnIgPCAwKQo+ICAJCWdv
+dG8gZW5kOwo+Cj4gLQkqaWQgPSAoZW5hYmxlX2V4dCAmIDB4MDEpIHwgKChlbmFibGVfd29yZCAm
+IDB4MDEpIDw8IDEpOwo+ICsJaWYgKGVuYWJsZV9leHQgPT0gMCkKPiArCQkqaWQgPSAwOwo+ICsJ
+ZWxzZSBpZiAoZW5hYmxlX3dvcmQgPT0gMCkKPiArCQkqaWQgPSAxOwo+ICsJZWxzZQo+ICsJCSpp
+ZCA9IDI7Cj4gIGVuZDoKPiAgCXJldHVybiBlcnI7Cj4gIH0KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
