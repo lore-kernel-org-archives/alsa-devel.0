@@ -1,35 +1,84 @@
-From: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Subject: Re: [PATCH 1/2] thinkpad-acpi: Try to use full software mute control
-Date: Sat, 25 Oct 2014 19:46:41 -0200
-Message-ID: <20141025214641.GA13554@khazad-dum.debian.net>
-References: <cover.1413481880.git.luto@amacapital.net>
- <72f375b46a34702fc9f8be419fa83c219fbc28c5.1413481880.git.luto@amacapital.net>
- <20141016183130.GA15835@khazad-dum.debian.net>
- <CALCETrXz_x7E5aVvr7S1aTtGLbE8PKpVJFrBCZTEXZKjdi0F3w@mail.gmail.com>
- <20141016185455.GB15835@khazad-dum.debian.net>
- <CALCETrXovzScXMWLTF4WqY9SjsL4+KPxmviYjQ-pDry8qZjZ1A@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Uninitialized id returned by
+	saffirepro_both_clk_src_get.
+Date: Sun, 26 Oct 2014 10:10:15 +0900
+Message-ID: <544C49F7.8010300@sakamocchi.jp>
+References: <1414237241-18984-1-git-send-email-vogelchr@vogel.cx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CALCETrXovzScXMWLTF4WqY9SjsL4+KPxmviYjQ-pDry8qZjZ1A@mail.gmail.com>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Matthew Garrett <mjg59@srcf.ucam.org>, ibm-acpi-devel@lists.sourceforge.net, Len Brown <len.brown@intel.com>, Jerone Young <jerone.young@canonical.com>, David Henningsson <david.henningsson@canonical.com>, Takashi Iwai <tiwai@suse.de>, Grant Diffey <gdiffey@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, platform-driver-x86@vger.kernel.org, Andy Lutomirski <luto@mit.edu>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp311.phy.lolipop.jp (smtp311.phy.lolipop.jp [210.157.22.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id EDA04260644
+ for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 02:10:22 +0100 (CET)
+In-Reply-To: <1414237241-18984-1-git-send-email-vogelchr@vogel.cx>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Christian Vogel <vogelchr@vogel.cx>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 25 Oct 2014, Andy Lutomirski wrote:
-> > I will only be able to do that during the weekend anyway, so feel free to
-> > send a v3 if you need :-)
-> >
+Hi Chris,
+
+Thanks for your posting to alsa-devel. And sorry to include any bugs in
+snd-bebob.
+
+I reviewed your patch and realized that your patch cannot be applied to
+current tree. The patch seems not to be based on the latest changes:
+
+[alsa-devel] [PATCH 07/43] ALSA: bebob: More constify text arrays
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-October/082580.html
+
+[alsa-devel] [PATCH 08/43] ALSA: bebob: Use snd_ctl_enum_info()
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-October/082574.html
+
+I'll post revised patches later, just for our convenience.
+
+
+Thanks
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
+
+On Oct 25 2014 20:40, Christian Vogel wrote:
+> Hi,
 > 
-> Any update?
-
-Will test tomorrow, or with some luck, tonight... Had some nasty issues to
-deal with.
-
--- 
-  "One disk to rule them all, One disk to find them. One disk to bring
-  them all and in the darkness grind them. In the Land of Redmond
-  where the shadows lie." -- The Silicon Valley Tarot
-  Henrique Holschuh
+> there's a possibility to get a Oops caused by an uninitialized value
+> in snd_bebob_stream_check_internal_clock for a SaffirePro running on the
+> internal clock.
+> 
+> 	[   88.100531] BUG: unable to handle kernel paging request at 8a3c85fc          
+> 	[   88.103808] IP: [<e8553aa0>] snd_bebob_stream_check_internal_clock+0x66/0x11e [snd_bebob]
+> 
+> ...which is dereferencing of clk_spec->labels[id] in...
+> 
+> 	sound/firewire/bebob/bebob_stream.c :
+> 
+> 	/* 1.The device has its own operation to switch source of clock */
+> 	if (clk_spec) {
+> 		err = clk_spec->get(bebob, &id);
+> 		if (err < 0)
+> 			dev_err(&bebob->unit->device,
+> 				"fail to get clock source: %d\n", err);
+> -->		else if (strncmp(clk_spec->labels[id], SND_BEBOB_CLOCK_INTERNAL,
+> 				 strlen(SND_BEBOB_CLOCK_INTERNAL)) == 0)
+> 			*internal = true;
+> 		goto end;
+> 	}
+> 
+> id is uninitialized, and will not be set by clk_spec->get (which is
+> saffirepro_both_clk_src_get(), even if it returns ok(0).
+> 
+> Attached patch tries to clean up the logic in saffirepro_both_clk_src_get()
+> and also adds a safety check to snd_bebob_stream_check_internal_clock().
+> 
+> Thanks for Takashi Sakamoto to whom I sent the patch initially and who
+> suggested some cleanup to my code, reviewed the patch and suggested I send
+> it to alsa-dev.
