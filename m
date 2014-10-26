@@ -1,15 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 23/29] ALSA: oxfw: Add proc interface for
-	debugging purpose
-Date: Sun, 26 Oct 2014 22:03:24 +0900
-Message-ID: <1414328610-12729-24-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 20/29] ALSA: oxfw: Change the way to name card
+Date: Sun, 26 Oct 2014 22:03:21 +0900
+Message-ID: <1414328610-12729-21-git-send-email-o-takashi@sakamocchi.jp>
 References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 3941D26072A
+ by alsa0.perex.cz (Postfix) with ESMTP id 48E10260786
  for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:04:11 +0100 (CET)
 In-Reply-To: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,187 +24,132 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds proc interface to get information about stream
-formation. This commit also adds snd_oxfw_stream_get_current_formation()
-to get current stream formation.
+The 'struct snd_card' has 4 members for name. They're 'driver', 'shortname',
+'longname' and 'mixername'. This commit names these 4 members according to
+two members in model-specific structure and reduce rest of members in the
+structure.
+
+The reason that alias names are still used is that currently supported devices,
+Griffin FireWave and LaCie Firewire Speaker have too long names for model and
+vendor field in their config rom to be over allocated buffer for the names.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/oxfw/Makefile      |  3 +-
- sound/firewire/oxfw/oxfw-proc.c   | 84 +++++++++++++++++++++++++++++++++++++++
- sound/firewire/oxfw/oxfw-stream.c | 27 +++++++++++++
- sound/firewire/oxfw/oxfw.c        |  2 +
- sound/firewire/oxfw/oxfw.h        |  3 ++
- 5 files changed, 118 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/oxfw/oxfw-proc.c
+ sound/firewire/oxfw/oxfw.c | 51 +++++++++++++++++++++++++++-------------------
+ sound/firewire/oxfw/oxfw.h |  3 +--
+ 2 files changed, 31 insertions(+), 23 deletions(-)
 
-diff --git a/sound/firewire/oxfw/Makefile b/sound/firewire/oxfw/Makefile
-index b107134..e9297c6 100644
---- a/sound/firewire/oxfw/Makefile
-+++ b/sound/firewire/oxfw/Makefile
-@@ -1,2 +1,3 @@
--snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o oxfw.o
-+snd-oxfw-objs := oxfw-command.o oxfw-stream.o oxfw-control.o oxfw-pcm.o \
-+		 oxfw-proc.o oxfw.o
- obj-m += snd-oxfw.o
-diff --git a/sound/firewire/oxfw/oxfw-proc.c b/sound/firewire/oxfw/oxfw-proc.c
-new file mode 100644
-index 0000000..18e0305
---- /dev/null
-+++ b/sound/firewire/oxfw/oxfw-proc.c
-@@ -0,0 +1,84 @@
-+/*
-+ * oxfw_proc.c - a part of driver for OXFW970/971 based devices
-+ *
-+ * Copyright (c) 2014 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "./oxfw.h"
-+
-+static void proc_read_formation(struct snd_info_entry *entry,
-+				struct snd_info_buffer *buffer)
-+{
-+	struct snd_oxfw *oxfw = entry->private_data;
-+	struct snd_oxfw_stream_formation formation, curr;
-+	u8 *format;
-+	char flag;
-+	unsigned int i, err;
-+
-+	/* Show input. */
-+	err = snd_oxfw_stream_get_current_formation(oxfw,
-+						    AVC_GENERAL_PLUG_DIR_IN,
-+						    &curr);
-+	if (err < 0)
-+		return;
-+
-+	snd_iprintf(buffer, "Input Stream to device:\n");
-+	snd_iprintf(buffer, "\tRate\tPCM\tMIDI\n");
-+	for (i = 0; i < SND_OXFW_STREAM_FORMAT_ENTRIES; i++) {
-+		format = oxfw->rx_stream_formats[i];
-+		if (format == NULL)
-+			continue;
-+
-+		err = snd_oxfw_stream_parse_format(format, &formation);
-+		if (err < 0)
-+			continue;
-+
-+		if (memcmp(&formation, &curr, sizeof(curr)) == 0)
-+			flag = '*';
-+		else
-+			flag = ' ';
-+
-+		snd_iprintf(buffer, "%c\t%d\t%d\t%d\n", flag,
-+			    formation.rate, formation.pcm, formation.midi);
-+	}
-+
-+}
-+
-+static void add_node(struct snd_oxfw *oxfw, struct snd_info_entry *root,
-+		     const char *name,
-+		     void (*op)(struct snd_info_entry *e,
-+				struct snd_info_buffer *b))
-+{
-+	struct snd_info_entry *entry;
-+
-+	entry = snd_info_create_card_entry(oxfw->card, name, root);
-+	if (entry == NULL)
-+		return;
-+
-+	snd_info_set_text_ops(entry, oxfw, op);
-+	if (snd_info_register(entry) < 0)
-+		snd_info_free_entry(entry);
-+}
-+
-+void snd_oxfw_proc_init(struct snd_oxfw *oxfw)
-+{
-+	struct snd_info_entry *root;
-+
-+	/*
-+	 * All nodes are automatically removed at snd_card_disconnect(),
-+	 * by following to link list.
-+	 */
-+	root = snd_info_create_card_entry(oxfw->card, "firewire",
-+					  oxfw->card->proc_root);
-+	if (root == NULL)
-+		return;
-+	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
-+	if (snd_info_register(root) < 0) {
-+		snd_info_free_entry(root);
-+		return;
-+	}
-+
-+	add_node(oxfw, root, "formation", proc_read_formation);
-+}
-diff --git a/sound/firewire/oxfw/oxfw-stream.c b/sound/firewire/oxfw/oxfw-stream.c
-index f0b2c9c..dd905fe 100644
---- a/sound/firewire/oxfw/oxfw-stream.c
-+++ b/sound/firewire/oxfw/oxfw-stream.c
-@@ -120,6 +120,33 @@ void snd_oxfw_stream_update_simplex(struct snd_oxfw *oxfw)
- 	}
- }
- 
-+int snd_oxfw_stream_get_current_formation(struct snd_oxfw *oxfw,
-+				enum avc_general_plug_dir dir,
-+				struct snd_oxfw_stream_formation *formation)
-+{
-+	u8 *format;
-+	unsigned int len;
-+	int err;
-+
-+	len = AVC_GENERIC_FRAME_MAXIMUM_BYTES;
-+	format = kmalloc(len, GFP_KERNEL);
-+	if (format == NULL)
-+		return -ENOMEM;
-+
-+	err = avc_stream_get_format_single(oxfw->unit, dir, 0, format, &len);
-+	if (err < 0)
-+		goto end;
-+	if (len < 3) {
-+		err = -EIO;
-+		goto end;
-+	}
-+
-+	err = snd_oxfw_stream_parse_format(format, formation);
-+end:
-+	kfree(format);
-+	return err;
-+}
-+
- /*
-  * See Table 6.16 - AM824 Stream Format
-  *     Figure 6.19 - format_information field for AM824 Compound
 diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 88ab913..b85d80a 100644
+index 236a55e..08c55be 100644
 --- a/sound/firewire/oxfw/oxfw.c
 +++ b/sound/firewire/oxfw/oxfw.c
-@@ -117,6 +117,8 @@ static int oxfw_probe(struct fw_unit *unit,
- 	if (err < 0)
- 		goto error;
+@@ -25,14 +25,34 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_LICENSE("GPL v2");
+ MODULE_ALIAS("snd-firewire-speakers");
  
-+	snd_oxfw_proc_init(oxfw);
+-static u32 oxfw_read_firmware_version(struct fw_unit *unit)
++static int name_card(struct snd_oxfw *oxfw)
+ {
+-	__be32 data;
++	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
++	const char *d, *v, *m;
++	u32 firmware;
+ 	int err;
+ 
+-	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
+-				 OXFORD_FIRMWARE_ID_ADDRESS, &data, 4, 0);
+-	return err >= 0 ? be32_to_cpu(data) : 0;
++	err = snd_fw_transaction(oxfw->unit, TCODE_READ_QUADLET_REQUEST,
++				 OXFORD_FIRMWARE_ID_ADDRESS, &firmware, 4, 0);
++	if (err < 0)
++		goto end;
++	be32_to_cpus(&firmware);
 +
- 	err = snd_oxfw_stream_init_simplex(oxfw);
++	d = oxfw->device_info->driver_name;
++	v = oxfw->device_info->vendor_name;
++	m = oxfw->device_info->driver_name;
++
++	strcpy(oxfw->card->driver, d);
++	strcpy(oxfw->card->shortname, m);
++	strcpy(oxfw->card->mixername, m);
++
++	snprintf(oxfw->card->longname, sizeof(oxfw->card->longname),
++		 "%s %s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
++		 v, m, firmware >> 20, firmware & 0xffff,
++		 fw_dev->config_rom[3], fw_dev->config_rom[4],
++		 dev_name(&oxfw->unit->device), 100 << fw_dev->max_speed);
++end:
++	return err;
+ }
+ 
+ static void oxfw_card_free(struct snd_card *card)
+@@ -45,10 +65,8 @@ static void oxfw_card_free(struct snd_card *card)
+ static int oxfw_probe(struct fw_unit *unit,
+ 		       const struct ieee1394_device_id *id)
+ {
+-	struct fw_device *fw_dev = fw_parent_device(unit);
+ 	struct snd_card *card;
+ 	struct snd_oxfw *oxfw;
+-	u32 firmware;
+ 	int err;
+ 
+ 	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
+@@ -63,16 +81,9 @@ static int oxfw_probe(struct fw_unit *unit,
+ 	oxfw->unit = unit;
+ 	oxfw->device_info = (const struct device_info *)id->driver_data;
+ 
+-	strcpy(card->driver, oxfw->device_info->driver_name);
+-	strcpy(card->shortname, oxfw->device_info->short_name);
+-	firmware = oxfw_read_firmware_version(unit);
+-	snprintf(card->longname, sizeof(card->longname),
+-		 "%s (OXFW%x %04x), GUID %08x%08x at %s, S%d",
+-		 oxfw->device_info->long_name,
+-		 firmware >> 20, firmware & 0xffff,
+-		 fw_dev->config_rom[3], fw_dev->config_rom[4],
+-		 dev_name(&unit->device), 100 << fw_dev->max_speed);
+-	strcpy(card->mixername, "OXFW");
++	err = name_card(oxfw);
++	if (err < 0)
++		goto error;
+ 
+ 	err = snd_oxfw_create_pcm(oxfw);
  	if (err < 0)
- 		goto error;
+@@ -118,9 +129,8 @@ static void oxfw_remove(struct fw_unit *unit)
+ }
+ 
+ static const struct device_info griffin_firewave = {
++	.vendor_name = "Griffin",
+ 	.driver_name = "FireWave",
+-	.short_name  = "FireWave",
+-	.long_name   = "Griffin FireWave Surround",
+ 	.pcm_constraints = firewave_constraints,
+ 	.mixer_channels = 6,
+ 	.mute_fb_id   = 0x01,
+@@ -128,9 +138,8 @@ static const struct device_info griffin_firewave = {
+ };
+ 
+ static const struct device_info lacie_speakers = {
++	.vendor_name = "LaCie",
+ 	.driver_name = "FWSpeakers",
+-	.short_name  = "FireWire Speakers",
+-	.long_name   = "LaCie FireWire Speakers",
+ 	.pcm_constraints = lacie_speakers_constraints,
+ 	.mixer_channels = 1,
+ 	.mute_fb_id   = 0x01,
 diff --git a/sound/firewire/oxfw/oxfw.h b/sound/firewire/oxfw/oxfw.h
-index c4c1acd..6bc2ac3 100644
+index 6164bf3..b60e91d 100644
 --- a/sound/firewire/oxfw/oxfw.h
 +++ b/sound/firewire/oxfw/oxfw.h
-@@ -18,6 +18,7 @@
- #include <sound/initval.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/info.h>
+@@ -27,9 +27,8 @@
+ #include "../cmp.h"
  
- #include "../lib.h"
- #include "../fcp.h"
-@@ -107,3 +108,5 @@ int snd_oxfw_stream_discover(struct snd_oxfw *oxfw);
- int snd_oxfw_create_pcm(struct snd_oxfw *oxfw);
- 
- int snd_oxfw_create_mixer(struct snd_oxfw *oxfw);
-+
-+void snd_oxfw_proc_init(struct snd_oxfw *oxfw);
+ struct device_info {
++	const char *vendor_name;
+ 	const char *driver_name;
+-	const char *short_name;
+-	const char *long_name;
+ 	int (*pcm_constraints)(struct snd_pcm_runtime *runtime);
+ 	unsigned int mixer_channels;
+ 	u8 mute_fb_id;
 -- 
 1.9.1
