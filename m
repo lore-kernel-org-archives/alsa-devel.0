@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 08/29] ALSA: dice: Add new functions for
-	constraints of PCM parameters
-Date: Sun, 26 Oct 2014 22:03:09 +0900
-Message-ID: <1414328610-12729-9-git-send-email-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/29] ALSA: dice: Split proc interface into a
+	file
+Date: Sun, 26 Oct 2014 22:03:08 +0900
+Message-ID: <1414328610-12729-8-git-send-email-o-takashi@sakamocchi.jp>
 References: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AEC72606CF
- for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:03:53 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 244AE2606CE
+ for <alsa-devel@alsa-project.org>; Sun, 26 Oct 2014 14:03:51 +0100 (CET)
 In-Reply-To: <1414328610-12729-1-git-send-email-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,158 +25,557 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a new functions and some arrangement for PCM restriction.
-This arrangement is due to the number of channels which each Dice device has.
-
-I note that minimum number for period becomes 2, instead of 1 because its PCM
-functionality has SNDRV_PCM_INFO_BATCH, this means that the driver uses double
-(or more) buffering so the minimum number for period should be 2.
+This commit adds a file and move some codes related to proc output.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-pcm.c | 109 ++++++++++++++++++++++++-----------------
- 1 file changed, 65 insertions(+), 44 deletions(-)
+ sound/firewire/dice/Makefile    |   4 +-
+ sound/firewire/dice/dice-proc.c | 252 ++++++++++++++++++++++++++++++++++++++++
+ sound/firewire/dice/dice.c      | 244 +-------------------------------------
+ sound/firewire/dice/dice.h      |   2 +
+ 4 files changed, 257 insertions(+), 245 deletions(-)
+ create mode 100644 sound/firewire/dice/dice-proc.c
 
-diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
-index deacb53..2e531bd 100644
---- a/sound/firewire/dice/dice-pcm.c
-+++ b/sound/firewire/dice/dice-pcm.c
-@@ -67,71 +67,92 @@ static int dice_channels_constraint(struct snd_pcm_hw_params *params,
- 	return snd_interval_refine(c, &channels);
- }
+diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
+index 73b0e38..9a48289 100644
+--- a/sound/firewire/dice/Makefile
++++ b/sound/firewire/dice/Makefile
+@@ -1,3 +1,3 @@
+-snd-dice-objs := dice-transaction.o dice-stream.o dice-pcm.o dice-hwdep.o \
+-		 dice.o
++snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-pcm.o \
++		 dice-hwdep.o dice.o
+ obj-m += snd-dice.o
+diff --git a/sound/firewire/dice/dice-proc.c b/sound/firewire/dice/dice-proc.c
+new file mode 100644
+index 0000000..f5c1d1b
+--- /dev/null
++++ b/sound/firewire/dice/dice-proc.c
+@@ -0,0 +1,252 @@
++/*
++ * dice_proc.c - a part of driver for Dice based devices
++ *
++ * Copyright (c) Clemens Ladisch
++ * Copyright (c) 2014 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "dice.h"
++
++static int dice_proc_read_mem(struct snd_dice *dice, void *buffer,
++			      unsigned int offset_q, unsigned int quadlets)
++{
++	unsigned int i;
++	int err;
++
++	err = snd_fw_transaction(dice->unit, TCODE_READ_BLOCK_REQUEST,
++				 DICE_PRIVATE_SPACE + 4 * offset_q,
++				 buffer, 4 * quadlets, 0);
++	if (err < 0)
++		return err;
++
++	for (i = 0; i < quadlets; ++i)
++		be32_to_cpus(&((u32 *)buffer)[i]);
++
++	return 0;
++}
++
++static const char *str_from_array(const char *const strs[], unsigned int count,
++				  unsigned int i)
++{
++	if (i < count)
++		return strs[i];
++
++	return "(unknown)";
++}
++
++static void dice_proc_fixup_string(char *s, unsigned int size)
++{
++	unsigned int i;
++
++	for (i = 0; i < size; i += 4)
++		cpu_to_le32s((u32 *)(s + i));
++
++	for (i = 0; i < size - 2; ++i) {
++		if (s[i] == '\0')
++			return;
++		if (s[i] == '\\' && s[i + 1] == '\\') {
++			s[i + 2] = '\0';
++			return;
++		}
++	}
++	s[size - 1] = '\0';
++}
++
++static void dice_proc_read(struct snd_info_entry *entry,
++			   struct snd_info_buffer *buffer)
++{
++	static const char *const section_names[5] = {
++		"global", "tx", "rx", "ext_sync", "unused2"
++	};
++	static const char *const clock_sources[] = {
++		"aes1", "aes2", "aes3", "aes4", "aes", "adat", "tdif",
++		"wc", "arx1", "arx2", "arx3", "arx4", "internal"
++	};
++	static const char *const rates[] = {
++		"32000", "44100", "48000", "88200", "96000", "176400", "192000",
++		"any low", "any mid", "any high", "none"
++	};
++	struct snd_dice *dice = entry->private_data;
++	u32 sections[ARRAY_SIZE(section_names) * 2];
++	struct {
++		u32 number;
++		u32 size;
++	} tx_rx_header;
++	union {
++		struct {
++			u32 owner_hi, owner_lo;
++			u32 notification;
++			char nick_name[NICK_NAME_SIZE];
++			u32 clock_select;
++			u32 enable;
++			u32 status;
++			u32 extended_status;
++			u32 sample_rate;
++			u32 version;
++			u32 clock_caps;
++			char clock_source_names[CLOCK_SOURCE_NAMES_SIZE];
++		} global;
++		struct {
++			u32 iso;
++			u32 number_audio;
++			u32 number_midi;
++			u32 speed;
++			char names[TX_NAMES_SIZE];
++			u32 ac3_caps;
++			u32 ac3_enable;
++		} tx;
++		struct {
++			u32 iso;
++			u32 seq_start;
++			u32 number_audio;
++			u32 number_midi;
++			char names[RX_NAMES_SIZE];
++			u32 ac3_caps;
++			u32 ac3_enable;
++		} rx;
++		struct {
++			u32 clock_source;
++			u32 locked;
++			u32 rate;
++			u32 adat_user_data;
++		} ext_sync;
++	} buf;
++	unsigned int quadlets, stream, i;
++
++	if (dice_proc_read_mem(dice, sections, 0, ARRAY_SIZE(sections)) < 0)
++		return;
++	snd_iprintf(buffer, "sections:\n");
++	for (i = 0; i < ARRAY_SIZE(section_names); ++i)
++		snd_iprintf(buffer, "  %s: offset %u, size %u\n",
++			    section_names[i],
++			    sections[i * 2], sections[i * 2 + 1]);
++
++	quadlets = min_t(u32, sections[1], sizeof(buf.global) / 4);
++	if (dice_proc_read_mem(dice, &buf.global, sections[0], quadlets) < 0)
++		return;
++	snd_iprintf(buffer, "global:\n");
++	snd_iprintf(buffer, "  owner: %04x:%04x%08x\n",
++		    buf.global.owner_hi >> 16,
++		    buf.global.owner_hi & 0xffff, buf.global.owner_lo);
++	snd_iprintf(buffer, "  notification: %08x\n", buf.global.notification);
++	dice_proc_fixup_string(buf.global.nick_name, NICK_NAME_SIZE);
++	snd_iprintf(buffer, "  nick name: %s\n", buf.global.nick_name);
++	snd_iprintf(buffer, "  clock select: %s %s\n",
++		    str_from_array(clock_sources, ARRAY_SIZE(clock_sources),
++				   buf.global.clock_select & CLOCK_SOURCE_MASK),
++		    str_from_array(rates, ARRAY_SIZE(rates),
++				   (buf.global.clock_select & CLOCK_RATE_MASK)
++				   >> CLOCK_RATE_SHIFT));
++	snd_iprintf(buffer, "  enable: %u\n", buf.global.enable);
++	snd_iprintf(buffer, "  status: %slocked %s\n",
++		    buf.global.status & STATUS_SOURCE_LOCKED ? "" : "un",
++		    str_from_array(rates, ARRAY_SIZE(rates),
++				   (buf.global.status &
++				    STATUS_NOMINAL_RATE_MASK)
++				   >> CLOCK_RATE_SHIFT));
++	snd_iprintf(buffer, "  ext status: %08x\n", buf.global.extended_status);
++	snd_iprintf(buffer, "  sample rate: %u\n", buf.global.sample_rate);
++	snd_iprintf(buffer, "  version: %u.%u.%u.%u\n",
++		    (buf.global.version >> 24) & 0xff,
++		    (buf.global.version >> 16) & 0xff,
++		    (buf.global.version >>  8) & 0xff,
++		    (buf.global.version >>  0) & 0xff);
++	if (quadlets >= 90) {
++		snd_iprintf(buffer, "  clock caps:");
++		for (i = 0; i <= 6; ++i)
++			if (buf.global.clock_caps & (1 << i))
++				snd_iprintf(buffer, " %s", rates[i]);
++		for (i = 0; i <= 12; ++i)
++			if (buf.global.clock_caps & (1 << (16 + i)))
++				snd_iprintf(buffer, " %s", clock_sources[i]);
++		snd_iprintf(buffer, "\n");
++		dice_proc_fixup_string(buf.global.clock_source_names,
++				       CLOCK_SOURCE_NAMES_SIZE);
++		snd_iprintf(buffer, "  clock source names: %s\n",
++			    buf.global.clock_source_names);
++	}
++
++	if (dice_proc_read_mem(dice, &tx_rx_header, sections[2], 2) < 0)
++		return;
++	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.tx) / 4);
++	for (stream = 0; stream < tx_rx_header.number; ++stream) {
++		if (dice_proc_read_mem(dice, &buf.tx, sections[2] + 2 +
++				       stream * tx_rx_header.size,
++				       quadlets) < 0)
++			break;
++		snd_iprintf(buffer, "tx %u:\n", stream);
++		snd_iprintf(buffer, "  iso channel: %d\n", (int)buf.tx.iso);
++		snd_iprintf(buffer, "  audio channels: %u\n",
++			    buf.tx.number_audio);
++		snd_iprintf(buffer, "  midi ports: %u\n", buf.tx.number_midi);
++		snd_iprintf(buffer, "  speed: S%u\n", 100u << buf.tx.speed);
++		if (quadlets >= 68) {
++			dice_proc_fixup_string(buf.tx.names, TX_NAMES_SIZE);
++			snd_iprintf(buffer, "  names: %s\n", buf.tx.names);
++		}
++		if (quadlets >= 70) {
++			snd_iprintf(buffer, "  ac3 caps: %08x\n",
++				    buf.tx.ac3_caps);
++			snd_iprintf(buffer, "  ac3 enable: %08x\n",
++				    buf.tx.ac3_enable);
++		}
++	}
++
++	if (dice_proc_read_mem(dice, &tx_rx_header, sections[4], 2) < 0)
++		return;
++	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.rx) / 4);
++	for (stream = 0; stream < tx_rx_header.number; ++stream) {
++		if (dice_proc_read_mem(dice, &buf.rx, sections[4] + 2 +
++				       stream * tx_rx_header.size,
++				       quadlets) < 0)
++			break;
++		snd_iprintf(buffer, "rx %u:\n", stream);
++		snd_iprintf(buffer, "  iso channel: %d\n", (int)buf.rx.iso);
++		snd_iprintf(buffer, "  sequence start: %u\n", buf.rx.seq_start);
++		snd_iprintf(buffer, "  audio channels: %u\n",
++			    buf.rx.number_audio);
++		snd_iprintf(buffer, "  midi ports: %u\n", buf.rx.number_midi);
++		if (quadlets >= 68) {
++			dice_proc_fixup_string(buf.rx.names, RX_NAMES_SIZE);
++			snd_iprintf(buffer, "  names: %s\n", buf.rx.names);
++		}
++		if (quadlets >= 70) {
++			snd_iprintf(buffer, "  ac3 caps: %08x\n",
++				    buf.rx.ac3_caps);
++			snd_iprintf(buffer, "  ac3 enable: %08x\n",
++				    buf.rx.ac3_enable);
++		}
++	}
++
++	quadlets = min_t(u32, sections[7], sizeof(buf.ext_sync) / 4);
++	if (quadlets >= 4) {
++		if (dice_proc_read_mem(dice, &buf.ext_sync,
++				       sections[6], 4) < 0)
++			return;
++		snd_iprintf(buffer, "ext status:\n");
++		snd_iprintf(buffer, "  clock source: %s\n",
++			    str_from_array(clock_sources,
++					   ARRAY_SIZE(clock_sources),
++					   buf.ext_sync.clock_source));
++		snd_iprintf(buffer, "  locked: %u\n", buf.ext_sync.locked);
++		snd_iprintf(buffer, "  rate: %s\n",
++			    str_from_array(rates, ARRAY_SIZE(rates),
++					   buf.ext_sync.rate));
++		snd_iprintf(buffer, "  adat user data: ");
++		if (buf.ext_sync.adat_user_data & ADAT_USER_DATA_NO_DATA)
++			snd_iprintf(buffer, "-\n");
++		else
++			snd_iprintf(buffer, "%x\n",
++				    buf.ext_sync.adat_user_data);
++	}
++}
++
++void snd_dice_create_proc(struct snd_dice *dice)
++{
++	struct snd_info_entry *entry;
++
++	if (!snd_card_proc_new(dice->card, "dice", &entry))
++		snd_info_set_text_ops(entry, dice, dice_proc_read);
++}
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index e7d665a..7e8ecd3 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -11,248 +11,6 @@ MODULE_DESCRIPTION("DICE driver");
+ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
+ MODULE_LICENSE("GPL v2");
  
--
--static int pcm_open(struct snd_pcm_substream *substream)
-+static void limit_channels_and_rates(struct snd_dice *dice,
-+				     struct snd_pcm_runtime *runtime,
-+				     unsigned int *pcm_channels)
- {
--	static const struct snd_pcm_hardware hardware = {
--		.info = SNDRV_PCM_INFO_MMAP |
--			SNDRV_PCM_INFO_MMAP_VALID |
--			SNDRV_PCM_INFO_BATCH |
--			SNDRV_PCM_INFO_INTERLEAVED |
--			SNDRV_PCM_INFO_BLOCK_TRANSFER,
--		.formats = AMDTP_OUT_PCM_FORMAT_BITS,
--		.channels_min = UINT_MAX,
--		.channels_max = 0,
--		.buffer_bytes_max = 16 * 1024 * 1024,
--		.period_bytes_min = 1,
--		.period_bytes_max = UINT_MAX,
--		.periods_min = 1,
--		.periods_max = UINT_MAX,
--	};
--	struct snd_dice *dice = substream->private_data;
--	struct snd_pcm_runtime *runtime = substream->runtime;
+-static int dice_proc_read_mem(struct snd_dice *dice, void *buffer,
+-			      unsigned int offset_q, unsigned int quadlets)
+-{
 -	unsigned int i;
 -	int err;
-+	struct snd_pcm_hardware *hw = &runtime->hw;
-+	unsigned int i, rate, mode;
- 
--	err = snd_dice_stream_lock_try(dice);
--	if (err < 0)
--		goto error;
 -
--	runtime->hw = hardware;
-+	hw->channels_min = UINT_MAX;
-+	hw->channels_max = 0;
- 
- 	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
--		if (dice->clock_caps & (1 << i))
--			runtime->hw.rates |=
--				snd_pcm_rate_to_rate_bit(snd_dice_rates[i]);
-+		rate = snd_dice_rates[i];
-+		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
-+			continue;
-+		hw->rates |= snd_pcm_rate_to_rate_bit(rate);
-+
-+		if (pcm_channels[mode] == 0)
-+			continue;
-+		hw->channels_min = min(hw->channels_min, pcm_channels[mode]);
-+		hw->channels_max = max(hw->channels_max, pcm_channels[mode]);
- 	}
-+
- 	snd_pcm_limit_hw_rates(runtime);
-+}
- 
--	for (i = 0; i < 3; ++i) {
--		if (dice->rx_channels[i]) {
--			runtime->hw.channels_min = min(runtime->hw.channels_min,
--						       dice->rx_channels[i]);
--			runtime->hw.channels_max = max(runtime->hw.channels_max,
--						       dice->rx_channels[i]);
+-	err = snd_fw_transaction(dice->unit, TCODE_READ_BLOCK_REQUEST,
+-				 DICE_PRIVATE_SPACE + 4 * offset_q,
+-				 buffer, 4 * quadlets, 0);
+-	if (err < 0)
+-		return err;
+-
+-	for (i = 0; i < quadlets; ++i)
+-		be32_to_cpus(&((u32 *)buffer)[i]);
+-
+-	return 0;
+-}
+-
+-static const char *str_from_array(const char *const strs[], unsigned int count,
+-				  unsigned int i)
+-{
+-	if (i < count)
+-		return strs[i];
+-
+-	return "(unknown)";
+-}
+-
+-static void dice_proc_fixup_string(char *s, unsigned int size)
+-{
+-	unsigned int i;
+-
+-	for (i = 0; i < size; i += 4)
+-		cpu_to_le32s((u32 *)(s + i));
+-
+-	for (i = 0; i < size - 2; ++i) {
+-		if (s[i] == '\0')
+-			return;
+-		if (s[i] == '\\' && s[i + 1] == '\\') {
+-			s[i + 2] = '\0';
+-			return;
 -		}
 -	}
-+static void limit_period_and_buffer(struct snd_pcm_hardware *hw)
-+{
-+	hw->periods_min = 2;			/* SNDRV_PCM_INFO_BATCH */
-+	hw->periods_max = UINT_MAX;
-+
-+	hw->period_bytes_min = 4 * hw->channels_max;    /* byte for a frame */
-+
-+	/* Just to prevent from allocating much pages. */
-+	hw->period_bytes_max = hw->period_bytes_min * 2048;
-+	hw->buffer_bytes_max = hw->period_bytes_max * hw->periods_min;
-+}
-+
-+static int init_hw_info(struct snd_dice *dice,
-+			struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_pcm_hardware *hw = &runtime->hw;
-+	int err;
-+
-+	hw->info = SNDRV_PCM_INFO_MMAP |
-+		   SNDRV_PCM_INFO_MMAP_VALID |
-+		   SNDRV_PCM_INFO_BATCH |
-+		   SNDRV_PCM_INFO_INTERLEAVED |
-+		   SNDRV_PCM_INFO_BLOCK_TRANSFER;
-+	hw->formats = AMDTP_OUT_PCM_FORMAT_BITS;
-+
-+	limit_channels_and_rates(dice, runtime, dice->rx_channels);
-+	limit_period_and_buffer(hw);
+-	s[size - 1] = '\0';
+-}
+-
+-static void dice_proc_read(struct snd_info_entry *entry,
+-			   struct snd_info_buffer *buffer)
+-{
+-	static const char *const section_names[5] = {
+-		"global", "tx", "rx", "ext_sync", "unused2"
+-	};
+-	static const char *const clock_sources[] = {
+-		"aes1", "aes2", "aes3", "aes4", "aes", "adat", "tdif",
+-		"wc", "arx1", "arx2", "arx3", "arx4", "internal"
+-	};
+-	static const char *const rates[] = {
+-		"32000", "44100", "48000", "88200", "96000", "176400", "192000",
+-		"any low", "any mid", "any high", "none"
+-	};
+-	struct snd_dice *dice = entry->private_data;
+-	u32 sections[ARRAY_SIZE(section_names) * 2];
+-	struct {
+-		u32 number;
+-		u32 size;
+-	} tx_rx_header;
+-	union {
+-		struct {
+-			u32 owner_hi, owner_lo;
+-			u32 notification;
+-			char nick_name[NICK_NAME_SIZE];
+-			u32 clock_select;
+-			u32 enable;
+-			u32 status;
+-			u32 extended_status;
+-			u32 sample_rate;
+-			u32 version;
+-			u32 clock_caps;
+-			char clock_source_names[CLOCK_SOURCE_NAMES_SIZE];
+-		} global;
+-		struct {
+-			u32 iso;
+-			u32 number_audio;
+-			u32 number_midi;
+-			u32 speed;
+-			char names[TX_NAMES_SIZE];
+-			u32 ac3_caps;
+-			u32 ac3_enable;
+-		} tx;
+-		struct {
+-			u32 iso;
+-			u32 seq_start;
+-			u32 number_audio;
+-			u32 number_midi;
+-			char names[RX_NAMES_SIZE];
+-			u32 ac3_caps;
+-			u32 ac3_enable;
+-		} rx;
+-		struct {
+-			u32 clock_source;
+-			u32 locked;
+-			u32 rate;
+-			u32 adat_user_data;
+-		} ext_sync;
+-	} buf;
+-	unsigned int quadlets, stream, i;
+-
+-	if (dice_proc_read_mem(dice, sections, 0, ARRAY_SIZE(sections)) < 0)
+-		return;
+-	snd_iprintf(buffer, "sections:\n");
+-	for (i = 0; i < ARRAY_SIZE(section_names); ++i)
+-		snd_iprintf(buffer, "  %s: offset %u, size %u\n",
+-			    section_names[i],
+-			    sections[i * 2], sections[i * 2 + 1]);
+-
+-	quadlets = min_t(u32, sections[1], sizeof(buf.global) / 4);
+-	if (dice_proc_read_mem(dice, &buf.global, sections[0], quadlets) < 0)
+-		return;
+-	snd_iprintf(buffer, "global:\n");
+-	snd_iprintf(buffer, "  owner: %04x:%04x%08x\n",
+-		    buf.global.owner_hi >> 16,
+-		    buf.global.owner_hi & 0xffff, buf.global.owner_lo);
+-	snd_iprintf(buffer, "  notification: %08x\n", buf.global.notification);
+-	dice_proc_fixup_string(buf.global.nick_name, NICK_NAME_SIZE);
+-	snd_iprintf(buffer, "  nick name: %s\n", buf.global.nick_name);
+-	snd_iprintf(buffer, "  clock select: %s %s\n",
+-		    str_from_array(clock_sources, ARRAY_SIZE(clock_sources),
+-				   buf.global.clock_select & CLOCK_SOURCE_MASK),
+-		    str_from_array(rates, ARRAY_SIZE(rates),
+-				   (buf.global.clock_select & CLOCK_RATE_MASK)
+-				   >> CLOCK_RATE_SHIFT));
+-	snd_iprintf(buffer, "  enable: %u\n", buf.global.enable);
+-	snd_iprintf(buffer, "  status: %slocked %s\n",
+-		    buf.global.status & STATUS_SOURCE_LOCKED ? "" : "un",
+-		    str_from_array(rates, ARRAY_SIZE(rates),
+-				   (buf.global.status &
+-				    STATUS_NOMINAL_RATE_MASK)
+-				   >> CLOCK_RATE_SHIFT));
+-	snd_iprintf(buffer, "  ext status: %08x\n", buf.global.extended_status);
+-	snd_iprintf(buffer, "  sample rate: %u\n", buf.global.sample_rate);
+-	snd_iprintf(buffer, "  version: %u.%u.%u.%u\n",
+-		    (buf.global.version >> 24) & 0xff,
+-		    (buf.global.version >> 16) & 0xff,
+-		    (buf.global.version >>  8) & 0xff,
+-		    (buf.global.version >>  0) & 0xff);
+-	if (quadlets >= 90) {
+-		snd_iprintf(buffer, "  clock caps:");
+-		for (i = 0; i <= 6; ++i)
+-			if (buf.global.clock_caps & (1 << i))
+-				snd_iprintf(buffer, " %s", rates[i]);
+-		for (i = 0; i <= 12; ++i)
+-			if (buf.global.clock_caps & (1 << (16 + i)))
+-				snd_iprintf(buffer, " %s", clock_sources[i]);
+-		snd_iprintf(buffer, "\n");
+-		dice_proc_fixup_string(buf.global.clock_source_names,
+-				       CLOCK_SOURCE_NAMES_SIZE);
+-		snd_iprintf(buffer, "  clock source names: %s\n",
+-			    buf.global.clock_source_names);
+-	}
+-
+-	if (dice_proc_read_mem(dice, &tx_rx_header, sections[2], 2) < 0)
+-		return;
+-	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.tx) / 4);
+-	for (stream = 0; stream < tx_rx_header.number; ++stream) {
+-		if (dice_proc_read_mem(dice, &buf.tx, sections[2] + 2 +
+-				       stream * tx_rx_header.size,
+-				       quadlets) < 0)
+-			break;
+-		snd_iprintf(buffer, "tx %u:\n", stream);
+-		snd_iprintf(buffer, "  iso channel: %d\n", (int)buf.tx.iso);
+-		snd_iprintf(buffer, "  audio channels: %u\n",
+-			    buf.tx.number_audio);
+-		snd_iprintf(buffer, "  midi ports: %u\n", buf.tx.number_midi);
+-		snd_iprintf(buffer, "  speed: S%u\n", 100u << buf.tx.speed);
+-		if (quadlets >= 68) {
+-			dice_proc_fixup_string(buf.tx.names, TX_NAMES_SIZE);
+-			snd_iprintf(buffer, "  names: %s\n", buf.tx.names);
+-		}
+-		if (quadlets >= 70) {
+-			snd_iprintf(buffer, "  ac3 caps: %08x\n",
+-				    buf.tx.ac3_caps);
+-			snd_iprintf(buffer, "  ac3 enable: %08x\n",
+-				    buf.tx.ac3_enable);
+-		}
+-	}
+-
+-	if (dice_proc_read_mem(dice, &tx_rx_header, sections[4], 2) < 0)
+-		return;
+-	quadlets = min_t(u32, tx_rx_header.size, sizeof(buf.rx) / 4);
+-	for (stream = 0; stream < tx_rx_header.number; ++stream) {
+-		if (dice_proc_read_mem(dice, &buf.rx, sections[4] + 2 +
+-				       stream * tx_rx_header.size,
+-				       quadlets) < 0)
+-			break;
+-		snd_iprintf(buffer, "rx %u:\n", stream);
+-		snd_iprintf(buffer, "  iso channel: %d\n", (int)buf.rx.iso);
+-		snd_iprintf(buffer, "  sequence start: %u\n", buf.rx.seq_start);
+-		snd_iprintf(buffer, "  audio channels: %u\n",
+-			    buf.rx.number_audio);
+-		snd_iprintf(buffer, "  midi ports: %u\n", buf.rx.number_midi);
+-		if (quadlets >= 68) {
+-			dice_proc_fixup_string(buf.rx.names, RX_NAMES_SIZE);
+-			snd_iprintf(buffer, "  names: %s\n", buf.rx.names);
+-		}
+-		if (quadlets >= 70) {
+-			snd_iprintf(buffer, "  ac3 caps: %08x\n",
+-				    buf.rx.ac3_caps);
+-			snd_iprintf(buffer, "  ac3 enable: %08x\n",
+-				    buf.rx.ac3_enable);
+-		}
+-	}
+-
+-	quadlets = min_t(u32, sections[7], sizeof(buf.ext_sync) / 4);
+-	if (quadlets >= 4) {
+-		if (dice_proc_read_mem(dice, &buf.ext_sync,
+-				       sections[6], 4) < 0)
+-			return;
+-		snd_iprintf(buffer, "ext status:\n");
+-		snd_iprintf(buffer, "  clock source: %s\n",
+-			    str_from_array(clock_sources,
+-					   ARRAY_SIZE(clock_sources),
+-					   buf.ext_sync.clock_source));
+-		snd_iprintf(buffer, "  locked: %u\n", buf.ext_sync.locked);
+-		snd_iprintf(buffer, "  rate: %s\n",
+-			    str_from_array(rates, ARRAY_SIZE(rates),
+-					   buf.ext_sync.rate));
+-		snd_iprintf(buffer, "  adat user data: ");
+-		if (buf.ext_sync.adat_user_data & ADAT_USER_DATA_NO_DATA)
+-			snd_iprintf(buffer, "-\n");
+-		else
+-			snd_iprintf(buffer, "%x\n",
+-				    buf.ext_sync.adat_user_data);
+-	}
+-}
+-
+-static void dice_create_proc(struct snd_dice *dice)
+-{
+-	struct snd_info_entry *entry;
+-
+-	if (!snd_card_proc_new(dice->card, "dice", &entry))
+-		snd_info_set_text_ops(entry, dice, dice_proc_read);
+-}
+-
+ #define OUI_WEISS		0x001c6a
  
- 	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 				  dice_rate_constraint, dice,
- 				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+ #define DICE_CATEGORY_ID	0x04
+@@ -520,7 +278,7 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
  	if (err < 0)
--		goto err_lock;
-+		goto end;
- 	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
- 				  dice_channels_constraint, dice,
- 				  SNDRV_PCM_HW_PARAM_RATE, -1);
+ 		goto error;
+ 
+-	dice_create_proc(dice);
++	snd_dice_create_proc(dice);
+ 
+ 	err = snd_dice_stream_init(dice);
  	if (err < 0)
--		goto err_lock;
-+		goto end;
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index dcc8c78..969189a 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -175,4 +175,6 @@ int snd_dice_create_pcm(struct snd_dice *dice);
  
- 	err = amdtp_stream_add_pcm_hw_constraints(&dice->rx_stream, runtime);
--	if (err < 0)
--		goto err_lock;
-+end:
-+	return err;
-+}
+ int snd_dice_create_hwdep(struct snd_dice *dice);
  
--	return 0;
-+static int pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_dice *dice = substream->private_data;
-+	int err;
- 
--err_lock:
-+	err = snd_dice_stream_lock_try(dice);
-+	if (err < 0)
-+		goto end;
++void snd_dice_create_proc(struct snd_dice *dice);
 +
-+	err = init_hw_info(dice, substream);
-+	if (err < 0)
-+		goto err_locked;
-+end:
-+	return err;
-+err_locked:
- 	snd_dice_stream_lock_release(dice);
--error:
- 	return err;
- }
- 
+ #endif
 -- 
 1.9.1
