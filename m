@@ -1,163 +1,197 @@
-From: Mauro Carvalho Chehab <mchehab@infradead.org>
-Subject: Re: [alsa-devel] [PATCH v2 5/6] sound/usb: pcm changes to use media
- token api
-Date: Mon, 27 Oct 2014 10:52:37 -0200
-Message-ID: <20141027105237.5f5ec7fd@recife.lan>
-References: <cover.1413246370.git.shuahkh@osg.samsung.com>
-	<cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com>
-	<543FB374.8020604@metafoo.de>
-	<543FC3CD.8050805@osg.samsung.com>
-	<s5h38aow1ub.wl-tiwai@suse.de>
-	<543FD1EC.5010206@osg.samsung.com>
-	<s5hy4sgumjo.wl-tiwai@suse.de>
-	<543FD892.6010209@osg.samsung.com>
-	<s5htx34ul3w.wl-tiwai@suse.de>
-	<54467EFB.7050800@xs4all.nl>
-	<s5hbnp5z9uy.wl-tiwai@suse.de>
-	<CAGoCfixD-zv1MMHUXLnjGV5KVB-DGdp2ZqZ0hUTR14UvLh-Gvw@mail.gmail.com>
-	<544804F1.7090606@linux.intel.com>
-	<20141025114115.292ff5d2@recife.lan>
-	<s5hk33n8ccj.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] Uninitialized id returned by
+	saffirepro_both_clk_src_get.
+Date: Mon, 27 Oct 2014 21:55:48 +0900
+Message-ID: <544E40D4.4090705@sakamocchi.jp>
+References: <1414237241-18984-1-git-send-email-vogelchr@vogel.cx>
+ <1414237241-18984-2-git-send-email-vogelchr@vogel.cx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hk33n8ccj.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Devin Heitmueller <dheitmueller@kernellabs.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Linux Media Mailing List <linux-media@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "ramakrmu@cisco.com" <ramakrmu@cisco.com>, Shuah Khan <shuahkh@osg.samsung.com>, Hans Verkuil <hverkuil@xs4all.nl>, Sander Eikelenboom <linux@eikelenboom.it>, prabhakar.csengg@gmail.com, Antti Palosaari <crope@iki.fi>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Tim Gardner <tim.gardner@canonical.com>, "olebowle@gmx.com" <olebowle@gmx.com>, Linux Kernel <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73574261171
+ for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 13:55:56 +0100 (CET)
+In-Reply-To: <1414237241-18984-2-git-send-email-vogelchr@vogel.cx>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "iwai >> Takashi Iwai" <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Christian Vogel <vogelchr@vogel.cx>
 List-Id: alsa-devel@alsa-project.org
 
-Em Sun, 26 Oct 2014 09:27:40 +0100
-Takashi Iwai <tiwai@suse.de> escreveu:
+Iwai-san,
 
-> At Sat, 25 Oct 2014 11:41:15 -0200,
-> Mauro Carvalho Chehab wrote:
-
-> >      +---------------+
-> >      |     start     |
-> >      +---------------+
-> >        |
-> >        |
-> >        v
-> >      +--------------------------------+
-> >      |              idle              | <+
-> >      +--------------------------------+  |
-> >        |                ^           |    |
-> >        |                |           |    |
-> >        v                |           |    |
-> >      +---------------+  |           |    |
-> >      | configuration |  |           |    |
-> >      +---------------+  |           |    |
-> >        |                |           |    |
-> >        |                |           |    |
-> >        v                |           |    |
-> >      +---------------+  |           |    |
-> >   +> |   streaming   | -+           |    |
-> >   |  +---------------+              |    |
-> >   |    |                            |    |
-> >   |    |                            |    |
-> >   |    v                            v    |
-> >   |  +---------------+-----------+----+  |
-> >   +- |       1       | suspended |  2 | -+
-> >      +---------------+-----------+----+
-
-
-The above diagram is actually simplified. There's an extra state
-there that should be mentioned:
-
-idle <-> DVB stream
-
-(actually, DVB stream is a copy of the above, except that ALSA
-won't have any business to do while the device is on DVB mode)
-
-> So, judging from your description, the problem isn't about the
-> exclusive lock, but rather implementation a kind of master/slave
-> devices?  Then the proposed patch doesn't look like a correct
-> implementation to me.
-
-You might see it as a master/slave, except that it is not that simple.
-It is really a hardware lock.
-
-There are actually 3 (sub)drivers that may need to set the hardware:
-	- ALSA driver;
-	- V4L2 driver;
-	- DVB driver.
-
-The goal of the lock is to prevent that more than one driver would try 
-to use a common piece of the hardware that it is already in usage
-by another driver.
-
-So, for example, the ALSA driver should not reprogram the hardware while 
-the V4L2 driver is doing that.
-
-I agree that, for V4L2/ALSA driver's interaction PoV, it could resemble
-a sort of master/slave control, in the sense that ALSA capture start only
-makes sense while V4L2 is at streaming state. Yet, just opening the device
-or (even start capture on ALSA, for the hardware with multiple DMA engines,
-like the ones that use snd-usb-audio) won't cause any harm if the V4L2 driver
-is not reconfiguring the audio registers at the same time.
-
-Also, ALSA open/close should be supported any time, as otherwise it will 
-break existing applications. 
-
-However, when the device is streaming on DVB mode, it is not possible
-to stream on V4L2 mode, as there's just one DMA for both and just one
-tuner. Also, ALSA capture doesn't make much sense on such case. Still,
-locking on open/close may eventually break existing applications. Also,
-it doesn't really make any sense to block the device to move from analog
-to digital mode just because the ALSA devnodes are opened.
-
-> What I (and supposedly Pierre) opposed is the implementation of
-> exclusive lock control in spontaneous callbacks.  Especially the
-> trigger callback is a bad place since it's a callback that is supposed
-> to just trigger atomically.  In general, the only good place for
-> allowing user-space to *control* the exclusive lock is open/close,
-> unless the finer lock control is exposed.
-
-I see your point. Then perhaps we should expose callbacks from other
-parts of the ALSA core, perhaps at the logic that calls the trigger
-callback at read and poll syscalls, plus the corresponding logic that is
-used when the device is using the mmap syscall.
-
-> But, reading through the argument from you guys, the intention of the
-> patch seems like just to raise the conflict from the hardware level to
-> the software level. 
-
-Yes.
-
-> If so, I doubt whether such an exclusive lock is
-> the best way.   For example, audio stream can simply receive an error
-> at any time if something is wrong and reacts accordingly instead of
-> keeping the lock while streaming. Then the master side (video) can
-> set the error flag, let the audio stream stop in the driver (if
-> running), and sync with it.
-
-Hmm... this is actually more complex than that. V4L2 driver doesn't
-know if ALSA is streaming or not, or even if ALSA device node is opened
-while he is touching at the hardware configuration or changing the
-state. I mean: it is not an error to set the hardware. The error only
-happens if ALSA and V4L2 tries to do it at the same time on an incompatible
-way.
-
-Also, this won't work for DVB, as on DVB this is really an exclusive
-lock that would prevent both ALSA and V4L2 drivers to stream while in
-DVB mode.
-
-Implementing it with a lock seems to be the best approach, at least on
-my eyes.
-
-> That said, we should go back and start discussing the design goal at
-> first.
-
-Surely.
-
+On Oct 25 2014 20:40, Christian Vogel wrote:
+> snd_bebob_stream_check_internal_clock() may get an id from
+> saffirepro_both_clk_src_get (via clk_src->get()) that was uninitialized.
 > 
+> a) make logic in saffirepro_both_clk_src_get explicit
+> b) test if id used in snd_bebob_stream_check_internal_clock matches array size
 > 
-> thanks,
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Signed-off-by: Christian Vogel <vogelchr@vogel.cx>
+> ---
+>  sound/firewire/bebob/bebob_focusrite.c | 62 ++++++++++++++++++++++++++--------
+>  sound/firewire/bebob/bebob_stream.c    | 18 ++++++++--
+>  2 files changed, 63 insertions(+), 17 deletions(-)
+
+[alsa-devel] [PATCH] Uninitialized id returned by
+saffirepro_both_clk_src_get.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-October/082810.html
+
+Would you please apply this patch to 'for-linus' branch and C.C.ed to
+Linux stable branch, as a bug fix?
+
+The subject should be with a prefix 'ALSA: bebob: ', and I hope to add
+'Reviewed-by' instead of 'Signed-off-by' for myself.
+
+
+Regards
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
+
+> diff --git a/sound/firewire/bebob/bebob_focusrite.c b/sound/firewire/bebob/bebob_focusrite.c
+> index 45a0eed..7b18e84 100644
+> --- a/sound/firewire/bebob/bebob_focusrite.c
+> +++ b/sound/firewire/bebob/bebob_focusrite.c
+> @@ -27,12 +27,14 @@
+>  #define SAFFIRE_CLOCK_SOURCE_INTERNAL		0
+>  #define SAFFIRE_CLOCK_SOURCE_SPDIF		1
+>  
+> -/* '1' is absent, why... */
+> +/* clock sources as returned from register of Saffire Pro 10 and 26 */
+>  #define SAFFIREPRO_CLOCK_SOURCE_INTERNAL	0
+> +#define SAFFIREPRO_CLOCK_SOURCE_SKIP		1 /* never used on hardware */
+>  #define SAFFIREPRO_CLOCK_SOURCE_SPDIF		2
+> -#define SAFFIREPRO_CLOCK_SOURCE_ADAT1		3
+> -#define SAFFIREPRO_CLOCK_SOURCE_ADAT2		4
+> +#define SAFFIREPRO_CLOCK_SOURCE_ADAT1		3 /* not used on s.pro. 10 */
+> +#define SAFFIREPRO_CLOCK_SOURCE_ADAT2		4 /* not used on s.pro. 10 */
+>  #define SAFFIREPRO_CLOCK_SOURCE_WORDCLOCK	5
+> +#define SAFFIREPRO_CLOCK_SOURCE_COUNT		6
+>  
+>  /* S/PDIF, ADAT1, ADAT2 is enabled or not. three quadlets */
+>  #define SAFFIREPRO_ENABLE_DIG_IFACES		0x01a4
+> @@ -101,13 +103,34 @@ saffire_write_quad(struct snd_bebob *bebob, u64 offset, u32 value)
+>  				  &data, sizeof(__be32), 0);
+>  }
+>  
+> +static char *const saffirepro_10_clk_src_labels[] = {
+> +	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "Word Clock"
+> +};
+>  static char *const saffirepro_26_clk_src_labels[] = {
+>  	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "ADAT1", "ADAT2", "Word Clock"
+>  };
+> -
+> -static char *const saffirepro_10_clk_src_labels[] = {
+> -	SND_BEBOB_CLOCK_INTERNAL, "S/PDIF", "Word Clock"
+> +/* Value maps between registers and labels for SaffirePro 10/26. */
+> +static const char saffirepro_clk_maps[][SAFFIREPRO_CLOCK_SOURCE_COUNT] = {
+> +	/* SaffirePro 10 */
+> +	[0] = {
+> +		[SAFFIREPRO_CLOCK_SOURCE_INTERNAL]  =  0,
+> +		[SAFFIREPRO_CLOCK_SOURCE_SKIP]      = -1, /* not supported */
+> +		[SAFFIREPRO_CLOCK_SOURCE_SPDIF]     =  1,
+> +		[SAFFIREPRO_CLOCK_SOURCE_ADAT1]     = -1, /* not supported */
+> +		[SAFFIREPRO_CLOCK_SOURCE_ADAT2]     = -1, /* not supported */
+> +		[SAFFIREPRO_CLOCK_SOURCE_WORDCLOCK] =  2,
+> +	},
+> +	/* SaffirePro 26 */
+> +	[1] = {
+> +		[SAFFIREPRO_CLOCK_SOURCE_INTERNAL]  =  0,
+> +		[SAFFIREPRO_CLOCK_SOURCE_SKIP]      = -1, /* not supported */
+> +		[SAFFIREPRO_CLOCK_SOURCE_SPDIF]     =  1,
+> +		[SAFFIREPRO_CLOCK_SOURCE_ADAT1]     =  2,
+> +		[SAFFIREPRO_CLOCK_SOURCE_ADAT2]     =  3,
+> +		[SAFFIREPRO_CLOCK_SOURCE_WORDCLOCK] =  4,
+> +	}
+>  };
+> +
+>  static int
+>  saffirepro_both_clk_freq_get(struct snd_bebob *bebob, unsigned int *rate)
+>  {
+> @@ -138,24 +161,35 @@ saffirepro_both_clk_freq_set(struct snd_bebob *bebob, unsigned int rate)
+>  
+>  	return saffire_write_quad(bebob, SAFFIREPRO_RATE_NOREBOOT, id);
+>  }
+> +
+> +/*
+> + * query hardware for current clock source, return our internally
+> + * used clock index in *id, depending on hardware.
+> + */
+>  static int
+>  saffirepro_both_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
+>  {
+>  	int err;
+> -	u32 value;
+> +	u32 value;       /* clock source read from hw register */
+> +	const char *map;
+>  
+>  	err = saffire_read_quad(bebob, SAFFIREPRO_OFFSET_CLOCK_SOURCE, &value);
+>  	if (err < 0)
+>  		goto end;
+>  
+> -	if (bebob->spec->clock->labels == saffirepro_10_clk_src_labels) {
+> -		if (value == SAFFIREPRO_CLOCK_SOURCE_WORDCLOCK)
+> -			*id = 2;
+> -		else if (value == SAFFIREPRO_CLOCK_SOURCE_SPDIF)
+> -			*id = 1;
+> -	} else if (value > 1) {
+> -		*id = value - 1;
+> +	/* depending on hardware, use a different mapping */
+> +	if (bebob->spec->clock->labels == saffirepro_10_clk_src_labels)
+> +		map = saffirepro_clk_maps[0];
+> +	else
+> +		map = saffirepro_clk_maps[1];
+> +
+> +	/* In a case that this driver cannot handle the value of register. */
+> +	if (value >= SAFFIREPRO_CLOCK_SOURCE_COUNT || map[value] < 0) {
+> +		err = -EIO;
+> +		goto end;
+>  	}
+> +
+> +	*id = (unsigned int)map[value];
+>  end:
+>  	return err;
+>  }
+> diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
+> index ef4d0c9..1aab0a3 100644
+> --- a/sound/firewire/bebob/bebob_stream.c
+> +++ b/sound/firewire/bebob/bebob_stream.c
+> @@ -129,12 +129,24 @@ snd_bebob_stream_check_internal_clock(struct snd_bebob *bebob, bool *internal)
+>  	/* 1.The device has its own operation to switch source of clock */
+>  	if (clk_spec) {
+>  		err = clk_spec->get(bebob, &id);
+> -		if (err < 0)
+> +		if (err < 0) {
+>  			dev_err(&bebob->unit->device,
+>  				"fail to get clock source: %d\n", err);
+> -		else if (strncmp(clk_spec->labels[id], SND_BEBOB_CLOCK_INTERNAL,
+> -				 strlen(SND_BEBOB_CLOCK_INTERNAL)) == 0)
+> +			goto end;
+> +		}
+> +
+> +		if (id >= clk_spec->num) {
+> +			dev_err(&bebob->unit->device,
+> +				"clock source %d out of range 0..%d\n",
+> +				id, clk_spec->num - 1);
+> +			err = -EIO;
+> +			goto end;
+> +		}
+> +
+> +		if (strncmp(clk_spec->labels[id], SND_BEBOB_CLOCK_INTERNAL,
+> +			    strlen(SND_BEBOB_CLOCK_INTERNAL)) == 0)
+>  			*internal = true;
+> +
+>  		goto end;
+>  	}
+>  
 > 
-> Takashi
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-media" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
