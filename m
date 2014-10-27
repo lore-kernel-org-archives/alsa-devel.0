@@ -1,37 +1,66 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: Don't bypass settings if cpu-dai is
- Master
-Date: Mon, 27 Oct 2014 10:42:02 -0700
-Message-ID: <20141027174201.GA3408@Asurada>
-References: <cover.1414193668.git.nicoleotsuka@gmail.com>
- <1414194502-14052-1-git-send-email-nicoleotsuka@gmail.com>
- <20141027173031.GA18557@sirena.org.uk>
+From: dE <de.techno@gmail.com>
+Subject: Re: What are subdevices?
+Date: Mon, 27 Oct 2014 23:32:23 +0530
+Message-ID: <544E88AF.8090705@gmail.com>
+References: <544CAD55.8070605@gmail.com> <544CBACF.2080702@ladisch.de>
+ <544CC58C.3080800@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20141027173031.GA18557@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: b02247@freescale.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f174.google.com (mail-pd0-f174.google.com
+ [209.85.192.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id F17372614BF
+ for <Alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 19:02:55 +0100 (CET)
+Received: by mail-pd0-f174.google.com with SMTP id p10so6096186pdj.33
+ for <Alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 11:02:54 -0700 (PDT)
+Received: from [192.168.1.2] ([59.89.143.167])
+ by mx.google.com with ESMTPSA id ot8sm11460456pbc.1.2014.10.27.11.02.51
+ for <Alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Mon, 27 Oct 2014 11:02:53 -0700 (PDT)
+In-Reply-To: <544CC58C.3080800@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 27, 2014 at 05:30:31PM +0000, Mark Brown wrote:
-> On Fri, Oct 24, 2014 at 04:48:11PM -0700, Nicolin Chen wrote:
-> > When cpu-dai is the DAI Master (CBM_CFx), it may need some configurations,
-> > set_sysclk() call for eample, for cpu-dai side in the hw_params(), even if
-> > the set_bias_level() has already taken care of the codec-dai side.
-> > 
-> > So this patch just simply adds an additional condition.
-> 
-> This was threaded with another patch series - did you intend to submit
-> this or did it get sent by accident?
+On 10/26/14 15:27, dE wrote:
+> On 10/26/14 14:41, Clemens Ladisch wrote:
+>> dE wrote:
+>>> A device seems like the output streams the sound card supports. Like 
+>>> HDMI, DP, analog etc...
+>>>
+>>> So what's a subdevice?
+>> A subdevice is an output streams the sound card supports.
+>>
+>> Typically, a device has multiple subdevices if the card supports 
+>> hardware mixing; all
+>> the subdevices end up at the same physical output.
+>>
+>>
+>> Regards,
+>> Clemens
+>
+> Ok, so a device list is a list of different streams the card can 
+> supports simultaneously and they'll be output via different channels 
+> without mixing.
+>
+> Thanks for clarifying this.
+>
+> But, typically cards have a single analog device but support 
+> multichannel output. So how does this work at the software level? If 
+> ALSA can't send multiple streams of audio to one device, then how does 
+> ALSA send  separate output to different channels of the device?
+>
+> Is the PCM sent to the sound card codified? Is this the same way how 
+> stereo work?
 
-I created this one without "--thread" (separately from that series) but
-accidentally sent the patch along with the series in one git-send-mail
-command. So I think I don't need to resend it since it's already there.
-
-Please regard this one as one single patch.
-
-Thank you.
-Nicolin
+No one knows?
