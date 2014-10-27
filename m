@@ -1,62 +1,63 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Pass printf argument directly to
-	request_module()
-Date: Mon, 27 Oct 2014 15:38:58 +0100
-Message-ID: <1414420738-14142-1-git-send-email-tiwai@suse.de>
+From: Shuah Khan <shuahkh@osg.samsung.com>
+Subject: Re: [alsa-devel] [PATCH v2 5/6] sound/usb: pcm changes to use media
+ token api
+Date: Mon, 27 Oct 2014 09:47:25 -0600
+Message-ID: <544E690D.1030506@osg.samsung.com>
+References: <cover.1413246370.git.shuahkh@osg.samsung.com> <cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com> <543FB374.8020604@metafoo.de> <543FC3CD.8050805@osg.samsung.com> <s5h38aow1ub.wl-tiwai@suse.de> <543FD1EC.5010206@osg.samsung.com> <s5hy4sgumjo.wl-tiwai@suse.de> <543FD892.6010209@osg.samsung.com> <s5htx34ul3w.wl-tiwai@suse.de> <54467EFB.7050800@xs4all.nl> <s5hbnp5z9uy.wl-tiwai@suse.de> <5446989A.3010000@osg.samsung.com> <20141025085742.43e20bb5.m.chehab@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A6C22608D3
- for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 15:45:29 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D3410AC0F
- for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 14:45:28 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20141025085742.43e20bb5.m.chehab@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <m.chehab@samsung.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Hans Verkuil <hverkuil@xs4all.nl>, Lars-Peter Clausen <lars@metafoo.de>, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-request_module() handles the printf style arguments, so we don't have
-to render strings in the caller side.  Not only it reduces the
-unnecessary temporary string buffer, it's even safer from the security
-POV.
+On 10/25/2014 04:57 AM, Mauro Carvalho Chehab wrote:
+> Hi,
+> 
+> Sorry to enter into this thread so late. Last week was a full week, due to the
+> 4 conferences I paticiapated, and last week I needed to fill lots of trip
+> reports. Also, I have another trip to give two speeches.
+> 
+> Em Tue, 21 Oct 2014 11:32:10 -0600
+> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
+> 
+>> Here is what I propose for patch v3:
+>> - make it a module under media
+>> - collapse tuner and audio tokens into media token
+> 
+> I'm a little skeptical about this. Merging tuner and audio tokens seems
+> weird on my eyes, as there are actually two different hardware resources
+> we need to lock, and we may be locking them on different places.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+I think the suggestion for collapsing came about because, in this
+patch series, the dvb and v4l use-cases are such that tuner and
+audio need to be held together. i.e when tuner is held, audio is
+held as well. With an intent to simplify the usage, I decided to
+have get_tuner interface to return audio token. It does simplify
+the logic for callers - all the paces that get tuner will also
+need to make a call to get audio and handle errors when audio is
+not available. That made it even more confusing perhaps and raised
+the question that "why can't we collapse".
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 259fbeaa37bd..0025bf4c2f44 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -966,14 +966,12 @@ find_codec_preset(struct hda_codec *codec)
- 	mutex_unlock(&preset_mutex);
- 
- 	if (mod_requested < HDA_MODREQ_MAX_COUNT) {
--		char name[32];
- 		if (!mod_requested)
--			snprintf(name, sizeof(name), "snd-hda-codec-id:%08x",
--				 codec->vendor_id);
-+			request_module("snd-hda-codec-id:%08x",
-+				       codec->vendor_id);
- 		else
--			snprintf(name, sizeof(name), "snd-hda-codec-id:%04x*",
--				 (codec->vendor_id >> 16) & 0xffff);
--		request_module(name);
-+			request_module("snd-hda-codec-id:%04x*",
-+				       (codec->vendor_id >> 16) & 0xffff);
- 		mod_requested++;
- 		goto again;
- 	}
+Having two tokens will allow the ability hold them independently.
+Maybe the right approach for patch v3 is don't collapse, but
+change dvb and v4l to get tuner followed by audio and handle the
+errors paths themselves.
+
+> 
+>> - change names (get rid of abbreviated tkn stuff)
+>> - Make other changes Takashi/Lars pointed out in pcm
+>> - hold token in pcm open/close
+> 
+
+-- Shuah
+
+
 -- 
-2.1.2
+Shuah Khan
+Sr. Linux Kernel Developer
+Samsung Research America (Silicon Valley)
+shuahkh@osg.samsung.com | (970) 217-8978
