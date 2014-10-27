@@ -1,18 +1,15 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 8/8] ASoC: dapm: Use more aggressive
-	caching
-Date: Mon, 27 Oct 2014 13:10:23 +0100
-Message-ID: <544E362F.2050100@metafoo.de>
-References: <CAES_P+8Z2BO46XuLokSXsgfNQud3VfNTXKOno9VinTsM=cyXBQ@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] pcm: Fix snd_pcm_avail_update description
+Date: Mon, 27 Oct 2014 13:11:42 +0100
+Message-ID: <1414411902-5335-1-git-send-email-david.henningsson@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-141.synserver.de (smtp-out-141.synserver.de
- [212.40.185.141])
- by alsa0.perex.cz (Postfix) with ESMTP id 553E82608C7
- for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 13:10:49 +0100 (CET)
-In-Reply-To: <CAES_P+8Z2BO46XuLokSXsgfNQud3VfNTXKOno9VinTsM=cyXBQ@mail.gmail.com>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 495E82608D3
+ for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 13:11:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: noman pouigt <variksla@gmail.com>, alsa-devel@alsa-project.org
+To: tiwai@suse.de, perex@perex.cz, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/26/2014 08:29 PM, noman pouigt wrote:
->> E.g. imagine the following example:
->>
->>         A --> B ----.
->>                     v
->>        M --> N --> Z <-- S <-- R
->>                     |
->>                     v
->>                     X>
->>
->> Widget Z has multiple input paths, if any change was made that cause Z to be
->> marked as dirty the power state of Z has to be re-computed. This requires to
->> know the number of inputs and outputs of Z, which requires to know the
->> number of inputs and outputs of all widgets on all paths from or to Z.
->> Previously this meant re-computing all inputs and outputs of all the path
->> going into or out of Z. With this patch in place only paths that actually
->> have changed need to be re-computed.
-> so suppose "B" was the widget which caused "Z" to be dirtied then with your
-> patch only you will calculate A->B->N->Z ?
+While reading alsa-lib code, I discovered that snd_pcm_avail_update
+does require a user-kernel context switch:
 
-It will only re-compute the inputs and outputs on those path that may have 
-changed. E.g. if Z is a mixer and the switch between N and Z is changed it 
-will only re-compute the number of outputs for M and N and the number of 
-outputs for Z and X. But keep the cached numbers for all other widgets.
+snd_pcm_avail_update() -> snd_pcm_hw_avail_update() -> sync_ptr()
+-> sync_ptr1() -> ioctl()
 
->
-> Is my understanding right?
->
-> A->B->C
->              |
->              v
->             G->P
->              v
->              |
-> D->E->F
->
-> What will happen in the above diagram if P gets dirtied?
+The documentation says it does not, so let's fix the documentation.
 
-That depends on the reason why it was marked as dirty. Different operations 
-have different impacts on the validity of the cached input/output numbers.
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ src/pcm/pcm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-This series does not change which widgets get mark as dirty or how dirty 
-widgets are handled. It introduces caching for the number of connected paths 
-that go to a sink and the number of paths that come from source.
-
-- Lars
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 4a7be6c..e57e362 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -403,10 +403,12 @@ The function #snd_pcm_avail_update() updates the current
+ available count of samples for writing (playback) or filled samples for
+ reading (capture). This call is mandatory for updating actual r/w pointer.
+ Using standalone, it is a light method to obtain current stream position,
+-because it does not require the user <-> kernel context switch, but the value
+-is less accurate, because ring buffer pointers are updated in kernel drivers
++because while it does require a user <-> kernel context switch, the value is
++just copied from the kernel, and not updated by synchronously asking the hardware
++about its current position. The ring buffer pointers are updated in kernel drivers
+ only when an interrupt occurs. If you want to get accurate stream state,
+-use functions #snd_pcm_avail(), #snd_pcm_delay() or #snd_pcm_avail_delay().
++use functions #snd_pcm_avail(), #snd_pcm_delay(), #snd_pcm_avail_delay() or
++#snd_pcm_status().
+ </p>
+ <p>
+ The function #snd_pcm_avail() reads the current hardware pointer
+-- 
+1.9.1
