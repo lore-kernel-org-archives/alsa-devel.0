@@ -1,19 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] Uninitialized id returned
-	by	saffirepro_both_clk_src_get.
-Date: Mon, 27 Oct 2014 22:41:13 +0900
-Message-ID: <544E4B79.90407@sakamocchi.jp>
-References: <1414237241-18984-1-git-send-email-vogelchr@vogel.cx>
- <1414237241-18984-2-git-send-email-vogelchr@vogel.cx>
- <544E40D4.4090705@sakamocchi.jp> <s5hbnox4pvq.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Pass printf argument directly to
+	request_module()
+Date: Mon, 27 Oct 2014 15:38:58 +0100
+Message-ID: <1414420738-14142-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp302.phy.lolipop.jp (smtp302.phy.lolipop.jp [210.157.22.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 04085261171
- for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 14:41:20 +0100 (CET)
-In-Reply-To: <s5hbnox4pvq.wl-tiwai@suse.de>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A6C22608D3
+ for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 15:45:29 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id D3410AC0F
+ for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 14:45:28 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,42 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Christian Vogel <vogelchr@vogel.cx>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+request_module() handles the printf style arguments, so we don't have
+to render strings in the caller side.  Not only it reduces the
+unnecessary temporary string buffer, it's even safer from the security
+POV.
 
-On Oct 27 2014 22 13  Takashi Iwai wrote:
-> About the patch:
->>> +/* Value maps between registers and labels for SaffirePro 10/26. */
->>> +static const char saffirepro_clk_maps[][SAFFIREPRO_CLOCK_SOURCE_COUNT] = {
->>> +	/* SaffirePro 10 */
->>> +	[0] = {
->>> +		[SAFFIREPRO_CLOCK_SOURCE_INTERNAL]  =  0,
->>> +		[SAFFIREPRO_CLOCK_SOURCE_SKIP]      = -1, /* not supported */
-> 
-> If you need to handle a negative value, you must specify "signed
-> char".  Without "signed" prefix, it might be unsigned, depending on
-> the architecture, in the case of char.
->
->>>  static int
->>>  saffirepro_both_clk_src_get(struct snd_bebob *bebob, unsigned int *id)
->>>  {
->>>  	int err;
->>> -	u32 value;
->>> +	u32 value;       /* clock source read from hw register */
->>> +	const char *map;
-> 
-> Ditto.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_codec.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Yep, exactly. I missed them...
-
-Thanks for your indication and applying to the branch, C.C.ed to stable:
-http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?h=for-linus&id=d1d0b6b668818571122d30d68a0b3f768bd83a52
-
-
-Regards
-
-Takashi Sakamoto
-o-takashi@sakamocchi.jp
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 259fbeaa37bd..0025bf4c2f44 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -966,14 +966,12 @@ find_codec_preset(struct hda_codec *codec)
+ 	mutex_unlock(&preset_mutex);
+ 
+ 	if (mod_requested < HDA_MODREQ_MAX_COUNT) {
+-		char name[32];
+ 		if (!mod_requested)
+-			snprintf(name, sizeof(name), "snd-hda-codec-id:%08x",
+-				 codec->vendor_id);
++			request_module("snd-hda-codec-id:%08x",
++				       codec->vendor_id);
+ 		else
+-			snprintf(name, sizeof(name), "snd-hda-codec-id:%04x*",
+-				 (codec->vendor_id >> 16) & 0xffff);
+-		request_module(name);
++			request_module("snd-hda-codec-id:%04x*",
++				       (codec->vendor_id >> 16) & 0xffff);
+ 		mod_requested++;
+ 		goto again;
+ 	}
+-- 
+2.1.2
