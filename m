@@ -1,19 +1,20 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 1/7] ASoC: Intel: Make ADSP memory block
- allocation more generic
-Date: Mon, 27 Oct 2014 10:09:54 +0000
-Message-ID: <1414404594.6917.7.camel@loki>
-References: <1413814012-5619-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <20141021230224.GF2344@sirena.org.uk> <5449FE1B.9000201@linux.intel.com>
- <5449FF2A.9070200@linux.intel.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
+Subject: Re: Customizing simple audio card?
+Date: Mon, 27 Oct 2014 13:15:52 +0300
+Message-ID: <CAMo8BfJZf0FEgMWqUwamBr3_gZ17NXaSQDvH=peHbauok44eKg@mail.gmail.com>
+References: <CAMo8BfLfMEwTqLnSt+WnzdrbRh0kh1hCYxj6u-xxwrKotiWx3Q@mail.gmail.com>
+ <87lho21gah.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id C1E87260859
- for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 11:10:17 +0100 (CET)
-In-Reply-To: <5449FF2A.9070200@linux.intel.com>
+Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
+ [209.85.218.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id D8937260859
+ for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 11:15:53 +0100 (CET)
+Received: by mail-oi0-f45.google.com with SMTP id i138so3102921oig.32
+ for <alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 03:15:52 -0700 (PDT)
+In-Reply-To: <87lho21gah.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,39 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2014-10-24 at 10:26 +0300, Jarkko Nikula wrote:
-> On 10/24/2014 10:22 AM, Jarkko Nikula wrote:
-> > Hi Liam
-> >
-> > On 10/22/2014 02:02 AM, Mark Brown wrote:
-> >> On Mon, Oct 20, 2014 at 03:06:46PM +0100, Liam Girdwood wrote:
-> >>> Current block allocation is tied to block type and requestor type. 
-> >>> Make the
-> >>> allocation more generic by removing the struct module parameter and 
-> >>> adding
-> >>> a generic block allocator structure. Also pass in the list that the 
-> >>> blocks
-> >>> have to be added too in order to remove dependence on block 
-> >>> requestor type.
-> >> I'm having trouble apply this - patch 1 manages to apply with some fuzz
-> >> but patch 5 is failing.  Probably needs refreshing against Vinod's
-> >> recent changes?  I applied everything up to patch 4 (ASoC: Intel: Add
-> >> runtime module support).
-> >
-> > For me sound.git for-next head a929d726a507 don't build anymore. I 
-> > have to revert all your four recent patches cd51c82524ff -4. I guess 
-> > some patch order or dependency issue since the first patch doesn't 
-> > build when applied to topic/intel?
-> >
-> Ah, nevermind. Mark was dropped these already. I was building at my 
-> local copy of for-next branch before patches were dropped.
-> 
+Hi Kuninori,
 
-Yeah, it looks like it was out of sync with Vinod's latest patches so
-I'll resend today now that I'm back from holidays.
+Thanks for your reply.
 
-Liam 
+On Mon, Oct 27, 2014 at 3:56 AM, Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
+> Current simple-card already has mclk_fs support on hw_param.
+
+Thought some more about it, indeed I can change my I2S master driver to just use
+constant factor to derive MCLK frequency from the requested sample rate.
+
+> So, we can add similar method ?
+> Below is my idea. priv->xxx is new option here.
+
+Hardcoding it seemed a bit awkward to me as well as providing full lookup table
+to map sample rate to MCLK frequency in the device tree. So I'll stick with the
+mclk_fs feature for now.
+
+> Or you can update mclk_fs feature somehow ?
+
+-- 
+Thanks.
+-- Max
