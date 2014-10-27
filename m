@@ -1,63 +1,51 @@
-From: Shuah Khan <shuahkh@osg.samsung.com>
-Subject: Re: [alsa-devel] [PATCH v2 5/6] sound/usb: pcm changes to use media
- token api
-Date: Mon, 27 Oct 2014 09:47:25 -0600
-Message-ID: <544E690D.1030506@osg.samsung.com>
-References: <cover.1413246370.git.shuahkh@osg.samsung.com> <cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com> <543FB374.8020604@metafoo.de> <543FC3CD.8050805@osg.samsung.com> <s5h38aow1ub.wl-tiwai@suse.de> <543FD1EC.5010206@osg.samsung.com> <s5hy4sgumjo.wl-tiwai@suse.de> <543FD892.6010209@osg.samsung.com> <s5htx34ul3w.wl-tiwai@suse.de> <54467EFB.7050800@xs4all.nl> <s5hbnp5z9uy.wl-tiwai@suse.de> <5446989A.3010000@osg.samsung.com> <20141025085742.43e20bb5.m.chehab@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl-asoc-card: Don't bypass settings if cpu-dai is
+ Master
+Date: Mon, 27 Oct 2014 17:30:31 +0000
+Message-ID: <20141027173031.GA18557@sirena.org.uk>
+References: <cover.1414193668.git.nicoleotsuka@gmail.com>
+ <1414194502-14052-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ds9maZbwT7uk2FVi"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141025085742.43e20bb5.m.chehab@samsung.com>
+Content-Disposition: inline
+In-Reply-To: <1414194502-14052-1-git-send-email-nicoleotsuka@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <m.chehab@samsung.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Hans Verkuil <hverkuil@xs4all.nl>, Lars-Peter Clausen <lars@metafoo.de>, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, ramakrmu@cisco.com, sakari.ailus@linux.intel.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-media@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: b02247@freescale.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 10/25/2014 04:57 AM, Mauro Carvalho Chehab wrote:
-> Hi,
-> 
-> Sorry to enter into this thread so late. Last week was a full week, due to the
-> 4 conferences I paticiapated, and last week I needed to fill lots of trip
-> reports. Also, I have another trip to give two speeches.
-> 
-> Em Tue, 21 Oct 2014 11:32:10 -0600
-> Shuah Khan <shuahkh@osg.samsung.com> escreveu:
-> 
->> Here is what I propose for patch v3:
->> - make it a module under media
->> - collapse tuner and audio tokens into media token
-> 
-> I'm a little skeptical about this. Merging tuner and audio tokens seems
-> weird on my eyes, as there are actually two different hardware resources
-> we need to lock, and we may be locking them on different places.
 
-I think the suggestion for collapsing came about because, in this
-patch series, the dvb and v4l use-cases are such that tuner and
-audio need to be held together. i.e when tuner is held, audio is
-held as well. With an intent to simplify the usage, I decided to
-have get_tuner interface to return audio token. It does simplify
-the logic for callers - all the paces that get tuner will also
-need to make a call to get audio and handle errors when audio is
-not available. That made it even more confusing perhaps and raised
-the question that "why can't we collapse".
+--ds9maZbwT7uk2FVi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Having two tokens will allow the ability hold them independently.
-Maybe the right approach for patch v3 is don't collapse, but
-change dvb and v4l to get tuner followed by audio and handle the
-errors paths themselves.
+On Fri, Oct 24, 2014 at 04:48:11PM -0700, Nicolin Chen wrote:
+> When cpu-dai is the DAI Master (CBM_CFx), it may need some configurations,
+> set_sysclk() call for eample, for cpu-dai side in the hw_params(), even if
+> the set_bias_level() has already taken care of the codec-dai side.
+>=20
+> So this patch just simply adds an additional condition.
 
-> 
->> - change names (get rid of abbreviated tkn stuff)
->> - Make other changes Takashi/Lars pointed out in pcm
->> - hold token in pcm open/close
-> 
+This was threaded with another patch series - did you intend to submit
+this or did it get sent by accident?
 
--- Shuah
+--ds9maZbwT7uk2FVi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
--- 
-Shuah Khan
-Sr. Linux Kernel Developer
-Samsung Research America (Silicon Valley)
-shuahkh@osg.samsung.com | (970) 217-8978
+iQEcBAEBAgAGBQJUToE2AAoJECTWi3JdVIfQTYkH/1COldDWplbfTUcsM/7aE54g
+Z62JNqf6aaYMuFKyDAPXuXW6IC/KsSGLvj7eR1vT1sf4NUZSQ5qGf9LdJ4CCM//p
+W/jVvoYIYSLT/erZw/t/r1QgPkmC/Vt2VdmzwqvM7cIafq5/M6drIoGru8fv4wE8
+luR4Aq6Y+gqsVE8c9u6CMAumsXushHQUcDBgd0QoYVIGhuATLpV+PRVfUer9bWWg
+vBjsU3KNaOU9CLOsa3tUTNoFLSSyOlUK6lcueySAkGpyvMyZ6kzhAszMDiz2m8/F
+p58A6YUOX+SteJGXW2dc1sZW1a4sP0PIyM9xrCHJJRsBtRJtgC0bz/6NXB+EcBo=
+=Ykv5
+-----END PGP SIGNATURE-----
+
+--ds9maZbwT7uk2FVi--
