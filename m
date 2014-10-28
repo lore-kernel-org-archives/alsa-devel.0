@@ -1,41 +1,69 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 00/15] new locomo driver
-Date: Tue, 28 Oct 2014 00:13:39 +0000
-Message-ID: <20141028001338.GZ27405@n2100.arm.linux.org.uk>
-References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_asrc: Add reg_defaults for regmap to fix
+ kernel dump
+Date: Tue, 28 Oct 2014 00:19:04 +0000
+Message-ID: <20141028001904.GH18557@sirena.org.uk>
+References: <1414202637-18929-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-gpio-owner@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Zlo2GrDIozf6aQFY"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, Greg KH <greg@kroah.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, linux-input@vger.kernel.org, linux-leds@vger.kernel.org, linux-spi@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Andrea Adami <andrea.adami@gmail.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo Han <jg1.han@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <1414202637-18929-1-git-send-email-nicoleotsuka@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 28, 2014 at 03:01:53AM +0300, Dmitry Eremin-Solenikov wrote:
-> Sharp Zaurus SL-5500 and SL-5600 use special companion Gate Array. Current
-> drivers present in Linux kernel has some problems:
-> 
->  * It uses custom bus instead of platform bus/mfd core.
 
-I believe Greg wouldn't see that as a positive point.
+--Zlo2GrDIozf6aQFY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Don't think that the platform bus _should_ always be used.  It shouldn't
-(Greg has said he'd like to see the platform bus to be totally killed off.)
-Instead, custom buses properly suited to the class of device in question
-is much preferred, especially if it aids in...
+On Fri, Oct 24, 2014 at 07:03:57PM -0700, Nicolin Chen wrote:
+> Kernel dump (WARN_ON) ocurred during system boot-up inside regmap_write():
+>=20
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 47 at kernel/locking/lockdep.c:2744 lockdep_trace_al=
+loc+0xe8/0x108()
 
->  * Device drivers are not well layered/separated.
+Applied, thanks.  Please edit down or elide backtraces - they take up a
+lot of space in the changelog compared to the amount of information they
+contain.
 
-... better layering or separation of drivers.
+> By looking at 2744 line, we can get that it's because regcache_rbtree_wri=
+te()
+> would call kmalloc() with GFP flag if it couldn't find an existing block =
+to
+> insert nodes while this kmalloc() call is inside a spin_lock_irq_save pai=
+r,
+> i.e. IRQs disabled.
 
-So, thinking that converting from a custom bus to a platform bus
-definitely is /not/ a positive step forward.
+> Even though this may be a bug that should be fixed, I still try to send t=
+his
+> patch as a quick fix (work around) since it does no harm to assign default
+> values of every registers when using regcache.
 
-(Why mfd was ever allowed to re-use the platform bus stuff is a separate
-question not relevent to these patches.)
+It's not a bug, it's not reasonable to default allocations to atomic and
+we can't really tell what context we're in.  Anything used inside a
+heavily locked path should either have a default provided or arrange for
+a prior write to set up the cache.
 
--- 
-FTTC broadband for 0.8mile line: currently at 9.5Mbps down 400kbps up
-according to speedtest.net.
+--Zlo2GrDIozf6aQFY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUTuD4AAoJECTWi3JdVIfQJEIH/iDOZISkXC669AIXlfD4zREZ
+FlbJ3Nui/RiIAQUYLjFmOPphMH+SwzJyX4GMl99i73c9koKnlp8CxDxXsbUEap0z
+/iVwhUrTgteuZl6rK+z+R1gn0Jt+m/kqgl3d5RfAfKSNSp6yfvqhyHXKfKxe9FLR
+R8jRyZ3jQDBYh4ua1g5Dxx+eoxK5KucUma0sLXGAwEHPNS9KsZbsajnFs/r6QjAW
+4IAkK0XhTrpW1630Hi/n7xlA4q8R+U8Mm2HTzOKqXJBQYy+gUtQdQ93NbuXIFfFa
+/9GV3B8KFPsStNOc9xSlWl2LNTrc5mT5mh7xwSJelpWyWZ+rPDlU4RLtsZXiCIY=
+=5gSx
+-----END PGP SIGNATURE-----
+
+--Zlo2GrDIozf6aQFY--
