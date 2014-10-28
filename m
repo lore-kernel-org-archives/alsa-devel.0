@@ -1,88 +1,166 @@
 From: Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>
-Subject: [PATCH v2] sound: pci: pcxhr: convert timeval to ktime_t
-Date: Tue, 28 Oct 2014 14:27:44 +0200
-Message-ID: <20141028122744.GA3772@localhost.localdomain>
+Subject: Re: [PATCH] sound: pci: pcxhr: convert timeval to ktime_t
+Date: Tue, 28 Oct 2014 14:35:11 +0200
+Message-ID: <20141028123511.GA3719@localhost.localdomain>
+References: <20141028112955.GA2365@localhost.localdomain>
+ <s5hsii88kw0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <s5hsii88kw0.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.de, bhelgaas@google.com, benoit.taine@lip6.fr
-Cc: arnd@arndb.de, opw-kernel@googlegroups.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, bhelgaas@google.com, benoit.taine@lip6.fr, arnd@arndb.de, opw-kernel@googlegroups.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch is concerned with migrating the time variables in the pcxhr
-module found in the sound driver. The changes are concerend with the
-y2038 problem where timeval will overflow in the year 2038. ktime_t
-was used instead of timeval to get the wall time. The difference
-is displayed now in nanoseconds instead of microseconds.
+On Tue, Oct 28, 2014 at 12:59:59PM +0100, Takashi Iwai wrote:
+> At Tue, 28 Oct 2014 13:29:56 +0200,
+> Aya Mahfouz wrote:
+> >=20
+> > This patch is concerned with migrating the time variables in the pc=
+xhr
+> > module found in the sound driver. The changes are concerend with th=
+e
+> > y2038 problem where timeval will overflow in the year 2038. ktime_t
+> > was used instead of timeval to get the wall time. The difference
+> > is displayed now in nanoseconds instead of microseconds.
+> >=20
+> > Signed-off-by: Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>
+> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+>=20
+> It gets compile errors like below.  Please submit a patch at least
+> after build testing.
+>
 
-Signed-off-by: Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: changed variables names to avoid redeclaration conflicts.
+I do actually compile all my patches before submitting them. Since
+the change is minor I use make M=3Dsound/pci. My second patch is based
+on your compile errors. Kindly let me know how do you compile the
+patch to avoid breaking your system in the future.
+=20
+> thanks,
+>=20
+> Takashi
+>=20
 
- sound/pci/pcxhr/pcxhr.c      | 10 ++++++----
- sound/pci/pcxhr/pcxhr_core.c | 10 ++++++----
- 2 files changed, 12 insertions(+), 8 deletions(-)
+Kind Regards,
+Aya Saif El-yazal Mahfouz
 
-diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
-index b854fc5..7c33c97 100644
---- a/sound/pci/pcxhr/pcxhr.c
-+++ b/sound/pci/pcxhr/pcxhr.c
-@@ -711,8 +711,9 @@ static void pcxhr_start_linked_stream(struct pcxhr_mgr *mgr)
- 	int playback_mask = 0;
- 
- #ifdef CONFIG_SND_DEBUG_VERBOSE
--	struct timeval my_tv1, my_tv2;
--	do_gettimeofday(&my_tv1);
-+	ktime_t start_time, stop_time, diff_time;
-+
-+	start_time = ktime_get();
- #endif
- 	mutex_lock(&mgr->setup_mutex);
- 
-@@ -823,9 +824,10 @@ static void pcxhr_start_linked_stream(struct pcxhr_mgr *mgr)
- 	mutex_unlock(&mgr->setup_mutex);
- 
- #ifdef CONFIG_SND_DEBUG_VERBOSE
--	do_gettimeofday(&my_tv2);
-+	stop_time = ktime_get();
-+	diff_time = ktime_sub(stop_time, start_time);
- 	dev_dbg(&mgr->pci->dev, "***TRIGGER START*** TIME = %ld (err = %x)\n",
--		    (long)(my_tv2.tv_usec - my_tv1.tv_usec), err);
-+		    (long)(ktime_to_ns(diff_time)), err);
- #endif
- }
- 
-diff --git a/sound/pci/pcxhr/pcxhr_core.c b/sound/pci/pcxhr/pcxhr_core.c
-index a584acb..181f772 100644
---- a/sound/pci/pcxhr/pcxhr_core.c
-+++ b/sound/pci/pcxhr/pcxhr_core.c
-@@ -910,8 +910,9 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr, int playback_mask,
- 	int audio_mask;
- 
- #ifdef CONFIG_SND_DEBUG_VERBOSE
--	struct timeval my_tv1, my_tv2;
--	do_gettimeofday(&my_tv1);
-+	ktime_t start_time, stop_time, diff_time;
-+
-+	start_time = ktime_get();
- #endif
- 	audio_mask = (playback_mask |
- 		      (capture_mask << PCXHR_PIPE_STATE_CAPTURE_OFFSET));
-@@ -960,9 +961,10 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr, int playback_mask,
- 			return err;
- 	}
- #ifdef CONFIG_SND_DEBUG_VERBOSE
--	do_gettimeofday(&my_tv2);
-+	stop_time = ktime_get();
-+	diff_time = ktime_sub(stop_time, start_time);
- 	dev_dbg(&mgr->pci->dev, "***SET PIPE STATE*** TIME = %ld (err = %x)\n",
--		    (long)(my_tv2.tv_usec - my_tv1.tv_usec), err);
-+			(long)(ktime_to_ns(diff_time)), err);
- #endif
- 	return 0;
- }
--- 
-1.9.3
+> =3D=3D=3D
+>=20
+> sound/pci/pcxhr/pcxhr_core.c: In function =E2=80=98pcxhr_set_pipe_sta=
+te=E2=80=99:
+> sound/pci/pcxhr/pcxhr_core.c:913:10: error: =E2=80=98start=E2=80=99 r=
+edeclared as different kind of symbol
+>   ktime_t start, stop, diff;
+>           ^
+> sound/pci/pcxhr/pcxhr_core.c:907:27: note: previous definition of =E2=
+=80=98start=E2=80=99 was here
+>      int capture_mask, int start)
+>                            ^
+> In file included from include/linux/printk.h:260:0,
+>                  from include/linux/kernel.h:13,
+>                  from include/linux/delay.h:10,
+>                  from sound/pci/pcxhr/pcxhr_core.c:23:
+> sound/pci/pcxhr/pcxhr_core.c:923:13: error: used union type value whe=
+re scalar is required
+>        start ? "START" : "STOP", audio_mask, state);
+>              ^
+> include/linux/dynamic_debug.h:87:9: note: in definition of macro =E2=80=
+=98dynamic_dev_dbg=E2=80=99
+>        ##__VA_ARGS__);  \
+>          ^
+> sound/pci/pcxhr/pcxhr_core.c:921:2: note: in expansion of macro =E2=80=
+=98dev_dbg=E2=80=99
+>   dev_dbg(&mgr->pci->dev,
+>   ^
+> sound/pci/pcxhr/pcxhr_core.c:924:6: error: used union type value wher=
+e scalar is required
+>   if (start) {
+>       ^
+> sound/pci/pcxhr/pcxhr_core.c:950:38: error: used union type value whe=
+re scalar is required
+>    if ((state & audio_mask) =3D=3D (start ? audio_mask : 0))
+>                                       ^
+> sound/pci/pcxhr/pcxhr_core.c:958:6: error: wrong type argument to una=
+ry exclamation mark
+>   if (!start) {
+>       ^
+> scripts/Makefile.build:257: recipe for target 'sound/pci/pcxhr/pcxhr_=
+core.o' failed
+>=20
+>=20
+> > ---
+> >  sound/pci/pcxhr/pcxhr.c      | 10 ++++++----
+> >  sound/pci/pcxhr/pcxhr_core.c | 10 ++++++----
+> >  2 files changed, 12 insertions(+), 8 deletions(-)
+> >=20
+> > diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
+> > index b854fc5..3f4607c 100644
+> > --- a/sound/pci/pcxhr/pcxhr.c
+> > +++ b/sound/pci/pcxhr/pcxhr.c
+> > @@ -711,8 +711,9 @@ static void pcxhr_start_linked_stream(struct pc=
+xhr_mgr *mgr)
+> >  	int playback_mask =3D 0;
+> > =20
+> >  #ifdef CONFIG_SND_DEBUG_VERBOSE
+> > -	struct timeval my_tv1, my_tv2;
+> > -	do_gettimeofday(&my_tv1);
+> > +	ktime_t start, stop, diff;
+> > +
+> > +	start =3D ktime_get();
+> >  #endif
+> >  	mutex_lock(&mgr->setup_mutex);
+> > =20
+> > @@ -823,9 +824,10 @@ static void pcxhr_start_linked_stream(struct p=
+cxhr_mgr *mgr)
+> >  	mutex_unlock(&mgr->setup_mutex);
+> > =20
+> >  #ifdef CONFIG_SND_DEBUG_VERBOSE
+> > -	do_gettimeofday(&my_tv2);
+> > +	stop =3D ktime_get();
+> > +	diff =3D ktime_sub(stop, start);
+> >  	dev_dbg(&mgr->pci->dev, "***TRIGGER START*** TIME =3D %ld (err =3D=
+ %x)\n",
+> > -		    (long)(my_tv2.tv_usec - my_tv1.tv_usec), err);
+> > +			(long)(ktime_to_ns(diff)), err);
+> >  #endif
+> >  }
+> > =20
+> > diff --git a/sound/pci/pcxhr/pcxhr_core.c b/sound/pci/pcxhr/pcxhr_c=
+ore.c
+> > index a584acb..be3c003 100644
+> > --- a/sound/pci/pcxhr/pcxhr_core.c
+> > +++ b/sound/pci/pcxhr/pcxhr_core.c
+> > @@ -910,8 +910,9 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr,=
+ int playback_mask,
+> >  	int audio_mask;
+> > =20
+> >  #ifdef CONFIG_SND_DEBUG_VERBOSE
+> > -	struct timeval my_tv1, my_tv2;
+> > -	do_gettimeofday(&my_tv1);
+> > +	ktime_t start, stop, diff;
+> > +
+> > +	start =3D ktime_get();
+> >  #endif
+> >  	audio_mask =3D (playback_mask |
+> >  		      (capture_mask << PCXHR_PIPE_STATE_CAPTURE_OFFSET));
+> > @@ -960,9 +961,10 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr=
+, int playback_mask,
+> >  			return err;
+> >  	}
+> >  #ifdef CONFIG_SND_DEBUG_VERBOSE
+> > -	do_gettimeofday(&my_tv2);
+> > +	stop =3D ktime_get();
+> > +	diff =3D ktime_sub(stop, start);
+> >  	dev_dbg(&mgr->pci->dev, "***SET PIPE STATE*** TIME =3D %ld (err =3D=
+ %x)\n",
+> > -		    (long)(my_tv2.tv_usec - my_tv1.tv_usec), err);
+> > +			(long)(ktime_to_ns(diff)), err);
+> >  #endif
+> >  	return 0;
+> >  }
+> > --=20
+> > 1.9.3
+> >=20
