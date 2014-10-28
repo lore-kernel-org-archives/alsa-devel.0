@@ -1,50 +1,38 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_asrc: Add reg_defaults for regmap to fix
- kernel dump
-Date: Tue, 28 Oct 2014 09:37:34 -0700
-Message-ID: <20141028163733.GA6480@Asurada>
-References: <1414202637-18929-1-git-send-email-nicoleotsuka@gmail.com>
- <20141028001904.GH18557@sirena.org.uk>
- <20141028042603.GA5548@Asurada>
- <20141028104742.GP18557@sirena.org.uk>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: add xtensa xtfpga I2S interface and
+ platform
+Date: Tue, 28 Oct 2014 17:39:13 +0100
+Message-ID: <544FC6B1.1060002@metafoo.de>
+References: <1414436825-19416-1-git-send-email-jcmvbkbc@gmail.com> <544FBD20.5000604@metafoo.de> <20141028160414.GY18557@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20141028104742.GP18557@sirena.org.uk>
+In-Reply-To: <20141028160414.GY18557@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
+Cc: Max Filippov <jcmvbkbc@gmail.com>, alsa-devel@alsa-project.org, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, linux-xtensa@linux-xtensa.org, Takashi Iwai <tiwai@suse.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, Grant Likely <grant.likely@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 28, 2014 at 10:47:42AM +0000, Mark Brown wrote:
-> On Mon, Oct 27, 2014 at 09:26:26PM -0700, Nicolin Chen wrote:
-> > On Tue, Oct 28, 2014 at 12:19:04AM +0000, Mark Brown wrote:
-> 
-> > > It's not a bug, it's not reasonable to default allocations to atomic and
-> > > we can't really tell what context we're in.  Anything used inside a
-> > > heavily locked path should either have a default provided or arrange for
-> > > a prior write to set up the cache.
-> 
-> > I've a little trouble to understand the prior write over here. Inside my
-> > probe() there's a register_init() call which has a set of regmap_write().
-> > And then the first regmap_write() results the dump. Does that mean this
-> > regmap_write() isn't prior write? If so, how should I do if not setting
-> 
-> Oh, bother.  We fixed things so that we're now always running with the
-> spinlock held...  never mind.
+On 10/28/2014 05:04 PM, Mark Brown wrote:
+> On Tue, Oct 28, 2014 at 04:58:24PM +0100, Lars-Peter Clausen wrote:
+>> On 10/27/2014 08:07 PM, Max Filippov wrote:
+>
+>>> +	if (tx_active) {
+>>> +		if (i2s->tx_fifo_high < 256)
+>>> +			xtfpga_i2s_refill_fifo(i2s);
+>>> +		else
+>>> +			tasklet_hi_schedule(&i2s->refill_fifo);
+>
+>> Maybe use threaded IRQs instead of IRQ + tasklet.
+>
+> Is that going to play nicely with the fact that the interrupt can be
+> shared and the desire to (AFAICT) do NAPI style stuff with the interrupt
+> disabled for long periods?
+>
 
-Okay...so only one choice left.
+Threaded interrupts got support for interrupt sharing a while ago, so I 
+guess yes. I think it will even work better than the tasklet approach. You 
+can configure the IRQ to disable itself as long as the thread is running.
 
-> > default values here -- Some IPs may have default value 0 for registers.
-> > And this would make reg_defaults tedious since there's nothing special
-> > to assign.
-> 
-> Write a small script then, or a little bit of code to create the
-> defaults dynamically.
-
-It actually doesn't bother me at all. I just thought there might be
-a simpler way. :)
-
-Thank you
-Nicolin
+- Lars
