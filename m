@@ -1,51 +1,45 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: jack: Fix kerneldoc comments
-Date: Tue, 28 Oct 2014 15:45:45 +0100
-Message-ID: <1414507545-13362-2-git-send-email-tiwai@suse.de>
-References: <1414507545-13362-1-git-send-email-tiwai@suse.de>
+From: Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
+Subject: Re: [PATCH 03/11] drivers: char: add AXD Audio Processing IP driver
+Date: Tue, 28 Oct 2014 22:50:22 +0800
+Message-ID: <20141028145022.GA19843@kroah.com>
+References: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com>
+ <1414495589-8579-4-git-send-email-qais.yousef@imgtec.com>
+ <20141028141038.GA18384@kroah.com>
+ <544FA9F7.1020101@imgtec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DA2C3260320
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 15:45:46 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 9C978AC0F
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 14:45:46 +0000 (UTC)
-In-Reply-To: <1414507545-13362-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <544FA9F7.1020101-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Qais Yousef <qais.yousef-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/jack.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+On Tue, Oct 28, 2014 at 02:36:39PM +0000, Qais Yousef wrote:
+> On 10/28/2014 02:10 PM, Greg Kroah-Hartman wrote:
+> >On Tue, Oct 28, 2014 at 11:26:21AM +0000, Qais Yousef wrote:
+> >>AXD is Audio Processing IP by Imagination Technologies that can
+> >>perform decoding, encoding, equalisation, resampling, mixing,
+> >>synchronisation and audio playback.
+> >Isn't that a codec?  Why is this a "char" driver and not one that fits
+> >into our existing audio subsystem?
+> 
+> As far as I understand it doesn't fit into current alsa framework because of
+> a number of unsupported features that we need. Specifically the range of
+> compressed decoders we support and their configurations and encoding. I
+> might have gotten it wrong though so I'll wait to see what alsa people say.
 
-diff --git a/include/sound/jack.h b/include/sound/jack.h
-index 58916573db58..37e612e77410 100644
---- a/include/sound/jack.h
-+++ b/include/sound/jack.h
-@@ -28,8 +28,9 @@
- struct input_dev;
- 
- /**
-- * Jack types which can be reported.  These values are used as a
-- * bitmask.
-+ * enum snd_jack_types: Jack types which can be reported
-+ *
-+ * These values are used as a bitmask.
-  *
-  * Note that this must be kept in sync with the lookup table in
-  * sound/core/jack.c.
--- 
-2.1.2
+Then add the new features you need and everyone benefits.
+
+Please work with the alsa developers on this, I will not accept anything
+until they say there is no way this will work, and they bless a custom
+one-off interface like this.
+
+thanks,
+
+greg k-h
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
