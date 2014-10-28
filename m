@@ -1,15 +1,12 @@
-From: Daniel Silverstone <dsilvers@digital-scurf.org>
-Subject: Issue with hda_intel on i7+Z97 chipset
-Date: Tue, 28 Oct 2014 20:57:25 +0000
-Message-ID: <20141028205725.GA3839@somnambulist.local>
+From: Lukas Bossard <mr.bobukas@gmail.com>
+Subject: [PATCH - hda 1/1] Add ultra dock support for Thinkpad
+	X240.
+Date: Tue, 28 Oct 2014 22:15:02 +0100
+Message-ID: <1414530902-5030-1-git-send-email-mr.bobukas@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bagpuss.pepperfish.net (bagpuss.pepperfish.net [148.251.8.16])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A7CC265733
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 21:57:28 +0100 (CET)
-Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,98 +16,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Lukas Bossard <mr.bobukas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Adding ultra doch support for Lenovo Thinkpad X240
+(17aa:2214). In the same process also rename
+ALC292_FIXUP_TPT440_DOCK to a more generic
+ALC292_FIXUP_LENOVO_ULTRA_DOCK
 
-Firstly, I hope this is a suitable way to report this issue.  I am using
-Debian/Wheezy on a reasonably recent i7 based system which has a Z97
-motherboard chipset.
+Signed-off-by: Lukas Bossard <mr.bobukas@gmail.com>
 
-In Windows, sound is perfect, but in Linux it's very crackly (direct through
-alsa) and if I bring pulseaudio into the mix then it reports buffer/interrupt
-issues on the microphone along the lines of:
-
-Oct 19 16:03:33 listless pulseaudio[3780]: [alsa-source] alsa-source.c: ALSA woke us up to read new data from the device, but there was actually nothing to read!
-Oct 19 16:03:33 listless pulseaudio[3780]: [alsa-source] alsa-source.c: Most likely this is a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to the ALSA developers.
-Oct 19 16:03:33 listless pulseaudio[3780]: [alsa-source] alsa-source.c: We were woken up with POLLIN set -- however a subsequent snd_pcm_avail() returned 0 or another value < min_avail.
-
-Similar messages are shown for issues with playback:
-
-user.log.2.gz:Oct 18 21:50:25 listless pulseaudio[3780]: [alsa-sink] alsa-sink.c: ALSA woke us up to write new data to the device, but there was actually nothing to write!
-user.log.2.gz:Oct 18 21:50:25 listless pulseaudio[3780]: [alsa-sink] alsa-sink.c: Most likely this is a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to the ALSA developers.
-user.log.2.gz:Oct 18 21:50:25 listless pulseaudio[3780]: [alsa-sink] alsa-sink.c: We were woken up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or another value < min_avail.
-
-In both cases, sound exhibts crackles, pops, crunches, stalls, repeats etc.
-
-I can mitigate the issue by working one or more of the CPU cores hard with
-bzip2 -c </dev/urandom > /dev/null
-
-Of course, this makes my system fans run harder etc, which is a bit of a pain
-for me, and it's only masking the issue, not solving it.
-
-For reference, my motherboard's dmi shows:
-        Manufacturer: Gigabyte Technology Co., Ltd.
-        Product Name: Z97-D3H-CF
-And the CPU reports as:
-        Family: Core i7
-        Manufacturer: Intel
-        ID: C3 06 03 00 FF FB EB BF
-        Signature: Type 0, Family 6, Model 60, Stepping 3
-        Version: Intel(R) Core(TM) i7-4790K CPU @ 4.00GHz
-
-The relevant PCI devices are:
-
-00:03.0 0403: 8086:0c0c (rev 06)
-	Subsystem: 8086:2010
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Latency: 0, Cache Line Size: 64 bytes
-	Interrupt: pin A routed to IRQ 51
-	Region 0: Memory at f7834000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: <access denied>
-	Kernel driver in use: snd_hda_intel
-
-and
-
-00:1b.0 0403: 8086:8ca0
-	Subsystem: 1458:a182
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Latency: 0, Cache Line Size: 64 bytes
-	Interrupt: pin A routed to IRQ 50
-	Region 0: Memory at f7830000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: <access denied>
-	Kernel driver in use: snd_hda_intel
-
-and it's possible that this kernel message is relevant:
-
-[   17.248493] hda-intel: IRQ timing workaround is activated for card #1. Suggest a bigger bdl_pos_adj.
-[   17.251735] hda-intel: Invalid position buffer, using LPIB read method instead.
-
-I have tried a number of bdl_pos_adj between 1 and 32 and I have tried
-enable_msi=1
-
-Neither seem to have helped significantly.
-
-I am currently running 3.12-0.bpo.1-amd64 from Debian's wheezy-backports
-repository.  Unfortunately anything newer seems to lock up during boot and I've
-not managed to track down what or why as yet.
-
-I was hoping that you may have some idea of what is going on and either some
-suggestions for improving my situation on 3.12 or else some desire for further
-debug data such that a newer kernel (once I can persuade one to boot) may
-perform better for me.
-
-Please let me know if you require further details from me in order to address
-this.
-
-Regards,
-
-Daniel.
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 34b7bdb..693f083 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4212,7 +4212,7 @@ enum {
+ 	ALC255_FIXUP_HEADSET_MODE,
+ 	ALC255_FIXUP_HEADSET_MODE_NO_HP_MIC,
+ 	ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
+-	ALC292_FIXUP_TPT440_DOCK,
++	ALC292_FIXUP_LENOVO_ULTRA_DOCK,
+ 	ALC283_FIXUP_BXBT2807_MIC,
+ 	ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED,
+ 	ALC282_FIXUP_ASPIRE_V5_PINS,
+@@ -4640,7 +4640,7 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE
+ 	},
+-	[ALC292_FIXUP_TPT440_DOCK] = {
++	[ALC292_FIXUP_LENOVO_ULTRA_DOCK] = {
+ 		.type = HDA_FIXUP_PINS,
+ 		.v.pins = (const struct hda_pintbl[]) {
+ 			{ 0x16, 0x21211010 }, /* dock headphone */
+@@ -4799,16 +4799,17 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
+-	SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad T440s", ALC292_FIXUP_TPT440_DOCK),
+-	SND_PCI_QUIRK(0x17aa, 0x220e, "Thinkpad T440p", ALC292_FIXUP_TPT440_DOCK),
+-	SND_PCI_QUIRK(0x17aa, 0x2210, "Thinkpad T540p", ALC292_FIXUP_TPT440_DOCK),
+-	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad T440", ALC292_FIXUP_TPT440_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad X240", ALC292_FIXUP_LENOVO_ULTRA_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x2212, "Thinkpad T440", ALC292_FIXUP_LENOVO_ULTRA_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x220c, "Thinkpad T440s", ALC292_FIXUP_LENOVO_ULTRA_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x220e, "Thinkpad T440p", ALC292_FIXUP_LENOVO_ULTRA_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x2210, "Thinkpad T540p", ALC292_FIXUP_LENOVO_ULTRA_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x2214, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x2215, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x3978, "IdeaPad Y410P", ALC269_FIXUP_NO_SHUTUP),
+ 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x501a, "Thinkpad", ALC283_FIXUP_INT_MIC),
+-	SND_PCI_QUIRK(0x17aa, 0x501e, "Thinkpad L440", ALC292_FIXUP_TPT440_DOCK),
++	SND_PCI_QUIRK(0x17aa, 0x501e, "Thinkpad L440", ALC292_FIXUP_LENOVO_ULTRA_DOCK),
+ 	SND_PCI_QUIRK(0x17aa, 0x5026, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
+@@ -4887,7 +4888,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC269_FIXUP_DELL2_MIC_NO_PRESENCE, .name = "dell-headset-dock"},
+ 	{.id = ALC283_FIXUP_CHROME_BOOK, .name = "alc283-dac-wcaps"},
+ 	{.id = ALC283_FIXUP_SENSE_COMBO_JACK, .name = "alc283-sense-combo"},
+-	{.id = ALC292_FIXUP_TPT440_DOCK, .name = "tpt440-dock"},
++	{.id = ALC292_FIXUP_LENOVO_ULTRA_DOCK, .name = "lenovo-ultra-dock"},
+ 	{}
+ };
+ 
 -- 
-Daniel Silverstone                         http://www.digital-scurf.org/
-PGP mail accepted and encouraged.            Key Id: 3CCE BABE 206C 3B69
+2.1.0
