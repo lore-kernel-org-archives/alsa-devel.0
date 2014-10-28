@@ -1,107 +1,115 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: add xtensa xtfpga I2S interface and platform
-Date: Tue, 28 Oct 2014 21:34:26 +0000
-Message-ID: <20141028213426.GE18557@sirena.org.uk>
-References: <1414436825-19416-1-git-send-email-jcmvbkbc@gmail.com>
- <20141027193229.GE18557@sirena.org.uk>
- <CAMo8Bf+Z9V8mkiC3JOupPQmi1EJUDKrb1qcNncDbsEbhjigbww@mail.gmail.com>
- <20141028154224.GX18557@sirena.org.uk>
- <CAMo8BfLpJ0bdmaFt9+gLQ_kEjB68XdjAJUw8f8s=Owv46h_yDQ@mail.gmail.com>
- <20141028173853.GD18557@sirena.org.uk>
- <CAMo8BfL+vW7BjC1bQPNjhuBMTcRTkf8_DDS3NO2HmBUnfHYAFQ@mail.gmail.com>
+From: Geoffrey McRae <geoff@spacevs.com>
+Subject: Re: [PATCH 1/2] ALSA: hda - Fix probing and stuttering
+ on CMI8888 HD-audio controller
+Date: Wed, 29 Oct 2014 07:21:24 +1100
+Message-ID: <20141029072124.2cc32661@sarah.home.spacevs.com>
+References: <1407328755-1021-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="o1Pxsi7EGdPPGBHz"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMo8BfL+vW7BjC1bQPNjhuBMTcRTkf8_DDS3NO2HmBUnfHYAFQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Max Filippov <jcmvbkbc@gmail.com>
-Cc: alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Grant Likely <grant.likely@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.spacevs.com (mail1.spacevs.com [202.174.111.252])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF4CE266679
+ for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 21:21:29 +0100 (CET)
+Received: from localhost (mail1.spacevs.com [127.0.0.1])
+ by mail1.spacevs.com (Postfix) with ESMTP id A7C1D281F8
+ for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 07:21:26 +1100 (EST)
+Received: from mail1.spacevs.com ([127.0.0.1])
+ by localhost (mail1.spacevs.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id o-HS_RRVD-qj for <alsa-devel@alsa-project.org>;
+ Wed, 29 Oct 2014 07:21:26 +1100 (EST)
+Received: from sarah.home.spacevs.com (122-149-209-199.static.dsl.dodo.com.au
+ [122.149.209.199])
+ by mail1.spacevs.com (Postfix) with ESMTPSA id 28DB070056
+ for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 07:21:26 +1100 (EST)
+In-Reply-To: <1407328755-1021-1-git-send-email-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I can confirm that disable of MSI is required as even Windows 7
+64bit does not enable this for Intel HDA. Out of curiosity I altered
+the driver to use MSI-X with the same results, interrupts are never
+received even though the PCI caps state that MSI is supported.
 
---o1Pxsi7EGdPPGBHz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Playback is very poor and stutters if I do not allow snoop by
+commenting out "case AZX_DRIVER_CMEDIA:" in azx_check_snoop_available.
 
-On Tue, Oct 28, 2014 at 09:11:34PM +0300, Max Filippov wrote:
-> On Tue, Oct 28, 2014 at 8:38 PM, Mark Brown <broonie@kernel.org> wrote:
+I can also confirm that AZX_DCAPS_POSFIX_LPIB is required on my
+hardware also.
 
-> > You *really* need to explain how it's supposed to work - right now it's
-> > not at all obvious, like I say the fact that this is a rarely used idiom
-> > is not helping.  For example when we tear down the stream we just assign
-> > the pointer in _stop() but don't bother with a sync until the stream is
-> > closed - why?
+http://www.alsa-project.org/db/?f=512e0135e82a644bb9d2fe8f6b5e2be1cb10c53b
 
-> Because we can't wait in stop and syncing is not time critical, we can
-> do it any time before the stream becomes invalid.
+Things of note:
 
-To be clear: the important part is that someone reading the code can
-understand what's going on.
+ASUS Sabertooth 990FX r1 with bugged IOMMU
+Linux does not load correctly without IOMMU enabled, so disabling to
+test is not an option.
 
-> >> > it'd be better to just add a DMA controller on the FPGA, everyone will
-> >> > be much happier).
+On Wed,  6 Aug 2014 14:39:14 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-> >> Hardware people think different and it's been like that for more than 5
-> >> years.
-
-> > They appear to be the only hardware people who think this way, while we
-
-> The whole audio subsystem on xtfpga boards is there for, I think, a single
-> purpose: for the demonstration of CPU audio processing capabilities.
-> That's why it's that simple.
-
-This means that the demos include cycles spent taking interrupts and
-stuffing data into the FIFO (with associated cache impacts) instead of
-signal processing which isn't usually helpful for benchmarks.
-
-> >> hw_params callback can change MCLK rate, so it has to disable and
-> >> enable the clock anyway, and since enable can fail it does not guarantee
-> >> that the clock will be left in the same state. Or should I adjust MCLK rate
-> >> w/o disabling the clock?
-
-> > So yet again: why not just enable the clock only when the device is in
-> > use?  If it's being configured it stands to reason that the device isn't
-> > actively in use...
-
-> Mark, I don't get it, sorry ): My clock synthesizer is I2C controlled, so
-> I can't prepare/unprepare it in the trigger callback. When should I do it?
-
-Runtime PM is the normal way of doing it.
-
-> >> The level field in the control register is 4 bit wide, so the allowed range of
-> >> level is 0..15. FIFO size is 8192 entries, level = 1 corresponds to
-> >> FIFO size / 2, level = 14 -- to FIFO size of 0. I guess this function
-> >> won't get period_size of 0?
-
-> > So if the IP gets changed and the code gets blown up this could well
-> > explode then...  which doesn't seem entirely unlikely considering this
-> > is a FPGA platform so presumably this is easy to update.  To repeat this
-> > is about clarity and the code looking like it's probably hiding bugs as
-> > much as if the code actually works if you really sit down and study it.
-
-> The calculation does not depend on the actual hardware, but on the
-> constant definitions in the same file. They need to be updated if the
-> hardware changes. I'll try to rewrite it in a cleaner way.
-
-Right, my point is that if someone changes the hardware they'll just
-update the constants and then things will break.
-
---o1Pxsi7EGdPPGBHz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUUAvhAAoJECTWi3JdVIfQx+IH+wbCe8/ralW+77h3qoNIpCyO
-eN0Bsqx34r78LcAIHbStdiadMMM1uQk83ob3Me50rOZ1apEEOWCV5q8HzPeazPVQ
-LdjfJlf2ptzmtmWzesITcEZP7o8YPc+uw4Ba/o6nu5ilKjV0yqI622bYCvQBXnuO
-FxdE0v/RL1wI7GcdE5pjalaiZMBa2FeP2qXqcExKdJNzB2hGHogG7ZyTed4f+cfr
-oySx1mZc5yMLumcGRYHKCfrIW9FvE4DZ9OIxuFIBvEwm9snEjdCQS8UR0bKoxaep
-RzErdFYeejkdbmmP7tR8Jcgx9+Us6g3DK3LhkZOW2goPFgNt4i7wuZJikBktgQY=
-=bAYO
------END PGP SIGNATURE-----
-
---o1Pxsi7EGdPPGBHz--
+> ASUS Phoebus with CMI8888 HD-audio chip (PCI id 13f6:5011) doesn't
+> work with HD-audio driver as is because of some weird nature.  For
+> making DMA properly working, we need to disable MSI.  The position
+> report buffer doesn't work, thus we need to force reading LPIB
+> instead.  And yet, the codec CORB/RIRB communication gives errors
+> unless we disable the snooping (caching).
+> 
+> In this patch, all these workarounds are added as a quirk for the
+> device.  The HD-audio *codec* chip needs yet another workaround, but
+> it'll be provided in the succeeding patch.
+> 
+> Reported-and-tested-by: Vincent Lejeune <vljn@ovi.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/pci/hda/hda_intel.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 5db1948699d8..aa302fb03fc5 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -265,6 +265,7 @@ enum {
+>  	AZX_DRIVER_TERA,
+>  	AZX_DRIVER_CTX,
+>  	AZX_DRIVER_CTHDA,
+> +	AZX_DRIVER_CMEDIA,
+>  	AZX_DRIVER_GENERIC,
+>  	AZX_NUM_DRIVERS, /* keep this as last entry */
+>  };
+> @@ -330,6 +331,7 @@ static char *driver_short_names[] = {
+>  	[AZX_DRIVER_TERA] = "HDA Teradici", 
+>  	[AZX_DRIVER_CTX] = "HDA Creative", 
+>  	[AZX_DRIVER_CTHDA] = "HDA Creative",
+> +	[AZX_DRIVER_CMEDIA] = "HDA C-Media",
+>  	[AZX_DRIVER_GENERIC] = "HD-Audio Generic",
+>  };
+>  
+> @@ -1373,6 +1375,7 @@ static void azx_check_snoop_available(struct
+> azx *chip) snoop = false;
+>  		break;
+>  	case AZX_DRIVER_CTHDA:
+> +	case AZX_DRIVER_CMEDIA:
+>  		snoop = false;
+>  		break;
+>  	}
+> @@ -2154,6 +2157,10 @@ static const struct pci_device_id azx_ids[] = {
+>  	  .driver_data = AZX_DRIVER_CTX | AZX_DCAPS_CTX_WORKAROUND |
+>  	  AZX_DCAPS_RIRB_PRE_DELAY | AZX_DCAPS_POSFIX_LPIB },
+>  #endif
+> +	/* CM8888 */
+> +	{ PCI_DEVICE(0x13f6, 0x5011),
+> +	  .driver_data = AZX_DRIVER_CMEDIA |
+> +	  AZX_DCAPS_NO_MSI | AZX_DCAPS_POSFIX_LPIB },
+>  	/* Vortex86MX */
+>  	{ PCI_DEVICE(0x17f3, 0x3010), .driver_data =
+> AZX_DRIVER_GENERIC }, /* VMware HDAudio */
