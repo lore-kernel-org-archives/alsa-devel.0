@@ -1,16 +1,14 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 12/15] ARM: pxa: poodle: don't preallocate IRQ space for
- locomo
-Date: Tue, 28 Oct 2014 20:13:17 +0100
-Message-ID: <87bnow80tu.fsf@free.fr>
-References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
- <1414454528-24240-13-git-send-email-dbaryshkov@gmail.com>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: [PATCH 2/6] ASoC: cs42l51: make driver user-selectable
+Date: Tue, 28 Oct 2014 14:50:32 -0500
+Message-ID: <alpine.DEB.2.10.1410281449130.28816@heelrod>
+References: <1414512524-24466-1-git-send-email-thomas.petazzoni@free-electrons.com>
+ <1414512524-24466-3-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1414454528-24240-13-git-send-email-dbaryshkov@gmail.com> (Dmitry
- Eremin-Solenikov's message of "Tue, 28 Oct 2014 03:02:05 +0300")
+In-Reply-To: <1414512524-24466-3-git-send-email-thomas.petazzoni@free-electrons.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -20,51 +18,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: Alexandre Courbot <gnurou@gmail.com>, linux-fbdev@vger.kernel.org, Bryan Wu <cooloney@gmail.com>, Russell King <linux@arm.linux.org.uk>, Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, alsa-devel@alsa-project.org, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-spi@vger.kernel.org, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, Andrea Adami <andrea.adami@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Jingoo Han <jg1.han@samsung.com>, Daniel Mack <daniel@zonque.org>, Lee Jones <lee.jones@linaro.org>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>, Brian Austin <brian.austin@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Nadav Haklai <nadavh@marvell.com>, Mark Brown <broonie@kernel.org>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dmitry Eremin-Solenikov <dbaryshkov@gmail.com> writes:
-
-...zip...
-
-> diff --git a/arch/arm/mach-pxa/poodle.c b/arch/arm/mach-pxa/poodle.c
-> index 3041d83..97eced9 100644
-> --- a/arch/arm/mach-pxa/poodle.c
-> +++ b/arch/arm/mach-pxa/poodle.c
-> @@ -181,14 +181,18 @@ static struct locomo_platform_data locomo_info = {
->  	.gpio_data = {
->  		.gpio_base = POODLE_LOCOMO_GPIO_BASE,
->  	},
-> -	.bl_data = {
-> +	.lcd_data = {
-Is that part really belonging to that patch ? It seems to me that this changes
-the code included in patch 10/15 "ARM: pxa: poodle: use new LoCoMo
-driver".
-
-Therefore I'm wondering if I take the serie, halt it at patch 10, and try to
-compile I would succeed ... I think I wouldn't.
-
-> +	},
-> +	.bl_data = {
->  		.gpio_fl_vr       = POODLE_GPIO_FL_VR,
->  	},
-Ditto.
-
-> +	.gpio_amp1_on	= -1,
-> +	.gpio_amp2_on	= -1,
-This won't prevent compilation, but is it the target of this patch which is IRQ
-space oriented ?
-
-> @@ -453,7 +457,7 @@ static void __init poodle_init(void)
->  	platform_scoop_config = &poodle_pcmcia_config;
+> the CS42L51 I2C codec driver user-selectable.
+> 
+> Cc: Brian Austin <brian.austin@cirrus.com>
+> Cc: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
+> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+> ---
+>  sound/soc/codecs/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+> index a68d173..f4fb12f 100644
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -336,7 +336,7 @@ config SND_SOC_CS42L51
+>  	tristate
 >  
->  	if (sharpsl_param.comadj != -1)
-> -		locomo_info.bl_data.comadj = sharpsl_param.comadj;
-> +		locomo_info.lcd_data.comadj = sharpsl_param.comadj;
-Ditto.
+>  config SND_SOC_CS42L51_I2C
+> -	tristate
+> +	tristate "Cirrus Logic CS42L51 CODEC (I2C)"
+>  	select SND_SOC_CS42L51
+>  
+>  config SND_SOC_CS42L52
+> -- 
+> 2.0.0
+> 
 
-Cheers.
+Thanks,
 
--- 
-Robert
+Acked-by: Brian Austin <brian.austin@cirrus.com>
