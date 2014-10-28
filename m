@@ -1,110 +1,78 @@
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH 00/11] Add AXD Audio Processing IP driver
-Date: Tue, 28 Oct 2014 11:26:18 +0000
-Message-ID: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com>
+Subject: [PATCH 02/11] dt: bindings: add AXD Audio Processing IP binding document
+Date: Tue, 28 Oct 2014 11:26:20 +0000
+Message-ID: <1414495589-8579-3-git-send-email-qais.yousef@imgtec.com>
+References: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Cc: Qais Yousef <qais.yousef@imgtec.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Qais Yousef <qais.yousef@imgtec.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-AXD Audio Processing IP performs audio decoding, encoding, mixing, equalisation,
-synchronisation and playback. This series adds the driver and DT binding
-document.
+Add device tree support for AXD Audio Processing IP
 
-I tried to split it into 'logical' units as there are many files and some of them
-are big (necessarily I believe). If it is still difficult to review as is I'd
-be happy to take on any suggestion to make things easier.
-
-I added it to drivers/char as this is the best location I could think of at the
-moment. It doesn't fit in alsa subsystem but I Cced them to confirm.
-Also I'm not sure if new drivers should go to staging first then get promoted or
-they can be accepted directly.
-
-This is based on Linus' 3.18-rc2
-
+Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Pawel Moll <pawel.moll@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Ian Campbell <ijc+devicetree@hellion.org.uk>
+Cc: Kumar Gala <galak@codeaurora.org>
 Cc: <devicetree@vger.kernel.org>
 Cc: <alsa-devel@alsa-project.org>
-
-Qais Yousef (11):
-  MAINTANERS: Add AXD as a supported driver
-  dt: bindings: add AXD Audio Processing IP binding document
-  drivers: char: add AXD Audio Processing IP driver
-  drivers: char: axd: add fw binary header manipulation files
-  drivers: char: axd: add buffers manipulation files
-  drivers: char: axd: add basic files for sending/receiving axd cmds
-  drivers: char: axd: add cmd interfce helper functions
-  drivers: char: axd: add low level AXD platform setup files
-  drivers: char: axd: add sysfs setup files
-  drivers: char: axd: add ts interface file
-  drivers: char: axd: add Kconfig and Makefile
-
- Documentation/devicetree/bindings/axd.txt  |   39 +
- MAINTAINERS                                |    6 +
- drivers/char/Kconfig                       |    2 +
- drivers/char/Makefile                      |    2 +
- drivers/char/axd/Kconfig                   |   19 +
- drivers/char/axd/Makefile                  |   20 +
- drivers/char/axd/axd_api.h                 |  641 ++++++
- drivers/char/axd/axd_buffers.c             |  245 +++
- drivers/char/axd/axd_buffers.h             |   70 +
- drivers/char/axd/axd_cmds.c                |   98 +
- drivers/char/axd/axd_cmds.h                |  531 +++++
- drivers/char/axd/axd_cmds_codec_internal.c |   58 +
- drivers/char/axd/axd_cmds_codec_internal.h |   28 +
- drivers/char/axd/axd_cmds_config.c         | 1194 ++++++++++
- drivers/char/axd/axd_cmds_decoder_config.c | 1806 ++++++++++++++++
- drivers/char/axd/axd_cmds_encoder_config.c |  519 +++++
- drivers/char/axd/axd_cmds_info.c           | 1409 ++++++++++++
- drivers/char/axd/axd_cmds_internal.c       | 3237 ++++++++++++++++++++++++++++
- drivers/char/axd/axd_cmds_internal.h       |  306 +++
- drivers/char/axd/axd_cmds_pipes.c          | 1368 ++++++++++++
- drivers/char/axd/axd_hdr.c                 |   69 +
- drivers/char/axd/axd_hdr.h                 |   20 +
- drivers/char/axd/axd_module.c              | 1064 +++++++++
- drivers/char/axd/axd_module.h              |   99 +
- drivers/char/axd/axd_platform.h            |   31 +
- drivers/char/axd/axd_platform_mips.c       |  270 +++
- drivers/char/axd/axd_sysfs.h               |   37 +
- drivers/char/axd/axd_sysfs_ctrl.c          |  539 +++++
- drivers/char/axd/axd_sysfs_input.c         |  406 ++++
- drivers/char/axd/axd_sysfs_output.c        | 1373 ++++++++++++
- drivers/char/axd/axd_ts_driver.h           |   24 +
- include/linux/axd.h                        |   32 +
- 32 files changed, 15562 insertions(+)
+---
+ Documentation/devicetree/bindings/axd.txt | 39 +++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/axd.txt
- create mode 100644 drivers/char/axd/Kconfig
- create mode 100644 drivers/char/axd/Makefile
- create mode 100644 drivers/char/axd/axd_api.h
- create mode 100644 drivers/char/axd/axd_buffers.c
- create mode 100644 drivers/char/axd/axd_buffers.h
- create mode 100644 drivers/char/axd/axd_cmds.c
- create mode 100644 drivers/char/axd/axd_cmds.h
- create mode 100644 drivers/char/axd/axd_cmds_codec_internal.c
- create mode 100644 drivers/char/axd/axd_cmds_codec_internal.h
- create mode 100644 drivers/char/axd/axd_cmds_config.c
- create mode 100644 drivers/char/axd/axd_cmds_decoder_config.c
- create mode 100644 drivers/char/axd/axd_cmds_encoder_config.c
- create mode 100644 drivers/char/axd/axd_cmds_info.c
- create mode 100644 drivers/char/axd/axd_cmds_internal.c
- create mode 100644 drivers/char/axd/axd_cmds_internal.h
- create mode 100644 drivers/char/axd/axd_cmds_pipes.c
- create mode 100644 drivers/char/axd/axd_hdr.c
- create mode 100644 drivers/char/axd/axd_hdr.h
- create mode 100644 drivers/char/axd/axd_module.c
- create mode 100644 drivers/char/axd/axd_module.h
- create mode 100644 drivers/char/axd/axd_platform.h
- create mode 100644 drivers/char/axd/axd_platform_mips.c
- create mode 100644 drivers/char/axd/axd_sysfs.h
- create mode 100644 drivers/char/axd/axd_sysfs_ctrl.c
- create mode 100644 drivers/char/axd/axd_sysfs_input.c
- create mode 100644 drivers/char/axd/axd_sysfs_output.c
- create mode 100644 drivers/char/axd/axd_ts_driver.h
- create mode 100644 include/linux/axd.h
 
+diff --git a/Documentation/devicetree/bindings/axd.txt b/Documentation/devicetree/bindings/axd.txt
+new file mode 100644
+index 000000000000..694fc40613fb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/axd.txt
+@@ -0,0 +1,39 @@
++* AXD Audio Processing IP Binding *
++
++Required properties:
++- compatible: "img,axd"
++- clocks: phandle for the clock that drives AXD.
++- interrupts: the GIC interrupt where AXD is connected or software interrupt
++  1 (not recommended).
++
++Optional properties:
++- gic-irq: it takes two non-zero values, the first one is the host hwirq and
++           the second one is axd's. Host's hwirq should match the value in
++           interrupts.
++           If not using GIC, then axd will revert to using software interrupt 1
++           which is a fallback mechanism for systems without GIC. It is
++           recommended to use GIC whenever possible. Some systems will only work
++           with GIC so this property will not be optional then.
++- vpe: VPE number on which axd should start. Must be provided if axd is
++       running as a single VPE along Linux on the same core.
++       It can't be VPE0.
++       The VPE must be offlined by Linux before axd is loaded.
++- inbuf-size: size of shared input buffers area. by default it's 0x7800 bytes.
++- outbuf-size: size of shared output buffers area. by default it's 0x3c000 bytes.
++
++
++Example:
++
++		axdclk: axdclk@400M {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <400000000>;
++		};
++
++		axd: axd@07800000 {
++			compatible = "img,axd";
++			clocks = <&axdclk>;
++			interrupts = <36 IRQ_TYPE_EDGE_RISING>
++			gic-irq = <36 37>;
++			vpe = <1>;
++		};
 -- 
 2.1.0
