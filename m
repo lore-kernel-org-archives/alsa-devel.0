@@ -1,59 +1,47 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: add xtensa xtfpga I2S interface and
- platform
-Date: Tue, 28 Oct 2014 16:04:14 +0000
-Message-ID: <20141028160414.GY18557@sirena.org.uk>
-References: <1414436825-19416-1-git-send-email-jcmvbkbc@gmail.com>
- <544FBD20.5000604@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl-asoc-card: Don't bypass settings if cpu-dai is
+ Master
+Date: Tue, 28 Oct 2014 16:05:16 +0000
+Message-ID: <20141028160516.GZ18557@sirena.org.uk>
+References: <cover.1414193668.git.nicoleotsuka@gmail.com>
+ <1414194502-14052-1-git-send-email-nicoleotsuka@gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bLzFIlwpOfW+4Y/z"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="sC1KxrFoiW8MuHBc"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <544FBD20.5000604-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>
-Cc: Max Filippov <jcmvbkbc-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, linux-xtensa-PjhNF2WwrV/0Sa2dR60CXw@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, Grant Likely <grant.likely-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+In-Reply-To: <1414194502-14052-1-git-send-email-nicoleotsuka@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: b02247@freescale.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---bLzFIlwpOfW+4Y/z
+--sC1KxrFoiW8MuHBc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 28, 2014 at 04:58:24PM +0100, Lars-Peter Clausen wrote:
-> On 10/27/2014 08:07 PM, Max Filippov wrote:
+On Fri, Oct 24, 2014 at 04:48:11PM -0700, Nicolin Chen wrote:
+> When cpu-dai is the DAI Master (CBM_CFx), it may need some configurations,
+> set_sysclk() call for eample, for cpu-dai side in the hw_params(), even if
+> the set_bias_level() has already taken care of the codec-dai side.
 
-> >+	if (tx_active) {
-> >+		if (i2s->tx_fifo_high < 256)
-> >+			xtfpga_i2s_refill_fifo(i2s);
-> >+		else
-> >+			tasklet_hi_schedule(&i2s->refill_fifo);
+Applied, thanks.
 
-> Maybe use threaded IRQs instead of IRQ + tasklet.
-
-Is that going to play nicely with the fact that the interrupt can be
-shared and the desire to (AFAICT) do NAPI style stuff with the interrupt
-disabled for long periods?
-
---bLzFIlwpOfW+4Y/z
+--sC1KxrFoiW8MuHBc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUT759AAoJECTWi3JdVIfQB8EH+gPB7Aw0ccJppeaG9EnsnvlA
-AP7CSMwz+XSZPgHeYFJEZt1/adzlrGF3rmjT5EFZHx7Sc8OtKBmrntQT850iw/iZ
-6ju53/DKyzXspepZgs6wv1X1VueMC05F5kMMlO2EW79H/GSX1CpJL/wWQ/RXI/A/
-1X13J9oOOEkiMxoD3a9BCb2VqXS0M+160wkCqLKerbiqoSQSG6/62DrztYI0UY1B
-0bk6cSpiLQmGBOlapor2dJY0JntTuTG7Lwgt4NemAFhyW9OiwgXBrk7i2NXu4mLk
-mj483xwwzbG5RTDCfPy6n4BmzQRKDCmPVWNTAFAIBLvi9zCCmIrfWUUKCJ6NveY=
-=RcMg
+iQEcBAEBAgAGBQJUT768AAoJECTWi3JdVIfQwmUH/3kHoarWO77yk17oVY3U4Aby
+R/vlzUFosMqGZBNmEFamsfbBEd5jNq9P5I5eWvOCoP7bw+OL5RU9F3XU2blZVA+d
+7Nt28CXcF7ankJs0Qa2h/3tpbbAbFnx3HW/NIS/xVktH8eYrNZMZ0uVILOePBc5B
+P9HWZC+k9CqCIxpi3PWzoPt9e5ipjCknDDQhhdcINrIosnK8sG7vUfUASlSk7YrU
+ayMFCqFjL6etw0bX5uoVixA0qmLsOG5UZ1wMZaM7IKy4FmaRsfELhAArX2IAASD9
+H7TgQtvIiTufcFUqGVnp5XL5VJME9VoL5/P1haidTca/8HfKi8lTalcVkC9hMcg=
+=xXnR
 -----END PGP SIGNATURE-----
 
---bLzFIlwpOfW+4Y/z--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--sC1KxrFoiW8MuHBc--
