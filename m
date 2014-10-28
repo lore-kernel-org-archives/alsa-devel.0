@@ -1,40 +1,71 @@
-From: dE <de.techno@gmail.com>
-Subject: Selecting correct input device port.
-Date: Tue, 28 Oct 2014 09:57:18 +0530
-Message-ID: <544F1B26.2070502@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_asrc: Add reg_defaults for regmap to fix
+ kernel dump
+Date: Tue, 28 Oct 2014 10:47:42 +0000
+Message-ID: <20141028104742.GP18557@sirena.org.uk>
+References: <1414202637-18929-1-git-send-email-nicoleotsuka@gmail.com>
+ <20141028001904.GH18557@sirena.org.uk>
+ <20141028042603.GA5548@Asurada>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f170.google.com (mail-lb0-f170.google.com
- [209.85.217.170])
- by alsa0.perex.cz (Postfix) with ESMTP id EDF6F261987
- for <Alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 05:28:00 +0100 (CET)
-Received: by mail-lb0-f170.google.com with SMTP id u10so6942249lbd.15
- for <Alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 21:28:00 -0700 (PDT)
-Received: from [192.168.1.2] ([59.89.143.167])
- by mx.google.com with ESMTPSA id ya10sm134725lbb.6.2014.10.27.21.27.57
- for <Alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Mon, 27 Oct 2014 21:27:59 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="scYsJfBjqkrBfg1Z"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20141028042603.GA5548@Asurada>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As I learn't in this mailng list, a device can typically handle only one 
-stream at a time unless it supports hardware mixing which's exposed via 
-subdevices in ALSA
 
-What does subdevice mean for input device? Do they mark physical ports 
-for input? If not how do I record from a specific input port? Is it 
-automatically selected by the card?
+--scYsJfBjqkrBfg1Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-And what's 'input source' in ALSA mixer?
+On Mon, Oct 27, 2014 at 09:26:26PM -0700, Nicolin Chen wrote:
+> On Tue, Oct 28, 2014 at 12:19:04AM +0000, Mark Brown wrote:
+
+> > It's not a bug, it's not reasonable to default allocations to atomic and
+> > we can't really tell what context we're in.  Anything used inside a
+> > heavily locked path should either have a default provided or arrange for
+> > a prior write to set up the cache.
+
+> I've a little trouble to understand the prior write over here. Inside my
+> probe() there's a register_init() call which has a set of regmap_write().
+> And then the first regmap_write() results the dump. Does that mean this
+> regmap_write() isn't prior write? If so, how should I do if not setting
+
+Oh, bother.  We fixed things so that we're now always running with the
+spinlock held...  never mind.
+
+> default values here -- Some IPs may have default value 0 for registers.
+> And this would make reg_defaults tedious since there's nothing special
+> to assign.
+
+Write a small script then, or a little bit of code to create the
+defaults dynamically.
+
+> And actually I remember I haven't seen any dump when I sent the initial
+> patch for the whole ASRC driver but it manifested last month. I thought
+> it might be a partially-merging issue and it would be fixed after merge
+> window's done.....
+
+Nothing has changed here for a while as far as I remember.
+
+--scYsJfBjqkrBfg1Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUT3RNAAoJECTWi3JdVIfQ6dgH/31xUY+Mj0t8ZJ640hvt2+hz
+02CP6IhL9gVdQ0/K6+AupVIIln9sbR5Ys9PWnZShGmcULb99c4wcwuo0pQhI3He8
+00TCixzko3Q3rFo3Hbs5GaxlmUpUOlki3n5O34rZ4whOHqWuBk7MVEB/crrJHANS
+M3FzS0IB5wymEWPnr2PYXwQi52JNcSYhXOHVqmhnJJJPiFut1otsqo4qAaSjLmxz
+MRw0qSFWwuT0YdRK8ku0jvpZgOsyC2uyRR9ZIRvX4sufNDXgv18spfATbk5DtxSy
+1vbZETpugd6Bu/B3Tn97rv/M2NIDEtNN5txJEZpmG277LPjiq1ujx1vuGpUogVs=
+=YnuJ
+-----END PGP SIGNATURE-----
+
+--scYsJfBjqkrBfg1Z--
