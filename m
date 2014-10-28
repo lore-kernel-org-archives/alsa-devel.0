@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH][resend] ASoC: simple-card / rsnd resend
-Date: Tue, 28 Oct 2014 11:57:57 +0000
-Message-ID: <20141028115757.GS18557@sirena.org.uk>
-References: <87sii9qa27.wl%kuninori.morimoto.gx@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: pcm: Zero-clear reserved fields of PCM
+	status ioctl in compat mode
+Date: Tue, 28 Oct 2014 12:54:30 +0100
+Message-ID: <1414497270-15765-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7212339209453334441=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DC8A26584A
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 12:58:20 +0100 (CET)
-In-Reply-To: <87sii9qa27.wl%kuninori.morimoto.gx@gmail.com>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DE5D265979
+ for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 13:00:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: alsa-devel@alsa-project.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+In compat mode, we copy each field of snd_pcm_status struct but don't
+touch the reserved fields, and this leaves uninitialized values
+there.  Meanwhile the native ioctl does zero-clear the whole
+structure, so we should follow the same rule in compat mode, too.
 
---===============7212339209453334441==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jBGnWEXsPC4kSclK"
-Content-Disposition: inline
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/pcm_compat.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
---jBGnWEXsPC4kSclK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Oct 27, 2014 at 06:04:17PM -0700, Kuninori Morimoto wrote:
-
-> Subject: [PATCH 0/8] ASoC: rsnd: add Volume Ramp support
-> Date: Tue, 21 Oct 2014 18:13:17 -0700 (PDT)
-
-You sent these patches less than a week ago, please allow a reasonable
-time for a response.
-
---jBGnWEXsPC4kSclK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUT4TEAAoJECTWi3JdVIfQ7/wH/1NNjoGGvjScM7OPnVSGQIoZ
-bccde1iMdVYJfGmNJmh6ZOLxsKSK3CwIf66tDpSC5qYM0TOGh3Rg6ZrJBwLuqLHX
-4CtZbpPYCISvyG6gpZNgIAM5cbRQ2ScC6H8meM/Xb1MQNX5nE9WSGtZsgOtZ01ad
-NrgN5JU24XgFQ3WHhsca+3GsJs9rXn20W+pNhiGHZffilEqcuJgUaiZVRxQBQ+KU
-juOST9YNimmUCTbEens5bsIxSYsBWYqpUetIvYdywBkTlvkd8kgm3TmNMOMBJMm3
-pyxZhOhtMB03m8umqbhPFjYUI+NkAnnTO+zz71hYfLPCH4gSNHQCY5tv8uPbwec=
-=RyIX
------END PGP SIGNATURE-----
-
---jBGnWEXsPC4kSclK--
-
---===============7212339209453334441==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7212339209453334441==--
+diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
+index 102e8fd1d450..2d957ba63557 100644
+--- a/sound/core/pcm_compat.c
++++ b/sound/core/pcm_compat.c
+@@ -210,6 +210,8 @@ static int snd_pcm_status_user_compat(struct snd_pcm_substream *substream,
+ 	if (err < 0)
+ 		return err;
+ 
++	if (clear_user(src, sizeof(*src)))
++		return -EFAULT;
+ 	if (put_user(status.state, &src->state) ||
+ 	    compat_put_timespec(&status.trigger_tstamp, &src->trigger_tstamp) ||
+ 	    compat_put_timespec(&status.tstamp, &src->tstamp) ||
+-- 
+2.1.2
