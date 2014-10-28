@@ -1,13 +1,14 @@
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: [PATCH 5/6] ARM: mvebu: use simple-card DT binding for audio on
- Armada 370 DB
-Date: Tue, 28 Oct 2014 17:08:43 +0100
-Message-ID: <1414512524-24466-6-git-send-email-thomas.petazzoni@free-electrons.com>
+From: Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH 0/6] ASoC/ARM: move Marvell Armada 370 DB to
+ simple-audio-card
+Date: Tue, 28 Oct 2014 17:23:55 +0100
+Message-ID: <20141028162355.GI10559@lunn.ch>
 References: <1414512524-24466-1-git-send-email-thomas.petazzoni@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
 In-Reply-To: <1414512524-24466-1-git-send-email-thomas.petazzoni@free-electrons.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
@@ -18,121 +19,78 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
  <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
 Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Gregory Clement <gregory.clement@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Tawfik Bayouk <tawfik@marvell.com>, Nadav Haklai <nadavh@marvell.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>, Liam Girdwood <lgirdwood@gmail.com>, Nadav Haklai <nadavh@marvell.com>, Mark Brown <broonie@kernel.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This commit modifies the Armada 370 and Armada 370 DB Device Tree
-descriptions to use the simple-card DT binding to describe the audio
-complex of the Armada 370 DB instead of a custom audio machine driver.
+On Tue, Oct 28, 2014 at 05:08:38PM +0100, Thomas Petazzoni wrote:
+> Hello,
+> 
+> This set of patches moves the Marvell Armada 370 DB audio complex
+> description from a custom audio machine driver to the
+> simple-audio-card DT binding.
 
-To do so, it:
+Hi Thomas
 
- - Adds the sound-dai-cells properties to the CS42L51 node, the audio
-   controller node and the SPDIF in/out nodes.
+All looks sensible, from the little i know about simple-audio-card.
 
- - Completely changes the description of the sound complex to use the
-   "simple-audio-card" DT binding instead of the
-   "marvell,a370db-audio" DT binding.
+Acked-by: Andrew Lunn <andrew@lunn.ch>
 
- - Fixes the indentation to properly use tabs instead of spaces.
+	  Andrew
 
-Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
----
- arch/arm/boot/dts/armada-370-db.dts | 56 +++++++++++++++++++++++++++++++++----
- arch/arm/boot/dts/armada-370.dtsi   |  1 +
- 2 files changed, 51 insertions(+), 6 deletions(-)
-
-diff --git a/arch/arm/boot/dts/armada-370-db.dts b/arch/arm/boot/dts/armada-370-db.dts
-index d505135..0b7bf5e 100644
---- a/arch/arm/boot/dts/armada-370-db.dts
-+++ b/arch/arm/boot/dts/armada-370-db.dts
-@@ -75,6 +75,7 @@
- 				clock-frequency = <100000>;
- 				status = "okay";
- 				audio_codec: audio-codec@4a {
-+					#sound-dai-cells = <0>;
- 					compatible = "cirrus,cs42l51";
- 					reg = <0x4a>;
- 				};
-@@ -143,17 +144,60 @@
- 	};
- 
- 	sound {
--	      compatible = "marvell,a370db-audio";
--	      marvell,audio-controller = <&audio_controller>;
--	      marvell,audio-codec = <&audio_codec &spdif_out &spdif_in>;
--	      status = "okay";
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "Armada 370 DB Audio";
-+		simple-audio-card,mclk-fs = <256>;
-+		simple-audio-card,widgets =
-+			"Headphone", "Out Jack",
-+			"Line", "In Jack";
-+		simple-audio-card,routing =
-+			"Out Jack", "HPL",
-+			"Out Jack", "HPR",
-+			"AIN1L", "In Jack",
-+			"AIN1L", "In Jack";
-+		status = "okay";
-+
-+		simple-audio-card,dai-link@0 {
-+			format = "i2s";
-+			cpu {
-+				sound-dai = <&audio_controller 0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&audio_codec>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@1 {
-+			format = "i2s";
-+			cpu {
-+				sound-dai = <&audio_controller 1>;
-+			};
-+
-+			codec {
-+				sound-dai = <&spdif_out>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@2 {
-+			format = "i2s";
-+			cpu {
-+				sound-dai = <&audio_controller 1>;
-+			};
-+
-+			codec {
-+				sound-dai = <&spdif_in>;
-+			};
-+		};
- 	};
- 
- 	spdif_out: spdif-out {
--	      compatible = "linux,spdif-dit";
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,spdif-dit";
- 	};
- 
- 	spdif_in: spdif-in {
--	      compatible = "linux,spdif-dir";
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,spdif-dir";
- 	};
- };
-diff --git a/arch/arm/boot/dts/armada-370.dtsi b/arch/arm/boot/dts/armada-370.dtsi
-index 6b3c23b..8d0c451 100644
---- a/arch/arm/boot/dts/armada-370.dtsi
-+++ b/arch/arm/boot/dts/armada-370.dtsi
-@@ -249,6 +249,7 @@
- 			};
- 
- 			audio_controller: audio-controller@30000 {
-+				#sound-dai-cells = <1>;
- 				compatible = "marvell,armada370-audio";
- 				reg = <0x30000 0x4000>;
- 				interrupts = <93>;
--- 
-2.0.0
+> 
+> The first three patches are meant to go through the ASoC tree, the
+> last three patches are meant to go through the mvebu maintainers tree.
+> 
+> Quick description of the patches:
+> 
+>  - First patch fixes a small issue in the cs42l51 driver following its
+>    split in two parts.
+> 
+>  - Second patch makes the cs42l51 user-selectable by adding a prompt
+>    to its Kconfig option.
+> 
+>  - Third patch gets rid of the machine driver.
+> 
+>  - Fourth patch removes some now incorrect pin-muxing selection in the
+>    Armada 370 DB platform.
+> 
+>  - Fifth patch actually switches to use the simple-audio-card DT
+>    binding on Armada 370 DB.
+> 
+>  - Sixth patch updates mvebu_v7_defconfig to select the relevant
+>    options to get audio to work.
+> 
+> Note: obviously, after PATCH 3 is applied, the audio will no longer
+> work until PATCH 5 is applied. But since those patches will anyway go
+> through different trees, it is a bit inevitable. And it is not
+> dramatically important, since audio support on Armada 370 DB is
+> already broken since the split of the CS42L51 driver.
+> 
+> Thanks,
+> 
+> Thomas
+> 
+> Thomas Petazzoni (6):
+>   ASoC: cs42l51: re-add of_match_table pointer
+>   ASoC: cs42l51: make driver user-selectable
+>   ASoC: kirkwood: get rid of armada-370-db driver
+>   ARM: mvebu: remove conflicting muxing on Armada 370 DB
+>   ARM: mvebu: use simple-card DT binding for audio on Armada 370 DB
+>   ARM: mvebu: update mvebu_v7_defconfig for Armada 370 audio
+> 
+>  arch/arm/boot/dts/armada-370-db.dts |  80 +++++++++++--------
+>  arch/arm/boot/dts/armada-370.dtsi   |   1 +
+>  arch/arm/configs/mvebu_v7_defconfig |   4 +-
+>  sound/soc/codecs/Kconfig            |   2 +-
+>  sound/soc/codecs/cs42l51-i2c.c      |   7 ++
+>  sound/soc/codecs/cs42l51.c          |   5 --
+>  sound/soc/kirkwood/Kconfig          |  13 +---
+>  sound/soc/kirkwood/Makefile         |   4 -
+>  sound/soc/kirkwood/armada-370-db.c  | 148 ------------------------------------
+>  9 files changed, 63 insertions(+), 201 deletions(-)
+>  delete mode 100644 sound/soc/kirkwood/armada-370-db.c
+> 
+> -- 
+> 2.0.0
+> 
