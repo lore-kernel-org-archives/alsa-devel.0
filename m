@@ -1,16 +1,16 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 3/7] ASoC: Intel: Add call to calculate
-	offsets internally within the DSP.
-Date: Tue, 28 Oct 2014 17:37:14 +0000
-Message-ID: <1414517838-16210-3-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v2 6/7] ASoC: Intel: Add runtime module lookup
+	API call
+Date: Tue, 28 Oct 2014 17:37:17 +0000
+Message-ID: <1414517838-16210-6-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1414517838-16210-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 2561A265D5E
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 18:38:53 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 88C79265D6C
+ for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 18:38:55 +0100 (CET)
 In-Reply-To: <1414517838-16210-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,114 +25,43 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A call to calculate internal DSP memory addresses used to allocate persistent
-and scartch buffers.
+Add an API to allow quick lookup of runtime modules based on ID.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-dsp-priv.h    |  7 +++++++
- sound/soc/intel/sst-firmware.c    | 22 +++++++++++++++++++---
- sound/soc/intel/sst-haswell-dsp.c |  8 ++++++++
- 3 files changed, 34 insertions(+), 3 deletions(-)
+ sound/soc/intel/sst-firmware.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/sound/soc/intel/sst-dsp-priv.h b/sound/soc/intel/sst-dsp-priv.h
-index 4c91449..92fd7f0 100644
---- a/sound/soc/intel/sst-dsp-priv.h
-+++ b/sound/soc/intel/sst-dsp-priv.h
-@@ -26,6 +26,9 @@ struct sst_mem_block;
- struct sst_module;
- struct sst_fw;
- 
-+/* do we need to remove or keep */
-+#define DSP_DRAM_ADDR_OFFSET		0x400000
-+
- /*
-  * DSP Operations exported by platform Audio DSP driver.
-  */
-@@ -67,6 +70,8 @@ struct sst_addr {
- 	u32 shim_offset;
- 	u32 iram_offset;
- 	u32 dram_offset;
-+	u32 dsp_iram_offset;
-+	u32 dsp_dram_offset;
- 	void __iomem *lpe;
- 	void __iomem *shim;
- 	void __iomem *pci_cfg;
-@@ -319,4 +324,6 @@ struct sst_mem_block *sst_mem_block_register(struct sst_dsp *dsp, u32 offset,
- 	void *private);
- void sst_mem_block_unregister_all(struct sst_dsp *dsp);
- 
-+u32 sst_dsp_get_offset(struct sst_dsp *dsp, u32 offset,
-+	enum sst_mem_type type);
- #endif
 diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
-index fa91b3d..bf28480 100644
+index b27d385..692a6ae 100644
 --- a/sound/soc/intel/sst-firmware.c
 +++ b/sound/soc/intel/sst-firmware.c
-@@ -231,9 +231,8 @@ struct sst_module *sst_module_new(struct sst_fw *sst_fw,
- 	sst_module->id = template->id;
- 	sst_module->dsp = dsp;
- 	sst_module->sst_fw = sst_fw;
--
--	memcpy(&sst_module->s, &template->s, sizeof(struct sst_module_data));
--	memcpy(&sst_module->p, &template->p, sizeof(struct sst_module_data));
-+	sst_module->scratch_size = template->scratch_size;
-+	sst_module->persistent_size = template->persistent_size;
- 
- 	INIT_LIST_HEAD(&sst_module->block_list);
- 
-@@ -709,3 +708,20 @@ struct sst_module *sst_module_get_from_id(struct sst_dsp *dsp, u32 id)
- 	return NULL;
+@@ -1158,6 +1158,26 @@ struct sst_module *sst_module_get_from_id(struct sst_dsp *dsp, u32 id)
  }
  EXPORT_SYMBOL_GPL(sst_module_get_from_id);
-+
-+/* returns block address in DSP address space */
-+u32 sst_dsp_get_offset(struct sst_dsp *dsp, u32 offset,
-+	enum sst_mem_type type)
+ 
++struct sst_module_runtime *sst_module_runtime_get_from_id(
++	struct sst_module *module, u32 id)
 +{
-+	switch (type) {
-+	case SST_MEM_IRAM:
-+		return offset - dsp->addr.iram_offset +
-+			dsp->addr.dsp_iram_offset;
-+	case SST_MEM_DRAM:
-+		return offset - dsp->addr.dram_offset +
-+			dsp->addr.dsp_dram_offset;
-+	default:
-+		return 0;
++	struct sst_module_runtime *runtime;
++	struct sst_dsp *dsp = module->dsp;
++
++	mutex_lock(&dsp->mutex);
++
++	list_for_each_entry(runtime, &module->runtime_list, list) {
++		if (runtime->id == id) {
++			mutex_unlock(&dsp->mutex);
++			return runtime;
++		}
 +	}
++
++	mutex_unlock(&dsp->mutex);
++	return NULL;
 +}
-+EXPORT_SYMBOL_GPL(sst_dsp_get_offset);
-diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
-index 7f239d0..5058dc8 100644
---- a/sound/soc/intel/sst-haswell-dsp.c
-+++ b/sound/soc/intel/sst-haswell-dsp.c
-@@ -42,6 +42,10 @@
- #define SST_LP_SHIM_OFFSET	0xE7000
- #define SST_WPT_IRAM_OFFSET	0xA0000
- #define SST_LP_IRAM_OFFSET	0x80000
-+#define SST_WPT_DSP_DRAM_OFFSET	0x400000
-+#define SST_WPT_DSP_IRAM_OFFSET	0x00000
-+#define SST_LPT_DSP_DRAM_OFFSET	0x400000
-+#define SST_LPT_DSP_IRAM_OFFSET	0x00000
- 
- #define SST_SHIM_PM_REG		0x84
- 
-@@ -462,12 +466,16 @@ static int hsw_init(struct sst_dsp *sst, struct sst_pdata *pdata)
- 		region = lp_region;
- 		region_count = ARRAY_SIZE(lp_region);
- 		sst->addr.iram_offset = SST_LP_IRAM_OFFSET;
-+		sst->addr.dsp_iram_offset = SST_LPT_DSP_IRAM_OFFSET;
-+		sst->addr.dsp_dram_offset = SST_LPT_DSP_DRAM_OFFSET;
- 		sst->addr.shim_offset = SST_LP_SHIM_OFFSET;
- 		break;
- 	case SST_DEV_ID_WILDCAT_POINT:
- 		region = wpt_region;
- 		region_count = ARRAY_SIZE(wpt_region);
- 		sst->addr.iram_offset = SST_WPT_IRAM_OFFSET;
-+		sst->addr.dsp_iram_offset = SST_WPT_DSP_IRAM_OFFSET;
-+		sst->addr.dsp_dram_offset = SST_WPT_DSP_DRAM_OFFSET;
- 		sst->addr.shim_offset = SST_WPT_SHIM_OFFSET;
- 		break;
- 	default:
++EXPORT_SYMBOL_GPL(sst_module_runtime_get_from_id);
++
+ /* returns block address in DSP address space */
+ u32 sst_dsp_get_offset(struct sst_dsp *dsp, u32 offset,
+ 	enum sst_mem_type type)
 -- 
 1.9.1
