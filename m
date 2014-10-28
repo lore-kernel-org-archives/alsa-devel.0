@@ -1,7 +1,7 @@
 From: Qais Yousef <qais.yousef@imgtec.com>
-Subject: [PATCH 08/11] drivers: char: axd: add low level AXD platform setup files
-Date: Tue, 28 Oct 2014 11:26:26 +0000
-Message-ID: <1414495589-8579-9-git-send-email-qais.yousef@imgtec.com>
+Subject: [PATCH 10/11] drivers: char: axd: add ts interface file
+Date: Tue, 28 Oct 2014 11:26:28 +0000
+Message-ID: <1414495589-8579-11-git-send-email-qais.yousef@imgtec.com>
 References: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -12,334 +12,49 @@ To: linux-kernel@vger.kernel.org
 Cc: Qais Yousef <qais.yousef@imgtec.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-At the moment AXD runs on MIPS cores only. These files provide
-basic functionality to prepare AXD f/w to bootstrap itself and
-do low level interrupt/kick when being initialised from a mips
-core.
+ts (time stamp) interface is required when axd is to perform synchronisation.
+since the time stamp hardware is SoC dependent, this file provides the
+interface that can be implemented by a different driver to do the necessary
+time stamp translation to perform synchronisation inside AXD
 
 Signed-off-by: Qais Yousef <qais.yousef@imgtec.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: <alsa-devel@alsa-project.org>
 ---
- drivers/char/axd/axd_platform.h      |  31 ++++
- drivers/char/axd/axd_platform_mips.c | 270 +++++++++++++++++++++++++++++++++++
- 2 files changed, 301 insertions(+)
- create mode 100644 drivers/char/axd/axd_platform.h
- create mode 100644 drivers/char/axd/axd_platform_mips.c
+ drivers/char/axd/axd_ts_driver.h | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 drivers/char/axd/axd_ts_driver.h
 
-diff --git a/drivers/char/axd/axd_platform.h b/drivers/char/axd/axd_platform.h
+diff --git a/drivers/char/axd/axd_ts_driver.h b/drivers/char/axd/axd_ts_driver.h
 new file mode 100644
-index 000000000000..1293b632fa67
+index 000000000000..2b99ad4a7adc
 --- /dev/null
-+++ b/drivers/char/axd/axd_platform.h
-@@ -0,0 +1,31 @@
++++ b/drivers/char/axd/axd_ts_driver.h
+@@ -0,0 +1,24 @@
 +/*
-+ * Copyright (C) 2011-2014 Imagination Technologies Ltd.
++ * Copyright (C) 2014 Imagination Technologies Ltd.
 + *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of the GNU General Public License
 + * as published by the Free Software Foundation; either version 2
 + * of the License, or (at your option) any later version.
 + *
-+ * Platform Specific helper functions.
++ * AXD timestamp driver interface.
 + */
-+#ifndef AXD_PLATFORM_H_
-+#define AXD_PLATFORM_H_
-+#include "axd_module.h"
-+
-+void axd_platform_init(struct axd_dev *axd);
-+void axd_platform_set_pc(unsigned long pc);
-+int axd_platform_start(void);
-+void axd_platform_stop(void);
-+unsigned int axd_platform_num_threads(void);
-+void axd_platform_kick(void);
-+void axd_platform_irq_ack(void);
-+void axd_platform_print_regs(void);
++#include <linux/types.h>
 +
 +/*
-+ * protect against simultaneous access to shared memory mapped registers area
-+ * between axd and the host
++ * Called at the beginning of a stream to set the fixed reference point in time
++ * for the stream. This should not be implemented if the reference point should
++ * not be altered in this way, and is managed through other means.
 + */
-+unsigned long axd_platform_lock(void);
-+void axd_platform_unlock(unsigned long flags);
++void __attribute__((weak)) axd_ts_reset(void);
 +
-+#endif /* AXD_PLATFORM_H_ */
-diff --git a/drivers/char/axd/axd_platform_mips.c b/drivers/char/axd/axd_platform_mips.c
-new file mode 100644
-index 000000000000..47f02a9fcb85
---- /dev/null
-+++ b/drivers/char/axd/axd_platform_mips.c
-@@ -0,0 +1,270 @@
 +/*
-+ * Copyright (C) 2011-2014 Imagination Technologies Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * as published by the Free Software Foundation; either version 2
-+ * of the License, or (at your option) any later version.
-+ *
-+ * This file implements running AXD as a single VPE along side linux on the same
-+ * core.
++ * Adjusts the provided timestamp from the source to destination formats.
++ * @return Non-zero for failure.
 + */
-+#include <linux/device.h>
-+#include <linux/io.h>
-+
-+#include <asm/cpu-features.h>
-+#include <asm/gic.h>
-+#include <asm/hazards.h>
-+#include <asm/mipsregs.h>
-+#include <asm/mipsmtregs.h>
-+#include <asm/tlbmisc.h>
-+
-+#include "axd_module.h"
-+#include "axd_platform.h"
-+
-+static unsigned int axd_irq;
-+static unsigned int axd_vpe;
-+
-+/* below definition is required to allow axd to be compiled as a module */
-+extern unsigned long __weak _gic_base;
-+
-+void axd_platform_init(struct axd_dev *axd)
-+{
-+	unsigned int val;
-+	unsigned long irqflags;
-+	unsigned long mtflags;
-+
-+	axd_irq = axd->axd_irq;
-+	axd_vpe = axd->vpe;
-+
-+	/*
-+	 * make sure nothing else on this vpe or another vpe can try to modify
-+	 * any of the shared registers below
-+	 */
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	/* EVP = 0, VPC = 1 */
-+	val = read_c0_mvpcontrol();
-+	val &= ~MVPCONTROL_EVP;
-+	val |= MVPCONTROL_VPC;
-+	write_c0_mvpcontrol(val);
-+	instruction_hazard();
-+
-+	/* prepare TC for setting up */
-+	settc(axd_vpe);
-+	write_tc_c0_tchalt(1);
-+
-+	/* make sure no interrupts are pending and exceptions bits are clear */
-+	write_vpe_c0_cause(0);
-+	write_vpe_c0_status(0);
-+
-+	/* bind TC to VPE */
-+	val = read_tc_c0_tcbind();
-+	val |= (axd_vpe << TCBIND_CURTC_SHIFT) | (axd_vpe << TCBIND_CURVPE_SHIFT);
-+	write_tc_c0_tcbind(val);
-+
-+	/* VPA = 1, MVP = 1 */
-+	val = read_vpe_c0_vpeconf0();
-+	val |= VPECONF0_MVP;
-+	val |= VPECONF0_VPA;
-+	write_vpe_c0_vpeconf0(val);
-+
-+	/* A = 1, IXMT = 0 */
-+	val = read_tc_c0_tcstatus();
-+	val &= ~TCSTATUS_IXMT;
-+	val |= TCSTATUS_A;
-+	write_tc_c0_tcstatus(val);
-+
-+	/* TE = 1 */
-+	val = read_vpe_c0_vpecontrol();
-+	val |= VPECONTROL_TE;
-+	write_vpe_c0_vpecontrol(val);
-+
-+	/* EVP = 1, VPC = 0 */
-+	val = read_c0_mvpcontrol();
-+	val |= MVPCONTROL_EVP;
-+	val &= ~MVPCONTROL_VPC;
-+	write_c0_mvpcontrol(val);
-+	instruction_hazard();
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
-+}
-+
-+static void reset(unsigned int thread)
-+{
-+	unsigned int val;
-+	unsigned long irqflags;
-+	unsigned long mtflags;
-+
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	settc(axd_vpe);
-+	/* first stop TC1 */
-+	write_tc_c0_tchalt(1);
-+
-+	/* clear EXL and ERL from TCSTATUS */
-+	val = read_c0_tcstatus();
-+	val &= ~(ST0_EXL | ST0_ERL);
-+	write_c0_tcstatus(val);
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
-+}
-+
-+void axd_platform_set_pc(unsigned long pc)
-+{
-+	unsigned long irqflags;
-+	unsigned long mtflags;
-+
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	settc(axd_vpe);
-+	write_tc_c0_tcrestart(pc);
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
-+}
-+
-+static int thread_control(unsigned int thread, int start)
-+{
-+	unsigned long irqflags;
-+	unsigned long mtflags;
-+
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	settc(axd_vpe);
-+	/* start/stop the thread */
-+	write_tc_c0_tchalt(!start);
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
-+
-+	return 1;
-+}
-+
-+int axd_platform_start(void)
-+{
-+	int thread = 0;
-+
-+	reset(thread);
-+	if (thread_control(thread, 1))
-+		return 0;
-+	return -1;
-+}
-+
-+void axd_platform_stop(void)
-+{
-+	int thread = 0;
-+
-+	thread_control(thread, 0);
-+}
-+
-+unsigned int axd_platform_num_threads(void)
-+{
-+	return 1;
-+}
-+
-+void axd_platform_kick(void)
-+{
-+	unsigned int val;
-+	unsigned long irqflags;
-+	unsigned long mtflags;
-+
-+	/*
-+	 * ensure all writes to shared uncached memory are visible to AXD
-+	 * before sending interrupt
-+	 */
-+	wmb();
-+
-+	if (axd_irq) {
-+		/* send an interrupt to axd using GIC WEDGE register */
-+		GICWRITE(GIC_REG(SHARED, GIC_SH_WEDGE), 0x80000000 | axd_irq);
-+		return;
-+	}
-+
-+	/* fallback to sending interrupt at SWT1 */
-+
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	settc(axd_vpe);
-+	val = read_vpe_c0_cause();
-+	val |= CAUSEF_IP1;
-+	write_vpe_c0_cause(val);
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
-+}
-+
-+inline unsigned long axd_platform_lock(void)
-+{
-+	return dvpe();
-+}
-+
-+inline void axd_platform_unlock(unsigned long flags)
-+{
-+	evpe(flags);
-+}
-+
-+inline void axd_platform_irq_ack(void)
-+{
-+}
-+
-+static void print_regs(unsigned int thread)
-+{
-+	unsigned long irqflags;
-+	unsigned long mtflags;
-+
-+	local_irq_save(irqflags);
-+	mtflags = dvpe();
-+
-+	settc(thread);
-+	pr_err("PC:\t\t0x%08lX\n", read_tc_c0_tcrestart());
-+	pr_err("STATUS:\t\t0x%08lX\n", read_vpe_c0_status());
-+	pr_err("CAUSE:\t\t0x%08lX\n", read_vpe_c0_cause());
-+	pr_err("EPC:\t\t0x%08lX\n", read_vpe_c0_epc());
-+	pr_err("EBASE:\t\t0x%08lX\n", read_vpe_c0_ebase());
-+	pr_err("BADVADDR:\t0x%08lX\n", read_vpe_c0_badvaddr());
-+	pr_err("CONFIG:\t\t0x%08lX\n", read_vpe_c0_config());
-+	pr_err("MVPCONTROL:\t0x%08X\n", read_c0_mvpcontrol());
-+	pr_err("VPECONTROL:\t0x%08lX\n", read_vpe_c0_vpecontrol());
-+	pr_err("VPECONF0:\t0x%08lX\n", read_vpe_c0_vpeconf0());
-+	pr_err("TCBIND:\t\t0x%08lX\n", read_tc_c0_tcbind());
-+	pr_err("TCSTATUS:\t0x%08lX\n", read_tc_c0_tcstatus());
-+	pr_err("TCHALT:\t\t0x%08lX\n", read_tc_c0_tchalt());
-+	pr_err("\n");
-+	pr_err("$0: 0x%08lX\tat: 0x%08lX\tv0: 0x%08lX\tv1: 0x%08lX\n",
-+				mftgpr(0), mftgpr(1), mftgpr(2), mftgpr(3));
-+	pr_err("a0: 0x%08lX\ta1: 0x%08lX\ta2: 0x%08lX\ta3: 0x%08lX\n",
-+				mftgpr(4), mftgpr(5), mftgpr(6), mftgpr(7));
-+	pr_err("t0: 0x%08lX\tt1: 0x%08lX\tt2: 0x%08lX\tt3: 0x%08lX\n",
-+				mftgpr(8), mftgpr(9), mftgpr(10), mftgpr(11));
-+	pr_err("t4: 0x%08lX\tt5: 0x%08lX\tt6: 0x%08lX\tt7: 0x%08lX\n",
-+				mftgpr(12), mftgpr(13), mftgpr(14), mftgpr(15));
-+	pr_err("s0: 0x%08lX\ts1: 0x%08lX\ts2: 0x%08lX\ts3: 0x%08lX\n",
-+				mftgpr(16), mftgpr(17), mftgpr(18), mftgpr(19));
-+	pr_err("s4: 0x%08lX\ts5: 0x%08lX\ts6: 0x%08lX\ts7: 0x%08lX\n",
-+				mftgpr(20), mftgpr(21), mftgpr(22), mftgpr(23));
-+	pr_err("t8: 0x%08lX\tt9: 0x%08lX\tk0: 0x%08lX\tk1: 0x%08lX\n",
-+				mftgpr(24), mftgpr(25), mftgpr(26), mftgpr(27));
-+	pr_err("gp: 0x%08lX\tsp: 0x%08lX\ts8: 0x%08lX\tra: 0x%08lX\n",
-+				mftgpr(28), mftgpr(29), mftgpr(30), mftgpr(31));
-+
-+	evpe(mtflags);
-+	local_irq_restore(irqflags);
-+}
-+
-+void axd_platform_print_regs(void)
-+{
-+	int i;
-+
-+	for (i = 1; i < 2; i++) {
-+		pr_err("Thread %d regs dump\n", i);
-+		print_regs(i);
-+	}
-+}
++int __attribute__((weak)) axd_ts_adjust(u64 *ts);
 -- 
 2.1.0
