@@ -1,69 +1,94 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: es8328-i2c: Fix i2c_device_id name
- field in es8328_id
-Date: Tue, 28 Oct 2014 10:48:12 +0000
-Message-ID: <20141028104812.GQ18557@sirena.org.uk>
-References: <1414457977.5091.2.camel@phoenix>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 15/15] spi: add locomo SPI driver
+Date: Tue, 28 Oct 2014 11:03:53 +0000
+Message-ID: <20141028110353.GR18557@sirena.org.uk>
+References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+ <1414454528-24240-16-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7838192872110803630=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F695260438
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 11:48:37 +0100 (CET)
-In-Reply-To: <1414457977.5091.2.camel@phoenix>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Sean Cross <xobs@kosagi.com>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="5LBS9LiS8wIv0ZHM"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1414454528-24240-16-git-send-email-dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Dmitry Eremin-Solenikov <dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-leds-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Andrea Adami <andrea.adami-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bryan Wu <cooloney-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Richard Purdie <rpurdie-Fm38FmjxZ/leoWH0uzbU5w@public.gmane.org>, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jingoo Han <jg1.han-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7838192872110803630==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pWAGJYLEitsbNOt2"
-Content-Disposition: inline
-
-
---pWAGJYLEitsbNOt2
+--5LBS9LiS8wIv0ZHM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 28, 2014 at 08:59:37AM +0800, Axel Lin wrote:
-> The convention for i2c_device_id name does not need to have company prefix.
+On Tue, Oct 28, 2014 at 03:02:08AM +0300, Dmitry Eremin-Solenikov wrote:
+> LoCoMo chip has a built-in simple SPI controller. On Sharp SL-5500 PDDAs
+> it is connected to external MMC slot.
 
-Applied, thanks.
+> +config SPI_LOCOMO
+> +	tristate "Locomo SPI master"
+> +	depends on MFD_LOCOMO
+> +	select SPI_BITBANG
 
---pWAGJYLEitsbNOt2
+Rather than using SPI_BITBANG it'd be good for new drivers to convert to
+using the core transfer_one() functionality which replaces most of what
+the bitbang code is doing.  The bitbang functionality was misnamed for
+most of the users and we're going to try to move most of the functionality
+not actually related to bitbanging out of it.
+
+> +	/* if (locomospi_carddetect()) { */
+> +	r = readw(spidev->base + LOCOMO_SPIMD);
+> +	r |= LOCOMO_SPIMD_XON;
+> +	writew(r, spidev->base + LOCOMO_SPIMD);
+> +
+> +	r = readw(spidev->base + LOCOMO_SPIMD);
+> +	r |= LOCOMO_SPIMD_XEN;
+> +	writew(r, spidev->base + LOCOMO_SPIMD);
+> +	/* } */
+
+Either remove or implement the comments.
+
+> +	r = readw(spidev->base + LOCOMO_SPICT);
+> +	r |= LOCOMO_SPIMD_XEN; /* FIXME */
+> +	writew(r, spidev->base + LOCOMO_SPICT);
+
+FIXME?
+
+> +	if (t)
+> +		hz = t->speed_hz;
+> +	if (!hz)
+> +		hz = spi->max_speed_hz;
+
+The core will ensure that the transfer always has a speed set in it.
+
+> +static int locomo_spi_probe(struct platform_device *pdev)
+> +{
+> +	struct resource *res;
+> +	struct spi_master *master;
+> +	struct locomospi_dev *spidev;
+> +	int ret;
+> +
+> +	dev_info(&pdev->dev, "LoCoO SPI Driver\n");
+
+Remove this, it's not adding anything.
+
+--5LBS9LiS8wIv0ZHM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUT3RrAAoJECTWi3JdVIfQys0H/2fGHVOYKrTR2Dvxq7I0835C
-7j8iWkt4aEWBQnMa2mMPxRllA/vsJgE0XWPx8Kp2mb4UYT+XfhRvSvrEypaWYFGk
-3+k1LJGsulpygqXtGVvdqhNuir0CV0MZg6E+EDcO7Jd2K5qBBqkww/2q7GN2qZwW
-GicI9IV/G0lKjPQSxm93r+WybFw5iFZKTaTroQKzqn/oleGPa4V+LoQqiqoe3IRf
-rNQ2YEqtfe4KNiVpb7h8uAO1TDHjT9V24xwVNmWfBOJ5iAngS7jWTF5PdLdLQBrW
-+f9/pdKv/VjkGxQGZIj9jAtNZmbMYZoKoayOV/IQmgm0q097tizVX12i65zvFt4=
-=Njbl
+iQEcBAEBAgAGBQJUT3gYAAoJECTWi3JdVIfQMRUH/1ywHd6UOGA0VNyAiMVZYi+x
+XlQspIiJGWfZFNWBuga40yvkX7JD1xGNSVzVAYkjowyN8iDKW9xrBhP+sRoANS8K
+mvQ4NALGqU7dQW5/mFItbnCNcEWn3B65Y3fj3vlxQ4CGkQr3IoKG4wexl+pO3aju
+584wwezeESMuNdOrPKIHjksY6/QAY35hPOooIaDW5H9t+9gHOMe/JToxbru+8liw
+h0k52r2CkuXb5thCqAkeF45aBaNSXqbPZ0TMVnh0GvSQiGE9U62WWOJH8fvVG+5s
+BW/2DUoHYtmpsf3kNDmD/gilT7+f4YjKKUw6tkBc6ewbkLe5wb1rSNM+JkiElcU=
+=55Nr
 -----END PGP SIGNATURE-----
 
---pWAGJYLEitsbNOt2--
-
---===============7838192872110803630==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7838192872110803630==--
+--5LBS9LiS8wIv0ZHM--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
