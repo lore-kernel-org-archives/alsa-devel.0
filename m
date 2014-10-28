@@ -1,27 +1,88 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH 00/11] Add AXD Audio Processing IP driver
-Date: Tue, 28 Oct 2014 13:06:25 +0100
-Message-ID: <544F86C1.8040500@metafoo.de>
-References: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com>
+From: Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>
+Subject: [PATCH v2] sound: pci: pcxhr: convert timeval to ktime_t
+Date: Tue, 28 Oct 2014 14:27:44 +0200
+Message-ID: <20141028122744.GA3772@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com>
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
-To: Qais Yousef <qais.yousef@imgtec.com>, linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de, bhelgaas@google.com, benoit.taine@lip6.fr
+Cc: arnd@arndb.de, opw-kernel@googlegroups.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/28/2014 12:26 PM, Qais Yousef wrote:
-> AXD Audio Processing IP performs audio decoding, encoding, mixing, equalisation,
-> synchronisation and playback. This series adds the driver and DT binding
-> document.
-> [...]
-> I added it to drivers/char as this is the best location I could think of at the
-> moment. It doesn't fit in alsa subsystem but I Cced them to confirm.
- > [...]
+This patch is concerned with migrating the time variables in the pcxhr
+module found in the sound driver. The changes are concerend with the
+y2038 problem where timeval will overflow in the year 2038. ktime_t
+was used instead of timeval to get the wall time. The difference
+is displayed now in nanoseconds instead of microseconds.
 
-I think it will fit in nicely.
+Signed-off-by: Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: changed variables names to avoid redeclaration conflicts.
 
-- Lars
+ sound/pci/pcxhr/pcxhr.c      | 10 ++++++----
+ sound/pci/pcxhr/pcxhr_core.c | 10 ++++++----
+ 2 files changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
+index b854fc5..7c33c97 100644
+--- a/sound/pci/pcxhr/pcxhr.c
++++ b/sound/pci/pcxhr/pcxhr.c
+@@ -711,8 +711,9 @@ static void pcxhr_start_linked_stream(struct pcxhr_mgr *mgr)
+ 	int playback_mask = 0;
+ 
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+-	struct timeval my_tv1, my_tv2;
+-	do_gettimeofday(&my_tv1);
++	ktime_t start_time, stop_time, diff_time;
++
++	start_time = ktime_get();
+ #endif
+ 	mutex_lock(&mgr->setup_mutex);
+ 
+@@ -823,9 +824,10 @@ static void pcxhr_start_linked_stream(struct pcxhr_mgr *mgr)
+ 	mutex_unlock(&mgr->setup_mutex);
+ 
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+-	do_gettimeofday(&my_tv2);
++	stop_time = ktime_get();
++	diff_time = ktime_sub(stop_time, start_time);
+ 	dev_dbg(&mgr->pci->dev, "***TRIGGER START*** TIME = %ld (err = %x)\n",
+-		    (long)(my_tv2.tv_usec - my_tv1.tv_usec), err);
++		    (long)(ktime_to_ns(diff_time)), err);
+ #endif
+ }
+ 
+diff --git a/sound/pci/pcxhr/pcxhr_core.c b/sound/pci/pcxhr/pcxhr_core.c
+index a584acb..181f772 100644
+--- a/sound/pci/pcxhr/pcxhr_core.c
++++ b/sound/pci/pcxhr/pcxhr_core.c
+@@ -910,8 +910,9 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr, int playback_mask,
+ 	int audio_mask;
+ 
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+-	struct timeval my_tv1, my_tv2;
+-	do_gettimeofday(&my_tv1);
++	ktime_t start_time, stop_time, diff_time;
++
++	start_time = ktime_get();
+ #endif
+ 	audio_mask = (playback_mask |
+ 		      (capture_mask << PCXHR_PIPE_STATE_CAPTURE_OFFSET));
+@@ -960,9 +961,10 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr, int playback_mask,
+ 			return err;
+ 	}
+ #ifdef CONFIG_SND_DEBUG_VERBOSE
+-	do_gettimeofday(&my_tv2);
++	stop_time = ktime_get();
++	diff_time = ktime_sub(stop_time, start_time);
+ 	dev_dbg(&mgr->pci->dev, "***SET PIPE STATE*** TIME = %ld (err = %x)\n",
+-		    (long)(my_tv2.tv_usec - my_tv1.tv_usec), err);
++			(long)(ktime_to_ns(diff_time)), err);
+ #endif
+ 	return 0;
+ }
+-- 
+1.9.3
