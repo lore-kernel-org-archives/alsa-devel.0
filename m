@@ -1,86 +1,33 @@
-From: Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>
-Subject: [PATCH] sound: pci: pcxhr: convert timeval to ktime_t
-Date: Tue, 28 Oct 2014 13:29:56 +0200
-Message-ID: <20141028112955.GA2365@localhost.localdomain>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 00/11] Add AXD Audio Processing IP driver
+Date: Tue, 28 Oct 2014 12:55:37 +0100
+Message-ID: <544F8439.4080402@ladisch.de>
+References: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.de, bhelgaas@google.com, benoit.taine@lip6.fr
-Cc: arnd@arndb.de, opw-kernel@googlegroups.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Qais Yousef <qais.yousef@imgtec.com>, linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch is concerned with migrating the time variables in the pcxhr
-module found in the sound driver. The changes are concerend with the
-y2038 problem where timeval will overflow in the year 2038. ktime_t
-was used instead of timeval to get the wall time. The difference
-is displayed now in nanoseconds instead of microseconds.
+Qais Yousef wrote:
+> AXD Audio Processing IP performs audio decoding, encoding, mixing, equalisation,
+> synchronisation and playback.
 
-Signed-off-by: Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/pci/pcxhr/pcxhr.c      | 10 ++++++----
- sound/pci/pcxhr/pcxhr_core.c | 10 ++++++----
- 2 files changed, 12 insertions(+), 8 deletions(-)
+What exactly do you mean with "synchronisation" and "playback"?
 
-diff --git a/sound/pci/pcxhr/pcxhr.c b/sound/pci/pcxhr/pcxhr.c
-index b854fc5..3f4607c 100644
---- a/sound/pci/pcxhr/pcxhr.c
-+++ b/sound/pci/pcxhr/pcxhr.c
-@@ -711,8 +711,9 @@ static void pcxhr_start_linked_stream(struct pcxhr_mgr *mgr)
- 	int playback_mask = 0;
- 
- #ifdef CONFIG_SND_DEBUG_VERBOSE
--	struct timeval my_tv1, my_tv2;
--	do_gettimeofday(&my_tv1);
-+	ktime_t start, stop, diff;
-+
-+	start = ktime_get();
- #endif
- 	mutex_lock(&mgr->setup_mutex);
- 
-@@ -823,9 +824,10 @@ static void pcxhr_start_linked_stream(struct pcxhr_mgr *mgr)
- 	mutex_unlock(&mgr->setup_mutex);
- 
- #ifdef CONFIG_SND_DEBUG_VERBOSE
--	do_gettimeofday(&my_tv2);
-+	stop = ktime_get();
-+	diff = ktime_sub(stop, start);
- 	dev_dbg(&mgr->pci->dev, "***TRIGGER START*** TIME = %ld (err = %x)\n",
--		    (long)(my_tv2.tv_usec - my_tv1.tv_usec), err);
-+			(long)(ktime_to_ns(diff)), err);
- #endif
- }
- 
-diff --git a/sound/pci/pcxhr/pcxhr_core.c b/sound/pci/pcxhr/pcxhr_core.c
-index a584acb..be3c003 100644
---- a/sound/pci/pcxhr/pcxhr_core.c
-+++ b/sound/pci/pcxhr/pcxhr_core.c
-@@ -910,8 +910,9 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr, int playback_mask,
- 	int audio_mask;
- 
- #ifdef CONFIG_SND_DEBUG_VERBOSE
--	struct timeval my_tv1, my_tv2;
--	do_gettimeofday(&my_tv1);
-+	ktime_t start, stop, diff;
-+
-+	start = ktime_get();
- #endif
- 	audio_mask = (playback_mask |
- 		      (capture_mask << PCXHR_PIPE_STATE_CAPTURE_OFFSET));
-@@ -960,9 +961,10 @@ int pcxhr_set_pipe_state(struct pcxhr_mgr *mgr, int playback_mask,
- 			return err;
- 	}
- #ifdef CONFIG_SND_DEBUG_VERBOSE
--	do_gettimeofday(&my_tv2);
-+	stop = ktime_get();
-+	diff = ktime_sub(stop, start);
- 	dev_dbg(&mgr->pci->dev, "***SET PIPE STATE*** TIME = %ld (err = %x)\n",
--		    (long)(my_tv2.tv_usec - my_tv1.tv_usec), err);
-+			(long)(ktime_to_ns(diff)), err);
- #endif
- 	return 0;
- }
--- 
-1.9.3
+> It doesn't fit in alsa subsystem but I Cced them to confirm.
+
+... because those two words sound like something that a sound card could do.
+
+> I added it to drivers/char as this is the best location I could think of at the
+> moment.
+
+drivers/misc?
+
+
+Regards,
+Clemens
