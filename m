@@ -1,71 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_asrc: Add reg_defaults for regmap to fix
- kernel dump
-Date: Tue, 28 Oct 2014 10:47:42 +0000
-Message-ID: <20141028104742.GP18557@sirena.org.uk>
-References: <1414202637-18929-1-git-send-email-nicoleotsuka@gmail.com>
- <20141028001904.GH18557@sirena.org.uk>
- <20141028042603.GA5548@Asurada>
+Subject: Re: [PATCH] ASoC: es8328-i2c: Fix i2c_device_id name
+ field in es8328_id
+Date: Tue, 28 Oct 2014 10:48:12 +0000
+Message-ID: <20141028104812.GQ18557@sirena.org.uk>
+References: <1414457977.5091.2.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="scYsJfBjqkrBfg1Z"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20141028042603.GA5548@Asurada>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============7838192872110803630=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F695260438
+ for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 11:48:37 +0100 (CET)
+In-Reply-To: <1414457977.5091.2.camel@phoenix>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: Sean Cross <xobs@kosagi.com>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---scYsJfBjqkrBfg1Z
+--===============7838192872110803630==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="pWAGJYLEitsbNOt2"
+Content-Disposition: inline
+
+
+--pWAGJYLEitsbNOt2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Oct 27, 2014 at 09:26:26PM -0700, Nicolin Chen wrote:
-> On Tue, Oct 28, 2014 at 12:19:04AM +0000, Mark Brown wrote:
+On Tue, Oct 28, 2014 at 08:59:37AM +0800, Axel Lin wrote:
+> The convention for i2c_device_id name does not need to have company prefix.
 
-> > It's not a bug, it's not reasonable to default allocations to atomic and
-> > we can't really tell what context we're in.  Anything used inside a
-> > heavily locked path should either have a default provided or arrange for
-> > a prior write to set up the cache.
+Applied, thanks.
 
-> I've a little trouble to understand the prior write over here. Inside my
-> probe() there's a register_init() call which has a set of regmap_write().
-> And then the first regmap_write() results the dump. Does that mean this
-> regmap_write() isn't prior write? If so, how should I do if not setting
-
-Oh, bother.  We fixed things so that we're now always running with the
-spinlock held...  never mind.
-
-> default values here -- Some IPs may have default value 0 for registers.
-> And this would make reg_defaults tedious since there's nothing special
-> to assign.
-
-Write a small script then, or a little bit of code to create the
-defaults dynamically.
-
-> And actually I remember I haven't seen any dump when I sent the initial
-> patch for the whole ASRC driver but it manifested last month. I thought
-> it might be a partially-merging issue and it would be fixed after merge
-> window's done.....
-
-Nothing has changed here for a while as far as I remember.
-
---scYsJfBjqkrBfg1Z
+--pWAGJYLEitsbNOt2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUT3RNAAoJECTWi3JdVIfQ6dgH/31xUY+Mj0t8ZJ640hvt2+hz
-02CP6IhL9gVdQ0/K6+AupVIIln9sbR5Ys9PWnZShGmcULb99c4wcwuo0pQhI3He8
-00TCixzko3Q3rFo3Hbs5GaxlmUpUOlki3n5O34rZ4whOHqWuBk7MVEB/crrJHANS
-M3FzS0IB5wymEWPnr2PYXwQi52JNcSYhXOHVqmhnJJJPiFut1otsqo4qAaSjLmxz
-MRw0qSFWwuT0YdRK8ku0jvpZgOsyC2uyRR9ZIRvX4sufNDXgv18spfATbk5DtxSy
-1vbZETpugd6Bu/B3Tn97rv/M2NIDEtNN5txJEZpmG277LPjiq1ujx1vuGpUogVs=
-=YnuJ
+iQEcBAEBAgAGBQJUT3RrAAoJECTWi3JdVIfQys0H/2fGHVOYKrTR2Dvxq7I0835C
+7j8iWkt4aEWBQnMa2mMPxRllA/vsJgE0XWPx8Kp2mb4UYT+XfhRvSvrEypaWYFGk
+3+k1LJGsulpygqXtGVvdqhNuir0CV0MZg6E+EDcO7Jd2K5qBBqkww/2q7GN2qZwW
+GicI9IV/G0lKjPQSxm93r+WybFw5iFZKTaTroQKzqn/oleGPa4V+LoQqiqoe3IRf
+rNQ2YEqtfe4KNiVpb7h8uAO1TDHjT9V24xwVNmWfBOJ5iAngS7jWTF5PdLdLQBrW
++f9/pdKv/VjkGxQGZIj9jAtNZmbMYZoKoayOV/IQmgm0q097tizVX12i65zvFt4=
+=Njbl
 -----END PGP SIGNATURE-----
 
---scYsJfBjqkrBfg1Z--
+--pWAGJYLEitsbNOt2--
+
+--===============7838192872110803630==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7838192872110803630==--
