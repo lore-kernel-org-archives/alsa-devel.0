@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/8] ASoC: dapm: Cleanups and speed-ups
-Date: Tue, 28 Oct 2014 00:20:14 +0000
-Message-ID: <20141028002014.GI18557@sirena.org.uk>
-References: <1414251723-25050-1-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Use generic control handlers for S8
+	control
+Date: Tue, 28 Oct 2014 00:20:59 +0000
+Message-ID: <20141028002059.GJ18557@sirena.org.uk>
+References: <1414261556-16212-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5697666581801585129=="
+Content-Type: multipart/mixed; boundary="===============2493833060562297377=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 64F18261584
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 01:20:37 +0100 (CET)
-In-Reply-To: <1414251723-25050-1-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EB1D261A2F
+ for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 01:21:21 +0100 (CET)
+In-Reply-To: <1414261556-16212-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,47 +26,47 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5697666581801585129==
+--===============2493833060562297377==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qhD8kUEc5MK9MdKG"
+	protocol="application/pgp-signature"; boundary="a0kvDU9Y5772Ejco"
 Content-Disposition: inline
 
 
---qhD8kUEc5MK9MdKG
+--a0kvDU9Y5772Ejco
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Oct 25, 2014 at 05:41:55PM +0200, Lars-Peter Clausen wrote:
-> Only as few minor cleanup changes since v1. No change in functionallity.
->=20
-> Original cover letter from v1:
+On Sat, Oct 25, 2014 at 08:25:56PM +0200, Lars-Peter Clausen wrote:
+> Commit f227b88f0fce ("ASoC: core: Add signed register volume control logic")
+> added support for signed control to the generic volsw control handler.
+> This makes it possible to use them for the S8 control as well, rather than
+> having to use a custom control handler implementation.
 
-Applied all, thanks.
+Applied, thanks.
 
---qhD8kUEc5MK9MdKG
+--a0kvDU9Y5772Ejco
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUTuE+AAoJECTWi3JdVIfQCAIH/iht/GNJXJ7W8XEEIqo+v31i
-3oh2nj7z7ZOfdfySImB+jKi82m0zMBKNkTEvedG1ryD7k0i+dcsCy6xtGcqdK2Tf
-lnqLXGmOgp8Zu11SDui1QYmpnLDzzYLFoQAadJpb1J3i8wACbGauQif0x/fSqXIQ
-lr2lgk1dvkkZSzYykAJRE9SLz5uG5TU4IflogxmMlzL7Q2+KXdeQwHakh5PsAGI9
-Vn+H9grPA/gxrxTind79+70dTt0mv7XFtueuQUBLzCVYYPx04OcC0Sg4cEo2kRoX
-CYYhsi4BB0w2Y+BHelSaBxJJkDsKzS2tGPSlgmVkBqj3zKU1G7UejnW2C58dCcg=
-=Qgpr
+iQEcBAEBAgAGBQJUTuFqAAoJECTWi3JdVIfQI8wH/jwnpEvxhdFM40pTPh7X+G0z
+ip5V6IDmqnBrIRkYAESj49SmnvYNu4rt9Ukn+chIHzGOuVmnVgCsx7WuimBrwmCH
+UKcO5EAfmoAzWEQWr40WtqUZukL7f3SC+0c2GfSPkDrPS3dHZ9kp7MseYLzvGFlz
+yA3zeX9hfoKAYHVH5Hkrekdb3Aota/4JHAPgl8yLRQFO4ROMPpXB8HkqMHIhdBf2
+rXYInpmbZWWoNPKHEe1ZIKQWOjicYQ4IXsafD4nNZkfVEsfh6gcnEAVV6dzWyvwZ
+Ji0CEM9Xxt+u+mlmAQ0mm221RA8VnuO+69xhZkl3pL+jkWqaeOmrJFv6zWPOfkU=
+=Jin5
 -----END PGP SIGNATURE-----
 
---qhD8kUEc5MK9MdKG--
+--a0kvDU9Y5772Ejco--
 
---===============5697666581801585129==
+--===============2493833060562297377==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5697666581801585129==--
+--===============2493833060562297377==--
