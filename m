@@ -1,106 +1,70 @@
-From: Max Filippov <jcmvbkbc@gmail.com>
-Subject: Re: [PATCH] ASoC: add xtensa xtfpga I2S interface and platform
-Date: Tue, 28 Oct 2014 21:11:34 +0300
-Message-ID: <CAMo8BfL+vW7BjC1bQPNjhuBMTcRTkf8_DDS3NO2HmBUnfHYAFQ@mail.gmail.com>
-References: <1414436825-19416-1-git-send-email-jcmvbkbc@gmail.com>
-	<20141027193229.GE18557@sirena.org.uk>
-	<CAMo8Bf+Z9V8mkiC3JOupPQmi1EJUDKrb1qcNncDbsEbhjigbww@mail.gmail.com>
-	<20141028154224.GX18557@sirena.org.uk>
-	<CAMo8BfLpJ0bdmaFt9+gLQ_kEjB68XdjAJUw8f8s=Owv46h_yDQ@mail.gmail.com>
-	<20141028173853.GD18557@sirena.org.uk>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 12/15] ARM: pxa: poodle: don't preallocate IRQ space for
+ locomo
+Date: Tue, 28 Oct 2014 20:13:17 +0100
+Message-ID: <87bnow80tu.fsf@free.fr>
+References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+ <1414454528-24240-13-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141028173853.GD18557@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Grant Likely <grant.likely@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1414454528-24240-13-git-send-email-dbaryshkov@gmail.com> (Dmitry
+ Eremin-Solenikov's message of "Tue, 28 Oct 2014 03:02:05 +0300")
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Cc: Alexandre Courbot <gnurou@gmail.com>, linux-fbdev@vger.kernel.org, Bryan Wu <cooloney@gmail.com>, Russell King <linux@arm.linux.org.uk>, Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, alsa-devel@alsa-project.org, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-spi@vger.kernel.org, linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>, Andrea Adami <andrea.adami@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Jingoo Han <jg1.han@samsung.com>, Daniel Mack <daniel@zonque.org>, Lee Jones <lee.jones@linaro.org>, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 28, 2014 at 8:38 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Oct 28, 2014 at 08:00:45PM +0300, Max Filippov wrote:
->> On Tue, Oct 28, 2014 at 6:42 PM, Mark Brown <broonie@kernel.org> wrote:
->> > So atomics don't work?  Simple flags are one of the few cases where they
->> > might cover it...  again, the fact that this isn't similar to other code
->> > doing the same thing is worrying.
->
->> tx_substream use pattern is the same as of a typical RCU variable.
->> RCU wrappers combine ACCESS_ONCE and barriers that I'd otherwise
->> have to write myself.
->
-> You *really* need to explain how it's supposed to work - right now it's
-> not at all obvious, like I say the fact that this is a rarely used idiom
-> is not helping.  For example when we tear down the stream we just assign
-> the pointer in _stop() but don't bother with a sync until the stream is
-> closed - why?
+Dmitry Eremin-Solenikov <dbaryshkov@gmail.com> writes:
 
-Because we can't wait in stop and syncing is not time critical, we can
-do it any time before the stream becomes invalid.
+...zip...
 
-> We also appear to be doing several different dereferences
-> of the pointer inside a single rcu_read_lock() for some reason which is
-> worrying.
+> diff --git a/arch/arm/mach-pxa/poodle.c b/arch/arm/mach-pxa/poodle.c
+> index 3041d83..97eced9 100644
+> --- a/arch/arm/mach-pxa/poodle.c
+> +++ b/arch/arm/mach-pxa/poodle.c
+> @@ -181,14 +181,18 @@ static struct locomo_platform_data locomo_info = {
+>  	.gpio_data = {
+>  		.gpio_base = POODLE_LOCOMO_GPIO_BASE,
+>  	},
+> -	.bl_data = {
+> +	.lcd_data = {
+Is that part really belonging to that patch ? It seems to me that this changes
+the code included in patch 10/15 "ARM: pxa: poodle: use new LoCoMo
+driver".
 
-I've cleaned that up.
+Therefore I'm wondering if I take the serie, halt it at patch 10, and try to
+compile I would succeed ... I think I wouldn't.
 
->> > it'd be better to just add a DMA controller on the FPGA, everyone will
->> > be much happier).
->
->> Hardware people think different and it's been like that for more than 5
->> years.
->
-> They appear to be the only hardware people who think this way, while we
+> +	},
+> +	.bl_data = {
+>  		.gpio_fl_vr       = POODLE_GPIO_FL_VR,
+>  	},
+Ditto.
 
-The whole audio subsystem on xtfpga boards is there for, I think, a single
-purpose: for the demonstration of CPU audio processing capabilities.
-That's why it's that simple.
+> +	.gpio_amp1_on	= -1,
+> +	.gpio_amp2_on	= -1,
+This won't prevent compilation, but is it the target of this patch which is IRQ
+space oriented ?
 
-> do have some FIQ based PIO stuff in mainline all the examples I can
-> think of are there because people didn't work out how to drive the DMA
-> controller yet (and even there we're using FIQs not bashing things in
-> from a regular interrupt).
+> @@ -453,7 +457,7 @@ static void __init poodle_init(void)
+>  	platform_scoop_config = &poodle_pcmcia_config;
+>  
+>  	if (sharpsl_param.comadj != -1)
+> -		locomo_info.bl_data.comadj = sharpsl_param.comadj;
+> +		locomo_info.lcd_data.comadj = sharpsl_param.comadj;
+Ditto.
 
-Currently we don't support fast interrupt handlers written in C on xtensa.
-
->> >> Because this callback is said to be potentially called multiple times per
->> >> initialization. Is it not?
->
->> > It can but but I'm not seeing any connection between that and the idea
->> > of not keeping the clock enabled when the device isn't in use?
->
->> hw_params callback can change MCLK rate, so it has to disable and
->> enable the clock anyway, and since enable can fail it does not guarantee
->> that the clock will be left in the same state. Or should I adjust MCLK rate
->> w/o disabling the clock?
->
-> So yet again: why not just enable the clock only when the device is in
-> use?  If it's being configured it stands to reason that the device isn't
-> actively in use...
-
-Mark, I don't get it, sorry ): My clock synthesizer is I2C controlled, so
-I can't prepare/unprepare it in the trigger callback. When should I do it?
-
->> > I'm not sure I find that terribly convincing, I'd like to be able to
->> > look at the code and tell that it's not going to blow up.  This again
->> > comes back to the general comment about clarity - the code *looks*
->> > suspicious (strange indentation of the for loop with a comment in the
->> > middle of the statement itself for example).
->
->> The level field in the control register is 4 bit wide, so the allowed range of
->> level is 0..15. FIFO size is 8192 entries, level = 1 corresponds to
->> FIFO size / 2, level = 14 -- to FIFO size of 0. I guess this function
->> won't get period_size of 0?
->
-> So if the IP gets changed and the code gets blown up this could well
-> explode then...  which doesn't seem entirely unlikely considering this
-> is a FPGA platform so presumably this is easy to update.  To repeat this
-> is about clarity and the code looking like it's probably hiding bugs as
-> much as if the code actually works if you really sit down and study it.
-
-The calculation does not depend on the actual hardware, but on the
-constant definitions in the same file. They need to be updated if the
-hardware changes. I'll try to rewrite it in a cleaner way.
+Cheers.
 
 -- 
-Thanks.
--- Max
+Robert
