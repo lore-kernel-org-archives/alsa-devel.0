@@ -1,17 +1,22 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 7/7] ASoC: Intel: Provide streams with
-	dynamic module information
-Date: Tue, 28 Oct 2014 17:37:18 +0000
-Message-ID: <1414517838-16210-7-git-send-email-liam.r.girdwood@linux.intel.com>
-References: <1414517838-16210-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: "Palacios, Hector" <Hector.Palacios@digi.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: always cancel any pending
+ delayed stream shutdown
+Date: Tue, 28 Oct 2014 17:42:18 +0000
+Message-ID: <544FD578.7000205@digi.com>
+References: <1413987293-21544-1-git-send-email-hector.palacios@digi.com>
+ <20141022162802.GB2344@sirena.org.uk>
+ <52F917CEA1B9C64C94833D53889D478C044B9B@dor-sms-xch01.digi.com>
+ <CAOMZO5BjS9y0sCkT8wq_pdi7BgxB-5PMa8gCdAgs5=CfYP5K1A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F66A265D6E
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 18:38:55 +0100 (CET)
-In-Reply-To: <1414517838-16210-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Received: from mail1.bemta12.messagelabs.com (mail1.bemta12.messagelabs.com
+ [216.82.251.4]) by alsa0.perex.cz (Postfix) with ESMTP id A6CF9265E22
+ for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 18:42:24 +0100 (CET)
+In-Reply-To: <CAOMZO5BjS9y0sCkT8wq_pdi7BgxB-5PMa8gCdAgs5=CfYP5K1A@mail.gmail.com>
+Content-Language: en-US
+Content-ID: <F8DC7D71247BFC4AA1FCDA04F276EFAC@digi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,164 +26,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Remove the hard coded module paramaters and provide each module with
-dynamically generated buffer information for scratch and persistent
-buffers.
+Hi Fabio,
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- sound/soc/intel/sst-haswell-ipc.c | 54 ++++++++++++++++-----------------------
- sound/soc/intel/sst-haswell-ipc.h |  3 +--
- sound/soc/intel/sst-haswell-pcm.c | 29 +++++----------------
- 3 files changed, 29 insertions(+), 57 deletions(-)
+On 10/28/2014 04:23 PM, Fabio Estevam wrote:
+> Hi Hector,
+>
+> On Wed, Oct 22, 2014 at 3:25 PM, Palacios, Hector <Hector.Palacios@digi.com>
+> wrote:
+>
+>>> You're not saying what the problems are, just that they might be caused.
+>>
+>> Sorry, your right. When I do a recording 2 seconds after a previous playback, and
+>> later play the recorded sound I hear 3 seconds of correct audio and then I
+>> continue to hear good audio but mixed with noise and at a higher volume, as if
+>> the codec had reseted certain parameters to some default values.
+>
+> Are you able to reproduce this problem on 3.18-rc?
 
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 62daa97..770d467 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -1351,10 +1351,11 @@ int sst_hsw_stream_buffer(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
- }
- 
- int sst_hsw_stream_set_module_info(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, enum sst_hsw_module_id module_id,
--	u32 entry_point)
-+	struct sst_hsw_stream *stream, struct sst_module_runtime *runtime)
- {
- 	struct sst_hsw_module_map *map = &stream->request.map;
-+	struct sst_dsp *dsp = sst_hsw_get_dsp(hsw);
-+	struct sst_module *module = runtime->module;
- 
- 	if (stream->commited) {
- 		dev_err(hsw->dev, "error: stream committed for set module\n");
-@@ -1363,36 +1364,25 @@ int sst_hsw_stream_set_module_info(struct sst_hsw *hsw,
- 
- 	/* only support initial module atm */
- 	map->module_entries_count = 1;
--	map->module_entries[0].module_id = module_id;
--	map->module_entries[0].entry_point = entry_point;
--
--	return 0;
--}
--
--int sst_hsw_stream_set_pmemory_info(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, u32 offset, u32 size)
--{
--	if (stream->commited) {
--		dev_err(hsw->dev, "error: stream committed for set pmem\n");
--		return -EINVAL;
--	}
--
--	stream->request.persistent_mem.offset = offset;
--	stream->request.persistent_mem.size = size;
--
--	return 0;
--}
--
--int sst_hsw_stream_set_smemory_info(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, u32 offset, u32 size)
--{
--	if (stream->commited) {
--		dev_err(hsw->dev, "error: stream committed for set smem\n");
--		return -EINVAL;
--	}
--
--	stream->request.scratch_mem.offset = offset;
--	stream->request.scratch_mem.size = size;
-+	map->module_entries[0].module_id = module->id;
-+	map->module_entries[0].entry_point = module->entry;
-+
-+	stream->request.persistent_mem.offset =
-+		sst_dsp_get_offset(dsp, runtime->persistent_offset, SST_MEM_DRAM);
-+	stream->request.persistent_mem.size = module->persistent_size;
-+
-+	stream->request.scratch_mem.offset =
-+		sst_dsp_get_offset(dsp, dsp->scratch_offset, SST_MEM_DRAM);
-+	stream->request.scratch_mem.size = dsp->scratch_size;
-+
-+	dev_dbg(hsw->dev, "module %d runtime %d using:\n", module->id,
-+		runtime->id);
-+	dev_dbg(hsw->dev, " persistent offset 0x%x bytes 0x%x\n",
-+		stream->request.persistent_mem.offset,
-+		stream->request.persistent_mem.size);
-+	dev_dbg(hsw->dev, " scratch offset 0x%x bytes 0x%x\n",
-+		stream->request.scratch_mem.offset,
-+		stream->request.scratch_mem.size);
- 
- 	return 0;
- }
-diff --git a/sound/soc/intel/sst-haswell-ipc.h b/sound/soc/intel/sst-haswell-ipc.h
-index f474f99..fe6e63f 100644
---- a/sound/soc/intel/sst-haswell-ipc.h
-+++ b/sound/soc/intel/sst-haswell-ipc.h
-@@ -433,8 +433,7 @@ int sst_hsw_stream_set_map_config(struct sst_hsw *hsw,
- int sst_hsw_stream_set_style(struct sst_hsw *hsw, struct sst_hsw_stream *stream,
- 	enum sst_hsw_interleaving style);
- int sst_hsw_stream_set_module_info(struct sst_hsw *hsw,
--	struct sst_hsw_stream *stream, enum sst_hsw_module_id module_id,
--	u32 entry_point);
-+	struct sst_hsw_stream *stream, struct sst_module_runtime *runtime);
- int sst_hsw_stream_set_pmemory_info(struct sst_hsw *hsw,
- 	struct sst_hsw_stream *stream, u32 offset, u32 size);
- int sst_hsw_stream_set_smemory_info(struct sst_hsw *hsw,
-diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
-index 3690cf7..522edef 100644
---- a/sound/soc/intel/sst-haswell-pcm.c
-+++ b/sound/soc/intel/sst-haswell-pcm.c
-@@ -105,6 +105,7 @@ struct hsw_pcm_data {
- 	unsigned int wpos;
- 	struct mutex mutex;
- 	bool allocated;
-+	int persistent_offset;
- };
- 
- /* private data for the driver */
-@@ -478,28 +479,8 @@ static int hsw_pcm_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	/* we use hardcoded memory offsets atm, will be updated for new FW */
--	if (stream_type == SST_HSW_STREAM_TYPE_CAPTURE) {
--		sst_hsw_stream_set_module_info(hsw, pcm_data->stream,
--			SST_HSW_MODULE_PCM_CAPTURE, module_data->entry);
--		sst_hsw_stream_set_pmemory_info(hsw, pcm_data->stream,
--			0x449400, 0x4000);
--		sst_hsw_stream_set_smemory_info(hsw, pcm_data->stream,
--			0x400000, 0);
--	} else { /* stream_type == SST_HSW_STREAM_TYPE_SYSTEM */
--		sst_hsw_stream_set_module_info(hsw, pcm_data->stream,
--			SST_HSW_MODULE_PCM_SYSTEM, module_data->entry);
--
--		sst_hsw_stream_set_pmemory_info(hsw, pcm_data->stream,
--			module_data->offset, module_data->size);
--		sst_hsw_stream_set_pmemory_info(hsw, pcm_data->stream,
--			0x44d400, 0x3800);
--
--		sst_hsw_stream_set_smemory_info(hsw, pcm_data->stream,
--			module_data->offset, module_data->size);
--		sst_hsw_stream_set_smemory_info(hsw, pcm_data->stream,
--			0x400000, 0);
--	}
-+	sst_hsw_stream_set_module_info(hsw, pcm_data->stream,
-+		pcm_data->runtime);
- 
- 	ret = sst_hsw_stream_commit(hsw, pcm_data->stream);
- 	if (ret < 0) {
-@@ -679,9 +660,11 @@ static int hsw_pcm_create_modules(struct hsw_priv_data *pdata)
- 		pcm_data = &pdata->pcm[i];
- 
- 		pcm_data->runtime = sst_hsw_runtime_module_create(hsw,
--			mod_map[i].mod_id);
-+			mod_map[i].mod_id, pcm_data->persistent_offset);
- 		if (pcm_data->runtime == NULL)
- 			goto err;
-+		pcm_data->persistent_offset =
-+			pcm_data->runtime->persistent_offset;
- 	}
- 
- 	return 0;
--- 
-1.9.1
+Mark was right and I tracked the problem down to sgtl5000 driver's function 
+power_vag_event() which is called by the scheduled work 5 seconds after a playback is 
+finished.
+Then I saw this was already fixed in commit f091f3f07328f75d20a2a5970d1f8b58d95fc990 
+"ASoC: sgtl5000: prevent playback to be muted when terminating concurrent capture".
+
+Thanks
+--
+Hector Palacios
