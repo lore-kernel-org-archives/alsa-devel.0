@@ -1,202 +1,78 @@
-From: Max Filippov <jcmvbkbc@gmail.com>
-Subject: Re: [PATCH] ASoC: add xtensa xtfpga I2S interface and platform
-Date: Mon, 27 Oct 2014 23:38:53 +0300
-Message-ID: <CAMo8Bf+Z9V8mkiC3JOupPQmi1EJUDKrb1qcNncDbsEbhjigbww@mail.gmail.com>
-References: <1414436825-19416-1-git-send-email-jcmvbkbc@gmail.com>
-	<20141027193229.GE18557@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141027193229.GE18557@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Grant Likely <grant.likely@linaro.org>
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Subject: [PATCH 00/15] new locomo driver
+Date: Tue, 28 Oct 2014 03:01:53 +0300
+Message-ID: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+Return-path: <linux-leds-owner@vger.kernel.org>
+Sender: linux-leds-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, linux-input@vger.kernel.org, linux-leds@vger.kernel.org, linux-spi@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo Han <jg1.han@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 27, 2014 at 10:32 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Oct 27, 2014 at 10:07:05PM +0300, Max Filippov wrote:
->
->> +config SND_SOC_XTENSA_XTFPGA
->> +     tristate "SoC Audio for xtensa xtfpga"
->> +     depends on XTENSA_PLATFORM_XTFPGA
->> +     select SND_SOC_XTFPGA_I2S
->> +     select SND_SOC_TLV320AIC23_SPI
->> +     select SND_SIMPLE_CARD
->
-> I've only got this far in the file and have to leave now so I'll look
-> properly at the actual code later but the above shouldn't have the CODEC
-> or card driver selected, if the I2S driver is well written it should be
-> usable independently of either.
+Sharp Zaurus SL-5500 and SL-5600 use special companion Gate Array. Current
+drivers present in Linux kernel has some problems:
 
-The above entry is for the whole sound subsystem of that SoC.
-An entry for I2S driver is above it.
+ * It uses custom bus instead of platform bus/mfd core.
+ * Device drivers are not well layered/separated.
+ * It uses custom gpio accessors instead of using GPIOLIB.
 
->> +++ b/sound/soc/xtensa/Makefile
->> @@ -0,0 +1 @@
->> +obj-$(CONFIG_SND_SOC_XTFPGA_I2S) += xtfpga-i2s.o
->
-> Please follow the style for all other ASoC drivers and name the module
-> snd-soc-foo.
+With this patchset I tried to modernise and restructure the LoCoMo driver.
+Also I added an experimental SPI driver that will be used by mmc-spi on
+Sharp SL-5500 collie devices.
 
-Ok.
+----------------------------------------------------------------
+Dmitry Eremin-Solenikov (15):
+      mfd: add new driver for Sharp LoCoMo
+      GPIO: port LoCoMo gpio support from old driver
+      leds: port locomo leds driver to new locomo core
+      input: convert LoCoMo keyboard driver to use new locomo core
+      video: backlight: add new locomo backlight driver
+      video: lcd: add LoCoMo LCD driver
+      video: backlight: drop old locomo bl/lcd driver
+      ARM: sa1100: make collie use new locomo drivers
+      ARM: sa1100: don't preallocate IRQ space for locomo
+      ARM: pxa: poodle: use new LoCoMo driver
+      sound: soc: poodle: make use of new locomo GPIO interface
+      ARM: pxa: poodle: don't preallocate IRQ space for locomo
+      ARM: drop old LoCoMo driver
+      gpio: locomo: implement per-pin irq handling
+      spi: add locomo SPI driver
 
->> +static void xtfpga_i2s_push_tx(struct xtfpga_i2s *i2s)
->> +{
->> +     struct snd_pcm_substream *tx_substream;
->> +     struct snd_pcm_runtime *runtime;
->> +
->> +     rcu_read_lock();
->> +     tx_substream = rcu_dereference(i2s->tx_substream);
->> +     runtime = tx_substream->runtime;
->> +#define xtfpga_i2s_tx_loop(i2s, runtime, channels, sample_bits) \
->> +     do { \
->> +             const u##sample_bits (*p)[channels] = \
->> +                     (void *)runtime->dma_area; \
->> +             for (; i2s->tx_fifo_sz < i2s->tx_fifo_high; \
->> +                  i2s->tx_fifo_sz += 2) { \
->> +                     iowrite32(p[i2s->tx_ptr][0], \
->> +                               i2s->regs + XTFPGA_I2S_CHAN0_DATA); \
->> +                     iowrite32(p[i2s->tx_ptr][channels - 1], \
->> +                               i2s->regs + XTFPGA_I2S_CHAN0_DATA); \
->> +                     if (++i2s->tx_ptr >= runtime->buffer_size) \
->> +                             i2s->tx_ptr = 0; \
->> +             } \
->> +     } while (0)
->> +
->> +     switch (runtime->sample_bits | (runtime->channels << 8)) {
->> +     case 0x110:
->> +             xtfpga_i2s_tx_loop(i2s, runtime, 1, 16);
->> +             break;
->
-> This really needs some rework to be legible.  I'd suggest making your
-> macro an inline function and either replacing these magic numbers in the
-> switch statement with defines or just writing the code clearly and
-> letting the compiler figure it out.
-
-Ok, I'll rewrite it.
-
-> Some documentation explaining what your RCU usage is all about would
-> also be good...  I'm not clear why it's being used, none of the FIQ
-> drivers do this and I can't entirely figure out what we're defending
-> against other than the tasklet which we should be stopping anyway and
-> why what we're doing is safe.
-
-Ok, I'll document it. I'm synchronizing trigger callback with both interrupt
-handler and the tasklet. All that they need to know is whether we're playing
-a stream or not, so I protect the stream pointer with RCU. A spinlock for
-protection of a single pointer seems too big for me.
-
-> I would also expect to see the data transfer and I2S bits more split
-> out, presumably this IP can actually be used in designs with a DMA
-> controller and one would expect that for practical systems this would be
-> the common case?
-
-I don't know of other designs that use this IP block. Can we do it when
-we get such users?
-
->> +     if (int_status & XTFPGA_I2S_INT_UNDERRUN) {
->> +             i2s->tx_fifo_sz = 0;
->> +             regmap_update_bits(i2s->regmap, XTFPGA_I2S_CONFIG,
->> +                                XTFPGA_I2S_CONFIG_INT_ENABLE |
->> +                                XTFPGA_I2S_CONFIG_TX_ENABLE, 0);
->> +     } else {
->> +             i2s->tx_fifo_sz = i2s->tx_fifo_low;
->> +             regmap_update_bits(i2s->regmap, XTFPGA_I2S_CONFIG,
->> +                                XTFPGA_I2S_CONFIG_INT_ENABLE, 0);
->> +     }
->
-> We're trying to implement a NAPI style thing here?
-
-No, there's no way to retrieve the exact FIFO level from the hardware,
-there's no such register. But there are two interrupt reasons: one
-when the FIFO is below preset level and another when FIFO is empty.
-So this code tracks the FIFO level according to the interrupt reason.
-
->> +     if (tx_active) {
->> +             if (i2s->tx_fifo_high < 256)
->> +                     xtfpga_i2s_refill_fifo(i2s);
->> +             else
->> +                     tasklet_hi_schedule(&i2s->refill_fifo);
->
-> How does the interrupt handler avoid getting into a fight with the
-> tasklet if the interrupt line is shared?
-
-IRQ is masked in the I2S controller once we're in the interrupt
-handler and is not re-enabled until we're done with FIFO, which
-happens at the very end of a tasklet. But if the line could ever be
-shared interrupt handler logic that checks if IRQ came from our
-device needs an additional check. Thanks for pointing that out.
-
->> +static int xtfpga_i2s_hw_params(struct snd_pcm_substream *substream,
->> +                                struct snd_pcm_hw_params *params,
->> +                                struct snd_soc_dai *dai)
->> +{
->> +     struct xtfpga_i2s *i2s = snd_soc_dai_get_drvdata(dai);
->> +     unsigned srate = params_rate(params);
->> +     unsigned channels = params_channels(params);
->> +     unsigned period_size = params_period_size(params);
->> +     unsigned sample_size = snd_pcm_format_width(params_format(params));
->> +     unsigned freq, ratio, level;
->> +     int err;
->> +
->> +     switch (params_format(params)) {
->> +     case SNDRV_PCM_FORMAT_S16_LE:
->> +     case SNDRV_PCM_FORMAT_S32_LE:
->> +             break;
->
-> This looks buggy, we're accepting two different formats but not storing
-> anything or telling the hardware - especially concerning given that this
-> is a master only driver.
-
-xtfpga_i2s_push_tx does the right thing based on runtime->sample_bits
-value.
-
->> +     regmap_update_bits(i2s->regmap, XTFPGA_I2S_CONFIG,
->> +                        XTFPGA_I2S_CONFIG_RES_MASK,
->> +                        sample_size << XTFPGA_I2S_CONFIG_RES_BASE);
->> +
->> +     if (i2s->clk_enabled) {
->> +             clk_disable_unprepare(i2s->clk);
->> +             i2s->clk_enabled = false;
->> +     }
->> +     freq = 256 * srate;
->> +     err = clk_set_rate(i2s->clk, freq);
->> +     if (err < 0)
->> +             return err;
->> +
->> +     err = clk_prepare_enable(i2s->clk);
->> +     if (err < 0)
->> +             return err;
->> +     i2s->clk_enabled = true;
->
-> This stuff with the clock seems complicated, why not just leave it
-> disabled when not in use and take advantage of the reference counting
-> the core already has?
-
-Because this callback is said to be potentially called multiple times per
-initialization. Is it not?
-
->> +     ratio = (freq - srate * sample_size * 8) /
->> +             (srate * sample_size * 4);
->
-> What ratio exactly?  This needs more brackets in the first line and a
-> comment explaining what it's calculating.
-
-It controls the divider in the I2S controller that derives I2S bus frequency
-from the master clock. The manual basically says 'use the following
-equation to determine the ratio value'.
-
->> +     i2s->tx_fifo_low = XTFPGA_I2S_FIFO_SIZE / 2;
->> +     for (level = 1;
->> +          /* period_size * 2: FIFO always gets 2 samples per frame */
->> +          i2s->tx_fifo_low / 2 >= period_size * 2;
->> +          ++level)
->> +             i2s->tx_fifo_low /= 2;
->
-> This can't come out with a bad value?
-
-I've tested it in the range of frequencies that we support -- works well.
-
--- 
-Thanks.
--- Max
+ arch/arm/common/Kconfig                            |   3 -
+ arch/arm/common/Makefile                           |   1 -
+ arch/arm/common/locomo.c                           | 914 ---------------------
+ arch/arm/mach-pxa/Kconfig                          |   1 -
+ arch/arm/mach-pxa/include/mach/poodle.h            |  16 +-
+ arch/arm/mach-pxa/poodle.c                         |  23 +-
+ arch/arm/mach-sa1100/Kconfig                       |   1 -
+ arch/arm/mach-sa1100/collie.c                      | 112 +--
+ arch/arm/mach-sa1100/include/mach/collie.h         |  25 +-
+ arch/arm/mach-sa1100/include/mach/irqs.h           |  19 +-
+ drivers/gpio/Kconfig                               |   7 +
+ drivers/gpio/Makefile                              |   1 +
+ drivers/gpio/gpio-locomo.c                         | 386 +++++++++
+ drivers/input/keyboard/Kconfig                     |   1 -
+ drivers/input/keyboard/locomokbd.c                 | 165 ++--
+ drivers/leds/Kconfig                               |   1 -
+ drivers/leds/leds-locomo.c                         | 104 ++-
+ drivers/mfd/Kconfig                                |   8 +
+ drivers/mfd/Makefile                               |   1 +
+ drivers/mfd/locomo.c                               | 644 +++++++++++++++
+ drivers/spi/Kconfig                                |   8 +
+ drivers/spi/Makefile                               |   1 +
+ drivers/spi/spi-locomo.c                           | 370 +++++++++
+ drivers/video/backlight/Kconfig                    |  14 +-
+ drivers/video/backlight/Makefile                   |   3 +-
+ drivers/video/backlight/locomo_bl.c                | 171 ++++
+ drivers/video/backlight/locomo_lcd.c               | 224 +++++
+ drivers/video/backlight/locomolcd.c                | 255 ------
+ .../asm/hardware => include/linux/mfd}/locomo.h    | 148 ++--
+ sound/soc/pxa/poodle.c                             |  51 +-
+ 30 files changed, 2185 insertions(+), 1493 deletions(-)
+ delete mode 100644 arch/arm/common/locomo.c
+ create mode 100644 drivers/gpio/gpio-locomo.c
+ create mode 100644 drivers/mfd/locomo.c
+ create mode 100644 drivers/spi/spi-locomo.c
+ create mode 100644 drivers/video/backlight/locomo_bl.c
+ create mode 100644 drivers/video/backlight/locomo_lcd.c
+ delete mode 100644 drivers/video/backlight/locomolcd.c
+ rename {arch/arm/include/asm/hardware => include/linux/mfd}/locomo.h (55%)
