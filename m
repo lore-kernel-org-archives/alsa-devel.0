@@ -1,50 +1,59 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] ALSA: au88x0: Kill the rest snd_print*()
-Date: Tue, 28 Oct 2014 17:45:15 +0100
-Message-ID: <1414514715-569-4-git-send-email-tiwai@suse.de>
-References: <1414514715-569-1-git-send-email-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: add xtensa xtfpga I2S interface and
+ platform
+Date: Tue, 28 Oct 2014 17:06:44 +0000
+Message-ID: <20141028170644.GC18557@sirena.org.uk>
+References: <1414436825-19416-1-git-send-email-jcmvbkbc@gmail.com>
+ <544FBD20.5000604@metafoo.de>
+ <20141028160414.GY18557@sirena.org.uk>
+ <544FC6B1.1060002@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D1945261ABB
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 17:45:17 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 82ED7ACEF
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 16:45:17 +0000 (UTC)
-In-Reply-To: <1414514715-569-1-git-send-email-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="n2RoZOfqketZuWCG"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <544FC6B1.1060002@metafoo.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Max Filippov <jcmvbkbc@gmail.com>, alsa-devel@alsa-project.org, Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, linux-xtensa@linux-xtensa.org, Takashi Iwai <tiwai@suse.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, Kumar Gala <galak@codeaurora.org>, Grant Likely <grant.likely@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use the standard dev_*() instead.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/au88x0/au88x0.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--n2RoZOfqketZuWCG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/au88x0/au88x0.c b/sound/pci/au88x0/au88x0.c
-index e9c3833f6d44..996369134ea8 100644
---- a/sound/pci/au88x0/au88x0.c
-+++ b/sound/pci/au88x0/au88x0.c
-@@ -314,7 +314,7 @@ snd_vortex_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 	if (snd_seq_device_new(card, 1, SNDRV_SEQ_DEV_ID_VORTEX_SYNTH,
- 			       sizeof(snd_vortex_synth_arg_t), &wave) < 0
- 	    || wave == NULL) {
--		snd_printk(KERN_ERR "Can't initialize Aureal wavetable synth\n");
-+		dev_err(card->dev, "Can't initialize Aureal wavetable synth\n");
- 	} else {
- 		snd_vortex_synth_arg_t *arg;
- 
--- 
-2.1.2
+On Tue, Oct 28, 2014 at 05:39:13PM +0100, Lars-Peter Clausen wrote:
+> On 10/28/2014 05:04 PM, Mark Brown wrote:
+
+> >Is that going to play nicely with the fact that the interrupt can be
+> >shared and the desire to (AFAICT) do NAPI style stuff with the interrupt
+> >disabled for long periods?
+
+> Threaded interrupts got support for interrupt sharing a while ago, so I
+> guess yes. I think it will even work better than the tasklet approach. You
+> can configure the IRQ to disable itself as long as the thread is running.
+
+I know you *can* share threaded interrupts, I'm just not sure that
+hogging the threaded handler plays nicely with other users.  Though now
+I look at this again tx_fifo_high is a "constant" so it's not actually
+trying to do a NAPI type mitigation thing and this is really just an
+open coded threaded interrupt as you say.
+
+--n2RoZOfqketZuWCG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUT80jAAoJECTWi3JdVIfQgUgH/1FAr8h7Ttski6CahzubwkA+
+Unp3ehJ36F2UR4Gwcr8pFbKJ88oFi9WmLqJ4ZQ+TRDg8axEKJW5rKfO9Ho8Y1UGn
+h1wTSxYKNJlzNK9H0r85k5lrhdZlqoPtC8DDXyv4/nJCnwAEwgezEcaaqdsnqS0p
+pp4giA1N4oKGEZD3dfzvdlk6S+m9mfL9DGnddDZy8EJGFDyIv8tzVg1RirTWok/u
+mAquqw6cX9eWThcvwTWKQ545JcfZUBEDwnZOGMWy9778HR+I4g0qZI8n1iM3TIxn
+R721beh5f3Bqkw4Ewgpj+A0A/h8peueLU0afxHkxxMSheF/HvyFqOYP8K2QlS/w=
+=briD
+-----END PGP SIGNATURE-----
+
+--n2RoZOfqketZuWCG--
