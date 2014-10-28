@@ -1,57 +1,65 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 00/11] Add AXD Audio Processing IP driver
-Date: Tue, 28 Oct 2014 15:54:45 +0100
-Message-ID: <544FAE35.4000509@metafoo.de>
-References: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com> <544F8439.4080402@ladisch.de> <544F97A4.7080209@imgtec.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 11/15] sound: soc: poodle: make use of new locomo GPIO
+ interface
+Date: Tue, 28 Oct 2014 14:58:50 +0000
+Message-ID: <20141028145850.GU18557@sirena.org.uk>
+References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+ <1414454528-24240-12-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <544F97A4.7080209@imgtec.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Qais Yousef <qais.yousef@imgtec.com>, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Neil Jones <neil.jones@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="8gjvNdKnYEg0NgYj"
+Return-path: <linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1414454528-24240-12-git-send-email-dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: linux-spi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Dmitry Eremin-Solenikov <dbaryshkov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-leds-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-spi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Andrea Adami <andrea.adami-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>, Daniel Mack <daniel-cYrQPVfZoowdnm+yROfE0A@public.gmane.org>, Haojian Zhuang <haojian.zhuang-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Robert Jarzmik <robert.jarzmik-GANU6spQydw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bryan Wu <cooloney-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Richard Purdie <rpurdie-Fm38FmjxZ/leoWH0uzbU5w@public.gmane.org>, Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jingoo Han <jg1.han-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/28/2014 02:18 PM, Qais Yousef wrote:
-> On 10/28/2014 11:55 AM, Clemens Ladisch wrote:
->> Qais Yousef wrote:
->>> AXD Audio Processing IP performs audio decoding, encoding, mixing,
->>> equalisation,
->>> synchronisation and playback.
->> What exactly do you mean with "synchronisation" and "playback"?
->
-> Synchronisation refers to accurate audio playout relative to a master
-> clock source including compensation of drift between the master clock
-> source and the playout clock of the audio hardware. Hence allowing
-> synchronised audio playout across multiple independent devices.
->
-> Playback simple refers to the fact that AXD is capable of managing audio
-> playout hardware like I2S and SPDIF interfaces.
->
->
->>> It doesn't fit in alsa subsystem but I Cced them to confirm.
->> ... because those two words sound like something that a sound card could do.
->
-> The problem mainly stems from the fact that we take a variety of
-> compressed audio as input and we could perform audio encoding. The
-> problem with the compressed audio is that the range of decoders and
-> configuration supported in alsa is limited and there's no support for
-> taking raw pcm and producing compressed output. I'm not an expert on
-> alsa but when I looked it looked like there's more infra structure
-> required.
->
-> [...]
 
-This doesn't sound to different from any of the other supported audio DSPs. 
-ALSA seems to have 95% of what you need. And the missing 5% is probably 
-stuff that is not specific to your hardware but rather something that other 
-hardware will need as well. The framework is not set in stone you can make 
-modifications and add the features that are missing to make your hardware work.
+--8gjvNdKnYEg0NgYj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-E.g. look at sound/soc/intel/ for an example of a audio DSP.
+On Tue, Oct 28, 2014 at 03:02:04AM +0300, Dmitry Eremin-Solenikov wrote:
+> Since LoCoMo driver has been converted to provide proper gpiolib
+> interface, make poodle ASoC platform driver use gpiolib API.
 
-No integrating this into ALSA will quite likely result in a quite messy 
-situation for you on the long run.
+Please use subject lines matching the style for the subsystem.
 
-- Lars
+> +	ret = gpio_request_array(poodle_gpios, ARRAY_SIZE(poodle_gpios));
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "gpio_request_array() failed: %d\n",
+> +				ret);
+> +		return ret;
+> +	}
+
+I sense a need for devm_gpio_request_array() here.  Otherwise this looks
+fine - ideally it'd move to gpiod but moving to gpiolib is a clear win
+so no need to block on this.
+
+Acked-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+
+with at least the subject line fixed.
+
+--8gjvNdKnYEg0NgYj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUT68pAAoJECTWi3JdVIfQYyYH+QGeymd7BRFPtelbajCPw7hF
+pZtjJ8IMNDHVFq7cb6nHCJDADtnjFr4H3wn4O/C7hjbVpFomxDExEiGZri2z97CZ
+8XR1cFMTwDhZ9+5Vy4xZLQXjK3fHMB7VW7NvED34HiBNuPXlcXfH+4+opgN4WACS
+a5kCtgAOdwgZzkDQcn34bIMzHnKoLxu4EzJ4IBegj3BKwLbDidTsdqzR9hIEnrA9
+Itqct65aE2A1LG+wdwwSB6wttnUWuYviq5sY/W9LBa+g3w++6dkdeB5PRtD6Iatw
+TCf7R9XJBYlu7T86V1XdB38ln7qc1KHYi16HHKeRwZPnuFWVFxuFH5J2hF9G5Ls=
+=vsEb
+-----END PGP SIGNATURE-----
+
+--8gjvNdKnYEg0NgYj--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
