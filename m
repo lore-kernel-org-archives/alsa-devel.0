@@ -1,47 +1,74 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: Don't bypass settings if cpu-dai is
- Master
-Date: Tue, 28 Oct 2014 16:05:16 +0000
-Message-ID: <20141028160516.GZ18557@sirena.org.uk>
-References: <cover.1414193668.git.nicoleotsuka@gmail.com>
- <1414194502-14052-1-git-send-email-nicoleotsuka@gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sC1KxrFoiW8MuHBc"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1414194502-14052-1-git-send-email-nicoleotsuka@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: b02247@freescale.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: [PATCH 1/6] ASoC: cs42l51: re-add of_match_table pointer
+Date: Tue, 28 Oct 2014 17:08:39 +0100
+Message-ID: <1414512524-24466-2-git-send-email-thomas.petazzoni@free-electrons.com>
+References: <1414512524-24466-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1414512524-24466-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Sender: stable-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Gregory Clement <gregory.clement@free-electrons.com>
+Cc: linux-arm-kernel@lists.infradead.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Tawfik Bayouk <tawfik@marvell.com>, Nadav Haklai <nadavh@marvell.com>, Lior Amsalem <alior@marvell.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, stable@vger.kernel.org, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Brian Austin <brian.austin@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
+In commit a1253ef6d3fa ("ASoC: cs42l51: split i2c from codec driver"),
+the I2C part of the CS42L51 was moved to a separate file, but the
+definition of the of_device_id array was left in the driver file
+itself, no longer connected to the platform_driver structure using the
+.of_match_table pointer.
 
---sC1KxrFoiW8MuHBc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This commit therefore moves the of_device_id array into the
+cs42l51-i2c.c file, and restore the proper .of_match_table pointer.
 
-On Fri, Oct 24, 2014 at 04:48:11PM -0700, Nicolin Chen wrote:
-> When cpu-dai is the DAI Master (CBM_CFx), it may need some configurations,
-> set_sysclk() call for eample, for cpu-dai side in the hw_params(), even if
-> the set_bias_level() has already taken care of the codec-dai side.
+Fixes: a1253ef6d3fa ("ASoC: cs42l51: split i2c from codec driver")
+Cc: <stable@vger.kernel.org> # v3.16+
+Cc: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
+Cc: Brian Austin <brian.austin@cirrus.com>
+Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+---
+ sound/soc/codecs/cs42l51-i2c.c | 7 +++++++
+ sound/soc/codecs/cs42l51.c     | 5 -----
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-Applied, thanks.
-
---sC1KxrFoiW8MuHBc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUT768AAoJECTWi3JdVIfQwmUH/3kHoarWO77yk17oVY3U4Aby
-R/vlzUFosMqGZBNmEFamsfbBEd5jNq9P5I5eWvOCoP7bw+OL5RU9F3XU2blZVA+d
-7Nt28CXcF7ankJs0Qa2h/3tpbbAbFnx3HW/NIS/xVktH8eYrNZMZ0uVILOePBc5B
-P9HWZC+k9CqCIxpi3PWzoPt9e5ipjCknDDQhhdcINrIosnK8sG7vUfUASlSk7YrU
-ayMFCqFjL6etw0bX5uoVixA0qmLsOG5UZ1wMZaM7IKy4FmaRsfELhAArX2IAASD9
-H7TgQtvIiTufcFUqGVnp5XL5VJME9VoL5/P1haidTca/8HfKi8lTalcVkC9hMcg=
-=xXnR
------END PGP SIGNATURE-----
-
---sC1KxrFoiW8MuHBc--
+diff --git a/sound/soc/codecs/cs42l51-i2c.c b/sound/soc/codecs/cs42l51-i2c.c
+index cee51ae..216a610 100644
+--- a/sound/soc/codecs/cs42l51-i2c.c
++++ b/sound/soc/codecs/cs42l51-i2c.c
+@@ -17,6 +17,12 @@
+ 
+ #include "cs42l51.h"
+ 
++static const struct of_device_id cs42l51_of_match[] = {
++	{ .compatible = "cirrus,cs42l51", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, cs42l51_of_match);
++
+ static struct i2c_device_id cs42l51_i2c_id[] = {
+ 	{"cs42l51", 0},
+ 	{}
+@@ -46,6 +52,7 @@ static struct i2c_driver cs42l51_i2c_driver = {
+ 	.driver = {
+ 		.name = "cs42l51",
+ 		.owner = THIS_MODULE,
++		.of_match_table = cs42l51_of_match,
+ 	},
+ 	.probe = cs42l51_i2c_probe,
+ 	.remove = cs42l51_i2c_remove,
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 09488d9..56ecc1e 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -558,11 +558,6 @@ error:
+ }
+ EXPORT_SYMBOL_GPL(cs42l51_probe);
+ 
+-static const struct of_device_id cs42l51_of_match[] = {
+-	{ .compatible = "cirrus,cs42l51", },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, cs42l51_of_match);
+ MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
+ MODULE_DESCRIPTION("Cirrus Logic CS42L51 ALSA SoC Codec Driver");
+ MODULE_LICENSE("GPL");
+-- 
+2.0.0
