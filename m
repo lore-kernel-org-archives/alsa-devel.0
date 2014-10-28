@@ -1,71 +1,107 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH] 6fire: Convert byte_rev_table uses to bitrev8
-Date: Tue, 28 Oct 2014 14:22:49 -0700
-Message-ID: <1414531369.10912.14.camel@perches.com>
-References: <35FD53F367049845BC99AC72306C23D103E010D18254@CNBJMBX05.corpusers.net>
-	 <35FD53F367049845BC99AC72306C23D103E010D18257@CNBJMBX05.corpusers.net>
-	 <1414392371.8884.2.camel@perches.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: add xtensa xtfpga I2S interface and platform
+Date: Tue, 28 Oct 2014 21:34:26 +0000
+Message-ID: <20141028213426.GE18557@sirena.org.uk>
+References: <1414436825-19416-1-git-send-email-jcmvbkbc@gmail.com>
+ <20141027193229.GE18557@sirena.org.uk>
+ <CAMo8Bf+Z9V8mkiC3JOupPQmi1EJUDKrb1qcNncDbsEbhjigbww@mail.gmail.com>
+ <20141028154224.GX18557@sirena.org.uk>
+ <CAMo8BfLpJ0bdmaFt9+gLQ_kEjB68XdjAJUw8f8s=Owv46h_yDQ@mail.gmail.com>
+ <20141028173853.GD18557@sirena.org.uk>
+ <CAMo8BfL+vW7BjC1bQPNjhuBMTcRTkf8_DDS3NO2HmBUnfHYAFQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1414392371.8884.2.camel@perches.com>
-Sender: owner-linux-mm@kvack.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: "Wang, Yalin" <Yalin.Wang@sonymobile.com>, Russell King <linux@arm.linux.org.uk>, linux-mm@kvack.org, Will Deacon <Will.Deacon@arm.com>, Akinobu Mita <akinobu.mita@gmail.com>, linux-arm-kernel@lists.infradead.org, alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>linux-mm@kvack.orgWill Deacon <Will.Deacon@arm.com>Akinobu Mita <akinobu.mita@gmail.com>linux-arm-kernel@lists.infradead.orgalsa-devel <alsa-devel@alsa-project.org>LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="o1Pxsi7EGdPPGBHz"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAMo8BfL+vW7BjC1bQPNjhuBMTcRTkf8_DDS3NO2HmBUnfHYAFQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Max Filippov <jcmvbkbc@gmail.com>
+Cc: alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Grant Likely <grant.likely@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use the inline function instead of directly indexing the array.
 
-This allows some architectures with hardware instructions
-for bit reversals to eliminate the array.
+--o1Pxsi7EGdPPGBHz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
-On Sun, 2014-10-26 at 23:46 -0700, Joe Perches wrote:
-> On Mon, 2014-10-27 at 14:37 +0800, Wang, Yalin wrote:
-> > this change add CONFIG_HAVE_ARCH_BITREVERSE config option,
-> > so that we can use arm/arm64 rbit instruction to do bitrev operation
-> > by hardware.
-[]
-> > diff --git a/include/linux/bitrev.h b/include/linux/bitrev.h
-> > index 7ffe03f..ef5b2bb 100644
-> > --- a/include/linux/bitrev.h
-> > +++ b/include/linux/bitrev.h
-> > @@ -3,6 +3,14 @@
-> >  
-> >  #include <linux/types.h>
-> >  
-> > +#ifdef CONFIG_HAVE_ARCH_BITREVERSE
-> > +#include <asm/bitrev.h>
-> > +
-> > +#define bitrev32 __arch_bitrev32
-> > +#define bitrev16 __arch_bitrev16
-> > +#define bitrev8 __arch_bitrev8
-> > +
-> > +#else
-> >  extern u8 const byte_rev_table[256];
+On Tue, Oct 28, 2014 at 09:11:34PM +0300, Max Filippov wrote:
+> On Tue, Oct 28, 2014 at 8:38 PM, Mark Brown <broonie@kernel.org> wrote:
 
- sound/usb/6fire/firmware.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > You *really* need to explain how it's supposed to work - right now it's
+> > not at all obvious, like I say the fact that this is a rarely used idiom
+> > is not helping.  For example when we tear down the stream we just assign
+> > the pointer in _stop() but don't bother with a sync until the stream is
+> > closed - why?
 
-diff --git a/sound/usb/6fire/firmware.c b/sound/usb/6fire/firmware.c
-index 3b02e54..62c25e7 100644
---- a/sound/usb/6fire/firmware.c
-+++ b/sound/usb/6fire/firmware.c
-@@ -316,7 +316,7 @@ static int usb6fire_fw_fpga_upload(
- 
- 	while (c != end) {
- 		for (i = 0; c != end && i < FPGA_BUFSIZE; i++, c++)
--			buffer[i] = byte_rev_table[(u8) *c];
-+			buffer[i] = bitrev8((u8)*c);
- 
- 		ret = usb6fire_fw_fpga_write(device, buffer, i);
- 		if (ret < 0) {
+> Because we can't wait in stop and syncing is not time critical, we can
+> do it any time before the stream becomes invalid.
 
+To be clear: the important part is that someone reading the code can
+understand what's going on.
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+> >> > it'd be better to just add a DMA controller on the FPGA, everyone will
+> >> > be much happier).
+
+> >> Hardware people think different and it's been like that for more than 5
+> >> years.
+
+> > They appear to be the only hardware people who think this way, while we
+
+> The whole audio subsystem on xtfpga boards is there for, I think, a single
+> purpose: for the demonstration of CPU audio processing capabilities.
+> That's why it's that simple.
+
+This means that the demos include cycles spent taking interrupts and
+stuffing data into the FIFO (with associated cache impacts) instead of
+signal processing which isn't usually helpful for benchmarks.
+
+> >> hw_params callback can change MCLK rate, so it has to disable and
+> >> enable the clock anyway, and since enable can fail it does not guarantee
+> >> that the clock will be left in the same state. Or should I adjust MCLK rate
+> >> w/o disabling the clock?
+
+> > So yet again: why not just enable the clock only when the device is in
+> > use?  If it's being configured it stands to reason that the device isn't
+> > actively in use...
+
+> Mark, I don't get it, sorry ): My clock synthesizer is I2C controlled, so
+> I can't prepare/unprepare it in the trigger callback. When should I do it?
+
+Runtime PM is the normal way of doing it.
+
+> >> The level field in the control register is 4 bit wide, so the allowed range of
+> >> level is 0..15. FIFO size is 8192 entries, level = 1 corresponds to
+> >> FIFO size / 2, level = 14 -- to FIFO size of 0. I guess this function
+> >> won't get period_size of 0?
+
+> > So if the IP gets changed and the code gets blown up this could well
+> > explode then...  which doesn't seem entirely unlikely considering this
+> > is a FPGA platform so presumably this is easy to update.  To repeat this
+> > is about clarity and the code looking like it's probably hiding bugs as
+> > much as if the code actually works if you really sit down and study it.
+
+> The calculation does not depend on the actual hardware, but on the
+> constant definitions in the same file. They need to be updated if the
+> hardware changes. I'll try to rewrite it in a cleaner way.
+
+Right, my point is that if someone changes the hardware they'll just
+update the constants and then things will break.
+
+--o1Pxsi7EGdPPGBHz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUUAvhAAoJECTWi3JdVIfQx+IH+wbCe8/ralW+77h3qoNIpCyO
+eN0Bsqx34r78LcAIHbStdiadMMM1uQk83ob3Me50rOZ1apEEOWCV5q8HzPeazPVQ
+LdjfJlf2ptzmtmWzesITcEZP7o8YPc+uw4Ba/o6nu5ilKjV0yqI622bYCvQBXnuO
+FxdE0v/RL1wI7GcdE5pjalaiZMBa2FeP2qXqcExKdJNzB2hGHogG7ZyTed4f+cfr
+oySx1mZc5yMLumcGRYHKCfrIW9FvE4DZ9OIxuFIBvEwm9snEjdCQS8UR0bKoxaep
+RzErdFYeejkdbmmP7tR8Jcgx9+Us6g3DK3LhkZOW2goPFgNt4i7wuZJikBktgQY=
+=bAYO
+-----END PGP SIGNATURE-----
+
+--o1Pxsi7EGdPPGBHz--
