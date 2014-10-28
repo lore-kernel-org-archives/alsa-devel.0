@@ -1,55 +1,48 @@
-From: dE <de.techno@gmail.com>
-Subject: Re: What are subdevices?
-Date: Tue, 28 Oct 2014 08:47:26 +0530
-Message-ID: <544F0AC6.5030806@gmail.com>
-References: <544CAD55.8070605@gmail.com> <544CBACF.2080702@ladisch.de>
- <544CC58C.3080800@gmail.com> <544EA125.80909@ladisch.de>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_asrc: Add reg_defaults for regmap to fix
+ kernel dump
+Date: Mon, 27 Oct 2014 21:26:26 -0700
+Message-ID: <20141028042603.GA5548@Asurada>
+References: <1414202637-18929-1-git-send-email-nicoleotsuka@gmail.com>
+ <20141028001904.GH18557@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f44.google.com (mail-pa0-f44.google.com
- [209.85.220.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 353CD2615F3
- for <Alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 04:17:55 +0100 (CET)
-Received: by mail-pa0-f44.google.com with SMTP id bj1so3229011pad.3
- for <Alsa-devel@alsa-project.org>; Mon, 27 Oct 2014 20:17:52 -0700 (PDT)
-Received: from [192.168.1.2] ([59.89.143.167])
- by mx.google.com with ESMTPSA id c2sm175785pdf.52.2014.10.27.20.17.49
- for <Alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Mon, 27 Oct 2014 20:17:51 -0700 (PDT)
-In-Reply-To: <544EA125.80909@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20141028001904.GH18557@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/28/14 01:16, Clemens Ladisch wrote:
-> dE wrote:
->> typically cards have a single analog device but support multichannel
->> output. So how does this work at the software level? If ALSA can't
->> send multiple streams of audio to one device, then how does ALSA send
->> separate output to different channels of the device?
-> The channels are not separate.  For a stereo devices, the samples are
-> arranged like LRLRLRLRLR...; for more channels, there are more
-> interleaved values: 123456123456123456123456...
->
->
-> Regards,
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+On Tue, Oct 28, 2014 at 12:19:04AM +0000, Mark Brown wrote:
+> On Fri, Oct 24, 2014 at 07:03:57PM -0700, Nicolin Chen wrote:
+> > Kernel dump (WARN_ON) ocurred during system boot-up inside regmap_write():
+> > 
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 0 PID: 47 at kernel/locking/lockdep.c:2744 lockdep_trace_alloc+0xe8/0x108()
 
-So it's with the encoding of the PCM.
+> > Even though this may be a bug that should be fixed, I still try to send this
+> > patch as a quick fix (work around) since it does no harm to assign default
+> > values of every registers when using regcache.
+> 
+> It's not a bug, it's not reasonable to default allocations to atomic and
+> we can't really tell what context we're in.  Anything used inside a
+> heavily locked path should either have a default provided or arrange for
+> a prior write to set up the cache.
 
-Thank you so much for the response! I'll blog about this in my ALSA doc.
+I've a little trouble to understand the prior write over here. Inside my
+probe() there's a register_init() call which has a set of regmap_write().
+And then the first regmap_write() results the dump. Does that mean this
+regmap_write() isn't prior write? If so, how should I do if not setting
+default values here -- Some IPs may have default value 0 for registers.
+And this would make reg_defaults tedious since there's nothing special
+to assign.
+
+And actually I remember I haven't seen any dump when I sent the initial
+patch for the whole ASRC driver but it manifested last month. I thought
+it might be a partially-merging issue and it would be fixed after merge
+window's done.....
+
+Thank you
+Nicolin
