@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 8/8] ASoC: rsnd: Add Volume Ramp support
-Date: Tue, 28 Oct 2014 22:38:14 +0000
-Message-ID: <20141028223814.GM18557@sirena.org.uk>
-References: <8761fc7vpx.wl%kuninori.morimoto.gx@gmail.com>
- <87tx2w6h2r.wl%kuninori.morimoto.gx@gmail.com>
+Subject: Re: [PATCH v2] ASoC: rt5677: Add TDM channel mapping
+	function
+Date: Tue, 28 Oct 2014 22:52:29 +0000
+Message-ID: <20141028225229.GP18557@sirena.org.uk>
+References: <1413965499-42914-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8193309285910520831=="
+Content-Type: multipart/mixed; boundary="===============1180276925777733278=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AFE23260443
- for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 23:38:39 +0100 (CET)
-In-Reply-To: <87tx2w6h2r.wl%kuninori.morimoto.gx@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 10E4E26045D
+ for <alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 23:52:51 +0100 (CET)
+In-Reply-To: <1413965499-42914-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,69 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, benzh@google.com, anatol@google.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8193309285910520831==
+--===============1180276925777733278==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aTq0RFdLe0rSEdju"
+	protocol="application/pgp-signature"; boundary="HTh2KjHqV0X0DOgD"
 Content-Disposition: inline
 
 
---aTq0RFdLe0rSEdju
+--HTh2KjHqV0X0DOgD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 21, 2014 at 06:14:55PM -0700, Kuninori Morimoto wrote:
+On Wed, Oct 22, 2014 at 04:11:39PM +0800, Oder Chiou wrote:
+> It is for channel to slot mapping, and it is not only for 8 channels mapping,
+> but also in 2, 4 and 6 channels mapping. If we want to use the 2 channels in
+> the stereo2 adc path, we need to set the item "2/1/3/4" or "2/3/1/4".
 
-> This sample indicates Mute -> Volume 100% -> Mute
+Applied, thanks.
 
-> amixer set "DVC Out Ramp" 100%		// Mute as default
-> amixer set "DVC Out Ramp Period" 80%
-
-Normally this would be expressed as an enum with some sort of time
-units.  We did discuss at the mini-summit making a standard way of
-expressing this but nobody did that yet.
-
-> amixer set "DVC Out Ramp Enable" on
-
-That "Enable" should be a Switch control.
-
-> aplay xxx.wav &
-> amixer set "DVC Out Ramp" 0%		// to Volume 100%
-> amixer set "DVC Out Ramp" 100%		// to Mute
-
-I'm not sure I quite understand this control - what exactly is this
-setting?  It appears that the ramp value is the opposite of the volume
-we end up with which is a bit odd and the comments suggest that this is
-actually triggering a ramp when normally ramps would be done as part of
-a volume set, mute or power up/down operation.
-
---aTq0RFdLe0rSEdju
+--HTh2KjHqV0X0DOgD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUUBrVAAoJECTWi3JdVIfQpyMH/jiz1kE9SWEK6yG/zF9oe0Bk
-rX3QShfMDz7jCD2vCyFveieQN2tIJLFLkhtM0wv3prxRXsdAU/IMpqSfyjKxa9re
-BJHXny+J7mGnX5yBqAUZbbKYDd0PH4vhpBsP22qkB0Um3jWwJ2NLAQnWFrzUJvwe
-ltE5eDd1rN6HlUj2fWNUfrHJnNvBNVfnH0VU6STU1q+AO8HFdF6V2eRZ2gUaITrv
-o8PqUBW+oNsYN9vbGx5EhH0v/35Iq2tbXN9ioew2dLGGrVrjBnKczXNXN6fJ95ji
-1KBoMarf9Sxx/yZwnda5VNxbxxteji0/MXiMkd2GS+s7hw4RLX7sFX4PBOj23NE=
-=bqIi
+iQEcBAEBAgAGBQJUUB4sAAoJECTWi3JdVIfQuf8H/j/KXo9qVMgXbsX91H3MRINk
+rb7ZZFc6ietDaIqCJSGRL8MuJFH0a/LsGl0jVOOTZy14OW27nrxAoUqgG3yCU+Md
+IfYez2kWTzd47DOTIt3dsEObFeQtgYpGmaW/8w7pIFCb8GnnN3IY5Sua1SmybIlX
+JLKxHYQr5lO6XDGe2eO4yjcq6F0iTC11Z+2Gfd3pLMxCLOFDweRrACVWj7wJbZmn
+Xkprzboncq+1IxfZybD8Nc/LERIOLIl8Hn5h1+ycOLshqNG6J6Fooy7chWMBsTCG
+Qu3wO6lRkJdioZy0f5neaoWHN1qsrKrCQ+TGfI/81rrhvzKt34PLTaW3u10CpxU=
+=nY18
 -----END PGP SIGNATURE-----
 
---aTq0RFdLe0rSEdju--
+--HTh2KjHqV0X0DOgD--
 
---===============8193309285910520831==
+--===============1180276925777733278==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8193309285910520831==--
+--===============1180276925777733278==--
