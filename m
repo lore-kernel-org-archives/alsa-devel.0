@@ -1,125 +1,24 @@
-From: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Subject: [PATCH v5 1/3] ARM: dts: pbab01: move i2c pins and frequency configuration into pfla02
-Date: Wed, 29 Oct 2014 16:47:02 +0300
-Message-ID: <1414590424-25585-2-git-send-email-d.lavnikevich@sam-solutions.com>
-References: <1414590424-25585-1-git-send-email-d.lavnikevich@sam-solutions.com>
+From: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Subject: [PATCH v5 0/3] Add Phytec pbab01 audio support
+Date: Wed, 29 Oct 2014 16:47:01 +0300
+Message-ID: <1414590424-25585-1-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1414590424-25585-1-git-send-email-d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: shawn.guo-KZfg59tc24xl57MIdRCFDg@public.gmane.org, kernel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, pawel.moll-5wv7dgnIgG8@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org, galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org
-Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: shawn.guo@freescale.com, kernel@pengutronix.de, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Since pins and frequency are specific to module (pfla02), not base board
-(pbab02), it is better to be initialized in corresponding dts file.
+By mistake previous patchset versions was sent as in-reply-to to
+previous patchset versions, so they may have been lost among other
+mails.
 
-This patch fixes i2c2, i2c3 pin configuration which caused messages:
+One of pathces was already applied by Mark Brown, here is 3 patches
+implementing audio support on Phytec phyFLEX-i.MX6 boards.
 
-imx6q-pinctrl 20e0000.iomuxc: no groups defined in /soc/aips-bus@02000000/iomuxc@020e0000/i2c2grp
-imx6q-pinctrl 20e0000.iomuxc: no groups defined in /soc/aips-bus@02000000/iomuxc@020e0000/i2c3grp
-imx6q-pinctrl 20e0000.iomuxc: unable to find group for node i2c2grp
-imx6q-pinctrl 20e0000.iomuxc: unable to find group for node i2c3grp
+This patchset version only renames audio card name to
+OnboardTLV320AIC3007 (on request from Phytec).
 
-Signed-off-by: Dmitry Lavnikevich <d.lavnikevich-H6HfJ9slvY0Aspv4Qr0y0gC/G2K4zDHf@public.gmane.org>
----
- arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi | 22 ----------------------
- arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi | 26 ++++++++++++++++++++++++++
- 2 files changed, 26 insertions(+), 22 deletions(-)
-
-diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi
-index 584721264121..f1bdcae5b97d 100644
---- a/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi
-@@ -28,9 +28,6 @@
- };
- 
- &i2c2 {
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_i2c2>;
--	clock-frequency = <100000>;
- 	status = "okay";
- 
- 	tlv320@18 {
-@@ -55,9 +52,6 @@
- };
- 
- &i2c3 {
--	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_i2c3>;
--	clock-frequency = <100000>;
- 	status = "okay";
- };
- 
-@@ -84,19 +78,3 @@
- &usdhc3 {
- 	status = "okay";
- };
--
--&iomuxc {
--	pinctrl_i2c2: i2c2grp {
--		fsl,pins = <
--			MX6QDL_PAD_EIM_EB2__I2C2_SCL		0x4001b8b1
--			MX6QDL_PAD_EIM_D16__I2C2_SDA		0x4001b8b1
--		>;
--	};
--
--	pinctrl_i2c3: i2c3grp {
--		fsl,pins = <
--			MX6QDL_PAD_EIM_D17__I2C3_SCL		0x4001b8b1
--			MX6QDL_PAD_EIM_D18__I2C3_SDA		0x4001b8b1
--		>;
--	};
--};
-diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-index 0e50bb0a6b94..aa2275671d2c 100644
---- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-@@ -162,6 +162,18 @@
- 	};
- };
- 
-+&i2c2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	clock-frequency = <100000>;
-+};
-+
-+&i2c3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c3>;
-+	clock-frequency = <100000>;
-+};
-+
- &iomuxc {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_hog>;
-@@ -235,6 +247,20 @@
- 			>;
- 		};
- 
-+		pinctrl_i2c2: i2c2grp {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_EB2__I2C2_SCL		0x4001b8b1
-+				MX6QDL_PAD_EIM_D16__I2C2_SDA		0x4001b8b1
-+			>;
-+		};
-+
-+		pinctrl_i2c3: i2c3grp {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_D17__I2C3_SCL		0x4001b8b1
-+				MX6QDL_PAD_EIM_D18__I2C3_SDA		0x4001b8b1
-+			>;
-+		};
-+
- 		pinctrl_uart3: uart3grp {
- 			fsl,pins = <
- 				MX6QDL_PAD_EIM_D24__UART3_TX_DATA	0x1b0b1
--- 
-2.1.2
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Patches are based on branch for-next of
+git://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git
