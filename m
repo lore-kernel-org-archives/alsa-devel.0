@@ -1,15 +1,17 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 1/3] ASoC: Intel: Add PM support to the HSW/BDW
-	DSP core.
-Date: Wed, 29 Oct 2014 17:40:41 +0000
-Message-ID: <1414604443-7712-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 2/3] ASoC: Intel: Add PM support to HSW/BDW IPC
+	driver
+Date: Wed, 29 Oct 2014 17:40:42 +0000
+Message-ID: <1414604443-7712-2-git-send-email-liam.r.girdwood@linux.intel.com>
+References: <1414604443-7712-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id CB9122604D4
- for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 18:44:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 849D42604E5
+ for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 18:44:25 +0100 (CET)
+In-Reply-To: <1414604443-7712-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,231 +25,358 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add support for PM wake, sleep and stall calls to the core HSW/BDW driver.
-This includes reworking the reset and boot code and adding new calls
-for setting D3/D0 state.
+Add PM and RTD3 support to the HSW/BDW IPC driver. This patch
+saves and restores the DSP context, loads and unloads FW and drops
+any pending IPC messages after suspend.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-haswell-dsp.c | 158 ++++++++++++++++++++++++++++----------
- 1 file changed, 119 insertions(+), 39 deletions(-)
+ sound/soc/intel/sst-haswell-ipc.c | 256 +++++++++++++++++++++++++++++++++++++-
+ sound/soc/intel/sst-haswell-ipc.h |   7 ++
+ 2 files changed, 258 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/sst-haswell-dsp.c b/sound/soc/intel/sst-haswell-dsp.c
-index 5058dc8..86aea34 100644
---- a/sound/soc/intel/sst-haswell-dsp.c
-+++ b/sound/soc/intel/sst-haswell-dsp.c
-@@ -247,8 +247,67 @@ static irqreturn_t hsw_irq(int irq, void *context)
- 	return ret;
+diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
+index 770d467..b37d3ee 100644
+--- a/sound/soc/intel/sst-haswell-ipc.c
++++ b/sound/soc/intel/sst-haswell-ipc.c
+@@ -30,6 +30,7 @@
+ #include <linux/firmware.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/debugfs.h>
++#include <linux/pm_runtime.h>
+ 
+ #include "sst-haswell-ipc.h"
+ #include "sst-dsp.h"
+@@ -276,6 +277,7 @@ struct sst_hsw {
+ 	struct sst_hsw_ipc_fw_version version;
+ 	struct sst_module *scratch;
+ 	bool fw_done;
++	struct sst_fw *sst_fw;
+ 
+ 	/* stream */
+ 	struct list_head stream_list;
+@@ -289,6 +291,8 @@ struct sst_hsw {
+ 
+ 	/* DX */
+ 	struct sst_hsw_ipc_dx_reply dx;
++	void *dx_context;
++	dma_addr_t dx_context_paddr;
+ 
+ 	/* boot */
+ 	wait_queue_head_t boot_wait;
+@@ -1707,6 +1711,237 @@ void sst_hsw_runtime_module_free(struct sst_module_runtime *runtime)
+ 	sst_module_runtime_free(runtime);
  }
  
--static void hsw_boot(struct sst_dsp *sst)
-+static void hsw_set_dsp_D3(struct sst_dsp *sst)
++#ifdef CONFIG_PM_RUNTIME
++static int sst_hsw_dx_state_dump(struct sst_hsw *hsw)
 +{
-+	u32 val;
++	struct sst_dsp *sst = hsw->dsp;
++	u32 item, offset, size;
++	int ret = 0;
 +
-+	/* switch off audio PLL, DRAM & IRAM blocks */
-+	val = readl(sst->addr.pci_cfg + SST_VDRTCTL0);
-+	val |= SST_VDRTCL0_APLLSE_MASK | SST_VDRTCL0_DSRAMPGE_MASK |
-+		SST_VDRTCL0_ISRAMPGE_MASK;
-+	writel(val, sst->addr.pci_cfg + SST_VDRTCTL0);
++	trace_ipc_request("PM state dump. Items #", SST_HSW_MAX_DX_REGIONS);
 +
-+	/* Set D3 state */
-+	val = readl(sst->addr.pci_cfg + SST_PMCS);
-+	val |= SST_PMCS_PS_MASK;
-+	writel(val, sst->addr.pci_cfg + SST_PMCS);
-+}
-+
-+static void hsw_reset(struct sst_dsp *sst)
-+{
-+	/* put DSP into reset and stall */
-+	sst_dsp_shim_update_bits_unlocked(sst, SST_CSR,
-+		SST_CSR_RST | SST_CSR_STALL,
-+		SST_CSR_RST | SST_CSR_STALL);
-+
-+	/* keep in reset for 10ms */
-+	mdelay(10);
-+
-+	/* take DSP out of reset and keep stalled for FW loading */
-+	sst_dsp_shim_update_bits_unlocked(sst, SST_CSR,
-+		SST_CSR_RST | SST_CSR_STALL, SST_CSR_STALL);
-+}
-+
-+static int hsw_set_dsp_D0(struct sst_dsp *sst)
- {
-+	int tries = 10;
-+	u32 reg;
-+
-+	/* Set D0 state */
-+	reg = readl(sst->addr.pci_cfg + SST_PMCS);
-+	reg &= ~SST_PMCS_PS_MASK;
-+	writel(reg, sst->addr.pci_cfg + SST_PMCS);
-+
-+	/* check that ADSP shim is enabled */
-+	while (tries--) {
-+		reg = readl(sst->addr.pci_cfg + SST_PMCS) & SST_PMCS_PS_MASK;
-+		if (reg == 0)
-+			goto finish;
-+
-+		msleep(1);
++	if (hsw->dx.entries_no > SST_HSW_MAX_DX_REGIONS) {
++		dev_err(hsw->dev,
++			"error: number of FW context regions greater than %d\n",
++			SST_HSW_MAX_DX_REGIONS);
++		memset(&hsw->dx, 0, sizeof(hsw->dx));
++		return -EINVAL;
 +	}
 +
-+	return -ENODEV;
++	ret = sst_dsp_dma_get_channel(sst, 0);
++	if (ret < 0) {
++		dev_err(hsw->dev, "error: cant allocate dma channel %d\n", ret);
++		return ret;
++	}
 +
-+finish:
-+	hsw_reset(sst);
-+
-+	/* switch on audio PLL, DRAM & IRAM blocks */
-+	reg = readl(sst->addr.pci_cfg + SST_VDRTCTL0);
-+	reg &= ~(SST_VDRTCL0_APLLSE_MASK | SST_VDRTCL0_DSRAMPGE_MASK |
-+		SST_VDRTCL0_ISRAMPGE_MASK);
-+	writel(reg, sst->addr.pci_cfg + SST_VDRTCTL0);
-+
- 	/* select SSP1 19.2MHz base clock, SSP clock 0, turn off Low Power Clock */
- 	sst_dsp_shim_update_bits_unlocked(sst, SST_CSR,
- 		SST_CSR_S1IOCS | SST_CSR_SBCS1 | SST_CSR_LPCS, 0x0);
-@@ -267,30 +326,73 @@ static void hsw_boot(struct sst_dsp *sst)
- 	sst_dsp_shim_update_bits_unlocked(sst, SST_CSR2, SST_CSR2_SDFD_SSP1,
- 		SST_CSR2_SDFD_SSP1);
- 
--	/* enable DMA engine 0,1 all channels to access host memory */
--	sst_dsp_shim_update_bits_unlocked(sst, SST_HMDC,
--		SST_HMDC_HDDA1(0xff) | SST_HMDC_HDDA0(0xff),
--		SST_HMDC_HDDA1(0xff) | SST_HMDC_HDDA0(0xff));
-+	/* set on-demond mode on engine 0,1 for all channels */
++	/* set on-demond mode on engine 0 channel 3 */
 +	sst_dsp_shim_update_bits(sst, SST_HMDC,
 +			SST_HMDC_HDDA_E0_ALLCH | SST_HMDC_HDDA_E1_ALLCH,
 +			SST_HMDC_HDDA_E0_ALLCH | SST_HMDC_HDDA_E1_ALLCH);
 +
-+	/* Enable Interrupt from both sides */
-+	sst_dsp_shim_update_bits(sst, SST_IMRX, (SST_IMRX_BUSY | SST_IMRX_DONE),
-+				 0x0);
-+	sst_dsp_shim_update_bits(sst, SST_IMRD, (SST_IMRD_DONE | SST_IMRD_BUSY |
-+				SST_IMRD_SSP0 | SST_IMRD_DMAC), 0x0);
++	for (item = 0; item < hsw->dx.entries_no; item++) {
++		if (hsw->dx.mem_info[item].source == SST_HSW_DX_TYPE_MEMORY_DUMP
++			&& hsw->dx.mem_info[item].offset > DSP_DRAM_ADDR_OFFSET
++			&& hsw->dx.mem_info[item].offset <
++			DSP_DRAM_ADDR_OFFSET + SST_HSW_DX_CONTEXT_SIZE) {
 +
-+	/* clear IPC registers */
-+	sst_dsp_shim_write(sst, SST_IPCX, 0x0);
-+	sst_dsp_shim_write(sst, SST_IPCD, 0x0);
-+	sst_dsp_shim_write(sst, 0x80, 0x6);
-+	sst_dsp_shim_write(sst, 0xe0, 0x300a);
- 
- 	/* disable all clock gating */
- 	writel(0x0, sst->addr.pci_cfg + SST_VDRTCTL2);
- 
++			offset = hsw->dx.mem_info[item].offset
++					- DSP_DRAM_ADDR_OFFSET;
++			size = (hsw->dx.mem_info[item].size + 3) & (~3);
++
++			ret = sst_dsp_dma_copyfrom(sst, hsw->dx_context_paddr + offset,
++				sst->addr.lpe_base + offset, size);
++			if (ret < 0) {
++				dev_err(hsw->dev,
++					"error: FW context dump failed\n");
++				memset(&hsw->dx, 0, sizeof(hsw->dx));
++				goto out;
++			}
++		}
++	}
++
++out:
++	sst_dsp_dma_put_channel(sst);
++	return ret;
++}
++
++static int sst_hsw_dx_state_restore(struct sst_hsw *hsw)
++{
++	struct sst_dsp *sst = hsw->dsp;
++	u32 item, offset, size;
++	int ret;
++
++	for (item = 0; item < hsw->dx.entries_no; item++) {
++		if (hsw->dx.mem_info[item].source == SST_HSW_DX_TYPE_MEMORY_DUMP
++			&& hsw->dx.mem_info[item].offset > DSP_DRAM_ADDR_OFFSET
++			&& hsw->dx.mem_info[item].offset <
++			DSP_DRAM_ADDR_OFFSET + SST_HSW_DX_CONTEXT_SIZE) {
++
++			offset = hsw->dx.mem_info[item].offset
++					- DSP_DRAM_ADDR_OFFSET;
++			size = (hsw->dx.mem_info[item].size + 3) & (~3);
++
++			ret = sst_dsp_dma_copyto(sst, sst->addr.lpe_base + offset,
++				hsw->dx_context_paddr + offset, size);
++			if (ret < 0) {
++				dev_err(hsw->dev,
++					"error: FW context restore failed\n");
++				return ret;
++			}
++		}
++	}
++
 +	return 0;
 +}
 +
-+static void hsw_boot(struct sst_dsp *sst)
++static void sst_hsw_drop_all(struct sst_hsw *hsw)
 +{
-+	/* set oportunistic mode on engine 0,1 for all channels */
-+	sst_dsp_shim_update_bits(sst, SST_HMDC,
-+			SST_HMDC_HDDA_E0_ALLCH | SST_HMDC_HDDA_E1_ALLCH, 0);
++	struct ipc_message *msg, *tmp;
++	unsigned long flags;
++	int tx_drop_cnt = 0, rx_drop_cnt = 0;
 +
- 	/* set DSP to RUN */
- 	sst_dsp_shim_update_bits_unlocked(sst, SST_CSR, SST_CSR_STALL, 0x0);
- }
- 
--static void hsw_reset(struct sst_dsp *sst)
-+static void hsw_stall(struct sst_dsp *sst)
- {
-+	/* stall DSP */
-+	sst_dsp_shim_update_bits(sst, SST_CSR,
-+		SST_CSR_24MHZ_LPCS | SST_CSR_STALL,
-+		SST_CSR_STALL | SST_CSR_24MHZ_LPCS);
++	/* drop all TX and Rx messages before we stall + reset DSP */
++	spin_lock_irqsave(&hsw->dsp->spinlock, flags);
++
++	list_for_each_entry_safe(msg, tmp, &hsw->tx_list, list) {
++		list_move(&msg->list, &hsw->empty_list);
++		tx_drop_cnt++;
++	}
++
++	list_for_each_entry_safe(msg, tmp, &hsw->rx_list, list) {
++		list_move(&msg->list, &hsw->empty_list);
++		rx_drop_cnt++;
++	}
++
++	spin_unlock_irqrestore(&hsw->dsp->spinlock, flags);
++
++	if (tx_drop_cnt || rx_drop_cnt)
++		dev_err(hsw->dev, "dropped IPC msg RX=%d, TX=%d\n",
++			tx_drop_cnt, rx_drop_cnt);
 +}
 +
-+static void hsw_sleep(struct sst_dsp *sst)
++int sst_hsw_dsp_load(struct sst_hsw *hsw)
 +{
-+	dev_dbg(sst->dev, "HSW_PM dsp runtime suspend\n");
++	struct sst_dsp *dsp = hsw->dsp;
++	int ret;
 +
- 	/* put DSP into reset and stall */
--	sst_dsp_shim_update_bits_unlocked(sst, SST_CSR,
--		SST_CSR_RST | SST_CSR_STALL, SST_CSR_RST | SST_CSR_STALL);
-+	sst_dsp_shim_update_bits(sst, SST_CSR,
-+		SST_CSR_24MHZ_LPCS | SST_CSR_RST | SST_CSR_STALL,
-+		SST_CSR_RST | SST_CSR_STALL | SST_CSR_24MHZ_LPCS);
- 
--	/* keep in reset for 10ms */
--	mdelay(10);
-+	hsw_set_dsp_D3(sst);
-+	dev_dbg(sst->dev, "HSW_PM dsp runtime suspend exit\n");
++	dev_dbg(hsw->dev, "loading audio DSP....");
++
++	ret = sst_dsp_wake(dsp);
++	if (ret < 0) {
++		dev_err(hsw->dev, "error: failed to wake audio DSP\n");
++		return -ENODEV;
++	}
++
++	ret = sst_dsp_dma_get_channel(dsp, 0);
++	if (ret < 0) {
++		dev_err(hsw->dev, "error: cant allocate dma channel %d\n", ret);
++		return ret;
++	}
++
++	ret = sst_fw_reload(hsw->sst_fw);
++	if (ret < 0) {
++		dev_err(hsw->dev, "error: SST FW reload failed\n");
++		sst_dsp_dma_put_channel(dsp);
++		return -ENOMEM;
++	}
++
++	sst_dsp_dma_put_channel(dsp);
++	return 0;
 +}
- 
--	/* take DSP out of reset and keep stalled for FW loading */
--	sst_dsp_shim_update_bits_unlocked(sst, SST_CSR,
--		SST_CSR_RST | SST_CSR_STALL, SST_CSR_STALL);
-+static int hsw_wake(struct sst_dsp *sst)
++
++static int sst_hsw_dsp_restore(struct sst_hsw *hsw)
++{
++	struct sst_dsp *dsp = hsw->dsp;
++	int ret;
++
++	dev_dbg(hsw->dev, "restoring audio DSP....");
++
++	ret = sst_dsp_dma_get_channel(dsp, 0);
++	if (ret < 0) {
++		dev_err(hsw->dev, "error: cant allocate dma channel %d\n", ret);
++		return ret;
++	}
++
++	ret = sst_hsw_dx_state_restore(hsw);
++	if (ret < 0) {
++		dev_err(hsw->dev, "error: SST FW context restore failed\n");
++		sst_dsp_dma_put_channel(dsp);
++		return -ENOMEM;
++	}
++	sst_dsp_dma_put_channel(dsp);
++
++	/* wait for DSP boot completion */
++	sst_dsp_boot(dsp);
++
++	return ret;
++}
++
++int sst_hsw_dsp_runtime_suspend(struct sst_hsw *hsw)
 +{
 +	int ret;
 +
-+	dev_dbg(sst->dev, "HSW_PM dsp runtime resume\n");
++	dev_dbg(hsw->dev, "audio dsp runtime suspend\n");
 +
-+	ret = hsw_set_dsp_D0(sst);
++	ret = sst_hsw_dx_set_state(hsw, SST_HSW_DX_STATE_D3, &hsw->dx);
 +	if (ret < 0)
 +		return ret;
 +
-+	dev_dbg(sst->dev, "HSW_PM dsp runtime resume exit\n");
++	sst_dsp_stall(hsw->dsp);
++
++	ret = sst_hsw_dx_state_dump(hsw);
++	if (ret < 0)
++		return ret;
++
++	sst_hsw_drop_all(hsw);
 +
 +	return 0;
- }
- 
- struct sst_adsp_memregion {
-@@ -431,27 +533,6 @@ static struct sst_block_ops sst_hsw_ops = {
- 	.disable = hsw_block_disable,
- };
- 
--static int hsw_enable_shim(struct sst_dsp *sst)
--{
--	int tries = 10;
--	u32 reg;
--
--	/* enable shim */
--	reg = readl(sst->addr.pci_cfg + SST_SHIM_PM_REG);
--	writel(reg & ~0x3, sst->addr.pci_cfg + SST_SHIM_PM_REG);
--
--	/* check that ADSP shim is enabled */
--	while (tries--) {
--		reg = sst_dsp_shim_read_unlocked(sst, SST_CSR);
--		if (reg != 0xffffffff)
--			return 0;
--
--		msleep(1);
--	}
--
--	return -ENODEV;
--}
--
- static int hsw_init(struct sst_dsp *sst, struct sst_pdata *pdata)
++}
++
++int sst_hsw_dsp_runtime_sleep(struct sst_hsw *hsw)
++{
++	sst_fw_unload(hsw->sst_fw);
++	sst_block_free_scratch(hsw->dsp);
++
++	hsw->boot_complete = false;
++
++	sst_dsp_sleep(hsw->dsp);
++
++	return 0;
++}
++
++int sst_hsw_dsp_runtime_resume(struct sst_hsw *hsw)
++{
++	struct device *dev = hsw->dev;
++	int ret;
++
++	dev_dbg(dev, "audio dsp runtime resume\n");
++
++	if (hsw->boot_complete)
++		return 1; /* tell caller no action is required */
++
++	ret = sst_hsw_dsp_restore(hsw);
++	if (ret < 0)
++		dev_err(dev, "error: audio DSP boot failure\n");
++
++	ret = wait_event_timeout(hsw->boot_wait, hsw->boot_complete,
++		msecs_to_jiffies(IPC_BOOT_MSECS));
++	if (ret == 0) {
++		dev_err(hsw->dev, "error: audio DSP boot timeout\n");
++		return -EIO;
++	}
++
++	/* Set ADSP SSP port settings */
++	ret = sst_hsw_device_set_config(hsw, SST_HSW_DEVICE_SSP_0,
++					SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
++					SST_HSW_DEVICE_CLOCK_MASTER, 9);
++	if (ret < 0)
++		dev_err(dev, "error: SSP re-initialization failed\n");
++
++	return ret;
++}
++#endif
++
+ static int msg_empty_list_init(struct sst_hsw *hsw)
  {
- 	const struct sst_adsp_memregion *region;
-@@ -490,7 +571,7 @@ static int hsw_init(struct sst_dsp *sst, struct sst_pdata *pdata)
+ 	int i;
+@@ -1738,7 +1973,6 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
+ {
+ 	struct sst_hsw_ipc_fw_version version;
+ 	struct sst_hsw *hsw;
+-	struct sst_fw *hsw_sst_fw;
+ 	int ret;
+ 
+ 	dev_dbg(dev, "initialising Audio DSP IPC\n");
+@@ -1780,12 +2014,19 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
+ 		goto dsp_err;
  	}
  
- 	/* enable the DSP SHIM */
--	ret = hsw_enable_shim(sst);
-+	ret = hsw_set_dsp_D0(sst);
- 	if (ret < 0) {
- 		dev_err(dev, "error: failed to set DSP D0 and reset SHIM\n");
- 		return ret;
-@@ -500,10 +581,6 @@ static int hsw_init(struct sst_dsp *sst, struct sst_pdata *pdata)
- 	if (ret)
- 		return ret;
++	/* allocate DMA buffer for context storage */
++	hsw->dx_context = dma_alloc_coherent(hsw->dsp->dma_dev,
++		SST_HSW_DX_CONTEXT_SIZE, &hsw->dx_context_paddr, GFP_KERNEL);
++	if (hsw->dx_context == NULL) {
++		ret = -ENOMEM;
++		goto dma_err;
++	}
++
+ 	/* keep the DSP in reset state for base FW loading */
+ 	sst_dsp_reset(hsw->dsp);
  
--	/* Enable Interrupt from both sides */
--	sst_dsp_shim_update_bits_unlocked(sst, SST_IMRX, 0x3, 0x0);
--	sst_dsp_shim_update_bits_unlocked(sst, SST_IMRD,
--		(0x3 | 0x1 << 16 | 0x3 << 21), 0x0);
+-	hsw_sst_fw = sst_fw_new(hsw->dsp, pdata->fw, hsw);
+-
+-	if (hsw_sst_fw == NULL) {
++	hsw->sst_fw = sst_fw_new(hsw->dsp, pdata->fw, hsw);
++	if (hsw->sst_fw == NULL) {
+ 		ret = -ENODEV;
+ 		dev_err(dev, "error: failed to load firmware\n");
+ 		goto fw_err;
+@@ -1816,8 +2057,11 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
  
- 	/* register DSP memory blocks - ideally we should get this from ACPI */
- 	for (i = 0; i < region_count; i++) {
-@@ -535,6 +612,9 @@ static void hsw_free(struct sst_dsp *sst)
- struct sst_ops haswell_ops = {
- 	.reset = hsw_reset,
- 	.boot = hsw_boot,
-+	.stall = hsw_stall,
-+	.wake = hsw_wake,
-+	.sleep = hsw_sleep,
- 	.write = sst_shim32_write,
- 	.read = sst_shim32_read,
- 	.write64 = sst_shim32_write64,
+ boot_err:
+ 	sst_dsp_reset(hsw->dsp);
+-	sst_fw_free(hsw_sst_fw);
++	sst_fw_free(hsw->sst_fw);
+ fw_err:
++	dma_free_coherent(hsw->dsp->dma_dev, SST_HSW_DX_CONTEXT_SIZE,
++			hsw->dx_context, hsw->dx_context_paddr);
++dma_err:
+ 	sst_dsp_free(hsw->dsp);
+ dsp_err:
+ 	kthread_stop(hsw->tx_thread);
+@@ -1834,6 +2078,8 @@ void sst_hsw_dsp_free(struct device *dev, struct sst_pdata *pdata)
+ 
+ 	sst_dsp_reset(hsw->dsp);
+ 	sst_fw_free_all(hsw->dsp);
++	dma_free_coherent(hsw->dsp->dma_dev, SST_HSW_DX_CONTEXT_SIZE,
++			hsw->dx_context, hsw->dx_context_paddr);
+ 	sst_dsp_free(hsw->dsp);
+ 	kfree(hsw->scratch);
+ 	kthread_stop(hsw->tx_thread);
+diff --git a/sound/soc/intel/sst-haswell-ipc.h b/sound/soc/intel/sst-haswell-ipc.h
+index fe6e63f..afd0ae1 100644
+--- a/sound/soc/intel/sst-haswell-ipc.h
++++ b/sound/soc/intel/sst-haswell-ipc.h
+@@ -23,6 +23,7 @@
+ 
+ #define SST_HSW_NO_CHANNELS		2
+ #define SST_HSW_MAX_DX_REGIONS		14
++#define SST_HSW_DX_CONTEXT_SIZE        (640 * 1024)
+ 
+ #define SST_HSW_FW_LOG_CONFIG_DWORDS	12
+ #define SST_HSW_GLOBAL_LOG		15
+@@ -492,4 +493,10 @@ struct sst_module_runtime *sst_hsw_runtime_module_create(struct sst_hsw *hsw,
+ 	int mod_id, int offset);
+ void sst_hsw_runtime_module_free(struct sst_module_runtime *runtime);
+ 
++/* PM */
++int sst_hsw_dsp_runtime_resume(struct sst_hsw *hsw);
++int sst_hsw_dsp_runtime_suspend(struct sst_hsw *hsw);
++int sst_hsw_dsp_load(struct sst_hsw *hsw);
++int sst_hsw_dsp_runtime_sleep(struct sst_hsw *hsw);
++
+ #endif
 -- 
 2.1.0
