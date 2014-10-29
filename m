@@ -1,44 +1,97 @@
-From: Max Filippov <jcmvbkbc@gmail.com>
-Subject: Re: [PATCH] ASoC: add xtensa xtfpga I2S interface and platform
-Date: Wed, 29 Oct 2014 17:23:15 +0300
-Message-ID: <CAMo8BfJfRTo7puxeafyBnaGWhY38o6ktsSBugcSmSaMYUArcyw@mail.gmail.com>
-References: <1414436825-19416-1-git-send-email-jcmvbkbc@gmail.com>
-	<20141027193229.GE18557@sirena.org.uk>
-	<CAMo8Bf+Z9V8mkiC3JOupPQmi1EJUDKrb1qcNncDbsEbhjigbww@mail.gmail.com>
-	<20141028154224.GX18557@sirena.org.uk>
-	<CAMo8BfLpJ0bdmaFt9+gLQ_kEjB68XdjAJUw8f8s=Owv46h_yDQ@mail.gmail.com>
-	<20141028173853.GD18557@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH] ALSA: hdspm: remove unused variable
+Date: Wed, 29 Oct 2014 20:09:45 +0530
+Message-ID: <1414593585-13277-1-git-send-email-sudipm.mukherjee@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141028173853.GD18557@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar Gala <galak@codeaurora.org>, Grant Likely <grant.likely@linaro.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 28, 2014 at 8:38 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Oct 28, 2014 at 08:00:45PM +0300, Max Filippov wrote:
->> On Tue, Oct 28, 2014 at 6:42 PM, Mark Brown <broonie@kernel.org> wrote:
->> >> > I would also expect to see the data transfer and I2S bits more split
->> >> > out, presumably this IP can actually be used in designs with a DMA
->> >> > controller and one would expect that for practical systems this would be
->> >> > the common case?
->
->> >> I don't know of other designs that use this IP block. Can we do it when
->> >> we get such users?
->
->> > It's also about ensuring that the code is cleanly split up so that
->> > someone can actually go in and add the required support later (and TBH
->
->> Can you point me to an example of such split, so that I don't write it in
->> an unusual way?
->
-> Essentially all drivers are split this way...
+removed the unused variables. These variables were only being
+assigned some value, but the values were never being used.
 
-But all of them have DMA registers and I2S registers completely separated,
-right? How do I share registers between pcm and i2s parts?
+it has been build tested after removing the variables.
 
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
+ sound/pci/rme9652/hdspm.c | 23 +++--------------------
+ 1 file changed, 3 insertions(+), 20 deletions(-)
+
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 7f7277b..e09348c1 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -1257,14 +1257,13 @@ static int hdspm_rate_multiplier(struct hdspm *hdspm, int rate)
+ /* check for external sample rate, returns the sample rate in Hz*/
+ static int hdspm_external_sample_rate(struct hdspm *hdspm)
+ {
+-	unsigned int status, status2, timecode;
++	unsigned int status, status2;
+ 	int syncref, rate = 0, rate_bits;
+ 
+ 	switch (hdspm->io_type) {
+ 	case AES32:
+ 		status2 = hdspm_read(hdspm, HDSPM_statusRegister2);
+ 		status = hdspm_read(hdspm, HDSPM_statusRegister);
+-		timecode = hdspm_read(hdspm, HDSPM_timecodeRegister);
+ 
+ 		syncref = hdspm_autosync_ref(hdspm);
+ 		switch (syncref) {
+@@ -4862,18 +4861,15 @@ snd_hdspm_proc_read_madi(struct snd_info_entry *entry,
+ 			 struct snd_info_buffer *buffer)
+ {
+ 	struct hdspm *hdspm = entry->private_data;
+-	unsigned int status, status2, control, freq;
++	unsigned int status, status2;
+ 
+ 	char *pref_sync_ref;
+ 	char *autosync_ref;
+ 	char *system_clock_mode;
+-	char *insel;
+ 	int x, x2;
+ 
+ 	status = hdspm_read(hdspm, HDSPM_statusRegister);
+ 	status2 = hdspm_read(hdspm, HDSPM_statusRegister2);
+-	control = hdspm->control_register;
+-	freq = hdspm_read(hdspm, HDSPM_timecodeRegister);
+ 
+ 	snd_iprintf(buffer, "%s (Card #%d) Rev.%x Status2first3bits: %x\n",
+ 			hdspm->card_name, hdspm->card->number + 1,
+@@ -4936,17 +4932,6 @@ snd_hdspm_proc_read_madi(struct snd_info_entry *entry,
+ 	snd_iprintf(buffer, "Line out: %s\n",
+ 		(hdspm->control_register & HDSPM_LineOut) ? "on " : "off");
+ 
+-	switch (hdspm->control_register & HDSPM_InputMask) {
+-	case HDSPM_InputOptical:
+-		insel = "Optical";
+-		break;
+-	case HDSPM_InputCoaxial:
+-		insel = "Coaxial";
+-		break;
+-	default:
+-		insel = "Unknown";
+-	}
+-
+ 	snd_iprintf(buffer,
+ 		"ClearTrackMarker = %s, Transmit in %s Channel Mode, "
+ 		"Auto Input %s\n",
+@@ -5191,15 +5176,13 @@ snd_hdspm_proc_read_raydat(struct snd_info_entry *entry,
+ 			 struct snd_info_buffer *buffer)
+ {
+ 	struct hdspm *hdspm = entry->private_data;
+-	unsigned int status1, status2, status3, control, i;
++	unsigned int status1, status2, status3, i;
+ 	unsigned int lock, sync;
+ 
+ 	status1 = hdspm_read(hdspm, HDSPM_RD_STATUS_1); /* s1 */
+ 	status2 = hdspm_read(hdspm, HDSPM_RD_STATUS_2); /* freq */
+ 	status3 = hdspm_read(hdspm, HDSPM_RD_STATUS_3); /* s2 */
+ 
+-	control = hdspm->control_register;
+-
+ 	snd_iprintf(buffer, "STATUS1: 0x%08x\n", status1);
+ 	snd_iprintf(buffer, "STATUS2: 0x%08x\n", status2);
+ 	snd_iprintf(buffer, "STATUS3: 0x%08x\n", status3);
 -- 
-Thanks.
--- Max
+1.8.1.2
