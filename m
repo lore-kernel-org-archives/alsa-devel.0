@@ -1,14 +1,19 @@
-From: yang.a.fang@intel.com
-Subject: [PATCH] ASoC: rt5645:Mark RT5645_TDM_CTRL_3 as readable
-Date: Tue, 28 Oct 2014 18:36:36 -0300
-Message-ID: <1414532196-34611-1-git-send-email-yang.a.fang@intel.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5677: Use specific r/w function
+	for DSP mode
+Date: Wed, 29 Oct 2014 01:44:57 +0000
+Message-ID: <7EB0DE829A537248AF2ED30C97D12694F30527@RTITMBSV03.realtek.com.tw>
+References: <1414378351-2329-1-git-send-email-oder_chiou@realtek.com>
+ <20141028222915.GG18557@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id B6C1C260454
- for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 02:37:53 +0100 (CET)
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC468260454
+ for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 02:45:01 +0100 (CET)
+In-Reply-To: <20141028222915.GG18557@sirena.org.uk>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,38 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: "Fang, Yang A" <yang.a.fang@intel.com>, bardliao@realtek.com, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@google.com" <benzh@google.com>, "anatol@google.com" <anatol@google.com>, Bard Liao <bardliao@realtek.com>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Wednesday, October 29, 2014 6:29 AM
+> To: Oder Chiou
+> Cc: lgirdwood@gmail.com; alsa-devel@alsa-project.org; Bard Liao; Flove;
+> anatol@google.com; benzh@google.com
+> Subject: Re: [PATCH] ASoC: rt5677: Use specific r/w function for DSP mode
+> 
+> On Mon, Oct 27, 2014 at 10:52:31AM +0800, Oder Chiou wrote:
+> 
+> > +	/* Write register */
+> > +	r[0] = reg & 0xff;
+> > +	xfer[0].addr = client->addr;
+> > +	xfer[0].flags = 0;
+> > +	xfer[0].len = 1;
+> > +	xfer[0].buf = &r[0];
+> > +
+> > +	/* Read data */
+> > +	xfer[1].addr = client->addr;
+> > +	xfer[1].flags = I2C_M_RD;
+> > +	xfer[1].len = 2;
+> > +	xfer[1].buf = data;
+> > +
+> > +	ret = i2c_transfer(client->adapter, xfer, 2);
+> > +	if (ret != 2) {
+> > +		dev_err(&client->dev, "i2c_transfer() returned %d\n", ret);
+> > +		return -EIO;
+> > +	}
+> 
+> This looks like standard regmap stuff - what's different?
 
-amixer query fails due to it is not readable reigster
+They are not different with regmap stuff, but they are called by
+rt5677_dsp_mode_i2c_write_addr(), rt5677_dsp_mode_i2c_read_addr(),
+rt5677_read() and rt5677_write().
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
----
- sound/soc/codecs/rt5645.c |    2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 3fb83bf..d16331e 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -139,6 +139,7 @@ static const struct reg_default rt5645_reg[] = {
- 	{ 0x76, 0x000a },
- 	{ 0x77, 0x0c00 },
- 	{ 0x78, 0x0000 },
-+	{ 0x79, 0x0123 },
- 	{ 0x80, 0x0000 },
- 	{ 0x81, 0x0000 },
- 	{ 0x82, 0x0000 },
-@@ -334,6 +335,7 @@ static bool rt5645_readable_register(struct device *dev, unsigned int reg)
- 	case RT5645_DMIC_CTRL2:
- 	case RT5645_TDM_CTRL_1:
- 	case RT5645_TDM_CTRL_2:
-+	case RT5645_TDM_CTRL_3:
- 	case RT5645_GLB_CLK:
- 	case RT5645_PLL_CTRL1:
- 	case RT5645_PLL_CTRL2:
--- 
-1.7.9.5
+The customize access function is implemented by rt5677_read() and
+rt5677_write() that are assigned to regmap_config "rt5677_regmap" for using
+between codec mode or DSP mode.
