@@ -1,8 +1,8 @@
 From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: [RFCv1] Media Token API needs - Was: Re: [alsa-devel] [PATCH v2
+Subject: Re: [RFCv1] Media Token API needs - Was: Re: [alsa-devel] [PATCH v2
  5/6] sound/usb: pcm changes to use media token api
-Date: Tue, 28 Oct 2014 21:42:50 -0200
-Message-ID: <20141028214250.27f0c869@recife.lan>
+Date: Tue, 28 Oct 2014 22:00:51 -0200
+Message-ID: <20141028220051.68a8ab6e@recife.lan>
 References: <cover.1413246370.git.shuahkh@osg.samsung.com>
 	<cf1059cc2606f20d921e5691e3d59945a19a7871.1413246372.git.shuahkh@osg.samsung.com>
 	<543FB374.8020604@metafoo.de>
@@ -20,330 +20,109 @@ References: <cover.1413246370.git.shuahkh@osg.samsung.com>
 	<s5hk33n8ccj.wl-tiwai@suse.de>
 	<20141027105237.5f5ec7fd@recife.lan>
 	<5450077F.70101@osg.samsung.com>
+	<20141028214250.27f0c869@recife.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <5450077F.70101@osg.samsung.com>
+In-Reply-To: <20141028214250.27f0c869@recife.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Shuah Khan <shuahkh@osg.samsung.com>
 Cc: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Devin Heitmueller <dheitmueller@kernellabs.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Linux Media Mailing List <linux-media@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans Verkuil <hverkuil@xs4all.nl>, Sander Eikelenboom <linux@eikelenboom.it>, prabhakar.csengg@gmail.com, Antti Palosaari <crope@iki.fi>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, Tim Gardner <tim.gardner@canonical.com>, "olebowle@gmx.com" <olebowle@gmx.com>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Shuah,
+Em Tue, 28 Oct 2014 21:42:50 -0200
+Mauro Carvalho Chehab <mchehab@osg.samsung.com> escreveu:
 
-I'm understanding that you're collecting comments to write a RFC with the
-needs by the media token, right?
+> Before starting with the description, this is the simplified diagram of
+> a media device (without IR, eeprom and other beasts):
 
-I'm sending you my contributions to such text. See enclosed.
-
-I suggest to change the subject and submit this on a separate thread, after
-we finish the review of such document. Anyway, I'm changing the subject
-of this Thread to reflect that.
-
-Regards,
-Mauro
-
-Em Tue, 28 Oct 2014 15:15:43 -0600
-Shuah Khan <shuahkh@osg.samsung.com> escreveu:
-
-> On 10/27/2014 06:52 AM, Mauro Carvalho Chehab wrote:
-> > Em Sun, 26 Oct 2014 09:27:40 +0100
-> > Takashi Iwai <tiwai@suse.de> escreveu:
-> > 
-> 
-> > 
-> > Hmm... this is actually more complex than that. V4L2 driver doesn't
-> > know if ALSA is streaming or not, or even if ALSA device node is opened
-> > while he is touching at the hardware configuration or changing the
-> > state. I mean: it is not an error to set the hardware. The error only
-> > happens if ALSA and V4L2 tries to do it at the same time on an incompatible
-> > way.
-> > 
-> > Also, this won't work for DVB, as on DVB this is really an exclusive
-> > lock that would prevent both ALSA and V4L2 drivers to stream while in
-> > DVB mode.
-> > 
-> > Implementing it with a lock seems to be the best approach, at least on
-> > my eyes.
-> > 
-> >> That said, we should go back and start discussing the design goal at
-> >> first.
-> > 
-> > Surely.
-> 
-> This is long, however, hoping it will describe the problem and
-> solution that is being pursued in detail:
-
-Before starting with the description, this is the simplified diagram of
-a media device (without IR, eeprom and other beasts):
-
-  +-----------------------------------------------------------------------------------------+
-  |                                                                                         |
-  |                   +----------------+     +------------------+-------+----------------+  |
-  |                   |  demod_video   | <-- |      analog      | tuner |     digital    |  |
-  |                   +----------------+     +------------------+-------+----------------+  |
-  |                     |                      |                           |                |
-  |                     |                      |                           |                |
-  v                     v                      v                           v                |
-+--------------+-----+-----------------+     +------------------+        +---------------+  |
-|     dvb      | DMA |      analog     |     |   demod_audio    |        | digital_demux | -+
-+--------------+-----+-----------------+     +------------------+        +---------------+
-  |                     |                      |
-  |                     |                      |
-  v                     v                      v
-+--------------+      +----------------+     +------------------+
-| devnode dvr0 |      | devnode video0 |     |    audio DMA     |
-+--------------+      +----------------+     +------------------+
-                                               |
-                                               |
-                                               v
-                                             +------------------+
-                                             | devnode pcmC1D0c |
-                                             +------------------+
-
-There are two components that are shared there between analog and digital:
-the tuner (where the signal is captured) and the DMA engine used to stream
-analog and Digital TV (dvb).
-
-PS.: the diagram is over-simplified, as the tuner is just one of the possible
-inputs for the analog part of the device. Other possible inputs are S-Video,
-composite, HDMI, etc.
-
-Sometimes, the audio DMA is also shared, e. g. just one stream comes from
-the hardware. It is up to the driver to split audio and video and send
-them to the V4L2 and ALSA APIs. This is the case of tm6000 driver.
-
-Those shared components can be used either at analog or digital mode,
-but not at the same time.
-
-Also, programming the V4L2 analog and audio DMA and demods should be done
-via V4L2 API, as this API allows the selection of the proper audio/video
-input (almost all devices have multiple analog inputs).
-
-Please notice that, if the tuner is on digital mode, the entire analog
-path is disabled, including ALSA output.
-
-If the tuner is on analog mode, both ALSA and V4L2 can work at the
-same time. However, during the period where the tuner firmware is
-loaded, and during the DMA configuration and input selection time,
-neither ALSA or V4L2 can stream. Such configuration/firmware load
-is commanded via V4L2 API, as ALSA knows nothing about tuner or
-input selection.
-
-> 
-> At a higher level the problem description is:
-> 
-> There are 3 different device files that get created to control
-> tuner and audio functions on a media device. 3 drivers (dvb,
-> v4l2, alsa), and 3 core apis (dvb-core, v4l-core, audio) that
-> control the tuner and audio hardware and provide user api to
-> these 3 device files.
+As reference, a more complete diagram would be:
 
 
-There's actually a 4th component for some drivers: the mceusb driver,
-that handles remote controllers. The mceusb handles the Microsoft 
-Media Center Remote Control protocol. It supports standalone remote
-controller devices, but it also supports a few USB devices that use
-a separate interface for IR.
 
-There are currently some issues on cx231xx and mceusb, as both drivers 
-can be used at the same time, but, when cx231xx sends certain commands, 
-the mceusb IR polls fail. This is out of the scope of the audio lock,
-but it also needs to be addressed some day.
+                                                                +------------------+
+                                                                |        IR        |
+                                                                +------------------+
+                                                                  |
+                                                                  |
+                                                                  v
+                                                                +------------------+
+                                                                |  IR POLL or DMA  |
+                                                                +------------------+
+                                                                  |
+                                                                  |
+                                                                  v
+                                                                +------------------+
+                                                                |  devnode input8  |
+                                                                +------------------+
 
-> User applications, drivers and the core have no knowledge of each
-> other. The only thing that is common across all these drivers is
-> the parent device for the main usb device which is controlled by
-> the main usb driver.
-
-I would add that there are user applications that can handle all
-3 APIs like MythTV. But, at least MythTV doesn't know how to associate
-ALSA, V4L2 and DVB devnodes that belong to the same device.
-
-I mean: if MythTV finds, let's say, 3 V4L2 nodes, 3 ALSA nodes, 
-and 1 DVB node, it doesn't know what device is associated with the
-DVB node.
-
-Almost all applications that are aware of V4L2 API are also aware of
-ALSA API and may associate audio and video, as there is a way to 
-associate it using sysfs. However, several apps don't use it.
-
-> The premise for the main design idea in this series is creating
-> a common construct at the parent device structure that is visible
-> to all drivers to act as a master access control (lock). Let's call
-> this media token object with two sub-tokens one for tuner and another
-> for audio.
-> 
-> Each of the apis evolved separately, hence have their own backwards
-> compatibility to maintain. Starting with v4l2:
-> 
-> v4l2 case:
-> Multiple v4l2 applications are allowed to open /dev/video0 in
-> read/write mode with no restrictions as long as the tuner is in
-> analog mode. v4l2 core handles conflicting requests between v4l2
-> applications. 
-
-> It doesn't have the knowledge that the tuner is in
-
-To be clear: "It" here refers to v4l2 core. The drivers may have this
-knowledge as, except for one case (bttv driver), they share some data.
-
-> use by a dvb and/or audio is in use. As soon as a v4l2 application
-> starts, digital stream glitches and audio glitches.
-> 
-> dvb case:
-> Multiple dvb applications can open the dvb device in read only mode.
-
-There's no issue with ALSA on R/O mode, as the application is not
-allowed to modify anything at the stream. This is used only to monitor
-an already opened device in R/W mode.
-
-> As soon an application open the device read/write mode a separate
-> kthread is kicked off to handle the request. Only one application
-> can open the device in read/write mode. 
-
-> Similar to v4l2 case,
-
-s/v4l2/v4l2 core/
-
-> dvb-core doesn't have any knowledge that the tuner is in use by
-> v4l2 and/or audio is in use. As soon as a dvb application starts v4l2
-> video glitches and audio glitches.
-> 
-> audio case:
-> Same scenario is applicable to audio application. When a v4l2 or dvb
-> application starts, audio application gets impacted.
-> 
-> Problems to address:
-> 
-> dvb owns tuner and audio: another dvb, v4l2 app and audio app should
->                           detect tuner/audio busy right away and exit.
-> 
-> v4l2 owns tuner and audio: another dvb and audio app should detect
->                            tuner/audio busy right away and exit.
-
-Actually, no: audio should not exit. The V4L2 should only hold the
-token for the required time to initialize the device and/or load the
-firmware. ALSA applications should wait for V4L2 to finish
-programming at audio, and should keep working after that.
-
->                            v4l2 app can continue to use it until it
->                            tries to change the tuner/audio state.
-> 
-> 
-> audio owns audio: dvb and v4l2 apps should detect audio busy and exit.
-
-Actually no. It is, instead:
-
-audio owns audio: dvb apps should detect audio busy and exit.
-V4L2 apps should work. However, when certain V4L2 ioctls are issued, 
-the audio device driver should not send any command to the hardware.
-After such commands, the audio mixers may change.
-
-We need two separate tokens because of that: the behavior is different.
-
-This is basically why we need two separate tokens, and because we cannot
-implement locking at ALSA open/close.
-
-> 
-> Special cases:
-> 
-> dvb apps. access tuner and audio in exclusive mode. i.e only one dvb app.
-> at a time is allowed to open the device read/write mode.
-
-To be clearer: dvb apps won't use the audio node, but audio should be blocked,
-as the devices can't use audio while in DVB mode.
-
-> As dvb apps.
-> create threads to handle audio and video, 
-
-No. DVB apps don't handle audio/video. It receives data as MPEG-TS,
-using a separate device node. Yet, the same DMA engine that provides
-video (and, sometimes audio) is used by the DVB devnode.
-
-> all threads in that group
-> should be allowed by the higher level construct to access the tuner and
-> audio. dvb application will have to hold tuner and audio tokens so v4l2
-> and audio apps. know they are in use.
-> 
-> audio apps. access audio in exclusive mode. i.e only one audio app. at
-> a time is allowed to open the device in read/write mode. Audio apps.
-> create threads and thread closes and re-opens the audio device. Threads
-> can do this and hence something that higher level construct has to allow.
-> audio app. has to hold audio token so dvb and v4l2 know that it is in use.
-> (Note: I am not sure if I have the audio scenario right)
-> 
-> v4l2 apps. access tuner and audio in shared v4l2 mode. i.e several v4l2
-> processes and threads could use tuner and audio at the same time. The
-> higher level construct has to allow multiple v4l2 apps. to access and
-> disallow dvb and audio apps. access when they are in use by v4l2.
-
-Actually, V4L2 core handles concurrency. There's just one file handler
-with full control to start/stop stream at V4L2 side.
-
-> 
-> Adding to this, both dvb and v4l2 open audio device and make snd pcm
-> capture callbacks.
-
-Huh? DVB won't need to touch at PCM capture callbacks. It should just
-avoid audio PCM capture to stream while in DVB mode.
-
-> There is no way to tell if dvb or v4l2 or audio
-> app is the one that is making this request.
-
-> dvb app would like audio
-> in exclusive mode allowing only one process and its threads to access
-> it.
-
-No. It just wants to disable the part of the hardware that can now
-be powered off.
-
-> v4l2 on the other hand would like audio in shared state accessible
-> to all v4l2 processes. 
-
-> If dvb-core and v4l2-core get tuner and audio
-> tokens at the same time, the window for having tuner token and not
-> getting audio token go down.
-
-No. It should not be allowed that both dvb-core and v4l2-core to get
-the tokens at the same time. This is an exclusive lock.
-
-> In dvb case when dvb device is opened in read/write mode, and v4l2
-> case when an app. tries to change the status. Audio callbacks have to
-> detect if audio is busy, if not which mode to request the token in.
-
-Huh?
-
-> For dvb and audio app. cases, the audio token should be requested in
-> exclusive mode and in v4l2 case shared mode. The logic for requesting
-> audio token will have to be try to get in exclusive mode, if fails,
-> try to get in shared mode, and if that fails give up.
-
-Huh?
-
-> 
-> Current status:
-> Combining patch v1 and patch v2 designs by allowing shared mode token
-> hold for v4l2, and deciding on where to hold audio token from
-> alsa driver will solve the above conflict scenarios. That said, the
-> question is "is this the right approach?" or are there other ways to
-> solve the problem. One thing is clear, we need some common higher level
-> construct for all the device drivers and dvb, v4l2, and audio ioctls,
-> callbacks etc, to detect the hardware is in use.
-
-I think that the current status is that we need to finish the spec
-first. Then check if the patches are doing what's above.
-
-It seems that we agree to not agree at the requirements so far ;)
-
-> 
-> I do think lock/token approach has the best potential to solve the
-> problems. We are at this point very close to addressing conflicts.
-> At least the ones I am able to test.
-> 
-> thanks,
-> -- Shuah
+                             +------------------------------------+
+                             v                                    |
+                           +----------------+          +-------+-------------------+-----------+
+                           |  demod_video   |  +-----> | tuner |     A/V switch    | composite |
+                           +----------------+  |       +-------+-------------------+-----------+
+                             |                 |                  |
+                             |                 |                  |
+                             v                 |                  v
+     +--------------+-----+-----------------+  |                +------------------+
+  +- |     dvb      | DMA |      analog     |  |                |   demod_audio    |
+  |  +--------------+-----+-----------------+  |                +------------------+
+  |    ^                     |                 |                  |
+  |    +---------------+     |                 |                  |
+  |                    |     v                 |                  v
+  |  +--------------+  |   +----------------+  |                +------------------+
+  +> | devnode dvr0 |  |   | devnode video0 |  |                |    audio DMA     |
+     +--------------+  |   +----------------+  |                +------------------+
+                       |                       |                  |
+                       |                       |                  |
+                       |                       |                  v
+                       |                       |                +------------------+
+                       |                       |                | devnode pcmC1D0c |
+                       |                       |                +------------------+
+                       |                       |
+                       |                       |
+                       |                       |
+                       |                     +--------+--------+-------------------+
+                       |                     | analog |  tuner |      digital      |
+                       |                     +--------+--------+-------------------+
+                       |                                          |
+                       |                                          |
+                       |                                          v
+                       |                                        +------------------+
+                       +--------------------------------------- |  digital_demux   |
+                                                                +------------------+
 
 Regards,
 Mauro
+
+-
+
+Dot file for the above diagram:
+
+digraph media_hardware {
+  node [shape=record]
+  DMA1[label = "<dvb> dvb | <dma> DMA | <video> analog"]
+  DMA2[label = "audio DMA"]
+  DMA3[label = "IR POLL or DMA"]
+  tuner[label = "<analog> analog | <tuner> tuner | <digital> digital"]
+  input[label = "<tuner> tuner | <switch> A/V switch | <composite> composite"]
+
+  DMA1:video -> "devnode video0"
+  DMA1:dvb -> "devnode dvr0"
+
+  "digital_demux" -> DMA1:dvb
+  demod_video -> DMA1:video
+
+  tuner:digital -> "digital_demux"
+  tuner:analog -> input:tuner
+
+  input:switch -> demod_video
+  input:switch -> demod_audio
+
+  demod_audio -> DMA2
+  DMA2 -> "devnode pcmC1D0c"
+
+  IR -> DMA3
+  DMA3 -> "devnode input8"
+}
