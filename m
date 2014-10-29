@@ -1,52 +1,68 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] audio: sai: Add Power Management support
-Date: Wed, 29 Oct 2014 11:36:34 +0000
-Message-ID: <20141029113634.GF18557@sirena.org.uk>
-References: <1414552896-20797-1-git-send-email-b18965@freescale.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v03 0/4] ASoC: davinci-mcasp: Correct
+	start/stop sequences
+Date: Wed, 29 Oct 2014 13:55:43 +0200
+Message-ID: <1414583747-25065-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="blhOMs4YVM72OzYk"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1414552896-20797-1-git-send-email-b18965@freescale.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alison Wang <b18965@freescale.com>
-Cc: perex@perex.cz, tiwai@suse.de, lgirdwood@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EE4C2604FF
+ for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 12:55:53 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, jsarha@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---blhOMs4YVM72OzYk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+For some reason these patches did not made it to mainline kernel. V2 was sent
+on 28.04.2014:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/074871.html
+and got applied the same day:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2014-March/074878.html
 
-On Wed, Oct 29, 2014 at 11:21:36AM +0800, Alison Wang wrote:
-> This patch adds Power Management support for SAI.
-> Activate regmap cache with REGCACHE_RBTREE, and use
+I just noticed that they are missing.
 
-Are you sure that REGCACHE_RBTREE is the best option here?  For MMIO
-devices the cost tradeoff for the rbtree is usually higher than people
-like so flat caches are preferred.  But if it works for you that's fine,
-this shouldn't be *that* performance critical.
+Changes since v2:
+- rebased on next
 
-I'm also a bit surprised that this works without register defaults being
-provided since we need to make sure we allocate the rbtree nodes outside
-of the spinlock we use to lock MMIO access - was this tested with
-mainline?
+Changes since v1:
+- Correction for the stop sequence is added
+- start code cleanup patch added
 
---blhOMs4YVM72OzYk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+The startup sequence for TX and RX was not correct, not following the
+programming sequence from the TRM.
+This could cause initial channel swap when starting TX.
+When stopping the stream the AFIFO should be stopped as the last step to avoid
+unpredictable behavior.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+The change has been tested on AM335x and AM437x but it should be valid for all
+devices.
 
-iQEcBAEBAgAGBQJUUNFBAAoJECTWi3JdVIfQ2RoH/R78fnjr1p5Nb8zDFRKIXXhB
-RgnOYVpZJxHKjZX2gtm7V61dSYbWilH+nKZ3vhaeG0H84n8gqvLLFOc+w8OhtRNZ
-pzZReEutmW+oQCmV7UZYUn1ThprS4ojjTQ+cfBSo8L9gPtRqslhrvD+u4bA92/hk
-CfWZ8srGW3CK/Vzw3lSkOBmuW3A5ruwShYN9NGyKB2KFNmWZcX4d3Zen9cJvw2M+
-MJxF0e7YNvfgc77pEWcmq3flrONr8pit5o2evNsDcqYl7tVM+ij9p3mXtfRE4Wu3
-c8cICgv971oVs1EtXEh+qvPsbvUfR/vw8G+nXyTWvaL3l9WWhlScgkpHassLB2g=
-=ftGc
------END PGP SIGNATURE-----
+Regards,
+Peter
+---
+Peter Ujfalusi (4):
+  ASoC: davinci-mcasp: Correct TX start sequence
+  ASoC: davinci-mcasp: Correct RX start sequence
+  ASoC: davinci-mcasp: When stopping TX/RX stop the AFIFO as the last
+    step
+  ASoC: davinci-mcasp: Move the AFIFO related code under start_tx/rx
+    functions
 
---blhOMs4YVM72OzYk--
+ sound/soc/davinci/davinci-mcasp.c | 95 ++++++++++++++++++---------------------
+ sound/soc/davinci/davinci-mcasp.h |  6 +++
+ 2 files changed, 49 insertions(+), 52 deletions(-)
+
+-- 
+2.1.2
