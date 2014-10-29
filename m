@@ -1,19 +1,17 @@
-From: Geoffrey McRae <geoff@spacevs.com>
-Subject: Re: [PATCH 1/2] ALSA: hda - Fix probing and stuttering
- on CMI8888 HD-audio controller
-Date: Wed, 29 Oct 2014 23:13:15 +1100
-Message-ID: <20141029231315.77e79b70@sarah.home.spacevs.com>
-References: <1407328755-1021-1-git-send-email-tiwai@suse.de>
- <20141029072124.2cc32661@sarah.home.spacevs.com>
- <s5hy4rzco0y.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v03 0/4] ASoC: davinci-mcasp: Correct
+	start/stop sequences
+Date: Wed, 29 Oct 2014 12:32:44 +0000
+Message-ID: <20141029123244.GI18557@sirena.org.uk>
+References: <1414583747-25065-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1056919616810058865=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.spacevs.com (mail1.spacevs.com [202.174.111.252])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AB732604E3
- for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 13:13:24 +0100 (CET)
-In-Reply-To: <s5hy4rzco0y.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 916AE2604E3
+ for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 13:33:15 +0100 (CET)
+In-Reply-To: <1414583747-25065-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,29 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 29 Oct 2014 08:50:53 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
 
-> At Wed, 29 Oct 2014 07:21:24 +1100,
-> Geoffrey McRae wrote:
-> > 
-> > I can confirm that disable of MSI is required as even Windows 7
-> > 64bit does not enable this for Intel HDA. Out of curiosity I altered
-> > the driver to use MSI-X with the same results, interrupts are never
-> > received even though the PCI caps state that MSI is supported.
-> > 
-> > Playback is very poor and stutters if I do not allow snoop by
-> > commenting out "case AZX_DRIVER_CMEDIA:" in
-> > azx_check_snoop_available.
-> 
-> OK, so we have some conflicting results.  Possibly we need non-cached
-> pages only for CORB/RIRB but leave the stream buffers?  Could you
-> check the patch below?
-> 
+--===============1056919616810058865==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PmxSQ+XK5f0H4C2R"
+Content-Disposition: inline
 
-The patch works fine, no errors reported, if I however disable snoop it
-continues to stutter.
+
+--PmxSQ+XK5f0H4C2R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Oct 29, 2014 at 01:55:43PM +0200, Peter Ujfalusi wrote:
+
+> The startup sequence for TX and RX was not correct, not following the
+> programming sequence from the TRM.
+
+Applied all, thanks.
+
+--PmxSQ+XK5f0H4C2R
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUUN5rAAoJECTWi3JdVIfQ1cYIAIYuFdpT7JG5wkSlYU2eskgJ
+ZzAjTO3kkyiNyy2jEgOoEHu5zg9Bsaf4yTYvAlo1CeYX1VfFhdJoVeQ1gx9+ievZ
+YqnXiUL6EckE8cI5Zwb1chk25c+iaUMdf1W2leOKX9a7wEMBSKY0CMPICgLNWHCq
+NeSRnKkFXynt9kU/ZgT1OplRhFhWBcacXLOzUFul4QJUdY0L2pIx926m6BHPgmw7
+PTqPQiRj4TmVnPMOZxK8wOOcKi++GYl9AVmOQpVhe3IgW9D0GJkrCHMgQATRCqhq
+g4eA5K4RkFbnpyW1K5+g6U3iRLa+kjte/EM3/RmNQK4z8jU5zWt3HjT9IUuMvr8=
+=5CMQ
+-----END PGP SIGNATURE-----
+
+--PmxSQ+XK5f0H4C2R--
+
+--===============1056919616810058865==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1056919616810058865==--
