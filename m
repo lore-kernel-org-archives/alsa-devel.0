@@ -1,97 +1,86 @@
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] ALSA: hdspm: remove unused variable
-Date: Wed, 29 Oct 2014 20:09:45 +0530
-Message-ID: <1414593585-13277-1-git-send-email-sudipm.mukherjee@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 00/11] Add AXD Audio Processing IP driver
+Date: Wed, 29 Oct 2014 10:06:19 -0500
+Message-ID: <5451026B.9030306@linux.intel.com>
+References: <1414495589-8579-1-git-send-email-qais.yousef@imgtec.com> <544F8439.4080402@ladisch.de> <544F97A4.7080209@imgtec.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <544F97A4.7080209@imgtec.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Qais Yousef <qais.yousef@imgtec.com>, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, Neil Jones <neil.jones@imgtec.com>, Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-removed the unused variables. These variables were only being
-assigned some value, but the values were never being used.
+On 10/28/14, 8:18 AM, Qais Yousef wrote:
+> On 10/28/2014 11:55 AM, Clemens Ladisch wrote:
+>> Qais Yousef wrote:
+>>> AXD Audio Processing IP performs audio decoding, encoding, mixing,
+>>> equalisation,
+>>> synchronisation and playback.
+>> What exactly do you mean with "synchronisation" and "playback"?
+>
+> Synchronisation refers to accurate audio playout relative to a master
+> clock source including compensation of drift between the master clock
+> source and the playout clock of the audio hardware. Hence allowing
+> synchronised audio playout across multiple independent devices.
+>
+> Playback simple refers to the fact that AXD is capable of managing audio
+> playout hardware like I2S and SPDIF interfaces.
+>
+>
+>>> It doesn't fit in alsa subsystem but I Cced them to confirm.
+>> ... because those two words sound like something that a sound card
+>> could do.
+>
+> The problem mainly stems from the fact that we take a variety of
+> compressed audio as input and we could perform audio encoding. The
+> problem with the compressed audio is that the range of decoders and
+> configuration supported in alsa is limited and there's no support for
+> taking raw pcm and producing compressed output. I'm not an expert on
+> alsa but when I looked it looked like there's more infra structure
+> required.
+>
+> The following not supported points from
+> Documentation/sound/alsa/compress_offload.txt affect us:
+>
+> - Volume control/routing is not handled by this API. Devices exposing a
+>    compressed data interface will be considered as regular ALSA devices;
+>    volume changes and routing information will be provided with regular
+>    ALSA kcontrols.
+>
+> - Embedded audio effects. Such effects should be enabled in the same
+>    manner, no matter if the input was PCM or compressed.
+>
+> - Encoding/decoding acceleration is not supported as mentioned
+>    above. It is possible to route the output of a decoder to a capture
+>    stream, or even implement transcoding capabilities. This routing
+>    would be enabled with ALSA kcontrols.
 
-it has been build tested after removing the variables.
+Volume control, effects and routing aren't supported directly with the 
+snd_pcm streaming interface either. we didn't add these features either 
+in the compressed API since they could be enabled through existing means 
+(kcontrols and routing).
 
-Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
----
- sound/pci/rme9652/hdspm.c | 23 +++--------------------
- 1 file changed, 3 insertions(+), 20 deletions(-)
-
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 7f7277b..e09348c1 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -1257,14 +1257,13 @@ static int hdspm_rate_multiplier(struct hdspm *hdspm, int rate)
- /* check for external sample rate, returns the sample rate in Hz*/
- static int hdspm_external_sample_rate(struct hdspm *hdspm)
- {
--	unsigned int status, status2, timecode;
-+	unsigned int status, status2;
- 	int syncref, rate = 0, rate_bits;
- 
- 	switch (hdspm->io_type) {
- 	case AES32:
- 		status2 = hdspm_read(hdspm, HDSPM_statusRegister2);
- 		status = hdspm_read(hdspm, HDSPM_statusRegister);
--		timecode = hdspm_read(hdspm, HDSPM_timecodeRegister);
- 
- 		syncref = hdspm_autosync_ref(hdspm);
- 		switch (syncref) {
-@@ -4862,18 +4861,15 @@ snd_hdspm_proc_read_madi(struct snd_info_entry *entry,
- 			 struct snd_info_buffer *buffer)
- {
- 	struct hdspm *hdspm = entry->private_data;
--	unsigned int status, status2, control, freq;
-+	unsigned int status, status2;
- 
- 	char *pref_sync_ref;
- 	char *autosync_ref;
- 	char *system_clock_mode;
--	char *insel;
- 	int x, x2;
- 
- 	status = hdspm_read(hdspm, HDSPM_statusRegister);
- 	status2 = hdspm_read(hdspm, HDSPM_statusRegister2);
--	control = hdspm->control_register;
--	freq = hdspm_read(hdspm, HDSPM_timecodeRegister);
- 
- 	snd_iprintf(buffer, "%s (Card #%d) Rev.%x Status2first3bits: %x\n",
- 			hdspm->card_name, hdspm->card->number + 1,
-@@ -4936,17 +4932,6 @@ snd_hdspm_proc_read_madi(struct snd_info_entry *entry,
- 	snd_iprintf(buffer, "Line out: %s\n",
- 		(hdspm->control_register & HDSPM_LineOut) ? "on " : "off");
- 
--	switch (hdspm->control_register & HDSPM_InputMask) {
--	case HDSPM_InputOptical:
--		insel = "Optical";
--		break;
--	case HDSPM_InputCoaxial:
--		insel = "Coaxial";
--		break;
--	default:
--		insel = "Unknown";
--	}
--
- 	snd_iprintf(buffer,
- 		"ClearTrackMarker = %s, Transmit in %s Channel Mode, "
- 		"Auto Input %s\n",
-@@ -5191,15 +5176,13 @@ snd_hdspm_proc_read_raydat(struct snd_info_entry *entry,
- 			 struct snd_info_buffer *buffer)
- {
- 	struct hdspm *hdspm = entry->private_data;
--	unsigned int status1, status2, status3, control, i;
-+	unsigned int status1, status2, status3, i;
- 	unsigned int lock, sync;
- 
- 	status1 = hdspm_read(hdspm, HDSPM_RD_STATUS_1); /* s1 */
- 	status2 = hdspm_read(hdspm, HDSPM_RD_STATUS_2); /* freq */
- 	status3 = hdspm_read(hdspm, HDSPM_RD_STATUS_3); /* s2 */
- 
--	control = hdspm->control_register;
--
- 	snd_iprintf(buffer, "STATUS1: 0x%08x\n", status1);
- 	snd_iprintf(buffer, "STATUS2: 0x%08x\n", status2);
- 	snd_iprintf(buffer, "STATUS3: 0x%08x\n", status3);
--- 
-1.8.1.2
+>
+>
+>
+>>> I added it to drivers/char as this is the best location I could think
+>>> of at the
+>>> moment.
+>> drivers/misc?
+>
+> Yeah could do if there's consensus.
+>
+> Thanks,
+> Qais
+>
+>>
+>> Regards,
+>> Clemens
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
