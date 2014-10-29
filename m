@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v03 3/4] ASoC: davinci-mcasp: When stopping
-	TX/RX stop the AFIFO as the last step
-Date: Wed, 29 Oct 2014 13:55:46 +0200
-Message-ID: <1414583747-25065-4-git-send-email-peter.ujfalusi@ti.com>
+Subject: [PATCH v03 4/4] ASoC: davinci-mcasp: Move the AFIFO
+	related code under start_tx/rx functions
+Date: Wed, 29 Oct 2014 13:55:47 +0200
+Message-ID: <1414583747-25065-5-git-send-email-peter.ujfalusi@ti.com>
 References: <1414583747-25065-1-git-send-email-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C036260537
- for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 12:56:00 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+ by alsa0.perex.cz (Postfix) with ESMTP id B4F4D2604FF
+ for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 12:56:02 +0100 (CET)
 In-Reply-To: <1414583747-25065-1-git-send-email-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,68 +25,72 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, jsarha@ti.com, zonque@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The AFIFO should not be stopped (or started for that matter) when McASP is
-running since it can cause unpredictable issues because we are switching off
-AFIFO for the direction which was handling the requests from McASP and was
-generating DMA request toward the system DMA.
+In this way the start code for tx/rx going to be located at the same place.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/davinci/davinci-mcasp.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 142da94f8878..002351f9fc40 100644
+index 002351f9fc40..6b1bfd9de57d 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -233,6 +233,12 @@ static void mcasp_stop_rx(struct davinci_mcasp *mcasp)
+@@ -154,6 +154,13 @@ static bool mcasp_is_synchronous(struct davinci_mcasp *mcasp)
  
- 	mcasp_set_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, 0);
- 	mcasp_set_reg(mcasp, DAVINCI_MCASP_RXSTAT_REG, 0xFFFFFFFF);
-+
-+	if (mcasp->rxnumevt) {	/* disable FIFO */
+ static void mcasp_start_rx(struct davinci_mcasp *mcasp)
+ {
++	if (mcasp->rxnumevt) {	/* enable FIFO */
 +		u32 reg = mcasp->fifo_base + MCASP_RFIFOCTL_OFFSET;
 +
 +		mcasp_clr_bits(mcasp, reg, FIFO_ENABLE);
++		mcasp_set_bits(mcasp, reg, FIFO_ENABLE);
 +	}
- }
- 
- static void mcasp_stop_tx(struct davinci_mcasp *mcasp)
-@@ -248,27 +254,22 @@ static void mcasp_stop_tx(struct davinci_mcasp *mcasp)
- 
- 	mcasp_set_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, val);
- 	mcasp_set_reg(mcasp, DAVINCI_MCASP_TXSTAT_REG, 0xFFFFFFFF);
 +
-+	if (mcasp->txnumevt) {	/* disable FIFO */
+ 	/* Start clocks */
+ 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXHCLKRST);
+ 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLR_REG, RXCLKRST);
+@@ -181,6 +188,13 @@ static void mcasp_start_tx(struct davinci_mcasp *mcasp)
+ {
+ 	u32 cnt;
+ 
++	if (mcasp->txnumevt) {	/* enable FIFO */
 +		u32 reg = mcasp->fifo_base + MCASP_WFIFOCTL_OFFSET;
 +
 +		mcasp_clr_bits(mcasp, reg, FIFO_ENABLE);
++		mcasp_set_bits(mcasp, reg, FIFO_ENABLE);
 +	}
- }
++
+ 	/* Start clocks */
+ 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXHCLKRST);
+ 	mcasp_set_ctl_reg(mcasp, DAVINCI_MCASP_GBLCTLX_REG, TXCLKRST);
+@@ -201,25 +215,12 @@ static void mcasp_start_tx(struct davinci_mcasp *mcasp)
  
- static void davinci_mcasp_stop(struct davinci_mcasp *mcasp, int stream)
+ static void davinci_mcasp_start(struct davinci_mcasp *mcasp, int stream)
  {
 -	u32 reg;
 -
- 	mcasp->streams--;
+ 	mcasp->streams++;
  
 -	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		if (mcasp->txnumevt) {	/* disable FIFO */
+-		if (mcasp->txnumevt) {	/* enable FIFO */
 -			reg = mcasp->fifo_base + MCASP_WFIFOCTL_OFFSET;
 -			mcasp_clr_bits(mcasp, reg, FIFO_ENABLE);
+-			mcasp_set_bits(mcasp, reg, FIFO_ENABLE);
 -		}
 +	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		mcasp_stop_tx(mcasp);
+ 		mcasp_start_tx(mcasp);
 -	} else {
--		if (mcasp->rxnumevt) {	/* disable FIFO */
+-		if (mcasp->rxnumevt) {	/* enable FIFO */
 -			reg = mcasp->fifo_base + MCASP_RFIFOCTL_OFFSET;
 -			mcasp_clr_bits(mcasp, reg, FIFO_ENABLE);
+-			mcasp_set_bits(mcasp, reg, FIFO_ENABLE);
 -		}
 +	else
- 		mcasp_stop_rx(mcasp);
+ 		mcasp_start_rx(mcasp);
 -	}
  }
  
- static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ static void mcasp_stop_rx(struct davinci_mcasp *mcasp)
 -- 
 2.1.2
