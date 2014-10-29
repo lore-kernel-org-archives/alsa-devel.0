@@ -1,56 +1,35 @@
-From: Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH] ASoC: TLV320AIC23: make codecs selectable in
-	Kconfig
-Date: Wed, 29 Oct 2014 16:25:38 +0300
-Message-ID: <1414589138-1956-1-git-send-email-jcmvbkbc@gmail.com>
+From: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
+Subject: [PATCH v5 3/3] ARM: imx_v6_v7_defconfig: enable tlv320aic3x audio codec by default
+Date: Wed, 29 Oct 2014 16:47:04 +0300
+Message-ID: <1414590424-25585-4-git-send-email-d.lavnikevich@sam-solutions.com>
+References: <1414590424-25585-1-git-send-email-d.lavnikevich@sam-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lb0-f176.google.com (mail-lb0-f176.google.com
- [209.85.217.176])
- by alsa0.perex.cz (Postfix) with ESMTP id CF04F260537
- for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 14:26:00 +0100 (CET)
-Received: by mail-lb0-f176.google.com with SMTP id z11so489370lbi.35
- for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 06:25:59 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Max Filippov <jcmvbkbc@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1414590424-25585-1-git-send-email-d.lavnikevich@sam-solutions.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: shawn.guo@freescale.com, kernel@pengutronix.de, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-Now that manual selection of drivers for audio subsystem components is
-preferred AIC23 codec must be selectable in Kconfig to make it possible.
+Used on Phytec PBAB01 board.
 
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
 ---
- sound/soc/codecs/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/configs/imx_v6_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 8838838e..7dad805 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -552,11 +552,11 @@ config SND_SOC_TLV320AIC23
- 	tristate
- 
- config SND_SOC_TLV320AIC23_I2C
--	tristate
-+	tristate "Texas Instruments TLV320AIC23 audio CODEC - I2C"
- 	select SND_SOC_TLV320AIC23
- 
- config SND_SOC_TLV320AIC23_SPI
--	tristate
-+	tristate "Texas Instruments TLV320AIC23 audio CODEC - SPI"
- 	select SND_SOC_TLV320AIC23
- 
- config SND_SOC_TLV320AIC26
+diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+index 8fca6e276b69..cac07d67b933 100644
+--- a/arch/arm/configs/imx_v6_v7_defconfig
++++ b/arch/arm/configs/imx_v6_v7_defconfig
+@@ -210,6 +210,7 @@ CONFIG_SND_SOC_IMX_WM8962=y
+ CONFIG_SND_SOC_IMX_SGTL5000=y
+ CONFIG_SND_SOC_IMX_SPDIF=y
+ CONFIG_SND_SOC_IMX_MC13783=y
++CONFIG_SND_SOC_TLV320AIC3X=y
+ CONFIG_SND_SIMPLE_CARD=y
+ CONFIG_USB=y
+ CONFIG_USB_EHCI_HCD=y
 -- 
-1.8.1.4
+2.1.2
