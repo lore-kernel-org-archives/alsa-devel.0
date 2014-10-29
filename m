@@ -1,45 +1,34 @@
-From: dE <de.techno@gmail.com>
-Subject: Re: Selecting correct input device port.
-Date: Wed, 29 Oct 2014 08:40:24 +0530
-Message-ID: <54505AA0.8090605@gmail.com>
-References: <544F1B26.2070502@gmail.com>
+From: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
+Subject: RE: [PATCH] 6fire: Convert byte_rev_table uses to bitrev8
+Date: Wed, 29 Oct 2014 11:10:08 +0800
+Message-ID: <35FD53F367049845BC99AC72306C23D103E010D1825E@CNBJMBX05.corpusers.net>
+References: <35FD53F367049845BC99AC72306C23D103E010D18254@CNBJMBX05.corpusers.net>
+	 <35FD53F367049845BC99AC72306C23D103E010D18257@CNBJMBX05.corpusers.net>
+	 <1414392371.8884.2.camel@perches.com>
+	 <1414531369.10912.14.camel@perches.com>
+	 <35FD53F367049845BC99AC72306C23D103E010D1825C@CNBJMBX05.corpusers.net>
+ <1414551974.10912.16.camel@perches.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pd0-f180.google.com (mail-pd0-f180.google.com
- [209.85.192.180])
- by alsa0.perex.cz (Postfix) with ESMTP id AA67626062D
- for <Alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 04:10:51 +0100 (CET)
-Received: by mail-pd0-f180.google.com with SMTP id ft15so2033122pdb.25
- for <Alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 20:10:50 -0700 (PDT)
-Received: from [192.168.1.2] ([59.89.16.210])
- by mx.google.com with ESMTPSA id rh5sm2898823pdb.4.2014.10.28.20.10.48
- for <Alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Tue, 28 Oct 2014 20:10:49 -0700 (PDT)
-In-Reply-To: <544F1B26.2070502@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1414551974.10912.16.camel@perches.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: 'Joe Perches' <joe@perches.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Russell King <linux@arm.linux.org.uk>, "linux-mm@kvack.org" <linux-mm@kvack.org>, Will Deacon <Will.Deacon@arm.com>, Akinobu Mita <akinobu.mita@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/28/14 09:57, dE wrote:
-> As I learn't in this mailng list, a device can typically handle only 
-> one stream at a time unless it supports hardware mixing which's 
-> exposed via subdevices in ALSA
->
-> What does subdevice mean for input device? Do they mark physical ports 
-> for input? If not how do I record from a specific input port? Is it 
-> automatically selected by the card?
->
-> And what's 'input source' in ALSA mixer?
+> From: Joe Perches [mailto:joe@perches.com]
+> > I think the most safe way is change byte_rev_table[] to be satic, So
+> > that no driver can access it directly, The build error can remind the
+> > developer if they use byte_rev_table[] Directly .
+> 
+> You can do that with your later patch, but the existing uses _must_ be
+> converted first so you don't break the build.
+> 
+> 
+Yeah, I agree with you,
+I will add this into my later patch.
 
-Pointers to any doc...?
+Thanks
