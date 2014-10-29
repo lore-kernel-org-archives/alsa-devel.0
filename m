@@ -1,58 +1,112 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6] ASoC: dapm: add code to configure dai link parameters
-Date: Wed, 29 Oct 2014 21:43:01 +0000
-Message-ID: <20141029214301.GO18557@sirena.org.uk>
-References: <1412957836-2186-1-git-send-email-nikesh@opensource.wolfsonmicro.com>
- <20141010164959.GG18557@sirena.org.uk>
- <20141014103945.GA25013@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 8/8] ASoC: rsnd: Add Volume Ramp support
+Date: Wed, 29 Oct 2014 22:56:59 +0000
+Message-ID: <20141029225659.GS18557@sirena.org.uk>
+References: <8761fc7vpx.wl%kuninori.morimoto.gx@gmail.com>
+ <87tx2w6h2r.wl%kuninori.morimoto.gx@gmail.com>
+ <20141028223814.GM18557@sirena.org.uk>
+ <87oasviuw0.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8/LSkofCkrBCwA7K"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20141014103945.GA25013@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nikesh Oswal <nikesh@opensource.wolfsonmicro.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com
+Content-Type: multipart/mixed; boundary="===============3548019047116160507=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D3C12604F3
+ for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 23:57:32 +0100 (CET)
+In-Reply-To: <87oasviuw0.wl%kuninori.morimoto.gx@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---8/LSkofCkrBCwA7K
+--===============3548019047116160507==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="SI+x/MFwqKaBjKyD"
+Content-Disposition: inline
+
+
+--SI+x/MFwqKaBjKyD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 14, 2014 at 11:39:45AM +0100, Nikesh Oswal wrote:
-> On Fri, Oct 10, 2014 at 05:49:59PM +0100, Mark Brown wrote:
+On Tue, Oct 28, 2014 at 05:26:06PM -0700, Kuninori Morimoto wrote:
 
-> > Has anything changed since the previous version?  I've postponed
-> > reviewing that until after the merge window given the way you were
-> > ignoring feedback and the approach of the merge window, is this a new
-> > version or just a reposting.
+> > > amixer set "DVC Out Ramp" 100%		// Mute as default
+> > > amixer set "DVC Out Ramp Period" 80%
 
-> >>> Since it was not merged or reviewed since long, I just did a  reposti=
-ng=20
-> of previous version of the patch
+> > Normally this would be expressed as an enum with some sort of time
+> > units.  We did discuss at the mini-summit making a standard way of
+> > expressing this but nobody did that yet.
 
-OK.  *Please* try to configure your e-mail client so that it formats
-e-mails in a normal fashion for posting on the lists, I'm sure your
-colleagues can help you with that.  The above looks like your reply is
-actually part of some quoted text rather than a reply.
+> OK, I can be a 1st guy :)
+> The HW setting is like below
+>=20
+>     value: mean
+>     00000: 128 dB/1 step
 
---8/LSkofCkrBCwA7K
+> Current "DVC Out Ramp Period" wants to have direct value of register.
+> But, upstream want to have time like this ?
+
+Yes, please - much easier for users.
+
+> > > amixer set "DVC Out Ramp" 0%		// to Volume 100%
+> > > amixer set "DVC Out Ramp" 100%		// to Mute
+
+> > I'm not sure I quite understand this control - what exactly is this
+> > setting?  It appears that the ramp value is the opposite of the volume
+> > we end up with which is a bit odd and the comments suggest that this is
+> > actually triggering a ramp when normally ramps would be done as part of
+> > a volume set, mute or power up/down operation.
+
+> Current "DVC Out Ramp" want to have direct value of register.
+> It is...
+
+>    000:  1 time
+>    ...
+>    031:  0.5 time
+>    ...
+>    3FE:  4.1 x 10^-7 time
+>    3FF:  Mute
+
+> Maybe I can used inverted value for it ?
+
+That sounds like it'd address part of it, though I'm still not 100% sure
+what the effect of this control is - is it the final value or something
+(0.5*programmed volume for example)?
+
+--SI+x/MFwqKaBjKyD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUUV9lAAoJECTWi3JdVIfQgVoH/RUer9+8qDdKbCFJTZoNRrO5
-hvTIRkML+9oPiGtKD2UH7jGA8eFc+4Xe7Vl1IKxIvVAaAyGiGRGvzjmIWLhxkCOD
-fTx9Wc/T3ahJF6DNO267DFL1qPmuAkqh6MqOaaWIsNNYWvjctX8Vbd6yun30h6bE
-9D0hm8uaiLmbBzTcFSebDHY1khcElYTGRLoifzjbCQQydH29sYaGVFgq/Gyfrsx/
-VSg8Bv11eZp53JKgYU3D0/dml3Ik9IqZqug3npdMARufiNVrhdwbrdADHoX6TbbV
-ICP6PttwFeLZgbUQZ8zGLLa6qperr42otwIlXvUiRSv4jZoRRm5kFfSQMyErR1Q=
-=rpfp
+iQEcBAEBAgAGBQJUUXC6AAoJECTWi3JdVIfQm9gH/i+yW8+/+hbPLozws1YEXY7E
+2EPcg1nidcY+dGARdnPgk59oZvGmKwSLKC2XBdYxCouNI7T8RgM/HX2KxUIYIjTm
+166KY0sb+vfxyZj9zY+TkFiWYTh1nhq6lgd7B+2PIFZa5ZOunevqQPSK2sZzssma
+3DjB6xiVvGQ2qPsAT4PJiXOaVWhI/fRid3APO/pSpBLvTzFMcTYF3Oovz5JmSVHv
+J3cB920Ju3mDjUH7RM8mNS2v9l17vwsY15tQNO/vnwcPmwQWgNKGwjzHtpP9h7FZ
+mXESTaz/VKHfisVs3RT+96Qi0Lj/nRhn4q4s6QC3ySwZiGsyBNBzyq+ldxcrAI8=
+=X+a9
 -----END PGP SIGNATURE-----
 
---8/LSkofCkrBCwA7K--
+--SI+x/MFwqKaBjKyD--
+
+--===============3548019047116160507==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3548019047116160507==--
