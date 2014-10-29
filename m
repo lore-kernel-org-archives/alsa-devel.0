@@ -1,46 +1,45 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] 6fire: Convert byte_rev_table uses to bitrev8
-Date: Tue, 28 Oct 2014 20:06:14 -0700
-Message-ID: <1414551974.10912.16.camel@perches.com>
-References: <35FD53F367049845BC99AC72306C23D103E010D18254@CNBJMBX05.corpusers.net>
-	 <35FD53F367049845BC99AC72306C23D103E010D18257@CNBJMBX05.corpusers.net>
-	 <1414392371.8884.2.camel@perches.com>
-	 <1414531369.10912.14.camel@perches.com>
-	 <35FD53F367049845BC99AC72306C23D103E010D1825C@CNBJMBX05.corpusers.net>
+From: dE <de.techno@gmail.com>
+Subject: Re: Selecting correct input device port.
+Date: Wed, 29 Oct 2014 08:40:24 +0530
+Message-ID: <54505AA0.8090605@gmail.com>
+References: <544F1B26.2070502@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <35FD53F367049845BC99AC72306C23D103E010D1825C@CNBJMBX05.corpusers.net>
-Sender: owner-linux-mm@kvack.org
-To: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Russell King <linux@arm.linux.org.uk>, "linux-mm@kvack.org" <linux-mm@kvack.org>, Will Deacon <Will.Deacon@arm.com>, Akinobu Mita <akinobu.mita@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, alsa-devel <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pd0-f180.google.com (mail-pd0-f180.google.com
+ [209.85.192.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA67626062D
+ for <Alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 04:10:51 +0100 (CET)
+Received: by mail-pd0-f180.google.com with SMTP id ft15so2033122pdb.25
+ for <Alsa-devel@alsa-project.org>; Tue, 28 Oct 2014 20:10:50 -0700 (PDT)
+Received: from [192.168.1.2] ([59.89.16.210])
+ by mx.google.com with ESMTPSA id rh5sm2898823pdb.4.2014.10.28.20.10.48
+ for <Alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Tue, 28 Oct 2014 20:10:49 -0700 (PDT)
+In-Reply-To: <544F1B26.2070502@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2014-10-29 at 10:42 +0800, Wang, Yalin wrote:
-> > Use the inline function instead of directly indexing the array.
-> > This allows some architectures with hardware instructions for bit reversals
-> > to eliminate the array.
-[]
-> > On Sun, 2014-10-26 at 23:46 -0700, Joe Perches wrote:
-> > > On Mon, 2014-10-27 at 14:37 +0800, Wang, Yalin wrote:
-> > > > this change add CONFIG_HAVE_ARCH_BITREVERSE config option, so that
-> > > > we can use arm/arm64 rbit instruction to do bitrev operation by
-> > > > hardware.
-[]
-> I think the most safe way is change byte_rev_table[] to be satic,
-> So that no driver can access it directly,
-> The build error can remind the developer if they use byte_rev_table[]
-> Directly .
+On 10/28/14 09:57, dE wrote:
+> As I learn't in this mailng list, a device can typically handle only 
+> one stream at a time unless it supports hardware mixing which's 
+> exposed via subdevices in ALSA
+>
+> What does subdevice mean for input device? Do they mark physical ports 
+> for input? If not how do I record from a specific input port? Is it 
+> automatically selected by the card?
+>
+> And what's 'input source' in ALSA mixer?
 
-You can do that with your later patch, but the
-existing uses _must_ be converted first so you
-don't break the build.
-
-
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+Pointers to any doc...?
