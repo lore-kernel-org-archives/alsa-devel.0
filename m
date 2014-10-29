@@ -1,15 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 2/3] ASoC: Intel: Add PM support to HSW/BDW IPC
+Subject: [PATCH 3/3] ASoC: Intel: Add PM support to HSW/BDW PCM
 	driver
-Date: Wed, 29 Oct 2014 17:40:42 +0000
-Message-ID: <1414604443-7712-2-git-send-email-liam.r.girdwood@linux.intel.com>
+Date: Wed, 29 Oct 2014 17:40:43 +0000
+Message-ID: <1414604443-7712-3-git-send-email-liam.r.girdwood@linux.intel.com>
 References: <1414604443-7712-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 849D42604E5
+ by alsa0.perex.cz (Postfix) with ESMTP id B1ADA2604FD
  for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 18:44:25 +0100 (CET)
 In-Reply-To: <1414604443-7712-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,358 +25,540 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add PM and RTD3 support to the HSW/BDW IPC driver. This patch
-saves and restores the DSP context, loads and unloads FW and drops
-any pending IPC messages after suspend.
+Add PM and RTD3 support to the HSW/BDW PCM driver. The PCM driver will
+now save DSP context and then power off the DSP when it's not in use.
+DSP power and context is then restored when it's next used.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/intel/sst-haswell-ipc.c | 256 +++++++++++++++++++++++++++++++++++++-
- sound/soc/intel/sst-haswell-ipc.h |   7 ++
- 2 files changed, 258 insertions(+), 5 deletions(-)
+ sound/soc/intel/sst-dsp.h         |   3 +
+ sound/soc/intel/sst-haswell-pcm.c | 271 ++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 260 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
-index 770d467..b37d3ee 100644
---- a/sound/soc/intel/sst-haswell-ipc.c
-+++ b/sound/soc/intel/sst-haswell-ipc.c
-@@ -30,6 +30,7 @@
- #include <linux/firmware.h>
+diff --git a/sound/soc/intel/sst-dsp.h b/sound/soc/intel/sst-dsp.h
+index 7bb4820..2753b85 100644
+--- a/sound/soc/intel/sst-dsp.h
++++ b/sound/soc/intel/sst-dsp.h
+@@ -30,6 +30,9 @@
+ #define SST_DMA_TYPE_DW		1
+ #define SST_DMA_TYPE_MID	2
+ 
++/* autosuspend delay 5s*/
++#define SST_RUNTIME_SUSPEND_DELAY	(5 * 1000)
++
+ /* SST Shim register map
+  * The register naming can differ between products. Some products also
+  * contain extra functionality.
+diff --git a/sound/soc/intel/sst-haswell-pcm.c b/sound/soc/intel/sst-haswell-pcm.c
+index 522edef..4489a35 100644
+--- a/sound/soc/intel/sst-haswell-pcm.c
++++ b/sound/soc/intel/sst-haswell-pcm.c
+@@ -18,6 +18,7 @@
  #include <linux/dma-mapping.h>
- #include <linux/debugfs.h>
+ #include <linux/slab.h>
+ #include <linux/delay.h>
 +#include <linux/pm_runtime.h>
+ #include <asm/page.h>
+ #include <asm/pgtable.h>
+ #include <sound/core.h>
+@@ -73,6 +74,13 @@ static const u32 volume_map[] = {
+ #define HSW_PCM_PERIODS_MAX	64
+ #define HSW_PCM_PERIODS_MIN	2
  
- #include "sst-haswell-ipc.h"
- #include "sst-dsp.h"
-@@ -276,6 +277,7 @@ struct sst_hsw {
- 	struct sst_hsw_ipc_fw_version version;
- 	struct sst_module *scratch;
- 	bool fw_done;
-+	struct sst_fw *sst_fw;
++#define HSW_PCM_DAI_ID_SYSTEM	0
++#define HSW_PCM_DAI_ID_OFFLOAD0	1
++#define HSW_PCM_DAI_ID_OFFLOAD1	2
++#define HSW_PCM_DAI_ID_LOOPBACK	3
++#define HSW_PCM_DAI_ID_CAPTURE	4
++
++
+ static const struct snd_pcm_hardware hsw_pcm_hardware = {
+ 	.info			= SNDRV_PCM_INFO_MMAP |
+ 				  SNDRV_PCM_INFO_MMAP_VALID |
+@@ -99,6 +107,8 @@ struct hsw_pcm_data {
+ 	int dai_id;
+ 	struct sst_hsw_stream *stream;
+ 	struct sst_module_runtime *runtime;
++	struct sst_module_runtime_context context;
++	struct snd_pcm *hsw_pcm;
+ 	u32 volume[2];
+ 	struct snd_pcm_substream *substream;
+ 	struct snd_compr_stream *cstream;
+@@ -108,10 +118,18 @@ struct hsw_pcm_data {
+ 	int persistent_offset;
+ };
  
- 	/* stream */
- 	struct list_head stream_list;
-@@ -289,6 +291,8 @@ struct sst_hsw {
- 
- 	/* DX */
- 	struct sst_hsw_ipc_dx_reply dx;
-+	void *dx_context;
-+	dma_addr_t dx_context_paddr;
- 
- 	/* boot */
- 	wait_queue_head_t boot_wait;
-@@ -1707,6 +1711,237 @@ void sst_hsw_runtime_module_free(struct sst_module_runtime *runtime)
- 	sst_module_runtime_free(runtime);
- }
- 
-+#ifdef CONFIG_PM_RUNTIME
-+static int sst_hsw_dx_state_dump(struct sst_hsw *hsw)
-+{
-+	struct sst_dsp *sst = hsw->dsp;
-+	u32 item, offset, size;
-+	int ret = 0;
++enum hsw_pm_state {
++	HSW_PM_STATE_D3 = 0,
++	HSW_PM_STATE_D0 = 1,
++};
 +
-+	trace_ipc_request("PM state dump. Items #", SST_HSW_MAX_DX_REGIONS);
-+
-+	if (hsw->dx.entries_no > SST_HSW_MAX_DX_REGIONS) {
-+		dev_err(hsw->dev,
-+			"error: number of FW context regions greater than %d\n",
-+			SST_HSW_MAX_DX_REGIONS);
-+		memset(&hsw->dx, 0, sizeof(hsw->dx));
-+		return -EINVAL;
-+	}
-+
-+	ret = sst_dsp_dma_get_channel(sst, 0);
-+	if (ret < 0) {
-+		dev_err(hsw->dev, "error: cant allocate dma channel %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* set on-demond mode on engine 0 channel 3 */
-+	sst_dsp_shim_update_bits(sst, SST_HMDC,
-+			SST_HMDC_HDDA_E0_ALLCH | SST_HMDC_HDDA_E1_ALLCH,
-+			SST_HMDC_HDDA_E0_ALLCH | SST_HMDC_HDDA_E1_ALLCH);
-+
-+	for (item = 0; item < hsw->dx.entries_no; item++) {
-+		if (hsw->dx.mem_info[item].source == SST_HSW_DX_TYPE_MEMORY_DUMP
-+			&& hsw->dx.mem_info[item].offset > DSP_DRAM_ADDR_OFFSET
-+			&& hsw->dx.mem_info[item].offset <
-+			DSP_DRAM_ADDR_OFFSET + SST_HSW_DX_CONTEXT_SIZE) {
-+
-+			offset = hsw->dx.mem_info[item].offset
-+					- DSP_DRAM_ADDR_OFFSET;
-+			size = (hsw->dx.mem_info[item].size + 3) & (~3);
-+
-+			ret = sst_dsp_dma_copyfrom(sst, hsw->dx_context_paddr + offset,
-+				sst->addr.lpe_base + offset, size);
-+			if (ret < 0) {
-+				dev_err(hsw->dev,
-+					"error: FW context dump failed\n");
-+				memset(&hsw->dx, 0, sizeof(hsw->dx));
-+				goto out;
-+			}
-+		}
-+	}
-+
-+out:
-+	sst_dsp_dma_put_channel(sst);
-+	return ret;
-+}
-+
-+static int sst_hsw_dx_state_restore(struct sst_hsw *hsw)
-+{
-+	struct sst_dsp *sst = hsw->dsp;
-+	u32 item, offset, size;
-+	int ret;
-+
-+	for (item = 0; item < hsw->dx.entries_no; item++) {
-+		if (hsw->dx.mem_info[item].source == SST_HSW_DX_TYPE_MEMORY_DUMP
-+			&& hsw->dx.mem_info[item].offset > DSP_DRAM_ADDR_OFFSET
-+			&& hsw->dx.mem_info[item].offset <
-+			DSP_DRAM_ADDR_OFFSET + SST_HSW_DX_CONTEXT_SIZE) {
-+
-+			offset = hsw->dx.mem_info[item].offset
-+					- DSP_DRAM_ADDR_OFFSET;
-+			size = (hsw->dx.mem_info[item].size + 3) & (~3);
-+
-+			ret = sst_dsp_dma_copyto(sst, sst->addr.lpe_base + offset,
-+				hsw->dx_context_paddr + offset, size);
-+			if (ret < 0) {
-+				dev_err(hsw->dev,
-+					"error: FW context restore failed\n");
-+				return ret;
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void sst_hsw_drop_all(struct sst_hsw *hsw)
-+{
-+	struct ipc_message *msg, *tmp;
-+	unsigned long flags;
-+	int tx_drop_cnt = 0, rx_drop_cnt = 0;
-+
-+	/* drop all TX and Rx messages before we stall + reset DSP */
-+	spin_lock_irqsave(&hsw->dsp->spinlock, flags);
-+
-+	list_for_each_entry_safe(msg, tmp, &hsw->tx_list, list) {
-+		list_move(&msg->list, &hsw->empty_list);
-+		tx_drop_cnt++;
-+	}
-+
-+	list_for_each_entry_safe(msg, tmp, &hsw->rx_list, list) {
-+		list_move(&msg->list, &hsw->empty_list);
-+		rx_drop_cnt++;
-+	}
-+
-+	spin_unlock_irqrestore(&hsw->dsp->spinlock, flags);
-+
-+	if (tx_drop_cnt || rx_drop_cnt)
-+		dev_err(hsw->dev, "dropped IPC msg RX=%d, TX=%d\n",
-+			tx_drop_cnt, rx_drop_cnt);
-+}
-+
-+int sst_hsw_dsp_load(struct sst_hsw *hsw)
-+{
-+	struct sst_dsp *dsp = hsw->dsp;
-+	int ret;
-+
-+	dev_dbg(hsw->dev, "loading audio DSP....");
-+
-+	ret = sst_dsp_wake(dsp);
-+	if (ret < 0) {
-+		dev_err(hsw->dev, "error: failed to wake audio DSP\n");
-+		return -ENODEV;
-+	}
-+
-+	ret = sst_dsp_dma_get_channel(dsp, 0);
-+	if (ret < 0) {
-+		dev_err(hsw->dev, "error: cant allocate dma channel %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = sst_fw_reload(hsw->sst_fw);
-+	if (ret < 0) {
-+		dev_err(hsw->dev, "error: SST FW reload failed\n");
-+		sst_dsp_dma_put_channel(dsp);
-+		return -ENOMEM;
-+	}
-+
-+	sst_dsp_dma_put_channel(dsp);
-+	return 0;
-+}
-+
-+static int sst_hsw_dsp_restore(struct sst_hsw *hsw)
-+{
-+	struct sst_dsp *dsp = hsw->dsp;
-+	int ret;
-+
-+	dev_dbg(hsw->dev, "restoring audio DSP....");
-+
-+	ret = sst_dsp_dma_get_channel(dsp, 0);
-+	if (ret < 0) {
-+		dev_err(hsw->dev, "error: cant allocate dma channel %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = sst_hsw_dx_state_restore(hsw);
-+	if (ret < 0) {
-+		dev_err(hsw->dev, "error: SST FW context restore failed\n");
-+		sst_dsp_dma_put_channel(dsp);
-+		return -ENOMEM;
-+	}
-+	sst_dsp_dma_put_channel(dsp);
-+
-+	/* wait for DSP boot completion */
-+	sst_dsp_boot(dsp);
-+
-+	return ret;
-+}
-+
-+int sst_hsw_dsp_runtime_suspend(struct sst_hsw *hsw)
-+{
-+	int ret;
-+
-+	dev_dbg(hsw->dev, "audio dsp runtime suspend\n");
-+
-+	ret = sst_hsw_dx_set_state(hsw, SST_HSW_DX_STATE_D3, &hsw->dx);
-+	if (ret < 0)
-+		return ret;
-+
-+	sst_dsp_stall(hsw->dsp);
-+
-+	ret = sst_hsw_dx_state_dump(hsw);
-+	if (ret < 0)
-+		return ret;
-+
-+	sst_hsw_drop_all(hsw);
-+
-+	return 0;
-+}
-+
-+int sst_hsw_dsp_runtime_sleep(struct sst_hsw *hsw)
-+{
-+	sst_fw_unload(hsw->sst_fw);
-+	sst_block_free_scratch(hsw->dsp);
-+
-+	hsw->boot_complete = false;
-+
-+	sst_dsp_sleep(hsw->dsp);
-+
-+	return 0;
-+}
-+
-+int sst_hsw_dsp_runtime_resume(struct sst_hsw *hsw)
-+{
-+	struct device *dev = hsw->dev;
-+	int ret;
-+
-+	dev_dbg(dev, "audio dsp runtime resume\n");
-+
-+	if (hsw->boot_complete)
-+		return 1; /* tell caller no action is required */
-+
-+	ret = sst_hsw_dsp_restore(hsw);
-+	if (ret < 0)
-+		dev_err(dev, "error: audio DSP boot failure\n");
-+
-+	ret = wait_event_timeout(hsw->boot_wait, hsw->boot_complete,
-+		msecs_to_jiffies(IPC_BOOT_MSECS));
-+	if (ret == 0) {
-+		dev_err(hsw->dev, "error: audio DSP boot timeout\n");
-+		return -EIO;
-+	}
-+
-+	/* Set ADSP SSP port settings */
-+	ret = sst_hsw_device_set_config(hsw, SST_HSW_DEVICE_SSP_0,
-+					SST_HSW_DEVICE_MCLK_FREQ_24_MHZ,
-+					SST_HSW_DEVICE_CLOCK_MASTER, 9);
-+	if (ret < 0)
-+		dev_err(dev, "error: SSP re-initialization failed\n");
-+
-+	return ret;
-+}
-+#endif
-+
- static int msg_empty_list_init(struct sst_hsw *hsw)
- {
- 	int i;
-@@ -1738,7 +1973,6 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
- {
- 	struct sst_hsw_ipc_fw_version version;
+ /* private data for the driver */
+ struct hsw_priv_data {
+ 	/* runtime DSP */
  	struct sst_hsw *hsw;
--	struct sst_fw *hsw_sst_fw;
- 	int ret;
++	struct device *dev;
++	enum hsw_pm_state pm_state;
++	struct snd_soc_card *soc_card;
  
- 	dev_dbg(dev, "initialising Audio DSP IPC\n");
-@@ -1780,12 +2014,19 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
- 		goto dsp_err;
+ 	/* page tables */
+ 	struct snd_dma_buffer dmab[HSW_PCM_COUNT][2];
+@@ -145,21 +163,25 @@ static inline unsigned int hsw_ipc_to_mixer(u32 value)
+ static int hsw_stream_volume_put(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+-	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(cmpnt);
++	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
++	struct hsw_priv_data *pdata =
++		snd_soc_platform_get_drvdata(platform);
+ 	struct hsw_pcm_data *pcm_data = &pdata->pcm[mc->reg];
+ 	struct sst_hsw *hsw = pdata->hsw;
+ 	u32 volume;
+ 
+ 	mutex_lock(&pcm_data->mutex);
++	pm_runtime_get_sync(pdata->dev);
+ 
+ 	if (!pcm_data->stream) {
+ 		pcm_data->volume[0] =
+ 			hsw_mixer_to_ipc(ucontrol->value.integer.value[0]);
+ 		pcm_data->volume[1] =
+ 			hsw_mixer_to_ipc(ucontrol->value.integer.value[1]);
++		pm_runtime_mark_last_busy(pdata->dev);
++		pm_runtime_put_autosuspend(pdata->dev);
+ 		mutex_unlock(&pcm_data->mutex);
+ 		return 0;
+ 	}
+@@ -175,6 +197,8 @@ static int hsw_stream_volume_put(struct snd_kcontrol *kcontrol,
+ 		sst_hsw_stream_set_volume(hsw, pcm_data->stream, 0, 1, volume);
  	}
  
-+	/* allocate DMA buffer for context storage */
-+	hsw->dx_context = dma_alloc_coherent(hsw->dsp->dma_dev,
-+		SST_HSW_DX_CONTEXT_SIZE, &hsw->dx_context_paddr, GFP_KERNEL);
-+	if (hsw->dx_context == NULL) {
-+		ret = -ENOMEM;
-+		goto dma_err;
++	pm_runtime_mark_last_busy(pdata->dev);
++	pm_runtime_put_autosuspend(pdata->dev);
+ 	mutex_unlock(&pcm_data->mutex);
+ 	return 0;
+ }
+@@ -182,21 +206,25 @@ static int hsw_stream_volume_put(struct snd_kcontrol *kcontrol,
+ static int hsw_stream_volume_get(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+-	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(cmpnt);
++	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
++	struct hsw_priv_data *pdata =
++		snd_soc_platform_get_drvdata(platform);
+ 	struct hsw_pcm_data *pcm_data = &pdata->pcm[mc->reg];
+ 	struct sst_hsw *hsw = pdata->hsw;
+ 	u32 volume;
+ 
+ 	mutex_lock(&pcm_data->mutex);
++	pm_runtime_get_sync(pdata->dev);
+ 
+ 	if (!pcm_data->stream) {
+ 		ucontrol->value.integer.value[0] =
+ 			hsw_ipc_to_mixer(pcm_data->volume[0]);
+ 		ucontrol->value.integer.value[1] =
+ 			hsw_ipc_to_mixer(pcm_data->volume[1]);
++		pm_runtime_mark_last_busy(pdata->dev);
++		pm_runtime_put_autosuspend(pdata->dev);
+ 		mutex_unlock(&pcm_data->mutex);
+ 		return 0;
+ 	}
+@@ -205,6 +233,9 @@ static int hsw_stream_volume_get(struct snd_kcontrol *kcontrol,
+ 	ucontrol->value.integer.value[0] = hsw_ipc_to_mixer(volume);
+ 	sst_hsw_stream_get_volume(hsw, pcm_data->stream, 0, 1, &volume);
+ 	ucontrol->value.integer.value[1] = hsw_ipc_to_mixer(volume);
++
++	pm_runtime_mark_last_busy(pdata->dev);
++	pm_runtime_put_autosuspend(pdata->dev);
+ 	mutex_unlock(&pcm_data->mutex);
+ 
+ 	return 0;
+@@ -213,11 +244,13 @@ static int hsw_stream_volume_get(struct snd_kcontrol *kcontrol,
+ static int hsw_volume_put(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+-	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(cmpnt);
++	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
++	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
+ 	struct sst_hsw *hsw = pdata->hsw;
+ 	u32 volume;
+ 
++	pm_runtime_get_sync(pdata->dev);
++
+ 	if (ucontrol->value.integer.value[0] ==
+ 		ucontrol->value.integer.value[1]) {
+ 
+@@ -232,23 +265,28 @@ static int hsw_volume_put(struct snd_kcontrol *kcontrol,
+ 		sst_hsw_mixer_set_volume(hsw, 0, 1, volume);
+ 	}
+ 
++	pm_runtime_mark_last_busy(pdata->dev);
++	pm_runtime_put_autosuspend(pdata->dev);
+ 	return 0;
+ }
+ 
+ static int hsw_volume_get(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_value *ucontrol)
+ {
+-	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+-	struct hsw_priv_data *pdata = snd_soc_component_get_drvdata(cmpnt);
++	struct snd_soc_platform *platform = snd_soc_kcontrol_platform(kcontrol);
++	struct hsw_priv_data *pdata = snd_soc_platform_get_drvdata(platform);
+ 	struct sst_hsw *hsw = pdata->hsw;
+ 	unsigned int volume = 0;
+ 
++	pm_runtime_get_sync(pdata->dev);
+ 	sst_hsw_mixer_get_volume(hsw, 0, 0, &volume);
+ 	ucontrol->value.integer.value[0] = hsw_ipc_to_mixer(volume);
+ 
+ 	sst_hsw_mixer_get_volume(hsw, 0, 1, &volume);
+ 	ucontrol->value.integer.value[1] = hsw_ipc_to_mixer(volume);
+ 
++	pm_runtime_mark_last_busy(pdata->dev);
++	pm_runtime_put_autosuspend(pdata->dev);
+ 	return 0;
+ }
+ 
+@@ -577,6 +615,7 @@ static int hsw_pcm_open(struct snd_pcm_substream *substream)
+ 	pcm_data = &pdata->pcm[rtd->cpu_dai->id];
+ 
+ 	mutex_lock(&pcm_data->mutex);
++	pm_runtime_get_sync(pdata->dev);
+ 
+ 	snd_soc_pcm_set_drvdata(rtd, pcm_data);
+ 	pcm_data->substream = substream;
+@@ -587,6 +626,8 @@ static int hsw_pcm_open(struct snd_pcm_substream *substream)
+ 		hsw_notify_pointer, pcm_data);
+ 	if (pcm_data->stream == NULL) {
+ 		dev_err(rtd->dev, "error: failed to create stream\n");
++		pm_runtime_mark_last_busy(pdata->dev);
++		pm_runtime_put_autosuspend(pdata->dev);
+ 		mutex_unlock(&pcm_data->mutex);
+ 		return -EINVAL;
+ 	}
+@@ -626,6 +667,8 @@ static int hsw_pcm_close(struct snd_pcm_substream *substream)
+ 	pcm_data->stream = NULL;
+ 
+ out:
++	pm_runtime_mark_last_busy(pdata->dev);
++	pm_runtime_put_autosuspend(pdata->dev);
+ 	mutex_unlock(&pcm_data->mutex);
+ 	return ret;
+ }
+@@ -643,11 +686,11 @@ static struct snd_pcm_ops hsw_pcm_ops = {
+ 
+ /* static mappings between PCMs and modules - may be dynamic in future */
+ static struct hsw_pcm_module_map mod_map[] = {
+-	{0, SST_HSW_MODULE_PCM_SYSTEM},		/* "System Pin" */
+-	{1, SST_HSW_MODULE_PCM},		/* "Offload0 Pin" */
+-	{2, SST_HSW_MODULE_PCM},		/* "Offload1 Pin" */
+-	{3, SST_HSW_MODULE_PCM_REFERENCE},	/* "Loopback Pin" */
+-	{4, SST_HSW_MODULE_PCM_CAPTURE},	/* "Capture Pin" */
++	{HSW_PCM_DAI_ID_SYSTEM, SST_HSW_MODULE_PCM_SYSTEM},
++	{HSW_PCM_DAI_ID_OFFLOAD0, SST_HSW_MODULE_PCM},
++	{HSW_PCM_DAI_ID_OFFLOAD1, SST_HSW_MODULE_PCM},
++	{HSW_PCM_DAI_ID_LOOPBACK, SST_HSW_MODULE_PCM_REFERENCE},
++	{HSW_PCM_DAI_ID_CAPTURE, SST_HSW_MODULE_PCM_CAPTURE},
+ };
+ 
+ static int hsw_pcm_create_modules(struct hsw_priv_data *pdata)
+@@ -659,6 +702,7 @@ static int hsw_pcm_create_modules(struct hsw_priv_data *pdata)
+ 	for (i = 0; i < ARRAY_SIZE(mod_map); i++) {
+ 		pcm_data = &pdata->pcm[i];
+ 
++		/* create new runtime module, use same offset if recreated */
+ 		pcm_data->runtime = sst_hsw_runtime_module_create(hsw,
+ 			mod_map[i].mod_id, pcm_data->persistent_offset);
+ 		if (pcm_data->runtime == NULL)
+@@ -700,6 +744,7 @@ static int hsw_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 	struct snd_soc_platform *platform = rtd->platform;
+ 	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
++	struct hsw_priv_data *priv_data = dev_get_drvdata(platform->dev);
+ 	struct device *dev = pdata->dma_dev;
+ 	int ret = 0;
+ 
+@@ -716,6 +761,7 @@ static int hsw_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 			return ret;
+ 		}
+ 	}
++	priv_data->pcm[rtd->cpu_dai->id].hsw_pcm = pcm;
+ 
+ 	return ret;
+ }
+@@ -728,6 +774,7 @@ static int hsw_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ static struct snd_soc_dai_driver hsw_dais[] = {
+ 	{
+ 		.name  = "System Pin",
++		.id = HSW_PCM_DAI_ID_SYSTEM,
+ 		.playback = {
+ 			.stream_name = "System Playback",
+ 			.channels_min = 2,
+@@ -739,6 +786,7 @@ static struct snd_soc_dai_driver hsw_dais[] = {
+ 	{
+ 		/* PCM */
+ 		.name  = "Offload0 Pin",
++		.id = HSW_PCM_DAI_ID_OFFLOAD0,
+ 		.playback = {
+ 			.stream_name = "Offload0 Playback",
+ 			.channels_min = 2,
+@@ -750,6 +798,7 @@ static struct snd_soc_dai_driver hsw_dais[] = {
+ 	{
+ 		/* PCM */
+ 		.name  = "Offload1 Pin",
++		.id = HSW_PCM_DAI_ID_OFFLOAD1,
+ 		.playback = {
+ 			.stream_name = "Offload1 Playback",
+ 			.channels_min = 2,
+@@ -760,6 +809,7 @@ static struct snd_soc_dai_driver hsw_dais[] = {
+ 	},
+ 	{
+ 		.name  = "Loopback Pin",
++		.id = HSW_PCM_DAI_ID_LOOPBACK,
+ 		.capture = {
+ 			.stream_name = "Loopback Capture",
+ 			.channels_min = 2,
+@@ -770,6 +820,7 @@ static struct snd_soc_dai_driver hsw_dais[] = {
+ 	},
+ 	{
+ 		.name  = "Capture Pin",
++		.id = HSW_PCM_DAI_ID_CAPTURE,
+ 		.capture = {
+ 			.stream_name = "Analog Capture",
+ 			.channels_min = 2,
+@@ -808,9 +859,21 @@ static int hsw_pcm_probe(struct snd_soc_platform *platform)
+ {
+ 	struct hsw_priv_data *priv_data = snd_soc_platform_get_drvdata(platform);
+ 	struct sst_pdata *pdata = dev_get_platdata(platform->dev);
+-	struct device *dma_dev = pdata->dma_dev;
++	struct device *dma_dev, *dev;
+ 	int i, ret = 0;
+ 
++	if (!pdata)
++		return -ENODEV;
++
++	dev = platform->dev;
++	dma_dev = pdata->dma_dev;
++
++	priv_data = devm_kzalloc(platform->dev, sizeof(*priv_data), GFP_KERNEL);
++	priv_data->hsw = pdata->dsp;
++	priv_data->dev = platform->dev;
++	priv_data->pm_state = HSW_PM_STATE_D0;
++	priv_data->soc_card = platform->component.card;
++
+ 	/* allocate DSP buffer page tables */
+ 	for (i = 0; i < ARRAY_SIZE(hsw_dais); i++) {
+ 
+@@ -836,6 +899,13 @@ static int hsw_pcm_probe(struct snd_soc_platform *platform)
+ 	/* allocate runtime modules */
+ 	hsw_pcm_create_modules(priv_data);
+ 
++	/* enable runtime PM with auto suspend */
++	pm_runtime_set_autosuspend_delay(platform->dev,
++		SST_RUNTIME_SUSPEND_DELAY);
++	pm_runtime_use_autosuspend(platform->dev);
++	pm_runtime_enable(platform->dev);
++	pm_runtime_idle(platform->dev);
++
+ 	return 0;
+ 
+ err:
+@@ -854,6 +924,9 @@ static int hsw_pcm_remove(struct snd_soc_platform *platform)
+ 		snd_soc_platform_get_drvdata(platform);
+ 	int i;
+ 
++	pm_runtime_disable(platform->dev);
++	hsw_pcm_free_modules(priv_data);
++
+ 	for (i = 0; i < ARRAY_SIZE(hsw_dais); i++) {
+ 		if (hsw_dais[i].playback.channels_min)
+ 			snd_dma_free_pages(&priv_data->dmab[i][0]);
+@@ -931,10 +1004,180 @@ static int hsw_pcm_dev_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM
++#ifdef CONFIG_PM_RUNTIME
++
++static int hsw_pcm_runtime_idle(struct device *dev)
++{
++	return 0;
++}
++
++static int hsw_pcm_runtime_suspend(struct device *dev)
++{
++	struct hsw_priv_data *pdata = dev_get_drvdata(dev);
++	struct sst_hsw *hsw = pdata->hsw;
++
++	if (pdata->pm_state == HSW_PM_STATE_D3)
++		return 0;
++
++	sst_hsw_dsp_runtime_suspend(hsw);
++	sst_hsw_dsp_runtime_sleep(hsw);
++	pdata->pm_state = HSW_PM_STATE_D3;
++
++	return 0;
++}
++
++static int hsw_pcm_runtime_resume(struct device *dev)
++{
++	struct hsw_priv_data *pdata = dev_get_drvdata(dev);
++	struct sst_hsw *hsw = pdata->hsw;
++	int ret;
++
++	if (pdata->pm_state == HSW_PM_STATE_D0)
++		return 0;
++
++	ret = sst_hsw_dsp_load(hsw);
++	if (ret < 0) {
++		dev_err(dev, "failed to reload %d\n", ret);
++		return ret;
 +	}
 +
- 	/* keep the DSP in reset state for base FW loading */
- 	sst_dsp_reset(hsw->dsp);
- 
--	hsw_sst_fw = sst_fw_new(hsw->dsp, pdata->fw, hsw);
--
--	if (hsw_sst_fw == NULL) {
-+	hsw->sst_fw = sst_fw_new(hsw->dsp, pdata->fw, hsw);
-+	if (hsw->sst_fw == NULL) {
- 		ret = -ENODEV;
- 		dev_err(dev, "error: failed to load firmware\n");
- 		goto fw_err;
-@@ -1816,8 +2057,11 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
- 
- boot_err:
- 	sst_dsp_reset(hsw->dsp);
--	sst_fw_free(hsw_sst_fw);
-+	sst_fw_free(hsw->sst_fw);
- fw_err:
-+	dma_free_coherent(hsw->dsp->dma_dev, SST_HSW_DX_CONTEXT_SIZE,
-+			hsw->dx_context, hsw->dx_context_paddr);
-+dma_err:
- 	sst_dsp_free(hsw->dsp);
- dsp_err:
- 	kthread_stop(hsw->tx_thread);
-@@ -1834,6 +2078,8 @@ void sst_hsw_dsp_free(struct device *dev, struct sst_pdata *pdata)
- 
- 	sst_dsp_reset(hsw->dsp);
- 	sst_fw_free_all(hsw->dsp);
-+	dma_free_coherent(hsw->dsp->dma_dev, SST_HSW_DX_CONTEXT_SIZE,
-+			hsw->dx_context, hsw->dx_context_paddr);
- 	sst_dsp_free(hsw->dsp);
- 	kfree(hsw->scratch);
- 	kthread_stop(hsw->tx_thread);
-diff --git a/sound/soc/intel/sst-haswell-ipc.h b/sound/soc/intel/sst-haswell-ipc.h
-index fe6e63f..afd0ae1 100644
---- a/sound/soc/intel/sst-haswell-ipc.h
-+++ b/sound/soc/intel/sst-haswell-ipc.h
-@@ -23,6 +23,7 @@
- 
- #define SST_HSW_NO_CHANNELS		2
- #define SST_HSW_MAX_DX_REGIONS		14
-+#define SST_HSW_DX_CONTEXT_SIZE        (640 * 1024)
- 
- #define SST_HSW_FW_LOG_CONFIG_DWORDS	12
- #define SST_HSW_GLOBAL_LOG		15
-@@ -492,4 +493,10 @@ struct sst_module_runtime *sst_hsw_runtime_module_create(struct sst_hsw *hsw,
- 	int mod_id, int offset);
- void sst_hsw_runtime_module_free(struct sst_module_runtime *runtime);
- 
-+/* PM */
-+int sst_hsw_dsp_runtime_resume(struct sst_hsw *hsw);
-+int sst_hsw_dsp_runtime_suspend(struct sst_hsw *hsw);
-+int sst_hsw_dsp_load(struct sst_hsw *hsw);
-+int sst_hsw_dsp_runtime_sleep(struct sst_hsw *hsw);
++	ret = hsw_pcm_create_modules(pdata);
++	if (ret < 0) {
++		dev_err(dev, "failed to create modules %d\n", ret);
++		return ret;
++	}
 +
- #endif
++	ret = sst_hsw_dsp_runtime_resume(hsw);
++	if (ret < 0)
++		return ret;
++	else if (ret == 1) /* no action required */
++		return 0;
++
++	pdata->pm_state = HSW_PM_STATE_D0;
++	return ret;
++}
++
++static void hsw_pcm_complete(struct device *dev)
++{
++	struct hsw_priv_data *pdata = dev_get_drvdata(dev);
++	struct sst_hsw *hsw = pdata->hsw;
++	struct hsw_pcm_data *pcm_data;
++	int i, err;
++
++	if (pdata->pm_state == HSW_PM_STATE_D0)
++		return;
++
++	err = sst_hsw_dsp_load(hsw);
++	if (err < 0) {
++		dev_err(dev, "failed to reload %d\n", err);
++		return;
++	}
++
++	err = hsw_pcm_create_modules(pdata);
++	if (err < 0) {
++		dev_err(dev, "failed to create modules %d\n", err);
++		return;
++	}
++
++	for (i = 0; i < HSW_PCM_DAI_ID_CAPTURE + 1; i++) {
++		pcm_data = &pdata->pcm[i];
++
++		if (!pcm_data->substream)
++			continue;
++
++		err = sst_module_runtime_restore(pcm_data->runtime,
++			&pcm_data->context);
++		if (err < 0)
++			dev_err(dev, "failed to restore context for PCM %d\n", i);
++	}
++
++	snd_soc_resume(pdata->soc_card->dev);
++
++	err = sst_hsw_dsp_runtime_resume(hsw);
++	if (err < 0)
++		return;
++	else if (err == 1) /* no action required */
++		return;
++
++	pdata->pm_state = HSW_PM_STATE_D0;
++	return;
++}
++
++static int hsw_pcm_prepare(struct device *dev)
++{
++	struct hsw_priv_data *pdata = dev_get_drvdata(dev);
++	struct sst_hsw *hsw = pdata->hsw;
++	struct hsw_pcm_data *pcm_data;
++	int i, err;
++
++	if (pdata->pm_state == HSW_PM_STATE_D3)
++		return 0;
++	/* suspend all active streams */
++	for (i = 0; i < HSW_PCM_DAI_ID_CAPTURE + 1; i++) {
++		pcm_data = &pdata->pcm[i];
++
++		if (!pcm_data->substream)
++			continue;
++		dev_dbg(dev, "suspending pcm %d\n", i);
++		snd_pcm_suspend_all(pcm_data->hsw_pcm);
++
++		/* We need to wait until the DSP FW stops the streams */
++		msleep(2);
++	}
++
++	snd_soc_suspend(pdata->soc_card->dev);
++	snd_soc_poweroff(pdata->soc_card->dev);
++
++	/* enter D3 state and stall */
++	sst_hsw_dsp_runtime_suspend(hsw);
++
++	/* preserve persistent memory */
++	for (i = 0; i < HSW_PCM_DAI_ID_CAPTURE + 1; i++) {
++		pcm_data = &pdata->pcm[i];
++
++		if (!pcm_data->substream)
++			continue;
++
++		dev_dbg(dev, "saving context pcm %d\n", i);
++		err = sst_module_runtime_save(pcm_data->runtime,
++			&pcm_data->context);
++		if (err < 0)
++			dev_err(dev, "failed to save context for PCM %d\n", i);
++	}
++
++	/* put the DSP to sleep */
++	sst_hsw_dsp_runtime_sleep(hsw);
++	pdata->pm_state = HSW_PM_STATE_D3;
++
++	return 0;
++}
++
++#else
++#define hsw_pcm_runtime_idle		NULL
++#define hsw_pcm_runtime_suspend		NULL
++#define hsw_pcm_runtime_resume		NULL
++#define hsw_pcm_runtime_complete	NULL
++#define hsw_pcm_runtime_prepare		NULL
++#endif
++
++static const struct dev_pm_ops hsw_pcm_pm = {
++	.runtime_idle = hsw_pcm_runtime_idle,
++	.runtime_suspend = hsw_pcm_runtime_suspend,
++	.runtime_resume = hsw_pcm_runtime_resume,
++	.prepare = hsw_pcm_prepare,
++	.complete = hsw_pcm_complete,
++};
++#else
++#define hsw_pcm_pm	NULL
++#endif
++
+ static struct platform_driver hsw_pcm_driver = {
+ 	.driver = {
+ 		.name = "haswell-pcm-audio",
+ 		.owner = THIS_MODULE,
++		.pm = &hsw_pcm_pm,
++
+ 	},
+ 
+ 	.probe = hsw_pcm_dev_probe,
 -- 
 2.1.0
