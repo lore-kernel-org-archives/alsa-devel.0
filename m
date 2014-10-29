@@ -1,123 +1,76 @@
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH 3/6] ASoC: kirkwood: get rid of
-	armada-370-db driver
-Date: Wed, 29 Oct 2014 09:24:19 +0100
-Message-ID: <20141029092419.5eb8ad3a@free-electrons.com>
-References: <1414512524-24466-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1414512524-24466-4-git-send-email-thomas.petazzoni@free-electrons.com>
- <20141028223521.GL18557@sirena.org.uk>
- <20141028235456.7d68d53e@free-electrons.com>
- <20141028230740.GQ18557@sirena.org.uk>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: Re: [PATCH v2 0/6] media token resource framework
+Date: Wed, 29 Oct 2014 11:17:44 +0200
+Message-ID: <5450B0B8.2060804@linux.intel.com>
+References: <cover.1413246370.git.shuahkh@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (down.free-electrons.com
- [37.187.137.238])
- by alsa0.perex.cz (Postfix) with ESMTP id B4500260454
- for <alsa-devel@alsa-project.org>; Wed, 29 Oct 2014 09:24:23 +0100 (CET)
-In-Reply-To: <20141028230740.GQ18557@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org, Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>, Liam Girdwood <lgirdwood@gmail.com>, Nadav Haklai <nadavh@marvell.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Gregory Clement <gregory.clement@free-electrons.com>, linux-arm-kernel@lists.infradead.org, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <cover.1413246370.git.shuahkh@osg.samsung.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Shuah Khan <shuahkh@osg.samsung.com>, m.chehab@samsung.com, akpm@linux-foundation.org, gregkh@linuxfoundation.org, crope@iki.fi, olebowle@gmx.com, dheitmueller@kernellabs.com, hverkuil@xs4all.nl, ramakrmu@cisco.com, laurent.pinchart@ideasonboard.com, perex@perex.cz, tiwai@suse.de, prabhakar.csengg@gmail.com, tim.gardner@canonical.com, linux@eikelenboom.it
+Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+Hi Shuah and others,
 
-On Tue, 28 Oct 2014 23:07:40 +0000, Mark Brown wrote:
+Shuah Khan wrote:
+> Add media token device resource framework to allow sharing
+> resources such as tuner, dma, audio etc. across media drivers
+> and non-media sound drivers that control media hardware. The
+> Media token resource is created at the main struct device that
+> is common to all drivers that claim various pieces of the main
+> media device, which allows them to find the resource using the
+> main struct device. As an example, digital, analog, and
+> snd-usb-audio drivers can use the media token resource API
+> using the main struct device for the interface the media device
+> is attached to.
+>
+> This patch series consists of media token resource framework
+> and changes to use it in dvb-core, v4l2-core, au0828 driver,
+> and snd-usb-audio driver.
+>
+> With these changes dvb and v4l2 can share the tuner without
+> disrupting each other. Used tvtime, xawtv, kaffeine, and vlc,
+> vlc audio capture option, arecord/aplay during development to
+> identify v4l2 vb2 and vb1 ioctls and file operations that
+> disrupt the digital stream and would require changes to check
+> tuner ownership prior to changing the tuner configuration.
+> vb2 changes are made in the v4l2-core and vb1 changes are made
+> in the au0828 driver to encourage porting drivers to vb2 to
+> advantage of the new media token resource framework with changes
+> in the core.
 
-> > Hum, I'm not sure to follow you here. In a subsequent patch, I change
-> > the Armada 370 DB audio complex DT description to use the
-> > simple-audio-card DT binding, which makes the Armada 370 DB audio
-> > machine driver irrelevant.
-> 
-> > Of course, this means that if someone uses an old Armada 370 DB Device
-> > Tree with a new kernel, it will no longer. But I believe this is kind
-> 
-> Yes, this is the entire point of device tree as an ABI.  We also need to
-> care about out of tree users.
+I know this comes quite late after the first patch series has been sent, 
+but I'd like to ask if you have you considered a different approach: 
+rather than implementing something entirely new, the Media controller 
+can almost do this already. It models the physical layout of the device, 
+instead of creating special use case specific Media entity like 
+constructs for tuner and audio. Also the Media token framework does not 
+appear to be as a perfect match for the Media controller framework which 
+is also planned to be used by DVB already:
 
-Right, but I believe it has been discussed multiple times that when a
-subsystem doesn't yet have the proper generic DT bindings and that
-temporary solutions are used, we are allowed to break the compatibility
-when moving to the proper generic DT bindings.
+<URL:http://linuxtv.org/news.php?entry=2014-10-21.mchehab>; look for "3) 
+DVB API improvements". There have been ALSA MC patches as well but I'm 
+not aware of the status of those at the moment.
 
-Another example is a platform moving from clocks defined in the platform
-code to clocks defined in the Device Tree and using the common clock
-framework. Should we keep around the code defining the clocks in the
-platform code forever, just because old Device Tree didn't carry the
-clock description?
+The tokens appear much like media entities of specific kind to me.
 
-> > of expected for this specific case: when we originally introduced the
-> > Armada 370 DB audio support, we knew a proper DT binding to describe
-> > sound complex was arriving, and therefore the Armada 370 DB audio
-> > machine driver was only a temporary solution until the pure DT solution
-> > was available.
-> 
-> No, that's not the case - these drivers predate DT IIRC and while it's
+Currently, media entities may only be entities bound to a given 
+subsystem, but I don't think it has to (or perhaps even may) stay that way.
 
-No, the armada-370-db driver does not predate DT. The mach-mvebu
-platforms started to be supported in kernel 3.6, in full DT mode from
-the beginning. The armada-370-db audio machine driver was added in
-3.15, and is *only* used for the Marvell Armada 370 DB platform, which
-is only described in DT.
+In case of the Media controller, mutual exclusion of different users is 
+currently performed by adding the entities to a pipeline and 
+incrementing the streaming count once streaming is enabled --- on 
+different interfaces streaming may mean a different thing.
 
-In addition, the Marvell Armada 370 DB board is an internal evaluation
-board that is not publicly available. So the rules in terms of DT
-backward compatibility should I believe be a bit relaxed for such
-platforms.
+The Media controller interface does not handle serialising potential 
+users that may wish to configure the device. If that's needed then we'll 
+need to think how to add it.
 
-> good to avoid adding new drivers there's nothing inherently bad about
-> having a machine driver or adaption layer into simple card (you could do
-> this just as platform data for simple card for many devices).
-
-I'm sorry but I don't understand what you mean: the simple card DT
-binding is completely sufficient, in its current state, to describe the
-audio complex of the Armada 370 DB.
-
-> In this particular case I'm especially worried since we've got the whole
-> thing with not having a good story for supporting simulataneous use of
-> the S/PDIF and I2S links worked out yet on the controller side and on
-> the simple-card side it's pretty much just the most basic CPUs that are
-> supported.
-
-I agree that the simple card binding may not be sufficient for all
-situations, but in the case of this platform, it is sufficient. The
-audio data gets sent simultaneously to the codec and the S/PDIF
-transceiver, with no way of enabling or disabling those outputs
-independently. So I believe the simple card DT binding is good enough
-for this case.
-
-> > Therefore, with the agreement of the mvebu maintainers, I'd like to be
-> > allowed to break the DT backward compatibility here, and get rid of
-> > this audio machine driver which would otherwise have no users left.
-> 
-> ...in mainline.  Doesn't this hardware tend to have lots of small
-> variants on the design floating around?
-
-Again, the armada-370-db driver is a *board* specific driver, that
-works just and only for the Armada 370 DB board. Other boards may have
-a different codec, maybe no S/PDIF transceivers, etc. So any "variant"
-on the design would anyway have to use a different driver.
-
-All that being said, if you really want to keep the armada-370-db audio
-machine driver around that's fine with me. It's going to be just an
-unused piece of code and therefore a piece of code that will probably
-be broken in the near future, but I'm not the ASoC maintainer, so it's
-your call.
-
-Best regards,
-
-Thomas
 -- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+Kind regards,
+
+Sakari Ailus
+sakari.ailus@linux.intel.com
