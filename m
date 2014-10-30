@@ -1,61 +1,65 @@
-From: Jie Yang <yang.jie@intel.com>
-Subject: [PATCH] ASoC: Intel: Fix block is enabled multiple
-	times issue
-Date: Thu, 30 Oct 2014 21:21:52 +0800
-Message-ID: <1414675312-7667-1-git-send-email-yang.jie@intel.com>
+From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Subject: Re: [PATCH v2 2/2] [media] sound: Update au0828 quirks table
+Date: Thu, 30 Oct 2014 11:37:25 -0200
+Message-ID: <20141030113725.08b3aa40@recife.lan>
+References: <cover.1414668341.git.mchehab@osg.samsung.com>
+	<678fa12fb8e75c6dc1e781a02e3ddbbba7e1a904.1414668341.git.mchehab@osg.samsung.com>
+	<CAGoCfizkcdU1fgfLjFHwnH34HgpJBcznO+3RrqOMHpLUYKCNPg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 701B1260602
- for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 14:23:08 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <CAGoCfizkcdU1fgfLjFHwnH34HgpJBcznO+3RrqOMHpLUYKCNPg@mail.gmail.com>
+Sender: stable-owner@vger.kernel.org
+To: Devin Heitmueller <dheitmueller@kernellabs.com>
+Cc: Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>, Eduard Gilmutdinov <edgilmutdinov@gmail.com>, Vlad Catoi <vladcatoi@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org, Michael Krufky <mkrufky@linuxtv.org>
 List-Id: alsa-devel@alsa-project.org
 
-During FW parsing and loading, block_list_prepare() may
-be called for each raw data block copying and this may
-made the hsw_block_enable() called mutiple times, which
-increase block->users many times. The result of this is
-hsw_block_disable() can't power gated the related block
-when trying to free the blocks during suspend, and the
-power gating status also confused.
+Hi Devin,
 
-Here check the block user status, only calling enable()
-for those blocks who has no user yet. Remember that
-this works correctlly on current case, where there are
-enough SRAM memory so different module won't share a
-memory block. For further usage, we may need restructure
-the struct sst_mem_block to save the module list who is
-using it.
+Em Thu, 30 Oct 2014 09:15:31 -0400
+Devin Heitmueller <dheitmueller@kernellabs.com> escreveu:
 
-Signed-off-by: Jie Yang <yang.jie@intel.com>
----
- sound/soc/intel/sst-firmware.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Hi Mauro,
+> 
+> > Syncronize it and put them on the same order as found at au0828
+> > driver, as all the au0828 devices with analog TV need the
+> > same quirks.
+> 
+> The MXL and Woodbury boards don't support analog under Linux, so
+> probably shouldn't be included in the list of quirks.
 
-diff --git a/sound/soc/intel/sst-firmware.c b/sound/soc/intel/sst-firmware.c
-index 35788ad..c451398 100644
---- a/sound/soc/intel/sst-firmware.c
-+++ b/sound/soc/intel/sst-firmware.c
-@@ -149,7 +149,7 @@ static int block_list_prepare(struct sst_dsp *dsp,
- 	/* enable each block so that's it'e ready for data */
- 	list_for_each_entry(block, block_list, module_list) {
- 
--		if (block->ops && block->ops->enable) {
-+		if (block->ops && block->ops->enable && !block->users) {
- 			ret = block->ops->enable(block);
- 			if (ret < 0) {
- 				dev_err(dsp->dev,
--- 
-1.9.1
+True.
+> 
+> That said, the MXL and Woodbury versions of the PCBs were prototypes
+> that never made it into production (and since the Auvitek chips are
+> EOL, they never will).  I wouldn't object to a patch which removed the
+> board profiles entirely in the interest of removing dead code.
+> 
+> It was certainly nice of Mike Krufky to work to get support into the
+> open source driver before the product was released, but after four
+> years it probably makes sense to remove the entries for products that
+> never actually shipped.
+
+Yeah, if nobody is using such devices, then we should get rid of them,
+but I prefer to have this on a separate patch, in order to give
+people the opportunity to complain.
+
+So, if I'm understanding well, you're suggesting to add a patch
+removing those 5 entries (and the corresponding quirks on alsa),
+right?
+
+	{ USB_DEVICE(0x2040, 0x7201),
+		.driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
+	{ USB_DEVICE(0x2040, 0x7211),
+		.driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
+	{ USB_DEVICE(0x2040, 0x7281),
+		.driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
+	{ USB_DEVICE(0x05e1, 0x0480),
+		.driver_info = AU0828_BOARD_HAUPPAUGE_WOODBURY },
+	{ USB_DEVICE(0x2040, 0x8200),
+		.driver_info = AU0828_BOARD_HAUPPAUGE_WOODBURY },
+	{ USB_DEVICE(0x2040, 0x7260),
+
+Regards,
+Mauro
