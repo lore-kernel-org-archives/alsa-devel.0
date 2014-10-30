@@ -1,38 +1,54 @@
 From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] [media] sound: simplify au0828 quirk
- table
-Date: Thu, 30 Oct 2014 09:28:48 -0200
-Message-ID: <20141030092848.1b41ab7d@recife.lan>
-References: <cover.1414666159.git.mchehab@osg.samsung.com>
-	<63287e8b3f1e449376666b55f9174df7d827b5b0.1414666159.git.mchehab@osg.samsung.com>
-	<54521DFD.5030402@ladisch.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <54521DFD.5030402@ladisch.de>
-Sender: linux-media-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Linux Media Mailing List <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, stable@vger.kernel.org, Daniel Mack <zonque@gmail.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Eduard Gilmutdinov <edgilmutdinov@gmail.com>, Vlad Catoi <vladcatoi@gmail.com>, Mauro Carvalho Chehab <m.chehab@samsung.com>
+Subject: [PATCH v2 2/2] [media] sound: Update au0828 quirks table
+Date: Thu, 30 Oct 2014 09:28:12 -0200
+Message-ID: <678fa12fb8e75c6dc1e781a02e3ddbbba7e1a904.1414668341.git.mchehab@osg.samsung.com>
+References: <cover.1414668341.git.mchehab@osg.samsung.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <cover.1414668341.git.mchehab@osg.samsung.com>
+In-Reply-To: <cover.1414668341.git.mchehab@osg.samsung.com>
+References: <cover.1414668341.git.mchehab@osg.samsung.com>
+Sender: stable-owner@vger.kernel.org
+To: Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>, Eduard Gilmutdinov <edgilmutdinov@gmail.com>, Vlad Catoi <vladcatoi@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Em Thu, 30 Oct 2014 12:16:13 +0100
-Clemens Ladisch <clemens@ladisch.de> escreveu:
+The au0828 quirks table is currently not in sync with the au0828
+media driver.
 
-> Mauro Carvalho Chehab wrote:
-> > Add a macro to simplify au0828 quirk table. That makes easier
-> > to check it against the USB IDs at drivers/media/usb/au0828-card.c
-> >
-> > +++ b/sound/usb/quirks-table.h
-> > ...
-> > + * This should be kept in sync with drivers/media/usb/au0828-card.c
-> 
-> The file does not exist in that directory.  And when you want to
-> keep two files in sync, you need such reminders in both of them.
+Syncronize it and put them on the same order as found at au0828
+driver, as all the au0828 devices with analog TV need the
+same quirks.
 
-Thanks for reviewing it. 
+Cc: stable@vger.kernel.org
+Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
 
-I'm sending an updated version with those fixes.
-
-Regards,
-Mauro
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 8f3e2bf100eb..83bddbdb90e9 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2827,14 +2827,22 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ }
+ 
+ AU0828_DEVICE(0x2040, 0x7200, "Hauppauge", "HVR-950Q"),
++AU0828_DEVICE(0x2040, 0x7240, "Hauppauge", "HVR-850"),
+ AU0828_DEVICE(0x2040, 0x7210, "Hauppauge", "HVR-950Q"),
+ AU0828_DEVICE(0x2040, 0x7217, "Hauppauge", "HVR-950Q"),
+ AU0828_DEVICE(0x2040, 0x721b, "Hauppauge", "HVR-950Q"),
+ AU0828_DEVICE(0x2040, 0x721e, "Hauppauge", "HVR-950Q"),
+ AU0828_DEVICE(0x2040, 0x721f, "Hauppauge", "HVR-950Q"),
+-AU0828_DEVICE(0x2040, 0x7240, "Hauppauge", "HVR-850"),
+ AU0828_DEVICE(0x2040, 0x7280, "Hauppauge", "HVR-950Q"),
+ AU0828_DEVICE(0x0fd9, 0x0008, "Hauppauge", "HVR-950Q"),
++AU0828_DEVICE(0x2040, 0x7201, "Hauppauge", "HVR-950Q-MXL"),
++AU0828_DEVICE(0x2040, 0x7211, "Hauppauge", "HVR-950Q-MXL"),
++AU0828_DEVICE(0x2040, 0x7281, "Hauppauge", "HVR-950Q-MXL"),
++AU0828_DEVICE(0x05e1, 0x0480, "Hauppauge", "Woodbury"),
++AU0828_DEVICE(0x2040, 0x8200, "Hauppauge", "Woodbury"),
++AU0828_DEVICE(0x2040, 0x7260, "Hauppauge", "HVR-950Q"),
++AU0828_DEVICE(0x2040, 0x7213, "Hauppauge", "HVR-950Q"),
++AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 
+ /* Digidesign Mbox */
+ {
+-- 
+1.9.3
