@@ -1,49 +1,59 @@
-From: Devin Heitmueller <dheitmueller@kernellabs.com>
-Subject: Re: [PATCH v2 2/2] [media] sound: Update au0828 quirks table
-Date: Thu, 30 Oct 2014 10:13:09 -0400
-Message-ID: <CAGoCfiwU0VVbjtzuv6Y9jvAPiHJJjC4=1Amp2AGweLuEa9vEHA@mail.gmail.com>
-References: <cover.1414668341.git.mchehab@osg.samsung.com>
-	<678fa12fb8e75c6dc1e781a02e3ddbbba7e1a904.1414668341.git.mchehab@osg.samsung.com>
-	<CAGoCfizkcdU1fgfLjFHwnH34HgpJBcznO+3RrqOMHpLUYKCNPg@mail.gmail.com>
-	<20141030113725.08b3aa40@recife.lan>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] ASoC: Intel; Add debug output when boot fails.
+Date: Thu, 30 Oct 2014 14:34:00 +0000
+Message-ID: <1414679640-11108-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20141030113725.08b3aa40@recife.lan>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Cc: Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>, Eduard Gilmutdinov <edgilmutdinov@gmail.com>, Vlad Catoi <vladcatoi@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org, Michael Krufky <mkrufky@linuxtv.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70247260611
+ for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 15:34:07 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 30, 2014 at 9:37 AM, Mauro Carvalho Chehab
-<mchehab@osg.samsung.com> wrote:
-> Yeah, if nobody is using such devices, then we should get rid of them,
-> but I prefer to have this on a separate patch, in order to give
-> people the opportunity to complain.
+Add the debug output from IPCD and IPCX when booting fails.
 
-Yes, I would definitely suggest a separate patch.  There's no reason
-it should be mixed in with your general cleanup of the ALSA quirks.
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+ sound/soc/intel/sst-haswell-ipc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-> So, if I'm understanding well, you're suggesting to add a patch
-> removing those 5 entries (and the corresponding quirks on alsa),
-> right?
->
->         { USB_DEVICE(0x2040, 0x7201),
->                 .driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
->         { USB_DEVICE(0x2040, 0x7211),
->                 .driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
->         { USB_DEVICE(0x2040, 0x7281),
->                 .driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
->         { USB_DEVICE(0x05e1, 0x0480),
->                 .driver_info = AU0828_BOARD_HAUPPAUGE_WOODBURY },
->         { USB_DEVICE(0x2040, 0x8200),
->                 .driver_info = AU0828_BOARD_HAUPPAUGE_WOODBURY },
->         { USB_DEVICE(0x2040, 0x7260),
-
-Exactly.
-
-Devin
-
+diff --git a/sound/soc/intel/sst-haswell-ipc.c b/sound/soc/intel/sst-haswell-ipc.c
+index b37d3ee..0ea7c3d 100644
+--- a/sound/soc/intel/sst-haswell-ipc.c
++++ b/sound/soc/intel/sst-haswell-ipc.c
+@@ -1927,7 +1927,9 @@ int sst_hsw_dsp_runtime_resume(struct sst_hsw *hsw)
+ 	ret = wait_event_timeout(hsw->boot_wait, hsw->boot_complete,
+ 		msecs_to_jiffies(IPC_BOOT_MSECS));
+ 	if (ret == 0) {
+-		dev_err(hsw->dev, "error: audio DSP boot timeout\n");
++		dev_err(hsw->dev, "error: audio DSP boot timeout IPCD 0x%x IPCX 0x%x\n",
++			sst_dsp_shim_read_unlocked(hsw->dsp, SST_IPCD),
++			sst_dsp_shim_read_unlocked(hsw->dsp, SST_IPCX));
+ 		return -EIO;
+ 	}
+ 
+@@ -2038,7 +2040,9 @@ int sst_hsw_dsp_init(struct device *dev, struct sst_pdata *pdata)
+ 		msecs_to_jiffies(IPC_BOOT_MSECS));
+ 	if (ret == 0) {
+ 		ret = -EIO;
+-		dev_err(hsw->dev, "error: ADSP boot timeout\n");
++		dev_err(hsw->dev, "error: audio DSP boot timeout IPCD 0x%x IPCX 0x%x\n",
++			sst_dsp_shim_read_unlocked(hsw->dsp, SST_IPCD),
++			sst_dsp_shim_read_unlocked(hsw->dsp, SST_IPCX));
+ 		goto boot_err;
+ 	}
+ 
 -- 
-Devin J. Heitmueller - Kernel Labs
-http://www.kernellabs.com
+2.1.0
