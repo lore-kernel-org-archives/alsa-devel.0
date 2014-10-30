@@ -1,227 +1,31 @@
-From: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Subject: Re: [PATCH 1/2] [media] sound: simplify au0828 quirk table
-Date: Thu, 30 Oct 2014 09:15:05 -0200
-Message-ID: <20141030091505.7d08dec8@recife.lan>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] [PATCH 1/2] [media] sound: simplify au0828 quirk
+	table
+Date: Thu, 30 Oct 2014 12:16:13 +0100
+Message-ID: <54521DFD.5030402@ladisch.de>
 References: <cover.1414666159.git.mchehab@osg.samsung.com>
 	<63287e8b3f1e449376666b55f9174df7d827b5b0.1414666159.git.mchehab@osg.samsung.com>
-	<s5hzjcd4xws.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <s5hzjcd4xws.wl-tiwai@suse.de>
+In-Reply-To: <63287e8b3f1e449376666b55f9174df7d827b5b0.1414666159.git.mchehab@osg.samsung.com>
 Sender: linux-media-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <m.chehab@samsung.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Clemens Ladisch <clemens@ladisch.de>, Eduard Gilmutdinov <edgilmutdinov@gmail.com>, Daniel Mack <zonque@gmail.com>, Vlad Catoi <vladcatoi@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, stable@vger.kernel.org, Daniel Mack <zonque@gmail.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Eduard Gilmutdinov <edgilmutdinov@gmail.com>, Vlad Catoi <vladcatoi@gmail.com>, Mauro Carvalho Chehab <m.chehab@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Thu, 30 Oct 2014 12:09:07 +0100
-Takashi Iwai <tiwai@suse.de> escreveu:
+Mauro Carvalho Chehab wrote:
+> Add a macro to simplify au0828 quirk table. That makes easier
+> to check it against the USB IDs at drivers/media/usb/au0828-card.c
+>
+> +++ b/sound/usb/quirks-table.h
+> ...
+> + * This should be kept in sync with drivers/media/usb/au0828-card.c
 
-> At Thu, 30 Oct 2014 08:53:04 -0200,
-> Mauro Carvalho Chehab wrote:
-> > 
-> > From: Mauro Carvalho Chehab <m.chehab@samsung.com>
-> > 
-> > Add a macro to simplify au0828 quirk table. That makes easier
-> > to check it against the USB IDs at drivers/media/usb/au0828-card.c
-> > 
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Mauro Carvalho Chehab <m.chehab@samsung.com>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-> 
-> Which sign-off should I take?  Judging from the author line, the
-> former one?
+The file does not exist in that directory.  And when you want to
+keep two files in sync, you need such reminders in both of them.
 
-Gah, that's the problem with rebased patches ;) 
 
-I started using mchehab@osg.samsung.com for upstream submission
-a few months ago.
-
-Both emails are valid, but I prefer if you use this one:
-Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-
-> The second patch had only s-o-b from @samsung.com.
-
-Yeah, I remembered to remove the extra SOB on the second patch,
-but didn't notice it on the first one.
-
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > 
-> > diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-> > index c657752a420c..5ae1d02d17a3 100644
-> > --- a/sound/usb/quirks-table.h
-> > +++ b/sound/usb/quirks-table.h
-> > @@ -2804,133 +2804,37 @@ YAMAHA_DEVICE(0x7010, "UB99"),
-> >  	}
-> >  },
-> >  
-> > -/* Hauppauge HVR-950Q and HVR-850 */
-> > -{
-> > -	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7200),
-> > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-> > -		       USB_DEVICE_ID_MATCH_INT_CLASS |
-> > -		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-> > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > -	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
-> > -	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-> > -		.vendor_name = "Hauppauge",
-> > -		.product_name = "HVR-950Q",
-> > -		.ifnum = QUIRK_ANY_INTERFACE,
-> > -		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
-> > -	}
-> > -},
-> > -{
-> > -	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7210),
-> > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-> > -		       USB_DEVICE_ID_MATCH_INT_CLASS |
-> > -		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-> > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > -	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
-> > -	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-> > -		.vendor_name = "Hauppauge",
-> > -		.product_name = "HVR-950Q",
-> > -		.ifnum = QUIRK_ANY_INTERFACE,
-> > -		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
-> > -	}
-> > -},
-> > -{
-> > -	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7217),
-> > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-> > -		       USB_DEVICE_ID_MATCH_INT_CLASS |
-> > -		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-> > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > -	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
-> > -	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-> > -		.vendor_name = "Hauppauge",
-> > -		.product_name = "HVR-950Q",
-> > -		.ifnum = QUIRK_ANY_INTERFACE,
-> > -		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
-> > -	}
-> > -},
-> > -{
-> > -	USB_DEVICE_VENDOR_SPEC(0x2040, 0x721b),
-> > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-> > -		       USB_DEVICE_ID_MATCH_INT_CLASS |
-> > -		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-> > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > -	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
-> > -	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-> > -		.vendor_name = "Hauppauge",
-> > -		.product_name = "HVR-950Q",
-> > -		.ifnum = QUIRK_ANY_INTERFACE,
-> > -		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
-> > -	}
-> > -},
-> > -{
-> > -	USB_DEVICE_VENDOR_SPEC(0x2040, 0x721e),
-> > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-> > -		       USB_DEVICE_ID_MATCH_INT_CLASS |
-> > -		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-> > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > -	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
-> > -	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-> > -		.vendor_name = "Hauppauge",
-> > -		.product_name = "HVR-950Q",
-> > -		.ifnum = QUIRK_ANY_INTERFACE,
-> > -		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
-> > -	}
-> > -},
-> > -{
-> > -	USB_DEVICE_VENDOR_SPEC(0x2040, 0x721f),
-> > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-> > -		       USB_DEVICE_ID_MATCH_INT_CLASS |
-> > -		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-> > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > -	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
-> > -	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-> > -		.vendor_name = "Hauppauge",
-> > -		.product_name = "HVR-950Q",
-> > -		.ifnum = QUIRK_ANY_INTERFACE,
-> > -		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
-> > -	}
-> > -},
-> > -{
-> > -	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7240),
-> > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-> > -		       USB_DEVICE_ID_MATCH_INT_CLASS |
-> > -		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-> > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > -	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
-> > -	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-> > -		.vendor_name = "Hauppauge",
-> > -		.product_name = "HVR-850",
-> > -		.ifnum = QUIRK_ANY_INTERFACE,
-> > -		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
-> > -	}
-> > -},
-> > -{
-> > -	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7280),
-> > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-> > -		       USB_DEVICE_ID_MATCH_INT_CLASS |
-> > -		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-> > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > -	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
-> > -	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-> > -		.vendor_name = "Hauppauge",
-> > -		.product_name = "HVR-950Q",
-> > -		.ifnum = QUIRK_ANY_INTERFACE,
-> > -		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
-> > -	}
-> > -},
-> > -{
-> > -	USB_DEVICE_VENDOR_SPEC(0x0fd9, 0x0008),
-> > -	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-> > -		       USB_DEVICE_ID_MATCH_INT_CLASS |
-> > -		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-> > -	.bInterfaceClass = USB_CLASS_AUDIO,
-> > -	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
-> > -	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-> > -		.vendor_name = "Hauppauge",
-> > -		.product_name = "HVR-950Q",
-> > -		.ifnum = QUIRK_ANY_INTERFACE,
-> > -		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
-> > -	}
-> > -},
-> > +/*
-> > + * Auvitek au0828 devices with audio interface.
-> > + * This should be kept in sync with drivers/media/usb/au0828-card.c
-> > + * Please notice that some drivers are DVB only, and don't need to be
-> > + * here. That's the case, for example, of DVICO_FUSIONHDTV7.
-> > + */
-> > +
-> > +#define AU0828_DEVICE(vid, pid, vname, pname) { \
-> > +	USB_DEVICE_VENDOR_SPEC(vid, pid), \
-> > +	.match_flags = USB_DEVICE_ID_MATCH_DEVICE | \
-> > +		       USB_DEVICE_ID_MATCH_INT_CLASS | \
-> > +		       USB_DEVICE_ID_MATCH_INT_SUBCLASS, \
-> > +	.bInterfaceClass = USB_CLASS_AUDIO, \
-> > +	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL, \
-> > +	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) { \
-> > +		.vendor_name = vname, \
-> > +		.product_name = pname, \
-> > +		.ifnum = QUIRK_ANY_INTERFACE, \
-> > +		.type = QUIRK_AUDIO_ALIGN_TRANSFER, \
-> > +	} \
-> > +}
-> > +
-> > +AU0828_DEVICE(0x2040, 0x7200, "Hauppauge", "HVR-950Q"),
-> > +AU0828_DEVICE(0x2040, 0x7210, "Hauppauge", "HVR-950Q"),
-> > +AU0828_DEVICE(0x2040, 0x7217, "Hauppauge", "HVR-950Q"),
-> > +AU0828_DEVICE(0x2040, 0x721b, "Hauppauge", "HVR-950Q"),
-> > +AU0828_DEVICE(0x2040, 0x721e, "Hauppauge", "HVR-950Q"),
-> > +AU0828_DEVICE(0x2040, 0x721f, "Hauppauge", "HVR-950Q"),
-> > +AU0828_DEVICE(0x2040, 0x7240, "Hauppauge", "HVR-850"),
-> > +AU0828_DEVICE(0x2040, 0x7280, "Hauppauge", "HVR-950Q"),
-> > +AU0828_DEVICE(0x0fd9, 0x0008, "Hauppauge", "HVR-950Q"),
-> >  
-> >  /* Digidesign Mbox */
-> >  {
-> > -- 
-> > 1.9.3
-> > 
+Regards,
+Clemens
