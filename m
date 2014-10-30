@@ -1,34 +1,39 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Build error on Fedora 21
-Date: Thu, 30 Oct 2014 12:41:39 +0100
-Message-ID: <545223F3.4090005@ladisch.de>
-References: <54521CB8.7010201@inf.ed.ac.uk>
+From: Devin Heitmueller <dheitmueller@kernellabs.com>
+Subject: Re: [PATCH v2 2/2] [media] sound: Update au0828 quirks table
+Date: Thu, 30 Oct 2014 09:15:31 -0400
+Message-ID: <CAGoCfizkcdU1fgfLjFHwnH34HgpJBcznO+3RrqOMHpLUYKCNPg@mail.gmail.com>
+References: <cover.1414668341.git.mchehab@osg.samsung.com>
+	<678fa12fb8e75c6dc1e781a02e3ddbbba7e1a904.1414668341.git.mchehab@osg.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from dehamd003.servertools24.de (dehamd003.servertools24.de
- [31.47.254.18]) by alsa0.perex.cz (Postfix) with ESMTP id 778C626549C
- for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 12:41:40 +0100 (CET)
-In-Reply-To: <54521CB8.7010201@inf.ed.ac.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark van Rossum <mvanross@inf.ed.ac.uk>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <678fa12fb8e75c6dc1e781a02e3ddbbba7e1a904.1414668341.git.mchehab@osg.samsung.com>
+Sender: stable-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Cc: Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>, Eduard Gilmutdinov <edgilmutdinov@gmail.com>, Vlad Catoi <vladcatoi@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org, Michael Krufky <mkrufky@linuxtv.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark van Rossum wrote:
-> make[1]: Entering directory '/usr/src/kernels/3.17.0-301.fc21.x86_64'
->   CC [M] /tmp/alsa-compile-script/alsa-driver-1.0.25.3584.gb044d/acore/info.o
+Hi Mauro,
 
-Why are you trying to replace your kernel's drivers with an older version?
+> Syncronize it and put them on the same order as found at au0828
+> driver, as all the au0828 devices with analog TV need the
+> same quirks.
 
+The MXL and Woodbury boards don't support analog under Linux, so
+probably shouldn't be included in the list of quirks.
 
-Regards,
-Clemens
+That said, the MXL and Woodbury versions of the PCBs were prototypes
+that never made it into production (and since the Auvitek chips are
+EOL, they never will).  I wouldn't object to a patch which removed the
+board profiles entirely in the interest of removing dead code.
+
+It was certainly nice of Mike Krufky to work to get support into the
+open source driver before the product was released, but after four
+years it probably makes sense to remove the entries for products that
+never actually shipped.
+
+Devin
+
+-- 
+Devin J. Heitmueller - Kernel Labs
+http://www.kernellabs.com
