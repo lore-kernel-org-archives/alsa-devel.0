@@ -1,22 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 7/9] ASoC: Intel: move PCI probe to a
- seprate	file
-Date: Thu, 30 Oct 2014 17:31:12 +0000
-Message-ID: <20141030173112.GF18557@sirena.org.uk>
-References: <1414666312-4657-8-git-send-email-vinod.koul@intel.com>
- <s5hmw8d4n1c.wl-tiwai@suse.de> <20141030143444.GA28745@intel.com>
- <s5hh9yl4lyq.wl-tiwai@suse.de> <20141030153719.GE28745@intel.com>
- <s5h7fzh4j3n.wl-tiwai@suse.de> <20141030155947.GF28745@intel.com>
- <s5h1tpp4i58.wl-tiwai@suse.de> <20141030161428.GG28745@intel.com>
- <s5hwq7h32rv.wl-tiwai@suse.de>
+Subject: Re: [PATCH 2/3] ASoC: Intel: sst: add runtime power
+ management handling
+Date: Thu, 30 Oct 2014 18:06:09 +0000
+Message-ID: <20141030180609.GG18557@sirena.org.uk>
+References: <1414645736-24426-1-git-send-email-vinod.koul@intel.com>
+ <1414645736-24426-3-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5631381275943256426=="
+Content-Type: multipart/mixed; boundary="===============5413353442356637636=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A3E0C260682
- for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 18:31:47 +0100 (CET)
-In-Reply-To: <s5hwq7h32rv.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id DCBD726069A
+ for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 19:06:44 +0100 (CET)
+In-Reply-To: <1414645736-24426-3-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,70 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5631381275943256426==
+--===============5413353442356637636==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="c7CFpnXo1AEAmHop"
+	protocol="application/pgp-signature"; boundary="ImbhesNbK26zUpL9"
 Content-Disposition: inline
 
 
---c7CFpnXo1AEAmHop
+--ImbhesNbK26zUpL9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Oct 30, 2014 at 06:07:00PM +0100, Takashi Iwai wrote:
-> Vinod Koul wrote:
+On Thu, Oct 30, 2014 at 10:38:55AM +0530, Vinod Koul wrote:
 
-> > snd-intel-sst-pci-y += sst-intel-core.o sst_pci.o
-> > snd-intel-sst-acpi-y += st-intel-core.o sst_acpi.o
+> +	ret = sst_prepare_and_post_msg(sst, SST_TASK_ID_MEDIA, IPC_CMD,
+> +			IPC_PREP_D3, PIPE_RSVD, 0, NULL, NULL,
+> +			true, true, false, true);
+> +
+> +	if (ret < 0) {
+> +		dev_err(sst->dev, "not suspending FW!!!");
+> +		return -EIO;
 
-> Kbuild doesn't allow this syntax, AFAIK.
+Better to print and pass back the actual error code we got.
 
-I've not followed the whole discussion but why not just have the core
-code as a separate module, this seems like an awful lot of trouble for
-something that's normally straightforward...
+> +	dev_info(dev, "runtime_suspend called\n");
+> +	if (ctx->sst_state == SST_RESET) {
 
-> > well both can be compile tested and we will put in symbols about limitation
-> > of having bpth apci and pci as built-in or module.
+Drop this down to a dev_dbg() or remove it please (and some others later
+on).
 
-> No, the point is that the exclusiveness in Kconfig level gives more
-> demerits.  This makes impossible to build the both codes in a single
-> shot, which makes also impossible to cover wider build tests, etc.
-> My concern isn't about the actual operation but about testing.
+> +		dev_dbg(dev, "LPE is already in RESET state, No action");
 
-> That is: don't try to side step such a build issue.  I bet it'll
-> strike back later.  Better to keep rather the simple and common
-> approach other drivers take.
+Missing \n.
 
-Right.
+> +		return 0;
+> +	}
+> +	/*save fw context*/
 
---c7CFpnXo1AEAmHop
+/* Upstream comment style please */
+
+--ImbhesNbK26zUpL9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUUnXfAAoJECTWi3JdVIfQSGQH/jqoK3srOG4FgrX5QodCAlf+
-vHNferMsH97Bn7wUDIGiyRt75LevArv49ZOJgbSjxO4NYwuVbSO5ZQxBZpHUNAnE
-BmGC55hOKt3bTWdXrx2kPAVYyDBlffMXcxPBWXPj8Zf3Q/gvcC09dFjZN5ahePM1
-M9BggWLYDv8mrcP1VTV4F+tsB9HLcfMN1TZ8xiHwC7bpF2HTItx7bPV41mw+vSG5
-9XWgFPte5L/N/7BAixNq5Q1/O5k8Nb9UrEpCEcD8EoLL8poiaQo+UC2nuLtonptL
-7YreE/1GnCoqtw1I683D/7eqOvSbJLZ15BHlRKYvNBqZ59Pao1YJIBQUYkPldOs=
-=+J9k
+iQEcBAEBAgAGBQJUUn4QAAoJECTWi3JdVIfQbZQH/0sAlaGgdlNzld75LdGk8kQa
+kxJemXwi42zOLhGnOErNzaH/YqS/1BVlzhOoEy9ItYV5rJvFdwK08XkJuM7qD4Tg
+yuwpZGcbcKcqF4iwFswn5+7TJFpjlvSA+To5Z9+YfKW2F+tw58oVyz6q4/mp3imX
+iTT5Tnh6RabK63HIv1RabS0RMtZPrLkXhsFUT2MSP5EK4lSrqFwSA+KBlIqZ8d77
+7VGg9jP5e+pRWYAdK2HYJKBJIGm6IXX6359ag0yeutc46ThVqDfIv+V+SKC7tebv
+pHJfbLmuHOTaXaLGo6d0Y87UkyQ9d3He5zPg8aHGfAui4YjHxZIKgpdcj94wtqk=
+=OnuE
 -----END PGP SIGNATURE-----
 
---c7CFpnXo1AEAmHop--
+--ImbhesNbK26zUpL9--
 
---===============5631381275943256426==
+--===============5413353442356637636==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5631381275943256426==--
+--===============5413353442356637636==--
