@@ -1,19 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 6/8] ALSA: pcm: Convert params_*() with static
-	inline functions
-Date: Thu, 30 Oct 2014 16:06:19 +0100
-Message-ID: <1414681581-4619-7-git-send-email-tiwai@suse.de>
+Subject: [PATCH 4/8] ALSA: pcm: Use static inline for
+	snd_pcm_lib_alloc_vmalloc_buffer()
+Date: Thu, 30 Oct 2014 16:06:17 +0100
+Message-ID: <1414681581-4619-5-git-send-email-tiwai@suse.de>
 References: <1414681581-4619-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 21459260642
- for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 16:06:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 00FA52605AF
+ for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 16:06:23 +0100 (CET)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 08025ADE0
- for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 15:06:24 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id DB37EAC01
+ for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 15:06:23 +0000 (UTC)
 In-Reply-To: <1414681581-4619-1-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,90 +27,62 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-... and add proper kerneldoc comments.
-There is no big reason to keep them as macros.  Static inline
-functions are safer in general, and suitable for kerneldoc, too.
+... instead of #if 0 hack.  It's more straightforward and obvious.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm.h | 65 +++++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 53 insertions(+), 12 deletions(-)
+ include/sound/pcm.h | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
 diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index f78a5722f5cc..29eb09ef2969 100644
+index e862497f7556..5c3310d7d4b8 100644
 --- a/include/sound/pcm.h
 +++ b/include/sound/pcm.h
-@@ -841,18 +841,59 @@ static inline const struct snd_interval *hw_param_interval_c(const struct snd_pc
- 	return &params->intervals[var - SNDRV_PCM_HW_PARAM_FIRST_INTERVAL];
- }
- 
--#define params_channels(p) \
--	(hw_param_interval_c((p), SNDRV_PCM_HW_PARAM_CHANNELS)->min)
--#define params_rate(p) \
--	(hw_param_interval_c((p), SNDRV_PCM_HW_PARAM_RATE)->min)
--#define params_period_size(p) \
--	(hw_param_interval_c((p), SNDRV_PCM_HW_PARAM_PERIOD_SIZE)->min)
--#define params_periods(p) \
--	(hw_param_interval_c((p), SNDRV_PCM_HW_PARAM_PERIODS)->min)
--#define params_buffer_size(p) \
--	(hw_param_interval_c((p), SNDRV_PCM_HW_PARAM_BUFFER_SIZE)->min)
--#define params_buffer_bytes(p) \
--	(hw_param_interval_c((p), SNDRV_PCM_HW_PARAM_BUFFER_BYTES)->min)
-+/**
-+ * params_channels - Get the number of channels from the hw params
-+ * @p: hw params
-+ */
-+static inline unsigned int params_channels(const struct snd_pcm_hw_params *p)
+@@ -942,7 +942,6 @@ int _snd_pcm_lib_alloc_vmalloc_buffer(struct snd_pcm_substream *substream,
+ int snd_pcm_lib_free_vmalloc_buffer(struct snd_pcm_substream *substream);
+ struct page *snd_pcm_lib_get_vmalloc_page(struct snd_pcm_substream *substream,
+ 					  unsigned long offset);
+-#if 0 /* for kernel-doc */
+ /**
+  * snd_pcm_lib_alloc_vmalloc_buffer - allocate virtual DMA buffer
+  * @substream: the substream to allocate the buffer to
+@@ -955,8 +954,13 @@ struct page *snd_pcm_lib_get_vmalloc_page(struct snd_pcm_substream *substream,
+  * Return: 1 if the buffer was changed, 0 if not changed, or a negative error
+  * code.
+  */
+-static int snd_pcm_lib_alloc_vmalloc_buffer
+-			(struct snd_pcm_substream *substream, size_t size);
++static inline int snd_pcm_lib_alloc_vmalloc_buffer
++			(struct snd_pcm_substream *substream, size_t size)
 +{
-+	return hw_param_interval_c(p, SNDRV_PCM_HW_PARAM_CHANNELS)->min;
++	return _snd_pcm_lib_alloc_vmalloc_buffer(substream, size,
++						 GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO);
 +}
 +
-+/**
-+ * params_channels - Get the sample rate from the hw params
-+ * @p: hw params
-+ */
-+static inline unsigned int params_rate(const struct snd_pcm_hw_params *p)
+ /**
+  * snd_pcm_lib_alloc_vmalloc_32_buffer - allocate 32-bit-addressable buffer
+  * @substream: the substream to allocate the buffer to
+@@ -968,15 +972,12 @@ static int snd_pcm_lib_alloc_vmalloc_buffer
+  * Return: 1 if the buffer was changed, 0 if not changed, or a negative error
+  * code.
+  */
+-static int snd_pcm_lib_alloc_vmalloc_32_buffer
+-			(struct snd_pcm_substream *substream, size_t size);
+-#endif
+-#define snd_pcm_lib_alloc_vmalloc_buffer(subs, size) \
+-	_snd_pcm_lib_alloc_vmalloc_buffer \
+-			(subs, size, GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO)
+-#define snd_pcm_lib_alloc_vmalloc_32_buffer(subs, size) \
+-	_snd_pcm_lib_alloc_vmalloc_buffer \
+-			(subs, size, GFP_KERNEL | GFP_DMA32 | __GFP_ZERO)
++static inline int snd_pcm_lib_alloc_vmalloc_32_buffer
++			(struct snd_pcm_substream *substream, size_t size)
 +{
-+	return hw_param_interval_c(p, SNDRV_PCM_HW_PARAM_RATE)->min;
-+}
-+
-+/**
-+ * params_channels - Get the period size (in frames) from the hw params
-+ * @p: hw params
-+ */
-+static inline unsigned int params_period_size(const struct snd_pcm_hw_params *p)
-+{
-+	return hw_param_interval_c(p, SNDRV_PCM_HW_PARAM_PERIOD_SIZE)->min;
-+}
-+
-+/**
-+ * params_channels - Get the number of periods from the hw params
-+ * @p: hw params
-+ */
-+static inline unsigned int params_periods(const struct snd_pcm_hw_params *p)
-+{
-+	return hw_param_interval_c(p, SNDRV_PCM_HW_PARAM_PERIODS)->min;
-+}
-+
-+/**
-+ * params_channels - Get the buffer size (in frames) from the hw params
-+ * @p: hw params
-+ */
-+static inline unsigned int params_buffer_size(const struct snd_pcm_hw_params *p)
-+{
-+	return hw_param_interval_c(p, SNDRV_PCM_HW_PARAM_BUFFER_SIZE)->min;
-+}
-+
-+/**
-+ * params_channels - Get the buffer size (in bytes) from the hw params
-+ * @p: hw params
-+ */
-+static inline unsigned int params_buffer_bytes(const struct snd_pcm_hw_params *p)
-+{
-+	return hw_param_interval_c(p, SNDRV_PCM_HW_PARAM_BUFFER_BYTES)->min;
++	return _snd_pcm_lib_alloc_vmalloc_buffer(substream, size,
++						 GFP_KERNEL | GFP_DMA32 | __GFP_ZERO);
 +}
  
- int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v);
- void snd_interval_mul(const struct snd_interval *a, const struct snd_interval *b, struct snd_interval *c);
+ #define snd_pcm_get_dma_buf(substream) ((substream)->runtime->dma_buffer_p)
+ 
 -- 
 2.1.2
