@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 01/14] ASoC: ad1980: Remove unused header
-Date: Thu, 30 Oct 2014 21:00:58 +0100
-Message-ID: <1414699271-22797-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 06/14] ASoC: wm9705: Cleanup printk usage
+Date: Thu, 30 Oct 2014 21:01:03 +0100
+Message-ID: <1414699271-22797-7-git-send-email-lars@metafoo.de>
 References: <1414699271-22797-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-209.synserver.de (smtp-out-209.synserver.de
  [212.40.185.209])
- by alsa0.perex.cz (Postfix) with ESMTP id A1470260701
- for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 21:01:15 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 98BA5261481
+ for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 21:01:18 +0100 (CET)
 In-Reply-To: <1414699271-22797-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,73 +25,48 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-The constants defined in the ad1980 header are not used. So remove the file.
+Use dev_err() instead of printk(KERN_ERR. This is common practice and makes
+it easy to find out which device generated the message. While we are at it
+also align the error messages with the other AC'97 drivers.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/blackfin/bf5xx-ad1980.c |  2 --
- sound/soc/codecs/ad1980.c         |  2 --
- sound/soc/codecs/ad1980.h         | 26 --------------------------
- 3 files changed, 30 deletions(-)
- delete mode 100644 sound/soc/codecs/ad1980.h
+ sound/soc/codecs/wm9705.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-ad1980.c b/sound/soc/blackfin/bf5xx-ad1980.c
-index 3450e8f..0fa81a5 100644
---- a/sound/soc/blackfin/bf5xx-ad1980.c
-+++ b/sound/soc/blackfin/bf5xx-ad1980.c
-@@ -46,8 +46,6 @@
- #include <linux/gpio.h>
- #include <asm/portmux.h>
+diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
+index c0b7f45..355b28d 100644
+--- a/sound/soc/codecs/wm9705.c
++++ b/sound/soc/codecs/wm9705.c
+@@ -300,6 +300,8 @@ static int wm9705_reset(struct snd_soc_codec *codec)
+ 			return 0; /* Success */
+ 	}
  
--#include "../codecs/ad1980.h"
--
- #include "bf5xx-ac97.h"
++	dev_err(codec->dev, "Failed to reset: AC97 link error\n");
++
+ 	return -EIO;
+ }
  
- static struct snd_soc_card bf5xx_board;
-diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
-index 304d300..cc28dba 100644
---- a/sound/soc/codecs/ad1980.c
-+++ b/sound/soc/codecs/ad1980.c
-@@ -30,8 +30,6 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
+@@ -317,10 +319,8 @@ static int wm9705_soc_resume(struct snd_soc_codec *codec)
+ 	u16 *cache = codec->reg_cache;
  
--#include "ad1980.h"
--
- /*
-  * AD1980 register cache
-  */
-diff --git a/sound/soc/codecs/ad1980.h b/sound/soc/codecs/ad1980.h
-deleted file mode 100644
-index eb0af44..0000000
---- a/sound/soc/codecs/ad1980.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/*
-- * ad1980.h  --  ad1980 Soc Audio driver
-- *
-- * WARNING:
-- *
-- * Because Analog Devices Inc. discontinued the ad1980 sound chip since
-- * Sep. 2009, this ad1980 driver is not maintained, tested and supported
-- * by ADI now.
-- */
--
--#ifndef _AD1980_H
--#define _AD1980_H
--/* Bit definition of Power-Down Control/Status Register */
--#define ADC		0x0001
--#define DAC		0x0002
--#define ANL		0x0004
--#define REF		0x0008
--#define PR0		0x0100
--#define PR1		0x0200
--#define PR2		0x0400
--#define PR3		0x0800
--#define PR4		0x1000
--#define PR5		0x2000
--#define PR6		0x4000
--
--#endif
+ 	ret = wm9705_reset(codec);
+-	if (ret < 0) {
+-		printk(KERN_ERR "could not reset AC97 codec\n");
++	if (ret < 0)
+ 		return ret;
+-	}
+ 
+ 	for (i = 2; i < ARRAY_SIZE(wm9705_reg) << 1; i += 2) {
+ 		soc_ac97_ops->write(codec->ac97, i, cache[i>>1]);
+@@ -339,7 +339,7 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
+ 
+ 	ret = snd_soc_new_ac97_codec(codec, soc_ac97_ops, 0);
+ 	if (ret < 0) {
+-		printk(KERN_ERR "wm9705: failed to register AC97 codec\n");
++		dev_err(codec->dev, "Failed to register AC97 codec\n");
+ 		return ret;
+ 	}
+ 
 -- 
 1.8.0
