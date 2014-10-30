@@ -1,32 +1,40 @@
 From: Huan Wang <alison.wang@freescale.com>
 Subject: Re: [PATCH] audio: sai: Add Power Management support
-Date: Thu, 30 Oct 2014 14:55:47 +0000
-Message-ID: <1414680936299.29360@freescale.com>
-References: <1414552896-20797-1-git-send-email-b18965@freescale.com>,<20141029113634.GF18557@sirena.org.uk>
+Date: Thu, 30 Oct 2014 14:56:42 +0000
+Message-ID: <1414680990680.12980@freescale.com>
+References: <1414552896-20797-1-git-send-email-b18965@freescale.com>,<CAOMZO5Ah4H1WDvFOBMhw7RS7XwSNSEet3u_emELFZTGD7rUzyw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="gb2312"
 Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20141029113634.GF18557@sirena.org.uk>
+In-Reply-To: <CAOMZO5Ah4H1WDvFOBMhw7RS7XwSNSEet3u_emELFZTGD7rUzyw@mail.gmail.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "perex@perex.cz" <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBXZWQsIE9jdCAyOSwgMjAxNCBhdCAxMToyMTozNkFNICswODAwLCBBbGlzb24gV2Fu
-ZyB3cm90ZToKPiBUaGlzIHBhdGNoIGFkZHMgUG93ZXIgTWFuYWdlbWVudCBzdXBwb3J0IGZvciBT
-QUkuCj4gQWN0aXZhdGUgcmVnbWFwIGNhY2hlIHdpdGggUkVHQ0FDSEVfUkJUUkVFLCBhbmQgdXNl
-CgpBcmUgeW91IHN1cmUgdGhhdCBSRUdDQUNIRV9SQlRSRUUgaXMgdGhlIGJlc3Qgb3B0aW9uIGhl
-cmU/ICBGb3IgTU1JTwpkZXZpY2VzIHRoZSBjb3N0IHRyYWRlb2ZmIGZvciB0aGUgcmJ0cmVlIGlz
-IHVzdWFsbHkgaGlnaGVyIHRoYW4gcGVvcGxlCmxpa2Ugc28gZmxhdCBjYWNoZXMgYXJlIHByZWZl
-cnJlZC4gIEJ1dCBpZiBpdCB3b3JrcyBmb3IgeW91IHRoYXQncyBmaW5lLAp0aGlzIHNob3VsZG4n
-dCBiZSAqdGhhdCogcGVyZm9ybWFuY2UgY3JpdGljYWwuCgpJJ20gYWxzbyBhIGJpdCBzdXJwcmlz
-ZWQgdGhhdCB0aGlzIHdvcmtzIHdpdGhvdXQgcmVnaXN0ZXIgZGVmYXVsdHMgYmVpbmcKcHJvdmlk
-ZWQgc2luY2Ugd2UgbmVlZCB0byBtYWtlIHN1cmUgd2UgYWxsb2NhdGUgdGhlIHJidHJlZSBub2Rl
-cyBvdXRzaWRlCm9mIHRoZSBzcGlubG9jayB3ZSB1c2UgdG8gbG9jayBNTUlPIGFjY2VzcyAtIHdh
-cyB0aGlzIHRlc3RlZCB3aXRoCm1haW5saW5lPwoKW0FsaXNvbiBXYW5nXSBJIHRlc3RlZCByYnRy
-ZWUgYW5kIGZsYXQgY2FjaGVzLCB0aGV5IGJvdGggd29yay4gQnV0IEkgZGlkbid0IHBheSBhdHRl
-bnRpb24gdG8gdGhlIGNvc3QgdHJhZGVvZmYgYW5kIHJlZ2lzdGVyIGRlZmF1bHRzIGJlZm9yZSwg
-c28gSSB0aGluayBmbGF0IGNhY2hlcyBhcmUgcHJlZmVycmVkIG5vdy4gCgpUaGFua3MuCgpCZXN0
-IFJlZ2FyZHMsCkFsaXNvbiBXYW5nCg==
+SGksIEZhYmlvLAoKUGxlYXNlIGFsd2F5cyBhZGQgdGhlIGRyaXZlciBtYWludGFpbmVycyAoWGl1
+Ym8gTGkgYW5kIE5pY29saW4gQ2hlbikuCltBbGlzb24gV2FuZ10gb2ssIHRoYW5rcyBmb3IgeW91
+ciByZW1pbmRlci4KCk9uIFdlZCwgT2N0IDI5LCAyMDE0IGF0IDE6MjEgQU0sIEFsaXNvbiBXYW5n
+IDxiMTg5NjVAZnJlZXNjYWxlLmNvbT4gd3JvdGU6Cgo+ICsjaWZkZWYgQ09ORklHX1BNX1NMRUVQ
+Cj4gK3N0YXRpYyBpbnQgZnNsX3NhaV9zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKPiArewo+
+ICsgICAgICAgc3RydWN0IGZzbF9zYWkgKnNhaSA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOwo+ICsK
+PiArICAgICAgIHJlZ2NhY2hlX2NhY2hlX29ubHkoc2FpLT5yZWdtYXAsIHRydWUpOwo+ICsgICAg
+ICAgcmVnY2FjaGVfbWFya19kaXJ0eShzYWktPnJlZ21hcCk7Cj4gKwo+ICsgICAgICAgcmV0dXJu
+IDA7Cj4gK30KPiArCj4gK3N0YXRpYyBpbnQgZnNsX3NhaV9yZXN1bWUoc3RydWN0IGRldmljZSAq
+ZGV2KQo+ICt7Cj4gKyAgICAgICBzdHJ1Y3QgZnNsX3NhaSAqc2FpID0gZGV2X2dldF9kcnZkYXRh
+KGRldik7Cj4gKwo+ICsgICAgICAgLyogUmVzdG9yZSBhbGwgcmVnaXN0ZXJzICovCj4gKyAgICAg
+ICByZWdjYWNoZV9jYWNoZV9vbmx5KHNhaS0+cmVnbWFwLCBmYWxzZSk7Cj4gKyAgICAgICByZWdj
+YWNoZV9zeW5jKHNhaS0+cmVnbWFwKTsKPiArCj4gKyAgICAgICByZXR1cm4gMDsKPiArfTsKPiAr
+I2VuZGlmIC8qIENPTkZJR19QTV9TTEVFUCAqLwo+ICsKPiArc3RhdGljIGNvbnN0IHN0cnVjdCBk
+ZXZfcG1fb3BzIGZzbF9zYWlfcG0gPSB7Cj4gKyAgICAgICBTRVRfU1lTVEVNX1NMRUVQX1BNX09Q
+Uyhmc2xfc2FpX3N1c3BlbmQsIGZzbF9zYWlfcmVzdW1lKQoKVGhpcyBjb3VsZCBiZSBzaW1wbGlm
+aWVkIHRvOgpzdGF0aWMgU0lNUExFX0RFVl9QTV9PUFMoZnNsX3NhaV9wbSwgZnNsX3NhaV9zdXNw
+ZW5kLCBmc2xfc2FpX3Jlc3VtZSk7CltBbGlzb24gV2FuZ10gb2suCgpJIGFtIGFsc28gY3VyaW91
+cyBhcyB0byBob3cgeW91IHRlc3RlZCBpdCwgYXMgSSBub3RpY2VkIHRoYXQKc3VzcGVuZC9yZXN1
+bWUgaXMgYnJva2VuIG9uIDMuMTgtcmMgZm9yIG14NnN4LgoKQXJlIHlvdSBhYmxlIHRvIGRvIHN1
+c3BlbmQvcmVzdW1lIG9uIDMuMTgtcmMgb24gYSBteDZzeCBzZGIgYm9hcmQ/CltBbGlzb24gV2Fu
+Z10gTm8sIEkgZG9uJ3QgaGF2ZSB0aGF0IGJvYXJkLiBJIHRlc3RlZCBvbiBMUzEwMjFBIFFEUyBi
+b2FyZCB3aGljaCBzdXBwb3J0cyBkZWVwIHNsZWVwLgoKQmVzdCBSZWdhcmRzLApBbGlzb24gV2Fu
+Zw==
