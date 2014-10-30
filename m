@@ -1,8 +1,8 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 05/14] ASoC: stac9766: Use table based control
+Subject: [PATCH 07/14] ASoC: wm9705: Use table based control
 	setup
-Date: Thu, 30 Oct 2014 21:01:02 +0100
-Message-ID: <1414699271-22797-6-git-send-email-lars@metafoo.de>
+Date: Thu, 30 Oct 2014 21:01:04 +0100
+Message-ID: <1414699271-22797-8-git-send-email-lars@metafoo.de>
 References: <1414699271-22797-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-209.synserver.de (smtp-out-209.synserver.de
  [212.40.185.209])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A1F5260824
- for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 21:01:18 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E03F261518
+ for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 21:01:19 +0100 (CET)
 In-Reply-To: <1414699271-22797-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,31 +30,32 @@ Makes the code a bit cleaner.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/codecs/stac9766.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm9705.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
-index e88d9ac..6c62d29 100644
---- a/sound/soc/codecs/stac9766.c
-+++ b/sound/soc/codecs/stac9766.c
-@@ -342,9 +342,6 @@ static int stac9766_codec_probe(struct snd_soc_codec *codec)
- 		goto codec_err;
- 	}
+diff --git a/sound/soc/codecs/wm9705.c b/sound/soc/codecs/wm9705.c
+index 355b28d..1650195 100644
+--- a/sound/soc/codecs/wm9705.c
++++ b/sound/soc/codecs/wm9705.c
+@@ -347,9 +347,6 @@ static int wm9705_soc_probe(struct snd_soc_codec *codec)
+ 	if (ret)
+ 		goto reset_err;
  
--	snd_soc_add_codec_controls(codec, stac9766_snd_ac97_controls,
--			     ARRAY_SIZE(stac9766_snd_ac97_controls));
+-	snd_soc_add_codec_controls(codec, wm9705_snd_ac97_controls,
+-				ARRAY_SIZE(wm9705_snd_ac97_controls));
 -
  	return 0;
  
- codec_err:
-@@ -359,6 +356,8 @@ static int stac9766_codec_remove(struct snd_soc_codec *codec)
- }
- 
- static struct snd_soc_codec_driver soc_codec_dev_stac9766 = {
-+	.controls = stac9766_snd_ac97_controls,
-+	.num_controls = ARRAY_SIZE(stac9766_snd_ac97_controls),
- 	.write = stac9766_ac97_write,
- 	.read = stac9766_ac97_read,
- 	.set_bias_level = stac9766_set_bias_level,
+ reset_err:
+@@ -374,6 +371,9 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9705 = {
+ 	.reg_word_size = sizeof(u16),
+ 	.reg_cache_step = 2,
+ 	.reg_cache_default = wm9705_reg,
++
++	.controls = wm9705_snd_ac97_controls,
++	.num_controls = ARRAY_SIZE(wm9705_snd_ac97_controls),
+ 	.dapm_widgets = wm9705_dapm_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(wm9705_dapm_widgets),
+ 	.dapm_routes = wm9705_audio_map,
 -- 
 1.8.0
