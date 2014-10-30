@@ -1,87 +1,73 @@
-From: Michael Ira Krufky <mkrufky@linuxtv.org>
-Subject: Re: [PATCH v2 2/2] [media] sound: Update au0828 quirks table
-Date: Thu, 30 Oct 2014 15:55:24 -0400
-Message-ID: <CAOcJUbwaysG4TfR-nesPskYhSaLnrd6nHAsV_s=5SEsq+4iY7A@mail.gmail.com>
-References: <cover.1414668341.git.mchehab@osg.samsung.com>
-	<678fa12fb8e75c6dc1e781a02e3ddbbba7e1a904.1414668341.git.mchehab@osg.samsung.com>
-	<CAGoCfizkcdU1fgfLjFHwnH34HgpJBcznO+3RrqOMHpLUYKCNPg@mail.gmail.com>
-	<20141030113725.08b3aa40@recife.lan>
-	<CAOcJUbyy59feGH4ME0O02QamYnn+1HPUvOc41tZ7+3p4e_GxGg@mail.gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH 00/14] ASoC: AC'97 driver cleanups
+Date: Thu, 30 Oct 2014 21:00:57 +0100
+Message-ID: <1414699271-22797-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <CAOcJUbyy59feGH4ME0O02QamYnn+1HPUvOc41tZ7+3p4e_GxGg@mail.gmail.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
-Cc: Devin Heitmueller <dheitmueller@kernellabs.com>, Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>, Eduard Gilmutdinov <edgilmutdinov@gmail.com>, Vlad Catoi <vladcatoi@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-209.synserver.de (smtp-out-209.synserver.de
+ [212.40.185.209])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C24B2606F4
+ for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 21:01:15 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 30, 2014 at 3:52 PM, Michael Ira Krufky <mkrufky@linuxtv.org> wrote:
-> On Thu, Oct 30, 2014 at 9:37 AM, Mauro Carvalho Chehab
-> <mchehab@osg.samsung.com> wrote:
->> Hi Devin,
->>
->> Em Thu, 30 Oct 2014 09:15:31 -0400
->> Devin Heitmueller <dheitmueller@kernellabs.com> escreveu:
->>
->>> Hi Mauro,
->>>
->>> > Syncronize it and put them on the same order as found at au0828
->>> > driver, as all the au0828 devices with analog TV need the
->>> > same quirks.
->>>
->>> The MXL and Woodbury boards don't support analog under Linux, so
->>> probably shouldn't be included in the list of quirks.
->>
->> True.
->>>
->>> That said, the MXL and Woodbury versions of the PCBs were prototypes
->>> that never made it into production (and since the Auvitek chips are
->>> EOL, they never will).  I wouldn't object to a patch which removed the
->>> board profiles entirely in the interest of removing dead code.
->>>
->>> It was certainly nice of Mike Krufky to work to get support into the
->>> open source driver before the product was released, but after four
->>> years it probably makes sense to remove the entries for products that
->>> never actually shipped.
->>
->> Yeah, if nobody is using such devices, then we should get rid of them,
->> but I prefer to have this on a separate patch, in order to give
->> people the opportunity to complain.
->>
->> So, if I'm understanding well, you're suggesting to add a patch
->> removing those 5 entries (and the corresponding quirks on alsa),
->> right?
->>
->>         { USB_DEVICE(0x2040, 0x7201),
->>                 .driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
->>         { USB_DEVICE(0x2040, 0x7211),
->>                 .driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
->>         { USB_DEVICE(0x2040, 0x7281),
->>                 .driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
->>         { USB_DEVICE(0x05e1, 0x0480),
->>                 .driver_info = AU0828_BOARD_HAUPPAUGE_WOODBURY },
->>         { USB_DEVICE(0x2040, 0x8200),
->>                 .driver_info = AU0828_BOARD_HAUPPAUGE_WOODBURY },
->>         { USB_DEVICE(0x2040, 0x7260),
->>
->> Regards,
->> Mauro
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-media" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
-> Let's *not* remove DTV support for WOODBURY board -- it is not the
-> business of the public whether or not the board shipped in
-> mass-production.  The board profile is in fact being used for some
-> reference designs, and I still use my woodbury prototype to test the
-> MXL tuner.
->
-> I am not the only person using this profile -- no not remove it, please.
+Hi,
 
-correction:  I still use both the woodbury prototype (to test the
-reference design) *and* the MXL version for testing the mxl tuner.
+This series does a few AC'97 driver cleanups in preparation of the
+conversion of the drivers to regmap. Most of the patches are quite trivial.
 
-There is no reason to remove these profiles, the USB IDs will not be recycled
+The last two patches remove the virtual registers from the wm9712 and wm9713
+drivers, which is a requirement for regmap conversion.
+
+The last patch is the only one in this series that is a bit more complex.
+Currently the drivers have a open-coded implementation of shared controls
+which is replaced by the patch with the generic one from the ASoC core.
+Unfortunately this changes the controls that are exposed by the driver,
+instead of having a "Left HP Mixer ..." and a "Right HP Mixer ..." control
+for each mixer input there will only be a single "HP Mixer" control. This
+may or may not be considered breaking the userspace interface. If it is we
+need to take a different approach at removing the virtual register form the
+driver.
+
+- Lars
+
+Lars-Peter Clausen (14):
+  ASoC: ad1980: Remove unused header
+  ASoC: ad1980: Cleanup printk usage
+  ASoC: ad1980: Use table based control setup
+  ASoC: stac9766: Cleanup printk usage
+  ASoC: stac9766: Use table based control setup
+  ASoC: wm9705: Cleanup printk usage
+  ASoC: wm9705: Use table based control setup
+  ASoC: wm9712: Cleanup printk usage
+  ASoC: wm9712: Use table based control setup
+  ASoC: wm9713: Cleanup printk usage
+  ASoC: wm9713: Use table based control setup
+  ASoC: wm9713: Move driver state struct allocation to driver probe
+  ASoC: wm9713: Use virtual control instead of virtual register
+  ASoC: wm9712/wm9713: Use shared controls
+
+ sound/soc/blackfin/bf5xx-ad1980.c |   2 -
+ sound/soc/codecs/ad1980.c         |  23 ++----
+ sound/soc/codecs/ad1980.h         |  26 ------
+ sound/soc/codecs/stac9766.c       |   9 +-
+ sound/soc/codecs/wm9705.c         |  14 ++--
+ sound/soc/codecs/wm9712.c         | 136 +++++++-----------------------
+ sound/soc/codecs/wm9713.c         | 170 +++++++++++---------------------------
+ 7 files changed, 98 insertions(+), 282 deletions(-)
+ delete mode 100644 sound/soc/codecs/ad1980.h
+
+-- 
+1.8.0
