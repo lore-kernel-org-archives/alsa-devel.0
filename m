@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] audio: sai: Add Power Management support
-Date: Thu, 30 Oct 2014 11:22:43 +0000
-Message-ID: <20141030112243.GV18557@sirena.org.uk>
-References: <1414552896-20797-1-git-send-email-b18965@freescale.com>
- <20141029113634.GF18557@sirena.org.uk>
- <718ee124537a4f4091bdf5242d256705@BY2PR0301MB0613.namprd03.prod.outlook.com>
+From: Mark van Rossum <mvanross@inf.ed.ac.uk>
+Subject: Build error on Fedora 21
+Date: Thu, 30 Oct 2014 11:10:48 +0000
+Message-ID: <54521CB8.7010201@inf.ed.ac.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6656645474849296566=="
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B68E26060B
- for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 12:23:16 +0100 (CET)
-In-Reply-To: <718ee124537a4f4091bdf5242d256705@BY2PR0301MB0613.namprd03.prod.outlook.com>
+Received: from nougat.ucs.ed.ac.uk (nougat.ucs.ed.ac.uk [129.215.13.205])
+ by alsa0.perex.cz (Postfix) with ESMTP id D0D17260629
+ for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 12:11:04 +0100 (CET)
+Received: from beeknow.inf.ed.ac.uk (beeknow.inf.ed.ac.uk [129.215.33.12])
+ by nougat.ucs.ed.ac.uk (8.13.8/8.13.4) with ESMTP id s9UBAmHO005048
+ for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 11:10:54 GMT
+Received: from [129.215.90.214] (dhcp-90-214.inf.ed.ac.uk [129.215.90.214])
+ (authenticated bits=0)
+ by beeknow.inf.ed.ac.uk (8.14.4/8.14.4) with ESMTP id s9UBAmKq013235
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NO)
+ for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 11:10:48 GMT
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +27,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Li.Xiubo@freescale.com" <Li.Xiubo@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Huan Wang <alison.wang@freescale.com>, "tiwai@suse.de" <tiwai@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============6656645474849296566==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qVfNuiS7HlVt3T7n"
-Content-Disposition: inline
-
-
---qVfNuiS7HlVt3T7n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Oct 30, 2014 at 03:30:40AM +0000, Li.Xiubo@freescale.com wrote:
-
-> One more thing, if the device is not performance critical, then shouldn't we
-> Take care of the cache memory consumption to determine using flat or rbtree
-> Type ?
-
-Yes, it's always fine to use a rbtree if it makes sense - it was just an
-unusual choice for a device like this that didn't seem to be discussed.
-
-Depending on the register map a flat cache can actually be more memory
-efficient sometimes since there's some overhead for the rbtree data
-structures, if you've just got one block of registers with no gaps a
-flat cache is going to be a win there.
-
---qVfNuiS7HlVt3T7n
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUUh+DAAoJECTWi3JdVIfQh2MH/jdbvpitCAym6GZEz+uOSx2C
-GT2ucOcRELRheT5iNiUhxMz5Q8pkjn81JU44gUsWr3bbtSeaiFLiA5T5If/WASWo
-1Qd0HnLjZyFQUJwx0b4nFiH+d3+Y7WPSD/ADplGTEVDedUkXcuU8iKWXpXfRigKv
-AGwHvADzJOAkyxmI4DqCo9wALrgpBv3qzxTG7BHNi5fbI/1VHAceNnc/DYN9S+Ev
-22rv4/nnOZ+fZwRihP8+W3YZFU1cMp27W3S8wUDSLumGH/MXuZV7CeTB8lJM2jTF
-1OSuL15SDBqDHqxqOaC1moYaWmgK//1St938tiohHXCTwQeFsM4c9LSCNX7Zrg4=
-=NKTJ
------END PGP SIGNATURE-----
-
---qVfNuiS7HlVt3T7n--
-
---===============6656645474849296566==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6656645474849296566==--
+SGkKCmFsc2FfdXRpbHNfYWxzYS1jb21waWxlLnNoCgpmYWlscyB3aXRoOgoKbWFrZVsxXTogRW50
+ZXJpbmcgZGlyZWN0b3J5ICcvdXNyL3NyYy9rZXJuZWxzLzMuMTcuMC0zMDEuZmMyMS54ODZfNjQn
+CiAgIENDIFtNXSAKL3RtcC9hbHNhLWNvbXBpbGUtc2NyaXB0L2Fsc2EtZHJpdmVyLTEuMC4yNS4z
+NTg0LmdiMDQ0ZC9hY29yZS9pbmZvLm8KL3RtcC9hbHNhLWNvbXBpbGUtc2NyaXB0L2Fsc2EtZHJp
+dmVyLTEuMC4yNS4zNTg0LmdiMDQ0ZC9hY29yZS9pbmZvLmM6IEluIApmdW5jdGlvbiDigJhzbmRf
+aW5mb192ZXJzaW9uX3JlYWTigJk6Ci90bXAvYWxzYS1jb21waWxlLXNjcmlwdC9hbHNhLWRyaXZl
+ci0xLjAuMjUuMzU4NC5nYjA0NGQvYWNvcmUvaW5mby5jOjEwNjU6MjI6IAplcnJvcjogbWFjcm8g
+Il9fREFURV9fIiBtaWdodCBwcmV2ZW50IHJlcHJvZHVjaWJsZSBidWlsZHMgClstV2Vycm9yPWRh
+dGUtdGltZV0KICAgICAgICAiQ29tcGlsZWQgb24gIiBfX0RBVEVfXyAiIGZvciBrZXJuZWwgJXMi
+CiAgICAgICAgICAgICAgICAgICAgICAgXgpjYzE6IHNvbWUgd2FybmluZ3MgYmVpbmcgdHJlYXRl
+ZCBhcyBlcnJvcnMKc2NyaXB0cy9NYWtlZmlsZS5idWlsZDoyNTc6IHJlY2lwZSBmb3IgdGFyZ2V0
+IAonL3RtcC9hbHNhLWNvbXBpbGUtc2NyaXB0L2Fsc2EtZHJpdmVyLTEuMC4yNS4zNTg0LmdiMDQ0
+ZC9hY29yZS9pbmZvLm8nIApmYWlsZWQKbWFrZVszXTogKioqIApbL3RtcC9hbHNhLWNvbXBpbGUt
+c2NyaXB0L2Fsc2EtZHJpdmVyLTEuMC4yNS4zNTg0LmdiMDQ0ZC9hY29yZS9pbmZvLm9dIApFcnJv
+ciAxCnNjcmlwdHMvTWFrZWZpbGUuYnVpbGQ6NDA0OiByZWNpcGUgZm9yIHRhcmdldCAKJy90bXAv
+YWxzYS1jb21waWxlLXNjcmlwdC9hbHNhLWRyaXZlci0xLjAuMjUuMzU4NC5nYjA0NGQvYWNvcmUn
+IGZhaWxlZAptYWtlWzJdOiAqKiogClsvdG1wL2Fsc2EtY29tcGlsZS1zY3JpcHQvYWxzYS1kcml2
+ZXItMS4wLjI1LjM1ODQuZ2IwNDRkL2Fjb3JlXSBFcnJvciAyCk1ha2VmaWxlOjEzNzM6IHJlY2lw
+ZSBmb3IgdGFyZ2V0IAonX21vZHVsZV8vdG1wL2Fsc2EtY29tcGlsZS1zY3JpcHQvYWxzYS1kcml2
+ZXItMS4wLjI1LjM1ODQuZ2IwNDRkJyBmYWlsZWQKbWFrZVsxXTogKioqIApbX21vZHVsZV8vdG1w
+L2Fsc2EtY29tcGlsZS1zY3JpcHQvYWxzYS1kcml2ZXItMS4wLjI1LjM1ODQuZ2IwNDRkXSBFcnJv
+ciAyCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5ICcvdXNyL3NyYy9rZXJuZWxzLzMuMTcuMC0z
+MDEuZmMyMS54ODZfNjQnCk1ha2VmaWxlOjE2NzogcmVjaXBlIGZvciB0YXJnZXQgJ2NvbXBpbGUn
+IGZhaWxlZAptYWtlOiAqKiogW2NvbXBpbGVdIEVycm9yIDIKV29ya2luZyBkaXJlY3RvcnkgL3Rt
+cC9hbHNhLWNvbXBpbGUtc2NyaXB0L2Fsc2EtZHJpdmVyLTEuMC4yNS4zNTg0LmdiMDQ0ZC4KQ29t
+cGlsYXRpb24gb2YgYWxzYS1kcml2ZXIgZmFpbGVkLgpSZXBvcnQgdGhpcyBwcm9ibGVtIHRvIHRo
+ZSA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPiBtYWlsaW5nIGxpc3QuCgotLSAKVGhlIFVu
+aXZlcnNpdHkgb2YgRWRpbmJ1cmdoIGlzIGEgY2hhcml0YWJsZSBib2R5LCByZWdpc3RlcmVkIGlu
+ClNjb3RsYW5kLCB3aXRoIHJlZ2lzdHJhdGlvbiBudW1iZXIgU0MwMDUzMzYuCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
