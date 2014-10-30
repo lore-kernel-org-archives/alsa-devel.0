@@ -1,93 +1,80 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: Intel: sst: add runtime power
- management handling
-Date: Thu, 30 Oct 2014 18:06:09 +0000
-Message-ID: <20141030180609.GG18557@sirena.org.uk>
-References: <1414645736-24426-1-git-send-email-vinod.koul@intel.com>
- <1414645736-24426-3-git-send-email-vinod.koul@intel.com>
+From: Michael Ira Krufky <mkrufky@linuxtv.org>
+Subject: Re: [PATCH v2 2/2] [media] sound: Update au0828 quirks table
+Date: Thu, 30 Oct 2014 15:52:47 -0400
+Message-ID: <CAOcJUbyy59feGH4ME0O02QamYnn+1HPUvOc41tZ7+3p4e_GxGg@mail.gmail.com>
+References: <cover.1414668341.git.mchehab@osg.samsung.com>
+	<678fa12fb8e75c6dc1e781a02e3ddbbba7e1a904.1414668341.git.mchehab@osg.samsung.com>
+	<CAGoCfizkcdU1fgfLjFHwnH34HgpJBcznO+3RrqOMHpLUYKCNPg@mail.gmail.com>
+	<20141030113725.08b3aa40@recife.lan>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5413353442356637636=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DCBD726069A
- for <alsa-devel@alsa-project.org>; Thu, 30 Oct 2014 19:06:44 +0100 (CET)
-In-Reply-To: <1414645736-24426-3-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20141030113725.08b3aa40@recife.lan>
+Sender: linux-media-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+Cc: Devin Heitmueller <dheitmueller@kernellabs.com>, Linux Media Mailing List <linux-media@vger.kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Daniel Mack <zonque@gmail.com>, Eduard Gilmutdinov <edgilmutdinov@gmail.com>, Vlad Catoi <vladcatoi@gmail.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5413353442356637636==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ImbhesNbK26zUpL9"
-Content-Disposition: inline
-
-
---ImbhesNbK26zUpL9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Oct 30, 2014 at 10:38:55AM +0530, Vinod Koul wrote:
-
-> +	ret = sst_prepare_and_post_msg(sst, SST_TASK_ID_MEDIA, IPC_CMD,
-> +			IPC_PREP_D3, PIPE_RSVD, 0, NULL, NULL,
-> +			true, true, false, true);
-> +
-> +	if (ret < 0) {
-> +		dev_err(sst->dev, "not suspending FW!!!");
-> +		return -EIO;
-
-Better to print and pass back the actual error code we got.
-
-> +	dev_info(dev, "runtime_suspend called\n");
-> +	if (ctx->sst_state == SST_RESET) {
-
-Drop this down to a dev_dbg() or remove it please (and some others later
-on).
-
-> +		dev_dbg(dev, "LPE is already in RESET state, No action");
-
-Missing \n.
-
-> +		return 0;
-> +	}
-> +	/*save fw context*/
-
-/* Upstream comment style please */
-
---ImbhesNbK26zUpL9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUUn4QAAoJECTWi3JdVIfQbZQH/0sAlaGgdlNzld75LdGk8kQa
-kxJemXwi42zOLhGnOErNzaH/YqS/1BVlzhOoEy9ItYV5rJvFdwK08XkJuM7qD4Tg
-yuwpZGcbcKcqF4iwFswn5+7TJFpjlvSA+To5Z9+YfKW2F+tw58oVyz6q4/mp3imX
-iTT5Tnh6RabK63HIv1RabS0RMtZPrLkXhsFUT2MSP5EK4lSrqFwSA+KBlIqZ8d77
-7VGg9jP5e+pRWYAdK2HYJKBJIGm6IXX6359ag0yeutc46ThVqDfIv+V+SKC7tebv
-pHJfbLmuHOTaXaLGo6d0Y87UkyQ9d3He5zPg8aHGfAui4YjHxZIKgpdcj94wtqk=
-=OnuE
------END PGP SIGNATURE-----
-
---ImbhesNbK26zUpL9--
-
---===============5413353442356637636==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Thu, Oct 30, 2014 at 9:37 AM, Mauro Carvalho Chehab
+<mchehab@osg.samsung.com> wrote:
+> Hi Devin,
+>
+> Em Thu, 30 Oct 2014 09:15:31 -0400
+> Devin Heitmueller <dheitmueller@kernellabs.com> escreveu:
+>
+>> Hi Mauro,
+>>
+>> > Syncronize it and put them on the same order as found at au0828
+>> > driver, as all the au0828 devices with analog TV need the
+>> > same quirks.
+>>
+>> The MXL and Woodbury boards don't support analog under Linux, so
+>> probably shouldn't be included in the list of quirks.
+>
+> True.
+>>
+>> That said, the MXL and Woodbury versions of the PCBs were prototypes
+>> that never made it into production (and since the Auvitek chips are
+>> EOL, they never will).  I wouldn't object to a patch which removed the
+>> board profiles entirely in the interest of removing dead code.
+>>
+>> It was certainly nice of Mike Krufky to work to get support into the
+>> open source driver before the product was released, but after four
+>> years it probably makes sense to remove the entries for products that
+>> never actually shipped.
+>
+> Yeah, if nobody is using such devices, then we should get rid of them,
+> but I prefer to have this on a separate patch, in order to give
+> people the opportunity to complain.
+>
+> So, if I'm understanding well, you're suggesting to add a patch
+> removing those 5 entries (and the corresponding quirks on alsa),
+> right?
+>
+>         { USB_DEVICE(0x2040, 0x7201),
+>                 .driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
+>         { USB_DEVICE(0x2040, 0x7211),
+>                 .driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
+>         { USB_DEVICE(0x2040, 0x7281),
+>                 .driver_info = AU0828_BOARD_HAUPPAUGE_HVR950Q_MXL },
+>         { USB_DEVICE(0x05e1, 0x0480),
+>                 .driver_info = AU0828_BOARD_HAUPPAUGE_WOODBURY },
+>         { USB_DEVICE(0x2040, 0x8200),
+>                 .driver_info = AU0828_BOARD_HAUPPAUGE_WOODBURY },
+>         { USB_DEVICE(0x2040, 0x7260),
+>
+> Regards,
+> Mauro
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-media" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 
---===============5413353442356637636==--
+Let's *not* remove DTV support for WOODBURY board -- it is not the
+business of the public whether or not the board shipped in
+mass-production.  The board profile is in fact being used for some
+reference designs, and I still use my woodbury prototype to test the
+MXL tuner.
+
+I am not the only person using this profile -- no not remove it, please.
