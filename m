@@ -1,27 +1,75 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 09/15] ARM: sa1100: don't preallocate IRQ space for locomo
-Date: Fri, 31 Oct 2014 08:50:47 +0100
-Message-ID: <CACRpkdZnAtXtdtKbuqj8a_6a=2jS_Jf6yrq=iz-GJV+4RifRhw@mail.gmail.com>
-References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
-	<1414454528-24240-10-git-send-email-dbaryshkov@gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v2 3/3] Audio: SST: use lock when changing SST
+	state.
+Date: Fri, 31 Oct 2014 12:38:21 +0530
+Message-ID: <1414739301-12659-4-git-send-email-vinod.koul@intel.com>
+References: <1414739301-12659-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <1414454528-24240-10-git-send-email-dbaryshkov@gmail.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2223265554
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 08:49:25 +0100 (CET)
+In-Reply-To: <1414739301-12659-1-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, Mythri P K <mythri.p.k@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 28, 2014 at 1:02 AM, Dmitry Eremin-Solenikov
-<dbaryshkov@gmail.com> wrote:
+From: Mythri P K <mythri.p.k@intel.com>
 
-> As new locomo driver properly supports SPARSE_IRQ, stop playing with
-> NR_IRQS on sa1100 (locomo was the last chip requiring NR_IRQ tricks).
->
-> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+SST state change should be done under sst_lock
 
-That's right! By moving to irqdomain things get even better :)
+Signed-off-by: Mythri P K <mythri.p.k@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ sound/soc/intel/sst/sst.c     |    4 +---
+ sound/soc/intel/sst/sst_ipc.c |    2 +-
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/sound/soc/intel/sst/sst.c b/sound/soc/intel/sst/sst.c
+index 7b8a110..04af246 100644
+--- a/sound/soc/intel/sst/sst.c
++++ b/sound/soc/intel/sst/sst.c
+@@ -463,15 +463,13 @@ static int intel_sst_runtime_resume(struct device *dev)
+ 	int ret = 0;
+ 	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
+ 
+-	mutex_lock(&ctx->sst_lock);
+ 	if (ctx->sst_state == SST_RESET) {
+ 		ret = sst_load_fw(ctx);
+ 		if (ret) {
+ 			dev_err(dev, "FW download fail %d\n", ret);
+-			ctx->sst_state = SST_RESET;
++			sst_set_fw_state_locked(ctx, SST_RESET);
+ 		}
+ 	}
+-	mutex_unlock(&ctx->sst_lock);
+ 	return ret;
+ }
+ 
+diff --git a/sound/soc/intel/sst/sst_ipc.c b/sound/soc/intel/sst/sst_ipc.c
+index 2126f5b..484e609 100644
+--- a/sound/soc/intel/sst/sst_ipc.c
++++ b/sound/soc/intel/sst/sst_ipc.c
+@@ -230,7 +230,7 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
+ 
+ 	dev_dbg(sst_drv_ctx->dev, "*** FW Init msg came***\n");
+ 	if (init->result) {
+-		sst_drv_ctx->sst_state =  SST_RESET;
++		sst_set_fw_state_locked(sst_drv_ctx, SST_RESET);
+ 		dev_err(sst_drv_ctx->dev, "FW Init failed, Error %x\n",
+ 				init->result);
+ 		retval = init->result;
+-- 
+1.7.0.4
