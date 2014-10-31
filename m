@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 08/14] ASoC: wm9712: Cleanup printk usage
-Date: Fri, 31 Oct 2014 17:32:29 +0000
-Message-ID: <20141031173229.GK18557@sirena.org.uk>
+Subject: Re: [PATCH 14/14] ASoC: wm9712/wm9713: Use shared
+	controls
+Date: Fri, 31 Oct 2014 17:40:56 +0000
+Message-ID: <20141031174056.GM18557@sirena.org.uk>
 References: <1414699271-22797-1-git-send-email-lars@metafoo.de>
- <1414699271-22797-9-git-send-email-lars@metafoo.de>
+ <1414699271-22797-15-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8114378771415748776=="
+Content-Type: multipart/mixed; boundary="===============8668400305101144055=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05A5226148A
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 18:33:05 +0100 (CET)
-In-Reply-To: <1414699271-22797-9-git-send-email-lars@metafoo.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B66D2606E2
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 18:41:32 +0100 (CET)
+In-Reply-To: <1414699271-22797-15-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,46 +27,52 @@ Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, patches@opensource.wol
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8114378771415748776==
+--===============8668400305101144055==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YF/0G2n1m4k2mZ5L"
+	protocol="application/pgp-signature"; boundary="CX5+52/sCRHY3fIm"
 Content-Disposition: inline
 
 
---YF/0G2n1m4k2mZ5L
+--CX5+52/sCRHY3fIm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Oct 30, 2014 at 09:01:05PM +0100, Lars-Peter Clausen wrote:
-> Use dev_err() instead of printk(KERN_ERR. This is common practice and makes
-> it easy to find out which device generated the message. While we are at it
-> also align the error messages with the other AC'97 drivers.
+On Thu, Oct 30, 2014 at 09:01:11PM +0100, Lars-Peter Clausen wrote:
 
-Applied, thanks.
+> Note: This changes the exposed controls, instead of having one "Left HP
+> Mixer ..." and one "Right HP Mixer ..." control for each input there will
+> only be a single "HP Mixer ..." control.
 
---YF/0G2n1m4k2mZ5L
+This change would be a win except for the above - these devices were
+very widely deployed in fairly popular devices like the Sharp Zaurus
+devices so there's quite a bit of deployed distro config in things like
+Angstrom which would get broken if we updated, and some user community
+remaining too.  On balance I'd say that the cleanup to use the new
+feature isn't worth the disruption it'd cause to userspace.
+
+--CX5+52/sCRHY3fIm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUU8esAAoJECTWi3JdVIfQm9MH/0sjhl0GNcM/CgPXQm44UEx8
-1EHH2vrXIvw35iYKaOJsMmIAPWpULHF7IdvUp68tcrhA+PNtgpPfYYTb9U9eoYkz
-oQKi5S5HRdJSdpLsEHlyJ12F0tBTrK/Ojw3/MLqzePnz9S+aGaNnZ8YBhn+LvkbE
-Ou45Gz0IuYPELKZWAXfuA3DWSClWBU9DkNf5HJZdcP+A1U2U0pRD87FLm8QcIh/M
-8RZERsNz4hCksf1tgnV1jy5JrPaNfQLRQ9uGfzVmq2dYzcOJCM7AXabv8/9WAwf2
-X8bggzQlOjkSnN1bSkNfzlB7QTahMCAps6KLBH4F9LL4vWDkUhPwfof9DtCRwWg=
-=5vNM
+iQEcBAEBAgAGBQJUU8mnAAoJECTWi3JdVIfQLRIH/0ViY5ZoD3JanXlxoBVSr49L
+/ZKeYjcQ1jHTpOcbj6NHUb1UkCpY6FAaks60u1Nrc157myYrBPUosdDn6FxzXDRz
+BCxkeAX58xqgy/aPqUACqPNRZ+SJ/Ypzqlxe8VM5efXsZfEx57TXU/Xfg5xGatpD
+6bk6CZMl6+7PUMAH9pgaD4lz2A60N0Ndz9p6ybPOYFS3AWJk+SAkZFRmh4jlLlwW
+4IlOTcua3+0DI5Ubyejtn57cM9Qo5OoOZJLDUVkFpzke+VvPMsniiISjYrEVvdoS
+A8vCSFxBRB+jJjZvAvAL3z81JtepzvmkjccGh/Xi9hnvqtyLp/Hfd/wCiHIvEj8=
+=kRQ3
 -----END PGP SIGNATURE-----
 
---YF/0G2n1m4k2mZ5L--
+--CX5+52/sCRHY3fIm--
 
---===============8114378771415748776==
+--===============8668400305101144055==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8114378771415748776==--
+--===============8668400305101144055==--
