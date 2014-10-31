@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Fix block is enabled multiple
-	times issue
-Date: Fri, 31 Oct 2014 10:20:17 +0000
-Message-ID: <20141031102017.GI18557@sirena.org.uk>
-References: <1414675312-7667-1-git-send-email-yang.jie@intel.com>
- <20141030134132.GX18557@sirena.org.uk>
- <E7B1D079BA13FB44A978CC8F69C7D6A901B500B1@SHSMSX101.ccr.corp.intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 00/14] ASoC: AC'97 driver cleanups
+Date: Fri, 31 Oct 2014 10:35:01 +0000
+Message-ID: <20141031103501.GL23178@opensource.wolfsonmicro.com>
+References: <1414699271-22797-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1641789322830917404=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DFE426056C
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 11:20:42 +0100 (CET)
-In-Reply-To: <E7B1D079BA13FB44A978CC8F69C7D6A901B500B1@SHSMSX101.ccr.corp.intel.com>
+Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
+ [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 09F30260597
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 11:35:02 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1414699271-22797-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Jie, Yang" <yang.jie@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Oct 30, 2014 at 09:00:57PM +0100, Lars-Peter Clausen wrote:
+> Hi,
+> 
+> This series does a few AC'97 driver cleanups in preparation of the
+> conversion of the drivers to regmap. Most of the patches are quite trivial.
+> 
+> The last two patches remove the virtual registers from the wm9712 and wm9713
+> drivers, which is a requirement for regmap conversion.
+> 
+> The last patch is the only one in this series that is a bit more complex.
+> Currently the drivers have a open-coded implementation of shared controls
+> which is replaced by the patch with the generic one from the ASoC core.
+> Unfortunately this changes the controls that are exposed by the driver,
+> instead of having a "Left HP Mixer ..." and a "Right HP Mixer ..." control
+> for each mixer input there will only be a single "HP Mixer" control. This
+> may or may not be considered breaking the userspace interface. If it is we
+> need to take a different approach at removing the virtual register form the
+> driver.
+> 
+> - Lars
+> 
+> Lars-Peter Clausen (14):
+>   ASoC: ad1980: Remove unused header
+>   ASoC: ad1980: Cleanup printk usage
+>   ASoC: ad1980: Use table based control setup
+>   ASoC: stac9766: Cleanup printk usage
+>   ASoC: stac9766: Use table based control setup
+>   ASoC: wm9705: Cleanup printk usage
+>   ASoC: wm9705: Use table based control setup
+>   ASoC: wm9712: Cleanup printk usage
+>   ASoC: wm9712: Use table based control setup
+>   ASoC: wm9713: Cleanup printk usage
+>   ASoC: wm9713: Use table based control setup
+>   ASoC: wm9713: Move driver state struct allocation to driver probe
+>   ASoC: wm9713: Use virtual control instead of virtual register
+>   ASoC: wm9712/wm9713: Use shared controls
 
---===============1641789322830917404==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="5+h/aC2rZ9d7r+wS"
-Content-Disposition: inline
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
+For the Wolfson parts.
 
---5+h/aC2rZ9d7r+wS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Oct 31, 2014 at 02:23:38AM +0000, Jie, Yang wrote:
-
-> > Applied, thanks.
-
-> [Keyon] thanks, Mark. BTW, can you share your rule about which branch do you apply patches on usually?
-> I ask this because I can't find applied patch on any branch(topic/intel, for-next, for-linus, fix/core, fix/intel...). :(
-
-It's on topic/intel.
-
---5+h/aC2rZ9d7r+wS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUU2JgAAoJECTWi3JdVIfQVdwH/iAVH6DFBoGFtVk6goAmfOHC
-6k3OjEtCCyovHWsIukddzmg5pU7exSGVuL0+bldIUXT1i9d/HB5eupfeUTXNmHE0
-9xcTuK8AA23flMLDAapBEjCHSS5dI3W/vtltsL3+RU6+V1AwdsdHTypPaZN8rUQc
-L8GZBMPO2mtsVnazUyCNfh/gzSaM48hpj3AH1YNJcqq87JEjCzj+soxrMfliTGUh
-J3NVqk4+2SGpPlmLfA/uK8XoH94vrx3q9ZD8GGIeLbWDwrwf8TdjKdlXTMMlr14i
-2USl0+3DdIoK04BdaB4HR4/SOqTWfBKAK88XuATybAiR2pg308UUk3Wpdzw8QVM=
-=MJgB
------END PGP SIGNATURE-----
-
---5+h/aC2rZ9d7r+wS--
-
---===============1641789322830917404==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1641789322830917404==--
+Thanks,
+Charles
