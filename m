@@ -1,19 +1,17 @@
-From: "Jie, Yang" <yang.jie@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Fix block is enabled multiple
-	times issue
-Date: Fri, 31 Oct 2014 02:23:38 +0000
-Message-ID: <E7B1D079BA13FB44A978CC8F69C7D6A901B500B1@SHSMSX101.ccr.corp.intel.com>
-References: <1414675312-7667-1-git-send-email-yang.jie@intel.com>
- <20141030134132.GX18557@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] usb-audio: Add mixer control for
+ Digidesign Mbox 1 clock source
+Date: Fri, 31 Oct 2014 12:29:22 +0900
+Message-ID: <54530212.7000804@sakamocchi.jp>
+References: <5452EC80.8060005@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E75C260668
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 03:25:10 +0100 (CET)
-In-Reply-To: <20141030134132.GX18557@sirena.org.uk>
-Content-Language: en-US
+Received: from smtp310.phy.lolipop.jp (smtp310.phy.lolipop.jp [210.157.22.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35A2C260668
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 04:29:26 +0100 (CET)
+In-Reply-To: <5452EC80.8060005@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,29 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Damien Zammit <damien.zammit@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Damien,
+
+On Oct 31 2014 10:57, Damien Zammit wrote:
+> This patch provides a mixer control for selecting the clock source of
+> the Digidesign Mbox 1 to either internal clock or S/PDIF external.
+> Trial and error and bus snooping were the only way to get this
+> information, but it works on the hardware.
+
+This patch includes lines over 80 characters. Furthermore, these lines 
+include inappropriate white-space for indentation. How about indenting 
+with tab only and add more line-breaks between each function parameter?
+
+$ ./scripts/checkpatch.pl /tmp/0001-mbox1-spdif.patch
+WARNING: line over 80 characters
+#134: FILE: sound/usb/mixer_quirks.c:641:
++                                     usb_rcvctrlpipe(mixer->chip->dev, 
+0), 0x81,
+
+WARNING: line over 80 characters
+#135: FILE: sound/usb/mixer_quirks.c:642:
++                                     USB_DIR_IN | USB_TYPE_CLASS | 
+USB_RECIP_INTERFACE,
+
+WARNING: line over 80 characters
+#140: FILE: sound/usb/mixer_quirks.c:647:
++                                     usb_rcvctrlpipe(mixer->chip->dev, 
+0), 0x81,
+
+WARNING: line over 80 characters
+#141: FILE: sound/usb/mixer_quirks.c:648:
++                                     USB_DIR_IN | USB_TYPE_CLASS | 
+USB_RECIP_ENDPOINT,
+
+WARNING: line over 80 characters
+#159: FILE: sound/usb/mixer_quirks.c:666:
++                                     usb_rcvctrlpipe(mixer->chip->dev, 
+0), 0x81,
+
+WARNING: line over 80 characters
+#160: FILE: sound/usb/mixer_quirks.c:667:
++                                     USB_DIR_IN | USB_TYPE_CLASS | 
+USB_RECIP_ENDPOINT,
+
+WARNING: line over 80 characters
+#165: FILE: sound/usb/mixer_quirks.c:672:
++                                     usb_rcvctrlpipe(mixer->chip->dev, 
+0), 0x81,
+
+WARNING: line over 80 characters
+#166: FILE: sound/usb/mixer_quirks.c:673:
++                                     USB_DIR_IN | USB_TYPE_CLASS | 
+USB_RECIP_ENDPOINT,
+
+total: 0 errors, 8 warnings, 226 lines checked
+
+/tmp/0001-mbox1-spdif.patch has style problems, please review.
+
+If any of these errors are false positives, please report
+them to the maintainer, see CHECKPATCH in MAINTAINERS.
 
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@kernel.org]
-> Sent: Thursday, October 30, 2014 9:42 PM
-> To: Jie, Yang
-> Cc: alsa-devel@alsa-project.org; Girdwood, Liam R
-> Subject: Re: [PATCH] ASoC: Intel: Fix block is enabled multiple times issue
-> 
-> On Thu, Oct 30, 2014 at 09:21:52PM +0800, Jie Yang wrote:
-> > During FW parsing and loading, block_list_prepare() may be called for
-> > each raw data block copying and this may made the hsw_block_enable()
-> > called mutiple times, which increase block->users many times. The
-> > result of this is
-> > hsw_block_disable() can't power gated the related block when trying to
-> > free the blocks during suspend, and the power gating status also
-> > confused.
-> 
-> Applied, thanks.
-[Keyon] thanks, Mark. BTW, can you share your rule about which branch do you apply patches on usually?
-I ask this because I can't find applied patch on any branch(topic/intel, for-next, for-linus, fix/core, fix/intel...). :(
+Regards
+
+Takashi Sakamoto
+o-takashi@sakamocchi.jp
