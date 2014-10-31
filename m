@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/9] ASoC: Intel: modularize driver probe
-	and remove
-Date: Fri, 31 Oct 2014 16:46:25 +0000
-Message-ID: <20141031164625.GD18557@sirena.org.uk>
+Subject: Re: [PATCH 8/9] ASoC: Intel: add shim save context and
+ restore routines
+Date: Fri, 31 Oct 2014 16:58:56 +0000
+Message-ID: <20141031165856.GE18557@sirena.org.uk>
 References: <1414666312-4657-1-git-send-email-vinod.koul@intel.com>
- <1414666312-4657-6-git-send-email-vinod.koul@intel.com>
+ <1414666312-4657-9-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5359340259577660128=="
+Content-Type: multipart/mixed; boundary="===============1882411304480764184=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B8782606DA
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 17:46:54 +0100 (CET)
-In-Reply-To: <1414666312-4657-6-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F41612606DC
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 17:59:25 +0100 (CET)
+In-Reply-To: <1414666312-4657-9-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,49 +27,51 @@ Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.c
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5359340259577660128==
+--===============1882411304480764184==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jgcrNRut14sNbEwy"
+	protocol="application/pgp-signature"; boundary="oKQo6H1tQBaoPMj5"
 Content-Disposition: inline
 
 
---jgcrNRut14sNbEwy
+--oKQo6H1tQBaoPMj5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 30, 2014 at 04:21:48PM +0530, Vinod Koul wrote:
+On Thu, Oct 30, 2014 at 04:21:51PM +0530, Vinod Koul wrote:
 > From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 >=20
-> The driver probe which initializes driver and remove which cleans up can =
-be
-> shared with APCI as well, so move them to common init_context and
+> Some ACPI platform require the driver to save the shim register content a=
+nd
+> restore them after resume, so add the routines for these
+> The APCI patch will use these routines
 
-APCI? :P  (same typo in all these)
+Applied everything up to here - this one doesn't apply, probably due to
+some interaction with one of the other serieses.
 
---jgcrNRut14sNbEwy
+--oKQo6H1tQBaoPMj5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUU7zgAAoJECTWi3JdVIfQwU0H/jKgFnbAw8THhEimkVdAOpvk
-RLA5hZwE93SKEI2n2CCUvoumn9YvslaFQnCpAw+SBBpt/Yxm1El3QhlNvMEp+am3
-HMJXRd6/XJElNhGP9wy0MjBikNcPUuqWfsrWVQxFHfuynoPfW9zlU0JmXyOQLRUF
-51HHajmR1h8fYK79uoK8gITYO8mIH698264xSqUyyVsZPAczR9XZohHQcMOdFpSJ
-J0q1Tjd1e28DTCw9DZZEt3J+yc0bExpXeqZKXkddM2clT6Vkp9FxuEwOhN8LdV3h
-ziYMHSkjA8yIp46Udtnuh9BTP/p2h2fhYQ5Ps1FX/Ervw8EOx3DRN25jAys6/o4=
-=VHoW
+iQEcBAEBAgAGBQJUU7/PAAoJECTWi3JdVIfQWWAH/1DMeB19d2boe8431p+Qz69i
+f6eWw1iAea7s9Q1ikiI9eCF+CYjf+07Yj9hodO+iL8npYRZLbuHzi/V4Tj589H8v
+v1Be22JiLpRUM/Och5MZz7Zhht8r2igZt7cGOnFOu/6tXVlVmbnqNVNPs3y9wvNd
+zMqIIbUSBFLtTheG/ZzTu0koGq6QonjQw4fAH0AAbW2NkBiuhAM+bBWIozBsXDXE
+bLXylJ/iz/BlqyTF1f4fG0K4dW2ff7IzPbQMZCpyZlDPlVrWt5+Uw56LEz5uejtp
+u35Qaq2JKpN96rGVRZrtFtn1msOsK5Lk8xwqOq/rv1lmrJbJTOaOq996LnOXHO4=
+=hcIQ
 -----END PGP SIGNATURE-----
 
---jgcrNRut14sNbEwy--
+--oKQo6H1tQBaoPMj5--
 
---===============5359340259577660128==
+--===============1882411304480764184==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5359340259577660128==--
+--===============1882411304480764184==--
