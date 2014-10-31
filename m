@@ -1,14 +1,23 @@
-From: <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt286: reduce power consumption
-Date: Fri, 31 Oct 2014 14:52:16 +0800
-Message-ID: <1414738336-17371-1-git-send-email-bardliao@realtek.com>
+From: Damien Zammit <damien.zammit@gmail.com>
+Subject: [PATCH] usb-audio: Duplex support for Digidesign Mbox
+ 1 and clock source selector
+Date: Fri, 31 Oct 2014 18:07:30 +1100
+Message-ID: <54533532.6040605@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------030200020206050803020605"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AB9926068C
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 07:52:44 +0100 (CET)
+Received: from mail-pd0-f170.google.com (mail-pd0-f170.google.com
+ [209.85.192.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id BECC22606A0
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 08:07:41 +0100 (CET)
+Received: by mail-pd0-f170.google.com with SMTP id z10so6709188pdj.15
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 00:07:40 -0700 (PDT)
+Received: from [192.168.140.2] (14-201-185-176.static.tpgi.com.au.
+ [14.201.185.176])
+ by mx.google.com with ESMTPSA id lm3sm9018827pab.34.2014.10.31.00.07.33
+ for <alsa-devel@alsa-project.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Fri, 31 Oct 2014 00:07:34 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,339 +27,242 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Bard Liao <bardliao@realtek.com>
+This is a multi-part message in MIME format.
+--------------030200020206050803020605
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-This patch will optimize the power consumption of rt286.
+Hi,
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Please review this patch and my previous one.
+
+This patch provides duplex support for the Digidesign Mbox 1 sound card.
+This also depends on my previous patch for enabling the clock source
+selector because the mixer is enabled in this patch.
+I reduced the supported sampling rates to just 48kHz because the device
+works better in this mode with the SPDIF external sync.
+
+Damien
+
+--------------030200020206050803020605
+Content-Type: text/x-patch;
+ name="mbox1-duplex.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="mbox1-duplex.patch"
+
+>From 6defd3a7bfb0bc110143cef1da0b9d1757035817 Mon Sep 17 00:00:00 2001
+From: Damien Zammit <damien@zamaudio.com>
+Date: Fri, 31 Oct 2014 17:30:11 +1100
+Subject: [PATCH] snd-usb-audio: Duplex support for Digidesign Mbox 1 and clock
+ source selector
+
+This patch provides duplex support for the Digidesign Mbox 1 sound card.
+This patch also depends on my previous patch for enabling the clock source
+selector because the mixer is enabled in this patch.
+
+Signed-off-by: Damien Zammit <damien@zamaudio.com>
 ---
- sound/soc/codecs/rt286.c | 211 ++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 155 insertions(+), 56 deletions(-)
+ sound/usb/card.h         |  5 ++++
+ sound/usb/quirks-table.h | 73 ++++++++++++++++++++++++++++++++----------------
+ sound/usb/quirks.c       | 32 ++++++++++++++++++++-
+ sound/usb/usbaudio.h     |  1 +
+ 4 files changed, 86 insertions(+), 25 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 4aa555c..97daa80 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -36,11 +36,13 @@
- 
- struct rt286_priv {
- 	struct regmap *regmap;
-+	struct snd_soc_codec *codec;
- 	struct rt286_platform_data pdata;
- 	struct i2c_client *i2c;
- 	struct snd_soc_jack *jack;
- 	struct delayed_work jack_detect_work;
- 	int sys_clk;
-+	int clk_id;
- 	struct reg_default *index_cache;
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 97acb90..a8fe22f 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -33,6 +33,11 @@ struct audioformat {
+ 	bool dsd_bitrev;		/* reverse the bits of each DSD sample */
  };
  
-@@ -298,7 +300,6 @@ static int rt286_support_power_controls[] = {
- static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
- {
- 	unsigned int val, buf;
--	int i;
- 
- 	*hp = false;
- 	*mic = false;
-@@ -309,67 +310,44 @@ static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
- 		if (*hp) {
- 			/* power on HV,VERF */
- 			regmap_update_bits(rt286->regmap,
--				RT286_POWER_CTRL1, 0x1001, 0x0);
-+				RT286_DC_GAIN, 0x200, 0x200);
++struct audioformats {
++	unsigned int n_formats;
++	const struct audioformat *format;
++};
 +
-+			snd_soc_dapm_force_enable_pin(&rt286->codec->dapm,
-+							"HV");
-+			snd_soc_dapm_force_enable_pin(&rt286->codec->dapm,
-+							"VREF");
- 			/* power LDO1 */
--			regmap_update_bits(rt286->regmap,
--				RT286_POWER_CTRL2, 0x4, 0x4);
--			regmap_write(rt286->regmap, RT286_SET_MIC1, 0x24);
--			regmap_read(rt286->regmap, RT286_CBJ_CTRL2, &val);
-+			snd_soc_dapm_force_enable_pin(&rt286->codec->dapm,
-+							"LDO1");
-+			snd_soc_dapm_sync(&rt286->codec->dapm);
+ struct snd_usb_substream;
+ struct snd_usb_endpoint;
  
--			msleep(200);
--			i = 40;
--			while (((val & 0x0800) == 0) && (i > 0)) {
--				regmap_read(rt286->regmap,
--					RT286_CBJ_CTRL2, &val);
--				i--;
--				msleep(20);
--			}
-+			regmap_write(rt286->regmap, RT286_SET_MIC1, 0x24);
-+			msleep(50);
- 
--			if (0x0400 == (val & 0x0700)) {
--				*mic = false;
-+			regmap_update_bits(rt286->regmap,
-+				RT286_CBJ_CTRL1, 0xfcc0, 0xd400);
-+			msleep(300);
-+			regmap_read(rt286->regmap, RT286_CBJ_CTRL2, &val);
- 
--				regmap_write(rt286->regmap,
--					RT286_SET_MIC1, 0x20);
--				/* power off HV,VERF */
--				regmap_update_bits(rt286->regmap,
--					RT286_POWER_CTRL1, 0x1001, 0x1001);
--				regmap_update_bits(rt286->regmap,
--					RT286_A_BIAS_CTRL3, 0xc000, 0x0000);
--				regmap_update_bits(rt286->regmap,
--					RT286_CBJ_CTRL1, 0x0030, 0x0000);
--				regmap_update_bits(rt286->regmap,
--					RT286_A_BIAS_CTRL2, 0xc000, 0x0000);
--			} else if ((0x0200 == (val & 0x0700)) ||
--				(0x0100 == (val & 0x0700))) {
-+			if (0x0070 == (val & 0x0070)) {
- 				*mic = true;
--				regmap_update_bits(rt286->regmap,
--					RT286_A_BIAS_CTRL3, 0xc000, 0x8000);
--				regmap_update_bits(rt286->regmap,
--					RT286_CBJ_CTRL1, 0x0030, 0x0020);
--				regmap_update_bits(rt286->regmap,
--					RT286_A_BIAS_CTRL2, 0xc000, 0x8000);
- 			} else {
--				*mic = false;
-+				regmap_update_bits(rt286->regmap,
-+					RT286_CBJ_CTRL1, 0xfcc0, 0xe400);
-+				msleep(300);
-+				regmap_read(rt286->regmap,
-+					RT286_CBJ_CTRL2, &val);
-+				if (0x0070 == (val & 0x0070))
-+					*mic = true;
-+				else
-+					*mic = false;
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index c657752..0b5f4fb 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2937,43 +2937,68 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	/* Thanks to Clemens Ladisch <clemens@ladisch.de> */
+ 	USB_DEVICE(0x0dba, 0x1000),
+ 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+-		.vendor_name = "Digidesign",
+-		.product_name = "MBox",
+-		.ifnum = QUIRK_ANY_INTERFACE,
+-		.type = QUIRK_COMPOSITE,
+-		.data = (const struct snd_usb_audio_quirk[]){
+-			{
+-				.ifnum = 0,
+-				.type = QUIRK_IGNORE_INTERFACE,
+-			},
+-			{
+-				.ifnum = 1,
+-				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+-				.data = &(const struct audioformat) {
++	.vendor_name = "Digidesign",
++	.product_name = "MBox",
++	.ifnum = QUIRK_ANY_INTERFACE,
++	.type = QUIRK_COMPOSITE,
++	.data = (const struct snd_usb_audio_quirk[]) {
++		{
++			.ifnum = 0,
++			.type = QUIRK_AUDIO_STANDARD_MIXER,
++		},
++		{
++			.ifnum = 1,
++			.type = QUIRK_AUDIO_FIXED_MULTI_ENDPOINT,
++			.data = &(const struct audioformats)
++			{
++				.n_formats = 2,
++				.format = (const struct audioformat[]) {
++					{
+ 					.formats = SNDRV_PCM_FMTBIT_S24_3BE,
+ 					.channels = 2,
+ 					.iface = 1,
+ 					.altsetting = 1,
+ 					.altset_idx = 1,
+-					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.attributes = 0x4,
+ 					.endpoint = 0x02,
+-					.ep_attr = 0x01,
+-					.rates = SNDRV_PCM_RATE_44100 |
+-						 SNDRV_PCM_RATE_48000,
+-					.rate_min = 44100,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC |
++						USB_ENDPOINT_SYNC_SYNC,
++					.maxpacksize = 0x130,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
+ 					.rate_max = 48000,
+-					.nr_rates = 2,
++					.nr_rates = 1,
+ 					.rate_table = (unsigned int[]) {
+-						44100, 48000
++						48000
++					}
++					},
++					{
++					.formats = SNDRV_PCM_FMTBIT_S24_3BE,
++					.channels = 2,
++					.iface = 1,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = 0x4,
++					.endpoint = 0x81,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC |
++						USB_ENDPOINT_SYNC_ASYNC,
++					.maxpacksize = 0x130,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) {
++						48000
++					}
+ 					}
+ 				}
+-			},
+-			{
+-				.ifnum = -1
  			}
--
--			regmap_update_bits(rt286->regmap,
--						RT286_MISC_CTRL1,
--						0x0060, 0x0000);
--		} else {
--			regmap_update_bits(rt286->regmap,
--						RT286_MISC_CTRL1,
--						0x0060, 0x0020);
--			regmap_update_bits(rt286->regmap,
--						RT286_A_BIAS_CTRL3,
--						0xc000, 0x8000);
- 			regmap_update_bits(rt286->regmap,
--						RT286_CBJ_CTRL1,
--						0x0030, 0x0020);
--			regmap_update_bits(rt286->regmap,
--						RT286_A_BIAS_CTRL2,
--						0xc000, 0x8000);
-+				RT286_DC_GAIN, 0x200, 0x0);
- 
-+		} else {
- 			*mic = false;
-+			regmap_write(rt286->regmap, RT286_SET_MIC1, 0x20);
++		},
++		{
++			.ifnum = -1
  		}
- 	} else {
- 		regmap_read(rt286->regmap, RT286_GET_HP_SENSE, &buf);
-@@ -378,6 +356,12 @@ static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
- 		*mic = buf & 0x80000000;
+-
  	}
++}
+ },
  
-+	snd_soc_dapm_disable_pin(&rt286->codec->dapm, "HV");
-+	snd_soc_dapm_disable_pin(&rt286->codec->dapm, "VREF");
-+	if (!*hp)
-+		snd_soc_dapm_disable_pin(&rt286->codec->dapm, "LDO1");
-+	snd_soc_dapm_sync(&rt286->codec->dapm);
-+
+ /* DIGIDESIGN MBOX 2 */
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index d2aa45a..d6c6c03 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -180,6 +180,34 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
  	return 0;
  }
  
-@@ -415,6 +399,17 @@ int rt286_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
- }
- EXPORT_SYMBOL_GPL(rt286_mic_detect);
- 
-+static int is_mclk_mode(struct snd_soc_dapm_widget *source,
-+			 struct snd_soc_dapm_widget *sink)
++/*
++ * create N streams for an interface without proper descriptors but with
++ * multiple endpoints
++ */
++static int create_fixed_multi_stream_quirk(struct snd_usb_audio *chip,
++				     struct usb_interface *iface,
++				     struct usb_driver *driver,
++				     const struct snd_usb_audio_quirk *quirk)
 +{
-+	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(source->codec);
++	struct audioformats *fp;
++	int i;
 +
-+	if (rt286->clk_id == RT286_SCLK_S_MCLK)
-+		return 1;
-+	else
-+		return 0;
-+}
-+
- static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -6350, 50, 0);
- static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, 0, 1000, 0);
- 
-@@ -568,7 +563,84 @@ static int rt286_adc_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int rt286_vref_event(struct snd_soc_dapm_widget *w,
-+			     struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec,
-+			RT286_CBJ_CTRL1, 0x0400, 0x0000);
-+		mdelay(50);
-+		break;
-+	default:
-+		return 0;
++	fp = kmemdup(quirk->data, sizeof(*fp), GFP_KERNEL);
++	if (!fp) {
++		usb_audio_err(chip, "cannot memdup\n");
++		return -ENOMEM;
 +	}
-+
++	for (i = 0; i < fp->n_formats; i++) {
++		struct snd_usb_audio_quirk nquirk = {
++			.ifnum = quirk->ifnum,
++			.type = QUIRK_AUDIO_FIXED_MULTI_ENDPOINT,
++			.data = (const struct audioformat *) &fp->format[i]
++		};
++		create_fixed_stream_quirk(chip, iface, driver, &nquirk);
++	}
 +	return 0;
 +}
 +
-+static int rt286_ldo2_event(struct snd_soc_dapm_widget *w,
-+			     struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		snd_soc_update_bits(codec, RT286_POWER_CTRL2, 0x38, 0x08);
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_update_bits(codec, RT286_POWER_CTRL2, 0x38, 0x30);
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rt286_mic1_event(struct snd_soc_dapm_widget *w,
-+			     struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec,
-+			RT286_A_BIAS_CTRL3, 0xc000, 0x8000);
-+		snd_soc_update_bits(codec,
-+			RT286_A_BIAS_CTRL2, 0xc000, 0x8000);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_update_bits(codec,
-+			RT286_A_BIAS_CTRL3, 0xc000, 0x0000);
-+		snd_soc_update_bits(codec,
-+			RT286_A_BIAS_CTRL2, 0xc000, 0x0000);
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget rt286_dapm_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY_S("HV", 1, RT286_POWER_CTRL1,
-+		12, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("VREF", RT286_POWER_CTRL1,
-+		0, 1, rt286_vref_event, SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_SUPPLY_S("LDO1", 1, RT286_POWER_CTRL2,
-+		2, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("LDO2", 2, RT286_POWER_CTRL1,
-+		13, 1, rt286_ldo2_event, SND_SOC_DAPM_PRE_PMD |
-+		SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_SUPPLY("MCLK MODE", RT286_PLL_CTRL1,
-+		5, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MIC1 Input Buffer", SND_SOC_NOPM,
-+		0, 0, rt286_mic1_event, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
-+
- 	/* Input Lines */
- 	SND_SOC_DAPM_INPUT("DMIC1 Pin"),
- 	SND_SOC_DAPM_INPUT("DMIC2 Pin"),
-@@ -642,6 +714,25 @@ static const struct snd_soc_dapm_widget rt286_dapm_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_route rt286_dapm_routes[] = {
-+	{"ADC 0", NULL, "MCLK MODE", is_mclk_mode},
-+	{"ADC 1", NULL, "MCLK MODE", is_mclk_mode},
-+	{"Front", NULL, "MCLK MODE", is_mclk_mode},
-+	{"Surround", NULL, "MCLK MODE", is_mclk_mode},
-+
-+	{"HP Power", NULL, "LDO1"},
-+	{"HP Power", NULL, "LDO2"},
-+
-+	{"MIC1", NULL, "LDO1"},
-+	{"MIC1", NULL, "LDO2"},
-+	{"MIC1", NULL, "HV"},
-+	{"MIC1", NULL, "VREF"},
-+	{"MIC1", NULL, "MIC1 Input Buffer"},
-+
-+	{"SPO", NULL, "LDO1"},
-+	{"SPO", NULL, "LDO2"},
-+	{"SPO", NULL, "HV"},
-+	{"SPO", NULL, "VREF"},
-+
- 	{"DMIC1", NULL, "DMIC1 Pin"},
- 	{"DMIC2", NULL, "DMIC2 Pin"},
- 	{"DMIC1", NULL, "DMIC Receiver"},
-@@ -880,6 +971,7 @@ static int rt286_set_dai_sysclk(struct snd_soc_dai *dai,
- 	}
- 
- 	rt286->sys_clk = freq;
-+	rt286->clk_id = clk_id;
- 
- 	return 0;
+ static int create_auto_pcm_quirk(struct snd_usb_audio *chip,
+ 				 struct usb_interface *iface,
+ 				 struct usb_driver *driver)
+@@ -387,7 +415,7 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
  }
-@@ -915,13 +1007,18 @@ static int rt286_set_bias_level(struct snd_soc_codec *codec,
  
- 	case SND_SOC_BIAS_ON:
- 		mdelay(10);
-+		snd_soc_update_bits(codec,
-+			RT286_CBJ_CTRL1, 0x0400, 0x0400);
-+		snd_soc_update_bits(codec,
-+			RT286_DC_GAIN, 0x200, 0x0);
-+
- 		break;
- 
- 	case SND_SOC_BIAS_STANDBY:
- 		snd_soc_write(codec,
- 			RT286_SET_AUDIO_POWER, AC_PWRST_D3);
- 		snd_soc_update_bits(codec,
--			RT286_DC_GAIN, 0x200, 0x0);
-+			RT286_CBJ_CTRL1, 0x0400, 0x0000);
- 		break;
- 
- 	default:
-@@ -962,6 +1059,7 @@ static int rt286_probe(struct snd_soc_codec *codec)
- {
- 	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
- 
-+	rt286->codec = codec;
- 	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
- 
- 	if (rt286->i2c->irq) {
-@@ -1152,7 +1250,6 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	if (!rt286->pdata.cbj_en) {
- 		regmap_write(rt286->regmap, RT286_CBJ_CTRL2, 0x0000);
- 		regmap_write(rt286->regmap, RT286_MIC1_DET_CTRL, 0x0816);
--		regmap_write(rt286->regmap, RT286_MISC_CTRL1, 0x0000);
- 		regmap_update_bits(rt286->regmap,
- 					RT286_CBJ_CTRL1, 0xf000, 0xb000);
- 	} else {
-@@ -1169,8 +1266,10 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 
- 	mdelay(10);
- 
--	/*Power down LDO2*/
--	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL2, 0x8, 0x0);
-+	regmap_write(rt286->regmap, RT286_MISC_CTRL1, 0x0000);
-+	/*Power down LDO, VREF*/
-+	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL2, 0xc, 0x0);
-+	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL1, 0x1001, 0x1001);
- 
- 	/*Set depop parameter*/
- 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL2, 0x403a, 0x401a);
+ /*
+- * Create a stream for an Edirol UA-700/UA-25/UA-4FX interface.  
++ * Create a stream for an Edirol UA-700/UA-25/UA-4FX interface.
+  * The only way to detect the sample rate is by looking at wMaxPacketSize.
+  */
+ static int create_uaxx_quirk(struct snd_usb_audio *chip,
+@@ -528,6 +556,8 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
+ 		[QUIRK_MIDI_FTDI] = create_any_midi_quirk,
+ 		[QUIRK_AUDIO_STANDARD_INTERFACE] = create_standard_audio_quirk,
+ 		[QUIRK_AUDIO_FIXED_ENDPOINT] = create_fixed_stream_quirk,
++		[QUIRK_AUDIO_FIXED_MULTI_ENDPOINT] =
++			create_fixed_multi_stream_quirk,
+ 		[QUIRK_AUDIO_EDIROL_UAXX] = create_uaxx_quirk,
+ 		[QUIRK_AUDIO_ALIGN_TRANSFER] = create_align_transfer_quirk,
+ 		[QUIRK_AUDIO_STANDARD_MIXER] = create_standard_mixer_quirk,
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 91d0380..31d8ff0 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -96,6 +96,7 @@ enum quirk_type {
+ 	QUIRK_MIDI_FTDI,
+ 	QUIRK_AUDIO_STANDARD_INTERFACE,
+ 	QUIRK_AUDIO_FIXED_ENDPOINT,
++	QUIRK_AUDIO_FIXED_MULTI_ENDPOINT,
+ 	QUIRK_AUDIO_EDIROL_UAXX,
+ 	QUIRK_AUDIO_ALIGN_TRANSFER,
+ 	QUIRK_AUDIO_STANDARD_MIXER,
 -- 
-1.8.1.1.439.g50a6b54
+1.9.1
+
+
+--------------030200020206050803020605
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------030200020206050803020605--
