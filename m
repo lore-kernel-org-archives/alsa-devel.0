@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 8/9] ASoC: Intel: add shim save context and
- restore routines
-Date: Fri, 31 Oct 2014 16:58:56 +0000
-Message-ID: <20141031165856.GE18557@sirena.org.uk>
-References: <1414666312-4657-1-git-send-email-vinod.koul@intel.com>
- <1414666312-4657-9-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Add jack detection for
+	Broadwell
+Date: Fri, 31 Oct 2014 16:59:51 +0000
+Message-ID: <20141031165951.GF18557@sirena.org.uk>
+References: <1414674983-7459-1-git-send-email-yang.jie@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1882411304480764184=="
+Content-Type: multipart/mixed; boundary="===============4052203756720065343=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F41612606DC
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 17:59:25 +0100 (CET)
-In-Reply-To: <1414666312-4657-9-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EBC372606DC
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 18:00:12 +0100 (CET)
+In-Reply-To: <1414674983-7459-1-git-send-email-yang.jie@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: Jie Yang <yang.jie@intel.com>
+Cc: alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1882411304480764184==
+--===============4052203756720065343==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oKQo6H1tQBaoPMj5"
+	protocol="application/pgp-signature"; boundary="vpXrFJ8GtvOCTzbW"
 Content-Disposition: inline
 
 
---oKQo6H1tQBaoPMj5
+--vpXrFJ8GtvOCTzbW
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 30, 2014 at 04:21:51PM +0530, Vinod Koul wrote:
-> From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
->=20
-> Some ACPI platform require the driver to save the shim register content a=
-nd
-> restore them after resume, so add the routines for these
-> The APCI patch will use these routines
+On Thu, Oct 30, 2014 at 09:16:23PM +0800, Jie Yang wrote:
+> Add jack dectection and event reporting for Broadwell. It use combo
+> jack on BDW platform, which including Mic Jack pin and Headphone
+> jack pin.
 
-Applied everything up to here - this one doesn't apply, probably due to
-some interaction with one of the other serieses.
+Applied, thanks.
 
---oKQo6H1tQBaoPMj5
+--vpXrFJ8GtvOCTzbW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUU7/PAAoJECTWi3JdVIfQWWAH/1DMeB19d2boe8431p+Qz69i
-f6eWw1iAea7s9Q1ikiI9eCF+CYjf+07Yj9hodO+iL8npYRZLbuHzi/V4Tj589H8v
-v1Be22JiLpRUM/Och5MZz7Zhht8r2igZt7cGOnFOu/6tXVlVmbnqNVNPs3y9wvNd
-zMqIIbUSBFLtTheG/ZzTu0koGq6QonjQw4fAH0AAbW2NkBiuhAM+bBWIozBsXDXE
-bLXylJ/iz/BlqyTF1f4fG0K4dW2ff7IzPbQMZCpyZlDPlVrWt5+Uw56LEz5uejtp
-u35Qaq2JKpN96rGVRZrtFtn1msOsK5Lk8xwqOq/rv1lmrJbJTOaOq996LnOXHO4=
-=hcIQ
+iQEcBAEBAgAGBQJUU8AGAAoJECTWi3JdVIfQEyYH/1zCDOgziO86qbReB5A8f3JW
+jZnLdQWhil+Eg4Z7gl+tcfGH4Na0uYz+U3uhUj2PHdtW+7mgYbReW0PqHL+7Pbqm
+c6P4FJNBl1S/8MAOnka0s0W5c5+UnUgIpKbaCJi3CJrcMQf3Exu+NsaalI2eW1Ww
+2rbFE4U7ySKrc6QShzRQ6tC4ZVrAfAJxCwsa+HRDq8B268ScJ8Nr0OlXJi0S6P++
+ZAVjTzOtl089UYt7SSTE/PWsRAjGiJYK6kptXcLeBRIPUncFxRaEYhiA29/ZLv1h
+wMFewKo1s2PccjrNyHpG71nUC+bZv2Iu1mvbdcpMt1eIBdHkMEf0jCDfS6w0cn4=
+=0gM5
 -----END PGP SIGNATURE-----
 
---oKQo6H1tQBaoPMj5--
+--vpXrFJ8GtvOCTzbW--
 
---===============1882411304480764184==
+--===============4052203756720065343==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1882411304480764184==--
+--===============4052203756720065343==--
