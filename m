@@ -1,16 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt286: reduce power consumption
-Date: Fri, 31 Oct 2014 11:08:51 +0000
-Message-ID: <20141031110851.GL18557@sirena.org.uk>
-References: <1414738336-17371-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH 8/8] ASoC: rsnd: Add Volume Ramp support
+Date: Fri, 31 Oct 2014 11:51:11 +0000
+Message-ID: <20141031115111.GM18557@sirena.org.uk>
+References: <8761fc7vpx.wl%kuninori.morimoto.gx@gmail.com>
+ <87tx2w6h2r.wl%kuninori.morimoto.gx@gmail.com>
+ <20141028223814.GM18557@sirena.org.uk>
+ <87oasviuw0.wl%kuninori.morimoto.gx@gmail.com>
+ <20141029225659.GS18557@sirena.org.uk>
+ <87y4ryxuxs.wl%kuninori.morimoto.gx@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0547904237984701411=="
+Content-Type: multipart/mixed; boundary="===============2765545775131223615=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 05337260597
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 12:09:17 +0100 (CET)
-In-Reply-To: <1414738336-17371-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 79209260597
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 12:51:45 +0100 (CET)
+In-Reply-To: <87y4ryxuxs.wl%kuninori.morimoto.gx@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,61 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: bardliao@realtek.com
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, flove@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0547904237984701411==
+--===============2765545775131223615==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="DI3e56nQDAJ1LWZd"
+	protocol="application/pgp-signature"; boundary="WQ/nOZqcqYGY8uZi"
 Content-Disposition: inline
 
 
---DI3e56nQDAJ1LWZd
+--WQ/nOZqcqYGY8uZi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 31, 2014 at 02:52:16PM +0800, bardliao@realtek.com wrote:
-> From: Bard Liao <bardliao@realtek.com>
->=20
-> This patch will optimize the power consumption of rt286.
->=20
-> Signed-off-by: Bard Liao <bardliao@realtek.com>
+On Wed, Oct 29, 2014 at 05:28:19PM -0700, Kuninori Morimoto wrote:
 
-So, I've applied this but I'm not at all happy with the changelog - it
-really should be explaining how the patch is achieving the goal it
-states.  Looking at the code it's fairly clear this is by converting to
-use DAPM to dynamically manage things but the changelog should say
-something about that.
+> > >    000:  1 time
+> > >    ...
+> > >    031:  0.5 time
+> > >    ...
+> > >    3FE:  4.1 x 10^-7 time
+> > >    3FF:  Mute
 
-Please also fix the comment style in this driver - spaces around the /* */=
-=20
+> > > Maybe I can used inverted value for it ?
 
---DI3e56nQDAJ1LWZd
+> > That sounds like it'd address part of it, though I'm still not 100% sure
+> > what the effect of this control is - is it the final value or something
+> > (0.5*programmed volume for example)?
+
+> In easy explain,
+> we can set "Volume Ramp Period" (= it will be "time" instead),
+> and "Volume scale". see below...
+
+> /*
+>  * target volume for "start" is Mute.
+>  * volume X x 0 time = volume 0
+>  */
+> amixer set "DVC Out Ramp" 0%		// Mute as default
+
+I'm sorry, this explanation still isn't at all clear to me.  Can you
+explain it in words please?
+
+--WQ/nOZqcqYGY8uZi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUU23DAAoJECTWi3JdVIfQkdEH/iTH5l64jTYs72gXjcrQe4GU
-u7YAyATxXA8Am9kP78ni3jgzv07FKFJ2pqr1lAh4U5HZJk3JxPB1msX0YiozJ1oY
-8RfUpbhPDrRZHtdCCgC04aHIu3q2SD57wlejtihbU8i8/hX8XgzqbYpoJhhJ7L4e
-RKKnW38R6/YE368HJT8GPW4CIXl3oNH1Mky/TFMDEE89pF9xzPy5mfl7vwlPuxzB
-tdflAICADx/sePqn2uy2JbD8yq+eCdtZ+Hbikr5BuFSrv1lWrz8jrDFRAGkdh8aS
-dzmvsxonOS/Haz5b7QJhgPbphfszikP5t7W0FgBUgargSZr5NJW9+kzMF1+R6/I=
-=rXju
+iQEcBAEBAgAGBQJUU3euAAoJECTWi3JdVIfQrxwH/ixOxCZ8CarQ5LhVjJ6fKOwf
+nU0DLY+TVxdxGa4r2r6XzaEU2ypFjlpgSFOBvvlAEeFw80MYGqeDhiuUd3v6Shtz
+mHQ2QE09+Uct8EE/wse7CWv4HbB7lTjJ1p/OvFlEpmSzSWVrJysZ4FmhScGQUUqu
+JZqQfpST1FyqbZmB7VsUIrRbprcbNGRWThfaoSWDjtHTS7W24oSUz07NCKUXJmHE
+Ux+zgfJkliP+BOSGpybOh+AUg8d47Z06x98pMDtr/YONmmHHwF2oQk7zn5RrVCOp
+qCSULLq2jwYDS4EUpTaCIzgfdoJj0IvyhuMp95nK9FjxRwLi594z/hN2ACpyTFA=
+=yeMh
 -----END PGP SIGNATURE-----
 
---DI3e56nQDAJ1LWZd--
+--WQ/nOZqcqYGY8uZi--
 
---===============0547904237984701411==
+--===============2765545775131223615==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0547904237984701411==--
+--===============2765545775131223615==--
