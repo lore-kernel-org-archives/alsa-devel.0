@@ -1,17 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 00/14] ASoC: AC'97 driver cleanups
-Date: Fri, 31 Oct 2014 10:35:01 +0000
-Message-ID: <20141031103501.GL23178@opensource.wolfsonmicro.com>
-References: <1414699271-22797-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 0/3] ASoC: Intel: add runtime power
+	management support
+Date: Fri, 31 Oct 2014 10:34:51 +0000
+Message-ID: <20141031103451.GK18557@sirena.org.uk>
+References: <1414739301-12659-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4909471032251380046=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource.wolfsonmicro.com (opensource.wolfsonmicro.com
- [80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 09F30260597
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 11:35:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1414699271-22797-1-git-send-email-lars@metafoo.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id C54422606A7
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 11:35:15 +0100 (CET)
+In-Reply-To: <1414739301-12659-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 30, 2014 at 09:00:57PM +0100, Lars-Peter Clausen wrote:
-> Hi,
-> 
-> This series does a few AC'97 driver cleanups in preparation of the
-> conversion of the drivers to regmap. Most of the patches are quite trivial.
-> 
-> The last two patches remove the virtual registers from the wm9712 and wm9713
-> drivers, which is a requirement for regmap conversion.
-> 
-> The last patch is the only one in this series that is a bit more complex.
-> Currently the drivers have a open-coded implementation of shared controls
-> which is replaced by the patch with the generic one from the ASoC core.
-> Unfortunately this changes the controls that are exposed by the driver,
-> instead of having a "Left HP Mixer ..." and a "Right HP Mixer ..." control
-> for each mixer input there will only be a single "HP Mixer" control. This
-> may or may not be considered breaking the userspace interface. If it is we
-> need to take a different approach at removing the virtual register form the
-> driver.
-> 
-> - Lars
-> 
-> Lars-Peter Clausen (14):
->   ASoC: ad1980: Remove unused header
->   ASoC: ad1980: Cleanup printk usage
->   ASoC: ad1980: Use table based control setup
->   ASoC: stac9766: Cleanup printk usage
->   ASoC: stac9766: Use table based control setup
->   ASoC: wm9705: Cleanup printk usage
->   ASoC: wm9705: Use table based control setup
->   ASoC: wm9712: Cleanup printk usage
->   ASoC: wm9712: Use table based control setup
->   ASoC: wm9713: Cleanup printk usage
->   ASoC: wm9713: Use table based control setup
->   ASoC: wm9713: Move driver state struct allocation to driver probe
->   ASoC: wm9713: Use virtual control instead of virtual register
->   ASoC: wm9712/wm9713: Use shared controls
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+--===============4909471032251380046==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XA7quakUSnawneuz"
+Content-Disposition: inline
 
-For the Wolfson parts.
 
-Thanks,
-Charles
+--XA7quakUSnawneuz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Oct 31, 2014 at 12:38:18PM +0530, Vinod Koul wrote:
+> This series fixes the device open pm handling and adds the runtime pm
+> support. Also we fix lock usage while changing the driver state
+
+Can you please stop sending so many different patch serieses for the
+same code simultaneously?  I'm assuming that these are mostly orthogonal
+but it's making it hard to keep track of what's going on and I expect at
+some point they'll end up conflicting with each other.
+
+--XA7quakUSnawneuz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJUU2XKAAoJECTWi3JdVIfQCQUH/03baTEM6Q8vehmw+1EO7nHv
+c9HytJAJoOyveq7J0jdv6UodKyJMtrd0JioIbK5LFEoRbC4d+9+G9Q8itiQ6Z5BG
+q8/JhlnuoOMAkKMVjq+BnT4ZV/4rCYiVWM2BvsY8cFNTdyfFY0+Jg5SWNh3CQPP/
+oCFBSuW1b7oQImKPf7dfte1a/o8Dm7fIpHJmPd/Gc7XJLHtAo25L8pYI7IA79lyQ
+v4MvMasPwBWbJepNNpJ2FTq+AYX3TRAC5QpBtHq4Rm0/Y9aWv5YMtmjGoz7yXCJg
+cSvex7OzJzPD5xkgDYjRTzBEkqwfqC/d7daWx7JX5NAd2EiT6m6mX3u02FZAMg8=
+=0HhG
+-----END PGP SIGNATURE-----
+
+--XA7quakUSnawneuz--
+
+--===============4909471032251380046==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4909471032251380046==--
