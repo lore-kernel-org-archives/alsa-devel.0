@@ -1,75 +1,153 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH v2 3/3] Audio: SST: use lock when changing SST
-	state.
-Date: Fri, 31 Oct 2014 12:38:21 +0530
-Message-ID: <1414739301-12659-4-git-send-email-vinod.koul@intel.com>
-References: <1414739301-12659-1-git-send-email-vinod.koul@intel.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 14/15] gpio: locomo: implement per-pin irq handling
+Date: Fri, 31 Oct 2014 09:00:49 +0100
+Message-ID: <CACRpkdamVriR9kJSeY=LVAx7ADukT8+GpqmNH9YMnL3OKUk8iw@mail.gmail.com>
+References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+	<1414454528-24240-15-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id D2223265554
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 08:49:25 +0100 (CET)
-In-Reply-To: <1414739301-12659-1-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, Mythri P K <mythri.p.k@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-leds-owner@vger.kernel.org>
+In-Reply-To: <1414454528-24240-15-git-send-email-dbaryshkov@gmail.com>
+Sender: linux-leds-owner@vger.kernel.org
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo
 List-Id: alsa-devel@alsa-project.org
 
-From: Mythri P K <mythri.p.k@intel.com>
+On Tue, Oct 28, 2014 at 1:02 AM, Dmitry Eremin-Solenikov
+<dbaryshkov@gmail.com> wrote:
 
-SST state change should be done under sst_lock
+> LoCoMo has a possibility to generate per-GPIO edge irqs. Support for
+> that was there in old locomo driver, got 'cleaned up' during old driver
+> IRQ cascading cleanup and is now reimplemented. It is expected that
+> SL-5500 (collie) will use locomo gpio irqs for mmc detection irq.
+>
+> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 
-Signed-off-by: Mythri P K <mythri.p.k@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/intel/sst/sst.c     |    4 +---
- sound/soc/intel/sst/sst_ipc.c |    2 +-
- 2 files changed, 2 insertions(+), 4 deletions(-)
+Please don't use open-coded IRQ handling like this, we are moving
+away from that.
 
-diff --git a/sound/soc/intel/sst/sst.c b/sound/soc/intel/sst/sst.c
-index 7b8a110..04af246 100644
---- a/sound/soc/intel/sst/sst.c
-+++ b/sound/soc/intel/sst/sst.c
-@@ -463,15 +463,13 @@ static int intel_sst_runtime_resume(struct device *dev)
- 	int ret = 0;
- 	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
- 
--	mutex_lock(&ctx->sst_lock);
- 	if (ctx->sst_state == SST_RESET) {
- 		ret = sst_load_fw(ctx);
- 		if (ret) {
- 			dev_err(dev, "FW download fail %d\n", ret);
--			ctx->sst_state = SST_RESET;
-+			sst_set_fw_state_locked(ctx, SST_RESET);
- 		}
- 	}
--	mutex_unlock(&ctx->sst_lock);
- 	return ret;
- }
- 
-diff --git a/sound/soc/intel/sst/sst_ipc.c b/sound/soc/intel/sst/sst_ipc.c
-index 2126f5b..484e609 100644
---- a/sound/soc/intel/sst/sst_ipc.c
-+++ b/sound/soc/intel/sst/sst_ipc.c
-@@ -230,7 +230,7 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
- 
- 	dev_dbg(sst_drv_ctx->dev, "*** FW Init msg came***\n");
- 	if (init->result) {
--		sst_drv_ctx->sst_state =  SST_RESET;
-+		sst_set_fw_state_locked(sst_drv_ctx, SST_RESET);
- 		dev_err(sst_drv_ctx->dev, "FW Init failed, Error %x\n",
- 				init->result);
- 		retval = init->result;
--- 
-1.7.0.4
+In Kconfig,
+
+select GPIOLIB_IRQCHIP
+
+and look at the other drivers selecting this for inspiration. There
+is even some documentation in Documentation/gpio/driver.txt
+
+You will find that it cuts down a lot of overhead from your driver
+and does everything in the right way in a central place.
+
+>  struct locomo_gpio {
+>         void __iomem *regs;
+> +       int irq;
+>
+>         spinlock_t lock;
+>         struct gpio_chip gpio;
+> +       int irq_base;
+
+gpiolib irqchip helpers uses irqdomain to do all this debasing
+and rebasing for you. Go with that.
+
+> +static int locomo_gpio_to_irq(struct gpio_chip *chip, unsigned offset)
+> +{
+> +       struct locomo_gpio *lg = container_of(chip, struct locomo_gpio, gpio);
+> +
+> +       return lg->irq_base + offset;
+> +}
+
+And it implements .to_irq() in the gpiolib core.
+
+> +static void
+> +locomo_gpio_handler(unsigned int irq, struct irq_desc *desc)
+
+It's locomo_gpio_irq_handler() right?
+
+> +{
+> +       u16 req;
+> +       struct locomo_gpio *lg = irq_get_handler_data(irq);
+> +       int i = lg->irq_base;
+> +
+> +       req = readw(lg->regs + LOCOMO_GIR) &
+> +             readw(lg->regs + LOCOMO_GPD);
+> +
+> +       while (req) {
+> +               if (req & 1)
+> +                       generic_handle_irq(i);
+> +               req >>= 1;
+> +               i++;
+> +       }
+
+Same thing as the MFD device, look closer at how you construct
+the IRQ handling loop, so the register gets re-read each iteration.
+
+> +static void locomo_gpio_ack_irq(struct irq_data *d)
+> +{
+> +       struct locomo_gpio *lg = irq_data_get_irq_chip_data(d);
+> +       unsigned long flags;
+> +       u16 r;
+> +
+> +       spin_lock_irqsave(&lg->lock, flags);
+> +
+> +       r = readw(lg->regs + LOCOMO_GWE);
+> +       r |= (0x0001 << (d->irq - lg->irq_base));
+> +       writew(r, lg->regs + LOCOMO_GWE);
+> +
+> +       r = readw(lg->regs + LOCOMO_GIS);
+> +       r &= ~(0x0001 << (d->irq - lg->irq_base));
+> +       writew(r, lg->regs + LOCOMO_GIS);
+> +
+> +       r = readw(lg->regs + LOCOMO_GWE);
+> +       r &= ~(0x0001 << (d->irq - lg->irq_base));
+> +       writew(r, lg->regs + LOCOMO_GWE);
+> +
+> +       spin_unlock_irqrestore(&lg->lock, flags);
+> +}
+
+I really wonder if this locking is needed around these
+regioster accesses. It seems more like a habit than
+like something that is actually needed. Think it over.
+
+*irqsave* versions of spinlocks are definately wrong
+in the irqchip callbacks, if you give it a minute I think
+you quickly realize why.
+
+> +static int locomo_gpio_type(struct irq_data *d, unsigned int type)
+> +{
+> +       unsigned int mask;
+> +       struct locomo_gpio *lg = irq_data_get_irq_chip_data(d);
+> +       unsigned long flags;
+> +
+> +       mask = 1 << (d->irq - lg->irq_base);
+
+This should just use d->hwirq with irqdomain implemented
+correctly.
+
+(...)
+
+> +static void locomo_gpio_setup_irq(struct locomo_gpio *lg)
+> +{
+> +       int irq;
+> +
+> +       lg->irq_base = irq_alloc_descs(-1, 0, LOCOMO_GPIO_NR_IRQS, -1);
+> +
+> +       /* Install handlers for IRQ_LOCOMO_* */
+> +       for (irq = lg->irq_base;
+> +                       irq < lg->irq_base + LOCOMO_GPIO_NR_IRQS;
+> +                       irq++) {
+> +               irq_set_chip_and_handler(irq, &locomo_gpio_chip,
+> +                               handle_edge_irq);
+> +               irq_set_chip_data(irq, lg);
+> +               set_irq_flags(irq, IRQF_VALID | IRQF_PROBE);
+> +       }
+> +
+> +       /*
+> +        * Install handler for IRQ_LOCOMO_HW.
+> +        */
+> +       irq_set_handler_data(lg->irq, lg);
+> +       irq_set_chained_handler(lg->irq, locomo_gpio_handler);
+> +}
+
+All this gets redundant with gpiochip_irqchip_add()
+and gpiochip_set_chained_irqchip().
+
+Yours,
+Linus Walleij
