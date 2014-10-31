@@ -1,90 +1,45 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 02/15] GPIO: port LoCoMo gpio support from old driver
-Date: Fri, 31 Oct 2014 08:48:35 +0100
-Message-ID: <CACRpkdY7tRadod2vQfEytmw-ubaMAvr_=XTczD5bUMkqie0xkg@mail.gmail.com>
-References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
-	<1414454528-24240-3-git-send-email-dbaryshkov@gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH v2 0/3] ASoC: Intel: add runtime power
+	management support
+Date: Fri, 31 Oct 2014 12:38:18 +0530
+Message-ID: <1414739301-12659-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-leds-owner@vger.kernel.org>
-In-Reply-To: <1414454528-24240-3-git-send-email-dbaryshkov@gmail.com>
-Sender: linux-leds-owner@vger.kernel.org
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Cc: "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Alexandre Courbot <gnurou@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Jingoo
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D824F2654E5
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 08:49:17 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 28, 2014 at 1:01 AM, Dmitry Eremin-Solenikov
-<dbaryshkov@gmail.com> wrote:
+This series fixes the device open pm handling and adds the runtime pm
+support. Also we fix lock usage while changing the driver state
 
-> Add gpiolib driver for gpio pins placed on the LoCoMo GA.
->
-> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Changes in v2:
+ - fix style in comments
+ - fix error prints and remove noisy debug
 
-(...)
-> +static int locomo_gpio_get(struct gpio_chip *chip,
-> +               unsigned offset)
-> +{
-> +       struct locomo_gpio *lg = container_of(chip, struct locomo_gpio, gpio);
-> +
-> +       return readw(lg->regs + LOCOMO_GPL) & (1 << offset);
+Mythri P K (1):
+  Audio: SST: use lock when changing SST state.
 
-Do this:
+Subhransu S. Prusty (1):
+  ASoC: Intel: mrfld: Fix runtime pm calls in sst_open_pcm_stream
 
-#include <linux/bitops.h>
+Vinod Koul (1):
+  ASoC: Intel: sst: add runtime power management handling
 
-return !!(readw(lg->regs + LOCOMO_GPL) & BIT(offset));
-
-So you clamp the returned value to a bool.
-
-> +static void __locomo_gpio_set(struct gpio_chip *chip,
-> +               unsigned offset, int value)
-> +{
-> +       struct locomo_gpio *lg = container_of(chip, struct locomo_gpio, gpio);
-> +       u16  r;
-> +
-> +       r = readw(lg->regs + LOCOMO_GPO);
-> +       if (value)
-> +               r |= 1 << offset;
-
-r |= BIT(offset);
-
-> +       else
-> +               r &= ~(1 << offset);
-
-r &= BIT(offset);
-
-(etc, everywhere this pattern occurs).
-> +static void locomo_gpio_set(struct gpio_chip *chip,
-> +               unsigned offset, int value)
-> +{
-> +       struct locomo_gpio *lg = container_of(chip, struct locomo_gpio, gpio);
-> +       unsigned long flags;
-> +
-> +       spin_lock_irqsave(&lg->lock, flags);
-> +
-> +       __locomo_gpio_set(chip, offset, value);
-> +
-> +       spin_unlock_irqrestore(&lg->lock, flags);
-
-If you actually always have to be getting and releasing a spin lock around
-the register writes, contemplate using regmap-mmio because that
-is part of what it does.
-
-But is this locking really necessary?
-
-> +static int locomo_gpio_remove(struct platform_device *pdev)
-> +{
-> +       struct locomo_gpio *lg = platform_get_drvdata(pdev);
-> +       int ret;
-> +
-> +       ret = gpiochip_remove(&lg->gpio);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "Can't remove gpio chip: %d\n", ret);
-> +               return ret;
-> +       }
-
-The return value from gpiochip_remove() has been removed in v3.18-rc1
-so this will not compile.
-
-Yours,
-Linus Walleij
+ sound/soc/intel/sst/sst.c               |   65 +++++++++++++++++++++++++++++++
+ sound/soc/intel/sst/sst_drv_interface.c |   12 ++----
+ sound/soc/intel/sst/sst_ipc.c           |    2 +-
+ 3 files changed, 70 insertions(+), 9 deletions(-)
