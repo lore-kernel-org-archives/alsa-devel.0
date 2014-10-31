@@ -1,21 +1,14 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 7/9] ASoC: Intel: move PCI probe to a
- seprate	file
-Date: Fri, 31 Oct 2014 11:25:02 +0530
-Message-ID: <20141031055502.GI28745@intel.com>
-References: <s5hmw8d4n1c.wl-tiwai@suse.de> <20141030143444.GA28745@intel.com>
- <s5hh9yl4lyq.wl-tiwai@suse.de> <20141030153719.GE28745@intel.com>
- <s5h7fzh4j3n.wl-tiwai@suse.de> <20141030155947.GF28745@intel.com>
- <s5h1tpp4i58.wl-tiwai@suse.de> <20141030161428.GG28745@intel.com>
- <s5hwq7h32rv.wl-tiwai@suse.de>
- <20141030173112.GF18557@sirena.org.uk>
+From: <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt286: reduce power consumption
+Date: Fri, 31 Oct 2014 14:52:16 +0800
+Message-ID: <1414738336-17371-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8093341690912421267=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 92C6326068C
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 07:35:58 +0100 (CET)
-In-Reply-To: <20141030173112.GF18557@sirena.org.uk>
+Received: from rtits2.realtek.com (rtits2.realtek.com [60.250.210.242])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AB9926068C
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 07:52:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,97 +18,339 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Bard Liao <bardliao@realtek.com>
 
---===============8093341690912421267==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="HnQK338I3UIa/qiP"
-Content-Disposition: inline
+This patch will optimize the power consumption of rt286.
 
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt286.c | 211 ++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 155 insertions(+), 56 deletions(-)
 
---HnQK338I3UIa/qiP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Oct 30, 2014 at 05:31:12PM +0000, Mark Brown wrote:
-> On Thu, Oct 30, 2014 at 06:07:00PM +0100, Takashi Iwai wrote:
-> > Vinod Koul wrote:
->=20
-> > > snd-intel-sst-pci-y +=3D sst-intel-core.o sst_pci.o
-> > > snd-intel-sst-acpi-y +=3D st-intel-core.o sst_acpi.o
->=20
-> > Kbuild doesn't allow this syntax, AFAIK.
->=20
-> I've not followed the whole discussion but why not just have the core
-> code as a separate module, this seems like an awful lot of trouble for
-> something that's normally straightforward...
-Hmm seems like my attempt to have just two module is fraught with risks. I
-will convert core to module which can be linked either by PCI or ACPI.
-
-Thats should clean this out :)
-Thanks for all the points
-
-Mark, please drop this patch, the ones before will still be required for
-module so pls do review them
-
-Thanks
---=20
-~Vinod
-
->=20
-> > > well both can be compile tested and we will put in symbols about limi=
-tation
-> > > of having bpth apci and pci as built-in or module.
->=20
-> > No, the point is that the exclusiveness in Kconfig level gives more
-> > demerits.  This makes impossible to build the both codes in a single
-> > shot, which makes also impossible to cover wider build tests, etc.
-> > My concern isn't about the actual operation but about testing.
->=20
-> > That is: don't try to side step such a build issue.  I bet it'll
-> > strike back later.  Better to keep rather the simple and common
-> > approach other drivers take.
->=20
-> Right.
-
-
-
---=20
-
---HnQK338I3UIa/qiP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIcBAEBAgAGBQJUUyQ2AAoJEHwUBw8lI4NHkkAP/jrE+rZn9Olc61YrxNILdmhd
-jwhct9lz2ZDU/B3fybyuF9MQeBqhVurAw7/9+V9IABs01ZEkW1B3uZHHqrR2J0qB
-oyT+MKndr7UsHPTVg5cDGFIzNkxbXugOAjCZzIviEcH3dyQ273HZrrs4G1NiNA/U
-4QLBrPlO3LHIxzYRCKYVU7fgXygGO5KRM4aVsi+xZurqoNO/d+q+Ke1SWCcQvFSy
-FU92hrkDPW7s00IEHU18T4Xc23Ou8L9c23hXOKcpxHOEIhuwpOFiqTsz81gHI7Fw
-9FIzumA07k1ZcMRxwFPrUsCMkFB5ZBniYGCZ7aaBwbsDJrrfF25B70HaGOW0U0bP
-MRB7AuUGsHwiGzDHLR8gdyKepDYJhJmDrds7HJRvd+skShwjb/G61DaVndTRtSc1
-4bSzg7OJdkhBeLHBnJ03pMBNyz+hjE1KBplNIXCp5RkROPwMNdkVbnNT81Fv/kN8
-onzT5mTuFyUbE0jPlcBxim4a7nyQqv1xQ9Lq7visrQd3zBJuDHFpzB4t0nUc1Oy6
-wv2w2cUigw3qRbzlAvyfHmWX2N3Jy4W2BcWOnuaXzKvG3kRdm6o+LHoxuCxP3hYR
-d3MMn0L4oIYiLFaoDufL3XQyZ+xTxoRGNoScjfAA32+OHl/HoQYyCgZzmOJiaN3c
-LQKBzqvw1QvPtz1WtfKX
-=7e/O
------END PGP SIGNATURE-----
-
---HnQK338I3UIa/qiP--
-
---===============8093341690912421267==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8093341690912421267==--
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 4aa555c..97daa80 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -36,11 +36,13 @@
+ 
+ struct rt286_priv {
+ 	struct regmap *regmap;
++	struct snd_soc_codec *codec;
+ 	struct rt286_platform_data pdata;
+ 	struct i2c_client *i2c;
+ 	struct snd_soc_jack *jack;
+ 	struct delayed_work jack_detect_work;
+ 	int sys_clk;
++	int clk_id;
+ 	struct reg_default *index_cache;
+ };
+ 
+@@ -298,7 +300,6 @@ static int rt286_support_power_controls[] = {
+ static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
+ {
+ 	unsigned int val, buf;
+-	int i;
+ 
+ 	*hp = false;
+ 	*mic = false;
+@@ -309,67 +310,44 @@ static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
+ 		if (*hp) {
+ 			/* power on HV,VERF */
+ 			regmap_update_bits(rt286->regmap,
+-				RT286_POWER_CTRL1, 0x1001, 0x0);
++				RT286_DC_GAIN, 0x200, 0x200);
++
++			snd_soc_dapm_force_enable_pin(&rt286->codec->dapm,
++							"HV");
++			snd_soc_dapm_force_enable_pin(&rt286->codec->dapm,
++							"VREF");
+ 			/* power LDO1 */
+-			regmap_update_bits(rt286->regmap,
+-				RT286_POWER_CTRL2, 0x4, 0x4);
+-			regmap_write(rt286->regmap, RT286_SET_MIC1, 0x24);
+-			regmap_read(rt286->regmap, RT286_CBJ_CTRL2, &val);
++			snd_soc_dapm_force_enable_pin(&rt286->codec->dapm,
++							"LDO1");
++			snd_soc_dapm_sync(&rt286->codec->dapm);
+ 
+-			msleep(200);
+-			i = 40;
+-			while (((val & 0x0800) == 0) && (i > 0)) {
+-				regmap_read(rt286->regmap,
+-					RT286_CBJ_CTRL2, &val);
+-				i--;
+-				msleep(20);
+-			}
++			regmap_write(rt286->regmap, RT286_SET_MIC1, 0x24);
++			msleep(50);
+ 
+-			if (0x0400 == (val & 0x0700)) {
+-				*mic = false;
++			regmap_update_bits(rt286->regmap,
++				RT286_CBJ_CTRL1, 0xfcc0, 0xd400);
++			msleep(300);
++			regmap_read(rt286->regmap, RT286_CBJ_CTRL2, &val);
+ 
+-				regmap_write(rt286->regmap,
+-					RT286_SET_MIC1, 0x20);
+-				/* power off HV,VERF */
+-				regmap_update_bits(rt286->regmap,
+-					RT286_POWER_CTRL1, 0x1001, 0x1001);
+-				regmap_update_bits(rt286->regmap,
+-					RT286_A_BIAS_CTRL3, 0xc000, 0x0000);
+-				regmap_update_bits(rt286->regmap,
+-					RT286_CBJ_CTRL1, 0x0030, 0x0000);
+-				regmap_update_bits(rt286->regmap,
+-					RT286_A_BIAS_CTRL2, 0xc000, 0x0000);
+-			} else if ((0x0200 == (val & 0x0700)) ||
+-				(0x0100 == (val & 0x0700))) {
++			if (0x0070 == (val & 0x0070)) {
+ 				*mic = true;
+-				regmap_update_bits(rt286->regmap,
+-					RT286_A_BIAS_CTRL3, 0xc000, 0x8000);
+-				regmap_update_bits(rt286->regmap,
+-					RT286_CBJ_CTRL1, 0x0030, 0x0020);
+-				regmap_update_bits(rt286->regmap,
+-					RT286_A_BIAS_CTRL2, 0xc000, 0x8000);
+ 			} else {
+-				*mic = false;
++				regmap_update_bits(rt286->regmap,
++					RT286_CBJ_CTRL1, 0xfcc0, 0xe400);
++				msleep(300);
++				regmap_read(rt286->regmap,
++					RT286_CBJ_CTRL2, &val);
++				if (0x0070 == (val & 0x0070))
++					*mic = true;
++				else
++					*mic = false;
+ 			}
+-
+-			regmap_update_bits(rt286->regmap,
+-						RT286_MISC_CTRL1,
+-						0x0060, 0x0000);
+-		} else {
+-			regmap_update_bits(rt286->regmap,
+-						RT286_MISC_CTRL1,
+-						0x0060, 0x0020);
+-			regmap_update_bits(rt286->regmap,
+-						RT286_A_BIAS_CTRL3,
+-						0xc000, 0x8000);
+ 			regmap_update_bits(rt286->regmap,
+-						RT286_CBJ_CTRL1,
+-						0x0030, 0x0020);
+-			regmap_update_bits(rt286->regmap,
+-						RT286_A_BIAS_CTRL2,
+-						0xc000, 0x8000);
++				RT286_DC_GAIN, 0x200, 0x0);
+ 
++		} else {
+ 			*mic = false;
++			regmap_write(rt286->regmap, RT286_SET_MIC1, 0x20);
+ 		}
+ 	} else {
+ 		regmap_read(rt286->regmap, RT286_GET_HP_SENSE, &buf);
+@@ -378,6 +356,12 @@ static int rt286_jack_detect(struct rt286_priv *rt286, bool *hp, bool *mic)
+ 		*mic = buf & 0x80000000;
+ 	}
+ 
++	snd_soc_dapm_disable_pin(&rt286->codec->dapm, "HV");
++	snd_soc_dapm_disable_pin(&rt286->codec->dapm, "VREF");
++	if (!*hp)
++		snd_soc_dapm_disable_pin(&rt286->codec->dapm, "LDO1");
++	snd_soc_dapm_sync(&rt286->codec->dapm);
++
+ 	return 0;
+ }
+ 
+@@ -415,6 +399,17 @@ int rt286_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
+ }
+ EXPORT_SYMBOL_GPL(rt286_mic_detect);
+ 
++static int is_mclk_mode(struct snd_soc_dapm_widget *source,
++			 struct snd_soc_dapm_widget *sink)
++{
++	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(source->codec);
++
++	if (rt286->clk_id == RT286_SCLK_S_MCLK)
++		return 1;
++	else
++		return 0;
++}
++
+ static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -6350, 50, 0);
+ static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, 0, 1000, 0);
+ 
+@@ -568,7 +563,84 @@ static int rt286_adc_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++static int rt286_vref_event(struct snd_soc_dapm_widget *w,
++			     struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(codec,
++			RT286_CBJ_CTRL1, 0x0400, 0x0000);
++		mdelay(50);
++		break;
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int rt286_ldo2_event(struct snd_soc_dapm_widget *w,
++			     struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		snd_soc_update_bits(codec, RT286_POWER_CTRL2, 0x38, 0x08);
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		snd_soc_update_bits(codec, RT286_POWER_CTRL2, 0x38, 0x30);
++		break;
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++static int rt286_mic1_event(struct snd_soc_dapm_widget *w,
++			     struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(codec,
++			RT286_A_BIAS_CTRL3, 0xc000, 0x8000);
++		snd_soc_update_bits(codec,
++			RT286_A_BIAS_CTRL2, 0xc000, 0x8000);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_update_bits(codec,
++			RT286_A_BIAS_CTRL3, 0xc000, 0x0000);
++		snd_soc_update_bits(codec,
++			RT286_A_BIAS_CTRL2, 0xc000, 0x0000);
++		break;
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget rt286_dapm_widgets[] = {
++	SND_SOC_DAPM_SUPPLY_S("HV", 1, RT286_POWER_CTRL1,
++		12, 1, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("VREF", RT286_POWER_CTRL1,
++		0, 1, rt286_vref_event, SND_SOC_DAPM_PRE_PMU),
++	SND_SOC_DAPM_SUPPLY_S("LDO1", 1, RT286_POWER_CTRL2,
++		2, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("LDO2", 2, RT286_POWER_CTRL1,
++		13, 1, rt286_ldo2_event, SND_SOC_DAPM_PRE_PMD |
++		SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_SUPPLY("MCLK MODE", RT286_PLL_CTRL1,
++		5, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("MIC1 Input Buffer", SND_SOC_NOPM,
++		0, 0, rt286_mic1_event, SND_SOC_DAPM_PRE_PMU |
++		SND_SOC_DAPM_POST_PMD),
++
+ 	/* Input Lines */
+ 	SND_SOC_DAPM_INPUT("DMIC1 Pin"),
+ 	SND_SOC_DAPM_INPUT("DMIC2 Pin"),
+@@ -642,6 +714,25 @@ static const struct snd_soc_dapm_widget rt286_dapm_widgets[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route rt286_dapm_routes[] = {
++	{"ADC 0", NULL, "MCLK MODE", is_mclk_mode},
++	{"ADC 1", NULL, "MCLK MODE", is_mclk_mode},
++	{"Front", NULL, "MCLK MODE", is_mclk_mode},
++	{"Surround", NULL, "MCLK MODE", is_mclk_mode},
++
++	{"HP Power", NULL, "LDO1"},
++	{"HP Power", NULL, "LDO2"},
++
++	{"MIC1", NULL, "LDO1"},
++	{"MIC1", NULL, "LDO2"},
++	{"MIC1", NULL, "HV"},
++	{"MIC1", NULL, "VREF"},
++	{"MIC1", NULL, "MIC1 Input Buffer"},
++
++	{"SPO", NULL, "LDO1"},
++	{"SPO", NULL, "LDO2"},
++	{"SPO", NULL, "HV"},
++	{"SPO", NULL, "VREF"},
++
+ 	{"DMIC1", NULL, "DMIC1 Pin"},
+ 	{"DMIC2", NULL, "DMIC2 Pin"},
+ 	{"DMIC1", NULL, "DMIC Receiver"},
+@@ -880,6 +971,7 @@ static int rt286_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	}
+ 
+ 	rt286->sys_clk = freq;
++	rt286->clk_id = clk_id;
+ 
+ 	return 0;
+ }
+@@ -915,13 +1007,18 @@ static int rt286_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	case SND_SOC_BIAS_ON:
+ 		mdelay(10);
++		snd_soc_update_bits(codec,
++			RT286_CBJ_CTRL1, 0x0400, 0x0400);
++		snd_soc_update_bits(codec,
++			RT286_DC_GAIN, 0x200, 0x0);
++
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
+ 		snd_soc_write(codec,
+ 			RT286_SET_AUDIO_POWER, AC_PWRST_D3);
+ 		snd_soc_update_bits(codec,
+-			RT286_DC_GAIN, 0x200, 0x0);
++			RT286_CBJ_CTRL1, 0x0400, 0x0000);
+ 		break;
+ 
+ 	default:
+@@ -962,6 +1059,7 @@ static int rt286_probe(struct snd_soc_codec *codec)
+ {
+ 	struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
+ 
++	rt286->codec = codec;
+ 	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
+ 
+ 	if (rt286->i2c->irq) {
+@@ -1152,7 +1250,6 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	if (!rt286->pdata.cbj_en) {
+ 		regmap_write(rt286->regmap, RT286_CBJ_CTRL2, 0x0000);
+ 		regmap_write(rt286->regmap, RT286_MIC1_DET_CTRL, 0x0816);
+-		regmap_write(rt286->regmap, RT286_MISC_CTRL1, 0x0000);
+ 		regmap_update_bits(rt286->regmap,
+ 					RT286_CBJ_CTRL1, 0xf000, 0xb000);
+ 	} else {
+@@ -1169,8 +1266,10 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 
+ 	mdelay(10);
+ 
+-	/*Power down LDO2*/
+-	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL2, 0x8, 0x0);
++	regmap_write(rt286->regmap, RT286_MISC_CTRL1, 0x0000);
++	/*Power down LDO, VREF*/
++	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL2, 0xc, 0x0);
++	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL1, 0x1001, 0x1001);
+ 
+ 	/*Set depop parameter*/
+ 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL2, 0x403a, 0x401a);
+-- 
+1.8.1.1.439.g50a6b54
