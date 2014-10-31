@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/4] ASoC: mfld-compress: implement .power
-	callback
-Date: Fri, 31 Oct 2014 12:52:10 +0000
-Message-ID: <20141031125210.GY18557@sirena.org.uk>
+Subject: Re: [PATCH 4/4] ASoC: Intel: sst - add compressed ops
+	handling
+Date: Fri, 31 Oct 2014 12:52:52 +0000
+Message-ID: <20141031125252.GZ18557@sirena.org.uk>
 References: <1414666259-4450-1-git-send-email-vinod.koul@intel.com>
- <1414666259-4450-4-git-send-email-vinod.koul@intel.com>
+ <1414666259-4450-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6117544244739581946=="
+Content-Type: multipart/mixed; boundary="===============4648125640374052137=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 91535265835
- for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 13:52:32 +0100 (CET)
-In-Reply-To: <1414666259-4450-4-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C8EE22606AF
+ for <alsa-devel@alsa-project.org>; Fri, 31 Oct 2014 13:53:13 +0100 (CET)
+In-Reply-To: <1414666259-4450-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,49 +27,44 @@ Cc: alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, lgirdwood@gmail.c
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6117544244739581946==
+--===============4648125640374052137==
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="q2efgaiYRy6GdUpU"
+	protocol="application/pgp-signature"; boundary="FXps2S/B285IqyHG"
 Content-Disposition: inline
 
 
---q2efgaiYRy6GdUpU
+--FXps2S/B285IqyHG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 30, 2014 at 04:20:58PM +0530, Vinod Koul wrote:
-> From: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
->=20
-> .power callback is required to invoked for compressed audio as well to tu=
-rn
-> on/off sst, so invoke them
+On Thu, Oct 30, 2014 at 04:20:59PM +0530, Vinod Koul wrote:
+> This patch add low level IPC handling for compressed stream operations
 
 Applied, thanks.
 
---q2efgaiYRy6GdUpU
+--FXps2S/B285IqyHG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUU4X5AAoJECTWi3JdVIfQonUH/0Ebr/7O+vr5AgWroEJ1IBHL
-4qSHiGt6qj7MCJhHMoh3oLtfXdikVQxM0MyfuUKsZ33tBzajQ3Fd9Xv9GAxNnmcM
-yY91wFNFG62vDQsBjT3BmxLM5zs4d1aul4KOcNfwUY3r8KzeZWXNGzNMQoWfw+5d
-gZFXaBWFiUsbAML4peRzL9aA6u639bwlEASrJW/Fs++eQHCi/EuLKP+i1/4kr8pp
-LI0eQvvN3lFlY7zw6d+RnhMFJIedSOvAae882zwD/KCrUdU2aPe0mOBqskFpiiMj
-QN2QjmlGcRX+f5geL6MRtENcGewK0mBIIZCvyoahEWxruqu04lxCI/mZLoNbiUY=
-=Y/x/
+iQEcBAEBAgAGBQJUU4YjAAoJECTWi3JdVIfQzoAH/3zD/1QB9zY7K8+u+IJiovUb
+eArxm1J8KqN1x4DjBvEYZjF5Mz1IUEGFV07HmljYGL3UhfzjcGlpU0qglrFSofSS
+0aasojZF59Z7kaktfKCjZDscBgQ6pKqFIP8bcXSpJlKazGet0vUQdTYOfRDW+azn
+3twXlNqq6zJ5Rw9B+Qi1YlFlF8fOmU+XOMcF3H/lJFNGpG0ZCAjlg3sqoTntJPGO
+AY1ILEXCvgORm3Roz8J3JjIVDgMNbZuel/ZcIRokr+wpkJqLte6rRghROeQPMORJ
+Wv8AyZ2MRjLKsbRV7Dev2IOlDtIO307fOphqjEiFaVQweFGMNGbn/XRtrkVue0g=
+=aTa0
 -----END PGP SIGNATURE-----
 
---q2efgaiYRy6GdUpU--
+--FXps2S/B285IqyHG--
 
---===============6117544244739581946==
+--===============4648125640374052137==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6117544244739581946==--
+--===============4648125640374052137==--
