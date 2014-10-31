@@ -1,50 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: atmel_ssc_dai: Match the CMR divider only in full
- duplex.
-Date: Fri, 31 Oct 2014 18:12:10 +0000
-Message-ID: <20141031181210.GQ18557@sirena.org.uk>
-References: <544A1121.6080900@atmel.com>
- <1414178759-7252-1-git-send-email-peda@axentia.se>
- <1414178759-7252-2-git-send-email-peda@axentia.se>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH 0/2] ASoC: fsl: Use dynamic slot width for ESAI.
+Date: Fri, 31 Oct 2014 11:16:27 -0700
+Message-ID: <20141031181626.GA7772@Asurada>
+References: <cover.1414193668.git.nicoleotsuka@gmail.com>
+ <20141031181224.GR18557@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2yGx+1UeQj0dgFI1"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1414178759-7252-2-git-send-email-peda@axentia.se>
+In-Reply-To: <20141031181224.GR18557@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: b02247@freescale.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, timur@tabi.org, Li.Xiubo@freescale.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Oct 31, 2014 at 06:12:24PM +0000, Mark Brown wrote:
+> On Fri, Oct 24, 2014 at 04:48:10PM -0700, Nicolin Chen wrote:
+> 
+> > @Shengjiu,
+> > Will you be available to test this series on Sabre Auto for both
+> > Master and Slave cases? I'd like to wait for your Test-by. Thanks.
+> 
+> Any ETA on the testing?
 
---2yGx+1UeQj0dgFI1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Please hold one more week. I'll also try to contact him personally.
 
-On Fri, Oct 24, 2014 at 09:25:59PM +0200, Peter Rosin wrote:
-> The CMR divider register is shared by playback and capture. The SSC driver
-> therefore tries to enforce rules so that the needed register content do
-> not conflict during simultaneous playback/capture. However, the
-> implementation also prevents changing the register content in
-> half-duplex scenarios, which is needed when using the OSS API.
-
-Bo, is this OK?
-
---2yGx+1UeQj0dgFI1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUU9D5AAoJECTWi3JdVIfQxq4H/0tmjB+/0YvxDhXsfcx44yaZ
-wuRJ3ClOkzAPgfVGtj/wBX4U66E1uCZVBpYsqkqjk2rHjGcPDZQSz8ojqsu0n5bh
-cGMKOygU3bN1RzRvYwgRIELWbI21GdPJc7XCORulhus3FdT5/Yi6t8XmtWvmDjoE
-vGLf4LSBx34hezavMioBIOlPuO9Q8C0f44/kXjkL+1mhhe7CVjKX7Q7ZkVuP58Br
-6TYBlLx53OlGpGZNp2XDeL+Roqdes5VJMQgF7WZ0nbniC5u4Egj9g2VVRfm+PCx8
-+qBOOfaVt/+oTd7FViGjSmN0Xi1Z9V9ypHC8tx967f2iCCD4m1taBzd3sTjb7Us=
-=uoBs
------END PGP SIGNATURE-----
-
---2yGx+1UeQj0dgFI1--
+Thank you.
+Nicolin
