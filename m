@@ -1,78 +1,62 @@
-From: Jianqun <jay.xu@rock-chips.com>
-Subject: [PATCH] ASoC: simple-card: add "invert" property for detect GPIOs
-Date: Sat,  1 Nov 2014 11:22:18 +0800
-Message-ID: <1414812138-6178-1-git-send-email-jay.xu@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, Li.Xiubo@freescale.com, moinejf@free.fr, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, Guangyu.Chen@freescale.com, dgreid@chromium.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: huangtao@rock-chips.com, cf@rock-chips.com, Jianqun <jay.xu@rock-chips.com>
+From: Alexandre Courbot <gnurou@gmail.com>
+Subject: Re: [PATCH 11/15] sound: soc: poodle: make use of new locomo GPIO interface
+Date: Sat, 1 Nov 2014 14:42:33 +0900
+Message-ID: <CAAVeFuKuBeoF0i4RpuXo=H1G4C6BfjC0hEUyN2TO02UM0DsHfg@mail.gmail.com>
+References: <1414454528-24240-1-git-send-email-dbaryshkov@gmail.com>
+ <1414454528-24240-12-git-send-email-dbaryshkov@gmail.com> <20141028145850.GU18557@sirena.org.uk>
+ <CAAVeFuKgARoMFzf+663iP6cULs93d4WSQS8ESjUb9VcxguWurA@mail.gmail.com>
+ <CACRpkdY-RDuxGMWe_SD613ovsEoHhxjP1+3T-m_zKQSx=mkFjA@mail.gmail.com> <CALT56yP6K-sXOGM4z-WRsvFVjOi-13wM+Ewqn6WpDmNB4xcOEg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-leds-owner@vger.kernel.org>
+In-Reply-To: <CALT56yP6K-sXOGM4z-WRsvFVjOi-13wM+Ewqn6WpDmNB4xcOEg@mail.gmail.com>
+Sender: linux-leds-owner@vger.kernel.org
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Linux Input <linux-input@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andrea Adami <andrea.adami@gmail.com>, Russell King <linux@arm.linux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Bryan Wu <cooloney@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Samuel Ortiz <sameo@linux.intel.com>, Lee Jones <lee.jones@linaro.org>, Ji
 List-Id: alsa-devel@alsa-project.org
 
-Since hardware may invert detect GPIO of headphone or mic, add one
-property to support software invert.
+On Fri, Oct 31, 2014 at 6:58 PM, Dmitry Eremin-Solenikov
+<dbaryshkov@gmail.com> wrote:
+> 2014-10-31 12:52 GMT+03:00 Linus Walleij <linus.walleij@linaro.org>:
+>> On Wed, Oct 29, 2014 at 4:03 AM, Alexandre Courbot <gnurou@gmail.com> wrote:
+>>> On Tue, Oct 28, 2014 at 11:58 PM, Mark Brown <broonie@kernel.org> wrote:
+>>>> On Tue, Oct 28, 2014 at 03:02:04AM +0300, Dmitry Eremin-Solenikov wrote:
+>>>>> Since LoCoMo driver has been converted to provide proper gpiolib
+>>>>> interface, make poodle ASoC platform driver use gpiolib API.
+>>>>
+>>>> Please use subject lines matching the style for the subsystem.
+>>>>
+>>>>> +     ret = gpio_request_array(poodle_gpios, ARRAY_SIZE(poodle_gpios));
+>>>>> +     if (ret) {
+>>>>> +             dev_err(&pdev->dev, "gpio_request_array() failed: %d\n",
+>>>>> +                             ret);
+>>>>> +             return ret;
+>>>>> +     }
+>>>>
+>>>> I sense a need for devm_gpio_request_array() here.  Otherwise this looks
+>>>> fine - ideally it'd move to gpiod but moving to gpiolib is a clear win
+>>>> so no need to block on this.
+>>>
+>>> I wish Dmitry took the opportunity to move this driver to the gpiod
+>>> API, especially since doing so would be trivial for this driver.
+>>
+>> +1 on this.
+>>
+>> However this platform is not device tree, so this implies setting up
+>> a descriptor table for the affected driver(s) to work properly.
+>> See Documentation/gpio/board.txt
+>
+> I checked the gpiod interfaces after original suggestion by Alexandre.
+>
+> Introducing those mapping tables (much like pinctrl tables) look like
+> a duplicate effort if Russell will permit adding a DT support. So
+> I thought that I will reconsider gpiod/pinctrl/etc after fixing
+> LoCoMo, reiterating IRQ patches, possibly switching to COMMON_CLK
+> and (finally) thinking about device tree support.
 
-Signed-off-by: Jianqun <jay.xu@rock-chips.com>
----
- sound/soc/generic/simple-card.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index d1b7293..f1bb537 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -29,7 +29,9 @@ struct simple_card_data {
- 	} *dai_props;
- 	unsigned int mclk_fs;
- 	int gpio_hp_det;
-+	int gpio_hp_det_invert;
- 	int gpio_mic_det;
-+	int gpio_mic_det_invert;
- 	struct snd_soc_dai_link dai_link[];	/* dynamically allocated */
- };
- 
-@@ -148,6 +150,7 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- 				      simple_card_hp_jack_pins);
- 
- 		simple_card_hp_jack_gpio.gpio = priv->gpio_hp_det;
-+		simple_card_hp_jack_gpio.invert = priv->gpio_hp_det_invert;
- 		snd_soc_jack_add_gpios(&simple_card_hp_jack, 1,
- 				       &simple_card_hp_jack_gpio);
- 	}
-@@ -159,6 +162,7 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- 				      ARRAY_SIZE(simple_card_mic_jack_pins),
- 				      simple_card_mic_jack_pins);
- 		simple_card_mic_jack_gpio.gpio = priv->gpio_mic_det;
-+		simple_card_mic_jack_gpio.invert = priv->gpio_mic_det_invert;
- 		snd_soc_jack_add_gpios(&simple_card_mic_jack, 1,
- 				       &simple_card_mic_jack_gpio);
- 	}
-@@ -381,6 +385,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 				     struct simple_card_data *priv)
- {
- 	struct device *dev = simple_priv_to_dev(priv);
-+	enum of_gpio_flags flags;
- 	u32 val;
- 	int ret;
- 
-@@ -436,13 +441,15 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 			return ret;
- 	}
- 
--	priv->gpio_hp_det = of_get_named_gpio(node,
--				"simple-audio-card,hp-det-gpio", 0);
-+	priv->gpio_hp_det = of_get_named_gpio_flags(node,
-+				"simple-audio-card,hp-det-gpio", 0, &flags);
-+	priv->gpio_hp_det_invert = !!(flags & OF_GPIO_ACTIVE_LOW);
- 	if (priv->gpio_hp_det == -EPROBE_DEFER)
- 		return -EPROBE_DEFER;
- 
--	priv->gpio_mic_det = of_get_named_gpio(node,
--				"simple-audio-card,mic-det-gpio", 0);
-+	priv->gpio_mic_det = of_get_named_gpio_flags(node,
-+				"simple-audio-card,mic-det-gpio", 0, &flags);
-+	priv->gpio_mic_det_invert = !!(flags & OF_GPIO_ACTIVE_LOW);
- 	if (priv->gpio_mic_det == -EPROBE_DEFER)
- 		return -EPROBE_DEFER;
- 
--- 
-1.9.1
+Note that the mapping tables are likely not going to end up being
+huge, and taking that step will allow you to convert to the gpiod
+interface, something you would probably want to do later when adding
+DT support anyway. So at the end of the day there would be very little
+wasted effort: once converting to DT, just add the GPIO properties
+into the appropriate node, remove the mapping tables, and you're done.
