@@ -1,43 +1,78 @@
 From: Jianqun <jay.xu@rock-chips.com>
-Subject: [PATCH v2] ASoC: rockchip: i2s: add text after tristate for SND_SOC_ROCKCHIP_I2S
-Date: Sat,  1 Nov 2014 10:58:18 +0800
-Message-ID: <1414810698-5609-1-git-send-email-jay.xu@rock-chips.com>
-References: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
+Subject: [PATCH] ASoC: simple-card: add "invert" property for detect GPIOs
+Date: Sat,  1 Nov 2014 11:22:18 +0800
+Message-ID: <1414812138-6178-1-git-send-email-jay.xu@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1413891110-21059-1-git-send-email-jay.xu@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: heiko@sntech.de, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, Li.Xiubo@freescale.com, moinejf@free.fr, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, Guangyu.Chen@freescale.com, dgreid@chromium.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 Cc: huangtao@rock-chips.com, cf@rock-chips.com, Jianqun <jay.xu@rock-chips.com>
 List-Id: alsa-devel@alsa-project.org
 
-For SND_SOC_ROCKCHIP_I2S, adding some text after the
-tristate to make this directly user selectable.
+Since hardware may invert detect GPIO of headphone or mic, add one
+property to support software invert.
 
 Signed-off-by: Jianqun <jay.xu@rock-chips.com>
 ---
-changes since v1:
--to make this directlyuser selectable by adding some text after
-the tristate as well as the rest, suggested by Mark
--to use the existing MAX98090 entry, not duplicate it, so remove
-related codes, suggested by Mark
+ sound/soc/generic/simple-card.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
- sound/soc/rockchip/Kconfig | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
-index 78fc159..b1fc0ca 100644
---- a/sound/soc/rockchip/Kconfig
-+++ b/sound/soc/rockchip/Kconfig
-@@ -8,4 +8,9 @@ config SND_SOC_ROCKCHIP
- 	  select the audio interfaces to support below.
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index d1b7293..f1bb537 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -29,7 +29,9 @@ struct simple_card_data {
+ 	} *dai_props;
+ 	unsigned int mclk_fs;
+ 	int gpio_hp_det;
++	int gpio_hp_det_invert;
+ 	int gpio_mic_det;
++	int gpio_mic_det_invert;
+ 	struct snd_soc_dai_link dai_link[];	/* dynamically allocated */
+ };
  
- config SND_SOC_ROCKCHIP_I2S
--	tristate
-+	tristate "Rockchip I2S Device Driver"
-+	depends on CLKDEV_LOOKUP
-+	help
-+	  Say Y or M if you want to add support for I2S driver for
-+	  Rockchip I2S device. The device supports upto maximum of
-+	  8 channels each for play and record.
+@@ -148,6 +150,7 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 				      simple_card_hp_jack_pins);
+ 
+ 		simple_card_hp_jack_gpio.gpio = priv->gpio_hp_det;
++		simple_card_hp_jack_gpio.invert = priv->gpio_hp_det_invert;
+ 		snd_soc_jack_add_gpios(&simple_card_hp_jack, 1,
+ 				       &simple_card_hp_jack_gpio);
+ 	}
+@@ -159,6 +162,7 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 				      ARRAY_SIZE(simple_card_mic_jack_pins),
+ 				      simple_card_mic_jack_pins);
+ 		simple_card_mic_jack_gpio.gpio = priv->gpio_mic_det;
++		simple_card_mic_jack_gpio.invert = priv->gpio_mic_det_invert;
+ 		snd_soc_jack_add_gpios(&simple_card_mic_jack, 1,
+ 				       &simple_card_mic_jack_gpio);
+ 	}
+@@ -381,6 +385,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 				     struct simple_card_data *priv)
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
++	enum of_gpio_flags flags;
+ 	u32 val;
+ 	int ret;
+ 
+@@ -436,13 +441,15 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 			return ret;
+ 	}
+ 
+-	priv->gpio_hp_det = of_get_named_gpio(node,
+-				"simple-audio-card,hp-det-gpio", 0);
++	priv->gpio_hp_det = of_get_named_gpio_flags(node,
++				"simple-audio-card,hp-det-gpio", 0, &flags);
++	priv->gpio_hp_det_invert = !!(flags & OF_GPIO_ACTIVE_LOW);
+ 	if (priv->gpio_hp_det == -EPROBE_DEFER)
+ 		return -EPROBE_DEFER;
+ 
+-	priv->gpio_mic_det = of_get_named_gpio(node,
+-				"simple-audio-card,mic-det-gpio", 0);
++	priv->gpio_mic_det = of_get_named_gpio_flags(node,
++				"simple-audio-card,mic-det-gpio", 0, &flags);
++	priv->gpio_mic_det_invert = !!(flags & OF_GPIO_ACTIVE_LOW);
+ 	if (priv->gpio_mic_det == -EPROBE_DEFER)
+ 		return -EPROBE_DEFER;
+ 
 -- 
 1.9.1
