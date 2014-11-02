@@ -1,70 +1,73 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: fix missing mutex
-Date: Sun, 2 Nov 2014 11:07:46 +0000
-Message-ID: <20141102110746.GA3815@sirena.org.uk>
-References: <1414910081-2487-1-git-send-email-sudipm.mukherjee@gmail.com>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Subject: [PATCH 1/1] PCI: EMU10K1: Deletion of unnecessary checks before three
+ function calls
+Date: Sun, 02 Nov 2014 19:27:20 +0100
+Message-ID: <54567788.9060008@users.sourceforge.net>
+References: <5307CAA2.8060406@users.sourceforge.net> <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6> <530A086E.8010901@users.sourceforge.net> <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6> <530A72AA.3000601@users.sourceforge.net> <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6> <530B5FB6.6010207@users.sourceforge.net> <alpine.DEB.2.10.1402241710370.2074@hadrien> <530C5E18.1020800@users.sourceforge.net> <alpine.DEB.2.10.1402251014170.2080@hadrien> <530CD2C4.4050903@users.sourceforge.net> <alpine.DEB.2.10.1402251840450.7035@hadrien> <530CF8FF.8080600@users.sourceforge.net> <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6> <530DD06F.4090703@users.sourceforge.net> <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6> <5317A59D.4@users.so
+ urceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5961663923419546970=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BEFF260A5D
- for <alsa-devel@alsa-project.org>; Sun,  2 Nov 2014 12:09:18 +0100 (CET)
-In-Reply-To: <1414910081-2487-1-git-send-email-sudipm.mukherjee@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, trivial@kernel.org, Coccinelle <cocci@systeme.lip6.fr>
 List-Id: alsa-devel@alsa-project.org
 
+The functions kfree(), release_firmware() and snd_util_memhdr_free() test
+whether their argument is NULL and then return immediately. Thus the test
+around the call is not needed.
 
---===============5961663923419546970==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
-Content-Disposition: inline
+This issue was detected by using the Coccinelle software.
 
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ sound/pci/emu10k1/emu10k1_main.c | 9 +++------
+ sound/pci/emu10k1/emufx.c        | 3 +--
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
---/9DWx/yDrRhgMJTb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+index 2292697..b4458a6 100644
+--- a/sound/pci/emu10k1/emu10k1_main.c
++++ b/sound/pci/emu10k1/emu10k1_main.c
+@@ -1289,10 +1289,8 @@ static int snd_emu10k1_free(struct snd_emu10k1 *emu)
+ 	}
+ 	if (emu->emu1010.firmware_thread)
+ 		kthread_stop(emu->emu1010.firmware_thread);
+-	if (emu->firmware)
+-		release_firmware(emu->firmware);
+-	if (emu->dock_fw)
+-		release_firmware(emu->dock_fw);
++	release_firmware(emu->firmware);
++	release_firmware(emu->dock_fw);
+ 	if (emu->irq >= 0)
+ 		free_irq(emu->irq, emu);
+ 	/* remove reserved page */
+@@ -1301,8 +1299,7 @@ static int snd_emu10k1_free(struct snd_emu10k1 *emu)
+ 			(struct snd_util_memblk *)emu->reserved_page);
+ 		emu->reserved_page = NULL;
+ 	}
+-	if (emu->memhdr)
+-		snd_util_memhdr_free(emu->memhdr);
++	snd_util_memhdr_free(emu->memhdr);
+ 	if (emu->silent_page.area)
+ 		snd_dma_free_pages(&emu->silent_page);
+ 	if (emu->ptb_pages.area)
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index 745f062..eb5c0ab 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -777,8 +777,7 @@ static void snd_emu10k1_ctl_private_free(struct snd_kcontrol
+*kctl)
+ 	kctl->private_value = 0;
+ 	list_del(&ctl->list);
+ 	kfree(ctl);
+-	if (kctl->tlv.p)
+-		kfree(kctl->tlv.p);
++	kfree(kctl->tlv.p);
+ }
 
-On Sun, Nov 02, 2014 at 12:04:41PM +0530, Sudip Mukherjee wrote:
-> on error in block prepare, we were returning the error code while still
-> holding the mutex. We are releasing the mutex in this patch before
-> return.
-
-Applied, thanks.
-
---/9DWx/yDrRhgMJTb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUVhB7AAoJECTWi3JdVIfQcZUH/RoQnYrPMaboeP9/y82hei2r
-yJLn7r5a3tqjyPOqUc4aZPCcaY7B50gtk2HhheVprHh4h1oe+iq1tSorP/u0g2ai
-a+9H4/qmS2qH1oVBHJDmFLgl6csFzhvyQatvAdCEuCyvOuCiUamoocDqTHs0v6wu
-iLQCjgdYM6HLHAlcB8tnR1cJccrqeFpN61bAxihUUwDJbz2zIHeMDbieFMduY5QZ
-QVhJ2x+QGZZC0AzjvWj6RNnIPhxQQtBAtN/Pg4y06sHXTW1gI0gh+P6kqxjjgN8Y
-CKzIxafBTurDDYd1NGEuWjuvpDVC6si+YRWvG+j+QK8RDWH3FDTHMSQ7ypfrP5w=
-=9h1N
------END PGP SIGNATURE-----
-
---/9DWx/yDrRhgMJTb--
-
---===============5961663923419546970==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5961663923419546970==--
+ static int snd_emu10k1_add_controls(struct snd_emu10k1 *emu,
+-- 
+2.1.3
