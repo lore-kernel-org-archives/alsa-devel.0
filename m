@@ -1,16 +1,18 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/2] ASoC: Remove snd_soc_platform_driver
-	suspend/resume callbacks
-Date: Mon,  3 Nov 2014 10:31:47 +0100
-Message-ID: <1415007108-18895-1-git-send-email-lars@metafoo.de>
+Subject: [PATCH 2/2] ASoC: Remove platform field from
+	snd_soc_dai
+Date: Mon,  3 Nov 2014 10:31:48 +0100
+Message-ID: <1415007108-18895-2-git-send-email-lars@metafoo.de>
+References: <1415007108-18895-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-246.synserver.de (smtp-out-246.synserver.de
  [212.40.185.246])
- by alsa0.perex.cz (Postfix) with ESMTP id 580DF26047B
+ by alsa0.perex.cz (Postfix) with ESMTP id 765D3260483
  for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 10:31:49 +0100 (CET)
+In-Reply-To: <1415007108-18895-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,75 +26,63 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Those are unused and new drivers should use device driver suspend/resume.
+Typically a DAI does not need direct access to the platform. Currently the
+only user of this field is in a platform driver where we have a more direct
+way of getting a pointer to the platform. This patch updates the driver to
+use the more direct way and then removes the platform field from the
+snd_soc_dai struct.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- include/sound/soc.h  |  4 ----
- sound/soc/soc-core.c | 10 ----------
- 2 files changed, 14 deletions(-)
+ include/sound/soc-dai.h   | 1 -
+ sound/soc/soc-core.c      | 2 --
+ sound/soc/txx9/txx9aclc.c | 2 +-
+ 3 files changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index ad47e96..edbb07b 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -857,8 +857,6 @@ struct snd_soc_platform_driver {
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index e8b3080..45d0fa1 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -268,7 +268,6 @@ struct snd_soc_dai {
+ 	unsigned int sample_bits;
  
- 	int (*probe)(struct snd_soc_platform *);
- 	int (*remove)(struct snd_soc_platform *);
--	int (*suspend)(struct snd_soc_dai *dai);
--	int (*resume)(struct snd_soc_dai *dai);
- 	struct snd_soc_component_driver component_driver;
+ 	/* parent platform/codec */
+-	struct snd_soc_platform *platform;
+ 	struct snd_soc_codec *codec;
+ 	struct snd_soc_component *component;
  
- 	/* pcm creation and destruction */
-@@ -891,8 +889,6 @@ struct snd_soc_platform {
- 	struct device *dev;
- 	const struct snd_soc_platform_driver *driver;
- 
--	unsigned int suspended:1; /* platform is suspended */
--
- 	struct list_head list;
- 
- 	struct snd_soc_component component;
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index dd8234d..00e944e 100644
+index 00e944e..3818cf3 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -592,17 +592,12 @@ int snd_soc_suspend(struct device *dev)
+@@ -1309,7 +1309,6 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
+ {
+ 	struct snd_soc_dai_link *dai_link = &card->dai_link[num];
+ 	struct snd_soc_pcm_runtime *rtd = &card->rtd[num];
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int i, ret;
  
- 	for (i = 0; i < card->num_rtd; i++) {
- 		struct snd_soc_dai *cpu_dai = card->rtd[i].cpu_dai;
--		struct snd_soc_platform *platform = card->rtd[i].platform;
+@@ -1317,7 +1316,6 @@ static int soc_probe_link_dais(struct snd_soc_card *card, int num, int order)
+ 			card->name, num, order);
  
- 		if (card->rtd[i].dai_link->ignore_suspend)
- 			continue;
- 
- 		if (cpu_dai->driver->suspend && !cpu_dai->driver->ac97_control)
- 			cpu_dai->driver->suspend(cpu_dai);
--		if (platform->driver->suspend && !platform->suspended) {
--			platform->driver->suspend(cpu_dai);
--			platform->suspended = 1;
--		}
- 	}
- 
- 	/* close any waiting streams and save state */
-@@ -775,17 +770,12 @@ static void soc_resume_deferred(struct work_struct *work)
- 
- 	for (i = 0; i < card->num_rtd; i++) {
- 		struct snd_soc_dai *cpu_dai = card->rtd[i].cpu_dai;
--		struct snd_soc_platform *platform = card->rtd[i].platform;
- 
- 		if (card->rtd[i].dai_link->ignore_suspend)
- 			continue;
- 
- 		if (cpu_dai->driver->resume && !cpu_dai->driver->ac97_control)
- 			cpu_dai->driver->resume(cpu_dai);
--		if (platform->driver->resume && platform->suspended) {
--			platform->driver->resume(cpu_dai);
--			platform->suspended = 0;
--		}
- 	}
- 
- 	if (card->resume_post)
+ 	/* config components */
+-	cpu_dai->platform = platform;
+ 	cpu_dai->card = card;
+ 	for (i = 0; i < rtd->num_codecs; i++)
+ 		rtd->codec_dais[i]->card = card;
+diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
+index cd71fd8..00b7e2d 100644
+--- a/sound/soc/txx9/txx9aclc.c
++++ b/sound/soc/txx9/txx9aclc.c
+@@ -292,7 +292,7 @@ static int txx9aclc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_soc_dai *dai = rtd->cpu_dai;
+ 	struct snd_pcm *pcm = rtd->pcm;
+-	struct platform_device *pdev = to_platform_device(dai->platform->dev);
++	struct platform_device *pdev = to_platform_device(rtd->platform->dev);
+ 	struct txx9aclc_soc_device *dev;
+ 	struct resource *r;
+ 	int i;
 -- 
 1.8.0
