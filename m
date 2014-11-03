@@ -1,50 +1,36 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: atmel_ssc_dai: Match the CMR divider only in full
- duplex.
-Date: Mon, 3 Nov 2014 12:45:49 +0000
-Message-ID: <20141103124549.GL3815@sirena.org.uk>
-References: <544A1121.6080900@atmel.com>
- <1414178759-7252-1-git-send-email-peda@axentia.se>
- <1414178759-7252-2-git-send-email-peda@axentia.se>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 0/3] Trivial usb-audio cleanup patches
+Date: Mon,  3 Nov 2014 14:02:03 +0100
+Message-ID: <1415019726-25710-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hTKW8p8tUZ/8vLMe"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1414178759-7252-2-git-send-email-peda@axentia.se>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70E05260434
+ for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 14:02:08 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 31FF7AC38
+ for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 13:02:08 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---hTKW8p8tUZ/8vLMe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+here are a few trivial cleanup patches for usb-audio driver.
 
-On Fri, Oct 24, 2014 at 09:25:59PM +0200, Peter Rosin wrote:
-> The CMR divider register is shared by playback and capture. The SSC driver
-> therefore tries to enforce rules so that the needed register content do
-> not conflict during simultaneous playback/capture. However, the
-> implementation also prevents changing the register content in
-> half-duplex scenarios, which is needed when using the OSS API.
+ [PATCH 1/3] ALSA: usb-audio: Flatten probe and disconnect functions
+ [PATCH 2/3] ALSA: usb-audio: Pass direct struct pointer instead of
+ [PATCH 3/3] ALSA: usb-audio: Use strim() instead of open code
 
-Applied, thanks.
 
---hTKW8p8tUZ/8vLMe
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBAgAGBQJUV3j8AAoJECTWi3JdVIfQcegH/A8sAVhYsXhlnnPdW08UxLRW
-uue4tn1WLmPI0WJd7XUqrFsO2w2ueloPZZrxMSL+8kuNdhd1mFFGuhe51vAlTuhR
-7IQkTb4Fy+bxKZJ4c7QqwJjYmKw8IU9qrXJ4B4f33TdA++V+ofAQEpAoaDOCCgKf
-9tqiqo6glP8qJYTfEUky2FU02AIu8dSNlPuDtbzbLznuC9Lg4gDPPcZX/K7d/kkS
-x/a565WlLqtxAYfpFaO53RY+IygL3L5lGoqAyZSLfvFasz3Q+wbaBXDXfSCGWIbB
-fTHYTMq1l9GRV3zhhTchbypys0tgkzajmDLGT1kTAv+GROZkgpiYEH7k6boxUcE=
-=z+FE
------END PGP SIGNATURE-----
-
---hTKW8p8tUZ/8vLMe--
+Takashi
