@@ -1,210 +1,83 @@
-From: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v5 2/3] ARM: dts: pbab01: enable I2S audio on
- phyFLEX-i.MX6 boards
-Date: Mon, 3 Nov 2014 14:14:13 +0800
-Message-ID: <20141103061408.GA21210@tiger>
-References: <1414590424-25585-1-git-send-email-d.lavnikevich@sam-solutions.com>
- <1414590424-25585-3-git-send-email-d.lavnikevich@sam-solutions.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: ASoC: Intel: mrfld: add DSP core controls
+Date: Mon, 3 Nov 2014 11:15:23 +0530
+Message-ID: <20141103054523.GM28745@intel.com>
+References: <20141029151457.GA29163@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id B42D0260470
+ for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 07:27:21 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1414590424-25585-3-git-send-email-d.lavnikevich@sam-solutions.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
-Cc: shawn.guo@freescale.com, kernel@pengutronix.de, robh+dt@kernel.org, pawel.moll@arm.com, mark.rutland@arm.com, ijc+devicetree@hellion.org.uk, galak@codeaurora.org, linux@arm.linux.org.uk, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20141029151457.GA29163@mwanda>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 29, 2014 at 04:47:03PM +0300, Dmitry Lavnikevich wrote:
-> Audio on phyFLEX boards is presented by tlv320aic3007 codec connected
-> over SSI interface.
+On Wed, Oct 29, 2014 at 06:14:57PM +0300, Dan Carpenter wrote:
+> Hello Vinod Koul,
 > 
-> Signed-off-by: Dmitry Lavnikevich <d.lavnikevich@sam-solutions.com>
-> ---
->  arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi | 100 ++++++++++++++++++++++++++-
->  arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi |  15 ++++
->  2 files changed, 113 insertions(+), 2 deletions(-)
+> The patch 24c8d14192cc: "ASoC: Intel: mrfld: add DSP core controls"
+> from Oct 15, 2014, leads to the following static checker warning:
 > 
-> diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi
-> index f1bdcae5b97d..cb8f1b6ec083 100644
-> --- a/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi
-> +++ b/arch/arm/boot/dts/imx6qdl-phytec-pbab01.dtsi
-> @@ -9,10 +9,73 @@
->   * http://www.gnu.org/copyleft/gpl.html
->   */
->  
-> +#include <dt-bindings/sound/fsl-imx-audmux.h>
-> +
->  / {
->  	chosen {
->  		linux,stdout-path = &uart4;
->  	};
-> +
-> +	regulators {
-> +		sound_1v8: regulator@2 {
-> +			compatible = "regulator-fixed";
-> +			reg = <2>;
-> +			regulator-name = "i2s-audio-1v8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +		};
-> +
-> +		sound_3v3: regulator@3 {
-> +			compatible = "regulator-fixed";
-> +			reg = <3>;
-> +			regulator-name = "i2s-audio-3v3";
-> +			regulator-min-microvolt = <3300000>;
-> +			regulator-max-microvolt = <3300000>;
-> +		};
-> +	};
-> +
-> +	tlv320_mclk: oscillator {
-> +		compatible = "fixed-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <19200000>;
-> +		clock-output-names = "tlv320-mclk";
-> +	};
-> +
-> +	sound {
-> +		compatible = "simple-audio-card";
-> +		simple-audio-card,name = "OnboardTLV320AIC3007";
-> +		simple-audio-card,format = "i2s";
-> +		simple-audio-card,bitclock-master = <&dailink_master>;
-> +		simple-audio-card,frame-master = <&dailink_master>;
-> +		simple-audio-card,widgets =
-> +			"Microphone", "Mic Jack",
-> +			"Line", "Line In",
-> +			"Line", "Line Out",
-> +			"Speaker", "Speaker",
-> +			"Headphone", "Headphone Jack";
-> +		simple-audio-card,routing =
-> +			"Line Out", "LLOUT",
-> +			"Line Out", "RLOUT",
-> +			"Speaker", "SPOP",
-> +			"Speaker", "SPOM",
-> +			"Headphone Jack", "HPLOUT",
-> +			"Headphone Jack", "HPROUT",
-> +			"MIC3L", "Mic Jack",
-> +			"MIC3R", "Mic Jack",
-> +			"Mic Jack", "Mic Bias",
-> +			"LINE1L", "Line In",
-> +			"LINE1R", "Line In";
-> +
-> +		simple-audio-card,cpu {
-> +			sound-dai = <&ssi2>;
-> +		};
-> +
-> +		dailink_master: simple-audio-card,codec {
-> +			sound-dai = <&codec>;
-> +			clocks = <&tlv320_mclk>;
-> +		};
-> +	};
-> +
->  };
->  
->  &fec {
-> @@ -27,12 +90,45 @@
->  	status = "okay";
->  };
->  
-> +&ssi2 {
-> +	status = "okay";
-> +};
-> +
-> +&audmux {
-
-Please sort the nodes alphabetically in label name.
-
-> +	status = "okay";
-> +
-> +	ssi2 {
-> +		fsl,audmux-port = <1>;
-> +		fsl,port-config = <
-> +			(IMX_AUDMUX_V2_PTCR_TFSDIR |
-> +			IMX_AUDMUX_V2_PTCR_TFSEL(4) |
-> +			IMX_AUDMUX_V2_PTCR_TCLKDIR |
-> +			IMX_AUDMUX_V2_PTCR_TCSEL(4))
-> +	                IMX_AUDMUX_V2_PDCR_RXDSEL(4)
-> +		>;
-> +	};
-> +	pins5 {
-
-Have a new line between nodes.
-
-> +		fsl,audmux-port = <4>;
-> +		fsl,port-config = <
-> +			0x00000000
-> +			IMX_AUDMUX_V2_PDCR_RXDSEL(1)
-> +		>;
-> +	};
-> +};
-> +
->  &i2c2 {
->  	status = "okay";
->  
-> -	tlv320@18 {
-> -		compatible = "ti,tlv320aic3x";
-> +	codec: tlv320@18 {
-> +		compatible = "ti,tlv320aic3007";
-
-Both compatible strings are documented in
-Documentation/devicetree/bindings/sound/tlv320aic3x.txt.  But I hope
-this change will not cause any DT compatible issues.
-
-> +		#sound-dai-cells = <0>;
->  		reg = <0x18>;
-> +		ai3x-micbias-vg = <2>;
-> +
-> +		AVDD-supply = <&sound_3v3>;
-> +		IOVDD-supply = <&sound_3v3>;
-> +		DRVDD-supply = <&sound_3v3>;
-> +		DVDD-supply = <&sound_1v8>;
->  	};
->  
->  	stmpe@41 {
-> diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-> index aa2275671d2c..d7f34664e008 100644
-> --- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-> +++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-> @@ -58,6 +58,12 @@
->  	};
->  };
->  
-> +&audmux {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_audmux>;
-> +	status = "disabled";
-> +};
-> +
->  &ecspi3 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_ecspi3>;
-> @@ -319,6 +325,15 @@
->  				MX6QDL_PAD_ENET_TXD1__GPIO1_IO29 0x80000000
->  			>;
->  		};
-> +
-> +		pinctrl_audmux: audmuxgrp {
-
-Please sort the pinctrl entries alphabetically.
-
-Shawn
-
-> +			fsl,pins = <
-> +				MX6QDL_PAD_DISP0_DAT16__AUD5_TXC	0x130b0
-> +				MX6QDL_PAD_DISP0_DAT18__AUD5_TXFS	0x130b0
-> +				MX6QDL_PAD_DISP0_DAT17__AUD5_TXD	0x110b0
-> +				MX6QDL_PAD_DISP0_DAT19__AUD5_RXD	0x130b0
-> +			>;
-> +		};
->  	};
->  };
->  
-> -- 
-> 2.1.2
+> 	sound/soc/intel/sst-atom-controls.c:1354 sst_map_modules_to_pipe()
+> 	warn: variable dereferenced before check 'platform' (see line 1353)
 > 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+> sound/soc/intel/sst-atom-controls.c
+>   1348  static int sst_map_modules_to_pipe(struct snd_soc_platform *platform)
+>   1349  {
+>   1350          struct snd_soc_dapm_widget *w;
+>   1351          int ret = 0;
+>   1352  
+>   1353          list_for_each_entry(w, &platform->component.card->widgets, list) {
+>                                         ^^^^^^^^
+> New dereference.
+> 
+>   1354                  if (platform && is_sst_dapm_widget(w) && (w->priv)) {
+>                             ^^^^^^^^
+> New check.
+Thanks Dan,
+
+This check is not required as the only user of this function does feref
+'platfomr' before calling so we cna remove this. I will send a patch.
+
+Thanks for reporting
+
+-- 
+~Vinod
+
+> 
+>   1355                          struct sst_ids *ids = w->priv;
+>   1356  
+>   1357                          dev_dbg(platform->dev, "widget type=%d name=%s\n",
+>   1358                                          w->id, w->name);
+>   1359                          INIT_LIST_HEAD(&ids->algo_list);
+>   1360                          INIT_LIST_HEAD(&ids->gain_list);
+>   1361                          ret = sst_fill_widget_module_info(w, platform);
+>   1362  
+>   1363                          if (ret < 0)
+>   1364                                  return ret;
+>   1365  
+>   1366                          /* fill linked widgets */
+>   1367                          if (ids->parent_wname !=  NULL)
+>   1368                                  sst_fill_linked_widgets(platform, ids);
+>   1369                  }
+>   1370          }
+>   1371          return 0;
+>   1372  }
+> 
+> regards,
+> dan carpenter
+
+-- 
