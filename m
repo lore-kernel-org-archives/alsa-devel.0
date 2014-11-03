@@ -1,44 +1,50 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: simple-card: add "invert" property for detect GPIOs
-Date: Mon, 3 Nov 2014 12:26:33 +0000
-Message-ID: <20141103122633.GH3815@sirena.org.uk>
-References: <1414812138-6178-1-git-send-email-jay.xu@rock-chips.com>
+Subject: Re: [PATCH] ASoC: atmel_ssc_dai: Match the CMR divider only in full
+ duplex.
+Date: Mon, 3 Nov 2014 12:45:49 +0000
+Message-ID: <20141103124549.GL3815@sirena.org.uk>
+References: <544A1121.6080900@atmel.com>
+ <1414178759-7252-1-git-send-email-peda@axentia.se>
+ <1414178759-7252-2-git-send-email-peda@axentia.se>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gKijDXBCEH69PxaN"
+	protocol="application/pgp-signature"; boundary="hTKW8p8tUZ/8vLMe"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1414812138-6178-1-git-send-email-jay.xu@rock-chips.com>
+In-Reply-To: <1414178759-7252-2-git-send-email-peda@axentia.se>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jianqun <jay.xu@rock-chips.com>
-Cc: heiko@sntech.de, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.de, Li.Xiubo@freescale.com, moinejf@free.fr, kuninori.morimoto.gx@renesas.com, jsarha@ti.com, Guangyu.Chen@freescale.com, dgreid@chromium.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, huangtao@rock-chips.com, cf@rock-chips.com
+To: Peter Rosin <peda@axentia.se>
+Cc: Bo Shen <voice.shen@atmel.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---gKijDXBCEH69PxaN
+--hTKW8p8tUZ/8vLMe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Nov 01, 2014 at 11:22:18AM +0800, Jianqun wrote:
-> Since hardware may invert detect GPIO of headphone or mic, add one
-> property to support software invert.
+On Fri, Oct 24, 2014 at 09:25:59PM +0200, Peter Rosin wrote:
+> The CMR divider register is shared by playback and capture. The SSC driver
+> therefore tries to enforce rules so that the needed register content do
+> not conflict during simultaneous playback/capture. However, the
+> implementation also prevents changing the register content in
+> half-duplex scenarios, which is needed when using the OSS API.
 
 Applied, thanks.
 
---gKijDXBCEH69PxaN
+--hTKW8p8tUZ/8vLMe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAEBAgAGBQJUV3R4AAoJECTWi3JdVIfQ/YgH/3yuttjMe5JiHreTvvv4Ykzt
-l50OzgSST8B1AiR9c3PsEpHIq+kBhNUiid4ZBx6gqHQ9SBXxORYmfNV/+BGeouJx
-k+k7zkWjT6kGDbp/i9rkOnGb+rJGMhvk5SQPvFimHEj3QAYqHOskpvL1xuXRHhF9
-BSDXlIz6AtQXfYqjwUnm+EZvuKZIAq+eV2MgIgexpOJufRhIZw0qqwEANQSVzgvV
-G46eAtzQmFGCUxFOqYnjOvQt1i1yDVJBILeIdtpTAETR6r+F06SNs6GgTtqFSb26
-tJzUfD/wd+DeXgSom3hnfFogqZ4lAQ8UTogJc+KjjZO0AjHaEcjtjrNDFp7Q3Ko=
-=30Fo
+iQEcBAEBAgAGBQJUV3j8AAoJECTWi3JdVIfQcegH/A8sAVhYsXhlnnPdW08UxLRW
+uue4tn1WLmPI0WJd7XUqrFsO2w2ueloPZZrxMSL+8kuNdhd1mFFGuhe51vAlTuhR
+7IQkTb4Fy+bxKZJ4c7QqwJjYmKw8IU9qrXJ4B4f33TdA++V+ofAQEpAoaDOCCgKf
+9tqiqo6glP8qJYTfEUky2FU02AIu8dSNlPuDtbzbLznuC9Lg4gDPPcZX/K7d/kkS
+x/a565WlLqtxAYfpFaO53RY+IygL3L5lGoqAyZSLfvFasz3Q+wbaBXDXfSCGWIbB
+fTHYTMq1l9GRV3zhhTchbypys0tgkzajmDLGT1kTAv+GROZkgpiYEH7k6boxUcE=
+=z+FE
 -----END PGP SIGNATURE-----
 
---gKijDXBCEH69PxaN--
+--hTKW8p8tUZ/8vLMe--
