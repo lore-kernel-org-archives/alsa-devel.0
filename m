@@ -1,23 +1,16 @@
-From: Chirag Ajmera <chirag@ncc.co.in>
-Subject: Query - PyAlsa Docs
-Date: Mon, 03 Nov 2014 21:01:58 +0530
-Message-ID: <54579FEE.8000001@ncc.co.in>
-Reply-To: chirag_ja@yahoo.co.in, chirag@ncc.co.in
+From: Panu Matilainen <pmatilai@laiskiainen.org>
+Subject: [PATCH] USB-Audio: Add Scarlett 2i4 USB to S/PDIF
+	blacklist
+Date: Mon,  3 Nov 2014 17:42:44 +0200
+Message-ID: <1415029364-9337-1-git-send-email-pmatilai@laiskiainen.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pa0-f47.google.com (mail-pa0-f47.google.com
- [209.85.220.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 327FD260519
- for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 16:33:45 +0100 (CET)
-Received: by mail-pa0-f47.google.com with SMTP id kx10so12244602pab.6
- for <alsa-devel@alsa-project.org>; Mon, 03 Nov 2014 07:33:41 -0800 (PST)
-Received: from [192.168.1.91] ([122.179.161.193])
- by mx.google.com with ESMTPSA id t11sm17499632pdj.89.2014.11.03.07.33.38
- for <alsa-devel@alsa-project.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Mon, 03 Nov 2014 07:33:40 -0800 (PST)
+Received: from homiemail-a92.g.dreamhost.com (sub5.mail.dreamhost.com
+ [208.113.200.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id D351926050B
+ for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 16:42:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,20 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Panu Matilainen <pmatilai@laiskiainen.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear,
+Like Scarlett 2i2, the 2i4 does not have any S/PDIF connections.
 
-Where can I get documentation for pyalsa bindings ?
+Signed-off-by: Panu Matilainen <pmatilai@laiskiainen.org>
+---
+ src/conf/cards/USB-Audio.conf | 1 +
+ 1 file changed, 1 insertion(+)
 
-The test files (eg cardtest1.py) included in the package fail with the 
-below error
-ImportError: No module named alsacard
-
-import pyalsa - this package is found and loaded
-
-Kindly guide
-
-Thank you
-Best,
-Chirag A.
+diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
+index 77a48b9..a6754d9 100644
+--- a/src/conf/cards/USB-Audio.conf
++++ b/src/conf/cards/USB-Audio.conf
+@@ -48,6 +48,7 @@ USB-Audio.pcm.iec958_device {
+ 	"Plantronics Wireless Audio" 999
+ 	"SB WoW Headset" 999
+ 	"Scarlett 2i2 USB" 999
++	"Scarlett 2i4 USB" 999
+ 	"Sennheiser USB headset" 999
+ 	"USB Device 0x46d:0x992" 999
+ }
+-- 
+1.9.3
