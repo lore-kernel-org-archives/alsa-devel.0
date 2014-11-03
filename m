@@ -1,27 +1,18 @@
-From: Bastien Nocera <hadess@hadess.net>
-Subject: Baytrail init file for alsa-utils
-Date: Mon, 03 Nov 2014 10:51:34 +0100
-Message-ID: <1415008294.2406.107.camel@hadess.net>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH v2 1/2] ALSA: echoaudio: add reference of
+	struct echoaudio
+Date: Mon,  3 Nov 2014 16:04:12 +0530
+Message-ID: <1415010853-4334-1-git-send-email-sudipm.mukherjee@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [217.70.183.197])
- by alsa0.perex.cz (Postfix) with ESMTP id 1872D2605CB
- for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 10:52:27 +0100 (CET)
-Received: from mfilter18-d.gandi.net (mfilter18-d.gandi.net [217.70.178.146])
- by relay5-d.mail.gandi.net (Postfix) with ESMTP id D133141C0AF
- for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 10:52:26 +0100 (CET)
-Received: from relay5-d.mail.gandi.net ([217.70.183.197])
- by mfilter18-d.gandi.net (mfilter18-d.gandi.net [10.0.15.180]) (amavisd-new,
- port 10024)
- with ESMTP id KM8QwMOzj-5Y for <alsa-devel@alsa-project.org>;
- Mon,  3 Nov 2014 10:52:25 +0100 (CET)
-Received: from nuvo (mon69-7-83-155-44-161.fbx.proxad.net [83.155.44.161])
- (Authenticated sender: hadess@hadess.net)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 793A541C0D3
- for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 10:52:16 +0100 (CET)
+Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com
+ [209.85.192.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id AE356260434
+ for <alsa-devel@alsa-project.org>; Mon,  3 Nov 2014 11:34:27 +0100 (CET)
+Received: by mail-pd0-f182.google.com with SMTP id fp1so11337923pdb.27
+ for <alsa-devel@alsa-project.org>; Mon, 03 Nov 2014 02:34:26 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,26 +22,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hey,
+added reference of struct echoaudio to free_firmware function.
+this structure will be later used to get a reference of the card
+when converting snd_printk to dev_* in the next patch of the series.
 
-I've done some work on the community generated "alsa state" file for
-Baytrail tablets, and shrunk it massively:
-https://github.com/AdamWill/baytrail-m/blob/master/alsa/t100_B.state
+Signed-off-by: Sudip Mukherjee <sudip@vectorindia.org>
+---
 
-Are there any tools, or hints as to how I might convert that to an
-"init" file that alsactl could run to set the default state of the
-mixer?
+same as v1.
 
-Or have any Intel folks already done that work?
+ sound/pci/echoaudio/echoaudio.c     |  3 ++-
+ sound/pci/echoaudio/echoaudio.h     |  3 ++-
+ sound/pci/echoaudio/echoaudio_dsp.c | 10 +++++-----
+ 3 files changed, 9 insertions(+), 7 deletions(-)
 
-I'll have a few more sound-related questions for that tablet, for which
-I could do with a few hints as to where to direct the questions/bug
-reports:
-- no jack sensing support (driver problem?)
-- left/right headphones output is inverted (another driver bug?)
-- HDMI audio is not detected (Intel video driver bug?)
-
-Cheers
+diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
+index d82321f..db1b247 100644
+--- a/sound/pci/echoaudio/echoaudio.c
++++ b/sound/pci/echoaudio/echoaudio.c
+@@ -69,7 +69,8 @@ static int get_firmware(const struct firmware **fw_entry,
+ 
+ 
+ 
+-static void free_firmware(const struct firmware *fw_entry)
++static void free_firmware(const struct firmware *fw_entry,
++			  struct echoaudio *chip)
+ {
+ #ifdef CONFIG_PM_SLEEP
+ 	DE_ACT(("firmware not released (kept in cache)\n"));
+diff --git a/sound/pci/echoaudio/echoaudio.h b/sound/pci/echoaudio/echoaudio.h
+index b86b88d..a4f112a 100644
+--- a/sound/pci/echoaudio/echoaudio.h
++++ b/sound/pci/echoaudio/echoaudio.h
+@@ -468,7 +468,8 @@ static int wait_handshake(struct echoaudio *chip);
+ static int send_vector(struct echoaudio *chip, u32 command);
+ static int get_firmware(const struct firmware **fw_entry,
+ 			struct echoaudio *chip, const short fw_index);
+-static void free_firmware(const struct firmware *fw_entry);
++static void free_firmware(const struct firmware *fw_entry,
++			  struct echoaudio *chip);
+ 
+ #ifdef ECHOCARD_HAS_MIDI
+ static int enable_midi_input(struct echoaudio *chip, char enable);
+diff --git a/sound/pci/echoaudio/echoaudio_dsp.c b/sound/pci/echoaudio/echoaudio_dsp.c
+index 5a6a217..977b2bd 100644
+--- a/sound/pci/echoaudio/echoaudio_dsp.c
++++ b/sound/pci/echoaudio/echoaudio_dsp.c
+@@ -206,12 +206,12 @@ static int load_asic_generic(struct echoaudio *chip, u32 cmd, short asic)
+ 	}
+ 
+ 	DE_INIT(("ASIC loaded\n"));
+-	free_firmware(fw);
++	free_firmware(fw, chip);
+ 	return 0;
+ 
+ la_error:
+ 	DE_INIT(("failed on write_dsp\n"));
+-	free_firmware(fw);
++	free_firmware(fw, chip);
+ 	return -EIO;
+ }
+ 
+@@ -317,11 +317,11 @@ static int install_resident_loader(struct echoaudio *chip)
+ 	}
+ 
+ 	DE_INIT(("Resident loader successfully installed\n"));
+-	free_firmware(fw);
++	free_firmware(fw, chip);
+ 	return 0;
+ 
+ irl_error:
+-	free_firmware(fw);
++	free_firmware(fw, chip);
+ 	return -EIO;
+ }
+ 
+@@ -491,7 +491,7 @@ static int load_firmware(struct echoaudio *chip)
+ 	if (err < 0)
+ 		return err;
+ 	err = load_dsp(chip, (u16 *)fw->data);
+-	free_firmware(fw);
++	free_firmware(fw, chip);
+ 	if (err < 0)
+ 		return err;
+ 
+-- 
+1.8.1.2
